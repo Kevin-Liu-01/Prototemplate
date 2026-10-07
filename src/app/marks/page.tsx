@@ -5,11 +5,13 @@ import type { Metadata } from 'next';
 
 import { MARKS } from '@/lib/marks';
 import type { MarkArt } from '@/lib/marks';
+import { PAGE_NAMES } from '@/lib/page-names';
+import { requireUpdated } from '@/lib/updated';
 
 import MarksViewer from './MarksViewer';
 
 export const metadata: Metadata = {
-  title: 'Marks',
+  title: PAGE_NAMES.marks.name,
   description: `${MARKS.length} GT marks: the speed set of seven in one register (wide letters, a forward slant, one cut, speed bars), from the bar monogram to its ASCII rendering, and the two survivors of the earlier round, each one color and shown at a run of sizes on paper and on ink.`,
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
 };
@@ -50,5 +52,5 @@ export default function MarksPage() {
       return [mark.id, entry];
     })
   );
-  return <MarksViewer art={art} />;
+  return <MarksViewer art={art} updated={requireUpdated('/marks')} />;
 }

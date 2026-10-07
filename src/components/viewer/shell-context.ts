@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useSyncExternalStore } from 'react';
 
 import type { ShellDensity, ShellItem, ShellKeys, ShellMode } from '@/lib/shell-data';
 
@@ -8,12 +8,37 @@ import type { ShellDensity, ShellItem, ShellKeys, ShellMode } from '@/lib/shell-
 export type StageSize = { width: number; height: number };
 
 /**
- * The stage geometry, in its own context so the ResizeObserver's ticks
- * (every frame of the sidebar's 220ms width transition, every window
- * resize) re-render only the fixed sheet that reads them, never the sidebar
- * rows, the toolbar, the panel or the book (directive 7.5).
+ * The stage geometry. It lives outside React state, in a store the shell's
+ * ResizeObserver writes on every frame of the sidebar's 220ms width
+ * transition and on every window resize; only its readers (the fixed sheet
+ * and the compare rig, through usePtStage) subscribe, so a tick re-renders
+ * them alone and never the shell, the sidebar rows, the toolbar, the panel
+ * or the book (directive 7.5).
  */
 export type StageState = { stageSize: StageSize };
+
+/** The stage box outside React state: the ResizeObserver writes it on every frame of the column's transition, and only its readers (the fixed sheet, the compare rig) render. */
+export type StageStore = { get: () => StageSize; set: (next: StageSize) => void; subscribe: (fn: () => void) => () => void };
+
+export function createStageStore(): StageStore {
+  let size: StageSize = { width: 0, height: 0 };
+  const fns = new Set<() => void>();
+  return {
+    get: () => size,
+    set: (next) => {
+      if (next.width === size.width && next.height === size.height) return;
+      size = next;
+      for (const fn of fns) fn();
+    },
+    subscribe: (fn) => {
+      fns.add(fn);
+      return () => fns.delete(fn);
+    },
+  };
+}
+
+/* the server's and the first client frame's stage: nothing measured yet */
+const NO_STAGE: StageSize = { width: 0, height: 0 };
 
 /** Which way the last paged move went; the slide-change animation reads it. */
 export type ShellDir = 'next' | 'prev';
@@ -113,11 +138,11 @@ export function usePtShell(): ShellState {
   return value;
 }
 
-export const StageContext = createContext<StageState | null>(null);
+export const StageContext = createContext<StageStore | null>(null);
 
-/** The stage box for the fixed sheet. Throws outside ViewerShell. */
+/** The stage box for the fixed sheet and the compare rig. Throws outside ViewerShell. */
 export function usePtStage(): StageState {
-  const value = useContext(StageContext);
-  if (!value) throw new Error('usePtStage must be called inside ViewerShell');
-  return value;
+  const store = useContext(StageContext);
+  if (!store) throw new Error('usePtStage must be called inside ViewerShell');
+  return { stageSize: useSyncExternalStore(store.subscribe, store.get, () => NO_STAGE) };
 }

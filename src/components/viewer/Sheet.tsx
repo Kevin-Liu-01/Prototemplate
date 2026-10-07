@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { MouseEvent, ReactNode, Ref, TouchEvent } from 'react';
 import { useRef, useState } from 'react';
 
+import { cn } from '@/lib/cn';
 import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -101,8 +102,6 @@ export type FixedSheetProps = {
 
 export type FlowSheetProps = {
   variant: 'flow';
-  /** the column: 1280px, or the 1170px article rail */
-  width?: 1280 | 'rail';
   /** the scroll region, for Progress and scroll spies */
   scrollRef?: Ref<HTMLDivElement>;
   children?: ReactNode;
@@ -116,9 +115,11 @@ type Slot = { key: string; node: ReactNode };
 /**
  * The content frame inside the stage. Fixed: a w x h sheet scaled to fit
  * the whole stage (the index panel is an overlay and takes nothing from
- * it), shown in slide mode, with the ring drawn as a mat (1px edge border,
- * 1px paper gap, 1px hair-soft outline; no shadow). Flow: a ruled scroll
- * region holding the same ring around a reading column. Both sit inside
+ * it), shown in slide mode on the plate, with the ring drawn as a mat
+ * (1px hair border, 1px paper gap, 1px hair-soft outline; no shadow): the
+ * edge of a fixed-size artifact. Flow: a reading page, a scroll region
+ * holding one column on the stage's paper with no ring and no ground, the
+ * deck's book column (deck/parts/head.html .book-in). Both sit inside
  * ViewerShell's .pt-stagewrap.
  */
 export function Sheet(props: SheetProps) {
@@ -237,7 +238,7 @@ function FixedSheet({
 
   return (
     <div
-      className={fitMode === 'height' ? 'pt-sheet-stage is-pan' : 'pt-sheet-stage'}
+      className={cn('pt-sheet-stage', fitMode === 'height' && 'is-pan', present && 'is-present')}
       data-dir={dir ?? 'next'}
       hidden={!shown}
       onClick={onClick}
@@ -284,12 +285,10 @@ function FixedSheet({
   );
 }
 
-function FlowSheet({ width = 1280, scrollRef, children }: FlowSheetProps) {
+function FlowSheet({ scrollRef, children }: FlowSheetProps) {
   return (
-    <div ref={scrollRef} className={width === 'rail' ? 'sheet-flow pt-scroll is-rail' : 'sheet-flow pt-scroll'}>
-      <div className='sheet-mat'>
-        <div className='sheet'>{children}</div>
-      </div>
+    <div ref={scrollRef} className='sheet-flow pt-scroll'>
+      <div className='pt-flow-col'>{children}</div>
     </div>
   );
 }

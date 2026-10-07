@@ -2,8 +2,8 @@
 
 The toolchain behind the blog illustrations. The procedure and the rules
 are in [`docs/GRAPHICS.md`](../docs/GRAPHICS.md) (served at
-`/docs/graphics`); the agent skills under `.agents/skills` carry them into
-sessions.
+`/docs/graphics`); the `gt-graphics` skill (`skills/gt-graphics`) carries
+them into agent sessions.
 
 ```bash
 pnpm install                       # heroicons for the label icons

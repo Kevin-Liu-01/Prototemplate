@@ -72,27 +72,74 @@ CSS — so figures must be checked by eye at 2× pixel crops of the junctions.
 
 ### Sanctioned devices
 
-- **The diagonal-hatch spacer** owns a section boundary once: one hairline
-  under a 45° hatch band —
-  `border-bottom: 1px solid var(--pt-hair)` over
-  `repeating-linear-gradient(-45deg, transparent 0 6px, var(--pt-hatch) 6px 7px)`.
+- **The diagonal-hatch band** marks the boundary between a book's front
+  matter and its first section, once per book: 42px of
+  `repeating-linear-gradient(-45deg, transparent 0 6px, var(--pt-hatch) 6px 7px)`
+  between two hairlines it draws itself, `border-block: 1px solid var(--pt-hair)`
+  (`.pt-book-band`, BookView.css). Its rules and its hatch run across the
+  whole stage, as every rule of a book does (see The reading column), and
+  nothing else draws a line within 4px of either rule; the first section's
+  divider draws no rule of its own.
+  The gallery's article (`.pt-hatch`, prototemplate.css) is the one place
+  a band draws only its bottom rule, because every section there draws its
+  own bottom rule and owns the band's top seam.
 - **Border crosses**: where two hairlines must legitimately cross, a small
   plus seated exactly on the intersection (ink, 1px, non-scaling) declares
   the crossing deliberate — the one ornament a junction is allowed.
 - **The doubled line** is the one sanctioned double — one owner, one path,
   stroked twice (see §5). The auditor's allow list holds deliberate devices
   by name; everything else stays strict.
-- **The sheet mat** is the one sanctioned doubled line in chrome: the viewer
-  shell draws its sheet ring as a 1px `--pt-edge` border on `.sheet`, a 1px
-  paper gap from the padding of `.sheet-mat`, and a 1px `--pt-hair-soft`
-  outline on the mat, with no shadow. The active thumbnail frame and the
-  active book page frame carry the same border plus offset outline. The
-  auditor allows them under `sheet`, `thumb-frame` and `page-frame`.
+- **The fixed sheet's ring** is the one sanctioned doubled line in chrome.
+  It is the edge of a fixed-size artifact: a slide, the gallery's live
+  1440x900 exhibit, the compare rig's panes, and the live page on
+  `/directions/<slug>` (`.dr-sheet`). The shell draws it as a 1px
+  `--pt-hair` border on `.sheet`, a 1px paper gap from the padding of
+  `.sheet-mat`, and a 1px `--pt-hair-soft` outline on the mat, with no
+  shadow, on the `--pt-plate` letterbox of the fixed stage, as the deck's
+  slide view draws it. A reading page has no ring and no plate. The active
+  thumbnail frame and the active book page frame carry the same border plus
+  offset outline. The auditor allows them under `sheet`, `thumb-frame` and
+  `page-frame`.
+
+### The reading column
+
+A reading page sits straight on the stage's paper. That covers the book
+mode of /brand, /docs, /handbook, /motion, /graphics, /skills and /marks,
+their record pages, /directions/<slug> and /archive/<slug>: every route
+that renders `Sheet variant='flow'`. Its column is the deck's book column
+(`deck/parts/head.html` `.book-in`): 1280px at most and centered in the
+stage, with `--pt-col-pad-x` (56px, 16px under 900px) on each side,
+`--pt-title-clear` over the title and 120px (80px under 900px) under the
+last block. The column draws no border, no ground and no mat. The
+toolbar's bottom rule is the only line above the title, and the sidebar's
+right edge is the only line beside the page. A fixed-size artifact inside
+a reading page keeps a frame, because the frame is its edge: the live page
+on a direction page keeps the fixed sheet's ring, and a capture takes the
+frame role with the card corner. Kevin asked for this on 2026-10-06, after
+the grey mat had made every page a framed picture of a page.
+
+Every structural horizontal rule of a book runs across the whole stage,
+from the sidebar's edge to the stage's right edge: the mast's rule, the
+contents rows, the band and the dividers, the full-width list rows of
+/skills, /graphics, /motion, /marks and a direction page, an archive
+record's rows, and the rule over a blog post's footer. The element keeps
+its 1px border for layout and paints it as a border image outset past
+both ends (`--pt-bleed-top`, `--pt-bleed-bottom` and `--pt-bleed-block` in
+tokens.css); the outset never scrolls, and the scroll region clips it at
+the stage's edges. A rule that drops its border also writes
+`border-image-source: none`, because the image ignores border-width and
+the build empties the shorthand `border-image: none` (lint:practices
+holds this). Under forced colors the hairs take `CanvasText`. A contents
+row is one line: the first link of each row draws it and the others draw
+none. Rules
+inside the content keep their measure: the head panel's rows, tables,
+prose lists, the `---` rule, ledgers and file lists. Kevin asked for
+full-width rules on 2026-10-07.
 
 ### Line law for chrome
 
 Chrome is everything the viewer shell draws around content: the toolbar,
-the sidebar, the index panel, the search, the sheet ring, the grid, the
+the sidebar, the index panel, the search, the fixed sheet's ring, the grid, the
 book frame, the help card, the direction corner, and the standalone deck
 viewer's own chrome. Every rule in chrome is 1px, drawn once, in one of
 three roles, and this is part of the identity: a page reads as
@@ -103,16 +150,16 @@ The three roles, and only three:
 
 | role | token | draws |
 | --- | --- | --- |
-| structural | `--pt-hair` | large surfaces and the lines that divide the shell: the sheet ring (fixed and flow), the search card, the index panel's left edge, the toolbar bottom, the sidebar right edge, the deck surface index's group headers (the sidebar's group headers draw no rule), the book head's rule, the segmented control, the field boxes at rest |
-| row | `--pt-hair-soft` | list rows, search results, panel rows, the book head's meta table rows, the help card's table rows, the sheet mat's outer ring, the progress track |
+| structural | `--pt-hair` | large surfaces and the lines that divide the shell: the fixed sheet's ring, the search card, the index panel's left edge, the toolbar bottom, the sidebar right edge, the deck surface index's group headers (the sidebar's group headers draw no rule), the book head's rule, the hatch band's two rules, the section dividers, the segmented control, the field boxes at rest, the install field at rest |
+| row | `--pt-hair-soft` | list rows, search results, panel rows, the book head's panel rows, the help card's table rows, the fixed sheet's outer ring, the progress track, the sidebar's rail (`.pt-sb-rail`, outline density) and the run guides (thumbnail density) |
 | frame | `--pt-edge` | frames of images and tiles only: thumbnails, the book's page frames, the grid tiles, the 96x54 and 64x36 captures, the hover preview's frame, and the help card |
 
 The weights carry meaning. A frame at 0.62 alpha is the darkest line in
 chrome because it holds a picture in place: the eye must find the edge of
-a capture against the paper around it. A large surface (the sheet, a card,
+a capture against the paper around it. A large surface (a fixed sheet, a card,
 a panel, a head) is not a picture; it is the paper itself, so its edge is
-the structural hairline, and its mat ring (where it has one) steps down
-again to the row weight. A sheet drawn in the frame weight reads as a
+the structural hairline, and its outer ring (where it has one) steps down
+again to the row weight. A fixed sheet drawn in the frame weight reads as a
 boxed image, which is the bug Kevin named in round six ("make the borders
 around these areas the proper border colors"). The help card is the one
 card that keeps the frame weight: it floats over a scrim, where the
@@ -121,8 +168,8 @@ hairline would vanish.
 Nothing in chrome sets a border color from any other token or literal.
 `--pt-ink` appears on a border only as a state: a pressed button
 (`.is-on`), the active thumbnail or page frame (`.is-active`), the count
-while it is being edited, the solid call to action, and a field while it
-holds focus. Book heads, table headings and the deck surface index's group
+while it is being edited, the solid call to action, the sidebar's current
+thumb on its rail, and a field while it holds focus. Book heads, table headings and the deck surface index's group
 headers draw `--pt-hair`, never ink; the sidebar's group headers draw no
 rule at all. Outlines are rings: the three roles, ink for focus and active
 rings, paper for a ring on an ink plate.
@@ -133,13 +180,21 @@ Where two bordered components touch, exactly one draws the line:
 | --- | --- | --- |
 | sidebar and stage | the sidebar's right edge | the main region draws no left edge |
 | toolbar and stage | the toolbar's bottom edge | the stage, the hint row and the index panel draw no top edge |
-| index panel and stage | the panel's left edge | the sheet ring runs under the panel; the panel covers the progress track while open |
+| index panel and stage | the panel's left edge | a fixed sheet's ring runs under the panel; the panel covers the progress track while open |
 | group header and its first row | no one: the header draws no rule, and the group's boundary is the 16px gap above its header | the first row draws no top rule |
-| a group nested under a page row and the row above it | no one: the nested header draws no rule, and the 4px gap between the row and the run of groups under it is the boundary | the row draws no bottom rule; the nested rows draw none |
+| a page row and its run | the group's rail (`.pt-sb-rail`, `--pt-hair-soft`), bending 45 degrees under the page row into the run; in thumbnail density the run's guide | the page row draws no bottom rule; run rows and labels draw no left border |
+| a run and the deep run in it | the same rail, one more bend; in thumbnail density each run its own guide, 16px or more apart | no row draws a left border |
+| the marked row and the rail | the rail; the 2px ink thumb is a state over it | the rail under the thumb is covered, not doubled; the row draws no bar |
+| a row and the pills | no one: the pills are grounds and draw no line | the row draws no box |
+| a page row and its fold | no one: the fold draws no border at rest, and its focus ring is a state | the row draws no right rule |
 | last row of a group and what follows | the last row's bottom edge | the next header carries no top rule |
-| sheet mat and its content | the mat's ring (hair border, paper gap, hair-soft outline) | content draws no outer border |
-| book head and its contents | the head's bottom rule (`--pt-hair`) | the contents grid draws no top rule; its rows draw their own bottom rules |
-| book head and its meta table | the table's rows draw `--pt-hair-soft` under themselves | the table draws no outer frame; the head's rule closes it |
+| a fixed sheet and its content | the ring (hair border, paper gap, hair-soft outline) | content draws no outer border |
+| a reading column and the stage | no one: the column draws no edge | the toolbar's bottom rule is the only line above the page and the sidebar's right edge the only line beside it; content draws no outer border |
+| book head and its contents | the mast's rule (`--pt-hair`), then the note when there is one | the note draws no rule; the contents grid draws no top rule; its rows draw their own bottom rules |
+| the title and what is above it | no one | nothing is drawn in the `--pt-title-clear` space between the toolbar's bottom rule (the stage's top) and the h1's box, and no line crosses a title |
+| book head and its panel | the panel's rows draw `--pt-hair-soft` under every row but the last | the panel draws no frame; side by side, the mast's rule closes the mast under the taller of lead and panel; on a narrow head the panel draws a row rule over its first row and the mast's rule is its last row's rule; the install field draws its own `--pt-hair` box and the row above it drops its rule |
+| front matter and the first section | the band, both rules | the contents grid draws no rule against it; the first section's divider draws no rule |
+| two sections | the lower section's divider rule | the upper section draws no bottom rule |
 | tile and its shot | the tile's frame | the shot draws no border |
 | segmented control and its options | the control's outer border | options draw only the dividers between them; the last draws none |
 | stacked corner buttons | the upper button's bottom edge | the lower button's top edge is transparent at rest |
@@ -148,17 +203,22 @@ Where two bordered components touch, exactly one draws the line:
 The auditor enforces this from computed CSS. `pnpm lint:lines:shell` walks
 `/`, `/docs`, `/brand`, `/compare`, `/archive/<first slug>`,
 `/directions/<first slug>`, `/skills`, `/skills/<first slug>`,
-`/motion`, `/motion/<first package>`, `/d/production` and `/deck` (the
-iframe's document) at 1440, 1280 and 390 in both themes against the dev
-server on port 3005, with the list toggled,
+`/handbook`, `/motion`, `/motion/<first package>`, `/graphics`, `/marks`,
+`/d/production` and `/deck` (the iframe's document) at 1440, 1280 and 390
+in both themes against the dev server on port 3005, with the list toggled,
 the index panel open, the search open, and the grid and book modes on `/`
 and `/deck`. It
 fails on any doubled line (two owners within 4px), any junction (two owners
 coincident on one seam), and any border color in chrome outside the three
-roles. `pnpm lint:all` runs it. The allow list in `scripts/lint-lines.mjs`
+roles. The sidebar's rail is a masked box the walk cannot see, so the
+auditor reads its vertical runs from its path (`data-rail-path`), holds its
+ink to the row role, and fails a state audited with the list open in
+outline density when the rail layer is not live. `pnpm lint:all` runs it.
+The allow list in `scripts/lint-lines.mjs`
 names every sanctioned multi-stroke device with its reason inline; for
-chrome those are the sheet mat (`sheet`: a hair border, a paper gap, a
-hair-soft outline), the active frames (`thumb-frame`, `page-frame`, the
+chrome those are the fixed sheet's ring (`sheet`: a hair border, a paper
+gap, a hair-soft outline, on /compare, in slide mode and around a
+direction's live page), the active frames (`thumb-frame`, `page-frame`, the
 sidebar's site tiles as `pt-tile`) and the hover preview's mat
 (`pt-preview`).
 
@@ -168,7 +228,23 @@ that widens to 4px on hover, owned by `.pt-scroll` in
 `src/components/viewer/tokens.css` and mirrored by the deck's `.scroll`
 rule. No scroll region draws a rule beside its thumb.
 
-### Corners
+### Corners: rounded controls, square shells
+
+Kevin's toolbar is the reference (2026-10-05): the search pill and the segmented control round at 6px, the key chip at 4px. Everything a reader presses, types into, picks up or looks at as an object is rounded; the surfaces that hold the interface are square. `src/components/viewer/tokens.css` holds the corners as six tokens, and nothing in the shell or the pages writes a radius any other way.
+
+| class | token | value | members |
+| --- | --- | --- | --- |
+| shell | `--pt-radius-shell` | 0 | the viewer frame, the sidebar column, the toolbar bar, the fixed sheet and its ring, the reading column, the index panel's column, the overlay layers and scrims, the progress track, scroll thumbs, the book head, the contents, the dividers and the bands; full-width list rows, which own their seams and never draw a box; an input inside its field |
+| control | `--pt-radius-control` | 6px | every button (`.pt-ib`), segmented groups, fields and field-shaped buttons (the search pill, the count, the filters, the palette's field, the install field), buttons on pages, the sidebar's pills, which are grounds the pointer is on |
+| inner | `--pt-radius-inner` | 5px | a part flush inside a control's 1px border: a segmented control's end options, the install field's copy segment |
+| chip | `--pt-radius-chip` | 4px | key caps, chips, pills, tags, inline code, and a control set 2 to 7px inside a field |
+| card | `--pt-radius-card` | 6px | cards, tiles, thumbnails, figures, and popovers: the palette, the help card, the toast, the hover preview |
+| round | `--pt-radius-round` | 50% | dots and avatars on a square box |
+
+- A part n px inside a rounded box (n from 1 to 3) takes `calc(var(--pt-radius-<role>) - npx)`.
+- A picture in a rounded frame is clipped by the frame or takes the concentric radius.
+- Named exceptions: Present keeps 8px (section 15); the marks page's app tile keeps the platform's 22% and its browser tab mock stays square, because they are specimens. The /d/ directions, the deck, the presenter, the craft article and the dashboard plate keep their own grammar.
+- `scripts/lint-radius.mjs` holds the law: statically in `pnpm lint:radius` and the build, and on the rendered pages in `pnpm lint:radius:live`.
 
 The corner notches on hero cards are not drawn — they are the ground showing
 through, so a corner can never disagree with the seam that meets it.
@@ -191,12 +267,77 @@ The page's spine is a ruled column with ONE rail on each side.
 The doubled LINE of section 5 is a different device: one path stroked
 twice, a connector, never a page rail.
 
+The sidebar's rail (section 16) is a different device: a row-weight line
+inside the list that marks the place, never a page rail.
+
 ## 4. Typography and voices
 
 - Three voices: the serif face for brand moments, the grotesk for labels
   (11px, `letter-spacing: 0.06em`), the mono for numbers and tokens only.
 - Hairline-boxed code blocks; figcaptions under figures; one type scale per
   page. Labels never shout; the active element is the only color.
+
+### Book type
+
+The shell's type is one family, the rsms InterVariable (v4.1) through
+next/font, bound as `ptInter` in `src/lib/fonts.ts` so its family name
+matches no installed Inter. Every stylesheet reads the type tokens of
+`src/components/viewer/tokens.css` and declares no family, feature list or
+display size of its own. The /d/ directions keep their own type.
+
+- **Stacks.** `--pt-text` is `var(--font-inter), system-ui, sans-serif`;
+  `--pt-display` reads it. `--pt-mono` is for code, numbers and tokens
+  only. The per-language stacks (`--pt-text-hant`, `-hans`, `-ja`, `-he`)
+  name system faces after Inter. The nameplate's faces are
+  `--pt-face-serif` and `--pt-face-grot`.
+- **Features.** h1 and h2 (and a display sentence such as the brand
+  plate's `.ptc-every`) take `--pt-ff-display`: the single-storey a
+  (cv11) and the open digits (ss01). Everything else takes
+  `--pt-ff-text`. Both name `'liga' 1, 'calt' 1`, because Chrome turns
+  contextual forms off under any letter-spacing. The base rules on the
+  shell's roots set them; a rule never writes a feature list.
+- **Weight.** 400 for text, 500 for labels, headings and `strong`.
+  Nothing above 500.
+- **The display ladder.** Optical size follows the size, so 32px and up
+  is the Display design.
+
+  | step | role | size / line | tracking | 900px and under |
+  | --- | --- | --- | --- | --- |
+  | d1 | page title (the book head's h1) | 44 / 1.04 | -0.025em | 32 |
+  | d2 | section title (a divider's h2, a brand chapter) | 32 / 1.05 | -0.025em | 26 / 1.15 |
+  | d3 | h2 in prose, a record's title | 24 / 1.25 | -0.02em | 21 |
+
+- **The text ladder.** Title 18/1.35 at 500 and -0.01em (h3, a row's
+  title); lead 17/1.55 in ink; body 16/1.6 in ink-2; small 14/1.55
+  (table cells, contents links, ledgers); meta 13/1.5 in titanium (meta
+  tables, gutter notes, captions, th); group labels 12.5 at 500 and
+  -0.005em. Weight 400 text is never tracked, and nothing on Inter is
+  tracked positive.
+- **Measure.** Body text at `--pt-measure` (32em, about 66 characters);
+  a head's lead at `--pt-measure-lead` (30em). Tables, figures, code and
+  ledgers keep the full column.
+- **The book page.** Every page with a book head has one structure, rendered by `BookHead` (BookView.tsx), and differs from another only in its words and its facts:
+  1. nothing is drawn in the `--pt-title-clear` space between the toolbar's bottom rule and the title (the reading column's top padding), and no line crosses a title;
+  2. the title, the page's plain name from `src/lib/page-names.ts` (Brand, Documentation, Motion) or a record's own title, at d1 across the mast; a page may set one badge after the name on the title's line (BookHead's `badge`: a 1px `--pt-hair` box at the card corner, its figure the cap height tall on the baseline, hidden from the accessible name). /brand's badge is the traced GT monogram in dotted outline (`src/app/brand/GtOutline.tsx`);
+  3. the lead (one to three lines at `--pt-measure-lead`, at most 200 characters, plain declarative sentences) and the panel on one row under the title, both starting on the lead's first line;
+  4. the panel: Updated first (the day of the last commit that touched the page's own sources, from `src/lib/updated.ts`, linked to its commit, with a relative hint after hydration), then three facts, or one fact and the install field; each row a Heroicons 20 solid glyph in titanium, a label in ink-2 and a value in ink at 500, one lead line tall so its baseline lands on a lead baseline;
+  5. one `--pt-hair` rule `--pt-head-rule-pad` under the taller of lead and panel, across the stage;
+  6. the note at the body step, then the contents;
+  7. one hatch band ruled on both edges and running across the stage, `--pt-sec-over` under the block above it;
+  8. the sections, each a `section.pt-book-part` opened by a divider: a `--pt-hair` rule (the first section's rule is the band's), `--pt-sec-pad`, a gutter note of two lines in titanium (`Section n`, then one fact) on the h2's last baseline, the h2 at d2.
+
+  Under 880px of head width the panel stacks under the lead with a row rule over its first row, and the mast's rule closes its last row. The gallery (`/`) is the site's front page, the nameplate hero and the redesign post in the article's own grammar, and has no book head; `/compare` is a tool and has none. `scripts/lint-heads.mjs` holds the structure, statically and on the rendered pages.
+- **The gutter.** Sections and rows keep the deck's 128px gutter and 28px
+  gap. A gutter number takes the size, line height and baseline of the
+  title beside it, in titanium (ink while active); under 900px it sits
+  above the title at the meta step.
+- **The lint.** `scripts/lint-type.mjs` holds all of this: statically in
+  `pnpm lint:type` and the build, and on the rendered pages with
+  `pnpm lint:type:live`. Its allowlist names every exception with its
+  reason: the nameplate, the gallery's grotesk labels, the mono numbers
+  and tokens, the specimens, and other sessions' code.
+  `scripts/lint-heads.mjs` holds the book page (`pnpm lint:heads`,
+  `pnpm lint:heads:live`).
 
 ## 5. The doubled line (thread grammar)
 
@@ -299,6 +440,12 @@ Density ramps render as ordered dither, never alpha veils.
 - Leader joints overshoot into opaque hulls so joints are gapless; leaning
   shapes (scan beams) are re-projected per phase (`beamAt(t)`), never a
   translated constant.
+- The sidebar's thumbs and pills move on transform only, by WAAPI, at
+  `--pt-dur-sb` (a pick) and `--pt-dur-toast` (the pointer), eased by
+  `--pt-ease`. Their geometry is read once per layout change (a
+  ResizeObserver per group, a MutationObserver for rows and marks), never
+  per frame and never on hover. Before the shell settles they are placed,
+  not moved. Reduced motion places them at once.
 
 ## 10. The seam (slide-to-reveal)
 
@@ -418,8 +565,9 @@ its own copy takes the line.
 
 ## 15. Chrome exceptions Kevin asked for
 
-The shell's chrome is Inter only, weight 500 or less, radius 0, one
-hairline per rule, colors from `src/components/viewer/tokens.css` and
+The shell's chrome is Inter only, weight 500 or less, corners as section 2
+sets them (square shells, 6px controls and cards, 4px chips), one hairline
+per rule, colors from `src/components/viewer/tokens.css` and
 borders in the three roles of section 2. Kevin's round six directives
 override those rules for exactly five elements. Each exception is listed
 here with its owner file so nothing else reaches for it, and so the next
@@ -427,15 +575,13 @@ sweep does not "fix" it back.
 
 | element | exception | owner |
 | --- | --- | --- |
-| Search pill (toolbar) | `border-radius: 6px` on the 32px `--pt-hair` field; hover border `--pt-ink-2`, a fourth border color in chrome, reachable only under the pointer (the line auditor never drives hover). At rest the pill stays in the `hair` role, and while its palette is open (`aria-expanded="true"`, a state the auditor does drive) it draws `--pt-ink`, the active-state color every open field takes | `Toolbar.css`, `.pt-toolbar .pt-search-btn` |
-| Search key chip | `kbd.pt-search-kbd`: `border-radius: 4px`, ground `--pt-hair-soft`, 11px weight 500 titanium; reads ⌘K, and `Ctrl K` on Windows and Linux (`Search.tsx` swaps the text after mount from the user agent) | `Toolbar.css`, `Search.tsx` |
-| Present | the one `.is-solid` button: `border-radius: 8px`, 14px sides, the label first and the 12px play glyph after it (`flex-direction: row-reverse`, so ToolButton keeps one markup), hover drops the ink ground for ink text in the ink frame, the old `.pt-nav-present` from 430e3c7 | `ToolButton.css`, `.pt-ib.is-solid`; `Toolbar.tsx` passes `solid` |
+| Search pill (toolbar) | hover border `--pt-ink-2`, a fourth border color in chrome, reachable only under the pointer (the line auditor never drives hover). At rest the pill stays in the `hair` role, and while its palette is open (`aria-expanded="true"`, a state the auditor does drive) it draws `--pt-ink`, the active-state color every open field takes | `Toolbar.css`, `.pt-toolbar .pt-search-btn` |
+| Search key chip | `kbd.pt-search-kbd`: ground `--pt-hair-soft`, 11px weight 500 titanium; reads ⌘K, and `Ctrl K` on Windows and Linux (`Search.tsx` swaps the text after mount from the user agent) | `Toolbar.css`, `Search.tsx` |
+| Present | the one `.is-solid` button: `border-radius: 8px` (the one named corner exception, hatched in lint-radius.mjs), 14px sides, the label first and the 12px play glyph after it (`flex-direction: row-reverse`, so ToolButton keeps one markup), hover drops the ink ground for ink text in the ink frame, the old `.pt-nav-present` from 430e3c7 | `ToolButton.css`, `.pt-ib.is-solid`; `Toolbar.tsx` passes `solid` |
 | Prototemplate mark | the rainbow core: five chroma stops (`#4b3bff`, `#00b3ff`, `#27d17e`, `#ffc53b`, `#ff3b6b`, display-p3 where supported) declared as `--pt-mark-c1` to `--pt-mark-c5` on `.pt-mark`, the one color in chrome outside the site icons; hovering the head link (or any `a` or `.pt-mark-host` around the mark) fades the hatched paper fill in over the core, opacity only, over `--pt-dur-enter` (200ms, 0 under reduced motion). The markup is the old nav's span with four `i.pt-mark-line` and `i.pt-mark-fill` | `PtMark.tsx`, `PtMark.css` |
 | Sidebar nameplate | the name beside the mark on every Prototemplate route is `span.pt-brand-word` with `b.pt-face-serif` `proto` in Fraunces 600 and `b.pt-face-grot` `template` in Space Grotesk 500 at 14.5px, two faces outside Inter and a weight above 500; the fonts load from `src/lib/brand-fonts.ts` with their variable classes on the span, so `/docs` and `/brand` carry them too. The deck keeps its Inter title beside the GT mark | `Sidebar.tsx` (head), `Sidebar.css` (head rules) |
 
-Everything else in chrome keeps the rules above: every other toolbar
-button is square, the palette card and the index panel are radius 0, and
-no other element carries a chroma or a face outside Inter.
+Everything else in chrome keeps the rules above: every other toolbar button takes the control corner, the palette and the help card take the card corner, the index panel is a shell column and stays square, and no other element carries a chroma or a face outside Inter.
 
 ## 16. The sidebar's rows
 
@@ -453,20 +599,63 @@ whose book scrolls and writes the address itself), or the item of the page
 the reader is already on. No row scrolls the gallery. The grid's tiles and
 the filter's Enter follow the same rule.
 
-**Route sections nest under their page row.** A section that names the
-surface id of the page it belongs to (`ShellSection.under: 'skills'`) hangs
-under that row as a child group (`.pt-grp.is-sub.is-under-row`), its header
-one indent under the row and its rows one further, instead of standing as a
-group of its own. Nested groups are closed until one holds the current
-item; the live surfaces under Shipped keep the same default. Folds persist
-site-wide under `gt-shell-groups`, a JSON map of group key to open or
-closed, so a group folded on one route stays folded on the next.
+**A page's sections open under its row.** On the page's own routes, its
+sections open as a run under the page's row, in the row's group
+(`ShellSection.under`: `brand`, `docs`, `handbook`, `marks`, `graphics`,
+`motion`, `skills`). A run is flush under the row. Each row of the run draws the
+route's own number in the icon's slot, in the deck's number style, and a
+name that wraps (a run row to two lines at most, a deep heading to three)
+and is never cut; a title that is a sentence takes a short name
+(`ShellItem.short`). When two or more of the page's sections hold more than
+one row, each gets a label with a chevron and a count inside the run; a
+section of one row is that row. The
+headings of the item being read hang under it as a deep run, at 12.5px
+titanium, ink while read. A chevron button at the right
+end of the page row folds the run for the visit; the run opens again on
+the page's next visit. A labelled group opens when the run has 40 rows or
+fewer, and past 40 only the group holding the active item opens; those
+folds persist under `gt-shell-groups`. A route section that stands for a
+site map group (Shipped, Sites, Explorations, Archive) keeps replacing that
+group. The sidebar is 208px, the deck's column.
+
+**The rail marks the place.** In outline density each top-level group
+carries one rail: a 1px `--pt-hair-soft` line drawn by `.pt-sb-rail`
+(`src/components/viewer/SidebarRails.ts`) and masked to an SVG path down the
+group's rows. The rail runs in a column 16px before each level's first
+glyph: x 18, under the group header's chevron, for the tree rows; x 34 for
+a run's rows and labels, a site's enterprise page and the live site's rows,
+whose icons and numbers start at 50; x 50 for the deep headings, which
+start at 66. Where the level changes, the path bends at 45 degrees across
+one 16px step. The marked row carries a 2px ink thumb on the rail and a
+`--pt-sb-pill-current` ground with the control corner. The row under the
+pointer, or under keyboard focus, carries a `--pt-thumb` thumb and a
+`--pt-plate` ground. The marked row is the deep heading being read when
+the deep run is shown, else the active item when its row is shown, else
+the current page's row, else the page row the reader is inside. A plain
+click moves both marks to the clicked row over `--pt-dur-sb` and turns it
+ink before the page arrives. When the click opens another route, the new
+page's list keeps the clicked row where it was and the marks travel from
+it to that page's mark once the shell settles. Thumbnail density has no
+rail: its rows lead with their captures, each run keeps its guide and the
+active row its 2px bar.
 
 **The current page is always marked.** The row whose path is the longest
 one covering the pathname is current, site map row or route item alike: on
 `/skills/<slug>` the skill's row, on `/directions/<slug>` the direction's,
 on `/d/production/enterprise` the Enterprise row and not Home. While no
-item carries the bar (a direction page, the gallery at its top) that row
-draws the 2px ink bar and ink text; while an item does, it draws ink text
+item is marked (a direction page, the gallery at its top) that row
+carries the rail's thumb and ink text; while an item is, it draws ink text
 (`.is-current`, `aria-current="page"`), as does the page row the reader is
-inside (Skills on `/skills/<slug>`).
+inside (Skills on `/skills/<slug>`). Exactly one row is
+`aria-current="page"`: the current row whose own path is the pathname; a
+page row the reader is inside is `"true"`.
+
+**The list is cheap to change.** Rows are memoized on data built once per
+route, so a fold renders only the rows it adds or removes, a pick renders
+the rows whose state changed, and a hover renders nothing in React. Rows
+are opaque in their first frame; nothing fades in on mount. A row that
+opens another route prefetches it after the pointer rests on it for 80ms
+or on keyboard focus, never on pointer down: the click's own navigation
+follows within milliseconds, and a prefetch there fetches the route twice
+and renders the arriving page twice. The index panel builds its rows on
+first open.

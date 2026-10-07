@@ -1,21 +1,26 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import ReassemblerDemo from '../craft/ReassemblerDemo';
 import AttributeScales, { AESTHETIC, PERSONALITY } from './AttributeScales';
 import BrandFilm from './BrandFilm';
-import BrandMarkFigure from './BrandMarkFigure';
 import type { BrandPage } from './BrandViewer';
 import BrandViewer from './BrandViewer';
 import { headingId } from './brand-sections';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import { GtWord, gtText } from '@/components/viewer/GtWord';
+import { PAGE_NAMES } from '@/lib/page-names';
+import { readingMinutes } from '@/lib/reading';
+import { requireUpdated } from '@/lib/updated';
 
 import '../prototemplate.css';
 import './brand.css';
 
 export const metadata: Metadata = {
-  title: 'Brand',
+  title: PAGE_NAMES.brand.name,
   description:
     'General Translation’s identity, laid out: the name, the idea, the character, the mark, color, type, language as material, and the completed reference.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
@@ -121,32 +126,26 @@ const GLOBES = [
   },
 ] as const;
 
-/** The opener: the head of the book, before the numbered sections. */
-const OPENER = (
-  <div className='ptb-opener'>
-    <div className='ptb-opener-copy'>
-      <h1>The brand</h1>
-      <p className='pt-post-byline'>General Translation. The identity, laid out</p>
-      <p>
-        This page is the brand in one place: the name, the idea, the character, the
-        mark, the color and type systems, and the devices that make the identity
-        recognizable. It is written for anyone who has to build with it, including
-        our partners at basement studio. The visual laws are codified
-        in <Link href='/docs/design'>the design system</Link>, and every engine
-        runs live on <Link href='/docs'>the docs page</Link>. The completed
-        reference application is{' '}
-        <Link href='/d/singularity-dossier'>the Dossier</Link>; treat it as the
-        finished statement of this identity, not a concept.
-      </p>
-    </div>
-    <BrandMarkFigure />
-  </div>
+/** The head's lead: two or three lines that say what the page is. */
+const LEAD =
+  'General Translation’s identity, laid out: the name, the idea, the character, the mark, the color and type systems, and the devices that make it recognizable.';
+
+/** The rest of the introduction, under the head's rule. */
+const NOTE = (
+  <p>
+    It is written for anyone who builds with the identity, including our partners at
+    basement studio. The visual laws are codified in{' '}
+    <Link href='/docs/design'>the design system</Link>, and every engine runs live
+    in <Link href='/docs'>the documentation</Link>.
+  </p>
 );
 
 /**
  * The ten sections, each rendered on the server and handed to the viewer as
  * a page. Ids match brand-sections.ts, which the viewer reads for the list,
- * the grid and the hash; the h3 ids are the rows under the active section.
+ * the grid, the hash and each section's divider (its title is the divider's
+ * h2, so a body starts under it); the h3 ids are the rows under the active
+ * section.
  * The word GT in the prose is <GtWord />; the space after it is written as
  * {' '} because the JSX transform drops the leading space of a text run
  * that also carries an HTML entity (&rsquo;, &hellip;).
@@ -156,7 +155,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'the-name',
     body: (
       <>
-        <h2>The name</h2>
         <p>
           <strong>General Translation</strong> was chosen deliberately, in this order.
           First, ambition: like General Motors or General Electric, the name says we intend
@@ -181,7 +179,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'the-idea',
     body: (
       <>
-        <h2>The idea</h2>
         <p className='ptb-thesis'>Every product in every language.</p>
         <p>
           Native-level speed and quality, from day one. A simple idea, executed insanely
@@ -225,7 +222,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'the-character',
     body: (
       <>
-        <h2>The character</h2>
         <p>
           The brand carries itself like a <strong>fullstack director</strong>: it writes
           the script and it pushes the camera. Creative and technically innovative, never
@@ -267,7 +263,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'the-mark',
     body: (
       <>
-        <h2>The mark</h2>
         <p>
           Every stroke of the <GtWord />{' '}monogram is two parallel lines: the doubled-line grammar
           at brand scale, the same device that runs through every diagram in the system.
@@ -308,7 +303,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'color',
     body: (
       <>
-        <h2>Color</h2>
         <p>
           Four absolute colors, one spectral accent per page. Structural color everywhere
           derives from the four as alpha steps: every text step is ink or white at some
@@ -349,7 +343,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'type',
     body: (
       <>
-        <h2>Type</h2>
         <p>
           One face carries the brand. <strong>Inter</strong> is the display, interface
           and text typeface: headlines, interface chrome, captions and long-form reading
@@ -398,7 +391,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'language-as-material',
     body: (
       <>
-        <h2>Language as material</h2>
         <p>
           The signature device: glyphs, characters that make up greater wholes. Writing
           systems are the raw material the brand keeps returning to. The sentence below is
@@ -441,7 +433,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'the-completed-reference',
     body: (
       <>
-        <h2>The completed reference</h2>
         <p>
           <strong>The Dossier is the completed version of this identity in application</strong>:
           the belt-driven morphing headline, the translate window, the stack tower
@@ -476,7 +467,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'made-with-the-system',
     body: (
       <>
-        <h2>Made with the system</h2>
         <p>
           Finished artwork produced with this toolchain and the Glyphfield studio,
           kept here as proof of what the identity does off the page. The whole
@@ -580,7 +570,6 @@ const PAGES: readonly BrandPage[] = [
     id: 'context-for-partners',
     body: (
       <>
-        <h2>Context for partners</h2>
         <p>
           The industry is AI developer tools: the full stack for localization, meaning
           i18n libraries, context-aware translation APIs, and the infrastructure for
@@ -649,11 +638,13 @@ const PAGES: readonly BrandPage[] = [
  * The brand book: General Translation's identity laid out in one ruled
  * column, for anyone who has to build with it (including basement studio),
  * read inside the viewer shell. The written canon is BRAND.md (served at
- * /docs/brand); the laws behind the visuals are DESIGN.md; the engines run
- * live on /docs; and the completed reference application is the Dossier.
+ * /docs/brand), whose reading time is the head's Reading fact; the laws
+ * behind the visuals are DESIGN.md; and the engines run live on /docs.
  * The routes that used to close the article (Docs, Deck, Present) are one
  * click away in the index panel's Pages group.
  */
 export default function BrandPage() {
-  return <BrandViewer opener={OPENER} pages={PAGES} />;
+  /* the literal file name keeps the build's file trace to BRAND.md */
+  const reading = readingMinutes(readFileSync(join(process.cwd(), 'BRAND.md'), 'utf8'));
+  return <BrandViewer lead={LEAD} note={NOTE} pages={PAGES} updated={requireUpdated('/brand')} readingMinutes={reading} />;
 }

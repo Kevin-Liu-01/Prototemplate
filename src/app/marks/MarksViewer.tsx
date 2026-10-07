@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { CSSProperties, MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
+import { BookHead } from '@/components/viewer/BookView';
 import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
@@ -20,21 +21,28 @@ import {
   WORDMARK_SIZES,
 } from '@/lib/marks';
 import type { Mark, MarkArt } from '@/lib/marks';
+import { PAGE_NAMES } from '@/lib/page-names';
+import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './marks.css';
 
-const MARKS_TITLE = 'Marks';
-const BOOK_TITLE = 'The speed set';
+const MARKS_TITLE = PAGE_NAMES.marks.name;
 const MARKS_MODES: readonly ShellMode[] = ['book', 'grid'];
 
 const REGISTER_ID = 'register';
 const PRESENTATION_ID = 'presentation';
 
 const BOOK_LEAD =
-  'Marks for General Translation in one register, taken from a race-type reference: wide letters, a forward slant, one horizontal cut through the letters, and speed bars that lead into the first letter. Every mark is black and white, one color, and takes the ink of whatever it sits on. Seven marks follow in that register, from the bar monogram to its ASCII rendering, then Two-way and Globe G, the two survivors of the earlier round, kept for comparison. Each mark is shown positive and reversed at a run of heights, the monograms also as an app icon and a favicon, and every file is linked. The current mark closes the page as the reference.';
+  'The speed set is seven General Translation marks in one register, taken from a race-type reference. Two-way and Globe G from the earlier round follow for comparison.';
+
+const BOOK_NOTE =
+  'Every mark is one color and takes the ink of whatever it sits on. Each one is shown positive and reversed at a run of heights, the monograms also as an app icon and a favicon, and every file is linked. The current mark closes the page as the reference.';
+
+/** A family's name in the head's panel and in its marks' gutter notes. */
+const FAMILY_NAME: Readonly<Record<string, string>> = { speed: 'Speed set', picture: 'Earlier round' };
 
 const REGISTER_LEAD =
   'The speed set follows one register, taken from a race-type reference. The rules below name it, and a mark that keeps them belongs to the set. The two picture marks at the end of the page predate the register and stay for comparison.';
@@ -92,17 +100,19 @@ const SPY_MARGIN = '0px 0px -90% 0px';
 /** How long the spy waits for a programmatic scroll to reach its section before it reads the page again. */
 const SETTLE_MS = 1200;
 
-/** The route's list: the register, the nine marks by name, Presentation. The marks alone are paged, so digits 1 to 9 pick a mark. */
+/** The route's list: the register, the nine marks by name, Presentation, as the run under Knowledge > Marks. The marks alone are paged, so digits 1 to 9 pick a mark. */
 const SECTIONS: readonly ShellSection[] = [
   {
     id: REGISTER_ID,
     label: 'Register',
+    under: 'marks',
     paged: false,
     items: [{ id: REGISTER_ID, n: '', title: 'The register', desc: 'The rules the speed set follows.' }],
   },
   {
     id: 'marks',
     label: 'Marks',
+    under: 'marks',
     items: MARKS.map((mark, i) => ({
       id: mark.id,
       n: pad2(i + 1),
@@ -113,6 +123,7 @@ const SECTIONS: readonly ShellSection[] = [
   {
     id: PRESENTATION_ID,
     label: 'Presentation',
+    under: 'marks',
     paged: false,
     items: [
       {
@@ -206,7 +217,8 @@ const groundName = (ground: Ground) => (ground === 'paper' ? 'Positive' : 'Rever
 
 type MarkSheetProps = {
   mark: Mark;
-  n: string;
+  /** the mark's section number on the page: the register is section 1 */
+  section: number;
   art: MarkArt;
   active: boolean;
 };
@@ -223,7 +235,7 @@ type MarkSheetProps = {
  * pass through gtText: the standalone word GT renders as the mark, as
  * everywhere in the site's copy.
  */
-function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
+function MarkSheet({ mark, section, art, active }: MarkSheetProps) {
   const family = markFamily(mark);
   const headingId = `mk-${mark.id}`;
   const wide = art.aspect > WIDE;
@@ -237,21 +249,20 @@ function MarkSheet({ mark, n, art, active }: MarkSheetProps) {
   const files = [mark.file, mark.constructionFile, mark.textFile].filter((file): file is string => Boolean(file));
   return (
     <section
-      className={cn('mk-sec', active && 'is-active')}
+      className={cn('pt-book-part mk-sec', active && 'is-active')}
       data-id={mark.id}
       aria-labelledby={headingId}
       aria-current={active ? 'true' : undefined}
     >
       {/* the picture first, the words after: the thesis waits in the notes under the plates */}
-      <div className='mk-div'>
+      <div className='mk-div pt-book-sec'>
         <small>
-          <span>Mark {n}</span>
-          <span>{family.label}</span>
-          <span>{mark.kind === 'monogram' ? 'Monogram' : 'Wordmark'}</span>
+          <span>Section {section}</span>
+          <span>{FAMILY_NAME[family.id] ?? family.label}</span>
         </small>
         <div>
           <h2 id={headingId}>{mark.name}</h2>
-          <p className='mk-thesis'>{gtText(family.principle)}</p>
+          <p>{gtText(family.principle)}</p>
         </div>
       </div>
 
@@ -355,6 +366,8 @@ type MarksBookProps = {
   jumpRef: RefObject<(id: string) => void>;
   /** the active id, read by the shell's onSelect outside this component */
   activeOut: RefObject<string>;
+  /** the head's Updated row: the /marks entry in src/lib/updated.ts */
+  updated: PageUpdated;
 };
 
 /**
@@ -367,7 +380,7 @@ type MarksBookProps = {
  * deep link lands without motion; the spy never selects at the head, so
  * the register stays marked there.
  */
-function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
+function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -483,53 +496,51 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
   const familyCount = (id: string) => MARKS.filter((mark) => mark.family === id).length;
 
   return (
-    <div className='mk-book'>
-      <header className='mk-head'>
-        <div>
-          <h1>{BOOK_TITLE}</h1>
-          <p>{BOOK_LEAD}</p>
-        </div>
-        <div className='mk-meta'>
-          <span>{MARKS.length} marks</span>
-          {MARK_FAMILIES.map((family) => (
-            <span key={family.id}>
-              {family.label} {familyCount(family.id)}
-            </span>
-          ))}
-        </div>
-      </header>
-
-      <nav className='mk-toc' aria-label='Contents'>
-        <a href={`#${REGISTER_ID}`} onClick={(e) => onContents(e, REGISTER_ID)}>
-          <span>The register</span>
-          <small>{MARK_RULES.length} rules</small>
-        </a>
-        {MARKS.map((mark, i) => (
-          <a key={mark.id} href={`#${mark.id}`} onClick={(e) => onContents(e, mark.id)}>
-            <span>{mark.name}</span>
-            <small>{pad2(i + 1)}</small>
-          </a>
-        ))}
-        <a href={`#${PRESENTATION_ID}`} onClick={(e) => onContents(e, PRESENTATION_ID)}>
-          <span>Presentation</span>
-          <small>Nine together</small>
-        </a>
-      </nav>
+    <div className='mk-book pt-book-col'>
+      <BookHead
+        title={PAGE_NAMES.marks.name}
+        lead={BOOK_LEAD}
+        note={BOOK_NOTE}
+        updated={updated}
+        facts={[
+          { icon: 'swatch', key: 'Marks', value: MARKS.length },
+          { icon: 'speed', key: FAMILY_NAME.speed, value: familyCount('speed') },
+          { icon: 'archive', key: FAMILY_NAME.picture, value: familyCount('picture') },
+        ]}
+        contents={
+          <nav className='mk-toc pt-book-toc' aria-label='Contents'>
+            <a href={`#${REGISTER_ID}`} onClick={(e) => onContents(e, REGISTER_ID)}>
+              <span>The register</span>
+              <small>{MARK_RULES.length} rules</small>
+            </a>
+            {MARKS.map((mark, i) => (
+              <a key={mark.id} href={`#${mark.id}`} onClick={(e) => onContents(e, mark.id)}>
+                <span>{mark.name}</span>
+                <small>{pad2(i + 1)}</small>
+              </a>
+            ))}
+            <a href={`#${PRESENTATION_ID}`} onClick={(e) => onContents(e, PRESENTATION_ID)}>
+              <span>Presentation</span>
+              <small>Nine together</small>
+            </a>
+          </nav>
+        }
+      />
 
       <section
-        className={cn('mk-sec', active === REGISTER_ID && 'is-active')}
+        className={cn('pt-book-part mk-sec', active === REGISTER_ID && 'is-active')}
         data-id={REGISTER_ID}
         aria-labelledby='mk-register'
         aria-current={active === REGISTER_ID ? 'true' : undefined}
       >
-        <div className='mk-div'>
+        <div className='mk-div pt-book-sec'>
           <small>
             <span>Section 1</span>
             <span>{MARK_RULES.length} rules</span>
           </small>
           <div>
             <h2 id='mk-register'>The register</h2>
-            <p className='mk-thesis'>{REGISTER_LEAD}</p>
+            <p>{REGISTER_LEAD}</p>
           </div>
         </div>
         <div className='mk-rows'>
@@ -561,23 +572,23 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
       {MARKS.map((mark, i) => {
         const files = art[mark.id];
         if (!files) return null;
-        return <MarkSheet key={mark.id} mark={mark} n={pad2(i + 1)} art={files} active={active === mark.id} />;
+        return <MarkSheet key={mark.id} mark={mark} section={i + 2} art={files} active={active === mark.id} />;
       })}
 
       <section
-        className={cn('mk-sec', active === PRESENTATION_ID && 'is-active')}
+        className={cn('pt-book-part mk-sec', active === PRESENTATION_ID && 'is-active')}
         data-id={PRESENTATION_ID}
         aria-labelledby='mk-presentation'
         aria-current={active === PRESENTATION_ID ? 'true' : undefined}
       >
-        <div className='mk-div'>
+        <div className='mk-div pt-book-sec'>
           <small>
-            <span>Section 3</span>
-            <span>{MARKS.length} marks</span>
+            <span>Section {MARKS.length + 2}</span>
+            <span>Nine together</span>
           </small>
           <div>
             <h2 id='mk-presentation'>Presentation</h2>
-            <p className='mk-thesis'>{PRESENTATION_LEAD}</p>
+            <p>{PRESENTATION_LEAD}</p>
           </div>
         </div>
         {GROUNDS.map((ground) => (
@@ -626,6 +637,8 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut }: MarksBookProps) {
 export type MarksViewerProps = {
   /** every mark's files and viewBox aspect, by id, read on the server */
   art: Readonly<Record<string, MarkArt>>;
+  /** the /marks entry in src/lib/updated.ts, from the server page */
+  updated: PageUpdated;
 };
 
 /**
@@ -636,7 +649,7 @@ export type MarksViewerProps = {
  * so Space and the arrows scroll; digits 1 to 9 pick a mark. The hash
  * names the active section.
  */
-export default function MarksViewer({ art }: MarksViewerProps) {
+export default function MarksViewer({ art, updated }: MarksViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef(REGISTER_ID);
@@ -658,8 +671,8 @@ export default function MarksViewer({ art }: MarksViewerProps) {
         if (id === activeOut.current) jumpRef.current(id);
       }}
     >
-      <Sheet variant='flow' width={1280} scrollRef={sheetRef}>
-        <MarksBook art={art} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} />
+      <Sheet variant='flow' scrollRef={sheetRef}>
+        <MarksBook art={art} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
       </Sheet>
     </ViewerShell>
   );

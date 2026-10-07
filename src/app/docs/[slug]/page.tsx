@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { buildDocs } from '../book';
+import { requireUpdated } from '@/lib/updated';
+
+import { bookFacts, buildDocs } from '../book';
 import DocsShell from '../DocsShell';
 import { docWindowTitle, README_SLUG } from '../model';
 import { DOCS, getDoc } from '../registry';
@@ -27,5 +29,14 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
   const { slug } = await params;
   const doc = getDoc(slug);
   if (!doc) notFound();
-  return <DocsShell active={doc.slug} docs={buildDocs()} />;
+  const docs = buildDocs();
+  return (
+    <DocsShell
+      book='docs'
+      active={doc.slug}
+      docs={docs}
+      updated={requireUpdated('/docs')}
+      facts={bookFacts('docs', docs)}
+    />
+  );
 }

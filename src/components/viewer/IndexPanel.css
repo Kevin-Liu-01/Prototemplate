@@ -11,10 +11,10 @@
    --pt-hair-soft for the tools and the rows, --pt-edge for the 96x54
    frames. The toolbar owns the seam above the panel (its bottom rule); the
    panel owns its left edge; a heading owns the line above its first row
-   and each row the line below it. No shadow. The only corners are the
-   shell corner (--pt-radius) on the tools row's seg and filter field, so
-   the two controls in that row read as one family; every other box in the
-   panel is square. The panel keeps its own view transition group so a mode
+   and each row the line below it. No shadow. Corners follow DESIGN.md
+   section 2: the column and its rows are square (a shell and its rows),
+   the tools row's seg, filter field and buttons take the control corner,
+   and the 96x54 captures take the card corner. The panel keeps its own view transition group so a mode
    change's stage snapshot never covers it. */
 .pt-panel {
   position: absolute;
@@ -83,7 +83,6 @@
 
 .pt-panel-head b {
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 14.5px;
   letter-spacing: -0.01em;
@@ -118,7 +117,7 @@
 }
 
 /* the filter: the search glyph and the field share one 34px ruled box with
-   the shell corner, the same control as the sidebar's filter row and level
+   the control corner, the same control as the sidebar's filter row and level
    with the seg beside it; the box turns ink while the field has focus. The
    input inside draws no border, no ground and no radius, so the corner is
    one stroke. */
@@ -132,7 +131,7 @@
   gap: 8px;
   padding: 0 10px;
   border: 1px solid var(--pt-hair);
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-control);
   background: var(--pt-paper);
   color: var(--pt-titanium);
   transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
@@ -159,8 +158,9 @@
   background: none;
   color: var(--pt-ink);
   font: 13.5px var(--pt-text);
+  font-feature-settings: var(--pt-ff-text); /* the font shorthand resets the features */
   padding: 0;
-  border-radius: 0;
+  border-radius: var(--pt-radius-shell);
   outline: none;
   -webkit-appearance: none;
   appearance: none;
@@ -193,9 +193,10 @@
 
 .pt-surf-group h4 {
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
-  font-size: 13.5px;
+  /* the group label step, the sidebar's .pt-grp-head */
+  font-size: var(--pt-t-group);
+  letter-spacing: var(--pt-track-group);
   line-height: 1.3;
   color: var(--pt-ink);
   margin: 0;
@@ -238,6 +239,7 @@
   height: 54px;
   box-sizing: border-box;
   border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
   background: var(--pt-plate);
   overflow: hidden;
 }
@@ -271,7 +273,6 @@
   display: grid;
   place-items: center;
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 15px;
   color: var(--pt-titanium);
@@ -284,7 +285,6 @@
 .pt-surf-name {
   display: block;
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 14px;
   line-height: 1.3;

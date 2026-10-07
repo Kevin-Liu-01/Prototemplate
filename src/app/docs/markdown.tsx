@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 import { gtText } from '@/components/viewer/GtWord';
 import { pad2 } from '@/lib/shell-data';
 
+import { siteHref } from './links';
+
 /**
  * The docs' own markdown renderer: the small subset the repo documents use
  * (headings, paragraphs, lists, tables, fenced code, inline code, bold,
@@ -23,21 +25,8 @@ import { pad2 } from '@/lib/shell-data';
 
 const INLINE = /(`[^`]+`|\*\*[^*]+\*\*|\[[^\]]+\]\([^)\s]+\))/g;
 
-/* doc-to-doc links resolve to their /docs routes */
-const DOC_LINKS: Record<string, string> = {
-  'README.md': '/docs',
-  'BRAND.md': '/docs/brand',
-  'DESIGN.md': '/docs/design',
-  'ARCHITECTURE.md': '/docs/architecture',
-  'docs/SHIP-LOOP.md': '/docs/ship-loop',
-  'docs/LIBRARIES.md': '/docs/libraries',
-  'docs/GRAPHICS.md': '/docs/graphics',
-};
-
-function resolveHref(href: string): string {
-  const clean = href.replace(/^\.\//, '');
-  return DOC_LINKS[clean] ?? href;
-}
+/** A site path whose last segment carries a file extension, `/skills/gt-brand/references/type.md`. */
+const RAW_FILE = /^\/(?:[^?#]*\/)?[^/?#]+\.[a-z0-9]+(?:[?#].*)?$/i;
 
 /** The text of a heading or cell with its inline markup removed. */
 export function plainText(text: string): string {
@@ -63,12 +52,16 @@ export function headingId(text: string): string {
 }
 
 /**
- * How a caller renders the plain text between the inline tokens. The
- * default is gtText; the /motion packages pass a hook that also sets
- * single-star emphasis and gives each run of another script its lang and
- * dir (src/app/motion/lang-text.tsx). Code spans and hrefs never reach it.
+ * How a caller renders a document. `text` renders the plain text between
+ * the inline tokens: the default is gtText; the /motion packages pass a
+ * hook that also sets single-star emphasis and gives each run of another
+ * script its lang and dir (src/app/motion/lang-text.tsx). Code spans and
+ * hrefs never reach it. `dir` is the repository folder the document sits
+ * in (`docs/handbook`; the root when left out), so a relative link resolves
+ * the way GitHub resolves it (links.ts, siteHref): a rendered document
+ * opens its route, a skill its page, any other file GitHub.
  */
-export type RenderOptions = { text?: (text: string, key: string) => ReactNode };
+export type RenderOptions = { text?: (text: string, key: string) => ReactNode; dir?: string };
 
 export function renderInline(text: string, keyBase: string, opts?: RenderOptions): ReactNode[] {
   const out: ReactNode[] = [];
@@ -86,10 +79,12 @@ export function renderInline(text: string, keyBase: string, opts?: RenderOptions
     }
     const link = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(part);
     if (link?.[1] && link[2]) {
-      const href = resolveHref(link[2]);
-      /* a docs route or an anchor: a plain link the docs book intercepts
-         and answers in place, so the shell never remounts */
-      if (href.startsWith('/docs') || href.startsWith('#')) {
+      const href = siteHref(link[2], opts?.dir);
+      /* a book route or an anchor: a plain link the docs book intercepts
+         and answers in place, so the shell never remounts; a file the
+         site serves as it is (a skill's raw SKILL.md or reference) has no
+         page for the router to fetch, so it is a plain link too */
+      if (href.startsWith('/docs') || href.startsWith('/handbook') || href.startsWith('#') || RAW_FILE.test(href)) {
         out.push(
           <a href={href} key={key}>
             {renderInline(link[1], key, opts)}

@@ -1,18 +1,17 @@
-/* The archive route. Tokens only, radius 0, no shadow. Two jobs: widen the
-   flow sheet to the capture's own 1440 pixels so the page shows at the size
-   it was captured, and draw the record over it. The shell draws the site
-   map in the sidebar. */
+/* The archive route. Tokens only, no shadow. Two jobs: widen the reading
+   column to the capture's own 1440 pixels so the page shows at the size it
+   was captured, and draw the record over it on the paper. The capture is
+   the artifact: it keeps a frame, its own edge, in the frame role with the
+   card corner (DESIGN.md section 2); the record draws no box. The shell
+   draws the site map in the sidebar. */
 
-/* the sheet takes the capture's width; the ring stays, the padding goes */
-.pt-viewer[data-shell='archive'] .sheet-flow .sheet-mat {
-  max-width: calc(1440px + 2px);
+/* the column takes the capture's width; its padding stays */
+.pt-viewer[data-shell='archive'] .pt-flow-col {
+  max-width: calc(1440px + 2 * var(--pt-col-pad-x));
 }
 
-.pt-viewer[data-shell='archive'] .sheet-flow .sheet {
-  padding: 0;
-}
-
-/* ---- the record: one ruled row of cells over the capture ---- */
+/* ---- the record: one ruled row of cells over the capture; its
+   horizontal rules run across the stage, as a book's do ---- */
 .ar-doc {
   color: var(--pt-ink);
   font-family: var(--pt-text);
@@ -22,6 +21,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto auto;
   border-bottom: 1px solid var(--pt-hair);
+  border-image: linear-gradient(var(--pt-hair) 0 0) var(--pt-bleed-bottom);
 }
 
 .ar-cell {
@@ -34,27 +34,28 @@
 }
 
 .ar-cell:first-child {
+  padding-left: 0;
   border-left: 0;
 }
 
+.ar-cell:last-child {
+  padding-right: 0;
+}
+
+/* the group label step, the sidebar's .pt-grp-head */
 .ar-k {
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 12.5px;
-  letter-spacing: -0.005em;
-  font-feature-settings: 'cv11', 'ss01';
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-group);
+  letter-spacing: var(--pt-track-group);
   color: var(--pt-titanium);
 }
 
+/* a record cell's title: d3 */
 .ar-head h1 {
   margin: 0;
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 24px;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  font-feature-settings: 'cv11', 'ss01';
-  text-wrap: balance;
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
 }
 
 .ar-v {
@@ -78,21 +79,23 @@
 
 .ar-note {
   margin: 0;
-  padding: 14px 22px;
+  padding: 14px 0;
   font-size: 13px;
   line-height: 1.5;
   color: var(--pt-ink-2);
   border-bottom: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-bottom);
 }
 
 /* the line that says the image is a picture, with the link to the first-fold crop */
 .ar-static {
   margin: 0;
-  padding: 10px 22px 12px;
+  padding: 10px 0 12px;
   font-size: 12.5px;
   line-height: 1.5;
   color: var(--pt-titanium);
   border-bottom: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-bottom);
 }
 
 .ar-static a {
@@ -117,29 +120,20 @@
   fill: currentColor;
 }
 
-/* The capture is a light picture by definition (the route is gone, so there
-   is no dark twin to switch to). In the light theme it runs edge to edge at
-   its captured width. In the dark theme it is matted, not recolored: a
-   --pt-plate ground with the picture inset and ruled in --pt-hair, the way
-   src/app/anatomy-wall.css keeps a capture's own ground, so it never sits
-   as a raw bright block on the ink sheet. */
+/* The capture: a picture in its own frame, in both themes, 24px under
+   the record. A light capture keeps its own ground on the ink page, as
+   the captures on /directions do; there is no plate around it. */
 .ar-capture {
   display: block;
-}
-
-:root[data-theme='dark'] .ar-capture {
-  padding: 24px;
-  background: var(--pt-plate);
+  margin-top: 24px;
 }
 
 .ar-full {
   display: block;
   width: 100%;
   height: auto;
-}
-
-:root[data-theme='dark'] .ar-full {
-  border: 1px solid var(--pt-hair);
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
 }
 
 @media (max-width: 900px) {
@@ -150,16 +144,24 @@
   .ar-cell-name {
     grid-column: 1 / -1;
     border-bottom: 1px solid var(--pt-hair-soft);
+    border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-bottom);
   }
 
   .ar-cell:nth-child(2) {
+    padding-left: 0;
     border-left: 0;
+  }
+
+  .ar-cell:nth-child(3) {
+    padding-right: 0;
   }
 
   .ar-cell:nth-child(4) {
     grid-column: 1 / -1;
+    padding-inline: 0;
     border-left: 0;
     border-top: 1px solid var(--pt-hair-soft);
+    border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-top);
   }
 
   .ar-v {

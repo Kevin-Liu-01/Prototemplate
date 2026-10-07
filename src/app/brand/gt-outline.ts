@@ -1,12 +1,10 @@
 /**
- * The GT mark, traced — contour loops extracted from
+ * The GT mark, traced: contour loops extracted from
  * public/brand/no-bg-gt-logo-light.png (marching squares over the alpha
  * channel, Douglas-Peucker simplified at 1.6px of the 1198px master), so
- * the outline is the actual logo, not a typeset stand-in. Regenerate with
- * the tracer if the master asset ever changes.
+ * the outline is the logo itself. Regenerate with the tracer if the master
+ * asset changes.
  */
-export const GT_OUTLINE_VIEWBOX = "-8 214 1213 771";
-
 export const GT_OUTLINE_BOX = { x: 0.0, y: 222.5, w: 1197.0, h: 754.5 };
 
 export const GT_OUTLINE_PATHS: readonly string[] = [

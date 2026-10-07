@@ -37,6 +37,13 @@ export type ShellItem = {
    * link and navigates; the shell never scrolls the page for it.
    */
   inPlace?: true;
+  /**
+   * The row's name in the sidebar when the title is a sentence that would
+   * run past two lines in a run: `Fuma Nama` for the film `Fuma Nama, the
+   * philosophy of an open-sourcerer`. The title stays the grid caption, the
+   * preview title, the filter text and the row's hover title.
+   */
+  short?: string;
 };
 
 export type ShellSection = {
@@ -50,12 +57,31 @@ export type ShellSection = {
    */
   paged?: false;
   /**
-   * The surfaces.ts id of the page row this section nests beneath in the
-   * sidebar: `skills` for the skill categories, which hang under Knowledge >
-   * Skills as collapsible child groups instead of standing as groups of
-   * their own. A section without it stands at the top level.
+   * The surfaces.ts id of the page row this section opens under in the
+   * sidebar, on the page's own routes: `brand`, `docs`, `marks`,
+   * `graphics`, `motion`, `skills`. A section whose id is a site map
+   * group's name (`documents`) takes that group's rows with it, and the
+   * group leaves the top level on that route. A section without it stands
+   * at the top level, replacing the site map group of its own name.
    */
   under?: string;
+  /** The section's label in a run when the label is a sentence: `Fuma Nama` for that post's graphics. The grid keeps `label`. */
+  short?: string;
+};
+
+/**
+ * A heading the sidebar hangs under the active item of a run: an h3 of the
+ * brand section being read, a heading of the open document, a section of a
+ * film's package. A link to its place; the route answers its plain click.
+ */
+export type ShellSubRow = {
+  id: string;
+  title: string;
+  /** the place's address, `/brand#personality`, so a modified click opens it */
+  href: string;
+  /** the heading being read */
+  active: boolean;
+  onSelect: () => void;
 };
 
 /** Stage modes. A route offers a subset; the first offered is its default. */
@@ -102,4 +128,30 @@ export function previewId(item: ShellItem): string {
 /** `1` becomes `01`; `52` stays `52`. Used for counts, thumbs and pages. */
 export function pad2(n: number): string {
   return n < 10 ? `0${n}` : String(n);
+}
+
+/** The longest a lead runs before the rest becomes the note: about three lines of the lead measure. */
+export const LEAD_MAX = 200;
+
+/** A note longer than this leaves the head and becomes the book's last section. */
+export const NOTE_MAX = 600;
+
+/** A sentence ends at . ! or ? before a space and a capital, a quote or a parenthesis. */
+const SENTENCE_END = /(?<=[.!?])\s+(?=[A-Z“"(])/;
+
+/**
+ * Splits a plain-text lead at a sentence end: whole sentences up to `max`
+ * characters (LEAD_MAX) stay (always at least one); the rest is the note.
+ * A `max` of 0 keeps the first sentence alone.
+ */
+export function splitLead(text: string, max: number = LEAD_MAX): { lead: string; note: string | null } {
+  const sentences = text.trim().split(SENTENCE_END);
+  let lead = sentences[0] ?? '';
+  let i = 1;
+  while (i < sentences.length && lead.length + 1 + sentences[i].length <= max) {
+    lead += ` ${sentences[i]}`;
+    i += 1;
+  }
+  const rest = sentences.slice(i).join(' ');
+  return { lead, note: rest.length > 0 ? rest : null };
 }

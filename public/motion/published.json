@@ -1,0 +1,55 @@
+{
+  "about": "The cut of each film the site publishes. film and poster are the web copies under public/media; cut and length are the cut's label and length as its script states them (null when the cut was made before the scripts); streams are the SHA-256 of its video and audio streams, from ffmpeg's streamhash with the streams copied. scripts/build-motion.mjs publishes a film's credits, contact sheet and script only from the folder in motion/out whose render has these streams, and lists any other cut in motion/out as in review. Replace a web copy, then run node scripts/build-motion.mjs --pin <slug>.",
+  "films": {
+    "blog-designing-docs": {
+      "cut": "round 7d revision without the frame",
+      "length": "42.5 s",
+      "film": "/media/designing-docs-film.mp4",
+      "poster": "/media/designing-docs-poster.jpg",
+      "streams": {
+        "video": "bbc0c33a9a3bc28f09fa8b2d86fecaa1cfd6107dd93b4fefca2c65bdc8591502",
+        "audio": "28c097fff24c9380094da2f7a50e340446ee124593f6ba26337d7393f684ef45"
+      }
+    },
+    "blog-fuma-nama": {
+      "cut": "round 8",
+      "length": "54.0 s",
+      "film": "/media/fuma-nama-film.mp4",
+      "poster": "/media/fuma-nama-poster.jpg",
+      "streams": {
+        "video": "d1a1a27829cacbd6f2df4a79d1a8c65635efdf47551f435301d1d245b72ff484",
+        "audio": "929c8716773017185607d53de67c391e87950915ae8f9fc02d4a2169b473853c"
+      }
+    },
+    "jihe-yuanben": {
+      "cut": "100 s cut",
+      "length": "100.0 s",
+      "film": "/media/jihe-yuanben-film.mp4",
+      "poster": "/media/jihe-yuanben-poster.jpg",
+      "streams": {
+        "video": "cdc8bf271523313ff06d2fe87c3962d68f797f2e18e2e6483aefd7e5d39b7e12",
+        "audio": "ad0a496bafe65dc631b193341fc4fe74471e5ab57c2655625b244a6cac9b3a6f"
+      }
+    },
+    "journey-to-the-west": {
+      "cut": "100 s cut",
+      "length": "100.0 s",
+      "film": "/media/journey-to-the-west-film.mp4",
+      "poster": "/media/journey-to-the-west-poster.jpg",
+      "streams": {
+        "video": "b500505a44ae9d9b3fa26696b16d4d050bde9c80be30a10db3898a4453d1bd5c",
+        "audio": "eceaa11ac505245a4b02ba2e735eff70f18d5e457621850ad0df492fff6ad13f"
+      }
+    },
+    "modern-hebrew": {
+      "cut": "100 s cut",
+      "length": "100.0 s",
+      "film": "/media/modern-hebrew-film.mp4",
+      "poster": "/media/modern-hebrew-poster.jpg",
+      "streams": {
+        "video": "396b4a38d65115ae0811dc2a19a7c01fb9ac458905921808b121d73d00359b07",
+        "audio": "56b7bf687ec3ac9516dac0f7e064fcd6511ddb01991a9ace06907f5bc0a75709"
+      }
+    }
+  }
+}

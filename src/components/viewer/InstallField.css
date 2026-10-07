@@ -1,0 +1,98 @@
+/* InstallField: the install command in a field two lead lines tall
+   (calc(2 * --pt-row - 8px), 44.7px), so in the book head's panel it takes
+   two row slots with 4px of air above and below. Its 1px --pt-hair border
+   is the structural role (a field box at rest) at the control corner; the
+   copy button is the field's last segment, as in the segmented control: a
+   divider on its left, the inner corner on its right. Hover takes the
+   search pill's ink-2 border; focus inside takes ink, the color every
+   focused field draws. Nothing else draws a line within 4px of the field
+   (BookView.css drops the row rule above it). */
+.pt-cmd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px;
+  min-height: calc(2 * var(--pt-row) - 8px);
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background-clip: padding-box;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-cmd:hover {
+  border-color: var(--pt-ink-2);
+}
+
+.pt-cmd:has(:focus-visible) {
+  border-color: var(--pt-ink);
+}
+
+.pt-cmd code {
+  align-self: center;
+  padding: 0 8px 0 10px;
+  font-family: var(--pt-mono);
+  font-size: 12px; /* lint-type: allow the command at the code step under the 13px meta labels, so two lines of it fit the field's 44.7px */
+  line-height: var(--pt-t-meta-lh);
+  font-weight: var(--pt-w-text);
+  letter-spacing: 0;
+  color: var(--pt-ink);
+  white-space: normal;
+  user-select: all;
+}
+
+/* a group never breaks: a flag stays with its value */
+.pt-cmd-w {
+  white-space: nowrap;
+}
+
+.pt-cmd-copy {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-shell) var(--pt-radius-inner) var(--pt-radius-inner) var(--pt-radius-shell);
+  background: transparent;
+  color: var(--pt-titanium);
+  cursor: pointer;
+  transition:
+    color var(--pt-dur-fast) var(--pt-ease-out),
+    background-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-cmd-copy svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.pt-cmd-copy:hover,
+.pt-cmd.is-copied .pt-cmd-copy {
+  color: var(--pt-ink);
+}
+
+.pt-cmd-copy:hover {
+  background: var(--pt-plate);
+}
+
+/* the field draws the focus (its border turns ink); the button draws none of its own */
+.pt-cmd-copy:focus-visible {
+  outline: none;
+}
+
+/* the copy segment is a 44px target on a phone: 44px wide, and the field
+   44px inside its two borders (on a phone the panel stacks, so the field
+   no longer keeps the lead's pitch) */
+@media (max-width: 900px) {
+  .pt-cmd {
+    grid-template-columns: minmax(0, 1fr) 44px;
+    min-height: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-cmd,
+  .pt-cmd-copy {
+    transition: none;
+  }
+}

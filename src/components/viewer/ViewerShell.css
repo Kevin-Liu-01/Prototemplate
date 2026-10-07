@@ -80,6 +80,13 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
   grid-template-columns: 0 minmax(0, 1fr);
 }
 
+/* a closed list keeps its width inside the empty track, so it is hidden once
+   its fade has run; its sticky group heads would otherwise paint over the
+   page, which has no mat to cover them, and its rows would stay in tab order */
+.pt-viewer[data-sb='0']:not([data-sb-moving]) > .pt-sb:not(.is-overlay) {
+  visibility: hidden;
+}
+
 /* the list keeps the density's width whatever the track is doing, so its
    content holds still while the main region slides over it */
 .pt-viewer > .pt-sb {
@@ -144,13 +151,15 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
    sheet, the grid and the book sit inside it. The index panel is a sibling,
    positioned against .pt-main so it spans the toolbar's bottom rule to the
    progress line, sliding over the stage without changing its layout. The
-   view-transition-name makes it the one region a mode change cross-fades. */
+   view-transition-name makes it the one region a mode change cross-fades.
+   The stage is paper: a reading page sits straight on it, and the fixed
+   sheet paints its own plate (Sheet.css). */
 .pt-stagewrap {
   grid-row: 2;
   position: relative;
   overflow: hidden;
   min-height: 0;
-  background: var(--pt-plate);
+  background: var(--pt-paper);
   view-transition-name: pt-stage;
 }
 
@@ -176,10 +185,6 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
 .pt-viewer.is-present .pt-toolbar,
 .pt-viewer.is-present .pt-progress {
   display: none;
-}
-
-.pt-viewer.is-present .pt-stagewrap {
-  background: var(--pt-paper);
 }
 
 /* ---- the shared fades, pt-fade-in and pt-fade-out, live in tokens.css so
@@ -287,6 +292,11 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
 @media (max-width: 900px) {
   .pt-viewer {
     grid-template-columns: 0 minmax(0, 1fr);
+  }
+
+  /* only the overlay shows the list here; the column copy stays hidden */
+  .pt-viewer > .pt-sb:not(.is-overlay) {
+    visibility: hidden;
   }
 }
 

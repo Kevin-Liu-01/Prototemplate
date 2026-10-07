@@ -143,7 +143,13 @@ export function IndexPanel({ set: initialSet, ref }: IndexPanelProps) {
   const [broken, setBroken] = useState<ReadonlySet<string>>(() => new Set());
 
   const open = shell.panelOpen;
-  const groups = surfaceGroups(set)
+  /* the panel's content (the head, the filter and the 113 surface rows,
+     each a capture, two images and a glyph) is built on the panel's first
+     open, never on a route where it stays closed; the aside and the
+     stage's scrim render closed, so the first open still slides in */
+  const [seen, setSeen] = useState(false);
+  if (open && !seen) setSeen(true);
+  const groups = (seen ? surfaceGroups(set) : [])
     .map((entry) => ({
       group: entry.group,
       rows: entry.rows.filter((row) => surfaceMatches(row, query)),
@@ -200,60 +206,66 @@ export function IndexPanel({ set: initialSet, ref }: IndexPanelProps) {
       onKeyDown={onPanelKey}
     >
       {open && !shell.narrow ? <FocusOnOpen target={inputRef} /> : null}
-      <div className='pt-panel-head'>
-        <b>Index</b>
-        <span>{surfaceCount(set, visible)}</span>
-        <ToolButton icon='close' title='Close the index (Esc)' onClick={close} />
-      </div>
-      <div className='pt-panel-tools'>
-        <Seg options={SET_OPTIONS} value={set} onChange={setSet} label='Which index' className='pt-panel-sets' />
-        {/* the same control as the sidebar's filter: a search glyph, then the field */}
-        <label className='pt-panel-filter'>
-          <Icon name='search' />
-          <input
-            ref={inputRef}
-            type='search'
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onKeyDown={onInputKey}
-            placeholder='Filter by name or address'
-            aria-label='Filter by name or address'
-            autoComplete='off'
-            spellCheck={false}
-          />
-        </label>
-      </div>
-      <div className='pt-panel-body pt-scroll'>
-        <p className='pt-panel-note'>{NOTE[set]}</p>
-        {groups.map((entry) => (
-          <div className='pt-surf-group' key={entry.group}>
-            <h4>{entry.group}</h4>
-            {entry.rows.map((row) => {
-              const external = isExternalSurface(row);
-              return (
-                <a
-                  key={row.id}
-                  className='pt-surf'
-                  href={row.href}
-                  data-preview={row.id}
-                  target={external ? '_blank' : undefined}
-                  rel={external ? 'noreferrer' : undefined}
-                  onClick={(event) => onRowClick(event, row)}
-                >
-                  <Shot row={row} broken={broken.has(row.id)} onBroken={() => markBroken(row.id)} />
-                  <span className='pt-surf-t'>
-                    <span className='pt-surf-name'>{row.name}</span>
-                    <span className='pt-surf-url'>{row.host}</span>
-                    <span className='pt-surf-desc'>{row.desc}</span>
-                  </span>
-                  <Icon name={external ? 'external' : 'next'} />
-                </a>
-              );
-            })}
+      {/* the panel's content, built on its first open; the aside itself is
+          always there, so the first open still slides in */}
+      {seen ? (
+        <>
+          <div className='pt-panel-head'>
+            <b>Index</b>
+            <span>{surfaceCount(set, visible)}</span>
+            <ToolButton icon='close' title='Close the index (Esc)' onClick={close} />
           </div>
-        ))}
-        {visible === 0 ? <p className='pt-panel-note'>Nothing matches the filter.</p> : null}
-      </div>
+          <div className='pt-panel-tools'>
+            <Seg options={SET_OPTIONS} value={set} onChange={setSet} label='Which index' className='pt-panel-sets' />
+            {/* the same control as the sidebar's filter: a search glyph, then the field */}
+            <label className='pt-panel-filter'>
+              <Icon name='search' />
+              <input
+                ref={inputRef}
+                type='search'
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={onInputKey}
+                placeholder='Filter by name or address'
+                aria-label='Filter by name or address'
+                autoComplete='off'
+                spellCheck={false}
+              />
+            </label>
+          </div>
+          <div className='pt-panel-body pt-scroll'>
+            <p className='pt-panel-note'>{NOTE[set]}</p>
+            {groups.map((entry) => (
+              <div className='pt-surf-group' key={entry.group}>
+                <h4>{entry.group}</h4>
+                {entry.rows.map((row) => {
+                  const external = isExternalSurface(row);
+                  return (
+                    <a
+                      key={row.id}
+                      className='pt-surf'
+                      href={row.href}
+                      data-preview={row.id}
+                      target={external ? '_blank' : undefined}
+                      rel={external ? 'noreferrer' : undefined}
+                      onClick={(event) => onRowClick(event, row)}
+                    >
+                      <Shot row={row} broken={broken.has(row.id)} onBroken={() => markBroken(row.id)} />
+                      <span className='pt-surf-t'>
+                        <span className='pt-surf-name'>{row.name}</span>
+                        <span className='pt-surf-url'>{row.host}</span>
+                        <span className='pt-surf-desc'>{row.desc}</span>
+                      </span>
+                      <Icon name={external ? 'external' : 'next'} />
+                    </a>
+                  );
+                })}
+              </div>
+            ))}
+            {visible === 0 ? <p className='pt-panel-note'>Nothing matches the filter.</p> : null}
+          </div>
+        </>
+      ) : null}
     </aside>
   );
 }

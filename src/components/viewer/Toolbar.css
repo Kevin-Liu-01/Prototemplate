@@ -25,10 +25,10 @@
 
    The search trigger (directive 8.3) is the one field-shaped button, and
    it keeps the old nav's pill (Kevin's directive; DESIGN.md, chrome
-   exceptions): a 32px --pt-hair box with the shell corner (--pt-radius,
-   6px, the token the seg, the filter and the hover preview share), the
-   search glyph, the word Search in ink-2 and the key chip at its right
-   end, a 4px-corner
+   exceptions): a 32px --pt-hair box with the control corner
+   (--pt-radius-control, 6px, the corner every control and field takes),
+   the search glyph, the word Search in ink-2 and the key chip at its right
+   end, a chip-corner (--pt-radius-chip, 4px)
    kbd on --pt-hair-soft reading ⌘K (Ctrl K on Windows, Search.tsx) in 11px
    titanium; hover turns the box --pt-ink-2, and while the palette is open
    (aria-expanded) it draws --pt-ink, as every open field does. No tier
@@ -75,8 +75,8 @@
 }
 
 /* the search trigger: the old nav's pill, a glyph, a word and the key chip
-   (the pill's corner is --pt-radius, the shell corner this pill set; the
-   4px chip inside it is the chip's own) */
+   (the pill takes the control corner, which this pill set for every
+   control; the chip inside it takes the chip corner) */
 .pt-toolbar .pt-search-btn {
   min-width: 176px;
   height: 32px;
@@ -84,7 +84,7 @@
   justify-content: flex-start;
   gap: 8px;
   border-color: var(--pt-hair);
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-control);
   color: var(--pt-titanium);
 }
 
@@ -116,13 +116,13 @@
   align-items: center;
   height: 18px;
   padding: 0 5px;
-  border-radius: 4px;
+  border-radius: var(--pt-radius-chip);
   background: var(--pt-hair-soft);
   font-family: var(--pt-text);
   font-size: 11px;
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   color: var(--pt-titanium);
   white-space: nowrap;
 }
@@ -142,7 +142,6 @@
 .pt-count-field {
   color: var(--pt-ink);
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 14px;
   font-variant-numeric: tabular-nums;
@@ -159,6 +158,7 @@
   height: 32px;
   padding: 0 10px;
   border: 1px solid var(--pt-ink);
+  border-radius: var(--pt-radius-control);
 }
 
 .pt-count-field {
@@ -168,7 +168,7 @@
   padding: 0;
   background: none;
   outline: none;
-  border-radius: 0;
+  border-radius: var(--pt-radius-shell);
   text-align: right;
   appearance: none;
 }
@@ -214,7 +214,6 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
 
 .pt-bar-brand b {
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 14.5px;
   letter-spacing: -0.01em;

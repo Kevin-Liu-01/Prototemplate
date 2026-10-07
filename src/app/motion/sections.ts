@@ -7,7 +7,8 @@ import type { ShellItem, ShellSection } from '@/lib/shell-data';
  * pages under /motion/<slug>, so both routes list the same rows in the
  * same order. Pure data on top of the generated src/lib/motion.ts.
  *
- * Both sections hang under Knowledge > Motion in the sidebar (`under`).
+ * Both sections open under Knowledge > Motion in the sidebar (`under`),
+ * as the labelled groups of the Motion row's run.
  * Their ids carry a `motion-` prefix so they never match a site map group
  * (a section named `knowledge` would replace that group) and so their fold
  * state, which persists site-wide by group key, belongs to this page.
@@ -24,8 +25,22 @@ export function plainSummary(text: string): string {
   return text.replace(/`([^`]+)`/g, '$1').replace(/\*/g, '');
 }
 
+/**
+ * The sidebar names of the films whose titles are sentences, keyed by film
+ * slug (MOTION_PACKAGE_SLUGS and the roster's slugs in src/lib/motion.ts):
+ * the title would run past two lines in the 208px list. The title stays
+ * the row's hover title, the filter text, the preview title and the book's.
+ * The map lives here because src/lib/motion.ts is generated from motion/.
+ */
+const SIDEBAR_NAME: Readonly<Record<string, string>> = {
+  'blog-fuma-nama': 'Fuma Nama',
+  'jihe-yuanben': 'Euclid in Chinese',
+  'journey-to-the-west': 'Journey to the West in English',
+  'modern-hebrew': 'The vocabulary of Modern Hebrew',
+};
+
 function filmItem(film: MotionFilm, route: string): ShellItem {
-  const base = { id: film.id, n: film.n, title: film.title, desc: plainSummary(film.summary) };
+  const base = { id: film.id, n: film.n, title: film.title, short: SIDEBAR_NAME[film.slug], desc: plainSummary(film.summary) };
   if (film.pkg) return { ...base, href: `/motion/${film.slug}` };
   if (route === 'index') return { ...base, inPlace: true };
   return { ...base, href: `/motion#${film.id}` };

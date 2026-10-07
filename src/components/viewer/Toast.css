@@ -14,7 +14,9 @@
   background: var(--pt-ink);
   color: var(--pt-paper);
   outline: 1px solid var(--pt-paper);
+  border-radius: var(--pt-radius-card); /* a popover; the outline follows the corner */
   font: 12.5px/1.4 var(--pt-text);
+  font-feature-settings: var(--pt-ff-text); /* the font shorthand resets the features */
   font-variant-numeric: tabular-nums;
   padding: 7px 12px;
   white-space: nowrap;

@@ -3,8 +3,9 @@
 How the illustrations for the General Translation blog are made, from the
 brief to the carousel, with the toolchain that lives in `graphics/`. It
 produced the thirty-six visuals of "Designing docs for humans" and is the
-procedure every post after it runs. The skills under `.agents/skills`
-carry the same rules into agent sessions; this document is the long form.
+procedure every post after it runs. The `gt-graphics` skill
+(`skills/gt-graphics`, `/skills/gt-graphics`) carries the same rules into
+agent sessions; this document is the long form.
 
 ## What a visual is
 

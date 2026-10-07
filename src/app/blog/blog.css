@@ -16,36 +16,45 @@
   color: var(--pt-ink);
 }
 
-.blog-eyebrow {
+/* the index is a book (DESIGN.md section 4, The book page): its title has
+   --pt-title-clear over it, as on every book; its rules and its band run
+   across the page, as they run across the stage on every shell route */
+.blog-root.is-book {
+  padding-top: var(--pt-title-clear);
+}
+
+/* a post's breadcrumb: the blog and the post's tag, at the meta step */
+.blog-crumb {
   margin: 0 0 14px;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
   color: var(--pt-titanium);
 }
 
-.blog-eyebrow a {
+.blog-crumb a {
   color: inherit;
   text-decoration: none;
 }
 
-.blog-eyebrow a:hover {
+.blog-crumb a:hover {
   color: var(--pt-ink);
 }
 
+/* the page title: d1 (DESIGN.md section 4) */
 .blog-root h1 {
   margin: 0;
-  font-size: 34px;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.12;
-  text-wrap: balance;
+  font-size: var(--pt-d1);
+  line-height: var(--pt-d1-lh);
+  letter-spacing: var(--pt-d1-track);
 }
 
+/* a post's lead, its summary under the title, keeps the book heads'
+   measure (about 66 characters a line) */
 .blog-lead {
+  max-width: var(--pt-measure-lead);
   margin: 16px 0 0;
-  font-size: 17px;
-  line-height: 1.5;
+  font-size: var(--pt-t-lead);
+  line-height: var(--pt-t-lead-lh);
   color: var(--pt-ink-2);
 }
 
@@ -84,7 +93,7 @@
   position: relative;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: var(--pt-radius-round);
   object-fit: cover;
   box-shadow: 0 0 0 2px var(--pt-paper);
 }
@@ -99,8 +108,18 @@
 
 /* ---- index ---- */
 
-.blog-index-head {
-  margin-bottom: 48px;
+/* the index's one section: its divider, then the cards, the docs
+   section's step apart (.ptd-doc in docs.css) */
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+@media (max-width: 900px) {
+  .blog-list {
+    gap: 24px;
+  }
 }
 
 .blog-index {
@@ -114,7 +133,7 @@
 .blog-card-cover {
   display: block;
   overflow: hidden;
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-card);
   background: var(--pt-plate);
   aspect-ratio: 16 / 9;
 }
@@ -125,10 +144,9 @@
 
 .blog-card-copy h2 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
 }
 
 .blog-card-copy h2 a {
@@ -155,7 +173,7 @@
   display: block;
   width: 100%;
   height: auto;
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-card);
 }
 
 .blog-article-head .blog-cover {
@@ -164,7 +182,7 @@
 
 .blog-card-cover .blog-cover {
   height: 100%;
-  border-radius: 0;
+  border-radius: inherit;
   object-fit: cover;
 }
 
@@ -195,17 +213,17 @@
 
 .blog-body h2 {
   margin-top: 2.2em;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
 }
 
 .blog-body h3 {
   margin-top: 1.8em;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
 }
 
 .blog-body ul,
@@ -219,14 +237,14 @@
 
 .blog-body code {
   padding: 0.1em 0.35em;
-  border-radius: 4px;
+  border-radius: var(--pt-radius-chip);
   background: var(--pt-plate);
   font-family: var(--pt-mono);
   font-size: 0.88em;
 }
 
 .blog-body strong {
-  font-weight: 600;
+  font-weight: var(--pt-w-strong);
 }
 
 .blog-body em {
@@ -238,7 +256,7 @@
   width: 100%;
   height: auto;
   margin: 2em 0;
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-card);
 }
 
 .blog-video {
@@ -246,7 +264,7 @@
   width: 100%;
   height: auto;
   margin: 2em 0;
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-card);
 }
 
 .blog-body p:has(> .blog-image:only-child) {
@@ -262,6 +280,7 @@
   margin-top: 64px;
   padding-top: 24px;
   border-top: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-top);
   font-size: 15px;
 }
 
@@ -270,7 +289,7 @@
 .blog-callout {
   margin: 2em 0;
   padding: 20px 22px;
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-card);
   background: var(--pt-plate);
   font-size: 15.5px;
 }
@@ -280,7 +299,7 @@
 }
 
 .blog-callout-title {
-  font-weight: 600;
+  font-weight: var(--pt-w-strong);
 }
 
 /* ---- GitHub chip ---- */
@@ -295,7 +314,7 @@
   gap: 10px;
   padding: 9px 14px;
   border: 1px solid var(--pt-hair);
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-control);
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
@@ -319,7 +338,7 @@
   margin: 2em 0;
   overflow: hidden;
   border: 1px solid var(--pt-hair);
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-card);
 }
 
 .blog-spotlight-portrait {
@@ -370,7 +389,7 @@
   gap: 8px;
   padding: 6px 10px;
   border: 1px solid var(--pt-hair);
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-control);
   font-size: 13px;
   color: var(--pt-ink);
   text-decoration: none;
@@ -381,7 +400,7 @@
 }
 
 .blog-spotlight-links img {
-  border-radius: 4px;
+  border-radius: var(--pt-radius-chip);
 }
 
 @media (max-width: 640px) {
@@ -427,7 +446,7 @@
   width: 18px;
   height: 18px;
   margin-top: 2px;
-  border-radius: 50%;
+  border-radius: var(--pt-radius-round);
   background: color-mix(in srgb, var(--blog-red) 16%, transparent);
   color: var(--blog-red);
 }
@@ -441,7 +460,7 @@
 .blog-carousel-frame {
   position: relative;
   overflow: hidden;
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-card);
 }
 
 .blog-carousel-frame.is-multiple {
@@ -462,6 +481,7 @@
 .blog-carousel-track:focus-visible {
   outline: 2px solid var(--pt-ink);
   outline-offset: 2px;
+  border-radius: var(--pt-radius-card);
 }
 
 .blog-carousel-slide {
@@ -535,6 +555,7 @@
 .blog-carousel-arrow:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.9);
   outline-offset: 2px;
+  border-radius: var(--pt-radius-control);
 }
 
 .blog-carousel-dots {
@@ -549,7 +570,7 @@
   height: 6px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
+  border-radius: var(--pt-radius-round);
   background: var(--pt-cross);
   cursor: pointer;
   transition:
@@ -604,12 +625,12 @@
 }
 
 .blog-fumadocs-architecture .ft {
-  font: 600 13px var(--pt-text);
+  font: 500 13px var(--pt-text);
   fill: var(--fda-fg);
 }
 
 .blog-fumadocs-architecture .fl {
-  font: 600 13.5px var(--pt-text);
+  font: 500 13.5px var(--pt-text);
   fill: var(--fda-fg);
 }
 

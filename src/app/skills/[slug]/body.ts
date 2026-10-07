@@ -1,65 +1,125 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { posix, join } from 'node:path';
 
+import { DOC_ROUTES, repoPath } from '@/app/docs/links';
 import { parseBlocks } from '@/app/docs/markdown';
 import type { Block } from '@/app/docs/markdown';
-import { SKILL_BODY_DIR, getSkill } from '@/lib/skills';
+import { getSkill, skillFileHref, skillHref } from '@/lib/skills';
 
 /**
- * The server side of /skills/[slug]: reads one skill's body from the files
- * scripts/build-skills.mjs writes (public/skills/<slug>.md, the SKILL.md
- * with its frontmatter removed) and parses it with the docs' markdown
- * parser, so the page renders prose the way /docs does. Files are read
- * relative to process.cwd(), as the docs read theirs; nothing here reaches
- * a client bundle, and a slug is read only when the generated registry
- * knows it, so the path can name nothing else.
+ * The server side of /skills/[slug]: reads one skill's SKILL.md from the
+ * curated folder (skills/<slug>/SKILL.md, relative to process.cwd(), as the
+ * docs read theirs), drops its frontmatter, and parses the body with the
+ * docs' markdown parser, so the page renders prose the way /docs does.
+ * Nothing here reaches a client bundle, and a slug is read only when the
+ * generated registry knows it, so the path can name nothing else.
  *
  * The parser reads the subset the repository documents use. The skill
  * bodies are written for agents and reach a little further, so the text is
  * normalized to that subset first: HTML comments (notes to the author) are
  * dropped; headings deeper than h3 read as h3; the opening h1 is dropped,
- * since the page's head carries the name, and any later h1 reads as h2;
+ * since the page's head carries the title, and any later h1 reads as h2;
  * a blockquote reads as a paragraph; a list nested under a bullet flattens
  * into sibling rows, and one nested under a numbered step stays inside the
  * step's row with a middle dot for each item, so the steps keep their
  * numbers (the docs grammar counts each list from one); single-star and
- * underscore emphasis reads as plain text; an image reads as its link; and
- * a link into the skill's own folder (references/, scripts/, a sibling
- * file) reads as its text with the path in code, since only SKILL.md is
- * published. Fenced code is left exactly as written, and so is anything
- * inside an inline code span.
+ * underscore emphasis reads as plain text; an image reads as its link.
+ *
+ * Links into the skill's own folder become links to the published raw
+ * files (/skills/<slug>/references/<file>, served by the route beside this
+ * one), and so does a code span that names one of the skill's files
+ * exactly (`references/type.md`); a link into a sibling skill's folder
+ * (../gt-brand/SKILL.md) opens that skill's page. A link to a document the
+ * site renders (../../docs/handbook/glossary.md), or a code span that names
+ * one by its repository path (`docs/handbook/quality-bar.md`, `DESIGN.md`),
+ * opens that document's route. Any other relative link reads as its text
+ * with the path in code, since nothing else in the folder is published.
+ * Fenced code is left exactly as written.
  */
 
 const FENCE = /^(```|~~~)/;
 const COMMENT_OPEN = '<!--';
 const COMMENT_CLOSE = '-->';
 
-/** A single-backtick code span, kept whole by the inline pass. */
-const CODE_SPAN = /(`[^`\n]+`)/;
+/** A link or an image, or a single-backtick code span: the tokens the inline pass reads whole. */
+const TOKEN = /(!?\[[^\]]*\]\([^)\s]+\)|`[^`\n]+`)/;
+const LINK = /^!?\[([^\]]*)\]\(([^)\s]+)\)$/;
 
-/** `![alt](src)`: the image becomes its link. */
-const IMAGE = /!\[([^\]]*)\]\(([^)\s]+)\)/g;
-
-/** `[text](target)` where the target is a relative path: neither a scheme, nor an absolute path, nor an anchor. */
-const RELATIVE_LINK = /\[([^\]]+)\]\((?![a-z][a-z0-9+.-]*:|\/|#)([^)\s]+)\)/g;
+/** A target with a scheme (`https:`, `mailto:`), an absolute path or an anchor: left as written. */
+const NOT_RELATIVE = /^(?:[a-z][a-z0-9+.-]*:|\/|#)/i;
 
 /** `*text*` and `_text_` at word boundaries, never `**`, never a list marker or a glob. */
 const STAR_EM = /(^|[\s(["'])\*(?!\*)([^*\s](?:[^*\n]*?[^*\s])?)\*(?=$|[\s.,;:)!?"'\]])/g;
 const UNDERSCORE_EM = /(^|[\s(["'])_(?!_)([^_\s](?:[^_\n]*?[^_\s])?)_(?=$|[\s.,;:)!?"'\]])/g;
 
-/** Text outside code spans: images, relative links and emphasis, in that order. */
-function normalizeInline(text: string): string {
+/**
+ * Repository document names a skill also uses for another repository's
+ * file (gt-cloud's `README.md`, a film project's `AGENTS.md`), so a code
+ * span naming one stays text.
+ */
+const AMBIGUOUS_DOCS: ReadonlySet<string> = new Set(['README.md', 'AGENTS.md']);
+
+/** The site route of a document named by its repository path in a code span, or null. */
+function docSpanTarget(name: string): string | null {
+  return AMBIGUOUS_DOCS.has(name) ? null : (DOC_ROUTES[name] ?? null);
+}
+
+/** The skill whose body is being read, so its links can reach its published files. */
+type SkillContext = { slug: string; files: ReadonlySet<string> };
+
+/**
+ * Where a relative target in a skill's body points on the site: a file of
+ * the skill's own folder (its raw address), a sibling skill's folder or
+ * file (that skill's page or raw file), or null for anything unpublished.
+ */
+function publishedTarget(target: string, ctx: SkillContext): string | null {
+  const hash = target.indexOf('#');
+  const path = hash >= 0 ? target.slice(0, hash) : target;
+  const anchor = hash >= 0 ? target.slice(hash) : '';
+  /* a document the site renders, by its path from the repository root */
+  const fromRoot = repoPath(`skills/${ctx.slug}`, path);
+  const doc = fromRoot ? DOC_ROUTES[fromRoot] : undefined;
+  if (doc) return `${doc}${anchor}`;
+  const resolved = posix.normalize(posix.join(ctx.slug, path)).replace(/\/$/, '');
+  const [owner, ...rest] = resolved.split('/');
+  if (!owner) return null;
+  const file = rest.join('/');
+  if (owner === ctx.slug) {
+    if (file === '') return skillHref(owner);
+    if (file === 'SKILL.md' || ctx.files.has(file)) return `${skillFileHref(owner, file)}${anchor}`;
+    return null;
+  }
+  const sibling = getSkill(owner);
+  if (!sibling) return null;
+  if (file === '' || file === 'SKILL.md') return skillHref(owner);
+  return sibling.files.includes(file) ? skillFileHref(owner, file) : null;
+}
+
+/** Text outside the links and code spans: emphasis to plain text. */
+function plain(text: string): string {
+  return text.replace(STAR_EM, '$1$2').replace(UNDERSCORE_EM, '$1$2');
+}
+
+/** One line's inline markup in the docs subset; see the module comment for the rules. */
+function normalizeInline(text: string, ctx: SkillContext | null): string {
   return text
-    .split(CODE_SPAN)
+    .split(TOKEN)
     .map((part, i) => {
-      if (i % 2 === 1) return part;
-      return part
-        .replace(IMAGE, '[$1]($2)')
-        .replace(RELATIVE_LINK, (_match, label: string, target: string) =>
-          label === target ? `\`${target}\`` : `${label} (\`${target}\`)`
-        )
-        .replace(STAR_EM, '$1$2')
-        .replace(UNDERSCORE_EM, '$1$2');
+      if (i % 2 === 0) return plain(part);
+      if (part.startsWith('`')) {
+        const name = part.slice(1, -1).replace(/^\.\//, '');
+        if (ctx && ctx.files.has(name)) return `[${part}](${skillFileHref(ctx.slug, name)})`;
+        const doc = docSpanTarget(name);
+        return doc ? `[${part}](${doc})` : part;
+      }
+      const link = LINK.exec(part);
+      if (!link) return part;
+      const target = link[2] ?? '';
+      const label = link[1] || target;
+      if (NOT_RELATIVE.test(target)) return `[${label}](${target})`;
+      const href = ctx ? publishedTarget(target, ctx) : null;
+      if (href) return `[${label}](${href})`;
+      return label === target ? `\`${target}\`` : `${label} (\`${target}\`)`;
     })
     .join('');
 }
@@ -99,8 +159,8 @@ const NESTED = /^(\s{2,})([-*]|\d+\.)\s+/;
 /** The list the current line sits in, when it sits in one; the parser ends a list at a blank line or a line at the margin. */
 type ListKind = 'ul' | 'ol' | null;
 
-/** The body text in the docs' markdown subset; see the module comment for the rules. */
-export function normalizeSkillMarkdown(md: string): string {
+/** The body text in the docs' markdown subset; see the module comment for the rules. Without a skill, relative links read as their text. */
+export function normalizeSkillMarkdown(md: string, ctx: SkillContext | null = null): string {
   const out: string[] = [];
   let inFence = false;
   let inComment = false;
@@ -128,7 +188,7 @@ export function normalizeSkillMarkdown(md: string): string {
         continue;
       }
       const level = depth === 1 ? 2 : Math.min(depth, 3);
-      out.push(`${'#'.repeat(level)} ${normalizeInline(heading[2])}`);
+      out.push(`${'#'.repeat(level)} ${normalizeInline(heading[2], ctx)}`);
       continue;
     }
     /* a blockquote reads as prose */
@@ -141,18 +201,33 @@ export function normalizeSkillMarkdown(md: string): string {
     if (BULLET.test(line)) list = 'ul';
     else if (NUMBER.test(line)) list = 'ol';
     else if (line.trim() === '' || !/^\s{2,}\S/.test(line)) list = null;
-    out.push(normalizeInline(line));
+    out.push(normalizeInline(line, ctx));
   }
   return out.join('\n');
 }
 
-/** The raw body file, as the generator wrote it. Throws for a slug the registry does not know. */
-export function readSkillBody(slug: string): string {
-  if (!getSkill(slug)) throw new Error(`skills: no body for ${slug}`);
-  return readFileSync(join(process.cwd(), SKILL_BODY_DIR, `${slug}.md`), 'utf8');
+/** The body of a SKILL.md: everything after the frontmatter block, trimmed of the blank lines that open it. */
+export function stripFrontmatter(text: string): string {
+  const lines = text.split(/\r?\n/);
+  let start = 0;
+  if (/^---\s*$/.test(lines[0] ?? '')) {
+    const close = lines.findIndex((line, i) => i > 0 && /^---\s*$/.test(line));
+    start = close < 0 ? 0 : close + 1;
+  }
+  while (start < lines.length && (lines[start] ?? '').trim() === '') start += 1;
+  return lines.slice(start).join('\n');
+}
+
+/** A skill's SKILL.md as written, frontmatter included. Throws for a slug the registry does not know. */
+export function readSkillFile(slug: string): string {
+  if (!getSkill(slug)) throw new Error(`skills: no skill ${slug}`);
+  /* the folder is a literal (SKILL_DIR's value), so the build traces skills/ and not the whole project */
+  return readFileSync(join(process.cwd(), 'skills', slug, 'SKILL.md'), 'utf8');
 }
 
 /** The skill's body as parsed blocks, ready for the docs renderer. */
 export function skillBlocks(slug: string): Block[] {
-  return parseBlocks(normalizeSkillMarkdown(readSkillBody(slug)));
+  const skill = getSkill(slug);
+  const ctx = skill ? { slug, files: new Set(skill.files) } : null;
+  return parseBlocks(normalizeSkillMarkdown(stripFrontmatter(readSkillFile(slug)), ctx));
 }

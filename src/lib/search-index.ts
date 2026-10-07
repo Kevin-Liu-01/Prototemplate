@@ -1,7 +1,9 @@
 import type { IconName } from '@/components/viewer/icons';
+import { docHref } from '@/app/docs/model';
 import { DOCS } from '@/app/docs/registry';
-import { MOTION_FILMS, MOTION_SECTIONS, MOTION_STATUS_LABEL, motionHref } from '@/lib/motion';
-import { SKILL_GROUPS, skillHref } from '@/lib/skills';
+import { HANDBOOK, HANDBOOK_README } from '@/app/handbook/registry';
+import { MOTION_FILMS, MOTION_SCRIPT_WORDS, MOTION_SECTIONS, MOTION_STATUS_LABEL, motionHref } from '@/lib/motion';
+import { SKILL_AREAS, SKILLS, skillHref } from '@/lib/skills';
 import { SITE_SURFACES } from '@/lib/surfaces';
 import type { Surface, SurfaceGroup } from '@/lib/surfaces';
 
@@ -10,8 +12,9 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * as one flat list the palette filters client-side. Restored from the
  * palette at 430e3c7 and rebuilt on the shell's registries so the rows
  * carry the same ids as the index panel and the sidebar: pages, the skill
- * pages, the films on the motion roster with the sections of each research
- * package, documents and their headings, the sites and explorations (each
+ * pages, the handbook's documents, the films on the motion roster with the
+ * sections of each research package and the contact sheet and script of
+ * each published cut, documents and their headings, the sites and explorations (each
  * opening its page under /directions), the archived versions, the brand
  * sections, the library anchors, and the 93 deck slides, each linking to
  * /deck#n. Pure data, no React, no DOM.
@@ -20,9 +23,9 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * there (Shipped, directive 8.10) appears here without a change; `surface`
  * is that row's id and is what a result row writes to data-preview for the
  * preview layer (directive 8.6). The skill rows come from the generated
- * src/lib/skills.ts (SKILL_GROUPS: the slug, the name and the category,
- * never the descriptions, which would put the whole registry in every
- * shell page's bundle) and preview the skills index. The headings and the
+ * src/lib/skills.ts (SKILLS: the slug, the title, the areas and the
+ * description, about 13 KB for the curated set, which every shell page's
+ * bundle carries) and preview the skills index. The headings and the
  * slide titles are snapshots: the documents are read from disk on the
  * server, and the slide files live under deck/slides, neither reachable
  * from a client module. Heading ids follow src/app/docs/markdown.tsx
@@ -32,8 +35,8 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  */
 export type SearchSite = 'dossier' | 'orbit' | 'signal' | 'shipped';
 
-/** The site map groups from surfaces.ts plus the four groups only the search has. */
-export type SearchGroup = SurfaceGroup | 'Skills' | 'Motion' | 'Headings' | 'Deck slides';
+/** The site map groups from surfaces.ts plus the five groups only the search has. */
+export type SearchGroup = SurfaceGroup | 'Skills' | 'Handbook' | 'Motion' | 'Headings' | 'Deck slides';
 
 export type SearchEntry = {
   /** unique across the index */
@@ -63,6 +66,7 @@ const GROUP_ORDER: readonly string[] = [
   'Pages',
   'Knowledge',
   'Skills',
+  'Handbook',
   'Motion',
   'Shipped',
   'Documents',
@@ -101,7 +105,8 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   deck: 'deck',
   brand: 'swatch',
   docs: 'document',
-  skills: 'sparkles',
+  skills: 'skill',
+  handbook: 'book',
   marks: 'swatch',
   blog: 'document',
   graphics: 'gallery',
@@ -117,7 +122,10 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   deck: 'brand deck slideshow slides identity summary book GT',
   present: 'presenter slides scoreboard',
   compare: 'side by side synced frames',
-  skills: 'agent skills SKILL.md engineering productivity general translation graphics',
+  skills:
+    'agent skills SKILL.md install voice humanizer website landing brand Inter aesthetic deck lints gates PR motion films video graphics dither diagrams isometric components Prototemplate',
+  handbook:
+    'wiki how kevin works operating principles quality bar done multi-session playbook lanes sessions forks product map glossary terms decisions rulings agents',
   blog: 'posts articles docs redesign rewriting fuma nama designing docs for humans carousel',
   graphics: 'illustrations visuals covers carousel slides glyphfield exports pipeline manifest',
   motion:
@@ -152,7 +160,7 @@ function siteOf(row: Surface): SearchSite | undefined {
 /* the icon for a site map group when the row itself does not decide */
 const GROUP_ICON: Readonly<Partial<Record<SurfaceGroup, IconName>>> = {
   Documents: 'document',
-  Explorations: 'sparkles',
+  Explorations: 'explore',
   Archive: 'archive',
   Libraries: 'cube',
   'Brand sections': 'swatch',
@@ -180,23 +188,45 @@ function fromSurface(row: Surface): SearchEntry {
 }
 
 /**
- * One row per skill page, in the categories' order: the name, the category
- * as the meta line, the sparkles glyph the Skills row carries, and the
- * skills index as the preview, since a skill page has no capture of its own.
+ * One row per skill page, in the set's order: the title, the area the
+ * skill is filed under as the meta line, the skill glyph the Skills row
+ * carries, and the skills index as the preview, since a skill page has no
+ * capture of its own. The keywords hold the slug, every area and the
+ * description, so a search for an area or a word of the description finds
+ * the skill.
  */
-const SKILL_ROWS: readonly SearchEntry[] = SKILL_GROUPS.flatMap((group) =>
-  group.skills.map(
-    (skill): SearchEntry => ({
-      id: `skill-${skill.slug}`,
-      title: skill.name,
-      href: skillHref(skill.slug),
-      group: 'Skills',
-      meta: `Skills / ${group.label}`,
-      icon: 'sparkles',
-      keywords: `skill SKILL.md agent ${group.label}`,
-      surface: 'skills',
-    })
-  )
+const SKILL_ROWS: readonly SearchEntry[] = SKILLS.map((skill): SearchEntry => {
+  const areas = skill.areas.map((area) => SKILL_AREAS.find((entry) => entry.id === area)?.label ?? area);
+  return {
+    id: `skill-${skill.id}`,
+    title: skill.title,
+    href: skillHref(skill.id),
+    group: 'Skills',
+    meta: `Skills / ${areas[0] ?? ''}`,
+    icon: 'skill',
+    keywords: `skill SKILL.md agent ${skill.id} ${areas.join(' ')} ${skill.description}`,
+    surface: 'skills',
+  };
+});
+
+/**
+ * One row per handbook document, the readme first, in the book's order:
+ * the title, `Handbook` and the document's number as the meta line, the
+ * Handbook row's glyph, and the Handbook row as the preview. The keywords
+ * hold the blurb, so a search for a word of what a document holds finds
+ * it.
+ */
+const HANDBOOK_ROWS: readonly SearchEntry[] = [HANDBOOK_README, ...HANDBOOK].map(
+  (doc, i): SearchEntry => ({
+    id: `handbook-${doc.slug}`,
+    title: doc.slug === HANDBOOK_README.slug ? 'Handbook readme' : doc.title,
+    href: docHref(doc.slug, 'handbook'),
+    group: 'Handbook',
+    meta: `Handbook / ${String(i + 1).padStart(2, '0')}`,
+    icon: 'book',
+    keywords: `handbook ${doc.slug} ${doc.blurb}`,
+    surface: 'handbook',
+  })
 );
 
 /** The film's text without its inline markup. */
@@ -248,10 +278,43 @@ const MOTION_HEADINGS: readonly SearchEntry[] = MOTION_FILMS.flatMap((film) =>
   )
 );
 
-/** `/docs` for the readme, `/docs/<slug>` otherwise (src/app/docs/model.ts). */
-function docHref(slug: string): string {
-  return slug === 'readme' ? '/docs' : `/docs/${slug}`;
-}
+/**
+ * The published cut's records of each film as heading rows: its contact
+ * sheet and its script as built, which land on their sections of the
+ * film's page (or its row on /motion for a film without one). A script
+ * row matches every word of the script's story and spoken lines
+ * (MOTION_SCRIPT_WORDS, generated with the registry), so a line the film
+ * says finds the film.
+ */
+const MOTION_RECORDS: readonly SearchEntry[] = MOTION_FILMS.flatMap((film): SearchEntry[] => {
+  const rows: SearchEntry[] = [];
+  const at = (id: string) => (film.pkg ? `/motion/${film.slug}#${id}` : `/motion#${film.id}`);
+  if (film.sheet) {
+    rows.push({
+      id: `heading-motion-${film.slug}-contact-sheet`,
+      title: 'Contact sheet',
+      href: at('contact-sheet'),
+      group: 'Headings',
+      meta: `In ${film.title}`,
+      icon: 'grid',
+      keywords: `${film.slug} contact sheet frames stills ${film.sheet.frames ? `${film.sheet.frames} frames` : ''} ${film.cut?.label ?? ''}`,
+      surface: 'motion',
+    });
+  }
+  if (film.script) {
+    rows.push({
+      id: `heading-motion-${film.slug}-film-script`,
+      title: 'Script',
+      href: at('film-script'),
+      group: 'Headings',
+      meta: `In ${film.title}`,
+      icon: 'document',
+      keywords: `${film.slug} script as built narration lines ${film.script.label ?? ''} ${film.script.voices} ${MOTION_SCRIPT_WORDS[film.slug] ?? ''}`,
+      surface: 'motion',
+    });
+  }
+  return rows;
+});
 
 /** The h2 rows of each document, in reading order: [id, title]. The readme ends with the build log's seven sections. */
 const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
@@ -267,9 +330,13 @@ const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])
     ['where-it-went-wrong-and-the-fix', 'Where it went wrong, and the fix'],
   ],
   readme: [
+    ['what-is-here', 'What is here'],
     ['run-it', 'Run it'],
     ['read-first', 'Read first'],
+    ['skills', 'Skills'],
+    ['import-this-into-another-project', 'Import this into another project'],
     ['the-one-paragraph-tour', 'The one-paragraph tour'],
+    ['license', 'License'],
     ['the-system-under-the-system', 'The system under the system'],
     ['the-line-law-and-the-auditors-that-hold-it', 'The line law, and the auditors that hold it'],
     ['the-dither-transitions-and-the-grid-they-run-on', 'The dither transitions, and the grid they run on'],
@@ -304,6 +371,8 @@ const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])
     ['12-the-mobile-type-ladder', '12. The mobile type ladder'],
     ['13-the-svh-dvh-law', '13. The svh/dvh law'],
     ['14-the-two-read-lines', '14. The two read lines'],
+    ['15-chrome-exceptions-kevin-asked-for', '15. Chrome exceptions Kevin asked for'],
+    ['16-the-sidebars-rows', "16. The sidebar's rows"],
   ],
   architecture: [
     ['the-shape-of-the-app', 'The shape of the app'],
@@ -314,14 +383,119 @@ const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])
     ['skills-and-docs', 'Skills and docs'],
     ['the-mirror', 'The mirror'],
   ],
+  agents: [
+    ['read-in-this-order', 'Read in this order'],
+    ['the-principles-in-brief', 'The principles in brief'],
+    ['which-skill-to-load', 'Which skill to load'],
+    ['the-handbook', 'The handbook'],
+    ['house-rules', 'House rules'],
+    ['working-in-this-repository', 'Working in this repository'],
+    ['using-the-hub-in-another-project', 'Using the hub in another project'],
+    ['ending-a-turn', 'Ending a turn'],
+  ],
   'ship-loop': [
     ['0-ground-rules', '0. Ground rules'],
     ['1-the-line-audit', '1. The line audit'],
-    ['2-the-practices-ratchet', '2. The practices ratchet'],
-    ['3-types', '3. Types'],
-    ['4-film-it', '4. Film it'],
-    ['5-commit-and-back-up', '5. Commit and back up'],
-    ['6-the-mirror', '6. The mirror'],
+    ['2-the-page-check', '2. The page check'],
+    ['3-the-practices-ratchet', '3. The practices ratchet'],
+    ['4-types', '4. Types'],
+    ['5-film-it', '5. Film it'],
+    ['6-commit-and-back-up', '6. Commit and back up'],
+    ['7-the-mirror', '7. The mirror'],
+  ],
+};
+
+/** The h2 rows of each handbook document, in reading order: [id, title]. A snapshot, like DOC_HEADINGS; check-registries.mjs reads both. */
+const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
+  readme: [
+    ['the-documents', 'The documents'],
+    ['how-the-handbook-relates-to-the-skills', 'How the handbook relates to the skills'],
+    ['changing-the-handbook', 'Changing the handbook'],
+    ['sources', 'Sources'],
+  ],
+  'operating-principles': [
+    ['1-keep-going-until-everything-is-done', '1. Keep going until everything is done'],
+    ['2-do-the-work-yourself-and-ask-once-for-what-only-kevin-can-do', '2. Do the work yourself and ask once for what only Kevin can do'],
+    ['3-change-only-what-was-asked', '3. Change only what was asked'],
+    ['4-keep-approved-work', '4. Keep approved work'],
+    ['5-fix-the-whole-class', '5. Fix the whole class'],
+    ['6-find-the-root-cause-and-guard-it', '6. Find the root cause and guard it'],
+    ['7-measure-the-rendered-result', '7. Measure the rendered result'],
+    ['8-show-the-result', '8. Show the result'],
+    ['9-real-content-and-real-assets', '9. Real content and real assets'],
+    ['10-ask-only-real-decisions-with-a-recommendation', '10. Ask only real decisions, with a recommendation'],
+    ['11-correct-from-the-first-frame', '11. Correct from the first frame'],
+    ['12-nothing-unnecessary-ships', '12. Nothing unnecessary ships'],
+    ['13-prefer-free-and-cheap', '13. Prefer free and cheap'],
+    ['14-secrets-stay-in-protected-files', '14. Secrets stay in protected files'],
+    ['15-fully-means-complete', '15. "Fully" means complete'],
+    ['16-codify-what-worked', '16. Codify what worked'],
+    ['17-vendor-agnostic-agent-tooling', '17. Vendor-agnostic agent tooling'],
+    ['18-privacy-on-public-surfaces', '18. Privacy on public surfaces'],
+    ['where-the-procedures-live', 'Where the procedures live'],
+    ['sources', 'Sources'],
+  ],
+  'quality-bar': [
+    ['the-overall-bar', 'The overall bar'],
+    ['reading-the-tables', 'Reading the tables'],
+    ['pages', 'Pages'],
+    ['motion', 'Motion'],
+    ['graphics-and-diagrams', 'Graphics and diagrams'],
+    ['copy', 'Copy'],
+    ['pull-requests', 'Pull requests'],
+    ['convergence-loops', 'Convergence loops'],
+    ['performance', 'Performance'],
+    ['films', 'Films'],
+    ['charts', 'Charts'],
+    ['repositories', 'Repositories'],
+    ['done', 'Done'],
+    ['sources', 'Sources'],
+  ],
+  'multi-session-playbook': [
+    ['1-lanes', '1. Lanes'],
+    ['2-forked-sessions', '2. Forked sessions'],
+    ['3-one-instruction-to-several-sessions', '3. One instruction to several sessions'],
+    ['4-shared-checkouts', '4. Shared checkouts'],
+    ['5-collisions', '5. Collisions'],
+    ['6-claude-and-codex-together', '6. Claude and Codex together'],
+    ['7-relays', '7. Relays'],
+    ['8-messages-across-lanes-and-repositories', '8. Messages across lanes and repositories'],
+    ['9-resumption', '9. Resumption'],
+    ['10-shared-resources', '10. Shared resources'],
+    ['checklist', 'Checklist'],
+    ['sources', 'Sources'],
+  ],
+  'gt-product-map': [
+    ['1-positioning', '1. Positioning'],
+    ['2-audience-and-the-sale', '2. Audience and the sale'],
+    ['3-products', '3. Products'],
+    ['4-context', '4. Context'],
+    ['5-enterprise-and-plans', '5. Enterprise and plans'],
+    ['6-copy-that-must-be-exact', '6. Copy that must be exact'],
+    ['7-cli-and-agent-entry-points', '7. CLI and agent entry points'],
+    ['8-repositories', '8. Repositories'],
+    ['9-site-behaviour', '9. Site behaviour'],
+    ['sources', 'Sources'],
+  ],
+  glossary: [
+    ['company-and-products', 'Company and products'],
+    ['repositories-and-places', 'Repositories and places'],
+    ['design-vocabulary', 'Design vocabulary'],
+    ['material-and-motion', 'Material and motion'],
+    ['gates-and-tools', 'Gates and tools'],
+    ['working-terms', 'Working terms'],
+    ['kevins-shorthand', "Kevin's shorthand"],
+    ['retired-terms', 'Retired terms'],
+    ['sources', 'Sources'],
+  ],
+  decisions: [
+    ['using-the-log', 'Using the log'],
+    ['july-and-august-2026', 'July and August 2026'],
+    ['september-2026', 'September 2026'],
+    ['october-2026', 'October 2026'],
+    ['superseded-july-practices', 'Superseded July practices'],
+    ['recorded-elsewhere', 'Recorded elsewhere'],
+    ['sources', 'Sources'],
   ],
 };
 
@@ -330,20 +504,41 @@ const DOC_TITLE: Readonly<Record<string, string>> = {
   ...Object.fromEntries(DOCS.map((doc) => [doc.slug, doc.title])),
 };
 
-const HEADINGS: readonly SearchEntry[] = Object.entries(DOC_HEADINGS).flatMap(([slug, rows]) =>
-  rows.map(
-    ([id, title]): SearchEntry => ({
-      id: `heading-${slug}-${id}`,
-      title,
-      href: `${docHref(slug)}#${id}`,
-      group: 'Headings',
-      meta: `In ${DOC_TITLE[slug] ?? slug}`,
-      icon: 'document',
-      keywords: `${DOC_TITLE[slug] ?? ''} heading section`,
-      surface: `docs-${slug}`,
-    })
-  )
-);
+const HANDBOOK_TITLE: Readonly<Record<string, string>> = {
+  readme: 'Handbook readme',
+  ...Object.fromEntries(HANDBOOK.map((doc) => [doc.slug, doc.title])),
+};
+
+const HEADINGS: readonly SearchEntry[] = [
+  ...Object.entries(DOC_HEADINGS).flatMap(([slug, rows]) =>
+    rows.map(
+      ([id, title]): SearchEntry => ({
+        id: `heading-${slug}-${id}`,
+        title,
+        href: `${docHref(slug)}#${id}`,
+        group: 'Headings',
+        meta: `In ${DOC_TITLE[slug] ?? slug}`,
+        icon: 'document',
+        keywords: `${DOC_TITLE[slug] ?? ''} heading section`,
+        surface: `docs-${slug}`,
+      })
+    )
+  ),
+  ...Object.entries(HANDBOOK_HEADINGS).flatMap(([slug, rows]) =>
+    rows.map(
+      ([id, title]): SearchEntry => ({
+        id: `heading-handbook-${slug}-${id}`,
+        title,
+        href: `${docHref(slug, 'handbook')}#${id}`,
+        group: 'Headings',
+        meta: `In ${HANDBOOK_TITLE[slug] ?? slug}`,
+        icon: 'book',
+        keywords: `handbook ${HANDBOOK_TITLE[slug] ?? ''} heading section`,
+        surface: 'handbook',
+      })
+    )
+  ),
+];
 
 /** The 93 slide titles, in order: the first h1, h2 or .big of each deck/slides/NN-*.html; the ten mood slides carry no heading and are listed by their picture. Regenerate with the loop in the commit that added the mood pictures of writing when slides change. */
 const DECK_SLIDES: readonly string[] = [
@@ -463,9 +658,11 @@ function hayOf(entry: SearchEntry): string {
 export const SEARCH_INDEX: readonly SearchEntry[] = [
   ...SITE_SURFACES.map(fromSurface),
   ...SKILL_ROWS,
+  ...HANDBOOK_ROWS,
   ...MOTION_ROWS,
   ...HEADINGS,
   ...MOTION_HEADINGS,
+  ...MOTION_RECORDS,
   ...SLIDES,
 ].map((entry) => ({ ...entry, hay: hayOf(entry) }));
 

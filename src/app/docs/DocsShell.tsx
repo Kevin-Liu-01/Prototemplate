@@ -2,30 +2,34 @@
 
 import { useGSAP } from '@gsap/react';
 import type { RefObject } from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
-import { ListRow } from '@/components/viewer/ListRow';
+import type { BookFact } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
-import type { SubRenderer } from '@/components/viewer/Sidebar';
+import type { SubRows } from '@/components/viewer/Sidebar';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
+import { PAGE_NAMES, pageLabel } from '@/lib/page-names';
+import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import type { DocPage } from './model';
+import type { BookId, DocPage } from './model';
 import { docHref, docWindowTitle, slugFromPath } from './model';
 
 import '../prototemplate.css';
 import './docs.css';
 
-const DOCS_TITLE = 'Docs';
 const DOCS_MODES: readonly ShellMode[] = ['book', 'grid'];
-const BOOK_TITLE = 'Prototemplate docs';
-const BOOK_LEAD =
-  'The repository documents, read in the browser and top to bottom: the readme with the build log, the brand and design canons, the architecture map, the ship loop, and the library index. The list on the left follows the section in view; pick a document or a heading to jump to it.';
-const BOOK_DATE = 'September 2026';
+
+/** Each book's lead: one to three lines at the lead measure, 200 characters at most. */
+const BOOK_LEADS: Readonly<Record<BookId, string>> = {
+  docs: 'The repository’s documents: the readme and its build log, the brand and design canons, the architecture map, the ship loop, the libraries, the graphics pipeline and the agent guide.',
+  handbook:
+    'How Kevin Liu runs General Translation work: the operating principles, the quality bar, the playbook for parallel sessions, the product map, the glossary and the decisions.',
+};
 
 /**
  * The read line. A block that crosses the top tenth of the sheet is the one
@@ -66,8 +70,8 @@ function here(): string {
   return `${window.location.pathname}${window.location.hash}`;
 }
 
-function urlFor(slug: string, heading: string | null): string {
-  return heading ? `${docHref(slug)}#${encodeURIComponent(heading)}` : docHref(slug);
+function urlFor(book: BookId, slug: string, heading: string | null): string {
+  return heading ? `${docHref(slug, book)}#${encodeURIComponent(heading)}` : docHref(slug, book);
 }
 
 function writeUrl(url: string, push: boolean): void {
@@ -87,12 +91,20 @@ function cssEscape(value: string): string {
   return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
 }
 
-/** The six documents as the shell's one section. */
-function docsSections(docs: readonly DocPage[]): readonly ShellSection[] {
+/**
+ * The documents as the shell's one section, opened as the run under the
+ * book's page row in the sidebar (`under`). On /docs the run is the
+ * Documents group under Pages > Docs and takes that group's rows with it,
+ * so the group leaves the top level there; on /handbook it opens under
+ * Knowledge > Handbook, and its documents have no site map rows of their
+ * own.
+ */
+function docsSections(docs: readonly DocPage[], book: BookId): readonly ShellSection[] {
   return [
     {
-      id: 'documents',
+      id: book === 'docs' ? 'documents' : 'handbook-documents',
       label: 'Documents',
+      under: book,
       items: docs.map((doc) => ({
         id: doc.slug,
         n: doc.n,
@@ -100,8 +112,8 @@ function docsSections(docs: readonly DocPage[]): readonly ShellSection[] {
         href: doc.href,
         desc: doc.blurb,
         shot: doc.shot,
-        /* the surfaces.ts id, for the preview layer and the sidebar's site map pairing */
-        surface: `docs-${doc.slug}`,
+        /* the surfaces.ts id, for the preview layer and the sidebar's site map pairing (the Documents rows) */
+        surface: book === 'docs' ? `docs-${doc.slug}` : undefined,
         /* the book scrolls to the document and writes its address itself; the sidebar row never navigates */
         inPlace: true,
       })),
@@ -110,6 +122,7 @@ function docsSections(docs: readonly DocPage[]): readonly ShellSection[] {
 }
 
 type DocsBookProps = {
+  book: BookId;
   docs: readonly DocPage[];
   activeHeading: string | null;
   onHeading: (id: string | null) => void;
@@ -122,6 +135,10 @@ type DocsBookProps = {
   docJumpRef: RefObject<(slug: string) => void>;
   /** the active document, read by the shell's onSelect outside this component */
   activeOut: RefObject<string>;
+  /** the head's Updated row: the book's entry in src/lib/updated.ts */
+  updated: PageUpdated;
+  /** the head's three facts after Updated, computed on the server (book.tsx, bookFacts) */
+  facts: readonly [BookFact, BookFact, BookFact];
 };
 
 /**
@@ -136,7 +153,19 @@ type DocsBookProps = {
  * document's own route, `/docs/design#2-the-line-law`, so a copied link
  * lands on the same place.
  */
-function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, docJumpRef, activeOut }: DocsBookProps) {
+function DocsBook({
+  book,
+  docs,
+  activeHeading,
+  onHeading,
+  sheetRef,
+  source,
+  jumpRef,
+  docJumpRef,
+  activeOut,
+  updated,
+  facts,
+}: DocsBookProps) {
   const { active, index, select } = usePtShell();
   activeOut.current = active;
 
@@ -163,8 +192,6 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
   const settling = useRef<Element | null>(null);
   const settleTimer = useRef(0);
   const landTimer = useRef(0);
-
-  const sectionTotal = useMemo(() => docs.reduce((n, doc) => n + doc.sections.length, 0), [docs]);
 
   const hasDoc = (slug: string | null): slug is string => slug !== null && docs.some((doc) => doc.slug === slug);
 
@@ -212,7 +239,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
     }
     scrollTo(el, behavior);
     if (row) onHeadingRef.current(id);
-    url.current = urlFor(activeRef.current, id);
+    url.current = urlFor(book, activeRef.current, id);
     writeUrl(url.current, false);
     return true;
   };
@@ -224,7 +251,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
   docJumpRef.current = (slug: string) => {
     scrollTo(blockFor(slug, null), scrollBehavior());
     /* the shell wrote `#<slug>` over the current entry: put the document's own address back */
-    writeUrl(url.current || urlFor(slug, null), false);
+    writeUrl(url.current || urlFor(book, slug, null), false);
   };
 
   /**
@@ -304,7 +331,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
         selectRef.current(doc);
         return;
       }
-      url.current = urlFor(doc, heading);
+      url.current = urlFor(book, doc, heading);
       writeUrl(url.current, false);
     };
     const observer = new IntersectionObserver(
@@ -358,7 +385,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
         if (heading && jumpTo(heading, scrollBehavior())) e.preventDefault();
         return;
       }
-      const slug = slugFromPath(path ?? '');
+      const slug = slugFromPath(path ?? '', book);
       if (!hasDoc(slug)) return;
       e.preventDefault();
       if (slug === activeRef.current) {
@@ -377,7 +404,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
   /* Back and Forward: the path names the document, the hash the heading */
   useMountEffect(() => {
     const onPop = () => {
-      const slug = slugFromPath(window.location.pathname);
+      const slug = slugFromPath(window.location.pathname, book);
       if (!hasDoc(slug)) return;
       const hash = readHash();
       const heading = hash && hash !== slug ? hash : null;
@@ -408,7 +435,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
       source.current = null;
       const doc = docs.find((d) => d.slug === active);
       if (!doc) return;
-      document.title = docWindowTitle(doc.slug, doc.title);
+      document.title = docWindowTitle(doc.slug, doc.title, book);
 
       if (previous === null) {
         url.current = here();
@@ -420,7 +447,7 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
       if (previous === active) return;
 
       if (src === 'spy') {
-        url.current = urlFor(active, headingRef.current);
+        url.current = urlFor(book, active, headingRef.current);
         writeUrl(url.current, false);
         return;
       }
@@ -431,12 +458,12 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
       scrollTo(blockFor(active, heading), src === 'history' ? 'auto' : scrollBehavior());
 
       if (src === 'history') {
-        url.current = popped.current ?? urlFor(active, heading);
+        url.current = popped.current ?? urlFor(book, active, heading);
         popped.current = null;
         writeUrl(url.current, false);
         return;
       }
-      const next = urlFor(active, heading);
+      const next = urlFor(book, active, heading);
       if (src === 'select') {
         /* the shell wrote `#<slug>` over the current entry: put that entry back, then add one */
         writeUrl(url.current, false);
@@ -451,36 +478,37 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
   );
 
   return (
-    <div className='ptd-book'>
+    <div className='ptd-book pt-book-col'>
       <BookHead
-        title={BOOK_TITLE}
-        lead={BOOK_LEAD}
-        meta={[
-          { key: 'Documents', value: String(docs.length) },
-          { key: 'Sections', value: String(sectionTotal) },
-          { key: 'Updated', value: BOOK_DATE },
-        ]}
+        title={PAGE_NAMES[book].name}
+        lead={BOOK_LEADS[book]}
+        updated={updated}
+        facts={facts}
+        contents={
+          <nav className='ptd-toc pt-book-toc' aria-label='Contents'>
+            {docs.map((doc) => (
+              <a key={doc.slug} href={doc.href} aria-current={doc.slug === active ? 'true' : undefined}>
+                <span>{doc.title}</span>
+                <small>{doc.n}</small>
+              </a>
+            ))}
+          </nav>
+        }
       />
 
-      <nav className='ptd-toc' aria-label='Contents'>
-        {docs.map((doc) => (
-          <a key={doc.slug} href={doc.href} aria-current={doc.slug === active ? 'true' : undefined}>
-            <span>{doc.title}</span>
-            <small>{doc.n}</small>
-          </a>
-        ))}
-      </nav>
-
-      {docs.map((doc) => (
+      {docs.map((doc, i) => (
         <section
           key={doc.slug}
-          className={cn('ptd-doc', doc.slug === active && 'is-active')}
+          className={cn('pt-book-part ptd-doc', doc.slug === active && 'is-active')}
           aria-labelledby={`ptd-${doc.slug}`}
         >
-          <div className='ptd-sec' data-doc={doc.slug}>
+          <div className='ptd-sec pt-book-sec' data-doc={doc.slug}>
             <small>
-              <span>Document {doc.n}</span>
-              <span>{doc.file}</span>
+              <span>Section {i + 1}</span>
+              {/* the file's name in /docs (a folder in front of it would wrap the 128px gutter:
+                  docs/SHIP-LOOP.md); in the handbook, whose names run past the gutter
+                  (multi-session-playbook.md), the count of its sections */}
+              <span>{book === 'docs' ? doc.file.split('/').pop() : `${doc.sections.length} sections`}</span>
             </small>
             <h2 id={`ptd-${doc.slug}`}>{doc.title}</h2>
           </div>
@@ -516,46 +544,59 @@ function DocsBook({ docs, activeHeading, onHeading, sheetRef, source, jumpRef, d
 }
 
 export type DocsShellProps = {
-  /** the document the route names: `readme` on /docs, the slug on /docs/[slug] */
+  /** which book: the repository documents (/docs) or the handbook (/handbook) */
+  book: BookId;
+  /** the document the route names: `readme` on the book's index, the slug on <base>/[slug] */
   active: string;
-  /** from buildDocs() on the server */
+  /** from buildBook() on the server */
   docs: readonly DocPage[];
+  /** the book's entry in src/lib/updated.ts, from the server page */
+  updated: PageUpdated;
+  /** the head's three facts after Updated, from bookFacts() on the server */
+  facts: readonly [BookFact, BookFact, BookFact];
 };
 
 /**
- * The docs on the viewer shell: six documents under Documents in the site
- * map, the headings of the active document as rows under it, the canon as
- * a book inside the 1280px flow sheet, and the six captures as a grid. Flow
- * keys, so Space and the arrows scroll. A direct /docs/<slug> lands on that
- * document and stays there while the sheet settles.
+ * A book of documents on the viewer shell: the documents as the run under
+ * the book's page row in the site map (Pages > Docs, Knowledge >
+ * Handbook), the headings of the active document as a deep run under its
+ * row, the documents as one book inside the 1280px flow sheet, and their
+ * captures as a grid. Flow keys, so Space and the arrows scroll. A direct
+ * /docs/<slug> or /handbook/<slug> lands on that document and stays there
+ * while the sheet settles.
  */
-export default function DocsShell({ active, docs }: DocsShellProps) {
+export default function DocsShell({ book, active, docs, updated, facts }: DocsShellProps) {
   const [activeHeading, setActiveHeading] = useState<string | null>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const source = useRef<SelectSource | null>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const docJumpRef = useRef<(slug: string) => void>(() => {});
   const activeOut = useRef(active);
-  const sections = useMemo(() => docsSections(docs), [docs]);
+  const sections = useMemo(() => docsSections(docs, book), [docs, book]);
 
-  const renderSub: SubRenderer = (item, isActive) => {
-    if (!isActive) return null;
-    const doc = docs.find((d) => d.slug === item.id);
-    if (!doc || doc.sections.length === 0) return null;
-    return doc.sections.map((section) => (
-      <ListRow
-        key={section.id}
-        item={{ id: section.id, n: section.n, title: section.title }}
-        active={section.id === activeHeading}
-        onSelect={(id) => jumpRef.current(id)}
-      />
-    ));
-  };
+  /* the headings of the open document, as the deep run under its row;
+     stable between heading changes, so the memoized list skips the
+     renders a scroll would otherwise cost */
+  const subRows: SubRows = useCallback(
+    (item, isActive) => {
+      if (!isActive) return null;
+      const doc = docs.find((d) => d.slug === item.id);
+      if (!doc || doc.sections.length === 0) return null;
+      return doc.sections.map((section) => ({
+        id: section.id,
+        title: section.title,
+        href: `${doc.href}#${encodeURIComponent(section.id)}`,
+        active: section.id === activeHeading,
+        onSelect: () => jumpRef.current(section.id),
+      }));
+    },
+    [docs, activeHeading]
+  );
 
   return (
     <ViewerShell
-      id='docs'
-      title={DOCS_TITLE}
+      id={book}
+      title={pageLabel(book)}
       mark='pt'
       count={`${docs.length} documents`}
       sections={sections}
@@ -565,7 +606,7 @@ export default function DocsShell({ active, docs }: DocsShellProps) {
       surfaces='site'
       keys='flow'
       noun='document'
-      renderSub={renderSub}
+      subRows={subRows}
       onSelect={(id) => {
         /* re-clicking the current document jumps to it; any other selection
            nobody claimed came from the list, the keys or the grid */
@@ -573,8 +614,9 @@ export default function DocsShell({ active, docs }: DocsShellProps) {
         else source.current ??= 'select';
       }}
     >
-      <Sheet variant='flow' width={1280} scrollRef={sheetRef}>
+      <Sheet variant='flow' scrollRef={sheetRef}>
         <DocsBook
+          book={book}
           docs={docs}
           activeHeading={activeHeading}
           onHeading={setActiveHeading}
@@ -583,6 +625,8 @@ export default function DocsShell({ active, docs }: DocsShellProps) {
           jumpRef={jumpRef}
           docJumpRef={docJumpRef}
           activeOut={activeOut}
+          updated={updated}
+          facts={facts}
         />
       </Sheet>
     </ViewerShell>

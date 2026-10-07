@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation';
 
 import { plainText } from '@/app/docs/markdown';
 import { MOTION_PACKAGE_SLUGS, getMotionFilm } from '@/lib/motion';
+import { requireUpdated } from '@/lib/updated';
 
+import { reviewBlock, scriptBlock, sheetBlock } from '../records';
 import { buildCredits, buildPackage } from './package';
 import PackageViewer from './PackageViewer';
 
@@ -29,7 +31,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 /**
  * /motion/[slug]: one film of the translation series with its research
  * package on the viewer shell. The package is read from
- * public/motion/<slug>.md and rendered here on the server (package.ts), so
+ * public/motion/<slug>.md and rendered here on the server (package.ts), and
+ * so are the published cut's contact sheet and script (records.tsx), so
  * the client receives elements. The key on the viewer makes a change of
  * slug a fresh mount, so the shell's active item always matches the
  * address.
@@ -46,7 +49,11 @@ export default async function MotionPackagePage({ params }: Params) {
       lead={page.lead}
       leadRest={page.leadRest}
       credits={buildCredits(slug)}
+      sheet={sheetBlock(film)}
+      script={scriptBlock(film)}
+      review={reviewBlock(film)}
       sections={page.sections}
+      updated={requireUpdated(`/motion/${slug}`)}
     />
   );
 }

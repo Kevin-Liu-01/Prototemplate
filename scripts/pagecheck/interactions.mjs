@@ -5,7 +5,7 @@
 // pages are read at 390x844 and 1440x900 unless the interaction narrows
 // that.
 //
-// The six for this site, each on what the shell code says it does:
+// The seven for this site, each on what the shell code says it does:
 //   theme-flip        the toolbar's Theme button flips html[data-theme] and
 //                     persists gt-theme (ThemeButton.tsx applyTheme)
 //   index-preview     the Index button opens the 460px panel over the stage
@@ -28,6 +28,13 @@
 //                     under the read line
 //   present-controls  the presenter dock's Next slide button advances the
 //                     count (PresenterApp.tsx goTo)
+//   sidebar-rails     the sidebar's rail layer is live (SidebarRails.ts sets
+//                     data-rails on the aside); a hover on a run row shows
+//                     the pointer's thumb and pill; a click moves the mark
+//                     to the row (or a deep heading under it once the read
+//                     line passes one) and the current thumb rests there;
+//                     under reduced motion a click starts no animation
+//                     (DESIGN.md section 16)
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -150,6 +157,46 @@ export const INTERACTIONS = [
       }, slug);
       const landed = after.headingOffset != null && after.headingOffset >= -2 && after.headingOffset <= 160;
       return { pass: after.pathname === href && landed, href, ...after };
+    },
+  },
+  {
+    id: 'sidebar-rails',
+    pages: ['brand', 'docs'],
+    viewports: ['1440x900'],
+    run: async (page) => {
+      const live = await page.evaluate(() => Boolean(document.querySelector('.pt-sb[data-rails]')));
+      const row = '.pt-sb .pt-nest .pt-nrow:not(.is-deep):not([data-mark])';
+      const id = await page.evaluate((s) => document.querySelector(s)?.id ?? null, row);
+      await page.hover(`#${id}`);
+      await page.waitForTimeout(250);
+      const hover = await page.evaluate(() => ({
+        thumb: Boolean(document.querySelector('.pt-sb-thumb.is-hover[data-on]')),
+        pill: Boolean(document.querySelector('.pt-sb-pill.is-hover[data-on]')),
+      }));
+      await page.click(`#${id}`);
+      await page.waitForTimeout(300);
+      /* the read line may pass a heading during the book's scroll and move the mark once more: wait for the list to rest */
+      const rested = await page
+        .waitForFunction(() => document.getAnimations().filter((a) => a.effect?.target?.closest?.('.pt-sb')).length === 0, null, { timeout: 2000 })
+        .then(
+          () => true,
+          () => false
+        );
+      const after = await page.evaluate((want) => {
+        const marked = document.querySelector('.pt-sb [data-mark]');
+        return {
+          /* the clicked row, or a deep heading under it once the read line passes one */
+          onTarget: Boolean(marked) && (marked.id === want || marked.getAttribute('data-parent') === want),
+          thumb: Boolean(document.querySelector('.pt-sb-thumb.is-current[data-on]')),
+        };
+      }, id);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.waitForTimeout(150);
+      const other = await page.evaluate((s) => document.querySelector(s)?.id ?? null, row);
+      await page.click(`#${other}`);
+      const reduced = await page.evaluate(() => document.getAnimations().filter((a) => a.effect?.target?.closest?.('.pt-sb')).length);
+      const pass = live && hover.thumb && hover.pill && rested && after.onTarget && after.thumb && reduced === 0;
+      return { pass, live, hover, rested, after, reduced };
     },
   },
   {

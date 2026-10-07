@@ -1,15 +1,19 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
+import Link from 'next/link';
 import type { MouseEvent, RefObject } from 'react';
 import { useMemo, useRef } from 'react';
 
+import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { backgroundLabel } from '@/lib/graphics-model';
 import type { Block, Entry } from '@/lib/graphics-model';
+import { PAGE_NAMES } from '@/lib/page-names';
+import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -17,10 +21,23 @@ import { VariantFigure } from './VariantFigure';
 
 import './graphics.css';
 
-const TITLE = 'Graphics';
+const TITLE = PAGE_NAMES.graphics.name;
 const MODES: readonly ShellMode[] = ['book', 'grid'];
 const LEAD =
-  'Every illustration of the series, read top to bottom by the area of the post it sits in, then the covers, the contact sheets, the glyphfield grounds and the figures of the two earlier posts. Each image is one row with every version it ships in (dark and light, the social card cut from a cover, a clip’s GIF, video and still) switched in place, and the frame opens the file at full size. The list on the left follows the row in view; the grid shows the set as thumbnails.';
+  'Every illustration of the docs series, ordered by the area of the post it sits in, then the covers, the contact sheets, the glyphfield grounds and the two earlier posts.';
+const NOTE =
+  'Each image is one row. The row switches in place between the versions the image ships in: dark and light, the social card cut from a cover, and a clip’s GIF, video and still. The frame opens the file at full size.';
+
+/**
+ * The sidebar names of the areas whose labels are post titles, keyed by
+ * block id (src/lib/graphics.ts EARLIER): a sentence would run past two
+ * lines in the 208px list. The label stays the grid caption and the
+ * divider's title.
+ */
+const SIDEBAR_AREA: Readonly<Record<string, string>> = {
+  'rewriting-our-docs': 'Rewriting our docs',
+  'fuma-nama': 'Fuma Nama',
+};
 
 /** The read line: the lowest row crossing the top tenth of the sheet is the one being read. */
 const SPY_MARGIN = '0px 0px -90% 0px';
@@ -57,6 +74,7 @@ function shellSections(blocks: readonly Block[]): readonly ShellSection[] {
   return blocks.map((block) => ({
     id: block.id,
     label: block.label,
+    short: SIDEBAR_AREA[block.id],
     under: 'graphics',
     items: block.entries.map((entry) => ({ id: entry.id, n: entry.n, title: entry.title, desc: entry.why, shot: entry.shot, inPlace: true as const })),
   }));
@@ -70,6 +88,10 @@ type GraphicsBookProps = {
   jumpRef: RefObject<(id: string) => void>;
   /** the active image, read by the shell's onSelect outside this component */
   activeOut: RefObject<string>;
+  /** the number of posts on /blog, for the head's Posts fact */
+  posts: number;
+  /** the head's Updated row: the /graphics entry in src/lib/updated.ts */
+  updated: PageUpdated;
 };
 
 /**
@@ -80,7 +102,7 @@ type GraphicsBookProps = {
  * selects it through the shell; a selection from anywhere else scrolls the
  * sheet to the row and mutes the spy until it arrives.
  */
-function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut }: GraphicsBookProps) {
+function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: GraphicsBookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -188,40 +210,38 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut }: GraphicsBookProp
   };
 
   return (
-    <div className='gx-book'>
-      <header className='gx-head'>
-        <div>
-          <h1>{TITLE}</h1>
-          <p>{LEAD}</p>
-        </div>
-        <div className='gx-meta'>
-          <span>{total} images</span>
-          {blocks.map((block) => (
-            <span key={block.id}>
-              {block.label} {block.entries.length}
-            </span>
-          ))}
-        </div>
-      </header>
+    <div className='gx-book pt-book-col'>
+      <BookHead
+        title={TITLE}
+        lead={LEAD}
+        note={NOTE}
+        updated={updated}
+        facts={[
+          { icon: 'photo', key: 'Images', value: total },
+          { icon: 'index', key: 'Sections', value: blocks.length },
+          { icon: 'post', key: 'Posts', value: <Link href='/blog'>{posts}</Link> },
+        ]}
+        contents={
+          <nav className='gx-toc pt-book-toc' aria-label='Contents'>
+            {blocks.map((block) => {
+              const first = block.entries[0];
+              if (!first) return null;
+              return (
+                <a key={block.id} href={`#${first.id}`} onClick={(e) => onContents(e, first.id)}>
+                  <span>{block.label}</span>
+                  <small>{rangeText(block.entries)}</small>
+                </a>
+              );
+            })}
+          </nav>
+        }
+      />
 
-      <nav className='gx-toc' aria-label='Contents'>
-        {blocks.map((block) => {
-          const first = block.entries[0];
-          if (!first) return null;
-          return (
-            <a key={block.id} href={`#${first.id}`} onClick={(e) => onContents(e, first.id)}>
-              <span>{block.label}</span>
-              <small>{rangeText(block.entries)}</small>
-            </a>
-          );
-        })}
-      </nav>
-
-      {blocks.map((block) => (
-        <section key={block.id} className='gx-cat' aria-labelledby={`gx-${block.id}`}>
-          <div className='gx-sec'>
+      {blocks.map((block, i) => (
+        <section key={block.id} className='pt-book-part gx-cat' aria-labelledby={`gx-${block.id}`}>
+          <div className='gx-sec pt-book-sec'>
             <small>
-              <span>{block.eyebrow}</span>
+              <span>Section {i + 1}</span>
               <span>Images {rangeText(block.entries)}</span>
             </small>
             <div>
@@ -254,7 +274,13 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut }: GraphicsBookProp
   );
 }
 
-type GraphicsViewerProps = { blocks: readonly Block[] };
+type GraphicsViewerProps = {
+  blocks: readonly Block[];
+  /** the number of posts on /blog, from the server page */
+  posts: number;
+  /** the /graphics entry in src/lib/updated.ts, from the server page */
+  updated: PageUpdated;
+};
 
 /**
  * The graphics on the viewer shell: one section per area of the post, the
@@ -265,7 +291,7 @@ type GraphicsViewerProps = { blocks: readonly Block[] };
  * scroll; the sidebar filter matches names and descriptions. The hash
  * names the row in view.
  */
-export default function GraphicsViewer({ blocks }: GraphicsViewerProps) {
+export default function GraphicsViewer({ blocks, posts, updated }: GraphicsViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef(blocks[0]?.entries[0]?.id ?? '');
@@ -289,8 +315,15 @@ export default function GraphicsViewer({ blocks }: GraphicsViewerProps) {
         if (id === activeOut.current) jumpRef.current(id);
       }}
     >
-      <Sheet variant='flow' width={1280} scrollRef={sheetRef}>
-        <GraphicsBook blocks={blocks} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} />
+      <Sheet variant='flow' scrollRef={sheetRef}>
+        <GraphicsBook
+          blocks={blocks}
+          sheetRef={sheetRef}
+          jumpRef={jumpRef}
+          activeOut={activeOut}
+          posts={posts}
+          updated={updated}
+        />
       </Sheet>
     </ViewerShell>
   );

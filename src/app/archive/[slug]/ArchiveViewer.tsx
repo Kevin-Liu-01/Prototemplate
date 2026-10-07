@@ -23,7 +23,7 @@ import './archive.css';
 
 /**
  * The archive on the viewer shell: one retired version at a time, its
- * full-page capture at 1440 pixels wide in a flow sheet under a ruled
+ * full-page capture at 1440 pixels wide in the reading column under a ruled
  * record (the name, the capture date, the source address, the last commit
  * that held the code) and a line saying the image is a picture. The shell
  * draws the site map in its one order (Pages, Documents, Sites,
@@ -54,7 +54,7 @@ const SECTIONS: readonly ShellSection[] = [
   { id: 'archive', label: 'Archive', items: ARCHIVE.map(archiveItem) },
 ];
 
-/** The record and the capture, in the flow sheet widened to the capture's own 1440 pixels. */
+/** The record and the capture, in the reading column widened to the capture's own 1440 pixels. */
 function ArchiveStage({ item }: { item: ArchiveEntry }) {
   return (
     <Sheet variant='flow'>
@@ -95,7 +95,7 @@ function ArchiveStage({ item }: { item: ArchiveEntry }) {
             <Icon name='external' />
           </a>
         </p>
-        {/* the mat: archive.css insets the light capture on a plate in the dark theme */}
+        {/* the capture: a picture in its own frame (archive.css) */}
         <div className='ar-capture'>
           <img
             className='ar-full'

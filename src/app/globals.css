@@ -1,4 +1,19 @@
 @import 'tailwindcss';
+/* Left out of Tailwind's class scan: motion/ holds the films' sources and
+   renders (gigabytes, no class the app uses; its scan ran past the dev
+   server's PostCSS deadline), and skills/ holds the SKILL.md files, whose
+   prose quotes class names such as text-[var()] that compile to invalid
+   CSS. docs/ holds the repository documents, the handbook, the harness
+   scripts and 66 MB of reference pictures; the docs and handbook routes
+   render its Markdown through their own components, so no class the app
+   draws is written there. .claude/skills and .agents/skills hold links to
+   the skill folders (scripts/install-skills.mjs), which the scan would
+   follow. */
+@source not '../../motion';
+@source not '../../skills';
+@source not '../../docs';
+@source not '../../.claude';
+@source not '../../.agents';
 /* The sign-in and onboarding gallery's Tailwind tokens (src/components/plate):
    the theme tokens its utilities read, tw-animate-css and the dark variant
    bound to data-theme. Right after tailwindcss so the utilities are emitted
@@ -14,9 +29,10 @@
   --color-titanium: #8a8f98;
   --color-paper: #ffffff;
 
-  --font-display: var(--font-inter), 'Inter', system-ui, sans-serif;
-  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', 'Menlo', monospace;
+  /* the type tokens of src/components/viewer/tokens.css (DESIGN.md section 4) */
+  --font-display: var(--pt-display);
+  --font-sans: var(--pt-text);
+  --font-mono: var(--pt-mono);
 }
 
 /*

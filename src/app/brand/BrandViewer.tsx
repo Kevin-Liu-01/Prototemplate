@@ -1,22 +1,26 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
-import type { ReactNode, RefObject } from 'react';
-import { Fragment, useRef, useState } from 'react';
+import Link from 'next/link';
+import type { MouseEvent, ReactNode, RefObject } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
-import { ListRow } from '@/components/viewer/ListRow';
+import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
-import type { ShellMode } from '@/lib/shell-data';
+import { PAGE_NAMES } from '@/lib/page-names';
+import type { PageUpdated } from '@/lib/page-updated';
+import type { ShellItem, ShellMode } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { BRAND_COUNT, BRAND_SECTIONS, BRAND_SHELL_SECTIONS, headingsOf } from './brand-sections';
+import GtOutline from './GtOutline';
 
 /* the sidebar head: the mark, this, and `10 sections` share 208px */
-const BRAND_TITLE = 'Brand';
+const BRAND_TITLE = PAGE_NAMES.brand.name;
 const BRAND_MODES: readonly ShellMode[] = ['book', 'grid'];
 
 /**
@@ -68,8 +72,13 @@ function readSpy(region: HTMLElement): SpyReading | null {
 }
 
 type BrandBookProps = {
-  /** the article opener: the h1, the byline, the intro, the mark figure */
-  opener: ReactNode;
+  /** the head's lead and note (BookHead), above the article */
+  lead: ReactNode;
+  note: ReactNode;
+  /** the head's Updated row: the /brand entry in src/lib/updated.ts */
+  updated: PageUpdated;
+  /** the head's Reading fact: BRAND.md's reading time in minutes, from the server page */
+  readingMinutes: number;
   pages: readonly BrandPage[];
   /** the heading the spy sees, for the rows in the list */
   onHeading: (id: string | null) => void;
@@ -78,14 +87,16 @@ type BrandBookProps = {
 };
 
 /**
- * The flow sheet at the rail width holding the article: the opener as the
- * head, then every section as a page row with its number in the gutter. A
- * passive scroll listener on the sheet spies the section and heading being
+ * The flow sheet at the book width holding the book: the shell's BookHead
+ * (the title, the lead, the panel, the note, the contents and the band) on
+ * the shell's tokens, then the article with every section opened by the
+ * shared divider (Section n and its source in the gutter, the title at
+ * d2) and its body in the title's column. A passive scroll listener on the sheet spies the section and heading being
  * read and selects the section through the shell, which moves the hash and
  * the list without scrolling the book; a selection from anywhere else (the
  * list, the grid, the keys, the hash) jumps the book to the section.
  */
-function BrandBook({ opener, pages, onHeading, jumpRef }: BrandBookProps) {
+function BrandBook({ lead, note, updated, readingMinutes, pages, onHeading, jumpRef }: BrandBookProps) {
   const { active, index, select } = usePtShell();
   const region = useRef<HTMLDivElement>(null);
 
@@ -172,70 +183,108 @@ function BrandBook({ opener, pages, onHeading, jumpRef }: BrandBookProps) {
     { dependencies: [active] }
   );
 
+  const onContents = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    if (id === activeRef.current) jump(id);
+    else select(id);
+  };
+
   return (
-    <Sheet variant='flow' width='rail' scrollRef={region}>
-      <div className='pt-root ptb-book'>
-        <article className='pt-post'>
-          <header className='ptb-head pt-sec pt-post-sec'>{opener}</header>
-          {BRAND_SECTIONS.map((section, i) => (
-            <Fragment key={section.id}>
-              <div className='pt-hatch' aria-hidden='true' />
+    <Sheet variant='flow' scrollRef={region}>
+      <div className='pt-book-col'>
+        <BookHead
+          title={PAGE_NAMES.brand.name}
+          badge={<GtOutline />}
+          lead={lead}
+          note={note}
+          updated={updated}
+          facts={[
+            { icon: 'index', key: 'Sections', value: BRAND_SECTIONS.length },
+            {
+              icon: 'document',
+              key: 'Canon',
+              value: (
+                <>
+                  <Link href='/docs/brand'>BRAND.md</Link>, <Link href='/docs/design'>DESIGN.md</Link>
+                </>
+              ),
+            },
+            { icon: 'duration', key: 'Reading', value: `${readingMinutes} min` },
+          ]}
+          contents={
+            <nav className='pt-book-toc' aria-label='Contents'>
+              {BRAND_SECTIONS.map((section, i) => (
+                <a key={section.id} href={`#${section.id}`} onClick={(e) => onContents(e, section.id)}>
+                  <span>{section.title}</span>
+                  <small>{pad2(i + 1)}</small>
+                </a>
+              ))}
+            </nav>
+          }
+        />
+        <div className='pt-root ptb-book'>
+          <article className='pt-book-col ptb-article'>
+            {BRAND_SECTIONS.map((section, i) => (
               <section
-                className={cn('ptb-page pt-sec', section.id === active && 'is-active')}
+                key={section.id}
+                className={cn('pt-book-part ptb-page', section.id === active && 'is-active')}
                 id={section.id}
                 data-id={section.id}
               >
-                <div className='ptb-pn' aria-hidden='true'>
-                  <b>{pad2(i + 1)}</b>
+                <div className='pt-book-sec'>
+                  <small>
+                    <span>Section {i + 1}</span>
+                    <span>{section.source}</span>
+                  </small>
+                  <h2>{section.title}</h2>
                 </div>
                 <div className='ptb-page-body pt-post-sec'>{bodies.get(section.id)}</div>
               </section>
-            </Fragment>
-          ))}
-        </article>
+            ))}
+          </article>
+        </div>
       </div>
     </Sheet>
   );
 }
 
-type BrandHeadingRowsProps = {
-  sectionId: string;
-  heading: string | null;
-  onJump: Jump;
-};
-
-/**
- * The h3 rows under the active section in the list. Rendered inside the
- * shell's provider, so it can read the mode and stand down in the grid,
- * where the cards carry no rows.
- */
-function BrandHeadingRows({ sectionId, heading, onJump }: BrandHeadingRowsProps) {
-  const { mode } = usePtShell();
-  if (mode === 'grid') return null;
-  return headingsOf(sectionId).map((row) => (
-    <ListRow
-      key={row.id}
-      item={{ id: row.id, title: row.title }}
-      active={row.id === heading}
-      onSelect={onJump}
-    />
-  ));
-}
-
 export type BrandViewerProps = {
-  opener: ReactNode;
+  /** the head's lead: two or three lines that say what the page is */
+  lead: ReactNode;
+  /** the rest of the introduction, under the head's rule */
+  note: ReactNode;
   pages: readonly BrandPage[];
+  /** the /brand entry in src/lib/updated.ts, from the server page */
+  updated: PageUpdated;
+  /** BRAND.md's reading time in minutes, for the head's Reading fact */
+  readingMinutes: number;
 };
 
 /**
- * The brand book on the viewer shell: ten sections as captured thumbnails
- * in the list and the grid, the article itself in a flow sheet at the rail
- * width as the book, the site map in the index panel. Flow keys, so Space
- * and the arrows scroll; the hash carries the section.
+ * The brand book on the viewer shell: ten sections as the run under Pages
+ * > Brand in the list (with the h3s of the section being read under it)
+ * and as captured thumbnails in the grid, the article itself in a flow
+ * sheet at the book width (1280px, as every book) as the book, the site
+ * map in the index panel.
+ * Flow keys, so Space and the arrows scroll; the hash carries the section.
  */
-export default function BrandViewer({ opener, pages }: BrandViewerProps) {
+export default function BrandViewer({ lead, note, pages, updated, readingMinutes }: BrandViewerProps) {
   const [heading, setHeading] = useState<string | null>(null);
   const jump = useRef<Jump>(() => undefined);
+  /* the h3s of the section being read, as the deep run under its row; stable between heading changes */
+  const subRows = useCallback(
+    (item: ShellItem, active: boolean) =>
+      active
+        ? headingsOf(item.id).map((h) => ({
+            id: h.id,
+            title: h.title,
+            href: `/brand#${h.id}`,
+            active: h.id === heading,
+            onSelect: () => jump.current(h.id),
+          }))
+        : null,
+    [heading]
+  );
 
   return (
     <ViewerShell
@@ -249,13 +298,17 @@ export default function BrandViewer({ opener, pages }: BrandViewerProps) {
       surfaces='site'
       keys='flow'
       noun='section'
-      renderSub={(item, active) =>
-        active && headingsOf(item.id).length > 0 ? (
-          <BrandHeadingRows sectionId={item.id} heading={heading} onJump={(id) => jump.current(id)} />
-        ) : null
-      }
+      subRows={subRows}
     >
-      <BrandBook opener={opener} pages={pages} onHeading={setHeading} jumpRef={jump} />
+      <BrandBook
+        lead={lead}
+        note={note}
+        updated={updated}
+        readingMinutes={readingMinutes}
+        pages={pages}
+        onHeading={setHeading}
+        jumpRef={jump}
+      />
     </ViewerShell>
   );
 }

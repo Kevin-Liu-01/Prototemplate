@@ -2,7 +2,7 @@
 
 import { useGSAP } from '@gsap/react';
 import type { ReactNode, TouchEvent } from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { memo, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 import { cn } from '@/lib/cn';
@@ -23,16 +23,27 @@ import { HelpCard } from './HelpCard';
 import { IndexPanel } from './IndexPanel';
 import { PreviewLayer } from './PreviewLayer';
 import { Progress } from './Progress';
-import { ShellContext, StageContext } from './shell-context';
-import type { ShellDir, ShellState, ShellTransition, StageSize, StageState } from './shell-context';
+import { createStageStore, ShellContext, StageContext } from './shell-context';
+import type { ShellDir, ShellState, ShellTransition } from './shell-context';
 import { Sidebar, ThumbList } from './Sidebar';
-import type { SidebarFilter, SubRenderer } from './Sidebar';
+import type { SidebarFilter, SubRows } from './Sidebar';
 import { toggleTheme } from './ThemeButton';
 import { Toast, useToast } from './Toast';
 import { Toolbar } from './Toolbar';
 import { useShellKeys } from './useShellKeys';
 
 import './ViewerShell.css';
+
+/* The chrome, memoized: a shell render that changes none of a child's
+   props (a toast, a transition flag) skips it; a context change still
+   reaches every reader. The routes keep these props stable (module
+   constants, useMemo, useCallback). */
+const SidebarMemo = memo(Sidebar);
+const ToolbarMemo = memo(Toolbar);
+const IndexPanelMemo = memo(IndexPanel);
+const ProgressMemo = memo(Progress);
+const HelpCardMemo = memo(HelpCard);
+const PreviewLayerMemo = memo(PreviewLayer);
 
 /** The sidebar preference, shared by every shell: '0' hides the list. */
 const SIDEBAR_KEY = 'gt-shell-sb';
@@ -133,8 +144,8 @@ export type ViewerShellProps = {
   noun?: string;
   /** the route's own words for the mode seg where the defaults do not fit: `{ slide: 'Live' }` on the gallery */
   modeLabels?: Partial<Record<ShellMode, string>>;
-  /** rows a route hangs under an item in the list */
-  renderSub?: SubRenderer;
+  /** the headings a route hangs under the active item of a run in the list (the sidebar only; the grid draws tiles) */
+  subRows?: SubRows;
   /**
    * The site map (Pages, Documents, Sites, Explorations, Archive) rendered
    * ahead of and around the route's sections, a route section replacing the
@@ -177,6 +188,23 @@ function stampHtml(name: 'shellSb' | 'shellDensity', value: string | null): void
   else data[name] = value;
 }
 
+/**
+ * The route's sections, kept by content. A page can be rendered again with
+ * equal data in new objects (a prefetch that lands after the navigation it
+ * raced hands the page its props anew), and a new identity would rebuild
+ * the shell's state and every row of the list. The serialization runs only
+ * when the identity changes.
+ */
+function useStableSections(next: readonly ShellSection[]): readonly ShellSection[] {
+  const kept = useRef<{ seen: readonly ShellSection[]; value: readonly ShellSection[]; key: string } | null>(null);
+  const last = kept.current;
+  if (last && last.seen === next) return last.value;
+  const key = JSON.stringify(next);
+  const value = last && last.key === key ? last.value : next;
+  kept.current = { seen: next, value, key };
+  return value;
+}
+
 /** The item id in the hash, decoded; empty when there is none. */
 function readHash(): string {
   const raw = window.location.hash.replace(/^#/, '');
@@ -214,7 +242,7 @@ export function ViewerShell({
   title,
   mark,
   count,
-  sections,
+  sections: sectionsProp,
   active: initialActive,
   modes,
   surfaces,
@@ -224,12 +252,13 @@ export function ViewerShell({
   keys,
   noun = 'slide',
   modeLabels,
-  renderSub,
+  subRows,
   siteMap = surfaces === 'site',
   countLabel,
   onCurrentPage,
   children,
 }: ViewerShellProps) {
+  const sections = useStableSections(sectionsProp);
   const items = useMemo(() => flattenShellItems(sections), [sections]);
   const paged = useMemo(() => pagedShellItems(sections), [sections]);
   const defaultMode = modes[0] ?? 'slide';
@@ -247,11 +276,14 @@ export function ViewerShell({
   const [narrow, setNarrow] = useState(false);
   const [active, setActive] = useState<string>(() => initialActive ?? items[0]?.id ?? '');
   const [dir, setDir] = useState<ShellDir>('next');
-  const [stageSize, setStageSize] = useState<StageSize>({ width: 0, height: 0 });
+  /* the stage box, outside React state: its readers subscribe (shell-context.ts) */
+  const [stageStore] = useState(createStageStore);
   /* true once the mount effect has applied the saved state and the hash */
   const [booted, setBooted] = useState(false);
-  /* true one frame after that: from here on the column transitions apply */
-  const [settledState, setSettledState] = useState(false);
+  /* the root; one frame after the boot the settle writes data-settled on it
+     (from there on the column transitions apply), an attribute and not
+     state, so the settle costs no render of the shell */
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const touchX = useRef<number | null>(null);
@@ -460,15 +492,25 @@ export function ViewerShell({
     /* persisted mode (a first visit on a phone opens the book where the
        route has one), density, the hash, the width, the sidebar preference */
     const savedMode = load(`gt-shell-mode:${id}`);
-    if (savedMode && modesRef.current.some((m) => m === savedMode)) {
-      setModeState(savedMode as ShellMode);
+    const restored = savedMode && modesRef.current.some((m) => m === savedMode) ? (savedMode as ShellMode) : null;
+    if (restored) {
+      setModeState(restored);
     } else if (!savedMode && window.innerWidth <= PHONE_PX && modesRef.current.includes('book')) {
       setModeState('book');
     }
     const savedDensity = load(DENSITY_KEY);
     if (isDensity(savedDensity)) setDensityState(savedDensity);
     const fromHash = readHash();
-    if (fromHash && itemsRef.current.some((item) => item.id === fromHash)) setActive(fromHash);
+    const hashItem = fromHash && itemsRef.current.some((item) => item.id === fromHash) ? fromHash : null;
+    if (hashItem) setActive(hashItem);
+    /* a restored slide follows commitMode's entry rule: with nothing paged
+       marked (the gallery's Live mode saved, no hash), it opens the first
+       item instead of an empty frame */
+    if (restored === 'slide') {
+      const list = pagedRef.current;
+      const at = hashItem ?? activeRef.current;
+      if (list[0] && !list.some((item) => item.id === at)) select(list[0].id);
+    }
     const startNarrow = isNarrow();
     setNarrow(startNarrow);
     narrowRef.current = startNarrow;
@@ -476,9 +518,12 @@ export function ViewerShell({
     /* landed: the sidebar may spend its centering scroll; the settle follows a frame later */
     setBooted(true);
 
-    /* the first visit to a route family: the toast names the arrows and the help key */
+    /* the first visit to a route family: the toast names the arrows and the help key.
+       A phone has no arrow keys, and its toast hangs under the toolbar over the
+       page's title, so the hint waits for a wider window with a fine pointer. */
     const seen = (load(HINT_KEY) ?? '').split(',').filter(Boolean);
-    if (!seen.includes(id)) {
+    const keyboardLikely = window.innerWidth > PHONE_PX && window.matchMedia('(any-pointer: fine)').matches;
+    if (keyboardLikely && !seen.includes(id)) {
       store(HINT_KEY, [...seen, id].join(','));
       sayRef.current(HINT_TEXT, HINT_HOLD_MS);
     }
@@ -505,7 +550,7 @@ export function ViewerShell({
       if (!stage) return;
       const width = stage.clientWidth;
       const height = stage.clientHeight;
-      setStageSize((prev) => (prev.width === width && prev.height === height ? prev : { width, height }));
+      stageStore.set({ width, height });
     };
     measure();
     let observer: ResizeObserver | null = null;
@@ -532,7 +577,7 @@ export function ViewerShell({
       if (!booted) return;
       const frame = requestAnimationFrame(() => {
         settled.current = true;
-        setSettledState(true);
+        rootRef.current?.setAttribute('data-settled', '');
       });
       return () => cancelAnimationFrame(frame);
     },
@@ -607,8 +652,6 @@ export function ViewerShell({
     ]
   );
 
-  const stage: StageState = useMemo(() => ({ stageSize }), [stageSize]);
-
   useShellKeys(state, {
     toggleTheme,
     /* the Escape ladder's filter rung: true when the sidebar filter had text to clear */
@@ -626,14 +669,14 @@ export function ViewerShell({
 
   return (
     <ShellContext value={state}>
-      <StageContext value={stage}>
+      <StageContext value={stageStore}>
         <div
+          ref={rootRef}
           className={cn('pt-viewer', present && 'is-present', overlayOpen && 'sb-open')}
           data-shell={id}
           data-dir={dir}
           data-sb={sb}
           data-density={density}
-          data-settled={settledState ? '' : undefined}
           data-sb-moving={sbMotion ?? undefined}
           data-entering={transition && !transition.native ? transition.to : undefined}
           onTouchStart={narrow ? onTouchStart : undefined}
@@ -647,19 +690,19 @@ export function ViewerShell({
               onClick={() => setSidebar(false)}
             />
           ) : null}
-          <Sidebar
+          <SidebarMemo
             title={title}
             mark={mark}
             count={count}
             sections={sections}
             thumb={thumb}
-            renderSub={renderSub}
+            subRows={subRows}
             siteMap={siteMap}
             filter={filter}
             onCurrentPage={onCurrentPage}
           />
           <section className='pt-main'>
-            <Toolbar title={title} mark={mark} slot={toolbarSlot} modeLabels={modeLabels} />
+            <ToolbarMemo title={title} mark={mark} slot={toolbarSlot} modeLabels={modeLabels} />
             <div ref={stageRef} className='pt-stagewrap'>
               {children}
               {grid ? (
@@ -669,7 +712,6 @@ export function ViewerShell({
                     thumb={thumb}
                     density='thumbs'
                     siteMap={siteMap}
-                    renderSub={renderSub}
                     onSelect={(next) => {
                       /* a pick from the grid opens the item live where the route has a slide */
                       setMode(modes.includes('slide') ? 'slide' : defaultMode);
@@ -688,14 +730,14 @@ export function ViewerShell({
               />
             </div>
             {/* a child of .pt-main, not of the stage: its top and bottom are written against the toolbar and the progress line */}
-            <IndexPanel set={surfaces} />
-            <Progress />
+            <IndexPanelMemo set={surfaces} />
+            <ProgressMemo />
           </section>
         </div>
-        <HelpCard />
+        <HelpCardMemo />
         <Toast message={toast.message} on={toast.on} />
         {/* the one preview layer (directive 8.6): every data-preview under the shell opens its capture here */}
-        <PreviewLayer />
+        <PreviewLayerMemo />
       </StageContext>
     </ShellContext>
   );

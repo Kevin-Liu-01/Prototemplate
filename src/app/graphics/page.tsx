@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 
+import { getPosts } from '@/lib/blog';
 import { getGraphicsBlocks } from '@/lib/graphics';
+import { PAGE_NAMES } from '@/lib/page-names';
+import { requireUpdated } from '@/lib/updated';
 
 import GraphicsViewer from './GraphicsViewer';
 
 export const metadata: Metadata = {
-  title: 'Graphics',
+  title: PAGE_NAMES.graphics.name,
   description:
     'Every illustration of the docs series on the viewer shell: one row per image with every version it ships in, the covers and social cards, the contact sheets, the glyphfield grounds and the figures of the earlier posts, read as a book or seen as a grid.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
@@ -18,5 +21,5 @@ export const metadata: Metadata = {
  * book at its head with every image in the list on the left.
  */
 export default function GraphicsPage() {
-  return <GraphicsViewer blocks={getGraphicsBlocks()} />;
+  return <GraphicsViewer blocks={getGraphicsBlocks()} posts={getPosts().length} updated={requireUpdated('/graphics')} />;
 }

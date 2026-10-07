@@ -538,7 +538,10 @@ export function PreviewLayer() {
     const follow = (el: HTMLElement) => {
       const place = placeFor(el);
       moved.current = false;
-      setCard((prev) => (prev && prev.on ? { ...prev, ...place, moved: false } : prev));
+      /* a row that has not moved re-renders nothing */
+      setCard((prev) =>
+        prev && prev.on && (prev.x !== place.x || prev.y !== place.y || prev.moved) ? { ...prev, ...place, moved: false } : prev
+      );
     };
 
     /* a scroll with the pointer still resting on the card's row re-places
@@ -549,10 +552,14 @@ export function PreviewLayer() {
        next row under the pointer: the two would commit in one render as the
        new row with the card off, so the card would jump to the row, fade out
        under its title over the old capture, and fade back in from the plate
-       once re-armed */
-    const onScroll = () => {
+       once re-armed. A scroll of a box that does not hold the row (the
+       reading page, the index panel) leaves the card alone: no style read,
+       no rect, no render */
+    const onScroll = (event: Event) => {
       const el = anchor.current;
       if (!el) return;
+      const scroller = event.target;
+      if (!(scroller instanceof Node) || !scroller.contains(el)) return;
       let resting = false;
       try {
         resting = hover && el.isConnected && el.matches(':hover');
@@ -620,7 +627,12 @@ export function PreviewLayer() {
     let mutations: MutationObserver | null = null;
     if (typeof IntersectionObserver !== 'undefined') {
       watch();
-      mutations = new MutationObserver(schedule);
+      /* the card's own updates (its title, its capture) never rescan the document */
+      mutations = new MutationObserver((records) => {
+        const inCard = (node: Node) => (node instanceof Element ? node : node.parentElement)?.closest('.pt-preview');
+        if (records.every((record) => inCard(record.target))) return;
+        schedule();
+      });
       mutations.observe(document.body, { childList: true, subtree: true });
     }
 

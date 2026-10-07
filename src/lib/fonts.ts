@@ -5,9 +5,11 @@ import localFont from 'next/font/local';
  * rsms.me Inter (v4.1 variable builds, roman and italic), self-hosted and
  * not the Google Fonts build: the rsms variable family carries the opsz axis
  * and the full feature set, and the presenter's "wrong Inter" beat depends
- * on the two resolving differently.
+ * on the two resolving differently. The binding is named `ptInter` because
+ * next/font names the family after the identifier, and a family named
+ * `inter` matches an installed Inter (family names are case-insensitive).
  */
-export const inter = localFont({
+export const ptInter = localFont({
   src: [
     {
       path: '../../public/fonts/InterVariable.woff2',
@@ -24,4 +26,4 @@ export const inter = localFont({
   display: 'swap',
 });
 
-export const fontVariables = inter.variable;
+export const fontVariables = ptInter.variable;

@@ -119,6 +119,24 @@ function scriptRuns(text: string, key: string): ReactNode[] {
   return out;
 }
 
+const WHOLE_HEBREW = new RegExp(`^[${HEB}\\s\\p{P}]+$`, 'u');
+const WHOLE_HAN = new RegExp(`^[${HAN}\\s]+$`, 'u');
+const HAS_HEBREW = new RegExp(`[${HEB}]`, 'u');
+
+/**
+ * The language of a stretch that is wholly one script (a reader's line in
+ * a film's script), so its element can carry the lang and dir itself and
+ * its closing punctuation sits inside the right-to-left line; undefined
+ * for mixed text, which langText tags run by run.
+ */
+export function wholeLang(text: string): { lang: string; dir?: 'rtl' } | undefined {
+  const trimmed = text.trim();
+  if (!trimmed) return undefined;
+  if (HAS_HEBREW.test(trimmed) && WHOLE_HEBREW.test(trimmed)) return { lang: 'he', dir: 'rtl' };
+  if (WHOLE_HAN.test(trimmed)) return { lang: hanLang(trimmed) };
+  return undefined;
+}
+
 export function langText(text: string, key: string): ReactNode {
   if (URL_TEXT.test(text)) {
     return (

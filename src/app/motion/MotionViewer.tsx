@@ -7,25 +7,31 @@ import { useRef } from 'react';
 
 import BrandFilm from '@/app/brand/BrandFilm';
 import { BookHead } from '@/components/viewer/BookView';
+import { Icon } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { MOTION_FILMS, MOTION_SECTIONS, MOTION_STATUS_LABEL } from '@/lib/motion';
 import type { MotionFilm, MotionStatus } from '@/lib/motion';
+import { PAGE_NAMES } from '@/lib/page-names';
+import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { cutWords, megabytes, reviewWords } from './records-words';
 import { motionSections } from './sections';
 
 import '../graphics/graphics.css';
 import './motion.css';
 
-const TITLE = 'Motion';
+const TITLE = PAGE_NAMES.motion.name;
 const MODES: readonly ShellMode[] = ['book'];
 const SECTIONS = motionSections('index');
 const LEAD =
-  'This page lists every film on the motion roster with its length and its status. A film is rendered when its final render exists, in production when its folder or research package exists, and planned otherwise. A rendered film plays here when its web copy is published with the site: the two blog films and the three films of the translation series. A final render without a web copy stays in the motion folder and is listed by its path. Each film of the translation series opens its research package, with the script, the post, the vocabulary, the sources and the fact-check list.';
+  'Every film on the General Translation motion roster, with its length and its status. Each rendered film plays here from the copy the site publishes.';
+const NOTE =
+  'A film is rendered when its final render exists, in production when its folder or research package exists, and planned otherwise. A final render without a web copy stays in the motion folder, and its row gives the path.';
 
 /** The read line: the lowest row crossing the top tenth of the sheet is the one being read. */
 const SPY_MARGIN = '0px 0px -90% 0px';
@@ -43,8 +49,8 @@ function rangeText(films: readonly MotionFilm[]): string {
   return films.length > 1 ? `${first.n} to ${last.n}` : first.n;
 }
 
-function countOf(status: MotionStatus): string {
-  return String(MOTION_FILMS.filter((film) => film.status === status).length);
+function countOf(status: MotionStatus): number {
+  return MOTION_FILMS.filter((film) => film.status === status).length;
 }
 
 /** The film's local path the meta line names: the final render when it is not published, the folder while the film is in production. */
@@ -55,28 +61,116 @@ function localPath(film: MotionFilm): string | undefined {
   return undefined;
 }
 
+/** `200 frames`, or the sheet's format when its grid is not the kit's. */
+function sheetWords(film: MotionFilm): string {
+  return film.sheet?.frames ? `${film.sheet.frames} frames` : 'WebP';
+}
+
+type FilmRecordsProps = {
+  film: MotionFilm;
+  /** the full blocks, for a film with no page of its own to link to (records.tsx, rendered on the server) */
+  more?: ReactNode;
+};
+
+/**
+ * A roster row's records, compactly: the published cut's contact sheet and
+ * script as one line each, linked to their sections on the film's page,
+ * and the cut in review by its label and length. A film without a page
+ * opens the full blocks in place under the line. A film whose published
+ * cut has no records, with a newer cut in review, says so in one line.
+ */
+function FilmRecords({ film, more }: FilmRecordsProps) {
+  const { sheet, script, review } = film;
+  if (!sheet && !script && !review) return null;
+  const page = film.pkg ? `/motion/${film.slug}` : undefined;
+  const made = Boolean(sheet || script);
+  return (
+    <>
+      <dl className='mo-rec'>
+        {sheet ? (
+          <div>
+            <dt>
+              <Icon name='grid' />
+              Contact sheet
+            </dt>
+            <dd>
+              {page ? <Link href={`${page}#contact-sheet`}>{sheetWords(film)}</Link> : sheetWords(film)}
+              {sheet.png && sheet.pngBytes ? (
+                <>
+                  {' · '}
+                  <a aria-label={`download the PNG of the contact sheet of ${film.title}`} download href={sheet.png}>
+                    PNG, {megabytes(sheet.pngBytes)}
+                  </a>
+                </>
+              ) : null}
+            </dd>
+          </div>
+        ) : null}
+        {script ? (
+          <div>
+            <dt>
+              <Icon name='document' />
+              Script
+            </dt>
+            <dd>
+              {page ? <Link href={`${page}#film-script`}>{script.lines} lines</Link> : `${script.lines} lines`}
+              {` · ${cutWords(script.label)}`}
+            </dd>
+          </div>
+        ) : null}
+        {review ? (
+          <div>
+            <dt>
+              <Icon name='in-progress' />
+              {made ? 'In review' : 'Contact sheet and script'}
+            </dt>
+            <dd>
+              {made
+                ? reviewWords(review)
+                : review.label
+                  ? `${cutWords(review.label)} in review, ${review.length}`
+                  : `${review.length} cut in review`}
+            </dd>
+          </div>
+        ) : null}
+      </dl>
+      {more ? (
+        <details className='mo-rec-more'>
+          <summary>Contact sheet and script</summary>
+          {more}
+        </details>
+      ) : null}
+    </>
+  );
+}
+
 type MotionBookProps = {
   summaries: Readonly<Record<string, ReactNode>>;
+  /** the full record blocks of each film without a page, by film id */
+  records: Readonly<Record<string, ReactNode>>;
   /** the flow sheet's scroll region */
   sheetRef: RefObject<HTMLDivElement | null>;
   /** receives the row jump, for a re-click on the active film in the list */
   jumpRef: RefObject<(id: string) => void>;
   /** the active film, read by the shell's onSelect outside this component */
   activeOut: RefObject<string>;
+  /** the head's Updated row: the /motion entry in src/lib/updated.ts */
+  updated: PageUpdated;
 };
 
 /**
  * The roster read top to bottom inside the flow sheet: the head with the
  * counts, a contents list, then the two sections under their dividers as
  * ruled rows, one per film, in the graphics book's row grammar. A film with
- * a published render carries its player; a film of the translation series
- * links its package page. The reading state works as the graphics book's
+ * a published render carries its player and its records (FilmRecords: the
+ * published cut's contact sheet and script, and a newer cut in review); a
+ * film of the translation series links its package page. The reading state works as the graphics book's
  * does: an IntersectionObserver selects the row under the read line through
  * the shell, and a selection from anywhere else jumps the sheet to its row
  * and mutes the spy until it lands. Jumps are instant (the site does not
  * smooth-scroll).
  */
-function MotionBook({ summaries, sheetRef, jumpRef, activeOut }: MotionBookProps) {
+function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated }: MotionBookProps) {
   const { active, select } = usePtShell();
   activeOut.current = active;
 
@@ -180,40 +274,41 @@ function MotionBook({ summaries, sheetRef, jumpRef, activeOut }: MotionBookProps
   };
 
   return (
-    <div className='gx-book mo-book'>
+    <div className='gx-book mo-book pt-book-col'>
       <BookHead
         title={TITLE}
         lead={LEAD}
-        meta={[
-          { key: 'Films', value: String(MOTION_FILMS.length) },
-          { key: 'Rendered', value: countOf('rendered') },
-          { key: 'In production', value: countOf('in-production') },
-          { key: 'Planned', value: countOf('planned') },
+        note={NOTE}
+        updated={updated}
+        facts={[
+          { icon: 'done', key: 'Rendered', value: `${countOf('rendered')} of ${MOTION_FILMS.length}` },
+          { icon: 'in-progress', key: 'In production', value: countOf('in-production') },
+          { icon: 'planned', key: 'Planned', value: countOf('planned') },
         ]}
+        contents={
+          <nav className='gx-toc pt-book-toc' aria-label='Contents'>
+            {MOTION_SECTIONS.map((section) => {
+              const films = MOTION_FILMS.filter((film) => film.section === section.id);
+              const first = films[0];
+              if (!first) return null;
+              return (
+                <a key={section.id} href={`#${first.id}`} onClick={(e) => onContents(e, first.id)}>
+                  <span>{section.label}</span>
+                  <small>{rangeText(films)}</small>
+                </a>
+              );
+            })}
+          </nav>
+        }
       />
 
-      <nav className='gx-toc' aria-label='Contents'>
-        {MOTION_SECTIONS.map((section) => {
-          const films = MOTION_FILMS.filter((film) => film.section === section.id);
-          const first = films[0];
-          if (!first) return null;
-          return (
-            <a key={section.id} href={`#${first.id}`} onClick={(e) => onContents(e, first.id)}>
-              <span>{section.label}</span>
-              <small>{rangeText(films)}</small>
-            </a>
-          );
-        })}
-      </nav>
-
-      {MOTION_SECTIONS.map((section) => {
+      {MOTION_SECTIONS.filter((section) => MOTION_FILMS.some((film) => film.section === section.id)).map((section, i) => {
         const films = MOTION_FILMS.filter((film) => film.section === section.id);
-        if (films.length === 0) return null;
         return (
-          <section key={section.id} className='gx-cat' aria-labelledby={`mo-${section.id}`}>
-            <div className='gx-sec'>
+          <section key={section.id} className='pt-book-part gx-cat' aria-labelledby={`mo-${section.id}`}>
+            <div className='gx-sec pt-book-sec'>
               <small>
-                <span>{films.length} films</span>
+                <span>Section {i + 1}</span>
                 <span>Films {rangeText(films)}</span>
               </small>
               <div>
@@ -250,6 +345,7 @@ function MotionBook({ summaries, sheetRef, jumpRef, activeOut }: MotionBookProps
                         {film.post ? <Link href={film.post}>Read the post</Link> : null}
                       </p>
                     ) : null}
+                    <FilmRecords film={film} more={records[film.id]} />
                     <p className='gx-line'>
                       {film.runtime ?? film.length}
                       {film.note ? ` · ${film.note}` : null}
@@ -278,6 +374,10 @@ function MotionBook({ summaries, sheetRef, jumpRef, activeOut }: MotionBookProps
 type MotionViewerProps = {
   /** each film's summary, rendered on the server, by film id */
   summaries: Readonly<Record<string, ReactNode>>;
+  /** the contact sheet and script blocks of each film without a page, rendered on the server, by film id */
+  records: Readonly<Record<string, ReactNode>>;
+  /** the /motion entry in src/lib/updated.ts, from the server page */
+  updated: PageUpdated;
 };
 
 /**
@@ -288,7 +388,7 @@ type MotionViewerProps = {
  * the row in view. A series row in the list opens its package page; the
  * spy only selects, so scrolling past a series row never navigates.
  */
-export default function MotionViewer({ summaries }: MotionViewerProps) {
+export default function MotionViewer({ summaries, records, updated }: MotionViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef(MOTION_FILMS[0]?.id ?? '');
@@ -310,8 +410,15 @@ export default function MotionViewer({ summaries }: MotionViewerProps) {
         if (id === activeOut.current) jumpRef.current(id);
       }}
     >
-      <Sheet variant='flow' width={1280} scrollRef={sheetRef}>
-        <MotionBook summaries={summaries} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} />
+      <Sheet variant='flow' scrollRef={sheetRef}>
+        <MotionBook
+          summaries={summaries}
+          records={records}
+          sheetRef={sheetRef}
+          jumpRef={jumpRef}
+          activeOut={activeOut}
+          updated={updated}
+        />
       </Sheet>
     </ViewerShell>
   );

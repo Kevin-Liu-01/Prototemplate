@@ -46,7 +46,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <main className='blog-root'>
       <article className='blog-article'>
         <header className='blog-article-head'>
-          <p className='blog-eyebrow'>
+          <p className='blog-crumb'>
             <Link href='/blog'>Blog</Link>
             {post.tags[0] ? <span> / {post.tags[0]}</span> : null}
           </p>

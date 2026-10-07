@@ -2,17 +2,19 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
-import type { BookMeta } from '@/components/viewer/BookView';
 import { Icon } from '@/components/viewer/icons';
+import type { IconName } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
 import { ThumbShot } from '@/components/viewer/ThumbShot';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { DIRECTIONS, directionPageHref, directionPages, directionShots, getDirection } from '@/lib/directions';
 import type { Direction, DirectionPage, Tone } from '@/lib/directions';
+import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
+import { NOTE_MAX, splitLead } from '@/lib/shell-data';
 import { surfaceShot } from '@/lib/surfaces';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -28,15 +30,18 @@ import './directions.css';
  * route's sections (the direction groups shared with the gallery, Shipped,
  * Sites and Explorations) replace the groups of the same name, with this
  * direction's row active and scrolled into view; the count reads the
- * direction's place among the seventeen, and the toolbar's Previous and
+ * direction's place among them all, and the toolbar's Previous and
  * Next, a list pick or a digit open another direction's page (the archive
- * route's pattern). The flow sheet holds the
- * direction's book: the head (the name, the concept as the lead, the
- * label, the kind and the tone in the meta table, the signature as a ruled
- * row under it), the live page at 1440 pixels wide in the sheet ring the
+ * route's pattern). The reading column holds the
+ * direction's book: the head (the name, the concept's lead in two or
+ * three lines, the kind, the tone and the page count in the panel, the
+ * rest of the concept and the signature in the note), the band, then the
+ * live page at 1440 pixels wide in the fixed sheet's ring the
  * gallery's slide and the compare rig draw around a live frame, the light
  * and dark captures side by side in edge frames, and, for a site, its
- * pages as ruled rows with their thumbnails. The toolbar slot opens the
+ * pages as ruled rows with their thumbnails, and a concept too long for
+ * the head's note (the deco briefs) as the last section, The brief. The
+ * toolbar slot opens the
  * prototype as its own full page. Keys are flow, so Space and the arrows
  * scroll the sheet.
  */
@@ -48,6 +53,9 @@ function kindLabel(d: Direction): string {
   if (d.reference) return 'Shipped';
   return d.site ? 'Site' : 'Exploration';
 }
+
+/** The panel's glyph for a kind: the shell's own for the shipped site, a site and an exploration. */
+const KIND_ICON: Readonly<Record<string, IconName>> = { Shipped: 'check-badge', Site: 'globe', Exploration: 'explore' };
 
 /** The toolbar slot: the prototype as its own full page, with the page's own chrome. */
 function OpenFullPage({ direction }: { direction: Direction }) {
@@ -74,7 +82,7 @@ function Divider({ ordinal, note, title }: { ordinal: number; note: string; titl
 
 /**
  * The live page in the flow: a 1440x900 stage scaled to the column, inside
- * the sheet ring (a hair border, a paper gap, a hair-soft outline; the
+ * the fixed sheet's ring (a hair border, a paper gap, a hair-soft outline; the
  * structural role, since a live page is a surface and not a picture). The
  * scale is measured from the ring's content box, so the frame follows the
  * column through the sidebar's width and the window; the box keeps the
@@ -167,32 +175,53 @@ function PageRow({ page }: { page: DirectionPage }) {
   );
 }
 
-function DirectionBook({ direction }: { direction: Direction }) {
+function DirectionBook({ direction, updated }: { direction: Direction; updated: PageUpdated }) {
   const pages = directionPages(direction);
-  /* the direction's place among the seventeen, the number its sidebar row and the toolbar count read (sections.ts), not the gallery article's registry label */
-  const meta: BookMeta[] = [
-    { key: 'Direction', value: DIRECTION_ITEMS.get(direction.slug)?.n ?? direction.label ?? '' },
-    { key: 'Kind', value: kindLabel(direction) },
-    { key: 'Tone', value: TONE_LABEL[direction.tone] },
-    { key: 'Pages', value: String(pages.length) },
-  ];
+  const kind = kindLabel(direction);
+
+  /* the lead in two or three lines; the rest of the concept under the
+     head's rule with the signature, or, past NOTE_MAX (the deco briefs), as
+     the last section, which leaves the signature alone in the note */
+  const split = splitLead(direction.concept, direction.lead ? 0 : undefined);
+  const lead = direction.lead ?? split.lead;
+  const note = direction.note ?? split.note;
+  const brief = note && note.length > NOTE_MAX ? note : null;
+  const briefOrdinal = direction.site ? 4 : 3;
+  const signature = (
+    <p>
+      <b>Signature.</b> {direction.signature}
+    </p>
+  );
 
   return (
-    <article className='dr-doc'>
-      <div className='dr-head'>
-        <BookHead title={direction.name} lead={direction.concept} meta={meta} />
-        <dl className='dr-sig'>
-          <dt>Signature</dt>
-          <dd>{direction.signature}</dd>
-        </dl>
-      </div>
+    <article className='dr-doc pt-book-col'>
+      <BookHead
+        title={direction.name}
+        lead={lead}
+        note={
+          brief || !note ? (
+            signature
+          ) : (
+            <>
+              <p>{note}</p>
+              {signature}
+            </>
+          )
+        }
+        updated={updated}
+        facts={[
+          { icon: KIND_ICON[kind] ?? 'pages', key: 'Kind', value: kind },
+          { icon: 'swatch', key: 'Tone', value: TONE_LABEL[direction.tone] },
+          { icon: 'pages', key: 'Pages', value: pages.length },
+        ]}
+      />
 
-      <section className='dr-sec' aria-label='Live page'>
+      <section className='pt-book-part dr-sec' aria-label='Live page'>
         <Divider ordinal={1} note={`${FRAME_W} pixels wide`} title='Live page' />
         <LivePage direction={direction} />
       </section>
 
-      <section className='dr-sec' aria-label='Captures'>
+      <section className='pt-book-part dr-sec' aria-label='Captures'>
         <Divider ordinal={2} note={`${FRAME_W} by ${FRAME_H}`} title='Captures' />
         <div className='dr-shots'>
           <Capture direction={direction} theme='light' />
@@ -201,7 +230,7 @@ function DirectionBook({ direction }: { direction: Direction }) {
       </section>
 
       {direction.site ? (
-        <section className='dr-sec' aria-label='Pages'>
+        <section className='pt-book-part dr-sec' aria-label='Pages'>
           <Divider ordinal={3} note={`${pages.length} pages`} title='Pages' />
           <ul className='dr-page-list'>
             {pages.map((page) => (
@@ -210,15 +239,30 @@ function DirectionBook({ direction }: { direction: Direction }) {
           </ul>
         </section>
       ) : null}
+
+      {brief ? (
+        <section className='pt-book-part dr-sec' aria-label='The brief'>
+          <Divider ordinal={briefOrdinal} note='The concept' title='The brief' />
+          <div className='pt-book-note dr-brief'>
+            <p>{brief}</p>
+          </div>
+        </section>
+      ) : null}
     </article>
   );
 }
 
-export type DirectionViewerProps = { slug: string };
+export type DirectionViewerProps = {
+  slug: string;
+  /** the direction's entry in src/lib/updated.ts, from the server page */
+  updated: PageUpdated;
+};
 
-export default function DirectionViewer({ slug }: DirectionViewerProps) {
+export default function DirectionViewer({ slug, updated }: DirectionViewerProps) {
   const router = useRouter();
   const direction = getDirection(slug);
+  /* stable, so the memoized toolbar skips this route's renders */
+  const openPage = useMemo(() => (direction ? <OpenFullPage direction={direction} /> : null), [direction]);
 
   /* a selection from the list, the arrows or a digit opens that direction's page */
   const onSelect = (id: string) => {
@@ -242,10 +286,10 @@ export default function DirectionViewer({ slug }: DirectionViewerProps) {
       keys='flow'
       noun='direction'
       onSelect={onSelect}
-      toolbarSlot={<OpenFullPage direction={direction} />}
+      toolbarSlot={openPage}
     >
-      <Sheet variant='flow' width={1280}>
-        <DirectionBook direction={direction} />
+      <Sheet variant='flow'>
+        <DirectionBook direction={direction} updated={updated} />
       </Sheet>
     </ViewerShell>
   );

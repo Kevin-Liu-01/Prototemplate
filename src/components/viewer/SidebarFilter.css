@@ -1,12 +1,13 @@
 /* SidebarFilter: the filter row and its field. The field is the index
    panel's control (IndexPanel.css, .pt-panel-tools input): a 1px --pt-hair
    border that turns ink on focus, paper ground, ink text, titanium
-   placeholder, no native search styling, and the shell corner (--pt-radius,
-   the Search pill's 6px) at both sizes. Two custom properties size it:
+   placeholder, no native search styling, and the control corner
+   (--pt-radius-control, the Search pill's 6px) at both sizes. Two custom properties size it:
    --pt-filter-h (34px, the panel's) and --pt-filter-fs (13.5px); the
    sidebar sets its own 30px and 13px in Sidebar.css. One rule per field,
    drawn once by the field: the input and the clear button inside it draw
-   no border and no ground, so the corner is one stroke. Colors are tokens
+   no border, so the corner is one stroke; the clear button, 4px inside
+   the field, takes the chip corner for its hover ground. Colors are tokens
    only. */
 
 .pt-filter-row {
@@ -26,7 +27,7 @@
   height: var(--pt-filter-h);
   padding: 0 4px 0 9px;
   border: 1px solid var(--pt-hair);
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-control);
   background: var(--pt-paper);
   color: var(--pt-titanium);
   transition:
@@ -65,9 +66,10 @@
   background: none;
   color: var(--pt-ink);
   font: var(--pt-filter-fs) var(--pt-text);
+  font-feature-settings: var(--pt-ff-text); /* the font shorthand resets the features */
   padding: 0;
   margin: 0;
-  border-radius: 0;
+  border-radius: var(--pt-radius-shell);
   outline: none;
   -webkit-appearance: none;
   appearance: none;
@@ -88,7 +90,7 @@
   appearance: none;
   background: none;
   border: 0;
-  border-radius: 0;
+  border-radius: var(--pt-radius-chip);
   margin: 0;
   padding: 0;
   width: 22px;

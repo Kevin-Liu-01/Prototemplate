@@ -35,6 +35,7 @@ const found = {
   'outer-rail-pair': [],
   'rail-outer-token': [],
   'retired-rail-vocabulary': [],
+  'border-image-none': [],
 };
 
 /* DESIGN.md section 3: one rail each side, drawn once by the column's own
@@ -118,6 +119,11 @@ for (const file of files) {
     lines.forEach((line, i) => {
       if (line.includes('!important'))
         found['important-in-css'].push(`${rel}:${i + 1}`);
+      /* the build (Lightning CSS) writes `border-image: none` out as an
+         empty declaration the browser drops, so the image keeps painting;
+         the longhand border-image-source: none survives */
+      if (!isComment(line) && /(?:^|[;{\s])border-image\s*:\s*none\s*(?:[;}]|$)/.test(line))
+        found['border-image-none'].push(`${rel}:${i + 1}`);
     });
     // rule blocks with comments blanked (line count kept), so prose never
     // matches and a nested @media rule parses the same as a top-level one

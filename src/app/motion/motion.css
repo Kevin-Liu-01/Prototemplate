@@ -24,6 +24,7 @@
   width: 100%;
   height: auto;
   border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
   background: var(--pt-panel-ink);
   background-clip: padding-box;
   transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
@@ -64,19 +65,19 @@
 
 /* ---------- a package ---------- */
 
-/* the film at the head of the sheet: the roster's player and frame (.mo-film
-   above), first in the lead row, so it takes no air above it; the book's
-   32px gap already parts it from the head's rule */
+/* the film at the top of section 1, The film: the roster's player and
+   frame (.mo-film above), first in its row, so it takes no air above it;
+   the section's own gap already parts it from the divider */
 .mo-book .mo-head-film {
   margin-top: 0;
 }
 
-/* the download link under the film: the docs' link at the caption size, in
+/* the download link under the film: the docs' link at the meta step, in
    the seat /brand gives the send line under each blog film */
 .mo-book .ptd-body p.mo-send {
   margin-top: 8px;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
 }
 
 .mo-sec {
@@ -84,15 +85,15 @@
 }
 
 /* the film's credits under the status line: the Videos session's file word
-   for word, at the caption size so the package stays the page's reading */
+   for word, at the meta step so the package stays the page's reading */
 .mo-book .mo-credits {
   margin-top: 24px;
 }
 
 .mo-book .ptd-body .mo-credits p,
 .mo-book .ptd-body .mo-credits li {
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
 }
 
 /* the script's times stay on one line */
@@ -121,28 +122,29 @@
 }
 
 /* faces for the scripts Inter lacks, after Inter so Latin keeps the house
-   face. This is CSS, which the inter-only lint does not read; the stacks
-   name system faces only and load nothing. var(--font-inter) ends in
-   next/font's fallback face, local Arial with Inter's line metrics. Arial
-   has Hebrew with the points (niqqud), so Hebrew renders in it and its
-   lines keep the paragraph's leading (Arial Hebrew first adds 1 to 2px to
-   each line that holds Hebrew); the Hebrew faces after it serve a system
-   without Arial. Arial has no Han glyphs, so Han falls through to PingFang
-   or Hiragino. */
+   face: the per-language stacks in tokens.css (--pt-text-hant and the
+   rest), which name system faces only and load nothing. var(--font-inter)
+   ends in next/font's fallback face, local Arial with Inter's line
+   metrics. Arial has Hebrew with the points (niqqud), so Hebrew still
+   renders in that fallback face, by design: its lines keep the
+   paragraph's leading (Arial Hebrew first adds 1 to 2px to each line that
+   holds Hebrew), and the Hebrew faces after it serve a system without
+   Arial. Arial has no Han glyphs, so Han falls through to PingFang or
+   Hiragino. */
 .mo-book :lang(zh-Hant) {
-  font-family: var(--font-inter), 'Inter', 'PingFang TC', 'Hiragino Sans CNS', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  font-family: var(--pt-text-hant);
 }
 
 .mo-book :lang(zh-Hans) {
-  font-family: var(--font-inter), 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  font-family: var(--pt-text-hans);
 }
 
 .mo-book :lang(ja) {
-  font-family: var(--font-inter), 'Inter', 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+  font-family: var(--pt-text-ja);
 }
 
 .mo-book :lang(he) {
-  font-family: var(--font-inter), 'Arial Hebrew', 'Noto Sans Hebrew', 'Times New Roman', Arial, sans-serif;
+  font-family: var(--pt-text-he);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -154,6 +156,167 @@
 /* the toolbar's raw package link: a tool button that is a link */
 .mo-raw {
   text-decoration: none;
+}
+
+/* ---------- the records: the published cut's contact sheet and script ---------- */
+
+/* a roster row's records, compactly: one item per record (glyph, label,
+   value) at the meta step, in the head panel's glyph, label and value
+   colors; the items wrap as one line, and nothing draws a rule */
+.mo-rec {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 12px 0 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+}
+
+.mo-rec > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mo-rec dt {
+  color: var(--pt-ink-2);
+  white-space: nowrap;
+}
+
+.mo-rec dt svg {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: -3px;
+  fill: currentColor;
+  color: var(--pt-titanium);
+}
+
+.mo-rec dd {
+  margin: 0;
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+}
+
+.mo-rec a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.mo-rec a:hover {
+  text-decoration-color: currentColor;
+}
+
+.mo-rec a:focus-visible,
+.mo-rec-more summary:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+/* a film with no page of its own opens its full blocks in place */
+.mo-rec-more {
+  margin-top: 8px;
+}
+
+.mo-rec-more summary {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
+  cursor: pointer;
+}
+
+.gx-body .mo-rec-more p {
+  max-width: var(--pt-measure);
+  margin: 12px 0 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+/* the contact sheet at the column's width: the WebP in the frame role every
+   picture in the shell takes (as the film's), its width and height
+   reserved by the attributes so nothing moves when it decodes; the white
+   gaps between its tiles are the sheet's own */
+.mo-sheet {
+  margin: 16px 0 0;
+}
+
+.mo-sheet-link {
+  display: block;
+  border-radius: var(--pt-radius-card);
+}
+
+.mo-sheet img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-panel-ink);
+}
+
+.mo-sheet-link:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.mo-book .mo-sheet figcaption.mo-send {
+  margin-top: 8px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+
+/* the script as built: its facts line and closing note at the meta step,
+   the table in the docs' grammar with the times on one line; a spoken
+   line and its subtitle stack in the Line cell, the subtitle in ink-2 */
+.mo-book .ptd-body p.mo-built-meta,
+.mo-book .ptd-body p.mo-built-note,
+.mo-book .ptd-body p.mo-review {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+
+.mo-book .ptd-body p.mo-built-meta {
+  margin-top: 8px;
+  color: var(--pt-ink);
+}
+
+.mo-built .ptd-table td:first-child {
+  white-space: nowrap;
+}
+
+.mo-built .ptd-table th:nth-child(3) {
+  width: 36%;
+}
+
+.mo-built .mo-said,
+.mo-built .mo-sub {
+  display: block;
+}
+
+.mo-built .mo-said {
+  color: var(--pt-ink);
+}
+
+.mo-built .mo-sub {
+  margin-top: 4px;
+}
+
+/* a reader's line wholly in Hebrew runs right to left in its own box */
+.mo-built .mo-said[dir='rtl'] {
+  text-align: right;
+}
+
+.mo-built .mo-sub em {
+  font-style: normal;
+  color: var(--pt-titanium);
 }
 
 /* ---------- narrow ---------- */
@@ -176,5 +339,21 @@
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+  }
+
+  /* the records' links: the inline box's vertical padding grows the hit
+     area to 44px and leaves the line where it is */
+  .mo-rec a {
+    padding-block: 12px;
+  }
+
+  .mo-rec-more summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .mo-book .mo-sheet figcaption.mo-send {
+    margin-top: 0;
   }
 }

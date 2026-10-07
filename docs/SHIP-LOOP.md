@@ -6,7 +6,7 @@ camera, and the mirror build all get a vote.
 
 ## 0. Ground rules
 
-- The dev server runs at `http://localhost:3006`.
+- The dev server runs at `http://localhost:3005`.
 - A concurrent session may be editing the same worktree. Check
   `git status` before staging; commit only your own files. Expect the other
   session to absorb your changes into its commits — when that happens,
@@ -17,8 +17,8 @@ camera, and the mirror build all get a vote.
 ## 1. The line audit
 
 ```bash
-node scripts/lint-lines.mjs http://localhost:3006/<page> --theme light
-node scripts/lint-lines.mjs http://localhost:3006/<page> --theme dark
+node scripts/lint-lines.mjs http://localhost:3005/<page> --theme light
+node scripts/lint-lines.mjs http://localhost:3005/<page> --theme dark
 ```
 
 - Audits at 1440 and 1280; expects **zero** findings in all four classes
@@ -74,6 +74,35 @@ snippets doesn't count), and `!important`. It refuses anything that adds to
 `lint-practices.baseline.json`. When files are deleted, prune their baseline
 entries in the same commit.
 
+`scripts/lint-type.mjs` holds the type to DESIGN.md section 4 ("Book type"):
+statically on every `pnpm build` and `pnpm lint:type` (family, stack,
+next/font binding, features, weight, heading and tracking rules, plus a
+per-file ratchet of literal sizes in `lint-type.baseline.json`), and
+against the dev server with `pnpm lint:type:live` (the face Chrome
+rendered, the computed features, tracking, optical size and weight).
+`pnpm test:type` runs its tests; `--update-baseline` records a burn-down.
+
+`scripts/lint-radius.mjs` holds the corners to DESIGN.md section 2
+("Corners: rounded controls, square shells"): statically on every
+`pnpm build` and `pnpm lint:radius` (every radius reads one of the six
+`--pt-radius-<role>` tokens, shells and rows stay square, controls are
+never square, chips read the chip corner, the token values are pinned),
+and against the dev server with `pnpm lint:radius:live` (the computed
+corners at 1440 and 390, the overlays on /brand and the toolbar's hover
+boxes: square shells, round controls, a picture clipped by its frame).
+A named exception carries `/* lint-radius: allow <reason> */`.
+`pnpm test:radius` runs its tests.
+
+`scripts/lint-heads.mjs` holds every book page to DESIGN.md section 4
+("The book page"): statically (`pnpm lint:heads`, in the build: BookHead's
+props, page titles from `src/lib/page-names.ts`, no route restyling the
+shared head, band or dividers, no second hatch, no guide over a title,
+the spaces on their tokens), and against the dev server with
+`pnpm lint:heads:live` (each head route at 1440 and 390 in both themes:
+the structure, the title's clearance, the lead, the panel and its Updated
+day, the mast rule, the band's two rules and the dividers, measured).
+`pnpm test:heads` runs its tests.
+
 ## 4. Types
 
 ```bash
@@ -97,6 +126,10 @@ browser pane pauses rAF — shader canvases come out blank):
 
 - Commit only your files;
   `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
+- Run `pnpm build:updated --staged` after staging the change, and stage
+  `src/lib/updated.ts` with it. `pnpm lint:updated` (in the build and
+  `pnpm lint:all`) fails when a commit touched a book page and the file
+  was not regenerated with it.
 - Push a NEW backup branch each round from HEAD:
   `redesign/diagram-standard-v1<next-letter>`.
 

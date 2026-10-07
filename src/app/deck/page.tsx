@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 
+import { PAGE_NAMES } from '@/lib/page-names';
+
 import DeckFrame from './DeckFrame';
 
 import './deck.css';
 
 export const metadata: Metadata = {
-  title: { absolute: 'General Translation brand deck' },
+  title: PAGE_NAMES.deck.name,
   description:
     'The General Translation brand in 93 slides: thesis, values, writing style, mark, color, type, line rules, diagrams, dither, motion, the shipped site and every public surface, docs, blog, content rules, Prototemplate, Glyphfield, fixed points, current status, and mood images between the sections.',
   // declared per-route so the browser stops probing the app-wide /favicon.ico

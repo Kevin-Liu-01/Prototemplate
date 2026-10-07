@@ -446,6 +446,26 @@ export default function CompareRig() {
     });
   };
 
+  /* the toolbar's controls, stable while the values they show hold, so the
+     memoized toolbar skips this route's other renders; the handlers close
+     over refs and state setters only */
+  const tools = useMemo(
+    () => (
+      <CompareTools
+        pair={pair}
+        target={target}
+        view={view}
+        syncOn={syncOn}
+        setTarget={setTarget}
+        setView={setView}
+        swap={swap}
+        toggleSync={toggleSync}
+      />
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pair, target, view, syncOn]
+  );
+
   return (
     <ViewerShell
       id='compare'
@@ -461,18 +481,7 @@ export default function CompareRig() {
       keys='paged'
       noun='direction'
       onSelect={onSelect}
-      toolbarSlot={
-        <CompareTools
-          pair={pair}
-          target={target}
-          view={view}
-          syncOn={syncOn}
-          setTarget={setTarget}
-          setView={setView}
-          swap={swap}
-          toggleSync={toggleSync}
-        />
-      }
+      toolbarSlot={tools}
     >
       <CompareStage view={view} pair={pair} target={target} frames={frames} onLoad={wire} />
       <CompareBoot readPair={readPair} readTarget={readTarget} apply={apply} wireLoaded={wireLoaded} />

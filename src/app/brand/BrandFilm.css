@@ -28,6 +28,7 @@
   place-items: center;
   width: 56px;
   height: 56px;
+  border-radius: var(--pt-radius-control);
   background: #f2f2f0;
   color: #070707;
 }

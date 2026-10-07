@@ -2,21 +2,24 @@
 
 import { useRouter } from 'next/navigation';
 import type { MouseEvent, ReactNode } from 'react';
-import { useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import BrandFilm from '@/app/brand/BrandFilm';
 import { BookHead } from '@/components/viewer/BookView';
 import { Icon } from '@/components/viewer/icons';
-import { ListRow } from '@/components/viewer/ListRow';
+import type { IconName } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
-import type { SubRenderer } from '@/components/viewer/Sidebar';
+import type { SubRows } from '@/components/viewer/Sidebar';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { MOTION_FILMS, MOTION_STATUS_LABEL, getMotionFilm, motionHref } from '@/lib/motion';
-import type { MotionFilm, MotionMedia, PackageSectionId } from '@/lib/motion';
+import type { MotionFilm, MotionMedia, MotionStatus, PackageSectionId } from '@/lib/motion';
+import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
+import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { cutWords, reviewWords } from '../records-words';
 import { filmById, motionSections } from '../sections';
 
 import '../../prototemplate.css';
@@ -31,18 +34,22 @@ const SPY_MARGIN = '0px 0px -90% 0px';
 /** How long the spy waits for a jump to reach its section before it reads the page again. */
 const SETTLE_MS = 1200;
 
-/**
- * The sections' names in the sidebar, where a row under a nested item has
- * about 70px for its title: the contents and the dividers keep the
- * package's own headings.
- */
-const SUB_TITLE: Record<PackageSectionId, string> = {
-  script: 'Script',
-  post: 'Post',
-  vocabulary: 'Vocabulary',
-  sources: 'Sources',
-  checks: 'Fact checks',
+/** The film block's anchor: section 1, before the package's own sections. */
+const FILM_ID = 'the-film';
+
+/** The panel's Status glyph: the roster's status icons. */
+const STATUS_ICON: Readonly<Record<MotionStatus, IconName>> = {
+  rendered: 'done',
+  'in-production': 'in-progress',
+  planned: 'planned',
 };
+
+/**
+ * A record of the published cut, set as a section between the film and the
+ * package: the contact sheet and the script as built (records.tsx), or the
+ * one sentence a film gets while its records belong to a cut in review.
+ */
+type RecordPart = { id: string; title: string; note: string; body: ReactNode; className: string };
 
 /** One section of the package as the server rendered it (package.ts). */
 export type PackageSectionView = {
@@ -128,10 +135,18 @@ function StatusLine({ film }: { film: MotionFilm }) {
   const folder = film.local?.folder ?? `motion/films/${film.slug}`;
   const render = film.local?.video ?? `motion/out/${film.slug}.mp4`;
   if (film.status === 'rendered' && film.media) {
+    /* the published cut's own render (the version rule), never motion/out's newest */
+    const cut = film.cut ? `the ${cutWords(film.cut.label)}` : 'the published cut';
     return (
       <p>
-        The Videos session made this film in <code>{folder}</code> from the research package below. The final render,{' '}
-        <code>{render}</code>, plays here from its web copy.
+        The Videos session made this film in <code>{folder}</code> from the research package below.{' '}
+        {film.cut?.render ? (
+          <>
+            The final render of {cut}, <code>{film.cut.render}</code>, plays here from its web copy.
+          </>
+        ) : (
+          <>The final render of {cut} plays here from its web copy.</>
+        )}
       </p>
     );
   }
@@ -162,22 +177,31 @@ export type PackageViewerProps = {
   leadRest: ReactNode | null;
   /** the published film's credits from the Videos session's file, rendered on the server, or null */
   credits: ReactNode | null;
+  /** the published cut's contact sheet block (records.tsx), or null */
+  sheet: ReactNode | null;
+  /** the published cut's script block (records.tsx), or null */
+  script: ReactNode | null;
+  /** the sentence a film without published records gets while a newer cut is in review, or null */
+  review: ReactNode | null;
   sections: readonly PackageSectionView[];
+  /** the package page's entry in src/lib/updated.ts, from the server page */
+  updated: PageUpdated;
 };
 
 /**
  * One film of the translation series on the viewer shell: the roster in
  * the list under Knowledge > Motion with this film's row marked and its
  * five sections as rows under it, and the research package as a book in
- * the 1280px flow sheet (the book head with the film's facts, the film's
+ * the reading column (the book head with the film's facts, the film's
  * player when its web copy is published, the status line, a contents list,
- * then each section under its divider in the docs' prose grammar). An IntersectionObserver marks the section under the read
+ * the published cut's contact sheet and script as built, then each package
+ * section under its divider in the docs' prose grammar). An IntersectionObserver marks the section under the read
  * line in the list; a contents link or a section row jumps the sheet there
  * and writes `#<section>` to the address, which a later visit lands on.
  * The shell ignores that hash, since it names no item. Selecting another
  * film navigates to it; the raw package is one click away in the toolbar.
  */
-export default function PackageViewer({ slug, lead, leadRest, credits, sections }: PackageViewerProps) {
+export default function PackageViewer({ slug, lead, leadRest, credits, sheet, script, review, sections, updated }: PackageViewerProps) {
   const router = useRouter();
   const film = getMotionFilm(slug);
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -208,6 +232,43 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sections 
   const go = (id: string) => {
     if (jump(id)) writeHash(id);
   };
+  const goRef = useRef(go);
+  goRef.current = go;
+
+  /* the shell's props, stable across this route's renders so the memoized
+     list and toolbar skip them: the sections, the toolbar's link, and the
+     package's own headings as the deep run under the film's row */
+  const shellSections = useMemo(() => motionSections(slug), [slug]);
+  const rawLink = useMemo(() => <RawLink slug={slug} />, [slug]);
+  /* the published cut's records, between the film and the package */
+  const parts: readonly RecordPart[] = useMemo(() => {
+    const out: RecordPart[] = [];
+    if (sheet && film?.sheet) {
+      const note = film.sheet.frames ? `${film.sheet.frames} frames` : 'WebP';
+      out.push({ id: 'contact-sheet', title: 'Contact sheet', note, body: sheet, className: 'mo-sheet-body' });
+    }
+    if (script && film?.script) {
+      out.push({ id: 'film-script', title: 'Script', note: `${film.script.lines} lines`, body: script, className: 'mo-built mo-wide' });
+    }
+    if (out.length === 0 && review) {
+      out.push({ id: 'contact-sheet', title: 'Contact sheet and script', note: 'In review', body: review, className: '' });
+    }
+    return out;
+  }, [sheet, script, review, film]);
+  const filmId = film?.id;
+  const subRows: SubRows = useCallback(
+    (item) =>
+      item.id === filmId
+        ? [...parts, ...sections].map((section) => ({
+            id: `${slug}-${section.id}`,
+            title: section.title,
+            href: `/motion/${slug}#${section.id}`,
+            active: section.id === activeSection,
+            onSelect: () => goRef.current(section.id),
+          }))
+        : null,
+    [filmId, parts, sections, slug, activeSection]
+  );
 
   const onContents = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -276,18 +337,6 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sections 
   if (!film?.pkg) return null;
   const pkg = film.pkg;
 
-  const renderSub: SubRenderer = (item) =>
-    item.id === film.id
-      ? sections.map((section) => (
-          <ListRow
-            key={section.id}
-            item={{ id: `${slug}-${section.id}`, n: section.n, title: SUB_TITLE[section.id] }}
-            active={section.id === activeSection}
-            onSelect={() => go(section.id)}
-          />
-        ))
-      : null;
-
   const onSelect = (id: string) => {
     if (id === film.id) {
       /* this film's own row: back to the head, the address without a hash */
@@ -305,73 +354,110 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sections 
       title={TITLE}
       mark='pt'
       count={`${MOTION_FILMS.length} films`}
-      sections={motionSections(slug)}
+      sections={shellSections}
       active={film.id}
       modes={MODES}
       thumb='row'
       surfaces='site'
       keys='flow'
       noun='film'
-      renderSub={renderSub}
-      toolbarSlot={<RawLink slug={slug} />}
+      subRows={subRows}
+      toolbarSlot={rawLink}
       onSelect={onSelect}
     >
-      <Sheet variant='flow' width={1280} scrollRef={sheetRef}>
-        <div className='ptd-book mo-book'>
+      <Sheet variant='flow' scrollRef={sheetRef}>
+        <div className='ptd-book mo-book pt-book-col'>
           <BookHead
             title={film.title}
             lead={lead}
-            meta={[
-              { key: 'Film', value: `${film.n} of ${MOTION_FILMS.length}` },
-              { key: 'Length', value: film.runtime ?? film.length },
-              { key: 'Status', value: MOTION_STATUS_LABEL[film.status] },
-              { key: 'Series', value: pkg.seriesName },
+            updated={updated}
+            facts={[
+              { icon: STATUS_ICON[film.status], key: 'Status', value: MOTION_STATUS_LABEL[film.status] },
+              { icon: 'duration', key: 'Length', value: film.runtime ?? film.length },
+              { icon: 'language', key: 'Series', value: pkg.seriesName },
             ]}
+            contents={
+              <nav className='ptd-toc pt-book-toc' aria-label='Contents'>
+                <a href={`#${FILM_ID}`} onClick={(e) => onContents(e, FILM_ID)}>
+                  <span>The film</span>
+                  <small>{pad2(1)}</small>
+                </a>
+                {[...parts, ...sections].map((section, i) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    aria-current={section.id === activeSection ? 'true' : undefined}
+                    onClick={(e) => onContents(e, section.id)}
+                  >
+                    <span>{section.title}</span>
+                    <small>{pad2(i + 2)}</small>
+                  </a>
+                ))}
+              </nav>
+            }
           />
 
-          <div className='ptd-row ptd-lead'>
-            <div className='ptd-pn' aria-hidden='true' />
-            <div className='ptd-body pt-root'>
-              {film.media ? <FilmHead film={film} media={film.media} /> : null}
-              <StatusLine film={film} />
-              {credits ? (
-                <div className='mo-credits'>
-                  <h3>Credits</h3>
-                  {credits}
-                </div>
-              ) : null}
-              {leadRest}
+          {/* the film block: the player, the status sentence, the credits and the rest of the series text; it names no row in the list, so it carries no data-section */}
+          <section id={FILM_ID} className='pt-book-part ptd-doc mo-sec' aria-labelledby='mo-film-h'>
+            <div className='ptd-sec pt-book-sec'>
+              <small>
+                <span>Section 1</span>
+                <span>{film.runtime ?? film.length}</span>
+              </small>
+              <h2 id='mo-film-h'>The film</h2>
             </div>
-          </div>
+            <div className='ptd-row ptd-lead'>
+              <div className='ptd-pn' aria-hidden='true' />
+              <div className='ptd-body pt-root'>
+                {film.media ? <FilmHead film={film} media={film.media} /> : null}
+                <StatusLine film={film} />
+                {film.review ? <p className='mo-review'>A newer cut is in review: {reviewWords(film.review)}.</p> : null}
+                {credits ? (
+                  <div className='mo-credits'>
+                    <h3>Credits</h3>
+                    {credits}
+                  </div>
+                ) : null}
+                {leadRest}
+              </div>
+            </div>
+          </section>
 
-          <nav className='ptd-toc' aria-label='Contents'>
-            {sections.map((section) => (
-              <a
-                key={section.id}
-                href={`#${section.id}`}
-                aria-current={section.id === activeSection ? 'true' : undefined}
-                onClick={(e) => onContents(e, section.id)}
-              >
-                <span>{section.title}</span>
-                <small>{section.n}</small>
-              </a>
-            ))}
-          </nav>
+          {/* the published cut's records: its contact sheet and its script as built */}
+          {parts.map((part, i) => (
+            <section
+              key={part.id}
+              id={part.id}
+              className='pt-book-part ptd-doc mo-sec'
+              data-section={part.id}
+              aria-labelledby={`mo-${part.id}`}
+            >
+              <div className='ptd-sec pt-book-sec'>
+                <small>
+                  <span>Section {i + 2}</span>
+                  <span>{part.note}</span>
+                </small>
+                <h2 id={`mo-${part.id}`}>{part.title}</h2>
+              </div>
+              <div className={cn('ptd-row', part.id === activeSection && 'is-active')}>
+                <div className='ptd-pn' aria-hidden='true' />
+                <div className={cn('ptd-body pt-root', part.className)}>{part.body}</div>
+              </div>
+            </section>
+          ))}
 
-          {sections.map((section) => (
+          {sections.map((section, i) => (
             <section
               key={section.id}
               id={section.id}
-              className='ptd-doc mo-sec'
+              className='pt-book-part ptd-doc mo-sec'
               data-section={section.id}
               aria-labelledby={`mo-${section.id}`}
             >
-              <div className='ptd-sec'>
+              <div className='ptd-sec pt-book-sec'>
                 <small>
-                  <span>Section {section.n}</span>
-                  {section.note.split(', ').map((part) => (
-                    <span key={part}>{part}</span>
-                  ))}
+                  <span>Section {i + 2 + parts.length}</span>
+                  <span>{section.note.split(', ')[0]}</span>
                 </small>
                 <h2 id={`mo-${section.id}`}>{section.title}</h2>
               </div>

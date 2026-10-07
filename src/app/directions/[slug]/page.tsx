@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { DIRECTION_PAGE_SLUGS, getDirection } from '@/lib/directions';
+import { requireUpdated } from '@/lib/updated';
 
 import DirectionViewer from '../DirectionViewer';
 
@@ -36,5 +37,7 @@ export default async function DirectionPage({ params }: Params) {
   const { slug } = await params;
   const direction = getDirection(slug);
   if (!direction || direction.reference) notFound();
-  return <DirectionViewer key={direction.slug} slug={direction.slug} />;
+  return (
+    <DirectionViewer key={direction.slug} slug={direction.slug} updated={requireUpdated(`/directions/${direction.slug}`)} />
+  );
 }

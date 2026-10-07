@@ -1,7 +1,7 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
-import { useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 
 import type { IconName } from '@/components/viewer/icons';
 import { ToolButton } from '@/components/viewer/ToolButton';
@@ -23,11 +23,17 @@ import './Seg.css';
  * The active fill is one indicator shared by every option (directive 7.4):
  * an absolutely positioned span under the buttons, moved with a transform
  * (translateX for its place, scaleX for its width, so nothing lays out
- * while it slides) over the slide duration. Its geometry is measured from
- * the active option in a layout effect, so the first paint already shows it
- * in place, and re-measured whenever the group's box changes (the toolbar's
- * label collapse, a font load). Until the first measurement the active
- * option fills itself (tokens.css, the :not(.has-ind) rule).
+ * while it slides) over the slide duration. Its first measurement comes
+ * from the group's ResizeObserver, whose first notification arrives after
+ * the browser's own layout and before paint, so the read forces no style
+ * or layout of the new page inside React's commit. The indicator then
+ * commits as an ordinary update, after that frame: committing it inside
+ * the observer (flushSync) would leave the next control's read, in the same
+ * delivery, a dirty page to recalculate. Until it commits, the active
+ * option fills itself (tokens.css, the :not(.has-ind) rule), which draws
+ * the same pixels. Later changes of the active option or the option set
+ * re-measure in a layout effect, and the observer re-measures whenever the
+ * group's box changes (the toolbar's label collapse, a font load).
  */
 export type SegOption<T extends string> = {
   value: T;
@@ -63,7 +69,7 @@ function measure(group: HTMLElement): Indicator | null {
   return { x: on.offsetLeft, w: on.offsetWidth };
 }
 
-export function Seg<T extends string>({ options, value, onChange, label, iconOnly = false, className }: SegProps<T>) {
+function SegControl<T extends string>({ options, value, onChange, label, iconOnly = false, className }: SegProps<T>) {
   const root = useRef<HTMLDivElement>(null);
   const [ind, setInd] = useState<Indicator | null>(null);
 
@@ -81,11 +87,25 @@ export function Seg<T extends string>({ options, value, onChange, label, iconOnl
     setInd((prev) => (prev && next && prev.x === next.x && prev.w === next.w ? prev : next));
   };
 
-  /* before paint, on every change of the active option or the option set */
-  useGSAP(place, { dependencies: [value, options, iconOnly] });
+  /* before paint, on every change of the active option or the option set;
+     not on mount, where the read would force the whole new page's style
+     inside the commit (the observer below takes the first measurement) */
+  const mounted = useRef(false);
+  useGSAP(
+    () => {
+      if (!mounted.current) {
+        mounted.current = true;
+        return;
+      }
+      place();
+    },
+    { dependencies: [value, options, iconOnly] }
+  );
 
-  /* and whenever the group's box changes: the toolbar collapsing its labels
-     moves every option, and a late font load can change their widths */
+  /* the first measurement, and every change of the group's box: the
+     toolbar collapsing its labels moves every option, and a late font load
+     can change their widths. The observer runs after layout and before
+     paint, so its read forces nothing; the indicator commits after it */
   useMountEffect(() => {
     const group = root.current;
     if (!group || typeof ResizeObserver === 'undefined') return;
@@ -119,3 +139,6 @@ export function Seg<T extends string>({ options, value, onChange, label, iconOnl
     </div>
   );
 }
+
+/** The control, memoized: a render of its parent with the same options, value and handler skips it. */
+export const Seg = memo(SegControl) as typeof SegControl;

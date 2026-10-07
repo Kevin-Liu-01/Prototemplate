@@ -1,14 +1,13 @@
 import localFont from 'next/font/local';
 
 /**
- * The nameplate's two faces, loaded once for the shell so the wordmark in
- * the sidebar head (Sidebar.tsx) reads the same on every route, /docs and
- * /brand included: Fraunces 600 for `proto`, the working model, and Space
- * Grotesk 500 for `template`, the reusable form. Kevin asked for the old
- * nameplate back (DESIGN.md, chrome exceptions), so this is the one place
- * chrome steps outside Inter. The gallery page (src/app/page.tsx) loads its
- * own copies for the hero; each caller applies the `.variable` classes on
- * the element that uses them, so the two instances never meet.
+ * The one loader for the nameplate's two faces: Fraunces 600 for `proto`,
+ * the working model, and Space Grotesk 500 for `template`, the reusable
+ * form. The sidebar head (Sidebar.tsx) carries them on every route, /docs
+ * and /brand included, and the gallery page (src/app/page.tsx) passes the
+ * same classes to its article for the hero and the grotesk labels. Kevin
+ * asked for the old nameplate back (DESIGN.md, chrome exceptions), so this
+ * is the one place chrome steps outside Inter.
  */
 export const fraunces = localFont({
   src: [
@@ -27,5 +26,9 @@ export const grotesk = localFont({
   display: 'swap',
 });
 
-/** Both variable classes, for the element that carries the wordmark. */
-export const brandFontVariables = `${fraunces.variable} ${grotesk.variable}`;
+/**
+ * Both variable classes, for the element that carries the wordmark, plus
+ * `pt-faces`, where tokens.css declares --pt-face-serif and --pt-face-grot
+ * from them (a custom property resolves where it is declared).
+ */
+export const brandFontVariables = `${fraunces.variable} ${grotesk.variable} pt-faces`;

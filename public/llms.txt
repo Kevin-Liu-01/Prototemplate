@@ -1,21 +1,66 @@
 # Prototemplate
 
-> Prototemplate (https://prototemplate.vercel.app) is the General Translation knowledge base. It holds the brand book, the brand directives, the design lab with its directions and sites, the repository documents, the agent skills, and the mark explorations, and serves all of it as live pages in one viewer: a sidebar of thumbnails, a toolbar, a stage, and an index panel that lists every page on the site. General Translation (https://generaltranslation.com) is the localization platform for developers. The site is made by Kevin Liu.
+> Prototemplate (https://prototemplate.vercel.app) is Kevin Liu's hub and working wiki for how General Translation work is done, built to be used from any project. It holds the brand book, the brand directives, the design lab with its directions and sites, the repository documents, the curated skills, the handbook, the mark explorations, the blog graphics and the films, and serves all of it as live pages in one viewer: a sidebar of thumbnails, a toolbar, a stage, and an index panel that lists every page on the site. Its skills install into any repository with one command, and its agent guide and handbook copy in beside them, so another project's agents follow the same rules. General Translation (https://generaltranslation.com) is the localization platform for developers.
 
-The design lab holds seventeen directions for the General Translation website, each one built and running live with GSAP motion, WebGL shader heroes and a ruled-line design system. Every direction is a real page, not a mockup. Thirteen are single-page explorations; three are full site concepts (a home page plus an enterprise page) built on the shared Toolchain foundation; one is the site that shipped, rebuilt page for page.
+An agent starts with the agent guide (AGENTS.md in the repository, https://prototemplate.vercel.app/docs/agents on the site), then the operating principles in the handbook, then the skill for its task.
+
+The design lab holds twenty-seven directions for the General Translation website, each one built and running live with GSAP motion, WebGL shader heroes and a ruled-line design system. Every direction is a built page that runs live. Twenty-three are single-page explorations; three are full site concepts (a home page plus an enterprise page) built on the shared Toolchain foundation; one is the site that shipped, rebuilt page for page.
 
 ## Routes
 
-- [Gallery](https://prototemplate.vercel.app/): the design lab, the seventeen directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall and the capabilities ledger.
+- [Gallery](https://prototemplate.vercel.app/): the design lab, the twenty-seven directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall and the capabilities ledger.
 - [Brand](https://prototemplate.vercel.app/brand): the brand book, the identity canon in ten sections.
 - [Docs](https://prototemplate.vercel.app/docs): the repository documents read in the browser, one address per document at /docs/<slug>, with the build log under the readme.
-- [Deck](https://prototemplate.vercel.app/deck): the General Translation brand deck, 52 slides in its own viewer.
-- [Skills](https://prototemplate.vercel.app/skills): the agent skills that carry the brand and design rules into coding sessions.
+- [Deck](https://prototemplate.vercel.app/deck): the General Translation brand deck, 93 slides in its own viewer.
+- [Skills](https://prototemplate.vercel.app/skills): the curated skills that record how General Translation work is done, filed by area (voice, website, landing pages, aesthetic, lints, motion, graphics, videos, diagrams, isometry, components, workflow), each a SKILL.md with its own page at /skills/<slug> and its raw file at /skills/<slug>/SKILL.md.
+- [Handbook](https://prototemplate.vercel.app/handbook): how Kevin runs General Translation work, one address per document at /handbook/<slug>: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log.
+- [Blog](https://prototemplate.vercel.app/blog): the docs-redesign series as General Translation published it, three posts with their sources.
+- [Graphics](https://prototemplate.vercel.app/graphics): every illustration of the series, by area, with what it shows and the glyphfield export it sits on.
+- [Motion](https://prototemplate.vercel.app/motion): the film roster with its lengths and statuses, and the research package of each film in the translation series at /motion/<slug>.
 - [Marks](https://prototemplate.vercel.app/marks): the mark explorations, every candidate drawn in one color.
 - [Compare](https://prototemplate.vercel.app/compare): two directions side by side in scroll-synced frames.
 - [Present](https://prototemplate.vercel.app/present): the presenter, a full-screen walkthrough of the redesign with every prototype live.
-- [Archive](https://prototemplate.vercel.app/archive): the retired directions, each kept at /archive/<slug> as a full-page capture with the commit that last held its code.
+- [Archive](https://prototemplate.vercel.app/archive/archive-press): the retired directions, each kept at /archive/<slug> as a full-page capture with the commit that last held its code.
 - Each direction lives at https://prototemplate.vercel.app/d/<slug>; site concepts add /d/<slug>/enterprise.
+
+## Skills
+
+Each skill is a folder in the standard SKILL.md format that Claude Code, Codex and other agents load. The raw files are served at /skills/<slug>/SKILL.md and /skills/<slug>/references/<file>; https://prototemplate.vercel.app/skills/index.json lists the whole set with every file and install line. To install them into a project, run this from a checkout of the repository (Node only): `node scripts/install-skills.mjs --project <dir>` links every skill into <dir>/.claude/skills and <dir>/.agents/skills; name slugs to install fewer, add --copy to vendor the folders, and --dry-run to see each step first.
+
+- [Voice and the humanizer](https://prototemplate.vercel.app/skills/gt-voice): How Kevin writes for General Translation. Raw file: https://prototemplate.vercel.app/skills/gt-voice/SKILL.md
+- [The GT website](https://prototemplate.vercel.app/skills/gt-website): How generaltranslation.com is built and changed in gt-cloud's apps/landing. Raw file: https://prototemplate.vercel.app/skills/gt-website/SKILL.md
+- [Working in Prototemplate](https://prototemplate.vercel.app/skills/prototemplate): How to work in Prototemplate, Kevin's hub and wiki for General Translation work. Raw file: https://prototemplate.vercel.app/skills/prototemplate/SKILL.md
+- [Performance without visual loss](https://prototemplate.vercel.app/skills/gt-performance): How General Translation keeps visual surfaces fast with no change to how they look. Raw file: https://prototemplate.vercel.app/skills/gt-performance/SKILL.md
+- [The landing page grammar](https://prototemplate.vercel.app/skills/gt-landing-pages): The page grammar for General Translation landing and marketing pages. Raw file: https://prototemplate.vercel.app/skills/gt-landing-pages/SKILL.md
+- [Taste and the review standard](https://prototemplate.vercel.app/skills/gt-aesthetic): Kevin's taste for General Translation work and the review he applies to it. Raw file: https://prototemplate.vercel.app/skills/gt-aesthetic/SKILL.md
+- [The brand and the correct Inter](https://prototemplate.vercel.app/skills/gt-brand): The General Translation identity as rules. Raw file: https://prototemplate.vercel.app/skills/gt-brand/SKILL.md
+- [The brand deck](https://prototemplate.vercel.app/skills/gt-deck): How the General Translation brand deck in Prototemplate's deck/ folder is built and edited. Raw file: https://prototemplate.vercel.app/skills/gt-deck/SKILL.md
+- [Exploration rounds and convergence](https://prototemplate.vercel.app/skills/gt-explorations): How a General Translation design exploration runs from research to one landed design. Raw file: https://prototemplate.vercel.app/skills/gt-explorations/SKILL.md
+- [Lints and gates](https://prototemplate.vercel.app/skills/gt-lints): Every lint and gate that holds General Translation's design and copy rules, what each catches, where it runs and how to fix a failure. Raw file: https://prototemplate.vercel.app/skills/gt-lints/SKILL.md
+- [Motion rules](https://prototemplate.vercel.app/skills/gt-motion): The motion rules General Translation work follows on the web and in films. Raw file: https://prototemplate.vercel.app/skills/gt-motion/SKILL.md
+- [Blog and brand graphics](https://prototemplate.vercel.app/skills/gt-graphics): How General Translation's blog and brand graphics are made with Prototemplate's graphics/ toolchain. Raw file: https://prototemplate.vercel.app/skills/gt-graphics/SKILL.md
+- [Dither and artifact pictures](https://prototemplate.vercel.app/skills/gt-dither): General Translation's 1-bit material and its artifact pictures. Raw file: https://prototemplate.vercel.app/skills/gt-dither/SKILL.md
+- [Making a film](https://prototemplate.vercel.app/skills/gt-films): How General Translation films are made in Prototemplate's motion/ folder with HyperFrames. Raw file: https://prototemplate.vercel.app/skills/gt-films/SKILL.md
+- [Drawing diagrams](https://prototemplate.vercel.app/skills/gt-diagrams): How General Translation diagrams are drawn. Raw file: https://prototemplate.vercel.app/skills/gt-diagrams/SKILL.md
+- [Isometric drawings](https://prototemplate.vercel.app/skills/gt-isometric): The General Translation isometric family. Raw file: https://prototemplate.vercel.app/skills/gt-isometric/SKILL.md
+- [Components to reuse](https://prototemplate.vercel.app/skills/gt-components): The components General Translation work reuses before writing new ones. Raw file: https://prototemplate.vercel.app/skills/gt-components/SKILL.md
+- [Review servers and local environments](https://prototemplate.vercel.app/skills/gt-local-dev): How General Translation apps run locally so Kevin can review and try them. Raw file: https://prototemplate.vercel.app/skills/gt-local-dev/SKILL.md
+- [Proving work is done](https://prototemplate.vercel.app/skills/gt-verify): How to prove General Translation work is done before saying so. Raw file: https://prototemplate.vercel.app/skills/gt-verify/SKILL.md
+- [Branches, PRs and landing](https://prototemplate.vercel.app/skills/gt-ship): How General Translation work moves from a worktree to main. Raw file: https://prototemplate.vercel.app/skills/gt-ship/SKILL.md
+- [Reporting to Kevin](https://prototemplate.vercel.app/skills/gt-reporting): How to report to Kevin during and after General Translation work. Raw file: https://prototemplate.vercel.app/skills/gt-reporting/SKILL.md
+- [Running agent fleets and long autonomous runs](https://prototemplate.vercel.app/skills/gt-orchestration): How General Translation work runs across many agents and over long autonomous runs. Raw file: https://prototemplate.vercel.app/skills/gt-orchestration/SKILL.md
+
+## Handbook
+
+The handbook holds what spans the skills. Each document is also in the repository under docs/handbook/, and a skill holds the procedure wherever the two meet.
+
+- [Handbook readme](https://prototemplate.vercel.app/handbook): what the handbook is, who reads it, the order to read it in, and how it relates to the skills.
+- [Operating principles](https://prototemplate.vercel.app/handbook/operating-principles): the eighteen standing rules behind Kevin's corrections, each with how to apply it, the skill that holds its procedure and the dated directive it comes from.
+- [Quality bar](https://prototemplate.vercel.app/handbook/quality-bar): the measurable bar for each kind of artifact and for done, each row with its owner.
+- [Multi-session playbook](https://prototemplate.vercel.app/handbook/multi-session-playbook): lanes, forked sessions, one instruction to several sessions, shared checkouts, collisions, Claude and Codex on one main, relays and resumption.
+- [GT product and architecture map](https://prototemplate.vercel.app/handbook/gt-product-map): what General Translation sells and to whom, how the products fit together, the copy that must be exact, the CLI and agent entry points, and the repositories.
+- [Glossary](https://prototemplate.vercel.app/handbook/glossary): the terms in Kevin's messages, the skills and the code, each with where it lives.
+- [Decisions log](https://prototemplate.vercel.app/handbook/decisions): Kevin's dated rulings on process, product, design and the repositories, what each replaced and what holds it.
 
 ## Documents
 
@@ -25,6 +70,8 @@ The design lab holds seventeen directions for the General Translation website, e
 - [Architecture](https://prototemplate.vercel.app/docs/architecture): the code map: the direction registry, the toolchain single source of truth and fork rescoping, the componentized instruments, the mirror.
 - [The ship loop](https://prototemplate.vercel.app/docs/ship-loop): the verify-and-ship procedure every round runs: the line audit, the practices ratchet, types, filming, the backup branch, the mirror build.
 - [The libraries](https://prototemplate.vercel.app/docs/libraries): the index of the componentized instruments; the living version, with plates running, is the build log under the readme.
+- [The graphics pipeline](https://prototemplate.vercel.app/docs/graphics): how the blog illustrations are made with the toolchain in graphics/, from captures to the hand-off to a post.
+- [The agent guide](https://prototemplate.vercel.app/docs/agents): the entry point for an agent (AGENTS.md): the read order, the principles in brief, which skill to load for a task, the house rules, and how to use the hub in another project.
 
 ## Directions
 
@@ -44,6 +91,16 @@ The design lab holds seventeen directions for the General Translation website, e
 - [Dossier](https://prototemplate.vercel.app/d/singularity-dossier): a full site whose home folds the every-stack argument into the hero terminal, with an enterprise page that reads as an evidence file.
 - [Orbit](https://prototemplate.vercel.app/d/singularity-orbit): a full site with a one-line terminal hero and the system pieces the dossier retired.
 - [Signal](https://prototemplate.vercel.app/d/singularity-signal): a full site with the terminal split into session and output panes and an enterprise page as the broadcast.
+- [Textile Block](https://prototemplate.vercel.app/d/textile-block): the relief library as a system, a named Wright block per course, with perforated variants lit by Bayer dither.
+- [Stepped Fret](https://prototemplate.vercel.app/d/stepped-fret): the register stagger made material as a stair of graded Bayer stone down the left margin.
+- [Glazed Bond](https://prototemplate.vercel.app/d/glazed-bond): Flemish bond with glazed lapis headers and a Bayer glaze sheen, set on a crenellated gate elevation.
+- [Brick Lattice](https://prototemplate.vercel.app/d/brick-lattice): one glazed-brick wall in running bond, every brick an ordered-dither cell, one source brick lighting its neighbours.
+- [Screenfold Codex](https://prototemplate.vercel.app/d/screenfold-codex): parallelogram leaves whose creases align from panel to panel, with bar-and-dot numerals beside every count.
+- [Raking Relief](https://prototemplate.vercel.app/d/raking-relief): stepped Bayer-ramp shadows that make every tablet, heading and string read as carved under one raking light.
+- [Calendar Rings](https://prototemplate.vercel.app/d/calendar-rings): the calendar disk as a readable instrument, with flag chips on the outer ring and two notched edges turning.
+- [Talud-Tablero](https://prototemplate.vercel.app/d/talud-tablero): a stepped-pyramid page silhouette of framed tableros joined by sloped stone bands.
+- [Apadana Grid](https://prototemplate.vercel.app/d/apadana-grid): a page of column bases on a square grid, with content in the bays between them.
+- [Clay Tablet](https://prototemplate.vercel.app/d/clay-tablet): a museum case of clay tablets, with the cuneiform wedge as the cell of an ordered Bayer dither.
 - [Shipped](https://prototemplate.vercel.app/d/production): what the directions produced, the site now live at generaltranslation.com, rebuilt here page for page.
 
 ## Archive

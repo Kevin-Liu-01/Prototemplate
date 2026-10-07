@@ -7,106 +7,14 @@
    --pt-hair and --pt-hair-soft and never ink, the figure frames carry the
    frame grammar every captured frame in the shell uses (a 1px --pt-edge
    border, ink on hover, ink plus the 2px offset outline when active).
-   One hairline per rule, radius 0, no shadow. The grid needs nothing here:
+   One hairline per rule; the figure frames take the card corner (DESIGN.md
+   section 2, Corners); no shadow. The grid needs nothing here:
    the shell's shot tiles show each image's thumbnail. */
 
-/* ---------- the book column ---------- */
-
-.gx-book {
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-  color: var(--pt-ink);
-  font-family: var(--pt-text);
-}
-
-/* head: title and lead on the left, the counts on the right, one rule under both */
-.gx-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 32px;
-  align-items: end;
-  padding-bottom: 26px;
-  border-bottom: 1px solid var(--pt-hair);
-}
-
-.gx-head h1 {
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 44px;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
-  margin: 0;
-  text-wrap: balance;
-  font-feature-settings: 'cv11', 'ss01';
-}
-
-.gx-head p {
-  font-size: 15.5px;
-  line-height: 1.5;
-  color: var(--pt-ink-2);
-  max-width: 62ch;
-  margin: 14px 0 0;
-}
-
-.gx-meta {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--pt-titanium);
-  text-align: right;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-
-.gx-meta span {
-  display: block;
-}
-
-/* contents: one ruled link per section with its tabular range */
-.gx-toc {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0 28px;
-}
-
-.gx-toc a {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: baseline;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--pt-hair-soft);
-  color: inherit;
-  text-decoration: none;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: -0.01em;
-}
-
-.gx-toc a span {
-  min-width: 0;
-  line-height: 1.3;
-}
-
-.gx-toc a:hover span {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-
-.gx-toc a:focus-visible {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: 2px;
-}
-
-.gx-toc small {
-  font-family: var(--pt-text);
-  font-size: 12px;
-  color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
-}
+/* ---------- the book column ----------
+   The column (.pt-book-col), the head, the contents, the band and the
+   section dividers are the shared book classes (BookHead, .pt-book-toc and
+   .pt-book-sec in BookView.css); this sheet draws the rows. */
 
 /* one section: its divider, then its rows; the rows rule themselves */
 .gx-cat {
@@ -114,57 +22,17 @@
   flex-direction: column;
 }
 
-/* divider: the eyebrow and the range in the gutter, the title and its lead beside */
-.gx-sec {
-  display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  gap: 28px;
-  align-items: end;
-  padding: 30px 0 18px;
-  border-top: 1px solid var(--pt-hair);
-  margin-top: 12px;
-}
-
-.gx-sec small {
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
-}
-
-.gx-sec small span {
-  display: block;
-}
-
-.gx-sec h2 {
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  margin: 0;
-  text-wrap: balance;
-  font-feature-settings: 'cv11', 'ss01';
-}
-
-.gx-sec p {
-  max-width: 72ch;
-  margin: 10px 0 0;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--pt-ink-2);
-}
-
-/* row: the number in the gutter, the name, the description, the figure and
-   its meta line beside; one soft rule below each; the scroll margin keeps a
-   landed row off the edge */
+/* row: the number in the gutter on the title's baseline, the name, the
+   description, the figure and its meta line beside; one soft rule below
+   each; the scroll margin keeps a landed row off the edge */
 .gx-row {
   display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  gap: 28px;
-  align-items: start;
-  padding: 20px 0 24px;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  gap: var(--pt-gutter-gap);
+  align-items: baseline;
+  padding: 24px 0 28px;
   border-bottom: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-bottom);
   scroll-margin-top: 20px;
 }
 
@@ -172,19 +40,20 @@
    book's end, follows it */
 .gx-cat .gx-row:last-child {
   border-bottom: 0;
+  border-image-source: none;
 }
 
 .gx-n {
-  padding-top: 2px;
+  padding-top: 0;
 }
 
+/* the gutter number takes the size and the baseline of the title beside it */
 .gx-n b {
   display: block;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 1.3;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
   color: var(--pt-titanium);
   font-variant-numeric: tabular-nums;
 }
@@ -200,21 +69,18 @@
 
 .gx-body h3 {
   margin: 0;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
   color: var(--pt-ink);
   overflow-wrap: anywhere;
 }
 
 .gx-body > p {
-  max-width: 72ch;
-  margin: 6px 0 0;
-  font-size: 15px;
-  line-height: 1.5;
+  max-width: var(--pt-measure);
+  margin: 4px 0 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
   color: var(--pt-ink-2);
 }
 
@@ -228,6 +94,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
   background: var(--pt-plate);
   overflow: hidden;
   transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
@@ -260,9 +127,9 @@
 
 /* the meta line: the ground, the size, the count of versions */
 .gx-body .gx-line {
-  margin-top: 10px;
-  font-size: 12.5px;
-  line-height: 1.5;
+  margin-top: 6px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
   color: var(--pt-titanium);
   font-variant-numeric: tabular-nums;
 }
@@ -276,38 +143,15 @@
 /* ---------- narrow ---------- */
 
 @media (max-width: 900px) {
-  .gx-book {
-    gap: 24px;
-  }
-
-  .gx-head {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .gx-head h1 {
-    font-size: 32px;
-  }
-
-  .gx-meta {
-    text-align: left;
-  }
-
-  .gx-toc {
-    grid-template-columns: 1fr;
-  }
-
-  .gx-sec,
   .gx-row {
     grid-template-columns: 1fr;
     gap: 8px;
   }
 
-  .gx-sec h2 {
-    font-size: 26px;
-  }
-
-  .gx-n {
-    padding-top: 0;
+  /* the number sits above the title at the meta step */
+  .gx-n b {
+    font-size: var(--pt-t-meta);
+    line-height: var(--pt-t-meta-lh);
+    letter-spacing: 0;
   }
 }

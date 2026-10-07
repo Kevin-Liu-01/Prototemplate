@@ -6,8 +6,9 @@
    full-bleed, the article's archive rows, and the archive capture sheet.
    Colors are tokens only: the shell's --pt- set outside the article, the
    article's own .pt-root set inside it (decision 6 keeps the article's
-   hairline family). No radius, no shadow, Inter at weight 500 or less in
-   everything that is chrome. */
+   hairline family). Captures take the card corner (DESIGN.md section 2,
+   Corners), no shadow, Inter at weight 500 or less in everything that is
+   chrome. */
 
 /* ---- the toolbar slot: a link dressed as the shell's button ---- */
 .gv-open {
@@ -18,8 +19,8 @@
    8.2). One scroll region on the shell's paper, no sheet mat and no column
    cap: the article's own 1170px rail with one hairline at each edge centers
    itself the way it did on the old page, and the hero measures against the
-   same box it did there. The region paints paper so the margins beside the
-   rail read as the page, not the plate. ---- */
+   same box it did there. The region paints the same paper as the
+   stage. ---- */
 .gv-flow {
   position: absolute;
   inset: 0;
@@ -126,6 +127,7 @@
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
   background: var(--pt-white);
 }
 
@@ -148,7 +150,7 @@
 }
 
 /* ---- the archive sheet: the full-page capture under its record. Shell
-   tokens: this sits in the flow sheet's own column, outside .pt-root. ---- */
+   tokens: this sits in the reading column, outside .pt-root. ---- */
 .gv-archive {
   color: var(--pt-ink);
   font-family: var(--pt-text);
@@ -160,18 +162,14 @@
   gap: 32px;
   align-items: end;
   padding-bottom: 26px;
-  border-bottom: 1px solid var(--pt-ink);
+  border-bottom: 1px solid var(--pt-hair);
 }
 
 .gv-archive-head h1 {
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
   margin: 0;
-  text-wrap: balance;
-  font-feature-settings: 'cv11', 'ss01';
+  font-size: var(--pt-d2);
+  line-height: var(--pt-d2-lh);
+  letter-spacing: var(--pt-d2-track);
 }
 
 .gv-archive-head p {
@@ -241,17 +239,14 @@
   width: 100%;
   height: auto;
   margin-top: 18px;
-  border: 1px solid var(--pt-hair);
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
 }
 
 @media (max-width: 900px) {
   .gv-archive-head {
     grid-template-columns: 1fr;
     gap: 12px;
-  }
-
-  .gv-archive-head h1 {
-    font-size: 26px;
   }
 
   .gv-archive-meta {

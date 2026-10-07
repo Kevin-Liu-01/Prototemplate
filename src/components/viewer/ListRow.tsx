@@ -48,9 +48,9 @@ export type ListRowProps = {
 
 /**
  * A frameless sidebar row: the 22px number column and a 13.5px title over
- * a soft rule. Used for the headings under the active document on /docs,
- * the sections on /brand, the sub-beats on /present, and as the whole list
- * when a shell's thumb is 'row'. Presentational on purpose: the caller
+ * a soft rule. Used for the sub-beats on /present and as the grid's list
+ * when a shell's thumb is 'row'; the sidebar draws its runs and the
+ * headings under them itself (Sidebar.tsx). Presentational on purpose: the caller
  * supplies active and onSelect, because a row's active state is often a
  * scroll-spied heading rather than the shell's active item. The title
  * attribute carries the full text, since the sidebar clamps the row to one

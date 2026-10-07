@@ -2,6 +2,7 @@ import { LIBRARIES } from '@/app/craft/libraries';
 import { DOCS } from '@/app/docs/registry';
 import { ARCHIVE, archiveDesc } from '@/lib/archive';
 import { DIRECTIONS, directionPageHref } from '@/lib/directions';
+import { pageLabel } from '@/lib/page-names';
 import type { ShellShot } from '@/lib/shell-data';
 
 /**
@@ -38,8 +39,8 @@ import type { ShellShot } from '@/lib/shell-data';
  * working views of the lab: the gallery, the presenter and the compare rig.
  * Knowledge holds what the site keeps as the General Translation knowledge
  * base: the brand book (/deck), the brand directives (/brand), the
- * repository documents (/docs), the agent skills (/skills), the mark
- * explorations (/marks), the blog, the graphics, the motion roster with
+ * repository documents (/docs), the curated skills (/skills), the handbook
+ * (/handbook), the mark explorations (/marks), the blog, the graphics, the motion roster with
  * the translation series' research packages (/motion) and the archive of
  * retired versions. Shipped
  * (directive 8.10) holds the direction that shipped and its pages:
@@ -129,37 +130,48 @@ function thumb(stem: string): { shot: string; shotDark: string } {
  * The Pages rows, the site's own views in the order Kevin set for the
  * sidebar: gallery, brand, docs, deck, presenter, compare. Each previews its
  * own first fold, shot by scripts/capture-pages.mjs under the row's id.
+ * The labels come from src/lib/page-names.ts, the one source for a page's
+ * name (the 208px column takes Docs for Documentation).
  */
 const PAGES: readonly Surface[] = [
-  internal('gallery', 'Gallery', '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
-  internal('brand', 'Brand', '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
-  internal('docs', 'Docs', '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs')),
-  internal('deck', 'Deck', '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
-  internal('present', 'Presenter', '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
-  internal('compare', 'Compare', '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
+  internal('gallery', pageLabel('gallery'), '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
+  internal('brand', pageLabel('brand'), '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
+  internal('docs', pageLabel('docs'), '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs')),
+  internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
+  internal('present', pageLabel('present'), '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
+  internal('compare', pageLabel('compare'), '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
 ];
 
 /**
- * The Knowledge rows: what the site keeps as the General Translation
- * knowledge base beyond its pages. The skills and the marks preview their
+ * The Knowledge rows: what Kevin's hub keeps on how General Translation
+ * work is done beyond its pages. The skills and the marks preview their
  * first folds, shot by scripts/capture-pages.mjs under their ids (the plate
  * with the initial stands in until the cuts exist); the archive row opens
  * the first retired version, since the archive has no index page of its
- * own. The sidebar hangs the skill categories under the Skills row, the
- * graphics' areas under Graphics and the films under Motion.
+ * own. The sidebar hangs the curated skills under the Skills row as one
+ * numbered run, the handbook's documents under Handbook, the graphics'
+ * areas under Graphics and the films under Motion.
  */
 const KNOWLEDGE: readonly Surface[] = [
   internal(
     'skills',
-    'Skills',
+    pageLabel('skills'),
     '/skills',
-    'The working skills behind the design lab and the product, by name and description.',
+    'The skills Kevin uses for General Translation work, filed by area, each installable in any project.',
     'Knowledge',
     thumb('skills')
   ),
   internal(
+    'handbook',
+    pageLabel('handbook'),
+    '/handbook',
+    'How Kevin runs General Translation work: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log.',
+    'Knowledge',
+    thumb('handbook')
+  ),
+  internal(
     'marks',
-    'Marks',
+    pageLabel('marks'),
     '/marks',
     'The speed set of General Translation marks, seven in one register, and the two survivors of the earlier round, each one color.',
     'Knowledge',
@@ -167,28 +179,28 @@ const KNOWLEDGE: readonly Surface[] = [
   ),
   internal(
     'blog',
-    'Blog',
+    pageLabel('blog'),
     '/blog',
     'The docs-redesign series as General Translation published it: the content rewrite, the Fuma Nama interview, and designing docs for humans.',
     'Knowledge'
   ),
   internal(
     'graphics',
-    'Graphics',
+    pageLabel('graphics'),
     '/graphics',
     'Every illustration of the series by area, with what it shows and the glyphfield export it sits on.',
     'Knowledge'
   ),
   internal(
     'motion',
-    'Motion',
+    pageLabel('motion'),
     '/motion',
     'Every film on the motion roster with its status, and the research packages of the translation series.',
     'Knowledge'
   ),
   internal(
     'archive',
-    'Archive',
+    pageLabel('archive'),
     `/archive/${ARCHIVE[0]?.slug ?? ''}`,
     `The ${ARCHIVE.length} retired versions, kept as full-page captures at their own addresses.`,
     'Knowledge'

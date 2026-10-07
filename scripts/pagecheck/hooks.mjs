@@ -24,8 +24,9 @@
 //                   scaled by fit() in deck/parts/tail.html) stays inside
 //                   the frame's viewport with its 16:9 aspect kept
 //   docsToc         the docs book's contents grid stays inside the viewport
-//                   and runs three columns above 900px, two at or below
-//                   (src/app/docs/docs.css .ptd-toc and its 900px cut)
+//                   and runs four columns above 900px, two at or below
+//                   (the shared .pt-book-toc in BookView.css and its 900px
+//                   cut, the deck's .book-toc)
 //   galleryCells    no tile of the gallery's anatomy wall crosses the
 //                   viewport edge on any viewport (src/app/anatomy-wall.css;
 //                   DESIGN.md section 3, the rails hold the column)
@@ -216,7 +217,7 @@ export function judge(reads, site, cell, item) {
   }
   if (L.docsToc) {
     const t = L.docsToc;
-    const wanted = cell.w <= NARROW_MAX ? 2 : 3;
+    const wanted = cell.w <= NARROW_MAX ? 2 : 4;
     judge.docsToc = t.x >= -1 && t.right <= reads.innerWidth + 1 && site.tocColumns === wanted;
     info.docsToc = { x: t.x, right: t.right, columns: site.tocColumns, wanted };
   }
@@ -317,7 +318,7 @@ export function where(key, detail, item) {
         fix: 'fit the 1600x900 sheet to the smaller of the stage box ratios so it stays inside the frame at 16:9',
       };
     case 'docsToc':
-      return { file: `${classRef('ptd-toc', item)} and its 900px rule`, fix: 'three columns above 900, two at or below; keep the grid inside the sheet' };
+      return { file: `${classRef('pt-book-toc', item)} and its 900px rule`, fix: 'four columns above 900, two at or below; keep the grid inside the sheet' };
     case 'galleryCells':
       return { file: `${classRef('aw-collage', item)} and ${classRef('aw-cell', item)}`, fix: 'let the collage wrap or shrink its tiles inside the rail at this width' };
     case 'tapTargets':

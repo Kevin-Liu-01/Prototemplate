@@ -1,15 +1,25 @@
 /* The sheet.
 
    ViewerShell.css owns .pt-stagewrap, the main grid's second row that the
-   shell renders and measures, and the cross-fade between views. The sheet
-   sits inside it. The fixed sheet is positioned by fitSheet() in Sheet.tsx;
-   the ring is drawn as a mat so no shadow is needed: a 1px hair border on
-   .sheet (the structural role: a sheet is a large surface, not a framed
-   image, so it never draws --pt-edge), a 1px paper gap from the mat's
-   padding, a 1px hair-soft outline on the mat. lint-lines allows the pair
-   under the `sheet` class fragment.
-   A frameless sheet carries a 24px caption under it; a paged sheet shows a
-   chevron at each edge on hover, where a click pages.
+   shell renders and measures, on the shell's paper, and the cross-fade
+   between views. Two things sit inside it.
+
+   The fixed sheet is the edge of a fixed-size artifact: a slide, the
+   gallery's live 1440x900 exhibit, the compare rig's panes. Its stage
+   paints --pt-plate, the letterbox around the artifact (the deck's own
+   stagewrap), and fitSheet() in Sheet.tsx places the sheet on it. The
+   ring is drawn as a mat so no shadow is needed: a 1px hair border on
+   .sheet (the structural role), a 1px paper gap from the mat's padding,
+   a 1px hair-soft outline on the mat. lint-lines allows the pair under
+   the `sheet` class fragment. A frameless sheet carries a 24px caption
+   under it; a paged sheet shows a chevron at each edge on hover, where a
+   click pages. Present drops the ring and the plate.
+
+   The flow sheet is a reading page: a scroll region holding one column,
+   .pt-flow-col, on the stage's paper. The column draws no border, no
+   ground and no mat (Kevin, 2026-10-06); it is the deck's book column
+   (deck/parts/head.html .book-in): 1280px at most, --pt-col-pad-x on
+   each side, --pt-title-clear over the first line, 120px under the last.
 
    Slide change (directive 7.4): the stage carries data-dir, the way the last
    move went. The incoming slide fades from 0 and rises 6px over the slide
@@ -19,10 +29,12 @@
    native deck route (directive 8.1). GalleryViewer.css reads the
    pt-slide-up and pt-slide-down keyframes. All off under reduced motion. */
 
-/* the click and swipe surface for the fixed sheet; shown only in slide mode */
+/* the click and swipe surface for the fixed sheet, shown only in slide
+   mode, on the plate: the letterbox around a fixed-size artifact */
 .pt-sheet-stage {
   position: absolute;
   inset: 0;
+  background: var(--pt-plate);
 }
 
 .pt-sheet-stage[hidden] {
@@ -95,6 +107,7 @@
   place-items: center;
   background: var(--pt-paper);
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
   color: var(--pt-ink-2);
   opacity: 0;
   pointer-events: none;
@@ -196,7 +209,12 @@
   }
 }
 
-/* present: the ring goes, the sheet reads as the window */
+/* present: the plate and the ring go, the sheet reads as the window */
+.pt-sheet-stage.is-present {
+  background: var(--pt-paper);
+}
+
+/* the ring */
 .sheet-mat.is-present {
   outline-color: transparent;
 }
@@ -205,35 +223,25 @@
   border-color: transparent;
 }
 
-/* flow: a scroll region with the ring around a reading column */
+/* flow: a reading page. The scroll region has no ground of its own (the
+   stage's paper shows) and the column draws nothing: the toolbar's rule
+   is the only line above the title and the sidebar's edge the only line
+   beside the page (DESIGN.md section 2, The reading column). A book's
+   band and its structural rules run across the stage (BookView.css). */
 .sheet-flow {
   position: absolute;
   inset: 0;
-  padding: 28px;
 }
 
-.sheet-flow .sheet-mat {
-  position: relative;
-  max-width: calc(1280px + 2px);
+.pt-flow-col {
+  max-width: 1280px;
   margin: 0 auto;
-}
-
-.sheet-flow.is-rail .sheet-mat {
-  max-width: calc(var(--pt-rail) + 2px);
-}
-
-.sheet-flow .sheet {
-  padding: 44px 56px 120px;
-  overflow: visible;
+  padding: var(--pt-title-clear) var(--pt-col-pad-x) 120px;
 }
 
 @media (max-width: 900px) {
-  .sheet-flow {
-    padding: 12px;
-  }
-
-  .sheet-flow .sheet {
-    padding: 24px 16px 80px;
+  .pt-flow-col {
+    padding-bottom: 80px;
   }
 }
 

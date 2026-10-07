@@ -17,10 +17,20 @@
   --pt-titanium: #8a8f98;
   --pt-hair: rgba(7, 7, 7, 0.18);
   --pt-hair-soft: rgba(7, 7, 7, 0.09);
-  --pt-plate: rgba(7, 7, 7, 0.035);
+  --pt-plate: rgba(7, 7, 7, 0.035); /* the letterbox around a fixed sheet, a blank capture's ground; never a page's ground */
   --pt-cross: rgba(7, 7, 7, 0.38);
   --pt-edge: rgba(7, 7, 7, 0.62);
   --pt-thumb: rgba(7, 7, 7, 0.32);
+  /* The sidebar's rail (DESIGN.md section 16). The rail is a row-role line;
+     the current thumb is ink, a state, the bar the current row drew before;
+     the pointer's thumb is the scrollbar thumb's ink. The pills are grounds,
+     never lines: the hover pill is the plate every hover ground uses, the
+     current pill one step stronger. */
+  --pt-sb-rail-ink: var(--pt-hair-soft);
+  --pt-sb-thumb-ink: var(--pt-ink);
+  --pt-sb-thumb-hover-ink: var(--pt-thumb);
+  --pt-sb-pill-hover: var(--pt-plate);
+  --pt-sb-pill-current: rgba(7, 7, 7, 0.055);
   --pt-scrim: rgba(7, 7, 7, 0.28);
   --pt-panel-ink: #101010;
   --pt-panel-text: rgba(255, 255, 255, 0.87);
@@ -43,18 +53,97 @@
   --pt-sb-w: 208px;
   --pt-panel-w: 460px;
   --pt-rail: 1170px;
-  /* The one corner in chrome (Kevin's directive): the Search pill's 6px,
-     shared by the segmented control at both sizes (the toolbar's format seg,
-     the sidebar's density seg and the index panel's set switch), the
-     sidebar's filter field at both sizes (.pt-filter, 30px and 34px), the
-     index panel's own filter field (.pt-panel-filter in IndexPanel.css,
-     34px, beside the set switch) and the hover preview frame
-     (PreviewLayer.css reads it with a 6px fallback). Every other box in the
-     shell stays square. */
-  --pt-radius: 6px;
-  --pt-display: var(--font-inter), 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --pt-text: var(--font-inter), 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --pt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* Corners (DESIGN.md section 2, Corners). Kevin's toolbar is the
+     reference (round two, 2026-10-05): the search pill and the segmented
+     control at 6px, the key chip at 4px. Shells are square; everything a
+     reader presses, types into, picks up or looks at as an object is
+     rounded. lint-radius.mjs pins these values. */
+  --pt-radius-shell: 0;                                    /* the viewer frame, the sidebar, the toolbar bar, the fixed sheet and its ring, the reading column, the index panel, the book head, the dividers, the band, full-width rows, an input inside its field */
+  --pt-radius-control: 6px;                                /* buttons, fields, field-shaped buttons, segmented groups */
+  --pt-radius-inner: calc(var(--pt-radius-control) - 1px); /* a part flush inside a control's 1px border */
+  --pt-radius-chip: 4px;                                   /* key caps, chips, pills, tags, inline code, a control 2 to 7px inside a field */
+  --pt-radius-card: 6px;                                   /* cards, tiles, thumbnails, figures, popovers */
+  --pt-radius-round: 50%;                                  /* dots and avatars on a square box */
+
+  /* Type (DESIGN.md section 4). One family: the rsms InterVariable through
+     next/font (src/lib/fonts.ts, family ptInter). No bare Inter, no face
+     after it but system-ui: next/font's fallback face is already the
+     metric-matched local Arial. Every stylesheet reads these tokens and
+     declares no family, feature list or display size of its own;
+     scripts/lint-type.mjs holds them to it. */
+  --pt-text: var(--font-inter), system-ui, sans-serif;
+  --pt-display: var(--pt-text);
+  --pt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; /* code, numbers and tokens only */
+  --pt-text-hant: var(--font-inter), 'PingFang TC', 'Hiragino Sans CNS', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  --pt-text-hans: var(--font-inter), 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  --pt-text-ja: var(--font-inter), 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+  --pt-text-he: var(--font-inter), 'Arial Hebrew', 'Noto Sans Hebrew', sans-serif;
+  /* --pt-face-serif and --pt-face-grot: see .pt-faces below */
+
+  /* Features. Display (h1, h2 and display sentences) adds the single-storey
+     a and the open digits; text keeps Inter's default forms. Both name liga
+     and calt because Chrome turns them off under any letter-spacing
+     (rsms.me/inter's own fix). */
+  --pt-ff-text: 'liga' 1, 'calt' 1;
+  --pt-ff-display: 'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1;
+
+  /* Weights (BRAND.md section 6): nothing above 500. */
+  --pt-w-text: 400;
+  --pt-w-label: 500;
+  --pt-w-display: 500;
+  --pt-w-strong: 500;
+
+  /* Display ladder. opsz follows the size, so 32px and up is the Display design. */
+  --pt-d1: 44px; --pt-d1-lh: 1.04; --pt-d1-track: -0.025em; /* page title: deck .book-head h1 */
+  --pt-d2: 32px; --pt-d2-lh: 1.05; --pt-d2-track: -0.025em; /* section title: deck .book-sec h2 */
+  --pt-d3: 24px; --pt-d3-lh: 1.25; --pt-d3-track: -0.02em; /* h2 in prose, a record's title */
+
+  /* Text ladder: deck slide 29 and DESIGN.md section 12 */
+  --pt-t-title: 18px; --pt-t-title-lh: 1.35; /* h3, a row's title; weight 500 */
+  --pt-t-lead: 17px; --pt-t-lead-lh: 1.55; /* a head's lead */
+  --pt-t-body: 16px; --pt-t-body-lh: 1.6; /* prose, notes, section leads */
+  --pt-t-small: 14px; --pt-t-small-lh: 1.55; /* table cells, contents links, ledger rows */
+  --pt-t-meta: 13px; --pt-t-meta-lh: 1.5; /* meta tables, gutter notes, captions, th */
+  --pt-t-group: 12.5px; /* group labels in chrome */
+  --pt-track-label: -0.01em; /* weight 500 at 13 to 18px */
+  --pt-track-group: -0.005em; /* weight 500 at 12 to 12.5px */
+  /* weight 400 text is never tracked; nothing on Inter is tracked positive */
+
+  /* Measure: Inter averages 0.45em a character in prose */
+  --pt-measure: 32em; /* body: about 66 characters */
+  --pt-measure-lead: 30em; /* lead: about 66 characters at 17px */
+
+  /* the book's gutter (deck .book-sec, .page) */
+  --pt-gutter: 128px;
+  --pt-gutter-gap: 28px;
+
+  /* The book page (DESIGN.md section 4, The book page). BookView.css and
+     Sheet.css read these; lint-heads.mjs holds every book head to them. */
+  --pt-title-clear: 44px;    /* the space above a page title: the stage's top, under the toolbar's rule, to the h1's box; nothing is drawn in it and no line crosses a title */
+  --pt-head-gap: 14px;       /* the h1's box to the lead's box */
+  --pt-head-rule-pad: 26px;  /* the taller of lead and panel to the mast's rule */
+  --pt-head-col-gap: 56px;   /* the lead's column to the panel */
+  --pt-head-panel: 304px;    /* the panel's column: the longest value is a date with its hint (Sep 10, 2026 4 weeks ago, 168px) */
+  --pt-row: calc(var(--pt-t-lead) * var(--pt-t-lead-lh)); /* one lead line, 26.35px: the panel's row pitch */
+  --pt-book-gap: 32px;       /* between the blocks of a book column */
+  --pt-sec-over: 48px;       /* the block above a rule to the rule: the contents to the band, a section to the next divider */
+  --pt-sec-pad: 30px;        /* a rule to the h2's box under it */
+  --pt-band-h: 42px;         /* the hatch band, both rules included */
+  --pt-col-pad-x: 56px;      /* the reading column's side padding: the deck's book column (.book-in) */
+  --pt-hatch: rgba(7, 7, 7, 0.085); /* the band's 1px diagonal */
+
+  /* The full-width rule: a book's horizontal rules run across the whole
+     stage. The element keeps its 1px border for layout and paints it as a
+     border image outset past both ends of its box; the outset is ink
+     overflow, so nothing scrolls sideways, and the scroll region clips it at
+     the stage's edges. Written after the image:
+     border-image: linear-gradient(var(--pt-hair) 0 0) var(--pt-bleed-bottom);
+     The image ignores border-width, so a rule that drops its border also
+     writes border-image-source: none (the build empties the shorthand
+     border-image: none to a blank declaration the browser discards). */
+  --pt-bleed-top: 1 0 0 / 1px 0 0 / 0 100vmax;
+  --pt-bleed-bottom: 0 0 1 / 0 0 1px / 0 100vmax;
+  --pt-bleed-block: 1 0 / 1px 0 / 0 100vmax;
 
   /* Motion (directive 7.4). Every transition and animation in the shell
      reads one of these, and every one of them moves transform or opacity
@@ -63,12 +152,12 @@
      the whole layer goes still from one place. */
   --pt-dur-fast: 120ms; /* button color and ground, frame borders, the outgoing slide */
   --pt-dur-leave: 140ms; /* the leaving view */
-  --pt-dur-toast: 160ms; /* the toast, the help scrim, a scrim fade */
+  --pt-dur-toast: 160ms; /* the toast, the help scrim, a scrim fade, the sidebar's pointer marks */
   --pt-dur-slide: 180ms; /* the incoming slide, the index panel, the seg indicator */
   --pt-dur-enter: 200ms; /* the entering view, the help card */
-  --pt-dur-sb: 220ms; /* the sidebar column */
+  --pt-dur-sb: 220ms; /* the sidebar column, the sidebar's marks on a pick */
   --pt-ease-out: ease-out;
-  --pt-ease: cubic-bezier(0.2, 0, 0, 1); /* the sidebar column */
+  --pt-ease: cubic-bezier(0.2, 0, 0, 1); /* the sidebar column and its marks */
 }
 
 /* Native controls follow the theme (directive: light and dark hold
@@ -98,6 +187,7 @@
   --pt-cross: rgba(255, 255, 255, 0.34);
   --pt-edge: rgba(242, 242, 240, 0.55);
   --pt-thumb: rgba(242, 242, 240, 0.32);
+  --pt-sb-pill-current: rgba(242, 242, 240, 0.075);
   /* the site hues lifted for the ink ground: #2f5ce0 would sit at 3.58:1
      on #070707, so each keeps its hue and gains light; the Signal amber
      returns to its own #f0a020 */
@@ -105,11 +195,88 @@
   --pt-site-orbit: #9d91ff;
   --pt-site-signal: #f0a020;
   --pt-site-shipped: #1fbf92;
+  --pt-hatch: rgba(255, 255, 255, 0.07);
+}
+
+/* Forced colors leave a border image in its author colors (Chromium), so
+   the full-width rules (--pt-bleed-*) would fade out against the system's
+   ground; the hairs take the system's text color there. */
+@media (forced-colors: active) {
+  :root,
+  :root[data-theme='dark'] {
+    --pt-hair: CanvasText;
+    --pt-hair-soft: CanvasText;
+  }
+}
+
+/* The phone steps of the display ladder (deck head.html, its 900px book rule) */
+@media (max-width: 900px) {
+  :root {
+    --pt-d1: 32px;
+    --pt-d2: 26px;
+    --pt-d2-lh: 1.15;
+    --pt-d3: 21px;
+    --pt-title-clear: 24px;
+    --pt-book-gap: 24px;
+    --pt-sec-over: 40px;
+    --pt-col-pad-x: 16px;
+  }
+}
+
+/* The nameplate's faces (DESIGN.md section 15) and the gallery's grotesk
+   labels (section 4). A custom property resolves where it is declared, and
+   next/font's variable classes for these two faces sit on the elements that
+   use them (src/lib/brand-fonts.ts adds .pt-faces to its classes), not on
+   :root, so the two tokens are declared there. */
+.pt-faces {
+  --pt-face-serif: var(--font-fraunces), Georgia, 'Times New Roman', serif;
+  --pt-face-grot: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Type base on the shell's roots, not on html, so the /d/ directions keep
+   their own type. The display features reach h1 and h2 only (the deck's
+   rule, head.html:62); every other element takes the text features. The
+   /d/production blog port carries .blog-root beside .toolchain-root and
+   keeps its own type: :where() leaves the exclusion at no specificity. */
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-preview, .pt-corner, .pt-toast, .pt-root, .blog-root:not(:where(.toolchain-root))) {
+  font-family: var(--pt-text);
+  font-feature-settings: var(--pt-ff-text);
+  font-optical-sizing: auto;
+  font-weight: var(--pt-w-text);
+}
+
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root))) :is(h1, h2) {
+  font-family: var(--pt-display);
+  font-feature-settings: var(--pt-ff-display);
+  font-weight: var(--pt-w-display);
+  text-wrap: balance;
+}
+
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root))) :is(h3, h4) {
+  font-weight: var(--pt-w-label);
+  text-wrap: balance;
+}
+
+/* form controls take the UA's font shorthand, which resets the features
+   to normal; the text features come back on every control in the shell */
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-preview, .pt-corner, .pt-toast) :is(button, input, select, textarea) {
+  font-feature-settings: var(--pt-ff-text);
+}
+
+/* stops the UA's bolder computing 700 (the brand section numerals, prose strong) */
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root))) :is(b, strong) {
+  font-weight: var(--pt-w-strong);
+}
+
+/* kbd stays Inter: the search key chip and the help card's keys are labels (DESIGN.md section 15) */
+:is(.pt-viewer, .pt-root, .blog-root:not(:where(.toolchain-root))) :is(code, pre, samp) {
+  font-family: var(--pt-mono);
+  letter-spacing: 0;
 }
 
 /* Scroll regions (directive 8.11): one thin scrollbar for every scrolling
    box in chrome, the sidebar list, the index panel body, the search
-   results, the grid, the book and the flow sheet. A 4px gutter, always
+   results, the grid, the book and the reading page. A 4px gutter, always
    present, with no track and no rule; a 2px thumb in --pt-thumb centered
    in the gutter (a 1px transparent border on each side, clipped out of the
    thumb's ground, leaves the paint on the middle 2px, so the thumb never
@@ -161,7 +328,7 @@
   border: 0;
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
-  border-radius: 0;
+  border-radius: var(--pt-radius-shell);
 }
 
 .pt-scroll-x::-webkit-scrollbar-thumb {
@@ -208,6 +375,7 @@ body[data-shell] {
   border: 1px solid transparent;
   color: var(--pt-ink-2);
   font: 13px/1 var(--pt-text);
+  font-feature-settings: var(--pt-ff-text); /* the font shorthand resets the features */
   height: 32px;
   padding: 0 10px;
   display: inline-flex;
@@ -215,7 +383,7 @@ body[data-shell] {
   gap: 8px;
   white-space: nowrap;
   cursor: pointer;
-  border-radius: 0;
+  border-radius: var(--pt-radius-control);
   /* directive 7.4: color and ground move over the fast duration; nothing else animates */
   transition:
     color var(--pt-dur-fast) var(--pt-ease-out),
@@ -251,8 +419,7 @@ body[data-shell] {
   width: 32px;
   padding: 0;
   justify-content: center;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
+  font-family: var(--pt-text);
   font-weight: 500;
   font-size: 14px;
 }
@@ -276,11 +443,13 @@ body[data-shell] {
    has measured the indicator (.has-ind), the active option fills itself so
    a render without scripts still shows the choice.
 
-   The box takes the shell corner (--pt-radius) and clips its children to
-   the inner corner: the indicator is a 1px span widened with scaleX, so a
-   radius of its own would stretch with it, and the clip is what keeps its
-   ink inside the rounded border. The end options also round their outer
-   corners to the inner radius (the box's radius less its 1px border), so
+   The box takes the control corner (--pt-radius-control) and clips its
+   children to the inner corner (--pt-radius-inner): the indicator is a
+   1px span widened with scaleX, so a radius of its own would stretch with
+   it, and the clip is what keeps its ink inside the rounded border. The
+   options set the shell corner, since .pt-ib now rounds every button; the
+   end options round their outer corners to the inner radius (the box's
+   radius less its 1px border), so
    the plate hover, the ink fallback fill and the focus ring follow the box
    without a second stroke at the corner. The dividers between options are
    straight rules that never reach a corner; the last option draws none.
@@ -290,7 +459,7 @@ body[data-shell] {
   position: relative;
   display: inline-flex;
   border: 1px solid var(--pt-hair);
-  border-radius: var(--pt-radius);
+  border-radius: var(--pt-radius-control);
   height: 32px;
   overflow: hidden;
 }
@@ -301,18 +470,20 @@ body[data-shell] {
   height: 30px;
   border: 0;
   border-right: 1px solid var(--pt-hair);
+  /* the interior corners stay square; the end options round their outer ones below */
+  border-radius: var(--pt-radius-shell);
   padding: 0 12px;
 }
 
 .pt-seg .pt-ib:first-of-type {
-  border-top-left-radius: calc(var(--pt-radius) - 1px);
-  border-bottom-left-radius: calc(var(--pt-radius) - 1px);
+  border-top-left-radius: var(--pt-radius-inner);
+  border-bottom-left-radius: var(--pt-radius-inner);
 }
 
 .pt-seg .pt-ib:last-of-type {
   border-right: 0;
-  border-top-right-radius: calc(var(--pt-radius) - 1px);
-  border-bottom-right-radius: calc(var(--pt-radius) - 1px);
+  border-top-right-radius: var(--pt-radius-inner);
+  border-bottom-right-radius: var(--pt-radius-inner);
 }
 
 .pt-seg .pt-ib:hover {

@@ -1,180 +1,59 @@
-/* Skills: the working skills on the viewer shell.
+/* Skills: the curated skills on the viewer shell.
 
    The shell (src/components/viewer) draws the frame; this sheet draws the
-   book inside the flow sheet (the head, the contents, the category
-   dividers, the ruled rows) and lays the grid's rows out as text tiles.
+   book inside the flow sheet (the rows under the shared head, contents and
+   area dividers; a skill page's about rows, install line and files) and
+   lays the grid's rows out as text tiles.
    Everything reads the shell's --pt- tokens: the book is chrome, so its
    rules are --pt-hair and --pt-hair-soft and never ink (directive 8.9),
    and the tiles carry the frame grammar every captured frame in the shell
    uses (a 1px --pt-edge border, ink on hover, ink plus the 2px offset
-   outline when active). One hairline per rule, radius 0, no shadow. */
+   outline when active). One hairline per rule; the tiles take the card
+   corner (DESIGN.md section 2, Corners); no shadow. */
 
-/* ---------- the book column ---------- */
+/* ---------- the book column ----------
+   The column (.pt-book-col), the head, the contents, the band and the
+   category dividers are the shared book classes (BookHead, .pt-book-toc
+   and .pt-book-sec in BookView.css); this sheet draws the rows. */
 
-.sk-book {
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-  color: var(--pt-ink);
-  font-family: var(--pt-text);
-}
-
-/* head: title and lead on the left, the counts on the right, one rule under both */
-.sk-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 32px;
-  align-items: end;
-  padding-bottom: 26px;
-  border-bottom: 1px solid var(--pt-hair);
-}
-
-.sk-head h1 {
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 44px;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
-  margin: 0;
-  text-wrap: balance;
-  font-feature-settings: 'cv11', 'ss01';
-}
-
-.sk-head p {
-  font-size: 15.5px;
-  line-height: 1.5;
-  color: var(--pt-ink-2);
-  max-width: 62ch;
-  margin: 14px 0 0;
-}
-
-.sk-meta {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--pt-titanium);
-  text-align: right;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-
-.sk-meta span {
-  display: block;
-}
-
-/* contents: one ruled link per category with its tabular range */
-.sk-toc {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0 28px;
-}
-
-.sk-toc a {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: baseline;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--pt-hair-soft);
-  color: inherit;
-  text-decoration: none;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: -0.01em;
-}
-
-.sk-toc a span {
-  min-width: 0;
-  line-height: 1.3;
-}
-
-.sk-toc a:hover span {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-
-.sk-toc a:focus-visible {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: 2px;
-}
-
-.sk-toc small {
-  font-family: var(--pt-text);
-  font-size: 12px;
-  color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
-}
-
-/* one category: its divider, then its rows; the rows rule themselves */
+/* one area: its divider, then its rows; the rows rule themselves */
 .sk-cat {
   display: flex;
   flex-direction: column;
 }
 
-/* divider: the ordinal and the range in the gutter, the title beside */
-.sk-sec {
-  display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  gap: 28px;
-  align-items: end;
-  padding: 30px 0 18px;
-  border-top: 1px solid var(--pt-hair);
-  margin-top: 12px;
-}
-
-.sk-sec small {
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
-}
-
-.sk-sec small span {
-  display: block;
-}
-
-.sk-sec h2 {
-  font-family: var(--pt-display);
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  margin: 0;
-  text-wrap: balance;
-  font-feature-settings: 'cv11', 'ss01';
-}
-
-/* row: the number in the gutter, the name and the description beside, one
-   soft rule below each; the scroll margin keeps a landed row off the edge */
+/* row: the number in the gutter on the name's baseline, the name and the
+   description beside, one soft rule below each; the scroll margin keeps a
+   landed row off the edge */
 .sk-row {
   display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  gap: 28px;
-  align-items: start;
-  padding: 14px 0;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  gap: var(--pt-gutter-gap);
+  align-items: baseline;
+  padding: 24px 0 28px;
   border-bottom: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-bottom);
   scroll-margin-top: 20px;
 }
 
-/* the last row of a category draws no rule: the next divider's rule, or the
+/* the last row of an area draws no rule: the next divider's rule, or the
    book's end, follows it, so no two lines sit 12px apart */
 .sk-cat .sk-row:last-child {
   border-bottom: 0;
+  border-image-source: none;
 }
 
 .sk-n {
-  padding-top: 2px;
+  padding-top: 0;
 }
 
+/* the gutter number takes the size and the baseline of the name beside it */
 .sk-n b {
   display: block;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 1.3;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
   color: var(--pt-titanium);
   font-variant-numeric: tabular-nums;
 }
@@ -188,23 +67,36 @@
   min-width: 0;
 }
 
+/* the title, then the slug as a code token on the title's baseline; the
+   slug drops under the title when the line is full */
+.sk-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 12px;
+  row-gap: 2px;
+}
+
 .sk-body h3 {
   margin: 0;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
   color: var(--pt-ink);
   overflow-wrap: anywhere;
 }
 
+.sk-name code {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
 .sk-body p {
-  max-width: 72ch;
-  margin: 6px 0 0;
-  font-size: 15px;
-  line-height: 1.5;
+  max-width: var(--pt-measure);
+  margin: 4px 0 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
   color: var(--pt-ink-2);
 }
 
@@ -234,6 +126,7 @@
   padding: 12px 14px;
   margin: 0;
   border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
   background: var(--pt-paper);
   overflow: visible;
   color: var(--pt-ink-2);
@@ -252,7 +145,6 @@
 
 .pt-viewer[data-shell='skills'] .pt-grid .pt-row .pt-row-title {
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 14px;
   line-height: 1.3;
@@ -286,39 +178,16 @@
 /* ---------- narrow ---------- */
 
 @media (max-width: 900px) {
-  .sk-book {
-    gap: 24px;
-  }
-
-  .sk-head {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .sk-head h1 {
-    font-size: 32px;
-  }
-
-  .sk-meta {
-    text-align: left;
-  }
-
-  .sk-toc {
-    grid-template-columns: 1fr;
-  }
-
-  .sk-sec,
   .sk-row {
     grid-template-columns: 1fr;
     gap: 8px;
   }
 
-  .sk-sec h2 {
-    font-size: 26px;
-  }
-
-  .sk-n {
-    padding-top: 0;
+  /* the number sits above the name at the meta step */
+  .sk-n b {
+    font-size: var(--pt-t-meta);
+    line-height: var(--pt-t-meta-lh);
+    letter-spacing: 0;
   }
 }
 
@@ -343,30 +212,164 @@
   outline-offset: 2px;
 }
 
+/* ---------- the code tokens in the head's note ---------- */
+
+.sk-book .pt-book-note code,
+.sk-page code:where(:not(.pt-cmd code)) {
+  font-size: 0.875em;
+  overflow-wrap: anywhere;
+}
+
 /* ---------- the skill page (/skills/<slug>) ----------
-   The page is a book in the docs grammar: the shell's BookHead, the body
-   under .ptd-body.pt-root from docs.css (SkillViewer loads docs.css and
-   prototemplate.css for it), and the two neighbours in the category under
-   one structural rule. Only what the docs grammar does not already say is
-   written here. */
+   The page is a book in the docs grammar: the shell's BookHead (with the
+   about rows as its note), the band, then three sections under the shared
+   dividers (Install with the shell's InstallField, Instructions with the
+   body under .ptd-body.pt-root from docs.css, which SkillViewer loads with
+   prototemplate.css, and Files), and the two neighbours under one
+   structural rule. Each section's body sits in the docs' .ptd-row, so it
+   keeps the h2's column. Only what the docs grammar does not already say
+   is written here. */
 
 /* the toolbar slot: a link dressed as the shell's button */
 .sk-raw {
   text-decoration: none;
 }
 
+/* the head's note holds the about rows, which run wider than one measure */
+.sk-page .pt-book-note {
+  max-width: calc(var(--pt-gutter) + var(--pt-gutter-gap) + var(--pt-measure));
+}
+
+/* about: covers, when to use, the other areas; one soft rule between rows */
+.sk-about {
+  margin: 0;
+}
+
+.sk-about > div {
+  display: grid;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  column-gap: var(--pt-gutter-gap);
+  align-items: baseline;
+}
+
+.sk-about > div {
+  padding: 12px 0;
+  border-top: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-top);
+}
+
+.sk-about > div:first-child {
+  padding-top: 0;
+  border-top: 0;
+  border-image-source: none;
+}
+
+.sk-about > div:last-child {
+  padding-bottom: 0;
+}
+
+.sk-about dt {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+.sk-about dd {
+  margin: 0;
+  max-width: var(--pt-measure);
+}
+
+/* Install: the copy field, then one sentence */
+.sk-install-body {
+  min-width: 0;
+  max-width: calc(var(--pt-measure) + 8em);
+}
+
+.sk-install-body p {
+  margin: 10px 0 0;
+  max-width: var(--pt-measure);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  color: var(--pt-ink-2);
+}
+
 /* one continuous body, unlike the docs' one row per h2: the sections need
-   air between them, and the first block sits flush under the head */
+   air between them, and the first block sits flush under the divider */
 .ptd-book .ptd-body.sk-doc h2 {
-  margin-top: 44px;
+  margin-top: 48px;
 }
 
 .ptd-book .ptd-body.sk-doc h3 {
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
 .ptd-book .ptd-body.sk-doc > :first-child {
   margin-top: 0;
+}
+
+/* the Files divider's rule closes the body, so a list or a table that
+   ends the body draws no rule of its own above it (the line law: one rule) */
+.ptd-book .ptd-body.sk-doc > .ptd-list:last-child li:last-child,
+.ptd-book .ptd-body.sk-doc > :last-child tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Files: the folder as agents fetch it, each file a raw link under its kind */
+.sk-files-body {
+  min-width: 0;
+}
+
+.sk-files-body > p {
+  margin: 0;
+  max-width: var(--pt-measure);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+.sk-files ul {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: var(--pt-measure);
+}
+
+.sk-files li {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  column-gap: var(--pt-gutter-gap);
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.sk-files li > span {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+.sk-files a {
+  min-width: 0;
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.sk-files a:hover {
+  text-decoration-color: currentColor;
+}
+
+.sk-files a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.sk-files a code {
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
 }
 
 /* the neighbours: previous at the left, next at the right, under one rule */
@@ -376,6 +379,7 @@
   gap: 28px;
   padding-top: 22px;
   border-top: 1px solid var(--pt-hair);
+  border-image: linear-gradient(var(--pt-hair) 0 0) var(--pt-bleed-top);
 }
 
 .sk-pager-link {
@@ -408,20 +412,18 @@
 
 .sk-pager-link small {
   display: block;
-  font-size: 12.5px;
-  line-height: 1.5;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
   color: var(--pt-titanium);
 }
 
 .sk-pager-link b {
   display: block;
   margin-top: 2px;
-  font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
   color: var(--pt-ink);
   overflow-wrap: anywhere;
 }
@@ -442,6 +444,13 @@
 }
 
 @media (max-width: 900px) {
+  /* the gutter labels sit above their text */
+  .sk-about > div,
+  .sk-files li {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 4px;
+  }
+
   .sk-pager {
     grid-template-columns: 1fr;
     gap: 16px;

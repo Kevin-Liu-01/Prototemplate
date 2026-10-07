@@ -39,6 +39,9 @@
   flex-direction: column;
   background: var(--pt-paper);
   border: 1px solid var(--pt-hair);
+  /* a popover: the card corner, and the clip keeps the rows' grounds inside it */
+  border-radius: var(--pt-radius-card);
+  overflow: hidden;
   animation: pt-search-in var(--pt-dur-enter) var(--pt-ease-out) both;
 }
 
@@ -76,6 +79,7 @@
   gap: 8px;
   padding: 0 10px;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
   background: var(--pt-paper);
   color: var(--pt-titanium);
   cursor: text;
@@ -103,9 +107,10 @@
   background: none;
   color: var(--pt-ink);
   font: 13.5px var(--pt-text);
+  font-feature-settings: var(--pt-ff-text); /* the font shorthand resets the features */
   padding: 0;
   margin: 0;
-  border-radius: 0;
+  border-radius: var(--pt-radius-shell);
   outline: none;
   -webkit-appearance: none;
   appearance: none;
@@ -140,7 +145,6 @@
   margin: 0;
   padding: 14px 0 6px;
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 12.5px;
   line-height: 1.3;
@@ -220,7 +224,6 @@
 .pt-search-t {
   min-width: 0;
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 14px;
   line-height: 1.3;

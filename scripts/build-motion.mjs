@@ -11,13 +11,36 @@
 // public/media, or motion/out/<slug>.mp4 by that exact name; a
 // _draft-<slug>.mp4 or a <slug>-share.mp4 is not the final), in production
 // when its folder under motion/films exists, and planned otherwise. A film
-// with a web copy under public/media (PUBLISHED: the two blog films and the
-// three films of the translation series) plays on the site; every other
-// render stays in the motion folder and is listed by its repository-relative
-// path. The script reads motion/ and never writes there, and it never copies
-// a render into public/: the web copies are made by hand, each named
-// <name>-film.mp4 with the moov atom at the front and <name>-poster.jpg at
-// 1920x1080 (public/media/README.md lists every file).
+// with a web copy under public/media (pinned in public/motion/published.json:
+// the two blog films and the three films of the translation series) plays on
+// the site; every other render stays in the motion folder and is listed by
+// its repository-relative path. The script reads motion/ and never writes
+// there, and it never copies a render into public/: the web copies are made
+// by hand, each named <name>-film.mp4 with the moov atom at the front and
+// <name>-poster.jpg at 1920x1080 (public/media/README.md lists every file).
+//
+// The version rule. The film on the site, its credits, its contact sheet and
+// its script describe one cut. public/motion/published.json pins that cut
+// per film: the web copy and its poster, the cut's label and length as its
+// script states them, and the SHA-256 of its video and audio streams
+// (ffmpeg's streamhash with the streams copied, so a faststart remux of a
+// render hashes the same as the render). The script checks every web copy
+// against its pin and throws when one differs. It then looks for the
+// published cut in motion/out and in each folder under it that holds the
+// kit's records (sheets/ or scripts/, such as out/series-100s): the folder
+// whose <slug>.mp4 or <slug>-share.mp4 has the pinned streams holds the cut,
+// and its <slug>.credits.txt, sheets/<slug>.webp (with the .png when it is
+// at most SHEET_PNG_CAP) and scripts/<slug>.md are copied to public/motion,
+// after the script's label and length are checked against the pin. When no
+// folder holds the cut, the copies already in public/motion stay as they
+// are (their script must still match the pin). A render in motion/out that
+// is not the published cut is listed as in review, by its label (when its
+// own script names it and runs the same length) and its length, and nothing
+// else of it reaches the site: no picture, no sheet, no script, no credits.
+// To publish a new cut, replace the web copy, then run
+// `node scripts/build-motion.mjs --pin <slug> ...`, which pins the web copy's
+// streams and the label and length of the folder that holds them, and run
+// the script again.
 //
 // The package body is the BRIEF.md from the package's own h1 to the end:
 // the "# Brief: <slug>" header block above it (the lane instructions, up to
@@ -32,7 +55,10 @@
 // input writes byte-identical files.
 //
 // Usage: pnpm build:motion
-// MOTION_DIR overrides the motion folder (default: <repo>/motion).
+//        node scripts/build-motion.mjs --pin <slug> [<slug> ...]
+// MOTION_DIR overrides the motion folder (default: <repo>/motion). ffmpeg and
+// ffprobe must be on the PATH: the version rule reads which cut each render
+// holds.
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -46,34 +72,21 @@ const MOTION = process.env.MOTION_DIR ?? join(ROOT, 'motion');
 const BODY_DIR = 'public/motion';
 const BODY_OUT = join(ROOT, BODY_DIR);
 
+/** The published copies of the contact sheets and the scripts, served under /motion/sheets/ and /motion/scripts/. */
+const SHEET_DIR = 'sheets';
+const SCRIPT_DIR = 'scripts';
+
+/** The pinned cut of each published film; hand-edited, or written by --pin. */
+const MANIFEST = join(BODY_OUT, 'published.json');
+
+/** The full-resolution PNG of a sheet is published beside the WebP when it is at most this size; a larger one is linked nowhere. */
+const SHEET_PNG_CAP = 20_000_000;
+
+/** The kit's contact sheet (motion/kit/contact-sheet.sh): 384 x 216 tiles, eight to a row, 3 px gaps, two frames a second from frame 0. */
+const SHEET_TILE = { width: 384, height: 216, gap: 3, perSecond: 2 };
+
 /** The motion folder as the generated paths name it, relative to the repository root. */
 const REL = 'motion';
-
-/**
- * The films with a web copy under public/media, by roster slug: the two blog
- * films (also on /brand) and the three films of the translation series. Each
- * file is checked before it is used, so a slug whose copy is missing reads as
- * its motion folder says.
- */
-const PUBLISHED = {
-  'blog-designing-docs': { video: '/media/designing-docs-film.mp4', poster: '/media/designing-docs-poster.jpg' },
-  'blog-fuma-nama': { video: '/media/fuma-nama-film.mp4', poster: '/media/fuma-nama-poster.jpg' },
-  'jihe-yuanben': { video: '/media/jihe-yuanben-film.mp4', poster: '/media/jihe-yuanben-poster.jpg' },
-  'journey-to-the-west': { video: '/media/journey-to-the-west-film.mp4', poster: '/media/journey-to-the-west-poster.jpg' },
-  'modern-hebrew': { video: '/media/modern-hebrew-film.mp4', poster: '/media/modern-hebrew-poster.jpg' },
-};
-
-/**
- * A film's credits, the plain-text file the Videos session writes beside the
- * render (motion/out/<slug>.credits.txt) and asks to ship with the film
- * wherever it is published. It is copied verbatim to public/motion and read by
- * the film's page; its text stays out of motion.ts, whose guards refuse
- * quoted hex colors, and the jihe-yuanben credits name one.
- */
-function creditsOf(slug) {
-  const file = join(MOTION, 'out', `${slug}.credits.txt`);
-  return existsSync(file) ? readFileSync(file, 'utf8') : undefined;
-}
 
 /** The post each blog film trails; emitted only when content/blog/<post>.mdx exists. */
 const BLOG_POST = {
@@ -189,21 +202,352 @@ function summaryOf(paragraph, where) {
   return text;
 }
 
-/** `100.0` seconds becomes `1:40`; undefined when ffprobe is missing or cannot read the file. */
-function runtimeOf(file) {
+/** A file's duration in seconds as ffprobe reads it; undefined when ffprobe is missing or cannot read the file. */
+function durationOf(file) {
   if (!file || !existsSync(file)) return undefined;
   try {
     const out = execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file], {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
     });
-    const seconds = Math.round(Number.parseFloat(out.trim()));
-    if (!Number.isFinite(seconds) || seconds <= 0) return undefined;
-    return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+    const seconds = Number.parseFloat(out.trim());
+    return Number.isFinite(seconds) && seconds > 0 ? seconds : undefined;
   } catch {
     return undefined;
   }
 }
+
+/** `100.0` seconds becomes `1:40`; undefined when ffprobe is missing or cannot read the file. */
+function runtimeOf(file) {
+  const duration = durationOf(file);
+  if (duration === undefined) return undefined;
+  const seconds = Math.round(duration);
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
+/* ---- the version rule ---- */
+
+/**
+ * The SHA-256 of a render's video and audio streams, copied as they are
+ * (ffmpeg's streamhash muxer): the identity of a cut, the same for a render
+ * and its faststart remux. Throws without ffmpeg, since the rule cannot be
+ * kept without it.
+ */
+function streamsOf(file) {
+  let out;
+  try {
+    out = execFileSync(
+      'ffmpeg',
+      ['-v', 'error', '-i', file, '-map', '0:v', '-map', '0:a?', '-c', 'copy', '-f', 'streamhash', '-hash', 'sha256', '-'],
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 1 << 20 }
+    );
+  } catch (error) {
+    fail(`ffmpeg could not hash the streams of ${file.replace(`${ROOT}/`, '')} (${String(error.message ?? error).split('\n')[0]})`);
+  }
+  const streams = {};
+  for (const line of out.trim().split('\n')) {
+    const match = /^\d+,([va]),SHA256=([0-9a-f]{64})$/.exec(line.trim());
+    if (!match) continue;
+    const kind = match[1] === 'v' ? 'video' : 'audio';
+    if (streams[kind]) fail(`${file.replace(`${ROOT}/`, '')} has more than one ${kind} stream`);
+    streams[kind] = match[2];
+  }
+  if (!streams.video) fail(`${file.replace(`${ROOT}/`, '')} has no video stream`);
+  return streams;
+}
+
+const sameStreams = (a, b) => a.video === b.video && (a.audio ?? null) === (b.audio ?? null);
+
+/** `100.0 s` becomes 100. */
+const secondsOf = (length) => Number.parseFloat(length);
+
+/** A script's length beside a render's duration: the kit writes one decimal, so 74.85 s reads `74.8 s`. */
+const sameLength = (length, seconds) => Math.abs(secondsOf(length) - seconds) <= 0.1;
+
+const SCRIPT_HEADER = '| Time | Voice | Line | On screen |';
+const SCRIPT_TIME = /^\d+:\d{2}\.\d{2}$/;
+const SCRIPT_LENGTH = /^\d+(?:\.\d+)? s$/;
+const SCRIPT_VOICE = /^[A-Z][A-Za-z ]*: \S/;
+
+/** `1:05.66` becomes 65.66. */
+function timeOf(text) {
+  const [minutes, seconds] = text.split(':');
+  return Number(minutes) * 60 + Number(seconds);
+}
+
+/** The cells of a table line, outer pipes dropped. */
+function cellsOf(line) {
+  return line
+    .trim()
+    .replace(/^\|/, '')
+    .replace(/\|$/, '')
+    .split('|')
+    .map((cell) => cell.trim());
+}
+
+/** A line's words for the search: no markup and no Subtitle label, the <br> a space. */
+function searchWords(text) {
+  return text
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/\*Subtitle:\*/g, ' ')
+    .replace(/\*+/g, '')
+    .replace(/`/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * A script as built (motion/kit/script-export.py): an h1, the line
+ * `<length> s · <label> · <Voice>: <name> ...`, the story in one paragraph,
+ * the table Time | Voice | Line | On screen with every time later than the
+ * one before, then a closing note. Throws on any other shape, before
+ * anything is written. Returns the second line's facts, the line count and
+ * the words the search matches (the story and the spoken lines).
+ */
+function scriptOf(file) {
+  const where = file.replace(`${ROOT}/`, '');
+  const lines = readLines(file);
+  const title = /^# (.+)$/.exec(lines[0] ?? '')?.[1]?.trim();
+  if (!title) fail(`${where} does not open with an h1`);
+  const header = lines.findIndex((line) => line.trim() === SCRIPT_HEADER);
+  if (header < 0) fail(`${where} has no "${SCRIPT_HEADER}" table`);
+  const front = paragraphs(lines.slice(1, header));
+  const [meta, ...story] = front;
+  if (!meta || story.length !== 1) fail(`${where} needs its length line and a one-paragraph story above the table`);
+  const [length, ...fields] = meta.split(' · ').map((field) => field.trim());
+  if (!SCRIPT_LENGTH.test(length ?? '')) fail(`${where}: "${meta}" does not open with a length such as 100.0 s`);
+  const voices = fields.filter((field) => SCRIPT_VOICE.test(field));
+  const labels = fields.filter((field) => !SCRIPT_VOICE.test(field));
+  if (labels.length > 1) fail(`${where}: "${meta}" names more than one cut`);
+  if (voices.length === 0) fail(`${where}: "${meta}" names no voice`);
+  if (!/^\|[\s|:-]+\|$/.test(lines[header + 1]?.trim() ?? '')) fail(`${where}: the table's separator row is missing`);
+  const rows = [];
+  let end = header + 2;
+  for (; end < lines.length && lines[end].trim().startsWith('|'); end += 1) {
+    const cells = cellsOf(lines[end]);
+    if (cells.length !== 4) fail(`${where}: table row ${rows.length + 1} has ${cells.length} cells, not 4`);
+    if (!SCRIPT_TIME.test(cells[0])) fail(`${where}: table row ${rows.length + 1} starts at "${cells[0]}", not m:ss.cc`);
+    if (rows.length > 0 && timeOf(cells[0]) <= timeOf(rows[rows.length - 1][0])) fail(`${where}: table row ${rows.length + 1} does not start after the row before it`);
+    if (!cells[1] || !cells[2]) fail(`${where}: table row ${rows.length + 1} has no voice or no line`);
+    rows.push(cells);
+  }
+  if (rows.length === 0) fail(`${where} has an empty table`);
+  if (lines.slice(end).some((line) => line.trim().startsWith('|'))) fail(`${where} has a second table`);
+  const spoken = rows.filter((row) => !/^no voice$/i.test(row[1])).map((row) => searchWords(row[2]));
+  return {
+    length,
+    label: labels[0],
+    voices: voices.join(' · '),
+    lines: rows.length,
+    words: [searchWords(story[0]), ...spoken].join(' '),
+  };
+}
+
+/** The pixel size of a lossy, lossless or extended WebP, from its first chunk. */
+function webpSize(bytes, where) {
+  if (bytes.toString('ascii', 0, 4) !== 'RIFF' || bytes.toString('ascii', 8, 12) !== 'WEBP') fail(`${where} is not a WebP`);
+  const chunk = bytes.toString('ascii', 12, 16);
+  if (chunk === 'VP8 ') return { width: bytes.readUInt16LE(26) & 0x3fff, height: bytes.readUInt16LE(28) & 0x3fff };
+  if (chunk === 'VP8L') {
+    const bits = bytes.readUInt32LE(21);
+    return { width: (bits & 0x3fff) + 1, height: ((bits >> 14) & 0x3fff) + 1 };
+  }
+  if (chunk === 'VP8X') return { width: bytes.readUIntLE(24, 3) + 1, height: bytes.readUIntLE(27, 3) + 1 };
+  fail(`${where} has an unknown WebP chunk ${chunk}`);
+}
+
+/** The pixel size of a PNG, from its IHDR. */
+function pngSize(bytes, where) {
+  if (bytes.readUInt32BE(0) !== 0x89504e47 || bytes.toString('ascii', 12, 16) !== 'IHDR') fail(`${where} is not a PNG`);
+  return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
+}
+
+/**
+ * The frames a sheet shows when its grid is the kit's for a cut of this
+ * length: two a second from frame 0, eight to a row. Undefined when the
+ * picture is some other grid, so the page states no count it cannot read.
+ */
+function sheetFrames(size, seconds) {
+  const { width, height, gap, perSecond } = SHEET_TILE;
+  const columns = (size.width + gap) / (width + gap);
+  const rows = (size.height + gap) / (height + gap);
+  if (!Number.isInteger(columns) || !Number.isInteger(rows)) return undefined;
+  const frames = Math.ceil(seconds * perSecond - 1e-6);
+  return Math.ceil(frames / columns) === rows ? frames : undefined;
+}
+
+/** A copy that already holds these bytes is left alone, so a rerun touches nothing. */
+function writeIfChanged(file, bytes) {
+  if (existsSync(file)) {
+    const old = readFileSync(file);
+    if (old.equals(Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes))) return false;
+  }
+  writeFileSync(file, bytes);
+  return true;
+}
+
+/**
+ * The pinned cuts: `{ films: { <slug>: { cut, length, film, poster, streams } } }`.
+ * While --pin runs, an entry may hold only its film and poster paths (and a
+ * hand label for a cut made before the scripts).
+ */
+function readManifest(pinning = false) {
+  if (!existsSync(MANIFEST)) fail(`${MANIFEST.replace(`${ROOT}/`, '')} is missing; it pins the cut of each published film`);
+  const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
+  for (const [slug, pin] of Object.entries(manifest.films ?? {})) {
+    const where = `published.json ${slug}`;
+    if (typeof pin.film !== 'string' || typeof pin.poster !== 'string') fail(`${where} needs film and poster paths under /media`);
+    if (!/^\/media\/[\w.-]+$/.test(pin.film) || !/^\/media\/[\w.-]+$/.test(pin.poster)) fail(`${where}: film and poster are root paths under /media`);
+    if (pinning) continue;
+    if (pin.cut !== null && typeof pin.cut !== 'string') fail(`${where}: cut is a label or null`);
+    if (!SCRIPT_LENGTH.test(pin.length ?? '')) fail(`${where}: length reads like 100.0 s`);
+    if (!/^[0-9a-f]{64}$/.test(pin.streams?.video ?? '')) fail(`${where}: streams.video is a SHA-256`);
+    if (pin.streams.audio !== undefined && !/^[0-9a-f]{64}$/.test(pin.streams.audio)) fail(`${where}: streams.audio is a SHA-256`);
+  }
+  return manifest;
+}
+
+/**
+ * The folders that can hold a cut's records: motion/out, then each folder
+ * under it with the kit's sheets/ or scripts/ (out/series-100s holds the
+ * 100 s cuts of the translation series), in name order.
+ */
+function cutFolders() {
+  const out = join(MOTION, 'out');
+  if (!existsSync(out)) return [];
+  const archived = readdirSync(out, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && !entry.name.startsWith('_'))
+    .filter((entry) => existsSync(join(out, entry.name, SHEET_DIR)) || existsSync(join(out, entry.name, SCRIPT_DIR)))
+    .map((entry) => `out/${entry.name}`)
+    .sort();
+  return ['out', ...archived];
+}
+
+const FOLDERS = cutFolders();
+
+/**
+ * The folder that holds a cut: the first whose <slug>.mp4 or
+ * <slug>-share.mp4 has these streams. A render whose duration is not the
+ * cut's length is not hashed.
+ */
+function folderWith(slug, streams, seconds) {
+  for (const folder of FOLDERS) {
+    for (const name of [`${slug}.mp4`, `${slug}-share.mp4`]) {
+      const file = join(MOTION, folder, name);
+      const duration = durationOf(file);
+      if (duration === undefined || Math.abs(duration - seconds) > 0.06) continue;
+      if (sameStreams(streamsOf(file), streams)) return folder;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * The records of the published cut for one film: read from the folder that
+ * holds it, or kept from public/motion when no folder does. Each script's
+ * label and length must match the pin; a sheet's PNG is kept only under
+ * the cap and only when it is the WebP's size.
+ */
+function publishedRecords(slug, pin) {
+  const where = `${slug}'s published cut (${pin.cut ?? 'no label'}, ${pin.length})`;
+  const folder = folderWith(slug, pin.streams, secondsOf(pin.length));
+  const base = folder ? join(MOTION, folder) : BODY_OUT;
+  const files = {
+    credits: join(base, `${slug}.credits.txt`),
+    webp: join(base, SHEET_DIR, `${slug}.webp`),
+    png: join(base, SHEET_DIR, `${slug}.png`),
+    script: join(base, SCRIPT_DIR, `${slug}.md`),
+  };
+  const records = { folder: folder ?? 'public/motion' };
+  /* the cut's final render, which the page names: the folder's <slug>.mp4 (a share copy may be what matched) */
+  if (folder) {
+    const final = [`${slug}.mp4`, `${slug}-share.mp4`].find((name) => existsSync(join(MOTION, folder, name)));
+    if (final) records.render = `${REL}/${folder}/${final}`;
+  }
+  if (existsSync(files.credits)) records.credits = readFileSync(files.credits, 'utf8');
+  if (existsSync(files.script)) {
+    const meta = scriptOf(files.script);
+    if (meta.length !== pin.length || (meta.label ?? null) !== pin.cut) {
+      fail(`the script in ${records.folder} reads "${meta.length}${meta.label ? ` · ${meta.label}` : ''}", but ${where} is pinned; its records are not the published cut's`);
+    }
+    records.script = { text: readFileSync(files.script, 'utf8'), meta };
+  }
+  if (existsSync(files.webp)) {
+    const webp = readFileSync(files.webp);
+    const size = webpSize(webp, files.webp);
+    let png;
+    if (existsSync(files.png) && statSync(files.png).size <= SHEET_PNG_CAP) {
+      png = readFileSync(files.png);
+      const pngDims = pngSize(png, files.png);
+      if (pngDims.width !== size.width || pngDims.height !== size.height) fail(`${files.png} is not the size of ${files.webp}`);
+    }
+    records.sheet = { webp, png, ...size, frames: sheetFrames(size, secondsOf(pin.length)) };
+  }
+  return records;
+}
+
+/**
+ * The cut in motion/out when it is not the published one: its label, when
+ * its own script names it and runs its length, and its length. Undefined
+ * when motion/out holds the published cut or no render.
+ */
+function reviewOf(slug, publishedFolder) {
+  if (publishedFolder === 'out') return undefined;
+  const render = join(MOTION, 'out', `${slug}.mp4`);
+  const seconds = durationOf(render);
+  if (seconds === undefined) return undefined;
+  const scriptFile = join(MOTION, 'out', SCRIPT_DIR, `${slug}.md`);
+  let script;
+  try {
+    script = existsSync(scriptFile) ? scriptOf(scriptFile) : undefined;
+  } catch {
+    script = undefined;
+  }
+  const labelled = script && sameLength(script.length, seconds);
+  return { label: labelled ? script.label : undefined, length: labelled ? script.length : `${seconds.toFixed(1)} s` };
+}
+
+/**
+ * --pin <slug>: pins the cut public/media holds for one film. The entry's
+ * film and poster paths are written by hand first; this reads the web copy's
+ * streams, finds the folder in motion/out that holds them, and takes the
+ * cut's label and length from that folder's script (the web copy's duration
+ * and the label already pinned when the folder has no script).
+ */
+function pin(slug) {
+  const manifest = readManifest(true);
+  const entry = manifest.films?.[slug];
+  if (!entry) fail(`published.json has no entry for ${slug}; add its film and poster paths first`);
+  const web = join(ROOT, 'public', entry.film);
+  if (!existsSync(web)) fail(`${entry.film} is missing under public/`);
+  const streams = streamsOf(web);
+  const seconds = durationOf(web);
+  if (seconds === undefined) fail(`ffprobe could not read ${entry.film}`);
+  const folder = folderWith(slug, streams, seconds);
+  const scriptFile = folder ? join(MOTION, folder, SCRIPT_DIR, `${slug}.md`) : undefined;
+  const script = scriptFile && existsSync(scriptFile) ? scriptOf(scriptFile) : undefined;
+  manifest.films[slug] = {
+    cut: script ? (script.label ?? null) : (entry.cut ?? null),
+    length: script ? script.length : `${seconds.toFixed(1)} s`,
+    film: entry.film,
+    poster: entry.poster,
+    streams,
+  };
+  writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
+  console.log(
+    `build-motion: pinned ${slug} at ${manifest.films[slug].cut ?? 'no label'}, ${manifest.films[slug].length}${folder ? `, records in motion/${folder}` : ', no folder in motion/out holds it'}`
+  );
+}
+
+const pinAt = process.argv.indexOf('--pin');
+if (pinAt >= 0) {
+  const slugs = process.argv.slice(pinAt + 1);
+  if (slugs.length === 0) fail('--pin takes one or more film slugs');
+  for (const slug of slugs) pin(slug);
+  process.exit(0);
+}
+
+const PINS = readManifest().films ?? {};
 
 /* ---- the roster ---- */
 
@@ -355,6 +699,14 @@ function buildPackage(slug, file) {
 const films = [];
 const bodies = new Map();
 const credits = new Map();
+/** slug to the published sheet's bytes: `{ webp, png? }` */
+const sheets = new Map();
+/** slug to the published script's text */
+const scripts = new Map();
+/** slug to the published script's words, for the search */
+const scriptWords = new Map();
+/** slug to the folder its records came from, for the log */
+const recordFolders = new Map();
 
 for (const entry of rosterEntries()) {
   const { slug } = entry;
@@ -373,12 +725,15 @@ for (const entry of rosterEntries()) {
     length = found;
   }
 
-  /* the published copy, when every file of it is there */
-  const published = PUBLISHED[slug];
+  /* the published copy, when every file of it is there; it must still be the pinned cut */
+  const pinned = PINS[slug];
   const media =
-    published && existsSync(join(ROOT, 'public', published.video)) && existsSync(join(ROOT, 'public', published.poster))
-      ? published
+    pinned && existsSync(join(ROOT, 'public', pinned.film)) && existsSync(join(ROOT, 'public', pinned.poster))
+      ? { video: pinned.film, poster: pinned.poster }
       : undefined;
+  if (media && !sameStreams(streamsOf(join(ROOT, 'public', media.video)), pinned.streams)) {
+    fail(`public${media.video} is not the cut published.json pins for ${slug} (${pinned.cut ?? 'no label'}, ${pinned.length}); run --pin ${slug} once the new cut is approved`);
+  }
 
   /* what the motion folder holds for the film, as repository-relative paths */
   const local = {};
@@ -395,8 +750,33 @@ for (const entry of rosterEntries()) {
 
   const status = media || local.video ? 'rendered' : local.folder ? 'in-production' : 'planned';
   const runtime = runtimeOf(media ? join(ROOT, 'public', media.video) : local.video ? join(MOTION, `out/${slug}.mp4`) : undefined);
-  const creditText = media ? creditsOf(slug) : undefined;
+  /* the version rule: the published cut's records, and the cut in review */
+  const records = media ? publishedRecords(slug, pinned) : undefined;
+  const review = media ? reviewOf(slug, records.folder) : undefined;
+  const creditText = records?.credits;
   if (creditText) credits.set(slug, creditText);
+  if (records) recordFolders.set(slug, records.folder);
+  let sheet;
+  if (records?.sheet) {
+    const { webp, png, width, height, frames } = records.sheet;
+    sheets.set(slug, { webp, png });
+    sheet = {
+      src: `/motion/${SHEET_DIR}/${slug}.webp`,
+      width,
+      height,
+      bytes: webp.length,
+      frames,
+      png: png ? `/motion/${SHEET_DIR}/${slug}.png` : undefined,
+      pngBytes: png ? png.length : undefined,
+    };
+  }
+  let script;
+  if (records?.script) {
+    const { text, meta } = records.script;
+    scripts.set(slug, text);
+    scriptWords.set(slug, meta.words);
+    script = { src: `/motion/${SCRIPT_DIR}/${slug}.md`, label: meta.label, length: meta.length, voices: meta.voices, lines: meta.lines };
+  }
   const postSlug = BLOG_POST[slug];
   const post = postSlug && existsSync(join(ROOT, 'content/blog', `${postSlug}.mdx`)) ? `/blog/${postSlug}` : undefined;
 
@@ -424,8 +804,16 @@ for (const entry of rosterEntries()) {
     local: Object.keys(local).length > 0 ? local : undefined,
     post,
     credits: creditText ? `/motion/${slug}.credits.txt` : undefined,
+    cut: media ? { label: pinned.cut ?? undefined, length: pinned.length, render: records.render } : undefined,
+    sheet,
+    script,
+    review,
     pkg,
   });
+}
+
+for (const slug of Object.keys(PINS)) {
+  if (!films.some((film) => film.slug === slug)) fail(`published.json pins ${slug}, which is not on the MOTION.md roster`);
 }
 
 /* page order: the roster's other films, then the series, each in roster order */
@@ -445,7 +833,12 @@ function objectLines(indent, fields) {
   const pad = ' '.repeat(indent);
   return Object.entries(fields)
     .filter(([, value]) => value !== undefined)
-    .map(([key, value]) => `${pad}${key}: ${quote(value)},`);
+    .map(([key, value]) => `${pad}${key}: ${typeof value === 'number' ? String(value) : quote(value)},`);
+}
+
+/** `key: { ... },` at four spaces, the fields at six; nothing for an absent object. */
+function nested(key, fields) {
+  return fields ? [`    ${key}: {`, ...objectLines(6, fields), '    },'] : [];
 }
 
 function filmLines(film) {
@@ -464,6 +857,7 @@ function filmLines(film) {
   if (film.local) lines.push('    local: {', ...objectLines(6, film.local), '    },');
   if (film.post) lines.push(`    post: ${quote(film.post)},`);
   if (film.credits) lines.push(`    credits: ${quote(film.credits)},`);
+  lines.push(...nested('cut', film.cut), ...nested('sheet', film.sheet), ...nested('script', film.script), ...nested('review', film.review));
   if (film.pkg) {
     lines.push(
       '    pkg: {',
@@ -485,9 +879,11 @@ function filmLines(film) {
 const out = [
   "/* Generated by scripts/build-motion.mjs (pnpm build:motion) from motion/MOTION.md's",
   "   roster (\"## The films\") and the translation series' motion/films/<slug>/BRIEF.md.",
-  '   Do not edit by hand. motion/ is untracked; this file and public/motion/<slug>.md',
-  '   are what the site reads, so it builds without motion/. Statuses are read from the',
-  '   files when the script runs: rerun it after a render lands. */',
+  '   Do not edit by hand. motion/ is untracked; this file and public/motion/ (the',
+  '   packages, and the published cuts\' credits, sheets and scripts under the version',
+  '   rule pinned in public/motion/published.json) are what the site reads, so it builds',
+  '   without motion/. Statuses are read from the files when the script runs: rerun it',
+  '   after a render lands. */',
   '',
   "export type MotionStatus = 'rendered' | 'in-production' | 'planned';",
   `export type MotionSectionId = ${SECTIONS.map((s) => quote(s.id)).join(' | ')};`,
@@ -501,6 +897,26 @@ const out = [
   '',
   '/** One of the five sections of a research package, with a note read from its contents. */',
   'export type PackageSection = { id: PackageSectionId; n: string; title: string; note: string };',
+  '',
+  '/**',
+  ' * The published cut as public/motion/published.json pins it: its label (absent for a cut',
+  ' * made before the scripts), its length, and the repository-relative path of its final',
+  ' * render when a folder in motion/out holds it (display only; never served).',
+  ' */',
+  'export type MotionCut = { label?: string; length: string; render?: string };',
+  '',
+  '/**',
+  ' * The published cut\'s contact sheet (two frames a second from frame 0, eight to a row):',
+  ' * the WebP the page shows, its pixel size and bytes, the frames it holds when its grid',
+  ' * is the kit\'s, and the full-resolution PNG when it is published.',
+  ' */',
+  'export type MotionSheet = { src: string; width: number; height: number; bytes: number; frames?: number; png?: string; pngBytes?: number };',
+  '',
+  '/** The published cut\'s script as built: the copy served at src, the label, length and voices of its second line, and its count of lines. */',
+  'export type MotionScript = { src: string; label?: string; length: string; voices: string; lines: number };',
+  '',
+  '/** A newer cut in motion/out, in review and not published: its label when its own script names it, and its length. Nothing else of it reaches the site. */',
+  'export type MotionReview = { label?: string; length: string };',
   '',
   'export type MotionPackage = {',
   '  /** the package h1 as plain text (asterisks stripped) */',
@@ -535,8 +951,16 @@ const out = [
   '  local?: MotionLocal;',
   '  /** the blog post the film trails, when it is on this site */',
   '  post?: string;',
-  '  /** a published film\'s credits, copied verbatim from motion/out/<slug>.credits.txt and served at this root path */',
+  '  /** a published film\'s credits, copied verbatim from the folder that holds its published cut and served at this root path */',
   '  credits?: string;',
+  '  /** the published cut, for a film with a web copy */',
+  '  cut?: MotionCut;',
+  '  /** the published cut\'s contact sheet, when the Videos session made one */',
+  '  sheet?: MotionSheet;',
+  '  /** the published cut\'s script as built, when the Videos session made one */',
+  '  script?: MotionScript;',
+  '  /** the cut in motion/out when it is not the published one */',
+  '  review?: MotionReview;',
   '  pkg?: MotionPackage;',
   '};',
   '',
@@ -552,6 +976,11 @@ const out = [
   'export const MOTION_FILMS: readonly MotionFilm[] = [',
   ...ordered.flatMap(filmLines),
   '];',
+  '',
+  '/** Each published script\'s story and spoken lines as plain text, by film slug: what the search matches a script on. */',
+  'export const MOTION_SCRIPT_WORDS: Readonly<Record<string, string>> = {',
+  ...ordered.filter((film) => scriptWords.has(film.slug)).map((film) => `  ${quote(film.slug)}: ${quote(scriptWords.get(film.slug))},`),
+  '};',
   '',
   '/** The films with a research package, each a page at /motion/<slug>. */',
   'export const MOTION_PACKAGE_SLUGS: readonly string[] = [',
@@ -586,6 +1015,12 @@ if (text.includes('/Users/')) fail('motion.ts would carry an absolute local path
 for (const [slug, body] of bodies) {
   if (body.includes('/Users/')) fail(`public/motion/${slug}.md would carry an absolute local path`);
 }
+for (const [slug, credit] of credits) {
+  if (credit.includes('/Users/')) fail(`public/motion/${slug}.credits.txt would carry an absolute local path`);
+}
+for (const [slug, script] of scripts) {
+  if (script.includes('/Users/')) fail(`public/motion/${SCRIPT_DIR}/${slug}.md would carry an absolute local path`);
+}
 
 writeFileSync(OUT, text);
 
@@ -599,14 +1034,33 @@ for (const entry of readdirSync(BODY_OUT)) {
     removed += 1;
   }
 }
-for (const [slug, text] of credits) {
-  if (text.includes('/Users/')) fail(`public/motion/${slug}.credits.txt would carry an absolute local path`);
-  writeFileSync(join(BODY_OUT, `${slug}.credits.txt`), text);
+for (const [slug, credit] of credits) {
+  writeIfChanged(join(BODY_OUT, `${slug}.credits.txt`), credit);
 }
 let bytes = 0;
 for (const [slug, body] of bodies) {
-  writeFileSync(join(BODY_OUT, `${slug}.md`), body);
+  writeIfChanged(join(BODY_OUT, `${slug}.md`), body);
   bytes += Buffer.byteLength(body);
+}
+
+/* the published cuts' sheets and scripts: a file no published cut owns goes */
+const wanted = new Map();
+for (const [slug, sheet] of sheets) {
+  wanted.set(`${SHEET_DIR}/${slug}.webp`, sheet.webp);
+  if (sheet.png) wanted.set(`${SHEET_DIR}/${slug}.png`, sheet.png);
+}
+for (const [slug, script] of scripts) wanted.set(`${SCRIPT_DIR}/${slug}.md`, script);
+let copied = 0;
+for (const dir of [SHEET_DIR, SCRIPT_DIR]) {
+  mkdirSync(join(BODY_OUT, dir), { recursive: true });
+  for (const entry of readdirSync(join(BODY_OUT, dir))) {
+    if (wanted.has(`${dir}/${entry}`)) continue;
+    unlinkSync(join(BODY_OUT, dir, entry));
+    removed += 1;
+  }
+}
+for (const [path, content] of wanted) {
+  if (writeIfChanged(join(BODY_OUT, path), content)) copied += 1;
 }
 
 const counts = Object.entries(STATUS_LABEL)
@@ -616,3 +1070,10 @@ console.log(`build-motion: ${films.length} films (${counts}) -> ${OUT.replace(`$
 console.log(
   `build-motion: ${bodies.size} packages, ${(bytes / 1024).toFixed(0)} KB -> ${BODY_DIR}/<slug>.md, ${credits.size} credit files -> ${BODY_DIR}/<slug>.credits.txt${removed > 0 ? ` (${removed} stale removed)` : ''}`
 );
+for (const film of ordered.filter((f) => f.cut)) {
+  const records = [film.credits && 'credits', film.sheet && (film.sheet.png ? 'sheet (WebP, PNG)' : 'sheet (WebP)'), film.script && 'script'].filter(Boolean);
+  console.log(
+    `build-motion: ${film.slug}: published ${film.cut.label ?? 'cut'}, ${film.cut.length}; ${records.length > 0 ? `${records.join(', ')} from ${recordFolders.get(film.slug)}` : 'no records'}${film.review ? `; in review: ${film.review.label ? `${film.review.label}, ` : ''}${film.review.length}` : ''}`
+  );
+}
+console.log(`build-motion: ${sheets.size} sheets and ${scripts.size} scripts -> ${BODY_DIR}/${SHEET_DIR}, ${BODY_DIR}/${SCRIPT_DIR} (${copied} written)`);

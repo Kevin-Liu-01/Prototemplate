@@ -4,76 +4,65 @@
    themes: the mark and swatches state the system rather than
    sample the page); everything else derives from the pt layer.
    Nothing here draws a line the prototemplate layer already owns.
-   The article reads inside the viewer shell's flow sheet, so the
-   book rules at the end replace the rail the page used to stand in.
+   The article reads inside the viewer shell's flow sheet as a standard
+   book (DESIGN.md section 4, The book page): BookHead, the contents and
+   the band come from BookView.css, every section opens with the shared
+   .pt-book-sec divider, and this sheet never styles the divider.
    ============================================================ */
 
 /* ---------- the book: the article inside the shell's flow sheet ---------- */
 
-/* The sheet carries the horizontal gutter (Sheet.css: 44px 56px 120px,
-   24px 16px 80px at or below 900px). The article's full-width rules, the
-   section closes and the hatch bands, bleed back out by the same amount so
-   they reach the sheet border the way they reached the rails. */
+/* the article: a wrapper around the book's sections, a .pt-root token
+   scope for the article layer; its <article> is a .pt-book-col, so the
+   sections keep the book's rhythm */
 .ptb-book {
-  --ptb-bleed: 56px;
-  --ptb-sec-pad: clamp(40px, 4.6vw, 64px);
   min-height: 0;
 }
 
-.ptb-book .pt-sec,
-.ptb-book .pt-hatch {
-  margin-inline: calc(-1 * var(--ptb-bleed));
-}
-
-.ptb-book .pt-sec {
-  padding-inline: var(--ptb-bleed);
-}
-
-/* the sections keep their vertical rhythm and lose their own side gutter */
+/* the sections keep no padding of their own: the dividers own the rhythm */
 .ptb-book .pt-post-sec {
-  padding-inline: 0;
+  padding: 0;
 }
 
-/* the opener is the head of the book: flush with the sheet's top padding,
-   and inset like the sections below it (it carries pt-post-sec too, whose
-   reset above would otherwise zero its inline padding) */
-.ptb-book .ptb-head {
-  padding-block: 0 var(--ptb-sec-pad);
-  padding-inline: var(--ptb-bleed);
+/* one ink and one hairline family per book: the article layer reads the
+   shell's inks and hairs, so the head, the dividers and the chapters under
+   them are the same ink and draw one rule color (AUDIT-HEADS-NOW 2.3).
+   inherit on a custom property takes the shell's value from the parent;
+   :root lifts the rule over [data-theme='dark'] .pt-root. (docs.css holds
+   the same ink rule for the docs' row bodies.) */
+:root .ptb-book.pt-root {
+  --pt-ink: inherit;
+  --pt-ink-2: inherit;
+  --pt-ink-3: var(--pt-titanium);
+  --pt-hair: inherit;
+  --pt-hair-2: var(--pt-hair-soft);
 }
 
-/* a page row: the section number in the gutter, the section beside it */
+/* a section: the shared divider spans it on its own grid; the body keeps
+   the h2's column */
 .ptb-page {
-  display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  gap: 28px;
-  align-items: start;
+  display: block;
   scroll-margin-top: 28px;
-}
-
-/* the sheet border closes the book */
-.ptb-page:last-child {
-  border-bottom: 0;
-}
-
-.ptb-pn {
-  padding-top: calc(var(--ptb-sec-pad) + 2px);
-  font-family: var(--pt-sans);
-  font-feature-settings: 'cv11', 'ss01';
-  font-weight: 500;
-  font-size: 24px;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: var(--pt-ink-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.ptb-page.is-active .ptb-pn {
-  color: var(--pt-ink);
 }
 
 .ptb-page-body {
   min-width: 0;
+  margin-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
+}
+
+/* the body starts 14px under the h2's box, the old h2 + p step */
+.ptb-book .ptb-page-body > :first-child {
+  margin-top: 14px;
+}
+
+/* the prose at the body step and measure, its h3s at the title step
+   (DESIGN.md section 4, Book type) */
+.ptb-book .ptb-page-body > p {
+  max-width: var(--pt-measure);
+  margin-top: 16px;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  text-wrap: pretty;
 }
 
 /* the headings the list rows jump to land under the sheet's top edge */
@@ -81,105 +70,16 @@
   scroll-margin-top: 28px;
 }
 
-/* the rows under the active section stand down in the grid; the shell's
-   wrapper stays, empty, and must not take a grid cell */
-.pt-viewer[data-shell='brand'] .pt-sub:empty {
-  display: none;
-}
-
-/* prototemplate.css, which the article needs, also names the gallery's
-   exploration rows .pt-row and loads after the shell's ListRow.css on this
-   route. Inside the shell's list the ListRow layout is re-asserted one
-   class higher; the article's own rows are not touched. */
-.pt-viewer[data-shell='brand'] .pt-sub .pt-row {
-  position: static;
-  grid-template-columns: 22px minmax(0, 1fr);
-  gap: 8px;
-  min-height: 0;
-  padding: 6px 0;
-  border-top: 0;
-  overflow: visible;
-  transition: none;
-  background: none;
-}
-
-.pt-viewer[data-shell='brand'] .pt-sub .pt-row::before {
-  content: none;
-}
-
-/* ---------- the opener: copy beside the measured monogram ---------- */
-
-.ptb-opener {
-  display: grid;
-  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-  gap: clamp(28px, 5vw, 72px);
-  align-items: center;
-}
-
-/* the book's own h1 speaks the brand face */
-.pt-post .ptb-opener h1 {
-  max-width: none;
-  font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
-  font-size: clamp(34px, 4.2vw, 48px);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.08;
-}
-
-/* the specimen: the monogram in dotted outline, measured by dashed
-   guides seated on its own glyph box */
-.ptb-hero-fig {
-  position: relative;
-  margin: 0;
-  aspect-ratio: 1213 / 771;
-  color: var(--pt-ink);
-}
-
-.ptb-hero-fig svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-/* the traced mark, in dots: the stroke holds screen gauge at any scale so
-   the dotting stays crisp */
-.ptb-fig-gt {
+/* the head's badge: the traced monogram in dots of the one ink; the
+   stroke and the dots keep their size at any scale */
+.ptb-gt-outline path {
   fill: none;
-  stroke: var(--pt-ink-3);
+  stroke: var(--pt-ink);
   stroke-width: 1.25;
-  stroke-dasharray: 2 5;
+  stroke-dasharray: 0.5 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-}
-
-.ptb-fig-line {
-  position: absolute;
-}
-
-.ptb-fig-line.is-h {
-  left: 0;
-  right: 0;
-  height: 0;
-  border-top: 1px dashed var(--pt-hair);
-}
-
-.ptb-fig-line.is-v {
-  top: 0;
-  bottom: 0;
-  width: 0;
-  border-left: 1px dashed var(--pt-hair);
-}
-
-@media (max-width: 900px) {
-  .ptb-opener {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .ptb-hero-fig {
-    max-width: 440px;
-  }
 }
 
 /* ---------- the naming system: a ruled ledger ---------- */
@@ -195,16 +95,18 @@
   gap: 18px;
   padding: 10px 0;
   border-top: 1px solid var(--pt-hair-2);
-  font-size: 14.5px;
-  line-height: 1.5;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
 }
 
+/* the ledger closes on the hair rule */
 .ptb-name-row:last-child {
-  border-bottom: 1px solid var(--pt-hair-2);
+  border-bottom: 1px solid var(--pt-hair);
 }
 
 .ptb-name-row b {
-  font-weight: 500;
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
   color: var(--pt-ink);
 }
 
@@ -212,16 +114,14 @@
   color: var(--pt-ink-2);
 }
 
-/* ---------- the thesis, set in the brand's own face ---------- */
+/* ---------- the thesis ---------- */
 
-.ptb-thesis {
-  max-width: 24ch;
+/* one sentence of emphasis at the body step, in ink at 500 */
+.ptb-book .ptb-page-body > p.ptb-thesis {
   margin-top: 18px;
-  font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
-  font-size: clamp(28px, 4vw, 44px);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.12;
+  font-family: var(--pt-text);
+  font-weight: var(--pt-w-label);
+  letter-spacing: 0;
   color: var(--pt-ink);
 }
 
@@ -242,7 +142,7 @@
 }
 
 .ptb-scale-label {
-  font-family: var(--pt-sans);
+  font-family: var(--pt-text);
   font-weight: 500;
   font-size: 12px;
   color: var(--pt-ink-4);
@@ -269,7 +169,7 @@
   width: 7px;
   height: 7px;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
+  border-radius: var(--pt-radius-round);
   background: var(--pt-ink);
 }
 
@@ -277,7 +177,7 @@
   position: absolute;
   left: 0;
   top: 7px;
-  font-family: var(--pt-sans);
+  font-family: var(--pt-text);
   font-style: normal;
   font-weight: 500;
   font-size: 11px;
@@ -293,9 +193,11 @@
 
 .pt-post-sec .ptb-scales + h3,
 .pt-post-sec h3 {
-  margin-top: 30px;
-  font-size: 17px;
-  font-weight: 500;
+  margin-top: 32px;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  font-weight: var(--pt-w-label);
   color: var(--pt-ink);
 }
 
@@ -316,11 +218,10 @@
 }
 
 .ptb-voice-row span {
-  font-family: var(--pt-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.04em;
-  color: var(--pt-ink-4);
-  text-transform: uppercase;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  letter-spacing: 0;
+  color: var(--pt-titanium);
 }
 
 .ptb-voice-row p {
@@ -360,6 +261,7 @@
   height: 150px;
   object-fit: contain;
   padding: 30px;
+  border-radius: var(--pt-radius-card);
 }
 
 .ptb-mark.is-paper img {
@@ -375,11 +277,10 @@
 }
 
 .ptb-mark figcaption {
-  margin-top: 8px;
-  font-family: var(--pt-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.02em;
-  color: var(--pt-ink-3);
+  margin-top: 10px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
 }
 
 /* ---------- color: the four, absolute, plus the one accent ---------- */
@@ -396,6 +297,7 @@
   display: block;
   height: 44px;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
   background-clip: padding-box;
 }
 
@@ -472,15 +374,14 @@
 
 .ptb-face-tag {
   display: block;
-  font-family: var(--pt-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.04em;
-  color: var(--pt-ink-3);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
 }
 
 .ptb-display {
   margin-top: 10px;
-  font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--pt-text);
   font-size: 21px;
   line-height: 1.3;
   color: var(--pt-ink);
@@ -489,7 +390,7 @@
 .ptb-inter {
   max-width: 44ch;
   margin-top: 12px;
-  font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--pt-text);
   font-size: 15.5px;
   line-height: 1.65;
   color: var(--pt-ink-2);
@@ -510,6 +411,7 @@
   margin-top: 20px;
   display: grid;
   place-items: center;
+  border-radius: var(--pt-radius-card);
   background: #070707;
   overflow: hidden;
 }
@@ -517,10 +419,11 @@
 /* the reassembler's type on the plate (the demo's wrapper class) */
 .ptb-plate .ptc-every {
   color: #ffffff;
-  font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
-  font-weight: 500;
+  font-family: var(--pt-display);
+  font-feature-settings: var(--pt-ff-display);
+  font-weight: var(--pt-w-display);
   font-size: clamp(22px, 3.2vw, 36px);
-  letter-spacing: -0.01em;
+  letter-spacing: var(--pt-d1-track);
   line-height: 1.2;
 }
 
@@ -540,6 +443,7 @@
   display: inline-flex;
   padding: 3px 9px;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
   background-clip: padding-box;
   font-family: var(--pt-mono);
   font-size: 12px;
@@ -570,12 +474,12 @@
   gap: 18px;
   padding: 9px 0;
   border-top: 1px solid var(--pt-hair-2);
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
 }
 
 .ptb-device-row:last-child {
-  border-bottom: 1px solid var(--pt-hair-2);
+  border-bottom: 1px solid var(--pt-hair);
 }
 
 .ptb-device-row b {
@@ -611,15 +515,15 @@
   object-fit: cover;
   object-position: top;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
   background-clip: padding-box;
 }
 
 .ptb-shot figcaption {
-  margin-top: 8px;
-  font-family: var(--pt-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.02em;
-  color: var(--pt-ink-3);
+  margin-top: 10px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
 }
 
 .ptb-media {
@@ -642,6 +546,7 @@
   height: auto;
   object-fit: contain;
   border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
   background-clip: padding-box;
 }
 
@@ -701,6 +606,7 @@
   width: 100%;
   height: auto;
   border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
   background-color: #070707;
   background-clip: padding-box;
 }
@@ -728,23 +634,9 @@
 /* ---------- narrow ---------- */
 
 @media (max-width: 900px) {
-  .ptb-book {
-    --ptb-bleed: 16px;
-  }
-
-  /* the gutter folds: the number sits over its section */
-  .ptb-page {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-  }
-
-  .ptb-pn {
-    padding-top: 28px;
-    font-size: 16px;
-  }
-
-  .ptb-book .ptb-page .pt-post-sec {
-    padding-top: 10px;
+  /* the gutter folds with the divider's: the body takes the full column */
+  .ptb-page-body {
+    margin-left: 0;
   }
 
   /* the send links are tap targets: a 44px row each, the type unchanged;

@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import type { ReactNode, RefObject } from 'react';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 import { Icon } from '@/components/viewer/icons';
@@ -14,7 +14,7 @@ import { ARCHIVE, ARCHIVE_DELETION, archiveDate, archiveDesc, archiveFull, archi
 import type { ArchiveEntry } from '@/lib/archive';
 import { cn } from '@/lib/cn';
 import { DIRECTIONS, directionPageHref } from '@/lib/directions';
-import type { ShellItem, ShellMode, ShellSection } from '@/lib/shell-data';
+import type { ShellItem, ShellKeysProp, ShellMode, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { DirectionFrame, FRAME_H, FRAME_W } from './directions/DirectionFrame';
@@ -256,7 +256,7 @@ function OpenPage() {
 }
 
 /**
- * An archived version: its full-page capture in a flow sheet under the name,
+ * An archived version: its full-page capture in the reading column under the name,
  * the source address, the capture date and the commit that last held the
  * code. Shown whenever the active item is an archive entry, in the book and
  * the slide alike; Escape (GalleryEscape) or any sidebar item leaves it. The
@@ -879,6 +879,10 @@ function GalleryStage({ fontClass, anatomy, ledger, scrollRef, intent }: StagePr
   );
 }
 
+/* the shell's props that never change, as module constants so the memoized toolbar and list skip the gallery's renders */
+const OPEN_PAGE = <OpenPage />;
+const GALLERY_KEYS: ShellKeysProp = (mode) => (mode === 'slide' ? 'paged' : 'flow');
+
 export type GalleryViewerProps = {
   /** the Fraunces and Space Grotesk variable classes from next/font, for the nameplate */
   fontClass: string;
@@ -892,6 +896,7 @@ export default function GalleryViewer({ fontClass, anatomy, ledger }: GalleryVie
   const scrollRef = useRef<HTMLDivElement>(null);
   const intent = useRef<MountIntent>(null);
   const home = useRef<() => void>(() => {});
+  const onCurrentPage = useCallback(() => home.current(), []);
 
   return (
     <ViewerShell
@@ -904,11 +909,11 @@ export default function GalleryViewer({ fontClass, anatomy, ledger }: GalleryVie
       modes={GALLERY_MODES}
       thumb='shot'
       surfaces='site'
-      keys={(mode) => (mode === 'slide' ? 'paged' : 'flow')}
+      keys={GALLERY_KEYS}
       noun='direction'
       modeLabels={GALLERY_MODE_LABELS}
-      toolbarSlot={<OpenPage />}
-      onCurrentPage={() => home.current()}
+      toolbarSlot={OPEN_PAGE}
+      onCurrentPage={onCurrentPage}
     >
       <DeepLink />
       <GalleryEscape intent={intent} />

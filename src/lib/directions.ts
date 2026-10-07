@@ -33,6 +33,19 @@ export type Direction = {
    * because it is what they produced and not another candidate.
    */
   reference?: boolean;
+  /**
+   * The head's lead, when the concept's own first sentences do not make
+   * one: two or three lines of plain sentences, at most LEAD_MAX characters
+   * (src/lib/shell-data.ts). Without it the head takes splitLead(concept).
+   */
+  lead?: string;
+  /**
+   * The rest of the introduction under the head's rule. Without it a
+   * direction with its own lead takes the concept after its first
+   * sentence, and any other direction the remainder splitLead leaves. A
+   * note longer than NOTE_MAX becomes the book's last section, The brief.
+   */
+  note?: string;
 };
 
 /**
@@ -177,6 +190,10 @@ export const DIRECTIONS: Direction[] = [
     slug: 'singularity-dossier',
     site: true,
     name: 'Dossier',
+    lead:
+      'The Dossier is the completed direction, a full site. Its home folds the every-stack argument into the hero terminal, and its /enterprise page reads as an evidence file.',
+    note:
+      'Folding the argument into the terminal removes one section from the home. The enterprise page holds exhibits, a certificate wall, and an audit ledger under the gate.',
     concept:
       'The completed direction: a full site whose home folds the every-stack argument into the hero terminal (one less section), over an /enterprise page that reads as an evidence file, with exhibits, a certificate wall, and an audit ledger under the gate.',
     tone: 'light',
@@ -188,6 +205,10 @@ export const DIRECTIONS: Direction[] = [
     slug: 'singularity-orbit',
     site: true,
     name: 'Orbit',
+    lead:
+      'Orbit is a showcase of the previous generation. It keeps its one-line hero and carries the system pieces the Dossier retired.',
+    note:
+      'Those pieces are the windowed translation demo, the toolchain bento, the gravity well and instrument dials, the dark band, and the pricing file.',
     concept:
       'A showcase of the previous generation: orbit keeps its one-line hero and carries the system pieces the dossier retired, the windowed translation demo, the toolchain bento, the gravity well and instrument dials, the dark band, and the pricing file.',
     tone: 'light',
@@ -199,6 +220,10 @@ export const DIRECTIONS: Direction[] = [
     slug: 'singularity-signal',
     site: true,
     name: 'Signal',
+    lead:
+      'Signal is a showcase of the previous generation. It keeps its split-pane hero and carries the sections the Dossier retired.',
+    note:
+      'Those sections are the pinned story cinema, the review workspace, the assurance strip, and the self-typing transmission log.',
     concept:
       'A showcase of the previous generation: signal keeps its split-pane hero and carries the sections the dossier retired, the pinned story cinema, the review workspace, the assurance strip, and the self-typing transmission log.',
     tone: 'light',
@@ -209,6 +234,8 @@ export const DIRECTIONS: Direction[] = [
     label: '18',
     slug: 'textile-block',
     name: 'Textile Block',
+    lead:
+      'This direction sets the General Translation landing page as a Frank Lloyd Wright textile-block relief wall in horizontal courses.',
     concept:
       'The General Translation landing page as a Frank Lloyd Wright textile-block relief wall in horizontal courses. One square cast module is the grid; content sits on smooth cast faces, ornament is a library of six geometric reliefs (the Ennis cruciform, the Millard chevron, the Storer bar-and-slots, the Freeman stepped pyramid, the Aztec Hotel greca band, the running bond), and every course of the page is keyed to one relief. Light behind the perforated Ennis and Storer blocks is a live Bayer dither field; the shade the upper wall casts across the dark jade course is a static ramp of nested Bayer tiers. Every line on the page is a joint drawn once; every label on the wall is a header brick flush in a block\'s corner. A materials legend near the base names the six reliefs and the five materials from the same records that draw them.',
     tone: 'light',
@@ -219,6 +246,10 @@ export const DIRECTIONS: Direction[] = [
     label: '19',
     slug: 'stepped-fret',
     name: 'Stepped Fret',
+    lead:
+      'The page is a stack of horizontal registers bounded by five Zapotec frets from Mitla, drawn at three scales and assigned by register.',
+    note:
+      'The frets are the stepped fret with coil, the hooked step, the stepped chevron, the stepped diamond and the opposed pair. Each register\'s content block steps one fret step right and back down the page, and graded Bayer stone fills the gutter it leaves, so the grid itself is a stair. The hero is one monumental fret in ordered dither with the claim set in the step it leaves open, and the dark band is the same figure inverted: the Mitla facade in cream on black, and the hero\'s stair returning as six solid cream plates carrying the platform tiers.',
     concept:
       'Mitla fret strata: the page is a stack of horizontal registers bounded by five distinct Zapotec frets (stepped fret with coil, hooked step, stepped chevron, stepped diamond, opposed pair) drawn at three scales and assigned by register; each register\'s content block steps one fret step right and back down the page with the gutter it leaves filled with graded Bayer stone, so the grid itself is a stair. The hero is one monumental fret in ordered dither with the claim set in the step it leaves open, and the dark band is the same figure inverted: the Mitla facade in cream on black, and the hero\'s stair returning as six solid cream plates carrying the platform tiers.',
     tone: 'light',
@@ -229,6 +260,8 @@ export const DIRECTIONS: Direction[] = [
     label: '21',
     slug: 'glazed-bond',
     name: 'Glazed Bond',
+    lead:
+      'This direction draws General Translation as an Ishtar Gate elevation in the Babylonian revival of Art Deco.',
     concept:
       'General Translation as an Ishtar Gate elevation in the Babylonian revival of Art Deco. Two battered towers with stepped, turquoise-capped parapets flank a corbelled arch that holds the claim; every section below is one more course of the elevation, its content set as glazed panels into running-bond brick, with gold rosette bands on lapis crossing the towers between courses. The T proof is laid as Flemish bond with glazed headers: a lapis header brick (the flag chip) beside every cream stretcher (the translation), the source string as the one gold brick. Languages are three courses of rosette medallions with the endonym at each center. The four product surfaces sit as tablets in a lapis inner court under its own two-step crenellation. The story is a three-tier ziggurat. Pricing is a gate in miniature: two towers carrying the plans as gold plaques, the rate ledger as the lapis opening. Every glazed surface catches light as ordered Bayer dither from one shared set of tiles; no gradient anywhere. Geometry only.',
     tone: 'light',
@@ -249,6 +282,8 @@ export const DIRECTIONS: Direction[] = [
     label: '24',
     slug: 'screenfold-codex',
     name: 'Screenfold Codex',
+    lead:
+      'This direction sets the landing page as a Maya screenfold: one strip of bark-paper cream folded into ten leaves, each framed in red oxide and cut into horizontal registers by red rules.',
     concept:
       'The landing page as a Maya screenfold: one strip of bark-paper cream folded into ten leaves, each a red-oxide-framed page cut into horizontal registers by red rules. Every leaf is a parallelogram whose side edges run a fixed 40px across from top to bottom, adjacent leaves running opposite ways, so every crease lines up exactly and the strip\'s silhouette zigzags down the page like an accordion pleat seen off its axis. The folds between leaves are stepped Bayer troughs (inked at a valley with a solid crease hairline, red oxide at a mountain with a bare-paper ridge). Dither is the writing: twelve geometric signs carved through dithered squares form a documented vocabulary, each standing for one product concept (strings, build, runtime, CLI, dashboard, review, locale, languages, routing, edge, context, tokens) and printed wherever that concept appears, with the key on the back board. Bar and dot is the counting: every figure prints in the Maya numeral beside its Arabic form, with the key on leaf one. The living material is the real product: the shipped Next.js sample, both TranslateWindow belt strings in five locales, the component outputs, the review rows, the 120-row locale roster, the published rate ledger, the shipped feature grid.',
     tone: 'light',
@@ -259,6 +294,8 @@ export const DIRECTIONS: Direction[] = [
     label: '25',
     slug: 'raking-relief',
     name: 'Raking Relief',
+    lead:
+      'The page is a monumental bas-relief alabaster wall under a raking light from the left.',
     concept:
       'A bas-relief alabaster wall under a raking light from the left, made monumental. Every form on the page is carved by one consistent light: raised tablets catch a lit edge on their left and top and cast a stepped Bayer-tier shadow to their right and below (dense beside the tablet, thinning outward, one exact ramp mask per strip); sunk registers hold the rim\'s shadow inside their left and top edges and a lit inner wall on their right and bottom; carved headings cast a dithered shadow and incised strings show the lit lip of their cut. Geometric relief bands from the Ishtar Gate, the Guardian Building and Mitla (rosette, palmette, chevron, guilloche, stepped fret) run between the courses and frame every raised tablet. The content is inscription: the claim in Cinzel capitals under a sun-disk crown, the same claim incised in its sixteen shipped locales, the Next.js source raised beside its eight translations cut into the wall with lapis locale inlays, the locales as a rosette band with the word for language in nine scripts, the agent on a stele inside a shadowed recess with a stepped niche head, the published rates on three tablets under ziggurat caps with the shipped compare ledger sunk beneath. Alabaster and warm shadow, one lapis inlay.',
     tone: 'light',
@@ -269,6 +306,8 @@ export const DIRECTIONS: Direction[] = [
     label: '26',
     slug: 'calendar-rings',
     name: 'Calendar Rings',
+    lead:
+      'The landing page is one concentric disk that works as an instrument.',
     concept:
       'A General Translation landing page as one concentric disk that works as an instrument. Ground and dither rings alternate outward from the source at the center and every ring reads something real: the claim in the hub inside the jade source circle, the name inscribed on ring one, the four product surfaces labelled along ring two, the seven usage rates as bar-and-dot numerals knocked out of ring three, the twenty locales of the outer ring as flag chips on ring four, and a rim notched once per locale. A stepped plinth carries the sub, the CTAs and a six-cell key that says how to read the disk. Every later section unrolls one ring into a wide arc band with radial cells, notch ticks and numerals seated on the arc: the customers, the T component as a half disk around its source window, the stack and the nine-beat pipeline in the negative ring floored by the disk itself inverted, the languages in two bands of ten in the disk\'s own order with a variants register, and the pricing file as seven rate segments plus two plan segments. Lineage is the Aztec and Maya revival of 1920s deco, geometry only (Sun Stone, Dresden Codex numerals, Aztec Hotel registers); palette is obsidian, fired clay, jade and gold.',
     tone: 'light',
@@ -279,6 +318,8 @@ export const DIRECTIONS: Direction[] = [
     label: '27',
     slug: 'talud-tablero',
     name: 'Talud-Tablero',
+    lead:
+      'The landing page is a stepped platform in the Teotihuacan talud-tablero profile.',
     concept:
       'The General Translation landing page as a stepped platform in the Teotihuacan talud-tablero profile. Every section is one terrace module: a framed tablero (the rectangular content panel with a red oxide projecting frame and a hairline molding each side) over a sloped talud (a clip-path trapezoid of Bayer-tiled volcanic stone that carries the ornament, the stair, or a load of chips and cells). Each terrace is one step wider than the one above it (data-tier 6 down to 0), so the page silhouette is a pyramid in elevation: the claim on the top platform, a stair axis with treads and two red alfardas descending through every talud, a full-bleed volcanic-stone plaza at the foot (the dark moment), and a lower platform beyond it carrying the pricing file as three tableros of increasing frame depth and the footer as the base course. Language as the oldest technology, carried on a platform built in registers.',
     tone: 'light',
@@ -289,6 +330,8 @@ export const DIRECTIONS: Direction[] = [
     label: '28',
     slug: 'apadana-grid',
     name: 'Apadana Grid',
+    lead:
+      'The landing page is the floor plan of a hypostyle hall, seen from above.',
     concept:
       'The General Translation landing page as the floor plan of a hypostyle hall seen from above. Every section is a hall in plan: a strict square grid of column bases (three concentric rings, the middle one dashed so each dash is one flute) on every axis intersection, with the bays between the columns holding the content. The halls follow one another down the page with different column counts and the pitch is derived from each: the portico (6 by 2, pitch 200) holds the claim between its two rows with two sun-disk dither plates in the outer bays and double-volute capitals over the front row and mirrored under the back row; a 4 by 4 bay hall proves the T component with the source code window at the center and eight locale builds of "Scale to every language" in the surrounding bays, each flag chip seated beside its column base as a nameplate; the great hall (6 by 6, twenty-five bays) sets one locale per bay around the halftone globe, zh-Hans and zh-Hant flanking the center, with the four-row variants register beneath; the throne hall at night is the dark moment, a full-bleed black-basalt band with a gold-hairline 3 by 3 field whose four rooms are the product surfaces (six-stack code window, the gt translate terminal, the review workspace, the Locadex trace) over a dithered lamplight floor; the treasury sets the seven-row rate ledger and then frames Starter, the footnotes with the compare link, and Enterprise in three bays; the rear portico is the footer\'s four link columns. The page\'s rails are drawn as walls with thickness (two faces ten pixels apart with a hairline hatch between, the draughtsman\'s poché). Language is the oldest technology; the hall that received every embassy is the frame.',
     tone: 'light',

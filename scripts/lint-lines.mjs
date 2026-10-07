@@ -37,19 +37,25 @@
 //   node scripts/lint-lines.mjs --shell [--base http://localhost:3005]
 //     [--only /docs] [--width 1440] [--theme dark] [--jobs 3] [--report] [--json]
 //   Walks /, /docs, /brand, /compare, /archive/<first slug>,
-//   /directions/<first slug>, /skills, /skills/<first slug>, /motion,
-//   /motion/<first package>, /d/production and /deck (the iframe's
-//   document) at 1440, 1280 and 390 in both themes
+//   /directions/<first slug>, /skills, /skills/<first slug>, /handbook, /motion,
+//   /motion/<first package>, /graphics, /marks, /d/production and /deck
+//   (the iframe's document) at 1440, 1280 and 390 in both themes
 //   against the dev server, and on each page audits the resting state, the
 //   list toggled ([), the index panel (R), the search (Cmd K), and on / and
 //   /deck the grid (G) and the book (B). Chrome is every element under a
 //   shell root (.pt-viewer, .pt-corner, .pt-corner-layer, .pt-help, .pt-toast,
 //   .pt-preview, or any pt- class) outside the content roots (.stage, the
-//   flow sheet's children, .pt-page-body, .pt-root, .gv-article, .ar-doc);
+//   reading column's children (.pt-flow-col > *), .pt-page-body, .pt-root,
+//   .gv-article, .ar-doc);
 //   in the deck's document everything outside .stage, .mini and .slide.
 //   Fails on any double, any junction and any border color outside the
-//   three roles where at least one owner is chrome. A state that did not
-//   apply is an infrastructure failure (exit 2), never a pass.
+//   three roles where at least one owner is chrome. The sidebar's rail
+//   (.pt-sb-rail, DESIGN.md section 16) is a masked box the element walk
+//   skips, so its vertical runs are read from its path (data-rail-path) and
+//   its ink must be the row role; a state audited with the list open in
+//   outline density needs the rail layer live (.pt-sb[data-rails]) and
+//   drawing, and the run prints the rail segments per route. A state that
+//   did not apply is an infrastructure failure (exit 2), never a pass.
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -58,7 +64,9 @@ import { chromium } from 'playwright-core';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
+/* CHROME_PATH first, as scripts/site-pages.mjs reads it, so the audit runs on any machine */
 const EXEC =
+  process.env.CHROME_PATH ??
   '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
 
 const argv = process.argv.slice(2);
@@ -75,7 +83,7 @@ const jsonOut = argv.includes('--json');
 
 /* EVERY positional URL is audited — for years of shame, an earlier version
    silently audited only the first and blessed the rest. */
-const urls = positional.length ? positional : ['http://localhost:3006/d/toolchain?chrome=0'];
+const urls = positional.length ? positional : ['http://localhost:3005/d/toolchain?chrome=0'];
 for (const u of urls) {
   /* a URL with whitespace is a shell-quoting accident (zsh does not split
      unquoted vars) — refuse it rather than auditing a 404 */
@@ -106,7 +114,7 @@ const ALLOW = [
   'eh-chip', // orbiting locale chips sweep the hero; any parallelism is transient
   'tcb-term', // the band terminal wears the doubled frame: border + offset outline
   'lg-card', // lens-gate's refracting cards drift each frame; parallelism is transient
-  'sheet', // the viewer shell's sheet mat: a 1px hair border (the structural role; a sheet is a large surface, not a framed image) inside a 1px paper gap inside a 1px hair-soft outline, the one sanctioned doubled line in chrome (the deck's own .sheet draws the same ring as two spread shadows)
+  'sheet', // the fixed sheet's ring (slide mode on /, the compare rig, and the live page on /directions/<slug> as dr-sheet): a 1px hair border inside a 1px paper gap inside a 1px hair-soft outline, the edge of a fixed-size artifact and the one sanctioned doubled line in chrome (the deck's own .sheet draws the same ring as two spread shadows); a reading page has no ring (DESIGN.md section 2, The reading column)
   'thumb-frame', // the shell's active thumbnail frame: the edge border plus the 2px offset ink outline (the deck's .thumb-frame is the same device)
   'page-frame', // the shell's active book page frame: the same border plus offset outline pair
   'pt-preview', // the hover preview card: a paper mat with a hair-soft outline around a frame with an edge border, the sheet ring at 240px
@@ -120,7 +128,7 @@ const ALLOW = [
 const SHELL_CHROME = {
   roots: '.pt-viewer, .pt-corner, .pt-corner-layer, .pt-help, .pt-toast, .pt-preview',
   prefix: 'pt-',
-  content: '.stage, .sheet-flow .sheet > *, .pt-page-body, .pt-root, .gv-article, .ar-doc, iframe',
+  content: '.stage, .pt-flow-col > *, .pt-page-body, .pt-root, .gv-article, .ar-doc, iframe',
   tokens: {
     hair: ['--pt-hair', '--hair'],
     soft: ['--pt-hair-soft', '--hair-soft'],
@@ -400,7 +408,7 @@ const auditDocument = (cfg) => {
     if (visible(cs.backgroundColor) && rect.width > 24 && rect.height > 24) {
       const bgA2 = alphaOf(cs.backgroundColor);
       /* the named devices (ALLOW) own their strips and stacks by design: the
-         sheet mat's 1px paper gap is the ring's middle stroke, not a seam */
+         fixed sheet's 1px paper gap is the ring's middle stroke, not a seam */
       const deviceOwner = ALLOW.some((frag) => owner.includes(frag));
       if (bgA2 >= 0.95 && (!chrome || inChrome) && !deviceOwner) {
         const own = cs.backgroundColor.match(/\d+/g)?.map(Number) ?? [];
@@ -497,6 +505,37 @@ const auditDocument = (cfg) => {
       }
     }
   });
+
+  /* the sidebar's rail (DESIGN.md section 16) is a masked box, which the walk
+     skips; its path is on the element. Each vertical run longer than 24px is a
+     line owned by the rail, clamped to the list's scrollport like any element,
+     and its ink must be the row role. */
+  let railSegs = 0;
+  if (chrome) {
+    document.querySelectorAll('.pt-sb-rail[data-rail-path]').forEach((el) => {
+      const cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      const box = el.getBoundingClientRect();
+      const port = el.closest('.pt-thumbs')?.getBoundingClientRect();
+      if (!port) return;
+      const pts = [...el.dataset.railPath.matchAll(/[ML]([\d.]+) ([\d.]+)/g)].map((m) => [Number(m[1]), Number(m[2])]);
+      const elIdx = els.push(el) - 1;
+      chromeOf[elIdx] = true;
+      for (let i = 1; i < pts.length; i++) {
+        const [x0, y0] = pts[i - 1];
+        const [x1, y1] = pts[i];
+        if (x0 !== x1 || Math.abs(y1 - y0) <= 24) continue;
+        const from = Math.max(box.top + Math.min(y0, y1), port.top);
+        const to = Math.min(box.top + Math.max(y0, y1), port.bottom);
+        if (to - from < 1) continue;
+        segs.push({ orient: 'v', pos: Math.round((box.left + x0) * 2) / 2, from, to, owner: 'div.pt-sb-rail', el: elIdx });
+        railSegs++;
+      }
+      /* the rail's ink is its background; it must resolve to the row role */
+      if (!sameColor(rgba(cs.backgroundColor), ROLES.soft))
+        colors.push({ kind: 'rail', owner: 'div.pt-sb-rail', side: 'ink', color: cs.backgroundColor, role: roleOf(cs.backgroundColor) ?? 'none', at: Math.round(box.top) });
+    });
+  }
 
   const allowed = (owner) => ALLOW.some((frag) => owner.includes(frag));
 
@@ -635,6 +674,7 @@ const auditDocument = (cfg) => {
     selfStacks: selfStacks.slice(0, 24),
     invisibles: invisibles.slice(0, 12),
     roles: ROLES,
+    railSegs,
   };
 };
 
@@ -730,7 +770,8 @@ function firstSlug(file, pattern, from) {
  * the gallery, the docs, the brand book, the compare rig, the first archived
  * version, the first exploration's page under /directions, the skills index
  * and the first skill's page, the motion roster and the first research
- * package, the shipped direction's corner, and the deck.
+ * package, the graphics and the marks books (whose sidebar runs carry the
+ * rail's bends), the shipped direction's corner, and the deck.
  */
 function shellRoutes() {
   const archive = firstSlug('src/lib/archive.ts', /entry\('([^']+)'/);
@@ -746,8 +787,11 @@ function shellRoutes() {
     { path: `/directions/${direction}`, states: ['list', 'index', 'search'] },
     { path: '/skills', states: ['list', 'index', 'search'] },
     { path: `/skills/${skill}`, states: ['list', 'index', 'search'] },
+    { path: '/handbook', states: ['list', 'index', 'search'] },
     { path: '/motion', states: ['list', 'index', 'search'] },
     { path: `/motion/${pkg}`, states: ['list', 'index', 'search'] },
+    { path: '/graphics', states: ['list', 'index', 'search'] },
+    { path: '/marks', states: ['list', 'index', 'search'] },
     { path: '/d/production', states: ['list', 'index'], corner: true },
     { path: '/deck', states: ['list', 'index', 'grid', 'book'], deck: true },
   ];
@@ -773,6 +817,15 @@ const probeState = () => {
     grid: mode === 'grid' || Boolean(document.querySelector('.pt-grid, .viewer.is-overview')),
     book: mode === 'book' || Boolean(document.querySelector('.pt-book, .sheet-flow, .gv-flow, .viewer .book:not([hidden])')),
     help: Boolean(document.querySelector('.pt-help, .help:not([hidden])')),
+    /* the sidebar's rail layer (SidebarRails.ts) is live on the aside */
+    rails: Boolean(document.querySelector('.pt-sb[data-rails]')),
+    /* the list shows in outline density, where the rail draws the place */
+    outlineList: (() => {
+      const sb = document.querySelector('.pt-sb');
+      const list = sb?.querySelector('.pt-thumbs');
+      if (!sb || !list || list.classList.contains('is-shots') || sb.classList.contains('is-hidden')) return false;
+      return getComputedStyle(sb).visibility !== 'hidden' && sb.getBoundingClientRect().width > 0;
+    })(),
   };
 };
 
@@ -865,6 +918,12 @@ async function auditShellRoute(route, width, themeName) {
     const state = await target.evaluate(probeState);
     const found = await target.evaluate(auditDocument, cfg);
     results[name] = { ...found, probe: state };
+    /* with the list open in outline density the audit must read the live
+       rail, never the CSS fallback, and the rail must draw */
+    if (!deck && state.outlineList) {
+      if (!state.rails) unapplied.push(`${name}: the sidebar's rail layer is not live; the audit would read the CSS fallback`);
+      else if (!found.railSegs) unapplied.push(`${name}: the sidebar's rail drew no segment`);
+    }
     return state;
   };
 
@@ -961,6 +1020,8 @@ async function runShellMode() {
   let audits = 0;
   let bad = 0;
   let broken = 0;
+  /* rail segments per route: the most any audited state of the route drew */
+  const railByRoute = {};
   const tasks = [];
   for (const route of routes)
     for (const themeName of themes)
@@ -972,6 +1033,7 @@ async function runShellMode() {
           out[route.path][key] = results;
           for (const [state, audit] of Object.entries(results)) {
             audits++;
+            railByRoute[route.path] = Math.max(railByRoute[route.path] ?? 0, audit.railSegs ?? 0);
             if (failing(audit)) {
               bad++;
               const lines = [];
@@ -992,6 +1054,7 @@ async function runShellMode() {
   await pool(tasks, jobs);
 
   if (jsonOut || reportOnly) console.log(JSON.stringify(out, null, 1));
+  console.error(`rail segments per route: ${routes.map((r) => `${r.path} ${railByRoute[r.path] ?? 0}`).join(', ')}`);
   console.error(
     `lint:lines:shell — ${audits} audit(s) over ${routes.length} route(s), ${widths.length} width(s), ${themes.length} theme(s): ${bad} with findings, ${broken} state(s) unapplied`
   );

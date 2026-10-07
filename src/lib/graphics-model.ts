@@ -33,8 +33,6 @@ export type Entry = {
 export type Block = {
   id: string;
   label: string;
-  /** the small line over the title: `Area A`, `Covers`, `Earlier in the series` */
-  eyebrow: string;
   lead: string;
   ordinal: number;
   entries: readonly Entry[];

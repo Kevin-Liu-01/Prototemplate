@@ -3,7 +3,7 @@
    sheet ring, one stroke each; scripts/lint-lines.mjs allows pt-preview for
    the pair), the 320x180 frame with its --pt-edge border holding the
    decoded capture over the plate with the surface's initial, and the 32px
-   title row. Rounded on --pt-radius (6px until tokens.css defines it); the
+   title row. A popover, so it takes the card corner (--pt-radius-card); the
    frame takes the radius less the mat's 1px and clips its capture to that
    less its own border. Fixed at the viewport origin and moved with
    translate3d alone, so opening it lays nothing out; above the index
@@ -37,7 +37,7 @@
   color: var(--pt-ink);
   font-family: var(--pt-text);
   outline: 1px solid var(--pt-hair-soft);
-  border-radius: var(--pt-radius, 6px);
+  border-radius: var(--pt-radius-card);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -76,7 +76,7 @@
   width: 320px;
   height: 180px;
   border: 1px solid var(--pt-edge);
-  border-radius: calc(var(--pt-radius, 6px) - 1px);
+  border-radius: calc(var(--pt-radius-card) - 1px);
   background: var(--pt-plate);
   overflow: hidden;
 }
@@ -88,7 +88,6 @@
   display: grid;
   place-items: center;
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 15px;
   color: var(--pt-titanium);
@@ -127,7 +126,7 @@
   position: relative;
   height: 100%;
   border: 1px solid var(--pt-hair);
-  border-radius: calc(var(--pt-radius, 6px) - 2px);
+  border-radius: calc(var(--pt-radius-card) - 2px);
   overflow: hidden;
 }
 

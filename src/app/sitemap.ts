@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 import { DOCS } from '@/app/docs/registry';
+import { HANDBOOK } from '@/app/handbook/registry';
 import { ARCHIVE } from '@/lib/archive';
 import { DIRECTION_PAGE_SLUGS, DIRECTIONS } from '@/lib/directions';
 import { getPosts } from '@/lib/blog';
@@ -12,8 +13,8 @@ const SITE_URL = 'https://prototemplate.vercel.app';
 /**
  * Every route on the site, derived from the registries the pages render
  * from so the sitemap tracks the lineup: the gallery, the presenter, the
- * deck, the brand book, the documents, the skills index and each skill's
- * page, the mark explorations, the blog and its posts, the graphics, the
+ * deck, the brand book, the documents, the handbook and each of its
+ * documents, the skills index and each skill's page, the mark explorations, the blog and its posts, the graphics, the
  * motion roster and each research package of the translation series, the
  * compare rig, each direction's own page and its prototype with each site
  * concept's enterprise page, and the archive of retired versions. /craft
@@ -29,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/brand`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/docs`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/skills`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${SITE_URL}/handbook`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/marks`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/blog`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/graphics`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
@@ -59,6 +61,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: 'monthly',
       priority: 0.6,
+    });
+  }
+
+  for (const doc of HANDBOOK) {
+    entries.push({
+      url: `${SITE_URL}/handbook/${doc.slug}`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.5,
     });
   }
 

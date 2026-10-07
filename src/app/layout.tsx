@@ -10,7 +10,7 @@ const SITE_URL = 'https://prototemplate.vercel.app';
 const SITE_TITLE = 'Prototemplate';
 
 const SITE_DESCRIPTION =
-  'Prototemplate is the General Translation knowledge base: the brand book, the brand directives, the design lab with its directions and sites, the repository documents, the agent skills, and the mark explorations, read in one viewer.';
+  "Prototemplate is Kevin Liu's hub and working wiki for how General Translation work is done: the brand book, the brand directives, the design lab with its directions and sites, the repository documents, the curated skills, the handbook, the mark explorations, the graphics and the films, read in one viewer, with skills that install into any project.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -24,6 +24,9 @@ export const metadata: Metadata = {
     'Prototemplate',
     'General Translation',
     'knowledge base',
+    'agent skills',
+    'handbook',
+    'AGENTS.md',
     'brand book',
     'brand guidelines',
     'website redesign',
@@ -55,7 +58,7 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 2400,
         height: 1260,
-        alt: 'Prototemplate, the General Translation knowledge base.',
+        alt: "Prototemplate, Kevin's hub for General Translation work.",
       },
     ],
   },

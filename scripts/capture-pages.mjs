@@ -13,9 +13,15 @@
 //     the rule surfaces.ts uses
 //   - the routes the Pages group lists: the gallery (`gallery`), /brand,
 //     /docs, /compare, /present and /deck, under their own ids
-//   - the Knowledge rows that have a page of their own: /skills (`skills`)
-//     and /marks (`marks`), so the sidebar's Skills and Marks rows can
-//     preview their first fold
+//   - the Knowledge rows that have a page of their own: /skills (`skills`),
+//     /handbook (`handbook`) and /marks (`marks`), so the sidebar's Skills,
+//     Handbook and Marks rows can preview their first fold
+//   - every document of the two books, the readme first: /docs and
+//     /docs/<slug> (`docs-<slug>`) from src/app/docs/registry.ts, /handbook
+//     and /handbook/<slug> (`handbook-<slug>`) from
+//     src/app/handbook/registry.ts; the book lands on the document, so each
+//     capture is that document's first fold, the tile the book's grid and
+//     the Documents rows show
 //   - one direction page (`directions`): /directions/<slug> for the first
 //     exploration in src/lib/directions.ts, the route every site and
 //     exploration row opens (the reference keeps /d/production, which the
@@ -48,7 +54,7 @@
 // scripts/site-pages.mjs, which scripts/pagecheck/ shares, so a new
 // production page or a moved registry is picked up by both tools from one
 // change.
-import { mkdirSync, statSync } from 'node:fs';
+import { mkdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { chromium } from 'playwright-core';
@@ -109,6 +115,21 @@ const LIVE_PAGES = [
 /** The one live page whose response is a 404 on purpose. */
 const EXPECTED_404 = 'live-404';
 
+/** The `slug` lines of a book registry, in order. */
+function registrySlugs(rel) {
+  return [...readFileSync(join(ROOT, rel), 'utf8').matchAll(/slug: '([^']+)',\s*\n\s*file: '/g)].map((m) => m[1]);
+}
+
+/** [id, path] for every document of both books, each readme first: the docs registry leaves its readme out, the handbook registry lists its own first. */
+function bookDocuments() {
+  const docs = ['readme', ...registrySlugs('src/app/docs/registry.ts')];
+  const handbook = registrySlugs('src/app/handbook/registry.ts');
+  return [
+    ...docs.map((slug) => [`docs-${slug}`, slug === 'readme' ? '/docs' : `/docs/${slug}`]),
+    ...handbook.map((slug) => [`handbook-${slug}`, slug === 'readme' ? '/handbook' : `/handbook/${slug}`]),
+  ];
+}
+
 /** [id, url] for every capture: the live pages under --live, the local pages otherwise. */
 function targets() {
   if (LIVE) return ONLY ? LIVE_PAGES.filter(([id]) => ONLY.includes(id)) : LIVE_PAGES;
@@ -128,8 +149,10 @@ function targets() {
     ['present', '/present'],
     ['deck', '/deck'],
     ['skills', '/skills'],
+    ['handbook', '/handbook'],
     ['marks', '/marks'],
     ['directions', `/directions/${exploration}`],
+    ...bookDocuments(),
   ].map(([id, path]) => [id, `${BASE}${path}`]);
   const all = [...shipped, ...routes];
   return ONLY ? all.filter(([id]) => ONLY.includes(id)) : all;

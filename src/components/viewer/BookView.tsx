@@ -2,12 +2,18 @@
 
 import { useGSAP } from '@gsap/react';
 import type { MouseEvent, ReactNode } from 'react';
-import { Fragment, useMemo, useRef } from 'react';
+import { useMemo, useRef, useSyncExternalStore } from 'react';
 
+import { formatDay, localDay, relativeDay } from '@/lib/dates';
+import { COMMIT_URL } from '@/lib/page-updated';
+import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
 import { pad2, previewId } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { Icon } from './icons';
+import type { IconName } from './icons';
+import { InstallField } from './InstallField';
 import { usePtShell } from './shell-context';
 
 import './BookView.css';
@@ -15,29 +21,36 @@ import './BookView.css';
 /** The word for one page in the divider text: `Slides 13 to 24`, `Slide 49`. */
 export type BookNoun = { one: string; many: string };
 
-/** One row of the head's meta table: `Documents` and `6`, `Updated` and `September 2026`. */
-export type BookMetaEntry = { key: string; value: string };
+/** One row of the head panel: a shell glyph, a label and a short value (a count, a name, links). */
+export type BookFact = { icon: IconName; key: string; value: ReactNode };
 
-/**
- * A meta line as a caller writes it. A string is parsed: `6 documents`
- * becomes the value `6` under the key `Documents`, and a line with no
- * leading count (`September 2026`) becomes the value under `Updated`. An
- * entry names both sides itself.
- */
-export type BookMeta = string | BookMetaEntry;
+/** The panel's four slots after Updated's one: three facts, or one fact and the install field (two slots). */
+export type BookSlots =
+  | { facts: readonly [BookFact, BookFact, BookFact]; install?: undefined }
+  | { facts: readonly [BookFact]; install: string };
 
-export type BookHeadProps = {
+export type BookHeadProps = BookSlots & {
+  /** the page's plain name from PAGE_NAMES, or a record's own title */
   title: string;
-  lead?: ReactNode;
-  /** the rows of the ruled table at the right of the title, top to bottom */
-  meta?: readonly BookMeta[];
+  /** a figure on the title's line after the name (the brand's traced monogram); decorative, so hidden from the accessible name */
+  badge?: ReactNode;
+  /** one to three lines at the lead measure, 200 characters at most */
+  lead: ReactNode;
+  /** the page's entry in src/lib/updated.ts, passed down from its server page.tsx */
+  updated: PageUpdated;
+  /** the rest of the introduction, under the mast's rule at the body step */
+  note?: ReactNode;
+  /** the route's contents nav (.pt-book-toc); left out on a page of fewer than two sections */
+  contents?: ReactNode;
 };
 
-export type BookViewProps = {
+export type BookViewProps = BookSlots & {
   title: string;
-  lead?: ReactNode;
-  /** the head's meta rows: `8 sections`, `52 slides`, `September 2026`, or key and value pairs */
-  meta?: readonly BookMeta[];
+  lead: ReactNode;
+  /** the rest of the introduction, under the head's rule */
+  note?: ReactNode;
+  /** the route's entry in src/lib/updated.ts */
+  updated: PageUpdated;
   /** the book's sections; each becomes a contents entry and a divider */
   sections: readonly ShellSection[];
   /** what fills a page: a ThumbShot, or the real content of a section */
@@ -69,46 +82,96 @@ function dividerText(range: PageRange, noun: BookNoun): string {
     : `${noun.one} ${pad2(range.first)}`;
 }
 
-/** `6 documents`: the count, then the noun */
-const COUNT_LINE = /^(\d[\d,.]*)\s+(\S.*)$/;
+const noop = () => () => {};
+const noDay = () => null;
 
-/** the key a line with no count sits under */
-const DATE_KEY = 'Updated';
-
-function metaEntry(line: BookMeta): BookMetaEntry {
-  if (typeof line !== 'string') return line;
-  const m = COUNT_LINE.exec(line.trim());
-  if (!m) return { key: DATE_KEY, value: line.trim() };
-  const noun = m[2].trim();
-  return { key: noun.charAt(0).toUpperCase() + noun.slice(1), value: m[1] };
+/**
+ * The Updated row's value: the day as `Oct 5, 2026` in a time element,
+ * linked to its commit (plain while the change is uncommitted), and the
+ * relative hint before it once the page has hydrated. The reader's day is
+ * read through useSyncExternalStore, null on the server and in the
+ * hydrating render, so the markup matches; the hint mounts after, left of
+ * the right-aligned date, so the date never moves.
+ */
+function UpdatedValue({ updated }: { updated: PageUpdated }) {
+  const today = useSyncExternalStore(noop, localDay, noDay);
+  const ago = today ? relativeDay(updated.day, today) : null;
+  const date = <time dateTime={updated.at}>{formatDay(updated.day)}</time>;
+  return (
+    <>
+      {ago ? <small>{ago}</small> : null}
+      {updated.commit ? (
+        <a href={`${COMMIT_URL}${updated.commit}`} title={`Commit ${updated.commit}`}>
+          {date}
+        </a>
+      ) : (
+        date
+      )}
+    </>
+  );
 }
 
 /**
- * The masthead of a book: the title and its lead at the left, the meta as
- * a ruled mini table at the right, top-aligned with the title, and one
- * structural rule (--pt-hair, never ink; directive 8.9) under both. Used
- * by BookView and by any route that lays out its own book (the docs) so
- * every book in the shell opens the same way.
+ * The front matter of a book (DESIGN.md section 4, The book page), the same
+ * on every page: the mast (the title across the top, with an optional badge
+ * after the name, then the lead and the panel side by side from the lead's
+ * first line, one --pt-hair rule under the taller of the two, run across
+ * the stage), the note under the rule, the route's contents,
+ * and the hatch band that ends the front matter. The panel holds four
+ * slots after Updated: three facts, or one fact and the install field. A
+ * page differs from another only in its words and its facts. Rendered
+ * inside the route's .pt-book-col, before its first section.pt-book-part.
  */
-export function BookHead({ title, lead, meta }: BookHeadProps) {
-  const rows = meta ? meta.map(metaEntry) : [];
+export function BookHead({ title, badge, lead, updated, note, contents, facts, install }: BookHeadProps) {
   return (
-    <header className='pt-book-head'>
-      <div className='pt-book-title'>
-        <h1>{title}</h1>
-        {lead ? <p>{lead}</p> : null}
-      </div>
-      {rows.length > 0 ? (
-        <dl className='pt-book-meta'>
-          {rows.map((row, i) => (
-            <div key={`${i}-${row.key}`}>
-              <dt>{row.key}</dt>
-              <dd>{row.value}</dd>
-            </div>
-          ))}
-        </dl>
-      ) : null}
-    </header>
+    <>
+      <header className='pt-book-head'>
+        <div className='pt-book-mast'>
+          <h1>
+            {title}
+            {badge ? (
+              <span className='pt-book-badge' aria-hidden='true'>
+                {badge}
+              </span>
+            ) : null}
+          </h1>
+          <p className='pt-book-lead'>{lead}</p>
+          <aside className='pt-book-panel' aria-label='About this page'>
+            <dl>
+              <div className='pt-book-fact is-updated'>
+                <dt>
+                  <Icon name='updated' />
+                  Updated
+                </dt>
+                <dd>
+                  <UpdatedValue updated={updated} />
+                </dd>
+              </div>
+              {facts.map((fact) => (
+                <div key={fact.key} className='pt-book-fact'>
+                  <dt>
+                    <Icon name={fact.icon} />
+                    {fact.key}
+                  </dt>
+                  <dd>{fact.value}</dd>
+                </div>
+              ))}
+              {install ? (
+                <div className='pt-book-fact is-field'>
+                  <dt className='pt-book-vh'>Install command</dt>
+                  <dd>
+                    <InstallField command={install} />
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+          </aside>
+        </div>
+        {note ? <div className='pt-book-note'>{typeof note === 'string' ? <p>{note}</p> : note}</div> : null}
+      </header>
+      {contents}
+      <div className='pt-book-band' aria-hidden='true' />
+    </>
   );
 }
 
@@ -126,7 +189,10 @@ export function BookHead({ title, lead, meta }: BookHeadProps) {
 export function BookView({
   title,
   lead,
-  meta,
+  note,
+  updated,
+  facts,
+  install,
   sections,
   renderPage,
   frame = true,
@@ -256,22 +322,29 @@ export function BookView({
   return (
     <div ref={root} className='pt-book pt-scroll' role='region' aria-label={label}>
       <div className='pt-book-in'>
-        <BookHead title={title} lead={lead} meta={meta} />
-
-        <nav className='pt-book-toc' aria-label='Contents'>
-          {blocks.map(({ section, range }) => {
-            const first = section.items[0];
-            return (
-              <a key={section.id} href={`#${first.id}`} onClick={(e) => onContents(e, first.id)}>
-                <span>{section.label}</span>
-                <small>{rangeText(range)}</small>
-              </a>
-            );
-          })}
-        </nav>
+        <BookHead
+          {...(install === undefined ? { facts } : { facts, install })}
+          title={title}
+          lead={lead}
+          note={note}
+          updated={updated}
+          contents={
+            <nav className='pt-book-toc' aria-label='Contents'>
+              {blocks.map(({ section, range }) => {
+                const first = section.items[0];
+                return (
+                  <a key={section.id} href={`#${first.id}`} onClick={(e) => onContents(e, first.id)}>
+                    <span>{section.label}</span>
+                    <small>{rangeText(range)}</small>
+                  </a>
+                );
+              })}
+            </nav>
+          }
+        />
 
         {blocks.map(({ section, range, ordinal }) => (
-          <Fragment key={section.id}>
+          <section key={section.id} className='pt-book-part'>
             <div className='pt-book-sec'>
               <small>
                 <span>Section {ordinal}</span>
@@ -301,7 +374,7 @@ export function BookView({
                 </article>
               );
             })}
-          </Fragment>
+          </section>
         ))}
       </div>
     </div>

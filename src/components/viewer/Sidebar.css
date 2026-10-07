@@ -7,41 +7,61 @@
    its rows scroll under it, and 28px rows indented 24px behind their icons,
    a child row (a site's enterprise page) one level further. The Shipped
    group's header carries the check-badge on the shipped color and folds its
-   live surfaces under a child header; a page row that hangs route sections
-   under it (Skills) is followed by their headers one indent in and their
-   rows one further (.is-under-row). Thumbnail density widens the column
-   (ViewerShell.css sets --pt-sb-w to 256px) and every row becomes 44px with
-   its 64x36 capture and its address.
+   live surfaces under a child header. A page's sections open under its row
+   on the page's own routes as a run (.pt-nest): flush under the row, its
+   rows (.pt-nrow) with the route's number in the icon's slot and a name
+   that wraps and is never cut, labels (.pt-nest-head) when two or more of
+   its sections hold more than one row, and the headings of the item being
+   read as a deep run (.pt-nest.is-deep); the page row's fold
+   (.pt-orow-fold) sits over its right end. Thumbnail density widens the
+   column (ViewerShell.css sets --pt-sb-w to 256px) and every row becomes
+   44px with its 64x36 capture and its address.
 
-   Nodes (directive 8.6, under 300 at 52 items): a header is four nodes
-   (button, the chevron svg and its path, the name span; the count is
+   Nodes (directive 8.6 set a budget of 300 at 52 items): a header is four
+   nodes (button, the chevron svg and its path, the name span; the count is
    painted from data-count, and only the Shipped header adds a glyph), a
    row four (the anchor, its icon svg and path, the name span; five for a
-   two-path icon), and a group's rows are the section's own children with
-   no wrapper between.
+   two-path icon), a run row three (the anchor, the number span and the
+   name span), and a group's rows are the section's own children with no
+   wrapper between. The rail adds four elements per top-level group (the
+   rail, the track and its two thumbs) and the list two pills. Measured in
+   a production build (round three, 2026-10-06), the aside holds 403 to
+   521 elements as the shell routes land (803 on /graphics with every fold
+   open), so the budget stays unmet until the row icons stop costing nodes
+   (SPEC-R3 section 6.3, the icon DOM diet).
 
    Lines (directive 8.9), 1px each, drawn once by one owner: the aside owns
    its right edge, the head and the filter row their bottom edges, a row's
    64x36 capture its own --pt-edge frame. Group headers and rows draw no
    rule: a 65-row list with a rule per row would be 65 lines, the tree reads
    by indentation, and a group starts at the 16px gap above its header
-   (DESIGN.md, the line law's junction table). The current
-   row draws the 2px ink bar at the column's edge and ink text; a current
-   capture an ink frame plus the 2px offset outline every current frame in
-   the shell uses (scripts/lint-lines.mjs allows thumb-frame for that pair).
-   Site icons draw their site's token through data-site and hold it in
-   every state; every other icon turns ink with its name. Spacing
-   (directive 8.8): 28px rows, 24px headers with 16px above, 8px above the
-   tree and 32px of run-out below it, both left in flow by the edge fades.
-   The list has no padding of its own: Chromium insets a sticky box's
-   constraint rectangle by its scroll container's padding, so an 8px top
-   padding held every stuck header 8px below the edge with the rows of the
-   group before it passing through the strip above it. The 10px sides sit
-   on the headers and rows themselves so the bar reaches the edge. Colors
-   are tokens only, radius 0, no shadow;
-   motion is color and border color over the fast duration plus the
-   chevron's turn, off under reduced motion. Rows skip painting off screen
-   (content-visibility) at their exact height.
+   (DESIGN.md, the line law's junction table). In outline density each
+   top-level group carries one rail (.pt-sb-rail, --pt-sb-rail-ink, the row
+   role), drawn by SidebarRails.ts as an SVG mask down the group's rows,
+   bending 45 degrees into each run; it replaces the run guides and the
+   edge bar, and no row draws a left border. The marked row's 2px ink thumb
+   rides the rail as a state; the pills under the rows are grounds and draw
+   no line. Thumbnail density has no rail: a run draws one 1px
+   --pt-hair-soft guide under its page row's capture (.pt-nest::before), a
+   deep run its own, and the active row the 2px ink bar at the column's
+   edge. A current capture draws an ink frame plus the 2px offset outline
+   every current frame in the shell uses (scripts/lint-lines.mjs allows
+   thumb-frame for that pair). Site icons draw their site's token through
+   data-site and hold it in every state; every other icon turns ink with
+   its name. Spacing (directive 8.8): 28px rows, 24px headers with 16px
+   above, 8px above the tree and 32px of run-out below it, both left in
+   flow by the edge fades. The list has no padding of its own: Chromium
+   insets a sticky box's constraint rectangle by its scroll container's
+   padding, so an 8px top padding held every stuck header 8px below the
+   edge with the rows of the group before it passing through the strip
+   above it. The 10px sides sit on the headers and rows themselves so the
+   bar reaches the edge. Colors are tokens only, no shadow; the column and
+   its rows are square (a shell and its rows), the pills take the control
+   corner and the thumbnails the card corner. Motion is the rail's thumbs
+   and pills (transform and opacity) and the chevrons' turn; row colors
+   change at once; nothing moves under reduced motion. Top-level rows skip
+   painting off screen (content-visibility) at their exact height; run rows
+   always paint.
 
    The grid re-uses the tail of this sheet: ThumbList renders .pt-thumbs
    with .pt-sec-label and .pt-thumb frames, and GridView.css re-lays it
@@ -131,6 +151,7 @@ a.pt-sb-mark {
   padding: 4px;
   margin: 0 -4px;
   outline: 1px solid transparent;
+  border-radius: var(--pt-radius-control);
   transition: outline-color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
@@ -151,7 +172,6 @@ a.pt-sb-mark:focus-visible {
   font-weight: 500;
   font-size: 13.5px;
   letter-spacing: -0.01em;
-  font-feature-settings: 'cv11', 'ss01';
   white-space: nowrap;
 }
 
@@ -169,15 +189,17 @@ a.pt-sb-mark:focus-visible {
 }
 
 .pt-sb-head .pt-face-serif {
-  font-family: var(--font-fraunces), Georgia, 'Times New Roman', serif;
+  font-family: var(--pt-face-serif);
   font-weight: 600;
   letter-spacing: -0.015em;
+  font-feature-settings: normal;
 }
 
 .pt-sb-head .pt-face-grot {
-  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--pt-face-grot);
   font-weight: 500;
   letter-spacing: -0.03em;
+  font-feature-settings: normal;
 }
 
 .pt-sb-head .pt-seg {
@@ -202,6 +224,7 @@ a.pt-sb-mark:focus-visible {
 /* ---- the list: no padding (the header comment says why); the edge fades
    below leave 8px above the tree and 32px of run-out after the last row ---- */
 .pt-sb .pt-thumbs {
+  position: relative; /* the pills' containing block, so they scroll with the rows */
   flex: 1 1 auto;
   min-height: 0;
   padding: 0;
@@ -252,8 +275,10 @@ a.pt-sb-mark:focus-visible {
 /* ---- a group: the header, then its rows as its own children; 16px above
    every group but the first. The group is the sticky header's containing
    block, so the header rides along while the group's rows scroll under it
-   and leaves with its last row. The rows a header opens fade in over the
-   fast duration; closing removes them at once. ---- */
+   and leaves with its last row. Rows are opaque in their first frame: a
+   header opens them and closes them at once, and nothing fades on mount
+   (a fade replayed on every route change, since each route mounts its own
+   list). ---- */
 .pt-grp {
   position: relative;
   display: flex;
@@ -262,11 +287,6 @@ a.pt-sb-mark:focus-visible {
 
 .pt-grp + .pt-grp {
   margin-top: 16px;
-}
-
-.pt-grp:not(.is-closed) > .pt-orow,
-.pt-grp:not(.is-closed) > .pt-sub {
-  animation: pt-fade-in var(--pt-dur-fast) var(--pt-ease-out) both;
 }
 
 /* the header: 24px, the chevron in a 16px slot at the head of a 24px
@@ -287,7 +307,7 @@ a.pt-sb-mark:focus-visible {
   margin: 0;
   padding: 0 10px;
   border: 0;
-  border-radius: 0;
+  border-radius: var(--pt-radius-shell);
   background: var(--pt-paper);
   display: flex;
   align-items: center;
@@ -297,7 +317,6 @@ a.pt-sb-mark:focus-visible {
   font-weight: 500;
   font-size: 12.5px;
   letter-spacing: -0.005em;
-  font-feature-settings: 'cv11', 'ss01';
   text-align: left;
   cursor: pointer;
   transition: color var(--pt-dur-fast) var(--pt-ease-out);
@@ -367,34 +386,7 @@ a.pt-sb-mark:focus-visible {
 }
 
 .pt-grp.is-sub > .pt-orow {
-  padding-left: 58px;
-}
-
-/* a child group nested under a page row (the skill categories under
-   Knowledge > Skills): its header starts where the row's name does, one
-   indent under the row, and its rows one level further; closed until it
-   holds the current skill. The run of groups under one row sits 4px off
-   the row above and the row below, with no gap between two of them, so the
-   row reads as their parent. The header draws no rule, like every header
-   (DESIGN.md, the line law's junction table). */
-.pt-grp.is-sub.is-under-row {
-  margin-top: 4px;
-}
-
-.pt-grp.is-under-row + .pt-grp.is-under-row {
-  margin-top: 0;
-}
-
-.pt-grp.is-under-row + .pt-orow {
-  margin-top: 4px;
-}
-
-.pt-grp.is-sub.is-under-row > .pt-grp-head {
-  padding-left: 58px;
-}
-
-.pt-grp.is-sub.is-under-row > .pt-orow {
-  padding-left: 82px;
+  padding-left: 50px;
 }
 
 /* ---- a row: a two-column grid, the icon in a 16px column under the
@@ -415,9 +407,10 @@ a.pt-sb-mark:focus-visible {
   contain-intrinsic-size: auto 28px;
 }
 
-/* a child row: one level further in, under the row before it */
+/* a child row: one level further in, under the row before it, its icon
+   on the run's column (50), 16px after the rail's level-1 column */
 .pt-orow.is-child {
-  padding-left: 58px;
+  padding-left: 50px;
 }
 
 /* the icon is the row's own child (no wrapper: a row is four nodes) */
@@ -427,7 +420,6 @@ a.pt-sb-mark:focus-visible {
   height: 16px;
   fill: currentColor;
   color: var(--pt-titanium);
-  transition: color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
 .pt-orow-name {
@@ -437,13 +429,27 @@ a.pt-sb-mark:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+/* outline density: a name that does not fit the column wraps to a second
+   line and is never cut (DESIGN.md section 16); one line keeps the row at
+   28px (5 + 17 + 6) */
+.pt-thumbs:not(.is-shots) .pt-orow {
+  height: auto;
+  min-height: 28px;
+  padding-block: 5px 6px;
+  contain-intrinsic-size: auto 17px; /* the content box: a 28px row off screen */
+}
+
+.pt-thumbs:not(.is-shots) .pt-orow-name {
+  white-space: normal;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
 /* a route's short mark at the right end: the pane letter on /compare */
 .pt-orow-mark {
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 12px;
   line-height: 17px;
@@ -472,8 +478,9 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-ink);
 }
 
-/* the current row: the 2px ink bar at the column's edge */
-.pt-orow.is-active::before {
+/* the current row in thumbnail density: the 2px ink bar at the column's
+   edge (in outline density the rail's thumb marks it) */
+.pt-thumbs.is-shots .pt-orow.is-active::before {
   content: '';
   position: absolute;
   left: 0;
@@ -487,6 +494,539 @@ a.pt-sb-mark:focus-visible {
   outline: 1px solid var(--pt-ink);
   outline-offset: -1px;
 }
+
+/* ================================================================
+   A page's run (DESIGN.md section 16): the page's sections open under
+   its row on its own routes. The fold, the run and its guide, the run
+   rows with the route's number in the icon's slot, the labels, the deep
+   rows under the item being read.
+   ================================================================ */
+
+.pt-sb {
+  /* the run geometry: the page row's icon column starts at 34px; a run's
+     number column starts one 16px column further in; the deck's 6px gap
+     between number and name */
+  --pt-nest-x: 50px;
+  --pt-nest-gap: 6px;
+}
+
+/* ---- a page row that owns a run: its name stops short of the fold ---- */
+.pt-orow.has-run {
+  padding-right: 34px;
+}
+
+/* the fold: a 34x28 button over the right end of its page row (the row is
+   a link and cannot hold a button). Positioned so it paints over the row
+   (also positioned) in DOM order, with no z-index, so the list's edge
+   fades (z 1 and 3) still paint over it. The chevron sits in a 16px slot
+   whose right edge is the group header counts' right edge. */
+.pt-orow-fold {
+  position: relative;
+  align-self: flex-end;
+  appearance: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 34px;
+  height: 28px;
+  margin: -28px 0 0;
+  padding: 0 10px 0 8px;
+  border: 0;
+  border-radius: var(--pt-radius-shell);
+  background: none;
+  color: var(--pt-titanium);
+  cursor: pointer;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-orow-fold > svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  padding: 2px;
+  box-sizing: border-box;
+  fill: currentColor;
+  transition: transform var(--pt-dur-toast) var(--pt-ease-out);
+}
+
+.pt-orow-fold[aria-expanded='false'] > svg {
+  transform: rotate(-90deg);
+}
+
+.pt-orow-fold:hover,
+.pt-orow-fold:focus-visible {
+  color: var(--pt-ink);
+}
+
+.pt-orow-fold:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* ---- a run: the page's own sections, flush under its row ---- */
+.pt-nest {
+  --pt-guide-x: 41px; /* the page row's icon centre (34 + 8), less half the line */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4px;
+}
+
+.pt-nest[data-n='2'] {
+  --pt-n-w: 16px; /* 15.6px: two tabular digits at 12px */
+}
+
+.pt-nest[data-n='3'] {
+  --pt-n-w: 24px; /* 23.4px: three */
+}
+
+/* the guide, in thumbnail density: one 1px row-weight line per run, drawn
+   by the run (in outline density the group's rail runs here instead) */
+.pt-thumbs.is-shots .pt-nest::before {
+  content: '';
+  position: absolute;
+  left: var(--pt-guide-x);
+  top: 0;
+  bottom: 4px;
+  width: 1px;
+  background: var(--pt-hair-soft);
+  pointer-events: none;
+}
+
+/* the headings under the active section: a run inside the run; in
+   thumbnail density its guide sits under the centre of the number column
+   above it */
+.pt-nest.is-deep {
+  --pt-guide-x: calc(var(--pt-nest-x) + var(--pt-n-w, 16px) / 2 - 1px);
+  padding-bottom: 2px;
+}
+
+/* ---- a run row: the number in the icon's slot, then the name, which
+   wraps (no ellipsis) and stops at three lines as a safety. A run row
+   always paints (no content-visibility): a run opens at most 40 rows by
+   default (RUN_OPEN_MAX), and a skipped row laid out at one line grew on
+   its first paint when its name wrapped, which moved every group under the
+   run (a layout shift). ---- */
+.pt-nrow {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--pt-n-w, 16px) minmax(0, 1fr);
+  column-gap: var(--pt-nest-gap);
+  align-items: baseline;
+  min-height: 28px;
+  box-sizing: border-box;
+  padding: 5px 10px 6px var(--pt-nest-x);
+  color: var(--pt-ink-2);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.pt-nrow-n {
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 17px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--pt-titanium);
+}
+
+.pt-nrow-name {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 17px;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.pt-nrow:hover .pt-nrow-name,
+.pt-nrow:focus-visible .pt-nrow-name,
+.pt-nrow.is-active .pt-nrow-name,
+.pt-nrow.is-current .pt-nrow-name,
+.pt-nrow.is-active .pt-nrow-n,
+.pt-nrow.is-current .pt-nrow-n {
+  color: var(--pt-ink);
+}
+
+/* the shell's active item in thumbnail density: the 2px ink bar at the
+   column's edge, the same device every active row there draws (in outline
+   density the rail's thumb marks it); no weight change, so a wrapped name
+   never re-wraps when it becomes current */
+.pt-thumbs.is-shots .pt-nrow.is-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--pt-ink);
+}
+
+.pt-nrow:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* a deep row: no number, the name at the deep column (66, 16px after the
+   rail's level-2 column), 12.5px titanium, ink while it is the heading
+   being read */
+.pt-nrow.is-deep {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 26px;
+  padding: 4px 10px 5px calc(var(--pt-sb-col-2) + 16px);
+  color: var(--pt-titanium);
+}
+
+.pt-nrow.is-deep .pt-nrow-name {
+  font-size: 12.5px;
+}
+
+.pt-nrow.is-deep[aria-current] .pt-nrow-name {
+  color: var(--pt-ink);
+}
+
+/* ================================================================
+   The rail (DESIGN.md section 16). SidebarRails.ts draws the geometry;
+   these rules paint it. Outline density only: in thumbnail density the
+   rows lead with their 64x36 captures, where a rail would cross them, so
+   that density keeps the run guides and the 2px edge bar (the rules
+   scoped to .pt-thumbs.is-shots above).
+   ================================================================ */
+
+.pt-sb {
+  /* the ladder: one pixel column per level, 16px before the level's first
+     glyph. Level 0 hangs under the group header's chevron (16px before the
+     tree icons at 34), level 1 sits 16px before the run numbers, the
+     labels' chevrons and the child icons (50), level 2 16px before the
+     deep headings (66). The step is the 16px icon column, so every bend is
+     one 45-degree diagonal of 16px. A row's segment is its box less the
+     inset at top and bottom: the 16px the icon occupies in a 28px row. */
+  --pt-sb-col-0: 18px;
+  --pt-sb-col-1: 34px;
+  --pt-sb-col-2: 50px;
+  --pt-sb-rail-inset: 6px;
+  --pt-sb-pill-inset: 4px;
+}
+
+[data-rail='0'] {
+  --pt-sb-col: var(--pt-sb-col-0);
+}
+
+[data-rail='1'] {
+  --pt-sb-col: var(--pt-sb-col-1);
+}
+
+[data-rail='2'] {
+  --pt-sb-col: var(--pt-sb-col-2);
+}
+
+/* Before the layer is live (the server render, the frames before
+   hydration, a script failure) the list marks itself with CSS at the
+   places the layer will use, so the handover moves nothing sideways: each
+   run's straight guide at its level's column, the 2px ink bar on the
+   marked row at its column, and the current ground under it. The layer
+   sets data-rails on the aside in the frame it places the thumb; these
+   stand down in the same frame. */
+.pt-sb:not([data-rails]) .pt-thumbs:not(.is-shots) .pt-nest::before {
+  content: '';
+  position: absolute;
+  left: var(--pt-sb-col-1);
+  top: var(--pt-sb-rail-inset);
+  bottom: calc(var(--pt-sb-rail-inset) + 4px);
+  width: 1px;
+  background: var(--pt-sb-rail-ink);
+  pointer-events: none;
+}
+
+.pt-sb:not([data-rails]) .pt-thumbs:not(.is-shots) .pt-nest.is-deep::before {
+  left: var(--pt-sb-col-2);
+}
+
+/* its own stacking context, so the ground (z -1) paints under the row's text
+   and not under the list's paper (run rows have no content-visibility) */
+.pt-sb:not([data-rails]) .pt-thumbs:not(.is-shots) [data-mark] {
+  isolation: isolate;
+}
+
+.pt-sb:not([data-rails]) .pt-thumbs:not(.is-shots) [data-mark]::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--pt-sb-col) - 0.5px);
+  top: var(--pt-sb-rail-inset);
+  bottom: var(--pt-sb-rail-inset);
+  width: 2px;
+  background: var(--pt-sb-thumb-ink);
+  pointer-events: none;
+}
+
+.pt-sb:not([data-rails]) .pt-thumbs:not(.is-shots) [data-mark]::after {
+  content: '';
+  position: absolute;
+  inset: 0 var(--pt-sb-pill-inset);
+  z-index: -1;
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-sb-pill-current);
+  pointer-events: none;
+}
+
+/* The rail. One per top-level group: .pt-sb-rail is the line, a box
+   painted in the rail ink and masked by the group's path (1px stroke);
+   .pt-sb-track is the same box masked by the same path at 2px, holding the
+   two thumbs, which are full-width 1px bands scaled to a row's segment, so
+   only the path inside the band shows. Both are aria-hidden, never hit,
+   and shown only while the layer is live. */
+.pt-sb-rail,
+.pt-sb-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+  pointer-events: none;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+.pt-sb[data-rails] .pt-thumbs:not(.is-shots) :is(.pt-sb-rail, .pt-sb-track) {
+  display: block;
+}
+
+.pt-sb-rail {
+  background: var(--pt-sb-rail-ink);
+}
+
+.pt-sb-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  transform-origin: 0 0;
+  opacity: 0;
+  transition: opacity var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-sb-thumb.is-current {
+  background: var(--pt-sb-thumb-ink);
+}
+
+.pt-sb-thumb.is-hover {
+  background: var(--pt-sb-thumb-hover-ink);
+}
+
+/* The live site's header (a sub group's header) is static, not sticky, so
+   it needs no ground. With the paper ground every header has, it would
+   cover the rail and the hover pill: the sub group is positioned and later
+   in the tree, so it paints over both. */
+.pt-thumbs:not(.is-shots) .pt-grp.is-sub > .pt-grp-head {
+  background: none;
+}
+
+/* The pills: two grounds under every row (the list's first children),
+   translated to a row and sized to it, inset from both sides of the row
+   area. The corner is the control corner, since a pill is a ground the
+   pointer is on. They draw no line. */
+.pt-sb-pill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-radius: var(--pt-radius-control);
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: 0 0;
+  transition: opacity var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-sb-pill.is-hover {
+  background: var(--pt-sb-pill-hover);
+}
+
+.pt-sb-pill.is-current {
+  background: var(--pt-sb-pill-current);
+}
+
+.pt-thumbs.is-shots .pt-sb-pill {
+  display: none;
+}
+
+:is(.pt-sb-thumb, .pt-sb-pill)[data-on] {
+  opacity: 1;
+}
+
+/* the pointer on the marked row: the hover ground gives way to the current one, so two grounds never stack */
+.pt-sb-pill.is-hover[data-quiet] {
+  opacity: 0;
+}
+
+/* Keyboard focus on a rail row: the 1px ink ring takes the pill's box
+   (inset 4px from each side, the control corner) instead of the row's
+   square edge, so it lines up with the ground the focus brings. Only while
+   the layer is live; before it, the rows keep the plain outline. The run
+   label draws its count with ::after, so its ring is ::before. */
+.pt-sb[data-rails] .pt-thumbs:not(.is-shots) :is(.pt-orow, .pt-nrow, .pt-nest-head):focus-visible {
+  outline: none;
+}
+
+.pt-sb[data-rails] .pt-thumbs:not(.is-shots) .pt-nest-head:focus-visible {
+  position: relative;
+}
+
+.pt-sb[data-rails] .pt-thumbs:not(.is-shots) :is(.pt-orow, .pt-nrow):focus-visible::after,
+.pt-sb[data-rails] .pt-thumbs:not(.is-shots) .pt-nest-head:focus-visible::before {
+  content: '';
+  position: absolute;
+  inset: 0 var(--pt-sb-pill-inset);
+  border-radius: var(--pt-radius-control);
+  box-shadow: inset 0 0 0 1px var(--pt-ink);
+  pointer-events: none;
+}
+
+/* a plain click: the row reads as current at once, before the route marks it */
+.pt-orow[data-pending] .pt-orow-name,
+.pt-nrow[data-pending] .pt-nrow-name,
+.pt-nrow[data-pending] .pt-nrow-n {
+  color: var(--pt-ink);
+}
+
+.pt-orow:not([data-site])[data-pending] > svg {
+  color: var(--pt-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-sb-thumb,
+  .pt-sb-pill {
+    transition: none;
+  }
+}
+
+/* ---- a run label: shown only when two or more of the page's sections
+   hold more than one row (Films and Translation series under Motion, the
+   skill areas, the graphics areas). The chevron sits in the number column,
+   right-aligned; the label in the name column, wrapping; the count at the
+   right end. No rule, not sticky. ---- */
+.pt-nest-head {
+  appearance: none;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: var(--pt-n-w, 16px) minmax(0, 1fr) auto;
+  column-gap: var(--pt-nest-gap);
+  align-items: start;
+  width: 100%;
+  min-height: 26px;
+  margin: 6px 0 0;
+  padding: 5px 10px 3px var(--pt-nest-x);
+  border: 0;
+  border-radius: var(--pt-radius-shell);
+  background: none;
+  color: var(--pt-titanium);
+  font-family: var(--pt-display);
+  font-weight: 500;
+  font-size: var(--pt-t-group);
+  line-height: 16px;
+  letter-spacing: var(--pt-track-group);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-nest > .pt-nest-head:first-child {
+  margin-top: 0;
+}
+
+.pt-nest-head > svg {
+  justify-self: end;
+  width: 16px;
+  height: 16px;
+  padding: 2px;
+  box-sizing: border-box;
+  fill: currentColor;
+  transition: transform var(--pt-dur-toast) var(--pt-ease-out);
+}
+
+.pt-nest-head[aria-expanded='false'] > svg {
+  transform: rotate(-90deg);
+}
+
+.pt-nest-head::after {
+  content: attr(data-count);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pt-nest-head:hover,
+.pt-nest-head:focus-visible {
+  color: var(--pt-ink);
+}
+
+.pt-nest-head:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: -1px;
+}
+
+/* ---- the page row's run between rows: 4px after the run ---- */
+.pt-nest + .pt-orow {
+  margin-top: 4px;
+}
+
+/* ---- thumbnail density: the run row keeps its 64x36 capture at the run's
+   number column start, the number and the name beside it, no address; the
+   guide stays under the page row's capture centre (10 + 32) ---- */
+.pt-thumbs.is-shots .pt-orow.has-run {
+  padding-right: 34px; /* the density rule sets both sides to 10px one class deeper */
+}
+
+.pt-thumbs.is-shots .pt-orow.has-run + .pt-orow-fold {
+  height: 44px;
+  margin-top: -44px;
+}
+
+.pt-thumbs.is-shots .pt-nrow:not(.is-deep) {
+  grid-template-columns: 64px var(--pt-n-w, 16px) minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: start;
+  min-height: 44px;
+  padding: 4px 10px 4px var(--pt-nest-x);
+}
+
+.pt-thumbs.is-shots .pt-nrow .pt-thumb-frame.is-mini {
+  grid-row: 1 / span 3;
+  align-self: center;
+}
+
+.pt-thumbs.is-shots .pt-nrow:not(.is-deep) .pt-nrow-n,
+.pt-thumbs.is-shots .pt-nrow:not(.is-deep) .pt-nrow-name {
+  line-height: 16px;
+  padding-top: 2px;
+}
+
+/* a deep run in thumbnail density: its guide under the centre of the
+   capture above it (50 + 32, less half the line), its names in the number
+   column of the row above, so the headings keep 123px and not 101px */
+.pt-thumbs.is-shots .pt-nest.is-deep {
+  --pt-guide-x: calc(var(--pt-nest-x) + 31px);
+}
+
+.pt-thumbs.is-shots .pt-nrow.is-deep {
+  padding-left: calc(var(--pt-nest-x) + 72px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-orow-fold,
+  .pt-orow-fold > svg,
+  .pt-nest-head,
+  .pt-nest-head > svg {
+    transition: none;
+  }
+}
+
 
 /* the sites' icons carry their site's color on both grounds */
 .pt-sb [data-site='dossier'] > svg {
@@ -530,11 +1070,6 @@ a.pt-sb-mark:focus-visible {
 .pt-thumbs.is-shots .pt-orow.is-child,
 .pt-thumbs.is-shots .pt-grp.is-sub > .pt-orow {
   padding-left: 26px;
-}
-
-/* a row of a group nested under a page row: one more level in, its capture at 42px */
-.pt-thumbs.is-shots .pt-grp.is-sub.is-under-row > .pt-orow {
-  padding-left: 42px;
 }
 
 .pt-thumbs.is-shots .pt-orow .pt-thumb-frame.is-mini {
@@ -583,40 +1118,6 @@ a.pt-sb-mark:focus-visible {
   outline-offset: 2px;
 }
 
-/* ---- the rows a route hangs under an item (ListRow): 28px, indented under
-   the item's icon, one line with an ellipsis (the title attribute carries
-   the whole heading), no rule of their own. Written above the shields in
-   docs.css and brand.css (three and four selectors deep), which keep the
-   article layer's .pt-row rules off these rows. ---- */
-.pt-sb .pt-thumbs .pt-sub .pt-row {
-  grid-template-columns: 26px minmax(0, 1fr);
-  gap: 8px;
-  align-items: baseline;
-  min-height: 28px;
-  padding: 5px 10px 5px 34px;
-  border-bottom: 0;
-}
-
-.pt-sb .pt-thumbs .pt-sub .pt-row .pt-row-title {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pt-thumbs.is-shots .pt-sub .pt-row {
-  padding-left: 10px;
-}
-
-/* the rows hung under an item of a group nested under a page row (the
-   sections of a research package under its film, Knowledge > Motion):
-   the number sits under the item's icon, one indent in from the nested
-   header, so the run reads as the item's own; one further indent would
-   leave the titles too little of the 207px column */
-.pt-sb .pt-thumbs:not(.is-shots) .pt-grp.is-under-row > .pt-sub .pt-row {
-  padding-left: 82px;
-}
-
 /* ================================================================
    The grid's list (ThumbList): labels and captured frames. GridView.css
    lays the list out as a grid and sizes the number column.
@@ -631,7 +1132,6 @@ a.pt-sb-mark:focus-visible {
   font-weight: 500;
   font-size: 12.5px;
   letter-spacing: -0.005em;
-  font-feature-settings: 'cv11', 'ss01';
   color: var(--pt-titanium);
   padding: 16px 0 0 30px;
 }
@@ -667,7 +1167,6 @@ a.pt-sb-mark:focus-visible {
   font-family: var(--pt-display);
   font-weight: 500;
   font-size: 12.5px;
-  font-feature-settings: 'cv11', 'ss01';
   color: var(--pt-titanium);
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -687,6 +1186,8 @@ a.pt-sb-mark:focus-visible {
   width: 100%;
   aspect-ratio: 16 / 9;
   border: 1px solid var(--pt-edge);
+  /* a tile: the card corner; the clip rounds the mat, the capture and the plate inside it */
+  border-radius: var(--pt-radius-card);
   overflow: hidden;
   background: var(--pt-paper);
   transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
@@ -712,13 +1213,6 @@ a.pt-sb-mark:focus-visible {
 
 .pt-thumb.is-active .pt-thumb-title {
   color: var(--pt-ink);
-}
-
-/* the rows a route hangs under an item in the grid's list */
-.pt-thumbs > .pt-sub {
-  display: flex;
-  flex-direction: column;
-  padding: 0 10px 4px;
 }
 
 /* ThumbShot: light and dark twins; the theme attribute picks one */
@@ -784,7 +1278,6 @@ a.pt-sb-mark:focus-visible {
   font-family: var(--pt-display);
   font-weight: 500;
   font-size: 15px;
-  font-feature-settings: 'cv11', 'ss01';
   font-variant-numeric: tabular-nums;
   color: var(--pt-titanium);
 }
@@ -795,17 +1288,13 @@ a.pt-sb-mark:focus-visible {
     transition: none;
   }
 
-  .pt-sb.is-overlay,
-  .pt-grp:not(.is-closed) > .pt-orow,
-  .pt-grp:not(.is-closed) > .pt-sub {
+  .pt-sb.is-overlay {
     animation: none;
   }
 
   a.pt-sb-mark,
   .pt-grp-head,
   .pt-grp-head > svg,
-  .pt-orow > svg,
-  .pt-orow-name,
   .pt-thumb-frame {
     transition: none;
   }

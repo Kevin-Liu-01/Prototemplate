@@ -282,14 +282,14 @@ export function getGraphicsBlocks(): readonly Block[] {
     const area = AREA_NAMES[id];
     const entries = visualEntries(visuals.filter((v) => v.area === id));
     if (!entries.length || !area) continue;
-    blocks.push({ id: `area-${id.toLowerCase()}`, label: area.name, eyebrow: id === 'H' ? 'Covers' : `Area ${id}`, lead: area.slot, entries });
+    blocks.push({ id: `area-${id.toLowerCase()}`, label: area.name, lead: area.slot, entries });
   }
-  blocks.push({ id: 'sheets', label: 'Contact sheets', eyebrow: 'Review', lead: 'The finished set tiled at thumbnail size, the way a reader meets it.', entries: sheetEntries() });
-  blocks.push({ id: 'grounds', label: 'Backgrounds', eyebrow: 'Grounds', lead: 'The glyphfield exports the visuals sit on, at their native 1920 by 1080 and their own aspect; each names the visuals that use it.', entries: groundEntries(visuals) });
+  blocks.push({ id: 'sheets', label: 'Contact sheets', lead: 'The finished set tiled at thumbnail size, the way a reader meets it.', entries: sheetEntries() });
+  blocks.push({ id: 'grounds', label: 'Backgrounds', lead: 'The glyphfield exports the visuals sit on, at their native 1920 by 1080 and their own aspect; each names the visuals that use it.', entries: groundEntries(visuals) });
   for (const { slug, lead } of EARLIER) {
     const post = getPost(slug);
     const entries = postEntries(slug);
-    if (post && entries.length) blocks.push({ id: slug, label: post.title, eyebrow: 'Earlier in the series', lead, entries });
+    if (post && entries.length) blocks.push({ id: slug, label: post.title, lead, entries });
   }
   let n = 0;
   return blocks.map((block, i) => ({

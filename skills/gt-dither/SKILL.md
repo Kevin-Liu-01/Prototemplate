@@ -1,0 +1,497 @@
+---
+name: gt-dither
+description: >-
+  General Translation's 1-bit material and its artifact pictures: the 4x4
+  and 8x8 Bayer screens, coverage tiers that nest, the CPU engine
+  (dither.ts) and the GPU studio field with its BAYER_PRESETS, the landing
+  hero's bayer-8x8 field as the one material on product surfaces, Glyphfield
+  as the authoring source for new shaders, and the Blue Marble standard for
+  dithered photographs and scans with its cutter (pnpm mood-tone), its lint
+  and its retired pictures. Use when adding a dithered field, picture, cover
+  or texture to any GT surface, when choosing or tuning a studio preset, or
+  when cutting, replacing, crediting or reviewing a mood picture in
+  Prototemplate or gt-cloud.
+metadata:
+  title: Dither and artifact pictures
+  areas: graphics, aesthetic
+  updated: 2026-10-06
+  origin: prototemplate
+---
+
+# Dither and artifact pictures
+
+General Translation (GT) builds the full stack for localization: i18n
+libraries, context-aware translation APIs, a CDN that serves translations
+and Locadex, its AI agent (BRAND.md sections 1 and 9). Its product monorepo
+is gt-cloud
+(github.com/generaltranslation/gt-cloud): `apps/landing` serves
+generaltranslation.com and `apps/dashboard` holds the sign-in and
+onboarding pages, a form plate on the left over a dithered field on the
+right. Prototemplate (github.com/Kevin-Liu-01/Prototemplate) is Kevin Liu's
+hub for GT design work: the brand deck, the docs, and the plate port, a copy
+of the dashboard's sign-in and onboarding gallery under
+`src/components/plate`, served at `/d/production/{signin,onboarding,consent,device,cli}`.
+
+GT draws texture with one device: an ordered Bayer dither that prints whole
+square cells in one ink. The same screen runs the procedural fields on the
+landing, the dashboard and Prototemplate, and the artifact pictures, which
+are photographs and scans of objects screened at 1 CSS px cells to the Blue
+Marble standard. This skill holds the rules, the engines, the commands and
+the review standard for both.
+
+Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless
+they start with `$GT_CLOUD`, a gt-cloud checkout. Engine detail is in
+[references/engines.md](references/engines.md); the picture roster, the
+per-surface constants and the full lint list are in
+[references/pictures.md](references/pictures.md).
+
+## 1. The language
+
+- A tone ramp is drawn as ordered dither. Density never comes from an
+  alpha veil (DESIGN.md section 7), and texture is only ordered dither
+  (BRAND.md section 3).
+- Error diffusion (Floyd-Steinberg) is out. Its output is serial, it reads
+  as noise, and it shimmers when animated. A Bayer matrix is a fixed
+  threshold map, so every cell is decided alone and the repeating cell
+  structure reads as print halftone (`src/lib/dither.ts`, module header).
+- The house screens:
+
+  | screen | values | where |
+  | --- | --- | --- |
+  | 4x4 | rows `0 8 2 10`, `12 4 14 6`, `3 11 1 9`, `15 7 13 5` | `bayer4` in `src/lib/studio-field.ts`, preset 01 and most of the family |
+  | 8x8 | `BAYER_8`, built by M(2n) = [[4M, 4M+2], [4M+3, 4M+1]] | `src/lib/dither.ts`, the cutter, the deck engine, presets 02, 10 and `bayerSphere` |
+  | 2x2 | four thresholds | preset 07 bayer-chunk only |
+
+- The 8x8 matrix is an exact permutation of 0 to 63. A constant tone k/64
+  lights exactly k cells in every tile, so the screen has 65 tonally linear
+  levels. A cell is lit when its tone is over `(m + 0.5) / 64`.
+- Coverage tiers nest by construction. A tier lights the cells whose
+  threshold is under its tone, so every tier's lit cells are a subset of
+  the next tier's. Regions filled with different tiers compose an exact
+  ramp, and an opaque glint ink drawn over a lower tier never brightens a
+  doubled cell (`DitheredMark`, DESIGN.md section 6; see gt-isometric).
+- Cells are square screen pixels.
+  - Canvas engines write one buffer pixel per cell and CSS upscales the
+    buffer with `image-rendering: pixelated` (`applyStyles` in
+    `ditherToCanvas`). The CPU engine never renders at devicePixelRatio: a
+    retina cell is subpixel and the screen collapses into flat gray.
+  - SVG dithers carry `shape-rendering: crispEdges`.
+  - A transform that would foreshorten the cells (an iso plane seat) goes
+    inside the alpha mask, so the cells stay square. A rotated window is a
+    pre-rotated clip path swept by pure horizontal translate, because
+    GSAP's transform origin makes `rotate()` windows fragile (DESIGN.md
+    section 6).
+- Scale is the design control. `scale` is the CSS px width of one cell,
+  and eight times it is the grain the eye reads. The artifact pictures use
+  1 for fidelity, and the sign-in globe and the deck's ramp use 2. At 3
+  and 4 the screen reads as halftone, and 3 is the default for a
+  full-bleed procedural field. At 8 or more it reads as pixel art.
+- A dissolve multiplies the field's tone (`rampField` in
+  `src/components/plate/brand/FieldStack.tsx`), so the dither drops whole
+  cells across the ramp. A fading CSS mask over a picture prints its cells
+  at partial alpha, so picture layers take a hard cut at the plate's edge
+  and do their dissolve in the field.
+- Alpha on a dither layer is limited to its fixed opacity (0.62 and 0.7
+  for pictures, 0.55 for the hero's field) and to the measured masks that
+  quiet a procedural field behind a plate (section 3). A picture layer
+  never fades by mask.
+- One grid per transition (`TRANSITION_RULES` in
+  `src/app/craft/libraries.ts`):
+  - both states are read at the same cells at one cell size, and the size
+    never changes inside a transition;
+  - the Bayer tile keeps its phase from one page cell (the `phase` option),
+    so the first frame of a transition is the last frame of the state
+    before it;
+  - the tone mixes on one smoothstep and the ink interpolates on the same
+    curve (`mixFields`);
+  - an incoming picture's curve is solved so its disc's mean tone equals
+    the outgoing field's;
+  - reduced motion draws the end state once as a still.
+  - Alpha fades, wipes, moving masks and content entrance animation are
+    refused. A resolve takes 350 ms and a step from one picture to the
+    next 150 ms (`RESOLVE_MS` and `STEP_MS` in
+    `src/app/craft/TransitionDemo.tsx`, `STEP_MS` in the plate's
+    `FieldStack.tsx`; Kevin, 2026-09-29: "make the dither transitions 2x
+    faster").
+- On a dithered cover or deck opener, the dither shades one large
+  hard-edged form at sheet scale on a quiet ground, with the plate area
+  solid ink or paper. Round ten replaced two openers whose dither was the
+  subject: a 7.3x blow-up that read as a checker and a band of mid-tone
+  with no edge (`deck/shots/OPENERS.md`).
+
+## 2. The engines
+
+| engine | file | use it for |
+| --- | --- | --- |
+| CPU dither | `src/lib/dither.ts` | any scalar field `fn(u, v, t)` to 0..1 through the 8x8 screen: field factories (`radialBurst`, `globe`, `streakBands`, `gradientRamp`, `makeGlyphField`), combinators (`multiplyFields`, `maxFields`, `mixFields`, `mapField`), pictures, transitions, the deck ramp (`redrawDithers`) |
+| GPU studio field | `src/lib/studio-field.ts` | the Bayer family of animated materials: `createStudioField(canvas, { preset, dpr, speed, params })`, `BAYER_PRESETS`, `BAYER_DEFAULT_ID = '02'` |
+| React wrapper | `src/components/shared/StudioField.tsx` | a canvas that mounts one studio field and destroys it on unmount |
+| picture sampler | `src/components/plate/lib/picture-field.ts` | a tone grid placed by `cover`, `disc` or `region`, read at the loop's cells |
+
+- `createDitherLoop(canvas, fn, opts)` returns `render`, `start`, `stop`,
+  `setField`, `setOptions` and `destroy`. Defaults: `scale` 3, `fps` 30,
+  `pauseOffscreen` true, `gamma` 1, `bias` 0.
+- `createStudioField` returns `setParams`, `pause`, `resume`,
+  `renderStatic` and `destroy`, or null when WebGL is unavailable. The
+  canvas then stays transparent and the parent's own ground shows.
+- The studio family, all on an ink ground in the blue family
+  (`#2f5ce0`, `#5f86f2`, `#9db9ff`, `#cfe0ff`), white only in 10:
+
+  | id | name | preset | what moves |
+  | --- | --- | --- | --- |
+  | 01 | bayer-flow | `bayer` | the Glyphfield original: 4x4 over flow clouds at 2 to 10 device px cells |
+  | 02 | bayer-8x8 | `bayer8` | the same flow through the 8x8 at 1 to 4 device px cells; the default and the hero's material |
+  | 03 | bayer-contour | `bayerContour` | elevation bands drifting downslope |
+  | 04 | bayer-radial | `bayerRadial` | two glows at the flanks, the centre column ink |
+  | 05 | bayer-sweep | `bayerSweep` | long diagonal bands with a slow churn |
+  | 06 | bayer-waves | `bayerWaves` | two interfering wave systems, the slowest clock |
+  | 07 | bayer-chunk | `bayerChunk` | the 2x2 at 8 to 22 px poster cells |
+  | 08 | bayer-pulse | `bayerPulse` | the flow breathing on a 16 s clock |
+  | 09 | bayer-ink | `bayerInk` | sparse blue on ink, no bright chip |
+  | 10 | bayer-hot | `bayerHot` | heat cores lifting crests to white through the 8x8 |
+
+  `bayerSphere` sits outside the roster: a lit sphere through the 8x8, the
+  landing's report card globe and Prototemplate's /try figure.
+- Every engine follows the lifecycle in DESIGN.md section 11: mount lazily
+  behind an IntersectionObserver, pause offscreen and on a hidden tab,
+  draw exactly one still under `prefers-reduced-motion`, release
+  everything the instance owns in `destroy()`, and re-resolve ink on a
+  `data-theme` flip. The studio field draws one ink set in both themes and
+  leaves the light theme to the page's CSS filter (section 3).
+- The studio field holds exactly one WebGL context per session for every
+  subscriber, blitting into each subscriber's 2D canvas. Per-component
+  contexts exhausted the browser's budget of about 16 and went black, so
+  `destroy()` keeps the shared context by design. Switch a preset by
+  remounting a keyed canvas (`src/components/shared/HeroFieldSwitcher.tsx`).
+- The studio field has four copies with identical shaders and presets,
+  two here and two in gt-cloud (the landing's on main and `packages/ui`'s
+  on PR #4977, listed in [references/engines.md](references/engines.md)
+  with the gotchas). Change a preset in every copy in the same round, or
+  the app's material drifts from the hero's.
+
+## 3. Material on product surfaces
+
+- The landing hero's field is the one material on the dashboard and the
+  auth pages. Kevin, 2026-09-25: "they should be as tasteful as our dither
+  shader in hero of landing". It is preset 02 bayer-8x8 drawn by
+  `createStudioField`.
+- The hero mounts it in `shared/HeroField.tsx` on
+  `canvas.tc-hero-field.tch-field`, and three files under
+  `$GT_CLOUD/apps/landing/src/components/landing/` set its composite:
+  - `shell/engine.css`: absolute, full bleed, `mix-blend-mode: screen`,
+    inside an isolated dark cell;
+  - `home/sections/hero-terminal.css`: opacity 0.55 and a seven-stop
+    horizontal mask, 0.72 at the edges to 0.12 in the centre behind the
+    window;
+  - `home/v0-pages.css`, light theme:
+    `filter: invert(1) hue-rotate(180deg) brightness(1.07) saturate(1.15)`,
+    so the clouds print pale blue on paper.
+- In the app the field mounts through `FieldGround` (`ground` for page
+  grounds, `band` inside a block) and `DitherBand` (an empty state with its
+  copy on a paper plate in the lower left). They live in
+  `$GT_CLOUD/apps/dashboard/src/components/brand/` on PR #4977 and in
+  `src/components/plate/brand/`. The composite is the hero's, measured:
+  - `.brand-field-host` is `isolation: isolate`, `pointer-events: none`;
+  - `.brand-field` is opacity 0.55;
+  - `ground` masks the field to nothing left of `--plate-edge`, then ramps
+    to full over 600 px; under md it is a faint top band gone by mid-page;
+  - `band` ramps from 0.12 to full across the block;
+  - the light theme uses the hero's filter, because a screen blend is inert
+    in an isolated host with a transparent backdrop.
+- Measure the hero's composite before inventing a new one. Never draw the
+  material as a pattern, a border, a boxed plate or a heavier form. Kevin
+  judged the horizon ring at page scale too heavy, and it was deleted.
+- Glyph rain (`glyph-field`) keeps its glyphs as anti-aliased type at the
+  page's pixel ratio. Its depth is glyph size and a quantized alpha ramp,
+  and every tier is solid ink (`TIER_COVER` `[1, 1, 1]` in
+  `src/lib/glyph-field.ts` and `$GT_CLOUD/packages/ui/src/lib/glyph-field.ts`),
+  because a dither pattern on moving glyphs shimmers with every step. Kevin
+  removed the rain's far-tier dither for that reason (commit b59f7d4,
+  2026-08-06: "the dither is making it flicker every time it moves"). A
+  later pass that redrew the rain as enlarged two-tone pixel type was
+  reverted on his word (2026-09-28: "make the glyphs look like how they did
+  before, and dont make them dithered").
+- On gt-cloud main the sign-in page draws the blue globe alone on the CPU
+  loop at `GLOBE_SCALE` 2 (the rain left it on 2026-09-29), and the
+  onboarding, consent, device and CLI pages draw artifact pictures at
+  `PICTURE_SCALE` 1
+  (`$GT_CLOUD/apps/dashboard/src/components/brand/FieldStack.tsx`). The
+  dashboard field's file map is gt-cloud's `artifact-pictures` skill
+  (PR #5133).
+- A field is decoration: `aria-hidden`, no pointer capture, and a readable
+  page without WebGL.
+
+## 4. Glyphfield, the source of new material
+
+- Glyphfield is Kevin's studio and open-source repository
+  (glyphfield.com/studio, github.com/Kevin-Liu-01/Glyphfield, MIT). The
+  studio field was ported from it. The original material,
+  `glyphfield-dither-gradient`, is a moving wave distorted by layered
+  noise under a 4x4 Bayer threshold with three palette colors; its
+  `grain` sets the screen-space cell size.
+- New material starts in the studio. Compare a few distinct treatments at
+  the target aspect ratio, then refine the one chosen. Record the material
+  ID, colors, scale, motion settings and the source document.
+- What ships is material code or exported assets:
+  - live motion becomes a preset and shader body in the studio-field
+    engine (every copy), mounted through `createStudioField`;
+  - fixed artwork ships as an exported SVG or raster, checked at display
+    size;
+  - fixed-timing motion ships as a Studio export with a still for reduced
+    motion.
+- A page never depends on an editor iframe, a local checkout or a
+  generation request per page view.
+- Tune the shader for texture and motion. Masks, fades, text protection and
+  theme blending stay in the page's CSS.
+- Keep the source URL and revision, the material settings and the license
+  notices with copied code or assets.
+- Agents drive the studio through `window.glyphfield.studio` and discover
+  the API at `/llms.txt` and `/api/agent`. The headless export recipe is in
+  gt-graphics; the landing code map is gt-cloud's `.agents/skills/glyphfield`.
+
+## 5. Artifact pictures
+
+An artifact picture is a photograph or scan of an object, artwork or place,
+screened through the house dither. They appear on the plate port's field
+(`src/components/plate`), the brand deck's mood slides (`deck/`), the
+transition demo on /docs (`src/app/craft`) and gt-cloud's dashboard sign-in
+and onboarding field. Procedural fields (the sign-in globe, the ramp),
+marks, glyph fields, the deck's shader openers and blog covers are not
+artifact pictures.
+
+Choosing a picture:
+
+- No plain English prose. Dictionary entries, book pages, documents, signs
+  and captions read as copy and distract from the form beside them. Kevin,
+  2026-10-05: "the dictionaries are plain english and distracting instead
+  of artistic or design meaningful".
+- Writing is welcome when it is the artistic or design subject: carved
+  inscriptions (the Rosetta Stone), calligraphy, manuscripts in other
+  scripts or old hands (Devanagari, the gloss), signs pressed in clay (the
+  tablet), and lettering engraved on a historical chart or instrument (the
+  cable chart, the compass rose).
+- The picture applies to the page it sits on. On the dashboard Kevin cut
+  the Great Wave ("does not really make sense here") and asked for human,
+  cultural and language objects such as Karahisari's calligraphy and a
+  Devanagari manuscript (2026-09-29).
+- The source is the original scan or photograph, public domain or Creative
+  Commons, and the credit is shown with the picture.
+- On the dashboard and the plate port, the caption card has a title in
+  title case, a note of at most 90 characters (`NOTE_MAX_CHARS`) that
+  states one fact about the object, and the credit in italic (Kevin,
+  2026-10-01). Kevin asked for notes of two lines at most, and the note
+  never mentions the company (2026-09-30: "dont write the corny stuff about
+  gt relating").
+- On the deck, a mood slide's plate has the title at 44px, one or two
+  sentences on why the picture is in the deck (these may name GT), and the
+  credit in titanium at 15px (`deck/shots/OPENERS.md`). The gt-deck skill
+  owns that format.
+
+The tone grid (`scripts/mood-tone/standard.json` under `tone` and `file`):
+
+- Fixed for every picture: no blur, gamma 1.2, an autocontrast that clips
+  0.5 percent at each tail (over the frame, or over the subject mask for a
+  masked object), an 8-bit gray JPEG at quality 82, or 75 when 82 is over
+  the cap.
+- Chosen per picture in the recipe: the crop, the channel (`red` or
+  `gray`), the polarity (`invert` puts the subject lit on a black ground)
+  and the kind.
+- Solved per picture by the cutter: the black and white points.
+  - A `scene` lands on the Blue Marble's mean tone 0.361 and standard
+    deviation 0.342 over the region of the grid that is shown.
+  - `marks` (writing, engraving, lines on a plain ground) put the ground at
+    black with an Otsu threshold and the 90th percentile of the marks at
+    white.
+  - The solver returns levels 80 and 230 for the plate's earth, which is
+    the earth's own recipe, so the earth is the reference.
+- Sizes: a cover is 1600 by 900, one grid cell per CSS px at a 1440 by 900
+  view; a disc is 2400 by 1350. The cap is 573440 bytes.
+
+The screen (`standard.json` under `screen`):
+
+- the 8x8 Bayer matrix with threshold `(m + 0.5) / 64`;
+- cells of 1 CSS px, screened live at display size. A pre-screened bitmap
+  that is then scaled never ships;
+- tone floor 10: bytes at or under 10 read as 0, above the JPEG ringing on
+  black;
+- the loop at gamma 1 and bias 0, because the whole curve is in the grid;
+- dark theme: white cells at 0.62 over `#070707`; light theme: `#070707`
+  cells at 0.7 over white.
+
+The windows the lint holds each grid's shown region to:
+
+| kind | mean | std | at white (250 and up) | at the floor (10 and under) |
+| --- | --- | --- | --- | --- |
+| scene | 0.30 to 0.42 | 0.28 to 0.44 | at least 2% | at least 5% |
+| marks | at most 0.35 | any | at least 0.5% | at least 50% |
+
+The constants on each surface, the picture roster and the crop kinds are in
+[references/pictures.md](references/pictures.md).
+
+## 6. The cutter
+
+Requires Node 20 or later and Python 3 with Pillow. From the Prototemplate
+root:
+
+```sh
+pnpm mood-tone <sources dir>                     # the deck set into deck/shots/tone
+pnpm mood-tone <sources dir> --set plate         # the plate set into public/brand/mood
+pnpm mood-tone <sources dir> --preview <dir>     # also writes preview-{name}.png, the 1 px screen
+pnpm mood-tone <sources dir> --check             # cuts into a temp folder, fails unless byte-identical
+pnpm mood-tone <sources dir> --out <dir>         # writes the grids and manifest elsewhere
+```
+
+In gt-cloud (PR #5133, branch `k/artifact-picture-standard`, open on
+2026-10-05): `pnpm --dir apps/dashboard mood-tone <sources dir> [preview
+dir]`, or the sources directory in `MOOD_SOURCES_DIR`.
+
+On Kevin's machine the sources are in `~/gt/artifact-picture-sources` with a
+`SHA256SUMS` file. `pnpm mood-tone ~/gt/artifact-picture-sources --check`
+and the same with `--set plate` passed on 2026-10-05.
+
+- `mood-tone.mjs` holds the recipes and `SOURCES` (each file's origin URL
+  and sha256). It refuses a source whose sha256 differs, then sends the
+  recipes and the standard to `mood_tone.py`, which writes
+  `mood-{name}.jpg` and prints one manifest entry per picture. The wrapper
+  writes `manifest.json` and prints each picture's levels, region stats,
+  text lines and bytes.
+- The cutter is deterministic. The lint ties a grid to its manifest entry
+  by sha256, but only `--check` with the sources proves the entry came from
+  the recipe. Never edit a grid or a manifest by hand. In gt-cloud the
+  reviewer reruns the wrapper and checks that `git status` shows no change.
+- A recipe holds only `name`, `source`, the size and cap, `crop`,
+  `channel`, `invert`, `kind`, `writing` and `placement`. It holds no tone
+  numbers. If no crop, channel, polarity, kind or placement puts a scene in
+  its window, the picture does not meet the standard; tone settings are
+  never added to make it pass.
+- Sources are never committed. Each person keeps a sources directory
+  outside the repository with the copies the grids were cut from. Keep
+  those copies: the Met now serves the tablet with different bytes, and
+  the wrapper refuses them.
+
+## 7. Adding or removing a picture
+
+1. Choose the object against section 5. Find the original and confirm its
+   license.
+2. Put the source in your sources directory. Add its URL and sha256 to
+   `SOURCES` in `mood-tone.mjs` and its row (file, origin, pixels, sha256)
+   to `scripts/mood-tone/README.md`.
+3. Add a recipe to `DECK` or `PLATE`. Spread `COVER` for a cover. Use
+   `kind: 'marks'` for writing or engraving on a plain ground and `'scene'`
+   otherwise. Declare `writing`. A deck placement is a cover at focus 0.5,
+   0.5. A plate recipe is gt-cloud's too: add the same recipe to `PICTURES`
+   and the source to `SOURCES` in
+   `$GT_CLOUD/apps/dashboard/scripts/mood-tone/mood-tone.mjs`, and the
+   source row to that folder's README.
+4. Run the wrapper with `--preview` and look at `preview-{name}.png`.
+   Adjust the crop, channel, polarity, kind or placement until the subject
+   sits where it should and the stats meet the window.
+5. Show it: a deck mood slide, or a plate registry entry made in both
+   repositories so `public/brand/mood` holds the same bytes in each. The
+   markup, the bookkeeping and the caption rules are in
+   [references/pictures.md](references/pictures.md).
+6. Run the lint in both repositories (section 8).
+7. Commit the grid, `manifest.json`, the recipe, the README row and the
+   slide or registry entry together. If the manifest shows `textLines`
+   above 0, say so in the commit or pull request so the reviewer checks
+   the writing against section 5.
+
+To remove a picture, delete its recipe, grid and slide or registry entry,
+run the wrapper so the manifest drops it, and move its pages to another
+picture, in both repositories.
+
+## 8. The lint
+
+| repository | command | runs in |
+| --- | --- | --- |
+| Prototemplate | `node scripts/lint-pictures.mjs` (`pnpm lint:pictures`), tests `pnpm test:pictures` | `pnpm build` before `next build`, `pnpm lint:all` |
+| gt-cloud (PR #5133) | `node scripts/check-artifact-pictures.mjs` (`pnpm check:artifact-pictures`), tests `pnpm exec vitest run scripts/__tests__` | `pnpm lint` |
+
+Prototemplate's lint fails when a grid, its manifest entry, the registry or
+a slide disagree, when a grid or its stats are off the standard, when a
+credit is missing, when a retired name appears, when a screen constant is
+off on any surface, and when `standard.json` differs from its pin.
+gt-cloud's applies the same rules to its one manifest and registry, and
+also reads scene 1's `makeLoop` call. The full list, and what the lint
+cannot see, are in [references/pictures.md](references/pictures.md).
+
+## 9. Changing the standard
+
+`standard.json` and `mood_tone.py` are byte-identical in Prototemplate and gt-cloud, and `STANDARD_SHA256` pins them in both lints. A change edits both repositories in one round and recuts every grid. The steps and the current pin are in [references/pictures.md](references/pictures.md) under "Changing the standard".
+
+## 10. Retired names
+
+`dictionary`, `johnson`, `oed-volumes`, `oxford` and `oed` never return as picture names, files, registry keys, `mood-{name}` tokens or string literals in picture code. They are listed in `standard.json` under `writing.retired`; [references/pictures.md](references/pictures.md) under "Retired names" says what each was and why it went.
+
+## Review checklist
+
+- Every density ramp is dither. No alpha veil carries tone, and a
+  picture's dissolve is in the field.
+- Cells are square and crisp at 1x and 2x zoom in both themes: pixelated
+  upscale, crispEdges in SVG, transforms inside the mask.
+- A product surface uses the hero's bayer-8x8 field with the hero's
+  measured composite, and nothing heavier. Glyph rain stays solid type.
+- The engine pauses offscreen and on a hidden tab, draws one still under
+  reduced motion, cleans up in `destroy()`, and the page reads without
+  WebGL. A CPU loop re-reads its ink on a theme flip (`data-theme` in
+  Prototemplate, the `.dark` class in gt-cloud); the studio field takes the
+  light theme from the page's CSS filter.
+- A transition keeps one cell grid, one anchored tile and one smoothstep
+  for tone and ink, and draws the end state under reduced motion.
+- A new artifact picture has no plain English prose, applies to its page,
+  has an original source with a license and a sha256 in `SOURCES`, and a
+  credit shown with it.
+- Its grid and manifest were cut by the wrapper, `--check` passes with the
+  sources, and the page matches `preview-{name}.png`.
+- On the dashboard and the plate port, its caption note is one fact in 90
+  characters or fewer, with no line about the company.
+- `node scripts/lint-pictures.mjs` passes, and for any plate change
+  gt-cloud's `node scripts/check-artifact-pictures.mjs` passes on PR
+  #5133's branch (or main once it merges).
+- A standard change touched both repositories and both pins in one round.
+
+## Related skills
+
+GT: gt-graphics (covers, blog graphics, the Glyphfield headless export),
+gt-aesthetic, gt-isometric (`DitheredMark`), gt-deck (mood slides and
+openers), gt-landing-pages, gt-lints. Wiki: create-graphics,
+design-engineering-polish, agent-browser. gt-cloud's own skills under
+`.agents/skills`: `artifact-pictures` (PR #5133) maps the dashboard field's
+files, `glyphfield` maps Glyphfield and the landing's studio field, and
+`gt-landing` lists the landing's shared pieces.
+
+## Sources
+
+- Prototemplate: DESIGN.md sections 6, 7 and 11; BRAND.md sections 3, 4
+  and 7; docs/ARTIFACT-PICTURES.md; docs/LIBRARIES.md;
+  deck/DECK-GRAMMAR.md; deck/shots/OPENERS.md; scripts/mood-tone/
+  (standard.json, mood-tone.mjs, mood_tone.py, README.md);
+  scripts/lint-pictures.mjs; src/lib/dither.ts; src/lib/studio-field.ts;
+  src/components/shared/StudioField.tsx and HeroFieldSwitcher.tsx;
+  src/lib/glyph-field.ts; src/components/plate/brand/ (FieldStack.tsx,
+  FieldGround.tsx, DitherBand.tsx, FieldMoodPlate.tsx, moodPictures.ts);
+  src/components/plate/lib/picture-field.ts;
+  src/components/plate/gallery/devStates.ts;
+  src/components/plate/plate.css; src/app/craft/CraftArticle.tsx,
+  TransitionDemo.tsx and libraries.ts; deck/parts/tail.html and head.html.
+- gt-cloud: apps/landing/src/lib/studio-field.ts; under
+  apps/landing/src/components/landing/, shared/HeroField.tsx,
+  shell/engine.css, home/sections/hero-terminal.css and home/v0-pages.css;
+  apps/dashboard/src/components/brand/FieldStack.tsx and
+  moodPictures.test.ts; packages/ui/src/lib/glyph-field.ts and
+  picture-field.ts;
+  .agents/skills/glyphfield/ (SKILL.md, references/source-map.md); on
+  `k/dashboard-shell-ia` (PR #4977) FieldGround.tsx, DitherBand.tsx and
+  brand-tokens.css; on `k/artifact-picture-standard` (PR #5133)
+  .agents/skills/artifact-pictures/SKILL.md and
+  scripts/check-artifact-pictures.mjs.
+- Kevin's directives: by 2026-08-06 (the rain's dither flickers, so it
+  goes); 2026-09-25 (the hero's field as the app's only material; the ring
+  too heavy); 2026-09-28 (glyph rain stays type); 2026-09-29 (pictures
+  apply to the page; human and language objects; less distracting,
+  higher-fidelity pictures at 1 px cells; transitions twice as fast);
+  2026-09-30 (caption notes of two lines with no company tie-in);
+  2026-10-01 (italic credits); 2026-10-05 (no plain English prose; the
+  Blue Marble as the standard). Memory notes: dashboard-deck-grammar,
+  signin-field-transition, artifact-picture-standard,
+  prototemplate-plate-port.

@@ -40,7 +40,7 @@ those files:
 - Photographs and artworks in the brand deck that come from Wikimedia
   Commons keep the public-domain or Creative Commons terms recorded with
   their credits on the slides and in deck/shots/OPENERS.md.
-- Skills under public/skills that credit an upstream source keep that
+- Skills under skills/ that credit an upstream source keep that
   source's license as noted in the file.
 - Dependencies installed from npm keep their own licenses.
 

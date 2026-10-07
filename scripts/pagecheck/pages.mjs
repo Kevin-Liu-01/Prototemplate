@@ -84,6 +84,8 @@ export function pages() {
     { id: 'marks', path: '/marks', source: ['src/app/marks'] },
     { id: 'skills', path: '/skills', source: ['src/app/skills'] },
     { id: `skills-${skill}`, path: `/skills/${skill}`, source: ['src/app/skills'] },
+    { id: 'handbook', path: '/handbook', source: ['src/app/handbook', 'src/app/docs', 'docs/handbook'] },
+    { id: 'handbook-decisions', path: '/handbook/decisions', source: ['src/app/handbook', 'src/app/docs', 'docs/handbook'] },
     { id: 'graphics', path: '/graphics', source: ['src/app/graphics'] },
     { id: 'motion', path: '/motion', source: ['src/app/motion'] },
     { id: `motion-${pkg}`, path: `/motion/${pkg}`, source: ['src/app/motion'] },

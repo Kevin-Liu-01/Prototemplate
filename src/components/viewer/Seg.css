@@ -1,6 +1,7 @@
-/* Seg. tokens.css owns .pt-seg and its options (the 30px height, the shell
-   corner --pt-radius with the overflow clip that holds children inside it,
-   the right-hand rule between options, the end options' inner radius, the
+/* Seg. tokens.css owns .pt-seg and its options (the 30px height, the
+   control corner --pt-radius-control with the overflow clip that holds
+   children inside it, the square interior corners, the right-hand rule
+   between options, the end options' --pt-radius-inner, the
    plate hover, the paper text on the active option and the ink fallback
    fill before the indicator exists). This sheet owns the shared indicator
    and the small variant. */

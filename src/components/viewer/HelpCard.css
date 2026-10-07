@@ -19,6 +19,7 @@
   background: var(--pt-paper);
   color: var(--pt-ink);
   border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
   padding: 26px 30px 22px;
   min-width: 400px;
   max-width: 92vw;
@@ -63,7 +64,6 @@
 
 .pt-help-card h3 {
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 18px;
   line-height: 1.2;
@@ -84,7 +84,6 @@
   padding: 14px 0 6px;
   text-align: left;
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   font-size: 12.5px;
   letter-spacing: -0.005em;
@@ -112,7 +111,6 @@
 .pt-help-card td:first-child {
   color: var(--pt-ink);
   font-family: var(--pt-display);
-  font-feature-settings: 'cv11', 'ss01';
   font-weight: 500;
   white-space: nowrap;
 }

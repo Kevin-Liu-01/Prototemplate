@@ -16,6 +16,15 @@ const nextConfig: NextConfig = {
     // blog assets carry a ?v= cache stamp; everything else stays query-free
     localPatterns: [{ pathname: '/**', search: '' }, { pathname: '/static/blogs/**' }],
   },
+  async redirects() {
+    return [
+      // The raw skill files moved from /skills/<slug>.md (the generated
+      // bodies under public/skills, retired) to the skill's own folder,
+      // served by src/app/skills/[slug]/[...path]/route.ts. A retired slug
+      // lands on that route's 404.
+      { source: '/skills/:slug([a-z0-9-]+).md', destination: '/skills/:slug/SKILL.md', permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;
