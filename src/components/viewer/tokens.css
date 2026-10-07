@@ -444,17 +444,13 @@ body[data-shell] {
    a render without scripts still shows the choice.
 
    The box takes the control corner (--pt-radius-control) and clips its
-   children to the inner corner (--pt-radius-inner): the indicator is a
-   1px span widened with scaleX, so a radius of its own would stretch with
-   it, and the clip is what keeps its ink inside the rounded border. The
-   options set the shell corner, since .pt-ib now rounds every button; the
-   end options round their outer corners to the inner radius (the box's
-   radius less its 1px border), so
-   the plate hover, the ink fallback fill and the focus ring follow the box
-   without a second stroke at the corner. The dividers between options are
-   straight rules that never reach a corner; the last option draws none.
-   The indicator span is the first child while it exists, so the end
-   options are the first and last button, not the first and last child. */
+   children. Everything drawn inside it is a pill 2px inside its option
+   with the chip corner on all four sides: the sliding indicator
+   (Seg.css), and on each option's ::before the plate hover, the ink
+   fallback fill and the focus ring (Seg.css), so a fill or a ring reads
+   the same on either end and in the middle. No rule divides the options;
+   the pill is the division. The options themselves draw nothing and take
+   the shell corner. */
 .pt-seg {
   position: relative;
   display: inline-flex;
@@ -469,24 +465,20 @@ body[data-shell] {
   z-index: 1;
   height: 30px;
   border: 0;
-  border-right: 1px solid var(--pt-hair);
-  /* the interior corners stay square; the end options round their outer ones below */
   border-radius: var(--pt-radius-shell);
   padding: 0 12px;
 }
 
-.pt-seg .pt-ib:first-of-type {
-  border-top-left-radius: var(--pt-radius-inner);
-  border-bottom-left-radius: var(--pt-radius-inner);
+/* an option's ground: the indicator's pill, under the option's content */
+.pt-seg .pt-ib::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  z-index: -1;
+  border-radius: var(--pt-radius-chip);
 }
 
-.pt-seg .pt-ib:last-of-type {
-  border-right: 0;
-  border-top-right-radius: var(--pt-radius-inner);
-  border-bottom-right-radius: var(--pt-radius-inner);
-}
-
-.pt-seg .pt-ib:hover {
+.pt-seg .pt-ib:hover::before {
   background: var(--pt-plate);
 }
 
@@ -495,7 +487,11 @@ body[data-shell] {
   color: var(--pt-paper);
 }
 
-.pt-seg:not(.has-ind) .pt-ib.is-on {
+.pt-seg .pt-ib.is-on::before {
+  background: none;
+}
+
+.pt-seg:not(.has-ind) .pt-ib.is-on::before {
   background: var(--pt-ink);
 }
 

@@ -196,7 +196,7 @@ Where two bordered components touch, exactly one draws the line:
 | front matter and the first section | the band, both rules | the contents grid draws no rule against it; the first section's divider draws no rule |
 | two sections | the lower section's divider rule | the upper section draws no bottom rule |
 | tile and its shot | the tile's frame | the shot draws no border |
-| segmented control and its options | the control's outer border | options draw only the dividers between them; the last draws none |
+| segmented control and its options | the control's outer border | options draw no dividers; the active option is an ink pill 2px inside it with the chip corner, and the hover and the focus ring trace the same pill |
 | stacked corner buttons | the upper button's bottom edge | the lower button's top edge is transparent at rest |
 | sidebar head and toolbar | each owns its own side of the vertical seam | the two bottom rules meet at the sidebar's edge and never overlap |
 
@@ -236,8 +236,8 @@ Kevin's toolbar is the reference (2026-10-05): the search pill and the segmented
 | --- | --- | --- | --- |
 | shell | `--pt-radius-shell` | 0 | the viewer frame, the sidebar column, the toolbar bar, the fixed sheet and its ring, the reading column, the index panel's column, the overlay layers and scrims, the progress track, scroll thumbs, the book head, the contents, the dividers and the bands; full-width list rows, which own their seams and never draw a box; an input inside its field |
 | control | `--pt-radius-control` | 6px | every button (`.pt-ib`), segmented groups, fields and field-shaped buttons (the search pill, the count, the filters, the palette's field, the install field), buttons on pages, the sidebar's pills, which are grounds the pointer is on |
-| inner | `--pt-radius-inner` | 5px | a part flush inside a control's 1px border: a segmented control's end options, the install field's copy segment |
-| chip | `--pt-radius-chip` | 4px | key caps, chips, pills, tags, inline code, and a control set 2 to 7px inside a field |
+| inner | `--pt-radius-inner` | 5px | a part flush inside a control's 1px border: the install field's copy segment |
+| chip | `--pt-radius-chip` | 4px | key caps, chips, pills, tags, inline code, a segmented control's active and hover pill (2px inside its option), and a control set 2 to 7px inside a field |
 | card | `--pt-radius-card` | 6px | cards, tiles, thumbnails, figures, and popovers: the palette, the help card, the toast, the hover preview |
 | round | `--pt-radius-round` | 50% | dots and avatars on a square box |
 
@@ -318,7 +318,7 @@ display size of its own. The /d/ directions keep their own type.
   ledgers keep the full column.
 - **The book page.** Every page with a book head has one structure, rendered by `BookHead` (BookView.tsx), and differs from another only in its words and its facts:
   1. nothing is drawn in the `--pt-title-clear` space between the toolbar's bottom rule and the title (the reading column's top padding), and no line crosses a title;
-  2. the title, the page's plain name from `src/lib/page-names.ts` (Brand, Documentation, Motion) or a record's own title, at d1 across the mast; a page may set one badge after the name on the title's line (BookHead's `badge`: a 1px `--pt-hair` box at the card corner, its figure the cap height tall on the baseline, hidden from the accessible name). /brand's badge is the traced GT monogram in dotted outline (`src/app/brand/GtOutline.tsx`);
+  2. the title, the page's plain name from `src/lib/page-names.ts` (Brand, Documentation, Motion) or a record's own title, at d1 across the mast; a page may set one badge after the name on the title's line (BookHead's `badge`: a 1px `--pt-hair` box at the card corner, its figure at most the cap height tall and set on the baseline, hidden from the accessible name). /brand's badge is the GT monogram cutting through the register's monograms every 1.4s (`src/app/brand/GtVariants.tsx`), still under reduced motion;
   3. the lead (one to three lines at `--pt-measure-lead`, at most 200 characters, plain declarative sentences) and the panel on one row under the title, both starting on the lead's first line;
   4. the panel: Updated first (the day of the last commit that touched the page's own sources, from `src/lib/updated.ts`, linked to its commit, with a relative hint after hydration), then three facts, or one fact and the install field; each row a Heroicons 20 solid glyph in titanium, a label in ink-2 and a value in ink at 500, one lead line tall so its baseline lands on a lead baseline;
   5. one `--pt-hair` rule `--pt-head-rule-pad` under the taller of lead and panel, across the stage;

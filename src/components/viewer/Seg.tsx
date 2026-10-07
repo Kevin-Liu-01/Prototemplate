@@ -21,9 +21,9 @@ import './Seg.css';
  * selection.
  *
  * The active fill is one indicator shared by every option (directive 7.4):
- * an absolutely positioned span under the buttons, moved with a transform
- * (translateX for its place, scaleX for its width, so nothing lays out
- * while it slides) over the slide duration. Its first measurement comes
+ * an absolutely positioned pill under the buttons, 2px inside the active
+ * option, sized to it and moved with translateX; its place and width move
+ * together over the slide duration, and only the pill itself lays out. Its first measurement comes
  * from the group's ResizeObserver, whose first notification arrives after
  * the browser's own layout and before paint, so the read forces no style
  * or layout of the new page inside React's commit. The indicator then
@@ -57,16 +57,26 @@ export type SegProps<T extends string> = {
 /** Where the indicator sits: its left edge and its width, in CSS pixels inside the group's border. */
 type Indicator = { x: number; w: number };
 
+/** The pill's inset inside the active option on every side (Seg.css .pt-seg-ind). */
+const IND_INSET = 2;
+
 function letGo(): void {
   const focused = document.activeElement;
   if (focused instanceof HTMLElement && focused.closest('.pt-seg')) focused.blur();
 }
 
-/** The active option's box inside the group, or null while no option is on. */
+/**
+ * The active option's box inside the group, or null while no option is on
+ * or the group is not laid out. Read from the rects, not offsetLeft and
+ * offsetWidth, which round to whole pixels: a text option's width is
+ * fractional, and the pill keeps its 2px inset on both sides.
+ */
 function measure(group: HTMLElement): Indicator | null {
   const on = group.querySelector<HTMLElement>('.pt-ib.is-on');
   if (!on) return null;
-  return { x: on.offsetLeft, w: on.offsetWidth };
+  const box = on.getBoundingClientRect();
+  if (box.width <= 2 * IND_INSET) return null;
+  return { x: box.left - group.getBoundingClientRect().left - group.clientLeft, w: box.width };
 }
 
 function SegControl<T extends string>({ options, value, onChange, label, iconOnly = false, className }: SegProps<T>) {
@@ -122,7 +132,7 @@ function SegControl<T extends string>({ options, value, onChange, label, iconOnl
         <span
           className='pt-seg-ind'
           aria-hidden='true'
-          style={{ transform: `translateX(${ind.x}px) scaleX(${ind.w})` }}
+          style={{ width: ind.w - 2 * IND_INSET, transform: `translateX(${ind.x}px)` }}
         />
       ) : null}
       {options.map((option) => (

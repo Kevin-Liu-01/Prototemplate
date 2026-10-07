@@ -70,16 +70,127 @@
   scroll-margin-top: 28px;
 }
 
-/* the head's badge: the traced monogram in dots of the one ink; the
-   stroke and the dots keep their size at any scale */
-.ptb-gt-outline path {
+/* the head's badge: the GT monogram, then a hard cut every 1.4s through
+   the register's monograms (GtVariants.tsx); five slots, so each holds
+   the first 1/5 of the 7s cycle. A slot fits its mark in the cap-height
+   box, in the title's ink, and sets it on the baseline (a wide mark is
+   shorter than the cap height). Under reduced motion the monogram stands
+   alone, still, and the box takes its width. */
+.ptb-variants {
+  position: relative;
+  display: block;
+  width: 2.2em;
+  height: 0.727em;
+}
+
+.ptb-variant {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  animation: ptb-cut 7s step-end calc(var(--i) * 1.4s) infinite;
+}
+
+.ptb-variant svg {
+  width: auto;
+  height: 100%;
+}
+
+.ptb-variant.is-mask {
+  background: currentColor;
+  mask-position: center bottom;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+@keyframes ptb-cut {
+  0% {
+    opacity: 1;
+  }
+
+  20%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ptb-variants {
+    width: auto;
+  }
+
+  .ptb-variant {
+    display: none;
+    animation: none;
+  }
+
+  .ptb-variant:first-child {
+    position: static;
+    display: flex;
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+/* the mark section's specimen: the traced monogram in dotted outline,
+   measured by dashed guides seated on its own glyph box */
+.ptb-mark-fig {
+  max-width: 860px;
+  margin: 22px 0 0;
+}
+
+.ptb-mark-fig-art {
+  position: relative;
+  aspect-ratio: 1213 / 771;
+  color: var(--pt-ink);
+}
+
+.ptb-mark-fig-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* the traced mark, in dots: the stroke holds screen gauge at any scale so
+   the dotting stays crisp */
+.ptb-fig-gt {
   fill: none;
-  stroke: var(--pt-ink);
+  stroke: var(--pt-ink-3);
   stroke-width: 1.25;
-  stroke-dasharray: 0.5 2.5;
+  stroke-dasharray: 2 5;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+}
+
+.ptb-fig-line {
+  position: absolute;
+}
+
+.ptb-fig-line.is-h {
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px dashed var(--pt-hair);
+  transform: translateY(-0.5px);
+}
+
+/* each guide is centred on its edge of the glyph box */
+.ptb-fig-line.is-v {
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed var(--pt-hair);
+  transform: translateX(-0.5px);
+}
+
+.ptb-mark-fig figcaption {
+  margin-top: 10px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
 }
 
 /* ---------- the naming system: a ruled ledger ---------- */

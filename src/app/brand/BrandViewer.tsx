@@ -17,7 +17,7 @@ import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { BRAND_COUNT, BRAND_SECTIONS, BRAND_SHELL_SECTIONS, headingsOf } from './brand-sections';
-import GtOutline from './GtOutline';
+import GtVariants from './GtVariants';
 
 /* the sidebar head: the mark, this, and `10 sections` share 208px */
 const BRAND_TITLE = PAGE_NAMES.brand.name;
@@ -194,7 +194,7 @@ function BrandBook({ lead, note, updated, readingMinutes, pages, onHeading, jump
       <div className='pt-book-col'>
         <BookHead
           title={PAGE_NAMES.brand.name}
-          badge={<GtOutline />}
+          badge={<GtVariants />}
           lead={lead}
           note={note}
           updated={updated}

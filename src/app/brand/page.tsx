@@ -7,6 +7,7 @@ import Link from 'next/link';
 import ReassemblerDemo from '../craft/ReassemblerDemo';
 import AttributeScales, { AESTHETIC, PERSONALITY } from './AttributeScales';
 import BrandFilm from './BrandFilm';
+import BrandMarkFigure from './BrandMarkFigure';
 import type { BrandPage } from './BrandViewer';
 import BrandViewer from './BrandViewer';
 import { headingId } from './brand-sections';
@@ -272,6 +273,7 @@ const PAGES: readonly BrandPage[] = [
           the shape takes the surface&rsquo;s ink. The one sanctioned flourish is the
           Bayer-dithered specular shimmer, never a GIF and never a glow.
         </p>
+        <BrandMarkFigure />
         <div className='ptb-marks'>
           <figure className='ptb-mark is-paper'>
             <img alt='The GT monogram in ink on paper' src='/brand/gt-logo-light.svg' />
