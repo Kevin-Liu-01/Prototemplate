@@ -3,8 +3,8 @@
 /**
  * Reports drift between the registries a Prototemplate page, document or
  * skill has to appear in. Pure Node and read-only: it reads the sources
- * with regular expressions, the way scripts/site-pages.mjs and
- * scripts/lint-lines.mjs read the registries, so it needs no TypeScript
+ * with regular expressions, the way scripts/site-pages.mjs reads the
+ * registries, so it needs no TypeScript
  * loader and no dev server.
  *
  *   1. Headings. Every h2 of every document the docs registry serves
@@ -18,14 +18,16 @@
  *      links to a dead anchor.
  *   2. Routes. Every Pages and Knowledge row of src/lib/surfaces.ts with a
  *      fixed path, against the sitemap (src/app/sitemap.ts), public/llms.txt,
- *      the capture list (scripts/capture-pages.mjs), the page check
- *      (scripts/pagecheck/pages.mjs), the line audit's shell routes
- *      (scripts/lint-lines.mjs), the sidebar's and the search's icon maps,
- *      the search keywords and the row's thumbnail under public/shots/thumb.
- *   3. First slugs. The four regexes the gates use to find a first slug in
- *      src/lib/skills.ts, src/lib/motion.ts, src/lib/archive.ts and
- *      src/lib/directions.ts. A generator that changes its output shape
- *      breaks lint-lines and the page check; this says so first.
+ *      the shared route list the browser tools read (scripts/site-pages.mjs,
+ *      siteRoutes: a row's `tools` names the capture list, the page check
+ *      and the line audit's shell routes), the sidebar's and the search's
+ *      icon maps, the search keywords and the row's thumbnail under
+ *      public/shots/thumb.
+ *   3. First slugs. The four regexes scripts/site-pages.mjs uses to find a
+ *      first slug in src/lib/skills.ts, src/lib/motion.ts,
+ *      src/lib/archive.ts and src/lib/directions.ts. A generator that
+ *      changes its output shape breaks every browser gate; this says so
+ *      first.
  *   4. Skills (when skills/ exists; --no-skills skips them). Each
  *      skills/<slug> against the frontmatter and body contract of the
  *      curated set.
@@ -209,9 +211,9 @@ if (rows.length === 0) fail('found no internal(...) rows in PAGES or KNOWLEDGE; 
 
 const sitemap = read('src/app/sitemap.ts');
 const llms = read('public/llms.txt');
-const capture = read('scripts/capture-pages.mjs');
-const pagecheck = read('scripts/pagecheck/pages.mjs');
-const lines = read('scripts/lint-lines.mjs');
+/* the route list's rows are one line each: `{ id, path, tools: '<tool> <tool>', source }` */
+const routeRows = read('scripts/site-pages.mjs').split('\n');
+const walks = (p, tool) => routeRows.some((line) => line.includes(`path: '${p}'`) && new RegExp(`tools: '[^']*\\b${tool}\\b`).test(line));
 const sidebarIcons = block(read('src/components/viewer/Sidebar.tsx'), 'const PAGE_ICON', '\n};');
 const searchIcons = block(searchIndex, 'const PAGE_ICON', '\n};');
 const keywords = block(searchIndex, 'const PAGE_KEYWORDS', '\n};');
@@ -226,9 +228,9 @@ for (const row of rows) {
   const cells = {
     sitemap: row.dynamic ? 'loop' : sitemap.includes('${SITE_URL}' + p + '`') ? 'yes' : 'NO',
     llms: row.dynamic ? 'n/a' : new RegExp(`\\]\\(https?://[^/)\\s]+${p === '/' ? '/?' : escape(p)}\\)`).test(llms) ? 'yes' : 'no',
-    capture: row.dynamic ? 'n/a' : capture.includes(`['${row.id}', '${p}']`) ? 'yes' : 'no',
-    pagecheck: row.dynamic ? 'first' : pagecheck.includes(`path: '${p}'`) ? 'yes' : 'no',
-    lines: row.dynamic ? 'first' : lines.includes(`path: '${p}'`) ? 'yes' : 'no',
+    capture: row.dynamic ? 'n/a' : walks(p, 'capture') ? 'yes' : 'no',
+    pagecheck: row.dynamic ? 'first' : walks(p, 'check') ? 'yes' : 'no',
+    lines: row.dynamic ? 'first' : walks(p, 'lines') ? 'yes' : 'no',
     'sb-icon': hasKey(sidebarIcons, row.id) ? 'yes' : 'fallback',
     'search-icon': hasKey(searchIcons, row.id) ? 'yes' : 'NO',
     keywords: hasKey(keywords, row.id) ? 'yes' : 'no',
@@ -255,7 +257,7 @@ for (const [book, doc] of [...docs.map((d) => ['docs', d]), ...handbook.map((d) 
 
 /* ---- 3. first slugs ---- */
 
-console.log('\nFirst slugs: the regexes lint-lines.mjs and pagecheck/pages.mjs read');
+console.log('\nFirst slugs: the regexes scripts/site-pages.mjs reads');
 const firsts = [
   ['src/lib/skills.ts', /id: '([^']+)'/, 'export const SKILLS'],
   ['src/lib/motion.ts', /'([^']+)'/, 'export const MOTION_PACKAGE_SLUGS'],
@@ -267,14 +269,14 @@ for (const [file, pattern, from] of firsts) {
   if (from) {
     const at = text.indexOf(from);
     if (at < 0) {
-      fail(`${file}: no "${from}"; lint-lines and the page check throw`);
+      fail(`${file}: no "${from}"; the browser gates (scripts/site-pages.mjs) throw`);
       continue;
     }
     text = text.slice(at);
   }
   const slug = text.match(pattern)?.[1];
   if (slug) console.log(`  ok   ${file}: ${slug}`);
-  else fail(`${file}: ${pattern} matches nothing after ${from ?? 'the start'}; lint-lines and the page check throw`);
+  else fail(`${file}: ${pattern} matches nothing after ${from ?? 'the start'}; the browser gates (scripts/site-pages.mjs) throw`);
 }
 
 /* ---- 4. skills ---- */

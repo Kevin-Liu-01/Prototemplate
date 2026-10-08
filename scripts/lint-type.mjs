@@ -61,6 +61,8 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from '
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { CHROME_PATH, routesFor, seedTheme } from './site-pages.mjs';
+
 export const PATHS = {
   tokens: 'src/components/viewer/tokens.css',
   fonts: 'src/lib/fonts.ts',
@@ -569,11 +571,6 @@ export function ratchet(counts, baseline) {
 /* Live mode: the rendered pages on the dev server                      */
 /* ------------------------------------------------------------------ */
 
-/** The Chrome lint-lines.mjs drives (CHROME_PATH first, as scripts/site-pages.mjs reads it); the same build reads the same faces. lint-radius.mjs and lint-heads.mjs drive it too. */
-export const EXEC =
-  process.env.CHROME_PATH ??
-  '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
-
 /**
  * Where the live rules stand down, by DOM: the nameplate, code, the mono
  * entries, the gallery's grotesk labels, the craft article and its demos
@@ -744,68 +741,17 @@ export function checkGroups(page, { lead = false } = {}) {
   return { failures, warnings };
 }
 
-/** The first slug a source file declares after `from` (lint-lines.mjs's helper). */
-function firstSlugIn(root, file, pattern, from) {
-  let text = readFileSync(join(root, file), 'utf8');
-  if (from) text = text.slice(Math.max(0, text.indexOf(from)));
-  return text.match(pattern)?.[1] ?? null;
-}
-
-const DEFAULT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+/** The overlay keys a route is read under besides its resting state: /brand's index (r), search (Meta+k) and help (Shift+/). */
+const LIVE_KEYS = { brand: ['r', 'Meta+k', 'Shift+Slash'] };
 
 /**
  * The live lints' one route list (lint-type, lint-radius and lint-heads
- * read it): the shell's routes, the first of each kind read from the data
- * or from its index page (a skill, a post, a direction, an archive entry,
- * a motion package), and the deck's own document. Returns the routes, each
- * { path, keys?, deck? }, and the kinds it could not find.
+ * read it): the rows of scripts/site-pages.mjs tagged `live`, each
+ * { id, path, keys, deck }, with the deck's own document marked `deck`.
+ * Throws when a registry's first slug cannot be read.
  */
-export async function liveRoutes(browser, base, root = DEFAULT_ROOT) {
-  const direction = firstSlugIn(root, 'src/lib/directions.ts', /slug: '([^']+)'/);
-  const archive = firstSlugIn(root, 'src/lib/archive.ts', /entry\('([^']+)'/);
-  const pkg = firstSlugIn(root, 'src/lib/motion.ts', /'([^']+)'/, 'export const MOTION_PACKAGE_SLUGS');
-  const firstLink = async (path, prefix) => {
-    const ctx = await browser.newContext();
-    const page = await ctx.newPage();
-    try {
-      await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded', timeout: 240000 });
-      await page.waitForSelector(`a[href^="${prefix}"]`, { timeout: 240000 }).catch(() => null);
-      return await page.evaluate((p) => {
-        const a = [...document.querySelectorAll('a[href]')].find((el) => {
-          const href = el.getAttribute('href') ?? '';
-          return href.startsWith(p) && href.length > p.length && !href.includes('#');
-        });
-        return a ? a.getAttribute('href') : null;
-      }, prefix);
-    } finally {
-      await ctx.close();
-    }
-  };
-  const skill = await firstLink('/skills', '/skills/');
-  const post = await firstLink('/blog', '/blog/');
-  const routes = [
-    { path: '/' },
-    { path: '/brand', keys: ['r', 'Meta+k', 'Shift+Slash'] },
-    { path: '/docs' },
-    { path: '/docs/design' },
-    { path: '/handbook' },
-    { path: '/compare' },
-    { path: '/graphics' },
-    { path: '/marks' },
-    { path: '/skills' },
-    skill ? { path: skill } : null,
-    { path: '/motion' },
-    pkg ? { path: `/motion/${pkg}` } : null,
-    direction ? { path: `/directions/${direction}` } : null,
-    archive ? { path: `/archive/${archive}` } : null,
-    { path: '/blog' },
-    post ? { path: post } : null,
-    { path: '/brand-deck.html', deck: true },
-  ].filter(Boolean);
-  const missing = Object.entries({ skill, post, direction, archive, package: pkg })
-    .filter(([, v]) => !v)
-    .map(([k]) => k);
-  return { routes, missing };
+export function liveRoutes() {
+  return routesFor('live').map((r) => ({ id: r.id, path: r.path, keys: LIVE_KEYS[r.id] ?? [], deck: r.id === 'brand-deck' }));
 }
 
 async function runLive(root, argv) {
@@ -826,7 +772,14 @@ async function runLive(root, argv) {
     return 2;
   }
   const deckFixed = readFileSync(join(root, PATHS.deckHead), 'utf8').includes("'calt' 1");
-  const browser = await chromium.launch({ executablePath: EXEC, headless: true });
+  let all;
+  try {
+    all = liveRoutes();
+  } catch (error) {
+    console.error(`lint:type --live: ${error instanceof Error ? error.message : error}`);
+    return 2;
+  }
+  const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   const failures = [];
   const warnings = [];
   let broken = 0;
@@ -834,12 +787,7 @@ async function runLive(root, argv) {
   /** One page at one width: load, settle, collect, read the faces over CDP. */
   const visit = async (path, width, keys = []) => {
     const ctx = await browser.newContext({ viewport: { width, height: width <= 600 ? 844 : 900 } });
-    await ctx.addInitScript(() => {
-      try {
-        localStorage.setItem('gt-theme', 'dark');
-        localStorage.setItem('gt-deck-theme', 'dark');
-      } catch {}
-    });
+    await seedTheme(ctx, 'dark');
     const page = await ctx.newPage();
     try {
       /* domcontentloaded, then the page's root: /compare and /directions hold
@@ -885,12 +833,7 @@ async function runLive(root, argv) {
   };
 
   /* the routes: the shared list (liveRoutes), narrowed by --only */
-  const { routes: all, missing } = await liveRoutes(browser, base, root);
   const routes = all.filter((r) => !only || r.path.includes(only));
-  if (missing.length) {
-    console.error(`lint:type --live: no first ${missing.join(', ')} was found`);
-    broken++;
-  }
 
   const tasks = routes.flatMap((route) => widths.map((width) => ({ route, width })));
   let next = 0;
@@ -898,7 +841,7 @@ async function runLive(root, argv) {
     while (next < tasks.length) {
       const { route, width } = tasks[next++];
       try {
-        const states = await visit(route.path, width, route.keys ?? []);
+        const states = await visit(route.path, width, route.keys);
         for (const { state, data } of states) {
           const where = `${route.path} ${width}${state === 'rest' ? '' : ` ${state}`}`;
           const { failures: f, warnings: w } = checkGroups(data, { lead: width >= 1200 });

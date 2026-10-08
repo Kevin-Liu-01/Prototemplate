@@ -4,7 +4,8 @@
 // the surface id in src/lib/surfaces.ts. scripts/build-thumbs.mjs cuts the
 // 640x360 thumbnails the preview layer reads from these.
 //
-// What is captured:
+// What is captured, from the shared route list (scripts/site-pages.mjs,
+// the rows tagged `capture`) and the two book registries:
 //   - every static page of the shipped direction: src/app/d/production and
 //     each page.tsx under it whose path has no dynamic segment (blog/[slug]
 //     and the catch-all are not pages of their own), with ?chrome=0 so the
@@ -50,25 +51,15 @@
 // playwright-core expects; CHROME_PATH overrides the executable. --live
 // needs the network instead of the dev server.
 //
-// Page discovery, the theme door and the executable path come from
-// scripts/site-pages.mjs, which scripts/pagecheck/ shares, so a new
-// production page or a moved registry is picked up by both tools from one
-// change.
+// The routes, the theme door and the executable path come from
+// scripts/site-pages.mjs, which every browser tool shares, so a new page
+// or a moved registry is picked up by all of them from one change.
 import { mkdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { chromium } from 'playwright-core';
 
-import {
-  CHROME_PATH,
-  HIDE_DEV_UI_CSS,
-  ROOT,
-  firstExplorationSlug,
-  productionId,
-  productionPages,
-  productionPath,
-  seedTheme,
-} from './site-pages.mjs';
+import { CHROME_PATH, HIDE_DEV_UI_CSS, ROOT, routesFor, seedTheme } from './site-pages.mjs';
 
 const OUT = join(ROOT, 'public/shots/pages');
 
@@ -133,28 +124,17 @@ function bookDocuments() {
 /** [id, url] for every capture: the live pages under --live, the local pages otherwise. */
 function targets() {
   if (LIVE) return ONLY ? LIVE_PAGES.filter(([id]) => ONLY.includes(id)) : LIVE_PAGES;
-  const shipped = productionPages().map((segments) => [productionId(segments), `${BASE}${productionPath(segments)}?chrome=0`]);
-  let exploration;
+  let routes;
   try {
-    exploration = firstExplorationSlug();
+    routes = routesFor('capture').map((r) => [r.id, r.path]);
   } catch (error) {
     console.error(`capture-pages: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(2);
   }
-  const routes = [
-    ['gallery', '/'],
-    ['brand', '/brand'],
-    ['docs', '/docs'],
-    ['compare', '/compare'],
-    ['present', '/present'],
-    ['deck', '/deck'],
-    ['skills', '/skills'],
-    ['handbook', '/handbook'],
-    ['marks', '/marks'],
-    ['directions', `/directions/${exploration}`],
-    ...bookDocuments(),
-  ].map(([id, path]) => [id, `${BASE}${path}`]);
-  const all = [...shipped, ...routes];
+  /* the shipped pages first, as the captures have always been ordered */
+  const shipped = routes.filter(([id]) => id.startsWith('production'));
+  const rest = routes.filter(([id]) => !id.startsWith('production'));
+  const all = [...shipped, ...rest, ...bookDocuments()].map(([id, path]) => [id, `${BASE}${path}`]);
   return ONLY ? all.filter(([id]) => ONLY.includes(id)) : all;
 }
 
