@@ -253,13 +253,20 @@
       var t = document.createElement('div'); t.className = 'thumb'; t.dataset.k = k; t.setAttribute('role', 'button'); t.tabIndex = 0;
       var n = document.createElement('div'); n.className = 'n'; n.textContent = pad(k + 1);
       var body = document.createElement('div');
-      var f = document.createElement('div'); f.className = 'thumb-frame'; f.appendChild(cloneSlide(k));
+      var f = document.createElement('div'); f.className = 'thumb-frame';
       var tt = document.createElement('div'); tt.className = 'thumb-title'; tt.textContent = titleOf(slide, k);
       body.appendChild(f); body.appendChild(tt);
       t.appendChild(n); t.appendChild(body);
       t.addEventListener('click', function () { go(k); });
       t.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(k); } });
       thumbsEl.appendChild(t); thumbs.push(t);
+    });
+    /* the copies go in at their scale: Chrome sizes SVG text for the scale of its first layout and keeps it when the
+       transform changes, so a copy laid out at the default scale would keep labels sized for it */
+    var w = thumbs.length ? thumbs[0].querySelector('.thumb-frame').clientWidth : 0;
+    thumbs.forEach(function (t, k) {
+      var mini = cloneSlide(k); if (w) mini.style.setProperty('--k', (w - 2) / 1600);
+      t.querySelector('.thumb-frame').appendChild(mini);
     });
     $('sb-count').textContent = slides.length + ' slides';
     barTotal.textContent = pad(slides.length);
@@ -355,9 +362,16 @@
     if (backImg) backImg.hidden = !!tone;
     if (backTone) {
       backTone.hidden = !tone;
-      if (tone) { if (backTone.getAttribute('data-tone') !== tone) backTone.setAttribute('data-tone', tone); drawMood(backTone); }
+      /* a new picture clears the backdrop first, so the last one never shows under this slide's plate while it loads */
+      if (tone) { if (backTone.getAttribute('data-tone') !== tone) { backTone.setAttribute('data-tone', tone); backTone.width = 0; } drawMood(backTone); }
     }
-    if (on && !tone && backImg) { var src = pic.getAttribute('src'); if (backImg.getAttribute('src') !== src) backImg.setAttribute('src', src); }
+    if (on && !tone && backImg) { var src = pic.getAttribute('src'); if (backImg.getAttribute('src') !== src) { backImg.removeAttribute('src'); backImg.setAttribute('src', src); } }
+  }
+  /* the build marks every picture lazy, so a slide fetches nothing until it is near; this fetches slide k's pictures
+     ahead of its turn, so a step never waits on the network */
+  function warm(k) {
+    var s = slides[k]; if (!s) return;
+    Array.prototype.forEach.call(s.querySelectorAll('img[loading="lazy"]'), function (im) { im.loading = 'eager'; });
   }
   function show(n, opts) {
     opts = opts || {};
@@ -366,6 +380,7 @@
     thumbs.forEach(function (t, k) { t.classList.toggle('is-active', k === n); });
     pages.forEach(function (p, k) { p.classList.toggle('is-active', k === n); });
     i = n;
+    warm(n); warm(n + 1); warm(n + 2); warm(n - 1);
     syncBackdrop();
     counter.textContent = pad(n + 1) + ' / ' + pad(slides.length);
     barN.textContent = pad(n + 1);

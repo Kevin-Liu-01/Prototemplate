@@ -229,8 +229,8 @@ and `pnpm test:pictures` runs them alone. It fails when:
 - the plate registry's names, `src` or `placement` differ from its manifest;
 - a deck mood slide does not name a manifest picture on a canvas, a manifest
   picture has no slide, a slide shows a bitmap, a pre-screened `mood-*` file
-  sits in `deck/shots`, or `public/brand-deck.html` inlines grids other than
-  the manifest's (run `pnpm build:deck`);
+  sits in `deck/shots`, or `public/brand-deck.html` names grid files under
+  `public/deck-assets` other than the manifest's (run `pnpm build:deck`);
 - a deck mood slide's plate has no `<div class="credit">`, or the text
   around the transition demo on /docs does not carry the deck credit of each
   picture the demo shows;

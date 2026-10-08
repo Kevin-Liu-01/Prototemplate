@@ -20,7 +20,7 @@ metadata:
 
 # Brand deck
 
-The brand deck is the General Translation identity in 93 slides. Its source is the `deck/` folder of the Prototemplate repository, and `pnpm build:deck` turns it into one self-contained viewer that prototemplate.com/deck frames. Kevin judges product surfaces against it (2026-09-25) and had Prototemplate's viewer shell built from its viewer (2026-09-08), so every slide meets the grammar below in both themes before it ships.
+The brand deck is the General Translation identity in 93 slides. Its source is the `deck/` folder of the Prototemplate repository, and `pnpm build:deck` turns it into one viewer page, with its pictures as files beside it, that prototemplate.com/deck frames. Kevin judges product surfaces against it (2026-09-25) and had Prototemplate's viewer shell built from its viewer (2026-09-08), so every slide meets the grammar below in both themes before it ships.
 
 Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`). The two scripts in `scripts/` read that checkout: from its root they need no flag, and from an installed copy of this skill they take `--root <checkout>` or the `PROTOTEMPLATE` variable. The deck's own written grammar is `deck/DECK-GRAMMAR.md`; this skill distils it with the head CSS, the scripts and Kevin's directives. Detail lives in `references/full-picture-slides.md` and `references/viewer-and-build.md`.
 
@@ -35,7 +35,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`). The two scrip
 | `deck/fonts/deck-fonts.css` | the inlined Inter | nobody without a type decision |
 | `deck/DECK-GRAMMAR.md` | the grammar agents read before touching a slide | the deck owner |
 | `deck/shoot-slide.mjs`, `deck/assemble.mjs` | the shooter, and the assembler it shares with the build (`SLIDE_COUNT`) | the deck owner |
-| `scripts/build-deck.mjs` | the build to `public/brand-deck.html` | the deck owner |
+| `scripts/build-deck.mjs` | the build to `public/brand-deck.html` and its pictures under `public/deck-assets` | the deck owner |
 | `deck/preview/`, `deck/tmp/` | renders and temp files, gitignored | anyone |
 
 - A slide file is exactly one `<section class="slide ..."><div class="in"> ... </div></section>` preceded by an HTML comment that names the slide. It carries no `<script>`; the build refuses one.
@@ -202,7 +202,7 @@ Slides 17 to 23 present the seven race-type marks Kevin chose on 2026-09-29. Eac
 node deck/shoot-slide.mjs 8 15                        # positions 8 and 15, light and dark, into deck/preview
 node deck/shoot-slide.mjs all                         # every slide
 node skills/gt-deck/scripts/check-deck.mjs --titles   # registries, structure, scoping, marks; writes nothing
-pnpm build:deck                                       # public/brand-deck.html and public/shots/deck
+pnpm build:deck                                       # public/brand-deck.html, public/deck-assets and public/shots/deck
 pnpm lint:pictures                                    # the mood grids, slides and the built deck's grids
 pnpm lint:lines:shell                                 # the line audit, /deck included, against the dev server on 3005
 node scripts/lint-lines.mjs --shell --only /deck --width 1440 --theme dark   # the deck alone, about 45 s
@@ -210,8 +210,8 @@ node scripts/lint-lines.mjs --shell --only /deck --width 1440 --theme dark   # t
 
 - Shoot after every edit and look at both JPEGs. The shooter prints elements that overflow the sheet and any page error; it does not see a label on a line, text touching a rail, or an empty half-slide.
 - Run `check-deck.mjs` before a commit. It exits 1 on an error.
-- Commit `public/brand-deck.html` with the slides. It is the file `/deck` serves, `pnpm build` runs `lint-pictures.mjs` against it, and the line audit reads it.
-- `references/viewer-and-build.md` covers the build's image handling, its macOS and Pillow requirements, the `deck/tmp/shots` symlink, the shooter's Chromium path, and the size-limited artifact copy.
+- Commit `public/brand-deck.html` and `public/deck-assets/` with the slides. The page is the file `/deck` serves, `pnpm build` runs `lint-pictures.mjs` against it and its grid files, and the line audit reads it.
+- `references/viewer-and-build.md` covers the build's image files and lazy loading, its macOS and Pillow requirements, the `deck/tmp/shots` symlink, the shooter's Chromium path, and the size-limited artifact copy.
 
 When a slide is added, removed, retitled or moved, these places restate it:
 
@@ -279,7 +279,7 @@ The rails, the rules and the registration crosses belong to the 1600 by 900 shee
 - [ ] Copy reads as plain technical English: sentence-case headings without periods, full sentences, the GT word as the mark.
 - [ ] `node deck/shoot-slide.mjs N` shows no overflow and no page error, and both JPEGs were looked at.
 - [ ] `node skills/gt-deck/scripts/check-deck.mjs` exits 0, with every registry in section 12 updated for an added, moved or retitled slide.
-- [ ] `pnpm build:deck` ran, `public/brand-deck.html` is staged with the slides, and `pnpm lint:pictures` passes.
+- [ ] `pnpm build:deck` ran, `public/brand-deck.html` and `public/deck-assets/` are staged with the slides, and `pnpm lint:pictures` passes.
 - [ ] A new presentation was planned in text first, each slide stands alone and ties to the one before it, and every idea is introduced before a slide relies on it.
 
 ## Related skills

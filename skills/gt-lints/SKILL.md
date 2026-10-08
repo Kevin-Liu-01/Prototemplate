@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Lints and gates
   areas: lints
-  updated: 2026-10-06
+  updated: 2026-10-08
   origin: prototemplate
 ---
 
@@ -199,7 +199,8 @@ sha256 and bytes, 8-bit gray JPEGs at the placement's size and under the cap,
 the house tone settings, each grid's region stats inside its kind's window,
 the plate registry, the deck mood slides and their credits, the transition
 demo on /docs, the screen constants by declaration, the built
-`public/brand-deck.html`, and the retired names. It prints `path: message`
+`public/brand-deck.html` and the grid files it names in
+`public/deck-assets`, and the retired names. It prints `path: message`
 lines and exits 1 on any problem. `STANDARD_SHA256` pins `standard.json`,
 which is byte-identical to gt-cloud's
 `apps/dashboard/scripts/mood-tone/standard.json` on the open branch

@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Working in Prototemplate
   areas: website, components
-  updated: 2026-10-06
+  updated: 2026-10-08
   origin: prototemplate
 ---
 
@@ -98,7 +98,7 @@ graphics/                the blog illustration toolchain
 content/                 the blog posts and their authors
 motion/                  the films, untracked, owned by the Videos session
 skills/<slug>/           the curated GT skills, the canonical copy
-public/                  fonts/, shots/, marks/, media/, brand-deck.html, llms.txt,
+public/                  fonts/, shots/, marks/, media/, brand-deck.html, deck-assets/, llms.txt,
                          skills/, motion/
 docs/                    the documents, with handbook/, harness/, research/ and reference/
 AGENTS.md, CLAUDE.md     the agent entry point and its pointer
@@ -204,7 +204,7 @@ The same round asked for full titles that wrap to two lines with no ellipsis (`s
 | `pnpm dev` | the source | `next dev --turbopack --port 3005`, started from the launch config `prototemplate-dev` |
 | `pnpm build` | the source | the picture, type, radius and heads lints, the `build:updated` check, then `next build` |
 | `pnpm build:updated` | `git log` over each book head's paths (`--staged` for a commit) | `src/lib/updated.ts`; `pnpm lint:updated` (`--check`) fails while it is stale against HEAD |
-| `pnpm build:deck` | `deck/parts`, `deck/slides`, `deck/fonts`, `deck/shots` | `public/brand-deck.html` with every image inlined, and `public/shots/deck` |
+| `pnpm build:deck` | `deck/parts`, `deck/slides`, `deck/fonts`, `deck/shots` | `public/brand-deck.html`, its pictures as content-hashed files in `public/deck-assets`, and `public/shots/deck` |
 | `pnpm build:marks` | the faces in `public/fonts/google`, through fontkit | the speed marks in `public/marks`, one color in `currentColor` |
 | `pnpm build:thumbs` | `public/shots/{light,dark,archive,pages}` | 640 by 360 JPEGs in `public/shots/thumb`, through `sips` on macOS |
 | `pnpm build:skills` | `skills/<slug>/SKILL.md` and the files beside it, nothing outside the checkout | `src/lib/skills.ts` and `skills/README.md`, after checking the contract (section 10); `pnpm lint:skills` (`--check`) fails while either is stale |
@@ -215,7 +215,7 @@ The same round asked for full titles that wrap to two lines with no ellipsis (`s
 | `pnpm mood-tone <sources dir>` | source pictures, with `--set deck` (the default) or `--set plate` | the tone grids in `deck/shots/tone` or `public/brand/mood` (`gt-dither`) |
 | `python3 scripts/fetch-google-faces.py` | Google Fonts | `public/fonts/google` and its `MANIFEST.json` |
 
-- The generated outputs are committed (`src/lib/skills.ts`, `src/lib/motion.ts`, `public/brand-deck.html`, `public/shots`, `public/marks`), so the site builds without `motion/` or any other checkout.
+- The generated outputs are committed (`src/lib/skills.ts`, `src/lib/motion.ts`, `public/brand-deck.html`, `public/deck-assets`, `public/shots`, `public/marks`), so the site builds without `motion/` or any other checkout.
 - `build:motion` only reads `motion/`. It throws before writing when a brief's or a script's shape changes or a web copy differs from the cut `public/motion/published.json` pins, so the last generated files stay intact. It publishes a film's credits, sheet and script only from the folder whose render is the pinned cut, and lists a newer cut as in review (`--pin <slug>` pins a new web copy once Kevin approves it).
 - `scripts/build-skills.mjs` reads only `skills/`, so it runs in any clone. Its header comment lists the contract it checks.
 - The browser scripts launch Chrome for Testing through `playwright-core` and default to the build in Kevin's Playwright cache. Every one of them (`capture:pages`, `check:pages`, `lint:lines`, and the live modes of `lint:type`, `lint:radius` and `lint:heads`) reads `CHROME_PATH` first, so on another machine set it to a local Chrome for Testing.

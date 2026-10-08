@@ -79,7 +79,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Working in Prototemplate',
     description: 'How to work in Prototemplate, Kevin\'s hub and wiki for General Translation work: what each route holds, the repository map, the viewer shell and its props, the registries that move together (surfaces, search index, docs, sitemap, llms.txt, captures), the chrome and sidebar rules, the book page standard, adding a page, a document, a handbook document or a skill, the build scripts, the shared checkout and its session lanes, the gates and landing, keeping the hub current with gt-cloud, and the curated skills with their contract and install. Use when changing anything in the Prototemplate repository, when adding a route, document or skill to it, or when building on it from another project.',
     areas: ['website', 'components'],
-    updated: '2026-10-06',
+    updated: '2026-10-08',
     files: ['references/adding.md', 'references/shell.md', 'scripts/check-registries.mjs'],
   },
   {
@@ -142,7 +142,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Lints and gates',
     description: 'Every lint and gate that holds General Translation\'s design and copy rules, what each catches, where it runs and how to fix a failure: Prototemplate\'s line auditor, shell token lint, practices ratchet, picture lint, type lint, gt-ui oxlint copy and page check, and gt-cloud\'s oxlint plugins, email identity check and oxfmt. Also covers how a new rule becomes a lint and the gate hygiene that keeps a red gate from passing (chained gates, real exit codes, one browser gate at a time). Use before committing in either repository, when a lint or a build gate fails, or when Kevin asks for a new rule to be enforced.',
     areas: ['lints'],
-    updated: '2026-10-06',
+    updated: '2026-10-08',
     files: ['references/gt-ui-rules.md', 'references/line-auditor.md'],
   },
   {

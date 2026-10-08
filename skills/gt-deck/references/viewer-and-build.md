@@ -13,6 +13,7 @@ The deck carries its own viewer in `deck/parts/head.html` (CSS and markup up to 
 - The slide list, the grid and the book are live clones of the slides (`cloneSlide`). Clones drop every `id`, so a slide styles by class. An id selector reaches only the copy on the stage.
 - A slide's title in the list, the book and the toolbar is the text of its first `h1`, `h2` or `.big` (`titleOf`), cut at 72 characters. A slide with none of the three shows "Slide N".
 - SECTIONS in `tail.html` drives the section labels in the slide list, the book's contents and section heads, and the section name. Each entry is `[position of the opener, 'Section name']`.
+- Pictures load as they are needed. The build marks every `<img>` `loading="lazy"`, and `show()` warms the current slide, the two after it and the one before (`warm()`): their pictures turn eager, so a step does not wait on the network. The slide list, the grid and the book fetch their copies' pictures as they scroll near. A jump straight to a far slide (digits then Enter, or a `/deck#80` link) can show the slide before its pictures on a slow connection.
 - The surfaces panel lists every public place the brand is live, grouped, with thumbnails from `deck/shots/thumb`. `scripts/build-deck.mjs` also copies those thumbnails to `public/shots/deck` for the index panel's General Translation set in `src/lib/surfaces.ts`.
 
 ## What Kevin expects of a viewer
@@ -30,29 +31,33 @@ Kevin's asks for the deck's viewer (2026-09-08 and 2026-09-09) hold for any GT p
 
 - The script at the top of `head.html` stamps `data-theme` on `<html>` before the first paint: `gt-theme`, then `gt-deck-theme`, then dark when neither is set. `prefers-color-scheme` is never consulted.
 - The toggle writes both keys. A toggle on the page around the frame arrives as a `storage` event, and `ThemeButton.tsx` also posts `{ type: 'gt-theme', theme }` (same origin only), which covers private windows.
-- `applyTheme()` swaps every `img[data-dark]` between its `src` and its `data-dark` file, redraws the `canvas.dither` ramps, syncs the backdrop and redraws the mood canvases with the theme's `--mood-ink` and `--mood-opacity`.
+- `applyTheme()` swaps every `img[data-dark]` between its `src` and its `data-dark` file, redraws the `canvas.dither` ramps, syncs the backdrop and redraws the mood canvases with the theme's `--mood-ink` and `--mood-opacity`. A lazy picture off screen fetches only the theme it is shown in.
 
 ## The build
 
 `pnpm build:deck` runs `scripts/build-deck.mjs`:
 
 1. `deck/assemble.mjs` reads `deck/slides/NN-*.html` (the pattern is `^\d\d-.*\.html$`, sorted) and fails unless there are exactly `SLIDE_COUNT` files. It also fails if any slide carries a `<script>`, if `head.html` does not open with the `<title>` the wrapper replaces, or if the `<!--FONTS-->` marker is missing. The shooter reads the deck through the same module.
-2. It inlines `deck/fonts/deck-fonts.css` in place of `<!--FONTS-->`. That file registers the rsms InterVariable roman, byte for byte the same file as `public/fonts/InterVariable.woff2`, as the family `'Inter'` at weights 100 to 900. No italic is inlined.
-3. It turns every `src`, `data-dark` and `data-tone` path under `shots/` into a data URI:
+2. It inlines `deck/fonts/deck-fonts.css` in place of `<!--FONTS-->`. That file registers the rsms InterVariable roman, byte for byte the same file as `public/fonts/InterVariable.woff2`, as the family `'Inter'` at weights 100 to 900. No italic is inlined. The font stays inline so the first paint is never a fallback face.
+3. It marks every `<img>` that names a `shots/` file `loading="lazy"`.
+4. It encodes every `src`, `data-dark` and `data-tone` path under `shots/` once:
    - photographs and captures are resampled through `sips` to 1280 px wide at JPEG quality 78;
    - `opener-*` and `detail-*` files keep their native size: a two-tone image (98 percent of pixels at the two extremes) is stored as a one-bit PNG through python3 with Pillow, and a continuous-tone one as JPEG quality 88;
    - `shots/thumb/*` files and the mood tone grids `shots/tone/*` pass through untouched (the grids are screened in the browser, so a re-encode would change the picture).
-4. It wraps the result in a document (doctype, charset, viewport, the title "General Translation brand deck", `noindex`), checks that the output holds `SLIDE_COUNT` slide sections, and writes `public/brand-deck.html`.
+
+   Each result is written to `public/deck-assets/<name>.<sha8>.<ext>`, named by the first 8 hex digits of its sha256, and the page names it by that relative path. Identical bytes share one file, so a light and a dark twin cut from the same picture are one fetch. A file's name changes whenever its bytes do, so `next.config.ts` serves `/deck-assets/*` as `public, max-age=31536000, immutable`.
+5. It wraps the result in a document (doctype, charset, viewport, the title "General Translation brand deck", `noindex`), checks that the output holds `SLIDE_COUNT` slide sections, refuses a page over 1 MB (an inlined image), writes `public/brand-deck.html`, and last removes the files under `public/deck-assets` the new page no longer names, so a failed build leaves the old page and its files whole.
 
 Requirements and traps:
 
 - `sips` makes the build macOS only.
-- Without python3 and Pillow the build prints one warning and stores the two-tone images as JPEG, and the file grows several times over.
-- `public/brand-deck.html` is committed. It was 28,077,898 bytes on 2026-10-05, which the build prints as 26.78MB because its MB is 1024 by 1024 bytes. A full build takes about 100 seconds. Rebuild and commit it with the slide change, or `/deck` serves the old deck and `scripts/lint-pictures.mjs` can fail on the built file's grids.
+- Without python3 and Pillow the build prints one warning and stores the two-tone images as JPEG, and the files grow several times over.
+- `public/brand-deck.html` and `public/deck-assets/` are committed together. On 2026-10-08 the page was 910,026 bytes, about half of it the inlined font, and the folder held 211 files, which the build prints as 17.62MB (its MB is 1024 by 1024 bytes). A full build takes about 100 seconds. Rebuild and commit both with the slide change, or `/deck` serves the old deck and `scripts/lint-pictures.mjs` can fail on the built file's grids, which it reads from `public/deck-assets` by sha256.
+- A rebuild that changes no picture writes the same file names, so a commit adds only the pictures that changed.
 
 ### The artifact copy
 
-`node scripts/build-deck.mjs --out <file> --quality <n> --max-width <px> --native-quality <n> --thumb-quality <n>` writes one lighter copy elsewhere and leaves `public/` alone. A claude.ai artifact holds at most 16 MB.
+`node scripts/build-deck.mjs --out <file> --quality <n> --max-width <px> --native-quality <n> --thumb-quality <n>` writes one self-contained copy elsewhere, every picture inlined as a data URI, and leaves `public/` alone. A claude.ai artifact holds at most 16 MB.
 
 | Flags | Output as the build prints it |
 | --- | --- |
@@ -79,5 +84,5 @@ The flags reach only the resampled photographs, the continuous-tone natives and 
 
 ## Sources
 
-- Prototemplate: `scripts/build-deck.mjs`, `deck/assemble.mjs`, `deck/shoot-slide.mjs`, `deck/parts/head.html`, `deck/parts/tail.html`, `scripts/site-pages.mjs` (`CHROME_PATH`), `src/app/deck/page.tsx`, `src/app/deck/DeckFrame.tsx`, `DESIGN.md` ("Line law for chrome"), `.gitignore`.
+- Prototemplate: `scripts/build-deck.mjs`, `deck/assemble.mjs`, `deck/shoot-slide.mjs`, `deck/parts/head.html`, `deck/parts/tail.html`, `scripts/site-pages.mjs` (`CHROME_PATH`), `next.config.ts` (the `/deck-assets` cache header), `src/app/deck/page.tsx`, `src/app/deck/DeckFrame.tsx`, `DESIGN.md` ("Line law for chrome"), `.gitignore`.
 - Memory notes `gt-brand-deck` (the artifact copy flags and the 16 MB limit) and `prototemplate-interface-system` (the deck opens dark; the deck stands alone at `/deck`, Kevin, 2026-09-08 and 2026-09-09).

@@ -8,7 +8,7 @@
 //                           place of <!--FONTS--> and the leading <title> stripped
 //                           (the wrapper below carries the document title)
 //   shots/*                 every src="shots/...", data-dark="shots/..." and
-//                           data-tone="shots/..." becomes a data URI: photographs
+//                           data-tone="shots/..." is encoded once: photographs
 //                           are resampled to 1280px wide at JPEG quality 78 through
 //                           sips, except the full-bleed openers (shots/opener-*)
 //                           and the 2x detail crops (shots/detail-*), which keep
@@ -24,6 +24,13 @@
 //                           at 1 CSS px cells, so their bytes stay the ones
 //                           shots/tone/manifest.json records
 //
+// Each encoded image is written to public/deck-assets/<name>.<sha8>.<ext>,
+// once per distinct content, and the page names it by that relative path, so
+// the page stays under 1MB and a browser caches every image by its content. Every <img> is marked
+// loading="lazy", and the viewer warms the slides around the current one
+// (warm() in parts/tail.html). Files the new page no longer names are removed
+// last, so a failed build leaves the old page and its files whole.
+//
 // The result is wrapped as a full document (doctype, charset, viewport, the
 // title, a noindex meta, and a style for color-scheme, which follows the
 // data-theme attribute the head script stamps rather than the OS scheme, and
@@ -34,13 +41,15 @@
 // Usage: pnpm build:deck
 //        node scripts/build-deck.mjs --out <file> [--quality <n>] [--max-width <px>]
 //                                          [--native-quality <n>] [--thumb-quality <n>]
-//                           writes one lighter copy somewhere else (the
+//                           writes one self-contained copy somewhere else (the
 //                           artifact copy, which must stay under 16MB) with
-//                           the photographs at that JPEG quality and width,
-//                           the continuous-tone native images at that quality,
-//                           and the thumbnails re-encoded at that quality
-//                           instead of passing through; public/ is left alone
+//                           every image inlined as a data URI, the photographs
+//                           at that JPEG quality and width, the continuous-tone
+//                           native images at that quality, and the thumbnails
+//                           re-encoded at that quality instead of passing
+//                           through; public/ is left alone
 import { execFileSync, execSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import {
   copyFileSync,
   existsSync,
@@ -63,10 +72,13 @@ const flag = (name) => {
   const at = ARGS.indexOf(name);
   return at >= 0 ? ARGS[at + 1] : undefined;
 };
-/* an alternate output path: one lighter file, and public/ is left alone */
+/* an alternate output path: one self-contained file, and public/ is left alone */
 const OUT_OVERRIDE = flag('--out');
 const OUT = OUT_OVERRIDE ?? join(ROOT, 'public/brand-deck.html');
+const ASSETS_OUT = join(ROOT, 'public/deck-assets');
 const THUMBS_OUT = join(ROOT, 'public/shots/deck');
+/* the public page carries markup, styles, the script and the font; its images are files */
+const MAX_PUBLIC_BYTES = 1024 * 1024;
 const QUALITY = Number(flag('--quality') ?? 78);
 const MAX_WIDTH = Number(flag('--max-width') ?? 1280);
 /* the thumbnails pass through untouched unless a copy asks for them re-encoded */
@@ -112,7 +124,7 @@ function twoTonePng(abs, out) {
   } catch (error) {
     if (error && typeof error === 'object' && 'status' in error && error.status === 3) return false;
     pillowMissing = true;
-    console.warn('build-deck: python3 with Pillow is not available, so two-tone images are inlined as JPEG and the deck is far larger');
+    console.warn('build-deck: python3 with Pillow is not available, so two-tone images are stored as JPEG and the deck is far larger');
     return false;
   }
 }
@@ -120,13 +132,17 @@ const TITLE = 'General Translation brand deck';
 const IMAGE_REF = /(src|data-dark|data-tone)="(shots\/[^"]+)"/g;
 const IMAGE = /\.(jpg|jpeg|png|webp|gif)$/i;
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif' };
+const EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
 
-let source = assemble();
+/* every shipped picture is fetched when its slide is near, not with the page */
+let source = assemble().replace(/<img (?=[^>]*\bsrc="shots\/)/g, '<img loading="lazy" ');
 
 /* ---------- images ---------- */
 
 const tmp = mkdtempSync(join(tmpdir(), 'build-deck-'));
 const uris = new Map();
+/* the files under public/deck-assets this build names, by content hash: identical bytes share one file */
+const written = new Map();
 let imageBytes = 0;
 let photographs = 0;
 let natives = 0;
@@ -134,13 +150,24 @@ let twoTones = 0;
 let thumbs = 0;
 let tones = 0;
 
-function toUri(abs, mime) {
+/** One encoded image: a data URI in the --out copy, else a content-hashed file under public/deck-assets. */
+function toUri(rel, abs, mime) {
   const bytes = readFileSync(abs);
-  imageBytes += bytes.length;
-  return `data:${mime};base64,${bytes.toString('base64')}`;
+  if (OUT_OVERRIDE) {
+    imageBytes += bytes.length;
+    return `data:${mime};base64,${bytes.toString('base64')}`;
+  }
+  const hash = createHash('sha256').update(bytes).digest('hex').slice(0, 8);
+  if (!written.has(hash)) {
+    const file = `${basename(rel).replace(/\.[^.]+$/, '')}.${hash}.${EXT[mime]}`;
+    writeFileSync(join(ASSETS_OUT, file), bytes);
+    written.set(hash, file);
+    imageBytes += bytes.length;
+  }
+  return `deck-assets/${written.get(hash)}`;
 }
 
-/** The data URI for one shots/ path: a thumbnail or a tone grid as it is, a photograph resampled. */
+/** The reference for one shots/ path: a thumbnail or a tone grid as it is, a photograph resampled. */
 function dataUri(rel) {
   const abs = join(DECK, rel);
   if (!existsSync(abs)) {
@@ -150,13 +177,13 @@ function dataUri(rel) {
     /* a tone grid is screened in the browser, so a re-encode would change the picture */
     if (!/\.jpg$/.test(rel)) throw new Error(`build-deck: deck/${rel} is not a tone grid JPEG`);
     tones += 1;
-    return toUri(abs, 'image/jpeg');
+    return toUri(rel, abs, 'image/jpeg');
   }
   if (rel.startsWith('shots/thumb/')) {
     const mime = MIME[extname(abs).toLowerCase()];
     if (!mime) throw new Error(`build-deck: no image type for deck/${rel}`);
     thumbs += 1;
-    if (THUMB_QUALITY === undefined) return toUri(abs, mime);
+    if (THUMB_QUALITY === undefined) return toUri(rel, abs, mime);
     const small = join(tmp, `thumb-${basename(rel).replace(/\.[^.]+$/, '.jpg')}`);
     try {
       execSync(`sips -s format jpeg -s formatOptions ${THUMB_QUALITY} "${abs}" --out "${small}"`, { stdio: ['ignore', 'ignore', 'pipe'] });
@@ -164,14 +191,14 @@ function dataUri(rel) {
       const detail = error && typeof error === 'object' && 'stderr' in error && error.stderr ? String(error.stderr).trim() : '';
       throw new Error(`build-deck: sips could not re-encode deck/${rel}; the build runs on macOS${detail ? `: ${detail}` : ''}`);
     }
-    return toUri(small, 'image/jpeg');
+    return toUri(rel, small, 'image/jpeg');
   }
   const native = NATIVE.test(basename(rel));
   if (native) {
     const png = join(tmp, basename(rel).replace(/\.[^.]+$/, '.png'));
     if (twoTonePng(abs, png)) {
       twoTones += 1;
-      return toUri(png, 'image/png');
+      return toUri(rel, png, 'image/png');
     }
   }
   const resampled = join(tmp, basename(rel).replace(/\.[^.]+$/, '.jpg'));
@@ -186,9 +213,10 @@ function dataUri(rel) {
   }
   if (native) natives += 1;
   else photographs += 1;
-  return toUri(resampled, 'image/jpeg');
+  return toUri(rel, resampled, 'image/jpeg');
 }
 
+if (!OUT_OVERRIDE) mkdirSync(ASSETS_OUT, { recursive: true });
 try {
   source = source.replace(IMAGE_REF, (_, attr, rel) => {
     if (!uris.has(rel)) uris.set(rel, dataUri(rel));
@@ -198,7 +226,7 @@ try {
   rmSync(tmp, { recursive: true, force: true });
 }
 if (/(src|data-dark|data-tone)="shots\//.test(source)) {
-  throw new Error('build-deck: an image path was not inlined');
+  throw new Error('build-deck: an image path was not encoded');
 }
 
 /* ---------- wrap and write ---------- */
@@ -214,8 +242,21 @@ const sections = (html.match(/<section class="slide[\s"]/g) ?? []).length;
 if (sections !== SLIDE_COUNT) {
   throw new Error(`build-deck: expected ${SLIDE_COUNT} <section class="slide"> in the output, found ${sections}`);
 }
+if (!OUT_OVERRIDE && Buffer.byteLength(html) > MAX_PUBLIC_BYTES) {
+  throw new Error(`build-deck: the public page is ${Buffer.byteLength(html)} bytes, over ${MAX_PUBLIC_BYTES}; an image was inlined`);
+}
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, html);
+/* the files the new page no longer names, removed last so a failed build leaves the old page whole */
+let removed = 0;
+if (!OUT_OVERRIDE) {
+  const named = new Set(written.values());
+  for (const file of readdirSync(ASSETS_OUT)) {
+    if (named.has(file)) continue;
+    rmSync(join(ASSETS_OUT, file));
+    removed += 1;
+  }
+}
 
 /* ---------- thumbnails for the index panel (the public build only) ---------- */
 
@@ -230,6 +271,9 @@ if (!OUT_OVERRIDE) {
 }
 
 const mb = (n) => `${(n / 1024 / 1024).toFixed(2)}MB`;
+const images = `${photographs} photographs resampled, ${twoTones} two-tone images as PNG, ${natives} continuous-tone images at native size, ${tones} tone grids and ${thumbs} thumbnails`;
 console.log(
-  `build:deck  ${SLIDE_COUNT} slides, ${photographs} photographs resampled, ${twoTones} two-tone images as PNG, ${natives} continuous-tone images at native size, ${tones} tone grids and ${thumbs} thumbnails inlined (${mb(imageBytes)}) -> ${OUT_OVERRIDE ?? 'public/brand-deck.html'} (${mb(Buffer.byteLength(html))})${OUT_OVERRIDE ? '' : `; ${copied} thumbnails -> public/shots/deck`}`
+  OUT_OVERRIDE
+    ? `build:deck  ${SLIDE_COUNT} slides, ${images} inlined (${mb(imageBytes)}) -> ${OUT_OVERRIDE} (${mb(Buffer.byteLength(html))})`
+    : `build:deck  ${SLIDE_COUNT} slides -> public/brand-deck.html (${mb(Buffer.byteLength(html))}); ${images} as ${written.size} files -> public/deck-assets (${mb(imageBytes)}, ${removed} old files removed); ${copied} thumbnails -> public/shots/deck`
 );

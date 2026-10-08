@@ -176,8 +176,8 @@ Across the surfaces:
   picture has no slide, a slide shows a bitmap, a pre-screened `mood-*`
   file sits in `deck/shots`, a deck placement is not a centred cover, or
   the deck view is not the 1600 by 900 sheet;
-- `public/brand-deck.html` inlines grids other than the manifest's (run
-  `pnpm build:deck`);
+- `public/brand-deck.html` names grid files under `public/deck-assets`
+  other than the manifest's (run `pnpm build:deck`);
 - a mood slide's plate has no `<div class="credit">`, or the text around
   the transition demo does not carry the credit of each picture it shows;
 - the demo's grids are not byte copies of the deck's, a stray `mood-*` file
