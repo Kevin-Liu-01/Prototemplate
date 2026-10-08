@@ -7,7 +7,7 @@ import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
-import { DIRECTIONS } from '@/lib/directions';
+import { PRESENT_DIRECTIONS } from '../directions';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin);
 
@@ -427,13 +427,16 @@ export default function TypeDetailSlide() {
           },
           '>-0.1'
         )
+        // The cascade takes 0.91 s whatever the sheet holds, so the
+        // timeline's length, and with it the rail's beat fractions in
+        // PresenterApp, never move with the number of tiles.
         .fromTo(
           '.pr-close-tile',
           { autoAlpha: 0, y: 26 },
           {
             autoAlpha: 1,
             y: 0,
-            stagger: 0.035,
+            stagger: { amount: 0.91 },
             duration: 0.4,
             ease: 'power3.out',
             immediateRender: true,
@@ -537,7 +540,7 @@ export default function TypeDetailSlide() {
         <div className='pr-detail-close'>
           <h3>So I built 12</h3>
           <div className='pr-close-gallery'>
-            {DIRECTIONS.map((direction) => (
+            {PRESENT_DIRECTIONS.map((direction) => (
               <button
                 key={direction.slug}
                 type='button'
@@ -550,7 +553,7 @@ export default function TypeDetailSlide() {
               >
                 <img
                   className='pr-close-shot'
-                  src={`/shots/dark/${direction.slug}.jpg`}
+                  src={`/shots/thumb/${direction.slug}-dark.jpg`}
                   alt={`${direction.name} in dark mode`}
                   loading='lazy'
                 />

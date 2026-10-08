@@ -65,8 +65,8 @@ skill wiki, `skills/engineering/<name>/SKILL.md`).
 - **Scrolling is native and marks are drawn.** BRAND.md section 9 (the
   final avoid list) refuses smooth scrolling, scroll hijacking and inertia
   libraries; `gt-ui/no-smooth-scroll` enforces it (Prototemplate's
-  `.oxlintrc.json` turns it off only for `/present`, which still scrolls on
-  Lenis). `gt-ui/no-gif-mark` keeps every mark and demo frame drawn: SVG,
+  `.oxlintrc.json` turns it off only for `/present`, whose paging animates
+  its jumps between slides). `gt-ui/no-gif-mark` keeps every mark and demo frame drawn: SVG,
   the canvas field or `LocadexMark`.
 
 ## 2. Timing

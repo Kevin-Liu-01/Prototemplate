@@ -10,11 +10,15 @@ import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import Icon from '../icons';
-import { getLenis } from '../lenis';
 import RatingStars from './RatingStars';
 import { setReview, useReviews } from './reviewStore';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+/** Freezes or resumes a frame's rAF loops through the root layout's gate. */
+function setFrozen(frame: HTMLIFrameElement | null, frozen: boolean) {
+  frame?.contentWindow?.postMessage({ type: 'gt:freeze', frozen }, '*');
+}
 
 /**
  * The live prototype stage. The slides frame scales up into a full-screen
@@ -29,6 +33,7 @@ export default function PrototypeViewer() {
   const roll = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
   const activeTrigger = useRef<ScrollTrigger | null>(null);
+  const onScreen = useRef<ScrollTrigger | null>(null);
   const [index, setIndex] = useState(0);
   const [loadedSlug, setLoadedSlug] = useState<string | null>(null);
   const [notesOpen, setNotesOpen] = useState(false);
@@ -64,6 +69,15 @@ export default function PrototypeViewer() {
         trigger: root.current,
         start: 'top 60%',
         end: 'bottom 40%',
+      });
+
+      // The stage loads with the page so it is ready on arrival, and idles
+      // while no part of this section is on screen.
+      onScreen.current = ScrollTrigger.create({
+        trigger: root.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        onToggle: (self) => setFrozen(frame.current, !self.isActive),
       });
 
       // Deep link (/present?d=slug — the index rows link this way): land
@@ -235,9 +249,7 @@ export default function PrototypeViewer() {
         root.current.getBoundingClientRect().top +
         window.scrollY +
         window.innerHeight * 1.05;
-      const lenis = getLenis();
-      if (lenis) lenis.scrollTo(y, { duration: 1.3 });
-      else window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: y, behavior: 'smooth' });
     };
 
     window.addEventListener('keydown', onKey);
@@ -250,12 +262,16 @@ export default function PrototypeViewer() {
 
   // The SSR-rendered iframe can finish loading before hydration attaches
   // React's onLoad, so the veil would never lift — watch the load natively and
-  // treat an already-complete document as loaded.
+  // treat an already-complete document as loaded. A page that loads while
+  // the stage is off screen is frozen at once.
   useEffect(() => {
     const el = frame.current;
     if (!el) return;
     const slug = current.slug;
-    const markLoaded = () => setLoadedSlug(slug);
+    const markLoaded = () => {
+      setLoadedSlug(slug);
+      if (!onScreen.current?.isActive) setFrozen(el, true);
+    };
     const doc = el.contentDocument;
     if (doc?.readyState === 'complete' && doc.body?.childElementCount)
       markLoaded();
@@ -266,16 +282,14 @@ export default function PrototypeViewer() {
   // The frame takes the pointer once loaded (hover states inside the
   // prototype must work in presenter mode), but the deck keeps the wheel:
   // wheel events inside the same-origin frame are cancelled there and
-  // replayed on the deck's Lenis, so scroll-driving never strands.
+  // replayed on the presenter's own scroll, so scroll-driving never strands.
   useEffect(() => {
     if (!isLoaded) return;
     const win = frame.current?.contentWindow;
     if (!win) return;
     const forward = (e: WheelEvent) => {
       e.preventDefault();
-      const lenis = getLenis();
-      if (lenis) lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: true });
-      else window.scrollBy(0, e.deltaY);
+      window.scrollBy(0, e.deltaY);
     };
     win.addEventListener('wheel', forward, { passive: false, capture: true });
     return () =>
@@ -294,11 +308,7 @@ export default function PrototypeViewer() {
   }, [index]);
 
   const scrollToScoreboard = () => {
-    const target = document.getElementById('pr-scoreboard');
-    if (!target) return;
-    const lenis = getLenis();
-    if (lenis) lenis.scrollTo(target, { duration: 1.4 });
-    else target.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('pr-scoreboard')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -330,7 +340,7 @@ export default function PrototypeViewer() {
           >
             <Icon name={rollOpen ? 'arrow-right' : 'arrow-left'} size={13} />
           </button>
-          <aside ref={roll} className='pr-roll' data-lenis-prevent aria-label='All prototypes'>
+          <aside ref={roll} className='pr-roll' aria-label='All prototypes'>
             {DIRECTIONS.map((direction, i) => {
               const rating = reviews[direction.slug]?.rating ?? 0;
               return (

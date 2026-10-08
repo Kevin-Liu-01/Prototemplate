@@ -14,7 +14,7 @@ These are the checklists behind section 6 of the skill. Paths are relative to `$
 8. **Put it under the gates.** Add `{ id: '<id>', path: '/<route>', source: ['src/app/<route>'] }` to `pages()` in `scripts/pagecheck/pages.mjs`. For a shell route, add `{ path: '/<route>', states: ['list', 'index', 'search'] }` to `shellRoutes()` in `scripts/lint-lines.mjs` and to its usage comment. Then run the gates in section 9 of the skill on the new route.
 9. **Update the canon.** A page that adds a rule or a code area adds it to `DESIGN.md` or `ARCHITECTURE.md` in the same change.
 
-A page outside the shell (`/blog`, `/present`) still takes steps 2, 3, 5 and 6 and the page check. `/present` is the full-screen presenter with its own chrome in `src/app/present/`, and its `directions.ts` leaves Signal out on Kevin's 2026-09-09 directive. `/blog` renders `content/blog` with the landing's MDX components (`src/app/blog/mdx-components.tsx`).
+A page outside the shell (`/blog`, `/present`) still takes steps 2, 3, 5 and 6 and the page check. `/present` is the full-screen presenter with its own chrome in `src/app/present/`, and its `directions.ts` leaves Signal out on Kevin's 2026-09-09 directive and keeps the first 16 of the rest (2026-10-08), one list for the viewer, the contact sheet and the verdict. `/blog` renders `content/blog` with the landing's MDX components (`src/app/blog/mdx-components.tsx`).
 
 ## A document
 

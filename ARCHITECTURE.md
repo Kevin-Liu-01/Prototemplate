@@ -157,9 +157,10 @@ twenty-seven directions, four of them full site pairs (`site: true`):
 **production**, the shipped site. singularity-dossier is the completed
 concept; signal and orbit keep their own heroes and carry the
 previous-generation sections the dossier retired, as exploration
-showcases. The index, the presenter and the sitemap all map over
-`DIRECTIONS`, so adding or removing a direction there updates all three.
-When a direction is deleted, also sweep
+showcases. The index and the sitemap map over `DIRECTIONS`, and the
+presenter walks its first 16 without Signal
+(`src/app/present/directions.ts`), so adding or removing a direction there
+updates all three. When a direction is deleted, also sweep
 `scripts/lint-practices.baseline.json` for its paths, record it in
 `src/lib/archive.ts`, and re-check stated counts (index funnel, layout
 description, craft intro).

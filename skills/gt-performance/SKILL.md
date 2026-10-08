@@ -201,6 +201,15 @@ day, and Prototemplate's `src/lib/glyph-field.ts` holds the pattern:
   when a subscriber's `destroy()` runs, so it survives route switches.
   gt-dither section 2 and `references/engines.md` hold the mechanism and
   the rebuild after a lost context.
+- **A shared engine's canvas only grows.** Setting a canvas's width or
+  height reallocates its drawing buffer, so an engine that resizes its one
+  GL canvas to each subscriber reallocates it twice a frame once two fields
+  of different sizes are on screen. On 2026-10-08 the presenter's intro (a
+  full-bleed field and two 125px logo fields) kept the main thread busy
+  about 1,000 ms of every second for that alone. `src/lib/prismatic-field.ts`
+  grows its canvas to the largest field, draws each field into the
+  bottom-left corner (GL's origin) and blits that rectangle:
+  `drawImage(source, 0, source.height - height, width, height, 0, 0, width, height)`.
 - **A canvas read back with `getImageData` stays off the blit path.**
   `willReadFrequently` pins a canvas to CPU memory, so every `drawImage`
   from it uploads to the GPU. That upload was the glyph rain's mobile lag,
@@ -235,17 +244,27 @@ day, and Prototemplate's `src/lib/glyph-field.ts` holds the pattern:
   IntersectionObserver, pause offscreen and on a hidden tab, draw one still
   under reduced motion, re-read ink on a theme flip and release everything
   in `destroy()` (DESIGN.md section 11, gt-motion section 6).
-- **A gallery freezes its live previews.** Twenty-two live iframes running
-  shaders made the presenter wall lag (2026-07-31). Prototemplate's root
-  layout (`src/app/layout.tsx`) installs a rAF gate in every page: a parent
-  posts `{ type: 'gt:freeze', frozen }`, callbacks queue while frozen, and
-  the queue flushes on resume so loops continue where they stopped.
-  `src/app/present/viewer/LazyFrame.tsx` mounts an iframe only near the
-  viewport (far frames release their contexts), freezes it 2.8 s after load
-  and lets it animate under the pointer. Gallery tiles show static captures
+- **A gallery shows stills and goes live only under the mouse.** Twenty-two
+  live iframes running shaders made the presenter wall lag (2026-07-31).
+  Prototemplate's root layout (`src/app/layout.tsx`) installs a rAF gate in
+  every page: a parent posts `{ type: 'gt:freeze', frozen }`, callbacks
+  queue while frozen, and the queue flushes on resume so loops continue
+  where they stopped. Freezing is not enough for a wall: a frozen
+  same-origin frame still hydrates, composites and runs its CSS animations
+  on the parent's main thread. On 2026-10-08 the presenter's verdict
+  gallery, which froze each frame 2.8 s after load, still held 12 live
+  pages, 4 WebGL contexts and about 1.3 GB of renderer memory, and the page
+  stayed busy about 950 ms of every second at rest.
+  `src/app/present/viewer/LazyFrame.tsx` now shows the direction's 640x360
+  thumbnail and mounts the live page only while a mouse is over the card.
+  Gallery tiles show static captures
   (`public/shots/<theme>/<slug>.jpg`), and
   `src/app/directions/DirectionFrame.tsx` keeps the capture behind its one
-  live frame until the frame loads. The gate wraps `requestAnimationFrame`
+  live frame until the frame loads. The presenter's prototype stage
+  (`src/app/present/viewer/PrototypeViewer.tsx`) loads with the page so it
+  is ready on arrival, and is frozen whenever no part of its section is on
+  screen; live, it cost about 110 ms of every second through the slides
+  before it (2026-10-08). The gate wraps `requestAnimationFrame`
   only, so a new scene animates on rAF; a loop on `setInterval` or
   `setTimeout` keeps running inside a frozen preview.
 - **An engine used on several pages lives in one shared library and
@@ -413,13 +432,14 @@ shape.
       the second use costs.
 - [ ] Quality tiers follow measured frame time with a warmup and gap skip,
       never switch mid-move, and width sets only the layout.
-- [ ] A shared engine holds one context; a component-owned context deletes
+- [ ] A shared engine holds one context and its canvas only grows; a
+      component-owned context deletes
       its objects and loses the context on unmount; exactly one canvas
       exists after a strict-mode mount and a hot reload; ticker callbacks
       unhook offscreen; no per-frame blit reads from a
       `willReadFrequently` canvas.
-- [ ] Gallery previews are frozen at rest, animate on hover and run on
-      rAF.
+- [ ] Gallery previews are stills at rest and mount a live frame only on
+      hover; a live frame off screen is frozen; animations run on rAF.
 - [ ] Engines used on several pages live in one shared library, resize and
       re-read the pixel ratio on zoom for every usage, and a fix reached
       every copy.

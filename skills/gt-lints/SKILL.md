@@ -180,8 +180,8 @@ oxlint off and loads only the gt-ui plugin from
 `no-raw-locale-flags`, `typed-text-var` and `no-hex-colors`. The archived
 directions under `src/app/d/`, `deck/` and `public/` are ignored.
 
-The exemptions carry their reasons as comments: the presenter's Lenis
-scroll, the principles slide's flag sprite, the three files that load the
+The exemptions carry their reasons as comments: the presenter's animated
+paging, the principles slide's flag sprite, the three files that load the
 nameplate's Fraunces and Space Grotesk and the presenter intro's faces, and
 the generated `src/lib/skills.ts` and `src/lib/motion.ts`. On 2026-10-05 the
 copy lags gt-cloud main by one change to `inter-only`, which now judges only

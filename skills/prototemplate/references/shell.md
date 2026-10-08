@@ -181,7 +181,7 @@ Both types live in `src/lib/shell-data.ts`, which holds pure types and helpers a
 | `body[data-shell]` | set while a shell is mounted; the document does not scroll. |
 | the hash | the active item's id. |
 
-A framed page follows the parent's theme through the storage event and through `postMessage({ type: 'gt-theme', theme })`. An embedding page can freeze a frame's animation loops with `postMessage({ type: 'gt:freeze', frozen })` (the presenter's wall of live thumbnails, and `DirectionFrame` while its exhibit is off screen).
+A framed page follows the parent's theme through the storage event and through `postMessage({ type: 'gt-theme', theme })`. An embedding page can freeze a frame's animation loops with `postMessage({ type: 'gt:freeze', frozen })` (the presenter's prototype stage while it is off screen, and `DirectionFrame` while its exhibit is off screen).
 
 ## How the sidebar builds its groups
 

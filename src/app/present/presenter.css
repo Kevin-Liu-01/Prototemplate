@@ -63,33 +63,6 @@
   filter: invert(1);
 }
 
-/*
- * Louize Display (205TF) is commercial and not vendored here: it resolves
- * from a locally installed copy or from public/fonts if the woff2 is dropped
- * in, and otherwise falls back to Georgia in the title stack.
- */
-@font-face {
-  font-family: 'Louize Display';
-  src:
-    local('Louize Display'),
-    local('LouizeDisplay'),
-    url('/fonts/louize-display.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Louize Display';
-  src:
-    local('Louize Display Italic'),
-    local('LouizeDisplay-Italic'),
-    url('/fonts/louize-display-italic.woff2') format('woff2');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
 /* The browser defaults <code> to monospace; the presenter has none. */
 .pr-root code {
   font-family: inherit;
@@ -1462,13 +1435,16 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   stroke: color-mix(in srgb, var(--pt-ink) 28%, transparent);
 }
 
+/* Top-aligned, so the title holds its place under the HUD at every size
+   while the sheet runs down under its fade. */
 .pr-detail-close {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: clamp(56px, 9vh, 110px);
   gap: 16px;
   text-align: center;
 }
@@ -1480,13 +1456,14 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   letter-spacing: -0.035em;
 }
 
-/* Contact sheet of every direction — twelve tiles, three rows of four —
-   fading to black toward the viewer. */
+/* Contact sheet of the presenter's 16 directions, four rows of four,
+   fading to black toward the viewer. The width also follows the height,
+   so the whole sheet sits under the title on a laptop screen. */
 .pr-close-gallery {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
-  width: min(1040px, var(--pr-stage-w));
+  width: min(1040px, var(--pr-stage-w), calc(150vh - 460px));
   margin-top: 2vh;
   mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
 }
@@ -1508,10 +1485,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   border-color: color-mix(in srgb, var(--pt-ink) 50%, transparent);
 }
 
+/* the 640x360 thumbnails, cut from the top of each capture */
 .pr-close-shot {
   display: block;
   width: 100%;
-  aspect-ratio: 1440 / 900;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: 6px;
   border: 1px solid color-mix(in srgb, var(--pt-ink) 12%, transparent);
@@ -1799,7 +1777,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* Once loaded the frame takes the pointer so the embedded page's hover
    states (the iso stack's layers, marquee pauses) work in presenter mode.
    The deck still owns the WHEEL: PrototypeViewer forwards wheel events out
-   of the same-origin frame to Lenis, so scroll-driving never strands. */
+   of the same-origin frame to the presenter's own scroll, so scroll-driving
+   never strands. */
 .pr-stage-frame iframe.is-loaded {
   opacity: 1;
   pointer-events: auto;
@@ -2396,17 +2375,24 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   cursor: pointer;
 }
 
-/* Sized by its grid cell; LazyFrame measures it and scales the iframe. */
+/* Sized by its grid cell at the thumbnail's 16:9. Under the mouse the live
+   1440x900 page lays over the still, scaled by LazyFrame and centered the
+   way build-thumbs cuts the thumbnails, and fades in once loaded. */
 .pr-thumb {
   position: relative;
   width: 100%;
-  aspect-ratio: 1440 / 900;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--pt-ink) 14%, transparent);
   background: var(--pr-raised);
-  display: grid;
-  place-items: center;
   transition: border-color 0.2s;
+}
+
+.pr-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .pr-gal-preview:hover .pr-thumb {
@@ -2415,17 +2401,19 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-thumb iframe {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
   width: 1440px;
   height: 900px;
   border: 0;
   transform-origin: 0 0;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
-.pr-thumb-empty {
-  color: color-mix(in srgb, var(--pt-ink) 25%, transparent);
+.pr-thumb iframe.is-loaded {
+  opacity: 1;
 }
 
 .pr-gal-meta {
@@ -2484,6 +2472,33 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
+  }
+}
+
+/* ---------- Touch targets ---------- */
+
+/* Under 900px every control the first screen and the verdict show is a
+   44px hit box, and its drawing keeps its size: the mark and its label sit
+   centered in a taller link that starts 12px higher, the slide arrows grow
+   while the slide pill drops its vertical padding to stay one row, and the
+   theme switch grows through its padding. */
+@media (max-width: 900px) {
+  .pr-hud-brand {
+    top: 8px;
+    min-height: 44px;
+  }
+
+  .pr-dock[data-mode='slides'] {
+    padding-block: 0;
+  }
+
+  .pr-dock-set-slides button {
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .pr-score-theme {
+    min-height: 44px;
   }
 }
 
@@ -2641,10 +2656,6 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
   .pr-proto {
     height: 100vh;
-  }
-
-  .pr-stage-caption {
-    display: none;
   }
 
   /* Static fallback: main columns and the red/white overlay stack in flow. */

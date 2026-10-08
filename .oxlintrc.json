@@ -51,9 +51,9 @@
       }
     },
     {
-      // The presenter (/present) scrolls on Lenis: src/app/present/lenis.ts
-      // wraps the instance, and PresenterApp.tsx and viewer/PrototypeViewer.tsx
-      // fall back to window.scrollTo({ behavior: 'smooth' }) without it.
+      // The presenter (/present) scrolls natively, but its paging animates:
+      // PresenterApp.tsx and viewer/PrototypeViewer.tsx jump between slides
+      // and prototypes with window.scrollTo({ behavior: 'smooth' }).
       // Retiring that is a motion redesign of the presenter, not a lint fix.
       "files": ["src/app/present/**/*.{js,jsx,ts,tsx}"],
       "rules": {
