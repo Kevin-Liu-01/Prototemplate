@@ -66,6 +66,14 @@
   font-display: swap;
 }
 
+/* An empty <i> draws no glyph of its own, but its line box still takes its
+   font's metrics, so the decorative <i> marks (the Prototemplate mark, the
+   flags, the /d pages' rules and carets) would fetch the italic file above
+   on every page for no glyph. */
+i:empty {
+  font-style: normal;
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
