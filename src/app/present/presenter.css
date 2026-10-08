@@ -1462,13 +1462,16 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   stroke: color-mix(in srgb, var(--pt-ink) 28%, transparent);
 }
 
+/* Top-aligned, so the title holds its place under the HUD at every size
+   while the sheet runs down under its fade. */
 .pr-detail-close {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: clamp(56px, 9vh, 110px);
   gap: 16px;
   text-align: center;
 }
@@ -1480,13 +1483,14 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   letter-spacing: -0.035em;
 }
 
-/* Contact sheet of every direction — twelve tiles, three rows of four —
-   fading to black toward the viewer. */
+/* Contact sheet of the presenter's 16 directions, four rows of four,
+   fading to black toward the viewer. The width also follows the height,
+   so the whole sheet sits under the title on a laptop screen. */
 .pr-close-gallery {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
-  width: min(1040px, var(--pr-stage-w));
+  width: min(1040px, var(--pr-stage-w), calc(150vh - 460px));
   margin-top: 2vh;
   mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
 }
@@ -1508,10 +1512,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   border-color: color-mix(in srgb, var(--pt-ink) 50%, transparent);
 }
 
+/* the 640x360 thumbnails, cut from the top of each capture */
 .pr-close-shot {
   display: block;
   width: 100%;
-  aspect-ratio: 1440 / 900;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: 6px;
   border: 1px solid color-mix(in srgb, var(--pt-ink) 12%, transparent);

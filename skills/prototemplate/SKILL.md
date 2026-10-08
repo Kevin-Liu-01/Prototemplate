@@ -135,7 +135,7 @@ A page, a document or a skill appears in several hand-kept lists. A change updat
 | `src/lib/page-names.ts` (`PAGE_NAMES`) | each page's plain name and its short sidebar label | the book heads, the window titles, the Pages and Knowledge rows |
 | `scripts/build-updated.mjs` (`pages()`) | the paths whose last commit dates each book head | `pnpm build:updated` writes `src/lib/updated.ts`; `pnpm lint:updated` and the build check it |
 | `src/app/docs/links.ts` (`DOC_ROUTES`, `siteHref`) | where a repository path opens on the site, built from both registries | the docs renderer, the skill pages |
-| `src/lib/directions.ts` (`DIRECTIONS`) | every direction | the gallery, the presenter, the sitemap, `/directions`, the Sites and Explorations rows |
+| `src/lib/directions.ts` (`DIRECTIONS`) | every direction | the gallery, the presenter (the first 16, without Signal, through `src/app/present/directions.ts`), the sitemap, `/directions`, the Sites and Explorations rows |
 | `src/lib/archive.ts` (`ARCHIVE`) | the retired directions | `/archive/<slug>`, the sitemap, the Archive rows |
 | `src/app/sitemap.ts` | a static list of routes plus loops over the registries | crawlers |
 | `public/llms.txt` | the hub described for agents, written by hand | agents |

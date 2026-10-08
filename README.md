@@ -45,7 +45,7 @@ each of them.
 - `/graphics`: every illustration of the series, by area, with what it shows and the glyphfield export it sits on; made with the toolchain in `graphics/`
 - `/motion`: every film on the motion roster with its length and status, the research package of each film in the translation series (`/motion/<slug>`), and the contact sheet and script of each published cut; generated from `motion/` by `pnpm build:motion`, which publishes a film's credits, sheet and script only for the cut `public/motion/published.json` pins and lists a newer cut as in review
 - `/compare`: two directions side by side in scroll-synced frames
-- `/present`: the presenter, a full-screen walkthrough of the redesign with every prototype live
+- `/present`: the presenter, a full-screen walkthrough of the redesign with the first 16 prototypes live
 - `/archive`: the retired directions, each kept as a full-page capture with the commit that last held its code
 
 ## Run it

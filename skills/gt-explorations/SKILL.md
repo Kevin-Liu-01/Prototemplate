@@ -141,7 +141,7 @@ Kevin compares directions live in one place. Kevin, 2026-07-28: "give me one pla
 | `/` | the gallery: every direction as an article (Book), one live 1440 exhibit at a time (Live), or every capture at once (Grid) | `src/app/GalleryViewer.tsx` |
 | `/directions/<slug>` | one direction on the shell: its summary, both captures and a live frame | `src/app/directions/` |
 | `/compare` | two directions side by side in scroll-locked same-origin frames, with the pair in the hash (`#a=<slug>&b=<slug>`) | `src/app/compare/` |
-| `/present` | the presenter: the opening slides, every prototype live with a note and a star rating, and a closing gallery | `src/app/present/` |
+| `/present` | the presenter: the opening slides, the first 16 prototypes live with a note and a star rating, and a closing gallery | `src/app/present/` |
 
 - The presenter keeps notes and ratings in the reviewer's own browser (`localStorage` key `gt-presenter-review:v1`, `src/app/present/viewer/reviewStore.ts`). They never reach another machine or an agent, so ask Kevin for his notes in chat. `src/app/present/directions.ts` filters the presenter's list; Signal has been out since 2026-09-09.
 - Direction pages hide their corner control under `?chrome=0`. Every capture uses it, so the control is never judged as part of a design.
