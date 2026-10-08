@@ -87,7 +87,7 @@ pnpm install
 pnpm dev                      # http://localhost:3005
 pnpm exec tsc --noEmit        # 3 to 5 minutes
 pnpm lint:all                 # every static lint, the live audits against 3005 and the lint tests
-pnpm check:pages --pages <id> # ten viewports in both themes on the touched pages
+pnpm check:pages --preset quick --pages <id> # eight devices in dark and 1440x900 in light on the touched pages
 ```
 
 - Reuse the dev server on 3005 when it is running, and never build in the shared `.next`. The build gate runs in a scratch worktree with `&&` (`gt-ship` section 8).

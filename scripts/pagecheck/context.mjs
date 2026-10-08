@@ -1,34 +1,43 @@
 // One browser context per cell, built the same way by the runner, the
-// layout-shift run and the interactions: the viewport, the theme seeded
-// through the site's pre-boot door (scripts/site-pages.mjs seedTheme) and
-// matched by the context's color scheme, and the phone flags under 768px
-// (isMobile, hasTouch, deviceScaleFactor 2) so a phone cell lays out and
-// paints as a phone would.
-import { seedTheme } from '../site-pages.mjs';
+// layout-shift trace and the interactions: the device's viewport, scale
+// and touch flags (scripts/site-pages.mjs, a phone or a tablet is a touch
+// device in either orientation), the theme seeded through the site's
+// pre-boot door and matched by the context's color scheme, and the
+// observers the cell reads its layout shifts, its largest paint and its
+// long tasks from, installed before the page's first byte.
+import { deviceOptions, seedTheme } from '../site-pages.mjs';
 
-/** Under this width a viewport is a phone: the phone flags apply and the tap targets are read. */
-export const PHONE_MAX = 767;
-
-/** `WxH` to { w, h }; throws on anything else, so a typo never becomes a 0x0 context. */
-export function parseViewport(text) {
-  const m = /^(\d+)x(\d+)$/.exec(text.trim());
-  if (!m) throw new Error(`viewport must read WxH, got ${JSON.stringify(text)}`);
-  return { w: Number(m[1]), h: Number(m[2]) };
-}
-
-export function isPhone(w) {
-  return w <= PHONE_MAX;
-}
-
-/** A context for one (viewport, theme) cell; the caller closes it. */
-export async function cellContext(browser, { w, h, theme }) {
-  const phone = isPhone(w);
-  const context = await browser.newContext({
-    viewport: { width: w, height: h },
-    colorScheme: theme,
-    ...(phone ? { isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : { deviceScaleFactor: 1 }),
+/**
+ * Runs in every page before its scripts: buffered observers for
+ * layout-shift, largest-contentful-paint and longtask, collected on
+ * window.__pcVitals for probes.mjs vitals() to read.
+ */
+function observeVitals() {
+  const v = { shifts: [], lcp: null, longTasks: [] };
+  window.__pcVitals = v;
+  const desc = (n) =>
+    n ? `${n.nodeName.toLowerCase()}${n.id ? '#' + n.id : ''}${typeof n.className === 'string' && n.className ? '.' + n.className.trim().split(/\s+/).slice(0, 2).join('.') : ''}` : '?';
+  const observe = (type, take) => {
+    try {
+      new PerformanceObserver((list) => list.getEntries().forEach(take)).observe({ type, buffered: true });
+    } catch {
+      // an entry type this build does not report; the reading stays empty
+    }
+  };
+  observe('layout-shift', (e) =>
+    v.shifts.push({ t: Math.round(e.startTime), value: e.value, recent: e.hadRecentInput, sources: (e.sources ?? []).slice(0, 3).map((s) => desc(s.node)) })
+  );
+  observe('largest-contentful-paint', (e) => {
+    v.lcp = Math.round(e.startTime);
   });
+  observe('longtask', (e) => v.longTasks.push(Math.round(e.duration)));
+}
+
+/** A context for one (device, theme) cell; the caller closes it. */
+export async function cellContext(browser, { device, theme }) {
+  const context = await browser.newContext({ ...deviceOptions(device), colorScheme: theme });
   await seedTheme(context, theme);
+  await context.addInitScript(observeVitals);
   return context;
 }
 

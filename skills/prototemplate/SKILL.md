@@ -236,7 +236,7 @@ On Kevin's machine `$PROTOTEMPLATE` is one working tree that several Claude sess
 
 1. `pnpm exec tsc --noEmit`, which takes 3 to 5 minutes.
 2. `pnpm lint:all`, which chains the static lints (`lint:shell`, `lint:practices`, `lint:type`, `lint:radius`, `lint:heads`, `lint:skills`, `lint:updated`, `lint:code`, `lint:pictures`), the browser audits against the dev server on 3005 (`lint:lines:shell`, `lint:type:live`, `lint:radius:live`, `lint:heads:live`) and the lint tests; `package.json` holds the exact chain. It takes about 25 minutes. Run the browser gates one at a time, because a parallel capture made `lint:lines:shell` fail on 2026-10-01.
-3. `pnpm check:pages --pages <ids>` on the touched routes, with zero defects and every interaction passing.
+3. `pnpm check:pages --preset quick --pages <ids>` on the touched routes (phones, a tablet, laptops, desktops and the ultrawide), with zero defects and every interaction passing.
 4. A look at both themes at 1440 and 390 wide, with 2x crops of every junction a figure draws, because the line audit cannot see SVG strokes.
 5. `pnpm build` in a scratch worktree, gated with `&&` and never piped.
 
@@ -308,7 +308,7 @@ metadata:
 - [ ] Generated files changed only through their scripts.
 - [ ] Prose that states a count, a port or a path matches the code.
 - [ ] Only the change's own paths are staged, and `motion/` and the other lanes' paths are untouched.
-- [ ] tsc, `lint:all`, `check:pages` on the touched routes, both themes at 1440 and 390, and the scratch worktree build all pass.
+- [ ] tsc, `lint:all`, `check:pages --preset quick` on the touched routes, both themes at 1440 and 390, and the scratch worktree build all pass.
 - [ ] Kevin reviewed the change on localhost before it reached main.
 - [ ] A new or changed skill passes the contract in section 10.
 
