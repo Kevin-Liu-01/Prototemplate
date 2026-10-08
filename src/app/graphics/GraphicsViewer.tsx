@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { MouseEvent, RefObject } from 'react';
 import { useMemo, useRef } from 'react';
 
+import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
@@ -118,6 +119,15 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
   const settleTimer = useRef(0);
 
   const total = useMemo(() => blocks.reduce((n, block) => n + block.entries.length, 0), [blocks]);
+  /* the head's badge: the numbered visuals by their file stems (A1-zones-overlay), the first twelve */
+  const badgeWords = useMemo(
+    () =>
+      blocks
+        .flatMap((block) => block.entries.map((entry) => entry.id))
+        .filter((id) => /^[A-Z]\d+-/.test(id))
+        .slice(0, 12),
+    [blocks]
+  );
 
   const rowFor = (id: string): HTMLElement | null =>
     sheetRef.current?.querySelector<HTMLElement>(`.gx-row[data-id="${cssEscape(id)}"]`) ?? null;
@@ -213,6 +223,7 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
     <div className='gx-book pt-book-col'>
       <BookHead
         title={TITLE}
+        badge={<BadgeWords words={badgeWords} />}
         lead={LEAD}
         note={NOTE}
         updated={updated}

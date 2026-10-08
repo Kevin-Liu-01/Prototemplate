@@ -53,6 +53,7 @@ export default async function MotionPackagePage({ params }: Params) {
       script={scriptBlock(film)}
       review={reviewBlock(film)}
       sections={page.sections}
+      terms={page.terms}
       updated={requireUpdated(`/motion/${slug}`)}
     />
   );

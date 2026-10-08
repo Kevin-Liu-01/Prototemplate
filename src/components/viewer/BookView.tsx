@@ -46,6 +46,8 @@ export type BookHeadProps = BookSlots & {
 
 export type BookViewProps = BookSlots & {
   title: string;
+  /** the head's badge (BadgeCycle.tsx) */
+  badge?: ReactNode;
   lead: ReactNode;
   /** the rest of the introduction, under the head's rule */
   note?: ReactNode;
@@ -128,12 +130,19 @@ export function BookHead({ title, badge, lead, updated, note, contents, facts, i
       <header className='pt-book-head'>
         <div className='pt-book-mast'>
           <h1>
-            {title}
             {badge ? (
-              <span className='pt-book-badge' aria-hidden='true'>
-                {badge}
-              </span>
-            ) : null}
+              <>
+                {title.slice(0, title.lastIndexOf(' ') + 1)}
+                <span className='pt-book-title-end'>
+                  {title.slice(title.lastIndexOf(' ') + 1)}
+                  <span className='pt-book-badge' aria-hidden='true'>
+                    {badge}
+                  </span>
+                </span>
+              </>
+            ) : (
+              title
+            )}
           </h1>
           <p className='pt-book-lead'>{lead}</p>
           <aside className='pt-book-panel' aria-label='About this page'>
@@ -188,6 +197,7 @@ export function BookHead({ title, badge, lead, updated, note, contents, facts, i
  */
 export function BookView({
   title,
+  badge,
   lead,
   note,
   updated,
@@ -325,6 +335,7 @@ export function BookView({
         <BookHead
           {...(install === undefined ? { facts } : { facts, install })}
           title={title}
+          badge={badge}
           lead={lead}
           note={note}
           updated={updated}

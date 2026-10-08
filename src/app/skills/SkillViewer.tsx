@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 
+import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { gtText } from '@/components/viewer/GtWord';
 import { Icon } from '@/components/viewer/icons';
@@ -131,6 +132,7 @@ function SkillPage({ skill, body, updated }: SkillPageProps) {
     <div className='ptd-book sk-page pt-book-col'>
       <BookHead
         title={skill.title}
+        badge={<BadgeWords words={files.map((file) => file.split('/').pop() ?? file)} />}
         lead={gtText(summary)}
         note={<About skill={skill} />}
         updated={updated}

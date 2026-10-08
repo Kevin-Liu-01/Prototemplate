@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { RefObject } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import type { BookFact } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -481,6 +482,7 @@ function DocsBook({
     <div className='ptd-book pt-book-col'>
       <BookHead
         title={PAGE_NAMES[book].name}
+        badge={<BadgeWords words={docs.map((doc) => doc.file.split('/').pop() ?? doc.file)} />}
         lead={BOOK_LEADS[book]}
         updated={updated}
         facts={facts}

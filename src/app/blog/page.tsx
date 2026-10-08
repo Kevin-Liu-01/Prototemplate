@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import PostAuthors from '@/components/blog/PostAuthors';
 import PostCover from '@/components/blog/PostCover';
+import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { getAuthors, getPosts } from '@/lib/blog';
 import { PAGE_NAMES } from '@/lib/page-names';
@@ -34,6 +35,7 @@ export default function BlogIndexPage() {
       <div className='pt-book-col'>
         <BookHead
           title={PAGE_NAMES.blog.name}
+          badge={<BadgeWords words={posts.map((post) => post.slug)} />}
           lead={
             <>
               The docs redesign in three posts, as they ran on generaltranslation.com, kept here with their sources.

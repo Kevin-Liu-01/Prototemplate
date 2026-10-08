@@ -69,10 +69,16 @@
   letter-spacing: var(--pt-d1-track);
 }
 
-/* a badge after the title (the brand's traced monogram): a card-cornered
-   box on the title's line. The figure inside is the cap height tall and
-   sits on the baseline; the padding stays inside the title's line box, so
-   the line keeps its height and the mast its rule. */
+/* a badge after the title: a card-cornered box on the title's line that
+   cuts through what the page holds (BadgeCycle.tsx). Its content is the
+   cap height tall and sits on the baseline; the padding stays inside the
+   title's line box, so the line keeps its height. The title's last word
+   and the badge never break apart (.pt-book-title-end), so a narrow title
+   takes the badge onto its last line rather than leaving it alone. */
+.pt-book-title-end {
+  white-space: nowrap;
+}
+
 .pt-book-badge {
   display: inline-block;
   margin-left: 0.3em;
@@ -82,13 +88,106 @@
   border-radius: var(--pt-radius-card);
   background-clip: padding-box;
   overflow: hidden;
+  user-select: none;
 }
 
-.pt-book-badge > svg {
+.pt-book-badge:empty {
+  display: none;
+}
+
+/* clip, so a reveal can never scroll the strip out of step */
+.pt-cycle {
+  position: relative;
   display: block;
   height: 0.727em;
+  overflow: hidden;
+  overflow: clip;
+}
+
+/* the sizer: every frame in one cell, unseen, so the box is the widest */
+.pt-cycle-size {
+  display: grid;
+  height: 100%;
+  visibility: hidden;
+}
+
+.pt-cycle-size > * {
+  display: flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  padding-inline: 1px;
+}
+
+/* the strip: the frames side by side, each exactly one box wide (100% of
+   the box, never a division), stepped one box to the left every 1.4s;
+   steps(n) makes each move a hard cut. The 1px gutter in every frame and
+   sizer cell keeps a frame's ink off the pixel it shares with the next. */
+.pt-cycle-strip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  animation: pt-cycle calc(var(--n) * 1.4s) steps(var(--n)) infinite;
+}
+
+.pt-cycle-frame {
+  display: flex;
+  flex: 0 0 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 1px;
+}
+
+@keyframes pt-cycle {
+  to {
+    transform: translateX(calc(var(--n) * -100%));
+  }
+}
+
+.pt-cycle svg {
+  display: block;
   width: auto;
-  overflow: visible;
+  height: 100%;
+}
+
+/* a name: the label step's weight and tracking at about 16px under a
+   44px title, drawn from its data-word as generated content */
+.pt-cycle-word {
+  font-size: 0.36em;
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+  white-space: nowrap;
+}
+
+.pt-cycle-word::before {
+  content: attr(data-word);
+}
+
+/* a mark: its file as an alpha mask in the title's ink, fit in a 2.2em
+   box rounded to whole pixels (so each step moves whole pixels and the
+   mask stays sharp) and set on the baseline (a wide mark is shorter than
+   the cap) */
+.pt-cycle-mark {
+  display: block;
+  width: round(2.2em, 1px);
+  height: 100%;
+  background: currentColor;
+  mask-position: center bottom;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-cycle-strip {
+    animation: none;
+  }
+
+  .pt-cycle-size > :not(:first-child) {
+    display: none;
+  }
 }
 
 .pt-book-lead {

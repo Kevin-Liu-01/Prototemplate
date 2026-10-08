@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
+import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -212,6 +213,7 @@ function SkillsBook({ sheetRef, jumpRef, activeOut, updated }: SkillsBookProps) 
     <div className='sk-book pt-book-col'>
       <BookHead
         title={SKILLS_TITLE}
+        badge={<BadgeWords words={SKILLS.map((skill) => skill.id)} />}
         lead={BOOK_LEAD}
         note={BOOK_NOTE}
         updated={updated}

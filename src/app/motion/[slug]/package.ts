@@ -6,9 +6,10 @@ import type { ReactNode } from 'react';
 import { parseBlocks, renderBlocks, renderInline, splitDoc } from '@/app/docs/markdown';
 import type { Block } from '@/app/docs/markdown';
 import { MOTION_BODY_DIR, getMotionFilm } from '@/lib/motion';
+import type { BadgeWord } from '@/components/viewer/BadgeCycle';
 import type { PackageSectionId } from '@/lib/motion';
 
-import { langText } from '../lang-text';
+import { langText, wholeLang } from '../lang-text';
 
 /**
  * The server side of /motion/[slug]: reads one research package from the
@@ -42,7 +43,12 @@ export type PackagePage = {
   /** the paragraphs after the series line (the Journey to the West package has one), or null */
   leadRest: ReactNode | null;
   sections: readonly PackageSectionPage[];
+  /** the vocabulary table's terms in their own script, first form only (幾何 of 幾何 / 几何), with their lang, for the head's badge */
+  terms: readonly BadgeWord[];
 };
+
+/** How many of the vocabulary's terms the head's badge cuts between. */
+const BADGE_TERMS = 12;
 
 export type PackageSectionPage = {
   id: PackageSectionId;
@@ -251,5 +257,16 @@ export function buildPackage(slug: string): PackagePage {
     };
   });
 
-  return { lead, leadRest, sections };
+  /* the badge's terms: the vocabulary table's Term column, the first form
+     of each cell (before a slash, a semicolon or a comma), once each */
+  const vocabulary = split.rows[pkg.sections.findIndex((section) => section.id === 'vocabulary')];
+  const table = vocabulary?.blocks.find((block) => block.kind === 'table');
+  const column = table?.kind === 'table' ? table.header.findIndex((cell) => /^Term\b/i.test(cell.trim())) : -1;
+  const firstForms =
+    table?.kind === 'table' && column >= 0
+      ? table.rows.map((row) => (row[column] ?? '').split(/\s*[/;；，,]\s*/)[0].replace(/[*_`]/g, '').trim()).filter(Boolean)
+      : [];
+  const terms = [...new Set(firstForms)].slice(0, BADGE_TERMS).map((text): BadgeWord => ({ text, ...wholeLang(text) }));
+
+  return { lead, leadRest, sections, terms };
 }

@@ -5,6 +5,8 @@ import type { MouseEvent, ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import BrandFilm from '@/app/brand/BrandFilm';
+import { BadgeWords } from '@/components/viewer/BadgeCycle';
+import type { BadgeWord } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { Icon } from '@/components/viewer/icons';
 import type { IconName } from '@/components/viewer/icons';
@@ -184,6 +186,8 @@ export type PackageViewerProps = {
   /** the sentence a film without published records gets while a newer cut is in review, or null */
   review: ReactNode | null;
   sections: readonly PackageSectionView[];
+  /** the vocabulary's terms in their own script, which the head's badge cuts between */
+  terms: readonly BadgeWord[];
   /** the package page's entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
 };
@@ -201,7 +205,7 @@ export type PackageViewerProps = {
  * The shell ignores that hash, since it names no item. Selecting another
  * film navigates to it; the raw package is one click away in the toolbar.
  */
-export default function PackageViewer({ slug, lead, leadRest, credits, sheet, script, review, sections, updated }: PackageViewerProps) {
+export default function PackageViewer({ slug, lead, leadRest, credits, sheet, script, review, sections, terms, updated }: PackageViewerProps) {
   const router = useRouter();
   const film = getMotionFilm(slug);
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -369,6 +373,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
         <div className='ptd-book mo-book pt-book-col'>
           <BookHead
             title={film.title}
+            badge={terms.length > 0 ? <BadgeWords words={terms} /> : undefined}
             lead={lead}
             updated={updated}
             facts={[

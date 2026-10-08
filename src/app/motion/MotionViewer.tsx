@@ -6,6 +6,7 @@ import type { MouseEvent, ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
 
 import BrandFilm from '@/app/brand/BrandFilm';
+import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { Icon } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -277,6 +278,7 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
     <div className='gx-book mo-book pt-book-col'>
       <BookHead
         title={TITLE}
+        badge={<BadgeWords words={MOTION_FILMS.map((film) => film.slug)} />}
         lead={LEAD}
         note={NOTE}
         updated={updated}

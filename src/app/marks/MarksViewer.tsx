@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { CSSProperties, MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
+import { BadgeCycle, badgeMark } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -40,6 +41,14 @@ const BOOK_LEAD =
 
 const BOOK_NOTE =
   'Every mark is one color and takes the ink of whatever it sits on. Each one is shown positive and reversed at a run of heights, the monograms also as an app icon and a favicon, and every file is linked. The current mark closes the page as the reference.';
+
+/**
+ * The marks the head's badge cuts between: the register's, less the ones
+ * that do not hold at the badge's size (double cut is 25 times as wide as
+ * it is tall; the dithered and ASCII monograms' cells fall under a pixel;
+ * the lockup's wordmark line is a few pixels tall).
+ */
+const BADGE_MARKS: ReadonlySet<string> = new Set(['bar-monogram', 'plate-inverted', 'livery-stack', 'two-way', 'globe-g']);
 
 /** A family's name in the head's panel and in its marks' gutter notes. */
 const FAMILY_NAME: Readonly<Record<string, string>> = { speed: 'Speed set', picture: 'Earlier round' };
@@ -499,6 +508,7 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
     <div className='mk-book pt-book-col'>
       <BookHead
         title={PAGE_NAMES.marks.name}
+        badge={<BadgeCycle frames={MARKS.filter((mark) => BADGE_MARKS.has(mark.id)).map((mark) => badgeMark(mark.file))} />}
         lead={BOOK_LEAD}
         note={BOOK_NOTE}
         updated={updated}
