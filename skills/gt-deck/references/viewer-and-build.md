@@ -13,7 +13,8 @@ The deck carries its own viewer in `deck/parts/head.html` (CSS and markup up to 
 - The slide list, the grid and the book are live clones of the slides (`cloneSlide`). Clones drop every `id`, so a slide styles by class. An id selector reaches only the copy on the stage.
 - A slide's title in the list, the book and the toolbar is the text of its first `h1`, `h2` or `.big` (`titleOf`), cut at 72 characters. A slide with none of the three shows "Slide N".
 - SECTIONS in `tail.html` drives the section labels in the slide list, the book's contents and section heads, and the section name. Each entry is `[position of the opener, 'Section name']`.
-- Pictures load as they are needed. The build marks every `<img>` `loading="lazy"`, and `show()` warms the current slide, the two after it and the one before (`warm()`): their pictures turn eager, so a step does not wait on the network. The slide list, the grid and the book fetch their copies' pictures as they scroll near. A jump straight to a far slide (digits then Enter, or a `/deck#80` link) can show the slide before its pictures on a slow connection.
+- Pictures load as they are needed. The build marks every `<img>` `loading="lazy"`, and `show()` warms the current slide, the two after it and the one before (`warm()`): their pictures turn eager, and a mood slide's tone grid is fetched and decoded, so a step does not wait on the network. The slide list, the grid and the book fetch their copies' pictures as they scroll near. A jump straight to a far slide (digits then Enter, or a `/deck#80` link) can show the slide before its pictures on a slow connection.
+- A mood canvas is drawn only when it is on screen or within one screen of it (`drawMood`). A scroll of the slide list, the grid or the book draws the rest as they come near, so opening the book or switching the theme draws a few canvases, not every copy.
 - The surfaces panel lists every public place the brand is live, grouped, with thumbnails from `deck/shots/thumb`. `scripts/build-deck.mjs` also copies those thumbnails to `public/shots/deck` for the index panel's General Translation set in `src/lib/surfaces.ts`.
 
 ## What Kevin expects of a viewer
@@ -31,7 +32,7 @@ Kevin's asks for the deck's viewer (2026-09-08 and 2026-09-09) hold for any GT p
 
 - The script at the top of `head.html` stamps `data-theme` on `<html>` before the first paint: `gt-theme`, then `gt-deck-theme`, then dark when neither is set. `prefers-color-scheme` is never consulted.
 - The toggle writes both keys. A toggle on the page around the frame arrives as a `storage` event, and `ThemeButton.tsx` also posts `{ type: 'gt-theme', theme }` (same origin only), which covers private windows.
-- `applyTheme()` swaps every `img[data-dark]` between its `src` and its `data-dark` file, redraws the `canvas.dither` ramps, syncs the backdrop and redraws the mood canvases with the theme's `--mood-ink` and `--mood-opacity`. A lazy picture off screen fetches only the theme it is shown in.
+- `applyTheme()` swaps every `img[data-dark]` between its `src` and its `data-dark` file, redraws the `canvas.dither` ramps, syncs the backdrop and redraws the mood canvases near the screen with the theme's `--mood-ink` and `--mood-opacity`. A lazy picture off screen fetches only the theme it is shown in.
 
 ## The build
 
