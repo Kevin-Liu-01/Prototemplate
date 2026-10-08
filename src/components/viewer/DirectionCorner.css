@@ -229,6 +229,14 @@
   bottom: 0;
 }
 
+/* the panel mounts with CornerLayers' chunk, which R can open before it
+   lands; a panel that mounts open slides in from the closed place */
+@starting-style {
+  .pt-corner-layer .pt-panel.is-on {
+    transform: translateX(100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pt-corner-scrim {
     transition: none;

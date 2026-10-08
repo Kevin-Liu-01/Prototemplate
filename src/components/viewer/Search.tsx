@@ -6,7 +6,6 @@ import { useRef, useState } from 'react';
 
 import { Icon } from '@/components/viewer/icons';
 import { ToolButton } from '@/components/viewer/ToolButton';
-import { searchCount, searchGroups } from '@/lib/search-index';
 import type { SearchEntry, SearchGroupRows } from '@/lib/search-index';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -41,7 +40,11 @@ import './Search.css';
  *
  * The index is filtered only while the card is open: the trigger sits in
  * the toolbar, which re-renders on every shell state change, and a closed
- * palette has nothing to compute. An empty query shows a short map of the
+ * palette has nothing to compute. The index itself (about 59K of titles,
+ * headings and slide names) is a separate chunk, loaded on the first open
+ * or earlier when the pointer or focus reaches the trigger (preloadSearch,
+ * which the direction corner also calls); until it lands the card shows
+ * its field and no rows. An empty query shows a short map of the
  * site (search-index.ts, searchGroups) that fits the card without a scroll
  * region, so opening it mounts a few rows and the preview layer preloads
  * only what a reader can see.
@@ -56,6 +59,29 @@ export type SearchProps = {
 };
 
 const EMPTY_GROUPS: readonly SearchGroupRows[] = [];
+
+type SearchIndex = typeof import('@/lib/search-index');
+
+/* the loaded index, once its chunk has landed; shared by every mounted palette */
+let searchIndex: SearchIndex | null = null;
+let indexLoad: Promise<SearchIndex> | null = null;
+
+/** Start loading the index chunk; a failed load is tried again on the next call. */
+function loadIndex(): Promise<SearchIndex> {
+  indexLoad ??= import('@/lib/search-index').then(
+    (mod) => (searchIndex = mod),
+    (error: unknown) => {
+      indexLoad = null;
+      throw error;
+    }
+  );
+  return indexLoad;
+}
+
+/** Fetch the index ahead of the first open: on a hover or focus of a trigger. */
+export function preloadSearch(): void {
+  loadIndex().catch(() => undefined);
+}
 
 /** The document event that opens the palette; fired by openSearch(). */
 export const SEARCH_OPEN_EVENT = 'pt:search-open';
@@ -101,8 +127,11 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
   /* the mount-time listener reads the latest callback through this ref */
   const onOpenRef = useRef(onOpen);
   onOpenRef.current = onOpen;
+  /* renders again once the index chunk lands */
+  const [, setIndexReady] = useState(searchIndex !== null);
 
-  const groups = open ? searchGroups(query) : EMPTY_GROUPS;
+  const loaded = searchIndex;
+  const groups = open && loaded ? loaded.searchGroups(query) : EMPTY_GROUPS;
   const rows: readonly SearchEntry[] = groups.flatMap((entry) => entry.rows);
   const at = Math.min(sel, Math.max(rows.length - 1, 0));
 
@@ -111,6 +140,7 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
     setSel(0);
     setOpen(true);
     onOpenRef.current?.();
+    if (!searchIndex) loadIndex().then(() => setIndexReady(true), () => undefined);
   };
 
   const close = () => {
@@ -202,6 +232,8 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
           aria-haspopup='dialog'
           aria-expanded={open}
           onClick={show}
+          onFocus={preloadSearch}
+          onPointerEnter={preloadSearch}
         >
           <Icon name='search' />
           <span className='pt-lb'>Search</span>
@@ -249,7 +281,7 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
                   enterKeyHint='go'
                 />
               </label>
-              <span className='pt-search-count'>{searchCount(rows.length)}</span>
+              <span className='pt-search-count'>{loaded ? loaded.searchCount(rows.length) : ''}</span>
             </div>
             <div id='pt-search-list' className='pt-search-list pt-scroll' role='listbox' aria-label='Results'>
               {groups.map((entry) => (
@@ -289,7 +321,7 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
                   })}
                 </div>
               ))}
-              {rows.length === 0 ? <p className='pt-search-empty'>Nothing matches</p> : null}
+              {loaded && rows.length === 0 ? <p className='pt-search-empty'>Nothing matches</p> : null}
             </div>
             <p className='pt-search-foot' aria-hidden='true'>
               <span>Up and down arrows move</span>

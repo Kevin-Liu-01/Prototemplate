@@ -42,7 +42,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`; `git clone htt
 | `/present` | the full-screen presenter with its own chrome | `src/app/present/` |
 | `/directions/<slug>` | each site and exploration on the shell: the summary, the captures and a live frame | `src/app/directions/` |
 | `/archive/<slug>` | each retired direction as a full-page capture, with the commit that last held its code | `src/lib/archive.ts` |
-| `/d/<slug>` | the directions themselves, self-contained, with their own type; `DirectionCorner` floats over them and `?chrome=0` hides it | `src/app/d/` |
+| `/d/<slug>` | the directions themselves, self-contained, with their own type; `DirectionCorner` floats over them and `?chrome=0` hides it; its list, index panel and preview layer (`CornerLayers.tsx`) load as their own chunk on the first reach for the corner | `src/app/d/` |
 | `/d/production/...` | the shipped site rebuilt page for page, with the dashboard's sign-in and onboarding states (`signin`, `onboarding`, `consent`, `device`, `cli`; `?state=<id>` opens a state) | `src/app/d/production/`, `src/components/plate/` |
 
 There is no `/archive` index page; the Archive row opens the first retired version.
@@ -130,7 +130,7 @@ A page, a document or a skill appears in several hand-kept lists. A change updat
 | registry | holds | read by |
 | --- | --- | --- |
 | `src/lib/surfaces.ts` | every place on the site (`SITE_SURFACES`: Pages, Knowledge, Shipped, Documents, Sites, Explorations, Archive, Libraries, Brand sections) and every public place the brand is live (`PUBLIC_SURFACES`); the id is also the thumbnail stem | the sidebar's site map, the index panel, the preview layer, the search |
-| `src/lib/search-index.ts` | the Cmd K list: the surfaces, a row per skill, per film and per handbook document, `DOC_HEADINGS` and `HANDBOOK_HEADINGS` (every h2 of every document), `DECK_SLIDES` (the 93 slide titles), `PAGE_ICON`, `PAGE_KEYWORDS`, `EMPTY_PER_GROUP` | `Search.tsx` |
+| `src/lib/search-index.ts` | the Cmd K list: the surfaces, a row per skill, per film and per handbook document, `DOC_HEADINGS` and `HANDBOOK_HEADINGS` (every h2 of every document), `DECK_SLIDES` (the 93 slide titles), `PAGE_ICON`, `PAGE_KEYWORDS`, `EMPTY_PER_GROUP` | `Search.tsx`, which loads it as its own chunk on the palette's first open or on a hover or focus of a trigger |
 | `src/app/docs/registry.ts` (`DOCS`) and `src/app/handbook/registry.ts` (`HANDBOOK`) | the documents /docs serves and the handbook documents /handbook serves: slug, file, title, blurb | the two book routes, the Documents rows, the search's Handbook rows, the sitemap, `capture-pages.mjs`, `build-updated.mjs` |
 | `src/lib/page-names.ts` (`PAGE_NAMES`) | each page's plain name and its short sidebar label | the book heads, the window titles, the Pages and Knowledge rows |
 | `scripts/build-updated.mjs` (`pages()`) | the paths whose last commit dates each book head | `pnpm build:updated` writes `src/lib/updated.ts`; `pnpm lint:updated` and the build check it |

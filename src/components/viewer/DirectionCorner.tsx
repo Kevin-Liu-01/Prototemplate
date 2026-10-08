@@ -1,28 +1,27 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useRef, useState } from 'react';
 
 import Link from 'next/link';
 
 import { HelpCard } from '@/components/viewer/HelpCard';
-import { IndexPanel } from '@/components/viewer/IndexPanel';
-import { PreviewLayer } from '@/components/viewer/PreviewLayer';
 import { PtMark } from '@/components/viewer/PtMark';
-import { openSearch, Search } from '@/components/viewer/Search';
+import { openSearch, preloadSearch, Search } from '@/components/viewer/Search';
 import { ShellContext } from '@/components/viewer/shell-context';
 import type { ShellState } from '@/components/viewer/shell-context';
-import { Sidebar } from '@/components/viewer/Sidebar';
 import { toggleTheme } from '@/components/viewer/ThemeButton';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import type { ShellKeyRow } from '@/components/viewer/useShellKeys';
 import { cn } from '@/lib/cn';
-import { SITE_SURFACES } from '@/lib/surfaces';
-import type { SurfaceGroup } from '@/lib/surfaces';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './DirectionCorner.css';
+
+/* the list, the index panel and the preview layer: their own chunk (CornerLayers.tsx) */
+const CornerLayers = dynamic(() => import('@/components/viewer/CornerLayers'), { ssr: false });
 
 /**
  * The direction pages' one piece of floating chrome, in the shell's grammar.
@@ -37,7 +36,7 @@ import './DirectionCorner.css';
  * Explorations, Archive) with this page's row marked, with its filter and
  * its collapsible groups, so every route is one click away from every
  * prototype; Index opens the IndexPanel over the page; the one
- * PreviewLayer (directive 8.6) mounts here for all three. Keys: Cmd K
+ * PreviewLayer (directive 8.6) mounts with them for all three. Keys: Cmd K
  * or Ctrl K for the search, [ for the list, R for the index, D for the
  * theme, ? for the shortcuts, Escape back one layer. Hidden under
  * ?chrome=0, which the gallery's
@@ -64,6 +63,13 @@ import './DirectionCorner.css';
  * the panel's slide duration; the list slides in through Sidebar.css and,
  * on close, stays mounted for the sidebar duration under .is-leaving so
  * DirectionCorner.css can slide it back out. Reduced motion commits at once.
+ *
+ * Loading: the list, the index panel and the preview layer (CornerLayers)
+ * and the search index are chunks of their own, about 150K of script a
+ * prototype would otherwise parse for a 32px corner. The corner wakes them
+ * on the first hover or focus inside it, on [, R or Cmd K, and when the
+ * palette opens; a panel opened by its key before its chunk lands slides
+ * in from its @starting-style (DirectionCorner.css).
  */
 export type DirectionCornerProps = {
   slug: string;
@@ -86,12 +92,6 @@ export type DirectionCornerProps = {
    */
   suspense?: boolean;
 };
-
-/** The site map groups the list shows, in the shell's one order (Shipped after Pages, directive 8.10); the count names their rows. */
-const LIST_GROUPS: readonly SurfaceGroup[] = ['Pages', 'Knowledge', 'Shipped', 'Documents', 'Sites', 'Explorations', 'Archive'];
-
-/** `44 pages`: the count at the end of the filter row, and the word its placeholder takes (`Filter pages`). */
-const LIST_COUNT = `${SITE_SURFACES.filter((row) => LIST_GROUPS.includes(row.group)).length} pages`;
 
 /** How long the closing list stays for its exit; matches --pt-dur-sb in tokens.css. */
 const LEAVE_MS = 220;
@@ -161,6 +161,13 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
   const [help, setHelp] = useState(false);
   /* true from a close of the list until its exit has run, so it is still there to slide out */
   const [leaving, setLeaving] = useState(false);
+  /* true from the first reach for the corner: CornerLayers and the search index load then */
+  const [awake, setAwake] = useState(false);
+  const wake = () => {
+    if (awake) return;
+    setAwake(true);
+    preloadSearch();
+  };
   const wasList = useRef(false);
   const leaveTimer = useRef(0);
 
@@ -192,6 +199,7 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
       const low = e.key.length === 1 ? e.key.toLowerCase() : e.key;
       if ((e.metaKey || e.ctrlKey) && !e.altKey && low === 'k') {
         e.preventDefault();
+        setAwake(true);
         /* the palette renders inside the corner's stacking context, under
            the layer that holds the list and the index, so both close first */
         setList(false);
@@ -211,9 +219,11 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
       if (e.defaultPrevented) return;
       switch (low) {
         case '[':
+          setAwake(true);
           setList((open) => !open);
           return;
         case 'r':
+          setAwake(true);
           setPanel((open) => !open);
           return;
         case 'd':
@@ -262,6 +272,8 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
         className={cn('pt-corner', placement === 'right' && 'is-right')}
         role='group'
         aria-label='Prototemplate'
+        onFocus={wake}
+        onPointerEnter={wake}
       >
         <Link
           className='pt-ib pt-icon pt-corner-mark'
@@ -275,6 +287,7 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
           trigger='tool'
           className='pt-corner-search'
           onOpen={() => {
+            setAwake(true);
             setList(false);
             setPanel(false);
           }}
@@ -303,21 +316,7 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
           tabIndex={-1}
           onClick={closeTop}
         />
-        {listShown ? (
-          <ShellContext value={listState}>
-            <Sidebar
-              title='Prototemplate'
-              mark='pt'
-              count={LIST_COUNT}
-              sections={[]}
-              thumb='row'
-              siteMap
-            />
-          </ShellContext>
-        ) : null}
-        <ShellContext value={panelState}>
-          <IndexPanel set='site' />
-        </ShellContext>
+        {awake ? <CornerLayers listShown={listShown} listState={listState} panelState={panelState} /> : null}
       </div>
       <ShellContext value={helpState}>
         <HelpCard
@@ -325,8 +324,6 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
           note='The list and the index reach every page on the site; the page itself scrolls as a document.'
         />
       </ShellContext>
-      {/* the one preview layer (directive 8.6) for the list's, the index's and the search's rows */}
-      <PreviewLayer />
     </>
   );
 }
