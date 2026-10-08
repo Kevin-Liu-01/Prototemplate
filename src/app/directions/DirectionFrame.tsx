@@ -35,7 +35,7 @@ export type DirectionFrameProps = {
  * load event from a page that was skipped never marks the next one ready.
  * While the exhibit is off screen (the reader has scrolled the book past
  * it) the frame is frozen through the gt:freeze gate in layout.tsx, the
- * one the presenter's wall uses, and it resumes when the exhibit returns;
+ * one the presenter's stage uses, and it resumes when the exhibit returns;
  * a frame that loads off screen is frozen as it loads. The theme reaches
  * the frame through the storage event the boot script in layout.tsx
  * listens for.

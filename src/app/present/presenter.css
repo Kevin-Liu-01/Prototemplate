@@ -2625,6 +2625,14 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 /* ---------- Reduced motion: a plain vertical document ---------- */
 
+/* a phone on its side: the rail's rows would be 15px tall, so it steps
+   aside and the dock carries the paging */
+@media (pointer: coarse) and (max-height: 500px) {
+  .pr-hud-rail {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pr-slide {
     height: auto !important;

@@ -119,7 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             animation loops with postMessage({type:'gt:freeze',frozen});
             queued callbacks flush on resume, so shaders and scroll loops
             pick up where they left off. The presenter uses it to idle its
-            wall of live thumbnails. */}
+            prototype stage while the stage is off screen. */}
         <script
           dangerouslySetInnerHTML={{
             __html:

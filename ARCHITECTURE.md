@@ -29,6 +29,8 @@ src/
     deck/                 /deck: the frame around public/brand-deck.html
     docs/                 the documents book: registry.ts (the documents),
                           book.tsx (reads and renders them on the server),
+                          docs-book.ts (the /docs book with the build log
+                          appended; /handbook builds from book.tsx alone),
                           markdown.tsx and links.ts (the renderer and where
                           a repository path opens on the site), DocsShell
                           (the shell for both books)
@@ -73,7 +75,10 @@ src/
                           prismatic-field.ts; try/ (the report card's
                           checks); and the generated skills.ts, motion.ts
                           and updated.ts (build-updated.mjs; server modules
-                          only) with page-updated.ts (its type)
+                          only) with page-updated.ts (its type); the hooks:
+                          use-mount-effect.ts and use-layout-work.ts
+                          (dependency layout effects with useGSAP's timing,
+                          without GSAP)
 scripts/
   build-deck.mjs          deck/ to public/brand-deck.html and
                           public/shots/deck (pnpm build:deck)

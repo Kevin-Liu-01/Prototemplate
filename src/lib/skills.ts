@@ -89,7 +89,7 @@ export const SKILLS: readonly Skill[] = [
     description: 'How General Translation keeps visual surfaces fast with no change to how they look: measure first with the machine\'s load recorded, 60 fps motion and no lag on first use, quality tiers driven by measured frame time, one WebGL context per engine and full cleanup on unmount, frozen previews in galleries, shader and module weight cut with a pixel-identity proof while the library API stays, Lighthouse on production builds, live values hydrated on static pages, and budgets that exit 1 on a breach. Use when a page or animation lags, before shipping a shader, canvas or heavy component, and when Kevin asks for Lighthouse or performance work.',
     areas: ['website', 'landing', 'motion'],
     updated: '2026-10-06',
-    files: ['references/recipes.md', 'scripts/frame-probe.mjs', 'scripts/pixel-diff.mjs'],
+    files: ['references/recipes.md', 'references/webgl-lifecycles.md', 'scripts/frame-probe.mjs', 'scripts/pixel-diff.mjs'],
   },
   {
     id: 'gt-landing-pages',
@@ -143,7 +143,7 @@ export const SKILLS: readonly Skill[] = [
     description: 'Every lint and gate that holds General Translation\'s design and copy rules, what each catches, where it runs and how to fix a failure: Prototemplate\'s line auditor, shell token lint, practices ratchet, picture lint, type lint, gt-ui oxlint copy and page check, and gt-cloud\'s oxlint plugins, email identity check and oxfmt. Also covers how a new rule becomes a lint and the gate hygiene that keeps a red gate from passing (chained gates, real exit codes, one browser gate at a time). Use before committing in either repository, when a lint or a build gate fails, or when Kevin asks for a new rule to be enforced.',
     areas: ['lints'],
     updated: '2026-10-08',
-    files: ['references/gt-ui-rules.md', 'references/line-auditor.md'],
+    files: ['references/gt-ui-rules.md', 'references/line-auditor.md', 'references/page-check.md'],
   },
   {
     id: 'gt-motion',

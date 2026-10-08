@@ -65,7 +65,7 @@ pnpm dev        # http://localhost:3005
 | [`DESIGN.md`](./DESIGN.md) | the visual canon: the four-color system, the line law, rails/grounds/seams, the doubled line, iso, the 1-bit language, moving type, motion discipline, the mobile type ladder, the svh/dvh law, the two read lines |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | the code map: directions registry, the toolchain SSOT + fork rescoping, the component inventory |
 | [`docs/SHIP-LOOP.md`](./docs/SHIP-LOOP.md) | the verify/ship procedure every round runs (line audit, page check, ratchet, tsc, filming, mirror build) |
-| [`docs/LIBRARIES.md`](./docs/LIBRARIES.md) | the library index; the live version is `/craft` |
+| [`docs/LIBRARIES.md`](./docs/LIBRARIES.md) | the library index; the live version is the build log at the end of the `/docs` readme |
 | [`public/media/`](./public/media/README.md) | finished artwork made with the system: the Open Source announcement reel, the X banner, two blog films and three partnership globes, shown live in `/brand`, and the three translation series films, which play on `/motion` |
 | [`docs/GRAPHICS.md`](./docs/GRAPHICS.md) | the graphics pipeline: how the blog illustrations are captured, composed, rendered, clipped and handed to a post; the live version is `/docs/graphics`, and the set is `/graphics` |
 | [`graphics/`](./graphics/README.md) | the toolchain itself: the generator, the renderer, the exports, the captures and the recordings |
