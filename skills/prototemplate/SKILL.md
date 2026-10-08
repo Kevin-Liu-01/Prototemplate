@@ -105,6 +105,7 @@ AGENTS.md, CLAUDE.md     the agent entry point and its pointer
 ```
 
 - `next.config.ts` sets `typescript.ignoreBuildErrors: true`, so `pnpm build` never type-checks. `tsc` is a gate of its own.
+- `next.config.ts` also holds the cache headers for public files (a day fresh plus a week of stale-while-revalidate for `/shots`, `/media`, `/static`, `/graphics`, `/brand` and `/fonts`; a year, immutable, for the hashed `/deck-assets`), the permanent redirects (`/skills/<slug>.md`, and `/craft` to `/docs`), and `outputFileTracingExcludes` for the prerendered routes that read files through computed paths (`/`, `/docs`, `/handbook`, `/motion`, `/marks`, `/graphics`). A route that turns dynamic must stop reading an excluded path.
 - `tsconfig.json` includes `**/*.ts`, so a `.ts` file under `skills/` would be type-checked. Skill helpers are `.mjs`.
 - `src/app/d/**` holds self-contained explorations with their own type and colors. The shell's rules do not reach it. The type lint also skips the files its `ALLOW_FILES` list names: `/d/`, `/present` (a type specimen), the plate, the craft demos, `src/components/try` and the shared components only the directions mount.
 
