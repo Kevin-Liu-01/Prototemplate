@@ -1,0 +1,67 @@
+slash-announcement: credits and sources
+General Translation and Slash: the partnership announcement, on Kevin Liu's script.
+Film: 74.3 s, 1920 x 1080, 60 fps. Built 2026-10-07; revised the same day after review.
+
+SCRIPT
+- The eight voiceover lines are Kevin Liu's (BRIEF.md), recorded word for word and in order.
+  Every line matches the announcement post (../slash-partnership/BRIEF.md) and its follow-up.
+
+LOGOS AND MARKS (each drawn from its own file, true: no redrawing, no recolouring, no distortion)
+- Slash wordmark: assets/logos/slash-logo.svg, as the GT site serves it
+  (gt-cloud main, apps/landing/public/logos/slash-logo.svg). White as supplied.
+- General Translation doubled-line GT mark: kit/brand/gt-mark.svg (currentColor, filled white).
+- The lockup's "x" is Inter 500 (below), set as Kevin Liu's guidance image sets it.
+
+THE LIGHT AND THE SCREEN
+- Kevin Liu's guidance image, assets/reference/slash-x-gt-kevin.webp: the palette (olive
+  #3b382b, gold #c1a56d, straw #c7b78d, screen gold #c6b75d, white), the shafts and the
+  6 px Bayer screen were measured from it. The film's light is an analytic field fitted to
+  the image (lib/light-fit.json), not the image itself.
+- Bayer screen: kit/dither.js (the 8 by 8 Bayer tile), 6 px cells anchored at (0, 0).
+
+PICTURES
+- The Blue Marble (lines 1 and 5): kit/sources/earth.jpg.
+  Image: NASA, Reto Stöckli, 2007, public domain
+  Printed through the film's screen in its inks (lib/globe-prep.py). The 51 route endpoints
+  are seeded points on the photo's visible land, at least 40 px apart, and claim no
+  individual countries or corridors; the figure counts to 180 on its own clock and carries
+  the post's "180+ countries".
+- The glyph globe's twenty writing systems are the partnership still's glyph list
+  (motion/stills/partnership-globe/index.html), as the approved Slash film uses them.
+- The app page (line 8) is the GIF film's page (films/gif-how-gt-works), with its strings:
+  Welcome back / Hola de nuevo / Bon retour / おかえりなさい, Get started / Comenzar /
+  Commencer / 始める. The chevron is Heroicons 2.2.0 16 solid chevron-down (MIT, Tailwind Labs).
+- The plates' rows (line 7) are the brand film's sanctioned lines from MOTION.md, cut at word
+  boundaries to the phrase "every product" (the Japanese and Korean without their object
+  particles): すべての製品, كل منتج, हर उत्पाद, 모든 제품, 每个产品.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), self-hosted by kit/tokens.css
+  (kit/fonts/InterVariable.woff2) through var(--font); weights 400 and 500.
+- Canvas text (the lockup's x, the glyph globe): lib/fonts/InterCanvas.woff2, the kit's Inter
+  with its cv11 substitution baked in, registered through the FontFace API.
+- Non-Latin text uses the machine's fallback faces (Hiragino Sans, PingFang SC,
+  Apple SD Gothic Neo, Geeza Pro, Kohinoor Devanagari and the system faces for the glyph
+  globe's other scripts).
+
+VOICE
+- Narrator: Frederick Surrey (ElevenLabs library voice j9jfwdrw7BRfcR43Qohk,
+  eleven_multilingual_v2, stability 0.55, style 0.2, speed 1.0), from kit/audio/voice.json.
+  Eight takes, one per line, recorded with kit/audio/el.mjs line through lib/take.sh
+  (--prev and --next set to the neighbouring lines), each checked with el.mjs hear. No
+  retakes. No take is slowed, sped or time-stretched.
+
+MUSIC
+- One bed from the ElevenLabs Music API (music_v1, instrumental, 75 s requested), from the
+  approved Slash film's prompt: "Warm, confident, unhurried instrumental for a company
+  announcement. Felt piano and warm electric piano chords over soft upright bass and a
+  slow, steady brushed pulse around 80 BPM, major key, spacious. No vocals, no drops, no
+  risers, no build. Resolves on a held chord in the last five seconds." A 10 s test came
+  first. The bed resolved at 60.0 s of 75, so lib/mix.py extends it on its own bar lines
+  (bars 8 to 11 play twice) and starts it three beats in, so its held chord lands on the
+  end card.
+
+THE OFFER (as the GT site states it, ../slash-partnership/BRIEF.md)
+- generaltranslation.com/slash. Up to $2,000 in translation credits.
+- The end card's legal line is the post's sentence, verbatim: "Translation credits are
+  subject to General Translation's review and approval."

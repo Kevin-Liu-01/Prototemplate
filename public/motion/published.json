@@ -69,6 +69,16 @@
       "streams": {
         "video": "26f79245fe3599f9e5ff42cc7a3e04ce4bd8af0ab0c4f95f1ba1ef6df636949f"
       }
+    },
+    "slash-announcement": {
+      "cut": "v1",
+      "length": "74.3 s",
+      "film": "/media/slash-announcement-film.mp4",
+      "poster": "/media/slash-announcement-poster.jpg",
+      "streams": {
+        "video": "6af3364ec361f674bbaa58abee586d70ee517d3b40addf592d76dfb44f9ad428",
+        "audio": "5390166ccbbc032399eea596da6cd2c932b646a5fdc8e55bd8eb3f63a2680ba6"
+      }
     }
   }
 }

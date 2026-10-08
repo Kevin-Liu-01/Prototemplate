@@ -20,6 +20,8 @@ kept here as proof of what the identity does off the page.
 | `modern-hebrew-poster.jpg` | the Modern Hebrew film's poster, the v2 cut's poster frame, 1920x1080. |
 | `slash-partnership-film.mp4` | "Slash and General Translation": the announcement of General Translation's offer to Slash customers, up to $2,000 in translation credits, over Slash's scale and the more than 180 countries it pays into, closing on the Slash and General Translation lockup and generaltranslation.com/slash. 19.5 s, narrated by Frederick Surrey, 1920x1080, H.264 and AAC, the render's streams unchanged with the moov atom at the front. |
 | `slash-partnership-poster.jpg` | the Slash film's poster frame, 1920x1080. |
+| `slash-announcement-film.mp4` | "Supporting Slash companies": the longer announcement of General Translation's partnership with Slash, from Kevin's own script, which Frederick Surrey reads word for word. It covers Slash's global payments and Slash Global Cards, how General Translation connects code, content, translations and review in one platform, and the offer of up to $2,000 in translation credits, and it closes on the Slash and General Translation lockup with generaltranslation.com/slash. v1, 74.3 s, 1920x1080 at 60 fps, H.264 and AAC, the render's streams unchanged with the moov atom at the front. It sits beside the 19.5 s Slash film. |
+| `slash-announcement-poster.jpg` | the Supporting Slash companies film's poster frame, 1920x1080. |
 | `how-gt-works-film.mp4` | "How General Translation works": the looping product film made for OpenAI for Startups, the app's text wrapped in the T component, `npx gt translate` writing the translation files, a reviewer editing a translation in the Dashboard, and the app switching between English, Spanish, French and Japanese. 17.3 s, no narration, 1920x1080, H.264 with the moov atom at the front; the 1280x720 GIF it also ships as stays in the motion folder. |
 | `how-gt-works-poster.jpg` | the How General Translation works film's poster frame, 1920x1080. |
 | `gt-globe-dithered.png` | the dithered globe, a graphic for a partnership: the dashboard sign-in globe (`globe()` in `src/lib/dither.ts`) printed through the 8x8 Bayer screen in `#86a8ff` on ink `#070707`, 6 px cells, 2048x2048. |
@@ -30,9 +32,9 @@ kept here as proof of what the identity does off the page.
 
 The reel, the blog films and the globes are shown live in `/brand` under
 Made with the system. The blog films, the three translation series films,
-the Slash film and How General Translation works also play on `/motion` in
-their roster rows, and each translation series film plays at the head of
-its package page, `/motion/<slug>`. Each blog film on `/brand` and each
-translation series film on its package page has a link that downloads its
-MP4, and each globe has links that download its PNG on its ground (ink or
-paper) and its transparent PNG.
+the two Slash films and How General Translation works also play on
+`/motion` in their roster rows, and each translation series film plays at
+the head of its package page, `/motion/<slug>`. Each blog film on `/brand`
+and each translation series film on its package page has a link that
+downloads its MP4, and each globe has links that download its PNG on its
+ground (ink or paper) and its transparent PNG.
