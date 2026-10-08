@@ -21,7 +21,8 @@
    every button but the seg's text-only options is an icon square, the seg
    is icon-only and the search trigger a glyph; at or below 600px Previous,
    Next and Copy link leave too (the sheet's edges and a swipe page), so the
-   count, the search, the seg, Index, Theme and Help fit a phone.
+   count, the search, the seg, Index, Theme and Help fit a phone. On a
+   touch phone each control's tap area reaches 40px (the last block).
 
    The search trigger (directive 8.3) is the one field-shaped button, and
    it keeps the old nav's pill (Kevin's directive; DESIGN.md, chrome
@@ -322,7 +323,8 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
     justify-content: center;
   }
 
-  .pt-toolbar .pt-search-btn {
+  .pt-toolbar .pt-search-btn,
+  .pt-toolbar.is-tight-4 .pt-search-btn {
     min-width: 0;
   }
 
@@ -350,5 +352,57 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
   .pt-toolbar .pt-count-word,
   .pt-toolbar .pt-bar-slot > .pt-ib {
     display: none;
+  }
+}
+
+/* a touch phone, upright or on its side: every control answers a tap at
+   least 40px on each side while its drawing keeps its size (the page
+   check reads the hit area). A transparent ::after grows each control's
+   hit box over the bar's height and halfway into the 8px gaps, so
+   neighbors' boxes meet and never overlap; the seg's options touch, so an
+   icon-only one widens to 40px instead. Where a route's controls still
+   run past a small phone (the gallery's need about 340px, a count and a
+   two-option seg about 370, the compare rig about 410), the bar scrolls
+   rather than letting the two groups overlap. */
+@media (pointer: coarse) and (max-width: 600px), (pointer: coarse) and (max-height: 500px) {
+  .pt-toolbar {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .pt-bar-l,
+  .pt-bar-r {
+    gap: 8px;
+  }
+
+  .pt-toolbar .pt-ib {
+    position: relative;
+  }
+
+  /* measured from the padding edge, inside the 1px border: 6px over and 4px aside */
+  .pt-toolbar .pt-ib::after {
+    content: '';
+    position: absolute;
+    inset: -7px -5px;
+  }
+
+  .pt-toolbar .pt-seg {
+    overflow: visible;
+  }
+
+  .pt-toolbar .pt-seg .pt-ib {
+    min-width: 40px;
+  }
+
+  .pt-toolbar .pt-seg .pt-ib::after {
+    inset: -7px 0;
+  }
+}
+
+/* the left group gives way only through the brand title, which a narrow
+   bar hides, so on a touch phone it keeps its width and the bar scrolls */
+@media (pointer: coarse) and (max-width: 900px) {
+  .pt-bar-l {
+    flex-shrink: 0;
   }
 }
