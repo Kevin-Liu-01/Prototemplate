@@ -106,7 +106,7 @@ AGENTS.md, CLAUDE.md     the agent entry point and its pointer
 
 - `next.config.ts` sets `typescript.ignoreBuildErrors: true`, so `pnpm build` never type-checks. `tsc` is a gate of its own.
 - `tsconfig.json` includes `**/*.ts`, so a `.ts` file under `skills/` would be type-checked. Skill helpers are `.mjs`.
-- `src/app/d/**` holds self-contained explorations with their own type and colors. The shell's rules do not reach it. The type lint also skips the files its `ALLOW_FILES` list names: `/d/`, `/present` (a type specimen), the plate, the craft demos, `src/components/try` and the shared components only the directions mount.
+- `src/app/d/**` holds self-contained explorations with their own type and colors. The shell's rules do not reach it. The type lint also skips the files its `ALLOW_FILES` list names: `/d/`, `/present` (a type specimen), the plate, the craft demos, `src/components/try`, the shared components only the directions mount, and the unmounted reference components (`StorySection`, `FeatureBento`, `LanguageWheel`).
 
 ## 3. The viewer shell
 

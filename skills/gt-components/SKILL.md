@@ -192,7 +192,7 @@ A component added to chrome reuses these parts and follows these rules.
 - The theme is `data-theme` on `<html>` under the `gt-theme` key, dark by default.
 - `pnpm lint:shell` refuses raw colors in `src/components/shell`, `src/components/viewer` and two toolchain bento files; `pnpm lint:lines:shell` audits the drawn lines against the dev server on port 3005. The gt-lints skill covers both.
 
-`src/components/shared` holds the other cross-page pieces, among them `StudioField`, `PrismaticField`, `HeroFieldSwitcher`, `FeatureBento`, `LanguageWheel`, `TcMobileNav` and `diagrams/`, and `src/components/shell/Bento.tsx` the Prototemplate copy of the bento primitives. `src/components/plate` is a port of the dashboard's sign-in and onboarding pages with its own `ui/` copies and a `gt-next` shim; it follows the dashboard source.
+`src/components/shared` holds the other cross-page pieces, among them `StudioField`, `PrismaticField`, `HeroFieldSwitcher`, `TcMobileNav` and `diagrams/`, plus `FeatureBento`, `StorySection` and `LanguageWheel`, which nothing mounts and which stay as reference, and `src/components/shell/Bento.tsx` the Prototemplate copy of the bento primitives. `src/components/plate` is a port of the dashboard's sign-in and onboarding pages with its own `ui/` copies and a `gt-next` shim; it follows the dashboard source.
 
 ## Standardization
 

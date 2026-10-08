@@ -47,7 +47,6 @@
     "@gsap/react": "^2.1.2",
     "@heroicons/react": "^2.2.0",
     "@icons-pack/react-simple-icons": "^13.13.0",
-    "@paper-design/shaders-react": "0.0.78",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-select": "^2.3.7",
     "@radix-ui/react-toast": "^1.2.23",
