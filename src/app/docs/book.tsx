@@ -18,7 +18,7 @@ import { DOCS } from './registry';
  * It reads the files from the app root at build time and renders them into
  * the pages the client shell lays out. Files are read relative to
  * process.cwd() while the routes prerender, so nothing reads them at
- * request time (next.config.ts keeps the checkout out of the file trace).
+ * request time, and readDoc's path stays out of the file trace.
  * Each book opens with its readme; on /docs the readme also carries the
  * build log, which docs-book.ts appends, so the handbook's routes never
  * import the craft demos. Section numbers read document.section (1.1, 1.2,
@@ -27,7 +27,8 @@ import { DOCS } from './registry';
  * resolves against the folder of the document that holds it (links.ts).
  */
 export function readDoc(file: string): string {
-  return readFileSync(join(process.cwd(), file), 'utf8');
+  /* a computed path: without the ignore, Turbopack's file trace takes in the whole checkout */
+  return readFileSync(join(/*turbopackIgnore: true*/ process.cwd(), file), 'utf8');
 }
 
 const README = {
