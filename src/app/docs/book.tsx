@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { CRAFT_SECTIONS } from '@/app/craft/CraftArticle';
 import { HANDBOOK, HANDBOOK_README } from '@/app/handbook/registry';
 import type { BookFact } from '@/components/viewer/BookView';
 import { readingMinutes } from '@/lib/reading';
@@ -18,13 +17,14 @@ import { DOCS } from './registry';
  * repository documents, and /handbook, the documents under docs/handbook/.
  * It reads the files from the app root at build time and renders them into
  * the pages the client shell lays out. Files are read relative to
- * process.cwd(); the ship loop rsyncs the root docs alongside src/. Each
- * book opens with its readme; the repository readme carries the build log
- * (CRAFT_SECTIONS) as its last rows, numbered on from its own headings.
- * Section numbers read document.section (1.1, 1.2, 3.1), never the bare
- * 01 to 09 that a document itself carries, so a heading row never reads
- * like a document row in the list. A relative link resolves against the
- * folder of the document that holds it (links.ts).
+ * process.cwd() while the routes prerender, so nothing reads them at
+ * request time (next.config.ts keeps the checkout out of the file trace).
+ * Each book opens with its readme; on /docs the readme also carries the
+ * build log, which docs-book.ts appends, so the handbook's routes never
+ * import the craft demos. Section numbers read document.section (1.1, 1.2,
+ * 3.1), never the bare 01 to 09 that a document itself carries, so a
+ * heading row never reads like a document row in the list. A relative link
+ * resolves against the folder of the document that holds it (links.ts).
  */
 export function readDoc(file: string): string {
   return readFileSync(join(process.cwd(), file), 'utf8');
@@ -65,17 +65,6 @@ export function buildBook(book: BookId): readonly DocPage[] {
       title: row.title,
       body: renderBlocks(row.blocks, `${entry.slug}-${row.id}`, { dir }),
     }));
-    if (book === 'docs' && entry.slug === README_SLUG) {
-      for (const craft of CRAFT_SECTIONS) {
-        sections.push({
-          kind: 'craft',
-          id: craft.id,
-          n: number(sections.length),
-          title: craft.title,
-          body: craft.body,
-        });
-      }
-    }
     return {
       slug: entry.slug,
       n: pad2(i + 1),
@@ -88,10 +77,6 @@ export function buildBook(book: BookId): readonly DocPage[] {
       sections,
     };
   });
-}
-
-export function buildDocs(): readonly DocPage[] {
-  return buildBook('docs');
 }
 
 /** The dated rulings in the decisions log: the table rows that open with their date (the superseded practices' rows open with the practice). */

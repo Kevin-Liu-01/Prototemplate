@@ -550,7 +550,7 @@ export type DocsShellProps = {
   book: BookId;
   /** the document the route names: `readme` on the book's index, the slug on <base>/[slug] */
   active: string;
-  /** from buildBook() on the server */
+  /** from buildDocs() (docs-book.ts) or buildBook() (book.tsx) on the server */
   docs: readonly DocPage[];
   /** the book's entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;

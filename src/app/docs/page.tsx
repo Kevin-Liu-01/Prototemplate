@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 
 import { requireUpdated } from '@/lib/updated';
 
-import { bookFacts, buildDocs } from './book';
+import { bookFacts } from './book';
+import { buildDocs } from './docs-book';
 import DocsShell from './DocsShell';
 import { docWindowTitle, README_SLUG } from './model';
 
