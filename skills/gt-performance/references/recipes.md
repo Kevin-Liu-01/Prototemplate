@@ -121,3 +121,35 @@ These rules back section 6 of the skill.
   stuff that is high risk like posthog", and the PostHog deferral was
   reverted. An idea that measures worse is built, measured, reverted and
   listed in the PR body.
+
+## First-load bytes
+
+Measure each route cold under `next start` on a production build, never
+against www (about 200 automated loads put a machine behind Vercel's
+Security Checkpoint on 2026-10-08): one fresh browser context per run, CDP
+`Network.loadingFinished` `encodedDataLength` summed by resource type, at
+1440x900 and at 390x844 with touch, three runs, the median. Bytes are
+deterministic; timings move with the load average, so record it.
+
+The 2026-10-08 round found the bytes, not the scripts, and fixed them in
+these places, which hold for any new page:
+
+- next/font preloads every face a route's CSS names, and Turbopack shares
+  CSS chunks between routes, so a display face on one page loaded on all
+  of them. Only `src/lib/fonts.ts` (the roman Inter) and
+  `src/lib/brand-fonts.ts` preload; every other `localFont` sets
+  `preload: false` (lint-type T3), and the italic Inter is a plain
+  `@font-face` in `src/app/globals.css`.
+- React 19 hoists an eager `<img>` into a high-priority preload. A picture
+  outside the first view takes `loading='lazy'`, and a large file drawn
+  small goes through next/image (the byline avatars).
+- A `<video poster>` is fetched at load wherever the video sits. A film
+  paints its poster as a lazy image and preloads nothing until play
+  (`src/app/brand/BrandFilm.tsx`).
+- Work for a device that can hover (preview preloads) checks
+  `(hover: hover) and (pointer: fine)` first.
+- Data and panels used only after an open load with `import()` on the
+  first open or on the first hover or focus of the trigger (the search
+  index, the direction corner's panels).
+- GSAP loads only where a tween runs; the shell's layout effects use
+  `src/lib/use-layout-work.ts`.
