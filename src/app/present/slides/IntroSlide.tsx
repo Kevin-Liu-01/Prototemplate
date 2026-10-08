@@ -3,7 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 
@@ -13,13 +13,6 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export default function IntroSlide() {
   const root = useRef<HTMLElement>(null);
   const [logoField, setLogoField] = useState(0);
-
-  // The logo box alternates between two shader moods.
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const id = window.setInterval(() => setLogoField((f) => (f + 1) % 2), 3400);
-    return () => window.clearInterval(id);
-  }, []);
 
   useGSAP(
     () => {
@@ -39,9 +32,8 @@ export default function IntroSlide() {
         .from('.pr-intro-sub', { autoAlpha: 0, y: 16, duration: 0.9 }, 1.2)
         .from('.pr-intro-cue', { autoAlpha: 0, duration: 0.8 }, 1.6);
 
-      // The mouse wheel dot drips downward on a loop.
       // The liquid glass slowly undulates: the displacement field breathes.
-      gsap.to('#pr-liquid-turb', {
+      const breathe = gsap.to('#pr-liquid-turb', {
         attr: { baseFrequency: '0.014 0.02' },
         duration: 7,
         repeat: -1,
@@ -49,7 +41,8 @@ export default function IntroSlide() {
         ease: 'sine.inOut',
       });
 
-      gsap.fromTo(
+      // The mouse wheel dot drips downward on a loop.
+      const drip = gsap.fromTo(
         '.pr-cue-wheel',
         { y: 0, autoAlpha: 1 },
         {
@@ -61,6 +54,23 @@ export default function IntroSlide() {
           ease: 'power1.in',
         }
       );
+
+      // The logo box alternates between two shader moods.
+      let onScreen = true;
+      const swap = window.setInterval(() => {
+        if (onScreen) setLogoField((f) => (f + 1) % 2);
+      }, 3400);
+
+      // The loops and the swap stop once the intro has scrolled away.
+      ScrollTrigger.create({
+        trigger: root.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        onToggle: (self) => {
+          onScreen = self.isActive;
+          for (const loop of [breathe, drip]) loop.paused(!onScreen);
+        },
+      });
 
       // The whole card sinks and dims as the deck scrolls on.
       gsap.to('.pr-intro-inner', {
@@ -74,6 +84,8 @@ export default function IntroSlide() {
           scrub: true,
         },
       });
+
+      return () => window.clearInterval(swap);
     },
     { scope: root }
   );
