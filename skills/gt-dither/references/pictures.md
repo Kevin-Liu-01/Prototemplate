@@ -124,7 +124,7 @@ The full slide markup and placement rules are in the gt-deck skill
   sentences on why the picture is in the deck, and `<div class="credit">`.
 - Place it after a dense slide, at least one content slide away from the
   next section opener (`deck/shots/OPENERS.md`).
-- Update `SLIDE_COUNT` in `scripts/build-deck.mjs` (93 on 2026-10-05),
+- Update `SLIDE_COUNT` in `deck/assemble.mjs` (93 on 2026-10-05),
   `SECTIONS` in `deck/parts/tail.html`, `DECK_SLIDES` in
   `src/lib/search-index.ts` and the entry in `deck/shots/OPENERS.md`, then
   run `pnpm build:deck`.

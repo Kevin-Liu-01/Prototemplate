@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Brand deck
   areas: aesthetic, graphics
-  updated: 2026-10-07
+  updated: 2026-10-08
   origin: prototemplate
 ---
 
@@ -34,7 +34,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`). The two scrip
 | `deck/shots/` | captures, crops and opener images; `thumb/` for the surfaces panel; `tone/` for the mood grids and `manifest.json`; `OPENERS.md` and `DETAILS.md` | a round assigned pictures |
 | `deck/fonts/deck-fonts.css` | the inlined Inter | nobody without a type decision |
 | `deck/DECK-GRAMMAR.md` | the grammar agents read before touching a slide | the deck owner |
-| `deck/shoot-slide.mjs`, `deck/assemble.mjs` | the shooter and the raw assembler | the deck owner |
+| `deck/shoot-slide.mjs`, `deck/assemble.mjs` | the shooter, and the assembler it shares with the build (`SLIDE_COUNT`) | the deck owner |
 | `scripts/build-deck.mjs` | the build to `public/brand-deck.html` | the deck owner |
 | `deck/preview/`, `deck/tmp/` | renders and temp files, gitignored | anyone |
 
@@ -211,13 +211,13 @@ node scripts/lint-lines.mjs --shell --only /deck --width 1440 --theme dark   # t
 - Shoot after every edit and look at both JPEGs. The shooter prints elements that overflow the sheet and any page error; it does not see a label on a line, text touching a rail, or an empty half-slide.
 - Run `check-deck.mjs` before a commit. It exits 1 on an error.
 - Commit `public/brand-deck.html` with the slides. It is the file `/deck` serves, `pnpm build` runs `lint-pictures.mjs` against it, and the line audit reads it.
-- `references/viewer-and-build.md` covers the build's image handling, its macOS and Pillow requirements, the `deck/tmp/shots` symlink, the shooter's playwright path, and the size-limited artifact copy.
+- `references/viewer-and-build.md` covers the build's image handling, its macOS and Pillow requirements, the `deck/tmp/shots` symlink, the shooter's Chromium path, and the size-limited artifact copy.
 
 When a slide is added, removed, retitled or moved, these places restate it:
 
 | Place | What changes |
 | --- | --- |
-| `scripts/build-deck.mjs` | `SLIDE_COUNT` |
+| `deck/assemble.mjs` | `SLIDE_COUNT` |
 | `deck/parts/head.html` | the `#bar-total` count in the toolbar |
 | `deck/parts/tail.html` | `SECTIONS`: each opener's position and the section's name |
 | `src/lib/search-index.ts` | `DECK_SLIDES`, the titles in order as the viewer reads them (the first `h1`, `h2` or `.big`), and the two comments that state the count |

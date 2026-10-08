@@ -124,7 +124,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Brand deck',
     description: 'How the General Translation brand deck in Prototemplate\'s deck/ folder is built and edited: the 1600 by 900 sheet, the Inter type sizes and color tokens, the layout classes, icons from the Heroicons 20 solid sprite, diagrams, openers and mood slides as artifact pictures, the speed mark slides, slide-scoped CSS, both themes, the build and shoot scripts, the registries a new slide touches, what counts as a defect, and how any GT presentation\'s story is written. Use when adding or editing a slide, rebuilding or checking the deck, reviewing a slide lane\'s work, writing another GT presentation, or borrowing the deck\'s grammar for another surface.',
     areas: ['aesthetic', 'graphics'],
-    updated: '2026-10-07',
+    updated: '2026-10-08',
     files: ['references/full-picture-slides.md', 'references/viewer-and-build.md', 'scripts/check-deck.mjs', 'scripts/heroicon-symbol.mjs'],
   },
   {
@@ -169,7 +169,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Dither and artifact pictures',
     description: 'General Translation\'s 1-bit material and its artifact pictures: the 4x4 and 8x8 Bayer screens, coverage tiers that nest, the CPU engine (dither.ts) and the GPU studio field with its BAYER_PRESETS, the landing hero\'s bayer-8x8 field as the one material on product surfaces, Glyphfield as the authoring source for new shaders, and the Blue Marble standard for dithered photographs and scans with its cutter (pnpm mood-tone), its lint and its retired pictures. Use when adding a dithered field, picture, cover or texture to any GT surface, when choosing or tuning a studio preset, or when cutting, replacing, crediting or reviewing a mood picture in Prototemplate or gt-cloud.',
     areas: ['graphics', 'aesthetic'],
-    updated: '2026-10-06',
+    updated: '2026-10-08',
     files: ['references/engines.md', 'references/pictures.md'],
   },
   {

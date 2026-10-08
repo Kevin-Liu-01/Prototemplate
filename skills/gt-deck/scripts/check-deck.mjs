@@ -10,7 +10,7 @@
 //
 // Errors (exit 1):
 //   - the slide count differs between deck/slides and SLIDE_COUNT in
-//     scripts/build-deck.mjs, #bar-total in deck/parts/head.html,
+//     deck/assemble.mjs, #bar-total in deck/parts/head.html,
 //     DECK_SLIDES in src/lib/search-index.ts, the description in
 //     src/app/deck/page.tsx or the "N-slide" sentence in src/app/brand/page.tsx;
 //   - SECTIONS in deck/parts/tail.html does not start a section at each
@@ -153,7 +153,7 @@ for (const s of slides) {
 
 const count = slides.length;
 const restated = [
-  ['scripts/build-deck.mjs', /const SLIDE_COUNT = (\d+);/, 'SLIDE_COUNT'],
+  ['deck/assemble.mjs', /const SLIDE_COUNT = (\d+);/, 'SLIDE_COUNT'],
   ['deck/parts/head.html', /id="bar-total">(\d+)</, '#bar-total'],
   ['src/app/deck/page.tsx', /brand in (\d+) slides/, 'the page description'],
   ['src/app/brand/page.tsx', /(\d+)-slide/, 'the "N-slide" sentence'],

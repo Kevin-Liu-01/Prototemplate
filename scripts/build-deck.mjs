@@ -3,11 +3,10 @@
 // and surface index; nothing under src/components/viewer reaches into it,
 // and src/app/deck only frames the file.
 //
-//   parts/head.html, slides/NN-*.html in name order, parts/tail.html
-//                           assembled in that order, the way deck/assemble.mjs
-//                           does, with the source's leading <title> stripped
+//   deck/assemble.mjs       parts/head.html, slides/NN-*.html in name order and
+//                           parts/tail.html, with fonts/deck-fonts.css inlined in
+//                           place of <!--FONTS--> and the leading <title> stripped
 //                           (the wrapper below carries the document title)
-//   fonts/deck-fonts.css    inlined as a <style> in place of <!--FONTS-->
 //   shots/*                 every src="shots/...", data-dark="shots/..." and
 //                           data-tone="shots/..." becomes a data URI: photographs
 //                           are resampled to 1280px wide at JPEG quality 78 through
@@ -56,8 +55,9 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { assemble, DECK, SLIDE_COUNT } from '../deck/assemble.mjs';
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const DECK = join(ROOT, 'deck');
 const ARGS = process.argv.slice(2);
 const flag = (name) => {
   const at = ARGS.indexOf(name);
@@ -67,7 +67,6 @@ const flag = (name) => {
 const OUT_OVERRIDE = flag('--out');
 const OUT = OUT_OVERRIDE ?? join(ROOT, 'public/brand-deck.html');
 const THUMBS_OUT = join(ROOT, 'public/shots/deck');
-const SLIDE_COUNT = 93;
 const QUALITY = Number(flag('--quality') ?? 78);
 const MAX_WIDTH = Number(flag('--max-width') ?? 1280);
 /* the thumbnails pass through untouched unless a copy asks for them re-encoded */
@@ -118,39 +117,11 @@ function twoTonePng(abs, out) {
   }
 }
 const TITLE = 'General Translation brand deck';
-const LEADING_TITLE = /^<title>[^<]*<\/title>\n/;
 const IMAGE_REF = /(src|data-dark|data-tone)="(shots\/[^"]+)"/g;
 const IMAGE = /\.(jpg|jpeg|png|webp|gif)$/i;
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif' };
 
-const read = (rel) => readFileSync(join(DECK, rel), 'utf8');
-
-/* ---------- assemble ---------- */
-
-const slideFiles = readdirSync(join(DECK, 'slides'))
-  .filter((file) => /^\d\d-.*\.html$/.test(file))
-  .sort();
-if (slideFiles.length !== SLIDE_COUNT) {
-  throw new Error(`build-deck: expected ${SLIDE_COUNT} slide files under deck/slides, found ${slideFiles.length}`);
-}
-const slides = slideFiles.map((file) => `${read(`slides/${file}`).replace(/\s+$/, '')}\n\n`).join('');
-if (/<script\b/i.test(slides)) {
-  throw new Error('build-deck: a slide carries a <script>; the grammar forbids it');
-}
-
-const head = read('parts/head.html');
-if (!LEADING_TITLE.test(head)) {
-  throw new Error('build-deck: deck/parts/head.html does not open with the <title> the wrapper replaces');
-}
-if (!head.includes('<!--FONTS-->')) {
-  throw new Error('build-deck: deck/parts/head.html has no <!--FONTS--> marker for the font styles');
-}
-let source = head.replace(LEADING_TITLE, '') + slides + read('parts/tail.html');
-
-/* ---------- fonts ---------- */
-
-/* a function replacer, so nothing in the CSS is read as a replacement pattern */
-source = source.replace('<!--FONTS-->', () => `<style>${read('fonts/deck-fonts.css')}</style>`);
+let source = assemble();
 
 /* ---------- images ---------- */
 

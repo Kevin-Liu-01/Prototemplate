@@ -2,30 +2,30 @@
 //   node shoot-slide.mjs 8            -> preview/s08-light.jpg, preview/s08-dark.jpg
 //   node shoot-slide.mjs 8 15 22      -> those three
 //   node shoot-slide.mjs all          -> every slide
-// Assembles parts/head.html + slides/*.html + parts/tail.html into a private temp file
-// (safe to run concurrently), inlines the fonts, keeps images as relative shots/ paths.
-import { createRequire } from 'node:module';
-import { readFileSync, writeFileSync, readdirSync, mkdirSync, unlinkSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-const require = createRequire('/Users/kevinliu/gt/gt-cloud-wt-diagrams/apps/redesign/package.json');
-const { chromium } = require('playwright-core');
-const D = dirname(new URL(import.meta.url).pathname);
+// Writes the source assemble.mjs builds to a private temp file (safe to run
+// concurrently), with images as relative shots/ paths. Chromium comes from
+// CHROME_PATH as scripts/site-pages.mjs resolves it.
+import { writeFileSync, mkdirSync, unlinkSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { chromium } from 'playwright-core';
+import { CHROME_PATH } from '../scripts/site-pages.mjs';
+import { assemble, slideFiles } from './assemble.mjs';
+/* this script's folder: deck/, or a copy's folder beside it */
+const D = dirname(fileURLToPath(import.meta.url));
 mkdirSync(`${D}/preview`, { recursive: true });
 mkdirSync(`${D}/tmp`, { recursive: true });
 
-const head = readFileSync(resolve(D, 'parts/head.html'), 'utf8');
-const tail = readFileSync(resolve(D, 'parts/tail.html'), 'utf8');
-const files = readdirSync(resolve(D, 'slides')).filter((f) => /^\d\d-.*\.html$/.test(f)).sort();
-const body = files.map((f) => readFileSync(resolve(D, 'slides', f), 'utf8').replace(/\s+$/, '') + '\n\n').join('');
-const fonts = readFileSync(resolve(D, 'fonts', 'deck-fonts.css'), 'utf8');
-const src = (head + body + tail).replace('<!--FONTS-->', `<style>${fonts}</style>`).replace(/^<title>[^<]*<\/title>\s*/, '');
+const src = assemble(D);
+const files = slideFiles(D);
 const args = process.argv.slice(2);
 const want = args.length === 0 || args[0] === 'all' ? files.map((_, k) => k + 1) : args.map(Number).filter((n) => n >= 1 && n <= files.length);
 const tag = want.join('-').slice(0, 40) + '-' + process.pid;
 const tmp = `${D}/tmp/preview-${tag}.html`;
 writeFileSync(tmp, `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html{color-scheme:light dark}body{margin:0}</style></head><body>${src}</body></html>`);
 
-const browser = await chromium.launch({ executablePath: '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing' });
+// file:// pages taint a canvas that reads another file, so the mood grids need file access to screen
+const browser = await chromium.launch({ executablePath: CHROME_PATH, args: ['--allow-file-access-from-files'] });
 const errors = [];
 for (const scheme of ['light', 'dark']) {
   const ctx = await browser.newContext({ viewport: { width: 1600, height: 900 }, colorScheme: scheme, deviceScaleFactor: 1, reducedMotion: 'reduce' });
