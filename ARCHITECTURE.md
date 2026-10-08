@@ -156,36 +156,32 @@ entry (body + snippet) in the same round.
 
 ## The gallery pipeline
 
-The index's anatomy wall and the variant gallery are fed by one harness,
-and the file names are the contract between the two ends:
+The index's anatomy wall is fed by one shooter, and the file names are
+the contract between the two ends:
 
-- **The shooter** (`scripts/gallery-shoot.mjs`) shoots the flagship
-  home section by section — **element shots anchored on each section's
-  own landmark selector, never scroll depths**, so side-by-side pairs
-  align regardless of viewport — across desktop/mobile cuts and both
-  themes, plus one hero viewport shot per variant home. Theme is set
-  before first paint by an `addInitScript` that writes
-  `localStorage['gt-theme']`, which the root inline script applies; one
-  full scroll pass settles every lazy/armed section before shooting. A
-  selector that misses is reported, never fatal — the wall just skips
-  that tile.
-- **The manifest contract**: the shooter writes `manifest.json` beside
-  the tiles — `{ flagship, sections: [{ key, label, cut, theme, file }],
-  variants: [{ slug, theme, file }] }` — so a consumer can import the
-  set instead of globbing the directory.
-- **Deterministic tile names** are what the anatomy wall reads:
-  `sec-<key>-<cut>-<theme>.png` under `public/shots/gallery/` (key ∈
-  hero, customers, story, developer, locadex, context, global, deploy,
-  footer; cut ∈ desk, mob; theme ∈ light, dark), and
-  `var-<slug>-<theme>.png` for the variant heroes (slugs from
-  `src/lib/directions.ts`). Any single tile may be missing — consumers
-  hide on `onError` or render from a known-good list, never a broken
-  image.
+- **The shooter** (`scripts/gallery-shoot.mjs`) shoots the flagship home
+  section by section across desktop and mobile cuts and both themes. It
+  takes element screenshots anchored on each section's own landmark
+  selector, never scroll depths, so side-by-side pairs align at any
+  viewport. An `addInitScript` writes `localStorage['gt-theme']` before
+  first paint, which the root inline script applies, and one full scroll
+  pass settles every lazy section before the first shot. A selector that
+  misses is reported and skipped.
+- **The manifest**: the shooter writes `manifest.json` beside the tiles,
+  `{ flagship, generatedFor, sections: [{ key, label, cut, theme, file }] }`.
+  Nothing reads it today; it records what the last run shot.
+- **The tile names** are what the anatomy wall (`src/app/AnatomyWall.tsx`)
+  reads: `sec-<key>-<cut>-<theme>.jpg` under `public/shots/gallery/` (key
+  is hero, customers, story, developer, locadex, context, global, deploy or
+  footer; cut is desk or mob; theme is light or dark). The wall accepts a
+  `.png` under the same stem, and a missing tile leaves hatched ground.
+  The `var-*` tiles still in the folder are the retired directions' last
+  dark captures; nothing renders them.
 - **`/compare`** puts two directions side by side as synced same-origin
-  iframes — same origin is what lets the route drive both frames' scroll
-  and theme in lockstep. (The index's home/enterprise sweep,
-  `src/app/SiteCompare.tsx`, is the still-image cousin: two shots under
-  the house seam, the cut living in one CSS var.)
+  iframes. Same origin is what lets the route drive both frames' scroll
+  and theme together. `src/app/SiteCompare.tsx` is the still-image
+  version: two captures under the house seam, the cut held in one CSS
+  variable.
 
 ## Skills and docs
 
