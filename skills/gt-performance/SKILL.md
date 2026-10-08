@@ -201,6 +201,15 @@ day, and Prototemplate's `src/lib/glyph-field.ts` holds the pattern:
   when a subscriber's `destroy()` runs, so it survives route switches.
   gt-dither section 2 and `references/engines.md` hold the mechanism and
   the rebuild after a lost context.
+- **A shared engine's canvas only grows.** Setting a canvas's width or
+  height reallocates its drawing buffer, so an engine that resizes its one
+  GL canvas to each subscriber reallocates it twice a frame once two fields
+  of different sizes are on screen. On 2026-10-08 the presenter's intro (a
+  full-bleed field and two 125px logo fields) kept the main thread busy
+  about 1,000 ms of every second for that alone. `src/lib/prismatic-field.ts`
+  grows its canvas to the largest field, draws each field into the
+  bottom-left corner (GL's origin) and blits that rectangle:
+  `drawImage(source, 0, source.height - height, width, height, 0, 0, width, height)`.
 - **A canvas read back with `getImageData` stays off the blit path.**
   `willReadFrequently` pins a canvas to CPU memory, so every `drawImage`
   from it uploads to the GPU. That upload was the glyph rain's mobile lag,
@@ -423,7 +432,8 @@ shape.
       the second use costs.
 - [ ] Quality tiers follow measured frame time with a warmup and gap skip,
       never switch mid-move, and width sets only the layout.
-- [ ] A shared engine holds one context; a component-owned context deletes
+- [ ] A shared engine holds one context and its canvas only grows; a
+      component-owned context deletes
       its objects and loses the context on unmount; exactly one canvas
       exists after a strict-mode mount and a hot reload; ticker callbacks
       unhook offscreen; no per-frame blit reads from a

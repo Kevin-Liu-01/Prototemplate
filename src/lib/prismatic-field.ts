@@ -435,7 +435,8 @@ type Engine = {
   timeLoc: WebGLUniformLocation | null;
   paramLocs: Map<keyof PrismaticParams, WebGLUniformLocation | null>;
   /**
-   * Draws one frame at the given size and returns the GL canvas to blit from.
+   * Draws one frame at the given size into the bottom-left corner of the GL
+   * canvas and returns the canvas to blit from.
    * The trailing six numbers are the cursor-effect uniforms (cursor x/y in
    * shader screen space, eased strength, mode index, smoothed velocity in
    * kpx/s, and CSS-px-per-screen-unit scale) — the first five are zero for
@@ -604,9 +605,12 @@ function getEngine(): Engine | null {
     timeLoc,
     paramLocs,
     draw(width, height, time, params, fxX, fxY, fxStrength, fxMode, fxVel, fxScale) {
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
+      // The canvas only grows. Resizing it reallocates the drawing buffer,
+      // and with two fields of different sizes on screen that happened
+      // twice a frame; each field draws into the bottom-left corner instead.
+      if (canvas.width < width || canvas.height < height) {
+        canvas.width = Math.max(canvas.width, width);
+        canvas.height = Math.max(canvas.height, height);
       }
       ctx.viewport(0, 0, width, height);
       ctx.uniform2f(resolutionLoc, width, height);
@@ -668,7 +672,8 @@ function renderSubscriber(sub: Subscriber, time: number) {
     fxVel,
     fxScale
   );
-  sub.blit.drawImage(source, 0, 0);
+  // GL's origin is bottom-left, so the field sits at the canvas's bottom rows.
+  sub.blit.drawImage(source, 0, source.height - height, width, height, 0, 0, width, height);
 }
 
 /**
