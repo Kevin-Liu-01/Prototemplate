@@ -107,7 +107,7 @@ Inter is the one typeface for display, interface and text. The build is the rsms
 
 **The binding.**
 
-- Prototemplate binds the files as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`.
+- Prototemplate binds the roman as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`, and declares the italic as a plain `@font-face` in the same `ptInter` family in `src/app/globals.css`. So every route preloads the roman, and a browser fetches the italic only where italic text renders.
 - next/font names the family after the JavaScript identifier, and CSS family names are case-insensitive. A binding named `inter` therefore shares its name with an installed Inter. If the woff2 fails to load, that installed Inter renders (desktop Inter 3, for example, which has no opsz axis), and the metric-matched fallback never engages.
 - gt-cloud's landing still binds `inter` on `--font-sans`, and its built CSS reads `"inter", "inter Fallback"`, so it carries the same exposure.
 

@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import type { MouseEvent, ReactNode } from 'react';
 import { useMemo, useRef, useSyncExternalStore } from 'react';
 
@@ -9,6 +8,7 @@ import { COMMIT_URL } from '@/lib/page-updated';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
 import { pad2, previewId } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { Icon } from './icons';
@@ -298,7 +298,7 @@ export function BookView({
   /* the one dependency effect: when the active item changes from outside
      the book, bring its page to the top. The first run is the mount, where
      the jump is instant; a change the observer caused is left alone. */
-  useGSAP(
+  useLayoutWork(
     () => {
       const previous = lastActive.current;
       lastActive.current = active;

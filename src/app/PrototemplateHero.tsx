@@ -28,7 +28,8 @@ gsap.registerPlugin(useGSAP);
  * carries the words home and retypes `type` under the returning rule.
  *
  * Fonts are awaited before measuring; resize rebuilds; reduced motion
- * holds the settled sheet.
+ * holds the settled sheet. The timeline pauses while the hero is off
+ * screen, so GSAP's ticker sleeps once the reader scrolls past it.
  */
 
 const TYPE_LETTERS = 'type'.split('');
@@ -91,6 +92,8 @@ export default function PrototemplateHero() {
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       let tl: gsap.core.Timeline | null = null;
+      /* whether the hero is on screen; the timeline runs only while it is */
+      let visible = true;
 
       const build = () => {
         tl?.kill();
@@ -240,7 +243,18 @@ export default function PrototemplateHero() {
 
         tl = gsap.timeline();
         tl.add(intro).add(cycle);
+        if (!visible) tl.pause();
       };
+
+      const view =
+        typeof IntersectionObserver === 'undefined'
+          ? null
+          : new IntersectionObserver(([entry]) => {
+              visible = entry?.isIntersecting ?? true;
+              if (visible) tl?.resume();
+              else tl?.pause();
+            });
+      view?.observe(rootEl);
 
       let cancelled = false;
       document.fonts.ready.then(() => {
@@ -286,6 +300,7 @@ export default function PrototemplateHero() {
 
       return () => {
         cancelled = true;
+        view?.disconnect();
         observer?.disconnect();
         window.removeEventListener('resize', rebuild);
         cancelAnimationFrame(raf);

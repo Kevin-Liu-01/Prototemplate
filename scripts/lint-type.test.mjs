@@ -87,8 +87,15 @@ describe('T3 next/font', () => {
   test('the binding named ptInter passes', () => {
     assert.deepEqual(lintBindings(new Map([[PATHS.fonts, pt]])).problems, []);
   });
+  test('a face outside the shell font files fails unless it sets preload: false', () => {
+    const preloaded = "const display = localFont({ src: [], display: 'swap' });\n";
+    const lazy = "const display = localFont({ src: [], display: 'swap', preload: false });\n";
+    assert.ok(lintBindings(new Map([['src/app/d/a/page.tsx', preloaded]])).problems.some((p) => p.rule === 'T3'));
+    assert.ok(lintBindings(new Map([['src/app/present/fonts.ts', preloaded]])).problems.some((p) => p.rule === 'T3'));
+    assert.deepEqual(lintBindings(new Map([['src/app/d/a/page.tsx', lazy]])).problems, []);
+  });
   test('one identifier in two files outside /d/ fails, and under /d/ warns', () => {
-    const twice = "const display = localFont({ src: [] });\n";
+    const twice = "const display = localFont({ src: [], preload: false });\n";
     assert.ok(lintBindings(new Map([['src/app/a.tsx', twice], ['src/app/b.tsx', twice]])).problems.length > 0);
     const under = lintBindings(new Map([['src/app/d/a/page.tsx', twice], ['src/app/d/b/page.tsx', twice]]));
     assert.deepEqual(under.problems, []);

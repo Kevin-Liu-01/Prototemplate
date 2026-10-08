@@ -568,7 +568,7 @@
    No rule here sets aspect-ratio, which would override that mapping. The
    films and the banner are large surfaces and draw the structural hair. */
 .ptb-media .ptb-shot video,
-.ptb-media .ptb-shot img {
+.ptb-media .ptb-shot > img {
   display: block;
   width: 100%;
   height: auto;

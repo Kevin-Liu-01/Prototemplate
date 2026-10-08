@@ -23,6 +23,7 @@ const display = localFont({
   ],
   variable: '--talud-tablero-display',
   display: 'swap',
+  preload: false,
 });
 
 export const metadata = {

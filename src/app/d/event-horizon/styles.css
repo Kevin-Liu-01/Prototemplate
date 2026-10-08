@@ -809,13 +809,22 @@
   transform: translateZ(0);
 }
 
-/* the lensing shader: disc + annulus, transparent wherever it draws nothing */
+/* the lensing shader: disc + annulus, transparent wherever it draws nothing.
+   Its box is the square Hero.tsx measures (half side r * 2.05 around the
+   hole), set here from the same properties so the canvas holds that box
+   from first paint instead of growing from 300x150 when the engine runs.
+   No transition: under reduced motion globals.css gives every property a
+   0.01ms one, and the engine's one still frame would read the box before
+   Hero.tsx's size landed. */
 .eventhorizon-root .eh-field {
   position: absolute;
-  left: 0;
-  top: 0;
+  left: calc(var(--eh-cx) - var(--eh-r) * 2.05);
+  top: calc(var(--eh-cy) - var(--eh-r) * 2.05);
+  width: calc(var(--eh-r) * 4.1);
+  height: calc(var(--eh-r) * 4.1);
   z-index: 2;
   pointer-events: none;
+  transition: none;
 }
 
 /* ---------- the flag orbit ----------

@@ -10,7 +10,7 @@ These are the checklists behind section 6 of the skill. Paths are relative to `$
 4. **Nest the page's sections.** Every section the page owns sets `under: '<id>'`. Each item carries `href` to its own page, or `inPlace: true` when the page's book scrolls to it.
 5. **List it in the sitemap.** Add a line to the static list in `src/app/sitemap.ts`. A dynamic route adds a loop over its registry, as the docs, skills, packages, posts, directions and archive do.
 6. **Update the prose that lists routes.** Edit `public/llms.txt` (Routes) and the "What is here" list in `README.md`. Edit the description and keywords in `src/app/layout.tsx` when the hub's scope changes.
-7. **Capture it.** Add `['<id>', '/<route>']` to the `routes` list in `targets()` of `scripts/capture-pages.mjs`. With the dev server on 3005, run `pnpm capture:pages --only <id>`, then `pnpm build:thumbs`, which uses `sips` and runs on macOS. Commit `public/shots/pages/<id>-light.jpg`, `public/shots/pages/<id>-dark.jpg`, `public/shots/thumb/<id>.jpg` and `public/shots/thumb/<id>-dark.jpg`.
+7. **Capture it.** Add `['<id>', '/<route>']` to the `routes` list in `targets()` of `scripts/capture-pages.mjs`. With the dev server on 3005, run `pnpm capture:pages --only <id>`, then `pnpm build:thumbs`, which uses `sips` and `cwebp` (`brew install webp`) and runs on macOS. Commit `public/shots/pages/<id>-light.jpg`, `public/shots/pages/<id>-dark.jpg`, `public/shots/thumb/<id>.webp` and `public/shots/thumb/<id>-dark.webp`.
 8. **Put it under the gates.** Add `{ id: '<id>', path: '/<route>', source: ['src/app/<route>'] }` to `pages()` in `scripts/pagecheck/pages.mjs`. For a shell route, add `{ path: '/<route>', states: ['list', 'index', 'search'] }` to `shellRoutes()` in `scripts/lint-lines.mjs` and to its usage comment. Then run the gates in section 9 of the skill on the new route.
 9. **Update the canon.** A page that adds a rule or a code area adds it to `DESIGN.md` or `ARCHITECTURE.md` in the same change.
 
@@ -23,7 +23,7 @@ A page outside the shell (`/blog`, `/present`) still takes steps 2, 3, 5 and 6 a
 3. **Its links resolve themselves.** `DOC_ROUTES` in `src/app/docs/links.ts` is built from both book registries, so a relative link from any rendered document, written the way GitHub resolves it, opens `/docs/<slug>`. A link to a file the site does not render opens it on GitHub.
 4. **Index its headings.** Add the document's h2s to `DOC_HEADINGS` in `src/lib/search-index.ts`, one `['<id>', '<title>']` per heading. The id follows `headingId`: lower case, `&` to "and", apostrophes dropped, and every other run of characters to one hyphen, so `## 2. The page check` becomes `2-the-page-check`. Renumbering a document's sections changes every id after the change, so the table changes in the same commit.
 5. **Update the prose.** Add a line to the Documents list of `public/llms.txt` and a row to the "Read first" table of `README.md`.
-6. **Capture the thumbnail.** `capture-pages.mjs` shoots every document of both books from their registries: run `pnpm capture:pages --only docs-<slug>`, then cut the thumbnail (`pnpm build:thumbs`, or its `sips` line for the one stem).
+6. **Capture the thumbnail.** `capture-pages.mjs` shoots every document of both books from their registries: run `pnpm capture:pages --only docs-<slug>`, then cut the thumbnail (`pnpm build:thumbs`).
 
 ## A handbook document
 

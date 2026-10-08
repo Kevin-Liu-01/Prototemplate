@@ -1,10 +1,10 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { memo, useRef, useState } from 'react';
 
 import type { IconName } from '@/components/viewer/icons';
 import { ToolButton } from '@/components/viewer/ToolButton';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './Seg.css';
@@ -101,7 +101,7 @@ function SegControl<T extends string>({ options, value, onChange, label, iconOnl
      not on mount, where the read would force the whole new page's style
      inside the commit (the observer below takes the first measurement) */
   const mounted = useRef(false);
-  useGSAP(
+  useLayoutWork(
     () => {
       if (!mounted.current) {
         mounted.current = true;

@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type { KeyboardEvent, MouseEvent, PointerEvent, ReactElement, ReactNode, RefObject } from 'react';
@@ -12,6 +11,7 @@ import type { ShellDensity, ShellItem, ShellMark, ShellSection, ShellShot, Shell
 import { previewId } from '@/lib/shell-data';
 import { isExternalSurface, surfaceGroups } from '@/lib/surfaces';
 import type { Surface, SurfaceGroup, SurfaceSite } from '@/lib/surfaces';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { GtMark } from './GtMark';
@@ -958,7 +958,7 @@ const Pills = memo(function Pills() {
 
 /** Creates the rail layer once the list is laid out, before paint, and destroys it on unmount. */
 const RailsLayer = memo(function RailsLayer({ list }: { list: RefObject<HTMLElement | null> }) {
-  useGSAP(
+  useLayoutWork(
     () => {
       const el = list.current;
       const rails = el ? createSidebarRails(el) : null;
@@ -1138,7 +1138,7 @@ export function Sidebar({
      asked for (pendingFocusPath names this page) puts focus back on the
      marked row, the current page's row failing that, so the arrow walk
      goes on from the list of the new page. */
-  useGSAP(
+  useLayoutWork(
     () => {
       if (!ready) return;
       const list = listRef.current;

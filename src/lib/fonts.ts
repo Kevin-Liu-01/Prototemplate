@@ -8,6 +8,11 @@ import localFont from 'next/font/local';
  * on the two resolving differently. The binding is named `ptInter` because
  * next/font names the family after the identifier, and a family named
  * `inter` matches an installed Inter (family names are case-insensitive).
+ *
+ * Only the roman is bound here, so only the roman is preloaded on every
+ * route. The italic (379K) renders on two pages, so src/app/globals.css
+ * declares it as a plain @font-face in the same ptInter family, and a
+ * browser fetches it only when italic text is on the page.
  */
 export const ptInter = localFont({
   src: [
@@ -15,11 +20,6 @@ export const ptInter = localFont({
       path: '../../public/fonts/InterVariable.woff2',
       weight: '100 900',
       style: 'normal',
-    },
-    {
-      path: '../../public/fonts/InterVariable-Italic.woff2',
-      weight: '100 900',
-      style: 'italic',
     },
   ],
   variable: '--font-inter',

@@ -1,11 +1,11 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '@/lib/cn';
 import { getSurface } from '@/lib/surfaces';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './PreviewLayer.css';
@@ -46,12 +46,14 @@ import './PreviewLayer.css';
  * Latest wins for hovers: the row under the pointer starts decoding at
  * once, at most two hover decodes are in flight, and a newer hover
  * supersedes the oldest of them (its source is cleared, which aborts the
- * fetch and settles its promise; the file is not marked broken). One
- * IntersectionObserver per scroll region (the list the rows sit in)
- * preloads the captures of rows while they are in view, one at a time in
- * the background and only while no hover decode is in flight, and again
- * for the other theme's twins when the theme changes; a hover for a
- * capture still waiting in the preload line takes it out and starts it.
+ * fetch and settles its promise; the file is not marked broken). On a
+ * device that can hover, one IntersectionObserver per scroll region (the
+ * list the rows sit in) preloads the captures of rows while they are in
+ * view, one at a time in the background and only while no hover decode is
+ * in flight, and again for the other theme's twins when the theme
+ * changes; a touch screen preloads nothing, since it opens a preview only
+ * from focus. A hover for a capture still waiting in the preload line
+ * takes it out and starts it.
  * Every queued job remembers the element that asked for it and is dropped
  * when that element has left the document (a search wiped by typing, a
  * group folded), so no fetch lands for a row nobody can see. Until an
@@ -625,7 +627,8 @@ export function PreviewLayer() {
       });
     };
     let mutations: MutationObserver | null = null;
-    if (typeof IntersectionObserver !== 'undefined') {
+    /* a touch screen never opens a preview from a pointer, so it preloads nothing */
+    if (hover && typeof IntersectionObserver !== 'undefined') {
       watch();
       /* the card's own updates (its title, its capture) never rescan the document */
       mutations = new MutationObserver((records) => {
@@ -695,7 +698,7 @@ export function PreviewLayer() {
      capture in place; a closing card keeps its capture through the fade
      out and lets it go after. Nothing here changes the frame's box, so the
      card never reflows when a capture arrives. */
-  useGSAP(
+  useLayoutWork(
     () => {
       const box = frame.current;
       if (!box) return;

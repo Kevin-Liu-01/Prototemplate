@@ -1,12 +1,12 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { useRef, useState } from 'react';
 
 import { usePtShell } from '@/components/viewer/shell-context';
 import { shellKeyRows } from '@/components/viewer/useShellKeys';
 import type { ShellKeyGroup, ShellKeyRow } from '@/components/viewer/useShellKeys';
 import type { ShellKeys } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './HelpCard.css';
@@ -50,7 +50,7 @@ export function HelpCard({ rows, note }: HelpCardProps) {
   const wasOpen = useRef(false);
   const timer = useRef(0);
 
-  useGSAP(
+  useLayoutWork(
     () => {
       window.clearTimeout(timer.current);
       if (helpOpen) {

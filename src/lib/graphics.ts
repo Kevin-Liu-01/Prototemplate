@@ -157,10 +157,10 @@ function visualEntries(visuals: readonly Visual[]): Entry[] {
   });
 }
 
-/** The three contact sheets under public/graphics/sheets. */
+/** The three contact sheets under public/graphics/sheets, lossless WebP (a PNG still reads). */
 function sheetEntries(): Entry[] {
   const dir = join(process.cwd(), 'public', 'graphics', 'sheets');
-  const files = readdirSync(dir).filter((f) => f.endsWith('.png')).sort();
+  const files = readdirSync(dir).filter((f) => /\.(webp|png)$/.test(f)).sort();
   const notes = ['areas A to D at thumbnail size', 'areas D to F', 'the covers'];
   return files.map((file, i) => {
     const src = `/graphics/sheets/${file}`;

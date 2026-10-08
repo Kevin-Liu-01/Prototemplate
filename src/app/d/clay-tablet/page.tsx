@@ -39,6 +39,7 @@ const forum = localFont({
   ],
   variable: '--clay-tablet-display',
   display: 'swap',
+  preload: false,
 });
 
 export default function ClayTabletPage() {

@@ -36,6 +36,7 @@ const display = localFont({
   ],
   variable: '--apadana-grid-display',
   display: 'swap',
+  preload: false,
 });
 
 export const metadata = {

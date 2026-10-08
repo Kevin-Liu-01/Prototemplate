@@ -21,7 +21,9 @@
  *      the capture list (scripts/capture-pages.mjs), the page check
  *      (scripts/pagecheck/pages.mjs), the line audit's shell routes
  *      (scripts/lint-lines.mjs), the sidebar's and the search's icon maps,
- *      the search keywords and the row's thumbnail under public/shots/thumb.
+ *      the search keywords and the row's WebP thumbnail under
+ *      public/shots/thumb, where no JPEG may be left (pnpm build:thumbs cuts
+ *      a capture pass's JPEGs to WebP and removes them).
  *   3. First slugs. The four regexes the gates use to find a first slug in
  *      src/lib/skills.ts, src/lib/motion.ts, src/lib/archive.ts and
  *      src/lib/directions.ts. A generator that changes its output shape
@@ -35,8 +37,9 @@
  *
  * The root defaults to the checkout this file sits in, then to the working
  * directory. Exit 0 when the hard checks pass, 1 when one fails (heading
- * drift, a page missing from the sitemap or the search icons, a broken
- * first-slug regex, a skill off its contract), 2 when a file it needs is
+ * drift, a page missing from the sitemap or the search icons, a JPEG left
+ * in public/shots/thumb, a broken first-slug regex, a skill off its
+ * contract), 2 when a file it needs is
  * missing. The other route columns are printed as notes that never fail
  * the run, because not every page belongs in every list (/present is not
  * on the shell, /blog has no thumbnail yet).
@@ -234,23 +237,27 @@ for (const row of rows) {
     keywords: hasKey(keywords, row.id) ? 'yes' : 'no',
     thumb: !row.thumb
       ? 'none'
-      : existsSync(join(ROOT, `public/shots/thumb/${row.id}.jpg`)) &&
-          existsSync(join(ROOT, `public/shots/thumb/${row.id}-dark.jpg`))
+      : existsSync(join(ROOT, `public/shots/thumb/${row.id}.webp`)) &&
+          existsSync(join(ROOT, `public/shots/thumb/${row.id}-dark.webp`))
         ? 'yes'
         : 'MISSING',
   };
   console.log(`  ${row.id.padEnd(10)} ${(row.dynamic ? '(dynamic)' : p).padEnd(10)} ${COLUMNS.map((c) => cells[c].padEnd(11)).join(' ')}`);
   if (cells.sitemap === 'NO') fail(`${row.id}: ${p} is not in src/app/sitemap.ts`);
   if (cells['search-icon'] === 'NO') fail(`${row.id}: no PAGE_ICON entry in src/lib/search-index.ts`);
-  if (cells.thumb === 'MISSING') fail(`${row.id}: surfaces.ts points at public/shots/thumb/${row.id}.jpg and -dark.jpg, which do not both exist`);
+  if (cells.thumb === 'MISSING') fail(`${row.id}: surfaces.ts points at public/shots/thumb/${row.id}.webp and -dark.webp, which do not both exist`);
 }
 note('lower-case "no" and "fallback" are notes and do not fail the run: /present is not on the shell, and a row without a sidebar icon draws the pages glyph');
 
 for (const [book, doc] of [...docs.map((d) => ['docs', d]), ...handbook.map((d) => ['handbook', d])]) {
   const stem = `${book}-${doc.slug}`;
-  if (!existsSync(join(ROOT, `public/shots/thumb/${stem}.jpg`))) {
+  if (!existsSync(join(ROOT, `public/shots/thumb/${stem}.webp`))) {
     note(`${stem}: no thumbnail; run pnpm capture:pages --only ${stem}, then cut public/shots/pages/${stem}-{light,dark}.jpg into public/shots/thumb (pnpm build:thumbs)`);
   }
+}
+const thumbJpegs = readdirSync(join(ROOT, 'public/shots/thumb')).filter((file) => /\.jpg$/i.test(file));
+if (thumbJpegs.length > 0) {
+  fail(`public/shots/thumb holds ${thumbJpegs.length} JPEG file(s) (${thumbJpegs.slice(0, 3).join(', ')}); the surfaces read WebP, so run pnpm build:thumbs, which cuts them and removes the JPEGs`);
 }
 
 /* ---- 3. first slugs ---- */

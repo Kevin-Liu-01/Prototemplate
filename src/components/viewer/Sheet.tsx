@@ -1,11 +1,11 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import type { MouseEvent, ReactNode, Ref, TouchEvent } from 'react';
 import { useRef, useState } from 'react';
 
 import { cn } from '@/lib/cn';
 import { pad2 } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { Icon } from './icons';
@@ -155,7 +155,7 @@ function FixedSheet({
     last.current = { key: itemKey, node: children };
   }
 
-  useGSAP(
+  useLayoutWork(
     () => {
       window.clearTimeout(leaveTimer.current);
       if (!leaving) return;

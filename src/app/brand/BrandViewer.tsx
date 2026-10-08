@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import type { MouseEvent, ReactNode, RefObject } from 'react';
 import { useCallback, useRef, useState } from 'react';
@@ -14,6 +13,7 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellItem, ShellMode } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { BRAND_COUNT, BRAND_SECTIONS, BRAND_SHELL_SECTIONS, headingsOf } from './brand-sections';
@@ -165,7 +165,7 @@ function BrandBook({ lead, note, updated, readingMinutes, pages, onHeading, jump
   /* the one dependency effect: when the active section changes from outside
      the book, bring it to the top. The first run is the mount, where only a
      deep link moves the book; a change the spy caused is left alone. */
-  useGSAP(
+  useLayoutWork(
     () => {
       const previous = lastActive.current;
       lastActive.current = active;

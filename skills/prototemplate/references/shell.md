@@ -181,7 +181,7 @@ Both types live in `src/lib/shell-data.ts`, which holds pure types and helpers a
 | `body[data-shell]` | set while a shell is mounted; the document does not scroll. |
 | the hash | the active item's id. |
 
-A framed page follows the parent's theme through the storage event and through `postMessage({ type: 'gt-theme', theme })`. An embedding page can freeze a frame's animation loops with `postMessage({ type: 'gt:freeze', frozen })` (the presenter's wall of live thumbnails).
+A framed page follows the parent's theme through the storage event and through `postMessage({ type: 'gt-theme', theme })`. An embedding page can freeze a frame's animation loops with `postMessage({ type: 'gt:freeze', frozen })` (the presenter's wall of live thumbnails, and `DirectionFrame` while its exhibit is off screen).
 
 ## How the sidebar builds its groups
 
@@ -195,13 +195,13 @@ A framed page follows the parent's theme through the storage event and through `
 
 ## Previews and thumbnails
 
-- Any element with `data-preview="<surface id>"` under the shell opens that surface's capture in the one hover preview (`PreviewLayer.tsx`). The layer reads the row's `shot` and `shotDark` through `getSurface(id)` in `surfaces.ts`, so the attribute must name a surface id.
-- Thumbnails are 640 by 360 JPEGs at `public/shots/thumb/<id>.jpg` and `<id>-dark.jpg`, cut by `pnpm build:thumbs` from the 1440 by 900 captures `pnpm capture:pages` writes to `public/shots/pages/<id>-light.jpg` and `-dark.jpg`. A row without a shot draws the plate with its initial.
+- Any element with `data-preview="<surface id>"` under the shell opens that surface's capture in the one hover preview (`PreviewLayer.tsx`). The layer reads the row's `shot` and `shotDark` through `getSurface(id)` in `surfaces.ts`, so the attribute must name a surface id. On a device that can hover, the layer preloads the captures of the rows in view; a touch screen preloads nothing and opens a preview only from keyboard focus.
+- Thumbnails are 640 by 360 WebP files (quality 82) at `public/shots/thumb/<id>.webp` and `<id>-dark.webp`, cut by `pnpm build:thumbs` from the 1440 by 900 captures `pnpm capture:pages` writes to `public/shots/pages/<id>-light.jpg` and `-dark.jpg`. A capture pass that writes straight into `public/shots/thumb` (the brand sections, the documents) leaves JPEGs, which `pnpm build:thumbs` cuts to WebP and removes; `check-registries.mjs` fails while a JPEG is left there. A row without a shot draws the plate with its initial.
 - `ThumbShot.tsx` carries both captures and swaps them by CSS on `data-theme`; markup never reads the theme.
 
 ## Code inside the shell
 
-- Mount-only work runs in `useMountEffect` from `src/lib/use-mount-effect.ts`, and a dependency effect runs in `useGSAP` with `dependencies`. The practices ratchet counts a bare `useEffect(` outside a file whose path contains `use-mount-effect`. The hook defers its cleanup one task because React strict mode's simulated remount removed every listener registered through it.
+- Mount-only work runs in `useMountEffect` from `src/lib/use-mount-effect.ts`, and a dependency effect runs in `useLayoutWork` from `src/lib/use-layout-work.ts` with `dependencies`: a layout effect that keeps useGSAP's timing (a returned cleanup runs on unmount, or before each rerun under `revertOnUpdate`) without loading GSAP. GSAP stays in the components that tween (the home hero, the /d sections, the craft demos). The practices ratchet counts a bare `useEffect(` outside a file whose path contains `use-mount-effect`, and fails any GSAP import under `src/components/viewer`. The hook defers its cleanup one task because React strict mode's simulated remount removed every listener registered through it.
 - Listeners registered on mount read the latest values through refs assigned on every render (`itemsRef.current = items`), as `ViewerShell.tsx` does.
 - Motion reads the `--pt-dur-*` tokens and moves transform and opacity only; the sidebar column's width is the one exception. Under reduced motion the tokens are 0ms.
 - Every `.pt-*` class is global. `.pt-row` once existed in both `prototemplate.css` and the shell's `ListRow`; grep the name before using it.

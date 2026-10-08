@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import type { RefObject } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
@@ -15,6 +14,7 @@ import { cn } from '@/lib/cn';
 import { PAGE_NAMES, pageLabel } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import type { BookId, DocPage } from './model';
@@ -428,7 +428,7 @@ function DocsBook({
 
   /* the one dependency effect: the active document changed. On mount the
      entry URL decides the scroll; after that the source decides the URL. */
-  useGSAP(
+  useLayoutWork(
     () => {
       const previous = lastActive.current;
       lastActive.current = active;
@@ -550,7 +550,7 @@ export type DocsShellProps = {
   book: BookId;
   /** the document the route names: `readme` on the book's index, the slug on <base>/[slug] */
   active: string;
-  /** from buildBook() on the server */
+  /** from buildDocs() (docs-book.ts) or buildBook() (book.tsx) on the server */
   docs: readonly DocPage[];
   /** the book's entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;

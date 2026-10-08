@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import type { ReactNode, RefObject } from 'react';
 import { useCallback, useRef } from 'react';
@@ -15,6 +14,7 @@ import type { ArchiveEntry } from '@/lib/archive';
 import { cn } from '@/lib/cn';
 import { DIRECTIONS, directionPageHref } from '@/lib/directions';
 import type { ShellItem, ShellKeysProp, ShellMode, ShellSection } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { DirectionFrame, FRAME_H, FRAME_W } from './directions/DirectionFrame';
@@ -461,7 +461,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
      the article, bring its section to the top. A change the observer caused
      is left alone; one that arrives before the first frame (the shell
      reading the hash after this mount) jumps instead of scrolling. */
-  useGSAP(
+  useLayoutWork(
     () => {
       const previous = lastActive.current;
       lastActive.current = active;

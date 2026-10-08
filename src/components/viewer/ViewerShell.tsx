@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import type { ReactNode, TouchEvent } from 'react';
 import { memo, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -16,6 +15,7 @@ import type {
 } from '@/lib/shell-data';
 import { flattenShellItems, pagedShellItems, resolveShellKeys } from '@/lib/shell-data';
 import type { SurfaceSet } from '@/lib/surfaces';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { GridView } from './GridView';
@@ -572,7 +572,7 @@ export function ViewerShell({
 
   /* the settle: one frame after the saved state is in the DOM, so the
      column transitions can never run from the server's layout */
-  useGSAP(
+  useLayoutWork(
     () => {
       if (!booted) return;
       const frame = requestAnimationFrame(() => {

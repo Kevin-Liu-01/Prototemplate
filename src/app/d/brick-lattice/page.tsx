@@ -26,6 +26,7 @@ const display = localFont({
   ],
   variable: '--brick-lattice-display',
   display: 'swap',
+  preload: false,
   adjustFontFallback: 'Times New Roman',
 });
 

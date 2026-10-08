@@ -293,15 +293,15 @@ const PAGES: readonly BrandPage[] = [
         <BrandMarkFigure />
         <div className='ptb-marks'>
           <figure className='ptb-mark is-paper'>
-            <img alt='The GT monogram in ink on paper' src='/brand/gt-logo-light.svg' />
+            <img alt='The GT monogram in ink on paper' decoding='async' loading='lazy' src='/brand/gt-logo-light.svg' />
             <figcaption>ink on paper</figcaption>
           </figure>
           <figure className='ptb-mark is-ink'>
-            <img alt='The GT monogram in paper on ink' src='/brand/gt-logo-dark.svg' />
+            <img alt='The GT monogram in paper on ink' decoding='async' loading='lazy' src='/brand/gt-logo-dark.svg' />
             <figcaption>paper on ink</figcaption>
           </figure>
           <figure className='ptb-mark is-paper'>
-            <img alt='The Locadex mark' src='/brand/locadex-mark.svg' />
+            <img alt='The Locadex mark' decoding='async' loading='lazy' src='/brand/locadex-mark.svg' />
             <figcaption>Locadex, the agent&rsquo;s own mark</figcaption>
           </figure>
         </div>
@@ -498,15 +498,10 @@ const PAGES: readonly BrandPage[] = [
         </p>
         <div className='ptb-media'>
           <figure className='ptb-shot'>
-            <video
-              aria-label='the Open Source announcement reel'
-              controls
-              height={1080}
-              playsInline
+            <BrandFilm
+              name='the Open Source announcement reel'
               poster='/media/open-source-poster.jpg'
-              preload='metadata'
               src='/media/open-source-reel.mp4'
-              width={1920}
             />
             <figcaption>
               the Open Source announcement reel&nbsp;· twelve studio materials cut on the

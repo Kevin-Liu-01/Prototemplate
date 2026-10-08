@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import type { MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
@@ -16,6 +15,7 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
 import { SKILLS, skillHref } from '@/lib/skills';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { BLOCKS, SECTIONS, capitalized, countWord, describe, installLine } from './model';
@@ -187,7 +187,7 @@ function SkillsBook({ sheetRef, jumpRef, activeOut, updated }: SkillsBookProps) 
      book, so bring its row to the read line. The first run is the mount at
      the head; the landing on a deep link is a cut, every later change moves;
      a change the spy caused is left alone. */
-  useGSAP(
+  useLayoutWork(
     () => {
       const wasLanded = landed.current;
       if (ready) landed.current = true;

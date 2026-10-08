@@ -1,9 +1,9 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { useRef } from 'react';
 
 import { usePtShell } from '@/components/viewer/shell-context';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './Progress.css';
@@ -66,7 +66,7 @@ export function Progress({ value }: ProgressProps) {
   fixedRef.current = fixed;
   /* the fill's binding to a scroll box, dropped when React owns the fraction */
   const unbindRef = useRef<() => void>(() => {});
-  useGSAP(
+  useLayoutWork(
     () => {
       if (fixed !== null) unbindRef.current();
     },

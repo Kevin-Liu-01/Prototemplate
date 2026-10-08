@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import type { MouseEvent, RefObject } from 'react';
 import { useMemo, useRef } from 'react';
@@ -16,6 +15,7 @@ import type { Block, Entry } from '@/lib/graphics-model';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { VariantFigure } from './VariantFigure';
@@ -197,7 +197,7 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
     };
   });
 
-  useGSAP(
+  useLayoutWork(
     () => {
       const wasLanded = landed.current;
       if (ready) landed.current = true;

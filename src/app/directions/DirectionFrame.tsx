@@ -1,13 +1,14 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { ThumbShot } from '@/components/viewer/ThumbShot';
 import { cn } from '@/lib/cn';
 import { directionShots } from '@/lib/directions';
 import type { Direction } from '@/lib/directions';
 import type { ShellItem } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './DirectionFrame.css';
 
@@ -32,16 +33,38 @@ export type DirectionFrameProps = {
  * and shows until the page has loaded; a new direction waits SETTLE_MS
  * before the frame takes it. The frame is keyed by its address, so a late
  * load event from a page that was skipped never marks the next one ready.
- * The gt:freeze gate the presenter uses for its wall is not needed here:
- * this is the one live frame in its stage, and it unmounts with it. The
- * theme reaches the frame through the storage event the boot script in
- * layout.tsx listens for.
+ * While the exhibit is off screen (the reader has scrolled the book past
+ * it) the frame is frozen through the gt:freeze gate in layout.tsx, the
+ * one the presenter's wall uses, and it resumes when the exhibit returns;
+ * a frame that loads off screen is frozen as it loads. The theme reaches
+ * the frame through the storage event the boot script in layout.tsx
+ * listens for.
  */
 export function DirectionFrame({ direction, item }: DirectionFrameProps) {
   const [src, setSrc] = useState<string | null>(null);
   const [ready, setReady] = useState<string | null>(null);
+  const exhibit = useRef<HTMLDivElement>(null);
+  const frame = useRef<HTMLIFrameElement>(null);
+  /* whether the exhibit is on screen, read when a frame loads */
+  const inView = useRef(true);
 
-  useGSAP(
+  /* tell the frame's rAF gate whether to run */
+  const sync = () => {
+    frame.current?.contentWindow?.postMessage({ type: 'gt:freeze', frozen: !inView.current }, window.location.origin);
+  };
+
+  useMountEffect(() => {
+    const el = exhibit.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => {
+      inView.current = entry?.isIntersecting ?? true;
+      sync();
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  });
+
+  useLayoutWork(
     () => {
       const timer = window.setTimeout(() => setSrc(`/d/${direction.slug}?chrome=0`), SETTLE_MS);
       return () => window.clearTimeout(timer);
@@ -53,15 +76,19 @@ export function DirectionFrame({ direction, item }: DirectionFrameProps) {
   const on = src !== null && ready === src;
 
   return (
-    <div className='dr-exhibit'>
+    <div className='dr-exhibit' ref={exhibit}>
       <ThumbShot item={shot} />
       {src ? (
         <iframe
           key={src}
+          ref={frame}
           className={cn('dr-frame', on && 'is-on')}
           src={src}
           title={`${shot.title}, live at ${FRAME_W} pixels wide`}
-          onLoad={() => setReady(src)}
+          onLoad={() => {
+            setReady(src);
+            sync();
+          }}
         />
       ) : null}
     </div>

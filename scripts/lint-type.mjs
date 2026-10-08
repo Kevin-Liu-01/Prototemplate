@@ -29,7 +29,11 @@
  *                  an installed family (`inter`) outside /d/ and /present/;
  *                  no identifier bound in two files outside /d/ (next/font
  *                  names the family after the identifier). /d/ is read as
- *                  warnings
+ *                  warnings. Every localFont call outside src/lib/fonts.ts
+ *                  and src/lib/brand-fonts.ts sets preload: false, /d/ and
+ *                  /present/ included: Turbopack merges @font-face rules
+ *                  into CSS chunks that other routes share, and Next
+ *                  preloads every font a route's CSS names
  *   T4 features    font-feature-settings reads var(--pt-ff-text) or
  *                  var(--pt-ff-display) (`normal` on the nameplate); both
  *                  token definitions hold 'liga' 1 and 'calt' 1
@@ -472,10 +476,14 @@ export function lintTsx(rel, source) {
 export function fontBindings(source) {
   const out = [];
   for (const m of source.matchAll(/(?:export\s+)?const\s+(\w+)\s*=\s*localFont\(/g)) {
-    out.push({ name: m[1], line: source.slice(0, m.index).split('\n').length });
+    const call = source.slice(m.index, source.indexOf('});', m.index));
+    out.push({ name: m[1], line: source.slice(0, m.index).split('\n').length, preload: !/\bpreload:\s*false\b/.test(call) });
   }
   return out;
 }
+
+/** The two files whose faces every shell route draws, so their preloads stay (the roman Inter and the nameplate). */
+const PRELOADED_FONTS = new Set([PATHS.fonts, 'src/lib/brand-fonts.ts']);
 
 /** Families installed on designers' machines that a next/font identifier must not take (next/font names the family after it). */
 const INSTALLED = new Set(['inter', 'arial', 'helvetica', 'georgia', 'times', 'menlo', 'roboto']);
@@ -489,6 +497,11 @@ export function lintBindings(files) {
   const warnings = [];
   const seen = new Map();
   for (const [rel, source] of files) {
+    if (!PRELOADED_FONTS.has(rel)) {
+      for (const { name, line, preload } of fontBindings(source)) {
+        if (preload) problems.push({ file: rel, line, rule: 'T3', message: `next/font binding ${name} is preloaded on every route that shares its CSS chunk; set preload: false` });
+      }
+    }
     const allow = allowedFile(rel);
     if (allow && allow.t3 === 'skip') continue;
     const warn = allow?.t3 === 'warn';

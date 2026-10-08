@@ -279,9 +279,12 @@ inside the list that marks the place, never a page rail.
 
 ### Book type
 
-The shell's type is one family, the rsms InterVariable (v4.1) through
-next/font, bound as `ptInter` in `src/lib/fonts.ts` so its family name
-matches no installed Inter. Every stylesheet reads the type tokens of
+The shell's type is one family, the rsms InterVariable (v4.1). The roman
+comes through next/font, bound as `ptInter` in `src/lib/fonts.ts` so its
+family name matches no installed Inter, and every route preloads it. The
+italic is a plain `@font-face` in the same `ptInter` family in
+`src/app/globals.css`, fetched only where italic text renders. Any other
+`localFont` call sets `preload: false` (`pnpm lint:type`, T3). Every stylesheet reads the type tokens of
 `src/components/viewer/tokens.css` and declares no family, feature list or
 display size of its own. The /d/ directions keep their own type.
 

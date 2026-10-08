@@ -36,7 +36,14 @@ const found = {
   'rail-outer-token': [],
   'retired-rail-vocabulary': [],
   'border-image-none': [],
+  'gsap-in-shell': [],
 };
+
+/* The shell (src/components/viewer) loads on every route and never tweens:
+   its dependency work runs in useLayoutWork (src/lib/use-layout-work.ts),
+   so GSAP's 71K reaches only the routes that animate with it. */
+const SHELL_DIR = 'src/components/viewer/';
+const GSAP_IMPORT = /\bfrom\s+['"](?:gsap|@gsap\/react)(?:\/[^'"]*)?['"]/;
 
 /* DESIGN.md section 3: one rail each side, drawn once by the column's own
    border-inline. Three checks keep the retired second pair from coming
@@ -108,6 +115,8 @@ for (const file of files) {
         found['bare-useEffect'].push(`${rel}:${i + 1}`);
       if (/:\s*any\b|\bas any\b/.test(line))
         found['any-type'].push(`${rel}:${i + 1}`);
+      if (rel.startsWith(SHELL_DIR) && GSAP_IMPORT.test(line))
+        found['gsap-in-shell'].push(`${rel}:${i + 1}`);
       if (/['"`(]#[0-9a-fA-F]{6}\b/.test(line))
         found['raw-hex-in-tsx'].push(`${rel}:${i + 1}`);
       if (/calc\(min\(var\(--tc-rail\),\s*100%\)\s*\+/.test(line))

@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 
@@ -15,6 +14,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { toggleFullscreen } from '@/components/viewer/useShellKeys';
 import { MODE_ORDER, pad2, previewId } from '@/lib/shell-data';
 import type { ShellMark, ShellMode } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './Toolbar.css';
@@ -282,7 +282,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   });
 
   /* and before paint when what the bar holds changes shape */
-  useGSAP(
+  useLayoutWork(
     () => {
       const el = bar.current;
       if (el) setTight(fitLabels(el));
