@@ -1,11 +1,9 @@
-# The Brand
+# Brand
 
 General Translation's identity, laid out for anyone who has to build with
 it, including our partners at basement studio. This document is the written
-canon. The living version is the [`/brand`](./BRAND.md) page, the visual
-laws live in [`DESIGN.md`](./DESIGN.md), and the completed reference
-application is the **Dossier** (`/d/singularity-dossier`). Treat the
-Dossier as the finished statement of this identity, not a concept.
+canon. The living version is the [`/brand`](./BRAND.md) page, and the visual
+laws live in [`DESIGN.md`](./DESIGN.md).
 
 ---
 
@@ -132,9 +130,9 @@ Rules:
   so the shape takes the surface's ink; the sanctioned flourish is the
   Bayer-dithered specular shimmer (`DitheredMark`), never a GIF, never a
   filter glow.
-- At text size, the wordmark sits inline with prose (the hero's
-  "GT builds full-stack infrastructure…" pattern) at the cap height of the
-  line it lives in.
+- At text size, the wordmark sits inline with prose at the cap height of
+  the line it lives in, as in the generaltranslation.com hero's "GT builds
+  full-stack localization for apps, docs, and websites".
 - **The identity must survive compression:** a favicon, a CLI banner, a
   README, a syntax-highlighted code block. Developers meet the brand in a
   terminal as often as on a website.
@@ -193,15 +191,30 @@ Writing systems are the raw material the brand keeps returning to:
 
 All of them run live on `/craft` with their APIs.
 
-## 8. The completed reference
+## 8. Where it ships
 
-**The Dossier** (`/d/singularity-dossier`, with `/enterprise`) is the
-completed version of this identity in application: the belt-driven
-morphing headline, the translate window, the stack tower with the
-Locadex shimmer, the edge globe with its dithered atmosphere, the four-color
-dark band. When in doubt about how the brand behaves in product, the
-Dossier is the answer. The other directions are the working record of how
-we got there.
+The identity is applied on four kinds of surface today.
+
+- **The site.** Marketing pages ship on generaltranslation.com, built in
+  gt-cloud's `apps/landing`. The production landing page (gt-cloud #4213)
+  has been canonical for the site since 2026-08-11.
+- **Product surfaces.** The dashboard, onboarding, the sign-in plate and
+  the Prototemplate shell have followed the brand deck (`/deck`) since
+  2026-09-25.
+- **Motion.** The films on `/motion` apply the identity to film: the blog
+  trailers, the product films and the translation-history series.
+- **The marks.** The speed marks chosen on 2026-09-29 (`/marks`) sit
+  beside the doubled-line monogram, which stays the current mark
+  (section 4). The title badges in the `/brand` and `/marks` heads cycle
+  through a selection of the marks on `/marks`.
+
+When in doubt about how the brand behaves, read the shipped surface the
+work belongs to.
+
+The site grew from the direction of the **Dossier**
+(`/d/singularity-dossier`). It stays in the gallery with the other
+directions as the working record of how we got there. From 2026-08-06 to
+2026-10-07 this section named it the completed reference for the brand.
 
 ## 9. Context for partners
 

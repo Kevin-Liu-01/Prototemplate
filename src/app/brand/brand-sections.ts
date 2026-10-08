@@ -90,9 +90,10 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
     headings: [],
   },
   {
+    /* the anchor keeps its first name so links and the section captures still resolve */
     id: 'the-completed-reference',
-    title: 'The completed reference',
-    desc: 'The Dossier as the finished application of the system.',
+    title: 'Where it ships',
+    desc: 'Where the identity ships today: the site, the product surfaces, the films and the marks.',
     source: 'BRAND.md part 8',
     headings: [],
   },

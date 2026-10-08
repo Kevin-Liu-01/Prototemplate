@@ -1,4 +1,4 @@
-# The Design System
+# Design system
 
 The canon for every page in `apps/redesign` — the laws the sixteen directions
 run on, distilled from the founder rounds. The `/craft` page is the living

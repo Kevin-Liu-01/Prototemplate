@@ -1,4 +1,4 @@
-# The graphics pipeline
+# Graphics pipeline
 
 How the illustrations for the General Translation blog are made, from the
 brief to the carousel, with the toolchain that lives in `graphics/`. It

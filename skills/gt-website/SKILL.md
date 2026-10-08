@@ -9,13 +9,13 @@ description: >-
   on any page, doc, blog post, route or build of the GT website, together
   with gt-cloud's own gt-landing skill, which owns the file map.
 metadata:
-  title: The GT website
+  title: GT website
   areas: website
-  updated: 2026-10-05
+  updated: 2026-10-07
   origin: prototemplate
 ---
 
-# The GT website
+# GT website
 
 General Translation (GT) is an internationalization platform for developers: open-source SDKs (`gt-next`, `gt-react` and others), the `gt` CLI, AI translation, the Locadex coding agent and CDN delivery of translations (as `/llms.txt` on the site describes it). Its website, generaltranslation.com, is the Next.js app in `apps/landing` of the private gt-cloud monorepo (`generaltranslation/gt-cloud`). It serves the marketing pages, the documentation on Fumadocs and the blog, and Vercel deploys it from gt-cloud's main branch. This skill records how Kevin builds and changes it: where each part lives, the rules each part follows, the traps met in 2026, and the checks a change passes before its pull request.
 

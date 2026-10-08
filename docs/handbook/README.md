@@ -2,7 +2,7 @@
 
 This handbook records how Kevin Liu runs his work at General Translation (GT), a localization platform for developers. It is written for the agents and people who work with him: Claude Code and Codex sessions, teammates, and anyone who copies this repository into another project to work the same way. The [skills](../../skills/README.md) hold the procedures for each area of the work. The handbook holds what spans them: the standing principles, the bar for done, the rules for running many sessions at once, the product facts, the vocabulary and the dated rulings.
 
-The handbook is served at prototemplate.com/handbook, and the files live in `docs/handbook/` of the public repository.
+The handbook is served at /handbook on each of the site's three addresses (www.prototemplate.com, prototemplate.vercel.app and prototemplate.kevinliu.studio), and the files live in `docs/handbook/` of the public repository.
 
 ## The documents
 

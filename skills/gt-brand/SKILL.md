@@ -11,13 +11,13 @@ description: >-
   image), when choosing a face, weight, tracking or color, when placing a GT
   mark or a third-party logo, and when reviewing a surface against the brand.
 metadata:
-  title: The brand and the correct Inter
+  title: Brand and the correct Inter
   areas: aesthetic
-  updated: 2026-10-06
+  updated: 2026-10-07
   origin: prototemplate
 ---
 
-# The brand and the correct Inter
+# Brand and the correct Inter
 
 General Translation (GT) builds open-source i18n libraries (`gt` and the framework packages such as `gt-next`) and a closed translation platform with an AI agent, Locadex. Its identity is written in Prototemplate's BRAND.md and DESIGN.md and drawn in the brand deck (`deck/parts/head.html` and `deck/slides/`). This skill states those documents as rules for anything that carries the GT brand. Type gets the most room, because the one face is the real rsms InterVariable and nearly every type defect Kevin has flagged came from settings layered on that face.
 
@@ -65,7 +65,7 @@ The voice is measured, declarative and precise. BRAND.md section 3 gives the pai
 
 Deck slide 12 states the five rules: one claim per sentence; a number or a mechanism where a marketing adjective would go; no hedging; no exclamation marks and no em dashes; sentence case everywhere and Title Case only on buttons. The full writing rules are in `gt-voice`.
 
-For product surfaces, Kevin judges the result against the brand deck (Kevin, 2026-09-25, on the first dashboard pass: "it does not feel like our style and is too busy"). BRAND.md section 8 still calls the Dossier (`/d/singularity-dossier`) the completed reference application of the identity. On 2026-10-06 Kevin asked why the Dossier was the reference for the brand, since the brand has "evolved so much more since then"; the section waits for his decision, and no page presents the Dossier as the brand's current reference (`gt-aesthetic` `references/verdicts.md`).
+For product surfaces, Kevin judges the result against the brand deck (Kevin, 2026-09-25, on the first dashboard pass: "it does not feel like our style and is too busy"). For the site, the reference is the shipped generaltranslation.com, built from `apps/landing` in gt-cloud (`gt-aesthetic` section 1). On 2026-10-06 Kevin asked why the Dossier (`/d/singularity-dossier`) was the reference for the brand, since the brand has "evolved so much more since then", and on 2026-10-07 he ruled "fix the dossier references". BRAND.md section 8 now names where the identity ships, and the Dossier stays in the gallery as the direction the site grew from (`gt-aesthetic` `references/verdicts.md`).
 
 ## 3. Color
 
@@ -253,7 +253,7 @@ General skills in Kevin's wiki that this one depends on: `design-engineering-pol
 
 ## Sources
 
-- Prototemplate: BRAND.md sections 1 to 9 (the name, the idea, the character and voice, the mark, color, type, language as material, the completed reference, the context for partners and the final avoid list).
+- Prototemplate: BRAND.md sections 1 to 9 (the name, the idea, the character and voice, the mark, color, type, language as material, where it ships, the context for partners and the final avoid list).
 - Prototemplate: DESIGN.md sections 1 (the four-color system), 4 (voices), 5 (the doubled line), 7 (the Bayer language), 8 (the moving type law), 12 (the mobile type ladder) and 15 (chrome exceptions).
 - Prototemplate: `deck/parts/head.html` (tokens, the type rules at lines 55 to 69, the GT word at 74 to 78, the book head at 279 to 293, semantic icon hues at 113 to 125) and `deck/DECK-GRAMMAR.md` (type, color, speed marks, defects).
 - Prototemplate: deck slides 12 (voice), 15 (naming), 16 (the mark), 25 (small sizes), 26 (color), 27 (type), 28 (scripts), 29 (the ladder), 36 (language as material), 39 (anti-patterns), 93 (fixed points).
@@ -268,5 +268,5 @@ General skills in Kevin's wiki that this one depends on: `design-engineering-pol
 - Kevin, 2026-09-25: the dashboard verdict ("kerning needs to be adjusted"), the deck as the standard, and the tracking ladder measured from the deck and the landing.
 - Kevin, 2026-09-18: "change switzer to inter everywhere" (gt-cloud PR 4887).
 - Kevin, 2026-08-11: the final basement questionnaire and its avoid list; zero em dashes in rendered prose.
-- Kevin, 2026-08-06: the Dossier (`/d/singularity-dossier`) is the completed reference; sensitive questionnaire facts stay off the public site. Kevin, 2026-10-06: the brand has evolved past the Dossier, and BRAND.md section 8 waits for his decision.
+- Kevin, 2026-08-06: the Dossier (`/d/singularity-dossier`) is the completed reference; sensitive questionnaire facts stay off the public site. Kevin, 2026-10-06: the brand has evolved past the Dossier, and BRAND.md section 8 waited for his decision. Kevin, 2026-10-07: "fix the dossier references"; the shipped site is the site's reference, and the Dossier is the direction it grew from.
 - Third-party material: Kevin, 2026-08-05 (the gray customer logo), 2026-09-25 (the licence), 2026-10-02 (never privatize the repository); `LICENSE`, `public/media/README.md`, `public/fonts/google/README.md`.

@@ -19,7 +19,7 @@ export const DOCS: readonly DocEntry[] = [
     file: 'BRAND.md',
     title: 'Brand',
     blurb:
-      'The identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and the Dossier as the completed reference.',
+      'The identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and where the identity ships.',
   },
   {
     slug: 'design',

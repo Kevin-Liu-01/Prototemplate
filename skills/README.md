@@ -16,7 +16,7 @@ The curated skills of Prototemplate, Kevin Liu's hub for General Translation (GT
 
 | Skill | Title | What it is | Also in |
 | --- | --- | --- | --- |
-| [`gt-website`](gt-website/SKILL.md) | The GT website | How generaltranslation.com is built and changed in gt-cloud's apps/landing. |  |
+| [`gt-website`](gt-website/SKILL.md) | GT website | How generaltranslation.com is built and changed in gt-cloud's apps/landing. |  |
 | [`prototemplate`](prototemplate/SKILL.md) | Working in Prototemplate | How to work in Prototemplate, Kevin's hub and wiki for General Translation work. | Components |
 | [`gt-performance`](gt-performance/SKILL.md) | Performance without visual loss | How General Translation keeps visual surfaces fast with no change to how they look. | Landing pages, Motion |
 
@@ -24,15 +24,15 @@ The curated skills of Prototemplate, Kevin Liu's hub for General Translation (GT
 
 | Skill | Title | What it is | Also in |
 | --- | --- | --- | --- |
-| [`gt-landing-pages`](gt-landing-pages/SKILL.md) | The landing page grammar | The page grammar for General Translation landing and marketing pages. | Aesthetic |
+| [`gt-landing-pages`](gt-landing-pages/SKILL.md) | Landing page grammar | The page grammar for General Translation landing and marketing pages. | Aesthetic |
 
 ## Aesthetic
 
 | Skill | Title | What it is | Also in |
 | --- | --- | --- | --- |
 | [`gt-aesthetic`](gt-aesthetic/SKILL.md) | Taste and the review standard | Kevin's taste for General Translation work and the review he applies to it. | Website, Landing pages, Components |
-| [`gt-brand`](gt-brand/SKILL.md) | The brand and the correct Inter | The General Translation identity as rules. |  |
-| [`gt-deck`](gt-deck/SKILL.md) | The brand deck | How the General Translation brand deck in Prototemplate's deck/ folder is built and edited. | Graphics |
+| [`gt-brand`](gt-brand/SKILL.md) | Brand and the correct Inter | The General Translation identity as rules. |  |
+| [`gt-deck`](gt-deck/SKILL.md) | Brand deck | How the General Translation brand deck in Prototemplate's deck/ folder is built and edited. | Graphics |
 | [`gt-explorations`](gt-explorations/SKILL.md) | Exploration rounds and convergence | How a General Translation design exploration runs from research to one landed design. | Website, Landing pages, Graphics |
 
 ## Lints

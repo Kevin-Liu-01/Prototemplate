@@ -3,8 +3,10 @@
 // page renders, from the motion folder: the roster in motion/MOTION.md (its
 // "## The films" section, one "### <slug>: <title> (<length>)" entry per
 // film) and the package in motion/films/<slug>/BRIEF.md of every film that
-// has one. A film with a BRIEF.md belongs to the translation series; the
-// rest are the roster's other films, kept in roster order.
+// has one. A film whose BRIEF.md opens with "# Brief: <slug>" (the package
+// format) belongs to the translation series; a production brief, such as
+// slash-partnership's "# slash-partnership: the brief", does not. The rest
+// are the roster's other films, kept in roster order.
 //
 // Each film's status is read from the files, never written by hand: a film
 // is rendered when its final render exists (a published copy under
@@ -328,7 +330,8 @@ function scriptOf(file) {
     if (cells.length !== 4) fail(`${where}: table row ${rows.length + 1} has ${cells.length} cells, not 4`);
     if (!SCRIPT_TIME.test(cells[0])) fail(`${where}: table row ${rows.length + 1} starts at "${cells[0]}", not m:ss.cc`);
     if (rows.length > 0 && timeOf(cells[0]) <= timeOf(rows[rows.length - 1][0])) fail(`${where}: table row ${rows.length + 1} does not start after the row before it`);
-    if (!cells[1] || !cells[2]) fail(`${where}: table row ${rows.length + 1} has no voice or no line`);
+    /* a silent row (an end card) reads "No voice" and may leave its line empty */
+    if (!cells[1] || (!cells[2] && !/^no voice$/i.test(cells[1]))) fail(`${where}: table row ${rows.length + 1} has no voice or no line`);
     rows.push(cells);
   }
   if (rows.length === 0) fail(`${where} has an empty table`);
@@ -712,7 +715,7 @@ for (const entry of rosterEntries()) {
   const { slug } = entry;
   const folder = join(MOTION, 'films', slug);
   const brief = join(folder, 'BRIEF.md');
-  const series = existsSync(brief);
+  const series = existsSync(brief) && /^# Brief: /.test(readFileSync(brief, 'utf8'));
   const title = entry.heading ? capitalize(entry.heading.trim()) : capitalize(slug);
 
   let length = entry.paren;

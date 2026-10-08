@@ -1,4 +1,4 @@
-# The Ship Loop
+# Ship loop
 
 The verify-and-ship procedure every round of work on `apps/redesign` runs
 before it lands. Nothing ships on faith: the auditor, the type checker, the

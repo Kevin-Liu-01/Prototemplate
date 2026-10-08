@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Isometric drawings
   areas: isometry, diagrams
-  updated: 2026-10-05
+  updated: 2026-10-07
   origin: prototemplate
 ---
 
@@ -261,7 +261,7 @@ GT skills in this set: `gt-diagrams` (the doubled-line connector and flat diagra
 ## Sources
 
 - Prototemplate: DESIGN.md sections 2 (the line law and the auditor's blind spot for SVG), 6 (the isometric family), 7 (the 1-bit language), 9 (motion discipline and the dash rules) and 14 (the two read lines).
-- Prototemplate: BRAND.md section 4 (marks as alpha masks, the shimmer as the one flourish), section 5 (the accent and its dark-band lift), section 8 (the Dossier, `/d/singularity-dossier`, as the completed reference) and section 9 (the direction line and the avoid list, including glassmorphism).
+- Prototemplate: BRAND.md section 4 (marks as alpha masks, the shimmer as the one flourish), section 5 (the accent and its dark-band lift), section 8 (where the identity ships, with the Dossier, `/d/singularity-dossier`, as the direction the site grew from) and section 9 (the direction line and the avoid list, including glassmorphism).
 - Prototemplate: `src/app/d/toolchain/diagrams/iso.ts`, `IsoSolid.tsx`, `IsoFrame.tsx`, `iso.css`, `DitheredMark.tsx` and `tc-stack-iso.tsx`.
 - Prototemplate: `src/app/d/_v0/sections/Locadex.tsx`, `locadex.css`, `StackTower.tsx`, `FullStack.tsx` and `fullstack.css`; the production copies in `src/app/d/production/sections/`.
 - Prototemplate: `src/app/d/toolchain/enterprise/GovernedColumn.tsx`, `src/app/d/toolchain/locadex/LocadexIso.tsx`, `src/app/craft/IsoDemo.tsx`, `src/app/craft/craft.css` and `src/app/craft/libraries.ts` (the kit entry shown on /docs).

@@ -541,30 +541,10 @@
   color: var(--pt-ink-2);
 }
 
-/* ---------- the completed reference ---------- */
-
-.ptb-shots {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  max-width: 1000px;
-  margin-top: 20px;
-}
+/* ---------- made with the system: the artwork ---------- */
 
 .ptb-shot {
   margin: 0;
-}
-
-/* the reference captures share one 16:10 crop; the artwork below keeps its own ratio */
-.ptb-shots .ptb-shot img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  object-position: top;
-  border: 1px solid var(--pt-hair);
-  border-radius: var(--pt-radius-card);
-  background-clip: padding-box;
 }
 
 .ptb-shot figcaption {
@@ -703,7 +683,6 @@
 @media (max-width: 760px) {
   .ptb-marks,
   .ptb-type,
-  .ptb-shots,
   .ptb-globes,
   .ptb-brief {
     grid-template-columns: minmax(0, 1fr);

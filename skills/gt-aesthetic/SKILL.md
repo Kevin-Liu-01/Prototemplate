@@ -3,24 +3,24 @@ name: gt-aesthetic
 description: >-
   Kevin's taste for General Translation work and the review he applies to it.
   The brand deck (deck/parts/head.html and DECK-GRAMMAR.md) is the reference
-  for product surfaces and the Dossier is the reference for the site. Covers
-  contrast and hierarchy, the rhythm numbers, single lines whose weight
-  carries meaning, one material per surface, type polish for heads and leads,
-  the dated record of what Kevin rejected and why, and the review loop of one
-  exemplar, a local review, then landing, with a script that measures a
-  page's heads and leads. Use when designing or polishing any GT surface,
-  when Kevin says something looks bad, busy or ugly, and before showing him
-  design work.
+  for product surfaces and the shipped generaltranslation.com is the
+  reference for the site. Covers contrast and hierarchy, the rhythm numbers,
+  single lines whose weight carries meaning, one material per surface, type
+  polish for heads and leads, the dated record of what Kevin rejected and
+  why, and the review loop of one exemplar, a local review, then landing,
+  with a script that measures a page's heads and leads. Use when designing
+  or polishing any GT surface, when Kevin says something looks bad, busy or
+  ugly, and before showing him design work.
 metadata:
   title: Taste and the review standard
   areas: aesthetic, website, landing, components
-  updated: 2026-10-06
+  updated: 2026-10-07
   origin: prototemplate
 ---
 
 # Taste and the review standard
 
-General Translation (GT) builds open-source i18n libraries and a translation platform. Kevin Liu reviews its design work, and he judges every GT surface against two finished references: the brand deck for product surfaces and the Dossier for the site. This skill records what those references measure, the verdicts he has given with their dates, and the loop in which he reviews work. Read it before designing a GT surface and again before showing him the result.
+General Translation (GT) builds open-source i18n libraries and a translation platform. Kevin Liu reviews its design work, and he judges every GT surface against two finished references: the brand deck for product surfaces and the shipped generaltranslation.com for the site. This skill records what those references measure, the verdicts he has given with their dates, and the loop in which he reviews work. Read it before designing a GT surface and again before showing him the result.
 
 Paths are relative to a checkout: `$PROTOTEMPLATE` is Prototemplate (Kevin's design lab, served at prototemplate.com) and `$GT_CLOUD` is gt-cloud (the monorepo of the GT site, docs and dashboard). Read gt-cloud facts from `origin/main` or a fresh worktree, because a long-lived checkout can sit on an old branch. `references/verdicts.md` holds every dated verdict in Kevin's words, `references/measures.md` holds the numbers of each reference, and `scripts/measure-type.mjs` reads the heads and leads of any page.
 
@@ -31,13 +31,13 @@ Every surface has one governing reference, and its values are measured before an
 | Surface | Reference | Where it lives |
 | --- | --- | --- |
 | Product surfaces: the dashboard, onboarding and the auth plate, the Prototemplate shell and its pages, the deck itself | The brand deck | `$PROTOTEMPLATE/deck/parts/head.html` (tokens and CSS), `deck/DECK-GRAMMAR.md` (rules), `/deck` on the dev server |
-| The site: generaltranslation.com, landing and marketing pages | The Dossier | `$PROTOTEMPLATE/src/app/d/singularity-dossier`, served at `/d/singularity-dossier` with its `/enterprise`; BRAND.md section 8 |
+| The site: generaltranslation.com, landing and marketing pages | The shipped site | `$GT_CLOUD/apps/landing` on `origin/main`, served at generaltranslation.com; Prototemplate's page-for-page copy at `/d/production`; BRAND.md section 8 |
 | Enterprise and pricing pages | The toolchain prototypes | `/d/toolchain/enterprise` and `/d/toolchain/pricing`, copy included, word for word |
 | Page content | Production | the current generaltranslation.com page components on gt-cloud `origin/main` |
 | Material on a product surface | The landing hero's field | the studio's bayer-8x8 preset through `createStudioField` in `$GT_CLOUD/apps/landing/src/lib/studio-field.ts`, mounted by `HeroField.tsx` (`references/measures.md`) |
 | Dithered pictures | The Blue Marble | `$PROTOTEMPLATE/docs/ARTIFACT-PICTURES.md` |
 
-Kevin named both references. On the deck: "i really love our deck's navigation and basic interface" (2026-09-08), and on 2026-09-25 he answered the first dashboard pass with the deck's URL. On the Dossier: "dossier is indeed our completed version and treat it as such" (2026-08-06). BRAND.md section 8 (last edited 2026-09-09) still names the Dossier as the answer for "how the brand behaves in product". The later verdicts on the deck viewer (2026-09-08) and the dashboard (2026-09-25) set the deck for product surfaces, and they win.
+Kevin named the deck as a reference: "i really love our deck's navigation and basic interface" (2026-09-08), and on 2026-09-25 he answered the first dashboard pass with the deck's URL. From 2026-08-06 the site's reference was the Dossier (`/d/singularity-dossier`): "dossier is indeed our completed version and treat it as such". On 2026-10-06 he asked "why is the dossier the reference for Brand? its evolved so much more since then", and on 2026-10-07 he ruled "fix the dossier references". The shipped site grew from the Dossier's direction: gt-cloud #4213 built the production landing from it, and that landing became canonical for the redesign stack on 2026-08-11. Since then the identity has added the deck as the reference for product surfaces (2026-09-25), the speed marks (2026-09-29), the films on `/motion` and the cycling title badges. BRAND.md section 8 now names where the identity ships, and the Dossier stays in the gallery as the direction the site grew from.
 
 ### Measuring the reference
 
@@ -79,6 +79,7 @@ Each row is a verdict on real work and the rule it set. The full wording and con
 | 2026-09-30 | Two gaps evened at the smaller 10px | Matching measures both take the larger one |
 | 2026-10-05 | Pictures of plain English prose ("never distract with text on the artifacts") | The dictionary pictures are retired and the picture lint rejects them |
 | 2026-10-05 | Book heads with a seven-line lead and a floating subtitle | A lead of two or three lines at 60 to 70 characters, the rest in the body |
+| 2026-10-07 | The Dossier named as the reference for the brand and the site, after the brand had moved past it | The shipped site is the reference for landing and marketing pages, and the Dossier stays in the gallery as the direction the site grew from |
 
 ## 3. What reads as GT
 
@@ -193,7 +194,7 @@ Kevin's ask on 2026-09-28 was "make our spacing a lot better, kerning a lot bett
 - "Equivalent" or "equal" means both measures take the larger value (2026-09-30).
 - "Keep its aesthetic" means the geometry and the material stay and only the named thing changes.
 - "Smaller" or "larger" means the next rung of the existing ladder. The 13px card facts went to the 12px rung (2026-09-28).
-- "Make it look better" with a reference attached means measure the reference and match it. Without one, the reference is the deck or the Dossier.
+- "Make it look better" with a reference attached means measure the reference and match it. Without one, the reference is the deck for a product surface and the shipped site for a landing or marketing page.
 - "Fix this" on one instance means the whole class: find every member, fix it and report the count (`docs/handbook/operating-principles.md` rule 5).
 - "Redesign" means visibly new. A change that keeps the old shape comes back as not done (`gt-explorations` section 2).
 - "Remove this" takes the smallest reading, then re-checks the neighbors.
@@ -212,7 +213,7 @@ The wiki's general design skills stay useful, and where they disagree with a ver
 
 - `design-engineering-polish` gives the animation decision framework, easing and duration choices, the Before, After and Why table for reviews, and signature-first exploration for a round of new directions. Its rule to reject disguised duplicates matches the deco verdict. In GT work, product pages have no entrance animation, motion moves transform and opacity only at the shell's 120 to 220ms durations, and reduced motion renders a designed still (`gt-motion`).
 - `make-interfaces-feel-better` applies as written for tabular numbers, balanced heads and pretty body text, antialiased smoothing, 44px touch and 40px desktop hit areas, the state matrix, exact transition properties and sparing `will-change`. Five of its rules do not apply to GT work. GT draws no shadows for elevation and never replaces a border between sections with a shadow, because lines carry the structure. Its concentric radii apply to the controls: a part flush inside a 6px control takes 5px (`--pt-radius-inner`). Product pages have no staggered entrances. The shell shows a press as the ink border of `.is-on`, with no scale and no blurred icon swap. A picture's frame is a 1px border in the `edge` role (ink at 62%), which is heavier than the low-opacity outline that skill suggests.
-- `taste`, `frontend-design`, `frontend-design-taste` and `web-design-guidelines` are general references. Kevin's GT taste is the deck, the Dossier and the verdicts here.
+- `taste`, `frontend-design`, `frontend-design-taste` and `web-design-guidelines` are general references. Kevin's GT taste is the deck, the shipped site and the verdicts here.
 - `animated-component-libraries` finds sources for components. Anything sourced is restyled to the tokens and passes this review.
 
 ## Review checklist
@@ -253,3 +254,4 @@ Built from the deck's defect list (DECK-GRAMMAR.md, "What a defect is") and Kevi
 - Kevin's wiki, whose skills load from `~/.claude/skills`: `skills/engineering/design-engineering-polish/SKILL.md` and `references/signature-first-exploration.md`; `skills/engineering/make-interfaces-feel-better/SKILL.md`.
 - Kevin's taste rules on voids, density, optical placement, attached edges and one component across modes: 2026-07-31, 2026-08-05, 2026-08-07, 2026-08-12, 2026-08-13, 2026-08-17 and 2026-10-05, from his messages to Claude Code and Codex; the radius law and the book page standard (2026-10-05 and 2026-10-06, `references/verdicts.md`).
 - Kevin's dated directives (2026-08-04, 08-06, 08-11, 08-12, 08-17, 08-26, 09-04, 09-08, 09-09, 09-14, 09-18, 09-25, 09-28, 09-29, 09-30, 10-05), quoted in `references/verdicts.md`, checked against his Claude Code session transcripts on 2026-10-05, and recorded in his gt-cloud memory notes `dashboard-deck-grammar`, `redesign-v0-verdict`, `k-pages-restart-round`, `brand-questionnaire-directives`, `variants-program-state`, `deco-exploration-round`, `explorations-stay-local`, `signin-field-transition`, `prototemplate-interface-system`, `artifact-picture-standard`, `plain-technical-english`, `landing-inter-only`, `mobile-type-ladder`, `page-check-system`, `redesign-screenshot-harness` and `pr-screenshots-and-gallery`.
+- Kevin, 2026-10-07: "fix the dossier references" (`references/verdicts.md`). gt-cloud #4213 built the production landing from the Dossier, and the redesign stack took that landing as canonical on 2026-08-11 (`docs/handbook/decisions.md`).

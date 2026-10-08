@@ -174,13 +174,19 @@ This is the record of Kevin's design verdicts on General Translation work, oldes
 - What was wrong: the Brand head's panel named the Dossier as the brand's reference, and the lead called it the completed reference application.
 - The rule since: the Brand panel shows a reading time like the other pages, and no page presents the Dossier as the current reference for the brand. BRAND.md section 8 ("The completed reference") waits for Kevin's decision.
 
+## 2026-10-07: the Dossier references
+
+- Kevin: "fix the dossier references."
+- What was wrong: after the 2026-10-06 verdict, `gt-aesthetic` section 1 still named the Dossier as the reference for the site, and BRAND.md section 8, the other GT skills and the handbook still presented it as the completed reference.
+- The rule since: the shipped site is the reference for landing and marketing pages. It is generaltranslation.com, built from `apps/landing` on gt-cloud origin/main. gt-cloud #4213 built the production landing from the Dossier's direction, and that landing became canonical for the redesign stack on 2026-08-11. The identity now covers more than the Dossier shows: product surfaces follow the brand deck (2026-09-25), and the identity includes the speed marks (2026-09-29), the films on `/motion` and the cycling title badges. BRAND.md section 8 names where the identity ships. The Dossier (`/d/singularity-dossier`) stays in the gallery as the direction the site grew from, which settles the decision the 2026-10-06 entry left open.
+
 ## What he approved
 
 These are the pieces Kevin praised, and they set the bar for new work of the same kind.
 
 - The Locadex isometric animation (2026-08-04).
 - The pricing page's isometric diagrams, and the enterprise page's diagrams, which he called better than the rest of that round (2026-08-11).
-- The Dossier as the completed direction (2026-08-06).
+- The Dossier as the completed direction (2026-08-06). Since 2026-10-07 it is the direction the site grew from, and the shipped site is the reference.
 - The brand deck's viewer and interface (2026-09-08), now the Prototemplate shell.
 - The landing hero's dither field (2026-09-25).
 - The Blue Marble on the onboarding field as the picture standard (2026-10-05).

@@ -1,4 +1,4 @@
-# The Libraries
+# Libraries
 
 The index of the componentized instruments. The living version — bodies,
 live plates, and API snippets — is the `/craft` page ("The libraries"

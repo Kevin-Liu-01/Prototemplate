@@ -1,20 +1,19 @@
-Jihe yuanben 幾何原本 (motion/films/jihe-yuanben), 100 s, 1920 x 1080.
+Jihe yuanben 幾何原本 (motion/films/jihe-yuanben), v2, 74.85 s, 1920 x 1080.
 Ship this text with the film wherever it is published (the description field
-of the post or the video page). The film's end card carries the same credits.
+of the post or the video page). The film's closing title carries the same
+image credits.
 
 Images
 
-- Jihe yuanben 幾何原本, vol. 1, sp=7, 8 and 23, early 17th-century printing.
+- Jihe yuanben 幾何原本, vol. 1, sp=8 and 23, early 17th-century printing.
   Library of Congress / National Library of China (World Digital Library).
   No known restrictions.
 - Athanasius Kircher, La Chine illustrée, Amsterdam, 1670, plate facing
   p. 201. Villanova University, Falvey Library. Public domain (the unretouched
   Villanova master; the CC BY-SA 3.0 Wikimedia Commons retouch is not used).
 - Christoph Clavius, Euclidis Elementorum libri XV, Rome: Vincenzo Accolti,
-  1574, title page, fol. 1r and fol. 21v. Boston College Library, via
-  Internet Archive. Public domain by age.
-- Christoph Clavius, Euclidis Elementorum libri XV, 3rd ed., Cologne, 1591,
-  p. 20. ETH-Bibliothek Zürich, e-rara. Public Domain Mark 1.0.
+  1574, fol. 1r and fol. 21v. Boston College Library, via Internet Archive.
+  Public domain by age.
 - 九章算術 Nine Chapters on the Mathematical Art, Siku Quanshu (Qing edition),
   vols 1 to 3 p. 19, and vols 7 to 9 p. 132 (the 句股容圓圖 and its note,
   supplied by the Qing editors: 原本缺圖今補). Source Library
@@ -22,15 +21,14 @@ Images
   4.0: https://creativecommons.org/licenses/by-sa/4.0/
   Changes made in this film: both pages are toned to the colour of paper
   (#d4c4a4 multiplied, contrast 0.9); on p. 132 the figure's three regions are
-  coloured by their own labels (朱, 青, 黃), the figure is cut along its printed
-  lines, and the pieces are moved and rearranged. These adapted images are
-  licensed CC BY-SA 4.0.
+  coloured by their own labels (朱, 青, 黃), the figure is copied and cut along
+  its printed lines, and its pieces are rearranged into a rectangle. These
+  adapted images are licensed CC BY-SA 4.0.
 
-Whether the film as a whole is published under CC BY-SA 4.0 is the
-publisher's decision. If Source Library confirms that the page images are
-public domain, the BY-SA label can be dropped (NOTES.md, Credits and rights).
+The film is licensed under CC BY-SA 4.0:
+https://creativecommons.org/licenses/by-sa/4.0/
 
 Type: EB Garamond (Octavio Pardo) and Noto Serif CJK TC (Adobe), SIL Open
 Font License 1.1.
-Voices: ElevenLabs (Clara, narrator; Yun, Mandarin reader). Music: ElevenLabs
-Music API. Paper sounds: ElevenLabs sound generation.
+Voices: ElevenLabs (Frederick Surrey, narrator; Yun, Mandarin reader). Music:
+ElevenLabs Music API. Paper sounds: ElevenLabs sound generation.

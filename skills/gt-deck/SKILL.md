@@ -12,13 +12,13 @@ description: >-
   another GT presentation, or borrowing the deck's grammar for another
   surface.
 metadata:
-  title: The brand deck
+  title: Brand deck
   areas: aesthetic, graphics
-  updated: 2026-10-06
+  updated: 2026-10-07
   origin: prototemplate
 ---
 
-# The brand deck
+# Brand deck
 
 The brand deck is the General Translation identity in 93 slides. Its source is the `deck/` folder of the Prototemplate repository, and `pnpm build:deck` turns it into one self-contained viewer that prototemplate.com/deck frames. Kevin judges product surfaces against it (2026-09-25) and had Prototemplate's viewer shell built from its viewer (2026-09-08), so every slide meets the grammar below in both themes before it ships.
 

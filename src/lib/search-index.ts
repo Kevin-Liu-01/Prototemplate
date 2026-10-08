@@ -353,7 +353,7 @@ const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])
     ['5-color', '5. Color'],
     ['6-type', '6. Type'],
     ['7-language-as-material', '7. Language as material'],
-    ['8-the-completed-reference', '8. The completed reference'],
+    ['8-where-it-ships', '8. Where it ships'],
     ['9-context-for-partners', '9. Context for partners'],
   ],
   design: [

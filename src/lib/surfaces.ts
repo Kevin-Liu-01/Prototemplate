@@ -387,8 +387,8 @@ const BRAND_SECTIONS: readonly Surface[] = [
   ],
   [
     'the-completed-reference',
-    'The completed reference',
-    'The Dossier as the finished application of the system.',
+    'Where it ships',
+    'Where the identity ships today: the site, the product surfaces, the films and the marks.',
   ],
   [
     'made-with-the-system',

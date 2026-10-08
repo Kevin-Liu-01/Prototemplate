@@ -23,7 +23,7 @@ import './brand.css';
 export const metadata: Metadata = {
   title: PAGE_NAMES.brand.name,
   description:
-    'General Translation’s identity, laid out: the name, the idea, the character, the mark, color, type, language as material, and the completed reference.',
+    'General Translation’s identity, laid out: the name, the idea, the character, the mark, color, type, language as material, and where it ships.',
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
 };
 
@@ -36,6 +36,23 @@ const NAMES = [
   ['Locadex', 'the AI agent product'],
   ['generaltranslation.com', 'the domain, with gt.sh, generaltranslation.ai/.dev, locadex.com/.ai/.dev'],
   ['glyphfield.com', 'the companion tooling site (shader library, animation studio)'],
+] as const;
+
+/** Where the identity ships today, one row per kind of surface (BRAND.md section 8). */
+const SHIPS = [
+  [
+    'The site',
+    'generaltranslation.com, built in gt-cloud’s apps/landing; the production landing page (gt-cloud #4213) has been canonical for the site since 2026-08-11',
+  ],
+  [
+    'Product surfaces',
+    'the dashboard, onboarding, the sign-in plate and the Prototemplate shell, which have followed the brand deck since 2026-09-25',
+  ],
+  ['Motion', 'the films on /motion: the blog trailers, the product films and the translation-history series'],
+  [
+    'The marks',
+    'the speed marks chosen on 2026-09-29, shown beside the doubled-line monogram, which stays the current mark; the title badges in the /brand and /marks heads cycle through a selection of the marks on /marks',
+  ],
 ] as const;
 
 /** The signature devices, each with its one-line jurisdiction. */
@@ -290,8 +307,8 @@ const PAGES: readonly BrandPage[] = [
         </div>
         <p>
           At text size the wordmark sits inline with prose, at the cap height of the line
-          it lives in, the way the Dossier&rsquo;s hero sets &ldquo;<GtWord />{' '}builds full-stack
-          infrastructure&hellip;&rdquo;.
+          it lives in, the way the hero on generaltranslation.com sets &ldquo;<GtWord />{' '}builds
+          full-stack localization for apps, docs, and websites&rdquo;.
         </p>
         <p>
           The identity must survive compression: a favicon, a CLI banner, a README, a
@@ -435,32 +452,36 @@ const PAGES: readonly BrandPage[] = [
     id: 'the-completed-reference',
     body: (
       <>
-        <p>
-          <strong>The Dossier is the completed version of this identity in application</strong>:
-          the belt-driven morphing headline, the translate window, the stack tower
-          wearing the Locadex shimmer, the edge globe over its dithered atmosphere, the
-          four-color dark band. When in doubt about how the brand behaves in product, the
-          Dossier is the answer. The other directions are the working record of how we
-          got there.
-        </p>
-        <div className='ptb-shots'>
-          <figure className='ptb-shot'>
-            <img alt='The Dossier home, light theme' loading='lazy' src='/shots/light/singularity-dossier.jpg' />
-            <figcaption>the home · light</figcaption>
-          </figure>
-          <figure className='ptb-shot'>
-            <img alt='The Dossier home, dark theme' loading='lazy' src='/shots/dark/singularity-dossier.jpg' />
-            <figcaption>the home · dark</figcaption>
-          </figure>
-          <figure className='ptb-shot'>
-            <img alt='The Dossier enterprise page, light theme' loading='lazy' src='/shots/light/singularity-dossier-enterprise.jpg' />
-            <figcaption>the enterprise page</figcaption>
-          </figure>
+        <p>The identity is applied on four kinds of surface today.</p>
+        <div className='ptb-names'>
+          {SHIPS.map(([name, what]) => (
+            <div className='ptb-name-row' key={name}>
+              <b>{name}</b>
+              <span>{what}</span>
+            </div>
+          ))}
         </div>
         <p className='pt-site-links'>
-          <Link href='/d/singularity-dossier'>open the home</Link>
+          <a href='https://generaltranslation.com' rel='noreferrer' target='_blank'>
+            open generaltranslation.com
+          </a>
           <span aria-hidden> · </span>
-          <Link href='/d/singularity-dossier/enterprise'>open the enterprise page</Link>
+          <Link href='/deck'>open the deck</Link>
+          <span aria-hidden> · </span>
+          <Link href='/motion'>open the films</Link>
+          <span aria-hidden> · </span>
+          <Link href='/marks'>open the marks</Link>
+        </p>
+        <p>
+          When in doubt about how the brand behaves, read the shipped surface the work
+          belongs to.
+        </p>
+        <p>
+          The site grew from the direction of the{' '}
+          <Link href='/d/singularity-dossier'>Dossier</Link>, which stays in the gallery
+          with the other directions as the working record of how we got there. From
+          2026-08-06 to 2026-10-07 this section named it the completed reference for the
+          brand.
         </p>
       </>
     ),

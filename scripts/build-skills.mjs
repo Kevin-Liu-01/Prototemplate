@@ -9,7 +9,9 @@
 //     `index`) and the frontmatter `name` equals it;
 //   - `description` is present, at most 1024 characters, and says when to use
 //     the skill ("Use when", or "Use before", "Use after", "Use for");
-//   - `metadata.title` is set, and the body's first h1 repeats it;
+//   - `metadata.title` is set, names the thing with no leading "The"
+//     (Kevin, 2026-10-07: "fix the The titles"), and the body's first h1
+//     repeats it;
 //   - `metadata.areas` lists one or more areas from AREAS, the first being the
 //     area the skill is filed under;
 //   - `metadata.updated` is a real date, YYYY-MM-DD;
@@ -292,6 +294,7 @@ for (const slug of readdirSync(SOURCE).sort()) {
   }
   if (!title) fail(slug, 'no metadata.title');
   else {
+    if (/^The\s/.test(title)) fail(slug, `metadata.title '${title}' opens with "The"; name the thing itself`);
     const h1 = /^# (.+)$/m.exec(lines.slice(end + 1).join('\n'))?.[1]?.trim();
     if (h1 !== title) fail(slug, `the h1 '${h1 ?? ''}' differs from metadata.title '${title}'`);
   }

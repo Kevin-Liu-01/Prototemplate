@@ -14,15 +14,25 @@ this one and build on it. An agent starts at [`AGENTS.md`](./AGENTS.md).
 
 Every direction is a built page that runs live. The Dossier
 (`/d/singularity-dossier`) is the site concept Kevin called complete on
-2026-08-06; Signal and Orbit are the two earlier
-site concepts, each keeping its own hero and the sections the Dossier
-retired; `/d/production` is the site that shipped, rebuilt page for page.
+2026-08-06 and the direction the shipped site grew from. The brand has
+moved past it since then (Kevin, 2026-10-06), and since 2026-10-07 the
+Dossier is no longer the reference for the brand or the site. Signal and
+Orbit are the two earlier site concepts, each keeping its own hero and
+the sections the Dossier retired; `/d/production` is the site that
+shipped at generaltranslation.com, rebuilt page for page.
 Its Shipped section also carries the dashboard's sign-in and onboarding
 system, which lives under `src/components/plate` with its state console
 (`/d/production/signin`, `/onboarding`, `/consent`, `/device`, `/cli`;
 `?state=<id>` opens any state).
 
 ## What is here
+
+The site is served at three addresses:
+https://www.prototemplate.com (the General Translation team's Vercel
+project; the apex domain redirects to www), and
+https://prototemplate.vercel.app and https://prototemplate.kevinliu.studio
+(both from Kevin's personal Vercel project). Every route below works at
+each of them.
 
 - `/`: the design lab, the twenty-seven directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall (the flagship cut into section tiles, light and dark, desktop and mobile) and the capabilities ledger (what the system can do, each entry pointing at where it runs live)
 - `/brand`: the brand book, the identity canon in ten sections
@@ -77,13 +87,13 @@ reader on GitHub or in an imported copy; `pnpm build:skills` writes it.
 | area | skill | folder | also in |
 | --- | --- | --- | --- |
 | Voice | Voice and the humanizer | [`gt-voice`](./skills/gt-voice/SKILL.md) |  |
-| Website | The GT website | [`gt-website`](./skills/gt-website/SKILL.md) |  |
+| Website | GT website | [`gt-website`](./skills/gt-website/SKILL.md) |  |
 | Website | Working in Prototemplate | [`prototemplate`](./skills/prototemplate/SKILL.md) | Components |
 | Website | Performance without visual loss | [`gt-performance`](./skills/gt-performance/SKILL.md) | Landing pages, Motion |
-| Landing pages | The landing page grammar | [`gt-landing-pages`](./skills/gt-landing-pages/SKILL.md) | Aesthetic |
+| Landing pages | Landing page grammar | [`gt-landing-pages`](./skills/gt-landing-pages/SKILL.md) | Aesthetic |
 | Aesthetic | Taste and the review standard | [`gt-aesthetic`](./skills/gt-aesthetic/SKILL.md) | Website, Landing pages, Components |
-| Aesthetic | The brand and the correct Inter | [`gt-brand`](./skills/gt-brand/SKILL.md) |  |
-| Aesthetic | The brand deck | [`gt-deck`](./skills/gt-deck/SKILL.md) | Graphics |
+| Aesthetic | Brand and the correct Inter | [`gt-brand`](./skills/gt-brand/SKILL.md) |  |
+| Aesthetic | Brand deck | [`gt-deck`](./skills/gt-deck/SKILL.md) | Graphics |
 | Aesthetic | Exploration rounds and convergence | [`gt-explorations`](./skills/gt-explorations/SKILL.md) | Website, Landing pages, Graphics |
 | Lints | Lints and gates | [`gt-lints`](./skills/gt-lints/SKILL.md) |  |
 | Motion | Motion rules | [`gt-motion`](./skills/gt-motion/SKILL.md) | Landing pages, Videos, Diagrams |

@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Running agent fleets and long autonomous runs
   areas: workflow
-  updated: 2026-10-05
+  updated: 2026-10-07
   origin: prototemplate
 ---
 
@@ -67,7 +67,7 @@ A brief stands alone, because its receiver has none of the conversation. The rul
 
 Quality work converges through a separate harsh critic that scores the work against a named reference.
 
-1. **Name the exemplar and the bar in the brief.** `gt-aesthetic` section 1 names the reference for each surface: the brand deck for product surfaces, the Dossier for the site, and the Blue Marble for dithered pictures. In July 2026 the references were live sites. Kevin, 2026-07-30: "remember the bar is generaltranslation.com and resend.com. literally rereview and continuously score yourself until it look sright". For a set, the bar is the best item Kevin has accepted.
+1. **Name the exemplar and the bar in the brief.** `gt-aesthetic` section 1 names the reference for each surface: the brand deck for product surfaces, the shipped generaltranslation.com for the site (the Dossier until 2026-10-07), and the Blue Marble for dithered pictures. In July 2026 the references were live sites. Kevin, 2026-07-30: "remember the bar is generaltranslation.com and resend.com. literally rereview and continuously score yourself until it look sright". For a set, the bar is the best item Kevin has accepted.
 2. **Capture both at the same geometry.** The work and the reference share the viewport, theme, camera and crop, side by side. Reset to the same viewport or camera presets after every edit, so before and after stay comparable.
 3. **A fresh critic scores blind.** The critic did not build the work, is told to be harsh, and is not told which image is the work. It writes concrete mismatch notes before it scores, cites what the reference does that the work does not, keeps the lower score when unsure, and judges the worst item as harshly as the best.
 4. **Refiners fix only the named gaps.**
