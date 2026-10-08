@@ -207,7 +207,7 @@ The same round asked for full titles that wrap to two lines with no ellipsis (`s
 | `pnpm build:updated` | `git log` over each book head's paths (`--staged` for a commit) | `src/lib/updated.ts`; `pnpm lint:updated` (`--check`) fails while it is stale against HEAD |
 | `pnpm build:deck` | `deck/parts`, `deck/slides`, `deck/fonts`, `deck/shots` | `public/brand-deck.html` with every image inlined, and `public/shots/deck` |
 | `pnpm build:marks` | the faces in `public/fonts/google`, through fontkit | the speed marks in `public/marks`, one color in `currentColor` |
-| `pnpm build:thumbs` | `public/shots/{light,dark,archive,pages}` | 640 by 360 JPEGs in `public/shots/thumb`, through `sips` on macOS |
+| `pnpm build:thumbs` | `public/shots/{light,dark,archive,pages}` | 640 by 360 WebP files in `public/shots/thumb`, through `sips` and `cwebp` on macOS; it also cuts any JPEG a capture pass left there to WebP and removes it |
 | `pnpm build:skills` | `skills/<slug>/SKILL.md` and the files beside it, nothing outside the checkout | `src/lib/skills.ts` and `skills/README.md`, after checking the contract (section 10); `pnpm lint:skills` (`--check`) fails while either is stale |
 | `pnpm build:motion` | `motion/MOTION.md`, `motion/films/<slug>/BRIEF.md`, the published cuts pinned in `public/motion/published.json` and their records in `motion/out` | `src/lib/motion.ts`, `public/motion/<slug>.md`, and each published cut's credits, contact sheet and script in `public/motion` |
 | `pnpm capture:pages` | the dev server, or generaltranslation.com with `--live` | `public/shots/pages/<id>-{light,dark}.jpg` at 1440 by 900 |

@@ -196,7 +196,7 @@ A framed page follows the parent's theme through the storage event and through `
 ## Previews and thumbnails
 
 - Any element with `data-preview="<surface id>"` under the shell opens that surface's capture in the one hover preview (`PreviewLayer.tsx`). The layer reads the row's `shot` and `shotDark` through `getSurface(id)` in `surfaces.ts`, so the attribute must name a surface id. On a device that can hover, the layer preloads the captures of the rows in view; a touch screen preloads nothing and opens a preview only from keyboard focus.
-- Thumbnails are 640 by 360 JPEGs at `public/shots/thumb/<id>.jpg` and `<id>-dark.jpg`, cut by `pnpm build:thumbs` from the 1440 by 900 captures `pnpm capture:pages` writes to `public/shots/pages/<id>-light.jpg` and `-dark.jpg`. A row without a shot draws the plate with its initial.
+- Thumbnails are 640 by 360 WebP files (quality 82) at `public/shots/thumb/<id>.webp` and `<id>-dark.webp`, cut by `pnpm build:thumbs` from the 1440 by 900 captures `pnpm capture:pages` writes to `public/shots/pages/<id>-light.jpg` and `-dark.jpg`. A capture pass that writes straight into `public/shots/thumb` (the brand sections, the documents) leaves JPEGs, which `pnpm build:thumbs` cuts to WebP and removes; `check-registries.mjs` fails while a JPEG is left there. A row without a shot draws the plate with its initial.
 - `ThumbShot.tsx` carries both captures and swaps them by CSS on `data-theme`; markup never reads the theme.
 
 ## Code inside the shell

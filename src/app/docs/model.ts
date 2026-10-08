@@ -84,5 +84,5 @@ export function docWindowTitle(slug: string, title: string, book: BookId = 'docs
 
 /** Where a document's thumbnails live, light and dark: `docs-<slug>` or `handbook-<slug>` under /shots/thumb. */
 export function docShot(slug: string, book: BookId = 'docs'): ShellShot {
-  return { light: `/shots/thumb/${book}-${slug}.jpg`, dark: `/shots/thumb/${book}-${slug}-dark.jpg` };
+  return { light: `/shots/thumb/${book}-${slug}.webp`, dark: `/shots/thumb/${book}-${slug}-dark.webp` };
 }
