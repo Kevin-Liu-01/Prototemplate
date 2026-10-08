@@ -102,10 +102,11 @@
 }
 
 /* the panel: Updated, then the facts, one lead line per row (2px over a
-   21.35px line over 2px over a 1px rule under every row, the last one
-   included), so the text sits centered between its rules. Beside the lead
-   it starts 2px under the lead's top, which lands each row's baseline on a
-   lead baseline. No frame, no ground, no line over the first row. */
+   21.35px line over 2px over a 1px rule), so the text sits centered
+   between its rules. Rules run between rows only: none over the first,
+   and the last row's stays transparent so every row keeps one pitch.
+   Beside the lead the panel starts 2px under the lead's top, which lands
+   each row's baseline on a lead baseline. No frame, no ground. */
 .pt-book-panel {
   grid-area: panel;
   min-width: 0;
@@ -126,6 +127,10 @@
   padding: 2px 0;
   line-height: calc(var(--pt-row) - 5px);
   border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.pt-book-fact:last-child {
+  border-bottom-color: transparent;
 }
 
 /* the label in ink-2 (titanium text at 13px is under 4.5:1 on white); the
@@ -237,7 +242,7 @@
 }
 
 /* the narrow head (lead 510 + gap 56 + panel 304 = 870): the panel under
-   the lead, ruled as it is beside it, and the mast's rule
+   the lead, ruled between its rows as it is beside it, and the mast's rule
    --pt-head-rule-pad under the panel */
 @container pt-head (max-width: 880px) {
   .pt-book-mast {
