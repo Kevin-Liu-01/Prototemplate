@@ -235,14 +235,20 @@ day, and Prototemplate's `src/lib/glyph-field.ts` holds the pattern:
   IntersectionObserver, pause offscreen and on a hidden tab, draw one still
   under reduced motion, re-read ink on a theme flip and release everything
   in `destroy()` (DESIGN.md section 11, gt-motion section 6).
-- **A gallery freezes its live previews.** Twenty-two live iframes running
-  shaders made the presenter wall lag (2026-07-31). Prototemplate's root
-  layout (`src/app/layout.tsx`) installs a rAF gate in every page: a parent
-  posts `{ type: 'gt:freeze', frozen }`, callbacks queue while frozen, and
-  the queue flushes on resume so loops continue where they stopped.
-  `src/app/present/viewer/LazyFrame.tsx` mounts an iframe only near the
-  viewport (far frames release their contexts), freezes it 2.8 s after load
-  and lets it animate under the pointer. Gallery tiles show static captures
+- **A gallery shows stills and goes live only under the mouse.** Twenty-two
+  live iframes running shaders made the presenter wall lag (2026-07-31).
+  Prototemplate's root layout (`src/app/layout.tsx`) installs a rAF gate in
+  every page: a parent posts `{ type: 'gt:freeze', frozen }`, callbacks
+  queue while frozen, and the queue flushes on resume so loops continue
+  where they stopped. Freezing is not enough for a wall: a frozen
+  same-origin frame still hydrates, composites and runs its CSS animations
+  on the parent's main thread. On 2026-10-08 the presenter's verdict
+  gallery, which froze each frame 2.8 s after load, still held 12 live
+  pages, 4 WebGL contexts and about 1.3 GB of renderer memory, and the page
+  stayed busy about 950 ms of every second at rest.
+  `src/app/present/viewer/LazyFrame.tsx` now shows the direction's 640x360
+  thumbnail and mounts the live page only while a mouse is over the card.
+  Gallery tiles show static captures
   (`public/shots/<theme>/<slug>.jpg`), and
   `src/app/directions/DirectionFrame.tsx` keeps the capture behind its one
   live frame until the frame loads. The presenter's prototype stage
@@ -422,8 +428,8 @@ shape.
       exists after a strict-mode mount and a hot reload; ticker callbacks
       unhook offscreen; no per-frame blit reads from a
       `willReadFrequently` canvas.
-- [ ] Gallery previews are frozen at rest, animate on hover and run on
-      rAF.
+- [ ] Gallery previews are stills at rest and mount a live frame only on
+      hover; a live frame off screen is frozen; animations run on rAF.
 - [ ] Engines used on several pages live in one shared library, resize and
       re-read the pixel ratio on zoom for every usage, and a fix reached
       every copy.

@@ -2401,17 +2401,24 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   cursor: pointer;
 }
 
-/* Sized by its grid cell; LazyFrame measures it and scales the iframe. */
+/* Sized by its grid cell at the thumbnail's 16:9. Under the mouse the live
+   1440x900 page lays over the still, scaled by LazyFrame and centered the
+   way build-thumbs cuts the thumbnails, and fades in once loaded. */
 .pr-thumb {
   position: relative;
   width: 100%;
-  aspect-ratio: 1440 / 900;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--pt-ink) 14%, transparent);
   background: var(--pr-raised);
-  display: grid;
-  place-items: center;
   transition: border-color 0.2s;
+}
+
+.pr-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .pr-gal-preview:hover .pr-thumb {
@@ -2420,17 +2427,19 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-thumb iframe {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 0;
   width: 1440px;
   height: 900px;
   border: 0;
   transform-origin: 0 0;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
-.pr-thumb-empty {
-  color: color-mix(in srgb, var(--pt-ink) 25%, transparent);
+.pr-thumb iframe.is-loaded {
+  opacity: 1;
 }
 
 .pr-gal-meta {

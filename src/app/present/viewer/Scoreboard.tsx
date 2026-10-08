@@ -18,9 +18,10 @@ import { setReview, useReviews } from './reviewStore';
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
- * The closing gallery — every prototype as a live preview, nothing else.
- * A card's number and stars are the only chrome; clicking a preview jumps
- * back into the viewer on that direction.
+ * The closing gallery: every prototype the presenter walks as a still that
+ * goes live under the mouse, nothing else. A card's number and stars are
+ * the only chrome; clicking a preview jumps back into the viewer on that
+ * direction.
  */
 export default function Scoreboard() {
   const root = useRef<HTMLElement>(null);
@@ -98,7 +99,7 @@ export default function Scoreboard() {
               onClick={() => jumpTo(direction.slug)}
               aria-label={`Open ${direction.name} in the viewer`}
             >
-              <LazyFrame slug={direction.slug} />
+              <LazyFrame slug={direction.slug} theme={theme} />
             </button>
             <div className='pr-gal-meta'>
               <span className='pr-roll-num'>{direction.label}</span>
