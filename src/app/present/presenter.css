@@ -63,33 +63,6 @@
   filter: invert(1);
 }
 
-/*
- * Louize Display (205TF) is commercial and not vendored here: it resolves
- * from a locally installed copy or from public/fonts if the woff2 is dropped
- * in, and otherwise falls back to Georgia in the title stack.
- */
-@font-face {
-  font-family: 'Louize Display';
-  src:
-    local('Louize Display'),
-    local('LouizeDisplay'),
-    url('/fonts/louize-display.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Louize Display';
-  src:
-    local('Louize Display Italic'),
-    local('LouizeDisplay-Italic'),
-    url('/fonts/louize-display-italic.woff2') format('woff2');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
 /* The browser defaults <code> to monospace; the presenter has none. */
 .pr-root code {
   font-family: inherit;
@@ -1804,7 +1777,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* Once loaded the frame takes the pointer so the embedded page's hover
    states (the iso stack's layers, marquee pauses) work in presenter mode.
    The deck still owns the WHEEL: PrototypeViewer forwards wheel events out
-   of the same-origin frame to Lenis, so scroll-driving never strands. */
+   of the same-origin frame to the presenter's own scroll, so scroll-driving
+   never strands. */
 .pr-stage-frame iframe.is-loaded {
   opacity: 1;
   pointer-events: auto;
@@ -2655,10 +2629,6 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
   .pr-proto {
     height: 100vh;
-  }
-
-  .pr-stage-caption {
-    display: none;
   }
 
   /* Static fallback: main columns and the red/white overlay stack in flow. */

@@ -10,7 +10,6 @@ import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import Icon from '../icons';
-import { getLenis } from '../lenis';
 import RatingStars from './RatingStars';
 import { setReview, useReviews } from './reviewStore';
 
@@ -250,9 +249,7 @@ export default function PrototypeViewer() {
         root.current.getBoundingClientRect().top +
         window.scrollY +
         window.innerHeight * 1.05;
-      const lenis = getLenis();
-      if (lenis) lenis.scrollTo(y, { duration: 1.3 });
-      else window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: y, behavior: 'smooth' });
     };
 
     window.addEventListener('keydown', onKey);
@@ -285,16 +282,14 @@ export default function PrototypeViewer() {
   // The frame takes the pointer once loaded (hover states inside the
   // prototype must work in presenter mode), but the deck keeps the wheel:
   // wheel events inside the same-origin frame are cancelled there and
-  // replayed on the deck's Lenis, so scroll-driving never strands.
+  // replayed on the presenter's own scroll, so scroll-driving never strands.
   useEffect(() => {
     if (!isLoaded) return;
     const win = frame.current?.contentWindow;
     if (!win) return;
     const forward = (e: WheelEvent) => {
       e.preventDefault();
-      const lenis = getLenis();
-      if (lenis) lenis.scrollTo(lenis.scroll + e.deltaY, { immediate: true });
-      else window.scrollBy(0, e.deltaY);
+      window.scrollBy(0, e.deltaY);
     };
     win.addEventListener('wheel', forward, { passive: false, capture: true });
     return () =>
@@ -313,11 +308,7 @@ export default function PrototypeViewer() {
   }, [index]);
 
   const scrollToScoreboard = () => {
-    const target = document.getElementById('pr-scoreboard');
-    if (!target) return;
-    const lenis = getLenis();
-    if (lenis) lenis.scrollTo(target, { duration: 1.4 });
-    else target.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('pr-scoreboard')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -349,7 +340,7 @@ export default function PrototypeViewer() {
           >
             <Icon name={rollOpen ? 'arrow-right' : 'arrow-left'} size={13} />
           </button>
-          <aside ref={roll} className='pr-roll' data-lenis-prevent aria-label='All prototypes'>
+          <aside ref={roll} className='pr-roll' aria-label='All prototypes'>
             {DIRECTIONS.map((direction, i) => {
               const rating = reviews[direction.slug]?.rating ?? 0;
               return (

@@ -9,7 +9,6 @@ import { useRef, useState } from 'react';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import Icon from './icons';
-import { getLenis } from './lenis';
 import CraftSlide from './slides/CraftSlide';
 import IntroSlide from './slides/IntroSlide';
 import PrinciplesSlide from './slides/PrinciplesSlide';
@@ -82,8 +81,8 @@ const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] =
 ];
 
 /**
- * The presenter frame: one Lenis scrollport, a HUD rail for orientation, and
- * keyboard paging. Up/Down/Space page between slides; Left/Right are owned by
+ * The presenter frame: the page's own scroll, a HUD rail for orientation,
+ * and keyboard paging. Up/Down/Space page between slides; Left/Right are owned by
  * the prototype viewer for switching directions.
  */
 export default function PresenterApp() {
@@ -202,9 +201,7 @@ export default function PresenterApp() {
           (subFraction !== undefined
             ? subFraction * pinLength(clamped)
             : (SLIDES[clamped]?.jump ?? 0) * window.innerHeight);
-        const lenis = getLenis();
-        if (lenis) lenis.scrollTo(y, { duration: 1.2 });
-        else window.scrollTo({ top: y, behavior: 'smooth' });
+        window.scrollTo({ top: y, behavior: 'smooth' });
       };
       goToRef.current = goTo;
 

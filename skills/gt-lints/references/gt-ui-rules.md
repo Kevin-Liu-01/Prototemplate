@@ -87,7 +87,7 @@ It ignores `public/`, `deck/`, `src/app/d/` (the archived directions) and
 `lint:practices` counts bare `useEffect` calls.
 
 Exemptions, each with its reason in a comment in `.oxlintrc.json`:
-`src/app/present/**` (`no-smooth-scroll`, the presenter scrolls on Lenis),
+`src/app/present/**` (`no-smooth-scroll`, the presenter's paging animates),
 `src/app/present/slides/PrinciplesSlide.tsx` (`no-raw-locale-flags`, no
 `LocaleFlag` in this repository), `src/app/page.tsx`, `src/lib/brand-fonts.ts`
 and `src/app/present/fonts.ts` (`inter-only`, the nameplate's Fraunces and
