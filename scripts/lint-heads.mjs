@@ -82,7 +82,8 @@ import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { EXEC, liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './lint-type.mjs';
+import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './lint-type.mjs';
+import { CHROME_PATH, seedTheme } from './site-pages.mjs';
 
 /* ------------------------------------------------------------------ */
 /* Static mode                                                          */
@@ -834,14 +835,17 @@ async function runLive(root, argv) {
     console.error(`lint:heads --live needs playwright-core: ${error}`);
     return 2;
   }
-  const browser = await chromium.launch({ executablePath: EXEC, headless: true });
+  const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   const failures = [];
   const waiting = [];
   let broken = 0;
-  const { routes: all, missing } = await liveRoutes(browser, base, root);
-  for (const kind of missing.filter((k) => k !== 'post' && k !== 'archive')) {
-    console.error(`lint:heads --live: no first ${kind} was found`);
-    broken++;
+  let all;
+  try {
+    all = liveRoutes();
+  } catch (error) {
+    await browser.close();
+    console.error(`lint:heads --live: ${error instanceof Error ? error.message : error}`);
+    return 2;
   }
   const routes = all.map((r) => r.path).filter((p) => LIVE_PATHS.test(p)).filter((p) => !only || p.includes(only));
   const cells = [
@@ -856,11 +860,7 @@ async function runLive(root, argv) {
     while (next < tasks.length) {
       const { path, w, h, theme } = tasks[next++];
       const ctx = await browser.newContext({ viewport: { width: w, height: h } });
-      await ctx.addInitScript((t) => {
-        try {
-          localStorage.setItem('gt-theme', t);
-        } catch {}
-      }, theme);
+      await seedTheme(ctx, theme);
       const page = await ctx.newPage();
       try {
         const resp = await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded', timeout: 240000 });

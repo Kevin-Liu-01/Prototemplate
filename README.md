@@ -215,8 +215,8 @@ printf '# CLAUDE.md\n\n@AGENTS.md\n' > CLAUDE.md
 
 Every page runs on the laws: hairlines drawn exactly once
 (`scripts/lint-lines.mjs` fails the round otherwise; `pnpm check:pages`,
-`scripts/pagecheck/`, reads every page at ten viewports in both themes
-and reports what did not hold), four absolute colors
+`scripts/pagecheck/`, reads every page on phones, tablets and desktops in
+both themes and reports what did not hold), four absolute colors
 plus one spectral accent per page, dark mode as a pure token remap, and one
 mobile type ladder (`DESIGN.md` §12). `src/app/d/toolchain` is the
 single source of truth the fork directions import and re-skin by root-class

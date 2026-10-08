@@ -36,10 +36,11 @@
 // Shell mode (pnpm lint:lines:shell, directive 8.9):
 //   node scripts/lint-lines.mjs --shell [--base http://localhost:3005]
 //     [--only /docs] [--width 1440] [--theme dark] [--jobs 3] [--report] [--json]
-//   Walks /, /docs, /brand, /compare, /archive/<first slug>,
-//   /directions/<first slug>, /skills, /skills/<first slug>, /handbook, /motion,
-//   /motion/<first package>, /graphics, /marks, /d/production and /deck
-//   (the iframe's document) at 1440, 1280 and 390 in both themes
+//   Walks the routes scripts/site-pages.mjs tags `lines` (/, /docs, /brand,
+//   /compare, /archive/<first slug>, /directions/<first exploration>,
+//   /skills, /skills/<first slug>, /handbook, /motion,
+//   /motion/<first package>, /graphics, /marks, /d/production and /deck,
+//   the iframe's document) at 1440, 1280 and 390 in both themes
 //   against the dev server, and on each page audits the resting state, the
 //   list toggled ([), the index panel (R), the search (Cmd K), and on / and
 //   /deck the grid (G) and the book (B). Chrome is every element under a
@@ -56,18 +57,9 @@
 //   outline density needs the rail layer live (.pt-sb[data-rails]) and
 //   drawing, and the run prints the rail segments per route. A state that
 //   did not apply is an infrastructure failure (exit 2), never a pass.
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 import { chromium } from 'playwright-core';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-
-/* CHROME_PATH first, as scripts/site-pages.mjs reads it, so the audit runs on any machine */
-const EXEC =
-  process.env.CHROME_PATH ??
-  '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
+import { CHROME_PATH, routesFor, seedTheme } from './site-pages.mjs';
 
 const argv = process.argv.slice(2);
 /* flags that take a value; the value is never a positional URL */
@@ -693,7 +685,7 @@ const failing = (audit) => {
   );
 };
 
-const browser = await chromium.launch({ executablePath: EXEC, headless: true });
+const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
 
 /* ------------------------------------------------------------------ */
 /* page mode                                                           */
@@ -701,7 +693,7 @@ const browser = await chromium.launch({ executablePath: EXEC, headless: true });
 
 async function auditPageAt(url, width) {
   const ctx = await browser.newContext({ viewport: { width, height: 4200 } });
-  await ctx.addInitScript((t) => localStorage.setItem('gt-theme', t), theme);
+  await seedTheme(ctx, theme);
   const page = await ctx.newPage();
   const resp = await page.goto(url, { waitUntil: 'networkidle', timeout: 90000 });
   /* an error page audits clean at ~1 line — that is a blessing nobody asked
@@ -739,62 +731,37 @@ async function runPageMode() {
 /* shell mode                                                          */
 /* ------------------------------------------------------------------ */
 
-/**
- * The first slug a registry file declares, read from its source so the route
- * list follows the data: the archive's first `entry('<slug>'`, the first
- * `slug: '<slug>'` of src/lib/directions.ts (the first exploration), the
- * first `id: '<slug>'` after the SKILLS array opens in the generated
- * src/lib/skills.ts (the categories above it carry ids of their own), the
- * first package slug in the generated src/lib/motion.ts.
- */
-function firstSlug(file, pattern, from) {
-  let text = readFileSync(join(ROOT, file), 'utf8');
-  if (from) {
-    const at = text.indexOf(from);
-    if (at < 0) {
-      console.error(`lint-lines: ${from} not found in ${file}`);
-      process.exit(2);
-    }
-    text = text.slice(at);
-  }
-  const slug = text.match(pattern)?.[1];
-  if (!slug) {
-    console.error(`lint-lines: no slug matching ${pattern} in ${file}`);
-    process.exit(2);
-  }
-  return slug;
-}
+/** The states a route is driven through beyond the default (list, index, search): the gallery and the deck add the grid and the book; the shipped home's corner has no search. */
+const STATES = {
+  gallery: ['list', 'index', 'search', 'grid', 'book'],
+  deck: ['list', 'index', 'grid', 'book'],
+  'production-corner': ['list', 'index'],
+};
 
 /**
- * The routes directive 8.9 names, and the states each is driven through:
- * the gallery, the docs, the brand book, the compare rig, the first archived
+ * The routes directive 8.9 names, from the shared list (scripts/site-pages.mjs,
+ * the rows tagged `lines`), and the states each is driven through: the
+ * gallery, the docs, the brand book, the compare rig, the first archived
  * version, the first exploration's page under /directions, the skills index
  * and the first skill's page, the motion roster and the first research
  * package, the graphics and the marks books (whose sidebar runs carry the
- * rail's bends), the shipped direction's corner, and the deck.
+ * rail's bends), the shipped direction's corner, and the deck. A registry
+ * whose first slug cannot be read stops the run (exit 2).
  */
 function shellRoutes() {
-  const archive = firstSlug('src/lib/archive.ts', /entry\('([^']+)'/);
-  const direction = firstSlug('src/lib/directions.ts', /slug: '([^']+)'/);
-  const skill = firstSlug('src/lib/skills.ts', /id: '([^']+)'/, 'export const SKILLS');
-  const pkg = firstSlug('src/lib/motion.ts', /'([^']+)'/, 'export const MOTION_PACKAGE_SLUGS');
-  return [
-    { path: '/', states: ['list', 'index', 'search', 'grid', 'book'] },
-    { path: '/docs', states: ['list', 'index', 'search'] },
-    { path: '/brand', states: ['list', 'index', 'search'] },
-    { path: '/compare', states: ['list', 'index', 'search'] },
-    { path: `/archive/${archive}`, states: ['list', 'index', 'search'] },
-    { path: `/directions/${direction}`, states: ['list', 'index', 'search'] },
-    { path: '/skills', states: ['list', 'index', 'search'] },
-    { path: `/skills/${skill}`, states: ['list', 'index', 'search'] },
-    { path: '/handbook', states: ['list', 'index', 'search'] },
-    { path: '/motion', states: ['list', 'index', 'search'] },
-    { path: `/motion/${pkg}`, states: ['list', 'index', 'search'] },
-    { path: '/graphics', states: ['list', 'index', 'search'] },
-    { path: '/marks', states: ['list', 'index', 'search'] },
-    { path: '/d/production', states: ['list', 'index'], corner: true },
-    { path: '/deck', states: ['list', 'index', 'grid', 'book'], deck: true },
-  ];
+  let routes;
+  try {
+    routes = routesFor('lines');
+  } catch (error) {
+    console.error(`lint-lines: ${error instanceof Error ? error.message : error}`);
+    process.exit(2);
+  }
+  return routes.map((r) => ({
+    path: r.path,
+    states: STATES[r.id] ?? ['list', 'index', 'search'],
+    corner: r.id === 'production-corner',
+    deck: r.id === 'deck',
+  }));
 }
 
 /** What the document shows right now; the driver verifies every state against it. */
@@ -858,12 +825,7 @@ async function settle(target, ms) {
 async function auditShellRoute(route, width, themeName) {
   const height = width <= 600 ? 844 : 900;
   const ctx = await browser.newContext({ viewport: { width, height } });
-  await ctx.addInitScript((t) => {
-    try {
-      localStorage.setItem('gt-theme', t);
-      localStorage.setItem('gt-deck-theme', t);
-    } catch {}
-  }, themeName);
+  await seedTheme(ctx, themeName);
   const page = await ctx.newPage();
   const url = `${BASE}${route.path}`;
   const resp = await page.goto(url, { waitUntil: 'load', timeout: 90000 });

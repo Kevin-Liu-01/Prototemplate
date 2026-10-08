@@ -386,8 +386,8 @@ skill adds, are in
   `requestAnimationFrame`, so canvases there come back blank.
 - Check every animated surface under emulated reduced motion
   (`page.emulateMedia({ reducedMotion: 'reduce' })`), in both themes, at
-  1440 and 390 wide; run `pnpm check:pages --pages <id,id>` on changed
-  routes for layout shifts.
+  1440 and 390 wide; run `pnpm check:pages --preset quick --pages <id,id>`
+  on changed routes for layout shifts.
 - Check drawn lines at 2x crops of their junctions; slow
   `requestAnimationFrame` in the capture only to see a dither step's cells.
 - Films: `npx -y hyperframes@0.8.106 check .` with 0 errors, then

@@ -33,38 +33,48 @@ node scripts/lint-lines.mjs http://localhost:3005/<page> --theme dark
 ## 2. The page check
 
 ```bash
-pnpm check:pages --pages <id>,<id>            # the round's touched pages
-pnpm check:pages                              # the whole site, before a release
+pnpm check:pages --preset quick --pages <id>,<id>   # the round's touched pages
+pnpm check:pages                                    # every page on every device, before a release
 ```
 
 `scripts/pagecheck/` (its README explains the tool) loads every named
-page on the dev server at ten viewports (360x800, 390x844, 430x932,
-768x1024, 1024x768, 1280x720, 1440x900, 1527x814, 1920x1080, 2560x1440)
-in both themes and reads each cell: horizontal overflow, boxes past the
-viewport edge, text clipped mid-word, console errors and failed
-resources, the theme applied, the phone tap targets and the site
-invariants `hooks.mjs` names (the 52px toolbar row, the stage rows, the
-sidebar column, the deck's sheet, the docs contents grid, the gallery's
-tiles). It then runs a layout-shift observer on every page at four
-viewports, the declared interactions (the theme flip, the index panel and
-the preview, the search, the deck's arrow key, a docs contents link, the
-presenter's dock) with before and after captures, and writes
-`.pagecheck/REPORT.md`.
+page on the dev server on the device table in `scripts/site-pages.mjs`:
+phones from 320x568 to 430x932 and on their sides, tablets from 768x1024
+to 1366x1024 in both orientations, desktops from 1280x720 to the 3440x1440
+ultrawide, Kevin's 1527x814 laptop and 1440x900 at 200% zoom. A phone or
+a tablet is read as a touch device whatever its width. The quick preset
+reads eight devices in dark and 1440x900 in light; the full preset every
+device in dark and three in light. Each cell is read once the page's own
+ready signal has fired and its layout holds still: horizontal overflow,
+boxes past the viewport edge, text clipped mid-word, console errors and
+failed resources, the theme applied, the tap targets' hit areas on touch
+devices, the layout shift score, and the site invariants `hooks.mjs`
+names (the 52px toolbar row, the stage rows, the sidebar column, the
+deck's sheet, the docs contents grid, the gallery's tiles). The declared
+interactions run in the same queue: the theme flip, the index panel and
+the preview, the search, the deck's arrow key, every deck slide in its
+sheet and the deck's grid and book, a docs contents link, the
+presenter's dock, and the presenter walked slide by slide on every
+device (each title visible, the "So I built 12" close beat and the grid
+at 16 prototypes). It writes `.pagecheck/REPORT.md` with a page by device
+grid and the run's timing.
 
-- Thresholds: a tap target under 40px on its smaller side is a defect, 40
-  to 43 a note (44 is the target); a layout-shift entry over 0.001 is
-  listed with its sources; an ellipsis truncation is a note, a clip
-  without one a defect.
+- Thresholds: a tap target under 40px on a phone is a defect, 40 to 43 a
+  note (44 is the target), a tablet's under 40 a note until Kevin decides
+  on tablet touch sizing; a layout shift score over 0.1 is a defect and
+  over 0.05 a note; an ellipsis truncation is a note, a clip without one
+  a defect.
 - Each defect row names the file and line to change (the rule declaring
   the element's class, the line rendering its text, or the line naming a
   missing file) and a fix written from the element's kind; a folder
   stands in when no line matched.
 - Expects **zero** defects and every interaction passing; the run exits 1
   otherwise. Notes are read, not fixed on sight.
-- A round's touched pages run it in both themes at the ten viewports
-  before shipping; the whole site runs before a release.
-- Captures live under `.pagecheck/shots/` (ignored by git); `--sheets`
-  adds a contact sheet per viewport for a quick look at every page.
+- A round's touched pages run the quick preset before shipping; the whole
+  site runs the full preset before a release.
+- Captures of the first screen live under `.pagecheck/shots/` (ignored by
+  git), with the full page for a failing cell; `--sheets` adds a contact
+  sheet per device for a quick look at every page.
 
 ## 3. The practices ratchet
 

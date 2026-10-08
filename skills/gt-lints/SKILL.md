@@ -78,7 +78,7 @@ repositories, and gt-cloud's other plugins).
 | `pnpm lint:heads`, `pnpm lint:heads:live`, `pnpm test:heads` | a book head without its props or with a page name not from `src/lib/page-names.ts`, a route restyling the shared head, band or dividers, a second hatch, a guide over a title, a space off its token, and (live) the head's structure, the title's clearance, the lead, the panel and its Updated day, the mast rule, the band's two rules and the dividers, measured at 1440 and 390 in both themes | `build` (the static mode), `lint:all` (all three) |
 | `pnpm lint:updated`, `pnpm test:updated` | a stale `src/lib/updated.ts`: a commit touched a book page after the day the file records, a page's path list changed, a page missing or orphaned, a path that matches nothing, a client module importing the file | `build` (the check, skipped on a shallow clone or Vercel), `lint:all` (both); `pnpm build:updated --staged` before a commit |
 | `pnpm lint:skills`, `pnpm test:skills` | a curated skill off its contract (frontmatter, Sources, em dashes, home paths, emails, a slug the wiki already holds, a missing README row), a stale `src/lib/skills.ts`, and the installer's behaviour | `lint:all` (both) |
-| `pnpm check:pages` | overflow, clipping, errors, tap targets, invariants, layout shift, interactions | by hand on touched pages each round, the whole site before a release |
+| `pnpm check:pages` | overflow, clipping, errors, tap targets, invariants, layout shift, interactions, the presenter's titles, every deck slide, on phones, tablets and desktops | `--preset quick` by hand on touched pages each round, the full preset on the whole site before a release |
 | `pnpm exec tsc --noEmit` | types | by hand, 3 to 5 minutes |
 
 `pnpm lint:all` is
@@ -256,25 +256,37 @@ temporary folders.
 ### check:pages
 
 `pnpm check:pages` (`scripts/pagecheck/`, its README explains it) loads every
-page on the dev server at ten viewports (360x800, 390x844, 430x932,
-768x1024, 1024x768, 1280x720, 1440x900, 1527x814, 1920x1080, 2560x1440) in
-both themes, then runs a layout-shift observer on every page at four
-viewports and the declared interactions with before and after captures. It
-writes `.pagecheck/REPORT.md` with each defect's page, viewport, theme,
-`file:line` and a proposed fix, and exits 1 on any defect or failed
+page on the dev server on the device table in `scripts/site-pages.mjs`
+(phones from 320 wide and on their sides, tablets in both orientations,
+laptops, desktops to the 3440 ultrawide, 1440x900 at 200% zoom). A phone or
+a tablet is a touch device whatever its width. `--preset quick` reads eight
+devices in dark and 1440x900 in light; the default full preset reads every
+device in dark and three in light. Each cell waits for the page's own ready
+signal and a still layout, not a fixed time. The declared interactions run
+in the same queue of four jobs, among them the presenter walked slide by
+slide on every device and every deck slide checked inside its sheet. It
+writes `.pagecheck/REPORT.md` with each defect's page, device, theme,
+`file:line` and a proposed fix, a page by device grid, the presenter's and
+the deck's tables and the run's timing, and exits 1 on any defect or failed
 interaction.
 
 - Defects: horizontal overflow, a box past the viewport edge, text clipped
   mid-word, a console error or failed resource outside the allowlist, the
-  theme not applied, a phone tap target under 40px on its smaller side, a
-  site invariant from `hooks.mjs` that did not hold, a page that failed to
-  load.
-- Notes, read and fixed only when asked: tap targets of 40 to 43px (44 is the
-  target), ellipsis truncations, console messages the allowlist absorbed.
-- Fast forms: `--pages gallery,docs --viewports 1440x900 --themes dark`,
-  `--no-cls --no-interactions`, `--report-only` to rebuild the report from a
-  finished run. `CHROME_PATH` names the browser when it is not at the
+  theme not applied, a phone tap target whose hit area is under 40px on its
+  smaller side, a layout shift score over 0.1, a site invariant from
+  `hooks.mjs` that did not hold, a page that failed to load.
+- Notes, read and fixed only when asked: phone tap targets of 40 to 43px
+  (44 is the target), a tablet's targets under 40 (Kevin has not decided on
+  tablet touch sizing), a layout shift over 0.05, ellipsis truncations,
+  console messages the allowlist absorbed.
+- Fast forms: `--preset quick --pages gallery,docs`, `--pages present
+  --viewports 390x844,1440x900 --themes dark`, `--no-interactions`,
+  `--interactions present-walk`, `--report-only` to rebuild the report from
+  a finished run. `CHROME_PATH` names the browser when it is not at the
   default path.
+- Performance budgets are not judged: the dev server compiles on demand and
+  the live site sends headless Chrome to the Vercel checkpoint, so the
+  paints and the blocking time are readings.
 
 ### tsc
 
@@ -455,8 +467,8 @@ finding there.
       are captured.
 - [ ] The production build ran in a scratch worktree.
 - [ ] SVG figures were checked by eye at 2x crops of their junctions.
-- [ ] `pnpm check:pages` on the touched pages shows zero defects and every
-      interaction passing, in both themes.
+- [ ] `pnpm check:pages --preset quick` on the touched pages shows zero
+      defects and every interaction passing.
 - [ ] `pnpm exec tsc --noEmit` passes.
 
 ## Related skills

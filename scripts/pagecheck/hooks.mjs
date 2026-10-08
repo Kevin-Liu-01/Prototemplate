@@ -33,6 +33,11 @@
 // No page scrolls horizontally: the generic noOverflow and noPastEdge
 // checks in probes.mjs hold that one for every page.
 //
+// PRESENTER names what the present-walk interaction reads on each of the
+// presenter's slides (the title it lands on, the close beat's title, the
+// prototypes grid) and how many prototypes the presenter shows. DECK_SKIP
+// names what the deck's grid and book reads leave out.
+//
 // where() names the file and line a failed check points at through
 // locate.mjs (the stylesheet line declaring the element's class, the
 // component line rendering its text, the line naming a requested path),
@@ -41,7 +46,8 @@
 //
 // Another site can supply its own module through --hooks-module; it must
 // export LANDMARKS, SKIP, TAP_SCOPE, CONSOLE_ALLOW, siteReads, judge and
-// where with the same shapes.
+// where with the same shapes (PRESENTER, DECK_SKIP and deckDoc serve this
+// site's own interactions).
 import { ROOT } from '../site-pages.mjs';
 import { parseErrors } from './context.mjs';
 import { locateAsset, locateClass, locateElement, locateText, parseDesc } from './locate.mjs';
@@ -100,6 +106,43 @@ export const TAP_SCOPE = 'main, .pt-viewer, .pt-corner, .pt-corner-layer, .pr-ro
  */
 export const CONSOLE_ALLOW = /hydrat|did not match|extra attributes from the server|Download the React DevTools|Fast Refresh/i;
 
+/**
+ * The presenter's walk (interactions.mjs present-walk). Each stop is a
+ * slide in the presenter's order (src/app/present/PresenterApp.tsx,
+ * SLIDES): the walk presses j from the first, waits for the scroll to
+ * rest, and the stop's title must be on screen with nothing painted over
+ * it. The close beat is the end of the Details slide, where "So I built
+ * 12" heads the contact sheet (TypeDetailSlide.tsx), read at `at` of the
+ * slide's pin length; the grid opens with G on the Prototypes slide
+ * (PrototypeViewer.tsx). `count` is how many prototypes the presenter
+ * shows (Kevin, 2026-10-08: the first 16, so the close title fits), read
+ * on the contact sheet and in the grid. The chrome boxes must not overlap
+ * one another.
+ */
+export const PRESENTER = {
+  count: 16,
+  stops: [
+    { slide: 'intro', title: '.pr-intro-title' },
+    { slide: 'why', title: '.pr-why-big' },
+    { slide: 'need', title: '[data-slide="need"] h2' },
+    { slide: 'craft', title: '[data-slide="craft"] h2' },
+    { slide: 'detail', title: '.pr-detail-head h2' },
+    { slide: 'prototypes', title: '.pr-dock-label strong' },
+    { slide: 'scoreboard', title: '.pr-score-title' },
+  ],
+  close: { slide: 'detail', at: 0.97, title: '.pr-detail-close h3', tiles: '.pr-close-tile' },
+  grid: { slide: 'prototypes', key: 'g', title: '.pr-grid-head strong', cards: '.pr-grid-cards > button', dock: '.pr-dock', fitFrom: 1280 },
+  chrome: ['.pr-hud-brand', '.pr-hud-author', '.pr-hud-rail', '.pr-dock', '.pr-notes'],
+};
+
+/** What the deck's grid and book reads leave out: the scaled slides inside each thumb and page clip on purpose. */
+export const DECK_SKIP = ['.mini', '.thumb-frame', '.page-frame', 'canvas'];
+
+/** The document the deck is read in: its own document inside the /deck frame (src/app/deck/DeckFrame.tsx), or the page when the deck is served directly. */
+export function deckDoc(page) {
+  return page.frames().find((f) => /brand-deck\.html/.test(f.url())) ?? page.mainFrame();
+}
+
 /** The sidebar's two widths (tokens.css --pt-sb-w, ViewerShell.css thumbs density). */
 const SIDEBAR_WIDTHS = [208, 256];
 
@@ -150,7 +193,7 @@ export async function siteReads(page, cell, item) {
     };
   });
   if (item.id === 'deck') {
-    const frame = page.frames().find((f) => /brand-deck\.html/.test(f.url()));
+    const frame = deckDoc(page);
     site.deck = frame
       ? await frame.evaluate(() => {
           const sheet = document.getElementById('sheet');
@@ -212,7 +255,15 @@ export function judge(reads, site, cell, item) {
       const inside = d.sheet.x >= -1 && d.sheet.y >= -1 && d.sheet.right <= d.innerWidth + 1 && d.sheet.bottom <= d.innerHeight + 1;
       const ratio = d.sheet.w / d.sheet.h;
       judge.deckSheet = inside && Math.abs(ratio - 16 / 9) <= ASPECT_SLACK * (16 / 9);
-      info.deck = { sheet: d.sheet, frame: [d.innerWidth, d.innerHeight], ratio: Math.round(ratio * 1000) / 1000, counter: d.counter, noSidebar: d.noSidebar };
+      /* scale: the 1600px sheet's drawn width over its design width, a reading for the phone layout */
+      info.deck = {
+        sheet: d.sheet,
+        frame: [d.innerWidth, d.innerHeight],
+        ratio: Math.round(ratio * 1000) / 1000,
+        scale: Math.round((d.sheet.w / 1600) * 100) / 100,
+        counter: d.counter,
+        noSidebar: d.noSidebar,
+      };
     }
   }
   if (L.docsToc) {
@@ -253,21 +304,22 @@ function placeElement(detail, item) {
 /**
  * The fix for a tap target under 40px, from what the element is: a field
  * gets a 44px row, a text link (wider than twice its height) a 44px line
- * box, a dot or glyph a hit area around it, a square icon control a 44px
- * square, any other control a 44px height. The drawing keeps its size in every case.
+ * box, and a dot, a glyph or a control a hit area grown past its box by a
+ * transparent ::after on a touch device, with the gaps beside it wide
+ * enough that neighbors' areas do not overlap (the shell toolbar's touch
+ * phone block in Toolbar.css). The drawing keeps its size in every case.
  */
 function tapFix(t) {
-  if (!t || typeof t !== 'object') return 'give the control a 44px tap box under the 900px cut (min-height and min-width 44) while the drawing stays its size';
+  const grow = 'on a touch device give it a transparent ::after inset past its box (and gaps that leave room, so neighbors do not overlap), the way Toolbar.css does for the toolbar';
+  if (!t || typeof t !== 'object') return `${grow}; the drawing stays its size`;
   const { tag } = parseDesc(t.el);
   const size = t.size ?? 0;
   if (tag === 'input') return 'give the field a 44px row under 900px (min-height 44); the type and the border stay';
   if (tag === 'a' && t.w > 2 * t.h) return 'set the link inline-flex with min-height 44 and align-items center under 900px, or lift it into a 44px row; the type stays, the hit box grows';
-  if (size < GLYPH_MAX) return `draw the ${size}px glyph inside a 44px hit area (padding, or a ::after box with a negative margin) so the layout keeps its spacing while the touch box reads 44`;
-  if (Math.abs(t.w - t.h) <= 4) return `give the control a 44px square under the 900px cut (min-width and min-height 44, the ${size}px drawing centered through padding); the bar can keep its 52px row`;
+  if (size < GLYPH_MAX) return `the ${size}px glyph needs a 44px hit area: ${grow}`;
   /* the side under 40 is the one to grow: a tall narrow icon link needs width, a wide short button needs height */
-  return t.w < t.h
-    ? 'give the control min-width 44 under 900px (padding each side grows the box; the icon and the label stay)'
-    : 'give the control min-height 44 under 900px (padding grows the box; the label and the drawing stay)';
+  if (Math.abs(t.w - t.h) <= 4) return `the ${size}px square needs a 44px hit area: ${grow}`;
+  return t.w < t.h ? `grow its width to a 44px hit area: ${grow}` : `grow its height to a 44px hit area: ${grow}`;
 }
 
 /** The file column and the fix for a cell's console errors: the lines that build or name each failed path. */
@@ -329,6 +381,13 @@ export function where(key, detail, item) {
       return { file: placeElement(detail, item), fix: 'let the text wrap, scroll (overflow-x auto) or truncate with an ellipsis instead of clipping mid-word' };
     case 'noOverflow':
       return { file: placeElement(detail, item), fix: 'find the box past the edge (noPastEdge names it) and keep it inside the viewport' };
+    case 'noLayoutShift': {
+      const source = detail?.shifts?.[0]?.sources?.[0];
+      return {
+        file: source ? placeElement({ el: source, text: '' }, item) : pageFolder(item),
+        fix: 'reserve the box before first paint (a fixed height, aspect-ratio or min-height) so nothing moves once it renders',
+      };
+    }
     case 'themeApplied':
       return {
         file: `${textRef("'gt-theme'", ['src/app/*'], 'src/app/layout.tsx')} (the boot script) and ${textRef('gt-theme', shell, 'src/components/viewer/ThemeButton.tsx')}`,

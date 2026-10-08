@@ -11,21 +11,30 @@
 //   leave it out; text-overflow ellipsis is marked as a truncation and
 //   becomes a note), the document height, the first h1 and its box, the
 //   theme as the root carries it (html[data-theme] and the dark class),
-//   the phone tap targets (buttons, links with an href, inputs, role
-//   button or combobox, inside the scope the site names) with their boxes,
-//   and the boxes of the named landmarks a site hook compares across pages.
-//   Every element reading carries `within`, the nearest ancestor with a
-//   class, so the report can place a bare link by its row or group.
+//   on a touch device the tap targets (buttons, links with an href,
+//   inputs, role button or combobox, inside the scope the site names)
+//   with their boxes, and the boxes of the named landmarks a site hook
+//   compares across pages. Every element reading carries `within`, the
+//   nearest ancestor with a class, so the report can place a bare link by
+//   its row or group.
+//
+// A tap target's size is its hit area where the target is on screen: how
+// far past each edge of its box a tap through its center still lands on
+// it (elementFromPoint), so a 32px drawing with a 44px ::after answers as
+// 44. Off screen, the box stands in.
 //
 // What counts: under 44px on the smaller side a tap target is listed;
-// under 40 it is a defect, 40 to 43 a note (the source system's rule, kept).
-// A clipped text whose box truncates with an ellipsis is a note, not a
-// defect, because the truncation is the design's own answer to a long
-// title; a clip without one hides words.
+// on a phone under 40 is a defect and 40 to 43 a note (the source
+// system's rule, kept). A tablet's targets are notes until Kevin decides
+// whether tablets get the phone's touch sizing. A clipped text whose box
+// truncates with an ellipsis is a note, not a defect, because the
+// truncation is the design's own answer to a long title; a clip without
+// one hides words. A layout shift score over 0.1 (the Web Vitals limit)
+// is a defect and over 0.05 a note.
 
 /**
  * The read, run inside the document.
- * cfg.phone: whether the viewport is a phone (tap targets are read then).
+ * cfg.touch: whether the device is a phone or a tablet (tap targets are read then).
  * cfg.w, cfg.h: the viewport.
  * cfg.skip: selectors whose subtrees are left out of the edge and clip reads.
  * cfg.landmarks: name to selector; each box is returned under its name.
@@ -145,9 +154,32 @@ export const readPage = (cfg) => {
     });
   }
 
-  /* 3. phone tap targets */
+  /* the hit area through the center: how far past each edge a tap still lands on the target; null off screen */
+  const HIT_MAX = 12;
+  const hitArea = (el, b) => {
+    if (b.left < 0 || b.top < 0 || b.right > window.innerWidth || b.bottom > window.innerHeight) return null;
+    const on = (x, y) => {
+      const t = document.elementFromPoint(x, y);
+      return Boolean(t) && (t === el || el.contains(t));
+    };
+    const cx = (b.left + b.right) / 2;
+    const cy = (b.top + b.bottom) / 2;
+    if (!on(cx, cy)) return null;
+    /* in quarter pixels: the last offset that still lands, plus the quarter it stands for */
+    const reach = (x, y, dx, dy) => {
+      let n = 0;
+      while (n < HIT_MAX * 4 && on(x + (dx * (n + 1)) / 4, y + (dy * (n + 1)) / 4)) n++;
+      return n ? (n + 1) / 4 : 0;
+    };
+    return {
+      w: b.width + reach(b.left, cy, -1, 0) + reach(b.right, cy, 1, 0),
+      h: b.height + reach(cx, b.top, 0, -1) + reach(cx, b.bottom, 0, 1),
+    };
+  };
+
+  /* 3. tap targets on a touch device */
   const targets = [];
-  if (cfg.phone) {
+  if (cfg.touch) {
     const scopes = [...document.querySelectorAll(cfg.tapScope)];
     const seen = new Set();
     for (const scope of scopes) {
@@ -160,13 +192,14 @@ export const readPage = (cfg) => {
         if (!vr) continue;
         const b = el.getBoundingClientRect();
         /* a target scrolled out of the viewport is still a target; one clipped away by a closed panel is not */
+        const hit = hitArea(el, b) ?? { w: b.width, h: b.height };
         targets.push({
           el: desc(el),
           within: within(el),
           text: (text(el) || el.getAttribute('aria-label') || el.getAttribute('title') || '').slice(0, 30),
-          w: r1(b.width),
-          h: r1(b.height),
-          size: r1(Math.min(b.width, b.height)),
+          w: r1(hit.w),
+          h: r1(hit.h),
+          size: r1(Math.min(hit.w, hit.h)),
           y: r1(b.y),
         });
       }
@@ -213,12 +246,58 @@ export const readPage = (cfg) => {
 export const TAP_DEFECT_UNDER = 40;
 export const TAP_NOTE_UNDER = 44;
 
+/** The layout shift limits: over CLS_DEFECT a defect, over CLS_NOTE a note. */
+export const CLS_DEFECT = 0.1;
+export const CLS_NOTE = 0.05;
+
+/** The long tasks a cell counts toward its blocking time (ms over 50, as Lighthouse sums TBT). */
+const LONG_TASK_MS = 50;
+
+/** What the context's observers collected (context.mjs observeVitals), read inside the page. */
+export const readVitals = () => window.__pcVitals ?? null;
+
+/**
+ * The layout shift score as Web Vitals counts it: shifts without a recent
+ * input, grouped into windows that close after 1s without a shift or 5s
+ * in all, and the largest window's sum.
+ */
+export function clsOf(shifts) {
+  let best = 0;
+  let sum = 0;
+  let start = -Infinity;
+  let last = -Infinity;
+  for (const s of shifts.filter((x) => !x.recent)) {
+    if (s.t - last > 1000 || s.t - start > 5000) {
+      sum = 0;
+      start = s.t;
+    }
+    sum += s.value;
+    last = s.t;
+    best = Math.max(best, sum);
+  }
+  return Math.round(best * 10000) / 10000;
+}
+
+/** The vitals a cell reports: the layout shift score with its largest shifts, the largest paint and the long tasks. */
+export function summarizeVitals(v) {
+  if (!v) return null;
+  const top = [...v.shifts].sort((a, b) => b.value - a.value).slice(0, 3);
+  return {
+    cls: clsOf(v.shifts),
+    shifts: top.map((s) => ({ t: s.t, value: Math.round(s.value * 10000) / 10000, sources: s.sources })),
+    lcp: v.lcp,
+    longTasks: v.longTasks.length,
+    blockingMs: v.longTasks.reduce((n, d) => n + Math.max(0, d - LONG_TASK_MS), 0),
+  };
+}
+
 /**
  * The generic judgements from a cell's reads: `judge` holds pass or fail
  * booleans, `info` the readings the report prints beside them.
- * consoleErrors is the list after the allowlist has been applied.
+ * consoleErrors is the list after the allowlist has been applied; vitals
+ * is summarizeVitals' reading, or null when the observers saw nothing.
  */
-export function judgeReads(reads, cell, consoleErrors) {
+export function judgeReads(reads, cell, consoleErrors, vitals) {
   const judge = {};
   const info = {};
   judge.noOverflow = reads.scrollWidth <= reads.innerWidth;
@@ -232,10 +311,18 @@ export function judgeReads(reads, cell, consoleErrors) {
   judge.themeApplied = reads.theme.data === cell.theme;
   /* a reading, not a check: the deck and the presenter have no h1 by design */
   info.h1Count = reads.h1Count;
-  if (cell.phone) {
-    info.targetsUnder40 = reads.targets.filter((t) => t.size < TAP_DEFECT_UNDER);
+  if (cell.kind !== 'desktop') {
+    const under = reads.targets.filter((t) => t.size < TAP_DEFECT_UNDER);
     info.targets40to43 = reads.targets.filter((t) => t.size >= TAP_DEFECT_UNDER && t.size < TAP_NOTE_UNDER);
-    judge.tapTargets = info.targetsUnder40.length === 0;
+    /* a phone fails under 40; a tablet's small targets are notes until Kevin decides on tablet touch sizing */
+    if (cell.kind === 'phone') {
+      info.targetsUnder40 = under;
+      judge.tapTargets = under.length === 0;
+    } else info.tabletUnder40 = under;
+  }
+  if (vitals) {
+    judge.noLayoutShift = vitals.cls <= CLS_DEFECT;
+    info.noLayoutShift = vitals;
   }
   return { judge, info };
 }

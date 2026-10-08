@@ -187,7 +187,7 @@ Kevin's ask on 2026-09-28 was "make our spacing a lot better, kerning a lot bett
 - Seed the theme before load: `localStorage['gt-theme']` for Prototemplate and the deck, the `theme` key or the `dark` class on `<html>` for gt-cloud.
 - Scroll through a page before a full-page capture, because plates mount on IntersectionObserver.
 - Crop every junction at `deviceScaleFactor: 2`. The line auditor reads computed CSS and cannot see SVG strokes.
-- `pnpm check:pages --pages <id>` reads ten viewports in both themes for overflow, clipping, tap targets and layout shift. `pnpm lint:lines:shell` audits the chrome's lines. `node shoot-slide.mjs 8 15`, run in `deck/`, renders slides in both themes and reports overflow.
+- `pnpm check:pages --preset quick --pages <id>` reads phones, a tablet, laptops, desktops and the ultrawide for overflow, clipping, tap targets and layout shift, and walks the presenter's slides on each. `pnpm lint:lines:shell` audits the chrome's lines. `node shoot-slide.mjs 8 15`, run in `deck/`, renders slides in both themes and reports overflow.
 
 ### Reading Kevin's asks
 

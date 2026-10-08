@@ -1,10 +1,12 @@
-// The layout-shift run for one page at one viewport and theme: a
-// PerformanceObserver on layout-shift installed before navigation (an init
-// script, so the entries from the first paint are buffered), then 6s of
-// box samples every 50ms (the document height, the h1, every landmark),
-// then the entries over 0.001 with their sources, and an end capture.
-// Writes <out>/<id>-<WxH>-<theme>.json and -end.png and returns the
-// summary the report prints.
+// The layout-shift trace (pnpm check:pages --cls-trace): for a cell whose
+// shift score reached a note, the page is loaded again with a
+// PerformanceObserver on layout-shift installed before navigation (an
+// init script, so the entries from the first paint are buffered), then 6s
+// of box samples every 50ms (the document height, the h1, every
+// landmark), then the entries over 0.001 with their sources, and an end
+// capture. Writes <out>/<id>-<device>-<theme>.json and -end.png. Every
+// cell already reads and judges its score (probes.mjs); the trace is for
+// explaining a shift.
 //
 // Why the sampling as well as the observer: the observer reports what the
 // browser counts as a shift, which excludes moves within 500ms of an
@@ -23,10 +25,9 @@ const SAMPLE_EVERY_MS = 50;
 /** Entries at or under this value are noise the report does not list. */
 const SHIFT_FLOOR = 0.001;
 
-export async function runCls(browser, { base, item, viewport, theme, outDir, landmarks }) {
-  const { w, h } = viewport;
-  const tag = `${item.id}-${w}x${h}-${theme}`;
-  const context = await cellContext(browser, { w, h, theme });
+export async function runCls(browser, { base, item, device, theme, outDir, landmarks }) {
+  const tag = `${item.id}-${device.name}-${theme}`;
+  const context = await cellContext(browser, { device, theme });
   await context.addInitScript(() => {
     window.__pcShifts = [];
     const desc = (n) =>
@@ -95,7 +96,7 @@ export async function runCls(browser, { base, item, viewport, theme, outDir, lan
     const over = tail.shifts.filter((s) => s.value > SHIFT_FLOOR);
     result = {
       id: item.id,
-      viewport: `${w}x${h}`,
+      viewport: device.name,
       theme,
       count: values.length,
       sum: +values.reduce((a, b) => a + b, 0).toFixed(4),
@@ -109,7 +110,7 @@ export async function runCls(browser, { base, item, viewport, theme, outDir, lan
       changed,
     };
   } catch (err) {
-    result = { id: item.id, viewport: `${w}x${h}`, theme, error: String(err).slice(0, 400), consoleErrors: errors };
+    result = { id: item.id, viewport: device.name, theme, error: String(err).slice(0, 400), consoleErrors: errors };
   }
   writeFileSync(join(outDir, `${tag}.json`), JSON.stringify(result, null, 1));
   await context.close();

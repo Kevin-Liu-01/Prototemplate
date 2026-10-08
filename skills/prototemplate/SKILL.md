@@ -141,11 +141,10 @@ A page, a document or a skill appears in several hand-kept lists. A change updat
 | `src/app/sitemap.ts` | a static list of routes plus loops over the registries | crawlers |
 | `public/llms.txt` | the hub described for agents, written by hand | agents |
 | `src/app/layout.tsx` | the site description, the keywords and the Open Graph text | every page's metadata |
-| `scripts/capture-pages.mjs` (`routes` in `targets()`) | the routes shot for the previews | `public/shots/pages`, then `pnpm build:thumbs` |
-| `scripts/pagecheck/pages.mjs`, `scripts/lint-lines.mjs` (`shellRoutes()`) | the routes each gate walks | `pnpm check:pages`, `pnpm lint:lines:shell` |
+| `scripts/site-pages.mjs` (`siteRoutes()`) | every route a browser tool walks, each row tagged with its tools (`check`, `live`, `lines`, `capture`), and the device table | `pnpm check:pages`, `pnpm lint:lines:shell`, the live lints, `pnpm capture:pages` (then `pnpm build:thumbs`) |
 
 - `src/lib/skills.ts` and `src/lib/motion.ts` are generated. Edit their sources and rerun `pnpm build:skills` or `pnpm build:motion`.
-- `lint-lines.mjs` and `pagecheck/pages.mjs` find a first slug by regex: `id: '` after `export const SKILLS` in `skills.ts`, the first quoted string after `export const MOTION_PACKAGE_SLUGS` in `motion.ts` and `entry('` in `archive.ts`. For the direction, `lint-lines.mjs` takes the first `slug: '` in `directions.ts`, and `pages.mjs` takes the first `DIRECTIONS` entry without `site: true` (`firstExplorationSlug` in `scripts/site-pages.mjs`). `pages.mjs` also reads the first `slug: '` after `export const DOCS` and the newest post in `content/blog`. A generator that changes its output shape breaks both gates.
+- `scripts/site-pages.mjs` finds a first slug by regex for every browser tool: `id: '` after `export const SKILLS` in `skills.ts`, the first quoted string after `export const MOTION_PACKAGE_SLUGS` in `motion.ts`, `entry('` in `archive.ts`, the first `slug: '` after `export const DOCS`, the first `DIRECTIONS` entry without `site: true` (`firstExplorationSlug`) and the newest post in `content/blog`. A generator that changes its output shape breaks every browser gate.
 - `DOC_HEADINGS`, `HANDBOOK_HEADINGS` and `DECK_SLIDES` are snapshots. A document that gains or renames an h2 updates its table in the same change; `check-registries.mjs` reports the drift.
 - The live domain is www.prototemplate.com. `SITE_URL` in `layout.tsx` and `sitemap.ts` still names prototemplate.vercel.app, which is the personal project's alias, and every link in `llms.txt` names it too.
 
@@ -191,7 +190,7 @@ The same round asked for full titles that wrap to two lines with no ellipsis (`s
 
 `references/adding.md` gives each list file by file, along with directions, shipped pages, films and stills.
 
-- **A page** needs the route's `page.tsx` and viewer, a row in `PAGES` or `KNOWLEDGE` of `surfaces.ts`, `PAGE_ICON` in `Sidebar.tsx` and `search-index.ts`, `PAGE_KEYWORDS`, `under` on its sections, a sitemap line, lines in `llms.txt` and the README, an entry in the capture routes followed by `pnpm capture:pages --only <id>` and `pnpm build:thumbs`, and entries in `pagecheck/pages.mjs` and `lint-lines.mjs`.
+- **A page** needs the route's `page.tsx` and viewer, a row in `PAGES` or `KNOWLEDGE` of `surfaces.ts`, `PAGE_ICON` in `Sidebar.tsx` and `search-index.ts`, `PAGE_KEYWORDS`, `under` on its sections, a sitemap line, lines in `llms.txt` and the README, a row in `siteRoutes()` of `scripts/site-pages.mjs` tagged with the tools that walk it, then `pnpm capture:pages --only <id>` and `pnpm build:thumbs`.
 - **A document** needs the file, a `DOCS` entry, its h2s in `DOC_HEADINGS`, lines in `llms.txt` and the README's "Read first" table, and a `docs-<slug>` capture. Its links resolve through `src/app/docs/links.ts`.
 - **A handbook document** needs `docs/handbook/<slug>.md`, a `HANDBOOK` entry in `src/app/handbook/registry.ts`, its h2s in `HANDBOOK_HEADINGS`, its row in `docs/handbook/README.md` and AGENTS.md's handbook list, a line in `llms.txt`, and a `handbook-<slug>` capture.
 - **A page with a book head** follows DESIGN.md section 4 (The book page): its `PAGE_NAMES` entry, `BookHead` with three facts, `requireUpdated` from the server page, an entry in `scripts/build-updated.mjs`, its route in `lint-heads.mjs`' live list, then `pnpm build:updated`.
@@ -238,7 +237,7 @@ On Kevin's machine `$PROTOTEMPLATE` is one working tree that several Claude sess
 
 1. `pnpm exec tsc --noEmit`, which takes 3 to 5 minutes.
 2. `pnpm lint:all`, which chains the static lints (`lint:shell`, `lint:practices`, `lint:type`, `lint:radius`, `lint:heads`, `lint:skills`, `lint:updated`, `lint:code`, `lint:pictures`), the browser audits against the dev server on 3005 (`lint:lines:shell`, `lint:type:live`, `lint:radius:live`, `lint:heads:live`) and the lint tests; `package.json` holds the exact chain. It takes about 25 minutes. Run the browser gates one at a time, because a parallel capture made `lint:lines:shell` fail on 2026-10-01.
-3. `pnpm check:pages --pages <ids>` on the touched routes, with zero defects and every interaction passing.
+3. `pnpm check:pages --preset quick --pages <ids>` on the touched routes (phones, a tablet, laptops, desktops and the ultrawide), with zero defects and every interaction passing.
 4. A look at both themes at 1440 and 390 wide, with 2x crops of every junction a figure draws, because the line audit cannot see SVG strokes.
 5. `pnpm build` in a scratch worktree, gated with `&&` and never piped.
 
@@ -310,7 +309,7 @@ metadata:
 - [ ] Generated files changed only through their scripts.
 - [ ] Prose that states a count, a port or a path matches the code.
 - [ ] Only the change's own paths are staged, and `motion/` and the other lanes' paths are untouched.
-- [ ] tsc, `lint:all`, `check:pages` on the touched routes, both themes at 1440 and 390, and the scratch worktree build all pass.
+- [ ] tsc, `lint:all`, `check:pages --preset quick` on the touched routes, both themes at 1440 and 390, and the scratch worktree build all pass.
 - [ ] Kevin reviewed the change on localhost before it reached main.
 - [ ] A new or changed skill passes the contract in section 10.
 

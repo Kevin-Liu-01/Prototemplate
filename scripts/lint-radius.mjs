@@ -62,7 +62,8 @@ import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { EXEC, liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './lint-type.mjs';
+import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './lint-type.mjs';
+import { CHROME_PATH, seedTheme } from './site-pages.mjs';
 
 export const TOKENS = 'src/components/viewer/tokens.css';
 
@@ -594,7 +595,7 @@ async function runLive(root, argv) {
     console.error(`lint:radius --live needs playwright-core: ${error}`);
     return 2;
   }
-  const browser = await chromium.launch({ executablePath: EXEC, headless: true });
+  const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   const failures = [];
   const warnings = [];
   let broken = 0;
@@ -602,11 +603,7 @@ async function runLive(root, argv) {
   /** One page at one width and theme: load, settle, collect at rest, under each overlay key and on the hover pass. */
   const visit = async (path, width, theme, keys = []) => {
     const ctx = await browser.newContext({ viewport: { width, height: width <= 600 ? 844 : 900 } });
-    await ctx.addInitScript((t) => {
-      try {
-        localStorage.setItem('gt-theme', t);
-      } catch {}
-    }, theme);
+    await seedTheme(ctx, theme);
     const page = await ctx.newPage();
     try {
       const resp = await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded', timeout: 240000 });
@@ -638,15 +635,18 @@ async function runLive(root, argv) {
     }
   };
 
-  const { routes: all, missing } = await liveRoutes(browser, base, root);
-  if (missing.length) {
-    console.error(`lint:radius --live: no first ${missing.join(', ')} was found`);
-    broken++;
+  let all;
+  try {
+    all = liveRoutes();
+  } catch (error) {
+    await browser.close();
+    console.error(`lint:radius --live: ${error instanceof Error ? error.message : error}`);
+    return 2;
   }
   const routes = all.filter((r) => !r.deck && !SKIP_ROUTES.test(r.path)).filter((r) => !only || r.path.includes(only));
   const tasks = [];
   for (const route of routes) {
-    for (const width of widths) tasks.push({ route, width, theme: 'dark', keys: route.keys ?? [] });
+    for (const width of widths) tasks.push({ route, width, theme: 'dark', keys: route.keys });
     if (route.path === '/brand') tasks.push({ route, width: widths[0], theme: 'light', keys: [] });
   }
   let next = 0;
