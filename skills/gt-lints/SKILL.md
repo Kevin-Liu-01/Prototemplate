@@ -225,16 +225,16 @@ authority; the type system it holds is in `gt-brand` (`references/type.md`).
   Static mode reads `src/**/*.{css,ts,tsx}` minus `ALLOW_FILES`, prints
   `file:line RULE message`, and exits 0 on a pass, 1 on failures and 2 on
   an infrastructure failure.
-- Hard rules T1 to T9: every family reads a type token or `inherit`; no
-  family is named Inter, InterVariable, Inter var, Inter Display or
-  Lausanne, and no `@font-face` has a `local()` source; `src/lib/fonts.ts`
-  binds `ptInter` and no binding is named after an installed family;
-  `font-feature-settings` reads `--pt-ff-text` or `--pt-ff-display`; no
-  `font-variation-settings` and no `font-optical-sizing: none`; no weight
-  above 500 outside the nameplate and the specimens; `h1` and `h2` rules
-  take their size, line height and tracking from the `--pt-d*` tokens and
-  never set a family or features; no positive tracking on Inter; mono only
-  on code elements and the named `MONO` selectors.
+- Hard rules T1 to T9: every family reads a type token or `inherit`; no family
+  is named Inter, InterVariable, Inter var, Inter Display or Lausanne, and no
+  `@font-face` has a `local()` source; `src/lib/fonts.ts` binds `ptInter`, no
+  binding is named after an installed family, and every other `localFont` sets
+  `preload: false`; `font-feature-settings` reads `--pt-ff-text` or
+  `--pt-ff-display`; no `font-variation-settings` and no `font-optical-sizing: none`;
+  no weight above 500 outside the nameplate and the specimens; `h1` and
+  `h2` rules take their size, line height and tracking from the `--pt-d*`
+  tokens and never set a family or features; no positive tracking on Inter;
+  mono only on code elements and the named `MONO` selectors.
 - Ratchets R1 to R3 count literal px `font-size`, `letter-spacing` and
   `line-height` per file against the baseline. A rise fails, a drop asks
   for `--update-baseline`, and a missing baseline fails.

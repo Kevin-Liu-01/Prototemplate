@@ -23,6 +23,7 @@ const display = localFont({
   ],
   variable: '--textile-block-display',
   display: 'swap',
+  preload: false,
   adjustFontFallback: 'Times New Roman',
 });
 

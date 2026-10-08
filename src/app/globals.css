@@ -55,6 +55,17 @@
   box-sizing: border-box;
 }
 
+/* Inter's italic, in the ptInter family that src/lib/fonts.ts binds for the
+   roman. Declared here rather than in next/font so no route preloads it: a
+   browser fetches it only when italic text renders (/brand and /motion). */
+@font-face {
+  font-family: ptInter; /* lint-type: allow the italic face of the family src/lib/fonts.ts declares */
+  src: url('/fonts/InterVariable-Italic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

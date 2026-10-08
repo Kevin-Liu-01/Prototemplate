@@ -28,6 +28,7 @@ const display = localFont({
   ],
   variable: '--screenfold-codex-display',
   display: 'swap',
+  preload: false,
 });
 
 /**

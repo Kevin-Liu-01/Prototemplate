@@ -23,6 +23,7 @@ const display = localFont({
   ],
   variable: '--stepped-fret-display',
   display: 'swap',
+  preload: false,
 });
 
 export const metadata = {

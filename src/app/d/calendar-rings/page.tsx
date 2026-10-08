@@ -40,6 +40,7 @@ const display = localFont({
   ],
   variable: '--calendar-rings-display',
   display: 'swap',
+  preload: false,
   adjustFontFallback: 'Times New Roman',
 });
 

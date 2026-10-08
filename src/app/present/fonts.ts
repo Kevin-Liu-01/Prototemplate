@@ -1,5 +1,9 @@
 import localFont from 'next/font/local';
 
+/* preload: false on both faces: Turbopack shares their @font-face rules with
+   other routes' CSS chunks, and Next preloads every font a chunk names
+   (scripts/lint-type.mjs, T3). */
+
 /** Presenter-only face for the intro lockup's "The"; scoped via page.tsx. */
 export const sora = localFont({
   src: [
@@ -9,6 +13,7 @@ export const sora = localFont({
   ],
   variable: '--font-sora',
   display: 'swap',
+  preload: false,
 });
 
 /** Presenter-only italic sans for the intro lockup's "website". */
@@ -21,4 +26,5 @@ export const instrument = localFont({
   ],
   variable: '--font-instrument',
   display: 'swap',
+  preload: false,
 });
