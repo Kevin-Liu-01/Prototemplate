@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 };
 
 /**
- * The brand deck as a page: the self-contained slideshow at
- * /public/brand-deck.html (fonts and screenshots inlined) framed to the
+ * The brand deck as a page: the slideshow at /public/brand-deck.html (its
+ * pictures under /public/deck-assets, loaded as slides come near) framed to the
  * viewport. The file carries its own viewer: a sidebar of live thumbnails,
  * a toolbar, an overview grid (g), present mode (p), dark mode (d),
  * fullscreen (f) and a shortcut card (?). Arrow keys move; the frame takes

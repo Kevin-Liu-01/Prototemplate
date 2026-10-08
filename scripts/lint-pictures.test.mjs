@@ -3,7 +3,7 @@
 //
 // Usage: pnpm test:pictures (node --test scripts/lint-pictures.test.mjs)
 import assert from 'node:assert/strict';
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { after, describe, test } from 'node:test';
@@ -242,11 +242,12 @@ describe('the deck slides', () => {
     reports(problems, 'deck/shots/mood-wave.jpg', 'pre-screened');
   });
 
-  test('a built deck whose inlined grids are stale', () => {
+  test('a built deck whose grid files are stale', () => {
     const root = fixture();
-    const stale = Buffer.from('a grid from an older cut').toString('base64');
-    writeFileSync(join(root, PATHS.builtDeck), `<canvas class="mood-img" data-tone="data:image/jpeg;base64,${stale}"></canvas>`);
-    reports(lintPictures(root), PATHS.builtDeck, '1 inlined, 1 unknown', 'run pnpm build:deck');
+    mkdirSync(join(root, 'public/deck-assets'));
+    writeFileSync(join(root, 'public/deck-assets/mood-earth.00000000.jpg'), 'a grid from an older cut');
+    writeFileSync(join(root, PATHS.builtDeck), '<canvas class="mood-img" data-tone="deck-assets/mood-earth.00000000.jpg"></canvas>');
+    reports(lintPictures(root), PATHS.builtDeck, '1 named, 1 unknown', 'run pnpm build:deck');
   });
 
   test('a deck picture placed off centre', () => {

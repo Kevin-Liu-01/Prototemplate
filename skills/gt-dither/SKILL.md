@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Dither and artifact pictures
   areas: graphics, aesthetic
-  updated: 2026-10-06
+  updated: 2026-10-08
   origin: prototemplate
 ---
 

@@ -79,7 +79,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Working in Prototemplate',
     description: 'How to work in Prototemplate, Kevin\'s hub and wiki for General Translation work: what each route holds, the repository map, the viewer shell and its props, the registries that move together (surfaces, search index, docs, sitemap, llms.txt, captures), the chrome and sidebar rules, the book page standard, adding a page, a document, a handbook document or a skill, the build scripts, the shared checkout and its session lanes, the gates and landing, keeping the hub current with gt-cloud, and the curated skills with their contract and install. Use when changing anything in the Prototemplate repository, when adding a route, document or skill to it, or when building on it from another project.',
     areas: ['website', 'components'],
-    updated: '2026-10-06',
+    updated: '2026-10-08',
     files: ['references/adding.md', 'references/shell.md', 'scripts/check-registries.mjs'],
   },
   {
@@ -124,7 +124,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Brand deck',
     description: 'How the General Translation brand deck in Prototemplate\'s deck/ folder is built and edited: the 1600 by 900 sheet, the Inter type sizes and color tokens, the layout classes, icons from the Heroicons 20 solid sprite, diagrams, openers and mood slides as artifact pictures, the speed mark slides, slide-scoped CSS, both themes, the build and shoot scripts, the registries a new slide touches, what counts as a defect, and how any GT presentation\'s story is written. Use when adding or editing a slide, rebuilding or checking the deck, reviewing a slide lane\'s work, writing another GT presentation, or borrowing the deck\'s grammar for another surface.',
     areas: ['aesthetic', 'graphics'],
-    updated: '2026-10-07',
+    updated: '2026-10-08',
     files: ['references/full-picture-slides.md', 'references/viewer-and-build.md', 'scripts/check-deck.mjs', 'scripts/heroicon-symbol.mjs'],
   },
   {
@@ -142,7 +142,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Lints and gates',
     description: 'Every lint and gate that holds General Translation\'s design and copy rules, what each catches, where it runs and how to fix a failure: Prototemplate\'s line auditor, shell token lint, practices ratchet, picture lint, type lint, gt-ui oxlint copy and page check, and gt-cloud\'s oxlint plugins, email identity check and oxfmt. Also covers how a new rule becomes a lint and the gate hygiene that keeps a red gate from passing (chained gates, real exit codes, one browser gate at a time). Use before committing in either repository, when a lint or a build gate fails, or when Kevin asks for a new rule to be enforced.',
     areas: ['lints'],
-    updated: '2026-10-06',
+    updated: '2026-10-08',
     files: ['references/gt-ui-rules.md', 'references/line-auditor.md'],
   },
   {
@@ -169,7 +169,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Dither and artifact pictures',
     description: 'General Translation\'s 1-bit material and its artifact pictures: the 4x4 and 8x8 Bayer screens, coverage tiers that nest, the CPU engine (dither.ts) and the GPU studio field with its BAYER_PRESETS, the landing hero\'s bayer-8x8 field as the one material on product surfaces, Glyphfield as the authoring source for new shaders, and the Blue Marble standard for dithered photographs and scans with its cutter (pnpm mood-tone), its lint and its retired pictures. Use when adding a dithered field, picture, cover or texture to any GT surface, when choosing or tuning a studio preset, or when cutting, replacing, crediting or reviewing a mood picture in Prototemplate or gt-cloud.',
     areas: ['graphics', 'aesthetic'],
-    updated: '2026-10-06',
+    updated: '2026-10-08',
     files: ['references/engines.md', 'references/pictures.md'],
   },
   {

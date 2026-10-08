@@ -24,7 +24,8 @@
  *     its manifest disagree on names, src or placement;
  *   - a deck mood slide does not name a manifest picture, a manifest
  *     picture has no slide, a slide shows a bitmap instead of its grid, or
- *     the built deck (public/brand-deck.html) inlines other bytes;
+ *     the built deck (public/brand-deck.html) names grid files under
+ *     public/deck-assets with other bytes;
  *   - a deck mood slide's plate has no credit, or the text around the
  *     transition demo on /docs (src/app/craft) does not credit a picture
  *     the demo shows;
@@ -414,12 +415,15 @@ function lintSlides(root, deck, built, problems) {
   for (const rel of listFiles(root, PATHS.deckShots)) {
     if (/^deck\/shots\/mood-[^/]+\.(jpg|png)$/.test(rel)) problems.push(`${rel}: a pre-screened mood file; a mood picture is its tone grid under ${PATHS.deckGrids}`);
   }
-  // the built deck inlines each grid with its bytes untouched
+  // the built deck names each grid as a file under public/deck-assets with its bytes untouched
   if (built !== null) {
-    const inlined = [...built.matchAll(/data-tone="data:image\/jpeg;base64,([^"]+)"/g)].map((m) => sha256(Buffer.from(m[1], 'base64')));
-    const unknown = inlined.filter((sha) => !deck.pictures.some((e) => e.sha256 === sha)).length;
-    if (unknown || inlined.length !== used.size || /data-tone="shots\//.test(built)) {
-      problems.push(`${PATHS.builtDeck}: its inlined tone grids differ from ${PATHS.deckGrids} (${inlined.length} inlined, ${unknown} unknown); run pnpm build:deck`);
+    const named = [...built.matchAll(/data-tone="([^"]+)"/g)].map((m) => {
+      const file = join(root, dirname(PATHS.builtDeck), m[1]);
+      return /^deck-assets\/[^/]+\.jpg$/.test(m[1]) && existsSync(file) ? sha256(readFileSync(file)) : null;
+    });
+    const unknown = named.filter((sha) => !deck.pictures.some((e) => e.sha256 === sha)).length;
+    if (unknown || named.length !== used.size) {
+      problems.push(`${PATHS.builtDeck}: its tone grids differ from ${PATHS.deckGrids} (${named.length} named, ${unknown} unknown); run pnpm build:deck`);
     }
   }
   return credits;

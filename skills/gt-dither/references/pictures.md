@@ -124,7 +124,7 @@ The full slide markup and placement rules are in the gt-deck skill
   sentences on why the picture is in the deck, and `<div class="credit">`.
 - Place it after a dense slide, at least one content slide away from the
   next section opener (`deck/shots/OPENERS.md`).
-- Update `SLIDE_COUNT` in `scripts/build-deck.mjs` (93 on 2026-10-05),
+- Update `SLIDE_COUNT` in `deck/assemble.mjs` (93 on 2026-10-05),
   `SECTIONS` in `deck/parts/tail.html`, `DECK_SLIDES` in
   `src/lib/search-index.ts` and the entry in `deck/shots/OPENERS.md`, then
   run `pnpm build:deck`.
@@ -176,8 +176,8 @@ Across the surfaces:
   picture has no slide, a slide shows a bitmap, a pre-screened `mood-*`
   file sits in `deck/shots`, a deck placement is not a centred cover, or
   the deck view is not the 1600 by 900 sheet;
-- `public/brand-deck.html` inlines grids other than the manifest's (run
-  `pnpm build:deck`);
+- `public/brand-deck.html` names grid files under `public/deck-assets`
+  other than the manifest's (run `pnpm build:deck`);
 - a mood slide's plate has no `<div class="credit">`, or the text around
   the transition demo does not carry the credit of each picture it shows;
 - the demo's grids are not byte copies of the deck's, a stray `mood-*` file
