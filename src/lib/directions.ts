@@ -50,8 +50,9 @@ export type Direction = {
 
 /**
  * The curated lineup. The maximalist round-one prototypes (old 00–09 and 11)
- * were retired from review on July 30, 2026 — their pages still exist under
- * src/app/d/ and answer at /d/<slug>, they just no longer appear here.
+ * were retired from review on July 30, 2026, and commit c064945 deleted
+ * their routes; src/lib/archive.ts keeps each as a capture with the commit
+ * that last held its code.
  */
 export const DIRECTIONS: Direction[] = [
   {
