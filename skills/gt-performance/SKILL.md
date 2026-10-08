@@ -245,7 +245,11 @@ day, and Prototemplate's `src/lib/glyph-field.ts` holds the pattern:
   and lets it animate under the pointer. Gallery tiles show static captures
   (`public/shots/<theme>/<slug>.jpg`), and
   `src/app/directions/DirectionFrame.tsx` keeps the capture behind its one
-  live frame until the frame loads. The gate wraps `requestAnimationFrame`
+  live frame until the frame loads. The presenter's prototype stage
+  (`src/app/present/viewer/PrototypeViewer.tsx`) loads with the page so it
+  is ready on arrival, and is frozen whenever no part of its section is on
+  screen; live, it cost about 110 ms of every second through the slides
+  before it (2026-10-08). The gate wraps `requestAnimationFrame`
   only, so a new scene animates on rAF; a loop on `setInterval` or
   `setTimeout` keeps running inside a frozen preview.
 - **An engine used on several pages lives in one shared library and

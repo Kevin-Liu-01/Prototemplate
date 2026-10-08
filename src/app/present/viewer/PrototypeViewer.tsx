@@ -16,6 +16,11 @@ import { setReview, useReviews } from './reviewStore';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
+/** Freezes or resumes a frame's rAF loops through the root layout's gate. */
+function setFrozen(frame: HTMLIFrameElement | null, frozen: boolean) {
+  frame?.contentWindow?.postMessage({ type: 'gt:freeze', frozen }, '*');
+}
+
 /**
  * The live prototype stage. The slides frame scales up into a full-screen
  * iframe of the current direction; a dock and a vertical carousel roll switch
@@ -29,6 +34,7 @@ export default function PrototypeViewer() {
   const roll = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLIFrameElement>(null);
   const activeTrigger = useRef<ScrollTrigger | null>(null);
+  const onScreen = useRef<ScrollTrigger | null>(null);
   const [index, setIndex] = useState(0);
   const [loadedSlug, setLoadedSlug] = useState<string | null>(null);
   const [notesOpen, setNotesOpen] = useState(false);
@@ -64,6 +70,15 @@ export default function PrototypeViewer() {
         trigger: root.current,
         start: 'top 60%',
         end: 'bottom 40%',
+      });
+
+      // The stage loads with the page so it is ready on arrival, and idles
+      // while no part of this section is on screen.
+      onScreen.current = ScrollTrigger.create({
+        trigger: root.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        onToggle: (self) => setFrozen(frame.current, !self.isActive),
       });
 
       // Deep link (/present?d=slug — the index rows link this way): land
@@ -250,12 +265,16 @@ export default function PrototypeViewer() {
 
   // The SSR-rendered iframe can finish loading before hydration attaches
   // React's onLoad, so the veil would never lift — watch the load natively and
-  // treat an already-complete document as loaded.
+  // treat an already-complete document as loaded. A page that loads while
+  // the stage is off screen is frozen at once.
   useEffect(() => {
     const el = frame.current;
     if (!el) return;
     const slug = current.slug;
-    const markLoaded = () => setLoadedSlug(slug);
+    const markLoaded = () => {
+      setLoadedSlug(slug);
+      if (!onScreen.current?.isActive) setFrozen(el, true);
+    };
     const doc = el.contentDocument;
     if (doc?.readyState === 'complete' && doc.body?.childElementCount)
       markLoaded();
