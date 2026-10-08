@@ -1,7 +1,8 @@
 slash-partnership: credits and sources
 General Translation and Slash: up to $2,000 in translation credits for Slash customers.
 Film: 19.5 s, 1920 x 1080, 60 fps. The 20 s cut, built 2026-10-06 and revised the same day
-after review (the 47.5 s cut and its credits are in archive-47s/).
+after review (the 47.5 s cut and its credits are in archive-47s/). Re-rendered 2026-10-08 on
+the 3 px screen (the 6 px cut is in archive-6px/).
 
 LOGOS AND MARKS (each drawn from its own file, true: no redrawing, no recolouring, no distortion)
 - Slash wordmark: assets/logos/slash-logo.svg, as the GT site serves it
@@ -11,10 +12,12 @@ LOGOS AND MARKS (each drawn from its own file, true: no redrawing, no recolourin
 
 THE LIGHT AND THE SCREEN
 - Kevin Liu's guidance image, assets/reference/slash-x-gt-kevin.webp: the palette (olive
-  #3b382b, gold #c1a56d, straw #c7b78d, screen gold #c6b75d, white), the shafts and the
-  6 px Bayer screen were measured from it. The film's light is an analytic field fitted to
-  the image (lib/light-fit.json), not the image itself.
-- Bayer screen: kit/dither.js (the 8 by 8 Bayer tile), 6 px cells anchored at (0, 0).
+  #3b382b, gold #c1a56d, straw #c7b78d, screen gold #c6b75d, white) and the shafts were
+  measured from it. The film's light is an analytic field fitted to the image
+  (lib/light-fit.json), not the image itself.
+- Bayer screen: kit/dither.js (the 8 by 8 Bayer tile), 3 px cells anchored at (0, 0), the
+  films' common screen (Kevin, 2026-10-08); the 6 px screen measured from his image is
+  retired (archive-6px/).
 
 THE GLOBE
 - Kevin's dithered partnership globe: the sign-in globe of Prototemplate's dither library
