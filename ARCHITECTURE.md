@@ -69,7 +69,7 @@ scripts/
                           report (pnpm check:pages; its README explains)
   site-pages.mjs          page discovery and the theme door, shared by
                           capture-pages.mjs and pagecheck/
-  shoot-route.mjs         screenshot harness (external playwright-core)
+  gallery-shoot.mjs       the gallery shooter (see "The gallery pipeline")
   build-skills.mjs        skills/ to src/lib/skills.ts and skills/README.md,
                           with the skill contract and lint (pnpm
                           build:skills; --check is pnpm lint:skills)
@@ -81,9 +81,9 @@ docs/
                           the operating principles, the quality bar, the
                           multi-session playbook, the product map, the
                           glossary and the decisions log, with README.md
-  harness/gallery-shoot.mjs   the gallery shooter (see "The gallery
-                              pipeline" below; the rest of harness/ is
-                              one-off probes)
+  harness/                three screenshot probes the skills and comments
+                          cite: shoot-one.mjs, shoot-route.mjs and
+                          rhythm-probe.mjs
 graphics/                 the blog-illustration toolchain (docs/GRAPHICS.md)
 content/                  the three docs-redesign posts and their authors
 skills/                   the curated skills, one folder per skill
@@ -159,7 +159,7 @@ entry (body + snippet) in the same round.
 The index's anatomy wall and the variant gallery are fed by one harness,
 and the file names are the contract between the two ends:
 
-- **The shooter** (`docs/harness/gallery-shoot.mjs`) shoots the flagship
+- **The shooter** (`scripts/gallery-shoot.mjs`) shoots the flagship
   home section by section — **element shots anchored on each section's
   own landmark selector, never scroll depths**, so side-by-side pairs
   align regardless of viewport — across desktop/mobile cuts and both

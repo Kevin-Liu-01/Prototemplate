@@ -223,7 +223,7 @@ single source of truth the fork directions import and re-skin by root-class
 rescoping; `src/lib` holds the visual engines; `src/components/shared` holds
 the instruments. `src/lib/directions.ts` registers every direction, and the
 index, the presenter and the sitemap all follow it. The anatomy wall's tiles come
-from `docs/harness/gallery-shoot.mjs` under deterministic names
+from `scripts/gallery-shoot.mjs` under deterministic names
 (`ARCHITECTURE.md`, "The gallery pipeline"), and a missing tile drops
 from the wall.
 

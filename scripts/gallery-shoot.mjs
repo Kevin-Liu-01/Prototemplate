@@ -4,19 +4,21 @@
 // script) and at desktop/mobile widths, then writes a manifest the gallery
 // page imports. Element screenshots, not scroll depths — each tile is one
 // section's own box, so side-by-side pairs align regardless of viewport.
-// Usage: node gallery-shoot.mjs <out-dir> [--flagship-only|--variants-only]
-//   REDESIGN_BASE overrides the dev server (default http://localhost:3006).
+// Usage: node scripts/gallery-shoot.mjs <out-dir> [--flagship-only|--variants-only]
+//   REDESIGN_BASE overrides the dev server (default http://localhost:3005).
+//   CHROME_PATH overrides the browser (scripts/site-pages.mjs).
 import { chromium } from 'playwright-core';
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 
-const EXEC =
-  '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
-const BASE = process.env.REDESIGN_BASE || 'http://localhost:3006';
+import { CHROME_PATH } from './site-pages.mjs';
+
+const EXEC = CHROME_PATH;
+const BASE = process.env.REDESIGN_BASE || 'http://localhost:3005';
 
 const [, , outDir, mode] = process.argv;
 if (!outDir) {
-  console.error('usage: node gallery-shoot.mjs <out-dir> [--flagship-only|--variants-only]');
+  console.error('usage: node scripts/gallery-shoot.mjs <out-dir> [--flagship-only|--variants-only]');
   process.exit(2);
 }
 mkdirSync(outDir, { recursive: true });

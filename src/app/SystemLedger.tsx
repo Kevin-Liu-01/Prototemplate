@@ -80,7 +80,7 @@ const CAPABILITIES: Capability[] = [
   {
     name: 'Gallery shooter',
     law: 'The harness that shot every tile on this page: section-anchored element screenshots, both themes, both widths.',
-    see: 'docs/harness/gallery-shoot.mjs',
+    see: 'scripts/gallery-shoot.mjs',
   },
   {
     name: 'Pixel auditor',
