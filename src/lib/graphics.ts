@@ -27,14 +27,6 @@ export type Visual = {
   animated: boolean;
 };
 
-export type Area = {
-  id: string;
-  name: string;
-  /** where in the post the area's visuals sit */
-  slot: string;
-  visuals: readonly Visual[];
-};
-
 export type { Block, Entry, Variant } from '@/lib/graphics-model';
 export { backgroundLabel } from '@/lib/graphics-model';
 import type { Block, Entry, Variant } from '@/lib/graphics-model';
@@ -70,17 +62,6 @@ export function readManifest(): readonly Visual[] {
   return JSON.parse(readFileSync(file, 'utf8')) as Visual[];
 }
 
-/** The visuals grouped by area, in the post's order, covers last. */
-export function getAreas(): readonly Area[] {
-  const visuals = readManifest();
-  return AREA_ORDER.map((id) => ({
-    id,
-    name: AREA_NAMES[id]?.name ?? id,
-    slot: AREA_NAMES[id]?.slot ?? '',
-    visuals: visuals.filter((v) => v.area === id),
-  })).filter((area) => area.visuals.length > 0);
-}
-
 /** The 3840-wide export of a visual. */
 export function visualSrc(id: string): string {
   return `/static/blogs/designing-docs-${id}.webp`;
@@ -89,18 +70,6 @@ export function visualSrc(id: string): string {
 /** The export's pixel size: every visual renders 3840 wide, whatever its stage. */
 function exportSize(visual: Visual): { w: number; h: number } {
   return { w: 3840, h: Math.round((3840 * visual.h) / visual.w) };
-}
-
-/** The GIF of an animated visual, when it has one. */
-export function clipSrc(id: string): string | undefined {
-  return CLIPS[id]?.gif;
-}
-
-/** The served path of a ground, by its BG key. */
-export function backgroundSrc(bg: string): string | undefined {
-  if (/^u\d+$/.test(bg)) return `/graphics/bg/user/${bg}.webp`;
-  const blue = BLUE_GROUNDS[bg];
-  return blue ? `/graphics/bg/${blue}` : undefined;
 }
 
 /* ---------- the entries ---------- */

@@ -81,10 +81,9 @@ const ROLES = ['shell', 'control', 'inner', 'chip', 'card', 'round'];
 /** Files static mode skips, each with its reason. deck/ sits outside src/ and is never read. */
 export const ALLOW = [
   { path: 'src/app/d/', reason: 'the /d/ directions are self-contained explorations with their own grammar' },
-  { path: 'src/components/shared/StorySection.css', reason: 'mounted only by the directions' },
-  { path: 'src/components/shared/FeatureBento.css', reason: 'mounted only by the directions' },
-  { path: 'src/components/shared/EditorWorkspace.css', reason: 'mounted only by the directions' },
-  { path: 'src/components/shared/LanguageWheel.css', reason: 'mounted only by the directions' },
+  { path: 'src/components/shared/StorySection.css', reason: 'mounted nowhere: a reference component the skills cite' },
+  { path: 'src/components/shared/FeatureBento.css', reason: 'mounted nowhere: a reference component the skills cite' },
+  { path: 'src/components/shared/LanguageWheel.css', reason: 'mounted nowhere: a reference component the skills cite' },
   { path: 'src/components/shared/HeroFieldSwitcher.css', reason: 'mounted only by the directions' },
   { path: 'src/components/shared/field-effects-menu.css', reason: 'mounted only by the directions' },
   { path: 'src/components/shared/diagrams/', reason: 'mounted only by the directions and the craft demos' },

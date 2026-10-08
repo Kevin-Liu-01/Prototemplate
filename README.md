@@ -220,12 +220,14 @@ and reports what did not hold), four absolute colors
 plus one spectral accent per page, dark mode as a pure token remap, and one
 mobile type ladder (`DESIGN.md` §12). `src/app/d/toolchain` is the
 single source of truth the fork directions import and re-skin by root-class
-rescoping; `src/lib` holds the visual engines; `src/components/shared` holds
-the instruments. `src/lib/directions.ts` registers every direction, and the
-index, the presenter and the sitemap all follow it. The anatomy wall's tiles come
-from `docs/harness/gallery-shoot.mjs` under deterministic names
-(`ARCHITECTURE.md`, "The gallery pipeline"), and a missing tile drops
-from the wall.
+rescoping; `src/components/viewer` holds the viewer shell the site's own
+routes run on; `src/lib` holds the registries and the visual engines;
+`src/components/shared` holds the instruments. `src/lib/directions.ts`
+registers every direction, and the index, the presenter and the sitemap
+all follow it. The anatomy wall's tiles come from
+`scripts/gallery-shoot.mjs` under deterministic names (`ARCHITECTURE.md`,
+"The gallery pipeline"), and a missing tile leaves hatched ground on the
+wall.
 
 ## License
 

@@ -76,10 +76,9 @@ export const PATHS = {
  */
 export const ALLOW_FILES = [
   { path: 'src/app/d/', t3: 'warn', reason: 'the /d/ directions are self-contained explorations with their own type' },
-  { path: 'src/components/shared/StorySection.css', t3: 'skip', reason: 'mounted only by the directions' },
-  { path: 'src/components/shared/FeatureBento.css', t3: 'skip', reason: 'mounted only by the directions' },
-  { path: 'src/components/shared/EditorWorkspace.css', t3: 'skip', reason: 'mounted only by the directions' },
-  { path: 'src/components/shared/LanguageWheel.css', t3: 'skip', reason: 'mounted only by the directions' },
+  { path: 'src/components/shared/StorySection.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },
+  { path: 'src/components/shared/FeatureBento.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },
+  { path: 'src/components/shared/LanguageWheel.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },
   { path: 'src/components/shared/HeroFieldSwitcher.css', t3: 'skip', reason: 'mounted only by the directions' },
   { path: 'src/components/shared/field-effects-menu.css', t3: 'skip', reason: 'mounted only by the directions' },
   { path: 'src/components/shared/diagrams/', t3: 'skip', reason: 'mounted only by the directions and the craft demos' },

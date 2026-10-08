@@ -168,8 +168,3 @@ export function formatDate(iso: string): string {
 export function postFigures(body: string): readonly { alt: string; src: string }[] {
   return [...body.matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)/g)].map((m) => ({ alt: m[1] ?? '', src: m[2] ?? '' }));
 }
-
-/** The `<CarouselItem src alt />` slides of a post body, in order. */
-export function postSlides(body: string): readonly { alt: string; src: string }[] {
-  return [...body.matchAll(/<CarouselItem\s+src='([^']+)'\s+alt='([^']*)'/g)].map((m) => ({ src: m[1] ?? '', alt: m[2] ?? '' }));
-}
