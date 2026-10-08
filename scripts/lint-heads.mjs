@@ -53,9 +53,10 @@
  *                 6 at 390, 200 characters at most
  *   H5 panel      Updated first, dated as src/lib/updated.ts records the
  *                 route; four slots (the install field is two); a glyph per
- *                 label; no value cut; side by side, the rows start on the
- *                 lead's first line and sit on its baselines; at 390 under
- *                 the lead, the copy target 44px
+ *                 label; no value cut; side by side, the first row's
+ *                 baseline is the lead's first and every row sits on the
+ *                 lead's baselines; at 390 under the lead, the copy target
+ *                 44px
  *   H6 rule       one 1px --pt-hair rule on the content box, painted
  *                 across the stage (a --pt-bleed border image), no other
  *                 line within 4px of it,
@@ -71,7 +72,7 @@
  *                 two lines in titanium, `Section n` first; every h2 sits
  *                 the same distance under its rule (35.5 at 1440, 79 at 390)
  *   H9 standard   at 1440, a one-line title's mast rule is the same distance
- *                 under it on every page (191.16)
+ *                 under it on every page (193.16)
  *
  * Exit 0 on a pass, 1 on findings, 2 on an infrastructure failure.
  * --report prints without failing.
@@ -705,7 +706,8 @@ export function judgePanel(d, { day, wide }) {
   }
   const side = d.lead && p.rect.x > d.lead.rect.r;
   if (side) {
-    if (!near(p.rect.y, d.lead.rect.y)) out.push(`H5 the panel starts ${f1(p.rect.y - d.lead.rect.y)}px from the lead's top; it starts on the lead's first line`);
+    const firstBase = p.rows.find((r) => r.baseline !== null)?.baseline;
+    if (firstBase !== undefined && !near(firstBase, d.lead.first)) out.push(`H5 the panel's first row sits ${f1(firstBase - d.lead.first)}px from the lead's first baseline; it starts on the lead's first line`);
     for (const r of p.rows) {
       if (r.baseline === null) continue;
       const k = (r.baseline - d.lead.first) / d.lead.lh;
@@ -779,13 +781,13 @@ export function judgeDividers(d, { wide }) {
 }
 
 /** H9: one standard mast at 1440. */
-export const H9_GAP = 191.16;
+export const H9_GAP = 193.16;
 export function judgeStandard(d) {
   /* the side-by-side mast only: a narrow head (the blog's 720px column) stacks its panel */
   const side = d.lead && d.panel && d.panel.rect.x > d.lead.rect.r;
   if (!side || !d.h1 || !d.rule || d.h1.rect.h > d.h1.lh * 1.5) return [];
   const gap = d.rule.y - d.h1.rect.y;
-  return near(gap, H9_GAP) ? [] : [`H9 the mast's rule is ${f1(gap)}px under the title's top; every one-line title's is ${H9_GAP}px (45.76 + 14 + 105.4 + 26)`];
+  return near(gap, H9_GAP) ? [] : [`H9 the mast's rule is ${f1(gap)}px under the title's top; every one-line title's is ${H9_GAP}px (45.76 + 14 + 2 + 105.4 + 26)`];
 }
 
 /** Every live rule over one page. */

@@ -95,10 +95,10 @@ const head = () => ({
   h1: { rect: { x: 264, y: 96, w: 113, h: 45.76, r: 377, b: 141.76 }, lh: 45.76 },
   lead: { rect: { x: 264, y: 155.76, w: 500, h: 79.05, r: 764, b: 234.81 }, lh: 26.35, lines: 3, chars: 157, first: 174 },
   panel: {
-    rect: { x: 1076, y: 155.76, w: 304, h: 105.4, r: 1380, b: 261.16 },
-    rows: [26.35, 26.35, 26.35, 26.35].map((h, i) => ({ cls: i === 0 ? 'pt-book-fact is-updated' : 'pt-book-fact', rect: { y: 155.76 + i * h }, field: false, svgs: 1, cut: false, baseline: 174 + i * 26.35, time: i === 0 ? '2026-10-06' : null, copy: null })),
+    rect: { x: 1076, y: 157.76, w: 304, h: 105.4, r: 1380, b: 263.16 },
+    rows: [26.35, 26.35, 26.35, 26.35].map((h, i) => ({ cls: i === 0 ? 'pt-book-fact is-updated' : 'pt-book-fact', rect: { y: 157.76 + i * h }, field: false, svgs: 1, cut: false, baseline: 174 + i * 26.35, time: i === 0 ? '2026-10-06' : null, copy: null })),
   },
-  rule: { y: 287.16, w: 1, st: 'solid', col: HAIR, x1: 264, x2: 1380, bleed: true },
+  rule: { y: 289.16, w: 1, st: 'solid', col: HAIR, x1: 264, x2: 1380, bleed: true },
   bands: 1,
   band: { rect: { x: 264, y: 584.47, w: 1116, h: 42, r: 1380, b: 626.47 }, bleed: true, top: { w: 1, st: 'solid', col: HAIR }, bottom: { w: 1, st: 'solid', col: HAIR }, aboveBottom: 536.47, above: 'nav.pt-book-toc', near: [] },
   dividers: [
@@ -151,7 +151,9 @@ test('H5: the panel', () => {
   const d = head();
   d.panel.rows[2].baseline += 3;
   d.panel.rows[3].svgs = 0;
-  assert.equal(judgePanel(d, { day: '2026-10-05', wide: true }).length, 3);
+  assert.equal(judgePanel(d, { day: '2026-10-05', wide: true }).length, 3);  const f = head();
+  for (const r of f.panel.rows) r.baseline -= 2;
+  assert.match(judgePanel(f, { day: '2026-10-06', wide: true })[0], /^H5 the panel's first row sits -2px from the lead's first baseline/);
 });
 
 test('H6: the mast rule', () => {
@@ -194,7 +196,7 @@ test('H8: the dividers', () => {
 
 test('H9: one standard mast at 1440', () => {
   assert.deepEqual(judgeStandard(head()), []);
-  assert.equal(H9_GAP, 191.16);
+  assert.equal(H9_GAP, 193.16);
   const d = head();
   d.rule.y += 1.28;
   assert.match(judgeStandard(d)[0], /^H9 /);

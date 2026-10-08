@@ -101,12 +101,15 @@
   text-wrap: pretty;
 }
 
-/* the panel: Updated, then the facts, one lead line per row (4px over a
-   21.35px line over a 1px row rule), so each row's baseline lands on a lead
-   baseline. No frame, no ground, no header line. */
+/* the panel: Updated, then the facts, one lead line per row (2px over a
+   21.35px line over 2px over a 1px rule under every row, the last one
+   included), so the text sits centered between its rules. Beside the lead
+   it starts 2px under the lead's top, which lands each row's baseline on a
+   lead baseline. No frame, no ground, no line over the first row. */
 .pt-book-panel {
   grid-area: panel;
   min-width: 0;
+  margin-top: 2px;
 }
 
 .pt-book-panel dl {
@@ -120,14 +123,9 @@
   grid-template-columns: max-content minmax(0, 1fr);
   column-gap: 16px;
   align-items: baseline;
-  padding-top: 4px;
+  padding: 2px 0;
   line-height: calc(var(--pt-row) - 5px);
   border-bottom: 1px solid var(--pt-hair-soft);
-}
-
-.pt-book-fact:last-child {
-  padding-bottom: 1px;
-  border-bottom: 0;
 }
 
 /* the label in ink-2 (titanium text at 13px is under 4.5:1 on white); the
@@ -239,8 +237,8 @@
 }
 
 /* the narrow head (lead 510 + gap 56 + panel 304 = 870): the panel under
-   the lead, a row rule over its first row 20px under the lead, and the
-   mast's rule as its last row's rule */
+   the lead, ruled as it is beside it, and the mast's rule
+   --pt-head-rule-pad under the panel */
 @container pt-head (max-width: 880px) {
   .pt-book-mast {
     grid-template-columns: minmax(0, 1fr);
@@ -248,22 +246,10 @@
       'title'
       'lead'
       'panel';
-    padding-bottom: 0;
   }
 
   .pt-book-panel {
-    margin-top: 6px;
-    border-top: 1px solid var(--pt-hair-soft);
-  }
-
-  .pt-book-fact:last-child {
-    padding-bottom: 0;
-  }
-
-  /* the install field keeps its 4px of air over the mast's rule, so the
-     rule never runs against the field's own border (a doubled line) */
-  .pt-book-fact.is-field:last-child {
-    padding-bottom: 4px;
+    margin-top: 0;
   }
 }
 

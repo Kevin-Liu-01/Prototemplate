@@ -10,7 +10,7 @@
 import type { PageUpdated } from './page-updated';
 
 export const UPDATED: Readonly<Record<string, PageUpdated>> = {
-  '/brand': { day: '2026-10-07', at: '2026-10-07', commit: null, src: 'd989157d' },
+  '/brand': { day: '2026-10-07', at: '2026-10-07T16:28:21-07:00', commit: '95341a7', src: 'd989157d' },
   '/docs': { day: '2026-10-07', at: '2026-10-07', commit: null, src: 'dbfa1264' },
   '/handbook': { day: '2026-10-07', at: '2026-10-07T15:04:20-07:00', commit: '5c978a8', src: '2e348cde' },
   '/skills': { day: '2026-10-07', at: '2026-10-07T15:04:20-07:00', commit: '5c978a8', src: 'ba0d6db4' },
