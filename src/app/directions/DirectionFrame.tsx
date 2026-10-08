@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { useState } from 'react';
 
 import { ThumbShot } from '@/components/viewer/ThumbShot';
@@ -8,6 +7,7 @@ import { cn } from '@/lib/cn';
 import { directionShots } from '@/lib/directions';
 import type { Direction } from '@/lib/directions';
 import type { ShellItem } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 
 import './DirectionFrame.css';
 
@@ -41,7 +41,7 @@ export function DirectionFrame({ direction, item }: DirectionFrameProps) {
   const [src, setSrc] = useState<string | null>(null);
   const [ready, setReady] = useState<string | null>(null);
 
-  useGSAP(
+  useLayoutWork(
     () => {
       const timer = window.setTimeout(() => setSrc(`/d/${direction.slug}?chrome=0`), SETTLE_MS);
       return () => window.clearTimeout(timer);

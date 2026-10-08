@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useRef, useState } from 'react';
 
@@ -20,6 +19,7 @@ import type { ShellKeyRow } from '@/components/viewer/useShellKeys';
 import { cn } from '@/lib/cn';
 import { SITE_SURFACES } from '@/lib/surfaces';
 import type { SurfaceGroup } from '@/lib/surfaces';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './DirectionCorner.css';
@@ -169,7 +169,7 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
   layers.current = { list, panel, help };
 
   /* the one dependency effect: the list closed, so hold it for its exit */
-  useGSAP(
+  useLayoutWork(
     () => {
       window.clearTimeout(leaveTimer.current);
       if (list) {

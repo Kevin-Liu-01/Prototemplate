@@ -201,7 +201,7 @@ A framed page follows the parent's theme through the storage event and through `
 
 ## Code inside the shell
 
-- Mount-only work runs in `useMountEffect` from `src/lib/use-mount-effect.ts`, and a dependency effect runs in `useGSAP` with `dependencies`. The practices ratchet counts a bare `useEffect(` outside a file whose path contains `use-mount-effect`. The hook defers its cleanup one task because React strict mode's simulated remount removed every listener registered through it.
+- Mount-only work runs in `useMountEffect` from `src/lib/use-mount-effect.ts`, and a dependency effect runs in `useLayoutWork` from `src/lib/use-layout-work.ts` with `dependencies`: a layout effect that keeps useGSAP's timing (a returned cleanup runs on unmount, or before each rerun under `revertOnUpdate`) without loading GSAP. GSAP stays in the components that tween (the home hero, the /d sections, the craft demos). The practices ratchet counts a bare `useEffect(` outside a file whose path contains `use-mount-effect`, and fails any GSAP import under `src/components/viewer`. The hook defers its cleanup one task because React strict mode's simulated remount removed every listener registered through it.
 - Listeners registered on mount read the latest values through refs assigned on every render (`itemsRef.current = items`), as `ViewerShell.tsx` does.
 - Motion reads the `--pt-dur-*` tokens and moves transform and opacity only; the sidebar column's width is the one exception. Under reduced motion the tokens are 0ms.
 - Every `.pt-*` class is global. `.pt-row` once existed in both `prototemplate.css` and the shell's `ListRow`; grep the name before using it.

@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import type { MouseEvent, ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
@@ -18,6 +17,7 @@ import type { MotionFilm, MotionStatus } from '@/lib/motion';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { cutWords, megabytes, reviewWords } from './records-words';
@@ -254,7 +254,7 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
   });
 
   /* a selection the spy did not make (the list, the keys, the hash on landing) jumps to its row */
-  useGSAP(
+  useLayoutWork(
     () => {
       const previous = lastActive.current;
       lastActive.current = active;

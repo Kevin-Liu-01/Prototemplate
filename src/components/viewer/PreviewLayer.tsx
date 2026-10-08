@@ -1,11 +1,11 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '@/lib/cn';
 import { getSurface } from '@/lib/surfaces';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './PreviewLayer.css';
@@ -698,7 +698,7 @@ export function PreviewLayer() {
      capture in place; a closing card keeps its capture through the fade
      out and lets it go after. Nothing here changes the frame's box, so the
      card never reflows when a capture arrives. */
-  useGSAP(
+  useLayoutWork(
     () => {
       const box = frame.current;
       if (!box) return;

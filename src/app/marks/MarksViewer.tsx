@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import type { CSSProperties, MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
@@ -26,6 +25,7 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './marks.css';
@@ -480,7 +480,7 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
      book, so bring its section to the read line. The first run is the mount
      at the head; the landing on a deep link is a cut, every later change
      moves; a change the spy caused is left alone. */
-  useGSAP(
+  useLayoutWork(
     () => {
       const wasLanded = landed.current;
       if (ready) landed.current = true;
