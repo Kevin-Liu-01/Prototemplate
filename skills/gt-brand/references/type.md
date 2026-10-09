@@ -30,7 +30,7 @@ In a page, `getComputedStyle(document.body).getPropertyValue('--font-inter')` st
 
 | surface | file | binding | notes |
 | --- | --- | --- | --- |
-| Prototemplate site and shell | `src/lib/fonts.ts` | `ptInter`, roman only, on `--font-inter`; the italic is a plain `@font-face` in the `ptInter` family in `src/app/globals.css`, so no route preloads it | `fontVariables` is the class on `<html>` in `src/app/layout.tsx` |
+| Prototemplate site and shell | `src/lib/fonts.ts` | `ptInter`, the roman's latin subset only, on `--font-inter`; the other subsets and the italic are `@font-face` rules with a `unicode-range` in the `ptInter` family in `src/app/inter-subsets.css` (`scripts/subset-inter.py`), so no route preloads them | `fontVariables` is the class on `<html>` in `src/app/layout.tsx` |
 | Prototemplate nameplate | `src/lib/brand-fonts.ts` | `fraunces` (600) and `grotesk` (500) on `--font-fraunces`, `--font-grotesk` | the one place chrome steps outside Inter (DESIGN.md section 15) |
 | The brand deck | `deck/fonts/deck-fonts.css`, inlined by `scripts/build-deck.mjs` in place of `<!--FONTS-->` | `@font-face { font-family: 'Inter' }`, roman only | a data URI cannot fail, so it always hides an installed Inter; no italic is inlined, so an italic in the deck would be synthesised |
 | gt-cloud landing | `$GT_CLOUD/apps/landing/src/lib/fonts.ts` | `inter`, roman only, on `--font-sans`; `mono` is Geist Mono on `--font-mono` | the base module stays roman so the 388 KB italic is not preloaded on every route |
@@ -163,3 +163,4 @@ A new exception goes into DESIGN.md section 15 or the lint allowlist with its re
 - `text-wrap: balance` belongs on h1 to h3; without it a two-line heading leaves one word on the second line.
 - Positive tracking on 11px uppercase labels is the eyebrow pattern Kevin rejected. Delete the label.
 - The deck's italic is synthesised, because only the roman is inlined. Use no italic in the deck.
+- A subset without glyph names (pyftsubset's default, a format 3 `post` table) rasterises a shade differently in Chrome on macOS, at every weight. `scripts/subset-inter.py` keeps the names (`glyph_names`), and its subsets match the full file pixel for pixel.

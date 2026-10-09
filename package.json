@@ -26,6 +26,7 @@
     "mood-tone": "node scripts/mood-tone/mood-tone.mjs",
     "build:deck": "node scripts/build-deck.mjs",
     "build:marks": "node scripts/build-speed-marks.mjs",
+    "build:inter": "python3 scripts/subset-inter.py",
     "build:thumbs": "node scripts/build-thumbs.mjs",
     "build:skills": "node scripts/build-skills.mjs",
     "lint:skills": "node scripts/build-skills.mjs --check",

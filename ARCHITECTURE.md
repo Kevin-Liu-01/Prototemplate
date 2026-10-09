@@ -92,6 +92,10 @@ scripts/
                           (pnpm build:updated; --check is pnpm
                           lint:updated, in the build), with its tests
   build-speed-marks.mjs   the speed marks under public/marks
+  subset-inter.py         the Inter roman and italic to unicode-range
+                          subsets in public/fonts/inter, their faces in
+                          src/app/inter-subsets.css and the latin range in
+                          src/lib/fonts.ts (pnpm build:inter)
   build-motion.mjs        motion/ to src/lib/motion.ts and public/motion,
                           run only when the Videos session hands a film over
   capture-pages.mjs       the 1440x900 page captures in public/shots/pages
