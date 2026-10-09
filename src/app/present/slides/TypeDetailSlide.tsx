@@ -553,7 +553,7 @@ export default function TypeDetailSlide() {
               >
                 <img
                   className='pr-close-shot'
-                  src={`/shots/thumb/${direction.slug}-dark.jpg`}
+                  src={`/shots/thumb/${direction.slug}-dark.webp`}
                   alt={`${direction.name} in dark mode`}
                   loading='lazy'
                 />

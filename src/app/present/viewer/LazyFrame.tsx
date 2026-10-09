@@ -33,7 +33,7 @@ export default function LazyFrame({ slug, theme }: { slug: string; theme: Theme 
       }}
     >
       <img
-        src={`/shots/thumb/${slug}${theme === 'dark' ? '-dark' : ''}.jpg`}
+        src={`/shots/thumb/${slug}${theme === 'dark' ? '-dark' : ''}.webp`}
         alt=''
         loading='lazy'
         decoding='async'
