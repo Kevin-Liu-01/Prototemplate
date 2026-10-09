@@ -71,13 +71,13 @@
       }
     },
     "slash-announcement": {
-      "cut": "v2",
-      "length": "40.0 s",
+      "cut": "v8",
+      "length": "36.3 s",
       "film": "/media/slash-announcement-film.mp4",
       "poster": "/media/slash-announcement-poster.jpg",
       "streams": {
-        "video": "356a888c17c7694bd4f03fea35d960acc50eb9272f7a43ed74f33a089caec2c2",
-        "audio": "ffefc24560fa65e0cfe1527e0502b7c0142ff489cf35dc100e5fd39180a8df57"
+        "video": "66b3e12970b82383721ad0cc515f498f378584618a559677a52f263cd71aefcf",
+        "audio": "38058636f810e6e62247e871bb7811bb266a804f22121664f44911efe31ed717"
       }
     }
   }

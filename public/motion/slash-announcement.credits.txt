@@ -1,21 +1,61 @@
 slash-announcement: credits and sources
 General Translation and Slash: the partnership announcement, on Kevin Liu's script.
-Film: v2, 39.98 s, 1920 x 1080, 60 fps. Built 2026-10-08 on Kevin's notes (the 40 s cut),
-fix round the same day (the approved globe's pulse restored, larger plate rows and labels).
-v1 (74.3 s, eight lines, 2026-10-07) and its credits are in archive-v1/; the build before
-the fix round is in archive-v2-build/.
+Film: v8, 36.283 s, 1920 x 1080, 60 fps. Built 2026-10-09 on Kevin's notes on v7 ("its a bit
+hard to see the lines", "make the transition less 'weird' ... make it slide right behind the
+globe"): from "for" the payment globe grows at its seat in front of Slash's card and the card
+slides right behind it (v7's morph of the card into the globe is gone); the globe's 24 routes
+and their crosses are drawn wider over a thin olive keyline, so they read on the bright land;
+plate 1's light clears with its outline instead of in one frame; and the first plate starts
+within 0.5 s of the credits bar landing. The audio (the bed, the five takes and the mix) is
+v7's. The v7 build is in archive-v7-build/ and motion/out/v17/.
+v7 (2026-10-09, on Kevin's notes on v6): the card itself became the payment globe in one move
+from "for"; Slash's wordmark in the opener became the file's own white; the offer's stems and
+plates arrived on "localize"; and line 8 became a new take, "Your product should exist in
+every language." v6 is in archive-v6/ and motion/out/v16/.
+v6 (2026-10-09, on Kevin's note on v5, "i meant the slash logo should be there in the
+beginning"): Slash's wordmark stood over the card in the opener, drawn from its file in the
+film's olive ink, and left as the card set off for the globe. v5 (with its fix round) is in
+archive-v5/ and motion/out/v15/.
+v5 (2026-10-08, on Kevin's notes on v4): the hard
+cut from Slash's card to the globe is now one move in which the card shrinks into the globe
+and becomes the origin of the payment routes, and the "Hello" greetings under the Slash x GT
+lockup are gone (the lockup pushes in slowly instead). The v5 fix round (the same day) gives
+the card's last step more time and pushes the lockup 9 percent at an even rate. The v5 build
+is in archive-v5-build/. v4 (with its fix round) is in archive-v4/ and motion/out/v14/; the v4
+build in archive-v4-build/ and motion/out/v13/v4-build/. v3 (the faster cut and its
+carry-over) and its credits are in archive-v3-carry/ and motion/out/v13/; v2 (39.98 s) in
+archive-v2/ and motion/out/v12/; v1 (74.3 s, eight lines, 2026-10-07) in archive-v1/.
 
 SCRIPT
 - Five of Kevin Liu's eight voiceover lines (BRIEF.md), in his order: lines 1, 3, 6, 7 and
   the first sentence of line 8, word for word, except line 3, which follows his note "no
   need to say 'we bank with slash'": "We're excited to partner with Slash to help ambitious
-  companies reach customers in every language." Lines 2, 4, 5 and line 8's second sentence
-  were cut to meet his 40 s cap. Every line matches the announcement post
-  (../slash-partnership/BRIEF.md) and its follow-up.
+  companies reach customers in every language.", and line 8, which since v7 follows his note
+  of 2026-10-09 ("more than one" -> "every"): "Your product should exist in every language."
+  Lines 2, 4, 5 and line 8's second sentence were cut to meet his 40 s cap. Every line
+  matches the announcement post (../slash-partnership/BRIEF.md) and its follow-up, except
+  that line 8 no longer quotes the follow-up post word for word.
 
-LOGOS AND MARKS (each drawn from its own file, true: no redrawing, no recolouring, no distortion)
+SLASH CARD IMAGE (line 1's first sentence)
+- Slash card image: Slash. Slash's photo of its brushed-gold Visa Business card on a warm
+  gold ground (assets/reference/slash-card-kevin.png, 1080 x 360), supplied by Kevin Liu on
+  2026-10-08. The Visa mark on the card is part of Slash's photo. The film shows the photo
+  itself, not redrawn and not printed through the screen: lib/card-prep.py cuts the card
+  out along its own edges and corners at 16/9 of the photo (Lanczos, a light unsharp mask)
+  and extends the photo's own ground to the frame (assets/opener/card.png and ground.png);
+  the film turns the card in perspective and sweeps a soft highlight across it (v6: at 0.84
+  of that size, resampled from the photo, so Slash's wordmark fits over it), then (v8) the
+  card slides right behind the globe, a little smaller as it goes, resampled from the photo
+  at its size on screen in its own canvas (v7 resampled it per pixel into a shape that became
+  the globe; that morph is gone). The photo's ground leaves through the film's 3 px screen;
+  the photo itself is never printed through the screen.
+
+LOGOS AND MARKS (each drawn from its own file, true: no redrawing, no distortion)
 - Slash wordmark: assets/logos/slash-logo.svg, as the GT site serves it
-  (gt-cloud main, apps/landing/public/logos/slash-logo.svg). White as supplied.
+  (gt-cloud main, apps/landing/public/logos/slash-logo.svg). White as supplied everywhere:
+  in the opener (v7, on Kevin's note; v6 filled it with the film's olive), in the lockup and
+  on the end card. In the opener it is drawn as a vector at its size, with no outline and no
+  shadow; on the gold photo behind it it measures about 2.9:1 (2.7:1 at the brightest).
 - General Translation doubled-line GT mark: kit/brand/gt-mark.svg (currentColor, filled white).
 - The lockup's "x" is Inter 500 (below), set as Kevin Liu's guidance image sets it.
 
@@ -33,8 +73,11 @@ THE GLOBE (the approved 19.5 s cut's, ../slash-partnership/lib/film.js, drawn as
   (motion/stills/partnership-globe/dither-lib.js, globe(), at the dashboard's sign-in
   settings: ambient 0.14, rim 0.16, landmass 0.42, gamma 1.15, tilt 0.15), redrawn live in
   the film's inks with spin 0.05 rad a second. Its land is procedural noise and claims no
-  real geography; the 180 routes from one origin are an illustration of the post's
-  "180+ countries".
+  real geography; the 24 routes from one origin (the approved cut's paths and clock; since v8
+  2.5 px white lines with 2 px white crosses, over a 1 px keyline of the film's olive at 60
+  percent on each side, so they read on the bright land; v4 to v7 drew them 1 px, as the
+  approved cut does) are an illustration of the post's
+  "180+ countries" (the figure counts to 180; the routes do not stand for countries).
 - The glyph globe's twenty writing systems are the partnership still's own glyph list
   (motion/stills/partnership-globe/index.html).
 - v1's Blue Marble globe (NASA, Reto Stöckli, 2007) is no longer in the film.
@@ -44,9 +87,11 @@ PICTURES
   Welcome back / Hola de nuevo / Bon retour / おかえりなさい, Get started / Comenzar /
   Commencer / 始める, English / Español / Français / 日本語. The chevron is Heroicons 2.2.0
   16 solid chevron-down (MIT, Tailwind Labs).
-- The plates' rows (line 7) are the brand film's sanctioned lines from MOTION.md, cut at word
-  boundaries to the phrase "every product" (the Japanese and Korean without their object
-  particles): すべての製品, كل منتج, हर उत्पाद, 모든 제품, 每个产品.
+- The plates' rows (line 7) are plain interface strings written for v3, one per surface, not
+  quotes from the post: App "Sign in" / ログイン (Japanese), Website "Pricing" / الأسعار
+  (Arabic, right to left), Docs "Quickstart" / त्वरित शुरुआत (Hindi), Slides "Sales deck" /
+  세일즈 덱 (Korean, v4; v3 read "Q3 review" / 3분기 리뷰), Design files "Hero banner" /
+  首页横幅 (Chinese, Simplified: "home page banner").
 
 TYPE
 - Inter (rsms/inter, SIL Open Font License 1.1), self-hosted by kit/tokens.css
@@ -61,9 +106,12 @@ VOICE
 - Narrator: Frederick Surrey (ElevenLabs library voice j9jfwdrw7BRfcR43Qohk,
   eleven_multilingual_v2, stability 0.55, style 0.2, speed 1.0), from kit/audio/voice.json.
   Five takes, one per line, recorded with kit/audio/el.mjs line through lib/take.sh
-  (--prev and --next set to the new neighbouring lines): lines 1, 3, 6 and 8 were recorded
-  for v2 on 2026-10-08; line 7 is v1's take, whose words are exactly the line's. Each was
-  checked with el.mjs hear. No retakes. No take is slowed, sped or time-stretched.
+  (--prev and --next set to the new neighbouring lines): lines 1, 3 and 6 were recorded
+  for v2 on 2026-10-08; line 7 is v1's take, whose words are exactly the line's. Line 8,
+  "Your product should exist in every language." (Kevin, 2026-10-09: "more than one" ->
+  "every"), was recorded for v7 on 2026-10-09 in four takes; the third (audio/vo-8-v7-t3.mp3)
+  is used. Each take was checked with el.mjs hear. v3 to v6 used v2's line 8, "Your product
+  should exist in more than one language." No take is slowed, sped or time-stretched.
 
 MUSIC
 - The film's composed bed from the ElevenLabs Music API (music_v1, instrumental, 75 s
@@ -71,11 +119,10 @@ MUSIC
   instrumental for a company announcement. Felt piano and warm electric piano chords over
   soft upright bass and a slow, steady brushed pulse around 80 BPM, major key, spacious. No
   vocals, no drops, no risers, no build. Resolves on a held chord in the last five
-  seconds." No new music was made for v2: lib/mix.py re-cuts the bed on its own bar lines
-  (its 4-bar intro, then from the bar line at 36.026 s, the B section, through A' to the
-  held chord), so its held chord lands on the end card.
+  seconds." No new music was made for v2 to v8: lib/mix.py re-cuts the bed on its own bar
+  lines (v3: from source 0.277 s to the bar line at 9.044 s, then from the bar line at
+  36.026 s, the B section, through A' to the held chord), so its held chord lands on the
+  end card.
 
 THE OFFER (as the GT site states it, ../slash-partnership/BRIEF.md)
 - generaltranslation.com/slash. Up to $2,000 in translation credits.
-- The end card's legal line is the post's sentence, verbatim: "Translation credits are
-  subject to General Translation's review and approval."
