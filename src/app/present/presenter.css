@@ -1599,7 +1599,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 /* “wrong Inter”: red, with the word Inter glitching between the two
-   builds, features on so the glyph swaps are visible. */
+   builds (the rsms build in --font-inter, Google's cut in
+   --font-google-inter), features on so the glyph swaps are visible. */
 .pr-wrong-inter {
   color: #ff3b30;
 }
@@ -1617,31 +1618,31 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 @keyframes pr-inter-glitch {
   0%,
   100% {
-    font-family: 'InterVariable', var(--font-inter), sans-serif;
+    font-family: var(--font-inter), sans-serif;
   }
   11% {
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-google-inter), sans-serif;
   }
   16% {
-    font-family: 'InterVariable', var(--font-inter), sans-serif;
+    font-family: var(--font-inter), sans-serif;
   }
   21% {
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-google-inter), sans-serif;
   }
   26% {
-    font-family: 'InterVariable', var(--font-inter), sans-serif;
+    font-family: var(--font-inter), sans-serif;
   }
   58% {
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-google-inter), sans-serif;
   }
   63% {
-    font-family: 'InterVariable', var(--font-inter), sans-serif;
-  }
-  67% {
     font-family: var(--font-inter), sans-serif;
   }
+  67% {
+    font-family: var(--font-google-inter), sans-serif;
+  }
   74% {
-    font-family: 'InterVariable', var(--font-inter), sans-serif;
+    font-family: var(--font-inter), sans-serif;
   }
 }
 

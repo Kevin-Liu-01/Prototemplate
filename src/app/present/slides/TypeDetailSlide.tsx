@@ -11,12 +11,16 @@ import { PRESENT_DIRECTIONS } from '../directions';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin);
 
+/** The official Inter release from rsms.me, the site's own face (src/lib/fonts.ts). */
+const RSMS_STACK = 'var(--font-inter), sans-serif';
+
 /**
- * The official Inter release, served from Rasmus Andersson's own site. Falls
- * back to the Google build if the stylesheet has not loaded, which makes the
- * comparison read as "no difference" rather than breaking.
+ * Google Fonts' build of Inter, cut to this file's specimen strings plus a to
+ * z (src/app/present/fonts.ts; a new string goes into TEXT_CUTS in
+ * scripts/fetch-google-faces.py). It has no opsz axis and none of the
+ * features the rows name, so each row renders differently in the two builds.
  */
-const RSMS_STACK = "'InterVariable', 'Inter var', var(--font-inter), sans-serif";
+const GOOGLE_STACK = 'var(--font-google-inter), sans-serif';
 
 const ROWS = [
   {
@@ -62,6 +66,10 @@ function GoogleMark() {
   );
 }
 
+/**
+ * One build's card. Only the specimen text takes the build's face: the
+ * Google cut holds no other glyphs.
+ */
 function Specimen({
   name,
   stack,
@@ -72,7 +80,7 @@ function Specimen({
   variant: 'google' | 'rsms';
 }) {
   return (
-    <div className={`pr-detail-col pr-col-${variant}`} style={{ fontFamily: stack }}>
+    <div className={`pr-detail-col pr-col-${variant}`}>
       <svg
         className='pr-col-frame'
         aria-hidden
@@ -93,11 +101,11 @@ function Specimen({
           />
         )}
       </header>
-      <p className='pr-detail-big'>Gg Ra 0123</p>
+      <p className='pr-detail-big' style={{ fontFamily: stack }}>Gg Ra 0123</p>
       {ROWS.map((row) => (
         <div key={row.label} className='pr-detail-row'>
           <span>{row.label}</span>
-          <p style={{ fontFeatureSettings: row.features }}>{row.text}</p>
+          <p style={{ fontFamily: stack, fontFeatureSettings: row.features }}>{row.text}</p>
         </div>
       ))}
     </div>
@@ -458,7 +466,6 @@ export default function TypeDetailSlide() {
 
   return (
     <section ref={root} className='pr-slide pr-detail' data-slide='detail'>
-      <link rel='stylesheet' href='https://rsms.me/inter/inter.css' precedence='default' />
       <div ref={pin} className='pr-pin pr-detail-inner'>
         <div className='pr-detail-main'>
           <div className='pr-detail-head'>
@@ -476,11 +483,7 @@ export default function TypeDetailSlide() {
             </p>
           </div>
           <div className='pr-detail-grid'>
-            <Specimen
-              name='Inter, via Google Fonts'
-              stack='var(--font-inter)'
-              variant='google'
-            />
+            <Specimen name='Inter, via Google Fonts' stack={GOOGLE_STACK} variant='google' />
             <Specimen name='Inter, via rsms.me' stack={RSMS_STACK} variant='rsms' />
           </div>
           <p className='pr-detail-note'>Keep scrolling to lay one over the other.</p>
@@ -509,10 +512,7 @@ export default function TypeDetailSlide() {
               <p
                 className='pr-overlay-line pr-overlay-google'
                 aria-hidden
-                style={{
-                  fontFamily: 'var(--font-inter)',
-                  fontFeatureSettings: OVERLAY_FEATURES,
-                }}
+                style={{ fontFamily: GOOGLE_STACK, fontFeatureSettings: OVERLAY_FEATURES }}
               >
                 {OVERLAY_TEXT}
               </p>
