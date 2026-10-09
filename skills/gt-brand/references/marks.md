@@ -11,11 +11,11 @@ The GT monogram in use is the doubled-line mark: every stroke of the G and the T
 | `REFERENCE_MARK` in `src/lib/marks.ts` (viewBox `-8 214 1213 771`) | the mark as four contour loops in one evenodd path in currentColor, traced from `public/brand/no-bg-gt-logo-light.png` by marching squares over the alpha channel and simplified at 1.6px of the 1198px master | any vector use in the site, and `/marks`, where it closes the page as the reference |
 | the `#gt-mark` symbol in `deck/parts/head.html` | the same outline as a symbol | the deck's sidebar head, the wordmark slot and the GT word |
 | `public/brand/no-bg-gt-logo-dark.png`, `no-bg-gt-logo-light.png` and their `-96` versions | transparent PNG masters; the dark file is the white mark cut for the ink ground | favicons (`/present` uses the light PNG as its icon) and raster contexts |
-| `public/brand/gt-logo-light.svg`, `gt-logo-dark.svg` | SVG wrappers around an embedded PNG (141 KB and 224 KB) | nothing new; they hold a raster, so prefer the outline |
+| `public/brand/gt-logo-light.svg`, `gt-logo-dark.svg` | the `REFERENCE_MARK` path in `#000` and `#fff` (1.5 KB each), placed where the embedded PNGs they replaced on 2026-10-09 held the mark: the master's 1198px grid 182px into a 1563px square, scaled 0.239923 into viewBox `0 0 375 374.999991` | the `/brand` tiles and any page that needs the mark as a file |
 
 - The mark ships as vector geometry (deck slide 16). For a new surface take the outline from `REFERENCE_MARK` and draw it in `currentColor`. `src/app/brand/gt-outline.ts` held the same loops as four paths until the 2026-10-06 head round removed it with the brand head's figure; `git show 2a8453c:src/app/brand/gt-outline.ts` prints it.
 - The outline is about 1.57 times as wide as it is tall, so a mark set by height takes its width from that aspect.
-- If the PNG master ever changes, trace it again the same way (marching squares over the alpha channel, Douglas-Peucker at 1.6px) and replace `REFERENCE_MARK` and the deck symbol from the same output.
+- If the PNG master ever changes, trace it again the same way (marching squares over the alpha channel, Douglas-Peucker at 1.6px) and replace `REFERENCE_MARK`, the deck symbol and the path in the two `gt-logo-*.svg` files from the same output.
 
 ## Rules for every GT mark
 

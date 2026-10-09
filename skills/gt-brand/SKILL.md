@@ -173,7 +173,7 @@ The Prototemplate shell tracks nothing positive, and its type lint fails any pos
 
 Detail, files and procedures are in `references/marks.md`.
 
-- **The current mark** is the doubled-line GT monogram: every stroke of the G and the T is two parallel lines, the doubled-line grammar at brand scale. Its vector outline is `REFERENCE_MARK` in `src/lib/marks.ts`, the same path as the deck's `#gt-mark` symbol. The masters are `public/brand/no-bg-gt-logo-light.png` and `no-bg-gt-logo-dark.png` (the white mark). The `gt-logo-*.svg` files beside them wrap an embedded PNG, so new work draws the outline.
+- **The current mark** is the doubled-line GT monogram: every stroke of the G and the T is two parallel lines, the doubled-line grammar at brand scale. Its vector outline is `REFERENCE_MARK` in `src/lib/marks.ts`, the same path as the deck's `#gt-mark` symbol. The masters are `public/brand/no-bg-gt-logo-light.png` and `no-bg-gt-logo-dark.png` (the white mark). The `gt-logo-*.svg` files beside them draw the same outline in black and in white.
 - **One ink.** Ink on paper or paper on ink. No third color, no gradient, no shadow, no glow. On a dark surface the drawn mark inverts, as an alpha mask that takes the surface's ink or as a clean invert. A mark ships only as vector geometry.
 - **Compression.** The mark must hold at 16px (favicon), 32px (CLI banner), 64px (README header), 128px (npm page) and 256px (website), because developers meet the brand in a terminal as often as on the site (deck slide 25).
 - **Inline.** At text size the GT mark sits in the line at the cap height of the text around it, with the letters GT kept as hidden text.
