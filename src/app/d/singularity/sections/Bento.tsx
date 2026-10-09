@@ -37,6 +37,9 @@ import PreviewSurface from '@/app/d/event-horizon/diagrams/surface/PreviewSurfac
 import CodeBlock from './code';
 import { useQuietReveal } from './reveal';
 import './bento-motion.css';
+/* toolchain's surface.css is scoped to .toolchain-root and inert here; this
+   fork's rescoped copy styles the four surfaces */
+import '../diagrams/surface/surface.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
