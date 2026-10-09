@@ -6,7 +6,8 @@ kept here as proof of what the identity does off the page.
 | file | what it is |
 | --- | --- |
 | `open-source-reel.mp4` | the GT Open Source announcement reel: twelve shader materials cut at 0.2s each in the brand blue, landing on the paper gem smoke composition with the $15,000 reveal. Rendered frame-by-frame through the studio's own material engines and Bayer effect layer, scored to the cut grid. |
-| `gt-banner-signin.png` | the X profile banner: the sign-in page's halftone dither globe and glyph rain on the left, the customer logo grid on the right, in the 1-bit language. `@2x` is the retina master. |
+| `gt-banner-signin.png` | the X profile banner: the sign-in page's halftone dither globe and glyph rain on the left, the customer logo grid on the right, in the 1-bit language, 1500x500. |
+| `gt-banner-signin@2x.webp` | the banner's retina master, 3000x1000, in lossless WebP: its pixels are identical to the PNG it was made from, and `dwebp gt-banner-signin@2x.webp -o gt-banner-signin@2x.png` writes that PNG back for an upload that takes only PNG. `/brand` shows this file. |
 | `banner-contact-sheet.png` | the process artifact: the ten banner explorations that led to the shipped sign-in globe design, as one contact sheet. |
 | `fuma-nama-film.mp4` | the trailer for Taylor Fang's post "Fuma Nama: The philosophy of an open-sourcerer": a HyperFrames composition in the fire gem smoke (`#fe5b16`, `#f7ff61` and white on ink `#070707`), the v4 cut, 59.5 s, narrated by Frederick Surrey, 1920x1080, H.264 and AAC, the render's streams unchanged with the moov atom at the front so it plays before it has finished loading. |
 | `fuma-nama-poster.jpg` | the Fuma Nama film's poster, the v4 cut's poster frame, 1920x1080. |
@@ -29,6 +30,7 @@ kept here as proof of what the identity does off the page.
 | `gt-globe-glyphs.png` | the glyph globe: the same sphere printed in characters from twenty writing systems, land large in `#f2f2f0` and `#86a8ff`, ocean at half size in `#2f5ce0`, the size of each glyph setting its brightness, 2048x2048 on ink. |
 | `gt-globe-glyphs-light.png` | the glyph globe in light, 2048x2048 on paper `#ffffff`: land in ink `#070707`, ocean in `#2f5ce0` thinning to `#86a8ff` in the highlight, the halftone run the other way so ink carries the shadow. |
 | `gt-globe-*-transparent.png` | each globe's twin: the same art on an alpha ground, for laying beside a partner's mark. A dark twin is for a dark ground and a light twin for a light one. |
+| `gt-globe-*.webp` | each globe on its ground in lossless WebP, pixel-identical to its PNG. `/brand` shows these files, and its download links keep to the PNGs. |
 
 The reel, the blog films and the globes are shown live in `/brand` under
 Made with the system. The blog films, the three translation series films,
@@ -38,3 +40,7 @@ the head of its package page, `/motion/<slug>`. Each blog film on `/brand`
 and each translation series film on its package page has a link that
 downloads its MP4, and each globe has links that download its PNG on its
 ground (ink or paper) and its transparent PNG.
+
+The stills `/brand` shows are lossless WebP, written from the PNG with
+`cwebp -lossless -z 9 -exact -metadata none <name>.png -o <name>.webp`.
+Each WebP is 2 to 38 percent of its PNG's bytes and holds the same pixels.
