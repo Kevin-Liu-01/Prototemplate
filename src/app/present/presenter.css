@@ -2023,6 +2023,9 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   position: fixed;
   bottom: 18px;
   left: 50%;
+  /* left: 50% leaves half the screen for a shrink-to-fit width; the pill
+     takes its own width instead and centers by its transform */
+  width: max-content;
   transform: translateX(-50%);
   z-index: 90;
   display: flex;
@@ -2490,12 +2493,13 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 /* ---------- Touch targets ---------- */
 
-/* Under 900px every control the first screen and the verdict show is a
+/* Under 900px and on any coarse pointer (a phone held sideways is 932
+   wide) every control the first screen and the verdict show is a
    44px hit box, and its drawing keeps its size: the mark and its label sit
    centered in a taller link that starts 12px higher, the slide arrows grow
    while the slide pill drops its vertical padding to stay one row, and the
    theme switch grows through its padding. */
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) {
   .pr-hud-brand {
     top: 8px;
     min-height: 44px;

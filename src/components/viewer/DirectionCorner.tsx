@@ -66,10 +66,11 @@ const CornerLayers = dynamic(() => import('@/components/viewer/CornerLayers'), {
  *
  * Loading: the list, the index panel and the preview layer (CornerLayers)
  * and the search index are chunks of their own, about 150K of script a
- * prototype would otherwise parse for a 32px corner. The corner wakes them
- * on the first hover or focus inside it, on [, R or Cmd K, and when the
- * palette opens; a panel opened by its key before its chunk lands slides
- * in from its @starting-style (DirectionCorner.css).
+ * prototype would otherwise parse for a 32px corner. The layers' chunk is
+ * fetched once the page is idle and mounts on the first hover or focus
+ * inside the corner, on [, R or Cmd K, and when the palette opens; a panel
+ * opened by its key before its chunk lands slides in from its
+ * @starting-style (DirectionCorner.css).
  */
 export type DirectionCornerProps = {
   slug: string;
@@ -192,6 +193,17 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
     },
     { dependencies: [list] }
   );
+
+  /* fetch the layers' chunk once the page is idle, so the first [ opens at once */
+  useMountEffect(() => {
+    const warm = () => void import('@/components/viewer/CornerLayers');
+    if (typeof window.requestIdleCallback !== 'function') {
+      const id = window.setTimeout(warm, 2000);
+      return () => window.clearTimeout(id);
+    }
+    const id = window.requestIdleCallback(warm, { timeout: 4000 });
+    return () => window.cancelIdleCallback(id);
+  });
 
   useMountEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
