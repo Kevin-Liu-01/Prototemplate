@@ -2634,8 +2634,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     max-width: 100%;
   }
 
-  .pr-dock-set-viewer .pr-dock-label,
-  .pr-dock .pr-dock-label {
+  .pr-dock button.pr-dock-label {
     flex-shrink: 1;
     min-width: 0;
   }
@@ -2648,12 +2647,33 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     max-width: 100%;
   }
 
-  .pr-dock-summary {
+  /* the label already opens the grid, so its twin button goes */
+  .pr-dock button.pr-dock-summary,
+  .pr-dock button.pr-dock-grid,
+  .pr-dock-set-viewer .pr-dock-sep:last-of-type {
     display: none;
   }
 
   .pr-dock button {
     padding: 0 6px;
+  }
+
+  /* the viewer's set is the dock's one child that may shrink, so the
+     label yields instead of the pill clipping both ends */
+  .pr-dock-set-viewer {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .pr-dock .pr-stars button {
+    min-width: 26px;
+    padding: 0 2px;
+  }
+
+  /* the pencil alone; the word stays the button's accessible name */
+  .pr-dock button.pr-dock-notes {
+    font-size: 0;
+    gap: 0;
   }
 }
 

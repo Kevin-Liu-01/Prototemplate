@@ -430,6 +430,7 @@ export default function PrototypeViewer() {
             </button>
             <button
               type='button'
+              className='pr-dock-grid'
               onClick={() => setGridOpen((open) => !open)}
               aria-label='All prototypes'
             >
