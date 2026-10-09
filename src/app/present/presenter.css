@@ -1388,7 +1388,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* safe: a stage taller than the screen keeps its head and loses its foot */
+  justify-content: safe center;
   padding: 10vh 8vw;
   text-align: center;
 }
@@ -1463,7 +1464,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
-  width: min(1040px, var(--pr-stage-w), calc(150vh - 460px));
+  width: min(1040px, var(--pr-stage-w), max(280px, calc(150vh - 460px)));
   margin-top: 2vh;
   mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
 }
@@ -1518,12 +1519,6 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-@media (max-width: 1020px) {
-  .pr-close-gallery {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 .pr-overlay-stack {
@@ -1731,11 +1726,33 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 @media (max-width: 860px) {
   .pr-detail-grid {
-    grid-template-columns: 1fr;
+    gap: 10px;
   }
 
-  .pr-overlay-line {
-    white-space: normal;
+  .pr-detail-col {
+    padding: 16px 12px 18px;
+    gap: 12px;
+  }
+
+  .pr-detail-col header {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+
+  .pr-detail-mark {
+    width: 15px;
+    height: 15px;
+  }
+
+  .pr-detail-row p {
+    font-size: clamp(13px, 3.4vw, 20px);
+  }
+}
+
+/* a short phone has no room for the scroll hint above the dock */
+@media (max-width: 700px) and (max-height: 700px) {
+  .pr-detail-note {
+    display: none;
   }
 }
 
@@ -2446,10 +2463,6 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .pr-close-gallery {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .pr-tail {
     position: static;
     max-width: none;
@@ -2536,7 +2549,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   }
 
   .pr-detail-big {
-    font-size: clamp(24px, 7.4vw, 40px);
+    font-size: clamp(18px, 5.2vw, 40px);
   }
 
   .pr-overlay-line {
@@ -2579,7 +2592,28 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   }
 
   .pr-close-gallery {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .pr-close-tile {
+    padding: 3px;
+    border-radius: 7px;
+  }
+
+  .pr-close-shot {
+    border-radius: 4px;
+  }
+
+  .pr-close-tile-meta {
+    padding: 5px 3px 2px;
+  }
+
+  .pr-close-tile-num {
+    display: none;
+  }
+
+  .pr-close-tile strong {
+    font-size: 10.5px;
   }
 
   .pr-gallery {
