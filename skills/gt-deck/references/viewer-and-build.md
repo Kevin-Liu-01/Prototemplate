@@ -4,12 +4,12 @@ Detail behind sections 11 and 12 of SKILL.md. Paths are relative to a Prototempl
 
 ## The viewer
 
-The deck carries its own viewer in `deck/parts/head.html` (CSS and markup up to the stage) and `deck/parts/tail.html` (the surfaces panel, the help card and the script). Nothing under `src/components/viewer` reaches into it. `/deck` frames the built file in an iframe (`src/app/deck/page.tsx`, `src/app/deck/DeckFrame.tsx`).
+The deck carries its own viewer in `deck/parts/head.html` (CSS and markup up to the stage) and `deck/parts/tail.html` (the surfaces panel, the help card and the script). Nothing under `src/components/viewer` reaches into it. `/deck` serves the built file itself through a rewrite in `next.config.ts`, so the deck is the top document: its relative `deck-assets/` paths resolve from `/` at either address, and the file's own address `/brand-deck.html` carries `X-Robots-Tag: noindex`.
 
 - Modes: slide, grid (`G`, every slide as a tile) and book (`B`, a head, a contents list and every slide as a page under its section). Present mode (`P`) hides the chrome so the sheet fills the window; fullscreen (`F`) also turns present mode on.
 - At 900 px wide or less the toolbar drops the controls marked `hide-sm` (present, copy link, keyboard shortcuts and fullscreen, none of which a phone can use) and scrolls sideways if a narrow phone still runs out of room. The keys still work.
 - Keys, from the help card: Right, Space or J for the next slide; Left or K for the previous one; Home and End; digits then Enter to jump; R for the surfaces panel; `[` for the slide list; D for the theme; `?` for the card; Escape steps back one layer. Clicking the left or right half of the sheet moves too.
-- The hash is the slide's position (`#12`). Each change posts `{ type: 'gt-deck-slide', n }` to the parent, and `DeckFrame.tsx` mirrors it into the page address, so a search row's `/deck#12` lands on slide 12.
+- The hash is the slide's position (`#12`). The deck writes it on each change and reads it on load and on `hashchange` (`fromHash`), so a search row's `/deck#12` lands on slide 12. The shell opens `/deck` links as a document load (`src/lib/document-routes.ts`).
 - State in localStorage: `gt-theme` (shared with the Prototemplate shell), `gt-deck-theme` (the deck's older key), `gt-deck-sb` (the slide list hidden) and `gt-deck-mode` (book mode remembered). Every read and write is wrapped in try/catch.
 - The slide list, the grid and the book are live clones of the slides (`cloneSlide`). Clones drop every `id`, so a slide styles by class. An id selector reaches only the copy on the stage.
 - A slide's title in the list, the book and the toolbar is the text of its first `h1`, `h2` or `.big` (`titleOf`), cut at 72 characters. A slide with none of the three shows "Slide N".
@@ -40,7 +40,7 @@ Kevin's asks for the deck's viewer (2026-09-08 and 2026-09-09) hold for any GT p
 `pnpm build:deck` runs `scripts/build-deck.mjs`:
 
 1. `deck/assemble.mjs` reads `deck/slides/NN-*.html` (the pattern is `^\d\d-.*\.html$`, sorted) and fails unless there are exactly `SLIDE_COUNT` files. It also fails if any slide carries a `<script>`, if `head.html` does not open with the `<title>` the wrapper replaces, or if the `<!--FONTS-->` marker is missing. The shooter reads the deck through the same module.
-2. It inlines `deck/fonts/deck-fonts.css` in place of `<!--FONTS-->`. That file registers the rsms InterVariable roman, byte for byte the same file as `public/fonts/InterVariable.woff2`, as the family `'Inter'` at weights 100 to 900. No italic is inlined. The font stays inline so the first paint is never a fallback face.
+2. It inlines `deck/fonts/deck-fonts.css` in place of `<!--FONTS-->`. That file registers the rsms InterVariable roman, byte for byte the same file as `public/fonts/InterVariable.woff2`, as the family `'Inter'` at weights 100 to 900. No italic is inlined. The font stays inline so the first paint is never a fallback face. The marker sits after the head's theme script and styles, because the font is about 470 KB of text: a dark visit paints the dark paper with the first bytes. With the font first, a dark visit to /deck stayed white for 1.7 s on a 1.6 Mbps link (2026-10-09).
 3. It marks every `<img>` that names a `shots/` file `loading="lazy"`.
 4. It encodes every `src`, `data-dark` and `data-tone` path under `shots/` once:
    - photographs and captures are resampled through `sips` to 1280 px wide at JPEG quality 78;
@@ -48,7 +48,7 @@ Kevin's asks for the deck's viewer (2026-09-08 and 2026-09-09) hold for any GT p
    - `shots/thumb/*` files and the mood tone grids `shots/tone/*` pass through untouched (the grids are screened in the browser, so a re-encode would change the picture).
 
    Each result is written to `public/deck-assets/<name>.<sha8>.<ext>`, named by the first 8 hex digits of its sha256, and the page names it by that relative path. Identical bytes share one file, so a light and a dark twin cut from the same picture are one fetch. A file's name changes whenever its bytes do, so `next.config.ts` serves `/deck-assets/*` as `public, max-age=31536000, immutable`.
-5. It wraps the result in a document (doctype, charset, viewport, the title "General Translation brand deck", `noindex`), checks that the output holds `SLIDE_COUNT` slide sections, refuses a page over 1 MB (an inlined image), writes `public/brand-deck.html`, and last removes the files under `public/deck-assets` the new page no longer names, so a failed build leaves the old page and its files whole.
+5. It wraps the result in a document (doctype, charset, viewport, the title "General Translation brand deck", the description with `SLIDE_COUNT` in it, and the 96px GT mark `public/brand/no-bg-gt-logo-light-96.png` as the icon; the `--out` copy takes `noindex` in place of the icon), checks that the output holds `SLIDE_COUNT` slide sections, refuses a page over 1 MB (an inlined image), writes `public/brand-deck.html`, and last removes the files under `public/deck-assets` the new page no longer names, so a failed build leaves the old page and its files whole.
 
 Requirements and traps:
 
@@ -82,9 +82,9 @@ The flags reach only the resampled photographs, the continuous-tone natives and 
 
 ## The line audit
 
-`pnpm lint:lines:shell` audits `/deck` too: the iframe's document on the dev server at port 3005, at 1440, 1280 and 390 in both themes, with the grid and the book open. It reads the built `public/brand-deck.html`, so rebuild before it runs. It fails on a doubled line, two owners on one seam, or a chrome border color outside the three roles in `DESIGN.md` ("Line law for chrome"). The deck's `.scroll` rule mirrors the shell's thin scrollbar (`.pt-scroll` in `src/components/viewer/tokens.css`).
+`pnpm lint:lines:shell` audits `/deck` too: the deck's own document on the dev server at port 3005, at 1440, 1280 and 390 in both themes, with the grid and the book open. It reads the built `public/brand-deck.html`, so rebuild before it runs. It fails on a doubled line, two owners on one seam, or a chrome border color outside the three roles in `DESIGN.md` ("Line law for chrome"). The deck's `.scroll` rule mirrors the shell's thin scrollbar (`.pt-scroll` in `src/components/viewer/tokens.css`).
 
 ## Sources
 
-- Prototemplate: `scripts/build-deck.mjs`, `deck/assemble.mjs`, `deck/shoot-slide.mjs`, `deck/parts/head.html`, `deck/parts/tail.html`, `scripts/site-pages.mjs` (`CHROME_PATH`), `next.config.ts` (the `/deck-assets` cache header), `src/app/deck/page.tsx`, `src/app/deck/DeckFrame.tsx`, `DESIGN.md` ("Line law for chrome"), `.gitignore`.
+- Prototemplate: `scripts/build-deck.mjs`, `deck/assemble.mjs`, `deck/shoot-slide.mjs`, `deck/parts/head.html`, `deck/parts/tail.html`, `scripts/site-pages.mjs` (`CHROME_PATH`), `next.config.ts` (the `/deck` rewrite and the `/deck-assets` cache header), `src/lib/document-routes.ts`, `DESIGN.md` ("Line law for chrome"), `.gitignore`.
 - Memory notes `gt-brand-deck` (the artifact copy flags and the 16 MB limit) and `prototemplate-interface-system` (the deck opens dark; the deck stands alone at `/deck`, Kevin, 2026-09-08 and 2026-09-09).

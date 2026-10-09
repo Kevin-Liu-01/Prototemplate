@@ -26,7 +26,6 @@ src/
     compare/              /compare: two directions in synced frames
     present/              the presenter deck (intro, prototypes, scoreboard)
     brand/                /brand: the brand book
-    deck/                 /deck: the frame around public/brand-deck.html
     docs/                 the documents book: registry.ts (the documents),
                           book.tsx (reads and renders them on the server),
                           docs-book.ts (the /docs book with the build log
@@ -81,7 +80,8 @@ src/
                           without GSAP)
 scripts/
   build-deck.mjs          deck/ to public/brand-deck.html and
-                          public/shots/deck (pnpm build:deck)
+                          public/shots/deck (pnpm build:deck); next.config.ts
+                          rewrites /deck to the built file
   build-thumbs.mjs        the 640x360 previews in public/shots/thumb, cut
                           from the captures under public/shots
   build-skills.mjs        skills/ to src/lib/skills.ts and skills/README.md,
