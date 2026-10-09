@@ -1,9 +1,9 @@
 /* DirectionCorner: the floating chrome on /d pages. A 32px tile with the
    Prototemplate mark (the link back to the gallery) over three labeled
    buttons (Search, List, Index), stacked in the top left corner and
-   sharing one hairline (a row in the top right under 768px on a page that
-   asks for placement='right', below), on paper, so the stack reads as
-   Prototemplate
+   sharing one hairline (under 768px a row in a strip above the page, or
+   in the top right on a page that asks for placement='right', below), on
+   paper, so the stack reads as Prototemplate
    chrome and not as part of the prototype's own nav band; a fixed layer
    over the page holds the overlay list and the index panel above a 28
    percent ink scrim, and the search palette (Search.css) opens from the
@@ -114,34 +114,31 @@
   }
 }
 
-/* the outer margin is gone on a phone: the corner steps below the nav band */
-@media (max-width: 700px) {
-  .pt-corner {
-    top: 70px;
+/* Phones (under 767px, or held sideways): the corner is one row of 32px
+   squares. By default it sits in a 44px strip the body opens above the
+   page's nav band and scrolls away with it, so it never covers the page; a
+   plate page (placement='right') keeps the row fixed in the top right. */
+@media (max-width: 767px), (pointer: coarse) and (max-height: 500px) {
+  body:has(.pt-corner:not(.is-right)) {
+    padding-top: 44px;
   }
-}
 
-/* A page whose column starts at the left edge under the corner (the plate
-   pages: the mark at x 22 and the heading at x 36 on a 390 phone) sets
-   placement='right'. Under the plate frame's md cut, 767px, where the
-   gallery's console folds into its 44px handle at the top left, the corner
-   takes the top right as one row of 32px squares (the mark tile, Search,
-   List, Index: 125 by 32, from y 10 to 42), where nothing of the page sits:
-   the mark row starts at y 94 and the onboarding step counter that ends it
-   at the right starts at 108, so the column the corner was would have
-   covered the counter. It keeps the outer margin's top since there is no
-   nav band to step below. The seam turns with the layout: the left button
-   owns each hairline with its right edge and the right one's left edge is
-   transparent at rest, with the top edge back on the hairline. */
-@media (max-width: 767px) {
+  .pt-corner {
+    flex-direction: row;
+  }
+
+  .pt-corner:not(.is-right) {
+    position: absolute;
+    top: 6px;
+  }
+
   .pt-corner.is-right {
     top: 10px;
     left: auto;
     right: 12px;
-    flex-direction: row;
   }
 
-  .pt-corner.is-right .pt-ib ~ .pt-ib {
+  .pt-corner .pt-ib ~ .pt-ib {
     margin-top: 0;
     margin-left: -1px;
     border-top-color: var(--pt-hair);
@@ -150,17 +147,17 @@
 
   /* the seam rule above outweighs the hover and pressed rule, so the ink
      edge is restored here at the same weight */
-  .pt-corner.is-right .pt-ib:hover,
-  .pt-corner.is-right .pt-ib.is-on {
+  .pt-corner .pt-ib:hover,
+  .pt-corner .pt-ib.is-on {
     border-color: var(--pt-ink);
   }
 
   /* the row: the first member rounds its left corners, the last its right */
-  .pt-corner.is-right .pt-ib:nth-child(1 of .pt-ib) {
+  .pt-corner .pt-ib:nth-child(1 of .pt-ib) {
     border-radius: var(--pt-radius-control) var(--pt-radius-shell) var(--pt-radius-shell) var(--pt-radius-control);
   }
 
-  .pt-corner.is-right .pt-ib:nth-last-child(1 of .pt-ib) {
+  .pt-corner .pt-ib:nth-last-child(1 of .pt-ib) {
     border-radius: var(--pt-radius-shell) var(--pt-radius-control) var(--pt-radius-control) var(--pt-radius-shell);
   }
 }

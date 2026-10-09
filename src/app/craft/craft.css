@@ -596,16 +596,21 @@
    narrower than the resting reveal so the cut never clips its left edge */
 .ptc-seam-under-in {
   width: 40%;
-  min-width: 280px;
+  /* a phone's box is narrower than 280px: the column shrinks to it
+     rather than hang past its left edge */
+  min-width: min(280px, 100%);
 }
 
+/* 11px (the file label's size) sets the 40-character line inside the
+   280px column; a narrower one wraps, the tail indented, rather than cut */
 .ptc-seam-under pre {
   margin-top: 10px;
   font-family: var(--pt-mono);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.8);
-  white-space: pre;
+  white-space: pre-wrap;
+  text-indent: 4ch each-line hanging;
   overflow: hidden;
 }
 

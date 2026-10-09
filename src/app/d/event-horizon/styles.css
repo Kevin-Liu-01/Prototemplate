@@ -262,10 +262,25 @@
   color: var(--tc-ink);
 }
 
+/* The theme toggle leads .tc-nav-right, so Sign in is the link after it;
+   a:first-child stopped matching and let Sign in wrap on phones. */
 @media (max-width: 860px) {
   .eventhorizon-root .tc-nav-links,
-  .eventhorizon-root .tc-nav-right > a:first-child {
+  .eventhorizon-root .tc-nav-right > .tc-nav-theme + a {
     display: none;
+  }
+}
+
+/* Below 375px the wordmark has no room beside the demo button: the mark
+   stands alone (the link keeps its name in aria-label) on a 44px hit box. */
+@media (max-width: 374px) {
+  .eventhorizon-root .tc-nav-word {
+    display: none;
+  }
+
+  .eventhorizon-root .tc-nav-brand {
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 

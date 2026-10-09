@@ -738,3 +738,63 @@
 .blog-fumadocs-architecture .brand-flexsearch-a {
   fill: #f4641d;
 }
+
+/* ---- touch ---- */
+
+/* a touch phone (Toolbar.css's query): every link and dot answers a tap
+   at least 40px on each side while its drawing keeps its size */
+@media (pointer: coarse) and (max-width: 600px), (pointer: coarse) and (max-height: 500px) {
+  /* an inline link's padding grows its hit area; the inline box keeps the
+     line height and the negative margins keep the words where they are */
+  .blog-lead a,
+  .blog-body :is(p, li):not([class]) a,
+  .blog-article-foot a,
+  .blog-card-copy h2 a {
+    padding: 12px 4px;
+    margin-inline: -4px;
+  }
+
+  .blog-crumb a {
+    padding: 12px 8px;
+    margin-inline: -8px;
+  }
+
+  /* the spotlight's chips: a transparent ::after 5px past the padding edge */
+  .blog-spotlight-links a {
+    position: relative;
+  }
+
+  .blog-spotlight-links a::after {
+    content: '';
+    position: absolute;
+    inset: -5px 0;
+  }
+
+  /* the row's margins keep the dots on their line */
+  .blog-carousel-dots {
+    gap: 0;
+    margin-block: -5px -17px;
+  }
+
+  /* a dot draws in the content box of a 40px button, raised over the frame's
+     edge; the row's class keeps the clip over the background shorthands */
+  .blog-carousel-dots .blog-carousel-dot {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    padding: 17px;
+    background-clip: content-box;
+  }
+
+  /* a square ::after, so the round button's corners answer a tap too */
+  .blog-carousel-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .blog-carousel-dot.is-current {
+    padding: 16.25px;
+    transform: none;
+  }
+}

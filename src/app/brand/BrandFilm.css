@@ -67,17 +67,22 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 760px) {
-  /* a phone's film is about 185px tall; the smaller badge keeps clear of
-     the Fuma Nama title under it and the docs title over it. The whole
-     frame is the button, so the badge's size is not the tap target's. */
+@media (max-width: 760px), (pointer: coarse) and (max-height: 500px) {
+  /* on a phone, in either orientation, a centred badge lands on the title
+     card's title, so a smaller one sits in the bottom right corner, clear of
+     every title. The whole frame is still the button, the tap target. */
+  .ptb-film-play {
+    place-items: end;
+    padding: 8px;
+  }
+
   .ptb-film-badge {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
   }
 
   .ptb-film-badge svg {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
   }
 }

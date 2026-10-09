@@ -75,9 +75,9 @@ const CornerLayers = dynamic(() => import('@/components/viewer/CornerLayers'), {
 export type DirectionCornerProps = {
   slug: string;
   /**
-   * Where the corner sits under 768px: the top left under the page's nav
-   * band (the default), or the top right as one row of squares, for a page
-   * whose column starts at the left edge under the corner.
+   * Where the corner's row of squares sits under 768px: in a strip above
+   * the page's nav band (the default), or fixed in the top right, for a
+   * page with no nav band whose column starts at the left edge.
    */
   placement?: 'left' | 'right';
   /**

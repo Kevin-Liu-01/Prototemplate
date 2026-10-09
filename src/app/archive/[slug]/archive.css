@@ -169,3 +169,12 @@
     overflow-wrap: anywhere;
   }
 }
+
+/* a touch phone (Toolbar.css's query): a link's vertical padding grows its
+   hit area past 40px; an inline box keeps the lines where they are */
+@media (pointer: coarse) and (max-width: 600px), (pointer: coarse) and (max-height: 500px) {
+  .ar-v a,
+  .ar-static a {
+    padding-block: 14px;
+  }
+}

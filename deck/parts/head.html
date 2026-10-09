@@ -353,7 +353,8 @@
     /* a phone has no keyboard card to open and no element fullscreen, so help and fullscreen go with the other hide-sm
        controls; the bar scrolls sideways if a narrow phone still runs out of room */
     .toolbar { gap: 8px; padding: 0 8px; overflow-x: auto; scrollbar-width: none; }
-    .toolbar .hide-sm, .toolbar .sep, .bar-brand { display: none; }
+    /* three classes deep so the brand stays off in the grid too (.viewer.is-overview .bar-brand above) */
+    .toolbar .hide-sm, .toolbar .sep, .viewer .toolbar .bar-brand { display: none; }
     .book-in { padding: 24px 16px 80px; gap: 24px; }
     .book-head { grid-template-columns: 1fr; gap: 12px; }
     .book-head h1 { font-size: 32px; }
@@ -364,6 +365,8 @@
     .page .pn b { font-size: 16px; margin: 0; }
     .panel-r { width: 100%; }
   }
+  /* under 375px the arrows go so the bar fits; a tap on either half of the slide or a swipe still steps through it */
+  @media (max-width: 374px) { .toolbar [data-act="prev"], .toolbar [data-act="next"] { display: none; } }
 </style>
 
 <div class="viewer" id="viewer">

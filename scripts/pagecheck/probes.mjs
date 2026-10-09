@@ -142,7 +142,9 @@ export const readPage = (cfg) => {
     if (!(el.textContent ?? '').trim()) continue;
     /* a scroll region that hides its bar is a scroller, not a clip; a box of blocks that each fit is not a clip of text */
     if (cs.overflowX === 'auto' || cs.overflowX === 'scroll') continue;
-    if (!hasOwnText(el) && ![...el.children].some((c) => c.getBoundingClientRect().right > el.getBoundingClientRect().right + 1)) continue;
+    /* only a child with readable text counts: an empty aria-hidden watermark may run past the edge */
+    const spills = (c) => c.getBoundingClientRect().right > el.getBoundingClientRect().right + 1 && !!c.textContent?.trim() && !c.closest('[aria-hidden="true"], [aria-hidden=""]');
+    if (!hasOwnText(el) && ![...el.children].some(spills)) continue;
     clipped.push({
       el: desc(el),
       within: within(el),
