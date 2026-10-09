@@ -259,6 +259,8 @@
   .stagewrap.is-picture .sheet { background: transparent; border-color: transparent; box-shadow: none; }
   .stagewrap.is-picture .slide.is-on .opener-img, .stagewrap.is-picture .slide.is-on .mood-img { visibility: hidden; }
   .sheet { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; box-sizing: content-box; background: var(--paper); border: 1px solid var(--edge); box-shadow: 0 0 0 1px var(--paper), 0 0 0 2px var(--hair-soft); overflow: hidden; z-index: 1; }
+  /* the sheet stays unpainted until fit() writes its size: a long document can paint before the closing script runs, and the unscaled 1600 x 900 box would then jump (a layout shift up to 0.13 at 3440 wide) */
+  .sheet:not([style]) { visibility: hidden; }
   .stage { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; transform-origin: 0 0; }
   .slide { position: absolute; inset: 57px; padding: 72px 80px; display: none; }
   .slide.is-on { display: block; }
