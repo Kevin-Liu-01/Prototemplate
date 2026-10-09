@@ -466,7 +466,7 @@ const PAGES: readonly BrandPage[] = [
             open generaltranslation.com
           </a>
           <span aria-hidden> · </span>
-          <Link href='/deck'>open the deck</Link>
+          <a href='/deck'>open the deck</a>
           <span aria-hidden> · </span>
           <Link href='/motion'>open the films</Link>
           <span aria-hidden> · </span>
@@ -494,7 +494,7 @@ const PAGES: readonly BrandPage[] = [
           Finished artwork produced with this toolchain and the Glyphfield studio,
           kept here as proof of what the identity does off the page. The whole
           identity, this page included, is also summarized as a 93-slide
-          slideshow at <Link href='/deck'>/deck</Link>.
+          slideshow at <a href='/deck'>/deck</a>.
         </p>
         <div className='ptb-media'>
           <figure className='ptb-shot'>

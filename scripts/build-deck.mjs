@@ -1,7 +1,7 @@
 // Builds public/brand-deck.html, the standalone brand deck viewer, from the
 // deck source checked in at deck/. The deck keeps its own chrome, slide list
 // and surface index; nothing under src/components/viewer reaches into it,
-// and src/app/deck only frames the file.
+// and next.config.ts serves the file itself at /deck.
 //
 //   deck/assemble.mjs       parts/head.html, slides/NN-*.html in name order and
 //                           parts/tail.html, with fonts/deck-fonts.css inlined in
@@ -32,9 +32,11 @@
 // last, so a failed build leaves the old page and its files whole.
 //
 // The result is wrapped as a full document (doctype, charset, viewport, the
-// title, a noindex meta, and a style for color-scheme, which follows the
-// data-theme attribute the head script stamps rather than the OS scheme, and
-// the body margin) and written to public/brand-deck.html. The thumbnails under
+// title, the description, the 96px GT mark as its icon, and a style for
+// color-scheme, which follows the data-theme attribute the head script stamps
+// rather than the OS scheme, and the body margin) and written to
+// public/brand-deck.html. The --out copy has no site beside it, so it takes a
+// noindex meta in place of the icon. The thumbnails under
 // shots/thumb are also copied to public/shots/deck, where the index panel's
 // General Translation set (src/lib/surfaces.ts) reads them.
 //
@@ -129,6 +131,9 @@ function twoTonePng(abs, out) {
   }
 }
 const TITLE = 'General Translation brand deck';
+const DESCRIPTION = `The General Translation brand in ${SLIDE_COUNT} slides: thesis, values, writing style, mark, color, type, line rules, diagrams, dither, motion, the shipped site and every public surface, docs, blog, content rules, Prototemplate, Glyphfield, fixed points, current status, and mood images between the sections.`;
+/* the same picture as public/brand/no-bg-gt-logo-light.png at 96px, 3.6 KB in place of 45 KB */
+const ICON = '/brand/no-bg-gt-logo-light-96.png';
 const IMAGE_REF = /(src|data-dark|data-tone)="(shots\/[^"]+)"/g;
 const IMAGE = /\.(jpg|jpeg|png|webp|gif)$/i;
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif' };
@@ -234,7 +239,8 @@ if (/(src|data-dark|data-tone)="shots\//.test(source)) {
 const open =
   '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1">' +
-  `<title>${TITLE}</title><meta name="robots" content="noindex">` +
+  `<title>${TITLE}</title><meta name="description" content="${DESCRIPTION}">` +
+  (OUT_OVERRIDE ? '<meta name="robots" content="noindex">' : `<link rel="icon" type="image/png" href="${ICON}">`) +
   '<style>:root{color-scheme:light}:root[data-theme="dark"]{color-scheme:dark}body{margin:0}</style></head><body>';
 const html = `${open}${source}\n</body></html>\n`;
 

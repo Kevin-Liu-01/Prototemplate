@@ -763,7 +763,7 @@ const LIVE_KEYS = { brand: ['r', 'Meta+k', 'Shift+Slash'] };
  * Throws when a registry's first slug cannot be read.
  */
 export function liveRoutes() {
-  return routesFor('live').map((r) => ({ id: r.id, path: r.path, keys: LIVE_KEYS[r.id] ?? [], deck: r.id === 'brand-deck' }));
+  return routesFor('live').map((r) => ({ id: r.id, path: r.path, keys: LIVE_KEYS[r.id] ?? [], deck: r.id === 'deck' }));
 }
 
 async function runLive(root, argv) {

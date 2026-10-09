@@ -7,6 +7,7 @@ import { Fragment, memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { brandFontVariables } from '@/lib/brand-fonts';
 import { cn } from '@/lib/cn';
+import { isDocumentHref, openSiteHref } from '@/lib/document-routes';
 import type { ShellDensity, ShellItem, ShellMark, ShellSection, ShellShot, ShellSubRow, ShellThumb } from '@/lib/shell-data';
 import { previewId } from '@/lib/shell-data';
 import { isExternalSurface, surfaceGroups } from '@/lib/surfaces';
@@ -694,7 +695,7 @@ export function ThumbList({ sections, thumb, density, siteMap = false, onSelect,
       return;
     }
     if (item.url) window.open(item.url, '_blank', 'noopener,noreferrer');
-    else if (item.href) router.push(item.href);
+    else if (item.href) openSiteHref(router, item.href);
   };
 
   return (
@@ -853,7 +854,8 @@ const TreeRow = memo(function TreeRow({
         {shots ? <span className='pt-orow-addr'>{row.address}</span> : null}
       </>
     );
-  if (link && !row.external) {
+  /* a static document (/deck) is a plain anchor: Link would fetch it through the router and then load it again */
+  if (link && !row.external && !isDocumentHref(row.href)) {
     return (
       <Link
         className={className}
@@ -1317,7 +1319,7 @@ export function Sidebar({
       return () => {
         if (narrow) setSidebar(false);
         if (row.external) window.open(row.href, '_blank', 'noopener,noreferrer');
-        else router.push(row.href);
+        else openSiteHref(router, row.href);
       };
     }
     return null;

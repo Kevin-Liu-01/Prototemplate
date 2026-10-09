@@ -393,8 +393,6 @@
     document.title = 'GT Brand deck, ' + (n + 1) + ' of ' + slides.length;
     if (opts.hash !== false) {
       try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {}
-      /* inside the /deck frame the page around it mirrors the slide into its own address (src/app/deck/DeckFrame.tsx) */
-      if (window.parent !== window) { try { window.parent.postMessage({ type: 'gt-deck-slide', n: n + 1 }, location.origin); } catch (e) {} }
     }
     var c = slides[n].querySelector('canvas.dither');
     if (c && !c.dataset.drawn) { drawDither(c); c.dataset.drawn = '1'; }
@@ -445,7 +443,7 @@
     else say(url);
   }
   /* one theme for the site and the deck: gt-theme is the key the Prototemplate shell reads and writes, gt-deck-theme the
-     deck's older one; the toggle writes both, and a toggle on the page around the frame arrives as a storage event.
+     deck's older one; the toggle writes both, and a toggle on a site page in another tab arrives as a storage event.
      With neither key set the deck opens dark, as the site does; prefers-color-scheme is not consulted */
   function storedTheme() {
     var t = load('gt-theme'); if (t === 'dark' || t === 'light') return t;
@@ -461,17 +459,6 @@
   window.addEventListener('storage', function (e) {
     if (e.key !== 'gt-theme' || (e.newValue !== 'dark' && e.newValue !== 'light')) return;
     document.documentElement.setAttribute('data-theme', e.newValue);
-    applyTheme();
-  });
-  /* the page around the frame also posts { type: 'gt-theme', theme } on every toggle and once on load
-     (src/components/viewer/ThemeButton.tsx, src/app/deck/DeckFrame.tsx); it arrives where the storage event does not,
-     in a private window, and lands the same way. Same origin only. */
-  window.addEventListener('message', function (e) {
-    var d = e && e.data;
-    if (!d || d.type !== 'gt-theme' || (d.theme !== 'dark' && d.theme !== 'light') || e.origin !== location.origin) return;
-    if (document.documentElement.getAttribute('data-theme') === d.theme) return;
-    document.documentElement.setAttribute('data-theme', d.theme);
-    store('gt-deck-theme', d.theme);
     applyTheme();
   });
 

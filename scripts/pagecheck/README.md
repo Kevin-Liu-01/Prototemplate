@@ -53,12 +53,11 @@ Per (page, device, theme) cell, once the page is ready:
   paint and the blocking time of long tasks, from observers the context
   installs before the page's first byte (`context.mjs`)
 - the boxes of the named landmarks (the toolbar, the sidebar, the stage,
-  the progress line, the index panel, the docs contents, the deck frame,
-  the presenter dock, `main`), which the report compares across pages per
-  device
+  the progress line, the index panel, the docs contents, the presenter
+  dock, `main`), which the report compares across pages per device
 - the site's own reads (`hooks.mjs`): the shell's data attributes, the
   docs contents grid's column count, the anatomy wall's tiles past the
-  edge, and the deck's sheet inside its frame with its scale
+  edge, and the deck's sheet inside the viewport with its scale
 - console errors, page errors and failed resources, against an allowlist
 
 Every element reading (a box past the edge, a clipped text, a tap target)
@@ -74,10 +73,10 @@ The reads start once the page's ready selector (`pages.mjs`) has matched
 with a box, in the page or in one of its frames: the shell stamps
 `.pt-viewer[data-settled]` one frame after it boots, the blog mounts
 `.blog-root`, the presenter `.pr-root`, and the deck's `#sheet` gets its
-box inside the deck's own document. Then the check waits two frames and
-for the layout (the document's size, the h1, the landmarks, the ready
-element) to hold still for 300ms, at most `settleMs` (3000ms). A cell
-takes as long as its page needs, not a fixed wait.
+box (`/deck` serves the built deck as the page). Then the check waits two
+frames and for the layout (the document's size, the h1, the landmarks, the
+ready element) to hold still for 300ms, at most `settleMs` (3000ms). A
+cell takes as long as its page needs, not a fixed wait.
 
 ### The interactions
 
@@ -96,8 +95,8 @@ after and its readings in `interactions/results.json`:
 - `deck-slides`, once: every slide of the deck, opened by its hash, keeps
   every element inside the 1600x900 sheet
 - `deck-modes`, at 390x844 and 1440x900: the deck's grid and book views
-  lay out inside the frame with no overflow, nothing past the edge and no
-  clipped text
+  lay out inside the viewport with no overflow, nothing past the edge and
+  no clipped text
 
 ## Running it
 
