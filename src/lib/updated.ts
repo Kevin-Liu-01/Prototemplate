@@ -10,7 +10,7 @@
 import type { PageUpdated } from './page-updated';
 
 export const UPDATED: Readonly<Record<string, PageUpdated>> = {
-  '/brand': { day: '2026-10-08', at: '2026-10-08T13:54:41-07:00', commit: 'fbc2b88', src: 'd989157d' },
+  '/brand': { day: '2026-10-08', at: '2026-10-08T22:14:41-07:00', commit: '044dd65', src: 'd989157d' },
   '/docs': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: 'dbfa1264' },
   '/handbook': { day: '2026-10-08', at: '2026-10-08T14:33:46-07:00', commit: '1efa99c', src: '2e348cde' },
   '/skills': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: 'ba0d6db4' },
@@ -37,7 +37,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/skills/gt-website': { day: '2026-10-07', at: '2026-10-07T22:18:34-07:00', commit: 'c72d18b', src: '99644e97' },
   '/skills/prototemplate': { day: '2026-10-08', at: '2026-10-08T14:33:46-07:00', commit: '1efa99c', src: '9f87fa1b' },
   '/marks': { day: '2026-10-08', at: '2026-10-08T12:52:06-07:00', commit: '8960592', src: '8d5c11b6' },
-  '/blog': { day: '2026-10-08', at: '2026-10-08T12:24:14-07:00', commit: 'b932d9d', src: '99b981b0' },
+  '/blog': { day: '2026-10-08', at: '2026-10-08T22:14:41-07:00', commit: '044dd65', src: '99b981b0' },
   '/graphics': { day: '2026-10-08', at: '2026-10-08T14:33:16-07:00', commit: '4ad2d71', src: 'd0e23102' },
   '/motion': { day: '2026-10-08', at: '2026-10-08T12:52:06-07:00', commit: '8960592', src: 'ec682ed6' },
   '/motion/jihe-yuanben': { day: '2026-10-07', at: '2026-10-07T22:18:34-07:00', commit: 'c72d18b', src: '7deaa67a' },
@@ -53,7 +53,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/directions/paper-foundry': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: '0f8b15a3' },
   '/directions/terminus-board': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: '54c173ff' },
   '/directions/wide-rule': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: '3b2f37b7' },
-  '/directions/event-horizon': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: '7be1516d' },
+  '/directions/event-horizon': { day: '2026-10-08', at: '2026-10-08T22:14:41-07:00', commit: '044dd65', src: '7be1516d' },
   '/directions/hourglass': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: '1bad3e03' },
   '/directions/singularity': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: '127a66d5' },
   '/directions/singularity-dossier': { day: '2026-10-08', at: '2026-10-08T14:36:12-07:00', commit: 'b289851', src: '4d1a12dd' },
