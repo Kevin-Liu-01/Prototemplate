@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { closeSync, openSync, readdirSync, readFileSync, readSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { getPost, postFigures } from '@/lib/blog';
@@ -11,7 +11,8 @@ import { getPost, postFigures } from '@/lib/blog';
  * earlier posts. Read on the server at build time. Every version of one
  * image (dark and light, the social card cut from a cover, a clip's still,
  * GIF and video) is one entry with variants, so the viewer shows them in
- * one place.
+ * one place. Each variant's size is read from its file's header, so the
+ * frame the viewer reserves matches the picture.
  */
 
 export type Visual = {
@@ -67,9 +68,58 @@ export function visualSrc(id: string): string {
   return `/static/blogs/designing-docs-${id}.webp`;
 }
 
-/** The export's pixel size: every visual renders 3840 wide, whatever its stage. */
-function exportSize(visual: Visual): { w: number; h: number } {
-  return { w: 3840, h: Math.round((3840 * visual.h) / visual.w) };
+const PUBLIC = join(process.cwd(), 'public');
+
+/**
+ * The pixel size of a file under public/, read from its first 4 KB: a PNG's
+ * IHDR, a GIF's screen, a WebP's first chunk, or an MP4's first track
+ * header with a picture (the moov box must lead, as a faststart export
+ * does). Undefined for a remote, missing or other file; the viewer then
+ * frames it at 16 by 9.
+ */
+function fileSize(src: string): { w: number; h: number } | undefined {
+  if (!src.startsWith('/')) return undefined;
+  const head = Buffer.alloc(4096);
+  let read: number;
+  try {
+    const fd = openSync(join(PUBLIC, src.split('?')[0] ?? src), 'r');
+    try {
+      read = readSync(fd, head, 0, head.length, 0);
+    } finally {
+      closeSync(fd);
+    }
+  } catch {
+    return undefined;
+  }
+  const b = head.subarray(0, read);
+  if (b.length < 32) return undefined;
+  if (b.readUInt32BE(0) === 0x89504e47) return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+  if (b.toString('ascii', 0, 3) === 'GIF') return { w: b.readUInt16LE(6), h: b.readUInt16LE(8) };
+  if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WEBP') {
+    const chunk = b.toString('ascii', 12, 16);
+    if (chunk === 'VP8 ') return { w: b.readUInt16LE(26) & 0x3fff, h: b.readUInt16LE(28) & 0x3fff };
+    if (chunk === 'VP8L') {
+      const bits = b.readUInt32LE(21);
+      return { w: (bits & 0x3fff) + 1, h: ((bits >> 14) & 0x3fff) + 1 };
+    }
+    if (chunk === 'VP8X') return { w: b.readUIntLE(24, 3) + 1, h: b.readUIntLE(27, 3) + 1 };
+  }
+  if (b.toString('ascii', 4, 8) === 'ftyp') {
+    for (let at = b.indexOf('tkhd'); at >= 0; at = b.indexOf('tkhd', at + 4)) {
+      /* width and height are the box's last two 16.16 fields; version 1 widens its times to 64 bits */
+      const end = at + (b[at + 4] === 1 ? 92 : 80);
+      if (end + 8 > b.length) break;
+      const w = b.readUInt32BE(end) >>> 16;
+      const h = b.readUInt32BE(end + 4) >>> 16;
+      if (w && h) return { w, h };
+    }
+  }
+  return undefined;
+}
+
+/** One version of an image, sized from its file. */
+function variantOf(key: string, label: string, src: string, kind: Variant['kind'] = 'image'): Variant {
+  return { key, label, src, ...fileSize(src), kind };
 }
 
 /* ---------- the entries ---------- */
@@ -126,9 +176,9 @@ function visualEntries(visuals: readonly Visual[]): Entry[] {
     let variants: Variant[];
     if (clip) {
       variants = [
-        { key: 'gif', label: 'GIF', src: clip.gif, w: 1400, h: 788, kind: 'gif' },
-        { key: 'video', label: 'Video', src: clip.video, w: 1400, h: 788, kind: 'video' },
-        { key: 'still', label: 'Still', src: visualSrc(visual.id), ...exportSize(visual), kind: 'image' },
+        variantOf('gif', 'GIF', clip.gif, 'gif'),
+        variantOf('video', 'Video', clip.video, 'video'),
+        variantOf('still', 'Still', visualSrc(visual.id)),
       ];
     } else {
       const rank: Record<string, number> = { dark: 0, light: 1, card: 2, 'card-light': 3 };
@@ -136,9 +186,9 @@ function visualEntries(visuals: readonly Visual[]): Entry[] {
         .sort((a, b) => (rank[a.key] ?? 9) - (rank[b.key] ?? 9))
         .map(({ key, label, visual: v }) => {
           /* the post ships the exploded cover's cards as 2400 by 1260 PNGs; those are the versions that matter */
-          if (shipped && key === 'card') return { key, label, src: shipped.card, w: 2400, h: 1260, kind: 'image' as const };
-          if (shipped && key === 'card-light') return { key, label, src: shipped.cardLight, w: 2400, h: 1260, kind: 'image' as const };
-          return { key, label, src: visualSrc(v.id), ...exportSize(v), kind: 'image' as const };
+          if (shipped && key === 'card') return variantOf(key, label, shipped.card);
+          if (shipped && key === 'card-light') return variantOf(key, label, shipped.cardLight);
+          return variantOf(key, label, visualSrc(v.id));
         });
       if (variants.length === 1 && variants[0]) variants = [{ ...variants[0], key: 'image', label: 'Image' }];
     }
@@ -169,7 +219,7 @@ function sheetEntries(): Entry[] {
       n: '',
       title: `Contact sheet ${i + 1} of ${files.length}`,
       why: `The set tiled at the size a reader meets it, ${notes[i] ?? 'the rest of the set'}; what the set was reviewed on.`,
-      variants: [{ key: 'image', label: 'Image', src, w: 2560, h: i === files.length - 1 ? 768 : 1536, kind: 'image' }],
+      variants: [variantOf('image', 'Image', src)],
       shot: { light: src },
     };
   });
@@ -199,7 +249,7 @@ function groundEntries(visuals: readonly Visual[]): Entry[] {
         n: '',
         title: `glyphfield export ${number}${flavor}`,
         why: users.length ? `Ground of ${users.join(', ')}.` : 'Kept in the palette; no visual sits on it yet.',
-        variants: [{ key: 'image', label: 'Image', src, w: 1920, h: 1080, kind: 'image' }],
+        variants: [variantOf('image', 'Image', src)],
         shot: { light: src },
       });
     }
@@ -213,9 +263,9 @@ function postEntries(slug: string): Entry[] {
   if (!post) return [];
   const entries: Entry[] = [];
   if (post.image) {
-    const variants: Variant[] = [{ key: 'dark', label: post.imageLight ? 'Dark' : 'Cover', src: post.image, w: 1920, h: 1080, kind: 'image' }];
-    if (post.imageLight) variants.push({ key: 'light', label: 'Light', src: post.imageLight, w: 1920, h: 1080, kind: 'image' });
-    if (post.ogImage) variants.push({ key: 'card', label: 'Card', src: post.ogImage, kind: 'image' });
+    const variants: Variant[] = [variantOf('dark', post.imageLight ? 'Dark' : 'Cover', post.image)];
+    if (post.imageLight) variants.push(variantOf('light', 'Light', post.imageLight));
+    if (post.ogImage) variants.push(variantOf('card', 'Card', post.ogImage));
     entries.push({
       id: `${slug}-cover`,
       n: '',
@@ -231,7 +281,7 @@ function postEntries(slug: string): Entry[] {
       n: '',
       title: figureTitle(figure.src, `Figure ${i + 1}`),
       why: figure.alt,
-      variants: [{ key: 'image', label: 'Image', src: figure.src, kind: 'image' }],
+      variants: [variantOf('image', 'Image', figure.src)],
       shot: { light: figure.src },
     });
   });
