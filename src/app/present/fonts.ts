@@ -28,3 +28,14 @@ export const instrument = localFont({
   display: 'swap',
   preload: false,
 });
+
+/**
+ * Google's build of Inter for the Details slide's red specimen, cut by the
+ * css2 text= parameter to that slide's strings (public/fonts/google/README.md).
+ */
+export const googleInter = localFont({
+  src: [{ path: '../../../public/fonts/google/inter-specimen.woff2', weight: '100 900', style: 'normal' }],
+  variable: '--font-google-inter',
+  display: 'swap',
+  preload: false,
+});

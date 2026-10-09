@@ -1,7 +1,7 @@
 import { PAGE_NAMES } from '@/lib/page-names';
 
 import PresenterApp from './PresenterApp';
-import { instrument, sora } from './fonts';
+import { googleInter, instrument, sora } from './fonts';
 
 import './presenter.css';
 
@@ -15,7 +15,7 @@ export const metadata = {
 
 export default function PresentPage() {
   return (
-    <div className={`${sora.variable} ${instrument.variable}`}>
+    <div className={`${sora.variable} ${instrument.variable} ${googleInter.variable}`}>
       <PresenterApp />
     </div>
   );

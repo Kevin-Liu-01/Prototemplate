@@ -276,5 +276,16 @@
     "bytes": 14108,
     "license": "SIL Open Font License 1.1",
     "axis": "ital,wdth,wght@1,150,500"
+  },
+  {
+    "file": "inter-specimen.woff2",
+    "family": "Inter",
+    "style": "normal",
+    "text": "Gg Ra 0123 Illegal 10Ol 0 skips in 100 songs a little while ago General Translation Inter abcdefghijklmnopqrstuvwxyz",
+    "unicodeRange": "U+20, U+30-33, U+47, U+49, U+4f, U+52, U+54, U+61-7a",
+    "source": "https://fonts.gstatic.com/l/font?kit=UcC73FwrK3iLTeHuS_nVMrMxCp50SjIq15j8eUYDu_QliUbvVtEO3-Hh-YywHFfqce4gRApS3kZeCYdKdVR2A5C5yg&skey=c491285d6722e4fa&v=v20",
+    "bytes": 10720,
+    "license": "SIL Open Font License 1.1",
+    "axis": "wght@100..900"
   }
 ]
