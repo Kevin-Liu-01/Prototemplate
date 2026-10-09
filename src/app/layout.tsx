@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { fontVariables } from '@/lib/fonts';
 
 import './globals.css';
+import './inter-subsets.css';
 import '@/components/viewer/tokens.css';
 
 const SITE_URL = 'https://prototemplate.vercel.app';

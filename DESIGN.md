@@ -279,11 +279,16 @@ inside the list that marks the place, never a page rail.
 
 ### Book type
 
-The shell's type is one family, the rsms InterVariable (v4.1). The roman
+The shell's type is one family, the rsms InterVariable (v4.1), cut into
+unicode-range subsets by `scripts/subset-inter.py` (`pnpm build:inter`):
+Google Fonts' latin, latin-ext, vietnamese, greek, greek-ext, cyrillic and
+cyrillic-ext, plus Latin Extended-A, the private use area and the remaining
+symbols, each with every feature and both axes. The roman's latin subset
 comes through next/font, bound as `ptInter` in `src/lib/fonts.ts` so its
 family name matches no installed Inter, and every route preloads it. The
-italic is a plain `@font-face` in the same `ptInter` family in
-`src/app/globals.css`, fetched only where italic text renders. Any other
+other subsets and the italic are plain `@font-face` rules in the same
+`ptInter` family in `src/app/inter-subsets.css`, each fetched only where
+the page draws a code point in its range. Any other
 `localFont` call sets `preload: false` (`pnpm lint:type`, T3). Every stylesheet reads the type tokens of
 `src/components/viewer/tokens.css` and declares no family, feature list or
 display size of its own. The /d/ directions keep their own type.

@@ -101,13 +101,13 @@ Inter is the one typeface for display, interface and text. The build is the rsms
 **The face.**
 
 - The files are `public/fonts/InterVariable.woff2` (sha1 `f55b18fd`) and `public/fonts/InterVariable-Italic.woff2` (sha1 `a5f0513e`). Their family name is "Inter Variable", version string 4.001, with axes `opsz` 14 to 32 and `wght` 100 to 900.
-- Prototemplate, the deck (which inlines the roman) and gt-cloud's landing serve the same bytes.
+- The deck (which inlines the roman) and gt-cloud's landing serve the same bytes. Prototemplate serves unicode-range subsets cut from them in `public/fonts/inter`, which keep every feature and both axes.
 - No other Inter is ever loaded: no Google Fonts build through `next/font/google`, no fontsource package, no CDN copy, no `local()` source.
 - No stack names `'Inter'`, `'InterVariable'` or `'Inter Display'` as a family. A bare name matches whatever Inter the reader has installed. The deck is the one place a family is named `'Inter'`: its `@font-face` carries the roman as a data URI, which cannot fail to load, so it always hides an installed Inter (`references/type.md`).
 
 **The binding.**
 
-- Prototemplate binds the roman as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`, and declares the italic as a plain `@font-face` in the same `ptInter` family in `src/app/globals.css`. So every route preloads the roman, and a browser fetches the italic only where italic text renders.
+- Prototemplate binds the roman's latin subset as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`, and declares the other subsets and the italic as plain `@font-face` rules with a `unicode-range` in the same `ptInter` family in `src/app/inter-subsets.css`, which `scripts/subset-inter.py` writes. So every route preloads the roman latin subset, and a browser fetches any other subset only where the page draws a code point in its range.
 - next/font names the family after the JavaScript identifier, and CSS family names are case-insensitive. A binding named `inter` therefore shares its name with an installed Inter. If the woff2 fails to load, that installed Inter renders (desktop Inter 3, for example, which has no opsz axis), and the metric-matched fallback never engages.
 - gt-cloud's landing still binds `inter` on `--font-sans`, and its built CSS reads `"inter", "inter Fallback"`, so it carries the same exposure.
 
