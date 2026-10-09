@@ -39,7 +39,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/marks': { day: '2026-10-08', at: '2026-10-08T12:52:06-07:00', commit: '8960592', src: '8d5c11b6' },
   '/blog': { day: '2026-10-08', at: '2026-10-08T22:14:41-07:00', commit: '044dd65', src: '99b981b0' },
   '/graphics': { day: '2026-10-09', at: '2026-10-09T10:29:09-07:00', commit: '8f857fc', src: 'd0e23102' },
-  '/motion': { day: '2026-10-09', at: '2026-10-09T10:30:24-07:00', commit: '408e043', src: 'ec682ed6' },
+  '/motion': { day: '2026-10-09', at: '2026-10-09T14:50:56-07:00', commit: '9120a7d', src: 'ec682ed6' },
   '/motion/jihe-yuanben': { day: '2026-10-07', at: '2026-10-07T22:18:34-07:00', commit: 'c72d18b', src: '7deaa67a' },
   '/motion/journey-to-the-west': { day: '2026-10-07', at: '2026-10-07T22:18:34-07:00', commit: 'c72d18b', src: 'f066292e' },
   '/motion/modern-hebrew': { day: '2026-10-07', at: '2026-10-07T22:18:34-07:00', commit: 'c72d18b', src: '10944d87' },
