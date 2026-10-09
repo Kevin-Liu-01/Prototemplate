@@ -6,7 +6,8 @@ import { formatDate } from '@/lib/blog';
 /**
  * The byline: avatars stacked in author order (the first on top), the names, the date.
  * The avatars go through next/image, so a 1600px portrait reaches the reader as a
- * file near its 22px box; a remote avatar (a GitHub URL) is passed through as it is.
+ * file near its 22px box, at quality 95 since the default 75 softens a face this small;
+ * a remote avatar (a GitHub URL) is passed through as it is.
  */
 export default function PostAuthors({ authors, date }: { authors: readonly Author[]; date: string }) {
   const avatars = authors.flatMap((author) => (author.avatar ? [{ slug: author.slug, src: author.avatar }] : []));
@@ -21,6 +22,7 @@ export default function PostAuthors({ authors, date }: { authors: readonly Autho
               alt=''
               width={22}
               height={22}
+              quality={95}
               unoptimized={!avatar.src.startsWith('/')}
               style={{ zIndex: avatars.length - i }}
             />
