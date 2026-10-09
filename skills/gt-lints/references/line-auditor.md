@@ -51,10 +51,10 @@ matches `.is-on`, `.is-active`, `.is-editing`, `.is-solid`,
 these routes against the dev server (default base `http://localhost:3005`):
 `/`, `/docs`, `/brand`, `/compare`, `/archive/<first slug>`,
 `/directions/<first slug>`, `/skills`, `/skills/<first slug>`, `/motion`,
-`/motion/<first package>`, `/d/production` and `/deck`, the last one inside
-its iframe. The first slugs come from the registries through `firstSlug()`:
-`src/lib/archive.ts`, `src/lib/directions.ts`, `src/lib/skills.ts` after
-`export const SKILLS`, and `src/lib/motion.ts` after
+`/motion/<first package>`, `/d/production` and `/deck`, the last one the
+deck's own document. The first slugs come from the registries through
+`firstSlug()`: `src/lib/archive.ts`, `src/lib/directions.ts`,
+`src/lib/skills.ts` after `export const SKILLS`, and `src/lib/motion.ts` after
 `export const MOTION_PACKAGE_SLUGS`. A registry that moves or renames that
 anchor makes the run exit 2, so a change to a registry's shape updates
 `shellRoutes()` in the same commit.

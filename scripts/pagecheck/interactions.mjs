@@ -20,18 +20,18 @@
 //   search            Ctrl K opens the search card (useShellKeys.ts,
 //                     Search.tsx) inside the viewport, typing filters the
 //                     rows, Escape closes it
-//   deck-advance      with the deck's frame focused, the right arrow moves
-//                     to the next slide (deck/parts/tail.html show), the
-//                     frame's counter changes and the page's hash follows
-//                     (DeckFrame.tsx)
+//   deck-advance      with nothing clicked or focused since load, the right
+//                     arrow moves to the next slide (deck/parts/tail.html
+//                     show): the counter changes and the hash follows; a
+//                     cold load of /deck#12, the link a search row opens,
+//                     shows slide 12 (tail.html fromHash)
 //   deck-slides       every slide of the deck, opened by its hash
 //                     (tail.html fromHash), keeps every element inside the
 //                     1600x900 sheet (the read deck/shoot-slide.mjs makes);
 //                     once, since the slides do not depend on the viewport
 //   deck-modes        the deck's grid (G) and book (B) views lay out inside
-//                     the frame with no overflow, nothing past the edge and
-//                     no clipped text (probes.mjs readPage in the deck's
-//                     document)
+//                     the viewport with no overflow, nothing past the edge
+//                     and no clipped text (probes.mjs readPage)
 //   docs-toc          a contents link in the docs book is answered in place
 //                     (DocsShell.tsx, the sheet's click handler): the
 //                     address becomes the document's and its heading lands
@@ -56,7 +56,7 @@ import { join } from 'node:path';
 
 import { device } from '../site-pages.mjs';
 import { cellContext, collectErrors } from './context.mjs';
-import { DECK_SKIP, PRESENTER, deckDoc } from './hooks.mjs';
+import { DECK_SKIP, PRESENTER } from './hooks.mjs';
 import { readPage } from './probes.mjs';
 
 const BOTH = ['390x844', '1440x900'];
@@ -140,17 +140,20 @@ export const INTERACTIONS = [
     pages: ['deck'],
     devices: BOTH,
     run: async (page) => {
-      const read = async () => {
-        const counter = await deckDoc(page).evaluate(() => document.getElementById('counter')?.textContent?.trim() ?? null);
-        const hash = await page.evaluate(() => location.hash);
-        return { counter, hash };
-      };
+      const read = () => page.evaluate(() => ({ counter: document.getElementById('counter')?.textContent?.trim() ?? null, hash: location.hash }));
       const before = await read();
-      await page.focus('.pt-deck-frame');
+      /* no click and no focus call: the deck is the top document and has the keys from load */
       await page.keyboard.press('ArrowRight');
       await page.waitForTimeout(600);
       const after = await read();
-      return { pass: Boolean(before.counter) && before.counter !== after.counter && after.hash === '#2', before, after };
+      const deepLink = new URL(page.url());
+      deepLink.hash = '#12';
+      await page.goto('about:blank');
+      await page.goto(deepLink.href, { waitUntil: 'load' });
+      await page.waitForSelector('#sheet');
+      const deep = await read();
+      const advanced = Boolean(before.counter) && before.counter !== after.counter && after.hash === '#2';
+      return { pass: advanced && parseInt(deep.counter ?? '', 10) === 12 && deep.hash === '#12', before, after, deep };
     },
   },
   {
@@ -158,7 +161,7 @@ export const INTERACTIONS = [
     pages: ['deck'],
     devices: ['1440x900'],
     run: async (page) => {
-      const r = await deckDoc(page).evaluate(async () => {
+      const r = await page.evaluate(async () => {
         const slides = [...document.querySelectorAll('#stage .slide')];
         const sheet = document.getElementById('sheet');
         const desc = (el) => `${el.tagName.toLowerCase()}${typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/)[0] : ''}`;
@@ -192,21 +195,18 @@ export const INTERACTIONS = [
     pages: ['deck'],
     devices: BOTH,
     run: async (page) => {
-      const doc = deckDoc(page);
-      /* the deck listens on its own document; a key is dispatched there the way lint-lines drives it */
-      const press = (key) => doc.evaluate((k) => document.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true })), key);
       const modes = {};
       for (const [mode, key, cls] of [
         ['grid', 'g', 'is-overview'],
         ['book', 'b', 'is-book'],
       ]) {
-        await press(key);
+        await page.keyboard.press(key);
         await page.waitForTimeout(800);
-        const [w, h, on] = await doc.evaluate((c) => [innerWidth, innerHeight, Boolean(document.querySelector('.viewer')?.classList.contains(c))], cls);
-        const reads = await doc.evaluate(readPage, { touch: false, w, h, skip: DECK_SKIP, landmarks: {}, tapScope: 'body' });
+        const [w, h, on] = await page.evaluate((c) => [innerWidth, innerHeight, Boolean(document.querySelector('.viewer')?.classList.contains(c))], cls);
+        const reads = await page.evaluate(readPage, { touch: false, w, h, skip: DECK_SKIP, landmarks: {}, tapScope: 'body' });
         const clipped = reads.clipped.filter((c) => !c.srOnly && !c.ellipsis);
         modes[mode] = { on, overflow: reads.scrollWidth > reads.innerWidth, pastEdge: reads.pastEdge.slice(0, 4), clipped: clipped.slice(0, 4) };
-        await press(key);
+        await page.keyboard.press(key);
         await page.waitForTimeout(500);
       }
       const ok = (m) => m.on && !m.overflow && m.pastEdge.length === 0 && m.clipped.length === 0;

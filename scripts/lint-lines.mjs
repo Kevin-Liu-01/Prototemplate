@@ -40,7 +40,7 @@
 //   /compare, /archive/<first slug>, /directions/<first exploration>,
 //   /skills, /skills/<first slug>, /handbook, /motion,
 //   /motion/<first package>, /graphics, /marks, /d/production and /deck,
-//   the iframe's document) at 1440, 1280 and 390 in both themes
+//   the deck's own document) at 1440, 1280 and 390 in both themes
 //   against the dev server, and on each page audits the resting state, the
 //   list toggled ([), the index panel (R), the search (Cmd K), and on / and
 //   /deck the grid (G) and the book (B). Chrome is every element under a
@@ -796,21 +796,9 @@ const probeState = () => {
   };
 };
 
-/** Send one key. The top document gets a real key press; the deck's iframe gets the same event dispatched on its document. */
-async function press(target, key, deck) {
-  if (!deck) {
-    await target.page().keyboard.press(key);
-    return;
-  }
-  const [, mod, k] = key.match(/^(?:(Meta|Control)\+)?(.+)$/);
-  await target.evaluate(
-    ([kk, m]) => {
-      document.dispatchEvent(
-        new KeyboardEvent('keydown', { key: kk, bubbles: true, cancelable: true, metaKey: m === 'Meta', ctrlKey: m === 'Control' })
-      );
-    },
-    [k, mod ?? null]
-  );
+/** Send one key as a real key press; the deck at /deck is the top document too. */
+async function press(target, key) {
+  await target.page().keyboard.press(key);
 }
 
 async function settle(target, ms) {
@@ -833,24 +821,10 @@ async function auditShellRoute(route, width, themeName) {
     console.error(`lint-lines: HTTP ${resp ? resp.status() : 'none'} for ${url}`);
     process.exit(2);
   }
-  let target = page.mainFrame();
-  let deck = false;
-  if (route.deck) {
-    await page.waitForSelector('iframe, .pt-viewer', { timeout: 60000 });
-    const iframe = await page.$('iframe');
-    if (iframe) {
-      const frame = await iframe.contentFrame();
-      if (!frame) {
-        console.error(`lint-lines: the deck iframe at ${url} has no document`);
-        process.exit(2);
-      }
-      await frame.waitForSelector('.viewer', { timeout: 60000 });
-      target = frame;
-      deck = true;
-    }
-  } else {
-    await page.waitForSelector(route.corner ? '.pt-corner' : '.pt-viewer', { timeout: 60000 });
-  }
+  const target = page.mainFrame();
+  /* /deck serves the built deck as the page (next.config.ts), audited with the deck's own roles */
+  const deck = route.deck;
+  await page.waitForSelector(deck ? '.viewer' : route.corner ? '.pt-corner' : '.pt-viewer', { timeout: 60000 });
   await target.evaluate(() => document.fonts.ready);
   await settle(target, 1200);
 
@@ -864,7 +838,7 @@ async function auditShellRoute(route, width, themeName) {
     probe = await target.evaluate(probeState);
   }
   if (probe.theme !== null && probe.theme !== themeName) {
-    await press(target, 'd', deck);
+    await press(target, 'd');
     await settle(target, 400);
     probe = await target.evaluate(probeState);
   }
@@ -897,47 +871,47 @@ async function auditShellRoute(route, width, themeName) {
       /* [ toggles the list: at a wide width the column closes; at or below
          900px, and on a direction page, it opens as the overlay */
       const opens = narrow || Boolean(route.corner);
-      await press(target, '[', deck);
+      await press(target, '[');
       await settle(target, 500);
       const p = await audit(opens ? 'list-open' : 'list-closed');
       const ok = opens ? p.overlay || (narrow && p.sb !== '0') : p.sb === '0';
       if (!ok) unapplied.push('list');
-      await press(target, opens ? 'Escape' : '[', deck);
+      await press(target, opens ? 'Escape' : '[');
       await settle(target, 400);
     } else if (state === 'index') {
-      await press(target, 'r', deck);
+      await press(target, 'r');
       await settle(target, 500);
       const p = await audit('index');
       if (!p.panel) unapplied.push('index');
-      await press(target, 'Escape', deck);
+      await press(target, 'Escape');
       await settle(target, 400);
       const after = await target.evaluate(probeState);
       if (after.panel) {
-        await press(target, 'r', deck);
+        await press(target, 'r');
         await settle(target, 400);
       }
     } else if (state === 'search') {
-      await press(target, 'Meta+k', deck);
+      await press(target, 'Meta+k');
       await settle(target, 500);
       const p0 = await target.evaluate(probeState);
       /* the search bar (directive 8.3); until it lands Cmd K opens the index panel with the filter focused */
       const name = p0.search ? 'search' : p0.panel ? 'search-as-index' : 'search';
       const p = await audit(name);
       if (!p.search && !p.panel) unapplied.push('search');
-      await press(target, 'Escape', deck);
+      await press(target, 'Escape');
       await settle(target, 400);
       const after = await target.evaluate(probeState);
       if (after.search || after.panel) {
-        await press(target, 'Escape', deck);
+        await press(target, 'Escape');
         await settle(target, 300);
       }
     } else if (state === 'grid' || state === 'book') {
-      await press(target, state === 'grid' ? 'g' : 'b', deck);
+      await press(target, state === 'grid' ? 'g' : 'b');
       await settle(target, 700);
       const p = await audit(state);
       if (!p[state]) unapplied.push(state);
       /* Escape returns to the default mode */
-      await press(target, 'Escape', deck);
+      await press(target, 'Escape');
       await settle(target, 600);
     }
   }

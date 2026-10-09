@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 
 import { Icon } from '@/components/viewer/icons';
 import { ToolButton } from '@/components/viewer/ToolButton';
+import { openSiteHref } from '@/lib/document-routes';
 import type { SearchEntry, SearchGroupRows } from '@/lib/search-index';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -173,7 +174,7 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
       window.location.hash = entry.href.slice(hashAt);
       return;
     }
-    router.push(entry.href);
+    openSiteHref(router, entry.href);
   };
 
   /* keep the active row in view as the arrows move it */

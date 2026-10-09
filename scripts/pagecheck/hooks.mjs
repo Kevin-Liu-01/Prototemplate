@@ -1,6 +1,6 @@
 // This site's own reads and judgements: the landmarks the generic probe
 // boxes, the subtrees it leaves out, the extra reads a page needs (the
-// deck's frame, the docs contents grid, the shell's data attributes), the
+// deck's sheet, the docs contents grid, the shell's data attributes), the
 // invariants judged per cell, and where in the code a failed check points.
 //
 // The invariants, each with where it comes from:
@@ -22,7 +22,7 @@
 //                   the sidebar's right edge owns that seam)
 //   deckSheet       the deck's sheet (1600x900 in deck/parts/head.html,
 //                   scaled by fit() in deck/parts/tail.html) stays inside
-//                   the frame's viewport with its 16:9 aspect kept
+//                   the viewport with its 16:9 aspect kept
 //   docsToc         the docs book's contents grid stays inside the viewport
 //                   and runs four columns above 900px, two at or below
 //                   (the shared .pt-book-toc in BookView.css and its 900px
@@ -46,8 +46,8 @@
 //
 // Another site can supply its own module through --hooks-module; it must
 // export LANDMARKS, SKIP, TAP_SCOPE, CONSOLE_ALLOW, siteReads, judge and
-// where with the same shapes (PRESENTER, DECK_SKIP and deckDoc serve this
-// site's own interactions).
+// where with the same shapes (PRESENTER and DECK_SKIP serve this site's
+// own interactions).
 import { ROOT } from '../site-pages.mjs';
 import { parseErrors } from './context.mjs';
 import { locateAsset, locateClass, locateElement, locateText, parseDesc } from './locate.mjs';
@@ -61,7 +61,6 @@ export const LANDMARKS = {
   progress: '.pt-progress',
   panel: '.pt-panel',
   docsToc: '.ptd-toc',
-  deckFrame: '.pt-deck-frame',
   presenterDock: '.pr-dock',
   main: 'main',
 };
@@ -138,11 +137,6 @@ export const PRESENTER = {
 /** What the deck's grid and book reads leave out: the scaled slides inside each thumb and page clip on purpose. */
 export const DECK_SKIP = ['.mini', '.thumb-frame', '.page-frame', 'canvas'];
 
-/** The document the deck is read in: its own document inside the /deck frame (src/app/deck/DeckFrame.tsx), or the page when the deck is served directly. */
-export function deckDoc(page) {
-  return page.frames().find((f) => /brand-deck\.html/.test(f.url())) ?? page.mainFrame();
-}
-
 /** The sidebar's two widths (tokens.css --pt-sb-w, ViewerShell.css thumbs density). */
 const SIDEBAR_WIDTHS = [208, 256];
 
@@ -164,8 +158,8 @@ const GLYPH_MAX = 16;
 /**
  * The reads beyond the generic probe, run after it on the same page:
  * the shell's data attributes, the docs contents grid's column count, the
- * anatomy wall's tiles past the edge, and the deck's sheet inside its frame
- * (a same-origin document, read through the frame).
+ * anatomy wall's tiles past the edge, and the deck's sheet inside the
+ * viewport (/deck serves the built deck as the page, next.config.ts).
  */
 export async function siteReads(page, cell, item) {
   const site = await page.evaluate(() => {
@@ -193,21 +187,18 @@ export async function siteReads(page, cell, item) {
     };
   });
   if (item.id === 'deck') {
-    const frame = deckDoc(page);
-    site.deck = frame
-      ? await frame.evaluate(() => {
-          const sheet = document.getElementById('sheet');
-          const b = sheet?.getBoundingClientRect() ?? null;
-          const r1 = (n) => Math.round(n * 10) / 10;
-          return {
-            counter: document.getElementById('counter')?.textContent?.trim() ?? null,
-            innerWidth: window.innerWidth,
-            innerHeight: window.innerHeight,
-            sheet: b ? { x: r1(b.x), y: r1(b.y), w: r1(b.width), h: r1(b.height), right: r1(b.right), bottom: r1(b.bottom) } : null,
-            noSidebar: document.querySelector('.viewer')?.classList.contains('no-sb') ?? null,
-          };
-        })
-      : { missing: true };
+    site.deck = await page.evaluate(() => {
+      const sheet = document.getElementById('sheet');
+      const b = sheet?.getBoundingClientRect() ?? null;
+      const r1 = (n) => Math.round(n * 10) / 10;
+      return {
+        counter: document.getElementById('counter')?.textContent?.trim() ?? null,
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+        sheet: b ? { x: r1(b.x), y: r1(b.y), w: r1(b.width), h: r1(b.height), right: r1(b.right), bottom: r1(b.bottom) } : null,
+        noSidebar: document.querySelector('.viewer')?.classList.contains('no-sb') ?? null,
+      };
+    });
   }
   return site;
 }
@@ -248,7 +239,7 @@ export function judge(reads, site, cell, item) {
   }
   if (site.deck) {
     const d = site.deck;
-    if (d.missing || !d.sheet) {
+    if (!d.sheet) {
       judge.deckSheet = false;
       info.deck = d;
     } else {
@@ -258,7 +249,7 @@ export function judge(reads, site, cell, item) {
       /* scale: the 1600px sheet's drawn width over its design width, a reading for the phone layout */
       info.deck = {
         sheet: d.sheet,
-        frame: [d.innerWidth, d.innerHeight],
+        viewport: [d.innerWidth, d.innerHeight],
         ratio: Math.round(ratio * 1000) / 1000,
         scale: Math.round((d.sheet.w / 1600) * 100) / 100,
         counter: d.counter,

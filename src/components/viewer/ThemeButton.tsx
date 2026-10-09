@@ -59,11 +59,11 @@ export function readTheme(): Theme {
 
 /**
  * The message a theme change posts to every same-origin frame on the page.
- * The deck (deck/parts/tail.html) and every framed site page (the boot
- * script in src/app/layout.tsx) apply it live. The frames also follow the
- * gt-theme storage event, so the message is the path that holds when
- * storage does not (a private window), and the one DeckFrame.tsx uses to
- * hand a freshly loaded deck the current theme.
+ * Every framed site page (the boot script in src/app/layout.tsx) applies it
+ * live. The frames also follow the gt-theme storage event, so the message
+ * is the path that holds when storage does not (a private window), and the
+ * one the presenter's LazyFrame.tsx uses to hand a freshly loaded frame the
+ * current theme.
  */
 export type ThemeMessage = { type: 'gt-theme'; theme: Theme };
 

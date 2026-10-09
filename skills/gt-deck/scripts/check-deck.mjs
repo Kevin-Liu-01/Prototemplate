@@ -11,8 +11,9 @@
 // Errors (exit 1):
 //   - the slide count differs between deck/slides and SLIDE_COUNT in
 //     deck/assemble.mjs, #bar-total in deck/parts/head.html,
-//     DECK_SLIDES in src/lib/search-index.ts, the description in
-//     src/app/deck/page.tsx or the "N-slide" sentence in src/app/brand/page.tsx;
+//     DECK_SLIDES in src/lib/search-index.ts, the description in the built
+//     public/brand-deck.html (scripts/build-deck.mjs writes it from
+//     SLIDE_COUNT) or the "N-slide" sentence in src/app/brand/page.tsx;
 //   - SECTIONS in deck/parts/tail.html does not start a section at each
 //     opener's position, or a section's name differs from its opener's title;
 //   - a DECK_SLIDES entry differs from the slide's title, read the way the
@@ -155,7 +156,7 @@ const count = slides.length;
 const restated = [
   ['deck/assemble.mjs', /const SLIDE_COUNT = (\d+);/, 'SLIDE_COUNT'],
   ['deck/parts/head.html', /id="bar-total">(\d+)</, '#bar-total'],
-  ['src/app/deck/page.tsx', /brand in (\d+) slides/, 'the page description'],
+  ['public/brand-deck.html', /brand in (\d+) slides/, 'the built description (pnpm build:deck)'],
   ['src/app/brand/page.tsx', /(\d+)-slide/, 'the "N-slide" sentence'],
 ];
 for (const [rel, re, what] of restated) {

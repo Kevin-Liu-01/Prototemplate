@@ -1,10 +1,9 @@
 <title>GT Brand deck</title>
-<!--FONTS-->
 <script>
   /* the theme before first paint: the same read as the boot script in src/app/layout.tsx (gt-theme, then the deck's older
-     gt-deck-theme, dark when neither is set), so the document never paints the light :root defaults below and then flips;
-     the stamp at the end of parts/tail.html is the assertion after load, and a same-origin page around the frame can post
-     { type: 'gt-theme', theme } (src/components/viewer/ThemeButton.tsx), which the tail applies live */
+     gt-deck-theme, dark when neither is set), so the document never paints the light :root defaults below and then flips.
+     This script and the styles below come before the inlined font (the marker after them, about 470 KB of text), so
+     the first bytes paint the theme's paper; the stamp at the end of parts/tail.html is the assertion after load */
   try { var t = localStorage.getItem('gt-theme'); if (t !== 'light' && t !== 'dark') t = localStorage.getItem('gt-deck-theme'); document.documentElement.setAttribute('data-theme', t === 'light' || t === 'dark' ? t : 'dark'); } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
 </script>
 <style>
@@ -368,6 +367,7 @@
   /* under 375px the arrows go so the bar fits; a tap on either half of the slide or a swipe still steps through it */
   @media (max-width: 374px) { .toolbar [data-act="prev"], .toolbar [data-act="next"] { display: none; } }
 </style>
+<!--FONTS-->
 
 <div class="viewer" id="viewer">
   <aside class="sb" id="sb" aria-label="Slides">

@@ -116,8 +116,8 @@ export const SHELL = [
   '.pt-scroll::-webkit-scrollbar-thumb', '.pt-scroll-x::-webkit-scrollbar-thumb', 'html::-webkit-scrollbar-thumb',
   // the book page: the column, the head, its mast and panel, the contents, the parts, the dividers and the bands
   '.pt-book-col', '.pt-book-head', '.pt-book-mast', '.pt-book-panel', '.pt-book-toc', '.pt-book-part', '.pt-book-sec', '.pt-book-band', '.pt-hatch', '.sl-hatch', '.pt-feature-sec',
-  // route roots and route frames: the gallery, a direction's sheet, the deck route's frame, the compare panes
-  '.pt-root', '.gv-flow', '.dr-exhibit', '.dr-sheet-mat', '.dr-sheet', '.pt-deckpage', '.pt-deck-frame', '.pt-cmp-panes', '.pt-cmp-pane', '.pt-cmp-seam',
+  // route roots and route frames: the gallery, a direction's sheet, the compare panes
+  '.pt-root', '.gv-flow', '.dr-exhibit', '.dr-sheet-mat', '.dr-sheet', '.pt-cmp-panes', '.pt-cmp-pane', '.pt-cmp-seam',
 ];
 
 /** Full-bleed list rows: they own their seams and never draw a box, so they stay square. */
@@ -375,7 +375,7 @@ export function lintRadius(root) {
 export const LIVE_SKIP = ['.ptd-craft', '[class*="ptc-"]:not(.ptc-every)', '.plate-root', '.pr-root', 'nextjs-portal'];
 
 /** Routes live mode never reads: the deck's own grammar, the directions, the presenter. */
-const SKIP_ROUTES = /^\/(d\/|deck|brand-deck\.html|present)/;
+const SKIP_ROUTES = /^\/(d\/|deck|present)/;
 
 /**
  * Runs in the page: every visible element the rules read, as records with

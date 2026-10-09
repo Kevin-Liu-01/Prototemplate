@@ -8,9 +8,9 @@
 //   ready     the selector that says the page is ready to read: the shell
 //             stamps .pt-viewer[data-settled] one frame after it boots, the
 //             blog mounts .blog-root, the presenter .pr-root, and the deck
-//             is ready when its sheet has a box (hooks.mjs ready() reads it
-//             inside the deck's document). The reads then wait for the
-//             layout to hold still (pagecheck.mjs)
+//             (/deck, the built deck served as the page) is ready when its
+//             sheet has a box. The reads then wait for the layout to hold
+//             still (pagecheck.mjs)
 //   settleMs  the longest the reads wait for that (default 3000; no page
 //             here needs more once the ready selector has matched)
 //   hide      selectors hidden before the reads and the capture, on top of

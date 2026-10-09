@@ -83,7 +83,7 @@ html {
    src/components/viewer/tokens.css, imported right after this file, which
    defines both on :root with the dark remap. html carries the ground too,
    so the overscroll canvas, the scrollbar gutter and any pane that has not
-   filled yet (the deck frame while its document streams) never expose the
+   filled yet (a framed page while its document streams) never expose the
    other theme. The @theme colors above stay for Tailwind utilities only. */
 html,
 body {

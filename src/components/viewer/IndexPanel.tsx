@@ -10,6 +10,7 @@ import { Seg } from '@/components/viewer/Seg';
 import type { SegOption } from '@/components/viewer/Seg';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { ToolButton } from '@/components/viewer/ToolButton';
+import { openSiteHref } from '@/lib/document-routes';
 import { isExternalSurface, surfaceGroups, surfaceInitial, surfaceMatches } from '@/lib/surfaces';
 import type { Surface, SurfaceSet } from '@/lib/surfaces';
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -170,7 +171,7 @@ export function IndexPanel({ set: initialSet, ref }: IndexPanelProps) {
       return;
     }
     shell.setPanel(false);
-    router.push(row.href);
+    openSiteHref(router, row.href);
   };
 
   const onRowClick = (event: ReactMouseEvent<HTMLAnchorElement>, row: Surface) => {

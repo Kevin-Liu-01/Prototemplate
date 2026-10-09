@@ -255,8 +255,8 @@ export function siteRoutes() {
     { id: 'docs-design', path: '/docs/design', tools: 'live', source: ['src/app/docs'] },
     { id: 'compare', path: '/compare', tools: 'check live lines capture', source: ['src/app/compare'] },
     { id: 'present', path: '/present', tools: 'check capture', source: ['src/app/present'] },
-    { id: 'deck', path: '/deck', tools: 'check lines capture', source: ['src/app/deck', 'deck/parts'] },
-    { id: 'brand-deck', path: '/brand-deck.html', tools: 'live', source: ['deck/parts'] },
+    /* the built deck itself (next.config.ts rewrites /deck to public/brand-deck.html) */
+    { id: 'deck', path: '/deck', tools: 'check live lines capture', source: ['deck/parts'] },
     { id: 'marks', path: '/marks', tools: 'check live lines capture', source: ['src/app/marks'] },
     { id: 'skills', path: '/skills', tools: 'check live lines capture', source: ['src/app/skills'] },
     { id: `skills-${skill}`, path: `/skills/${skill}`, tools: 'check live lines', source: ['src/app/skills'] },

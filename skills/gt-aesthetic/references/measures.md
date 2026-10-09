@@ -4,7 +4,7 @@ These are the numbers of the references Kevin judges against, read from the sour
 
 ## How to measure
 
-1. Open the reference and the new surface at the same width and theme. Prototemplate's dev server runs on port 3005 (`pnpm dev`, launch config `prototemplate-dev`). `/deck` frames `/brand-deck.html`, so measure the deck at `/brand-deck.html` itself. The Dossier is `/d/singularity-dossier`. gt-cloud's landing and dashboard run on their own dev servers (see gt-cloud's `.agents/skills/gt-landing` and `gt-dashboard`).
+1. Open the reference and the new surface at the same width and theme. Prototemplate's dev server runs on port 3005 (`pnpm dev`, launch config `prototemplate-dev`). `/deck` serves `/brand-deck.html` itself, so either address measures the deck. The Dossier is `/d/singularity-dossier`. gt-cloud's landing and dashboard run on their own dev servers (see gt-cloud's `.agents/skills/gt-landing` and `gt-dashboard`).
 2. Read the computed values of the matching element: font size, line height, weight, tracking, feature list, color token, padding and gaps. DevTools' computed panel works for one element.
 3. For heads and leads, run the script on both pages with the same flags and compare the rows:
 
