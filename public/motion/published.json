@@ -1,5 +1,5 @@
 {
-  "about": "The cut of each film the site publishes. film and poster are the web copies under public/media; cut and length are the cut's label and length as its script states them (null when the cut was made before the scripts); streams are the SHA-256 of its video and audio streams, from ffmpeg's streamhash with the streams copied. scripts/build-motion.mjs publishes a film's credits, contact sheet and script only from the folder in motion/out whose render has these streams, and lists any other cut in motion/out as in review. Replace a web copy, then run node scripts/build-motion.mjs --pin <slug>.",
+  "about": "The cut of each film the site publishes. film and poster are the web copies under public/media; cut and length are the cut's label and length as its script states them (null when the cut was made before the scripts); streams are the SHA-256 of its video and audio streams, from ffmpeg's streamhash with the streams copied. scripts/build-motion.mjs publishes a film's credits, contact sheet and script only from the folder in motion/out whose render has these streams, and lists any other cut in motion/out as in review. Replace a web copy, then run node scripts/build-motion.mjs --pin <slug>. offSite lists roster films the site leaves out entirely.",
   "films": {
     "blog-designing-docs": {
       "cut": "v4",
@@ -51,16 +51,6 @@
         "audio": "954351493a6ab77c5d85a000321a9da739c83ab21ffce34fd5da37e1e9ffb349"
       }
     },
-    "slash-partnership": {
-      "cut": null,
-      "length": "19.5 s",
-      "film": "/media/slash-partnership-film.mp4",
-      "poster": "/media/slash-partnership-poster.jpg",
-      "streams": {
-        "video": "2d5fb3b90913e3ecd1734d27617ab3715d4cc8114b84f4f3374eb8451def9873",
-        "audio": "abcf2dab012d4c874036430356ab30406a8dda0225d4fe09ea7d99d22743831f"
-      }
-    },
     "gif-how-gt-works": {
       "cut": null,
       "length": "17.3 s",
@@ -80,5 +70,8 @@
         "audio": "38058636f810e6e62247e871bb7811bb266a804f22121664f44911efe31ed717"
       }
     }
-  }
+  },
+  "offSite": [
+    "slash-partnership"
+  ]
 }

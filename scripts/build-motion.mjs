@@ -407,6 +407,9 @@ function readManifest(pinning = false) {
     if (!/^[0-9a-f]{64}$/.test(pin.streams?.video ?? '')) fail(`${where}: streams.video is a SHA-256`);
     if (pin.streams.audio !== undefined && !/^[0-9a-f]{64}$/.test(pin.streams.audio)) fail(`${where}: streams.audio is a SHA-256`);
   }
+  for (const slug of manifest.offSite ?? []) {
+    if (manifest.films?.[slug]) fail(`published.json both pins and leaves off ${slug}`);
+  }
   return manifest;
 }
 
@@ -550,7 +553,10 @@ if (pinAt >= 0) {
   process.exit(0);
 }
 
-const PINS = readManifest().films ?? {};
+const MANIFEST_DATA = readManifest();
+const PINS = MANIFEST_DATA.films ?? {};
+/** roster films the site leaves out (Kevin's call), though the roster keeps them */
+const OFF_SITE = new Set(MANIFEST_DATA.offSite ?? []);
 
 /* ---- the roster ---- */
 
@@ -711,8 +717,14 @@ const scriptWords = new Map();
 /** slug to the folder its records came from, for the log */
 const recordFolders = new Map();
 
-for (const entry of rosterEntries()) {
+const ROSTER_ENTRIES = rosterEntries();
+for (const slug of OFF_SITE) {
+  if (!ROSTER_ENTRIES.some((entry) => entry.slug === slug)) fail(`published.json leaves off ${slug}, which is not on the MOTION.md roster`);
+}
+
+for (const entry of ROSTER_ENTRIES) {
   const { slug } = entry;
+  if (OFF_SITE.has(slug)) continue;
   const folder = join(MOTION, 'films', slug);
   const brief = join(folder, 'BRIEF.md');
   const series = existsSync(brief) && /^# Brief: /.test(readFileSync(brief, 'utf8'));
