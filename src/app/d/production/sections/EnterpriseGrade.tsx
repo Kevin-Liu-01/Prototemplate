@@ -64,18 +64,18 @@ export default function EnterpriseGrade() {
         {/* four framework marks under the dither screen, stacked as the
             head's right seal */}
         <span className='tcf-seal' aria-hidden='true'>
-          <i className='tcf-seal-icon'>
+          <span className='tcf-seal-icon'>
             <SiNextdotjs />
-          </i>
-          <i className='tcf-seal-icon'>
+          </span>
+          <span className='tcf-seal-icon'>
             <SiReact />
-          </i>
-          <i className='tcf-seal-icon'>
+          </span>
+          <span className='tcf-seal-icon'>
             <SiPython />
-          </i>
-          <i className='tcf-seal-icon'>
+          </span>
+          <span className='tcf-seal-icon'>
             <SiExpo />
-          </i>
+          </span>
         </span>
       </div>
 

@@ -1139,9 +1139,11 @@ export default function StoryCinema() {
               bottom rule — pre-ruled slots that fill as the run learns */}
           <div className='tc-cinema-ctxgroup' data-ctxgroup aria-hidden>
             <b>context group</b>
+            {/* The key is a span: the ledger is hidden under 900px, so GSAP reads
+                each cell's transform on <html>, where an <i> would fetch Inter's italic. */}
             {CTX_ACCUM.map((row) => (
               <span className='tc-cinema-ctxrow' data-ctxrow key={row.k}>
-                <i>{row.k}</i>
+                <span>{row.k}</span>
                 <span>{row.v}</span>
               </span>
             ))}

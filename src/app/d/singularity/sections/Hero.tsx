@@ -638,9 +638,9 @@ export default function Hero() {
           {/* the customers live INSIDE the hole: quiet marks in the dark */}
           <div className='eh-core-logos' data-hero-in aria-label='Trusted by'>
             {CUSTOMERS.map((customer) => (
-              <i className={`eh-corewm ${customer.mark}`} key={customer.name}>
+              <span className={`eh-corewm ${customer.mark}`} key={customer.name}>
                 {customer.name}
-              </i>
+              </span>
             ))}
           </div>
         </div>

@@ -699,8 +699,7 @@
   border-top: 1px solid var(--cin-rule);
 }
 
-.toolchain-root .tc-cinema-v3 .tc-cinema-ctxrow > i {
-  font-style: normal;
+.toolchain-root .tc-cinema-v3 .tc-cinema-ctxrow > span:first-child {
   font-size: 11px;
   color: var(--cin-dim);
 }
