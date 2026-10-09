@@ -7,9 +7,11 @@
 //                           parts/tail.html, with fonts/deck-fonts.css inlined in
 //                           place of <!--FONTS--> and the leading <title> stripped
 //                           (the wrapper below carries the document title)
-//   shots/*                 every src="shots/...", data-dark="shots/..." and
-//                           data-tone="shots/..." is encoded once: photographs
-//                           are resampled to 1280px wide at JPEG quality 78 through
+//   shots/*                 every src="shots/...", data-dark="shots/...",
+//                           data-light="shots/..." (the surface index's
+//                           thumbnails, which take a src when the panel first
+//                           opens) and data-tone="shots/..." is encoded once:
+//                           photographs are resampled to 1280px wide at JPEG quality 78 through
 //                           sips, except the full-bleed openers (shots/opener-*)
 //                           and the 2x detail crops (shots/detail-*), which keep
 //                           their native size so they stay sharp on the 1600px
@@ -26,17 +28,19 @@
 //
 // Each encoded image is written to public/deck-assets/<name>.<sha8>.<ext>,
 // once per distinct content, and the page names it by that relative path, so
-// the page stays under 1MB and a browser caches every image by its content. Every <img> is marked
+// the page stays under 1MB and a browser caches every image by its content. Every <img> with a src is marked
 // loading="lazy", and the viewer warms the slides around the current one
 // (warm() in parts/tail.html). Files the new page no longer names are removed
 // last, so a failed build leaves the old page and its files whole.
 //
 // The result is wrapped as a full document (doctype, charset, viewport, the
-// title, the description, the 96px GT mark as its icon, and a style for
-// color-scheme, which follows the data-theme attribute the head script stamps
-// rather than the OS scheme, and the body margin) and written to
-// public/brand-deck.html. The --out copy has no site beside it, so it takes a
-// noindex meta in place of the icon. The thumbnails under
+// title, the description, the 96px GT mark as its icon, the link preview
+// card (Open Graph title, description and the site's og.png, and a large
+// image Twitter card), and a style for color-scheme, which follows the
+// data-theme attribute the head script stamps rather than the OS scheme, and
+// the body margin) and written to public/brand-deck.html. The --out copy has
+// no site beside it, so it takes a noindex meta in place of the icon and the
+// card. The thumbnails under
 // shots/thumb are also copied to public/shots/deck, where the index panel's
 // General Translation set (src/lib/surfaces.ts) reads them.
 //
@@ -134,7 +138,9 @@ const TITLE = 'General Translation brand deck';
 const DESCRIPTION = `The General Translation brand in ${SLIDE_COUNT} slides: thesis, values, writing style, mark, color, type, line rules, diagrams, dither, motion, the shipped site and every public surface, docs, blog, content rules, Prototemplate, Glyphfield, fixed points, current status, and mood images between the sections.`;
 /* the same picture as public/brand/no-bg-gt-logo-light.png at 96px, 3.6 KB in place of 45 KB */
 const ICON = '/brand/no-bg-gt-logo-light-96.png';
-const IMAGE_REF = /(src|data-dark|data-tone)="(shots\/[^"]+)"/g;
+/* /deck serves this file itself, so the root layout's Open Graph card never reaches it; a crawler needs the image's full address */
+const OG_IMAGE = 'https://www.prototemplate.com/og.png';
+const IMAGE_REF = /(src|data-dark|data-light|data-tone)="(shots\/[^"]+)"/g;
 const IMAGE = /\.(jpg|jpeg|png|webp|gif)$/i;
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif' };
 const EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
@@ -230,7 +236,7 @@ try {
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }
-if (/(src|data-dark|data-tone)="shots\//.test(source)) {
+if (/(src|data-dark|data-light|data-tone)="shots\//.test(source)) {
   throw new Error('build-deck: an image path was not encoded');
 }
 
@@ -240,7 +246,11 @@ const open =
   '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
   '<meta name="viewport" content="width=device-width,initial-scale=1">' +
   `<title>${TITLE}</title><meta name="description" content="${DESCRIPTION}">` +
-  (OUT_OVERRIDE ? '<meta name="robots" content="noindex">' : `<link rel="icon" type="image/png" href="${ICON}">`) +
+  (OUT_OVERRIDE
+    ? '<meta name="robots" content="noindex">'
+    : `<link rel="icon" type="image/png" href="${ICON}">` +
+      `<meta property="og:title" content="${TITLE}"><meta property="og:description" content="${DESCRIPTION}">` +
+      `<meta property="og:image" content="${OG_IMAGE}"><meta name="twitter:card" content="summary_large_image">`) +
   '<style>:root{color-scheme:light}:root[data-theme="dark"]{color-scheme:dark}body{margin:0}</style></head><body>';
 const html = `${open}${source}\n</body></html>\n`;
 
