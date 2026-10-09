@@ -108,7 +108,7 @@ const FILMS = [
   },
 ] as const;
 
-/** The partnership globes under public/media: 2048 by 2048 on ink or on paper (`ground`), each with a -transparent twin for a ground of its own kind; the captions set their separators as FILMS does. */
+/** The partnership globes under public/media: 2048 by 2048 on ink or on paper (`ground`), each with a -transparent twin for a ground of its own kind; the captions set their separators as FILMS does. The page shows each globe's lossless WebP and the links download the PNGs. */
 const GLOBES = [
   {
     stem: 'gt-globe-dithered',
@@ -513,7 +513,7 @@ const PAGES: readonly BrandPage[] = [
               alt='The X profile banner: the halftone dither globe and glyph rain beside the customer logo grid'
               height={1000}
               loading='lazy'
-              src='/media/gt-banner-signin@2x.png'
+              src='/media/gt-banner-signin@2x.webp'
               width={3000}
             />
             <figcaption>
@@ -561,7 +561,7 @@ const PAGES: readonly BrandPage[] = [
                   alt={globe.alt}
                   height={2048}
                   loading='lazy'
-                  src={`/media/${globe.stem}.png`}
+                  src={`/media/${globe.stem}.webp`}
                   width={2048}
                 />
                 <figcaption>{globe.caption}</figcaption>

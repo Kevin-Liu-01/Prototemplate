@@ -132,8 +132,8 @@ Blog visuals take the docs' colours because they depict the docs. Brand artwork 
 
 | Artwork | Files | Shown |
 | --- | --- | --- |
-| Partnership globes | `gt-globe-dithered.png`, `gt-globe-dithered-mark.png`, `gt-globe-glyphs.png`, `gt-globe-glyphs-light.png`, each with a `-transparent` twin, 2048 by 2048 | `/brand`, Made with the system, Partnership globes (`#made-with-the-system-partnership-globes`), with download links for the PNG on its ground and the transparent PNG |
-| X profile banner | `gt-banner-signin.png` and its `@2x` master, with `banner-contact-sheet.png` holding the ten explorations | `/brand`, Made with the system |
+| Partnership globes | `gt-globe-dithered.png`, `gt-globe-dithered-mark.png`, `gt-globe-glyphs.png`, `gt-globe-glyphs-light.png`, each with a `-transparent` twin and a lossless `.webp` of the PNG on its ground, 2048 by 2048 | `/brand`, Made with the system, Partnership globes (`#made-with-the-system-partnership-globes`), which shows the WebP and links the PNG on its ground and the transparent PNG for download |
+| X profile banner | `gt-banner-signin.png` and its `@2x` master, kept as lossless WebP, with `banner-contact-sheet.png` holding the ten explorations | `/brand`, Made with the system, which shows the `@2x` WebP |
 | Open Source reel and blog films | `open-source-reel.mp4`, `*-film.mp4` and posters | `/brand` and `/motion`; films belong to gt-films |
 
 The globes came from Kevin's request for "a small graphic" for a partnership (Kevin, 2026-10-01).
@@ -144,7 +144,7 @@ The globes came from Kevin's request for "a small graphic" for a partnership (Ke
 - The light glyph globe sits on paper `#ffffff` with land in `#070707` and ocean in `#2f5ce0` thinning to `#86a8ff` in the highlight. Its halftone runs the other way so ink carries the shadow.
 - Kevin named the glyph globe his favourite and then asked that only the versions without the GT logo be shown (Kevin, 2026-10-02). The carved versions stay in the renders and out of `public/media`.
 
-The globe sources live in `motion/stills/partnership-globe/` (`index.html?v=globe|gt|glyphs&mode=dark|light`, `render.mjs`, `carve.js`, `sheet.mjs`). `motion/` is untracked and belongs to the Videos session, so treat it as read-only from other lanes. `dither-lib.js` there is generated from `src/lib/dither.ts` by stripping the types, so the sign-in engine runs in the page unchanged. `node render.mjs` writes 2048px PNGs to `motion/out/stills/` and refuses to overwrite an approved still whose bytes differ from its sha256 pin; `REPIN=1` writes it and prints the new hash. Copy approved stills into `public/media/` at their existing names.
+The globe sources live in `motion/stills/partnership-globe/` (`index.html?v=globe|gt|glyphs&mode=dark|light`, `render.mjs`, `carve.js`, `sheet.mjs`). `motion/` is untracked and belongs to the Videos session, so treat it as read-only from other lanes. `dither-lib.js` there is generated from `src/lib/dither.ts` by stripping the types, so the sign-in engine runs in the page unchanged. `node render.mjs` writes 2048px PNGs to `motion/out/stills/` and refuses to overwrite an approved still whose bytes differ from its sha256 pin; `REPIN=1` writes it and prints the new hash. Copy approved stills into `public/media/` at their existing names, and write the lossless WebP that `/brand` shows beside each one on its ground with `cwebp -lossless -z 9 -exact -metadata none <name>.png -o <name>.webp`. Decode the PNG and the WebP and compare their raw pixels before committing; they must be identical.
 
 `/graphics` is the page for still artwork and `/motion` the page for films (Kevin, 2026-10-03). Today `/graphics` carries the docs series, its contact sheets, its grounds and the figures of the earlier posts, and the globes and the banner are on `/brand`. Dithered photographs and scans of objects are artifact pictures, governed by gt-dither, and they carry no readable English text (Kevin, 2026-10-05).
 
