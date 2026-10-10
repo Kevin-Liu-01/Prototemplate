@@ -15,8 +15,9 @@ description: >-
 metadata:
   title: Reporting to Kevin
   areas: workflow, voice
-  updated: 2026-10-05
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Reporting to Kevin
@@ -43,6 +44,11 @@ Every visual or audible result reaches Kevin as something he can see or hear, in
 - A claim about size or spacing carries the value measured in the browser, such as "both buttons read 9.5px from label to glyph".
 - Say which kind of check passed. A page that loads at the right size has passed a proxy check. The visual check is a person or a critic comparing the crop with the reference (`docs/handbook/quality-bar.md`).
 - Shoot crops and try copy buttons outside the in-app browser pane, which blanks canvases and blocks clipboard writes (`gt-aesthetic` "Local review", `gt-local-dev`). Send Kevin to Chrome for anything that copies.
+
+### Where a review page lives
+
+- A review page (a script review, a listening page, a "show me everything" ledger) is published from a builder script and a data file kept in a tracked folder of the repository that owns the work. Six builders that lived only in scratchpads were lost to wipes, and their Artifacts held the only copies (2026-10-10 sweep). The film script page and the listening page belong to the Videos session's film kit (`gt-films`).
+- Artifacts stay private to the organization, while Prototemplate's skills and docs are public. The hub links an Artifact only when it is a design-system reference (the brand deck, the marks, the docs visuals), from the skill that owns that reference, and never lists a confidential page.
 
 ## 2. Ship state
 
@@ -211,8 +217,4 @@ Prototemplate: `gt-aesthetic` (crop sizes, local review, Kevin's design vocabula
 
 ## Sources
 
-- Prototemplate: `skills/gt-aesthetic/SKILL.md` section 5; `skills/gt-local-dev/SKILL.md` section 1; `skills/gt-orchestration/SKILL.md` section 8 and `references/handoffs.md`; `skills/gt-ship/SKILL.md` sections 3, 4, 5 and 8, with `references/pr-body.md`, `references/review-loop.md` and `scripts/pr-bots.mjs`; `skills/gt-voice/SKILL.md`; `skills/gt-website/SKILL.md` sections 5 and 8; `skills/prototemplate/SKILL.md` section 10; `docs/handbook/quality-bar.md` and `docs/handbook/decisions.md`.
-- gt-cloud: `scripts/deploy-landing.sh`. generaltranslation/content: `.github/CODEOWNERS` and the rulesets on main. Open PR data for generaltranslation/gt-cloud, gt and content, read on 2026-10-05 to test `scripts/pr-slate.mjs`.
-- Claude memory notes (gt-cloud project): landing-deploy-failures, pr-screenshots-and-gallery, explorations-stay-local, plain-technical-english, sentence-order-rules, writing-for-strangers, cli-callback-page, docs-redesign-post-part2, redesign-screenshot-harness.
-- Kevin's wiki: `skills/productivity/handoff/SKILL.md`, `skills/productivity/human-review/SKILL.md`, `skills/productivity/gws/SKILL.md` and `skills/personal/slack-voice/SKILL.md`.
-- Kevin's directives from 2026-07-30 to 2026-10-05 (the mining synthesis, sections D1 to D10 and P3): numbered image notes (07-30); the swap read wrong (08-04); cutting process lines from a recap (08-08); a form filled in (08-10); where is this visible (08-11); stop and give me everything (08-12); the recap weighted to the CEO's asks (08-16); the matcher in one sentence (08-17); the 4673, 4522, 506 order (09-04); the Google Doc tab (09-10); open questions from earlier conversations (09-14); is everything on main (09-15, 09-24); a rule blocking an approval (09-21); PNGs in Downloads (09-21); inline decisions (09-25); the shorter summary and numbered risks (09-28); the PR slate and its Slack version (10-01, 10-02, 10-05); close only what is on main and the 5091 explanation (10-02); a merge into the PR branch (10-03); MP3s to confirm (10-03); the percentage report and the listening and review pages (10-05).
+`references/sources.md` lists the Prototemplate files, the gt-cloud and content sources, the memory notes, the wiki skills and Kevin's dated directives behind each section, and the lines added on 2026-10-10.
