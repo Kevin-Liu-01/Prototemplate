@@ -1,6 +1,6 @@
 # Tools
 
-Every command this repository runs, by `pnpm <name>`, and the scripts the skills bundle. Skills, documents and the `/skills` install line name these commands, never a script path, so a script can move without breaking them. Run any script with `--help` for its full usage.
+Every command this repository runs, by `pnpm <name>` (`pnpm run doctor`, since a bare `pnpm doctor` is a command of pnpm itself), and the scripts the skills bundle. Skills, documents and the `/skills` install line name these commands, never a script path, so a script can move without breaking them. Run any script with `--help` for its full usage.
 
 This file is written by `pnpm build:tools` from `package.json` and the opening comment of each file a command runs; `pnpm lint:tools` fails while it is stale. To change a line, edit that comment, or `DESCRIBE` in `scripts/build/tools.mjs` for a command that runs no file of its own.
 
@@ -16,7 +16,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 
 | Command | What it does | Runs |
 | --- | --- | --- |
-| `pnpm doctor` | Checks that this machine can run the repository's tools from a fresh clone. | `scripts/doctor.mjs` |
+| `pnpm run doctor` | Checks that this machine can run the repository's tools from a fresh clone. | `scripts/doctor.mjs` |
 
 ## Lints
 

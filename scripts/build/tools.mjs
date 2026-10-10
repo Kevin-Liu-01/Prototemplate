@@ -105,6 +105,9 @@ function fileOf(command) {
 
 const cell = (s) => s.replace(/\|/g, '\\|');
 
+/* script names pnpm runs as its own command when called bare; these are called through `pnpm run` */
+const PNPM_BUILTINS = new Set(['doctor']);
+
 /** What the Runs column shows: the files and flags after node or python3, or the command itself, shortened. */
 function runsOf(command) {
   const m = /^(?:node(?: --test)?|python3)\s+([^&]+?)\s*$/.exec(command);
@@ -127,7 +130,7 @@ if (unfiled.length > 0) sections.push(['Other', unfiled]);
 const lines = [
   '# Tools',
   '',
-  'Every command this repository runs, by `pnpm <name>`, and the scripts the skills bundle. Skills, documents and the `/skills` install line name these commands, never a script path, so a script can move without breaking them. Run any script with `--help` for its full usage.',
+  'Every command this repository runs, by `pnpm <name>` (`pnpm run doctor`, since a bare `pnpm doctor` is a command of pnpm itself), and the scripts the skills bundle. Skills, documents and the `/skills` install line name these commands, never a script path, so a script can move without breaking them. Run any script with `--help` for its full usage.',
   '',
   `This file is written by \`pnpm build:tools\` from \`package.json\` and the opening comment of each file a command runs; \`pnpm lint:tools\` fails while it is stale. To change a line, edit that comment, or \`DESCRIBE\` in \`scripts/build/tools.mjs\` for a command that runs no file of its own.`,
   '',
@@ -140,7 +143,7 @@ for (const [title, rows] of sections) {
     const what = DESCRIBE[name] ?? (file ? openingSentence(join(ROOT, file)) : undefined);
     if (!what) missing.push(name);
     const runs = runsOf(command);
-    lines.push(`| \`pnpm ${name}\` | ${cell(what ?? 'No description: add an opening comment to the file.')} | ${cell(runs)} |`);
+    lines.push(`| \`pnpm ${PNPM_BUILTINS.has(name) ? 'run ' : ''}${name}\` | ${cell(what ?? 'No description: add an opening comment to the file.')} | ${cell(runs)} |`);
   }
   lines.push('');
 }
