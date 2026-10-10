@@ -18,16 +18,29 @@ export default function IntroSlide() {
 
   useGSAP(
     () => {
-      // The entrance itself is CSS keyframes (presenter.css), so it runs on
-      // the compositor from the first paint. Deferred presenter work
-      // (after-intro.ts) waits until it has played.
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // The field has nothing to show before its first frame, which follows
+      // this mount, so its 2 s power2.inOut fade starts here. Like the CSS
+      // entrance (presenter.css), it runs on the compositor.
+      if (!reduced) {
+        root.current
+          ?.querySelector('.pr-intro-field')
+          ?.animate(
+            { opacity: [0, 1] },
+            { duration: 2000, easing: 'cubic-bezier(0.45, 0, 0.55, 1)' }
+          );
+      }
+
+      // Deferred presenter work (after-intro.ts) waits until the entrance
+      // has played.
       const entrance = root.current?.getAnimations({ subtree: true }) ?? [];
       Promise.all(entrance.map((animation) => animation.finished)).then(
         introSettled,
         introSettled
       );
 
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (reduced) return;
 
       // The liquid glass slowly undulates: the displacement field breathes.
       const breathe = gsap.to('#pr-liquid-turb', {
