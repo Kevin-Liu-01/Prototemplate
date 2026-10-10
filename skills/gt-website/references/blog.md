@@ -63,7 +63,7 @@ The blog compiles MDX with JavaScript expressions blocked. Every `prop={expressi
 3. `pnpm --dir apps/landing exec tsc --noEmit`.
 4. Load the post on the worktree's dev server in both themes, confirm that every stamped asset returns 200, and step through each carousel.
 
-## The Lottie figure (open pull request #5068)
+## The Lottie figure (pull request #5068, open on 2026-10-10)
 
 A post embeds `<LottieTranslation />` (server, `src/components/blog/LottieTranslation.tsx`), which renders `LottieTranslationWindow`: one translated Lottie animation shown large with the languages in a column of locale chips, made for the Lottie translation announcement. The branch is `k/blog-lottie-translation` and the development page is `/dev/lottie`.
 

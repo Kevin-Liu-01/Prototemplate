@@ -73,6 +73,13 @@ approval through the `&&` build gate.
 
   The audit of 2026-09-08 found the routing PR #4359 open with every commit
   intact, and it merged the next day.
+- **Line survival** tells whether merged work was clobbered. For each of
+  the author's merged PRs, count the share of its added lines that still
+  exist verbatim on main, then trace every removed line to a stated
+  follow-up or a later PR. On 2026-09-08 Kevin's seven PRs read 91 to 100
+  percent, and every removal traced to a stated follow-up; the same pass
+  found another PR that had deleted two teammates' pages, restored 1 h 44 min
+  later.
 
 ## 7. Simplicity in the bot sweep
 
@@ -132,6 +139,30 @@ skill still holds: an agent merges only when Kevin says so.
   Keeping the hub current).
 - The PR slate format is in `gt-reporting`.
 
+## 14. Cutting a release from a stack
+
+When Kevin wants part of a stack out first as one PR against main
+(#5063 on 2026-09-30: the onboarding release cut from a four-PR stack whose
+shell PR stayed open):
+
+1. Build the tree without touching a branch:
+   `git merge-tree --write-tree --merge-base=<branch below the part> origin/main <top of the part>`.
+   Parse its `CONFLICT` lines with Python, the tool the 2026-09-30 cut
+   settled on: the modify/delete lines end in "left in tree.".
+2. In a fresh worktree from `origin/main`, `git read-tree --reset -u <tree>`.
+   Resolve each conflict toward the part being released, then add, file by
+   file, the foundations it needs from the branches below (a stylesheet
+   import, a toggle component, one dependency).
+3. Keep the install frozen. Add only the lockfile importer lines the
+   change needs; a non-frozen install rewrote about 200 unrelated lines.
+4. Run every gate on the cut before opening the PR (types in each package,
+   lint, format, tests, a production build), then the release hygiene of
+   section 4 and, for onboarding or auth, the parity gate (`gt-ship`
+   section 7).
+5. The stacked PRs stay open as history until the release merges; then
+   close each one naming the release PR (section 5). A PR stacked on the
+   cut part rebases onto main after the merge.
+
 ## Sources
 
 - Kevin's messages to Claude Code and Codex from 2026-07-29 to 2026-10-05,
@@ -145,5 +176,6 @@ skill still holds: an agent merges only when Kevin says so.
   and `apps/admin/src/components/featureFlags/` at origin/main e17fce499
   (2026-10-05); PRs #4359, #4825 and #5091; content#517.
 - Claude memory notes for gt-cloud: lost-work-audit-2026-09,
-  recordly-pr-style, pr-stacks-2026-10.
+  recordly-pr-style, pr-stacks-2026-10, signin-field-transition (the
+  release cut, added 2026-10-10).
 - `docs/handbook/decisions.md` (the feature-flag and PR-closing rulings).

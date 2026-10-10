@@ -19,7 +19,11 @@ On 2026-09-02 this drag returned "Project name" on the fixed dashboard label and
 
 - Hover, then click, for controls with a hover state: `await loc.hover(); await page.waitForTimeout(300); await loc.click();`. Never pass `force: true` in a verification run; it skips the checks that a covered or disabled control fails.
 - Type with `locator.pressSequentially(text, { delay: 30 })` when the field reacts to keystrokes.
-- An authenticated dashboard page loads the seeded session of the per-worktree dev environment: `browser.newContext({ storageState: '<worktree>/dev-infra/state/<id>/storage-state.json' })` (gt-local-dev section 4). The dashboard then serves at `http://dashboard-<id>.localhost:1355`.
+- An authenticated dashboard page loads the seeded session of the per-worktree dev environment through `browser.newContext({ storageState: <its storage-state file> })`; gt-cloud's `dev-infra/README.md` names the file and the dashboard's local host (internal to gt-cloud, `gt-local-dev` section 4).
+
+## Request URLs in a harness
+
+Build every request URL as `new URL(ORIGIN + path)`, never `new URL(path, ORIGIN)`. A path that starts with `//` (`//evil.com/x`, a doubled slash from a join) is a protocol-relative URL, so the second form sends the request to that other host, and the harness reports a result from the wrong server. A routing review of 2026-09-09 first read an off-origin redirect from one such row; the row was the harness's own request. The same holds for a page-side `fetch(path)`, where a `//` path also leaves the origin, and for curl loops: append the path to the origin as a string.
 
 ## Layout shift around one interaction
 

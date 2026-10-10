@@ -7,21 +7,22 @@ description: >-
   cover the viewports, themes, browsers, accessibility and edge counts that
   check:pages misses, re-check what was already right, verify the live
   deployment, sweep the whole class of a defect, find the root cause and
-  guard it, and report how each item was verified. Use before reporting any
-  fix or feature as done, when Kevin says something is still broken, and
-  when closing a round.
+  guard it, compare a whole page set before and after an upgrade, and report
+  how each item was verified. Use before reporting any fix or feature as
+  done, when Kevin says something is still broken, and when closing a round.
 metadata:
   title: Proving work is done
   areas: workflow, lints, website, aesthetic, motion
-  updated: 2026-10-05
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Proving work is done
 
 Kevin checks General Translation (GT) work in the running app, and he finds what an agent did not look at. On 2026-09-02 he asked "did you actualy test this?" about a fix that had been reported with screenshots and never tried with a mouse. This skill defines when an item is done, which cases to walk for each kind of change, and what the report says about each item.
 
-Capture tooling lives in `gt-aesthetic` (section 5, "Local review") and `gt-website` ("Looking at pages"), and the gates live in `gt-lints`. This skill adds the definition of done, the cases those tools miss, and two headless scripts: `scripts/probe.mjs` measures one spot of a page and `scripts/stress.mjs` walks a scroll story through the stress matrix. Commands and code for every check are in [references/recipes.md](references/recipes.md).
+Capture tooling lives in `gt-aesthetic` (section 5, "Local review") and `gt-website` ("Looking at pages"), and the gates live in `gt-lints`. This skill adds the definition of done, the cases those tools miss, two headless scripts (`scripts/probe.mjs` measures one spot of a page and `scripts/stress.mjs` walks a scroll story through the stress matrix) and two parity scripts (`scripts/compare-signatures.py` fetches the same routes from two servers and diffs each page's structure, read through `scripts/page-signature.py`). Commands and code for every check are in [references/recipes.md](references/recipes.md), the cases in detail in [references/cases.md](references/cases.md) and the parity method in [references/parity-review.md](references/parity-review.md).
 
 `$GT_CLOUD` is a checkout of gt-cloud, GT's monorepo (the site at generaltranslation.com is its `apps/landing`, and the dashboard is `apps/dashboard`). `$PROTOTEMPLATE` is a checkout of Prototemplate, the design hub behind prototemplate.com. Run both scripts from `$PROTOTEMPLATE`, because its `node_modules` holds `playwright-core`. On a new machine, `pnpm exec playwright-core install chromium webkit` there downloads the browsers they launch. Pass a scratch folder as `--out`.
 
@@ -47,31 +48,24 @@ A typecheck, a clean lint and a passing structural audit are gates (`gt-lints`).
   node skills/gt-verify/scripts/probe.mjs http://localhost:3005/brand --sel ".pt-book-title h1" --theme dark --out <scratch>/probe
   ```
 
-  The probe prints the rect, each side of margin, border and padding, the content box, layout, type and paint values, the effective opacity, the parent's display and gap, and the distance to the previous and next siblings with the margins that make it up. It saves a crop of the element plus 24px at the device scale.
+  The probe prints the box model per side, the type and paint values, the parent's gap and the space to each sibling, and saves a crop plus 24px (references/cases.md).
 - **Computed values are the evidence.** Source and class names say what was intended. `getComputedStyle` on the live element (the probe, or the Browser pane's JavaScript) says what rendered.
 - **Crop seams at 2x or 4x.** Corners, junctions and seams are judged on crops (`--dsf 4` for 4x). One 1px line is 2 device px at 2x, and a full-page capture hides it. The line auditor reads computed CSS and cannot see SVG strokes, so figures are judged on crops (`gt-lints`).
 - **Probe what paints at a point.** `--point x,y` lists the elements under a viewport point from the top (`elementsFromPoint`), with each one's borders, background, opacity, shadow and outline, and the composite pixel there. It shows which owner draws a line, what covers a control and which layer leaks a fill.
-- **Read composite pixels across a seam.** `--scan x,y,down,24` (or `right`) groups the device pixels along a segment into runs of one grey, prints each run's width in device pixels and marks the runs that are lines. Compositing gives `a*L + (1-a)*G` for a stroke of alpha `a` and color `L` over ground `G`, and two stacked strokes composite at alpha `1-(1-a)^2`. Expected greys in Prototemplate's shell, from `src/components/viewer/tokens.css` on 2026-10-05:
-
-  | Line | One stroke | Two strokes |
-  | --- | --- | --- |
-  | Shell `--pt-hair`, dark (242 at 0.22 over 7) | 59 | 99 |
-  | Shell `--pt-hair`, light (7 at 0.18 over 255) | 210 | 174 |
-
-  A reading near the two-stroke value is a double line or one stroke over a brighter backing such as a shader glow. A glow raises the neighbouring pixels as well, and a double line leaves them at the ground. On 2026-10-05 a scan read 59 across the toolbar's bottom rule on the brand page in dark (58 in WebKit), which is one stroke. The landing's main hairline `--tc-hair` is opaque (rgb 39, 39, 42 in dark and 228, 228, 231 in light on 2026-10-05), so its grey stays the same when two rules touch. There a double line shows as a run twice as wide: 4 device pixels at 2x for two 1px rules.
-- **Check every state of a moving element.** `--frames 12 --every 120` takes the box reading and a crop twelve times. On 2026-08-01 an agent equalized the gaps between the locale words on a hero orbit and judged them from a capture at rest. Kevin then found a wider gap on the orbit's flank, where one word had rolled over and its neighbour had not yet, because each word's footprint changed with its roll state.
+- **Read composite pixels across a seam.** `--scan x,y,down,24` (or `right`) groups the device pixels along a segment into runs of one grey and marks the runs that are lines. A reading near the two-stroke grey is a double line or a stroke over a brighter backing (the arithmetic and the expected greys: [references/cases.md](references/cases.md), "Reading a seam").
+- **Check every state of a moving element.** `--frames 12 --every 120` takes the box reading and a crop twelve times, since a footprint changes with an animation's state (the 2026-08-01 orbit gaps are in references/cases.md).
 - **Measure layout shift.** `pnpm check:pages` reads the layout shift score in every cell (over 0.1 fails, over 0.05 is a note; `--cls-trace` samples the boxes behind a shift), and `stress.mjs` records the entries in every phase. Around one gesture, read the entries directly (recipes, "Layout shift around one interaction"). Every entry over 0.001 is a defect, reported with its sources. Kevin, 2026-08-05: "either trannsition and animate them properly or dont let them layout shift around".
-- **Switch tools when one reads badly.** `gt-aesthetic` section 5 and `gt-website` cover the external playwright-core harness, theme seeding, the scroll-through before a full-page capture, and the in-app pane that pauses `requestAnimationFrame` and blanks canvases. A blank or wrong capture is a tool problem to solve. Kevin is never asked to check what an agent can measure.
+- **Switch tools when one reads badly.** A blank or wrong capture is a tool problem to solve, and Kevin is never asked to check what an agent can measure (references/cases.md).
 - **Look at every capture.** The agent finds a backwards part, a clipped letter, a doubled rule or a banner over the copy before Kevin sees it. Kevin, 2026-08-01: "be better at identifying these things".
 
 ## 2. The real gesture and the real flow
 
 - **Drive the interaction a user performs.** A text selection is a mouse drag read back with `getSelection()`. A hover state is hovered, then clicked. A sign-in change is proven by signing in: "hmm but i cant sign in. full flow is technically not working" (Kevin, 2026-07-21). Recipes has the drag.
-- **Name every shortcut, then remove it.** Shortcuts include a programmatic selection, `click({ force: true })`, a script that sets state, and a harness route in place of the real screen. On 2026-09-02 the label fix in gt-cloud #4633 was first shown with a Range API selection on a harness route. After Kevin's question, a real drag selected "Project name" on the fixed label and selected nothing with `select-none` put back. Report the shortcut, run the gesture, then report the gesture. A harness route stays out of the PR (`gt-ship` section 3); that session deleted it before committing.
+- **Name every shortcut, then remove it.** A programmatic selection, `click({ force: true })`, a script that sets state or a harness route proves nothing about the gesture. Report the shortcut, run the gesture, then report the gesture; a harness route stays out of the PR (`gt-ship` section 3; the 2026-09-02 label case is in references/cases.md).
 - **The runtime proves the value.** When a settings panel, a stats readout or a log line shows the corrected value, it still does not show that the runtime uses it. Exercise the behaviour the value controls and measure that.
 - **Test every category.** When a change covers several kinds of item (every page type, every file format, every plan state, every provider), run one of each against the real system and read its logs.
-- **Dashboard UI passes Kevin's manual gate.** Before a dashboard commit or PR, gt-cloud's `.agents/skills/gt-dashboard` "UI Verification Checklist" has Kevin confirm that nothing shifts on refresh or resize, small screens work, nothing flickers or refetches, loading and empty states hold still, focus and hover states show, transitions have no white flash and no text clips. Walk every line first with evidence (captures, `stress.mjs` shifts, the probe), then ask him to confirm with that evidence attached. Authenticated pages run on the per-worktree dev environment with its seeded session (`gt-local-dev` section 4), so a sign-in wall is no reason to leave a screen unverified. The `/dev/states` gallery mounts every auth-adjacent state; it lives on a branch outside main, and `gt-local-dev` section 4 says how to use it.
-- **A prompt for coding agents is proven on a fresh agent.** The Setup for Agents prompt is handed unchanged to a fresh agent on a fresh app until a real translation renders, and a separate verifier grades the result and the wording. Kevin, 2026-10-01: "havce you actualy tried the prompt? do it and validate results." `gt init` and `gt configure` wait forever on an unanswered interactive question, so every step runs with `--no-interactive` and a flag for each answer. Record whether the run used an existing CLI login, which skips steps a new user meets. `gt-website` section 6 and its `references/pages.md` hold the verified command.
+- **Dashboard UI passes Kevin's manual gate.** Walk every line of gt-cloud's gt-dashboard "UI Verification Checklist" with evidence, then ask him to confirm with that evidence attached; a sign-in wall is no reason to leave a screen unverified (references/cases.md).
+- **A prompt for coding agents is proven on a fresh agent.** It is handed unchanged to a fresh agent on a fresh app until a real translation renders, and a separate verifier grades it (Kevin, 2026-10-01; references/cases.md, "Agent prompts").
 
 ## 3. The stress matrix
 
@@ -94,26 +88,17 @@ node skills/gt-verify/scripts/stress.mjs http://localhost:3001/en-US \
   --out <scratch>/stress
 ```
 
-- The script walks the phases first, slow, fast, reverse, reload, deeplink, zoom and throttle at 1440x900, 1920x1080, 1100x800, 868x525 and 390x844. At every settled step it fails when copy sits in the viewport band and none of it is visible (hidden, transparent or under a fixed layer). It records layout shifts, console and page errors, failed responses and the frame cadence per phase, and compares the throttled walk's settled states with the normal walk's. It writes `REPORT.md` and `index.html`, a sheet of every capture. `--phases`, `--viewports` and `--steps` narrow a run; `--each` requires every element in the band to be visible.
-- **First frames are judged by eye.** Look at the captures taken 0, 150, 400, 1000 and 2500 ms after the first load, the reload captures, and the capture 100 ms after each fast jump. They show what the checks cannot read: stacked layers, a gap that heals as the animation runs, layers that flash, stale animation after a jump. Each of those is a defect.
-- **The first interaction is right.** The first scroll, hover or click after a load behaves like every later one. On 2026-08-08 the stack story at 390x844 kept all four beats transparent after a deep link or a restored scroll position, until the reader scrolled again.
-- **Frame-starved or wrong.** Under throttle the frame rate falls and in-between states stay on screen longer. When the settled states and the timing of the story's events match the unthrottled run, the run was frame-starved; when they differ, the logic is wrong. On 2026-08-08 the headline rewrite followed each locale-belt crossing by 2.46 s at 1x and by 2.43 to 2.50 s at 10x, while frames fell to 4 to 6 per second. The rewrite was correct and frame-starved (recipes, "CPU and network throttling").
-- **Overlays outside the change.** The script counts copy under a fixed layer as not visible. On 2026-10-05 at 390x844 the consent banner covered the lit beat of the landing's stack story at every step on a first visit. Report such a layer, then pass `--hide "<css>"` to read the story under it.
-- **The URL bar** exists only on a phone. Use the iOS Simulator (recipes); headless Chromium has no browser chrome to collapse.
+- `stress.mjs` walks every phase at five viewports, fails when copy in the read band is not visible, records shifts, errors and frame cadence, and writes `REPORT.md` and a capture sheet (`--phases`, `--viewports`, `--steps` narrow a run).
+- The first-frame captures are judged by eye; the first interaction after a load behaves like every later one; a throttled run whose settled states and event timing match the unthrottled run is frame-starved, and one that differs is wrong; an overlay outside the change is reported, then hidden with `--hide`; the URL bar is checked on a phone. The rules with the incidents behind them are in [references/cases.md](references/cases.md) ("The stress matrix").
 - `gt-motion` holds the motion rules (one clock, paused loops, reduced motion). `gt-landing-pages` and DESIGN.md sections 13 and 14 hold the story's layout (the 55 and 80 percent read lines, the svh and dvh law).
 
 ## 4. Viewports, themes, browsers and accessibility
 
-- **Start with the standing checks.** `pnpm check:pages --preset quick --pages <ids>` reads phones from 320 wide, a tablet, laptops, desktops and the 3440 ultrawide (the full preset: 25 devices, tablets and landscape phones as touch devices), the layout shift in every cell and the declared interactions (docs/SHIP-LOOP.md section 2, `gt-lints`). For a site outside Prototemplate, pass `--base <url> --pages-module <file>` (`prototemplate` section 10). `gt-aesthetic` adds shots at 1440 and 390 in both themes and plate pages at 1527 by 814.
-- **Add what those miss.**
-  - Phone landscape: 844x390 and 932x430.
-  - 900, 1100 and 1279 wide (1279 sits one pixel under check:pages' 1280 devices).
-  - Short heights: 1280x600 and 1440x700.
-  - 150% browser zoom, about 868 by 525 CSS px in the window Kevin used: "no im on the tab at 150%, it should just show the mobile version at this smallness" (Kevin, 2026-08-07). At that size the stack band was one column but shorter than the stage's 640px height floor, so the desktop scroll logic drove a one-column layout.
-  - DevTools device emulation: change the width in steps across each breakpoint. Sizing must recompute on every width change; a size read once at mount fails here.
+- **Start with the standing checks.** `pnpm check:pages --preset quick --pages <ids>` (devices from 320 wide to the 3440 ultrawide, layout shift per cell, the declared interactions; `gt-lints`). Another site takes `--base <url> --pages-module <file>`; the presets are in references/cases.md.
+- **Add what those miss:** phone landscape, 900, 1100 and 1279 wide, short heights, 150% browser zoom and emulated width changes across each breakpoint (sizes and the 150% incident in [references/cases.md](references/cases.md), "Viewports check:pages misses").
 - **One composition per width.** Intermediate widths and zoomed windows fall to the mobile composition, with no hybrid of desktop logic and mobile layout.
-- **Mobile reaches everything desktop reaches.** Open the mobile menu and every drawer and check each entry. On 2026-08-16 the old light and dark toggle survived in the mobile dropdown after the desktop header changed. Header destinations live in both `items` and `columns` (`gt-website` section 2).
-- **Safari as well as Chrome.** Run the checks with `--browser webkit` on both scripts. On 2026-08-18 the blog index's lead card broke only in Safari: WebKit resolved the cover's `height: 100%` against the whole two-row subgrid. The fix was verified with one invariant in Chromium and WebKit at desktop and tablet widths.
+- **Mobile reaches everything desktop reaches.** Open the mobile menu and every drawer and check each entry; header destinations live in both `items` and `columns` (`gt-website` section 2).
+- **Safari as well as Chrome.** Run the checks with `--browser webkit` on both scripts. On 2026-08-18 the blog index's lead card broke only in Safari (references/cases.md, "Mobile menus and WebKit").
 - **The iOS Simulator** checks iPhone spacing and lag (recipes). It runs at the host's CPU speed, so CPU tiers come from the throttle. Drop it when it blocks the round, and say it was dropped.
 - **Both themes, every time.** Seed the theme before load (`--theme`), and confirm it took: the probe prints `data-theme` and the `dark` class.
 - **Accessibility.**
@@ -122,7 +107,7 @@ node skills/gt-verify/scripts/stress.mjs http://localhost:3001/en-US \
   node skills/gt-verify/scripts/probe.mjs http://localhost:3001/en-US/docs --viewport 390x844 --a11y --strict --out <scratch>/a11y
   ```
 
-  It lists controls with no accessible name, the name every icon-only control announces with its `aria-expanded` or `aria-pressed` state, text set to `user-select: none`, and the count of live regions. Read each announced name against what the control does. On 2026-09-02 the docs drawer trigger had no name, the drawer's close button announced "Open Sidebar", and dashboard labels were `select-none`. State changes are announced (`aria-expanded` and `aria-pressed` on toggles, a live region for an async result). Tab through the changed controls and see the focus ring. Reduced motion renders the designed still (`gt-motion`).
+  It lists controls with no accessible name, the name and state every icon-only control announces, `user-select: none` text and the live regions. Read each name against what the control does, tab through the changed controls, and check reduced motion (references/cases.md, "Accessibility reading").
 
 ## 5. Edge counts and languages
 
@@ -136,6 +121,7 @@ node skills/gt-verify/scripts/stress.mjs http://localhost:3001/en-US \
 - **Re-check every flagged item.** Before a page is called done, re-check each item Kevin flagged on it earlier in the round, with the same probe as the first time.
 - **Start from Kevin's known-good commit.** When he names one, diff against it (`git log` and `git diff <good> <bad> -- <paths>`) or bisect in a scratch worktree before changing code (recipes).
 - **Rule out caches first.** Before diagnosing a deployed regression, load the page in a clean profile. Each headless context is one. Kevin, 2026-09-29: "i opened in an incognito tab and it was fine. i think cached stuff is causing weirdness". Locally, `rm -rf .next` clears a stale dev build (`gt-website` section 2).
+- **Compare the whole page set across an upgrade.** A framework bump, a layout rewrite or a routing change is checked route by route against the reference build with `compare-signatures.py`, and every difference gets a verdict and evidence ([references/parity-review.md](references/parity-review.md)).
 - **Record the load with every timing.** Parallel agents share the machine, and a timing check reads red under their load. Put the `uptime` load average beside every timing and rerun at low load before calling a timing defect real (`gt-performance` section 2, which also holds budgets and frame-time work).
 
 ## 7. The live deployment
@@ -143,19 +129,19 @@ node skills/gt-verify/scripts/stress.mjs http://localhost:3001/en-US \
 Work that shipped is done when production serves it. Kevin, 2026-10-01: "why does your deploys keep regressing?"
 
 - **Every lane's commits are on main.** For each commit, `git merge-base --is-ancestor <sha> origin/main` succeeds; a lane's work lost in a rebase counts as unshipped.
-- **Production runs the merged commit.** Read the newest Ready production deployment's `githubCommitSha` and aliases with `vercel api /v13/deployments/<url>`, and check that it contains your merged commit (recipes, "The live deployment"). A newer deployment still building serves nothing yet.
-- **The live page carries that deployment's stamp.** The page's HTML names the serving deployment as its longest `dpl_` id. On 2026-10-05 that id matched the newest Ready production deployment, built from origin/main's e17fce499. Prototemplate's check is `gt-ship` section 8.
-- **The full-feature build is the one serving.** When several lanes or builds shipped, spot-check one feature from each in production with the probe or the stress script pointed at the production URL. Read in a fresh headless context; a page whose `dpl_` id is older than the deployment is a stale copy.
+- **Production runs the merged commit.** The newest Ready production deployment's `githubCommitSha` contains it (recipes, "The live deployment").
+- **The live page carries that deployment's stamp,** its longest `dpl_` id. Prototemplate's check is `gt-ship` section 8.
+- **The full-feature build is the one serving.** Spot-check one feature from each lane or build in production, in a fresh headless context.
 - **Cards.** OG and Twitter tags are read live after the deploy, the image answers `200 image/png`, and the card is opened and looked at (recipes; `gt-graphics` for the design).
-- **Failed builds.** While production builds fail, the site keeps serving the last good deployment, so a merged PR stays invisible (2026-10-02, `gt-reporting` section 2). `gt-website` section 8 reads the landing's Vercel logs; `gt-ship` section 8 reads Prototemplate's.
+- **Failed builds** leave the last good deployment serving, so a merged PR stays invisible (`gt-website` section 8, `gt-ship` section 8).
 
 ## 8. Fix the class
 
 When Kevin flags one instance, find every instance: "in everything, make sure our footers are properly logo and text side by side" (Kevin, 2026-08-03); "look for ANYWHERE ELSE icons nneed to be synced" (Kevin, 2026-09-28).
 
 1. Enumerate the class programmatically: a grep (`git grep -n "select-none" -- 'packages/ui/src' 'apps/*/src'`), a registry (Prototemplate's `scripts/lib/site-pages.mjs`, the header's `items` and `columns`), a lint (gt-ui rules), or a measurable heuristic such as symmetry (left and right padding equal) or attachment (a logo and its wordmark on one baseline) read with the probe on every member (`--nth`).
-2. Fix every member, preferring the shared source. The 2026-09-02 label fix (#4633, still open on 2026-10-05) removes `select-none` from the shared Label primitive in `packages/ui`, which every label above every dashboard input renders.
-3. Verify each member and report the count. The 2026-09-02 report counted 26 label consumers in the dashboard. All of them import the shared primitive, and the dashboard's local Label copy had no importers, so the PR deletes it.
+2. Fix every member, preferring the shared source.
+3. Verify each member and report the count.
 4. When a lint could have caught the defect and did not, extend it until it catches the class, then sweep every page (`gt-lints` section 4). Cross-app UI changes go through `packages/ui` (`gt-components`, "Standardization").
 
 ## 9. Root cause and guard
@@ -164,7 +150,7 @@ When Kevin flags one instance, find every instance: "in everything, make sure ou
 - **Fix the cause, then guard it.** Add the regression test or the lint in the same change, so the class cannot return.
 - **Chase intermittent symptoms.** A defect that vanishes on reload is reproduced on purpose: late fonts under a network throttle, a cold cache, a fast jump, a restored scroll. Sample the moving property on a timer and count wrong readings.
 - **A pasted runtime error overlay** gets the root fix and then a console-error probe that scrolls through every affected route (recipes, "Console errors across routes").
-- **A phone screen recording** is read frame by frame. Attribute it to a build before saying whether it is fixed (recipes). On 2026-08-08 the frames matched production's build from before the fix, and gt-cloud #4240 carried the fix.
+- **A phone screen recording** is read frame by frame and attributed to a build before saying whether it is fixed (recipes; the 2026-08-08 case is in references/cases.md).
 
 ## 10. Tests and checks that prove something
 
@@ -178,9 +164,9 @@ When Kevin flags one instance, find every instance: "in everything, make sure ou
 
 ## 11. Test discreetly
 
-- **Headless only.** Both scripts, check:pages and the harnesses run headless. Never launch a headed browser or open a URL in Kevin's browser to test. Put "headless only, no visible windows" in every brief that has an agent drive a browser. On 2026-09-25 agents measuring frame times opened headed windows over his work: "stop opening testing instances so much that go into the top layer of my screen".
+- **Headless only.** Both scripts, check:pages and the harnesses run headless. Never launch a headed browser or open a URL in Kevin's browser to test, and put "headless only, no visible windows" in every brief that has an agent drive a browser (the 2026-09-25 incident is in references/cases.md).
 - **Size the run to the change.** One page and two viewports while iterating (`--pages`, `--viewports`, `--phases`); the full matrix before a release. Run browser gates one at a time.
-- **Leave Kevin's sessions alone.** A funnel that signs out runs against the seeded dev-environment session, and seeding again restores it afterwards (`gt-local-dev` section 4). A CLI login under test runs with `XDG_STATE_HOME=<scratch>`. The `gt` CLI keeps its sign-in state under that folder, so his stored login stays untouched (`gt-local-dev` section 5). A server Kevin started is never stopped (`gt-local-dev` section 6).
+- **Leave Kevin's sessions alone.** A funnel that signs out runs on the seeded dev session, a CLI login under test keeps its state in the scratchpad, and a server Kevin started is never stopped (references/cases.md).
 - **Simulators stay headless.** `xcrun simctl boot` opens no window; the simulator panel opens only when Kevin wants to watch.
 - **Clean up.** Close contexts, shut down booted simulators and remove scratch worktrees when the check is done.
 
@@ -193,7 +179,7 @@ Every reported item says how it was verified and names anything left unverified,
 - A shortcut is named with the item it touched.
 - The reason is something the agent could not do in the session. A check the agent could have run (a signed-in screen, a production read, a second browser) is run before the report.
 
-The 2026-09-02 report on the label fix asked Kevin to sign in and drag across a label himself. To this standard the agent runs that drag on a signed-in screen through the seeded session, and the report reads: "Labels above inputs select again (#4633). Verified: on a signed-in dashboard form, a mouse drag selects 'Project name' after the fix and selects nothing with `select-none` restored; the shared Label primitive computes `user-select: auto`. Not verified: Safari on an iPhone. The simulator device still needs Kevin's one-time grant, and WebKit at 390x844 passed."
+A worked report to this standard, for the 2026-09-02 label fix, is in [references/cases.md](references/cases.md) ("A report to this standard").
 
 ## Review checklist
 
@@ -216,9 +202,4 @@ Prototemplate: `gt-aesthetic` (the review standard and local review tooling), `g
 
 ## Sources
 
-- Prototemplate: docs/SHIP-LOOP.md (sections 0 to 5); DESIGN.md sections 2, 8, 13 and 14; BRAND.md section 6; `scripts/check/pagecheck/README.md` and `pagecheck.mjs`; `scripts/lib/site-pages.mjs`; `src/components/viewer/tokens.css` (the hair tokens); `skills/gt-aesthetic`, `gt-website` (with `references/pages.md`), `gt-lints`, `gt-ship`, `gt-motion`, `gt-landing-pages`, `gt-components`, `gt-local-dev`, `gt-performance`, `gt-reporting` and `prototemplate`; all read 2026-10-05.
-- gt-cloud at origin/main e17fce499 (2026-10-05): `.agents/skills/gt-dashboard/SKILL.md` (UI Verification Checklist); `.agents/skills/gt-testing/SKILL.md`; `apps/landing/gt.config.json`; `packages/ui/src/components/ui/label.tsx`; PR #4633 (open) and PR #4240 (merged 2026-08-08).
-- gt at origin/main: `packages/cli/CHANGELOG.md` (#2205, sign-in state under `$XDG_STATE_HOME/gt`).
-- Live readings, 2026-10-05: `vercel ls landing` and `vercel api /v13/deployments` for the newest Ready production deployment, the `dpl_` stamp and OG tags of generaltranslation.com, the landing's computed `--tc-hair` in both themes, `stress.mjs` and `probe.mjs` runs against generaltranslation.com and localhost:3005 in Chromium 153 and WebKit 26.5.
-- Claude memory notes, private to Kevin's machine (gt-cloud project): page-check-system, redesign-screenshot-harness, agent-prompt-test, responsive-audit-round, onboarding-funnel-testing, dashboard-local-dev, cli-callback-page, landing-deploy-failures. `gt-local-dev` carries the parts of them this skill relies on.
-- Kevin's directives: the sign-in flow (2026-07-21); "be better at identifying these things" and the orbit gaps (2026-08-01); the margin and padding undo (2026-08-05); layout shift (2026-08-05); the longest translation and 150% zoom (2026-08-07); ignoring the simulator when it blocks (2026-08-07); the stress cases, the throttled rewrite and the phone recording (2026-08-08); the mobile dropdown toggle (2026-08-16); a global offset (2026-08-17); Safari (2026-08-18); "did you actualy test this?", the docs drawer names and select-none labels (2026-09-02); tests and fixes (2026-09-12); discreet testing (2026-09-25); icon sync and auditing checks (2026-09-28); cached assets (2026-09-29); deploy regressions, failed and incomplete checks with pictures, and the agent prompt test (2026-10-01); a merged PR missing from production (2026-10-02).
+Dated provenance for every rule, script and number in this skill is in [references/sources.md](references/sources.md).

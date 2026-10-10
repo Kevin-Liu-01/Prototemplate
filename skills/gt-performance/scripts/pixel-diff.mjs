@@ -37,6 +37,10 @@
 // seeded through localStorage gt-theme and theme plus the color-scheme
 // emulation. CHROME_PATH overrides the browser; otherwise the newest Chrome
 // for Testing build under the ms-playwright cache is used.
+//
+// Requires: playwright-core (in a Prototemplate checkout) and Chrome for Testing.
+// Last real run: 2026-10-08, the Prototemplate session's checks of the copied
+// plate and engine files (a transcript scan on 2026-10-10).
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';

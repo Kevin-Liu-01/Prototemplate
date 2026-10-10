@@ -43,6 +43,11 @@
 //
 // Exit codes: 0 after a reading; 1 with --strict when --a11y found a control
 // with no name or unselectable text; 2 when the page could not be read.
+//
+// Requires: playwright-core (in a Prototemplate checkout) and Chrome for Testing
+// or the ms-playwright WebKit build.
+// Last real run: 2026-10-06, Prototemplate session workflow runs after authoring
+// (a transcript scan on 2026-10-10).
 
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';

@@ -1,0 +1,67 @@
+# Routing cases for scripts/routing-matrix.sh: label | path | status | target
+# (a path, - for no redirect, * for any). Public URLs only; every check is one GET.
+# Built from the 35-case near-miss matrix of 2026-08-20 to 2026-08-24 (the docs
+# and blog routing PRs, gt-cloud #4358, #4359 and #4360), plus the root, legacy
+# redirect and agent-file rows added on 2026-10-10. Last run:
+#   sh skills/gt-website/scripts/routing-matrix.sh
+# 2026-10-10 against https://generaltranslation.com: 41 passed, 0 failed.
+## docs: pages that resolve
+real page | /en-US/docs/react/react-quickstart | 200 | -
+docs root | /en-US/docs/overview/get-started | 200 | -
+## docs: near-miss corrections
+plural stripped | /en-US/docs/quickstarts | 307 | /en-US/docs/overview/get-started
+eponymous containment | /en-US/docs/react/quickstart | 307 | /en-US/docs/react/react-quickstart
+whole-segment containment | /en-US/docs/zzz-init-zzz | 307 | /en-US/docs/cli/reference/commands/init
+## docs: unknown slugs fall back to their section, never across sections
+junk under a real section | /en-US/docs/react/zzzq-nothing | 307 | /en-US/docs/react/overview
+guard: infinite-scroll | /en-US/docs/react/infinite-scroll | 307 | /en-US/docs/react/overview
+guard: definitely | /en-US/docs/react/definitely | 307 | /en-US/docs/react/overview
+guard: xxinitxx | /en-US/docs/react/xxinitxx | 307 | /en-US/docs/react/overview
+guard: init inside a word | /en-US/docs/node/definitely-not-real-xyz | 307 | /en-US/docs/node/quickstart
+## docs: a near miss never leaves the section it was asked for
+initializing stays in node | /en-US/docs/node/initializing | 307 | /en-US/docs/node/quickstart
+initializing stays in python | /en-US/docs/python/initializing | 307 | /en-US/docs/python/quickstart
+numbers stays in cli | /en-US/docs/cli/numbers | 307 | /en-US/docs/cli/quickstart
+plugins stays in integrations | /en-US/docs/integrations/plugins | 307 | /en-US/docs/integrations
+variables stays in python | /en-US/docs/python/variables | 307 | /en-US/docs/python/quickstart
+uploads stays in platform | /en-US/docs/platform/uploads | 307 | /en-US/docs/platform
+linking stays in cli | /en-US/docs/cli/linking | 307 | /en-US/docs/cli/quickstart
+troubleshooting stays in cli | /en-US/docs/cli/troubleshooting | 307 | /en-US/docs/cli/quickstart
+in-section: configuration | /en-US/docs/node/configuration | 307 | /en-US/docs/node/reference/config
+in-section: enqueueing | /en-US/docs/cli/enqueueing | 307 | /en-US/docs/cli/reference/commands/enqueue
+unknown section, known tail | /en-US/docs/zzzsection/initializing | 200 | -
+# an unknown first segment never borrows a lone owner's section: it answers the
+# suggestions page or the docs front page (2026-10-10: the front page)
+unknown section, num tail | /en-US/docs/nosuchsection/numbers | 307 | /en-US/docs/overview/get-started
+## docs: the root and legacy redirects
+bare docs root | /en-US/docs | 307 | /en-US/docs/overview/get-started
+legacy CLI auth | /en-US/docs/cli/auth | 301 | /en-US/docs/cli/reference/commands/login
+legacy API root | /en-US/docs/api | 301 | /en-US/docs/platform/openapi/overview
+## agent-readable files
+markdown twin | /en-US/docs/react/react-quickstart.md | 200 | -
+mdx twin | /en-US/docs/react/react-quickstart.mdx | 200 | -
+llms.txt | /llms.txt | 200 | -
+## blog: a version bump is not a typo
+no cross-version redirect | /en-US/blog/gt_v2_12_0 | 200 | -
+the real release | /en-US/blog/gt_v2_13_0 | 200 | -
+## blog: a real post and its near misses
+blog index | /en-US/blog | 200 | -
+real post | /en-US/blog/supporting-open-source-software | 200 | -
+truncated slug | /en-US/blog/supporting-open-source | 307 | /en-US/blog/supporting-open-source-software
+devlog under /blog | /en-US/blog/generaltranslation_v8 | 200 | -
+## blog: locale parity (the recovery ladder is not en-US only)
+# 2026-08-20 both redirected to en-US; since the pooled slug list (merged
+# 2026-09-09, gt-cloud #4359) a translation wins and the locale is kept
+en-GB real post | /en-GB/blog/supporting-open-source-software | 200 | -
+en-GB truncated slug | /en-GB/blog/supporting-open-source | 307 | /en-GB/blog/supporting-open-source-software
+## locale prefixes
+off-roster locale | /de-AT/pricing | 301 | /en-US/pricing
+en-GB legal falls back | /en-GB/legal/privacy-policy | 200 | -
+## unmatchable slugs answer 200 with suggestions and noindex
+docs: no match at all | /en-US/docs/nothing-like-anything-here | 200 | -
+blog: no match at all | /en-US/blog/definitely-not-a-real-post-xyz | 200 | -
+## known open: production differs from the 2026-08-21 matrix
+# 2026-08-21 this corrected to /en-US/docs/node/reference/functions/initialize-gt;
+# on 2026-10-10 production sends the section fallback. Ask the docs owner before
+# changing either side.
+in-section: initialize | /en-US/docs/node/initialize | 307 | /en-US/docs/node/quickstart

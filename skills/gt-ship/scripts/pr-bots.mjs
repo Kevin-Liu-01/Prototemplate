@@ -11,6 +11,9 @@
 // Exit code: 0 when the PR reads ready (Greptile 5/5 on the head commit, no
 // unresolved bot threads, no conflict with the base, and on gt-cloud each
 // required check present and green), 1 otherwise, 2 on a usage or gh error.
+//
+// Requires: Node 20 or later and `gh` logged in with read access.
+// Last real run: none (kept for: every PR loop).
 import { execFileSync } from 'node:child_process';
 
 const args = process.argv.slice(2);

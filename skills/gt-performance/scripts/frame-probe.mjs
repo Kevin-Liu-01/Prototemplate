@@ -47,6 +47,9 @@
 // 2026, and every timing taken under that load reads slow. The script warns
 // when the load is above the core count; rerun at low load and compare
 // before and after runs taken under similar load.
+//
+// Requires: playwright-core (in a Prototemplate checkout) and Chrome for Testing.
+// Last real run: none (kept for: frame-rate checks in performance rounds).
 
 import { existsSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';

@@ -1,6 +1,6 @@
 # Pages with rules of their own
 
-Four parts of the site carry rules beyond the landing grammar: the pricing numbers, the hero's agent button and the prompt behind it, the AI features, and the `/world` map. Paths that start with `src/`, `scripts/`, `public/` or `__tests__/` are inside `$GT_CLOUD/apps/landing`, and `content:` paths are in the content repository.
+Six parts of the site carry rules beyond the landing grammar: the pricing numbers, the hero's agent button and the prompt behind it, the partner pages, the AI features, the `/world` map, and the programmatic SEO pages Kevin decided on. Paths that start with `src/`, `scripts/`, `public/` or `__tests__/` are inside `$GT_CLOUD/apps/landing`, and `content:` paths are in the content repository.
 
 ## Pricing money
 
@@ -22,7 +22,16 @@ Four parts of the site carry rules beyond the landing grammar: the pricing numbe
   - A development key in `.env.local` makes `next build` fail, so the prompt puts it in `.env.development.local`.
 - Keep the prompt in English. "Agent experience (AX) is a huge deal for us" (Kevin, 2026-09-30), and the prompt names `gt login` prominently for that reason.
 
-## AI features on the landing (open pull request #4885)
+## Partner pages
+
+The partner credit pages at `/[locale]/enterprise/contact/<partner>` (Slash, Mercury, a16z, speedrun, YC and The Residency, live on generaltranslation.com on 2026-10-10) are one screen in the sign-in plate's grammar under the landing navbar (gt-cloud #5216, merged 2026-10-08; The Residency in #5239, merged 2026-10-09). `src/components/pages/partners/PartnerOfferPage.tsx` renders every one of them.
+
+- **Layout.** The left column holds the GT and partner mark, a 30 px heading, one sentence, three ruled rows, one Apply button and the fine print. The right side shows the dithered Blue Marble with its caption card. The plate kit comes from `packages/ui` and mounts as an inset section (`PlateRoot inset`, `contain: paint`), so the landing navbar and footer keep their own styling.
+- **Kevin's edits** (2026-10-07): no outer rules on the ledger; brand colors stay in logos (YC keeps its orange square) and the other partner logos are monochrome; the fine print is each page's original legal notice at 12 px.
+- **Adding a partner** touches, in gt-cloud: the program table in `programs.server.ts`, `usePartnerCreditCopy.ts` and `applicationCopy.ts` (amount and duration come from a per-program table, and the approval email names the partnership), the partner tests, the landing wrapper and its route, a short link and its PostHog slug, the `next.config.ts` redirects, and the sitemap with its test. Redemption codes stay in the program table and out of this repository.
+- **The social card.** A long title overflows `/api/og-home`; pass the shorter heading as its `t` parameter.
+
+## AI features on the landing (pull request #4885, open on 2026-10-10)
 
 The questions band and the `/faq` page answer free-form questions through the Vercel AI Gateway with `google/gemini-2.5-flash` by default (`FAQ_ASSISTANT_MODEL` overrides it; branch `k/landing-faq`): `POST /api/faq/ask` in `src/app/api/faq/ask/route.ts`, with the entries, the docs index, the prompt and the fallback in `src/lib/faq/`. The route shape is the pattern for any AI feature on the site:
 
@@ -37,9 +46,9 @@ The questions band and the `/faq` page answer free-form questions through the Ve
 - The chat UI uses AI Elements ported by hand into `packages/ui/src/components/ai/`; the registry files use `useEffect`, streamdown and shiki, which the lints and the landing bundle reject. The conversation frame never scrolls itself: `StickToBottom.Content`'s scroll element takes `min-h-0` inside a flex column.
 - Gateway spend needs paid credits and a budget on the feature's tag before deploy. Kevin sets those in the Vercel dashboard.
 
-## The /world map (branch k/language-map)
+## The /world map (branch k/language-map, no pull request on 2026-10-10)
 
-`/world` is a map where each region is drawn in glyphs of the languages written there, with CLDR facts, coordinates as typography, a glyph globe and dithered pictures of writing artifacts. It is built on `k/language-map` in the worktree `gt-cloud-wt-langmap` and packaged as three stacked branches (dataset, data layer, page); none is pushed as of 2026-10-05, and pushing waits for Kevin.
+`/world` is a map where each region is drawn in glyphs of the languages written there, with CLDR facts, coordinates as typography, a glyph globe and dithered pictures of writing artifacts. It is built on `k/language-map` and packaged as three stacked branches (dataset, data layer, page); none is pushed as of 2026-10-10, and pushing waits for Kevin.
 
 - The page is organized by language. It names no country or territory, draws no borders and shows no country figures: a selection is a language, the hover readout is coordinates, languages and density, fact sites are named by site and town, and disputed areas draw a neutral mix of the surrounding languages. Kevin asked for a page that avoids political sensitivity "without making it look forced" (Kevin, 2026-10-03). Policy choices go to Kevin before merge.
 - Every fact has a source other than Wikipedia: Unicode CLDR, Natural Earth (4.1.0, and 5.1.2 for disputed areas), GT's supported-locales data, and published research for the places.
@@ -49,8 +58,19 @@ The questions band and the `/faq` page answer free-form questions through the Ve
 - The page adds a footer link and leaves the shared header alone.
 - Packaging the stack found two CI traps. The root `pnpm lint` runs `oxfmt --check .` over the repository, and a nested `.oxfmtrc.json` replaces the root config, so generated files are ignored in the root `.oxfmtrc.json`. A test that imports the generator's dependencies passes locally only because `scripts/world/node_modules` exists, so the grid test runs under `node --test` in `scripts/world` and vitest excludes that folder. Run every gate from a clean checkout before pushing a stack.
 
+## Programmatic SEO pages (round 1 building on 2026-10-10)
+
+Kevin's decisions for the SEO page system (2026-10-09), which round 1 builds on unpushed branches (no pull request on 2026-10-10):
+
+- Every string is translated through `<T>`, and the translation is a real `gt translate` run with the CLI's signed-in session.
+- The comparison pages are in, and the `/aeo` listicles stay.
+- The surfaces the pages cover are the app, the docs, the website, the CLI and agents, and video (subtitles). PDF is out.
+
+The route families, claim tracing and build limits join this file when round 1 ships.
+
 ## Sources
 
 - gt-cloud origin/main (2026-10-05): `packages/ui/src/components/pricing/dollar-format.ts`, `apps/landing/src/lib/agent-prompt.ts`, `apps/landing/src/components/landing/sections/agent/HeroSecondButton.tsx`, `apps/landing/src/app/agent-prompt.md/route.ts`, `apps/landing/src/lib/rate-limit.ts`.
 - gt-cloud branches: `k/landing-faq` (#4885; `src/lib/faq/config.ts` and `src/app/api/faq/ask/route.ts` read at c675222e0), `k/language-map` (`apps/landing/scripts/world/generate.mjs`, `package.json`).
 - Claude Code project memory for gt-cloud: `pricing-money-format.md`, `landing-hero-agent-button.md`, `agent-prompt-test.md`, `landing-ai-gateway-faq.md`, `world-language-map.md`.
+- Added 2026-10-10: Partner pages from Claude memory `partner-plate-pages` (2026-10-07 and 2026-10-08) and the partner pages spec of 2026-10-07 (layout only, no codes), with every partner page read live on generaltranslation.com on 2026-10-10 (each answered 200); Programmatic SEO pages from Claude memory `resume-2026-10-09` (Kevin's SEO decisions, 2026-10-09); pull request states read with `gh pr view` on 2026-10-10.
