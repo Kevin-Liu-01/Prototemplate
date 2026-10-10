@@ -18,28 +18,16 @@ export default function IntroSlide() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        introSettled();
-        return;
-      }
+      // The entrance itself is CSS keyframes (presenter.css), so it runs on
+      // the compositor from the first paint. Deferred presenter work
+      // (after-intro.ts) waits until it has played.
+      const entrance = root.current?.getAnimations({ subtree: true }) ?? [];
+      Promise.all(entrance.map((animation) => animation.finished)).then(
+        introSettled,
+        introSettled
+      );
 
-      // Deferred presenter work (after-intro.ts) waits for the entrance.
-      const tl = gsap.timeline({
-        defaults: { ease: 'power4.out' },
-        onComplete: introSettled,
-      });
-      tl.fromTo(
-        '.pr-intro-field',
-        { opacity: 0 },
-        { opacity: 1, duration: 2, ease: 'power2.inOut' }
-      )
-        .from(
-          '.pr-title-piece',
-          { yPercent: 118, stagger: 0.14, duration: 1.05 },
-          0.45
-        )
-        .from('.pr-intro-sub', { autoAlpha: 0, y: 16, duration: 0.9 }, 1.2)
-        .from('.pr-intro-cue', { autoAlpha: 0, duration: 0.8 }, 1.6);
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       // The liquid glass slowly undulates: the displacement field breathes.
       const breathe = gsap.to('#pr-liquid-turb', {

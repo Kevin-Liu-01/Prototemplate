@@ -565,6 +565,68 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: color-mix(in srgb, var(--pt-ink) 50%, transparent);
 }
 
+/* The entrance is CSS keyframes from the first paint, so it runs on the
+   compositor and keeps its frame rate while hydration and the shader start
+   use the main thread, and the title is never painted whole and then hidden.
+   The timings are the former GSAP timeline's: the field fades in over 2 s
+   (power2.inOut), and from 0.45 s the title pieces rise one by one 0.14 s
+   apart, the byline follows at 1.2 s and the cue at 1.6 s (power4.out).
+   `translate` composes ahead of the logo box's own transform. */
+@media (prefers-reduced-motion: no-preference) {
+  .pr-intro-field {
+    animation: pr-intro-fade 2s cubic-bezier(0.45, 0, 0.55, 1) backwards;
+  }
+
+  .pr-title-piece {
+    animation: pr-intro-rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.45s backwards;
+  }
+
+  .pr-title-mask:nth-child(2) .pr-title-piece {
+    animation-delay: 0.59s;
+  }
+
+  .pr-title-mask:nth-child(3) .pr-title-piece {
+    animation-delay: 0.73s;
+  }
+
+  .pr-title-mask:nth-child(4) .pr-title-piece {
+    animation-delay: 0.87s;
+  }
+
+  .pr-intro-sub {
+    animation: pr-intro-lift 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.2s backwards;
+  }
+
+  .pr-intro-cue {
+    animation: pr-intro-fade 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.6s backwards;
+  }
+}
+
+@keyframes pr-intro-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pr-intro-rise {
+  from {
+    translate: 0 118%;
+  }
+  to {
+    translate: 0 0%;
+  }
+}
+
+@keyframes pr-intro-lift {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
 /* ---------- Why ---------- */
 
 .pr-why {
