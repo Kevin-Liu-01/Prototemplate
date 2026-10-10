@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Split the rsms InterVariable roman and italic into unicode-range subsets (pnpm build:inter; needs fonttools and brotli)."""
-import pathlib, re
+import pathlib, re, sys
+
+# --help prints the docstring before fontTools is needed
+if {'--help', '-h'} & set(sys.argv[1:]):
+    print(__doc__)
+    sys.exit(0)
 
 from fontTools import subset
 from fontTools.ttLib import TTFont
