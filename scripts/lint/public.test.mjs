@@ -111,6 +111,7 @@ describe('lint:public', () => {
   it('skips excluded folders, binaries and allowed paths', () => {
     const root = checkout({
       'node_modules/pkg/index.js': `${KEYS.github}\n`,
+      '.pnpm-store/v11/files/0d/abc': `${KEYS.aws}\n`,
       'motion/notes.md': `${MACHINE}\n`,
       'public/media/clip.txt': `${MACHINE}\n`,
       'public/logo.png': `${KEYS.github}\n`,

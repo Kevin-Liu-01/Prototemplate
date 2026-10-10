@@ -17,7 +17,8 @@
  *     is skipped with a printed line, since no private file is there.
  *
  * It is a filesystem walk with no git call, so it reads untracked files
- * too. It skips node_modules, .next, .git, out, .pagecheck, motion/ at the
+ * too. It skips node_modules, package stores (.pnpm-store, .npm, .cache,
+ * .yarn), .next, .git, out, .pagecheck, motion/ at the
  * root, public/media, deck/preview, deck/tmp, .env files, binaries and
  * symlinks. scripts/lint/public.allow.json exempts a path from named rules
  * (this lint's own source and test, which spell the patterns).
@@ -70,7 +71,8 @@ export const KEY_SHAPES = [
 ];
 const MACHINE_PATH = /\/Users\/[A-Za-z0-9._-]+\/|\/private\/tmp\//g;
 
-const SKIP_NAMES = new Set(['node_modules', '.next', '.git', 'out', '.pagecheck', '.vercel', '.turbo', '.DS_Store']);
+/* package stores and caches a CI or Vercel build keeps inside the checkout hold other projects' files */
+const SKIP_NAMES = new Set(['node_modules', '.pnpm-store', '.npm', '.cache', '.yarn', '.next', '.git', 'out', '.pagecheck', '.vercel', '.turbo', '.DS_Store']);
 const SKIP_PATHS = new Set(['motion', 'public/media', 'deck/preview', 'deck/tmp']);
 const BINARY = /\.(png|jpe?g|webp|gif|avif|ico|mp4|webm|mov|mp3|wav|m4a|woff2?|ttf|otf|pdf|zip|gz|tgz|glb|bin|tsbuildinfo)$/i;
 
