@@ -76,6 +76,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm build:thumbs` | Builds the preview thumbnails the preview layer reads (directive 8.6): public/shots/thumb/<stem>.webp and <stem>-dark.webp at 640x360 (the 320x180 card at 2x), cut from the 1440-wide exhibit captures under public/shots. | `scripts/build/thumbs.mjs` |
 | `pnpm build:tools` | Builds docs/TOOLS.md, the index /docs/tools serves: every pnpm command in package.json with the first sentence of the opening comment of the file it runs, grouped by its prefix, then every script a skill bundles (skills/<slug>/scripts/) and the environment the tools read. | `scripts/build/tools.mjs` |
 | `pnpm build:updated` | Builds src/lib/updated.ts: the date each page with a book head last changed, shown in the Updated row of the head's panel (DESIGN.md section 4, The book page). | `scripts/build/updated.mjs` |
+| `pnpm gen:all` | Runs every generator in write mode. | `scripts/build/gen-all.mjs` |
 | `pnpm mood-tone` | Cuts the artifact pictures' tone grids to the house standard and writes the manifest the lint reads (docs/ARTIFACT-PICTURES.md). | `scripts/media/mood-tone/mood-tone.mjs` |
 
 ## Skills
