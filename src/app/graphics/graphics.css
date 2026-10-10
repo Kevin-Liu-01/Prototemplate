@@ -142,7 +142,7 @@
 
 /* ---------- narrow ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .gx-row {
     grid-template-columns: 1fr;
     gap: 8px;

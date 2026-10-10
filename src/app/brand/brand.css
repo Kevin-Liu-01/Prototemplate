@@ -661,7 +661,7 @@
 
 /* ---------- narrow ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   /* the gutter folds with the divider's: the body takes the full column */
   .ptb-page-body {
     margin-left: 0;

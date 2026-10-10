@@ -136,7 +136,7 @@
   border-radius: var(--pt-radius-card);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .ar-head {
     grid-template-columns: 1fr 1fr;
   }

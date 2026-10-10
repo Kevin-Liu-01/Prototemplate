@@ -243,7 +243,7 @@
   border-radius: var(--pt-radius-card);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .gv-archive-head {
     grid-template-columns: 1fr;
     gap: 12px;

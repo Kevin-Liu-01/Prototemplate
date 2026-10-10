@@ -116,7 +116,7 @@
   gap: 36px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .blog-list {
     gap: 24px;
   }

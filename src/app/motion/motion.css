@@ -322,7 +322,7 @@
 /* ---------- narrow ---------- */
 
 /* the contents links are tap targets on a phone: a 44px row each, the type unchanged */
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .mo-book .gx-toc a,
   .mo-book .ptd-toc a {
     min-height: 44px;

@@ -287,9 +287,11 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
   will-change: transform, opacity;
 }
 
-/* at or below 900px the sidebar leaves the grid; .sb-open marks the shell
-   while the list floats as the overlay Sidebar.css draws (.pt-sb.is-overlay) */
-@media (max-width: 900px) {
+/* at or below 900px, and on a phone on its side (every 900px rule of the
+   shell carries the same second query, which ViewerShell.tsx isNarrow
+   reads), the sidebar leaves the grid; .sb-open marks the shell while the
+   list floats as the overlay Sidebar.css draws (.pt-sb.is-overlay) */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-viewer {
     grid-template-columns: 0 minmax(0, 1fr);
   }
