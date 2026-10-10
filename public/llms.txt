@@ -70,7 +70,7 @@ The handbook holds what spans the skills. Each document is also in the repositor
 - [Brand](https://prototemplate.vercel.app/docs/brand): the identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and the context for partners.
 - [Design system](https://prototemplate.vercel.app/docs/design): the four-color system, the line law, rails and seams, the doubled line, iso, the 1-bit language, moving type, motion discipline.
 - [Architecture](https://prototemplate.vercel.app/docs/architecture): the code map: the direction registry, the toolchain single source of truth and fork rescoping, the componentized instruments, the mirror.
-- [Ship loop](https://prototemplate.vercel.app/docs/ship-loop): the verify-and-ship procedure every round runs: the line audit, the practices ratchet, types, filming, the backup branch, the mirror build.
+- [Ship loop](https://prototemplate.vercel.app/docs/ship-loop): the verify-and-ship procedure every round runs: the line audit, the page check, the ratchets, types, captures, the backup branch and the gated push to main.
 - [Libraries](https://prototemplate.vercel.app/docs/libraries): the index of the componentized instruments; the living version, with plates running, is the build log under the readme.
 - [Graphics pipeline](https://prototemplate.vercel.app/docs/graphics): how the blog illustrations are made with the toolchain in graphics/, from captures to the hand-off to a post.
 - [Agent guide](https://prototemplate.vercel.app/docs/agents): the entry point for an agent (AGENTS.md): the read order, the principles in brief, which skill to load for a task, the house rules, and how to use the hub in another project.

@@ -422,7 +422,7 @@ const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])
     ['4-types', '4. Types'],
     ['5-film-it', '5. Film it'],
     ['6-commit-and-back-up', '6. Commit and back up'],
-    ['7-the-mirror', '7. The mirror'],
+    ['7-push-to-main', '7. Push to main'],
   ],
 };
 
@@ -496,6 +496,7 @@ const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [string, str
     ['7-cli-and-agent-entry-points', '7. CLI and agent entry points'],
     ['8-repositories', '8. Repositories'],
     ['9-site-behaviour', '9. Site behaviour'],
+    ['10-public-surfaces', '10. Public surfaces'],
     ['sources', 'Sources'],
   ],
   glossary: [
