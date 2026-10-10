@@ -14,15 +14,16 @@ description: >-
 metadata:
   title: Running agent fleets and long autonomous runs
   areas: workflow
-  updated: 2026-10-07
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Running agent fleets and long autonomous runs
 
 Kevin Liu runs much of his General Translation (GT) work through many agents at once: Workflow lanes inside one session, task chips spun off for later, and long runs that go for hours while he is away. This skill gives the procedure for that work: how to split it, how to brief each agent, how to judge what comes back, and how to keep it going through usage limits, restarts and changes of owner. Peer sessions that Kevin opens himself follow `docs/handbook/multi-session-playbook.md`, git lanes and worktrees follow `gt-ship` section 1, and proof of done follows `gt-verify`.
 
-Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name gt-cloud (`$GT_CLOUD`). `docs/handbook/glossary.md` defines lane, chip and handoff. `references/briefs.md` holds the brief template, a worked gt-cloud chip, the lane prompt and the round files. `references/workflow-shapes.md` holds the phase shapes gt-cloud workflows used from August to October 2026, their schemas, a review skeleton and the resume recipe. `references/handoffs.md` holds the handoff, the hard stop record and the resume report. `references/campaigns.md` holds the campaign proposal, the stop question and the heartbeat prompt.
+Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name gt-cloud (`$GT_CLOUD`). `docs/handbook/glossary.md` defines lane, chip and handoff. The references hold the detail: `briefs.md` (brief template, worked chip, lane prompt, round files), `workflow-shapes.md` (phase shapes, schemas, a review skeleton, resume) with `examples/` (four reduced scripts), `convergence.md` (the critic loop), `handoffs.md` (handoff, resume file, hard stop, resume report), `campaigns.md` (proposal, uncapped project, stop question, heartbeat), `harness-traps.md` (reboots, pattern kills, hanging commands, the guard line) and `sources.md` (the date of every rule). `scripts/replay-edits.py` rebuilds lost files from transcripts.
 
 ## 1. Fan out or stay linear
 
@@ -65,28 +66,20 @@ A brief stands alone, because its receiver has none of the conversation. The rul
 
 ## 4. Critic-scored convergence
 
-Quality work converges through a separate harsh critic that scores the work against a named reference.
+Quality work converges through a separate harsh critic that scores the work against a named reference. `references/convergence.md` holds the loop with its examples and numbers.
 
-1. **Name the exemplar and the bar in the brief.** `gt-aesthetic` section 1 names the reference for each surface: the brand deck for product surfaces, the shipped generaltranslation.com for the site (the Dossier until 2026-10-07), and the Blue Marble for dithered pictures. In July 2026 the references were live sites. Kevin, 2026-07-30: "remember the bar is generaltranslation.com and resend.com. literally rereview and continuously score yourself until it look sright". For a set, the bar is the best item Kevin has accepted.
-2. **Capture both at the same geometry.** The work and the reference share the viewport, theme, camera and crop, side by side. Reset to the same viewport or camera presets after every edit, so before and after stay comparable.
-3. **A fresh critic scores blind.** The critic did not build the work, is told to be harsh, and is not told which image is the work. It writes concrete mismatch notes before it scores, cites what the reference does that the work does not, keeps the lower score when unsure, and judges the worst item as harshly as the best.
-4. **Refiners fix only the named gaps.**
-5. **Repeat until the bar holds everywhere.** Prefer a number per view and per dimension, and state it in the brief. The July GT diagram rounds used 8.5 of 10 from the rubric in `docs/research/DESIGN_STANDARD.md` section 8, and `gt-explorations` section 6 holds that rubric and its composites for design rounds. Kevin's own long loops used 8.5 of 10 per dimension, 90 of 100 overall and in every view, and "until 100" for research loops (July to September 2026).
-6. **Close the ways to game the score.**
-   - The bar ends the loop. A cap on rounds is a budget stop, and the report lists the gaps still open.
-   - One strong view or component never averages away a weak one.
-   - The builder never scores its own work. A lane's "pass" counts only with its captures.
-   - The reference is checked first: it renders, it is the right variant, and it is complete. A rubric's anchor composites live in the repository (`docs/composites/`), because a scratchpad path disappears.
-   - Work from the worst item upward, so showcase items cannot hide failures, and run the whole set. A sample proves nothing about the items it skipped.
-   - When a shared base changes, rerun every item built on it.
-   - Kevin's note outranks a critic's pass. An item he called wrong stays open until he says otherwise (`gt-films` section 9).
-7. **Change the method when scores stop rising.** Measure the references and rebuild from the measurements. `gt-films` holds the same rule for films: when a move fails twice, change the idea.
-8. **Say which kind of check passed.** A structural audit (loads, hierarchy, dimensions) read 91 of 91 while 0 of 72 items passed a visual bar of 90 in every view (2026-07-30). Report each kind of check on its own line, and call a structural pass structural (`gt-verify`).
+1. **Name the exemplar and the bar in the brief.** `gt-aesthetic` section 1 names the reference for each surface. For a set, the bar is the best item Kevin has accepted.
+2. **Capture both at the same geometry**: viewport, theme, camera and crop, side by side, reset to the same presets after every edit.
+3. **A fresh critic scores blind.** It did not build the work, is told to be harsh, writes concrete mismatch notes before it scores, keeps the lower score when unsure, and judges the worst item as harshly as the best.
+4. **Refiners fix only the named gaps, and the loop repeats until the bar holds everywhere**, stated as a number per view and per dimension (8.5 of 10 per dimension, 90 of 100 overall and in every view; `gt-explorations` section 6 holds the design rubric).
+5. **No gaming.** The bar ends the loop, and a cap on rounds is a budget stop whose report lists the open gaps. One strong view never averages away a weak one. The builder never scores its own work, and a lane's pass counts only with its captures. The reference is checked first, and its composites live in the repository (`docs/composites/`). Work from the worst item upward over the whole set, rerun every item when a shared base changes, and keep an item Kevin called wrong open until he says otherwise.
+6. **Change the method when scores stop rising**: measure the references and rebuild from the measurements.
+7. **Say which kind of check passed.** Report each kind on its own line and call a structural pass structural (`gt-verify`): on 2026-07-30 a structural audit read 91 of 91 while 0 of 72 items passed the visual bar.
 
 ## 5. Long autonomous runs
 
-- **Write the orchestration prompt first.** Kevin opened the first GT site redesign round with: "your goal here is just to set up the prompt that will go for hours building this and spinning up subagents that evaluate" (2026-07-28). The prompt is saved as a file the run reads back.
-- **Research first.** Read Kevin's wiki and X bookmarks for lessons and examples (2026-07-28: "read through our entire wiki and x bookmarks to learn lessons about design"), then online best practice and tools. Picture the end state, draw the system diagram, build it fully, and loop until every objective is verified. Kevin, 2026-08-01: "scope out and imagine the end state ... and then build that out fully".
+- **Write the orchestration prompt first**, as Kevin asked for the first GT site redesign round (2026-07-28), and save it as a file the run reads back.
+- **Research first.** Read Kevin's wiki and X bookmarks for lessons and examples (2026-07-28), then online best practice and tools. Picture the end state, draw the system diagram, build it fully, and loop until every objective is verified (2026-08-01).
 - **Cheapest, most wanted phase first.** On 2026-07-29 a run of about 45 agents put its blind judge first, because the previous run had died on usage credits before its judge ran. If the budget runs out mid-run, the result Kevin is waiting for already exists.
 - **Judge after the builders land.** While builders still rewrite the work, a verdict goes stale within the hour. Stage the judge to start when the build lanes commit.
 - **Evaluators are fresh and own one lens each.** An evaluator has no memory of the build and checks the build's claims itself, with its own drive test or measurement. Lenses that worked: visuals, the whole set judged item by item, interaction and dead affordances, measured performance at device scale factors 1 and 2, code architecture, and completeness against everything Kevin asked for in the session.
@@ -101,39 +94,33 @@ Quality work converges through a separate harsh critic that scores the work agai
 - **When agents die.** Usage limits, outages and app quits stop agents mid-edit.
   1. Check the tree: `git status --short`, the type check or build of each touched package, and a sweep for conflict markers and half-written files.
   2. Read what each dead agent left: its partial report, its diff and its notes. On 2026-07-29 three lanes died on one session limit, and one had already written a complete diagnosis.
-  3. Resume each agent with its original brief and a line on what it already did. A Workflow run resumes with `Workflow({ scriptPath, resumeFromRunId })`, which returns cached results for the unchanged prefix of agent calls.
+  3. Resume each agent with its original brief and a line on what it already did. A Workflow run resumes with `Workflow({ scriptPath, resumeFromRunId })` and byte-identical `args`, which returns cached results for the unchanged prefix of agent calls. New information goes only into the prompt of one unfinished agent.
   4. Fold in every order Kevin gave while the agents were down.
   5. Report what resumed, what was already done and what is left (`references/handoffs.md`).
-- **State lives on disk.** Plans, lane specs, round files and outputs live in files, so a bare "continue" after a restart or a compaction needs no new brief. On Kevin's desktop app the session scratchpad and the dev servers have died at the date change (memory blog-graphics-pipeline-traps). A spec that must outlive the day goes into the repository or a memory note, as the 2026-09-28 sign-in spec did (memory signin-field-transition).
+- **State lives on disk.** Plans, lane specs, round files and outputs live in files, so a bare "continue" after a restart or a compaction needs no new brief. On Kevin's desktop app the session scratchpad and the dev servers have died at the date change (memory blog-graphics-pipeline-traps), and a reboot empties the scratchpad and stops every process (2026-10-07; `references/harness-traps.md` lists what survives). A spec that must outlive the day goes into the repository or a memory note, as the 2026-09-28 sign-in spec did (memory signin-field-transition).
+- **The guard line.** Every workflow agent prompt carries the guard text in `references/harness-traps.md`: Kevin's messages go to the orchestrating session, and the agent keeps working. On 2026-10-09 a "status report" message reached running agents, and the workflow ended early with reports in place of work.
+- **When Kevin leaves mid-run**, write a resume file at a durable path (`RESUME.md`) with each run id, worktree, port and decision, and a one-line memory note pointing to it (`references/handoffs.md`).
+- **Lost files.** A file lost with a scratchpad or an overwritten uncommitted route is rebuilt from the Write and Edit calls in the transcripts: `python3 scripts/replay-edits.py <transcript.jsonl> --match <path part> --out <dir>` (`--list` first; `--revert` rebuilds the state before an agent's edits). It prints counts only and writes only under `--out`.
 - **Remote compute.** Long jobs on shared or remote machines run inside `tmux` with checkpoints, because a cluster shutdown loses unsaved work.
 
 ## 7. Paid model campaigns and heartbeats
 
-- **The proposal.** Before a run that pays for model calls, propose the grid, a per-run cap and a total cap on estimated spend, a fixed trial count and a no-retry rule, with the recommended option first. The proposal says that the cap can stop the study early, and nothing runs until Kevin approves it. Kevin, 2026-10-05: "Run the 96-run comparison, capped at $25".
-- **Pilot, then bulk.** A small pilot runs first and is verified (archives, traces, grades and costs) before the approved remainder launches, once.
-- **Stops.** A stop is diagnosed read-only. The continuation runs as a new, separately labelled campaign that keeps every prior record and cost reservation inside the original allowance, after Kevin approves it.
-- **One worker under a lock.** One worker owns a long collection and holds its lock file. Nothing starts a second collector.
-- **Infrastructure failures are defects.** A timeout or a dropped connection gets fixed, and the campaign continues. Kevin, 2026-10-05: "why do we have timeout failrues, fix this and continnue until its done".
+`references/campaigns.md` holds the proposal, the stop question and the heartbeat prompt.
+
+- **The proposal.** Before a run that pays for model calls, propose the grid, a per-run cap and a total cap on estimated spend, a fixed trial count and a no-retry rule, with the recommended option first, and say that the cap can stop the study early. Nothing runs until Kevin approves it. Kevin, 2026-10-05: "Run the 96-run comparison, capped at $25".
+- **Pilot, then bulk.** A verified pilot runs first. The approved remainder launches once, under one worker that holds the run's lock file, and nothing starts a second collector.
+- **Stops.** A stop is diagnosed read-only. The continuation is a new, separately labelled campaign that keeps every prior record and cost reservation inside the original allowance, after Kevin approves it.
+- **Infrastructure failures are defects.** A timeout or a dropped connection gets fixed, and the campaign continues (2026-10-05).
 - **Small samples never name a winner.** A campaign of single attempts reports its limits and makes no ranking claim.
-- **Hosted runs cost money too.** The whole check matrix runs locally, and hosted runs are narrowed to what only a deployment can show. On 2026-09-15 Kevin asked for git preview deployments of the landing to be turned off because they were "running up a lot of costs" (`gt-website`).
-- **Heartbeats.** A heartbeat (a Codex automation, a `/loop` or a scheduled task) checks a long run read-only: process ownership, the manifest and the summary. It stays quiet when nothing changed. It never starts a duplicate, retries a cell or relaxes a limit. It speaks on completion, on failure, or when Kevin must decide, and at the terminal boundary it runs the verifier. `references/campaigns.md` has the prompt.
+- **A project without a cap.** A project may lift its API spend caps on Kevin's explicit order, for that project alone. It keeps a high cap as a runaway-loop stop and still logs and reports every dollar (2026-10-08; `references/campaigns.md`).
+- **Hosted runs cost money too.** The whole check matrix runs locally, and hosted runs are narrowed to what only a deployment can show (2026-09-15; `gt-website`).
+- **Heartbeats.** A heartbeat (a Codex automation, a `/loop` or a scheduled task) checks a long run read-only and stays quiet when nothing changed. It never starts a duplicate, retries a cell or relaxes a limit. It speaks on completion, on failure, or when Kevin must decide, and at the terminal boundary it runs the verifier.
 
 ## 8. Handoffs
 
-A handoff records an unfinished state for the next owner and makes no completion claim. When an earlier headline pass missed Kevin's standard, the handoff says so first. It holds:
+A handoff records an unfinished state for the next owner and makes no completion claim. When an earlier headline pass missed Kevin's standard, the handoff says so first. It holds the stopped state and the baseline commit (the fetched `origin/main` SHA), how to start from fresh main, every raw input Kevin supplied with a durable path, the asset and code map with the generated outputs and their commands, ownership rules, constraints with their reasons, the verification already done, environment gotchas, the numbered priority queue, the line that a push is not deployment proof with the check that proves a deploy, and the authority it grants, which is never a new push, merge or comment authority (the wiki `handoff` template; 2026-08-11). `references/handoffs.md` has the template, the resume file and the hard stop record.
 
-- the stopped state and the baseline commit (the fetched `origin/main` SHA, to be fetched again before integration);
-- how to start from fresh main: a fresh worktree from `origin/main` for gt-cloud (`gt-ship` section 1), or `git status`, `git switch main`, `git fetch`, `git pull --ff-only` after preserving the owner's dirty changes in a repository worked on main;
-- every raw input Kevin supplied: URLs, dropped files copied to a durable path, and recovered drops. Kevin, 2026-07-29: "include all of the urls esp user drops recovered and to implement everything in there.";
-- the asset and code map, with the generated outputs that are never edited by hand and the command that regenerates each;
-- ownership rules: which checkouts and files belong to other sessions, and any shared checkout that is unsafe to work in;
-- constraints with their reasons, and the verification already done with its date, marked not to be redone;
-- environment gotchas (ports, servers that were not running at the handoff check, shell traps);
-- the priority queue and the open threads, numbered;
-- the line that a push is not deployment proof, with the check that proves a deploy (`gt-ship` section 8 for Prototemplate, `gt-verify` for production);
-- the authority it grants. A handoff grants no new push, merge or comment authority (the wiki `handoff` template; 2026-08-11).
-
-The receiver's first reply follows the Output block of the wiki `handoff` template. The 2026-08-11 gt-cloud stack handoff put it as "Start with independent review findings and a recommendation." A compact state matrix follows (branch or PR, clean or dirty, ancestry, CI, remaining proof, risk). The receiver re-checks live repository, PR and CI state before changing anything, and it never discards, resets or stashes existing work. Work that runs over days keeps its state in committed repository files, where any session can read it. `references/handoffs.md` has the template and the hard stop record.
+The receiver's first reply opens with independent review findings and a recommendation ("Start with independent review findings and a recommendation.", 2026-08-11), then a compact state matrix. It re-checks live repository, PR and CI state before changing anything, and it never discards, resets or stashes existing work. Work that runs over days keeps its state in committed repository files.
 
 ## 9. Closing a round
 
@@ -163,10 +150,4 @@ Prototemplate: `gt-ship` (lanes, worktrees, commits and landing), `gt-verify` (k
 
 ## Sources
 
-- Prototemplate: `docs/research/DESIGN_STANDARD.md` section 8; `skills/gt-ship/SKILL.md` sections 1, 2, 3 and 8; `skills/gt-aesthetic/SKILL.md` section 1 and "Rules of the loop"; `skills/gt-films/SKILL.md` (the judge and section 9); `skills/prototemplate/SKILL.md` section 10; all read 2026-10-05.
-- gt-cloud Workflow scripts from Claude Code sessions, read 2026-10-05: `gt-color-template-sweep` (2026-08-06), `review-pr-4887-inter-only` (2026-09-19), `signin-field-design` and `signin-field-build` (2026-09-29), `managed-org-atomic` (2026-10-02), `verify-5091-alias` (2026-10-03), and the round files `CONTEXT.md` to `CONTEXT9.md` (2026-09-28 to 2026-09-30).
-- Handoffs Kevin pasted to agents: the gt-cloud landing and dashboard stack (2026-08-11, written to the wiki `handoff` template), and three from personal projects whose method only is kept (2026-07-30, 2026-09-11, 2026-10-02). Two task chips: the gt-landing skill refresh (2026-09-15) and the flaky Temporal test (2026-10-02).
-- Claude memory (gt-cloud project): workflow-lane-relay-trap.md, redesign-v0-verdict.md, turboslide-ship-two-lessons.md, turboslide-pipeline-cost-rules.md, scratch-worktree-disk.md, session-lanes-prototemplate.md, blog-graphics-pipeline-traps.md, signin-field-transition.md.
-- Kevin's wiki (github.com/Kevin-Liu-01/Kevin-Wiki): skills/productivity/handoff, skills/productivity/loopy, skills/productivity/agent-iteration-loop, skills/engineering/improve. The harness's `workflow-authoring` skill (resume, dead agents, worktree isolation).
-- The 2026-10-05 mining round's synthesis of Kevin's messages from 2026-07-20 to 2026-10-05: A1, A9, B1 to B7, C5 and H7.
-- Kevin's directives: full specs from the strongest model (2026-07-21); all waves (2026-07-24); the hours-long prompt and research first (2026-07-28); handoff inputs (2026-07-29); the named bar (2026-07-30); the end state (2026-08-01); no new spawns (2026-08-06); all updates (2026-09-09); git preview costs (2026-09-15); fast and linear (2026-09-21); Do this task here (2026-10-02); the capped campaign, timeouts and codifying prompts (2026-10-05).
+`references/sources.md` lists the Prototemplate files, the gt-cloud workflow scripts, the handoffs, the memory notes and Kevin's dated directives behind each section, and the provenance of the 2026-10-10 additions.

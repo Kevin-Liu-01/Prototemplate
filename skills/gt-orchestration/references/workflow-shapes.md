@@ -14,6 +14,12 @@ Detail for sections 1, 2 and 5 of `gt-orchestration`. The shapes below are the p
 | Sweep | Sweep, Audit or Sweep, Verify | one mechanical change over many files, one agent per file group, then an adversarial re-read | `gt-color-template-sweep` (2026-08-06), `localize-and-comment-sweep` (2026-08-08) |
 | Parity | Record, Synthesize, Fix, Verify | a redesign that must keep every tracking call and side effect of production | `onboarding-parity` (2026-10-02) |
 | PR sweep | Update, Verify, Repair | every open PR brought up to date with its base, threads answered, obsolete ones flagged | `pr-sweep` (2026-10-02) |
+| Write | Research, Write, Critique, Revise | a spec or document that a build or a reader depends on: parallel readers, one writer, one hard critic, a revision that records each rejected change with its reason | `seo-pages-research-spec` (2026-10-09), `docs-part2-rewrite-kevin-voice` (2026-09-09) |
+| Probe | Probe, Verify | a hunt across the real input space of a running server: one hunter per input class, an INTENDED list, one skeptic per finding | `routing-adversarial-probe` (2026-08-20) |
+| Investigate | Investigate, Verify, Synthesize | a performance or behaviour question: one read-only agent per dimension proves the mechanism with file and line, two skeptics per dimension (regression, claimed savings), then an ordered plan with PR grouping | `docs-perf-deep-dive` (2026-09-14) |
+| Research | Research, Verify, Critique, Gap research, Synthesize | facts a build will rest on: one researcher per dimension, an adversarial fact check per note, a completeness critic, a bounded gap round | a research workflow (2026-10-05); the `/world` fact and license checks (2026-10-02 to 2026-10-05) |
+| Package | Package, Check | finished work cut into stacked PR branches from `origin/main`, each gated in a clean checkout, with PR bodies and crops, then an independent check; no push | the `/world` packaging runs (2026-10-03 to 2026-10-05) |
+| Gauntlet | Build consumers, Matrix, Hostile inputs, Verify | a library PR proven on real consumer apps: the same request matrix on the PR head and on main, diffed, then hostile and customer-shaped inputs, each finding re-checked by skeptics | a `gt-next` middleware stack review (2026-09-09 to 2026-09-10) |
 
 Run one shape per workflow and read its result before choosing the next. The 2026-09-29 sign-in round ran Design, then Build with its own Review, and each later note from Kevin opened a smaller Build.
 
@@ -52,6 +58,23 @@ Each finding goes to three refuters with distinct lenses:
 - **necessity**: would the fix change behaviour, bytes or a reader's understanding, and would it break a repository lint rule.
 
 Each refuter defaults to refuted when it cannot substantiate the finding, and names a corrected fix when the finding stands but the proposed fix is wrong. A finding stands on at least two of three. The synthesis ranks confirmed findings with file, line and an exact fix, lists what was checked and found clean, states what blocks the merge and what can follow, and receives the refuted findings for context only.
+
+## Probe: the INTENDED list
+
+A hunter that does not know the designed behaviour reports it as a defect, and the skeptics then spend their runs refuting noise. Every Probe prompt and every skeptic prompt carries one INTENDED block in two parts:
+
+- **Known and intended.** One line per designed behaviour, with an example input and its result, and every known issue already reported and waiting on a decision, marked "do not report again".
+- **What is a real finding.** The defect that started the hunt, named as its archetype, and its neighbours: a result unrelated to the input, a crossing of a boundary the design keeps, a chain or a loop, a dead target, an inconsistency between locales or modes, any crash.
+
+The same block also tells each hunter how to observe one input without changing anything, to enumerate real inputs from the source of truth, and to stay inside a budget of inputs. A skeptic refutes a claim that is intended, does not reproduce, is a reasonable answer, or is harmless and implausible, and defaults to refuted when unsure. Review workflows take the same block for their known and already-handled findings. `examples/probe.js` holds the shape.
+
+## Research: fact and license checks before a build
+
+Facts a page or a pipeline will show (numbers, dates, prices, licenses, model behaviour) are checked before the build that uses them. Each research note gets a checker whose job is to break its most important claims against primary sources. Each claim returns `confirmed`, `corrected`, `refuted` or `unverifiable` with evidence links, and the checker appends a verification log to the note. Pictures and other assets get a license, subject and neutrality check per item before they are downloaded into the build. A completeness critic then names the gaps, a capped number of gap dimensions runs through the same check, and the synthesis trusts corrected values over the original claims. `examples/research.js` holds the shape.
+
+## Package: stacked PRs from clean checkouts
+
+A finished feature is cut into a stack (for example dataset, data layer, page) from a fresh `origin/main`. Each branch is gated in a clean checkout of that branch, because the packaging runs of 2026-10-03 to 2026-10-05 caught CI failures that the working tree's gates passed: the repository-wide formatter, and a generator that ran only with packages the first branch did not install. Each branch gets its PR body, crops and size breakdown, and an independent agent checks the packaging. The workflow never pushes; the lead pushes after Kevin's word (`gt-ship`).
 
 ## Prove: mutation testing
 
@@ -120,6 +143,17 @@ log(`${confirmed.length} confirmed, ${refuted.length} refuted`)
 const report = await agent(`${CTX}\nConfirmed:\n${JSON.stringify(confirmed)}\nRefuted, for context only:\n${JSON.stringify(refuted.map((f) => f.title))}\nRank the confirmed findings with exact fixes, list what was found clean, and say what blocks the merge.`, { label: 'synthesize', phase: 'Synthesize' })
 return { confirmed, refuted: refuted.map((f) => f.title), report }
 ```
+
+## Examples
+
+`examples/` holds four runnable shapes reduced from real workflows: the structure, the schemas and the control flow are kept, and every prompt is a one-line stub with no repository paths or product context. Fill the stubs and pass the paths through `args`.
+
+| File | Shape | From |
+| --- | --- | --- |
+| `examples/probe.js` | Probe with an INTENDED list and one skeptic per finding | a gt-cloud routing hunt (2026-08-20) |
+| `examples/write.js` | Write: readers, a writer, a critic, a revision | a gt-cloud research and spec workflow (2026-10-09) |
+| `examples/critic-loop.js` | Build on disjoint files, then a fresh critic per round until the bar holds | a redesign build round (2026-07-30) |
+| `examples/research.js` | Research with an adversarial fact check, a completeness critic and a gap round | a research workflow (2026-10-05) |
 
 ## Dead agents and resume
 
