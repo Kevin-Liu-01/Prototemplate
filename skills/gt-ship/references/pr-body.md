@@ -67,6 +67,9 @@ costs and changes nothing else.
   help ("464 by 44 controls, the same column as the steps"). Add a one-line
   note under a caption when something in the after shot is out of the PR's
   scope (a control that keeps its Lucide icon in an icon PR).
+- **Many states at once** (a review of every sign-in state, a run of
+  viewports) go on one contact sheet:
+  `python3 $PROTOTEMPLATE/skills/gt-ship/scripts/contact-sheet.py <out.png> 3 480 "label=file.png" ...`.
 - **Capture tool.** `playwright-core` driven from a script, at
   `deviceScaleFactor` 2 for anything with 1 px lines. The in-app browser
   pane pauses requestAnimationFrame, so shader and dither canvases come out
@@ -92,8 +95,17 @@ images posts an instant failed landing build ("Root Directory apps/landing
 does not exist"). That failure is expected. One shared `pr-assets` branch
 keeps it to one branch name.
 
-Add files without touching the worktree's index or checkout. A private index
-file holds the new tree:
+Add files without touching the worktree's index or checkout.
+`scripts/pr-assets.sh` runs these steps and prints the links:
+
+```sh
+sh $PROTOTEMPLATE/skills/gt-ship/scripts/pr-assets.sh --repo generaltranslation/gt-cloud --pr 5200 <scratch>/shots/*.png
+sh $PROTOTEMPLATE/skills/gt-ship/scripts/pr-assets.sh --repo generaltranslation/gt-cloud --pr 5200 --sub round3 <files>
+```
+
+It requires `--repo`, refuses a Prototemplate repository (Vercel builds
+every branch pushed there, so an orphan branch fails a build on each push)
+and has `--dry-run`. By hand, a private index file holds the new tree:
 
 ```sh
 N=5200                                   # the PR number
@@ -138,6 +150,17 @@ gh pr view N --json body --jq .body > <scratch>/body-N.md
 gh pr edit N --body-file <scratch>/body-N.md
 ```
 
+When the section has its own markers, `scripts/patch-body.py` replaces only
+the text between them (or puts the marked block above `## Verification` or
+the first bot block when the body has none) and writes the body back:
+
+```sh
+python3 $PROTOTEMPLATE/skills/gt-ship/scripts/patch-body.py --repo generaltranslation/gt-cloud --pr N --section <scratch>/shots.md --dry-run
+```
+
+Drop `--dry-run` to write it. `--name parity` targets
+`<!-- parity-begin -->` and `<!-- parity-end -->` instead.
+
 Never pass a body through `--body "<text>"` built in the shell, and never
 write it from a heredoc on the same `&&` chain as a commit message: zsh feeds
 heredocs in operator order and once put a script into a pushed commit
@@ -158,3 +181,4 @@ if the Cursor block names an old commit, comment `bugbot run`.
   pr-stacks-2026-10.md, landing-deploy-failures.md, zsh-shell-traps.md.
 - Kevin, 2026-09-25 (screenshots the whole time); Kevin, 2026-09-28 (the
   readable PR page).
+- The three scripts (added 2026-10-10): `references/sources.md`.

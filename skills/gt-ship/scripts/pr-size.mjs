@@ -15,6 +15,9 @@
 // the test lines added per product line, and a note for each group a reviewer
 // will ask about. Exit code 0 whatever the numbers say, since they are for
 // the author to read; 2 when the base has no merge base with the head.
+//
+// Requires: Node 20 or later and git.
+// Last real run: none (kept for: every PR loop; Kevin reads a PR's size first).
 import { execFileSync } from 'node:child_process';
 
 const args = process.argv.slice(2);

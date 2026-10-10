@@ -13,8 +13,9 @@ description: >-
 metadata:
   title: Branches, PRs and landing
   areas: workflow, lints
-  updated: 2026-10-06
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Branches, PRs and landing
@@ -33,11 +34,16 @@ body and its screenshots are detailed in
 [references/pr-body.md](references/pr-body.md); the bots, the checks and
 Linear in [references/review-loop.md](references/review-loop.md); the work
 around a PR (approval, grouping, release hygiene, closing, teammates,
-upstream, cleanup) in [references/beyond-the-pr.md](references/beyond-the-pr.md). Two
-read-only scripts sit in `scripts/`: `pr-size.mjs` groups a branch's diff,
-and `pr-bots.mjs` reads a PR's review state. The commands below call them
-at `$PROTOTEMPLATE/skills/gt-ship/scripts/`; an installed copy of this
-skill carries the same files in its own `scripts/` folder.
+upstream, cleanup) in [references/beyond-the-pr.md](references/beyond-the-pr.md), and
+Prototemplate's landing and deploys in
+[references/prototemplate.md](references/prototemplate.md). `scripts/`
+holds two read-only scripts, `pr-size.mjs` (a branch's diff by kind) and
+`pr-bots.mjs` (a PR's review state), and three for the PR body:
+`pr-assets.sh` (uploads screenshots), `patch-body.py` (replaces the
+marked screenshots section) and `contact-sheet.py` (many states on one
+image). The commands below call them at
+`$PROTOTEMPLATE/skills/gt-ship/scripts/`; an installed copy of this skill
+carries the same files in its own `scripts/` folder.
 
 ## 1. Lanes and worktrees
 
@@ -172,6 +178,10 @@ there dashboard css additions in 5063? and why is it so many lines?"
   pretty-printed recorded JSON. A review gallery Kevin asks for lives
   outside the PR: the sign-in and onboarding states run in Prototemplate at
   `/d/production/signin?state=<id>`.
+- **Always simplify.** "Beautiful but don't complicate. Always simplify."
+  (Kevin, 2026-10-06, #5191). Prefer the platform feature that removes code,
+  keep bodies short, and remove machinery a reviewer asks to test instead
+  of testing it (`gt-aesthetic` holds the principle).
 - **Comments say why, in one or two lines.** Comments were 20% of #5063's
   added product lines.
 - **Each behaviour is tested once.** #5063 ran 1.2 test lines per product
@@ -208,7 +218,12 @@ Full rules, an example and the upload commands are in
   branch, in a `| Before (main) | After (this branch) |` table with one bold
   caption line. Both themes where the change has a theme.
 - Images go on gt-cloud's `pr-assets` orphan branch under
-  `screenshots/pr-<n>/` and are linked with `blob/pr-assets/...?raw=true`.
+  `screenshots/pr-<n>/` and are linked with `blob/pr-assets/...?raw=true`:
+  `sh scripts/pr-assets.sh --repo generaltranslation/gt-cloud --pr <n> <files>`
+  uploads them without touching the worktree and prints the links, and
+  `python3 scripts/patch-body.py --repo generaltranslation/gt-cloud --pr <n>
+  --section <file>` swaps the section between `<!-- screenshots-begin -->`
+  and `<!-- screenshots-end -->` and keeps the rest byte for byte.
 - The Devin, Cursor and Greptile blocks inside the body stay byte for byte.
   Rewrite only the part above the first bot marker
   (`<!-- devin-review-badge-begin -->`, `<!-- CURSOR_SUMMARY -->` or
@@ -285,24 +300,12 @@ Stack PRs that share files, so the same conflicts are resolved once: the
   needs no restack between merges. `gh stack merge` asks for confirmation
   only in an interactive terminal; from an agent's shell it merges at once,
   so run it only when Kevin says to merge (section 5).
-- **Building a chain by hand.** One worktree for the whole stack. For each
-  PR, bottom first: list its own commits (`git log --oneline <old base>..<branch>`),
-  move them with `git rebase --onto <branch below> <old base point> <branch>`,
-  or merge the branch below when the branch holds someone else's commits.
-  On a conflict, keep everything the lower PR has and re-apply the upper
-  PR's intent; record each conflict in the commit or merge message. Then
-  check `git range-diff <old base>..<old head> <new base>..<new head>` and
-  that `gh pr diff <n> --name-only` lists only the PR's own files. Push with
-  a lease and set the base with `gh pr edit <n> --base <branch below>`.
-- **After a squash merge of the bottom** (manual chains). GitHub deletes the
-  merged branch and retargets the next PR to main, but that branch still
-  holds the old bottom commits and its diff shows them again. Run
-  `git rebase --onto origin/main <old bottom head> <branch>` and push with a
-  lease. Where a branch has others' commits, merge `origin/main` into it
-  instead (conflicts land in files the stack changed; keep the branch's
-  version when it is the base's final tree plus additions), then merge it
-  down the rest of the stack in order. When main brought a lockfile change,
-  run `pnpm install` and build the dependencies before type checking.
+- **Manual chains** (no native stack): one worktree for the whole stack,
+  `git rebase --onto` per PR bottom first, conflicts resolved toward the
+  lower PR and recorded, `git range-diff` and `gh pr diff --name-only`
+  checked, then a lease push and `gh pr edit --base`. After a squash merge
+  of the bottom, rebase the next branch onto `origin/main` past the old
+  bottom head. The full recipe is in [references/stacks.md](references/stacks.md).
 - **Body edits race Bugbot.** An edit right after a force push can restore
   Bugbot's stale summary; read the body again and comment `bugbot run`.
 
@@ -334,85 +337,31 @@ onboarding or auth redesign.
 
 ## 8. Prototemplate
 
-- **The repository.** github.com/Kevin-Liu-01/Prototemplate, public. One
-  working tree at `$PROTOTEMPLATE` is shared by several sessions. The dev
-  server runs at http://localhost:3005 (launch config `prototemplate-dev`)
-  with hot reload; reuse it and never stop it.
-- **Explorations stay local until Kevin says to land them.** "wait what
-  they're on main? they shouldn't be pushed, I should be reviewing them
-  locally" (Kevin, 2026-09-14). Main deploys www.prototemplate.com, the
-  reference that basement.studio, the agency building GT's visual
-  identity, sees. Landing is his call per round.
-  When he says to land, push the committed HEAD he reviewed; the working
-  tree holds other sessions' edits, so never commit it blind. Never rewrite
-  shared main history to undo a mistake without Kevin.
-- **Before committing:** `git fetch origin main` and
-  `git log --oneline HEAD..origin/main`. Other sessions push main from
-  their own worktrees; bring their commits in first. Sweep for conflict
-  markers and stop on any hit:
-  `grep -rln '^<<<<<<< ' src docs deck scripts skills`. Kevin's own GitHub
-  Desktop operations left markers in a shared tree mid-round on 2026-08-07.
-- **Gates:** the list in `prototemplate` section 9 (tsc, `pnpm lint:all`,
-  `check:pages` on the touched pages, both themes at 1440 and 390, the
-  build). What each gate checks is in `gt-lints`.
-- **The build gate runs in a scratch worktree.** The dev server owns the
-  shared `.next`, so never build there:
+Commands, incidents and the deploy checks are in
+[references/prototemplate.md](references/prototemplate.md).
 
-  ```sh
-  git -C $PROTOTEMPLATE worktree add --detach <scratch>/proto-build HEAD
-  # copy in the uncommitted files the change needs, path by path
-  cd <scratch>/proto-build
-  pnpm install --frozen-lockfile --prefer-offline
-  pnpm build > <scratch>/proto-build.log 2>&1 && echo BUILD_OK || tail -40 <scratch>/proto-build.log
-  ```
-
-  `pnpm build` runs the picture lint before `next build`. The gate is `&&`:
-  a `;` pushed a broken build to main on 2026-08-07, and
-  `pnpm build | tail` did it again on 2026-08-11, because a pipeline's exit
-  status is the last command's. `next start` can serve a stale `.next`
-  after a rebuild; delete `.next` in the scratch tree before diagnosing.
-  Remove the scratch worktree afterwards. `gt-lints` section 5 holds the
-  same gate hygiene for every gated command.
-- **Commit** with explicit paths (`src/`, `public/`, `docs/`, `deck/`,
-  `scripts/`, `skills/`) and a pathspec. `motion/` is never staged.
-- **Two Vercel projects build every push:** the team project
-  `general-translation/prototemplate` (www.prototemplate.com) and Kevin's
-  personal project (prototemplate.vercel.app), each with a Production
-  deployment for main and a Preview for any other branch. A red "push
-  failed" can come from any of the four. GitHub shows one deployment per
-  commit with one status per project: the team's URL ends in
-  `-general-translation.vercel.app`, the personal one's in
-  `-kl01s-projects.vercel.app`.
-- **After pushing main,** read the deployment statuses and the live asset
-  stamp:
-
-  ```sh
-  sha=$(git rev-parse HEAD)
-  gh api "repos/Kevin-Liu-01/Prototemplate/deployments?sha=$sha" --jq '.[] | "\(.id) \(.environment)"'
-  gh api repos/Kevin-Liu-01/Prototemplate/deployments/<id>/statuses --jq '.[] | "\(.state) \(.environment_url)"'
-  curl -s https://www.prototemplate.com/ | grep -oE 'dpl_[A-Za-z0-9]+' | sort -u
-  vercel inspect <the -general-translation.vercel.app url> --scope general-translation
-  ```
-
-  The chunk URLs on www carry `?dpl=<deployment id>`. The longest id the
-  grep prints must equal the `id` that `vercel inspect` prints for the team
-  deployment of your commit, and that deployment's Aliases list
-  https://www.prototemplate.com. `vercel inspect` has kept running after
-  printing; stop it once the id is out. Check www.prototemplate.com itself:
-  the personal alias belongs to the other project and can serve a
-  different build.
-- **When a build fails:** a blocked build shows as UNKNOWN in `vercel ls`,
-  and `vercel api /v13/deployments/<id> --scope general-translation` gives
-  `readyStateReason` and `errorMessage`. Retry a flaky preview with
-  `vercel redeploy <failed url> --scope general-translation`, which posts
-  fresh statuses. An empty commit is never the retry. Google faces are self
-  hosted under `public/fonts/google` because Turbopack's Google loader
-  failed builds at random (vercel/next.js#99114); a new face goes into the
-  `WANT` table of `scripts/build/fetch-google-faces.py` and loads through
-  `next/font/local`. If a team build reports "Only repositories in
-  github.com/generaltranslation are allowed", the git-source policy that
-  froze the site from 2026-09-01 to mid-September is back; tell Kevin.
+- **The repository** (github.com/Kevin-Liu-01/Prototemplate) is public, and
+  one working tree at `$PROTOTEMPLATE` is shared by several sessions. Reuse
+  the dev server at http://localhost:3005 and never stop it.
+- **Explorations stay local until Kevin says to land them** (Kevin,
+  2026-09-14). Then push the committed HEAD he reviewed; never commit the
+  shared tree blind, and never rewrite shared main history without him.
+- **Before committing,** fetch origin main, bring other sessions' commits
+  in, and stop on any conflict marker:
+  `grep -rln '^<<<<<<< ' src docs deck scripts skills`.
+- **Gates** are the list in `prototemplate` section 9. The build gate runs
+  in a scratch worktree, chained with `&&` and unpiped, never in the shared
+  tree whose `.next` the dev server owns.
+- **Commit** with explicit paths and a pathspec. `motion/` is never staged.
+- **Two Vercel projects build every push** (the GT team project behind
+  www.prototemplate.com and Kevin's personal project). After pushing main,
+  the longest `dpl_` id on www equals the team deployment of your commit.
+- **A failed build** is read with `readyStateReason` and retried with
+  `vercel redeploy`, never with an empty commit.
 - **Never run `vercel --prod` on the team scope** unless Kevin says so.
+- **Which Vercel account.** "My Vercel bill" means Kevin's personal team.
+  The GT team is a shared company account: read it for an FYI and change
+  nothing there unless Kevin names it (2026-09-14).
 
 ## Review checklist
 
@@ -460,38 +409,4 @@ both repositories), `gt-graphics` (capture recipes for PR screenshots),
 
 ## Sources
 
-- gt-cloud at origin/main e17fce499 (2026-10-05):
-  .agents/skills/pr-desc/SKILL.md; .github/workflows/pr-policy.yml,
-  ci.yml and check-planning-files.yml; scripts/check-plan-files.mjs and
-  plan-file-detector.mjs; package.json (`lint`); .github/CODEOWNERS;
-  APPROVAL_POLICY.md.
-- gt-cloud on GitHub, read 2026-10-05: the rulesets "Protect Main",
-  "Require Review (with bypass)", "CI: Require tests to pass" and "Disable
-  Force Pushes"; repository settings (squash merges only with the PR title
-  as subject, branches deleted on merge); the `pr-assets` branch; PRs
-  #4703, #4707, #4815, #5021, #5029, #5054, #5063, #5095 and #5133 (bodies,
-  commit authors, check runs); the `github/gh-stack` v0.2.0 help for `link`
-  and `merge`.
-- Prototemplate: docs/SHIP-LOOP.md (sections 1 to 4 and 7); ARCHITECTURE.md
-  ("The mirror"); package.json (`build`, `lint:all`, `check:pages`);
-  scripts/lint/lines.mjs and scripts/check/pagecheck/pagecheck.mjs (the 3005
-  default); public/fonts/google/README.md; GitHub deployments of
-  Kevin-Liu-01/Prototemplate, `vercel inspect` of the team deployment and
-  www.prototemplate.com, read 2026-10-05.
-- Kevin's wiki (`~/repos/Kevin-Wiki`, live copy `~/repos/Kevin-Wiki-v3`):
-  skills/productivity/agent-iteration-loop/SKILL.md.
-- Claude memory (gt-cloud project): pr-size-discipline.md,
-  pr-bot-review-loop.md, pr-screenshots-and-gallery.md,
-  gt-commit-identity.md, pr-stacks-2026-10.md, onboarding-parity-rule.md,
-  explorations-stay-local.md, prototemplate-deploy-policy.md,
-  ship-loop-hard-gates.md, scratch-worktree-disk.md,
-  session-lanes-prototemplate.md, lost-work-audit-2026-09.md,
-  signin-field-transition.md, prototemplate-plate-port.md,
-  landing-deploy-failures.md, zsh-shell-traps.md, basement-engagement.md.
-- Kevin's directives: commit on approval (2026-08-02); grouping and the
-  feature-flag rule (2026-09-03); the work identity (2026-08-26);
-  explorations stay local (2026-09-14); one approval without the trailer (#4795, 2026-09-11);
-  screenshots in the PR the whole time (2026-09-25); the readable PR page
-  (#5007, 2026-09-28); the size of #5063 (2026-10-01 and 2026-10-02);
-  onboarding parity (2026-10-02); one session per lane (2026-10-03);
-  stacks and the native stack feature (2026-10-05).
+Dated provenance for every rule, script and number in this skill is in [references/sources.md](references/sources.md).
