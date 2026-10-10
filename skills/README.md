@@ -64,19 +64,14 @@ The curated skills of Prototemplate, Kevin Liu's hub for General Translation (GT
 
 | Skill | Title | What it is | Also in |
 | --- | --- | --- | --- |
-| [`gt-diagrams`](gt-diagrams/SKILL.md) | Drawing diagrams | How General Translation diagrams are drawn. |  |
-
-## Isometry
-
-| Skill | Title | What it is | Also in |
-| --- | --- | --- | --- |
-| [`gt-isometric`](gt-isometric/SKILL.md) | Isometric drawings | The General Translation isometric family. | Diagrams |
+| [`gt-diagrams`](gt-diagrams/SKILL.md) | Drawing diagrams | How General Translation diagrams are drawn. | Isometry |
 
 ## Components
 
 | Skill | Title | What it is | Also in |
 | --- | --- | --- | --- |
 | [`gt-components`](gt-components/SKILL.md) | Components to reuse | The components General Translation work reuses before writing new ones. | Landing pages, Website |
+| [`gt-product-surfaces`](gt-product-surfaces/SKILL.md) | Product surfaces | A map of General Translation's product surfaces (the sign-in plate and the auth pages, the four-step onboarding, the dashboard shell, plans and billing, the partner credit pages on the plate) to the skills that own their rules, and the state gallery method for reviewing a flow. | Aesthetic, Workflow |
 
 ## Workflow
 
