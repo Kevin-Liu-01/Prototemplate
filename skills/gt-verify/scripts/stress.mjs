@@ -58,6 +58,11 @@
 // copy, a layout shift over 0.001 outside the zoom phase, a page error, a
 // story state the zoom round trip changed or a throttled state that differs;
 // 2 when the page could not be loaded.
+//
+// Requires: playwright-core (in a Prototemplate checkout) and Chrome for Testing
+// or the ms-playwright WebKit build.
+// Last real run: 2026-10-06, Prototemplate session workflow runs after authoring
+// (a transcript scan on 2026-10-10).
 
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
