@@ -594,6 +594,15 @@
   white-space: nowrap;
 }
 
+/* a phone: the two notes ran 46px past the ledger and the page on one
+   line, so the second drops under the first */
+@media (max-width: 560px) {
+  .prismlight-root .dlv-ledger-foot {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+}
+
 @media (max-width: 860px) {
   .prismlight-root .dlv-hot-split {
     grid-template-columns: minmax(0, 1fr);

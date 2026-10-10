@@ -49,7 +49,7 @@ const SAMPLES: readonly Sample[] = [
 /** Long, irregular periods so the field never falls into step with itself. */
 const PERIOD = [9.5, 8.2, 11.4, 10.1, 8.8, 12.3, 9.1, 10.8];
 
-type SampleStyle = { top: string; left: string; '--lang-ss-depth': number };
+type SampleStyle = { top: string; '--lang-ss-x': string; '--lang-ss-depth': number };
 
 export default function ScriptSampler({ className, accent = true, title }: LangProps) {
   const root = useRef<HTMLDivElement>(null);
@@ -86,7 +86,7 @@ export default function ScriptSampler({ className, accent = true, title }: LangP
         {SAMPLES.map((sample) => {
           const style: SampleStyle = {
             top: `${sample.y}px`,
-            left: `${sample.x}%`,
+            '--lang-ss-x': `${sample.x}%`,
             '--lang-ss-depth': sample.depth,
           };
           return (

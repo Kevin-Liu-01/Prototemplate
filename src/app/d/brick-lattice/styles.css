@@ -1807,6 +1807,20 @@
   }
 }
 
+/* a small phone: the wordmark, the theme switch and Get a Demo ran 41px
+   past a 320px screen, so the brand keeps its mark and the word stays only
+   as the link's name (the hero sets the name under the title) */
+@media (max-width: 380px) {
+  .brick-lattice-root .bl-brand span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 /* the last 720px block: the mobile ladder, consumed with px fallbacks */
 @media (max-width: 720px) {
   .brick-lattice-root {

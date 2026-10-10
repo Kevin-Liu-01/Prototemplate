@@ -234,6 +234,19 @@
   color: var(--lang-dim);
 }
 
+/* A track too narrow for a box and its delta side by side (SentenceWidth.tsx
+   sets data-stacked): the delta drops under its box, on the box's own side. */
+.lang-sw[data-stacked] .lang-sw-track {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.lang-sw[data-stacked] .lang-sw-row.is-rtl .lang-sw-track {
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 @media (max-width: 560px) {
   .lang-sw-row {
     grid-template-columns: 64px minmax(0, 1fr);
@@ -297,8 +310,12 @@
   border-top: 1px solid var(--lang-rule-2);
 }
 
+/* start-aligned so its box is the word, not the column: the lit word scales
+   from its left edge, and a column-wide box scaled with it ran past the card
+   and the page on a phone */
 .lang-wm-word {
   display: inline-block;
+  justify-self: start;
   transform-origin: 0 50%;
   white-space: nowrap;
   font-family: var(--lang-sans), var(--lang-script);
@@ -331,6 +348,7 @@
 
 .lang-ss-item {
   position: absolute;
+  left: var(--lang-ss-x);
   opacity: calc(1 - var(--lang-ss-depth) * 0.5);
   will-change: transform;
 }
@@ -924,6 +942,14 @@
 /* ============================================================
    RESPONSIVE
    ============================================================ */
+
+/* a phone: each sample keeps its place but stops 78px short of the field's
+   right edge (the widest sample and its drift), so none runs past the page */
+@media (max-width: 480px) {
+  .lang-ss-item {
+    left: min(var(--lang-ss-x), 100% - 78px);
+  }
+}
 
 @media (max-width: 560px) {
   .lang-pf-cols {

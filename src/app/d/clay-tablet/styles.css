@@ -1525,6 +1525,14 @@
   gap: 24px;
 }
 
+/* a phone: four columns left each about 50px, and Acceptable Use ran past
+   the screen; two columns hold every link */
+@media (max-width: 480px) {
+  .clay-tablet-root .ct-foot-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .clay-tablet-root .ct-foot-col h4 {
   color: var(--clay-case-ink);
 }
