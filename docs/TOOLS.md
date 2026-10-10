@@ -115,10 +115,16 @@ Each skill carries the scripts its procedure calls, self-contained so an install
 | `gt-performance` | `frame-probe.mjs` | frame-probe.mjs: measures how smoothly a page animates, the way the gt-performance skill asks for before and after numbers. |
 | `gt-performance` | `pixel-diff.mjs` | pixel-diff.mjs: proves that a performance change left the picture alone. |
 | `gt-reporting` | `pr-slate.mjs` | Drafts Kevin's PR slate: every open PR he authored in gt-cloud, gt and content, sorted into the groups the slate uses, with the full link, the purpose (the title without its type), the line counts and the facts that put it in its group. |
+| `gt-ship` | `contact-sheet.py` | contact-sheet.py: lays labelled screenshots out on one PNG grid, for a review page or a PR comment that has to show many states at once (gt-ship section 4). |
+| `gt-ship` | `patch-body.py` | patch-body.py: replaces one marked section of a PR body (the screenshots, by default) and leaves every other byte of the body as it was, the bot summaries included (gt-ship section 4). |
+| `gt-ship` | `pr-assets.sh` | pr-assets.sh: uploads PR screenshots to the repository's pr-assets orphan branch under screenshots/pr-<n>/ and prints the link for each file, without touching the checkout's index, working tree or branch (gt-ship section 4, references/pr-body.md "Where the images live"). |
 | `gt-ship` | `pr-bots.mjs` | Reads one PR's review state through the GitHub CLI and reports what still stands between it and a merge: the title policy, the bot summaries and the commit each one reviewed, the unresolved and unanswered review threads, and the checks. |
 | `gt-ship` | `pr-size.mjs` | Groups a branch's diff by kind so every large group in a PR can be justified before it is pushed. |
+| `gt-verify` | `compare-signatures.py` | compare-signatures.py: fetches the same routes from two servers and reports every structural difference between the two renders, page by page (gt-verify references/parity-review.md). |
+| `gt-verify` | `page-signature.py` | page-signature.py: reads the structural signature of one server-rendered page, the unit a parity review compares (gt-verify references/parity-review.md). |
 | `gt-verify` | `probe.mjs` | probe.mjs: measures what renders at one spot of a page, the way a fix is verified before it is reported as done (gt-verify sections 1 and 4). |
 | `gt-verify` | `stress.mjs` | stress.mjs: walks a scroll story or an animated section through the stress matrix of gt-verify section 3 at several viewports and writes the readings and the captures a reviewer looks at. |
+| `gt-website` | `routing-matrix.sh` | routing-matrix.sh: checks generaltranslation.com's routing cases (real pages, near-miss corrections, section fallbacks, locale prefixes) by the status and redirect target each path answers, so a routing change is gated before it ships (gt-website section 4). |
 | `prototemplate` | `check-registries.mjs` | Moved to scripts/lint/registries.mjs (pnpm lint:registries). |
 
 ## Environment

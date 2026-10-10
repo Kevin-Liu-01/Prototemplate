@@ -50,6 +50,30 @@
       "mode": "fork",
       "from": "gt-cloud:apps/landing/src/lib/prismatic-field.ts",
       "reason": "the explorations' prismatic field; gt-cloud's copy is what the landing ships, and the two are not re-synced"
+    },
+    {
+      "path": "skills/gt-verify/scripts/page-signature.py",
+      "mode": "fork",
+      "from": "the signature script in the docs review notes of the New Onboarding and Dashboard session (2026-10-10)",
+      "reason": "the bundled copy is general: it reads any page's signature, and the session's copy stays tied to the docs review round"
+    },
+    {
+      "path": "skills/gt-verify/scripts/compare-signatures.py",
+      "mode": "fork",
+      "from": "the compare script in the docs review notes of the New Onboarding and Dashboard session (2026-10-10), with a fetch step added",
+      "reason": "the bundled copy fetches from a route list instead of the prerender manifest; the session's copy is not re-synced"
+    },
+    {
+      "path": "skills/gt-ship/scripts/patch-body.py",
+      "mode": "fork",
+      "from": "the PR body tool of the New Onboarding and Dashboard session's onboarding PRs (2026-10-10)",
+      "reason": "the bundled copy requires --repo and refuses Prototemplate; the session's copy is not re-synced"
+    },
+    {
+      "path": "skills/gt-ship/scripts/contact-sheet.py",
+      "mode": "fork",
+      "from": "the review sheet tool (sheet.py) of the New Onboarding and Dashboard session's onboarding PRs (2026-10-10)",
+      "reason": "the bundled copy uses Pillow's built-in font unless --font names one and writes no fixed path; the session's copy is not re-synced"
     }
   ]
 }
