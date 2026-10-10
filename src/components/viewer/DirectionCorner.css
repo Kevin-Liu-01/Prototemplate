@@ -162,6 +162,43 @@
   }
 }
 
+/* A touch phone: four joined squares gave each a 31px tap pitch, under the
+   40px a finger needs, and no hit area can grow past a neighbor it shares a
+   seam with. So the row parts the way the toolbar's buttons do: each square
+   keeps its 32px drawing and stands alone with its own hairline and control
+   corner, 8px apart, and a transparent ::after 5px past its padding edge
+   (inside the 1px border) answers a tap 40px on each side; neighbors' hit
+   boxes meet in the gaps and never overlap. The 44px strip still holds the
+   row (6px above it, 6px below). */
+@media (pointer: coarse) and (max-width: 767px), (pointer: coarse) and (max-height: 500px) {
+  .pt-corner {
+    gap: 8px;
+  }
+
+  .pt-corner .pt-ib ~ .pt-ib {
+    margin-left: 0;
+    border-left-color: var(--pt-hair);
+  }
+
+  .pt-corner .pt-ib:hover,
+  .pt-corner .pt-ib.is-on {
+    border-color: var(--pt-ink);
+  }
+
+  .pt-corner .pt-ib,
+  .pt-corner .pt-ib:nth-child(1 of .pt-ib),
+  .pt-corner .pt-ib:nth-last-child(1 of .pt-ib) {
+    position: relative;
+    border-radius: var(--pt-radius-control);
+  }
+
+  .pt-corner .pt-ib::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+  }
+}
+
 /* the layer: inert until a child opens; children take the pointer */
 .pt-corner-layer {
   position: fixed;
