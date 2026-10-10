@@ -22,7 +22,8 @@
    is icon-only and the search trigger a glyph; at or below 600px Previous,
    Next and Copy link leave too (the sheet's edges and a swipe page), so the
    count, the search, the seg, Index, Theme and Help fit a phone. On a
-   touch phone each control's tap area reaches 40px (the last block).
+   touch phone each control's tap area reaches 40px, and where the bar is
+   still short the count and then Help leave (the last block).
 
    The search trigger (directive 8.3) is the one field-shaped button, and
    it keeps the old nav's pill (Kevin's directive; DESIGN.md, chrome
@@ -361,8 +362,9 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
    hit box over the bar's height and halfway into the 8px gaps, so
    neighbors' boxes meet and never overlap; the seg's options touch, so an
    icon-only one widens to 40px instead. Where a route's controls still
-   run past a small phone (the gallery's need about 340px, a count and a
-   two-option seg about 370, the compare rig about 410), the bar scrolls
+   run past a small phone (the gallery's need about 346px, a count and a
+   two-option seg about 370, the compare rig about 407), the count and
+   then Help leave (tiers five and six, below); the bar still scrolls
    rather than letting the two groups overlap. */
 @media (pointer: coarse) and (max-width: 600px), (pointer: coarse) and (max-height: 500px) {
   .pt-toolbar {
@@ -396,6 +398,33 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
 
   .pt-toolbar .pt-seg .pt-ib::after {
     inset: -7px 0;
+  }
+
+}
+
+/* an upright touch phone: the measured tiers past the labels (Toolbar.tsx
+   applies each only while the bar is still short). Tier five takes the
+   count, the least needed control on a phone (the sheet's edges and a swipe
+   page, the index jumps), and tier six takes Help, whose card lists
+   keyboard keys. A phone on its side holds every control.
+
+   The server's paint, before the first measurement (.is-boot), guesses the
+   same: the count hidden, so measuring can only bring it back at the end of
+   the left group, where it moves nothing; and below 338px, where a
+   three-option seg leaves no room for Help (the gallery's modes, the
+   compare rig's panes), Help hidden too, so the right group never moves on
+   load. */
+@media (pointer: coarse) and (max-width: 600px) {
+  .pt-toolbar.is-tight-5 .pt-count,
+  .pt-toolbar.is-tight-6 .pt-help-btn,
+  .pt-toolbar.is-boot .pt-count {
+    display: none;
+  }
+}
+
+@media (pointer: coarse) and (max-width: 337px) {
+  .pt-toolbar.is-boot:has(.pt-seg > .pt-ib:nth-child(3 of .pt-ib)) .pt-help-btn {
+    display: none;
   }
 }
 
