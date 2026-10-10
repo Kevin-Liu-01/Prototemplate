@@ -75,6 +75,8 @@ Kevin's rule for the sample (2026-10-10): "make them idiomatic!" Sample copy rea
 
 `gt translate`'s ICU plural output can omit CLDR branches. On 2026-10-10 Russian and Polish lacked `few` and `many` until a `--force` run with a context saying "the count can be any number"; Spanish, French and pt-BR never got `many`; and a context-only change returned identical plurals. Check each language's branches against the CLDR plural rules before publishing it.
 
+A `$context` applies to every language at once, so it cannot set one market's register without naming languages. On 2026-10-10 a fourth run added "use the form of address that consumer apps in the target market use" to every context: it fixed Spanish (tú) and Dutch (je), but it also turned German to "du" and added a space in Japanese ("新着メッセージ 3件"), so the committed run 3 stayed, with formal Spanish and Dutch. Adopt a new run only when it is strictly better than the committed one in every locale.
+
 The route families, claim tracing and build limits join this file when round 1 ships.
 
 ## Sources
@@ -83,4 +85,4 @@ The route families, claim tracing and build limits join this file when round 1 s
 - gt-cloud branches: `k/landing-faq` (#4885; `src/lib/faq/config.ts` and `src/app/api/faq/ask/route.ts` read at c675222e0), `k/language-map` (`apps/landing/scripts/world/generate.mjs`, `package.json`).
 - Claude Code project memory for gt-cloud: `pricing-money-format.md`, `landing-hero-agent-button.md`, `agent-prompt-test.md`, `landing-ai-gateway-faq.md`, `world-language-map.md`.
 - Added 2026-10-10: Partner pages from Claude memory `partner-plate-pages` (2026-10-07 and 2026-10-08) and the partner pages spec of 2026-10-07 (layout only, no codes), with every partner page read live on generaltranslation.com on 2026-10-10 (each answered 200); Programmatic SEO pages from Claude memory `resume-2026-10-09` (Kevin's SEO decisions, 2026-10-09); pull request states read with `gh pr view` on 2026-10-10.
-- Added 2026-10-10 from the New Onboarding and Dashboard session's review (checked against gt-cloud origin/main d63346837 and production): the partner logo and fine print rules, and the two kinds of text on the programmatic SEO pages with the sample store, Kevin's idiomatic rule and the plural trap.
+- Added 2026-10-10 from the New Onboarding and Dashboard session's review (checked against gt-cloud origin/main d63346837 and production): the partner logo and fine print rules, and the two kinds of text on the programmatic SEO pages with the sample store, Kevin's idiomatic rule and the plural trap; and, in a follow-up the same day, the register trap from the fourth sample run and the rule to adopt a run only when it is better in every locale.
