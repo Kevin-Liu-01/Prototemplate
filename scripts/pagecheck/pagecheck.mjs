@@ -55,7 +55,7 @@ import { pathToFileURL } from 'node:url';
 
 import { chromium } from 'playwright-core';
 
-import { CHROME_PATH, HIDE_DEV_UI_CSS, PRESETS, ROOT, device } from '../site-pages.mjs';
+import { chromePath, HIDE_DEV_UI_CSS, PRESETS, ROOT, device } from '../site-pages.mjs';
 import { runCls } from './cls.mjs';
 import { cellContext, collectErrors } from './context.mjs';
 import { interactionTasks, runInteraction } from './interactions.mjs';
@@ -294,7 +294,7 @@ async function runCell(item, d, theme, attempt = 1) {
 if (WARM) await warm([...new Set(PAGES.map((p) => p.path))]);
 const warmMs = Date.now() - t0;
 
-const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
+const browser = await chromium.launch({ executablePath: chromePath(), headless: true });
 
 /* one queue: every cell, then every interaction run, worked through by JOBS contexts at a time */
 const tasks = [];

@@ -155,8 +155,8 @@ the border-role check and prints JSON.
 - It cannot see SVG strokes or canvas, skips elements under a 3D transform
   or a mask, and never hovers. Figures are checked by eye at 2x crops of
   every junction.
-- It launches `CHROME_PATH`, else the Chrome for Testing in Kevin's
-  Playwright cache (`chromium-1217`); set the variable on another machine.
+- It launches `CHROME_PATH`, else the Chrome for Testing build
+  playwright-core installs (`pnpm exec playwright-core install chromium`).
 - A full run is 72 page loads with up to five states each. Use
   `--only /docs --width 1440 --theme dark --jobs 1` while fixing, then run
   the whole gate once.

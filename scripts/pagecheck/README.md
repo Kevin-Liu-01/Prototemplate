@@ -141,8 +141,8 @@ Flags:
   the rows)
 - `--pages-module path`, `--hooks-module path`
 
-`CHROME_PATH` names the Chrome for Testing binary when it is not at the
-default install path. A cell whose navigation fails (an aborted load, a
+`CHROME_PATH` names the Chrome for Testing binary when it is not the
+build playwright-core installs (`pnpm exec playwright-core install chromium`). A cell whose navigation fails (an aborted load, a
 closed target) is tried once more in a fresh context.
 
 The run exits 1 when any defect is found or any interaction fails, 0

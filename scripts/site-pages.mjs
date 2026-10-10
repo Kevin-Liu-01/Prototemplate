@@ -4,8 +4,8 @@
 // lint-type, lint-radius and lint-heads, lint-lines --shell and
 // capture-pages all import from here.
 //
-//   - CHROME_PATH: the Chrome for Testing build playwright-core launches,
-//     CHROME_PATH in the environment or the default install path
+//   - chromePath: the Chrome for Testing build playwright-core launches,
+//     CHROME_PATH in the environment or the build playwright-core installs
 //   - seedTheme: the site's pre-boot theme door. The root layout's script
 //     (and the deck's head) reads the gt-theme localStorage key and stamps
 //     html[data-theme] before first paint, so a context that writes the
@@ -26,11 +26,17 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { chromium } from 'playwright-core';
+
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-export const CHROME_PATH =
-  process.env.CHROME_PATH ??
-  '/Users/kevinliu/Library/Caches/ms-playwright/chromium-1217/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
+/** The browser to launch: CHROME_PATH, else the Chrome for Testing build this playwright-core installs. Exits with the install line when it is missing. */
+export function chromePath() {
+  const path = process.env.CHROME_PATH ?? chromium.executablePath();
+  if (existsSync(path)) return path;
+  console.error(`no Chrome at ${path}: run pnpm exec playwright-core install chromium, or set CHROME_PATH`);
+  process.exit(2);
+}
 
 /** The localStorage key the root layout reads before first paint (src/components/viewer/ThemeButton.tsx, THEME_KEY). */
 export const THEME_KEY = 'gt-theme';

@@ -9,7 +9,7 @@ import { writeFileSync, mkdirSync, unlinkSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
-import { CHROME_PATH } from '../scripts/site-pages.mjs';
+import { chromePath } from '../scripts/site-pages.mjs';
 import { assemble, slideFiles } from './assemble.mjs';
 /* this script's folder: deck/, or a copy's folder beside it */
 const D = dirname(fileURLToPath(import.meta.url));
@@ -25,7 +25,7 @@ const tmp = `${D}/tmp/preview-${tag}.html`;
 writeFileSync(tmp, `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html{color-scheme:light dark}body{margin:0}</style></head><body>${src}</body></html>`);
 
 // file:// pages taint a canvas that reads another file, so the mood grids need file access to screen
-const browser = await chromium.launch({ executablePath: CHROME_PATH, args: ['--allow-file-access-from-files'] });
+const browser = await chromium.launch({ executablePath: chromePath(), args: ['--allow-file-access-from-files'] });
 const errors = [];
 for (const scheme of ['light', 'dark']) {
   const ctx = await browser.newContext({ viewport: { width: 1600, height: 900 }, colorScheme: scheme, deviceScaleFactor: 1, reducedMotion: 'reduce' });

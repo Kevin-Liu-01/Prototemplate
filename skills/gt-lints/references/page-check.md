@@ -27,8 +27,8 @@ interaction.
 - Fast forms: `--preset quick --pages gallery,docs`, `--pages present
   --viewports 390x844,1440x900 --themes dark`, `--no-interactions`,
   `--interactions present-walk`, `--report-only` to rebuild the report from
-  a finished run. `CHROME_PATH` names the browser when it is not at the
-  default path.
+  a finished run. `CHROME_PATH` names the browser when it is not the
+  build playwright-core installs.
 - Performance budgets are not judged: the dev server compiles on demand and
   the live site sends headless Chrome to the Vercel checkpoint, so the
   paints and the blocking time are readings.

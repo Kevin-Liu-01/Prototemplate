@@ -12,9 +12,9 @@ import { chromium } from 'playwright-core';
 import { mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
 
-import { CHROME_PATH } from './site-pages.mjs';
+import { chromePath } from './site-pages.mjs';
 
-const EXEC = CHROME_PATH;
+const EXEC = chromePath();
 const BASE = process.env.REDESIGN_BASE || 'http://localhost:3005';
 
 const [, , outDir] = process.argv;

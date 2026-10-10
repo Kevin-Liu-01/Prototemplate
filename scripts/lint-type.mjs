@@ -65,7 +65,7 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from '
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { CHROME_PATH, routesFor, seedTheme } from './site-pages.mjs';
+import { chromePath, routesFor, seedTheme } from './site-pages.mjs';
 
 export const PATHS = {
   tokens: 'src/components/viewer/tokens.css',
@@ -791,7 +791,7 @@ async function runLive(root, argv) {
     console.error(`lint:type --live: ${error instanceof Error ? error.message : error}`);
     return 2;
   }
-  const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
+  const browser = await chromium.launch({ executablePath: chromePath(), headless: true });
   const failures = [];
   const warnings = [];
   let broken = 0;

@@ -59,7 +59,7 @@
 //   did not apply is an infrastructure failure (exit 2), never a pass.
 import { chromium } from 'playwright-core';
 
-import { CHROME_PATH, routesFor, seedTheme } from './site-pages.mjs';
+import { chromePath, routesFor, seedTheme } from './site-pages.mjs';
 
 const argv = process.argv.slice(2);
 /* flags that take a value; the value is never a positional URL */
@@ -685,7 +685,7 @@ const failing = (audit) => {
   );
 };
 
-const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
+const browser = await chromium.launch({ executablePath: chromePath(), headless: true });
 
 /* ------------------------------------------------------------------ */
 /* page mode                                                           */
