@@ -57,6 +57,20 @@ export const DOCS: readonly DocEntry[] = [
       'How the blog illustrations are made with the toolchain in graphics/: captures at 3 to 5x, labelled crops on glyphfield exports, the sizing rules, clips, export and hand-off to a post.',
   },
   {
+    slug: 'artifact-pictures',
+    file: 'docs/ARTIFACT-PICTURES.md',
+    title: 'Artifact pictures',
+    blurb:
+      'The standard for the dithered photographs on the plate, the deck and the docs: the rules, the tone grid and screen of the Blue Marble, the cutter, adding a picture and the lint that holds them.',
+  },
+  {
+    slug: 'tools',
+    file: 'docs/TOOLS.md',
+    title: 'Tools',
+    blurb:
+      'Every pnpm command in the repository and the scripts the skills bundle, each with what it does, and the environment the tools read. Written by pnpm build:tools.',
+  },
+  {
     slug: 'agents',
     file: 'AGENTS.md',
     title: 'Agent guide',
