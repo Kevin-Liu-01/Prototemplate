@@ -294,7 +294,7 @@ for (const [file, pattern, from] of firsts) {
 
 const AREAS = ['voice', 'website', 'landing', 'aesthetic', 'lints', 'motion', 'graphics', 'videos', 'diagrams', 'isometry', 'components', 'workflow'];
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const SUPPORT = /\.(md|mjs|json)$/;
+const SUPPORT = /\.(md|mjs|json|py|sh|txt|js)$/;
 const MAX_LINES = 500;
 const MAX_DESCRIPTION = 1024;
 
@@ -376,7 +376,7 @@ if (!argv.includes('--no-skills') && existsSync(skillsDir)) {
     if (!/^## Sources\s*$/m.test(text)) problems.push('no "## Sources" section');
     for (const rel of walk(dir)) {
       const body = readFileSync(join(dir, rel), 'utf8');
-      if (rel !== 'SKILL.md' && !SUPPORT.test(rel) && !rel.startsWith('assets/')) problems.push(`${rel}: supporting files are .md, .mjs or .json`);
+      if (rel !== 'SKILL.md' && !SUPPORT.test(rel) && !rel.startsWith('assets/')) problems.push(`${rel}: supporting files are .md, .mjs, .json, .py, .sh, .txt or .js`);
       if (/\/Users\/[^/\s]+/.test(body)) problems.push(`${rel}: names an absolute home path; use $PROTOTEMPLATE or $GT_CLOUD`);
       if (/\.md$/.test(rel) && body.includes('\u2014')) problems.push(`${rel}: holds an em dash`);
     }

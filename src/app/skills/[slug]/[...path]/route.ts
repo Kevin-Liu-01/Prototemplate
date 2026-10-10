@@ -22,11 +22,15 @@ export function generateStaticParams(): { slug: string; path: string[] }[] {
   );
 }
 
-/** The type each published extension is served with; build/skills.mjs allows only these. */
+/** The type each published extension is served with; build/skills.mjs allows only these. Python, shell, text and plain JavaScript go out as text/plain, so a browser shows them and never runs them. */
 const TYPES: Readonly<Record<string, string>> = {
   md: 'text/markdown; charset=utf-8',
   mjs: 'text/javascript; charset=utf-8',
   json: 'application/json; charset=utf-8',
+  py: 'text/plain; charset=utf-8',
+  sh: 'text/plain; charset=utf-8',
+  txt: 'text/plain; charset=utf-8',
+  js: 'text/plain; charset=utf-8',
 };
 
 type Context = { params: Promise<{ slug: string; path: string[] }> };
