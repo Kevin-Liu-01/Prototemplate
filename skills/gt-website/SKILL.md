@@ -5,21 +5,23 @@ description: >-
   the app map, the engine CSS and the shared packages, translation in the
   site code, the Fumadocs docs and their agent-readable twins, the blog and its
   content submodule, the pages with rules of their own, crawlers, deploys and
-  performance traps, and the checks before a pull request. Use when working
-  on any page, doc, blog post, route or build of the GT website, together
-  with gt-cloud's own gt-landing skill, which owns the file map.
+  performance traps, the routing matrix, gt-next in other sites, and the
+  checks before a pull request. Use when working on any page, doc, blog
+  post, route or build of the GT website, together with gt-cloud's own
+  gt-landing skill, which owns the file map.
 metadata:
   title: GT website
   areas: website
-  updated: 2026-10-07
+  updated: 2026-10-10
   origin: prototemplate
+  owner: O
 ---
 
 # GT website
 
 General Translation (GT) is an internationalization platform for developers: open-source SDKs (`gt-next`, `gt-react` and others), the `gt` CLI, AI translation, the Locadex coding agent and CDN delivery of translations (as `/llms.txt` on the site describes it). Its website, generaltranslation.com, is the Next.js app in `apps/landing` of the private gt-cloud monorepo (`generaltranslation/gt-cloud`). It serves the marketing pages, the documentation on Fumadocs and the blog, and Vercel deploys it from gt-cloud's main branch. This skill records how Kevin builds and changes it: where each part lives, the rules each part follows, the traps met in 2026, and the checks a change passes before its pull request.
 
-Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `$GT_CLOUD/apps/landing`. Other paths are relative to a gt-cloud checkout (`$GT_CLOUD`, which is `~/gt/gt-cloud` on Kevin's machine), and files at the gt-cloud root carry the prefix, as in `$GT_CLOUD/scripts/deploy-landing.sh`. `content:` marks the public `generaltranslation/content` repository and `$PROTOTEMPLATE` a Prototemplate checkout. Detail sits in three references: [references/docs.md](references/docs.md) for the documentation site, [references/blog.md](references/blog.md) for posts and their components, and [references/pages.md](references/pages.md) for pricing, the hero's agent button, the AI features and the `/world` map.
+Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `$GT_CLOUD/apps/landing`. Other paths are relative to a gt-cloud checkout (`$GT_CLOUD`, which is `~/gt/gt-cloud` on Kevin's machine), and files at the gt-cloud root carry the prefix, as in `$GT_CLOUD/scripts/deploy-landing.sh`. `content:` marks the public `generaltranslation/content` repository and `$PROTOTEMPLATE` a Prototemplate checkout. Detail sits in references: [docs.md](references/docs.md) for the documentation site and its routing, [blog.md](references/blog.md) for posts and their components, [pages.md](references/pages.md) for pricing, the hero's agent button, the partner pages, the AI features, the `/world` map and the SEO pages, [footer-and-theme.md](references/footer-and-theme.md), [deploys.md](references/deploys.md), and [gt-next-integration.md](references/gt-next-integration.md) for `gt-next` in other sites. `scripts/routing-matrix.sh` checks the routing cases in `references/routing-cases.txt`. This skill is owned by the New Onboarding and Dashboard session, which reviews each change to it.
 
 ## 1. The site
 
@@ -55,12 +57,11 @@ Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `
 - `src/components/landing/shell/engine.css` scopes the site grammar and its `--tc-*` tokens under `.toolchain-root`, with dark values under `[data-theme='dark'] .toolchain-root`. `src/app/globals.css` exposes the tokens to Tailwind as the `tc-*` utilities (`text-tc-ink-2`, `border-tc-hair`, `bg-tc-card`, `px-tc-gut`, `font-tc-mono`).
 - The page grammar built on the engine lives in the gt-landing-pages skill and gt-landing's `references/design.md`: the token values, the unlayered heading and paragraph resets that beat Tailwind utilities, the one-rail law and the Tailwind 4 `text-[length:var(--x)]` form.
 - The `--tc-*` tokens exist only inside `.toolchain-root`. A development page outside the site layouts imports `engine.css` and `src/components/landing/home/v0-pages.css` itself, and `src/components/blog/blog.css` for blog parts.
-- Turbopack can serve one layout's CSS chunk to other routes. On 2026-09-25, on the `k/docs-perf` branch, a font face that blog CSS joined to `inter` was fetched by the home page. Scope a route's rules under its root class (`.blog-root`), and give a route-only face a family name that only that route's CSS uses.
+- Turbopack can serve one layout's CSS chunk to other routes. On 2026-09-25, on the `k/docs-perf` branch (#4815, open on 2026-10-10), a font face that blog CSS joined to `inter` was fetched by the home page. Scope a route's rules under its root class (`.blog-root`), and give a route-only face a family name that only that route's CSS uses.
 
 ### Tailwind 4 build traps
 
-- Tailwind scans comments for class candidates, so a bracketed utility written in a code comment can break the CSS build. Fix the comment, then `rm -rf .next`, because the candidate cache persists.
-- A token in a plain `@theme` block that no utility uses is dropped from the build. Tokens read by inline styles or third-party CSS go in `@theme static`, as in `packages/ui/src/css/fd-theme.css`.
+A bracketed utility in a code comment can break the CSS build, and a plain `@theme` token no utility uses is dropped; both are in [references/deploys.md](references/deploys.md).
 
 ### Looking at pages
 
@@ -75,6 +76,7 @@ Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `
 - `gt-next`'s `Link` adds the locale to every href that starts with `/`. A link to a file at the app root (`/openapi.json`, `/sitemap.xml`, a `.md` twin) is a plain `<a>`. `gt-next` exports no router, and `useRouter().push` from Next drops the locale prefix.
 - The locale roster lives in `gt.config.json` for production and `staging.gt.config.json` for the staging translate step. `next.config.ts` never gates locales on `VERCEL_ENV`: the staging pipeline runs with `VERCEL_ENV=preview`, and `gt-next` refuses an option that conflicts with the config file.
 - `pnpm --dir apps/landing validate` runs `gt validate`. The deploy runs `gt translate` before it builds.
+- Integrating `gt-next` into another Next.js site (a showcase, a demo, a customer's app under review) meets traps of its own: a config file that conflicts with `withGTConfig`, `next.config.mjs`, static generation, `usePathname()` behind the proxy, and translated MDX. Read [references/gt-next-integration.md](references/gt-next-integration.md) first.
 
 ## 4. Docs
 
@@ -87,6 +89,7 @@ Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `
 - A `redirect()` thrown during a page render commits the layout above it first and paints an intermediate shell. Every link the site renders points at the resolved leaf page (`footer-links.test.ts` holds the footer to that).
 - The docs sidebar on a 404 is the stock flat tree: "the flash is worse" (Kevin, 2026-09-10).
 - Check sidebar changes on a page with a nested folder open, such as `/en-US/docs/cli/reference/commands/configure`.
+- Every routing change (`src/proxy.ts`, `next.config.ts` redirects, the near-miss ladders, the legacy map) passes the routing matrix before the pull request and again on production after the deploy: `sh scripts/routing-matrix.sh --base http://localhost:<port>`, then with no `--base`. It sends one GET per case and exits with the number of failures. Routing defects reached production three times in September 2026.
 - A performance pull request holds the few small changes that carry the measured win, the docs keep their italics, and PostHog loading stays as it is (Kevin, 2026-09-15 and 2026-09-25). The measurement recipes are in the reference.
 - The content repository holds the writing rules for the pages (`content:DOCS-SKILL.md`) and a public authentication boundary in `content:AGENTS.md`: the docs cover API-key authentication and the CLI sign-in commands and leave out user-token internals.
 
@@ -99,7 +102,7 @@ Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `
 - A new component is registered in `src/mdx-components.tsx` and gets a simple stand-in in `content:apps/content/src/mdx-components.tsx`, or the content preview build fails.
 - Images live in gt-cloud under `public/static/blogs/`: 3840 px webp illustrations and covers, a 2400 by 1260 PNG social card, GIF clips, and a `?v=YYYYMMDD-HHMM` stamp on every reference. `BlogPostCover` requests quality 95 for webp covers.
 - Every deploy checks out the tip of content main (`git submodule update --init --remote` in `$GT_CLOUD/scripts/deploy-landing.sh`), and the content repository's deploy hook rebuilds the site on each merge, so merging the content pull request publishes the post. Merge the gt-cloud side first whenever the post needs a new component, new images or new redirects, and the content side second.
-- The Lottie translation figure (open pull request #5068) and the `lottie-web` canvas traps are in the reference.
+- The Lottie translation figure (pull request #5068, open on 2026-10-10) and the `lottie-web` canvas traps are in the reference.
 
 ## 6. Pages with rules of their own
 
@@ -107,27 +110,26 @@ Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `
 
 - Pricing follows gt-landing-pages' whole-dollar rule (Kevin, 2026-09-10) through one formatter, `packages/ui/src/components/pricing/dollar-format.ts`.
 - The hero's second button is Setup for Agents. It copies the start prompt, which lives once in the docs page `content:docs/en-US/overview/for-coding-agents.mdx` and is served raw at `/agent-prompt.md`. The prompt must work when handed to a coding agent unchanged, so every change to it, the CLI or the quickstarts is followed by an end-to-end run on a fresh app (Kevin, 2026-09-30).
-- AI features (the FAQ assistant, open pull request #4885) call the Vercel AI Gateway with plain `provider/model` ids, rate-limit through the shared `src/lib/rate-limit.ts`, set Gemini's thinking budget to 0, and always answer, with a local fallback when the gateway refuses. The FAQ assistant stays off until `FAQ_ASSISTANT_ENABLED` is set, which waits on a rate limit shared by every function instance.
-- `/world` (branch `k/language-map`, unmerged on 2026-10-05) is organized by language and names no country or territory. Its facts come from CLDR, Natural Earth and GT's locale data, and its artifact pictures carry no readable English (Kevin, 2026-10-03 and 2026-10-05).
+- The partner credit pages under `/enterprise/contact/<partner>` share one plate layout; adding a partner touches about ten files, listed in the reference with the layout rules.
+- AI features (the FAQ assistant, pull request #4885, open on 2026-10-10) call the Vercel AI Gateway with plain `provider/model` ids, rate-limit through the shared `src/lib/rate-limit.ts`, set Gemini's thinking budget to 0, and always answer, with a local fallback when the gateway refuses. The FAQ assistant stays off until `FAQ_ASSISTANT_ENABLED` is set, which waits on a rate limit shared by every function instance.
+- Programmatic SEO pages (round 1 building on 2026-10-10, no pull request) follow Kevin's decisions of 2026-10-09: every string through `<T>` and a real `gt translate`, comparison pages in, the `/aeo` listicles kept, and five surfaces (app, docs, website, CLI and agents, video subtitles), with no PDF.
+- `/world` (branch `k/language-map`, no pull request on 2026-10-10) is organized by language and names no country or territory. Its facts come from CLDR, Natural Earth and GT's locale data, and its artifact pictures carry no readable English (Kevin, 2026-10-03 and 2026-10-05).
 
 ## 7. Crawlers, the footer and the theme
 
 - Every crawler and agent may read the public site: "make it so that all robots and agents can crawl us" (Kevin, 2026-08-07). `src/app/robots.ts` on main allows every user agent on `/` with `/api/` and `/private/` disallowed, lets Twitterbot fetch `/api/og` and `/api/og-home`, and names the sitemap. The staging build disallows everything, and the locale layout's metadata emits `index, follow` everywhere except staging. Never add a rule that blocks an AI crawler or a public page; a Content-Signal line is Kevin's decision.
 - Known AI agents (`AI_USER_AGENTS` in `src/proxy.ts`) get the markdown twin of a docs page.
 - Vercel previews send `x-robots-tag: noindex`, so Lighthouse's crawlable audit fails on a preview and passes on generaltranslation.com. Leave it.
-- One footer serves the whole site. `src/components/landing/shell/SiteFooterMount.tsx` renders `V0Footer` inside `.toolchain-root sgdh-root` with `ThemeAttributeBridge` and a `tc-rail` column. The `sgdh-root` class is required, because the light theme's token remaps in `v0-pages.css` are scoped to the page root classes and the footer stays dark on light pages without it. The `(home)` and blog layouts pass `footer={false}` to `Header` and append the mount right after the content; the home page has no footer of its own. The docs have no site footer. Footer links live in `src/components/landing/shell/footer-links.tsx`, tested in `shell/__tests__/footer-links.test.ts`.
-- The theme is set before first paint. `src/app/[locale]/layout.tsx` emits `ThemePreferenceInitScript` and an inline script (`DATA_THEME_PREPAINT`) that sets `data-theme` from the stored theme or the system preference. The site's stylesheets key on `[data-theme]` while `next-themes` sets the `dark` class, and `ThemeAttributeBridge` (`src/components/pages/home/ThemeAttributeBridge.tsx`) mirrors the class onto the attribute after hydration. `SiteFooterMount`, the blog layout and `HomePage` mount the bridge; a page that renders none of them keeps its first-paint theme when the reader switches themes.
+- One footer serves the whole site through `src/components/landing/shell/SiteFooterMount.tsx`, which needs the `sgdh-root` class so the light theme reaches it; the docs have no site footer. The theme is set before first paint from the stored theme or the system preference, and `ThemeAttributeBridge` mirrors `next-themes`' class onto `data-theme`. The detail is in [references/footer-and-theme.md](references/footer-and-theme.md).
 
 ## 8. Deploys
 
-- The Vercel project is `landing` in the team scope `general-translation`, with generaltranslation.com as the production alias. Its build command runs `$GT_CLOUD/scripts/deploy-landing.sh`: check out content main, prepare legal, a filtered install (`pnpm i --filter=landing... --filter=. --frozen-lockfile`), build `@generaltranslation/settings`, `gt translate`, `build:landing` (variant pages, `next build`, Pagefind), then Sentry source maps.
-- Git deploys run for `main` and `staging` only (`apps/landing/vercel.json`). The content repository's deploy hook adds a deploy for each merge to content main. Pull request branches get no preview; measure on production after the merge or deploy a preview by hand.
-- When deploys fail, read Vercel first: `vercel ls landing --scope general-translation`, then `vercel inspect <url> --logs --scope general-translation`. Compare the first error line of the newest production build with the last Ready build's commit. While builds fail, production keeps serving the last good deployment, and docs merges do not go live.
-- `TS6306: Referenced project packages/email must have setting composite` came from a `tsconfig.json` project reference to a package the landing never imports. The filtered install leaves such a package without `node_modules`, so its config cannot resolve. The landing's `tsconfig.json` references only packages it imports (gt-cloud #5076).
-- Next 16.3 retains memory for every prerendered page (vercel/next.js#97464), and the build worker was killed at page 1,779 of 7,117 where 16.2 finishes in under a minute. The landing pins `next` 16.2.12 in its own `package.json` while the dashboard and admin stay on the catalog's 16.3.8: "16.2 it is" (Kevin, 2026-10-01, gt-cloud #5079). When the landing returns to 16.3, restore `agentRules: false` in `next.config.ts`, and weigh that 16.3.8 is a security release for image optimization with allow-listed remote hosts, which the landing uses.
-- Orphan branches such as `screenshots/pr-*` fail on Vercel at once with "Root Directory apps/landing does not exist". Those failures need no action.
-- A local production build is `pnpm --dir apps/landing run build` without `APP_NODE_ENV=production` (the dashboard URL guard refuses it). It prerenders about 7,000 pages and prints fumadocs-openapi "Failed to generate typescript schema" warnings that predate any current change.
-- gt-cloud CI never initializes the content submodule. Code that reads docs content at build time returns null when the docs are absent, and tests that read real pages skip when the files are missing.
+[references/deploys.md](references/deploys.md) holds the full detail for this section.
+
+- Vercel project `landing` in the team scope `general-translation` builds through `$GT_CLOUD/scripts/deploy-landing.sh` (content main, a filtered install, `gt translate`, `build:landing`). Git deploys run for `main` and `staging` only, plus one for each merge to content main; pull request branches get no preview.
+- When deploys fail, read Vercel first (`vercel ls landing`, then `vercel inspect <url> --logs`, both with `--scope general-translation`). Production keeps serving the last good deployment, so merges stay invisible until a build passes.
+- The landing's `tsconfig.json` references only packages it imports, and the landing pins `next` 16.2.12 while 16.3 retains memory per prerendered page (Kevin, 2026-10-01).
+- Orphan branches fail on Vercel at once and need no action. A local production build runs without `APP_NODE_ENV=production`, and gt-cloud CI never initializes the content submodule.
 
 ## 9. Checks before a pull request
 
@@ -159,9 +161,4 @@ General skills from Kevin's wiki: agent-browser (pages, screenshots and measurem
 
 ## Sources
 
-- gt-cloud (origin/main, 2026-10-05): `.agents/skills/gt-landing/SKILL.md`, `.agents/skills/gt-landing/references/design.md`, `CLAUDE.md`, `apps/landing/next.config.ts`, `apps/landing/package.json`, `apps/landing/vercel.json`, `apps/landing/src/app/robots.ts`, `apps/landing/src/app/[locale]/layout.tsx`, `apps/landing/src/app/[locale]/(home)/layout.tsx`, `apps/landing/src/app/[locale]/blog/layout.tsx`, `apps/landing/src/app/[locale]/docs/layout.tsx`, `apps/landing/src/components/landing/shell/SiteFooterMount.tsx`, `apps/landing/src/components/landing/shell/engine.css`, `apps/landing/src/app/globals.css`, `apps/landing/src/proxy.ts`, `apps/landing/src/lib/fonts.ts`, `apps/landing/src/lib/fonts-prose.ts`, `scripts/deploy-landing.sh`, `scripts/check-agent-skills.mjs`, `.gitmodules`, `pnpm-workspace.yaml`, `package.json`, `.oxlintrc.json`, `tooling/oxlint-plugins/gt-ui.ts`, `tooling/oxlint-plugins/gt-react.ts`, `.github/workflows/pr-policy.yml`.
-- gt-cloud pull requests: #4499, #4522, #4773, #4785, #4815 (open), #4871, #4885 (open), #4886, #4887, #4909, #5007, #5049, #5068 (open), #5076, #5079.
-- content: `AGENTS.md`, `DOCS-SKILL.md`, `apps/content/src/mdx-components.tsx`.
-- Prototemplate: `.agents/skills/gt-blog-mdx-components/SKILL.md` (2026-09-18, absorbed into this skill), `content/blog/designing-docs-for-humans.mdx`, `docs/GRAPHICS.md`.
-- Claude Code project memory for gt-cloud: `agent-readable-docs.md`, `docs-perf-investigation.md`, `docs-shell-transition-traps.md`, `landing-deploy-failures.md`, `fuma-blog-pipeline.md`, `docs-redesign-post-part2.md`, `blog-lottie-figure.md`, `landing-ai-gateway-faq.md`, `world-language-map.md`, `lighthouse-round-conventions.md`, `pricing-money-format.md`, `landing-hero-agent-button.md`, `agent-prompt-test.md`, `tailwind-port-conventions.md`, `landing-inter-only.md`, `pr-screenshots-and-gallery.md`, `pr-size-discipline.md`.
-- Kevin's directives: robots open to every crawler (2026-08-07); whole-dollar prices (2026-09-10); the stock 404 sidebar (2026-09-10); PostHog untouched (2026-09-15); Inter as the only face (2026-09-18); screenshots in the pull request from the first push (2026-09-25); small performance pull requests and italics on docs (2026-09-25); the hero as its own pull request and a prompt tested end to end (2026-09-30); Next 16.2 for the landing (2026-10-01); `/world` organized by language (2026-10-03); no English on artifact pictures (2026-10-05).
+Dated provenance for every rule, script and number in this skill is in [references/sources.md](references/sources.md).
