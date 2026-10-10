@@ -42,18 +42,23 @@ function onIdle(run: () => void) {
 function setUp() {
   listen(false);
   const setups = queue.filter((item) => item.setup);
-  if (setups.length === 0) return;
+  if (setups.length === 0) return false;
   for (const item of setups) queue.splice(queue.indexOf(item), 1);
   flushSync(() => setups.forEach((item) => item.run()));
   // New pins queue a full refresh for the next frame, where it would cut
   // into the entrance or a smooth scroll the input is starting. Refresh now.
   ScrollTrigger.refresh();
+  return true;
 }
 
 function turn() {
   pending = false;
   if (holds > 0) return;
-  setUp();
+  // The title waits for a turn of its own, so it starts after the setup task.
+  if (setUp()) {
+    schedule();
+    return;
+  }
   // A slow picture must not hold the title for long: wait a second at most.
   if (deckReady.length && document.readyState !== 'complete' && !loadWait) {
     const go = () => {

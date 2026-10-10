@@ -48,8 +48,8 @@ export default function IntroSlide() {
         release();
       };
       fieldDrawn.current = start;
-      // A field that cannot draw must not hold the deck.
-      const fallback = window.setTimeout(start, 1500);
+      // A field that is slow to draw, or cannot, must not hold the deck.
+      const fallback = window.setTimeout(start, 800);
 
       // The title, byline and cue hold paused (presenter.css) while the
       // deck sets up, so no setup runs during their motion. They then play
