@@ -2,7 +2,7 @@
 
 The curated skills of Prototemplate, Kevin Liu's hub for General Translation (GT) work. Each folder holds a `SKILL.md` in the Agent Skills format (frontmatter `name` and `description`, a `metadata` block with the title, the areas and the last update, then the body), with its references and scripts beside it, so Claude Code, Codex and other agents load it as it is.
 
-- To use them in another project, copy this folder and `scripts/install-skills.mjs` to its root and run `node scripts/install-skills.mjs --project . --dry-run`, then the same command without `--dry-run`. README.md (Skills, and Import this into another project) gives every flag and the other way, linking from a checkout of this repository.
+- To use them in another project, copy this folder to its root and `scripts/skills/install.mjs` to the same path there, and run `node scripts/skills/install.mjs --project . --dry-run`, then the same command without `--dry-run`. README.md (Skills, and Import this into another project) gives every flag and the other way, linking from a checkout of this repository.
 - Several skills name the handbook (`docs/handbook/`), `AGENTS.md`, `BRAND.md` and `DESIGN.md`. Copy them beside the skills, so the links between them keep working.
 - The site shows each skill with its files and its install line at prototemplate.com/skills, and `/skills/index.json` lists the set for an agent.
 
