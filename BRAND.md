@@ -101,15 +101,17 @@ These are read from the shipped system for basement to confirm or push.
 
 ### Voice
 
-Measured, declarative, precise, quietly confident. Captions state laws:
-"the ground is the seam." Short sentences carry their own weight, with no
-exclamation marks doing the work, no hedging, and no marketing adjectives
-where a fact would do. Wit is allowed as precision, never as decoration.
-Technical terms are used precisely and sparingly, then explained plainly.
-The register sits closer to a well-written spec or a good engineering blog
-than to marketing copy: product focus over performative marketing.
+Measured, declarative, precise, quietly confident. Every sentence is
+complete and makes one claim. A caption states the mechanism: "A framed
+cell has a 1px padding reveal that shows the ground underneath, so the
+cell draws no border." Copy uses no exclamation marks, no hedging and no
+marketing adjectives where a fact would do. Wit is allowed when it is
+precise. Technical terms are used precisely and sparingly, then explained
+plainly. The register sits closer to a well-written spec or a good
+engineering blog than to marketing copy, and the copy is about the
+product.
 
-- Say: "One pipeline. Every language ships with the deploy."
+- Say: "Translations are generated at build time and deploy with the app."
 - Not: "Supercharge your global growth with cutting-edge AI!"
 
 ## 4. The mark
@@ -189,7 +191,8 @@ Writing systems are the raw material the brand keeps returning to:
 - The **doubled line**: every connector one path stroked twice; the mark's
   own grammar running through every diagram.
 
-All of them run live on `/craft` with their APIs.
+All of them run live in the build log at the end of the `/docs` readme,
+with their APIs.
 
 ## 8. Where it ships
 
@@ -222,9 +225,19 @@ directions as the working record of how we got there. From 2026-08-06 to
   meaning i18n libraries, context-aware translation APIs, and the
   infrastructure for versioning, editing, and integrations.
 - **Audience:** technical and product executives at growth-stage startups;
-  their engineering and growth teams are the users. Auth0 translates docs,
-  Sierra translates marketing and sales material, Ramp translates its core
-  dashboard.
+  their engineering and growth teams are the users.
+- **Public names:** a customer or partner is named only where
+  generaltranslation.com shows it. On 2026-10-10 the home page showed
+  Cursor, Ramp, Mintlify, Profound, Partiful and ClickHouse, and a quote
+  from Theo, CEO of T3 Chat. `/enterprise` showed Ramp with 11+ locales
+  across its dashboard, landing page and iOS, Cursor with 14+ across web
+  and docs, Profound with 47+ across platform and docs, Partiful with 2+
+  across web, iOS and Android, and Sierra with 7+ across web and GTM, with
+  a quote from Lee Robinson, VP of Developer Experience at Cursor.
+  `/enterprise/contact` had partner pages for YC, Mercury, Slash,
+  speedrun, a16z and The Residency. Every other name stays off public
+  surfaces, this repository included. Read the live site again before a
+  new surface names anyone.
 - **Against:** legacy TMS (seat-based, partial-stack). GT is usage-based
   and owns the whole stack, so it can own the whole experience.
 - **Admired:** Vercel, Resend, Stripe, for reliable, developer-first

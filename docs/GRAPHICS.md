@@ -151,10 +151,16 @@ The post embeds the set with the `Carousel` and `HitList` MDX components
 of the landing blog (children with string attributes; the blog's MDX
 renderer strips expression props). Covers ship as 3840 webp and the OG
 image as a 2400 by 1260 PNG; the landing app serves webp covers at
-quality 90. Posts live in the `generaltranslation/content` submodule, so a
-change is two pull requests: content first, then gt-cloud pointing at the
-content merge commit. The content repository's preview app needs a simple
-version of every component or its build fails. This repository keeps the
+quality 95, because dithered artwork smears at the default 75. Posts live
+in the `generaltranslation/content` submodule, so a change is two pull
+requests. When the post needs anything from gt-cloud (a new MDX component,
+images under `public/static/blogs/`, redirects or navigation entries),
+the gt-cloud pull request merges first and the content pull request
+second; in the other order the post publishes with missing images or a
+failed build. The content repository's preview app needs a simple
+version of every component or its build fails. `gt-website`
+(`references/blog.md`, read against gt-cloud main on 2026-10-05) holds
+both rules. This repository keeps the
 authoritative copy of the three docs-redesign posts under `content/blog`
 and their graphics under `public/static/blogs`, read by `/blog` and
 `/graphics`.
@@ -169,7 +175,7 @@ and their graphics under `public/static/blogs`, read by `/blog` and
 
 | symptom | cause | fix |
 | --- | --- | --- |
-| "pixelated" cover | 1x dither aliasing, plus the optimizer re-encoding at quality 75 | 2x smooth background; webp cover at quality 90 |
+| "pixelated" cover | 1x dither aliasing, plus the optimizer re-encoding at quality 75 | 2x smooth background; webp cover at quality 95 |
 | "blurry" diagrams | 12px labels at 0.44x | labels 26px, lines 3px, zoom-to-fit |
 | lines clipped | 1px rules and 1.5px caps under a device pixel | 3px everywhere, labels on backing pills |
 | hover pill jumped after every click in the clip | screenshots re-fired trusted pointer events | block real pointer events; synthetic hovers |
