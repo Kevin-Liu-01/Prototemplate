@@ -37,7 +37,7 @@ A page outside the shell (`/blog`, `/present`) still takes steps 2, 3, 5 and 6 a
 
 1. Add an entry to `DIRECTIONS` in `src/lib/directions.ts` and the route under `src/app/d/<slug>/`. A fork imports `src/app/d/toolchain` and re-skins it by root-class rescoping, and it never edits toolchain's files (`ARCHITECTURE.md`, "The SSOT rule").
 2. The gallery, the presenter, the sitemap, `/directions/<slug>` and the Sites and Explorations rows follow the registry.
-3. Shoot its first fold in both themes to `public/shots/light/<slug>.jpg` and `public/shots/dark/<slug>.jpg` (`docs/harness/shoot-one.mjs <slug> public/shots`; `gt-explorations` gives its caveats), then run `pnpm build:thumbs`.
+3. Shoot its first fold in both themes to `public/shots/light/<slug>.jpg` and `public/shots/dark/<slug>.jpg` (`pnpm capture:pages --direction <slug>`), then run `pnpm build:thumbs`.
 4. Keep a new direction local or on a branch until Kevin lands it ("I should be reviewing them locally", 2026-09-14).
 5. To retire one, delete the route, record a full-page capture and the last commit that held its code in `src/lib/archive.ts`, prune its paths from `scripts/lint/practices.baseline.json`, and re-check every count written in prose.
 

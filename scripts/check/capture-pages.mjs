@@ -27,6 +27,11 @@
 //     exploration in src/lib/directions.ts, the route every site and
 //     exploration row opens (the reference keeps /d/production, which the
 //     shipped pages above already cover)
+//   - with --direction <slug>[,<slug>], only those directions' first folds
+//     at /d/<slug>?chrome=0 (a `<slug>-enterprise` stem shoots
+//     /d/<slug>/enterprise), written to public/shots/light/<stem>.jpg and
+//     public/shots/dark/<stem>.jpg, the files directionShots() in
+//     src/lib/directions.ts reads; a page that fails to load writes nothing
 //   - with --live, the pages of generaltranslation.com the Shipped group's
 //     `Live site` child lists (LIVE_PAGES below, ids live-<name>), instead
 //     of the local pages: the cookie banner is declined through the
@@ -47,6 +52,10 @@
 // page failed.
 //
 // Usage: pnpm capture:pages [--base <url>, default PT_BASE] [--only <id>[,<id>]] [--live]
+//          [--direction <slug>[,<slug>]] [--viewport 1440x900] [--out <dir>]
+// --viewport changes the capture size, and --out the folder the captures go
+// to (public/shots/pages, or public/shots for --direction); a review at
+// another size goes to its own --out, so the committed captures stay 1440x900.
 // Needs the dev server running (pnpm dev) and the Chrome for Testing build
 // playwright-core expects; CHROME_PATH overrides the executable. --live
 // needs the network instead of the dev server.
@@ -55,7 +64,7 @@
 // scripts/lib/site-pages.mjs, which every browser tool shares, so a new page
 // or a moved registry is picked up by all of them from one change.
 import { mkdirSync, readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 
 import { chromium } from 'playwright-core';
 
@@ -64,25 +73,27 @@ import { helpIfAsked } from '../lib/help.mjs';
 
 helpIfAsked(import.meta.url);
 
-const OUT = join(ROOT, 'public/shots/pages');
-
 const EXEC = chromePath();
-
-const WIDTH = 1440;
-const HEIGHT = 900;
-const SETTLE_MS = 2500;
-const LIVE_SETTLE_MS = 3000;
-const QUALITY = 82;
-const THEMES = ['light', 'dark'];
 
 const argv = process.argv.slice(2);
 const flag = (name) => {
   const at = argv.indexOf(name);
   return at >= 0 ? argv[at + 1] : undefined;
 };
+const [WIDTH, HEIGHT] = (flag('--viewport') ?? '1440x900').split('x').map(Number);
+if (!(WIDTH > 0 && HEIGHT > 0)) {
+  console.error('capture-pages: --viewport takes <width>x<height>, such as 390x844');
+  process.exit(2);
+}
+const SETTLE_MS = 2500;
+const LIVE_SETTLE_MS = 3000;
+const QUALITY = 82;
+const THEMES = ['light', 'dark'];
+
 const BASE = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
 const ONLY = flag('--only')?.split(',').filter(Boolean);
 const LIVE = argv.includes('--live');
+const DIRECTIONS = flag('--direction')?.split(',').filter(Boolean);
 
 const LIVE_ORIGIN = 'https://generaltranslation.com';
 
@@ -124,8 +135,14 @@ function bookDocuments() {
   ];
 }
 
-/** [id, url] for every capture: the live pages under --live, the local pages otherwise. */
+/** [id, url] for every capture: the directions under --direction, the live pages under --live, the local pages otherwise. */
 function targets() {
+  if (DIRECTIONS) {
+    return DIRECTIONS.map((stem) => {
+      const slug = stem.replace(/-enterprise$/, '');
+      return [stem, `${BASE}/d/${slug}${slug === stem ? '' : '/enterprise'}?chrome=0`];
+    });
+  }
   if (LIVE) return ONLY ? LIVE_PAGES.filter(([id]) => ONLY.includes(id)) : LIVE_PAGES;
   let routes;
   try {
@@ -147,7 +164,10 @@ if (list.length === 0) {
   process.exit(2);
 }
 
-mkdirSync(OUT, { recursive: true });
+/* the direction captures sit one folder per theme (public/shots/<theme>/<stem>.jpg); the rest are <id>-<theme>.jpg in one folder */
+const OUT = resolve(ROOT, flag('--out') ?? (DIRECTIONS ? 'public/shots' : 'public/shots/pages'));
+const targetOf = (id, theme) => (DIRECTIONS ? join(OUT, theme, `${id}.jpg`) : join(OUT, `${id}-${theme}.jpg`));
+for (const dir of DIRECTIONS ? THEMES.map((theme) => join(OUT, theme)) : [OUT]) mkdirSync(dir, { recursive: true });
 
 const browser = await chromium.launch({ executablePath: EXEC, headless: true });
 
@@ -169,7 +189,7 @@ for (const theme of THEMES) {
     await context.addCookies([{ name: 'cookie_consent', value: 'no', domain: '.generaltranslation.com', path: '/' }]);
   }
   for (const [id, url] of list) {
-    const target = join(OUT, `${id}-${theme}.jpg`);
+    const target = targetOf(id, theme);
     const page = await context.newPage();
     try {
       /* the live site keeps analytics connections open, so it is waited on through load, not network idle */
@@ -206,7 +226,7 @@ await browser.close();
 
 const kb = (n) => `${Math.round(n / 1024)}KB`;
 console.log(
-  `capture:pages  ${written} captures at ${WIDTH}x${HEIGHT} (${kb(bytes)}, ${kb(bytes / Math.max(1, written))} each) -> public/shots/pages`
+  `capture:pages  ${written} captures at ${WIDTH}x${HEIGHT} (${kb(bytes)}, ${kb(bytes / Math.max(1, written))} each) -> ${relative(ROOT, OUT) || OUT}`
 );
 if (failed.length > 0) {
   console.error(`capture:pages  ${failed.length} failed:\n  ${failed.join('\n  ')}`);

@@ -1,0 +1,51 @@
+# A fresh clone on Linux builds and passes every static gate (P3 of the
+# system plan): install, Chrome for Testing, the Python packages, pnpm
+# doctor, pnpm build, pnpm lint:static (every lint and test that needs no
+# running server, lint:public and test:skill-scripts among them) and --help
+# for every script. It uses no secrets; lint:public skips its private
+# denylist under CI.
+name: Fresh clone
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fresh-clone-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fresh-clone:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      # the version comes from package.json's packageManager
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Chrome for Testing
+        run: pnpm exec playwright-core install --with-deps chromium
+      - name: Python packages
+        run: pip install -r requirements.txt
+      - name: Doctor
+        run: pnpm doctor
+      - name: Build
+        run: pnpm build
+      - name: Static lints and tests
+        run: pnpm lint:static
+      - name: --help for every script
+        run: |
+          for file in $(grep -rl --include='*.mjs' 'helpIfAsked(import.meta.url' scripts | grep -v '^scripts/lib/'); do
+            node "$file" --help > /dev/null || { echo "--help failed: $file"; exit 1; }
+          done

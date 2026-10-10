@@ -143,9 +143,9 @@ docs/
   research/, reference/, reference-shots/, composites/
                           the exploration archive the skills cite;
                           nothing here is served
-  harness/                three screenshot probes the skills and comments
-                          cite: shoot-one.mjs, shoot-route.mjs and
-                          rhythm-probe.mjs
+  harness/                two screenshot probes the skills and comments
+                          cite: shoot-route.mjs and rhythm-probe.mjs (a
+                          direction's captures: pnpm capture:pages --direction)
 deck/                     the deck source: parts/, slides/, fonts/, shots/
 graphics/                 the blog-illustration toolchain (docs/GRAPHICS.md)
 content/                  the three docs-redesign posts and their authors

@@ -1,0 +1,55 @@
+{
+  "$comment": "Every file or folder that exists in two places, read by scripts/lint/copies.mjs (pnpm lint:copies). pin: gt-cloud is the source and this copy is frozen at sha256; a re-sync updates the hash. source: this repository is the source and `copies` names where it was copied. fork: the copies differ on purpose; `from` and `reason` say why, and nothing is compared.",
+  "copies": [
+    {
+      "path": "scripts/lint/oxlint-plugins/gt-ui.ts",
+      "mode": "pin",
+      "from": "gt-cloud:tooling/oxlint-plugins/gt-ui.ts",
+      "sha256": "b1c27952e0498d5449f87749974c2d1633a79f91ad1f6f80eec8bcfdcf707a19",
+      "reason": "the gt-ui lint plugin behind pnpm lint:code, frozen at the 2026-10-10 copy; a re-sync fixes or exempts its new findings before lint:code passes"
+    },
+    {
+      "path": "scripts/media/mood-tone",
+      "mode": "source",
+      "copies": ["gt-cloud:apps/dashboard/scripts/mood-tone"],
+      "reason": "the artifact picture cutter; gt-cloud's copy follows this one"
+    },
+    {
+      "path": "src/components/plate",
+      "mode": "fork",
+      "from": "gt-cloud:packages/ui/src/components/plate (apps/dashboard before gt-cloud #5216)",
+      "ported": "b56e64c1 (2026-10-01)",
+      "reason": "the sign-in plate port, frozen: gt-next, the server actions and navigation are stubs, and it is not re-synced"
+    },
+    {
+      "path": "src/lib/dither.ts",
+      "mode": "fork",
+      "from": "src/components/plate/lib/dither.ts; gt-cloud:packages/ui/src/lib/dither.ts",
+      "reason": "the hub's engine carries the docs transitions and the exploration presets; 228 lines differ from the plate's copy (2026-10-10)"
+    },
+    {
+      "path": "src/lib/studio-field.ts",
+      "mode": "fork",
+      "from": "src/components/plate/lib/studio-field.ts; gt-cloud:apps/landing/src/lib/studio-field.ts",
+      "reason": "the hub's field carries the Bayer roster the explorations switch through; 193 lines differ from the plate's copy (2026-10-10)"
+    },
+    {
+      "path": "src/lib/glyph-field.ts",
+      "mode": "fork",
+      "from": "gt-cloud:packages/ui/src/lib/glyph-field.ts",
+      "reason": "the explorations' glyph field; gt-cloud's copy is what the landing ships, and the two are not re-synced"
+    },
+    {
+      "path": "src/lib/horizon-field.ts",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/lib/horizon-field.ts",
+      "reason": "the explorations' horizon field; gt-cloud's copy is what the landing ships, and the two are not re-synced"
+    },
+    {
+      "path": "src/lib/prismatic-field.ts",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/lib/prismatic-field.ts",
+      "reason": "the explorations' prismatic field; gt-cloud's copy is what the landing ships, and the two are not re-synced"
+    }
+  ]
+}
