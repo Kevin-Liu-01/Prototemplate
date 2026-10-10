@@ -4,11 +4,10 @@ description: >-
   How General Translation apps run locally so Kevin can review and try
   them: the review servers and their ports (the gt-cloud landing on 3001,
   Prototemplate on 3005, the dashboard environment on 1355), the order of
-  checks when he cannot see a change, the per-worktree dashboard dev
-  environment with a seeded session, the /dev/states gallery and the
-  Stripe stand-in, real providers only with his approval, a CLI login he
-  can try without touching his credentials, and keeping servers current
-  and few. Use when starting, restarting or debugging a local server for
+  checks when he cannot see a change, the per-worktree dashboard
+  environment (set up through gt-cloud's README and gt-dashboard skill),
+  real providers only with his approval, a CLI login he can try without
+  touching his credentials, and keeping servers current and few. Use when starting, restarting or debugging a local server for
   GT work, when Kevin asks to see or try something locally, or when
   setting up a new machine or worktree.
 metadata:
