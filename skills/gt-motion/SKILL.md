@@ -13,8 +13,9 @@ description: >-
 metadata:
   title: Motion rules
   areas: motion, landing, videos, diagrams
-  updated: 2026-10-06
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Motion rules
@@ -200,7 +201,8 @@ The shipped field adds two rules of its own.
 - **The mark shimmer** (`DitheredMark.tsx`) sweeps nested Bayer tiers
   across a mark by pure horizontal translate with ease `none`. Its windows
   are pre-rotated, because a `rotate()` window proved fragile under GSAP's
-  transform origin. `gt-isometric` section 6 has its props and its driver.
+  transform origin. gt-diagrams `references/isometric.md` section 6 has its
+  props and its driver.
 - **The speed register** (films): speed bars arrive on a horizontal streak
   with a short dithered trail that thins with distance and retracts as the
   bar stops. That trail is the brand's motion blur; blur filters are refused.
@@ -341,42 +343,11 @@ running in August 2026); pad the gap past the path (`'100 200'`, parked at
 
 ## 8. Lottie
 
-The blog's Lottie translation figure (gt-cloud branch
-`k/blog-lottie-translation`, PR #5068: `LottieTranslationWindow.tsx`,
-`lottieDocument.ts`, `lottieLoader.ts` and `ditherMask.ts` in
-`apps/landing/src/components/blog/`) runs lottie-web 5.13 on canvas. It
-fills the glyph list, fits the track-matte buffers after a resize, sets
-`setSubframe(false)`, hides a layer that keeps its box with `visibility`,
-drives followers from the leader's `currentRawFrame`, makes the loop a cut
-dithered through a still, decodes every mask level before the first step,
-and holds a poster frame under reduced motion. Each rule was proven by a
-render or a measurement, and [references/traps.md](references/traps.md)
-has the proof.
-
-Films use the HyperFrames lottie adapter: unzip each `.lottie` at build
-time with its images inlined, and seek every locale's player to one frame.
+The blog's Lottie translation figure (gt-cloud PR #5068, open on 2026-10-10) runs lottie-web 5.13 on canvas under rules each proven by a render or a measurement; films use the HyperFrames lottie adapter with every locale's player seeked to one frame. The rules are in [references/tools.md](references/tools.md) ("Lottie") and their proof in [references/traps.md](references/traps.md).
 
 ## 9. Tools
 
-- **Web:** GSAP 3 with `@gsap/react`'s `useGSAP`, `ScrollTrigger` and
-  `gsap.matchMedia()`; the dither engines in Prototemplate `src/lib/`
-  (`dither.ts` on the CPU, `studio-field.ts` on the GPU, `glyph-field.ts`
-  for glyph rain), indexed in docs/LIBRARIES.md with live plates on /docs;
-  lottie-web with fflate for `.lottie` files.
-- **Films:** HyperFrames pinned at 0.8.106 with the kit's vendored GSAP
-  3.15 and plugins (DrawSVGPlugin, MorphSVGPlugin, SplitText, Flip,
-  MotionPathPlugin, CustomEase), `GTDither`, `GTSheet`, `GTGem` and
-  lottie-web 5.13, all loaded from `motion/kit/` so a render never touches
-  the network. `gt-films` owns the process.
-- **Wiki skills for film moves:** `hyperframes-animation` (atomic rules,
-  blueprints, runtime adapters, `scripts/animation-map.mjs` for auditing
-  choreography) and `hyperframes-keyframes` (punch-ins, camera moves, SVG
-  draw and morph, seek-safe keyframes).
-
-Code shapes for a web band, the interrupted tone mix, the dashed ring, the
-Lottie follower and a film move, with the one film determinism rule this
-skill adds, are in
-[references/recipes.md](references/recipes.md).
+Web motion uses GSAP 3 with `useGSAP`, `ScrollTrigger` and `gsap.matchMedia()`, the dither engines in `src/lib/` and lottie-web with fflate; films use HyperFrames pinned at 0.8.106 with the kit's vendored GSAP and plugins, all loaded from `motion/kit/` so a render never touches the network (`gt-films` owns the process). The versions, the plugin list and the wiki skills for film moves are in [references/tools.md](references/tools.md); code shapes are in [references/recipes.md](references/recipes.md).
 
 ## Verifying motion
 
@@ -430,13 +401,14 @@ skill adds, are in
 
 Prototemplate: `gt-films` (the film process and the composition
 contract), `gt-dither` (the Bayer material, its engines and the artifact
-picture standard), `gt-isometric` (the shimmer, the tower's build and the
-scan beam), `gt-diagrams` (the doubled line and connector drawing),
+picture standard), `gt-diagrams` (the doubled line and connector drawing,
+and in `references/isometric.md` the shimmer, the tower's build and the
+scan beam), `gt-verify` (the browser checks),
 `gt-components` (the instruments' props: RevealSeam, EverySentence,
 LocaleTag), `gt-graphics` (stills), `gt-landing-pages` (landing bands, the
 read lines and the svh and dvh law). Wiki: `hyperframes`,
 `hyperframes-core`, `hyperframes-animation`, `hyperframes-keyframes`,
-`agent-browser`, `design-engineering-polish`,
+`design-engineering-polish`,
 `animated-component-libraries`, plus `gsap-scrolltrigger` and
 `lottie-animations` for library API detail. Where a wiki skill suggests
 smooth scrolling, overshoot eases or loops that autoplay, the GT rules
@@ -444,49 +416,4 @@ above win.
 
 ## Sources
 
-- Prototemplate: DESIGN.md sections 2, 5, 7, 8, 9, 10, 11, 13 and 14;
-  BRAND.md section 9 (the final avoid list); motion/MOTION.md ("The
-  standard", "Motion", "Texture", "Line", "The marks", rounds 4 and 7);
-  motion/kit/dither.js; motion/films/_smoke/index.html;
-  motion/films/jihe-yuanben/NOTES.md (rounds 3 to 8 of beat 6).
-- Prototemplate: src/app/craft/CraftArticle.tsx ("The dither transitions,
-  and the grid they run on", "The moving type"), src/app/craft/libraries.ts
-  (`TRANSITION_RULES`), src/app/craft/TransitionDemo.tsx.
-- Prototemplate: src/lib/dither.ts; src/lib/glyph-field.ts (`resample`);
-  src/components/shared/EverySentence.tsx;
-  src/app/d/toolchain/sections/RevealSeam.tsx;
-  src/app/d/toolchain/diagrams/DitheredMark.tsx.
-- Prototemplate: src/app/d/_v0/sections/FullStack.tsx, StackTower.tsx,
-  Locadex.tsx and locadex.css; src/app/d/production/sections/Developer.tsx
-  and Locadex.tsx (`beamAt`).
-- Prototemplate: src/components/viewer/tokens.css; docs/LIBRARIES.md;
-  docs/ARTIFACT-PICTURES.md; .oxlintrc.json; scripts/lint/practices.mjs;
-  scripts/check/pagecheck/README.md; src/app/layout.tsx (the `gt-theme` key).
-- gt-cloud: apps/dashboard/src/components/brand/FieldStack.tsx and
-  fieldController.ts; apps/dashboard/src/app/brand-tokens.css
-  (`.plate-row-in`, `brand-field-picture-in`);
-  apps/dashboard/src/app/[locale]/signin/device/_components/DeviceCodeForm.tsx.
-- gt-cloud: apps/landing/src/components/landing/sections/shared/reveal.ts
-  and bento-motion.css; apps/landing/src/components/blog/flap.ts;
-  apps/landing/src/app/globals.css (`#nd-sidebar[data-sb-ready]`).
-- gt-cloud: tooling/oxlint-plugins/gt-ui.ts (`no-smooth-scroll`,
-  `no-gif-mark`, `no-use-effect`); packages/ui/src/lib/dither.ts (the
-  engine copy with `simBase` and the held `stop()`);
-  packages/ui/src/hooks/use-mount-effect.ts.
-- gt-cloud branch k/blog-lottie-translation (PR #5068):
-  apps/landing/src/components/blog/LottieTranslationWindow.tsx,
-  lottieDocument.ts, lottieLoader.ts, ditherMask.ts.
-- wiki: skills/engineering/hyperframes-animation/SKILL.md,
-  skills/engineering/gsap-scrolltrigger/SKILL.md,
-  skills/engineering/lottie-animations/SKILL.md.
-- Claude Code memory for gt-cloud: svg-dash-gotchas, lottie-web-canvas-traps,
-  blog-lottie-figure, signin-field-transition, docs-shell-transition-traps,
-  redesign-screenshot-harness, dashboard-deck-grammar, gt-motion-films.
-  svg-dash-gotchas states the park sign backwards; the code comments in
-  FullStack.tsx and StackTower.tsx and a headless Chromium check on
-  2026-10-05 agree with section 7.
-- Kevin: the backwards dash draw-on (August 2026); no entrance animation on
-  the onboarding pages (September 2026); "make the dither transitions 2x
-  faster" (2026-09-29); the seam drag performance (2026-10-01); the dither
-  background in films (round 7, 2026-10-02); the triangle reassembly
-  (2026-10-04).
+Dated provenance for every rule is in `references/sources.md`: DESIGN.md and BRAND.md, the engines and components, the films' MOTION.md, and Kevin's dated directives with the memory notes that recorded them.

@@ -4,7 +4,9 @@ description: >-
   Every lint and gate that holds General Translation's design and copy rules,
   what each catches, where it runs and how to fix a failure: Prototemplate's
   line auditor, shell token lint, practices ratchet, picture lint, type lint,
-  gt-ui oxlint copy and page check, and gt-cloud's oxlint plugins, email
+  gt-ui oxlint copy, the public scan (lint:public), the copies manifest
+  (lint:copies), the registries check (lint:registries), the tools index
+  (lint:tools) and page check, and gt-cloud's oxlint plugins, email
   identity check and oxfmt. Also covers how a new rule becomes a lint and the
   gate hygiene that keeps a red gate from passing (chained gates, real exit
   codes, one browser gate at a time). Use before committing in either
@@ -13,8 +15,9 @@ description: >-
 metadata:
   title: Lints and gates
   areas: lints
-  updated: 2026-10-08
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Lints and gates
@@ -79,191 +82,20 @@ repositories, and gt-cloud's other plugins).
 | `pnpm lint:updated`, `pnpm test:updated` | a stale `src/lib/updated.ts`: a commit touched a book page after the day the file records, a page's path list changed, a page missing or orphaned, a path that matches nothing, a client module importing the file | `build` (the check, skipped on a shallow clone or Vercel), `lint:all` (both); `pnpm build:updated --staged` before a commit |
 | `pnpm lint:skills`, `pnpm test:skills` | a curated skill off its contract (frontmatter, Sources, em dashes, home paths, emails, a slug the wiki already holds, a missing README row), a stale `src/lib/skills.ts`, and the installer's behaviour | `lint:all` (both) |
 | `pnpm check:pages` | overflow, clipping, errors, tap targets, invariants, layout shift, interactions, the presenter's titles, every deck slide, on phones, tablets and desktops | `--preset quick` by hand on touched pages each round, the full preset on the whole site before a release |
+| `pnpm lint:registries` | drift between the registries a page, document or skill must appear in: doc and handbook headings against the search tables, `surfaces.ts` rows against the sitemap, `llms.txt`, `siteRoutes`, the icon maps and the WebP thumbnails, the first-slug regexes the browser gates read, and each skill's contract | `lint:static` |
+| `pnpm lint:tools` | a stale `docs/TOOLS.md`, the index of every pnpm command and bundled skill script that `/docs/tools` serves (`pnpm build:tools` rewrites it; skipped with a printed line under `VERCEL` or with no `.git`) | `lint:static` |
+| `pnpm lint:copies`, `pnpm test:copies` | a copy off its record in `scripts/lint/copies.json`: a `pin` (gt-cloud is the source) whose sha256 changed, a `source` or `fork` path that is gone, and two identical code files no entry covers | `lint:static` (both) |
+| `pnpm lint:public`, `pnpm test:public` | what must never be public in this public repository: key shapes (never printed, always fail), machine paths (a home folder or the system temp folder, spelled out in the script's header) and the terms of the private list at `PT_DENYLIST` (skipped under `VERCEL` or `CI`); machine paths and terms ratchet against `scripts/lint/public.baseline.json` until the switch | `build` (`--keys` only), `lint:static` (both), the pre-push hook |
+| `pnpm test:skill-scripts` | the offline test beside every script a skill bundles | `lint:static` |
 | `pnpm exec tsc --noEmit` | types | by hand, 3 to 5 minutes |
 
-`pnpm lint:all` is
-`pnpm lint:shell && pnpm lint:practices && pnpm lint:type && pnpm lint:radius && pnpm lint:heads && pnpm lint:skills && pnpm lint:updated && pnpm lint:lines:shell && pnpm lint:type:live && pnpm lint:radius:live && pnpm lint:heads:live && pnpm lint:code && pnpm lint:pictures && pnpm test:pictures && pnpm test:type && pnpm test:radius && pnpm test:heads && pnpm test:updated && pnpm test:skills`.
-`pnpm build` is `node scripts/lint/pictures.mjs && node scripts/lint/type.mjs && node scripts/lint/radius.mjs && node scripts/lint/heads.mjs && node scripts/build/updated.mjs --check && next build`. The dev
+`pnpm lint:all` is `pnpm lint:static` followed by the four live gates (`lint:lines:shell`, `lint:type:live`, `lint:radius:live`, `lint:heads:live`). `pnpm lint:static` chains every static lint and test: shell, practices, type, radius, heads, skills, registries, updated, tools, copies, public and code, then the picture, type, radius, heads, updated, skills, copies and public tests and `test:skill-scripts`; `package.json` is the authority for its order. `pnpm build` runs `public.mjs --keys`, the picture, type, radius and heads lints and `build/updated.mjs --check`, then `next build`. `pnpm gen:all` rewrites every generated file a lint checks. The dev
 server is `pnpm dev` (`next dev --turbopack --port 3005`); `lint:all` needs it
 running because of the line audit.
 
-### lint:shell
+### Each gate in detail
 
-`scripts/lint/shell.mjs` reads `src/components/shell`,
-`src/components/viewer`, `src/app/d/toolchain/sections/bento-motion.css` and
-`src/app/d/toolchain/sections/Bento.tsx` and fails on any hex, `rgb()`,
-`rgba()`, `hsl()` or `oklch()` literal. A custom property definition
-(`--x: #fff`) is where a literal belongs and passes. A line that consumes
-`var(--...)` passes unless a hex, `rgb()` or `rgba()` literal remains after
-the `var()` calls are removed, so an `hsl()` or `oklch()` beside a `var()`
-is not caught; read those lines yourself. Comment lines are skipped. The
-marker `lint-shell: allow` on a line is for a token fallback read at runtime
-and nothing else. Add a folder to `TARGETS` when it moves onto the shell
-primitives.
-
-### lint:practices
-
-`scripts/lint/practices.mjs` scans `src/**/*.{ts,tsx,css}` for nine checks:
-`button-missing-type`, `img-missing-alt`, `bare-useEffect` (outside
-`use-mount-effect`), `any-type` (`: any`, `as any`), `raw-hex-in-tsx` (a
-six-digit hex right after a quote, a backtick or an opening parenthesis in
-TS or TSX), `important-in-css`, `outer-rail-pair` (a pseudo that pushes an
-inline border pair outside its box, or a column widened past `--tc-rail`),
-`rail-outer-token` (`--tc-rail-outer`) and `retired-rail-vocabulary`
-("outer pair", "outer rail", "doubled outer", "doubled rails" on a line
-that does not say "retire"). The vocabulary check also reads `DESIGN.md`,
-`BRAND.md`, `ARCHITECTURE.md` and every `.md` under `docs/`, because the
-docs are the part that recommends. The brand's two-stroke
-connector is called "the thread" or "the doubled line", and the rule leaves
-those words alone.
-
-The ratchet compares per-file counts per check with
-`scripts/lint/practices.baseline.json` and fails when a file's count rises.
-Counts are kept per file because parallel sessions move lines all the time,
-and a per-file count stays the same when a line moves. The three rail
-checks have no baseline entries, so they stand at zero. On 2026-10-05 the
-totals are 2 buttons without a type, 0 images without alt, 8 bare effects
-against a baseline of 9 (the slack is
-`src/app/present/viewer/Scoreboard.tsx`, recorded at 1 and now at 0), 3
-`any`, 52 quoted hex values, 204 `!important` and 0 for each rail check.
-
-- `node scripts/lint/practices.mjs --update-baseline` rewrites the baseline
-  with every violation present at that moment, new ones included. Run it
-  only after a cleanup lowered counts, and read the JSON diff before
-  committing it.
-- A baseline count above the real count lets a new violation into that file
-  without a failure, so lower the baseline after a cleanup.
-- When a file or a direction is deleted, prune its baseline entries in the
-  same commit (`ARCHITECTURE.md`, `docs/SHIP-LOOP.md` section 3).
-
-### lint:lines and lint:lines:shell
-
-`scripts/lint/lines.mjs` is the line auditor. Shell mode (`--shell`) drives
-twelve routes at 1440, 1280 and 390 in both themes through the rest state,
-the list (`[`), the index panel (`R`), the search (`Cmd K`, skipped on
-`/d/production` and `/deck`), and the grid (`G`) and book (`B`) on `/` and
-`/deck`. It fails on a double (two owners, parallel, 1 to 4px apart), a
-junction (two owners on one seam), a chrome border outside `--pt-hair`,
-`--pt-hair-soft` and `--pt-edge` (ink only in an active state), a self-stack
-120px or longer, and an invisible seam. Page mode
-(`node scripts/lint/lines.mjs <url> --theme dark|light`) audits the whole
-document of any URL at 1440 and 1280 in one theme, adds missing seams, skips
-the border-role check and prints JSON.
-
-- It needs the dev server on 3005 (`--base` to change). Page mode with no
-  URL audits `http://localhost:3005/d/toolchain?chrome=0`.
-- It cannot see SVG strokes or canvas, skips elements under a 3D transform
-  or a mask, and never hovers. Figures are checked by eye at 2x crops of
-  every junction.
-- It launches `CHROME_PATH`, else the Chrome for Testing build
-  playwright-core installs (`pnpm exec playwright-core install chromium`).
-- A full run is 72 page loads with up to five states each. Use
-  `--only /docs --width 1440 --theme dark --jobs 1` while fixing, then run
-  the whole gate once.
-- Exit 1 means findings and exit 2 means the run could not judge.
-  `--report` prints the findings and drops both the findings' exit 1 and the
-  exit 2 for a state that did not open, so a clean exit under `--report`
-  proves nothing.
-
-`references/line-auditor.md` holds the thresholds, the chrome scope, the
-allow list with its reasons and how to add a route or a state.
-
-### lint:code
-
-`pnpm lint:code` runs `oxlint` 1.74.0 with `.oxlintrc.json`, which turns base
-oxlint off and loads only the gt-ui plugin from
-`scripts/lint/oxlint-plugins/gt-ui.ts`, a copy of gt-cloud's
-`tooling/oxlint-plugins/gt-ui.ts`. Thirteen rules run on `src/app/**`,
-`src/components/**` and `src/lib/**`: `single-rail`, `no-em-dash`,
-`no-eyebrow`, `no-heading-period`, `cta-title-case`, `mono-is-not-voice`,
-`no-smooth-scroll`, `no-gif-mark`, `icon-tiers`, `inter-only`,
-`no-raw-locale-flags`, `typed-text-var` and `no-hex-colors`. The archived
-directions under `src/app/d/`, `deck/` and `public/` are ignored.
-
-The exemptions carry their reasons as comments: the presenter's animated
-paging, the principles slide's flag sprite, the three files that load the
-nameplate's Fraunces and Space Grotesk and the presenter intro's faces, and
-the generated `src/lib/skills.ts` and `src/lib/motion.ts`. On 2026-10-05 the
-copy lags gt-cloud main by one change to `inter-only`, which now judges only
-the first family of a `fontFamily` list. A dry run of main's plugin over
-Prototemplate's `src` that day reported nothing, so the recopy needs no other
-edit. When gt-cloud's plugin changes, copy the whole file, run
-`pnpm lint:code` and settle what it finds in the same commit.
-
-### lint:pictures and test:pictures
-
-`scripts/lint/pictures.mjs` holds the dithered artifact pictures to
-`docs/ARTIFACT-PICTURES.md` and `scripts/media/mood-tone/standard.json`: both
-manifests (`deck/shots/tone`, `public/brand/mood`) against their grids by
-sha256 and bytes, 8-bit gray JPEGs at the placement's size and under the cap,
-the house tone settings, each grid's region stats inside its kind's window,
-the plate registry, the deck mood slides and their credits, the transition
-demo on /docs, the screen constants by declaration, the built
-`public/brand-deck.html` and the grid files it names in
-`public/deck-assets`, and the retired names. It prints `path: message`
-lines and exits 1 on any problem. `STANDARD_SHA256` pins `standard.json`,
-which is byte-identical to gt-cloud's
-`apps/dashboard/scripts/mood-tone/standard.json` on the open branch
-`k/artifact-picture-standard` (#5133); gt-cloud main has no copy yet. It
-runs before `next build`, so a picture defect stops the build.
-
-`pnpm test:pictures` (`node --test scripts/lint/pictures.test.mjs`) copies the
-files the lint reads into a temporary folder, breaks one thing per test and
-asserts the problem is reported, and asserts the repository passes. The
-standard, the cutter and how to add a picture are in the `gt-dither` skill.
-
-### The type lint
-
-`scripts/lint/type.mjs` holds the site's type to the rsms InterVariable
-through the tokens in `src/components/viewer/tokens.css`. It was written
-on 2026-10-05, when Kevin asked to enforce the correct Rasmus Inter. The
-static mode runs in `build` and `lint:all` (`pnpm lint:type`), the live
-mode reads every shell route at 1440 and 390 (`pnpm lint:type:live`), and
-`pnpm test:type` runs its tests. The script's header comment is the
-authority; the type system it holds is in `gt-brand` (`references/type.md`).
-
-- Usage: `node scripts/lint/type.mjs [--report] [--update-baseline] [--root <dir>]`.
-  Static mode reads `src/**/*.{css,ts,tsx}` minus `ALLOW_FILES`, prints
-  `file:line RULE message`, and exits 0 on a pass, 1 on failures and 2 on
-  an infrastructure failure.
-- Hard rules T1 to T9: every family reads a type token or `inherit`; no family
-  is named Inter, InterVariable, Inter var, Inter Display or Lausanne, and no
-  `@font-face` has a `local()` source; `src/lib/fonts.ts` binds `ptInter`, no
-  binding is named after an installed family, and every other `localFont` sets
-  `preload: false`; `font-feature-settings` reads `--pt-ff-text` or
-  `--pt-ff-display`; no `font-variation-settings` and no `font-optical-sizing: none`;
-  no weight above 500 outside the nameplate and the specimens; `h1` and
-  `h2` rules take their size, line height and tracking from the `--pt-d*`
-  tokens and never set a family or features; no positive tracking on Inter;
-  mono only on code elements and the named `MONO` selectors.
-- Ratchets R1 to R3 count literal px `font-size`, `letter-spacing` and
-  `line-height` per file against the baseline. A rise fails, a drop asks
-  for `--update-baseline`, and a missing baseline fails.
-- The exceptions are named objects with reasons: `ALLOW_FILES` (the `/d/`
-  directions, the shared components only directions mount, other sessions'
-  folders, the presenter), `NAMEPLATE`, `GROTESK_LABELS`, `SPECIMENS` and
-  `MONO`. The escape hatch is `/* lint-type: allow <reason> */` on the line
-  or the line above, and an empty reason fails.
-
-### lint:skills and test:skills
-
-`pnpm lint:skills` (`build/skills.mjs --check`) fails a skill off the
-contract its header lists (frontmatter, Sources, no em dash, no home-folder
-path or email, no slug the wiki's runtime list holds, a README row) and a
-stale `src/lib/skills.ts` or `skills/README.md`. `pnpm test:skills` tests the installer in
-temporary folders.
-
-### check:pages
-
-`pnpm check:pages` (`scripts/check/pagecheck/`) loads every page on the dev server on the device table in `scripts/lib/site-pages.mjs`, phones from 320 wide to the 3440 ultrawide, a phone or a tablet counts as a touch device at any width, and `--preset quick` is the everyday run. What each cell reads, the presenter walk, the deck slides, the inline layout-shift limit and the report are in `references/page-check.md`.
-
-### tsc
-
-`pnpm exec tsc --noEmit` takes 3 to 5 minutes. `tsconfig.json` includes
-`**/*.ts` and excludes `node_modules` and `scripts/lint/oxlint-plugins`, so the
-plugin copy is never type-checked here and a `.ts` file under `skills/`
-would be. Skill helpers are `.mjs`; a `.ts` file there needs `skills` added
-to the exclude list.
+`references/prototemplate-gates.md` holds each gate's reads, flags, exit codes and traps: `lint:shell` (the `lint-shell: allow` marker is for a runtime token fallback only, and an `hsl()` or `oklch()` beside a `var()` is not caught), `lint:practices` (the per-file ratchet; `--update-baseline` only after a cleanup, with the JSON diff read, and pruned entries in the same commit as a deletion), the line auditor (exit 1 is findings, exit 2 means it could not judge, and a clean exit under `--report` proves nothing), `lint:code` (copy gt-cloud's whole plugin when it changes and settle the findings in the same commit), the picture lint, the type lint (the script header is the authority), `lint:skills`, `check:pages` and `tsc`. The new gates' headers are their authority too: `scripts/lint/public.mjs`, `scripts/lint/copies.mjs`, `scripts/lint/registries.mjs`, `scripts/build/tools.mjs` and `scripts/skills/script-tests.mjs`.
 
 ## 3. gt-cloud gates
 
@@ -320,20 +152,22 @@ pull request that adds it. CI fails a pull request on any unformatted file,
 so run `pnpm exec oxfmt <changed files>` before pushing; a file missed that
 way gets its own `style(...)` commit.
 
-### Gates on open branches (2026-10-05)
+### Gates on open branches
 
-- #5133 (`k/artifact-picture-standard`) adds
+Each fact below holds only on its branch, tagged with the pull request's state as read on 2026-10-10 (`gh pr view <n>`); read the state again before relying on one, and move the fact into the sections above once the pull request merges.
+
+- #5133 (`k/artifact-picture-standard`, open on 2026-10-10) adds
   `node scripts/check-artifact-pictures.mjs` (`pnpm check:artifact-pictures`)
   to `pnpm lint` and `pnpm lint:fix`, gt-cloud's counterpart of the picture
   lint.
-- #4977 (`k/dashboard-shell-ia`) adds `gt-ui/no-theme-icons` to every UI
+- #4977 (`k/dashboard-shell-ia`, open on 2026-10-10) adds `gt-ui/no-theme-icons` to every UI
   folder (no Sun or Moon imports from Lucide or Heroicons; the theme switch
   draws the circle glyphs of the shared `ThemeToggle`) and turns
   `inter-only`, `no-em-dash`, `no-eyebrow`, `typed-text-var`,
   `no-hex-colors`, `mono-is-not-voice`, `no-smooth-scroll`,
   `no-heading-period`, `no-gif-mark` and `icon-tiers` on for all of
   `apps/dashboard`.
-- #5029 (`k/dashboard-icon-tiers`) turns `icon-tiers` on for all of
+- #5029 (`k/dashboard-icon-tiers`, open on 2026-10-10) turns `icon-tiers` on for all of
   `apps/dashboard`.
 
 Read the branch's `package.json` and `.oxlintrc.json` before judging a
@@ -449,32 +283,9 @@ holds), `gt-dither` (the picture standard the picture lint holds),
 `gt-aesthetic` and `gt-components` (the line law and tokens the auditor
 reads), `gt-diagrams` (the SVG figures the auditor cannot see), `gt-voice`
 (the copy rules behind `no-em-dash`, `no-heading-period` and
-`cta-title-case`), `gt-landing-pages` (gt-cloud's landing conventions). Wiki
-skills it depends on: `agent-browser` (the visual check the auditor cannot
-make).
+`cta-title-case`), `gt-landing-pages` (gt-cloud's landing conventions),
+`gt-verify` (the visual check the auditor cannot make, in a real browser).
 
 ## Sources
 
-- Prototemplate: `package.json` (scripts); `scripts/lint/lines.mjs`;
-  `scripts/lint/shell.mjs`; `scripts/lint/practices.mjs` and
-  `scripts/lint/practices.baseline.json`; `scripts/lint/pictures.mjs` and
-  `scripts/lint/pictures.test.mjs`; `.oxlintrc.json`;
-  `scripts/lint/oxlint-plugins/gt-ui.ts`; `scripts/check/pagecheck/README.md`;
-  `docs/SHIP-LOOP.md` sections 0 to 4 and 7; `DESIGN.md` sections 2, 3, 7
-  and 15; `docs/ARTIFACT-PICTURES.md` ("The lint"); `ARCHITECTURE.md`
-  (the direction registry); commits 8c989de (2026-09-28), 946b1c9
-  (2026-10-01), d0f6c7e and f8dfa8b (2026-10-05).
-- gt-cloud (main): `package.json` (`lint`, `lint:fix`, `format`);
-  `.oxlintrc.json`; `.oxfmtrc.json`; `lefthook.yml`;
-  `.github/workflows/ci.yml`; `scripts/check-email-identities.mjs`;
-  `tooling/oxlint-plugins/gt-ui.ts` and `gt-ui.test.ts`; #5007 (0cfb5844a,
-  2026-09-29). Open branches, read 2026-10-05: `k/artifact-picture-standard`
-  (#5133), `k/dashboard-shell-ia` (#4977), `k/dashboard-icon-tiers` (#5029).
-- Prototemplate working tree, 2026-10-05: `scripts/lint/type.mjs` (its header
-  comment and `ALLOW_FILES`), written in the type round; `tsconfig.json`.
-- Claude memory notes: landing-icon-rule, ship-loop-hard-gates,
-  page-check-system, dashboard-deck-grammar, artifact-picture-standard.
-- Kevin's directives: 2026-09-28 ("lint for this properly now", the single
-  rail), 2026-10-01 ("carry over the system of checking the pages into
-  prototemplate"), 2026-10-05 (the artifact picture standard, the correct
-  Rasmus Inter).
+Dated provenance for every rule is in `references/sources.md`: the lint scripts and their headers, `package.json`, the gt-cloud plugins and CI, and Kevin's dated directives.

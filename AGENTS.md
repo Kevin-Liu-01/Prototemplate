@@ -52,9 +52,9 @@ The skills live in `skills/<slug>/SKILL.md`. In this repository they are already
 | A blog or launch graphic | `gt-graphics` |
 | Dithered fields and artifact pictures | `gt-dither` |
 | A film, trailer, promo or demo GIF | `gt-films` |
-| A diagram | `gt-diagrams` |
-| An isometric drawing | `gt-isometric` |
+| A diagram or an isometric drawing | `gt-diagrams` |
 | UI components and how product UI behaves | `gt-components` |
+| A product surface (sign-in, onboarding, the dashboard) and reviewing its states | `gt-product-surfaces` |
 
 ## The handbook
 

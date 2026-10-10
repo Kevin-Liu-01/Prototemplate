@@ -78,6 +78,10 @@ const nextConfig: NextConfig = {
       // served by src/app/skills/[slug]/[...path]/route.ts. A retired slug
       // lands on that route's 404.
       { source: '/skills/:slug([a-z0-9-]+).md', destination: '/skills/:slug/SKILL.md', permanent: true },
+      // gt-isometric merged into gt-diagrams on 2026-10-10; its page, its
+      // SKILL.md and its reference files all land on the merged skill.
+      { source: '/skills/gt-isometric', destination: '/skills/gt-diagrams', permanent: true },
+      { source: '/skills/gt-isometric/:path*', destination: '/skills/gt-diagrams', permanent: true },
       // The build log merged into the readme on /docs.
       { source: '/craft', destination: '/docs', permanent: true },
     ];

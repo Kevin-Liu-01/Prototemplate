@@ -1,0 +1,20 @@
+# Sources
+
+Where every line of `SKILL.md` and the files beside it comes from. Each line added after 2026-10-07 names its memory, transcript or inventory row and its date.
+
+## Sources of the skill as written through 2026-10-07
+
+- Prototemplate: `deck/parts/head.html` (tokens, type, rows, book view, viewer chrome); `deck/DECK-GRAMMAR.md` (type, color, layout classes, "What a defect is"); DESIGN.md sections 1, 2, 3, 12, 15 and 16; BRAND.md sections 3, 5, 6 and 8; `docs/ARTIFACT-PICTURES.md`; `docs/SHIP-LOOP.md`; `src/components/viewer/tokens.css`; `scripts/lint/lines.mjs`; `scripts/check/pagecheck/`.
+- gt-cloud, origin/main: `apps/dashboard/src/app/brand-tokens.css` (the plate's tokens, ladder and frame); `apps/dashboard/src/components/brand/FieldStack.tsx`; `tooling/oxlint-plugins/gt-ui.ts` (`consistent-radius`, `icon-tiers`, `no-gif-mark`, `no-eyebrow`, `mono-is-not-voice`); `apps/landing/src/lib/studio-field.ts`, `components/landing/shared/HeroField.tsx`, `home/sections/hero-terminal.css` and `home/v0-pages.css` (the hero's field); `packages/ui/src/components/frame/ThemeToggle.tsx`. The branch `k/dashboard-shell-ia` holds `packages/ui/src/lib/studio-field.ts` and the `no-theme-icons` rule.
+- Prototemplate's `.oxlintrc.json` (the gt-ui rules `pnpm lint:code` runs) and `package.json`.
+- Kevin's wiki, whose skills load from `~/.claude/skills`: `skills/engineering/design-engineering-polish/SKILL.md` and `references/signature-first-exploration.md`; `skills/engineering/make-interfaces-feel-better/SKILL.md`.
+- Kevin's taste rules on voids, density, optical placement, attached edges and one component across modes: 2026-07-31, 2026-08-05, 2026-08-07, 2026-08-12, 2026-08-13, 2026-08-17 and 2026-10-05, from his messages to Claude Code and Codex; the radius law and the book page standard (2026-10-05 and 2026-10-06, `references/verdicts.md`).
+- Kevin's dated directives (2026-08-04, 08-06, 08-11, 08-12, 08-17, 08-26, 09-04, 09-08, 09-09, 09-14, 09-18, 09-25, 09-28, 09-29, 09-30, 10-05), quoted in `references/verdicts.md`, checked against his Claude Code session transcripts on 2026-10-05, and recorded in his gt-cloud memory notes `dashboard-deck-grammar`, `redesign-v0-verdict`, `k-pages-restart-round`, `brand-questionnaire-directives`, `variants-program-state`, `deco-exploration-round`, `explorations-stay-local`, `signin-field-transition`, `prototemplate-interface-system`, `artifact-picture-standard`, `plain-technical-english`, `landing-inter-only`, `mobile-type-ladder`, `page-check-system`, `redesign-screenshot-harness` and `pr-screenshots-and-gallery`.
+- Kevin, 2026-10-07: "fix the dossier references" (`references/verdicts.md`). gt-cloud #4213 built the production landing from the Dossier, and the redesign stack took that landing as canonical on 2026-08-11 (`docs/handbook/decisions.md`).
+
+## Lines added on 2026-10-10 (system v2, lane L4)
+
+- Section 5, "Simplify, and keep the page", first bullet: Kevin's memory note `always-simplify` (written 2026-10-06 from gt-cloud #5191, the caption-card morph, merged 2026-10-07); system v2 inventory `memories.json` row "always-simplify", plan row N-8.
+- Section 5, "Simplify, and keep the page", second bullet: Kevin's memory note `careers-team-photo` (2026-10-08, gt-cloud #5226, second pass); inventory `memories.json` row "careers-team-photo", plan row N-8. The note on "enhance fully" for new work: `docs/handbook/operating-principles.md` (Kevin, 2026-08-05), which the inventory row flags as a different instruction.
+- Section 2's table moved to `references/verdicts.md`, the rhythm table to `references/measures.md`, and the local review, Kevin's asks, showing the work and the general skills to `references/process.md`, unchanged, to keep the body under the 24,000-byte budget (plan section 2.2).
+- Related skills: `gt-verify` replaces `agent-browser` as the visual check, because GT sessions verify with Playwright probes (inventory `skills.json` row 38, plan row N-28). the isometric skill merged into `gt-diagrams` on 2026-10-10 (plan section 2.2).

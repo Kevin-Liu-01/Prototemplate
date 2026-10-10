@@ -68,6 +68,14 @@ conventions stay in gt-cloud's `.agents/skills/gt-dashboard`.
 - Every contact form matches the enterprise form.
 - A third-party embedded form (Stripe Elements) takes the house field look
   through its appearance API (2026-10-01).
+- A third-party widget's theme follows the site's theme toggle, never the
+  OS. Cloudflare Turnstile's `theme: 'auto'` reads `prefers-color-scheme`, so
+  it drew a white card on a dark page whenever the two disagreed (the sign-in
+  form, 2026-08-14). Pass `resolvedTheme` from next-themes as the widget's
+  theme, default to light before mount, and key the widget on the theme so it
+  remounts when the theme lands or flips (`sign-in-form.tsx` on gt-cloud
+  main). This is the one place the resolved theme is read, because the widget
+  takes no CSS.
 
 ## 7. Lists and tables
 

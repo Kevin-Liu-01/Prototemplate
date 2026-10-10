@@ -2,6 +2,39 @@
 
 The drawings that already exist, where they live, what each one shows and where its one accent goes. Mount one of these before drawing anything new. Paths are relative to `$PROTOTEMPLATE` unless a row names `$GT_CLOUD`.
 
+
+## Which component shows what
+
+Moved from `SKILL.md` section 2 on 2026-10-10, unchanged. Find the content in the left column and mount the component.
+
+| content | mount | file under `src/app/d/toolchain/diagrams/` |
+| --- | --- | --- |
+| source file to translated locale files | TranslationFlow | `TranslationFlow.tsx` |
+| locale prefixes, localized paths, detection order | LocaleRouting | `LocaleRouting.tsx` |
+| text expansion and layout width | SentenceWidth, ExpansionBars | `lang/` |
+| one string, two meanings, context decides | ContextResolve | `lang/ContextResolve.tsx` |
+| plural rules | PluralForms | `lang/PluralForms.tsx` |
+| right to left layout | RtlMirror | `lang/RtlMirror.tsx` |
+| writing systems, one term in every locale | ScriptSampler, WordMorph | `lang/` |
+| glossary, live translation, previews, detection hook | GlossarySurface and the other surfaces | `surface/` |
+| delivery from the edge | EdgeGlobe | `EdgeGlobe.tsx` |
+| the full stack | TcStackIso | `tc-stack-iso.tsx` |
+| context inheritance | TcCtxLayers (unmounted) | `tc-ctx-layers.tsx` |
+| the SDKs | SdkLedger; SdkStack (unmounted) | `SdkLedger.tsx`, `SdkStack.tsx` |
+| a number, a benchmark | StatRow; BenchmarkBars (unmounted) | `StatRow.tsx`, `BenchmarkBars.tsx` |
+| a locale's name anywhere | LocaleTag | `../components/LocaleTag.tsx` |
+| any connector | DoubledLine | `src/components/shared/diagrams/DoubledLine.tsx` |
+| isometric objects | IsoFrame, IsoSolid, `iso.ts` | section 10 and `references/isometric.md` |
+
+
+## Where the components run live
+
+Moved from `SKILL.md` section 2 on 2026-10-10, unchanged.
+
+- **The build log on `/docs`** (the readme's last sections; `/craft` redirects there). The libraries section mounts the DoubledLine plate (`src/app/craft/ThreadsDemo.tsx`), the iso plate and EdgeGlobe. `RailFigure.tsx` and `CornerFigure.tsx` draw the ownership law and the border crosses. `docs/LIBRARIES.md` indexes every instrument.
+- **The deck.** The slide files `30-lines.html` (line rules), `31-doubled-line.html`, `33-diagrams.html` (the diagram grammar and four examples), `35-iso.html` and `76-line-law.html` (the line law in chrome) in `deck/slides/`. They are slides 30, 31, 33, 35 and 74: a file's number prefix is its sort key, and past slide 35 it no longer equals the slide's position. Start a new slide diagram from their markup.
+- **gt-cloud.** The landing app carries ports (StackTower, Locadex, ContextResolve, EdgeGlobe, SentenceWidth, PricingStackDiagram, EnterpriseContextFork) with the same thread tokens in `apps/landing/src/components/landing/shell/engine.css`. gt-cloud's `.agents/skills/gt-landing` is their code map.
+
 ## The toolchain family
 
 `src/app/d/toolchain/diagrams/` is the canon. The production home (`/d/production`), the v0 home (`/d/_v0`, which the Dossier mounts) and about a dozen directions import from it, and gt-cloud's landing ports of these drawings came from it. Five directions keep forked copies of the `lang/` or `surface/` set in their own `diagrams/` folder (glyph-rain, hourglass, prism-light, dither-field, event-horizon); a change to the original does not reach them.
@@ -30,8 +63,8 @@ Rows marked unmounted are imported by no route in Prototemplate today. They are 
 | LiveSurface, PreviewSurface, CustomSurface | `surface/*.tsx` | A live round trip with its cost; the Spanish preview beside its English source; the detection hook as code. | None; the four panels share the glossary pin's accent |
 | BenchmarkBars (unmounted) | `BenchmarkBars.tsx` | Horizontal bars extruded on the family's 30 degree vector. | One row |
 | StatRow | `StatRow.tsx` | A large number, a quiet label and a hairline. The number is the figure; no glyph beside it. | None |
-| IsoFrame, IsoSolid, iso | `IsoFrame.tsx`, `IsoSolid.tsx`, `iso.ts` | The isometric frame (240 by 180 viewBox, stroke 1.2, currentColor), `IsoSlab`, `IsoPlane`, `IsoWire`, `IsoArrow`, and the projection kit. Covered by gt-isometric. | The `accent` prop |
-| DitheredMark | `DitheredMark.tsx` | A brand mark as an alpha mask with the Bayer specular shimmer. Covered by gt-isometric and gt-dither. | The mark |
+| IsoFrame, IsoSolid, iso | `IsoFrame.tsx`, `IsoSolid.tsx`, `iso.ts` | The isometric frame (240 by 180 viewBox, stroke 1.2, currentColor), `IsoSlab`, `IsoPlane`, `IsoWire`, `IsoArrow`, and the projection kit. Covered by `isometric.md`. | The `accent` prop |
+| DitheredMark | `DitheredMark.tsx` | A brand mark as an alpha mask with the Bayer specular shimmer. Covered by `isometric.md` (section 6) and gt-dither. | The mark |
 | LocaleTag | `../components/LocaleTag.tsx` | The one locale pill: flag print and code. Every diagram names a locale with it. | None |
 
 The headers of these files record why each drawing has its shape and which earlier version it replaced. Read the header before changing a drawing.

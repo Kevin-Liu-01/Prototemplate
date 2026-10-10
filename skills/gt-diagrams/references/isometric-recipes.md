@@ -1,6 +1,6 @@
 # Isometric recipes
 
-Copyable code for the gt-isometric skill. Every snippet uses the real kit API. In Prototemplate the kit imports from `@/app/d/toolchain/diagrams/iso`; in the gt-cloud landing it imports from `@/components/landing/shared/iso`. Class names are examples; keep paint in CSS and pass only per-plate numbers inline.
+Copyable code for the isometric family (`isometric.md` beside this file). Every snippet uses the real kit API. In Prototemplate the kit imports from `@/app/d/toolchain/diagrams/iso`; in the gt-cloud landing it imports from `@/components/landing/shared/iso`. Class names are examples; keep paint in CSS and pass only per-plate numbers inline.
 
 ## 1. An opaque plate
 

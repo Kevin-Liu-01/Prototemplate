@@ -1,28 +1,10 @@
----
-name: gt-isometric
-description: >-
-  The General Translation isometric family: the 30 degree projection in
-  iso.ts, light from the upper left with fixed face tones (4, 9 and 15
-  percent), the extrusion recipe (opaque hull, face fills, hairlines),
-  IsoPrism and plane(), one corner radius, plate thickness and air, depth by
-  per-plate stroke alpha, one accent object per drawing, brand marks seated as
-  alpha masks, the DitheredMark Bayer shimmer, the build and scan animations,
-  and the reference drawings (the Locadex iso, the stack tower, the governed
-  column, the pricing platform, the kit plate, the docs film bridge). Use when
-  drawing, animating or reviewing any isometric figure for a GT page, slide,
-  graphic or film.
-metadata:
-  title: Isometric drawings
-  areas: isometry, diagrams
-  updated: 2026-10-07
-  origin: prototemplate
----
-
 # Isometric drawings
+
+This file was a skill of its own (Isometric drawings) until 2026-10-10, when it merged into `gt-diagrams`; its sections keep their numbers, so "section 5" of the isometric family is section 5 here. It is the whole isometric family: read it before drawing, animating or reviewing any isometric figure for a GT page, slide, graphic or film.
 
 General Translation (GT) builds the full stack for localization: i18n libraries, context-aware translation APIs, a CDN that serves translations, and Locadex, an AI agent that internationalizes a code repository and opens a pull request with the changes (BRAND.md section 9). Kevin is Kevin Liu at GT; his verdicts on the drawings are quoted below with their dates. GT draws every three-dimensional figure in one isometric family: one 30 degree projection, one light direction, one corner radius and one plate material, so drawings on the landing, in the deck and in the films read as one set. The geometry lives in one kit, `iso.ts`, which every React figure imports; the films repeat the same map in their own HTML. The Locadex isometric is the reference standard: it was the one element of the first v0 build that Kevin approved (2026-08-04).
 
-Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`, github.com/Kevin-Liu-01/Prototemplate, Kevin's design hub with the canon in DESIGN.md and BRAND.md) unless they name `$GT_CLOUD` (a checkout of github.com/generaltranslation/gt-cloud at origin/main, the monorepo whose `apps/landing` serves generaltranslation.com). Copyable code for every recipe below is in `references/recipes.md`.
+Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`, github.com/Kevin-Liu-01/Prototemplate, Kevin's design hub with the canon in DESIGN.md and BRAND.md) unless they name `$GT_CLOUD` (a checkout of github.com/generaltranslation/gt-cloud at origin/main, the monorepo whose `apps/landing` serves generaltranslation.com). Copyable code for every recipe below is in `isometric-recipes.md` beside this file.
 
 Order of work for a new drawing:
 
@@ -256,20 +238,8 @@ The toolchain stack (`src/app/d/toolchain/diagrams/tc-stack-iso.tsx`, route `/d/
 
 ## Related skills
 
-GT skills in this set: `gt-diagrams` (the doubled-line connector and flat diagrams), `gt-dither` (the Bayer language and its engines), `gt-motion` (GSAP and scroll rules), `gt-films` (the HyperFrames films), `gt-brand` (marks, color, the accent) and `gt-lints` (the line auditor). General skills in Kevin's wiki that this one depends on: `create-graphics`, `design-engineering-polish`, `hyperframes-animation`, `hyperframes-keyframes` and `agent-browser`.
+GT skills in this set: `gt-diagrams` (this file's skill: the doubled-line connector and flat diagrams), `gt-dither` (the Bayer language and its engines), `gt-motion` (GSAP and scroll rules), `gt-films` (the HyperFrames films), `gt-brand` (marks, color, the accent) and `gt-lints` (the line auditor). General skills in Kevin's wiki that this one depends on: `create-graphics`, `design-engineering-polish`, `hyperframes-animation`, `hyperframes-keyframes` and `gt-verify` (the browser checks).
 
 ## Sources
 
-- Prototemplate: DESIGN.md sections 2 (the line law and the auditor's blind spot for SVG), 6 (the isometric family), 7 (the 1-bit language), 9 (motion discipline and the dash rules) and 14 (the two read lines).
-- Prototemplate: BRAND.md section 4 (marks as alpha masks, the shimmer as the one flourish), section 5 (the accent and its dark-band lift), section 8 (where the identity ships, with the Dossier, `/d/singularity-dossier`, as the direction the site grew from) and section 9 (the direction line and the avoid list, including glassmorphism).
-- Prototemplate: `src/app/d/toolchain/diagrams/iso.ts`, `IsoSolid.tsx`, `IsoFrame.tsx`, `iso.css`, `DitheredMark.tsx` and `tc-stack-iso.tsx`.
-- Prototemplate: `src/app/d/_v0/sections/Locadex.tsx`, `locadex.css`, `StackTower.tsx`, `FullStack.tsx` and `fullstack.css`; the production copies in `src/app/d/production/sections/`.
-- Prototemplate: `src/app/d/toolchain/enterprise/GovernedColumn.tsx`, `src/app/d/toolchain/locadex/LocadexIso.tsx`, `src/app/craft/IsoDemo.tsx`, `src/app/craft/craft.css` and `src/app/craft/libraries.ts` (the kit entry shown on /docs).
-- Prototemplate: `deck/slides/35-iso.html` (the brand deck's iso slide) and `docs/figma-v0-spec.md` (Locadex is an isometric diagram, never a gif).
-- Prototemplate, local: `motion/films/blog-designing-docs/index.html`, the bridge block (round 7d).
-- gt-cloud: `apps/landing/src/components/landing/shared/iso.ts`, `DitheredMark.tsx` and `DitheredLedgerMark.tsx`; `apps/landing/src/components/landing/sections/fullstack/StackTower.tsx`; `apps/landing/src/components/landing/sections/locadex/Locadex.tsx`; `apps/landing/src/components/pages/pricing/PricingStackDiagram.tsx` and `pricing-page.css`; `.agents/skills/gt-landing/references/design.md` (the landing's code map).
-- Kevin, 2026-08-04: the first v0 build's only approved element was the Locadex animation, which "should have the locadex logo on it"; Locadex is never a gif.
-- Kevin, 2026-08-11: the k/ pages restart. Pricing had "nothing redeeming but the isometrics"; marks are seated as alpha masks (the small PNG assets, never a flat logo overlay); seated words at chip scale are illegible.
-- Kevin, the tower and Locadex rounds of 2026, quoted in the comments of `StackTower.tsx`, `FullStack.tsx` and `Locadex.tsx`: tags lie on the layers, the scanner stays inside the slab, the shimmer crosses the whole mark, the warm-to-accent pulse read as flashing, the top plate full size, no words by the diagram, the figure never moves down.
-- Kevin, 2026-10-02: bring the isometric view back into the designing-docs film as a bridge, replacing nothing.
-- Kevin's memory notes in Claude Code: `redesign-v0-verdict` (2026-08-04), `k-pages-restart-round` (2026-08-11, the seated-mark technique) and `gt-motion-films` (the 2026-10-02 request and round 7d landing on 2026-10-03).
+The dated provenance of this file is in `sources.md` beside it ("Isometric drawings").

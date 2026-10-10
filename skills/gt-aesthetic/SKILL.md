@@ -14,8 +14,9 @@ description: >-
 metadata:
   title: Taste and the review standard
   areas: aesthetic, website, landing, components
-  updated: 2026-10-07
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Taste and the review standard
@@ -55,31 +56,7 @@ Kevin named the deck as a reference: "i really love our deck's navigation and ba
 
 ## 2. What Kevin rejected
 
-Each row is a verdict on real work and the rule it set. The full wording and context of each is in `references/verdicts.md`. Work that he rejected restarts from the reference, and the rejected version is never the base of the next attempt.
-
-| Date | What he rejected | The rule since |
-| --- | --- | --- |
-| 2026-08-04 | Sections that kept the copy and drifted from the Figma mock layouts | A mock image is a layout spec: the composition, what sits left and right, which visual sits where |
-| 2026-08-04 | Three-line headers, headers floating in whitespace, floating bordered cards, broken border grammar and double borders | Display heads hold two lines at most, rules run edge to edge, heads sit in ruled bands, one line per seam |
-| 2026-08-04 | The Locadex isometric without its mark | Marks are seated into the drawing; Locadex is never a gif |
-| 2026-08-11 | Redrawn diagrams ("these diagrams are so bad"), "ugly ai gradients", bad spacing, invented enterprise content, a sign-in that "looks exact same" | Content from production, layout from the toolchain and the Dossier, only the praised diagrams kept, no invented product vignettes |
-| 2026-08-11 | The same diagrams, which laid flat logos over isometric drawings; the restart that followed seated them | A mark is an alpha mask in the face's plane, filled with a token |
-| 2026-08-11 | The avoid list: mono as the brand voice, smooth scrolling, robot and sparkle AI icons, flag soup, AI gradients and glass, eyebrows, em dashes | Most items are gt-ui lint rules in gt-cloud and in Prototemplate's `pnpm lint:code` (`no-smooth-scroll`, `no-eyebrow`, `mono-is-not-voice`, `no-em-dash`, `no-raw-locale-flags`, `icon-tiers`); AI icons, gradients and glass have no rule and are checked by eye (`gt-lints`) |
-| 2026-08-12 | Keeping the variant system after he picked one variant per page | The alternatives leave the code and stay in git history |
-| 2026-08-17 | Pages that never had a second pass, and monospace in page copy | Every page gets a second pass against the reference |
-| 2026-08-26 | The docs draft | Smaller text with more leading, no mono, diagrams and real icons, the shell's grid lines |
-| 2026-09-04 | An oval shadow behind a blog graphic's subject | No drawn shadows; depth comes from lines and the dither |
-| 2026-09-14 | Exploration rounds that were a costume, ten skins of one page, or the wrong lineage, pushed to main unseen | Directions differ in silhouette, material and action, and rounds stay local until he lands them |
-| 2026-09-18 | Switzer beside Inter | Inter is the only face |
-| 2026-09-25 | The first dashboard: boxed tiles and cells, titanium hairlines on every edge, uppercase mono eyebrows, registration crosses floating in the app, flat -0.028em tracking at every size, ink-4 text, two stacked scope switchers, chevron groups | The deck's grammar on every product surface (section 3) |
-| 2026-09-25 | A heavy horizon ring as the app's material | The landing hero's field sets the strength of any material, and a surface carries one |
-| 2026-09-28 | Sun and moon theme icons; 13px card facts; fade-and-rise entrances; a top header over onboarding; fills on layout containers | The ◐ and ◑ glyphs; the 12px rung; no entrance animation; the mark in the plate's head; no container fills |
-| 2026-09-29 | Pictures that do not fit the page ("the great wave for example does not really make sense here"); texture cut away around type; layout shift between states | A picture shows writing, language or the earth; faint texture across the whole face; reserved heights and a fixed foot |
-| 2026-09-30 | Picture plates over two lines and copy tying a picture to GT ("the corny stuff") | A title, one factual sentence about the artifact, a credit |
-| 2026-09-30 | Two gaps evened at the smaller 10px | Matching measures both take the larger one |
-| 2026-10-05 | Pictures of plain English prose ("never distract with text on the artifacts") | The dictionary pictures are retired and the picture lint rejects them |
-| 2026-10-05 | Book heads with a seven-line lead and a floating subtitle | A lead of two or three lines at 60 to 70 characters, the rest in the body |
-| 2026-10-07 | The Dossier named as the reference for the brand and the site, after the brand had moved past it | The shipped site is the reference for landing and marketing pages, and the Dossier stays in the gallery as the direction the site grew from |
+Each verdict on real work set a rule, and work he rejected restarts from the reference: the rejected version is never the base of the next attempt. The table of verdicts (date, what he rejected, the rule since) opens `references/verdicts.md`, and the full wording and context of each follows it. Read the rows for the kind of surface before building one; sections 3 and 4 and the review checklist carry the rules they set.
 
 ## 3. What reads as GT
 
@@ -115,16 +92,7 @@ A page reads as General Translation through its structure, its contrast and its 
 
 ### Rhythm
 
-These numbers come from the references, and the live file wins whenever one of them matters to the work.
-
-| Where | Measure |
-| --- | --- |
-| Deck sheet | 72px top and bottom and 80px side padding; 56px between head and body; 72px between columns; 18px under an `h2` and between paragraphs; rows 16px block padding with a 32px column gap |
-| Deck book head | title 44/1.04; lead 14px below at 15.5/1.5 in ink-2; 26px to the head's rule; 36px between blocks |
-| Dashboard | Plate pages (sign-in and onboarding): 48px column padding; 40px from the mark to the heading; 26px between a heading and its lede; 40px before a form; 28px between fields; 10px under a label; 44px inputs and primary buttons. Under 880px tall the column padding is 32 and 24, the mark gap 30, the heading gap 16 and the form gap 24. App pages: 40px section padding, 40px sidebar rows, 14px ledger cells |
-| Mobile | the `--tcm-*` ladder under 720px (DESIGN.md section 12); no copy within 20px of a hairline; 44px tap targets |
-
-Kevin's ask on 2026-09-28 was "make our spacing a lot better, kerning a lot better". Gaps that look equal must be equal, and the gaps around one heading match on both sides.
+The spacing numbers of the deck sheet, the deck book head, the dashboard plate and app pages, and the mobile ladder are in `references/measures.md` ("Rhythm across the references"); the live file wins whenever one of them matters. Kevin's ask on 2026-09-28 was "make our spacing a lot better, kerning a lot better". Gaps that look equal must be equal, and the gaps around one heading match on both sides.
 
 ### Voids, density and placement
 
@@ -136,7 +104,7 @@ Kevin's ask on 2026-09-28 was "make our spacing a lot better, kerning a lot bett
 
 ### Marks, icons and copy
 
-- A GT or Locadex mark renders from the brand components, or is seated into a drawing as an alpha mask in the face's plane. A flat logo laid over a drawing and a mark as a gif are both out (gt-ui `no-gif-mark`). `gt-brand` and `gt-isometric` hold the recipes.
+- A GT or Locadex mark renders from the brand components, or is seated into a drawing as an alpha mask in the face's plane. A flat logo laid over a drawing and a mark as a gif are both out (gt-ui `no-gif-mark`). `gt-brand` and `gt-diagrams` (`references/isometric.md`) hold the recipes.
 - Icons in gt-cloud follow the two tiers of gt-ui `icon-tiers`: Heroicons solid for meaning and Lucide for controls. The deck and the Prototemplate shell use Heroicons 20 solid, and in the deck an icon sits only in a key cell or at the start of a row.
 - Flags appear only as functional locale chips through the locale components.
 - The theme control draws ◐ and ◑.
@@ -178,43 +146,18 @@ Kevin's ask on 2026-09-28 was "make our spacing a lot better, kerning a lot bett
 - Prototemplate's checkout is shared by several sessions. Stage explicit paths and never `git add -A`.
 - A step's artifact, a flow's steps and a page's sections keep their places unless Kevin moves them (2026-09-30).
 
-### Local review
+### Simplify, and keep the page
 
-- Prototemplate runs on `http://localhost:3005` (`pnpm dev`, launch config `prototemplate-dev`). Reuse the running server: Next 16 refuses a second `next dev` for the same checkout.
-- gt-cloud apps run on their own dev servers (gt-cloud `.agents/skills/gt-landing` and `gt-dashboard`).
-- Shoot both themes at 1440 and 390. Plate pages are also shot at 1527 by 814, Kevin's laptop viewport. When he sends a screenshot, reproduce its state and size and fix the defect at that size.
-- Shoot with an external harness (playwright-core with Chrome for Testing). The in-app browser pane reports `document.hidden` and pauses `requestAnimationFrame`, so canvases come out blank there.
-- Seed the theme before load: `localStorage['gt-theme']` for Prototemplate and the deck, the `theme` key or the `dark` class on `<html>` for gt-cloud.
-- Scroll through a page before a full-page capture, because plates mount on IntersectionObserver.
-- Crop every junction at `deviceScaleFactor: 2`. The line auditor reads computed CSS and cannot see SVG strokes.
-- `pnpm check:pages --preset quick --pages <id>` reads phones, a tablet, laptops, desktops and the ultrawide for overflow, clipping, tap targets and layout shift, and walks the presenter's slides on each. `pnpm lint:lines:shell` audits the chrome's lines. `node shoot-slide.mjs 8 15`, run in `deck/`, renders slides in both themes and reports overflow.
+- Kevin, 2026-10-06, on the caption-card morph: "Beautiful but don't complicate. Always simplify." Reach for the platform feature that removes code before adding code: an auto height animates with a CSS grid row from `0fr` to `1fr`, never with a ResizeObserver and React state measuring the text. Comments stay at one or two lines and PR bodies stay short (`gt-ship`). When a review asks for tests of machinery that need not exist, remove the machinery.
+- "Enhance" on an existing page means keep the page and add to it. Its sections, the parts Kevin likes and its copy word for word stay; the change adds to them. On 2026-10-08 a careers rebuild that dropped the hero, the logo band, the glyph rain and the original copy was rejected, and the second pass kept the page and added the team photo band (gt-cloud #5226, open on 2026-10-10). For new work, "enhance fully" still means cover every section with real visuals (`docs/handbook/operating-principles.md`).
 
-### Reading Kevin's asks
+### Local review, Kevin's asks and showing the work
 
-- "Equivalent" or "equal" means both measures take the larger value (2026-09-30).
-- "Keep its aesthetic" means the geometry and the material stay and only the named thing changes.
-- "Smaller" or "larger" means the next rung of the existing ladder. The 13px card facts went to the 12px rung (2026-09-28).
-- "Make it look better" with a reference attached means measure the reference and match it. Without one, the reference is the deck for a product surface and the shipped site for a landing or marketing page.
-- "Fix this" on one instance means the whole class: find every member, fix it and report the count (`docs/handbook/operating-principles.md` rule 5).
-- "Redesign" means visibly new. A change that keeps the old shape comes back as not done (`gt-explorations` section 2).
-- "Remove this" takes the smallest reading, then re-checks the neighbors.
-- "Add it to the left of X" applies to X alone, and the rest of X's column stays as it is (2026-08-13: "incorrect. i only want you to add it to left of ...").
-- "Standardize" means one structure on every page of the kind, with only content differing, and a lint or the page check that catches a page that drifts (the book page, 2026-10-06).
-- Kevin asks for a lint once a rule matters to him ("document and create a lint for this", 2026-09-08; "fix and lint for this", 2026-09-28). A new rule ships with its lint or names the lint that should hold it (`gt-lints`).
-
-### Showing the work
-
-- Show crops of the changed region, 420 to 900 CSS px wide, before and after, in both themes. Full-page captures in a two-column table read as strips (2026-09-28). `gt-ship` has the PR format.
-- Say in plain sentences what changed and what to look at.
+`references/process.md` holds the local review recipe (the 3005 server, both themes at 1440 and 390 plus 1527 by 814 for plate pages, the external harness, theme seeding, junction crops at 2x, `pnpm check:pages` and `pnpm lint:lines:shell`), the readings of Kevin's words ("equivalent", "keep its aesthetic", "smaller", "make it look better", "fix this", "redesign", "remove this", "add it to the left of X", "standardize", and his ask for a lint once a rule matters), and how to show the work (before and after crops 420 to 900 CSS px wide in both themes, with plain sentences on what changed).
 
 ## 6. The general skills
 
-The wiki's general design skills stay useful, and where they disagree with a verdict in this skill, the verdict wins.
-
-- `design-engineering-polish` gives the animation decision framework, easing and duration choices, the Before, After and Why table for reviews, and signature-first exploration for a round of new directions. Its rule to reject disguised duplicates matches the deco verdict. In GT work, product pages have no entrance animation, motion moves transform and opacity only at the shell's 120 to 220ms durations, and reduced motion renders a designed still (`gt-motion`).
-- `make-interfaces-feel-better` applies as written for tabular numbers, balanced heads and pretty body text, antialiased smoothing, 44px touch and 40px desktop hit areas, the state matrix, exact transition properties and sparing `will-change`. Five of its rules do not apply to GT work. GT draws no shadows for elevation and never replaces a border between sections with a shadow, because lines carry the structure. Its concentric radii apply to the controls: a part flush inside a 6px control takes 5px (`--pt-radius-inner`). Product pages have no staggered entrances. The shell shows a press as the ink border of `.is-on`, with no scale and no blurred icon swap. A picture's frame is a 1px border in the `edge` role (ink at 62%), which is heavier than the low-opacity outline that skill suggests.
-- `taste`, `frontend-design`, `frontend-design-taste` and `web-design-guidelines` are general references. Kevin's GT taste is the deck, the shipped site and the verdicts here.
-- `animated-component-libraries` finds sources for components. Anything sourced is restyled to the tokens and passes this review.
+The wiki's general design skills stay useful, and where they disagree with a verdict in this skill, the verdict wins. Which of their rules apply to GT work, and the five that do not, are in `references/process.md` ("The general skills").
 
 ## Review checklist
 
@@ -244,14 +187,8 @@ Built from the deck's defect list (DECK-GRAMMAR.md, "What a defect is") and Kevi
 
 ## Related skills
 
-`gt-brand` (the tokens, the type system and the marks), `gt-voice` (copy), `gt-deck` (the reference deck), `gt-lints` (the line law, the type lint and gt-ui), `gt-dither` (the field and the pictures), `gt-landing-pages` and `gt-website` (the site), `gt-components` (the shell and shared UI), `gt-isometric` and `gt-diagrams` (drawings), `gt-motion`, `gt-ship` (PR screenshots) and `prototemplate`. General skills in Kevin's wiki: `design-engineering-polish`, `make-interfaces-feel-better`, `animated-component-libraries`, `agent-browser`.
+`gt-brand` (the tokens, the type system and the marks), `gt-voice` (copy), `gt-deck` (the reference deck), `gt-lints` (the line law, the type lint and gt-ui), `gt-dither` (the field and the pictures), `gt-landing-pages` and `gt-website` (the site), `gt-components` (the shell and shared UI), `gt-diagrams` (drawings, with the isometric family in `references/isometric.md`), `gt-motion`, `gt-ship` (PR screenshots), `gt-verify` (the browser probes GT sessions check a page with) and `prototemplate`. General skills in Kevin's wiki: `design-engineering-polish`, `make-interfaces-feel-better`, `animated-component-libraries`.
 
 ## Sources
 
-- Prototemplate: `deck/parts/head.html` (tokens, type, rows, book view, viewer chrome); `deck/DECK-GRAMMAR.md` (type, color, layout classes, "What a defect is"); DESIGN.md sections 1, 2, 3, 12, 15 and 16; BRAND.md sections 3, 5, 6 and 8; `docs/ARTIFACT-PICTURES.md`; `docs/SHIP-LOOP.md`; `src/components/viewer/tokens.css`; `scripts/lint/lines.mjs`; `scripts/check/pagecheck/`.
-- gt-cloud, origin/main: `apps/dashboard/src/app/brand-tokens.css` (the plate's tokens, ladder and frame); `apps/dashboard/src/components/brand/FieldStack.tsx`; `tooling/oxlint-plugins/gt-ui.ts` (`consistent-radius`, `icon-tiers`, `no-gif-mark`, `no-eyebrow`, `mono-is-not-voice`); `apps/landing/src/lib/studio-field.ts`, `components/landing/shared/HeroField.tsx`, `home/sections/hero-terminal.css` and `home/v0-pages.css` (the hero's field); `packages/ui/src/components/frame/ThemeToggle.tsx`. The branch `k/dashboard-shell-ia` holds `packages/ui/src/lib/studio-field.ts` and the `no-theme-icons` rule.
-- Prototemplate's `.oxlintrc.json` (the gt-ui rules `pnpm lint:code` runs) and `package.json`.
-- Kevin's wiki, whose skills load from `~/.claude/skills`: `skills/engineering/design-engineering-polish/SKILL.md` and `references/signature-first-exploration.md`; `skills/engineering/make-interfaces-feel-better/SKILL.md`.
-- Kevin's taste rules on voids, density, optical placement, attached edges and one component across modes: 2026-07-31, 2026-08-05, 2026-08-07, 2026-08-12, 2026-08-13, 2026-08-17 and 2026-10-05, from his messages to Claude Code and Codex; the radius law and the book page standard (2026-10-05 and 2026-10-06, `references/verdicts.md`).
-- Kevin's dated directives (2026-08-04, 08-06, 08-11, 08-12, 08-17, 08-26, 09-04, 09-08, 09-09, 09-14, 09-18, 09-25, 09-28, 09-29, 09-30, 10-05), quoted in `references/verdicts.md`, checked against his Claude Code session transcripts on 2026-10-05, and recorded in his gt-cloud memory notes `dashboard-deck-grammar`, `redesign-v0-verdict`, `k-pages-restart-round`, `brand-questionnaire-directives`, `variants-program-state`, `deco-exploration-round`, `explorations-stay-local`, `signin-field-transition`, `prototemplate-interface-system`, `artifact-picture-standard`, `plain-technical-english`, `landing-inter-only`, `mobile-type-ladder`, `page-check-system`, `redesign-screenshot-harness` and `pr-screenshots-and-gallery`.
-- Kevin, 2026-10-07: "fix the dossier references" (`references/verdicts.md`). gt-cloud #4213 built the production landing from the Dossier, and the redesign stack took that landing as canonical on 2026-08-11 (`docs/handbook/decisions.md`).
+Dated provenance for every rule is in `references/sources.md`: the Prototemplate and gt-cloud files, the wiki skills, and Kevin's dated directives with the memory notes that recorded them.

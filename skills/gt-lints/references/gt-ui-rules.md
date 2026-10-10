@@ -61,7 +61,7 @@ and `ui/code-ide-tabs.tsx` (the color rules and `no-thin-font`); landing and
 (`no-eyebrow`, `no-hex-colors`); `logocard.tsx` and `PythonLogo.tsx`
 (`no-hex-colors`).
 
-Open pull requests widen the set. #4977 (`k/dashboard-shell-ia`) and the
+Open pull requests widen the set (states read on 2026-10-10). #4977 (`k/dashboard-shell-ia`, open) and the
 branches stacked on it add `no-theme-icons` to the all-UI scope; it refuses
 Sun and Moon imports (`Sun`, `SunMedium`, `SunDim`, `SunMoon`, `Moon`,
 `MoonStar` and their `Icon` forms) from `lucide-react` and Heroicons,
@@ -69,7 +69,7 @@ because the theme switch draws the circle glyphs of the shared
 `ThemeToggle`. The same branch turns the nine rules of the landing and
 `packages/ui` row above plus `icon-tiers` on for all of `apps/dashboard`,
 with dashboard tests exempt from `no-em-dash` and `no-hex-colors`. #5029
-(`k/dashboard-icon-tiers`) turns `icon-tiers` on for all of
+(`k/dashboard-icon-tiers`, open) turns `icon-tiers` on for all of
 `apps/dashboard`. Both branches add control glyphs to
 `CONTROL_LUCIDE_GLYPHS` and drop `code-ide-tabs.tsx` from the color
 exemptions. Read the branch's `.oxlintrc.json` before judging a dashboard

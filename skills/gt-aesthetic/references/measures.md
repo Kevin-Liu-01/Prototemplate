@@ -144,3 +144,16 @@ The Blue Marble standard (`$PROTOTEMPLATE/docs/ARTIFACT-PICTURES.md`, `scripts/m
 - No copy within 20px of a hairline (DESIGN.md section 12, the box-air standard).
 - Tap targets: 44px is the target and under 40px is a defect on a phone (`scripts/check/pagecheck`). The size is the hit area, so a 32px drawing reaches it with a transparent `::after` and the gap beside it (the shell toolbar on a touch phone, `Toolbar.css`); a tablet's small targets are notes until Kevin decides on tablet touch sizing.
 - Kevin's laptop viewport is 1527 by 814, so a plate page compresses under 880px tall and is checked at that size.
+
+## Rhythm across the references
+
+These numbers come from the references, and the live file wins whenever one of them matters to the work.
+
+| Where | Measure |
+| --- | --- |
+| Deck sheet | 72px top and bottom and 80px side padding; 56px between head and body; 72px between columns; 18px under an `h2` and between paragraphs; rows 16px block padding with a 32px column gap |
+| Deck book head | title 44/1.04; lead 14px below at 15.5/1.5 in ink-2; 26px to the head's rule; 36px between blocks |
+| Dashboard | Plate pages (sign-in and onboarding): 48px column padding; 40px from the mark to the heading; 26px between a heading and its lede; 40px before a form; 28px between fields; 10px under a label; 44px inputs and primary buttons. Under 880px tall the column padding is 32 and 24, the mark gap 30, the heading gap 16 and the form gap 24. App pages: 40px section padding, 40px sidebar rows, 14px ledger cells |
+| Mobile | the `--tcm-*` ladder under 720px (DESIGN.md section 12); no copy within 20px of a hairline; 44px tap targets |
+
+Kevin's ask on 2026-09-28 was "make our spacing a lot better, kerning a lot better". Gaps that look equal must be equal, and the gaps around one heading match on both sides.
