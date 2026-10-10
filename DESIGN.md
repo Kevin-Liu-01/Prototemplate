@@ -1,9 +1,10 @@
 # Design system
 
-The canon for every page in `apps/redesign` — the laws the sixteen directions
-run on, distilled from the founder rounds. The `/craft` page is the living
-version of this document, with the diagrams drawn and the engines running;
-this file is the reference you read before touching a page.
+The canon for every page in Prototemplate: the laws the directions and the
+shipped site run on, distilled from the founder rounds. The build log at
+the end of the `/docs` readme is the living version of this document, with
+the diagrams drawn and the engines running. This file is the reference you
+read before touching a page.
 
 ---
 
@@ -57,8 +58,8 @@ The auditor (`scripts/lint/lines.mjs`) enforces it mechanically — see
   or the section's own full-bleed pair. Never both. The pair is the column's
   inner pair only: one hairline at each column edge, nothing outside it.
 - The row owns every structural line; cells never draw borders that parallel
-  a row seam. Framed cells expose the ground through a **1px padding reveal**
-  instead of a border — the ground is the seam.
+  a row seam. A framed cell has a **1px padding reveal** that shows the
+  ground underneath, so the cell draws no border.
 - **Flush at the rail**: where a row meets a line that already exists, the
   cell sits flush and that side's reveal is dropped. A reveal never runs
   beside a rail; a border never runs beside a seam.

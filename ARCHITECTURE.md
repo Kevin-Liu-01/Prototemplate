@@ -143,9 +143,8 @@ docs/
   research/, reference/, reference-shots/, composites/
                           the exploration archive the skills cite;
                           nothing here is served
-  harness/                two screenshot probes the skills and comments
-                          cite: shoot-route.mjs and rhythm-probe.mjs (a
-                          direction's captures: pnpm capture:pages --direction)
+  archive/                finished round specs kept as history, with a
+                          README naming each one; nothing here is served
 deck/                     the deck source: parts/, slides/, fonts/, shots/
 graphics/                 the blog-illustration toolchain (docs/GRAPHICS.md)
 content/                  the three docs-redesign posts and their authors
@@ -289,13 +288,7 @@ the contract between the two ends:
 
 ## The mirror
 
-Prototemplate `main` is the primary repository for this code. The public
-site builds and deploys from it, and the routes that exist only here
-(`/docs`, `/brand`, `/deck`, `/compare`, `/present`) have no counterpart
-in `apps/redesign`. `apps/redesign` in the gt-cloud monorepo is a
-downstream copy of the direction pages: when a direction changes there,
-the changed files are copied into Prototemplate one at a time and
-`pnpm build` must pass before the commit. No bulk `rsync --delete` runs
-toward Prototemplate from any tree. Root docs (`BRAND.md`, `DESIGN.md`,
-`ARCHITECTURE.md`, `README.md`, `docs/`) are edited here first. See
-`docs/SHIP-LOOP.md` section 7 (the mirror step) for the sequence.
+Prototemplate `main` has been the only copy of this code since
+2026-09-08, when gt-cloud's `apps/redesign` stopped being one, so nothing
+is copied or rsynced into it from another tree (`docs/SHIP-LOOP.md`
+section 7).

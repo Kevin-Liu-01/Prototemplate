@@ -137,7 +137,8 @@
      beat 04's lock-in, stays seated through the rail cell's agents
      dwell while the scan beam plays, and the native release then
      carries it UP and out with the band so the next section arrives.
-     Re-run docs/harness/rhythm-probe.mjs at 1440×900, 1926×1002 AND
+     Re-run the rhythm probe (docs/harness/rhythm-probe.mjs, in git
+     history since 2026-10-10) at 1440×900, 1926×1002 AND
      2000×1400 whenever the figure, seat, beat height, or dwell moves. */
   top: max(70px, calc(55vh - 262px));
   display: flex;

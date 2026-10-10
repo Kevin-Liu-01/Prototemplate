@@ -1,4 +1,16 @@
-# Figma "Landing page design" v0 — extraction spec (IN PROGRESS)
+# Figma "Landing page design" v0: extraction spec
+
+Status: finished, kept as the record of the v0 rounds (2026-08-03 to
+2026-08-06). The extraction stopped at about 90 percent (STATUS below),
+and the build it planned shipped as the shared v0 sections in
+`src/app/d/_v0/` under the singularity homes. Kevin's verdict of
+2026-08-04 holds: mock layouts are literal specs, and Locadex is an
+isometric drawing that carries its mark, never a gif (decisions log,
+2026-08-04). Its system decisions moved into the canon: one rail on each
+side (DESIGN.md section 3, decisions log 2026-09-28) and no eyebrows
+(decisions log, 2026-08-11). Since 2026-10-07 the shipped site is the
+reference for landing pages (decisions log), and this file is not
+maintained.
 
 Source: https://www.figma.com/design/zIeooSp1PZTzPaUmEt6c8i/Landing-page-design
 Scope per Kevin: this content is the spec FOR THE FIVE FINAL SITES (dossier,

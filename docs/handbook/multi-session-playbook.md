@@ -10,11 +10,11 @@ One session owns one lane. ListAgents prints the live list of sessions, and the 
 
 | Session | Owns | Where it works |
 | --- | --- | --- |
-| Prototemplate | The site at prototemplate.com, its viewer shell, the deck build, the skills and the docs | The shared checkout `~/repos/Prototemplate`, with the dev server at http://localhost:3005 |
+| Prototemplate | The site at prototemplate.com, its viewer shell, the deck build, the skills and the docs | The shared checkout (`$PROTOTEMPLATE`), with the dev server at http://localhost:3005 |
 | Videos | The films, their kit and `MOTION.md` | Prototemplate `motion/`, which stays untracked. Its Prototemplate commits carry only film and poster files in `public/media`. |
-| Glyph Map | The `/world` page on generaltranslation.com | gt-cloud `k/language-map`, worktree `~/gt/gt-cloud-wt-langmap`, port 3031 |
+| Glyph Map | The `/world` page on generaltranslation.com | gt-cloud `k/language-map` in its own worktree, port 3031 |
 | New Onboarding and Dashboard | The dashboard sign-in and onboarding PRs, and in Prototemplate the mood slides in `deck/`, `src/components/plate`, `src/app/craft` and `public/brand/mood` | Its own gt-cloud worktrees. It pushes Prototemplate main from its own worktree. |
-| Lottie | The blog's Lottie translation figure | gt-cloud #5068, `k/blog-lottie-translation`, worktree `~/gt/gt-cloud-wt-lottie`, port 3024 |
+| Lottie | The blog's Lottie translation figure | gt-cloud #5068, `k/blog-lottie-translation` in its own worktree, port 3024 |
 | docs redesign | The docs site on generaltranslation.com | Its own gt-cloud worktrees |
 
 Kevin's personal projects run in sessions and repositories of their own. They share the machine with the GT lanes (section 10) and nothing else.

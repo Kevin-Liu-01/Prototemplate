@@ -14,7 +14,7 @@ export const AUDITS = [
 export const RAIL_RULES = [
   'Exactly one thing draws the page rails for any section: a rail wrapper, or the section’s own full-bleed pair. Never both. The pair is the column’s inner pair only: one hairline at each column edge, nothing outside it.',
   'The row owns every structural line; cells never draw borders that parallel a row seam.',
-  'Framed rows expose the ground through a 1px padding reveal instead of drawing a border. The ground is the seam.',
+  'A framed row has a 1px padding reveal that shows the ground underneath, so the row draws no border.',
   'Translucent fills never extend under translucent borders: backgrounds clip to the padding box, everywhere.',
 ] as const;
 

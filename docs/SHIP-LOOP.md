@@ -1,15 +1,18 @@
 # Ship loop
 
-The verify-and-ship procedure every round of work on `apps/redesign` runs
-before it lands. Nothing ships on faith: the auditor, the type checker, the
-camera, and the mirror build all get a vote.
+The verify-and-ship procedure every round of work in Prototemplate runs
+before it lands on `main`. Each check below must pass: the line audit, the
+page check, the ratchets, the type checker, the captures and the gated
+build.
 
 ## 0. Ground rules
 
-- The dev server runs at `http://localhost:3005`.
+- The dev server runs at `http://localhost:3005` in the shared checkout.
+  A worktree runs its own server on another port, and `PT_BASE` points the
+  live lints, the page check and the captures at it.
 - A concurrent session may be editing the same worktree. Check
   `git status` before staging; commit only your own files. Expect the other
-  session to absorb your changes into its commits — when that happens,
+  session to absorb your changes into its commits. When that happens,
   verify by content, not by diff, and push the backup branch from HEAD.
 - `pnpm lint:all` may be red on files you don't own; ship anyway when your
   own diff is clean under the checks below.
@@ -23,11 +26,11 @@ node scripts/lint/lines.mjs http://localhost:3005/<page> --theme dark
 
 - Audits at 1440 and 1280; expects **zero** findings in all four classes
   (doubles, missing, selfStacks, invisibles) in both themes.
-- The standing battery: `/`, `/craft`, and the three singularity homes
-  (`dossier`, `orbit`, `signal`) — plus every page the round touched.
+- The standing battery: `/`, `/docs`, the three singularity homes
+  (`dossier`, `orbit`, `signal`) and every page the round touched.
 - Deliberate devices live on the ALLOW list inside the script; add an owner
   there only for a sanctioned device, never to silence a real double.
-- The auditor reconstructs lines from computed CSS — it cannot see SVG
+- The auditor reconstructs lines from computed CSS and cannot see SVG
   strokes. Figures get verified by eye with 2× pixel crops of junctions.
 
 ## 2. The page check
@@ -79,7 +82,7 @@ grid and the run's timing.
 ## 3. The practices ratchet
 
 `scripts/lint/practices.mjs` counts button types, bare effects, any-types,
-raw hex in TS/TSX (`'#xxxxxx'`-quoted — unquoted hex inside template CSS
+raw hex in TS/TSX (`'#xxxxxx'`-quoted; unquoted hex inside template CSS
 snippets doesn't count), and `!important`. It refuses anything that adds to
 `lint/practices.baseline.json`. When files are deleted, prune their baseline
 entries in the same commit.
@@ -122,53 +125,61 @@ pnpm exec tsc -p tsconfig.json --noEmit
 ## 5. Film it
 
 Screenshot every changed visual with the external harness (the in-app
-browser pane pauses rAF — shader canvases come out blank):
+browser pane pauses rAF, so shader canvases come out blank):
 
-- Driver: `playwright-core` from `scripts/node_modules`, launched against
-  the Chrome for Testing binary.
+- Driver: the repository's `playwright-core`, launched against Chrome for
+  Testing: `CHROME_PATH`, else the build playwright-core installs
+  (`pnpm exec playwright-core install chromium`). `pnpm capture:pages`
+  and `pnpm check:pages` launch it the same way.
 - Dark shots: seed `localStorage['gt-theme'] = 'dark'` in an init script.
-- Zoom junctions at `deviceScaleFactor: 2`+ and crop — full-page shots hide
+- Zoom junctions at `deviceScaleFactor: 2`+ and crop, because full-page shots hide
   1px defects.
 - Scroll through the page first so IntersectionObserver-armed plates mount;
   wait out arm delays before shooting animated engines.
 
 ## 6. Commit and back up
 
-- Commit only your files;
-  `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
+- Commit only your files, by explicit path. Commits author as Kevin with
+  his GitHub noreply address
+  (`66856750+Kevin-Liu-01@users.noreply.github.com`) and end with the
+  session's `Co-Authored-By:` trailer (decisions log, 2026-10-10).
 - Run `pnpm build:updated --staged` after staging the change, and stage
   `src/lib/updated.ts` with it. `pnpm lint:updated` (in the build and
   `pnpm lint:all`) fails when a commit touched a book page and the file
   was not regenerated with it.
-- Push a NEW backup branch each round from HEAD:
-  `redesign/diagram-standard-v1<next-letter>`.
+- Push the round to a branch of this repository from HEAD
+  (`git push origin HEAD:<branch>`), so the work survives a wiped scratch
+  folder or a reset checkout. Main takes only work Kevin approved
+  (section 7).
 
-## 7. The mirror
+## 7. Push to main
 
-Prototemplate `main` (`~/repos/Prototemplate`) is the primary repository.
-The public site builds and deploys from it, and it carries routes that
-`apps/redesign` does not have (`/docs`, `/brand`, `/deck`, `/compare`,
-`/present`). Nothing is rsynced from `apps/redesign` into Prototemplate
-with `--delete`: that command would erase every one of those routes.
+Prototemplate `main` is the only copy of this code. The public site,
+www.prototemplate.com, deploys from it through the General Translation
+team's Vercel project. gt-cloud's `apps/redesign` stopped being a copy on
+2026-09-08, so nothing is copied in from another tree, and no
+`rsync --delete` runs toward this repository: it would erase the routes
+that exist only here.
 
-Work that lands in Prototemplate `main` stays there. When a direction page
-is still edited in `apps/redesign`, the changed files move into
-Prototemplate one at a time, and the build is the gate:
+Kevin decides what lands. Exploration and redesign rounds stay on a branch
+or on the local dev server until he says to land them (decisions log,
+2026-09-14). Approved work lands in this order:
 
 ```bash
-cd ~/repos/Prototemplate
-git checkout main && git pull --ff-only
-cp <monorepo>/apps/redesign/src/app/d/<slug>/<file> src/app/d/<slug>/<file>   # only the files the round touched
-pnpm build > /tmp/proto-build.log 2>&1; echo $?   # capture the REAL exit code
+git fetch origin && git log --oneline HEAD..origin/main   # other sessions push to main too: take their commits first
+git grep -n '^<<<<<<< ' -- src docs deck skills scripts     # any hit stops the push
+pnpm build > "$TMPDIR/pt-build.log" 2>&1 && git push origin HEAD:main || tail -40 "$TMPDIR/pt-build.log"
 ```
 
-- The build must exit 0; `cmd | tail` reports tail's exit, so capture as
-  above. A flaky exit-1 with a clean log warrants one re-run before
-  diagnosing.
-- Sanity-grep the route manifest for pages you added or deleted.
-- Commit and push Prototemplate `main` ("push to main" always means this
-  repo).
-- To refresh `apps/redesign` from Prototemplate, copy in the other
-  direction, again file by file. Root docs (`BRAND.md`, `DESIGN.md`,
-  `ARCHITECTURE.md`, `README.md`, `docs/`) are edited in Prototemplate
-  first and copied outward.
+- The build gates the push with `&&`. A pipe such as `pnpm build | tail`
+  returns `tail`'s exit code and lets a failed build through, which
+  happened on 2026-08-07 and 2026-08-11. A flaky failure with a clean log
+  gets one re-run before diagnosis.
+- Commit with explicit paths, never `git add -A` or `git add .`: the shared
+  checkout holds other sessions' files, including the untracked `motion/`
+  folder.
+- Push with `git push origin HEAD:main` when HEAD is a fast-forward of
+  `origin/main`. Rewriting shared history needs Kevin.
+- After the push, read the commit's deployment statuses on GitHub and the
+  new build on www.prototemplate.com. A failed Preview is redeployed, never
+  pushed again with an empty commit.

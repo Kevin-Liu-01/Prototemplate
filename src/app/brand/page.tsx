@@ -256,18 +256,19 @@ const PAGES: readonly BrandPage[] = [
         </p>
         <h3 id={headingId('the-character', 'voice')}>Voice</h3>
         <p>
-          Measured, declarative, precise, quietly confident. Captions state laws:
-          &ldquo;the ground is the seam.&rdquo; Short sentences carry their own weight,
-          with no exclamation marks doing the work, no hedging, and no marketing
-          adjectives where a fact would do. Wit is allowed as precision, never as
-          decoration. Technical terms are used precisely and sparingly. The register sits
-          closer to a well-written spec or a good engineering blog than to marketing
-          copy: product focus over performative marketing.
+          Measured, declarative, precise, quietly confident. Every sentence is complete
+          and makes one claim. A caption states the mechanism: &ldquo;A framed cell has
+          a 1px padding reveal that shows the ground underneath, so the cell draws no
+          border.&rdquo; Copy uses no exclamation marks, no hedging and no marketing
+          adjectives where a fact would do. Wit is allowed when it is precise. Technical
+          terms are used precisely and sparingly. The register sits closer to a
+          well-written spec or a good engineering blog than to marketing copy, and the
+          copy is about the product.
         </p>
         <div className='ptb-voice'>
           <div className='ptb-voice-row is-yes'>
             <span>say</span>
-            <p>One pipeline. Every language ships with the deploy.</p>
+            <p>Translations are generated at build time and deploy with the app.</p>
           </div>
           <div className='ptb-voice-row is-no'>
             <span>not</span>
@@ -593,8 +594,9 @@ const PAGES: readonly BrandPage[] = [
           i18n libraries, context-aware translation APIs, and the infrastructure for
           versioning, editing, and integrations. The audience is technical and product
           leadership at growth-stage companies; their engineering and growth teams are
-          the users. Auth0 translates docs with <GtWord />, Sierra translates marketing and sales
-          material, Ramp translates its core dashboard. Against legacy, seat-based TMS
+          the users. Ramp runs <GtWord />{' '}across its dashboard, landing page and iOS,
+          Cursor across web and docs, and Sierra across web and GTM. Against legacy,
+          seat-based TMS
           point solutions, <GtWord />{' '}is usage-based and owns the whole stack, so it can own the
           whole experience.
         </p>

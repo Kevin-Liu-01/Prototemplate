@@ -1,10 +1,11 @@
 # Libraries
 
-The index of the componentized instruments. The living version — bodies,
-live plates, and API snippets — is the `/craft` page ("The libraries"
-section); keep the two in step: when an engine gains an option, update its
-craft entry in the same round. Once perfected these graduate to their own
-repos.
+The index of the componentized instruments. The living version, with the
+bodies, live plates and API snippets, is "The libraries" in the build log
+at the end of the `/docs` readme (`src/app/craft/libraries.ts`; `/craft`
+redirects there). Keep the two in step: when an engine gains an option,
+update its entry in `libraries.ts` in the same round. Once perfected these
+graduate to their own repos.
 
 | library | entry point | one line |
 | --- | --- | --- |

@@ -6,7 +6,7 @@
 //   getLocaleProperties(code)  generaltranslation
 //   getLocaleFlagCountryCode   @generaltranslation/locales/utils/flag.js
 // Source of truth:
-//   /Users/kevinliu/gt/gt-cloud-wt-pr-routing/apps/landing
+//   $GT_CLOUD/apps/landing
 //   (packages/locales/src/supportedLocales.ts — listSupportedLocales() with
 //   the custom qaa–qtz codes filtered out), properties resolved against
 //   userLocale 'en'. 120 rows, in the package's own order; the page renders

@@ -65,7 +65,21 @@ declaration against this rule. Plain English prose never qualifies.
 
 - Cut from the original scan or photograph. Never cut from a screened,
   two-tone or resized copy.
-- The license is public domain or Creative Commons.
+- The license is public domain or Creative Commons, taken in this order:
+  public domain and CC0 first (Wikimedia Commons public domain files and
+  the open-access collections of the Met, the Smithsonian, the Cleveland
+  Museum of Art, the Rijksmuseum and the Library of Congress), then CC BY,
+  then CC BY-SA only when nothing else shows the object. A CC BY-SA print
+  is a derived work under the same license, and its credit says so.
+  Non-commercial (NC) and no-derivatives (ND) licenses are refused, so
+  the British Museum's images, which carry a non-commercial license, are
+  refused.
+- The subject is the original object. A cast, a replica or a modern
+  reprint is refused when the original can be shown. A picture shows no
+  flag, emblem or coat of arms, no map with borders, no caption that
+  states sovereignty, and no private person. The license order and these
+  subject rules come from the artifact pictures of the language map
+  (gt-cloud branch `k/language-map`, 2026-10-03).
 - The credit is shown with the picture: on the deck slide's plate, in the
   picture's caption in `moodPictures.ts`, which the plate port's field shows,
   and in the credit line under the transition demo on /docs

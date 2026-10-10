@@ -2,7 +2,7 @@
 
 # GENERAL TRANSLATION — MARKETING SITE REDESIGN: THE DESIGN BRIEF
 
-**Audience:** sample builders. This document + `landing-content.md` (same directory) are the ONLY two documents you read. Everything you need — copy, structure, aesthetic law, technical contract, metallic CSS recipes, motion boot code — is here or in `landing-content.md`. Section pointers below use `LC §n` = section *n* of `landing-content.md`.
+**Audience:** sample builders. This document + `landing-content.md` (in `docs/archive/` since 2026-10-10) are the ONLY two documents you read. Everything you need — copy, structure, aesthetic law, technical contract, metallic CSS recipes, motion boot code — is here or in `landing-content.md`. Section pointers below use `LC §n` = section *n* of `landing-content.md`.
 
 **Deliverable per sample:** one complete, self-contained landing page (`.html`) executing ONE of the twenty art directions in Part 2, on top of the shared foundation in Part 1.
 

@@ -1,10 +1,8 @@
 /**
  * The docs registry: which repository documents the /docs route serves,
- * after the readme. Files are read from the app root at build time (this
- * app builds from its own directory in the monorepo and from the repo root
- * in the Prototemplate mirror; both keep the same relative layout, and the
- * ship loop rsyncs the root docs alongside src/). The handbook's documents
- * have their own registry (src/app/handbook/registry.ts) and route.
+ * after the readme. Files are read from the repository root at build time.
+ * The handbook's documents have their own registry
+ * (src/app/handbook/registry.ts) and route.
  */
 export type DocEntry = {
   slug: string;
@@ -40,7 +38,7 @@ export const DOCS: readonly DocEntry[] = [
     file: 'docs/SHIP-LOOP.md',
     title: 'Ship loop',
     blurb:
-      'The verify-and-ship procedure every round runs: the line audit, the practices ratchet, types, filming, the backup branch, the mirror build.',
+      'The verify-and-ship procedure every round runs: the line audit, the page check, the ratchets, types, captures, the backup branch and the gated push to main.',
   },
   {
     slug: 'libraries',
