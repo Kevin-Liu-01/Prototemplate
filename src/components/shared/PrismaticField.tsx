@@ -6,10 +6,12 @@ import { useRef, useState } from 'react';
 import FieldEffectsMenu from '@/components/shared/FieldEffectsMenu';
 import {
   createPrismaticField,
+  PRISMATIC_PRESETS,
   type PrismaticEffectMode,
   type PrismaticFieldHandle,
   type PrismaticParams,
 } from '@/lib/prismatic-field';
+import { createOffThreadField } from '@/lib/prismatic-offthread';
 
 const EFFECT_MODES: readonly PrismaticEffectMode[] = ['lens', 'dither', 'chroma'];
 
@@ -54,6 +56,14 @@ export type PrismaticFieldProps = {
    * Defaults to the burst's bright left flank at the field's equator.
    */
   previewAt?: readonly [number, number];
+  /**
+   * Draw this field in a worker (prismatic-worker.ts), so long tasks on the
+   * main thread never stall it. Fields with cursor effects stay on the
+   * shared engine, as does every field where a worker cannot draw a canvas.
+   */
+  offThread?: boolean;
+  /** Called once the field's first frame is on its canvas. */
+  onDrawn?: () => void;
 };
 
 type MenuState = {
@@ -85,11 +95,17 @@ export default function PrismaticField({
   effectsMenu,
   persistKey,
   previewAt = [0.24, 0.5],
+  offThread = false,
+  onDrawn,
 }: PrismaticFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const handleRef = useRef<PrismaticFieldHandle | null>(null);
   const storageKeyRef = useRef<string>('');
   const [menu, setMenu] = useState<MenuState | null>(null);
+  // Cleared when the worker cannot draw: a new canvas then joins the engine.
+  const [inWorker, setInWorker] = useState(offThread);
+  const drawnRef = useRef(onDrawn);
+  drawnRef.current = onDrawn;
 
   /* Stable dependency for the (rare) case of a literal array prop. */
   const effectsKey = effects?.join(' ');
@@ -109,6 +125,18 @@ export default function PrismaticField({
     const host = declaredHost ?? canvas.parentElement;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (inWorker && modes.length === 0) {
+      const drawn = createOffThreadField(canvas, {
+        params: { ...PRISMATIC_PRESETS[preset], ...params },
+        dpr,
+        speed,
+        animate: !reduced,
+        onDrawn: () => drawnRef.current?.(),
+        onFail: () => setInWorker(false),
+      });
+      if (drawn) return () => drawn.destroy();
+    }
 
     /* The committed mode persists per page (or per explicit key). */
     storageKeyRef.current = persistKey ?? `gt-fx:${window.location.pathname}`;
@@ -136,6 +164,8 @@ export default function PrismaticField({
     });
     if (!field) return;
     handleRef.current = field;
+    // The engine draws on its next animation frame.
+    const drawn = requestAnimationFrame(() => drawnRef.current?.());
     canvas.dataset.fxMode = field.getEffectMode();
 
     if (!reduced && modes.length > 0 && (effectsMenu ?? true)) {
@@ -143,10 +173,11 @@ export default function PrismaticField({
     }
 
     return () => {
+      cancelAnimationFrame(drawn);
       handleRef.current = null;
       field.destroy();
     };
-  }, [preset, dpr, speed, effectsKey]);
+  }, [preset, dpr, speed, effectsKey, inWorker]);
 
   const select = (mode: PrismaticEffectMode | 'off') => {
     setMenu((current) => (current ? { ...current, selected: mode } : current));
@@ -179,7 +210,13 @@ export default function PrismaticField({
 
   return (
     <>
-      <canvas ref={canvasRef} className={className} aria-hidden data-fx={effectsKey} />
+      <canvas
+        key={inWorker ? 'worker' : 'engine'}
+        ref={canvasRef}
+        className={className}
+        aria-hidden
+        data-fx={effectsKey}
+      />
       {menu !== null ? (
         <FieldEffectsMenu
           modes={menu.modes}

@@ -140,14 +140,14 @@ export const PRISMATIC_PRESETS: Record<'1' | '2', PrismaticParams> = {
   },
 };
 
-const VERT = `
+export const VERT = `
 attribute vec2 position;
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
-const FRAG = `
+export const FRAG = `
 precision highp float;
 precision highp int;
 
@@ -412,7 +412,7 @@ void main() {
 }
 `;
 
-const UNIFORM_KEYS: (keyof PrismaticParams)[] = [
+export const UNIFORM_KEYS: (keyof PrismaticParams)[] = [
   'initialDepth',
   'safeMinimum',
   'fieldTimeRate',
