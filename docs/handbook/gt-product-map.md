@@ -69,12 +69,14 @@ Context reaches a translation through three layers: the Organization, then the P
 
 ## 5. Enterprise and plans
 
-The pricing page has two plan cards (read 2026-10-05):
+Plan facts come only from the public pricing page, https://generaltranslation.com/pricing, quoted as it read on 2026-10-10. Plan rules the page does not state, such as what a new account receives, are internal and stay in gt-cloud's `gt-dashboard` skill.
 
-- Starter is self-serve with usage-based pricing and a Get Started button.
-- Enterprise is marked Recommended and has a Contact Us button.
+- The lead: "Start for free with usage-based billing. Unlimited projects and users on every plan."
+- Starter: "$0", "For individuals and small teams". It lists unlimited projects, users and languages, the Translation Editor, the GitHub Integration, the Locadex AI Agent and usage-based pricing, with a Get Started button.
+- Enterprise: marked Recommended, "For large teams with complex localization needs". It lists unlimited projects, users and languages; "Dedicated FDE hours to build any workflow for your use case."; "Custom integrations, webhooks, and tailored automation."; and "SSO, RBAC with custom permissions, SOC 2 and ISO 27001 certificates", with a Contact Us button.
+- The comparison table: a Platform Fee of $0 on Starter and Custom on Enterprise, and Usage Rates that link to https://generaltranslation.com/pricing/usage on Starter and read Custom on Enterprise. Its rows name the core products (Locadex AI Agent, Custom Workflows, Translation CLI, Context Platform, Translation CDN, Version Branching), the platform (languages, projects and users unlimited on both plans, Context Groups, Keyword Glossary, Custom Prompts, Translation Editor, Custom Roles, Webhooks, SOC 2 Type II and ISO 27001 certification, SSO over SAML and OIDC) and support (GitHub, email, Discord, Slack and phone). The table marks which plan has each row with icons, so copy that says which plan includes a row reads the live page first.
 
-Both cards list unlimited projects, unlimited users and unlimited languages, and the comparison table follows the cards directly (Kevin, 2026-08-15). The page's diagram sits below the plans. The money format on pricing pages is gt-landing-pages' whole-dollar rule. Onboarding and billing copy about cards and credits follows the plan states the dashboard shows at the time of writing.
+The comparison table follows the cards directly (Kevin, 2026-08-15), and the page's diagram sits below the plans. The money format on pricing pages is gt-landing-pages' whole-dollar rule.
 
 Kevin set the four enterprise pillars on 2026-08-15, and the enterprise page carries them (read 2026-10-05). His list named the third pillar Forward-deployed engineers, and the live page heads it Forward-Deployed Support, the name copy uses.
 
@@ -153,12 +155,35 @@ File-level maps stay with their owners: gt-cloud's `AGENTS.md` and `.agents/skil
 - Missing localized content falls back to en-US. A legal page renders the en-US copy in place, an untranslated docs page serves the default language, and a blog slug absent in a locale redirects to the en-US post. Kevin, 2026-08-17: "fix pages that are breaking from like en-GB".
 - The docs suggestion page answers HTTP 200 with `noindex, nofollow` by design (gt-cloud #4359). A real 404 needs the not-found boundary, and under the force-static root layout that boundary never sees the requested slug. The blog checks frontmatter aliases and close matches before it renders its own suggestion page.
 
+## 10. Public surfaces
+
+Every address below answered HTTP 200 on 2026-10-10. [BRAND.md](../../BRAND.md) section 8 says how the identity applies to each kind of surface.
+
+| Surface | Address |
+| --- | --- |
+| Home page | https://generaltranslation.com |
+| Pricing and usage rates | https://generaltranslation.com/pricing, https://generaltranslation.com/pricing/usage |
+| Enterprise and its contact form | https://generaltranslation.com/enterprise, https://generaltranslation.com/enterprise/contact |
+| Careers and contact | https://generaltranslation.com/careers, https://generaltranslation.com/contact |
+| Documentation | https://generaltranslation.com/docs, with https://generaltranslation.com/llms.txt and https://generaltranslation.com/agent-prompt.md for agents (section 7) |
+| Knowledge base | https://generaltranslation.com/kb |
+| Blog and changelog | https://generaltranslation.com/blog |
+| Supported locales | https://generaltranslation.com/supported-locales |
+| Localization report card | https://generaltranslation.com/report-card |
+| Legal pages | https://generaltranslation.com/legal |
+| Dashboard sign-in | https://dash.generaltranslation.com |
+| Social | https://x.com/generaltxn, https://www.linkedin.com/company/generaltranslation/ |
+| Open source | https://github.com/generaltranslation |
+| Design hub (this repository) | https://www.prototemplate.com, with /brand, /docs, /handbook, /skills, /deck, /motion, /graphics, /marks, /blog and /d/production |
+| Companion tooling | https://glyphfield.com, the shader and animation studio behind several graphics and films |
+
 ## Sources
 
 - Prototemplate: [BRAND.md](../../BRAND.md) sections 1, 2 and 9; [gt-brand](../../skills/gt-brand/SKILL.md) sections 1, 2 and 8; [gt-website](../../skills/gt-website/SKILL.md) with `references/docs.md` and `references/pages.md`; [gt-voice](../../skills/gt-voice/SKILL.md); [gt-landing-pages](../../skills/gt-landing-pages/SKILL.md); [gt-components](../../skills/gt-components/SKILL.md).
 - gt-cloud at origin/main e17fce499 (2026-10-05): `AGENTS.md`, `.gitmodules`, `apps/landing/gt.config.json`, `apps/landing/staging.gt.config.json`, `apps/landing/src/app/[locale]/docs/[variant]/[...slug]/page.tsx`, `apps/landing/src/app/[locale]/blog/[slug]/page.tsx`, `apps/landing/src/lib/legal.ts`, `apps/landing/src/components/landing/sections/global/Global.tsx`, `apps/landing/src/components/pages/enterprise/services-landing/GovernedExplorer.tsx`, `scripts/deploy-landing.sh`, `.agents/skills/gt-landing/SKILL.md`; pull requests #4359, #4499 and #5049.
 - `generaltranslation/gt` at origin/main a16ae03c6 (2026-10-05): `packages/`, `packages/cli/src/cli/base.ts`, `packages/cli/src/auth/__tests__/oauth.test.ts`, `packages/cli/src/cli/__tests__/initOnboarding.test.ts`, `packages/core/src/runtime.ts`, `packages/next/src/server.ts`, `packages/next/src/index.types.ts`.
 - `generaltranslation/content` at origin/main (2026-10-05): `AGENTS.md`, Public authentication boundary.
-- generaltranslation.com, read 2026-10-05: the home page, `/en-US/pricing`, `/en-US/enterprise`, `/en-US/careers`, `/ja`, `/llms.txt`, `/llms-index.txt`, `/agent-prompt.md`, `/openapi.yaml` and the docs guide Defining context for translations.
+- generaltranslation.com, read 2026-10-10: `/pricing` (section 5) and the addresses in section 10, each fetched with curl. Read 2026-10-05: the home page, `/en-US/pricing`, `/en-US/enterprise`, `/en-US/careers`, `/ja`, `/llms.txt`, `/llms-index.txt`, `/agent-prompt.md`, `/openapi.yaml` and the docs guide Defining context for translations.
 - npm and PyPI package pages, and the public repository list of the `generaltranslation` GitHub organization, read 2026-10-05.
 - Kevin's rulings: the full stack, the barbell and the challenger sale, and the context layers (2026-07-30); layout, review surfaces, formatting and region names (2026-08-06); locale heroes and staging (2026-08-08); showing over telling (2026-08-11); the mission text (2026-08-14); the enterprise pillars and CDN copy (2026-08-15); the enterprise order and the pricing cards (2026-08-15 and 2026-08-16); en-GB routing (2026-08-17); the copy page menu (2026-09-11); the agent button and AX (2026-09-30); the interactive CLI (2026-10-01); geography by language (2026-10-03).
+- The list of brand surfaces sent to the brand agency on 2026-09-04, from which section 10 is rebuilt and checked against the live addresses.
