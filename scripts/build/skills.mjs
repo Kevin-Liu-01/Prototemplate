@@ -17,6 +17,15 @@
 //   - `metadata.updated` is a real date, YYYY-MM-DD;
 //   - `metadata.origin` is `prototemplate`, which is how the installer
 //     (scripts/skills/install.mjs) knows a folder is its own;
+//   - `metadata.owner` is P, V or O: the session lane that keeps the skill
+//     current and reviews every diff to it (the Prototemplate, Videos or
+//     onboarding and dashboard session);
+//   - SKILL.md is at most 24,000 bytes, with the detail in references/. A
+//     skill over it fails unless scripts/build/skills.budget.json exempts it
+//     with a written reason and an expiry date that has not passed; an
+//     exemption that has expired, has no reason, names a skill that is not
+//     there or names one already under the budget fails too, so the list
+//     only shrinks;
 //   - supporting files are .md, .mjs, .json, .py, .sh, .txt or .js, since
 //     the route that serves them raw sends text (the last four as
 //     text/plain, so a browser shows a script and never runs it).
@@ -125,6 +134,11 @@ const EM_DASH = '\u2014';
 const HOME_PATH = /\/Users\/[^/\s]+/;
 const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/;
 const SOURCES = /^## Sources\s*$/m;
+const OWNERS = ['P', 'V', 'O'];
+/* the byte budget of one SKILL.md (system v2 plan section 2.2), and the file that may exempt a skill from it for a while */
+const BUDGET = 24000;
+const BUDGET_REL = 'scripts/build/skills.budget.json';
+const TODAY = new Date().toISOString().slice(0, 10);
 
 const FENCE = /^---\s*$/;
 const KEY = /^([A-Za-z0-9_-]+):(.*)$/;
@@ -259,6 +273,10 @@ if (!existsSync(SOURCE)) {
 }
 
 const runtime = runtimeSlugs();
+const BUDGET_FILE = join(ROOT, BUDGET_REL);
+/** slug -> { reason, expires }: the skills allowed over the budget until their date. */
+const exempt = existsSync(BUDGET_FILE) ? (JSON.parse(readFileSync(BUDGET_FILE, 'utf8')).exempt ?? {}) : {};
+const warnings = [];
 const areaIds = AREAS.map((area) => area.id);
 const skills = [];
 
@@ -307,6 +325,18 @@ for (const slug of readdirSync(SOURCE).sort()) {
   if (unknown.length > 0) fail(slug, `areas outside the fixed set: ${unknown.join(', ')} (the set: ${areaIds.join(', ')})`);
   if (!isDate(updated)) fail(slug, `metadata.updated '${updated}' is not a YYYY-MM-DD date`);
   if (meta.origin !== 'prototemplate') fail(slug, 'metadata.origin is not prototemplate');
+  if (!OWNERS.includes(meta.owner)) fail(slug, `metadata.owner '${typeof meta.owner === 'string' ? meta.owner : ''}' is not one of ${OWNERS.join(', ')}`);
+  const bytes = Buffer.byteLength(text);
+  const pass = exempt[slug];
+  if (pass) {
+    if (typeof pass.reason !== 'string' || pass.reason.trim() === '') fail(slug, `its exemption in ${BUDGET_REL} has no reason`);
+    if (typeof pass.expires !== 'string' || !isDate(pass.expires)) fail(slug, `its exemption in ${BUDGET_REL} has no YYYY-MM-DD expiry`);
+    else if (pass.expires < TODAY) fail(slug, `its exemption in ${BUDGET_REL} expired on ${pass.expires}; trim SKILL.md to ${BUDGET} bytes or less`);
+    if (bytes <= BUDGET) fail(slug, `SKILL.md is ${bytes} bytes, within the budget; remove its exemption from ${BUDGET_REL}`);
+    else warnings.push(`${slug}: SKILL.md is ${bytes} bytes, over the ${BUDGET}-byte budget under an exemption until ${pass.expires}`);
+  } else if (bytes > BUDGET) {
+    fail(slug, `SKILL.md is ${bytes} bytes (at most ${BUDGET}); move detail into references/, and never delete a rule to fit`);
+  }
   if (!SOURCES.test(text)) fail(slug, 'no "## Sources" section');
   const owner = runtime.get(slug);
   if (owner) fail(slug, `the slug is already in the wiki's runtime list (${owner}); choose another`);
@@ -329,6 +359,11 @@ for (const slug of readdirSync(SOURCE).sort()) {
 
   skills.push({ id: slug, name, title, description, areas, updated, files });
 }
+
+for (const slug of Object.keys(exempt)) {
+  if (!skills.some((skill) => skill.id === slug) && !existsSync(join(SOURCE, slug, 'SKILL.md'))) fail(slug, `${BUDGET_REL} exempts a skill that is not in ${SKILLS_DIR}/`);
+}
+for (const line of warnings) console.log(`build-skills: ${line}`);
 
 /* README.md's Skills table lists the set, linked as ./skills/<slug>/SKILL.md */
 const readme = existsSync(join(ROOT, 'README.md')) ? readFileSync(join(ROOT, 'README.md'), 'utf8') : '';

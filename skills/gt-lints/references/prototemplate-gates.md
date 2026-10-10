@@ -163,9 +163,13 @@ authority; the type system it holds is in `gt-brand` (`references/type.md`).
 ## lint:skills and test:skills
 
 `pnpm lint:skills` (`build/skills.mjs --check`) fails a skill off the
-contract its header lists (frontmatter, Sources, no em dash, no home-folder
-path or email, no slug the wiki's runtime list holds, a README row) and a
-stale `src/lib/skills.ts` or `skills/README.md`. `pnpm test:skills` tests the installer in
+contract its header lists (frontmatter with `metadata.owner` P, V or O,
+Sources, no em dash, no home-folder path or email, no slug the wiki's
+runtime list holds, a README row, a SKILL.md of at most 24,000 bytes) and a
+stale `src/lib/skills.ts` or `skills/README.md`. A skill over the budget
+passes only under an entry in `scripts/build/skills.budget.json` with a
+reason and an unexpired date, and an entry for a skill already under the
+budget fails, so the file only shrinks. `pnpm test:skills` tests the installer in
 temporary folders.
 
 ## check:pages

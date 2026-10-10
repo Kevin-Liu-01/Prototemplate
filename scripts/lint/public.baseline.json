@@ -1,5 +1,0 @@
-{
-  "$comment": "Counts per file that lint:public tolerates until L7 removes this file. L5 drained every docs, deck and content entry on 2026-10-10, and the integration merge of L2 and L3 cleared the last two skill entries (gt-ship, gt-local-dev) the same day, so the baseline is empty. Key shapes are never recorded.",
-  "machine-path": {},
-  "denylist": {}
-}

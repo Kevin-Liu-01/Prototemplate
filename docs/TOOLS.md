@@ -126,7 +126,6 @@ Each skill carries the scripts its procedure calls, self-contained so an install
 | `gt-verify` | `probe.mjs` | probe.mjs: measures what renders at one spot of a page, the way a fix is verified before it is reported as done (gt-verify sections 1 and 4). |
 | `gt-verify` | `stress.mjs` | stress.mjs: walks a scroll story or an animated section through the stress matrix of gt-verify section 3 at several viewports and writes the readings and the captures a reviewer looks at. |
 | `gt-website` | `routing-matrix.sh` | routing-matrix.sh: checks generaltranslation.com's routing cases (real pages, near-miss corrections, section fallbacks, locale prefixes) by the status and redirect target each path answers, so a routing change is gated before it ships (gt-website section 4). |
-| `prototemplate` | `check-registries.mjs` | Moved to scripts/lint/registries.mjs (pnpm lint:registries). |
 
 ## Environment
 

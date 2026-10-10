@@ -6,8 +6,7 @@
  * this repository, whether or not the site renders it. The findings:
  *   - key shapes: API keys and private keys by their published formats
  *     (Stripe, Anthropic, OpenAI, AWS, Google, GitHub, Slack, PEM headers).
- *     The matched text is never printed. A key shape always fails: the
- *     baseline never holds one.
+ *     The matched text is never printed.
  *   - machine paths: /Users/<name>/ and /private/tmp/. Write ~, $PROTOTEMPLATE
  *     or a repo-relative path instead (~/gt/ is fine).
  *   - denylist terms: the private list at PT_DENYLIST (one term per line,
@@ -23,24 +22,22 @@
  * symlinks. scripts/lint/public.allow.json exempts a path from named rules
  * (this lint's own source and test, which spell the patterns).
  *
- * Until the switch (L7) the scan runs in baseline mode: machine-path and
- * denylist counts per file are compared with scripts/lint/public.baseline.json,
- * and only a count above its baseline fails. --strict ignores the baseline.
+ * Every finding fails. The baseline that held the old machine paths and
+ * terms while they were cleared (scripts/lint/public.baseline.json) was
+ * emptied and removed on 2026-10-10 (system v2, lane L7); fix a finding or,
+ * for a file that must spell a pattern, add it to the allow file.
  *
  * Usage:
- *   node scripts/lint/public.mjs [--root <dir>] [--keys] [--strict] [--all] [--write-baseline]
- *   (pnpm lint:public; pnpm build runs --keys)
+ *   node scripts/lint/public.mjs [--root <dir>] [--keys]
+ *   (pnpm lint:public; pnpm build runs --keys; the pre-push hook runs it all)
  *
- *   --keys            key shapes only (fast; what the build runs)
- *   --strict          fail on every finding, baseline or not
- *   --all             print baselined findings too, not only new ones
- *   --write-baseline  record today's machine-path and denylist counts
+ *   --keys   key shapes only (fast; what the build runs)
  *
- * Exit 0 when nothing is above the baseline, 1 on a key shape or a count
- * above it, 2 when PT_DENYLIST names a file that is not there.
+ * Exit 0 when there is no finding, 1 on any finding, 2 when PT_DENYLIST
+ * names a file that is not there.
  */
-import { closeSync, existsSync, lstatSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { closeSync, existsSync, lstatSync, openSync, readFileSync, readSync, readdirSync } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
 
 import { ROOT as REPO_ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
@@ -51,11 +48,7 @@ const argv = process.argv.slice(2);
 const at = argv.indexOf('--root');
 const ROOT = at >= 0 ? resolve(argv[at + 1]) : REPO_ROOT;
 const KEYS_ONLY = argv.includes('--keys');
-const STRICT = argv.includes('--strict');
-const ALL = argv.includes('--all');
-const WRITE = argv.includes('--write-baseline');
 const ALLOW_REL = 'scripts/lint/public.allow.json';
-const BASELINE_REL = 'scripts/lint/public.baseline.json';
 
 /** The key formats, each anchored and with its length, as the providers publish them. */
 export const KEY_SHAPES = [
@@ -147,44 +140,14 @@ for (const rel of walk()) {
 }
 
 const RULES = KEYS_ONLY ? ['key-shape'] : ['key-shape', 'machine-path', 'denylist'];
-const count = (rule) => {
-  const per = {};
-  for (const f of findings.filter((x) => x.rule === rule)) per[f.file] = (per[f.file] ?? 0) + 1;
-  return per;
-};
-
-if (WRITE) {
-  if (findings.some((f) => f.rule === 'key-shape')) {
-    console.error('lint:public: refusing to write a baseline while a key shape is present; remove the key first');
-    process.exit(1);
-  }
-  const previous = readJson(BASELINE_REL, {});
-  const baseline = {
-    $comment: 'Counts per file that lint:public tolerates until L5 drains them and L7 removes this file. Key shapes are never recorded.',
-    'machine-path': count('machine-path'),
-    /* without the private list, keep the recorded denylist counts */
-    denylist: deny.terms ? count('denylist') : (previous.denylist ?? {}),
-  };
-  mkdirSync(dirname(join(ROOT, BASELINE_REL)), { recursive: true });
-  writeFileSync(join(ROOT, BASELINE_REL), `${JSON.stringify(baseline, null, 2)}\n`);
-  console.log(`lint:public: wrote ${BASELINE_REL}`);
-  process.exit(0);
-}
-
-const baseline = STRICT ? {} : readJson(BASELINE_REL, {});
 let failed = 0;
 for (const rule of RULES) {
   if (rule === 'denylist' && !deny.terms) continue;
-  const per = count(rule);
-  const limit = rule === 'key-shape' ? {} : (baseline[rule] ?? {});
-  const over = Object.keys(per).filter((file) => per[file] > (limit[file] ?? 0));
-  const total = Object.values(per).reduce((a, b) => a + b, 0);
-  const shown = ALL ? findings.filter((f) => f.rule === rule) : findings.filter((f) => f.rule === rule && over.includes(f.file));
-  for (const f of shown) console.log(`  ${over.includes(f.file) ? 'FAIL' : 'base'} ${f.file}:${f.line}  ${f.text}`);
-  for (const file of over) if (limit[file]) console.log(`  FAIL ${file}: ${per[file]} ${rule} findings, ${limit[file]} in the baseline`);
-  failed += over.length;
-  const held = total - over.reduce((n, file) => n + per[file], 0);
-  console.log(`lint:public: ${rule}: ${total} finding${total === 1 ? '' : 's'} in ${Object.keys(per).length} file${Object.keys(per).length === 1 ? '' : 's'}${held > 0 ? ` (${held} held by the baseline)` : ''}${over.length > 0 ? `, ${over.length} file${over.length === 1 ? '' : 's'} above it` : ''}`);
+  const found = findings.filter((f) => f.rule === rule);
+  const files = new Set(found.map((f) => f.file)).size;
+  for (const f of found) console.log(`  FAIL ${f.file}:${f.line}  ${f.text}`);
+  failed += found.length;
+  console.log(`lint:public: ${rule}: ${found.length} finding${found.length === 1 ? '' : 's'} in ${files} file${files === 1 ? '' : 's'}`);
 }
-console.log(`lint:public: ${failed === 0 ? 'pass' : 'fail'}${STRICT ? ' (strict)' : ''}`);
+console.log(`lint:public: ${failed === 0 ? 'pass' : 'fail'}`);
 process.exit(failed === 0 ? 0 : 1);

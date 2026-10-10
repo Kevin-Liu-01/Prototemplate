@@ -70,9 +70,9 @@ pnpm dev                              # http://localhost:3005
   Python 3 with `requirements.txt`. ffmpeg and the HyperFrames CLI are
   optional; only the films need them. Write `pnpm run doctor`: a bare
   `pnpm doctor` runs pnpm's own command.
-- The pre-push hook prints what `pnpm lint:public` finds: key shapes,
-  machine paths and, with `PT_DENYLIST` set to the private term list,
-  the denylist terms.
+- The pre-push hook runs `pnpm lint:public` and stops the push on any
+  finding: a key shape, a machine path or, with `PT_DENYLIST` set to the
+  private term list, a denylist term.
 - To load the skills in your agents, run `pnpm skills:install --user`
   (your agent home) or `pnpm skills:install --project <dir>` (one
   project); Skills below has the details.

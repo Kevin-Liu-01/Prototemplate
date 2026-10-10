@@ -61,24 +61,22 @@ describe('lint:public', () => {
     });
   }
 
-  it('fails on a key shape even with a baseline', () => {
+  it('fails on every machine path, with no baseline to hold one', () => {
     const root = checkout({
-      'src/config.ts': `const key = '${KEYS.aws}';\n`,
-      'scripts/lint/public.baseline.json': JSON.stringify({ 'key-shape': { 'src/config.ts': 9 } }),
+      'docs/notes.md': `see ${MACHINE}\nand ${MACHINE}\n`,
+      /* a leftover baseline file is ignored */
+      'scripts/lint/public.baseline.json': JSON.stringify({ 'machine-path': { 'docs/notes.md': 9 } }),
     });
-    assert.equal(scan(root).status, 1);
-  });
-
-  it('holds machine paths to the baseline and fails on a new one', () => {
-    const root = checkout({ 'docs/notes.md': `see ${MACHINE}\n` });
-    assert.equal(scan(root).status, 1);
-    assert.equal(scan(root, ['--write-baseline']).status, 0);
-    assert.equal(scan(root).status, 0);
-    writeFileSync(join(root, 'docs/notes.md'), `see ${MACHINE}\nand ${MACHINE}\n`);
     const result = scan(root);
     assert.equal(result.status, 1);
-    assert.match(result.stdout, /docs\/notes\.md: 2 machine-path findings, 1 in the baseline/);
-    assert.equal(scan(root, ['--strict']).status, 1);
+    assert.match(result.stdout, /FAIL docs\/notes\.md:1/);
+    assert.match(result.stdout, /machine-path: 2 findings in 1 file/);
+  });
+
+  it('passes a clean checkout', () => {
+    const result = scan(checkout({ 'docs/notes.md': 'see ~/gt/notes\n' }));
+    assert.equal(result.status, 0, result.stdout);
+    assert.match(result.stdout, /lint:public: pass/);
   });
 
   it('matches denylist terms whole-word and prints the list line, never the term', () => {
