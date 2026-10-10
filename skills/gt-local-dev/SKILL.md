@@ -79,49 +79,11 @@ Stop a server with `kill $(lsof -ti tcp:<port> -sTCP:LISTEN)`. Without `-sTCP:LI
 
 ## 3. A new machine or worktree
 
-- A new machine follows the Setup section of gt-cloud's `README.md` and the onboarding guide it links. `quick-install.sh` is sourced so the toolchain loads into the same shell, and `pnpm aws:configure` runs once per machine. In a new worktree, `source ./worktree-setup.sh` installs the toolchain and dependencies, starts the infrastructure, loads the `main` env profile that `pnpm env:save main` stored, and builds the workspace. Kevin performs every sign-in and fills every credential; the agent runs the rest and verifies it ("just log in to everything u need me to log in in now", Kevin, 2026-07-20).
-- A development `GT_API_KEY` makes a production `next build` fail by design: gt-next's `withGTConfig` throws "Production builds cannot use a development API key". The packages still build, and the apps run in development, which accepts the key.
-- The magic-link email does not arrive locally. The send goes through Resend and never throws, so the page says to check your email either way. With the root `.env`, sign in with Google. In the dev environment the seeded session is the way in (section 4).
-- Verify setup by driving the real sign-in through to the dashboard. On 2026-07-21 the sign-in page loaded and Kevin still could not sign in. Confirm that the editor extensions in `.vscode/extensions.json` (oxc and TypeScript Native Preview) are installed; he asked for that check by name.
-- A fresh worktree: gt-ship section 1 creates it and gt-website section 2 builds the landing. For any other app, run `pnpm install --frozen-lockfile` and `pnpm turbo run build --filter='<app>^...'` before `next dev`; without the build the dashboard dies with `Module not found ... settings/isBusinessEmail.js`. Authenticated dashboard work uses section 4, which brings its own infrastructure.
+Internal to gt-cloud: follow the Setup section of gt-cloud's `README.md` and the gt-dashboard skill in gt-cloud's `.agents/skills`. Kevin performs every sign-in and fills every credential; the agent runs the rest and verifies it by driving the real sign-in through to the dashboard.
 
 ## 4. Authenticated dashboard work
 
-### The per-worktree environment
-
-`dev-infra/` (README there) gives a worktree its own Postgres, Redis, SeaweedFS S3, LocalStack and Temporal in the Docker Compose project `gt-dev-<id>`. It migrates, seeds a user, an organization, a project and a session, and writes a Playwright storage state. Docker must be running.
-
-```sh
-cd <worktree>
-pnpm install --frozen-lockfile
-pnpm --dir dev-infra exec playwright install chromium   # once per machine
-pnpm dev-env up <id>
-pnpm dev-env seed <id> --no-root-env
-pnpm dev-env start <id> --services dashboard --no-root-env
-pnpm dev-env status <id>   # URLs and the storage-state path
-```
-
-- Always pass a short explicit id of a few letters (`onb`, `swp` and `fld` have been used). The default id is the worktree folder name, up to 39 characters, plus an 8-character hash, and the seed writes ids such as `usr_test_<id>` into `varchar(40)` columns, so a default id fails with "value too long for type character varying(40)".
-- `--no-root-env` keeps outbound integrations inert. `dev-env` blanks every key that the root and app env files set, and `buildHermeticProviderDefaults` in `config.ts` fills placeholder provider values. The Slack, CRM and email hooks then do nothing, and Google and GitHub sign-in cannot complete, so the seeded session is the way in. Without the flag the environment inherits the root `.env` provider credentials.
-- The dashboard serves at `http://dashboard-<id>.localhost:1355`, and `dev-infra/state/<id>/storage-state.json` signs Playwright in (gt-aesthetic for captures). `seed.json` beside it holds fixture credentials; never print it.
-- A restart takes 5 to 8 minutes, because turbo builds every dependency first. Run `pnpm dev-env stop <id>` before `start`, which otherwise refuses with "already running". `down` keeps the data and `destroy` deletes it. Seeding again deletes the fixture user with its memberships and sessions, then creates it and a new session.
-- The environment's Postgres container sometimes restarts on its own ("Consistent recovery state has not been yet reached"). Wait for it to settle and rerun.
-- `--services dashboard` leaves the API down. A CLI login against the environment needs only the dashboard.
-
-### The /dev/states gallery
-
-- Where it lives (2026-10-05): release PR #5063 removed the gallery, `/dev/session`, the stand-in and the `STRIPE_API_HOST` hook from main, because review galleries and other verification instruments stay out of release PRs (gt-ship section 3). They live on branch `k/dashboard-dev-gallery` (ebb900124, 2026-10-01, no PR, 46 commits behind main). To use them, check that branch out in its own worktree and merge `origin/main` locally. Never carry these files into a PR branch.
-- `/dev/states?state=<id>` mounts every auth-adjacent state in the order a user meets them: the sign-in page, the mail page, each onboarding step with its variants, the dashboard after it, then the CLI login (consent, the 127.0.0.1 callback page, the device code and the CLI wizard). A draggable console in the lower right pages through them with the arrow keys and can mark the seeded account's onboarding complete or reset it. The list is `apps/dashboard/src/lib/dev/devStates.ts`, and a new state in a flow gets an entry there.
-- `/dev/session` signs a cookie-less browser in from the storage state. It answers only in development, with `DEV_ENV_ID` set and on a loopback host. Everywhere else it answers 404, and that includes requests through a tunnel.
-- The Stripe client (`packages/clients/src/stripe/index.ts`) honours `STRIPE_API_HOST`, `STRIPE_API_PORT` and `STRIPE_API_PROTOCOL` outside production, and dev-infra runs a stand-in (`dev-infra/stripe-stand-in.mjs`) that creates customers and setup intents. `config.ts` sets the three values only under `--no-root-env`, and an environment created before the stand-in needs `pnpm dev-env up <id>` once. Stripe.js in the browser holds a placeholder key, so the payment states render a static replica of Stripe's form (`BillingFormPreview.tsx`) and the card funnels stay in unit tests.
-- When Kevin only needs to evaluate the UI, make the state render and leave auth alone: "i just need to evaluate the UI" (Kevin, 2026-09-30). That day the payment state failed because the fixture organization had no Stripe customer; the fixture gained one, and the form replica followed.
-- Locally the disposable-email list (read from S3) is missing, so every address counts as a weak signal and the website field is required. `acme.com` and GT's own domains are rejected; use an invented domain such as `funnelcorp.io`. Signing out deletes the seeded session, and seeding again restores it.
-- For a look without any backend, Prototemplate's Shipped section carries a copy of the gallery and its console at `/d/production/signin`, `onboarding`, `consent`, `device` and `cli` on 3005, each taking `?state=` (Prototemplate main b56e64c, 2026-10-01). The dashboard stays the source.
-
-### Real providers
-
-- Real providers are Google sign-in, AWS secrets, Stripe and email. A run against them needs `pnpm aws:login`, which opens a browser sign-in that Kevin completes, and a seed and start without `--no-root-env`. Run it only after he approves, as on 2026-08-11 when he asked for the login to be relaunched, and tell him first which integrations will be live.
-- A tunnel (`pnpm tunnel`, dev-infra README) puts an environment on a public URL. Open one only when Kevin asks, and turn it off afterwards.
+Internal to gt-cloud: the per-worktree environment, the `/dev/states` review gallery and the rules for real providers live in gt-cloud (`dev-infra/README.md` and the gt-dashboard skill). Run real providers or a public tunnel only after Kevin approves. For a look without any backend, Prototemplate's `/d/production/signin`, `onboarding`, `consent`, `device` and `cli` pages carry a copy of the gallery and its console, each taking `?state=`.
 
 ## 5. Letting Kevin try it
 

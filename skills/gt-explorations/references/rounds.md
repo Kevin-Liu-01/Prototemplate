@@ -6,7 +6,7 @@ Each entry names the surface, the ask, what was built, what Kevin picked or reje
 
 - Surface: the GT site, in a standalone redesign app in gt-cloud (`apps/redesign` on the branch `redesign/diagram-standard`), later exported to Prototemplate.
 - Ask: "literally 20 samples" after reading the wiki and the X bookmarks, built by agents under a harsh critic, ready to review when Kevin came back.
-- Built: numbered samples from 00, and the research now in `docs/research/` (`DESIGN_BRIEF.md`, `inspo.md`, `STORYBOARD.md`, `x-bookmarks.json`).
+- Built: numbered samples from 00, and the research now in `docs/research/` (`DESIGN_BRIEF.md`, `inspo.md`, `STORYBOARD.md`).
 - The same night Kevin asked for "one place to switch between all of these", and a switcher dock went over every sample.
 - Rules: build the number asked for; one place to switch.
 

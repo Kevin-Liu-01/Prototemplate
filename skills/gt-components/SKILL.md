@@ -24,7 +24,6 @@ Paths are written relative to a gt-cloud checkout at origin/main (`$GT_CLOUD` he
 
 ## References
 
-- `references/packages-ui.md` lists packages/ui file by file, with props and import paths.
 - `references/icons.md` holds the icon tiers, the glyph vocabulary, the dashboard mapping and Prototemplate's chrome icons.
 - `references/instruments.md` lists every instrument with its Prototemplate and gt-cloud paths, its interface and the lifecycle contract.
 - `references/react.md` holds the effect table, the code shape rules, the translation rules and the Prototemplate differences.
@@ -48,7 +47,7 @@ A new primitive goes in one of two places, and both `components.json` files keep
 
 ## The packages/ui inventory
 
-`$GT_CLOUD/packages/ui/src`, on origin/main, 2026-10-05. Full table in `references/packages-ui.md`.
+`$GT_CLOUD/packages/ui/src`, on origin/main, 2026-10-05.
 
 | file | export | what to know |
 | --- | --- | --- |

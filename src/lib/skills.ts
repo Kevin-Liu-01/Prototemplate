@@ -206,7 +206,7 @@ export const SKILLS: readonly Skill[] = [
     description: 'The components General Translation work reuses before writing new ones: gt-cloud\'s packages/ui (header, footer, theme toggle, language selector, LocaleFlag, ScrollArea, Button), the landing\'s Cta and Bento primitives, the gt-ui design rules and the oxlint rules that hold them, the icon tiers, the React and translation rules, Prototemplate\'s instruments library (dither, studio field, glyph field, DoubledLine, EdgeGlobe, LocaleTag, RevealSeam, EverySentence) and its viewer shell, and when an outside library is the right call. Use when building or reviewing UI in gt-cloud or Prototemplate, or before adding a component.',
     areas: ['components', 'landing', 'website'],
     updated: '2026-10-06',
-    files: ['references/behavior.md', 'references/icons.md', 'references/instruments.md', 'references/packages-ui.md', 'references/react.md'],
+    files: ['references/behavior.md', 'references/icons.md', 'references/instruments.md', 'references/react.md'],
   },
   {
     id: 'gt-local-dev',
