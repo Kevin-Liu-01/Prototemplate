@@ -73,6 +73,8 @@ The handbook holds what spans the skills. Each document is also in the repositor
 - [Ship loop](https://prototemplate.vercel.app/docs/ship-loop): the verify-and-ship procedure every round runs: the line audit, the practices ratchet, types, filming, the backup branch, the mirror build.
 - [Libraries](https://prototemplate.vercel.app/docs/libraries): the index of the componentized instruments; the living version, with plates running, is the build log under the readme.
 - [Graphics pipeline](https://prototemplate.vercel.app/docs/graphics): how the blog illustrations are made with the toolchain in graphics/, from captures to the hand-off to a post.
+- [Artifact pictures](https://prototemplate.vercel.app/docs/artifact-pictures): the standard for the dithered photographs on the plate, the deck and the docs, the cutter that makes them and the lint that holds them.
+- [Tools](https://prototemplate.vercel.app/docs/tools): every pnpm command and skill script in the repository with what it does, and the environment variables the tools read.
 - [Agent guide](https://prototemplate.vercel.app/docs/agents): the entry point for an agent (AGENTS.md): the read order, the principles in brief, which skill to load for a task, the house rules, and how to use the hub in another project.
 
 ## Directions
