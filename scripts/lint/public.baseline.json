@@ -1,0 +1,22 @@
+{
+  "$comment": "Counts per file that lint:public tolerates until L5 drains them and L7 removes this file. Key shapes are never recorded.",
+  "machine-path": {
+    "deck/ROUND-5.md": 2,
+    "deck/shots/OPENERS.md": 2,
+    "docs/harness/rhythm-probe.mjs": 1,
+    "docs/harness/shoot-route.mjs": 1,
+    "docs/research/DESIGN_STANDARD.md": 8,
+    "docs/research/ITERATION_SPEC.md": 2,
+    "docs/research/MODULES_PLAN.md": 2,
+    "docs/research/PORT_SPEC.md": 2,
+    "docs/research/feature-inventory.md": 9,
+    "docs/research/landing-content.md": 1,
+    "src/app/d/production/sections/locales-data.ts": 1
+  },
+  "denylist": {
+    "content/authors/kevin.mdx": 1,
+    "docs/handbook/glossary.md": 3,
+    "skills/gt-local-dev/SKILL.md": 7,
+    "skills/gt-ship/SKILL.md": 1
+  }
+}

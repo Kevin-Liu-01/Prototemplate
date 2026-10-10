@@ -1,0 +1,7 @@
+# Python packages the scripts import: pip install -r requirements.txt (pnpm doctor checks them).
+# Pillow: scripts/media/mood-tone and graphics/build; fonttools and brotli: pnpm build:inter;
+# numpy: graphics/build/rewriting-covers.py.
+Pillow>=11
+fonttools>=4.50
+brotli>=1.1
+numpy>=2

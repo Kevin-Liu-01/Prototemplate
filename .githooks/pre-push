@@ -1,0 +1,10 @@
+#!/bin/sh
+# Runs the public scan (pnpm lint:public) before a push. Report only until
+# the switch (L7): it prints what it finds and never stops the push.
+# Enable it once per clone: git config core.hooksPath .githooks
+# Set PT_DENYLIST to the private term list so the denylist part runs.
+root="$(git rev-parse --show-toplevel)" || exit 0
+if ! node "$root/scripts/lint/public.mjs"; then
+  echo "pre-push: lint:public found something above its baseline (report only; the push continues)"
+fi
+exit 0

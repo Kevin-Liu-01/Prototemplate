@@ -1,0 +1,7 @@
+{
+  "$comment": "Paths lint:public (scripts/lint/public.mjs) exempts from named rules: key-shape, machine-path, denylist. Only files that must spell a pattern belong here.",
+  "allow": [
+    { "path": "scripts/lint/public.mjs", "rules": ["machine-path"], "why": "its usage text names the two machine-path prefixes" },
+    { "path": "scripts/lint/public.test.mjs", "rules": ["key-shape", "machine-path", "denylist"], "why": "its fixtures build each finding at runtime" }
+  ]
+}
