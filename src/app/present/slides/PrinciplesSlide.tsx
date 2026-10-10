@@ -9,6 +9,7 @@ import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, type ReactNode } from 'react';
 
+import { useAfterIntro } from '../after-intro';
 import Icon, { type IconName } from '../icons';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, MorphSVGPlugin);
@@ -187,8 +188,12 @@ export default function PrinciplesSlide() {
   const root = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
 
+  // Set up after the intro's entrance (after-intro.ts).
+  const ready = useAfterIntro();
+
   useGSAP(
     () => {
+      if (!ready) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       const tl = gsap.timeline({
@@ -394,7 +399,7 @@ export default function PrinciplesSlide() {
         .from('.pr-ctx-note', { autoAlpha: 0, y: 12, duration: 0.45 }, 'pipe+=9.9')
         .to({}, { duration: 0.9 });
     },
-    { scope: root }
+    { scope: root, dependencies: [ready] }
   );
 
   return (

@@ -7,7 +7,9 @@ import Link from 'next/link';
 import { useRef, useState } from 'react';
 
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { useAfterIntro } from './after-intro';
 import Icon from './icons';
 import CraftSlide from './slides/CraftSlide';
 import IntroSlide from './slides/IntroSlide';
@@ -94,9 +96,22 @@ export default function PresenterApp() {
   const goToRef = useRef<(slide: number, atOverride?: number) => void>(
     () => {}
   );
+  const keyRef = useRef<(event: KeyboardEvent) => void>(() => {});
+
+  // Set up after the intro's entrance (after-intro.ts).
+  const ready = useAfterIntro();
+
+  // The key listener exists from mount: a key pressed while the setup below
+  // is still queued runs that setup first (after-intro.ts) and then pages.
+  useMountEffect(() => {
+    const onKey = (event: KeyboardEvent) => keyRef.current(event);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
 
   useGSAP(
     () => {
+      if (!ready) return;
       const sections = gsap.utils.toArray<HTMLElement>('[data-slide]');
 
       // One dock, two faces. The viewer announces mode via pr:chrome; the
@@ -187,12 +202,17 @@ export default function PresenterApp() {
          PREVIOUS page's scroll position (Next resets scroll a beat later)
          and against pre-pin geometry — which sticks the rail on a phantom
          slide while the viewer is actually at the top. Re-derive once the
-         reset scroll and the settled pin spacers are real. */
+         reset scroll and the settled pin spacers are real. A setup that
+         waited for the intro runs long after both, and a refresh there
+         would cut off a smooth scroll the first key or click just began. */
       const raf = requestAnimationFrame(syncPosition);
-      const settle = window.setTimeout(() => {
-        ScrollTrigger.refresh();
-        syncPosition();
-      }, 150);
+      const settle =
+        ready === 'mount'
+          ? window.setTimeout(() => {
+              ScrollTrigger.refresh();
+              syncPosition();
+            }, 150)
+          : 0;
 
       const goTo = (slide: number, subFraction?: number) => {
         const clamped = Math.max(0, Math.min(sections.length - 1, slide));
@@ -228,15 +248,15 @@ export default function PresenterApp() {
         event.preventDefault();
       };
 
-      window.addEventListener('keydown', onKey);
+      keyRef.current = onKey;
       return () => {
-        window.removeEventListener('keydown', onKey);
+        keyRef.current = () => {};
         window.removeEventListener('pr:chrome', onChrome);
         cancelAnimationFrame(raf);
         window.clearTimeout(settle);
       };
     },
-    { scope: root }
+    { scope: root, dependencies: [ready] }
   );
 
   return (

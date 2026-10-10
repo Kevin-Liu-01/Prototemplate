@@ -46,7 +46,7 @@ export default function PrototypeViewer() {
   // The frame's document hydrates on this page's main thread, so it loads
   // once the intro's entrance has played instead of with the page. That is
   // still seconds before anyone can scroll this far.
-  const frameArmed = useAfterIntro();
+  const frameArmed = useAfterIntro(false);
 
   // The dock is one shared pill in the presenter HUD; this viewer portals
   // its controls (and the notes panel) into the pill's slots.
@@ -63,8 +63,12 @@ export default function PrototypeViewer() {
     setIndex((target + DIRECTIONS.length) % DIRECTIONS.length);
   };
 
+  // Set up after the intro's entrance (after-intro.ts).
+  const ready = useAfterIntro();
+
   useGSAP(
     () => {
+      if (!ready) return;
       const reduced = window.matchMedia(
         '(prefers-reduced-motion: reduce)'
       ).matches;
@@ -218,7 +222,7 @@ export default function PrototypeViewer() {
 
       return cleanupDeepLink;
     },
-    { scope: root }
+    { scope: root, dependencies: [ready] }
   );
 
   useEffect(() => {

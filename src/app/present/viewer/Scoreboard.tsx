@@ -9,6 +9,7 @@ import { readTheme, toggleTheme } from '@/components/viewer/ThemeButton';
 import type { Theme } from '@/components/viewer/ThemeButton';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { useAfterIntro } from '../after-intro';
 import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 
 import LazyFrame from './LazyFrame';
@@ -43,8 +44,12 @@ export default function Scoreboard() {
     return () => observer.disconnect();
   });
 
+  // Set up after the intro's entrance (after-intro.ts).
+  const ready = useAfterIntro();
+
   useGSAP(
     () => {
+      if (!ready) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       gsap.utils.toArray<HTMLElement>('.pr-gal-card').forEach((card, i) => {
         gsap.from(card, {
@@ -57,7 +62,7 @@ export default function Scoreboard() {
         });
       });
     },
-    { scope: root }
+    { scope: root, dependencies: [ready] }
   );
 
   const jumpTo = (slug: string) => {

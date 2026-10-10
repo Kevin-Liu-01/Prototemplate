@@ -7,6 +7,7 @@ import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { useAfterIntro } from '../after-intro';
 import { PRESENT_DIRECTIONS } from '../directions';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin);
@@ -122,8 +123,12 @@ export default function TypeDetailSlide() {
   const root = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
 
+  // Set up after the intro's entrance (after-intro.ts).
+  const ready = useAfterIntro();
+
   useGSAP(
     () => {
+      if (!ready) return;
       // The two builds render their baselines at slightly different heights.
       // Font-metric math proved unreliable, so measure the truth instead: a
       // zero-height inline-block sits exactly on the baseline of the line it
@@ -461,7 +466,7 @@ export default function TypeDetailSlide() {
         placePair();
       });
     },
-    { scope: root }
+    { scope: root, dependencies: [ready] }
   );
 
   return (

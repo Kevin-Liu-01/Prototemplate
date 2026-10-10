@@ -6,6 +6,7 @@ import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { useAfterIntro } from '../after-intro';
 import Icon from '../icons';
 import { gtText } from '@/components/viewer/GtWord';
 
@@ -48,8 +49,12 @@ export default function CraftSlide() {
   const pin = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
 
+  // Set up after the intro's entrance (after-intro.ts).
+  const ready = useAfterIntro();
+
   useGSAP(
     () => {
+      if (!ready) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const trackEl = track.current;
       if (!trackEl) return;
@@ -127,7 +132,7 @@ export default function CraftSlide() {
       reveal(3, '.pr-weight-row', { autoAlpha: 0, x: -28, stagger: 0.08, duration: 0.35 });
       reveal(4, '.pr-tech-chip', { autoAlpha: 0, y: 20, stagger: 0.06, duration: 0.3 });
     },
-    { scope: root }
+    { scope: root, dependencies: [ready] }
   );
 
   return (

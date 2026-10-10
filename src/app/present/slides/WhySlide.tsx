@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { useRef } from 'react';
 
+import { useAfterIntro } from '../after-intro';
 import Icon, { type IconName } from '../icons';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
@@ -43,8 +44,12 @@ export default function WhySlide() {
   const root = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
 
+  // Set up after the intro's entrance (after-intro.ts).
+  const ready = useAfterIntro();
+
   useGSAP(
     () => {
+      if (!ready) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       const big = SplitText.create('.pr-why-big', {
@@ -86,7 +91,7 @@ export default function WhySlide() {
 
       return () => big.revert();
     },
-    { scope: root }
+    { scope: root, dependencies: [ready] }
   );
 
   return (
