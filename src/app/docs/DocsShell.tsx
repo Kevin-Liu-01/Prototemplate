@@ -92,6 +92,15 @@ function cssEscape(value: string): string {
   return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
 }
 
+/* the longest file name the 128px gutter holds on one line at the meta size (ARCHITECTURE.md, 123px) */
+const GUTTER_NAME_MAX = 15;
+
+/** A divider's second gutter line: the document's file name, or its section count when the name would wrap. */
+function gutterNote(book: BookId, doc: DocPage): string {
+  const name = doc.file.split('/').pop() ?? doc.file;
+  return book === 'docs' && name.length <= GUTTER_NAME_MAX ? name : `${doc.sections.length} sections`;
+}
+
 /**
  * The documents as the shell's one section, opened as the run under the
  * book's page row in the sidebar (`under`). On /docs the run is the
@@ -508,9 +517,9 @@ function DocsBook({
             <small>
               <span>Section {i + 1}</span>
               {/* the file's name in /docs (a folder in front of it would wrap the 128px gutter:
-                  docs/SHIP-LOOP.md); in the handbook, whose names run past the gutter
-                  (multi-session-playbook.md), the count of its sections */}
-              <span>{book === 'docs' ? doc.file.split('/').pop() : `${doc.sections.length} sections`}</span>
+                  docs/SHIP-LOOP.md); where a name runs past the gutter (over 15 characters:
+                  ARTIFACT-PICTURES.md, multi-session-playbook.md), the count of its sections */}
+              <span>{gutterNote(book, doc)}</span>
             </small>
             <h2 id={`ptd-${doc.slug}`}>{doc.title}</h2>
           </div>
