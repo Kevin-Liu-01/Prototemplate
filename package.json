@@ -41,6 +41,7 @@
     "build:updated": "node scripts/build/updated.mjs",
     "lint:updated": "node scripts/build/updated.mjs --check",
     "test:updated": "node --test scripts/build/updated.test.mjs",
+    "gen:all": "node scripts/build/gen-all.mjs",
     "capture:pages": "node scripts/check/capture-pages.mjs",
     "check:pages": "node scripts/check/pagecheck/pagecheck.mjs",
     "lint:copies": "node scripts/lint/copies.mjs",

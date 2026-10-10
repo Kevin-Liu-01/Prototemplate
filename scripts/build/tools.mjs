@@ -33,7 +33,7 @@ const GROUPS = [
   ['Lints', (name) => name.startsWith('lint:')],
   ['Tests', (name) => name.startsWith('test:')],
   ['Checks and captures', (name) => name.startsWith('check:') || name.startsWith('capture:')],
-  ['Generators', (name) => name.startsWith('build:') || name === 'mood-tone'],
+  ['Generators', (name) => name.startsWith('build:') || name.startsWith('gen:') || name === 'mood-tone'],
   ['Skills', (name) => name.startsWith('skills:')],
   ['Graphics', (name) => name.startsWith('graphics:')],
 ];
