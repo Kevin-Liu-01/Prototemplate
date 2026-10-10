@@ -9,7 +9,8 @@
  * CLI (films). Each missing item prints the command that fixes it.
  *
  * Usage:
- *   node scripts/doctor.mjs   (pnpm doctor)
+ *   node scripts/doctor.mjs   (pnpm run doctor; a bare `pnpm doctor` runs pnpm's own
+ *                              doctor command, which shadows the script)
  *
  * Exit 0 when every required item is present, 1 when one is missing.
  * Optional items never fail the run.

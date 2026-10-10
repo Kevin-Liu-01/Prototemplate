@@ -1,6 +1,6 @@
 # A fresh clone on Linux builds and passes every static gate (P3 of the
 # system plan): install, Chrome for Testing, the Python packages, pnpm
-# doctor, pnpm build, pnpm lint:static (every lint and test that needs no
+# run doctor, pnpm build, pnpm lint:static (every lint and test that needs no
 # running server, lint:public and test:skill-scripts among them) and --help
 # for every script. It uses no secrets; lint:public skips its private
 # denylist under CI.
@@ -39,7 +39,8 @@ jobs:
       - name: Python packages
         run: pip install -r requirements.txt
       - name: Doctor
-        run: pnpm doctor
+        # `pnpm doctor` alone runs pnpm's own doctor command, so the script goes through `run`
+        run: pnpm run doctor
       - name: Build
         run: pnpm build
       - name: Static lints and tests
