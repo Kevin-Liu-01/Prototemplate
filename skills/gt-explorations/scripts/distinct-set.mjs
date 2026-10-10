@@ -33,6 +33,11 @@
 // The default exit is 0 so a loop can read the report; --strict exits 1 when
 // any pair is flagged. CHROME_PATH overrides the browser; otherwise the newest
 // Chrome for Testing build in the ms-playwright cache decodes the images.
+//
+// Requires: Node 20 or later, playwright-core in the working checkout and a
+// Chrome for Testing build (pnpm exec playwright-core install chromium).
+// Last real run: none (kept for: every set of stills, frames or captures
+// shown to Kevin as options; its seven runs on 2026-10-06 were authoring runs).
 
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';

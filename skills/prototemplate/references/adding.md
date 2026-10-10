@@ -50,7 +50,7 @@ A page outside the shell (`/blog`, `/present`) still takes steps 2, 3, 5 and 6 a
 
 ## A skill
 
-1. Write `skills/<slug>/SKILL.md` to the frontmatter and body contract in section 10 of the skill, with `references/*.md`, `scripts/*.mjs` or `assets/` beside it.
+1. Write `skills/<slug>/SKILL.md` to the frontmatter and body contract in section 10 of the skill (`references/skills.md`): `metadata.owner`, a body under 24,000 bytes, and `references/sources.md` citing every line. Scripts go in `scripts/` with their header and an offline test.
 2. Run `pnpm lint:registries`, which checks the contract.
 3. Add the skill's row to README.md's Skills table, add its slug to `ORDER` in `scripts/build/skills.mjs` at its place in the area, and run `pnpm build:skills`, which checks the contract and regenerates `src/lib/skills.ts`. Commit the folder, the table and the registry together.
 4. Run the installer for the repository's own agent folders, `node scripts/skills/install.mjs <slug> --project . --dry-run`, then without `--dry-run` (section 10).

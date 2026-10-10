@@ -13,6 +13,10 @@ Ask one question with the recommended option first. A proposal holds:
 
 The proposal Kevin approved on 2026-10-05 read, in substance: four models by six tasks by four modes, 96 fresh runs, a $25 estimated-spend cap and no retries, with the note that the cap can stop the study before all runs finish. His answer: "Run the 96-run comparison, capped at $25".
 
+## A project without a spend cap
+
+Spend caps are set per project. A project may lift its API spend caps on Kevin's explicit order, and the order applies to that project alone. Such a project still keeps a high cap as a stop against a runaway loop, logs every paid call, and reports the exact dollars per unit of output in its ledger and results. Kevin gave this order for one research project on 2026-10-08, to get the best pipeline the measurements support. Every other paid run follows the proposal above.
+
 ## Pilot, then bulk
 
 1. Freeze the plan: the worker, its helpers and the grid file are not edited after approval.

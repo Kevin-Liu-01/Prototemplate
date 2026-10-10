@@ -14,15 +14,16 @@ description: >-
 metadata:
   title: Exploration rounds and convergence
   areas: aesthetic, website, landing, graphics
-  updated: 2026-10-05
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Exploration rounds and convergence
 
 General Translation (GT) builds localization tools for developers, and Kevin Liu does its design, website and product work. He designs in rounds. He asks for several directions, compares them live, picks by number, and asks for variants of the pick until one design lands. A direction is one complete design of a page or a site, built as its own running route. This skill holds the mechanics of a round, from the research before it to the cleanup after it, and `gt-aesthetic` holds the taste each round is judged by.
 
-Paths are relative to a checkout. `$PROTOTEMPLATE` is Prototemplate, Kevin's design lab and the public hub at prototemplate.com, where the site directions live. `$GT_CLOUD` is gt-cloud, the monorepo of GT's site, docs and dashboard. Kevin's wiki is github.com/Kevin-Liu-01/Kevin-Wiki, and its paths below are relative to its checkout. `references/rounds.md` records every round from July to October 2026 with what was asked, what Kevin picked and the rule it set. `scripts/distinct-set.mjs` checks that a set of options differ before Kevin sees it.
+Paths are relative to a checkout. `$PROTOTEMPLATE` is Prototemplate, Kevin's design lab and the public hub at prototemplate.com, where the site directions live. `$GT_CLOUD` is gt-cloud, the monorepo of GT's site, docs and dashboard. Kevin's wiki is github.com/Kevin-Liu-01/Kevin-Wiki, and its paths below are relative to its checkout. `references/rounds.md` records every round from July to October 2026 with what was asked, what Kevin picked and the rule it set. `references/charter.md` holds the round charter, `references/registry.md` the registry and numbers, `references/comparing.md` the variant switches, option sheets and module review, and `references/sources.md` the provenance. `scripts/distinct-set.mjs` checks that a set of options differ before Kevin sees it.
 
 ## 1. Before the round
 
@@ -56,6 +57,10 @@ Kevin asked for this on 2026-09-12 and 2026-10-01 on a project of his own, and t
 - For a page with many product visuals, write the page as text first, with every section's copy and a text description of every diagram, and build from that. Kevin, 2026-07-29: "create pages of text and then text describing diagrams u would build".
 - `docs/research/MODULES_PLAN.md` came from that ask. It is a build contract written so that five builders could work in parallel without inventing anything, ordered module by module the way Kevin reviews.
 - Copy comes from production or approved text. On 2026-08-12 Kevin set the minimum: the live page's own wording beats any new copy that reads worse.
+
+### The charter
+
+Every round starts from a written charter that every builder and reviewer reads (`references/charter.md`): the GT elements every direction keeps, the ordered section contract, the homes where the round's new idea may live, the copy rules, the builders' technical limits, and a completeness checklist run by reading code. The deco rounds of 2026-09-14 and 2026-09-15 ran from one after Kevin rejected the round before it as incomplete. Keep the charter in the round's notes or the repository, since the deco charter was lost with a scratchpad.
 
 ### One exemplar first
 
@@ -99,32 +104,14 @@ A palette, a title or a new arrangement of the same parts does not make a new di
 
 ## 3. One registry, Kevin's numbers
 
-### The registry
+`references/registry.md` holds the fields, the views and the record.
 
-`$PROTOTEMPLATE/src/lib/directions.ts` (`DIRECTIONS`) is the one list. The gallery at `/`, `/directions/<slug>`, `/compare`, the presenter at `/present`, the sitemap and the page check (`scripts/lib/site-pages.mjs`) all read it, so a direction is registered once.
-
-| Field | What it holds |
-| --- | --- |
-| `label` | the number Kevin uses, as two digits |
-| `n` | the round or exploration number the direction came from |
-| `slug` | the route under `/d`, fixed for the life of the direction |
-| `name`, `concept`, `signature`, `tone` | the name, the idea in one or two sentences, the one motion moment, the theme family |
-| `site` | a full site with its own `/enterprise` page |
-| `reference` | the shipped outcome |
-
-The shipped outcome carries no `label`. It is what the rounds produced, and a number would enter it in the comparison (commit 127960d, 2026-08-25). `src/lib/marks.ts` keeps the current mark the same way, as `REFERENCE_MARK`, and never offers it as a candidate.
-
-### Kevin's numbers
-
-- Refer to every version by the number Kevin uses, in reports, notes and commits. He writes "version 1 has the best layout direction" and "the best wheel is number 6" (2026-07-29) and expects the work to follow those numbers.
-- The number he uses is the one he saw. In July it was the switcher's position, and `docs/research/ITERATION_SPEC.md` mapped each position to its slug before work began. Today the gallery's book view shows `label`, and the viewer shell's sidebar and toolbar count positions in the site map's order (`pad2(position + 1)` in `src/app/directions/sections.ts`), so Toolchain is label 01 and row 05 on the shell. When a number could name two directions, find which view he was on, and ask once if it is still unclear.
-- A version that was overwritten comes back under a number of its own. Kevin, 2026-07-29: "number 1 is a revrsion, have a version 0 that is the version before 1". The same night an earlier state of version 1 became version 11. Each keeps the trait it was kept for.
-
-### Renumbering
-
-- Renumber only when Kevin asks, and then in one registry pass: remove the losers, number the keepers from the one he names, and keep every slug and URL so notes keyed by slug survive. Kevin, 2026-07-31: "remove 00-09 and 011. keep 10,12,13,14,15,16,17,18,19,20,21,22 and number them correctly with 10 as 01."
-- Without that ask, survivors keep their numbers and new directions take the next free ones. In the fifth deco round the seven shortlisted directions kept 18, 19, 21, 23, 24, 25 and 26, and the three new ones took 27, 28 and 29 (2026-09-14). Gaps in the labels are expected.
-- Counts written in prose do not follow the registry. On 2026-10-05 `DIRECTIONS` held 27 entries while `README.md`, `public/llms.txt` and `src/app/directions/DirectionViewer.tsx` said seventeen, `ARCHITECTURE.md` and `src/app/craft/CraftArticle.tsx` said sixteen, `src/app/GalleryViewer.tsx` said 17 and thirteen, and a comment in `src/lib/directions.ts` itself said thirteen explorations. After any registry change, find the counts and fix them in the same change:
+- `src/lib/directions.ts` (`DIRECTIONS`) is the one list. The gallery, `/directions/<slug>`, `/compare`, `/present`, the sitemap and the page check all read it, so a direction is registered once. `label` is the number Kevin uses, `slug` is fixed for the life of the direction, and `signature` holds its action.
+- The shipped outcome carries no `label`, so it never enters the comparison (127960d, 2026-08-25). `REFERENCE_MARK` in `src/lib/marks.ts` works the same way.
+- Refer to every version by the number Kevin uses, in reports, notes and commits (2026-07-29). The number he uses is the one he saw: the gallery's book view shows `label`, and the shell's sidebar and toolbar count positions. When a number could name two directions, find which view he was on, and ask once if it is still unclear.
+- A version that was overwritten comes back under a number of its own, and keeps the trait it was kept for (versions 0 and 11, 2026-07-29).
+- Renumber only when Kevin asks, in one registry pass: remove the losers, number the keepers from the one he names, and keep every slug and URL (2026-07-31). Otherwise survivors keep their numbers, new directions take the next free ones, and gaps are expected (2026-09-14).
+- Counts written in prose drift from the registry (on 2026-10-05 six files disagreed with its 27 entries). After any registry change, find and fix them in the same change:
 
   ```bash
   grep -rniE "\b(thirteen|sixteen|seventeen|twenty|[0-9]+ directions)\b" README.md ARCHITECTURE.md public/llms.txt src/app src/lib src/components | grep -v "src/app/d/"
@@ -146,34 +133,15 @@ Kevin compares directions live in one place. Kevin, 2026-07-28: "give me one pla
 - The presenter keeps notes and ratings in the reviewer's own browser (`localStorage` key `gt-presenter-review:v1`, `src/app/present/viewer/reviewStore.ts`). They never reach another machine or an agent, so ask Kevin for his notes in chat. `src/app/present/directions.ts` filters the presenter's list; Signal has been out since 2026-09-09.
 - Direction pages hide their corner control under `?chrome=0`. Every capture uses it, so the control is never judged as part of a design.
 
-### Variants on the real page
+### Variants, options and modules
 
-For variants of a production page in gt-cloud, put the switch on the real route. The variants round of 2026-08-12 (seven pages, five variants each) used:
+`references/comparing.md` holds the detail.
 
-- a `?v=1..5` parameter with a per-page cookie;
-- a thin dispatcher per page that renders the chosen variant;
-- slot 1 as the committed page, unchanged;
-- a development-only dock with chips 1 to 5 and the keys 1 to 5.
-
-The dispatcher stayed thin so that removing the losers was one delete. Kevin chose slot 1 on all seven pages, and the flatten removed about 16k lines (gt-cloud commit `1db410568`). The plan, `VARIANTS-PLAN.md` at the root of the commit before it, also set the copy law for every variant: production wording, approved wording, or no words.
-
-### Effect variants
-
-Shaders, dithers, hover effects and palettes get an options menu inside the page, so Kevin tries each one in place. Kevin, 2026-08-05: "add an option menu around the bottom right of the singularity hero component".
-
-- `src/components/shared/FieldEffectsMenu.tsx` is the pattern for a hero's cursor effects: a row of chips docked at the bottom right of the field, one per mode plus off. Hover or focus previews a mode, and a click commits it.
-- A switch reads its options from one roster, so the switch, the craft page and the default agree. `BAYER_PRESETS` in `src/lib/studio-field.ts` is the roster of the Bayer family. `src/components/shared/HeroFieldSwitcher.tsx` swaps the Dossier hero's field through it, and the craft page's Bayer demo maps over the same list.
-- A palette search takes the same form: "create a 20 blue example switcher to try out differnt palettes" (2026-08-13).
-
-### Showing options outside a page
-
-- Layout options are whole-page screenshots, so the relationships across the page are visible. Kevin, 2026-09-07: "show versions where its the whole page as screenshots so we get a better sense of the dock varieties". The next day he picked one from them. Scroll through the page before a full-page capture so lazy sections mount (`gt-aesthetic`, "Local review"). A change to one area is still shown as before and after crops (`gt-aesthetic`, "Showing the work").
-- Every option carries its number where Kevin sees it: on a contact sheet for stills and frames, and on a listening page for audio takes (`gt-reporting` section 1).
-- A direction's own captures are `public/shots/light/<slug>.jpg` and `public/shots/dark/<slug>.jpg`: the first fold at 1440 by 900 under `?chrome=0`, which `directionShots()` in `src/lib/directions.ts` reads. `pnpm capture:pages --direction <slug>` writes them from the server at `PT_BASE` (default `http://localhost:3005`) and writes nothing for a page that fails to load. Open every capture before using it.
-
-### Module by module
-
-A review of many directions goes module by module: one module across every direction, then the next. Kevin's July list was hero, story, product bentos, banners, Locadex, footer, context groups, dashboard, integrations and pricing (2026-07-29). Write the plan in that order (`docs/research/MODULES_PLAN.md`) so one module can be pulled up across every direction and rated alone. The July viewer for this is `tools/module-review` on gt-cloud's `redesign/diagram-standard` branch. It frames one module across every direction and rates each out of five.
+- **Variants of a production page** in gt-cloud sit behind a switch on the real route: a `?v=1..5` parameter with a per-page cookie, a thin dispatcher per page, slot 1 as the committed page unchanged, and a development-only dock. Every variant follows the copy law: production wording, approved wording, or no words (2026-08-12).
+- **Effect variants** (shaders, dithers, hover effects, palettes) get an options menu inside the page, read from one roster that the switch, the craft page and the default share (2026-08-05, 2026-08-13).
+- **Layout options** are whole-page screenshots (2026-09-07), and a change to one area is shown as before and after crops. Every option carries its number where Kevin sees it: a contact sheet for stills and frames, a listening page for audio (`gt-reporting` section 1).
+- **A direction's captures** are the first fold at 1440 by 900 under `?chrome=0`, written by `pnpm capture:pages --direction <slug>`. Open every capture before using it.
+- **Many directions are reviewed module by module**: one module across every direction, then the next, in the order of the plan (2026-07-29).
 
 ## 5. Picking and forking
 
@@ -249,8 +217,4 @@ GT skills: `gt-aesthetic` (the references, the verdicts and the review loop), `g
 
 ## Sources
 
-- Prototemplate: `src/lib/directions.ts`, `archive.ts`, `marks.ts` and `studio-field.ts`; `src/components/shared/FieldEffectsMenu.tsx` and `HeroFieldSwitcher.tsx`; `src/app/craft/BayerDemo.tsx`; `src/app/GalleryViewer.tsx`; `src/app/directions/sections.ts` and `DirectionViewer.tsx`; `src/app/compare/`; `src/app/present/` (`directions.ts`, `viewer/reviewStore.ts`, `viewer/Scoreboard.tsx`); `src/app/craft/CraftArticle.tsx`; `ARCHITECTURE.md` ("The direction registry", "The SSOT rule", "The gallery pipeline"); `docs/research/STORYBOARD.md`, `inspo.md`, `teardown-measured.md`, `teardown-oxc.md`, `teardown-viteplus.md`, `feature-inventory.md`, `MODULES_PLAN.md`, `ITERATION_SPEC.md` and `DESIGN_STANDARD.md`; `docs/reference-shots/`; `docs/composites/`; `scripts/check/gallery-shoot.mjs` and `scripts/check/capture-pages.mjs`; `skills/prototemplate/references/adding.md`; `skills/gt-aesthetic/SKILL.md`; `skills/gt-orchestration/SKILL.md` section 4; `skills/gt-local-dev/SKILL.md` section 1; `skills/gt-ship/SKILL.md` sections 1 and 8; `skills/gt-films/SKILL.md`. Commits fee151f, 1d3bd12, db06905, 156ca85, e80aea8, b6a7eba and 2d6f32b (the deco rounds, 2026-09-14), 127960d (2026-08-25) and c064945 (2026-09-08). All read 2026-10-05 on `speed-marks` at 2a8453c.
-- gt-cloud: commit `1db410568` (the variants flatten, 2026-08-12) and `VARIANTS-PLAN.md` in its parent; `tools/module-review` on the branch `redesign/diagram-standard` (commit ab9beeb2e).
-- Kevin's wiki: `wiki/design/README.md`, `ui-library-ranking.md`, `component-library-sources.md` and `x-bookmarks-design-ui.md`; `wiki/tools/fieldtheory.md`; `skills/engineering/design-engineering-polish/references/signature-first-exploration.md`.
-- Claude memory notes: deco-exploration-round, explorations-stay-local, variants-program-state, redesign-fork-architecture, redesign-presenter-app, redesign-v0-verdict.
-- Kevin's dated directives: 2026-07-28 (twenty samples, his sources, one place to switch); 2026-07-29 (the keepers, picks by number, versions 0 and 11, text first, module-by-module review, the teardown); 2026-07-30 (the bar and the critic); 2026-07-31 (the renumber, the shader credit); 2026-08-04 (exemplar first, the sibling variants); 2026-08-05 (the shader survey, the Bayer pick, the hover menu); 2026-08-11 and 08-12 (restart, keep the screenshotted parts, the variants program and its copy floor, remove the variation system); 2026-08-13 (the palette switcher); 2026-09-01 (the docs references); 2026-09-04 (nine identical frames); 2026-09-07 (whole-page screenshots); 2026-09-12 and 10-01 (product research); 2026-09-14 and 09-15 (the deco rounds and landing them); 2026-09-18 (a post's media); 2026-09-30 (a redesign is visibly new); 2026-10-03 (an archived film element); 2026-10-05 (audio takes in an HTML page).
+`references/sources.md` lists the Prototemplate files and commits, the gt-cloud commits, the wiki pages, the memory notes and Kevin's dated directives behind each section, and the lines added on 2026-10-10.

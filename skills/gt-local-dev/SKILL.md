@@ -14,8 +14,9 @@ description: >-
 metadata:
   title: Review servers and local environments
   areas: workflow, website
-  updated: 2026-10-05
+  updated: 2026-10-10
   origin: prototemplate
+  owner: O
 ---
 
 # Review servers and local environments
@@ -33,8 +34,8 @@ As of 2026-10-05:
 | Server | URL | Serves | Rule |
 | --- | --- | --- | --- |
 | gt-cloud landing under review | http://localhost:3001 | the worktree of the branch Kevin is reviewing | Kevin's review server: up, on that branch, at its latest commit |
-| Prototemplate | http://localhost:3005 | `$PROTOTEMPLATE`, launch config `prototemplate-dev` | shared by several sessions: reuse it and never stop it (gt-ship section 8) |
-| Dashboard dev environment | `http://dashboard-<id>.localhost:1355` | a worktree's `pnpm dev-env`, through the portless proxy | one short id per worktree (section 4) |
+| Prototemplate | http://localhost:3005 | `$PROTOTEMPLATE`, launch config `prototemplate-dev` | shared by several sessions: reuse it and never stop it, except to restart it when it has wedged (section 2, item 9; gt-ship section 8) |
+| Dashboard dev environment | `http://dashboard-<id>.localhost:1355` | a worktree's dashboard environment, through the portless proxy | one short id per worktree (section 4) |
 | Other worktree servers | 3011 to 3031 and 3080 so far | one launch entry per worktree | a port far from the defaults |
 
 - Restart 3001 the moment Kevin asks ("make sure localhost 3001 is up", Kevin, 2026-08-17). When a review spans several open PRs, 3001 has served a preview branch that merges their tips (`k/preview-restart`, an octopus merge of the landing page branches, 2026-08-11). Name the PR heads such a branch holds.
@@ -74,6 +75,7 @@ First establish which surface he is looking at. A merged change missing from gen
 6. **A cache is stale.** `next dev` keeps old `_next/image` variants, and Tailwind keeps its candidate cache. Stop the server, `rm -rf .next` in the app, start again (gt-website section 2).
 7. **Two `next dev` processes share one `.next`.** Every route answers 404 after a restart. Stop, kill the strays, `rm -rf apps/<app>/.next`, start again. Next 16 also refuses a second `next dev` while `.next/dev/lock` is held, so a stray blocks the restart.
 8. **Kevin's browser holds old assets.** A private window rules them out (gt-verify section 6).
+9. **The Prototemplate dev server has wedged.** Under load, with several agents compiling routes at once, `next dev` can leave `.next/dev/prerender-manifest.json` half written: every route then answers 500 with "Unexpected non-whitespace character after JSON" until a restart. After a large fast-forward of the shared checkout (47 commits on 2026-10-09) the 3005 server answered nothing. This is the one case where the shared 3005 server is restarted: stop its `next dev --port 3005` processes by PID, delete `.next/dev` (it had grown to 64 GB), and start the `prototemplate-dev` launch entry again. Tell the other sessions that use it. A cold image-optimizer request on a loaded server can also hang for 900 seconds or more and time out page-check cells; treat that as server state and retry once the load drops.
 
 Stop a server with `kill $(lsof -ti tcp:<port> -sTCP:LISTEN)`. Without `-sTCP:LISTEN` the command also kills a browser connected to the port.
 
@@ -106,10 +108,10 @@ Internal to gt-cloud: the per-worktree environment, the `/dev/states` review gal
 
 ## 6. Housekeeping
 
-- Register every server you start: a named launch entry, or a line in your notes with its port, PID and folder. At the end of the session stop each one with the listen-only kill, and stop (`pnpm dev-env stop` or `down`) the environments you created. Remove the launch entries you added. Leave Kevin's servers, 3005 and other sessions' environments running (`onb` belongs to the onboarding session). On 2026-10-05 Kevin had to ask a session to stop a preview server it had left running, with "any other background processes you started".
+- Register every server you start: a named launch entry, or a line in your notes with its port, PID and folder. At the end of the session stop each one with the listen-only kill, and stop the dashboard environments you created with gt-cloud's own command (section 4). Remove the launch entries you added. Leave Kevin's servers, 3005 and other sessions' environments running (the onboarding session owns its own environment). On 2026-10-05 Kevin had to ask a session to stop a preview server it had left running, with "any other background processes you started".
 - Remove scratch worktrees once their work is pushed (gt-ship section 1). Each costs about 6 GB.
-- Test discreetly (gt-verify section 11). `pnpm dev-env open` opens a headed browser, so use it only when Kevin asks.
-- Tools a session builds in its scratchpad can vanish at the date change. Keep reusable ones in a repository or a durable folder (the funnel runner's copy lives in `~/gt/gt-tools/onboarding-funnels/`).
+- Test discreetly (gt-verify section 11). A command that opens a headed browser runs only when Kevin asks.
+- Tools a session builds in its scratchpad can vanish at the date change or a reboot. Keep reusable ones in a repository or a durable folder outside the scratchpad.
 
 ## Review checklist
 
@@ -117,11 +119,12 @@ Internal to gt-cloud: the per-worktree environment, the `/dev/states` review gal
 - [ ] The server compiled the changed pages (a 200 with no `Module not found`) and serves the latest commit.
 - [ ] One review server per app; the extra servers you started are stopped; no server of Kevin's or of another session was stopped.
 - [ ] Port ownership was checked with `lsof` before any kill, and the kill was listen-only.
-- [ ] The dev-env id is a few letters, and `seed` and `start` ran with `--no-root-env`.
+- [ ] Authenticated dashboard work followed gt-cloud's setup and the gt-dashboard skill (section 4).
 - [ ] Real providers, `pnpm aws:login` and tunnels ran only after Kevin approved.
 - [ ] Kevin's credentials stayed isolated: `XDG_STATE_HOME` in a scratch folder, and no sign-in as him.
 - [ ] Kevin got the exact command or URL, and a warning when his worktree is behind the branch.
 - [ ] Tests ran headless, and the servers and environments you started are stopped at the end.
+- [ ] The shared 3005 server was restarted only when it had wedged (section 2, item 9), and the other sessions were told.
 
 ## Related skills
 
@@ -129,9 +132,11 @@ In this set: gt-website (landing worktrees, dev servers, build traps and deploys
 
 ## Sources
 
-- gt-cloud at origin/main e17fce499 (2026-10-05): `README.md` (Setup, Development, Worktrees and environment profiles), `quick-install.sh`, `setup.sh`, `worktree-setup.sh`, `package.json` (`dev`, `dev-env`, `tunnel`, `aws:configure`, `aws:login`, `env:*`), `turbo.json` (`dev`, `listen`), `.vscode/extensions.json`, the `dev` and `listen` scripts in `apps/{dashboard,landing,admin,locadex,api}/package.json`, `dev-infra/README.md`, `dev-infra/config.ts` (`buildDefaultEnvironmentId`, `buildHermeticProviderDefaults`), `dev-infra/docker-compose.yml`, `dev-infra/cli.ts` (`readDotEnvFiles`), `dev-infra/state.ts`, `dev-infra/__tests__/config.test.ts`, `seed/config.ts`, `seed/fixtures/createUserFixture.ts`, `packages/clients/src/secrets.ts`, `packages/node/src/integrations/resend/sendEmail.ts` (`sendMagicLinkEmail`).
+`references/sources.md` cites each line added on 2026-10-10.
+
+- gt-cloud at origin/main e17fce499 (2026-10-05): `README.md` (Setup, Development, Worktrees and environment profiles), the root `package.json` and `turbo.json` (`dev`, `listen`), the `dev` and `listen` scripts of each app, and `dev-infra/README.md`. The file-level detail behind sections 3 and 4 moved to gt-cloud's gt-dashboard skill on 2026-10-10.
 - The primary gt-cloud checkout's untracked `.claude/launch.json`, read on 2026-10-05.
-- gt-cloud branch `k/dashboard-dev-gallery` (ebb900124): `apps/dashboard/src/app/[locale]/dev/states/page.tsx`, `apps/dashboard/src/app/[locale]/dev/session/route.ts`, `apps/dashboard/src/lib/dev/devStates.ts`, `apps/dashboard/src/components/dev/BillingFormPreview.tsx`, `packages/clients/src/stripe/index.ts`, `dev-infra/stripe-stand-in.mjs`, `dev-infra/config.ts`; PR #5063 (merged 2026-10-02).
+- gt-cloud branch `k/dashboard-dev-gallery` (ebb900124) and PR #5063 (merged 2026-10-02).
 - generaltranslation/gt: `packages/cli/src/auth/credentialStore.ts`, `packages/cli/src/cli/base.ts` (`login --no-browser`) and `packages/next/src/errors/createErrors.ts` on main (a16ae03c6); `packages/cli/src/auth/callbackPage.ts` on `k/cli-login-callback-page` (PR #2341, open on 2026-10-05).
 - Prototemplate main 2a8453c: `src/app/d/production/{signin,onboarding,consent,device,cli}/page.tsx`, `src/components/plate/`. The sibling skills gt-ship, gt-website, gt-aesthetic, gt-verify, gt-reporting and gt-orchestration as written in the working tree on 2026-10-05.
 - Claude Code project memory for gt-cloud: `dashboard-local-dev.md`, `onboarding-funnel-testing.md`, `cli-callback-page.md`, `redesign-screenshot-harness.md`, `blog-graphics-pipeline-traps.md`, `pr-screenshots-and-gallery.md`, `prototemplate-plate-port.md`, `signin-field-transition.md`, `zsh-shell-traps.md`.

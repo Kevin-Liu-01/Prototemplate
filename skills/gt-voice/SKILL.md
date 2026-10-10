@@ -12,8 +12,9 @@ description: >-
 metadata:
   title: Voice and the humanizer
   areas: voice
-  updated: 2026-10-06
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Voice and the humanizer
@@ -314,22 +315,7 @@ and the PR size audit. The prose rules are these.
 
 ## Before and after
 
-| Before | After | Rule |
-| --- | --- | --- |
-| Heading: "Open-source libraries and a closed platform, built together." | Heading: "Open source and platform". Body: "GT builds both the open-source libraries and the closed platform." | Kevin rejected the comma-tail heading (2026-09-08); deck slide 07 now has a plain-noun title with the claim in the body |
-| "The identity has to work at small sizes" | "Small sizes" | A sentence-shaped title becomes a plain noun (2026-09-08) |
-| "Three details enlarged" | "Three close-ups" | Kevin: "'three details emerged' is not good wording" (2026-09-09) |
-| "Supercharge your global growth with cutting-edge AI." | "Translations are generated at build time and deploy with the app." | A mechanism replaces marketing (deck slide 12) |
-| "Unlock global markets with our game-changing localization platform." | "Source code is the source of truth. Every locale ships with the deploy." | The same (deck slide 12) |
-| "That market is yours to gain." and "Localization is a growth lever." | "Numbers, currency, and dates localize too." | The copy test and no metaphors (deck slide 62) |
-| Caption: "16px, favicon" | Caption: "16px favicon" | No comma tail on a data label (2026-09-08) |
-| Caption: "The ground is the seam." | "A framed cell has a 1px padding gap that shows the surface underneath, so the cell draws no border." | The mechanism replaces the metaphor (DESIGN.md section 2) |
-| An uppercase tracked "REACH EVERY USER" above a heading | The heading and one lead paragraph, nothing above | No eyebrows (docs/figma-v0-spec.md, `gt-ui/no-eyebrow`) |
-| "Three facts matter." followed by the facts | The three facts, each stated as its own sentence | No content labels (2026-10-01) |
-| "The detail that X is one most people would miss." | "The detail most people would miss is that X." | Short frame first, long content last (2026-09-20) |
-| "Typos, since proofreading is a big part of the final grade:" | "Proofreading is a big part of the final grade. The typos I found are below." | No aside before a colon (2026-09-20) |
-| "What I took from the talk was the timescale." | "My first reaction was that ..." with the point itself | A first-person reaction replaces an abstract-noun summary (2026-09-28, 2026-10-01) |
-| `// Identity values pass through untranslated, since translating a model_uid would corrupt data, which is worse than the bill this feature saves.` | `// 'identity': every value of the field is byte-identical to its translation. 'translated': at least one value differs.` | A comment states the contract, and the justification moves to the PR (gt-cloud code-comments) |
+[references/before-after.md](references/before-after.md) holds the rewrites from Kevin's reviews, each with its rule: comma-tail headings to plain nouns, marketing lines to mechanisms, metaphors to the mechanism, content labels to the content, long subjects reordered, and a justifying code comment turned into a contract.
 
 ## Review checklist
 
@@ -400,42 +386,4 @@ gt-ship the PR flow, the PR body's structure and the PR size audit.
 
 ## Sources
 
-- Prototemplate: deck/slides/12-voice.html (Writing style),
-  39-avoid.html (Anti-patterns), 62-content-rule.html (The copy test),
-  63-two-registers.html (Site copy and founder posts) and
-  07-positioning.html (Open source and platform).
-- Prototemplate: deck/DECK-GRAMMAR.md, Type.
-- Prototemplate: BRAND.md sections 1, 2, 3, 6 and 9.
-- Prototemplate: DESIGN.md section 2, Ownership.
-- Prototemplate: motion/MOTION.md, Round 4 direction, Copy, Sound and The
-  facts the films may state.
-- Prototemplate: .oxlintrc.json, scripts/lint/oxlint-plugins/gt-ui.ts,
-  src/app/docs/registry.ts and docs/figma-v0-spec.md.
-- gt-cloud: tooling/oxlint-plugins/gt-ui.ts (no-em-dash, no-eyebrow,
-  no-heading-period, cta-title-case, mono-is-not-voice) and .oxlintrc.json.
-- gt-cloud: .agents/skills/code-comments/SKILL.md,
-  .agents/skills/pr-desc/SKILL.md and CLAUDE.md.
-- wiki: skills/personal/humanizer/SKILL.md (v2.5.2-kevin, after
-  blader/humanizer and hardikpandya/stop-slop),
-  skills/personal/kevin-voice/SKILL.md and
-  skills/personal/social-draft/SKILL.md.
-- Claude Code memory notes for gt-cloud: plain-technical-english,
-  sentence-order-rules, writing-for-strangers,
-  brand-questionnaire-directives, redesign-v0-verdict, gt-brand-deck,
-  gt-motion-films, variants-program-state, recordly-pr-style and
-  pr-size-discipline.
-- Kevin's directives on posts and messages: 2026-07-21 (the team reply),
-  2026-08-03 and 2026-08-04 (launch packages), 2026-08-14 (his posted
-  edits), 2026-08-15 (enterprise copy, relayed from the CEO), 2026-08-19
-  (Slack), 2026-08-26 (docs captions), 2026-09-02 and 2026-09-03 (teammate
-  specs, the LinkedIn and X split), 2026-09-04, 2026-09-21 and 2026-09-24
-  (thread shapes), 2026-09-05 and 2026-09-24 (partner replies), 2026-10-04
-  (open-source posts).
-- Kevin's directives: 2026-08-04 (no three-line headers); 2026-08-11 (the
-  brand questionnaire's avoid list and nothing sensitive on public
-  surfaces); 2026-08-14 (PR text); 2026-09-08 (plain technical English,
-  heading periods, plain-noun titles, no fragment rhythm); 2026-09-09 (deck
-  heading wording); 2026-09-10 (writing for strangers); 2026-09-20
-  (sentence order and no interruptions); 2026-10-01 (first person welcome,
-  no labels or signposts, film headings at two lines); 2026-10-02 (PR size
-  and comment share); 2026-10-05 (upstream PRs).
+[references/sources.md](references/sources.md) lists the deck slides, the canon sections, the lint rules, the gt-cloud and wiki skills, the memory notes and Kevin's dated directives behind each rule, and the lines changed on 2026-10-10.

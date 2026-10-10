@@ -18,6 +18,10 @@
 // (SKILL.md, "The PR slate").
 //
 // Exit code: 0 after printing the slate, 2 on a usage or gh error.
+//
+// Requires: Node 20 or later and the GitHub CLI (gh) signed in.
+// Last real run: none (kept for: every "give me my PR list" or "PR slate"
+// ask; its seven runs on 2026-10-06 were authoring runs).
 import { execFileSync } from 'node:child_process';
 
 const args = process.argv.slice(2);

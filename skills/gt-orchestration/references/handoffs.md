@@ -31,6 +31,19 @@ A handoff records an unfinished state. When an earlier pass reported success tha
 13. **Authority.** What the receiver may do without asking. A handoff grants no new push, merge, close, label or comment authority by itself (2026-08-11).
 14. **Definition of done.** The conditions, each checkable, and the line that remaining failures are reported plainly until every condition holds.
 
+## The resume file
+
+When Kevin leaves while work runs ("save all progress so i can resume when i get home", 2026-10-09), write a resume file before he goes and leave the runs going:
+
+- the file sits at a durable path outside the scratchpad: `RESUME.md` at the root of the project, or one file in the work folder when several projects run;
+- per running workflow: its run id, its script, its worktree and branch, and its notes folder;
+- the launch entries and ports to restart after a reboot;
+- every decision Kevin made that the runs depend on, in his words;
+- the resume steps: restart the servers, then `Workflow({ scriptPath, resumeFromRunId })` with byte-identical `args` (`references/harness-traps.md`);
+- a one-line memory note that points to the file, so a bare "resume" or "continue" reads it first.
+
+Work that runs over days keeps its state in committed repository files, where any session can read it.
+
 ## The hard stop record
 
 When Kevin says "stop all work" or "stop and give me everything", halt every lane at once and write the stop at the top of the handoff:
