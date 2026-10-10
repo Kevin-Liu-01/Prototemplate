@@ -14,19 +14,19 @@ Each entry names the surface, the ask, what was built, what Kevin picked or reje
 
 - Kevin kept 02, 06, 07, 08 (for its story component), 09, 15, 19 and 20 and asked for them as routes of a Next app.
 - His notes then used switcher positions: version 1 for the layout, 6 for the wheel, 5 for the story section, the bentos and the diagrams. Version 9 was a fork of 1 in the old site's style. Version 10 was a minimalist evolution of the old site in the manner of oxc.rs and viteplus.dev, and it became Toolchain. Version 0 was the state before 1, and version 11 an earlier state of 1 from Kevin's screenshot.
-- `docs/research/ITERATION_SPEC.md` mapped each position to its slug and set global rules from the same notes: no gradients, green dots, eyebrows or decorative badges, and every section a header with a subheader or with content.
+- `docs/archive/ITERATION_SPEC.md` mapped each position to its slug and set global rules from the same notes: no gradients, green dots, eyebrows or decorative badges, and every section a header with a subheader or with content.
 - Rules: the number is the one Kevin sees; an overwritten version returns under its own number; a design can take parts from several numbers.
 
 ## 2026-07-29: five minimalist directions, text first
 
 - Ask: five minimalist examples in the frame of viteplus.dev and oxc.rs that show the product working, planned as pages of text with a text description of each diagram, and reviewed module by module (hero, story, product bentos, banners, Locadex, footer, context groups, dashboard, integrations, pricing).
-- Built: `docs/research/teardown-measured.md`, `teardown-oxc.md` and `teardown-viteplus.md` (the reference sites measured), `feature-inventory.md`, and `MODULES_PLAN.md` (five directions, each with one signature technique, written module by module).
+- Built: `docs/research/teardown-measured.md`, `teardown-oxc.md` and `teardown-viteplus.md` (the reference sites measured), and `docs/archive/feature-inventory.md` and `docs/archive/MODULES_PLAN.md` (five directions, each with one signature technique, written module by module).
 - Rules: measure the reference first; write the page as text before building it.
 
 ## 2026-07-30: the presenter and the standard
 
 - Built: `/present`, a full-screen presenter with opening slides, then every prototype live with a note and a rating, then a closing gallery of every version.
-- Kevin named generaltranslation.com and resend.com as the bar and asked for side-by-side comparison against the sites he likes. `docs/research/DESIGN_STANDARD.md` was derived from those composites, with a 0 to 10 rubric and 8.5 as the bar.
+- Kevin named generaltranslation.com and resend.com as the bar and asked for side-by-side comparison against the sites he likes. `docs/archive/DESIGN_STANDARD.md` was derived from those composites, with a 0 to 10 rubric and 8.5 as the bar.
 - Rule: a separate harsh critic scores composites against a written rubric.
 
 ## 2026-07-31: the renumber

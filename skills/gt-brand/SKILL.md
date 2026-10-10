@@ -63,7 +63,7 @@ The identity has to carry five values:
 
 The voice is measured, declarative and precise. BRAND.md section 3 gives the pair:
 
-- Say: "One pipeline. Every language ships with the deploy."
+- Say: "Translations are generated at build time and deploy with the app."
 - Not: "Supercharge your global growth with cutting-edge AI!"
 
 Deck slide 12 states the five rules: one claim per sentence; a number or a mechanism where a marketing adjective would go; no hedging; no exclamation marks and no em dashes; sentence case everywhere and Title Case only on buttons. The full writing rules are in `gt-voice`.

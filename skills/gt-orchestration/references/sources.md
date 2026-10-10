@@ -4,7 +4,7 @@ Provenance for `gt-orchestration`. The first list is the skill's sources as writ
 
 ## Sources as of 2026-10-07
 
-- Prototemplate: `docs/research/DESIGN_STANDARD.md` section 8; `skills/gt-ship/SKILL.md` sections 1, 2, 3 and 8; `skills/gt-aesthetic/SKILL.md` section 1 and "Rules of the loop"; `skills/gt-films/SKILL.md` (the judge and section 9); `skills/prototemplate/SKILL.md` section 10; all read 2026-10-05.
+- Prototemplate: `docs/archive/DESIGN_STANDARD.md` section 8; `skills/gt-ship/SKILL.md` sections 1, 2, 3 and 8; `skills/gt-aesthetic/SKILL.md` section 1 and "Rules of the loop"; `skills/gt-films/SKILL.md` (the judge and section 9); `skills/prototemplate/SKILL.md` section 10; all read 2026-10-05.
 - gt-cloud Workflow scripts from Claude Code sessions, read 2026-10-05: `gt-color-template-sweep` (2026-08-06), `review-pr-4887-inter-only` (2026-09-19), `signin-field-design` and `signin-field-build` (2026-09-29), `managed-org-atomic` (2026-10-02), `verify-5091-alias` (2026-10-03), and the round files `CONTEXT.md` to `CONTEXT9.md` (2026-09-28 to 2026-09-30).
 - Handoffs Kevin pasted to agents: the gt-cloud landing and dashboard stack (2026-08-11, written to the wiki `handoff` template), and three from personal projects whose method only is kept (2026-07-30, 2026-09-11, 2026-10-02). Two task chips: the gt-landing skill refresh (2026-09-15) and the flaky Temporal test (2026-10-02).
 - Claude memory (gt-cloud project): workflow-lane-relay-trap.md, redesign-v0-verdict.md, turboslide-ship-two-lessons.md, turboslide-pipeline-cost-rules.md, scratch-worktree-disk.md, session-lanes-prototemplate.md, blog-graphics-pipeline-traps.md, signin-field-transition.md.

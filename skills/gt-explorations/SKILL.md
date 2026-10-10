@@ -50,12 +50,12 @@ Before cloning a product or building a feature that answers one, research the pr
 - how it solves the hard part, such as sync, collaboration or layout;
 - prior art beyond that one product.
 
-Kevin asked for this on 2026-09-12 and 2026-10-01 on a project of his own, and the method applies to GT work unchanged. `docs/research/feature-inventory.md` is the GT example: each capability with the proof a visual must show and the misunderstanding it must prevent.
+Kevin asked for this on 2026-09-12 and 2026-10-01 on a project of his own, and the method applies to GT work unchanged. `docs/archive/feature-inventory.md` is the GT example: each capability with the proof a visual must show and the misunderstanding it must prevent.
 
 ### Text first
 
 - For a page with many product visuals, write the page as text first, with every section's copy and a text description of every diagram, and build from that. Kevin, 2026-07-29: "create pages of text and then text describing diagrams u would build".
-- `docs/research/MODULES_PLAN.md` came from that ask. It is a build contract written so that five builders could work in parallel without inventing anything, ordered module by module the way Kevin reviews.
+- `docs/archive/MODULES_PLAN.md` came from that ask. It is a build contract written so that five builders could work in parallel without inventing anything, ordered module by module the way Kevin reviews.
 - Copy comes from production or approved text. On 2026-08-12 Kevin set the minimum: the live page's own wording beats any new copy that reads worse.
 
 ### The charter
@@ -145,7 +145,7 @@ Kevin compares directions live in one place. Kevin, 2026-07-28: "give me one pla
 
 ## 5. Picking and forking
 
-- Kevin picks by number and can compose a design from parts of several directions. On 2026-07-29 version 1 had "the best layout direction", number 6 had the best wheel, and 5 had the best story section and bentos. Record each pick against its number before building, in a table the next round reads; `docs/research/ITERATION_SPEC.md` is the July table.
+- Kevin picks by number and can compose a design from parts of several directions. On 2026-07-29 version 1 had "the best layout direction", number 6 had the best wheel, and 5 had the best story section and bentos. Record each pick against its number before building, in a table the next round reads; `docs/archive/ITERATION_SPEC.md` is the July table.
 - Keepers become real routes. On 2026-07-29 Kevin listed the first keepers and wrote "make these into next apps and begin iterating off of these".
 - A new version is a fork with its own number, slug and root class, and the original stays as it was.
 - When one direction is the single source of truth, the forks import its parts and fork work never edits it. In July that source was Toolchain: forks import `src/app/d/toolchain` and rescope its CSS under their own root class (`ARCHITECTURE.md`, "The SSOT rule").
@@ -156,7 +156,7 @@ Kevin compares directions live in one place. Kevin, 2026-07-28: "give me one pla
 
 ### The critic loop
 
-A round converges through a separate harsh critic who scores the work against the reference side by side. `gt-orchestration` section 4 holds the loop, the bar and the July rubric (`docs/research/DESIGN_STANDARD.md` section 8). A design round feeds the critic composites.
+A round converges through a separate harsh critic who scores the work against the reference side by side. `gt-orchestration` section 4 holds the loop, the bar and the July rubric (`docs/archive/DESIGN_STANDARD.md` section 8). A design round feeds the critic composites.
 
 - Capture the work and the reference at the same viewport and theme, section against matching section. Shoot each section as an element screenshot anchored on its own landmark selector, so the pairs align at any viewport. A capture taken at a scroll depth drifts when the viewport changes. `scripts/check/gallery-shoot.mjs` does this for the Dossier's sections against the dev server on 3005, and `REDESIGN_BASE` points it at another address.
 - Join each pair into one image the critic reads. `docs/composites/` holds the July composites of the work beside resend, oxc and viteplus. Two captures join at a common height with ffmpeg:

@@ -257,11 +257,11 @@ above apply to everything Kevin will read or ship.
   the hyphen in a compound modifier before a noun, as in "open-source
   libraries" (deck slide 07) and "sentence-case headings" (deck slide 63).
 
-Two canon documents still carry older examples. BRAND.md section 3 offers
-"the ground is the seam" and "One pipeline. Every language ships with the
-deploy." as voice examples, and MOTION.md's Copy section repeats the second.
-Both predate the 2026-09-08 rules (a metaphor, and a fragment before a
-sentence), and Kevin rejected the second as a heading. Deck slide 12 holds
+BRAND.md section 3 offered "the ground is the seam" and "One pipeline.
+Every language ships with the deploy." as voice examples until 2026-10-10,
+and MOTION.md's Copy section repeats the second. Both predate the
+2026-09-08 rules (a metaphor, and a fragment before a sentence), and Kevin
+rejected the second as a heading. Deck slide 12 holds
 the current examples.
 
 ## Code comments, commits and PR descriptions
