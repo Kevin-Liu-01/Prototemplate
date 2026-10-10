@@ -75,6 +75,15 @@ Until gt-cloud #4522 (merged 2026-09-03), a click from the landing into the docs
 - Between 768 and 1279 px fumadocs-ui fixes `#nd-tocnav` below the nav and leaves the band above it unpainted. `#nd-docs-layout::before` in `src/app/globals.css` paints that band, and the same block defines `--fd-docs-row-1`, which fumadocs-openapi's sticky code column reads and only fumadocs-ui 16.2 defines.
 - Check sidebar work on a page with a nested folder open, such as `/en-US/docs/cli/reference/commands/configure`. `/docs/overview/get-started` has no open folder and hides nested defects.
 
+### Docs parity after the fumadocs 16.16 upgrade (#5258, open on 2026-10-10)
+
+gt-cloud #5258, "restore docs parity after the fumadocs 16.16 upgrade", fixes the sidebar and the OpenAPI pages:
+
+- `SidebarMotion` reads whether a folder is open from the collapsible (`:scope > div[data-state]`). The collapsible's inner list keeps its height while the collapsible animates to 0, so a test on the list leaves the pill and the rail drawn for rows that are gone.
+- On desktop the sidebar viewport's `scroll()` is a no-op, so `SidebarActiveScroll` writes `scrollTop`; the mobile drawer keeps fumadocs' own scroll. The desktop viewport has `overflow-anchor: none`.
+- Full OpenAPI pages are capped at `calc(1285px + 3rem)` so they center.
+- Kept on purpose: below 1280 px the TOC popover opens scrolled to the active heading, from 1280 px the OpenAPI title band takes the renderer's width, and code blocks keep shiki 4's Vue colors.
+
 ## Performance
 
 - Kevin's numbers come from PageSpeed Insights field data (CrUX, origin level), which includes redirect time. A good lab run on desktop does not settle a field complaint.
@@ -94,3 +103,4 @@ Until gt-cloud #4522 (merged 2026-09-03), a click from the landing into the docs
 - Claude Code project memory for gt-cloud: `agent-readable-docs.md`, `docs-shell-transition-traps.md`, `docs-perf-investigation.md`, `fuma-blog-pipeline.md`.
 - Pull requests: gt-cloud #4499, #4522, #4773, #4815, #4703, #4707, #5054; their states read with `gh pr view` on 2026-10-10.
 - The routing matrix (added 2026-10-10): the 35-case script of the docs and blog near-miss PRs (#4358, #4359, #4360; Claude Code transcript of the docs redesign session, 2026-08-20 to 2026-08-24) and system-v2 inventory `docs.json` row 2 (the three production routing defects); cases re-read against production on 2026-10-10.
+- The fumadocs 16.16 parity section (added 2026-10-10): gt-cloud #5258 (open on 2026-10-10), as the New Onboarding and Dashboard session's review of 2026-10-10 describes it.

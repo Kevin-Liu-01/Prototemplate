@@ -46,3 +46,14 @@ reference file also lists its own sources.
   no pull request), per inventory `skills.json` row 1 (N-27).
 - `references/deploys.md` and `references/footer-and-theme.md`: text moved
   from `SKILL.md` unchanged in substance.
+
+## Added 2026-10-10 (the New Onboarding and Dashboard session's review)
+
+The owner's review of the system-v2 diff, checked against gt-cloud origin/main d63346837 and production on 2026-10-10:
+
+- Section 3, the `Promise.all` extractor trap: gt-cloud #5257 (open on 2026-10-10), 26 landing files, 65 of 96 literals missing, the en-US table from 739 to 799 entries.
+- Section 6 and `references/pages.md`, "Programmatic SEO pages": page copy through `msg()` with `getMessages()` and `<T>`; the sample table from one scratch Next.js app with 7 `gt()` calls, run with gt 2.26.1 on 2026-10-10; the publish rule; round 1's stack and its 14 Next.js languages; Kevin's rule "make them idiomatic!" (2026-10-10); the plural branches missing from Russian, Polish, Spanish, French and pt-BR output on 2026-10-10.
+- `references/pages.md`, "Partner pages": logos keep their brand colors and monochrome marks stay monochrome; the fine print's size, color and opacity; the one page whose notice is Kevin's copy.
+- `references/docs.md`, the fumadocs 16.16 parity section: gt-cloud #5258 (open on 2026-10-10).
+- `references/routing-cases.txt`, the known-open `node/initialize` case: `content:docs/en-US/node/reference/functions/initialize-gt.mdx` exists; `/en-US/docs/node/initialize-gt` answered 307 to it and `/en-US/docs/node/initialize` answered 307 to the section quickstart on production on 2026-10-10.
+- The SEO, AI features and gt-next integration bullets of `SKILL.md` were shortened to keep it under its size budget; the detail stays in the references.

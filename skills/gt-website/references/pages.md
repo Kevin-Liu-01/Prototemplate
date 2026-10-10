@@ -27,7 +27,8 @@ Six parts of the site carry rules beyond the landing grammar: the pricing number
 The partner credit pages at `/[locale]/enterprise/contact/<partner>` (Slash, Mercury, a16z, speedrun, YC and The Residency, live on generaltranslation.com on 2026-10-10) are one screen in the sign-in plate's grammar under the landing navbar (gt-cloud #5216, merged 2026-10-08; The Residency in #5239, merged 2026-10-09). `src/components/pages/partners/PartnerOfferPage.tsx` renders every one of them.
 
 - **Layout.** The left column holds the GT and partner mark, a 30 px heading, one sentence, three ruled rows, one Apply button and the fine print. The right side shows the dithered Blue Marble with its caption card. The plate kit comes from `packages/ui` and mounts as an inset section (`PlateRoot inset`, `contain: paint`), so the landing navbar and footer keep their own styling.
-- **Kevin's edits** (2026-10-07): no outer rules on the ledger; brand colors stay in logos (YC keeps its orange square) and the other partner logos are monochrome; the fine print is each page's original legal notice at 12 px.
+- **Kevin's edits** (2026-10-07): no outer rules on the ledger. Logos keep their brand colors (YC keeps its orange square), and a mark that is monochrome stays monochrome.
+- **The fine print** is `text-xs` in titanium at 85% in light and 80% in dark, set lighter after Kevin asked for it "even lighter and smaller". It is the partner's legal notice on every page but one, whose notice was replaced with copy Kevin gave.
 - **Adding a partner** touches, in gt-cloud: the program table in `programs.server.ts`, `usePartnerCreditCopy.ts` and `applicationCopy.ts` (amount and duration come from a per-program table, and the approval email names the partnership), the partner tests, the landing wrapper and its route, a short link and its PostHog slug, the `next.config.ts` redirects, and the sitemap with its test. Redemption codes stay in the program table and out of this repository.
 - **The social card.** A long title overflows `/api/og-home`; pass the shorter heading as its `t` parameter.
 
@@ -60,11 +61,19 @@ The questions band and the `/faq` page answer free-form questions through the Ve
 
 ## Programmatic SEO pages (round 1 building on 2026-10-10)
 
-Kevin's decisions for the SEO page system (2026-10-09), which round 1 builds on unpushed branches (no pull request on 2026-10-10):
+Round 1 is on the unpushed stack `k/seo-0-kit`, `k/seo-1-nextjs` and `k/seo-2-matrix` (no pull request on 2026-10-10), with 14 languages for Next.js. Kevin's decisions for the page system (2026-10-09):
 
-- Every string is translated through `<T>`, and the translation is a real `gt translate` run with the CLI's signed-in session.
 - The comparison pages are in, and the `/aeo` listicles stay.
 - The surfaces the pages cover are the app, the docs, the website, the CLI and agents, and video (subtitles). PDF is out.
+
+Two kinds of text appear on these pages, and they are translated in two ways:
+
+- **Page copy** is translatable like every other page: `msg('...', { $format: 'STRING' })` strings resolved with `getMessages()`, and `<T>` for JSX headings. The deploy's `gt translate` localizes it into the site's locales.
+- **The sample table.** Each language page (`/libraries/nextjs/<language>`) shows a table that is real, unedited `gt translate` output from one scratch Next.js app with 7 `gt()` calls, each with a one-sentence `$context`, run in the GT Testing project with gt 2.26.1 on 2026-10-10. A language page publishes only when its language is in that sample store.
+
+Kevin's rule for the sample (2026-10-10): "make them idiomatic!" Sample copy reads like native product UI with correct CLDR plurals. Reach that by improving the `$context` and rerunning; never hand-edit the output.
+
+`gt translate`'s ICU plural output can omit CLDR branches. On 2026-10-10 Russian and Polish lacked `few` and `many` until a `--force` run with a context saying "the count can be any number"; Spanish, French and pt-BR never got `many`; and a change to the context alone, without `--force`, returned identical plurals. Check each language's branches against the CLDR plural rules before publishing it.
 
 The route families, claim tracing and build limits join this file when round 1 ships.
 
@@ -74,3 +83,4 @@ The route families, claim tracing and build limits join this file when round 1 s
 - gt-cloud branches: `k/landing-faq` (#4885; `src/lib/faq/config.ts` and `src/app/api/faq/ask/route.ts` read at c675222e0), `k/language-map` (`apps/landing/scripts/world/generate.mjs`, `package.json`).
 - Claude Code project memory for gt-cloud: `pricing-money-format.md`, `landing-hero-agent-button.md`, `agent-prompt-test.md`, `landing-ai-gateway-faq.md`, `world-language-map.md`.
 - Added 2026-10-10: Partner pages from Claude memory `partner-plate-pages` (2026-10-07 and 2026-10-08) and the partner pages spec of 2026-10-07 (layout only, no codes), with every partner page read live on generaltranslation.com on 2026-10-10 (each answered 200); Programmatic SEO pages from Claude memory `resume-2026-10-09` (Kevin's SEO decisions, 2026-10-09); pull request states read with `gh pr view` on 2026-10-10.
+- Added 2026-10-10 from the New Onboarding and Dashboard session's review (checked against gt-cloud origin/main d63346837 and production): the partner logo and fine print rules, and the two kinds of text on the programmatic SEO pages with the sample store, Kevin's idiomatic rule and the plural trap.

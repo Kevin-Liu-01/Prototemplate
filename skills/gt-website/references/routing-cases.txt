@@ -60,8 +60,10 @@ en-GB legal falls back | /en-GB/legal/privacy-policy | 200 | -
 ## unmatchable slugs answer 200 with suggestions and noindex
 docs: no match at all | /en-US/docs/nothing-like-anything-here | 200 | -
 blog: no match at all | /en-US/blog/definitely-not-a-real-post-xyz | 200 | -
-## known open: production differs from the 2026-08-21 matrix
-# 2026-08-21 this corrected to /en-US/docs/node/reference/functions/initialize-gt;
-# on 2026-10-10 production sends the section fallback. Ask the docs owner before
-# changing either side.
+## known open: a near-miss ranking question (the page exists)
+# content:docs/en-US/node/reference/functions/initialize-gt.mdx exists, and
+# /en-US/docs/node/initialize-gt still resolves to it (307). Only the bare
+# "initialize" falls to the section quickstart; on 2026-08-21 it corrected to
+# initialize-gt. Whether the ladder should rank initialize-gt above the
+# fallback is open. Ask the docs owner before changing either side.
 in-section: initialize | /en-US/docs/node/initialize | 307 | /en-US/docs/node/quickstart
