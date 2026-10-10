@@ -79,11 +79,15 @@ const MODE_KEY: Partial<Record<ShellMode, string>> = { grid: 'G', book: 'B' };
  * then Previous and Next; then Theme; then, when a route's own controls
  * still leave the bar short (the compare rig's seg and two buttons at
  * 1280), Index, Help, Present and the slot's buttons. The seg's words and
- * the Search field are never traded.
+ * the Search field are never traded. Two more tiers act only on an upright
+ * touch phone (Toolbar.css), where every control keeps a 40px hit area and
+ * a small phone cannot hold them all: tier five takes the count, tier six
+ * Help, so no control is left half off the bar. Elsewhere their classes
+ * change nothing.
  */
-type Tight = 0 | 1 | 2 | 3 | 4;
+type Tight = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-const TIERS: readonly Tight[] = [1, 2, 3, 4];
+const TIERS: readonly Tight[] = [1, 2, 3, 4, 5, 6];
 
 /* the tiers are cumulative: tier three carries the classes of one and two, so each tier's rules name only what it adds */
 const TIGHT_CLASS: Record<Tight, string> = {
@@ -92,7 +96,15 @@ const TIGHT_CLASS: Record<Tight, string> = {
   2: 'pt-toolbar is-tight-1 is-tight-2',
   3: 'pt-toolbar is-tight-1 is-tight-2 is-tight-3',
   4: 'pt-toolbar is-tight-1 is-tight-2 is-tight-3 is-tight-4',
+  5: 'pt-toolbar is-tight-1 is-tight-2 is-tight-3 is-tight-4 is-tight-5',
+  6: 'pt-toolbar is-tight-1 is-tight-2 is-tight-3 is-tight-4 is-tight-5 is-tight-6',
 };
+
+/* the server's paint, before the first measurement: on an upright touch
+   phone Toolbar.css guesses tiers five and six from the width and the seg
+   (.is-boot), so the measurement never moves the right group on load;
+   everywhere else the class changes nothing */
+const BOOT_CLASS = 'pt-toolbar is-boot';
 
 /**
  * Seg options for the modes a route offers, always in the one order Slide,
@@ -209,13 +221,13 @@ function Count() {
  * depend on the state it decides. The two groups are measured by their
  * content, not the bar by its scroll width: the left group is allowed to
  * shrink (the brand truncates inside it), so its buttons would overlap the
- * right group before the bar itself overflowed. At most three forced
- * layouts, and only when the bar or a group's content has changed size. A
+ * right group before the bar itself overflowed. At most one forced layout
+ * per tier, and only when the bar or a group's content has changed size. A
  * bar still short at the last tier stays there: the seg's words and the
  * Search field are the bar's meaning and are not traded.
  */
 function fitLabels(bar: HTMLElement): Tight {
-  bar.classList.remove('is-tight-1', 'is-tight-2', 'is-tight-3', 'is-tight-4');
+  bar.classList.remove('is-boot', 'is-tight-1', 'is-tight-2', 'is-tight-3', 'is-tight-4', 'is-tight-5', 'is-tight-6');
   const style = getComputedStyle(bar);
   const frame = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) + parseFloat(style.columnGap);
   const groups = bar.querySelectorAll<HTMLElement>(':scope > .pt-bar-l, :scope > .pt-bar-r');
@@ -241,7 +253,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   const shell = usePtShell();
   const { modes, keys, noun, mode, index, sidebarOpen, panelOpen, helpOpen, narrow } = shell;
   const [fullscreen, setFullscreen] = useState(false);
-  const [tight, setTight] = useState<Tight>(0);
+  const [tight, setTight] = useState<Tight | null>(null);
   const bar = useRef<HTMLDivElement>(null);
   const showSeg = modes.length > 1;
   const slideOffered = modes.includes('slide');
@@ -320,7 +332,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   };
 
   return (
-    <div ref={bar} className={TIGHT_CLASS[tight]} role='toolbar' aria-label='Viewer controls'>
+    <div ref={bar} className={tight === null ? BOOT_CLASS : TIGHT_CLASS[tight]} role='toolbar' aria-label='Viewer controls'>
       <div className='pt-bar-l'>
         <ToolButton
           icon='sidebar'
