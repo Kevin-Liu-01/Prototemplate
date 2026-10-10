@@ -100,9 +100,9 @@ reader on GitHub or in an imported copy; `pnpm build:skills` writes it.
 | Graphics | Blog and brand graphics | [`gt-graphics`](./skills/gt-graphics/SKILL.md) |  |
 | Graphics | Dither and artifact pictures | [`gt-dither`](./skills/gt-dither/SKILL.md) | Aesthetic |
 | Videos | Making a film | [`gt-films`](./skills/gt-films/SKILL.md) | Motion |
-| Diagrams | Drawing diagrams | [`gt-diagrams`](./skills/gt-diagrams/SKILL.md) |  |
-| Isometry | Isometric drawings | [`gt-isometric`](./skills/gt-isometric/SKILL.md) | Diagrams |
+| Diagrams | Drawing diagrams | [`gt-diagrams`](./skills/gt-diagrams/SKILL.md) | Isometry |
 | Components | Components to reuse | [`gt-components`](./skills/gt-components/SKILL.md) | Landing pages, Website |
+| Components | Product surfaces | [`gt-product-surfaces`](./skills/gt-product-surfaces/SKILL.md) | Aesthetic, Workflow |
 | Workflow | Review servers and local environments | [`gt-local-dev`](./skills/gt-local-dev/SKILL.md) | Website |
 | Workflow | Proving work is done | [`gt-verify`](./skills/gt-verify/SKILL.md) | Lints, Website, Aesthetic, Motion |
 | Workflow | Branches, PRs and landing | [`gt-ship`](./skills/gt-ship/SKILL.md) | Lints |
