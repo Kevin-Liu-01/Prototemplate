@@ -6,41 +6,78 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
+import { startFieldWorker } from '@/lib/prismatic-offthread';
 
-import { introSettled } from '../after-intro';
+import { entrancePlayed, holdSetup, whenDeckReady } from '../deck-setup';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+// The intro's fields draw in a worker; starting it now lets it boot while
+// the page hydrates, so the field's first frame does not wait for mount.
+if (typeof window !== 'undefined') startFieldWorker();
 
 /** Opening slide — the prismatic burst sets the mood under the title card. */
 export default function IntroSlide() {
   const root = useRef<HTMLElement>(null);
   const [logoField, setLogoField] = useState(0);
+  const fieldDrawn = useRef(() => {});
 
   useGSAP(
     () => {
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // The field has nothing to show before its first frame, which follows
-      // this mount, so its 2 s power2.inOut fade starts here. Like the CSS
-      // entrance (presenter.css), it runs on the compositor.
-      if (!reduced) {
-        root.current
-          ?.querySelector('.pr-intro-field')
-          ?.animate(
-            { opacity: [0, 1] },
-            { duration: 2000, easing: 'cubic-bezier(0.45, 0, 0.55, 1)' }
-          );
-      }
+      // The field draws in a worker, so it starts a moment after mount.
+      // Its 2 s power2.inOut fade holds at zero until the first frame, and
+      // the deck's setups wait for that frame too (deck-setup.ts). Like the
+      // CSS entrance (presenter.css), the fade runs on the compositor.
+      const fade = reduced
+        ? undefined
+        : root.current
+            ?.querySelector('.pr-intro-field')
+            ?.animate(
+              { opacity: [0, 1] },
+              { duration: 2000, easing: 'cubic-bezier(0.45, 0, 0.55, 1)' }
+            );
+      fade?.pause();
+      let fadeAt = 0;
+      const release = holdSetup();
+      const start = () => {
+        if (fadeAt) return;
+        fadeAt = performance.now();
+        fade?.play();
+        release();
+      };
+      fieldDrawn.current = start;
+      // A field that cannot draw must not hold the deck.
+      const fallback = window.setTimeout(start, 1500);
 
-      // Deferred presenter work (after-intro.ts) waits until the entrance
-      // has played.
-      const entrance = root.current?.getAnimations({ subtree: true }) ?? [];
-      Promise.all(entrance.map((animation) => animation.finished)).then(
-        introSettled,
-        introSettled
+      // The title, byline and cue hold paused (presenter.css) while the
+      // deck sets up, so no setup runs during their motion. They then play
+      // with their stagger intact, the title rising 0.45 s after the fade
+      // began or at once if the setup took longer.
+      const held = (root.current?.getAnimations({ subtree: true }) ?? []).filter(
+        (animation) => animation instanceof CSSAnimation
       );
+      const stopWaiting = whenDeckReady(() => {
+        const lead = Math.min(performance.now() - fadeAt, 450);
+        for (const animation of held) {
+          animation.currentTime = lead;
+          animation.play();
+        }
+        // Work that waits for the entrance runs once it has played.
+        const entrance = fade ? [fade, ...held] : held;
+        Promise.all(entrance.map((animation) => animation.finished)).then(
+          entrancePlayed,
+          entrancePlayed
+        );
+      });
 
-      if (reduced) return;
+      const stop = () => {
+        window.clearTimeout(fallback);
+        release();
+        stopWaiting();
+      };
+      if (reduced) return stop;
 
       // The liquid glass slowly undulates: the displacement field breathes.
       const breathe = gsap.to('#pr-liquid-turb', {
@@ -95,7 +132,10 @@ export default function IntroSlide() {
         },
       });
 
-      return () => window.clearInterval(swap);
+      return () => {
+        stop();
+        window.clearInterval(swap);
+      };
     },
     { scope: root }
   );
@@ -128,6 +168,8 @@ export default function IntroSlide() {
         preset='1'
         dpr={1.4}
         speed={0.4}
+        offThread
+        onDrawn={() => fieldDrawn.current()}
         params={{ exposureScale: 4200 }}
       />
       <div className='pr-intro-core' aria-hidden />
@@ -143,6 +185,7 @@ export default function IntroSlide() {
                 preset='1'
                 dpr={1}
                 speed={0.55}
+                offThread
                 params={{ exposureScale: 5200 }}
               />
               <PrismaticField
@@ -150,6 +193,7 @@ export default function IntroSlide() {
                 preset='2'
                 dpr={1}
                 speed={0.6}
+                offThread
                 params={{ exposureScale: 4600 }}
               />
               <img src='/brand/no-bg-gt-logo-dark.png' alt='General Translation' />

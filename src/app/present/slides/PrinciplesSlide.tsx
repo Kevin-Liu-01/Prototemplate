@@ -9,7 +9,7 @@ import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, type ReactNode } from 'react';
 
-import { useAfterIntro } from '../after-intro';
+import { useDeckSetup } from '../deck-setup';
 import Icon, { type IconName } from '../icons';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, MorphSVGPlugin);
@@ -188,8 +188,8 @@ export default function PrinciplesSlide() {
   const root = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
 
-  // Set up after the intro's entrance (after-intro.ts).
-  const ready = useAfterIntro();
+  // Set up in the deck's setup turn (deck-setup.ts).
+  const ready = useDeckSetup();
 
   useGSAP(
     () => {

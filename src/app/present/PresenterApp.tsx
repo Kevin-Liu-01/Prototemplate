@@ -9,7 +9,7 @@ import { useRef, useState } from 'react';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { useAfterIntro } from './after-intro';
+import { useDeckSetup } from './deck-setup';
 import Icon from './icons';
 import CraftSlide from './slides/CraftSlide';
 import IntroSlide from './slides/IntroSlide';
@@ -98,11 +98,11 @@ export default function PresenterApp() {
   );
   const keyRef = useRef<(event: KeyboardEvent) => void>(() => {});
 
-  // Set up after the intro's entrance (after-intro.ts).
-  const ready = useAfterIntro();
+  // Set up in the deck's setup turn (deck-setup.ts).
+  const ready = useDeckSetup();
 
   // The key listener exists from mount: a key pressed while the setup below
-  // is still queued runs that setup first (after-intro.ts) and then pages.
+  // is still queued runs that setup first (deck-setup.ts) and then pages.
   useMountEffect(() => {
     const onKey = (event: KeyboardEvent) => keyRef.current(event);
     window.addEventListener('keydown', onKey);
@@ -202,9 +202,10 @@ export default function PresenterApp() {
          PREVIOUS page's scroll position (Next resets scroll a beat later)
          and against pre-pin geometry — which sticks the rail on a phantom
          slide while the viewer is actually at the top. Re-derive once the
-         reset scroll and the settled pin spacers are real. A setup that
-         waited for the intro runs long after both, and a refresh there
-         would cut off a smooth scroll the first key or click just began. */
+         reset scroll and the settled pin spacers are real. The deck's
+         setup turn runs after both and refreshes once itself
+         (deck-setup.ts); a second refresh here would cut off a smooth
+         scroll the first key or click just began. */
       const raf = requestAnimationFrame(syncPosition);
       const settle =
         ready === 'mount'

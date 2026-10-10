@@ -9,7 +9,7 @@ import { readTheme, toggleTheme } from '@/components/viewer/ThemeButton';
 import type { Theme } from '@/components/viewer/ThemeButton';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { useAfterIntro } from '../after-intro';
+import { useDeckSetup } from '../deck-setup';
 import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 
 import LazyFrame from './LazyFrame';
@@ -44,8 +44,8 @@ export default function Scoreboard() {
     return () => observer.disconnect();
   });
 
-  // Set up after the intro's entrance (after-intro.ts).
-  const ready = useAfterIntro();
+  // Set up in the deck's setup turn (deck-setup.ts).
+  const ready = useDeckSetup();
 
   useGSAP(
     () => {

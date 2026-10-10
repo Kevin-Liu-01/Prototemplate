@@ -7,7 +7,7 @@ import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
-import { useAfterIntro } from '../after-intro';
+import { useDeckSetup } from '../deck-setup';
 import { PRESENT_DIRECTIONS } from '../directions';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin);
@@ -123,8 +123,8 @@ export default function TypeDetailSlide() {
   const root = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
 
-  // Set up after the intro's entrance (after-intro.ts).
-  const ready = useAfterIntro();
+  // Set up in the deck's setup turn (deck-setup.ts).
+  const ready = useDeckSetup();
 
   useGSAP(
     () => {

@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useAfterIntro } from '../after-intro';
+import { useAfterEntrance, useDeckSetup } from '../deck-setup';
 import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -46,7 +46,7 @@ export default function PrototypeViewer() {
   // The frame's document hydrates on this page's main thread, so it loads
   // once the intro's entrance has played instead of with the page. That is
   // still seconds before anyone can scroll this far.
-  const frameArmed = useAfterIntro(false);
+  const frameArmed = useAfterEntrance();
 
   // The dock is one shared pill in the presenter HUD; this viewer portals
   // its controls (and the notes panel) into the pill's slots.
@@ -63,8 +63,8 @@ export default function PrototypeViewer() {
     setIndex((target + DIRECTIONS.length) % DIRECTIONS.length);
   };
 
-  // Set up after the intro's entrance (after-intro.ts).
-  const ready = useAfterIntro();
+  // Set up in the deck's setup turn (deck-setup.ts).
+  const ready = useDeckSetup();
 
   useGSAP(
     () => {

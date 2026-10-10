@@ -565,16 +565,17 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: color-mix(in srgb, var(--pt-ink) 50%, transparent);
 }
 
-/* The entrance is CSS keyframes from the first paint, so it runs on the
-   compositor and keeps its frame rate while hydration and the shader start
-   use the main thread, and the title is never painted whole and then hidden.
-   The timings are the former GSAP timeline's: from 0.45 s the title pieces
-   rise one by one 0.14 s apart, the byline follows at 1.2 s and the cue at
-   1.6 s (power4.out). `translate` composes ahead of the logo box's own
+/* The entrance is CSS keyframes, so it runs on the compositor and keeps
+   its frame rate whatever the main thread is doing, and the title is never
+   painted whole and then hidden. The keyframes hold paused from the first
+   paint until IntroSlide plays them once the deck is set up. The timings
+   are the former GSAP timeline's: from 0.45 s the title pieces rise one by
+   one 0.14 s apart, the byline follows at 1.2 s and the cue at 1.6 s
+   (power4.out). `translate` composes ahead of the logo box's own
    transform. The field's fade starts at mount instead (IntroSlide). */
 @media (prefers-reduced-motion: no-preference) {
   .pr-title-piece {
-    animation: pr-intro-rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.45s backwards;
+    animation: pr-intro-rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.45s backwards paused;
   }
 
   .pr-title-mask:nth-child(2) .pr-title-piece {
@@ -590,11 +591,11 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   }
 
   .pr-intro-sub {
-    animation: pr-intro-lift 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.2s backwards;
+    animation: pr-intro-lift 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.2s backwards paused;
   }
 
   .pr-intro-cue {
-    animation: pr-intro-fade 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.6s backwards;
+    animation: pr-intro-fade 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.6s backwards paused;
   }
 }
 

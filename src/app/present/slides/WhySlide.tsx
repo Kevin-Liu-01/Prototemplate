@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { useRef } from 'react';
 
-import { useAfterIntro } from '../after-intro';
+import { useDeckSetup } from '../deck-setup';
 import Icon, { type IconName } from '../icons';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
@@ -44,8 +44,8 @@ export default function WhySlide() {
   const root = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
 
-  // Set up after the intro's entrance (after-intro.ts).
-  const ready = useAfterIntro();
+  // Set up in the deck's setup turn (deck-setup.ts).
+  const ready = useDeckSetup();
 
   useGSAP(
     () => {
