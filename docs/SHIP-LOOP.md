@@ -17,8 +17,8 @@ camera, and the mirror build all get a vote.
 ## 1. The line audit
 
 ```bash
-node scripts/lint-lines.mjs http://localhost:3005/<page> --theme light
-node scripts/lint-lines.mjs http://localhost:3005/<page> --theme dark
+node scripts/lint/lines.mjs http://localhost:3005/<page> --theme light
+node scripts/lint/lines.mjs http://localhost:3005/<page> --theme dark
 ```
 
 - Audits at 1440 and 1280; expects **zero** findings in all four classes
@@ -37,8 +37,8 @@ pnpm check:pages --preset quick --pages <id>,<id>   # the round's touched pages
 pnpm check:pages                                    # every page on every device, before a release
 ```
 
-`scripts/pagecheck/` (its README explains the tool) loads every named
-page on the dev server on the device table in `scripts/site-pages.mjs`:
+`scripts/check/pagecheck/` (its README explains the tool) loads every named
+page on the dev server on the device table in `scripts/lib/site-pages.mjs`:
 phones from 320x568 to 430x932 and on their sides, tablets from 768x1024
 to 1366x1024 in both orientations, desktops from 1280x720 to the 3440x1440
 ultrawide, Kevin's 1527x814 laptop and 1440x900 at 200% zoom. A phone or
@@ -78,21 +78,21 @@ grid and the run's timing.
 
 ## 3. The practices ratchet
 
-`scripts/lint-practices.mjs` counts button types, bare effects, any-types,
+`scripts/lint/practices.mjs` counts button types, bare effects, any-types,
 raw hex in TS/TSX (`'#xxxxxx'`-quoted — unquoted hex inside template CSS
 snippets doesn't count), and `!important`. It refuses anything that adds to
-`lint-practices.baseline.json`. When files are deleted, prune their baseline
+`lint/practices.baseline.json`. When files are deleted, prune their baseline
 entries in the same commit.
 
-`scripts/lint-type.mjs` holds the type to DESIGN.md section 4 ("Book type"):
+`scripts/lint/type.mjs` holds the type to DESIGN.md section 4 ("Book type"):
 statically on every `pnpm build` and `pnpm lint:type` (family, stack,
 next/font binding, features, weight, heading and tracking rules, plus a
-per-file ratchet of literal sizes in `lint-type.baseline.json`), and
+per-file ratchet of literal sizes in `lint/type.baseline.json`), and
 against the dev server with `pnpm lint:type:live` (the face Chrome
 rendered, the computed features, tracking, optical size and weight).
 `pnpm test:type` runs its tests; `--update-baseline` records a burn-down.
 
-`scripts/lint-radius.mjs` holds the corners to DESIGN.md section 2
+`scripts/lint/radius.mjs` holds the corners to DESIGN.md section 2
 ("Corners: rounded controls, square shells"): statically on every
 `pnpm build` and `pnpm lint:radius` (every radius reads one of the six
 `--pt-radius-<role>` tokens, shells and rows stay square, controls are
@@ -103,7 +103,7 @@ boxes: square shells, round controls, a picture clipped by its frame).
 A named exception carries `/* lint-radius: allow <reason> */`.
 `pnpm test:radius` runs its tests.
 
-`scripts/lint-heads.mjs` holds every book page to DESIGN.md section 4
+`scripts/lint/heads.mjs` holds every book page to DESIGN.md section 4
 ("The book page"): statically (`pnpm lint:heads`, in the build: BookHead's
 props, page titles from `src/lib/page-names.ts`, no route restyling the
 shared head, band or dividers, no second hatch, no guide over a title,

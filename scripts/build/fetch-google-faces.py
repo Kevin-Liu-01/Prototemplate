@@ -10,7 +10,7 @@ import json, re, sys, urllib.parse, urllib.request, pathlib
 
 UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-OUT = pathlib.Path(__file__).resolve().parent.parent / 'public' / 'fonts' / 'google'
+OUT = pathlib.Path(__file__).resolve().parents[2] / 'public' / 'fonts' / 'google'
 # family, italic(0/1), weight, subset
 WANT = [
     ('Sora', 0, 300, 'latin'), ('Sora', 0, 400, 'latin'), ('Sora', 0, 500, 'latin'),
@@ -22,7 +22,7 @@ WANT = [
     ('Cinzel', 0, 400, 'latin-ext'), ('Cinzel', 0, 600, 'latin-ext'),
     ('Marcellus', 0, 400, 'latin'), ('Aboreto', 0, 400, 'latin'),
     ('Julius Sans One', 0, 400, 'latin'), ('Federo', 0, 400, 'latin'), ('Forum', 0, 400, 'latin'),
-    # the speed marks (public/marks, scripts/build-speed-marks.mjs): the faces are converted to outlines at
+    # the speed marks (public/marks, scripts/build/speed-marks.mjs): the faces are converted to outlines at
     # build time, so the site never loads them; a fifth field names the exact css2 axis tuple for a variable
     # face and a sixth the file name, since Anybody is fetched at width 150 rather than at its default width
     ('Michroma', 0, 400, 'latin'), ('Orbitron', 0, 900, 'latin'),

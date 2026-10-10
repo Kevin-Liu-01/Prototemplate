@@ -7,10 +7,12 @@
 // Usage: pnpm lint:shell
 import { readFileSync, statSync } from 'node:fs';
 import { execSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+helpIfAsked(import.meta.url);
+
 const TARGETS = [
   'src/components/shell',
   'src/components/viewer',

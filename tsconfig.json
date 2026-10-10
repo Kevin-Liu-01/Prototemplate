@@ -37,6 +37,6 @@
   ],
   "exclude": [
     "node_modules",
-    "scripts/oxlint-plugins"
+    "scripts/lint/oxlint-plugins"
   ]
 }

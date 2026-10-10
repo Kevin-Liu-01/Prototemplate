@@ -13,7 +13,7 @@ import { langText, wholeLang } from '../lang-text';
 
 /**
  * The server side of /motion/[slug]: reads one research package from the
- * file scripts/build-motion.mjs writes (public/motion/<slug>.md, the
+ * file scripts/build/motion.mjs writes (public/motion/<slug>.md, the
  * film's BRIEF.md from the package's own h1 on) and renders it with the
  * docs' markdown renderer and the script hook, so the client receives
  * elements and no markdown ships in a bundle. A slug is read only when the

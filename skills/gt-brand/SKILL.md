@@ -107,7 +107,7 @@ Inter is the one typeface for display, interface and text. The build is the rsms
 
 **The binding.**
 
-- Prototemplate binds the roman's latin subset as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`, and declares the other subsets and the italic as plain `@font-face` rules with a `unicode-range` in the same `ptInter` family in `src/app/inter-subsets.css`, which `scripts/subset-inter.py` writes. So every route preloads the roman latin subset, and a browser fetches any other subset only where the page draws a code point in its range.
+- Prototemplate binds the roman's latin subset as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`, and declares the other subsets and the italic as plain `@font-face` rules with a `unicode-range` in the same `ptInter` family in `src/app/inter-subsets.css`, which `scripts/build/subset-inter.py` writes. So every route preloads the roman latin subset, and a browser fetches any other subset only where the page draws a code point in its range.
 - next/font names the family after the JavaScript identifier, and CSS family names are case-insensitive. A binding named `inter` therefore shares its name with an installed Inter. If the woff2 fails to load, that installed Inter renders (desktop Inter 3, for example, which has no opsz axis), and the metric-matched fallback never engages.
 - gt-cloud's landing still binds `inter` on `--font-sans`, and its built CSS reads `"inter", "inter Fallback"`, so it carries the same exposure.
 
@@ -166,8 +166,8 @@ The Prototemplate shell tracks nothing positive, and its type lint fails any pos
 
 **Enforcement.**
 
-- Prototemplate: `node scripts/lint-type.mjs` fails a literal family, a bare Inter, a feature list outside the tokens, any `font-variation-settings`, a weight above 500, heading metrics outside the display tokens, positive tracking and mono on a non-code selector, and ratchets literal sizes, tracking and line heights per file. An exception is written `/* lint-type: allow <reason> */`, and an empty reason fails. `pnpm build` runs its static mode first, `pnpm lint:type:live` reads the faces, features, tracking, optical size and weights Chrome renders on the dev server's pages at 1440 and 390, and `pnpm test:type` runs its tests. `gt-lints` owns the rule table and the wiring.
-- gt-cloud: the gt-ui oxlint rules `inter-only`, `mono-is-not-voice`, `no-thin-font` and `typed-text-var` in `$GT_CLOUD/tooling/oxlint-plugins/gt-ui.ts`. Prototemplate's `pnpm lint:code` runs a copy of that plugin taken on 2026-09-28 (`scripts/oxlint-plugins/gt-ui.ts`), with thirteen of its rules switched on in `.oxlintrc.json`; `no-thin-font` is not among them.
+- Prototemplate: `node scripts/lint/type.mjs` fails a literal family, a bare Inter, a feature list outside the tokens, any `font-variation-settings`, a weight above 500, heading metrics outside the display tokens, positive tracking and mono on a non-code selector, and ratchets literal sizes, tracking and line heights per file. An exception is written `/* lint-type: allow <reason> */`, and an empty reason fails. `pnpm build` runs its static mode first, `pnpm lint:type:live` reads the faces, features, tracking, optical size and weights Chrome renders on the dev server's pages at 1440 and 390, and `pnpm test:type` runs its tests. `gt-lints` owns the rule table and the wiring.
+- gt-cloud: the gt-ui oxlint rules `inter-only`, `mono-is-not-voice`, `no-thin-font` and `typed-text-var` in `$GT_CLOUD/tooling/oxlint-plugins/gt-ui.ts`. Prototemplate's `pnpm lint:code` runs a copy of that plugin taken on 2026-09-28 (`scripts/lint/oxlint-plugins/gt-ui.ts`), with thirteen of its rules switched on in `.oxlintrc.json`; `no-thin-font` is not among them.
 
 ## 5. Marks
 
@@ -178,7 +178,7 @@ Detail, files and procedures are in `references/marks.md`.
 - **Compression.** The mark must hold at 16px (favicon), 32px (CLI banner), 64px (README header), 128px (npm page) and 256px (website), because developers meet the brand in a terminal as often as on the site (deck slide 25).
 - **Inline.** At text size the GT mark sits in the line at the cap height of the text around it, with the letters GT kept as hidden text.
 - **Locadex** has its own one-color mark (`public/brand/locadex-mark.svg`; `LocadexMark` in gt-cloud's `packages/ui`) and appears only where it has a function.
-- **The speed set.** Kevin chose seven race-type marks on 2026-09-29 (bar monogram, lockup, plate, double cut, livery stack, dithered, ASCII). They are presented beside the current mark on `/marks` and on deck slides 17 to 23. `scripts/build-speed-marks.mjs` generates every file from geometry and font outlines (`pnpm build:marks`). Regenerate them; never redraw one by hand or edit an SVG under `public/marks`.
+- **The speed set.** Kevin chose seven race-type marks on 2026-09-29 (bar monogram, lockup, plate, double cut, livery stack, dithered, ASCII). They are presented beside the current mark on `/marks` and on deck slides 17 to 23. `scripts/build/speed-marks.mjs` generates every file from geometry and font outlines (`pnpm build:marks`). Regenerate them; never redraw one by hand or edit an SVG under `public/marks`.
 - **The one flourish** is the dithered specular shimmer (`DitheredMark`, the 4 by 4 Bayer band swept through the mark's alpha mask). A mark is never a gif and never carries a filter glow; gt-ui `no-gif-mark` refuses gifs.
 - **Third-party logos** come from thesvg.org files, inlined as components. The `@thesvg/react` package (84 MB unpacked) is never added. In gt-cloud they live in `packages/ui/src/components/icons/*Logo.tsx` on the shared `BrandMark` root.
 
@@ -257,10 +257,10 @@ General skills in Kevin's wiki that this one depends on: `design-engineering-pol
 - Prototemplate: DESIGN.md sections 1 (the four-color system), 4 (voices), 5 (the doubled line), 7 (the Bayer language), 8 (the moving type law), 12 (the mobile type ladder) and 15 (chrome exceptions).
 - Prototemplate: `deck/parts/head.html` (tokens, the type rules at lines 55 to 69, the GT word at 74 to 78, the book head at 279 to 293, semantic icon hues at 113 to 125) and `deck/DECK-GRAMMAR.md` (type, color, speed marks, defects).
 - Prototemplate: deck slides 12 (voice), 15 (naming), 16 (the mark), 25 (small sizes), 26 (color), 27 (type), 28 (scripts), 29 (the ladder), 36 (language as material), 39 (anti-patterns), 93 (fixed points).
-- Prototemplate: `src/lib/fonts.ts`, `src/lib/brand-fonts.ts`, `src/components/viewer/tokens.css` (type tokens and base rules), `src/app/globals.css`, `deck/fonts/deck-fonts.css`, `scripts/build-deck.mjs`.
-- Prototemplate: `src/app/present/presenter.css` (the mark inverted on paper), `src/lib/marks.ts`, `scripts/build-speed-marks.mjs`, `src/app/d/toolchain/diagrams/DitheredMark.tsx`, `src/app/d/toolchain/components/LocaleTag.tsx`, `src/components/shared/EverySentence.tsx`, `src/components/shared/diagrams/DoubledLine.tsx`.
+- Prototemplate: `src/lib/fonts.ts`, `src/lib/brand-fonts.ts`, `src/components/viewer/tokens.css` (type tokens and base rules), `src/app/globals.css`, `deck/fonts/deck-fonts.css`, `scripts/build/deck.mjs`.
+- Prototemplate: `src/app/present/presenter.css` (the mark inverted on paper), `src/lib/marks.ts`, `scripts/build/speed-marks.mjs`, `src/app/d/toolchain/diagrams/DitheredMark.tsx`, `src/app/d/toolchain/components/LocaleTag.tsx`, `src/components/shared/EverySentence.tsx`, `src/components/shared/diagrams/DoubledLine.tsx`.
 - Prototemplate: `motion/MOTION.md`, local and untracked (the films' material palettes and one accent per film).
-- Prototemplate: `scripts/lint-type.mjs`, `scripts/oxlint-plugins/gt-ui.ts` and `.oxlintrc.json`; `src/app/present/fonts.ts`; `src/app/system-ledger.css` and `src/app/anatomy-wall.css` (the gallery's accents).
+- Prototemplate: `scripts/lint/type.mjs`, `scripts/lint/oxlint-plugins/gt-ui.ts` and `.oxlintrc.json`; `src/app/present/fonts.ts`; `src/app/system-ledger.css` and `src/app/anatomy-wall.css` (the gallery's accents).
 - gt-cloud at origin/main e17fce499 (2026-10-05): `apps/landing/src/lib/fonts.ts`, `apps/landing/src/lib/fonts-prose.ts`, `apps/dashboard/src/app/brand-tokens.css`, `tooling/oxlint-plugins/gt-ui.ts`, `packages/ui/src/components/icons/BrandMark.tsx`, `packages/ui/src/components/ui/LocaleFlag.tsx`.
 - rsms.me/inter (the quick start's `font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */`) and rsms.me/inter/dynmetrics (removed), read 2026-10-05; the font file read with fontkit.
 - Kevin, 2026-10-05: enforce the correct Rasmus Inter, one type system in tokens, held by a lint.

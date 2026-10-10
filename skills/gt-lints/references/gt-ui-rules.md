@@ -3,7 +3,7 @@
 The gt-ui oxlint plugin lives in gt-cloud at
 `tooling/oxlint-plugins/gt-ui.ts`, with its tests in
 `tooling/oxlint-plugins/gt-ui.test.ts`. Prototemplate runs a copy at
-`scripts/oxlint-plugins/gt-ui.ts`. Each rule checks a static string, a JSX
+`scripts/lint/oxlint-plugins/gt-ui.ts`. Each rule checks a static string, a JSX
 element or an import, so a value built at runtime passes. Every message
 states the law and its fix, and most name their source document; oxlint
 prints the rule id beside it (`gt-ui(no-em-dash)`).
@@ -139,7 +139,7 @@ quiet. Run them with `cd tooling/oxlint-plugins && pnpm test`.
   `packages/ui/design-guide/` (`border-radius.md`, `typography.md`,
   `colors.md`, `why-we-banned-useeffect.md`); `.oxlintrc.json` on
   `k/dashboard-shell-ia` and `k/dashboard-icon-tiers`.
-- Prototemplate: `.oxlintrc.json`; `scripts/oxlint-plugins/gt-ui.ts`;
+- Prototemplate: `.oxlintrc.json`; `scripts/lint/oxlint-plugins/gt-ui.ts`;
   commit 8c989de (2026-09-28, the copy and its exemptions).
 - Claude memory notes: landing-icon-rule (#4909 and #5007), dashboard-deck-grammar
   (`no-theme-icons`, the dashboard overrides).

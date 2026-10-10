@@ -460,8 +460,8 @@ above win.
   Locadex.tsx and locadex.css; src/app/d/production/sections/Developer.tsx
   and Locadex.tsx (`beamAt`).
 - Prototemplate: src/components/viewer/tokens.css; docs/LIBRARIES.md;
-  docs/ARTIFACT-PICTURES.md; .oxlintrc.json; scripts/lint-practices.mjs;
-  scripts/pagecheck/README.md; src/app/layout.tsx (the `gt-theme` key).
+  docs/ARTIFACT-PICTURES.md; .oxlintrc.json; scripts/lint/practices.mjs;
+  scripts/check/pagecheck/README.md; src/app/layout.tsx (the `gt-theme` key).
 - gt-cloud: apps/dashboard/src/components/brand/FieldStack.tsx and
   fieldController.ts; apps/dashboard/src/app/brand-tokens.css
   (`.plate-row-in`, `brand-field-picture-in`);

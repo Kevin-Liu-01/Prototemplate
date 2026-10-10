@@ -76,12 +76,12 @@ On 2026-09-29 Kevin brought a race-type wordmark reference and chose seven marks
 
 ### Regenerating
 
-1. Edit `scripts/build-speed-marks.mjs`. The geometry is data at the top of the script (`MONOGRAM_RECTS`, `SKEW`, `CUT`), and text becomes outlines through fontkit.
+1. Edit `scripts/build/speed-marks.mjs`. The geometry is data at the top of the script (`MONOGRAM_RECTS`, `SKEW`, `CUT`), and text becomes outlines through fontkit.
 2. Run `pnpm build:marks`. It writes every file under `public/marks` and prints each size in bytes.
 3. The deck inlines the marks by hand: paste each changed file's markup over the old markup in `deck/slides/17-speed-monogram.html` to `23-speed-ascii.html`, with an explicit width and height in px on the root that keeps the file's aspect. Then run `pnpm build:deck`.
 4. If the presentation field changed, re-crop it for deck slide 73: `deck/shots/proto-marks-speed-light.jpg` and `proto-marks-speed-dark.jpg` are the field cropped from `/marks#presentation` at 1440 wide (memory note `speed-marks-set`). `gt-deck` covers the slide side of steps 3 and 4.
 
-Never edit an SVG under `public/marks` by hand, and never redraw a mark inside a slide. The faces behind the set (Michroma 400, Orbitron 900, Anybody at width 150 in 900, 900 italic and 500 italic) are fetched into `public/fonts/google` by `scripts/fetch-google-faces.py` and exist only as outlines in the files; no page loads them.
+Never edit an SVG under `public/marks` by hand, and never redraw a mark inside a slide. The faces behind the set (Michroma 400, Orbitron 900, Anybody at width 150 in 900, 900 italic and 500 italic) are fetched into `public/fonts/google` by `scripts/build/fetch-google-faces.py` and exist only as outlines in the files; no page loads them.
 
 ## The dithered shimmer
 

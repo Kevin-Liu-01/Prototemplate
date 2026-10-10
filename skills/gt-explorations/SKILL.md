@@ -101,7 +101,7 @@ A palette, a title or a new arrangement of the same parts does not make a new di
 
 ### The registry
 
-`$PROTOTEMPLATE/src/lib/directions.ts` (`DIRECTIONS`) is the one list. The gallery at `/`, `/directions/<slug>`, `/compare`, the presenter at `/present`, the sitemap and the page check (`scripts/site-pages.mjs`) all read it, so a direction is registered once.
+`$PROTOTEMPLATE/src/lib/directions.ts` (`DIRECTIONS`) is the one list. The gallery at `/`, `/directions/<slug>`, `/compare`, the presenter at `/present`, the sitemap and the page check (`scripts/lib/site-pages.mjs`) all read it, so a direction is registered once.
 
 | Field | What it holds |
 | --- | --- |
@@ -190,7 +190,7 @@ A review of many directions goes module by module: one module across every direc
 
 A round converges through a separate harsh critic who scores the work against the reference side by side. `gt-orchestration` section 4 holds the loop, the bar and the July rubric (`docs/research/DESIGN_STANDARD.md` section 8). A design round feeds the critic composites.
 
-- Capture the work and the reference at the same viewport and theme, section against matching section. Shoot each section as an element screenshot anchored on its own landmark selector, so the pairs align at any viewport. A capture taken at a scroll depth drifts when the viewport changes. `scripts/gallery-shoot.mjs` does this for the Dossier's sections against the dev server on 3005, and `REDESIGN_BASE` points it at another address.
+- Capture the work and the reference at the same viewport and theme, section against matching section. Shoot each section as an element screenshot anchored on its own landmark selector, so the pairs align at any viewport. A capture taken at a scroll depth drifts when the viewport changes. `scripts/check/gallery-shoot.mjs` does this for the Dossier's sections against the dev server on 3005, and `REDESIGN_BASE` points it at another address.
 - Join each pair into one image the critic reads. `docs/composites/` holds the July composites of the work beside resend, oxc and viteplus. Two captures join at a common height with ffmpeg:
 
   ```bash
@@ -218,7 +218,7 @@ The exemplar Kevin picks becomes the documented default, with its parameters in 
 ### Archive before overwriting
 
 - Archive each published version before replacing it, so an earlier element can come back exactly. On 2026-10-03 Kevin asked for part of an earlier film cut to return: "bring back the isometric view that transitions into more in the designing docs film, no need to replace anything".
-- A direction retired from the lineup becomes an entry in `src/lib/archive.ts`: its slug and name, a 1440 first-fold capture and a full-page capture under `public/shots/archive`, and the last commit that held its code. `/archive/<slug>` shows it, and `git checkout <lastCommit> -- src/app/d/<slug>` restores it. Retiring also prunes its paths from `scripts/lint-practices.baseline.json`.
+- A direction retired from the lineup becomes an entry in `src/lib/archive.ts`: its slug and name, a 1440 first-fold capture and a full-page capture under `public/shots/archive`, and the last commit that held its code. `/archive/<slug>` shows it, and `git checkout <lastCommit> -- src/app/d/<slug>` restores it. Retiring also prunes its paths from `scripts/lint/practices.baseline.json`.
 - A film's final is copied to the next `motion/out/v<N>/` folder before it is overwritten, and each film folder keeps `archive/` for earlier compositions (`gt-films`, "Renders").
 
 ### Landing
@@ -249,7 +249,7 @@ GT skills: `gt-aesthetic` (the references, the verdicts and the review loop), `g
 
 ## Sources
 
-- Prototemplate: `src/lib/directions.ts`, `archive.ts`, `marks.ts` and `studio-field.ts`; `src/components/shared/FieldEffectsMenu.tsx` and `HeroFieldSwitcher.tsx`; `src/app/craft/BayerDemo.tsx`; `src/app/GalleryViewer.tsx`; `src/app/directions/sections.ts` and `DirectionViewer.tsx`; `src/app/compare/`; `src/app/present/` (`directions.ts`, `viewer/reviewStore.ts`, `viewer/Scoreboard.tsx`); `src/app/craft/CraftArticle.tsx`; `ARCHITECTURE.md` ("The direction registry", "The SSOT rule", "The gallery pipeline"); `docs/research/STORYBOARD.md`, `inspo.md`, `teardown-measured.md`, `teardown-oxc.md`, `teardown-viteplus.md`, `feature-inventory.md`, `MODULES_PLAN.md`, `ITERATION_SPEC.md` and `DESIGN_STANDARD.md`; `docs/reference-shots/`; `docs/composites/`; `scripts/gallery-shoot.mjs` and `docs/harness/shoot-one.mjs`; `skills/prototemplate/references/adding.md`; `skills/gt-aesthetic/SKILL.md`; `skills/gt-orchestration/SKILL.md` section 4; `skills/gt-local-dev/SKILL.md` section 1; `skills/gt-ship/SKILL.md` sections 1 and 8; `skills/gt-films/SKILL.md`. Commits fee151f, 1d3bd12, db06905, 156ca85, e80aea8, b6a7eba and 2d6f32b (the deco rounds, 2026-09-14), 127960d (2026-08-25) and c064945 (2026-09-08). All read 2026-10-05 on `speed-marks` at 2a8453c.
+- Prototemplate: `src/lib/directions.ts`, `archive.ts`, `marks.ts` and `studio-field.ts`; `src/components/shared/FieldEffectsMenu.tsx` and `HeroFieldSwitcher.tsx`; `src/app/craft/BayerDemo.tsx`; `src/app/GalleryViewer.tsx`; `src/app/directions/sections.ts` and `DirectionViewer.tsx`; `src/app/compare/`; `src/app/present/` (`directions.ts`, `viewer/reviewStore.ts`, `viewer/Scoreboard.tsx`); `src/app/craft/CraftArticle.tsx`; `ARCHITECTURE.md` ("The direction registry", "The SSOT rule", "The gallery pipeline"); `docs/research/STORYBOARD.md`, `inspo.md`, `teardown-measured.md`, `teardown-oxc.md`, `teardown-viteplus.md`, `feature-inventory.md`, `MODULES_PLAN.md`, `ITERATION_SPEC.md` and `DESIGN_STANDARD.md`; `docs/reference-shots/`; `docs/composites/`; `scripts/check/gallery-shoot.mjs` and `docs/harness/shoot-one.mjs`; `skills/prototemplate/references/adding.md`; `skills/gt-aesthetic/SKILL.md`; `skills/gt-orchestration/SKILL.md` section 4; `skills/gt-local-dev/SKILL.md` section 1; `skills/gt-ship/SKILL.md` sections 1 and 8; `skills/gt-films/SKILL.md`. Commits fee151f, 1d3bd12, db06905, 156ca85, e80aea8, b6a7eba and 2d6f32b (the deco rounds, 2026-09-14), 127960d (2026-08-25) and c064945 (2026-09-08). All read 2026-10-05 on `speed-marks` at 2a8453c.
 - gt-cloud: commit `1db410568` (the variants flatten, 2026-08-12) and `VARIANTS-PLAN.md` in its parent; `tools/module-review` on the branch `redesign/diagram-standard` (commit ab9beeb2e).
 - Kevin's wiki: `wiki/design/README.md`, `ui-library-ranking.md`, `component-library-sources.md` and `x-bookmarks-design-ui.md`; `wiki/tools/fieldtheory.md`; `skills/engineering/design-engineering-polish/references/signature-first-exploration.md`.
 - Claude memory notes: deco-exploration-round, explorations-stay-local, variants-program-state, redesign-fork-architecture, redesign-presenter-app, redesign-v0-verdict.

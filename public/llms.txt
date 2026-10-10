@@ -27,7 +27,7 @@ The design lab holds twenty-seven directions for the General Translation website
 
 ## Skills
 
-Each skill is a folder in the standard SKILL.md format that Claude Code, Codex and other agents load. The raw files are served at /skills/<slug>/SKILL.md and /skills/<slug>/references/<file>; https://prototemplate.vercel.app/skills/index.json lists the whole set with every file and install line. To install them into a project, run this from a checkout of the repository (Node only): `node scripts/install-skills.mjs --project <dir>` links every skill into <dir>/.claude/skills and <dir>/.agents/skills; name slugs to install fewer, add --copy to vendor the folders, and --dry-run to see each step first.
+Each skill is a folder in the standard SKILL.md format that Claude Code, Codex and other agents load. The raw files are served at /skills/<slug>/SKILL.md and /skills/<slug>/references/<file>; https://prototemplate.vercel.app/skills/index.json lists the whole set with every file and install line. To install them into a project, run this from a checkout of the repository (Node only): `node scripts/skills/install.mjs --project <dir>` links every skill into <dir>/.claude/skills and <dir>/.agents/skills; name slugs to install fewer, add --copy to vendor the folders, and --dry-run to see each step first.
 
 - [Voice and the humanizer](https://prototemplate.vercel.app/skills/gt-voice): How Kevin writes for General Translation. Raw file: https://prototemplate.vercel.app/skills/gt-voice/SKILL.md
 - [GT website](https://prototemplate.vercel.app/skills/gt-website): How generaltranslation.com is built and changed in gt-cloud's apps/landing. Raw file: https://prototemplate.vercel.app/skills/gt-website/SKILL.md

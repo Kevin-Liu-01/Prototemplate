@@ -5,7 +5,7 @@
  * its own entry to its viewer).
  */
 
-/** One page's last change, as scripts/build-updated.mjs records it. */
+/** One page's last change, as scripts/build/updated.mjs records it. */
 export type PageUpdated = {
   /** the committer's calendar day, as the commit wrote it: `2026-10-05` */
   day: string;

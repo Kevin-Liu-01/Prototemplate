@@ -26,16 +26,18 @@
 //                               a cut through each line and one slash across
 //                               both (a mask)
 //
-// The faces are the static instances scripts/fetch-google-faces.py stores under
+// The faces are the static instances scripts/build/fetch-google-faces.py stores under
 // public/fonts/google (Michroma 400, Orbitron 900, Anybody at width 150 in
 // 900, 900 italic and 500 italic); fontkit turns the strings into outlines, so
 // the site never loads these fonts. Usage: pnpm build:marks
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import * as fontkit from 'fontkit';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+helpIfAsked(import.meta.url);
+
 const FONTS = join(ROOT, 'public/fonts/google');
 const OUT = join(ROOT, 'public/marks');
 mkdirSync(OUT, { recursive: true });

@@ -4,12 +4,12 @@
 //   node shoot-slide.mjs all          -> every slide
 // Writes the source assemble.mjs builds to a private temp file (safe to run
 // concurrently), with images as relative shots/ paths. Chromium comes from
-// CHROME_PATH as scripts/site-pages.mjs resolves it.
+// CHROME_PATH as scripts/lib/site-pages.mjs resolves it.
 import { writeFileSync, mkdirSync, unlinkSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
-import { chromePath } from '../scripts/site-pages.mjs';
+import { chromePath } from '../scripts/lib/site-pages.mjs';
 import { assemble, slideFiles } from './assemble.mjs';
 /* this script's folder: deck/, or a copy's folder beside it */
 const D = dirname(fileURLToPath(import.meta.url));

@@ -1,10 +1,8 @@
-// Tests for scripts/lint-heads.mjs: a passing and a failing fixture per
+// Tests for scripts/lint/heads.mjs: a passing and a failing fixture per
 // static rule, and each live judge fed recorded geometry (the judges are
 // pure functions over what collectHead measures, so no browser runs here).
 import assert from 'node:assert/strict';
-import { dirname, join } from 'node:path';
 import { test } from 'node:test';
-import { fileURLToPath } from 'node:url';
 
 import {
   H9_GAP,
@@ -24,9 +22,9 @@ import {
   lintHeads,
   lintSpaces,
   lintTitles,
-} from './lint-heads.mjs';
+} from './heads.mjs';
+import { ROOT } from '../lib/root.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const rules = (problems) => problems.map((p) => p.rule);
 
 const HEAD_OK = `const TITLE = PAGE_NAMES.motion.name;

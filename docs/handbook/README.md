@@ -26,7 +26,7 @@ The handbook is served at /handbook on each of the site's three addresses (www.p
 - A new ruling from Kevin goes into the decisions log as a dated row that names what it replaced, and the skill, lint or gate that holds it changes in the same commit.
 - A document keeps the writing rules of `gt-voice`: plain declarative sentences, no em dashes, no metaphors, and no contrast pairs.
 - The repository is public. No document carries keys, account ids, email addresses, personal details, customer names beyond BRAND.md section 9, unannounced plans or business figures (operating principle 18).
-- On the site, a new document needs its entry in `src/app/handbook/registry.ts` and its headings in `HANDBOOK_HEADINGS` (`src/lib/search-index.ts`). The `prototemplate` skill (section 6) lists every step, and `node skills/prototemplate/scripts/check-registries.mjs` reports what a change missed.
+- On the site, a new document needs its entry in `src/app/handbook/registry.ts` and its headings in `HANDBOOK_HEADINGS` (`src/lib/search-index.ts`). The `prototemplate` skill (section 6) lists every step, and `pnpm lint:registries` reports what a change missed.
 
 ## Sources
 

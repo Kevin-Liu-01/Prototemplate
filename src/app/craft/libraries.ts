@@ -29,7 +29,7 @@ export const TRANSITION_RULES = [
 /* The auditor's real invocation, and a finding in its real output shape
    (JSON.stringify(out, null, 1), keyed by audit width). The round is staged —
    this page audits clean — but every field is the auditor's own. */
-export const LINT_SNIPPET = `$ node scripts/lint-lines.mjs http://localhost:3006/craft --theme dark
+export const LINT_SNIPPET = `$ PT_BASE=http://localhost:3005 pnpm lint:lines /docs --theme dark
 
 {
  "1440": {
@@ -325,7 +325,7 @@ const COMPARE_SNIPPET = `import SiteCompare from '@/app/SiteCompare';
    draggable={false} on every face, since one native image-drag would
    steal the stream and freeze the seam mid-sweep */`;
 
-const SHOOT_SNIPPET = `$ node scripts/gallery-shoot.mjs public/shots/gallery
+const SHOOT_SNIPPET = `$ node scripts/check/gallery-shoot.mjs public/shots/gallery
 
 /* element screenshots, never scroll depths: a tile is one section's
    own box, so side-by-side pairs align at any viewport */
@@ -581,7 +581,7 @@ export const LIBRARIES: readonly Library[] = [
     role: 'the wall’s tile shooter',
     body:
       'The harness that stocks the landing wall: a real Chromium at the dev server, shooting the flagship home’s sections, both themes at both cuts. Element screenshots, never scroll depths: each tile is one section’s own box, so side-by-side pairs align whatever the viewport was. Theme is seeded through the same pre-boot door the site itself uses (an init script writes gt-theme to localStorage before navigation, the root script stamps it before first paint), one full scroll pass settles every lazy-armed section before the first shot, and a selector that misses is reported and skipped, never fatal. The run’s last act writes a manifest of the tiles beside them. The wall renders what was actually shot, so a missing tile is a skipped cell rather than a broken image.',
-    file: 'scripts/gallery-shoot.mjs',
+    file: 'scripts/check/gallery-shoot.mjs',
     snippet: SHOOT_SNIPPET,
   },
   {

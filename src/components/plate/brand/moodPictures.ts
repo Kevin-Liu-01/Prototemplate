@@ -51,13 +51,13 @@ export type MoodPicture = {
  * The artifact pictures: each one's tone grid, where it lands in the 1600
  * by 900 file space, and its caption with the credit. The grids are byte
  * copies of gt-cloud's (apps/dashboard/public/brand/mood), and
- * scripts/mood-tone/mood-tone.mjs --set plate cuts the same bytes from the
+ * scripts/media/mood-tone/mood-tone.mjs --set plate cuts the same bytes from the
  * sources and writes public/brand/mood/manifest.json. They are 8-bit gray
  * JPEGs at 1600 by 900, the earth at 2400 by 1350 because the field draws
  * it at about 2x; the field screens them at one CSS px per cell. Each
  * `src` and `placement` equals its manifest entry, and the earth's `cx`,
  * `cy` and `r` equal the entry's `disc`, the circle fitted to the limb on
- * its grid; scripts/lint-pictures.mjs holds them equal. The earth is the
+ * its grid; scripts/lint/pictures.mjs holds them equal. The earth is the
  * only disc: the field puts its left limb five sevenths of the way along
  * the ramp at 1.7 times the stack's height across, so the ramp thins the
  * limb and the rest bleeds off the top, right and bottom (FieldStack

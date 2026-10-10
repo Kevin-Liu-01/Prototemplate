@@ -1,16 +1,15 @@
-// Tests for scripts/lint-type.mjs: the repository passes, and each rule
+// Tests for scripts/lint/type.mjs: the repository passes, and each rule
 // reports its defect in a fixture string and passes the fixed string.
 //
-// Usage: pnpm test:type (node --test scripts/lint-type.test.mjs)
+// Usage: pnpm test:type (node --test scripts/lint/type.test.mjs)
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { describe, test } from 'node:test';
-import { fileURLToPath } from 'node:url';
 
-import { lintBindings, lintCss, lintTsx, lintType, parseCss, PATHS, ratchet, shorthandFamily } from './lint-type.mjs';
+import { lintBindings, lintCss, lintTsx, lintType, parseCss, PATHS, ratchet, shorthandFamily } from './type.mjs';
+import { ROOT } from '../lib/root.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SHEET = 'src/app/example/example.css';
 
 /** The rules a CSS string breaks, as a sorted list of rule ids. */

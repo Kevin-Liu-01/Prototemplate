@@ -7,11 +7,11 @@
  * key chip at 4px. src/components/viewer/tokens.css holds six radius
  * tokens; everything in the shell and the pages writes a corner through
  * them. Pure Node in static mode; --live drives the dev server with
- * playwright-core, as lint-type.mjs does, and reads its route list.
+ * playwright-core, as lint/type.mjs does, and reads its route list.
  *
  * Usage:
- *   node scripts/lint-radius.mjs [--report] [--root <dir>]
- *   node scripts/lint-radius.mjs --live [--base http://localhost:3005]
+ *   node scripts/lint/radius.mjs [--report] [--root <dir>]
+ *   node scripts/lint/radius.mjs --live [--base <url>] (default: PT_BASE, else http://localhost:3005)
  *     [--only /brand] [--width 1440] [--report]
  *
  * Static mode reads src/**\/*.{css,tsx} minus the allowlist (ALLOW) and
@@ -59,11 +59,15 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './lint-type.mjs';
-import { chromePath, seedTheme } from './site-pages.mjs';
+import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './type.mjs';
+import { BASE_URL, chromePath, seedTheme } from '../lib/site-pages.mjs';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 export const TOKENS = 'src/components/viewer/tokens.css';
 
@@ -583,7 +587,7 @@ async function runLive(root, argv) {
     const i = argv.indexOf(name);
     return i >= 0 ? argv[i + 1] : undefined;
   };
-  const base = (flag('--base') ?? 'http://localhost:3005').replace(/\/$/, '');
+  const base = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
   const report = argv.includes('--report');
   const only = flag('--only');
   const widths = flag('--width') ? [Number(flag('--width'))] : [1440, 390];
@@ -696,7 +700,7 @@ function runStatic(root, argv) {
 async function main() {
   const argv = process.argv.slice(2);
   const at = argv.indexOf('--root');
-  const root = at >= 0 ? resolve(argv[at + 1]) : resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const root = at >= 0 ? resolve(argv[at + 1]) : ROOT;
   if (argv.includes('--live')) process.exit(await runLive(root, argv));
   try {
     process.exit(runStatic(root, argv));

@@ -16,7 +16,7 @@ The deck carries its own viewer in `deck/parts/head.html` (CSS and markup up to 
 - SECTIONS in `tail.html` drives the section labels in the slide list, the book's contents and section heads, and the section name. Each entry is `[position of the opener, 'Section name']`.
 - Pictures load as they are needed. The build marks every `<img>` `loading="lazy"`, and `show()` warms the current slide, the two after it and the one before (`warm()`): their pictures turn eager, and a mood slide's tone grid is fetched and decoded, so a step does not wait on the network. The slide list, the grid and the book fetch their copies' pictures as they scroll near. A jump straight to a far slide (digits then Enter, or a `/deck#80` link) can show the slide before its pictures on a slow connection.
 - A mood canvas is drawn only when it is on screen or within one screen of it (`drawMood`). A scroll of the slide list, the grid or the book draws the rest as they come near, so opening the book or switching the theme draws a few canvases, not every copy.
-- The surfaces panel lists every public place the brand is live, grouped, with thumbnails from `deck/shots/thumb`. `scripts/build-deck.mjs` also copies those thumbnails to `public/shots/deck` for the index panel's General Translation set in `src/lib/surfaces.ts`.
+- The surfaces panel lists every public place the brand is live, grouped, with thumbnails from `deck/shots/thumb`. `scripts/build/deck.mjs` also copies those thumbnails to `public/shots/deck` for the index panel's General Translation set in `src/lib/surfaces.ts`.
 
 ## What Kevin expects of a viewer
 
@@ -37,7 +37,7 @@ Kevin's asks for the deck's viewer (2026-09-08 and 2026-09-09) hold for any GT p
 
 ## The build
 
-`pnpm build:deck` runs `scripts/build-deck.mjs`:
+`pnpm build:deck` runs `scripts/build/deck.mjs`:
 
 1. `deck/assemble.mjs` reads `deck/slides/NN-*.html` (the pattern is `^\d\d-.*\.html$`, sorted) and fails unless there are exactly `SLIDE_COUNT` files. It also fails if any slide carries a `<script>`, if `head.html` does not open with the `<title>` the wrapper replaces, or if the `<!--FONTS-->` marker is missing. The shooter reads the deck through the same module.
 2. It inlines `deck/fonts/deck-fonts.css` in place of `<!--FONTS-->`. That file registers the rsms InterVariable roman, byte for byte the same file as `public/fonts/InterVariable.woff2`, as the family `'Inter'` at weights 100 to 900. No italic is inlined. The font stays inline so the first paint is never a fallback face. The marker sits after the head's theme script and styles, because the font is about 470 KB of text: a dark visit paints the dark paper with the first bytes. With the font first, a dark visit to /deck stayed white for 1.7 s on a 1.6 Mbps link (2026-10-09).
@@ -54,12 +54,12 @@ Requirements and traps:
 
 - `sips` makes the build macOS only.
 - Without python3 and Pillow the build prints one warning and stores the two-tone images as JPEG, and the files grow several times over.
-- `public/brand-deck.html` and `public/deck-assets/` are committed together. On 2026-10-08 the page was 910,026 bytes, about half of it the inlined font, and the folder held 211 files, which the build prints as 17.62MB (its MB is 1024 by 1024 bytes). A full build takes about 100 seconds. Rebuild and commit both with the slide change, or `/deck` serves the old deck and `scripts/lint-pictures.mjs` can fail on the built file's grids, which it reads from `public/deck-assets` by sha256.
+- `public/brand-deck.html` and `public/deck-assets/` are committed together. On 2026-10-08 the page was 910,026 bytes, about half of it the inlined font, and the folder held 211 files, which the build prints as 17.62MB (its MB is 1024 by 1024 bytes). A full build takes about 100 seconds. Rebuild and commit both with the slide change, or `/deck` serves the old deck and `scripts/lint/pictures.mjs` can fail on the built file's grids, which it reads from `public/deck-assets` by sha256.
 - A rebuild that changes no picture writes the same file names, so a commit adds only the pictures that changed.
 
 ### The artifact copy
 
-`node scripts/build-deck.mjs --out <file> --quality <n> --max-width <px> --native-quality <n> --thumb-quality <n>` writes one self-contained copy elsewhere, every picture inlined as a data URI, and leaves `public/` alone. A claude.ai artifact holds at most 16 MB.
+`node scripts/build/deck.mjs --out <file> --quality <n> --max-width <px> --native-quality <n> --thumb-quality <n>` writes one self-contained copy elsewhere, every picture inlined as a data URI, and leaves `public/` alone. A claude.ai artifact holds at most 16 MB.
 
 | Flags | Output as the build prints it |
 | --- | --- |
@@ -74,9 +74,9 @@ The flags reach only the resampled photographs, the continuous-tone natives and 
 `node deck/shoot-slide.mjs 8 15` (or `all`) writes the source `deck/assemble.mjs` builds to a private file under `deck/tmp`, opens it in Chromium at 1600 by 900 in present mode, seeds the stored theme for a light pass and a dark pass, and writes `deck/preview/sNN-light.jpg` and `sNN-dark.jpg`. For each slide it prints any element inside the slide whose box leaves the 1600 by 900 sheet, then any page error or console error. Runs in parallel are safe.
 
 - The numbers are positions in the sorted file list, the same numbers as the hash and the counter. After 36 they differ from the file prefixes, because 37 and 54 are unused: `38-motion.html` is slide 37 and `95-closing.html` is slide 93. A number outside 1 to the slide count is dropped without a message.
-- Three slides in both themes take about 20 seconds. The JPEGs overwrite the last render of the same number, so a session that must not disturb another's previews can run copies of `shoot-slide.mjs` and `assemble.mjs` from a folder beside `deck/` (so `../scripts/site-pages.mjs` resolves) whose `parts`, `slides`, `fonts` and `shots` are symlinks to `deck/`, with `tmp/shots -> ../shots` inside it. The previews land in that folder.
+- Three slides in both themes take about 20 seconds. The JPEGs overwrite the last render of the same number, so a session that must not disturb another's previews can run copies of `shoot-slide.mjs` and `assemble.mjs` from a folder beside `deck/` (so `../scripts/lib/site-pages.mjs` resolves) whose `parts`, `slides`, `fonts` and `shots` are symlinks to `deck/`, with `tmp/shots -> ../shots` inside it. The previews land in that folder.
 - The private file references `shots/...`, which resolves through the symlink `deck/tmp/shots -> ../shots`. Create it if it is missing (`ln -s ../shots deck/tmp/shots`).
-- The script imports `playwright-core` from the repository's devDependencies and launches `CHROME_PATH` from `scripts/site-pages.mjs`: the environment variable, else the Chrome for Testing build playwright-core installs (`pnpm exec playwright-core install chromium`). Chromium runs with `--allow-file-access-from-files`, because a `file://` page that reads another file taints its canvas, and the mood slides would render blank.
+- The script imports `playwright-core` from the repository's devDependencies and launches `CHROME_PATH` from `scripts/lib/site-pages.mjs`: the environment variable, else the Chrome for Testing build playwright-core installs (`pnpm exec playwright-core install chromium`). Chromium runs with `--allow-file-access-from-files`, because a `file://` page that reads another file taints its canvas, and the mood slides would render blank.
 - `deck/preview` and `deck/tmp` are gitignored.
 - The overflow report reads boxes only. It does not see text that touches a rail, a label crossing a line, a contrast failure or an empty half-slide. Look at both JPEGs.
 
@@ -86,5 +86,5 @@ The flags reach only the resampled photographs, the continuous-tone natives and 
 
 ## Sources
 
-- Prototemplate: `scripts/build-deck.mjs`, `deck/assemble.mjs`, `deck/shoot-slide.mjs`, `deck/parts/head.html`, `deck/parts/tail.html`, `scripts/site-pages.mjs` (`CHROME_PATH`), `next.config.ts` (the `/deck` rewrite and the `/deck-assets` cache header), `src/lib/document-routes.ts`, `DESIGN.md` ("Line law for chrome"), `.gitignore`.
+- Prototemplate: `scripts/build/deck.mjs`, `deck/assemble.mjs`, `deck/shoot-slide.mjs`, `deck/parts/head.html`, `deck/parts/tail.html`, `scripts/lib/site-pages.mjs` (`CHROME_PATH`), `next.config.ts` (the `/deck` rewrite and the `/deck-assets` cache header), `src/lib/document-routes.ts`, `DESIGN.md` ("Line law for chrome"), `.gitignore`.
 - Memory notes `gt-brand-deck` (the artifact copy flags and the 16 MB limit) and `prototemplate-interface-system` (the deck opens dark; the deck stands alone at `/deck`, Kevin, 2026-09-08 and 2026-09-09).

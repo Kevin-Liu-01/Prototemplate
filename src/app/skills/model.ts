@@ -109,12 +109,12 @@ export function neighbours(slug: string): { prev: Neighbour | null; next: Neighb
   return { prev: near(SKILLS[at - 1]), next: near(SKILLS[at + 1]) };
 }
 
-/** The installer, run from a Prototemplate checkout. */
-export const INSTALLER = 'scripts/install-skills.mjs';
+/** The installer, run from a Prototemplate checkout (scripts/skills/install.mjs). */
+export const INSTALLER = 'pnpm skills:install';
 
-/** The command that links one skill into a project: `node scripts/install-skills.mjs gt-voice --project <dir>`. */
+/** The command that links one skill into a project: `pnpm skills:install gt-voice --project <dir>`. */
 export function installLine(slug?: string): string {
-  return slug ? `node ${INSTALLER} ${slug} --project <dir>` : `node ${INSTALLER} --project <dir>`;
+  return slug ? `${INSTALLER} ${slug} --project <dir>` : `${INSTALLER} --project <dir>`;
 }
 
 /** A description in its three parts, for the heads and the rows. */
@@ -130,7 +130,7 @@ export type DescriptionParts = {
 const USE_AT = /\bUse (?:when|before|after|for)\b/;
 
 /**
- * Splits a description the way the contract writes them (scripts/build-skills.mjs):
+ * Splits a description the way the contract writes them (scripts/build/skills.mjs):
  * a first sentence that names the skill and lists what it covers after a
  * colon, then a sentence that says when to use it. The summary is the
  * first sentence up to its colon, closed with a period; the list after the

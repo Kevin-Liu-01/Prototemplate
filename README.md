@@ -113,10 +113,10 @@ Install them into any project from a checkout of this repository. The
 script needs Node and nothing else:
 
 ```bash
-node scripts/install-skills.mjs --list                               # the set
-node scripts/install-skills.mjs --project ~/code/app --dry-run       # every step, nothing written
-node scripts/install-skills.mjs --project ~/code/app                 # link all of them
-node scripts/install-skills.mjs gt-voice gt-brand --project ~/code/app --copy   # vendor two
+pnpm skills:install --list                               # the set
+pnpm skills:install --project ~/code/app --dry-run       # every step, nothing written
+pnpm skills:install --project ~/code/app                 # link all of them
+pnpm skills:install gt-voice gt-brand --project ~/code/app --copy   # vendor two
 ```
 
 - `--project <dir>` writes `<dir>/.claude/skills/<slug>` and
@@ -168,7 +168,7 @@ link between them keeps working. From a checkout of this repository:
 ```bash
 # 1. the skills and their installer, at the project root as they sit here
 cp -R skills ~/code/app/skills
-mkdir -p ~/code/app/scripts && cp scripts/install-skills.mjs ~/code/app/scripts/
+mkdir -p ~/code/app/scripts/skills && cp scripts/skills/install.mjs ~/code/app/scripts/skills/
 
 # 2. the agent guide, the canon the skills cite, and the handbook
 cp AGENTS.md BRAND.md DESIGN.md ~/code/app/
@@ -177,8 +177,8 @@ mkdir -p ~/code/app/docs && cp -R docs/handbook ~/code/app/docs/handbook
 # 3. link the skills where agents look for them (see every step first),
 #    and point Claude Code at AGENTS.md
 cd ~/code/app
-node scripts/install-skills.mjs --project . --dry-run
-node scripts/install-skills.mjs --project .
+node scripts/skills/install.mjs --project . --dry-run
+node scripts/skills/install.mjs --project .
 printf '# CLAUDE.md\n\n@AGENTS.md\n' > CLAUDE.md
 ```
 
@@ -186,7 +186,7 @@ printf '# CLAUDE.md\n\n@AGENTS.md\n' > CLAUDE.md
   to the copied `skills/`, the layout this repository commits, so they work
   for everyone who clones the project.
 - On your own machine you can skip the copy and link every project to this
-  checkout instead: `node scripts/install-skills.mjs --project ~/code/app`
+  checkout instead: `pnpm skills:install --project ~/code/app`
   from here, so a `git pull` here updates them all. The handbook's links to
   `skills/` then resolve only on the site and on GitHub.
 - If the project already has an `AGENTS.md` or a `CLAUDE.md`, merge the
@@ -204,7 +204,7 @@ printf '# CLAUDE.md\n\n@AGENTS.md\n' > CLAUDE.md
   /skills/<slug>).
 - The page check and the line audit run against any site from this
   checkout: `pnpm check:pages --base <url> --pages-module <file>` and
-  `node scripts/lint-lines.mjs <url>` (the `prototemplate` skill, "Using the
+  `node scripts/lint/lines.mjs <url>` (the `prototemplate` skill, "Using the
   hub from another project"). They launch the Chrome for Testing build
   playwright-core installs (`pnpm exec playwright-core install chromium`),
   or `CHROME_PATH`.
@@ -215,8 +215,8 @@ printf '# CLAUDE.md\n\n@AGENTS.md\n' > CLAUDE.md
 ## The one-paragraph tour
 
 Every page runs on the laws: hairlines drawn exactly once
-(`scripts/lint-lines.mjs` fails the round otherwise; `pnpm check:pages`,
-`scripts/pagecheck/`, reads every page on phones, tablets and desktops in
+(`scripts/lint/lines.mjs` fails the round otherwise; `pnpm check:pages`,
+`scripts/check/pagecheck/`, reads every page on phones, tablets and desktops in
 both themes and reports what did not hold), four absolute colors
 plus one spectral accent per page, dark mode as a pure token remap, and one
 mobile type ladder (`DESIGN.md` §12). `src/app/d/toolchain` is the
@@ -226,7 +226,7 @@ routes run on; `src/lib` holds the registries and the visual engines;
 `src/components/shared` holds the instruments. `src/lib/directions.ts`
 registers every direction, and the index, the presenter and the sitemap
 all follow it. The anatomy wall's tiles come from
-`scripts/gallery-shoot.mjs` under deterministic names (`ARCHITECTURE.md`,
+`scripts/check/gallery-shoot.mjs` under deterministic names (`ARCHITECTURE.md`,
 "The gallery pipeline"), and a missing tile leaves hatched ground on the
 wall.
 

@@ -17,7 +17,7 @@ const RSMS_STACK = 'var(--font-inter), sans-serif';
 /**
  * Google Fonts' build of Inter, cut to this file's specimen strings plus a to
  * z (src/app/present/fonts.ts; a new string goes into TEXT_CUTS in
- * scripts/fetch-google-faces.py). It has no opsz axis and none of the
+ * scripts/build/fetch-google-faces.py). It has no opsz axis and none of the
  * features the rows name, so each row renders differently in the two builds.
  */
 const GOOGLE_STACK = 'var(--font-google-inter), sans-serif';

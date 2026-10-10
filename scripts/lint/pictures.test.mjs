@@ -1,19 +1,18 @@
-// Tests for scripts/lint-pictures.mjs: the repository passes, and each kind
+// Tests for scripts/lint/pictures.mjs: the repository passes, and each kind
 // of defect in a fixture copy of the picture files is reported.
 //
-// Usage: pnpm test:pictures (node --test scripts/lint-pictures.test.mjs)
+// Usage: pnpm test:pictures (node --test scripts/lint/pictures.test.mjs)
 import assert from 'node:assert/strict';
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { after, describe, test } from 'node:test';
-import { fileURLToPath } from 'node:url';
 
-import { bayer8, jpegFrame, lintPictures, parseRegistry, PATHS } from './lint-pictures.mjs';
+import { bayer8, jpegFrame, lintPictures, parseRegistry, PATHS } from './pictures.mjs';
+import { ROOT } from '../lib/root.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURE_PATHS = [
-  'scripts/mood-tone',
+  'scripts/media/mood-tone',
   PATHS.deckGrids,
   PATHS.deckSlides,
   PATHS.deckHead,

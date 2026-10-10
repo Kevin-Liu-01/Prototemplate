@@ -81,7 +81,7 @@ The loop that screens a picture runs at gamma 1 and bias 0
 (`LOOP_OPTIONS` in the plate's `FieldStack.tsx` and in
 `TransitionDemo.tsx`), because the whole curve is in the grid. The lint
 also reads the cutter's `BAYER_8` and its threshold in
-`scripts/mood-tone/mood_tone.py`, and the deck's `--paper` ground (white
+`scripts/media/mood-tone/mood_tone.py`, and the deck's `--paper` ground (white
 in light, `#070707` in dark) in `deck/parts/head.html` and the built deck.
 
 ## Recipes
@@ -152,7 +152,7 @@ The full slide markup and placement rules are in the gt-deck skill
 
 ## Everything the lint fails on
 
-Prototemplate's `scripts/lint-pictures.mjs`, for each of the two manifests
+Prototemplate's `scripts/lint/pictures.mjs`, for each of the two manifests
 (`deck/shots/tone`, `public/brand/mood`):
 
 - the manifest is missing or is not `{ view, pictures }`;
@@ -206,11 +206,11 @@ a look catches that: compare the page with `preview-{name}.png` at 1 px.
 ## Changing the standard
 
 - `standard.json` and `mood_tone.py` are byte-identical in Prototemplate
-  (`scripts/mood-tone/`) and gt-cloud (`apps/dashboard/scripts/mood-tone/`
+  (`scripts/media/mood-tone/`) and gt-cloud (`apps/dashboard/scripts/mood-tone/`
   on PR #5133's branch; gt-cloud main still has the older cutter and no
   `standard.json`).
 - A change edits both files in both repositories in one round, updates
-  `STANDARD_SHA256` in `scripts/lint-pictures.mjs` and in
+  `STANDARD_SHA256` in `scripts/lint/pictures.mjs` and in
   `scripts/check-artifact-pictures.mjs` in the same commits, and recuts
   every grid in both. Each lint fails until its pin matches.
 - The pin on 2026-10-05 is

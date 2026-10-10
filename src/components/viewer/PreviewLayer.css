@@ -1,6 +1,6 @@
 /* PreviewLayer: the one card beside a hovered or focused row (directive
    8.6). A 322px column: a 1px paper mat with a --pt-hair-soft outline (the
-   sheet ring, one stroke each; scripts/lint-lines.mjs allows pt-preview for
+   sheet ring, one stroke each; scripts/lint/lines.mjs allows pt-preview for
    the pair), the 320x180 frame with its --pt-edge border holding the
    decoded capture over the plate with the surface's initial, and the 32px
    title row. A popover, so it takes the card corner (--pt-radius-card); the

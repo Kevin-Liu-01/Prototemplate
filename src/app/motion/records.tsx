@@ -11,7 +11,7 @@ import { cutWords, megabytes } from './records-words';
 
 /**
  * The server side of a film's two records: its contact sheet and its
- * script as built, the files scripts/build-motion.mjs copies to
+ * script as built, the files scripts/build/motion.mjs copies to
  * public/motion/sheets and public/motion/scripts from the folder that holds
  * the published cut (the version rule, public/motion/published.json). Both
  * blocks are rendered here, so the client receives elements and the script

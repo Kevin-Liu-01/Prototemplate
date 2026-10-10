@@ -29,7 +29,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { DEVICES } from '../site-pages.mjs';
+import { DEVICES } from '../../lib/site-pages.mjs';
 import { parseErrors } from './context.mjs';
 import { CLS_DEFECT, CLS_NOTE, TAP_DEFECT_UNDER, TAP_NOTE_UNDER } from './probes.mjs';
 
@@ -408,7 +408,7 @@ export function writeReport({ outDir, base, rows, pages, devices, themes, intera
   md.push('## Pages by device', '', 'Each cell: ok, FAIL or error, then its time in seconds (the load, the settle, the reads and the capture).', '', table(grid.lines, grid.cols), '');
   md.push('## Pass counts per device', '', table(names.map((vp) => ({ device: vp, kind: devices.find((d) => d.name === vp)?.kind ?? '', ...counts[vp] })), ['device', 'kind', 'cells', 'pass', 'fail', 'error', 'checks', 'checkFails']), '');
   md.push(
-    `A cell passes when every check holds: no horizontal overflow, no box past the viewport edges, no text clipped mid-word (sr-only and ellipsis truncations excluded), no console error beyond the allowlist, the theme applied, on a phone every tap target at least ${TAP_DEFECT_UNDER}px on its smaller side (${TAP_NOTE_UNDER} is the target; a tablet's are notes), a layout shift score of ${CLS_DEFECT} at most, and every site invariant that applies to the page (scripts/pagecheck/hooks.mjs names them).`,
+    `A cell passes when every check holds: no horizontal overflow, no box past the viewport edges, no text clipped mid-word (sr-only and ellipsis truncations excluded), no console error beyond the allowlist, the theme applied, on a phone every tap target at least ${TAP_DEFECT_UNDER}px on its smaller side (${TAP_NOTE_UNDER} is the target; a tablet's are notes), a layout shift score of ${CLS_DEFECT} at most, and every site invariant that applies to the page (scripts/check/pagecheck/hooks.mjs names them).`,
     ''
   );
   md.push('## Site invariants per device', '', table(invariantRows(rows, names), ['viewport', 'toolbar', 'sidebar', 'stage', 'docsToc', 'deck', 'h1y']), '');

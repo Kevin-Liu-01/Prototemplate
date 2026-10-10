@@ -45,7 +45,7 @@
    --pt-hair-soft guide under its page row's capture (.pt-nest::before), a
    deep run its own, and the active row the 2px ink bar at the column's
    edge. A current capture draws an ink frame plus the 2px offset outline
-   every current frame in the shell uses (scripts/lint-lines.mjs allows
+   every current frame in the shell uses (scripts/lint/lines.mjs allows
    thumb-frame for that pair). Site icons draw their site's token through
    data-site and hold it in every state; every other icon turns ink with
    its name. Spacing (directive 8.8): 28px rows, 24px headers with 16px

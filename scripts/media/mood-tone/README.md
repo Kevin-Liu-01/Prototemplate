@@ -10,7 +10,7 @@ manifests are committed. The sources are not.
 | `plate`           | `public/brand/mood/mood-*.jpg`, 4 covers and 1 disc    | the plate port's field (`src/components/plate`)             |
 
 The rules for artifact pictures are in `docs/ARTIFACT-PICTURES.md`.
-`scripts/lint-pictures.mjs` holds the grids, the manifests, the registry, the
+`scripts/lint/pictures.mjs` holds the grids, the manifests, the registry, the
 deck slides and the screen constants to them. It runs before `next build` and
 in `pnpm lint:all`, which also runs its tests (`pnpm test:pictures`).
 
@@ -66,7 +66,7 @@ pnpm mood-tone <sources dir>                    # the deck set into deck/shots/t
 pnpm mood-tone <sources dir> --set plate        # the plate set into public/brand/mood
 pnpm mood-tone <sources dir> --preview <dir>    # also writes preview-{name}.png, the 1 px screen
 pnpm mood-tone <sources dir> --check            # cuts into a temporary folder and compares
-node scripts/lint-pictures.mjs
+node scripts/lint/pictures.mjs
 pnpm build:deck                                 # after a deck grid changes
 ```
 

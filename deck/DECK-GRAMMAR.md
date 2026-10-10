@@ -1,10 +1,10 @@
 # GT brand deck: grammar and working rules
 
-The deck builds to one HTML page, `public/brand-deck.html`, with its pictures as files beside it under `public/deck-assets`; `scripts/build-deck.mjs --out` writes the same deck as one self-contained file for the artifact copy. Source lives in this directory:
+The deck builds to one HTML page, `public/brand-deck.html`, with its pictures as files beside it under `public/deck-assets`; `scripts/build/deck.mjs --out` writes the same deck as one self-contained file for the artifact copy. Source lives in this directory:
 
 - `parts/head.html`: tokens, slide CSS, viewer CSS, viewer markup up to the stage. Do not edit unless told to.
 - Full-picture slides (`.s-opener`, `.s-mood`): the image sits at `inset: -57px` under the rails at object-fit cover, and in slide mode the viewer also paints it across the whole stage area through the `.backdrop` layer (`syncBackdrop()` in `parts/tail.html`), so on any viewport the picture fills the space edge to edge and only the plate, the rails and the chrome sit on the sheet. An opener's plate is lower left (section title, one sentence on what the section covers, credit); a mood slide's plate is lower right (the picture's title at 44px, one or two sentences on why the picture is in the deck, credit). Keep the picture's important region clear of its plate; the Blue Marble is fit to its plate, see `shots/OPENERS.md`.
-- Mood pictures are artifact pictures and follow the standard in `docs/ARTIFACT-PICTURES.md`: a mood slide's `<canvas class="mood-img" data-tone="shots/tone/mood-<name>.jpg">` names a tone grid that `scripts/mood-tone` cut and `shots/tone/manifest.json` records, the engine in `parts/tail.html` screens it live at 1 CSS px cells, and `node scripts/lint-pictures.mjs` holds all three to the standard.
+- Mood pictures are artifact pictures and follow the standard in `docs/ARTIFACT-PICTURES.md`: a mood slide's `<canvas class="mood-img" data-tone="shots/tone/mood-<name>.jpg">` names a tone grid that `scripts/media/mood-tone` cut and `shots/tone/manifest.json` records, the engine in `parts/tail.html` screens it live at 1 CSS px cells, and `node scripts/lint/pictures.mjs` holds all three to the standard.
 - `slides/NN-slug.html`: one file per slide, in order. Each file is exactly one `<section class="slide"><div class="in"> ... </div></section>` preceded by an HTML comment naming the slide. Edit only your assigned slide files.
 - `parts/tail.html`: closing markup, surfaces panel, help, script. Do not edit.
 - `node shoot-slide.mjs 8 15` renders slides 8 and 15 to `preview/s08-light.jpg`, `preview/s08-dark.jpg`, and so on, and prints any element that overflows the 1600x900 sheet. Safe to run concurrently. Look at both themes after every edit.
@@ -51,7 +51,7 @@ The deck builds to one HTML page, `public/brand-deck.html`, with its pictures as
 ## Speed marks
 
 - Slides 17 to 23 present the seven speed marks. Each is the markup of one file under `public/marks` (bar-monogram, bar-monogram-lockup, plate-inverted, double-cut, livery-stack, bar-monogram-dithered, bar-monogram-ascii) pasted into the slide, with an explicit width and height in px on the root that keeps the file's aspect. The files are one color in currentColor, so a mark takes the slide's ink in both themes.
-- `pnpm build:marks` regenerates the files from `scripts/build-speed-marks.mjs`. A mark is never redrawn by hand in a slide: when the files change, paste the new markup over the old.
+- `pnpm build:marks` regenerates the files from `scripts/build/speed-marks.mjs`. A mark is never redrawn by hand in a slide: when the files change, paste the new markup over the old.
 
 ## Slide scoped CSS
 

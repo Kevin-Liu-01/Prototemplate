@@ -6,9 +6,10 @@
  * agents load them there. Node only, no packages.
  *
  * Usage:
- *   node scripts/install-skills.mjs [slug...] (--project <dir> | --user | --into <dir>)
+ *   node scripts/skills/install.mjs [slug...] (--project <dir> | --user | --into <dir>)
  *     [--agents claude,agents,codex] [--copy] [--dry-run] [--force] [--uninstall]
- *   node scripts/install-skills.mjs --list
+ *   node scripts/skills/install.mjs --list
+ *   pnpm skills:install runs the same from the checkout root.
  *
  * Selection. With no slug it takes every skill in the set; with slugs, only
  * those (an unknown slug exits 2). With no target it prints the list and
@@ -69,6 +70,7 @@ import { homedir } from 'node:os';
 import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+/* no scripts/lib import, so a copy at <dir>/scripts/skills/ beside <dir>/skills runs alone */
 const HERE = dirname(fileURLToPath(import.meta.url));
 
 /** The folder each agent loads skills from, relative to a project or the home directory. */
@@ -78,9 +80,9 @@ const ORIGIN = /^\s+origin:\s*prototemplate\s*$/m;
 
 const HELP = `Install Prototemplate's skills into a project or an agent home.
 
-  node scripts/install-skills.mjs [slug...] --project <dir>   link into <dir>/.claude/skills and <dir>/.agents/skills
-  node scripts/install-skills.mjs [slug...] --user            the same under the home directory
-  node scripts/install-skills.mjs [slug...] --into <dir>      link into one folder: <dir>/<slug>
+  node scripts/skills/install.mjs [slug...] --project <dir>   link into <dir>/.claude/skills and <dir>/.agents/skills
+  node scripts/skills/install.mjs [slug...] --user            the same under the home directory
+  node scripts/skills/install.mjs [slug...] --into <dir>      link into one folder: <dir>/<slug>
 
   --agents claude,agents,codex   which agent folders (default claude,agents)
   --copy                         copy the folders instead of linking them
@@ -237,7 +239,7 @@ function stamp() {
 /* ---- the run ---- */
 
 const opts = parseArgs(process.argv.slice(2));
-const source = resolve(opts.source ?? join(HERE, '..', 'skills'));
+const source = resolve(opts.source ?? join(HERE, '../..', 'skills'));
 const set = readSet(source);
 const sourceRoot = real(dirname(source));
 const sourceTree = workTree(sourceRoot);

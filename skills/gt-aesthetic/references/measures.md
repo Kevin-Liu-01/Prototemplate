@@ -136,11 +136,11 @@ The dashboard copy of the field (`packages/ui/src/lib/studio-field.ts`, mounted 
 
 ## Artifact pictures
 
-The Blue Marble standard (`$PROTOTEMPLATE/docs/ARTIFACT-PICTURES.md`, `scripts/mood-tone/standard.json`): an 8x8 Bayer screen at 1 CSS px cells, white at 0.62 over `#070707` in dark and `#070707` at 0.7 over white in light, tone floor 10. Per picture only the crop, the channel, the polarity and the kind are chosen; the levels are solved. A mood plate in the deck carries the title at 44px, one or two sentences and a credit; a plate in the dashboard holds two lines at most.
+The Blue Marble standard (`$PROTOTEMPLATE/docs/ARTIFACT-PICTURES.md`, `scripts/media/mood-tone/standard.json`): an 8x8 Bayer screen at 1 CSS px cells, white at 0.62 over `#070707` in dark and `#070707` at 0.7 over white in light, tone floor 10. Per picture only the crop, the channel, the polarity and the kind are chosen; the levels are solved. A mood plate in the deck carries the title at 44px, one or two sentences and a credit; a plate in the dashboard holds two lines at most.
 
 ## Mobile
 
 - Under 720px the landing's type and spacing come from the `--tcm-*` ladder (DESIGN.md section 12): h2 2.25rem/1.18, h3 1.375rem/1.3, lead 17/1.55, body 16/1.6, small 14/1.55. Mobile has its own ladder and its own layout decisions.
 - No copy within 20px of a hairline (DESIGN.md section 12, the box-air standard).
-- Tap targets: 44px is the target and under 40px is a defect on a phone (`scripts/pagecheck`). The size is the hit area, so a 32px drawing reaches it with a transparent `::after` and the gap beside it (the shell toolbar on a touch phone, `Toolbar.css`); a tablet's small targets are notes until Kevin decides on tablet touch sizing.
+- Tap targets: 44px is the target and under 40px is a defect on a phone (`scripts/check/pagecheck`). The size is the hit area, so a 32px drawing reaches it with a transparent `::after` and the gap beside it (the shell toolbar on a touch phone, `Toolbar.css`); a tablet's small targets are notes until Kevin decides on tablet touch sizing.
 - Kevin's laptop viewport is 1527 by 814, so a plate page compresses under 880px tall and is checked at that size.

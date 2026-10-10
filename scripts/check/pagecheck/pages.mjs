@@ -1,8 +1,8 @@
 // The pages the check walks on this site, each { id, path, source, ready,
 // settleMs?, hide?, kinds? }:
-//   id, path, source   from the shared route list (scripts/site-pages.mjs,
+//   id, path, source   from the shared route list (scripts/lib/site-pages.mjs,
 //             siteRoutes, the rows tagged `check`): the id names the cell's
-//             capture the way scripts/capture-pages.mjs and
+//             capture the way scripts/check/capture-pages.mjs and
 //             src/lib/surfaces.ts name the page; source lists the folders
 //             the report's where column prefers
 //   ready     the selector that says the page is ready to read: the shell
@@ -23,7 +23,7 @@
 //
 // Another site can supply its own module through --pages-module; it must
 // export a `pages()` function returning the same shape.
-import { routesFor } from '../site-pages.mjs';
+import { routesFor } from '../../lib/site-pages.mjs';
 
 /** The shell's ready stamp (src/components/viewer/ViewerShell.tsx). */
 const SHELL_READY = '.pt-viewer[data-settled]';

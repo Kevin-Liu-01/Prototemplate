@@ -408,7 +408,7 @@ onboarding or auth redesign.
   fresh statuses. An empty commit is never the retry. Google faces are self
   hosted under `public/fonts/google` because Turbopack's Google loader
   failed builds at random (vercel/next.js#99114); a new face goes into the
-  `WANT` table of `scripts/fetch-google-faces.py` and loads through
+  `WANT` table of `scripts/build/fetch-google-faces.py` and loads through
   `next/font/local`. If a team build reports "Only repositories in
   github.com/generaltranslation are allowed", the git-source policy that
   froze the site from 2026-09-01 to mid-September is back; tell Kevin.
@@ -474,7 +474,7 @@ both repositories), `gt-graphics` (capture recipes for PR screenshots),
   and `merge`.
 - Prototemplate: docs/SHIP-LOOP.md (sections 1 to 4 and 7); ARCHITECTURE.md
   ("The mirror"); package.json (`build`, `lint:all`, `check:pages`);
-  scripts/lint-lines.mjs and scripts/pagecheck/pagecheck.mjs (the 3005
+  scripts/lint/lines.mjs and scripts/check/pagecheck/pagecheck.mjs (the 3005
   default); public/fonts/google/README.md; GitHub deployments of
   Kevin-Liu-01/Prototemplate, `vercel inspect` of the team deployment and
   www.prototemplate.com, read 2026-10-05.

@@ -58,7 +58,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       ...PUBLIC_ASSETS.map((source) => ({ source, headers: [{ key: 'Cache-Control', value: DAY_THEN_REVALIDATE }] })),
-      // the deck's pictures are named by a hash of their bytes (scripts/build-deck.mjs)
+      // the deck's pictures are named by a hash of their bytes (scripts/build/deck.mjs)
       { source: '/deck-assets/:path+', headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }] },
       // the deck's file address serves the same document as /deck, so only /deck is indexed
       { source: '/brand-deck.html', headers: [{ key: 'X-Robots-Tag', value: 'noindex' }] },
@@ -66,7 +66,7 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
-      // /deck is the built deck itself (scripts/build-deck.mjs); its relative
+      // /deck is the built deck itself (scripts/build/deck.mjs); its relative
       // deck-assets/ paths resolve from / at either address
       { source: '/deck', destination: '/brand-deck.html' },
     ];

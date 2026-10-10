@@ -1,5 +1,5 @@
 /**
- * Tests for scripts/install-skills.mjs: node --test scripts/install-skills.test.mjs
+ * Tests for scripts/skills/install.mjs: node --test scripts/skills/install.test.mjs
  * (pnpm test:skills). Every case builds its own temporary folders: a fake
  * checkout with two skills, a project, a home directory and a wiki-like
  * repository, and runs the script with --source and HOME pointed at them,
@@ -13,7 +13,7 @@ import { after, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 
-const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), 'install-skills.mjs');
+const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), 'install.mjs');
 const ROOTS = [];
 
 after(() => {

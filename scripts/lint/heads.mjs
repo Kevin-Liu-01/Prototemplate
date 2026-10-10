@@ -7,11 +7,11 @@
  * every section opens with the shared divider, and every space reads a
  * token in src/components/viewer/tokens.css. A page differs from another
  * only in its words and its facts. Pure Node in static mode; --live drives
- * the dev server with playwright-core on lint-type.mjs's harness.
+ * the dev server with playwright-core on lint/type.mjs's harness.
  *
  * Usage:
- *   node scripts/lint-heads.mjs [--report] [--root <dir>]
- *   node scripts/lint-heads.mjs --live [--base http://localhost:3005]
+ *   node scripts/lint/heads.mjs [--report] [--root <dir>]
+ *   node scripts/lint/heads.mjs --live [--base <url>] (default: PT_BASE, else http://localhost:3005)
  *     [--only /brand] [--report]
  *
  * Static mode:
@@ -79,11 +79,15 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './lint-type.mjs';
-import { chromePath, seedTheme } from './site-pages.mjs';
+import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './type.mjs';
+import { BASE_URL, chromePath, seedTheme } from '../lib/site-pages.mjs';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 /* ------------------------------------------------------------------ */
 /* Static mode                                                          */
@@ -824,7 +828,7 @@ async function runLive(root, argv) {
     const i = argv.indexOf(name);
     return i >= 0 ? argv[i + 1] : undefined;
   };
-  const base = (flag('--base') ?? 'http://localhost:3005').replace(/\/$/, '');
+  const base = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
   const report = argv.includes('--report');
   const only = flag('--only');
   const jobs = Number(flag('--jobs') ?? 2);
@@ -919,7 +923,7 @@ function runStatic(root, argv) {
 async function main() {
   const argv = process.argv.slice(2);
   const at = argv.indexOf('--root');
-  const root = at >= 0 ? resolve(argv[at + 1]) : resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const root = at >= 0 ? resolve(argv[at + 1]) : ROOT;
   if (argv.includes('--live')) process.exit(await runLive(root, argv));
   try {
     process.exit(runStatic(root, argv));

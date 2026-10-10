@@ -287,7 +287,7 @@ Choosing a picture:
   credit in titanium at 15px (`deck/shots/OPENERS.md`). The gt-deck skill
   owns that format.
 
-The tone grid (`scripts/mood-tone/standard.json` under `tone` and `file`):
+The tone grid (`scripts/media/mood-tone/standard.json` under `tone` and `file`):
 
 - Fixed for every picture: no blur, gamma 1.2, an autocontrast that clips
   0.5 percent at each tail (over the frame, or over the subject mask for a
@@ -375,7 +375,7 @@ and the same with `--set plate` passed on 2026-10-05.
    license.
 2. Put the source in your sources directory. Add its URL and sha256 to
    `SOURCES` in `mood-tone.mjs` and its row (file, origin, pixels, sha256)
-   to `scripts/mood-tone/README.md`.
+   to `scripts/media/mood-tone/README.md`.
 3. Add a recipe to `DECK` or `PLATE`. Spread `COVER` for a cover. Use
    `kind: 'marks'` for writing or engraving on a plain ground and `'scene'`
    otherwise. Declare `writing`. A deck placement is a cover at focus 0.5,
@@ -404,7 +404,7 @@ picture, in both repositories.
 
 | repository | command | runs in |
 | --- | --- | --- |
-| Prototemplate | `node scripts/lint-pictures.mjs` (`pnpm lint:pictures`), tests `pnpm test:pictures` | `pnpm build` before `next build`, `pnpm lint:all` |
+| Prototemplate | `node scripts/lint/pictures.mjs` (`pnpm lint:pictures`), tests `pnpm test:pictures` | `pnpm build` before `next build`, `pnpm lint:all` |
 | gt-cloud (PR #5133) | `node scripts/check-artifact-pictures.mjs` (`pnpm check:artifact-pictures`), tests `pnpm exec vitest run scripts/__tests__` | `pnpm lint` |
 
 Prototemplate's lint fails when a grid, its manifest entry, the registry or
@@ -445,7 +445,7 @@ cannot see, are in [references/pictures.md](references/pictures.md).
   sources, and the page matches `preview-{name}.png`.
 - On the dashboard and the plate port, its caption note is one fact in 90
   characters or fewer, with no line about the company.
-- `node scripts/lint-pictures.mjs` passes, and for any plate change
+- `node scripts/lint/pictures.mjs` passes, and for any plate change
   gt-cloud's `node scripts/check-artifact-pictures.mjs` passes on PR
   #5133's branch (or main once it merges).
 - A standard change touched both repositories and both pins in one round.
@@ -464,9 +464,9 @@ files, `glyphfield` maps Glyphfield and the landing's studio field, and
 
 - Prototemplate: DESIGN.md sections 6, 7 and 11; BRAND.md sections 3, 4
   and 7; docs/ARTIFACT-PICTURES.md; docs/LIBRARIES.md;
-  deck/DECK-GRAMMAR.md; deck/shots/OPENERS.md; scripts/mood-tone/
+  deck/DECK-GRAMMAR.md; deck/shots/OPENERS.md; scripts/media/mood-tone/
   (standard.json, mood-tone.mjs, mood_tone.py, README.md);
-  scripts/lint-pictures.mjs; src/lib/dither.ts; src/lib/studio-field.ts;
+  scripts/lint/pictures.mjs; src/lib/dither.ts; src/lib/studio-field.ts;
   src/components/shared/StudioField.tsx and HeroFieldSwitcher.tsx;
   src/lib/glyph-field.ts; src/components/plate/brand/ (FieldStack.tsx,
   FieldGround.tsx, DitherBand.tsx, FieldMoodPlate.tsx, moodPictures.ts);

@@ -2,7 +2,7 @@ import { useEffect, type DependencyList, type EffectCallback } from 'react';
 
 /**
  * The port's one door to useEffect. The practices ratchet
- * (scripts/lint-practices.mjs) counts a bare `useEffect(` in any file whose
+ * (scripts/lint/practices.mjs) counts a bare `useEffect(` in any file whose
  * path does not contain `use-mount-effect`, so every effect in
  * src/components/plate goes through this file.
  *

@@ -48,7 +48,7 @@
 // export LANDMARKS, SKIP, TAP_SCOPE, CONSOLE_ALLOW, siteReads, judge and
 // where with the same shapes (PRESENTER and DECK_SKIP serve this site's
 // own interactions).
-import { ROOT } from '../site-pages.mjs';
+import { ROOT } from '../../lib/site-pages.mjs';
 import { parseErrors } from './context.mjs';
 import { locateAsset, locateClass, locateElement, locateText, parseDesc } from './locate.mjs';
 
@@ -323,7 +323,7 @@ function consoleWhere(errors, item) {
   const refs = [...tally.entries()].sort((a, b) => b[1] - a[1]).map(([r]) => r);
   const missing = http.some((h) => h.status === 404 || (h.status === 400 && h.via));
   const fixes = [];
-  if (missing) fixes.push('add the file under public/ at the path the page asks for (scripts/build-thumbs.mjs cuts the thumbnails) or point the row at a file that exists');
+  if (missing) fixes.push('add the file under public/ at the path the page asks for (scripts/build/thumbs.mjs cuts the thumbnails) or point the row at a file that exists');
   else if (http.length) fixes.push('read the response; a 5xx is the server, a 4xx the request the page made');
   if (other.length) fixes.push('read the message; add it to CONSOLE_ALLOW in hooks.mjs only when the environment produces it; a message a page produces stays a defect');
   return { file: refs.slice(0, 3).join('; ') || pageFolder(item), fix: fixes.join('; ') };

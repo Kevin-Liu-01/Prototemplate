@@ -119,15 +119,15 @@
     if (mode === 'book') Array.prototype.forEach.call(bookIn.querySelectorAll('canvas.dither'), drawDither);
   }
 
-  /* the mood pictures, screened live to the standard in docs/ARTIFACT-PICTURES.md (scripts/mood-tone/standard.json).
-     A mood slide's canvas names its tone grid in data-tone: an 8-bit gray JPEG that scripts/mood-tone cut and
+  /* the mood pictures, screened live to the standard in docs/ARTIFACT-PICTURES.md (scripts/media/mood-tone/standard.json).
+     A mood slide's canvas names its tone grid in data-tone: an 8-bit gray JPEG that scripts/media/mood-tone cut and
      shots/tone/manifest.json records. The canvas's backing store is sized to its box on screen, read from
      getBoundingClientRect because the stage is CSS-scaled, so one cell is one CSS px wherever the slide is drawn:
      the sheet, a thumbnail, a book page or the backdrop. The grid is read at cover fit, centred: the grid cell under a
      cell's centre, or the area average of the grid cells under a cell where the picture is drawn smaller than the grid.
      The red channel is the tone, bytes at or under MOOD_TONE_FLOOR read as 0, and a cell is lit when its tone is over
      the 8x8 Bayer threshold (m + 0.5) / 64, at gamma 1 and bias 0. A lit cell is --mood-ink at --mood-opacity over
-     --paper; an unlit cell is left clear. scripts/lint-pictures.mjs holds these constants to the standard. */
+     --paper; an unlit cell is left clear. scripts/lint/pictures.mjs holds these constants to the standard. */
   var MOOD_CELL_PX = 1;
   var MOOD_TONE_FLOOR = 10;
   /* the threshold per tile cell, on the 0..255 tone scale */

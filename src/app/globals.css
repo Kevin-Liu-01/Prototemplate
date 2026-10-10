@@ -7,7 +7,7 @@
    scripts and 66 MB of reference pictures; the docs and handbook routes
    render its Markdown through their own components, so no class the app
    draws is written there. .claude/skills and .agents/skills hold links to
-   the skill folders (scripts/install-skills.mjs), which the scan would
+   the skill folders (scripts/skills/install.mjs), which the scan would
    follow. */
 @source not '../../motion';
 @source not '../../skills';

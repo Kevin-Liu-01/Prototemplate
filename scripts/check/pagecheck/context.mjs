@@ -1,11 +1,11 @@
 // One browser context per cell, built the same way by the runner, the
 // layout-shift trace and the interactions: the device's viewport, scale
-// and touch flags (scripts/site-pages.mjs, a phone or a tablet is a touch
+// and touch flags (scripts/lib/site-pages.mjs, a phone or a tablet is a touch
 // device in either orientation), the theme seeded through the site's
 // pre-boot door and matched by the context's color scheme, and the
 // observers the cell reads its layout shifts, its largest paint and its
 // long tasks from, installed before the page's first byte.
-import { deviceOptions, seedTheme } from '../site-pages.mjs';
+import { deviceOptions, seedTheme } from '../../lib/site-pages.mjs';
 
 /**
  * Runs in every page before its scripts: buffered observers for

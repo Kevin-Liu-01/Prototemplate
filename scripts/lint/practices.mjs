@@ -1,5 +1,5 @@
 // Practice lint with a ratchet: every check counts its violations and
-// records their locations in scripts/lint-practices.baseline.json. A run
+// records their locations in scripts/lint/practices.baseline.json. A run
 // fails ONLY on violations not present in the baseline — existing debt is
 // visible and burned down deliberately, new debt cannot land. Refresh the
 // baseline after intentional cleanups with --update-baseline.
@@ -7,11 +7,13 @@
 // Usage: pnpm lint:practices [--update-baseline]
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { execSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const BASELINE_PATH = join(ROOT, 'scripts/lint-practices.baseline.json');
+helpIfAsked(import.meta.url);
+
+const BASELINE_PATH = join(ROOT, 'scripts/lint/practices.baseline.json');
 const UPDATE = process.argv.includes('--update-baseline');
 
 const files = execSync(
