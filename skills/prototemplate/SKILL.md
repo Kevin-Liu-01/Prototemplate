@@ -219,7 +219,7 @@ The same round asked for full titles that wrap to two lines with no ellipsis (`s
 - The generated outputs are committed (`src/lib/skills.ts`, `src/lib/motion.ts`, `public/brand-deck.html`, `public/deck-assets`, `public/shots`, `public/marks`), so the site builds without `motion/` or any other checkout.
 - `build:motion` only reads `motion/`. It throws before writing when a brief's or a script's shape changes or a web copy differs from the cut `public/motion/published.json` pins, so the last generated files stay intact. It publishes a film's credits, sheet and script only from the folder whose render is the pinned cut, and lists a newer cut as in review (`--pin <slug>` pins a new web copy once Kevin approves it).
 - `scripts/build-skills.mjs` reads only `skills/`, so it runs in any clone. Its header comment lists the contract it checks.
-- The browser scripts launch Chrome for Testing through `playwright-core` and default to the build in Kevin's Playwright cache. Every one of them (`capture:pages`, `check:pages`, `lint:lines`, and the live modes of `lint:type`, `lint:radius` and `lint:heads`) reads `CHROME_PATH` first, so on another machine set it to a local Chrome for Testing.
+- The browser scripts launch Chrome for Testing through `playwright-core` and default to the build it installs (`pnpm exec playwright-core install chromium`). Every one of them (`capture:pages`, `check:pages`, `lint:lines`, and the live modes of `lint:type`, `lint:radius` and `lint:heads`) reads `CHROME_PATH` first.
 - The Google faces are self-hosted because Turbopack's Google font loader failed builds at random (vercel/next.js#99114, fixed here on 2026-09-24).
 
 ## 8. The shared checkout

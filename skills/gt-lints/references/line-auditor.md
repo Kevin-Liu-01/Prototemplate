@@ -78,10 +78,8 @@ and on states that did not apply; an HTTP error or a wrong theme still exits
 2). A fast loop on one route is
 `node scripts/lint-lines.mjs --shell --only /docs --width 1440 --theme dark --jobs 1`.
 
-The browser is the constant `EXEC` at the top of the script, an absolute
-path into Kevin's Playwright cache (`chromium-1217`). The script does not
-read `CHROME_PATH` (the page check does), so on another machine edit `EXEC`
-before the first run.
+The browser is `CHROME_PATH`, else the Chrome for Testing build
+playwright-core installs (`pnpm exec playwright-core install chromium`).
 
 ## Page mode
 

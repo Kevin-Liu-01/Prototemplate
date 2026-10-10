@@ -205,8 +205,9 @@ printf '# CLAUDE.md\n\n@AGENTS.md\n' > CLAUDE.md
 - The page check and the line audit run against any site from this
   checkout: `pnpm check:pages --base <url> --pages-module <file>` and
   `node scripts/lint-lines.mjs <url>` (the `prototemplate` skill, "Using the
-  hub from another project"). On another machine set `CHROME_PATH` to a
-  local Chrome for Testing first.
+  hub from another project"). They launch the Chrome for Testing build
+  playwright-core installs (`pnpm exec playwright-core install chromium`),
+  or `CHROME_PATH`.
 - The license still applies to what you copy: the code, the writing, the
   brand and the designs are copyright General Translation, Inc. (License
   below).

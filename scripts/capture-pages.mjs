@@ -59,11 +59,11 @@ import { join } from 'node:path';
 
 import { chromium } from 'playwright-core';
 
-import { CHROME_PATH, HIDE_DEV_UI_CSS, ROOT, routesFor, seedTheme } from './site-pages.mjs';
+import { chromePath, HIDE_DEV_UI_CSS, ROOT, routesFor, seedTheme } from './site-pages.mjs';
 
 const OUT = join(ROOT, 'public/shots/pages');
 
-const EXEC = CHROME_PATH;
+const EXEC = chromePath();
 
 const WIDTH = 1440;
 const HEIGHT = 900;

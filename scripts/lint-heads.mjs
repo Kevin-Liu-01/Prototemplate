@@ -83,7 +83,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './lint-type.mjs';
-import { CHROME_PATH, seedTheme } from './site-pages.mjs';
+import { chromePath, seedTheme } from './site-pages.mjs';
 
 /* ------------------------------------------------------------------ */
 /* Static mode                                                          */
@@ -835,7 +835,7 @@ async function runLive(root, argv) {
     console.error(`lint:heads --live needs playwright-core: ${error}`);
     return 2;
   }
-  const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
+  const browser = await chromium.launch({ executablePath: chromePath(), headless: true });
   const failures = [];
   const waiting = [];
   let broken = 0;
