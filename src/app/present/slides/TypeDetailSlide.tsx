@@ -457,6 +457,10 @@ export default function TypeDetailSlide() {
       // shifts when the webfonts finish loading (the centered stack's origin
       // depends on the red line's width). Re-measure the baseline and force
       // every function-based value to re-evaluate against final geometry.
+      // When the fonts had already landed before this ran (the setup waits
+      // for the intro), everything above measured final geometry, and a
+      // full refresh would be a long task with nothing to change.
+      if (document.fonts.status === 'loaded') return;
       document.fonts.ready.then(() => {
         alignBaselines();
         tl.invalidate();
