@@ -73,7 +73,7 @@ Two kinds of text appear on these pages, and they are translated in two ways:
 
 Kevin's rule for the sample (2026-10-10): "make them idiomatic!" Sample copy reads like native product UI with correct CLDR plurals. Reach that by improving the `$context` and rerunning; never hand-edit the output.
 
-`gt translate`'s ICU plural output can omit CLDR branches. On 2026-10-10 Russian and Polish lacked `few` and `many` until a `--force` run with a context saying "the count can be any number"; Spanish, French and pt-BR never got `many`; and a change to the context alone, without `--force`, returned identical plurals. Check each language's branches against the CLDR plural rules before publishing it.
+`gt translate`'s ICU plural output can omit CLDR branches. On 2026-10-10 Russian and Polish lacked `few` and `many` until a `--force` run with a context saying "the count can be any number"; Spanish, French and pt-BR never got `many`; and a context-only change returned identical plurals. Check each language's branches against the CLDR plural rules before publishing it.
 
 The route families, claim tracing and build limits join this file when round 1 ships.
 
