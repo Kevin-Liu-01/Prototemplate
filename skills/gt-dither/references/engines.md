@@ -213,3 +213,49 @@ copy also exports the `BAYER_PRESETS` roster and is formatted wider.
   activation, resize and a theme flip. `--mood-ink` and `--mood-opacity`
   come from `deck/parts/head.html`.
 - `pnpm build:deck` inlines the grids with their bytes untouched.
+
+## The studio family
+
+Moved from `SKILL.md` section 2 on 2026-10-10, unchanged.
+
+- The studio family, all on an ink ground in the blue family
+  (`#2f5ce0`, `#5f86f2`, `#9db9ff`, `#cfe0ff`), white only in 10:
+
+  | id | name | preset | what moves |
+  | --- | --- | --- | --- |
+  | 01 | bayer-flow | `bayer` | the Glyphfield original: 4x4 over flow clouds at 2 to 10 device px cells |
+  | 02 | bayer-8x8 | `bayer8` | the same flow through the 8x8 at 1 to 4 device px cells; the default and the hero's material |
+  | 03 | bayer-contour | `bayerContour` | elevation bands drifting downslope |
+  | 04 | bayer-radial | `bayerRadial` | two glows at the flanks, the centre column ink |
+  | 05 | bayer-sweep | `bayerSweep` | long diagonal bands with a slow churn |
+  | 06 | bayer-waves | `bayerWaves` | two interfering wave systems, the slowest clock |
+  | 07 | bayer-chunk | `bayerChunk` | the 2x2 at 8 to 22 px poster cells |
+  | 08 | bayer-pulse | `bayerPulse` | the flow breathing on a 16 s clock |
+  | 09 | bayer-ink | `bayerInk` | sparse blue on ink, no bright chip |
+  | 10 | bayer-hot | `bayerHot` | heat cores lifting crests to white through the 8x8 |
+
+  `bayerSphere` sits outside the roster: a lit sphere through the 8x8, the
+  landing's report card globe and Prototemplate's /try figure.
+
+## One grid per transition
+
+Moved from `SKILL.md` section 1 on 2026-10-10, unchanged.
+
+- One grid per transition (`TRANSITION_RULES` in
+  `src/app/craft/libraries.ts`):
+  - both states are read at the same cells at one cell size, and the size
+    never changes inside a transition;
+  - the Bayer tile keeps its phase from one page cell (the `phase` option),
+    so the first frame of a transition is the last frame of the state
+    before it;
+  - the tone mixes on one smoothstep and the ink interpolates on the same
+    curve (`mixFields`);
+  - an incoming picture's curve is solved so its disc's mean tone equals
+    the outgoing field's;
+  - reduced motion draws the end state once as a still.
+  - Alpha fades, wipes, moving masks and content entrance animation are
+    refused. A resolve takes 350 ms and a step from one picture to the
+    next 150 ms (`RESOLVE_MS` and `STEP_MS` in
+    `src/app/craft/TransitionDemo.tsx`, `STEP_MS` in the plate's
+    `FieldStack.tsx`; Kevin, 2026-09-29: "make the dither transitions 2x
+    faster").

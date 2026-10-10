@@ -2,6 +2,35 @@
 
 This is the record of Kevin's design verdicts on General Translation work, oldest first. Each entry gives the date, the surface, his words, what was wrong, and the rule that has held since. Quotes keep his wording and lowercase, and a few obvious typos are corrected ("abck" reads "back"). The rules in `SKILL.md` come from these entries. Dates are Kevin's local dates (Pacific time) from his session transcripts and the memory notes that recorded them.
 
+
+## The verdicts in one table
+
+Each row is a verdict on real work and the rule it set; the dated entries below give the full wording and context.
+
+| Date | What he rejected | The rule since |
+| --- | --- | --- |
+| 2026-08-04 | Sections that kept the copy and drifted from the Figma mock layouts | A mock image is a layout spec: the composition, what sits left and right, which visual sits where |
+| 2026-08-04 | Three-line headers, headers floating in whitespace, floating bordered cards, broken border grammar and double borders | Display heads hold two lines at most, rules run edge to edge, heads sit in ruled bands, one line per seam |
+| 2026-08-04 | The Locadex isometric without its mark | Marks are seated into the drawing; Locadex is never a gif |
+| 2026-08-11 | Redrawn diagrams ("these diagrams are so bad"), "ugly ai gradients", bad spacing, invented enterprise content, a sign-in that "looks exact same" | Content from production, layout from the toolchain and the Dossier, only the praised diagrams kept, no invented product vignettes |
+| 2026-08-11 | The same diagrams, which laid flat logos over isometric drawings; the restart that followed seated them | A mark is an alpha mask in the face's plane, filled with a token |
+| 2026-08-11 | The avoid list: mono as the brand voice, smooth scrolling, robot and sparkle AI icons, flag soup, AI gradients and glass, eyebrows, em dashes | Most items are gt-ui lint rules in gt-cloud and in Prototemplate's `pnpm lint:code` (`no-smooth-scroll`, `no-eyebrow`, `mono-is-not-voice`, `no-em-dash`, `no-raw-locale-flags`, `icon-tiers`); AI icons, gradients and glass have no rule and are checked by eye (`gt-lints`) |
+| 2026-08-12 | Keeping the variant system after he picked one variant per page | The alternatives leave the code and stay in git history |
+| 2026-08-17 | Pages that never had a second pass, and monospace in page copy | Every page gets a second pass against the reference |
+| 2026-08-26 | The docs draft | Smaller text with more leading, no mono, diagrams and real icons, the shell's grid lines |
+| 2026-09-04 | An oval shadow behind a blog graphic's subject | No drawn shadows; depth comes from lines and the dither |
+| 2026-09-14 | Exploration rounds that were a costume, ten skins of one page, or the wrong lineage, pushed to main unseen | Directions differ in silhouette, material and action, and rounds stay local until he lands them |
+| 2026-09-18 | Switzer beside Inter | Inter is the only face |
+| 2026-09-25 | The first dashboard: boxed tiles and cells, titanium hairlines on every edge, uppercase mono eyebrows, registration crosses floating in the app, flat -0.028em tracking at every size, ink-4 text, two stacked scope switchers, chevron groups | The deck's grammar on every product surface (section 3) |
+| 2026-09-25 | A heavy horizon ring as the app's material | The landing hero's field sets the strength of any material, and a surface carries one |
+| 2026-09-28 | Sun and moon theme icons; 13px card facts; fade-and-rise entrances; a top header over onboarding; fills on layout containers | The ◐ and ◑ glyphs; the 12px rung; no entrance animation; the mark in the plate's head; no container fills |
+| 2026-09-29 | Pictures that do not fit the page ("the great wave for example does not really make sense here"); texture cut away around type; layout shift between states | A picture shows writing, language or the earth; faint texture across the whole face; reserved heights and a fixed foot |
+| 2026-09-30 | Picture plates over two lines and copy tying a picture to GT ("the corny stuff") | A title, one factual sentence about the artifact, a credit |
+| 2026-09-30 | Two gaps evened at the smaller 10px | Matching measures both take the larger one |
+| 2026-10-05 | Pictures of plain English prose ("never distract with text on the artifacts") | The dictionary pictures are retired and the picture lint rejects them |
+| 2026-10-05 | Book heads with a seven-line lead and a floating subtitle | A lead of two or three lines at 60 to 70 characters, the rest in the body |
+| 2026-10-07 | The Dossier named as the reference for the brand and the site, after the brand had moved past it | The shipped site is the reference for landing and marketing pages, and the Dossier stays in the gallery as the direction the site grew from |
+
 ## 2026-08-04: the first Figma v0 build of the redesign
 
 - Kevin: "the only thing i really like u made is the locadex animation, which should have the locadex logo on it. lets rebuild following this structure, here are the literal images of the plans."
@@ -29,7 +58,7 @@ This is the record of Kevin's design verdicts on General Translation work, oldes
 
 - Kevin: "these diagrams are so bad. i literally want you to restart these".
 - What was wrong: the diagrams were redrawn without the crafted-engine process that built the toolchain and the Dossier, and logos were laid flat over isometric drawings.
-- The rule since: rebuild drawings with the house engines. A mark is seated into a face as an alpha mask filled with a token (see `gt-isometric`). Straight connectors survive a `preserveAspectRatio="none"` stretch and curves warp. Seated text at chip scale is illegible, so a stage label names it instead.
+- The rule since: rebuild drawings with the house engines. A mark is seated into a face as an alpha mask filled with a token (see `gt-diagrams`, `references/isometric.md`). Straight connectors survive a `preserveAspectRatio="none"` stretch and curves warp. Seated text at chip scale is illegible, so a stage label names it instead.
 
 ## 2026-08-11: round two of the landing pages
 

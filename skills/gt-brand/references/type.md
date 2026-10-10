@@ -164,3 +164,58 @@ A new exception goes into DESIGN.md section 15 or the lint allowlist with its re
 - Positive tracking on 11px uppercase labels is the eyebrow pattern Kevin rejected. Delete the label.
 - The deck's italic is synthesised, because only the roman is inlined. Use no italic in the deck.
 - A subset without glyph names (pyftsubset's default, a format 3 `post` table) rasterises a shade differently in Chrome on macOS, at every weight. `scripts/build/subset-inter.py` keeps the names (`glyph_names`), and its subsets match the full file pixel for pixel.
+
+## The rules of SKILL.md section 4 in full
+
+These blocks stood in `SKILL.md` section 4 until 2026-10-10 and moved here unchanged to keep the body under its budget; `SKILL.md` keeps a one-line summary of each.
+
+**The binding.**
+
+- Prototemplate binds the roman's latin subset as `ptInter` in `src/lib/fonts.ts`, on `--font-inter`, and declares the other subsets and the italic as plain `@font-face` rules with a `unicode-range` in the same `ptInter` family in `src/app/inter-subsets.css`, which `scripts/build/subset-inter.py` writes. So every route preloads the roman latin subset, and a browser fetches any other subset only where the page draws a code point in its range.
+- next/font names the family after the JavaScript identifier, and CSS family names are case-insensitive. A binding named `inter` therefore shares its name with an installed Inter. If the woff2 fails to load, that installed Inter renders (desktop Inter 3, for example, which has no opsz axis), and the metric-matched fallback never engages.
+- gt-cloud's landing still binds `inter` on `--font-sans`, and its built CSS reads `"inter", "inter Fallback"`, so it carries the same exposure.
+
+**The stack** is `var(--font-inter), system-ui, sans-serif` (the shell's `--pt-text`). next/font's fallback face is already a metric-matched local Arial, so `'Helvetica Neue', Arial` after the variable add nothing.
+
+**Tracking.** Tracking tightens with size and weight, and weight 400 text is never tracked.
+
+| role | tracking | where it is set |
+| --- | --- | --- |
+| page titles, section titles and slide headings, 32px and up, weight 500 | -0.025em | deck `head.html:62`; shell `--pt-d1-track`, `--pt-d2-track`; dashboard `.typo-page-heading` (30px) |
+| figures and 24px headings | -0.02em | deck `.page .pn b`, `.spec .w`; shell `--pt-d3-track` |
+| display quotes at 27 to 34px, weight 500 | -0.015em | deck `.say .q` (34px), slide 12's `.ex .q` (27px), the `.ladder` specimen rows |
+| labels at weight 500, 13 to 20px | -0.01em | deck `.rows b`, `.book-toc a`; shell `--pt-track-label` |
+| group labels at weight 500, 12 to 12.5px | -0.005em | deck `.sec-label`; shell `--pt-track-group` |
+| running text at weight 400 | 0 | everywhere |
+| 13px captions | +0.01em in gt-cloud (`.typo-caption`); 0 in the Prototemplate shell | |
+| 13px counters | +0.02em in the deck (`.counter`); 0 in the Prototemplate shell | |
+
+The Prototemplate shell tracks nothing positive, and its type lint fails any positive value on Inter. rsms.me no longer serves Inter 3's Dynamic Metrics page (rsms.me/inter/dynmetrics answers "This page used to exist, but is no longer"). In Inter 4 the opsz axis narrows spacing with size by itself, about -0.039em a character from 32px as measured on 2026-10-05. The deck's -0.025em on display sizes is a house choice on top of the Display design, and nothing goes tighter.
+
+**The ladders.**
+
+- The Prototemplate shell: d1 44/1.04 (page title), d2 32/1.05 (section title), d3 24/1.25 (h2 in prose), title 18/1.35, lead 17/1.55, body 16/1.6, small 14/1.55, meta 13/1.5, group 12.5. Under 900px d1 is 32, d2 26/1.15 and d3 21.
+- The deck sheet (1600 by 900): h1 88, `.big` 72, h2 44, lead 26, p 22 at 1.5, `.rows` 20, caption 15. Text under 15px on the sheet is a defect.
+- The landing's phone ladder is DESIGN.md section 12 (`--tcm-*`).
+
+**Monospace** is an instrument voice. It sets code, tokens, terminals, file paths, hex values and locale codes, and nothing else: no headline, body or marketing line is ever set in mono. Prototemplate uses the system mono stack (`--pt-mono`) and gt-cloud uses Geist Mono (`--font-mono`).
+
+**Scripts.**
+
+- Inter covers Latin, Greek and Cyrillic. CJK, Arabic, Hebrew and Indic text falls back to a face for that script: the deck's `--cjk`, `--arabic` and `--indic`, and the shell's `--pt-text-hant`, `--pt-text-hans`, `--pt-text-ja` and `--pt-text-he`.
+- Every layout is checked in CJK, RTL and Indic text as well as Latin (deck slide 28).
+- next/font's Arial fallback has Hebrew and Arabic glyphs, so in an Inter stack those scripts render in Arial and never reach a script face listed after it. For a real Arabic or Hebrew face, set that script's stack on its own rule (a `:lang()` selector or a class) with no Inter variable in front, the way the deck's `.lang .ar` does.
+
+**Exceptions.** Each is named here so no sweep removes it:
+
+- The Prototemplate nameplate: Fraunces 600 for `proto` and Space Grotesk 500 for `template`, loaded by `src/lib/brand-fonts.ts` (DESIGN.md section 15).
+- The gallery's grotesk labels and mono numerals on `/` (DESIGN.md section 4). They belong to the Prototemplate chrome and appear on no GT surface.
+- The `/d/` direction routes, which are self-contained explorations with their own type.
+- The presenter (`/present`), whose intro lockup sets Sora and Instrument Sans (`src/app/present/fonts.ts`) and whose type beats show other faces beside Inter on purpose.
+- Specimens that show the weights 300 to 800: deck slide 27 and `.ptb-display` on `/brand`.
+- The speed marks' faces (Michroma, Orbitron, Anybody), which exist only as outlines inside the mark files.
+
+**Enforcement.**
+
+- Prototemplate: `node scripts/lint/type.mjs` fails a literal family, a bare Inter, a feature list outside the tokens, any `font-variation-settings`, a weight above 500, heading metrics outside the display tokens, positive tracking and mono on a non-code selector, and ratchets literal sizes, tracking and line heights per file. An exception is written `/* lint-type: allow <reason> */`, and an empty reason fails. `pnpm build` runs its static mode first, `pnpm lint:type:live` reads the faces, features, tracking, optical size and weights Chrome renders on the dev server's pages at 1440 and 390, and `pnpm test:type` runs its tests. `gt-lints` owns the rule table and the wiring.
+- gt-cloud: the gt-ui oxlint rules `inter-only`, `mono-is-not-voice`, `no-thin-font` and `typed-text-var` in `$GT_CLOUD/tooling/oxlint-plugins/gt-ui.ts`. Prototemplate's `pnpm lint:code` runs a copy of that plugin taken on 2026-09-28 (`scripts/lint/oxlint-plugins/gt-ui.ts`), with thirteen of its rules switched on in `.oxlintrc.json`; `no-thin-font` is not among them.

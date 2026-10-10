@@ -11,8 +11,9 @@ description: >-
 metadata:
   title: Landing page grammar
   areas: landing, aesthetic
-  updated: 2026-10-07
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Landing page grammar
@@ -34,36 +35,19 @@ Paths are relative to a gt-cloud checkout at origin/main (`$GT_CLOUD`) or a Prot
 
 `landing/shell/engine.css` scopes the grammar under `.toolchain-root`. `landing/home/v0-pages.css` adds the home layer (registration crosses, square surfaces, the hatch spacers, the button hover hold, the light skin and the mobile cut) under `.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)`, the five home roots of Prototemplate's variant sites. gt-cloud uses only `sgdh-root`, and it is not limited to the home: the roots of pricing, usage pricing, enterprise, careers, contact, the blog, legal, supported locales, the 404 and the footer mount (`SiteFooterMount.tsx`) all carry `toolchain-root sgdh-root`, and those pages import `v0-pages.css`. The partners page and the report card carry `toolchain-root` alone. Below, "`sgdh-root` pages" means that whole set.
 
+### The enterprise page
+
+Kevin's ideal order for the enterprise page (2026-08-15), in this order: governance and SSO, built-in translation review, shared context across teams, forward-deployed support, then the contact form. His verdict on the page built before it: every component beautiful, the structure scattered. A rebuild of the page follows that spine and reuses the existing bands (the governed explorer's gate and review cards, the context fork, the contact bay) rather than new art.
+
 ## Rail and bands
 
-The page is one ruled column. `.tc-rail` (the column wrapper on the home, pricing, enterprise, careers, contact, blog, legal, supported locales and report card pages, and around the footer in `SiteFooterMount.tsx`) is `min(var(--tc-rail), 100%)` wide and draws the column's two lines once with `border-inline: 1px solid var(--tc-hair)`. A border rounds to whole device pixels at any zoom, which a background-filled box does not, so the rail is a border.
+The page is one ruled column, and every structural line is drawn once. The full rules with their classes and files are in [references/rail-and-bands.md](references/rail-and-bands.md); these are the ones a reviewer checks first.
 
-- A band inside the wrapper (`<section className='tc-sec v0-<slug>'>`) draws no side rails. `.tc-sec` draws only its bottom rule, and the last section draws none.
-- A full-bleed band (the feature bands `.tc-band.tcb`, the close band `.v0-dep`) spans the viewport and draws its own inner pair once, at the column edges, from its `-in` column. On the home these bands are children of `main.tc-rail` that break out with `margin-inline: calc(50% - 50vw)` (`fullstack.css`, `context.css`, `Deploy.tsx`); on Prototemplate's `/d/toolchain` the band sits at page level. `Deploy.tsx` is the model: the `v0-dep-in` column carries `w-[min(var(--tc-rail),100%)] border-x border-x-[var(--tc-hair-band)]`. The band never adds a pair beside the column.
-- In dark, `--tc-hair-band` aliases `--tc-hair`, so the rail runs one color through bands and wrapped sections. Prototemplate's toolchain engine gives light bands a stronger line (`--tc-hair-band` 0.34 against `--tc-hair` 0.26), because a line on ink needs more alpha than a line on paper to look equal. In gt-cloud both resolve to `--color-border` in light, and the `sgdh-root` light skin restates `--tc-hair-band: var(--tc-hair)` on its paper bands.
-- The outer pair at plus or minus 10px is retired: `.tc-rail::before`, `.tc-nav-in::before`, `.tc-band::after`, the `--tc-rail-outer` token and gt-cloud's `Rails` component were deleted in gt-cloud #5007 (Kevin, 2026-09-28: "make sure there's no rules that lead to two side rails"). gt-landing's App Structure list still names `Rails`; the export is gone from `shell/Bento.tsx`. Prototemplate keeps a `Rails` in `src/components/shell/Bento.tsx` that draws the single pair for a full-bleed band outside a wrapper.
-- Call the column's lines "the page's rail pair, drawn once". The brand's two-hairline connector is "the doubled line" or "the thread". The words "outer pair", "outer rail" and "doubled rails" fail Prototemplate's `retired-rail-vocabulary` check.
-
-### Hatch spacers
-
-- Home bands are separated by `<div aria-hidden className='v0-hatch' />` in `HomePage.tsx`. Rows inside one section are separated by `.tc-hatch`. Both are a `clamp(28px, 3.4vw, 40px)` strip with a 1px `--tc-hair` rule on each edge over a 45 degree hatch in `--tc-hatch`. Under 720px `.tc-hatch` is 40px and `.v0-hatch` 36px.
-- The hatch owns both of its edges. The section before it drops its bottom rule (`.tc-sec:has(+ .v0-hatch)`), and next to a full-bleed band the band's own border stands and the hatch drops that edge.
-- `.tc-hatch` carries `position: relative; z-index: 2`, because reveal tweens leave transforms on the framed cards above it and their stacking contexts would paint over its top rule.
-
-### Registration crosses
-
-- On `sgdh-root` pages, each `.tc-rail > .tc-sec::after` paints a cross at both bottom corners where the seam meets the rail: 9px arms, 1px thick, hanging 5px past the rail, in `--cross-ink` (`rgba(10, 11, 13, 0.38)` light, `rgba(255, 255, 255, 0.34)` dark). The next section's top corners are the same points, so one pseudo per seam is enough.
-- The full-bleed bands (`.tcb`, `.v0-dep`) clip their own pseudos, so the section after a band paints its own top pair with `::before`. Bands draw no crosses.
-- The arms reach past the rail, so the page root sets `overflow-x: clip`. `overflow: hidden` would make a scroll container and stop the sticky figures further down the page.
-
-### The row owns every seam
-
-- Grids of cells are `BentoRow` and `BentoCell` from `apps/landing/src/components/landing/shell/Bento.tsx`. The row is a grid with `gap-px` over a `--tc-hair` background, so the 1px gaps are the seams. Cells have no border props.
-- A framed cell (`BentoCell framed`, which always adds `.is-framed`) shows the row's hairline background through a 1px reveal: the framed row sets `padding: 1px 0`, its sides yield to the rail, and where two framed rows meet only the first keeps its strip. A framed cell without the class collects the gap seam and a border-top, which is a 2px double line.
-- Flush at the rail: where a row meets a line that already exists, the cell sits flush and drops that side's reveal. No reveal runs beside a rail, and no border runs beside a seam.
-- A translucent background under a translucent border composites darker than every other hairline (the self-stack). Clip it with `background-clip: padding-box`. Two stacked translucent grounds do the same, so cells stay transparent and the row paints the one background.
-- Every structural line runs rail to rail and top to bottom. There are no floating bordered cards and no heads floating in whitespace; a head sits in a ruled `tc-head` or in the cell's own head zone (`.shell-cell-head`).
-- On `sgdh-root` pages, structural surfaces are square: the hero card, the terminal window, framed cell cards and band art mats take `border-radius: 0`. Controls keep small radii (buttons 6px).
+- `.tc-rail` draws the column's two lines once as a border. A band inside it draws no side rails and only its bottom rule; a full-bleed band draws its own inner pair at the column edges and never adds a pair beside the column.
+- The outer pair at plus or minus 10px is retired (Kevin, 2026-09-28: "make sure there's no rules that lead to two side rails"). The column's lines are "the page's rail pair, drawn once"; "outer pair", "outer rail" and "doubled rails" fail `retired-rail-vocabulary`.
+- Hatch spacers separate home bands (`.v0-hatch`) and rows inside a section (`.tc-hatch`), and the hatch owns both of its edges.
+- On `sgdh-root` pages a registration cross sits at each seam where it meets the rail, and the root sets `overflow-x: clip`, never `overflow: hidden`.
+- The row owns every seam: `BentoRow` and `BentoCell`, a `gap-px` grid over the hairline ground, cells with no border props, no reveal beside a rail, `background-clip: padding-box` against the self-stack, no floating bordered cards and no heads floating in whitespace. Structural surfaces on `sgdh-root` pages are square; controls keep small radii.
 
 ## Section heads
 
@@ -125,57 +109,27 @@ Icons come in two tiers, plus brand marks (gt-cloud #4909, 2026-09-24; swept sit
 
 ## Type on the page
 
-- Inter is the only typeface on landing pages (Kevin, 2026-09-18: "change switzer to inter everywhere. dont need switzer and remove those files"; gt-cloud #4887). The face is rsms.me's InterVariable v4.1 from `apps/landing/public/fonts`, declared once in `apps/landing/src/lib/fonts.ts` as `--font-sans`; the italic build lives in `fonts-prose.ts` so only prose routes preload it. Prototemplate loads the same build as `--font-inter`.
-- Mono comes in two forms. The engine's `--tc-mono` (Tailwind `font-tc-mono`) is the system stack `ui-monospace, 'SF Mono', Menlo, Consolas, monospace`, and band code uses it. Geist Mono, loaded in `fonts.ts` as `--font-mono`, is Tailwind's `font-mono` and the only mono webfont the app loads.
-- `--tc-disp` resolves to `--tc-sans`. Keep the slot; it is the grammar's hook for display rules.
-- Weight 500 is the cap for headings at every size. The engine sets h1 to h4 to weight 500, line-height 1.06, letter-spacing -0.028em and margin 0.
-- Mono is for strings that carry numerals: measurements, values, code (Kevin, 2026-08-01). A plain-word caption or label is set in Inter, without uppercase tracking.
-- gt-cloud's `gt-ui` skill, which gt-landing routes UI work to, describes packages/ui defaults in `typography.md`: Geist on `font-sans`, `font-semibold` headings and `text-xs uppercase tracking-widest` section labels. None of those hold on a landing page. The landing's `--font-sans` is Inter, the engine caps headings at 500, and an uppercase tracked label fails `gt-ui/no-eyebrow`.
-- Prototemplate's own chrome sets its nameplate in Fraunces and Space Grotesk (DESIGN.md sections 4 and 15), which BRAND.md section 6 calls the lab's stationery. A GT landing page uses Inter alone.
-- Heading and paragraph metrics live in engine CSS. The engine's resets are unlayered and Tailwind utilities sit in a layer, so `font-semibold`, `leading-*`, `tracking-*` and margin utilities on h1 to h4 and p lose without a warning. Put those properties in the band's own stylesheet under `.toolchain-root`, or space siblings with a gap on the flex or grid parent (2026-08-07).
-- The other Tailwind 4 traps (`text-[length:var(--x)]` for a size, class candidates scanned from comments, unused `@theme` tokens dropped from the build) are in gt-website. Tailwind classes added to `packages/ui` may also need `touch apps/landing/src/app/globals.css` before the landing dev server compiles them.
+Detail is in [references/type-on-the-page.md](references/type-on-the-page.md).
 
-### The mobile ladder
-
-Under 720px, type and spacing come from one token ladder (gt-cloud #4240, 2026-08-08). Kevin's standing directive is that mobile is designed for the phone and never reads as the desktop page shrunk.
-
-- The `--tcm-*` slots are declared on `.toolchain-root` in the engine's late `@media (max-width: 720px)` block, near the end of `engine.css` (Prototemplate: `src/app/d/toolchain/styles.css`). Several base rules sit between the early 720px block and the late one, and a same-specificity override only wins by following them, so new mobile floors go in the late block.
-- Every consumer reads `var(--tcm-X, <px fallback>)` with the slot's canonical value as the fallback, so a rule outside the ladder's reach degrades to the same number. A new mobile rule never hardcodes a size the ladder has a slot for.
-- The mobile cut in `home/v0-pages.css` (`.toolchain-root:is(.sgdh-root, ...)`) has higher specificity than any engine floor. A raise made only in the engine does not render on `sgdh-root` pages. Change both in the same commit.
-- Copy sits at least 20px from any hairline on mobile: `--tc-card-pad` drops to 20px under 720px, and the trust lead carries a 20px bottom pad.
-- Tap targets are 44px: `.tc-btn` is 44px under 720px, and footer links sit on about a 46px pitch.
-- An authored `<br />` needs `{' '}` before it. The mobile cut hides some breaks, and without the space the two words fuse.
-- The mobile hero h1 reserves two lines (`min-height: 2.2em`), so the morphing headline cycles every locale without moving the layout. Its size is set against the longest of the sixteen sentences: at 390px French tips to a third line at 2.75rem, so the size stays just under it (`clamp(2.1rem, 10.9vw, 2.7rem)`).
-
-### Copy rules that show on the page
-
-- Rendered copy carries no em dashes (Kevin, 2026-08-11, and the `no-em-dash` lint).
-- On pricing pages, whole dollars of at least $1 render without cents ($2, $5), and cent prices keep two decimals ($0.50, $1.06). The formatter is `packages/ui/src/components/pricing/dollar-format.ts` (Kevin, 2026-09-10).
-- Mocks read complete at 390px. A diff, terminal or table mock that would crop gets its own narrow block (the enterprise PR diff mock has a 480px block with 11.5px type and its file path hidden).
+- Inter is the only typeface (Kevin, 2026-09-18, gt-cloud #4887): rsms InterVariable v4.1 as `--font-sans`, with the italic only on prose routes. Mono is the engine's system stack `--tc-mono` or Geist Mono (`font-mono`), and only for strings that carry numerals: measurements, values, code (Kevin, 2026-08-01).
+- Headings h1 to h4 are weight 500 at every size. gt-ui's packages/ui defaults (Geist, `font-semibold`, uppercase tracked labels) do not hold on a landing page.
+- Heading and paragraph metrics live in the engine CSS, whose unlayered resets beat Tailwind utilities on h1 to h4 and p without a warning; put them in the band's stylesheet or space siblings with a gap (2026-08-07).
+- Under 720px type and spacing come from the `--tcm-*` ladder in the engine's late 720px block, read as `var(--tcm-X, <fallback>)`; the `sgdh-root` mobile cut outranks the engine, so a raise changes both in one commit. Mobile is designed for the phone, copy keeps 20px from any hairline, tap targets are 44px, and an authored `<br />` needs `{' '}` before it.
+- Rendered copy has no em dashes; pricing shows whole dollars without cents and cent prices with two decimals (Kevin, 2026-09-10); mocks read complete at 390px.
 
 ## Scroll stories
 
-The full-stack band is the model for a story that builds a figure as the reader scrolls (`sections/fullstack/FullStack.tsx` and `fullstack.css` in gt-cloud; `src/app/d/_v0/sections/` in Prototemplate; DESIGN.md sections 13 and 14).
+The full-stack band is the model for a story that builds a figure as the reader scrolls; its mechanics are in [references/scroll-stories.md](references/scroll-stories.md).
 
-- The story keys on two lines with separate jobs. The read line at 55 percent of the viewport is structural: a beat locks in when the center of its copy block crosses it, and the tower's build clock, the capstone scrub and the sticky figure's seat all key on it. The highlight line at 80 percent belongs to the spotlight alone: a beat's copy lights as its center rises through it, while the arriving layer is still building. In code, `READ_LINE = 0.55` and `HIGHLIGHT_LINE = 0.8`.
-- Anchors are measured on the copy itself and from flow geometry. The beat window's top runs about half a viewport ahead of its copy, and anchoring on it made every layer arrive early (Kevin: "each layer arrives too early"). The finale is sticky, so its flow top is the previous beat's bottom; its own rect would read the stuck pose on a refresh mid-dwell. Re-anchor on every ScrollTrigger refresh.
-- One scrubbed dial spans the read. A piecewise map from measured lock-ins to story time holds the clock while a row is being read and spends each gap as hold, build, lock, so a layer stands locked before its copy reaches the read line.
-- The figure is CSS sticky. JavaScript never positions it ("the diagram keeps moving down as i scroll past agents, which is wrong"). The agents beat gets a dwell runway before the native sticky release carries the figure out with the band.
-- At 1020px and below (with at least 500px of height) the band becomes a stage: a CSS-sticky grid that fills the viewport, with the figure in the top 55 percent and one beat's copy in the bottom 45 percent (`grid-template-rows: minmax(0, 11fr) minmax(0, 9fr)`). The tower's width budget `--v0sm-tw` uses the same 0.55 factor, so the split and the factor change together; short windows (500 to 639px tall) rebalance both to 0.5. One ScrollTrigger over the `.v0sm-runway` spacer after the grid is the story clock. The stage's bullets stay 15px / 1.5 because the longest beat must fit the text zone.
-- The svh and dvh law sets every stage height. Reach is dvh: whatever must touch the true screen bottom (the stage's rails, the text zone) sizes from `100dvh`. Layout is svh: any height that takes part in layout uses `100svh`, because a dvh layout height grows the document on every browser chrome toggle and the scroll jitters. The difference is the token `--v0sm-bar-gap` (`--v0sm-stage-h` minus `--v0sm-stage-h-stable`, 0 while the URL bar shows), and only overhangs spend it. Anything sized from the stage derives from the stable var.
-- Every loop is created paused and plays only while its band is on screen. Under `prefers-reduced-motion` the setup is skipped and the markup pose is the still: the full stack with the first beat lit and the mark's shimmer parked.
-- Scrolling is native. `shared/SmoothScroll.tsx` is a pass-through kept as a mount point; no Lenis or Locomotive, no `scroll-smooth`, no `behavior: 'smooth'`, and in-page links jump. Prototemplate exempts only `/present`, the presenter.
+- Two lines with separate jobs: the read line at 55 percent locks beats and keys the build, and the highlight line at 80 percent lights the copy (`READ_LINE`, `HIGHLIGHT_LINE`). Anchors are measured on the copy and from flow geometry, and re-anchored on every refresh.
+- The figure is CSS sticky and JavaScript never positions it. Below 1020px the band becomes a stage of figure over copy.
+- The svh and dvh law: what must reach the true screen bottom sizes from `100dvh`; any height that takes part in layout uses `100svh`.
+- Every loop is created paused and plays only on screen; reduced motion skips the setup and the markup pose is the still.
+- Scrolling is native everywhere except Prototemplate's `/present`: no smooth-scroll library, no `scroll-smooth`, no `behavior: 'smooth'`.
 
 ## Material
 
-- The hero's field is the studio field: `shared/HeroField.tsx` calls `createStudioField(canvas, { preset: 'bayer8' })` from `apps/landing/src/lib/studio-field.ts`, through one shared GL context. The engine owns the frame loop, resizing and the reduced-motion still, so `destroy()` is the only cleanup.
-- The glyph fields come from `packages/ui/src/lib/glyph-field.ts` (imported as `@generaltranslation/ui/lib/glyph-field`), shared since 2026-08-13: the Deploy band's condensation field, the pricing close, the careers rain (`shared/GlyphRain.tsx`) and the enterprise contact bay (through `glyph-rain/sections/band/inkField.ts`). Import the shared engine; app-local copies are not allowed to come back. Its design contract (matter is conserved and the word comes first) is in gt-motion and gt-dither.
-- Density ramps use ordered dither from `packages/ui/src/lib/dither.ts` and `DitheredMark` (DESIGN.md section 7). An alpha veil does not count as a ramp.
-- New decorative material starts in Glyphfield (glyphfield.com/studio), following gt-cloud's `glyphfield` skill. Copy and buttons stay page content and are never baked into the artwork.
-- Marks are drawn: an SVG, a canvas field, `LocadexMark`. A gif is never a mark or a demo frame (Kevin, 2026-08-04: Locadex is never a gif). A mark seated in an isometric face is an alpha mask (gt-isometric).
-- A page spends one accent, `--tc-accent: #2f5ce0`; light paper is one white; the one black is the house background; `--tc-panel` is the one dark surface for code, config and diffs. Dark mode is a token remap under `[data-theme='dark'] .toolchain-root` and nothing else. Components take colors from the tokens (`no-hex-colors` checks className and style values). A literal color lives in a stylesheet, such as the ring's gradient and the on-ink faces in `engine.css`, and never in a className or style prop.
-- Light mode has no black backgrounds. On `sgdh-root` pages `v0-pages.css` moves the `.tc-band.tcb` feature bands onto paper and turns the panel family into white plates read by their rules (`--tc-panel: #ffffff`, its inks re-bound to black alphas). The Deploy close becomes a white day plate that keeps its ring (`deploy.css`), and the careers and 404 heroes turn to paper with only the black-hole disc keeping its black. A comment in `v0-pages.css` still names Deploy as the one exception; `deploy.css` overrides it.
-- Avoid AI gradients ("ugly ai gradients", the blog round of 2026-08-11), glassmorphism, rainbow washes as decoration, flag soup and robot iconography.
+The hero's field is the studio field (`createStudioField`, preset `bayer8`, one shared GL context); glyph fields import the shared `packages/ui` engine and app-local copies never come back; density ramps are ordered dither, never an alpha veil; new decorative material starts in Glyphfield; marks are drawn, never a gif, and a mark in an isometric face is an alpha mask. A page spends one accent, dark mode is a token remap, a literal color lives in a stylesheet and never in a className or style prop, light mode has no black backgrounds, and AI gradients, glassmorphism, rainbow washes, flag soup and robot icons are refused. The full rules are in [references/material.md](references/material.md).
 
 ## Process
 
@@ -212,17 +166,8 @@ The full-stack band is the model for a story that builds a figure as the reader 
 - [ ] Checked at 390, 768, 1024, 1440 and 1920 in light and dark.
 - [ ] gt-cloud: `pnpm lint` from the repository root passes (`scripts/check-email-identities.mjs`, which refuses GT email addresses written outside `packages/settings/src/email.ts`, then oxlint with the gt-ui plugin, then `oxfmt --check .`). Prototemplate: `pnpm lint:all` passes.
 
-Related skills: in this set, gt-website (the app around the pages: routes, translation, deploys, the Tailwind traps), gt-voice (the copy), gt-aesthetic (the taste bar and polish), gt-lints (the gt-ui plugin and Prototemplate's lints), gt-components (the `Cta` and Bento APIs, the glyph vocabulary, shared UI), gt-motion (GSAP discipline and the moving type), gt-dither (studio and glyph fields), gt-isometric (the iso kit and seated marks), gt-diagrams (the doubled line), gt-ship (pull requests and screenshots). In the wiki: agent-browser (screenshots and the audit), design-engineering-polish (the final pass), animated-component-libraries (sourcing a component before hand-building one). In gt-cloud: `.agents/skills/gt-landing`, `gt-ui`, `glyphfield`, `react-useeffect`.
+Related skills: in this set, gt-website (the app around the pages: routes, translation, deploys, the Tailwind traps), gt-voice (the copy), gt-aesthetic (the taste bar and polish), gt-lints (the gt-ui plugin and Prototemplate's lints), gt-components (the `Cta` and Bento APIs, the glyph vocabulary, shared UI), gt-motion (GSAP discipline and the moving type), gt-dither (studio and glyph fields), gt-diagrams (the doubled line, and the iso kit and seated marks in `references/isometric.md`), gt-ship (pull requests and screenshots). In this set, gt-verify (screenshots and the audit in a real browser). In the wiki: design-engineering-polish (the final pass), animated-component-libraries (sourcing a component before hand-building one). In gt-cloud: `.agents/skills/gt-landing`, `gt-ui`, `glyphfield`, `react-useeffect`.
 
 ## Sources
 
-- Prototemplate: `DESIGN.md` sections 1 (the four colors), 2 (the line law and its ownership rules), 3 (the rails), 4 and 15 (the nameplate's faces), 7 (the 1-bit language), 9 (motion discipline), 12 (the mobile type ladder and the box-air standard), 13 (the svh and dvh law), 14 (the two read lines); `BRAND.md` section 6 (type).
-- Prototemplate: `ARCHITECTURE.md` (the SSOT rule, the componentized instruments); `src/lib/directions.ts` (the singularity-dossier and production entries).
-- Prototemplate: `src/app/d/toolchain/styles.css` (tokens, the heading reset, `.tc-hatch`, the late 720px block); `src/app/d/_v0/v0-pages.css` (the home's mobile cut); `src/app/d/_v0/sections/FullStack.tsx` and `fullstack.css` (the read lines, the stage tokens); `src/components/shell/Bento.tsx`.
-- Prototemplate: `.oxlintrc.json` (the gt-ui rules over the live surfaces); `scripts/lint/practices.mjs` (`outer-rail-pair`, `rail-outer-token`, `retired-rail-vocabulary`); `scripts/lint/lines.mjs`; `scripts/check/pagecheck/README.md` and `scripts/lib/site-pages.mjs` (`CHROME_PATH`); `src/components/shared/SmoothScroll.tsx`.
-- gt-cloud: `.agents/skills/gt-landing/SKILL.md` and `references/design.md` (the editing map and the section recipe; rewritten 2026-09-18 in #4886, icon tiers added in #4909, rail and lints in #5007); `.agents/skills/gt-ui/typography.md` (the packages/ui defaults the landing overrides).
-- gt-cloud: `apps/landing/src/components/landing/shared/Cta.tsx`; `landing/shell/engine.css` (tokens, `.tc-rail`, `.tc-head`, `.tc-btn` faces, `.tc-cta-ring`, the framed row, the 620px hero cut, the late 720px block, the dark remap); `landing/shell/Bento.tsx`; `landing/shell/SiteFooterMount.tsx`; `landing/home/v0-pages.css` (the five home roots, crosses, `v0-hatch`, square surfaces, the hover hold, the light skin, the mobile cut); `landing/sections/shared/darkband.css` (`.tcb-in`, `.tcb-head`); `landing/shared/lang.css` (`--lang-low`).
-- gt-cloud: `landing/sections/locadex/Locadex.tsx` and `locadex.css` (the head example, the masked mark); `landing/sections/developer/Developer.tsx`, `context/ContextSec.tsx`, `global/Global.tsx`, `customers/Customers.tsx` (the other heads); `landing/sections/deploy/Deploy.tsx` and `deploy.css` (the full-bleed inner pair, the ringed close, the light day plate); `pages/careers/careers.css` and `pages/not-found/not-found.css` (the horizon heroes in light); `landing/sections/fullstack/FullStack.tsx` and `fullstack.css`; `landing/home/sections/HomeHero.tsx`; `landing/shared/HeroField.tsx` and `GlyphRain.tsx`; `apps/landing/src/lib/fonts.ts` and `fonts-prose.ts`; `apps/landing/src/app/globals.css`; `apps/landing/src/components/pages/home/HomePage.tsx`; the `className` roots of `apps/landing/src/components/pages/*` and the root `package.json` (`lint`).
-- gt-cloud: `tooling/oxlint-plugins/gt-ui.ts` and `.oxlintrc.json` (`single-rail`, `shared-cta`, `cta-title-case`, `no-eyebrow`, `icon-tiers`, `inter-only`, `mono-is-not-voice`, `no-smooth-scroll`, `no-gif-mark`, `no-em-dash`, `no-heading-period`, `no-hex-colors`, `typed-text-var`, `no-raw-locale-flags`); `packages/ui/src/components/frame/ThemeToggle.tsx`; `packages/ui/src/components/pricing/dollar-format.ts`; `packages/ui/src/lib/glyph-field.ts`.
-- Claude Code project memory for gt-cloud: `landing-cta-conventions.md`, `landing-icon-rule.md`, `landing-inter-only.md`, `mobile-type-ladder.md`, `redesign-v0-verdict.md`, `k-pages-restart-round.md`, `redesign-fork-architecture.md`, `tailwind-port-conventions.md`, `responsive-audit-round.md`, `lighthouse-round-conventions.md`, `dossier-completed-brand-canon.md`, `brand-questionnaire-directives.md`, `shared-ui-standardization.md`, `explorations-stay-local.md`, `landing-hero-agent-button.md`, `landing-ai-gateway-faq.md`.
-- Kevin, 2026-07-31 (one white, the line law, rail ownership); 2026-08-01 (mono is for numbers); 2026-08-04 (the v0 verdict: mocks are literal, two-line heads, exemplar first); 2026-08-06 (the Dossier is the completed direction); 2026-08-07 (the hover hold, the unlayered engine, the contrast floors); 2026-08-08 (the mobile ladder); 2026-08-11 (production content, the toolchain pages as the spec, the questionnaire's avoid list); 2026-08-14 (the shared Cta, the responsive audit); 2026-09-10 (whole dollars); 2026-09-14 (explorations stay local); 2026-09-18 (Inter only); 2026-09-24 and 2026-09-28 (icon tiers, the eleven grammar lints, one rail); 2026-09-30 (one rail in Prototemplate, Setup for Agents); 2026-10-01 (glyph gaps by drawn columns); 2026-10-07 (the shipped site replaces the Dossier as the reference).
+Dated provenance for every rule is in `references/sources.md`: the gt-cloud engine and page files, the Prototemplate prototypes and canon, the lints, and Kevin's dated directives with the memory notes that recorded them.

@@ -26,6 +26,20 @@ The GT monogram in use is the doubled-line mark: every stroke of the G and the T
 - **No gif.** A mark is drawn as an SVG, a canvas field or a component (`LocadexMark`). gt-ui `no-gif-mark` refuses a gif as a mark or a demo frame.
 - **Films.** The gem smoke material may wrap a mark as a glass shape (`motion/kit/gem-shapes/gt-mark.png` and `gt-bar-monogram.png`, made by `node kit/gem-shapes/make.mjs` from the motion folder, which is local and untracked). That is the films' material exception in `motion/MOTION.md` and applies to films only (`gt-films`).
 
+## Reviewing a new GT mark
+
+These rules hold for any new GT mark, from an exploration round to a final pick. They come from Kevin's reviews of a round of GT marks drawn as a globe (2026-10-08 and 2026-10-09).
+
+- **The G's top tail ends horizontal.** The G's top arc runs out into a straight horizontal segment, as in the current monogram, where it flattens into a stroke that runs into the T's bar. A diagonal, radial or hooked terminal is refused. Kevin, 2026-10-09, rejecting the third round: "make the top g tail end at a horizontal line".
+- **The failure list.** Kevin rated the second round 5 out of 10 (2026-10-08). Its causes are refused in every new mark:
+  - badge syndrome: a heavy outline circle with thin letters inside it;
+  - one ellipse as the only depth cue;
+  - a malformed G or a stick T;
+  - stubs and tangencies where strokes meet;
+  - a mark that collapses at 16px;
+  - grey tints in place of one ink.
+- **Where the work lives.** Exploration marks stay as review pages until Kevin picks (`gt-explorations`). A pick goes into `src/lib/marks.ts` and `public/marks` the way the speed set did, generated from geometry and never drawn by hand.
+
 ## The GT word in text
 
 In the deck, a standalone GT in rendered copy is the mark at the size of a capital, with the letters kept as hidden text for assistive technology and search:
@@ -85,7 +99,7 @@ Never edit an SVG under `public/marks` by hand, and never redraw a mark inside a
 
 ## The dithered shimmer
 
-The one sanctioned flourish on a mark is the Bayer specular shimmer, `DitheredMark` in `src/app/d/toolchain/diagrams/DitheredMark.tsx` (mirrored in `$GT_CLOUD/apps/landing/src/components/landing/shared/DitheredMark.tsx`). The mark keeps its alpha mask, and a band quantized by the 4 by 4 Bayer matrix sweeps through it by horizontal translate; under reduced motion or without JS the markup poses with the band mid-glyph. Its tiers, its counter-sheen and the driver are documented in `gt-isometric`, which owns the component.
+The one sanctioned flourish on a mark is the Bayer specular shimmer, `DitheredMark` in `src/app/d/toolchain/diagrams/DitheredMark.tsx` (mirrored in `$GT_CLOUD/apps/landing/src/components/landing/shared/DitheredMark.tsx`). The mark keeps its alpha mask, and a band quantized by the 4 by 4 Bayer matrix sweeps through it by horizontal translate; under reduced motion or without JS the markup poses with the band mid-glyph. Its tiers, its counter-sheen and the driver are documented in `gt-diagrams` (`references/isometric.md` section 6), which owns the component.
 
 ## Third-party logos
 

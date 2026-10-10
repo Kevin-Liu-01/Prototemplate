@@ -6,15 +6,17 @@ description: >-
   crops over glyphfield exports, the 26px text floor for the blog column,
   the audit and the render, contact sheets, stop-motion clips, webp
   and GIF export, the hand-off to a post, the GT docs measured for drawing,
-  still artwork such as the partnership globes, and the review standard for
-  each. Use when illustrating a blog post, a launch or a feature with real
-  product crops, when drawing the GT docs, or when making any still GT
-  artwork.
+  still artwork such as the partnership globes, marketplace listing
+  screenshots, world maps, and the review standard for each. Use when
+  illustrating a blog post, a launch or a feature with real product crops,
+  when drawing the GT docs, or when making any still GT artwork or store
+  listing.
 metadata:
   title: Blog and brand graphics
   areas: graphics
-  updated: 2026-10-06
+  updated: 2026-10-10
   origin: prototemplate
+  owner: P
 ---
 
 # Blog and brand graphics
@@ -128,25 +130,24 @@ Blog visuals take the docs' colours because they depict the docs. Brand artwork 
 
 ## Still artwork
 
-`public/media/` keeps the finished GT artwork made with the system, both the stills and the films. `public/media/README.md` describes every file in a table, and a new file gets its row there.
+`public/media/` keeps the finished GT artwork made with the system, the stills and the films, and `public/media/README.md` describes every file in a table; a new file gets its row there. `references/still-artwork.md` lists the partnership globes and the X banner, the settings of each globe, and the render path: sources in `motion/stills/` (untracked, owned by the Videos session, read-only from other lanes), sha256 pins on approved stills (`REPIN=1` to repin), copies into `public/media/` at their existing names, a lossless WebP beside each PNG (`cwebp -lossless -z 9 -exact -metadata none`), and a raw-pixel comparison of the PNG and the WebP before committing.
 
-| Artwork | Files | Shown |
-| --- | --- | --- |
-| Partnership globes | `gt-globe-dithered.png`, `gt-globe-dithered-mark.png`, `gt-globe-glyphs.png`, `gt-globe-glyphs-light.png`, each with a `-transparent` twin and a lossless `.webp` of the PNG on its ground, 2048 by 2048 | `/brand`, Made with the system, Partnership globes (`#made-with-the-system-partnership-globes`), which shows the WebP and links the PNG on its ground and the transparent PNG for download |
-| X profile banner | `gt-banner-signin.png` and its `@2x` master, kept as lossless WebP, with `banner-contact-sheet.png` holding the ten explorations | `/brand`, Made with the system, which shows the `@2x` WebP |
-| Open Source reel and blog films | `open-source-reel.mp4`, `*-film.mp4` and posters | `/brand` and `/motion`; films belong to gt-films |
+- Kevin named the glyph globe his favourite and then asked that only the versions without the GT logo be shown (2026-10-02).
+- `/graphics` is the page for still artwork and `/motion` the page for films (Kevin, 2026-10-03).
+- Dithered photographs and scans of objects are artifact pictures, governed by gt-dither, and they carry no readable English text (Kevin, 2026-10-05).
 
-The globes came from Kevin's request for "a small graphic" for a partnership (Kevin, 2026-10-01).
+### Store listings
 
-- The dithered globe is the dashboard sign-in globe (`globe()` in `src/lib/dither.ts`) printed through the 8x8 Bayer screen in `#86a8ff` on ink `#070707` with 6px cells. Its settings are ambient 0.14, rim 0.16, landmass 0.42, gamma 1.15, radius 0.40 of the frame, tilt 0.15 and t 40; larger tilts bring the pole and its noise into view.
-- The mark version puts the doubled-line GT mark at 0.42 of the diameter in `#f2f2f0` over a three-cell knockout.
-- The glyph globe prints the same sphere in characters from twenty writing systems, picked by a seeded draw. Glyph size follows the lighting alone. Land is large in `#f2f2f0` and `#86a8ff` and ocean is half size in `#2f5ce0`, on 32px cells. Matching glyphs to ink density was rejected because dense CJK glyphs took over every bright area.
-- The light glyph globe sits on paper `#ffffff` with land in `#070707` and ocean in `#2f5ce0` thinning to `#86a8ff` in the highlight. Its halftone runs the other way so ink carries the shadow.
-- Kevin named the glyph globe his favourite and then asked that only the versions without the GT logo be shown (Kevin, 2026-10-02). The carved versions stay in the renders and out of `public/media`.
+A marketplace listing is a set of screenshots made with the same care as a blog visual. For the Google Workspace Marketplace, Locadex's listing (specs verified 2026-10-09):
 
-The globe sources live in `motion/stills/partnership-globe/` (`index.html?v=globe|gt|glyphs&mode=dark|light`, `render.mjs`, `carve.js`, `sheet.mjs`). `motion/` is untracked and belongs to the Videos session, so treat it as read-only from other lanes. `dither-lib.js` there is generated from `src/lib/dither.ts` by stripping the types, so the sign-in engine runs in the page unchanged. `node render.mjs` writes 2048px PNGs to `motion/out/stills/` and refuses to overwrite an approved still whose bytes differ from its sha256 pin; `REPIN=1` writes it and prints the new hash. Copy approved stills into `public/media/` at their existing names, and write the lossless WebP that `/brand` shows beside each one on its ground with `cwebp -lossless -z 9 -exact -metadata none <name>.png -o <name>.webp`. Decode the PNG and the WebP and compare their raw pixels before committing; they must be identical.
+- Up to 10 screenshots at 1280 by 800 (2560 by 1600 accepted), full bleed with square corners; a card banner at 220 by 140; icons at 32 and 128.
+- Every image credits General Translation with the lockup "Locadex by General Translation" carrying both marks.
+- Type is the real rsms Inter, `public/fonts/InterVariable.woff2` with its opsz and wght axes, never the 518-glyph subset in `graphics/fonts/Inter-Variable.ttf`.
+- A product panel in a shot is the product's real markup rendered with its host API stubbed, never a redrawn approximation.
 
-`/graphics` is the page for still artwork and `/motion` the page for films (Kevin, 2026-10-03). Today `/graphics` carries the docs series, its contact sheets, its grounds and the figures of the earlier posts, and the globes and the banner are on `/brand`. Dithered photographs and scans of objects are artifact pictures, governed by gt-dither, and they carry no readable English text (Kevin, 2026-10-05).
+### Maps
+
+A world map on a GT surface takes no position on borders and does not look forced about it. It is organized by language: it never names a country or territory, never draws a country outline and never shows per-country figures. A disputed area draws a neutral mix of the languages around it, and the sources line says the map shows where languages are written, not borders. Kevin, 2026-10-03: "avoid political sensitivity without making it look forced".
 
 ## The hand-off to a post
 
@@ -161,31 +162,7 @@ Posts live in the `generaltranslation/content` repository, checked out in gt-clo
 
 ## Traps and fixes
 
-| Symptom | Cause | Fix |
-| --- | --- | --- |
-| A "pixelated" cover | 1x dither aliasing, and the optimizer re-encoding at quality 75 | Ground at 2x with square pixels; webp covers served at quality 95 |
-| `export-blog.py` stopped on a missing `--covers.png` | `pnpm graphics:export -- --covers` passed the `--` through, so argparse read `--covers` as an id | `pnpm graphics:export --covers` |
-| Every render failed to save on a fresh clone | `graphics/build/out/` is ignored and absent, and the screenshot does not create folders | `mkdir -p graphics/build/out` |
-| "Blurry" diagrams | 12px labels shown at 0.44x | Labels of 26px or more, 3px lines, a narrower composition |
-| Lines clipped | 1px rules and 1.5px caps fall under a device pixel | 3px everywhere, labels on backing pills |
-| Soft images on a sharp master | The browser shrank the 3840px master itself | `next/image` with `BLOG_COLUMN_SIZES` and the `deviceSizes` ladder |
-| Text under the floor after a type increase | The fit scaled the wider composition down | Narrow the composition |
-| A captured Lucide glyph drew as a lone corner | The SVG inliner stripped `width` and `height` from the glyph's `<rect>` | `svgFile()` resizes the root tag only (fixed 2026-09-24) |
-| A visual shipped as Chrome's "site can't be reached" page | The 8765 server was down during the render | `render.sh` skips a page that never centres; still check each render's pixel standard deviation (below) |
-| A crop renders empty | The `SHOTS` file is missing; the library marks it `missing` and sizes it 1440 by 900 without throwing | Confirm every shot a visual uses exists before rendering |
-| A sparkle icon appears in a label | The Heroicon name does not exist and `ico()` fell back to `sparkles` | Fix every name `graphics:gen` lists under `MISSING ICONS` |
-| A cover the post embeds as a figure went stale | `export-blog.py` skips `H*` ids unless they are in `POST_COVERS` | List the cover in `POST_COVERS` |
-| Servers and the scratchpad are gone after a break | The desktop app stops servers and clears the scratchpad when the date changes | Restart 8765 and the dev servers before rendering; keep review sheets under `graphics/build/out/_*.png` |
-| The hover pill jumped after every click in a clip | Screenshots re-fire trusted pointer events | Block trusted pointer events in the region and drive hovers synthetically |
-| Carousel prop `items` undefined | next-mdx-remote strips expression props | Child elements with string attributes |
-| The content preview build failed | The preview app did not know a new component | Stub every new component in the content repository's preview app |
-| The PR policy check failed | A `feat` title without a Linear issue | A `docs(blog)` title, or link the issue |
-
-A render that is a flat error page has a low standard deviation (under about 20 in grey). Check the whole set in one pass:
-
-```bash
-python3 -c "import sys; from PIL import Image, ImageStat; [print(round(ImageStat.Stat(Image.open(p).convert('L')).stddev[0], 1), p) for p in sys.argv[1:]]" graphics/build/out/*.png | sort -n | head
-```
+Every failure the toolchain has shown, with its cause and fix, is in `references/traps.md`: pixelated covers, the `pnpm graphics:export --covers` flag, the missing `graphics/build/out/` folder, blurry labels and clipped lines, soft images, text under the floor, the root-only SVG resize, renders of the browser's error page (check each render's pixel standard deviation), empty crops, fallback sparkle icons, stale covers, servers gone after the date change, jumping hover pills in clips, stripped MDX props, the preview build and the PR title check. Read it before a render and again when a render looks wrong.
 
 ## Review checklist
 
@@ -207,17 +184,8 @@ python3 -c "import sys; from PIL import Image, ImageStat; [print(round(ImageStat
 - [ ] The gt-cloud pull request with the images merges before the content pull request that publishes the post.
 - [ ] Still artwork has a row in `public/media/README.md`, a transparent twin where a partner will place it, and a pinned hash for an approved render.
 
-Related skills: agent-browser (captures, the audit and the render), create-graphics (choosing a route for diagrams and illustrations outside this toolchain), design-engineering-polish (the final visual pass), hyperframes (motion beyond a stop-motion clip). In this set: gt-website (the blog section and its MDX components), gt-brand (the inks and marks), gt-dither (artifact pictures and live dither fields), gt-diagrams (doubled-line connectors), gt-isometric (isometric plates and exploded views), gt-films (blog trailers and the reel), gt-voice (alt text and post copy).
+Related skills: agent-browser (captures, the audit and the render), create-graphics (choosing a route for diagrams and illustrations outside this toolchain), design-engineering-polish (the final visual pass), hyperframes (motion beyond a stop-motion clip). In this set: gt-website (the blog section and its MDX components), gt-brand (the inks and marks), gt-dither (artifact pictures and live dither fields), gt-diagrams (doubled-line connectors, and isometric plates and exploded views in `references/isometric.md`), gt-films (blog trailers and the reel), gt-voice (alt text and post copy).
 
 ## Sources
 
-- Prototemplate: `docs/GRAPHICS.md` (What a visual is, Sizing, The files, Procedure, Capturing, Backgrounds, Clips, Handing off to a post, Where it went wrong); served at `/docs/graphics`.
-- Prototemplate: `graphics/README.md`; `graphics/build/gen-lib.js` (`SHOTS`, `BG`, `MIN_TEXT`, `PAD`, the primitives, `CSS`, `CENTER_SCRIPT`, `stage`); `graphics/build/gen-visuals.js` (`N`, `O`, `add`, `ASSIGN`, `BG_WASH`, the covers); `graphics/build/audit.js`; `graphics/build/render.sh`; `graphics/build/export-blog.py`; `graphics/build/composite-videos.sh`; `graphics/build/capture-sidebar.sh`; `graphics/build/sheet.py`; `graphics/serve/server.js`; `graphics/glyph/gfboot.sh`, `gfexport.sh`, `gfsurvey.sh`.
-- Prototemplate: `src/lib/blog-image-sizes.ts`, `next.config.ts` (`images.deviceSizes`, `qualities`), `src/lib/graphics.ts`, `src/app/brand/page.tsx` (`GLOBES`), `src/app/brand/brand-sections.ts`, `src/lib/dither.ts` (`globe`), `public/media/README.md`, `content/blog/designing-docs-for-humans.mdx`.
-- Prototemplate: `motion/stills/partnership-globe/render.mjs` (local, untracked, owned by the Videos session).
-- Prototemplate, absorbed by this skill: `.agents/skills/blog-graphics-pipeline`, `docs-source-capture`, `glyphfield-headless-export`, `stop-motion-ui-capture` and `gt-docs-visual-tokens` (written 2026-09-18 in 3d87326; the pipeline revised the same day in 70380de and the tokens on 2026-09-21 in c18a362).
-- gt-cloud (origin/main, 2026-10-05): `.agents/skills/glyphfield/SKILL.md` and `references/source-map.md`; `apps/landing/src/lib/studio-field.ts`; `apps/landing/src/components/blog/BlogPostCover.tsx` (webp covers at quality 95), `imageSizes.ts`; `scripts/deploy-landing.sh` (content main on every deploy).
-- wiki: `skills/engineering/create-graphics/SKILL.md`.
-- Session notes: blog-graphics-pipeline-traps (2026-09-18 to 2026-09-24), gt-motion-films (partnership globes, 2026-10-01 to 2026-10-02), docs-redesign-post-part2 (the screenshot cookies, 2026-09-09), fuma-blog-pipeline (the merge order, verified 2026-09-14), explorations-stay-local, session-lanes-prototemplate.
-- Where this skill and `docs/GRAPHICS.md` differ, the skill follows the code and gt-cloud main: the set is thirty-three visuals and eight covers and cards (the doc says thirty-six), the GIF is 1400 wide (its Clips section says 1600), the ground is drawn pixelated (its trap table says smooth), the fit never scales up (its table says sparse compositions zoom to fill), webp covers are served at quality 95 (it says 90), and the gt-cloud pull request merges before the content one (it says content first). `graphics/README.md` writes `pnpm graphics:export -- --covers`, which fails under pnpm 11.
-- Kevin, 2026-09-14 (review explorations on localhost first); Kevin, 2026-10-01 (the partnership globes); Kevin, 2026-10-02 (show the glyph globes without the logo); Kevin, 2026-10-03 (dedicated pages for graphics and motion); Kevin, 2026-10-05 (no readable text on artifact pictures).
+Dated provenance for every rule is in `references/sources.md`: the toolchain files, `docs/GRAPHICS.md`, the gt-cloud and content files, and Kevin's dated directives.
