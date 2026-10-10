@@ -13,10 +13,14 @@ Where every rule, number and script in `gt-verify` comes from. This list moved o
 
 ## Added 2026-10-10 (system v2, lane L2)
 
-- `scripts/page-signature.py` and `scripts/compare-signatures.py`: copies of the docs parity review's `sig.py` and `compare.py` (New Onboarding and Dashboard session, used on gt-cloud #5217 on 2026-10-08), taken after that session called the review notes stable on 2026-10-10. Evidence: system-v2 inventory `onboarding.json` row 13 ("Dependency-upgrade parity review kit"). The fetch step reads a route list in place of a dev server's prerender manifest (plan item C2). The row-aligned pixel diff of the same kit is not copied: the docs parity round 2 has not named its keeper version.
+- `scripts/page-signature.py` and `scripts/compare-signatures.py`: copies of the docs parity review's `sig.py` and `compare.py` (New Onboarding and Dashboard session, used on gt-cloud #5217 on 2026-10-08), taken after that session called the review notes stable on 2026-10-10. Evidence: system-v2 inventory `onboarding.json` row 13 ("Dependency-upgrade parity review kit"). The fetch step reads a route list in place of a dev server's prerender manifest (plan item C2). The row-aligned pixel diff of the same kit was copied later the same day (next entry).
 - `references/parity-review.md`: the method and report shape of the #5217 review (its REVIEW.md, 2026-10-07), with gt-cloud file paths and findings left out.
 - Section 6, "Compare the whole page set across an upgrade": the same review.
 - `references/recipes.md`, "Request URLs in a harness": the harness rule recorded in Claude memory `ramp-routing-review` (2026-09-09 and 2026-09-10), rule only; inventory `memories.json` row "ramp-routing-review" and `docs.json` row 15.
 - `references/cases.md`: text moved from `SKILL.md` unchanged in substance; its sources are the ones above.
 - `metadata.owner: P` (the Prototemplate session), from the plan's skill table (2026-10-10).
 - `Last real run` lines of `probe.mjs` and `stress.mjs`: a scan of Claude Code transcripts on 2026-10-10 found their last runs on 2026-10-06 in Prototemplate session workflows.
+
+## Added 2026-10-10 (the New Onboarding and Dashboard session's review)
+
+- `scripts/row-diff.py`, its test `scripts/row-diff.test.py`, the Scripts table and step 3 of `references/parity-review.md`, and the third parity script in the opening paragraphs of `SKILL.md`: a copy of the docs parity audit's keeper `row-diff.py` (the `diff.py` that round 2 of the audit ran on 2026-10-09 for gt-cloud #5258 over 120 page and viewport keys), named as the stable version in the New Onboarding and Dashboard session's review of 2026-10-10 (plan item C2). The copy keeps the alignment, the threshold of 16 per channel, the crops and the noise pair, and adds `--help` and a `main()` so the test can import it. One key of the audit's shots re-read with the copy on 2026-10-10 printed the same line as the audit's pass 2 log.

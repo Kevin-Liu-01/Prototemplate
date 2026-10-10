@@ -19,6 +19,14 @@ Write the routes to check into a text file, one path per line (`compare-signatur
 - each variant a cookie selects, as `path<TAB>cookie=value` lines;
 - the machine files: `llms.txt` and its family, the sitemap, `robots.txt`, `rss.xml`, OpenAPI files and the markdown twins.
 
+## Scripts
+
+| Script | What it does |
+| --- | --- |
+| `scripts/page-signature.py` | reads the structural signature of one server-rendered page |
+| `scripts/compare-signatures.py` | fetches the route list from Before and After and reports every structural difference, route by route |
+| `scripts/row-diff.py` | compares Before and After screenshots row by row: it aligns rows first (SequenceMatcher over row hashes) so an inserted band does not mark everything below it changed, counts a pixel as changed above 16 in any channel, writes a side-by-side crop per changed block, and reads a second Before capture as the noise pair |
+
 ## Structure, then behaviour
 
 1. **Fetch and compare the structure.**
@@ -32,7 +40,11 @@ Write the routes to check into a text file, one path per line (`compare-signatur
 
    `compare` prints how many routes differ in each field and writes `report/diffs.json`. Read the counts first: a field that differs on every route is one cause, and a field that differs on a few routes is usually several. A difference the change adds on purpose to every page (a new button on every heading) goes in with `--ignore-button` so it does not hide the rest.
 2. **Machine files byte for byte.** Compare the agent files and the sitemap with `cmp` or `diff`; when the sorted lines match and the files do not, only the order changed, which is still a finding for an index whose order means something.
-3. **What the structure cannot see:** chrome geometry at several widths (`probe.mjs` on the sidebar, the table of contents and the h1 at 390, 768, 1000, 1280, 1440 and 1920), keyboard order (the first Tab stops on both sides), scroll-spy, anchor landing, search, theme and locale switching, back and forward without an intermediate shell, layout shift, axe counts per page and mode, and the JavaScript each page downloads (scripts and bytes, cold cache). Visual crops at 1440 dark and 390 light for a sample of pages, compared with `gt-performance`'s `pixel-diff.mjs` after the capture timing noise is removed.
+3. **What the structure cannot see:** chrome geometry at several widths (`probe.mjs` on the sidebar, the table of contents and the h1 at 390, 768, 1000, 1280, 1440 and 1920), keyboard order (the first Tab stops on both sides), scroll-spy, anchor landing, search, theme and locale switching, back and forward without an intermediate shell, layout shift, axe counts per page and mode, and the JavaScript each page downloads (scripts and bytes, cold cache). Visual crops at 1440 dark and 390 light for a sample of pages, compared with `row-diff.py` (below) after the capture timing noise is removed. Name the shots `before--<key>.png`, `fix--<key>.png` and `before2--<key>.png`; `gt-performance`'s `pixel-diff.mjs capture` writes one shot per call.
+
+   ```sh
+   python3 skills/gt-verify/scripts/row-diff.py <scratch>/shots <scratch>/row-diff [filter]
+   ```
 4. **Read the served bytes** where they can differ unseen: a dark screenshot showed two code blocks as identical while their served token spans differed.
 
 ## Verdicts

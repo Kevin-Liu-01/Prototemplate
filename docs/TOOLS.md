@@ -124,6 +124,7 @@ Each skill carries the scripts its procedure calls, self-contained so an install
 | `gt-verify` | `compare-signatures.py` | compare-signatures.py: fetches the same routes from two servers and reports every structural difference between the two renders, page by page (gt-verify references/parity-review.md). |
 | `gt-verify` | `page-signature.py` | page-signature.py: reads the structural signature of one server-rendered page, the unit a parity review compares (gt-verify references/parity-review.md). |
 | `gt-verify` | `probe.mjs` | probe.mjs: measures what renders at one spot of a page, the way a fix is verified before it is reported as done (gt-verify sections 1 and 4). |
+| `gt-verify` | `row-diff.py` | row-diff.py: compares before and after screenshots of the same pages row by row and writes a side-by-side crop of every changed block (gt-verify references/parity-review.md). |
 | `gt-verify` | `stress.mjs` | stress.mjs: walks a scroll story or an animated section through the stress matrix of gt-verify section 3 at several viewports and writes the readings and the captures a reviewer looks at. |
 | `gt-website` | `routing-matrix.sh` | routing-matrix.sh: checks generaltranslation.com's routing cases (real pages, near-miss corrections, section fallbacks, locale prefixes) by the status and redirect target each path answers, so a routing change is gated before it ships (gt-website section 4). |
 
