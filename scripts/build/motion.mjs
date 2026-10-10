@@ -563,7 +563,11 @@ const OFF_SITE = new Set(MANIFEST_DATA.offSite ?? []);
 /* ---- the roster ---- */
 
 const ROSTER = join(MOTION, 'MOTION.md');
-if (!existsSync(ROSTER)) fail(`${ROSTER} is missing; set MOTION_DIR, or run where motion/ exists`);
+if (!existsSync(ROSTER)) {
+  /* a fresh clone has no motion/: one line, no stack */
+  console.error(`build-motion: ${ROSTER} is missing; set MOTION_DIR, or run where motion/ exists`);
+  process.exit(1);
+}
 
 function rosterEntries() {
   const lines = readLines(ROSTER);

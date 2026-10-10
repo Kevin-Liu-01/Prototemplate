@@ -8,6 +8,11 @@ build. Re-run to refresh; MANIFEST.json records where every file came from.
 """
 import json, re, sys, urllib.parse, urllib.request, pathlib
 
+# --help prints this docstring and downloads nothing
+if {'--help', '-h'} & set(sys.argv[1:]):
+    print(__doc__)
+    sys.exit(0)
+
 UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
 OUT = pathlib.Path(__file__).resolve().parents[2] / 'public' / 'fonts' / 'google'

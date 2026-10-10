@@ -50,3 +50,6 @@ jobs:
           for file in $(grep -rl --include='*.mjs' 'helpIfAsked(import.meta.url' scripts | grep -v '^scripts/lib/'); do
             node "$file" --help > /dev/null || { echo "--help failed: $file"; exit 1; }
           done
+          for file in scripts/build/*.py; do
+            python3 "$file" --help > /dev/null || { echo "--help failed: $file"; exit 1; }
+          done
