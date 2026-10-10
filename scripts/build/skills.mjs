@@ -17,8 +17,9 @@
 //   - `metadata.updated` is a real date, YYYY-MM-DD;
 //   - `metadata.origin` is `prototemplate`, which is how the installer
 //     (scripts/skills/install.mjs) knows a folder is its own;
-//   - supporting files are .md, .mjs or .json, since the route that serves
-//     them raw sends text.
+//   - supporting files are .md, .mjs, .json, .py, .sh, .txt or .js, since
+//     the route that serves them raw sends text (the last four as
+//     text/plain, so a browser shows a script and never runs it).
 // It also lints each folder: no em dash in a Markdown file, no /Users/ path
 // and no email address in any file, a `## Sources` section in SKILL.md, and
 // no slug that the wiki's runtime skill list already holds where that list
@@ -117,7 +118,8 @@ const ORDER = [
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const WHEN = /\bUse (when|before|after|for)\b/;
-const SUPPORT = /\.(md|mjs|json)$/;
+/* the types the raw route (src/app/skills/[slug]/[...path]/route.ts) serves; skills.test.mjs keeps the lists equal */
+const SUPPORT = /\.(md|mjs|json|py|sh|txt|js)$/;
 const MAX_DESCRIPTION = 1024;
 const EM_DASH = '\u2014';
 const HOME_PATH = /\/Users\/[^/\s]+/;
@@ -313,7 +315,7 @@ for (const slug of readdirSync(SOURCE).sort()) {
     .filter((rel) => rel !== 'SKILL.md')
     .sort((a, b) => fileRank(a) - fileRank(b) || a.localeCompare(b, 'en'));
   for (const rel of ['SKILL.md', ...files]) {
-    if (rel !== 'SKILL.md' && !SUPPORT.test(rel)) fail(slug, `${rel}: supporting files are .md, .mjs or .json`);
+    if (rel !== 'SKILL.md' && !SUPPORT.test(rel)) fail(slug, `${rel}: supporting files are .md, .mjs, .json, .py, .sh, .txt or .js`);
     const body = readFileSync(join(dir, rel), 'utf8');
     if (rel.endsWith('.md') && body.includes(EM_DASH)) {
       const at = body.split('\n').findIndex((line) => line.includes(EM_DASH));
