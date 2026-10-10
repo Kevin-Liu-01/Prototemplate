@@ -31,8 +31,9 @@ The site is served at three addresses:
 https://www.prototemplate.com (the General Translation team's Vercel
 project; the apex domain redirects to www), and
 https://prototemplate.vercel.app and https://prototemplate.kevinliu.studio
-(both from Kevin's personal Vercel project). Every route below works at
-each of them.
+(both from Kevin's personal Vercel project). www.prototemplate.com is the
+canonical address and the other two are aliases. Every route below works
+at each of them.
 
 - `/`: the design lab, the twenty-seven directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall (the flagship cut into section tiles, light and dark, desktop and mobile) and the capabilities ledger (what the system can do, each entry pointing at where it runs live)
 - `/brand`: the brand book, the identity canon in ten sections
@@ -51,9 +52,31 @@ each of them.
 ## Run it
 
 ```bash
+git clone --filter=blob:none https://github.com/Kevin-Liu-01/Prototemplate.git
+cd Prototemplate
 pnpm install
-pnpm dev        # http://localhost:3005
+pnpm run doctor                       # lists what this machine is missing, with the command that fixes each
+git config core.hooksPath .githooks   # the pre-push hook runs pnpm lint:public
+pnpm dev                              # http://localhost:3005
 ```
+
+- `--filter=blob:none` makes a blobless clone. The history holds large
+  reference captures, and a blobless clone downloads an old file's
+  contents only when a command reads it. A full clone works too.
+- `pnpm run doctor` reads Node at the `.nvmrc` major, pnpm at
+  `package.json`'s `packageManager`, the installed packages, the Chrome
+  for Testing build the browser tools launch
+  (`pnpm exec playwright-core install chromium`, or `CHROME_PATH`), and
+  Python 3 with `requirements.txt`. ffmpeg and the HyperFrames CLI are
+  optional; only the films need them. Write `pnpm run doctor`: a bare
+  `pnpm doctor` runs pnpm's own command.
+- The pre-push hook prints what `pnpm lint:public` finds: key shapes,
+  machine paths and, with `PT_DENYLIST` set to the private term list,
+  the denylist terms.
+- To load the skills in your agents, run `pnpm skills:install --user`
+  (your agent home) or `pnpm skills:install --project <dir>` (one
+  project); Skills below has the details.
+- [`docs/TOOLS.md`](./docs/TOOLS.md) (`/docs/tools`) lists every command.
 
 ## Read first
 
@@ -64,7 +87,9 @@ pnpm dev        # http://localhost:3005
 | [`BRAND.md`](./BRAND.md) | the identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and the context for partners |
 | [`DESIGN.md`](./DESIGN.md) | the visual canon: the four-color system, the line law, rails/grounds/seams, the doubled line, iso, the 1-bit language, moving type, motion discipline, the mobile type ladder, the svh/dvh law, the two read lines |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | the code map: directions registry, the toolchain SSOT + fork rescoping, the component inventory |
-| [`docs/SHIP-LOOP.md`](./docs/SHIP-LOOP.md) | the verify/ship procedure every round runs (line audit, page check, ratchet, tsc, filming, mirror build) |
+| [`docs/SHIP-LOOP.md`](./docs/SHIP-LOOP.md) | the verify/ship procedure every round runs (line audit, page check, ratchets, tsc, captures, the gated push to main) |
+| [`docs/TOOLS.md`](./docs/TOOLS.md) | every pnpm command and the scripts the skills bundle, written by `pnpm build:tools`; the live version is `/docs/tools` |
+| [`docs/archive/`](./docs/archive/README.md) | finished round specs kept as design history |
 | [`docs/LIBRARIES.md`](./docs/LIBRARIES.md) | the library index; the live version is the build log at the end of the `/docs` readme |
 | [`public/media/`](./public/media/README.md) | finished artwork made with the system: the Open Source announcement reel, the X banner, two blog films and three partnership globes, shown live in `/brand`, and the three translation series films, which play on `/motion` |
 | [`docs/GRAPHICS.md`](./docs/GRAPHICS.md) | the graphics pipeline: how the blog illustrations are captured, composed, rendered, clipped and handed to a post; the live version is `/docs/graphics`, and the set is `/graphics` |
@@ -128,7 +153,9 @@ pnpm skills:install gt-voice gt-brand --project ~/code/app --copy   # vendor two
   are relative, which is how the committed `.claude/skills` and
   `.agents/skills` links are made (`--project .`). In a repository that
   teammates clone, use `--copy`; the script says so when git tracks the
-  target.
+  target. To keep links out of another repository's history, list each
+  one in that checkout's `.git/info/exclude`; Kevin's gt-cloud checkout
+  loads the skills this way (decisions log, 2026-10-10).
 - The script never writes into another git repository through a linked
   folder. On Kevin's machine `~/.claude/skills` and `~/.agents/skills` are
   links into his wiki's runtime list, so `--user` refuses there and says
