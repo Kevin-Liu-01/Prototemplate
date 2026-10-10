@@ -61,8 +61,8 @@ export const SKILLS: readonly Skill[] = [
     title: 'Voice and the humanizer',
     description: 'How Kevin writes for General Translation: plain technical English for site copy, docs, decks, captions, films, UI strings, PR text and Slack; sentence shape; the heading and casing rules; writing for a stranger; the humanizer pass that strips AI patterns; code comments, commit messages and PR descriptions; and the first-person register for Kevin\'s own posts and reviews. Use when writing or editing any text Kevin will ship, publish or read, including code comments and PR descriptions, and before showing him a draft.',
     areas: ['voice'],
-    updated: '2026-10-06',
-    files: ['references/ai-patterns.md', 'references/launch-posts.md', 'references/messages.md'],
+    updated: '2026-10-10',
+    files: ['references/ai-patterns.md', 'references/before-after.md', 'references/launch-posts.md', 'references/messages.md', 'references/sources.md'],
   },
   {
     id: 'gt-website',
@@ -79,8 +79,8 @@ export const SKILLS: readonly Skill[] = [
     title: 'Working in Prototemplate',
     description: 'How to work in Prototemplate, Kevin\'s hub and wiki for General Translation work: what each route holds, the repository map, the viewer shell and its props, the registries that move together (surfaces, search index, docs, sitemap, llms.txt, captures), the chrome and sidebar rules, the book page standard, adding a page, a document, a handbook document or a skill, the build scripts, the shared checkout and its session lanes, the gates and landing, keeping the hub current with gt-cloud, and the curated skills with their contract and install. Use when changing anything in the Prototemplate repository, when adding a route, document or skill to it, or when building on it from another project.',
     areas: ['website', 'components'],
-    updated: '2026-10-08',
-    files: ['references/adding.md', 'references/shell.md', 'scripts/check-registries.mjs'],
+    updated: '2026-10-10',
+    files: ['references/adding.md', 'references/build-scripts.md', 'references/chrome.md', 'references/hub.md', 'references/porting.md', 'references/registries.md', 'references/shell.md', 'references/skills.md', 'references/sources.md', 'scripts/check-registries.mjs'],
   },
   {
     id: 'gt-performance',
@@ -133,8 +133,8 @@ export const SKILLS: readonly Skill[] = [
     title: 'Exploration rounds and convergence',
     description: 'How a General Translation design exploration runs from research to one landed design: reading Kevin\'s sources and measuring the reference sites, writing the page as text first, directions that differ in silhouette, material and action, one registry and one place to compare them live, in-page switches for effect variants, picks by Kevin\'s numbers, forks that never overwrite a version, critic composites against the reference, removing the losers and archiving retired versions, and keeping rounds local until he lands them. Use when Kevin asks for options, versions, variations, directions or "try N approaches", when he links a post or product to learn from, and when converging a design toward his pick.',
     areas: ['aesthetic', 'website', 'landing', 'graphics'],
-    updated: '2026-10-05',
-    files: ['references/rounds.md', 'scripts/distinct-set.mjs'],
+    updated: '2026-10-10',
+    files: ['references/charter.md', 'references/comparing.md', 'references/registry.md', 'references/rounds.md', 'references/sources.md', 'scripts/distinct-set.mjs'],
   },
   {
     id: 'gt-lints',
@@ -214,8 +214,8 @@ export const SKILLS: readonly Skill[] = [
     title: 'Review servers and local environments',
     description: 'How General Translation apps run locally so Kevin can review and try them: the review servers and their ports (the gt-cloud landing on 3001, Prototemplate on 3005, the dashboard environment on 1355), the order of checks when he cannot see a change, the per-worktree dashboard dev environment with a seeded session, the /dev/states gallery and the Stripe stand-in, real providers only with his approval, a CLI login he can try without touching his credentials, and keeping servers current and few. Use when starting, restarting or debugging a local server for GT work, when Kevin asks to see or try something locally, or when setting up a new machine or worktree.',
     areas: ['workflow', 'website'],
-    updated: '2026-10-05',
-    files: [],
+    updated: '2026-10-10',
+    files: ['references/sources.md'],
   },
   {
     id: 'gt-verify',
@@ -241,8 +241,8 @@ export const SKILLS: readonly Skill[] = [
     title: 'Reporting to Kevin',
     description: 'How to report to Kevin during and after General Translation work: show every result as crops, a running page, a gallery or files he can grab; state each item\'s exact ship state with its SHA, PR or URL; keep a numbered ledger of every ask; close a turn with what shipped, what only Kevin can do and numbered risks; draft the PR slate across gt-cloud, gt and content; batch decisions with recommendations; map his screenshot notes to fixes; and write one-sentence explanations, end-of-day recaps and stop-and-handover reports. Use when ending every turn that changed something, when Kevin asks "show me", "is it on main", "give me my PR list", "what did you do" or "what do you need from me", and when a round produces decisions for him.',
     areas: ['workflow', 'voice'],
-    updated: '2026-10-05',
-    files: ['references/examples.md', 'scripts/pr-slate.mjs'],
+    updated: '2026-10-10',
+    files: ['references/examples.md', 'references/sources.md', 'scripts/pr-slate.mjs'],
   },
   {
     id: 'gt-orchestration',
@@ -250,8 +250,8 @@ export const SKILLS: readonly Skill[] = [
     title: 'Running agent fleets and long autonomous runs',
     description: 'How General Translation work runs across many agents and over long autonomous runs: when to fan out and when to stay linear, the spec before a build fan-out, lanes that own files, lane prompts that open with Kevin\'s words, the self-contained brief for a subagent, a task chip or another session, critic-scored convergence against a named reference, adversarial verification of findings, keeping going and resuming dead agents, heartbeats and spend caps for paid model campaigns, corrective handoffs, and closing a round. Use when planning or running a workflow, spawning subagents or task chips, writing a brief or handoff for another agent, or resuming work after an interruption.',
     areas: ['workflow'],
-    updated: '2026-10-07',
-    files: ['references/briefs.md', 'references/campaigns.md', 'references/handoffs.md', 'references/workflow-shapes.md'],
+    updated: '2026-10-10',
+    files: ['references/briefs.md', 'references/campaigns.md', 'references/convergence.md', 'references/examples/critic-loop.js', 'references/examples/probe.js', 'references/examples/research.js', 'references/examples/write.js', 'references/handoffs.md', 'references/harness-traps.md', 'references/sources.md', 'references/workflow-shapes.md', 'scripts/replay-edits.py', 'scripts/replay-edits.test.py'],
   },
 ];
 

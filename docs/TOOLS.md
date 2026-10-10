@@ -112,6 +112,7 @@ Each skill carries the scripts its procedure calls, self-contained so an install
 | `gt-films` | `frames.mjs` | Extracts a critic's frames from a render by frame index. |
 | `gt-films` | `measure-render.mjs` | Measures a General Translation film render against the motion brief's delivery targets (motion/MOTION.md, "Sound" and "What each film delivers"): H.264 at 1920 x 1080, 60 fps for a final (30 for a draft), AAC audio as long as the video, integrated loudness near -16 LUFS and a ... |
 | `gt-films` | `scan.mjs` | The critic's whole-film scan (skills/gt-films/references/critic.md). |
+| `gt-orchestration` | `replay-edits.py` | Rebuild files from the Write and Edit calls recorded in agent transcripts. |
 | `gt-performance` | `frame-probe.mjs` | frame-probe.mjs: measures how smoothly a page animates, the way the gt-performance skill asks for before and after numbers. |
 | `gt-performance` | `pixel-diff.mjs` | pixel-diff.mjs: proves that a performance change left the picture alone. |
 | `gt-reporting` | `pr-slate.mjs` | Drafts Kevin's PR slate: every open PR he authored in gt-cloud, gt and content, sorted into the groups the slate uses, with the full link, the purpose (the title without its type), the line counts and the facts that put it in its group. |
