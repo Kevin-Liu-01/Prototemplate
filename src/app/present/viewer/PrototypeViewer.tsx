@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { useAfterIntro } from '../after-intro';
 import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -42,6 +43,10 @@ export default function PrototypeViewer() {
   const [dockSlot, setDockSlot] = useState<HTMLElement | null>(null);
   const [notesSlot, setNotesSlot] = useState<HTMLElement | null>(null);
   const reviews = useReviews();
+  // The frame's document hydrates on this page's main thread, so it loads
+  // once the intro's entrance has played instead of with the page. That is
+  // still seconds before anyone can scroll this far.
+  const frameArmed = useAfterIntro();
 
   // The dock is one shared pill in the presenter HUD; this viewer portals
   // its controls (and the notes panel) into the pill's slots.
@@ -71,8 +76,7 @@ export default function PrototypeViewer() {
         end: 'bottom 40%',
       });
 
-      // The stage loads with the page so it is ready on arrival, and idles
-      // while no part of this section is on screen.
+      // The stage idles while no part of this section is on screen.
       onScreen.current = ScrollTrigger.create({
         trigger: root.current,
         start: 'top bottom',
@@ -260,10 +264,9 @@ export default function PrototypeViewer() {
     };
   }, []);
 
-  // The SSR-rendered iframe can finish loading before hydration attaches
-  // React's onLoad, so the veil would never lift — watch the load natively and
-  // treat an already-complete document as loaded. A page that loads while
-  // the stage is off screen is frozen at once.
+  // Watch the frame's load natively and treat an already-complete document
+  // as loaded, so the veil always lifts. A page that loads while the stage
+  // is off screen is frozen at once.
   useEffect(() => {
     const el = frame.current;
     if (!el) return;
@@ -277,7 +280,7 @@ export default function PrototypeViewer() {
       markLoaded();
     el.addEventListener('load', markLoaded);
     return () => el.removeEventListener('load', markLoaded);
-  }, [current.slug]);
+  }, [current.slug, frameArmed]);
 
   // The frame takes the pointer once loaded (hover states inside the
   // prototype must work in presenter mode), but the deck keeps the wheel:
@@ -315,13 +318,15 @@ export default function PrototypeViewer() {
     <section ref={root} className='pr-slide pr-proto' data-slide='prototypes'>
       <div className='pr-stage'>
         <div className='pr-stage-frame'>
-          <iframe
-            ref={frame}
-            key={current.slug}
-            src={`/d/${current.slug}?chrome=0`}
-            title={current.name}
-            className={isLoaded ? 'is-loaded' : ''}
-          />
+          {frameArmed && (
+            <iframe
+              ref={frame}
+              key={current.slug}
+              src={`/d/${current.slug}?chrome=0`}
+              title={current.name}
+              className={isLoaded ? 'is-loaded' : ''}
+            />
+          )}
           {!isLoaded && (
             <div className='pr-stage-veil'>
               <span>

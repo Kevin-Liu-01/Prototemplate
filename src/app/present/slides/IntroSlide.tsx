@@ -7,6 +7,8 @@ import { useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 
+import { introSettled } from '../after-intro';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /** Opening slide — the prismatic burst sets the mood under the title card. */
@@ -16,9 +18,16 @@ export default function IntroSlide() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        introSettled();
+        return;
+      }
 
-      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+      // Deferred presenter work (after-intro.ts) waits for the entrance.
+      const tl = gsap.timeline({
+        defaults: { ease: 'power4.out' },
+        onComplete: introSettled,
+      });
       tl.fromTo(
         '.pr-intro-field',
         { opacity: 0 },
