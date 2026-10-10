@@ -2741,6 +2741,24 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   }
 }
 
+/* An upright phone: one row left the prototype's label about 25px at 320
+   wide ("T..."), its name running out of its box over the stage. The label
+   takes the dock's first row, centered, and the arrows, the stars and the
+   pencil the second, so every name reads in full above the stage. */
+@media (max-width: 480px) {
+  .pr-dock[data-mode='viewer'] .pr-dock-set-viewer {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 2px;
+  }
+
+  .pr-dock[data-mode='viewer'] button.pr-dock-label {
+    order: -1;
+    flex: 1 0 100%;
+    align-items: center;
+  }
+}
+
 /* ---------- Reduced motion: a plain vertical document ---------- */
 
 /* a phone on its side: the rail's rows would be 15px tall, so it steps
