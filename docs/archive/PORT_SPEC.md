@@ -113,7 +113,7 @@ The dev server is already running on **:3005** — do not start or restart it. H
 your files.
 
 ```
-node /private/tmp/claude-501/-Users-kevinliu-gt-gt-cloud/0472faa4-f4b6-46f0-9054-5f30d7a23b3e/scratchpad/shoot-route.mjs <slug> /private/tmp/claude-501/-Users-kevinliu-gt-gt-cloud/0472faa4-f4b6-46f0-9054-5f30d7a23b3e/scratchpad/shots/next/<slug>/self
+node <scratchpad>/shoot-route.mjs <slug> <scratchpad>/shots/next/<slug>/self
 ```
 
 Then Read `summary.json` (errorCount MUST be 0 — a `NEXT ERROR OVERLAY` entry means the route is

@@ -147,7 +147,7 @@ Route: `src/app/d/archive-press/` (slug kept for stability; display name is "Wid
 Dev server runs on **:3005** — never start or stop it.
 
 ```
-node /private/tmp/claude-501/-Users-kevinliu-gt-gt-cloud/0472faa4-f4b6-46f0-9054-5f30d7a23b3e/scratchpad/shoot-route.mjs <slug> /private/tmp/claude-501/-Users-kevinliu-gt-gt-cloud/0472faa4-f4b6-46f0-9054-5f30d7a23b3e/scratchpad/shots/next/<slug>/self
+node <scratchpad>/shoot-route.mjs <slug> <scratchpad>/shots/next/<slug>/self
 ```
 
 `errorCount` must be 0 and no `NEXT ERROR OVERLAY`. Read d00, d03, d06, d09, d12, m00 minimum.

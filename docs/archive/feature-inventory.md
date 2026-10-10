@@ -16,25 +16,25 @@ caption — and a **misunderstanding** the diagram must pre-empt. Claims are wri
 
 | Kind | Where it came from |
 |---|---|
-| Copy, customers, section order, code panels | `research/landing-content.md` (clean checkout of `apps/landing`) |
+| Copy, customers, section order, code panels | `archive/landing-content.md` (clean checkout of `apps/landing`) |
 | Positioning, voice, pricing philosophy | `research/wiki-strategy.md`, `research/wiki-standards.md` |
 | Narrative beats already agreed | `research/STORYBOARD.md` |
 | Module structure for the presentation | `research/PRESENTATION_BRIEF.md` |
 | API surface, flags, dashboard flows | live docs via the GT docs MCP (`generaltranslation.com/…/docs/**.mdx`) |
-| Real code, real output files, real locale tags | `/Users/kevinliu/gt/gt` (OSS monorepo), `/Users/kevinliu/gt/gt-cloud` |
+| Real code, real output files, real locale tags | `$GT` (OSS monorepo), `$GT_CLOUD` |
 
 ### Verified artefact sources you can copy verbatim
 
 - Real translated output, hashed keys + JSX tree format:
-  `/Users/kevinliu/gt/gt/examples/next-ssg/public/_gt/es.json`, `…/ja.json`, `…/de.json`, `…/fr.json`, `…/zh.json`
-- Real locale tag catalogue: `/Users/kevinliu/gt/gt/packages/supported-locales/src/supportedLocales.ts`
+  `$GT/examples/next-ssg/public/_gt/es.json`, `…/ja.json`, `…/de.json`, `…/fr.json`, `…/zh.json`
+- Real locale tag catalogue: `$GT/packages/supported-locales/src/supportedLocales.ts`
   (78 base-language entries, 129 distinct locale tags including regional variants)
 - Display-filtered locale list used by the current site:
-  `/Users/kevinliu/gt/gt-cloud/packages/locales/src/supportedLocales.ts`
-- Public usage rates: `/Users/kevinliu/gt/gt-cloud/packages/settings/src/credits.ts`
-  (rendered by `/Users/kevinliu/gt/gt-cloud/packages/ui/src/components/pricing/UsagePricing.tsx`)
-- Linter rule names: `/Users/kevinliu/gt/gt/packages/react-core-linter/src/rules/`
-- Example apps to screenshot: `/Users/kevinliu/gt/gt/examples/` (`next-create-app`, `next-ssg`,
+  `$GT_CLOUD/packages/locales/src/supportedLocales.ts`
+- Public usage rates: `$GT_CLOUD/packages/settings/src/credits.ts`
+  (rendered by `$GT_CLOUD/packages/ui/src/components/pricing/UsagePricing.tsx`)
+- Linter rule names: `$GT/packages/react-core-linter/src/rules/`
+- Example apps to screenshot: `$GT/examples/` (`next-create-app`, `next-ssg`,
   `expo-react-native`, `vite-create-app`, `next-pages-router`, `next-chatbot`, `next-gt-starter`,
   `create-react-app`)
 

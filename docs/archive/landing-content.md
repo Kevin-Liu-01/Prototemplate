@@ -1,6 +1,6 @@
 # General Translation — Landing Page Content Inventory
 
-Source: `/Users/kevinliu/gt/gt-cloud-wt-design-samples/apps/landing` (clean checkout of main, read-only).
+Source: `$GT_CLOUD/apps/landing` (clean checkout of main, read-only).
 Home page component tree: `src/app/[locale]/(home)/page.tsx` → `src/components/pages/home/HomePage.tsx` → sections in `src/components/landing/*`. Header/footer come from the shared UI package: `packages/ui/src/components/frame/NewHeader.tsx` and `NewFooter.tsx`.
 
 This document contains ALL copy, links, code snippets, logos, and numbers on the current page, in page order. Builders should use ONLY this document for content.
