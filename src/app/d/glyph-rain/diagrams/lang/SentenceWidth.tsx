@@ -54,6 +54,14 @@ const PAD = 13;
 const LABEL_ROOM = 86;
 /** …but never blown up past a size a UI string could plausibly be set at. */
 const MAX_SCALE = 1.5;
+/** The smallest type a row keeps its delta beside the box at. On a phone
+    track too narrow for that, the delta drops under its box instead and the
+    type fits the box alone, so no row runs past the card or the page. */
+const MIN_INLINE_SIZE = 14;
+/** The phone width of lang.css, the only width where the type may shrink
+    below the stylesheet's size: wider, a long row keeps the size it always
+    had and its delta hangs into the card's padding. */
+const PHONE = '(max-width: 560px)';
 const TICKS = 37;
 
 export default function SentenceWidth({ className, accent = true, title }: LangProps) {
@@ -93,10 +101,18 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
 
         const track = firstRow.querySelector<HTMLElement>('[data-sw-track]');
         const room = track ? track.clientWidth : rootEl.clientWidth;
-        const scale = Math.min(
-          MAX_SCALE,
-          Math.max(1, (room - PAD * 2 - LABEL_ROOM) / Math.max(natural, 1)),
-        );
+        /* The scale that lands the widest box and its delta on the track. On a
+           phone it may go below the stylesheet's size (it used to stop at 1,
+           and the German row ran past the card and the page); below
+           MIN_INLINE_SIZE the deltas stack under their boxes and the type fits
+           the box alone. */
+        const phone = window.matchMedia(PHONE).matches;
+        const fit = (room - PAD * 2 - LABEL_ROOM) / Math.max(natural, 1);
+        const stacked = phone && fit * nominal < MIN_INLINE_SIZE;
+        const scale = stacked
+          ? Math.min(1, (room - PAD * 2 - 3) / Math.max(natural, 1))
+          : Math.min(MAX_SCALE, phone ? fit : Math.max(1, fit));
+        rootEl.toggleAttribute('data-stacked', stacked);
         rootEl.style.setProperty('--lang-sw-size', `${Math.round(nominal * scale * 10) / 10}px`);
 
         const texts = lines.map((el) => el.offsetWidth);

@@ -123,6 +123,14 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* a tile's cast shadow reaches 24px past its right edge, and on a phone the
+   last tile meets the screen's edge, so the page scrolled sideways by up to
+   11px; the root clips at the viewport's edge, past which nothing is seen
+   (clip, not hidden: no scroll box, so the sticky nav still sticks) */
+.raking-relief-root {
+  overflow-x: clip;
+}
+
 /* ---------- utilities ---------- */
 
 .raking-relief-root .rr-vh {
