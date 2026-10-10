@@ -212,7 +212,7 @@ export const SKILLS: readonly Skill[] = [
     id: 'gt-local-dev',
     name: 'gt-local-dev',
     title: 'Review servers and local environments',
-    description: 'How General Translation apps run locally so Kevin can review and try them: the review servers and their ports (the gt-cloud landing on 3001, Prototemplate on 3005, the dashboard environment on 1355), the order of checks when he cannot see a change, the per-worktree dashboard dev environment with a seeded session, the /dev/states gallery and the Stripe stand-in, real providers only with his approval, a CLI login he can try without touching his credentials, and keeping servers current and few. Use when starting, restarting or debugging a local server for GT work, when Kevin asks to see or try something locally, or when setting up a new machine or worktree.',
+    description: 'How General Translation apps run locally so Kevin can review and try them: the review servers and their ports (the gt-cloud landing on 3001, Prototemplate on 3005, the dashboard environment on 1355), the order of checks when he cannot see a change, the per-worktree dashboard environment (set up through gt-cloud\'s README and gt-dashboard skill), real providers only with his approval, a CLI login he can try without touching his credentials, and keeping servers current and few. Use when starting, restarting or debugging a local server for GT work, when Kevin asks to see or try something locally, or when setting up a new machine or worktree.',
     areas: ['workflow', 'website'],
     updated: '2026-10-10',
     files: ['references/sources.md'],
@@ -224,7 +224,7 @@ export const SKILLS: readonly Skill[] = [
     description: 'How to prove General Translation work is done before saying so: measure what renders at the spot Kevin flagged, run the real gesture and the real flow, walk the stress matrix for scroll stories and animated sections, cover the viewports, themes, browsers, accessibility and edge counts that check:pages misses, re-check what was already right, verify the live deployment, sweep the whole class of a defect, find the root cause and guard it, compare a whole page set before and after an upgrade, and report how each item was verified. Use before reporting any fix or feature as done, when Kevin says something is still broken, and when closing a round.',
     areas: ['workflow', 'lints', 'website', 'aesthetic', 'motion'],
     updated: '2026-10-10',
-    files: ['references/cases.md', 'references/parity-review.md', 'references/recipes.md', 'references/sources.md', 'scripts/compare-signatures.py', 'scripts/page-signature.py', 'scripts/page-signature.test.py', 'scripts/probe.mjs', 'scripts/stress.mjs'],
+    files: ['references/cases.md', 'references/parity-review.md', 'references/recipes.md', 'references/sources.md', 'scripts/compare-signatures.py', 'scripts/page-signature.py', 'scripts/page-signature.test.py', 'scripts/probe.mjs', 'scripts/row-diff.py', 'scripts/row-diff.test.py', 'scripts/stress.mjs'],
   },
   {
     id: 'gt-ship',
