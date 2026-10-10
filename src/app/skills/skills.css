@@ -177,7 +177,7 @@
 
 /* ---------- narrow ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .sk-row {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -443,7 +443,7 @@
   outline-offset: 2px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   /* the gutter labels sit above their text */
   .sk-about > div,
   .sk-files li {

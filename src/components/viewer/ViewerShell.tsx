@@ -61,6 +61,12 @@ const HINT_HOLD_MS = 5000;
 /** At or below this width the sidebar is an overlay and the sheet pad shrinks. */
 const NARROW_PX = 900;
 
+/** A phone on its side (932x430 and smaller): narrow at any width, as every
+    900px rule of the shell's CSS also matches this query, so it gets the
+    phone's composition and touch sizes rather than a desktop list column of
+    28px rows. A tablet is taller and keeps the desktop composition. */
+const PHONE_SIDEWAYS = '(pointer: coarse) and (max-height: 500px)';
+
 /** At or below this width a first visit to a paged route opens the book when the route offers one. */
 const PHONE_PX = 600;
 
@@ -225,7 +231,7 @@ function writeHash(id: string): void {
 }
 
 function isNarrow(): boolean {
-  return window.innerWidth <= NARROW_PX;
+  return window.innerWidth <= NARROW_PX || window.matchMedia(PHONE_SIDEWAYS).matches;
 }
 
 function isDensity(value: string | null): value is ShellDensity {

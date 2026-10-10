@@ -210,7 +210,7 @@
 }
 
 /* The phone steps of the display ladder (deck head.html, its 900px book rule) */
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   :root {
     --pt-d1: 32px;
     --pt-d2: 26px;

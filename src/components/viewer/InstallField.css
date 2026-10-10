@@ -83,7 +83,7 @@
 /* the copy segment is a 44px target on a phone: 44px wide, and the field
    44px inside its two borders (on a phone the panel stacks, so the field
    no longer keeps the lead's pitch) */
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-cmd {
     grid-template-columns: minmax(0, 1fr) 44px;
     min-height: 46px;

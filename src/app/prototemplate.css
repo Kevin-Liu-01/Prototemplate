@@ -615,7 +615,7 @@
 
 /* ---------- small screens ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-feature {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1098,7 +1098,7 @@
   color: var(--pt-ink-2);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-shipped {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;

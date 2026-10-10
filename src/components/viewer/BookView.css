@@ -361,7 +361,7 @@
    there, so no row keeps the lead's pitch); the negative margins hand the
    row its 21.35px line back, so the rows keep their height. Links in the
    lead and the note grow the same way through inline padding. */
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-book-fact dd a {
     display: inline-flex;
     align-items: center;
@@ -512,7 +512,7 @@
   text-wrap: pretty;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   /* two columns; each link a 44px tap target on a phone, the type unchanged */
   .pt-book-toc {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -619,7 +619,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-book-in {
     padding-bottom: 80px;
   }

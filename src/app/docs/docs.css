@@ -273,7 +273,7 @@
 
 /* ---------- narrow ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .ptd-doc {
     gap: 24px;
   }

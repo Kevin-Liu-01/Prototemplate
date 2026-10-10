@@ -294,7 +294,7 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
 /* narrow: one 52px row. The brand and the separators go, every button but
    a text-only seg option is an icon square, the seg is icon-only, the
    search is a glyph (directive 8.3), the count keeps its numbers. */
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-toolbar {
     gap: 8px;
     padding: 0 8px;
@@ -430,7 +430,7 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) .pt-bar-brand {
 
 /* the left group gives way only through the brand title, which a narrow
    bar hides, so on a touch phone it keeps its width and the bar scrolls */
-@media (pointer: coarse) and (max-width: 900px) {
+@media (pointer: coarse) and (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-bar-l {
     flex-shrink: 0;
   }

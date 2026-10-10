@@ -119,6 +119,13 @@ on a direction page keeps the fixed sheet's ring, and a capture takes the
 frame role with the card corner. Kevin asked for this on 2026-10-06, after
 the grey mat had made every page a framed picture of a page.
 
+Every shell rule written for 900px and under also matches a phone on its
+side, `(pointer: coarse) and (max-height: 500px)`, and `ViewerShell.tsx`
+`isNarrow()` reads the same query: a 932x430 phone gets the phone's
+composition and touch sizes (the list as the overlay, 44px book links)
+instead of the desktop list column of 28px rows. A tablet is taller and
+keeps the desktop composition.
+
 Every structural horizontal rule of a book runs across the whole stage,
 from the sidebar's edge to the stage's right edge: the mast's rule, the
 contents rows, the band and the dividers, the full-width list rows of

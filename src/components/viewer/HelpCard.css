@@ -123,7 +123,7 @@
 }
 
 /* on a phone the 400px floor would pass the viewport */
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .pt-help-card {
     min-width: 0;
     width: 92vw;

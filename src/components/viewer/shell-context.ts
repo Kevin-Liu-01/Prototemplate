@@ -92,7 +92,7 @@ export type ShellState = {
   panelOpen: boolean;
   helpOpen: boolean;
   present: boolean;
-  /** window.innerWidth at or below 900 */
+  /** window.innerWidth at or below 900, or a phone on its side (ViewerShell.tsx PHONE_SIDEWAYS) */
   narrow: boolean;
   /** the active item id; empty when nothing is marked (the gallery's book at its top) */
   active: string;

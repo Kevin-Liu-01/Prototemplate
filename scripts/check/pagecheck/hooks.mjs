@@ -15,8 +15,9 @@
 //                   directive 7.5)
 //   sidebarColumn   above 900px an open list is the first grid column, 208px
 //                   in outline density or 256px with thumbnails, and the
-//                   main region starts at its right edge; at or below 900px
-//                   the list leaves the grid and shows only as the overlay
+//                   main region starts at its right edge; at or below 900px,
+//                   and on a phone on its side at any width, the list leaves
+//                   the grid and shows only as the overlay
 //                   (ViewerShell.css: the 900px cut, --pt-sb-w; Sidebar.css
 //                   .pt-sb.is-overlay; DESIGN.md "Line law for chrome":
 //                   the sidebar's right edge owns that seam)
@@ -24,9 +25,9 @@
 //                   scaled by fit() in deck/parts/tail.html) stays inside
 //                   the viewport with its 16:9 aspect kept
 //   docsToc         the docs book's contents grid stays inside the viewport
-//                   and runs four columns above 900px, two at or below
-//                   (the shared .pt-book-toc in BookView.css and its 900px
-//                   cut, the deck's .book-toc)
+//                   and runs four columns above 900px, two at or below and
+//                   on a phone on its side (the shared .pt-book-toc in
+//                   BookView.css and its 900px cut, the deck's .book-toc)
 //   galleryCells    no tile of the gallery's anatomy wall crosses the
 //                   viewport edge on any viewport (src/app/anatomy-wall.css;
 //                   DESIGN.md section 3, the rails hold the column)
@@ -149,6 +150,12 @@ const PROGRESS_H = 2;
 /** The cut where the sidebar leaves the grid and the contents grid drops a column. */
 const NARROW_MAX = 900;
 
+/** A phone on its side is narrow at any width (ViewerShell.tsx PHONE_SIDEWAYS, `(pointer: coarse) and (max-height: 500px)`). */
+const SIDEWAYS_MAX_H = 500;
+
+/** Whether the shell lays a cell out narrow: at or below the cut, or a phone held on its side. */
+const isNarrowCell = (cell) => cell.w <= NARROW_MAX || (cell.kind === 'phone' && cell.h <= SIDEWAYS_MAX_H);
+
 /** How far the deck's sheet may stray from 16:9. */
 const ASPECT_SLACK = 0.01;
 
@@ -223,7 +230,7 @@ export function judge(reads, site, cell, item) {
         near(L.stage.y, L.toolbar.bottom) && near(L.stage.bottom, reads.innerHeight - PROGRESS_H, 1) && near(L.stage.right, reads.innerWidth, 1);
       info.stage = [L.stage.x, L.stage.y, L.stage.right, L.stage.bottom];
     }
-    const narrow = cell.w <= NARROW_MAX;
+    const narrow = isNarrowCell(cell);
     if (narrow) {
       /* the column is closed; the list may float only as the overlay */
       judge.sidebarColumn = !site.sidebarVisible || site.sidebarOverlay;
@@ -259,7 +266,7 @@ export function judge(reads, site, cell, item) {
   }
   if (L.docsToc) {
     const t = L.docsToc;
-    const wanted = cell.w <= NARROW_MAX ? 2 : 4;
+    const wanted = isNarrowCell(cell) ? 2 : 4;
     judge.docsToc = t.x >= -1 && t.right <= reads.innerWidth + 1 && site.tocColumns === wanted;
     info.docsToc = { x: t.x, right: t.right, columns: site.tocColumns, wanted };
   }
