@@ -4,7 +4,7 @@
  * Cuts the artifact pictures' tone grids to the house standard and writes
  * the manifest the lint reads (docs/ARTIFACT-PICTURES.md).
  *
- * Usage: node scripts/mood-tone/mood-tone.mjs <sources dir> [--set deck|plate]
+ * Usage: node scripts/media/mood-tone/mood-tone.mjs <sources dir> [--set deck|plate]
  *                                             [--out <dir>] [--preview <dir>] [--check]
  *
  * - `deck` (the default) cuts the brand deck's ten mood pictures into
@@ -35,8 +35,12 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { ROOT } from '../../lib/root.mjs';
+import { helpIfAsked } from '../../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
+
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(HERE, '../..');
 const STANDARD = JSON.parse(readFileSync(join(HERE, 'standard.json'), 'utf8'));
 
 /**
@@ -374,7 +378,7 @@ function main() {
   const set = flag('--set') ?? 'deck';
   if (!sourcesArg || sourcesArg.startsWith('--') || !SETS[set]) {
     console.error(
-      'usage: node scripts/mood-tone/mood-tone.mjs <sources dir> [--set deck|plate] [--out <dir>] [--preview <dir>] [--check]'
+      'usage: node scripts/media/mood-tone/mood-tone.mjs <sources dir> [--set deck|plate] [--out <dir>] [--preview <dir>] [--check]'
     );
     process.exit(2);
   }

@@ -27,9 +27,9 @@ The same standard covers gt-cloud's dashboard sign-in and onboarding field
 
 | File                                          | Role                                                            |
 | --------------------------------------------- | --------------------------------------------------------------- |
-| `scripts/mood-tone/standard.json`             | The standard: screen, tone, file sizes, windows, retired names  |
-| `scripts/mood-tone/mood_tone.py`              | The cutter (Python 3 with Pillow)                               |
-| `scripts/mood-tone/mood-tone.mjs`             | The recipes for the deck and plate sets, and the wrapper        |
+| `scripts/media/mood-tone/standard.json`             | The standard: screen, tone, file sizes, windows, retired names  |
+| `scripts/media/mood-tone/mood_tone.py`              | The cutter (Python 3 with Pillow)                               |
+| `scripts/media/mood-tone/mood-tone.mjs`             | The recipes for the deck and plate sets, and the wrapper        |
 | `deck/shots/tone/mood-{name}.jpg`             | The deck's tone grids                                           |
 | `deck/shots/tone/manifest.json`               | One entry per deck grid, written by the wrapper                 |
 | `public/brand/mood/mood-{name}.jpg`           | The plate's tone grids, the same bytes as gt-cloud's            |
@@ -39,7 +39,7 @@ The same standard covers gt-cloud's dashboard sign-in and onboarding field
 | `src/components/plate/brand/moodPictures.ts`  | The plate registry: src, placement and caption per picture      |
 | `deck/slides/NN-mood-{name}.html`             | The deck's mood slides, one canvas per grid, with the credit    |
 | `deck/parts/tail.html`                        | The deck engine that screens the grids                          |
-| `scripts/lint-pictures.mjs`                   | The lint                                                        |
+| `scripts/lint/pictures.mjs`                   | The lint                                                        |
 
 ## The rules
 
@@ -73,7 +73,7 @@ declaration against this rule. Plain English prose never qualifies.
   each picture the demo shows, without the label ("Image:", "Photograph:").
   The lint checks the deck slides and the demo's line.
 - Sources are never committed. Each person keeps a sources directory and
-  passes it to the wrapper. `scripts/mood-tone/README.md` lists each file's
+  passes it to the wrapper. `scripts/media/mood-tone/README.md` lists each file's
   name, origin, pixel size and sha256, and the wrapper refuses a source whose
   sha256 differs from `SOURCES` in `mood-tone.mjs`.
 
@@ -183,7 +183,7 @@ tone numbers. The crop kinds are documented above `DECK` in `mood-tone.mjs`.
    confirm its license (rule 2).
 2. Put the source file in your sources directory, add its origin and sha256
    to `SOURCES` in `mood-tone.mjs`, and add its row to the source table in
-   `scripts/mood-tone/README.md`.
+   `scripts/media/mood-tone/README.md`.
 3. Add a recipe to `DECK` or `PLATE` in `mood-tone.mjs`. Spread `COVER` for a
    cover. Set `kind: 'marks'` for writing or engraving on a plain ground and
    `kind: 'scene'` for anything else. Declare `writing`. A deck recipe's
@@ -197,7 +197,7 @@ tone numbers. The crop kinds are documented above `DECK` in `mood-tone.mjs`.
    - On the deck: add `deck/slides/NN-mood-{name}.html` from an existing mood
      slide, with `<canvas class="mood-img" data-tone="shots/tone/mood-{name}.jpg" role="img" aria-label="...">`,
      the plate's title, sentence and credit, then update `SLIDE_COUNT` in
-     `scripts/build-deck.mjs`, `SECTIONS` in `deck/parts/tail.html`,
+     `scripts/build/deck.mjs`, `SECTIONS` in `deck/parts/tail.html`,
      `DECK_SLIDES` in `src/lib/search-index.ts`, and the entry in
      `deck/shots/OPENERS.md`. Run `pnpm build:deck`.
    - On the plate port: add the name to `PictureName` and an entry to
@@ -206,7 +206,7 @@ tone numbers. The crop kinds are documented above `DECK` in `mood-tone.mjs`.
      also carries the manifest's `disc` values `cx`, `cy` and `r`), and the
      caption has a title, a note of at most 90 characters that says what the
      object is, and the credit. Make the same change in gt-cloud.
-7. Run `node scripts/lint-pictures.mjs` (it also runs before `next build` and
+7. Run `node scripts/lint/pictures.mjs` (it also runs before `next build` and
    in `pnpm lint:all`).
 8. Commit the grid, `manifest.json`, the recipe, the README row and the slide
    or registry entry. If the manifest shows `textLines` above 0, say so in
@@ -218,9 +218,9 @@ another picture.
 
 ## The lint
 
-`scripts/lint-pictures.mjs` runs before `next build` (`pnpm build`), in
+`scripts/lint/pictures.mjs` runs before `next build` (`pnpm build`), in
 `pnpm lint:all`, and on its own with `pnpm lint:pictures`. Its tests are in
-`scripts/lint-pictures.test.mjs`. `pnpm lint:all` runs them after the lint,
+`scripts/lint/pictures.test.mjs`. `pnpm lint:all` runs them after the lint,
 and `pnpm test:pictures` runs them alone. It fails when:
 
 - a grid file has no manifest entry, or an entry has no grid file;

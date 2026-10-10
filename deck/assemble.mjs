@@ -2,7 +2,7 @@
 // and parts/tail.html, with fonts/deck-fonts.css inlined in place of
 // <!--FONTS--> and the head's leading <title> stripped (the caller's wrapper
 // carries the document title). Image paths stay shots/... for the caller.
-// scripts/build-deck.mjs and deck/shoot-slide.mjs both read the deck here.
+// scripts/build/deck.mjs and deck/shoot-slide.mjs both read the deck here.
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

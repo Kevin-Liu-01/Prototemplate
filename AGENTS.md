@@ -99,7 +99,7 @@ pnpm check:pages --preset quick --pages <id> # eight devices in dark and 1440x90
 
 README.md's "Import this into another project" section gives the commands. In short:
 
-1. Copy `skills/` and `scripts/install-skills.mjs` to the project's root, then run `node scripts/install-skills.mjs --project . --dry-run` there and again without `--dry-run`. The skills land as relative links in `.claude/skills` and `.agents/skills`, the layout this repository uses.
+1. Copy `skills/` and `scripts/skills/install.mjs` to the project's root, then run `node scripts/skills/install.mjs --project . --dry-run` there and again without `--dry-run`. The skills land as relative links in `.claude/skills` and `.agents/skills`, the layout this repository uses.
 2. Copy `AGENTS.md`, `BRAND.md`, `DESIGN.md` and `docs/handbook/` beside them, so every link between the skills, the canon and the handbook keeps working, and add a `CLAUDE.md` that imports `AGENTS.md`.
 3. Edit the copied `AGENTS.md`: the project's name and purpose, its own commands and ports, its lanes, and its own gates. Keep the principles, the routing table and the house rules that still apply.
 4. Read the current canon by its address on the site (www.prototemplate.com/docs/design, /handbook, /skills/<slug>), and copy the folders again to take later changes.

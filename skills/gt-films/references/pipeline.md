@@ -6,7 +6,7 @@ This file is the detail behind section 3 of `../SKILL.md`: the research package,
 
 A translation series film starts from a five-part research package. jihe-yuanben's is Kevin's own research, saved verbatim. journey-to-the-west's and modern-hebrew's were compiled for their films by a workflow of history, sources, vocabulary, writer, claim checker, link and rights checker and finalizer lanes, in the same format.
 
-`scripts/build-motion.mjs` parses every BRIEF.md and publishes its body at `/motion/<slug>`, so the shape is fixed:
+`scripts/build/motion.mjs` parses every BRIEF.md and publishes its body at `/motion/<slug>`, so the shape is fixed:
 
 - A `# Brief: <slug>` header block: Kevin's request quoted with its date, and how the research binds the film (the script is a starting point; the facts may not move; contested items stay hedged). A `---` line closes it. build-motion leaves this block out of the public body.
 - The package h1 (`# Ricci, Xu Guangqi, and the Chinese vocabulary of Euclid`) and, under it, a series line that opens with `<Name> series` (`Chinese series, installment: *Jihe yuanben* 幾何原本, Beijing, 1607.`).

@@ -409,7 +409,7 @@ gt-ship the PR flow, the PR body's structure and the PR size audit.
 - Prototemplate: DESIGN.md section 2, Ownership.
 - Prototemplate: motion/MOTION.md, Round 4 direction, Copy, Sound and The
   facts the films may state.
-- Prototemplate: .oxlintrc.json, scripts/oxlint-plugins/gt-ui.ts,
+- Prototemplate: .oxlintrc.json, scripts/lint/oxlint-plugins/gt-ui.ts,
   src/app/docs/registry.ts and docs/figma-v0-spec.md.
 - gt-cloud: tooling/oxlint-plugins/gt-ui.ts (no-em-dash, no-eyebrow,
   no-heading-period, cta-title-case, mono-is-not-voice) and .oxlintrc.json.

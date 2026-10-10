@@ -15,7 +15,7 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { HIDE_DEV_UI_CSS } from '../site-pages.mjs';
+import { HIDE_DEV_UI_CSS } from '../../lib/site-pages.mjs';
 import { cellContext, collectErrors } from './context.mjs';
 
 /** How long the samples run after navigation commits. */

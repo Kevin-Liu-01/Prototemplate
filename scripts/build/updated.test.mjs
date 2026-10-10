@@ -1,4 +1,4 @@
-// Tests for scripts/build-updated.mjs, each in a throwaway git repository
+// Tests for scripts/build/updated.mjs, each in a throwaway git repository
 // with two pages, so nothing here reads or writes the checkout.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -8,7 +8,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 
-const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), 'build-updated.mjs');
+const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), 'updated.mjs');
 const PAGES = [
   { id: '/a', paths: ['src/a', 'A.md'] },
   { id: '/b', paths: ['src/[slug]', 'media/b-*'] },
@@ -64,6 +64,21 @@ test('writes the last commit per page and passes its own check', (t) => {
   assert.equal(entry(r.dir, '/a')[1], '2026-09-01');
   assert.equal(entry(r.dir, '/b')[1], '2026-09-20');
   assert.equal(r.script('--check').status, 0);
+});
+
+test('a pure rename (git mv) changes no date; an edit after it does', (t) => {
+  const r = repo();
+  t.after(r.cleanup);
+  r.put('pages.json', JSON.stringify([{ id: '/a', paths: ['src/a', 'docs/A.md'] }, PAGES[1]]));
+  mkdirSync(join(r.dir, 'docs'));
+  r.git(['mv', 'A.md', 'docs/A.md']);
+  r.git(['commit', '-qam', 'move A.md'], '2026-09-25T09:00:00-07:00');
+  assert.equal(r.script().status, 0);
+  assert.equal(entry(r.dir, '/a')[1], '2026-09-01');
+  appendFileSync(join(r.dir, 'docs/A.md'), 'more\n');
+  r.git(['commit', '-qam', 'edit A.md'], '2026-09-28T09:00:00-07:00');
+  assert.equal(r.script().status, 0);
+  assert.equal(entry(r.dir, '/a')[1], '2026-09-28');
 });
 
 test('a bracket folder is a literal path, not a glob class', (t) => {

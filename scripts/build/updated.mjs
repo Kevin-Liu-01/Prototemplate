@@ -3,7 +3,8 @@
 // The book page). A page's date is the
 // committer date of the last commit on HEAD that touched the page's own
 // sources and content, as `git log -1 --format=%H%x09%cI HEAD -- <paths>`
-// reads it. pages() below lists those paths for every page that renders a
+// reads it, passing over a commit that only renames the page's files
+// (lastChange). pages() below lists those paths for every page that renders a
 // book head: the single pages and the skill, package and direction records.
 // Shared shell code (src/components/viewer, tokens.css, surfaces.ts,
 // search-index.ts, globals.css) is in no page's list, so
@@ -42,11 +43,11 @@
 // would ship the page with an old date.
 //
 // Usage:
-//   node scripts/build-updated.mjs           write src/lib/updated.ts
-//   node scripts/build-updated.mjs --check   exit 1 when it is stale
+//   node scripts/build/updated.mjs           write src/lib/updated.ts
+//   node scripts/build/updated.mjs --check   exit 1 when it is stale
 //   --staged       the generator dates staged changes only; the check adds
 //                  the staged rule above
-//   --root <dir>   the checkout (default: this script's parent folder)
+//   --root <dir>   the checkout (default: the repository root)
 //   --out <file>   the output (default: <root>/src/lib/updated.ts)
 //   --json         print the computed table and write nothing
 //   --head         read HEAD alone and ignore the working tree (with --json or a write)
@@ -55,9 +56,12 @@
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, relative } from 'node:path';
 import { promisify } from 'node:util';
+import { ROOT as REPO_ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 const run = promisify(execFile);
 
@@ -68,7 +72,7 @@ const option = (name) => {
   return i >= 0 ? argv[i + 1] : undefined;
 };
 
-const ROOT = option('--root') ?? join(dirname(fileURLToPath(import.meta.url)), '..');
+const ROOT = option('--root') ?? REPO_ROOT;
 const OUT_REL = 'src/lib/updated.ts';
 const OUT = option('--out') ?? join(ROOT, OUT_REL);
 const CHECK = flag('--check');
@@ -138,12 +142,12 @@ function pages() {
     // the handbook renders through the docs book (src/app/docs), which is
     // /docs' own code; /handbook is dated by its documents and its route
     { id: '/handbook', paths: ['docs/handbook', 'src/app/handbook'] },
-    { id: '/skills', paths: ['skills', 'src/app/skills', 'src/lib/skills.ts', 'scripts/install-skills.mjs'] },
+    { id: '/skills', paths: ['skills', 'src/app/skills', 'src/lib/skills.ts', 'scripts/skills/install.mjs'] },
     ...skillSlugs().map((s) => ({
       id: `/skills/${s}`,
       paths: [`skills/${s}`, 'src/app/skills/[slug]', 'src/app/skills/SkillViewer.tsx'],
     })),
-    { id: '/marks', paths: ['src/app/marks', 'src/lib/marks.ts', 'public/marks', 'scripts/build-speed-marks.mjs'] },
+    { id: '/marks', paths: ['src/app/marks', 'src/lib/marks.ts', 'public/marks', 'scripts/build/speed-marks.mjs'] },
     { id: '/blog', paths: ['src/app/blog/page.tsx', 'src/app/blog/blog.css', 'content/blog', 'content/authors', 'src/lib/blog.ts'] },
     {
       id: '/graphics',
@@ -221,13 +225,47 @@ async function readTree(list) {
   return { files: zlist(files), dirty: zlist(status, true), staged: zlist(cached) };
 }
 
+/**
+ * The last commit on HEAD that changed a page, as [sha, at]. A commit whose
+ * every change under the page is a pure rename (a git mv, content
+ * unchanged) is passed over and the walk follows the old paths, so moving a
+ * listed file re-dates no page.
+ */
+async function lastChange(page, hit) {
+  const old = new Set();
+  let rev = 'HEAD';
+  for (;;) {
+    const log = await git(['log', '-1', '--format=%H%x09%cI', rev, '--', ...page.paths.map(pathspec), ...[...old].map(pathspec), SELF]);
+    const [sha, at] = log.trim().split('\t');
+    if (!sha) return [];
+    const changes = renames(await git(['diff-tree', '-r', '-z', '--root', '--no-commit-id', '--name-status', '-M100%', sha]));
+    const mine = changes.filter((c) => hit(c.path) || old.has(c.path) || (c.from && (hit(c.from) || old.has(c.from))));
+    if (mine.length === 0 || mine.some((c) => !c.from)) return [sha, at];
+    for (const c of mine) old.add(c.from);
+    rev = `${sha}^`;
+  }
+}
+
+/** `git diff-tree -z --name-status` output as { path, from }, where from is set on a pure rename (R100). */
+function renames(out) {
+  const parts = out.split('\0').filter(Boolean);
+  const list = [];
+  for (let i = 0; i < parts.length; i++) {
+    const status = parts[i];
+    if (/^[RC]/.test(status)) {
+      list.push({ path: parts[i + 2], from: status === 'R100' ? parts[i + 1] : null });
+      i += 2;
+    } else list.push({ path: parts[++i], from: null });
+  }
+  return list;
+}
+
 /** One page: the last commit on HEAD over its paths, and whether the working tree holds changes there. */
 async function readPage(page, tree) {
   const tests = page.paths.map(matcher);
   const hit = (f) => tests.some((t) => t(f));
-  const log = await git(['log', '-1', '--format=%H%x09%cI', 'HEAD', '--', ...page.paths.map(pathspec), SELF]);
   const missing = page.paths.filter((p, i) => !tree.files.some(tests[i]));
-  const [sha, at] = log.trim().split('\t');
+  const [sha, at] = await lastChange(page, hit);
   const dirty = !HEAD_ONLY && tree.dirty.some(hit);
   const staged = !HEAD_ONLY && tree.staged.some(hit);
   const committed = sha ? { day: at.slice(0, 10), at, commit: sha.slice(0, 7) } : null;
@@ -260,7 +298,7 @@ function render(entries) {
   const lines = entries.map(
     ([id, e]) => `  ${q(id)}: { day: ${q(e.day)}, at: ${q(e.at)}, commit: ${q(e.commit)}, src: ${q(e.src)} },`
   );
-  return `// Generated by scripts/build-updated.mjs (pnpm build:updated). Do not edit.
+  return `// Generated by scripts/build/updated.mjs (pnpm build:updated). Do not edit.
 //
 // The day each page last changed: the last commit on HEAD that touched the
 // page's own sources and content (the paths are listed in the script), or

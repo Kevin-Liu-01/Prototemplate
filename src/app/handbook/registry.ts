@@ -5,8 +5,8 @@ import type { DocEntry } from '@/app/docs/registry';
  * read from docs/handbook/ at build time by the docs book builder
  * (src/app/docs/book.tsx). The handbook's readme (docs/handbook/README.md)
  * opens the book at /handbook, the way the repository readme opens /docs.
- * scripts/build-updated.mjs dates /handbook from docs/handbook/ and this
- * route, and skills/prototemplate/scripts/check-registries.mjs reads the
+ * scripts/build/updated.mjs dates /handbook from docs/handbook/ and this
+ * route, and scripts/lint/registries.mjs reads the
  * `slug` and `file` lines here against HANDBOOK_HEADINGS in
  * src/lib/search-index.ts, so keep one entry per object in this shape.
  */

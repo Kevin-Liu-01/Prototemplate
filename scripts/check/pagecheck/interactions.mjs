@@ -1,7 +1,7 @@
 // Declared interactions, each { id, pages, devices, run }: run receives
 // a loaded page and the cell ({ w, h, kind, theme }) and returns
 // { pass, ...readings }; the runner takes a capture before and after.
-// `devices` names the devices it runs on (scripts/site-pages.mjs DEVICES),
+// `devices` names the devices it runs on (scripts/lib/site-pages.mjs DEVICES),
 // or 'run' for every dark device of the run. Dark theme only. The runner
 // (pagecheck.mjs) puts every run in its one queue with the cells and
 // writes the results to interactions/results.json, which the report
@@ -54,7 +54,7 @@
 //                     (DESIGN.md section 16)
 import { join } from 'node:path';
 
-import { device } from '../site-pages.mjs';
+import { device } from '../../lib/site-pages.mjs';
 import { cellContext, collectErrors } from './context.mjs';
 import { DECK_SKIP, PRESENTER } from './hooks.mjs';
 import { readPage } from './probes.mjs';

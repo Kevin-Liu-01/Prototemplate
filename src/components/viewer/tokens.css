@@ -57,7 +57,7 @@
      reference (round two, 2026-10-05): the search pill and the segmented
      control at 6px, the key chip at 4px. Shells are square; everything a
      reader presses, types into, picks up or looks at as an object is
-     rounded. lint-radius.mjs pins these values. */
+     rounded. lint/radius.mjs pins these values. */
   --pt-radius-shell: 0;                                    /* the viewer frame, the sidebar, the toolbar bar, the fixed sheet and its ring, the reading column, the index panel, the book head, the dividers, the band, full-width rows, an input inside its field */
   --pt-radius-control: 6px;                                /* buttons, fields, field-shaped buttons, segmented groups */
   --pt-radius-inner: calc(var(--pt-radius-control) - 1px); /* a part flush inside a control's 1px border */
@@ -70,7 +70,7 @@
      after it but system-ui: next/font's fallback face is already the
      metric-matched local Arial. Every stylesheet reads these tokens and
      declares no family, feature list or display size of its own;
-     scripts/lint-type.mjs holds them to it. */
+     scripts/lint/type.mjs holds them to it. */
   --pt-text: var(--font-inter), system-ui, sans-serif;
   --pt-display: var(--pt-text);
   --pt-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; /* code, numbers and tokens only */
@@ -118,7 +118,7 @@
   --pt-gutter-gap: 28px;
 
   /* The book page (DESIGN.md section 4, The book page). BookView.css and
-     Sheet.css read these; lint-heads.mjs holds every book head to them. */
+     Sheet.css read these; lint/heads.mjs holds every book head to them. */
   --pt-title-clear: 44px;    /* the space above a page title: the stage's top, under the toolbar's rule, to the h1's box; nothing is drawn in it and no line crosses a title */
   --pt-head-gap: 14px;       /* the h1's box to the lead's box */
   --pt-head-rule-pad: 26px;  /* the taller of lead and panel to the mast's rule */

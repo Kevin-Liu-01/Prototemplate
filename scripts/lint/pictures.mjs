@@ -2,11 +2,11 @@
 /* oxlint-disable no-console -- a lint reporting to stdout. */
 /**
  * Holds the artifact pictures to the standard (docs/ARTIFACT-PICTURES.md,
- * scripts/mood-tone/standard.json). Pure Node, no dependencies.
+ * scripts/media/mood-tone/standard.json). Pure Node, no dependencies.
  *
- * Usage: node scripts/lint-pictures.mjs [--root <dir>]
+ * Usage: node scripts/lint/pictures.mjs [--root <dir>]
  *
- * Two manifests are checked, each written by scripts/mood-tone/mood-tone.mjs
+ * Two manifests are checked, each written by scripts/media/mood-tone/mood-tone.mjs
  * beside its grids:
  *
  *   deck/shots/tone/manifest.json   the brand deck's mood slides
@@ -53,10 +53,14 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 export const PATHS = {
-  standard: 'scripts/mood-tone/standard.json',
-  cutter: 'scripts/mood-tone/mood_tone.py',
+  standard: 'scripts/media/mood-tone/standard.json',
+  cutter: 'scripts/media/mood-tone/mood_tone.py',
   deckGrids: 'deck/shots/tone',
   deckShots: 'deck/shots',
   deckSlides: 'deck/slides',
@@ -276,7 +280,7 @@ function lintManifest(root, dir, standard, problems) {
   const file = join(dir, 'manifest.json');
   const say = (message) => problems.push(`${file}: ${message}`);
   if (!existsSync(join(root, file))) {
-    say('missing; run scripts/mood-tone/mood-tone.mjs');
+    say('missing; run scripts/media/mood-tone/mood-tone.mjs');
     return null;
   }
   let manifest;
@@ -656,7 +660,7 @@ export function lintPictures(root) {
 
 function main() {
   const at = process.argv.indexOf('--root');
-  const root = at >= 0 ? resolve(process.argv[at + 1]) : resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const root = at >= 0 ? resolve(process.argv[at + 1]) : ROOT;
   const problems = lintPictures(root);
   if (problems.length) {
     console.error(`lint:pictures found ${problems.length} problem${problems.length === 1 ? '' : 's'} (docs/ARTIFACT-PICTURES.md):`);

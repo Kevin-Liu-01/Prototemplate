@@ -30,13 +30,15 @@
 //      the roles are read from whichever the document defines.
 //
 // Page mode (the original):
-//   node scripts/lint-lines.mjs [url ...] [--theme dark|light] [--report]
+//   node scripts/lint/lines.mjs [url ...] [--theme dark|light] [--report]
 //   Audits every URL at 1440 and 1280 in one theme, over the whole document.
+//   A URL that starts with / is a path on --base (default: PT_BASE, else
+//   http://localhost:3005).
 //
 // Shell mode (pnpm lint:lines:shell, directive 8.9):
-//   node scripts/lint-lines.mjs --shell [--base http://localhost:3005]
+//   node scripts/lint/lines.mjs --shell [--base <url>]
 //     [--only /docs] [--width 1440] [--theme dark] [--jobs 3] [--report] [--json]
-//   Walks the routes scripts/site-pages.mjs tags `lines` (/, /docs, /brand,
+//   Walks the routes scripts/lib/site-pages.mjs tags `lines` (/, /docs, /brand,
 //   /compare, /archive/<first slug>, /directions/<first exploration>,
 //   /skills, /skills/<first slug>, /handbook, /motion,
 //   /motion/<first package>, /graphics, /marks, /d/production and /deck,
@@ -59,7 +61,10 @@
 //   did not apply is an infrastructure failure (exit 2), never a pass.
 import { chromium } from 'playwright-core';
 
-import { chromePath, routesFor, seedTheme } from './site-pages.mjs';
+import { BASE_URL, chromePath, routesFor, seedTheme } from '../lib/site-pages.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 const argv = process.argv.slice(2);
 /* flags that take a value; the value is never a positional URL */
@@ -75,7 +80,9 @@ const jsonOut = argv.includes('--json');
 
 /* EVERY positional URL is audited — for years of shame, an earlier version
    silently audited only the first and blessed the rest. */
-const urls = positional.length ? positional : ['http://localhost:3005/d/toolchain?chrome=0'];
+const BASE = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
+/* a URL that starts with / is a path on BASE */
+const urls = (positional.length ? positional : ['/d/toolchain?chrome=0']).map((u) => (u.startsWith('/') ? BASE + u : u));
 for (const u of urls) {
   /* a URL with whitespace is a shell-quoting accident (zsh does not split
      unquoted vars) — refuse it rather than auditing a 404 */
@@ -147,8 +154,6 @@ const WIDTHS = [1440, 1280];
    toolbar takes two rows. */
 const SHELL_WIDTHS = [1440, 1280, 390];
 const SHELL_THEMES = ['dark', 'light'];
-const BASE = (flag('--base') ?? 'http://localhost:3005').replace(/\/$/, '');
-
 /**
  * The audit, run inside the document. Self-contained: Playwright serializes
  * the function, so it reads nothing but its argument.
@@ -739,7 +744,7 @@ const STATES = {
 };
 
 /**
- * The routes directive 8.9 names, from the shared list (scripts/site-pages.mjs,
+ * The routes directive 8.9 names, from the shared list (scripts/lib/site-pages.mjs,
  * the rows tagged `lines`), and the states each is driven through: the
  * gallery, the docs, the brand book, the compare rig, the first archived
  * version, the first exploration's page under /directions, the skills index

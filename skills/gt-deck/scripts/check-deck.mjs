@@ -12,7 +12,7 @@
 //   - the slide count differs between deck/slides and SLIDE_COUNT in
 //     deck/assemble.mjs, #bar-total in deck/parts/head.html,
 //     DECK_SLIDES in src/lib/search-index.ts, the description in the built
-//     public/brand-deck.html (scripts/build-deck.mjs writes it from
+//     public/brand-deck.html (scripts/build/deck.mjs writes it from
 //     SLIDE_COUNT) or the "N-slide" sentence in src/app/brand/page.tsx;
 //   - SECTIONS in deck/parts/tail.html does not start a section at each
 //     opener's position, or a section's name differs from its opener's title;

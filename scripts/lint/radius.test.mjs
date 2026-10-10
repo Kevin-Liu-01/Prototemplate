@@ -1,13 +1,12 @@
-// Tests for scripts/lint-radius.mjs: a passing and a failing string per
+// Tests for scripts/lint/radius.mjs: a passing and a failing string per
 // static rule, the live judges over recorded corners, and the repository.
 import assert from 'node:assert/strict';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { test } from 'node:test';
-import { fileURLToPath } from 'node:url';
 
-import { PINS, judgeCorners, lintRadius, lintRadiusCss, lintRadiusTsx } from './lint-radius.mjs';
+import { PINS, judgeCorners, lintRadius, lintRadiusCss, lintRadiusTsx } from './radius.mjs';
+import { ROOT } from '../lib/root.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PAGE = 'src/app/x/x.css';
 const rules = (problems) => problems.map((p) => p.rule);
 const css = (body, rel = PAGE) => rules(lintRadiusCss(rel, body));

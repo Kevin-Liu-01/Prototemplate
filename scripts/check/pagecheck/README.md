@@ -7,7 +7,7 @@ dashboard's plate pages, carried over as a tool of this repository.
 
 ## The devices
 
-`scripts/site-pages.mjs` holds the one device table every browser tool
+`scripts/lib/site-pages.mjs` holds the one device table every browser tool
 reads (`DEVICES`). Each row is a size and a kind:
 
 | kind | devices |
@@ -117,7 +117,7 @@ Flags:
   name,...` (or `--devices`) names devices instead, read in every theme
   of `--themes` (a `WxH` outside the table is a desktop with a mouse)
 - `--themes dark,light`, `--pages id,id`, `--base URL` (default
-  `http://localhost:3005`)
+  `PT_BASE`, else `http://localhost:3005`)
 - `--jobs N` (default 4, `--shards` is the old name): contexts of one
   browser working through one queue of every cell and every interaction
   run, so even one page's cells run side by side. Keep it at 4 or under on
@@ -225,7 +225,7 @@ blocking time are printed as readings only.
 
 ## Adding to it
 
-- A page: add a row to `siteRoutes()` in `scripts/site-pages.mjs` with
+- A page: add a row to `siteRoutes()` in `scripts/lib/site-pages.mjs` with
   `check` in its `tools` (and `capture`, `lines` or `live` for the other
   tools that should walk it). Use the id `src/lib/surfaces.ts` uses for
   the same route, so the capture and the index panel's preview name it
@@ -234,7 +234,7 @@ blocking time are printed as readings only.
   the where column should prefer them. A first slug comes from its
   registry through `firstSlug`. A page that is not on the shell gets its
   ready selector in `pages.mjs`.
-- A device: add a row to `DEVICES` in `scripts/site-pages.mjs`, and to a
+- A device: add a row to `DEVICES` in `scripts/lib/site-pages.mjs`, and to a
   preset if the quick check should read it.
 - A landmark: add `name: selector` to `LANDMARKS` in `hooks.mjs`; the
   probe returns its box per cell and the ready wait watches it.
@@ -261,7 +261,7 @@ blocking time are printed as readings only.
 `pages()` with the same shape as `pages.mjs`; `--hooks-module` a module
 exporting `LANDMARKS`, `SKIP`, `TAP_SCOPE`, `CONSOLE_ALLOW`,
 `siteReads`, `judge` and `where` with the same shapes as `hooks.mjs`.
-The interactions are this site's. The theme door (`scripts/site-pages.mjs`
+The interactions are this site's. The theme door (`scripts/lib/site-pages.mjs`
 `seedTheme`, the `gt-theme` localStorage key) is this site's; another
 site with another key needs its own context setup in `context.mjs`.
 `locate.mjs` indexes `src/`, `deck/parts` and `content/` under the
@@ -284,5 +284,5 @@ repository root; another layout changes `SOURCE_DIRS` there.
 - `cls.mjs`: the layout-shift trace (`--cls-trace`)
 - `interactions.mjs`: the declared interactions and their runner
 - `report.mjs`: cells.jsonl, REPORT.md and the contact sheets
-- `../site-pages.mjs`: the routes, the devices, the Chrome path and the
+- `../../lib/site-pages.mjs`: the routes, the devices, the Chrome path and the
   theme door, shared with every browser tool in `scripts/`

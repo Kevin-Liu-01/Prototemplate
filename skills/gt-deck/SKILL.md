@@ -35,7 +35,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`). The two scrip
 | `deck/fonts/deck-fonts.css` | the inlined Inter | nobody without a type decision |
 | `deck/DECK-GRAMMAR.md` | the grammar agents read before touching a slide | the deck owner |
 | `deck/shoot-slide.mjs`, `deck/assemble.mjs` | the shooter, and the assembler it shares with the build (`SLIDE_COUNT`) | the deck owner |
-| `scripts/build-deck.mjs` | the build to `public/brand-deck.html` and its pictures under `public/deck-assets` | the deck owner |
+| `scripts/build/deck.mjs` | the build to `public/brand-deck.html` and its pictures under `public/deck-assets` | the deck owner |
 | `deck/preview/`, `deck/tmp/` | renders and temp files, gitignored | anyone |
 
 - A slide file is exactly one `<section class="slide ..."><div class="in"> ... </div></section>` preceded by an HTML comment that names the slide. It carries no `<script>`; the build refuses one.
@@ -103,7 +103,7 @@ Copy on the sheet follows the deck's register, and gt-voice holds the full writi
 - No accent color on text, lines or fills anywhere in the deck. The brand accent appears only as an outlined, labeled swatch on the Color slide.
 - Semantic color lives only on icons: `.ic.ok` green `#12a37a` for done or passing, `.ic.warn` amber `#f0a020` for open or in review, `.ic.no` red `#e5484d` for excluded or rejected, `.ic.info` GT blue `#2f5ce0` for GT itself. The four hues are the same in both themes, and text and lines stay monochrome. Kevin asked for them on 2026-09-09: "use more colorful stuff like green check marks or other icons across tables and other kind of sparse, just text slides".
 - Code sits on `.panel`: `#101010` in both themes, white monospace, with a `--hair` border in dark. Nothing else on the sheet uses monospace. The ASCII monogram on slide 23 draws its @ characters in a monospace stack because it is a pasted mark.
-- `--mood-ink` and `--mood-opacity` belong to the artifact picture standard. `scripts/lint-pictures.mjs` holds their values, so a slide never sets them.
+- `--mood-ink` and `--mood-opacity` belong to the artifact picture standard. `scripts/lint/pictures.mjs` holds their values, so a slide never sets them.
 
 ## 5. Layout classes
 
@@ -176,7 +176,7 @@ Slides 17 to 23 present the seven race-type marks Kevin chose on 2026-09-29. Eac
 | 23 The monogram in ASCII | `bar-monogram-ascii.svg` |
 
 - Paste the file's `<svg>` whole and add `width` and `height` in px before `xmlns`, keeping the viewBox's aspect. The monogram is 1100 by 282 for its 499.6 by 128 viewBox. The files fill with currentColor, so a mark takes the slide's ink in both themes.
-- A mark is never redrawn or edited by hand in a slide. To change one, edit `scripts/build-speed-marks.mjs`, run `pnpm build:marks`, paste the new markup over the old, re-crop the marks page capture for Skills and marks (slide 71, `deck/shots/proto-marks-speed-*.jpg`), and rebuild the deck.
+- A mark is never redrawn or edited by hand in a slide. To change one, edit `scripts/build/speed-marks.mjs`, run `pnpm build:marks`, paste the new markup over the old, re-crop the marks page capture for Skills and marks (slide 71, `deck/shots/proto-marks-speed-*.jpg`), and rebuild the deck.
 - `check-deck.mjs` fails when any mark pasted on these slides differs from every file in `public/marks`, and warns when a size breaks the file's aspect.
 
 ## 10. Slide-scoped CSS
@@ -205,12 +205,12 @@ node skills/gt-deck/scripts/check-deck.mjs --titles   # registries, structure, s
 pnpm build:deck                                       # public/brand-deck.html, public/deck-assets and public/shots/deck
 pnpm lint:pictures                                    # the mood grids, slides and the built deck's grids
 pnpm lint:lines:shell                                 # the line audit, /deck included, against the dev server on 3005
-node scripts/lint-lines.mjs --shell --only /deck --width 1440 --theme dark   # the deck alone, about 45 s
+node scripts/lint/lines.mjs --shell --only /deck --width 1440 --theme dark   # the deck alone, about 45 s
 ```
 
 - Shoot after every edit and look at both JPEGs. The shooter prints elements that overflow the sheet and any page error; it does not see a label on a line, text touching a rail, or an empty half-slide.
 - Run `check-deck.mjs` before a commit. It exits 1 on an error.
-- Commit `public/brand-deck.html` and `public/deck-assets/` with the slides. The page is the file `/deck` serves, `pnpm build` runs `lint-pictures.mjs` against it and its grid files, and the line audit reads it.
+- Commit `public/brand-deck.html` and `public/deck-assets/` with the slides. The page is the file `/deck` serves, `pnpm build` runs `lint/pictures.mjs` against it and its grid files, and the line audit reads it.
 - `references/viewer-and-build.md` covers the build's image files and lazy loading, its macOS and Pillow requirements, the `deck/tmp/shots` symlink, the shooter's Chromium path, and the size-limited artifact copy.
 
 When a slide is added, removed, retitled or moved, these places restate it:
@@ -227,7 +227,7 @@ When a slide is added, removed, retitled or moved, these places restate it:
 | `deck/shots/OPENERS.md` | the opener or mood entry and a history line |
 | the section's opener | its "This section covers" sentence |
 
-`check-deck.mjs` verifies the first six rows and the OPENERS.md entries, and warns on a stale count in README.md or llms.txt. `--titles` prints every slide's position, file, kind and title, in the order `DECK_SLIDES` takes them. A mood picture also touches `scripts/mood-tone` and the files listed in `docs/ARTIFACT-PICTURES.md` under "Adding a picture".
+`check-deck.mjs` verifies the first six rows and the OPENERS.md entries, and warns on a stale count in README.md or llms.txt. `--titles` prints every slide's position, file, kind and title, in the order `DECK_SLIDES` takes them. A mood picture also touches `scripts/media/mood-tone` and the files listed in `docs/ARTIFACT-PICTURES.md` under "Adding a picture".
 
 ## 13. What a defect is
 
@@ -287,7 +287,7 @@ gt-voice (the writing rules the copy follows), gt-diagrams and gt-isometric (dia
 
 ## Sources
 
-- Prototemplate: `deck/DECK-GRAMMAR.md`; `deck/parts/head.html` (tokens, type, layout classes, sprite, `.gt-word`); `deck/parts/tail.html` (`SECTIONS`, `titleOf`, `cloneSlide`, the mood engine, the theme); `deck/shoot-slide.mjs`; `deck/assemble.mjs`; `scripts/build-deck.mjs`; `deck/shots/OPENERS.md`; `deck/ROUND-5.md`; `deck/fonts/deck-fonts.css`; `src/lib/search-index.ts` (`DECK_SLIDES`); `next.config.ts` (the `/deck` rewrite); `src/app/brand/page.tsx`; `README.md` and `public/llms.txt` (the /deck lines); `docs/ARTIFACT-PICTURES.md`; `BRAND.md` section 6; `DESIGN.md` sections 2 ("Line law for chrome"), 6 and 7; `deck/slides/17-speed-monogram.html` to `23-speed-ascii.html`, `27-type.html`, `33-diagrams.html`, `93-fixed-points.html`; `scripts/lint-lines.mjs` (the `--shell` audit of /deck).
+- Prototemplate: `deck/DECK-GRAMMAR.md`; `deck/parts/head.html` (tokens, type, layout classes, sprite, `.gt-word`); `deck/parts/tail.html` (`SECTIONS`, `titleOf`, `cloneSlide`, the mood engine, the theme); `deck/shoot-slide.mjs`; `deck/assemble.mjs`; `scripts/build/deck.mjs`; `deck/shots/OPENERS.md`; `deck/ROUND-5.md`; `deck/fonts/deck-fonts.css`; `src/lib/search-index.ts` (`DECK_SLIDES`); `next.config.ts` (the `/deck` rewrite); `src/app/brand/page.tsx`; `README.md` and `public/llms.txt` (the /deck lines); `docs/ARTIFACT-PICTURES.md`; `BRAND.md` section 6; `DESIGN.md` sections 2 ("Line law for chrome"), 6 and 7; `deck/slides/17-speed-monogram.html` to `23-speed-ascii.html`, `27-type.html`, `33-diagrams.html`, `93-fixed-points.html`; `scripts/lint/lines.mjs` (the `--shell` audit of /deck).
 - gt-cloud: `tooling/oxlint-plugins/gt-ui.ts` (the Heroicons sets the icon tiers accept).
 - Memory notes: `gt-brand-deck`, `speed-marks-set`, `prototemplate-interface-system`, `dashboard-deck-grammar`, `artifact-picture-standard`.
 - Kevin's presentation rules: 2026-07-29 and 2026-10-05 (plan in text, each slide stands alone, introduce before relying; the 2026-10-05 rules came from a personal-project deck and Kevin framed them as how presentations are written), 2026-09-08 and 2026-09-09 (the viewer: "make this much better like a real presentation viewer with a sidebar of all slides", "the present screenn should be separate", centered slides, the openers).

@@ -80,7 +80,7 @@ export const CRAFT_SECTIONS: readonly CraftSection[] = [
           strokes, and the span over which they run in parallel. The round below is staged (this
           page audits clean in both themes), but the shape is the auditor&rsquo;s own:
         </p>
-        <CodeBlock code={LINT_SNIPPET} label='scripts/lint-lines.mjs: a staged failing round' />
+        <CodeBlock code={LINT_SNIPPET} label='scripts/lint/lines.mjs: a staged failing round' />
         <p>
           Deliberate devices (the brand&rsquo;s doubled threads, marquee rails, terminal frames)
           live on a small allow list, so the auditor stays strict everywhere else. Two more
@@ -150,7 +150,7 @@ export const CRAFT_SECTIONS: readonly CraftSection[] = [
             label='Live demo: a dithered globe turning, resolving into the Blue Marble on the same cells, stepping into the Rosetta Stone, and mixing back to the globe, in a loop.'
             tag='mixFields()'
           />
-          {/* rule 2 of docs/ARTIFACT-PICTURES.md: the credit sits with the pictures; scripts/lint-pictures.mjs checks it against the deck slides */}
+          {/* rule 2 of docs/ARTIFACT-PICTURES.md: the credit sits with the pictures; scripts/lint/pictures.mjs checks it against the deck slides */}
           <figcaption className='ptc-credit'>
             The Blue Marble: NASA, Reto Stöckli, 2007, public domain. The Rosetta Stone: photograph by Hans Hillewaert, CC BY-SA 4.0.
           </figcaption>

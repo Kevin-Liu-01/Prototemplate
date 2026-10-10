@@ -5,21 +5,24 @@
 // not scroll depths: each tile is one section's own box, so side-by-side
 // pairs align regardless of viewport. src/app/AnatomyWall.tsx reads the
 // sec-* tiles by name.
-// Usage: node scripts/gallery-shoot.mjs <out-dir>
-//   REDESIGN_BASE overrides the dev server (default http://localhost:3005).
-//   CHROME_PATH overrides the browser (scripts/site-pages.mjs).
+// Usage: node scripts/check/gallery-shoot.mjs <out-dir>
+//   PT_BASE overrides the dev server (default http://localhost:3005).
+//   CHROME_PATH overrides the browser (scripts/lib/site-pages.mjs).
 import { chromium } from 'playwright-core';
 import { mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
 
-import { chromePath } from './site-pages.mjs';
+import { BASE_URL, chromePath } from '../lib/site-pages.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 const EXEC = chromePath();
-const BASE = process.env.REDESIGN_BASE || 'http://localhost:3005';
+const BASE = BASE_URL;
 
 const [, , outDir] = process.argv;
 if (!outDir) {
-  console.error('usage: node scripts/gallery-shoot.mjs <out-dir>');
+  console.error('usage: node scripts/check/gallery-shoot.mjs <out-dir>');
   process.exit(2);
 }
 mkdirSync(outDir, { recursive: true });

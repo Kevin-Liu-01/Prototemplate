@@ -6,7 +6,7 @@
    falling back to the page family's --tc-hair — so shells,
    page rails and section rules can never drift apart again.
 
-   Token discipline is enforced by scripts/lint-shell.mjs
+   Token discipline is enforced by scripts/lint/shell.mjs
    (pnpm lint:shell): no raw color literals may appear in this
    layer outside the token fallbacks below.
    ============================================================ */

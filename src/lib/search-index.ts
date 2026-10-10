@@ -405,7 +405,7 @@ const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])
   ],
 };
 
-/** The h2 rows of each handbook document, in reading order: [id, title]. A snapshot, like DOC_HEADINGS; check-registries.mjs reads both. */
+/** The h2 rows of each handbook document, in reading order: [id, title]. A snapshot, like DOC_HEADINGS; scripts/lint/registries.mjs reads both. */
 const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
   readme: [
     ['the-documents', 'The documents'],

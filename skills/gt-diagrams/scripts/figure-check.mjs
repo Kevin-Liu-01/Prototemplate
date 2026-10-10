@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Captures one figure at 2x device pixels in the light and dark themes and
 // reports the SVG facts the line auditor cannot see, because
-// scripts/lint-lines.mjs skips every element inside an svg or a canvas:
+// scripts/lint/lines.mjs skips every element inside an svg or a canvas:
 //
 //   - labels whose rendered size is under the surface's floor (--min);
 //   - labels that are rotated, skewed or stretched by a transform or by a

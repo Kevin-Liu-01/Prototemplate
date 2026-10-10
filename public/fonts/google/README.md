@@ -2,7 +2,7 @@
 
 These woff2 files are the static latin (and, for Cinzel, latin-ext) builds that
 fonts.googleapis.com served this site's `next/font/google` calls, downloaded by
-`scripts/fetch-google-faces.py`. `MANIFEST.json` records the source URL, weight,
+`scripts/build/fetch-google-faces.py`. `MANIFEST.json` records the source URL, weight,
 style, subset and unicode range of every file. The site loads them through
 `next/font/local`, so a production build no longer fetches anything from Google:
 Google Fonts occasionally answers with extensionless `/l/font?kit=` URLs and
@@ -22,4 +22,4 @@ The site's own Inter, one level up, is the rsms.me build and is documented in
 `src/lib/fonts.ts`.
 
 To refresh or add a face, edit the `WANT` table (or `TEXT_CUTS`, for a cut to
-given characters) in the script and run `python3 scripts/fetch-google-faces.py`.
+given characters) in the script and run `python3 scripts/build/fetch-google-faces.py`.

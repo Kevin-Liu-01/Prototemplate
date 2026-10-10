@@ -4,11 +4,11 @@
  * Holds the site's type to one system: the rsms InterVariable through the
  * tokens in src/components/viewer/tokens.css (DESIGN.md section 4, "Book
  * type"; BRAND.md section 6). Pure Node in static mode; --live drives the
- * dev server with playwright-core, as lint-lines.mjs does.
+ * dev server with playwright-core, as lint/lines.mjs does.
  *
  * Usage:
- *   node scripts/lint-type.mjs [--report] [--update-baseline] [--root <dir>]
- *   node scripts/lint-type.mjs --live [--base http://localhost:3005]
+ *   node scripts/lint/type.mjs [--report] [--update-baseline] [--root <dir>]
+ *   node scripts/lint/type.mjs --live [--base <url>] (default: PT_BASE, else http://localhost:3005)
  *     [--only /brand] [--width 1440] [--report]
  *
  * Static mode reads src/**\/*.{css,ts,tsx} minus the allowlist (ALLOW_FILES)
@@ -49,7 +49,7 @@
  *                  named MONO entry (numbers, identifiers, paths, hex values
  *                  and locale codes; words move to Inter)
  *
- * Ratchets, per file, against scripts/lint-type.baseline.json: R1 literal
+ * Ratchets, per file, against scripts/lint/type.baseline.json: R1 literal
  * px font-size, R2 literal letter-spacing, R3 literal line-height. A rise
  * fails; a drop asks for --update-baseline. Counts are per file, so edits
  * that move lines do not churn the baseline.
@@ -62,15 +62,19 @@
  */
 
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { chromePath, routesFor, seedTheme } from './site-pages.mjs';
+import { BASE_URL, chromePath, routesFor, seedTheme } from '../lib/site-pages.mjs';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 export const PATHS = {
   tokens: 'src/components/viewer/tokens.css',
   fonts: 'src/lib/fonts.ts',
-  baseline: 'scripts/lint-type.baseline.json',
+  baseline: 'scripts/lint/type.baseline.json',
   deckHead: 'deck/parts/head.html',
 };
 
@@ -144,7 +148,6 @@ const HEAVY = /^(600|700|800|900|bold|bolder)$/;
 const CODE_SUBJECT = /(^|[\s:(,>+~])(code|pre|samp|tt|kbd)(?=$|[.:#[\s,)])/;
 const CODE_CLASS = /\.[\w-]+-(code|token|path|file|tag|hex)(?=$|[.:#[\s,)])/;
 const HATCH = /lint-type:\s*allow\b(.*?)(\*\/|$)/;
-
 
 /** Every file under `dir` (relative to root), sorted. */
 function listFiles(root, dir) {
@@ -758,7 +761,7 @@ const LIVE_KEYS = { brand: ['r', 'Meta+k', 'Shift+Slash'] };
 
 /**
  * The live lints' one route list (lint-type, lint-radius and lint-heads
- * read it): the rows of scripts/site-pages.mjs tagged `live`, each
+ * read it): the rows of scripts/lib/site-pages.mjs tagged `live`, each
  * { id, path, keys, deck }, with the deck's own document marked `deck`.
  * Throws when a registry's first slug cannot be read.
  */
@@ -771,7 +774,7 @@ async function runLive(root, argv) {
     const i = argv.indexOf(name);
     return i >= 0 ? argv[i + 1] : undefined;
   };
-  const base = (flag('--base') ?? 'http://localhost:3005').replace(/\/$/, '');
+  const base = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
   const report = argv.includes('--report');
   const only = flag('--only');
   const widths = flag('--width') ? [Number(flag('--width'))] : [1440, 390];
@@ -901,9 +904,9 @@ function runStatic(root, argv) {
   const baseline = existsSync(baselinePath) ? JSON.parse(readFileSync(baselinePath, 'utf8')) : null;
   const { rises, drops } = baseline ? ratchet(counts, baseline) : { rises: [], drops: [] };
   for (const w of warnings) console.log(w);
-  for (const d of drops) console.log(`ratchet dropped: ${d}; run node scripts/lint-type.mjs --update-baseline`);
+  for (const d of drops) console.log(`ratchet dropped: ${d}; run node scripts/lint/type.mjs --update-baseline`);
   const failures = [...problems, ...rises];
-  if (!baseline && !argv.includes('--update-baseline')) failures.push(`${PATHS.baseline}: missing; run node scripts/lint-type.mjs --update-baseline`);
+  if (!baseline && !argv.includes('--update-baseline')) failures.push(`${PATHS.baseline}: missing; run node scripts/lint/type.mjs --update-baseline`);
   if (failures.length) {
     console.error(`lint:type found ${failures.length} problem${failures.length === 1 ? '' : 's'} (DESIGN.md section 4, Book type):`);
     for (const p of failures) console.error(`  ${p}`);
@@ -916,7 +919,7 @@ function runStatic(root, argv) {
 async function main() {
   const argv = process.argv.slice(2);
   const at = argv.indexOf('--root');
-  const root = at >= 0 ? resolve(argv[at + 1]) : resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const root = at >= 0 ? resolve(argv[at + 1]) : ROOT;
   if (argv.includes('--live')) process.exit(await runLive(root, argv));
   try {
     process.exit(runStatic(root, argv));

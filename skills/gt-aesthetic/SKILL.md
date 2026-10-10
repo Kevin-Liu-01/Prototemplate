@@ -248,7 +248,7 @@ Built from the deck's defect list (DECK-GRAMMAR.md, "What a defect is") and Kevi
 
 ## Sources
 
-- Prototemplate: `deck/parts/head.html` (tokens, type, rows, book view, viewer chrome); `deck/DECK-GRAMMAR.md` (type, color, layout classes, "What a defect is"); DESIGN.md sections 1, 2, 3, 12, 15 and 16; BRAND.md sections 3, 5, 6 and 8; `docs/ARTIFACT-PICTURES.md`; `docs/SHIP-LOOP.md`; `src/components/viewer/tokens.css`; `scripts/lint-lines.mjs`; `scripts/pagecheck/`.
+- Prototemplate: `deck/parts/head.html` (tokens, type, rows, book view, viewer chrome); `deck/DECK-GRAMMAR.md` (type, color, layout classes, "What a defect is"); DESIGN.md sections 1, 2, 3, 12, 15 and 16; BRAND.md sections 3, 5, 6 and 8; `docs/ARTIFACT-PICTURES.md`; `docs/SHIP-LOOP.md`; `src/components/viewer/tokens.css`; `scripts/lint/lines.mjs`; `scripts/check/pagecheck/`.
 - gt-cloud, origin/main: `apps/dashboard/src/app/brand-tokens.css` (the plate's tokens, ladder and frame); `apps/dashboard/src/components/brand/FieldStack.tsx`; `tooling/oxlint-plugins/gt-ui.ts` (`consistent-radius`, `icon-tiers`, `no-gif-mark`, `no-eyebrow`, `mono-is-not-voice`); `apps/landing/src/lib/studio-field.ts`, `components/landing/shared/HeroField.tsx`, `home/sections/hero-terminal.css` and `home/v0-pages.css` (the hero's field); `packages/ui/src/components/frame/ThemeToggle.tsx`. The branch `k/dashboard-shell-ia` holds `packages/ui/src/lib/studio-field.ts` and the `no-theme-icons` rule.
 - Prototemplate's `.oxlintrc.json` (the gt-ui rules `pnpm lint:code` runs) and `package.json`.
 - Kevin's wiki, whose skills load from `~/.claude/skills`: `skills/engineering/design-engineering-polish/SKILL.md` and `references/signature-first-exploration.md`; `skills/engineering/make-interfaces-feel-better/SKILL.md`.

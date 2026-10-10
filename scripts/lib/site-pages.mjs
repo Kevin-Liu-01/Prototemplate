@@ -1,9 +1,10 @@
 // What every browser script in scripts/ knows about this site, in one
 // place, so the routes, the devices, the Chrome build and the theme door
-// are written once. The page check (scripts/pagecheck/), the live modes of
+// are written once. The page check (scripts/check/pagecheck/), the live modes of
 // lint-type, lint-radius and lint-heads, lint-lines --shell and
 // capture-pages all import from here.
 //
+//   - BASE_URL: PT_BASE, else http://localhost:3005, for every --base
 //   - chromePath: the Chrome for Testing build playwright-core launches,
 //     CHROME_PATH in the environment or the build playwright-core installs
 //   - seedTheme: the site's pre-boot theme door. The root layout's script
@@ -23,12 +24,16 @@
 //     registry declares, read from the source with a regex, so no script
 //     needs a TypeScript loader
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
 import { chromium } from 'playwright-core';
 
-export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+import { ROOT } from './root.mjs';
+
+export { ROOT };
+
+/** The site the browser scripts read when no --base is given: PT_BASE (CAPTURE_BASE and REDESIGN_BASE are older names), else the dev server on 3005. */
+export const BASE_URL = (process.env.PT_BASE ?? process.env.CAPTURE_BASE ?? process.env.REDESIGN_BASE ?? 'http://localhost:3005').replace(/\/$/, '');
 
 /** The browser to launch: CHROME_PATH, else the Chrome for Testing build this playwright-core installs. Exits with the install line when it is missing. */
 export function chromePath() {
@@ -102,7 +107,7 @@ export function device(name) {
   const known = DEVICES.find((d) => d.name === name);
   if (known) return known;
   const m = /^(\d+)x(\d+)$/.exec(name.trim());
-  if (!m) throw new Error(`a device is one of DEVICES (scripts/site-pages.mjs) or WxH, got ${JSON.stringify(name)}`);
+  if (!m) throw new Error(`a device is one of DEVICES (scripts/lib/site-pages.mjs) or WxH, got ${JSON.stringify(name)}`);
   return { name: name.trim(), w: Number(m[1]), h: Number(m[2]), kind: 'desktop', dpr: 1 };
 }
 
@@ -232,7 +237,7 @@ const PRODUCTION_SOURCE = ['src/app/d/production', 'src/app/d/_v0', 'src/app/d/t
  *   id      the surface id in src/lib/surfaces.ts, which names a page
  *           check cell, a capture and a thumbnail alike
  *   path    the route, with the query a page needs
- *   tools   the tools that walk it: `check` (scripts/pagecheck), `live`
+ *   tools   the tools that walk it: `check` (scripts/check/pagecheck), `live`
  *           (the --live modes of lint-type, lint-radius and lint-heads),
  *           `lines` (lint-lines --shell) and `capture` (capture-pages)
  *   source  the folders the page's code lives in, in the order the page

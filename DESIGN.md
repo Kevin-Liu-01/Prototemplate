@@ -40,7 +40,7 @@ Four absolute colors, declared once in `src/app/globals.css`:
 ## 2. The line law
 
 Structure comes from hairlines, and **every line is drawn exactly once**.
-The auditor (`scripts/lint-lines.mjs`) enforces it mechanically — see
+The auditor (`scripts/lint/lines.mjs`) enforces it mechanically — see
 `docs/SHIP-LOOP.md`. Four defect classes:
 
 1. **Doubled lines** — two parallel strokes from different owners within
@@ -214,7 +214,7 @@ roles. The sidebar's rail is a masked box the walk cannot see, so the
 auditor reads its vertical runs from its path (`data-rail-path`), holds its
 ink to the row role, and fails a state audited with the list open in
 outline density when the rail layer is not live. `pnpm lint:all` runs it.
-The allow list in `scripts/lint-lines.mjs`
+The allow list in `scripts/lint/lines.mjs`
 names every sanctioned multi-stroke device with its reason inline; for
 chrome those are the fixed sheet's ring (`sheet`: a hair border, a paper
 gap, a hair-soft outline, on /compare, in slide mode and around a
@@ -244,7 +244,7 @@ Kevin's toolbar is the reference (2026-10-05): the search pill and the segmented
 - A part n px inside a rounded box (n from 1 to 3) takes `calc(var(--pt-radius-<role>) - npx)`.
 - A picture in a rounded frame is clipped by the frame or takes the concentric radius.
 - Named exceptions: Present keeps 8px (section 15); the marks page's app tile keeps the platform's 22% and its browser tab mock stays square, because they are specimens. The /d/ directions, the deck, the presenter, the craft article and the dashboard plate keep their own grammar.
-- `scripts/lint-radius.mjs` holds the law: statically in `pnpm lint:radius` and the build, and on the rendered pages in `pnpm lint:radius:live`.
+- `scripts/lint/radius.mjs` holds the law: statically in `pnpm lint:radius` and the build, and on the rendered pages in `pnpm lint:radius:live`.
 
 The corner notches on hero cards are not drawn — they are the ground showing
 through, so a corner can never disagree with the seam that meets it.
@@ -280,7 +280,7 @@ inside the list that marks the place, never a page rail.
 ### Book type
 
 The shell's type is one family, the rsms InterVariable (v4.1), cut into
-unicode-range subsets by `scripts/subset-inter.py` (`pnpm build:inter`):
+unicode-range subsets by `scripts/build/subset-inter.py` (`pnpm build:inter`):
 Google Fonts' latin, latin-ext, vietnamese, greek, greek-ext, cyrillic and
 cyrillic-ext, plus Latin Extended-A, the private use area and the remaining
 symbols, each with every feature and both axes. The roman's latin subset
@@ -334,17 +334,17 @@ display size of its own. The /d/ directions keep their own type.
   7. one hatch band ruled on both edges and running across the stage, `--pt-sec-over` under the block above it;
   8. the sections, each a `section.pt-book-part` opened by a divider: a `--pt-hair` rule (the first section's rule is the band's), `--pt-sec-pad`, a gutter note of two lines in titanium (`Section n`, then one fact) on the h2's last baseline, the h2 at d2.
 
-  Under 880px of head width the panel stacks under the lead, ruled the same way, and the mast's rule sits `--pt-head-rule-pad` under it. The gallery (`/`) is the site's front page, the nameplate hero and the redesign post in the article's own grammar, and has no book head; `/compare` is a tool and has none. `scripts/lint-heads.mjs` holds the structure, statically and on the rendered pages.
+  Under 880px of head width the panel stacks under the lead, ruled the same way, and the mast's rule sits `--pt-head-rule-pad` under it. The gallery (`/`) is the site's front page, the nameplate hero and the redesign post in the article's own grammar, and has no book head; `/compare` is a tool and has none. `scripts/lint/heads.mjs` holds the structure, statically and on the rendered pages.
 - **The gutter.** Sections and rows keep the deck's 128px gutter and 28px
   gap. A gutter number takes the size, line height and baseline of the
   title beside it, in titanium (ink while active); under 900px it sits
   above the title at the meta step.
-- **The lint.** `scripts/lint-type.mjs` holds all of this: statically in
+- **The lint.** `scripts/lint/type.mjs` holds all of this: statically in
   `pnpm lint:type` and the build, and on the rendered pages with
   `pnpm lint:type:live`. Its allowlist names every exception with its
   reason: the nameplate, the gallery's grotesk labels, the mono numbers
   and tokens, the specimens, and other sessions' code.
-  `scripts/lint-heads.mjs` holds the book page (`pnpm lint:heads`,
+  `scripts/lint/heads.mjs` holds the book page (`pnpm lint:heads`,
   `pnpm lint:heads:live`).
 
 ## 5. The doubled line (thread grammar)
@@ -413,7 +413,7 @@ Density ramps render as ordered dither, never alpha veils.
 - Engines: `src/lib/dither.ts` (CPU, any scalar field, 1 device px per cell)
   and `src/lib/studio-field.ts` (GPU, the authentic `BAYER_PRESETS` roster of
   ten variants, one shared GL context, switch by remount).
-- Artifact pictures (the dithered photographs and scans on the plate's field, the deck's mood slides and the transition demo on /docs) follow the Blue Marble standard in `docs/ARTIFACT-PICTURES.md`, held by `scripts/lint-pictures.mjs`.
+- Artifact pictures (the dithered photographs and scans on the plate's field, the deck's mood slides and the transition demo on /docs) follow the Blue Marble standard in `docs/ARTIFACT-PICTURES.md`, held by `scripts/lint/pictures.mjs`.
 
 ## 8. The moving type law
 
@@ -585,7 +585,7 @@ sweep does not "fix" it back.
 | --- | --- | --- |
 | Search pill (toolbar) | hover border `--pt-ink-2`, a fourth border color in chrome, reachable only under the pointer (the line auditor never drives hover). At rest the pill stays in the `hair` role, and while its palette is open (`aria-expanded="true"`, a state the auditor does drive) it draws `--pt-ink`, the active-state color every open field takes | `Toolbar.css`, `.pt-toolbar .pt-search-btn` |
 | Search key chip | `kbd.pt-search-kbd`: ground `--pt-hair-soft`, 11px weight 500 titanium; reads ⌘K, and `Ctrl K` on Windows and Linux (`Search.tsx` swaps the text after mount from the user agent) | `Toolbar.css`, `Search.tsx` |
-| Present | the one `.is-solid` button: `border-radius: 8px` (the one named corner exception, hatched in lint-radius.mjs), 14px sides, the label first and the 12px play glyph after it (`flex-direction: row-reverse`, so ToolButton keeps one markup), hover drops the ink ground for ink text in the ink frame, the old `.pt-nav-present` from 430e3c7 | `ToolButton.css`, `.pt-ib.is-solid`; `Toolbar.tsx` passes `solid` |
+| Present | the one `.is-solid` button: `border-radius: 8px` (the one named corner exception, hatched in lint/radius.mjs), 14px sides, the label first and the 12px play glyph after it (`flex-direction: row-reverse`, so ToolButton keeps one markup), hover drops the ink ground for ink text in the ink frame, the old `.pt-nav-present` from 430e3c7 | `ToolButton.css`, `.pt-ib.is-solid`; `Toolbar.tsx` passes `solid` |
 | Prototemplate mark | the rainbow core: five chroma stops (`#4b3bff`, `#00b3ff`, `#27d17e`, `#ffc53b`, `#ff3b6b`, display-p3 where supported) declared as `--pt-mark-c1` to `--pt-mark-c5` on `.pt-mark`, the one color in chrome outside the site icons; hovering the head link (or any `a` or `.pt-mark-host` around the mark) fades the hatched paper fill in over the core, opacity only, over `--pt-dur-enter` (200ms, 0 under reduced motion). The markup is the old nav's span with four `i.pt-mark-line` and `i.pt-mark-fill` | `PtMark.tsx`, `PtMark.css` |
 | Sidebar nameplate | the name beside the mark on every Prototemplate route is `span.pt-brand-word` with `b.pt-face-serif` `proto` in Fraunces 600 and `b.pt-face-grot` `template` in Space Grotesk 500 at 14.5px, two faces outside Inter and a weight above 500; the fonts load from `src/lib/brand-fonts.ts` with their variable classes on the span, so `/docs` and `/brand` carry them too. The deck keeps its Inter title beside the GT mark | `Sidebar.tsx` (head), `Sidebar.css` (head rules) |
 

@@ -11,8 +11,8 @@
 //   [--out DIR] [--no-interactions] [--interactions id,id] [--full-shots]
 //   [--cls-trace] [--sheets] [--no-warm] [--report-only]
 //   [--pages-module path] [--hooks-module path]
-// Defaults: the full preset (every device of scripts/site-pages.mjs
-// DEVICES in dark, light on three), base http://localhost:3005, 4 jobs
+// Defaults: the full preset (every device of scripts/lib/site-pages.mjs
+// DEVICES in dark, light on three), base PT_BASE or http://localhost:3005, 4 jobs
 // (contexts of one browser working through one queue of cells and
 // interactions), output under .pagecheck/ at the repo root (ignored by
 // git). --preset quick reads eight devices in dark and 1440x900 in light,
@@ -55,12 +55,15 @@ import { pathToFileURL } from 'node:url';
 
 import { chromium } from 'playwright-core';
 
-import { chromePath, HIDE_DEV_UI_CSS, PRESETS, ROOT, device } from '../site-pages.mjs';
+import { BASE_URL, chromePath, HIDE_DEV_UI_CSS, PRESETS, ROOT, device } from '../../lib/site-pages.mjs';
 import { runCls } from './cls.mjs';
 import { cellContext, collectErrors } from './context.mjs';
 import { interactionTasks, runInteraction } from './interactions.mjs';
 import { CLS_NOTE, judgeReads, readPage, readVitals, summarizeVitals } from './probes.mjs';
 import { SHEET_VIEWPORTS, deviceOrder, foldShards, writeReport, writeSheets } from './report.mjs';
+import { helpIfAsked } from '../../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 const DEFAULT_JOBS = 4;
 const DEFAULT_SETTLE_MS = 3000;
@@ -80,7 +83,7 @@ const flag = (name) => {
 const has = (name) => argv.includes(name);
 const list = (name) => flag(name)?.split(',').map((s) => s.trim()).filter(Boolean);
 
-const BASE = (flag('--base') ?? 'http://localhost:3005').replace(/\/$/, '');
+const BASE = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
 const OUT = resolve(ROOT, flag('--out') ?? '.pagecheck');
 const PRESET = flag('--preset') ?? 'full';
 if (!PRESETS[PRESET]) throw new Error(`--preset is ${Object.keys(PRESETS).join(' or ')}, got ${PRESET}`);
@@ -101,8 +104,8 @@ for (const theme of THEMES) if (theme !== 'dark' && theme !== 'light') throw new
 /** The devices each theme is read on: the --viewports list in every theme, else the preset's list for that theme. */
 const DEVICES_BY_THEME = Object.fromEntries(THEMES.map((theme) => [theme, (VIEWPORTS ?? PRESETS[PRESET][theme]).map(device)]));
 
-const pagesModule = await import(pathToFileURL(resolve(ROOT, flag('--pages-module') ?? 'scripts/pagecheck/pages.mjs')).href);
-const hooks = await import(pathToFileURL(resolve(ROOT, flag('--hooks-module') ?? 'scripts/pagecheck/hooks.mjs')).href);
+const pagesModule = await import(pathToFileURL(resolve(ROOT, flag('--pages-module') ?? 'scripts/check/pagecheck/pages.mjs')).href);
+const hooks = await import(pathToFileURL(resolve(ROOT, flag('--hooks-module') ?? 'scripts/check/pagecheck/hooks.mjs')).href);
 
 const allPages = pagesModule.pages();
 const PAGES = ONLY ? allPages.filter((p) => ONLY.includes(p.id)) : allPages;

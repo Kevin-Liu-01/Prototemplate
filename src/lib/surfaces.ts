@@ -15,19 +15,19 @@ import type { ShellShot } from '@/lib/shell-data';
  * Thumbnails: `shot` and `shotDark` are public paths, and this registry is
  * the preview layer's only image source (directive 8.6), so every path here
  * is a thumbnail: direction, page, shipped page and archive rows point at
- * the 640x360 WebP cuts scripts/build-thumbs.mjs writes under
+ * the 640x360 WebP cuts scripts/build/thumbs.mjs writes under
  * /shots/thumb/<id>.webp and <id>-dark.webp (archive-<slug>.webp for the
  * archive), document and brand section rows at the route captures in the
  * same folder, which build-thumbs also cuts to WebP. The page and shipped page cuts come from
- * scripts/capture-pages.mjs, which shoots every static page under
+ * scripts/check/capture-pages.mjs, which shoots every static page under
  * src/app/d/production and every route of the Pages group in both themes
  * into /shots/pages; the 1440 exhibit captures under /shots/light,
  * /shots/dark and /shots/archive stay for the exhibit sheet and the grid,
  * which read the routes' own ShellItem.shot. The live surfaces of the
- * shipped site point at the captures scripts/capture-pages.mjs --live
+ * shipped site point at the captures scripts/check/capture-pages.mjs --live
  * takes of generaltranslation.com in both themes, cut into /shots/thumb as
  * live-<id>.webp and live-<id>-dark.webp; public rows point into /shots/deck,
- * the deck's own thumbnails, which scripts/build-deck.mjs copies from
+ * the deck's own thumbnails, which scripts/build/deck.mjs copies from
  * deck/shots/thumb. So every site row that names a page resolves a picture
  * in both themes; a row without a shot (a library, the asset folder)
  * renders the blank plate with its initial. surfaceShot(id) is what the
@@ -129,7 +129,7 @@ function thumb(stem: string): { shot: string; shotDark: string } {
 /**
  * The Pages rows, the site's own views in the order Kevin set for the
  * sidebar: gallery, brand, docs, deck, presenter, compare. Each previews its
- * own first fold, shot by scripts/capture-pages.mjs under the row's id.
+ * own first fold, shot by scripts/check/capture-pages.mjs under the row's id.
  * The labels come from src/lib/page-names.ts, the one source for a page's
  * name (the 208px column takes Docs for Documentation).
  */
@@ -145,7 +145,7 @@ const PAGES: readonly Surface[] = [
 /**
  * The Knowledge rows: what Kevin's hub keeps on how General Translation
  * work is done beyond its pages. The skills and the marks preview their
- * first folds, shot by scripts/capture-pages.mjs under their ids (the plate
+ * first folds, shot by scripts/check/capture-pages.mjs under their ids (the plate
  * with the initial stands in until the cuts exist); the archive row opens
  * the first retired version, since the archive has no index page of its
  * own. The sidebar hangs the curated skills under the Skills row as one
@@ -227,7 +227,7 @@ const SITE_OF_SLUG: Readonly<Record<string, SurfaceSite>> = {
   production: 'shipped',
 };
 
-/** The light and dark thumbnails of a direction or a shipped page, cut by scripts/build-thumbs.mjs from the 1440 captures. */
+/** The light and dark thumbnails of a direction or a shipped page, cut by scripts/build/thumbs.mjs from the 1440 captures. */
 function directionShots(stem: string): { shot: string; shotDark: string } {
   return thumb(stem);
 }
@@ -296,7 +296,7 @@ const SHIPPED_HOME: readonly Surface[] = SHIPPED_DIRECTION
     ]
   : [];
 
-/** Every shipped page previews its own first fold: scripts/capture-pages.mjs shoots each static page under its stem. */
+/** Every shipped page previews its own first fold: scripts/check/capture-pages.mjs shoots each static page under its stem. */
 const SHIPPED_ROUTES: readonly Surface[] = SHIPPED_PAGES.map(([path, name, desc]) => {
   const stem = `production-${pathStem(path)}`;
   return { ...internal(stem, name, `/d/production${path}`, desc, 'Shipped', directionShots(stem)), site: 'shipped' };
@@ -306,8 +306,8 @@ const LIVE_HOST = 'generaltranslation.com';
 
 /**
  * A live surface of the shipped site: an external row in the site set,
- * with the light and dark captures scripts/capture-pages.mjs --live takes
- * of the live page, cut by scripts/build-thumbs.mjs into
+ * with the light and dark captures scripts/check/capture-pages.mjs --live takes
+ * of the live page, cut by scripts/build/thumbs.mjs into
  * /shots/thumb/live-<id>.webp and live-<id>-dark.webp.
  */
 function live(id: string, name: string, href: string, host: string, desc: string): Surface {

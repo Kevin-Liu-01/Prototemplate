@@ -45,7 +45,7 @@
 // General Translation set (src/lib/surfaces.ts) reads them.
 //
 // Usage: pnpm build:deck
-//        node scripts/build-deck.mjs --out <file> [--quality <n>] [--max-width <px>]
+//        node scripts/build/deck.mjs --out <file> [--quality <n>] [--max-width <px>]
 //                                          [--native-quality <n>] [--thumb-quality <n>]
 //                           writes one self-contained copy somewhere else (the
 //                           artifact copy, which must stay under 16MB) with
@@ -68,11 +68,13 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, extname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-import { assemble, DECK, SLIDE_COUNT } from '../deck/assemble.mjs';
+import { assemble, DECK, SLIDE_COUNT } from '../../deck/assemble.mjs';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+helpIfAsked(import.meta.url);
+
 const ARGS = process.argv.slice(2);
 const flag = (name) => {
   const at = ARGS.indexOf(name);

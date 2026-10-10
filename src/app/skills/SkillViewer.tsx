@@ -144,7 +144,7 @@ function SkillPage({ skill, body, updated }: SkillPageProps) {
       />
 
       <section className='pt-book-part ptd-doc sk-sec' aria-labelledby='sk-install-h'>
-        <Divider n={1} fact='install-skills.mjs' id='sk-install-h' title='Install' />
+        <Divider n={1} fact='pnpm skills:install' id='sk-install-h' title='Install' />
         <div className='ptd-row'>
           <div className='ptd-pn' aria-hidden='true' />
           <div className='sk-install-body'>

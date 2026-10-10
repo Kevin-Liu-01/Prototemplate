@@ -11,7 +11,7 @@
 //   public/shots/pages/<id>-light.jpg  -> public/shots/thumb/<id>.webp
 //   public/shots/pages/<id>-dark.jpg   -> public/shots/thumb/<id>-dark.webp
 //
-// The pages folder holds what scripts/capture-pages.mjs shoots: every
+// The pages folder holds what scripts/check/capture-pages.mjs shoots: every
 // static page of the shipped direction and the routes of the Pages group,
 // under their surface ids. It is cut last, so a stem captured both as an
 // exhibit and as a page (production, production-enterprise) takes the page
@@ -32,10 +32,12 @@
 // Usage: pnpm build:thumbs
 import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+helpIfAsked(import.meta.url);
+
 const SHOTS = join(ROOT, 'public/shots');
 const OUT = join(SHOTS, 'thumb');
 const WIDTH = 640;

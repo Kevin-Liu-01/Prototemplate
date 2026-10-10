@@ -36,7 +36,7 @@ Markup, from `01-opener-brand.html`:
 - The light file goes in `src` and the dark file in `data-dark`. A two-tone opener's light file is the inverse of its dark file.
 - The image rule from round ten: an opener carries one large hard-edged form on a quiet ground, with the plate's area solid ink or paper, and the dither sits on that form as shading or glow. A small crop blown up 7 times, or a band of mid-tone with no edge, dithers into a checker or a grey smear; Kevin rejected both ("the dither on the things in the back look weird and should just be on something better looking").
 - Keep the picture's lit cells clear of the plate. Round ten measured each new opener on the render: no lit cell inside the plate rectangle, the nearest one 83 to 84 px away, and for the Prototemplate opener none in the 30 px band around the plate. OPENERS.md records these distances per picture.
-- The shader pipeline (crop, Lanczos to cover 800 by 450, grayscale with an invert for light renders, autocontrast at 0.5 percent, black point and gamma, 8 by 8 Bayer at (m + 0.5) / 64, 2x nearest-neighbour to 1600 by 900, invert for the light twin) is written out in OPENERS.md under "Shader pipeline". `scripts/build-deck.mjs` stores a two-tone image as a one-bit PNG, so the JPEG only has to keep every cell on its side of the threshold.
+- The shader pipeline (crop, Lanczos to cover 800 by 450, grayscale with an invert for light renders, autocontrast at 0.5 percent, black point and gamma, 8 by 8 Bayer at (m + 0.5) / 64, 2x nearest-neighbour to 1600 by 900, invert for the light twin) is written out in OPENERS.md under "Shader pipeline". `scripts/build/deck.mjs` stores a two-tone image as a one-bit PNG, so the JPEG only has to keep every cell on its side of the threshold.
 
 ## Mood slides
 
@@ -58,7 +58,7 @@ Markup, from `06-mood-earth.html`:
 ```
 
 - A mood picture is an artifact picture. It follows `docs/ARTIFACT-PICTURES.md`: a continuous-tone gray grid under `deck/shots/tone/mood-<name>.jpg`, cut by `pnpm mood-tone` from the original source and recorded in `deck/shots/tone/manifest.json`, and screened live by the engine in `deck/parts/tail.html` at 1 CSS px cells. One grid serves both themes; the theme changes only `--mood-ink` and `--mood-opacity`.
-- The slide shows the picture on a `<canvas>`. A bitmap `<img>` or a pre-screened `mood-*` file in `deck/shots` fails `scripts/lint-pictures.mjs`. A grid or its manifest entry is never edited by hand; the lint checks the grid against its entry, and only `pnpm mood-tone <sources dir> --check` proves the grid came from its recipe.
+- The slide shows the picture on a `<canvas>`. A bitmap `<img>` or a pre-screened `mood-*` file in `deck/shots` fails `scripts/lint/pictures.mjs`. A grid or its manifest entry is never edited by hand; the lint checks the grid against its entry, and only `pnpm mood-tone <sources dir> --check` proves the grid came from its recipe.
 - The plate sits in the lower right: `max-width: 560px` on the content box, the opener's padding, so it spans about x 851 to 1463. It holds the picture's title as `.big.title` at 44px with line-height 1.08, one or two sentences at 22px on why the picture is in the deck (what it shows, then how it connects to the section), and the credit at the opener's credit style.
 - The title is in sentence case ("A proto-cuneiform tablet"). It is the slide's title in the slide list and in DECK_SLIDES.
 - The credit starts with a label that names the medium: Image, Photograph, Print, Map, Engraving or Calligraphy, then the author, the date where known, and the license. The plate must have a `<div class="credit">`; the lint checks it.
@@ -69,7 +69,7 @@ Markup, from `06-mood-earth.html`:
 
 ### Adding a mood picture
 
-1. Cut the grid first. The gt-dither skill and `docs/ARTIFACT-PICTURES.md` ("Adding a picture") hold the steps: the object and its license, the `SOURCES` entry, the recipe in `DECK` in `scripts/mood-tone/mood-tone.mjs`, and `pnpm mood-tone <sources dir> --preview <dir>`. If no crop puts a scene inside its window, the picture does not meet the standard.
+1. Cut the grid first. The gt-dither skill and `docs/ARTIFACT-PICTURES.md` ("Adding a picture") hold the steps: the object and its license, the `SOURCES` entry, the recipe in `DECK` in `scripts/media/mood-tone/mood-tone.mjs`, and `pnpm mood-tone <sources dir> --preview <dir>`. If no crop puts a scene inside its window, the picture does not meet the standard.
 2. Copy an existing mood slide to `deck/slides/NN-mood-<name>.html` and change the canvas, the aria-label, the title, the sentence and the credit.
 3. Add the picture's entry to the mood table in `deck/shots/OPENERS.md`, update the registries in SKILL.md section 12, and run `node skills/gt-deck/scripts/check-deck.mjs`, `pnpm build:deck` and `pnpm lint:pictures`.
 
@@ -79,5 +79,5 @@ Markup, from `06-mood-earth.html`:
 
 ## Sources
 
-- Prototemplate: `deck/shots/OPENERS.md`, `deck/DECK-GRAMMAR.md` (full-picture slides), `docs/ARTIFACT-PICTURES.md`, `scripts/mood-tone/README.md`, `deck/slides/01-opener-brand.html`, `deck/slides/06-mood-earth.html`, `deck/slides/95-closing.html`, `deck/parts/tail.html` (`syncBackdrop`, the mood engine).
+- Prototemplate: `deck/shots/OPENERS.md`, `deck/DECK-GRAMMAR.md` (full-picture slides), `docs/ARTIFACT-PICTURES.md`, `scripts/media/mood-tone/README.md`, `deck/slides/01-opener-brand.html`, `deck/slides/06-mood-earth.html`, `deck/slides/95-closing.html`, `deck/parts/tail.html` (`syncBackdrop`, the mood engine).
 - Kevin's directives: round seven, 2026-09-09 (shader openers return, photographs become mood slides); round nine, 2026-09-09 (full-picture slides fill the stage and say why they are there); round ten, 2026-09-09 (openers on better images); 2026-10-05 (no plain English prose on artifact pictures).

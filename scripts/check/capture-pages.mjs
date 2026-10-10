@@ -1,10 +1,10 @@
 // Captures the first fold of every page the index panel and the sidebar
 // preview (directive 8.6) against the running dev server, in both themes,
 // into public/shots/pages/<id>-light.jpg and <id>-dark.jpg, where <id> is
-// the surface id in src/lib/surfaces.ts. scripts/build-thumbs.mjs cuts the
+// the surface id in src/lib/surfaces.ts. scripts/build/thumbs.mjs cuts the
 // 640x360 thumbnails the preview layer reads from these.
 //
-// What is captured, from the shared route list (scripts/site-pages.mjs,
+// What is captured, from the shared route list (scripts/lib/site-pages.mjs,
 // the rows tagged `capture`) and the two book registries:
 //   - every static page of the shipped direction: src/app/d/production and
 //     each page.tsx under it whose path has no dynamic segment (blog/[slug]
@@ -46,20 +46,23 @@
 // reported and skipped, never fatal; the run exits 1 at the end when any
 // page failed.
 //
-// Usage: pnpm capture:pages [--base http://localhost:3005] [--only <id>[,<id>]] [--live]
+// Usage: pnpm capture:pages [--base <url>, default PT_BASE] [--only <id>[,<id>]] [--live]
 // Needs the dev server running (pnpm dev) and the Chrome for Testing build
 // playwright-core expects; CHROME_PATH overrides the executable. --live
 // needs the network instead of the dev server.
 //
 // The routes, the theme door and the executable path come from
-// scripts/site-pages.mjs, which every browser tool shares, so a new page
+// scripts/lib/site-pages.mjs, which every browser tool shares, so a new page
 // or a moved registry is picked up by all of them from one change.
 import { mkdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { chromium } from 'playwright-core';
 
-import { chromePath, HIDE_DEV_UI_CSS, ROOT, routesFor, seedTheme } from './site-pages.mjs';
+import { BASE_URL, chromePath, HIDE_DEV_UI_CSS, ROOT, routesFor, seedTheme } from '../lib/site-pages.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+helpIfAsked(import.meta.url);
 
 const OUT = join(ROOT, 'public/shots/pages');
 
@@ -77,7 +80,7 @@ const flag = (name) => {
   const at = argv.indexOf(name);
   return at >= 0 ? argv[at + 1] : undefined;
 };
-const BASE = (flag('--base') ?? process.env.CAPTURE_BASE ?? 'http://localhost:3005').replace(/\/$/, '');
+const BASE = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
 const ONLY = flag('--only')?.split(',').filter(Boolean);
 const LIVE = argv.includes('--live');
 

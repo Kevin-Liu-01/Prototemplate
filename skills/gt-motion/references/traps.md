@@ -56,7 +56,7 @@ a rejected round.
    source; store it once in `el.dataset.traceD` and restore it before
    measuring, or a re-run of the effect traces an emptied path
    (`src/app/d/production/sections/Developer.tsx`, `tracePath`).
-7. **The line auditor cannot see SVG strokes.** `scripts/lint-lines.mjs`
+7. **The line auditor cannot see SVG strokes.** `scripts/lint/lines.mjs`
    reconstructs lines from computed CSS, so drawn figures are checked by eye
    at 2x crops of their junctions (DESIGN.md section 2).
 

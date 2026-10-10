@@ -73,62 +73,68 @@ src/
                           studio-field.ts, glyph-field.ts, horizon-field.ts,
                           prismatic-field.ts; try/ (the report card's
                           checks); and the generated skills.ts, motion.ts
-                          and updated.ts (build-updated.mjs; server modules
+                          and updated.ts (build/updated.mjs; server modules
                           only) with page-updated.ts (its type); the hooks:
                           use-mount-effect.ts and use-layout-work.ts
                           (dependency layout effects with useGSAP's timing,
                           without GSAP)
-scripts/
-  build-deck.mjs          deck/ to public/brand-deck.html and
+scripts/                  pnpm names are the interface; every entry point
+                          takes --help
+  lib/root.mjs            the repository root every script resolves from
+  lib/site-pages.mjs      page discovery, the theme door, PT_BASE and the
+                          Chrome the browser scripts share
+  lib/help.mjs            --help: prints a script's opening comment
+  build/deck.mjs          deck/ to public/brand-deck.html and
                           public/shots/deck (pnpm build:deck); next.config.ts
                           rewrites /deck to the built file
-  build-thumbs.mjs        the 640x360 previews in public/shots/thumb, cut
+  build/thumbs.mjs        the 640x360 previews in public/shots/thumb, cut
                           from the captures under public/shots
-  build-skills.mjs        skills/ to src/lib/skills.ts and skills/README.md,
+  build/skills.mjs        skills/ to src/lib/skills.ts and skills/README.md,
                           with the skill contract and lint (pnpm
                           build:skills; --check is pnpm lint:skills)
-  build-updated.mjs       git to src/lib/updated.ts, the day each book page
+  build/updated.mjs       git to src/lib/updated.ts, the day each book page
                           last changed for its head's Updated row
                           (pnpm build:updated; --check is pnpm
                           lint:updated, in the build), with its tests
-  build-speed-marks.mjs   the speed marks under public/marks
-  subset-inter.py         the Inter roman and italic to unicode-range
+  build/speed-marks.mjs   the speed marks under public/marks
+  build/subset-inter.py   the Inter roman and italic to unicode-range
                           subsets in public/fonts/inter, their faces in
                           src/app/inter-subsets.css and the latin range in
                           src/lib/fonts.ts (pnpm build:inter)
-  build-motion.mjs        motion/ to src/lib/motion.ts and public/motion,
+  build/motion.mjs        motion/ to src/lib/motion.ts and public/motion,
                           run only when the Videos session hands a film over
-  capture-pages.mjs       the 1440x900 page captures in public/shots/pages
-                          that build-thumbs cuts
-  gallery-shoot.mjs       the anatomy wall's tiles (see "The gallery
+  check/capture-pages.mjs the 1440x900 page captures in public/shots/pages
+                          that build/thumbs.mjs cuts
+  check/gallery-shoot.mjs the anatomy wall's tiles (see "The gallery
                           pipeline")
-  site-pages.mjs          page discovery, the theme door and the Chrome
-                          path the browser scripts share
-  pagecheck/              the page check: every page at ten viewports in
+  check/pagecheck/        the page check: every page at ten viewports in
                           both themes, layout shifts, interactions, a
                           report (pnpm check:pages; its README explains)
-  lint-lines.mjs          the line auditor (see docs/SHIP-LOOP.md)
-  lint-practices.mjs      the practices ratchet (+ baseline JSON)
-  lint-type.mjs           the type lint: one Inter through the tokens,
+  lint/lines.mjs          the line auditor (see docs/SHIP-LOOP.md)
+  lint/practices.mjs      the practices ratchet (+ baseline JSON)
+  lint/type.mjs           the type lint: one Inter through the tokens,
                           static (lint:type, in the build) and --live
                           (lint:type:live), with its ratchet baseline
-                          lint-type.baseline.json and its tests
-  lint-radius.mjs         the radius lint: rounded controls, square shells,
+                          type.baseline.json and its tests
+  lint/radius.mjs         the radius lint: rounded controls, square shells,
                           every corner through the six --pt-radius-<role>
                           tokens, static (lint:radius, in the build) and
                           --live (lint:radius:live), with its tests
-  lint-heads.mjs          the book page lint: one head, one band, one
+  lint/heads.mjs          the book page lint: one head, one band, one
                           divider grammar on every book, static
                           (lint:heads, in the build) and --live
                           (lint:heads:live), with its tests
-  lint-pictures.mjs       the artifact picture standard
+  lint/pictures.mjs       the artifact picture standard
                           (docs/ARTIFACT-PICTURES.md), in the build
-  lint-shell.mjs          token discipline for the shell layer
-  mood-tone/              the artifact picture cutter and standard.json
-  oxlint-plugins/         the gt-ui rules pnpm lint:code runs
-  install-skills.mjs      links or copies skills/<slug> into a project's
-                          .claude/skills and .agents/skills (its tests:
-                          install-skills.test.mjs, pnpm test:skills)
+  lint/shell.mjs          token discipline for the shell layer
+  lint/registries.mjs     registry drift: headings, route lists, first
+                          slugs, the skill contract (pnpm lint:registries)
+  lint/oxlint-plugins/    the gt-ui rules pnpm lint:code runs
+  media/mood-tone/        the artifact picture cutter and standard.json
+  skills/install.mjs      links or copies skills/<slug> into a project's
+                          .claude/skills and .agents/skills (pnpm
+                          skills:install; its tests: install.test.mjs,
+                          pnpm test:skills)
 docs/
   handbook/               how Kevin runs GT work, served at /handbook:
                           the operating principles, the quality bar, the
@@ -152,7 +158,7 @@ skills/                   the curated skills, one folder per skill
                           copy, published on /skills
 .claude/skills/, .agents/skills/
                           relative links to skills/<slug>, made by
-                          install-skills.mjs --project .
+                          pnpm skills:install --project .
 motion/                   the films, untracked, owned by the Videos session
 AGENTS.md                 the agent entry point (CLAUDE.md imports it);
                           served at /docs/agents
@@ -170,7 +176,7 @@ showcases. The index and the sitemap map over `DIRECTIONS`, and the
 presenter walks its first 16 without Signal
 (`src/app/present/directions.ts`), so adding or removing a direction there
 updates all three. When a direction is deleted, also sweep
-`scripts/lint-practices.baseline.json` for its paths, record it in
+`scripts/lint/practices.baseline.json` for its paths, record it in
 `src/lib/archive.ts`, and re-check stated counts (index funnel, layout
 description, craft intro).
 
@@ -226,7 +232,7 @@ log entry (body and snippet) in the same round.
 The index's anatomy wall is fed by one shooter, and the file names are
 the contract between the two ends:
 
-- **The shooter** (`scripts/gallery-shoot.mjs`) shoots the flagship home
+- **The shooter** (`scripts/check/gallery-shoot.mjs`) shoots the flagship home
   section by section across desktop and mobile cuts and both themes. It
   takes element screenshots anchored on each section's own landmark
   selector, never scroll depths, so side-by-side pairs align at any
@@ -271,12 +277,12 @@ the contract between the two ends:
 - `skills/<slug>/` is the one copy of each curated skill: SKILL.md with
   its frontmatter contract (name, description with "Use when", metadata
   title, areas, updated and origin), its references and scripts.
-  `scripts/build-skills.mjs` validates the set and writes
+  `scripts/build/skills.mjs` validates the set and writes
   `src/lib/skills.ts` and the folder's index, `skills/README.md`;
   `/skills` and `/skills/<slug>` render it, the
   pages read each body from the folder on the server, and
   `src/app/skills/[slug]/[...path]/route.ts` serves the raw files.
-- `scripts/install-skills.mjs` links or copies the set into any project
+- `scripts/skills/install.mjs` links or copies the set into any project
   (`--project <dir>`, `--user`, `--into <dir>`, with `--dry-run`). This
   repository's `.claude/skills` and `.agents/skills` are its relative links
   (`--project .`); README.md's Skills section has the rules.

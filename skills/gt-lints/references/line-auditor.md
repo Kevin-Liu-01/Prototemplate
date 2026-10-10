@@ -1,6 +1,6 @@
 # The line auditor
 
-`scripts/lint-lines.mjs` in Prototemplate renders pages in Chrome for Testing
+`scripts/lint/lines.mjs` in Prototemplate renders pages in Chrome for Testing
 through `playwright-core` and audits the hairlines the browser actually drew.
 It enforces the line law of `DESIGN.md` section 2: every line is drawn
 exactly once, and every border in chrome draws one of three tokens. Paths are
@@ -47,7 +47,7 @@ matches `.is-on`, `.is-active`, `.is-editing`, `.is-solid`,
 
 ## Shell mode
 
-`pnpm lint:lines:shell` is `node scripts/lint-lines.mjs --shell`. It drives
+`pnpm lint:lines:shell` is `node scripts/lint/lines.mjs --shell`. It drives
 these routes against the dev server (default base `http://localhost:3005`):
 `/`, `/docs`, `/brand`, `/compare`, `/archive/<first slug>`,
 `/directions/<first slug>`, `/skills`, `/skills/<first slug>`, `/motion`,
@@ -76,14 +76,14 @@ Flags: `--base <url>`, `--only <path fragment>`, `--width <px>`,
 (print every audit), `--report` (print every audit and exit 0 on findings
 and on states that did not apply; an HTTP error or a wrong theme still exits
 2). A fast loop on one route is
-`node scripts/lint-lines.mjs --shell --only /docs --width 1440 --theme dark --jobs 1`.
+`node scripts/lint/lines.mjs --shell --only /docs --width 1440 --theme dark --jobs 1`.
 
 The browser is `CHROME_PATH`, else the Chrome for Testing build
 playwright-core installs (`pnpm exec playwright-core install chromium`).
 
 ## Page mode
 
-`node scripts/lint-lines.mjs <url> [<url> ...] [--theme dark|light]` audits
+`node scripts/lint/lines.mjs <url> [<url> ...] [--theme dark|light]` audits
 each URL at 1440 and 1280 in one theme over a 4200px tall viewport, waits for
 network idle and 3 seconds, and prints JSON. Every positional URL is audited.
 With no argument it audits `http://localhost:3005/d/toolchain?chrome=0`
@@ -144,7 +144,7 @@ open, and a way back to the rest state.
 
 ## Sources
 
-- Prototemplate: `scripts/lint-lines.mjs` (header comment, `ALLOW`,
+- Prototemplate: `scripts/lint/lines.mjs` (header comment, `ALLOW`,
   `SHELL_CHROME`, `auditDocument`, `shellRoutes`, `auditShellRoute`);
   `DESIGN.md` sections 2, 3 and 15; `docs/SHIP-LOOP.md` section 1.
 - Kevin, round six of the viewer shell: "make the borders around these areas

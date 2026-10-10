@@ -23,7 +23,7 @@ The signature visuals of the GT identity live as components and engines. Protote
 | TranslateWindow | `src/app/d/_v0/TranslateWindow.tsx` | `components/landing/home/sections/TranslateWindow.tsx` | The hero's windowed demo and the locale belt; `onLocaleChange` passes the active locale to a host. |
 | FullStack | `src/app/d/_v0/sections/FullStack.tsx` | `components/landing/sections/fullstack/FullStack.tsx`, `StackTower.tsx` | The scroll-scrubbed stack story; beats lock as their copy centre takes the 55% read line (DESIGN.md section 14). |
 
-Also in the Prototemplate roster: the locale belt, the nameplate take (`src/app/PrototemplateHero.tsx`), the site compare rig (`src/app/SiteCompare.tsx`), the gallery shooter (`scripts/gallery-shoot.mjs`), the mobile type ladder (`src/app/d/toolchain/styles.css`, the last 720px block), the pre-boot scripts in `src/app/layout.tsx`, and the four colors in `src/app/globals.css`.
+Also in the Prototemplate roster: the locale belt, the nameplate take (`src/app/PrototemplateHero.tsx`), the site compare rig (`src/app/SiteCompare.tsx`), the gallery shooter (`scripts/check/gallery-shoot.mjs`), the mobile type ladder (`src/app/d/toolchain/styles.css`, the last 720px block), the pre-boot scripts in `src/app/layout.tsx`, and the four colors in `src/app/globals.css`.
 
 ## The lifecycle contract
 

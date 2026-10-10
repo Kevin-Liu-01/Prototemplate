@@ -13,7 +13,7 @@ import './InstallField.css';
 const COPIED_MS = 1600;
 
 /**
- * `node scripts/install-skills.mjs --project <dir>` as the groups a line may
+ * `node scripts/skills/install.mjs --project <dir>` as the groups a line may
  * break between: a flag keeps its value, so `--project <dir>` never splits.
  */
 export function commandGroups(command: string): string[] {

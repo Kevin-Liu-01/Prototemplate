@@ -717,7 +717,7 @@
    the globe prints in GT blue and the picture in the artifact picture
    standard's dark screen (docs/ARTIFACT-PICTURES.md), white cells at 0.62
    over the plate's #070707 ground, since the plate is dark in both themes;
-   scripts/lint-pictures.mjs holds the two picture tokens to the standard */
+   scripts/lint/pictures.mjs holds the two picture tokens to the standard */
 .ptc-plate.is-transition {
   --ptc-globe-ink: #2f5ce0;
   --ptc-picture-ink: #ffffff;

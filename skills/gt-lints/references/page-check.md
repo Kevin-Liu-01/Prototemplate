@@ -1,7 +1,7 @@
 # The page check
 
-`pnpm check:pages` (`scripts/pagecheck/`, its README explains it) loads every
-page on the dev server on the device table in `scripts/site-pages.mjs`
+`pnpm check:pages` (`scripts/check/pagecheck/`, its README explains it) loads every
+page on the dev server on the device table in `scripts/lib/site-pages.mjs`
 (phones from 320 wide and on their sides, tablets in both orientations,
 laptops, desktops to the 3440 ultrawide, 1440x900 at 200% zoom). A phone or
 a tablet is a touch device whatever its width. `--preset quick` reads eight

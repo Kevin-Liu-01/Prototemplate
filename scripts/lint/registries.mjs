@@ -3,7 +3,7 @@
 /**
  * Reports drift between the registries a Prototemplate page, document or
  * skill has to appear in. Pure Node and read-only: it reads the sources
- * with regular expressions, the way scripts/site-pages.mjs reads the
+ * with regular expressions, the way scripts/lib/site-pages.mjs reads the
  * registries, so it needs no TypeScript
  * loader and no dev server.
  *
@@ -18,13 +18,13 @@
  *      links to a dead anchor.
  *   2. Routes. Every Pages and Knowledge row of src/lib/surfaces.ts with a
  *      fixed path, against the sitemap (src/app/sitemap.ts), public/llms.txt,
- *      the shared route list the browser tools read (scripts/site-pages.mjs,
+ *      the shared route list the browser tools read (scripts/lib/site-pages.mjs,
  *      siteRoutes: a row's `tools` names the capture list, the page check
  *      and the line audit's shell routes), the sidebar's and the search's
  *      icon maps, the search keywords and the row's WebP thumbnail under
  *      public/shots/thumb, where no JPEG may be left (pnpm build:thumbs cuts
  *      a capture pass's JPEGs to WebP and removes them).
- *   3. First slugs. The four regexes scripts/site-pages.mjs uses to find a
+ *   3. First slugs. The four regexes scripts/lib/site-pages.mjs uses to find a
  *      first slug in src/lib/skills.ts, src/lib/motion.ts,
  *      src/lib/archive.ts and src/lib/directions.ts. A generator that
  *      changes its output shape breaks every browser gate; this says so
@@ -34,7 +34,7 @@
  *      curated set.
  *
  * Usage:
- *   node skills/prototemplate/scripts/check-registries.mjs [--root <dir>] [--no-skills]
+ *   node scripts/lint/registries.mjs [--root <dir>] [--no-skills]   (pnpm lint:registries)
  *
  * The root defaults to the checkout this file sits in, then to the working
  * directory. Exit 0 when the hard checks pass, 1 when one fails (heading
@@ -46,8 +46,13 @@
  * on the shell, /blog has no thumbnail yet).
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
+
+import { ROOT as REPO_ROOT } from '../lib/root.mjs';
+import { helpIfAsked } from '../lib/help.mjs';
+
+/* no module imports this file, only the shim at the skill's old path */
+helpIfAsked(import.meta.url, false);
 
 const argv = process.argv.slice(2);
 const flag = (name) => {
@@ -55,14 +60,14 @@ const flag = (name) => {
   return at >= 0 ? argv[at + 1] : undefined;
 };
 
-/** The checkout: --root, else three folders up from this file, else the working directory. */
+/** The checkout: --root, else the repository this file sits in, else the working directory. */
 function findRoot() {
   const given = flag('--root');
   const candidates = given
     ? [resolve(given)]
-    : [resolve(dirname(fileURLToPath(import.meta.url)), '../../..'), process.cwd()];
+    : [REPO_ROOT, process.cwd()];
   for (const dir of candidates) if (existsSync(join(dir, 'src/lib/surfaces.ts'))) return dir;
-  console.error(`check-registries: no Prototemplate checkout at ${candidates.join(' or ')} (src/lib/surfaces.ts missing)`);
+  console.error(`lint:registries: no Prototemplate checkout at ${candidates.join(' or ')} (src/lib/surfaces.ts missing)`);
   process.exit(2);
 }
 
@@ -71,7 +76,7 @@ const ROOT = findRoot();
 function read(rel) {
   const abs = join(ROOT, rel);
   if (!existsSync(abs)) {
-    console.error(`check-registries: missing ${rel}`);
+    console.error(`lint:registries: missing ${rel}`);
     process.exit(2);
   }
   return readFileSync(abs, 'utf8');
@@ -214,7 +219,7 @@ if (rows.length === 0) fail('found no internal(...) rows in PAGES or KNOWLEDGE; 
 const sitemap = read('src/app/sitemap.ts');
 const llms = read('public/llms.txt');
 /* the route list's rows are one line each: `{ id, path, tools: '<tool> <tool>', source }` */
-const routeRows = read('scripts/site-pages.mjs').split('\n');
+const routeRows = read('scripts/lib/site-pages.mjs').split('\n');
 const walks = (p, tool) => routeRows.some((line) => line.includes(`path: '${p}'`) && new RegExp(`tools: '[^']*\\b${tool}\\b`).test(line));
 const sidebarIcons = block(read('src/components/viewer/Sidebar.tsx'), 'const PAGE_ICON', '\n};');
 const searchIcons = block(searchIndex, 'const PAGE_ICON', '\n};');
@@ -263,7 +268,7 @@ if (thumbJpegs.length > 0) {
 
 /* ---- 3. first slugs ---- */
 
-console.log('\nFirst slugs: the regexes scripts/site-pages.mjs reads');
+console.log('\nFirst slugs: the regexes scripts/lib/site-pages.mjs reads');
 const firsts = [
   ['src/lib/skills.ts', /id: '([^']+)'/, 'export const SKILLS'],
   ['src/lib/motion.ts', /'([^']+)'/, 'export const MOTION_PACKAGE_SLUGS'],
@@ -275,14 +280,14 @@ for (const [file, pattern, from] of firsts) {
   if (from) {
     const at = text.indexOf(from);
     if (at < 0) {
-      fail(`${file}: no "${from}"; the browser gates (scripts/site-pages.mjs) throw`);
+      fail(`${file}: no "${from}"; the browser gates (scripts/lib/site-pages.mjs) throw`);
       continue;
     }
     text = text.slice(at);
   }
   const slug = text.match(pattern)?.[1];
   if (slug) console.log(`  ok   ${file}: ${slug}`);
-  else fail(`${file}: ${pattern} matches nothing after ${from ?? 'the start'}; the browser gates (scripts/site-pages.mjs) throw`);
+  else fail(`${file}: ${pattern} matches nothing after ${from ?? 'the start'}; the browser gates (scripts/lib/site-pages.mjs) throw`);
 }
 
 /* ---- 4. skills ---- */
@@ -380,5 +385,5 @@ if (!argv.includes('--no-skills') && existsSync(skillsDir)) {
   }
 }
 
-console.log(`\ncheck-registries: ${failures === 0 ? 'pass' : `${failures} failure${failures === 1 ? '' : 's'}`}${headingDrift ? ` (${headingDrift} documents drift from DOC_HEADINGS)` : ''}`);
+console.log(`\nlint:registries: ${failures === 0 ? 'pass' : `${failures} failure${failures === 1 ? '' : 's'}`}${headingDrift ? ` (${headingDrift} documents drift from DOC_HEADINGS)` : ''}`);
 process.exit(failures === 0 ? 0 : 1);

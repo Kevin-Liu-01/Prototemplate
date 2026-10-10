@@ -22,7 +22,7 @@ export function generateStaticParams(): { slug: string; path: string[] }[] {
   );
 }
 
-/** The type each published extension is served with; build-skills.mjs allows only these. */
+/** The type each published extension is served with; build/skills.mjs allows only these. */
 const TYPES: Readonly<Record<string, string>> = {
   md: 'text/markdown; charset=utf-8',
   mjs: 'text/javascript; charset=utf-8',
