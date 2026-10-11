@@ -10,9 +10,11 @@
 //
 // Each film's status is read from the files, never written by hand: a film
 // is rendered when its final render exists (a published copy under
-// public/media, or motion/out/<slug>.mp4 by that exact name; a
-// _draft-<slug>.mp4 or a <slug>-share.mp4 is not the final), in production
-// when its folder under motion/films exists, and planned otherwise. A film
+// public/media, or motion/out/<slug>.mp4 by that exact name; a draft or a
+// <slug>-share.mp4 is not the final), in production when its folder under
+// motion/films exists, and planned otherwise. A film's current draft is
+// motion/films/<slug>/renders/draft.mp4, which kit/film.mjs writes, or
+// motion/out/_draft-<slug>.mp4, where drafts lived before it. A film
 // with a web copy under public/media (pinned in public/motion/published.json:
 // the two blog films and the three films of the translation series) plays on
 // the site; every other render stays in the motion folder and is listed by
@@ -759,14 +761,18 @@ for (const entry of ROSTER_ENTRIES) {
   /* what the motion folder holds for the film, as repository-relative paths */
   const local = {};
   if (existsSync(folder) && statSync(folder).isDirectory()) local.folder = `${REL}/films/${slug}`;
+  /* the first path that exists wins: kit/film.mjs writes a film's current draft to
+     films/<slug>/renders/draft.mp4, and out/_draft-<slug>.mp4, the older place, is read
+     until every film's draft has moved */
   const candidates = {
-    video: `out/${slug}.mp4`,
-    poster: `out/${slug}.png`,
-    sheet: `out/_sheets/${slug}.png`,
-    draft: `out/_draft-${slug}.mp4`,
+    video: [`out/${slug}.mp4`],
+    poster: [`out/${slug}.png`],
+    sheet: [`out/_sheets/${slug}.png`],
+    draft: [`films/${slug}/renders/draft.mp4`, `out/_draft-${slug}.mp4`],
   };
-  for (const [key, path] of Object.entries(candidates)) {
-    if (existsSync(join(MOTION, path))) local[key] = `${REL}/${path}`;
+  for (const [key, paths] of Object.entries(candidates)) {
+    const found = paths.find((path) => existsSync(join(MOTION, path)));
+    if (found) local[key] = `${REL}/${found}`;
   }
 
   const status = media || local.video ? 'rendered' : local.folder ? 'in-production' : 'planned';
