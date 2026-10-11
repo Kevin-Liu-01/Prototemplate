@@ -1917,3 +1917,12 @@
 [data-theme='dark'] .textile-block-root .tb-ldx-mark {
   filter: invert(1);
 }
+
+/* the narrowest phone: the nav ran 1px past a 320px screen, so its gaps
+   close a little (after the 720px block, which they override) */
+@media (max-width: 360px) {
+  .textile-block-root .tb-nav,
+  .textile-block-root .tb-nav-links {
+    gap: 10px;
+  }
+}

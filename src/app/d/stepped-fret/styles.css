@@ -439,6 +439,13 @@
   border-inline-start: 0;
 }
 
+/* a paper band's top edge bleeds a pixel or two past the screen on a phone
+   held sideways; the root clips at the viewport's edge, past which nothing
+   is seen (clip, not hidden: no scroll box, so sticky still sticks) */
+.stepped-fret-root {
+  overflow-x: clip;
+}
+
 .stepped-fret-root .sf-band {
   position: relative;
   box-sizing: content-box;
@@ -1660,6 +1667,16 @@
   .stepped-fret-root .sf-stair {
     grid-template-columns: minmax(0, 1fr);
     gap: 40px 0;
+  }
+
+  /* the source line's column took its longest unbroken run (445px), past
+     a phone's screen; it keeps the column and breaks the run instead */
+  .stepped-fret-root .sf-stair-base {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stepped-fret-root .sf-stair-src {
+    overflow-wrap: anywhere;
   }
 
   .stepped-fret-root .sf-atlas,
