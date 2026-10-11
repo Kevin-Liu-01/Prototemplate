@@ -2577,6 +2577,15 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   .pr-score-theme {
     min-height: 44px;
   }
+
+  /* The scoreboard's stars were 18.6px wide under a finger. Each takes a
+     40px square; five fit beside the label in the narrowest card (about
+     270px at 320 wide). */
+  .pr-stars-sm button {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
+  }
 }
 
 /* ---------- Mobile ---------- */
