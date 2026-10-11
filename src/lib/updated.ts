@@ -11,9 +11,9 @@ import type { PageUpdated } from './page-updated';
 
 export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/brand': { day: '2026-10-10', at: '2026-10-10T08:23:59-07:00', commit: 'c14a965', src: 'd989157d' },
-  '/docs': { day: '2026-10-10', at: '2026-10-10T10:59:11-07:00', commit: '5375a2c', src: '90684207' },
+  '/docs': { day: '2026-10-10', at: '2026-10-10T22:04:08-07:00', commit: 'fe55d78', src: '90684207' },
   '/handbook': { day: '2026-10-10', at: '2026-10-10T08:23:59-07:00', commit: 'd9d56c3', src: '2e348cde' },
-  '/skills': { day: '2026-10-10', at: '2026-10-10T11:57:42-07:00', commit: '9da99f7', src: '013673d4' },
+  '/skills': { day: '2026-10-10', at: '2026-10-10T22:04:08-07:00', commit: 'fe55d78', src: '013673d4' },
   '/skills/gt-aesthetic': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: '1c4d5d1f' },
   '/skills/gt-brand': { day: '2026-10-10', at: '2026-10-10T08:49:57-07:00', commit: '86929d5', src: 'a18b54ed' },
   '/skills/gt-components': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: '8ede68fd' },
@@ -21,7 +21,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/skills/gt-diagrams': { day: '2026-10-10', at: '2026-10-10T08:29:25-07:00', commit: 'd1684b0', src: '9cbe2f8c' },
   '/skills/gt-dither': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: '4a680400' },
   '/skills/gt-explorations': { day: '2026-10-10', at: '2026-10-10T08:49:57-07:00', commit: '86929d5', src: 'd039b54e' },
-  '/skills/gt-films': { day: '2026-10-10', at: '2026-10-10T09:06:15-07:00', commit: '5591541', src: '913f833a' },
+  '/skills/gt-films': { day: '2026-10-10', at: '2026-10-10T21:58:56-07:00', commit: '4a19b48', src: '913f833a' },
   '/skills/gt-graphics': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: 'f6737f95' },
   '/skills/gt-landing-pages': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: 'b2aedf8e' },
   '/skills/gt-lints': { day: '2026-10-10', at: '2026-10-10T09:06:15-07:00', commit: '5591541', src: '0c6ddc4d' },
