@@ -100,12 +100,6 @@ const TIGHT_CLASS: Record<Tight, string> = {
   6: 'pt-toolbar is-tight-1 is-tight-2 is-tight-3 is-tight-4 is-tight-5 is-tight-6',
 };
 
-/* the server's paint, before the first measurement: on an upright touch
-   phone Toolbar.css guesses tiers five and six from the width and the seg
-   (.is-boot), so the measurement never moves the right group on load;
-   everywhere else the class changes nothing */
-const BOOT_CLASS = 'pt-toolbar is-boot';
-
 /**
  * Seg options for the modes a route offers, always in the one order Slide,
  * Grid, Book, whichever mode is the default. The default mode's title says
@@ -227,7 +221,14 @@ function Count() {
  * Search field are the bar's meaning and are not traded.
  */
 function fitLabels(bar: HTMLElement): Tight {
-  bar.classList.remove('is-boot', 'is-tight-1', 'is-tight-2', 'is-tight-3', 'is-tight-4', 'is-tight-5', 'is-tight-6');
+  /* the server's paint, before the first measurement, carries no
+     data-measured: on an upright touch phone Toolbar.css guesses tiers five
+     and six from the width and the seg, so the measurement never moves the
+     right group on load. The mark is an attribute React does not own, so it
+     outlives every className write, and the first measurement settles at
+     tier 0 without a render, as it always has on a desktop. */
+  bar.dataset.measured = '';
+  bar.classList.remove('is-tight-1', 'is-tight-2', 'is-tight-3', 'is-tight-4', 'is-tight-5', 'is-tight-6');
   const style = getComputedStyle(bar);
   const frame = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) + parseFloat(style.columnGap);
   const groups = bar.querySelectorAll<HTMLElement>(':scope > .pt-bar-l, :scope > .pt-bar-r');
@@ -253,7 +254,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   const shell = usePtShell();
   const { modes, keys, noun, mode, index, sidebarOpen, panelOpen, helpOpen, narrow } = shell;
   const [fullscreen, setFullscreen] = useState(false);
-  const [tight, setTight] = useState<Tight | null>(null);
+  const [tight, setTight] = useState<Tight>(0);
   const bar = useRef<HTMLDivElement>(null);
   const showSeg = modes.length > 1;
   const slideOffered = modes.includes('slide');
@@ -332,7 +333,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   };
 
   return (
-    <div ref={bar} className={tight === null ? BOOT_CLASS : TIGHT_CLASS[tight]} role='toolbar' aria-label='Viewer controls'>
+    <div ref={bar} className={TIGHT_CLASS[tight]} role='toolbar' aria-label='Viewer controls'>
       <div className='pt-bar-l'>
         <ToolButton
           icon='sidebar'
