@@ -1,6 +1,6 @@
 # The film pipeline in detail
 
-This file is the detail behind section 3 of `../SKILL.md`: the research package, the director and judge briefs, the storyboard, the way the rounds ran as workflows, and Kevin's direction round by round. Paths are relative to `$PROTOTEMPLATE`, and paths that start with `films/`, `kit/` or `out/` sit inside `motion/`.
+This file is the detail behind sections 5 and 11 of `../SKILL.md`: the research package, the director and judge briefs, the storyboard, Kevin's direction round by round, and how a cut is published. The workflow shapes and the lane rules are in `workflows.md`. Paths are relative to `$PROTOTEMPLATE`, and paths that start with `films/`, `kit/` or `out/` sit inside `motion/`.
 
 ## The research package (`films/<slug>/BRIEF.md`)
 
@@ -36,12 +36,12 @@ A director delivers:
 
 - a one-sentence story that a viewer could repeat afterwards;
 - a treatment with the script, each line's source sentence and the beats (`TREATMENT.md`; earlier lanes kept it as `treatment.json` or `script.json`), and for a series film its sources;
-- for a blog film, a script at least two thirds of whose spoken words are verbatim excerpts from the post;
+- a script that tells its own story, with at most one short quote (round 7 asked for two thirds verbatim excerpts; Kevin replaced that on 2026-10-06: "make the script not driven by quotes but tell its own story");
 - key frames rendered from a page that draws any frame (`keyframes.html?f=<n>`, written to `frames/` or `stills/` by a `render.mjs`) and a contact sheet of them;
 - a motion test of the signature move: a small HyperFrames project in `motion-test/` that passes `check`, and its draft MP4;
 - for a series film, a narrator take and a music sketch, each with its `el.mjs hear` check.
 
-In a from-scratch round the directors are forbidden to open the earlier cuts. Plan the script's length from the narrator's measured pace: Clara reads about 2.5 to 2.7 words a second at speed 1.0, and numbers take longer read aloud ("sixteen oh six", "two sixty-three C E").
+In a from-scratch round the directors are forbidden to open the earlier cuts. Plan the script's length from the narrator's measured pace: Frederick Surrey read his audition at about 2.6 words a second at speed 1.0 (Clara read 2.5 to 2.7), numbers take longer read aloud ("sixteen oh six", "two sixty-three C E"), and gaps of 0.3 to 0.5 s between lines are part of the length.
 
 ## The judge brief
 
@@ -51,7 +51,7 @@ The judge scores the three treatments on six criteria of 10 and writes the two f
 - **Evidence.** Each treatment and its sources; every key frame at full size and at 1280 x 720; the contact sheet; the motion test read with ffmpeg (two frames a second, and single frames at full size where a move looks wrong); the narrator take and its transcription; the music sketch's check; an ebur128 pass on each motion test.
 - **Grafts.** The judge may take moves from the losing treatments only when they use the winner's grammar. jihe-yuanben's SCRIPT.md lists seven changes and says of them: "none of them adds a second visual language".
 - **Length.** The judge retimes the script to the length cap at the narrator's measured rate and lists each cut, with the first line to restore if the takes run short.
-- **SCRIPT.md** holds the decision table, the numbered changes, a Lines table (n, spoken text, heading, source sentence), the heading sources (heading, size, source sentence), pronunciation notes and an audit: every excerpt matched once against the post by exact string with curly quotes; no em dash, parenthesis, exclamation mark or question mark in a spoken line; no two adjacent lines sharing a two-word phrase; connecting lines complete declarative sentences.
+- **SCRIPT.md** holds the decision table, the numbered changes, a Lines table (n, spoken text, heading, source sentence), the heading sources (heading, size, the spoken words it is made of), pronunciation notes and an audit: the quote count (at most one) with the quote matched against its source by exact string, curly quotes included; the set pieces of the current cut and where each went; the 4 to 6 headings; the stakes inside the first 6 to 8 s; no em dash, parenthesis, exclamation mark or question mark in a spoken line; no two adjacent lines sharing a two-word phrase; every line a complete declarative sentence.
 - **CONCEPT.md** holds the story in one paragraph, the winner's folder and key frames, the material and the type, and per beat the heading, the picture, the motion with its eases and times, the word the key action lands on, the judge's fix and the key frame path, then build notes.
 
 The orchestrator's own changes after judging go at the end of each file under a dated heading (for example, Fuma's line 3 heading became "Four modular / layers" in place of "The moon, Luna", which needed the post's context). Later rounds add sections ("Round 7b changes", "Round 7d") and mark the sections they supersede. Nothing is deleted: an earlier script is kept as `SCRIPT-r6a.md`, an earlier concept as `CONCEPT-r6a.md`, and a series rewrite as `SCRIPT-v2.md` beside the old `SCRIPT.md`.
@@ -68,18 +68,7 @@ Kevin reads the scripts before the build starts. The Videos session sends them a
 
 ## How the rounds ran
 
-Kevin's film rounds ran as Workflow scripts with one lane per film and stage:
-
-- a build at high effort, an adversarial frame-by-frame critique, a revision, a verification and a fix;
-- a sound pass with its own lanes: sound, a measured listen, and a sound fix;
-- for a series film, source lanes, the three directors and the judge, then a separate build workflow with picture, sound and story, and history and rights critics.
-
-Lessons from those runs:
-
-- Copy the published cut to the next `motion/out/v<N>/` before a revision starts.
-- After a session break, start a new script that embeds the finished results from the journal. Resuming a stopped run with an edited script re-ran its finished critiques live, because the cache keys no longer matched.
-- A run that dies on a network outage may leave no file changes. Relaunch it.
-- Record every round in the film's NOTES.md, newest first: what Kevin said, what changed and what did not, the deliverables, the measurements, the ElevenLabs ledger and the traps met.
+Every round ran as a Workflow script. `workflows.md` has the three shapes, the hard rules every lane prompt carries, the lane rules and the lessons from the runs.
 
 ## Kevin's direction, round by round
 
@@ -98,6 +87,24 @@ Lessons from those runs:
 | 2026-10-04 | jihe 3 to 8 | "The triangle reassembly is a bit wacky" | path tuning failed; the idea changed to one moving pair and a print-in |
 | 2026-10-05 | series v2 | "a little too slow paced. the video isnt very interesting and the script is just kind of weird ... we love the diagrams and visuals though" | a story editor's diagnosis, three writers, `SCRIPT-v2.md` at 60 to 75 s |
 | 2026-10-05 | pictures | "never distract with text on the artifacts. this disqualifies the dictionary and oxford" | the dictionary pictures moved to `kit/_retired/` |
-| 2026-10-05 | narrator | "why are we using clara? what are some better voices?" | series auditions in `kit/audio/auditions/series/in-context/`, waiting on his pick |
+| 2026-10-05 | narrator | "why are we using clara? what are some better voices?" | thirteen series auditions; Kevin picked Frederick Surrey for the series |
+| 2026-10-06 | narrator | "remember, we're using Frederick Surrey" | Frederick Surrey narrates every film; Clara's settings kept in a separate voice file, unused |
+| 2026-10-06 | blog v3 | "we need to convey the gravitas better earlier ... keep all the visual spectacle, i would hate to see removals. make the script not driven by quotes but tell its own story"; "need a better fuma opener" | the stakes in the first 6 to 8 s; at most one quote; every set piece kept; no opening on a personal fact |
+| 2026-10-06 | blog v4 | "way too many headers ... they dont actually line up with whats being said"; "too many visuals that are rapidly playing ... we can just increase the length" | 4 to 6 headings made of the spoken words; one main motion at a time; the film lengthened instead of crammed |
+| 2026-10-06 | records | "save these kind of sheets to prototemplate as well as the scripts" | `kit/contact-sheet.sh` and `kit/script-export.py`; every published cut's sheet and script on /motion |
+| 2026-10-07 | scripts | "make 5 variations of each script ... humble and not cheesy ... each in a new tab" | the script variations round and its guidance (`workflows.md`) |
+| 2026-10-07 | publish | the series v2 cuts, the v4 blog films, the Slash partnership cut and the product GIF approved | seven cuts pinned in `public/motion/published.json`; jihe-yuanben goes out under CC BY-SA 4.0 |
+| 2026-10-08 | Slash v2 to v5 | "we use 3 px dither ... all dithers are a lil TOO dithered"; "cap it at 40 seconds"; "make its pacing a lil faster, we hang around on many shots for too long" | 3 px cells everywhere; Kevin's lines cut whole in his order; holds about 0.5 s and moves about 30 percent quicker; the card opens on Slash's own photo, never dithered; the legal line dropped |
+| 2026-10-09 | Slash v6 to v8 | "make the card transition and become the globe", then "make the transition less weird ... make it slide right behind the globe"; "its a bit hard to see the lines" | a plain physical move instead of a morph; routes 2.5 px over a keyline so they read at phone size; the white wordmark on the gold; v8 approved and published; the 19.5 s cut taken off the site (`offSite`) |
+| 2026-10-10 | how-to films | the films must "feel like telling a story instead of just saying lines from the articles" | an answer film tells a story (a product moment, its stakes, the change, the payoff); headings over code panels that recite an article are rejected |
+| 2026-10-10 | repository | system v2, decision K3 | `motion/` sources tracked through an allowlist; renders, audio and pictures stay local |
 
 When Kevin misses something from an earlier cut (the dither, the round 5 music, the isometric view), bring it back as an addition and keep what he approved since.
+
+## Publishing a cut
+
+- The Prototemplate session publishes a film only after Kevin approves the cut. It copies the final (or the share copy) to `public/media/<name>-film.mp4` with the moov atom at the front (`ffmpeg -i <in> -c copy -movflags +faststart <out>` when the streams stay unchanged), writes `public/media/<name>-poster.jpg` at 1920 x 1080, lists both in `public/media/README.md`, adds the film's `film` and `poster` paths to `public/motion/published.json`, pins the cut by the SHA-256 of its video and audio streams (a faststart remux hashes the same as its render), its label and its length with `node scripts/build/motion.mjs --pin <slug>`, then runs `pnpm build:motion` and commits the web copies and the generated files. `/brand` shows the blog films under "Made with the system".
+- `pnpm build:motion` copies `<slug>.credits.txt`, `sheets/<slug>.webp` (and the `.png` up to 20 MB) and `scripts/<slug>.md` to `public/motion` only from the folder in `motion/out` whose render has the pinned streams (`out/` itself, or an archive folder with the kit's `sheets/` or `scripts/`, such as `out/series-100s`), and checks the script's label and length against the pin. A newer render in `out/` is listed on the site as in review by its label and length only. When a final is replaced, move the old render with its credits, sheet and script into an archive folder with the same layout.
+- It also reads MOTION.md's roster and each series `BRIEF.md` and writes `src/lib/motion.ts` and `public/motion/<slug>.md`. A film's status comes from the files: rendered when its final or web copy exists, in production when its folder exists, planned otherwise. It throws before writing anything when a BRIEF's or a script's shape changes or a web copy is not its pinned cut, and it refuses quoted hex colors in `motion.ts` and absolute local paths anywhere.
+- In a clone whose `motion/` holds only the tracked sources (no `out/`, no unreleased film folders), `build:motion` still runs and leaves `public/motion/` as it is, but `motion.ts` loses the display-only paths into `out/` (each published film's local video, poster, checking sheet, draft and cut render) and an unreleased film whose folder exists only locally drops from in production to planned. So the generated files are written where the full `motion/` folder exists, and they are committed, so the site builds without `motion/`.
+- The Videos session then tracks the film's sources (the skill's section 1): its folder line in `.gitignore`, `films/<slug>/script.json` and `script.stt.json` from `out/scripts/source/`, the public scan on `motion/`, and the paths staged by name for Kevin to read.

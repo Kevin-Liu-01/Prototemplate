@@ -18,6 +18,10 @@
 // --flicker  mean absolute difference (0 to 255) that counts as a change for
 //            the flicker test (default 6); the neighbours must match within a
 //            sixth of it.
+//
+// Requires: Node 18 or later, ffmpeg and ffprobe.
+// Last real run: none (kept for: the whole-film scan of every draft and final;
+// references/critic.md step 2).
 import { execFileSync, spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 

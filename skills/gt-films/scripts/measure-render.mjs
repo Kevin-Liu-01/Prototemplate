@@ -15,6 +15,10 @@
 // --json    prints the measurements as JSON instead of a table.
 //
 // Exit code 0 when every check passes, 1 when one fails, 2 on a usage error.
+//
+// Requires: Node 18 or later, ffmpeg and ffprobe.
+// Last real run: none (kept for: the delivery check of every final; the
+// handbook's quality bar, docs/handbook/quality-bar.md, names it).
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 

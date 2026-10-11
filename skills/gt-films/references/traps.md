@@ -1,6 +1,6 @@
 # Composition and render traps
 
-The traps the films met while building, each with its fix. Sound traps are in `sound.md`. Paths that start with `films/`, `kit/` or `out/` sit inside `$PROTOTEMPLATE/motion/`. Sources: the films' NOTES.md files (blog-fuma-nama rounds 5 to 8, jihe-yuanben, journey-to-the-west, modern-hebrew) and the memory note gt-motion-films.
+The traps the films met while building, each with its fix. Sound traps are in `sound.md`. Paths that start with `films/`, `kit/` or `out/` sit inside `$PROTOTEMPLATE/motion/`. Sources: the films' NOTES.md files (blog-fuma-nama rounds 5 to 8, jihe-yuanben, journey-to-the-west, modern-hebrew, slash-announcement v1 to v8) and the memory notes gt-motion-films and film-script-rules.
 
 ## Type
 
@@ -36,6 +36,9 @@ The traps the films met while building, each with its fix. Sound traps are in `s
 
 ## Dither fields
 
+- **Thin lines vanish on a bright dithered ground at phone size.** The Slash globe's 1 px routes disappeared on the lit land at 640 x 360 (Kevin, 2026-10-09: "its a bit hard to see the lines"); v8 draws them 2.5 px with 2 px crosses over a 1 px keyline of the film's olive at 60 percent on each side. Check every thin line at 640 x 360.
+- **A coarse screen measured from a reference image is wrong.** The Slash film's first cut measured a 6 px screen from Kevin's guidance image; he asked for the 3 px screen every GT film uses (2026-10-08).
+
 - **Distances on a cell grid run centre to centre.** A cell's nearest pixel can sit 3 px nearer than its centre, so a 40 px clearance on screen needs 44 px between centres.
 - **Lower the tone in a clearance ramp; never scale it.** Scaling and subtracting together compressed the taper to about 20 px and drew a hard edge on the zone; lowering alone keeps the taper as long as the ramp, so the cleared edge follows the smoke's own contour.
 - **A soft knee at the bottom of the tone** (nothing under 0.014, a smoothstep to 0.07) keeps thin wisps from leaving lone cells in the margins.
@@ -48,7 +51,9 @@ The traps the films met while building, each with its fix. Sound traps are in `s
 
 ## Renders and frames
 
-- **Select frames by index.** `ffmpeg -i film.mp4 -ss t -frames:v 1` returned a near-black frame on these renders. Use `select='eq(n,N)'` (`../scripts/frames.mjs`).
-- **A loaded machine.** Several lanes render on one machine; at load 140 to 220 probes and checks took minutes. Keep `--workers 3` and record the load in NOTES.md.
+- **Select frames by index.** `ffmpeg -i film.mp4 -ss t -frames:v 1` returned a near-black frame on these renders. Select by index instead: `ffmpeg -v error -i film.mp4 -vf "select='eq(n\,N)'" -vsync 0 -frames:v 1 out.png`, with N = round(t x fps).
+- **A loaded machine.** Several lanes render on one machine; at load 140 to 220 probes and checks took minutes. Keep `--workers 3`, take turns through the render lock, and record the load in NOTES.md.
+- **A pattern kill stops other lanes.** Every lane runs the same render command, so `pkill` or `killall` on it stopped other lanes' renders on 2026-10-10. Stop only the PIDs you started.
+- **Frame dumps fill the disk.** With several workers a render writes every frame to disk before it encodes (about 0.33 GB for a 40 s film); `--workers 1` streams frames and writes almost nothing. Delete frame dumps and probes when a lane ends.
 - **Posters on the GPU path.** A `--no-browser-gpu` snapshot moved the smoke by up to 5 levels against the render, so blog film posters are snapshotted on the hardware GPU path.
 - From `hyperframes-core`: duplicate ids across the assembled page render blank, and a background on the composition root can drop out of the producer's compositing, so a full-frame fill goes on a full-bleed child.

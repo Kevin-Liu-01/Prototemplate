@@ -1,9 +1,4 @@
 {
   "$comment": "Skills that scripts/build/skills.mjs (pnpm lint:skills) lets run over the 24,000-byte SKILL.md budget, each with a written reason and an expiry date. Every other skill fails over the budget. An entry that has expired, has no reason, or names a skill already under the budget fails, so this list only shrinks; remove an entry in the commit that trims its skill.",
-  "exempt": {
-    "gt-films": {
-      "reason": "37,130 bytes on 2026-10-10. The Videos session owns the skill and rewrites it in lane L6 of the system v2 plan, which trims it under the budget.",
-      "expires": "2026-10-24"
-    }
-  }
+  "exempt": {}
 }
