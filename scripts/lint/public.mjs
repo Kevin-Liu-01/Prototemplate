@@ -10,7 +10,8 @@
  *   - machine paths: /Users/<name>/ and /private/tmp/. Write ~, $PROTOTEMPLATE
  *     or a repo-relative path instead (~/gt/ is fine).
  *   - denylist terms: the private list at PT_DENYLIST (one term per line,
- *     # for comments), matched whole-word and case-insensitive. The list
+ *     # for comments), matched whole-word and case-insensitive, a term of
+ *     several words also when it wraps across lines. The list
  *     lives outside this repository, and a finding prints the term's line
  *     number in the list, never the term. Under VERCEL or CI the denylist
  *     is skipped with a printed line, since no private file is there.
@@ -127,12 +128,16 @@ function denylist() {
     process.exit(2);
   }
   const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const terms = readFileSync(file, 'utf8')
+  const listed = readFileSync(file, 'utf8')
     .split('\n')
     .map((line, i) => [i + 1, line.trim()])
-    .filter(([, term]) => term && !term.startsWith('#'))
-    .map(([line, term]) => [line, new RegExp(`(?<![A-Za-z0-9_])${escape(term)}(?![A-Za-z0-9_])`, 'i')]);
-  return { terms };
+    .filter(([, term]) => term && !term.startsWith('#'));
+  const terms = listed.map(([line, term]) => [line, new RegExp(`(?<![A-Za-z0-9_])${escape(term)}(?![A-Za-z0-9_])`, 'i')]);
+  /* a term of several words may be wrapped across lines, with quote marks at the start of the next */
+  const wrapped = listed
+    .filter(([, term]) => /\s/.test(term))
+    .map(([line, term]) => [line, new RegExp(`(?<![A-Za-z0-9_])${term.split(/\s+/).map(escape).join('[\\s>]+')}(?![A-Za-z0-9_])`, 'gi')]);
+  return { terms, wrapped };
 }
 
 const allow = readJson(ALLOW_REL, { allow: [] }).allow ?? [];
@@ -143,7 +148,17 @@ if (deny.skip) console.log(`lint:public: denylist skipped: ${deny.skip}`);
 /** Every finding: { rule, kind, file, line, text }; `text` is printable (never a key or a term). */
 const findings = [];
 for (const rel of [...walk(), ...motionFiles()]) {
-  const lines = readFileSync(join(ROOT, rel), 'utf8').split('\n');
+  const whole = readFileSync(join(ROOT, rel), 'utf8');
+  const lines = whole.split('\n');
+  if (!KEYS_ONLY && deny.wrapped && !allowed(rel, 'denylist')) {
+    for (const [n, term] of deny.wrapped) {
+      for (const m of whole.matchAll(term)) {
+        if (!m[0].includes('\n')) continue;
+        const line = whole.slice(0, m.index).split('\n').length;
+        findings.push({ rule: 'denylist', file: rel, line, text: `denylist term across a line break (line ${n} of the list)` });
+      }
+    }
+  }
   lines.forEach((text, i) => {
     for (const [name, shape] of KEY_SHAPES) {
       if (shape.test(text) && !allowed(rel, 'key-shape')) findings.push({ rule: 'key-shape', file: rel, line: i + 1, text: `${name} key shape` });

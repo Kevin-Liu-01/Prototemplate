@@ -91,6 +91,18 @@ describe('lint:public', () => {
     assert.ok(!result.stdout.toLowerCase().includes(TERM));
   });
 
+  it('matches a term of several words wrapped across lines, once', () => {
+    const root = checkout({ 'docs/a.md': `the ${TERM}\n> plan here\n`, 'docs/b.md': `the ${TERM} plan here\n` });
+    const list = join(root, '..', `${root.split('/').pop()}-denylist.txt`);
+    ROOTS.push(list);
+    writeFileSync(list, `${TERM} plan\n`);
+    const result = scan(root, [], { PT_DENYLIST: list });
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /docs\/a\.md:1  denylist term across a line break \(line 1 of the list\)/);
+    assert.equal(result.stdout.match(/docs\/b\.md:1/g)?.length, 1);
+    assert.ok(!result.stdout.toLowerCase().includes(TERM));
+  });
+
   it('skips the denylist under CI and VERCEL with a printed line', () => {
     const root = checkout({ 'docs/a.md': `${TERM}\n` });
     const list = join(root, 'list.txt');
