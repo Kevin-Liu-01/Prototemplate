@@ -14,15 +14,15 @@ This file is the detail behind section 10 of `../SKILL.md`: what a critic checks
 
 1. **Frames.** Extract every 0.5 s at full size and every 0.25 s for 1 s either side of each cut and each major move, selected by frame index (`ffmpeg -ss` returned the wrong frame on these renders):
    ```sh
-   # every 0.5 s of a 60 fps render: frames 0, 30, 60, ...
-   ffmpeg -v error -i motion/out/_draft-<slug>.mp4 -vf "select='not(mod(n\,30))'" -vsync 0 <scratch>/frames/f%04d.png
+   # every 0.5 s of the 30 fps draft: frames 0, 15, 30, ... (30, 60, ... for a 60 fps final)
+   ffmpeg -v error -i motion/films/<slug>/renders/draft.mp4 -vf "select='not(mod(n\,15))'" -vsync 0 <scratch>/frames/f%04d.png
    # one frame at t seconds: N = round(t x fps)
-   ffmpeg -v error -i motion/out/_draft-<slug>.mp4 -vf "select='eq(n\,N)'" -vsync 0 -frames:v 1 <scratch>/t.png
+   ffmpeg -v error -i motion/films/<slug>/renders/draft.mp4 -vf "select='eq(n\,N)'" -vsync 0 -frames:v 1 <scratch>/t.png
    ```
    Read them in 3 x 3 sheets, or read the contact sheet (`kit/contact-sheet.sh`, two frames a second). Read every signature move frame by frame at full size. Read a handful at 1280 x 720 for legibility, and every thin line at 640 x 360.
 2. **Whole-film scan.**
    ```sh
-   node skills/gt-films/scripts/scan.mjs motion/out/_draft-<slug>.mp4 --cuts <every cut time from STORYBOARD.md>
+   node skills/gt-films/scripts/scan.mjs motion/films/<slug>/renders/draft.mp4 --cuts <every cut time from STORYBOARD.md>
    ```
    It reports the darkest frame and near-black runs (each must be planned, such as a film that opens from black), single-frame flicker (a frame that differs from both neighbours while they match), and the largest frame-to-frame changes, which must be the planned cuts on their planned frames.
 3. **Sound.**
@@ -35,14 +35,14 @@ This file is the detail behind section 10 of `../SKILL.md`: what a critic checks
 6. **Safe area.** Measure the nearest type to each edge: at least 160 px on the heading side and 120 px elsewhere. Note credits' lowest line.
 7. **Reading floors and holds.** For each sentence, the time from its full arrival to the next change, against (words / 3) + 1 s; for each shot, a hold of about 0.5 s once it reads and no still over about 2 s except the end card.
 8. **Kevin's standing rules** (the skill's section 2): the stakes inside the first 6 to 8 s, the count of headings (4 to 6, each made of the words spoken under it), the count of quotes (at most one), every set piece of the previous cut accounted for, transitions that move an object physically, 3 px dither.
-9. **Determinism**, when the build changed: two lossless renders (`--crf 0`, one with `--workers 3` and one with `--workers 2`) compared by `framemd5`, which must match on every frame. Compare builds rendered back to back in one sitting. A critic on a busy machine may leave this to the final lane and say so.
+9. **Determinism**, when the build changed: read the final's `renders/final.compare.txt`, where `kit/film.mjs final` compared renders A and B, rendered back to back, by `framemd5` and decoded audio; a pair that differs names its frames, its PSNR and the master it kept. A critic renders nothing outside `kit/film.mjs`, because every render takes turns through its lock.
 
 ## The report (`films/<slug>/CRITIQUE-<n>.md`, or a section of NOTES.md)
 
 ```markdown
 # <slug>: critique, pass <n>
 
-The critic watched `motion/out/_draft-<slug>.mp4` as rendered on <date> at <time> (<quality>, <fps>, <frames>, <audio>). The film was judged against ...
+The critic watched `motion/films/<slug>/renders/draft.mp4` as rendered on <date> at <time> (<quality>, <fps>, <frames>, <audio>). The film was judged against ...
 
 ## How the draft was checked
 - **Frames.** ...

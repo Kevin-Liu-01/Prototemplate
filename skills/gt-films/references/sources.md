@@ -5,7 +5,7 @@ Where each rule of `gt-films` comes from, with dates. Paths are relative to `$PR
 ## The brief and the kit
 
 - `motion/MOTION.md`: the brief, its dated sections (Round 4, 2026-10-01; Round 7, 2026-10-02; Dithered artifact pictures, 2026-10-05; Contact sheets and scripts, 2026-10-06), the roster, the credits table, "The facts the films may state" and "How a film is judged". Its ElevenLabs account lines and local paths were removed when it was first tracked (2026-10-10).
-- `motion/kit/`: `tokens.css`, `dither.js`, `gemsmoke.js`, `sheet.js`, `endcard/README.md`, `audio/el.mjs`, `audio/voice.json`, `contact-sheet.sh`, `script-export.py`, `sound/README.md`, `review/README.md`, `vendor.mjs`, `picture-sources.json`.
+- `motion/kit/`: `tokens.css`, `dither.js`, `gemsmoke.js`, `sheet.js`, `endcard/README.md`, `audio/el.mjs`, `audio/voice.json`, `contact-sheet.sh`, `script-export.py`, `sound/README.md`, `review/README.md`, `vendor.mjs`, `picture-sources.json`, `film.mjs` and `film.schema.json` (2026-10-11).
 - HyperFrames 0.8.106 itself: the render command's quality aliases (`delivery` maps to `high`, preset slow and CRF 15) and `enforceAacTruePeak`, read in the package's `dist/` on 2026-10-05.
 
 ## The films
@@ -33,6 +33,7 @@ Where each rule of `gt-films` comes from, with dates. Paths are relative to `$PR
 - 2026-10-08: 3 px dither; the 40 s cap with whole lines cut; faster pacing with holds of about 0.5 s; Slash's own card photo, never dithered; the legal line dropped.
 - 2026-10-09: a plain physical move instead of a morph; thin lines at phone size; white logos on Slash's gold; the 19.5 s Slash cut taken off the site; the standing rules and the lane rules written down for every lane.
 - 2026-10-10: answer films tell a story; never stop renders by a pattern; the `motion/` allowlist (decision K3 of the system v2 plan).
+- 2026-10-11: "clean up our videos a lot our folder in prototemplate is so messy. make the way we do and generate things a lot more cleaned up": earlier cuts and set-aside builds moved to `~/gt/motion-archive/2026-10-11/` (6.2 GB), and one command, `kit/film.mjs`, for drafts, finals and the archive, with the render queue that replaced the `mkdir` lock (a 60 s poller lost to 30 s pollers for hours) and the pair rule from hunayn's fix round 2.
 
 ## Memory notes and research
 

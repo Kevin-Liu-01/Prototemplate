@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Making a film
   areas: videos, motion
-  updated: 2026-10-10
+  updated: 2026-10-11
   origin: prototemplate
   owner: V
 ---
@@ -30,7 +30,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`), and paths tha
 - In a fresh clone, `node motion/kit/vendor.mjs` writes the vendored libraries and the brand twins (files the repository already tracks in `public/` and `deck/`), each checked by SHA-256. `motion/kit/picture-sources.json` lists every picture, logo, mark and font in the kit and the published films' folders, with its source, licence, hash and the code that loads it; fetch the ones without a twin by hand. Audio is never tracked.
 - When a film is published, the Videos session adds its folder to the allowlist, copies its reviewed script table to `films/<slug>/script.json` (and the final's transcript to `script.stt.json`), scrubs machine paths and account lines, runs the public scan on `motion/` (`PT_DENYLIST=<private list> node scripts/lint/public.mjs --root motion`, because `pnpm lint:public` skips `motion/`), and stages the paths by name. Never run `git add -A` or `git add .`: on 2026-10-01 a broad add pushed 229 files of `motion/` to main in b56e64c, and 8c8d6fb had to untrack them.
 - Commits to Prototemplate are authored as Kevin with his GitHub noreply address (system v2 decision K8). Kevin reads a staged `motion/` diff before it is committed. Publishing a film to main is his call; explorations stay local until he reviews them.
-- The kit is read only for a film lane; a kit change goes through the Videos session, because every film loads it. Lane rules: work only in your film's folder and its own files in `out/`; never edit another film, MOTION.md or LINEUP.md (the lead does); name your scratch folder after your slug; no git command that changes state. `references/workflows.md` has the full lane rules.
+- The kit is read only for a film lane; a kit change goes through the Videos session, because every film loads it. Lane rules: work only in your film's folder, and in `out/` only through `kit/film.mjs` (section 9); never edit another film, MOTION.md or LINEUP.md (the lead does); name your scratch folder after your slug; no git command that changes state. `references/workflows.md` has the full lane rules.
 
 ## 2. Kevin's standing rules
 
@@ -80,8 +80,8 @@ These hold for every film (Kevin's notes, 2026-10-01 to 2026-10-10). A film's ow
 | Storyboard | `films/<slug>/STORYBOARD.md` | beats on the 0.5 s grid, words verbatim, picture, motion and easing, transition out |
 | Takes and bed | `audio/` (or `sound/`) | one take per line through `kit/audio/el.mjs`; the bed edited to length |
 | Build and check | `index.html`, `lib/` | key actions timed to the takes' word times; `check` ends with 0 errors |
-| Draft, critics, fixes | `out/_draft-<slug>.mp4`, `CRITIQUE-<n>.md` | a defect table with times and fixes; each fix checked on the frames that showed it |
-| Delivery and records | `out/<slug>.mp4`, poster, sheet, script, credits, NOTES.md | section 9 |
+| Draft, critics, fixes | `films/<slug>/renders/draft.mp4`, `CRITIQUE-<n>.md` | a defect table with times and fixes; each fix checked on the frames that showed it |
+| Delivery and records | `out/<slug>.mp4` and its records, NOTES.md | `kit/film.mjs final`, section 9 |
 
 - **Directors** use three lenses chosen for the film (people, idea, viewer for the blog films; page, words, geometry for jihe-yuanben). In a from-scratch round they never open the earlier cuts.
 - **When Kevin rejects a script, diagnose the story first.** His note on the series (2026-10-05): "a little too slow paced. the video isnt very interesting and the script is just kind of weird ... we love the diagrams and visuals though". The scripts were fact inventories with no hook; a story editor's diagnosis, three writers and a fact-checking editor wrote SCRIPT-v2.md.
@@ -110,6 +110,7 @@ cd <slug> && ln -sfn ../../kit kit
 | `kit/sheet.js` | `window.GTSheet`, the deck's series frame (the blog films dropped it on 2026-10-04) |
 | `kit/audio/el.mjs`, `voice.json` | ElevenLabs narration, beds, music and transcription; the narrator's settings |
 | `kit/sound/`, `kit/sound/tones/` | the canonical take recorder, ledger, click, chroma and loudness checks, the mix functions, and the Mandarin tone tools; published films keep their frozen copies |
+| `kit/film.mjs`, `kit/film.schema.json` | the film command and the schema of `film.json` (section 9) |
 | `kit/contact-sheet.sh`, `kit/script-export.py` | the contact sheet and the script as built (section 9) |
 | `kit/review/` | the script review and narrator audition pages, filled from a JSON file |
 | `kit/vendor.mjs`, `kit/picture-sources.json` | the vendored libraries and twins; the picture and font manifest |
@@ -136,16 +137,19 @@ cd <slug> && ln -sfn ../../kit kit
 ## 9. Renders and records
 
 ```sh
-# from motion/films/<slug>
-npx -y hyperframes@0.8.106 check .
-npx -y hyperframes@0.8.106 render . -o ../../out/_draft-<slug>.mp4 --quality draft --fps 30 --workers 3 --quiet
-npx -y hyperframes@0.8.106 render . -o ../../out/<slug>.mp4 --quality delivery --fps 60 --workers 3
+# from motion/
+node kit/film.mjs status [slug]      # finals, current drafts, last render pairs
+node kit/film.mjs check <slug>       # hyperframes check and film.json
+node kit/film.mjs draft <slug>       # 30 fps draft: films/<slug>/renders/draft.mp4
+node kit/film.mjs final <slug>       # renders A and B, master out/<slug>.mp4, records
+node kit/film.mjs prune [--dry-run]  # superseded drafts and renders to the archive
 ```
 
-- The machine is shared: render with `--workers 3`, take turns through a render lock (`mkdir <scratch>/render.lock`, your slug and the render's PID in `owner`, removed the moment the render ends), and free disk first. Stop only the processes you started, by PID; never pkill, killall or a pattern, which stopped other lanes' renders on 2026-10-10.
-- Render the delivery cut twice and compare; prove determinism with two lossless renders compared by `framemd5`. Keep its log and check it never mentions Google Fonts. The final is faststart; a master over 50 MB also gets a share copy.
-- Before overwriting a final, copy it with its records to the next `out/v<N>/`. Never delete an earlier final or an archive.
-- **Records** of every final: the poster `out/<slug>.png`; the contact sheet `out/sheets/<slug>.png` and `.webp` from `kit/contact-sheet.sh` (two frames a second, 384 px tiles, eight to a row, 3 px white gaps, the grid Kevin asked to keep on 2026-10-06); the script as built, `out/scripts/<slug>.md`, from `kit/script-export.py` with the reviewed line table and the final's own transcript (`el.mjs hear`); `CREDITS.txt` copied to `out/<slug>.credits.txt`; and a dated round entry in NOTES.md. Regenerate all of them after any re-render.
+- `films/<slug>/film.json` (`kit/film.schema.json`; example `films/_smoke/film.json`) sets the kind, the render path (`software` for series films with large animated type, `gpu` for gem smoke), workers, the timeout, the poster and the records; a tracked one names voices, never IDs.
+- Render only through film.mjs: renders take turns in the queue of `motion/.render.lock` (`references/kit.md`). Stop only processes you started, by PID; never pkill, killall or a pattern (2026-10-10).
+- `final` compares A and B by framemd5 and decoded audio; when they differ it keeps both, takes the one matching the previous master and records PSNR and frame ranges in `renders/final.compare.txt`. It refuses a master that misses section 7's targets, is not faststart or has Google Fonts in a log.
+- Nothing is deleted and nothing goes to `out/v<N>/`: the previous final and its records, the previous draft and the A and B MP4s move to `~/gt/motion-archive/<date>/`, listed in its INDEX.md.
+- **Records** that `final` writes: the poster; the contact sheet, PNG and WebP (two frames a second, 384 px tiles, eight to a row, 3 px white gaps, the grid Kevin asked to keep on 2026-10-06); the checking sheet; the script page from the reviewed table and the final's transcript (one `el.mjs hear` call, or the previous one when the audio is unchanged); the credits; a share copy over 50 MB; a KB film's web copy, captions and VideoObject. Add a dated round entry to NOTES.md.
 
 ## 10. The critic
 
@@ -162,7 +166,7 @@ A critic watches the render frame by frame against MOTION.md's "How a film is ju
 - `/motion` lists every roster film with its status, plays the published ones, and shows each series film's research package at `/motion/<slug>`.
 - The Prototemplate session publishes a cut after Kevin approves it: the web copy in `public/media/<name>-film.mp4` (faststart) with its poster, the entry in `public/motion/published.json`, `node scripts/build/motion.mjs --pin <slug>`, then `pnpm build:motion`. A film Kevin takes off the site goes into `offSite` and stays on the roster.
 - The version rule: the film on the site, its credits, its sheet and its script describe one cut, pinned by the SHA-256 of its streams. `build:motion` copies the records only from the `out/` folder whose render has the pinned streams, so keep each cut's records beside its render.
-- `build:motion` reads MOTION.md, each `BRIEF.md` and `out/`, and writes `src/lib/motion.ts` and `public/motion/`. Run it where the full `motion/` folder exists: a clone without `out/` drops the display-only local paths and the in-review entries, and lists an unreleased film whose folder is only local as planned.
+- `build:motion` reads MOTION.md, each `BRIEF.md`, `out/` and each draft (`films/<slug>/renders/draft.mp4`, else `out/_draft-<slug>.mp4`), and writes `src/lib/motion.ts` and `public/motion/`. Run it where the full `motion/` folder exists: a clone without `out/` drops the display-only local paths and the in-review entries, and lists an unreleased film whose folder is only local as planned.
 - After any re-render of a published film, tell the Prototemplate session and regenerate the records first.
 
 ## 12. Short media
@@ -178,7 +182,7 @@ Promos, product demo videos, README and launch GIFs, launch captures and vendor 
 - [ ] -16 LUFS within 0.5, true peak at or below -1 dBTP, AAC, audio length equals video length, 1920 x 1080 at 60 fps; every take at speed 1.0 passed `el.mjs hear`; non-English takes have a native listener's sign-off.
 - [ ] `scan.mjs` shows no unplanned black frame or flicker; thin lines read at 640 x 360.
 - [ ] Every picture is credited; facts and hedges match the sources.
-- [ ] The earlier final is in `out/v<N>/`; poster, sheet, script, credits and NOTES.md are written.
+- [ ] `kit/film.mjs final` made the final and its records (the earlier one is in the archive's INDEX.md); NOTES.md is written.
 - [ ] Only allowlisted `motion/` paths are staged, by name, after the public scan; the Prototemplate session knows about a re-render of a published film.
 
 ## Related skills
