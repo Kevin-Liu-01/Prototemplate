@@ -43,7 +43,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/'
 SR = 48000
 DUR = json.load(open(ROOT + 'audio/cues.json'))['duration']  # v2: the film's length, from tools/timeline.py
 N = int(round(DUR * SR))
-PAGE = ROOT + '../../concepts/jihe-yuanben/page/sound/'
+PAGE = ROOT + 'audio/page/'
 
 # Levels (decided by measurement, see NOTES.md)
 DIALOGUE_LUFS = -16.1      # the dialogue alone, both channels

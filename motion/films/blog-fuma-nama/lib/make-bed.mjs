@@ -2,11 +2,11 @@
 /*
  * blog-fuma-nama (round 7d; re-cut for the v3 build, then for the v4 cut at 58.0 s, 2026-10-06): the music bed. Kevin, on the round 7 films: "for
  * the blogs i liked the peaceful music from before". The bed is round 5's
- * again: audio/archive-r6a/bed.mp3, the one ElevenLabs sound generation of
+ * again: audio/bed.mp3, the one ElevenLabs sound generation of
  * round 5 (28 s: a C2 drone with partials at C3, G3, A3, C4 and G4, a slow
  * soft pulse and sparse low piano; its prompt is bed.prompt.txt beside it).
  * Round 5 edited it with lib/make-bed.mjs (archive/lib-r5/) and round 6a
- * extended that edit to 44.8 s (archive-r6a/bed-edit.wav). This script builds
+ * extended that edit to 44.8 s (its bed-edit.wav is in the motion archive). This script builds
  * it to this film's length the same way and masters it:
  *
  *   node lib/make-bed.mjs            write audio/bed.master.wav
@@ -56,7 +56,7 @@ import { execFileSync } from 'node:child_process';
 import { rmSync, writeFileSync } from 'node:fs';
 import { END, CARD } from './cues.mjs';
 
-const SRC = 'audio/archive-r6a/bed.mp3';
+const SRC = 'audio/bed.mp3';
 const OUT = 'audio/bed.master.wav';
 const SR = 44100;
 const XF = 0.6; // seconds per join
