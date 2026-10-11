@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="stylesheet" href="kit/tokens.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="kit/dither.js"></script>
+    <style>
+      html, body { width: 1920px; height: 1080px; overflow: hidden; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      .fill { position: absolute; inset: 0; background: var(--ink); }
+      #field { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+      #title { position: absolute; left: 160px; bottom: 140px; color: var(--ink-text); margin: 0; }
+      #mark { position: absolute; right: 160px; top: 140px; width: 420px; height: 108px; color: var(--ink-text); display: block; }
+      .tone { display: none; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="3" data-width="1920" data-height="1080">
+      <div class="fill"></div>
+      <img class="tone" id="earth" src="kit/tone/mood-earth.jpg" alt="" />
+      <img class="tone" id="rosetta" src="kit/tone/mood-rosetta.jpg" alt="" />
+      <section id="scene" class="clip" data-start="0" data-duration="3" data-track-index="1">
+        <canvas id="field" width="1920" height="1080"></canvas>
+        <h1 id="title" class="t-h1">Every product in every language</h1>
+        <svg id="mark" viewBox="-109.1 36 499.6 128" fill="currentColor"><path d="M-8.5 40L21.5 40L9.6 96L-20.4 96ZM-22.1 104L7.9 104L-4 160L-34 160ZM-8.5 40L181.5 40L175.1 70L-14.9 70ZM-27.6 130L162.4 130L156 160L-34 160ZM137.9 104L167.9 104L156 160L126 160ZM77.9 104L167.9 104L162.4 130L72.4 130ZM-28.5 40L-6.5 40L-12.9 70L-34.9 70ZM-97.4 82L-15.4 82L-18.4 96L-100.4 96ZM-102.1 104L-20.1 104L-23.1 118L-105.1 118ZM-77.6 130L-25.6 130L-32 160L-84 160ZM216.5 40L386.5 40L380.1 70L210.1 70ZM274.5 40L308.5 40L296.6 96L262.6 96ZM260.9 104L294.9 104L283 160L249 160Z"/></svg>
+      </section>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const g = GTDither.grid(document.getElementById('field'), 2, { width: 1920, height: 1080 });
+      const proxy = { p: 0, mixp: 0 };
+      function frame() {
+        const a = GTDither.toneFromImage(document.getElementById('earth'), g, { fit: 'cover' });
+        const b = GTDither.toneFromImage(document.getElementById('rosetta'), g, { fit: 'cover' });
+        const m = GTDither.mix(a, b, proxy.mixp);
+        GTDither.draw(g, (i) => m(i) * proxy.p, { ink: GTDither.mixColor('#f2f2f0', '#86a8ff', GTDither.smoothstep(0, 1, proxy.mixp)) });
+      }
+      const tl = gsap.timeline({ paused: true, onUpdate: frame });
+      tl.to(proxy, { p: 1, duration: 1, ease: 'power2.out' }, 0);
+      tl.to(proxy, { mixp: 1, duration: 1.2, ease: 'none' }, 1.4);
+      tl.fromTo('#title', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, 0.3);
+      tl.fromTo('#mark', { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'expo.out' }, 0.5);
+      tl.set({}, {}, 3);
+      window.__timelines['main'] = tl;
+    </script>
+  </body>
+</html>

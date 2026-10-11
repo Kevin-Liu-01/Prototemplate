@@ -1,0 +1,9 @@
+{
+  "voice": "Yun",
+  "name": "Yun (Beijing Mandarin; ElevenLabs library) on eleven_v3",
+  "model": "eleven_v3",
+  "stability": 0.5,
+  "style": 0,
+  "speed": 1.0,
+  "_": "Read by kit/audio/el.mjs when it is run through this folder's symlink with node --preserve-symlinks-main, so the kit's own code (the only reader of the ElevenLabs key) records the reader's retakes on eleven_v3, SCRIPT.md's fallback model. The kit is not changed. The voice is named, and el.mjs reads its id from kit/audio/voices.local.json."
+}

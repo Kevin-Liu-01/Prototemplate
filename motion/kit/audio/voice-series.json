@@ -1,0 +1,9 @@
+{
+  "voice_id": "j9jfwdrw7BRfcR43Qohk",
+  "name": "Frederick Surrey (British, history and science documentary; ElevenLabs library)",
+  "model": "eleven_multilingual_v2",
+  "stability": 0.55,
+  "style": 0.2,
+  "speed": 1.0,
+  "chosen": "2026-10-05: Kevin picked Frederick Surrey (audition 01, stability 0.55, style 0.2, speed 1.0) as the narrator of the translation series (jihe-yuanben, journey-to-the-west, modern-hebrew). The blog films keep Clara in voice.json. Select this file with EL_VOICE_FILE."
+}

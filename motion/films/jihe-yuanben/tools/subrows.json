@@ -1,0 +1,70 @@
+{
+ "en01": {
+  "rows": 1,
+  "width": 784
+ },
+ "en02": {
+  "rows": 1,
+  "width": 599
+ },
+ "en03": {
+  "rows": 1,
+  "width": 947
+ },
+ "en04": {
+  "rows": 1,
+  "width": 518
+ },
+ "zh2": {
+  "rows": 1,
+  "width": 796
+ },
+ "zh3": {
+  "rows": 1,
+  "width": 923
+ },
+ "en07": {
+  "rows": 1,
+  "width": 1308
+ },
+ "en08": {
+  "rows": 1,
+  "width": 807
+ },
+ "en09": {
+  "rows": 2,
+  "width": 848
+ },
+ "en10": {
+  "rows": 1,
+  "width": 902
+ },
+ "en11": {
+  "rows": 1,
+  "width": 1477
+ },
+ "en12": {
+  "rows": 1,
+  "width": 1212
+ },
+ "zh6": {
+  "rows": 1,
+  "width": 669
+ },
+ "en14": {
+  "rows": 1,
+  "width": 922
+ },
+ "en15": {
+  "rows": 1,
+  "width": 622
+ },
+ "en16": {
+  "rows": 1,
+  "width": 1213
+ },
+ "en17": {
+  "rows": 1,
+  "width": 786
+ }
+}

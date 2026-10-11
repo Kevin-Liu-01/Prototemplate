@@ -1,0 +1,1963 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Designing docs for humans</title>
+    <link rel="stylesheet" href="kit/tokens.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="kit/dither.js"></script>
+    <script type="module" src="kit/gemsmoke.js"></script>
+    <script type="module" src="kit/endcard/endcard.js"></script>
+    <script src="lib/film.js"></script>
+    <style>
+      html, body { width: 1920px; height: 1080px; overflow: hidden; margin: 0; background: #071124; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: #071124; }
+      .full { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: block; }
+      canvas.full { image-rendering: pixelated; }
+      .gemhost { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+      #gemA { visibility: hidden; }
+      /* The headings (v4): one size, one grid. Ink from x 160, first baseline y 252, second y 402. */
+      .hd {
+        position: absolute;
+        left: 160px;
+        top: 125px;
+        margin: 0;
+        color: #ffffff;
+        font-family: var(--font);
+        font-size: 144px;
+        font-weight: 500;
+        font-optical-sizing: auto;
+        letter-spacing: -0.035em;
+        line-height: 1.04;
+        white-space: nowrap;
+        font-kerning: normal;
+        z-index: 40;
+        /* Always on its own layer, so a heading's text is not re-rasterized on the first frame it moves. */
+        will-change: transform, opacity;
+      }
+      .hd .ln { display: block; width: max-content; }
+      .hd .w { display: inline-block; will-change: transform, opacity; }
+      .hd .acc { color: #86a8ff; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="53.5" data-width="1920" data-height="1080">
+      <div id="gemA" class="gemhost"></div>
+
+      <!-- The background for the whole film: the blue gem smoke printed through the 8 by 8 Bayer screen, behind every shot. -->
+      <canvas id="cf" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+
+      <!--
+        The story, one stage from frame 0 to the card: one page carries the eye through the whole film. The iso map
+        (lines 1 to 4), the flat page under one camera (lines 4 to 10: the pile, the push into the sidebar, the pull
+        back into the wall, the fly-in to the writing, the pull-out over the planet, the page box, the shrink back),
+        and the pieces that draw out of it. render(t) shows each layer only inside its own window.
+      -->
+      <div id="sS" class="clip full" data-start="0" data-duration="49.5" data-track-index="1" data-layout-allow-overflow>
+        <canvas id="c1" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+        <svg id="vbr" class="full" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-allow-overflow></svg>
+        <svg id="vP" class="full" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-allow-overflow></svg>
+        <canvas id="cw" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+        <svg id="vW" class="full" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-allow-overflow></svg>
+        <canvas id="c45" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+        <svg id="vR" class="full" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-allow-overflow></svg>
+        <svg id="v6" class="full" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-allow-overflow></svg>
+        <canvas id="c7" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+        <svg id="v7" class="full" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-allow-overflow></svg>
+        <svg id="vL" class="full" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-allow-overflow></svg>
+        <svg id="vE" class="full" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-allow-overflow></svg>
+        <canvas id="cg" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+      </div>
+
+      <!-- The moving type, once: heading 1 into heading 2's first line, under the headings. -->
+      <div id="sM" class="clip full" data-start="7.5" data-duration="0.9" data-track-index="4" data-layout-allow-overflow>
+        <canvas id="mt" class="full" width="1920" height="1080" style="z-index: 39" data-layout-allow-overflow></canvas>
+      </div>
+
+      <!-- The five headings, each made of the narrator's own words as he says them, each word a span in its final place. -->
+      <div id="k1" class="clip full" data-start="3.98" data-duration="3.67" data-track-index="5" data-layout-allow-overflow>
+        <div class="hd" id="h1"><span class="ln"><span class="w acc">Humans</span> <span class="w">still</span> <span class="w">read</span> <span class="w">docs</span></span></div>
+      </div>
+      <div id="k2" class="clip full" data-start="7.55" data-duration="5.35" data-track-index="6" data-layout-allow-overflow>
+        <div class="hd" id="h2"><span class="ln"><span class="w">General</span> <span class="w">Translation</span></span><span class="ln"><span class="w">redesigned</span> <span class="w">its</span> <span class="w">docs</span></span></div>
+      </div>
+      <div id="k3" class="clip full" data-start="26.18" data-duration="4.55" data-track-index="5" data-layout-allow-overflow>
+        <div class="hd" id="h3"><span class="ln"><span class="w">One</span> <span class="w">accordion</span></span></div>
+      </div>
+      <div id="k4" class="clip full" data-start="36.29" data-duration="4.05" data-track-index="6" data-layout-allow-overflow>
+        <div class="hd" id="h4"><span class="ln"><span class="w">Translated</span> <span class="w">pages</span></span></div>
+      </div>
+      <div id="k5" class="clip full" data-start="44.7" data-duration="4.8" data-track-index="5" data-layout-allow-overflow>
+        <div class="hd" id="h5"><span class="ln"><span class="w">Docs</span> <span class="w">design</span> <span class="w">is</span></span><span class="ln"><span class="w">an</span> <span class="w">open</span> <span class="w">problem</span></span></div>
+      </div>
+
+      <!-- The shared series end card (kit/endcard), added by the timeline at B.card: silent, the music resolves under it. -->
+
+      <!-- Sound: the narrator's masters and the bed, built by audio/make-bed.py and audio/mix.py (peak control lives there); mix.py rewrites these attributes from the cue table O. -->
+      <hf-audio-group id="voiceover" data-label="Narrator (Frederick Surrey)" data-volume="1"></hf-audio-group>
+      <audio id="vo-1" src="audio/vo-1.master.wav" data-audio-group="voiceover" data-start="0.92" data-duration="2.926" data-track-index="10"></audio>
+      <audio id="vo-2" src="audio/vo-2.master.wav" data-audio-group="voiceover" data-start="3.88" data-duration="2.84" data-track-index="11"></audio>
+      <audio id="vo-3" src="audio/vo-3.master.wav" data-audio-group="voiceover" data-start="7.645" data-duration="4.795" data-track-index="12"></audio>
+      <audio id="vo-4" src="audio/vo-4.master.wav" data-audio-group="voiceover" data-start="13.96" data-duration="3.7" data-track-index="13"></audio>
+      <audio id="vo-5" src="audio/vo-5.master.wav" data-audio-group="voiceover" data-start="18.6" data-duration="4.48" data-track-index="14"></audio>
+      <audio id="vo-6" src="audio/vo-6.master.wav" data-audio-group="voiceover" data-start="24.89" data-duration="4.49" data-track-index="15"></audio>
+      <audio id="vo-7" src="audio/vo-7.master.wav" data-audio-group="voiceover" data-start="31.28" data-duration="3.07" data-track-index="16"></audio>
+      <audio id="vo-8" src="audio/vo-8.master.wav" data-audio-group="voiceover" data-start="36.22" data-duration="3.23" data-track-index="17"></audio>
+      <audio id="vo-9" src="audio/vo-9.master.wav" data-audio-group="voiceover" data-start="40.575" data-duration="3.115" data-track-index="18"></audio>
+      <audio id="vo-10" src="audio/vo-10.master.wav" data-audio-group="voiceover" data-start="44.65" data-duration="4.037" data-track-index="19"></audio>
+      <audio id="music" src="audio/music.master.wav" data-start="0" data-duration="53.5" data-track-index="20"></audio>
+    </div>
+
+    <script>
+      (function () {
+        'use strict';
+        const { W, H, CELL, COLS, ROWS, C, K, TH, clamp, clamp01, smooth, lin, ease, prog } = F;
+        const lerp = (a, b, x) => a + (b - a) * x;
+        const s01 = (x) => smooth(0, 1, x);
+
+        /* ---------------- the cue table (from the takes' word timings) ---------------- */
+        // O[n]: the film time of line n's first word (Frederick Surrey, kit/audio/voice.json, speed 1.0, the v3 takes as
+        // recorded). audio/mix.py places each master so its first word lands here. Word times below are scribe_v1 word
+        // starts from each take's first word (audio/vo-N.stt.json); nothing is cut inside a line and nothing is
+        // stretched. v4 fix round (NOTES.md, 2026-10-06): the gaps between lines (last word's end to the next first word)
+        // are 0.80, 1.30, 1.90, 1.30, 2.16, 2.25, 2.24, 1.50 and 1.31 s, so every set piece finishes and holds before the
+        // next and the steps of each bridge run one after another; the gap before line 10 puts the card on the first 0.5 s
+        // beat after the last word plus 0.6 s, with heading 5's floor inside it.
+        const O = [0, 1.0, 3.98, 7.72, 14.04, 18.66, 24.94, 31.33, 36.29, 40.65, 44.7];
+        const WD = {
+          agents: O[1] + 1.74,
+          humans: O[2],
+          still: O[2] + 0.44,
+          read2: O[2] + 0.68,
+          docs2: O[2] + 0.94,
+          evaluate: O[2] + 1.34,
+          product: O[2] + 1.96,
+          general: O[3],
+          translation: O[3] + 0.3,
+          redesigned: O[3] + 1.04,
+          its3: O[3] + 1.54,
+          docs3: O[3] + 1.74,
+          people: O[3] + 3.08,
+          read3: O[3] + 3.58,
+          writing3: O[3] + 3.98,
+          cluttered: O[4] + 1.38,
+          creates: O[4] + 2.32,
+          mental: O[4] + 2.66,
+          clutter: O[4] + 2.98,
+          redesign: O[5] + 0.14,
+          deleting: O[5] + 1.3,
+          lines: O[5] + 2.16,
+          links: O[5] + 2.84,
+          buttons: O[5] + 3.62,
+          sidebar: O[6] + 0.14,
+          one: O[6] + 1.24,
+          accordion: O[6] + 1.4,
+          rare: O[6] + 2.98,
+          sites: O[6] + 3.78,
+          writing: O[7] + 0.12,
+          it: O[7] + 2.58,
+          translated: O[8],
+          pages8: O[8] + 0.58,
+          same: O[8] + 1.38,
+          spacing: O[8] + 1.8,
+          and8: O[8] + 2.2,
+          each: O[9],
+          action: O[9] + 1.9,
+          docs: O[10],
+          design10: O[10] + 0.28,
+          is10: O[10] + 0.84,
+          an10: O[10] + 0.94,
+          open10: O[10] + 1.14,
+          problem10: O[10] + 1.46,
+          team: O[10] + 2.48,
+          last: O[10] + 3.72,
+        };
+        // The scene clock (DESIGN-v4.md, section 2, retimed by the fix round). rise: the camera's start on "product"; iso:
+        // the iso view; recent: the re-centre once heading 2 has left; flat0: the flatten; land: the landing (0.24 s
+        // before "cluttered", settled on it); pile: the pile's first wave; red: the redline on "redesign"; push: the push
+        // into the sidebar; diag: the push lands and the first connector starts; back6: the pull back (on "rare"); wall:
+        // the wall lands; fly: the fly-in; write: the camera lands on the writing; out: the pull-out; planet: the page
+        // over the planet, which lights from here; step: the script step on "same"; guides: the guides on "and
+        // alignment"; tobox: into the page box; path: the reader's path; back: the shrink back on "Docs"; card: the end
+        // card (the first 0.5 s beat after the last word plus 0.6 s). mix.py and make-bed.py read these numbers.
+        const B = { rise: 5.94, iso: 7.4, recent: 12.88, flat0: 13.58, land: 15.18, pile: 16.2, red: 18.8, push: 23.68, diag: 24.68, back6: 27.88, wall: 29.68, fly: 30.73, write: 32.73, out: 35.19, planet: 36.19, step: 37.67, guides: 38.49, tobox: 39.89, path: 40.69, back: 44.7, card: 49.5, end: 53.5 };
+        // The headings (section 3): each word enters on its own word start (0.30 s, 12 px rise, power2.out); each
+        // heading holds (words / 3) + 1 s after its last word has arrived, and leaves whole (0.45 s, 8 px up,
+        // power2.inOut) in a pause or its own sentence's tail. Heading 1 leaves by the moving type into heading 2's
+        // first line; heading 5 leaves on the card's cut.
+        const MT = { t0: 7.55, d: 0.8, swap: 0.05, y0: 117, rows: 70 };
+        const HW = {
+          h1: [[WD.humans, WD.still, WD.read2, WD.docs2]],
+          h2: [[null, null], [WD.redesigned, WD.its3, WD.docs3]],
+          h3: [[WD.one, WD.accordion]],
+          h4: [[WD.translated, WD.pages8]],
+          h5: [[WD.docs, WD.design10, WD.is10], [WD.an10, WD.open10, WD.problem10]],
+        };
+        const HX = { h2: 12.43, h3: 30.28, h4: 39.89 };
+        const HEADS = ['h1', 'h2', 'h3', 'h4', 'h5'];
+
+        /* ---------------- shared ---------------- */
+        const $ = (id) => document.getElementById(id);
+        const show = (el, on) => {
+          const v = on ? '' : 'none';
+          if (el.style.display !== v) el.style.display = v;
+        };
+        const gems = {};
+        const sample = document.createElement('canvas');
+        sample.width = COLS;
+        sample.height = ROWS;
+        const sctx = sample.getContext('2d', { willReadFrequently: true });
+        function gemCells(gem) {
+          sctx.imageSmoothingEnabled = true;
+          sctx.imageSmoothingQuality = 'high';
+          sctx.clearRect(0, 0, COLS, ROWS);
+          sctx.drawImage(gem.canvas, 0, 0, COLS, ROWS);
+          return sctx.getImageData(0, 0, COLS, ROWS).data;
+        }
+        const lum = (d, i) => (0.2126 * d[i * 4] + 0.7152 * d[i * 4 + 1] + 0.0722 * d[i * 4 + 2]) / 255;
+        const keyOf = (c) => (c === C.navy ? 'navy' : c === C.blue ? 'blue' : c === C.lift ? 'lift' : 'white');
+        /*
+         * A fill or stroke at one tone on the film's screen: a 24 px pattern at the frame's origin holding the 8 by 8
+         * Bayer tile of 3 px cells, lit where the tone is over a cell's threshold, so an SVG piece at tone v lights
+         * exactly the cells Cells.rect lights at v. Only valid on elements drawn in screen space (no transform).
+         */
+        function tonePat(svg, color, v) {
+          const level = clamp(Math.round(v * 64), 0, 64);
+          if (level <= 0) return 'none';
+          if (level >= 64) return color;
+          const id = `${svg.id}-tp-${keyOf(color)}-${level}`;
+          if (!svg.__pats) {
+            svg.__pats = {};
+            svg.__defs = F.el(svg, 'defs', {});
+          }
+          if (!svg.__pats[id]) {
+            const p = F.el(svg.__defs, 'pattern', { id, x: 0, y: 0, width: 24, height: 24, patternUnits: 'userSpaceOnUse' });
+            for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) if (F.B8[y * 8 + x] < level) F.el(p, 'rect', { x: x * 3, y: y * 3, width: 3, height: 3, fill: color, 'shape-rendering': 'crispEdges' });
+            svg.__pats[id] = true;
+          }
+          return `url(#${id})`;
+        }
+        const rgb = (a, b, s) => 'rgb(' + GTDither.mixColor(a, b, clamp01(s)).join(',') + ')';
+
+        /* ---------------- the gem smoke: one mount, two settings ---------------- */
+        const FIELD = {
+          params: { colorBack: '#000000', colors: ['#ffffff'], colorInner: '#00000000', scale: 1.8, size: 0.55, angle: 35, outerGlow: 0.8, innerGlow: 1, innerDistortion: 0.8, outerDistortion: 0.6, offset: 0, shape: 'metaballs', fit: 'contain', offsetX: 0, offsetY: 0, rotation: 240 },
+          // The clock: gem time 9.2 + 0.12 s a second (the v3 build's, NOTES.md); the v4 lit shares are in NOTES.md.
+          g0: 9.2,
+          rate: 0.12,
+          gamma: 1.45,
+          cap: 0.88,
+          floor: [0.045, 0.075],
+        };
+        const GEM7 = {
+          params: { colorBack: '#2f5ce0', colors: ['#ffffff', '#86a8ff'], colorInner: '#00000000', scale: 1.5, size: 0.8, angle: 0, outerGlow: 0.55, innerGlow: 1, innerDistortion: 0.8, outerDistortion: 0.6, offset: 0, shape: 'metaballs', fit: 'contain', offsetX: 0.2, offsetY: -0.2, rotation: 0 },
+          t0: 19.0,
+          rate: 0.45,
+          lead: 3.45, // the smoke's phase when the writing starts printing is round 7d's
+        };
+        let gemMode = '';
+        function gemFor(mode) {
+          const g = gems.a;
+          if (!g) return null;
+          if (gemMode !== mode) {
+            g.set(mode === 'field' ? FIELD.params : GEM7.params);
+            gemMode = mode;
+          }
+          return g;
+        }
+
+        /* ---------------- the page geometry ---------------- */
+        const PB = { x: 561, y: 456 }; // the page box: x 561 to 1853, y 456 to the foot
+        const PS = 0.897;
+        const at = F.place(PS, PB.x, PB.y);
+        const X = (u) => Math.round((PB.x + u * PS) / CELL) * CELL;
+        const Y = (v) => Math.round((PB.y + v * PS) / CELL) * CELL;
+        // yr: the contents rail's plate foot (page y 268), below its six rows.
+        const PG = { x0: 561, xs: X(294), xr: X(1140), x3: 1853, y0: 456, yh: Y(60), yr: Y(268), y3: 456 + 807 };
+        const PC = [(PG.x0 + PG.x3) / 2, (PG.y0 + PG.y3) / 2];
+        const PAGE = F.page().map(at); // the clean page, frame px
+        const isOld = (e) => e.ctl !== 'search' && e.ctl !== 'star';
+        const rectOf = (r) => at({ x: r[0], y: r[1], w: r[2], h: r[3] });
+        const EXTRAS = F.extras().map((x) => Object.assign({}, x, { R: rectOf(x.r), parts: x.parts.map((p) => Object.assign(at(p), { toR: p.to ? rectOf(p.to) : null })) }));
+        // The opening and closing page's rect: x 160 to 1056, y 470 to 1030 (the page box page at 0.694 about its centre).
+        const OPEN = { k: 896 / 1292, c: [608, 750] };
+
+        /* ---------------- the one flat camera (lines 4 to 10) ---------------- */
+        /*
+         * Scale k about the page box's centre PC, then centre c: a page point p sits at c + k (p - PC). Every move is a
+         * zoom about the fixed point of its two end cameras, on power2.inOut (zero speed at both ends), so scale changes in
+         * log space and position follows on the same progress.
+         */
+        const CAMS = {
+          box: { k: 1, c: PC },
+          // The push: the page's own sidebar becomes the diagram's accordion, x 1200 to 1543, switcher at y 250, so the
+          // first group's heading (and the tab bar's connector) sits at y 344, below heading 3's band (fix round: was k 1.4
+          // with the switcher at y 110 and the connector at y 211).
+          push: { k: 1.3, c: [1200 - 1.3 * (PG.x0 - PC[0]), 250 - 1.3 * (PB.y + 86 * PS - PC[1])] },
+          // General Translation's slot in the wall: column 4, row 2 (x 976 to 1216, y 522 to 672).
+          slot: { k: 240 / 1292, c: [976 + 120, 522 + 75] },
+          // The writing view: the content column (page x 332 to 1108) spans x 420 to 1520, the title at y 300.
+          write: (() => {
+            const xl = PB.x + 332 * PS, xr = PB.x + 1108 * PS, k = 1100 / (xr - xl);
+            return { k, c: [420 - k * (xl - PC[0]), 300 - k * (PB.y + 80 * PS - PC[1])] };
+          })(),
+          // The page over the planet: x 1036 to 1760, y 340 to 792.
+          small: { k: 0.56, c: [1036 + 0.56 * 646, 340 + 0.56 * 403.5] },
+          open: OPEN,
+        };
+        // The three long zooms (the pull back, the fly-in and the pull-out) run on the trapezoid ease, so their top speed is
+        // 1.43 times their mean; the short moves keep power2.inOut.
+        const MOVES = [
+          [B.push, B.diag, 'box', 'push', ease.p2io],
+          [B.back6, B.wall, 'push', 'slot', ease.trap],
+          [B.fly, B.write, 'slot', 'write', ease.trap],
+          [B.out, B.planet, 'write', 'small', ease.trap],
+          [B.tobox, B.path, 'small', 'box', ease.p2io],
+          [B.back, B.back + 0.9, 'box', 'open', ease.p2io],
+        ];
+        function zoomCam(A, Z, a) {
+          const r = Z.k / A.k;
+          if (Math.abs(r - 1) < 1e-6) return { k: A.k, c: [lerp(A.c[0], Z.c[0], a), lerp(A.c[1], Z.c[1], a)] };
+          const f0 = (Z.c[0] - r * A.c[0]) / (1 - r), f1 = (Z.c[1] - r * A.c[1]) / (1 - r);
+          const m = Math.pow(r, a);
+          return { k: A.k * m, c: [f0 + m * (A.c[0] - f0), f1 + m * (A.c[1] - f1)] };
+        }
+        function camF(t) {
+          let cur = 'box';
+          for (const [t0, t1, a, b, ez] of MOVES) {
+            if (t < t0) return { k: CAMS[cur].k, c: CAMS[cur].c, snap: cur === 'box', at: cur, a: 0 };
+            if (t < t1) {
+              const u = ez((t - t0) / (t1 - t0));
+              return Object.assign(zoomCam(CAMS[a], CAMS[b], u), { snap: false, from: a, to: b, a: u });
+            }
+            cur = b;
+          }
+          return { k: CAMS[cur].k, c: CAMS[cur].c, snap: false, at: cur, a: 1 };
+        }
+        const camPt = (cam, p) => [cam.c[0] + cam.k * (p[0] - PC[0]), cam.c[1] + cam.k * (p[1] - PC[1])];
+        const pageRect = (cam) => [cam.c[0] + cam.k * (PG.x0 - PC[0]), cam.c[1] + cam.k * (PG.y0 - PC[1]), cam.c[0] + cam.k * (PG.x3 - PC[0]), cam.c[1] + cam.k * (PG.y3 - PC[1])];
+        // Below about 0.4 px a page unit the page hands over by tone to its miniature, and back.
+        const detail = (k) => smooth(0.35, 0.45, k * PS);
+
+        /* ---------------- the background field ---------------- */
+        const cf = new F.Cells($('cf'));
+        const ENV = {};
+        const envNow = new Float32Array(COLS * ROWS);
+        function envBuild(items) {
+          const e = new Float32Array(COLS * ROWS).fill(1);
+          for (const it of items) {
+            if (it.disc) {
+              const [cx, cy, r, m] = it.disc;
+              for (let y = 0, i = 0; y < ROWS; y++)
+                for (let x = 0; x < COLS; x++, i++) {
+                  const d = Math.hypot(x * CELL + 1.5 - cx, y * CELL + 1.5 - cy) - r;
+                  e[i] *= m > 0 ? smooth(0, m, d) : d > 0 ? 1 : 0;
+                }
+              continue;
+            }
+            rectCalm(e, it.r, it.m0 || 0, it.m1 || 0, 1);
+          }
+          return e;
+        }
+        // Multiplies the field by a calm round rect r: 0 inside and within m0 px, back to full m1 px away, at weight w.
+        function rectCalm(e, r, m0, m1, w) {
+          if (!(w > 0)) return;
+          const [x0, y0, x1, y1] = r;
+          const gx0 = clamp(Math.floor((x0 - m1) / CELL), 0, COLS), gx1 = clamp(Math.ceil((x1 + m1) / CELL), 0, COLS);
+          const gy0 = clamp(Math.floor((y0 - m1) / CELL), 0, ROWS), gy1 = clamp(Math.ceil((y1 + m1) / CELL), 0, ROWS);
+          for (let y = gy0; y < gy1; y++)
+            for (let x = gx0; x < gx1; x++) {
+              const px = x * CELL + 1.5, py = y * CELL + 1.5;
+              const dx = Math.max(x0 - px, 0, px - x1), dy = Math.max(y0 - py, 0, py - y1);
+              const d = Math.hypot(dx, dy);
+              const v = m1 > m0 ? smooth(m0, m1, d) : d > 0 ? 1 : 0;
+              e[y * COLS + x] *= 1 - w * (1 - v);
+            }
+        }
+        function mulEnv(e, c, w) {
+          if (!(w > 0)) return;
+          if (w >= 1) for (let i = 0; i < e.length; i++) e[i] *= c[i];
+          else for (let i = 0; i < e.length; i++) e[i] *= 1 - w * (1 - c[i]);
+        }
+        // A heading's ink boxes, one per line, measured on the canvas face (the same Inter, the same tracking).
+        const mctx = document.createElement('canvas').getContext('2d');
+        function inkBoxes(id) {
+          mctx.font = '500 144px InterCanvas';
+          mctx.letterSpacing = (-0.035 * 144).toFixed(3) + 'px';
+          mctx.fontKerning = 'normal';
+          return Array.from($(id).querySelectorAll('.ln')).map((ln, i) => {
+            const m = mctx.measureText(ln.textContent);
+            return [160 - m.actualBoundingBoxLeft, 147 + 150 * i, 160 + m.actualBoundingBoxRight, 287 + 150 * i];
+          });
+        }
+        // The field's heading calm: 0 within 28 px of a line's ink box, back to full 230 px away.
+        const headCalm = (id) => inkBoxes(id).map((r) => ({ r, m0: 28, m1: 230 }));
+        // The wall's panel (line 6), in frame px.
+        // The panel draws as the pull back settles (its last 0.45 s), with General Translation's outline.
+        const PANEL = { x0: 136, y0: 322, x1: 1784, y1: 1048, t0: B.wall - 0.45, cap: 0.3, each: 0.15 };
+        const TH2 = { w: 240, h: 150, px: 272, py: 176, x0: 160, y0: 346, cols: 6, rows: 4, lit: [3, 1] };
+        // The panel's ground opens to the smoke on the fly-in, in from its edges, as the wall's pages leave (fix round:
+        // later and slower, with the 1.6 s fly-in).
+        const GR = { openLag: 0.45, gridSpread: 0.6, edgeSpeed: 600, openEach: 0.5 };
+        function buildEnvs() {
+          for (const id of HEADS) ENV[id] = envBuild(headCalm(id));
+          const b3 = inkBoxes('h3')[0];
+          KEEP3 = [b3[0] - 28, b3[1] - 28, b3[2] + 28, b3[3] + 28];
+          // The readers' node block (lines 1, 2 and 10): clear under the 28 nodes and 8 px round them, full 70 px away.
+          ENV.nodes = envBuild([{ r: [RG.cols[0] - RG.plate / 2, RG.rows[0] + RG.off - RG.plate / 2, RG.cols[3] + RG.plate / 2, RG.rows[6] + RG.off + RG.plate / 2], m0: 8, m1: 70 }]);
+          // The diagram's three old surfaces (line 6).
+          ENV.s6 = envBuild([{ r: [DG.tab.x - 4, DG.tab.y - 4, DG.tab.x1 + 4, DG.sub.y + DG.sub.h + 4], m0: 18, m1: 120 }, { r: [DG.nav.x - 4, DG.nav.y - 4, DG.nav.x + DG.nav.w + 4, DG.nav.y + DG.nav.h + 4], m0: 18, m1: 120 }]);
+          // The writing view (line 7): its text block and rail, with open margins round it.
+          ENV.write = envBuild([{ r: [W7.rail - 20, W7.y0 - 30, W7.x1 + 30, W7.yEnd + 30], m0: 28, m1: 220 }]);
+          ENV.disc = envBuild([{ disc: [960, 1520, 1012, 60] }]);
+          // The panel closing over the smoke cell by cell once both of its hairlines (out of its top-left cross, 0.6 s,
+          // expo.out) have passed, and opening again on the fly-in, a beat behind the leaving pages and in from its edges.
+          ENV.closeT = new Float32Array(COLS * ROWS).fill(-1);
+          ENV.openT = new Float32Array(COLS * ROWS).fill(-1);
+          const passT = (f) => (f <= 0 ? 0 : f >= 0.999 ? 0.6 : (0.6 * -Math.log2(1 - f)) / 10);
+          for (let y = 0, i = 0; y < ROWS; y++)
+            for (let x = 0; x < COLS; x++, i++) {
+              const px = x * CELL + 1.5, py = y * CELL + 1.5;
+              if (px < PANEL.x0 || py < PANEL.y0 || px > PANEL.x1 || py > PANEL.y1) continue;
+              const fx = (px - PANEL.x0) / (PANEL.x1 - PANEL.x0), fy = (py - PANEL.y0) / (PANEL.y1 - PANEL.y0);
+              ENV.closeT[i] = PANEL.t0 + Math.min(PANEL.cap, Math.max(passT(fx), passT(fy)));
+              const cf = (px - TH2.x0 - TH2.w / 2) / TH2.px, rf = (py - TH2.y0 - TH2.h / 2) / TH2.py;
+              const away = Math.min(1.25, Math.hypot((cf - TH2.lit[0]) / (TH2.cols - 1), (rf - TH2.lit[1]) / (TH2.rows - 1)) / 1.2);
+              const edge = Math.min(px - PANEL.x0, py - PANEL.y0, PANEL.x1 - px, PANEL.y1 - py);
+              ENV.openT[i] = B.fly + GR.openLag + Math.min(away * GR.gridSpread, edge / GR.edgeSpeed);
+            }
+        }
+        // Heading calms by tone: up over the 0.4 s before a heading's first word, down over its exit; from heading 1's
+        // calm to heading 2's around the moving type (7.35 to 8.35).
+        function headWeights(t) {
+          return [
+            smooth(WD.humans - 0.4, WD.humans, t) * (1 - smooth(MT.t0 - 0.2, MT.t0 + MT.d, t)),
+            smooth(MT.t0 - 0.2, MT.t0 + MT.d, t) * (1 - smooth(HX.h2, HX.h2 + 0.45, t)),
+            smooth(WD.one - 0.4, WD.one, t) * (1 - smooth(HX.h3, HX.h3 + 0.45, t)),
+            smooth(WD.translated - 0.4, WD.translated, t) * (1 - smooth(HX.h4, HX.h4 + 0.45, t)),
+            smooth(WD.docs - 0.4, WD.docs, t),
+          ];
+        }
+        // The planet's rise and set (line 8): once the pull-out has landed (fix round: it lit during the move), a cell row
+        // at y lights from B.planet at the crown (y 510) to 0.3 s later at the foot, each over 0.3 s, so it lights as
+        // "Translated" begins; it sets from B.tobox, rows from the foot up, over the same 0.6 s.
+        const PL = { rise0: B.planet, set0: B.tobox };
+        const planetP = (t, y) => {
+          const f = clamp01((y - 510) / 570);
+          return clamp01((t - PL.rise0 - 0.3 * f) / 0.3) * (1 - clamp01((t - PL.set0 - 0.3 * (1 - f)) / 0.3));
+        };
+        function envAt(t, cam) {
+          if (!ENV.nodes) return null;
+          const e = envNow;
+          e.fill(1);
+          const hw = headWeights(t);
+          HEADS.forEach((id, k) => mulEnv(e, ENV[id], hw[k]));
+          // The node block's calm while the readers are up: from frame 0 until they tone out on "product", and again with
+          // their return in line 10.
+          mulEnv(e, ENV.nodes, t < 7 ? 1 - lin(WD.product, WD.product + 0.3, t) : lin(GRID.close.t0 - 0.15, GRID.close.t0 + 0.4, t));
+          if (t < B.land) return e; // the opening and iso pages are opaque plates over the field
+          // The page is opaque wherever its ground is drawn; the calms below are for the pieces round it.
+          mulEnv(e, ENV.s6, smooth(DG.in0 - 0.1, DG.in1, t) * (1 - smooth(B.back6, B.back6 + 0.3, t)));
+          if (t >= PANEL.t0 && t < B.write + 0.6) {
+            const c = ENV.closeT, o = ENV.openT;
+            for (let i = 0; i < e.length; i++) {
+              if (c[i] < 0) continue;
+              const w = s01((t - c[i]) / PANEL.each) * (1 - s01((t - o[i]) / GR.openEach));
+              if (w > 0) e[i] *= 1 - w;
+            }
+          }
+          mulEnv(e, ENV.write, smooth(B.write - 0.3, B.write + 0.4, t) * (1 - smooth(B.out, B.out + 0.4, t)));
+          // The page above the planet: clear 28 px round its frame (the guides run 60 px past it), back to full 100 px
+          // away, by tone with the pull-out and the move into the page box.
+          const ws = smooth(B.out + 0.3, B.planet, t) * (1 - smooth(B.tobox, B.tobox + 0.4, t));
+          if (ws > 0) rectCalm(e, pageRect(cam), 28, 100, ws);
+          // The smoke inside the planet's disc leaves by tone, row by row, as the glyphs light, and comes back as it sets.
+          if (t >= PL.rise0 && t < PL.set0 + 0.7) {
+            const d = ENV.disc;
+            for (let y = 0, i = 0; y < ROWS; y++) {
+              const w = planetP(t, y * CELL + 1.5);
+              if (w <= 0) {
+                i += COLS;
+                continue;
+              }
+              for (let x = 0; x < COLS; x++, i++) e[i] *= 1 - w * (1 - d[i]);
+            }
+          }
+          return e;
+        }
+        // The field opens on the smoke at three quarters of its tone and is at full by 0.6 s.
+        const fieldTone = (t) => 0.75 + 0.25 * smooth(0, 0.6, t);
+        function drawField(t, cam) {
+          const cells = cf;
+          cells.clear();
+          const g = gemFor('field');
+          const env = envAt(t, cam);
+          if (g && env) {
+            g.at(FIELD.g0 + FIELD.rate * t);
+            const d = gemCells(g);
+            const tone = fieldTone(t);
+            cells.each(0, 0, COLS, ROWS, (i) => {
+              const e = env[i];
+              if (!(e > 0)) return -1;
+              let v = Math.min(1, Math.pow(lum(d, i), FIELD.gamma)) * FIELD.cap * e * tone;
+              if (v < FIELD.floor[1]) v = v <= FIELD.floor[0] ? 0 : (FIELD.floor[1] * (v - FIELD.floor[0])) / (FIELD.floor[1] - FIELD.floor[0]);
+              const th = TH[i];
+              return v * 2 > 1 + th ? K.lift : v * 2 > th ? K.blue : -1;
+            });
+          }
+          cells.paint();
+        }
+
+        /* ---------------- the flat page, drawn in SVG in screen space ---------------- */
+        /*
+         * One record per element of the page (the clean page and the four extras' parts), placed each frame by the flat
+         * camera. At k 1 and c PC every element sits on its snapped frame px, so the drawing is the cells page pixel for
+         * pixel. style(e) returns null (not drawn) or { ink, tone, mix: [ink2, s], rect: [X, Y, Wd, Ht] }; the grounds
+         * ({ kind: 'ground', part: 'side' | 'main' }), the frame's lines ({ kind: 'frame', id }) and the accordion's rail
+         * ({ kind: 'rail' }: tone, ink, gauge and core in screen px, draw 0 to 1, thumb 0 to 1 along g2's rail) likewise.
+         */
+        const DITH = (e) => (e.kind === 'icon' ? 0.5 : e.kind === 'fill' && !e.action ? 0.28 : 1);
+        const RAILPTS = [
+          [[26, 186], [26, 247]],
+          [[26, 298], [26, 310], [44, 328], [44, 382], [26, 400], [26, 455]],
+          [[26, 506], [26, 567]],
+        ];
+        const railFrame = (pts) => pts.map(([u, v]) => [Math.round(PB.x + u * PS) + 0.5, Math.round(PB.y + v * PS) + 0.5]);
+        const RAILF = RAILPTS.map(railFrame);
+        const THUMB_ACC = { L: 52.46 * PS, len: 21 * PS }; // the thumb's place on g2's rail at the active page (frame px)
+        let vpageN = 0;
+        function VPage(svg) {
+          const n = ++vpageN;
+          const g = F.el(svg, 'g', {});
+          const grounds = { side: F.el(g, 'rect', { fill: C.navy }), main: F.el(g, 'rect', { fill: C.navy }) };
+          const lines = {};
+          for (const id of ['top', 'left', 'right', 'bottom', 'xs', 'xr']) lines[id] = F.el(g, 'line', { stroke: C.blue, 'stroke-width': 1 });
+          const FR = {
+            top: [PG.x0, PG.y0, PG.x3, PG.y0],
+            left: [PG.x0, PG.y0, PG.x0, PG.y3],
+            right: [PG.x3, PG.y0, PG.x3, PG.y3],
+            bottom: [PG.x0, PG.y3, PG.x3, PG.y3],
+            xs: [PG.xs, PG.y0, PG.xs, PG.y3],
+            xr: [PG.xr, PG.y0, PG.xr, PG.y3],
+          };
+          const defs = F.el(g, 'defs', {});
+          const recs = [];
+          const addRec = (e, ex, part) => {
+            const r = { e, ex, part };
+            if (e.kind === 'box') r.node = F.el(g, 'rect', { fill: 'none', 'stroke-width': 1 });
+            else if (e.kind === 'rule') r.node = F.el(g, 'line', { 'stroke-width': 1 });
+            else if (e.kind === 'mark') {
+              const cp = F.el(defs, 'clipPath', { id: `vpm${n}`, clipPathUnits: 'userSpaceOnUse' });
+              r.clip = F.el(cp, 'path', { d: F.GT_MARK_D, 'fill-rule': 'evenodd' });
+              r.node = F.el(g, 'rect', { 'clip-path': `url(#vpm${n})` });
+            } else {
+              r.node = F.el(g, 'rect', {});
+              r.over = F.el(g, 'rect', {});
+            }
+            recs.push(r);
+          };
+          for (const e of PAGE) addRec(e, null, null);
+          for (const x of EXTRAS) for (const p of x.parts) addRec(p, x, p);
+          const railG = F.el(g, 'g', {});
+          const mk = (stroke) => F.el(railG, 'path', { fill: 'none', stroke, 'stroke-linejoin': 'miter', 'stroke-miterlimit': 10, 'stroke-linecap': 'butt' });
+          const railA = mk(C.blue), railB = mk(C.navy), thA = mk(C.white), thB = mk(C.navy);
+          const self = {
+            g,
+            cam: { k: 1, c: PC },
+            sx: (x) => self.cam.c[0] + self.cam.k * (x - PC[0]),
+            sy: (y) => self.cam.c[1] + self.cam.k * (y - PC[1]),
+            draw(cam, style) {
+              self.cam = cam;
+              const k = cam.k, sx = self.sx, sy = self.sy;
+              const rd = cam.snap ? Math.round : (v) => v;
+              for (const part of ['side', 'main']) {
+                const gs = style({ kind: 'ground', part });
+                const nd = grounds[part];
+                if (gs && gs.tone > 0) {
+                  nd.style.display = '';
+                  const xa = part === 'side' ? PG.x0 : PG.xs, xb = part === 'side' ? PG.xs : PG.x3 + 1;
+                  const x0 = rd(sx(xa)), y0 = rd(sy(PG.y0)), x1 = rd(sx(xb)), y1 = rd(sy(PG.y3 + 1));
+                  nd.setAttribute('x', x0), nd.setAttribute('y', y0), nd.setAttribute('width', Math.max(0, x1 - x0)), nd.setAttribute('height', Math.max(0, y1 - y0));
+                  nd.setAttribute('fill', tonePat(svg, C.navy, gs.tone));
+                } else nd.style.display = 'none';
+              }
+              for (const id in lines) {
+                const s = style({ kind: 'frame', id });
+                const ln = lines[id];
+                if (!s || !(s.tone > 0)) {
+                  ln.style.display = 'none';
+                  continue;
+                }
+                ln.style.display = '';
+                const [a, b, c, d] = FR[id];
+                ln.setAttribute('x1', (rd(sx(a)) + 0.5).toFixed(2)), ln.setAttribute('y1', (rd(sy(b)) + 0.5).toFixed(2));
+                ln.setAttribute('x2', (rd(sx(c)) + 0.5).toFixed(2)), ln.setAttribute('y2', (rd(sy(d)) + 0.5).toFixed(2));
+                ln.setAttribute('stroke', tonePat(svg, s.ink || C.blue, s.tone));
+              }
+              for (const r of recs) {
+                const s = style(r.e, r.ex);
+                if (!s || !(s.tone > 0)) {
+                  r.node.style.display = 'none';
+                  if (r.over) r.over.style.display = 'none';
+                  continue;
+                }
+                const e = r.e;
+                const [RX, RY, RW, RH] = s.rect || [e.X, e.Y, e.Wd, e.Ht];
+                r.node.style.display = '';
+                const ink = s.ink || C.blue;
+                if (e.kind === 'box') {
+                  const x = rd(sx(RX)) + 0.5, y = rd(sy(RY)) + 0.5;
+                  r.node.setAttribute('x', x.toFixed(2)), r.node.setAttribute('y', y.toFixed(2));
+                  r.node.setAttribute('width', Math.max(0, rd(k * RW) - 1).toFixed(2)), r.node.setAttribute('height', Math.max(0, rd(k * RH) - 1).toFixed(2));
+                  r.node.setAttribute('stroke', tonePat(svg, s.mix && s.mix[1] >= 0.5 ? s.mix[0] : ink, s.tone));
+                } else if (e.kind === 'rule') {
+                  const x1 = rd(sx(RX)) + 0.5, y1 = rd(sy(RY)) + 0.5;
+                  const x2 = e.vertical ? x1 : rd(sx(e.endX != null ? e.endX : RX + RW)) + 0.5, y2 = e.vertical ? rd(sy(RY + RH)) + 0.5 : y1;
+                  r.node.setAttribute('x1', x1.toFixed(2)), r.node.setAttribute('y1', y1.toFixed(2)), r.node.setAttribute('x2', x2.toFixed(2)), r.node.setAttribute('y2', y2.toFixed(2));
+                  r.node.setAttribute('stroke', tonePat(svg, s.mix && s.mix[1] >= 0.5 ? s.mix[0] : ink, s.tone));
+                } else if (e.kind === 'mark') {
+                  const kk = (k * RW) / 1213;
+                  r.clip.setAttribute('transform', `translate(${sx(RX).toFixed(3)} ${sy(RY).toFixed(3)}) scale(${kk.toFixed(5)}) translate(8 -214)`);
+                  const x0 = Math.floor(sx(RX)) - 2, y0 = Math.floor(sy(RY)) - 2;
+                  r.node.setAttribute('x', x0), r.node.setAttribute('y', y0), r.node.setAttribute('width', Math.ceil(k * RW) + 4), r.node.setAttribute('height', Math.ceil((k * RW * 771) / 1213) + 4);
+                  r.node.setAttribute('fill', tonePat(svg, ink, s.tone));
+                } else {
+                  const x0 = rd(sx(RX)), y0 = rd(sy(RY)), x1 = rd(sx(RX + RW)), y1 = rd(sy(RY + RH));
+                  const dith = s.dith != null ? s.dith : DITH(e);
+                  const v = s.tone * dith;
+                  for (const nd of [r.node, r.over]) {
+                    nd.setAttribute('x', x0.toFixed(2)), nd.setAttribute('y', y0.toFixed(2));
+                    nd.setAttribute('width', Math.max(0, x1 - x0).toFixed(2)), nd.setAttribute('height', Math.max(0, y1 - y0).toFixed(2));
+                  }
+                  r.node.setAttribute('fill', tonePat(svg, ink, v));
+                  if (s.mix && s.mix[1] > 0) {
+                    r.over.style.display = '';
+                    r.over.setAttribute('fill', tonePat(svg, s.mix[0], Math.min(v, s.mix[1])));
+                  } else r.over.style.display = 'none';
+                }
+              }
+              const rs = style({ kind: 'rail' });
+              if (rs && rs.tone > 0) {
+                railG.style.display = '';
+                const P = RAILF.map((pts) => pts.map(([x, y]) => [sx(x), sy(y)]));
+                const polys = P.map((p) => F.poly(p));
+                const dr = rs.draw == null ? 1 : rs.draw;
+                const d = polys.map((p) => p.sub(p.total * dr)).join('');
+                const gw = rs.px ? rs.gauge : (rs.gauge || 3) * Math.max(k, 0.34);
+                const cw = rs.px ? rs.core : (rs.core || 1) * Math.max(k, 0.34);
+                railA.setAttribute('d', d || 'M0 0'), railB.setAttribute('d', d || 'M0 0');
+                railA.setAttribute('stroke', tonePat(svg, rs.ink || C.blue, rs.tone)), railA.setAttribute('stroke-width', gw.toFixed(2));
+                railB.setAttribute('stroke', tonePat(svg, C.navy, rs.tone)), railB.setAttribute('stroke-width', cw.toFixed(2));
+                // The thumb, white on g2's rail: from the rail's top (0) to the active page (1); 'ride': it rides the
+                // drawing rail's head down g2 and parks at the active page as the head passes it.
+                const len = THUMB_ACC.len * k;
+                let td;
+                if (rs.thumb === 'ride') {
+                  const head = polys[1].total * dr;
+                  const L = clamp(head - len, 0, THUMB_ACC.L * k);
+                  const end = Math.min(head, L + len);
+                  td = end > L + 0.5 ? polys[1].sub(L, end) : '';
+                } else {
+                  const ts = rs.thumb == null ? 1 : rs.thumb;
+                  const L = THUMB_ACC.L * k * ts;
+                  td = rs.thumb === false ? '' : polys[1].sub(L, L + len);
+                }
+                thA.setAttribute('d', td || 'M0 0'), thB.setAttribute('d', td || 'M0 0');
+                thA.setAttribute('stroke', tonePat(svg, C.white, rs.tone)), thA.setAttribute('stroke-width', gw.toFixed(2));
+                thB.setAttribute('stroke', tonePat(svg, C.navy, rs.tone)), thB.setAttribute('stroke-width', cw.toFixed(2));
+              } else railG.style.display = 'none';
+            },
+          };
+          return self;
+        }
+        // The page's inks. The GT mark and its name bar are white from "General" to the end.
+        const isLogo = (e) => e.kind === 'mark' || e.name;
+        // The muted clean page (lines 8 to 10): one ink, the white logo; extras never drawn.
+        function cleanStyle(tone, opts) {
+          const o = opts || {};
+          return (e, ex) => {
+            if (e.kind === 'ground') return { tone: o.groundTone != null ? o.groundTone : tone };
+            if (e.kind === 'frame') return o.frame ? o.frame(e.id) : { tone };
+            if (e.kind === 'rail') return { tone: o.railTone != null ? o.railTone : tone };
+            if (ex) return null;
+            const s = { ink: isLogo(e) ? C.white : C.blue, tone };
+            if (e.action && o.action > 0) s.mix = [C.white, o.action];
+            if (o.textMix > 0 && (e.kind === 'text' || e.kind === 'title') && !isLogo(e)) s.mix = [C.lift, o.textMix];
+            return s;
+          };
+        }
+
+        /* ---------------- the opening page and the isometric camera (lines 1 to 4) ---------------- */
+        /*
+         * The old page (the clean page without its search icon and star pill, plus the four B1 extras in #86a8ff), in
+         * its flat frame pixels, carried by one matrix: at the opening it sits at the left (x 160 to 1056, y 470 to
+         * 1030); from "product" one monotone curve with zero speed at both ends turns it into the 30 degree axonometric
+         * map (45 degree turn, tan 30 squash, sqrt 1.5 scale), lifts its layers apart as plates (the content column, the
+         * contents rail at +110, the sidebar at +210, the header at +330), holds it at a slow drift, then lays it flat
+         * into the page box, where the matrix is the identity and the page is the flat page pixel for pixel.
+         */
+        const vbr = $('vbr');
+        const OLD = PAGE.filter(isOld);
+        const PLATES = [
+          { zone: 'content', r: [PG.xs, PG.yh, PG.xr, PG.y3], z: 0 },
+          { zone: 'railfoot', r: [PG.xr, PG.yr, PG.x3, PG.y3], z: 0, cut: 'top', under: CELL },
+          { zone: 'rail', r: [PG.xr, PG.yh, PG.x3, PG.yr], z: 110, cut: 'bottom', down: [0.59, 0.7] },
+          { zone: 'side', r: [PG.x0, PG.y0, PG.xs, PG.y3], z: 210, down: [0.57, 0.68] },
+          { zone: 'head', r: [PG.xs, PG.y0, PG.x3, PG.yh], z: 330, down: [0.55, 0.66] },
+        ];
+        // The content ink: the page's #2f5ce0 at the opening, the plates' #86a8ff through the iso view, #2f5ce0 again as
+        // it lays flat, so the opening and the landing are the flat page's own ink.
+        const contentInk = (u) => smooth(0.02, 0.4, u) * (1 - smooth(0.62, 0.95, u));
+        const THICK = 34;
+        const ISO_Q = Math.tan(Math.PI / 6);
+        const ISO_S = Math.sqrt(1.5);
+        // The iso view: kIso 0.53 drifting 2 percent to 0.541, low at the right, the largest scale at which the extras at
+        // +450 and the rail plate stay in the frame and the whole stack stays 28 px clear of heading 2's two lines
+        // (NOTES.md, v4); the content plate's far corner runs off the foot. Once heading 2 has left (B.recent), the camera
+        // re-centres the stack and scales it up (kR, cR) before the plates come down (fix round).
+        const CAM = { c0: OPEN.c, k0: OPEN.k, kIso: 0.53, cIso: [1342, 972], kIso2: 0.5406, cIso2: [1340, 980], kR: 0.63, cR: [1000, 672] };
+        const DRIFT = 0.1 / (B.recent - B.iso);
+        // u: the drift slows to rest at B.recent, holds through the re-centre, and the flatten runs from B.flat0.
+        const UK = [[B.rise, 0, 0], [B.iso, 0.45, DRIFT], [B.recent, 0.55, 0], [B.flat0, 0.55, 0], [B.land, 1, 0]];
+        function hermite(t) {
+          if (t <= UK[0][0]) return 0;
+          if (t >= UK[UK.length - 1][0]) return 1;
+          let i = 0;
+          while (t > UK[i + 1][0]) i++;
+          const [ta, ua, ma] = UK[i], [tb, ub, mb] = UK[i + 1];
+          const h = tb - ta, s = (t - ta) / h, s2 = s * s, s3 = s2 * s;
+          return (2 * s3 - 3 * s2 + 1) * ua + (s3 - 2 * s2 + s) * h * ma + (-2 * s3 + 3 * s2) * ub + (s3 - s2) * h * mb;
+        }
+        function camera(t) {
+          const u = hermite(t);
+          const tilt = smooth(0.06, 0.42, u) * (1 - smooth(0.66, 0.95, u));
+          let k, c;
+          if (u <= 0.45) {
+            const a = smooth(0, 0.45, u);
+            k = Math.exp(lerp(Math.log(CAM.k0), Math.log(CAM.kIso), a));
+            c = [lerp(CAM.c0[0], CAM.cIso[0], a), lerp(CAM.c0[1], CAM.cIso[1], a)];
+          } else if (u <= 0.55 && t < B.recent) {
+            const a = (u - 0.45) / 0.1;
+            k = lerp(CAM.kIso, CAM.kIso2, a);
+            c = [lerp(CAM.cIso[0], CAM.cIso2[0], a), lerp(CAM.cIso[1], CAM.cIso2[1], a)];
+          } else {
+            // The re-centre (B.recent to B.flat0, power2.inOut, the plates still up): the stack comes up from the low
+            // right to the frame's middle at kR. Then the flatten lowers the lifted layers first (header, sidebar, rail,
+            // then the extras, u 0.55 to 0.74) and turns and grows the page after (from u 0.64 and 0.66).
+            const r = ease.p2io(prog(t, B.recent, B.flat0 - B.recent));
+            const kE = Math.exp(lerp(Math.log(CAM.kIso2), Math.log(CAM.kR), r));
+            const cE = [lerp(CAM.cIso2[0], CAM.cR[0], r), lerp(CAM.cIso2[1], CAM.cR[1], r)];
+            const a = smooth(0.64, 1, u);
+            k = Math.exp(lerp(Math.log(kE), 0, a));
+            c = [lerp(cE[0], PC[0], a), lerp(cE[1], PC[1], a)];
+          }
+          return { u, tilt, k, c };
+        }
+        // Each plate's separation: up with the turn, down in order (header, sidebar, rail) as the page lays flat.
+        const sepOf = (u, pl) => (pl.z ? smooth(0.24, 0.45, u) * (1 - smooth(pl.down[0], pl.down[1], u)) : 0);
+        function matrixZ(cam, Z) {
+          const th = (Math.PI / 4) * cam.tilt;
+          const q = lerp(1, ISO_Q, cam.tilt);
+          const s = cam.k * lerp(1, ISO_S, cam.tilt);
+          const a = s * Math.cos(th), b = s * q * Math.sin(th), c = -s * Math.sin(th), d = s * q * Math.cos(th);
+          const e = cam.c[0] - (a * PC[0] + c * PC[1]);
+          const f = cam.c[1] - Z * cam.k * cam.tilt - (b * PC[0] + d * PC[1]);
+          return { a, b, c, d, e, f };
+        }
+        const proj = (m, x, y) => [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f];
+        const pts = (arr) => arr.map((p) => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join(' ');
+        const quad = (m, x, y, w, h) => pts([proj(m, x, y), proj(m, x + w, y), proj(m, x + w, y + h), proj(m, x, y + h)]);
+        const defsBr = F.el(vbr, 'defs', {});
+        function bayerPattern(id, tone, color) {
+          const p = F.el(defsBr, 'pattern', { id, x: 0, y: 0, width: 24, height: 24, patternUnits: 'userSpaceOnUse' });
+          for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) if (tone > (F.B8[y * 8 + x] + 0.5) / 64) F.el(p, 'rect', { x: x * 3, y: y * 3, width: 3, height: 3, fill: color, 'shape-rendering': 'crispEdges' });
+          return `url(#${id})`;
+        }
+        const PAT = { icon: bayerPattern('b50', 0.5, 'currentColor'), fill: bayerPattern('b28', 0.28, 'currentColor'), left: bayerPattern('bL', 0.3, C.blue), right: bayerPattern('bR', 0.56, C.blue), exIcon: bayerPattern('bX', 0.5, C.lift) };
+        const contentPats = [defsBr.querySelector('#b50'), defsBr.querySelector('#b28')];
+        const gBridge = F.el(vbr, 'g', {});
+        const markClip = F.el(F.el(defsBr, 'clipPath', { id: 'brMark', clipPathUnits: 'userSpaceOnUse' }), 'path', { d: F.GT_MARK_D, 'fill-rule': 'evenodd' });
+        // v4: 2 px rims at full tilt and 2 px dashed drop lines (were 1 px).
+        const DROP = { 'stroke-width': 2, 'stroke-dasharray': '4 6' };
+        const plateEls = PLATES.map((pl) => {
+          const g = F.el(gBridge, 'g', {});
+          const drops = pl.z > 0 ? [0, 1, 2, 3].map(() => F.el(g, 'line', Object.assign({ x1: 0, y1: 0, x2: 0, y2: 0, stroke: C.lift }, DROP))) : [];
+          const faceL = [F.el(g, 'polygon', { points: '', fill: C.navy }), F.el(g, 'polygon', { points: '', fill: PAT.left })];
+          const faceR = [F.el(g, 'polygon', { points: '', fill: C.navy }), F.el(g, 'polygon', { points: '', fill: PAT.right })];
+          const top = F.el(g, 'polygon', { points: '', fill: C.navy });
+          const content = F.el(g, 'g', {});
+          if (pl.zone === 'head') F.el(content, 'line', { x1: PG.xr + 0.5, y1: PG.y0 + 0.5, x2: PG.xr + 0.5, y2: PG.yh + 0.5, stroke: 'currentColor', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' });
+          const dith = [];
+          const white = []; // [element, polygon] overlays that print white by tone
+          let mark = null;
+          for (const e of OLD) {
+            if (e.zone !== pl.zone) continue;
+            if (e.kind === 'box') F.el(content, 'rect', { x: e.X + 0.5, y: e.Y + 0.5, width: e.Wd - 1, height: e.Ht - 1, fill: 'none', stroke: 'currentColor', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' });
+            else if (e.kind === 'rule') {
+              const a = e.vertical ? { x1: e.X + 0.5, y1: e.Y + 0.5, x2: e.X + 0.5, y2: e.Y + e.Ht + 0.5 } : { x1: e.X + 0.5, y1: e.Y + 0.5, x2: e.X + e.Wd + 0.5, y2: e.Y + 0.5 };
+              F.el(content, 'line', Object.assign(a, { stroke: 'currentColor', 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' }));
+            } else if (e.kind === 'mark') {
+              F.markAt(content, e.X, e.Y, e.Wd, 'currentColor');
+              mark = e;
+            } else if (e.kind === 'icon' || (e.kind === 'fill' && !e.action)) dith.push({ e, el: F.el(g, 'polygon', { points: '', fill: e.kind === 'icon' ? PAT.icon : PAT.fill }) });
+            else F.el(content, 'rect', { x: e.X, y: e.Y, width: e.Wd, height: e.Ht, fill: 'currentColor' });
+            if (e.name || e.writing != null || e.railRow != null) white.push({ e, el: F.el(g, 'polygon', { points: '', fill: 'none' }) });
+          }
+          const markW = mark ? F.el(g, 'rect', { x: 0, y: 0, width: 1920, height: 1080, fill: 'none', 'clip-path': 'url(#brMark)' }) : null;
+          // The white thumb on the contents rail's plate (line 3).
+          const thumb = pl.zone === 'rail' ? F.el(g, 'line', { x1: 0, y1: 0, x2: 0, y2: 0, stroke: C.white, 'stroke-width': 4, 'stroke-linecap': 'butt' }) : null;
+          const rimTop = F.el(g, pl.cut ? 'polyline' : 'polygon', { points: '', fill: 'none', stroke: C.lift, 'stroke-width': 1 });
+          const rimCut = pl.cut ? F.el(g, 'line', { x1: 0, y1: 0, x2: 0, y2: 0, stroke: C.lift, 'stroke-width': 1 }) : null;
+          const rimLow = F.el(g, 'polyline', { points: '', fill: 'none', stroke: C.blue, 'stroke-width': 1 });
+          return { pl, g, drops, faceL, faceR, top, content, dith, white, mark, markW, thumb, rimTop, rimCut, rimLow };
+        });
+        // The page box's three crosses land with the page (over it, as the flat page draws them).
+        const gBrX = F.el(vbr, 'g', { style: 'display:none' });
+        [[PB.x, PB.y], [1853, PB.y], [PB.x, 1013]].forEach(([x, y]) => F.cross(gBrX, x, y, C.lift));
+        const EXZ = 450, EXTHICK = 20;
+        const exEls = EXTRAS.map((x) => {
+          const g = F.el(gBridge, 'g', {});
+          const slab = x.id !== 'rule';
+          const drops = [0, 1, 2, 3].map(() => F.el(g, 'line', Object.assign({ x1: 0, y1: 0, x2: 0, y2: 0, stroke: C.lift }, DROP)));
+          const faceL = slab ? [F.el(g, 'polygon', { points: '', fill: C.navy }), F.el(g, 'polygon', { points: '', fill: PAT.left })] : null;
+          const faceR = slab ? [F.el(g, 'polygon', { points: '', fill: C.navy }), F.el(g, 'polygon', { points: '', fill: PAT.right })] : null;
+          const top = slab ? F.el(g, 'polygon', { points: '', fill: C.navy }) : null;
+          const content = F.el(g, 'g', { color: C.lift });
+          const dith = [];
+          for (const p of x.parts) {
+            if (p.kind === 'box') F.el(content, 'rect', { x: p.X + 0.5, y: p.Y + 0.5, width: p.Wd - 1, height: p.Ht - 1, fill: 'none', stroke: C.lift, 'stroke-width': 1, 'vector-effect': 'non-scaling-stroke' });
+            else if (p.kind === 'rule') F.el(content, 'line', { x1: p.X + 0.5, y1: p.Y + 0.5, x2: PG.x3 + 0.5, y2: p.Y + 0.5, stroke: C.lift, 'stroke-width': 2, 'vector-effect': 'non-scaling-stroke' });
+            else if (p.kind === 'icon') dith.push({ e: p, el: F.el(g, 'polygon', { points: '', fill: PAT.exIcon }) });
+            else F.el(content, 'rect', { x: p.X, y: p.Y, width: p.Wd, height: p.Ht, fill: C.lift });
+          }
+          const rim = slab ? F.el(g, 'polygon', { points: '', fill: 'none', stroke: C.lift, 'stroke-width': 2 }) : null;
+          const base = PLATES.find((pl) => pl.zone === x.zone);
+          return { x, g, slab, drops, faceL, faceR, top, content, dith, rim, base };
+        });
+        // The extras' lift: off the page on "redesigned" (0.6 s, power3.out), down last as the page lays flat.
+        const exLift = (t, u) => ease.p3out(prog(t, WD.redesigned, 0.6)) * (1 - smooth(0.6, 0.74, u));
+        // The white: the GT mark and its name bar from "General" (0.3 s); the writing in reading order from 11.10 (0.25 s
+        // a line, 90 ms apart), back to #2f5ce0 by tone as the extras land; the thumb from "people" to "writing".
+        const markWhite = (t) => s01(prog(t, WD.general, 0.3));
+        const WRITE3 = 11.1;
+        const writeWhite = (t, u, g) => lin(WRITE3 + 0.09 * g, WRITE3 + 0.09 * g + 0.25, t) * (1 - smooth(0.62, 0.74, u));
+        // The thumb on the rail plate: a run 56 page units long (about 30 px on the plate; fix round, was 34) down the
+        // rail's 146-unit rule from its top to its foot, past all six rows, 0.9 s from "people" to "writing"
+        // (power2.inOut); each row prints white as it passes.
+        const THUMB3 = { x: X(1168) + 0.5, a: [Y(104), Y(160)], b: [Y(194), Y(250)], t0: WD.people, d: WD.writing3 - WD.people, fade: 0.12 };
+        const thumb3At = (t, u) => {
+          const s = ease.p2io(prog(t, THUMB3.t0, THUMB3.d));
+          const v = lin(THUMB3.t0, THUMB3.t0 + THUMB3.fade, t) * (1 - smooth(0.62, 0.74, u));
+          return { s, v, ya: lerp(THUMB3.a[0], THUMB3.b[0], s), yb: lerp(THUMB3.a[1], THUMB3.b[1], s) };
+        };
+        const railWhite = (t, u, e) => {
+          const th = thumb3At(t, u);
+          if (!(th.v > 0)) return 0;
+          const c = (th.ya + th.yb) / 2, rc = e.Y + e.Ht / 2;
+          return th.v * clamp01(1.25 + (c - rc) / 14);
+        };
+        function slabFaces(P, a, b, c, d, T) {
+          const dn = (p) => [p[0], p[1] + T];
+          if (T > 0.05) {
+            const L = pts([d, c, dn(c), dn(d)]);
+            const R = pts([b, c, dn(c), dn(b)]);
+            P.faceL.forEach((el) => el.setAttribute('points', L));
+            P.faceR.forEach((el) => el.setAttribute('points', R));
+          } else {
+            P.faceL.forEach((el) => el.setAttribute('points', ''));
+            P.faceR.forEach((el) => el.setAttribute('points', ''));
+          }
+        }
+        function drawOpen(t) {
+          show(vbr, t < B.land);
+          if (t >= B.land) return;
+          const cam = camera(t);
+          const T = THICK * cam.k * cam.tilt;
+          const rimInk = rgb(C.blue, C.lift, smooth(0.1, 0.9, cam.tilt));
+          const rimW = (1 + cam.tilt).toFixed(3);
+          const ink = rgb(C.blue, C.lift, contentInk(cam.u));
+          gBridge.style.color = ink;
+          contentPats.forEach((p) => (p.style.color = ink));
+          const mw = markWhite(t);
+          for (const P of plateEls) {
+            const Z = P.pl.z * sepOf(cam.u, P.pl);
+            const m = matrixZ(cam, Z);
+            const [x0, y0, x1, y1] = P.pl.r;
+            const a = proj(m, x0, y0), b = proj(m, x1, y0), c = proj(m, x1, y1), d = proj(m, x0, y1);
+            const dn = (p) => [p[0], p[1] + T];
+            if (P.drops.length) {
+              const m0 = matrixZ(cam, 0);
+              const corners = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+              P.drops.forEach((ln, i) => {
+                const tp = dn(proj(m, corners[i][0], corners[i][1]));
+                const foot = proj(m0, corners[i][0], corners[i][1]);
+                const on = foot[1] - tp[1] > 2;
+                ln.style.display = on ? '' : 'none';
+                if (on) ln.setAttribute('x1', tp[0].toFixed(2)), ln.setAttribute('y1', tp[1].toFixed(2)), ln.setAttribute('x2', foot[0].toFixed(2)), ln.setAttribute('y2', foot[1].toFixed(2));
+              });
+            }
+            slabFaces(P, a, b, c, d, T);
+            if (T > 0.05) {
+              P.rimLow.setAttribute('points', pts([d, dn(d), dn(c), dn(b), b]));
+              P.rimLow.setAttribute('stroke', rimInk);
+              P.rimLow.setAttribute('stroke-width', rimW);
+              P.rimLow.style.display = '';
+            } else P.rimLow.style.display = 'none';
+            const ext = P.pl.under || 0;
+            P.top.setAttribute('points', ext ? pts([proj(m, x0, y0 - ext), proj(m, x1, y0 - ext), c, d]) : pts([a, b, c, d]));
+            P.content.setAttribute('transform', `matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`);
+            for (const q of P.dith) q.el.setAttribute('points', quad(m, q.e.X, q.e.Y, q.e.Wd, q.e.Ht));
+            for (const q of P.white) {
+              const v = q.e.name ? mw : q.e.railRow != null ? railWhite(t, cam.u, q.e) : writeWhite(t, cam.u, q.e.writing);
+              if (v > 0) {
+                q.el.setAttribute('points', quad(m, q.e.X, q.e.Y, q.e.Wd, q.e.Ht));
+                q.el.setAttribute('fill', tonePat(vbr, C.white, v));
+              } else q.el.setAttribute('fill', 'none');
+            }
+            if (P.markW) {
+              const e = P.mark;
+              const kk = e.Wd / 1213;
+              markClip.setAttribute('transform', `matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f}) translate(${e.X} ${e.Y}) scale(${kk}) translate(8 -214)`);
+              P.markW.setAttribute('fill', tonePat(vbr, C.white, mw));
+            }
+            if (P.thumb) {
+              const { v, ya, yb } = thumb3At(t, cam.u);
+              if (v > 0) {
+                const p0 = proj(m, THUMB3.x, ya), p1 = proj(m, THUMB3.x, yb);
+                P.thumb.setAttribute('x1', p0[0].toFixed(2)), P.thumb.setAttribute('y1', p0[1].toFixed(2)), P.thumb.setAttribute('x2', p1[0].toFixed(2)), P.thumb.setAttribute('y2', p1[1].toFixed(2));
+                P.thumb.setAttribute('stroke', v >= 1 ? C.white : rgb(C.navy, C.white, v));
+                P.thumb.style.display = '';
+              } else P.thumb.style.display = 'none';
+            }
+            const ra = proj(m, x0 + 0.5, y0 + 0.5), rb = proj(m, x1 + 0.5, y0 + 0.5), rc = proj(m, x1 + 0.5, y1 + 0.5), rdd = proj(m, x0 + 0.5, y1 + 0.5);
+            const sep = sepOf(cam.u, P.pl);
+            if (P.pl.cut === 'top') {
+              P.rimTop.setAttribute('points', pts([ra, rdd, rc, rb]));
+              P.rimCut.setAttribute('x1', ra[0].toFixed(2)), P.rimCut.setAttribute('y1', ra[1].toFixed(2)), P.rimCut.setAttribute('x2', rb[0].toFixed(2)), P.rimCut.setAttribute('y2', rb[1].toFixed(2));
+            } else if (P.pl.cut === 'bottom') {
+              P.rimTop.setAttribute('points', pts([rdd, ra, rb, rc]));
+              P.rimCut.setAttribute('x1', rdd[0].toFixed(2)), P.rimCut.setAttribute('y1', rdd[1].toFixed(2)), P.rimCut.setAttribute('x2', rc[0].toFixed(2)), P.rimCut.setAttribute('y2', rc[1].toFixed(2));
+            } else P.rimTop.setAttribute('points', pts([ra, rb, rc, rdd]));
+            if (P.rimCut) {
+              P.rimCut.setAttribute('stroke', rimInk);
+              P.rimCut.setAttribute('stroke-width', rimW);
+              P.rimCut.setAttribute('stroke-opacity', smooth(0, 0.3, Math.max(sep, sepOf(cam.u, PLATES[2]))).toFixed(3));
+            }
+            P.rimTop.setAttribute('stroke', rimInk);
+            P.rimTop.setAttribute('stroke-width', rimW);
+          }
+          gBrX.style.display = cam.u > 0.85 ? '' : 'none';
+          // The extras over every plate.
+          const lift = exLift(t, cam.u);
+          for (const E of exEls) {
+            const zb = E.base.z * sepOf(cam.u, E.base);
+            const Z = lerp(zb, EXZ, lift);
+            const m = matrixZ(cam, Z), mb = matrixZ(cam, zb);
+            const R = E.x.id === 'rule' ? { X: E.x.parts[0].X, Y: E.x.parts[0].Y, Wd: PG.x3 - E.x.parts[0].X, Ht: 0 } : E.x.R;
+            const x0 = R.X, y0 = R.Y, x1 = R.X + R.Wd, y1 = R.Y + R.Ht;
+            const corners = E.slab ? [[x0, y0], [x1, y0], [x1, y1], [x0, y1]] : [[x0 + 0.5, y0 + 0.5], [x1 + 0.5, y0 + 0.5]];
+            const Te = E.slab ? EXTHICK * cam.k * cam.tilt * smooth(0, 0.15, lift) : 0;
+            E.drops.forEach((ln, i) => {
+              const c = corners[i];
+              if (!c) {
+                ln.style.display = 'none';
+                return;
+              }
+              const tp = proj(m, c[0], c[1]);
+              tp[1] += Te;
+              const foot = proj(mb, c[0], c[1]);
+              const on = foot[1] - tp[1] > 2;
+              ln.style.display = on ? '' : 'none';
+              if (on) ln.setAttribute('x1', tp[0].toFixed(2)), ln.setAttribute('y1', tp[1].toFixed(2)), ln.setAttribute('x2', foot[0].toFixed(2)), ln.setAttribute('y2', foot[1].toFixed(2));
+            });
+            if (E.slab) {
+              const a = proj(m, x0, y0), b = proj(m, x1, y0), c = proj(m, x1, y1), d = proj(m, x0, y1);
+              slabFaces(E, a, b, c, d, Te);
+              // The slab's top is drawn only once it has left its plate, so the flat page is the page's own drawing.
+              E.top.setAttribute('points', lift > 0.001 ? pts([a, b, c, d]) : '');
+              const ra = proj(m, x0 + 0.5, y0 + 0.5), rb = proj(m, x1 + 0.5, y0 + 0.5), rc = proj(m, x1 + 0.5, y1 + 0.5), rdd = proj(m, x0 + 0.5, y1 + 0.5);
+              E.rim.setAttribute('points', lift > 0.001 ? pts([ra, rb, rc, rdd]) : '');
+            }
+            E.content.setAttribute('transform', `matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`);
+            for (const q of E.dith) q.el.setAttribute('points', quad(m, q.e.X, q.e.Y, q.e.Wd, q.e.Ht));
+          }
+        }
+
+        /* ---------------- the page under the flat camera (lines 4 to 10) ---------------- */
+        const vP = $('vP');
+        const pageV = VPage(vP);
+        // The page box's crosses: over the flat page in the page box, toning out as the camera leaves it and in as it comes back.
+        const pbX = [[PB.x, PB.y], [1853, PB.y], [PB.x, 1013]].map(([x, y]) => F.cross(vP, x, y, C.lift));
+        function boxTone(cam) {
+          if (cam.at === 'box') return 1;
+          if (cam.from === 'box') return 1 - Math.min(1, cam.a * 3);
+          if (cam.to === 'box') return Math.max(0, cam.a * 3 - 2);
+          return 0;
+        }
+
+        /* ---------------- the pile and the deletion (lines 4 and 5) ---------------- */
+        const c45 = new F.Cells($('c45'));
+        const vR = $('vR');
+        const CL = F.clutter().map((q, idx) => Object.assign(at(q), { idx }));
+        const yRange = (arr) => [Math.min(...arr), Math.max(...arr)];
+        const CLY = yRange(CL.filter((q) => !q.spill && !q.cover).map((q) => q.Y));
+        const fy = (Yv) => clamp01((Yv - CLY[0]) / (CLY[1] - CLY[0]));
+        // The pile in three waves (each a single tone rise in Bayer order, 0.1 s top to bottom, 0.3 s a piece): the
+        // lines, links and buttons on the page landing through "creates" (from 0.16 s before it), the toast over the action
+        // on "mental", the spill and the twelve late pieces inside "clutter" (fix round: 0.2 s earlier than v4). The deletion: the band on "deleting" takes the pieces
+        // tagged other and the whole spill (its front runs down the frame in 0.5 s, each piece over 0.4 s once it has
+        // passed); then each kind leaves on its own word, its boxes lit #86a8ff for 0.12 s, then a top-to-bottom sweep
+        // (0.15 s across, 0.25 s each).
+        const WAVE = { page: B.pile, cover: B.pile + 0.5, spill: B.pile + 1.0, spread: 0.1, d: 0.3 };
+        const DEL = {
+          other: { t: WD.deleting, d: 0.4 },
+          line: { t: WD.lines, spread: 0.15, d: 0.25 },
+          link: { t: WD.links, spread: 0.15, d: 0.25 },
+          button: { t: WD.buttons, spread: 0.15, d: 0.25 },
+          lit: 0.12,
+        };
+        {
+          const groupY = (sel) => yRange(CL.filter(sel).map((q) => q.Y));
+          const spillY = groupY((q) => q.spill), coverY = groupY((q) => q.cover);
+          CL.forEach((q) => {
+            if (q.cover) q.tin = WAVE.cover + WAVE.spread * clamp01((q.Y - coverY[0]) / (coverY[1] - coverY[0] || 1));
+            else if (q.spill) q.tin = WAVE.spill + WAVE.spread * clamp01((q.Y - spillY[0]) / (spillY[1] - spillY[0]));
+            else q.tin = WAVE.page + WAVE.spread * fy(q.Y);
+            if (q.spill || q.cover) {
+              q.tout = DEL.other.t + 0.5 * clamp01(q.Y / H);
+              q.dout = DEL.other.d;
+              q.lit = null;
+            } else {
+              const k = DEL[q.kind];
+              q.lit = k.t;
+              q.tout = k.t + DEL.lit + fy(q.Y) * k.spread;
+              q.dout = k.d;
+            }
+          });
+        }
+        const INKS = { blue: K.blue, lift: K.lift, white: K.white, navy: K.navy };
+        const pieceP = (q, t) => lin(q.tin, q.tin + WAVE.d, t) * (1 - ease.p2io(prog(t, q.tout, q.dout)));
+        function drawClutter(cells, t) {
+          for (const q of CL) {
+            const p = pieceP(q, t);
+            if (!(p > 0)) continue;
+            if (q.spill) cells.rect(q.X, q.Y, q.Wd, Math.max(CELL, q.Ht), K.navy, p);
+            if (q.fill) cells.rect(q.X, q.Y, q.Wd, Math.max(CELL, q.Ht), INKS[q.fill], (q.v == null ? 1 : q.v) * p);
+            if (q.border && q.Ht > 0) cells.stroke(q.X, q.Y, q.Wd, Math.max(CELL, q.Ht), INKS[q.border], p);
+          }
+        }
+        // When each extra is deleted: the rule with the line pieces; the banner shrinks into the star pill on "links",
+        // the toggle tones out and the search field shrinks into the search icon on "buttons" (the header closes into
+        // its row of five controls).
+        const EXT_KIND = { rule: WD.lines, banner: WD.links, toggle: WD.buttons, search: WD.buttons };
+        const EXT_GONE = { rule: WD.lines + DEL.lit + fy(Y(60)) * DEL.line.spread, banner: WD.links + DEL.lit, toggle: WD.buttons + DEL.lit, search: WD.buttons + DEL.lit };
+        const MORPH = { banner: { t: WD.links, d: 0.4, ease: ease.p2io }, search: { t: WD.buttons, d: 0.4, ease: ease.p3out } };
+        // The redline: on "redesign" a 2 px white box draws around every pile piece, every spill card and each of the four
+        // extras, 4 to 6 px outside it, out of its own top-left corner (0.5 s, power3.out); the start times run top to
+        // bottom over 0.5 s, one sweep. On its kind's word a box mixes to #86a8ff (0.12 s) and leaves with its piece.
+        const RED = [];
+        {
+          const addBox = (x, y, w, h, gone, lit) => {
+            const b = { x: Math.round(x) - 5, y: Math.round(y) - 5, w: Math.round(w) + 10, h: Math.round(Math.max(CELL, h)) + 10, gone, lit };
+            b.A = F.poly([[b.x, b.y], [b.x + b.w, b.y], [b.x + b.w, b.y + b.h]]);
+            b.B = F.poly([[b.x, b.y], [b.x, b.y + b.h], [b.x + b.w, b.y + b.h]]);
+            b.el = F.el(vR, 'path', { d: '', fill: 'none', stroke: C.white, 'stroke-width': 2, 'stroke-linecap': 'square', 'shape-rendering': 'crispEdges' });
+            b.over = lit != null ? F.el(vR, 'path', { d: '', fill: 'none', stroke: C.lift, 'stroke-width': 2, 'stroke-linecap': 'square', 'shape-rendering': 'crispEdges' }) : null;
+            RED.push(b);
+            return b;
+          };
+          CL.forEach((q) => addBox(q.X, q.Y, q.Wd, q.Ht, (t) => pieceP(q, t), q.lit));
+          EXTRAS.forEach((x) => {
+            const R = x.id === 'rule' ? { X: x.parts[0].X, Y: x.parts[0].Y - 3, Wd: PG.x3 - x.parts[0].X, Ht: 6 } : x.R;
+            x.red = addBox(R.X, R.Y, R.Wd, R.Ht, (t) => 1 - s01(prog(t, EXT_GONE[x.id], 0.2)), EXT_KIND[x.id]);
+          });
+          const ry = yRange(RED.map((b) => b.y));
+          RED.forEach((b) => (b.t0 = B.red + 0.5 * clamp01((b.y - ry[0]) / (ry[1] - ry[0]))));
+        }
+        function drawRed(t) {
+          for (const b of RED) {
+            const p = ease.p3out(prog(t, b.t0, 0.5));
+            const v = t >= b.t0 ? b.gone(t) : 0;
+            if (!(p > 0) || !(v > 0)) {
+              b.el.setAttribute('d', '');
+              if (b.over) b.over.setAttribute('d', '');
+              continue;
+            }
+            const d = b.A.sub(b.A.total * p) + b.B.sub(b.B.total * p);
+            b.el.setAttribute('d', d);
+            b.el.setAttribute('stroke', tonePat(vR, C.white, v));
+            if (b.over) {
+              const s = s01(prog(t, b.lit, DEL.lit));
+              b.over.setAttribute('d', s > 0 ? d : '');
+              if (s > 0) b.over.setAttribute('stroke', tonePat(vR, C.lift, Math.min(v, s)));
+            }
+          }
+        }
+        const lerpR = (a, b, s) => [lerp(a.X, b.X, s), lerp(a.Y, b.Y, s), lerp(a.Wd, b.Wd, s), lerp(a.Ht, b.Ht, s)];
+        // The page during the pile and the deletion: the old page (the GT mark and its name white, the action in the
+        // page's ink), its extras in #86a8ff, and the header closing into its row of five controls.
+        function pileStyle(t) {
+          return (e, ex) => {
+            if (e.kind === 'ground') return { tone: 1 };
+            if (e.kind === 'frame') return e.id === 'bottom' ? null : { tone: 1 };
+            if (e.kind === 'rail') return null;
+            if (ex) {
+              const id = ex.id;
+              if (id === 'rule' || id === 'toggle') {
+                const v = 1 - s01(prog(t, EXT_GONE[id], id === 'rule' ? DEL.line.d : 0.3));
+                return v > 0 ? { ink: C.lift, tone: v } : null;
+              }
+              const M = MORPH[id];
+              const s = M.ease(prog(t, M.t, M.d));
+              if (e.gone) {
+                const v = 1 - s01(prog(t, M.t, 0.2));
+                return v > 0 ? { ink: C.lift, tone: v } : null;
+              }
+              if (s >= 1) return null; // landed: the page's own control takes its place
+              const o = { ink: C.blue, tone: 1, rect: lerpR(e, e.toR, s), mix: [C.lift, 1 - s] };
+              if (e.kind === 'box') o.ink = s > 0.5 ? C.blue : C.lift;
+              return o;
+            }
+            if (e.ctl === 'star' && t < MORPH.banner.t + MORPH.banner.d) return null;
+            if (e.ctl === 'search' && t < MORPH.search.t + MORPH.search.d) return null;
+            return { ink: isLogo(e) ? C.white : C.blue, tone: 1 };
+          };
+        }
+        function drawPile(t) {
+          const on = t >= B.land && t < B.push;
+          show($('c45'), on);
+          show(vR, on);
+          if (!on) return;
+          const cells = c45;
+          cells.clear();
+          drawClutter(cells, t);
+          cells.paint();
+          drawRed(t);
+        }
+
+        /* ---------------- line 6: the diagram, reached by the push into the page's own sidebar ---------------- */
+        const v6 = $('v6');
+        // The three old navigation surfaces, toning in at the left as the push settles (its last 0.5 s), in 2 px #2f5ce0
+        // outlines: a tab bar of six 96 by 40 tabs, a row of five sub-tabs and a second vertical section nav. The
+        // connectors then draw one after another, each starting as the one before arrives (0.5 s each, power2.out), the
+        // last arriving on "one" (fix round: they were 0.15 s apart, nine events in 1.34 s).
+        const DG = {
+          in0: B.diag - 0.5,
+          in1: B.diag - 0.1,
+          tab: { x: 200, y: 600, w: 96, h: 40, pitch: 112.8, n: 6, x1: 860 },
+          sub: { x: 200, y: 680, w: 84, h: 32, pitch: 100, n: 5 },
+          nav: { x: 200, y: 760, w: 230, h: 240 },
+          conn0: [B.diag, B.diag + 0.5, B.diag + 1.0], // second nav (g3), sub-tabs (g2), tab bar (g1): bottom first
+          connD: 0.5,
+          dim: 0.35, // each old surface stays at this tone once its connector has arrived, through the hold
+        };
+        const oldSurf = [];
+        const box2 = (x, y, w, h) => F.el(v6, 'rect', { x: x + 1, y: y + 1, width: w - 2, height: h - 2, fill: 'none', stroke: C.blue, 'stroke-width': 2, 'shape-rendering': 'crispEdges' });
+        const bar = (x, y, w, h) => F.el(v6, 'rect', { x, y, width: w, height: h, fill: C.blue, 'shape-rendering': 'crispEdges' });
+        for (let i = 0; i < DG.tab.n; i++) {
+          const x = Math.round(DG.tab.x + i * DG.tab.pitch);
+          oldSurf.push({ g: 0, el: box2(x, DG.tab.y, DG.tab.w, DG.tab.h), box: true });
+          oldSurf.push({ g: 0, el: bar(x + 18, DG.tab.y + 17, [56, 44, 60, 38, 52, 46][i], 6) });
+        }
+        for (let i = 0; i < DG.sub.n; i++) {
+          const x = DG.sub.x + i * DG.sub.pitch;
+          oldSurf.push({ g: 1, el: box2(x, DG.sub.y, DG.sub.w, DG.sub.h), box: true });
+          oldSurf.push({ g: 1, el: bar(x + 14, DG.sub.y + 13, [44, 56, 34, 48, 38][i], 6) });
+        }
+        oldSurf.push({ g: 2, el: box2(DG.nav.x, DG.nav.y, DG.nav.w, DG.nav.h), box: true });
+        [0, 1, 2, 3, 4, 5, 6].forEach((k) => oldSurf.push({ g: 2, el: bar(DG.nav.x + 22, DG.nav.y + 28 + k * 28, [110, 160, 90, 140, 180, 100, 130][k], 6) }));
+        // Where the push camera puts each group's heading, and the sidebar's left edge (the connectors end on it).
+        const PUSHX = Math.round(camPt(CAMS.push, [PG.x0, 0])[0]);
+        const headE = (g) => PAGE.find((e) => e.acc === g && e.head);
+        const headY = (g) => Math.round(camPt(CAMS.push, [0, headE(g).Y + headE(g).Ht / 2])[1]);
+        const GY = [headY('g1'), headY('g2'), headY('g3')];
+        // The connectors: the doubled line (gauge 9, core 3) on a 19 px navy casing, each out of its old surface, across,
+        // up right of heading 3's ground, and into its group's heading on the sidebar's edge.
+        const CONN = [
+          F.poly([[DG.tab.x1 + 0.5, DG.tab.y + 20.5], [1104.5, DG.tab.y + 20.5], [1104.5, GY[0] + 0.5], [PUSHX + 0.5, GY[0] + 0.5]]),
+          F.poly([[DG.sub.x + (DG.sub.n - 1) * DG.sub.pitch + DG.sub.w + 0.5, DG.sub.y + 16.5], [1136.5, DG.sub.y + 16.5], [1136.5, GY[1] + 0.5], [PUSHX + 0.5, GY[1] + 0.5]]),
+          F.poly([[DG.nav.x + DG.nav.w + 0.5, DG.nav.y + 120.5], [1168.5, DG.nav.y + 120.5], [1168.5, GY[2] + 0.5], [PUSHX + 0.5, GY[2] + 0.5]]),
+        ];
+        const connCase = CONN.map(() => F.el(v6, 'path', { d: '', fill: 'none', stroke: C.navy, 'stroke-width': 19, 'stroke-linejoin': 'miter', 'stroke-linecap': 'butt' }));
+        const connD = CONN.map(() => F.doubled(v6, C.lift, C.navy, 9, 3));
+        const connX = GY.map((y) => F.cross2(v6, PUSHX, y, C.white, 8));
+        // The connector into group g arrives (tab bar into g1 last, on "one").
+        const arrive6 = (g) => DG.conn0[2 - g] + DG.connD;
+        function drawDiag(t) {
+          const on = t >= DG.in0 && t < B.back6 + 0.35;
+          show(v6, on);
+          if (!on) return;
+          const away = 1 - lin(B.back6, B.back6 + 0.3, t);
+          const inn = lin(DG.in0, DG.in1, t);
+          // Each old surface dims to DG.dim as its connector arrives and holds there, so the held frame still shows what
+          // the accordion replaced; all three tone out together with the connectors in the pull back's first 0.3 s.
+          for (const s of oldSurf) {
+            const v = inn * (1 - (1 - DG.dim) * lin(arrive6(s.g), arrive6(s.g) + 0.3, t)) * away;
+            s.el.setAttribute(s.box ? 'stroke' : 'fill', tonePat(v6, C.blue, v));
+          }
+          CONN.forEach((p, i) => {
+            const g = i; // CONN[i] serves group i (the tab bar g1, the sub-tabs g2, the second nav g3)
+            const t0 = DG.conn0[2 - i];
+            const d = p.sub(p.total * ease.p2out(prog(t, t0, DG.connD)));
+            connCase[i].setAttribute('d', d);
+            connD[i].set(d);
+            connCase[i].setAttribute('stroke', tonePat(v6, C.navy, away));
+            connD[i].g.childNodes[0].setAttribute('stroke', tonePat(v6, C.lift, away));
+            connD[i].g.childNodes[1].setAttribute('stroke', tonePat(v6, C.navy, away));
+            const xv = lin(arrive6(g), arrive6(g) + 0.15, t) * away;
+            connX[i].setAttribute('stroke', tonePat(v6, C.white, xv));
+          });
+        }
+        // The page from the push to the fly-in (lines 6 and 7). On the push the content, the header and the rail zone
+        // tone out with the main ground as the push settles, and the sidebar's group rows dim; as each connector arrives
+        // its group's rows rise to #86a8ff with white headings; the rail draws on "one" and the thumb slides to the active
+        // page. On the pull back the rest of the page tones back in, lit (#86a8ff, white titles and headings), and
+        // General Translation's page keeps those inks into the wall and the fly-in, where its furniture and ground tone out
+        // in the last 0.5 s and its text gives way to the writing.
+        const gi = (e) => (e.acc === 'g1' ? 0 : e.acc === 'g2' ? 1 : e.acc === 'g3' ? 2 : e.foot ? 2 : -1);
+        const diagInk = (e) => (e.head || e.active || (e.acc === 'sw' && e.strong) ? C.white : C.lift);
+        // On "one" the rail draws down the rows (0.7 s, power2.inOut) and bends inward where the tree nests; the white
+        // thumb rides its head down g2 and parks at the active page (fix round: one gesture, was the rail then the thumb).
+        const RAIL6 = { t0: WD.one, d: 0.7 };
+        // When the writing's print passes a content piece's row (its top at the writing camera), that piece tones out.
+        function printOut(e, t) {
+          if (e.__wy == null) e.__wy = camPt(CAMS.write, [0, e.Y])[1];
+          const f = clamp01((e.__wy - LINES7[0][0]) / (LINES7[LINES7.length - 1][0] - LINES7[0][0]));
+          const tf = LINE7(0) + 0.06 * (LINES7.length - 1) * f;
+          return smooth(tf, tf + 0.3, t);
+        }
+        function litStyle(t, cam) {
+          const pushP = smooth(B.push, B.diag, t);
+          const outMain = smooth(B.push + 0.5, B.diag, t) * (1 - smooth(B.back6, B.back6 + 0.5, t));
+          // After the camera lands on the writing (fix round): the furniture (sidebar, header, contents rail, grounds and
+          // frame lines) tones out over 0.4 s, and the content column's own pieces give way to the writing as its print
+          // passes their row (0.3 s each), so nothing changes while the camera is still moving.
+          const flyOut = smooth(B.write, B.write + 0.4, t);
+          const vp = detail(cam.k);
+          // Lit (#86a8ff, white titles) by tone as the rest of the page comes back in on the pull back.
+          const lit = smooth(B.back6, B.back6 + 0.5, t);
+          const swMix = smooth(DG.in0, DG.in1, t);
+          return (e, ex) => {
+            if (e.kind === 'ground') return { tone: (e.part === 'side' ? 1 : 1 - outMain) * (1 - flyOut) * vp };
+            if (e.kind === 'frame') {
+              if (e.id === 'bottom' && cam.k > 0.9) return null;
+              const side = e.id === 'left' || e.id === 'xs';
+              return { tone: (side ? 1 : 1 - outMain) * (1 - flyOut) * vp, ink: C.blue };
+            }
+            if (e.kind === 'rail') {
+              if (t < RAIL6.t0) return null;
+              const gs = 9 * Math.min(1, cam.k / CAMS.push.k);
+              return { tone: (1 - flyOut) * vp, ink: C.lift, px: true, gauge: gs, core: gs / 3, draw: ease.p2io(prog(t, RAIL6.t0, RAIL6.d)), thumb: 'ride' };
+            }
+            if (ex) return null;
+            if (e.zone === 'side') {
+              const fo = (1 - flyOut) * vp;
+              if (isLogo(e)) return { ink: C.white, tone: fo };
+              if (e.lang) return { ink: C.blue, tone: fo, mix: [C.lift, lit] };
+              if (e.acc === 'sw') return { ink: C.blue, tone: fo, mix: [diagInk(e), swMix] };
+              const g = gi(e);
+              if (g < 0) return { ink: C.blue, tone: fo };
+              const a = arrive6(g) + (e.foot ? 0.15 + 0.04 * e.fi : e.head ? 0 : 0.035 * ((e.ri || 0) + 1));
+              const r = lin(a, a + 0.3, t);
+              const tone = lerp(1 - 0.7 * pushP, 1, r) * fo;
+              return { ink: C.blue, tone, mix: [diagInk(e), r] };
+            }
+            // The content column, the header and the contents rail.
+            const out = e.zone === 'content' ? printOut(e, t) : flyOut;
+            const tone = (1 - outMain) * (1 - out) * vp;
+            const hi = isLogo(e) || e.kind === 'title' || e.active;
+            return { ink: C.blue, tone, mix: [hi ? C.white : C.lift, lit] };
+          };
+        }
+
+        /* ---------------- line 6: the wall of docs pages ---------------- */
+        // 6 by 4 pages of 240 by 150 at a 272 by 176 pitch from x 160, y 346, General Translation's at column 4, row 2.
+        // The wall is carried by the camera. A page's tone follows the camera's scale s (1 at the slot camera), so on the
+        // pull back the neighbours come in across the frame edges as the frame widens into them (during "among docs
+        // sites"), and on the fly-in they leave across the edges with the camera and tone out as they go (fix round: v4
+        // timed them by the clock, late on the pull back and early on the fly-in).
+        const cw = $('cw');
+        const cwx = cw.getContext('2d');
+        const WALL = [];
+        for (let r = 0; r < TH2.rows; r++)
+          for (let c = 0; c < TH2.cols; c++) {
+            const gt = c === TH2.lit[0] && r === TH2.lit[1];
+            const dn = Math.hypot((c - TH2.lit[0]) / 3, (r - TH2.lit[1]) / 2) / Math.hypot(3 / 3, 2 / 2);
+            WALL.push({ c, r, gt, x: TH2.x0 + c * TH2.px, y: TH2.y0 + r * TH2.py, dn: Math.min(1, dn), seed: 100 + r * 10 + c });
+          }
+        // pull back: full tone below s 1.6, none above s 7 (the pull back's start), so the neighbours are on screen by
+        // "docs"; fly-in: full below s 1.5, none above 3.5, so the dense wall is gone before the zoom's fastest stretch and
+        // the lit page, by then 840 px wide, carries the rest. While the camera moves the neighbours' lines sit at 0.7 and
+        // their bars at 0.25.
+        const WR = { back: [1.6, 7.0], fly: [1.5, 3.5], bars: 0.25, lines: 0.7 };
+        let KEEP3 = [132, 119, 1061, 315]; // heading 3's keep-out, set from its ink box in buildEnvs
+        const vW = $('vW');
+        const hairW = (x1, y1) => F.el(vW, 'line', { x1: x1 + 0.5, y1: y1 + 0.5, x2: x1 + 0.5, y2: y1 + 0.5, stroke: C.blue, 'stroke-width': 1, 'shape-rendering': 'crispEdges' });
+        const pTop = hairW(PANEL.x0, PANEL.y0), pLeft = hairW(PANEL.x0, PANEL.y0), pRight = hairW(PANEL.x1, PANEL.y0), pBot = hairW(PANEL.x0, PANEL.y1);
+        // The panel's corner crosses; three of them glide on the fly-in to the writing view's crosses.
+        const PX = [
+          { at: [PANEL.x0, PANEL.y0], to: [300, 250] },
+          { at: [PANEL.x1, PANEL.y0], to: [1620, 250] },
+          { at: [PANEL.x0, PANEL.y1], to: [300, 1013] },
+          { at: [PANEL.x1, PANEL.y1], to: null },
+        ].map((p) => Object.assign(p, { el: F.cross(vW, 0, 0, C.lift) }));
+        PX.forEach((p) => p.el.setAttribute('d', ''));
+        const crossD = (x, y) => `M${x - 6} ${y + 0.5}H${x + 7}M${x + 0.5} ${y - 6}V${y + 7}`;
+        // General Translation's 3 px white outline, 9 px outside its page, out of its top-left corner. It is carried by
+        // the camera (fix round), so it can draw while the pull back settles and is round the slot (x 967 to 1225, y 513
+        // to 681) once the camera lands.
+        const outPA = F.el(vW, 'path', { d: '', fill: 'none', stroke: C.white, 'stroke-width': 3, 'stroke-linecap': 'square', 'shape-rendering': 'crispEdges' });
+        const outPB = F.el(vW, 'path', { d: '', fill: 'none', stroke: C.white, 'stroke-width': 3, 'stroke-linecap': 'square', 'shape-rendering': 'crispEdges' });
+        const OUTL = { t0: B.wall - 0.4, d: 0.4, back0: B.fly, backD: 0.35 };
+        // The three crosses glide with the camera over the whole fly-in and land on the writing view's corners as it
+        // lands; the writing's hairlines then draw out of them.
+        const GLIDE_END = B.write;
+        function drawWall(t, cam) {
+          const on = t >= B.back6 && t < B.write + 0.1;
+          show(cw, on);
+          show(vW, on);
+          if (!on) return;
+          const ctx = cwx;
+          ctx.clearRect(0, 0, W, H);
+          const s = cam.k / CAMS.slot.k;
+          const vp = detail(cam.k);
+          const moving = t < B.wall + 0.5 ? 1 - smooth(B.wall - 0.45, B.wall, t) : smooth(B.fly, B.fly + 0.35, t);
+          const barT = 1 - (1 - WR.bars) * moving, lineT = 1 - (1 - WR.lines) * moving;
+          for (const p of WALL) {
+            let v;
+            if (p.gt) v = 1 - vp;
+            else {
+              const fr = t < B.wall + 0.5 ? WR.back : WR.fly;
+              v = (1 - smooth(fr[0], fr[1], s)) * lineT;
+            }
+            if (!(v > 0)) continue;
+            const x = cam.c[0] + s * (p.x - CAMS.slot.c[0]), y = cam.c[1] + s * (p.y - CAMS.slot.c[1]);
+            const w = TH2.w * s, h = TH2.h * s;
+            if (x > W || y > H || x + w < 0 || y + h < 0) continue;
+            // While heading 3 is up, a page coming in over its ground waits (tone 0) until it is clear of the heading's
+            // keep-out (28 px round its ink), then rises by tone over the next 24 px of its travel.
+            if (!p.gt && t < HX.h3 + 0.45) {
+              const dx = Math.max(KEEP3[0] - (x + w), 0, x - KEEP3[2]), dy = Math.max(KEEP3[1] - (y + h), 0, y - KEEP3[3]);
+              v *= smooth(0, 24, Math.hypot(dx, dy));
+              if (!(v > 0)) continue;
+            }
+            const rr = [Math.max(0, x - 2), Math.max(0, y - 2), Math.min(W, x + w + 2), Math.min(H, y + h + 2)];
+            if (p.gt) F.toneUniform(ctx, v, (c) => F.mini(c, x, y, s, 'gt', C.lift, C.white, p.seed), rr);
+            else {
+              // A neighbour's frame, rules and boxes at its tone; its text bars lower while the camera moves, so the wall
+              // in motion is its pages' structure (the old surfaces stay) and the text settles in as the camera lands.
+              F.toneUniform(ctx, v, (c) => F.mini(c, x, y, s, 'old', C.blue, C.blue, p.seed, 'lines'), rr);
+              F.toneUniform(ctx, v * barT, (c) => F.mini(c, x, y, s, 'old', C.blue, C.blue, p.seed, 'bars'), rr);
+            }
+          }
+          // The panel: its hairline frame draws out of its top-left cross (PANEL.t0, 0.6 s, expo.out), its right edge down out
+          // of the top-right corner, the bottom along out of the bottom-left; the corner crosses land as the lines reach
+          // them. On the fly-in the hairlines run back into their crosses and three crosses glide to the writing view's.
+          const e = ease.expoOut(prog(t, PANEL.t0, 0.6));
+          const eR = ease.expoOut(prog(t, PANEL.t0 + 0.25, 0.35));
+          const eB = ease.expoOut(prog(t, PANEL.t0 + 0.3, 0.35));
+          const back = 1 - ease.p2io(prog(t, B.fly, 0.5));
+          const wpx = (a, b, f) => a + (b - a) * f;
+          const show1 = (el, on) => (el.style.display = on ? '' : 'none');
+          show1(pTop, e * back > 0), show1(pLeft, e * back > 0), show1(pRight, eR * back > 0), show1(pBot, eB * back > 0);
+          pTop.setAttribute('x2', wpx(PANEL.x0, PANEL.x1, e * back) + 0.5);
+          pLeft.setAttribute('y2', wpx(PANEL.y0, PANEL.y1, e * back) + 0.5);
+          pRight.setAttribute('y2', wpx(PANEL.y0, PANEL.y1, eR * back) + 0.5);
+          pBot.setAttribute('x2', wpx(PANEL.x0, PANEL.x1, eB * back) + 0.5);
+          const reach = [t >= PANEL.t0, e > 0.995, wpx(PANEL.y0, PANEL.y1, e) >= PANEL.y1 - 1, eB > 0.995];
+          const glide = ease.trap(prog(t, B.fly, GLIDE_END - B.fly));
+          PX.forEach((p, i) => {
+            if (!reach[i]) return p.el.setAttribute('d', '');
+            let [x, y] = p.at;
+            let v = 1;
+            if (p.to) (x = Math.round(lerp(x, p.to[0], glide))), (y = Math.round(lerp(y, p.to[1], glide)));
+            else v = 1 - lin(B.fly, B.fly + 0.3, t);
+            // Once they have landed, the writing view's own crosses take over (drawWriting).
+            if (p.to && t >= GLIDE_END) v = 0;
+            p.el.setAttribute('d', v > 0 ? crossD(x, y) : '');
+            p.el.setAttribute('stroke', tonePat(vW, C.lift, v));
+          });
+          const o = ease.p3out(prog(t, OUTL.t0, OUTL.d)) * (1 - ease.p2io(prog(t, OUTL.back0, OUTL.backD)));
+          if (o > 0) {
+            const R = pageRect(cam);
+            const x0 = Math.round(R[0]) - 9 + 0.5, y0 = Math.round(R[1]) - 9 + 0.5, x1 = Math.round(R[2]) + 9 + 0.5, y1 = Math.round(R[3]) + 9 + 0.5;
+            const outA = F.poly([[x0, y0], [x1, y0], [x1, y1]]), outB = F.poly([[x0, y0], [x0, y1], [x1, y1]]);
+            outPA.setAttribute('d', outA.sub(outA.total * o));
+            outPB.setAttribute('d', outB.sub(outB.total * o));
+          } else {
+            outPA.setAttribute('d', '');
+            outPB.setAttribute('d', '');
+          }
+        }
+
+        /* ---------------- line 7: the writing ---------------- */
+        // The writing view at the writing camera: eleven lines from x 420 (title at y 300, lowest line ending by y 880)
+        // in page coordinates, so they move with the camera; a rail at x 360 (the doubled line, gauge 9, core 3) that
+        // draws down out of the hairline at y 250; hairlines x 300 down and y 250 across with crosses at their ends.
+        const W7 = { x0: 420, x1: 1520, y0: 300, yEnd: 882, rail: 360.5, hx: 300, hy: 250, hx1: 1620 };
+        const LINES7 = [
+          [300, 534, 54],
+          [387, 1048, 21], [429, 671, 21],
+          [531, 1087, 18], [570, 1042, 18], [612, 1100, 18], [654, 501, 18],
+          [714, 345, 33],
+          [783, 1068, 18], [822, 1003, 18], [864, 762, 18],
+        ];
+        // Each line in page px (the inverse of the writing camera), so the camera carries it.
+        const LINE7P = LINES7.map(([y, w, h]) => {
+          const k = CAMS.write.k, c = CAMS.write.c;
+          return [PC[0] + (W7.x0 - c[0]) / k, PC[1] + (y - c[1]) / k, w / k, h / k];
+        });
+        const c7 = new F.Cells($('c7'));
+        const v7 = $('v7');
+        const hV = F.el(v7, 'line', { x1: W7.hx + 0.5, y1: W7.hy + 0.5, x2: W7.hx + 0.5, y2: W7.hy + 0.5, stroke: C.blue, 'stroke-width': 1, 'shape-rendering': 'crispEdges' });
+        const hA = F.el(v7, 'line', { x1: W7.hx + 0.5, y1: W7.hy + 0.5, x2: W7.hx + 0.5, y2: W7.hy + 0.5, stroke: C.blue, 'stroke-width': 1, 'shape-rendering': 'crispEdges' });
+        const x7 = [[W7.hx, W7.hy], [W7.hx1, W7.hy], [W7.hx, 1013]].map(([x, y]) => F.cross(v7, x, y, C.lift));
+        const rule7 = F.el(v7, 'line', { x1: W7.x0, y1: 498.5, x2: W7.x0, y2: 498.5, stroke: C.blue, 'stroke-width': 1, 'shape-rendering': 'crispEdges' });
+        const rail7 = F.doubled(v7, C.blue, C.navy, 9, 3);
+        const thumb7 = F.doubled(v7, C.white, C.navy, 9, 3);
+        // Fix round, one step after another once the camera has landed (B.write): the furniture tones out while the
+        // writing's hairlines draw out of the crosses and its rail draws down (0.6 s); then the eleven lines print from
+        // their own smoke in reading order (0.3 s each, 60 ms apart, from B.write + 0.5), each taking over from the page's
+        // own pieces in its row, and the white thumb runs down the rail with the print from the title to the section
+        // heading (0.96 s, power2.inOut).
+        const LINE7 = (i) => B.write + 0.5 + i * 0.06;
+        const W7T = { h0: B.write, hD: 0.6, rail0: B.write + 0.05, railD: 0.6, rule0: LINE7(3) - 0.05, thumb0: LINE7(0), thumbD: 0.96, a: [303, 351], b: [708, 756] };
+        function drawWriting(t, cam) {
+          const on = t >= LINE7(0) - 0.1 && t < B.out + 0.45;
+          show($('c7'), on);
+          show(v7, t >= W7T.h0 && t < B.out + 0.45);
+          const away = 1 - lin(B.out, B.out + 0.4, t);
+          if (t >= W7T.h0 && t < B.out + 0.45) {
+            const h = ease.expoOut(prog(t, W7T.h0, W7T.hD));
+            hV.setAttribute('y2', (W7.hy + (H - W7.hy) * h + 0.5).toFixed(1));
+            hA.setAttribute('x2', (W7.hx + (W7.hx1 - W7.hx) * h + 0.5).toFixed(1));
+            [hV, hA].forEach((l) => l.setAttribute('stroke', tonePat(v7, C.blue, away)));
+            x7.forEach((x) => x.setAttribute('stroke', tonePat(v7, C.lift, (t >= W7T.h0 ? 1 : 0) * away)));
+            const r = ease.p3out(prog(t, W7T.rule0, 0.4));
+            rule7.setAttribute('x2', (W7.x0 + (W7.x1 - W7.x0) * r).toFixed(1));
+            rule7.setAttribute('stroke', tonePat(v7, C.blue, away));
+            const rr = ease.p3out(prog(t, W7T.rail0, W7T.railD));
+            rail7.set(rr > 0 ? `M${W7.rail} ${W7.hy + 12}L${W7.rail} ${(W7.hy + 12 + (H - W7.hy - 12) * rr).toFixed(1)}` : '');
+            rail7.g.childNodes[0].setAttribute('stroke', tonePat(v7, C.blue, away));
+            rail7.g.childNodes[1].setAttribute('stroke', tonePat(v7, C.navy, away));
+            const s = ease.p2io(prog(t, W7T.thumb0, W7T.thumbD));
+            const ya = lerp(W7T.a[0], W7T.b[0], s), yb = lerp(W7T.a[1], W7T.b[1], s);
+            const tv = lin(W7T.thumb0, W7T.thumb0 + 0.12, t) * away;
+            thumb7.set(tv > 0 ? `M${W7.rail} ${ya.toFixed(2)}L${W7.rail} ${yb.toFixed(2)}` : '');
+            thumb7.g.childNodes[0].setAttribute('stroke', tonePat(v7, C.white, tv));
+            thumb7.g.childNodes[1].setAttribute('stroke', tonePat(v7, C.navy, tv));
+          }
+          if (!on) return;
+          const cells = c7;
+          cells.clear();
+          // The GEM7 print returns to plain #2f5ce0 and the lines give way to the page's own text in the pull-out's first 0.4 s.
+          const g = gemFor('s7');
+          let d = null;
+          if (g) {
+            g.at(GEM7.t0 + (t - LINE7(0) - 0.06 - GEM7.lead) * GEM7.rate);
+            d = gemCells(g);
+          }
+          LINE7P.forEach(([px, py, pw, ph], li) => {
+            const pres = lin(LINE7(li), LINE7(li) + 0.3, t) * away;
+            if (!(pres > 0)) return;
+            const sx0 = cam.c[0] + cam.k * (px - PC[0]), sy0 = cam.c[1] + cam.k * (py - PC[1]);
+            const x0 = clamp(Math.round(sx0 / CELL), 0, COLS), y0 = clamp(Math.round(sy0 / CELL), 0, ROWS);
+            const x1 = clamp(Math.round((sx0 + cam.k * pw) / CELL), 0, COLS), y1 = clamp(Math.round((sy0 + cam.k * ph) / CELL), 0, ROWS);
+            for (let yy = y0; yy < Math.max(y1, y0 + 1); yy++)
+              for (let xx = x0, i = yy * COLS + x0; xx < x1; xx++, i++) {
+                const l = d ? lum(d, i) : 0.36;
+                const sm = Math.pow(clamp01((l - 0.4) / 0.6), 1.4) * away;
+                const tone = (1 + sm * 1.6) * pres;
+                const th = TH[i];
+                const k = tone - 2 > th ? K.white : tone - 1 > th ? K.lift : tone > th ? K.blue : -1;
+                if (k >= 0) cells.lv[i] = k;
+              }
+          });
+          cells.paint();
+        }
+
+        /* ---------------- line 8: the glyph planet under the translated page ---------------- */
+        // 30 px cells (fix round, was 21), so the glyphs are 20 to 26 px tall and the script step reads at phone size.
+        const G1 = { cell: 30, cols: Math.ceil(W / 30), rows: Math.ceil(H / 30), turn0: 44 };
+        const planet = F.globe({ cx: 960 / W, cy: 1520 / H, radius: 1010 / H, aspect: W / H, ambient: 0.14, rim: 0.16, spin: 0.14, tilt: 0.42 });
+        const REGION_SCRIPTS = [15, 4, 5, 16, 2, 9, 3, 13, 6, 1, 12, 8, 10, 14, 11, 7, 18, 17, 19];
+        const glyphCells = [];
+        {
+          const rnd = GTDither.rng(1988);
+          const vis = [];
+          for (let y = 0; y < G1.rows; y++)
+            for (let x = 0; x < G1.cols; x++) {
+              const cx = (x + 0.5) * G1.cell, cy = (y + 0.5) * G1.cell;
+              if (cy < 495) continue;
+              const d = planet.dir(cx / W, cy / H, G1.turn0);
+              if (!d) continue;
+              const th = (GTDither.B8[(y & 7) * 8 + (x & 7)] + 0.5) / 64;
+              vis.push({ x, y, cx, cy, th, d });
+            }
+          const seeds = [vis[Math.floor(rnd() * vis.length)].d];
+          const best = vis.map((c) => 1 - (c.d[0] * seeds[0][0] + c.d[1] * seeds[0][1] + c.d[2] * seeds[0][2]));
+          while (seeds.length < REGION_SCRIPTS.length) {
+            let k = 0;
+            for (let i = 1; i < vis.length; i++) if (best[i] > best[k]) k = i;
+            const sd = vis[k].d;
+            seeds.push(sd);
+            vis.forEach((c, i) => (best[i] = Math.min(best[i], 1 - (c.d[0] * sd[0] + c.d[1] * sd[1] + c.d[2] * sd[2]))));
+          }
+          for (const c of vis) {
+            let r = 0, rd = -2;
+            seeds.forEach((sd, i) => {
+              const dot = c.d[0] * sd[0] + c.d[1] * sd[1] + c.d[2] * sd[2];
+              if (dot > rd) (rd = dot), (r = i);
+            });
+            const sb = REGION_SCRIPTS[r];
+            const A = F.SCRIPTS[0], Bs = F.SCRIPTS[sb];
+            glyphCells.push({ cx: c.cx, cy: c.cy, th: c.th, ga: A[Math.floor(rnd() * A.length)], gb: Bs[Math.floor(rnd() * Bs.length)], ka: F.INK[0], kb: F.INK[sb] });
+          }
+        }
+        const c1 = $('c1');
+        const ctx1 = c1.getContext('2d');
+        // The script step on "same": every cell steps once to its region's script, in Bayer order over 0.6 s.
+        const STEP = { t0: WD.same, d: 0.6 };
+        function drawPlanet(t) {
+          const on = t >= PL.rise0 && t < PL.set0 + 0.65;
+          show(c1, on);
+          if (!on) return;
+          const ctx = ctx1;
+          ctx.clearRect(0, 0, W, H);
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const T = G1.turn0 + (t - STEP.t0);
+          let lastFont = '';
+          for (const c of glyphCells) {
+            const p = planetP(t, c.cy);
+            if (!(p > c.th)) continue;
+            const u = c.cx / W;
+            const v = c.cy / H;
+            const lit = planet(u, v, T, 0);
+            if (lit <= 0) continue;
+            const full = planet(u, v, T, 0.42);
+            const tt = Math.pow(lit, 1.15);
+            const dx = (c.cx - 960) / 1010, dy = (c.cy - 1520) / 1010;
+            const limbK = smooth(0.84, 0.97, dx * dx + dy * dy) * smooth(740, 960, c.cy);
+            const limb = 1 - 0.55 * limbK;
+            const land = full / lit > 1.02 && limbK < 0.5;
+            const k = Math.sqrt(Math.min(1, tt * 1.15)) * limb;
+            const stepped = t >= STEP.t0 + c.th * STEP.d;
+            const ink = stepped ? c.kb : c.ka;
+            const px = Math.round(G1.cell * ink * Math.min(1.15, land ? 0.34 + 0.72 * k : 0.2 + 0.42 * k) * 2) / 2;
+            ctx.fillStyle = land ? (tt * 1.15 * limb > 0.38 ? C.white : C.lift) : C.blue;
+            const f = '500 ' + px + 'px ' + F.GLYPH_STACK;
+            if (f !== lastFont) {
+              ctx.font = f;
+              lastFont = f;
+            }
+            ctx.fillText(stepped ? c.gb : c.ga, c.cx, c.cy + px * 0.04);
+          }
+        }
+        // E5's three dashed guides on "and alignment": white, 2 px, 10 on and 8 off, across the page at its header row,
+        // its title and its first group heading, from 60 px left of the page to 60 px right of it (0.3 s each, 50 ms
+        // apart, power3.out), held 1.0 s complete, toning out (0.2 s) as the page moves into the page box.
+        const vL = $('vL');
+        const GUIDE = { t0: WD.and8, each: 0.05, d: 0.3, out: B.tobox, outD: 0.2 };
+        const guideRows = [PG.y0 + 32 * PS, Y(80) + 1, Y(162)];
+        const guides = guideRows.map(() => F.el(vL, 'line', { x1: 0, y1: 0, x2: 0, y2: 0, stroke: C.white, 'stroke-width': 2, 'stroke-dasharray': '10 8', 'shape-rendering': 'crispEdges' }));
+        function drawGuides(t) {
+          const on = t >= GUIDE.t0 && t < GUIDE.out + GUIDE.outD;
+          show(vL, on);
+          if (!on) return;
+          const cam = CAMS.small;
+          const R = pageRect(cam);
+          const xa = Math.round(R[0] - 60), xb = Math.round(R[2] + 60);
+          const v = 1 - lin(GUIDE.out, GUIDE.out + GUIDE.outD, t);
+          guides.forEach((g, i) => {
+            const p = ease.p3out(prog(t, GUIDE.t0 + GUIDE.each * i, GUIDE.d));
+            const y = Math.round(camPt(cam, [0, guideRows[i]])[1]);
+            g.setAttribute('x1', xa), g.setAttribute('y1', y), g.setAttribute('y2', y);
+            g.setAttribute('x2', (xa + (xb - xa) * p).toFixed(1));
+            g.setAttribute('stroke', tonePat(vL, C.white, v));
+            g.style.display = p > 0 ? '' : 'none';
+          });
+        }
+
+        /* ---------------- lines 9 and 10: the reader's path ---------------- */
+        const vE = $('vE');
+        const P3 = (u, v) => [X(u) + 0.5, Y(v) + 0.5];
+        // The reader's path, A4's five stops: orient (the section switcher), navigate (the active page in the
+        // accordion), read (the title), choose (the first quickstart card), act (Get a Demo).
+        const PATH3PTS = [P3(8, 110), P3(8, 353), P3(196, 353), P3(312, 237), P3(312, 95), P3(470, 95), P3(470, 406), P3(470, 490), P3(1375, 490), P3(1375, 32)];
+        const path3 = F.poly(PATH3PTS);
+        const seatIdx = [0, 2, 5, 6, 9];
+        const seatL = seatIdx.map((i) => path3.acc[i]);
+        const dl3A = F.el(vE, 'path', { d: '', fill: 'none', stroke: C.lift, 'stroke-width': 9, 'stroke-linejoin': 'miter', 'stroke-miterlimit': 10, 'stroke-linecap': 'butt' });
+        const dl3B = F.el(vE, 'path', { d: '', fill: 'none', stroke: C.navy, 'stroke-width': 3, 'stroke-linejoin': 'miter', 'stroke-miterlimit': 10, 'stroke-linecap': 'butt' });
+        const pulse3 = F.el(vE, 'path', { d: '', fill: 'none', stroke: C.white, 'stroke-width': 3, 'stroke-linejoin': 'miter', 'stroke-linecap': 'butt' });
+        const seats = seatIdx.map(() => {
+          const g = F.el(vE, 'g', { style: 'display:none' });
+          const a = F.el(g, 'rect', { width: 16, height: 16, fill: C.white, 'shape-rendering': 'crispEdges' });
+          const b = F.el(g, 'rect', { width: 8, height: 8, fill: C.navy, 'shape-rendering': 'crispEdges' });
+          return { g, a, b };
+        });
+        // One constant speed (ease none, because reading is a process), set so the path reaches the action on "action".
+        const PATH3 = { t0: B.path, t1: WD.action };
+        PATH3.speed = path3.total / (PATH3.t1 - PATH3.t0);
+        const PULSE3 = { t0: WD.action + 0.3, d: 0.8, len: 160 };
+        function drawPath(t, cam) {
+          const on = t >= PATH3.t0 && t < B.card;
+          show(vE, on);
+          if (!on) return;
+          const map = (p) => camPt(cam, p);
+          const mp = F.poly(PATH3PTS.map(map));
+          const L = path3.total * clamp01((t - PATH3.t0) / (PATH3.t1 - PATH3.t0)) * cam.k;
+          const d = mp.sub(L);
+          dl3A.setAttribute('d', d || 'M0 0'), dl3B.setAttribute('d', d || 'M0 0');
+          seats.forEach((s, i) => {
+            const vis = L >= seatL[i] * cam.k - 0.01;
+            s.g.style.display = vis ? '' : 'none';
+            if (vis) {
+              const [x, y] = map(PATH3PTS[seatIdx[i]]);
+              s.a.setAttribute('x', Math.round(x - 8)), s.a.setAttribute('y', Math.round(y - 8));
+              s.b.setAttribute('x', Math.round(x - 8) + 4), s.b.setAttribute('y', Math.round(y - 8) + 4);
+            }
+          });
+          const pu = (t - PULSE3.t0) / PULSE3.d;
+          if (pu > 0 && pu < 1) {
+            const head = (mp.total + PULSE3.len) * pu;
+            pulse3.setAttribute('d', mp.sub(Math.max(0, head - PULSE3.len), Math.min(mp.total, head)));
+          } else pulse3.setAttribute('d', '');
+        }
+
+        /* ---------------- the page's styles after the writing (lines 8 to 10) ---------------- */
+        function mutedStyle(t, cam) {
+          // The furniture, the page's text and the ground tone back in over the pull-out's first 0.4 s; on "same" the text
+          // bars mix to #86a8ff in place (0.6 s) and back as the page moves into the page box; on "action" Get a Demo
+          // mixes to white.
+          const inn = smooth(B.out, B.out + 0.4, t);
+          const textMix = s01(prog(t, STEP.t0, STEP.d)) * (1 - s01(prog(t, B.tobox, 0.6)));
+          const act = s01(prog(t, WD.action, 0.3));
+          return cleanStyle(inn, { textMix, action: act, frame: (id) => (id === 'bottom' && cam.k > 0.9 ? null : { tone: inn }) });
+        }
+        function drawPage(t, cam) {
+          // Hidden while only the writing is up: from the last content piece's hand-over to the pull-out.
+          const on = t >= B.land && !(t >= LINE7(LINES7.length - 1) + 0.35 && t < B.out);
+          show(vP, on);
+          if (!on) return;
+          const style = t < B.push ? pileStyle(t) : t < B.out ? litStyle(t, cam) : mutedStyle(t, cam);
+          pageV.draw(cam, style);
+          const bt = boxTone(cam);
+          pbX.forEach((x) => {
+            x.style.display = bt > 0 ? '' : 'none';
+            if (bt > 0) x.setAttribute('stroke', tonePat(vP, C.lift, bt));
+          });
+        }
+
+        /* ---------------- the readers (lines 1, 2 and 10) ---------------- */
+        /*
+         * 28 nodes in 4 columns (x 1500 to 1710, 70 px apart) and 7 rows (threads at y 505 to 985, 80 px apart): 24 agents
+         * (Heroicons cpu-chip) and 4 humans (Heroicons user), 44 px icons on 52 px navy plates. Seven row threads leave
+         * the page's right edge (x 1056) at their rows' heights; each node hangs on a 20 px 45 degree stub below its
+         * thread. Doubled lines on 17 px navy casings, so they carve their own channel through the smoke; every piece
+         * enters and leaves by tone on the film's one grid.
+         */
+        const cgc = $('cg');
+        const cg = cgc.getContext('2d');
+        const RG = { x0: Math.round(camPt(OPEN, [PG.x3, 0])[0]), rows: [0, 1, 2, 3, 4, 5, 6].map((r) => 505 + 80 * r), cols: [1500, 1570, 1640, 1710], humans: [[0, 3], [2, 1], [4, 2], [6, 0]], stub: 20, off: 43, plate: 52, icon: 44 };
+        const NODES = [];
+        RG.rows.forEach((y, r) =>
+          RG.cols.forEach((x, c) => {
+            const human = RG.humans.some(([a, b]) => a === r && b === c);
+            const bx = x - RG.off;
+            const route = F.poly([[RG.x0, y + 0.5], [bx, y + 0.5], [bx + RG.stub, y + 0.5 + RG.stub]]);
+            NODES.push({ r, c, human, x, y, bx, route, d: bx - RG.x0, cx: x, cy: y + RG.off });
+          })
+        );
+        const ROWLEN = RG.cols[3] - RG.off + RG.stub * Math.SQRT2 - RG.x0; // a row's drawn length (to the last stub's end)
+        // The draw-out at frame 0 and again in line 10: each row's thread out of the page's edge (expo.out, 30 ms apart,
+        // top to bottom), the stubs as its continuation, each node's tone rising (0.2 s) as its stub arrives.
+        const GRID = { open: { t0: 0, d: 0.6 }, close: { t0: B.back + 0.9, d: 0.42 } };
+        const rowDraw = (t, r, D) => ROWLEN * ease.expoOut(prog(t, D.t0 + 0.03 * r, D.d));
+        const nodeArrive = (n, D) => {
+          const f = Math.min(0.999, (n.d + RG.stub * Math.SQRT2) / ROWLEN);
+          return D.t0 + 0.03 * n.r + (D.d * -Math.log2(1 - f)) / 10;
+        };
+        // White agent pulses, 3 by 60 px at 450 px a second: one train per thread, each pulse to the row's next agent, a
+        // second train on "agents"; from the page to the agents only.
+        const PULSE = { v: 450, len: 60, t0: 0.8, t1: B.back + 1.5 };
+        const rngP = GTDither.rng(9);
+        const ROWA = RG.rows.map((y, r) => NODES.filter((n) => n.r === r && !n.human));
+        const TRAIN = RG.rows.map(() => {
+          const P = 1.62 + 0.3 * rngP();
+          return { P, ph: rngP() * P };
+        });
+        function pulsesAt(t, t0, t2) {
+          const out = [];
+          RG.rows.forEach((y, r) => {
+            const ag = ROWA[r];
+            const { P, ph } = TRAIN[r];
+            const trains = [[t0, ph, 0]];
+            if (t >= t2) trains.push([t2, ph + P / 2, 2]);
+            for (const [ts, off, shift] of trains) {
+              if (t < ts) continue;
+              const j0 = Math.floor((t - ts - off) / P);
+              for (let j = j0; j >= j0 - 1; j--) {
+                const te = ts + off + j * P;
+                if (te < ts) continue;
+                const n = ag[(((j + shift + r) % ag.length) + ag.length) % ag.length];
+                const s = (t - te) * PULSE.v;
+                if (s > 0 && s < n.route.total + PULSE.len) out.push({ n, a: Math.max(0, s - PULSE.len), b: Math.min(n.route.total, s) });
+              }
+            }
+          });
+          return out;
+        }
+        // The agents leave on "Humans" by tone from the node ends back toward the page (0.5 s, to 4.48).
+        const XFAR = RG.cols[3] + RG.plate / 2;
+        const agentsGone = (t, x) => (t < WD.humans || t >= GRID.close.t0 ? 1 : 1 - s01((t - (WD.humans + (0.25 * (XFAR - x)) / (XFAR - RG.x0))) / 0.25));
+        // The reader's path continues in line 10: out of the lit action, out of the page's right edge, along row 1's
+        // thread and into row 1's white human, at the path's own speed.
+        const actionClose = camPt(OPEN, P3(1375, 32));
+        const humanR1 = NODES.find((n) => n.r === 0 && n.human);
+        const contY = RG.rows[0] + 0.5;
+        const CONT = F.poly([actionClose, [actionClose[0] + (contY - actionClose[1]), contY], [humanR1.bx, contY], [humanR1.bx + RG.stub, contY + RG.stub]]);
+        const CONT0 = B.back + 1.6;
+        function drawGrid(t) {
+          const opening = t < WD.product + 0.35;
+          const closing = t >= GRID.close.t0;
+          show(cgc, opening || closing);
+          if (!opening && !closing) return;
+          const ctx = cg;
+          ctx.clearRect(0, 0, W, H);
+          const D = opening ? GRID.open : GRID.close;
+          const outP = opening ? 1 - lin(WD.product, WD.product + 0.3, t) : 1;
+          const white = opening ? s01(prog(t, WD.evaluate, 0.3)) : s01(prog(t, WD.team, 0.3));
+          const rowLen = (r) => rowDraw(t, r, D);
+          const BOX = [RG.x0 - 12, RG.rows[0] - 14, XFAR + 4, RG.rows[6] + RG.off + RG.plate / 2 + 4];
+          const pieces = [];
+          RG.rows.forEach((y, r) => {
+            const L = Math.min(rowLen(r), RG.cols[3] - RG.off - RG.x0);
+            if (L > 0.5) pieces.push({ tone: outP, runs: [[[RG.x0, y + 0.5], [RG.x0 + L, y + 0.5]]], ink: C.blue, box: [RG.x0 - 9, y - 9, RG.x0 + L + 9, y + 10] });
+          });
+          NODES.forEach((n) => {
+            const sl = clamp(rowLen(n.r) - n.d, 0, RG.stub * Math.SQRT2) / Math.SQRT2;
+            const tone = n.human ? outP : outP * agentsGone(t, n.bx + RG.stub);
+            if (sl > 0.3 && tone > 0) pieces.push({ tone, runs: [[[n.bx, n.y + 0.5], [n.bx + sl, n.y + 0.5 + sl]]], ink: n.human ? C.lift : C.blue, white: n.human ? white : 0, box: [n.bx - 12, n.y - 12, n.bx + RG.stub + 12, n.y + RG.stub + 12] });
+          });
+          for (const pass of ['case', 'ink', 'core']) {
+            for (const p of pieces) {
+              const w = pass === 'case' ? 17 : pass === 'ink' ? 7 : 3;
+              const col = pass === 'ink' ? p.ink : C.navy;
+              F.toneUniform(ctx, p.tone, (x) => F.strokeRuns(x, p.runs, col, w), p.box);
+              if (pass === 'ink' && p.white > 0) F.toneUniform(ctx, Math.min(p.tone, p.white), (x) => F.strokeRuns(x, p.runs, C.white, 7), p.box);
+            }
+          }
+          // The agent pulses.
+          const pt0 = opening ? PULSE.t0 : PULSE.t1, pt2 = opening ? WD.agents : PULSE.t1;
+          if (!opening || t < WD.humans + 0.5) {
+            for (const q of pulsesAt(t, pt0, pt2)) {
+              if (t < nodeArrive(q.n, D)) continue;
+              const run = F.runPts(q.n.route, q.a, q.b);
+              if (!run) continue;
+              const v = opening ? agentsGone(t, run[run.length - 1][0]) : 1;
+              if (v > 0) F.toneUniform(ctx, v, (x) => F.strokeRuns(x, [run], C.white, 3), BOX);
+            }
+          }
+          // The path's continuation (line 10).
+          if (closing && t >= CONT0) {
+            const L = Math.min(CONT.total, (t - CONT0) * PATH3.speed * OPEN.k);
+            const run = [F.runPts(CONT, 0, L)];
+            F.strokeRuns(ctx, run, C.lift, 9);
+            F.strokeRuns(ctx, run, C.navy, 3);
+          }
+          NODES.forEach((n) => {
+            const tone = (n.human ? outP : outP * agentsGone(t, n.cx)) * lin(nodeArrive(n, D), nodeArrive(n, D) + 0.2, t);
+            if (!(tone > 0)) return;
+            const h = RG.plate / 2;
+            F.toneUniform(ctx, tone, (x) => {
+              x.fillStyle = C.navy;
+              x.fillRect(n.cx - h, n.cy - h, RG.plate, RG.plate);
+              F.iconAt(x, n.human ? F.ICON_USER : F.ICON_CPU, n.cx, n.cy, RG.icon, n.human ? C.white : C.lift);
+            }, [n.cx - h, n.cy - h, n.cx + h, n.cy + h]);
+          });
+        }
+
+        /* ---------------- the moving type (heading 1 into heading 2's first line) ---------------- */
+        const mtc = $('mt');
+        const ctxMT = mtc.getContext('2d');
+        MT.move0 = 2 * MT.swap;
+        MT.move1 = MT.d - 2 * MT.swap;
+        MT.dur = MT.move1 - MT.move0 - 0.2;
+        const mtImg = document.createElement('canvas');
+        mtImg.width = COLS;
+        mtImg.height = MT.rows;
+        const mtCtx = mtImg.getContext('2d');
+        const mtData = mtCtx.createImageData(COLS, MT.rows);
+        const mtA = new Float32Array(COLS * MT.rows);
+        const mtC = new Float32Array(COLS * MT.rows);
+        // A one-line heading's 3 px cells (canvas face, the heading's own grid); acc: the cells of the accented first word.
+        function headingCells(line, accWord) {
+          const cv = document.createElement('canvas');
+          cv.width = W;
+          cv.height = MT.rows * CELL;
+          const x = cv.getContext('2d', { willReadFrequently: true });
+          x.font = '500 144px InterCanvas';
+          x.letterSpacing = (-0.035 * 144).toFixed(3) + 'px';
+          x.fontKerning = 'normal';
+          x.fillStyle = '#fff';
+          x.textBaseline = 'alphabetic';
+          const m = x.measureText('Hg');
+          const A = m.fontBoundingBoxAscent, D = m.fontBoundingBoxDescent, lh = 1.04 * 144;
+          const top = 125 - MT.y0;
+          x.fillText(line, 160, top + (lh - (A + D)) / 2 + A);
+          const accX = accWord ? 160 + x.measureText(accWord).width : -1;
+          const d = x.getImageData(0, 0, W, MT.rows * CELL).data;
+          const out = [];
+          for (let cy = 0; cy < MT.rows; cy++)
+            for (let cx = 0; cx < COLS; cx++) {
+              let a = 0;
+              for (let yy = 0; yy < CELL; yy++) for (let xx = 0; xx < CELL; xx++) a += d[((cy * CELL + yy) * W + cx * CELL + xx) * 4 + 3];
+              const cov = a / (9 * 255);
+              if (cov > 0.04) out.push([cx * CELL, MT.y0 + cy * CELL, cx * CELL < accX ? 1 : 0, cov]);
+            }
+          return out;
+        }
+        // Matter is conserved: the old line's cells are paired in reading order with the new line's; the accent cells of
+        // "Humans" mix to white along the move.
+        function buildMT(a, accWord, b, seed) {
+          const key = (p) => p[0] * 1000 + p[1];
+          const pa = headingCells(a, accWord).sort((p, q) => key(p) - key(q));
+          const pb = headingCells(b, null).sort((p, q) => key(p) - key(q));
+          const rng = GTDither.rng(seed);
+          const parts = [];
+          const n = Math.max(pa.length, pb.length);
+          for (let k = 0; k < n; k++) {
+            const qa = pa[Math.floor((k * pa.length) / n)];
+            const qb = pb[Math.floor((k * pb.length) / n)];
+            const mid = (qa[0] + qb[0]) / 2;
+            parts.push({ ax: qa[0], ay: qa[1], acc: qa[2], ca: qa[3], bx: qb[0], by: qb[1], cb: qb[3], delay: 0.18 * clamp01((mid - 160) / 1200) + 0.02 * rng(), lift: (rng() - 0.5) * 12 });
+          }
+          return { parts };
+        }
+        let MTP = null;
+        function drawMT(t) {
+          const on = MTP && t >= MT.t0 && t < MT.t0 + MT.d;
+          show(mtc, !!on);
+          if (!on) return;
+          ctxMT.clearRect(0, 0, W, H);
+          const lt = t - MT.t0;
+          mtA.fill(0);
+          mtC.fill(0);
+          for (const q of MTP.parts) {
+            const u = ease.p2io((lt - MT.move0 - q.delay) / MT.dur);
+            const x = q.ax + (q.bx - q.ax) * u;
+            const y = q.ay + (q.by - q.ay) * u + Math.sin(Math.PI * u) * q.lift;
+            const gx = Math.round(x / CELL), gy = Math.round((y - MT.y0) / CELL);
+            if (gx < 0 || gx >= COLS || gy < 0 || gy >= MT.rows) continue;
+            const i = gy * COLS + gx;
+            const c = q.ca + (q.cb - q.ca) * u;
+            if (c > mtA[i]) {
+              mtA[i] = c;
+              mtC[i] = q.acc * (1 - u);
+            }
+          }
+          const dd = mtData.data;
+          const L = [134, 168, 255];
+          for (let i = 0, k = 0; i < mtA.length; i++, k += 4) {
+            const f = mtC[i];
+            dd[k] = Math.round(255 + (L[0] - 255) * f);
+            dd[k + 1] = Math.round(255 + (L[1] - 255) * f);
+            dd[k + 2] = 255;
+            dd[k + 3] = Math.round(mtA[i] * 255);
+          }
+          mtCtx.putImageData(mtData, 0, 0);
+          ctxMT.globalAlpha = Math.min(lin(0, MT.swap, lt), 1 - lin(MT.d - MT.swap, MT.d, lt));
+          ctxMT.imageSmoothingEnabled = false;
+          ctxMT.drawImage(mtImg, 0, MT.y0, W, MT.rows * CELL);
+          ctxMT.globalAlpha = 1;
+        }
+
+        /* ---------------- render ---------------- */
+        function render(t) {
+          if (t >= B.card) return;
+          const cam = camF(t);
+          drawPlanet(t);
+          drawOpen(t);
+          drawPage(t, cam);
+          drawWall(t, cam);
+          drawPile(t);
+          drawDiag(t);
+          drawWriting(t, cam);
+          drawGuides(t);
+          drawPath(t, cam);
+          drawGrid(t);
+          drawMT(t);
+          drawField(t, cam);
+        }
+
+        /* ---------------- the timeline ---------------- */
+        const tl = gsap.timeline({ paused: true, onUpdate: () => render(tl.time()) });
+        tl.to({ t: 0 }, { t: B.end, duration: B.end, ease: 'none' }, 0);
+        // Each word: opacity 0 to 1 and a 12 px rise in 0.30 s (power2.out) from its own word start.
+        const words = (id) => Array.from($(id).querySelectorAll('.ln')).map((ln) => Array.from(ln.querySelectorAll('.w')));
+        for (const id of HEADS) {
+          words(id).forEach((ws, li) =>
+            ws.forEach((w, wi) => {
+              const at0 = HW[id][li][wi];
+              if (at0 != null) tl.fromTo(w, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, at0);
+            })
+          );
+        }
+        // Exits: the whole heading, opacity to 0 and 8 px up in 0.45 s (power2.inOut), in a pause or its own tail.
+        for (const id of ['h2', 'h3', 'h4']) tl.fromTo(`#${id}`, { opacity: 1, y: 0 }, { opacity: 0, y: -8, duration: 0.45, ease: 'power2.inOut', immediateRender: false }, HX[id]);
+        // The moving type's hand-overs: heading 1 fades off its cells once they are up, and heading 2's first line fades
+        // onto its cells before they go; drawMT runs the cells' side.
+        tl.fromTo('#h1', { opacity: 1 }, { opacity: 0, duration: MT.swap, ease: 'none', immediateRender: false }, MT.t0 + MT.swap);
+        words('h2')[0].forEach((w) => tl.fromTo(w, { opacity: 0 }, { opacity: 1, duration: MT.swap, ease: 'none' }, MT.t0 + MT.d - 2 * MT.swap));
+        window.__render = render;
+        window.__dbg = { gems, FIELD, GEM7, gemCells, B, WD, O, MT, camera, camF, CAMS, CAM, LINE7, W7T, MOVES, WR, ease, ENV, envAt, inkBoxes, PATH3, path3, CONT, NODES, RG, DG, GY, PUSHX, CL, RED, pageRect };
+
+        /* ---------------- the end card (kit/endcard, used as it is) ---------------- */
+        window.__hf = window.__hf || {};
+        window.__hf.buildReady = window.__hf.buildReady || {};
+        let cardReady;
+        window.__hf.buildReady.endcard = new Promise((res) => (cardReady = res));
+        function addCard() {
+          const card = GTEndCard.addEndCard(tl, {
+            palette: 'blue',
+            title: ['Designing docs', 'for humans'],
+            url: 'generaltranslation.com/blog/designing-docs-for-humans',
+            start: B.card,
+          });
+          card.ready.then(cardReady, (e) => {
+            window.__filmError = String((e && e.stack) || e);
+            cardReady();
+          });
+          window.__timelines = window.__timelines || {};
+          window.__timelines['main'] = tl;
+        }
+        if (window.GTEndCard) addCard();
+        else window.addEventListener('gtendcard-ready', addCard, { once: true });
+
+        /* ---------------- readiness: fonts, the gem mount, the envelopes, the type caches ---------------- */
+        const canvasFace = new FontFace('InterCanvas', 'url(lib/fonts/InterCanvas.woff2)', { weight: '100 900' });
+        document.fonts.add(canvasFace);
+        const gemReady = new Promise((res) => (window.GTGem ? res() : window.addEventListener('gtgem-ready', res, { once: true })));
+        const ready = Promise.all([canvasFace.load(), document.fonts.load('500 144px Inter'), gemReady])
+          .then(() => document.fonts.ready)
+          .then(() => GTGem.mount($('gemA'), { palette: 'blue', width: W, height: H, pixelRatio: 0.5, params: FIELD.params }))
+          .then((a) => {
+            gems.a = a;
+            gemMode = 'field';
+            buildEnvs();
+            MTP = buildMT('Humans still read docs', 'Humans', 'General Translation', 77);
+            render(tl.time());
+            window.__filmReady = true;
+          })
+          .catch((e) => {
+            window.__filmError = String((e && e.stack) || e);
+          });
+        window.__hf.buildReady.film = ready;
+        render(0);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<style>html,body{margin:0;background:#dbcfba} svg{position:absolute;left:0;top:0}</style>
+<script src="../../data/glyphs.js"></script></head><body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+<script>
+const NS='http://www.w3.org/2000/svg', s=document.getElementById('s');
+function T(str,x,y,size,anchor,dir){const t=document.createElementNS(NS,'text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('font-family','MH Hebrew');t.setAttribute('font-weight','500');t.setAttribute('font-size',size);t.setAttribute('fill','#332617');t.setAttribute('direction',dir||'rtl');t.setAttribute('text-anchor',anchor||'start');t.setAttribute('lang','he');t.textContent=str;s.appendChild(t);return t;}
+function O(id,right,y,size){const W=MH_GLYPHS.words[id];const sc=size/W.upm;const left=right-W.adv*sc;for(const c of W.clusters)for(const g of c.glyphs){const p=document.createElementNS(NS,'path');p.setAttribute('d',g.d);p.setAttribute('fill','rgba(255,0,0,0.55)');p.setAttribute('transform',`translate(${left+g.x*sc} ${y-g.y*sc}) scale(${sc} ${-sc})`);s.appendChild(p);}}
+document.fonts.load('500 100px "MH Hebrew"','מ').then(()=>{
+ T('מִלּוֹן',900,350,220); O('milon',900,350,220);
+ T('אָפְנַיִם',1800,350,220); O('ofnayim',1800,350,220);
+ T('מַקְלֵעַ',900,750,220,'end','ltr'); O('maklea',900,750,220);
+ T('אוֹפָן',1800,750,220); O('ofan',1800,750,220);
+ const l=document.createElementNS(NS,'line');l.setAttribute('x1',900);l.setAttribute('x2',900);l.setAttribute('y1',0);l.setAttribute('y2',1080);l.setAttribute('stroke','blue');s.appendChild(l);
+ window.__done=true;});
+</script></body></html>

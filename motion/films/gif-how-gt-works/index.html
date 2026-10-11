@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>How GT works</title>
+    <link rel="stylesheet" href="kit/tokens.css" />
+    <link rel="stylesheet" href="lib/scene.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="lib/film.js"></script>
+    <script src="lib/scene.js"></script>
+    <style>
+      html, body { width: 1920px; height: 1080px; }
+      /* The MP4: the 1280 x 720 stage at 1.5, so every design px is 1.5 px here. */
+      #stage { transform: scale(1.5); }
+    </style>
+  </head>
+  <body>
+    <!-- How GT works: the MP4 master, 1920 x 1080 at 60 fps, a 17.3 s seamless loop (DESIGN.md, revised in NOTES.md). -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="17.3" data-width="1920" data-height="1080">
+      <div id="stage" data-layout-allow-overflow></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__hf = window.__hf || {};
+      window.__hf.buildReady = window.__hf.buildReady || {};
+      const scene = GTScene.mount(document.getElementById('stage'));
+      const tl = gsap.timeline({ paused: true, onUpdate: () => scene.render(tl.time()) });
+      tl.to({ t: 0 }, { t: GTScene.DUR, duration: GTScene.DUR, ease: 'none' }, 0);
+      window.__timelines['main'] = tl;
+      window.__scene = scene;
+      window.__hf.buildReady.scene = scene.ready
+        .then(() => scene.render(tl.time()))
+        .catch((e) => {
+          window.__sceneError = String((e && e.stack) || e);
+        });
+    </script>
+  </body>
+</html>

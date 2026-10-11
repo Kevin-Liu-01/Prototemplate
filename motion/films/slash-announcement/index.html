@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Slash and General Translation</title>
+    <link rel="stylesheet" href="kit/tokens.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="kit/dither.js"></script>
+    <script src="lib/cues.js"></script>
+    <script src="lib/card.js"></script>
+    <style>
+      html, body { width: 1920px; height: 1080px; overflow: hidden; margin: 0; background: #3b382b; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: #3b382b; }
+      .full { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: block; }
+      canvas.cells { image-rendering: pixelated; }
+      .hd { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 20; pointer-events: none; }
+      .ln {
+        position: absolute;
+        display: block;
+        margin: 0;
+        padding: 0;
+        white-space: nowrap;
+        color: #ffffff;
+        font-family: var(--font);
+        font-weight: 500;
+        font-kerning: normal;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .tab { font-variant-numeric: tabular-nums; display: inline-block; text-align: left; }
+      .tx {
+        position: absolute;
+        display: block;
+        margin: 0;
+        padding: 0;
+        white-space: nowrap;
+        color: #ffffff;
+        font-family: var(--font);
+        font-weight: 500;
+        font-kerning: normal;
+        visibility: hidden;
+        z-index: 18;
+        will-change: transform, opacity;
+      }
+      .tx.w4 { font-weight: 400; }
+      .tx.ink { color: #3b382b; }
+      .msk { position: absolute; display: block; overflow: hidden; margin: 0; padding: 0; white-space: nowrap; font-family: var(--font); }
+      .msk > span { display: block; will-change: transform; }
+      #card { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 30; visibility: hidden; pointer-events: none; }
+      #opener { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 6; overflow: hidden; visibility: hidden; pointer-events: none; }
+      #opGround { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; display: block; }
+      #cvOpGround { visibility: hidden; }
+      #cvFront { visibility: hidden; }
+      #opCard { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+      #cvCardPhoto { position: absolute; display: block; opacity: 0; will-change: transform, opacity; }
+      #assets { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+      #assets img { width: 1px; height: 1px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="36.283" data-width="1920" data-height="1080">
+      <!-- The light: Kevin's shafts as one analytic tone field, a smooth ground plus the 3 px Bayer screen. -->
+      <canvas id="cvField" class="full" width="1920" height="1080" style="z-index: 1" data-layout-allow-overflow></canvas>
+      <!-- Pictures printed on the same 3 px grid: the globe and its glyph ground, the plate drawings. -->
+      <canvas id="cvPic" class="full cells" width="1920" height="1080" style="z-index: 2" data-layout-allow-overflow></canvas>
+      <!-- The glyph globe's glyphs. -->
+      <canvas id="cvDots" class="full" width="1920" height="1080" style="z-index: 3" data-layout-allow-overflow></canvas>
+      <!-- Lines: routes, crosses, doubled lines, outlines, the app page. -->
+      <canvas id="cvVec" class="full" width="1920" height="1080" style="z-index: 4" data-layout-allow-overflow></canvas>
+      <!-- Marks printed through the screen: the wordmark, the lockup. -->
+      <canvas id="cvMarks" class="full" width="1920" height="1080" style="z-index: 5" data-layout-allow-overflow></canvas>
+
+      <!-- Line 1's first sentence: Slash's card (Kevin's photo, Slash's image) on the photo's own ground, cut out and extended by lib/card-prep.py, turned in 3D by lib/film.js, under Slash's wordmark (cvOpLogo, white since v7). Not printed through the screen. v8: from "for" the globe grows at its seat in front of the card (cvFront) and the card slides right behind it: the wordmark fades, the ground leaves by tone from "businesses" (cvOpGround). -->
+      <div id="opener" data-layout-allow-overflow>
+        <img id="opGround" src="assets/opener/ground.png" alt="" />
+        <canvas id="cvOpGround" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+        <!-- v6: Slash's wordmark, drawn from its file (assets/logos/slash-logo.svg) by lib/film.js; v7: in the file's own white. -->
+        <canvas id="cvOpLogo" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+        <div id="opCard" data-layout-allow-overflow>
+          <canvas id="cvCardPhoto" width="643" height="511" data-layout-allow-overflow></canvas>
+        </div>
+        <!-- v8: the globe in front of the card from "for", until the card is behind it (lib/film.js, drawFront). -->
+        <canvas id="cvFront" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+      </div>
+
+      <!-- The two counted figures. Each line is placed by lib/film.js on its baseline, first ink on x 160. -->
+      <div class="hd" id="heads">
+        <div class="ln" data-h="f1" data-k="0"><span class="tab" id="n180">0</span><span id="plus">+</span></div>
+        <div class="ln" data-h="f1" data-k="1">countries</div>
+        <div class="ln" data-h="f6" data-k="0">Up to $<span class="tab" id="n2000">2,000</span></div>
+        <div class="ln" data-h="f6" data-k="1">in translation credits</div>
+      </div>
+
+      <!-- Lines 6 and 7: the plate labels, and each plate's own interface string in English and in its language. -->
+      <div class="tx" id="pl0">App</div>
+      <div class="tx" id="pl1">Website</div>
+      <div class="tx" id="pl2">Docs</div>
+      <div class="tx" id="pl3">Slides</div>
+      <div class="tx" id="pl4">Design files</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pe0" lang="en">Sign in</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pe1" lang="en">Pricing</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pe2" lang="en">Quickstart</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pe3" lang="en">Sales deck</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pe4" lang="en">Hero banner</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pt0" lang="ja" dir="ltr">ログイン</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pt1" lang="ar" dir="rtl">الأسعار</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pt2" lang="hi" dir="ltr">त्वरित शुरुआत</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pt3" lang="ko" dir="ltr">세일즈 덱</div>
+      <div class="tx" data-layout-allow-overlap data-layout-allow-occlusion id="pt4" lang="zh" dir="ltr">首页横幅</div>
+
+      <!-- Line 8: the app page's strings (../gif-how-gt-works/lib/scene.js). -->
+      <div class="tx" id="ah-en" lang="en">Welcome back</div>
+      <div class="tx" id="ah-es" lang="es">Hola de nuevo</div>
+      <div class="tx" id="ah-fr" lang="fr">Bon retour</div>
+      <div class="tx" id="ah-ja" lang="ja">おかえりなさい</div>
+      <div class="tx w4" id="as-en" lang="en">English</div>
+      <div class="tx w4" id="as-es" lang="es">Español</div>
+      <div class="tx w4" id="as-fr" lang="fr">Français</div>
+      <div class="tx w4" id="as-ja" lang="ja">日本語</div>
+      <div class="tx ink" id="ab-en" lang="en">Get started</div>
+      <div class="tx ink" id="ab-es" lang="es">Comenzar</div>
+      <div class="tx ink" id="ab-fr" lang="fr">Commencer</div>
+      <div class="tx ink" id="ab-ja" lang="ja">始める</div>
+
+      <!-- The end card (film-local, in the shared card's grammar). -->
+      <div id="card">
+        <canvas id="cvCard" class="full" width="1920" height="1080" data-layout-allow-overflow></canvas>
+        <div class="msk" id="cardT1" style="color: #ffffff; font-weight: 500"><span>Up to $2,000</span></div>
+        <div class="msk" id="cardT2" style="color: #ffffff; font-weight: 500"><span>in translation credits</span></div>
+        <div class="msk" id="cardL" style="color: #ffffff; font-weight: 400"><span>generaltranslation.com/slash</span></div>
+      </div>
+
+      <!-- Every image a canvas draws, in the DOM so the renderer waits for it. -->
+      <div id="assets" aria-hidden="true">
+        <img id="img-slash" src="assets/logos/slash-logo.svg" alt="" />
+        <img id="img-card" src="assets/opener/card.png" alt="" />
+        <img id="img-gt" src="kit/brand/gt-mark.svg" alt="" />
+      </div>
+
+      <!-- mix: written by lib/mix.py -->
+      <audio id="mix" src="audio/film-premix.wav" data-start="0" data-duration="36.283" data-track-index="10" data-volume="1"></audio>
+      <!-- /mix -->
+    </div>
+    <script src="lib/film.js"></script>
+    <script>
+      // One paused timeline; its onUpdate draws the frame for the film time (lib/film.js).
+      window.__timelines = window.__timelines || {};
+      const film = window.GTFilmBoot();
+      const tl = gsap.timeline({ paused: true, onUpdate: () => film.render(tl.time()) });
+      tl.to({ t: 0 }, { t: film.END, duration: film.END, ease: 'none' }, 0);
+      window.__timelines['main'] = tl;
+    </script>
+  </body>
+</html>

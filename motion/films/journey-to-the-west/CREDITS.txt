@@ -1,0 +1,37 @@
+Journey to the West 西遊記 (motion/films/journey-to-the-west), v2, 73 s, 1920 x 1080.
+Ship this text with the film wherever it is published (the description field
+of the post or the video page). Each picture's credit is also on screen while
+the picture is shown.
+
+Images
+
+- 新刻出像官板大字西遊記, Shidetang 世德堂, Jinling (Nanjing), the oldest
+  surviving edition: chapter 1 title column and naming passage, the contents
+  (pp. 6 to 11), the chapter 4 woodcut and text, and the contents round
+  chapter 14. National Central Library (Taiwan) scan, call no. 08616, vol. 1,
+  via Wikimedia Commons:
+  https://commons.wikimedia.org/wiki/File:NCL-08616_01_新刻出像官板大字西遊記.pdf
+  Public domain (a mechanical scan of a public domain original).
+- Hu Shih 胡適, Washington, September 1939. Photograph: Harris & Ewing,
+  Library of Congress (LCCN 2016876181). No known restrictions on publication.
+- Plates from Timothy Richard, A Mission to Heaven, Shanghai, 1913, after an
+  unnamed Chinese illustrated edition. Cornell University Library, via
+  Internet Archive (https://archive.org/details/cu31924074502034). No known
+  copyright restrictions in the United States.
+
+Texts quoted in Chinese (public domain)
+
+- 本草綱目 (Compendium of Materia Medica), quoting a horse manual:
+  馬廄畜母猴，辟馬瘟疫.
+
+Books named on screen only as names, titles and short renderings set in the
+film's own type (all in copyright; no page, jacket or layout is shown):
+Arthur Waley, Monkey (London: George Allen & Unwin, 1942), its title and its
+footnote's one word "Monkey"; Hu Shih's introduction to the American edition
+(New York: John Day, 1943), named and paraphrased in the narration, not
+quoted; Julia Lovell, Monkey King: Journey to the West (Penguin, 2021), its
+four names.
+
+Type: Noto Serif CJK TC (Adobe) and Old Standard TT, SIL Open Font License 1.1.
+Voices: ElevenLabs (Frederick Surrey, narrator; Yun, Mandarin reader). Music:
+ElevenLabs Music API. Effects: made from seeded noise with ffmpeg.

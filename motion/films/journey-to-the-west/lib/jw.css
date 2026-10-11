@@ -1,0 +1,107 @@
+/* journey-to-the-west: one ink on one paper. The colours are in lib/jw.js (JW.C):
+   paper #ffffff, ink #202020, tint #bbbbbb, label #6b6b6b, hair #dbdbdb. */
+#root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+}
+.scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: #ffffff;
+}
+/* A picture inside a scene that a hard cut replaces (beat 1, 3, 6). */
+.part {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+}
+svg.art {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  display: block;
+  overflow: visible;
+}
+.plate {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  overflow: hidden;
+  display: block;
+}
+.plate img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  max-width: none;
+}
+.han {
+  position: absolute;
+  display: block;
+  font-family: var(--jw-han);
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1;
+  font-kerning: normal;
+}
+.han.v {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+.lat {
+  position: absolute;
+  display: block;
+  font-family: var(--jw-latin);
+  font-weight: 400;
+  white-space: nowrap;
+  line-height: 1;
+  font-kerning: normal;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.lat .l {
+  opacity: 0;
+}
+/* A translator's tag: name and year in letter-spaced capitals. */
+.tag {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+/* The credit line for the picture on screen: lower left, last baseline at y 960 or above. */
+.credit {
+  position: absolute;
+  left: 160px;
+  bottom: 112px;
+  display: block;
+  font-family: var(--jw-latin);
+  font-size: 21px;
+  line-height: 1.38;
+  color: #6b6b6b;
+  white-space: normal;
+  font-variant-numeric: lining-nums;
+}
+.credit .zh {
+  font-family: var(--jw-han);
+  font-size: 0.95em;
+}
+.credit i {
+  font-style: italic;
+}
+.credit .ln {
+  display: block;
+  white-space: nowrap;
+}

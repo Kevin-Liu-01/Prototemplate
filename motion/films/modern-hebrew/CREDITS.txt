@@ -1,0 +1,25 @@
+Modern Hebrew (motion/films/modern-hebrew), v2, 69.6 s, 1920 x 1080.
+Ship this text with the film wherever it is published (the description field
+of the post or the video page). The dictionary's pages are credited on screen
+in note 3, and the Ezekiel text in note 5.
+
+Images
+
+- Eliezer Ben-Yehuda, מלון הלשון העברית הישנה והחדשה, vol. 1, Jerusalem and
+  Berlin, 1908 (the title page, the key of signs and p. 110) and vol. 4
+  (p. 1806). Princeton Theological Seminary Library, via Internet Archive
+  (https://archive.org/details/thesaurustotiush01benj and
+  https://archive.org/details/thesaurustotiush04benj). Public domain.
+
+The film shows no other picture. The v2 cut leaves out the 1913 and 1922
+story, so the Technikum photograph, the Jaffa meeting poster (CC BY-SA 3.0),
+the front matter of vol. 1 and the Mandate's Article 22 are not in it, and no
+share-alike material is shown.
+
+Text: Ezekiel 1:4 from Tanach with Nikkud (tanach.us, via Sefaria), public
+domain.
+Type: Frank Ruhl Libre, Source Serif 4 and Noto Serif (Greek), SIL Open Font
+License 1.1.
+Voice: narrator Frederick Surrey (ElevenLabs voice library,
+eleven_multilingual_v2). Music: ElevenLabs Music API. Effects: ElevenLabs
+sound generation.

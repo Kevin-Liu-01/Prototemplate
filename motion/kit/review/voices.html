@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Narrator auditions</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+/*
+ * Narrator auditions: one reading column. A sticky bar holds the mode switch
+ * (a take with the film's music under it, or the voice alone) and the
+ * now-playing line. The voices are rows under group headings, each with one
+ * play button and a progress line, and one audio element plays every take.
+ * Every word on the page comes from the JSON file that ?data= names;
+ * README.md has its shape.
+ *
+ * Type is the kit's Inter through var(--font) from ../tokens.css, and the
+ * system sans when the kit is not there. The colors read the kit's tokens,
+ * with the same values as fallbacks.
+ */
+:root {
+  --ground: var(--paper, #ffffff);
+  --text: var(--ink, #070707);
+  --muted: var(--on-paper-body, rgba(7, 7, 7, 0.63));
+  --hair: var(--on-paper-hair, rgba(7, 7, 7, 0.11));
+  --blue: var(--accent, #2f5ce0);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ground: var(--ink, #070707);
+    --text: var(--ink-text, #f2f2f0);
+    --muted: var(--on-ink-body, rgba(242, 242, 240, 0.63));
+    --hair: var(--on-ink-hair, rgba(242, 242, 240, 0.11));
+    --blue: var(--accent-lift, #86a8ff);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --ground: var(--ink, #070707);
+  --text: var(--ink-text, #f2f2f0);
+  --muted: var(--on-ink-body, rgba(242, 242, 240, 0.63));
+  --hair: var(--on-ink-hair, rgba(242, 242, 240, 0.11));
+  --blue: var(--accent-lift, #86a8ff);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--ground); }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+}
+b, strong { font-weight: 500; }
+a { color: var(--text); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
+header { display: grid; gap: 10px; padding: 40px 0 20px; }
+h1 { font-size: 28px; line-height: 1.2; font-weight: 500; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+.intro { margin: 0; max-width: 62ch; color: var(--muted); }
+.links { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.sample { margin-top: 6px; padding: 14px 16px; border: 1px solid var(--hair); }
+.sample h2 { margin: 0 0 4px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.sample p { margin: 0; }
+.bar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 10px 0; background: var(--ground); border-bottom: 1px solid var(--hair); }
+.toggle { display: inline-flex; border: 1px solid var(--hair); }
+.toggle button { font: inherit; font-size: 14px; padding: 6px 14px; border: 0; border-radius: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.toggle button[aria-pressed='true'] { background: var(--text); color: var(--ground); font-weight: 500; }
+.now { margin: 0; min-width: 0; font-size: 14px; color: var(--muted); }
+.now strong { color: var(--text); }
+h2.group { font-size: 15px; font-weight: 500; margin: 28px 0 10px; }
+.list { display: grid; gap: 8px; }
+.row { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: 0 14px; padding: 12px 14px; border: 1px solid var(--hair); }
+.row.playing { border-color: var(--blue); }
+.play { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--hair); border-radius: 0; background: transparent; color: var(--text); cursor: pointer; }
+.play:hover { border-color: var(--blue); }
+.play svg { width: 16px; height: 16px; fill: currentColor; }
+.meta { display: grid; gap: 2px; min-width: 0; }
+.name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.name b { font-size: 17px; }
+.num { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tag { padding: 0 6px; font-size: 12px; line-height: 18px; color: var(--muted); border: 1px solid var(--hair); }
+.tag.pick { color: var(--blue); border-color: currentColor; }
+.desc { margin: 0; font-size: 14px; color: var(--muted); }
+.stats { margin: 0; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.track { grid-column: 1 / -1; height: 2px; margin-top: 12px; overflow: hidden; background: var(--hair); }
+.track i { display: block; width: 0; height: 100%; background: var(--blue); }
+footer { display: grid; gap: 6px; margin-top: 28px; font-size: 14px; color: var(--muted); }
+footer p { margin: 0; }
+.status { margin: 32px 0 0; max-width: 62ch; color: var(--muted); }
+.status.error { color: var(--text); padding-left: 12px; border-left: 2px solid var(--blue); }
+@media (max-width: 480px) {
+  h1 { font-size: 24px; }
+  .row { column-gap: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main id="main">
+    <p class="status">Loading the audition data.</p>
+  </main>
+</div>
+<audio id="player" preload="none"></audio>
+<script type="module">
+const PLAY = 'M8 5v14l11-7z';
+const PAUSE = 'M7 5h4v14H7zm6 0h4v14h-4z';
+
+const params = new URLSearchParams(location.search);
+const theme = params.get('theme');
+if (theme === 'dark' || theme === 'light') document.documentElement.dataset.theme = theme;
+const DATA = params.get('data') || 'sample-voices.json';
+const main = document.getElementById('main');
+const player = document.getElementById('player');
+
+let base = location.href; // the JSON file's address; take paths resolve against it
+let voices = [];
+let modes = [];
+let mode = '';
+let current = null; // the voice the player belongs to
+let loaded = ''; // the address of the take the player holds, or '' when it holds none
+let pendingSeek = null; // where the next take resumes once its metadata is in
+let ticket = 0; // numbers each load, so a slow load that a newer click replaced is dropped
+let now = null;
+const fetched = new Map(); // take address to the object URL of its fetched audio
+
+/** An element with attributes and children. Strings become text nodes, so nothing from the data is parsed as HTML. */
+function h(tag, attrs, ...children) {
+  const node = document.createElement(tag);
+  for (const [name, value] of Object.entries(attrs ?? {})) {
+    if (value === undefined || value === null || value === false) continue;
+    if (name === 'class') node.className = value;
+    else node.setAttribute(name, String(value));
+  }
+  for (const child of children.flat(Infinity)) {
+    if (child === undefined || child === null || child === false || child === '') continue;
+    node.append(child instanceof Node ? child : String(child));
+  }
+  return node;
+}
+const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+const num = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
+const text = (value) => (value === undefined || value === null ? '' : String(value));
+const list = (value) => (Array.isArray(value) ? value : value === undefined || value === null || value === '' ? [] : [value]);
+const slug = (value) => text(value).trim().replace(/[^A-Za-z0-9_-]+/g, '-') || 'x';
+
+function icon(path) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  const shape = document.createElementNS(svg.namespaceURI, 'path');
+  shape.setAttribute('d', path);
+  svg.append(shape);
+  return svg;
+}
+
+function showStatus(message, isError) {
+  main.replaceChildren(h('p', { class: isError ? 'status error' : 'status', role: isError ? 'alert' : undefined }, message));
+}
+
+/** A link from the data, resolved against the JSON file. Only http and https links are kept. */
+function link(item) {
+  if (!isObject(item) || typeof item.href !== 'string') return null;
+  try {
+    const url = new URL(item.href, base);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+    return h('a', { href: url.href }, text(item.label) || item.href);
+  } catch {
+    return null;
+  }
+}
+
+function row(voice) {
+  voice.button = h('button', { type: 'button', class: 'play', 'aria-label': 'Play ' + voice.name }, icon(PLAY));
+  voice.button.addEventListener('click', () => toggle(voice));
+  voice.fill = h('i');
+  const stats = [
+    voice.pace !== null ? 'Pace ' + voice.pace.toFixed(2) + ' words/s' : '',
+    voice.steadiness !== null ? 'Steadiness ' + voice.steadiness.toFixed(2) + '%' : '',
+  ].filter(Boolean).join(' · ');
+  voice.row = h('div', { class: 'row', id: 'voice-' + slug(voice.n) },
+    voice.button,
+    h('div', { class: 'meta' },
+      h('div', { class: 'name' },
+        h('span', { class: 'num' }, text(voice.n)),
+        h('b', {}, voice.name),
+        voice.pick ? h('span', { class: 'tag pick' }, voice.pick) : null,
+        voice.current ? h('span', { class: 'tag' }, 'Current') : null),
+      voice.description ? h('p', { class: 'desc' }, voice.description) : null,
+      stats ? h('p', { class: 'stats' }, stats) : null),
+    h('div', { class: 'track', 'aria-hidden': 'true' }, voice.fill));
+  return voice.row;
+}
+
+function render(data, dataUrl) {
+  if (!isObject(data) || !Array.isArray(data.voices)) throw new Error('it has no voices array');
+  base = dataUrl;
+  voices = data.voices.filter(isObject).map((voice, i) => ({
+    n: voice.n ?? i + 1,
+    name: text(voice.name) || 'Voice ' + (i + 1),
+    group: text(voice.group),
+    description: text(voice.description),
+    pace: num(voice.pace),
+    steadiness: num(voice.steadiness),
+    pick: text(voice.pick),
+    current: voice.current === true,
+    takes: isObject(voice.takes) ? voice.takes : {},
+  }));
+  if (voices.length === 0) throw new Error('its voices array is empty');
+
+  const declared = list(data.modes).filter((m) => isObject(m) && text(m.id));
+  modes = declared.length
+    ? declared.map((m) => ({ id: text(m.id), label: text(m.label) || text(m.id) }))
+    : Object.keys(voices[0].takes).map((id) => ({ id, label: id }));
+  mode = modes[0]?.id ?? '';
+
+  // The listed groups in their order, then any group a voice names that is not listed.
+  const labels = new Map();
+  for (const group of list(data.groups).filter((g) => isObject(g) && g.id !== undefined)) {
+    const id = text(group.id);
+    if (!labels.has(id)) labels.set(id, text(group.label) || id);
+  }
+  for (const voice of voices) {
+    if (!labels.has(voice.group)) labels.set(voice.group, voice.group);
+  }
+  const order = [...labels.keys()];
+
+  const title = text(data.title) || 'Narrator auditions';
+  document.title = title;
+  const links = list(data.links).map(link).filter(Boolean);
+  const sample = list(data.sample);
+  const header = h('header', {},
+    h('h1', {}, title),
+    list(data.intro).map((paragraph) => h('p', { class: 'intro' }, text(paragraph))),
+    links.length ? h('p', { class: 'links' }, links) : null,
+    sample.length ? h('div', { class: 'sample' }, h('h2', {}, 'What each voice reads'), sample.map((paragraph) => h('p', {}, text(paragraph)))) : null);
+
+  now = h('p', { class: 'now', id: 'now', 'aria-live': 'polite' }, 'Press play on any voice.');
+  const toggleGroup = modes.length > 1
+    ? h('div', { class: 'toggle', role: 'group', 'aria-label': 'What to play' }, modes.map((m) => {
+        const button = h('button', { type: 'button', 'data-mode': m.id, 'aria-pressed': String(m.id === mode) }, m.label);
+        button.addEventListener('click', () => setMode(m.id));
+        return button;
+      }))
+    : null;
+
+  const groups = order.map((group) => {
+    const members = voices.filter((voice) => voice.group === group);
+    if (members.length === 0) return null;
+    return h('section', { class: 'voices' }, group ? h('h2', { class: 'group' }, labels.get(group)) : null, h('div', { class: 'list' }, members.map(row)));
+  });
+  const notes = list(data.notes);
+  main.replaceChildren(...[
+    header,
+    h('div', { class: 'bar' }, toggleGroup, now),
+    ...groups,
+    notes.length ? h('footer', {}, notes.map((paragraph) => h('p', {}, text(paragraph)))) : null,
+  ].filter(Boolean));
+}
+
+/** The path of the voice's take in the selected mode, as the JSON gives it. */
+const takePath = (voice) => (Object.hasOwn(voice.takes, mode) ? text(voice.takes[mode]) : '');
+
+/** The address of the voice's take in the selected mode, or null when it has none. */
+function takeUrl(voice) {
+  const path = takePath(voice);
+  if (!path) return null;
+  try {
+    return new URL(path, base).href;
+  } catch {
+    return null;
+  }
+}
+const who = (voice) => h('strong', {}, text(voice.n) + '. ' + voice.name);
+const modeLabel = () => modes.find((m) => m.id === mode)?.label ?? mode;
+const say = (...parts) => now.replaceChildren(...parts);
+
+function setIcons() {
+  for (const voice of voices) {
+    const held = voice === current && loaded !== '' && !player.error;
+    const on = held && !player.paused;
+    voice.button.replaceChildren(icon(on ? PAUSE : PLAY));
+    voice.button.setAttribute('aria-label', (on ? 'Pause ' : 'Play ') + voice.name);
+    voice.row.classList.toggle('playing', held);
+  }
+}
+
+function blocked(error) {
+  // An AbortError means a newer take replaced this one, and an undecodable
+  // file reports through the error event. Only a refusal is shown here.
+  if (error && error.name === 'NotAllowedError') say('The browser blocked playback. Press play again.');
+}
+
+/**
+ * The take's audio as an object URL. The page fetches each take whole because
+ * a Blob is seekable on any static server, and a server that answers no Range
+ * requests (python3 -m http.server is one) leaves a file unseekable, so a mode
+ * switch could not resume the other take at the same time.
+ */
+async function fetchTake(url) {
+  if (fetched.has(url)) return fetched.get(url);
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) throw new Error('the server answered ' + response.status);
+  const objectUrl = URL.createObjectURL(await response.blob());
+  fetched.set(url, objectUrl);
+  return objectUrl;
+}
+
+/** Stops and empties the player without a message. */
+function empty() {
+  loaded = '';
+  pendingSeek = null;
+  if (player.hasAttribute('src')) {
+    player.removeAttribute('src');
+    player.load();
+  }
+}
+
+/**
+ * Puts the voice's take for the selected mode in the player at `at` seconds,
+ * and plays it when `play` is true. A take fetched before plays within the
+ * click, which browsers that need a gesture for sound require.
+ */
+async function loadTake(voice, at, play) {
+  const mine = ++ticket;
+  if (current && current !== voice) current.fill.style.width = '0';
+  current = voice;
+  empty();
+  const url = takeUrl(voice);
+  if (!url) {
+    say(who(voice), ' has no take in this mode.');
+    setIcons();
+    return;
+  }
+  let objectUrl = fetched.get(url);
+  if (!objectUrl) {
+    say('Loading ', who(voice), '.');
+    setIcons();
+    try {
+      objectUrl = await fetchTake(url);
+    } catch (error) {
+      if (mine !== ticket) return;
+      voice.fill.style.width = '0';
+      say('Could not play ', who(voice), ': ' + takePath(voice) + ' did not load (' + (error instanceof Error ? error.message : String(error)) + ').');
+      setIcons();
+      return;
+    }
+    if (mine !== ticket) return;
+  }
+  loaded = url;
+  pendingSeek = at > 0 ? at : null;
+  player.src = objectUrl;
+  if (play) player.play().catch(blocked);
+  setIcons();
+}
+
+function toggle(voice) {
+  if (voice === current && loaded !== '' && !player.error) {
+    if (player.paused) player.play().catch(blocked);
+    else player.pause();
+    return;
+  }
+  loadTake(voice, 0, true);
+}
+
+function setMode(id) {
+  if (id === mode) return;
+  mode = id;
+  for (const button of main.querySelectorAll('.toggle button')) button.setAttribute('aria-pressed', String(button.dataset.mode === id));
+  if (!current || loaded === '' || player.error) return;
+  // The same voice's other take, at the same time, playing if this one was.
+  loadTake(current, player.ended ? 0 : player.currentTime, !player.paused);
+}
+
+player.addEventListener('play', () => {
+  if (current) say('Playing ', who(current), ' · ' + modeLabel());
+  setIcons();
+});
+player.addEventListener('pause', () => {
+  if (current && loaded !== '' && !player.error && !player.ended) say('Paused ', who(current));
+  setIcons();
+});
+player.addEventListener('ended', () => {
+  if (current) say('Finished ', who(current));
+  setIcons();
+});
+player.addEventListener('timeupdate', () => {
+  if (current && loaded !== '' && player.duration) current.fill.style.width = (100 * player.currentTime) / player.duration + '%';
+});
+player.addEventListener('loadedmetadata', () => {
+  if (pendingSeek === null) return;
+  player.currentTime = Math.min(pendingSeek, player.duration || pendingSeek);
+  pendingSeek = null;
+});
+player.addEventListener('error', () => {
+  if (!current || loaded === '') return;
+  say('Could not play ', who(current), ': ' + takePath(current) + ' cannot be decoded.');
+  current.fill.style.width = '0';
+  pendingSeek = null;
+  setIcons();
+});
+
+async function loadData() {
+  if (location.protocol === 'file:') {
+    showStatus('This page reads its data with fetch, which browsers refuse on file:// pages. Serve the motion folder with a static server and open the page through it, as README.md describes.', true);
+    return;
+  }
+  showStatus('Loading ' + DATA + '.');
+  try {
+    const url = new URL(DATA, location.href);
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) throw new Error('the server answered ' + response.status);
+    render(await response.json(), url.href);
+  } catch (error) {
+    showStatus('Could not show ' + DATA + ': ' + (error instanceof Error ? error.message : String(error)) + '.', true);
+  }
+}
+loadData();
+</script>
+</body>
+</html>

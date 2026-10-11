@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Script review</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+/*
+ * Script review: one reading column. Each film is a section with a to-scale
+ * timeline of its lines, then the lines as rows of number, start time, voice,
+ * words, subtitle and on-screen note. Every word on the page comes from the
+ * JSON file that ?data= names; README.md has its shape.
+ *
+ * Type is the kit's Inter through var(--font) from ../tokens.css, and the
+ * system sans when the kit is not there. The colors read the kit's tokens,
+ * with the same values as fallbacks.
+ */
+:root {
+  --ground: var(--paper, #ffffff);
+  --text: var(--ink, #070707);
+  --muted: var(--on-paper-body, rgba(7, 7, 7, 0.63));
+  --hair: var(--on-paper-hair, rgba(7, 7, 7, 0.11));
+  --raised: rgba(7, 7, 7, 0.04);
+  --blue: var(--accent, #2f5ce0);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ground: var(--ink, #070707);
+    --text: var(--ink-text, #f2f2f0);
+    --muted: var(--on-ink-body, rgba(242, 242, 240, 0.63));
+    --hair: var(--on-ink-hair, rgba(242, 242, 240, 0.11));
+    --raised: var(--on-ink-hair-soft, rgba(242, 242, 240, 0.06));
+    --blue: var(--accent-lift, #86a8ff);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --ground: var(--ink, #070707);
+  --text: var(--ink-text, #f2f2f0);
+  --muted: var(--on-ink-body, rgba(242, 242, 240, 0.63));
+  --hair: var(--on-ink-hair, rgba(242, 242, 240, 0.11));
+  --raised: var(--on-ink-hair-soft, rgba(242, 242, 240, 0.06));
+  --blue: var(--accent-lift, #86a8ff);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--ground); }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--font, system-ui, sans-serif);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+}
+b, strong { font-weight: 500; }
+a { color: var(--text); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 40px 16px 80px; }
+h1 { font-size: 28px; line-height: 1.2; font-weight: 500; letter-spacing: -0.01em; margin: 0 0 12px; text-wrap: balance; }
+.intro { margin: 0 0 8px; max-width: 64ch; color: var(--muted); }
+.links { margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+nav.films { position: sticky; top: 0; z-index: 2; background: var(--ground); border-bottom: 1px solid var(--hair); margin-top: 28px; display: flex; flex-wrap: wrap; gap: 4px 20px; padding: 10px 0; }
+nav.films a { text-decoration: none; font-weight: 500; font-variant-numeric: tabular-nums; }
+nav.films a span { color: var(--muted); font-weight: 400; margin-left: 6px; }
+nav.films a:hover { text-decoration: underline; }
+section.film { padding-top: 48px; scroll-margin-top: 48px; }
+h2 { font-size: 22px; line-height: 1.25; font-weight: 500; margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+h2 .native { color: var(--muted); font-weight: 400; }
+.meta { color: var(--muted); margin: 6px 0 0; font-variant-numeric: tabular-nums; }
+.story { margin: 16px 0 0; max-width: 64ch; }
+.tl { position: relative; height: 22px; margin-top: 44px; border-bottom: 1px solid var(--hair); }
+.seg { position: absolute; bottom: 0; display: block; height: 12px; min-width: 2px; background: var(--muted); }
+.seg.reader { background: var(--blue); }
+.seg.silent { height: 10px; background: transparent; border: 1px dashed var(--muted); border-bottom: 0; }
+.seg b { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.seg:hover b, .seg:focus-visible b { color: var(--text); }
+.axis { position: relative; height: 20px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.axis span { position: absolute; top: 4px; transform: translateX(-50%); white-space: nowrap; }
+.axis span.first { transform: none; }
+.axis span.last { transform: translateX(-100%); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.legend i { display: inline-block; width: 14px; height: 8px; margin-right: 6px; background: var(--muted); }
+.legend i.reader { background: var(--blue); }
+.legend i.silent { background: transparent; border: 1px dashed var(--muted); }
+.shape { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 18px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+.shape strong { color: var(--text); }
+ol.lines { list-style: none; margin: 24px 0 0; padding: 0; }
+ol.lines > li { position: relative; isolation: isolate; display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 4px 16px; padding: 16px 0; border-top: 1px solid var(--hair); scroll-margin-top: 56px; }
+/* The marked line's tint runs 12px past the column on each side, inside the page gutter. */
+ol.lines > li.is-target::before { content: ''; position: absolute; inset: 0 -12px; z-index: -1; background: var(--raised); }
+ol.lines > li.is-target .num { color: var(--blue); }
+.when { display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.when .num { color: var(--text); font-size: 15px; font-weight: 500; }
+.when .who { font-size: 12px; }
+.when .who.reader { color: var(--blue); }
+.body { min-width: 0; }
+.said { margin: 0; font-size: 18px; line-height: 1.5; font-weight: 500; }
+.said.native { font-size: 22px; }
+.said.silent { font-size: 16px; font-weight: 400; color: var(--muted); }
+.sub { margin: 4px 0 0; font-size: 14px; }
+.sub span { color: var(--muted); }
+.screen { margin: 6px 0 0; max-width: 66ch; font-size: 14px; color: var(--muted); }
+h3 { font-size: 15px; font-weight: 500; margin: 32px 0 8px; }
+ul.notes { margin: 0; padding-left: 20px; max-width: 66ch; }
+ul.notes li { margin: 4px 0; }
+.callout { margin-top: 28px; padding: 16px 20px; border: 1px solid var(--hair); background: var(--raised); }
+.callout h3 { margin-top: 0; }
+.status { margin: 32px 0 0; max-width: 64ch; color: var(--muted); }
+.status.error { color: var(--text); padding-left: 12px; border-left: 2px solid var(--blue); }
+@media (max-width: 560px) {
+  h1 { font-size: 24px; }
+  ol.lines > li { grid-template-columns: minmax(0, 1fr); }
+  .when { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+  .said { font-size: 17px; }
+  .said.native { font-size: 20px; }
+  .seg b { font-size: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main id="main">
+    <p class="status">Loading the script data.</p>
+  </main>
+</div>
+<script type="module">
+// The voice codes of a film's script.json, as kit/script-export.py reads them.
+const VOICE_DEFAULTS = {
+  N: { label: 'Narrator', kind: 'narrator' },
+  R: { label: 'Reader', kind: 'reader' },
+  X: { label: 'No voice', kind: 'silent' },
+};
+const KINDS = ['narrator', 'reader', 'silent'];
+
+const params = new URLSearchParams(location.search);
+const theme = params.get('theme');
+if (theme === 'dark' || theme === 'light') document.documentElement.dataset.theme = theme;
+const DATA = params.get('data') || 'sample-script-review.json';
+const main = document.getElementById('main');
+
+/** An element with attributes and children. Strings become text nodes, so nothing from the data is parsed as HTML. */
+function h(tag, attrs, ...children) {
+  const node = document.createElement(tag);
+  for (const [name, value] of Object.entries(attrs ?? {})) {
+    if (value === undefined || value === null || value === false) continue;
+    if (name === 'class') node.className = value;
+    else node.setAttribute(name, String(value));
+  }
+  for (const child of children.flat(Infinity)) {
+    if (child === undefined || child === null || child === false || child === '') continue;
+    node.append(child instanceof Node ? child : String(child));
+  }
+  return node;
+}
+const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+/** The object stored under `key`, or an empty object. */
+const entry = (object, key) => (isObject(object) && Object.hasOwn(object, key) && isObject(object[key]) ? object[key] : {});
+const num = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
+const text = (value) => (value === undefined || value === null ? '' : String(value));
+const list = (value) => (Array.isArray(value) ? value : value === undefined || value === null || value === '' ? [] : [value]);
+const slug = (value) => text(value).trim().replace(/[^A-Za-z0-9_-]+/g, '-') || 'x';
+const fmt = (seconds) => seconds.toFixed(1) + ' s';
+
+function showStatus(message, isError) {
+  main.replaceChildren(h('p', { class: isError ? 'status error' : 'status', role: isError ? 'alert' : undefined }, message));
+}
+
+/** A link from the data, resolved against the JSON file. Only http and https links are kept. */
+function link(item, base) {
+  if (!isObject(item) || typeof item.href !== 'string') return null;
+  try {
+    const url = new URL(item.href, base);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+    return h('a', { href: url.href }, text(item.label) || item.href);
+  } catch {
+    return null;
+  }
+}
+
+/** The step between axis labels: the smallest that leaves at most eight steps. */
+function tickStep(length) {
+  return [1, 2, 5, 10, 15, 30, 60, 120, 300, 600].find((step) => length / step <= 8) ?? 1200;
+}
+
+function renderFilm(film, index, data, nav) {
+  const id = slug(film.id ?? 'film-' + (index + 1));
+  const title = text(film.title) || id;
+  const voiceOf = (code) => {
+    const voice = { ...entry(VOICE_DEFAULTS, code), ...entry(data.voices, code), ...entry(film.voices, code) };
+    const kind = KINDS.includes(voice.kind) ? voice.kind : 'narrator';
+    const lang = text(voice.lang) || (kind === 'reader' ? text(film.lang) : '');
+    return { label: text(voice.label) || text(code), kind, lang: lang || undefined };
+  };
+
+  const anchors = new Set();
+  const lines = list(film.lines).filter(isObject).map((line, i) => {
+    const n = line.n ?? i + 1;
+    let anchor = id + '-' + slug(n);
+    if (anchors.has(anchor)) anchor += '-' + (i + 1);
+    anchors.add(anchor);
+    return {
+      n,
+      anchor,
+      start: num(line.start ?? line.at),
+      end: num(line.end),
+      voice: voiceOf(text(line.who) || 'N'),
+      said: text(line.said),
+      sub: text(line.sub),
+      screen: text(line.screen),
+    };
+  });
+  const length = num(film.length) ?? Math.max(0, ...lines.map((line) => line.end ?? line.start ?? 0));
+
+  nav.append(h('a', { href: '#' + id }, title, h('span', {}, Math.round(length) + ' s')));
+
+  const section = h('section', { class: 'film', id });
+  section.append(
+    h('h2', {}, title, film.native ? h('span', { class: 'native', lang: text(film.lang) || undefined }, text(film.native)) : null),
+    h('p', { class: 'meta' }, film.meta ? text(film.meta) : fmt(length) + ', ' + lines.length + (lines.length === 1 ? ' line' : ' lines')),
+    ...list(film.story).map((paragraph) => h('p', { class: 'story' }, text(paragraph))),
+  );
+
+  if (length > 0) {
+    const timeline = h('div', { class: 'tl', role: 'group', 'aria-label': 'Timeline of ' + title + ', 0 to ' + fmt(length) });
+    for (const line of lines) {
+      if (line.start === null || line.end === null || line.end <= line.start) continue;
+      const start = Math.max(0, Math.min(line.start, length));
+      const end = Math.max(start, Math.min(line.end, length));
+      const name = (typeof line.n === 'number' ? 'Line ' + line.n : text(line.n)) + ', ' + fmt(line.start) + ' to ' + fmt(line.end);
+      const bar = h('a', { class: 'seg ' + line.voice.kind, href: '#' + line.anchor, title: name, 'aria-label': name },
+        typeof line.n === 'number' ? h('b', { 'aria-hidden': 'true' }, line.n) : null);
+      bar.style.left = (start / length) * 100 + '%';
+      bar.style.width = ((end - start) / length) * 100 + '%';
+      timeline.append(bar);
+    }
+    const axis = h('div', { class: 'axis', 'aria-hidden': 'true' });
+    const step = tickStep(length);
+    for (let k = 0; k * step <= length + 1e-9; k++) {
+      const where = (k * step) / length;
+      const tick = h('span', { class: k === 0 ? 'first' : where > 0.97 ? 'last' : undefined }, k * step + ' s');
+      tick.style.left = where * 100 + '%';
+      axis.append(tick);
+    }
+    const voicesUsed = new Map();
+    for (const line of lines) if (!voicesUsed.has(line.voice.label)) voicesUsed.set(line.voice.label, line.voice.kind);
+    const legend = h('div', { class: 'legend' }, [...voicesUsed].map(([label, kind]) => h('span', {}, h('i', { class: kind }), label)));
+    section.append(timeline, axis, legend);
+  }
+
+  const shape = list(film.shape).filter(isObject);
+  if (shape.length) section.append(h('ul', { class: 'shape', 'aria-label': 'Shape' }, shape.map((beat) => h('li', {}, h('strong', {}, text(beat.beat)), ' ', text(beat.lines)))));
+
+  section.append(h('ol', { class: 'lines' }, lines.map((line) => {
+    const silent = line.voice.kind === 'silent' || !line.said;
+    const said = silent
+      ? h('p', { class: 'said silent' }, line.said || line.voice.label)
+      : h('p', { class: line.voice.lang ? 'said native' : 'said', lang: line.voice.lang, dir: line.voice.lang ? 'auto' : undefined }, line.said);
+    return h('li', { id: line.anchor },
+      h('div', { class: 'when' },
+        h('span', { class: 'num' }, text(line.n)),
+        line.start !== null ? h('span', {}, fmt(line.start)) : null,
+        h('span', { class: 'who ' + line.voice.kind }, line.voice.label)),
+      h('div', { class: 'body' },
+        said,
+        line.sub ? h('p', { class: 'sub' }, h('span', {}, 'Subtitle: '), line.sub) : null,
+        line.screen ? h('p', { class: 'screen' }, line.screen) : null));
+  })));
+
+  for (const note of list(film.notes).filter(isObject)) {
+    const block = [h('h3', {}, text(note.heading) || 'Notes'), h('ul', { class: 'notes' }, list(note.items).map((item) => h('li', {}, text(item))))];
+    section.append(h('div', { class: note.callout === true ? 'callout' : 'note' }, block));
+  }
+  return section;
+}
+
+function render(data, base) {
+  if (!isObject(data) || !Array.isArray(data.films)) throw new Error('it has no films array');
+  const films = data.films.filter(isObject);
+  if (films.length === 0) throw new Error('its films array is empty');
+  const title = text(data.title) || 'Script review';
+  document.title = title;
+  const links = list(data.links).map((item) => link(item, base)).filter(Boolean);
+  const header = h('header', {},
+    h('h1', {}, title),
+    list(data.intro).map((paragraph) => h('p', { class: 'intro' }, text(paragraph))),
+    links.length ? h('p', { class: 'links' }, links) : null);
+  const nav = h('nav', { class: 'films', 'aria-label': 'Films' });
+  const sections = films.map((film, i) => renderFilm(film, i, data, nav));
+  main.replaceChildren(header, nav, ...sections);
+}
+
+/** Marks the line the address points at. Rows arrive after the first navigation, so the first call also scrolls. */
+function markTarget(scroll) {
+  for (const node of main.querySelectorAll('.is-target')) node.classList.remove('is-target');
+  let id = '';
+  try {
+    id = decodeURIComponent(location.hash.slice(1));
+  } catch {
+    return;
+  }
+  const node = id ? document.getElementById(id) : null;
+  if (!node) return;
+  if (node.matches('ol.lines > li')) node.classList.add('is-target');
+  if (scroll) node.scrollIntoView();
+}
+window.addEventListener('hashchange', () => markTarget(false));
+
+async function load() {
+  if (location.protocol === 'file:') {
+    showStatus('This page reads its data with fetch, which browsers refuse on file:// pages. Serve the motion folder with a static server and open the page through it, as README.md describes.', true);
+    return;
+  }
+  showStatus('Loading ' + DATA + '.');
+  try {
+    const url = new URL(DATA, location.href);
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) throw new Error('the server answered ' + response.status);
+    render(await response.json(), url.href);
+    markTarget(true);
+  } catch (error) {
+    showStatus('Could not show ' + DATA + ': ' + (error instanceof Error ? error.message : String(error)) + '.', true);
+  }
+}
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Jihe yuanben</title>
+    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="stylesheet" href="lib/page.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="lib/page.js"></script>
+    <script src="lib/data.js"></script>
+    <script src="lib/cues.js"></script>
+    <script src="lib/liuhui.js"></script>
+    <script src="lib/stems.js"></script>
+    <script src="lib/end.js"></script>
+    <script src="lib/film.js"></script>
+    <style>
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #0b0907;
+      }
+      #f {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+      }
+      /* Every plane composites as one flat sheet, so the marks multiply into
+         the scan and the paper pieces stack in document order. */
+      .jy-plane {
+        transform-style: flat;
+      }
+      .jy-cite > span {
+        opacity: 0;
+      }
+      .jy-cite .credits-block {
+        display: block;
+        max-width: 1680px;
+        line-height: 1.3;
+      }
+      .jy-cite .credits-block > span {
+        display: block;
+        white-space: nowrap;
+      }
+      .sub-line {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        width: 1480px;
+        line-height: 44px;
+        opacity: 0;
+        text-wrap: balance;
+      }
+      .jy-end {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 816px;
+        transform-origin: 960px 408px;
+      }
+      .jy-end-title {
+        position: absolute;
+        left: 886px;
+        top: 94px;
+        writing-mode: vertical-rl;
+        font-family: var(--jy-han);
+        font-weight: 600;
+        font-size: 148px;
+        line-height: 1;
+        letter-spacing: 0.06em;
+        color: #ece2cd;
+      }
+      .jy-end-title span {
+        display: inline-block;
+      }
+      .jy-end-stop {
+        position: absolute;
+        left: 982px;
+        top: 646px;
+        width: 120px;
+        height: 120px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="74.85">
+      <div id="f" class="clip" data-start="0" data-duration="74.85" data-track-index="1" data-layout-allow-overflow></div>
+      <!-- mix: written by tools/mix.py. The narrator (track 2) and the Mandarin reader (track 3), one clip per take at
+           its .json timing; the bed (music ducked under every line, room tone, brush and paper) as one stem. -->
+      <audio id="vo-en01" src="audio/master/en01.wav" data-start="0.570" data-duration="2.910" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en02" src="audio/master/en02.wav" data-start="3.580" data-duration="2.575" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en03" src="audio/master/en03.wav" data-start="6.365" data-duration="4.590" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en04" src="audio/master/en04.wav" data-start="11.105" data-duration="1.730" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-zh2" src="audio/master/zh2.wav" data-start="13.030" data-duration="1.715" data-track-index="3" data-volume="1"></audio>
+      <audio id="vo-zh3" src="audio/master/zh3.wav" data-start="15.030" data-duration="2.195" data-track-index="3" data-volume="1"></audio>
+      <audio id="vo-en07" src="audio/master/en07.wav" data-start="18.011" data-duration="6.080" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en08" src="audio/master/en08.wav" data-start="24.191" data-duration="3.390" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en09" src="audio/master/en09.wav" data-start="28.311" data-duration="6.730" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en10" src="audio/master/en10.wav" data-start="36.432" data-duration="4.200" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en11" src="audio/master/en11.wav" data-start="41.199" data-duration="6.620" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en12" src="audio/master/en12.wav" data-start="48.049" data-duration="6.050" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-zh6" src="audio/master/zh6.wav" data-start="54.274" data-duration="1.735" data-track-index="3" data-volume="1"></audio>
+      <audio id="vo-en14" src="audio/master/en14.wav" data-start="57.186" data-duration="3.795" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en15" src="audio/master/en15.wav" data-start="61.111" data-duration="2.410" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en16" src="audio/master/en16.wav" data-start="63.636" data-duration="6.000" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-en17" src="audio/master/en17.wav" data-start="69.911" data-duration="2.700" data-track-index="2" data-volume="1"></audio>
+      <audio id="bed" src="audio/bed.wav" data-start="0" data-duration="74.85" data-track-index="4" data-volume="1"></audio>
+      <!-- /mix -->
+    </div>
+    <script>
+      /*
+       * Jihe yuanben 幾何原本: two old books read aloud and marked by hand (v2, SCRIPT-v2.md).
+       * The picture and its timing are built by lib/film.js (with lib/liuhui.js,
+       * lib/stems.js and lib/end.js) from lib/cues.js, which tools/timeline.py
+       * writes from the takes. One paused timeline, registered here.
+       */
+      window.__timelines = window.__timelines || {};
+      const film = window.JYBuildFilm();
+      film.render(0);
+      window.__timelines['main'] = film.tl;
+    </script>
+  </body>
+</html>

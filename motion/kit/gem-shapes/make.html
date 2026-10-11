@@ -1,0 +1,28 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>gem shapes</title>
+<script type="module">
+  // Runs Paper's own pre-processing (an edge gradient in R, alpha in G) on a
+  // mark so the gem smoke can wrap it; make.mjs drives this page and saves
+  // the PNGs. The marks are drawn padded inside a square so the smoke has
+  // room around them.
+  import { toProcessedGemSmoke } from '../paper-shaders/index.js';
+  async function padded(src, pad) {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+    const W = 1024, H = 1024;
+    const c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d');
+    const s = Math.min((W * (1 - 2 * pad)) / img.naturalWidth, (H * (1 - 2 * pad)) / img.naturalHeight);
+    const w = img.naturalWidth * s, h = img.naturalHeight * s;
+    x.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+    return c.toDataURL('image/png');
+  }
+  window.processShape = async (src, pad) => {
+    const prepared = await padded(src, pad);
+    const { pngBlob } = await toProcessedGemSmoke(prepared);
+    const buf = new Uint8Array(await pngBlob.arrayBuffer());
+    let s = ''; for (let i = 0; i < buf.length; i++) s += String.fromCharCode(buf[i]);
+    return btoa(s);
+  };
+  window.__ready = true;
+</script>

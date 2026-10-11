@@ -1,0 +1,2823 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Fuma Nama: The philosophy of an open-sourcerer</title>
+    <link rel="stylesheet" href="kit/tokens.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="kit/dither.js"></script>
+    <script type="module" src="kit/gemsmoke.js"></script>
+    <script type="module" src="kit/endcard/endcard.js"></script>
+    <style>
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000000;
+      }
+      .layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        display: block;
+      }
+      canvas.cells {
+        image-rendering: pixelated;
+      }
+      .gemhost {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+      }
+      /* the headings: one size (160 px), one line, the ink seated on x 160, the cap top on y 172 */
+      .h {
+        position: absolute;
+        left: 160px;
+        top: 148.6px;
+        margin: 0;
+        color: #ffffff;
+        font-family: var(--font);
+        font-size: 160px;
+        font-weight: 500;
+        letter-spacing: -0.035em;
+        line-height: 1.02;
+        white-space: nowrap;
+        font-feature-settings: 'ss01' 0, 'cv11' 1;
+      }
+      /* each spoken word (or phrase) rises out of its own mask */
+      .h .wm {
+        display: inline-block;
+        vertical-align: top;
+        overflow: hidden;
+        padding-bottom: 0.14em;
+        margin-bottom: -0.14em;
+      }
+      .h .wm > span {
+        display: inline-block;
+      }
+      .h .fire {
+        color: #fe5b16;
+      }
+      .gl {
+        position: absolute;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        font-weight: 500;
+        opacity: 0;
+      }
+      .count {
+        position: absolute;
+        margin: 0;
+        overflow: hidden;
+        padding: 0 0.05em 0.08em;
+        color: #ffffff;
+        font-family: var(--font);
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+      .count .cin {
+        display: block;
+      }
+      .count .star {
+        display: inline-block;
+        vertical-align: baseline;
+        margin-right: 0.24em;
+      }
+      #shapes {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="59.5" data-width="1920" data-height="1080">
+      <!-- the shape images, the adopters' marks and the docs page's nav moon (kept in the DOM so the renderer waits for them) -->
+      <div id="shapes">
+        <img id="img-moon" src="kit/gem-shapes/fumadocs-moon.png" alt="" />
+        <img id="img-gt" src="kit/gem-shapes/gt-mark.png" alt="" />
+        <img id="img-fdlogo" src="kit/logos/fumadocs.png" alt="" />
+        <img id="logo-turborepo" src="assets/logos/turborepo.svg" alt="" />
+        <img id="logo-shadcn-ui" src="assets/logos/shadcn-ui.svg" alt="" />
+        <img id="logo-better-auth" src="assets/logos/better-auth.svg" alt="" />
+        <img id="logo-unkey" src="assets/logos/unkey.svg" alt="" />
+        <img id="logo-orama" src="assets/logos/orama.svg" alt="" />
+        <img id="logo-gt" src="assets/logos/gt-mark.svg" alt="" />
+      </div>
+
+      <!-- gem smoke: mount A (free fire smoke, hidden: the field, the heap's light and the file's light), mount C (shot
+           7's GT mark, full frame, the end card's own geometry so the card's first frame holds it) and mount B (the moon,
+           full frame: shot 1's shelf moon, the 762 px moon of shots 4, 6 and 7 and its move into the grant). B lies over
+           C: each draws an opaque black ground, and B is clipped to its circle, so in shot 7 C's ground never covers it -->
+      <div id="gem-a" class="gemhost" style="visibility: hidden"></div>
+      <div id="gem-c" class="gemhost" style="visibility: hidden" data-layout-allow-overflow></div>
+      <div id="gem-b" class="gemhost" style="visibility: hidden" data-layout-allow-overflow></div>
+
+      <!-- the field: mount A's fire smoke printed through the Bayer screen in black, ember and fire on the film's
+           one 3 px cell grid, behind every scene from the first frame to the end card. Its black cells are
+           transparent; it is cleared around every object and heading, and changes only by mixing tone on its grid -->
+      <canvas id="field" class="layer cells" width="1920" height="1080" data-layout-allow-overflow></canvas>
+
+      <!-- shots 2 and 3: the heap of code glyphs, and the file the heap's glyphs build -->
+      <canvas id="heap" class="layer" width="1920" height="1080" data-layout-allow-overflow></canvas>
+      <!-- the Bayer prints on the one 3 px cell grid: the two moving-type transitions, shot 1's moon, shots 4 and 6's moon -->
+      <canvas id="print" class="layer cells" width="1920" height="1080" data-layout-allow-overflow></canvas>
+      <!-- shots 3 and 5: the docs page, its seams, the code panel and the table of contents' journey -->
+      <canvas id="page" class="layer" width="1920" height="1080" data-layout-allow-overflow></canvas>
+      <!-- shots 1, 4, 6 and 7: the shelves, the adopters' marks, the seams, crosses, outlines and connectors -->
+      <canvas id="ink" class="layer" width="1920" height="1080" data-layout-allow-overflow></canvas>
+      <!-- shot 6: the glyph moon, one text node per glyph -->
+      <div id="glyphs" class="layer clip" data-start="46.3" data-duration="4.6" data-track-index="3" data-layout-allow-overflow data-layout-ignore></div>
+
+      <!-- the four headings (DESIGN-v4.md, the heading system): each is made of words Frederick says in its line, and
+           each word rises out of its own mask as he says it. The left edge is seated at boot so the ink starts at x 160.
+           data-cap is the cap top (y) the field's zones paint the heading's ink at -->
+      <h1 id="h-one" class="h clip" data-start="0" data-duration="3.34" data-track-index="5" data-cap="172"><span class="wm"><span class="fire">One</span></span> <span class="wm"><span>developer</span></span></h1>
+      <h1 id="h-fuma" class="h clip" data-start="16" data-duration="4.46" data-track-index="6" data-cap="172"><span class="wm"><span>Fuma</span></span> <span class="wm"><span>Nama</span></span></h1>
+      <h1 id="h-fd" class="h clip" data-start="31.4" data-duration="3.2" data-track-index="5" data-cap="172"><span class="wm"><span>Fumadocs</span></span></h1>
+      <h1 id="h-into" class="h clip" data-start="40.5" data-duration="4" data-track-index="6" data-cap="172"><span class="wm"><span>Into</span></span> <span class="wm"><span>your codebase</span></span></h1>
+
+      <!-- shot 1: the star counts, GitHub's rounding, built at boot -->
+      <div id="counts" class="layer clip" data-start="0" data-duration="19.5" data-track-index="4"></div>
+
+      <!-- the sound: the narrator (Frederick Surrey, ElevenLabs) on one bus, and the round 5 music bed ducked under him and carved against the bus -->
+      <!-- mix: generated by lib/make-mix.mjs; do not edit by hand -->
+      <hf-audio-group id="voiceover" data-label="Narrator" data-volume="1" data-fx-chain="{&quot;version&quot;:1,&quot;nodes&quot;:[{&quot;type&quot;:&quot;gain&quot;,&quot;id&quot;:&quot;v1&quot;,&quot;label&quot;:&quot;Narrator Level&quot;,&quot;params&quot;:{&quot;gain&quot;:0}}]}"></hf-audio-group>
+      <!-- line 1: One developer created Fumadocs, a docs framework with over 13,000 stars on GitHub. (first sound 1.00, last word ends 6.12) -->
+      <audio id="vo-1" src="audio/vo-1.master.wav" data-start="0.98" data-duration="5.323" data-track-index="20" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:5.263,&quot;v&quot;:1},{&quot;t&quot;:5.323,&quot;v&quot;:0}]}]}"></audio>
+      <!-- line 2: Vercel Turborepo, shadcn/ui, Better Auth, Unkey and many others use it. (first sound 7.95, last word ends 14.45) -->
+      <audio id="vo-2" src="audio/vo-2.master.wav" data-start="7.89" data-duration="6.74" data-track-index="21" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:6.68,&quot;v&quot;:1},{&quot;t&quot;:6.74,&quot;v&quot;:0}]}]}"></audio>
+      <!-- line 3: Fuma Nama has built it for three years, on top of his schoolwork. (first sound 16.33, last word ends 19.94) -->
+      <audio id="vo-3" src="audio/vo-3.master.wav" data-start="16.27" data-duration="3.849" data-track-index="20" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:3.789,&quot;v&quot;:1},{&quot;t&quot;:3.849,&quot;v&quot;:0}]}]}"></audio>
+      <!-- line 4: He learned to code by modding games and reading piles of JavaScript. (first sound 21.03, last word ends 24.75) -->
+      <audio id="vo-4" src="audio/vo-4.master.wav" data-start="20.91" data-duration="4.023" data-track-index="21" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:3.963,&quot;v&quot;:1},{&quot;t&quot;:4.023,&quot;v&quot;:0}]}]}"></audio>
+      <!-- line 5: He did not look at any documentation while he was learning. (first sound 26.34, last word ends 29.05) -->
+      <audio id="vo-5" src="audio/vo-5.master.wav" data-start="26.24" data-duration="2.99" data-track-index="20" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:2.93,&quot;v&quot;:1},{&quot;t&quot;:2.99,&quot;v&quot;:0}]}]}"></audio>
+      <!-- line 6: He designed Fumadocs in four layers that developers can take apart and reshape. (first sound 31.04, last word ends 35.62) -->
+      <audio id="vo-6" src="audio/vo-6.master.wav" data-start="30.94" data-duration="4.859" data-track-index="21" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:4.799,&quot;v&quot;:1},{&quot;t&quot;:4.859,&quot;v&quot;:0}]}]}"></audio>
+      <!-- line 7: The CLI can copy just the table of contents into your codebase. (first sound 37.66, last word ends 41.86) -->
+      <audio id="vo-7" src="audio/vo-7.master.wav" data-start="37.55" data-duration="4.487" data-track-index="20" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:4.427,&quot;v&quot;:1},{&quot;t&quot;:4.487,&quot;v&quot;:0}]}]}"></audio>
+      <!-- line 8: If he started again from scratch, he thinks Fumadocs would probably have the same shape. (first sound 44.63, last word ends 49.22) -->
+      <audio id="vo-8" src="audio/vo-8.master.wav" data-start="44.55" data-duration="4.847" data-track-index="21" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:4.787,&quot;v&quot;:1},{&quot;t&quot;:4.847,&quot;v&quot;:0}]}]}"></audio>
+      <!-- line 9: Fumadocs is General Translation’s first open-source grantee. (first sound 50.92, last word ends 54.42) -->
+      <audio id="vo-9" src="audio/vo-9.master.wav" data-start="50.86" data-duration="3.744" data-track-index="20" data-volume="1" data-audio-group="voiceover" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.02,&quot;v&quot;:1},{&quot;t&quot;:3.684,&quot;v&quot;:1},{&quot;t&quot;:3.744,&quot;v&quot;:0}]}]}"></audio>
+      <audio id="music-bed" src="audio/bed.master.wav" data-start="0" data-duration="59.5" data-track-index="10" data-volume="1" data-audio-group="music" data-fx-carve="{&quot;enabled&quot;:true,&quot;sources&quot;:[&quot;voiceover&quot;],&quot;strength&quot;:0.3}" data-fx-chain="{&quot;version&quot;:1,&quot;nodes&quot;:[{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n1&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:160,&quot;gain&quot;:-6.8,&quot;q&quot;:1.46}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n2&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:250,&quot;gain&quot;:-5.89,&quot;q&quot;:1.46}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;n3&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;frequency&quot;:2500,&quot;gain&quot;:-6.47,&quot;q&quot;:1.46}},{&quot;type&quot;:&quot;gain&quot;,&quot;id&quot;:&quot;n4&quot;,&quot;fromCarve&quot;:true,&quot;params&quot;:{&quot;gain&quot;:0}},{&quot;type&quot;:&quot;gain&quot;,&quot;id&quot;:&quot;b1&quot;,&quot;label&quot;:&quot;Bed Level&quot;,&quot;params&quot;:{&quot;gain&quot;:0.4}},{&quot;type&quot;:&quot;peaking&quot;,&quot;id&quot;:&quot;b2&quot;,&quot;label&quot;:&quot;Low-mid Dip&quot;,&quot;params&quot;:{&quot;frequency&quot;:260,&quot;gain&quot;:0,&quot;q&quot;:1.1}}]}" data-automation="{&quot;version&quot;:1,&quot;lanes&quot;:[{&quot;target&quot;:&quot;volume&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.1,&quot;v&quot;:0},{&quot;t&quot;:0.4,&quot;v&quot;:0.5129},{&quot;t&quot;:6.325,&quot;v&quot;:0.5146},{&quot;t&quot;:6.475,&quot;v&quot;:0.5391},{&quot;t&quot;:6.925,&quot;v&quot;:0.7013},{&quot;t&quot;:7.025,&quot;v&quot;:0.7209},{&quot;t&quot;:7.125,&quot;v&quot;:0.7231},{&quot;t&quot;:7.225,&quot;v&quot;:0.7072},{&quot;t&quot;:7.675,&quot;v&quot;:0.5452},{&quot;t&quot;:7.825,&quot;v&quot;:0.5166},{&quot;t&quot;:14.675,&quot;v&quot;:0.5163},{&quot;t&quot;:14.85,&quot;v&quot;:0.5501},{&quot;t&quot;:15.25,&quot;v&quot;:0.6948},{&quot;t&quot;:15.375,&quot;v&quot;:0.7208},{&quot;t&quot;:15.475,&quot;v&quot;:0.7234},{&quot;t&quot;:15.6,&quot;v&quot;:0.703},{&quot;t&quot;:16.05,&quot;v&quot;:0.5446},{&quot;t&quot;:16.2,&quot;v&quot;:0.5168},{&quot;t&quot;:24.95,&quot;v&quot;:0.5149},{&quot;t&quot;:25.05,&quot;v&quot;:0.5321},{&quot;t&quot;:25.225,&quot;v&quot;:0.5979},{&quot;t&quot;:25.425,&quot;v&quot;:0.6894},{&quot;t&quot;:25.525,&quot;v&quot;:0.718},{&quot;t&quot;:25.6,&quot;v&quot;:0.7244},{&quot;t&quot;:25.675,&quot;v&quot;:0.7167},{&quot;t&quot;:25.775,&quot;v&quot;:0.6867},{&quot;t&quot;:26.075,&quot;v&quot;:0.5532},{&quot;t&quot;:26.175,&quot;v&quot;:0.5247},{&quot;t&quot;:26.275,&quot;v&quot;:0.5131},{&quot;t&quot;:29.275,&quot;v&quot;:0.5159},{&quot;t&quot;:29.45,&quot;v&quot;:0.5458},{&quot;t&quot;:29.925,&quot;v&quot;:0.7031},{&quot;t&quot;:30.05,&quot;v&quot;:0.7229},{&quot;t&quot;:30.175,&quot;v&quot;:0.7196},{&quot;t&quot;:30.35,&quot;v&quot;:0.6791},{&quot;t&quot;:30.75,&quot;v&quot;:0.5433},{&quot;t&quot;:30.925,&quot;v&quot;:0.5152},{&quot;t&quot;:35.85,&quot;v&quot;:0.5162},{&quot;t&quot;:36.05,&quot;v&quot;:0.552},{&quot;t&quot;:36.5,&quot;v&quot;:0.6996},{&quot;t&quot;:36.625,&quot;v&quot;:0.7214},{&quot;t&quot;:36.75,&quot;v&quot;:0.7218},{&quot;t&quot;:36.9,&quot;v&quot;:0.6942},{&quot;t&quot;:37.35,&quot;v&quot;:0.5466},{&quot;t&quot;:37.525,&quot;v&quot;:0.5166},{&quot;t&quot;:42.15,&quot;v&quot;:0.5182},{&quot;t&quot;:43.125,&quot;v&quot;:0.7141},{&quot;t&quot;:43.375,&quot;v&quot;:0.722},{&quot;t&quot;:44.35,&quot;v&quot;:0.5266},{&quot;t&quot;:49.425,&quot;v&quot;:0.5155},{&quot;t&quot;:49.55,&quot;v&quot;:0.5381},{&quot;t&quot;:49.95,&quot;v&quot;:0.6953},{&quot;t&quot;:50.05,&quot;v&quot;:0.7194},{&quot;t&quot;:50.15,&quot;v&quot;:0.7234},{&quot;t&quot;:50.25,&quot;v&quot;:0.7062},{&quot;t&quot;:50.65,&quot;v&quot;:0.549},{&quot;t&quot;:50.775,&quot;v&quot;:0.5198},{&quot;t&quot;:54.5,&quot;v&quot;:0.5136},{&quot;t&quot;:54.6,&quot;v&quot;:0.5301},{&quot;t&quot;:54.725,&quot;v&quot;:0.5757},{&quot;t&quot;:55.1,&quot;v&quot;:0.7923},{&quot;t&quot;:55.175,&quot;v&quot;:0.824},{&quot;t&quot;:55.225,&quot;v&quot;:0.8369},{&quot;t&quot;:58.7,&quot;v&quot;:0.8414},{&quot;t&quot;:59.5,&quot;v&quot;:0}]},{&quot;target&quot;:&quot;fx.b2.gain&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:-5},{&quot;t&quot;:54.525,&quot;v&quot;:-4.94},{&quot;t&quot;:54.7,&quot;v&quot;:-4.03},{&quot;t&quot;:55.075,&quot;v&quot;:-0.77},{&quot;t&quot;:55.225,&quot;v&quot;:-0.05},{&quot;t&quot;:59.5,&quot;v&quot;:0}]},{&quot;target&quot;:&quot;fx.n1.gain&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.55,&quot;v&quot;:0},{&quot;t&quot;:0.7,&quot;v&quot;:-0.94},{&quot;t&quot;:0.825,&quot;v&quot;:-6},{&quot;t&quot;:4.15,&quot;v&quot;:-6.1},{&quot;t&quot;:4.2,&quot;v&quot;:-5.5},{&quot;t&quot;:8.1,&quot;v&quot;:-5.42},{&quot;t&quot;:8.125,&quot;v&quot;:-5.18},{&quot;t&quot;:8.375,&quot;v&quot;:-5.18},{&quot;t&quot;:8.775,&quot;v&quot;:-5.1},{&quot;t&quot;:8.8,&quot;v&quot;:-4.82},{&quot;t&quot;:10.1,&quot;v&quot;:-4.85},{&quot;t&quot;:10.125,&quot;v&quot;:-5.28},{&quot;t&quot;:13.425,&quot;v&quot;:-5.28},{&quot;t&quot;:13.525,&quot;v&quot;:-4.83},{&quot;t&quot;:16.825,&quot;v&quot;:-4.83},{&quot;t&quot;:16.85,&quot;v&quot;:-4.7},{&quot;t&quot;:19.25,&quot;v&quot;:-4.7},{&quot;t&quot;:21.425,&quot;v&quot;:-4.78},{&quot;t&quot;:21.45,&quot;v&quot;:-5.05},{&quot;t&quot;:21.7,&quot;v&quot;:-5.05},{&quot;t&quot;:21.725,&quot;v&quot;:-5.23},{&quot;t&quot;:22.1,&quot;v&quot;:-5.28},{&quot;t&quot;:22.125,&quot;v&quot;:-5.43},{&quot;t&quot;:22.15,&quot;v&quot;:-5.68},{&quot;t&quot;:26.35,&quot;v&quot;:-5.54},{&quot;t&quot;:26.375,&quot;v&quot;:-5.95},{&quot;t&quot;:29.675,&quot;v&quot;:-5.95},{&quot;t&quot;:29.7,&quot;v&quot;:-5.65},{&quot;t&quot;:30.625,&quot;v&quot;:-5.55},{&quot;t&quot;:30.7,&quot;v&quot;:-4.73},{&quot;t&quot;:31.8,&quot;v&quot;:-4.69},{&quot;t&quot;:32.35,&quot;v&quot;:-4.78},{&quot;t&quot;:35.7,&quot;v&quot;:-4.9},{&quot;t&quot;:37.875,&quot;v&quot;:-4.76},{&quot;t&quot;:37.925,&quot;v&quot;:-4.16},{&quot;t&quot;:37.95,&quot;v&quot;:-4.42},{&quot;t&quot;:37.975,&quot;v&quot;:-4.99},{&quot;t&quot;:44.3,&quot;v&quot;:-5.01},{&quot;t&quot;:44.5,&quot;v&quot;:-2.64},{&quot;t&quot;:44.525,&quot;v&quot;:-2.42},{&quot;t&quot;:44.55,&quot;v&quot;:-2.83},{&quot;t&quot;:44.65,&quot;v&quot;:-5.02},{&quot;t&quot;:44.675,&quot;v&quot;:-5.47},{&quot;t&quot;:47.975,&quot;v&quot;:-5.47},{&quot;t&quot;:48.025,&quot;v&quot;:-5.02},{&quot;t&quot;:50.65,&quot;v&quot;:-5.04},{&quot;t&quot;:50.675,&quot;v&quot;:-5.49},{&quot;t&quot;:54,&quot;v&quot;:-5.54},{&quot;t&quot;:54.075,&quot;v&quot;:-4.94},{&quot;t&quot;:54.1,&quot;v&quot;:-4.82},{&quot;t&quot;:56.975,&quot;v&quot;:-4.82},{&quot;t&quot;:57,&quot;v&quot;:-4.67},{&quot;t&quot;:57.15,&quot;v&quot;:-2.87},{&quot;t&quot;:57.25,&quot;v&quot;:-2.8},{&quot;t&quot;:57.4,&quot;v&quot;:-1.57},{&quot;t&quot;:57.525,&quot;v&quot;:-0.93},{&quot;t&quot;:57.625,&quot;v&quot;:0},{&quot;t&quot;:59.5,&quot;v&quot;:0}]},{&quot;target&quot;:&quot;fx.n2.gain&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.55,&quot;v&quot;:0},{&quot;t&quot;:0.575,&quot;v&quot;:-0.33},{&quot;t&quot;:0.7,&quot;v&quot;:-3.49},{&quot;t&quot;:3.325,&quot;v&quot;:-3.49},{&quot;t&quot;:3.425,&quot;v&quot;:-4.07},{&quot;t&quot;:4.35,&quot;v&quot;:-4.11},{&quot;t&quot;:4.375,&quot;v&quot;:-4.66},{&quot;t&quot;:7.7,&quot;v&quot;:-4.68},{&quot;t&quot;:7.775,&quot;v&quot;:-3.78},{&quot;t&quot;:7.8,&quot;v&quot;:-3.55},{&quot;t&quot;:7.9,&quot;v&quot;:-3.55},{&quot;t&quot;:7.95,&quot;v&quot;:-4.08},{&quot;t&quot;:11.25,&quot;v&quot;:-4.08},{&quot;t&quot;:11.325,&quot;v&quot;:-3.42},{&quot;t&quot;:14.375,&quot;v&quot;:-3.35},{&quot;t&quot;:14.4,&quot;v&quot;:-3.16},{&quot;t&quot;:15.475,&quot;v&quot;:-3.08},{&quot;t&quot;:15.55,&quot;v&quot;:-2.81},{&quot;t&quot;:16.1,&quot;v&quot;:-2.81},{&quot;t&quot;:16.25,&quot;v&quot;:-5.4},{&quot;t&quot;:16.275,&quot;v&quot;:-5.62},{&quot;t&quot;:19.575,&quot;v&quot;:-5.62},{&quot;t&quot;:19.65,&quot;v&quot;:-4.91},{&quot;t&quot;:20.75,&quot;v&quot;:-4.82},{&quot;t&quot;:24.2,&quot;v&quot;:-4.9},{&quot;t&quot;:24.225,&quot;v&quot;:-4.75},{&quot;t&quot;:24.3,&quot;v&quot;:-3.97},{&quot;t&quot;:24.325,&quot;v&quot;:-3.84},{&quot;t&quot;:25.45,&quot;v&quot;:-3.84},{&quot;t&quot;:25.525,&quot;v&quot;:-3.39},{&quot;t&quot;:26.05,&quot;v&quot;:-3.35},{&quot;t&quot;:26.075,&quot;v&quot;:-3.46},{&quot;t&quot;:26.1,&quot;v&quot;:-4.19},{&quot;t&quot;:26.425,&quot;v&quot;:-4.19},{&quot;t&quot;:26.45,&quot;v&quot;:-4.48},{&quot;t&quot;:26.5,&quot;v&quot;:-5.43},{&quot;t&quot;:29.8,&quot;v&quot;:-5.43},{&quot;t&quot;:29.825,&quot;v&quot;:-5.36},{&quot;t&quot;:30.025,&quot;v&quot;:-2.98},{&quot;t&quot;:30.35,&quot;v&quot;:-2.98},{&quot;t&quot;:30.7,&quot;v&quot;:-2.74},{&quot;t&quot;:30.725,&quot;v&quot;:-3.06},{&quot;t&quot;:30.75,&quot;v&quot;:-3.49},{&quot;t&quot;:30.875,&quot;v&quot;:-3.49},{&quot;t&quot;:30.9,&quot;v&quot;:-3.57},{&quot;t&quot;:31.025,&quot;v&quot;:-4.54},{&quot;t&quot;:31.15,&quot;v&quot;:-5.09},{&quot;t&quot;:34.45,&quot;v&quot;:-5.09},{&quot;t&quot;:34.5,&quot;v&quot;:-4.49},{&quot;t&quot;:34.525,&quot;v&quot;:-4.37},{&quot;t&quot;:35.55,&quot;v&quot;:-4.37},{&quot;t&quot;:35.7,&quot;v&quot;:-3.4},{&quot;t&quot;:37.625,&quot;v&quot;:-3.4},{&quot;t&quot;:37.7,&quot;v&quot;:-4.13},{&quot;t&quot;:41,&quot;v&quot;:-4.13},{&quot;t&quot;:41.025,&quot;v&quot;:-3.98},{&quot;t&quot;:41.1,&quot;v&quot;:-3.08},{&quot;t&quot;:42.775,&quot;v&quot;:-3.05},{&quot;t&quot;:42.8,&quot;v&quot;:-2.93},{&quot;t&quot;:42.825,&quot;v&quot;:-2.69},{&quot;t&quot;:44.025,&quot;v&quot;:-2.68},{&quot;t&quot;:44.075,&quot;v&quot;:-2.25},{&quot;t&quot;:44.3,&quot;v&quot;:-2.21},{&quot;t&quot;:44.425,&quot;v&quot;:-1.49},{&quot;t&quot;:44.525,&quot;v&quot;:-1.95},{&quot;t&quot;:44.875,&quot;v&quot;:-1.95},{&quot;t&quot;:44.9,&quot;v&quot;:-2.11},{&quot;t&quot;:44.925,&quot;v&quot;:-2.44},{&quot;t&quot;:44.95,&quot;v&quot;:-2.67},{&quot;t&quot;:46.925,&quot;v&quot;:-2.67},{&quot;t&quot;:46.95,&quot;v&quot;:-3.01},{&quot;t&quot;:46.975,&quot;v&quot;:-3.53},{&quot;t&quot;:47,&quot;v&quot;:-3.87},{&quot;t&quot;:50.3,&quot;v&quot;:-3.87},{&quot;t&quot;:50.375,&quot;v&quot;:-3.58},{&quot;t&quot;:50.75,&quot;v&quot;:-3.58},{&quot;t&quot;:50.775,&quot;v&quot;:-3.87},{&quot;t&quot;:50.8,&quot;v&quot;:-4.36},{&quot;t&quot;:50.825,&quot;v&quot;:-4.58},{&quot;t&quot;:54.125,&quot;v&quot;:-4.58},{&quot;t&quot;:54.25,&quot;v&quot;:-3.08},{&quot;t&quot;:56.45,&quot;v&quot;:-3.04},{&quot;t&quot;:56.525,&quot;v&quot;:-2.59},{&quot;t&quot;:57,&quot;v&quot;:-2.48},{&quot;t&quot;:57.125,&quot;v&quot;:-1.49},{&quot;t&quot;:57.625,&quot;v&quot;:0},{&quot;t&quot;:59.5,&quot;v&quot;:0}]},{&quot;target&quot;:&quot;fx.n3.gain&quot;,&quot;points&quot;:[{&quot;t&quot;:0,&quot;v&quot;:0},{&quot;t&quot;:0.825,&quot;v&quot;:0},{&quot;t&quot;:0.975,&quot;v&quot;:-0.8},{&quot;t&quot;:1.25,&quot;v&quot;:-0.82},{&quot;t&quot;:1.375,&quot;v&quot;:-1.37},{&quot;t&quot;:1.675,&quot;v&quot;:-1.38},{&quot;t&quot;:1.775,&quot;v&quot;:-2.42},{&quot;t&quot;:1.8,&quot;v&quot;:-2.53},{&quot;t&quot;:3.1,&quot;v&quot;:-2.53},{&quot;t&quot;:3.125,&quot;v&quot;:-2.77},{&quot;t&quot;:3.15,&quot;v&quot;:-3.26},{&quot;t&quot;:6.475,&quot;v&quot;:-3.24},{&quot;t&quot;:6.675,&quot;v&quot;:-1.68},{&quot;t&quot;:7.875,&quot;v&quot;:-1.68},{&quot;t&quot;:7.925,&quot;v&quot;:-2.27},{&quot;t&quot;:9.2,&quot;v&quot;:-2.3},{&quot;t&quot;:9.225,&quot;v&quot;:-2.45},{&quot;t&quot;:9.3,&quot;v&quot;:-5.52},{&quot;t&quot;:12.6,&quot;v&quot;:-5.52},{&quot;t&quot;:12.625,&quot;v&quot;:-5.33},{&quot;t&quot;:12.875,&quot;v&quot;:-2.4},{&quot;t&quot;:12.95,&quot;v&quot;:-2.05},{&quot;t&quot;:13.325,&quot;v&quot;:-2.05},{&quot;t&quot;:13.4,&quot;v&quot;:-2.49},{&quot;t&quot;:16.7,&quot;v&quot;:-2.49},{&quot;t&quot;:16.775,&quot;v&quot;:-1.94},{&quot;t&quot;:16.8,&quot;v&quot;:-1.83},{&quot;t&quot;:17.475,&quot;v&quot;:-1.83},{&quot;t&quot;:17.5,&quot;v&quot;:-2.07},{&quot;t&quot;:20.8,&quot;v&quot;:-2.07},{&quot;t&quot;:20.85,&quot;v&quot;:-1.83},{&quot;t&quot;:21.9,&quot;v&quot;:-1.83},{&quot;t&quot;:21.975,&quot;v&quot;:-1.77},{&quot;t&quot;:22,&quot;v&quot;:-1.98},{&quot;t&quot;:23.15,&quot;v&quot;:-1.98},{&quot;t&quot;:23.225,&quot;v&quot;:-3.66},{&quot;t&quot;:26.55,&quot;v&quot;:-3.65},{&quot;t&quot;:26.65,&quot;v&quot;:-2.84},{&quot;t&quot;:27.075,&quot;v&quot;:-2.76},{&quot;t&quot;:27.175,&quot;v&quot;:-1.94},{&quot;t&quot;:27.55,&quot;v&quot;:-1.87},{&quot;t&quot;:27.575,&quot;v&quot;:-2.04},{&quot;t&quot;:27.6,&quot;v&quot;:-2.39},{&quot;t&quot;:27.725,&quot;v&quot;:-5.02},{&quot;t&quot;:31.05,&quot;v&quot;:-5.11},{&quot;t&quot;:31.3,&quot;v&quot;:-2.11},{&quot;t&quot;:31.325,&quot;v&quot;:-1.9},{&quot;t&quot;:31.5,&quot;v&quot;:-1.92},{&quot;t&quot;:31.55,&quot;v&quot;:-2.47},{&quot;t&quot;:33.775,&quot;v&quot;:-2.49},{&quot;t&quot;:33.8,&quot;v&quot;:-2.61},{&quot;t&quot;:33.875,&quot;v&quot;:-4.32},{&quot;t&quot;:34.8,&quot;v&quot;:-4.35},{&quot;t&quot;:34.825,&quot;v&quot;:-5.47},{&quot;t&quot;:34.85,&quot;v&quot;:-6.01},{&quot;t&quot;:38.15,&quot;v&quot;:-6.01},{&quot;t&quot;:38.275,&quot;v&quot;:-5.01},{&quot;t&quot;:38.45,&quot;v&quot;:-2.91},{&quot;t&quot;:39.175,&quot;v&quot;:-2.86},{&quot;t&quot;:39.2,&quot;v&quot;:-3.15},{&quot;t&quot;:42.525,&quot;v&quot;:-3.25},{&quot;t&quot;:42.65,&quot;v&quot;:-2.87},{&quot;t&quot;:42.8,&quot;v&quot;:-1.69},{&quot;t&quot;:43.875,&quot;v&quot;:-1.5},{&quot;t&quot;:44.275,&quot;v&quot;:-0.31},{&quot;t&quot;:44.3,&quot;v&quot;:-0.3},{&quot;t&quot;:44.4,&quot;v&quot;:-1.02},{&quot;t&quot;:44.525,&quot;v&quot;:-3.32},{&quot;t&quot;:44.55,&quot;v&quot;:-3.42},{&quot;t&quot;:45.45,&quot;v&quot;:-3.42},{&quot;t&quot;:45.475,&quot;v&quot;:-3.91},{&quot;t&quot;:45.5,&quot;v&quot;:-4.19},{&quot;t&quot;:45.875,&quot;v&quot;:-4.19},{&quot;t&quot;:48.45,&quot;v&quot;:-4.28},{&quot;t&quot;:48.5,&quot;v&quot;:-5.33},{&quot;t&quot;:51.8,&quot;v&quot;:-5.33},{&quot;t&quot;:51.85,&quot;v&quot;:-4.73},{&quot;t&quot;:51.875,&quot;v&quot;:-4.54},{&quot;t&quot;:52.15,&quot;v&quot;:-4.54},{&quot;t&quot;:52.175,&quot;v&quot;:-4.95},{&quot;t&quot;:55.475,&quot;v&quot;:-4.95},{&quot;t&quot;:55.5,&quot;v&quot;:-4.84},{&quot;t&quot;:55.65,&quot;v&quot;:-3.04},{&quot;t&quot;:55.675,&quot;v&quot;:-2.86},{&quot;t&quot;:57.125,&quot;v&quot;:-2.86},{&quot;t&quot;:57.275,&quot;v&quot;:-1.61},{&quot;t&quot;:57.55,&quot;v&quot;:-0.47},{&quot;t&quot;:57.625,&quot;v&quot;:0},{&quot;t&quot;:59.5,&quot;v&quot;:0}]}]}"></audio>
+      <!-- /mix -->
+    </div>
+
+    <script>
+      /*
+       * blog-fuma-nama, v4 cut (2026-10-06): "Fuma Nama: The philosophy of an
+       * open-sourcerer". DESIGN-v4.md is the spec (SCRIPT-v3.md keeps the
+       * words, the facts and the spectacle map) and STORYBOARD.md the record
+       * of the measured result; this file draws it. One paused timeline on
+       * window.__timelines.main, registered after the three gem mounts, the
+       * shape images, the marks, the fonts and the kit's end card (from 55.5 s)
+       * are ready. Every frame is drawn by draw(t) from the timeline's
+       * onUpdate, a pure function of film time: eases are computed from t, the
+       * smoke is seeked with gem.at(), and seeded draws come from GTDither.rng.
+       * The headings, the counts and the glyph moon are DOM text the timeline
+       * reveals.
+       *
+       * Kevin's note on the v3 cut: "there are way too many headers in the
+       * blog videos and they dont actually line up with whats being said as
+       * well and theres too many visuals that are rapidly playing". So: four
+       * headings, each made of spoken words that rise as they are said; one
+       * main move at a time (a move may run several steps on into each other),
+       * and a hold of at least 1.0 s before each next picture; and two hard
+       * cuts only, both match cuts on the y 540 seam. Every other change of
+       * picture is a transform of an object already on screen. The fix round
+       * (after the v4 critic) moved lines 7 to 9 later, merged lines 6 and
+       * 7's steps into fewer moves, and made every field zone clear and return
+       * inside a running motion (DESIGN-v4.md, "Fix round").
+       *
+       * The palette is the fire material only: black, ember #7a2a08, fire
+       * #fe5b16, sun #f7ff61 and white, with raised ink #101010 for the docs
+       * page's panels. Every print uses one 3 px cell grid (640 x 360 cells)
+       * and the kit's 8 x 8 Bayer matrix, and so does the field.
+       *
+       * The shots: 1 (0 to 20.46) the hook, the moon and the shelf; 2 the
+       * heap; 3 the docs page and the file; 4 the moon breaks; 5 the page
+       * breaks; 6 the same shape; 7 the grant; then the series end card.
+       */
+      (function () {
+        'use strict';
+        const W = 1920;
+        const H = 1080;
+        const CELL = 3;
+        const COLS = 640;
+        const ROWS = 360;
+        const END = 59.5;
+        const CARD = 55.5;
+
+        // CUE: film time of the spoken words (lib/cues.mjs prints this table)
+        const CUE = {
+          L1: { _on: 1.00, _off: 6.13, 'one': 0.98, 'developer': 1.18, 'created': 1.62, 'fumadocs': 2.07, 'a': 3.08, 'docs': 3.22, 'framework': 3.51, 'with': 3.98, 'over': 4.14, '13': 4.36, '000': 4.86, 'stars': 5.19, 'on': 5.59, 'github': 5.73 },
+          L2: { _on: 7.95, _off: 14.47, 'vercel': 7.89, 'vercel_vursell': 7.89, 'turborepo': 8.42, 'shadcnui': 9.52, 'shadcnui_shad': 9.52, 'shadcnui_c': 9.86, 'shadcnui_n': 10.22, 'shadcnui_u': 10.43, 'shadcnui_i': 10.58, 'better': 11.33, 'auth': 11.66, 'unkey': 12.45, 'and': 13.28, 'many': 13.50, 'others': 13.73, 'use': 14.03, 'it': 14.30 },
+          L3: { _on: 16.33, _off: 19.94, 'fuma': 16.27, 'nama': 16.71, 'has': 17.06, 'built': 17.22, 'it': 17.48, 'for': 17.58, 'three': 17.74, 'years': 18.09, 'on': 18.67, 'top': 18.87, 'of': 19.13, 'his': 19.24, 'schoolwork': 19.38 },
+          L4: { _on: 21.03, _off: 24.78, 'he': 20.91, 'learned': 21.13, 'to': 21.39, 'code': 21.52, 'by': 21.93, 'modding': 22.13, 'games': 22.51, 'and': 22.94, 'reading': 23.14, 'piles': 23.51, 'of': 23.93, 'javascript': 24.03 },
+          L5: { _on: 26.34, _off: 29.08, 'he': 26.24, 'did': 26.45, 'not': 26.62, 'look': 26.79, 'at': 26.98, 'any': 27.13, 'documentation': 27.40, 'while': 28.16, 'he_2': 28.36, 'was': 28.46, 'learning': 28.64 },
+          L6: { _on: 31.04, _off: 35.55, 'he': 30.94, 'designed': 31.14, 'fumadocs': 31.61, 'in': 32.14, 'four': 32.32, 'layers': 32.65, 'that': 32.99, 'developers': 33.15, 'can': 33.65, 'take': 33.82, 'apart': 34.08, 'and': 34.70, 'reshape': 34.95 },
+          L7: { _on: 37.66, _off: 41.81, 'the': 37.55, 'cli': 37.77, 'cli_c': 37.77, 'cli_l': 38.00, 'cli_i': 38.20, 'can': 38.36, 'copy': 38.55, 'just': 39.12, 'the_2': 39.36, 'table': 39.48, 'of': 39.84, 'contents': 39.95, 'into': 40.69, 'your': 41.01, 'codebase': 41.18 },
+          L8: { _on: 44.63, _off: 49.20, 'if': 44.55, 'he': 44.77, 'started': 44.88, 'again': 45.27, 'from': 45.55, 'scratch': 45.76, 'he_2': 46.71, 'thinks': 46.85, 'fumadocs': 47.13, 'would': 47.62, 'probably': 47.80, 'have': 48.22, 'the': 48.39, 'same': 48.52, 'shape': 48.81 },
+          L9: { _on: 50.92, _off: 54.41, 'fumadocs': 50.86, 'is': 51.51, 'general': 51.67, 'translations': 52.00, 'first': 52.81, 'open': 53.18, 'source': 53.52, 'grantee': 53.83 },
+        };
+
+        // the headings: each word rises PRE seconds before the take's
+        // alignment start for it, over RISE seconds on power3.out; a word
+        // that starts under 0.20 s after the one before rises with it as one
+        // phrase (one mask). A heading is set when its last word lands and
+        // holds unchanged at least (words / 3) + 1 s
+        const RISE = 0.55;
+        const PRE = 0.06;
+
+        /* ------------------------------------------------------------ the events, keyed to the words (DESIGN-v4.md) */
+
+        // shot 1: the hook, the moon and the shelf
+        const H1_AT = [CUE.L1.one - PRE, CUE.L1.developer - PRE]; // 0.92 ("One", in fire), 1.12; set 1.67
+        const MT0 = 3.34; // the hook's floor ends (1.67 + 2/3 + 1); its cells leave in reading order on "docs framework"
+        const MT_LAND = MT0 + 0.6; // every cell has landed as the moon's print
+        const COUNT_AT = CUE.L1['13']; // 13.3k rises on "13" (4.36)
+        const STARS_END = CUE.L1.on - 0.05; // and lands on the end of "stars" (5.54)
+        const SHELF_AT = 5.95; // both shelves draw out of their left crosses on "GitHub" (0.9 s)
+        // each mark lights on its spoken name, 0.04 s before it: Turborepo on
+        // "Vercel", shadcn/ui on "shad", Better Auth on "Better", Unkey on
+        // "Unkey", and Orama with the GT mark in fire together on "many others"
+        const MARK_AT = [CUE.L2.vercel - 0.04, CUE.L2.shadcnui - 0.04, CUE.L2.better - 0.04, CUE.L2.unkey - 0.04, CUE.L2.many - 0.04, CUE.L2.many - 0.04];
+        const PULSE1 = 14.16; // "use it": a 200 px fire pulse runs shelf 2 from the GT mark to the moon (0.6 s)
+        const GLASS1 = PULSE1 + 0.6; // where it arrives, the moon's print tone-mixes into glass (0.45 s)
+        const H2_AT = [CUE.L3.fuma - PRE, CUE.L3.nama - PRE]; // 16.21, 16.65; set 17.20, floor ends 18.87
+        // fix round (the v4 critic): the recede starts on "on top" (was "top",
+        // 18.86), so the field's slow return into the shelf's place (0.9 s)
+        // ends at 19.56 and "Fuma Nama" then holds alone for 0.9 s
+        const RECEDE = CUE.L3.on - 0.01; // 18.66: everything but "Fuma Nama" recedes (0.6 s)
+        const SHELF_OUT = RECEDE + 0.6; // then "Fuma Nama" stands over the field alone, the hook frame again
+        // shot 2: the heap
+        const NAME_MT0 = 20.46; // the name's cells fall into the mound's left flank (moving type)
+        // fix round: the rain's base starts with the name's dissolve (v4 first cut: 20.7), and the
+        // lower rows land faster than the crest (RAIN_CURVE), so the mound's outline reads by 21.5
+        const RAIN_FROM = NAME_MT0;
+        const RAIN_CURVE = 1.8;
+        const CREST_AT = CUE.L4.javascript + 0.01; // the last glyphs settle on the crest on "JavaScript"
+        const HEAP_DRIFT = CREST_AT + 0.3;
+        // shot 3: the docs page and the file
+        const PAGE3_AT = 25.34; // the page builds above the held heap (0.8 s)
+        const PAGE_STEP = CUE.L5.look - 0.05; // its highlight steps on "look"
+        const PAGE_OUT = CUE.L5.documentation; // it leaves by a tone mix on "documentation" (0.6 s)
+        const SORT0 = 28.4; // "while he was learning": the heap's glyphs travel into the file's lines
+        const SORT1 = 29.5;
+        // fix round: the file's tone falls from its first frame (1 - (1 - u)^2 over 0.5 s, so a
+        // quarter is left at 30.75) and is gone by 31.0, before the moon's glow is at a third
+        const FILE_OUT = 30.5; // the file lowers its tone as the moon raises its glow in its place
+        const FILE_END = FILE_OUT + 0.5;
+        // shot 4: the moon breaks
+        // fix round: the glow starts with the file's tone-down and rises on
+        // sine.inOut over 1.0 s (v4 first cut: power3.out 0.8 s from 30.70, half its
+        // glow in 0.15 s), so it is half lit at 31.0 as the file's last glyphs go
+        // and full at 31.50, before "Fumadocs" rises
+        const GLOW4 = FILE_OUT; // the 762 px glass moon raises its glow from black
+        const GLOW4_D = 1.0;
+        const H3_AT = CUE.L6.fumadocs - PRE; // "Fumadocs" rises beside it (31.55); set 32.10, floor ends 33.44
+        const MIX4 = CUE.L6.four; // glass to print on "four layers" (0.5 s)
+        // fix round: line 6 plays as three moves instead of six steps. The
+        // crosses and seams on "that developers" (0.2 s apart, 0.5 s each)
+        // run on into the parting on "take apart" (power2.inOut 0.8), one
+        // move; "Fumadocs" drops into its mask as the parting starts; the
+        // slide on "and" runs on into the square-off on "reshape", one move
+        const CROSS4 = CUE.L6.that; // 32.99
+        const CROSS4_GAP = 0.2;
+        const SEAM_D = 0.5;
+        const PART4 = CUE.L6.take; // 33.82 (0.8 s)
+        const H3_OUT = PART4; // "Fumadocs" drops into its mask (0.45 s, power2.in), its floor long past
+        const SLIDE0 = CUE.L6.and; // layer 3 slides out on "and" (0.6 s)
+        const RESHAPE = SLIDE0 + 0.45; // and squares off (0.6 s) as the slide settles; the move ends at 35.75
+        const CUT5 = 37.5; // the match cut on "The": the middle seam on y 540 becomes the page's nav seam
+        // shot 5: the page breaks. Fix round: four moves (the seams; the
+        // parting run on into the shrink; the lift and its connector; the
+        // travel and seat, now in the gap after line 7), each finished before
+        // the next starts, and a 1.0 s hold before the cut
+        const CLI_SEAMS = [CUE.L7.cli + 0.03, CUE.L7.cli_l + 0.05]; // "CLI": the sidebar and table-of-contents seams draw down (0.5 s each)
+        const COPY = CUE.L7.copy; // the parts move apart (0.5 s)
+        const JUST = COPY + 0.4; // and the page eases to 0.625 as they settle, uncovering the code panel (0.7 s), through "just"
+        const LIFT = CUE.L7.of; // "of contents": the part lifts (0.4 s), its connector draws (0.35 s)
+        const CONN5 = LIFT + 0.25;
+        const H4_AT = [CUE.L7.into - PRE, CUE.L7.your - PRE]; // "Into" 40.63, "your codebase" 40.95; set 41.50, floor ends 43.50
+        const TRAVEL0 = 42.3; // 0.8 s after the heading is set, the part travels along the connector into the panel (0.8 s)
+        const TRAVEL_D = 0.8;
+        const SEAT0 = TRAVEL0 + 0.45; // and drops into the panel's opening (0.5 s), below the nav seam
+        const ROWS_OPEN = TRAVEL0 + 0.3; // the panel's rows part for it (0.5 s)
+        const SUNRUN = TRAVEL0 + 0.7; // and a sun block runs down its curved line as it seats (0.5 s); done 43.50, 1.0 s before the cut
+        const CUT6 = 44.5; // the match cut on "If", back to the parted moon
+        // shot 6: the same shape
+        const RETURN0 = CUE.L8.started; // the pieces return to the circle on "started again" (0.9 s)
+        // fix round: on "scratch" the print lowers its tone to PRINT_HOLD, not 0, and
+        // then leaves cell block by cell block as each glyph of the moon lands on it,
+        // so the circle is whole on every frame of the fill
+        const PRINT_OUT = CUE.L8.scratch + 0.12; // 45.88 (0.5 s)
+        const PRINT_HOLD = 0.3;
+        const GLYPH0 = PRINT_OUT + 0.5; // the glyph moon fills row by row from 46.38
+        const SHAPE = CUE.L8.shape; // its last row on "shape" (48.81)
+        // fix round: the glyphs switch off and the glass glows up over 0.8 s on sine.inOut
+        // (v4 first cut: 0.5 s smoothstep, which flared), done as the move starts on "Fumadocs"
+        const GLYPH_OUT = CUE.L9.fumadocs - 0.81; // 50.05
+        const GLYPH_OUT_D = 0.8;
+        // shot 7: the grant
+        const MOVE7 = CUE.L9.fumadocs; // the moon moves and shrinks into the grant (0.8 s)
+        const GT9 = CUE.L9.general + 0.04; // the GT mark forms on "General" (0.8 s)
+        const FIRST9 = CUE.L9.first; // the connector draws on "first" (0.5 s)
+        const PULSE9 = CUE.L9.grantee - 0.45; // the pulse runs it, its head reaching the moon on "grantee" (0.45 s)
+        const THICK9 = CUE.L9.grantee; // the moon's smoke thickens (0.25 s) and settles 0.67 s later
+        const RECEDE9 = CARD - 0.4; // everything but the GT mark recedes into the card's first frame (0.4 s)
+        // sine.inOut, as a function of progress
+        function SIO(u) {
+          return 0.5 - 0.5 * Math.cos(Math.PI * (u <= 0 ? 0 : u >= 1 ? 1 : u));
+        }
+
+        const RGB = {
+          black: [0, 0, 0],
+          ember: [0x7a, 0x2a, 0x08],
+          fire: [0xfe, 0x5b, 0x16],
+          sun: [0xf7, 0xff, 0x61],
+          white: [255, 255, 255],
+        };
+        const HEX = { black: '#000000', ember: '#7a2a08', fire: '#fe5b16', sun: '#f7ff61', white: '#ffffff', raised: '#101010', hair: 'rgba(242,242,240,0.18)' };
+        function pack(c, a) {
+          return ((a === undefined ? 255 : a) << 24) | (c[2] << 16) | (c[1] << 8) | c[0];
+        }
+        // the print's four steps, dark to light, packed for a Uint32 ImageData view
+        const STEP = [pack(RGB.black), pack(RGB.ember), pack(RGB.fire), pack(RGB.sun)];
+        const PACK_WHITE = pack(RGB.white);
+        const PACK_FIRE = pack(RGB.fire);
+        const CLEAR = 0;
+
+        const TH = new Float32Array(64);
+        for (let i = 0; i < 64; i++) TH[i] = (GTDither.B8[i] + 0.5) / 64;
+        function th8(x, y) {
+          return TH[((y & 7) << 3) | (x & 7)];
+        }
+        function clamp(v, a, b) {
+          const lo = a === undefined ? 0 : a;
+          const hi = b === undefined ? 1 : b;
+          return v < lo ? lo : v > hi ? hi : v;
+        }
+        function ss(e0, e1, x) {
+          const t = clamp((x - e0) / (e1 - e0));
+          return t * t * (3 - 2 * t);
+        }
+        // the inverse of the smoothstep: the time fraction at which ss reaches y
+        function ssInv(y) {
+          return 0.5 - Math.sin(Math.asin(1 - 2 * clamp(y)) / 3);
+        }
+        function lerp(a, b, t) {
+          return a + (b - a) * t;
+        }
+        function prog(t, t0, d) {
+          return clamp((t - t0) / d);
+        }
+        function snap(v) {
+          return Math.round(v / CELL) * CELL;
+        }
+        const EXPO = gsap.parseEase('expo.out');
+        const P3 = gsap.parseEase('power3.out');
+        const P2IO = gsap.parseEase('power2.inOut');
+
+        function el(id) {
+          return document.getElementById(id);
+        }
+
+        /* ------------------------------------------------------------ Bayer tone masks for vector objects */
+
+        // A vector object (the docs page, a line) raises or lowers its tone
+        // on the film's 3 px grid, anchored at (0, 0): cells switch in Bayer
+        // order. TILE[k] is one 8 x 8 cell tile (24 px) with the k cells of
+        // lowest threshold lit; a full-frame layer is kept only under it.
+        const TILE = [];
+        function tileFor(p) {
+          const k = clamp(Math.ceil(64 * p - 0.5), 0, 64);
+          if (!TILE[k]) {
+            const c = document.createElement('canvas');
+            c.width = 8 * CELL;
+            c.height = 8 * CELL;
+            const x = c.getContext('2d');
+            x.fillStyle = '#ffffff';
+            for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) if (GTDither.B8[j * 8 + i] < k) x.fillRect(i * CELL, j * CELL, CELL, CELL);
+            TILE[k] = c;
+          }
+          return TILE[k];
+        }
+        const patterns = {};
+        function toneLayer(ctx, p) {
+          // keep ctx's pixels only on the cells lit at tone p
+          if (p >= 1) return;
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          if (p <= 0) {
+            ctx.clearRect(0, 0, W, H);
+          } else {
+            const k = clamp(Math.ceil(64 * p - 0.5), 0, 64);
+            if (!patterns[k]) patterns[k] = ctx.createPattern(tileFor(p), 'repeat');
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.fillStyle = patterns[k];
+            ctx.fillRect(0, 0, W, H);
+          }
+          ctx.restore();
+        }
+        function layer() {
+          const c = document.createElement('canvas');
+          c.width = W;
+          c.height = H;
+          return { c, x: c.getContext('2d') };
+        }
+        const L1 = layer(); // a group being drawn at one tone
+        const L2 = layer(); // the page being assembled from its groups
+
+        /* ------------------------------------------------------------ the moons */
+
+        // the Fumadocs moon as mount B draws it at scale 1.1, offsetX 0.36,
+        // measured on screen (round 7): its lit disc's centre and radius
+        const MOON = { x: 1348.3, y: 539.5, r: 380.9 };
+        // the four layers: cut at quarter heights, snapped to the cell grid (px)
+        const CUTS = [153, 348, 540, 729, 927];
+        const SEAM_X0 = 944; // the seams start here, their left crosses at 928
+        const SEAM_X1 = 1752; // and end here, their right crosses at 1768
+        // the piece (layer 3): it slides 810 px left, then becomes this block
+        const SLIDE = -810;
+        const BLOCK = { x0: 180, x1: 732, y0: 513, y1: 783 };
+        const CONN_Y = 648;
+        // shot 1's moon: r 270, standing on shelf 2, the moving type's print and then glass
+        const SHELFMOON = { x: 1480, y: 522, r: 270 };
+        // shot 7: the 762 px moon moves and shrinks to its grant place
+        const MOON9 = { x: 1080, y: 700, r: 210 };
+
+        function sMoon(t) {
+          // shader seconds for the 762 px moon: rate 0.2, the treatment's key
+          // frame (2.30, the white pool at the top) on "Fumadocs"; the rate eases
+          // to 0.015 over the glass-to-print mix, so the prints of shots 4 and 6
+          // stay inside the swirl's bright half (2.3 to 3.7)
+          if (t < MIX4) return 2.3 + 0.2 * (t - CUE.L6.fumadocs);
+          const s0 = 2.3 + 0.2 * (MIX4 - CUE.L6.fumadocs);
+          const u = Math.min(0.5, t - MIX4);
+          const s1 = s0 + 0.2 * u - 0.185 * u * u;
+          return s1 + 0.015 * Math.max(0, t - MIX4 - 0.5);
+        }
+        // shot 1's moon: the smoke's cycle is 6.4 shader seconds and its lit
+        // half about 2 (39.6 to 41.6, the white pool at the top, then the bright
+        // arcs); at rate 0.13 the moon's 16.1 s on screen stay inside it
+        function sMoon1(t) {
+          return 39.6 + 0.13 * (t - MT0);
+        }
+        // shot 7's GT mark: shader second 3.5 on the card's first frame, where the
+        // card's own smoke clock starts (kit/endcard TIMING.smoke)
+        function sGT(t) {
+          return 3.5 - 0.25 * (CARD - t);
+        }
+
+        /* ------------------------------------------------------------ the mounts */
+
+        const gems = { a: null, b: null, c: null };
+        const shapes = { moon: el('img-moon'), gt: el('img-gt') };
+        // a moon of radius r centred at (x, y) on mount B, from round 7's
+        // measured disc (scale 1.1 drew radius 380.9 at offsetX 0.36), with no
+        // outer glow, so no smoke leaves the disc
+        function setMoonAt(x, y, r, ig) {
+          gems.b.mount.setUniformValues({ u_image: shapes.moon, u_scale: (1.1 * r) / MOON.r, u_offsetX: 0.36 + (x - MOON.x) / 1078.6, u_offsetY: (y - MOON.y) / 1080, u_innerGlow: ig, u_outerGlow: 0 });
+        }
+        // mount A has three looks, set before each draw (the mount caches
+        // uniforms by value): the heap's light, the file's light and the field
+        function setHeapLight() {
+          gems.a.mount.setUniformValues({ u_scale: 0.9, u_offsetX: 0.25, u_offsetY: 0 });
+        }
+        function setFileLight() {
+          gems.a.mount.setUniformValues({ u_scale: 0.6, u_offsetX: 0.3, u_offsetY: 0 });
+        }
+        function setFieldLook() {
+          gems.a.mount.setUniformValues({ u_scale: FIELD.scale, u_offsetX: FIELD.ox, u_offsetY: FIELD.oy });
+        }
+        // the end card's mark (kit/endcard LAYOUT): as tall as the title's ink,
+        // its top on y 160 and its right edge on x 1760; shot 7's GT mark sits in
+        // exactly that box at the card's shader values
+        const EC_CAP = 1490 / 2048;
+        const MARK_H = EC_CAP * 120 + 122;
+        const MARK_W = (MARK_H * 654) / 412;
+        const MARK = { x0: 1760 - MARK_W, x1: 1760, y0: 160, y1: 160 + MARK_H };
+        const GT_SMOKE = {
+          scale: (MARK_H * 0.95) / ((412 / 1024) * H),
+          offsetX: ((MARK.x0 + MARK.x1) / 2 - W / 2) / H,
+          offsetY: ((MARK.y0 + MARK.y1) / 2 - H / 2) / H,
+          innerDistortion: 0.8,
+          outerDistortion: 0.8,
+          angle: -60,
+          size: 0.7,
+          offset: 0,
+          innerGlow: 0,
+          outerGlow: 0,
+        };
+
+        // luminance readback of a gem canvas onto a small grid
+        const sampler = document.createElement('canvas');
+        const sctx = sampler.getContext('2d', { willReadFrequently: true });
+        function readLum(canvas, cols, rows, out) {
+          if (sampler.width !== cols) sampler.width = cols;
+          if (sampler.height !== rows) sampler.height = rows;
+          sctx.imageSmoothingEnabled = true;
+          sctx.imageSmoothingQuality = 'high';
+          sctx.clearRect(0, 0, cols, rows);
+          sctx.drawImage(canvas, 0, 0, cols, rows);
+          const d = sctx.getImageData(0, 0, cols, rows).data;
+          for (let i = 0, n = cols * rows; i < n; i++) out[i] = (0.2126 * d[i * 4] + 0.7152 * d[i * 4 + 1] + 0.0722 * d[i * 4 + 2]) / 255;
+          return out;
+        }
+
+        /* ------------------------------------------------------------ the print grid */
+
+        const printCanvas = el('print');
+        const pctx = printCanvas.getContext('2d');
+        const off = document.createElement('canvas');
+        off.width = COLS;
+        off.height = ROWS;
+        const octx = off.getContext('2d');
+        const image = octx.createImageData(COLS, ROWS);
+        const px32 = new Uint32Array(image.data.buffer);
+        const lumGrid = new Float32Array(COLS * ROWS);
+        const homeTone = new Float32Array(COLS * ROWS);
+        const discMask = new Float32Array(COLS * ROWS);
+        for (let y = 0, i = 0; y < ROWS; y++) {
+          for (let x = 0; x < COLS; x++, i++) {
+            const d = Math.hypot(x * CELL + 1.5 - MOON.x, y * CELL + 1.5 - MOON.y);
+            discMask[i] = ss(MOON.r + 1, MOON.r - 5, d);
+          }
+        }
+        function stepOf(tone, th) {
+          const lv = clamp(tone) * 3;
+          const base = lv >= 3 ? 2 : Math.floor(lv);
+          return lv - base > th ? base + 1 : base;
+        }
+        function blit() {
+          octx.putImageData(image, 0, 0);
+          pctx.imageSmoothingEnabled = false;
+          pctx.clearRect(0, 0, W, H);
+          pctx.drawImage(off, 0, 0, COLS * CELL, ROWS * CELL);
+        }
+
+        /* ------------------------------------------------------------ the field */
+
+        // Mount A's free fire smoke printed through the Bayer screen on the
+        // film's one 3 px cell grid, anchored at (0, 0) like every print, in
+        // the material's dark tones (black, ember, fire: fire only where the
+        // smoke is hottest), behind every scene from the first frame to the end
+        // card, on one slow clock, so the field never cuts.
+        //
+        // It is held off the type and the objects by zones. A zone is one
+        // object's own ink on the cell grid, never its bounding box, with an
+        // exact Euclidean distance from that ink: the field is black within m0
+        // and whole at m0 + ramp. Each zone holds the field off only inside its
+        // window: it clears on one smoothstep before its object arrives and
+        // gives the field back on one smoothstep after it leaves, so the field
+        // changes only by mixing tone on its grid. Where a zone's weight w is
+        // under 1 the tone is lowered by (1 - w) * BITE, so the cleared edge is
+        // one of the smoke's own contours, and the distance is shifted by up to
+        // SHIFT px by the smoke's plume-scale contrast (round 7d).
+        const FIELD = { scale: 0.6, ox: 0.1, oy: 0, s0: 0.4, rate: 0.075, gamma: 1.6, gain: 0.8, cap: 0.72 };
+        const FIELD_TONE = [0, pack(RGB.ember), pack(RGB.fire)]; // black cells are clear: the gem mounts' black grounds lie beneath
+        function sField(t) {
+          return FIELD.s0 + FIELD.rate * t;
+        }
+        const KNEE = [0.014, 0.07];
+        const HEAD_Z = { m0: 44, ramp: 230 };
+        const OBJ_Z = { m0: 18, ramp: 150 };
+        const RULE_Z = { m0: 18, ramp: 60, shift: 24 };
+        const GLASS_Z = { m0: 10, ramp: 90 };
+        const CORE_Z = { m0: 12, ramp: 70 };
+        const BITE = FIELD.cap;
+        const SHIFT = 60;
+        const LP1 = 14; // cells: 42 px
+        const LP2 = 40; // cells: 120 px
+        const NCELL = COLS * ROWS;
+        const fieldCanvas = el('field');
+        const fctx = fieldCanvas.getContext('2d');
+        const foff = document.createElement('canvas');
+        foff.width = COLS;
+        foff.height = ROWS;
+        const foctx = foff.getContext('2d');
+        const fimage = foctx.createImageData(COLS, ROWS);
+        const fpx32 = new Uint32Array(fimage.data.buffer);
+        const fieldLum = new Float32Array(NCELL);
+        const fieldS = new Float32Array(NCELL);
+        const fieldLP = new Float32Array(NCELL);
+        const fieldLP2 = new Float32Array(NCELL);
+        const blurTmp = new Float32Array(NCELL);
+        const fieldW = new Float32Array(NCELL);
+
+        function boxBlurH(src, dst, r) {
+          for (let y = 0; y < ROWS; y++) {
+            const o = y * COLS;
+            let s = 0;
+            let n = 0;
+            for (let x = 0; x < r && x < COLS; x++) {
+              s += src[o + x];
+              n++;
+            }
+            for (let x = 0; x < COLS; x++) {
+              if (x + r < COLS) {
+                s += src[o + x + r];
+                n++;
+              }
+              if (x - r - 1 >= 0) {
+                s -= src[o + x - r - 1];
+                n--;
+              }
+              dst[o + x] = s / n;
+            }
+          }
+        }
+        function boxBlurV(src, dst, r) {
+          for (let x = 0; x < COLS; x++) {
+            let s = 0;
+            let n = 0;
+            for (let y = 0; y < r && y < ROWS; y++) {
+              s += src[y * COLS + x];
+              n++;
+            }
+            for (let y = 0; y < ROWS; y++) {
+              if (y + r < ROWS) {
+                s += src[(y + r) * COLS + x];
+                n++;
+              }
+              if (y - r - 1 >= 0) {
+                s -= src[(y - r - 1) * COLS + x];
+                n--;
+              }
+              dst[y * COLS + x] = s / n;
+            }
+          }
+        }
+        function lowPass(src, dst, r) {
+          boxBlurH(src, blurTmp, r);
+          boxBlurV(blurTmp, dst, r);
+          boxBlurH(dst, blurTmp, r);
+          boxBlurV(blurTmp, dst, r);
+        }
+
+        // the exact Euclidean distance (css px, cell centre to cell centre)
+        // from every cell to the nearest inked cell (Felzenszwalb and
+        // Huttenlocher's two-pass transform of squared distances)
+        const EDT_N = Math.max(COLS, ROWS);
+        const edtF = new Float64Array(EDT_N);
+        const edtD = new Float64Array(EDT_N);
+        const edtV = new Int32Array(EDT_N);
+        const edtZ = new Float64Array(EDT_N + 1);
+        function edt1(n) {
+          let k = 0;
+          edtV[0] = 0;
+          edtZ[0] = -1e30;
+          edtZ[1] = 1e30;
+          for (let q = 1; q < n; q++) {
+            let s = (edtF[q] + q * q - (edtF[edtV[k]] + edtV[k] * edtV[k])) / (2 * q - 2 * edtV[k]);
+            while (s <= edtZ[k]) {
+              k--;
+              s = (edtF[q] + q * q - (edtF[edtV[k]] + edtV[k] * edtV[k])) / (2 * q - 2 * edtV[k]);
+            }
+            k++;
+            edtV[k] = q;
+            edtZ[k] = s;
+            edtZ[k + 1] = 1e30;
+          }
+          k = 0;
+          for (let q = 0; q < n; q++) {
+            while (edtZ[k + 1] < q) k++;
+            edtD[q] = (q - edtV[k]) * (q - edtV[k]) + edtF[edtV[k]];
+          }
+        }
+        function distanceFrom(occ) {
+          const g = new Float64Array(NCELL);
+          for (let i = 0; i < NCELL; i++) g[i] = occ[i] ? 0 : 1e20;
+          for (let x = 0; x < COLS; x++) {
+            for (let y = 0; y < ROWS; y++) edtF[y] = g[y * COLS + x];
+            edt1(ROWS);
+            for (let y = 0; y < ROWS; y++) g[y * COLS + x] = edtD[y];
+          }
+          for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) edtF[x] = g[y * COLS + x];
+            edt1(COLS);
+            for (let x = 0; x < COLS; x++) g[y * COLS + x] = edtD[x];
+          }
+          const d = new Float32Array(NCELL);
+          for (let i = 0; i < NCELL; i++) d[i] = Math.sqrt(g[i]) * CELL;
+          return d;
+        }
+
+        // an object's ink on the cell grid: paint(ctx, occ) draws in css px on
+        // a canvas the size of the cell grid (a cell is inked where its ink
+        // covers a tenth of it) or marks cells directly
+        const zcan = document.createElement('canvas');
+        zcan.width = COLS;
+        zcan.height = ROWS;
+        const zctx = zcan.getContext('2d', { willReadFrequently: true });
+        function inkCells(paint) {
+          const occ = new Uint8Array(NCELL);
+          zctx.setTransform(1, 0, 0, 1, 0, 0);
+          zctx.clearRect(0, 0, COLS, ROWS);
+          zctx.setTransform(1 / CELL, 0, 0, 1 / CELL, 0, 0);
+          zctx.fillStyle = '#ffffff';
+          zctx.strokeStyle = '#ffffff';
+          paint(zctx, occ);
+          const a = zctx.getImageData(0, 0, COLS, ROWS).data;
+          for (let i = 0; i < NCELL; i++) if (a[i * 4 + 3] > 24) occ[i] = 1;
+          return occ;
+        }
+        function cellsRow(occ, y, x0, x1) {
+          const r = Math.floor(y / CELL);
+          if (r < 0 || r >= ROWS) return;
+          const c0 = Math.max(0, Math.floor(x0 / CELL));
+          const c1 = Math.min(COLS - 1, Math.floor(x1 / CELL));
+          for (let c = c0; c <= c1; c++) occ[r * COLS + c] = 1;
+        }
+
+        // the zones, each with its window: it clears over [c0, c1] and gives
+        // the field back over [r0, r1] (a zone that holds from the first frame
+        // has c0 = c1 = -Infinity; one that holds to the end card, r0 = r1 = Infinity)
+        const zones = [];
+        function addZone(name, paint, z, c0, c1, r0, r1) {
+          const d = distanceFrom(inkCells(paint));
+          const shift = z.shift === undefined ? SHIFT : z.shift;
+          const reach = z.m0 + z.ramp + shift + 1;
+          let x0 = COLS;
+          let x1 = -1;
+          let y0 = ROWS;
+          let y1 = -1;
+          for (let y = 0, i = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++, i++) {
+              if (d[i] >= reach) continue;
+              if (x < x0) x0 = x;
+              if (x > x1) x1 = x;
+              if (y < y0) y0 = y;
+              if (y > y1) y1 = y;
+            }
+          }
+          zones.push({ name, d, m0: z.m0, ramp: z.ramp, A: shift / FIELD.cap, reach, c0, c1, r0, r1, x0, x1, y0, y1 });
+        }
+        function held(z, t) {
+          const c = z.c1 > z.c0 ? ss(z.c0, z.c1, t) : t >= z.c1 ? 1 : 0;
+          if (c <= 0) return 0;
+          const r = z.r1 > z.r0 ? ss(z.r0, z.r1, t) : t >= z.r1 ? 1 : 0;
+          return c * (1 - r);
+        }
+
+        // the painters. The headings and the counts are painted in faces with
+        // their own features (the headings' single-storey a, cv11; the
+        // counts' tabular figures, tnum), loaded from the kit's own Inter file
+        // at boot (a canvas cannot take font-feature-settings)
+        const INK_FACES = [
+          new FontFace('GTInkHead', 'url(kit/fonts/InterVariable.woff2)', { weight: '100 900', featureSettings: '"cv11" 1, "ss01" 0' }),
+          new FontFace('GTInkCount', 'url(kit/fonts/InterVariable.woff2)', { weight: '100 900', featureSettings: '"tnum" 1' }),
+        ];
+        function loadInkFaces() {
+          return Promise.all(
+            INK_FACES.map(function (f) {
+              return f.load().then(function (g) {
+                document.fonts.add(g);
+              });
+            })
+          );
+        }
+        const HEAD_SIZE = 160;
+        const HEAD_BASE = 172 + 0.7275 * HEAD_SIZE; // 288.4
+        function setHeadFont(ctx) {
+          ctx.font = '500 ' + HEAD_SIZE + 'px GTInkHead';
+          ctx.letterSpacing = (-0.035 * HEAD_SIZE).toFixed(2) + 'px';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
+        }
+        // a heading's rise units (one mask each): its text, its colour and the
+        // x of its first glyph's origin, from the seated left edge plus the
+        // advance of everything before it (the DOM adds the letter spacing
+        // after every character, spaces too, as the canvas does)
+        const unitCtx = document.createElement('canvas').getContext('2d');
+        function headingUnits(id) {
+          const h = el(id);
+          const left = parseFloat(h.style.left);
+          setHeadFont(unitCtx);
+          const units = [];
+          let prefix = '';
+          Array.prototype.forEach.call(h.childNodes, function (n) {
+            if (n.nodeType === 1 && n.classList.contains('wm')) {
+              units.push({ text: n.textContent, x: left + (prefix ? unitCtx.measureText(prefix).width : 0), fire: !!n.querySelector('.fire') });
+            }
+            prefix += n.textContent;
+          });
+          unitCtx.letterSpacing = '0px';
+          return units;
+        }
+        function paintHeading(id) {
+          return function (ctx) {
+            setHeadFont(ctx);
+            headingUnits(id).forEach(function (u) {
+              ctx.fillText(u.text, u.x, HEAD_BASE);
+            });
+            ctx.letterSpacing = '0px';
+          };
+        }
+        function paintCross(ctx, x, y) {
+          ctx.fillRect(x - 12, y - 1, 25, 3);
+          ctx.fillRect(x - 1, y - 12, 3, 25);
+        }
+        function paintDisc(ctx, cx, cy, r) {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        // a count as makeCount sets it: the star at cap height, then the figure
+        function paintCount(ctx, x, capTop, size, text) {
+          const sh = size * 0.7275;
+          const sw = (sh * 95.1) / 90.45;
+          ctx.beginPath();
+          for (let k = 0; k < 10; k++) {
+            const ang = ((-90 + k * 36) * Math.PI) / 180;
+            const rr = k % 2 ? 50 * 0.47 : 50;
+            const px = x + ((50 + rr * Math.cos(ang) - 2.45) * sw) / 95.1;
+            const py = capTop + ((52 + rr * Math.sin(ang) - 2) * sh) / 90.45;
+            if (k) ctx.lineTo(px, py);
+            else ctx.moveTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.font = '500 ' + size + 'px GTInkCount';
+          ctx.letterSpacing = (-0.02 * size).toFixed(2) + 'px';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillText(text, x + sw + 0.24 * size, capTop + sh);
+          ctx.letterSpacing = '0px';
+        }
+        // layer 3 as drawPiece sets it at (dx, dy, p): its cells
+        function pieceCells(occ, dx, dy, p) {
+          const top = lerp(CUTS[2] + dy, BLOCK.y0, p);
+          const bottom = lerp(CUTS[3] + dy, BLOCK.y1, p);
+          for (let y = top; y < bottom; y += CELL) {
+            const v = (y - top) / (bottom - top);
+            const hw = bandHalf(CUTS[2] + v * (CUTS[3] - CUTS[2]));
+            cellsRow(occ, y, lerp(MOON.x + dx - hw, BLOCK.x0, p), lerp(MOON.x + dx + hw, BLOCK.x1, p));
+          }
+        }
+        function paintPrint(ctx, occ) {
+          // the printed moon with its layers at rest and spread, and the seams with their crosses past the limb
+          const spread = [-42, -15, 15, 42];
+          for (let b = 0; b < 4; b++) {
+            for (let ys = CUTS[b]; ys < CUTS[b + 1]; ys += CELL) {
+              const half = bandHalf(ys + 1.5) + 3;
+              if (half <= 3) continue;
+              for (let dy = Math.min(0, spread[b]); dy <= Math.max(0, spread[b]); dy += CELL) cellsRow(occ, ys + dy, MOON.x - half, MOON.x + half);
+            }
+          }
+          for (let i = 1; i <= 3; i++) {
+            const ya = CUTS[i];
+            const yb = Math.round(CUTS[i] + (spread[i - 1] + spread[i]) / 2);
+            ctx.fillRect(SEAM_X0 - 28, Math.min(ya, yb) - 12, SEAM_X1 - SEAM_X0 + 56, Math.abs(yb - ya) + 25);
+          }
+        }
+        function paintSlide(ctx, occ) {
+          // the piece's whole path (out of its slot, into the block, and home again) and the connector with its crosses
+          for (let k = 0; k <= 90; k++) pieceCells(occ, (SLIDE * k) / 90, 15, 0);
+          for (let k = 0; k <= 20; k++) pieceCells(occ, SLIDE, 15, k / 20);
+          for (let k = 0; k <= 40; k++) pieceCells(occ, SLIDE * (1 - k / 40), 15 * (1 - k / 40), 1 - k / 40);
+          const from = connFrom();
+          ctx.fillRect(BLOCK.x1 + 24 - 24, CONN_Y - 12, from - BLOCK.x1 + 24, 25);
+        }
+        function paintRect(x0, y0, x1, y1) {
+          return function (ctx) {
+            ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+          };
+        }
+
+        const ALWAYS = -Infinity;
+        const NEVER = Infinity;
+        // fix round (the v4 critic): every zone clears and returns slowly (0.6
+        // to 1.0 s, smoothstep) and inside a motion that is already running,
+        // never on a start of its own in a hold. Each zone lists its four
+        // times: clearing from c0 to c1, returning from r0 to r1 (equal times
+        // switch it on a cut)
+        function headZone(id, c0, c1, r0, r1) {
+          addZone(id, paintHeading(id), HEAD_Z, c0, c1, r0, r1);
+        }
+        function objZone(name, paint, z, c0, c1, r0, r1) {
+          addZone(name, paint, z, c0, c1, r0, r1);
+        }
+        function buildFieldZones() {
+          // shot 1: the hook from the first frame (it gives way as its cells
+          // travel to the moon), the moon (clearing as the cells leave), its
+          // count, the shelves, the marks; all of them give the field back
+          // through the recede
+          headZone('h-one', ALWAYS, ALWAYS, MT0 + 0.2, MT_LAND + 0.3);
+          objZone('moon1', function (ctx) {
+            paintDisc(ctx, SHELFMOON.x, SHELFMOON.y, SHELFMOON.r + 1);
+          }, OBJ_Z, MT0 - 0.2, MT0 + 0.5, RECEDE, RECEDE + 0.9);
+          objZone('count', function (ctx) {
+            paintCount(ctx, FD_COUNT.x, FD_COUNT.cap, FD_COUNT.size, ghCount(FUMADOCS_STARS));
+          }, OBJ_Z, COUNT_AT - 0.6, COUNT_AT, RECEDE, RECEDE + 0.9);
+          objZone('shelves', function (ctx) {
+            SHELVES.forEach(function (s) {
+              ctx.fillRect(s.x0, s.y - 4, s.x1 - s.x0, 9);
+              paintCross(ctx, s.x0 - 16, s.y);
+              paintCross(ctx, s.x1 + 16, s.y);
+            });
+          }, RULE_Z, SHELF_AT - 0.7, SHELF_AT, RECEDE, RECEDE + 0.9);
+          marks.forEach(function (m) {
+            objZone('mark-' + m.a.id, function (ctx) {
+              ctx.drawImage(m.c, m.x, m.y, m.w, m.h);
+              paintCount(ctx, m.x, m.cap, MARK_COUNT, ghCount(m.a.stars));
+            }, OBJ_Z, m.t - 0.5, m.t + 0.05, RECEDE, RECEDE + 0.9);
+          });
+          // "Fuma Nama" clears during the pulse along shelf 2 and gives the
+          // field back as the rain falls
+          headZone('h-fuma', PULSE1, PULSE1 + 1.0, NAME_MT0 + 0.25, NAME_MT0 + 1.25);
+          // the smoke's dark core rides the plume's lower edge here (a ring
+          // about 100 px across, drifting from (1210, 352) at 19.5 s to (1150,
+          // 325) at 25.0 s; v3 met it at the same film times, since the field's
+          // clock is unchanged). The moon's zone hides it until the shelf
+          // recedes and the docs page's zone from 24.54; between them this
+          // zone holds the field off it, so the plume's edge curves into a dark
+          // bay instead of carrying a ring beside the heap
+          addZone('pile-core', function (ctx) {
+            for (let k = 0; k <= 12; k++) paintDisc(ctx, lerp(1218, 1144, k / 12), lerp(360, 320, k / 12), 58);
+          }, CORE_Z, RECEDE, RECEDE + 0.6, CREST_AT + 0.5, CREST_AT + 1.2);
+          // shot 2: the heap's glyphs (the rain falls through the field; the
+          // zone holds their cells), clearing with the name's dissolve
+          objZone('heap', function (ctx) {
+            heap.forEach(function (g) {
+              paintDisc(ctx, g.cx, g.cy, 14);
+            });
+          }, OBJ_Z, NAME_MT0, NAME_MT0 + 0.9, SORT0 + 0.3, SORT1 + 0.3);
+          // shot 3: the docs page's place, cleared while the crest settles and
+          // given back as the page leaves; the file's glyphs
+          objZone('page3', paintRect(PAGE3.x - 6, PAGE3.y - 6, PAGE3.x + 1600 * PAGE3.s + 6, PAGE3.y + 480 * PAGE3.s + 22), OBJ_Z, CREST_AT - 0.5, CREST_AT + 0.5, PAGE_OUT + 0.3, PAGE_OUT + 1.2);
+          objZone('file', function (ctx) {
+            slots.forEach(function (s) {
+              paintDisc(ctx, s.x, s.y, 12);
+            });
+          }, OBJ_Z, PAGE_OUT + 0.2, SORT0 + 0.2, FILE_OUT + 0.3, FILE_END + 0.6);
+          // shot 4: the glass moon (the printed smoke may almost touch it) and
+          // the crosses at its limb, clearing with the file's tone-down; then
+          // its print, the seams and the piece's path
+          objZone('glass4', function (ctx) {
+            paintDisc(ctx, MOON.x, MOON.y, MOON.r + 1);
+            for (let i = 1; i <= 3; i++) paintCross(ctx, SEAM_X0 - 16, CUTS[i]);
+          }, GLASS_Z, FILE_OUT, FILE_END + 0.1, MIX4 + 0.5, MIX4 + 1.0);
+          // "Fumadocs" clears with the file's tone-down and returns as the layers finish parting
+          headZone('h-fd', FILE_OUT, FILE_OUT + 0.85, H3_OUT + 0.3, H3_OUT + 1.3);
+          addZone('print4', paintPrint, OBJ_Z, GLOW4, GLOW4 + 0.8, CUT5, CUT5);
+          addZone('slide4', paintSlide, OBJ_Z, SLIDE0 - 0.45, SLIDE0 - 0.05, CUT5, CUT5);
+          // shot 5: the page at full size from the cut, then the parted page at
+          // 0.625 with its seam above the code panel, the connector, the part's
+          // path and the panel; "Into your codebase" clears during the shrink.
+          // After the cut back to the moon they hold the field off until the
+          // pieces start returning, so the field comes back with that return
+          addZone('page5a', paintRect(108, 432, 1836, 1004), OBJ_Z, CUT5, CUT5, JUST + 0.3, JUST + 1.3);
+          addZone('page5b', function (ctx) {
+            ctx.fillRect(108, 450, 1230 - 108, 400);
+            ctx.fillRect(1180, 528, 1800 - 1180, 24);
+            ctx.fillRect(1180, 528, 200, 270);
+            ctx.fillRect(PANEL.x0 - 28, PANEL.y0 - 28, PANEL.x1 - PANEL.x0 + 56, PANEL.y1 - PANEL.y0 + 56);
+          }, OBJ_Z, COPY, JUST, RETURN0, RETURN0 + 0.9);
+          headZone('h-into', JUST, JUST + 1.0, RETURN0, RETURN0 + 0.9);
+          // shot 6: the parted print and the piece's path home (from the cut back), then the moon's disc
+          addZone('print6', paintPrint, OBJ_Z, CUT6, CUT6, RETURN0 + 0.4, RETURN0 + 1.3);
+          addZone('slide6', paintSlide, OBJ_Z, CUT6, CUT6, RETURN0 + 0.3, RETURN0 + 1.2);
+          addZone('disc6', function (ctx) {
+            paintDisc(ctx, MOON.x, MOON.y, MOON.r + 1);
+          }, OBJ_Z, CUT6, CUT6, MOVE7, MOVE7 + 0.6);
+          // shot 7: the moon's path into the grant (clearing as the glass rises)
+          // and its place there, the GT mark in the card's box (clearing during
+          // the move), the connector (clearing as the mark forms)
+          objZone('path9', function (ctx) {
+            for (let k = 0; k <= 24; k++) {
+              const e = k / 24;
+              paintDisc(ctx, lerp(MOON.x, MOON9.x, e), lerp(MOON.y, MOON9.y, e), lerp(MOON.r, MOON9.r, e) + 1);
+            }
+          }, OBJ_Z, GLYPH_OUT, MOVE7, MOVE7 + 0.8, MOVE7 + 1.3);
+          objZone('moon9', function (ctx) {
+            paintDisc(ctx, MOON9.x, MOON9.y, MOON9.r + 1);
+          }, OBJ_Z, MOVE7 + 0.4, MOVE7 + 0.8, NEVER, NEVER);
+          objZone('gt9', function (ctx) {
+            ctx.drawImage(el('logo-gt'), MARK.x0, MARK.y0, MARK.x1 - MARK.x0, MARK.y1 - MARK.y0);
+          }, OBJ_Z, MOVE7 + 0.1, GT9, NEVER, NEVER);
+          objZone('conn9', function (ctx) {
+            ctx.fillRect(CONN9.x - 4, CONN9.y0, 9, CONN9.y1 - CONN9.y0 + 5);
+            ctx.fillRect(CONN9.x1, CONN9.y1 - 4, CONN9.x - CONN9.x1 + 5, 9);
+            paintCross(ctx, CONN9.x, CONN9.y0);
+            paintCross(ctx, CONN9.x1, CONN9.y1);
+          }, OBJ_Z, GT9 + 0.3, FIRST9, NEVER, NEVER);
+        }
+
+        // the weight at t: every zone in its window multiplies it, its
+        // distance shifted by the smoke's plume-scale contrast
+        function fieldWeights(t) {
+          fieldW.fill(1);
+          for (let k = 0; k < zones.length; k++) {
+            const z = zones[k];
+            const a = held(z, t);
+            if (a <= 0) continue;
+            const A = z.A;
+            for (let y = z.y0; y <= z.y1; y++) {
+              for (let x = z.x0, i = y * COLS + z.x0; x <= z.x1; x++, i++) {
+                const d = z.d[i];
+                if (d >= z.reach) continue;
+                let w = 0;
+                if (d > z.m0) {
+                  const u = (d + A * (fieldLP[i] - fieldLP2[i]) - z.m0) / z.ramp;
+                  w = u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u);
+                }
+                fieldW[i] *= 1 - a * (1 - w);
+              }
+            }
+          }
+        }
+        // the film opens on the field at tone 0.35, full by 0.8 s in Bayer order;
+        // it lowers its tone to 0 over the 0.4 s before the card
+        function fieldAmount(t) {
+          return (0.35 + 0.65 * ss(0, 0.8, t)) * (1 - ss(RECEDE9, CARD, t));
+        }
+        function drawField(t) {
+          setFieldLook();
+          gems.a.at(sField(t));
+          readLum(gems.a.canvas, COLS, ROWS, fieldLum);
+          for (let i = 0; i < NCELL; i++) {
+            const s = Math.min(FIELD.cap, Math.pow(fieldLum[i], FIELD.gamma) * FIELD.gain);
+            fieldS[i] = s * ss(KNEE[0], KNEE[1], s);
+          }
+          lowPass(fieldS, fieldLP, LP1);
+          lowPass(fieldS, fieldLP2, LP2);
+          fieldWeights(t);
+          const amt = fieldAmount(t);
+          for (let y = 0, i = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++, i++) {
+              const w = fieldW[i];
+              const v = (w >= 1 ? fieldS[i] : fieldS[i] - (1 - w) * BITE) * amt;
+              if (v <= 0) {
+                fpx32[i] = 0;
+                continue;
+              }
+              const th = th8(x, y);
+              fpx32[i] = FIELD_TONE[v * 2 > 1 + th ? 2 : v * 2 > th ? 1 : 0];
+            }
+          }
+          foctx.putImageData(fimage, 0, 0);
+          fctx.imageSmoothingEnabled = false;
+          fctx.clearRect(0, 0, W, H);
+          fctx.drawImage(foff, 0, 0, COLS * CELL, ROWS * CELL);
+        }
+
+        /* ------------------------------------------------------------ a heading's ink as 3 px cells */
+
+        // the heading as the zones paint it, on the cell grid: every cell its
+        // ink covers by 45 percent, white or (the accented word) fire
+        function headingCells(id) {
+          const cv = document.createElement('canvas');
+          cv.width = W;
+          cv.height = H;
+          const cx = cv.getContext('2d', { willReadFrequently: true });
+          setHeadFont(cx);
+          headingUnits(id).forEach(function (u) {
+            cx.fillStyle = u.fire ? HEX.fire : HEX.white;
+            cx.fillText(u.text, u.x, HEAD_BASE);
+          });
+          const by0 = Math.floor((HEAD_BASE - HEAD_SIZE) / CELL);
+          const by1 = Math.ceil((HEAD_BASE + 0.3 * HEAD_SIZE) / CELL);
+          const d = cx.getImageData(0, by0 * CELL, W, (by1 - by0) * CELL).data;
+          const src = [];
+          for (let gy = by0; gy < by1; gy++) {
+            for (let gx = 0; gx < COLS; gx++) {
+              let a = 0;
+              let g = 0;
+              for (let j = 0; j < CELL; j++) {
+                for (let i = 0; i < CELL; i++) {
+                  const k = (((gy - by0) * CELL + j) * W + gx * CELL + i) * 4;
+                  a += d[k + 3];
+                  g += d[k + 1] * d[k + 3];
+                }
+              }
+              if (a / (CELL * CELL * 255) < 0.45) continue;
+              src.push({ x: gx, y: gy, c: g / a < 160 ? PACK_FIRE : PACK_WHITE });
+            }
+          }
+          return src;
+        }
+
+        /* ------------------------------------------------------------ shot 1: the moving type into the moon's print */
+
+        // Moving type (MOTION.md transition d): once the hook's floor ends,
+        // on "docs framework", its 3 px cells leave in reading order (0.2 s),
+        // travel right on seeded paths (power2.inOut, 0.3 to 0.4 s each) and
+        // land as the moon's Bayer print, a disc of r 270 at (1480, 522); the
+        // disc's other cells raise their tone meanwhile. Each cell lands on one
+        // of the disc's cells of lowest Bayer threshold, so the landed cells
+        // are an even screen of the disc, and the left of the heading lands on
+        // the left of the disc. Every position is snapped to the cell grid.
+        // The print is then the moon until the pulse lights it.
+        const lockCells = [];
+        for (let y = 0, i = 0; y < ROWS; y++) {
+          for (let x = 0; x < COLS; x++, i++) {
+            if (Math.hypot(x * CELL + 1.5 - SHELFMOON.x, y * CELL + 1.5 - SHELFMOON.y) <= SHELFMOON.r) lockCells.push(i);
+          }
+        }
+        const lockTone = new Float32Array(NCELL);
+        const lockTarget = new Uint8Array(NCELL); // 1 where a hook cell lands
+        let swarm = [];
+        let swarmFrac = 0;
+        function buildSwarm() {
+          const src = headingCells('h-one');
+          // the targets: the disc's cells of lowest threshold, one per hook cell
+          const ranked = lockCells.slice().sort(function (p, q) {
+            return th8(p % COLS, Math.floor(p / COLS)) - th8(q % COLS, Math.floor(q / COLS)) || p - q;
+          });
+          const tg = ranked.slice(0, src.length);
+          tg.forEach(function (i) {
+            lockTarget[i] = 1;
+          });
+          swarmFrac = src.length / lockCells.length;
+          // pair in reading order: left of the heading to the left of the disc
+          src.sort(function (p, q) {
+            return p.x - q.x || p.y - q.y;
+          });
+          tg.sort(function (p, q) {
+            return (p % COLS) - (q % COLS) || p - q;
+          });
+          const rnd = GTDither.rng(1307);
+          let xmin = Infinity;
+          let xmax = -Infinity;
+          src.forEach(function (q) {
+            xmin = Math.min(xmin, q.x);
+            xmax = Math.max(xmax, q.x);
+          });
+          swarm = src.map(function (q, k) {
+            const ti = tg[k];
+            const bx = ti % COLS;
+            const by = Math.floor(ti / COLS);
+            const dx = bx - q.x;
+            const dy = by - q.y;
+            const len = Math.hypot(dx, dy) || 1;
+            const bend = Math.sin(q.x / 63 + q.y / 43) * 11 + (rnd() - 0.5) * 6; // cells
+            const mx = (q.x + bx) / 2 + (-dy / len) * bend;
+            const my = (q.y + by) / 2 + (dx / len) * bend - (4 + rnd() * 8);
+            const leave = MT0 + 0.2 * ((q.x - xmin) / (xmax - xmin || 1)) + rnd() * 0.02;
+            const fly = Math.min(0.3 + 0.1 * rnd(), MT_LAND - leave);
+            return { ax: q.x, ay: q.y, bx, by, mx, my, leave, fly, c: q.c, ti };
+          });
+        }
+        function drawMoonPrint1(t) {
+          // the moon's print as its smoke lights it, the hook's cells in flight, and the print's mix into the glass
+          readLum(gems.b.canvas, COLS, ROWS, lumGrid);
+          for (let k = 0; k < lockCells.length; k++) {
+            const i = lockCells[k];
+            lockTone[i] = clamp(Math.pow(lumGrid[i], 1.05) * 1.02);
+          }
+          px32.fill(CLEAR);
+          const rest = swarmFrac + (1 - swarmFrac) * ss(MT0 + 0.25, MT_LAND, t);
+          const mix = ss(GLASS1, GLASS1 + 0.45, t);
+          for (let k = 0; k < lockCells.length; k++) {
+            const i = lockCells[k];
+            if (lockTarget[i]) continue;
+            const x = i % COLS;
+            const y = (i - x) / COLS;
+            const th = th8(x, y);
+            if (th >= rest || th < mix) continue;
+            px32[i] = STEP[stepOf(lockTone[i], th)];
+          }
+          for (let k = 0; k < swarm.length; k++) {
+            const q = swarm[k];
+            const u = clamp((t - q.leave) / q.fly);
+            let gx = q.ax;
+            let gy = q.ay;
+            let c = q.c;
+            if (u > 0) {
+              const e = P2IO(u);
+              const iv = 1 - e;
+              gx = Math.round(iv * iv * q.ax + 2 * iv * e * q.mx + e * e * q.bx);
+              gy = Math.round(iv * iv * q.ay + 2 * iv * e * q.my + e * e * q.by);
+              if (u >= 0.5) {
+                const th = th8(q.bx, q.by);
+                if (u >= 1 && th < mix) continue; // landed, and its cell has turned to glass
+                c = STEP[stepOf(lockTone[q.ti], th)];
+              }
+            }
+            if (gx < 0 || gx >= COLS || gy < 0 || gy >= ROWS) continue;
+            px32[gy * COLS + gx] = c;
+          }
+          blit();
+        }
+
+        /* ------------------------------------------------------------ shot 2: the heap */
+
+        // v3's glyph halftone at a larger grid (24 px, glyphs up to 26 px),
+        // lowered 60 px so that it stands clear of the docs page's place
+        const heapCanvas = el('heap');
+        const hctx = heapCanvas.getContext('2d');
+        const HEAP_CELL = 24;
+        const HEAP_COLS = Math.ceil(W / HEAP_CELL);
+        const HEAP_ROWS = Math.ceil(H / HEAP_CELL);
+        const HEAP_LOWER = 60 / H;
+        const heapLum0 = new Float32Array(HEAP_COLS * HEAP_ROWS);
+        const heapLumT = new Float32Array(HEAP_COLS * HEAP_ROWS);
+        const heap = [];
+        // the docs page's place in shot 3 and its 60 px margin: no glyph lands there
+        const KEEP_OUT = { x0: 100, x1: 1180, y0: 116, y1: 524 };
+        const PUNCT = '{}()[];:=<>/*+.,\'"!&|_$'.split('');
+        const LETTERS = 'constletfunctionreturnimportexport'.split('');
+        function pickCode(r) {
+          return r < 0.68 ? PUNCT[Math.floor((r / 0.68) * PUNCT.length)] : LETTERS[Math.floor(((r - 0.68) / 0.32) * LETTERS.length)];
+        }
+        const PEAK = 0.7;
+        function hgt(u) {
+          return (
+            0.47 * Math.exp(-(((u - PEAK) / 0.19) ** 2)) +
+            0.26 * Math.exp(-(((u - 0.47) / 0.14) ** 2)) +
+            0.16 * Math.exp(-(((u - 0.93) / 0.1) ** 2)) +
+            (0.1 * ss(0.2, 0.42, u) * (1 - ss(0.97, 1.06, u)) + 0.01 * Math.sin(u * 61) + 0.006 * Math.sin(u * 143 + 1.3)) * ss(0.22, 0.3, u) -
+            0.012
+          );
+        }
+        function dh(u) {
+          return (hgt(u + 0.004) - hgt(u - 0.004)) / 0.008;
+        }
+        function fireInk(t, hi, mid, lo) {
+          return t > hi ? HEX.white : t > mid ? HEX.sun : t > lo ? HEX.fire : HEX.ember;
+        }
+        const FALL = 0.34; // seconds a glyph falls before it locks into its cell
+        function buildHeap() {
+          const rnd = GTDither.rng(611);
+          let peakH = 0;
+          for (let gx = 0; gx < HEAP_COLS; gx++) peakH = Math.max(peakH, hgt((gx + 0.5) / HEAP_COLS) - HEAP_LOWER);
+          for (let gy = 0; gy < HEAP_ROWS; gy++) {
+            for (let gx = 0; gx < HEAP_COLS; gx++) {
+              const pick = rnd();
+              const rot = rnd();
+              const jit = rnd();
+              const u = (gx + 0.5) / HEAP_COLS;
+              const v = (gy + 0.5) / HEAP_ROWS;
+              const tp = 1 - hgt(u) + HEAP_LOWER;
+              if (v < tp) continue;
+              const cx = gx * HEAP_CELL + HEAP_CELL / 2;
+              const cy = gy * HEAP_CELL + HEAP_CELL / 2;
+              if (cx > KEEP_OUT.x0 && cx < KEEP_OUT.x1 && cy > KEEP_OUT.y0 && cy < KEEP_OUT.y1) continue;
+              const depth = v - tp;
+              const face = clamp(0.5 + 0.85 * dh(u));
+              const s = ss(0.04, 0.65, heapLum0[gy * HEAP_COLS + gx]);
+              const crust = Math.exp(-depth / 0.05);
+              const fall = ss(0.0, 0.55, depth);
+              const tone = clamp(0.2 + 0.45 * face * (1 - 0.45 * fall) + 0.3 * s * (1 - 0.3 * fall) + 0.36 * crust * (0.4 + 0.6 * face));
+              const size = HEAP_CELL * Math.min(26 / 24, 0.2 + 1.0 * Math.sqrt(tone));
+              // the base lands first and the crest last; the lower rows, which hold
+              // most of the glyphs, land fastest (fix round: RAIN_CURVE 1.8, v4
+              // first cut 0.85, which left a thin band along the bottom edge
+              // for 0.7 s), so the mound's outline stands by about 21.5
+              const hf = clamp((1 - v) / peakH);
+              const land = Math.min(CREST_AT, RAIN_FROM + FALL + (CREST_AT - RAIN_FROM - FALL - 0.06) * Math.pow(hf, RAIN_CURVE) + (jit - 0.5) * 0.12);
+              heap.push({ ch: pickCode(pick), cx, cy, gx, gy, rot: (rot - 0.5) * 0.52, size, ink: fireInk(tone, 0.86, 0.62, 0.34), land: Math.max(RAIN_FROM + FALL, land), drop: 300, i: gy * HEAP_COLS + gx, fromName: false, slot: null });
+            }
+          }
+        }
+
+        // Moving type again: "Fuma Nama" breaks into its 3 px cells, which
+        // loosen over 0.24 s (each by up to 30 px, so the name is unreadable
+        // by 20.70) and leave in reading order (20.46 to 20.66).
+        // Each 24 px cluster of them falls on a seeded path that curves right
+        // into the mound's left flank and base (power2.in, 0.5 to 0.8 s) and
+        // resolves into one of the first glyphs to land there; the rest of the
+        // rain follows from above.
+        let nameClusters = [];
+        let NAME_END = NAME_MT0;
+        function buildNameCells() {
+          const src = headingCells('h-fuma');
+          const by = {};
+          src.forEach(function (q) {
+            const key = (q.x >> 3) + ',' + (q.y >> 3);
+            (by[key] = by[key] || []).push(q);
+          });
+          const clusters = Object.keys(by).map(function (k) {
+            const cs = by[k];
+            let sx = 0;
+            let sy = 0;
+            cs.forEach(function (q) {
+              sx += q.x;
+              sy += q.y;
+            });
+            return { cells: cs, cx: sx / cs.length, cy: sy / cs.length };
+          });
+          clusters.sort(function (p, q) {
+            return p.cx - q.cx || p.cy - q.cy;
+          });
+          // the targets: the earliest glyphs to land on the mound's left flank and base
+          const flank = heap
+            .filter(function (g) {
+              return g.cx < 1240;
+            })
+            .sort(function (p, q) {
+              return p.land - q.land || p.cx - q.cx;
+            })
+            .slice(0, clusters.length)
+            .sort(function (p, q) {
+              return p.cx - q.cx || q.cy - p.cy;
+            });
+          const rnd = GTDither.rng(2209);
+          const x0 = clusters[0].cx;
+          const x1 = clusters[clusters.length - 1].cx;
+          nameClusters = clusters.slice(0, flank.length).map(function (c, k) {
+            const g = flank[k];
+            const leave = NAME_MT0 + 0.2 * ((c.cx - x0) / (x1 - x0 || 1)) + rnd() * 0.015;
+            const fly = 0.5 + 0.3 * rnd();
+            g.fromName = true;
+            g.land = leave + fly;
+            NAME_END = Math.max(NAME_END, g.land);
+            const bx = g.cx / CELL;
+            const byy = g.cy / CELL;
+            // the path bends right: its control point lies beside the target, at the name's height
+            const mx = lerp(c.cx, bx, 0.8) + 20 + rnd() * 30;
+            const my = c.cy + (byy - c.cy) * 0.15;
+            return {
+              ax: c.cx,
+              ay: c.cy,
+              bx,
+              by: byy,
+              mx,
+              my,
+              leave,
+              fly,
+              cells: c.cells.map(function (q) {
+                const a = rnd() * 2 * Math.PI;
+                const r = 2 + rnd() * 8;
+                return { ox: q.x - c.cx, oy: q.y - c.cy, sx: Math.cos(a) * r, sy: Math.sin(a) * r, c: q.c };
+              }),
+            };
+          });
+        }
+        function drawNameCells(t) {
+          px32.fill(CLEAR);
+          const brk = ss(NAME_MT0, NAME_MT0 + 0.24, t);
+          for (let k = 0; k < nameClusters.length; k++) {
+            const c = nameClusters[k];
+            const u = clamp((t - c.leave) / c.fly);
+            if (u >= 1) continue;
+            const e = u * u;
+            const iv = 1 - e;
+            const px = iv * iv * c.ax + 2 * iv * e * c.mx + e * e * c.bx;
+            const py = iv * iv * c.ay + 2 * iv * e * c.my + e * e * c.by;
+            const keep = 1 - e;
+            for (let j = 0; j < c.cells.length; j++) {
+              const q = c.cells[j];
+              const gx = Math.round(px + (q.ox + q.sx * brk) * keep);
+              const gy = Math.round(py + (q.oy + q.sy * brk) * keep);
+              if (gx < 0 || gx >= COLS || gy < 0 || gy >= ROWS) continue;
+              px32[gy * COLS + gx] = q.c;
+            }
+          }
+          blit();
+        }
+
+        /* ------------------------------------------------------------ shot 3: the file, built from the heap's glyphs */
+
+        // v3's file layout (x 975 to 1736, top y 141, 30 px pitch, its
+        // indentation and blank lines); each token bar is now a run of the
+        // heap's own glyphs at 22 px on the bar's 21 px unit, at the bar's
+        // place and length. It reads as code; no line is a real program.
+        const FILE = { x0: 975, y0: 141, lh: 30, unit: 21, maxw: 762, size: 22 };
+        const INDENT = [0, 0, 1, 1, 2, 2, 3, 3, 2, 1, -1, 0, 1, 1, 2, 3, 3, 4, 3, 2, 1, 0, -1, 0, 1, 1, 0];
+        const slots = [];
+        // the file's light: mount A at half rate, its lit band across the middle block through the hold
+        function sFile(t) {
+          return 3.77 + 0.5 * (t - (SORT1 + 0.5));
+        }
+        function buildFile() {
+          const rnd = GTDither.rng(2016);
+          let line = 0;
+          for (let r = 0; r < INDENT.length; r++) {
+            const ind = INDENT[r];
+            if (ind < 0) continue; // a blank line between blocks
+            let xx = FILE.x0 + ind * 2 * FILE.unit;
+            const end = Math.min(FILE.x0 + FILE.maxw, xx + FILE.unit * Math.floor(6 + rnd() * 26));
+            const y0 = FILE.y0 + r * FILE.lh;
+            while (xx < end) {
+              const w = FILE.unit * Math.max(1, Math.floor(1 + rnd() * 7));
+              const x1 = Math.min(end, xx + w);
+              if (x1 - xx < FILE.unit) break; // no slivers at a line's end
+              const n = Math.max(1, Math.round((x1 - xx) / FILE.unit));
+              for (let j = 0; j < n; j++) {
+                const x = xx + FILE.unit * (j + 0.5);
+                slots.push({ x, y: y0 + 11, line, gx: Math.round((x - FILE.x0) / FILE.unit), g: null, start: 0 });
+              }
+              xx = x1 + FILE.unit * (rnd() < 0.2 ? 1 : 0.5);
+            }
+            line++;
+          }
+          // the glyphs that travel: the heap's surface, top first; each line
+          // takes the next run of them, left to right, so the top of the heap
+          // lifts into the top of the file
+          const pool = heap
+            .filter(function (g) {
+              return !g.fromName;
+            })
+            .sort(function (p, q) {
+              return p.cy - q.cy || p.cx - q.cx;
+            });
+          let k = 0;
+          for (let ln = 0; ln < line; ln++) {
+            const row = slots.filter(function (s) {
+              return s.line === ln;
+            });
+            const take = pool.slice(k, k + row.length).sort(function (p, q) {
+              return p.cx - q.cx;
+            });
+            k += row.length;
+            row.forEach(function (s, j) {
+              s.g = take[j];
+              take[j].slot = s;
+            });
+          }
+          const rnd2 = GTDither.rng(3301);
+          slots.forEach(function (s, j) {
+            s.start = SORT0 + (SORT1 - SORT0 - 0.55) * (j / (slots.length - 1));
+            s.bend = (rnd2() - 0.5) * 60;
+            s.ink = HEX.ember;
+          });
+        }
+        function inkFile() {
+          // the file's light at each slot (mount A's lumGrid, read by draw)
+          for (let j = 0; j < slots.length; j++) {
+            const s = slots[j];
+            const lum = lumGrid[Math.floor(s.y / CELL) * COLS + Math.floor(s.x / CELL)];
+            s.ink = fireInk(clamp(0.34 + 0.8 * Math.pow(lum, 0.9)), 0.86, 0.62, 0.4);
+          }
+        }
+        function drawHeap(t) {
+          hctx.setTransform(1, 0, 0, 1, 0, 0);
+          hctx.clearRect(0, 0, W, H);
+          hctx.textAlign = 'center';
+          hctx.textBaseline = 'middle';
+          hctx.font = '500 ' + HEAP_CELL + 'px Inter, system-ui, sans-serif';
+          // after the crest lands, the smoke light drifts: each glyph's size
+          // follows the re-sampled light by under 3 percent (its ink stays)
+          const drift = t > HEAP_DRIFT;
+          // during the sort the glyphs that stay lower their tone in Bayer order of the 24 px grid
+          const stay = 1 - ss(SORT0, SORT1, t);
+          // the file lowers its tone in Bayer order as the moon rises in its
+          // place, falling from its first frame (fix round: a smoothstep left it
+          // at 0.78 when the glow began)
+          const fileTone = Math.pow(1 - prog(t, FILE_OUT, FILE_END - FILE_OUT), 2);
+          for (let k = 0; k < heap.length; k++) {
+            const g = heap[k];
+            const s = g.slot;
+            if (s && t >= s.start) {
+              // a glyph travelling into the file, then seated in it
+              if (th8(s.gx, s.line) >= fileTone) continue;
+              const u = P2IO(prog(t, s.start, 0.55));
+              const iv = 1 - u;
+              const mx = (g.cx + s.x) / 2 + s.bend;
+              const my = Math.min(g.cy, s.y) - 50;
+              const x = iv * iv * g.cx + 2 * iv * u * mx + u * u * s.x;
+              const y = iv * iv * g.cy + 2 * iv * u * my + u * u * s.y;
+              const scale = lerp(g.size, FILE.size, u) / HEAP_CELL;
+              const rot = g.rot * iv;
+              const c = Math.cos(rot) * scale;
+              const sn = Math.sin(rot) * scale;
+              hctx.setTransform(c, sn, -sn, c, x, y);
+              hctx.fillStyle = u < 0.5 ? g.ink : s.ink;
+              hctx.fillText(g.ch, 0, HEAP_CELL * 0.04);
+              continue;
+            }
+            if (t >= SORT0 && !s && th8(g.gx, g.gy) >= stay) continue;
+            let y = g.cy;
+            let scale = g.size / HEAP_CELL;
+            if (g.fromName) {
+              // it resolves out of the name's cells as they arrive
+              if (t < g.land) continue;
+              scale *= 0.55 + 0.45 * ss(g.land, g.land + 0.12, t);
+            } else {
+              const start = g.land - FALL;
+              if (t < start) continue;
+              if (t < g.land) {
+                const q = (t - start) / FALL;
+                y = g.cy - g.drop * (1 - q);
+                scale *= ss(0, 0.45, q);
+                if (scale <= 0.01) continue;
+              }
+            }
+            if (drift && t >= g.land) scale *= 1 + 0.028 * clamp((heapLumT[g.i] - heapLum0[g.i]) * 6, -1, 1);
+            const c = Math.cos(g.rot) * scale;
+            const sn = Math.sin(g.rot) * scale;
+            hctx.setTransform(c, sn, -sn, c, g.cx, y);
+            hctx.fillStyle = g.ink;
+            hctx.fillText(g.ch, 0, HEAP_CELL * 0.04);
+          }
+          hctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
+
+        /* ------------------------------------------------------------ shots 4 and 6: the moon's print */
+
+        function moonState(t) {
+          const st = { sh: [0, 0, 0, 0], detached: false, dx: 0, p: 0, mix: 1, amount: 1 };
+          const spread = [-42, -15, 15, 42];
+          if (t < CUT5) {
+            st.mix = ss(0, 1, prog(t, MIX4, 0.5));
+            // "take apart": the layers part and spread in one move (v3's two steps
+            // merged), run on from the seams (fix round: power2.inOut 0.8)
+            const e = P2IO(prog(t, PART4, 0.8));
+            st.sh = spread.map(function (v) {
+              return snap(v * e);
+            });
+            st.detached = t >= SLIDE0;
+            st.dx = snap(SLIDE * P2IO(prog(t, SLIDE0, 0.6)));
+            st.p = P2IO(prog(t, RESHAPE, 0.6));
+          } else {
+            // shot 6: the pieces return to the circle on "started again", the print leaves on "scratch"
+            const e = P2IO(prog(t, RETURN0, 0.9));
+            st.sh = spread.map(function (v) {
+              return snap(v * (1 - e));
+            });
+            st.detached = e < 1;
+            st.dx = snap(SLIDE * (1 - e));
+            st.p = 1 - e;
+            // fix round: it comes back from the cut at 0.7 of its tone and eases to
+            // full over 0.4 s (power2.out), so the cut does not double the frame's
+            // brightness in one frame; on "scratch" it lowers to PRINT_HOLD, and the
+            // glyph moon's cells then take it block by block (printGate)
+            const back = prog(t, CUT6, 0.4);
+            st.amount = (0.7 + 0.3 * (1 - (1 - back) * (1 - back))) * (1 - (1 - PRINT_HOLD) * ss(0, 1, prog(t, PRINT_OUT, 0.5)));
+          }
+          return st;
+        }
+        function bandHalf(ys) {
+          const d = ys - MOON.y;
+          return Math.sqrt(Math.max(0, MOON.r * MOON.r - d * d));
+        }
+        function drawMoonPrint(t) {
+          const st = moonState(t);
+          readLum(gems.b.canvas, COLS, ROWS, lumGrid);
+          for (let i = 0, n = COLS * ROWS; i < n; i++) homeTone[i] = discMask[i] > 0 ? clamp(Math.pow(lumGrid[i], 1.05) * 1.02) * discMask[i] * st.amount : 0;
+          // shot 6: each 36 px block of the print leaves as its glyph lands on it
+          if (t >= GLYPH0 && t >= CUT6) {
+            for (let i = 0, n = COLS * ROWS; i < n; i++) if (printGate[i] <= t) homeTone[i] = 0;
+          }
+          px32.fill(CLEAR);
+          if (st.mix < 1) {
+            // the glass turns to its print cell by cell, in Bayer order (outside the disc the print is clear)
+            for (let y = 0, i = 0; y < ROWS; y++) {
+              for (let x = 0; x < COLS; x++, i++) {
+                if (discMask[i] <= 0) continue;
+                const th = th8(x, y);
+                if (th < st.mix) px32[i] = STEP[stepOf(homeTone[i], th)];
+              }
+            }
+            blit();
+            return;
+          }
+          // the layers, each printed at home and carried by its shift, so the print travels with its matter
+          for (let b = 0; b < 4; b++) {
+            if (b === 2 && st.detached) continue;
+            const dy = st.sh[b] / CELL;
+            for (let ys = CUTS[b] / CELL; ys < CUTS[b + 1] / CELL; ys++) {
+              const yd = ys + dy;
+              if (yd < 0 || yd >= ROWS) continue;
+              const half = bandHalf(ys * CELL + 1.5) + 3;
+              const x0 = Math.max(0, Math.floor((MOON.x - half) / CELL));
+              const x1 = Math.min(COLS, Math.ceil((MOON.x + half) / CELL));
+              for (let x = x0; x < x1; x++) {
+                const tone = homeTone[ys * COLS + x];
+                if (tone <= 0) continue;
+                px32[yd * COLS + x] = STEP[stepOf(tone, th8(x, ys))];
+              }
+            }
+          }
+          if (st.detached) drawPiece(st);
+          blit();
+        }
+        // layer 3 as a piece: its band shape at displacement (dx, dy), turned
+        // toward BLOCK by p; every cell reads the band's own tone, and the
+        // Bayer tile is anchored to the piece, so at p = 0 it is the band itself
+        function drawPiece(st) {
+          const dy = st.sh[2];
+          const dx = st.dx;
+          const p = st.p;
+          const by0 = CUTS[2];
+          const by1 = CUTS[3];
+          const top = lerp(by0 + dy, BLOCK.y0, p);
+          const bottom = lerp(by1 + dy, BLOCK.y1, p);
+          const dxc = dx / CELL;
+          const dyc = dy / CELL;
+          const r0 = Math.max(0, Math.floor(top / CELL));
+          const r1 = Math.min(ROWS, Math.ceil(bottom / CELL));
+          for (let oy = r0; oy < r1; oy++) {
+            const v = (oy * CELL + 1.5 - top) / (bottom - top);
+            if (v < 0 || v >= 1) continue;
+            const ys = by0 + v * (by1 - by0);
+            const hw = bandHalf(ys);
+            const left = lerp(MOON.x + dx - hw, BLOCK.x0, p);
+            const right = lerp(MOON.x + dx + hw, BLOCK.x1, p);
+            if (right - left < 1) continue;
+            const syc = Math.min(ROWS - 1, Math.floor(ys / CELL));
+            const c0 = Math.max(0, Math.floor(left / CELL));
+            const c1 = Math.min(COLS, Math.ceil(right / CELL));
+            for (let ox = c0; ox < c1; ox++) {
+              const u = (ox * CELL + 1.5 - left) / (right - left);
+              if (u < 0 || u >= 1) continue;
+              const xs = MOON.x - hw + u * 2 * hw;
+              const sxc = Math.min(COLS - 1, Math.max(0, Math.floor(xs / CELL)));
+              const tone = homeTone[syc * COLS + sxc];
+              px32[oy * COLS + ox] = STEP[stepOf(tone, th8(ox - dxc, oy - dyc))];
+            }
+          }
+        }
+        // the piece's right edge at screen height y
+        function pieceRight(st, y) {
+          const top = lerp(CUTS[2] + st.sh[2], BLOCK.y0, st.p);
+          const bottom = lerp(CUTS[3] + st.sh[2], BLOCK.y1, st.p);
+          const v = clamp((y - top) / (bottom - top));
+          const hw = bandHalf(CUTS[2] + v * (CUTS[3] - CUTS[2]));
+          return lerp(MOON.x + st.dx + hw, BLOCK.x1, st.p);
+        }
+
+        /* ------------------------------------------------------------ the line work */
+
+        const inkCanvas = el('ink');
+        const ictx = inkCanvas.getContext('2d');
+        // the context the line helpers draw into (the ink canvas, the page canvas or a tone layer)
+        let LX = ictx;
+        // the doubled line at video scale: a 9 px white gauge under a 3 px
+        // black core, drawn as whole-pixel rows, so both threads are 3 px and
+        // crisp. pulse: an optional [p0, p1] span drawn as a solid 9 px fire
+        // band over the whole gauge (its core filled too) inside a soft fire
+        // glow 8 px deep (fix round: v4's first cut turned only the two 3 px
+        // threads fire, which a phone shrinks to under 1 px)
+        function pulseGlow(x0, x1, y0, y1) {
+          // the glow: eight 1 px rings of fire, fading out, around the band
+          LX.fillStyle = HEX.fire;
+          for (let k = 8; k >= 1; k--) {
+            LX.globalAlpha = 0.07 + 0.05 * (8 - k);
+            LX.fillRect(x0 - k, y0 - k, x1 - x0 + 2 * k, y1 - y0 + 2 * k);
+          }
+          LX.globalAlpha = 1;
+        }
+        function doubledH(x0, x1, y, pulse) {
+          const a = Math.round(Math.min(x0, x1));
+          const b = Math.round(Math.max(x0, x1));
+          if (b - a < 1) return;
+          const yr = Math.round(y);
+          let p0 = 0;
+          let p1 = 0;
+          if (pulse) {
+            p0 = Math.max(a, Math.round(pulse[0]));
+            p1 = Math.min(b, Math.round(pulse[1]));
+          }
+          const lit = p1 - p0 >= 1;
+          if (lit) pulseGlow(p0, p1, yr - 4, yr + 5);
+          LX.fillStyle = HEX.white;
+          LX.fillRect(a, yr - 4, b - a, 9);
+          LX.fillStyle = HEX.black;
+          LX.fillRect(a, yr - 1, b - a, 3);
+          if (lit) {
+            LX.fillStyle = HEX.fire;
+            LX.fillRect(p0, yr - 4, p1 - p0, 9);
+          }
+        }
+        function doubledV(x, y0, y1) {
+          const a = Math.round(Math.min(y0, y1));
+          const b = Math.round(Math.max(y0, y1));
+          if (b - a < 1) return;
+          const xr = Math.round(x);
+          LX.fillStyle = HEX.white;
+          LX.fillRect(xr - 4, a, 9, b - a);
+          LX.fillStyle = HEX.black;
+          LX.fillRect(xr - 1, a, 3, b - a);
+        }
+        // a doubled line along an axis-aligned path with square corners, drawn
+        // up to length `upto` from its first point, with an optional fire
+        // pulse over [p0, p1] of its length
+        function doubledPath(pts, upto, pulse) {
+          const segs = [];
+          let acc = 0;
+          for (let k = 1; k < pts.length; k++) {
+            const len = Math.abs(pts[k][0] - pts[k - 1][0]) + Math.abs(pts[k][1] - pts[k - 1][1]);
+            segs.push({ a: pts[k - 1], b: pts[k], s0: acc, s1: acc + len, len });
+            acc += len;
+          }
+          function rects(lo, hi, half, color) {
+            LX.fillStyle = color;
+            segs.forEach(function (sg, k) {
+              const u0 = Math.max(lo, sg.s0);
+              const u1 = Math.min(hi, sg.s1);
+              if (u1 <= u0) return;
+              const f0 = (u0 - sg.s0) / sg.len;
+              const f1 = (u1 - sg.s0) / sg.len;
+              let xa = lerp(sg.a[0], sg.b[0], f0);
+              let ya = lerp(sg.a[1], sg.b[1], f0);
+              let xb = lerp(sg.a[0], sg.b[0], f1);
+              let yb = lerp(sg.a[1], sg.b[1], f1);
+              // a joint the line has passed closes its corner square
+              const ext0 = k > 0 && u0 <= sg.s0 ? half : 0;
+              const ext1 = k < segs.length - 1 && u1 >= sg.s1 ? half : 0;
+              if (sg.a[1] === sg.b[1]) {
+                const dir = Math.sign(sg.b[0] - sg.a[0]);
+                xa -= dir * ext0;
+                xb += dir * ext1;
+                LX.fillRect(Math.round(Math.min(xa, xb)), Math.round(sg.a[1]) - half, Math.round(Math.abs(xb - xa)), 2 * half + 1);
+              } else {
+                const dir = Math.sign(sg.b[1] - sg.a[1]);
+                ya -= dir * ext0;
+                yb += dir * ext1;
+                LX.fillRect(Math.round(sg.a[0]) - half, Math.round(Math.min(ya, yb)), 2 * half + 1, Math.round(Math.abs(yb - ya)));
+              }
+            });
+          }
+          if (upto <= 0) return acc;
+          const lit = pulse && Math.min(upto, pulse[1]) - Math.max(0, pulse[0]) >= 1;
+          if (lit) {
+            // the glow around the band (as doubledH): eight fading 1 px rings
+            for (let k = 8; k >= 1; k--) {
+              LX.globalAlpha = 0.07 + 0.05 * (8 - k);
+              rects(Math.max(0, pulse[0]) - k, Math.min(upto, pulse[1]) + k, 4 + k, HEX.fire);
+            }
+            LX.globalAlpha = 1;
+          }
+          rects(0, upto, 4, HEX.white);
+          rects(0, upto, 1, HEX.black);
+          if (lit) rects(Math.max(0, pulse[0]), Math.min(upto, pulse[1]), 4, HEX.fire);
+          return acc;
+        }
+        // a registration cross, 3 px arms, 25 px across; f (0..1) draws its arms out of its centre
+        function cross(x, y, f) {
+          const a = f === undefined ? 12 : Math.round(12 * f);
+          if (a < 1) return;
+          LX.fillStyle = HEX.white;
+          LX.fillRect(Math.round(x) - a, Math.round(y) - 1, 2 * a + 1, 3);
+          LX.fillRect(Math.round(x) - 1, Math.round(y) - a, 3, 2 * a + 1);
+        }
+        // the slot's outline: layer 3's band shape at home, as a polyline from
+        // its upper left corner clockwise, drawn once as a 3 px fire line
+        function slotPath(dy) {
+          const pts = [];
+          const y0 = CUTS[2] + dy - 1.5;
+          const y1 = CUTS[3] + dy + 1.5;
+          const hl = bandHalf(CUTS[2]);
+          pts.push([MOON.x - hl, y0], [MOON.x + hl, y0]);
+          for (let k = 1; k <= 24; k++) {
+            const yy = lerp(y0, y1, k / 24);
+            pts.push([MOON.x + bandHalf(yy - dy) + 1.5, yy]);
+          }
+          const hb = bandHalf(CUTS[3]);
+          pts.push([MOON.x - hb, y1]);
+          for (let k = 23; k >= 0; k--) {
+            const yy = lerp(y0, y1, k / 24);
+            pts.push([MOON.x - bandHalf(yy - dy) - 1.5, yy]);
+          }
+          return pts;
+        }
+        function strokePrefix(pts, f) {
+          let total = 0;
+          for (let k = 1; k < pts.length; k++) total += Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]);
+          let left = total * f;
+          LX.beginPath();
+          LX.moveTo(pts[0][0], pts[0][1]);
+          for (let k = 1; k < pts.length && left > 0; k++) {
+            const seg = Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]);
+            if (seg <= left) {
+              LX.lineTo(pts[k][0], pts[k][1]);
+              left -= seg;
+            } else {
+              const q = left / seg;
+              LX.lineTo(lerp(pts[k - 1][0], pts[k][0], q), lerp(pts[k - 1][1], pts[k][1], q));
+              left = 0;
+            }
+          }
+          LX.stroke();
+        }
+        // the connector's slot end: 24 px left of the slot's edge on its centre line
+        function connFrom() {
+          return Math.round(MOON.x - bandHalf(CONN_Y - 15) - 24);
+        }
+        // shot 4: the crosses and seams on "that developers" (0.2 s apart),
+        // then, as layer 3 slides on "and", the slot's fire outline and the
+        // connector, whose free end follows the piece's right edge to the block
+        function drawMoonLines4(t) {
+          const st = moonState(t);
+          for (let i = 1; i <= 3; i++) {
+            const t0 = CROSS4 + CROSS4_GAP * (i - 1);
+            if (t < t0) continue;
+            const y = Math.round(CUTS[i] + (st.sh[i - 1] + st.sh[i]) / 2);
+            cross(SEAM_X0 - 16, y, EXPO(prog(t, t0, 0.15)));
+            // fix round: power3.out over 0.5 s (v4 first cut: expo.out 0.45)
+            const e = P3(prog(t, t0, SEAM_D));
+            doubledH(SEAM_X0, lerp(SEAM_X0, SEAM_X1, e), y);
+            if (e > 0.995) cross(SEAM_X1 + 16, y);
+          }
+          if (t >= SLIDE0) {
+            const from = connFrom();
+            const to = BLOCK.x1 + 24;
+            if (t >= SLIDE0 + 0.1) {
+              LX.strokeStyle = HEX.fire;
+              LX.lineWidth = 3;
+              LX.lineJoin = 'miter';
+              strokePrefix(slotPath(st.sh[2]), EXPO(prog(t, SLIDE0 + 0.1, 0.5)));
+            }
+            const edgeX = pieceRight(st, CONN_Y);
+            const head = clamp(edgeX + 24, to, from);
+            // the slot's cross (x from + 4 to from + 28) opens as the piece's right edge clears it
+            cross(from + 16, CONN_Y, clamp((from + 4 - edgeX) / 24));
+            doubledH(head, from, CONN_Y);
+            if (st.p > 0.995) cross(to - 16, CONN_Y);
+          }
+        }
+        // shot 6: the seams, the slot's outline and the connector as shot 4
+        // left them, toned out on "started" (0.3 s) as the pieces return
+        function drawMoonLines6(t) {
+          const p = 1 - ss(RETURN0, RETURN0 + 0.3, t);
+          if (p <= 0) return;
+          L1.x.setTransform(1, 0, 0, 1, 0, 0);
+          L1.x.clearRect(0, 0, W, H);
+          LX = L1.x;
+          const sh = [-42, -15, 15, 42];
+          for (let i = 1; i <= 3; i++) {
+            const y = Math.round(CUTS[i] + (sh[i - 1] + sh[i]) / 2);
+            cross(SEAM_X0 - 16, y);
+            doubledH(SEAM_X0, SEAM_X1, y);
+            cross(SEAM_X1 + 16, y);
+          }
+          LX.strokeStyle = HEX.fire;
+          LX.lineWidth = 3;
+          LX.lineJoin = 'miter';
+          strokePrefix(slotPath(15), 1);
+          const from = connFrom();
+          const to = BLOCK.x1 + 24;
+          cross(from + 16, CONN_Y);
+          doubledH(to, from, CONN_Y);
+          cross(to - 16, CONN_Y);
+          toneLayer(L1.x, p);
+          LX = ictx;
+          ictx.drawImage(L1.c, 0, 0);
+        }
+
+        /* ------------------------------------------------------------ shot 1: the shelf */
+
+        // two doubled-line shelves out of crosses at x 144; shelf 1 ends 44 px
+        // short of the moon's limb at its centre height, shelf 2 runs under it
+        const SHELVES = [
+          { y: 532, x0: 160, x1: 1150 },
+          { y: 822, x0: 160, x1: 1760 },
+        ];
+        // the adopters in a 3 by 2 grid: columns at x 160, 490 and 820; row 1's
+        // marks stand on y 502 with their counts hanging from y 562, row 2's on y 792 and y 852
+        const GRID_X = [160, 490, 820];
+        const GRID_ROW = [
+          { feet: 502, cap: 562 },
+          { feet: 792, cap: 852 },
+        ];
+        const MARK_COUNT = 64;
+        // the adopters in the post's order, their GitHub stars on 2026-10-02
+        // (from Kevin), each mark's drawn height v3's optical size times 1.25;
+        // ar is each SVG's viewBox aspect
+        const ADOPTERS = [
+          { id: 'turborepo', stars: 31159, h: 130, ar: 1, round: true },
+          { id: 'shadcn-ui', stars: 124997, h: 122, ar: 1 },
+          { id: 'better-auth', stars: 30152, h: 93, ar: 361 / 259 },
+          { id: 'unkey', stars: 5456, h: 115, ar: 256 / 254 },
+          { id: 'orama', stars: 10569, h: 122, ar: 1, round: true },
+          { id: 'gt', stars: 1065, h: 110, ar: 1197 / 755 },
+        ];
+        const FUMADOCS_STARS = 13283;
+        // Fumadocs' own count, left-aligned on the moon's left limb, under shelf 2
+        const FD_COUNT = { x: SHELFMOON.x - SHELFMOON.r, cap: 852, size: 92 };
+        // GitHub's rounding: under 1,000 as is; to 100,000 one decimal and k; above, whole k
+        function ghCount(n) {
+          if (n < 1000) return String(Math.round(n));
+          if (n < 100000) return (Math.round(n / 100) / 10).toFixed(1) + 'k';
+          return Math.round(n / 1000) + 'k';
+        }
+        const marks = [];
+        function buildMarks() {
+          ADOPTERS.forEach(function (a, i) {
+            const img = el('logo-' + a.id);
+            const w = Math.round(a.h * a.ar);
+            const c = document.createElement('canvas');
+            c.width = w;
+            c.height = a.h;
+            c.getContext('2d').drawImage(img, 0, 0, w, a.h);
+            const row = GRID_ROW[Math.floor(i / 3)];
+            const x = GRID_X[i % 3];
+            let ink = c;
+            if (a.id === 'gt') {
+              // the GT mark in the material's fire, the same drawing
+              ink = document.createElement('canvas');
+              ink.width = w;
+              ink.height = a.h;
+              const fx = ink.getContext('2d');
+              fx.drawImage(c, 0, 0);
+              fx.globalCompositeOperation = 'source-in';
+              fx.fillStyle = HEX.fire;
+              fx.fillRect(0, 0, w, a.h);
+            }
+            marks.push({ a, c: ink, w, h: a.h, x, y: row.feet - a.h + (a.round ? 3 : 0), cap: row.cap, t: MARK_AT[i], count: null });
+          });
+        }
+        // a mark at tone p (0..1): cells of the frame's 3 px grid switch on in Bayer order as p rises
+        const tmpC = document.createElement('canvas');
+        const mskC = document.createElement('canvas');
+        function toneMark(m, p) {
+          if (p <= 0) return;
+          if (p >= 1) {
+            LX.drawImage(m.c, m.x, m.y);
+            return;
+          }
+          const gx0 = Math.floor(m.x / CELL);
+          const gy0 = Math.floor(m.y / CELL);
+          const cols = Math.ceil((m.x + m.w) / CELL) - gx0;
+          const rows = Math.ceil((m.y + m.h) / CELL) - gy0;
+          mskC.width = cols;
+          mskC.height = rows;
+          const mx = mskC.getContext('2d');
+          const id = mx.createImageData(cols, rows);
+          for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) if (p > th8(gx0 + i, gy0 + j)) id.data[(j * cols + i) * 4 + 3] = 255;
+          mx.putImageData(id, 0, 0);
+          tmpC.width = cols * CELL;
+          tmpC.height = rows * CELL;
+          const tx = tmpC.getContext('2d');
+          tx.clearRect(0, 0, tmpC.width, tmpC.height);
+          tx.drawImage(m.c, m.x - gx0 * CELL, m.y - gy0 * CELL);
+          tx.globalCompositeOperation = 'destination-in';
+          tx.imageSmoothingEnabled = false;
+          tx.drawImage(mskC, 0, 0, cols * CELL, rows * CELL);
+          tx.globalCompositeOperation = 'source-over';
+          LX.drawImage(tmpC, gx0 * CELL, gy0 * CELL);
+        }
+        // GitHub's star as a sharp five-point star in fire (the brand draws no rounded corners)
+        function starSVG(px) {
+          const R = 50;
+          const r = 50 * 0.47;
+          const pts = [];
+          for (let k = 0; k < 10; k++) {
+            const ang = ((-90 + k * 36) * Math.PI) / 180;
+            const rr = k % 2 ? r : R;
+            pts.push((50 + rr * Math.cos(ang)).toFixed(2) + ' ' + (52 + rr * Math.sin(ang)).toFixed(2));
+          }
+          const sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          sv.setAttribute('viewBox', '2.45 2 95.1 90.45');
+          sv.setAttribute('class', 'star');
+          sv.style.height = px.toFixed(2) + 'px';
+          sv.style.width = ((px * 95.1) / 90.45).toFixed(2) + 'px';
+          sv.innerHTML = '<path fill="' + HEX.fire + '" d="M' + pts.join('L') + 'Z"/>';
+          return sv;
+        }
+        // a count: the star at cap height, then the figure, left-aligned on x,
+        // its cap line at capTop; the inner span rises out of the box's mask
+        function makeCount(x, capTop, size, text) {
+          const d = document.createElement('div');
+          d.className = 'count';
+          d.setAttribute('data-layout-allow-overflow', ''); // the figure waits inside its mask until it rises
+          d.style.left = (x - 0.05 * size).toFixed(2) + 'px';
+          d.style.fontSize = size + 'px';
+          const inner = document.createElement('span');
+          inner.className = 'cin';
+          inner.appendChild(starSVG(size * 0.7275));
+          const tx = document.createElement('span');
+          tx.textContent = text;
+          inner.appendChild(tx);
+          d.appendChild(inner);
+          el('counts').appendChild(d);
+          // line-height 1: the baseline sits 0.8638 em below the box's top, the cap line 0.7275 em above it
+          d.style.top = (capTop - (0.8638 - 0.7275) * size).toFixed(2) + 'px';
+          return { el: d, inner, text: tx };
+        }
+        let fdCount = null;
+        function buildCounts() {
+          marks.forEach(function (m) {
+            m.count = makeCount(m.x, m.cap, MARK_COUNT, ghCount(m.a.stars));
+          });
+          fdCount = makeCount(FD_COUNT.x, FD_COUNT.cap, FD_COUNT.size, ghCount(FUMADOCS_STARS));
+        }
+        function drawShelf(t) {
+          // Fumadocs' count tallies onto the end of "stars" (a process: ease none)
+          if (fdCount) fdCount.text.textContent = ghCount(FUMADOCS_STARS * prog(t, COUNT_AT, STARS_END - COUNT_AT));
+          // "of his schoolwork": the marks and both shelves lower their tone to 0 in Bayer order
+          const out = 1 - ss(RECEDE, SHELF_OUT, t);
+          if (out <= 0) return;
+          if (t >= SHELF_AT) {
+            L1.x.setTransform(1, 0, 0, 1, 0, 0);
+            L1.x.clearRect(0, 0, W, H);
+            LX = L1.x;
+            const p = P3(prog(t, SHELF_AT, 0.9));
+            const fc = EXPO(prog(t, SHELF_AT, 0.12));
+            // on "use it" a 200 px fire pulse runs shelf 2 from under the GT
+            // mark to under the moon's centre (ease none), its tail closing after
+            let pulse = null;
+            if (t >= PULSE1) {
+              const gt = marks[5];
+              const x0 = gt.x + gt.w / 2;
+              const x1 = SHELFMOON.x;
+              const ph = lerp(x0, x1, prog(t, PULSE1, 0.6));
+              const tail = Math.max(x0, ph - 200 + 200 * prog(t, PULSE1 + 0.6, 0.2));
+              if (ph - tail > 0.5) pulse = [tail, ph];
+            }
+            SHELVES.forEach(function (s, k) {
+              cross(s.x0 - 16, s.y, fc);
+              doubledH(s.x0, lerp(s.x0, s.x1, p), s.y, k === 1 ? pulse : null);
+              if (p > 0.995) cross(s.x1 + 16, s.y);
+            });
+            toneLayer(L1.x, out);
+            LX = ictx;
+            ictx.drawImage(L1.c, 0, 0);
+          }
+          for (let k = 0; k < marks.length; k++) toneMark(marks[k], ss(0, 1, prog(t, marks[k].t, 0.5)) * out);
+        }
+
+        /* ------------------------------------------------------------ shots 3 and 5: the docs page */
+
+        // The docs page, a vector object rebuilt from the post's two images
+        // (kit/blog/fumadocs-landing.png, fumadocs-slider.png): raised-ink
+        // panels with square corners and 2 px edges at 0.18 alpha, the
+        // Fumadocs moon at 28 px in its nav, six bars in the sidebar, a white
+        // title bar over five ember paragraph bars in the content, and a
+        // table of contents of six short bars beside its curved line, which
+        // jogs right at nested entries and carries a dot at its top; its
+        // active stretch is sun and the rest ember. No text on it is readable.
+        // Page space is the full size, 1600 x 480: nav 68 tall, sidebar 320,
+        // content 920, table of contents 360 wide. v4 draws it thicker so it
+        // reads at 0.6 scale: nav bars 10 px, the other bars 12 px, the title
+        // bar 28 px, the table of contents' line 4 px with a 12 px dot.
+        const PG = { w: 1600, h: 480, nav: 68, side: 320, toc: 1240 };
+        const PARTS = {
+          nav: { x: 0, y: 0, w: 1600, h: 68 },
+          side: { x: 0, y: 68, w: 320, h: 412 },
+          content: { x: 320, y: 68, w: 920, h: 412 },
+          toc: { x: 1240, y: 68, w: 360, h: 412 },
+        };
+        const NAV_BARS = [[76, 92], [190, 58], [270, 76], [368, 70]];
+        const SIDE_BARS = [150, 110, 176, 128, 164, 118];
+        const CONTENT_BARS = [800, 760, 820, 700, 520];
+        const TOC_LV = [0, 1, 0, 1, 0, 1];
+        const TOC_W = [150, 118, 196, 84, 64, 104];
+        function tocY(k) {
+          return 52 + 58 * k; // entry centres, part space
+        }
+        function tocX(y) {
+          // the line's x at height y (part space): level 0 at 32, nested at 46, an S-bend between entries
+          let x = 32 + 14 * TOC_LV[0];
+          for (let k = 0; k < 5; k++) {
+            const b = (tocY(k) + tocY(k + 1)) / 2;
+            const u = ss(b - 9, b + 9, y);
+            if (u <= 0) break;
+            x = lerp(32 + 14 * TOC_LV[k], 32 + 14 * TOC_LV[k + 1], u);
+          }
+          return x;
+        }
+        const TOC_TOP = 18;
+        const TOC_BOT = tocY(5) + 30;
+        // the active stretch for section a (a float): entries 2a and 2a + 1
+        function activeSpan(a) {
+          const y0 = tocY(0) - 24 + 116 * a;
+          return [y0, y0 + 106];
+        }
+        // T: a transform to the screen, { s, x, y } with screen = (x + s px, y + s py)
+        function R(T, x, y, w, h) {
+          // a rect in page space, rounded to whole screen pixels
+          const x0 = Math.round(T.x + T.s * x);
+          const y0 = Math.round(T.y + T.s * y);
+          const x1 = Math.round(T.x + T.s * (x + w));
+          const y1 = Math.round(T.y + T.s * (y + h));
+          return [x0, y0, Math.max(1, x1 - x0), Math.max(1, y1 - y0)];
+        }
+        function fillR(ctx, T, x, y, w, h, color) {
+          const r = R(T, x, y, w, h);
+          ctx.fillStyle = color;
+          ctx.fillRect(r[0], r[1], r[2], r[3]);
+        }
+        function edge(ctx, r) {
+          // a 2 px edge inside a rect
+          ctx.strokeStyle = HEX.hair;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(r[0] + 1, r[1] + 1, r[2] - 2, r[3] - 2);
+        }
+        function panel(ctx, T, part) {
+          // a raised-ink panel and its 2 px edge
+          const r = R(T, part.x, part.y, part.w, part.h);
+          ctx.fillStyle = HEX.raised;
+          ctx.fillRect(r[0], r[1], r[2], r[3]);
+          edge(ctx, r);
+        }
+        const fdLogo = el('img-fdlogo');
+        function navInk(ctx, T) {
+          const p = PARTS.nav;
+          const lr = R(T, p.x + 22, p.y + 20, 28, 28);
+          ctx.drawImage(fdLogo, lr[0], lr[1], lr[2], lr[3]);
+          NAV_BARS.forEach(function (b) {
+            fillR(ctx, T, p.x + b[0], p.y + 29, b[1], 10, HEX.ember);
+          });
+          edge(ctx, R(T, p.x + 1224, p.y + 17, 236, 34));
+          fillR(ctx, T, p.x + 1240, p.y + 29, 60, 10, HEX.ember);
+          edge(ctx, R(T, p.x + 1500, p.y + 21, 26, 26));
+        }
+        function sideInk(ctx, T) {
+          const p = PARTS.side;
+          SIDE_BARS.forEach(function (w, k) {
+            fillR(ctx, T, p.x + 32, p.y + 43 + 52 * k, w, 12, k === 1 ? HEX.white : HEX.ember);
+          });
+        }
+        function contentInk(ctx, T) {
+          const p = PARTS.content;
+          fillR(ctx, T, p.x + 56, p.y + 48, 380, 28, HEX.white);
+          CONTENT_BARS.forEach(function (w, k) {
+            fillR(ctx, T, p.x + 56, p.y + 123 + 34 * k, w, 12, HEX.ember);
+          });
+        }
+        // the table of contents' ink at (part-local) transform T, its active section a
+        function tocInk(ctx, T, a) {
+          const span = activeSpan(a);
+          const lw = Math.max(2, Math.round(4 * T.s));
+          function stroke(y0, y1, color) {
+            if (y1 <= y0) return;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lw;
+            ctx.beginPath();
+            for (let y = y0, k = 0; y <= y1 + 0.01; y += 2, k++) {
+              const sx = T.x + T.s * tocX(Math.min(y, y1));
+              const sy = T.y + T.s * Math.min(y, y1);
+              if (k) ctx.lineTo(sx, sy);
+              else ctx.moveTo(sx, sy);
+            }
+            ctx.stroke();
+          }
+          stroke(TOC_TOP, TOC_BOT, HEX.ember);
+          stroke(clamp(span[0], TOC_TOP, TOC_BOT), clamp(span[1], TOC_TOP, TOC_BOT), HEX.sun);
+          const dr = Math.max(3, 6 * T.s);
+          ctx.fillStyle = HEX.sun;
+          ctx.beginPath();
+          ctx.arc(T.x + T.s * tocX(TOC_TOP), T.y + T.s * TOC_TOP, dr, 0, 2 * Math.PI);
+          ctx.fill();
+          TOC_LV.forEach(function (lv, k) {
+            const y = tocY(k);
+            const on = y >= span[0] && y <= span[1];
+            fillR(ctx, T, 32 + 14 * lv + 22, y - 6, TOC_W[k], 12, on ? HEX.sun : HEX.ember);
+          });
+        }
+        // transforms: a part's own origin (partT) or the page's origin shifted (pageT), page px offsets
+        function partT(G, part, dx, dy) {
+          return { s: G.s, x: G.x + G.s * (part.x + dx), y: G.y + G.s * (part.y + dy) };
+        }
+        function pageT(G, dx, dy) {
+          return { s: G.s, x: G.x + G.s * dx, y: G.y + G.s * dy };
+        }
+
+        // shot 3: the page at 0.6 scale above the held heap (x 160 to 1120, y 176 to 464)
+        const PAGE3 = { x: 160, y: 176, s: 0.6 };
+        const pageCanvas = el('page');
+        const gctx = pageCanvas.getContext('2d');
+        function group(draw, p) {
+          // draw a group into L1 at tone p, then onto L2
+          if (p <= 0) return;
+          L1.x.setTransform(1, 0, 0, 1, 0, 0);
+          L1.x.clearRect(0, 0, W, H);
+          draw(L1.x);
+          toneLayer(L1.x, p);
+          L2.x.drawImage(L1.c, 0, 0);
+        }
+        function drawPage3(t) {
+          L2.x.setTransform(1, 0, 0, 1, 0, 0);
+          L2.x.clearRect(0, 0, W, H);
+          // the raised-ink panels rise 16 px and raise their tone (0.5 s)
+          const rise = (1 - EXPO(prog(t, PAGE3_AT, 0.5))) * 16;
+          const G = { s: PAGE3.s, x: PAGE3.x, y: PAGE3.y + rise };
+          const pPanel = ss(PAGE3_AT, PAGE3_AT + 0.5, t);
+          group(function (ctx) {
+            ['nav', 'side', 'content', 'toc'].forEach(function (n) {
+              panel(ctx, pageT(G, 0, 0), PARTS[n]);
+            });
+          }, pPanel);
+          // then the nav, the sidebar, the content and the table of contents fill, 60 ms apart, left to right, done by 26.14
+          const f0 = PAGE3_AT + 0.46;
+          group(function (ctx) {
+            navInk(ctx, pageT(G, 0, 0));
+          }, ss(f0, f0 + 0.16, t));
+          group(function (ctx) {
+            sideInk(ctx, pageT(G, 0, 0));
+          }, ss(f0 + 0.06, f0 + 0.22, t));
+          group(function (ctx) {
+            contentInk(ctx, pageT(G, 0, 0));
+          }, ss(f0 + 0.12, f0 + 0.28, t));
+          group(function (ctx) {
+            tocInk(ctx, partT(G, PARTS.toc, 0, 0), P2IO(prog(t, PAGE_STEP, 0.35)));
+          }, ss(f0 + 0.18, f0 + 0.34, t));
+          // the whole page leaves by a tone mix on "documentation"
+          toneLayer(L2.x, 1 - ss(PAGE_OUT, PAGE_OUT + 0.6, t));
+          gctx.setTransform(1, 0, 0, 1, 0, 0);
+          gctx.clearRect(0, 0, W, H);
+          gctx.drawImage(L2.c, 0, 0);
+        }
+
+        // shot 5: the page at full size (x 160 to 1760, y 472 to 952), its nav
+        // seam on y 540, the line the moon's middle seam held a frame before
+        // the cut. On "CLI" the sidebar seam (x 480) and the table of
+        // contents' seam (x 1400) draw down out of crosses on the nav seam;
+        // on "copy" the parts move apart; on "just" the page eases to 0.625
+        // about (160, 540), so the nav seam stays on y 540, and its right edge
+        // uncovers the code panel lying under it; on "of contents" the table
+        // of contents lifts out, leaves a fire outline in its slot, and a
+        // connector draws to the panel; after "Into your codebase" is set it
+        // travels into the panel, whose rows part for it, and seats, and a sun
+        // block runs down its curved line
+        // fix round: the panel's top is y 568 (v4 first cut: 472), below the nav
+        // seam, which now runs on above it to x 1768; 14 rows instead of 18
+        const PANEL = { x0: 1340, y0: 568, x1: 1760, y1: 952 };
+        const PANEL_N = 14;
+        const PANEL_ROWS = [];
+        function buildPanelRows() {
+          const rnd = GTDither.rng(4417);
+          const ind = [0, 1, 1, 2, 2, 1, 0, 0, 1, 2, 3, 2, 1, 0, 1, 1, 0, 0];
+          for (let r = 0; r < PANEL_N; r++) {
+            const y = PANEL.y0 + 36 + 24 * r; // the row's centre
+            let x = PANEL.x0 + 28 + 24 * ind[r];
+            const end = Math.min(PANEL.x1 - 28, x + 90 + Math.floor(rnd() * 220));
+            const bars = [];
+            let k = 0;
+            while (x < end - 12) {
+              const w = Math.min(end - x, 20 + Math.floor(rnd() * 70));
+              bars.push({ x, w, c: k === 0 && rnd() < 0.55 ? HEX.white : HEX.ember });
+              x += w + 9;
+              k++;
+            }
+            PANEL_ROWS.push({ y, bars });
+          }
+        }
+        function seamOff(t) {
+          // the parts' offsets in page px: the nav up and the body down 12 each
+          // (the nav seam between them stays on y 540), the sidebar left 36, the
+          // table of contents right 36
+          const e = snap(36 * P3(prog(t, COPY, 0.5))) / 36;
+          return { nav: -12 * e, body: 12 * e, side: -36 * e, toc: 36 * e, e };
+        }
+        function page5G(t) {
+          const s = lerp(1, 0.625, P2IO(prog(t, JUST, 0.7)));
+          return { s, x: 160, y: 540 - 68 * s };
+        }
+        // the part's screen rect at t: lifted on "of contents", then along the connector into the panel
+        function partRect(t) {
+          const G = page5G(t);
+          const o = seamOff(t);
+          const lift = -24 * EXPO(prog(t, LIFT, 0.4));
+          const T = partT(G, PARTS.toc, o.toc, o.body + lift);
+          const w = G.s * PARTS.toc.w;
+          const h = G.s * PARTS.toc.h;
+          const seatX = (PANEL.x0 + PANEL.x1) / 2 - w / 2;
+          const seatY = (PANEL.y0 + PANEL.y1) / 2 - h / 2;
+          const u = P2IO(prog(t, TRAVEL0, TRAVEL_D));
+          // fix round: as it enters the panel it drops into the opening, below the nav seam
+          const v = P2IO(prog(t, SEAT0, 0.5));
+          return { T: { s: T.s, x: lerp(T.x, seatX, u), y: lerp(T.y, seatY, v) }, x0: T.x, y0: T.y, w, h, u, seatY };
+        }
+        function drawPage5(t) {
+          const G = page5G(t);
+          const o = seamOff(t);
+          LX = gctx;
+          gctx.setTransform(1, 0, 0, 1, 0, 0);
+          gctx.clearRect(0, 0, W, H);
+          const pr = partRect(t);
+          // the connector runs at the lifted part's middle; the panel opens at its seat's middle
+          const gapY = pr.y0 + pr.h / 2;
+          const openY = pr.seatY + pr.h / 2;
+          // the code panel comes first, under the page: it is there from the
+          // cut, and the shrinking page's right edge uncovers it
+          const hullRight = G.x + G.s * (PG.w + o.toc);
+          if (hullRight < PANEL.x1) {
+            gctx.save();
+            gctx.beginPath();
+            gctx.rect(Math.max(PANEL.x0 - 16, Math.ceil(hullRight)), PANEL.y0 - 16, PANEL.x1 + 16 - Math.max(PANEL.x0 - 16, Math.ceil(hullRight)), PANEL.y1 - PANEL.y0 + 32);
+            gctx.clip();
+            const pr0 = [PANEL.x0, PANEL.y0, PANEL.x1 - PANEL.x0, PANEL.y1 - PANEL.y0];
+            gctx.fillStyle = HEX.raised;
+            gctx.fillRect(pr0[0], pr0[1], pr0[2], pr0[3]);
+            edge(gctx, pr0);
+            cross(PANEL.x0, PANEL.y0);
+            // its 18 rows of 12 px bars, which part at the part's middle to open a gap its height
+            const gap = (pr.h + 24) * P2IO(prog(t, ROWS_OPEN, 0.5));
+            gctx.save();
+            gctx.beginPath();
+            gctx.rect(PANEL.x0 + 2, PANEL.y0 + 2, PANEL.x1 - PANEL.x0 - 4, PANEL.y1 - PANEL.y0 - 4);
+            gctx.clip();
+            PANEL_ROWS.forEach(function (row) {
+              const dy = row.y < openY ? -gap / 2 : gap / 2;
+              row.bars.forEach(function (bar) {
+                gctx.fillStyle = bar.c;
+                gctx.fillRect(bar.x, Math.round(row.y - 6 + dy), bar.w, 12);
+              });
+            });
+            gctx.restore();
+            gctx.restore();
+          }
+          // the nav, the sidebar and the content (the table of contents is drawn last, as the part)
+          panel(gctx, partT(G, PARTS.nav, 0, o.nav), { x: 0, y: 0, w: PARTS.nav.w, h: PARTS.nav.h });
+          navInk(gctx, pageT(G, 0, o.nav));
+          panel(gctx, partT(G, PARTS.side, o.side, o.body), { x: 0, y: 0, w: PARTS.side.w, h: PARTS.side.h });
+          sideInk(gctx, pageT(G, o.side, o.body));
+          panel(gctx, partT(G, PARTS.content, 0, o.body), { x: 0, y: 0, w: PARTS.content.w, h: PARTS.content.h });
+          contentInk(gctx, pageT(G, 0, o.body));
+          // the seams: the nav seam on y 540 (carried over by the cut), and on
+          // "CLI" the two vertical seams down out of crosses on it, in the
+          // middle of the gaps the parting opens
+          const ny = 540;
+          const nxl = G.x + G.s * o.side - 24;
+          // fix round: the seam keeps its length through the shrink, its right
+          // cross easing from the page's edge to x 1768, the right cross of the
+          // moon's middle seam, so the whole of that seam is on screen before
+          // the cut back on "If" (it runs above the code panel)
+          const nxr = lerp(G.x + PG.w + o.toc + 24, 1768, P2IO(prog(t, JUST, 0.7)));
+          cross(nxl, ny);
+          doubledH(nxl + 16, nxr - 16, ny);
+          cross(nxr, ny);
+          const vx = [G.x + G.s * (PG.side + o.side / 2), G.x + G.s * (PG.toc + o.toc / 2)];
+          const vy1 = 540 + G.s * (o.body + 412) + 24;
+          vx.forEach(function (x, k) {
+            const t0 = CLI_SEAMS[k];
+            if (t < t0) return;
+            cross(x, ny, EXPO(prog(t, t0, 0.15)));
+            const e = P3(prog(t, t0, SEAM_D));
+            doubledV(x, ny + 5, lerp(ny + 5, vy1 - 16, e));
+            if (e > 0.995) cross(x, vy1);
+          });
+          // the slot's 3 px fire outline, drawn once around the part's place on "of contents"
+          if (t >= LIFT) {
+            const slot = R(partT(G, PARTS.toc, o.toc, o.body), 0, 0, PARTS.toc.w, PARTS.toc.h);
+            gctx.strokeStyle = HEX.fire;
+            gctx.lineWidth = 3;
+            gctx.lineJoin = 'miter';
+            const x0 = slot[0] + 1.5;
+            const y0 = slot[1] + 1.5;
+            const x1 = slot[0] + slot[2] - 1.5;
+            const y1 = slot[1] + slot[3] - 1.5;
+            strokePrefix([[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]], EXPO(prog(t, LIFT, 0.5)));
+          }
+          // the connector, from a cross on the part's right edge to a cross at x 1324 (the panel's left edge, 16 px out)
+          if (t >= CONN5) {
+            const e = EXPO(prog(t, CONN5, 0.35));
+            const cy = Math.round(gapY);
+            const ca = Math.round(pr.x0 + pr.w + 8);
+            const cb = PANEL.x0 - 16;
+            cross(ca, cy, EXPO(prog(t, CONN5, 0.12)));
+            doubledH(ca + 16, lerp(ca + 16, cb - 16, e), cy);
+            if (e > 0.995) cross(cb, cy);
+          }
+          // the part itself, last: its panel and its table of contents; the
+          // highlight runs down its curved line as it seats
+          panel(gctx, pr.T, { x: 0, y: 0, w: PARTS.toc.w, h: PARTS.toc.h });
+          tocInk(gctx, pr.T, 2 * prog(t, SUNRUN, 0.5));
+          LX = ictx;
+        }
+
+        /* ------------------------------------------------------------ shot 7: the grant */
+
+        // the connector from a cross under the GT mark (1594, 393) down to the
+        // moon's centre line (y 700) and left to a cross at x 1306, 16 px out
+        // from the moon's limb: one path with a square corner
+        const CONN9 = { x: Math.round((MARK.x0 + MARK.x1) / 2), y0: Math.round(MARK.y1 + 24), y1: MOON9.y, x1: MOON9.x + MOON9.r + 16 };
+        function drawGrant(t) {
+          if (t < FIRST9) return;
+          const pts = [[CONN9.x, CONN9.y0 + 16], [CONN9.x, CONN9.y1], [CONN9.x1 + 16, CONN9.y1]];
+          const len = CONN9.y1 - CONN9.y0 - 16 + CONN9.x - CONN9.x1 - 16;
+          const e = EXPO(prog(t, FIRST9, 0.5));
+          // a 200 px fire pulse runs the connector, its head reaching the moon on "grantee"
+          let pulse = null;
+          if (t >= PULSE9) {
+            const ph = len * prog(t, PULSE9, THICK9 - PULSE9);
+            const tail = Math.max(0, ph - 200 + 200 * prog(t, THICK9, 0.2));
+            if (ph - tail > 0.5) pulse = [tail, ph];
+          }
+          // it tones out on the 3 px grid over the 0.4 s before the card
+          const out = 1 - ss(RECEDE9, CARD, t);
+          L1.x.setTransform(1, 0, 0, 1, 0, 0);
+          L1.x.clearRect(0, 0, W, H);
+          LX = L1.x;
+          cross(CONN9.x, CONN9.y0, EXPO(prog(t, FIRST9, 0.12)));
+          doubledPath(pts, len * e, pulse);
+          if (e > 0.995) cross(CONN9.x1, CONN9.y1);
+          toneLayer(L1.x, out);
+          LX = ictx;
+          ictx.drawImage(L1.c, 0, 0);
+        }
+
+        /* ------------------------------------------------------------ shot 6: the glyph moon */
+
+        const WORLD = [
+          [['a', 'e', 'g', 'r', 's', 'G', 'T'], 'en'],
+          [['λ', 'Ω', 'φ', 'ξ'], 'el'],
+          [['Ж', 'я', 'ф', 'д'], 'ru'],
+          [['א', 'ש', 'ל', 'ת'], 'he'],
+          [['ب', 'ع', 'ق', 'ك', 'م'], 'ar'],
+          [['क', 'ह', 'श', 'ज', 'त'], 'hi'],
+          [['த', 'ழ', 'க', 'ம'], 'ta'],
+          [['ಕ', 'ಗ', 'ಮ'], 'kn'],
+          [['ক', 'ভ', 'ম'], 'bn'],
+          [['ก', 'ญ', 'ม', 'ษ'], 'th'],
+          [['ა', 'ღ', 'ქ'], 'ka'],
+          [['Ա', 'Ֆ', 'Ջ'], 'hy'],
+          [['ሀ', 'ጸ', 'ሰ'], 'am'],
+          [['あ', 'ゆ', 'の'], 'ja'],
+          [['カ', 'ネ', 'ト'], 'ja'],
+          [['文', '字', '語', '言', '世', '界'], 'zh'],
+          [['한', '글', '말'], 'ko'],
+          [['{', '}', ';', '=', '(', ')', '<', '>', '/'], 'en'],
+        ];
+        // the glyph moon's light is read on a 5 px grid of the moon's smoke and
+        // mapped as the print maps it, so the lit band the print showed is where
+        // the white and sun glyphs stand
+        const GS = 5;
+        const GW = W / GS;
+        const GH = H / GS;
+        const glyphLum = new Float32Array(GW * GH);
+        function glyphTone(l) {
+          return clamp(Math.pow(l, 1.05) * 1.02);
+        }
+        function glyphInk(tn) {
+          return tn > 0.9 ? HEX.white : tn > 0.7 ? HEX.sun : tn > 0.38 ? HEX.fire : HEX.ember;
+        }
+        // the moon fills in the light the print had (the frame on "scratch");
+        // once its last row lands on "shape", the ink (never the size) follows
+        // the moon's smoke again, its clock easing up to 0.08 shader seconds a
+        // second; the glass moon of shot 7 keeps the same clock
+        function sGlyph(t) {
+          const u = Math.max(0, t - SHAPE);
+          return sMoon(PRINT_OUT) + 0.08 * (u < 0.5 ? u * u : u - 0.25);
+        }
+        const GLYPH_FAMILY = "var(--font), 'Hiragino Sans', 'PingFang SC', 'Apple SD Gothic Neo', 'Geeza Pro', 'Kohinoor Devanagari', 'Tamil Sangam MN', 'Kannada Sangam MN', 'Bangla Sangam MN', Thonburi, Kefa, Mshtakan, 'Helvetica Neue', system-ui, sans-serif";
+        const GLYPH_CELL = 36;
+        const GLYPH_MAX = 30;
+        const glyphRows = [];
+        function buildGlyphs(lum) {
+          const host = el('glyphs');
+          const cell = GLYPH_CELL;
+          const cols = Math.floor(W / cell);
+          const rows = Math.floor(H / cell);
+          const rnd = GTDither.rng(1988);
+          for (let gy = 0; gy < rows; gy++) {
+            const row = [];
+            for (let gx = 0; gx < cols; gx++) {
+              const pickS = rnd();
+              const pickG = rnd();
+              const cx = (gx + 0.5) * cell;
+              const cy = (gy + 0.5) * cell;
+              // centres at least half a cell inside the limb, and a glyph's ink never past it
+              const dc = Math.hypot(cx - MOON.x, cy - MOON.y);
+              if (dc > MOON.r - cell / 2) continue;
+              const li = Math.floor(cy / GS) * GW + Math.floor(cx / GS);
+              const tone = glyphTone(lum[li]);
+              const size = Math.min(GLYPH_MAX, cell * (0.3 + 0.68 * Math.sqrt(0.12 + 0.88 * tone)), (MOON.r - dc) / 0.4);
+              const script = WORLD[Math.floor(pickS * WORLD.length)];
+              const ch = script[0][Math.floor(pickG * script[0].length)];
+              const s = document.createElement('span');
+              s.className = 'gl';
+              s.textContent = ch;
+              s.setAttribute('lang', script[1]);
+              if (script[1] === 'he' || script[1] === 'ar') s.setAttribute('dir', 'rtl');
+              s.style.left = gx * cell + 'px';
+              s.style.top = gy * cell + 'px';
+              s.style.fontSize = size.toFixed(1) + 'px';
+              s.style.fontFamily = GLYPH_FAMILY;
+              const ink = glyphInk(tone);
+              s.style.color = ink;
+              host.appendChild(s);
+              row.push({ node: s, cx, gx, gy, li, ink0: ink, ink });
+            }
+            if (row.length) glyphRows.push(row);
+          }
+        }
+        // the time each print cell of shot 6 leaves: the time the glyph moon's
+        // block over it lands (its row's place in the fill, and its column's
+        // place along the row, as the timeline sets the glyphs). Cells near the
+        // limb that no glyph covers take their row's time at their column;
+        // cells above the first glyph row or below the last take that row's
+        const printGate = new Float32Array(COLS * ROWS).fill(Infinity);
+        function buildPrintGate(per) {
+          const byRow = {};
+          let gyMin = Infinity;
+          let gyMax = -Infinity;
+          glyphRows.forEach(function (row, r) {
+            let xa = 1e9;
+            let xb = -1e9;
+            row.forEach(function (g) {
+              xa = Math.min(xa, g.cx);
+              xb = Math.max(xb, g.cx);
+            });
+            byRow[row[0].gy] = { r, xa, xb };
+            gyMin = Math.min(gyMin, row[0].gy);
+            gyMax = Math.max(gyMax, row[0].gy);
+          });
+          for (let y = 0, i = 0; y < ROWS; y++) {
+            let gy = clamp(Math.floor((y * CELL + 1.5) / GLYPH_CELL), gyMin, gyMax);
+            while (!byRow[gy] && gy > gyMin) gy--;
+            const q = byRow[gy];
+            for (let x = 0; x < COLS; x++, i++) {
+              if (discMask[i] <= 0) continue;
+              const cx = (Math.floor((x * CELL + 1.5) / GLYPH_CELL) + 0.5) * GLYPH_CELL;
+              const f = q.xb > q.xa ? clamp((cx - q.xa) / (q.xb - q.xa)) : 0;
+              printGate[i] = GLYPH0 + per * (q.r + 0.85 * f);
+            }
+          }
+        }
+        // the glyphs' ink at film time t: the boot inks until the last row
+        // lands, then re-read from the drifting smoke (mount B, hidden) until
+        // the glass takes the disc
+        function inkGlyphs(t) {
+          const live = t >= SHAPE;
+          if (live) {
+            setMoonAt(MOON.x, MOON.y, MOON.r, 1);
+            gems.b.at(sGlyph(t));
+            readLum(gems.b.canvas, GW, GH, glyphLum);
+          }
+          for (let r = 0; r < glyphRows.length; r++) {
+            const row = glyphRows[r];
+            for (let k = 0; k < row.length; k++) {
+              const g = row[k];
+              const ink = live ? glyphInk(glyphTone(glyphLum[g.li])) : g.ink0;
+              if (ink !== g.ink) {
+                g.node.style.color = ink;
+                g.ink = ink;
+              }
+            }
+          }
+        }
+
+        /* ------------------------------------------------------------ the headings' left edge */
+
+        // Each heading's first glyph's ink is seated on x 160, measured from
+        // the loaded face, with the end card's overshoot for a round first
+        // glyph (kit/endcard). The shift sits on the heading, never on the
+        // spans the timeline moves.
+        const HEADINGS = ['h-one', 'h-fuma', 'h-fd', 'h-into'];
+        const ROUND_LEFT = 'acdeoqsCGOQS';
+        function seatHeadings() {
+          const mctx = document.createElement('canvas').getContext('2d');
+          HEADINGS.forEach(function (id) {
+            const h = el(id);
+            const cs = getComputedStyle(h);
+            const size = parseFloat(cs.fontSize);
+            mctx.font = cs.fontWeight + ' ' + size + 'px ' + cs.fontFamily;
+            const ch = h.textContent.charAt(0);
+            const lsb = -mctx.measureText(ch).actualBoundingBoxLeft;
+            const over = ROUND_LEFT.indexOf(ch) >= 0 ? 0.0125 * size : 0;
+            h.style.left = (160 - lsb - over).toFixed(2) + 'px';
+          });
+        }
+
+        /* ------------------------------------------------------------ draw */
+
+        const hostB = el('gem-b');
+        const hostC = el('gem-c');
+        const CLIP762 = 'circle(' + (MOON.r + 1).toFixed(1) + 'px at ' + MOON.x + 'px ' + MOON.y + 'px)';
+        function circleClip(x, y, r) {
+          return 'circle(' + (r + 1).toFixed(2) + 'px at ' + x.toFixed(2) + 'px ' + y.toFixed(2) + 'px)';
+        }
+        function draw(t) {
+          if (!gems.a || !gems.b || !gems.c) return;
+          // mount B: shot 1's moon (read for its print from the moving type,
+          // seen as glass from the pulse), shot 4's 762 px moon (glass until
+          // its print is whole), shot 6's (read for the print, then for the
+          // glyphs' ink), and shot 7's glass moon and its move into the grant
+          let bVis = false;
+          let clip = CLIP762;
+          if (t >= MT0 && t < SHELF_OUT) {
+            setMoonAt(SHELFMOON.x, SHELFMOON.y, SHELFMOON.r, 1 - ss(RECEDE, SHELF_OUT, t));
+            gems.b.at(sMoon1(t));
+            bVis = t >= GLASS1;
+            // the glass ends at its limb: the shader's soft rim is clipped 1 px outside it
+            clip = circleClip(SHELFMOON.x, SHELFMOON.y, SHELFMOON.r);
+          } else if (t >= GLOW4 && t < CUT5) {
+            // fix round: sine.inOut (v4 first cut: power3.out, half its glow in 0.15 s)
+            setMoonAt(MOON.x, MOON.y, MOON.r, SIO(prog(t, GLOW4, GLOW4_D)));
+            gems.b.at(sMoon(t));
+            bVis = t < MIX4 + 0.5;
+          } else if (t >= CUT6 && t < SHAPE) {
+            setMoonAt(MOON.x, MOON.y, MOON.r, 1);
+            gems.b.at(sMoon(t));
+          } else if (t >= GLYPH_OUT && t < CARD) {
+            const e = P2IO(prog(t, MOVE7, 0.8));
+            const x = lerp(MOON.x, MOON9.x, e);
+            const y = lerp(MOON.y, MOON9.y, e);
+            const r = lerp(MOON.r, MOON9.r, e);
+            // the glow rises from black in the glyph moon's disc; as the pulse
+            // arrives the smoke thickens and settles; then it lowers to black for the card
+            const lit = SIO(prog(t, GLYPH_OUT, GLYPH_OUT_D));
+            const up = P3(prog(t, THICK9, 0.25));
+            const down = P2IO(prog(t, THICK9 + 0.25, 0.42));
+            setMoonAt(x, y, r, (lit + 0.4 * up * (1 - down)) * (1 - ss(RECEDE9, CARD, t)));
+            gems.b.at(sGlyph(t));
+            bVis = true;
+            clip = circleClip(x, y, r);
+          }
+          hostB.style.visibility = bVis ? 'visible' : 'hidden';
+          hostB.style.clipPath = clip;
+          // mount C: shot 7's GT mark in the end card's box, forming on
+          // "General" and easing to the card's opening density 0.4
+          if (t >= GT9 && t < CARD) {
+            const form = P3(prog(t, GT9, 0.8));
+            const toCard = P2IO(prog(t, RECEDE9, CARD - RECEDE9));
+            gems.c.mount.setUniformValues({ u_innerGlow: lerp(form, 0.4, toCard), u_outerGlow: 0 });
+            gems.c.at(sGT(t));
+            hostC.style.visibility = 'visible';
+          } else {
+            hostC.style.visibility = 'hidden';
+          }
+          // the field, behind every scene until the end card
+          if (t < CARD) {
+            fieldCanvas.style.visibility = 'visible';
+            drawField(t);
+          } else {
+            fieldCanvas.style.visibility = 'hidden';
+          }
+          // shots 2 and 3: the heap, its light drifting after the crest, then the file it builds
+          if (t >= NAME_MT0 && t < FILE_END) {
+            if (t > HEAP_DRIFT && t < SORT0) {
+              setHeapLight();
+              gems.a.at(14 + 0.05 * (t - HEAP_DRIFT));
+              readLum(gems.a.canvas, HEAP_COLS, HEAP_ROWS, heapLumT);
+            }
+            if (t >= SORT0) {
+              setFileLight();
+              gems.a.at(sFile(t));
+              readLum(gems.a.canvas, COLS, ROWS, lumGrid);
+              inkFile();
+            }
+            heapCanvas.style.visibility = 'visible';
+            drawHeap(t);
+          } else {
+            heapCanvas.style.visibility = 'hidden';
+          }
+          // the prints
+          if (t >= MT0 && t < GLASS1 + 0.45) {
+            printCanvas.style.visibility = 'visible';
+            drawMoonPrint1(t);
+          } else if (t >= NAME_MT0 && t < NAME_END) {
+            printCanvas.style.visibility = 'visible';
+            drawNameCells(t);
+          } else if ((t >= MIX4 && t < CUT5) || (t >= CUT6 && t < SHAPE)) {
+            printCanvas.style.visibility = 'visible';
+            drawMoonPrint(t);
+          } else {
+            printCanvas.style.visibility = 'hidden';
+          }
+          // the docs page
+          if (t >= PAGE3_AT && t < PAGE_OUT + 0.6) {
+            pageCanvas.style.visibility = 'visible';
+            drawPage3(t);
+          } else if (t >= CUT5 && t < CUT6) {
+            pageCanvas.style.visibility = 'visible';
+            drawPage5(t);
+          } else {
+            pageCanvas.style.visibility = 'hidden';
+          }
+          // shot 6: the glyph moon's ink follows the smoke until the glass takes the disc
+          if (t >= SHAPE && t < GLYPH_OUT) inkGlyphs(t);
+          // the line work
+          LX = ictx;
+          ictx.setTransform(1, 0, 0, 1, 0, 0);
+          ictx.clearRect(0, 0, W, H);
+          if (t < SHELF_OUT) drawShelf(t);
+          else if (t >= CROSS4 && t < CUT5) drawMoonLines4(t);
+          else if (t >= CUT6 && t < CUT6 + 1) drawMoonLines6(t);
+          else if (t >= FIRST9 && t < CARD) drawGrant(t);
+        }
+
+        /* ------------------------------------------------------------ the timeline */
+
+        let card = null;
+        // each rise unit of a heading rises out of its mask at its time
+        function riseUnits(tl, id, times) {
+          el(id)
+            .querySelectorAll('.wm > span')
+            .forEach(function (s, k) {
+              tl.fromTo(s, { yPercent: 112 }, { yPercent: 0, duration: RISE, ease: 'power3.out' }, times[k]);
+            });
+        }
+        function build() {
+          const tl = gsap.timeline({ paused: true });
+          const clock = { t: 0 };
+          tl.to(clock, { t: END, duration: END, ease: 'none', onUpdate: function () { draw(tl.time()); } }, 0);
+          // the four headings, word by word on the take's own times
+          riseUnits(tl, 'h-one', H1_AT);
+          riseUnits(tl, 'h-fuma', H2_AT);
+          riseUnits(tl, 'h-fd', [H3_AT]);
+          // fix round: "Fumadocs" leaves as the layers part (its floor ended at
+          // 33.44), dropping back into its mask, so it is not on screen while
+          // the rest of line 6 is said
+          el('h-fd')
+            .querySelectorAll('.wm > span')
+            .forEach(function (sp) {
+              tl.fromTo(sp, { yPercent: 0 }, { yPercent: 112, duration: 0.45, ease: 'power2.in', immediateRender: false }, H3_OUT);
+            });
+          riseUnits(tl, 'h-into', H4_AT);
+          // the glyph moon fills row by row from the top, in reading order,
+          // its last row landing on "shape"; it leaves in Bayer order of its
+          // 36 px grid as the glass rises in the same disc
+          const per = (SHAPE - GLYPH0) / glyphRows.length;
+          buildPrintGate(per);
+          glyphRows.forEach(function (row, r) {
+            let xa = 1e9;
+            let xb = -1e9;
+            row.forEach(function (g) {
+              xa = Math.min(xa, g.cx);
+              xb = Math.max(xb, g.cx);
+            });
+            row.forEach(function (g) {
+              const f = xb > xa ? (g.cx - xa) / (xb - xa) : 0;
+              tl.set(g.node, { opacity: 1 }, GLYPH0 + per * (r + 0.85 * f));
+              // fix round: off in Bayer order on sine.inOut over GLYPH_OUT_D, the share
+              // switched off at each moment matching the glass's glow (lit, in draw)
+              tl.set(g.node, { opacity: 0 }, GLYPH_OUT + (GLYPH_OUT_D * Math.acos(1 - 2 * th8(g.gx, g.gy))) / Math.PI);
+            });
+          });
+          // shot 1: Fumadocs' count rises on "13"; each adopter's count rises
+          // with its mark; every count drops into its mask as the shelf recedes
+          tl.fromTo(fdCount.inner, { yPercent: 110 }, { yPercent: 0, duration: 0.4, ease: 'expo.out' }, COUNT_AT);
+          marks.forEach(function (m) {
+            tl.fromTo(m.count.inner, { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: 'expo.out' }, m.t);
+          });
+          [fdCount].concat(marks.map(function (m) { return m.count; })).forEach(function (c) {
+            tl.fromTo(c.inner, { yPercent: 0 }, { yPercent: 110, duration: 0.4, ease: 'power2.in', immediateRender: false }, RECEDE);
+          });
+          // the series end card (kit/endcard): fire, the post's title, its link, silent
+          card = GTEndCard.addEndCard(tl, {
+            palette: 'fire',
+            title: ['Fuma Nama: The philosophy', 'of an open-sourcerer'],
+            url: 'generaltranslation.com/blog/fuma-nama',
+            start: CARD,
+          });
+          return tl;
+        }
+
+        function boot() {
+          const logos = ADOPTERS.map(function (a) {
+            return el('logo-' + a.id).decode();
+          });
+          const ready = [
+            GTGem.mount(el('gem-a'), { palette: 'fire', width: W, height: H, pixelRatio: 0.5, params: { scale: 0.9, offsetX: 0.25 } }),
+            GTGem.mount(el('gem-b'), { palette: 'fire', width: W, height: H, image: 'kit/gem-shapes/fumadocs-moon.png', params: { scale: 1.1, offsetX: 0.36, offsetY: 0, innerGlow: 1, outerGlow: 0 } }),
+            GTGem.mount(el('gem-c'), { palette: 'fire', width: W, height: H, image: 'kit/gem-shapes/gt-mark.png', params: GT_SMOKE }),
+            document.fonts.load('500 160px Inter'),
+            document.fonts.load('500 24px Inter'),
+            document.fonts.load('500 64px Inter', '0123456789.k'),
+            document.fonts.load('500 92px Inter', '0123456789.k'),
+            shapes.moon.decode(),
+            shapes.gt.decode(),
+            el('img-fdlogo').decode(),
+            loadInkFaces(),
+          ].concat(logos);
+          Promise.all(ready).then(function (r) {
+            gems.a = r[0];
+            gems.b = r[1];
+            gems.c = r[2];
+            seatHeadings();
+            // the heap's light: the free smoke at one moment
+            setHeapLight();
+            gems.a.at(14);
+            readLum(gems.a.canvas, HEAP_COLS, HEAP_ROWS, heapLum0);
+            heapLumT.set(heapLum0);
+            buildHeap();
+            buildNameCells();
+            buildFile();
+            buildPanelRows();
+            buildSwarm();
+            // the glyph moon's light: the moon's smoke as the print leaves
+            setMoonAt(MOON.x, MOON.y, MOON.r, 1);
+            gems.b.at(sMoon(PRINT_OUT));
+            readLum(gems.b.canvas, GW, GH, glyphLum);
+            buildGlyphs(glyphLum);
+            buildMarks();
+            buildCounts();
+            buildFieldZones();
+            const tl = build();
+            // registered once the card's smoke is mounted and its type seated
+            card.ready.then(function () {
+              window.__timelines['main'] = tl;
+              draw(0);
+            });
+          });
+        }
+        if (window.GTEndCard) boot();
+        else window.addEventListener('gtendcard-ready', boot, { once: true });
+      })();
+    </script>
+  </body>
+</html>

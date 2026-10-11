@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Ben-Yehuda, Pines, and the vocabulary of Modern Hebrew</title>
+    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="stylesheet" href="lib/film.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="data/glyphs.js"></script>
+    <script src="data/cues.js"></script>
+    <script src="lib/data.js"></script>
+    <script src="lib/util.js"></script>
+    <script src="lib/build.js"></script>
+    <script src="lib/beats.js"></script>
+    <script src="lib/film.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #131112;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #131112;
+      }
+      #film {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="69.6">
+      <div id="film" class="clip" data-start="0" data-duration="69.6" data-track-index="1" data-layout-allow-overflow></div>
+      <!-- Sound (sound/NOTES.md): written by sound/tools/mix.py from sound/plan.json. Track 2 the narrator
+           (Frederick Surrey, kit/audio/voice-series.json), each clip placed at its take's .json timing;
+           track 4 the music, ducked under every line; track 5 the effects. Levels are in the files. -->
+      <audio id="vo-n01" src="sound/master/n01.wav" data-start="0.250" data-duration="3.830" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n02" src="sound/master/n02.wav" data-start="4.380" data-duration="4.790" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n03" src="sound/master/n03.wav" data-start="9.320" data-duration="4.470" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n04" src="sound/master/n04.wav" data-start="13.940" data-duration="6.570" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n05" src="sound/master/n05.wav" data-start="20.660" data-duration="3.460" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n06" src="sound/master/n06.wav" data-start="24.420" data-duration="5.970" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n07" src="sound/master/n07.wav" data-start="31.190" data-duration="4.700" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n08" src="sound/master/n08.wav" data-start="36.190" data-duration="5.000" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n09" src="sound/master/n09.wav" data-start="41.840" data-duration="3.180" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n10" src="sound/master/n10.wav" data-start="45.870" data-duration="5.000" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n11" src="sound/master/n11.wav" data-start="51.170" data-duration="2.760" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n12" src="sound/master/n12.wav" data-start="54.290" data-duration="5.720" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n13" src="sound/master/n13.wav" data-start="60.160" data-duration="3.770" data-track-index="2" data-volume="1"></audio>
+      <audio id="vo-n14" src="sound/master/n14.wav" data-start="64.080" data-duration="3.480" data-track-index="2" data-volume="1"></audio>
+      <audio id="music" src="sound/stems/music.wav" data-start="0" data-duration="69.6" data-track-index="4" data-volume="1"></audio>
+      <audio id="sfx" src="sound/stems/sfx.wav" data-start="0" data-duration="69.6" data-track-index="5" data-volume="1"></audio>
+    </div>
+    <script>
+      /*
+       * Ben-Yehuda, Pines, and the vocabulary of Modern Hebrew. v2 (SCRIPT-v2.md): 69.6 s, twelve
+       * pictures, every time read from data/cues.js (sound/tools/mix.py, from the takes).
+       * The film is set on the pages of the first volume of Ben-Yehuda's
+       * dictionary (Jerusalem and Berlin, 1908). Every frame is drawn by
+       * render(t) in lib/film.js from the beat states in lib/beats.js, a pure
+       * function of film time. One paused timeline, built synchronously and
+       * registered at once; its onUpdate draws the frame.
+       */
+      const film = window.MHFilm.mount(document.getElementById('film'));
+      const clock = { t: 0 };
+      const tl = gsap.timeline({ paused: true, onUpdate: () => film.render(tl.time()) });
+      tl.to(clock, { t: film.DUR, duration: film.DUR, ease: 'none' }, 0);
+      film.render(0);
+      window.__timelines['main'] = tl;
+      // The renderer's seek to 0 does not move the timeline, so onUpdate never
+      // fires for frame 0. Redraw the current time when each picture and the
+      // fonts are ready (the renderer waits for both); render(t) stays pure.
+      const redraw = () => film.render(tl.time());
+      document.querySelectorAll('#film img').forEach((i) => {
+        if (!i.complete) i.addEventListener('load', redraw);
+      });
+      if (document.fonts) document.fonts.ready.then(redraw);
+    </script>
+  </body>
+</html>

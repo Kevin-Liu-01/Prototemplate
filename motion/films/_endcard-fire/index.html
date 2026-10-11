@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>End card demo, fire</title>
+    <link rel="stylesheet" href="kit/tokens.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script type="module" src="kit/gemsmoke.js"></script>
+    <style>
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000000;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000000;
+      }
+      #ground-gem {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Demo of the series end card (kit/endcard/): 2 s of the fire material's plain
+      ground (its gem smoke with no shape and no type), then a hard
+      cut on the 2.0 s beat to the card, which runs 4.0 s to the last frame.
+    -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="6" data-width="1920" data-height="1080">
+      <div id="ground-gem" class="clip" data-start="0" data-duration="2" data-track-index="1" data-layout-allow-overflow></div>
+    </div>
+    <script type="module">
+      import { addEndCard } from './kit/endcard/endcard.js';
+
+      const PALETTE = 'fire';
+      const tl = gsap.timeline({ paused: true });
+
+      // The plain ground: the material alone, drifting.
+      const ground = { g: null };
+      const proxy = { t: 0 };
+      const drawGround = (t) => ground.g && ground.g.at(t);
+      tl.fromTo(proxy, { t: 0 }, { t: 2, duration: 2, ease: 'none', onUpdate: () => drawGround(proxy.t) }, 0);
+      GTGem.mount(document.getElementById('ground-gem'), { palette: PALETTE, width: 1920, height: 1080, offset: 7, rate: 0.5, params: { innerDistortion: 0.8, outerDistortion: 0.8 } }).then((g) => {
+        ground.g = g;
+        drawGround(Math.min(2, tl.time()));
+      });
+
+      // The card, on the 2.0 s beat.
+      addEndCard(tl, {
+        palette: PALETTE,
+        title: ['Fuma Nama: The philosophy', 'of an open-sourcerer'],
+        url: 'generaltranslation.com/blog/fuma-nama',
+        start: 2,
+      });
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines['main'] = tl;
+    </script>
+  </body>
+</html>

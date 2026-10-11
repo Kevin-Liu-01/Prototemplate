@@ -1,0 +1,82 @@
+{
+ "title": "Designing docs for humans",
+ "story": "Most docs readers are now AI agents, but humans still read docs to evaluate a product, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem.",
+ "lines": [
+  {
+   "n": 1,
+   "who": "N",
+   "said": "Most docs readers are now AI agents.",
+   "sub": null,
+   "screen": "GT’s old docs page is wired to a column of 28 readers. Pulses run to the 24 AI agents, and 4 are people."
+  },
+  {
+   "n": 2,
+   "who": "N",
+   "said": "Humans still read docs to evaluate a product.",
+   "sub": null,
+   "screen": "“Humans still read docs” builds word by word, with “Humans” in blue. The agents leave and the four people stay, then the page tilts up into the isometric view and lifts apart into plates."
+  },
+  {
+   "n": 3,
+   "who": "N",
+   "said": "General Translation redesigned its docs from scratch so people would read its writing.",
+   "sub": null,
+   "screen": "The heading becomes “General Translation redesigned its docs.” The GT mark lights white, the page’s extra pieces lift highest, and a thumb runs the contents rail as the writing prints white. Then the stack centres and comes down flat."
+  },
+  {
+   "n": 4,
+   "who": "N",
+   "said": "Interfaces keep getting more cluttered, which creates mental clutter.",
+   "sub": null,
+   "screen": "With no heading, the clutter arrives in three waves: extra lines, links and buttons, a toast over the demo button, then cards spilling into the margin."
+  },
+  {
+   "n": 5,
+   "who": "N",
+   "said": "The redesign started by deleting extra lines, links, and buttons.",
+   "sub": null,
+   "screen": "White boxes outline every piece. A band sweeps the general junk away, then the lines, the links and the buttons each leave on their own word, and the header closes into one row."
+  },
+  {
+   "n": 6,
+   "who": "N",
+   "said": "The sidebar is now one accordion, which is rare among docs sites.",
+   "sub": null,
+   "screen": "The camera pushes into the sidebar. Three old navigation bars connect into it one after another, and the accordion’s rail draws under “One accordion.” Then the camera pulls back until the page is one lit page in a wall of docs sites."
+  },
+  {
+   "n": 7,
+   "who": "N",
+   "said": "The writing now has more open space around it.",
+   "sub": null,
+   "screen": "The camera flies into GT’s page. The furniture falls away, and the writing prints line by line with wide margins while a thumb runs down its rail."
+  },
+  {
+   "n": 8,
+   "who": "N",
+   "said": "Translated pages keep the same spacing and alignment.",
+   "sub": null,
+   "screen": "The camera pulls out to the whole page, and a planet of letters lights under it under “Translated pages.” On “same” every letter switches to another writing system, and three dashed guides show the alignment holds."
+  },
+  {
+   "n": 9,
+   "who": "N",
+   "said": "Each page guides its reader toward the action they want.",
+   "sub": null,
+   "screen": "With no heading, one reader’s path draws through the page’s five stops to the demo button, which lights white, and a pulse runs along it."
+  },
+  {
+   "n": 10,
+   "who": "N",
+   "said": "Docs design is an open problem, and the team keeps working on it.",
+   "sub": null,
+   "screen": "“Docs design is an open problem” builds as the page shrinks back among the readers. The path runs on out of the page into one of the people, so the last frame mirrors the first."
+  },
+  {
+   "n": "end",
+   "who": "X",
+   "said": "End card, no voice.",
+   "screen": "The shared end card: the GT mark, the post’s title and its link."
+  }
+ ]
+}

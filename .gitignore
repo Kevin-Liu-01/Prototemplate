@@ -13,6 +13,127 @@ deck/tmp
 # the page check's captures and report (pnpm check:pages)
 .pagecheck/
 
-# motion/ belongs to the Videos session and stays untracked until it adds an allowlist of
-# sources (kit code, published films' sources); renders never enter the repo.
-/motion/
+# motion/ (owned by the Videos session) is tracked through an allowlist: everything under it
+# is ignored except MOTION.md, the kit's code and the text sources of the films the site
+# publishes (public/motion/published.json, offSite excluded). Renders, audio, pictures, fonts,
+# archives, unreleased films, concepts/ and scratch stay local. motion/kit/picture-sources.json
+# lists every picture, logo, mark and font of the kit and the published films with its source,
+# licence and hash, and node motion/kit/vendor.mjs writes the vendored libraries and the brand
+# twins into the ignored kit paths. Stage motion/ paths by name; a film enters this list only
+# when its cut is published.
+/motion/*
+!/motion/MOTION.md
+!/motion/kit/
+!/motion/films/
+!/motion/stills/
+
+# the kit: code, the narrator settings and the doubled-line GT mark; vendor.mjs writes the
+# vendored libraries and the twins, and picture-sources.json lists every other picture and font
+/motion/kit/*
+!/motion/kit/tokens.css
+!/motion/kit/dither.js
+!/motion/kit/gemsmoke.js
+!/motion/kit/sheet.js
+!/motion/kit/contact-sheet.sh
+!/motion/kit/script-export.py
+!/motion/kit/vendor.mjs
+!/motion/kit/picture-sources.json
+!/motion/kit/audio/
+!/motion/kit/endcard/
+!/motion/kit/gem-shapes/
+!/motion/kit/sound/
+!/motion/kit/review/
+!/motion/kit/brand/
+/motion/kit/audio/*
+!/motion/kit/audio/el.mjs
+!/motion/kit/audio/voice.json
+!/motion/kit/audio/voice-series.json
+!/motion/kit/audio/voices.mjs
+!/motion/kit/audio/voices.py
+!/motion/kit/audio/voices.example.json
+# the ids of the voices tracked files name stay in this local file (voices.example.json lists the names)
+/motion/kit/audio/voices.local.json
+/motion/kit/endcard/stills/
+/motion/kit/gem-shapes/*.png
+/motion/kit/brand/*
+!/motion/kit/brand/gt-mark.svg
+# sound/ and review/ hold code and docs only; takes, beds and review audio stay local
+/motion/kit/sound/**
+!/motion/kit/sound/**/
+!/motion/kit/sound/**/*.py
+!/motion/kit/sound/**/*.mjs
+!/motion/kit/sound/**/*.sh
+!/motion/kit/sound/**/*.md
+!/motion/kit/sound/**/*.json
+/motion/kit/review/**
+!/motion/kit/review/*.html
+!/motion/kit/review/*.mjs
+!/motion/kit/review/*.md
+!/motion/kit/review/sample-*.json
+
+# the published films, one line each, and the kit's four working examples
+/motion/films/*
+!/motion/films/blog-designing-docs/
+!/motion/films/blog-fuma-nama/
+!/motion/films/gif-how-gt-works/
+!/motion/films/jihe-yuanben/
+!/motion/films/journey-to-the-west/
+!/motion/films/modern-hebrew/
+!/motion/films/slash-announcement/
+!/motion/films/_smoke/
+!/motion/films/_gem/
+!/motion/films/_endcard-blue/
+!/motion/films/_endcard-fire/
+# inside a film: text sources and the kit links only
+/motion/films/*/**
+!/motion/films/*/**/
+!/motion/films/*/**/*.md
+!/motion/films/*/**/*.txt
+!/motion/films/*/**/*.html
+!/motion/films/*/**/*.css
+!/motion/films/*/**/*.js
+!/motion/films/*/**/*.mjs
+!/motion/films/*/**/*.py
+!/motion/films/*/**/*.sh
+!/motion/films/*/**/*.json
+!/motion/films/*/kit
+!/motion/films/*/gif/kit
+!/motion/films/*/gif/lib
+# audio/ and sound/ keep their media, take records, plans and reports local; only their code is tracked
+/motion/films/*/audio/**
+/motion/films/*/sound/**
+!/motion/films/*/audio/**/
+!/motion/films/*/sound/**/
+!/motion/films/*/audio/**/*.py
+!/motion/films/*/audio/**/*.mjs
+!/motion/films/*/audio/**/*.js
+!/motion/films/*/audio/**/*.sh
+!/motion/films/*/sound/**/*.py
+!/motion/films/*/sound/**/*.mjs
+!/motion/films/*/sound/**/*.js
+!/motion/films/*/sound/**/*.sh
+!/motion/films/*/sound/tools/**/*.json
+# never in a film: archives, prototypes, renders, caches, HyperFrames init boilerplate, logs,
+# the stopped round 6a drafts
+/motion/films/*/**/archive*/
+/motion/films/*/proto-v*/
+/motion/films/*/renders/
+/motion/films/*/.thumbnails/
+/motion/films/*/.waveform-cache/
+/motion/films/*/AGENTS.md
+/motion/films/*/CLAUDE.md
+/motion/films/*/*-r6a.md
+/motion/films/**/*.log
+# modern-hebrew's Hebrew reader tool reads the ElevenLabs key itself; the v2 cut has no reader
+/motion/films/modern-hebrew/sound/tools/he-line.mjs
+
+# stills: the partnership globe's core, whose renders are on the site (public/media/gt-globe-*)
+/motion/stills/*
+!/motion/stills/partnership-globe/
+/motion/stills/partnership-globe/*
+!/motion/stills/partnership-globe/index.html
+!/motion/stills/partnership-globe/render.mjs
+!/motion/stills/partnership-globe/carve.js
+!/motion/stills/partnership-globe/dither-lib.js
+!/motion/stills/partnership-globe/sheet.mjs
+!/motion/stills/partnership-globe/sweep.mjs

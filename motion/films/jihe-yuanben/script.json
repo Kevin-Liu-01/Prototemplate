@@ -1,0 +1,128 @@
+{
+ "title": "Jihe yuanben 幾何原本",
+ "story": "The Chinese word for geometry, 幾何, is often said to copy the sound of “geo.” In the 1607 Chinese Euclid it was the ordinary word for “how much.” Only six books of plane geometry existed in Chinese for 250 years, so the word for “how much” came to mean geometry.",
+ "lines": [
+  {
+   "n": 1,
+   "who": "N",
+   "said": "This title begins with the Chinese word for geometry.",
+   "sub": null,
+   "screen": "The 1607 title column rises under one lamp. The brush rings 幾何, and the ring stays on the paper."
+  },
+  {
+   "n": 2,
+   "who": "N",
+   "said": "It is often said to copy the sound of geo.",
+   "sub": null,
+   "screen": "The camera pushes in slowly on the ringed 幾何."
+  },
+  {
+   "n": 3,
+   "who": "N",
+   "said": "In 1606 two men in Beijing began to translate Euclid’s geometry.",
+   "sub": null,
+   "screen": "Cut to Kircher’s plate of Ricci and Xu, with both men in the lamp."
+  },
+  {
+   "n": 4,
+   "who": "N",
+   "said": "Only one of them could read Latin.",
+   "sub": null,
+   "screen": "On “one” the lamp narrows onto Ricci and stays there."
+  },
+  {
+   "n": 5,
+   "who": "R",
+   "said": "泰西，利瑪竇，口譯。",
+   "sub": "Matteo Ricci translated by mouth.",
+   "screen": "Cut to the two credit columns. A circle lands on each character as Yun reads it, and 口譯 is ringed.",
+   "at": 13.12
+  },
+  {
+   "n": 6,
+   "who": "R",
+   "said": "吳淞，徐光啓，筆受。",
+   "sub": "Xu Guangqi wrote it down with the brush.",
+   "screen": "Xu’s column is read the same way and 筆受 is ringed. The two rings hold side by side for 0.5 s.",
+   "at": 15.07
+  },
+  {
+   "n": 7,
+   "who": "N",
+   "said": "Chinese mathematics was written as questions, such as how large a field 15 paces by 16 is.",
+   "sub": null,
+   "screen": "Cut to the Nine Chapters page. Circles land under 十五步 and 十六步 as the numbers are said."
+  },
+  {
+   "n": 8,
+   "who": "N",
+   "said": "That question ends with the title’s first two characters.",
+   "sub": null,
+   "screen": "The camera travels down to 問為田幾何, and the brush rings 幾何."
+  },
+  {
+   "n": 9,
+   "who": "N",
+   "said": "A commentary written in 263 CE justified those methods by cutting figures apart and reassembling them.",
+   "sub": null,
+   "screen": "Liu Hui’s figure. The regions take their colours, the cuts are drawn, one pair turns into the strip’s first rectangle, the other eleven print in place, and the strip is measured."
+  },
+  {
+   "n": 10,
+   "who": "N",
+   "said": "Euclid never asks a question, and he defines every object first.",
+   "sub": null,
+   "screen": "Cut to Clavius’s 1574 Euclid. The brush underlines DEFINITIONES on “defines.”"
+  },
+  {
+   "n": 11,
+   "who": "N",
+   "said": "Chinese had no word for definition, so Ricci and Xu made one meaning “an account of boundaries.”",
+   "sub": null,
+   "screen": "The 1607 heading 界說 is ringed, and the note under it lifts off the page as a standing slip."
+  },
+  {
+   "n": 12,
+   "who": "N",
+   "said": "A, B and C were only sounds, so they used a series every literate reader could recite.",
+   "sub": null,
+   "screen": "Clavius’s lettered figure lifts off as one indigo sheet and settles on the 1607 figure, with A on 甲 and B on 乙."
+  },
+  {
+   "n": 13,
+   "who": "R",
+   "said": "甲、乙、丙、丁。",
+   "sub": "These are the first four Heavenly Stems.",
+   "screen": "As Yun says each Stem, its Latin letter sinks into the paper and the brush rings the Stem.",
+   "at": 54.33
+  },
+  {
+   "n": 14,
+   "who": "N",
+   "said": "Those two characters were the ordinary word for “how much.”",
+   "sub": null,
+   "screen": "Back to the Nine Chapters page. A second problem’s 幾何 is ringed, so two questions on one page end the same way."
+  },
+  {
+   "n": 15,
+   "who": "N",
+   "said": "Ricci and Xu used them to mean quantity.",
+   "sub": null,
+   "screen": "The 1607 first page slides in beside it, and its 幾何 in 幾何府 is ringed on “quantity.”"
+  },
+  {
+   "n": 16,
+   "who": "N",
+   "said": "For 250 years Chinese readers had only six of Euclid’s books, all on plane geometry.",
+   "sub": null,
+   "screen": "The camera eases across the 1607 page to its title column, so the ring from line 1 is back in frame."
+  },
+  {
+   "n": 17,
+   "who": "N",
+   "said": "So the word for “how much” came to mean geometry.",
+   "sub": null,
+   "screen": "The empty table under the lamp. 幾何原本 arrives in one column, and a vermilion stop lands after 本."
+  }
+ ]
+}

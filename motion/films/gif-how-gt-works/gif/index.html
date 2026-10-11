@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1280, height=720" />
+    <title>How GT works (GIF frames)</title>
+    <link rel="stylesheet" href="kit/tokens.css" />
+    <link rel="stylesheet" href="lib/scene.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="lib/film.js"></script>
+    <script src="lib/scene.js"></script>
+    <style>
+      html, body { width: 1280px; height: 720px; }
+    </style>
+  </head>
+  <body>
+    <!-- How GT works: the GIF's frames, 1280 x 720 at 20 fps, rendered at the GIF's own pixel (DESIGN.md sections 8 and 9). -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="17.3" data-width="1280" data-height="720">
+      <div id="stage" data-layout-allow-overflow></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__hf = window.__hf || {};
+      window.__hf.buildReady = window.__hf.buildReady || {};
+      const scene = GTScene.mount(document.getElementById('stage'));
+      const tl = gsap.timeline({ paused: true, onUpdate: () => scene.render(tl.time()) });
+      tl.to({ t: 0 }, { t: GTScene.DUR, duration: GTScene.DUR, ease: 'none' }, 0);
+      window.__timelines['main'] = tl;
+      window.__scene = scene;
+      window.__hf.buildReady.scene = scene.ready
+        .then(() => scene.render(tl.time()))
+        .catch((e) => {
+          window.__sceneError = String((e && e.stack) || e);
+        });
+    </script>
+  </body>
+</html>

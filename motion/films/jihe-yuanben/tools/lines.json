@@ -1,0 +1,119 @@
+{
+ "_": "Every spoken line of SCRIPT-v2.md, in film order; the id's number is the SCRIPT-v2 line number. text is what the voice is given (numbers written as said, per SCRIPT-v2's pronunciation table); prev and next are the neighbouring v2 lines (a Mandarin neighbour as printed). who N = the narrator, Frederick Surrey (kit/audio/voice-series.json, selected with EL_VOICE_FILE; record.mjs never passes --voice for an N line), R = Yun (its id in kit/audio/voices.local.json). The three R lines reuse the 100 s cut's takes unchanged (take). The 100 s cut's lines are in archive-100s/tools/lines.json.",
+ "lines": [
+  {
+   "id": "en01",
+   "who": "N",
+   "text": "This title begins with the Chinese word for geometry.",
+   "next": "It is often said to copy the sound of geo."
+  },
+  {
+   "id": "en02",
+   "who": "N",
+   "text": "It is often said to copy the sound of geo.",
+   "prev": "This title begins with the Chinese word for geometry.",
+   "next": "In sixteen oh six two men in Beijing began to translate Euclid's geometry."
+  },
+  {
+   "id": "en03",
+   "who": "N",
+   "text": "In sixteen oh six two men in Beijing began to translate Euclid's geometry.",
+   "prev": "It is often said to copy the sound of geo.",
+   "next": "Only one of them could read Latin."
+  },
+  {
+   "id": "en04",
+   "who": "N",
+   "text": "Only one of them could read Latin.",
+   "prev": "In sixteen oh six two men in Beijing began to translate Euclid's geometry.",
+   "next": "泰西，利瑪竇，口譯。"
+  },
+  {
+   "id": "zh2",
+   "who": "R",
+   "take": "zh2",
+   "text": "泰西，利瑪竇，口譯。"
+  },
+  {
+   "id": "zh3",
+   "who": "R",
+   "take": "zh3s",
+   "text": "吳淞，徐光啓，筆受。"
+  },
+  {
+   "id": "en07",
+   "who": "N",
+   "text": "Chinese mathematics was written as questions, such as how large a field fifteen paces by sixteen is.",
+   "prev": "吳淞，徐光啓，筆受。",
+   "next": "That question ends with the title's first two characters."
+  },
+  {
+   "id": "en08",
+   "who": "N",
+   "text": "That question ends with the title's first two characters.",
+   "prev": "Chinese mathematics was written as questions, such as how large a field fifteen paces by sixteen is.",
+   "next": "A commentary written in two sixty-three CE justified those methods by cutting figures apart and reassembling them."
+  },
+  {
+   "id": "en09",
+   "who": "N",
+   "text": "A commentary written in two sixty-three CE justified those methods by cutting figures apart and reassembling them.",
+   "prev": "That question ends with the title's first two characters.",
+   "next": "Euclid never asks a question, and he defines every object first."
+  },
+  {
+   "id": "en10",
+   "who": "N",
+   "text": "Euclid never asks a question, and he defines every object first.",
+   "prev": "A commentary written in two sixty-three CE justified those methods by cutting figures apart and reassembling them.",
+   "next": "Chinese had no word for definition, so Ricci and Xu made one meaning \"an account of boundaries.\""
+  },
+  {
+   "id": "en11",
+   "who": "N",
+   "text": "Chinese had no word for definition, so Ricci and Xu made one meaning \"an account of boundaries.\"",
+   "prev": "Euclid never asks a question, and he defines every object first.",
+   "next": "A, B and C were only sounds, so they used a series every literate reader could recite."
+  },
+  {
+   "id": "en12",
+   "who": "N",
+   "text": "A, B and C were only sounds, so they used a series every literate reader could recite.",
+   "prev": "Chinese had no word for definition, so Ricci and Xu made one meaning \"an account of boundaries.\"",
+   "next": "甲、乙、丙、丁。"
+  },
+  {
+   "id": "zh6",
+   "who": "R",
+   "take": "zh6t",
+   "text": "甲、乙、丙、丁。"
+  },
+  {
+   "id": "en14",
+   "who": "N",
+   "text": "Those two characters were the ordinary word for \"how much.\"",
+   "prev": "甲、乙、丙、丁。",
+   "next": "Ricci and Xu used them to mean quantity."
+  },
+  {
+   "id": "en15",
+   "who": "N",
+   "text": "Ricci and Xu used them to mean quantity.",
+   "prev": "Those two characters were the ordinary word for \"how much.\"",
+   "next": "For two hundred and fifty years Chinese readers had only six of Euclid's books, all on plane geometry."
+  },
+  {
+   "id": "en16",
+   "who": "N",
+   "text": "For two hundred and fifty years Chinese readers had only six of Euclid's books, all on plane geometry.",
+   "prev": "Ricci and Xu used them to mean quantity.",
+   "next": "So the word for \"how much\" came to mean geometry."
+  },
+  {
+   "id": "en17",
+   "who": "N",
+   "text": "So the word for \"how much\" came to mean geometry.",
+   "prev": "For two hundred and fifty years Chinese readers had only six of Euclid's books, all on plane geometry."
+  }
+ ]
+}

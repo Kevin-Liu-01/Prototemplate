@@ -1,0 +1,220 @@
+/* jihe-yuanben: the frame.
+
+   The stage is a letterboxed window (2.35 : 1) on a warm black table. The
+   picture is always a real scan, moved by a camera in its own native pixel
+   space. The top bar carries the citation of the scan on screen, the bottom
+   bar carries the spoken line. Nothing else is set on the picture except the
+   reader's vermilion marks, which live in the page's own coordinates.
+
+   Faces come from fonts/fonts.css (EB Garamond as JY Latin, Noto Serif CJK TC
+   as JY Han), through its variables only: a literal Google family name would
+   make the compiler fetch it. */
+
+:root {
+  --table: #0b0907;        /* the table the books lie on, and the letterbox */
+  --paper-type: #ece2cd;   /* type on the table: the narration line */
+  --label: #958a78;        /* the citation line */
+  --cinnabar: #c9351b;     /* the reader's vermilion (朱), multiplied into the paper */
+  --latin: var(--jy-latin);
+  --han: var(--jy-han);
+  --bar: 132px;            /* letterbox bar height: 1080 - 2 x 132 = 816, 2.35 : 1 */
+}
+
+html,
+body {
+  margin: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--table);
+}
+
+.jy-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--table);
+}
+
+/* The picture window: the camera looks into it with a long lens. */
+.jy-window {
+  position: absolute;
+  left: 0;
+  top: var(--bar);
+  width: 1920px;
+  height: calc(1080px - 2 * var(--bar));
+  overflow: hidden;
+  /* The table under the lamp: a warm pool on dark wood-black. */
+  background: radial-gradient(ellipse 1150px 430px at 50% 50%, #241c15 0%, #17120d 50%, var(--table) 100%);
+  perspective: 2400px;
+  perspective-origin: 960px 408px;
+}
+.jy-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  transform-origin: 0 0;
+  transform-style: preserve-3d;
+}
+.jy-plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  transform-style: preserve-3d;
+}
+.jy-plane > img.scan {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+}
+.jy-plane > svg.marks {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  mix-blend-mode: multiply;
+}
+.marks path,
+.marks ellipse {
+  fill: none;
+  stroke: var(--cinnabar);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Light: one lamp pool over the window. Multiplied, so it only darkens. */
+.jy-lamp {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+/* Depth of field: the far and near edges of a tilted page go soft. */
+.jy-dof {
+  position: absolute;
+  left: 0;
+  width: 1920px;
+  pointer-events: none;
+  backdrop-filter: blur(var(--dof, 5px));
+  -webkit-backdrop-filter: blur(var(--dof, 5px));
+}
+.jy-dof.top {
+  top: 0;
+  height: 300px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0) 100%);
+}
+.jy-dof.bottom {
+  bottom: 0;
+  height: 260px;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* The bars. */
+.jy-cite {
+  position: absolute;
+  left: 120px;
+  right: 120px;
+  top: 0;
+  height: var(--bar);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 30px;
+  box-sizing: border-box;
+  font-family: var(--latin);
+  font-size: 21px;
+  line-height: 1.2;
+  letter-spacing: 0.012em;
+  color: var(--label);
+  font-variant-numeric: lining-nums;
+}
+.jy-cite > span {
+  position: absolute;
+  left: 0;
+  bottom: 30px;
+  display: block;
+  max-width: 1680px;
+  text-wrap: balance;
+}
+.jy-cite i {
+  font-style: italic;
+}
+.jy-cite .han,
+.jy-sub .han {
+  font-family: var(--han);
+  font-size: 0.9em;
+  letter-spacing: 0.04em;
+  margin-right: -0.04em;
+}
+.jy-sub {
+  position: absolute;
+  left: 120px;
+  right: 120px;
+  bottom: 0;
+  height: var(--bar);
+  display: flex;
+  align-items: center;
+  padding-top: 4px;
+  box-sizing: border-box;
+  font-family: var(--latin);
+  font-weight: 500;
+  font-size: 37px;
+  line-height: 1.25;
+  letter-spacing: 0.004em;
+  color: var(--paper-type);
+  font-variant-numeric: lining-nums;
+}
+.jy-sub > span {
+  display: block;
+  max-width: 1480px;
+  text-wrap: balance;
+}
+.jy-sub .zh {
+  font-family: var(--han);
+  font-weight: 500;
+  font-size: 36px;
+  letter-spacing: 0.08em;
+  margin-right: -0.08em;
+}
+.jy-sub .py {
+  margin-left: 28px;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 30px;
+  color: var(--label);
+  letter-spacing: 0.01em;
+}
+.jy-sub i {
+  font-style: italic;
+}
+
+/* Name plates set in type over an engraving (the engraved characters are
+   miscut, so the names are never read off the plate). */
+.jy-name {
+  position: absolute;
+  font-family: var(--latin);
+  color: var(--paper-type);
+  white-space: nowrap;
+}
+.jy-name .han {
+  display: block;
+  font-family: var(--han);
+  font-weight: 500;
+  font-size: 44px;
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+}
+.jy-name .lat {
+  display: block;
+  margin-top: 10px;
+  font-size: 27px;
+  letter-spacing: 0.01em;
+}

@@ -1,0 +1,9 @@
+{
+  "voice_id": "j9jfwdrw7BRfcR43Qohk",
+  "name": "Frederick Surrey (British, history and science documentary; ElevenLabs library)",
+  "model": "eleven_multilingual_v2",
+  "stability": 0.55,
+  "style": 0.2,
+  "speed": 1.0,
+  "chosen": "2026-10-06: Kevin: 'remember, we're using Frederick Surrey'. Frederick Surrey (audition 01, stability 0.55, style 0.2, speed 1.0) is the narrator of every GT film: the translation series and the blog films. Clara's settings are kept in voice-clara.json."
+}

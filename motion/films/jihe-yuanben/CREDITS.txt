@@ -1,0 +1,34 @@
+Jihe yuanben 幾何原本 (motion/films/jihe-yuanben), v2, 74.85 s, 1920 x 1080.
+Ship this text with the film wherever it is published (the description field
+of the post or the video page). The film's closing title carries the same
+image credits.
+
+Images
+
+- Jihe yuanben 幾何原本, vol. 1, sp=8 and 23, early 17th-century printing.
+  Library of Congress / National Library of China (World Digital Library).
+  No known restrictions.
+- Athanasius Kircher, La Chine illustrée, Amsterdam, 1670, plate facing
+  p. 201. Villanova University, Falvey Library. Public domain (the unretouched
+  Villanova master; the CC BY-SA 3.0 Wikimedia Commons retouch is not used).
+- Christoph Clavius, Euclidis Elementorum libri XV, Rome: Vincenzo Accolti,
+  1574, fol. 1r and fol. 21v. Boston College Library, via Internet Archive.
+  Public domain by age.
+- 九章算術 Nine Chapters on the Mathematical Art, Siku Quanshu (Qing edition),
+  vols 1 to 3 p. 19, and vols 7 to 9 p. 132 (the 句股容圓圖 and its note,
+  supplied by the Qing editors: 原本缺圖今補). Source Library
+  (https://sourcelibrary.org) / Internet Archive (CADAL). Licensed CC BY-SA
+  4.0: https://creativecommons.org/licenses/by-sa/4.0/
+  Changes made in this film: both pages are toned to the colour of paper
+  (#d4c4a4 multiplied, contrast 0.9); on p. 132 the figure's three regions are
+  coloured by their own labels (朱, 青, 黃), the figure is copied and cut along
+  its printed lines, and its pieces are rearranged into a rectangle. These
+  adapted images are licensed CC BY-SA 4.0.
+
+The film is licensed under CC BY-SA 4.0:
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Type: EB Garamond (Octavio Pardo) and Noto Serif CJK TC (Adobe), SIL Open
+Font License 1.1.
+Voices: ElevenLabs (Frederick Surrey, narrator; Yun, Mandarin reader). Music:
+ElevenLabs Music API. Paper sounds: ElevenLabs sound generation.

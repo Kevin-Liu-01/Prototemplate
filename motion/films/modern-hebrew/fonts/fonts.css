@@ -1,0 +1,37 @@
+/* modern-hebrew: the film's faces, self-hosted (SIL OFL 1.1, licences beside
+   the files). The family names are private on purpose: a composition that
+   names a Google Fonts family makes the compiler fetch it from Google Fonts.
+   Use the variables in lib/film.css (--heb, --lat, --gk).
+
+   MH Hebrew  Frank Ruhl Libre (variable wght 300-900), renamed. Sets the
+              pointing (niqqud) with its GPOS mark and mkmk tables.
+   MH Latin   Source Serif 4 (variable opsz and wght, roman and italic), renamed.
+   MH Greek   Noto Serif, Greek and Greek Extended only, for ἤλεκτρον. */
+@font-face {
+  font-family: 'MH Hebrew';
+  src: url('./MHHebrew-VF.woff2') format('woff2');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'MH Latin';
+  src: url('./MHLatin-VF.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'MH Latin';
+  src: url('./MHLatin-Italic-VF.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: block;
+}
+@font-face {
+  font-family: 'MH Greek';
+  src: url('./MHGreek-VF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}

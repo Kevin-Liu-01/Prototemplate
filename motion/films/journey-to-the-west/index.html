@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Journey to the West</title>
+    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="stylesheet" href="lib/jw.css" />
+    <script src="kit/gsap.min.js"></script>
+    <script src="kit/MorphSVGPlugin.min.js"></script>
+    <script src="kit/DrawSVGPlugin.min.js"></script>
+    <script src="data/glyphs.js"></script>
+    <script src="data/plates.js"></script>
+    <script src="data/contents.js"></script>
+    <script src="data/events.js"></script>
+    <script src="lib/jw.js"></script>
+    <script src="lib/s1.js"></script>
+    <script src="lib/s2.js"></script>
+    <script src="lib/s3.js"></script>
+    <script src="lib/s4.js"></script>
+    <script src="lib/s5.js"></script>
+    <script src="lib/s6.js"></script>
+    <script src="lib/s7.js"></script>
+    <script src="lib/s8.js"></script>
+    <script src="lib/film.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #ffffff;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Journey to the West: Waley, Hu Shih, and the English names of 西遊記. v2 (SCRIPT-v2.md), 73 s at 1920 x 1080.
+      Written by tools/compose.py. Eight scenes, each a sub-composition between the cuts of sound/tools/timeline.py,
+      which places every take by its own word timings; the sound placed from sound/manifest.json.
+    -->
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="73">
+      <div id="s1" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="4.4333" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s2" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="4.4333" data-duration="20.0167" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s3" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="24.45" data-duration="3.3833" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s4" data-composition-id="s4" data-composition-src="compositions/s4.html" data-start="27.8333" data-duration="3.0333" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s5" data-composition-id="s5" data-composition-src="compositions/s5.html" data-start="30.8666" data-duration="5" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s6" data-composition-id="s6" data-composition-src="compositions/s6.html" data-start="35.8666" data-duration="10.0834" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s7" data-composition-id="s7" data-composition-src="compositions/s7.html" data-start="45.95" data-duration="11.2333" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <div id="s8" data-composition-id="s8" data-composition-src="compositions/s8.html" data-start="57.1833" data-duration="15.8167" data-track-index="1" data-width="1920" data-height="1080"></div>
+      <!-- sound (sound/manifest.json): one file, sound/mix/film-mix.wav, written by tools/premix.py: the narrator's and
+           the Mandarin reader's clips at their manifest starts, never re-timed, the bed with its ducking and fades, and the effects
+           stem, under a true-peak ceiling in the master. One file keeps the rendered sound identical between renders. -->
+      <audio id="mix" src="sound/mix/film-mix.wav" data-start="0" data-duration="73" data-track-index="2" data-volume="1"></audio>
+    </div>
+    <script>
+      /* The root timeline is empty: every move lives in its scene's sub-composition. */
+      window.__timelines['main'] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "title": "Sample narrator auditions",
+  "intro": "Three placeholder voices that use every part of the page. Each voice reads the same text. Play a take with the film's music under it, or the voice alone. This sample ships no audio, so a play button reports the missing take.",
+  "links": [
+    { "label": "Sample script review", "href": "script-review.html?data=sample-script-review.json" }
+  ],
+  "sample": "This is the text every voice reads. It is two sentences long.",
+  "modes": [
+    { "id": "music", "label": "With the film's music" },
+    { "id": "dry", "label": "Voice only" }
+  ],
+  "groups": [
+    { "id": "candidates", "label": "Candidates" },
+    { "id": "current", "label": "For comparison" }
+  ],
+  "voices": [
+    {
+      "n": 1,
+      "name": "Voice one",
+      "group": "candidates",
+      "description": "A calm, even reader.",
+      "pace": 2.6,
+      "steadiness": 1.3,
+      "pick": "First pick",
+      "takes": { "music": "audio/music/01-voice-one.mp3", "dry": "audio/dry/01-voice-one.mp3" }
+    },
+    {
+      "n": 2,
+      "name": "Voice two",
+      "group": "candidates",
+      "description": "A warmer reader at a slower pace.",
+      "pace": 2.42,
+      "steadiness": 1.41,
+      "takes": { "music": "audio/music/02-voice-two.mp3", "dry": "audio/dry/02-voice-two.mp3" }
+    },
+    {
+      "n": 3,
+      "name": "Voice three",
+      "group": "current",
+      "description": "The voice the films use now.",
+      "pace": 2.2,
+      "steadiness": 1.05,
+      "current": true,
+      "takes": { "music": "audio/music/03-voice-three.mp3", "dry": "audio/dry/03-voice-three.mp3" }
+    }
+  ],
+  "notes": [
+    "Pace is words a second at the voice's natural speed.",
+    "Steadiness is the median frame-to-frame pitch change in percent. A lower number means a steadier voice."
+  ]
+}

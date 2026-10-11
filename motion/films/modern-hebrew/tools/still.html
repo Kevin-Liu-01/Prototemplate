@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>modern-hebrew still</title>
+    <!-- Draws one frame of the film at ?t= seconds for checking (tools/shoot.mjs).
+         ?boxes=1 also outlines every box of lib/data.js on the page under the camera. -->
+    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="stylesheet" href="lib/film.css" />
+    <script src="data/glyphs.js"></script>
+    <script src="data/cues.js"></script>
+    <script src="lib/data.js"></script>
+    <script src="lib/util.js"></script>
+    <script src="lib/build.js"></script>
+    <script src="lib/beats.js"></script>
+    <script src="lib/film.js"></script>
+    <style>html,body{margin:0;background:#131112} #film{position:absolute;left:0;top:0;width:1920px;height:1080px}</style>
+  </head>
+  <body>
+    <div id="film"></div>
+    <script>
+      (async () => {
+        try {
+          const q = new URLSearchParams(location.search);
+          const t = parseFloat(q.get('t') || '0');
+          const film = window.MHFilm.mount(document.getElementById('film'));
+          await Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.onload = r; i.onerror = r; }))));
+          await document.fonts.ready;
+          // ?from=<s> renders every frame (30 fps) from that time up to t first,
+          // to test that a frame does not depend on the frames before it
+          const from = q.get('from');
+          if (from != null) for (let x = parseFloat(from); x < t; x += 1 / 30) film.render(x);
+          film.render(t);
+          window.__done = true;
+        } catch (e) { window.__err = String(e && e.stack || e); }
+      })();
+    </script>
+  </body>
+</html>

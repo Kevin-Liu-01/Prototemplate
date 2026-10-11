@@ -1,0 +1,98 @@
+{
+  "about": "Globe pins for jihe-yuanben. lat/lon are copied from BRIEF.md section 1, 'Coordinates for the globe build' (decimal degrees, north and east positive). caption is the on-screen coordinate string the brief's script uses (two decimals). dates quote the post (BRIEF.md section 2) unless 'source' names another part of the brief. name_zh labels are standard place names added for typesetting; BRIEF.md does not give them, so check them before the film states them.",
+  "route": ["rome", "macau", "shaozhou", "beijing"],
+  "opening_pin": "beijing",
+  "closing_pin": "xujiahui",
+  "places": [
+    {
+      "id": "rome",
+      "name": "Rome",
+      "site": "Collegio Romano",
+      "name_zh": "羅馬",
+      "lat": 41.898,
+      "lon": 12.48,
+      "caption": "41.90° N, 12.48° E · Rome · 1574",
+      "dates": [
+        { "year": 1574, "text": "Clavius's Latin edition, Euclidis Elementorum libri XV (Rome, 1574)", "source": "post" },
+        { "year": null, "text": "Ricci had learned mathematics in Rome from Christopher Clavius (the post gives no year)", "source": "post" }
+      ],
+      "notes": "Imprint on the 1574 title page: 'ROMAE, Apud Vincentium Accoltum. 1574.' (assets/west/clavius1574-crop-title-imprint-romae-1574.png)."
+    },
+    {
+      "id": "macau",
+      "name": "Macau",
+      "site": null,
+      "name_zh": "澳門",
+      "lat": 22.194,
+      "lon": 113.543,
+      "caption": "22.19° N, 113.54° E · Macau · 1582",
+      "dates": [
+        { "year": 1582, "text": "he had carried Clavius's Latin edition ... to Macau in 1582 and north over the next two decades", "source": "post" }
+      ],
+      "notes": null
+    },
+    {
+      "id": "shaozhou",
+      "name": "Shaozhou",
+      "site": "today Shaoguan",
+      "name_zh": "韶州",
+      "lat": 24.81,
+      "lon": 113.597,
+      "caption": "24.81° N, 113.60° E · Shaozhou · c. 1590",
+      "dates": [
+        { "year": 1590, "circa": true, "text": "Around 1590, in Shaozhou, he worked through Book I with the scholar Qu Rukui. That manuscript is lost.", "source": "post" },
+        { "year": "1590–91", "circa": true, "text": "c. 1590–91 (Engelfriet pp. 59ff.; MacTutor). The claim that Qu translated 'five books' is unsupported.", "source": "BRIEF.md section 5, item 14 (contested)" }
+      ],
+      "people": ["Qu Rukui 瞿汝夔"],
+      "overlay": "齟齬 (Ricci's verdict: 言象之粗，而齟齬若是)",
+      "notes": "Keep 'c.' or 'around' on screen; the date is contested."
+    },
+    {
+      "id": "beijing",
+      "name": "Beijing",
+      "site": "Jesuit residence near Xuanwumen (site of the later South Cathedral)",
+      "name_zh": "北京",
+      "lat": 39.899,
+      "lon": 116.371,
+      "caption": "39.90° N, 116.37° E · Beijing · 1606",
+      "dates": [
+        { "year": 1606, "text": "Every afternoon from the autumn of 1606, Xu went to Ricci's residence near Xuanwumen.", "source": "post" },
+        { "year": 1607, "text": "The six books were printed in Beijing in 1607.", "source": "post" },
+        { "year": 1610, "month": 5, "text": "Ricci died there in May 1610.", "source": "post" },
+        { "year": 1611, "text": "In 1611 Xu revised the text with the Jesuits Sabatino de Ursis and Diego de Pantoja, working from Ricci's annotated copy.", "source": "post (the post does not say where the revision was made)" },
+        { "year": "1606–07", "text": "Use 'translated 1606–07, printed 1607.'", "source": "BRIEF.md section 5, item 12 (contested)" }
+      ],
+      "notes": "The site is confirmed; the 1606 building footprint is not (BRIEF.md). Pin the site, not a building."
+    },
+    {
+      "id": "xujiahui",
+      "name": "Xujiahui",
+      "site": "Xu Guangqi's tomb in Guangqi Park, Shanghai",
+      "name_zh": "徐家匯",
+      "lat": 31.192,
+      "lon": 121.434,
+      "caption": "31.19° N, 121.43° E · Xujiahui · Shanghai",
+      "dates": [
+        { "year": null, "text": "The post's closing line gives no year: '31.19° N, 121.43° E · Xujiahui · Shanghai'", "source": "post" },
+        { "year": "1562–1633", "text": "Xu Guangqi 徐光啟, 1562–1633", "source": "BRIEF.md section 1, script caption at 0:04" },
+        { "year": 1983, "text": "Guangqi Park renamed 1983", "source": "BRIEF.md section 5, item 11" },
+        { "year": 1988, "text": "tomb listed as a national heritage site 1988", "source": "BRIEF.md section 5, item 11" }
+      ],
+      "notes": "Script caption at 1:24 adds 'named for the Xu family'."
+    },
+    {
+      "id": "alexandria",
+      "name": "Alexandria",
+      "site": null,
+      "name_zh": "亞歷山大",
+      "optional": true,
+      "lat": 31.2,
+      "lon": 29.919,
+      "caption": "31.20° N, 29.92° E · Alexandria · c. 300 BCE",
+      "dates": [
+        { "year": -300, "circa": true, "text": "Euclid c. 300 BCE", "source": "BRIEF.md section 1, coordinates list (the post does not mention Alexandria)" }
+      ],
+      "notes": "Optional pin. Caption string is derived here from the brief's decimals; the brief's script has no Alexandria caption."
+    }
+  ]
+}

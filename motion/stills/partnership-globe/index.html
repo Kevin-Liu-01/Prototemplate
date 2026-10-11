@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Partnership globes</title>
+    <link rel="stylesheet" href="../../kit/tokens.css" />
+    <style>
+      html, body { margin: 0; background: #070707; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <canvas id="c" width="2048" height="2048"></canvas>
+    <script type="module">
+      /*
+       * Three partnership graphics from the sign-in globe (Prototemplate
+       * src/lib/dither.ts globe(), at the dashboard's sign-in settings:
+       * radius 0.44 of its field, ambient 0.14, rim 0.16, landmass 0.42,
+       * gamma 1.15, its still frame at t = 8, ink #86a8ff on #070707).
+       *   ?v=globe   the dithered globe
+       *   ?v=gt      the dithered globe with the doubled-line GT mark in the middle
+       *   ?v=glyphs  the globe printed in glyphs from twenty writing systems
+       * The glyph globe also takes:
+       *   &mode=dark   (the default) the approved globe on ink #070707
+       *   &mode=light  its paper twin on #ffffff (see LIGHT below)
+       *   &carve=gt    the doubled-line GT mark's two lines carved out of the
+       *                middle as negative space, the glyphs set around the
+       *                outline and along each channel (carve.js), in either mode
+       * &bg=none draws any of them on a transparent ground.
+       * render.mjs opens each and saves the canvas as a PNG.
+       */
+      import { globe, BAYER_8 } from './dither-lib.js';
+      import { drawCarved } from './carve.js';
+
+      const W = 2048;
+      const INK = '#070707';
+      const PAPER = '#ffffff';
+      const BLUE = [134, 168, 255]; // #86a8ff, the accent's lift on ink
+      const DEEP = [47, 92, 224]; // #2f5ce0
+      const WHITE = [242, 242, 240]; // #f2f2f0
+      const params = new URLSearchParams(location.search);
+      const variant = params.get('v') || 'globe';
+      const T = Number(params.get('t') || 40);
+      const R = Number(params.get('r') || 0.4); // the globe's radius as a share of the frame
+      const TILT = Number(params.get('tilt') || 0.15);
+      const CELL = Number(params.get('cell') || 6); // px per cell at 2048: 3 css px at 2x, chunky enough to read small
+      const GAIN = Number(params.get('gain') || 0.94);
+      const canvas = document.getElementById('c');
+      const ctx = canvas.getContext('2d');
+
+      // The sign-in globe at the sign-in settings; its own radius (0.44 of
+      // its field) is rescaled so the sphere fills R of this frame.
+      const field = globe({ cx: 0.5, cy: 0.5, radius: R, ambient: 0.14, rim: 0.16, graticule: 0, landmass: 0.42, spin: 0.14, tilt: TILT });
+      const tone = (u, v) => Math.pow(Math.max(0, field(u, v, T)), 1.15) * GAIN;
+      // The same globe without its landmass: the lighting alone. Its ratio to
+      // the full field says land (above 1) or ocean (below 1) at each point.
+      const lightOnly = globe({ cx: 0.5, cy: 0.5, radius: R, ambient: 0.14, rim: 0.16, graticule: 0, landmass: 0, spin: 0.14, tilt: TILT });
+      const th8 = (x, y) => (BAYER_8[y & 7][x & 7] + 0.5) / 64;
+
+      const CLEAR = params.get('bg') === 'none'; // a transparent ground, for laying beside a partner's mark
+      // The glyph globe's mode: dark (the default, the approved globe) or light.
+      const MODE = variant === 'glyphs' && params.get('mode') === 'light' ? 'light' : 'dark';
+      const CARVE = variant === 'glyphs' && params.get('carve') === 'gt';
+      if (MODE === 'light') document.documentElement.style.background = document.body.style.background = PAPER;
+      function ground() {
+        ctx.clearRect(0, 0, W, W);
+        if (CLEAR) return;
+        ctx.fillStyle = MODE === 'light' ? PAPER : INK;
+        ctx.fillRect(0, 0, W, W);
+      }
+
+      /* The doubled-line GT mark as an offscreen mask, centred, `w` px wide. */
+      async function markMask(w) {
+        const svg = await (await fetch('../../kit/brand/gt-mark.svg')).text();
+        const img = new Image();
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace('fill="currentColor"', 'fill="#ffffff"'));
+        await img.decode();
+        const h = (w * 771) / 1213; // the mark's viewBox aspect
+        const m = document.createElement('canvas');
+        m.width = W;
+        m.height = W;
+        const mx = m.getContext('2d');
+        mx.drawImage(img, (W - w) / 2, (W - h) / 2, w, h);
+        return { canvas: m, data: mx.getImageData(0, 0, W, W).data, w, h };
+      }
+
+      function dilate(alpha, cols, rows, radius) {
+        // A cell is cleared when any cell within `radius` cells is inside the mark.
+        const out = new Uint8Array(cols * rows);
+        for (let y = 0; y < rows; y++)
+          for (let x = 0; x < cols; x++) {
+            if (!alpha[y * cols + x]) continue;
+            for (let dy = -radius; dy <= radius; dy++)
+              for (let dx = -radius; dx <= radius; dx++) {
+                if (dx * dx + dy * dy > radius * radius) continue;
+                const xx = x + dx, yy = y + dy;
+                if (xx >= 0 && yy >= 0 && xx < cols && yy < rows) out[yy * cols + xx] = 1;
+              }
+          }
+        return out;
+      }
+
+      async function drawDithered(withMark) {
+        ground();
+        const cell = CELL;
+        const cols = Math.ceil(W / cell);
+        let clear = null;
+        let mark = null;
+        if (withMark) {
+          mark = await markMask(Math.round(W * R * 2 * Number(params.get('mark') || 0.42)));
+          const alpha = new Uint8Array(cols * cols);
+          for (let y = 0; y < cols; y++)
+            for (let x = 0; x < cols; x++) {
+              const k = ((y * cell + cell / 2) * W + (x * cell + cell / 2)) * 4 + 3;
+              alpha[y * cols + x] = mark.data[k] > 8 ? 1 : 0;
+            }
+          clear = dilate(alpha, cols, cols, Number(params.get('halo') || 3));
+        }
+        const img = ctx.createImageData(cols, cols);
+        for (let y = 0; y < cols; y++)
+          for (let x = 0; x < cols; x++) {
+            const i = y * cols + x;
+            const k = i * 4;
+            const lit = (!clear || !clear[i]) && tone((x + 0.5) / cols, (y + 0.5) / cols) > th8(x, y);
+            const c = lit ? BLUE : [7, 7, 7];
+            img.data[k] = c[0]; img.data[k + 1] = c[1]; img.data[k + 2] = c[2]; img.data[k + 3] = lit || !CLEAR ? 255 : 0;
+          }
+        const off = document.createElement('canvas');
+        off.width = cols;
+        off.height = cols;
+        off.getContext('2d').putImageData(img, 0, 0);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(off, 0, 0, cols * cell, cols * cell);
+        if (mark) {
+          // The mark in the ink of type on ink, drawn as a vector over the cleared cells.
+          const tint = document.createElement('canvas');
+          tint.width = W;
+          tint.height = W;
+          const tx = tint.getContext('2d');
+          tx.drawImage(mark.canvas, 0, 0);
+          tx.globalCompositeOperation = 'source-in';
+          tx.fillStyle = 'rgb(' + WHITE.join(',') + ')';
+          tx.fillRect(0, 0, W, W);
+          ctx.drawImage(tint, 0, 0);
+        }
+      }
+
+      /*
+       * The glyph globe. Each cell holds one character from one of twenty
+       * writing systems, picked evenly by a seeded draw so every script shows
+       * across the sphere. The glyph's size carries the tone, a halftone in
+       * characters, and its ink steps with the tone: #2f5ce0 on the shadowed
+       * limb, #86a8ff on the body, #f2f2f0 in the highlight. Every glyph is
+       * one shaped text node, so Arabic and Devanagari keep their forms.
+       */
+      const SCRIPTS = [
+        ['a', 'e', 'g', 'r', 's', 'G', 'T'], // Latin
+        ['λ', 'Ω', 'φ', 'ξ'], // Greek
+        ['Ж', 'я', 'ф', 'д'], // Cyrillic
+        ['א', 'ש', 'ל', 'ת'], // Hebrew
+        ['ب', 'ع', 'ق', 'ك', 'م'], // Arabic
+        ['क', 'ह', 'श', 'ज', 'त'], // Devanagari
+        ['த', 'ழ', 'க', 'ம'], // Tamil
+        ['ಕ', 'ಗ', 'ಮ'], // Kannada
+        ['ক', 'ভ', 'ম'], // Bengali
+        ['ก', 'ญ', 'ม', 'ษ'], // Thai
+        ['ა', 'ღ', 'ქ'], // Georgian
+        ['Ա', 'Ֆ', 'Ջ'], // Armenian
+        ['ሀ', 'ጸ', 'ሰ'], // Ethiopic
+        ['あ', 'ゆ', 'の'], // Hiragana
+        ['カ', 'ネ', 'ト'], // Katakana
+        ['文', '字', '語', '言', '世', '界'], // Han
+        ['한', '글', '말'], // Hangul
+        ['ᠮ', 'ᠣ'], // Mongolian
+        ['ཀ', 'ཤ'], // Tibetan
+        ['ꦲ', 'ꦤ'], // Javanese
+      ];
+      function mulberry(seed) {
+        let a = seed >>> 0;
+        return () => {
+          a = (a + 0x6d2b79f5) >>> 0;
+          let t = a;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+      const fontFor = (px) => '500 ' + px.toFixed(1) + 'px Inter, "Hiragino Sans", "PingFang SC", "Apple SD Gothic Neo", "Geeza Pro", "Kohinoor Devanagari", "Tamil Sangam MN", "Kannada Sangam MN", "Bangla Sangam MN", "Thonburi", "Kefa", "Mongolian Baiti", "Kailasa", "Noto Sans Javanese", system-ui, sans-serif';
+
+      /*
+       * The light treatment (?mode=light), on paper #ffffff. On ink a glyph
+       * is light, so the dark globe's glyphs grow with the light; on paper a
+       * glyph is ink, so here the halftone runs the other way and the ink
+       * carries the shadow: every glyph grows toward the night side (the
+       * dark globe's own k range run backwards, K_MIN..1), and the sphere
+       * reads lit from the same upper left. The engine's rim term, which on
+       * ink brightens the silhouette so the sphere separates from the ground,
+       * is read as ink on paper for the same reason: it is taken out of the
+       * light and counted `rim` times as shadow, so the limb holds its edge
+       * on the lit side too.
+       *
+       * The land is ink #070707 at every light, from 0.89 of a cell in the
+       * sun to 1.15 in the shadow, so the shaded land is visibly heavier than
+       * the sunlit land and the continents keep their full shapes against
+       * the sea. The ocean is one ink, the accent #2f5ce0, as the dark
+       * globe's ocean is; #86a8ff is the accent's lift for dark bands and
+       * stays on ink. Its glyphs run from 0.44 of a cell in the sun to 0.9
+       * on the night side, so the highlight thins into the paper by size
+       * alone and draws no contour. Same cells, seed, scripts, land and
+       * Inter 500 as the dark globe; the land's two inks become the one ink.
+       *
+       * Every key can be overridden from the query as l.<key> for option
+       * sheets; the defaults are the chosen treatment.
+       *   hi, lo     land above and at or below `cut` (tone * ggain)
+       *   sea, sealo the ocean toward the highlight and the ocean body (one
+       *              ink by default; two put a second ink in the highlight)
+       *   fade       'a,b': the band of tone * ggain over which the ocean
+       *              passes from sealo (at a) to sea (at b) by an ordered
+       *              dither, each cell on its own Bayer threshold
+       *   land       'a,b': land glyph px = cell * min(1.15, a + b * k)
+       *   ocean      'c,d': ocean glyph px = cell * min(1.15, c + d * k)
+       *   rim        how many times the engine's rim term counts as shadow
+       *              (-1 leaves it as light, as on ink)
+       *   law        what a glyph's size carries: 'shadow' (the default, the
+       *              halftone run backwards so ink carries the shadow) or
+       *              'light' (the dark globe's own halftone kept, glyphs
+       *              growing with the light as the sign-in plate's dots do
+       *              in both themes; an option for comparison, with
+       *              l.rim=-1&l.land=0.36,0.92&l.ocean=0.2,0.46 for the
+       *              dark's sizes)
+       */
+      const LIGHT_DEFAULTS = {
+        hi: '#070707',
+        lo: '#070707',
+        sea: '#2f5ce0',
+        sealo: '#2f5ce0',
+        cut: 0.38,
+        fade: '0.65,0.85',
+        land: '0.75,0.4',
+        ocean: '0.2,0.7',
+        rim: 3,
+        law: 'shadow',
+      };
+      const LIGHT = Object.fromEntries(
+        Object.entries(LIGHT_DEFAULTS).map(([key, value]) => {
+          const q = params.get('l.' + key);
+          return [key, q === null ? value : typeof value === 'number' ? Number(q) : q];
+        })
+      );
+      // The smallest k on the sphere: the ambient term alone, through the gamma and the gain.
+      const K_MIN = Math.sqrt(Math.pow(0.14, 1.15) * 1.15);
+      const [LA, LB] = LIGHT.land.split(',').map(Number);
+      const [OA, OB] = LIGHT.ocean.split(',').map(Number);
+      const [FA, FB] = LIGHT.fade.split(',').map(Number);
+
+      /*
+       * One cell's glyph: its size and ink at (cx, cy) on the 2048 canvas, by
+       * the glyph globe's law in the current mode; null off the sphere. The
+       * grid cell (gx, gy) seats the ordered dither of the light mode's fade.
+       * The carve sets its ring and channel glyphs by this same law.
+       */
+      function glyphStyle(cx, cy, cell, GGAIN, gx, gy) {
+        const full = field(cx / W, cy / W, T);
+        const lit = lightOnly(cx / W, cy / W, T);
+        if (lit <= 0) return null;
+        const t = Math.pow(lit, 1.15);
+        const land = full / lit > 1.02;
+        if (MODE === 'light') {
+          // The engine feathers the silhouette (smoothstep(1, 0.985, d2) on
+          // the whole value), which is coverage, not light: read the light
+          // without it, run the halftone on that, then let the feather shrink
+          // the outermost cells toward the floor as it does on ink.
+          const du = (cx / W - 0.5) / R, dv = (cy / W - 0.5) / R;
+          const d2 = du * du + dv * dv;
+          const fe = Math.min(1, Math.max(0, (d2 - 1) / (0.985 - 1)));
+          const edge = fe * fe * (3 - 2 * fe);
+          const rimT = 0.16 * Math.pow(d2, 3.5); // the engine's rim term
+          const tl = Math.pow(Math.max(0, lit / edge - rimT * (1 + LIGHT.rim)), 1.15) * GGAIN;
+          const lightK = Math.sqrt(Math.min(1, tl));
+          const k = (LIGHT.law === 'light' ? lightK : Math.max(0, Math.min(1, 1 + K_MIN - lightK))) * Math.pow(edge, 0.575);
+          const px = cell * Math.min(1.15, land ? LA + LB * k : OA + OB * k);
+          let fill;
+          if (land) fill = tl > LIGHT.cut ? LIGHT.hi : LIGHT.lo;
+          else {
+            const f = (tl - FA) / (FB - FA);
+            fill = f > (BAYER_8[gy & 7][gx & 7] + 0.5) / 64 ? LIGHT.sea : LIGHT.sealo;
+          }
+          return { px, fill, land };
+        }
+        // A halftone in glyphs: the glyph's size carries the tone, as a
+        // halftone dot's area does, so the sphere and its land read at
+        // any size while every cell stays a character.
+        // Land prints large, ocean about half the size, both following the light.
+        const k = Math.sqrt(Math.min(1, t * GGAIN));
+        const px = cell * Math.min(1.15, land ? 0.36 + 0.92 * k : 0.2 + 0.46 * k);
+        // Land in the light inks, ocean in the blues, both stepping with the light.
+        const c = land ? (t * GGAIN > 0.38 ? WHITE : BLUE) : DEEP;
+        return { px, fill: 'rgb(' + c.join(',') + ')', land };
+      }
+
+      async function drawGlyphs() {
+        ground();
+        await document.fonts.load('500 24px Inter');
+        const cell = Number(params.get('gcell') || 32);
+        const GGAIN = Number(params.get('ggain') || 1.15);
+        const cols = Math.floor(W / cell);
+        const pad = (W - cols * cell) / 2;
+        const rnd = mulberry(1988);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (let y = 0; y < cols; y++)
+          for (let x = 0; x < cols; x++) {
+            const pickS = rnd();
+            const pickG = rnd();
+            const cx = pad + (x + 0.5) * cell;
+            const cy = pad + (y + 0.5) * cell;
+            const s = glyphStyle(cx, cy, cell, GGAIN, x, y);
+            if (!s) continue;
+            const script = SCRIPTS[Math.floor(pickS * SCRIPTS.length)];
+            const g = script[Math.floor(pickG * script.length)];
+            ctx.font = fontFor(s.px);
+            ctx.fillStyle = s.fill;
+            ctx.fillText(g, cx, cy + s.px * 0.04);
+          }
+      }
+
+      (async () => {
+        if (CARVE) {
+          const markSvg = await (await fetch('../../kit/brand/gt-mark.svg')).text();
+          const cell = 32;
+          const pad = (W - Math.floor(W / cell) * cell) / 2;
+          // Off-grid glyphs (ring, rows, fills) seat the fade's dither in the grid cell they fall in.
+          const styleAt = (x, y, gx = Math.floor((x - pad) / cell), gy = Math.floor((y - pad) / cell)) => glyphStyle(x, y, cell, 1.15, gx, gy);
+          await drawCarved({ ctx, W, R, styleAt, SCRIPTS, mulberry, CLEAR, groundRGB: MODE === 'light' ? [255, 255, 255] : [7, 7, 7], params, ground, fontFor, markSvg });
+        } else if (variant === 'glyphs') await drawGlyphs();
+        else await drawDithered(variant === 'gt');
+        window.__done = true;
+      })().catch((e) => { window.__err = String((e && e.stack) || e); });
+    </script>
+  </body>
+</html>

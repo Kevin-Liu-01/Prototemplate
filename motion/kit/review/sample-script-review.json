@@ -1,0 +1,51 @@
+{
+  "title": "Sample script review",
+  "intro": "Two placeholder films that use every part of the page. The times are estimates. Click a bar on a timeline to jump to its line.",
+  "links": [
+    { "label": "Sample narrator auditions", "href": "voices.html?data=sample-voices.json" }
+  ],
+  "voices": {
+    "N": { "label": "Narrator", "kind": "narrator" },
+    "R": { "label": "Reader", "kind": "reader" },
+    "X": { "label": "No voice", "kind": "silent" }
+  },
+  "films": [
+    {
+      "id": "sample-a",
+      "title": "Sample film A",
+      "native": "示例",
+      "lang": "zh-Hans",
+      "length": 14,
+      "meta": "14 s. Two narrator lines, one Mandarin reading and a close with no voice.",
+      "story": "A placeholder film with every kind of line: two narrator lines, a reading in the film's own language with a subtitle, and a close with no voice.",
+      "shape": [
+        { "beat": "Hook", "lines": "line 1" },
+        { "beat": "Reading", "lines": "line 2" },
+        { "beat": "Payoff", "lines": "line 3" }
+      ],
+      "voices": {
+        "R": { "label": "Mandarin reader" }
+      },
+      "lines": [
+        { "n": 1, "who": "N", "start": 0.5, "end": 3.6, "said": "This is the first narrator line.", "sub": null, "screen": "A title card rises on the ink ground." },
+        { "n": 2, "who": "R", "start": 4.0, "end": 5.8, "said": "这是一句示例。", "sub": "This is a sample sentence.", "screen": "Each character is boxed as the reader says it." },
+        { "n": 3, "who": "N", "start": 6.2, "end": 11.0, "said": "This is the last narrator line, and it carries the payoff.", "sub": null, "screen": "The box closes round the title card." },
+        { "n": "Close", "who": "X", "start": 11.4, "end": 14.0, "said": "", "sub": null, "screen": "The end card holds with no voice." }
+      ],
+      "notes": [
+        { "heading": "What changed from the last cut", "items": ["The reading now has a line of its own.", "The close is 1 s shorter."] },
+        { "heading": "Open decisions", "callout": true, "items": ["A native listener approves the reading before the final."] }
+      ]
+    },
+    {
+      "id": "sample-b",
+      "title": "Sample film B",
+      "length": 8,
+      "story": "A short film without the optional fields: no native title, meta line, shape or notes.",
+      "lines": [
+        { "n": 1, "who": "N", "start": 0.4, "end": 3.4, "said": "The first of two lines.", "screen": "One word on the paper ground." },
+        { "n": 2, "who": "N", "start": 3.9, "end": 7.2, "said": "The second of two lines.", "screen": "The word moves to the left edge." }
+      ]
+    }
+  ]
+}

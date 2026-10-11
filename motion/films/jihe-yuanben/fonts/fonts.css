@@ -1,0 +1,47 @@
+/* jihe-yuanben film faces, all self-hosted (OFL 1.1, licenses beside the files).
+   The family names are private on purpose: a composition that writes a Google
+   Fonts family name (for example 'EB Garamond' or 'Noto Serif TC') makes the
+   compiler fetch that family from Google Fonts. Use the variables below.
+
+   --jy-han   Chinese text. The subset (every character in BRIEF.md plus place
+              names, the ten Stems, the twelve Branches, CJK punctuation) loads
+              first; any character outside it falls through to the full font.
+   --jy-latin Latin, Greek (polytonic: ὅρος), pinyin with tone marks. ∠ is not
+              in EB Garamond, so the stack hands it to the Chinese face. */
+
+@font-face {
+  font-family: 'JY Han Subset';
+  src: url('./JiheHan-NotoSerifCJKtc-subset-VF.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'JY Han Full';
+  src: url('./NotoSerifCJKtc-VF.otf') format('opentype');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'JY Latin';
+  src: url('./EBGaramond-VF.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'JY Latin';
+  src: url('./EBGaramond-Italic-VF.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: italic;
+  font-display: block;
+}
+
+:root {
+  --jy-han: 'JY Han Subset', 'JY Han Full', serif;
+  --jy-latin: 'JY Latin', 'JY Han Subset', 'JY Han Full', serif;
+  /* Mixed lines (界說 · definitio · ὅρος): Latin glyphs from EB Garamond,
+     Han glyphs from Noto Serif CJK TC. */
+  --jy-mixed: 'JY Latin', 'JY Han Subset', 'JY Han Full', serif;
+}

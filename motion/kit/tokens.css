@@ -1,0 +1,62 @@
+/*
+ * GT motion kit: the brand's tokens for video compositions.
+ *
+ * Four absolute colors plus one spectral accent per film (BRAND.md section 5,
+ * DESIGN.md section 1). Inter is the one typeface, self-hosted from this kit;
+ * display text never goes bolder than 500. Mono is an instrument voice for
+ * code artifacts only (terminals, file paths, version numbers on a board).
+ */
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/InterVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/InterVariable-Italic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: block;
+}
+
+:root {
+  --ink: #070707;
+  --ink-raised: #101010;
+  --titanium: #8a8f98;
+  --paper: #ffffff;
+  /* The one accent: #2f5ce0 on paper, its lift #86a8ff on ink. */
+  --accent: #2f5ce0;
+  --accent-lift: #86a8ff;
+  /* Text steps as ink or paper at the deck's opacities. */
+  --on-ink-body: rgba(242, 242, 240, 0.63);
+  --on-ink-label: rgba(242, 242, 240, 0.45);
+  --on-ink-quiet: rgba(242, 242, 240, 0.27);
+  --on-ink-hair: rgba(242, 242, 240, 0.11);
+  --on-ink-hair-soft: rgba(242, 242, 240, 0.06);
+  --on-paper-body: rgba(7, 7, 7, 0.63);
+  --on-paper-label: rgba(7, 7, 7, 0.45);
+  --on-paper-hair: rgba(7, 7, 7, 0.11);
+  --ink-text: #f2f2f0;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--ink);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'ss01' 0, 'cv11' 1;
+}
+
+/* The deck's display ladder at 1920 wide (the deck sheet is 1600; x1.2). */
+.t-display { font-size: 106px; line-height: 1.02; font-weight: 500; letter-spacing: -0.035em; }
+.t-h1 { font-size: 88px; line-height: 1.04; font-weight: 500; letter-spacing: -0.03em; }
+.t-h2 { font-size: 53px; line-height: 1.1; font-weight: 500; letter-spacing: -0.02em; }
+.t-lead { font-size: 31px; line-height: 1.4; font-weight: 400; letter-spacing: -0.005em; }
+.t-body { font-size: 26px; line-height: 1.5; font-weight: 400; }
+.t-cap { font-size: 18px; line-height: 1.45; font-weight: 400; letter-spacing: 0.01em; }

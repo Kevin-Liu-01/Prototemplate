@@ -1,0 +1,75 @@
+{
+ "title": "Fuma Nama: The philosophy of an open-sourcerer",
+ "story": "One developer, Fuma Nama, created Fumadocs, a docs framework with over 13,000 GitHub stars that Vercel Turborepo, shadcn/ui, Better Auth, Unkey and many others use, and he has built it for three years on top of his schoolwork. He learned to code by modding games and reading code, and he did not read documentation. He designed Fumadocs in four layers that developers can take apart, down to copying only the table of contents into their own code. He thinks he would build it the same shape again, and General Translation has made it its first open-source grantee.",
+ "lines": [
+  {
+   "n": 1,
+   "who": "N",
+   "said": "One developer created Fumadocs, a docs framework with over 13,000 stars on GitHub.",
+   "sub": null,
+   "screen": "“One developer” rises word by word over the fire smoke, with “One” in fire. The words break into cells that become the Fumadocs moon, its 13.3k star count tallies, and two shelves draw out under it."
+  },
+  {
+   "n": 2,
+   "who": "N",
+   "said": "Vercel Turborepo, shadcn/ui, Better Auth, Unkey and many others use it.",
+   "sub": null,
+   "screen": "Each team’s logo lights in its slot as its name is said, with its GitHub stars: Turborepo, shadcn/ui, Better Auth and Unkey, then Orama and the GT mark together. A fire pulse runs along the shelf into the moon, which turns to glass."
+  },
+  {
+   "n": 3,
+   "who": "N",
+   "said": "Fuma Nama has built it for three years, on top of his schoolwork.",
+   "sub": null,
+   "screen": "“Fuma Nama” rises above the shelf. Then everything else recedes, and the name stands alone over the smoke."
+  },
+  {
+   "n": 4,
+   "who": "N",
+   "said": "He learned to code by modding games and reading piles of JavaScript.",
+   "sub": null,
+   "screen": "The name breaks into cells that fall and become code characters. They rain down and pile into a mound, and the last ones land on “JavaScript.”"
+  },
+  {
+   "n": 5,
+   "who": "N",
+   "said": "He did not look at any documentation while he was learning.",
+   "sub": null,
+   "screen": "A small docs page builds above the heap, its table of contents steps once, and it fades on “documentation.” The heap’s top glyphs travel into a code file of 25 lines."
+  },
+  {
+   "n": 6,
+   "who": "N",
+   "said": "He designed Fumadocs in four layers that developers can take apart and reshape.",
+   "sub": null,
+   "screen": "The file fades as the large Fumadocs moon glows up in its place, with “Fumadocs” beside it. The moon turns to print, seams cut it into four layers that part, and one layer slides out and squares off into a block."
+  },
+  {
+   "n": 7,
+   "who": "N",
+   "said": "The CLI can copy just the table of contents into your codebase.",
+   "sub": null,
+   "screen": "A match cut on the middle seam turns the moon into a full docs page. Its parts move apart, “Into your codebase” rises, and the table of contents lifts out and travels into a code panel."
+  },
+  {
+   "n": 8,
+   "who": "N",
+   "said": "If he started again from scratch, he thinks Fumadocs would probably have the same shape.",
+   "sub": null,
+   "screen": "A match cut back to the parted moon. Its pieces return to the circle, and the circle fills row by row with letters from 16 writing systems, the last row landing on “shape.”"
+  },
+  {
+   "n": 9,
+   "who": "N",
+   "said": "Fumadocs is General Translation’s first open-source grantee.",
+   "sub": null,
+   "screen": "The glyph moon turns to glass, moves down and shrinks. The GT mark forms in fire smoke in the corner, and a pulse runs along a connector into the moon on “grantee.”"
+  },
+  {
+   "n": "end",
+   "who": "X",
+   "said": "End card, no voice.",
+   "screen": "The shared end card: the GT mark, the post’s title and its link."
+  }
+ ]
+}

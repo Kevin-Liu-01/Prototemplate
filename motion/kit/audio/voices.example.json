@@ -1,0 +1,16 @@
+{
+  "$comment": "Copy to voices.local.json beside this file (git ignores it) and fill in each voice's ElevenLabs id. Tracked files name these voices and never hold their ids: kit/audio/el.mjs, kit/audio/voices.mjs and voices.py read the ids from voices.local.json and stop with a message that names any missing voice. Frederick Surrey's id is public and stays in voice.json.",
+  "voices": {
+    "Charlie": "",
+    "Clara": "",
+    "Australian Baritone": "",
+    "Patrick": "",
+    "Yun": "",
+    "Mr. Chen": "",
+    "Siqi Liu": "",
+    "James Gao": "",
+    "Tomer": "",
+    "Noa": "",
+    "Amit": ""
+  }
+}

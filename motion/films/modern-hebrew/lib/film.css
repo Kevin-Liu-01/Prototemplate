@@ -1,0 +1,54 @@
+/* modern-hebrew: the frame. The film is set as a page of the first volume of
+   Ben-Yehuda's dictionary (Jerusalem and Berlin, 1908): a running head above
+   the rule at y 131, the body window, the numbered notes below the rule at
+   y 908. Colours are sampled from the Princeton copy (lib/util.js, COL). */
+
+.mh {
+  --paper: #dbcfba;
+  --ink: #332617;
+  --ink2: #615546;
+  --board: #131112;
+  --board-ink: #dbcfba;
+  --board-ink2: #9a9182;
+  --heb: 'MH Hebrew', serif;
+  --lat: 'MH Latin', serif;
+  --gk: 'MH Greek', serif;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--paper);
+  font-family: var(--lat);
+  color: var(--ink);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.mh * { box-sizing: border-box; }
+
+/* faces in use from the first frame, under the opaque page canvas */
+.mh .mh-warm { position: absolute; left: 1820px; top: 1040px; width: 90px; height: 30px; overflow: hidden; white-space: nowrap; z-index: 0; color: var(--ink); }
+.mh .mh-warm span { margin-right: 4px; font-size: 20px; }
+.mh .mh-warm .w-he { font-family: var(--heb); font-weight: 500; }
+.mh .mh-warm .w-la { font-family: var(--lat); font-weight: 400; }
+.mh .mh-warm .w-la5 { font-family: var(--lat); font-weight: 500; }
+.mh .mh-warm .w-it { font-family: var(--lat); font-style: italic; }
+.mh .mh-warm .w-gk { font-family: var(--gk); }
+.mh .mh-store { display: none; }
+
+.mh canvas.mh-page { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 1; display: block; }
+.mh svg.mh-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 2; overflow: visible; }
+
+/* the running head: guide words at the margins (v2 sets no centre) */
+.mh .mh-head { position: absolute; left: 120px; top: 60px; width: 1680px; height: 50px; z-index: 3; display: none; }
+.mh .mh-head .hc { position: absolute; left: 0; top: 12px; width: 1680px; text-align: center; font-size: 22px; letter-spacing: 0.02em; color: var(--ink2); }
+.mh .mh-head .hr { position: absolute; right: 0; top: 2px; font-family: var(--heb); font-size: 31px; font-weight: 500; color: var(--ink); }
+.mh .mh-head .hl { position: absolute; left: 0; top: 2px; font-family: var(--heb); font-size: 31px; font-weight: 500; color: var(--ink); }
+
+/* the notes, set like the book's footnotes */
+.mh .mh-notes { position: absolute; left: 120px; top: 932px; width: 1680px; z-index: 3; display: none; }
+.mh .note { margin: 0 0 4px 0; font-size: 26px; line-height: 1.42; color: var(--ink); text-wrap: pretty; }
+.mh .note .n { color: var(--ink2); margin-right: 0.4em; }
+.mh .note .cr { color: var(--ink2); }
+.mh .he { font-family: var(--heb); font-weight: 500; font-size: 1.1em; unicode-bidi: isolate; white-space: nowrap; }
+.mh .gk { font-family: var(--gk); }

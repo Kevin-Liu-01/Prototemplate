@@ -1,0 +1,59 @@
+/* gif-how-gt-works: the stage, shared by index.html (scale 1.5) and gif/index.html (scale 1). */
+html,
+body {
+  overflow: hidden;
+  background: #070707;
+}
+#root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #070707;
+}
+#stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1280px;
+  height: 720px;
+  transform-origin: 0 0;
+}
+#art {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  overflow: visible;
+}
+#art text {
+  font-family: var(--font);
+  font-kerning: normal;
+}
+#art text.mono {
+  font-family: var(--mono);
+}
+/* Headings: Inter 500, 72 px at 1280, tracking -0.035 em, one line, white. */
+.hd {
+  position: absolute;
+  left: 80px;
+  top: 56px;
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font);
+  font-weight: 500;
+  font-size: 72px;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  white-space: nowrap;
+  font-kerning: normal;
+  /*
+   * No will-change: on its own layer a heading kept a raster made mid-rise, so
+   * the loop's last frames sat a fraction of a pixel off frame 0. Painted in
+   * place, every frame is rasterized from its own state.
+   */
+}
+/* The card's name: the fifth heading, bottom left, its baseline on y 640 (80 px above the bottom edge). */
+.hd.lock {
+  top: 576px;
+}

@@ -1,0 +1,38 @@
+/* journey-to-the-west faces, self-hosted (OFL 1.1, licences beside the files).
+   The family names are private on purpose: a composition that writes a Google
+   Fonts family name makes the compiler fetch it from Google Fonts.
+
+   --jw-han    Noto Serif CJK TC (variable), a Ming face descended from the
+               woodblock style, subset to every CJK character in BRIEF.md,
+               SCRIPT.md and CONCEPT.md plus the film's strings
+               (make-subset.sh, subset-chars.txt).
+   --jw-latin  Old Standard TT, a revival of the late 19th-century Modern
+               roman in which Richard's 1913 title page and plate captions
+               are set. It has no precomposed a or u with caron: the film
+               writes those as the base letter and U+030C, which the font
+               positions with its own mark feature. */
+@font-face {
+  font-family: 'JW Han';
+  src: url('./JWHan-NotoSerifCJKtc-subset-VF.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'JW Latin';
+  src: url('./OldStandard-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: 'JW Latin';
+  src: url('./OldStandard-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: block;
+}
+:root {
+  --jw-han: 'JW Han', serif;
+  --jw-latin: 'JW Latin', 'JW Han', serif;
+}
