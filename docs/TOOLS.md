@@ -109,7 +109,6 @@ Each skill carries the scripts its procedure calls, self-contained so an install
 | `gt-diagrams` | `deck-page.mjs` | Writes the brand deck as one HTML file with its fonts inlined, assembled the way deck/shoot-slide.mjs assembles it (parts/head.html, every slide in order, parts/tail.html, deck/fonts/deck-fonts.css in place of <!--FONTS-->), so figure-check.mjs can open one slide in present mode ... |
 | `gt-diagrams` | `figure-check.mjs` | Captures one figure at 2x device pixels in the light and dark themes and reports the SVG facts the line auditor cannot see, because scripts/lint/lines.mjs skips every element inside an svg or a canvas: - labels whose rendered size is under the surface's floor (--min); - labels ... |
 | `gt-explorations` | `distinct-set.mjs` | distinct-set.mjs: checks that a set of options actually differ before Kevin sees them. |
-| `gt-films` | `frames.mjs` | Extracts a critic's frames from a render by frame index. |
 | `gt-films` | `measure-render.mjs` | Measures a General Translation film render against the motion brief's delivery targets (motion/MOTION.md, "Sound" and "What each film delivers"): H.264 at 1920 x 1080, 60 fps for a final (30 for a draft), AAC audio as long as the video, integrated loudness near -16 LUFS and a ... |
 | `gt-films` | `scan.mjs` | The critic's whole-film scan (skills/gt-films/references/critic.md). |
 | `gt-orchestration` | `replay-edits.py` | Rebuild files from the Write and Edit calls recorded in agent transcripts. |

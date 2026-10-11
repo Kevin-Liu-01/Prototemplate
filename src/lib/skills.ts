@@ -176,10 +176,10 @@ export const SKILLS: readonly Skill[] = [
     id: 'gt-films',
     name: 'gt-films',
     title: 'Making a film',
-    description: 'How General Translation films are made in Prototemplate\'s motion/ folder with HyperFrames: the brief, the research package, three directors and a judge for the script and the look, the storyboard, the kit, narration and music through ElevenLabs, the mix targets, draft and delivery renders, the frame-by-frame critic, and how a finished film reaches /motion; and the short media around a launch: promos, product demo videos, README GIFs, launch captures and briefs for the video vendor. Use when planning, scripting, building, critiquing or rendering a GT film, trailer, sting, showreel, promo or demo GIF, or when reviewing one against Kevin\'s standard.',
+    description: 'How General Translation films are made in Prototemplate\'s motion/ folder with HyperFrames: Kevin\'s standing rules for scripts, pacing and narration, the brief, directors and a judge, the kit and its sound tools, ElevenLabs narration and music, the mix targets, renders and their records, the critic, which motion/ sources the public repository tracks, and how a film reaches /motion; and the short media around a launch. Use when planning, scripting, building, critiquing or rendering a GT film, trailer, sting, showreel, promo or demo GIF, when tracking or publishing a film\'s sources, or when reviewing one against Kevin\'s standard.',
     areas: ['videos', 'motion'],
-    updated: '2026-10-06',
-    files: ['references/critic.md', 'references/pipeline.md', 'references/short-media.md', 'references/sound.md', 'references/traps.md', 'scripts/frames.mjs', 'scripts/measure-render.mjs', 'scripts/scan.mjs'],
+    updated: '2026-10-10',
+    files: ['references/critic.md', 'references/kit.md', 'references/look.md', 'references/pipeline.md', 'references/short-media.md', 'references/sound.md', 'references/sources.md', 'references/traps.md', 'references/workflows.md', 'scripts/measure-render.mjs', 'scripts/scan.mjs'],
   },
   {
     id: 'gt-diagrams',
