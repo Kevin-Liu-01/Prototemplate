@@ -142,7 +142,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
       video: 'motion/out/blog-designing-docs.mp4',
       poster: 'motion/out/blog-designing-docs.png',
       sheet: 'motion/out/_sheets/blog-designing-docs.png',
-      draft: 'motion/out/_draft-blog-designing-docs.mp4',
+      draft: 'motion/films/blog-designing-docs/renders/draft.mp4',
     },
     post: '/blog/designing-docs-for-humans',
     cut: {
@@ -182,7 +182,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
       video: 'motion/out/blog-rewriting-docs.mp4',
       poster: 'motion/out/blog-rewriting-docs.png',
       sheet: 'motion/out/_sheets/blog-rewriting-docs.png',
-      draft: 'motion/out/_draft-blog-rewriting-docs.mp4',
+      draft: 'motion/films/blog-rewriting-docs/renders/draft.mp4',
     },
     post: '/blog/rewriting-our-docs',
   },
@@ -271,7 +271,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
       video: 'motion/out/release-board.mp4',
       poster: 'motion/out/release-board.png',
       sheet: 'motion/out/_sheets/release-board.png',
-      draft: 'motion/out/_draft-release-board.mp4',
+      draft: 'motion/films/release-board/renders/draft.mp4',
     },
   },
   {
@@ -381,7 +381,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
       video: 'motion/out/jihe-yuanben.mp4',
       poster: 'motion/out/jihe-yuanben.png',
       sheet: 'motion/out/_sheets/jihe-yuanben.png',
-      draft: 'motion/out/_draft-jihe-yuanben.mp4',
+      draft: 'motion/films/jihe-yuanben/renders/draft.mp4',
     },
     credits: '/motion/jihe-yuanben.credits.txt',
     cut: {
