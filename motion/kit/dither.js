@@ -94,22 +94,27 @@
    * invert flips light and dark; gamma shapes the curve; blur (in cells)
  * softens a two-tone source back into tone and lift rescales it; region
    * { x, y, w, h } in grid cells places the picture inside the grid (cells
-   * outside read 0). Cached per image, grid and options.
+   * outside read 0). Cached per image, grid and options once the image has
+   * loaded.
    */
   const toneCache = new Map();
   function toneFromImage(img, g, opts) {
     const o = opts || {};
     const key = [img.src, g.cols, g.rows, o.fit, o.focusX, o.focusY, o.invert, o.gamma, o.blur, o.lift, JSON.stringify(o.region || null)].join('|');
     if (toneCache.has(key)) return toneCache.get(key);
+    // HyperFrames runs the timeline once before its images finish loading.
+    // A loading image already reports its size, but drawImage draws nothing
+    // from it, so caching that read would keep the field black for the
+    // whole film. Until the image is complete, return black uncached.
+    const iw = img.naturalWidth || img.width;
+    const ih = img.naturalHeight || img.height;
+    if (!iw || !ih || img.complete === false) return new Float32Array(g.cols * g.rows);
     const region = o.region || { x: 0, y: 0, w: g.cols, h: g.rows };
     const c = document.createElement('canvas');
     c.width = region.w;
     c.height = region.h;
     const cx = c.getContext('2d');
     cx.imageSmoothingQuality = 'high';
-    const iw = img.naturalWidth || img.width;
-    const ih = img.naturalHeight || img.height;
-    if (!iw || !ih) return new Float32Array(g.cols * g.rows);
     const fit = o.fit || 'cover';
     const scale = fit === 'contain' ? Math.min(region.w / iw, region.h / ih) : Math.max(region.w / iw, region.h / ih);
     const dw = iw * scale;
