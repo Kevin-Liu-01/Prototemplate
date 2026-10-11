@@ -2,8 +2,8 @@
 """blog-designing-docs, round 7d (jump count added for v4): the music bed as the film plays it.
 
 Kevin, after round 7: "for the blogs i liked the peaceful music from before".
-That is the round 5 bed: one ElevenLabs sound generation (audio/bed.mp3, a
-byte copy of audio/archive-r6a/bed.mp3, 28 s), airy and glassy, soft pad
+That is the round 5 bed: one ElevenLabs sound generation (audio/bed.mp3, the
+same bytes as the archived audio/archive-r6a/bed.mp3, 28 s), airy and glassy, soft pad
 chords under a quiet celesta arpeggio. This script builds it to the film's
 length, deterministically (same input, same bytes out):
 
