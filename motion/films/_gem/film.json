@@ -1,0 +1,12 @@
+{
+  "$schema": "../../kit/film.schema.json",
+  "$comment": "The kit's gem smoke demo: 3 s, no sound. Gem smoke renders on the GPU path.",
+  "slug": "_gem",
+  "kind": "short",
+  "path": "gpu",
+  "timeout": 20,
+  "poster": { "frame": 120 },
+  "records": ["poster", "sheets", "checking"],
+  "checking": "../journey-to-the-west/tools/sheet.py",
+  "sound": false
+}

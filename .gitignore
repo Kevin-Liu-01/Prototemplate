@@ -38,6 +38,9 @@ deck/tmp
 !/motion/kit/script-export.py
 !/motion/kit/vendor.mjs
 !/motion/kit/picture-sources.json
+!/motion/kit/film.mjs
+!/motion/kit/film.schema.json
+!/motion/kit/film.test.mjs
 !/motion/kit/audio/
 !/motion/kit/endcard/
 !/motion/kit/gem-shapes/

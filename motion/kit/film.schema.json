@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "film.schema.json",
+  "title": "film.json",
+  "description": "One film's settings for kit/film.mjs: what the film is, how it renders and which records its final writes. It lives at motion/films/<slug>/film.json; films/_smoke/film.json is the example. Paths are relative to the film's folder, except script.source and legacyDraft, which are relative to motion/ (a path that starts with out/ means the folder that holds the finals). film.mjs validates every file against this schema before it renders. A published film's film.json is tracked, so it names voices by name and never by ID.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "kind", "path"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "This schema's path, for editors: ../../kit/film.schema.json."
+    },
+    "$comment": {
+      "type": "string",
+      "description": "A note for the next reader; film.mjs ignores it."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9_][a-z0-9-]*$",
+      "description": "The film's folder name under motion/films/. It must equal the folder's name."
+    },
+    "kind": {
+      "enum": ["blog", "series", "kb", "brand", "short"],
+      "description": "blog: a blog film. series: a translation series film. kb: a knowledge base film built from kit/kb/, whose final also runs what kit/kb/deliver.sh ran (node kit/kb/build.mjs --check before the renders, the poster at lib/kb-data.js's KB.poster unless poster is set, the kb-inputs hash in the master's comment, and the web, captions and seo records). brand: a brand or announcement film. short: a sting, a demo, a kit example or other short media."
+    },
+    "path": {
+      "enum": ["software", "gpu"],
+      "description": "The render path. software renders with --no-browser-gpu (SwiftShader); series films with large animated type use it, because two hardware GPU renders of nishi-amane differed in 240 frames under load while the software pair was byte-identical. gpu leaves the GPU on, as every gem smoke film (the blog films, the kit end card) renders, because the software path moves the smoke by up to 7 levels."
+    },
+    "fps": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 240,
+      "default": 60,
+      "description": "The delivery frame rate of renders A and B. A draft is always 30 fps."
+    },
+    "workers": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8,
+      "default": 1,
+      "description": "Render workers for the draft and the delivery pair. One worker streams frames to the encoder and needs 5 GiB free; more workers write every frame to disk first and need 8 GiB."
+    },
+    "timeout": {
+      "type": "number",
+      "minimum": 1,
+      "default": 60,
+      "description": "Minutes one render may run. A render still running then is stopped, by its own process IDs, and the lock goes to the next ticket."
+    },
+    "poster": {
+      "description": "The poster, out/<slug>.png. {\"frame\": n} takes frame n of the master, selected by index. {\"at\": seconds} takes a lossless snapshot of the composition at that time on the film's render path. Needed when records lists poster, except for a kb film.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["frame"],
+          "properties": { "frame": { "type": "integer", "minimum": 0 } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["at"],
+          "properties": { "at": { "type": "number", "minimum": 0 } }
+        }
+      ]
+    },
+    "records": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["poster", "sheets", "checking", "script", "credits", "web", "captions", "seo"] },
+      "description": "The records the final writes. poster: out/<slug>.png. sheets: the contact sheet out/sheets/<slug>.png and .webp (kit/contact-sheet.sh). checking: the checking sheet out/_sheets/<slug>.png. script: the script page out/scripts/<slug>.md (kit/script-export.py) from the final's transcript. credits: CREDITS.txt copied to out/<slug>.credits.txt. web, captions, seo: a kb film's web encode, WebVTT captions and VideoObject. Default: poster, sheets, checking, script and credits, and for a kb film also web, captions and seo. A master over 50 MB always gets a share copy, out/<slug>-share.mp4."
+    },
+    "checking": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The checking sheet tool, run as python3 <tool> <master> <sheet.png>. Default: tools/sheet.py, or kit/kb/check-sheet.py for a kb film."
+    },
+    "script": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The script page's inputs.",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The reviewed script table kit/script-export.py reads. Default: out/scripts/source/<slug>.json; a kb film writes it with kit/kb/script-source.mjs."
+        },
+        "voices": {
+          "type": "string",
+          "minLength": 1,
+          "default": "Narrator: Frederick Surrey",
+          "description": "The voices line of the page, by name, such as \"Narrator: Frederick Surrey; reader: Jane\"."
+        },
+        "version": {
+          "type": "string",
+          "description": "The cut's label on the page, such as v2. Leave it out for none."
+        }
+      }
+    },
+    "sound": {
+      "description": "The master's sound targets: false for a silent film, or the integrated loudness, the tolerance and the true peak ceiling. Default: -16 LUFS within 0.5, at or below -1 dBTP.",
+      "oneOf": [
+        { "const": false },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lufs", "within", "truePeak"],
+          "properties": {
+            "lufs": { "type": "number" },
+            "within": { "type": "number", "minimum": 0 },
+            "truePeak": { "type": "number" }
+          }
+        }
+      ]
+    },
+    "legacyDraft": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^out/_draft-[^/]+\\.mp4$" },
+      "description": "Drafts from before film.mjs at their old paths, besides out/_draft-<slug>.mp4, which is always read. status shows the first that exists while films/<slug>/renders/draft.mp4 is missing; the next draft moves them to the archive."
+    }
+  }
+}

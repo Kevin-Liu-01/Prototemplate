@@ -1,0 +1,13 @@
+{
+  "$schema": "../../kit/film.schema.json",
+  "$comment": "The kit end card's blue demo: 2 s of plain ground, then the card from 2.0 s to 6.0 s, no sound (kit/endcard/README.md). Gem smoke renders on the GPU path; the poster is the settled card at 5.95 s. The draft of 2026-10-04 is out/_draft-endcard-blue.mp4 (legacyDraft) until the next draft moves it to the archive.",
+  "slug": "_endcard-blue",
+  "kind": "short",
+  "path": "gpu",
+  "timeout": 20,
+  "poster": { "frame": 357 },
+  "records": ["poster", "sheets", "checking"],
+  "checking": "../journey-to-the-west/tools/sheet.py",
+  "sound": false,
+  "legacyDraft": ["out/_draft-endcard-blue.mp4"]
+}

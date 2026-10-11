@@ -120,4 +120,4 @@ The card reads no clock. The smoke is drawn from a proxy tween's `onUpdate`, as 
 ## Demos
 
 - `motion/films/_endcard-fire/` and `motion/films/_endcard-blue/`: each shows 2 s of the material's plain ground (its gem smoke with no shape, no type and no frame), then the card from the 2.0 s beat to 6.0 s. `npx -y hyperframes@0.8.106 check .` passes with 0 errors and 0 warnings.
-- Draft renders: `motion/out/_draft-endcard-fire.mp4`, `motion/out/_draft-endcard-blue.mp4` (`--quality draft --fps 30 --workers 3`). Neither render fetched Google Fonts.
+- Draft renders: `motion/films/_endcard-fire/renders/draft.mp4` and `motion/films/_endcard-blue/renders/draft.mp4`, from `node kit/film.mjs draft _endcard-fire` and `_endcard-blue` (`--quality draft --fps 30`, on the GPU path the films' `film.json` names). The drafts of 2026-10-04 (`--workers 3`) were rendered to `motion/out/_draft-endcard-fire.mp4` and `_draft-endcard-blue.mp4`; neither fetched Google Fonts.

@@ -1,0 +1,14 @@
+{
+  "$schema": "../../kit/film.schema.json",
+  "$comment": "The kit's smoke test and film.json's example: 3 s of dithered tone with a title and the mark, no sound. node kit/film.mjs draft _smoke renders it; node kit/film.mjs final _smoke --out <a scratch folder> runs a whole delivery without touching out/.",
+  "slug": "_smoke",
+  "kind": "short",
+  "path": "software",
+  "fps": 60,
+  "workers": 1,
+  "timeout": 20,
+  "poster": { "frame": 120 },
+  "records": ["poster", "sheets", "checking"],
+  "checking": "../journey-to-the-west/tools/sheet.py",
+  "sound": false
+}
