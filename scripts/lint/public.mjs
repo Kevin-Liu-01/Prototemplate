@@ -15,11 +15,13 @@
  *     number in the list, never the term. Under VERCEL or CI the denylist
  *     is skipped with a printed line, since no private file is there.
  *
- * It is a filesystem walk with no git call, so it reads untracked files
- * too. It skips node_modules, package stores (.pnpm-store, .npm, .cache,
- * .yarn), .next, .git, out, .pagecheck, motion/ at the
- * root, public/media, deck/preview, deck/tmp, .env files, binaries and
- * symlinks. scripts/lint/public.allow.json exempts a path from named rules
+ * It is a filesystem walk, so it reads untracked files too. It skips
+ * node_modules, package stores (.pnpm-store, .npm, .cache, .yarn), .next,
+ * .git, out, .pagecheck, public/media, deck/preview, deck/tmp, .env files,
+ * binaries and symlinks. motion/ at the root holds the Videos session's
+ * untracked renders and drafts, so only its tracked files are read: the
+ * ones git lists, or the whole folder in a checkout without .git (a clean
+ * export holds tracked files only). scripts/lint/public.allow.json exempts a path from named rules
  * (this lint's own source and test, which spell the patterns).
  *
  * Every finding fails. The baseline that held the old machine paths and
@@ -36,6 +38,7 @@
  * Exit 0 when there is no finding, 1 on any finding, 2 when PT_DENYLIST
  * names a file that is not there.
  */
+import { spawnSync } from 'node:child_process';
 import { closeSync, existsSync, lstatSync, openSync, readFileSync, readSync, readdirSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 
@@ -97,6 +100,22 @@ function walk(dir = ROOT, out = []) {
   return out;
 }
 
+/** motion/'s tracked text files: git's list when there is a .git, else the folder as it is. */
+function motionFiles() {
+  const dir = join(ROOT, 'motion');
+  if (!existsSync(dir)) return [];
+  if (!existsSync(join(ROOT, '.git'))) return walk(dir);
+  const listed = spawnSync('git', ['ls-files', '-z', 'motion'], { cwd: ROOT, encoding: 'utf8' });
+  if (listed.status !== 0) return walk(dir);
+  return listed.stdout.split('\0').filter((rel) => {
+    if (!rel) return false;
+    const abs = join(ROOT, rel);
+    if (!existsSync(abs)) return false;
+    const stat = lstatSync(abs);
+    return stat.isFile() && !BINARY.test(rel) && !isBinary(abs);
+  });
+}
+
 /** The denylist's terms as [line number, regex], or a reason it is skipped. */
 function denylist() {
   if (KEYS_ONLY) return { skip: 'key shapes only (--keys)' };
@@ -123,7 +142,7 @@ if (deny.skip) console.log(`lint:public: denylist skipped: ${deny.skip}`);
 
 /** Every finding: { rule, kind, file, line, text }; `text` is printable (never a key or a term). */
 const findings = [];
-for (const rel of walk()) {
+for (const rel of [...walk(), ...motionFiles()]) {
   const lines = readFileSync(join(ROOT, rel), 'utf8').split('\n');
   lines.forEach((text, i) => {
     for (const [name, shape] of KEY_SHAPES) {

@@ -110,7 +110,6 @@ describe('lint:public', () => {
     const root = checkout({
       'node_modules/pkg/index.js': `${KEYS.github}\n`,
       '.pnpm-store/v11/files/0d/abc': `${KEYS.aws}\n`,
-      'motion/notes.md': `${MACHINE}\n`,
       'public/media/clip.txt': `${MACHINE}\n`,
       'public/logo.png': `${KEYS.github}\n`,
       'docs/tool.mjs': `${MACHINE}\n`,
@@ -118,5 +117,22 @@ describe('lint:public', () => {
     });
     const result = scan(root);
     assert.equal(result.status, 0, result.stdout);
+  });
+
+  it('reads the motion files git tracks and skips its untracked ones', () => {
+    const root = checkout({ 'motion/kit/tracked.md': `${MACHINE}\n`, 'motion/out/draft.md': `${MACHINE}\n`, 'motion/local.md': `${MACHINE}\n` });
+    const git = (...args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+    git('init', '-q');
+    git('add', 'motion/kit/tracked.md');
+    const result = scan(root);
+    assert.equal(result.status, 1, result.stdout);
+    assert.match(result.stdout, /motion\/kit\/tracked\.md/);
+    assert.doesNotMatch(result.stdout, /motion\/local\.md|motion\/out/);
+  });
+
+  it('reads the whole motion folder in a checkout without .git', () => {
+    const result = scan(checkout({ 'motion/notes.md': `${MACHINE}\n` }));
+    assert.equal(result.status, 1, result.stdout);
+    assert.match(result.stdout, /motion\/notes\.md/);
   });
 });
