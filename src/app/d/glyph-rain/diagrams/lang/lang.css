@@ -1082,6 +1082,11 @@
     grid-template-columns: minmax(0, 1fr);
     gap: 8px;
   }
+
+  /* the 310px count line ran past a 320px screen: it may wrap here */
+  .lang-lv-count {
+    white-space: normal;
+  }
 }
 
 /* The transfer window: the live branch's own accent at full sandwich gauge,

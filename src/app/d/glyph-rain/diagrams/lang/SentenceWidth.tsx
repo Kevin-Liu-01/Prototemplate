@@ -107,10 +107,13 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
            MIN_INLINE_SIZE the deltas stack under their boxes and the type fits
            the box alone. */
         const phone = window.matchMedia(PHONE).matches;
-        const fit = (room - PAD * 2 - LABEL_ROOM) / Math.max(natural, 1);
+        /* this fork measures the line's offsetWidth, padding included, and
+           boxW() adds the padding again, so a phone reserves it twice */
+        const inset = phone ? PAD * 4 : PAD * 2;
+        const fit = (room - inset - LABEL_ROOM) / Math.max(natural, 1);
         const stacked = phone && fit * nominal < MIN_INLINE_SIZE;
         const scale = stacked
-          ? Math.min(1, (room - PAD * 2 - 3) / Math.max(natural, 1))
+          ? Math.min(1, (room - inset - 3) / Math.max(natural, 1))
           : Math.min(MAX_SCALE, phone ? fit : Math.max(1, fit));
         rootEl.toggleAttribute('data-stacked', stacked);
         rootEl.style.setProperty('--lang-sw-size', `${Math.round(nominal * scale * 10) / 10}px`);
