@@ -2652,3 +2652,40 @@
     gap: 28px;
   }
 }
+
+/* ---------- touch: the 44px floor ----------
+   A phone, upright or on its side: every control in the wall answers a
+   tap at least 44px on its smaller side. The carved buttons and the
+   command take the full height (their ::before and ::after draw the
+   shadow, so the height itself grows); the cartouche's link grows into
+   its own margin so the wordmarks stay put; the footer's rows take the
+   44px pitch. The nav keeps its 32px act. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .raking-relief-root main .rr-btn,
+  .raking-relief-root main .rr-btn.is-sm,
+  .raking-relief-root .rr-cmd,
+  .raking-relief-root .rr-code-bar .rr-copy {
+    height: 44px;
+  }
+
+  .raking-relief-root .rr-cartouche-in {
+    height: 44px;
+    margin-top: -8px;
+    margin-bottom: 12px;
+  }
+
+  .raking-relief-root .rr-cmp-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .raking-relief-root .rr-foot-col ul {
+    gap: 0;
+  }
+
+  .raking-relief-root .rr-foot-col a {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
