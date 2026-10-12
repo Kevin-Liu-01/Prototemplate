@@ -12,7 +12,8 @@ import type { PrismaticParams } from './prismatic-field';
  *
  * fieldWorker is the worker's whole program. prismatic-offthread.ts starts
  * it from its own source text, so the worker fetches no script before its
- * first frame; for that, it must use nothing from outside its body. Each
+ * first frame; for that, it must use nothing from outside its body, and
+ * the bundler must write nothing into it (see the useProgram call). Each
  * canvas has its own context, and the contexts end with the worker when
  * its last field goes, so the context budget the shared engine guards is
  * not spent across navigations.
@@ -89,7 +90,11 @@ export function fieldWorker() {
     gl.attachShader(program, frag);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
-    gl.useProgram(program);
+    // Called through .call: a call spelled use<Capital>() reads as a React
+    // hook to the dev server's Fast Refresh transform, which then writes a
+    // helper from the bundler's runtime into this body, and the worker has
+    // no such runtime.
+    gl.useProgram.call(gl, program);
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
     const position = gl.getAttribLocation(program, 'position');
