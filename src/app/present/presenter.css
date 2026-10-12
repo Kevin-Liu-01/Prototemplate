@@ -2586,6 +2586,14 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     min-height: 40px;
     padding: 0;
   }
+
+  /* The scoreboard ends the page, and on a phone on its side its 14vh
+     floor (55 to 60px) is shorter than the fixed dock's 64px from the
+     screen's bottom: the last row's stars stayed under Previous and Next
+     at the end of the scroll. The floor clears the dock with 20px over. */
+  .pr-score {
+    padding-bottom: max(14vh, 84px);
+  }
 }
 
 /* ---------- Mobile ---------- */
