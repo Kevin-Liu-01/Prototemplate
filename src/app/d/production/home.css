@@ -9,3 +9,72 @@
    the import stays so future dossier-local overrides have a
    ruled place to land.
    ============================================================ */
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, every control answers a tap at
+   least 41px on its smaller side, most of them 44. The desktop is
+   untouched. The selectors carry both root classes so they outrank the
+   shared sheets' (0,2,x) rules whatever order the sheets load in. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  /* the inspector badge: the button is already a transparent slab with
+     the 11px badge drawn in its middle (_v0/translate-window.css). On a
+     phone the slab grows from 25px to 45 by 41 around the same centre,
+     so the badge stays put and reconcileMarks' box-centre math still
+     lands on it. 41 tall is the most the stacked marks and the locale
+     chips above them leave before two slabs would overlap. */
+  .toolchain-root.prod-root .v0-tw .sgdh-ins-mark {
+    top: -21px;
+    right: -23px;
+    width: 45px;
+    height: 41px;
+    line-height: 41px;
+  }
+
+  .toolchain-root.prod-root .v0-tw .sgdh-ins-mark::before {
+    inset: 15px 17px;
+  }
+
+  /* the quote's post link sits in a row the 48px avatar already holds open */
+  .toolchain-root.prod-root .v0-glob .tcpq-attr > a {
+    min-height: 44px;
+  }
+
+  .toolchain-root.prod-root .v0-foot-status {
+    min-height: 44px;
+  }
+
+  /* each link already owns its row; a short label (Blog, X) widens to the floor */
+  .toolchain-root.prod-root .v0-foot-col a {
+    min-width: 44px;
+  }
+
+  /* the review doors: 38px on its side, 43.5 upright (the shared 640px
+     padding); both reach the floor */
+  .toolchain-root.prod-root .tcr-door {
+    min-height: 44px;
+  }
+}
+
+/* a phone on its side: the shared sheets lift these to 44px only below
+   640 or 720px wide, so landscape gets the same floor here, at the same
+   type size */
+@media (pointer: coarse) and (max-height: 500px) {
+  /* the footer rows take the 44px pitch the upright phone already uses */
+  .toolchain-root.prod-root .v0-foot-col ul {
+    gap: 0;
+  }
+
+  .toolchain-root.prod-root .v0-foot-col a {
+    min-height: 44px;
+  }
+
+  .toolchain-root.prod-root .v0-foot-theme {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .toolchain-root.prod-root .tc-btn:not(.tc-btn-sm),
+  .toolchain-root.prod-root .v0-dep-btn {
+    height: 44px;
+  }
+}
