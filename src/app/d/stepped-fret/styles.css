@@ -1919,16 +1919,58 @@
 }
 
 /* ------------------------------------------------------------------
-   Touch: the 44px floor. A phone, upright or on its side: the buttons
-   and the command take 44px; each copy glyph keeps its 26px drawing
-   while its transparent button grows to 44px, and a -9px margin gives
-   the row back the 26px it took, so nothing around it moves. The nav
-   keeps its 32px act.
+   Touch: the 44px floor. A phone, upright or on its side: the buttons,
+   the nav's act among them, and the command take 44px; each copy glyph
+   keeps its 26px drawing while its transparent button grows to 44px,
+   and a -9px margin gives the row back the 26px it took, so nothing
+   around it moves. The brand, the nav's links and the footer's links
+   fill 44px rows, the theme square keeps its 32px drawing inside a
+   transparent 44px ring, and the pricing link keeps its underline on
+   the words while a transparent band 11px deep above and below takes
+   the tap.
    ------------------------------------------------------------------ */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
-  .stepped-fret-root :not(.sf-nav-acts) > .sf-btn,
+  .stepped-fret-root .sf-btn,
   .stepped-fret-root .sf-cmd {
     height: 44px;
+  }
+
+  .stepped-fret-root .sf-brand,
+  .stepped-fret-root .sf-nav-links a,
+  .stepped-fret-root .sf-foot-cols a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .stepped-fret-root .sf-nav-links a {
+    justify-content: center;
+  }
+
+  /* Sign In keeps its display, which the 900px block sets to none */
+  .stepped-fret-root .sf-nav-signin {
+    line-height: 44px;
+  }
+
+  .stepped-fret-root .sf-foot-cols ul {
+    gap: 0;
+  }
+
+  .stepped-fret-root .sf-theme.pt-ib,
+  .stepped-fret-root .sf-compare a {
+    position: relative;
+  }
+
+  .stepped-fret-root .sf-theme.pt-ib::after,
+  .stepped-fret-root .sf-compare a::after {
+    content: '';
+    position: absolute;
+    inset: -7px;
+  }
+
+  .stepped-fret-root .sf-compare a::after {
+    inset: -11px 0;
   }
 
   .stepped-fret-root .sf-cmd-copy,

@@ -2659,10 +2659,12 @@
    command take the full height (their ::before and ::after draw the
    shadow, so the height itself grows); the cartouche's link grows into
    its own margin so the wordmarks stay put; the footer's rows take the
-   44px pitch. The nav keeps its 32px act. */
+   44px pitch. In the 58px nav the act grows to 44px with the rest, the
+   brand, the links and Sign In fill a 44px row, and the theme square
+   keeps its 32px drawing inside a transparent 44px ring. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
-  .raking-relief-root main .rr-btn,
-  .raking-relief-root main .rr-btn.is-sm,
+  .raking-relief-root .rr-btn,
+  .raking-relief-root .rr-btn.is-sm,
   .raking-relief-root .rr-cmd,
   .raking-relief-root .rr-code-bar .rr-copy {
     height: 44px;
@@ -2687,5 +2689,32 @@
   .raking-relief-root .rr-foot-col a {
     min-width: 44px;
     min-height: 44px;
+  }
+
+  .raking-relief-root .rr-brand,
+  .raking-relief-root .rr-nav-links a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .raking-relief-root .rr-nav-links a {
+    justify-content: center;
+  }
+
+  /* Sign In keeps its display, which the 720px block sets to none */
+  .raking-relief-root .rr-nav-signin {
+    line-height: 44px;
+  }
+
+  .raking-relief-root .rr-theme.pt-ib {
+    position: relative;
+  }
+
+  .raking-relief-root .rr-theme.pt-ib::after {
+    content: '';
+    position: absolute;
+    inset: -7px;
   }
 }

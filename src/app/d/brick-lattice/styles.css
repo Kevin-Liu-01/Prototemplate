@@ -1886,6 +1886,43 @@
     align-items: center;
     min-height: 44px;
   }
+
+  /* the nav and the footer sit outside main: the brand and the links
+     fill a 44px row of the 58px bar, Sign In takes a 44px line (it keeps
+     its display, which the 720px block sets to none), and the footer's
+     links take a 44px pitch in place of their 8px gaps */
+  .brick-lattice-root .bl-brand,
+  .brick-lattice-root .bl-nav-links a,
+  .brick-lattice-root .bl-foot-col a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .brick-lattice-root .bl-nav-links a {
+    justify-content: center;
+  }
+
+  .brick-lattice-root .bl-nav-signin {
+    line-height: 44px;
+  }
+
+  .brick-lattice-root .bl-foot-col ul {
+    gap: 0;
+  }
+
+  /* the theme switch keeps its 32px square; a transparent ring 6px wide
+     takes the tap, inside the 14px gaps on either side */
+  .brick-lattice-root .bl-theme {
+    position: relative;
+  }
+
+  .brick-lattice-root .bl-theme::after {
+    content: '';
+    position: absolute;
+    inset: -7px;
+  }
 }
 
 /* the last 720px block: the mobile ladder, consumed with px fallbacks */
