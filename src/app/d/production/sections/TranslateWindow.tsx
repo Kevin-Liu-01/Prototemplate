@@ -959,15 +959,21 @@ export default function TranslateWindow({
      pass restores that contract by geometry: on every cut write, marks
      whose centre sits right of the cut are filed data-swept (hidden and
      pointer-inert — indistinguishable from being covered), and marks on
-     the visible render win their own clicks inside the slab's fringe. */
+     the visible render win their own clicks inside the slab's fringe.
+     The cut is where the seam's line is drawn: at either end the line
+     parks 4.5px inside the card (reveal-seam.css), so a mark whose centre
+     sits between that line and the card's edge is right of the line and
+     files swept, instead of covering the line. */
   const reconcileMarks = () => {
     const el = app.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
     if (r.width === 0) return;
+    const line = el.querySelector('.tc-seam')?.getBoundingClientRect();
     const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
-    const cutX =
-      r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
+    const cutX = line?.width
+      ? (line.left + line.right) / 2
+      : r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
     for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
       const mr = m.getBoundingClientRect();
       if (mr.left + mr.width / 2 > cutX) m.setAttribute('data-swept', '');
