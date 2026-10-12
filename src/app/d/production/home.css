@@ -18,27 +18,30 @@
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   /* the inspector badge: the button is a transparent slab with the 11px
      badge drawn on the component's top-right corner
-     (_v0/translate-window.css). On a phone the slab grows from 25px to a
-     40px square that keeps main's right edge and runs left over the
-     component the mark names: nothing reaches further right than the
-     25px slab did, so the seam's line at the card's right edge stays
-     clear. The badge stays put, drawn by insets, and the padding sets the
-     "!" in it; reconcileMarks reads the badge's centre from the padding.
+     (_v0/translate-window.css). On a phone the slab grows from a 25px
+     circle to a 40px square whose right edge is the badge's right edge
+     and which runs left over the component the mark names. The square
+     reaches 7px less far right than the 25px slab did, so the marks
+     that rest 13px left of the seam's line at the card's right end stop
+     4px short of its left thread. The badge stays put, drawn by insets,
+     and the padding sets the "!" in it; reconcileMarks reads the badge's
+     centre from the padding.
      --lift moves the square off the corner's centre (up for a positive
      value, down for a negative one). */
   .toolchain-root.prod-root .v0-tw .sgdh-ins-mark {
     --lift: 0px;
     top: calc(-20.5px - var(--lift));
-    right: -13px;
+    right: -6px;
     box-sizing: border-box;
     width: 40px;
     height: 40px;
-    padding: calc(14.5px + var(--lift)) 7px calc(14.5px - var(--lift)) 22px;
+    padding: calc(14.5px + var(--lift)) 0 calc(14.5px - var(--lift)) 29px;
+    border-radius: 0;
     line-height: 11px;
   }
 
   .toolchain-root.prod-root .v0-tw .sgdh-ins-mark::before {
-    inset: calc(14.5px + var(--lift)) 7px calc(14.5px - var(--lift)) 22px;
+    inset: calc(14.5px + var(--lift)) 0 calc(14.5px - var(--lift)) 29px;
   }
 
   /* the nav items' marks sit 10px under the window bar, whose locale
