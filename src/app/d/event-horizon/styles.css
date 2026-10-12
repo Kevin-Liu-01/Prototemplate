@@ -4864,3 +4864,90 @@
 .eventhorizon-root .tc-delivery-band {
   border-top: 1px solid var(--tc-hair);
 }
+
+/* ---------- touch phones: hit areas outside the sections ----------
+   On a phone, upright or on its side, every control answers a tap at
+   least 40px on its smaller side, most of them 44. The nav and the
+   footer sit outside any main region. Buttons take 44px, text links fill
+   a 44px row, and a control drawn smaller (the theme square, the code
+   pane's Copy, the underlined links) keeps its drawing and takes the tap
+   on a transparent ::after. The hero's core keeps its drawn sizes, since
+   Hero.tsx fits the core into the horizon by them: its buttons and its
+   command take the tap on a transparent band instead. The desktop is
+   untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .eventhorizon-root .tc-btn:not(.eh-core .tc-btn),
+  .eventhorizon-root .tc-copy:not(.eh-core .tc-copy) {
+    height: 44px;
+  }
+
+  .eventhorizon-root .tc-nav-brand {
+    min-height: 44px;
+  }
+
+  .eventhorizon-root .tc-nav-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Sign in keeps its display, which the 860px block sets to none */
+  .eventhorizon-root .tc-nav-right > .tc-nav-theme + a {
+    line-height: 44px;
+  }
+
+  .eventhorizon-root .tc-foot-cols ul {
+    gap: 0;
+  }
+
+  .eventhorizon-root .tc-foot-cols a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .eventhorizon-root .tc-nav-theme,
+  .eventhorizon-root .eh-core .tc-btn,
+  .eventhorizon-root .eh-core .tc-copy,
+  .eventhorizon-root .tc-code-copy,
+  .eventhorizon-root .tc-fw-link,
+  .eventhorizon-root .tc-compare a {
+    position: relative;
+  }
+
+  .eventhorizon-root .tc-nav-theme::after,
+  .eventhorizon-root .eh-core .tc-btn::after,
+  .eventhorizon-root .eh-core .tc-copy::after,
+  .eventhorizon-root .tc-code-copy::after,
+  .eventhorizon-root .tc-fw-link::after,
+  .eventhorizon-root .tc-compare a::after {
+    content: '';
+    position: absolute;
+    /* a 44px band through the control's middle, as wide as the control */
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+
+  /* the command sits 10px under the buttons, whose bands reach at most
+     5.5px below them: its band starts 4px above its drawing and runs
+     down, so the two never meet */
+  .eventhorizon-root .eh-core .tc-copy::after {
+    top: -4px;
+    transform: none;
+  }
+
+  /* the 32px theme square: a 44px square on its centre, inside the
+     nav's 12px gaps */
+  .eventhorizon-root .tc-nav-theme::after {
+    left: 50%;
+    right: auto;
+    width: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
