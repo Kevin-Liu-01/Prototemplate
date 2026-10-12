@@ -421,3 +421,50 @@
     gap: 0;
   }
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, the bar's controls answer a tap at
+   least 44px on their smaller side: the brand, the links, Sign in and the
+   menu triggers fill a 44px row of the 58px bar, the demo chip takes
+   44px, and the 32px theme square keeps its drawing inside a transparent
+   44px square, within the 12px gaps. The burger takes its band in
+   toolchain/styles.css, which every home with this nav loads. The desktop
+   is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .v0-nav-brand {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .toolchain-root .v0-nav-links a,
+  .toolchain-root .v0-nav-drop-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Sign in keeps its display, which the 860px block sets to none */
+  .toolchain-root .v0-nav-right > a:first-of-type {
+    line-height: 44px;
+  }
+
+  .toolchain-root .v0-nav .v0-btn {
+    height: 44px;
+  }
+
+  .toolchain-root .v0-nav-theme {
+    position: relative;
+  }
+
+  .toolchain-root .v0-nav-theme::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
