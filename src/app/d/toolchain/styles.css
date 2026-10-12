@@ -4762,3 +4762,115 @@
 .toolchain-root .tc-band.tcb {
   border-bottom: 1px solid var(--tc-hair-band);
 }
+
+/* ---------- touch phones: hit areas outside the sections ----------
+   On a phone, upright or on its side, every control answers a tap at
+   least 40px on its smaller side, most of them 44. The nav, the hero's
+   window and the footer sit outside any main region. Text links and
+   buttons fill a 44px row; a control drawn smaller than that (the theme
+   square, the burger, the window bar's switch and locale chips, the code
+   pane's Copy, the underlined links and the seams) keeps its drawing and
+   takes the tap on a transparent ::after, or on a wider transparent box
+   for the seam. The desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .tc-btn,
+  .toolchain-root .tc-btn-sm,
+  .toolchain-root .tc-copy {
+    height: 44px;
+  }
+
+  .toolchain-root .tc-nav-brand {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .toolchain-root .tc-nav-links a,
+  .toolchain-root .tc-nav-drop-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Sign in keeps its display, which the 860px block sets to none */
+  .toolchain-root .tc-nav-right > .tc-nav-theme + a {
+    line-height: 44px;
+  }
+
+  /* the cinema's demo button carries a seam, which its box clips: the
+     button stands 40px tall so the seam does */
+  .toolchain-root .tc-cinema-dbtn {
+    height: 40px;
+  }
+
+  .toolchain-root .tc-foot-cols ul {
+    gap: 0;
+  }
+
+  .toolchain-root .tc-foot-cols a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding-block: 0;
+  }
+
+  .toolchain-root .tcpq-attr > a {
+    min-height: 44px;
+  }
+
+  .toolchain-root .tc-nav-theme,
+  .toolchain-root .tc-nav-burger,
+  .toolchain-root .tct-seg button,
+  .toolchain-root .tct-tabs button,
+  .toolchain-root .tc-code-copy,
+  .toolchain-root .tc-fw-link,
+  .toolchain-root .tc-compare a,
+  .toolchain-root .tcpv-compare a,
+  .toolchain-root .tcpq-meta a {
+    position: relative;
+  }
+
+  .toolchain-root .tc-nav-theme::after,
+  .toolchain-root .tc-nav-burger::after,
+  .toolchain-root .tct-seg button::after,
+  .toolchain-root .tct-tabs button::after,
+  .toolchain-root .tc-code-copy::after,
+  .toolchain-root .tc-fw-link::after,
+  .toolchain-root .tc-compare a::after,
+  .toolchain-root .tcpv-compare a::after,
+  .toolchain-root .tcpq-meta a::after {
+    content: '';
+    position: absolute;
+    /* a 44px band through the control's middle, as wide as the control */
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+
+  /* the 42px window bar holds the switch and the chips: their band is
+     40px, so it stays inside the bar */
+  .toolchain-root .tct-seg button::after,
+  .toolchain-root .tct-tabs button::after {
+    height: 40px;
+  }
+
+  /* the 32px theme square and the 21 by 27 burger: a 44px square on the
+     drawing's centre, inside the nav's 12px and 26px gaps */
+  .toolchain-root .tc-nav-theme::after,
+  .toolchain-root .tc-nav-burger::after {
+    left: 50%;
+    right: auto;
+    width: 44px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* the seam: an 18px slab with its threads and grip drawn on its centre;
+     the slab widens to 44px, so the drawing does not move */
+  .toolchain-root .tc-seam {
+    width: 44px;
+  }
+}
