@@ -1079,15 +1079,21 @@
   }
 }
 
-@media (max-width: 760px) {
-  /* Hero.tsx's stack-mode formulas, on the shorter stack */
+/* Hero.tsx's stack-mode formulas, which start below 760px
+   (wide = w >= 760), on the shorter stack set in the block below */
+@media (max-width: 759px) {
   .eventhorizon-root .eh-hero {
-    --eh-h: clamp(640px, calc(100svh - 58px), 800px);
     --eh-r: min(40vw, 168px, calc(var(--eh-h) * 0.26));
     --eh-cy: max(
       min(calc(var(--eh-h) * 0.46), calc(var(--eh-h) - var(--eh-r) - 232px)),
       calc(var(--eh-r) + 238px)
     );
+  }
+}
+
+@media (max-width: 760px) {
+  .eventhorizon-root .eh-hero {
+    --eh-h: clamp(640px, calc(100svh - 58px), 800px);
   }
 
   .eventhorizon-root .eh-tag {
