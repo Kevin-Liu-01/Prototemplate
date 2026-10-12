@@ -12,26 +12,51 @@
 
 /* ---------- touch phones: hit areas ----------
    On a phone, upright or on its side, every control answers a tap at
-   least 41px on its smaller side, most of them 44. The desktop is
+   least 40px on its smaller side, most of them 44. The desktop is
    untouched. The selectors carry both root classes so they outrank the
    shared sheets' (0,2,x) rules whatever order the sheets load in. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   /* the inspector badge: the button is already a transparent slab with
-     the 11px badge drawn in its middle (_v0/translate-window.css). On a
-     phone the slab grows from 25px to 45 by 41 around the same centre,
-     so the badge stays put and reconcileMarks' box-centre math still
-     lands on it. 41 tall is the most the stacked marks and the locale
-     chips above them leave before two slabs would overlap. */
+     the 11px badge drawn on the component's top-right corner
+     (_v0/translate-window.css). On a phone the slab grows from 25px to
+     45 by 40 around that corner, so the badge stays put and
+     reconcileMarks' box-centre math still lands on it. From the locale
+     chips down to the stats row the nav, heading, sub and stat marks
+     stack 38.5 to 41.7px apart, so a 40px slab centred on each corner
+     would cover the next. --lift moves each slab off its centre instead
+     (up for a positive value, down for a negative one): every slab
+     still holds its badge and ends before the next one starts. */
   .toolchain-root.prod-root .v0-tw .sgdh-ins-mark {
-    top: -21px;
+    --lift: 0px;
+    top: calc(-20px - var(--lift));
     right: -23px;
+    box-sizing: border-box;
     width: 45px;
-    height: 41px;
-    line-height: 41px;
+    height: 40px;
+    /* a button centres its content box: an 11px box set on the badge
+       keeps the "!" in the badge's middle */
+    padding: calc(14px + var(--lift)) 0 calc(15px - var(--lift));
+    line-height: 11px;
   }
 
   .toolchain-root.prod-root .v0-tw .sgdh-ins-mark::before {
-    inset: 15px 17px;
+    inset: calc(14px + var(--lift)) 17px calc(15px - var(--lift));
+  }
+
+  .toolchain-root.prod-root .v0-tw .sgdh-app-navi .sgdh-ins-mark {
+    --lift: 0.5px;
+  }
+
+  .toolchain-root.prod-root .v0-tw .tct-app-h .sgdh-ins-mark {
+    --lift: -1px;
+  }
+
+  .toolchain-root.prod-root .v0-tw .tct-app-copy .sgdh-ins-mark {
+    --lift: -3px;
+  }
+
+  .toolchain-root.prod-root .v0-tw .sgdh-app-stat .sgdh-ins-mark {
+    --lift: -4px;
   }
 
   /* the quote's post link sits in a row the 48px avatar already holds open */
