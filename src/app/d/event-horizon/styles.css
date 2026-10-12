@@ -300,9 +300,17 @@
    ============================================================ */
 
 .eventhorizon-root .eh-hero {
+  /* First paint carries the geometry Hero.tsx measures (its wide-mode
+     formulas on the hero's own height and the viewport's width), so the
+     disc, the canvas and the center text start where the script will put
+     them instead of jumping when it runs. */
+  --eh-h: clamp(640px, calc(100svh - 58px), 940px);
   --eh-cx: 50%;
-  --eh-cy: 47%;
-  --eh-r: 270px;
+  --eh-r: min(max(19vw, 228px), 300px, calc(var(--eh-h) * 0.36));
+  --eh-cy: max(
+    min(calc(var(--eh-h) * 0.47), calc(var(--eh-h) - var(--eh-r) - 148px)),
+    calc(var(--eh-r) + 96px)
+  );
   /* The handoff mask: the DOM's flat page structure opens a feathered hole
      under the shader canvas, which redraws that structure bent through the
      lens. Inner edge 1.46r, outer 1.66r — matching uRuleFadeIn/Out. */
@@ -312,7 +320,7 @@
     #000 100%
   );
   position: relative;
-  min-height: clamp(640px, calc(100svh - 58px), 940px);
+  min-height: var(--eh-h);
   overflow: hidden;
   background: var(--tc-paper);
 }
@@ -1072,8 +1080,14 @@
 }
 
 @media (max-width: 760px) {
+  /* Hero.tsx's stack-mode formulas, on the shorter stack */
   .eventhorizon-root .eh-hero {
-    min-height: clamp(640px, calc(100svh - 58px), 800px);
+    --eh-h: clamp(640px, calc(100svh - 58px), 800px);
+    --eh-r: min(40vw, 168px, calc(var(--eh-h) * 0.26));
+    --eh-cy: max(
+      min(calc(var(--eh-h) * 0.46), calc(var(--eh-h) - var(--eh-r) - 232px)),
+      calc(var(--eh-r) + 238px)
+    );
   }
 
   .eventhorizon-root .eh-tag {

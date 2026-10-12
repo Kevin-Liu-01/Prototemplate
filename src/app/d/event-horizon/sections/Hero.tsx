@@ -753,6 +753,8 @@ export default function Hero() {
         const h = hero.clientHeight;
         if (w < 10 || h < 10) return;
         wide = w >= 760;
+        /* styles.css (.eh-hero) repeats these formulas for first paint, so a
+           change here goes there too or the hero shifts when this runs. */
         r = wide
           ? Math.min(Math.max(w * 0.19, 228), 300, h * 0.36)
           : Math.min(w * 0.4, 168, h * 0.26);
