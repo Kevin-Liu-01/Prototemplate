@@ -303,33 +303,60 @@ export const INTERACTIONS = [
   },
 ];
 
+/** The page has run two animation frames: what was set before it (a scroll, a tween's step) has been handled. */
+const twoFrames = (page) => page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+
 /**
  * What the walk waits on, read inside the page: the scroll position, the
- * title's text box (as readStop measures it), its opacity with its
- * ancestors', and whether the box is on screen.
+ * title's text box (as readStop measures it) and that box cut by every
+ * clipping ancestor, its opacity with its ancestors', whether the box is on
+ * screen, and the chrome's boxes. The dock morphs between its modes with
+ * its overflow clipping the label while its box eases (PresenterApp.tsx
+ * onChrome), so a title can hold still while it is still cut away.
  */
-function walkState(title) {
-  const el = document.querySelector(title);
+function walkState({ title, chrome }) {
+  const r = (b) => [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)];
   const y = Math.round(window.scrollY);
-  if (!el) return { y, box: null, onScreen: false };
+  const frames = chrome.map((s) => {
+    const el = document.querySelector(s);
+    return el ? r(el.getBoundingClientRect()) : null;
+  });
+  const el = document.querySelector(title);
+  if (!el) return { y, frames, box: null, onScreen: false };
   const range = document.createRange();
   range.selectNodeContents(el);
   let b = range.getBoundingClientRect();
   if (!b.width || !b.height) b = el.getBoundingClientRect();
+  const cut = { left: b.left, top: b.top, right: b.right, bottom: b.bottom };
   let opacity = 1;
-  for (let n = el; n instanceof Element; n = n.parentElement) opacity *= parseFloat(getComputedStyle(n).opacity);
+  for (let n = el; n instanceof Element; n = n.parentElement) {
+    const cs = getComputedStyle(n);
+    opacity *= parseFloat(cs.opacity);
+    if (n !== el && /hidden|clip/.test(cs.overflowX + cs.overflowY)) {
+      const c = n.getBoundingClientRect();
+      cut.left = Math.max(cut.left, c.left);
+      cut.top = Math.max(cut.top, c.top);
+      cut.right = Math.min(cut.right, c.right);
+      cut.bottom = Math.min(cut.bottom, c.bottom);
+    }
+  }
   const onScreen = b.width > 0 && b.left >= -1 && b.top >= -1 && b.right <= window.innerWidth + 1 && b.bottom <= window.innerHeight + 1;
-  return { y, box: [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)], opacity: Math.round(opacity * 100) / 100, onScreen };
+  return { y, frames, box: r(b), cut: r({ ...cut, width: cut.right - cut.left, height: cut.bottom - cut.top }), opacity: Math.round(opacity * 100) / 100, onScreen };
 }
+
+/** How many reads, each 100ms and two animation frames after the last, must agree before the walk reads a stop. */
+const STILL_READS = 4;
 
 /**
  * Waits for the presenter to rest on a stop, on conditions and not on
  * times, since a loaded machine can start a smooth scroll seconds late.
  * With `from` (the position before a key), the scroll must first leave it.
- * Then the scroll position, the title's box and its opacity must hold for
- * three reads 100ms apart with the title on screen: the smooth scroll has
- * ended and the scrubbed timelines (scrub 0.45 in the slides) have caught
- * up. After PRESENT_WAIT_MS it stops waiting and the read reports what is
+ * Then everything walkState reads must hold for STILL_READS reads with
+ * the title on screen: the smooth scroll has ended, the scrubbed timelines
+ * (scrub 0.45 in the slides) have caught up and the chrome has stopped
+ * moving. Each read waits 100ms and two animation frames, since a loaded
+ * renderer can go seconds between frames and a tween moves only on one.
+ * After PRESENT_WAIT_MS it stops waiting and the read reports what is
  * there.
  */
 async function settleOn(page, title, from = null) {
@@ -340,17 +367,15 @@ async function settleOn(page, title, from = null) {
   let last = '';
   let same = 0;
   while (Date.now() < deadline) {
-    const state = await page.evaluate(walkState, title);
+    const state = await page.evaluate(walkState, { title, chrome: PRESENTER.chrome });
     const now = JSON.stringify(state);
     same = now === last ? same + 1 : 0;
     last = now;
-    if (same >= 2 && state.onScreen) return;
+    if (same >= STILL_READS - 1 && state.onScreen) return;
     await page.waitForTimeout(100);
+    await twoFrames(page);
   }
 }
-
-/** The page has run two animation frames: a scroll set before it has been handled. */
-const twoFrames = (page) => page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
 
 /**
  * Reads one stop of the presenter, inside the page: whether the title's

@@ -110,8 +110,8 @@ export const CONSOLE_ALLOW = /hydrat|did not match|extra attributes from the ser
  * The presenter's walk (interactions.mjs present-walk). Each stop is a
  * slide in the presenter's order (src/app/present/PresenterApp.tsx,
  * SLIDES): the walk presses j from the first, waits for the scroll to
- * leave and come to rest with the stop's title held still on screen, and
- * the title must then have nothing painted over it. The close beat is the
+ * leave and come to rest with the stop's title on screen and it and the
+ * chrome held still, and the title must then have nothing painted over it. The close beat is the
  * end of the Details slide, where "So I built 12" heads the contact sheet
  * (TypeDetailSlide.tsx), read at `at` of the slide's pin length; the grid
  * (`panel`) opens with G on the Prototypes slide (PrototypeViewer.tsx) and

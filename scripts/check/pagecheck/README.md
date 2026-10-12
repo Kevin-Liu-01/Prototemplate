@@ -91,9 +91,10 @@ after and its readings in `interactions/results.json`:
   control does (the file's head names each)
 - `present-walk`, on every dark device of the run: presses j through the
   presenter's slides, waits each time for the scroll to leave and come
-  to rest with the slide's title held still on screen (conditions, not
-  fixed times: a loaded machine starts a smooth scroll late; at most 30s
-  each), and checks each slide's title is on screen with nothing painted
+  to rest with the slide's title on screen and the title, its clipped
+  box and the chrome's boxes held still (conditions, not fixed times: a
+  loaded machine starts a smooth scroll late; at most 30s each), and
+  checks each slide's title is on screen with nothing painted
   over it, the "So I built 12" close beat and the
   prototypes grid showing the presenter's count (16), the grid's cards
   clear of the dock from 1280 wide, no chrome box over another, and no
