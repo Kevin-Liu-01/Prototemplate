@@ -16,63 +16,49 @@
    untouched. The selectors carry both root classes so they outrank the
    shared sheets' (0,2,x) rules whatever order the sheets load in. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
-  /* the inspector badge: the button is a transparent 25px slab centred
-     on the component's top-right corner with the 11px badge drawn in its
-     middle (_v0/translate-window.css). On a phone a transparent ::after
-     takes the tap over a 40px square that ends at the slab's right edge
-     and runs left over the component the mark names, so the badge and
-     reconcileMarks' horizontal centre stay as they are, and nothing
-     reaches further right than the 25px slab does: the seam's line at the
-     card's right edge stays clear. --lift moves a square off the corner's
-     centre (up for a positive value, down for a negative one). */
+  /* the inspector badge: the button is a transparent slab with the 11px
+     badge drawn on the component's top-right corner
+     (_v0/translate-window.css). On a phone the slab grows from 25px to a
+     40px square that keeps main's right edge and runs left over the
+     component the mark names: nothing reaches further right than the
+     25px slab did, so the seam's line at the card's right edge stays
+     clear. The badge stays put, drawn by insets, and the padding sets the
+     "!" in it; reconcileMarks reads the badge's centre from the padding.
+     --lift moves the square off the corner's centre (up for a positive
+     value, down for a negative one). */
   .toolchain-root.prod-root .v0-tw .sgdh-ins-mark {
     --lift: 0px;
+    top: calc(-20.5px - var(--lift));
+    right: -13px;
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    padding: calc(14.5px + var(--lift)) 7px calc(14.5px - var(--lift)) 22px;
+    line-height: 11px;
   }
 
-  .toolchain-root.prod-root .v0-tw .sgdh-ins-mark::after {
-    content: '';
-    position: absolute;
-    top: calc(-7.5px - var(--lift));
-    right: 0;
-    bottom: calc(-7.5px + var(--lift));
-    width: 40px;
+  .toolchain-root.prod-root .v0-tw .sgdh-ins-mark::before {
+    inset: calc(14.5px + var(--lift)) 7px calc(14.5px - var(--lift)) 22px;
   }
 
   /* the nav items' marks sit 10px under the window bar, whose locale
-     chips take the bar's 40px above them: the slab starts 1.5px lower
-     (its badge and "!" stay on the corner), and the square runs down
-     from the slab's top. The square sits 16px left and 24px right of the
-     corner, between the heading's slab on its left and right: on a 430px
-     phone the heading's corner is only 38.5px lower, under the same
-     columns. */
+     chips take the bar's 40px above them: their squares start 11.5px
+     above the corner, 1.5px lower than the 25px slab did. The heading's
+     square starts 9px above its corner, under the nav items' squares,
+     which end 28.5px under theirs, 38.5px above the heading's on a 430px
+     phone. The sub, the stats, the action and the chart sit in columns
+     of their own or 60px and more apart, so theirs stay centred. */
   .toolchain-root.prod-root .v0-tw .sgdh-app-navi .sgdh-ins-mark {
-    top: -11px;
-    height: 23.5px;
-    line-height: 22px;
+    --lift: -9px;
   }
 
-  .toolchain-root.prod-root .v0-tw .sgdh-app-navi .sgdh-ins-mark::before {
-    inset: 5.5px 7px 7px;
-  }
-
-  .toolchain-root.prod-root .v0-tw .sgdh-app-navi .sgdh-ins-mark::after {
-    top: 0;
-    right: -11.5px;
-    bottom: auto;
-    height: 40px;
-  }
-
-  /* the heading's square starts 9px above its corner, under the nav
-     items' squares, which end 38.5px under their corners' row; the sub,
-     the stats, the action and the chart sit in columns of their own or
-     60px and more apart, so theirs stay centred */
   .toolchain-root.prod-root .v0-tw .tct-app-h .sgdh-ins-mark {
     --lift: -11px;
   }
 
   /* the belt's chips sit 10px under its top edge (their 1px border
      included), centred in it: their 40px band runs down from that edge
-     and ends 1px above the nav items' slabs */
+     and ends 1px above the nav items' squares */
   .toolchain-root.prod-root .v0-tw .v0-tw-belt-track button::after {
     top: -10px;
     transform: none;

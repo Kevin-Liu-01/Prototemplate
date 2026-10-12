@@ -975,8 +975,14 @@ export default function TranslateWindow({
       ? (line.left + line.right) / 2
       : r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
     for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
+      /* the badge's centre: the middle of the slab's content box, which
+         the padding sets on the badge when a phone widens the slab
+         (home.css); with no padding it is the slab's own centre */
       const mr = m.getBoundingClientRect();
-      if (mr.left + mr.width / 2 > cutX) m.setAttribute('data-swept', '');
+      const cs = getComputedStyle(m);
+      const left = parseFloat(cs.paddingLeft) || 0;
+      const right = parseFloat(cs.paddingRight) || 0;
+      if (mr.left + (mr.width + left - right) / 2 > cutX) m.setAttribute('data-swept', '');
       else m.removeAttribute('data-swept');
     }
   };
