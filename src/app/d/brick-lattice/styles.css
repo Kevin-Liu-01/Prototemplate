@@ -1821,6 +1821,73 @@
   }
 }
 
+/* a phone: the code sample's lines ran past a 430px screen, so they wrap
+   under their own line number, and the kiln's window bar wraps its command
+   onto a second row before the copy button is squeezed */
+@media (max-width: 900px) {
+  .brick-lattice-root .bl-code-line {
+    white-space: pre-wrap;
+  }
+
+  .brick-lattice-root .bl-code-src {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .brick-lattice-root .bl-win-bar {
+    flex-wrap: wrap;
+    row-gap: 4px;
+    height: auto;
+    min-height: 36px;
+    padding-block: 4px;
+  }
+
+  .brick-lattice-root .bl-win-bar > * {
+    flex: none;
+  }
+}
+
+/* a touch phone: every control is 44px on its short side. The buttons and
+   the command grow; the copy glyphs keep their place inside a 44px box whose
+   negative margins give back the width it gained, and the customer marks and
+   the pricing link keep their type inside a 44px row */
+@media (pointer: coarse) and (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .brick-lattice-root .bl-btn,
+  .brick-lattice-root .bl-btn-sm,
+  .brick-lattice-root .bl-cmd {
+    height: 44px;
+  }
+
+  .brick-lattice-root .bl-cmd-copy {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    margin-inline: -10px -6px;
+  }
+
+  .brick-lattice-root .bl-cmd.is-bar .bl-cmd-copy {
+    width: 44px;
+    height: 44px;
+    margin-inline: -10px;
+  }
+
+  .brick-lattice-root .bl-wm-link {
+    display: grid;
+    place-items: center;
+    min-height: 44px;
+  }
+
+  .brick-lattice-root .bl-compare {
+    padding-block: 3px;
+  }
+
+  .brick-lattice-root .bl-compare a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
 /* the last 720px block: the mobile ladder, consumed with px fallbacks */
 @media (max-width: 720px) {
   .brick-lattice-root {
