@@ -7,7 +7,9 @@
 //             the report's where column prefers
 //   ready     the selector that says the page is ready to read: the shell
 //             stamps .pt-viewer[data-settled] one frame after it boots, the
-//             blog mounts .blog-root, the presenter .pr-root, and the deck
+//             blog mounts .blog-root, the presenter stamps
+//             .pr-root[data-settled] once its slides are set up and the
+//             intro's entrance has played (IntroSlide.tsx), and the deck
 //             (/deck, the built deck served as the page) is ready when its
 //             sheet has a box. The reads then wait for the layout to hold
 //             still (pagecheck.mjs)
@@ -30,7 +32,10 @@ const SHELL_READY = '.pt-viewer[data-settled]';
 
 /** The ready selector of the pages that are not on the shell. */
 const READY = {
-  present: '.pr-root',
+  /* not the bare .pr-root: before the deck's setup turn (deck-setup.ts) the
+     scoreboard's cards have not been hidden for their scroll reveal yet, so
+     a read then counts 100 tap targets on a phone and a read after it 4 */
+  present: '.pr-root[data-settled]',
   deck: '#sheet',
   blog: '.blog-root',
 };

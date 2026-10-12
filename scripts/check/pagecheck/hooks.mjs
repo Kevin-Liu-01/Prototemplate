@@ -110,14 +110,15 @@ export const CONSOLE_ALLOW = /hydrat|did not match|extra attributes from the ser
  * The presenter's walk (interactions.mjs present-walk). Each stop is a
  * slide in the presenter's order (src/app/present/PresenterApp.tsx,
  * SLIDES): the walk presses j from the first, waits for the scroll to
- * rest, and the stop's title must be on screen with nothing painted over
- * it. The close beat is the end of the Details slide, where "So I built
- * 12" heads the contact sheet (TypeDetailSlide.tsx), read at `at` of the
- * slide's pin length; the grid opens with G on the Prototypes slide
- * (PrototypeViewer.tsx). `count` is how many prototypes the presenter
- * shows (Kevin, 2026-10-08: the first 16, so the close title fits), read
- * on the contact sheet and in the grid. The chrome boxes must not overlap
- * one another.
+ * leave and come to rest with the stop's title held still on screen, and
+ * the title must then have nothing painted over it. The close beat is the
+ * end of the Details slide, where "So I built 12" heads the contact sheet
+ * (TypeDetailSlide.tsx), read at `at` of the slide's pin length; the grid
+ * (`panel`) opens with G on the Prototypes slide (PrototypeViewer.tsx) and
+ * closes with Escape. `count` is how many prototypes the presenter shows
+ * (Kevin, 2026-10-08: the first 16, so the close title fits), read on the
+ * contact sheet and in the grid. The chrome boxes must not overlap one
+ * another.
  */
 export const PRESENTER = {
   count: 16,
@@ -131,7 +132,7 @@ export const PRESENTER = {
     { slide: 'scoreboard', title: '.pr-score-title' },
   ],
   close: { slide: 'detail', at: 0.97, title: '.pr-detail-close h3', tiles: '.pr-close-tile' },
-  grid: { slide: 'prototypes', key: 'g', title: '.pr-grid-head strong', cards: '.pr-grid-cards > button', dock: '.pr-dock', fitFrom: 1280 },
+  grid: { slide: 'prototypes', key: 'g', panel: '.pr-grid', title: '.pr-grid-head strong', cards: '.pr-grid-cards > button', dock: '.pr-dock', fitFrom: 1280 },
   chrome: ['.pr-hud-brand', '.pr-hud-author', '.pr-hud-rail', '.pr-dock', '.pr-notes'],
 };
 

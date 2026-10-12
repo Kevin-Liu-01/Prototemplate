@@ -72,8 +72,11 @@ cell also gets the full page (`-full.png`, cut at ten screens).
 The reads start once the page's ready selector (`pages.mjs`) has matched
 with a box, in the page or in one of its frames: the shell stamps
 `.pt-viewer[data-settled]` one frame after it boots, the blog mounts
-`.blog-root`, the presenter `.pr-root`, and the deck's `#sheet` gets its
-box (`/deck` serves the built deck as the page). Then the check waits two
+`.blog-root`, the presenter stamps `.pr-root[data-settled]` once its
+slides are set up and the intro's entrance has played (so every cell
+reads the scoreboard's cards hidden for their scroll reveal, never the
+moment before), and the deck's `#sheet` gets its box (`/deck` serves the
+built deck as the page). Then the check waits two
 frames and for the layout (the document's size, the h1, the landmarks, the
 ready element) to hold still for 300ms, at most `settleMs` (3000ms). A
 cell takes as long as its page needs, not a fixed wait.
@@ -87,8 +90,11 @@ after and its readings in `interactions/results.json`:
   `present-controls` and `deck-advance`, on what the shell code says each
   control does (the file's head names each)
 - `present-walk`, on every dark device of the run: presses j through the
-  presenter's slides and checks each slide's title is on screen with
-  nothing painted over it, the "So I built 12" close beat and the
+  presenter's slides, waits each time for the scroll to leave and come
+  to rest with the slide's title held still on screen (conditions, not
+  fixed times: a loaded machine starts a smooth scroll late; at most 30s
+  each), and checks each slide's title is on screen with nothing painted
+  over it, the "So I built 12" close beat and the
   prototypes grid showing the presenter's count (16), the grid's cards
   clear of the dock from 1280 wide, no chrome box over another, and no
   horizontal overflow. `hooks.mjs` `PRESENTER` names the stops

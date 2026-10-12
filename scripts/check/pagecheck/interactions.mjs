@@ -61,8 +61,8 @@ import { readPage } from './probes.mjs';
 
 const BOTH = ['390x844', '1440x900'];
 
-/** How long a scrubbed timeline (scrub 0.45 in the presenter's slides) takes to catch up once the scroll rests. */
-const SCRUB_MS = 600;
+/** The longest the presenter's interactions wait on one condition before they read what is there; a loaded dev server can take seconds to start a smooth scroll. */
+const PRESENT_WAIT_MS = 30000;
 
 const rect = (page, selector) =>
   page.evaluate((s) => {
@@ -287,7 +287,9 @@ export const INTERACTIONS = [
       const count = () => page.evaluate(() => document.querySelector('.pr-hud-count')?.textContent?.replace(/\s+/g, ' ').trim() ?? null);
       const before = await count();
       await page.click('.pr-dock button[aria-label="Next slide"]');
-      await page.waitForTimeout(1500);
+      await page
+        .waitForFunction((was) => document.querySelector('.pr-hud-count')?.textContent?.replace(/\s+/g, ' ').trim() !== was, before, { timeout: PRESENT_WAIT_MS })
+        .catch(() => {});
       const after = await count();
       const dock = await rect(page, '.pr-dock');
       return { pass: Boolean(before) && before !== after, before, after, dock };
@@ -302,24 +304,53 @@ export const INTERACTIONS = [
 ];
 
 /**
- * Waits for the window's scroll to rest after a key: until it moves (at
- * most 800ms, the last slide does not), then until three reads 100ms apart
- * agree (at most 5s), then for the scrubbed timelines to catch up.
+ * What the walk waits on, read inside the page: the scroll position, the
+ * title's text box (as readStop measures it), its opacity with its
+ * ancestors', and whether the box is on screen.
  */
-async function scrollRest(page, from) {
-  const y = () => page.evaluate(() => Math.round(window.scrollY));
-  const start = Date.now();
-  while (Date.now() - start < 800 && (await y()) === from) await page.waitForTimeout(50);
-  let last = null;
+function walkState(title) {
+  const el = document.querySelector(title);
+  const y = Math.round(window.scrollY);
+  if (!el) return { y, box: null, onScreen: false };
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  let b = range.getBoundingClientRect();
+  if (!b.width || !b.height) b = el.getBoundingClientRect();
+  let opacity = 1;
+  for (let n = el; n instanceof Element; n = n.parentElement) opacity *= parseFloat(getComputedStyle(n).opacity);
+  const onScreen = b.width > 0 && b.left >= -1 && b.top >= -1 && b.right <= window.innerWidth + 1 && b.bottom <= window.innerHeight + 1;
+  return { y, box: [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)], opacity: Math.round(opacity * 100) / 100, onScreen };
+}
+
+/**
+ * Waits for the presenter to rest on a stop, on conditions and not on
+ * times, since a loaded machine can start a smooth scroll seconds late.
+ * With `from` (the position before a key), the scroll must first leave it.
+ * Then the scroll position, the title's box and its opacity must hold for
+ * three reads 100ms apart with the title on screen: the smooth scroll has
+ * ended and the scrubbed timelines (scrub 0.45 in the slides) have caught
+ * up. After PRESENT_WAIT_MS it stops waiting and the read reports what is
+ * there.
+ */
+async function settleOn(page, title, from = null) {
+  const deadline = Date.now() + PRESENT_WAIT_MS;
+  if (from !== null) {
+    while (Date.now() < deadline && (await page.evaluate(() => Math.round(window.scrollY))) === from) await page.waitForTimeout(50);
+  }
+  let last = '';
   let same = 0;
-  while (Date.now() - start < 5000 && same < 3) {
-    const now = await y();
+  while (Date.now() < deadline) {
+    const state = await page.evaluate(walkState, title);
+    const now = JSON.stringify(state);
     same = now === last ? same + 1 : 0;
     last = now;
+    if (same >= 2 && state.onScreen) return;
     await page.waitForTimeout(100);
   }
-  await page.waitForTimeout(SCRUB_MS);
 }
+
+/** The page has run two animation frames: a scroll set before it has been handled. */
+const twoFrames = (page) => page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
 
 /**
  * Reads one stop of the presenter, inside the page: whether the title's
@@ -424,12 +455,12 @@ async function presentWalk(page, cell) {
   let close = null;
   let grid = null;
   await page.keyboard.press('Home');
-  await scrollRest(page, -1);
+  await settleOn(page, P.stops[0].title);
   for (const [i, stop] of P.stops.entries()) {
     if (i > 0) {
       const from = await y();
       await page.keyboard.press('j');
-      await scrollRest(page, from);
+      await settleOn(page, stop.title, from);
     }
     stops[stop.slide] = stopVerdict(await page.evaluate(readStop, { title: stop.title, chrome: P.chrome }));
     if (stop.slide === P.close.slide) {
@@ -442,9 +473,9 @@ async function presentWalk(page, cell) {
       const to = Math.round(geo.top + P.close.at * geo.len);
       for (let k = 1; k <= 10; k++) {
         await page.evaluate((top) => window.scrollTo(0, top), Math.round(from + ((to - from) * k) / 10));
-        await page.waitForTimeout(120);
+        await twoFrames(page);
       }
-      await scrollRest(page, to);
+      await settleOn(page, P.close.title);
       const read = await page.evaluate(readStop, { title: P.close.title, chrome: P.chrome });
       const tiles = await page.locator(P.close.tiles).count();
       const verdict = stopVerdict(read);
@@ -452,7 +483,7 @@ async function presentWalk(page, cell) {
     }
     if (stop.slide === P.grid.slide) {
       await page.keyboard.press(P.grid.key);
-      await page.waitForTimeout(700);
+      await settleOn(page, P.grid.title);
       const read = await page.evaluate(readStop, { title: P.grid.title, chrome: [] });
       const fit = await page.evaluate(
         ({ cards, dock }) => {
@@ -464,7 +495,7 @@ async function presentWalk(page, cell) {
         { cards: P.grid.cards, dock: P.grid.dock }
       );
       await page.keyboard.press('Escape');
-      await page.waitForTimeout(400);
+      await page.waitForFunction((s) => !document.querySelector(s), P.grid.panel, { timeout: PRESENT_WAIT_MS }).catch(() => {});
       const verdict = stopVerdict(read);
       const fits = cell.w < P.grid.fitFrom || fit.clear === fit.cards;
       grid = { verdict, ...fit, pass: verdict === 'ok' && fit.cards === P.count && fits };

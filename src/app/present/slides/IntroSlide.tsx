@@ -64,12 +64,16 @@ export default function IntroSlide() {
           animation.currentTime = lead;
           animation.play();
         }
-        // Work that waits for the entrance runs once it has played.
+        // Work that waits for the entrance runs once it has played. The
+        // root then carries data-settled, the state the page check reads
+        // (scripts/check/pagecheck/pages.mjs): the deck set up and the
+        // title in place.
         const entrance = fade ? [fade, ...held] : held;
-        Promise.all(entrance.map((animation) => animation.finished)).then(
-          entrancePlayed,
-          entrancePlayed
-        );
+        const played = () => {
+          root.current?.closest('.pr-root')?.setAttribute('data-settled', '');
+          entrancePlayed();
+        };
+        Promise.all(entrance.map((animation) => animation.finished)).then(played, played);
       });
 
       const stop = () => {
