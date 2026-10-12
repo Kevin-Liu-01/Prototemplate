@@ -1917,3 +1917,25 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ------------------------------------------------------------------
+   Touch: the 44px floor. A phone, upright or on its side: the buttons
+   and the command take 44px; each copy glyph keeps its 26px drawing
+   while its transparent button grows to 44px, and a -9px margin gives
+   the row back the 26px it took, so nothing around it moves. The nav
+   keeps its 32px act.
+   ------------------------------------------------------------------ */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .stepped-fret-root :not(.sf-nav-acts) > .sf-btn,
+  .stepped-fret-root .sf-cmd {
+    height: 44px;
+  }
+
+  .stepped-fret-root .sf-cmd-copy,
+  .stepped-fret-root .sf-code-copy {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    margin: -9px;
+  }
+}
