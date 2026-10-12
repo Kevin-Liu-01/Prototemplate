@@ -471,6 +471,23 @@
   border-right: 1px solid var(--tc-hair);
 }
 
+/* The box steps 22px past the text column, but under about 710px wide the
+   cell's gutter (--tc-gut) is 20px, so the box ran 2px past both sides of
+   its cell and the clip cut its edges. On a phone the step is the gutter
+   itself, so the box fits its cell, and the vertical rules move out by the
+   same 2px, where the cell's clip still hides them as before. */
+@media (max-width: 900px) {
+  .toolchain-root .tcm-ruledbox {
+    margin-inline: calc(-1 * min(22px, var(--tc-gut)));
+    padding-inline: min(22px, var(--tc-gut));
+  }
+
+  .toolchain-root .tcm-ruledbox::after {
+    left: calc(min(22px, var(--tc-gut)) - 22px);
+    right: calc(min(22px, var(--tc-gut)) - 22px);
+  }
+}
+
 /* the config panel steps down from its head exactly like the bleed
    neighbour's art does (12px), so with eq-heads giving both cells the
    same head height, their first rules share one drafting line at every
