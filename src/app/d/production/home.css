@@ -46,17 +46,28 @@
 
   /* the nav items' marks sit 10px under the window bar, whose locale
      chips take the bar's 40px above them: their squares start 11.5px
-     above the corner, 1.5px lower than the 25px slab did. The heading's
-     square starts 9px above its corner, under the nav items' squares,
-     which end 28.5px under theirs, 38.5px above the heading's on a 430px
-     phone. The sub, the stats, the action and the chart sit in columns
-     of their own or 60px and more apart, so theirs stay centred. */
+     above the corner, 1.5px lower than the 25px slab did, and end 28.5px
+     under it. Below them the heading's, the sub's and the stats' corners
+     sit 39, 38.6 and 41.7px apart on a 412 or 430px phone, and the
+     heading's and the sub's squares cross every column of the rows above
+     and below them as their lines type, so each square drops below its
+     corner: the heading's starts 9px above it, the sub's and the stats'
+     6px above it, level with the badge's top. The four rows of squares
+     end 1.5, 1.6 and 1.7px apart there; on every other phone the heading
+     sits lower and only the first gap grows. The action's square starts
+     13.6px or more under the stats' and the chart's sits right of every
+     other column, so theirs stay centred. */
   .toolchain-root.prod-root .v0-tw .sgdh-app-navi .sgdh-ins-mark {
     --lift: -9px;
   }
 
   .toolchain-root.prod-root .v0-tw .tct-app-h .sgdh-ins-mark {
-    --lift: -11px;
+    --lift: -11.5px;
+  }
+
+  .toolchain-root.prod-root .v0-tw .tct-app-copy .sgdh-ins-mark,
+  .toolchain-root.prod-root .v0-tw .sgdh-app-stat .sgdh-ins-mark {
+    --lift: -14.5px;
   }
 
   /* the belt's chips sit 10px under its top edge (their 1px border
