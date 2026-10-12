@@ -91,7 +91,8 @@ after and its readings in `interactions/results.json`:
   control does (the file's head names each)
 - `present-walk`, on every dark device of the run: presses j through the
   presenter's slides, waits each time for the scroll to leave and come
-  to rest with the slide's title on screen and the title, its clipped
+  to rest with the slide's title on screen, its entrance finished (an
+  entrance held paused holds still too) and the title, its clipped
   box and the chrome's boxes held still (conditions, not fixed times: a
   loaded machine starts a smooth scroll late; at most 30s each), and
   checks each slide's title is on screen with nothing painted

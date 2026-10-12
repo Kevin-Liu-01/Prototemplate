@@ -341,7 +341,16 @@ function walkState({ title, chrome }) {
     }
   }
   const onScreen = b.width > 0 && b.left >= -1 && b.top >= -1 && b.right <= window.innerWidth + 1 && b.bottom <= window.innerHeight + 1;
-  return { y, frames, box: r(b), cut: r({ ...cut, width: cut.right - cut.left, height: cut.bottom - cut.top }), opacity: Math.round(opacity * 100) / 100, onScreen };
+  // An entrance held paused holds still too (IntroSlide.tsx pauses the
+  // title's until the deck is set up): a finite animation on the title, an
+  // ancestor or a descendant that has not finished means it has not entered.
+  const entering = document.getAnimations().some((a) => {
+    const t = a.effect?.target;
+    if (!(t instanceof Element) || a.playState === 'finished' || a.playState === 'idle') return false;
+    if (t !== el && !t.contains(el) && !el.contains(t)) return false;
+    return Number.isFinite(a.effect.getComputedTiming().endTime);
+  });
+  return { y, frames, box: r(b), cut: r({ ...cut, width: cut.right - cut.left, height: cut.bottom - cut.top }), opacity: Math.round(opacity * 100) / 100, onScreen, entering };
 }
 
 /** How many reads, each 100ms and two animation frames after the last, must agree before the walk reads a stop. */
@@ -352,7 +361,8 @@ const STILL_READS = 4;
  * times, since a loaded machine can start a smooth scroll seconds late.
  * With `from` (the position before a key), the scroll must first leave it.
  * Then everything walkState reads must hold for STILL_READS reads with
- * the title on screen: the smooth scroll has ended, the scrubbed timelines
+ * the title on screen and its entrance finished, not held paused: the
+ * smooth scroll has ended, the scrubbed timelines
  * (scrub 0.45 in the slides) have caught up and the chrome has stopped
  * moving. Each read waits 100ms and two animation frames, since a loaded
  * renderer can go seconds between frames and a tween moves only on one.
@@ -371,7 +381,7 @@ async function settleOn(page, title, from = null) {
     const now = JSON.stringify(state);
     same = now === last ? same + 1 : 0;
     last = now;
-    if (same >= STILL_READS - 1 && state.onScreen) return;
+    if (same >= STILL_READS - 1 && state.onScreen && !state.entering) return;
     await page.waitForTimeout(100);
     await twoFrames(page);
   }
