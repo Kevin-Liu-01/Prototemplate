@@ -33,7 +33,7 @@ export default function CopyPromptButton({ prompt }: CopyPromptButtonProps) {
 
   return (
     <>
-      <button className='tc-btn tc-btn-line tc-hero-copy' onClick={() => void copy(prompt)} type='button'>
+      <button className='tc-btn tc-btn-line tc-hero-copy' type='button' onClick={() => void copy(prompt)}>
         Setup for Agents
         {mark}
       </button>
