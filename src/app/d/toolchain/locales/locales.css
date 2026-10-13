@@ -524,3 +524,18 @@
     display: none;
   }
 }
+
+/* on a phone, upright or on its side, the ledger's filter stands 44px
+   tall instead of 36, the tap floor. Each line is 41px: its 1px rule,
+   8px of padding, the 24px row and 8px more. The first line has no rule
+   of its own (the header's is its top), so it stood 40px and answered
+   39 under the header's edge; a 9px top pad gives it the others' 41. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .lcl-filter-in {
+    height: 44px;
+  }
+
+  .toolchain-root .lcl-body > a.lcl-line:first-of-type {
+    padding-top: 9px;
+  }
+}

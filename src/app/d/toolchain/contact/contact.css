@@ -458,3 +458,24 @@
     bottom: 96px;
   }
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, the one-line fields stand 44px
+   tall instead of 39 (14px x 1.5 line, 8px padding and the 1px border
+   each side), and the two terms links, which sit in a sentence and
+   cannot widen into their neighbours, become inline flex boxes 44px
+   tall with 1px of margin above and below: the line that holds a link
+   opens to 46px, and links on consecutive lines keep 2px between their
+   boxes. The desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .tcc-field input {
+    min-height: 44px;
+  }
+
+  .toolchain-root .tcc-terms a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: 1px;
+  }
+}

@@ -4874,3 +4874,31 @@
     width: 44px;
   }
 }
+
+/* ---------- touch phones: the field effects menu ----------
+   The subpages' prismatic plates dock the effects menu
+   (src/components/shared/field-effects-menu.css) in their bottom-right
+   corner: chips 22px tall, 5px apart, the narrowest (off) 39.4px wide.
+   On a phone, upright or on its side, each chip keeps its drawing and
+   takes the tap on a transparent ::after, a 44px band through its
+   middle that reaches 2.5px into the gap on each side, so neighbouring
+   bands meet without overlapping and off answers 44.4px wide. The menu
+   sits 12px above the plate's bottom edge, so the band's lower 11px
+   stays on the plate. The desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .fxm-chip {
+    position: relative;
+  }
+
+  .toolchain-root .fxm-chip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    /* the ::after is placed from the chip's padding box: 1px of border
+       plus 2.5px of the gap */
+    left: -3.5px;
+    right: -3.5px;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}

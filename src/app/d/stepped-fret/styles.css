@@ -1921,9 +1921,10 @@
 /* ------------------------------------------------------------------
    Touch: the 44px floor. A phone, upright or on its side: the buttons,
    the nav's act among them, and the command take 44px; each copy glyph
-   keeps its 26px drawing while its transparent button grows to 44px,
-   and a -9px margin gives the row back the 26px it took, so nothing
-   around it moves. The brand, the nav's links and the footer's links
+   keeps its 26px drawing while its transparent button grows from 26px
+   to 44px, and a -9px margin on each side takes back the 18px it grew,
+   so the button still takes 26px of its row and nothing around it
+   moves. The brand, the nav's links and the footer's links
    fill 44px rows, the theme square keeps its 32px drawing inside a
    transparent 44px ring, and the pricing link keeps its underline on
    the words while a transparent band 11px deep above and below takes

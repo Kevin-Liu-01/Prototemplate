@@ -305,3 +305,19 @@
     width: 100%;
   }
 }
+
+/* touch phones: the two terms links sit in a sentence, so they cannot
+   widen into their neighbours. On a phone, upright or on its side, each
+   becomes an inline flex box 44px tall, the way the sign-in plate's
+   legal links do (max-md:inline-flex max-md:min-h-11), with 1px of
+   margin above and below: the line that holds a link opens to 46px, and
+   links on consecutive lines keep 2px between their boxes. The desktop
+   is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .prod-contact .contact-terms a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: 1px;
+  }
+}

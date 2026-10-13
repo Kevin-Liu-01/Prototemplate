@@ -435,3 +435,31 @@
     display: none;
   }
 }
+
+/* ---- touch phones: hit areas ----
+   On a phone, upright or on its side, the essays board's pills, search
+   box and RSS button stand 42px tall instead of 30, the search input
+   fills its box (40px inside the 1px border), and the changelog's arrows
+   grow from 30 to 40px circles. The rules sit outside any layer, so they
+   outrank the markup's h-[30px] and size-[30px] utilities. The desktop
+   is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .blog-root .blog-pill,
+  .blog-root .blog-search {
+    height: 42px;
+  }
+
+  .blog-root .blog-search input {
+    align-self: stretch;
+  }
+
+  .blog-root .blog-rss {
+    width: 42px;
+    height: 42px;
+  }
+
+  .blog-root .blog-updates-arrows button {
+    width: 40px;
+    height: 40px;
+  }
+}

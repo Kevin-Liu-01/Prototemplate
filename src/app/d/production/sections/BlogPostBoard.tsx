@@ -30,7 +30,7 @@ const CARD =
   'group flex min-w-0 flex-col overflow-hidden rounded-md no-underline transition-colors bg-[color-mix(in_srgb,var(--tc-ink)_3.5%,transparent)] hover:bg-[color-mix(in_srgb,var(--tc-ink)_6%,transparent)]';
 
 const PILL =
-  'h-[30px] cursor-pointer rounded-full border border-(--tc-hair) bg-transparent px-[15px] text-[12.5px] font-medium text-(--tc-ink-2) transition-colors hover:text-(--tc-ink) aria-pressed:border-(--tc-ink) aria-pressed:bg-(--tc-ink) aria-pressed:text-(--tc-paper)';
+  'blog-pill h-[30px] cursor-pointer rounded-full border border-(--tc-hair) bg-transparent px-[15px] text-[12.5px] font-medium text-(--tc-ink-2) transition-colors hover:text-(--tc-ink) aria-pressed:border-(--tc-ink) aria-pressed:bg-(--tc-ink) aria-pressed:text-(--tc-paper)';
 
 /* The feed is a real route on the shipped site, so it keeps its absolute
    destination the way the docs and dashboard links do. */
@@ -157,7 +157,7 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
           ))}
         </div>
         <div className='flex items-center gap-2'>
-          <label className='flex h-[30px] items-center gap-[7px] rounded-full border border-(--tc-hair) px-3 text-(--tc-ink-3) transition-colors focus-within:border-(--tc-ink-3)'>
+          <label className='blog-search flex h-[30px] items-center gap-[7px] rounded-full border border-(--tc-hair) px-3 text-(--tc-ink-3) transition-colors focus-within:border-(--tc-ink-3)'>
             <Search size={13} aria-hidden='true' />
             <input
               type='search'
@@ -171,7 +171,7 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
           <a
             href={RSS_HREF}
             aria-label='RSS feed'
-            className='grid size-[30px] place-items-center rounded-full border border-(--tc-hair) text-(--tc-ink-2) transition-colors hover:text-(--tc-ink)'
+            className='blog-rss grid size-[30px] place-items-center rounded-full border border-(--tc-hair) text-(--tc-ink-2) transition-colors hover:text-(--tc-ink)'
           >
             <Rss size={14} aria-hidden='true' />
           </a>

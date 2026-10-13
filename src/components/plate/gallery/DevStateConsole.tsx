@@ -241,10 +241,12 @@ function groupStates(states: DevState[]): Group[] {
  * rows across the bottom with 44px controls and a close button in place
  * of the grip; the lower right is left to the foot's theme flip, which
  * sits there whenever the foot is in view, and the upper right to the
- * direction corner. While the rows are open they cover the bottom of the
- * viewport, so the console adds the same height of ground after the page,
- * and the foot's controls scroll clear above the rows. The
- * dashboard's account switch is not here: the port has no seeded account
+ * direction corner. From md up to 900px wide, and on a phone on its
+ * side, the console stays unfolded in the upper right and its arrows and
+ * list take the same 44px height. While the rows are open they cover the
+ * bottom of the viewport, so the console adds the same height of ground
+ * after the page, and the foot's controls scroll clear above the rows.
+ * The dashboard's account switch is not here: the port has no seeded account
  * and no dashboard states for it to gate. Hidden under ?chrome=0, as the
  * direction corner is, so the captures and the page check see the page
  * alone.
@@ -560,7 +562,7 @@ function Console({ states, currentId }: DevStateConsoleProps) {
           <Button
             variant='outline'
             size='icon'
-            className='size-8 shrink-0 max-md:size-11'
+            className='size-8 shrink-0 max-md:size-11 phone:size-11'
             aria-label='Previous'
             onClick={() => walk(-1)}
           >
@@ -588,7 +590,7 @@ function Console({ states, currentId }: DevStateConsoleProps) {
               ref={triggerRef}
               aria-label='State'
               title={current.title}
-              className='h-8 min-w-0 flex-1 gap-1.5 px-2.5 py-0 text-xs max-md:h-11 max-md:px-3 max-md:text-sm'
+              className='h-8 min-w-0 flex-1 gap-1.5 px-2.5 py-0 text-xs max-md:h-11 max-md:px-3 max-md:text-sm phone:h-11'
               data-testid='dev-state-select'
             >
               <SelectValue>{current.title}</SelectValue>
@@ -664,7 +666,7 @@ function Console({ states, currentId }: DevStateConsoleProps) {
           <Button
             variant='outline'
             size='icon'
-            className='size-8 shrink-0 max-md:size-11'
+            className='size-8 shrink-0 max-md:size-11 phone:size-11'
             aria-label='Next'
             onClick={() => walk(1)}
           >

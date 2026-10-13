@@ -370,6 +370,10 @@ export default function SignInForm({
 
       {captchaWidget}
 
+      {/* On a phone each legal link is an inline flex box 44px tall, the
+          tap target, with 1px of margin above and below: where the two
+          wrap onto consecutive lines their boxes stay apart instead of
+          sharing a pixel row. */}
       <T>
         <p className='text-muted-foreground text-center text-xs'>
           By signing in, you agree to our{' '}
@@ -377,7 +381,7 @@ export default function SignInForm({
             href={`${homepageUrl}/legal/terms`}
             target='_blank'
             rel='noopener noreferrer'
-            className='underline underline-offset-4 max-md:inline-flex max-md:min-h-11 max-md:items-center'
+            className='underline underline-offset-4 max-md:my-px max-md:inline-flex max-md:min-h-11 max-md:items-center phone:my-px phone:inline-flex phone:min-h-11 phone:items-center'
           >
             Terms of Service
           </a>{' '}
@@ -386,7 +390,7 @@ export default function SignInForm({
             href={`${homepageUrl}/legal/privacy-policy`}
             target='_blank'
             rel='noopener noreferrer'
-            className='underline underline-offset-4 max-md:inline-flex max-md:min-h-11 max-md:items-center'
+            className='underline underline-offset-4 max-md:my-px max-md:inline-flex max-md:min-h-11 max-md:items-center phone:my-px phone:inline-flex phone:min-h-11 phone:items-center'
           >
             Privacy Policy
           </a>

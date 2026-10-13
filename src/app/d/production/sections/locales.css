@@ -212,6 +212,15 @@
   }
 }
 
+/* on a phone, upright or on its side, the search input stretches to
+   the 50px box's height (48px inside its 1px border), so its tap area
+   is the box's height, not its 22px line */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .locales-root .locales-search input {
+    align-self: stretch;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .locales-root .locales-card {
     transition: none;

@@ -29,6 +29,21 @@
 
 @custom-variant dark (&:where(:root[data-theme='dark'], :root[data-theme='dark'] *));
 
+/* A phone, upright or on its side: the shell's phone queries (up to
+   900px wide, or a coarse pointer under 500px tall). The ported controls
+   take their 44px tap sizes under md (max-md:); between md and 900px, and
+   on a phone on its side, the frame lays out from md up, so the controls
+   that need the floor there repeat the size under phone: as well. */
+@custom-variant phone {
+  @media (max-width: 900px) {
+    @slot;
+  }
+
+  @media (pointer: coarse) and (max-height: 500px) {
+    @slot;
+  }
+}
+
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));

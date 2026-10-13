@@ -807,3 +807,24 @@
     grid-template-columns: minmax(0, 108px) minmax(0, 1fr);
   }
 }
+
+/* ---------- touch phones: the toast's button ----------
+   The rendered toast's 30px button keeps its drawing; on a phone,
+   upright or on its side, it takes the tap on a transparent 44px band
+   through its middle. The band reaches 7px above and below the button,
+   inside the toast's 13px padding. The desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .ctx-toast-btn {
+    position: relative;
+  }
+
+  .toolchain-root .ctx-toast-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}

@@ -62,12 +62,12 @@ export default function PlateFrame({
           <div
             className={`${columnClassName} flex flex-col gap-10 py-8 sm:py-12 md:gap-(--plate-mark-gap) md:pt-(--plate-column-pt) md:pb-(--plate-column-pb)`}
           >
-            {/* Under md the padding and the negative margin that cancels it
-                give the 25 by 16 mark a 53 by 44 tap target with the mark
-                where it was. */}
+            {/* On a phone, up to 900px wide or on its side, the padding
+                and the negative margin that cancels it give the 25 by 16
+                mark a 53 by 44 tap target with the mark where it was. */}
             <a
               href={HOMEPAGE_URL}
-              className='text-foreground hover:text-foreground/70 w-fit transition-colors duration-150 max-md:-m-3.5 max-md:p-3.5'
+              className='text-foreground hover:text-foreground/70 w-fit transition-colors duration-150 max-md:-m-3.5 max-md:p-3.5 phone:-m-3.5 phone:p-3.5'
               aria-label={homeLabel}
             >
               <GtMark className='h-4 w-[25px]' />

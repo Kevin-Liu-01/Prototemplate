@@ -549,3 +549,26 @@
     font-size: 11.5px;
   }
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, the usage link and the quote's
+   x.com/theo keep their underlines on the words and take the tap on a
+   transparent 44px band through their middle, as wide as the link.
+   Nothing else in their rows is a control. The desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .tcp-usage-link,
+  .toolchain-root .tcp-quote figcaption a {
+    position: relative;
+  }
+
+  .toolchain-root .tcp-usage-link::after,
+  .toolchain-root .tcp-quote figcaption a::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}

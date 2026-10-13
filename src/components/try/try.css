@@ -664,6 +664,17 @@
   outline-offset: 2px;
 }
 
+/* on a phone, upright or on its side, each chip grows from 34 to 40px
+   square around the same 24px mark; a flank spaces its three chips'
+   centres 51px apart or more, and the connector overlay measures the
+   chips, so the lines follow */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .try-fig-chip {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 /* the chip's fill plate: a bottom-anchored ground that rises to fill the
    chip with the working accent during the run choreography */
 .try-fig-chip-fill {

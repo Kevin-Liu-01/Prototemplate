@@ -973,6 +973,44 @@
   }
 }
 
+/* ---- touch phones: hit areas ----
+   On a phone, upright or on its side, the hero's Usage Rates link, the
+   plan card's usage link and the compare board's View Rates keep their
+   drawing and take the tap on a transparent 44px band through their
+   middle, as wide as the link. The 14px help glyph takes a 42 by 40px
+   band whose left edge sits 8px left of the glyph and whose right edge
+   sits 20px right of it: in the plan card the usage link ends 10px left
+   of the glyph, so the band stays 2px clear of it. The desktop is
+   untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .pricing-root .pricing-hero-link,
+  .pricing-root .pricing-plan-usage-link,
+  .pricing-root .pc-rates,
+  .pricing-root .pricing-help > button {
+    position: relative;
+  }
+
+  .pricing-root .pricing-hero-link::after,
+  .pricing-root .pricing-plan-usage-link::after,
+  .pricing-root .pc-rates::after,
+  .pricing-root .pricing-help > button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+
+  .pricing-root .pricing-help > button::after {
+    left: -8px;
+    right: auto;
+    width: 42px;
+    height: 40px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pricing-root .pricing-hero-link svg {
     transition: none;

@@ -25,11 +25,12 @@ type PlateFootProps = {
  * 880px tall; the foot sits outside main's scroll area, so it is in view
  * at every height.
  *
- * Under md the three controls are 44px tall, the phone's tap target: the
- * language and sign out through their wrappers, since the shared selector
- * takes no class and the sign out keeps its 13px text; the theme flip
- * grows to 44 square and its right margin takes the 6px the growth adds,
- * so the glyph stays on the column's right edge.
+ * On a phone, up to 900px wide or on its side, the three controls are
+ * 44px tall, the phone's tap target: the language and sign out through
+ * their wrappers, since the shared selector takes no class and the sign
+ * out keeps its 13px text; the theme flip grows to 44 square and its
+ * right margin takes the 6px the growth adds, so the glyph stays on the
+ * column's right edge.
  */
 export default function PlateFoot({ accountEmail, className }: PlateFootProps) {
   return (
@@ -46,13 +47,13 @@ export default function PlateFoot({ accountEmail, className }: PlateFootProps) {
         className={cn(className, 'flex flex-wrap items-center gap-x-4 gap-y-2')}
       >
         <div
-          className='flex items-center max-md:[&>button]:min-h-11'
+          className='flex items-center max-md:[&>button]:min-h-11 phone:[&>button]:min-h-11'
           data-testid='plate-foot-language'
         >
           <LanguageSelector dropdownPosition='above' />
         </div>
         <div
-          className='order-3 flex basis-full items-center sm:order-2 sm:ml-auto sm:basis-auto max-md:[&_button]:min-h-11'
+          className='order-3 flex basis-full items-center sm:order-2 sm:ml-auto sm:basis-auto max-md:[&_button]:min-h-11 phone:[&_button]:min-h-11'
           data-testid='plate-foot-account'
         >
           {accountEmail ? (
@@ -67,7 +68,7 @@ export default function PlateFoot({ accountEmail, className }: PlateFootProps) {
           )}
         </div>
         <div className='order-2 ml-auto flex items-center sm:order-3 sm:ml-0'>
-          <PlateThemeToggle className='max-md:-mr-1.5 max-md:size-11' />
+          <PlateThemeToggle className='max-md:-mr-1.5 max-md:size-11 phone:-mr-1.5 phone:size-11' />
         </div>
       </div>
     </footer>

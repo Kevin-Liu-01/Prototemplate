@@ -1265,3 +1265,31 @@
     white-space: nowrap;
   }
 }
+
+/* ---------- touch phones ----------
+   On a phone, upright or on its side, the context group's bar wraps:
+   on a 320px phone brand-core, its kind and the priority note ran 33px
+   past the screen's edge and scrolled the page sideways, so the note
+   drops to a second line, still pushed right. The ledger head's trust.inc link
+   keeps its underline on the words and takes the tap on a transparent
+   44px band through its middle; the rows under it hold no control. The
+   desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .tce-group-bar {
+    flex-wrap: wrap;
+  }
+
+  .toolchain-root .tce-ledger-head a {
+    position: relative;
+  }
+
+  .toolchain-root .tce-ledger-head a::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}

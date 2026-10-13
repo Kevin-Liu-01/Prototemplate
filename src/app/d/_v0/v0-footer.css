@@ -425,3 +425,30 @@
     min-height: 44px;
   }
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, every footer control answers a
+   tap at least 44px on its smaller side. The rows drop their gap and
+   each link fills a 44px row (below 640px the 11px padding-block already
+   makes it 44.5px); a short label (Blog, X) widens to 44px; the status
+   link and the theme switch take 44px. The desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root .v0-foot-col ul {
+    gap: 0;
+  }
+
+  .toolchain-root .v0-foot-col a,
+  .toolchain-root .v0-foot-col button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .toolchain-root .v0-foot-status {
+    min-height: 44px;
+  }
+
+  .toolchain-root .v0-foot-theme {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

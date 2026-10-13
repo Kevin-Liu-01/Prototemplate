@@ -1300,3 +1300,17 @@
     padding-bottom: 16px;
   }
 }
+
+/* ---------- touch phones: the closing band's buttons ----------
+   The 720px blocks above lift the closing band's buttons to the 44px
+   tap floor on an upright phone; between 720 and 900px wide, and on a
+   phone on its side, they kept the 38px h-9.5 utility. They take the
+   44px floor here too, at their own type size. The desktop is
+   untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+    .v0-dep
+    .v0-dep-btn {
+    height: 44px;
+  }
+}

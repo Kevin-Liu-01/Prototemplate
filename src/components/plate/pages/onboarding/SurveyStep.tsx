@@ -494,13 +494,14 @@ export default function SurveyStep({
           // right aligned in a row of its own, and goes once the last row
           // is open, so nothing else moves. type='button' keeps it off the
           // form's default submit, so Enter in the website field still
-          // reaches handleSubmit as the form's implicit submission. Under
-          // md it is 44px tall, the phone's tap target.
+          // reaches handleSubmit as the form's implicit submission. On a
+          // phone, up to 900px wide or on its side, it is 44px tall, the
+          // phone's tap target.
           <div className='flex justify-end'>
             <Button
               type='button'
               variant='link'
-              className='h-auto px-0 font-normal text-(--ink-2) max-md:min-h-11'
+              className='h-auto px-0 font-normal text-(--ink-2) max-md:min-h-11 phone:min-h-11'
               onClick={skipTheRest}
             >
               <T>Skip the rest</T>

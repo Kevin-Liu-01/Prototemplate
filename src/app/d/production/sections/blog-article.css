@@ -849,6 +849,46 @@
   }
 }
 
+/* ---- touch phones: hit areas ----
+   On a phone, upright or on its side, the back link (19.5px tall) and
+   the crumb's Blog link (20.3px tall, 28.5px wide) keep their drawing
+   and take the tap on a transparent ::after: a 40px band through the
+   middle, the crumb's 44px wide. Stacked, the two centres sit 41.9px
+   apart (the lead's 22px gap), so the bands leave 1.9px between them;
+   above a devlog's tags the crumb's band starts 12px under the tags.
+   The share bar's three squares grow from 32 to 40px inside its 48px
+   bar. The desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .prod-root .pba-back,
+  .prod-root .pba-crumb a {
+    position: relative;
+  }
+
+  .prod-root .pba-back::after,
+  .prod-root .pba-crumb a::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 40px;
+    transform: translateY(-50%);
+  }
+
+  .prod-root .pba-crumb a::after {
+    left: 50%;
+    right: auto;
+    width: 44px;
+    transform: translate(-50%, -50%);
+  }
+
+  .prod-root .pba-share-actions > a,
+  .prod-root .pba-share-copy {
+    width: 40px;
+    height: 40px;
+  }
+}
+
 /* ---- dark ---- */
 
 [data-theme='dark'] .prod-root .pba-article {
