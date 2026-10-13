@@ -3,7 +3,8 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { BookOpen, Code2, Languages, Layers } from 'lucide-react';
+import { BookOpenIcon, CodeBracketIcon, LanguageIcon } from '@heroicons/react/16/solid';
+import { Square3Stack3DIcon } from '@heroicons/react/24/solid';
 import { useRef } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 
@@ -25,8 +26,8 @@ import './fullstack.css';
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 type BeatIconProps = {
-  size?: number;
-  strokeWidth?: number;
+  width?: number;
+  height?: number;
   className?: string;
   'aria-hidden'?: boolean;
 };
@@ -35,19 +36,20 @@ type BeatIconProps = {
  * The agents tag's icon: the Locadex mark itself, never a stock bot glyph
  * (founder) — the brand asset as an alpha mask over currentColor, the head
  * watermark's treatment (locadex.css) at tag scale, so it takes the tag's
- * accent exactly like the lucide icons do. Same lucide contract — size in,
- * square box out — and fullstack.css scales the mask so the GLYPH spans
+ * accent exactly like the Heroicons glyphs do. Same contract as the
+ * Heroicons glyphs (width and height in, square box out), and fullstack.css scales the mask so the GLYPH spans
  * the box, not the asset's padded canvas.
  */
 function LocadexMark({
-  size = 16,
+  width = 16,
+  height = 16,
   className,
   'aria-hidden': ariaHidden,
 }: BeatIconProps) {
   return (
     <span
       className={className ? `v0-stack-ldx ${className}` : 'v0-stack-ldx'}
-      style={{ width: size, height: size }}
+      style={{ width, height }}
       aria-hidden={ariaHidden}
     />
   );
@@ -83,7 +85,7 @@ const BEATS: readonly StackBeat[] = [
       'Tag user interfaces and they’re ready to ship in 120+ locales',
       'Open-source internationalization (i18n) libraries and SDKs for every major framework',
     ],
-    icon: Code2,
+    icon: CodeBracketIcon,
     slabIds: ['code'],
   },
   {
@@ -94,9 +96,9 @@ const BEATS: readonly StackBeat[] = [
       'Edit, version, and approve translations with unlimited users',
       'Share context, custom prompts, and glossaries across every product surface',
     ],
-    /* BookOpen, not Layers: Layers is the FULL STACK's icon; context
-       wears the knowledge glyph everywhere */
-    icon: BookOpen,
+    /* BookOpenIcon, not Square3Stack3DIcon: the stack glyph is the FULL
+       STACK's icon; context wears the knowledge glyph everywhere */
+    icon: BookOpenIcon,
     slabIds: ['context'],
   },
   {
@@ -107,7 +109,7 @@ const BEATS: readonly StackBeat[] = [
       'Localize copy and user-generated content in native-level quality',
       'Translate your entire app with APIs for text, files, and components',
     ],
-    icon: Languages,
+    icon: LanguageIcon,
     slabIds: ['translations'],
   },
   {
@@ -1287,11 +1289,11 @@ export default function V0FullStack() {
     >
       <div className='tcb-in'>
         {/* the head wears the section-head grammar so the FULL-STACK
-            watermark (the Layers glyph — founder: "use the full stack
+            watermark (the Square3Stack3DIcon glyph — founder: "use the full stack
             icon here") seats whole at the house 240 gauge, like the
             developer and context heads */}
         <div className='tc-head'>
-          <Layers className='tc-head-icon' strokeWidth={1} aria-hidden />
+          <Square3Stack3DIcon className='tc-head-icon' aria-hidden />
           <h2 id='v0-stack-title' data-reveal>
             The full stack for localization
           </h2>
@@ -1351,12 +1353,7 @@ export default function V0FullStack() {
                     key={beat.id}
                   >
                     <div className='v0-stack-tag'>
-                      <Icon
-                        className='v0-stack-ic'
-                        size={16}
-                        strokeWidth={1.6}
-                        aria-hidden
-                      />
+                      <Icon className='v0-stack-ic' height={16} width={16} aria-hidden />
                       <span className='v0-stack-name'>{beat.name}</span>
                     </div>
                     <h3>{beat.lead}</h3>

@@ -3,8 +3,10 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Braces, Download, History, Search, Table2, TerminalSquare } from 'lucide-react';
+import { CodeBracketSquareIcon, CommandLineIcon, TableCellsIcon } from '@heroicons/react/16/solid';
+import { Download, History, Search } from 'lucide-react';
 import { Fragment, useLayoutEffect, useRef, useState } from 'react';
+import type { ComponentType, SVGProps } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
@@ -82,10 +84,15 @@ type Surface = 'web' | 'api' | 'cli';
     line is the real product: the dashboard host, the OpenAPI endpoint
     local edits sync through (POST /v2/project/files/diffs), and the CLI
     verb that submits them (gt save-local) — never invented syntax. */
-const DOORS: readonly { key: Surface; name: string; line: string; icon: typeof Table2 }[] = [
-  { key: 'web', name: 'Workspace', line: 'dash.generaltranslation.com', icon: Table2 },
-  { key: 'api', name: 'API', line: 'POST /v2/project/files/diffs', icon: Braces },
-  { key: 'cli', name: 'CLI', line: 'npx gt save-local', icon: TerminalSquare },
+const DOORS: readonly {
+  key: Surface;
+  name: string;
+  line: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+}[] = [
+  { key: 'web', name: 'Workspace', line: 'dash.generaltranslation.com', icon: TableCellsIcon },
+  { key: 'api', name: 'API', line: 'POST /v2/project/files/diffs', icon: CodeBracketSquareIcon },
+  { key: 'cli', name: 'CLI', line: 'npx gt save-local', icon: CommandLineIcon },
 ];
 
 /* The rail net's drawing frame: each door drops NET_H deep to the bus,
@@ -388,7 +395,7 @@ export default function ReviewWorkspace({
                 /* the bar speaks the surface's real address (founder: the
                    rail captions moved into the window chrome) */
                 <span className='tcr-fact'>
-                  <Table2 className='tcr-fico' aria-hidden />
+                  <TableCellsIcon className='tcr-fico' aria-hidden />
                   dash.generaltranslation.com
                 </span>
               ) : (
@@ -417,8 +424,8 @@ export default function ReviewWorkspace({
                 </>
               ) : (
                 <>
-                  <div className='tcr-lab'>source — en</div>
-                  <div className='tcr-lab is-t'>translation — es</div>
+                  <div className='tcr-lab'>source · en</div>
+                  <div className='tcr-lab is-t'>translation · es</div>
                 </>
               )}
               {ROWS.map((row) => (
@@ -499,7 +506,7 @@ export default function ReviewWorkspace({
         {/* the bar names the surface, the body speaks the call — a header
             repeating the first request line read as a stutter (founder) */}
         <span className='tcr-fact'>
-          <Braces className='tcr-fico' aria-hidden />
+          <CodeBracketSquareIcon className='tcr-fico' aria-hidden />
           API · api2.gtx.dev
         </span>
         <span>200 OK</span>
@@ -540,8 +547,8 @@ export default function ReviewWorkspace({
     <>
       <div className='tcr-bar'>
         <span className='tcr-fact'>
-          <TerminalSquare className='tcr-fico' aria-hidden />
-          CLI — zsh
+          <CommandLineIcon className='tcr-fico' aria-hidden />
+          CLI · zsh
         </span>
         <span>branch main</span>
       </div>
@@ -550,8 +557,8 @@ export default function ReviewWorkspace({
           <b className='is-acc'>$</b> npx gt save-local
         </div>
         <div aria-hidden='true' className='tcr-ln is-gap' />
-        <div className='tcr-ln is-dim'>Reading gt.config.json — 3 files · branch main</div>
-        <div className='tcr-ln is-dim'>Changed since last download — ui.es-419.json</div>
+        <div className='tcr-ln is-dim'>Reading gt.config.json: 3 files · branch main</div>
+        <div className='tcr-ln is-dim'>Changed since last download: ui.es-419.json</div>
         <div aria-hidden='true' className='tcr-ln is-gap' />
         <div className='tcr-ln is-dim'>@@ meta.description · es-419 @@</div>
         <div className='tcr-ln is-del' lang='es'>
@@ -564,7 +571,7 @@ export default function ReviewWorkspace({
         </div>
         <div aria-hidden='true' className='tcr-ln is-gap' />
         <div className='tcr-ln'>
-          <span className='is-ok'>✓</span> Processed 1 translation(s) — synced to the workspace
+          <span className='is-ok'>✓</span> Processed 1 translation(s), synced to the workspace
         </div>
       </div>
       <div className='tcr-foot'>

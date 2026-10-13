@@ -74,6 +74,12 @@
       "mode": "fork",
       "from": "the review sheet tool (sheet.py) of the New Onboarding and Dashboard session's onboarding PRs (2026-10-10)",
       "reason": "the bundled copy uses Pillow's built-in font unless --font names one and writes no fixed path; the session's copy is not re-synced"
+    },
+    {
+      "path": "src/app/d/production/sections/EdgeGlobe.tsx",
+      "mode": "fork",
+      "from": "src/app/d/toolchain/diagrams/EdgeGlobe.tsx; gt-cloud:apps/landing/src/components/landing/sections/global/EdgeGlobe.tsx",
+      "reason": "the mirror's globe draws Heroicons solid marks as the live home does (gt-cloud #5007, 2026-10-13); the toolchain copy keeps its Lucide glyphs for the directions"
     }
   ]
 }

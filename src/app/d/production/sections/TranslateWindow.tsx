@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
 
-import { Eye, TerminalSquare } from 'lucide-react';
+import { CommandLineIcon, EyeIcon } from '@heroicons/react/16/solid';
 import {
   useRef,
   useState,
@@ -1885,7 +1885,7 @@ export default function TranslateWindow({
             aria-label='Preview'
             onClick={() => pickView('preview')}
           >
-            <Eye aria-hidden size={13} strokeWidth={1.8} />
+            <EyeIcon aria-hidden height={13} width={13} />
             <span className='v0-tw-seg-t'>Preview</span>
           </button>
           <button
@@ -1894,7 +1894,7 @@ export default function TranslateWindow({
             aria-label='Terminal'
             onClick={() => pickView('term')}
           >
-            <TerminalSquare aria-hidden size={13} strokeWidth={1.8} />
+            <CommandLineIcon aria-hidden height={13} width={13} />
             <span className='v0-tw-seg-t'>Terminal</span>
           </button>
         </div>

@@ -1,10 +1,11 @@
 'use client';
 
-import { ArrowUpRight, Globe } from 'lucide-react';
+import { GlobeAltIcon } from '@heroicons/react/24/solid';
+import { ArrowUpRight } from 'lucide-react';
 import { Fragment, useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
-import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
+import EdgeGlobe from './EdgeGlobe';
 import { BentoCell } from '@/components/shell/Bento';
 
 import '@/app/d/toolchain/sections/pricing-v2.css';
@@ -257,7 +258,7 @@ export default function V0Global() {
   return (
     <section className='tc-sec v0-glob' id='infrastructure' ref={root}>
       <div className='tc-head'>
-        <Globe className='tc-head-icon' strokeWidth={1} aria-hidden />
+        <GlobeAltIcon className='tc-head-icon' aria-hidden />
         <h2 data-reveal>Reach users in every market</h2>
         <p data-reveal>
           Grow your product around the world and reach your next billion users

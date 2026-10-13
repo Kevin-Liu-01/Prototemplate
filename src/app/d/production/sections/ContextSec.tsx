@@ -3,9 +3,16 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Ban, BookOpen, CalendarDays, PenLine, Pin, Speech, Users } from 'lucide-react';
+import { BookmarkIcon, NoSymbolIcon } from '@heroicons/react/16/solid';
+import {
+  BookOpenIcon,
+  CalendarDaysIcon,
+  ChatBubbleOvalLeftIcon,
+  PencilIcon,
+  UsersIcon,
+} from '@heroicons/react/24/solid';
 import { useRef } from 'react';
-import type { LucideIcon } from 'lucide-react';
+import type { ComponentType, SVGProps } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
@@ -321,7 +328,7 @@ const DE_DATE = new Intl.DateTimeFormat('de-DE', {
 
 type Directive = {
   label: string;
-  icon: LucideIcon;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   text: string;
   /** every directive shows its evidence — a real before→after pair */
   pair?: { before: string; after: string };
@@ -333,25 +340,25 @@ type Directive = {
 const DIRECTIVES: readonly Directive[] = [
   {
     label: 'Audience',
-    icon: Users,
+    icon: UsersIcon,
     text: 'Avoid jargon',
     pair: { before: 'Persistieren…', after: 'Speichern…' },
   },
   {
     label: 'Formality',
-    icon: Speech,
+    icon: ChatBubbleOvalLeftIcon,
     text: 'Use the formal “Sie”',
     pair: { before: 'Du kannst…', after: 'Sie können…' },
   },
   {
     label: 'Conventions',
-    icon: PenLine,
+    icon: PencilIcon,
     text: 'Use active voice',
     pair: { before: 'Wird geladen…', after: 'Lädt…' },
   },
   {
     label: 'Formatting',
-    icon: CalendarDays,
+    icon: CalendarDaysIcon,
     text: 'Use German date order',
     pair: { before: '07/30/2026', after: DE_DATE },
   },
@@ -366,7 +373,7 @@ export default function V0Context() {
             switched — same tc-head grammar, same watermark seat, the
             BookOpen mark where Code2 stands there */}
           <div className='tc-head'>
-            <BookOpen className='tc-head-icon v0-ctx-head-icon' strokeWidth={1} aria-hidden />
+            <BookOpenIcon className='tc-head-icon v0-ctx-head-icon' aria-hidden />
             <h2 data-reveal>
               One source of context, <br className='v0-ctx-title-break' />
               shared everywhere
@@ -396,7 +403,7 @@ export default function V0Context() {
                   <div className='v0-ctx-glossary-head'>
                     <b>Vault</b>
                     <span className='v0-ctx-rule'>
-                      <Pin aria-hidden strokeWidth={1.75} />
+                      <BookmarkIcon aria-hidden />
                       pinned
                     </span>
                   </div>
@@ -418,7 +425,7 @@ export default function V0Context() {
                       Locadex
                     </b>
                     <span className='v0-ctx-rule'>
-                      <Ban aria-hidden strokeWidth={1.75} />
+                      <NoSymbolIcon aria-hidden />
                       never translate
                     </span>
                   </div>
@@ -444,7 +451,7 @@ export default function V0Context() {
                     return (
                       <div className='v0-ctx-dir' key={directive.label}>
                         <b>
-                          <Icon aria-hidden strokeWidth={1.75} />
+                          <Icon aria-hidden />
                           {directive.label}
                         </b>
                         <span className='v0-ctx-dir-body'>

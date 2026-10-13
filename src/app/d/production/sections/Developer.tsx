@@ -4,20 +4,22 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  Code2,
-  Ruler,
-  CalendarDays,
-  Coins,
-  Cookie,
-  Globe,
-  Hash,
-  Languages,
-  Link,
-  ListTree,
-  MapPin,
-} from 'lucide-react';
+  ArrowsRightLeftIcon,
+  BanknotesIcon,
+  CalendarDaysIcon,
+  HashtagIcon,
+  NumberedListIcon,
+} from '@heroicons/react/16/solid';
+import {
+  BookmarkIcon,
+  CodeBracketIcon,
+  GlobeAltIcon,
+  LanguageIcon,
+  LinkIcon,
+  MapPinIcon,
+} from '@heroicons/react/24/solid';
 import { useRef } from 'react';
-import type { ComponentType, ReactNode } from 'react';
+import type { ComponentType, ReactNode, SVGProps } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import { prefersReducedMotion } from '@/app/d/toolchain/diagrams/lang/lang';
@@ -30,13 +32,9 @@ import './developer.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-/** The props lucide marks take here — 14–16px functional identification. */
-type MarkIcon = ComponentType<{
-  className?: string;
-  size?: number;
-  strokeWidth?: number;
-  'aria-hidden'?: boolean;
-}>;
+/** A Heroicons solid mark: an <svg> filled with currentColor, sized by its
+    width and height (gt-cloud sizes it with a class). */
+type MarkIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
 /* Fixed inputs — every displayed value is real Intl output computed at
    render, never a transcribed string. Only the plural sentences are
@@ -118,7 +116,7 @@ type ForkSpec = {
 const FORKS: readonly ForkSpec[] = [
   {
     label: 'Numbers',
-    icon: Hash,
+    icon: HashtagIcon,
     source: '1234567.89',
     branches: [
       { code: 'en', value: formatNumber('en-US') },
@@ -130,7 +128,7 @@ const FORKS: readonly ForkSpec[] = [
   },
   {
     label: 'Currency',
-    icon: Coins,
+    icon: BanknotesIcon,
     source: '1234.5',
     branches: [
       { code: 'en', value: formatCurrency('en-US', 'USD') },
@@ -142,7 +140,7 @@ const FORKS: readonly ForkSpec[] = [
   },
   {
     label: 'Dates',
-    icon: CalendarDays,
+    icon: CalendarDaysIcon,
     source: '2026-08-04',
     branches: [
       { code: 'en', value: formatDate('en-US') },
@@ -154,7 +152,7 @@ const FORKS: readonly ForkSpec[] = [
   },
   {
     label: 'Plurals',
-    icon: ListTree,
+    icon: NumberedListIcon,
     source: '3',
     branches: [
       { code: 'en', value: '3 files', note: pluralNote('en'), sans: true },
@@ -340,7 +338,7 @@ function BranchForks() {
                   from the pair (founder round: no separate headers) */}
               <span className='v0-dev-key'>
                 <span className='v0-dev-fork-label'>
-                  <Icon className='v0-dev-fork-ic' size={14} strokeWidth={1.6} aria-hidden />
+                  <Icon className='v0-dev-fork-ic' height={14} width={14} aria-hidden />
                   {spec.label}
                 </span>
                 <span className='v0-dev-src'>{spec.source}</span>
@@ -423,7 +421,7 @@ type Route = {
 
 const ROUTES: readonly Route[] = [
   {
-    icon: Link,
+    icon: LinkIcon,
     code: 'es',
     path: (
       <>
@@ -432,7 +430,7 @@ const ROUTES: readonly Route[] = [
     ),
   },
   {
-    icon: Globe,
+    icon: GlobeAltIcon,
     code: 'de',
     path: (
       <>
@@ -441,7 +439,7 @@ const ROUTES: readonly Route[] = [
     ),
   },
   {
-    icon: MapPin,
+    icon: MapPinIcon,
     code: 'fr',
     path: (
       <>
@@ -450,7 +448,7 @@ const ROUTES: readonly Route[] = [
     ),
   },
   {
-    icon: Languages,
+    icon: LanguageIcon,
     code: 'ja',
     path: (
       <>
@@ -460,7 +458,7 @@ const ROUTES: readonly Route[] = [
     ),
   },
   {
-    icon: Cookie,
+    icon: BookmarkIcon,
     code: 'zh',
     path: (
       <>
@@ -488,7 +486,7 @@ export default function V0Developer({ heading }: V0DeveloperProps) {
   return (
     <section className='tc-sec v0-dev' id='developers' ref={root}>
       <div className='tc-head'>
-        <Code2 className='tc-head-icon' strokeWidth={1} aria-hidden />
+        <CodeBracketIcon className='tc-head-icon' aria-hidden />
         <h2 data-reveal>
           {heading ?? (
             <>
@@ -520,7 +518,7 @@ export default function V0Developer({ heading }: V0DeveloperProps) {
             />
           </div>
           <p className='v0-dev-measure'>
-            <Ruler aria-hidden size={11} strokeWidth={1.8} />
+            <ArrowsRightLeftIcon aria-hidden height={11} width={11} />
             Widths measured at render
           </p>
         </BentoCell>
@@ -540,7 +538,7 @@ export default function V0Developer({ heading }: V0DeveloperProps) {
               const Icon = route.icon;
               return (
                 <div className='v0-dev-route' key={route.code}>
-                  <Icon className='v0-dev-route-ic' size={15} strokeWidth={1.6} aria-hidden />
+                  <Icon className='v0-dev-route-ic' height={15} width={15} aria-hidden />
                   <code className='v0-dev-route-path'>{route.path}</code>
                   <LocaleTag code={route.code} />
                 </div>
