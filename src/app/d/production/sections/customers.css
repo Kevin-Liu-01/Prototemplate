@@ -71,12 +71,12 @@
   background-image: url('/logos/clickhouse.light.svg');
 }
 
-/* Sierra: the official rosette+wordmark lockup (sierra.ai/using-our-brand),
-   re-inked per theme like every other mark on the wall. */
-.toolchain-root .v0-cust-mark.is-sierra {
-  aspect-ratio: 350 / 94;
+/* Okta replaced Sierra on the live wall (gt-cloud #5215, 2026-10-07);
+   the enterprise page still shows Sierra from enterprise-data.ts. */
+.toolchain-root .v0-cust-mark.is-okta {
   height: 34px;
-  background-image: url('/logos/sierra.light.svg');
+  aspect-ratio: 109.21 / 36;
+  background-image: url('/logos/okta.light.svg');
 }
 
 /* dark theme: the drawn-for-dark variants, same geometry */
@@ -100,8 +100,8 @@
   background-image: url('/logos/clickhouse.dark.svg');
 }
 
-[data-theme='dark'] .toolchain-root .v0-cust-mark.is-sierra {
-  background-image: url('/logos/sierra.dark.svg');
+[data-theme='dark'] .toolchain-root .v0-cust-mark.is-okta {
+  background-image: url('/logos/okta.dark.svg');
 }
 
 /* ---- wrap points ----------------------------------------------
