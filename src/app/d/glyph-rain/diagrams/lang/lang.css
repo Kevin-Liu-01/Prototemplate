@@ -266,9 +266,10 @@
    (data-fitted), the stylesheet sets them the way the script will, so the
    unfitted rows never run past the screen and nothing moves when the
    measurement lands. Each track is a size container: 100cqi is the
-   script's `room`. --lang-sw-fit is the type size, rounded to 0.1px as
-   the script rounds it; the script writes its measured one over it,
-   inline.
+   script's `room`, which the script reads rounded to a whole px.
+   --lang-sw-fit is the type size, rounded to 0.1px as the script rounds
+   it. The script writes its own over it, inline, and keeps this one
+   wherever its measured size is within that 0.1px step of it.
 
    --lang-sw-em is the widest default sample, "Änderungen speichern", in
    em of the page's Inter: 10.597 at 14px and under, 9.674 at 32px and
@@ -315,12 +316,12 @@
    track. At 14px (MIN_INLINE_SIZE) and over, the rows stay inline at that
    size, capped at 1.5 times the nominal; under it the deltas drop under
    their boxes and the type fits the box alone, (room - PAD * 4 - 3) * k,
-   the in-size plus 83px * k, capped at the nominal. The inline branch
-   carries (in - 13.99px) * 10000, negative under 13.99px, and the stacked
-   one (14px - in) * 10000, negative from 14px up, so max() keeps the
-   branch the script takes (in the 0.01px where both stand, the larger
-   stacked size, as the script stacks). --lang-sw-drop is 100% when the
-   rows stack and 0 when they do not: the break takes the whole line and
+   the in-size plus 83px * k, capped at the nominal. --lang-sw-stack is 1
+   under 14px and 0 from 14px up: 14px - in as a plain number, times a
+   million and clamped to 0 and 1, so only the millionth of a px just
+   under 14px holds a value between. It picks the type size's branch, the
+   script's choice, and --lang-sw-drop with it: 100% when the rows stack
+   and 0 when they do not. The break takes the whole line and
    pushes the delta under its box, and an inline delta's negative end
    margin keeps it on its box's line, hanging past the track as it does
    once the script has run. The break's -10px margin takes back the
@@ -330,14 +331,13 @@
 @media (max-width: 560px) {
   .lang-sw {
     --lang-sw-in: calc((100cqi - 138px) * var(--lang-sw-k));
+    --lang-sw-stack: clamp(0, tan(atan2(14px - var(--lang-sw-in), 1px)) * 1000000, 1);
     --lang-sw-fit: round(
-      max(
-        min(var(--lang-sw-size, 18px) * 1.5, var(--lang-sw-in), (var(--lang-sw-in) - 13.99px) * 10000),
-        min(var(--lang-sw-size, 18px), var(--lang-sw-in) + 83px * var(--lang-sw-k), (14px - var(--lang-sw-in)) * 10000)
-      ),
+      min(var(--lang-sw-size, 18px) * 1.5, var(--lang-sw-in)) * (1 - var(--lang-sw-stack)) +
+        min(var(--lang-sw-size, 18px), var(--lang-sw-in) + 83px * var(--lang-sw-k)) * var(--lang-sw-stack),
       0.1px
     );
-    --lang-sw-drop: clamp(0%, (14px - var(--lang-sw-in)) * 10000, 100%);
+    --lang-sw-drop: calc(var(--lang-sw-stack) * 100%);
   }
 
   .lang-sw:not([data-fitted]) .lang-sw-track {

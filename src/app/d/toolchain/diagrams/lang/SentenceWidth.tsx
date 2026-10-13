@@ -68,6 +68,11 @@ const MIN_INLINE_SIZE = 14;
     had and its delta hangs into the card's padding. lang.css repeats this
     arithmetic for the first paint, so a change here goes there too. */
 const PHONE = '(max-width: 560px)';
+/** Where lang.css paints the fitted rows itself before this runs: a phone
+    width and a landscape phone. */
+const FIRST_PAINT = '(max-width: 560px), (pointer: coarse) and (max-height: 500px)';
+/** The step the type size is rounded to, here and in lang.css. */
+const STEP = 0.1;
 const TICKS = 37;
 
 export default function SentenceWidth({
@@ -105,10 +110,24 @@ export default function SentenceWidth({
         if (!first || !firstRow) return;
 
         /* --lang-sw-fit is the size the rows are set at: the stylesheet's own
-           first-paint fit until this runs, then this function's. It goes back
-           to the nominal size for the first measurement. */
-        rootEl.style.setProperty('--lang-sw-fit', 'var(--lang-sw-size, 18px)');
+           first-paint fit until this runs, then this function's. Both are
+           lifted first, with the stacked layout of an earlier run, and where
+           lang.css paints the rows, what it paints at this width is read:
+           its type size, and whether its break takes the line and drops the
+           deltas under their boxes. Then the size goes back to the nominal
+           one for the first measurement. */
+        rootEl.removeAttribute('data-fitted');
+        rootEl.removeAttribute('data-stacked');
+        rootEl.style.removeProperty('--lang-sw-fit');
         boxes.forEach((el) => el.style.removeProperty('width'));
+        const firstPaint = window.matchMedia(FIRST_PAINT).matches;
+        const painted = firstPaint
+          ? {
+              size: Math.round(Number.parseFloat(getComputedStyle(first).fontSize) * 10) / 10,
+              stacked: (firstRow.querySelector<HTMLElement>('[data-sw-break]')?.offsetWidth ?? 0) > 0,
+            }
+          : null;
+        rootEl.style.setProperty('--lang-sw-fit', 'var(--lang-sw-size, 18px)');
 
         /* The TEXT's own width — a range over the contents. The p's
            offsetWidth would smuggle its 13px-per-side padding into the
@@ -133,13 +152,23 @@ export default function SentenceWidth({
            the box alone. */
         const phone = window.matchMedia(PHONE).matches;
         const fit = (room - PAD * 2 - LABEL_ROOM) / Math.max(natural, 1);
-        const stacked = phone && fit * nominal < MIN_INLINE_SIZE;
+        /* lang.css takes the German's width from a straight-line estimate in
+           em and its room from the track's fractional width, so its paint can
+           land one STEP from this measured size, or on the other side of
+           MIN_INLINE_SIZE when the fit sits within a STEP of it. Within that
+           step the rows keep what the stylesheet painted, so nothing moves
+           when this runs: 0.1px of type is about 1px of the German's box. */
+        const near = painted && phone && Math.abs(fit * nominal - MIN_INLINE_SIZE) <= STEP;
+        const stacked = near ? painted.stacked : phone && fit * nominal < MIN_INLINE_SIZE;
         const scale = stacked
           ? Math.min(1, (room - PAD * 2 - 3) / Math.max(natural, 1))
           : Math.min(MAX_SCALE, phone ? fit : Math.max(1, fit));
+        const measured = Math.round(nominal * scale * 10) / 10;
+        /* one STEP apart, with room for the float error of two tenths */
+        const keep = painted && painted.stacked === stacked && Math.abs(measured - painted.size) < STEP * 1.5;
         rootEl.toggleAttribute('data-stacked', stacked);
         rootEl.toggleAttribute('data-fitted', true);
-        rootEl.style.setProperty('--lang-sw-fit', `${Math.round(nominal * scale * 10) / 10}px`);
+        rootEl.style.setProperty('--lang-sw-fit', `${keep ? painted.size : measured}px`);
 
         const texts = lines.map(textWidth);
         const baseText = texts[0] ?? 1;
@@ -214,7 +243,7 @@ export default function SentenceWidth({
               </div>
               {/* Before the script fits the rows, this zero-height break drops
                   the delta under its box on a phone track lang.css stacks. */}
-              <i className='lang-sw-break' aria-hidden='true' />
+              <i className='lang-sw-break' data-sw-break='' aria-hidden='true' />
               <span className='lang-sw-delta'>
                 {i === 0 ? (
                   <span className='lang-sw-vs'>source</span>
