@@ -161,3 +161,13 @@
   }
 }
 
+/* At 320px a two-up cell is 159px wide, 135px inside its 12px padding, and
+   the 50px ClickHouse lockup runs 163.7px: centred, its box crossed the
+   screen's left edge and the Sierra cell. Capping it at the cell's full width
+   (100% plus the two 12px paddings) keeps every mark inside its own cell and
+   shrinks only the ClickHouse lockup, by 3% at 320px; from 360px it fits. */
+@media (max-width: 480px) {
+  .toolchain-root .v0-cust-mark {
+    max-width: calc(100% + 24px);
+  }
+}

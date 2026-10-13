@@ -338,3 +338,22 @@
     gap: 3px;
   }
 }
+
+/* At 320px the board path ran 28px past the bar's 270px width, and the board's
+   overflow: hidden cut 'generaltranslation' short. Under 480px the board name
+   becomes an inline-block, so the path may break before it. An 18px line,
+   9.5px of padding above and below and the 1px rule keep a one-line bar at
+   the same 38px; two lines make it 56px. */
+@media (max-width: 480px) {
+  .toolchain-root .crs-board-bar {
+    height: auto;
+    min-height: 38px;
+    padding: 9.5px 16px;
+    line-height: 18px;
+    white-space: normal;
+  }
+
+  .toolchain-root .crs-board-bar b {
+    display: inline-block;
+  }
+}
