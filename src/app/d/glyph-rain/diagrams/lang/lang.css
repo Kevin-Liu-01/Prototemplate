@@ -128,7 +128,7 @@
   flex: none;
   display: flex;
   align-items: center;
-  height: calc(var(--lang-sw-size, 18px) * 1.25 + 24px);
+  height: calc(var(--lang-sw-fit, var(--lang-sw-size, 18px)) * 1.25 + 24px);
   max-width: 100%;
   border: 1.5px solid var(--lang-ink);
   border-radius: 5px;
@@ -153,7 +153,7 @@
   padding-inline: 13px;
   white-space: nowrap;
   font-family: var(--lang-sans), var(--lang-script);
-  font-size: var(--lang-sw-size, 18px);
+  font-size: var(--lang-sw-fit, var(--lang-sw-size, 18px));
   letter-spacing: -0.01em;
   line-height: 1.2;
   color: #f5f5f3;
@@ -247,6 +247,11 @@
   align-items: flex-end;
 }
 
+/* The break the first paint stacks with (see below); shown only there. */
+.lang-sw-break {
+  display: none;
+}
+
 @media (max-width: 560px) {
   .lang-sw-row {
     grid-template-columns: 64px minmax(0, 1fr);
@@ -254,6 +259,106 @@
 
   .lang-sw-guide {
     left: 64px;
+  }
+}
+
+/* The first paint, on a phone. Until SentenceWidth.tsx measures the rows
+   (data-fitted), the stylesheet sets them the way the script will, so the
+   unfitted rows never run past the screen and nothing moves when the
+   measurement lands. Each track is a size container: 100cqi is the
+   script's `room`. --lang-sw-fit is the type size, rounded to 0.1px as
+   the script rounds it; the script writes its measured one over it,
+   inline.
+
+   --lang-sw-em is the widest default sample, "Änderungen speichern", in
+   em of the page's Inter: 10.597 at 14px and under, 9.674 at 32px and
+   over, and on the straight line between (Inter's optical sizes run from
+   14 to 32px, and the smaller cut is wider). tan(atan2(size, 1px)) is the
+   nominal size as a plain number, --lang-sw-n.
+
+   This fork measures the line's offsetWidth, its 13px padding per side
+   included, so its `natural` is em * n + 26 and --lang-sw-k is the
+   nominal size over it, per px of room. Its boxes are that offsetWidth
+   plus the padding again and 3px of walls (the 1.5px border a side),
+   26px past the line they hold and 1px past the 1px border Chrome draws,
+   so the first paint pads each box's end by 27px. */
+@media (max-width: 560px), (pointer: coarse) and (max-height: 500px) {
+  .lang-sw {
+    --lang-sw-n: tan(atan2(var(--lang-sw-size, 18px), 1px));
+    --lang-sw-em: calc(11.3152 - 0.051294 * clamp(14, var(--lang-sw-n), 32));
+    --lang-sw-k: calc(var(--lang-sw-n) / (var(--lang-sw-em) * var(--lang-sw-n) + 26));
+  }
+
+  .lang-sw-track {
+    container-type: inline-size;
+  }
+
+  .lang-sw:not([data-fitted]) .lang-sw-box {
+    padding-right: 27px;
+  }
+}
+
+/* A landscape phone is wider than PHONE: the script's wide scale on
+   room - PAD * 2 - LABEL_ROOM (13 and 86), never under the nominal size
+   and at most MAX_SCALE (1.5) times it. */
+@media (pointer: coarse) and (max-height: 500px) {
+  .lang-sw {
+    --lang-sw-fit: round(
+      clamp(var(--lang-sw-size, 18px), (100cqi - 112px) * var(--lang-sw-k), var(--lang-sw-size, 18px) * 1.5),
+      0.1px
+    );
+  }
+}
+
+/* A phone reserves the padding twice, room - PAD * 4 - LABEL_ROOM, and
+   --lang-sw-in is the size that lands the widest box and its delta on the
+   track. At 14px (MIN_INLINE_SIZE) and over, the rows stay inline at that
+   size, capped at 1.5 times the nominal; under it the deltas drop under
+   their boxes and the type fits the box alone, (room - PAD * 4 - 3) * k,
+   the in-size plus 83px * k, capped at the nominal. The inline branch
+   carries (in - 13.99px) * 10000, negative under 13.99px, and the stacked
+   one (14px - in) * 10000, negative from 14px up, so max() keeps the
+   branch the script takes (in the 0.01px where both stand, the larger
+   stacked size, as the script stacks). --lang-sw-drop is 100% when the
+   rows stack and 0 when they do not: the break takes the whole line and
+   pushes the delta under its box, and an inline delta's negative end
+   margin keeps it on its box's line, hanging past the track as it does
+   once the script has run. The break's -10px margin takes back the
+   track's column gap it would add inline; stacked, the two 2px row gaps
+   around it make the 4px the script's column layout puts between a box
+   and its delta. */
+@media (max-width: 560px) {
+  .lang-sw {
+    --lang-sw-in: calc((100cqi - 138px) * var(--lang-sw-k));
+    --lang-sw-fit: round(
+      max(
+        min(var(--lang-sw-size, 18px) * 1.5, var(--lang-sw-in), (var(--lang-sw-in) - 13.99px) * 10000),
+        min(var(--lang-sw-size, 18px), var(--lang-sw-in) + 83px * var(--lang-sw-k), (14px - var(--lang-sw-in)) * 10000)
+      ),
+      0.1px
+    );
+    --lang-sw-drop: clamp(0%, (14px - var(--lang-sw-in)) * 10000, 100%);
+  }
+
+  .lang-sw:not([data-fitted]) .lang-sw-track {
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+
+  .lang-sw:not([data-fitted]) .lang-sw-break {
+    display: block;
+    flex-basis: var(--lang-sw-drop);
+    height: 0;
+    margin-left: -10px;
+  }
+
+  .lang-sw:not([data-fitted]) .lang-sw-delta {
+    margin-right: calc(var(--lang-sw-drop) - 100%);
+  }
+
+  .lang-sw:not([data-fitted]) .lang-sw-row.is-rtl .lang-sw-delta {
+    margin-right: 0;
+    margin-left: calc(var(--lang-sw-drop) - 100%);
   }
 }
 

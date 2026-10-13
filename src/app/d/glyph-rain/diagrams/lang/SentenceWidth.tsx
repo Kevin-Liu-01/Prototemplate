@@ -60,7 +60,8 @@ const MAX_SCALE = 1.5;
 const MIN_INLINE_SIZE = 14;
 /** The phone width of lang.css, the only width where the type may shrink
     below the stylesheet's size: wider, a long row keeps the size it always
-    had and its delta hangs into the card's padding. */
+    had and its delta hangs into the card's padding. lang.css repeats this
+    arithmetic for the first paint, so a change here goes there too. */
 const PHONE = '(max-width: 560px)';
 const TICKS = 37;
 
@@ -93,7 +94,10 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
         const firstRow = rows[0];
         if (!first || !firstRow) return;
 
-        rootEl.style.removeProperty('--lang-sw-size');
+        /* --lang-sw-fit is the size the rows are set at: the stylesheet's own
+           first-paint fit until this runs, then this function's. It goes back
+           to the nominal size for the first measurement. */
+        rootEl.style.setProperty('--lang-sw-fit', 'var(--lang-sw-size, 18px)');
         boxes.forEach((el) => el.style.removeProperty('width'));
 
         const nominal = Number.parseFloat(getComputedStyle(first).fontSize) || 18;
@@ -116,7 +120,8 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
           ? Math.min(1, (room - inset - 3) / Math.max(natural, 1))
           : Math.min(MAX_SCALE, phone ? fit : Math.max(1, fit));
         rootEl.toggleAttribute('data-stacked', stacked);
-        rootEl.style.setProperty('--lang-sw-size', `${Math.round(nominal * scale * 10) / 10}px`);
+        rootEl.toggleAttribute('data-fitted', true);
+        rootEl.style.setProperty('--lang-sw-fit', `${Math.round(nominal * scale * 10) / 10}px`);
 
         const texts = lines.map((el) => el.offsetWidth);
         const baseText = texts[0] ?? 1;
@@ -189,6 +194,9 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
                   {sample.text}
                 </p>
               </div>
+              {/* Before the script fits the rows, this zero-height break drops
+                  the delta under its box on a phone track lang.css stacks. */}
+              <i className='lang-sw-break' aria-hidden='true' />
               <span className='lang-sw-delta'>
                 {i === 0 ? (
                   <span className='lang-sw-vs'>source</span>
