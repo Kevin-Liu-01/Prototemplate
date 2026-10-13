@@ -87,6 +87,14 @@ const nextConfig: NextConfig = {
       // The live site renamed its report card from /try to /report-card
       // (gt-cloud #4557) and redirects the old path; the mirror does the same.
       { source: '/d/production/try', destination: '/d/production/report-card', permanent: true },
+      // The live site's partner short links (gt-cloud apps/landing
+      // next.config.ts): /yc and the six beside it answer 308 with the
+      // partner's credit page, so the mirror's do too.
+      {
+        source: '/d/production/:partner(yc|mercury|slash|speedrun|a16z|residency|rho)',
+        destination: '/d/production/enterprise/contact/:partner',
+        permanent: true,
+      },
     ];
   },
 };

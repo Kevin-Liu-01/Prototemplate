@@ -254,11 +254,14 @@ const SITES: readonly Surface[] = SITE_DIRECTIONS.flatMap((d) => {
 /**
  * The pages of the shipped direction under /d/production (directive 8.10):
  * the pages Kevin built for the live site, as [path, name, description],
- * in the order the live site's navigation reads them after Home. The
- * legal, Mintlify, usage rates, enterprise contact and YC routes are gone
- * from this prototype on Kevin's directive; the live site's usage rates
- * page appears among the live surfaces below. The dynamic segments
- * (blog/[slug], the catch-all) are not pages of their own and are left out.
+ * in the order the live site's navigation reads them after Home, then the
+ * seven partner credit pages under /enterprise/contact, which the live
+ * site reaches only by their short links (/yc and the rest, redirected in
+ * next.config.ts). The legal, Mintlify, usage rates and bare enterprise
+ * contact routes are gone from this prototype on Kevin's directive; the
+ * live site's usage rates page appears among the live surfaces below. The
+ * dynamic segments (blog/[slug], the catch-all) are not pages of their own
+ * and are left out.
  */
 const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
   ['/pricing', 'Pricing', 'Plans and the comparison table.'],
@@ -273,6 +276,13 @@ const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
   ['/device', 'Device code', 'The device code pages.'],
   ['/cli', 'CLI', 'The CLI wizard, terminal and callback pages.'],
   ['/blog', 'Blog', 'Essays, devlogs and the changelog.'],
+  ['/enterprise/contact/yc', 'YC credits', 'The credit offer for YC startups.'],
+  ['/enterprise/contact/mercury', 'Mercury credits', 'The credit offer for Mercury customers.'],
+  ['/enterprise/contact/slash', 'Slash credits', 'The credit offer for Slash customers.'],
+  ['/enterprise/contact/speedrun', 'Speedrun credits', 'The credit offer for a16z speedrun startups.'],
+  ['/enterprise/contact/a16z', 'a16z credits', 'The credit offer for a16z startups.'],
+  ['/enterprise/contact/residency', 'Residency credits', 'The credit offer for founders at The Residency.'],
+  ['/enterprise/contact/rho', 'Rho credits', 'The credit offer for Rho customers.'],
 ];
 
 /** `/supported-locales` becomes `supported-locales`; a nested path joins its segments with hyphens. */

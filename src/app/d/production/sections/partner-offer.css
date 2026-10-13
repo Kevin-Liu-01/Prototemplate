@@ -1,0 +1,18 @@
+/*
+ * The partner credit pages (PartnerOffer.tsx). The live page sets
+ * --plate-inset-top to its 56px navbar; here the section sits under
+ * V0Nav, whose bar is 58px with a 1px bottom rule, so the inset plate
+ * (plate.css, .plate-inset) reads 59px.
+ */
+.prpo-root {
+  --plate-inset-top: 59px;
+}
+
+/* The landing engine's .tc-btn-lg metrics (engine.css), for the Apply for
+   Credits button; the toolchain sheet this page loads carries only solid,
+   line and sm. */
+.prpo-root .tc-btn-lg {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 14px;
+}
