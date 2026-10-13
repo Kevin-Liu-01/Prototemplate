@@ -10,9 +10,16 @@
 
 /* The landing engine's .tc-btn-lg metrics (engine.css), for the Apply for
    Credits button; the toolchain sheet this page loads carries only solid,
-   line and sm. */
+   line and sm. On phones the engine's 720px block sets every .tc-btn to
+   15px after .tc-btn-lg, so the live button reads 15px there. */
 .prpo-root .tc-btn-lg {
   height: 44px;
   padding: 0 20px;
   font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .prpo-root .tc-btn-lg {
+    font-size: 15px;
+  }
 }

@@ -558,6 +558,17 @@
   top: calc(-1 * var(--plate-inset-top, 0px));
 }
 
+/* gt-cloud's inset heading (packages/ui plate.css): two classes, so it
+   outranks a host page's element rule such as .toolchain-root h1. */
+.plate-inset .typo-page-heading {
+  font-size: 1.875rem;
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
 /*
  * The field stack: the auth and onboarding surfaces' field as canvas
  * layers in one wrapper. --tc-ink is the sign-in material's ink, the
