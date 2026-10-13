@@ -1,0 +1,69 @@
+/* ============================================================
+   HOME HERO · the two buttons
+   Ported from gt-cloud apps/landing/src/components/landing/shell/
+   engine.css (the .tc-hero-acts and .tc-hero-copy rules, gt-cloud
+   #5049, #5090 and #5095). The live Cta wraps Get Started in
+   .tc-cta-ring; this mirror's ring is .tch-cta (_v0/v0-pages.css),
+   so the selectors name it. Scoped under .prod-root so the shared
+   toolchain sheet and the other directions keep their flex row.
+   ============================================================ */
+
+/* The hero's buttons sit in equal columns as wide as the wider button, each
+   with its content centred. */
+.toolchain-root.prod-root .tc-hero-acts {
+  margin-inline: auto;
+  width: fit-content;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 10px;
+}
+
+/* the ring stretches to its column, so its button fills the ring */
+.toolchain-root.prod-root .tc-hero-acts .tch-cta > .tc-btn {
+  flex: 1;
+}
+
+/* The copy glyph draws 1.8px closer to the label than Get Started's arrow at
+   the same gap, so the copy button adds 1.8px to its gap and right padding to
+   match the arrow's visible spacing. */
+.toolchain-root.prod-root .tc-hero-copy {
+  gap: 8.8px;
+  padding-right: 18.8px;
+}
+
+/* the check after a successful copy is drawn in the accent */
+.toolchain-root.prod-root .tc-hero-copy-check {
+  color: var(--tc-accent);
+}
+
+/* At 620px and below the buttons fill the content column, up to 440px wide
+   and centred: side by side at half the row each when both labels fit in
+   half, otherwise one per row at the full width. No button shrinks below
+   its label, so a label wider than half wraps the row. The basis stays
+   0.05px under half the row less half the gap: a smaller basis lets two
+   unequal widths share the row, and a basis of exactly half can wrap a pair
+   that fits when it rounds up. The padding is the least room beside the
+   label; a wider button centres its content in the extra width. */
+@media (max-width: 620px) {
+  .toolchain-root.prod-root .tc-hero-acts {
+    width: auto;
+    max-width: 440px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .toolchain-root.prod-root .tc-hero-acts > .tch-cta,
+  .toolchain-root.prod-root .tc-hero-acts > .tc-btn {
+    flex: 1 1 calc(50% - 5.05px);
+    min-width: max-content;
+  }
+
+  .toolchain-root.prod-root .tc-hero-acts .tc-btn {
+    padding-inline: 6px;
+  }
+
+  .toolchain-root.prod-root .tc-hero-acts .tc-hero-copy {
+    padding-right: 7.8px;
+  }
+}

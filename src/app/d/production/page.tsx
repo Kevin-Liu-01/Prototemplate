@@ -12,6 +12,7 @@ import FullStack from './sections/FullStack';
 import Global from './sections/Global';
 import HomeHero from './sections/HomeHero';
 import Locadex from './sections/Locadex';
+import { AGENT_PROMPT } from './sections/agent-prompt';
 
 import '../toolchain/sections/logos-icons.css';
 import '../toolchain/styles.css';
@@ -52,7 +53,7 @@ export default function ProductionPage() {
         <V0Nav />
 
         <main className='tc-rail'>
-          <HomeHero />
+          <HomeHero agentPrompt={AGENT_PROMPT} />
           <Customers />
           <div aria-hidden className='v0-hatch' />
           <FullStack />

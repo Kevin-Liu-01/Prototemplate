@@ -10,9 +10,11 @@ import EverySentence, {
 } from '@/components/shared/EverySentence';
 import StudioField from '@/components/shared/StudioField';
 
+import CopyPromptButton from './CopyPromptButton';
 import TranslateWindow from './TranslateWindow';
 
 import '@/app/d/toolchain/sections/hero-terminal.css';
+import './hero-agent.css';
 
 /**
  * Trust-row entries. Each name is set as its own typographic mark — the
@@ -74,7 +76,14 @@ const WORDS: Record<string, EveryWord> = {
   pl: { text: 'Rośnij w każdym języku', lang: 'pl' },
 };
 
-export default function HomeHero() {
+type HomeHeroProps = {
+  /** The agent prompt the second button copies (sections/agent-prompt.ts).
+      The live hero falls back to a Docs link when its build has no prompt;
+      the mirror vendors the prompt, so it always has one. */
+  agentPrompt: string;
+};
+
+export default function HomeHero({ agentPrompt }: HomeHeroProps) {
   /* the belt's hand on the headline: TranslateWindow calls
      handleBeltLocale once on mount and on every active-locale change;
      the EverySentence engine consumes it. The component buffers calls
@@ -106,8 +115,8 @@ export default function HomeHero() {
         </h1>
 
         <p className='tc-hero-sub' data-hero-in>
-          <GtLogoText /> builds full-stack infrastructure for localizing apps,
-          docs, and websites
+          <GtLogoText /> builds full-stack localization for apps, docs, and
+          websites
         </p>
 
         <div className='tc-hero-acts' data-hero-in>
@@ -118,9 +127,9 @@ export default function HomeHero() {
               <ArrowRight aria-hidden size={15} strokeWidth={2} />
             </a>
           </span>
-          <a className='tc-btn tc-btn-line' href='https://generaltranslation.com/docs' rel='noreferrer' target='_blank'>
-            Docs
-          </a>
+          {/* the second button copies the brief a coding agent follows from
+              the docs entry point to a working translation */}
+          <CopyPromptButton prompt={agentPrompt} />
         </div>
       </div>
 
