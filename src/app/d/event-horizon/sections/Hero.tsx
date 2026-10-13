@@ -891,7 +891,7 @@ export default function Hero() {
   );
 
   return (
-    <section className='tc-sec' id='top' ref={root}>
+    <section className='tc-sec eh-hero-sec' id='top' ref={root}>
       <div className='eh-hero' ref={heroRef} data-eh-mode='wide'>
         {/* The page's concentric guide rings. A CSS mask opens a feathered
             hole under the shader canvas, which redraws their inner arcs bent

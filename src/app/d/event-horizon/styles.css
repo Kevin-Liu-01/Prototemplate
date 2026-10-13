@@ -299,14 +299,23 @@
    --eh-r, strip transforms) is measured and driven from Hero.tsx.
    ============================================================ */
 
+/* The hero's section is the size container its first paint reads. The
+   section's content box is exactly as wide as the hero, so 1cqw is a
+   hundredth of the hero.clientWidth Hero.tsx measures; vw counted a
+   classic scrollbar in (Windows, or macOS with scroll bars always shown)
+   and drew the disc 2 to 3px large at 1440 wide. */
+.eventhorizon-root .eh-hero-sec {
+  container: eh-hero / inline-size;
+}
+
 .eventhorizon-root .eh-hero {
   /* First paint carries the geometry Hero.tsx measures (its wide-mode
-     formulas on the hero's own height and the viewport's width), so the
-     disc, the canvas and the center text start where the script will put
-     them instead of jumping when it runs. */
+     formulas on the hero's own height and width), so the disc, the canvas
+     and the center text start where the script will put them instead of
+     jumping when it runs. */
   --eh-h: clamp(640px, calc(100svh - 58px), 940px);
   --eh-cx: 50%;
-  --eh-r: min(max(19vw, 228px), 300px, calc(var(--eh-h) * 0.36));
+  --eh-r: min(max(19cqw, 228px), 300px, calc(var(--eh-h) * 0.36));
   --eh-cy: max(
     min(calc(var(--eh-h) * 0.47), calc(var(--eh-h) - var(--eh-r) - 148px)),
     calc(var(--eh-r) + 96px)
@@ -1079,11 +1088,13 @@
   }
 }
 
-/* Hero.tsx's stack-mode formulas, which start below 760px
-   (wide = w >= 760), on the shorter stack set in the block below */
-@media (max-width: 759px) {
+/* Hero.tsx's stack-mode formulas, which start where the hero is under
+   760px wide (wide = w >= 760, the width this container reads), on the
+   hero's height, which the block below shortens on a viewport of 760px
+   and under */
+@container eh-hero (width < 760px) {
   .eventhorizon-root .eh-hero {
-    --eh-r: min(40vw, 168px, calc(var(--eh-h) * 0.26));
+    --eh-r: min(40cqw, 168px, calc(var(--eh-h) * 0.26));
     --eh-cy: max(
       min(calc(var(--eh-h) * 0.46), calc(var(--eh-h) - var(--eh-r) - 232px)),
       calc(var(--eh-r) + 238px)
