@@ -1070,3 +1070,14 @@
     font-size: 11px;
   }
 }
+
+/* an upright phone: on a 320px screen the drawing fills a 236px
+   column, where each plane's tallest tappable run is 39.5px. The
+   instrument's sides go from 20 to 10px, so there the drawing runs 256px
+   wide and each run 42.8px; from 375px wide it reaches its 300px cap. */
+@media (max-width: 480px) {
+  .singularity-root .tcb .tcb-stack {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}

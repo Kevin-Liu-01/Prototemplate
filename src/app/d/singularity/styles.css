@@ -1086,12 +1086,12 @@
   }
 }
 
-/* Hero.tsx's stack-mode formulas, which start below 760px (wide = w >=
-   760), so the phone's first paint before the script runs already seats
-   the disc and the core at their measured size: with the 270px default
-   the core ran 421px wide and its headline past both edges of a 320px
+/* Hero.tsx's stack-mode formulas (it stacks below 760px wide), so an
+   upright phone's first paint before the script runs already seats the
+   disc and the core at their measured size: with the 270px default the
+   core ran 421px wide and its headline past both edges of a 320px
    screen. */
-@media (max-width: 759px) {
+@media (max-width: 480px) {
   .singularity-root .eh-hero {
     --eh-h: clamp(640px, calc(100svh - 58px), 800px);
     --eh-r: min(40vw, 168px, calc(var(--eh-h) * 0.26));
@@ -4895,6 +4895,7 @@
   width: 96px;
   height: 20px;
   overflow: hidden;
+  text-indent: -999px;
   opacity: 0.52;
   background-position: center;
   background-repeat: no-repeat;
@@ -5257,5 +5258,14 @@
     right: auto;
     width: 44px;
     transform: translate(-50%, -50%);
+  }
+
+  /* the customer wordmarks are pictures named by their text, which the
+     -999px indent hides by running it out of the 96px box, clipped. On a
+     phone the text sets at 0px instead: the name stays for assistive
+     tech, the picture is unchanged and no clipped line sits in the box */
+  .singularity-root .eh-corewm {
+    text-indent: 0;
+    font-size: 0;
   }
 }

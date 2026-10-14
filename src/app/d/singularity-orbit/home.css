@@ -226,6 +226,18 @@
   }
 }
 
+/* an upright phone: on a 320px screen the dark band's stack drawing
+   (the toolchain's) fills a 236px column, where each plane's tallest
+   tappable run is 39.5px. The instrument's sides go from 20 to 10px, so
+   there the drawing runs 256px wide and each run 42.8px; from 375px wide
+   it reaches its 300px cap. */
+@media (max-width: 480px) {
+  .toolchain-root.sgoh-root .tcb .tcb-stack {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}
+
 /* a phone on its side: the shared sheets lift these to 44px only below
    640 or 720px wide, so landscape gets the same floor here, at the same
    type size */

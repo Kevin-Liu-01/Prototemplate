@@ -273,8 +273,9 @@
    wide as they are. The aside's link stays on one line, since a link
    broken across two lines would centre its band between them. The YC
    field's note sits 7px under its field, so its band starts 5px above
-   the note, 2px clear of the field, and ends 16.5px above the next
-   field. */
+   the note, 2px clear of the field. The next field's label sat 32px
+   under the note's top, 7px inside the band's end, so the note's group
+   keeps 9px more below it and the band ends 2px above that label. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .singularity-root .sgec-back,
   .singularity-root .sgec-quote figcaption a,
@@ -303,5 +304,9 @@
   .singularity-root .sgec-fieldnote::after {
     top: -5px;
     transform: none;
+  }
+
+  .singularity-root .sgec-fieldgroup {
+    margin-bottom: 9px;
   }
 }

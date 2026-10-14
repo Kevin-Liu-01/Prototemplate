@@ -904,8 +904,9 @@
    stays on one line, and it and the quote's source take the tap on a
    transparent 44px band through their middle, as wide as they are. The
    form's verification link sits 10px under its field, so its band starts
-   8px above the link, 2px clear of the field, and ends 20.3px above the
-   next field. */
+   8px above the link, 2px clear of the field. The next field's label sat
+   3.3px inside the band's end, so the link keeps 6px more below it and
+   the band ends 2.7px above that label. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .singularity-root .cpm-close-path a {
     white-space: nowrap;
@@ -932,5 +933,9 @@
   .singularity-root .cpy-verify-link::after {
     top: -8px;
     transform: none;
+  }
+
+  .singularity-root .cpy-verify-link {
+    margin-bottom: 6px;
   }
 }

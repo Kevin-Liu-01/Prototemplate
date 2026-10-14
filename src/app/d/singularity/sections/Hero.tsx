@@ -426,9 +426,9 @@ export default function Hero() {
         const h = hero.clientHeight;
         if (w < 10 || h < 10) return;
         wide = w >= 760;
-        /* styles.css (.eh-hero, below 760px) repeats the stack formulas for
-           first paint, so a change here goes there too or the phone hero
-           shifts when this runs. */
+        /* styles.css (.eh-hero, at 480px and below) repeats the stack
+           formulas for first paint, so a change here goes there too or the
+           phone hero shifts when this runs. */
         r = wide
           ? Math.min(Math.max(w * 0.19, 228), 300, h * 0.36)
           : Math.min(w * 0.4, 168, h * 0.26);
@@ -638,17 +638,12 @@ export default function Hero() {
               Talk to Sales
             </a>
           </div>
-          {/* the customers live INSIDE the hole: quiet marks in the dark.
-              Each mark is its wordmark picture, named for assistive tech;
-              no text sits in its 96px box to be cut off. */}
+          {/* the customers live INSIDE the hole: quiet marks in the dark */}
           <div className='eh-core-logos' data-hero-in aria-label='Trusted by'>
             {CUSTOMERS.map((customer) => (
-              <span
-                className={`eh-corewm ${customer.mark}`}
-                key={customer.name}
-                role='img'
-                aria-label={customer.name}
-              />
+              <span className={`eh-corewm ${customer.mark}`} key={customer.name}>
+                {customer.name}
+              </span>
             ))}
           </div>
         </div>
