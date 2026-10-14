@@ -1,0 +1,506 @@
+/* ============================================================
+   PRODUCTION CHROME CONTROLS
+   The live site's small shared controls, rebuilt for /d/production
+   without Radix or Tailwind: the theme toggle's glyphs, the
+   language selector (packages/ui LanguageSelector.tsx), the
+   cookie consent banner (packages/ui analytics/cookie-banner.tsx)
+   and the cookie settings dialog (dialog/CookieSettingsDialog.tsx).
+   Every value is the computed style read off generaltranslation.com
+   at 1440x900 and 390x844 on 2026-10-14. The zinc steps are the
+   house palette's (packages/ui shared.css): muted-foreground
+   240 3.8% 46.1% and 240 5% 64.9%, accent 240 4.8% 95.9% and
+   240 3.7% 15.9%, primary 240 5.9% 10% and 0 0% 98%.
+   ============================================================ */
+
+.toolchain-root.prod-root {
+  --pc-fg: hsl(240 10% 3.9%);
+  --pc-muted: hsl(240 3.8% 46.1%);
+  --pc-accent: hsl(240 4.8% 95.9%);
+  --pc-accent-ink: hsl(240 5.9% 10%);
+  --pc-primary: hsl(240 5.9% 10%);
+  --pc-primary-ink: hsl(0 0% 98%);
+  --pc-pop: hsl(0 0% 100% / 0.6);
+  --pc-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+[data-theme='dark'] .toolchain-root.prod-root {
+  --pc-fg: hsl(0 0% 98%);
+  --pc-muted: hsl(240 5% 64.9%);
+  --pc-accent: hsl(240 3.7% 15.9%);
+  --pc-accent-ink: hsl(0 0% 98%);
+  --pc-primary: hsl(0 0% 98%);
+  --pc-primary-ink: hsl(240 5.9% 10%);
+  --pc-pop: hsl(240 10% 3.9% / 0.6);
+}
+
+/* ---------- the theme glyph ----------
+   Live renders both half discs and lets the root theme pick one, so the
+   first paint already shows the right glyph (packages/ui ThemeToggle.tsx). */
+.prod-root .pc-glyph-dark,
+.prod-root .pc-name-dark {
+  display: none;
+}
+
+[data-theme='dark'] .prod-root .pc-glyph-light,
+[data-theme='dark'] .prod-root .pc-name-light {
+  display: none;
+}
+
+[data-theme='dark'] .prod-root .pc-glyph-dark,
+[data-theme='dark'] .prod-root .pc-name-dark {
+  display: inline;
+}
+
+/* ---------- the language selector ---------- */
+
+.prod-root .pc-lang {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.prod-root .pc-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--pt-radius-control);
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--pc-muted);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.prod-root .pc-lang-btn:hover,
+.prod-root .pc-lang-btn[aria-expanded='true'] {
+  background: var(--pc-accent);
+  color: var(--pc-accent-ink);
+}
+
+.prod-root .pc-lang-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.prod-root .pc-lang-chev {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.prod-root .pc-lang-btn[aria-expanded='true'] .pc-lang-chev {
+  transform: rotate(180deg);
+}
+
+/* the popover opens above the trigger, 4px off it, its right edge on the
+   trigger's right edge; --pc-shift moves it right when that would cross
+   the 16px collision margin on a phone */
+.prod-root .pc-lang-pop {
+  position: absolute;
+  right: calc(-1 * var(--pc-shift, 0px));
+  bottom: calc(100% + 4px);
+  z-index: 50;
+  min-width: 200px;
+  padding: 4px;
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--pt-radius-card);
+  background: var(--pc-pop);
+  box-shadow: var(--pc-shadow);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--pc-fg);
+}
+
+.prod-root .pc-lang-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 288px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.prod-root .pc-lang-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--pt-radius-control);
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.15s ease;
+}
+
+.prod-root .pc-lang-item:hover,
+.prod-root .pc-lang-item:focus-visible {
+  background: var(--pc-accent);
+  color: var(--pc-accent-ink);
+}
+
+.prod-root .pc-lang-item[aria-checked='true'] {
+  background: var(--pc-accent);
+  color: var(--pc-accent-ink);
+  font-weight: 500;
+}
+
+.prod-root .pc-lang-flag {
+  flex: none;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.prod-root .pc-lang-check {
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  flex: none;
+}
+
+@media (max-width: 767px) {
+  .prod-root .pc-lang-item {
+    min-height: 44px;
+  }
+}
+
+/* ---------- the footer strip ----------
+   Live seats the selector between the copyright and the theme switch
+   (V0Footer.tsx, .v0-foot-lang) and lifts its button to the 44px tap
+   height on a phone (v0-footer.css, max-width 640px). */
+.prod-root .v0-foot-lang {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .prod-root .v0-foot-lang .pc-lang-btn {
+    height: auto;
+    min-height: 44px;
+  }
+}
+
+/* ---------- the consent banner ---------- */
+
+.prod-root .pc-consent {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  z-index: 9999;
+  padding: 16px;
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--pt-radius-card);
+  background: var(--tc-paper);
+  box-shadow: var(--pc-shadow);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--pc-fg);
+}
+
+.prod-root .pc-consent-in {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prod-root .pc-consent-title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  letter-spacing: normal;
+}
+
+.prod-root .pc-consent-text {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.prod-root .pc-consent-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.prod-root .pc-consent-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prod-root .pc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--pt-radius-control);
+  background: var(--tc-paper);
+  background-clip: padding-box;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--pc-fg);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.prod-root .pc-btn:hover {
+  background: var(--pc-accent);
+  color: var(--pc-accent-ink);
+}
+
+.prod-root .pc-btn.is-primary {
+  border-color: var(--pc-primary);
+  background: var(--pc-primary);
+  color: var(--pc-primary-ink);
+}
+
+.prod-root .pc-btn.is-primary:hover {
+  border-color: color-mix(in srgb, var(--pc-primary) 80%, transparent);
+  background: color-mix(in srgb, var(--pc-primary) 80%, transparent);
+  color: var(--pc-primary-ink);
+}
+
+@media (min-width: 640px) {
+  .prod-root .pc-consent {
+    left: auto;
+    max-width: 384px;
+  }
+
+  .prod-root .pc-consent-title {
+    font-size: 18px;
+    line-height: 28px;
+  }
+
+  .prod-root .pc-consent-text {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .prod-root .pc-consent-actions {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .prod-root .pc-consent-pair {
+    flex-direction: row;
+  }
+}
+
+/* ---------- the cookie settings dialog ---------- */
+
+.prod-root .pc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgb(0 0 0 / 0.8);
+}
+
+.prod-root .pc-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 50;
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  max-width: 448px;
+  max-height: calc(100dvh - 2rem);
+  padding: 24px;
+  overflow-y: auto;
+  border: 1px solid var(--tc-hair);
+  background: var(--tc-paper);
+  color: var(--pc-fg);
+  font-size: 16px;
+  line-height: 24px;
+  transform: translate(-50%, -50%);
+}
+
+@media (min-width: 640px) {
+  .prod-root .pc-dialog {
+    border-radius: var(--pt-radius-card);
+  }
+}
+
+.prod-root .pc-dialog:focus {
+  outline: none;
+}
+
+.prod-root .pc-dialog-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .prod-root .pc-dialog-head {
+    text-align: left;
+  }
+}
+
+/* live sets the title at 600; the mirror holds Inter at 500 (DESIGN.md) */
+.prod-root .pc-dialog-title {
+  font-size: 18px;
+  line-height: 18px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.prod-root .pc-dialog-desc {
+  padding-top: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--pc-muted);
+}
+
+.prod-root .pc-dialog-desc a {
+  font-weight: 500;
+  color: var(--pc-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.prod-root .pc-dialog-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 0;
+}
+
+.prod-root .pc-dialog-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prod-root .pc-dialog-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: inherit;
+  cursor: pointer;
+}
+
+.prod-root .pc-dialog-trigger:hover {
+  text-decoration: underline;
+}
+
+.prod-root .pc-dialog-trigger svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s ease;
+}
+
+.prod-root .pc-dialog-trigger[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+
+.prod-root .pc-dialog-more {
+  padding-top: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--pc-muted);
+}
+
+.prod-root .pc-switch {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  width: 44px;
+  height: 24px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--tc-hair);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.prod-root .pc-switch[aria-checked='true'] {
+  background: var(--pc-primary);
+}
+
+.prod-root .pc-switch:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.prod-root .pc-switch-thumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--tc-paper);
+  box-shadow: var(--pc-shadow);
+  transition: transform 0.15s ease;
+}
+
+.prod-root .pc-switch[aria-checked='true'] .pc-switch-thumb {
+  transform: translateX(20px);
+}
+
+.prod-root .pc-dialog-foot {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+}
+
+@media (min-width: 640px) {
+  .prod-root .pc-dialog-foot {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.prod-root .pc-dialog-close {
+  position: absolute;
+  top: 17px;
+  right: 17px;
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: var(--pt-radius-chip);
+  background: none;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.prod-root .pc-dialog-close:hover {
+  opacity: 1;
+}
+
+.prod-root .pc-dialog-close svg {
+  width: 16px;
+  height: 16px;
+}

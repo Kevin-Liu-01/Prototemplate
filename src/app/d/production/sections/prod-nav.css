@@ -694,13 +694,16 @@
   background: none;
   font: inherit;
   font-size: 14px;
-  color: var(--tc-ink-2);
+  line-height: 20px;
+  /* live dresses it as the language selector beside it: the muted zinc
+     ink and the accent fill on hover (prod-chrome.css) */
+  color: var(--pc-muted);
   cursor: pointer;
 }
 
 .toolchain-root .pn-sheet-theme:hover {
-  background: var(--tc-hair-2);
-  color: var(--tc-ink);
+  background: var(--pc-accent);
+  color: var(--pc-accent-ink);
 }
 
 .toolchain-root .pn-sheet-theme-glyph {
@@ -749,8 +752,10 @@
     height: 44px;
   }
 
-  /* the sheet's theme switch sits alone in its 52px row */
-  .toolchain-root .pn-sheet-theme {
+  /* the sheet's language selector and theme switch share its 52px row;
+     both take the 44px tap height there */
+  .toolchain-root .pn-sheet-theme,
+  .toolchain-root .pn-sheet-tools .pc-lang-btn {
     height: 44px;
   }
 }

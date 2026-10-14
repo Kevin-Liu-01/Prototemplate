@@ -9,3 +9,4 @@
 export const TERMS_URL = 'https://generaltranslation.com/legal/terms';
 export const PRIVACY_URL = 'https://generaltranslation.com/legal/privacy-policy';
 export const USAGE_RATES_URL = 'https://generaltranslation.com/pricing/usage';
+export const COOKIE_POLICY_URL = 'https://generaltranslation.com/legal/cookie-policy';

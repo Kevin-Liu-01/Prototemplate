@@ -30,9 +30,11 @@ import {
 } from '@icons-pack/react-simple-icons';
 import { ChevronDown, Search } from 'lucide-react';
 
-import { ThemeButton, readTheme, toggleTheme } from '@/components/viewer/ThemeButton';
-import type { Theme } from '@/components/viewer/ThemeButton';
 import { useMountEffect } from '@/lib/use-mount-effect';
+
+import ConsentBanner from './ConsentBanner';
+import LanguageSelector from './LanguageSelector';
+import ProdThemeToggle, { ProdSheetThemeToggle } from './ProdThemeToggle';
 
 import './prod-nav.css';
 
@@ -49,9 +51,12 @@ import './prod-nav.css';
  *
  * Mirror conventions over the live code: internal pages resolve to their
  * /d/production copies, Sign In opens the mirror's sign-in plate, the theme
- * is html[data-theme] through ThemeButton, and Search is an inert control,
- * since the mirror has no docs index to search. Docs links leave for the
- * live documentation, which the mirror does not copy.
+ * is html[data-theme] through ProdThemeToggle, and Search is an inert
+ * control, since the mirror has no docs index to search. Docs links leave
+ * for the live documentation, which the mirror does not copy. The sheet's
+ * foot carries live's language selector stub and labeled theme switch, and
+ * the consent banner (ConsentBanner.tsx) mounts beside the bar, since every
+ * page that mounts this header is a page live shows the banner on.
  */
 
 const BASE = '/d/production';
@@ -314,33 +319,6 @@ function ToggleGlyph({ open }: { open: boolean }) {
   );
 }
 
-/** The sheet's labeled theme switch: the half disc and the current mode's name. */
-function SheetThemeToggle() {
-  const [theme, setTheme] = useState<Theme>('dark');
-  useMountEffect(() => {
-    setTheme(readTheme());
-    const observer = new MutationObserver(() => setTheme(readTheme()));
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    return () => observer.disconnect();
-  });
-  const name = theme === 'dark' ? 'Dark' : 'Light';
-  return (
-    <button
-      aria-label={`${name}, switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      className='pn-sheet-theme'
-      type='button'
-      onClick={() => {
-        toggleTheme();
-      }}
-    >
-      <span aria-hidden className='pn-sheet-theme-glyph'>
-        {theme === 'dark' ? '◑' : '◐'}
-      </span>
-      {name}
-    </button>
-  );
-}
-
 function SheetMenu({ menu, onNavigate }: { menu: NavMenu; onNavigate: () => void }) {
   const [open, setOpen] = useState(false);
   return (
@@ -410,7 +388,8 @@ function Sheet({ onClose, top }: { onClose: () => void; top: number }) {
             Sign In
           </a>
           <div className='pn-sheet-tools'>
-            <SheetThemeToggle />
+            <LanguageSelector />
+            <ProdSheetThemeToggle className='pn-sheet-theme' />
           </div>
         </div>
       </div>
@@ -442,8 +421,22 @@ export default function ProdNav() {
       <header className='pn' data-prod-nav ref={headerRef}>
         <div className='pn-in'>
           <a className='pn-brand' href={BASE}>
-            <Image alt='' className='pn-logo-light' height={40} src='/brand/no-bg-gt-logo-light.png' width={40} />
-            <Image alt='' className='pn-logo-dark' height={40} src='/brand/no-bg-gt-logo-dark.png' width={40} />
+            {/* live's Logo.tsx: both marks carry their alt, and the theme
+                hides one (prod-nav.css) */}
+            <Image
+              alt='GT, Inc. light logo'
+              className='pn-logo-light'
+              height={40}
+              src='/brand/no-bg-gt-logo-light.png'
+              width={40}
+            />
+            <Image
+              alt='GT, Inc. dark logo'
+              className='pn-logo-dark'
+              height={40}
+              src='/brand/no-bg-gt-logo-dark.png'
+              width={40}
+            />
             <span className='pn-sr'>General Translation, Inc.</span>
           </a>
 
@@ -472,7 +465,7 @@ export default function ProdNav() {
                 <kbd>K</kbd>
               </span>
             </button>
-            <ThemeButton className='pn-theme' />
+            <ProdThemeToggle className='pn-theme' />
             <a className='pn-signin' href={SIGN_IN}>
               Sign In
             </a>
@@ -493,6 +486,7 @@ export default function ProdNav() {
         </div>
       </header>
       {sheetTop !== null ? <Sheet top={sheetTop} onClose={() => setSheetTop(null)} /> : null}
+      <ConsentBanner />
     </>
   );
 }

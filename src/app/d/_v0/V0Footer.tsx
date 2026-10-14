@@ -14,6 +14,10 @@ import {
 
 import { ThemeButton } from "@/components/viewer/ThemeButton";
 
+import { OPEN_SETTINGS } from "../production/sections/ConsentBanner";
+import LanguageSelector from "../production/sections/LanguageSelector";
+import ProdThemeToggle from "../production/sections/ProdThemeToggle";
+
 import V0FooterMark from "./V0FooterMark";
 
 import "./v0-footer.css";
@@ -199,12 +203,14 @@ const BADGES: readonly { alt: string; src: string }[] = [
  * The metal-masked mark and the drawn compliance seals in the left cell,
  * five link columns beside it — no interior seams (founder note): the
  * columns separate by rhythm alone, and only the closing strip keeps its
- * hairline — then live status, the copyright line, and the theme switch.
+ * hairline — then live status, the copyright line, the language selector
+ * (production only) and the theme switch.
  */
 export default function V0Footer() {
   // /d/singularity-dossier/... -> /d/singularity-dossier, as V0Nav resolves it
   const pathname = usePathname();
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? "";
+  const isProduction = base === PRODUCTION;
 
   return (
     <footer className="tc-sec v0-foot">
@@ -260,11 +266,21 @@ export default function V0Footer() {
               {column.links.map((link) => {
                 const Mark = link.mark;
                 if (link.action === "cookies") {
-                  /* the mirror runs no analytics, so there is no consent
-                     dialog for the button to open */
+                  /* the production mirror opens its consent stub's
+                     settings dialog (production/sections/ConsentBanner.tsx);
+                     the other concepts run no consent dialog */
                   return (
                     <li key={link.label}>
-                      <button type="button">{link.label}</button>
+                      <button
+                        type="button"
+                        onClick={
+                          isProduction
+                            ? () => window.dispatchEvent(new Event(OPEN_SETTINGS))
+                            : undefined
+                        }
+                      >
+                        {link.label}
+                      </button>
                     </li>
                   );
                 }
@@ -305,7 +321,19 @@ export default function V0Footer() {
         <span className="v0-foot-copy max-[640px]:ml-0 max-[640px]:w-full max-[640px]:text-left">
           © 2026 General Translation, Inc. All rights reserved.
         </span>
-        <ThemeButton className="v0-foot-theme max-[640px]:ml-auto" />
+        {/* the production mirror carries live's language selector stub
+            and its theme switch labels; the other concepts keep the
+            shell's ThemeButton */}
+        {isProduction ? (
+          <>
+            <span className="v0-foot-lang">
+              <LanguageSelector />
+            </span>
+            <ProdThemeToggle className="v0-foot-theme max-[640px]:ml-auto" />
+          </>
+        ) : (
+          <ThemeButton className="v0-foot-theme max-[640px]:ml-auto" />
+        )}
       </div>
     </footer>
   );
