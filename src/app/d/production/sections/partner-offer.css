@@ -1,11 +1,11 @@
 /*
  * The partner credit pages (PartnerOffer.tsx). The live page sets
  * --plate-inset-top to its 56px navbar; here the section sits under
- * V0Nav, whose bar is 58px with a 1px bottom rule, so the inset plate
- * (plate.css, .plate-inset) reads 59px.
+ * ProdNav, whose bar is 56px with a 1px bottom rule, so the inset plate
+ * (plate.css, .plate-inset) reads 57px.
  */
 .prpo-root {
-  --plate-inset-top: 59px;
+  --plate-inset-top: 57px;
 }
 
 /* The landing engine's .tc-btn-lg metrics (engine.css), for the Apply for

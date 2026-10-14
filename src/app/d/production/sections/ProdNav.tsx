@@ -57,8 +57,8 @@ import './prod-nav.css';
 const BASE = '/d/production';
 const DOCS = 'https://generaltranslation.com/docs';
 
-/** The report card lives at /try in the mirror; the live site serves it at /report-card. */
-const REPORT_CARD = `${BASE}/try`;
+/** The report card, at /report-card as on the live site; /try redirects there. */
+const REPORT_CARD = `${BASE}/report-card`;
 
 type NavLink = {
   label: string;

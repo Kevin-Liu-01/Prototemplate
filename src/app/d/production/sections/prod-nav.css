@@ -2,7 +2,9 @@
    packages/ui frame/NewHeader.tsx over layout/home/client.tsx, ui/navigation-menu.tsx
    and mobile/MobileMenu.tsx), measured from the live page at 1440x900 and
    390x844. Every color is a toolchain token, so dark mode is the same
-   remap. The breakpoints are the live header's: the full bar from 1024px,
+   remap, with one exception: Search and the open menu toggle read the
+   live zinc steps (--pn-search-fill, --pn-search-rule, --pn-search-ink
+   and --pn-muted below), which carry their own dark values. The breakpoints are the live header's: the full bar from 1024px,
    the links with a menu toggle from 768px, and the mark, Sign In and the
    toggle below 768px. */
 

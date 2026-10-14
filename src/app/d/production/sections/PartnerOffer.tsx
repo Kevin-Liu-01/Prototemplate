@@ -8,8 +8,8 @@ import PlateRoot from '@/components/plate/frame/PlateRoot';
 import GtMark from '@/components/plate/icons/GtMark';
 
 import V0Footer from '../../_v0/V0Footer';
-import V0Nav from '../../_v0/V0Nav';
 
+import ProdNav from './ProdNav';
 import type { PartnerOffer as Offer } from './partner-offers';
 
 import '@/components/plate/plate.css';
@@ -50,7 +50,7 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
  * column beside the Blue Marble, with the GT mark and the partner's logo,
  * the offer, a ruled list of its terms, one full-width Apply for Credits
  * button and the fine print. The live page sits in the (home) route group,
- * so it wears the site header and footer; here that is V0Nav and V0Footer,
+ * so it wears the site header and footer; here that is ProdNav and V0Footer,
  * the pair every /d/production page mounts. The section reads the nav's
  * height from --plate-inset-top (partner-offer.css).
  */
@@ -60,7 +60,7 @@ export default function PartnerOffer({ offer }: { offer: Offer }) {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root prod-root prpo-root' id='top'>
-        <V0Nav />
+        <ProdNav />
 
         <main>
           <PlateRoot scene={1} picture='earth' inset>
