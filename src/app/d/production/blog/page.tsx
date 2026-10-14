@@ -31,7 +31,7 @@ export const metadata = {
  *
  * CHROME. The shipped blog route wraps its content in the same site
  * Header and SiteFooterMount as the landing page, so this page mounts the
- * production final's reproductions of those — ProdNav and V0Footer — rather
+ * production final's reproductions of those, ProdNav and V0Footer, rather
  * than the singularity TopNav/SiteFooter the proposal subpages use. The
  * root also carries `blog-root`, exactly as the real
  * app/[locale]/blog/layout.tsx does, because the blog sheet is scoped to

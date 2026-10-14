@@ -30,8 +30,8 @@ export const metadata: Metadata = {
  *
  * The chrome matches the real file: the site header, the band, the site
  * footer. The real not-found.tsx mounts `<Header footer={false}>` +
- * NotFoundPage + SiteFooterMount — the same header and footer the home page
- * carries — and ProdNav / V0Footer are this control's reproductions of exactly
+ * NotFoundPage + SiteFooterMount, the same header and footer the home page
+ * carries, and ProdNav / V0Footer are this control's reproductions of exactly
  * those two, so the concept's landing shell is reused rather than the
  * subpage TopNav/SiteFooter pair.
  *

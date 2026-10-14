@@ -41,9 +41,9 @@ export const metadata = {
  *
  * Chrome follows the shipped page too: on the real site careers sits in
  * the same (home) route group as the landing page, so it wears the same
- * header and the same footer. Here that means ProdNav and V0Footer — the
- * shipped chrome's counterparts, the pair /d/production's landing page
- * already mounts — rather than the singularity TopNav/SiteFooter the
+ * header and the same footer. Here that means ProdNav and V0Footer, the
+ * shipped chrome's counterparts and the pair /d/production's landing page
+ * already mounts, rather than the singularity TopNav/SiteFooter the
  * proposals' subpages use.
  *
  * Root classes match the shipped page's `toolchain-root sgdh-root

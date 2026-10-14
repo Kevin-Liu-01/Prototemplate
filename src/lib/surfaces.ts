@@ -256,8 +256,8 @@ const SITES: readonly Surface[] = SITE_DIRECTIONS.flatMap((d) => {
  * the pages Kevin built for the live site, as [path, name, description],
  * in the order the live site's navigation reads them after Home, then the
  * seven partner credit pages under /enterprise/contact, which the live
- * site reaches only by their short links (/yc and the rest, redirected in
- * next.config.ts). The legal, Mintlify, usage rates and bare enterprise
+ * site links from posts such as supporting-slash-companies and reaches by
+ * short links (/yc and the rest, redirected in next.config.ts). The legal, Mintlify, usage rates and bare enterprise
  * contact routes are gone from this prototype on Kevin's directive; the
  * live site's usage rates page appears among the live surfaces below. The
  * dynamic segments (blog/[slug], the catch-all) are not pages of their own

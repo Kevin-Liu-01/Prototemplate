@@ -97,9 +97,9 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
     return `${post.title} ${post.summary}`.toLowerCase().includes(needle);
   });
 
-  /* the front page leads with its three newest posts full-size; a
-     filtered or searched deck keeps the plain three columns, its top
-     three cards carrying their covers */
+  /* the front page leads with the first three posts in
+     content/blog/order.json order, full-size; a filtered or searched
+     deck keeps the plain three columns */
   const featuring = activeCategory === 'all' && needle === '';
   const featured = featuring ? visiblePosts.slice(0, 3) : [];
   const rest = featuring ? visiblePosts.slice(3) : visiblePosts;

@@ -19,12 +19,12 @@ gsap.registerPlugin(useGSAP);
    that share the toolchain drawing keep its Lucide line glyphs. */
 
 /**
- * Edge delivery — the translation CDN as an orthographic globe.
+ * Edge delivery: the translation CDN as an orthographic globe.
  *
  * The old meridian cage read as a tangle: overlapping ellipses, crossing
  * leaders, a stray plumb line. This drawing is built the other way round,
- * from the story outward. The story is one sentence — a request goes to the
- * closest edge, and the translation is already there — so the drawing is:
+ * from the story outward. The story is one sentence (a request goes to the
+ * closest edge, and the translation is already there), so the drawing is:
  * five points of presence standing on a sparse graticule, one user, and one
  * highlighted great-circle route between the user and the PoP that answers
  * in 12 ms. Everything else is quieter than those three things.
@@ -34,29 +34,29 @@ gsap.registerPlugin(useGSAP);
  * strongest neutral line. No fills, no shading.
  *
  * The meridian set is symmetric about the camera (±18°, ±54°) so no
- * meridian ever projects as a dead-vertical line — the old drawing's
+ * meridian ever projects as a dead-vertical line; the old drawing's
  * "plumb line" was the lon-0 meridian doing exactly that. The five PoPs
- * sit on graticule intersections — infrastructure snaps to the grid; the
- * user does not. Latencies are ordered the way geography would order them
+ * sit on graticule intersections, because infrastructure snaps to the
+ * grid; the user does not. Latencies are ordered the way geography would order them
  * from a user in fra's neighbourhood: fra 12 < iad 21 < nrt 34 < sin 41 <
  * syd 48. Callout leaders are corner-routed (node → elbow → horizontal
  * run) and fan outward on both sides, so no two ever cross. Glyphs
  * identify, never decorate: a server on each PoP label, a user on the
  * origin, and a file on the payload that travels the route.
  *
- * At rest the serving pair — fra and the user — wear the drawing's normal
+ * At rest the serving pair, fra and the user, wear the drawing's normal
  * quiet ink, indistinguishable from the other callouts (founder revision:
  * no persistent blue on labels or leaders; the route arc alone holds the
  * accent). The blue belongs to the arrivals: each callout ships an
  * invisible accent copy of its lockup and leader (the same overlay device
- * as the dot and rings — elements that exist only as motion), and the
+ * as the dot and rings, elements that exist only as motion), and the
  * timeline breathes the copy in and out at the landing beat, so the whole
  * lockup flashes to the accent and settles back as one gesture.
  *
  * Motion is one quiet loop: a request dot rides the route out, a ring
  * lands at fra, and the payload chip rides back. Each landing answers with
- * its blue flash — fra's as the request dot arrives, the user's as the
- * payload chip settles, echoed by a ring at the origin dot — scheduled on
+ * its blue flash (fra's as the request dot arrives, the user's as the
+ * payload chip settles, echoed by a ring at the origin dot), scheduled on
  * the same timeline at the landing beats, never on a parallel clock.
  * Under reduced motion the chip rests mid-route, the dot, rings, and
  * flash overlays are removed, and the still frame rests entirely in the
@@ -69,7 +69,7 @@ const R = 92;
 /* 179, not the frame's optical middle: the left rail's ticks end at 76
    and the right rail's start at 284, so a 170-centred sphere sat 2px
    off the left ticks and 22px off the right (founder: "rlly close to
-   fra and so far from the right side names") — 179 splits the air
+   fra and so far from the right side names"); 179 splits the air
    ~11/13. Leaders re-derive from the projection, so only the elbows'
    crossing margins need a glance when this moves. */
 const CX = 179;
@@ -179,7 +179,7 @@ const CAPS: Arc[] = [CAP, -CAP].flatMap((lat) => splitArcs(ring(lat), true));
 
 type Pop = {
   code: string;
-  /** The compact rendering's name — the PoP's airport code (founder: the
+  /** The compact rendering's name: the PoP's airport code (founder: the
       ap-* region codes overran the viewBox at the phone step's 12px). */
   short: string;
   lat: number;
@@ -193,14 +193,14 @@ type Pop = {
   home?: boolean;
 };
 
-/* The left rail reads iad then fra — the home PoP labels on its own side
+/* The left rail reads iad then fra: the home PoP labels on its own side
    of the sphere (founder note), well below iad at 47.5% of the frame's
    height, and with a real 18-unit horizontal arm like the right rail's
    (founder: the old elbow at (82, 96) was pinned outside the limb, which
    left it a 6-unit stub that read as one straight diagonal). The elbow
    now sits just inside the limb (x 78.8 at that height), so the arm
-   crosses the sphere's edge once — the same single limb crossing the old
-   diagonal made — and the derived path clears iad's leader and every
+   crosses the sphere's edge once (the same single limb crossing the old
+   diagonal made), and the derived path clears iad's leader and every
    node dot by 21+ units. The right rail keeps nrt/sin/syd top-to-bottom,
    still in latency order. */
 const POPS: readonly Pop[] = [
@@ -215,7 +215,8 @@ const POPS: readonly Pop[] = [
  *  east of fra keeps the great circle off the sphere's centre, so the
  *  route projects as a visible arc instead of a straight chord. */
 /* The reader's row lives in the right ledger, between sin and syd, so the
-   hollow dot is unmistakably "user" — same leader grammar as the PoPs. */
+   hollow dot is unmistakably "user", with the same leader grammar as the
+   PoPs. */
 const ORIGIN = { lat: -8, lon: 30, elbow: [272, 172], tickTo: 284, iconX: 288, textX: 300 } as const;
 
 const HOME = POPS.find((p) => p.home) ?? POPS[0];
@@ -223,8 +224,8 @@ const HOME = POPS.find((p) => p.home) ?? POPS[0];
 /* ---------------- the route ----------------
    The great circle from the user to the nearest PoP. Between two
    reader-facing points an orthographic great circle projects almost
-   straight, so the drawn route is bowed off its chord — perpendicular,
-   away from the sphere's centre — the way a flight path is lifted off a
+   straight, so the drawn route is bowed off its chord (perpendicular,
+   away from the sphere's centre), the way a flight path is lifted off a
    map. That keeps it legible as a route rather than another graticule
    line. Slerp in view space; both endpoints face the reader. */
 
@@ -344,7 +345,7 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
         .to(chipEl, { autoAlpha: 0, duration: 0.35 }, 2.5);
 
       /* Arrival flashes (founder revision): the receiving end's lockup and
-         leader flash to the accent and settle back to the quiet ink — fra's
+         leader flash to the accent and settle back to the quiet ink: fra's
          as the request dot arrives (1.05, the same beat its ring fires on),
          the user's as the payload chip settles (2.35, where the return
          tween ends). The flash is the accent overlay copy breathing in and
@@ -450,7 +451,7 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
         );
       })}
 
-      {/* the user's callout, in the right ledger — quiet ink at rest, with
+      {/* the user's callout, in the right ledger: quiet ink at rest, with
           its own accent flash copy for the payload chip's landing */}
       <g>
         <path

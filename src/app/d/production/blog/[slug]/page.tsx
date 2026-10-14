@@ -62,8 +62,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  * generaltranslation.com so a reviewer can hold a proposal beside the thing
  * it replaces. This route reproduces the shipped article page.
  *
- * The chrome is the one this control's landing page already runs — ProdNav
- * over the ruled column, V0Footer closing it — because that is what the
+ * The chrome is the one this control's landing page already runs, ProdNav
+ * over the ruled column and V0Footer closing it, because that is what the
  * shipped site does: the blog article inherits the site's own header and
  * footer from the blog layout, not a page-specific shell.
  *

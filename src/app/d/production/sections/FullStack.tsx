@@ -1289,7 +1289,7 @@ export default function V0FullStack() {
     >
       <div className='tcb-in'>
         {/* the head wears the section-head grammar so the FULL-STACK
-            watermark (the Square3Stack3DIcon glyph — founder: "use the full stack
+            watermark (the Square3Stack3DIcon glyph; founder: "use the full stack
             icon here") seats whole at the house 240 gauge, like the
             developer and context heads */}
         <div className='tc-head'>
