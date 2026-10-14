@@ -1,0 +1,88 @@
+/* ============================================================
+   PRODUCTION SHELL TOKENS
+   The live site binds the toolchain shell to the house palette
+   (gt-cloud apps/landing/src/components/landing/shell/engine.css,
+   lines 9 to 100 and 3260 to 3290) and seats the ruled column at
+   1104px. src/app/d/toolchain/styles.css keeps the earlier values
+   for the directions that fork it, so every rule here is scoped
+   to .toolchain-root.prod-root and no other /d page changes.
+
+   The house values come from packages/ui/src/css/shared.css
+   (light lines 227 to 247, dark lines 288 to 310): background
+   and card hsl(0 0% 100%) and hsl(240 10% 3.9%), border
+   hsl(240 5.9% 90%) and hsl(240 3.7% 15.9%), and the strong
+   border at 25% of the opposite ink.
+
+   src/app/d/production/layout.tsx imports this sheet, so every
+   page under /d/production reads it, the pages added later too.
+   ============================================================ */
+
+.toolchain-root.prod-root {
+  --color-background: hsl(0 0% 100%);
+  --color-card: hsl(0 0% 100%);
+  --color-border: hsl(240 5.9% 90%);
+  --color-border-strong: hsl(240 10% 3.9% / 0.25);
+
+  --tc-paper: var(--color-background);
+  --tc-sunk: var(--color-background);
+  --tc-white: var(--color-background);
+  --tc-card: var(--color-card);
+  --tc-hair: var(--color-border);
+  --tc-hair-2: color-mix(in srgb, var(--color-border) 58%, transparent);
+  --tc-hair-strong: var(--color-border-strong);
+  --tc-hair-band: var(--color-border);
+  --tc-hair-band-2: color-mix(in srgb, var(--color-border) 58%, transparent);
+  --tc-hair-band-strong: var(--color-border-strong);
+  --tc-negative: #f0524f;
+  /* the one black: the house dark background, kept literal here because
+     the ink bands stay dark in light mode while the background flips */
+  --tc-dark: hsl(240 10% 3.9%);
+  --tc-panel: hsl(240 10% 3.9%);
+  --tc-plate: #ffffff;
+
+  /* the live column: the original pages' max-w-[1120px] px-2 mains put
+     their border-x lines 1104px apart (engine.css line 95) */
+  --tc-rail: 1104px;
+}
+
+/* Dark restates every token the light block sets, at a higher rank than
+   the toolchain's own dark block, so the order in which the sheets load
+   never decides a value. */
+[data-theme='dark'] .toolchain-root.prod-root {
+  --color-background: hsl(240 10% 3.9%);
+  --color-card: hsl(240 10% 3.9%);
+  --color-border: hsl(240 3.7% 15.9%);
+  --color-border-strong: hsl(0 0% 98% / 0.25);
+
+  --tc-dark: var(--color-background);
+  --tc-panel: var(--color-background);
+  --tc-paper: var(--color-background);
+  --tc-sunk: var(--color-background);
+  --tc-white: var(--color-background);
+  --tc-card: var(--color-background);
+  --tc-hair: var(--color-border);
+  --tc-hair-2: color-mix(in srgb, var(--color-border) 72%, transparent);
+  --tc-hair-strong: var(--color-border-strong);
+  --tc-hair-band: var(--tc-hair);
+  --tc-hair-band-2: var(--tc-hair-2);
+  --tc-hair-band-strong: var(--color-border-strong);
+  /* live sets the plate to the background and then back to #070707 in the
+     same block (engine.css lines 3268 and 3287); the second one wins */
+  --tc-plate: #070707;
+}
+
+/* The document ground. Live leaves html transparent, so the canvas takes
+   the body's color, and paints the body with the house background: white
+   in light and hsl(240 10% 3.9%) (#09090b) in dark. The other routes keep
+   the site's --pt-paper ground from src/app/globals.css. */
+html:has(.prod-root) {
+  background: transparent;
+}
+
+body:has(.prod-root) {
+  background: hsl(0 0% 100%);
+}
+
+[data-theme='dark'] body:has(.prod-root) {
+  background: hsl(240 10% 3.9%);
+}
