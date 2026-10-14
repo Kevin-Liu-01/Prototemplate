@@ -16,7 +16,7 @@ import './prod-chrome.css';
  * src/components/analytics/cookie-banner.tsx and
  * dialog/CookieSettingsDialog.tsx), rebuilt as a stub. A first visit shows
  * the "We value your privacy" card with Accept, Reject all and Customize;
- * Customize, and Manage Cookies in the footer (V0Footer dispatches
+ * Customize, and Manage Cookies in the footer (ProdFooter dispatches
  * OPEN_SETTINGS), open the Cookie Settings dialog. The mirror loads no
  * analytics, so the choice is only remembered in this browser's
  * localStorage under CONSENT_KEY: nothing is captured, no cookie is set

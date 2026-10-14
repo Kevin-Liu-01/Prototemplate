@@ -752,11 +752,23 @@
     height: 44px;
   }
 
-  /* the sheet's language selector and theme switch share its 52px row;
-     both take the 44px tap height there */
+  /* the sheet's language selector and theme switch keep live's 36px
+     drawing in its 52px row (8px above and below); a transparent band
+     the height of the tap floor sits over each, inside the row */
   .toolchain-root .pn-sheet-theme,
   .toolchain-root .pn-sheet-tools .pc-lang-btn {
+    position: relative;
+  }
+
+  .toolchain-root .pn-sheet-theme::after,
+  .toolchain-root .pn-sheet-tools .pc-lang-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
     height: 44px;
+    transform: translateY(-50%);
   }
 }
 

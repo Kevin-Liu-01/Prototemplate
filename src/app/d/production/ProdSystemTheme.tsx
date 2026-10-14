@@ -12,6 +12,9 @@ function savedTheme(): 'light' | 'dark' | null {
   }
 }
 
+/* the boot script in src/app/layout.tsx uses the same test */
+const PRODUCTION_PATH = /^\/d\/production(\/|$)/;
+
 function systemTheme(): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
@@ -43,14 +46,20 @@ export default function ProdSystemTheme() {
       root.dataset.themeFrom = 'system';
     }
     return () => {
-      /* the cleanup runs a task after the unmount, once the next page has
-         committed; a production page there carries its own marker and
-         keeps the system theme */
-      if (document.querySelector('[data-prod-theme]')) return;
-      if (root.dataset.themeFrom !== 'system') return;
-      delete root.dataset.themeFrom;
-      if (!savedTheme()) root.dataset.theme = 'dark';
+      /* The new address decides, not the DOM: the router pushes the next
+         URL before this cleanup runs, while a hidden copy of the old route
+         can keep its nodes in the document for a while. The check runs now
+         and again on the next frame, in case the address had not changed
+         yet; both runs are no-ops under /d/production. */
+      const restore = () => {
+        if (PRODUCTION_PATH.test(window.location.pathname)) return;
+        if (root.dataset.themeFrom !== 'system') return;
+        delete root.dataset.themeFrom;
+        if (!savedTheme()) root.dataset.theme = 'dark';
+      };
+      restore();
+      window.requestAnimationFrame(restore);
     };
   });
-  return <span data-prod-theme hidden />;
+  return null;
 }

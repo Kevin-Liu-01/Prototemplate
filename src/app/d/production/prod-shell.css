@@ -86,3 +86,17 @@ body:has(.prod-root) {
 [data-theme='dark'] body:has(.prod-root) {
   background: hsl(240 10% 3.9%);
 }
+
+/* The report card's live root is toolchain-root report-root, with no
+   sgdh-root (gt-cloud ReportCardPage.tsx), so live's light panel flip in
+   v0-pages.css never reaches it and the panel family keeps engine.css's
+   dark values (lines 58 to 64). The mirror's report card carries
+   sgdh-root for the footer's light remaps, so on light it restates the
+   engine values at a rank above the flip (0,5,0 over 0,4,0). */
+:root:not([data-theme='dark']) .toolchain-root.prod-root.try-root {
+  --tc-panel: hsl(240 10% 3.9%);
+  --tc-panel-ink: rgba(255, 255, 255, 0.88);
+  --tc-panel-dim: rgba(255, 255, 255, 0.5);
+  --tc-panel-faint: rgba(255, 255, 255, 0.26);
+  --tc-panel-rule: rgba(255, 255, 255, 0.1);
+}

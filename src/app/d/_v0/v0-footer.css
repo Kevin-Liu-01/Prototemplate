@@ -145,9 +145,10 @@
 /* ---------- link columns ---------- */
 
 /* Small sentence-case heads in the display face — the ledger carries no
-   uppercase tracking and no eyebrows. h2 in the markup (the outline steps
-   to h2 from an h1-only page); this rule pins the size either way. */
-.toolchain-root .v0-foot-col h2 {
+   uppercase tracking and no eyebrows. h2 on the production mirror (the
+   outline steps to h2 from an h1-only page) and h3 on the other concepts;
+   this rule pins the size either way. */
+.toolchain-root .v0-foot-col :is(h2, h3) {
   font-size: 13.5px;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -320,7 +321,7 @@
 
   /* heads match the raised links at 15px — hierarchy rides the darker
      ink and the display face, not size */
-  .toolchain-root .v0-foot-col h2 {
+  .toolchain-root .v0-foot-col :is(h2, h3) {
     font-size: 15px;
     margin-bottom: 4px;
   }

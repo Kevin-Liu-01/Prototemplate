@@ -1,7 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../../_v0/V0Footer';
+import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
 
 import EnterpriseContact from '../sections/EnterpriseContact';
@@ -49,7 +49,7 @@ export const metadata = {
  * the shields and both sub-paragraphs. None of that is the real page, so
  * none of it is here.
  *
- * Chrome: ProdNav and V0Footer, the pair the concept's landing and pricing
+ * Chrome: ProdNav and ProdFooter, the pair the concept's landing and pricing
  * pages mount. The shipped site serves one nav and one footer from the
  * (home) layout on every route in the group — Header plus SiteFooterMount —
  * so this subpage inherits the home page's chrome rather than the
@@ -73,7 +73,7 @@ export default function ProductionEnterprisePage() {
           <EnterpriseTestimonial />
           <EnterpriseContact />
           <EnterpriseGrade />
-          <V0Footer />
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />

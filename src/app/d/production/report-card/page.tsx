@@ -2,7 +2,7 @@ import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import TryPage from '@/components/try/TryPage';
 
-import V0Footer from '../../_v0/V0Footer';
+import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
 
 import '../../toolchain/styles.css';
@@ -32,7 +32,7 @@ export default function ProductionReportCardPage() {
         <ProdNav />
         <main className='tc-rail try-rail'>
           <TryPage />
-          <V0Footer />
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />

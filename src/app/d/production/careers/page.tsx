@@ -1,7 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../../_v0/V0Footer';
+import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
 
 import Customers from '../sections/Customers';
@@ -41,7 +41,7 @@ export const metadata = {
  *
  * Chrome follows the shipped page too: on the real site careers sits in
  * the same (home) route group as the landing page, so it wears the same
- * header and the same footer. Here that means ProdNav and V0Footer, the
+ * header and the same footer. Here that means ProdNav and ProdFooter, the
  * shipped chrome's counterparts and the pair /d/production's landing page
  * already mounts, rather than the singularity TopNav/SiteFooter the
  * proposals' subpages use.
@@ -70,7 +70,7 @@ export default async function ProductionCareersPage() {
           <CareersMission />
           <CareersOpenings positions={positions} />
           <CareersClose />
-          <V0Footer />
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />

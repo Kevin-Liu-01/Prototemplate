@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../../../_v0/V0Footer';
+import ProdFooter from '../../sections/ProdFooter';
 import ProdNav from '../../sections/ProdNav';
 
 import BlogArticle from '../../sections/BlogArticle';
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  * it replaces. This route reproduces the shipped article page.
  *
  * The chrome is the one this control's landing page already runs, ProdNav
- * over the ruled column and V0Footer closing it, because that is what the
+ * over the ruled column and ProdFooter closing it, because that is what the
  * shipped site does: the blog article inherits the site's own header and
  * footer from the blog layout, not a page-specific shell.
  *
@@ -103,7 +103,7 @@ export default async function ProductionBlogPostPage({ params }: Params) {
           ) : (
             <BlogArticleNotFound suggestions={suggestions} />
           )}
-          <V0Footer />
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />

@@ -1,7 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../../_v0/V0Footer';
+import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
 
 import BlogList from '../sections/BlogList';
@@ -31,7 +31,7 @@ export const metadata = {
  *
  * CHROME. The shipped blog route wraps its content in the same site
  * Header and SiteFooterMount as the landing page, so this page mounts the
- * production final's reproductions of those, ProdNav and V0Footer, rather
+ * production final's reproductions of those, ProdNav and ProdFooter, rather
  * than the singularity TopNav/SiteFooter the proposal subpages use. The
  * root also carries `blog-root`, exactly as the real
  * app/[locale]/blog/layout.tsx does, because the blog sheet is scoped to
@@ -47,8 +47,8 @@ export default function ProductionBlogPage() {
           <BlogList />
           {/* the shipped page hangs its footer off the layout, in its own
               rail below main; this concept's other pages all close the
-              rail with V0Footer inside main, and the seam is identical */}
-          <V0Footer />
+              rail with ProdFooter inside main, and the seam is identical */}
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />

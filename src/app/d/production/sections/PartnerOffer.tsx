@@ -7,7 +7,7 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 import PlateRoot from '@/components/plate/frame/PlateRoot';
 import GtMark from '@/components/plate/icons/GtMark';
 
-import V0Footer from '../../_v0/V0Footer';
+import ProdFooter from './ProdFooter';
 
 import ProdNav from './ProdNav';
 import type { PartnerOffer as Offer } from './partner-offers';
@@ -50,7 +50,7 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
  * column beside the Blue Marble, with the GT mark and the partner's logo,
  * the offer, a ruled list of its terms, one full-width Apply for Credits
  * button and the fine print. The live page sits in the (home) route group,
- * so it wears the site header and footer; here that is ProdNav and V0Footer,
+ * so it wears the site header and footer; here that is ProdNav and ProdFooter,
  * the pair every /d/production page mounts. gt-cloud gives PlateRoot an
  * `inset` prop for this; the mirror's plate fork is frozen, so main's
  * .prpo-plate class (partner-offer.css) sets the same inset rules on the
@@ -128,7 +128,7 @@ export default function PartnerOffer({ offer }: { offer: Offer }) {
         </main>
 
         <div className='tc-rail'>
-          <V0Footer />
+          <ProdFooter />
         </div>
       </div>
       <DirectionCorner slug='production' />

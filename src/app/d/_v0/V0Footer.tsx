@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import type { ComponentType } from "react";
+import type { ComponentType, ReactNode } from "react";
 
 import {
   SiDiscord,
@@ -13,10 +13,6 @@ import {
 } from "@icons-pack/react-simple-icons";
 
 import { ThemeButton } from "@/components/viewer/ThemeButton";
-
-import { OPEN_SETTINGS } from "../production/sections/ConsentBanner";
-import LanguageSelector from "../production/sections/LanguageSelector";
-import ProdThemeToggle from "../production/sections/ProdThemeToggle";
 
 import V0FooterMark from "./V0FooterMark";
 
@@ -34,7 +30,7 @@ type FooterLink = {
   external?: boolean;
   /** Brand mark, only where the cell names a tool or venue. Functional, never ornament. */
   mark?: ComponentType<MarkProps>;
-  /** Renders a button in place of a link: the live footer's Manage Cookies opens its consent dialog. */
+  /** Manage Cookies: a button where the page passes onManageCookies, as the live footer's opens its consent dialog. */
   action?: "cookies";
 };
 
@@ -134,7 +130,7 @@ const columns = (
         href: isProduction ? `${base}/supported-locales` : `${base}/locales`,
       },
       {
-        label: "Report Card",
+        label: isProduction ? "Report Card" : "Report card",
         href:
           isProduction ? `${base}/report-card` : "/d/singularity-dossier/try",
       },
@@ -182,7 +178,7 @@ const columns = (
       { label: "Terms of Service", href: `${legalBase}/legal/terms`, external: legalExternal },
       { label: "Privacy", href: `${legalBase}/legal/privacy-policy`, external: legalExternal },
       { label: "Acceptable Use Policy", href: `${legalBase}/legal/acceptable-use`, external: legalExternal },
-      { label: "Manage Cookies", href: "", action: "cookies" },
+      { label: "Manage Cookies", href: "#", action: "cookies" },
     ],
   },
 ];
@@ -201,16 +197,36 @@ const BADGES: readonly { alt: string; src: string }[] = [
 /**
  * The v0 close: the production footer's full contents on one open sheet.
  * The metal-masked mark and the drawn compliance seals in the left cell,
- * five link columns beside it — no interior seams (founder note): the
+ * five link columns beside it with no interior seams (founder note): the
  * columns separate by rhythm alone, and only the closing strip keeps its
- * hairline — then live status, the copyright line, the language selector
- * (production only) and the theme switch.
+ * hairline. Then live status, the copyright line and the theme switch.
+ *
+ * The production mirror mounts it through production/sections/ProdFooter,
+ * which passes live's language selector and theme switch as `tools` and
+ * opens its consent stub from Manage Cookies. The footer imports nothing
+ * from the production concept, so the other concepts load none of its
+ * styles, and they keep their own markup: h3 column heads, the "Report
+ * card" label, a plain mark and a Manage Cookies link.
  */
-export default function V0Footer() {
+export default function V0Footer({
+  tools,
+  onManageCookies,
+}: {
+  /** Replaces the shell's ThemeButton at the end of the closing strip. */
+  tools?: ReactNode;
+  /** Makes Manage Cookies a button that runs this. */
+  onManageCookies?: () => void;
+} = {}) {
   // /d/singularity-dossier/... -> /d/singularity-dossier, as V0Nav resolves it
   const pathname = usePathname();
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? "";
   const isProduction = base === PRODUCTION;
+  /* h2 on the mirror, as the live footer: some of its pages head only at
+     h1, so an h3 would skip a level (Lighthouse heading-order). The other
+     concepts head their sections at h2 and keep h3. The ledger's own rule
+     in v0-footer.css pins the type either way. */
+  const ColumnHead = isProduction ? "h2" : "h3";
+  const mark = <V0FooterMark />;
 
   return (
     <footer className="tc-sec v0-foot">
@@ -219,13 +235,18 @@ export default function V0Footer() {
           {/* The mark in living metal: the drawn glyph masks an animated
               chrome shader (V0FooterMark); the static gradient stays as the
               no-WebGL and reduced-motion ground. */}
-          <a
-            aria-label="General Translation home"
-            className="v0-foot-home"
-            href={base || "/"}
-          >
-            <V0FooterMark />
-          </a>
+          {isProduction ? (
+            /* the mark links home, as the live footer's does */
+            <a
+              aria-label="General Translation home"
+              className="v0-foot-home"
+              href={base}
+            >
+              {mark}
+            </a>
+          ) : (
+            mark
+          )}
           <p>
             {base === PRODUCTION ? "Full-stack" : "End-to-end"}
             {" localization for the world\u2019s best companies"}
@@ -258,27 +279,17 @@ export default function V0Footer() {
             className="v0-foot-cell v0-foot-col"
             key={column.title}
           >
-            {/* h2, as the live footer: some pages head only at h1, so an h3
-                would skip a level (Lighthouse heading-order); the ledger's
-                own rule in v0-footer.css pins the type either way */}
-            <h2>{column.title}</h2>
+            <ColumnHead>{column.title}</ColumnHead>
             <ul>
               {column.links.map((link) => {
                 const Mark = link.mark;
-                if (link.action === "cookies") {
+                if (link.action === "cookies" && onManageCookies) {
                   /* the production mirror opens its consent stub's
-                     settings dialog (production/sections/ConsentBanner.tsx);
-                     the other concepts run no consent dialog */
+                     settings dialog; the other concepts run no consent
+                     dialog and keep the link */
                   return (
                     <li key={link.label}>
-                      <button
-                        type="button"
-                        onClick={
-                          isProduction
-                            ? () => window.dispatchEvent(new Event(OPEN_SETTINGS))
-                            : undefined
-                        }
-                      >
+                      <button type="button" onClick={onManageCookies}>
                         {link.label}
                       </button>
                     </li>
@@ -321,19 +332,7 @@ export default function V0Footer() {
         <span className="v0-foot-copy max-[640px]:ml-0 max-[640px]:w-full max-[640px]:text-left">
           © 2026 General Translation, Inc. All rights reserved.
         </span>
-        {/* the production mirror carries live's language selector stub
-            and its theme switch labels; the other concepts keep the
-            shell's ThemeButton */}
-        {isProduction ? (
-          <>
-            <span className="v0-foot-lang">
-              <LanguageSelector />
-            </span>
-            <ProdThemeToggle className="v0-foot-theme max-[640px]:ml-auto" />
-          </>
-        ) : (
-          <ThemeButton className="v0-foot-theme max-[640px]:ml-auto" />
-        )}
+        {tools ?? <ThemeButton className="v0-foot-theme max-[640px]:ml-auto" />}
       </div>
     </footer>
   );

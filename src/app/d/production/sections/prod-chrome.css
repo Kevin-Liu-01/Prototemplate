@@ -184,7 +184,7 @@
 
 /* ---------- the footer strip ----------
    Live seats the selector between the copyright and the theme switch
-   (V0Footer.tsx, .v0-foot-lang) and lifts its button to the 44px tap
+   (ProdFooter.tsx, .v0-foot-lang) and lifts its button to the 44px tap
    height on a phone (v0-footer.css, max-width 640px). */
 .prod-root .v0-foot-lang {
   display: inline-flex;
@@ -430,11 +430,14 @@
   }
 }
 
-/* live sets the title at 600; the mirror holds Inter at 500 (DESIGN.md) */
+/* live's DialogTitle: text-lg leading-none font-semibold tracking-tight
+   (packages/ui src/components/ui/dialog.tsx). The mirror matches live's
+   600 as its pricing and blog sheets do; DESIGN.md's 500 ceiling is the
+   shell's rule, and lint:type leaves src/app/d/ to the directions. */
 .prod-root .pc-dialog-title {
   font-size: 18px;
   line-height: 18px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.025em;
 }
 

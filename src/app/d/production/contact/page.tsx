@@ -1,7 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../../_v0/V0Footer';
+import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
 
 import ContactForm from '../sections/ContactForm';
@@ -27,7 +27,7 @@ export const metadata = {
  * right, one hairline between them. There is no hero and no closing band —
  * so there is none here either.
  *
- * Chrome: ProdNav + V0Footer, the same pair the production landing mounts,
+ * Chrome: ProdNav + ProdFooter, the same pair the production landing mounts,
  * because the real page's chrome IS the site header and the redesigned site
  * footer (the (home) layout wraps every page in Header + SiteFooterMount).
  * The TopNav/SiteFooter pair the singularity subpages use belongs to a
@@ -41,7 +41,7 @@ export default function ProductionContactPage() {
 
         <main className='tc-rail'>
           <ContactForm />
-          <V0Footer />
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />

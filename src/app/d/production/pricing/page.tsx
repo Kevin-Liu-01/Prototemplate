@@ -1,7 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../../_v0/V0Footer';
+import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
 
 import Deploy from '../sections/Deploy';
@@ -37,7 +37,7 @@ export const metadata = {
  * page does NOT carry: the rates live one route further out, at
  * /pricing/usage, behind the hero's single link. So none of it is here.
  *
- * Chrome: ProdNav and V0Footer, the same pair the concept's landing page
+ * Chrome: ProdNav and ProdFooter, the same pair the concept's landing page
  * mounts — the shipped site serves one nav and one footer from its layout
  * on every route, /pricing included, so the subpage inherits the home
  * page's chrome rather than the singularity finals' TopNav/SiteFooter.
@@ -58,7 +58,7 @@ export default function ProductionPricingPage() {
           <PricingPlanCards />
           <PricingCompare />
           <Deploy />
-          <V0Footer />
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />

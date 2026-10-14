@@ -1704,10 +1704,14 @@
   line-height: 1.55;
 }
 
-/* ---- the ruled shell: edge-to-edge lines between sections ---- */
+/* ---- the ruled shell: edge-to-edge lines between sections ----
+   The footer is a .tc-sec too, but live's footer carries no top rule (it
+   is 410.5px tall at 1440 on every page), so it is left out. The :where()
+   keeps each selector's specificity where it was, under the testimonial's
+   doubled-class border-top: 0. */
 
-.enterprise-root .tc-rail > .tc-sec + .tc-sec,
-.enterprise-root .tc-rail > .tce-contact-wrap + .tc-sec {
+.enterprise-root .tc-rail > .tc-sec + .tc-sec:not(:where(.v0-foot)),
+.enterprise-root .tc-rail > .tce-contact-wrap + .tc-sec:not(:where(.v0-foot)) {
   border-top: 1px solid var(--tc-hair);
 }
 
@@ -1715,7 +1719,7 @@
    it re-enter the seam chain by hand, or the quote plate loses its
    bottom line and the next section its top one */
 .enterprise-root .tc-rail > .tc-sec + .tce-contact-wrap,
-.enterprise-root .tc-rail > .tce-contact-wrap + .tc-sec:not(.pricing-stack) {
+.enterprise-root .tc-rail > .tce-contact-wrap + .tc-sec:not(.pricing-stack, :where(.v0-foot)) {
   /* the stack board owns its seam through its hatch and is excluded */
   border-top: 1px solid var(--tc-hair);
 }

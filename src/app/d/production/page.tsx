@@ -1,7 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../_v0/V0Footer';
+import ProdFooter from './sections/ProdFooter';
 import ProdNav from './sections/ProdNav';
 
 import ContextSec from './sections/ContextSec';
@@ -72,7 +72,7 @@ export default function ProductionPage() {
           <Global />
           <div aria-hidden className='v0-hatch' />
           <Deploy />
-          <V0Footer />
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />

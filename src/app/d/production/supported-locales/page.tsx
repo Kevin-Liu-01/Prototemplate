@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
-import V0Footer from '../../_v0/V0Footer';
+import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
 import LocalesCatalog from '../sections/LocalesCatalog';
 
@@ -30,7 +30,7 @@ export const metadata = {
  * Chrome follows the real page rather than the other concepts' subpages.
  * On the live site SupportedLocalesPage renders nothing but a <main> — the
  * header and footer come from the (home) route group's layout, the same pair
- * the home page wears. So this page mounts ProdNav and V0Footer, the chrome
+ * the home page wears. So this page mounts ProdNav and ProdFooter, the chrome
  * /d/production's landing page already carries, instead of the singularity
  * family's TopNav/SiteFooter.
  *
@@ -50,7 +50,7 @@ export default function ProductionSupportedLocalesPage() {
           <Suspense>
             <LocalesCatalog />
           </Suspense>
-          <V0Footer />
+          <ProdFooter />
         </main>
       </div>
       <DirectionCorner slug='production' />
