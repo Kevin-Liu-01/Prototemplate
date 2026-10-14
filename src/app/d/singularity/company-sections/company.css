@@ -1157,14 +1157,14 @@
    On a phone, upright or on its side, every control answers a tap at
    least 44px on its smaller side; the desktop is untouched. The contact
    form's fine print wraps its two links wherever the width puts them, so
-   its lines take a 44px pitch, each link stays on one line, and each
-   takes its line's full height on a transparent ::after: links on
-   neighbouring lines meet and never overlap. A link that broke across
-   two lines would centre its band between them, over its neighbour's
-   line. The locale rows stand 44px tall. */
+   its lines take a 46px pitch, each link stays on one line, and each
+   takes a 44px band through its line's middle on a transparent ::after:
+   links on neighbouring lines stand 2px apart and never overlap. A link
+   that broke across two lines would centre its band between them, over
+   its neighbour's line. The locale rows stand 44px tall. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .singularity-root .cpk-terms {
-    line-height: 44px;
+    line-height: 46px;
   }
 
   .singularity-root .cpk-terms a {
@@ -1207,5 +1207,29 @@
 
   .singularity-root .cpl-filter-in {
     min-width: 0;
+  }
+}
+
+/* ---------- phones: the locale ledger's rows ----------
+   Below 880px a row keeps five columns, and on a 320 to 430px phone the
+   name and the endonym get 23 to 58px each: a long word ("Österreichisches")
+   ran over the next column and past the screen's right edge. At phone
+   width the row stacks: the index, the code and the direction on its
+   first line, then the name and the endonym each on a line of their own
+   across the code's and the direction's columns, 220px or more wide. */
+@media (max-width: 480px) {
+  .singularity-root .cpl-row {
+    grid-template-columns: 44px minmax(0, 1fr) 40px;
+    row-gap: 2px;
+  }
+
+  .singularity-root .cpl-dir {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .singularity-root .cpl-name,
+  .singularity-root .cpl-native {
+    grid-column: 2 / 4;
   }
 }

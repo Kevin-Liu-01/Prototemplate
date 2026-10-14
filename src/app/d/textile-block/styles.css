@@ -1927,11 +1927,17 @@
   }
 }
 
-/* a phone: the source file's lines ran past a 320 to 430px screen inside
-   their scroller, so on a phone each line wraps under its own number
-   instead. The number leaves the line's flex row for the line's left
-   padding, where it stands as before; the desktop is unchanged. */
+/* a phone: the source file's lines and the config's lines ran past a 320
+   to 430px screen inside their scrollers, so on a phone each line wraps
+   instead, a source line under its own number. The number leaves the
+   line's flex row for the line's left padding, where it stands as
+   before; the desktop is unchanged. */
 @media (max-width: 900px) {
+  .textile-block-root .tb-config li {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
   .textile-block-root .tb-code li {
     display: block;
     position: relative;

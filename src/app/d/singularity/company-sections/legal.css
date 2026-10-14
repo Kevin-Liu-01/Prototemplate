@@ -378,8 +378,13 @@
   /* a link in the prose keeps its underline and takes the tap on 13px of
      transparent padding above and below each of its lines: an inline's
      padding answers a tap without moving a line, so an address that
-     breaks across two lines is at least 44px tall on each of them */
+     breaks across two lines is at least 44px tall on each of them. The
+     prose's lines sit 25.4px apart, so the padding runs over the
+     neighbouring lines, whose text would take the tap there; positioned,
+     the link paints and answers above the text in flow. No two links in
+     the documents sit on neighbouring lines. */
   .singularity-root .cpg-doc-body a {
+    position: relative;
     padding: 13px 0;
   }
 }

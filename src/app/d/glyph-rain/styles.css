@@ -2101,8 +2101,11 @@
     padding: 12px 10px 13px;
   }
 
+  /* "language", the longest word, runs 64px at 14.5px and a 320px
+     phone's cell holds 59px: below 354px wide the word shrinks with the
+     screen, 13.1px and 57.9px wide at 320 */
   .glyphrain-root .gr-ledger-cell b {
-    font-size: 14.5px;
+    font-size: min(14.5px, 4.1vw);
   }
 
   /* Four mono labels across 390px: the tag keeps the first line and a

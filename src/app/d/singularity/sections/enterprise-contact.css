@@ -271,7 +271,10 @@
    source, the YC field's note and the aside's link keep their drawing
    and take the tap on a transparent 44px band through their middle, as
    wide as they are. The aside's link stays on one line, since a link
-   broken across two lines would centre its band between them. */
+   broken across two lines would centre its band between them. The YC
+   field's note sits 7px under its field, so its band starts 5px above
+   the note, 2px clear of the field, and ends 16.5px above the next
+   field. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .singularity-root .sgec-back,
   .singularity-root .sgec-quote figcaption a,
@@ -295,5 +298,10 @@
     right: 0;
     height: 44px;
     transform: translateY(-50%);
+  }
+
+  .singularity-root .sgec-fieldnote::after {
+    top: -5px;
+    transform: none;
   }
 }

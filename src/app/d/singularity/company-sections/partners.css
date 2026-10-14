@@ -899,16 +899,27 @@
 }
 
 /* ---------- touch phones: hit areas ----------
-   On a phone, upright or on its side, the close's link to the live flow
-   stays on one line and takes the tap on a transparent 44px band through
-   its middle, as wide as the link; the desktop is untouched. */
+   On a phone, upright or on its side, the small links answer a tap 44px
+   tall; the desktop is untouched. The close's link to the live flow
+   stays on one line, and it and the quote's source take the tap on a
+   transparent 44px band through their middle, as wide as they are. The
+   form's verification link sits 10px under its field, so its band starts
+   8px above the link, 2px clear of the field, and ends 20.3px above the
+   next field. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .singularity-root .cpm-close-path a {
-    position: relative;
     white-space: nowrap;
   }
 
-  .singularity-root .cpm-close-path a::after {
+  .singularity-root .cpm-close-path a,
+  .singularity-root .cpy-plate figcaption a,
+  .singularity-root .cpy-verify-link {
+    position: relative;
+  }
+
+  .singularity-root .cpm-close-path a::after,
+  .singularity-root .cpy-plate figcaption a::after,
+  .singularity-root .cpy-verify-link::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -916,5 +927,10 @@
     right: 0;
     height: 44px;
     transform: translateY(-50%);
+  }
+
+  .singularity-root .cpy-verify-link::after {
+    top: -8px;
+    transform: none;
   }
 }

@@ -1389,16 +1389,18 @@
    On a phone, upright or on its side, every control answers a tap at
    least 44px on its smaller side; the desktop is untouched. The fine
    print's two links share a sentence that wraps wherever the width puts
-   it, so its lines take a 44px pitch, each link stays on one line, and
-   each takes its line's full height on a transparent ::after: links on
-   neighbouring lines meet and never overlap, and the bands stay inside
-   the sentence's own box. A link that broke across two lines would
-   centre its band between them, over its neighbour's line. The
-   certificates' trust link and the stories' Talk to us stand alone in
-   their rows and take a 44px band through their middle the same way. */
+   it, so its lines take a 46px pitch, each link stays on one line, and
+   each takes a 44px band through its line's middle on a transparent
+   ::after: links on neighbouring lines stand 2px apart and never
+   overlap, and the bands stay inside the sentence's own box. A link
+   that broke across two lines would centre its band between them, over
+   its neighbour's line. The certificates' trust link and the stories'
+   Talk to us stand alone in their rows and take a 44px band through
+   their middle the same way; Talk to us stays on one line, since on a
+   320px phone it broke in two and its band was 36.7px wide. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .singularity-root .sge-terms {
-    line-height: 44px;
+    line-height: 46px;
   }
 
   .singularity-root .sge-terms a,
@@ -1407,8 +1409,13 @@
     position: relative;
   }
 
-  .singularity-root .sge-terms a {
+  .singularity-root .sge-terms a,
+  .singularity-root .sge-stories-foot a {
     white-space: nowrap;
+  }
+
+  .singularity-root .sge-stories-foot a {
+    flex-shrink: 0;
   }
 
   .singularity-root .sge-terms a::after,
