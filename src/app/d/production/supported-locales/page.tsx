@@ -23,7 +23,8 @@ export const metadata = {
  *
  * Reproduces generaltranslation.com/supported-locales: one section, the
  * centered head and its one-line sub, the search rail with its live
- * `shown / total` readout, and all 120 locales as a three-up card grid.
+ * `shown / total` readout, and the first 120 of 132 locales as a three-up
+ * card grid with a Show All button under it.
  * The real route is /supported-locales, so this one is too.
  *
  * Chrome follows the real page rather than the other concepts' subpages.

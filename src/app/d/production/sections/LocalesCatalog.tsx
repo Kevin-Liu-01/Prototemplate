@@ -28,19 +28,17 @@ import './locales.css';
  * name, region, then `code • endonym`. Every card links out to the ISO 639
  * list on Wikipedia, anchored on its own code.
  *
- * Kept 1-1, including the parts that only show under a condition the live
- * data never meets:
+ * Kept 1-1:
  *   - the roster is sliced to the first 120 rows until expanded, and the
  *     "Show All" control appears only when the slice hides something. The
- *     package currently lists exactly 120 locales, so on the real page the
- *     control never renders — the branch stays because the real branch does.
+ *     package lists 132 locales, so the first screen shows 120 cards and a
+ *     "Show All 132" button, as the real page does.
  *   - `?search=` round-trips through the URL with router.replace, and a
  *     popstate listener pulls the query back out of the address bar.
  *
  * The flag slot follows the real page's own test: an ISO flag whenever the
  * locale resolves a real country region, and the locale's globe emoji
- * otherwise — which is Esperanto (001), Latin American Spanish (419), and
- * the bare-subtag Greek (EL) row.
+ * otherwise, which is Esperanto (001) and Latin American Spanish (419).
  */
 export default function LocalesCatalog() {
   const searchParams = useSearchParams();

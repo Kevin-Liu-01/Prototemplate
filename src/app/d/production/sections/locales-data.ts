@@ -1,4 +1,4 @@
-// GENERATED DATA — do not hand-edit rows.
+// GENERATED DATA: do not hand-edit rows.
 //
 // VENDORED FIXTURE. The real page reads its roster at runtime from the
 // workspace locales package, which this repo cannot install:
@@ -7,9 +7,11 @@
 //   getLocaleFlagCountryCode   @generaltranslation/locales/utils/flag.js
 // Source of truth:
 //   $GT_CLOUD/apps/landing
-//   (packages/locales/src/supportedLocales.ts — listSupportedLocales() with
-//   the custom qaa–qtz codes filtered out), properties resolved against
-//   userLocale 'en'. 120 rows, in the package's own order; the page renders
+//   (packages/locales/src/supportedLocales.ts: listSupportedLocales() with
+//   the custom qaa to qtz codes filtered out), resolved with the versions
+//   gt-cloud's pnpm catalog pins on 2026-10-13: generaltranslation 9.5.3
+//   and @generaltranslation/supported-locales 2.1.41, properties against
+//   userLocale 'en'. 132 rows, in the package's own order; the page renders
 //   them in exactly that order, as the real page does.
 //
 // Every field below is one property the real page actually reads:
@@ -24,17 +26,17 @@
 export type LocaleProperties = {
   /** canonical BCP-47 code, as listed by the API */
   code: string;
-  /** English display name — the card's own heading, capitalized on render */
+  /** English display name, the card's own heading, capitalized on render */
   name: string;
   /** what the search path matches and sorts on (LocaleData.name) */
   nameWithRegionCode: string;
-  /** endonym — the locale named in itself */
+  /** endonym: the locale named in itself */
   nativeName: string;
-  /** English region name; '—' stands in when empty */
+  /** English region name; '–' stands in when empty */
   regionName: string;
-  /** region named in the locale itself — a search field only */
+  /** region named in the locale itself, a search field only */
   nativeRegionName: string;
-  /** ISO 3166-1 alpha-2, a UN M.49 number ('419'), or a bare subtag ('EL') */
+  /** ISO 3166-1 alpha-2, or a UN M.49 number ('419', '001') */
   regionCode: string;
   /** bare language subtag, a search field */
   languageCode: string;
@@ -54,10 +56,14 @@ export const SUPPORTED_LOCALES: LocaleProperties[] = [
   { code: "ar-MA", name: "Arabic (Morocco)", nameWithRegionCode: "Arabic (MA)", nativeName: "العربية (المغرب)", regionName: "Morocco", nativeRegionName: "المغرب", regionCode: "MA", languageCode: "ar", emoji: "🇲🇦", flag: "ma" },
   { code: "ar-OM", name: "Arabic (Oman)", nameWithRegionCode: "Arabic (OM)", nativeName: "العربية (عُمان)", regionName: "Oman", nativeRegionName: "عُمان", regionCode: "OM", languageCode: "ar", emoji: "🇴🇲", flag: "om" },
   { code: "ar-SA", name: "Arabic (Saudi Arabia)", nameWithRegionCode: "Arabic (SA)", nativeName: "العربية (المملكة العربية السعودية)", regionName: "Saudi Arabia", nativeRegionName: "المملكة العربية السعودية", regionCode: "SA", languageCode: "ar", emoji: "🇸🇦", flag: "sa" },
+  { code: "az", name: "Azerbaijani", nameWithRegionCode: "Azerbaijani", nativeName: "azərbaycan", regionName: "Azerbaijan", nativeRegionName: "Azərbaycan", regionCode: "AZ", languageCode: "az", emoji: "🇦🇿", flag: "az" },
+  { code: "be", name: "Belarusian", nameWithRegionCode: "Belarusian", nativeName: "беларуская", regionName: "Belarus", nativeRegionName: "Беларусь", regionCode: "BY", languageCode: "be", emoji: "🇧🇾", flag: "by" },
   { code: "bg", name: "Bulgarian", nameWithRegionCode: "Bulgarian", nativeName: "български", regionName: "Bulgaria", nativeRegionName: "България", regionCode: "BG", languageCode: "bg", emoji: "🇧🇬", flag: "bg" },
   { code: "bn", name: "Bangla", nameWithRegionCode: "Bangla", nativeName: "বাংলা", regionName: "Bangladesh", nativeRegionName: "বাংলাদেশ", regionCode: "BD", languageCode: "bn", emoji: "🇧🇩", flag: "bd" },
   { code: "bs", name: "Bosnian", nameWithRegionCode: "Bosnian", nativeName: "bosanski", regionName: "Bosnia & Herzegovina", nativeRegionName: "Bosna i Hercegovina", regionCode: "BA", languageCode: "bs", emoji: "🇧🇦", flag: "ba" },
   { code: "ca", name: "Catalan", nameWithRegionCode: "Catalan", nativeName: "català", regionName: "Spain", nativeRegionName: "Espanya", regionCode: "ES", languageCode: "ca", emoji: "🌍", flag: "es" },
+  { code: "ca-ES", name: "Catalan (Spain)", nameWithRegionCode: "Catalan (ES)", nativeName: "català (Espanya)", regionName: "Spain", nativeRegionName: "Espanya", regionCode: "ES", languageCode: "ca", emoji: "🇪🇸", flag: "es" },
+  { code: "cnr", name: "Montenegrin", nameWithRegionCode: "Serbian (ME)", nativeName: "srpski (Crna Gora)", regionName: "Montenegro", nativeRegionName: "Crna Gora", regionCode: "ME", languageCode: "sr", emoji: "🇲🇪", flag: "me" },
   { code: "cs", name: "Czech", nameWithRegionCode: "Czech", nativeName: "čeština", regionName: "Czechia", nativeRegionName: "Česko", regionCode: "CZ", languageCode: "cs", emoji: "🇨🇿", flag: "cz" },
   { code: "cy", name: "Welsh", nameWithRegionCode: "Welsh", nativeName: "Cymraeg", regionName: "United Kingdom", nativeRegionName: "Y Deyrnas Unedig", regionCode: "GB", languageCode: "cy", emoji: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", flag: "gb" },
   { code: "da", name: "Danish", nameWithRegionCode: "Danish", nativeName: "dansk", regionName: "Denmark", nativeRegionName: "Danmark", regionCode: "DK", languageCode: "da", emoji: "🇩🇰", flag: "dk" },
@@ -67,11 +73,12 @@ export const SUPPORTED_LOCALES: LocaleProperties[] = [
   { code: "de-DE", name: "German (Germany)", nameWithRegionCode: "German (DE)", nativeName: "Deutsch (Deutschland)", regionName: "Germany", nativeRegionName: "Deutschland", regionCode: "DE", languageCode: "de", emoji: "🇩🇪", flag: "de" },
   { code: "el", name: "Greek", nameWithRegionCode: "Greek", nativeName: "Ελληνικά", regionName: "Greece", nativeRegionName: "Ελλάδα", regionCode: "GR", languageCode: "el", emoji: "🇬🇷", flag: "gr" },
   { code: "el-CY", name: "Greek (Cyprus)", nameWithRegionCode: "Greek (CY)", nativeName: "Ελληνικά (Κύπρος)", regionName: "Cyprus", nativeRegionName: "Κύπρος", regionCode: "CY", languageCode: "el", emoji: "🇨🇾", flag: "cy" },
-  { code: "el-EL", name: "Greek (EL)", nameWithRegionCode: "Greek (EL)", nativeName: "Ελληνικά (EL)", regionName: "EL", nativeRegionName: "EL", regionCode: "EL", languageCode: "el", emoji: "🌍", flag: "el" },
+  { code: "el-GR", name: "Greek (Greece)", nameWithRegionCode: "Greek (GR)", nativeName: "Ελληνικά (Ελλάδα)", regionName: "Greece", nativeRegionName: "Ελλάδα", regionCode: "GR", languageCode: "el", emoji: "🇬🇷", flag: "gr" },
   { code: "en", name: "English", nameWithRegionCode: "English", nativeName: "English", regionName: "United States", nativeRegionName: "United States", regionCode: "US", languageCode: "en", emoji: "🇺🇸", flag: "us" },
   { code: "en-AU", name: "Australian English", nameWithRegionCode: "English (AU)", nativeName: "Australian English", regionName: "Australia", nativeRegionName: "Australia", regionCode: "AU", languageCode: "en", emoji: "🇦🇺", flag: "au" },
   { code: "en-CA", name: "Canadian English", nameWithRegionCode: "English (CA)", nativeName: "Canadian English", regionName: "Canada", nativeRegionName: "Canada", regionCode: "CA", languageCode: "en", emoji: "🇨🇦", flag: "ca" },
   { code: "en-GB", name: "British English", nameWithRegionCode: "English (GB)", nativeName: "British English", regionName: "United Kingdom", nativeRegionName: "United Kingdom", regionCode: "GB", languageCode: "en", emoji: "🇬🇧", flag: "gb" },
+  { code: "en-MX", name: "English (Mexico)", nameWithRegionCode: "English (MX)", nativeName: "English (Mexico)", regionName: "Mexico", nativeRegionName: "Mexico", regionCode: "MX", languageCode: "en", emoji: "🇲🇽", flag: "mx" },
   { code: "en-NZ", name: "English (New Zealand)", nameWithRegionCode: "English (NZ)", nativeName: "English (New Zealand)", regionName: "New Zealand", nativeRegionName: "New Zealand", regionCode: "NZ", languageCode: "en", emoji: "🇳🇿", flag: "nz" },
   { code: "en-US", name: "American English", nameWithRegionCode: "English (US)", nativeName: "American English", regionName: "United States", nativeRegionName: "United States", regionCode: "US", languageCode: "en", emoji: "🇺🇸", flag: "us" },
   { code: "eo", name: "Esperanto", nameWithRegionCode: "Esperanto", nativeName: "Esperanto", regionName: "world", nativeRegionName: "mondo", regionCode: "001", languageCode: "eo", emoji: "🌍", flag: "" },
@@ -86,6 +93,8 @@ export const SUPPORTED_LOCALES: LocaleProperties[] = [
   { code: "es-US", name: "Spanish (United States)", nameWithRegionCode: "Spanish (US)", nativeName: "español (Estados Unidos)", regionName: "United States", nativeRegionName: "Estados Unidos", regionCode: "US", languageCode: "es", emoji: "🇺🇸", flag: "us" },
   { code: "es-VE", name: "Spanish (Venezuela)", nameWithRegionCode: "Spanish (VE)", nativeName: "español (Venezuela)", regionName: "Venezuela", nativeRegionName: "Venezuela", regionCode: "VE", languageCode: "es", emoji: "🇻🇪", flag: "ve" },
   { code: "et", name: "Estonian", nameWithRegionCode: "Estonian", nativeName: "eesti", regionName: "Estonia", nativeRegionName: "Eesti", regionCode: "EE", languageCode: "et", emoji: "🇪🇪", flag: "ee" },
+  { code: "eu", name: "Basque", nameWithRegionCode: "Basque", nativeName: "euskara", regionName: "Spain", nativeRegionName: "Espainia", regionCode: "ES", languageCode: "eu", emoji: "🌍", flag: "es" },
+  { code: "eu-ES", name: "Basque (Spain)", nameWithRegionCode: "Basque (ES)", nativeName: "euskara (Espainia)", regionName: "Spain", nativeRegionName: "Espainia", regionCode: "ES", languageCode: "eu", emoji: "🇪🇸", flag: "es" },
   { code: "fa", name: "Persian", nameWithRegionCode: "Persian", nativeName: "فارسی", regionName: "Iran", nativeRegionName: "ایران", regionCode: "IR", languageCode: "fa", emoji: "🇮🇷", flag: "ir" },
   { code: "fi", name: "Finnish", nameWithRegionCode: "Finnish", nativeName: "suomi", regionName: "Finland", nativeRegionName: "Suomi", regionCode: "FI", languageCode: "fi", emoji: "🇫🇮", flag: "fi" },
   { code: "fil", name: "Filipino", nameWithRegionCode: "Filipino", nativeName: "Filipino", regionName: "Philippines", nativeRegionName: "Pilipinas", regionCode: "PH", languageCode: "fil", emoji: "🇵🇭", flag: "ph" },
@@ -96,6 +105,9 @@ export const SUPPORTED_LOCALES: LocaleProperties[] = [
   { code: "fr-CM", name: "French (Cameroon)", nameWithRegionCode: "French (CM)", nativeName: "français (Cameroun)", regionName: "Cameroon", nativeRegionName: "Cameroun", regionCode: "CM", languageCode: "fr", emoji: "🇨🇲", flag: "cm" },
   { code: "fr-FR", name: "French (France)", nameWithRegionCode: "French (FR)", nativeName: "français (France)", regionName: "France", nativeRegionName: "France", regionCode: "FR", languageCode: "fr", emoji: "🇫🇷", flag: "fr" },
   { code: "fr-SN", name: "French (Senegal)", nameWithRegionCode: "French (SN)", nativeName: "français (Sénégal)", regionName: "Senegal", nativeRegionName: "Sénégal", regionCode: "SN", languageCode: "fr", emoji: "🇸🇳", flag: "sn" },
+  { code: "ga", name: "Irish", nameWithRegionCode: "Irish", nativeName: "Gaeilge", regionName: "Ireland", nativeRegionName: "Éire", regionCode: "IE", languageCode: "ga", emoji: "🇮🇪", flag: "ie" },
+  { code: "gl", name: "Galician", nameWithRegionCode: "Galician", nativeName: "galego", regionName: "Spain", nativeRegionName: "España", regionCode: "ES", languageCode: "gl", emoji: "🇪🇸", flag: "es" },
+  { code: "gl-ES", name: "Galician (Spain)", nameWithRegionCode: "Galician (ES)", nativeName: "galego (España)", regionName: "Spain", nativeRegionName: "España", regionCode: "ES", languageCode: "gl", emoji: "🇪🇸", flag: "es" },
   { code: "gu", name: "Gujarati", nameWithRegionCode: "Gujarati", nativeName: "ગુજરાતી", regionName: "India", nativeRegionName: "ભારત", regionCode: "IN", languageCode: "gu", emoji: "🇮🇳", flag: "in" },
   { code: "ha", name: "Hausa", nameWithRegionCode: "Hausa", nativeName: "Hausa", regionName: "Nigeria", nativeRegionName: "Nijeriya", regionCode: "NG", languageCode: "ha", emoji: "🇳🇬", flag: "ng" },
   { code: "he", name: "Hebrew", nameWithRegionCode: "Hebrew", nativeName: "עברית", regionName: "Israel", nativeRegionName: "ישראל", regionCode: "IL", languageCode: "he", emoji: "🇮🇱", flag: "il" },
@@ -144,6 +156,7 @@ export const SUPPORTED_LOCALES: LocaleProperties[] = [
   { code: "so", name: "Somali", nameWithRegionCode: "Somali", nativeName: "Soomaali", regionName: "Somalia", nativeRegionName: "Soomaaliya", regionCode: "SO", languageCode: "so", emoji: "🇸🇴", flag: "so" },
   { code: "sq", name: "Albanian", nameWithRegionCode: "Albanian", nativeName: "shqip", regionName: "Albania", nativeRegionName: "Shqipëri", regionCode: "AL", languageCode: "sq", emoji: "🇦🇱", flag: "al" },
   { code: "sr", name: "Serbian", nameWithRegionCode: "Serbian", nativeName: "српски", regionName: "Serbia", nativeRegionName: "Србија", regionCode: "RS", languageCode: "sr", emoji: "🇷🇸", flag: "rs" },
+  { code: "sr-Latn", name: "Serbian (Latin)", nameWithRegionCode: "Serbian (Latin)", nativeName: "srpski (latinica)", regionName: "Serbia", nativeRegionName: "Srbija", regionCode: "RS", languageCode: "sr", emoji: "🇷🇸", flag: "rs" },
   { code: "sv", name: "Swedish", nameWithRegionCode: "Swedish", nativeName: "svenska", regionName: "Sweden", nativeRegionName: "Sverige", regionCode: "SE", languageCode: "sv", emoji: "🇸🇪", flag: "se" },
   { code: "sw", name: "Swahili", nameWithRegionCode: "Swahili", nativeName: "Kiswahili", regionName: "Tanzania", nativeRegionName: "Tanzania", regionCode: "TZ", languageCode: "sw", emoji: "🇹🇿", flag: "tz" },
   { code: "sw-KE", name: "Swahili (Kenya)", nameWithRegionCode: "Swahili (KE)", nativeName: "Kiswahili (Kenya)", regionName: "Kenya", nativeRegionName: "Kenya", regionCode: "KE", languageCode: "sw", emoji: "🇰🇪", flag: "ke" },
@@ -158,6 +171,7 @@ export const SUPPORTED_LOCALES: LocaleProperties[] = [
   { code: "uz", name: "Uzbek", nameWithRegionCode: "Uzbek", nativeName: "o‘zbek", regionName: "Uzbekistan", nativeRegionName: "Oʻzbekiston", regionCode: "UZ", languageCode: "uz", emoji: "🇺🇿", flag: "uz" },
   { code: "vi", name: "Vietnamese", nameWithRegionCode: "Vietnamese", nativeName: "Tiếng Việt", regionName: "Vietnam", nativeRegionName: "Việt Nam", regionCode: "VN", languageCode: "vi", emoji: "🇻🇳", flag: "vn" },
   { code: "yo", name: "Yoruba", nameWithRegionCode: "Yoruba", nativeName: "Èdè Yorùbá", regionName: "Nigeria", nativeRegionName: "Nàìjíríà", regionCode: "NG", languageCode: "yo", emoji: "🇳🇬", flag: "ng" },
+  { code: "zgh", name: "Standard Moroccan Tamazight", nameWithRegionCode: "Standard Moroccan Tamazight", nativeName: "ⵜⴰⵎⴰⵣⵉⵖⵜ", regionName: "Morocco", nativeRegionName: "ⵍⵎⵖⵔⵉⴱ", regionCode: "MA", languageCode: "zgh", emoji: "🇲🇦", flag: "ma" },
   { code: "zh", name: "Chinese", nameWithRegionCode: "Chinese", nativeName: "中文", regionName: "China", nativeRegionName: "中国", regionCode: "CN", languageCode: "zh", emoji: "🇨🇳", flag: "cn" },
   { code: "zh-CN", name: "Chinese (China)", nameWithRegionCode: "Chinese (CN)", nativeName: "中文（中国）", regionName: "China", nativeRegionName: "中国", regionCode: "CN", languageCode: "zh", emoji: "🇨🇳", flag: "cn" },
   { code: "zh-HK", name: "Chinese (Hong Kong SAR China)", nameWithRegionCode: "Chinese (HK)", nativeName: "中文（中國香港特別行政區）", regionName: "Hong Kong SAR China", nativeRegionName: "中國香港特別行政區", regionCode: "HK", languageCode: "zh", emoji: "🇭🇰", flag: "hk" },
