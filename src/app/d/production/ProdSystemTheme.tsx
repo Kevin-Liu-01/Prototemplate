@@ -3,7 +3,7 @@
 import { THEME_KEY } from '@/components/viewer/ThemeButton';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-function savedTheme(): string | null {
+function savedTheme(): 'light' | 'dark' | null {
   try {
     const saved = localStorage.getItem(THEME_KEY);
     return saved === 'light' || saved === 'dark' ? saved : null;
@@ -31,11 +31,20 @@ function systemTheme(): 'light' | 'dark' {
 export default function ProdSystemTheme() {
   useMountEffect(() => {
     const root = document.documentElement;
-    if (!savedTheme() && root.dataset.themeFrom === undefined) {
+    const saved = savedTheme();
+    /* a not-found render can rebuild <html> without the boot script's
+       attribute; the saved choice is stamped again, as ThemeButton does
+       for the shell */
+    if (saved && root.dataset.theme !== 'light' && root.dataset.theme !== 'dark') {
+      root.dataset.theme = saved;
+    }
+    if (!saved && root.dataset.themeFrom === undefined) {
       root.dataset.theme = systemTheme();
       root.dataset.themeFrom = 'system';
     }
     return () => {
+      /* a remount on the next production page keeps the system theme */
+      if (/^\/d\/production(\/|$)/.test(window.location.pathname)) return;
       if (root.dataset.themeFrom !== 'system') return;
       delete root.dataset.themeFrom;
       if (!savedTheme()) root.dataset.theme = 'dark';

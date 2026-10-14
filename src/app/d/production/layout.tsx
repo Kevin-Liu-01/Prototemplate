@@ -11,8 +11,8 @@ import './prod-shell.css';
 export default function ProductionLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <ProdSystemTheme />
       {children}
+      <ProdSystemTheme />
     </>
   );
 }
