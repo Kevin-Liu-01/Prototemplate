@@ -191,10 +191,56 @@
   align-items: center;
 }
 
+/* live's status is the shared Status badge: a link at text-xs (12px on a
+   16px line) with 4px above and below, a 6px gap and an 8px dot, in the
+   muted zinc (packages/ui Status.tsx, variant badge) */
+.toolchain-root.prod-root .v0-foot-status {
+  gap: 6px;
+  padding-block: 4px;
+  font-size: 12px;
+  line-height: 1.3333;
+  color: var(--pc-muted);
+}
+
+.toolchain-root.prod-root .v0-foot-status:hover {
+  color: var(--pc-fg);
+}
+
+.toolchain-root.prod-root .v0-foot-dot {
+  width: 8px;
+  height: 8px;
+}
+
+/* live's switch: h-9 px-2 around the 15px glyph, 31 by 36 (the shell's
+   .pt-ib.pt-icon would square it at 32) */
+.toolchain-root.prod-root .v0-foot-theme {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  height: 36px;
+  padding: 0 8px;
+}
+
+.toolchain-root.prod-root .v0-foot-theme .pt-theme-glyph {
+  width: auto;
+  font-size: 15px;
+  line-height: 15px;
+}
+
 @media (max-width: 640px) {
-  .prod-root .v0-foot-lang .pc-lang-btn {
+  .toolchain-root.prod-root .v0-foot-status {
+    font-size: var(--tcm-kick, 13px);
+  }
+
+  .toolchain-root.prod-root .v0-foot-lang .pc-lang-btn {
     height: auto;
     min-height: 44px;
+  }
+
+  /* the switch closes the selector's row at its right end */
+  .toolchain-root.prod-root .v0-foot-theme {
+    height: auto;
+    margin-left: auto;
   }
 }
 
@@ -211,8 +257,8 @@
   border-radius: var(--pt-radius-card);
   background: var(--tc-paper);
   box-shadow: var(--pc-shadow);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px;
+  line-height: 24px;
   color: var(--pc-fg);
 }
 
@@ -220,6 +266,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .prod-root .pc-consent-title {
@@ -468,16 +516,18 @@
   transform: translateX(20px);
 }
 
+/* stacked on a phone with no gap, as live's flex-col-reverse is; a row
+   with live's space-x-2 from 640px */
 .prod-root .pc-dialog-foot {
   display: flex;
   flex-direction: column-reverse;
-  gap: 8px;
 }
 
 @media (min-width: 640px) {
   .prod-root .pc-dialog-foot {
     flex-direction: row;
     justify-content: flex-end;
+    gap: 8px;
   }
 }
 

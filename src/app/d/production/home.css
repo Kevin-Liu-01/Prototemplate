@@ -84,10 +84,6 @@
     min-height: 44px;
   }
 
-  .toolchain-root.prod-root .v0-foot-status {
-    min-height: 44px;
-  }
-
   /* each link already owns its row; a short label (Blog, X) widens to the
      floor. Manage Cookies is a button, as it is live, and takes the same floor */
   .toolchain-root.prod-root .v0-foot-col a,
