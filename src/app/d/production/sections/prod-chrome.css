@@ -216,6 +216,10 @@
 .toolchain-root.prod-root .v0-foot-theme {
   display: inline-flex;
   align-items: center;
+  /* live's button sets no justify-content, so where the phone floor
+     widens it to 44px the glyph stays 8px in from its left edge; the
+     shell's .pt-ib centers it */
+  justify-content: flex-start;
   width: auto;
   height: 36px;
   padding: 0 8px;

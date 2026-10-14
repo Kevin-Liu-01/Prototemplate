@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 
 import { fontVariables } from '@/lib/fonts';
 
+import ProdSystemTheme from './d/production/ProdSystemTheme';
+
 import './globals.css';
 import './inter-subsets.css';
 import '@/components/viewer/tokens.css';
@@ -160,6 +162,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             script tag" warning. */}
         <div hidden dangerouslySetInnerHTML={{ __html: BOOT_SCRIPTS }} />
         {children}
+        {/* the production mirror's system theme on client navigation, in and
+            out of /d/production; it renders nothing */}
+        <ProdSystemTheme />
       </body>
     </html>
   );
