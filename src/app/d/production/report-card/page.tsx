@@ -16,14 +16,16 @@ export const metadata = {
 };
 
 /**
- * PRODUCTION · REPORT CARD — the shipped /try page on the shipped
- * direction: the glyph-field hero with the URL form and the satellite
- * figure, a hatch strip, then the graded report as a framed artifact,
+ * PRODUCTION · REPORT CARD — the shipped /report-card page on the shipped
+ * direction (gt-cloud #4403 drafted it as /try; #4557 renamed it and left
+ * a permanent redirect, which next.config.ts mirrors for /d/production/try):
+ * the glyph-field hero with the URL form and the satellite figure, a hatch
+ * strip, then the graded report as a framed artifact,
  * between the production final's V0 nav and footer. The components are
  * the shared set under src/components/try, one implementation for every
  * direction that mounts the instrument.
  */
-export default function ProductionTryPage() {
+export default function ProductionReportCardPage() {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root prod-root try-root'>

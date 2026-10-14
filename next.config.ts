@@ -84,6 +84,9 @@ const nextConfig: NextConfig = {
       { source: '/skills/gt-isometric/:path*', destination: '/skills/gt-diagrams', permanent: true },
       // The build log merged into the readme on /docs.
       { source: '/craft', destination: '/docs', permanent: true },
+      // The live site renamed its report card from /try to /report-card
+      // (gt-cloud #4557) and redirects the old path; the mirror does the same.
+      { source: '/d/production/try', destination: '/d/production/report-card', permanent: true },
     ];
   },
 };

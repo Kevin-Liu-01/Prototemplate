@@ -265,7 +265,7 @@ const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
   ['/enterprise', 'Enterprise', 'The enterprise page of the shipped site.'],
   ['/careers', 'Careers', 'Open roles and the mission.'],
   ['/contact', 'Contact', 'The contact form.'],
-  ['/try', 'Report card', 'The interactive localization report card.'],
+  ['/report-card', 'Report card', 'The interactive localization report card.'],
   ['/supported-locales', 'Supported locales', 'The catalog of supported locales.'],
   ['/signin', 'Sign in', 'Sign in and the auth pages, with the state console.'],
   ['/onboarding', 'Onboarding', 'The four onboarding steps on the plate frame.'],

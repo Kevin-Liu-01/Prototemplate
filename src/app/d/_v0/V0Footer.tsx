@@ -104,7 +104,7 @@ const columns = (
       {
         label: "Report card",
         href:
-          base === "/d/production" ? `${base}/try` : "/d/singularity-dossier/try",
+          base === "/d/production" ? `${base}/report-card` : "/d/singularity-dossier/try",
       },
     ],
   },
