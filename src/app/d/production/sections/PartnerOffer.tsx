@@ -51,8 +51,10 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
  * the offer, a ruled list of its terms, one full-width Apply for Credits
  * button and the fine print. The live page sits in the (home) route group,
  * so it wears the site header and footer; here that is ProdNav and V0Footer,
- * the pair every /d/production page mounts. The section reads the nav's
- * height from --plate-inset-top (partner-offer.css).
+ * the pair every /d/production page mounts. gt-cloud gives PlateRoot an
+ * `inset` prop for this; the mirror's plate fork is frozen, so main's
+ * .prpo-plate class (partner-offer.css) sets the same inset rules on the
+ * plate root from outside, reading the nav's height from --plate-inset-top.
  */
 export default function PartnerOffer({ offer }: { offer: Offer }) {
   const validFor = `${offer.term.charAt(0).toUpperCase()}${offer.term.slice(1)} after activation`;
@@ -62,8 +64,8 @@ export default function PartnerOffer({ offer }: { offer: Offer }) {
       <div className='toolchain-root sgdh-root prod-root prpo-root' id='top'>
         <ProdNav />
 
-        <main>
-          <PlateRoot scene={1} picture='earth' inset>
+        <main className='prpo-plate'>
+          <PlateRoot scene={1} picture='earth'>
             <div className='relative flex flex-1 flex-col px-4 pt-[max(0px,calc(clamp(24px,9svh,88px)_-_var(--plate-inset-top)))] sm:px-6 md:px-0'>
               <div className='plate-column mx-auto flex w-full max-w-[560px] flex-col gap-10 px-5 py-8 sm:px-12 sm:py-12 md:gap-(--plate-mark-gap) md:pt-(--plate-column-pt) md:pb-(--plate-column-pb)'>
                 <div

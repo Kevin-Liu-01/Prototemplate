@@ -534,42 +534,6 @@
 }
 
 /*
- * The inset plate (PlateRoot's `inset`, gt-cloud #5216): a plate section
- * under a page's own header, as the landing's partner pages mount it. The
- * root keeps .plate-root, so the tokens and the lengths above hold; this
- * class sets the section one screen tall under the header, whose height
- * the page sets as --plate-inset-top. contain: paint makes the section the
- * containing block of the field and the caption, which the full-screen
- * plate fixes to the viewport, so both stay in the section; the field
- * keeps the viewport's height and top, and the section clips it. Captions
- * and counters take gt-cloud's darker titanium on paper there, as the
- * section's fine print sits on the page's own ground.
- */
-.plate-inset {
-  min-height: calc(100svh - var(--plate-inset-top, 0px));
-  contain: paint;
-}
-
-:root:not([data-theme='dark']) .plate-inset {
-  --titanium: #6e737c;
-}
-
-.plate-inset .brand-field-viewport {
-  top: calc(-1 * var(--plate-inset-top, 0px));
-}
-
-/* gt-cloud's inset heading (packages/ui plate.css): two classes, so it
-   outranks a host page's element rule such as .toolchain-root h1. */
-.plate-inset .typo-page-heading {
-  font-size: 1.875rem;
-  line-height: 1.08;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
-  font-feature-settings: 'cv11', 'ss01';
-}
-
-/*
  * The field stack: the auth and onboarding surfaces' field as canvas
  * layers in one wrapper. --tc-ink is the sign-in material's ink, the
  * deck's blue family: the working blue on paper, the chip blue on ink.

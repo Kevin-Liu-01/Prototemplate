@@ -17,8 +17,6 @@ import {
 } from '@/components/plate/brand/moodPictures';
 
 type PlateRootProps = Pick<FieldStackProps, 'scene' | 'picture'> & {
-  /** Renders the plate as a section under the page's own header (.plate-inset in plate.css). */
-  inset?: boolean;
   children: React.ReactNode;
 };
 
@@ -35,15 +33,11 @@ type PlateRootProps = Pick<FieldStackProps, 'scene' | 'picture'> & {
  * viewport's height, so the foot stays at the frame's bottom and a step
  * taller than the room scrolls inside main (PlateFrame) instead of
  * growing the document under the fixed field; under md the document
- * scrolls as a page does. With `inset` the root is a section under the
- * page's own header (the landing's partner pages): it keeps the
- * plate-root tokens and lengths, drops the viewport height, and
- * .plate-inset keeps the field and the caption inside the section.
+ * scrolls as a page does.
  */
 export default function PlateRoot({
   scene,
   picture,
-  inset,
   children,
 }: PlateRootProps) {
   const controllerRef = useRef<FieldController | null>(null);
@@ -73,13 +67,7 @@ export default function PlateRoot({
 
   return (
     <FieldControllerContext.Provider value={controllerRef}>
-      <div
-        className={
-          inset
-            ? 'plate-root plate-inset bg-background relative flex flex-col overflow-hidden'
-            : 'plate-root bg-background relative flex min-h-svh flex-col overflow-hidden md:h-svh'
-        }
-      >
+      <div className='plate-root bg-background relative flex min-h-svh flex-col overflow-hidden md:h-svh'>
         {/* The stack creates its engine once per mount and reads picture
             only then; the scene picks which engine exists, so a scene
             change is a remount (the development gallery swaps scenes on

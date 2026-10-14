@@ -1,11 +1,48 @@
 /*
  * The partner credit pages (PartnerOffer.tsx). The live page sets
  * --plate-inset-top to its 56px navbar; here the section sits under
- * ProdNav, whose bar is 56px with a 1px bottom rule, so the inset plate
- * (plate.css, .plate-inset) reads 57px.
+ * ProdNav, whose bar is 56px with a 1px bottom rule, so it reads 57px.
  */
 .prpo-root {
   --plate-inset-top: 57px;
+}
+
+/*
+ * The inset plate, gt-cloud #5216's .plate-inset (packages/ui plate.css),
+ * set from outside the frozen plate fork in src/components/plate: the
+ * main element carries .prpo-plate and these rules restyle the PlateRoot
+ * inside it. The section is one screen tall under the nav, in place of
+ * PlateRoot's min-h-svh and md:h-svh. contain: paint makes the section
+ * the containing block of the field and the caption, which the
+ * full-screen plate fixes to the viewport, so both stay in the section;
+ * the field keeps the viewport's height and top, and the section clips
+ * it. Captions and counters take gt-cloud's darker titanium on paper, as
+ * the fine print sits on the page's own ground.
+ */
+.prpo-plate > .plate-root {
+  height: auto;
+  min-height: calc(100svh - var(--plate-inset-top, 0px));
+  contain: paint;
+}
+
+:root:not([data-theme='dark']) .prpo-plate > .plate-root {
+  --titanium: #6e737c;
+}
+
+.prpo-plate > .plate-root .brand-field-viewport {
+  top: calc(-1 * var(--plate-inset-top, 0px));
+}
+
+/* gt-cloud's inset heading: three classes, so it outranks plate.css's
+   .typo-page-heading and a host page's element rule such as
+   .toolchain-root h1. */
+.prpo-plate > .plate-root .typo-page-heading {
+  font-size: 1.875rem;
+  line-height: 1.08;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  font-feature-settings: 'cv11', 'ss01';
 }
 
 /* The landing engine's .tc-btn-lg metrics (engine.css), for the Apply for
