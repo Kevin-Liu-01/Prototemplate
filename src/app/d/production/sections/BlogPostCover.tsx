@@ -30,7 +30,7 @@ export default function BlogPostCover({
   priority = false,
   sizes = '100vw',
 }: {
-  post: Pick<IndexPost, 'slug' | 'title' | 'tags' | 'images'>;
+  post: Pick<IndexPost, 'slug' | 'title' | 'tags' | 'images' | 'imagesLight'>;
   id: string;
   className?: string;
   scale?: number;
@@ -38,6 +38,7 @@ export default function BlogPostCover({
   sizes?: string;
 }) {
   const image = post.images?.[0];
+  const imageLight = post.imagesLight?.[0];
 
   if (!image) {
     return (
@@ -50,15 +51,52 @@ export default function BlogPostCover({
     );
   }
 
+  // Dithered artwork ships as webp and smears at the default 75; the
+  // PNG covers of older posts keep the default.
+  const quality = (src: string) =>
+    /\.webp(?:\?|$)/.test(src) ? 95 : undefined;
+  const classes = `blog-dither-cover blog-post-cover${className ? ` ${className}` : ''}`;
+
+  if (!imageLight) {
+    return (
+      <Image
+        src={localSrc(image)}
+        alt=''
+        width={960}
+        height={540}
+        sizes={sizes}
+        quality={quality(image)}
+        priority={priority}
+        className={classes}
+      />
+    );
+  }
+
+  // A post with a light-theme cover keeps both in the document;
+  // blog-index.css shows the one for the current theme, so a switch swaps
+  // them without a request.
   return (
-    <Image
-      src={localSrc(image)}
-      alt=''
-      width={960}
-      height={540}
-      sizes={sizes}
-      priority={priority}
-      className={`blog-dither-cover blog-post-cover${className ? ` ${className}` : ''}`}
-    />
+    <>
+      <Image
+        src={localSrc(image)}
+        alt=''
+        width={960}
+        height={540}
+        sizes={sizes}
+        quality={quality(image)}
+        priority={priority}
+        className={`${classes} blog-post-cover-dark`}
+      />
+      <Image
+        src={localSrc(imageLight)}
+        alt=''
+        width={960}
+        height={540}
+        sizes={sizes}
+        quality={quality(imageLight)}
+        priority={priority}
+        className={`${classes} blog-post-cover-light`}
+      />
+    </>
   );
 }

@@ -3,19 +3,20 @@
  *
  * The shipped page reads MDX frontmatter off disk
  * (apps/landing/src/components/blog/utils.ts → content/blog/en-US and
- * content/devlog/en-US, a git submodule this repo does not carry), so the
- * frontmatter is transcribed here instead. Nothing is paraphrased:
+ * content/devlog/en-US, the public generaltranslation/content repository
+ * this repo does not carry), so the frontmatter is transcribed here.
+ * Nothing is paraphrased. Source: generaltranslation/content at 361ec4a8
+ * and the live generaltranslation.com/en-US/blog, read on 2026-10-13.
  *
- *   POSTS    — content/blog/en-US/supporting-open-source-software.mdx.
- *              The tree holds exactly one blog post, so the real index
- *              renders exactly one card.
- *   AUTHORS  — content/authors/archie.mdx (name + avatar).
- *   RELEASES — content/devlog/en-US/*.mdx, all 52 of them, in the ORDER
- *              THE REAL PAGE RENDERS THEM: getAllPosts sorts by date
- *              descending with a descending title tiebreak, and this array
- *              is that resolved order, verified cell for cell against the
- *              running app. Storing the settled order keeps the board
- *              1-1 without re-implementing a locale-sensitive comparator.
+ *   POSTS    — content/blog/en-US/*.mdx, all five, in the order of
+ *              content/blog/order.json, which the shipped index applies
+ *              before rendering (gt-cloud #5211, orderPosts).
+ *   AUTHORS  — content/authors/<slug>.mdx (name and avatar) for the
+ *              authors the posts name, co-authors included (gt-cloud #4855).
+ *   RELEASES — content/devlog/en-US/*.mdx, all 55, in the order the live
+ *              page renders them: getAllPosts sorts by date descending with
+ *              a descending title tiebreak, and this array is that resolved
+ *              order as the live page printed it.
  *
  * The helpers below (categories, date format, release-title split) are the
  * shipped model.ts and UpdatesBoard rules, carried over unchanged.
@@ -29,6 +30,8 @@ export type IndexPost = {
   summary: string;
   tags: readonly string[];
   images?: readonly string[];
+  /** Frontmatter `imagesLight`: the light-theme cover, where a post has one. */
+  imagesLight?: readonly string[];
   authors: readonly IndexAuthor[];
 };
 
@@ -36,7 +39,6 @@ export type IndexPost = {
 export type IndexAuthor = {
   name: string;
   avatar: string;
-  email: string;
 };
 
 /** A devlog release, as the changelog strip needs it. */
@@ -49,14 +51,58 @@ export type IndexRelease = {
   date: string;
 };
 
-const ARCHIE: IndexAuthor = {
-  name: 'Archie McKenzie',
-  avatar: '/static/avatars/archie.png',
-  email: 'archie@generaltranslation.com',
-};
+/** content/authors, keyed by the slug post frontmatter names. */
+const AUTHORS = {
+  archie: { name: 'Archie McKenzie', avatar: '/static/avatars/archie.png' },
+  kevin: { name: 'Kevin Liu', avatar: '/static/avatars/kevin.png' },
+  'kevin-wu': { name: 'Kevin Wu', avatar: '/static/avatars/kevin-wu.jpg' },
+  taylor: { name: 'Taylor Fang', avatar: '/static/avatars/taylor.png' },
+} as const satisfies Record<string, IndexAuthor>;
 
-/** content/blog/en-US — the whole tree, newest first. */
+/** content/blog/en-US — the whole tree, in content/blog/order.json order. */
 export const POSTS: readonly IndexPost[] = [
+  {
+    slug: 'designing-docs-for-humans',
+    title: 'Designing docs for humans',
+    date: '2026-09-17',
+    summary:
+      'Why design still matters in the age of AI and our docs design principles to clean up mental clutter.',
+    tags: ['craft', 'docs', 'documentation', 'design', 'developer-experience'],
+    images: ['/static/blogs/designing-docs.webp?v=20260920-0930'],
+    imagesLight: ['/static/blogs/designing-docs-light.webp?v=20260920-0930'],
+    authors: [AUTHORS.kevin, AUTHORS.taylor],
+  },
+  {
+    slug: 'rewriting-our-docs',
+    title: 'Rewriting docs for humans and agents',
+    date: '2026-09-14',
+    summary:
+      'How we designed the reading experience with a 13,000-word style guide and structured docs for agent-readability.',
+    tags: ['craft', 'docs', 'documentation', 'agents', 'llms', 'developer-experience'],
+    images: ['/static/blogs/rewriting-our-docs-dark.png?v=20260918-2200'],
+    imagesLight: ['/static/blogs/rewriting-our-docs.png?v=20260918-2200'],
+    authors: [AUTHORS.taylor],
+  },
+  {
+    slug: 'supporting-slash-companies',
+    title: 'Supporting Slash companies',
+    date: '2026-10-07',
+    summary:
+      'General Translation is giving $2,000 in translation credits to help companies that bank with Slash localize their products and scale to global markets.',
+    tags: ['slash', 'partners', 'credits', 'startups', 'community'],
+    images: ['/static/blogs/supporting-slash-companies.jpg?v=20261007-1215'],
+    authors: [AUTHORS['kevin-wu'], AUTHORS.taylor],
+  },
+  {
+    slug: 'fuma-nama',
+    title: 'Fuma Nama: The philosophy of an open-sourcerer',
+    date: '2026-09-03',
+    summary:
+      'Why Fuma Nama believes in less abstraction, less opinionated software, and a beautiful reader experience.',
+    tags: ['open-source', 'grants', 'fuma-nama', 'fumadocs', 'developers', 'community'],
+    images: ['/static/blogs/fumadocs.png'],
+    authors: [AUTHORS.taylor],
+  },
   {
     slug: 'supporting-open-source-software',
     title: 'Supporting open-source software',
@@ -65,16 +111,34 @@ export const POSTS: readonly IndexPost[] = [
       'General Translation is giving away $15,000 to developers who build and maintain open-source projects.',
     tags: ['open-source', 'grants', 'developers', 'community'],
     images: ['/static/blogs/supporting-open-source-software.png?v=8704532b'],
-    authors: [ARCHIE],
+    authors: [AUTHORS.archie],
   },
 ];
 
 /** content/devlog/en-US — every release, in the real page's own order. */
 export const RELEASES: readonly IndexRelease[] = [
   {
+    slug: 'gt_v2_23_0_generaltranslation-api_v0_5_0',
+    title: 'gt@2.23.0 / @generaltranslation/api@0.5.0',
+    headline: 'Sign in and set up projects from the CLI',
+    date: '2026-09-29',
+  },
+  {
+    slug: 'gt-rrweb_v0_2_0',
+    title: 'gt-rrweb@0.2.0',
+    headline: 'Localized product walkthroughs',
+    date: '2026-08-22',
+  },
+  {
+    slug: 'gt-vue_v0_1_0',
+    title: 'gt-vue@0.1.0',
+    headline: 'Vue 3 framework support',
+    date: '2026-08-21',
+  },
+  {
     slug: 'gt-sanity_v4_0_0',
     title: 'gt-sanity@4.0.0',
-    headline: 'Support for Sanity 6 Studios',
+    headline: 'Sanity 6.9.2+ Studio support',
     date: '2026-08-14',
   },
   {
@@ -188,13 +252,13 @@ export const RELEASES: readonly IndexRelease[] = [
   {
     slug: 'gt-cli_v2_12_0',
     title: 'gt@2.12.0',
-    headline: 'derive() supports Python dictionaries and lists',
+    headline: 'Object and dictionary derivation',
     date: '2026-03-19',
   },
   {
     slug: 'gt-cli_v2_11_3',
     title: 'gt@2.11.3',
-    headline: 'Object and array access for derive()',
+    headline: 'CDN publishing from upload and save-local',
     date: '2026-03-19',
   },
   {

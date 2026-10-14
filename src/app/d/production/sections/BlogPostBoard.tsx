@@ -1,18 +1,18 @@
 'use client';
 
-import { Rss, Search } from 'lucide-react';
-import Image from 'next/image';
+import { RssIcon } from '@heroicons/react/24/solid';
+import { Search } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 import BlogCategoryLabel from './BlogCategoryLabel';
 import BlogPostCover from './BlogPostCover';
+import PostAuthors from './PostAuthors';
 import {
   BLOG_CATEGORIES,
   formatPostDate,
   postHref,
   type BlogCategory,
-  type IndexAuthor,
   type IndexPost,
 } from './blog-index-data';
 
@@ -36,32 +36,6 @@ const PILL =
    destination the way the docs and dashboard links do. */
 const RSS_HREF = 'https://generaltranslation.com/rss.xml';
 
-function AuthorList({ authors }: { authors: readonly IndexAuthor[] }) {
-  if (authors.length === 0) return null;
-
-  return (
-    <span className='mt-auto flex flex-wrap gap-3 pt-4 text-[12.5px] text-(--tc-ink-3)'>
-      {authors.map((author, index) => (
-        <span
-          key={author.email || index}
-          className='inline-flex items-center gap-2'
-        >
-          {author.avatar ? (
-            <Image
-              src={author.avatar}
-              alt=''
-              width={20}
-              height={20}
-              className='rounded-full'
-            />
-          ) : null}
-          {author.name}
-        </span>
-      ))}
-    </span>
-  );
-}
-
 function PostBody({
   post,
   lead = false,
@@ -77,9 +51,11 @@ function PostBody({
           <BlogCategoryLabel category={post.category} />
         </span>
       </span>
+      {/* the lead's larger title belongs to its two-column desktop card;
+          below 1000px every card stacks alike, so every title sizes alike */}
       <strong
-        className={`line-clamp-2 leading-[1.25] font-medium tracking-[-0.025em] [text-wrap:balance] ${
-          lead ? 'text-[clamp(23px,2vw,28px)]' : 'text-[21px]'
+        className={`line-clamp-2 text-[21px] leading-[1.25] font-medium tracking-[-0.025em] [text-wrap:balance] ${
+          lead ? 'min-[1000px]:text-[clamp(23px,2vw,28px)]' : ''
         }`}
       >
         {post.title}
@@ -87,7 +63,7 @@ function PostBody({
       <span className='line-clamp-2 text-[13.5px] leading-[1.6] text-(--tc-ink-2)'>
         {post.summary}
       </span>
-      <AuthorList authors={post.authors} />
+      <PostAuthors authors={post.authors} variant='card' />
     </span>
   );
 }
@@ -173,7 +149,7 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
             aria-label='RSS feed'
             className='blog-rss grid size-[30px] place-items-center rounded-full border border-(--tc-hair) text-(--tc-ink-2) transition-colors hover:text-(--tc-ink)'
           >
-            <Rss size={14} aria-hidden='true' />
+            <RssIcon className='size-3.5' aria-hidden='true' />
           </a>
         </div>
       </div>
@@ -243,20 +219,19 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
         </div>
       ) : (
         <div className='grid grid-cols-1 gap-2.5 px-(--tc-gut) min-[720px]:grid-cols-2 min-[1000px]:grid-cols-3'>
-          {rest.map((post, index) => (
+          {rest.map((post) => (
             <a
               key={post.slug}
               href={postHref(base, post.slug)}
               className={CARD}
             >
-              {!featuring && index < 3 && (
-                <BlogPostCover
-                  post={post}
-                  id={`grid-${post.slug}`}
-                  className='aspect-[16/7]'
-                  sizes='(min-width: 1000px) 33vw, (min-width: 720px) 50vw, 100vw'
-                />
-              )}
+              {/* every card carries its cover at the image's own 16:9, lazily below the fold */}
+              <BlogPostCover
+                post={post}
+                id={`grid-${post.slug}`}
+                className='aspect-video'
+                sizes='(min-width: 1000px) 33vw, (min-width: 720px) 50vw, 100vw'
+              />
               <PostBody post={post} />
             </a>
           ))}

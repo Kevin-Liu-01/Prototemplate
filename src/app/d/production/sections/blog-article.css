@@ -161,16 +161,6 @@
   color: var(--tc-ink-3);
 }
 
-.prod-root .pba-byline > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.prod-root .pba-avatar {
-  border-radius: 9999px;
-}
-
 /* ---- the not-found branch ---- */
 
 .prod-root .pba-miss {

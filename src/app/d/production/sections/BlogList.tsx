@@ -26,7 +26,7 @@ export default function BlogList() {
       <section className='tc-sec blog-hero'>
         <BlogHeroBoard>
           <h1 id='blog-index-title'>
-            <FlapPhrase text='Blog' flash={false} />
+            <FlapPhrase text='General Translation Blog' flash={false} />
           </h1>
         </BlogHeroBoard>
       </section>

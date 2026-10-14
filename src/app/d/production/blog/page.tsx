@@ -23,13 +23,11 @@ export const metadata = {
  * The real page is three sections deep and nothing more
  * (apps/landing/src/components/pages/blog/BlogPage.tsx → BlogList): a
  * terminus masthead whose two ticker canvases clack "news" through the
- * catalog's scripts while the word "Blog" lands on flap cells; the
- * changelog as a horizontal departures board carrying all 52 devlog
+ * catalog's scripts while "General Translation Blog" lands on flap cells;
+ * the changelog as a horizontal departures board carrying all 55 devlog
  * releases, newest first; and the essays deck — filter pills, a search
- * box, an RSS button — leading with the content tree's one blog post at
- * feature size. That last count is not an abbreviation: content/blog/en-US
- * holds exactly one post today, so the real index shows exactly one card
- * and announces "1 post shown".
+ * box, an RSS button — leading with the first three of the five blog posts
+ * at feature size, in content/blog/order.json order.
  *
  * CHROME. The shipped blog route wraps its content in the same site
  * Header and SiteFooterMount as the landing page, so this page mounts the

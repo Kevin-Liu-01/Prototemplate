@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { Fragment, type ReactNode } from 'react';
@@ -8,6 +7,7 @@ import { Fragment, type ReactNode } from 'react';
 import BlogArticleCover from './BlogArticleCover';
 import BlogArticleFooter from './BlogArticleFooter';
 import BlogArticleSidebar from './BlogArticleSidebar';
+import PostAuthors from './PostAuthors';
 import {
   authorsOf,
   siblingsOf,
@@ -162,20 +162,7 @@ export default function BlogArticle({ post, postType }: Props) {
             ) : null}
 
             <div className='pba-byline'>
-              {authors.map((author, index) => (
-                <span key={author.name || index}>
-                  {author.avatar ? (
-                    <Image
-                      alt=''
-                      className='pba-avatar'
-                      height={26}
-                      src={author.avatar}
-                      width={26}
-                    />
-                  ) : null}
-                  {author.name}
-                </span>
-              ))}
+              <PostAuthors authors={authors} variant='article' />
               {authors.length > 0 ? (
                 <span aria-hidden='true'>&middot;</span>
               ) : null}

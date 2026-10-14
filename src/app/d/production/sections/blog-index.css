@@ -385,6 +385,21 @@
   object-fit: cover;
 }
 
+/* A post with two covers shows the one for the theme; the other stays in
+   the document, so a theme switch needs no request (the shipped blog.css,
+   gt-cloud origin/main). The mirror reads the theme from data-theme only. */
+.blog-root .blog-dither-cover.blog-post-cover-dark {
+  display: none;
+}
+
+[data-theme='dark'] .blog-root .blog-dither-cover.blog-post-cover-dark {
+  display: block;
+}
+
+[data-theme='dark'] .blog-root .blog-dither-cover.blog-post-cover-light {
+  display: none;
+}
+
 /* below five-across, the slabs hold a readable width and scroll */
 @media (max-width: 1250px) {
   .blog-root .blog-updates-cell {

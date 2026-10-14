@@ -7,22 +7,22 @@
  * frontmatter is transcribed here instead. Nothing is paraphrased and
  * nothing is added:
  *
- *   AUTHORS      content/authors/<slug>.mdx — `name` and `avatar`. Taylor's
- *                file declares no avatar, so hers is absent here too; the
- *                shipped byline renders the name alone in that case.
- *   BLOG_POSTS   content/blog/en-US — the tree holds exactly ONE post, so
- *                the shipped blog serves exactly one essay.
- *   DEVLOG_POSTS content/devlog/en-US — all 52 releases.
+ *   AUTHORS      content/authors/<slug>.mdx — `name` and `avatar`.
+ *   BLOG_POSTS   content/blog/en-US — all five posts.
+ *   DEVLOG_POSTS content/devlog/en-US — all 55 releases.
+ *
+ * Source: the public generaltranslation/content repository at 361ec4a8,
+ * read on 2026-10-13.
  *
  * Both lists are stored in the order getAllPosts resolves: date descending,
  * with a descending numeric-aware title tiebreak. That order is what the
  * article's previous/next pair walks, so it is stored settled rather than
  * re-derived from a locale-sensitive comparator.
  *
- * Devlog frontmatter carries a `headline` and NO `summary`; blog frontmatter
- * carries a `summary` and, here, an `images` cover. The shipped page prints
- * exactly what the frontmatter holds, which is why a release article shows
- * no summary paragraph and a release Explore card shows no dek.
+ * Devlog frontmatter carries a `headline` and, with one exception (gt@2.23.0),
+ * no `summary`; blog frontmatter carries a `summary` and an `images` cover.
+ * The shipped page prints exactly what the frontmatter holds, which is why
+ * most release articles show no summary paragraph.
  *
  * Bodies are separate: the five posts in
  * ../../singularity/company-sections/post-bodies.ts carry real article text.
@@ -46,7 +46,10 @@ export const AUTHORS: Readonly<Record<string, ArticleAuthor>> = {
   ernest: { name: 'Ernest McCarter', avatar: '/static/avatars/ernest.png' },
   fernando: { name: 'Fernando Aviles', avatar: '/static/avatars/fernando.png' },
   jackie: { name: 'Jackie Chen', avatar: '/static/avatars/jackie.png' },
-  taylor: { name: 'Taylor Fang' },
+  kevin: { name: 'Kevin Liu', avatar: '/static/avatars/kevin.png' },
+  'kevin-wu': { name: 'Kevin Wu', avatar: '/static/avatars/kevin-wu.jpg' },
+  cyan: { name: 'Chenxin (Cyan) Yan', avatar: '/static/avatars/cyan.jpg' },
+  taylor: { name: 'Taylor Fang', avatar: '/static/avatars/taylor.png' },
   default: { name: 'Team', avatar: '/static/avatars/logo.png' },
 };
 
@@ -71,6 +74,42 @@ export type ArticlePost = {
 /** content/blog/en-US, newest first. */
 export const BLOG_POSTS: readonly ArticlePost[] = [
   {
+    slug: 'supporting-slash-companies',
+    title: 'Supporting Slash companies',
+    date: '2026-10-07',
+    authors: ['kevin-wu', 'taylor'],
+    summary: 'General Translation is giving $2,000 in translation credits to help companies that bank with Slash localize their products and scale to global markets.',
+    tags: ['slash', 'partners', 'credits', 'startups', 'community'],
+    images: ['/static/blogs/supporting-slash-companies.jpg?v=20261007-1215'],
+  },
+  {
+    slug: 'designing-docs-for-humans',
+    title: 'Designing docs for humans',
+    date: '2026-09-17',
+    authors: ['kevin', 'taylor'],
+    summary: 'Why design still matters in the age of AI and our docs design principles to clean up mental clutter.',
+    tags: ['craft', 'docs', 'documentation', 'design', 'developer-experience'],
+    images: ['/static/blogs/designing-docs.webp?v=20260920-0930'],
+  },
+  {
+    slug: 'rewriting-our-docs',
+    title: 'Rewriting docs for humans and agents',
+    date: '2026-09-14',
+    authors: ['taylor'],
+    summary: 'How we designed the reading experience with a 13,000-word style guide and structured docs for agent-readability.',
+    tags: ['craft', 'docs', 'documentation', 'agents', 'llms', 'developer-experience'],
+    images: ['/static/blogs/rewriting-our-docs-dark.png?v=20260918-2200'],
+  },
+  {
+    slug: 'fuma-nama',
+    title: 'Fuma Nama: The philosophy of an open-sourcerer',
+    date: '2026-09-03',
+    authors: ['taylor'],
+    summary: 'Why Fuma Nama believes in less abstraction, less opinionated software, and a beautiful reader experience.',
+    tags: ['open-source', 'grants', 'fuma-nama', 'fumadocs', 'developers', 'community'],
+    images: ['/static/blogs/fumadocs.png'],
+  },
+  {
     slug: 'supporting-open-source-software',
     title: 'Supporting open-source software',
     date: '2026-08-17',
@@ -84,9 +123,36 @@ export const BLOG_POSTS: readonly ArticlePost[] = [
 /** content/devlog/en-US, newest first. */
 export const DEVLOG_POSTS: readonly ArticlePost[] = [
   {
+    slug: 'gt_v2_23_0_generaltranslation-api_v0_5_0',
+    title: 'gt@2.23.0 / @generaltranslation/api@0.5.0',
+    headline: 'Sign in and set up projects from the CLI',
+    date: '2026-09-29',
+    authors: ['cyan'],
+    summary: 'Sign in, set up a project, and create keys with explicit permissions from the CLI, or run setup headless from scripts and agents.',
+    tags: ['gt', '2.23.0', '@generaltranslation/api', '0.5.0', 'generaltranslation', '9.5.2', 'cli'],
+  },
+  {
+    slug: 'gt-rrweb_v0_2_0',
+    title: 'gt-rrweb@0.2.0',
+    headline: 'Localized product walkthroughs',
+    date: '2026-08-22',
+    authors: ['ernest'],
+    summary: '',
+    tags: ['gt-rrweb', 'v0.2.0', 'rrweb', 'recording', 'translation'],
+  },
+  {
+    slug: 'gt-vue_v0_1_0',
+    title: 'gt-vue@0.1.0',
+    headline: 'Vue 3 framework support',
+    date: '2026-08-21',
+    authors: ['ernest'],
+    summary: '',
+    tags: ['gt-vue', 'v0.1.0', 'vue', 'i18n', 'translation'],
+  },
+  {
     slug: 'gt-sanity_v4_0_0',
     title: 'gt-sanity@4.0.0',
-    headline: 'Support for Sanity 6 Studios',
+    headline: 'Sanity 6.9.2+ Studio support',
     date: '2026-08-14',
     authors: ['fernando'],
     summary: '',
@@ -257,7 +323,7 @@ export const DEVLOG_POSTS: readonly ArticlePost[] = [
   {
     slug: 'gt-cli_v2_12_0',
     title: 'gt@2.12.0',
-    headline: 'derive() supports Python dictionaries and lists',
+    headline: 'Object and dictionary derivation',
     date: '2026-03-19',
     authors: ['ernest'],
     summary: '',
@@ -266,11 +332,11 @@ export const DEVLOG_POSTS: readonly ArticlePost[] = [
   {
     slug: 'gt-cli_v2_11_3',
     title: 'gt@2.11.3',
-    headline: 'Object and array access for derive()',
+    headline: 'CDN publishing from upload and save-local',
     date: '2026-03-19',
     authors: ['ernest'],
     summary: '',
-    tags: ['gt-cli', 'derive', 'objects', 'arrays'],
+    tags: ['gt-cli', 'cdn', 'publish', 'upload', 'save-local'],
   },
   {
     slug: 'gt-cli_v2_11_0',
