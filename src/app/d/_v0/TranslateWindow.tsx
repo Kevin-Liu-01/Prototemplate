@@ -627,6 +627,16 @@ const isNarrow = () =>
   typeof window !== 'undefined' && window.matchMedia(NARROW_MQ).matches;
 const restCut = () => (isNarrow() ? 100 : REST_CUT);
 
+/* ---- the phone's hit areas: the homes' home.css pads each mark into a
+   40px square and narrows the seam's slab to 44px under this query, and
+   the component keeps every mark and belt chip it would let a tap reach
+   at 40px or more, overlapping nothing. Must agree with those sheets;
+   the desktop never matches it. */
+const PHONE_MQ =
+  '(max-width: 900px), (pointer: coarse) and (max-height: 500px)';
+const isPhone = () =>
+  typeof window !== 'undefined' && window.matchMedia(PHONE_MQ).matches;
+
 /** A component's inspector mark: the quiet exclamation pinned to its
     component's top-right CORNER — one fixed inset, centred on the corner
     point, the same on every component (founder: no floating offsets).
@@ -952,31 +962,27 @@ export default function TranslateWindow({
      The cut is where the seam's line is drawn: at either end the line
      parks 4.5px inside the card (reveal-seam.css), so a mark whose centre
      sits between that line and the card's edge is right of the line and
-     files swept, instead of covering the line. */
+     files swept, instead of covering the line. On a phone (PHONE_MQ) the
+     mark is a 40px square ending at its badge's right edge and the slab
+     is 44px wide, so a mark files swept once its square would reach into
+     the slab: the two hit areas never overlap. */
   const reconcileMarks = () => {
     const el = app.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
     if (r.width === 0) return;
-    const line = el.querySelector('.tc-seam')?.getBoundingClientRect();
+    const seam = el.querySelector('.tc-seam')?.getBoundingClientRect();
     const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
-    const cutX = line?.width
-      ? (line.left + line.right) / 2
+    const cutX = seam?.width
+      ? (seam.left + seam.right) / 2
       : r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
+    const phone = isPhone() && !!seam?.width;
     for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
-      /* the badge's centre: the middle of the slab's content box, which
-         the padding sets on the badge when a phone widens the slab (the
-         homes' home.css); with no padding it is the slab's own centre */
       const mr = m.getBoundingClientRect();
-      const cs = getComputedStyle(m);
-      const left = parseFloat(cs.paddingLeft) || 0;
-      const right = parseFloat(cs.paddingRight) || 0;
-      /* padded, the square ends at the badge's right edge, so a badge
-         within 10px of the line (its own 5.5px half and the bar's 4.5px
-         half) would lay the square and the badge over the bar's left
-         thread: that mark files swept too */
-      const reach = left > 0 ? 10 : 0;
-      if (mr.left + (mr.width + left - right) / 2 + reach > cutX) m.setAttribute('data-swept', '');
+      const swept = phone
+        ? mr.right > (seam?.left ?? cutX)
+        : mr.left + mr.width / 2 > cutX;
+      if (swept) m.setAttribute('data-swept', '');
       else m.removeAttribute('data-swept');
     }
   };
@@ -1147,8 +1153,8 @@ export default function TranslateWindow({
       let widths: number[] = [];
       let runWidth = 0;
       const measure = () => {
-        lefts = chips.slice(0, n + 1).map((chip) => chip.offsetLeft);
-        widths = chips.slice(0, n).map((chip) => chip.offsetWidth);
+        lefts = chips.map((chip) => chip.offsetLeft);
+        widths = chips.map((chip) => chip.offsetWidth);
         runWidth = (lefts[n] ?? 0) - (lefts[0] ?? 0);
       };
       measure();
@@ -1160,7 +1166,25 @@ export default function TranslateWindow({
       /* the click-to-centre tween, held so a pointer down can kill it */
       let slide: gsap.core.Tween | null = null;
       const wrap = (v: number) => ((v % runWidth) + runWidth) % runWidth;
-      const setX = () => gsap.set(trackEl, { x: -pos });
+      /* On a phone a chip the zone's edge cuts to under 40px goes inert
+         until the belt carries it back in: the clip, not the chip, would
+         take the rest of a tap there, and the belt under it takes the tap
+         as a drag. Its look does not change. */
+      const phone = isPhone();
+      const fileEdges = () => {
+        const zone = beltEl.clientWidth;
+        chips.forEach((chip, i) => {
+          const left = (lefts[i] ?? 0) - pos;
+          const seen =
+            Math.min(left + (widths[i] ?? 0), zone) - Math.max(left, 0);
+          const inert = seen < 40;
+          if (chip.inert !== inert) chip.inert = inert;
+        });
+      };
+      const setX = () => {
+        gsap.set(trackEl, { x: -pos });
+        if (phone) fileEdges();
+      };
       const chipCenter = (i: number) => (lefts[i] ?? 0) + (widths[i] ?? 0) / 2;
       const seat = (i: number) => {
         pos = wrap(chipCenter(i) - beltEl.clientWidth / 2);
@@ -1577,10 +1601,14 @@ export default function TranslateWindow({
       }
 
       /* the text-hugging marks land on new corners when the swap
-         settles — re-file them against the cut once the typing is done */
+         settles — re-file them against the cut once the typing is done.
+         On a phone they re-file on every typed frame as well, so a mark
+         its line carries toward the seam files swept before it reaches
+         the slab, not when the typing ends. */
       rewrite.current?.kill();
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
+        onUpdate: isPhone() ? reconcileMarks : undefined,
         onComplete: reconcileMarks,
       });
       rewrite.current = tl;

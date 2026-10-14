@@ -21,12 +21,8 @@
      badge drawn on the component's top-right corner
      (_v0/translate-window.css). On a phone the slab grows from a 25px
      circle to a 40px square whose right edge is the badge's right edge
-     and which runs left over the component the mark names. The square
-     reaches 7px less far right than the 25px slab did, so the marks
-     that rest 13px left of the seam's line at the card's right end stop
-     4px short of its left thread. The badge stays put, drawn by insets,
-     and the padding sets the "!" in it; reconcileMarks reads the badge's
-     centre from the padding.
+     and which runs left over the component the mark names. The badge
+     stays put, drawn by insets, and the padding sets the "!" in it.
      --lift moves the square off the corner's centre (up for a positive
      value, down for a negative one). */
   .toolchain-root.sgdh-root .v0-tw .sgdh-ins-mark {
@@ -69,6 +65,25 @@
   .toolchain-root.sgdh-root .v0-tw .tct-app-copy .sgdh-ins-mark,
   .toolchain-root.sgdh-root .v0-tw .sgdh-app-stat .sgdh-ins-mark {
     --lift: -14.5px;
+  }
+
+  /* the seam's slab: 64px on the desktop, 44px here, centred on its line.
+     reconcileMarks (_v0/TranslateWindow.tsx) files a mark swept once its
+     square would reach into the slab, so the two never overlap. At rest
+     the line parks 4.5px inside the card's right edge upright and at 88%
+     on its side; the chart's square ended 8.5 or 21px left of it, inside
+     the slab. The chart stops 16px short of its column's right edge, so
+     its square ends 24.5 or 37px left of the line, 2.5 or 15px clear of
+     the slab. Upright, the slab takes a tap from 22px left of the line to
+     the 18.5px the page leaves right of it: 40.5px. The third stat runs
+     to the card's edge at 390px wide and past the line on narrower
+     phones, so its mark files swept there. */
+  .toolchain-root.sgdh-root .v0-tw .tct-app .tc-seam {
+    width: 44px;
+  }
+
+  .toolchain-root.sgdh-root .v0-tw .sgdh-app-chart {
+    margin-right: 16px;
   }
 
   /* the belt's chips sit 10px under its top edge (their 1px border
