@@ -80,6 +80,17 @@
   padding-bottom: 16px;
 }
 
+/* The production mirror mounts this page in the v0 shell (sgdh-root),
+   whose section-head padding (clamp 26 to 36px, and 72px over 36px under
+   720px) outranks the rule above. The shipped page has no such shell
+   rule, so the mirror restates the head's own padding. Measured on
+   2026-10-13: the shipped H1 sits 16px under the field at 390 wide and
+   26px under it at 1440. */
+.toolchain-root.prod-root.try-root .tc-head.try-head {
+  padding-top: clamp(16px, 2.2vw, 26px);
+  padding-bottom: 16px;
+}
+
 .try-root .try-head h1 {
   font-size: clamp(1.62rem, 2.5vw, 2.2rem);
   max-width: 22ch;
@@ -1380,6 +1391,30 @@
 
 .try-tip-btn svg {
   display: block;
+}
+
+/* The production mirror shows the shipped trigger: the shared
+   PricingHelpTooltip colors it with --color-emphasis (the shared sheet's
+   blue, light then dark), its button is the 14px icon with no padding,
+   and hover leaves the color alone. */
+.toolchain-root.prod-root.try-root {
+  --try-tip-emphasis: hsl(217.2 91.2% 59.8%);
+}
+
+[data-theme='dark'] .toolchain-root.prod-root.try-root {
+  --try-tip-emphasis: hsl(213.1 93.9% 67.8%);
+}
+
+.prod-root .try-tip-btn,
+.prod-root .try-tip-btn:hover,
+.prod-root .try-tip-btn[aria-expanded='true'] {
+  color: var(--try-tip-emphasis);
+}
+
+.prod-root .try-tip-btn,
+.prod-root .try-tip-btn svg {
+  width: 14px;
+  height: 14px;
 }
 
 .try-tip-panel {
