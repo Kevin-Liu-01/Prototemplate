@@ -1,9 +1,11 @@
 'use client';
 
+import {
+  ChatBubbleLeftEllipsisIcon,
+  LifebuoyIcon,
+} from '@heroicons/react/24/solid';
 import { useState } from 'react';
-import type { ComponentType, FormEvent } from 'react';
-
-import { HelpCircle, MessageSquare } from 'lucide-react';
+import type { ComponentType, FormEvent, SVGProps } from 'react';
 
 import GtHeroFigure from './GtHeroFigure';
 import { PRIVACY_URL, TERMS_URL } from './site-links';
@@ -42,15 +44,9 @@ type FormState = {
 
 const EMPTY: FormState = { name: '', email: '', companyName: '', message: '' };
 
-type IconProps = {
-  className?: string;
-  size?: number;
-  strokeWidth?: number;
-  'aria-hidden'?: boolean;
-};
-
 type Feature = {
-  icon: ComponentType<IconProps>;
+  /** A meaning mark: Heroicons solid, as the shipped page draws it (gt-cloud #5007). */
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   title: string;
   description: string;
 };
@@ -58,13 +54,13 @@ type Feature = {
 /** The shipped feature pair, in the shipped order. */
 const FEATURES: readonly Feature[] = [
   {
-    icon: HelpCircle,
+    icon: LifebuoyIcon,
     title: 'Technical support.',
     description:
       'Need help with integration or troubleshooting? Reach out to our team.',
   },
   {
-    icon: MessageSquare,
+    icon: ChatBubbleLeftEllipsisIcon,
     title: 'General inquiries.',
     description:
       'Have a question about General Translation? We’re here to help.',
@@ -120,7 +116,7 @@ export default function ContactForm() {
                 const Icon = feature.icon;
                 return (
                   <div className='contact-feature' key={feature.title}>
-                    <Icon aria-hidden size={16} strokeWidth={1.7} />
+                    <Icon aria-hidden='true' />
                     <p>
                       <span className='contact-feature-lead'>
                         {feature.title}

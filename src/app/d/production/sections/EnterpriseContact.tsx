@@ -1,9 +1,14 @@
 'use client';
 
-import { Building2, Rocket, ShieldCheck, Workflow } from 'lucide-react';
+import {
+  ArrowPathRoundedSquareIcon,
+  BuildingOffice2Icon,
+  RocketLaunchIcon,
+  ShieldCheckIcon,
+} from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
-import type { ComponentType, FormEvent } from 'react';
+import type { ComponentType, FormEvent, SVGProps } from 'react';
 import { PRIVACY_URL, TERMS_URL } from './site-links';
 
 /**
@@ -34,15 +39,9 @@ type FormState = {
 
 const EMPTY: FormState = { name: '', email: '', companyName: '', message: '' };
 
-type IconProps = {
-  className?: string;
-  size?: number;
-  strokeWidth?: number;
-  'aria-hidden'?: boolean;
-};
-
 type Feature = {
-  icon: ComponentType<IconProps>;
+  /** A meaning mark: Heroicons solid, as the shipped form draws it (gt-cloud #5007). */
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   title: string;
   description: string;
 };
@@ -50,24 +49,24 @@ type Feature = {
 /** The four enterprise pillars, in the shipped order. */
 const FEATURES: readonly Feature[] = [
   {
-    icon: Building2,
+    icon: BuildingOffice2Icon,
     title: 'Enterprise Platform.',
     description:
       'Share translation context, glossaries, and custom prompts across every project and content source in your company.',
   },
   {
-    icon: Workflow,
+    icon: ArrowPathRoundedSquareIcon,
     title: 'Custom Workflows.',
     description:
       'Reliable, scalable translation workflows across any file format or framework. Custom integrations, webhooks, and tailored automation.',
   },
   {
-    icon: ShieldCheck,
+    icon: ShieldCheckIcon,
     title: 'Security and Governance.',
     description: 'SSO, SOC 2, ISO 27001, audit logs, and custom roles.',
   },
   {
-    icon: Rocket,
+    icon: RocketLaunchIcon,
     title: 'Forward-Deployed Support.',
     description:
       'Dedicated FDE hours with localization engineers to set up your system and bring localization to production.',
@@ -138,7 +137,7 @@ export default function EnterpriseContact() {
                   const Icon = feature.icon;
                   return (
                     <div className='contact-feature flex gap-2' key={feature.title}>
-                      <Icon aria-hidden className='mt-1 size-4 shrink-0' />
+                      <Icon aria-hidden='true' className='mt-1 size-4 shrink-0' />
                       <p className='m-0'>
                         <span className='font-semibold'>{feature.title}</span>{' '}
                         <span>{feature.description}</span>

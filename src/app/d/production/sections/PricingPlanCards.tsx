@@ -1,19 +1,19 @@
 'use client';
 
 import {
-  Brain,
-  CreditCard,
-  Landmark,
-  PencilLine,
-  ShieldCheck,
-  UsersRound,
-  Workflow,
-  Zap,
-} from 'lucide-react';
+  ArrowPathRoundedSquareIcon,
+  BoltIcon,
+  BuildingLibraryIcon,
+  CreditCardIcon,
+  PencilSquareIcon,
+  ShieldCheckIcon,
+  UsersIcon,
+} from '@heroicons/react/24/solid';
+import { SiGithub } from '@icons-pack/react-simple-icons';
 import type { ReactNode } from 'react';
 
+import LocadexMark from './LocadexMark';
 import PricingHelp from './PricingHelp';
-import { LucideGithubMark } from './pricing-github-mark';
 import { bayerTile, type ShineTier } from './pricing-bayer';
 import { PLAN_CTAS } from './pricing-links';
 import { USAGE_RATES_URL } from './site-links';
@@ -182,7 +182,7 @@ export default function PricingPlanCards() {
         <article className='pricing-plan-card'>
           <div className='pricing-plan-top'>
             <div className='pricing-plan-name'>
-              <Zap aria-hidden='true' />
+              <BoltIcon aria-hidden='true' />
               <h3>Starter</h3>
             </div>
           </div>
@@ -192,19 +192,19 @@ export default function PricingPlanCards() {
             <ul className='pricing-plan-features'>
               <UnlimitedPlanFeatureItems idPrefix='starter' />
               <li>
-                <PencilLine aria-hidden='true' />
+                <PencilSquareIcon aria-hidden='true' />
                 Translation Editor
               </li>
               <li>
-                <LucideGithubMark />
+                <SiGithub aria-hidden='true' />
                 GitHub Integration
               </li>
               <li>
-                <Brain aria-hidden='true' />
+                <LocadexMark aria-hidden='true' />
                 Locadex AI Agent
               </li>
               <li>
-                <CreditCard aria-hidden='true' />
+                <CreditCardIcon aria-hidden='true' />
                 <a
                   className='pricing-plan-usage-link'
                   href={usage}
@@ -232,7 +232,7 @@ export default function PricingPlanCards() {
         <article className='pricing-plan-card is-reco'>
           <div className='pricing-plan-top'>
             <div className='pricing-plan-name'>
-              <Landmark aria-hidden='true' />
+              <BuildingLibraryIcon aria-hidden='true' />
               <h3>Enterprise</h3>
             </div>
             <span className='pricing-plan-badge'>Recommended</span>
@@ -246,7 +246,7 @@ export default function PricingPlanCards() {
               <UnlimitedPlanFeatureItems idPrefix='enterprise' />
             </ul>
             <div className='pricing-plan-group'>
-              <UsersRound aria-hidden='true' />
+              <UsersIcon aria-hidden='true' />
               <div>
                 <h4>Dedicated engineers</h4>
                 <p>
@@ -255,14 +255,14 @@ export default function PricingPlanCards() {
               </div>
             </div>
             <div className='pricing-plan-group'>
-              <Workflow aria-hidden='true' />
+              <ArrowPathRoundedSquareIcon aria-hidden='true' />
               <div>
                 <h4>Custom workflows</h4>
                 <p>Custom integrations, webhooks, and tailored automation.</p>
               </div>
             </div>
             <div className='pricing-plan-group'>
-              <ShieldCheck aria-hidden='true' />
+              <ShieldCheckIcon aria-hidden='true' />
               <div>
                 <h4>Security and governance</h4>
                 <p>

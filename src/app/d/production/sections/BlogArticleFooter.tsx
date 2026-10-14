@@ -1,6 +1,7 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, Compass } from 'lucide-react';
+import { MapIcon } from '@heroicons/react/24/solid';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 import BlogArticleCover from './BlogArticleCover';
 import type { ArticlePost, PostType } from './blog-article-data';
@@ -71,7 +72,7 @@ export default function BlogArticleFooter({
       {related.length > 0 ? (
         <section className='pba-explore'>
           <h2 className='pba-explore-head'>
-            <Compass aria-hidden='true' size={16} />
+            <MapIcon className='size-4' aria-hidden='true' />
             Explore
           </h2>
           <div className='pba-explore-grid'>

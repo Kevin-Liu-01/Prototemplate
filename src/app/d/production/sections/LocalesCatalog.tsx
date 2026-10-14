@@ -148,12 +148,12 @@ export default function LocalesCatalog() {
                   <span className='locales-card-body'>
                     <strong>{languageName}</strong>
                     <span className='locales-card-region'>
-                      {properties.regionName || '—'}
+                      {properties.regionName || '–'}
                     </span>
                     <span className='locales-card-code'>
                       <code>{code}</code>
                       <i>•</i>
-                      {properties.nativeName || '—'}
+                      {properties.nativeName || '–'}
                     </span>
                   </span>
                 </a>

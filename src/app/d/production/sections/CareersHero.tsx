@@ -13,16 +13,12 @@ import CareersHorizon from './CareersHorizon';
  * hero is a headline and a single "Explore Open Roles" button that scrolls
  * the page to the openings ledger below (the shipped
  * ScrollToPositionsButton, minus its PostHog capture — this concept ships
- * no analytics). The button honours prefers-reduced-motion by jumping
- * instead of smooth-scrolling, exactly as the shipped control does.
+ * no analytics). The jump is native, with no smooth scroll, as the shipped
+ * control has done since gt-cloud #5007.
  */
 export default function CareersHero() {
   const scrollToPositions = () => {
-    document.getElementById('positions')?.scrollIntoView({
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        ? 'auto'
-        : 'smooth',
-    });
+    document.getElementById('positions')?.scrollIntoView();
   };
 
   return (

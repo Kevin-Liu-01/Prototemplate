@@ -1,14 +1,14 @@
 'use client';
 
 import {
-  ArrowUpRight,
-  Check,
-  DollarSign,
-  Layers,
-  LifeBuoy,
-  Package,
-  X,
-} from 'lucide-react';
+  CheckIcon,
+  CubeIcon,
+  CurrencyDollarIcon,
+  LifebuoyIcon,
+  Square3Stack3DIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/solid';
+import { ArrowUpRight } from 'lucide-react';
 import type { ComponentType, ReactNode } from 'react';
 
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -99,12 +99,14 @@ function CompareDitherMotif() {
 
 type MarkProps = { 'aria-hidden'?: boolean | 'true' | 'false'; className?: string };
 
-/** The group marks, keyed to the shipped hook's own group ids. */
+/** The group marks, keyed to the shipped hook's own group ids: meaning
+    marks, so Heroicons solid as packages/ui PricingData.tsx draws them
+    (gt-cloud #5007); the View Rates arrow stays a Lucide control. */
 const GROUP_MARK: Record<FeatureGroupId, ComponentType<MarkProps>> = {
-  pricing: DollarSign,
-  core: Package,
-  platform: Layers,
-  support: LifeBuoy,
+  pricing: CurrencyDollarIcon,
+  core: CubeIcon,
+  platform: Square3Stack3DIcon,
+  support: LifebuoyIcon,
 };
 
 /* The pinned group label's handoff: Chromium doesn't constrain sticky
@@ -179,10 +181,24 @@ type Tier = {
 
 function CellValue({ cell, usage }: { cell: Cell; usage: string }) {
   if (cell.kind === 'yes') {
-    return <Check aria-label='Included' className='pc-yes' strokeWidth={2.5} />;
+    return (
+      <CheckIcon
+        aria-hidden={false}
+        aria-label='Included'
+        className='pc-yes'
+        role='img'
+      />
+    );
   }
   if (cell.kind === 'no') {
-    return <X aria-label='Not included' className='pc-no' strokeWidth={2} />;
+    return (
+      <XMarkIcon
+        aria-hidden={false}
+        aria-label='Not included'
+        className='pc-no'
+        role='img'
+      />
+    );
   }
   if (cell.kind === 'rates') {
     return (

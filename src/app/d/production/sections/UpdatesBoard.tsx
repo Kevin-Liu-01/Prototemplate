@@ -8,13 +8,8 @@ import {
   SiReact,
   SiSanity,
 } from '@icons-pack/react-simple-icons';
-import {
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
-  Package,
-  Terminal,
-} from 'lucide-react';
+import { CommandLineIcon, CubeIcon } from '@heroicons/react/24/solid';
+import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useRef, useState } from 'react';
 
@@ -34,6 +29,17 @@ type UpdatesBoardProps = {
   releases: readonly IndexRelease[];
 };
 
+/* The CLI and the crate are meaning marks, so they are Heroicons solid
+   (gt-cloud #4909; the board's controls stay Lucide outline); the adapters
+   take the `size` the brand marks take. */
+function CliMark({ size = 16 }: { size?: number }) {
+  return <CommandLineIcon width={size} height={size} aria-hidden='true' />;
+}
+
+function CrateMark({ size = 16 }: { size?: number }) {
+  return <CubeIcon width={size} height={size} aria-hidden='true' />;
+}
+
 /* Each package under its own marque, set in the board's ink; the core
    gt package carries the house monogram, and packages without a marque
    ship under the crate. */
@@ -46,14 +52,14 @@ const PACKAGE_MARKS: readonly [RegExp, ComponentType<{ size?: number }>][] = [
   [/sanity/, SiSanity],
   [/flask/, SiFlask],
   [/django/, SiDjango],
-  [/cli/, Terminal],
+  [/cli/, CliMark],
 ];
 
 function markFor(pkg: string): ComponentType<{ size?: number }> {
   for (const [pattern, mark] of PACKAGE_MARKS) {
     if (pattern.test(pkg)) return mark;
   }
-  return Package;
+  return CrateMark;
 }
 
 /**
