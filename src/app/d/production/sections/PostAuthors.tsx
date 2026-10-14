@@ -15,12 +15,16 @@ const variantStyles = {
   article: {
     avatar: 'size-[22px]',
     authors: 'inline-flex min-w-0 items-center gap-2',
+    // no outer spacing: the article header places the byline itself
+    spacing: undefined,
     size: 22,
   },
   card: {
     avatar: 'size-[18px]',
     authors:
-      'mt-auto inline-flex min-w-0 items-center gap-2 pt-4 text-[12.5px] text-(--tc-ink-3)',
+      'inline-flex min-w-0 items-center gap-2 text-[12.5px] text-(--tc-ink-3)',
+    // the shipped mt-auto and pt-4: auto pins the byline to the card foot
+    spacing: { marginTop: 'auto', paddingTop: 16 },
     size: 18,
   },
 } as const;
@@ -32,8 +36,9 @@ const variantStyles = {
  *
  * Ported from apps/landing/src/components/blog/PostAuthors.tsx (gt-cloud
  * #4855, the co-author byline). The stack's overlap is an inline margin on
- * each later avatar, where the shipped file uses -space-x-1.5: Tailwind
- * margin utilities lose to the engine's element resets on a ported route.
+ * each later avatar, where the shipped file uses -space-x-1.5, and the
+ * card's mt-auto and pt-4 are inline styles: Tailwind spacing utilities
+ * lose to the engine's element resets on a ported route.
  */
 export default function PostAuthors({ authors, variant }: PostAuthorsProps) {
   if (authors.length === 0) return null;
@@ -44,7 +49,11 @@ export default function PostAuthors({ authors, variant }: PostAuthorsProps) {
   );
 
   return (
-    <span className={styles.authors} data-testid='post-authors'>
+    <span
+      className={styles.authors}
+      style={styles.spacing}
+      data-testid='post-authors'
+    >
       {authorsWithAvatars.length > 0 ? (
         <span aria-hidden='true' className='flex shrink-0'>
           {authorsWithAvatars.map((author, i) => (
