@@ -16,7 +16,7 @@ export const metadata = {
 };
 
 /**
- * PRODUCTION · REPORT CARD — the shipped /report-card page on the shipped
+ * PRODUCTION · REPORT CARD. The shipped /report-card page on the shipped
  * direction (gt-cloud #4403 drafted it as /try; #4557 renamed it and left
  * a permanent redirect, which next.config.ts mirrors for /d/production/try):
  * the glyph-field hero with the URL form and the satellite figure, a hatch

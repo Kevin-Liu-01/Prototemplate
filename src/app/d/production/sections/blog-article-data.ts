@@ -7,9 +7,9 @@
  * frontmatter is transcribed here instead. Nothing is paraphrased and
  * nothing is added:
  *
- *   AUTHORS      content/authors/<slug>.mdx — `name` and `avatar`.
- *   BLOG_POSTS   content/blog/en-US — all five posts.
- *   DEVLOG_POSTS content/devlog/en-US — all 55 releases.
+ *   AUTHORS      content/authors/<slug>.mdx: `name` and `avatar`.
+ *   BLOG_POSTS   content/blog/en-US: all five posts.
+ *   DEVLOG_POSTS content/devlog/en-US: all 55 releases.
  *
  * Source: the public generaltranslation/content repository at 361ec4a8,
  * read on 2026-10-13.

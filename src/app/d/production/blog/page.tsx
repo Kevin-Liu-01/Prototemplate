@@ -25,9 +25,9 @@ export const metadata = {
  * terminus masthead whose two ticker canvases clack "news" through the
  * catalog's scripts while "General Translation Blog" lands on flap cells;
  * the changelog as a horizontal departures board carrying all 55 devlog
- * releases, newest first; and the essays deck — filter pills, a search
- * box, an RSS button — leading with the first three of the five blog posts
- * at feature size, in content/blog/order.json order.
+ * releases, newest first; and the essays deck (filter pills, a search
+ * box and an RSS button), which leads with the first three of the five
+ * blog posts at feature size, in content/blog/order.json order.
  *
  * CHROME. The shipped blog route wraps its content in the same site
  * Header and SiteFooterMount as the landing page, so this page mounts the

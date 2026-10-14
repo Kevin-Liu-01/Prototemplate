@@ -8,12 +8,12 @@
  * Nothing is paraphrased. Source: generaltranslation/content at 361ec4a8
  * and the live generaltranslation.com/en-US/blog, read on 2026-10-13.
  *
- *   POSTS    — content/blog/en-US/*.mdx, all five, in the order of
+ *   POSTS:    content/blog/en-US/*.mdx, all five, in the order of
  *              content/blog/order.json, which the shipped index applies
  *              before rendering (gt-cloud #5211, orderPosts).
- *   AUTHORS  — content/authors/<slug>.mdx (name and avatar) for the
+ *   AUTHORS:  content/authors/<slug>.mdx (name and avatar) for the
  *              authors the posts name, co-authors included (gt-cloud #4855).
- *   RELEASES — content/devlog/en-US/*.mdx, all 55, in the order the live
+ *   RELEASES: content/devlog/en-US/*.mdx, all 55, in the order the live
  *              page renders them: getAllPosts sorts by date descending with
  *              a descending title tiebreak, and this array is that resolved
  *              order as the live page printed it.
@@ -59,7 +59,7 @@ const AUTHORS = {
   taylor: { name: 'Taylor Fang', avatar: '/static/avatars/taylor.png' },
 } as const satisfies Record<string, IndexAuthor>;
 
-/** content/blog/en-US — the whole tree, in content/blog/order.json order. */
+/** content/blog/en-US: the whole tree, in content/blog/order.json order. */
 export const POSTS: readonly IndexPost[] = [
   {
     slug: 'designing-docs-for-humans',
