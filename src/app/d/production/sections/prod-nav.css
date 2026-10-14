@@ -1,0 +1,723 @@
+/* PROD NAV: the shipped header of generaltranslation.com (gt-cloud
+   packages/ui frame/NewHeader.tsx over layout/home/client.tsx, ui/navigation-menu.tsx
+   and mobile/MobileMenu.tsx), measured from the live page at 1440x900 and
+   390x844. Every color is a toolchain token, so dark mode is the same
+   remap. The breakpoints are the live header's: the full bar from 1024px,
+   the links with a menu toggle from 768px, and the mark, Sign In and the
+   toggle below 768px. */
+
+.toolchain-root .pn {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  /* the live bar is 80 percent paper over a 16px blur; the mirror's page
+     layers leave that blur unpainted, which showed the column's rails and
+     the pricing table crisp through the bar, so the bar is opaque */
+  background: var(--tc-paper);
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .pn-in {
+  display: flex;
+  align-items: center;
+  width: min(var(--tc-rail), 100%);
+  height: 56px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+.toolchain-root .pn-brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+.toolchain-root .pn-brand img {
+  width: 40px;
+  height: 40px;
+}
+
+/* both marks ship; the theme shows one */
+.toolchain-root .pn-brand .pn-logo-light {
+  display: block;
+}
+
+.toolchain-root .pn-brand .pn-logo-dark {
+  display: none;
+}
+
+[data-theme='dark'] .toolchain-root .pn-brand .pn-logo-dark {
+  display: block;
+}
+
+[data-theme='dark'] .toolchain-root .pn-brand .pn-logo-light {
+  display: none;
+}
+
+.toolchain-root .pn-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- the links ----------
+   The list fills the bar's height, so the sheets hang from its bottom edge
+   flush on the bar's rule and the pointer never crosses a gap between a
+   trigger and its sheet. */
+
+.toolchain-root .pn-links {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  margin-left: 16px;
+}
+
+.toolchain-root .pn-links > ul {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toolchain-root .pn-links > ul > li {
+  display: flex;
+  align-items: center;
+}
+
+.toolchain-root .pn-trigger {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 4px 16px;
+  border: 0;
+  border-radius: var(--pt-radius-control);
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--tc-ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.toolchain-root .pn-drop .pn-trigger {
+  padding-right: 12px;
+}
+
+.toolchain-root .pn-trigger:hover,
+.toolchain-root .pn-drop[data-open='true'] .pn-trigger {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .pn-chev {
+  position: relative;
+  top: 1px;
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  transition: transform 0.2s ease;
+}
+
+.toolchain-root .pn-drop[data-open='true'] .pn-chev {
+  transform: rotate(180deg);
+}
+
+/* ---------- the sheets ----------
+   Square, one hairline, no shadow: the live viewport's inspection-plate
+   skin. Both sheets anchor at the list's left edge, as the shared Radix
+   viewport does, and settle 4px as they fade in. */
+
+.toolchain-root .pn-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 60;
+  display: none;
+  background: var(--tc-white);
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--pt-radius-shell);
+}
+
+.toolchain-root .pn-drop[data-open='true'] .pn-panel {
+  display: block;
+  animation: pn-settle 0.15s ease-out;
+}
+
+@keyframes pn-settle {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.toolchain-root .pn-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  width: 560px;
+  padding: 16px;
+}
+
+/* the live sheet widens to four columns on a very wide screen */
+@media (min-width: 1800px) {
+  .toolchain-root .pn-drop:nth-child(2) .pn-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 1120px;
+  }
+}
+
+.toolchain-root .pn-col {
+  min-width: 0;
+}
+
+.toolchain-root .pn-col-title {
+  padding: 0 12px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .pn-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toolchain-root .pn-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--pt-radius-control);
+  outline: none;
+}
+
+.toolchain-root .pn-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  color: var(--tc-ink-2);
+}
+
+.toolchain-root .pn-glyph svg,
+.toolchain-root .pn-glyph .pn-mask {
+  width: 20px;
+  height: 20px;
+}
+
+.toolchain-root .pn-row .pn-glyph {
+  width: 36px;
+  height: 36px;
+  background: var(--tc-hair-2);
+  background-clip: padding-box;
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--pt-radius-control);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease;
+}
+
+.toolchain-root .pn-row:hover .pn-glyph,
+.toolchain-root .pn-row:focus-visible .pn-glyph {
+  color: var(--tc-accent);
+  border-color: var(--tc-accent);
+  background: color-mix(in srgb, var(--tc-accent) 5%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--tc-accent) 30%, transparent);
+}
+
+.toolchain-root .pn-mask {
+  display: block;
+  background: currentColor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+}
+
+.toolchain-root .pn-row-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.toolchain-root .pn-row-label {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .pn-row-desc {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--tc-ink-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- the right cluster ---------- */
+
+.toolchain-root .pn-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.toolchain-root .pn-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--pt-radius-control);
+  background: var(--tc-hair-2);
+  background-clip: padding-box;
+  font: inherit;
+  font-size: 14px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.toolchain-root .pn-search:hover {
+  color: var(--tc-ink);
+}
+
+.toolchain-root .pn-search-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.toolchain-root .pn-keys {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.toolchain-root .pn-keys kbd {
+  padding: 0 6px;
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--pt-radius-chip);
+  background: var(--tc-paper);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.toolchain-root .pn-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--pt-radius-control);
+  background: none;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.toolchain-root .pn-theme:hover {
+  color: var(--tc-ink);
+  background: var(--tc-hair-2);
+}
+
+.toolchain-root .pn-signin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--tc-ink);
+  border-radius: var(--pt-radius-control);
+  background: var(--tc-ink);
+  background-clip: padding-box;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tc-paper);
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.toolchain-root .pn-signin:hover {
+  background: color-mix(in srgb, var(--tc-ink) 80%, transparent);
+}
+
+.toolchain-root .pn-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--tc-hair);
+  border-radius: var(--pt-radius-control);
+  background: color-mix(in srgb, var(--tc-paper) 60%, transparent);
+  background-clip: padding-box;
+  color: var(--tc-ink);
+  cursor: pointer;
+}
+
+.toolchain-root .pn-toggle:hover {
+  background: var(--tc-hair-2);
+}
+
+.toolchain-root .pn-toggle-glyph {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 16px;
+}
+
+.toolchain-root .pn-toggle-glyph i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 1.75px;
+  border-radius: var(--pt-radius-round);
+  background: currentColor;
+  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.toolchain-root .pn-toggle-glyph i:first-child {
+  transform: translate(-50%, -3px);
+}
+
+.toolchain-root .pn-toggle-glyph i:last-child {
+  transform: translate(-50%, 3px);
+}
+
+.toolchain-root .pn-toggle-glyph[data-open='true'] i:first-child {
+  transform: translate(-50%, 0) rotate(45deg);
+}
+
+.toolchain-root .pn-toggle-glyph[data-open='true'] i:last-child {
+  transform: translate(-50%, 0) rotate(-45deg);
+}
+
+.toolchain-root .pn a:focus-visible,
+.toolchain-root .pn button:focus-visible,
+.toolchain-root .pn-sheet a:focus-visible,
+.toolchain-root .pn-sheet button:focus-visible {
+  outline: 1px solid var(--tc-ink-2);
+  outline-offset: 2px;
+}
+
+.toolchain-root .pn-row:focus-visible,
+.toolchain-root .pn-sheet-row:focus-visible {
+  outline-offset: -1px;
+}
+
+/* ---------- 768px to 1023px: links, theme, Sign In, toggle ---------- */
+
+@media (max-width: 1023px) {
+  .toolchain-root .pn-search {
+    display: none;
+  }
+
+  .toolchain-root .pn-toggle {
+    display: inline-flex;
+  }
+}
+
+/* ---------- under 768px: the mark, Sign In and the toggle ---------- */
+
+@media (max-width: 767px) {
+  .toolchain-root .pn-links,
+  .toolchain-root .pn-theme {
+    display: none;
+  }
+
+  .toolchain-root .pn-right .pn-signin {
+    height: 40px;
+    padding: 0 14px;
+    font-size: 15px;
+  }
+
+  .toolchain-root .pn-toggle {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ---------- the sheet ----------
+   Full height under the bar, mounted only while open; ProdNav sets its top
+   to the bar's rule. The list scrolls on its own; Sign In and the theme
+   switch stay at the foot. */
+
+.toolchain-root .pn-sheet {
+  position: fixed;
+  top: 56px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  /* the live sheet is 98 percent paper over a blur; opaque reads the same
+     and does not depend on a backdrop the page's own layers can break */
+  background: var(--tc-paper);
+}
+
+@media (min-width: 1024px) {
+  .toolchain-root .pn-sheet {
+    display: none;
+  }
+}
+
+.toolchain-root .pn-sheet-in {
+  display: flex;
+  flex-direction: column;
+  width: min(var(--tc-rail), 100%);
+  height: 100%;
+  margin-inline: auto;
+  padding: 20px 16px;
+}
+
+.toolchain-root .pn-sheet-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.toolchain-root .pn-sheet-list::-webkit-scrollbar {
+  display: none;
+}
+
+.toolchain-root .pn-sheet-list > * {
+  border-bottom: 1px solid var(--tc-hair);
+}
+
+.toolchain-root .pn-sheet-menu {
+  padding: 6px 0;
+}
+
+.toolchain-root .pn-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 4px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 16.8px;
+  font-weight: 500;
+  color: var(--tc-ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.toolchain-root .pn-sheet-chev {
+  width: 16px;
+  height: 16px;
+  color: var(--tc-ink-2);
+  transition: transform 0.2s ease;
+}
+
+.toolchain-root .pn-sheet-menu[data-open='true'] .pn-sheet-chev {
+  transform: rotate(180deg);
+}
+
+.toolchain-root .pn-sheet-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.3s ease-out,
+    opacity 0.3s ease-out,
+    visibility 0s linear 0.3s;
+}
+
+.toolchain-root .pn-sheet-menu[data-open='true'] .pn-sheet-body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.3s ease-out,
+    opacity 0.3s ease-out;
+}
+
+.toolchain-root .pn-sheet-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  padding-bottom: 12px;
+}
+
+.toolchain-root .pn-sheet-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--pt-radius-control);
+  transition: background-color 0.15s ease;
+}
+
+.toolchain-root .pn-sheet-row:hover {
+  background: var(--tc-hair-2);
+}
+
+.toolchain-root .pn-sheet-row .pn-glyph {
+  width: 24px;
+  height: 24px;
+}
+
+.toolchain-root .pn-sheet-row .pn-row-text {
+  line-height: 1.43;
+}
+
+.toolchain-root .pn-sheet-row .pn-row-desc {
+  font-size: 14px;
+  line-height: 20px;
+  white-space: normal;
+}
+
+.toolchain-root .pn-sheet-link {
+  display: flex;
+  align-items: center;
+  padding: 16px 4px;
+  font-size: 16.8px;
+  font-weight: 500;
+  color: var(--tc-ink);
+}
+
+.toolchain-root .pn-sheet-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 20px;
+}
+
+.toolchain-root .pn-signin.is-block {
+  width: 100%;
+  height: 48px;
+  padding: 0 20px;
+  font-size: 16px;
+}
+
+.toolchain-root .pn-sheet-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px;
+}
+
+.toolchain-root .pn-sheet-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--pt-radius-control);
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  color: var(--tc-ink-2);
+  cursor: pointer;
+}
+
+.toolchain-root .pn-sheet-theme:hover {
+  background: var(--tc-hair-2);
+  color: var(--tc-ink);
+}
+
+.toolchain-root .pn-sheet-theme-glyph {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ---------- touch: 44px targets ----------
+   The live bar's 36px and 40px controls keep their drawn size; a
+   transparent square widens each to the 44px tap floor the mirror holds. */
+@media (pointer: coarse) {
+  .toolchain-root .pn-theme,
+  .toolchain-root .pn-toggle,
+  .toolchain-root .pn-right .pn-signin {
+    position: relative;
+  }
+
+  .toolchain-root .pn-theme::after,
+  .toolchain-root .pn-toggle::after,
+  .toolchain-root .pn-right .pn-signin::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+
+  /* Sign In is already wider than 44px; it grows only in height, so its
+     square never takes taps from the theme switch 8px to its left */
+  .toolchain-root .pn-right .pn-signin::after {
+    width: 100%;
+  }
+
+  /* the 4px of extra width fall to the right, so the mark keeps the live
+     page's 16px inset */
+  .toolchain-root .pn-brand {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* a phone on its side shows the links; their row is 56px tall, so the
+     triggers take 44px of it with no change to the drawing */
+  .toolchain-root .pn-trigger {
+    height: 44px;
+  }
+
+  /* the sheet's theme switch sits alone in its 52px row */
+  .toolchain-root .pn-sheet-theme {
+    height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolchain-root .pn-drop[data-open='true'] .pn-panel {
+    animation: none;
+  }
+
+  .toolchain-root .pn-chev,
+  .toolchain-root .pn-toggle-glyph i,
+  .toolchain-root .pn-sheet-chev,
+  .toolchain-root .pn-sheet-body {
+    transition: none;
+  }
+}

@@ -49,8 +49,8 @@
     var(--pba-label-fs) * (var(--pba-label-lh) - var(--pba-cap-ratio)) / 2
   );
 
-  /* this shell's sticky navbar: 58px plus its hairline */
-  --pba-nav: 59px;
+  /* this shell's sticky navbar (ProdNav): 56px plus its hairline */
+  --pba-nav: 57px;
   /* the small-screen contents bar, which rides under the navbar */
   --pba-bar: 48px;
 

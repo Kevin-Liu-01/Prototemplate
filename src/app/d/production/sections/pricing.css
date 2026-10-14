@@ -561,7 +561,7 @@
    boxes and their CTAs slid over the nav for the last 60px of the compare
    section. Raising the nav here — scoped to this route, never in the
    shared nav sheet — restores the shipped painting order. */
-.pricing-root .v0-nav {
+.toolchain-root.pricing-root .pn {
   z-index: 60;
 }
 

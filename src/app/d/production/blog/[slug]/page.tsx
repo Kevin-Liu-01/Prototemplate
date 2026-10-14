@@ -4,7 +4,7 @@ import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import V0Footer from '../../../_v0/V0Footer';
-import V0Nav from '../../../_v0/V0Nav';
+import ProdNav from '../../sections/ProdNav';
 
 import BlogArticle from '../../sections/BlogArticle';
 import BlogArticleNotFound, {
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  * generaltranslation.com so a reviewer can hold a proposal beside the thing
  * it replaces. This route reproduces the shipped article page.
  *
- * The chrome is the one this control's landing page already runs — V0Nav
+ * The chrome is the one this control's landing page already runs — ProdNav
  * over the ruled column, V0Footer closing it — because that is what the
  * shipped site does: the blog article inherits the site's own header and
  * footer from the blog layout, not a page-specific shell.
@@ -95,7 +95,7 @@ export default async function ProductionBlogPostPage({ params }: Params) {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root prod-root' id='top'>
-        <V0Nav />
+        <ProdNav />
 
         <main className='tc-rail pba-article'>
           {post && postType ? (

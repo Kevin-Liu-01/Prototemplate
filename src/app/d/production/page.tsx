@@ -2,7 +2,7 @@ import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import V0Footer from '../_v0/V0Footer';
-import V0Nav from '../_v0/V0Nav';
+import ProdNav from './sections/ProdNav';
 
 import ContextSec from './sections/ContextSec';
 import Customers from './sections/Customers';
@@ -50,7 +50,7 @@ export default function ProductionPage() {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root prod-root' id='top'>
-        <V0Nav />
+        <ProdNav />
 
         <main className='tc-rail'>
           <HomeHero agentPrompt={AGENT_PROMPT} />

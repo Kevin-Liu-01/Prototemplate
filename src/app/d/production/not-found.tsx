@@ -2,7 +2,7 @@ import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import V0Footer from '../_v0/V0Footer';
-import V0Nav from '../_v0/V0Nav';
+import ProdNav from './sections/ProdNav';
 
 import NotFound from './sections/NotFound';
 
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
  * The chrome matches the real file: the site header, the band, the site
  * footer. The real not-found.tsx mounts `<Header footer={false}>` +
  * NotFoundPage + SiteFooterMount — the same header and footer the home page
- * carries — and V0Nav / V0Footer are this control's reproductions of exactly
+ * carries — and ProdNav / V0Footer are this control's reproductions of exactly
  * those two, so the concept's landing shell is reused rather than the
  * subpage TopNav/SiteFooter pair.
  *
@@ -44,7 +44,7 @@ export default function ProductionNotFound() {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root prod-root' id='top'>
-        <V0Nav />
+        <ProdNav />
         <NotFound />
         <div className='tc-rail'>
           <V0Footer />

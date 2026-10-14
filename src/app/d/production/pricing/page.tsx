@@ -2,7 +2,7 @@ import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import V0Footer from '../../_v0/V0Footer';
-import V0Nav from '../../_v0/V0Nav';
+import ProdNav from '../sections/ProdNav';
 
 import Deploy from '../sections/Deploy';
 import PricingCompare from '../sections/PricingCompare';
@@ -37,7 +37,7 @@ export const metadata = {
  * page does NOT carry: the rates live one route further out, at
  * /pricing/usage, behind the hero's single link. So none of it is here.
  *
- * Chrome: V0Nav and V0Footer, the same pair the concept's landing page
+ * Chrome: ProdNav and V0Footer, the same pair the concept's landing page
  * mounts — the shipped site serves one nav and one footer from its layout
  * on every route, /pricing included, so the subpage inherits the home
  * page's chrome rather than the singularity finals' TopNav/SiteFooter.
@@ -51,7 +51,7 @@ export default function ProductionPricingPage() {
         className='toolchain-root sgdh-root prod-root pricing-root'
         id='top'
       >
-        <V0Nav />
+        <ProdNav />
 
         <main className='tc-rail'>
           <PricingHero />

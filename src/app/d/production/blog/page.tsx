@@ -2,7 +2,7 @@ import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import V0Footer from '../../_v0/V0Footer';
-import V0Nav from '../../_v0/V0Nav';
+import ProdNav from '../sections/ProdNav';
 
 import BlogList from '../sections/BlogList';
 
@@ -31,7 +31,7 @@ export const metadata = {
  *
  * CHROME. The shipped blog route wraps its content in the same site
  * Header and SiteFooterMount as the landing page, so this page mounts the
- * production final's reproductions of those — V0Nav and V0Footer — rather
+ * production final's reproductions of those — ProdNav and V0Footer — rather
  * than the singularity TopNav/SiteFooter the proposal subpages use. The
  * root also carries `blog-root`, exactly as the real
  * app/[locale]/blog/layout.tsx does, because the blog sheet is scoped to
@@ -41,7 +41,7 @@ export default function ProductionBlogPage() {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root prod-root blog-root' id='top'>
-        <V0Nav />
+        <ProdNav />
 
         <main className='tc-rail blog-index'>
           <BlogList />

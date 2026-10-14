@@ -2,7 +2,7 @@ import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 
 import V0Footer from '../../_v0/V0Footer';
-import V0Nav from '../../_v0/V0Nav';
+import ProdNav from '../sections/ProdNav';
 
 import EnterpriseContact from '../sections/EnterpriseContact';
 import EnterpriseGrade from '../sections/EnterpriseGrade';
@@ -49,7 +49,7 @@ export const metadata = {
  * the shields and both sub-paragraphs. None of that is the real page, so
  * none of it is here.
  *
- * Chrome: V0Nav and V0Footer, the pair the concept's landing and pricing
+ * Chrome: ProdNav and V0Footer, the pair the concept's landing and pricing
  * pages mount. The shipped site serves one nav and one footer from the
  * (home) layout on every route in the group — Header plus SiteFooterMount —
  * so this subpage inherits the home page's chrome rather than the
@@ -66,7 +66,7 @@ export default function ProductionEnterprisePage() {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root prod-root enterprise-root pricing-root'>
-        <V0Nav />
+        <ProdNav />
 
         <main className='tc-rail'>
           <EnterpriseHero />

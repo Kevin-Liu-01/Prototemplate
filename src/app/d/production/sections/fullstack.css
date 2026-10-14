@@ -975,8 +975,8 @@
 
 @media (max-width: 1020px) and (min-height: 500px) {
   .toolchain-root .tcb.v0-stack.is-stage {
-    /* the stage's seat: the sticky nav's 58px bar + its 1px hairline */
-    --v0sm-top: 59px;
+    /* the stage's seat: the sticky nav's 56px bar + its 1px hairline */
+    --v0sm-top: 57px;
     /* dvh (founder call: "on mobile version use 100dvh") — the stage
        takes the REAL viewport, chrome collapse included, so the rail
        and text zone always reach the true screen bottom; the earlier

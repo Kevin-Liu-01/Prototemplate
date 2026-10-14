@@ -3,7 +3,7 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 import TryPage from '@/components/try/TryPage';
 
 import V0Footer from '../../_v0/V0Footer';
-import V0Nav from '../../_v0/V0Nav';
+import ProdNav from '../sections/ProdNav';
 
 import '../../toolchain/styles.css';
 import '@/components/try/try.css';
@@ -29,7 +29,7 @@ export default function ProductionReportCardPage() {
   return (
     <SmoothScroll>
       <div className='toolchain-root sgdh-root prod-root try-root'>
-        <V0Nav />
+        <ProdNav />
         <main className='tc-rail try-rail'>
           <TryPage />
           <V0Footer />
