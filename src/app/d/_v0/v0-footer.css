@@ -145,9 +145,9 @@
 /* ---------- link columns ---------- */
 
 /* Small sentence-case heads in the display face — the ledger carries no
-   uppercase tracking and no eyebrows. h3 in the markup (the outline steps
-   h2 -> h3, not h2 -> h4); this rule pins the size either way. */
-.toolchain-root .v0-foot-col h3 {
+   uppercase tracking and no eyebrows. h2 in the markup (the outline steps
+   to h2 from an h1-only page); this rule pins the size either way. */
+.toolchain-root .v0-foot-col h2 {
   font-size: 13.5px;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -177,6 +177,24 @@
 .toolchain-root .v0-foot-col a:hover,
 .toolchain-root .v0-foot-col button:hover {
   color: var(--tc-ink);
+}
+
+/* Manage Cookies is a button, as the live footer's is: it wears the link
+   face, so the browser's button chrome comes off */
+.toolchain-root .v0-foot-col button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* the mark links home, as the live footer's does; the link is only as wide
+   as the mark */
+.toolchain-root .v0-foot-home {
+  display: inline-flex;
+  align-self: flex-start;
 }
 
 .toolchain-root .v0-foot-mark {
@@ -302,7 +320,7 @@
 
   /* heads match the raised links at 15px — hierarchy rides the darker
      ink and the display face, not size */
-  .toolchain-root .v0-foot-col h3 {
+  .toolchain-root .v0-foot-col h2 {
     font-size: 15px;
     margin-bottom: 4px;
   }

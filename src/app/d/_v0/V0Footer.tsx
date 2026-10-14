@@ -30,6 +30,8 @@ type FooterLink = {
   external?: boolean;
   /** Brand mark, only where the cell names a tool or venue. Functional, never ornament. */
   mark?: ComponentType<MarkProps>;
+  /** Renders a button in place of a link: the live footer's Manage Cookies opens its consent dialog. */
+  action?: "cookies";
 };
 
 const DOCS = "https://generaltranslation.com/docs";
@@ -76,35 +78,61 @@ function LinkedInMark({ className, color, ...rest }: MarkProps) {
  * the docs and the social venues. The legal column resolves against the
  * concept while it ships /legal/<document> of its own; the production
  * concept dropped its legal pages, so there the column leaves for the live
- * site's documents. */
+ * site's documents.
+ *
+ * The production concept follows the live footer-links.tsx (gt-cloud
+ * apps/landing/src/components/landing/shell, origin/main): Supported Locales
+ * at /supported-locales, the Report Card label, and the Guides rows on their
+ * quickstart pages. The social venues are the live addresses for every
+ * concept, since they are facts about General Translation. */
 const LIVE = "https://generaltranslation.com";
+const PRODUCTION = "/d/production";
 
 const columns = (
   base: string,
 ): readonly { title: string; links: readonly FooterLink[] }[] => {
-  const legalBase = base === "/d/production" ? LIVE : base;
+  const isProduction = base === PRODUCTION;
+  const legalBase = isProduction ? LIVE : base;
   const legalExternal = legalBase === LIVE;
   return [
   {
     title: "Guides",
     links: [
-      { label: "Locadex Agent", href: DOCS, external: true, mark: LocadexMark },
-      { label: "Next.js", href: DOCS, external: true, mark: SiNextdotjs },
-      { label: "React", href: DOCS, external: true, mark: SiReact },
-      { label: "React Native", href: DOCS, external: true, mark: SiReact },
+      {
+        label: "Locadex Agent",
+        href: `${DOCS}/platform/locadex/quickstart`,
+        external: true,
+        mark: LocadexMark,
+      },
+      {
+        label: "Next.js",
+        href: `${DOCS}/react/nextjs-quickstart`,
+        external: true,
+        mark: SiNextdotjs,
+      },
+      { label: "React", href: `${DOCS}/react/overview`, external: true, mark: SiReact },
+      {
+        label: "React Native",
+        href: `${DOCS}/react/react-native-quickstart`,
+        external: true,
+        mark: SiReact,
+      },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Documentation", href: DOCS, external: true },
+      { label: "Documentation", href: `${DOCS}/overview/get-started`, external: true },
       { label: "Blog", href: `${base}/blog` },
       { label: "Pricing", href: `${base}/pricing` },
-      { label: "Supported Locales", href: `${base}/locales` },
       {
-        label: "Report card",
+        label: "Supported Locales",
+        href: isProduction ? `${base}/supported-locales` : `${base}/locales`,
+      },
+      {
+        label: "Report Card",
         href:
-          base === "/d/production" ? `${base}/report-card` : "/d/singularity-dossier/try",
+          isProduction ? `${base}/report-card` : "/d/singularity-dossier/try",
       },
     ],
   },
@@ -119,19 +147,19 @@ const columns = (
       },
       {
         label: "X",
-        href: "https://x.com/generaltranslation",
+        href: "https://x.com/generaltxn",
         external: true,
         mark: SiX,
       },
       {
         label: "LinkedIn",
-        href: "https://www.linkedin.com/company/general-translation",
+        href: "https://www.linkedin.com/company/generaltranslation",
         external: true,
         mark: LinkedInMark,
       },
       {
         label: "Discord",
-        href: "https://discord.gg/generaltranslation",
+        href: "https://discord.gg/SjQwPjZaGa",
         external: true,
         mark: SiDiscord,
       },
@@ -150,7 +178,7 @@ const columns = (
       { label: "Terms of Service", href: `${legalBase}/legal/terms`, external: legalExternal },
       { label: "Privacy", href: `${legalBase}/legal/privacy-policy`, external: legalExternal },
       { label: "Acceptable Use Policy", href: `${legalBase}/legal/acceptable-use`, external: legalExternal },
-      { label: "Manage Cookies", href: "#" },
+      { label: "Manage Cookies", href: "", action: "cookies" },
     ],
   },
 ];
@@ -185,8 +213,17 @@ export default function V0Footer() {
           {/* The mark in living metal: the drawn glyph masks an animated
               chrome shader (V0FooterMark); the static gradient stays as the
               no-WebGL and reduced-motion ground. */}
-          <V0FooterMark />
-          <p>End-to-end localization for the world&rsquo;s best companies</p>
+          <a
+            aria-label="General Translation home"
+            className="v0-foot-home"
+            href={base || "/"}
+          >
+            <V0FooterMark />
+          </a>
+          <p>
+            {base === PRODUCTION ? "Full-stack" : "End-to-end"}
+            {" localization for the world\u2019s best companies"}
+          </p>
 
           <div className="v0-foot-badges">
             {BADGES.map(({ alt, src }) => (
@@ -215,13 +252,22 @@ export default function V0Footer() {
             className="v0-foot-cell v0-foot-col"
             key={column.title}
           >
-            {/* h3, not h4: the sections above head at h2, so h4 skipped a
-                level (Lighthouse heading-order); the ledger's own rule in
-                v0-footer.css pins the type either way */}
-            <h3>{column.title}</h3>
+            {/* h2, as the live footer: some pages head only at h1, so an h3
+                would skip a level (Lighthouse heading-order); the ledger's
+                own rule in v0-footer.css pins the type either way */}
+            <h2>{column.title}</h2>
             <ul>
               {column.links.map((link) => {
                 const Mark = link.mark;
+                if (link.action === "cookies") {
+                  /* the mirror runs no analytics, so there is no consent
+                     dialog for the button to open */
+                  return (
+                    <li key={link.label}>
+                      <button type="button">{link.label}</button>
+                    </li>
+                  );
+                }
                 return (
                   <li key={link.label}>
                     <a
