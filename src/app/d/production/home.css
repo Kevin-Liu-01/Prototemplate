@@ -84,12 +84,8 @@
     min-height: 44px;
   }
 
-  /* each link already owns its row; a short label (Blog, X) widens to the
-     floor. Manage Cookies is a button, as it is live, and takes the same floor */
-  .toolchain-root.prod-root .v0-foot-col a,
-  .toolchain-root.prod-root .v0-foot-col button {
-    min-width: 44px;
-  }
+  /* the footer's hit areas live in sections/prod-chrome.css for every
+     production page */
 
   /* the review doors: 38px on its side, 43.5 upright (the shared 640px
      padding); both reach the floor */

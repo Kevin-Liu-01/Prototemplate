@@ -244,6 +244,26 @@
   }
 }
 
+/* touch phones: the status link and the short footer links (Blog, X)
+   reach the 44px tap floor the mirror holds while the footer keeps live's
+   411 and 1085px. The status box grows to 44px and a negative margin
+   gives the difference back, so its row stays live's 25.33px; a short
+   column link widens to 44px inside a row it already owns. The page
+   check reads an off-screen target by its box, so a pseudo-element hit
+   area would not count here. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root.prod-root .v0-foot-status {
+    min-height: 44px;
+    /* the drawn row: one 1.3333 line of its own type plus 4px a side */
+    margin-block: calc((1.3333em + 8px - 44px) / 2);
+  }
+
+  .toolchain-root.prod-root .v0-foot-col a,
+  .toolchain-root.prod-root .v0-foot-col button {
+    min-width: 44px;
+  }
+}
+
 /* ---------- the consent banner ---------- */
 
 .prod-root .pc-consent {
