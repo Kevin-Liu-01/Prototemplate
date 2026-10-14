@@ -66,6 +66,8 @@ type NavLink = {
   href: string;
   icon: ReactNode;
   external?: boolean;
+  /** A simple-icons mark where live draws one too: the live phone sheet draws these at 24px and every other glyph at 20px. */
+  brand?: boolean;
 };
 
 type NavColumn = { title: string; links: readonly NavLink[] };
@@ -102,6 +104,7 @@ const RESOURCES: NavMenu = {
           desc: 'Open-source libraries',
           href: 'https://github.com/generaltranslation/gt',
           icon: <SiGithub />,
+          brand: true,
           external: true,
         },
         {
@@ -109,6 +112,7 @@ const RESOURCES: NavMenu = {
           desc: 'Join our developer community',
           href: 'https://generaltranslation.com/discord',
           icon: <SiDiscord />,
+          brand: true,
           external: true,
         },
         { label: 'Contact', desc: 'Get in touch with us', href: `${BASE}/contact`, icon: <ChatBubbleLeftRightIcon /> },
@@ -133,12 +137,13 @@ const DOCS_MENU: NavMenu = {
           href: `${DOCS}/react/nextjs-quickstart`,
           icon: <MaskMark src='/logos/nextjs-no-bg.svg' />,
         },
-        { label: 'React SDK', desc: 'gt-react', href: `${DOCS}/react/overview`, icon: <SiReact /> },
+        { label: 'React SDK', desc: 'gt-react', href: `${DOCS}/react/overview`, icon: <SiReact />, brand: true },
         {
           label: 'React Native SDK',
           desc: 'gt-react-native',
           href: `${DOCS}/react/react-native-quickstart`,
           icon: <SiReact />,
+          brand: true,
         },
       ],
     },
@@ -151,9 +156,9 @@ const DOCS_MENU: NavMenu = {
           href: `${DOCS}/react/tanstack-start-quickstart`,
           icon: <MaskMark src='/logos/tanstack-logo.svg' />,
         },
-        { label: 'Node.js SDK', desc: 'gt-node', href: `${DOCS}/node/quickstart`, icon: <SiNodedotjs /> },
-        { label: 'Python SDK', desc: 'gt-python', href: `${DOCS}/python/quickstart`, icon: <SiPython /> },
-        { label: 'Vue SDK', desc: 'gt-vue', href: `${DOCS}/vue/quickstart`, icon: <SiVuedotjs /> },
+        { label: 'Node.js SDK', desc: 'gt-node', href: `${DOCS}/node/quickstart`, icon: <SiNodedotjs />, brand: true },
+        { label: 'Python SDK', desc: 'gt-python', href: `${DOCS}/python/quickstart`, icon: <SiPython />, brand: true },
+        { label: 'Vue SDK', desc: 'gt-vue', href: `${DOCS}/vue/quickstart`, icon: <SiVuedotjs />, brand: true },
       ],
     },
     {
@@ -171,12 +176,14 @@ const DOCS_MENU: NavMenu = {
           desc: 'CMS content source',
           href: `${DOCS}/integrations/storyblok/quickstart`,
           icon: <SiStoryblok />,
+          brand: true,
         },
         {
           label: 'Google Drive',
           desc: 'Docs and Slides',
           href: `${DOCS}/integrations/google-drive/quickstart`,
           icon: <SiGoogledrive />,
+          brand: true,
         },
       ],
     },
@@ -226,7 +233,9 @@ function LinkRow({ link, className, onNavigate }: { link: NavLink; className: st
       target={external ? '_blank' : undefined}
       onClick={onNavigate}
     >
-      <span className='pn-glyph'>{link.icon}</span>
+      <span className='pn-glyph' data-brand={link.brand ? '' : undefined}>
+        {link.icon}
+      </span>
       <span className='pn-row-text'>
         <span className='pn-row-label'>{link.label}</span>
         <span className='pn-row-desc'>{link.desc}</span>
@@ -341,10 +350,14 @@ function SheetMenu({ menu, onNavigate }: { menu: NavMenu; onNavigate: () => void
         <ChevronDown aria-hidden className='pn-sheet-chev' strokeWidth={2} />
       </button>
       <div className='pn-sheet-body'>
-        <div className='pn-sheet-inner'>
-          {menu.columns.flatMap((column) => column.links).map((link) => (
-            <LinkRow className='pn-sheet-row' key={link.label} link={link} onNavigate={onNavigate} />
-          ))}
+        {/* the clip and the list are two boxes, as live: the list's 12px
+            bottom padding then folds away with the 0fr row */}
+        <div className='pn-sheet-clip'>
+          <div className='pn-sheet-inner'>
+            {menu.columns.flatMap((column) => column.links).map((link) => (
+              <LinkRow className='pn-sheet-row' key={link.label} link={link} onNavigate={onNavigate} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

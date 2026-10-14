@@ -10,7 +10,7 @@
    The numbers are the shipped ones. Three exceptions, each because
    this shell's chrome measures differently:
      · the sticky offsets and the anchor insets are measured from
-       this navbar (58px + hairline) where the shipped one is 56px;
+       this navbar (ProdNav: a 56px bar plus its 1px rule, 57px);
      · the prose colours are the values the shipped page COMPUTES
        (fumadocs' .prose over the fd theme: body ink at 90%,
        headings and strong at full ink, inline code on zinc-100 /

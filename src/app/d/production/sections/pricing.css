@@ -23,11 +23,11 @@
   /* the plan header row's rendered height: the group labels pin just
      under it. --pc-group-h is the label row's own height; the label
      centres on the CTA row (16px pad + half the 40px button = 36px
-     off the band's bottom). --pc-nav is this shell's nav, two px
-     taller than the shipped site's 56. */
+     off the band's bottom). --pc-nav is ProdNav's height: its 56px
+     bar plus the 1px rule under it. */
   --pc-plan-head: 130px;
   --pc-group-h: 57px;
-  --pc-nav: 58px;
+  --pc-nav: 57px;
 
   overflow-x: clip;
 }
@@ -1013,7 +1013,7 @@
 
 /* ---- a phone on its side: the board's head scrolls ----
    The screen is 390 to 430px tall, and the pinned nav and plan band
-   (58 + 130 = 188px) would hold nearly half of it, so a row's tap at
+   (57 + 130 = 187px) would hold nearly half of it, so a row's tap at
    mid-screen would run under the band. There the plan band and the
    group labels scroll with the table; their rows keep their height,
    so nothing moves at rest. PricingCompare.tsx's label handoff stands

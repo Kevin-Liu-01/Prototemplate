@@ -284,19 +284,37 @@
   margin-left: auto;
 }
 
+/* Search and the open menu toggle wear the live controls' own zinc steps
+   (fumadocs' secondary at 50% over a zinc border, muted zinc text, and
+   the muted fill): the toolchain hair tokens read lighter, most of all
+   in dark */
+.toolchain-root .pn {
+  --pn-search-fill: rgb(244 244 245 / 0.5);
+  --pn-search-rule: rgb(228 228 231);
+  --pn-search-ink: rgb(113 113 122);
+  --pn-muted: rgb(244 244 245);
+}
+
+[data-theme='dark'] .toolchain-root .pn {
+  --pn-search-fill: rgb(39 39 42 / 0.5);
+  --pn-search-rule: rgb(39 39 42);
+  --pn-search-ink: rgb(161 161 170);
+  --pn-muted: rgb(39 39 42);
+}
+
 .toolchain-root .pn-search {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   height: 36px;
   padding: 0 10px;
-  border: 1px solid var(--tc-hair);
+  border: 1px solid var(--pn-search-rule);
   border-radius: var(--pt-radius-control);
-  background: var(--tc-hair-2);
+  background: var(--pn-search-fill);
   background-clip: padding-box;
   font: inherit;
   font-size: 14px;
-  color: var(--tc-ink-2);
+  color: var(--pn-search-ink);
   cursor: pointer;
   transition:
     background-color 0.15s ease,
@@ -318,9 +336,17 @@
   margin-left: auto;
 }
 
+/* the keys stay Inter (DESIGN.md section 15); live sets them in Geist
+   Mono, so each chip takes the mono measure, a 0.6em advance plus 6px
+   padding a side and its rule, and centres its glyph. Inter's wide ⌘
+   would otherwise make Search 7px wider than live */
 .toolchain-root .pn-keys kbd {
-  padding: 0 6px;
-  border: 1px solid var(--tc-hair);
+  display: inline-flex;
+  justify-content: center;
+  box-sizing: border-box;
+  width: calc(0.6em + 14px);
+  padding: 0;
+  border: 1px solid var(--pn-search-rule);
   border-radius: var(--pt-radius-chip);
   background: var(--tc-paper);
   font: inherit;
@@ -332,7 +358,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
+  /* live: 6px padding around a 24px line box */
+  height: 36px;
   padding: 6px 8px;
   border: 0;
   border-radius: var(--pt-radius-control);
@@ -356,7 +383,8 @@
   align-items: center;
   justify-content: center;
   height: 36px;
-  padding: 0 16px;
+  /* buttonVariants size default: h-9 px-2.5 */
+  padding: 0 10px;
   border: 1px solid var(--tc-ink);
   border-radius: var(--pt-radius-control);
   background: var(--tc-ink);
@@ -379,7 +407,8 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid var(--tc-hair);
+  /* live: border-border/60 over background/60 */
+  border: 1px solid color-mix(in srgb, var(--pn-search-rule) 60%, transparent);
   border-radius: var(--pt-radius-control);
   background: color-mix(in srgb, var(--tc-paper) 60%, transparent);
   background-clip: padding-box;
@@ -389,6 +418,11 @@
 
 .toolchain-root .pn-toggle:hover {
   background: var(--tc-hair-2);
+}
+
+/* live's ghost button fills with the muted zinc step while its sheet is open */
+.toolchain-root .pn-toggle[aria-expanded='true'] {
+  background: var(--pn-muted);
 }
 
 .toolchain-root .pn-toggle-glyph {
@@ -570,11 +604,14 @@
     opacity 0.3s ease-out;
 }
 
+.toolchain-root .pn-sheet-clip {
+  min-height: 0;
+}
+
 .toolchain-root .pn-sheet-inner {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-height: 0;
   padding-bottom: 12px;
 }
 
@@ -592,6 +629,13 @@
 }
 
 .toolchain-root .pn-sheet-row .pn-glyph {
+  width: 24px;
+  height: 24px;
+}
+
+/* the live sheet draws its simple-icons marks at the full 24px cell and
+   the Heroicons and drawn logo masks at 20px */
+.toolchain-root .pn-sheet-row .pn-glyph[data-brand] svg {
   width: 24px;
   height: 24px;
 }

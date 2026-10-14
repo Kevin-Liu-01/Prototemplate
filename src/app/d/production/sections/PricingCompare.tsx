@@ -114,10 +114,10 @@ const GROUP_MARK: Record<FeatureGroupId, ComponentType<MarkProps>> = {
    the next group's label glides over it. This emulates contained
    sticky — the incoming label pushes the pinned one up (they stack),
    and the outgoing one clips away at the band's top edge. Mirrors the
-   CSS pin math (58 nav + 130 band − 36 CTA inset − 57/2); the nav in
-   this shell stands 58px, two more than the shipped site's. On a
-   phone on its side (UNPINNED_MQ) pricing.css lets the labels scroll
-   with the table, so the handoff stands down there. */
+   CSS pin math (57 nav + 130 band − 36 CTA inset − 57/2); ProdNav
+   stands 57px, its 56px bar plus the 1px rule under it. On a phone on
+   its side (UNPINNED_MQ) pricing.css lets the labels scroll with the
+   table, so the handoff stands down there. */
 const UNPINNED_MQ = '(pointer: coarse) and (max-height: 500px)';
 
 function useGroupLabelHandoff() {
@@ -128,8 +128,8 @@ function useGroupLabelHandoff() {
       )
     );
     if (labels.length === 0) return;
-    const PIN = 58 + 130 - 36 - 57 / 2;
-    const BAND_TOP = 58;
+    const PIN = 57 + 130 - 36 - 57 / 2;
+    const BAND_TOP = 57;
     const H = 57;
     const unpinned = window.matchMedia(UNPINNED_MQ);
     let raf = 0;

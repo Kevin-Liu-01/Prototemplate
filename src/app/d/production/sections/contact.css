@@ -35,7 +35,7 @@
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: stretch;
-  min-height: clamp(690px, calc(100svh - 58px), 820px);
+  min-height: clamp(690px, calc(100svh - 57px), 820px);
   padding: 0;
 }
 
