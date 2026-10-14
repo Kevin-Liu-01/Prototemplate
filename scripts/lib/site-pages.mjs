@@ -121,21 +121,31 @@ const PRODUCTION = join(ROOT, 'src/app/d/production');
 const DIRECTIONS_SOURCE = join(ROOT, 'src/lib/directions.ts');
 
 /**
+ * The key the /d/production consent stub stores its choice under
+ * (src/app/d/production/sections/ConsentBanner.tsx, CONSENT_KEY).
+ */
+export const MIRROR_CONSENT_KEY = 'pt-mirror-consent';
+
+/**
  * Seeds a Playwright context with the theme: the key is written before any
  * page of the context navigates, so the boot script in src/app/layout.tsx
  * finds it on first paint. The caller sets the context's colorScheme to
- * match, so native controls and the overscroll canvas agree.
+ * match, so native controls and the overscroll canvas agree. The seed also
+ * declines the production mirror's consent banner, as the live captures
+ * decline the live one, so a capture or a check reads the page and not
+ * the first-visit card.
  */
 export async function seedTheme(context, theme) {
   await context.addInitScript(
-    ([key, value]) => {
+    ([key, value, consentKey]) => {
       try {
         localStorage.setItem(key, value);
+        localStorage.setItem(consentKey, 'no');
       } catch {
         // a context without storage: the boot script falls back to dark
       }
     },
-    [THEME_KEY, theme]
+    [THEME_KEY, theme, MIRROR_CONSENT_KEY]
   );
 }
 
