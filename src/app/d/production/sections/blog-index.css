@@ -115,11 +115,15 @@
 }
 
 .blog-root .blog-hero h1 {
-  max-width: 12ch;
+  /* the mast carries a phrase now, not the single word the 12ch cap was cut
+     for: 12ch broke "General Translation Blog" as General / Translation Blog
+     (the shipped blog.css) */
+  max-width: min(100%, 20ch);
   font-size: clamp(2.3rem, 3.4vw, 3.4rem);
   font-weight: 500;
   letter-spacing: -0.045em;
   line-height: 0.96;
+  text-wrap: balance;
 }
 
 /* the masthead band tightens on a phone (the shipped rule ships in a
