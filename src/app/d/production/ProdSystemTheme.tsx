@@ -43,12 +43,14 @@ export default function ProdSystemTheme() {
       root.dataset.themeFrom = 'system';
     }
     return () => {
-      /* a remount on the next production page keeps the system theme */
-      if (/^\/d\/production(\/|$)/.test(window.location.pathname)) return;
+      /* the cleanup runs a task after the unmount, once the next page has
+         committed; a production page there carries its own marker and
+         keeps the system theme */
+      if (document.querySelector('[data-prod-theme]')) return;
       if (root.dataset.themeFrom !== 'system') return;
       delete root.dataset.themeFrom;
       if (!savedTheme()) root.dataset.theme = 'dark';
     };
   });
-  return null;
+  return <span data-prod-theme hidden />;
 }
