@@ -1,23 +1,34 @@
 import type { Metadata, Viewport } from 'next';
 
 import { fontVariables } from '@/lib/fonts';
+import { OG_HEIGHT, OG_WIDTH, cardPath } from '@/lib/seo/card-url';
+import { webSite } from '@/lib/seo/json-ld';
+import JsonLd from '@/lib/seo/JsonLd';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, TWITTER_CREATOR, TWITTER_SITE } from '@/lib/seo/site';
 
 import './globals.css';
 import './inter-subsets.css';
 import '@/components/viewer/tokens.css';
 
-const SITE_URL = 'https://prototemplate.vercel.app';
+/* the site card, which a route that sets no card of its own shows; every
+   route that calls seoRoute writes its own */
+const SITE_CARD = {
+  url: `${SITE_URL}${cardPath({ title: SITE_NAME, description: SITE_DESCRIPTION, kind: 'page', path: '/' })}`,
+  width: OG_WIDTH,
+  height: OG_HEIGHT,
+  type: 'image/png',
+  alt: SITE_NAME,
+};
 
-const SITE_TITLE = 'Prototemplate';
-
-const SITE_DESCRIPTION =
-  "Prototemplate is Kevin Liu's hub and working wiki for how General Translation work is done: the brand book, the brand directives, the design lab with its directions and sites, the repository documents, the curated skills, the handbook, the mark explorations, the graphics and the films, read in one viewer, with skills that install into any project.";
-
+/* No alternates and no openGraph.url here: Next merges metadata
+   shallowly, so a canonical set at the root was inherited by every route
+   that set none and named the home page as each one's original. Each
+   route's canonical comes from seoRoute (src/lib/seo/route.ts). */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     template: '%s, Prototemplate',
-    default: SITE_TITLE,
+    default: SITE_NAME,
   },
   description: SITE_DESCRIPTION,
   applicationName: 'Prototemplate',
@@ -49,25 +60,20 @@ export const metadata: Metadata = {
   creator: 'Kevin Liu',
   publisher: 'General Translation',
   openGraph: {
-    siteName: 'Prototemplate',
+    siteName: SITE_NAME,
     type: 'website',
-    url: '/',
-    title: SITE_TITLE,
+    locale: 'en_US',
+    title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: [
-      {
-        url: '/og.png',
-        width: 2400,
-        height: 1260,
-        alt: "Prototemplate, Kevin's hub for General Translation work.",
-      },
-    ],
+    images: [SITE_CARD],
   },
   twitter: {
     card: 'summary_large_image',
-    title: SITE_TITLE,
+    site: TWITTER_SITE,
+    creator: TWITTER_CREATOR,
+    title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ['/og.png'],
+    images: [{ url: SITE_CARD.url, alt: SITE_CARD.alt }],
   },
   robots: {
     index: true,
@@ -81,7 +87,6 @@ export const metadata: Metadata = {
     },
   },
   icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-  alternates: { canonical: '/' },
 };
 
 export const viewport: Viewport = {
@@ -132,7 +137,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           attributes on <body> before React hydrates, and the mismatch
           logs a console error Lighthouse counts against the page; the
           flag is attribute-only, one level deep, so real bugs still warn */}
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <JsonLd nodes={[webSite()]} />
+        {children}
+      </body>
     </html>
   );
 }

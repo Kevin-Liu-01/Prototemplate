@@ -1,4 +1,6 @@
 import { brandFontVariables } from '@/lib/brand-fonts';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 
 import AnatomyWall from './AnatomyWall';
 import GalleryViewer from './GalleryViewer';
@@ -6,26 +8,16 @@ import SystemLedger from './SystemLedger';
 
 import './prototemplate.css';
 
-export const metadata = {
+const route = seoRoute({
+  path: '/',
   title: 'Prototemplate',
+  kind: 'page',
   description:
-    'Prototype × template: the working index of General Translation redesign directions.',
-  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-  openGraph: {
-    title: 'Prototemplate',
-    description:
-      'Prototype × template: the working index of General Translation redesign directions.',
-    type: 'website',
-    images: [{ url: '/og.png', width: 2400, height: 1260, alt: 'prototype × template' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Prototemplate',
-    description:
-      'Prototype × template: the working index of General Translation redesign directions.',
-    images: ['/og.png'],
-  },
-};
+    "Prototemplate is Kevin Liu's hub and working wiki for General Translation: the design lab, the brand book, the deck, the handbook, the skills and the docs.",
+  source: '',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The gallery: a server page that mounts the viewer shell (GalleryViewer, a
@@ -36,10 +28,13 @@ export const metadata = {
  */
 export default function IndexPage() {
   return (
-    <GalleryViewer
-      fontClass={brandFontVariables}
-      anatomy={<AnatomyWall />}
-      ledger={<SystemLedger />}
-    />
+    <>
+      <JsonLd nodes={route.jsonLd} />
+      <GalleryViewer
+        fontClass={brandFontVariables}
+        anatomy={<AnatomyWall />}
+        ledger={<SystemLedger />}
+      />
+    </>
   );
 }
