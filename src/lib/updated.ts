@@ -11,9 +11,9 @@ import type { PageUpdated } from './page-updated';
 
 export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/brand': { day: '2026-10-11', at: '2026-10-11T07:17:52-07:00', commit: '1e9c4d9', src: 'd989157d' },
-  '/docs': { day: '2026-10-11', at: '2026-10-11T07:17:52-07:00', commit: '1e9c4d9', src: '90684207' },
+  '/docs': { day: '2026-10-15', at: '2026-10-15T12:11:20-07:00', commit: '57a777f', src: '90684207' },
   '/handbook': { day: '2026-10-10', at: '2026-10-10T08:23:59-07:00', commit: 'd9d56c3', src: '2e348cde' },
-  '/skills': { day: '2026-10-12', at: '2026-10-12T19:29:11-07:00', commit: 'ead190c', src: '013673d4' },
+  '/skills': { day: '2026-10-15', at: '2026-10-15T11:27:46-07:00', commit: '9941757', src: '013673d4' },
   '/skills/gt-aesthetic': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: '1c4d5d1f' },
   '/skills/gt-brand': { day: '2026-10-10', at: '2026-10-10T08:49:57-07:00', commit: '86929d5', src: 'a18b54ed' },
   '/skills/gt-components': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: '8ede68fd' },
@@ -24,7 +24,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/skills/gt-films': { day: '2026-10-12', at: '2026-10-12T14:32:19-07:00', commit: '7ad1cbd', src: '913f833a' },
   '/skills/gt-graphics': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: 'f6737f95' },
   '/skills/gt-landing-pages': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: 'b2aedf8e' },
-  '/skills/gt-lints': { day: '2026-10-10', at: '2026-10-10T09:06:15-07:00', commit: '5591541', src: '0c6ddc4d' },
+  '/skills/gt-lints': { day: '2026-10-15', at: '2026-10-15T11:27:46-07:00', commit: '9941757', src: '0c6ddc4d' },
   '/skills/gt-local-dev': { day: '2026-10-10', at: '2026-10-10T10:59:07-07:00', commit: '3ea4c43', src: '281dc226' },
   '/skills/gt-motion': { day: '2026-10-10', at: '2026-10-10T08:29:26-07:00', commit: 'e59cc50', src: '87432f1b' },
   '/skills/gt-orchestration': { day: '2026-10-10', at: '2026-10-10T08:49:57-07:00', commit: '86929d5', src: 'cfa9f9fb' },
