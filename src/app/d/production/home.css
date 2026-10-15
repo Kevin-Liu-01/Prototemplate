@@ -23,9 +23,10 @@
      and which runs left over the component the mark names. The square
      reaches 7px less far right than the 25px slab did, so the marks
      that rest 13px left of the seam's line at the card's right end stop
-     4px short of its left thread. The badge stays put, drawn by insets,
-     and the padding sets the "!" in it; reconcileMarks reads the badge's
-     centre from the padding.
+     4px short of its left thread; a square that reaches the thread files
+     swept (reconcileMarks). The badge stays put, drawn by insets, and the
+     padding sets the "!" in it; reconcileMarks reads the badge's centre
+     from the padding.
      --lift moves the square off the corner's centre (up for a positive
      value, down for a negative one). */
   .toolchain-root.prod-root .v0-tw .sgdh-ins-mark {
@@ -48,12 +49,12 @@
      chips take the bar's 40px above them: their squares start 11.5px
      above the corner, 1.5px lower than the 25px slab did, and end 28.5px
      under it. Below them the heading's, the sub's and the stats' corners
-     sit 39, 38.6 and 41.7px apart on a 412 or 430px phone, and the
+     sit 39, 38.59 and 41.75px apart on a 412 or 430px phone, and the
      heading's and the sub's squares cross every column of the rows above
      and below them as their lines type, so each square drops below its
      corner: the heading's starts 9px above it, the sub's and the stats'
      6px above it, level with the badge's top. The four rows of squares
-     end 1.5, 1.6 and 1.7px apart there; on every other phone the heading
+     end 1.5, 1.59 and 1.75px apart there; on every other phone the heading
      sits lower and only the first gap grows. The action's square starts
      13.6px or more under the stats' and the chart's sits right of every
      other column, so theirs stay centred. */

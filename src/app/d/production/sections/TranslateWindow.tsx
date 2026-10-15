@@ -963,26 +963,45 @@ export default function TranslateWindow({
      The cut is where the seam's line is drawn: at either end the line
      parks 4.5px inside the card (reveal-seam.css), so a mark whose centre
      sits between that line and the card's edge is right of the line and
-     files swept, instead of covering the line. */
+     files swept, instead of covering the line.
+     On a phone the slab is a 40px square that ends at the badge's right
+     edge (home.css), so a square that reaches the left thread means the
+     badge itself is drawn over it: that mark files swept too, which
+     keeps every square left of both threads. */
   const reconcileMarks = () => {
     const el = app.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
     if (r.width === 0) return;
-    const line = el.querySelector('.tc-seam')?.getBoundingClientRect();
+    const seam = el.querySelector('.tc-seam');
+    const line = seam?.getBoundingClientRect();
     const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
     const cutX = line?.width
       ? (line.left + line.right) / 2
       : r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
-    for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
-      /* the badge's centre: the middle of the slab's content box, which
-         the padding sets on the badge when a phone widens the slab
-         (home.css); with no padding it is the slab's own centre */
-      const mr = m.getBoundingClientRect();
-      const cs = getComputedStyle(m);
-      const left = parseFloat(cs.paddingLeft) || 0;
-      const right = parseFloat(cs.paddingRight) || 0;
-      if (mr.left + (mr.width + left - right) / 2 > cutX) m.setAttribute('data-swept', '');
+    /* the threads are the outer edges of the seam's ::before bar, centred
+       on the cut; its width is the border-box width, threads included */
+    const bar = seam ? parseFloat(getComputedStyle(seam, '::before').width) : 0;
+    const threadX = cutX - (Number.isFinite(bar) ? bar : 0) / 2;
+    /* read every mark before writing any, so one pass forces one layout */
+    const swept = Array.from(
+      el.querySelectorAll<HTMLElement>('.sgdh-ins-mark'),
+      (m) => {
+        /* the badge's centre: the middle of the slab's content box, which
+           the padding sets on the badge when a phone widens the slab
+           (home.css); with no padding it is the slab's own centre */
+        const mr = m.getBoundingClientRect();
+        const cs = getComputedStyle(m);
+        const left = parseFloat(cs.paddingLeft) || 0;
+        const right = parseFloat(cs.paddingRight) || 0;
+        const off =
+          mr.left + (mr.width + left - right) / 2 > cutX ||
+          (left > 0 && mr.right > threadX);
+        return [m, off] as const;
+      }
+    );
+    for (const [m, off] of swept) {
+      if (off) m.setAttribute('data-swept', '');
       else m.removeAttribute('data-swept');
     }
   };
@@ -1582,11 +1601,14 @@ export default function TranslateWindow({
         return;
       }
 
-      /* the text-hugging marks land on new corners when the swap
-         settles — re-file them against the cut once the typing is done */
+      /* the text-hugging marks ride their corners while the lines type,
+         so they re-file against the cut on every tick of the swap, not
+         only once it settles: a mark carried past the line never stays
+         live over it */
       rewrite.current?.kill();
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
+        onUpdate: reconcileMarks,
         onComplete: reconcileMarks,
       });
       rewrite.current = tl;
