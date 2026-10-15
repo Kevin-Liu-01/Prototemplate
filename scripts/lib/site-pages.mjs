@@ -293,11 +293,13 @@ export function siteRoutes() {
     /* the shipped home with its direction corner, which lint-lines audits as chrome */
     { id: 'production-corner', path: '/d/production', tools: 'lines', source: PRODUCTION_SOURCE },
   ];
-  /* the shipped direction's static pages, with the direction corner kept out of the picture */
+  /* the shipped direction's static pages, with the direction corner kept
+     out of the picture; /home renders the home page itself (live's alias),
+     so the page check walks it and the captures leave it out */
   const shipped = productionPages().map((segments) => ({
     id: productionId(segments),
     path: `${productionPath(segments)}?chrome=0`,
-    tools: 'check capture',
+    tools: segments.join('/') === 'home' ? 'check' : 'check capture',
     source: PRODUCTION_SOURCE,
   }));
   return [...shell, ...shipped];

@@ -87,6 +87,54 @@
       "mode": "fork",
       "from": "src/app/d/toolchain/diagrams/EdgeGlobe.tsx; gt-cloud:apps/landing/src/components/landing/sections/global/EdgeGlobe.tsx",
       "reason": "the mirror's globe draws Heroicons solid marks as the live home does (gt-cloud #5007, 2026-10-13); the toolchain copy keeps its Lucide glyphs for the directions"
+    },
+    {
+      "path": "content/legal/en-US/acceptable-use.md",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/legal@fbf96ead854b0f8f38035e727906041b60895b01:en-US/acceptable-use.md (gt-cloud apps/landing/legal, the submodule live renders)",
+      "sha256": "e09ce80e1a15a4470c700d86302cd3abfae595cde1698404d9eaebdc32680530",
+      "reason": "the text of generaltranslation.com/legal/acceptable-use, vendored 2026-10-14 for /d/production/legal/acceptable-use; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/legal/en-US/cookie-policy.md",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/legal@fbf96ead854b0f8f38035e727906041b60895b01:en-US/cookie-policy.md (gt-cloud apps/landing/legal, the submodule live renders)",
+      "sha256": "902684a6fe8c163cafa908f3eb04f2f8cf96f84e799914cc2c417feb52eed915",
+      "reason": "the text of generaltranslation.com/legal/cookie-policy, vendored 2026-10-14 for /d/production/legal/cookie-policy; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/legal/en-US/credit-terms.md",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/legal@fbf96ead854b0f8f38035e727906041b60895b01:en-US/credit-terms.md (gt-cloud apps/landing/legal, the submodule live renders)",
+      "sha256": "f481bbad36abd0d230ef110106d6d96af27f4f16a4c3c83c62a5cff07ee2e859",
+      "reason": "the text of generaltranslation.com/legal/credit-terms, vendored 2026-10-14 for /d/production/legal/credit-terms; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/legal/en-US/data-processing.md",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/legal@fbf96ead854b0f8f38035e727906041b60895b01:en-US/data-processing.md (gt-cloud apps/landing/legal, the submodule live renders)",
+      "sha256": "5b77fae41e84cfd8bdcbdb8d0bc05a316fd9dcdcecd855dbc6c850f90541e058",
+      "reason": "the text of generaltranslation.com/legal/data-processing, vendored 2026-10-14 for /d/production/legal/data-processing; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/legal/en-US/privacy-policy.md",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/legal@fbf96ead854b0f8f38035e727906041b60895b01:en-US/privacy-policy.md (gt-cloud apps/landing/legal, the submodule live renders)",
+      "sha256": "782b40515679528aa442073f334c50680e546ab09514218649efadef3b7ffde7",
+      "reason": "the text of generaltranslation.com/legal/privacy-policy, vendored 2026-10-14 for /d/production/legal/privacy-policy; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/legal/en-US/subprocessors.md",
+      "mode": "fork",
+      "from": "github.com/generaltranslation/legal@fbf96ead854b0f8f38035e727906041b60895b01:en-US/subprocessors.md (gt-cloud apps/landing/legal, the submodule live renders)",
+      "reason": "the text of generaltranslation.com/legal/subprocessors, vendored 2026-10-14 for /d/production/legal/subprocessors, less one table row (the third subprocessor): its name is a term on the private denylist lint:public enforces, so the row stays out of this public repository until Kevin rules on it; the other rows are the source's bytes"
+    },
+    {
+      "path": "content/legal/en-US/terms.md",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/legal@fbf96ead854b0f8f38035e727906041b60895b01:en-US/terms.md (gt-cloud apps/landing/legal, the submodule live renders)",
+      "sha256": "6957352b3e657c814609dd54d071cdc70f187458efbca4bd91ea8ed5f9640017",
+      "reason": "the text of generaltranslation.com/legal/terms, vendored 2026-10-14 for /d/production/legal/terms; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
     }
   ]
 }

@@ -255,13 +255,15 @@ const SITES: readonly Surface[] = SITE_DIRECTIONS.flatMap((d) => {
  * The pages of the shipped direction under /d/production (directive 8.10):
  * the pages Kevin built for the live site, as [path, name, description],
  * in the order the live site's navigation reads them after Home, then the
- * seven partner credit pages under /enterprise/contact, which the live
- * site links from posts such as supporting-slash-companies and reaches by
- * short links (/yc and the rest, redirected in next.config.ts). The legal, Mintlify, usage rates and bare enterprise
- * contact routes are gone from this prototype on Kevin's directive; the
- * live site's usage rates page appears among the live surfaces below. The
- * dynamic segments (blog/[slug], the catch-all) are not pages of their own
- * and are left out.
+ * bare enterprise contact page and the seven partner credit pages under
+ * /enterprise/contact, which the live site links from posts such as
+ * supporting-slash-companies and reaches by short links (/yc and the rest,
+ * redirected in next.config.ts), then the usage rates page and the legal
+ * index. On 2026-10-14 Kevin asked for everything production shows, so the
+ * usage rates, legal and bare enterprise contact routes removed on his
+ * earlier directive (bdc21d35) are back, rebuilt from live. The dynamic
+ * segments (blog/[slug], legal/[route], the catch-all) and the /home alias
+ * of the home page are not pages of their own and are left out.
  */
 const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
   ['/pricing', 'Pricing', 'Plans and the comparison table.'],
@@ -276,6 +278,7 @@ const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
   ['/device', 'Device code', 'The device code pages.'],
   ['/cli', 'CLI', 'The CLI wizard, terminal and callback pages.'],
   ['/blog', 'Blog', 'Essays, devlogs and the changelog.'],
+  ['/enterprise/contact', 'Enterprise contact', 'The enterprise contact form on its own page.'],
   ['/enterprise/contact/yc', 'YC credits', 'The credit offer for YC startups.'],
   ['/enterprise/contact/mercury', 'Mercury credits', 'The credit offer for Mercury customers.'],
   ['/enterprise/contact/slash', 'Slash credits', 'The credit offer for Slash customers.'],
@@ -283,6 +286,8 @@ const SHIPPED_PAGES: readonly (readonly [string, string, string])[] = [
   ['/enterprise/contact/a16z', 'a16z credits', 'The credit offer for a16z startups.'],
   ['/enterprise/contact/residency', 'Residency credits', 'The credit offer for founders at The Residency.'],
   ['/enterprise/contact/rho', 'Rho credits', 'The credit offer for Rho customers.'],
+  ['/pricing/usage', 'Usage rates', 'The per-token rates behind the plans.'],
+  ['/legal', 'Legal', 'The legal index and the seven legal documents.'],
 ];
 
 /** `/supported-locales` becomes `supported-locales`; a nested path joins its segments with hyphens. */
@@ -350,7 +355,7 @@ function livePage(id: string, name: string, path: string, desc: string): Surface
 const SHIPPED_LIVE: readonly Surface[] = [
   livePage('home', 'Home', '', 'The live home page.'),
   livePage('pricing', 'Pricing', '/pricing', 'The live pricing page.'),
-  livePage('usage', 'Usage rates', '/pricing/usage', 'The per-word rates behind the plans.'),
+  livePage('usage', 'Usage rates', '/pricing/usage', 'The per-token rates behind the plans.'),
   livePage('enterprise', 'Enterprise', '/enterprise', 'The live enterprise page.'),
   livePage('careers', 'Careers', '/careers', 'The live careers page.'),
   livePage('contact', 'Contact', '/contact', 'The live contact form.'),
@@ -475,7 +480,7 @@ export const PUBLIC_SURFACES: readonly Surface[] = [
     'Pricing',
     'https://generaltranslation.com/pricing',
     'generaltranslation.com/pricing',
-    'Plans, with the per-word rates at /pricing/usage.',
+    'Plans, with the per-token rates at /pricing/usage.',
     'Live product',
     'gt-pricing.jpg',
     'gt-pricing-dark.jpg'
