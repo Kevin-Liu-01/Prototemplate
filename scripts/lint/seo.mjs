@@ -98,7 +98,24 @@ import { pathToFileURL } from 'node:url';
 
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
-import { importTs } from '../lib/ts-module.mjs';
+
+// The repository's package.json names no module type, so Node's type
+// stripping (on by default in Node 24, the version engines pins) warns
+// MODULE_TYPELESS_PACKAGE_JSON each time a src/ TypeScript module loads.
+// This drops that one warning and passes every other warning on to the
+// listeners Node installed. A module loaded this way imports nothing at
+// runtime (import type only), as src/lib/seo/policy.ts does.
+const warningListeners = process.listeners('warning');
+process.removeAllListeners('warning');
+process.on('warning', (warning) => {
+  if (warning?.code === 'MODULE_TYPELESS_PACKAGE_JSON') return;
+  for (const listener of warningListeners) listener(warning);
+});
+
+/** The TypeScript module at `url` (a file URL), loaded with the typeless-package warning dropped. */
+export function importTs(url) {
+  return import(url.href);
+}
 
 const { ALIAS_HOSTS, SITE_URL, normalizePath, policyFor, selfUrl } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
 const { UPDATED } = await importTs(new URL('../../src/lib/updated.ts', import.meta.url));

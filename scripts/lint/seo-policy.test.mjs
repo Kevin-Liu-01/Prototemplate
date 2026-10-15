@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { importTs } from '../lib/ts-module.mjs';
+import { importTs } from './seo.mjs';
 
 const {
   ALIAS_HOSTS,

@@ -13,6 +13,7 @@ import {
   BASELINE,
   applyBaseline,
   imageSize,
+  importTs,
   judgeHead,
   judgeSitemap,
   judgeUnique,
@@ -30,7 +31,9 @@ import {
   topLevelProps,
 } from './seo.mjs';
 import { ROOT } from '../lib/root.mjs';
-import { importTs } from '../lib/ts-module.mjs';
+
+/* U+2014, written as an escape so the fixtures hold no literal em dash */
+const EM_DASH = '\u2014';
 
 const { ALIAS_HOSTS, SITE_URL } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
 
@@ -108,12 +111,12 @@ test('S3: title and description literals', () => {
     );
   const ok = "'The brand book, its rules and every mark, color and type size General Translation uses.'";
   assert.deepEqual(at("'Brand'", ok), []);
-  assert.deepEqual(at("'Brand — GT Redesign'", ok), ['S3']);
+  assert.deepEqual(at(`'Brand ${EM_DASH} GT Redesign'`, ok), ['S3']);
   assert.deepEqual(at("'Brand!'", ok), ['S3']);
   assert.deepEqual(at("'Brand.'", ok), ['S3']);
   assert.deepEqual(at("'Brand'", "'Too short.'"), ['S3']);
   assert.deepEqual(at("'Brand'", `'${'x'.repeat(161)}'`), ['S3']);
-  assert.deepEqual(at("'Brand'", "'The brand book — its rules and every mark, color and type size General Translation uses.'"), ['S3']);
+  assert.deepEqual(at("'Brand'", `'The brand book ${EM_DASH} its rules and every mark, color and type size General Translation uses.'`), ['S3']);
   /* a description that is not a literal is judged on the built page (B1) */
   assert.deepEqual(at("'Brand'", 'direction.concept'), []);
 });
@@ -210,7 +213,7 @@ test('B1 to B4: the head judge on fixture HTML', () => {
   assert.deepEqual(judged('/brand', head()), []);
   assert.deepEqual(judged('/brand', head({ canonical: '' })), ['B1']);
   assert.deepEqual(judged('/brand', head({ description: 'Short.' })), ['B1']);
-  assert.deepEqual(judged('/brand', head({ title: 'Brand — GT Redesign' })), ['B1']);
+  assert.deepEqual(judged('/brand', head({ title: `Brand ${EM_DASH} GT Redesign` })), ['B1']);
   assert.deepEqual(judged('/brand', head({ canonical: `https://${ALIAS_HOSTS[0]}/brand` })), ['B2']);
   assert.deepEqual(judged('/brand', head({ canonical: `${SITE_URL}/` })), ['B2']);
   assert.deepEqual(judged('/brand', head({ ogUrl: `${SITE_URL}/` })), ['B2']);

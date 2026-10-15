@@ -73,9 +73,20 @@ import { basename, dirname, extname, join } from 'node:path';
 import { assemble, DECK, SLIDE_COUNT } from '../../deck/assemble.mjs';
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
-import { importTs } from '../lib/ts-module.mjs';
 
 helpIfAsked(import.meta.url);
+
+// The repository's package.json names no module type, so Node's type
+// stripping warns MODULE_TYPELESS_PACKAGE_JSON when card-url.ts and
+// policy.ts load. This drops that one warning and passes every other
+// warning on to the listeners Node installed.
+const warningListeners = process.listeners('warning');
+process.removeAllListeners('warning');
+process.on('warning', (warning) => {
+  if (warning?.code === 'MODULE_TYPELESS_PACKAGE_JSON') return;
+  for (const listener of warningListeners) listener(warning);
+});
+const importTs = (url) => import(url.href);
 
 const { cardPath, OG_HEIGHT, OG_WIDTH } = await importTs(new URL('../../src/lib/seo/card-url.ts', import.meta.url));
 const { SITE_URL } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
