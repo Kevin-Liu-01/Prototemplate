@@ -601,13 +601,13 @@
   font-size: var(--pba-h3-fs);
 }
 
-/* fumadocs' typography h4: the body size at weight 600 */
+/* fumadocs' typography h4 sits in Tailwind's utilities layer, so on live
+   the landing engine's unlayered heading reset wins: no margin, weight
+   500 and the display line height */
 .prod-root .pba-prose h4 {
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
-  /* lint-type: allow live's fumadocs typography sets h4 at 600 */
-  font-weight: 600;
-  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+  line-height: var(--pba-heading-lh);
 }
 
 .prod-root .pba-prose :is(h2, h3, h4) code {
@@ -648,13 +648,17 @@
   transition-property: opacity;
 }
 
-.prod-root .pba-heading:hover .pba-heading-copy {
-  opacity: 1;
-}
+/* Tailwind v4 states its hover variants under (hover: hover), so on a
+   touch screen the button stays hidden, as live's does */
+@media (hover: hover) {
+  .prod-root .pba-heading:hover .pba-heading-copy {
+    opacity: 1;
+  }
 
-.prod-root .pba-heading-copy:hover {
-  background: var(--pba-fd-accent);
-  color: var(--pba-fd-accent-fg);
+  .prod-root .pba-heading-copy:hover {
+    background: var(--pba-fd-accent);
+    color: var(--pba-fd-accent-fg);
+  }
 }
 
 .prod-root .pba-heading-copy svg {
@@ -803,6 +807,7 @@
   display: block;
   width: 100%;
   height: auto;
+  margin-block: 2em;
   border-radius: 0.375rem;
 }
 
@@ -888,9 +893,14 @@
   transition: color 100ms;
 }
 
-.prod-root .pba-code-copy:hover,
 .prod-root .pba-code-copy[data-checked] {
   color: var(--pba-fd-accent-fg);
+}
+
+@media (hover: hover) {
+  .prod-root .pba-code-copy:hover {
+    color: var(--pba-fd-accent-fg);
+  }
 }
 
 .prod-root .pba-code-copy svg {
@@ -995,11 +1005,14 @@
   display: none;
 }
 
-.prod-root .prose-no-margin > :first-child {
+/* fumadocs' prose-no-margin sits in Tailwind's utilities layer, so on live
+   blog.css's unlayered paragraph margins win over it: only a first or last
+   child that is not a paragraph loses its margin */
+.prod-root .prose-no-margin > :first-child:not(p) {
   margin-top: 0;
 }
 
-.prod-root .prose-no-margin > :last-child {
+.prod-root .prose-no-margin > :last-child:not(p) {
   margin-bottom: 0;
 }
 
@@ -1123,18 +1136,20 @@
   gap: 6px;
   padding-inline: 10px;
   border: 1px solid var(--color-border, var(--tc-hair));
-  border-radius: 8px;
+  border-radius: 6px;
   background: var(--color-background, var(--tc-paper));
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: var(--tc-ink);
+  color: inherit;
   white-space: nowrap;
   transition: background-color 150ms;
 }
 
-.prod-root .pba-github-link:hover {
-  background: var(--pba-fd-accent);
+@media (hover: hover) {
+  .prod-root .pba-github-link:hover {
+    background: var(--pba-fd-accent);
+  }
 }
 
 .prod-root .pba-github-link svg {
@@ -1259,8 +1274,10 @@
   translate: 0 -50%;
 }
 
-.prod-root .pba-prose .blog-carousel-arrow:hover {
-  color: rgb(255 255 255);
+@media (hover: hover) {
+  .prod-root .pba-prose .blog-carousel-arrow:hover {
+    color: rgb(255 255 255);
+  }
 }
 
 .prod-root .pba-prose .blog-carousel-arrow svg {
@@ -1284,8 +1301,10 @@
   transition-duration: 150ms;
 }
 
-.prod-root .pba-prose .blog-carousel-dot:hover {
-  background: var(--tc-ink-2);
+@media (hover: hover) {
+  .prod-root .pba-prose .blog-carousel-dot:hover {
+    background: var(--tc-ink-2);
+  }
 }
 
 .prod-root .pba-prose .blog-carousel-dot.is-current {
@@ -1752,8 +1771,10 @@
   transition: background-color 150ms ease;
 }
 
-.prod-root .pba-card:hover {
-  background: color-mix(in srgb, var(--tc-ink) 6%, transparent);
+@media (hover: hover) {
+  .prod-root .pba-card:hover {
+    background: color-mix(in srgb, var(--tc-ink) 6%, transparent);
+  }
 }
 
 .prod-root .pba-card-body {

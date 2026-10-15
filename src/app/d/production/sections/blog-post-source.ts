@@ -100,13 +100,19 @@ function slugger(): (text: string) => string {
 /** A heading's text: the text and inline code of its children, as live's extractHeadings joins them. */
 function headingText(source: string): string {
   return source
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/<[^>]+>/g, '')
-    .replace(/`([^`]*)`/g, '$1')
-    .replace(/(\*\*|__)(.+?)\1/g, '$2')
-    .replace(/(\*|_)(.+?)\1/g, '$2')
-    .replace(/\\([\\`*_{}[\]()#+\-.!])/g, '$1')
+    .split(/(`[^`]*`)/)
+    .map((part) =>
+      part.startsWith('`') && part.endsWith('`') && part.length > 1
+        ? part.slice(1, -1)
+        : part
+            .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+            .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+            .replace(/<[^>]+>/g, '')
+            .replace(/(\*\*|__)(.+?)\1/g, '$2')
+            .replace(/(\*|_)(.+?)\1/g, '$2')
+            .replace(/\\([\\`*_{}[\]()#+\-.!])/g, '$1')
+    )
+    .join('')
     .trim();
 }
 
