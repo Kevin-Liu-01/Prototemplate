@@ -302,6 +302,55 @@
   }
 }
 
+/* ---------- the footer's top rule ----------
+   Live mounts the footer in its own rail (SiteFooterMount.tsx,
+   .tc-rail.v0-foot-rail), so the last content section is the main
+   rail's :last-child and draws no bottom border (engine.css). The
+   footer rail then draws the seam: one hairline at its top row that
+   runs the full viewport width, and the registration crosses on that
+   row at the rail edges (v0-footer.css, "the footer's top rule").
+   Here the footer closes the main rail, so the section before it
+   drops its border, the footer grid draws the full-width hairline
+   and the footer draws the crosses on its own top row. */
+.toolchain-root.prod-root .tc-rail > .tc-sec:has(+ .v0-foot) {
+  border-bottom: 0;
+}
+
+.toolchain-root.prod-root .tc-rail > .v0-foot > .v0-foot-grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 1px;
+  transform: translateX(-50%);
+  background: var(--tc-hair);
+  pointer-events: none;
+}
+
+/* six classes outrank v0-pages.css's band-follower crosses (five),
+   which this pseudo also matches after the deploy band */
+.toolchain-root.prod-root.sgdh-root .tc-rail > .v0-foot.tc-sec::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -5px;
+  left: -5px;
+  height: 9px;
+  z-index: 2;
+  pointer-events: none;
+  --cross-ink: rgba(10, 11, 13, 0.38);
+  background:
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 4px 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 0 4px / 9px 1px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) calc(100% - 4px) 0 / 1px 9px no-repeat,
+    linear-gradient(var(--cross-ink), var(--cross-ink)) 100% 4px / 9px 1px no-repeat;
+}
+
+[data-theme='dark'] .toolchain-root.prod-root.sgdh-root .tc-rail > .v0-foot.tc-sec::before {
+  --cross-ink: rgba(255, 255, 255, 0.34);
+}
+
 /* ---------- the consent banner ---------- */
 
 .prod-root .pc-consent {
