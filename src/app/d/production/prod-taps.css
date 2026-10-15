@@ -59,4 +59,10 @@
     padding: 15px;
     margin: -15px;
   }
+
+  /* the locales search field fills its 48px row inside the 50px box,
+     where live centres a 22px field; the text stays centred */
+  .toolchain-root.prod-root .locales-search input {
+    align-self: stretch;
+  }
 }
