@@ -6,8 +6,11 @@ import type { Tweet } from 'react-tweet/api';
  * as the public X syndication API (cdn.syndication.twimg.com, the source
  * react-tweet reads) returned it on 2026-10-15. Live fetches it when the
  * page renders; this mirror keeps the record so the build makes no network
- * call. The like and reply counts are that day's. The account's numeric
- * id is left empty: the renderer never reads it.
+ * call. The like and reply counts are that day's. The record is shaped to
+ * react-tweet's Tweet type: the account's numeric id is left empty, the
+ * video's duration and empty media info are left out, and the entity lists
+ * and colour palette the API omits are empty; the renderer reads none of
+ * them.
  */
 export const POST_TWEETS: Readonly<Record<string, Tweet>> = {
   '2090135549780848662': {
@@ -21,6 +24,10 @@ export const POST_TWEETS: Readonly<Record<string, Tweet>> = {
       173
     ],
     "entities": {
+      "hashtags": [],
+      "urls": [],
+      "user_mentions": [],
+      "symbols": [],
       "media": [
         {
           "display_url": "pic.x.com/tYbZ1qRgLY",
@@ -55,11 +62,13 @@ export const POST_TWEETS: Readonly<Record<string, Tweet>> = {
     },
     "mediaDetails": [
       {
-        "additional_media_info": {},
         "display_url": "pic.x.com/tYbZ1qRgLY",
         "expanded_url": "https://x.com/generaltxn/status/2090135549780848662/video/1",
         "ext_media_availability": {
           "status": "Available"
+        },
+        "ext_media_color": {
+          "palette": []
         },
         "indices": [
           174,
@@ -100,7 +109,6 @@ export const POST_TWEETS: Readonly<Record<string, Tweet>> = {
             16,
             9
           ],
-          "duration_millis": 8498,
           "variants": [
             {
               "content_type": "application/x-mpegURL",
