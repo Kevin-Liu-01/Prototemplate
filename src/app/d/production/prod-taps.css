@@ -65,4 +65,127 @@
   .toolchain-root.prod-root .locales-search input {
     align-self: stretch;
   }
+
+  /* the blog article: running-text links in the prose and its callouts
+     (inline boxes), then the heading anchors, the back link and the
+     crumb's Blog link (flex items), the code blocks' 24px copy button and
+     the accordion row */
+  .toolchain-root.prod-root .pba-prose a:not([data-card]):not(.not-prose a) {
+    position: relative;
+    z-index: 1;
+    padding: 15px 13px;
+    margin-inline: -13px;
+  }
+
+  .toolchain-root.prod-root .pba-heading > a,
+  .toolchain-root.prod-root .pba-back {
+    position: relative;
+    z-index: 1;
+    padding-block: 12px;
+    margin-block: -12px;
+  }
+
+  .toolchain-root.prod-root .pba-crumb a {
+    position: relative;
+    z-index: 1;
+    padding: 12px 8px;
+    margin: -12px -8px;
+  }
+
+  .toolchain-root.prod-root .pba-code-copy {
+    padding: 14px;
+    margin: -10px;
+  }
+
+  .toolchain-root.prod-root .pba-accordion-trigger {
+    padding-block: 12px;
+    margin-block: -2px;
+  }
+
+  /* the gallery's 6px dots: the dot stays drawn in the content box */
+  .toolchain-root.prod-root .pba-prose .blog-carousel-dot {
+    position: relative;
+    box-sizing: content-box;
+    padding: 19px;
+    margin: -19px;
+    background-clip: content-box;
+  }
+
+  /* the repository button: 36px drawn inside a 40px box, its frame an
+     inset ring on the padding box so the outline stays where it was */
+  .toolchain-root.prod-root .pba-github-link {
+    height: 40px;
+    margin-block: -2px;
+    padding-inline: 11px;
+    border-width: 2px 0;
+    border-color: transparent;
+    border-radius: 6px / 8px;
+    background-clip: padding-box;
+    box-shadow: inset 0 0 0 1px var(--color-border, var(--tc-hair));
+  }
+
+  /* the tweet card's links and buttons (react-tweet), grown without
+     moving the card: each takes padding with a matching negative margin
+     (an inline link ignores both on the block axis), and the two pills
+     keep their drawn height inside a transparent border */
+  .toolchain-root.prod-root .blog-tweet-embed :is(
+      a[class*='tweet-header-module__'][class*='username'],
+      a[class*='tweet-header-module__'][class*='follow'],
+      a[class*='tweet-info-created-at-module__']
+    ) {
+    position: relative;
+    z-index: 1;
+    padding-block: 12px;
+    margin-block: -12px;
+  }
+
+  .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-header-module__'][class*='authorLink'] {
+    position: relative;
+    z-index: 1;
+    padding-block: 12px;
+    margin-block: -12px;
+  }
+
+  .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-header-module__'][class*='brand'] {
+    padding-inline: 10px;
+    margin-inline-end: -10px;
+  }
+
+  .toolchain-root.prod-root .blog-tweet-embed :is(
+      a[class*='tweet-actions-module__'],
+      button[class*='tweet-actions-module__']
+    ) {
+    padding-block: 6px;
+    margin-block: -6px;
+  }
+
+  .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-info-module__'][class*='infoLink'] {
+    box-sizing: content-box;
+    padding: 6px;
+    margin-block: -6px;
+    margin-right: -10px;
+    background-clip: content-box;
+  }
+
+  .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-media-video-module__'][class*='anchor'] {
+    min-height: 40px;
+    margin-block: -4px;
+    padding-inline: calc(1rem + 1px);
+    border-width: 4px 0;
+    background-clip: padding-box;
+  }
+
+  .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-replies-module__'][class*='link'] {
+    min-height: 40px;
+    margin-block: -4px;
+    padding-inline: calc(1rem + 1px);
+    border-width: 4px 0;
+    border-color: transparent;
+    background-clip: padding-box;
+    box-shadow: inset 0 0 0 1px #cfd9de;
+  }
+
+  [data-theme='dark'] .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-replies-module__'][class*='link'] {
+    box-shadow: inset 0 0 0 1px #425364;
+  }
 }

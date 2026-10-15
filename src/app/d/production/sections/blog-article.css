@@ -1296,19 +1296,19 @@
   width: 6px;
   height: 6px;
   border-radius: 9999px;
-  background: var(--tc-ink-4, color-mix(in srgb, var(--tc-ink) 25%, transparent));
+  background-color: var(--tc-ink-4, color-mix(in srgb, var(--tc-ink) 25%, transparent));
   transition-property: background-color, transform;
   transition-duration: 150ms;
 }
 
 @media (hover: hover) {
   .prod-root .pba-prose .blog-carousel-dot:hover {
-    background: var(--tc-ink-2);
+    background-color: var(--tc-ink-2);
   }
 }
 
 .prod-root .pba-prose .blog-carousel-dot.is-current {
-  background: var(--tc-ink);
+  background-color: var(--tc-ink);
   transform: scale(1.25);
 }
 
@@ -1803,6 +1803,9 @@
   letter-spacing: -0.025em;
   line-height: 1.25;
   text-wrap: balance;
+  /* a title word wider than the card (gt@2.23.0's package name at 390px)
+     breaks and takes the clamp's ellipsis, where live clips its last 4px */
+  overflow-wrap: break-word;
   color: var(--tc-ink);
 }
 
