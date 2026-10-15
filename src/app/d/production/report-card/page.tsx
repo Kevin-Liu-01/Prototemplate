@@ -21,7 +21,8 @@ export const metadata = {
  * a permanent redirect, which next.config.ts mirrors for /d/production/try):
  * the glyph-field hero with the URL form and the satellite figure, a hatch
  * strip, then the graded report as a framed artifact,
- * between the production final's V0 nav and footer. The components are
+ * between the shipped header (ProdNav) and footer (ProdFooter), as on
+ * every other mirror page. The components are
  * the shared set under src/components/try, one implementation for every
  * direction that mounts the instrument.
  */

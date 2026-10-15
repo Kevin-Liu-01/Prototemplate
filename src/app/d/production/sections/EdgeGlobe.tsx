@@ -42,7 +42,7 @@ gsap.registerPlugin(useGSAP);
  * syd 48. Callout leaders are corner-routed (node → elbow → horizontal
  * run) and fan outward on both sides, so no two ever cross. Glyphs
  * identify, never decorate: a server on each PoP label, a user on the
- * origin, and a file on the payload that travels the route.
+ * origin, and code brackets on the payload that travels the route.
  *
  * At rest the serving pair, fra and the user, wear the drawing's normal
  * quiet ink, indistinguishable from the other callouts (founder revision:
