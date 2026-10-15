@@ -158,7 +158,7 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
         // the same three columns as the ledger below — the lead spans
         // two of them, so every vertical seam is shared
         <div
-          className='mb-2.5 grid grid-cols-1 gap-2.5 px-(--tc-gut) min-[1000px]:grid-cols-3 min-[1000px]:grid-rows-[1fr_1fr]'
+          className='blog-feature-grid mb-2.5 grid grid-cols-1 gap-2.5 px-(--tc-gut) min-[1000px]:grid-cols-3 min-[1000px]:grid-rows-[1fr_1fr]'
           data-testid='blog-feature'
         >
           {featured.map((post, index) => {

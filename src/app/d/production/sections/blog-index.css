@@ -29,6 +29,13 @@
   display: block;
 }
 
+/* the feature grid's mb-2.5: this repo's unlayered margin reset in
+   globals.css outranks the utility, where live's holds, so the 10px is
+   restated here and the ledger starts 10px under the features as on live */
+.blog-root .blog-feature-grid {
+  margin-bottom: 10px;
+}
+
 /* ---- the terminus masthead: ticker strips flush at both edges ---- */
 
 .blog-root .blog-hero-board {

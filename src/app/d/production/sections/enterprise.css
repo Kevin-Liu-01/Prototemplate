@@ -2044,19 +2044,33 @@
 }
 
 .enterprise-root .enterprise-contact .contact-testimonial-quote {
-  color: var(--tc-ink);
+  color: var(--pc-fg);
 }
 
 .enterprise-root .enterprise-contact .contact-testimonial-name {
-  color: var(--tc-ink);
+  color: var(--pc-fg);
 }
 
+/* text-fd-muted-foreground: the house zinc, not the engine's ink-3 */
 .enterprise-root .enterprise-contact .contact-testimonial-role {
-  color: var(--tc-ink-3);
+  color: var(--pc-muted);
 }
 
 .enterprise-root .enterprise-contact .contact-consent {
-  color: var(--tc-ink-3);
+  color: var(--pc-muted);
+}
+
+/* the ask is the ui Button's default face: primary over its foreground,
+   80 percent on hover (packages/ui button.tsx) */
+.toolchain-root.enterprise-root .enterprise-contact .tc-btn.tc-btn-solid {
+  border-color: var(--pc-primary);
+  background: var(--pc-primary);
+  color: var(--pc-primary-ink);
+}
+
+.toolchain-root.enterprise-root .enterprise-contact .tc-btn.tc-btn-solid:hover {
+  border-color: color-mix(in srgb, var(--pc-primary) 80%, transparent);
+  background: color-mix(in srgb, var(--pc-primary) 80%, transparent);
 }
 
 /* This repo's globals.css opens with an UNLAYERED `* { margin: 0 }`

@@ -29,25 +29,32 @@ import PostTweet from './PostTweet';
 const BASE = '/d/production';
 const LIVE = 'https://generaltranslation.com';
 
-/** The live systems this mirror leaves out: the docs, the knowledge base and the SEO posts. */
-const EXCLUDED = /^\/(?:docs|kb|aeo)(?:[/?#]|$)/;
+/**
+ * The generaltranslation.com paths the mirror carries: its pages and the
+ * live redirects next.config.ts repeats under /d/production. Every other
+ * path (the docs, the knowledge base, the SEO posts, /dashboard, which live
+ * sends to the dashboard app, and the agent files such as /llms.txt and
+ * /sitemap.xml) stays on the live site.
+ */
+const MIRRORED =
+  /^\/(?:home|blog|devlog|pricing|pricing-catalog|enterprise|careers|contact|supported-locales|legal|privacy|terms|data-processing|report-card|try|yc|a16z|mercury|slash|speedrun|rho|residency)?(?:[/?#]|$)/;
 const LIVE_URL = /^https?:\/\/(?:www\.)?generaltranslation\.com(?:\/en-US)?(?=\/|$)/;
+
+/** A live path's address: the mirror's page when it carries one, else live's. */
+function pathHref(path: string): string {
+  if (!MIRRORED.test(path)) return `${LIVE}${path}`;
+  return path === '/' ? BASE : `${BASE}${path}`;
+}
 
 /**
  * Where a post link lands in the mirror. A path on generaltranslation.com
- * that the mirror carries opens the mirror's page; the docs, the knowledge
- * base and the SEO posts stay on the live site; other addresses pass
- * through.
+ * that the mirror carries opens the mirror's page, any other path stays on
+ * the live site, and other addresses pass through.
  */
 function postHref(href: string): string {
-  if (href.startsWith('/') && !href.startsWith('//')) {
-    return EXCLUDED.test(href) ? `${LIVE}${href}` : `${BASE}${href}`;
-  }
+  if (href.startsWith('/') && !href.startsWith('//')) return pathHref(href);
   const live = LIVE_URL.exec(href);
-  if (live) {
-    const path = href.slice(live[0].length) || '/';
-    return EXCLUDED.test(path) ? `${LIVE}${path}` : `${BASE}${path === '/' ? '' : path}`;
-  }
+  if (live) return pathHref(href.slice(live[0].length) || '/');
   return href;
 }
 

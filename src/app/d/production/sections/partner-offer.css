@@ -1,10 +1,10 @@
 /*
  * The partner credit pages (PartnerOffer.tsx). The live page sets
- * --plate-inset-top to its 56px navbar; here the section sits under
- * ProdNav, whose bar is 56px with a 1px bottom rule, so it reads 57px.
+ * --plate-inset-top to its 56px navbar; ProdNav's bar is 56px and its
+ * 1px bottom rule overlaps the section (prod-nav.css), so it reads 56px.
  */
 .prpo-root {
-  --plate-inset-top: 57px;
+  --plate-inset-top: 56px;
 }
 
 /*

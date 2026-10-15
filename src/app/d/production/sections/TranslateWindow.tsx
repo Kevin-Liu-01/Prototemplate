@@ -969,10 +969,9 @@ export default function TranslateWindow({
      whose centre sits right of the cut are filed data-swept (hidden and
      pointer-inert — indistinguishable from being covered), and marks on
      the visible render win their own clicks inside the slab's fringe.
-     The cut is where the seam's line is drawn: at either end the line
-     parks 4.5px inside the card (reveal-seam.css), so a mark whose centre
-     sits between that line and the card's edge is right of the line and
-     files swept, instead of covering the line.
+     The cut is read from --seam-cut, as live's TranslateWindow.tsx
+     (gt-cloud origin/main) reads it, so the same marks file swept here
+     as on the live home, the reduced-motion still included.
      On a phone the slab is a 40px square that ends at the badge's right
      edge (home.css), so a square that reaches the left thread means the
      badge itself is drawn over it: that mark files swept too, which
@@ -982,14 +981,12 @@ export default function TranslateWindow({
     if (!el) return;
     const r = el.getBoundingClientRect();
     if (r.width === 0) return;
-    const seam = el.querySelector('.tc-seam');
-    const line = seam?.getBoundingClientRect();
     const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
-    const cutX = line?.width
-      ? (line.left + line.right) / 2
-      : r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
+    const cutX =
+      r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
     /* the threads are the outer edges of the seam's ::before bar, centred
        on the cut; its width is the border-box width, threads included */
+    const seam = el.querySelector('.tc-seam');
     const bar = seam ? parseFloat(getComputedStyle(seam, '::before').width) : 0;
     const threadX = cutX - (Number.isFinite(bar) ? bar : 0) / 2;
     /* read every mark before writing any, so one pass forces one layout */
@@ -1948,7 +1945,7 @@ export default function TranslateWindow({
             <div className='tct-line tct-meta' data-ts>
               {'  Scanning '}
               <span data-stackline>{stack.scanRoot}</span>
-              {' — '}
+              {': '}
               <b className='tct-strong' data-count-scan>
                 {stack.strings}
               </b>

@@ -90,14 +90,14 @@ export default function EnterpriseHero() {
                         src={logo.lightSrc}
                         alt={logo.name}
                         width={150}
-                        height={42}
+                        height={logo.height ?? 42}
                         className={`is-light ${logo.className ?? ''}`}
                       />
                       <Image
                         src={logo.darkSrc}
                         alt={logo.name}
                         width={150}
-                        height={42}
+                        height={logo.height ?? 42}
                         className={`is-dark ${logo.className ?? ''}`}
                       />
                     </span>

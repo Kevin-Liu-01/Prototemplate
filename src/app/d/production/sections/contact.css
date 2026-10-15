@@ -126,7 +126,8 @@
 }
 
 .toolchain-root .prod-contact .contact-feature-desc {
-  color: var(--tc-ink-2);
+  /* text-fd-muted-foreground */
+  color: var(--pc-muted);
 }
 
 .toolchain-root .prod-contact .contact-form-panel {
@@ -236,7 +237,8 @@
   flex: 1;
   max-width: 43ch;
   padding-right: 8px;
-  color: var(--tc-ink-3);
+  /* text-fd-muted-foreground */
+  color: var(--pc-muted);
   font-size: 12px;
   line-height: 1.5;
 }
@@ -268,8 +270,17 @@
   transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.toolchain-root .prod-contact .contact-submit:hover {
-  background: color-mix(in oklab, var(--tc-ink) 80%, transparent);
+/* the ui Button's default face: primary over its foreground, 80 percent
+   on hover (packages/ui button.tsx), above .tc-btn-solid's dark remap */
+.toolchain-root.prod-root .prod-contact .tc-btn.contact-submit {
+  border-color: var(--pc-primary);
+  background-color: var(--pc-primary);
+  color: var(--pc-primary-ink);
+}
+
+.toolchain-root.prod-root .prod-contact .tc-btn.contact-submit:hover {
+  border-color: color-mix(in srgb, var(--pc-primary) 80%, transparent);
+  background: color-mix(in srgb, var(--pc-primary) 80%, transparent);
 }
 
 .toolchain-root .prod-contact .contact-submit:active {

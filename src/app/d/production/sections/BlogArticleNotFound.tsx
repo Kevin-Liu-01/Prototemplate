@@ -26,7 +26,7 @@ export default function BlogArticleNotFound({
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
 
   return (
-    <header className='pba-header'>
+    <header className='pba-header is-missing'>
       <div className='pba-lead'>
         <div className='pba-lead-rail'>
           <a className='pba-back' href={`${base}/blog`}>

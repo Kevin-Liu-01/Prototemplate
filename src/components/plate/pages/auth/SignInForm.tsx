@@ -376,7 +376,7 @@ export default function SignInForm({
           sharing a pixel row. */}
       <T>
         <p className='text-muted-foreground text-center text-xs'>
-          By signing in, you agree to our{' '}
+          By signing in, you confirm you’re at least 18 and agree to our{' '}
           <a
             href={`${homepageUrl}/legal/terms`}
             target='_blank'

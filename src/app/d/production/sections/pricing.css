@@ -646,7 +646,19 @@
   font-family: var(--tc-sans);
   font-size: 14px;
   line-height: 20px;
-  color: var(--tc-ink);
+  color: var(--pc-fg);
+}
+
+/* in the desktop table the plan heads sit in shadcn TableHeads:
+   font-medium, where the th would bold the cost, and
+   text-muted-foreground, which the outline button inherits for want of
+   an ink of its own. The phone grid's heads sit in plain divs. */
+.pricing-root .pricing-compare-desktop .pc-plan-cost {
+  font-weight: 500;
+}
+
+.pricing-root .pricing-compare-desktop .pc-plan-cta:not(.is-solid) {
+  color: var(--pc-muted);
 }
 
 .pricing-root .pc-plan-cta {
@@ -659,7 +671,7 @@
   padding: 0 24px;
   border: 1px solid var(--tc-hair);
   border-radius: 6px;
-  color: var(--tc-ink);
+  color: var(--pc-fg);
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
@@ -674,14 +686,17 @@
   border-color: color-mix(in srgb, var(--tc-ink) 30%, var(--tc-hair));
 }
 
+/* the ui Button's default face: primary over its foreground, 80
+   percent on hover (packages/ui button.tsx) */
 .pricing-root .pc-plan-cta.is-solid {
-  border-color: var(--tc-ink);
-  background: var(--tc-ink);
-  color: var(--tc-paper);
+  border-color: var(--pc-primary);
+  background: var(--pc-primary);
+  color: var(--pc-primary-ink);
 }
 
 .pricing-root .pc-plan-cta.is-solid:hover {
-  background: color-mix(in srgb, var(--tc-ink) 88%, transparent);
+  border-color: color-mix(in srgb, var(--pc-primary) 80%, transparent);
+  background: color-mix(in srgb, var(--pc-primary) 80%, transparent);
 }
 
 /* The table's group labels (Pricing, Core Products, Platform, Support)
@@ -754,7 +769,9 @@
   border-radius: 6px;
   color: var(--pc-emph);
   font-size: 10px;
-  line-height: 1.4;
+  /* the Badge's font-semibold under leading-tight */
+  font-weight: 600;
+  line-height: 1.25;
   text-transform: uppercase;
 }
 
@@ -811,7 +828,8 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  color: var(--tc-ink);
+  /* text-primary */
+  color: var(--pc-primary);
   font-size: 14px;
   font-weight: 500;
   text-decoration: underline;

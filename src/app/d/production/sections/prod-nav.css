@@ -12,11 +12,14 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  /* the live bar is 80 percent paper over a 16px blur; the mirror's page
-     layers leave that blur unpainted, which showed the column's rails and
-     the pricing table crisp through the bar, so the bar is opaque */
-  background: var(--tc-paper);
+  /* the live bar: bg-background/80 over backdrop-blur-lg */
+  background: color-mix(in srgb, var(--tc-paper) 80%, transparent);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--tc-hair);
+  /* live's header is fixed and 57px tall over a main padded 56px (pt-14),
+     so the page starts under the header's bottom rule. The sticky bar
+     gives that rule back to the page the same way. */
+  margin-bottom: -1px;
 }
 
 .toolchain-root .pn-in {
@@ -104,7 +107,7 @@
   font: inherit;
   font-size: 15px;
   font-weight: 500;
-  color: var(--tc-ink-2);
+  color: var(--pn-muted-ink);
   white-space: nowrap;
   cursor: pointer;
   transition: color 0.15s ease;
@@ -116,7 +119,7 @@
 
 .toolchain-root .pn-trigger:hover,
 .toolchain-root .pn-drop[data-open='true'] .pn-trigger {
-  color: var(--tc-ink);
+  color: var(--pn-fg);
 }
 
 .toolchain-root .pn-chev {
@@ -286,21 +289,30 @@
   margin-left: auto;
 }
 
-/* Search and the open menu toggle wear the live controls' own zinc steps
-   (fumadocs' secondary at 50% over a zinc border, muted zinc text, and
-   the muted fill): the toolchain hair tokens read lighter, most of all
-   in dark */
-.toolchain-root .pn {
+/* The header wears the live header's house tokens (packages/ui
+   shared.css): foreground, muted-foreground, primary and its foreground,
+   fumadocs' secondary at 50% over a zinc border for Search, and the muted
+   fill for the open menu toggle. The toolchain's ink and hair tokens read
+   a step off, most of all in dark. The menu sheet renders beside the
+   header, so it takes the same tokens. */
+.toolchain-root :is(.pn, .pn-sheet) {
+  --pn-fg: rgb(9 9 11);
+  --pn-muted-ink: rgb(113 113 122);
+  --pn-primary: rgb(24 24 27);
+  --pn-primary-ink: rgb(250 250 250);
   --pn-search-fill: rgb(244 244 245 / 0.5);
   --pn-search-rule: rgb(228 228 231);
-  --pn-search-ink: rgb(113 113 122);
+  --pn-search-ink: var(--pn-muted-ink);
   --pn-muted: rgb(244 244 245);
 }
 
-[data-theme='dark'] .toolchain-root .pn {
+[data-theme='dark'] .toolchain-root :is(.pn, .pn-sheet) {
+  --pn-fg: rgb(250 250 250);
+  --pn-muted-ink: rgb(161 161 170);
+  --pn-primary: rgb(250 250 250);
+  --pn-primary-ink: rgb(24 24 27);
   --pn-search-fill: rgb(39 39 42 / 0.5);
   --pn-search-rule: rgb(39 39 42);
-  --pn-search-ink: rgb(161 161 170);
   --pn-muted: rgb(39 39 42);
 }
 
@@ -316,6 +328,7 @@
   background-clip: padding-box;
   font: inherit;
   font-size: 14px;
+  line-height: 20px;
   color: var(--pn-search-ink);
   cursor: pointer;
   transition:
@@ -324,7 +337,7 @@
 }
 
 .toolchain-root .pn-search:hover {
-  color: var(--tc-ink);
+  color: var(--pn-fg);
 }
 
 .toolchain-root .pn-search-icon {
@@ -367,8 +380,9 @@
   border-radius: var(--pt-radius-control);
   background: none;
   font-size: 16px;
-  line-height: 1;
-  color: var(--tc-ink-2);
+  line-height: 24px;
+  /* text-foreground/60, hover:bg-foreground/10 hover:text-foreground */
+  color: color-mix(in srgb, var(--pn-fg) 60%, transparent);
   cursor: pointer;
   transition:
     background-color 0.15s ease,
@@ -376,8 +390,8 @@
 }
 
 .toolchain-root .pn-theme:hover {
-  color: var(--tc-ink);
-  background: var(--tc-hair-2);
+  color: var(--pn-fg);
+  background: color-mix(in srgb, var(--pn-fg) 10%, transparent);
 }
 
 .toolchain-root .pn-signin {
@@ -387,19 +401,22 @@
   height: 36px;
   /* buttonVariants size default: h-9 px-2.5 */
   padding: 0 10px;
-  border: 1px solid var(--tc-ink);
+  border: 1px solid var(--pn-primary);
   border-radius: var(--pt-radius-control);
-  background: var(--tc-ink);
+  background: var(--pn-primary);
   background-clip: padding-box;
   font-size: 14px;
   font-weight: 500;
-  color: var(--tc-paper);
+  line-height: 20px;
+  color: var(--pn-primary-ink);
   white-space: nowrap;
   transition: background-color 0.15s ease;
 }
 
+/* hover:bg-primary/80 hover:border-primary/80 */
 .toolchain-root .pn-signin:hover {
-  background: color-mix(in srgb, var(--tc-ink) 80%, transparent);
+  border-color: color-mix(in srgb, var(--pn-primary) 80%, transparent);
+  background: color-mix(in srgb, var(--pn-primary) 80%, transparent);
 }
 
 .toolchain-root .pn-toggle {

@@ -188,4 +188,136 @@
   [data-theme='dark'] .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-replies-module__'][class*='link'] {
     box-shadow: inset 0 0 0 1px #425364;
   }
+  /* the avatar sits above the author link, whose grown box would
+     otherwise cover the avatar's lower half on a narrow card */
+  .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-header-module__'][class*='avatar'] {
+    z-index: 2;
+  }
+
+  /* the blog index: the search field fills a 44px box inside its 30px
+     pill; the filter pills, the RSS circle and the changelog arrows keep
+     their drawn 30px inside transparent borders, their rule an inset
+     ring and their ground clipped to the padding box. The arrows split
+     their 6px gap, so neither box reaches over the other. */
+  .toolchain-root.prod-root.blog-root input[aria-label='Search posts'] {
+    position: relative;
+    z-index: 1;
+    padding-block: 13px;
+    margin-block: -13px;
+  }
+
+  .toolchain-root.prod-root.blog-root [aria-label='Filter blog posts'] > button {
+    position: relative;
+    z-index: 1;
+    height: 44px;
+    margin-block: -7px;
+    padding-inline: 16px;
+    border-width: 7px 0;
+    border-color: transparent;
+    border-radius: 15px / 22px;
+    background-clip: padding-box;
+    box-shadow: inset 0 0 0 1px var(--tc-hair);
+  }
+
+  .toolchain-root.prod-root.blog-root [aria-label='Filter blog posts'] > button[aria-pressed='true'] {
+    border-color: transparent;
+    box-shadow: inset 0 0 0 1px var(--tc-ink);
+  }
+
+  .toolchain-root.prod-root.blog-root a[aria-label='RSS feed'] {
+    position: relative;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    margin: -7px;
+    border-width: 7px;
+    border-color: transparent;
+    background-clip: padding-box;
+    box-shadow: inset 0 0 0 1px var(--tc-hair);
+  }
+
+  .toolchain-root.prod-root.blog-root .blog-updates-arrows button {
+    position: relative;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    border-color: transparent;
+    border-style: solid;
+    background-clip: padding-box;
+    box-shadow: inset 0 0 0 1px var(--tc-hair);
+  }
+
+  .toolchain-root.prod-root.blog-root .blog-updates-arrows button:first-child {
+    margin: -7px -3px -7px -11px;
+    border-width: 7px 3px 7px 11px;
+    border-radius: 26px 18px 18px 26px / 22px;
+  }
+
+  .toolchain-root.prod-root.blog-root .blog-updates-arrows button:last-child {
+    margin: -7px -11px -7px -3px;
+    border-width: 7px 11px 7px 3px;
+    border-radius: 18px 26px 26px 18px / 22px;
+  }
+
+  /* the report card's six chips: 44px boxes around the drawn 34px
+     chip. The chip's rule moves to a ::before that inherits the chip's
+     border color, so the run's color states still reach it, and the
+     ground and the fill plate stay inside the drawn square. The selector
+     outranks try.css's state rules, whose background shorthand would
+     reset the clip. */
+  .toolchain-root.prod-root.try-root .try-fig .try-fig-sat .try-fig-chip {
+    width: 44px;
+    height: 44px;
+    margin: -5px;
+    padding: 5px;
+    border-width: 0;
+    background-clip: content-box;
+  }
+
+  .toolchain-root.prod-root.try-root .try-fig .try-fig-sat .try-fig-chip::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    z-index: 1;
+    border: 1px solid;
+    border-color: inherit;
+    pointer-events: none;
+  }
+
+  .toolchain-root.prod-root.try-root .try-fig .try-fig-sat .try-fig-chip-fill {
+    inset: 6px;
+  }
+
+  /* a table link in a legal document, as narrow as x.ai, takes 10px a
+     side that its negative margin gives back */
+  .toolchain-root.prod-root .legal-document-body td a {
+    padding-inline: 10px;
+    margin-inline: -10px;
+  }
+}
+
+/* A phone on its side shows the legal documents' Contents column, whose
+   links are stacked with no gap between them, so no box can grow without
+   covering its neighbors: there the rows are 44px tall, where live's are
+   28.8px. */
+@media (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root.prod-root .legal-toc-list a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* the plate pages (sign-in, onboarding, the CLI and device pages):
+     live's frame grows the home mark and Skip the Rest to 44px under md
+     only, so a phone on its side draws them at 17 and 23px; the same
+     padding and negative margin reach them there */
+  .plate-root a[aria-label='General Translation home'] {
+    margin: -14px;
+    padding: 14px;
+  }
+
+  .plate-root button.max-md\:min-h-11 {
+    min-height: 44px;
+    margin-block: -10.5px;
+  }
 }

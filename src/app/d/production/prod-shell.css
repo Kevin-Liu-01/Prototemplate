@@ -100,3 +100,11 @@ body:has(.prod-root) {
   --tc-panel-faint: rgba(255, 255, 255, 0.26);
   --tc-panel-rule: rgba(255, 255, 255, 0.1);
 }
+
+/* For the same reason live's report card footer draws no registration
+   crosses at its bottom corners: v0-pages.css hangs them on every
+   sgdh-root section, and live's report card is no sgdh-root page. Its
+   rail crosses (.v0-foot-rail) stay. */
+.toolchain-root.prod-root.try-root .tc-rail > .v0-foot.tc-sec::after {
+  content: none;
+}

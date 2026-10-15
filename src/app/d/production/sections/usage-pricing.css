@@ -580,7 +580,9 @@
 }
 
 /* the rate table: a 6px frame; the corner cells round with it, so the
-   frame needs no clip and a help bubble rises past it */
+   frame needs no clip and a help bubble rises past it. The borders
+   collapse, as Tailwind's preflight collapses live's shadcn tables, so
+   each table is as tall as live's to the half pixel. */
 .usage-pricing-root .up-table-wrap {
   position: relative;
   border: 1px solid var(--tc-hair);
@@ -590,8 +592,7 @@
 .usage-pricing-root .up-table {
   width: 100%;
   table-layout: fixed;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
   color: var(--tc-ink);
   font-size: 14px;
   line-height: 20px;

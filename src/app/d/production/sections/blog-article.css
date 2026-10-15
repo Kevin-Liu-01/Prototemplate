@@ -86,6 +86,14 @@
   }
 }
 
+/* A missing post: live's .blog-root, which wraps the page above the
+   footer, is min-height 100vh (gt-cloud components/blog/blog.css), so
+   the footer starts a full screen under the header's rule. The mirror's
+   footer sits inside the rail, so the not-found header holds that height. */
+.prod-root .pba-header.is-missing {
+  min-height: 100vh;
+}
+
 /* ---- the lead: rail column, copy column, cover ---- */
 
 /* The bottom padding centers the cover: space below the image (this

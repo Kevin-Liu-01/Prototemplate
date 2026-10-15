@@ -18,6 +18,10 @@ export type CustomerLogo = {
   lightSrc: string;
   darkSrc: string;
   className?: string;
+  /** The Image's height attribute where the 150 by 42 default would not
+      match the box CSS draws (next/image warns in development when only
+      one dimension changes). */
+  height?: number;
 };
 
 export type LabelValue = {
@@ -65,6 +69,8 @@ export const customerLogos: readonly CustomerLogo[] = [
     lightSrc: '/logos/sierra.light.svg',
     darkSrc: '/logos/sierra.dark.svg',
     className: 'is-sierra',
+    /* the 350 by 94 viewBox at the 150px width enterprise.css sets */
+    height: 40,
   },
 ];
 

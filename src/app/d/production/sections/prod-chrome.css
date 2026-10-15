@@ -192,18 +192,20 @@
 }
 
 /* live's status is the shared Status badge: a link at text-xs (12px on a
-   16px line) with 4px above and below, a 6px gap and an 8px dot, in the
-   muted zinc (packages/ui Status.tsx, variant badge) */
+   16px line) with 4px above and below, a 6px gap and an 8px dot
+   (packages/ui Status.tsx, variant badge). Its color is the footer's own
+   --tc-ink-2, ink on hover (gt-cloud shell/v0-footer.css lines 161 to
+   168), which outranks the badge's muted zinc. */
 .toolchain-root.prod-root .v0-foot-status {
   gap: 6px;
   padding-block: 4px;
   font-size: 12px;
-  line-height: 1.3333;
-  color: var(--pc-muted);
+  line-height: 16px;
+  color: var(--tc-ink-2);
 }
 
 .toolchain-root.prod-root .v0-foot-status:hover {
-  color: var(--pc-fg);
+  color: var(--tc-ink);
 }
 
 .toolchain-root.prod-root .v0-foot-dot {
@@ -234,6 +236,7 @@
 @media (max-width: 640px) {
   .toolchain-root.prod-root .v0-foot-status {
     font-size: var(--tcm-kick, 13px);
+    line-height: 1.3333;
   }
 
   .toolchain-root.prod-root .v0-foot-lang .pc-lang-btn {
