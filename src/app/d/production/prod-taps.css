@@ -1,0 +1,62 @@
+/* ============================================================
+   PRODUCTION TAP FLOOR
+   The mirror holds every content link and control to the page
+   check's tap floor on a phone (scripts/check/pagecheck/probes.mjs:
+   a target under 40px is a defect, 40 to 43 a note), where live
+   draws them at their type's height. Nothing here moves or redraws
+   a pixel: each target grows its box with padding and gives the
+   difference back with a negative margin, or, for an inline link,
+   with vertical padding, which an inline box never lends to its
+   line. Each one sits above its neighbors (position and z-index),
+   so a tap inside the grown box lands on it. The page check reads
+   an off-screen target by its box, so a pseudo-element hit area
+   would not count.
+
+   The breakpoints are the footer's (prod-chrome.css): the upright
+   phone and tablet under 900px, and a phone in landscape.
+   src/app/d/production/layout.tsx imports this sheet, so it
+   reaches every page under /d/production and no other /d page.
+   ============================================================ */
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  /* inline links inside running text: the forms' terms lines, the
+     legal documents, the usage page's head and table captions */
+  .toolchain-root.prod-root .contact-terms a,
+  .toolchain-root.prod-root .contact-consent a,
+  .toolchain-root.prod-root .legal-document-body a,
+  .toolchain-root.prod-root .usage-pricing-hero p a,
+  .toolchain-root.prod-root .up-per a {
+    position: relative;
+    z-index: 1;
+    padding-block: 15px;
+  }
+
+  /* links drawn as their own boxes or laid out as flex items, at 20 to
+     23px tall: 12px a side reaches 44 */
+  .toolchain-root.prod-root .tc-back-link,
+  .toolchain-root.prod-root .pricing-plan-usage-link,
+  .toolchain-root.prod-root .usage-back a,
+  .toolchain-root.prod-root .pc-rates {
+    position: relative;
+    z-index: 1;
+    padding-block: 12px;
+    margin-block: -12px;
+  }
+
+  /* the pricing hero's Usage Rates link keeps its 28px offset */
+  .toolchain-root.prod-root .pricing-hero-link {
+    position: relative;
+    z-index: 1;
+    padding-block: 11px;
+    margin-top: 17px;
+    margin-bottom: -11px;
+  }
+
+  /* the 14 to 15px help glyph, centred in a 44px square */
+  .toolchain-root.prod-root .pricing-help > button:not(.up-chip) {
+    position: relative;
+    z-index: 1;
+    padding: 15px;
+    margin: -15px;
+  }
+}
