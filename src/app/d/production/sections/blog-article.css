@@ -18,7 +18,9 @@
        from the live page in both themes;
      · code is set in --tc-mono: live sets it in Geist Mono, a
        face this repository does not ship (Inter is its only
-       family).
+       family). Each mono glyph is tracked to Geist Mono's 0.6em
+       advance (0.6em less the face's own 1ch), so a line of code
+       breaks where live's does on any platform's mono.
    Every rule stays under .prod-root, so no other /d page reads
    it.
    ============================================================ */
@@ -708,6 +710,7 @@
   font-family: var(--tc-mono);
   font-size: 0.8125em;
   font-weight: 400;
+  letter-spacing: calc(0.6em - 1ch);
   color: var(--pba-fd-fg);
 }
 
@@ -794,8 +797,11 @@
 }
 
 /* a markdown image or clip: fumadocs' plain img, with the carousel frame's
-   6px corner blog.css gives every picture in a post */
-.prod-root .pba-prose .pba-img {
+   6px corner blog.css gives every picture in a post. The 2em margins sit
+   under :where, as typography's do, so the prose's first-child and
+   last-child resets above still win: a post that opens on a clip starts
+   at the prose top, as live's does. */
+.prod-root .pba-prose :where(.pba-img) {
   display: block;
   max-width: 100%;
   height: auto;
@@ -803,7 +809,7 @@
   border-radius: 0.375rem;
 }
 
-.prod-root .pba-prose .pba-video {
+.prod-root .pba-prose :where(.pba-video) {
   display: block;
   width: 100%;
   height: auto;
@@ -927,6 +933,7 @@
   min-width: 100%;
   margin: 0;
   font-family: var(--tc-mono);
+  letter-spacing: calc(0.6em - 1ch);
   white-space: pre;
 }
 

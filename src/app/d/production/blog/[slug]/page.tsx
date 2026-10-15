@@ -73,7 +73,12 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  * shipped site does: the blog article inherits the site's own header and
  * footer from the blog layout, not a page-specific shell.
  *
- * A slug no post owns follows the shipped ladder rather than 404ing: a
+ * Six old slugs never reach this page: the knowledge base articles that
+ * replaced them name them in redirectFrom, live answers each with a 308 to
+ * the article, and next.config.ts sends them to the live article because
+ * the knowledge base is not mirrored.
+ *
+ * Any other slug no post owns follows the shipped ladder rather than 404ing: a
  * confident match (normalized-exact, or a near miss clearly ahead of the
  * runner-up) redirects to the live slug, and everything else renders the
  * blog's own not-found shell with the closest posts. The shipped route has

@@ -31,6 +31,16 @@ const UNTRACED = [
   'tsconfig.tsbuildinfo',
 ];
 
+/** Old /blog slugs and the live knowledge base article each now names (see redirects). */
+const PRODUCTION_KB_REDIRECTS: readonly (readonly [from: string, article: string])[] = [
+  ['best-localization-software', 'best-localization-software'],
+  ['plurals', 'how-to-handle-plurals-in-react'],
+  ['i18n-without-translation-files', 'i18n-without-translation-files'],
+  ['nextjs-i18n-code-is-the-source-of-truth', 'i18n-without-translation-files'],
+  ['multilingual-nextjs-seo', 'multilingual-nextjs-seo'],
+  ['branch_vs_ternary', 'translate-conditional-jsx'],
+];
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Prototype code: a handful of exploration pages carry known non-blocking
@@ -100,6 +110,17 @@ const nextConfig: NextConfig = {
       // catalog address, and the short legal addresses. Live answers 308
       // for the permanent ones and 307 for /pricing-catalog.
       { source: '/d/production/devlog/:slug*', destination: '/d/production/blog/:slug*', permanent: true },
+      // The live site's knowledge base redirects (gt-cloud apps/landing
+      // src/lib/kb-redirects.ts): each old /blog slug a kb article names in
+      // its redirectFrom answers 308 with that article. The knowledge base
+      // is not mirrored, so these land on the live article. The pairs are
+      // the redirectFrom lines of kb/*.mdx in generaltranslation/content
+      // at befd13c1, the content gt-cloud origin/main pins.
+      ...PRODUCTION_KB_REDIRECTS.map(([from, article]) => ({
+        source: `/d/production/blog/${from}`,
+        destination: `https://generaltranslation.com/en-US/kb/${article}`,
+        permanent: true,
+      })),
       { source: '/d/production/pricing-catalog', destination: '/d/production/pricing', permanent: false },
       { source: '/d/production/privacy', destination: '/d/production/legal/privacy-policy', permanent: true },
       { source: '/d/production/terms', destination: '/d/production/legal/terms', permanent: true },
