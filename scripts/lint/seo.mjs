@@ -59,8 +59,8 @@
  *               generaltranslation.com where the policy maps it there;
  *               og:url equals the canonical
  *   B3 robots   robots matches policyFor(path); a page still in the
- *               baseline matches its layout's default instead (noindex,
- *               follow under /d/, index elsewhere)
+ *               baseline matches its layout's index state instead (noindex
+ *               under /d/, index elsewhere), whatever its follow value
  *   B4 json-ld  every application/ld+json block parses and has @context
  *   B5 sitemap  sitemap.xml lists only www URLs the policy lists, each
  *               prerendered, each index with a self canonical (adopted
@@ -606,7 +606,8 @@ export function judgeHead(path, html, { adopted = true } = {}) {
   const wantIndex = adopted ? policy.index : !(path === '/d' || path.startsWith('/d/'));
   const indexed = !/\bnoindex\b/.test(robots);
   const followed = !/\bnofollow\b/.test(robots);
-  if (wantIndex !== indexed || !followed) {
+  /* a page still in the baseline may set its own follow value until it adopts seoRoute; only its index state is held */
+  if (wantIndex !== indexed || (adopted && !followed)) {
     out.push(['B3', `robots "${robots}"; ${adopted ? 'the policy' : "the layout's default"} gives ${wantIndex ? 'index, follow' : 'noindex, follow'}`]);
   }
 

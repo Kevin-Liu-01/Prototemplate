@@ -230,6 +230,8 @@ test('B1 to B4: the head judge on fixture HTML', () => {
   assert.deepEqual(judged('/d/production/pricing', head({ canonical: '', robots: 'noindex, follow' }), { adopted: false }), []);
   assert.deepEqual(judged('/brand', head({ canonical: '' }), { adopted: false }), []);
   assert.deepEqual(judged('/d/toolchain', head({ canonical: '' }), { adopted: false }), ['B3']);
+  assert.deepEqual(judged('/d/singularity-dossier/yc', head({ canonical: '', robots: 'noindex, nofollow' }), { adopted: false }), []);
+  assert.deepEqual(judged('/d/toolchain', head({ canonical: `${SITE_URL}/d/toolchain`, robots: 'noindex, nofollow' })), ['B3']);
 });
 
 test('B5: the sitemap judge', () => {
