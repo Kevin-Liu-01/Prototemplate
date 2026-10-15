@@ -420,7 +420,8 @@ export default function ProdNav() {
     <>
       <header className='pn' data-prod-nav ref={headerRef}>
         <div className='pn-in'>
-          <a className='pn-brand' href={BASE}>
+          {/* live's logo links /en-US/home, the alias of the home page */}
+          <a className='pn-brand' href={`${BASE}/home`}>
             {/* live's Logo.tsx: both marks carry their alt, and the theme
                 hides one (prod-nav.css) */}
             <Image
