@@ -135,6 +135,426 @@
       "from": "github.com/generaltranslation/legal@fbf96ead854b0f8f38035e727906041b60895b01:en-US/terms.md (gt-cloud apps/landing/legal, the submodule live renders)",
       "sha256": "6957352b3e657c814609dd54d071cdc70f187458efbca4bd91ea8ed5f9640017",
       "reason": "the text of generaltranslation.com/legal/terms, vendored 2026-10-14 for /d/production/legal/terms; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/blog/en-US/designing-docs-for-humans.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:blog/en-US/designing-docs-for-humans.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "8ab33ae734eaf22176796d0dd791c3c36ce2e07c575d201977c6435eae36bedf",
+      "reason": "the text of generaltranslation.com/blog/designing-docs-for-humans, vendored 2026-10-15 for /d/production/blog/designing-docs-for-humans; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/blog/en-US/fuma-nama.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:blog/en-US/fuma-nama.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "b8ec526a9d176d76224a35c1fa1bd166f5aed69a52c8b12cbdbd0ccd0d85ef70",
+      "reason": "the text of generaltranslation.com/blog/fuma-nama, vendored 2026-10-15 for /d/production/blog/fuma-nama; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/blog/en-US/rewriting-our-docs.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:blog/en-US/rewriting-our-docs.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "2d2fc3c6feba25efe09dbe67f8735d37b08d2314844b6061a6040665ea40b456",
+      "reason": "the text of generaltranslation.com/blog/rewriting-our-docs, vendored 2026-10-15 for /d/production/blog/rewriting-our-docs; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/blog/en-US/supporting-open-source-software.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:blog/en-US/supporting-open-source-software.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "647de1e7d3a3c07e61ee8437b3f5f24a609b02bbb5499540d566923362824449",
+      "reason": "the text of generaltranslation.com/blog/supporting-open-source-software, vendored 2026-10-15 for /d/production/blog/supporting-open-source-software; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/blog/en-US/supporting-slash-companies.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:blog/en-US/supporting-slash-companies.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "d6c0906bb8809b24ccae1bc0c8e3a28fce56c56737f2951ce6be82149bb39779",
+      "reason": "the text of generaltranslation.com/blog/supporting-slash-companies, vendored 2026-10-15 for /d/production/blog/supporting-slash-companies; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/compiler_v1_0_0_gt-next_v6_7_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/compiler_v1_0_0_gt-next_v6_7_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "a013f46f0619cff35ad6d3f79904315c4f76b9f7b54dafcf31cc51ac78b86c4f",
+      "reason": "the text of generaltranslation.com/blog/compiler_v1_0_0_gt-next_v6_7_0, vendored 2026-10-15 for /d/production/blog/compiler_v1_0_0_gt-next_v6_7_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/compiler_v1_3_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/compiler_v1_3_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "8d7d45fde316185de3c49990ec9764ffc23547c8a0cc7c3eff7cf374d49f94bf",
+      "reason": "the text of generaltranslation.com/blog/compiler_v1_3_0, vendored 2026-10-15 for /d/production/blog/compiler_v1_3_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/generaltranslation_v7_8_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/generaltranslation_v7_8_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "71c9c99fa86780d1afa2455b5949b79bd7ca8260dcf3240092bb834a777dbeed",
+      "reason": "the text of generaltranslation.com/blog/generaltranslation_v7_8_0, vendored 2026-10-15 for /d/production/blog/generaltranslation_v7_8_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/generaltranslation_v8.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/generaltranslation_v8.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "20062204ab2230e2e314b6140e6d98243a2e88daca273ac784e95261fda3dc16",
+      "reason": "the text of generaltranslation.com/blog/generaltranslation_v8, vendored 2026-10-15 for /d/production/blog/generaltranslation_v8; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/generaltranslation_v8_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/generaltranslation_v8_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "ba555941e1b790b08c28f6b5a3768edd1c333e54de0542d5cb7ac909348b815f",
+      "reason": "the text of generaltranslation.com/blog/generaltranslation_v8_1_0, vendored 2026-10-15 for /d/production/blog/generaltranslation_v8_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-cli_v2_11_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-cli_v2_11_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "00a38c5e9e0bee808c0081309d1091fc0e2627bff209490b28e0e3ac6c9f4f48",
+      "reason": "the text of generaltranslation.com/blog/gt-cli_v2_11_0, vendored 2026-10-15 for /d/production/blog/gt-cli_v2_11_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-cli_v2_11_3.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-cli_v2_11_3.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "152a77b9388fe77e467ea72d93698cd93fef8c085e1a7f5ab8f76ef3bfb3f590",
+      "reason": "the text of generaltranslation.com/blog/gt-cli_v2_11_3, vendored 2026-10-15 for /d/production/blog/gt-cli_v2_11_3; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-cli_v2_12_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-cli_v2_12_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "219ce9d8d4635cf53d09277fab103113daaf45f81a924ef604f11a9ba2025a27",
+      "reason": "the text of generaltranslation.com/blog/gt-cli_v2_12_0, vendored 2026-10-15 for /d/production/blog/gt-cli_v2_12_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-cli_v2_8_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-cli_v2_8_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "9741918afa82fdee279a68c8eb009af7c2bd2c8670d65540bd2dcf5ba9b360f1",
+      "reason": "the text of generaltranslation.com/blog/gt-cli_v2_8_0, vendored 2026-10-15 for /d/production/blog/gt-cli_v2_8_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-cli_v2_9_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-cli_v2_9_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "4d55be110766e13610f0fc62a76b1bd2bef471c187d0041319f9fc7ef2674434",
+      "reason": "the text of generaltranslation.com/blog/gt-cli_v2_9_0, vendored 2026-10-15 for /d/production/blog/gt-cli_v2_9_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-flask_v0_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-flask_v0_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "2b218c26f81b2ffbf26183af5a6850e12de7178edcb46a933f6e8db209693ea1",
+      "reason": "the text of generaltranslation.com/blog/gt-flask_v0_1_0, vendored 2026-10-15 for /d/production/blog/gt-flask_v0_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-i18n_v0_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-i18n_v0_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "59c632a310888e20f8956d8cd242d07cba1ded7aa6a24c353aabf5e45531b2d8",
+      "reason": "the text of generaltranslation.com/blog/gt-i18n_v0_1_0, vendored 2026-10-15 for /d/production/blog/gt-i18n_v0_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-i18n_v0_9_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-i18n_v0_9_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "72e186feff8aab2205e69065e1b48c453921d0538d3ac57844a7aebd291675ca",
+      "reason": "the text of generaltranslation.com/blog/gt-i18n_v0_9_0, vendored 2026-10-15 for /d/production/blog/gt-i18n_v0_9_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v11_1_3.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v11_1_3.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "d054a81c0540c55fc09e2233fef687fa497906ff5348f430dfcd5af735a32dbb",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v11_1_3, vendored 2026-10-15 for /d/production/blog/gt-next_v11_1_3; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_10_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_10_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "a738e5412e47e1e7848374261717c96da7ba0cbfb90a18d6b41dc39e6ed7b56d",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_10_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_10_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_11_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_11_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "37719cf0cfa33520312b66478d1e3e7465b25de587f0d5cef4ac6835b0b0ab76",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_11_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_11_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_12_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_12_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "ac1477b890d2c40bd37fac516682173ccf4d773d82c7bf841e023523d526e6c3",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_12_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_12_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_13_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_13_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "5b873d3aaf81a994182885709199989398ce4c903214ad9c0a09e87ff445063f",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_13_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_13_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_14_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_14_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "3de30d9784ea92de197267830f305ff5a14a2dafff285d71e79411a3bf8775c7",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_14_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_14_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_15_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_15_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "8e9502635a0f5e04fa0abe7db83f0f19b8e3a543c990fe7f6ef25ff788788bf8",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_15_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_15_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_2_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_2_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "0c44601e93d632e90ef3a40b09c0f106f883a8f5e32fc40da2584a2d325e8b56",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_2_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_2_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_3_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_3_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "4dd1c682895b0e11dacecd049aaf9157aacb8c6b5ca4654404e9a216fc124bea",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_3_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_3_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_4_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_4_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "f536094ddb6f52242f59fc857c3065a18b17ad56252f2ada84a34031ef8d59ba",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_4_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_4_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_6_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_6_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "903657328a3e403544aca0c493748d4f1fe9f6c17cf84e1e54adcd8e89d40dba",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_6_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_6_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_8_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_8_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "15ef5fb4c5d04e92a5144c67a3a2f358daa7f0177e635cf481c5d06b49f5372b",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_8_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_8_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-next_v6_9_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-next_v6_9_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "f7d5063e157343164113a7d1c61467d9689aec3c660e0b42b7e3bc228029cc45",
+      "reason": "the text of generaltranslation.com/blog/gt-next_v6_9_0, vendored 2026-10-15 for /d/production/blog/gt-next_v6_9_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-node_v0_2_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-node_v0_2_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "8e19a599a6dc2f051e9a9a94c433e37e0e62ae7ef2302d87f9c3dc38d1dd56c3",
+      "reason": "the text of generaltranslation.com/blog/gt-node_v0_2_0, vendored 2026-10-15 for /d/production/blog/gt-node_v0_2_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-node_v0_3_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-node_v0_3_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "232a383b04d260890f196e224fea1d297be9b09a9a7b55db972433306f2dbe30",
+      "reason": "the text of generaltranslation.com/blog/gt-node_v0_3_0, vendored 2026-10-15 for /d/production/blog/gt-node_v0_3_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-node_v0_6_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-node_v0_6_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "80618e1c4438b64dedfa5b092dac58427c3b4260a46a98e9a206bfaa52fe1a0e",
+      "reason": "the text of generaltranslation.com/blog/gt-node_v0_6_0, vendored 2026-10-15 for /d/production/blog/gt-node_v0_6_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react-native_v10_20_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react-native_v10_20_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "bea4a2aed90c032446f1ff143b6cb399f0e937c68067dc8b347840c9ceb0db9f",
+      "reason": "the text of generaltranslation.com/blog/gt-react-native_v10_20_0, vendored 2026-10-15 for /d/production/blog/gt-react-native_v10_20_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v10_12_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v10_12_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "e63fbe4e904c1bf97ab985e51f5cad1a6b31ef331de9d6a9d4f5ede9516edd31",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v10_12_0, vendored 2026-10-15 for /d/production/blog/gt-react_v10_12_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v10_13_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v10_13_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "8df6a732a7cc646da393923c3920b302d2f502e6b5787cc3dc6b810b5d7fc2e1",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v10_13_0, vendored 2026-10-15 for /d/production/blog/gt-react_v10_13_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v10_15_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v10_15_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "8b11e6371c5c385f416a68ce42cda0ea62830cb1e8fd071d4acde066b1d37c38",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v10_15_0, vendored 2026-10-15 for /d/production/blog/gt-react_v10_15_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v10_16_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v10_16_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "c30db8167dc7e5b2feb04e9feb91a67d5948e4743bfb6793eafab22dacb803dc",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v10_16_0, vendored 2026-10-15 for /d/production/blog/gt-react_v10_16_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v10_18_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v10_18_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "cb344d7337eda0ed8d9776e30a17c66a7ef6455a5ec2202638b98feb171b7948",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v10_18_0, vendored 2026-10-15 for /d/production/blog/gt-react_v10_18_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v10_19_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v10_19_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "5b2d27464c4b6bd55dcef76acb90a733648ec7910aabaf9803c8e57fb51baa70",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v10_19_0, vendored 2026-10-15 for /d/production/blog/gt-react_v10_19_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v10_8_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v10_8_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "a4a26679490e206c68f7fa8042f9748deaa7781d9dd5e8bda79fc1df9aae7229",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v10_8_0, vendored 2026-10-15 for /d/production/blog/gt-react_v10_8_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v11_0_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v11_0_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "786ec8a183cec5969b0fbd415d56679e798bdb45971502a6d7b7cc45f6607c0d",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v11_0_0, vendored 2026-10-15 for /d/production/blog/gt-react_v11_0_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-react_v11_1_2.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-react_v11_1_2.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "ff8df60bc80b3df1aa660ce20ab067c769b84452fa74cd03977809eff638d774",
+      "reason": "the text of generaltranslation.com/blog/gt-react_v11_1_2, vendored 2026-10-15 for /d/production/blog/gt-react_v11_1_2; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-rrweb_v0_2_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-rrweb_v0_2_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "a14fd874e5b8f86f0279d0fd3ba3b8a06c611dde07e5ade46fc017b33934c47c",
+      "reason": "the text of generaltranslation.com/blog/gt-rrweb_v0_2_0, vendored 2026-10-15 for /d/production/blog/gt-rrweb_v0_2_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-sanity_v2_0_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-sanity_v2_0_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "2f593c0f538516974b952ca5c8da5ac0f39c094a8ff01b68dbe7e7818d2c5884",
+      "reason": "the text of generaltranslation.com/blog/gt-sanity_v2_0_0, vendored 2026-10-15 for /d/production/blog/gt-sanity_v2_0_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-sanity_v2_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-sanity_v2_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "605c315aed28a0ac0379c58724b49f6a46b0763c0e3424925eabf06bbcab786d",
+      "reason": "the text of generaltranslation.com/blog/gt-sanity_v2_1_0, vendored 2026-10-15 for /d/production/blog/gt-sanity_v2_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-sanity_v3_0_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-sanity_v3_0_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "f78ff6c07b08b38bbfed2d6f8b2c769a9202b4b228c38010fa5915aa63eb8677",
+      "reason": "the text of generaltranslation.com/blog/gt-sanity_v3_0_0, vendored 2026-10-15 for /d/production/blog/gt-sanity_v3_0_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-sanity_v3_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-sanity_v3_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "d352bb1767255643d2b7058c252c27263d37c5c634f4c90549707f87e9c6d423",
+      "reason": "the text of generaltranslation.com/blog/gt-sanity_v3_1_0, vendored 2026-10-15 for /d/production/blog/gt-sanity_v3_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-sanity_v3_1_1.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-sanity_v3_1_1.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "75f5553f93c4176571a2694cd19d1c3124966314aed01f80f2a43649f3952881",
+      "reason": "the text of generaltranslation.com/blog/gt-sanity_v3_1_1, vendored 2026-10-15 for /d/production/blog/gt-sanity_v3_1_1; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-sanity_v4_0_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-sanity_v4_0_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "96bf2035264fbfc2cf91af8943fe4718ca77f68cc15d2f879c4763fac07cb727",
+      "reason": "the text of generaltranslation.com/blog/gt-sanity_v4_0_0, vendored 2026-10-15 for /d/production/blog/gt-sanity_v4_0_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-tanstack-start_v0_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-tanstack-start_v0_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "38af01eee74149afef144148820254c3ffd8b9c334a1adee10acda8f6f078c33",
+      "reason": "the text of generaltranslation.com/blog/gt-tanstack-start_v0_1_0, vendored 2026-10-15 for /d/production/blog/gt-tanstack-start_v0_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-tanstack-start_v11_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-tanstack-start_v11_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "371d05cf94226ba4daea56093a0544d734f348d81226a76bbbe491da344c39ae",
+      "reason": "the text of generaltranslation.com/blog/gt-tanstack-start_v11_1_0, vendored 2026-10-15 for /d/production/blog/gt-tanstack-start_v11_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt-vue_v0_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-vue_v0_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "14eb46181e5b1c40f1dcadd37c087390623e87b297a0ee3c10fe12008e5c077d",
+      "reason": "the text of generaltranslation.com/blog/gt-vue_v0_1_0, vendored 2026-10-15 for /d/production/blog/gt-vue_v0_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt_v2_13_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt_v2_13_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "217d7412020f8f8f75581265de4984764b76985ad0c5bedc2a20a7266abc3dd8",
+      "reason": "the text of generaltranslation.com/blog/gt_v2_13_0, vendored 2026-10-15 for /d/production/blog/gt_v2_13_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gt_v2_23_0_generaltranslation-api_v0_5_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt_v2_23_0_generaltranslation-api_v0_5_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "2822731ca0bab0b573ad899e25b7d9b20dccc23ab5d8dc473adced2efd617a6d",
+      "reason": "the text of generaltranslation.com/blog/gt_v2_23_0_generaltranslation-api_v0_5_0, vendored 2026-10-15 for /d/production/blog/gt_v2_23_0_generaltranslation-api_v0_5_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gtx-cli_v2_10_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gtx-cli_v2_10_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "2f8d883ecd1d183200d35cab600bc438fd430d61e29a8bc37fc69eb71f095ce2",
+      "reason": "the text of generaltranslation.com/blog/gtx-cli_v2_10_0, vendored 2026-10-15 for /d/production/blog/gtx-cli_v2_10_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/gtx-cli_v2_3_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gtx-cli_v2_3_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "42e5ee05678f06a36e7a7197945b42951fb5c029e2f802d2ea933fce1b956aab",
+      "reason": "the text of generaltranslation.com/blog/gtx-cli_v2_3_0, vendored 2026-10-15 for /d/production/blog/gtx-cli_v2_3_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/local-edits.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/local-edits.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "9ac34a58581c13531cc6b455d644f70795ef83c59091d2f38551532177e1bced",
+      "reason": "the text of generaltranslation.com/blog/local-edits, vendored 2026-10-15 for /d/production/blog/local-edits; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "content/production/devlog/en-US/react-core-linter_v0_1_0.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/react-core-linter_v0_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
+      "sha256": "cdd8297adc8e1bc33f1dfbbd3b3722ccf350cd46eab3c332901deb970e30b0b0",
+      "reason": "the text of generaltranslation.com/blog/react-core-linter_v0_1_0, vendored 2026-10-15 for /d/production/blog/react-core-linter_v0_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
     }
   ]
 }

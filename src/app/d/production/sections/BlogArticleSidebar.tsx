@@ -7,32 +7,27 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 
 import BlogArticleShare from './BlogArticleShare';
 
-import type { ArticleHeading } from '../../singularity/company-sections/post-bodies';
+import type { PostHeading } from './blog-post-source';
 
 /**
- * PRODUCTION · the article's rail — a port of the shipped SideBar
+ * PRODUCTION · the article's rail, a port of the shipped SideBar
  * (apps/landing/src/components/blog/SideBar.tsx and TableOfContents.tsx).
  *
  * Same two faces as the shipped one. Above 980px: a sticky column holding
  * the "Table of contents" list over a "Share" block. Below it: the docs'
- * collapsed popover bar — progress ring, current section, chevron —
- * opening to the same list with the share row at its foot. A post with no
- * headings keeps share on both faces (the shipped page renders the bare
- * share bar on small screens and the Share block alone in the rail), so
- * the sticky bar is never an empty hairline.
+ * collapsed popover bar (progress ring, current section, chevron) opening
+ * to the same list with the share row at its foot. A post with no
+ * headings keeps share on both faces, so the sticky bar is never an empty
+ * hairline.
  *
- * The shipped rail reads its active anchor from `fumadocs-core/toc`. This
- * repo has no fumadocs, so the same rule — the last heading whose top has
- * crossed the read line under the navbar — comes from an
- * IntersectionObserver, settled by a passive frame-throttled scroll
- * listener. The observer alone is not enough: an INSTANT jump (an anchor
- * click, a deep link with a hash, a restored scroll position) can move a
- * heading from below the line to above it without rendering a frame in
- * between, and no intersection callback fires.
+ * The shipped rail reads its active anchors from fumadocs-core 16.16.1's
+ * toc Observer, and this port runs the same rule: every heading at least
+ * 90% inside the viewport is active, the most recently activated one is
+ * the current section, and when none is in view the heading nearest the
+ * viewport's top edge stands in.
  */
 
-/** The read line, in px from the viewport top — clears this sticky navbar. */
-const READ_LINE = 99;
+type Anchor = { id: string; active: boolean; fallback: boolean; t: number };
 
 /** The shipped ProgressCircle: a track at quarter ink, the arc filled to
     the current section's share of the list. */
@@ -73,58 +68,69 @@ function ProgressRing({ value }: { value: number }) {
 }
 
 type Props = {
-  headings: readonly ArticleHeading[];
+  headings: readonly PostHeading[];
   postTitle: string;
 };
 
 export default function BlogArticleSidebar({ headings, postTitle }: Props) {
-  const [activeId, setActiveId] = useState('');
+  const [active, setActive] = useState<readonly string[]>([]);
+  const [current, setCurrent] = useState<string | undefined>(undefined);
   const [open, setOpen] = useState(false);
 
   /* Mount-only by contract: the heading set is fixed for the life of an
      article, and the caller keys this component by slug so a different
      post remounts it rather than reusing a stale observer. */
   useMountEffect(() => {
-    const nodes = headings
-      .map((heading) => document.getElementById(heading.id))
-      .filter((node): node is HTMLElement => node !== null);
-    if (nodes.length === 0) return;
+    let items: Anchor[] = headings.map((heading) => ({ id: heading.id, active: false, fallback: false, t: 0 }));
 
-    /* The last heading whose top has crossed the read line wins; above the
-       first one, nothing is lit and the ring reads empty. */
-    const settle = () => {
-      let passed = '';
-      for (const node of nodes) {
-        if (node.getBoundingClientRect().top <= READ_LINE) passed = node.id;
-      }
-      setActiveId(passed);
-    };
-
-    const observer = new IntersectionObserver(settle, {
-      rootMargin: `-${READ_LINE}px 0px 0px 0px`,
-      threshold: 0,
-    });
-    for (const node of nodes) observer.observe(node);
-
-    let frame = 0;
-    const onScroll = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        settle();
-      });
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    settle();
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', onScroll);
-      if (frame) cancelAnimationFrame(frame);
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.length === 0) return;
+        let hasActive = false;
+        const updated = items.map((item) => {
+          const entry = entries.find((candidate) => candidate.target.id === item.id);
+          const isActive = entry ? entry.isIntersecting : item.active && !item.fallback;
+          const next = item.active === isActive ? item : { ...item, t: Date.now(), active: isActive, fallback: false };
+          if (isActive) hasActive = true;
+          return next;
+        });
+        const viewTop = entries[0]?.rootBounds?.top;
+        if (!hasActive && viewTop !== undefined) {
+          let min = Number.MAX_VALUE;
+          let fallbackAt = -1;
+          updated.forEach((item, index) => {
+            const element = document.getElementById(item.id);
+            if (!element) return;
+            const distance = Math.abs(viewTop - element.getBoundingClientRect().top);
+            if (distance < min) {
+              fallbackAt = index;
+              min = distance;
+            }
+          });
+          const fallback = updated[fallbackAt];
+          if (fallback) updated[fallbackAt] = { ...fallback, active: true, fallback: true, t: Date.now() };
+        }
+        items = updated;
+        let latest: Anchor | undefined;
+        const ids: string[] = [];
+        for (const item of updated) {
+          if (!item.active) continue;
+          ids.push(item.id);
+          if (!latest || item.t > latest.t) latest = item;
+        }
+        setActive(ids);
+        setCurrent(latest?.id);
+      },
+      { threshold: 0.9 }
+    );
+    for (const heading of headings) {
+      const element = document.getElementById(heading.id);
+      if (element) observer.observe(element);
+    }
+    return () => observer.disconnect();
   });
 
-  const selected = headings.findIndex((heading) => heading.id === activeId);
+  const selected = headings.findIndex((heading) => heading.id === current);
   const progress = (selected + 1) / Math.max(1, headings.length);
 
   const list = (onPick?: () => void) => (
@@ -132,7 +138,7 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
       {headings.map((heading) => (
         <a
           className='pba-toc-item'
-          data-active={heading.id === activeId}
+          data-active={active.includes(heading.id)}
           data-depth={heading.level}
           href={`#${heading.id}`}
           key={heading.id}

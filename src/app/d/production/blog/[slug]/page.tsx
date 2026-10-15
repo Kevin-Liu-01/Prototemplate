@@ -7,6 +7,7 @@ import ProdFooter from '../../sections/ProdFooter';
 import ProdNav from '../../sections/ProdNav';
 
 import BlogArticle from '../../sections/BlogArticle';
+import BlogPostBody from '../../sections/BlogPostBody';
 import BlogArticleNotFound, {
   type BlogSuggestion,
 } from '../../sections/BlogArticleNotFound';
@@ -16,6 +17,7 @@ import {
   postTypeOf,
 } from '../../sections/blog-article-data';
 import { suggestSlug } from '../../sections/blog-article-model';
+import { readPostSource } from '../../sections/blog-post-source';
 
 import '../../../toolchain/sections/logos-icons.css';
 import '../../../toolchain/styles.css';
@@ -62,6 +64,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  * generaltranslation.com so a reviewer can hold a proposal beside the thing
  * it replaces. This route reproduces the shipped article page.
  *
+ * The body is the post's MDX, vendored in content/production and compiled
+ * on the server as live compiles it (BlogPostBody), then handed to the
+ * client article as rendered nodes.
+ *
  * The chrome is the one this control's landing page already runs, ProdNav
  * over the ruled column and ProdFooter closing it, because that is what the
  * shipped site does: the blog article inherits the site's own header and
@@ -78,6 +84,7 @@ export default async function ProductionBlogPostPage({ params }: Params) {
   const { slug } = await params;
   const post = findPost(slug);
   const postType = post ? postTypeOf(post.slug) : undefined;
+  const source = post && postType ? readPostSource(post.slug, postType) : null;
 
   let suggestions: BlogSuggestion[] = [];
   if (!post) {
@@ -99,7 +106,13 @@ export default async function ProductionBlogPostPage({ params }: Params) {
 
         <main className='tc-rail pba-article'>
           {post && postType ? (
-            <BlogArticle post={post} postType={postType} />
+            <BlogArticle
+              body={source ? <BlogPostBody source={source.body} /> : null}
+              headerIntro={source?.header ? <BlogPostBody source={source.header} /> : null}
+              headings={source?.headings ?? []}
+              post={post}
+              postType={postType}
+            />
           ) : (
             <BlogArticleNotFound suggestions={suggestions} />
           )}

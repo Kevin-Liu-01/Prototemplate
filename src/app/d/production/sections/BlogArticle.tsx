@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
-import { Fragment, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import BlogArticleCover from './BlogArticleCover';
 import BlogArticleFooter from './BlogArticleFooter';
@@ -22,104 +22,46 @@ import {
   rankRelatedPosts,
 } from './blog-article-model';
 
-import CodeBlock from '../../toolchain/sections/code';
-import {
-  bodyFor,
-  headingsOf,
-  type BodyBlock,
-} from '../../singularity/company-sections/post-bodies';
+import type { PostHeading } from './blog-post-source';
 
 /**
  * PRODUCTION · the blog article, section for section as the shipped page
  * mounts it (apps/landing/src/app/[locale]/blog/[slug]/page.tsx and the
  * components under apps/landing/src/components/blog):
  *
- *   header  — rail column: the back link, and a release's tags
- *             copy column: the Blog / <category> crumb, the h1, the
- *             summary, the author-and-date byline
- *             cover: the post's image, or the motif plate; in the copy
- *             column above 980px
- *   grid    — the contents-and-share rail beside the prose
- *   footer  — a release's previous/next pair, then Explore
+ *   header: the rail column holds the back link and a release's tags; the
+ *           copy column holds the Blog / <category> crumb, the h1, the
+ *           summary and the author-and-date byline; the cover (the post's
+ *           image or the motif plate) and a header intro follow in the
+ *           copy column above 980px
+ *   grid:   the contents-and-share rail beside the prose
+ *   footer: a release's previous/next pair, then Explore
  *
- * The shipped page reads MDX out of the content submodule through
- * next-mdx-remote and highlights it with shiki. This control has neither,
- * so the body is the vendored block list in post-bodies.ts walked by hand,
- * and fenced samples ride the toolchain CodeBlock panel. Frontmatter is
- * vendored in blog-article-data.ts, straight from the content tree.
+ * The body and the header intro arrive rendered: the page compiles the
+ * post's vendored MDX on the server (BlogPostBody), as the shipped page
+ * does with next-mdx-remote and shiki. Frontmatter is vendored in
+ * blog-article-data.ts, straight from the content tree.
  */
-
-/* Inline markup the vendored bodies use: `code`, **strong**, *em*. */
-const INLINE = /`([^`]+)`|\*\*([^*]+)\*\*|\*([^*\n]+)\*/g;
-
-function inline(text: string, keyBase: string): ReactNode {
-  const out: ReactNode[] = [];
-  let last = 0;
-  let index = 0;
-
-  for (const match of text.matchAll(INLINE)) {
-    const at = match.index ?? 0;
-    if (at > last) out.push(text.slice(last, at));
-    const key = `${keyBase}-${(index += 1)}`;
-    if (match[1] !== undefined) out.push(<code key={key}>{match[1]}</code>);
-    else if (match[2] !== undefined)
-      out.push(<strong key={key}>{match[2]}</strong>);
-    else out.push(<em key={key}>{match[3]}</em>);
-    last = at + match[0].length;
-  }
-
-  if (last < text.length) out.push(text.slice(last));
-  return out.length === 1 ? out[0] : out;
-}
-
-function ProseBlock({
-  block,
-  id,
-  index,
-}: {
-  block: BodyBlock;
-  id?: string;
-  index: number;
-}) {
-  const key = `b${index}`;
-
-  if (block.kind === 'h2') return <h2 id={id}>{inline(block.text, key)}</h2>;
-  if (block.kind === 'h3') return <h3 id={id}>{inline(block.text, key)}</h3>;
-  if (block.kind === 'p') return <p>{inline(block.text, key)}</p>;
-  if (block.kind === 'list') {
-    return (
-      <ul>
-        {block.items.map((item, i) => (
-          <li key={`${key}-${i}`}>{inline(item, `${key}-${i}`)}</li>
-        ))}
-      </ul>
-    );
-  }
-  if (block.kind === 'code') {
-    return <CodeBlock code={block.code} file={block.lang} numbers={false} />;
-  }
-  return <hr />;
-}
 
 type Props = {
   post: ArticlePost;
   postType: PostType;
+  /** The rendered post body. */
+  body: ReactNode;
+  /** The rendered header intro, when the frontmatter sets headerIntro. */
+  headerIntro: ReactNode;
+  /** The body's h2 and h3 headings, for the contents rail. */
+  headings: readonly PostHeading[];
 };
 
-export default function BlogArticle({ post, postType }: Props) {
+export default function BlogArticle({ post, postType, body, headerIntro, headings }: Props) {
   const pathname = usePathname();
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
 
-  const body = bodyFor(post.slug);
-  const headings = headingsOf(body);
   const siblings = siblingsOf(postType);
   const related = rankRelatedPosts(post, siblings, 2);
   const { previous, next } = getPostNeighbors(post.slug, siblings);
   const authors = authorsOf(post);
-
-  /* headingsOf and the prose walk the same block list in the same order,
-     so the nth heading block takes the nth derived id. */
-  let headingAt = -1;
 
   const title =
     postType === 'devlog' && post.headline
@@ -183,6 +125,11 @@ export default function BlogArticle({ post, postType }: Props) {
               sizes='(max-width: 980px) calc(100vw - 40px), 960px'
             />
           </div>
+          {headerIntro ? (
+            <div className='pba-header-intro'>
+              <div className='pba-prose'>{headerIntro}</div>
+            </div>
+          ) : null}
         </div>
       </header>
 
@@ -194,33 +141,7 @@ export default function BlogArticle({ post, postType }: Props) {
         />
 
         <article className='pba-main'>
-          <div className='pba-prose'>
-            {body ? (
-              body.blocks.map((block, index) => {
-                const isHeading = block.kind === 'h2' || block.kind === 'h3';
-                if (isHeading) headingAt += 1;
-                return (
-                  <Fragment key={`${post.slug}-${index}`}>
-                    <ProseBlock
-                      block={block}
-                      id={isHeading ? headings[headingAt]?.id : undefined}
-                      index={index}
-                    />
-                  </Fragment>
-                );
-              })
-            ) : (
-              /* The header already carries what frontmatter there is;
-                 repeating it as the lede printed it twice. A post whose
-                 body is not vendored here says so plainly instead. */
-              <p className='pba-stub'>
-                This control carries the full text of the four posts whose
-                bodies are vendored with it. This one is filed from its
-                frontmatter alone, so the article shell is real and the body
-                is not.
-              </p>
-            )}
-          </div>
+          <div className='pba-prose'>{body}</div>
         </article>
       </div>
 

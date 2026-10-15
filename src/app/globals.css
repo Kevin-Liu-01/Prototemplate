@@ -8,8 +8,11 @@
    render its Markdown through their own components, so no class the app
    draws is written there. .claude/skills and .agents/skills hold links to
    the skill folders (scripts/skills/install.mjs), which the scan would
-   follow. */
+   follow. content/production holds the vendored generaltranslation.com
+   posts, whose code samples spell hundreds of class names no page draws;
+   the mirror's post components style the posts with their own sheet. */
 @source not '../../motion';
+@source not '../../content/production';
 @source not '../../skills';
 @source not '../../docs';
 @source not '../../.claude';

@@ -90,6 +90,8 @@ export type MotifSource = {
   tags: readonly string[];
   /** Frontmatter `images` — the first entry becomes the cover. */
   images?: readonly string[];
+  /** Frontmatter `imagesLight`: the light theme's cover, when a post has one. */
+  imagesLight?: readonly string[];
 };
 
 /** A post's cover motif, from its title, tags, and slug. */
@@ -169,17 +171,50 @@ export default function BlogArticleCover({
      config; the query addresses nothing on this asset, so it is dropped on
      the way to the loader rather than configured around. */
   const image = post.images?.[0]?.split('?')[0];
-  if (image) {
+  const imageLight = post.imagesLight?.[0]?.split('?')[0];
+  /* Dithered webp artwork smears at the default quality of 75. */
+  const quality = (src: string) => (/\.webp$/.test(src) ? 95 : undefined);
+  const classes = `pba-dither pba-photo${className ? ` ${className}` : ''}`;
+  if (image && !imageLight) {
     return (
       <Image
         alt=''
-        className={`pba-dither pba-photo${className ? ` ${className}` : ''}`}
+        className={classes}
         height={540}
         priority={priority}
+        quality={quality(image)}
         sizes={sizes}
         src={image}
         width={960}
       />
+    );
+  }
+  if (image && imageLight) {
+    /* Both covers stay in the document and the sheet shows the one for the
+       theme, as the shipped BlogPostCover does. */
+    return (
+      <>
+        <Image
+          alt=''
+          className={`${classes} pba-photo-dark`}
+          height={540}
+          priority={priority}
+          quality={quality(image)}
+          sizes={sizes}
+          src={image}
+          width={960}
+        />
+        <Image
+          alt=''
+          className={`${classes} pba-photo-light`}
+          height={540}
+          priority={priority}
+          quality={quality(imageLight)}
+          sizes={sizes}
+          src={imageLight}
+          width={960}
+        />
+      </>
     );
   }
 

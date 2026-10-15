@@ -1,72 +1,94 @@
 /* ============================================================
    PRODUCTION · the blog ARTICLE (pba-).
 
-   A port of the shipped page's own sheet — the .blog-article,
-   .blog-sidebar, .blog-prose, .blog-share and .blog-post-footer
-   blocks of apps/landing/src/components/blog/blog.css — rescoped
-   to this control's root and renamed pba- so it can never collide
-   with another production route's sheet.
+   A port of the shipped page's own sheet, the article rules of
+   apps/landing/src/components/blog/blog.css (gt-cloud origin/main
+   c58edda6, 2026-10-14), rescoped to this control's root and
+   renamed pba- so it can never collide with another production
+   route's sheet. The author spotlight and the Fumadocs diagram
+   keep live's class names, scoped under the prose.
 
-   The numbers are the shipped ones. Three exceptions, each because
-   this shell's chrome measures differently:
-     · the sticky offsets and the anchor insets are measured from
-       this navbar (ProdNav: a 56px bar plus its 1px rule, 57px);
-     · the prose colours are the values the shipped page COMPUTES
-       (fumadocs' .prose over the fd theme: body ink at 90%,
-       headings and strong at full ink, inline code on zinc-100 /
-       zinc-800), spelled out here because this repo has neither
-       fumadocs nor the typography plugin;
-     · code samples ride the toolchain CodeBlock panel, which owns
-       its own dress; only the block rhythm is set here.
+   The post body is fumadocs' MDX output, which live dresses with
+   fumadocs-ui's typography (.prose, in Tailwind's utilities
+   layer), fumadocs' component classes and blog.css on top. This
+   repository has neither fumadocs nor the typography plugin, so
+   the values live COMPUTES are stated here, rule for rule, under
+   the pba- names BlogPostBody and PostMdxControls render:
+     · the fd colour tokens are the fumadocs theme's (zinc), read
+       from the live page in both themes;
+     · code is set in --tc-mono: live sets it in Geist Mono, a
+       face this repository does not ship (Inter is its only
+       family).
+   Every rule stays under .prod-root, so no other /d page reads
+   it.
    ============================================================ */
 
 .prod-root .pba-article {
   /* The article type ramp, declared once: the rules below consume these,
      and the first-line alignment nudges derive the half-leading delta
-     from the same values — retune the type here and the alignment
-     re-solves itself. (blog.css's .blog-root block, verbatim.) */
+     from the same values. (blog.css's .blog-root block, verbatim.) */
   --pba-label-fs: 13px;
   --pba-label-lh: 1.35;
   --pba-body-fs: 16px;
   --pba-body-lh: 1.78;
-  --pba-h2-fs: clamp(1.7rem, 3vw, 2.3rem);
-  --pba-h3-fs: clamp(1.35rem, 2vw, 1.7rem);
+  --pba-h2-fs: clamp(1.4rem, 2vw, 1.7rem);
+  --pba-h3-fs: clamp(1.15rem, 1.5vw, 1.35rem);
   /* mirrors the .toolchain-root heading line-height in the engine sheet */
   --pba-heading-lh: 1.06;
-  /* effective cap height as a share of font size, measured from the
-     rendered ink. Label, body and headings are all Inter, whose cap
-     height measures 0.7275 of the font size at every size and weight
-     this sheet uses, so both values are the same. The heading value
-     stays its own variable so a different display face could be
-     metered on its own. */
+  /* Inter's cap height as a share of font size (1490/2048) */
   --pba-cap-ratio: 0.72;
-  --pba-heading-cap-ratio: 0.72;
+  --pba-heading-cap-ratio: var(--pba-cap-ratio);
   /* optical lift on top of the metric alignment, per first-block type */
   --pba-first-line-trim-body: 0.4px;
   --pba-first-line-trim-heading: 1px;
+  /* the opening h2 has its own knob: from 1348px up Chrome rounds its
+     descent up a whole pixel, so that band keeps only the remainder */
+  --pba-first-line-trim-h2: var(--pba-first-line-trim-heading);
   /* the contents label's half-leading above its cap height */
   --pba-label-overlead: calc(
     var(--pba-label-fs) * (var(--pba-label-lh) - var(--pba-cap-ratio)) / 2
   );
 
-  /* this shell's sticky navbar (ProdNav): 56px plus its hairline */
-  --pba-nav: 57px;
-  /* the small-screen contents bar, which rides under the navbar */
-  --pba-bar: 48px;
-
-  /* the site's --color-emphasis: the active contents tick and the
-     reading-progress arc */
+  /* the fumadocs theme the post body reads (light) */
+  --pba-fd-fg: hsl(240 10% 3.9%);
+  --pba-fd-card: hsl(0 0% 100%);
+  --pba-fd-muted: hsl(240 4.8% 95.9%);
+  --pba-fd-muted-fg: hsl(240 3.8% 46.1%);
+  --pba-fd-border: hsl(240 5.9% 90%);
+  --pba-fd-primary: hsl(240 5.9% 10%);
+  --pba-fd-accent: hsl(240 4.8% 95.9%);
+  --pba-fd-accent-fg: hsl(240 5.9% 10%);
+  /* the site's --color-emphasis: links, the active contents tick, the
+     reading-progress arc and the info callout */
   --pba-mark: hsl(217.2 91.2% 59.8%);
-  /* the motif cover's ink — blog.css's own literal */
+  /* the motif cover's ink, blog.css's own literal */
   --pba-dither: #2563eb;
+}
+
+[data-theme='dark'] .prod-root .pba-article {
+  --pba-fd-fg: hsl(0 0% 98%);
+  --pba-fd-card: hsl(240 10% 3.9%);
+  --pba-fd-muted: hsl(240 3.7% 15.9%);
+  --pba-fd-muted-fg: hsl(240 5% 64.9%);
+  --pba-fd-border: hsl(240 3.7% 15.9%);
+  --pba-fd-primary: hsl(0 0% 98%);
+  --pba-fd-accent: hsl(240 3.7% 15.9%);
+  --pba-fd-accent-fg: hsl(0 0% 98%);
+  --pba-mark: hsl(213.1 93.9% 67.8%);
+  --pba-dither: #86a8ff;
+}
+
+@media (min-width: 1348px) {
+  .prod-root .pba-article {
+    --pba-first-line-trim-h2: 0.15px;
+  }
 }
 
 /* ---- the lead: rail column, copy column, cover ---- */
 
 /* The bottom padding centers the cover: space below the image (this
    padding + the prose's 30px top inset) must equal the space above it
-   (the lead's row gap + the cover's 22px margin-top), so pb = gap − 8px.
-   Change with the lead gap, the cover margin, and the prose inset. */
+   (the lead's row gap + the cover's 22px margin-top), so pb = gap - 8px. */
 .prod-root .pba-header {
   padding: clamp(48px, 6vw, 76px) clamp(28px, 5vw, 64px)
     calc(clamp(28px, 4vw, 56px) - 8px);
@@ -86,7 +108,7 @@
 }
 
 /* the shipped BackLink, dressed as .tc-back-link in the landing engine
-   sheet — this repo's engine has no such rule, so it is carried here */
+   sheet; this repo's engine has no such rule, so it is carried here */
 .prod-root .pba-back {
   display: inline-flex;
   align-items: center;
@@ -128,10 +150,6 @@
   font-size: 13.5px;
   color: var(--tc-ink-3);
 }
-
-/* The shipped crumb's Blog link carries a hover utility that the same
-   unlayered `a { color: inherit }` reset swallows, so it does not lighten
-   on the live site either. Left un-dressed on purpose. */
 
 .prod-root .pba-copy h1 {
   max-width: 22ch;
@@ -182,9 +200,8 @@
 
 /* The recovery links are the only affordance on the not-found page, and the
    shell's unlayered `a { color: inherit; text-decoration: none }` reset
-   means utilities cannot dress them: they compute to plain ink with no
-   underline and read as body copy. Dressed here, where the cascade allows —
-   the shipped sheet carries the same rule for the same reason. */
+   means utilities cannot dress them; the shipped sheet carries the same
+   rule for the same reason. */
 .prod-root .pba-suggestion {
   color: var(--tc-ink-2);
   text-decoration: underline;
@@ -200,22 +217,22 @@
   margin-top: 28px;
 }
 
-/* the article's header image: the same dither, wide */
+/* ---- the cover ---- */
+
 .prod-root .pba-cover {
   overflow: hidden;
   border-radius: 6px;
   margin-top: 22px;
 }
 
-/* the cover renders in the copy column only while the lead keeps its
-   rail column — the body grid's own breakpoint */
+/* the cover and the header intro sit in the copy column only while the
+   lead keeps its rail column, the body grid's own breakpoint */
 @media (min-width: 981px) {
-  .prod-root .pba-cover {
+  .prod-root .pba-cover,
+  .prod-root .pba-header-intro {
     grid-column-start: 2;
   }
 }
-
-/* ---- the motif cover ---- */
 
 .prod-root .pba-dither {
   display: block;
@@ -244,7 +261,21 @@
   object-fit: cover;
 }
 
-/* tall enough that the motif renders whole and large — 21/7 cropped it */
+/* A post with two covers shows the one for the theme; the other stays in
+   the document, so the switch needs no request. */
+.prod-root .pba-dither.pba-photo-dark {
+  display: none;
+}
+
+[data-theme='dark'] .prod-root .pba-dither.pba-photo-dark {
+  display: block;
+}
+
+[data-theme='dark'] .prod-root .pba-dither.pba-photo-light {
+  display: none;
+}
+
+/* tall enough that the motif renders whole and large */
 .prod-root .pba-cover .pba-dither {
   aspect-ratio: 2 / 1;
 }
@@ -256,7 +287,34 @@
 }
 
 .prod-root .pba-dither.is-card {
-  aspect-ratio: 16 / 6;
+  aspect-ratio: 16 / 9;
+}
+
+/* ---- the header intro: a lead Callout lifted out of the body ---- */
+
+.prod-root .pba-header-intro .pba-prose {
+  width: 100%;
+  padding: 0;
+}
+
+.prod-root .pba-header-intro .pba-callout-bar {
+  display: none;
+}
+
+.prod-root .pba-header-intro .not-prose {
+  margin-block: 0.75rem;
+}
+
+.prod-root .pba-header-intro .prose-no-margin > :first-child {
+  margin-top: 0;
+}
+
+.prod-root .pba-header-intro .prose-no-margin > :first-child em {
+  color: var(--tc-ink);
+}
+
+.prod-root .pba-header-intro .prose-no-margin > :last-child {
+  margin-bottom: 0;
 }
 
 /* ---- the body: contents and share left, prose right ---- */
@@ -265,7 +323,7 @@
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   gap: clamp(28px, 4vw, 56px);
-  padding-left: clamp(28px, 5vw, 64px);
+  padding-inline: clamp(28px, 5vw, 64px);
 }
 
 .prod-root .pba-main {
@@ -278,7 +336,7 @@
 
 .prod-root .pba-rail-sticky {
   position: sticky;
-  top: calc(var(--pba-nav) + 20px);
+  top: 76px;
 }
 
 .prod-root .pba-toc,
@@ -313,19 +371,19 @@
   border-left: 1px solid var(--tc-hair);
 }
 
-/* The shipped item carries five colour utilities — text-(--tc-ink-2), a
-   hover, and an active pair — and only the BORDER half of them lands:
-   engine.css's unlayered `.toolchain-root a { color: inherit }` outranks
-   anything in Tailwind's utilities layer, so every row, active or not,
-   renders at full ink and the lit row is marked by its blue tick alone.
-   That is what ships, so that is what this control draws. Do not "fix" it
-   into ink-2 with a blue active row — that would be a divergence. */
+/* The shipped item carries five colour utilities, and only the BORDER half
+   of them lands: engine.css's unlayered `.toolchain-root a { color:
+   inherit }` outranks Tailwind's utilities layer, so every row, active or
+   not, renders at full ink and the lit rows are marked by the blue tick
+   alone. That is what ships, so that is what this control draws. */
 .prod-root .pba-toc-item {
   margin-left: -1px;
   padding: 5px 0 5px 14px;
   border-left: 1px solid transparent;
   font-size: 12.5px;
+  line-height: 18.75px;
   color: inherit;
+  transition: color 150ms ease;
 }
 
 .prod-root .pba-toc-item[data-depth='3'] {
@@ -475,29 +533,62 @@
   opacity: 0;
 }
 
-/* ---- the prose ---- */
+/* ---- the prose: fumadocs' .prose with blog.css on top ---- */
 
-/* The prose sits on the copy column's own left edge — flush with the
-   title and cover above, not centered in the leftover width. The 30px
-   top inset matches .pba-toc's, so the first line of the article and the
-   contents label share a top edge — change the two together. */
+/* The prose sits on the copy column's own left edge, flush with the title
+   and cover above. The 30px top inset matches .pba-toc's, so the first line
+   of the article and the contents label share a top edge. */
 .prod-root .pba-prose {
-  width: min(100%, 700px);
+  width: 100%;
   margin-inline: 0;
-  padding: 30px clamp(28px, 5vw, 52px) clamp(76px, 8vw, 112px) 0;
+  padding: 30px 0 clamp(76px, 8vw, 112px);
   font-family: var(--tc-sans);
+  font-size: 16px;
+  line-height: 28px;
+  color: color-mix(in oklab, var(--pba-fd-fg) 90%, transparent);
+}
+
+.prod-root .pba-prose > :first-child {
+  margin-top: 0;
+}
+
+.prod-root .pba-prose > :last-child {
+  margin-bottom: 0;
+}
+
+.prod-root .pba-prose :is(p, li) {
   font-size: var(--pba-body-fs);
   line-height: var(--pba-body-lh);
-  color: color-mix(in srgb, var(--tc-ink) 90%, transparent);
+}
+
+.prod-root .pba-prose p {
+  margin-block: 1.25em;
+}
+
+/* headings: fumadocs' Heading (a flex row: the anchor text, then the
+   copy-anchor button) in blog.css's display ramp */
+.prod-root .pba-prose :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--pba-fd-fg);
+}
+
+.prod-root .pba-prose .pba-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.prod-root .pba-prose :is(h1, h4, h5, h6).pba-heading {
+  scroll-margin-top: 112px;
 }
 
 .prod-root .pba-prose :is(h2, h3) {
-  scroll-margin-top: calc(var(--pba-nav) + 40px);
+  margin-bottom: 0.8em;
+  scroll-margin-top: 96px;
   font-family: var(--tc-disp);
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: var(--pba-heading-lh);
-  color: var(--tc-ink);
 }
 
 .prod-root .pba-prose h2 {
@@ -510,86 +601,1038 @@
   font-size: var(--pba-h3-fs);
 }
 
-.prod-root .pba-prose :is(p, li) {
-  font-size: var(--pba-body-fs);
-  line-height: var(--pba-body-lh);
+/* fumadocs' typography h4: the body size at weight 600 */
+.prod-root .pba-prose h4 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  /* lint-type: allow live's fumadocs typography sets h4 at 600 */
+  font-weight: 600;
+  line-height: 1.5;
 }
 
-.prod-root .pba-prose p {
-  margin-block: 1.25em;
+.prod-root .pba-prose :is(h2, h3, h4) code {
+  color: inherit;
+}
+
+.prod-root .pba-prose h2 code {
+  font-size: 0.875em;
+}
+
+.prod-root .pba-prose h3 code {
+  font-size: 0.9em;
+}
+
+.prod-root .pba-heading > a {
+  color: inherit;
+}
+
+/* the copy-anchor button: fumadocs' ghost icon-xs button, hidden until the
+   heading is hovered; it takes the room of a 14px glyph 8px from the text,
+   neither growing the heading's line box nor narrowing its text */
+.prod-root .pba-heading-copy {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  margin-block: -0.25rem;
+  margin-inline-end: -0.375rem;
+  padding: 4px;
+  border-radius: 6px;
+  font-family: var(--tc-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--pba-fd-muted-fg);
+  opacity: 0;
+  transition-duration: 100ms;
+  transition-property: opacity;
+}
+
+.prod-root .pba-heading:hover .pba-heading-copy {
+  opacity: 1;
+}
+
+.prod-root .pba-heading-copy:hover {
+  background: var(--pba-fd-accent);
+  color: var(--pba-fd-accent-fg);
+}
+
+.prod-root .pba-heading-copy svg {
+  width: 16px;
+  height: 16px;
+}
+
+.prod-root .pba-heading-copy:focus-visible,
+.prod-root .pba-code-copy:focus-visible {
+  outline: 2px solid var(--pba-fd-fg);
+  outline-offset: 0;
+}
+
+/* links: fumadocs' prose link in the site's link colour, underlined on hover */
+.prod-root .pba-prose a:not([data-card]):not(.not-prose a) {
+  font-weight: 500;
+  color: var(--pba-mark);
+  text-decoration: none;
+  text-underline-offset: 3.5px;
+  transition: opacity 0.2s;
+}
+
+.prod-root .pba-prose a:not([data-card]):not(.not-prose a):hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.prod-root .pba-prose strong {
+  font-weight: 500;
+  color: var(--pba-fd-fg);
+}
+
+.prod-root .pba-prose a strong {
+  color: inherit;
+}
+
+.prod-root .pba-prose em {
+  font-style: italic;
+}
+
+/* inline code */
+.prod-root .pba-prose code:not(pre code) {
+  padding: 0.1875em;
+  border: 1px solid var(--pba-fd-border);
+  border-radius: 6px;
+  background: var(--pba-fd-muted);
+  font-family: var(--tc-mono);
+  font-size: 0.8125em;
+  font-weight: 400;
+  color: var(--pba-fd-fg);
+}
+
+.prod-root .pba-prose a code:not(pre code) {
+  color: inherit;
+}
+
+/* fumadocs' :where(hr + *, h2 + *, h3 + *, h4 + *) zeroes the top margin of
+   the block after a rule or a heading wherever blog.css sets no margin of
+   its own: lists, quotes, tables and callouts, never a paragraph, a
+   heading or a not-prose component */
+.prod-root .pba-prose > :is(hr, h2, h3, h4) + :is(ul, ol, blockquote, .pba-table, .pba-callout, .pba-accordions) {
+  margin-top: 0;
+}
+
+.prod-root .pba-prose hr {
+  height: 0;
+  margin-block: 3em;
+  border: 0;
+  border-top: 1px solid var(--pba-fd-border);
 }
 
 .prod-root .pba-prose ul {
   margin-block: 1.25em;
-  padding-left: 26px;
-  list-style: disc;
+  padding-inline-start: 1rem;
+  list-style-type: disc;
+}
+
+.prod-root .pba-prose ol {
+  margin-block: 1.25em;
+  padding-inline-start: 1.625em;
+  list-style-type: decimal;
 }
 
 .prod-root .pba-prose li {
   margin-block: 0.5em;
 }
 
-.prod-root .pba-prose strong {
+.prod-root .pba-prose ol > li {
+  padding-inline-start: 0.375em;
+}
+
+.prod-root .pba-prose ul > li::marker {
+  color: var(--pba-fd-muted-fg);
+}
+
+.prod-root .pba-prose ol > li::marker {
+  font-weight: 400;
+  color: var(--pba-fd-muted-fg);
+}
+
+.prod-root .pba-prose :is(ul, ol) :is(ul, ol) {
+  margin-block: 0.75em;
+}
+
+.prod-root .pba-prose > ul > li p {
+  margin-block: 0.75em;
+}
+
+.prod-root .pba-prose > :is(ul, ol) > li > p:first-child {
+  margin-top: 1.25em;
+}
+
+.prod-root .pba-prose > :is(ul, ol) > li > p:last-child {
+  margin-bottom: 1.25em;
+}
+
+.prod-root .pba-prose blockquote {
+  margin-block: 1.6em;
+  padding-inline-start: 1em;
+  border-inline-start: 0.25rem solid var(--pba-fd-border);
+  font-style: italic;
   font-weight: 500;
-  color: var(--tc-ink);
+  color: var(--pba-fd-fg);
+  quotes: '\201C' '\201D' '\2018' '\2019';
 }
 
-/* inline code only — the code PANEL owns the <code> inside .tc-code, and
-   a chip in there would ring every single line */
-.prod-root .pba-prose :is(p, li, h2, h3) > code {
-  padding: 2.4375px;
-  border: 1px solid #e4e4e7;
-  border-radius: 6px;
-  background: #f4f4f5;
-  font-family: var(--tc-mono);
-  font-size: 13px;
-  color: var(--tc-ink);
+.prod-root .pba-prose blockquote p:first-of-type::before {
+  content: open-quote;
 }
 
-.prod-root .pba-prose hr {
-  height: 0;
+.prod-root .pba-prose blockquote p:last-of-type::after {
+  content: close-quote;
+}
+
+/* a markdown image or clip: fumadocs' plain img, with the carousel frame's
+   6px corner blog.css gives every picture in a post */
+.prod-root .pba-prose .pba-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
   margin-block: 2em;
-  border: 0;
-  border-top: 1px solid var(--tc-hair);
+  border-radius: 0.375rem;
 }
 
-/* The shipped page highlights its fences with shiki's github-dark and sets
-   them in a fumadocs figure: a dark plate at 12px radius, on a 16px
-   rhythm, its code at #e1e4e8. v0-pages.css turns the whole v0 family's
-   panels into WHITE plates for the light theme — a decision for the five
-   proposal homes, and one this control cannot follow in the prose: on
-   white, the toolchain panel's syntax ramp (--tc-tok-*, "dark panels
-   only") drops to a few percent contrast, and the article's samples stop
-   being readable at all.
-   So the prose panels alone re-point the panel token family at the shipped
-   github-dark surface. Tokens, not paints: the bar rule, the copy
-   affordance, the gutter and the code all re-ink together, and every other
-   panel on the page keeps the family's dress. */
-.prod-root .pba-prose .tc-code {
-  --tc-panel: #24292e;
-  --tc-panel-ink: #e1e4e8;
-  --tc-panel-dim: rgba(225, 228, 232, 0.62);
-  --tc-panel-faint: rgba(225, 228, 232, 0.4);
-  --tc-panel-rule: rgba(225, 228, 232, 0.14);
+.prod-root .pba-prose .pba-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+}
 
+/* tables: fumadocs' scrolling wrapper and its framed table */
+.prod-root .pba-table {
+  position: relative;
+  overflow: auto;
+  margin-block: 1.5rem;
+}
+
+.prod-root .pba-table table {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--pba-fd-border);
+  border-collapse: separate;
+  border-radius: 8px;
+  border-spacing: 0;
+  background: var(--pba-fd-card);
+  font-size: 0.875em;
+  line-height: 1.71429;
+  table-layout: auto;
+}
+
+.prod-root .pba-table :is(th, td) {
+  padding: 10px;
+  border-inline-start: 1px solid var(--pba-fd-border);
+  text-align: start;
+}
+
+.prod-root .pba-table :is(th, td):first-child {
+  border-inline-start: none;
+}
+
+.prod-root .pba-table tr:not(:last-child) :is(th, td),
+.prod-root .pba-table thead :is(th, td) {
+  border-bottom: 1px solid var(--pba-fd-border);
+}
+
+.prod-root .pba-table th {
+  background: var(--pba-fd-muted);
+  /* lint-type: allow live's fumadocs typography sets table heads at 600 */
+  font-weight: 600;
+  color: var(--pba-fd-fg);
+}
+
+/* code blocks: fumadocs' CodeBlock around shiki's github-dark pre */
+.prod-root .pba-code {
+  --padding-left: 16px;
+  --padding-right: 16px;
+
+  position: relative;
+  overflow: hidden;
   margin-block: 16px;
+  border: 1px solid var(--pba-fd-border);
   border-radius: 12px;
+  background: var(--pba-fd-card);
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+  font-size: 14px;
+  line-height: calc(1.25 / 0.875);
 }
 
-.prod-root .pba-prose > :first-child {
+.prod-root .pba-code-bar {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  right: 8px;
+  border-radius: 8px;
+  color: var(--pba-fd-muted-fg);
+  backdrop-filter: blur(16px);
+}
+
+.prod-root .pba-code-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  transition: color 100ms;
+}
+
+.prod-root .pba-code-copy:hover,
+.prod-root .pba-code-copy[data-checked] {
+  color: var(--pba-fd-accent-fg);
+}
+
+.prod-root .pba-code-copy svg {
+  width: 16px;
+  height: 16px;
+}
+
+.prod-root .pba-code-region {
+  --padding-right: 32px;
+
+  max-height: 600px;
+  overflow: auto;
+  padding-block: 14px;
+  font-size: 0.8125rem;
+}
+
+.prod-root .pba-code-region:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--pba-fd-fg);
+}
+
+.prod-root .pba-code-pre {
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  font-family: var(--tc-mono);
+  white-space: pre;
+}
+
+.prod-root .pba-code-pre > code {
+  display: flex;
+  flex-direction: column;
+  font-family: inherit;
+}
+
+.prod-root .pba-code-pre .line {
+  position: relative;
+  padding-right: var(--padding-right);
+  padding-left: var(--padding-left);
+}
+
+.prod-root .pba-code-pre .line:empty {
+  height: 1lh;
+}
+
+/* callouts: fumadocs' Callout, with the two class lists the posts pass */
+.prod-root .pba-callout {
+  --callout-color: var(--pba-mark);
+
+  display: flex;
+  gap: 8px;
+  margin-block: 16px;
+  padding: 12px 12px 12px 4px;
+  border: 1px solid var(--pba-fd-border);
+  border-radius: 12px;
+  background: var(--pba-fd-card);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--pba-fd-fg);
+}
+
+.prod-root .pba-callout:not(.is-info) {
+  --callout-color: var(--pba-fd-muted);
+}
+
+.prod-root .pba-callout-bar {
+  width: 2px;
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--callout-color) 50%, transparent);
+}
+
+.prod-root .pba-callout-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: -2px;
+  color: var(--pba-fd-card);
+  fill: var(--callout-color);
+}
+
+.prod-root .pba-callout-body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prod-root .pba-callout-title {
+  margin-block: 0;
+  font-weight: 500;
+}
+
+.prod-root .pba-callout-text {
+  color: var(--pba-fd-muted-fg);
+}
+
+.prod-root .pba-callout-text:empty {
+  display: none;
+}
+
+.prod-root .prose-no-margin > :first-child {
   margin-top: 0;
 }
 
-.prod-root .pba-prose > :last-child {
+.prod-root .prose-no-margin > :last-child {
   margin-bottom: 0;
+}
+
+/* className="w-full max-w-none rounded-md border-0 bg-fd-muted p-5
+   shadow-none" */
+.prod-root .pba-callout.is-muted {
+  width: 100%;
+  padding: 20px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--pba-fd-muted);
+  box-shadow: none;
+}
+
+/* [&>div:first-child]:hidden */
+.prod-root .pba-callout.is-barless > .pba-callout-bar {
+  display: none;
+}
+
+/* [&_p]:my-3! [&_ul]:my-3! [&_li]:my-3! [&_p]:leading-snug!
+   [&_li]:leading-snug! */
+.prod-root .pba-callout.is-snug :is(p, ul, li) {
+  margin-block: 12px;
+}
+
+.prod-root .pba-callout.is-snug :is(p, li) {
+  line-height: 1.375;
+}
+
+/* the Check and X marks inside a callout: Heroicons 16 at the inline icon
+   scale, green and red as the posts colour them */
+.prod-root .pba-mdx-icon {
+  display: inline;
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+}
+
+.prod-root .pba-mdx-icon.is-yes {
+  color: oklch(62.7% 0.194 149.214);
+}
+
+.prod-root .pba-mdx-icon.is-no {
+  color: oklch(57.7% 0.245 27.325);
+}
+
+[data-theme='dark'] .prod-root .pba-mdx-icon.is-yes {
+  color: oklch(72.3% 0.219 149.579);
+}
+
+[data-theme='dark'] .prod-root .pba-mdx-icon.is-no {
+  color: oklch(63.7% 0.237 25.331);
+}
+
+/* accordions: fumadocs' Accordions and Accordion */
+.prod-root .pba-accordions {
+  overflow: hidden;
+  border: 1px solid var(--pba-fd-border);
+  border-radius: 8px;
+  background: var(--pba-fd-card);
+}
+
+.prod-root .pba-accordion + .pba-accordion {
+  border-top: 1px solid var(--pba-fd-border);
+}
+
+.prod-root .pba-accordion-head {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--pba-fd-card-fg, var(--pba-fd-fg));
+}
+
+.prod-root .pba-accordion-trigger {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  text-align: start;
+}
+
+.prod-root .pba-accordion-trigger svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--pba-fd-muted-fg);
+  transition: transform 200ms;
+}
+
+.prod-root .pba-accordion[data-state='open'] .pba-accordion-trigger svg {
+  transform: rotate(90deg);
+}
+
+.prod-root .pba-accordion-content {
+  padding: 0 16px 8px;
+  font-size: 0.9375rem;
+}
+
+.prod-root .pba-accordion-content > :first-child {
+  margin-top: 0;
+}
+
+.prod-root .pba-accordion-content > :last-child {
+  margin-bottom: 0;
+}
+
+/* the repository button: the design system's outline Button */
+.prod-root .pba-github {
+  display: flex;
+  margin-block: 32px;
+}
+
+.prod-root .pba-github-link {
+  display: inline-flex;
+  height: 36px;
+  align-items: center;
+  gap: 6px;
+  padding-inline: 10px;
+  border: 1px solid var(--color-border, var(--tc-hair));
+  border-radius: 8px;
+  background: var(--color-background, var(--tc-paper));
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--tc-ink);
+  white-space: nowrap;
+  transition: background-color 150ms;
+}
+
+.prod-root .pba-github-link:hover {
+  background: var(--pba-fd-accent);
+}
+
+.prod-root .pba-github-link svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.prod-root .pba-github-count {
+  color: var(--pba-fd-muted-fg);
+}
+
+/* the tweet: react-tweet's card, centred */
+.prod-root .pba-tweet {
+  display: flex;
+  justify-content: center;
+  margin-block: 32px;
+}
+
+.prod-root .blog-tweet-embed
+  :is(
+    a[href^='https://x.com/intent/follow'],
+    a[class*='tweet-in-reply-to-module__'],
+    a[class*='tweet-replies-module__'][class*='link']
+  ) {
+  color: var(--pba-mark);
+}
+
+/* the image gallery (src/components/blog/CarouselGallery.tsx, the same
+   instrument live ships): live's Tailwind classes, restated */
+.prod-root .pba-prose .blog-carousel {
+  margin-block: 32px;
+}
+
+.prod-root .pba-prose .blog-carousel-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.prod-root .pba-prose .blog-carousel-frame.is-multiple {
+  cursor: pointer;
+}
+
+.prod-root .pba-prose .blog-carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.prod-root .pba-prose .blog-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.prod-root .pba-prose .blog-carousel-track:focus-visible {
+  outline: 2px solid var(--tc-ink);
+  outline-offset: 2px;
+}
+
+.prod-root .pba-prose .blog-carousel-slide {
+  width: 100%;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+.prod-root .pba-prose .blog-carousel-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.prod-root .pba-prose .blog-carousel-edge {
+  position: absolute;
+  inset-block: 0;
+  width: 16%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease-out;
+}
+
+.prod-root .pba-prose .blog-carousel-edge.is-left {
+  left: 0;
+  background-image: linear-gradient(to right, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.14) 60%, transparent);
+}
+
+.prod-root .pba-prose .blog-carousel-edge.is-right {
+  right: 0;
+  background-image: linear-gradient(to left, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.14) 60%, transparent);
+}
+
+.prod-root .pba-prose .blog-carousel-edge.is-shown {
+  opacity: 1;
+}
+
+.prod-root .pba-prose .blog-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  padding: 12px;
+  color: rgb(255 255 255 / 0.9);
+  filter: drop-shadow(0 2px 10px rgb(0 0 0 / 0.7));
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: 300ms;
+  transition-property: translate, opacity, color;
+  transition-timing-function: ease-out;
+}
+
+.prod-root .pba-prose .blog-carousel-edge.is-left .blog-carousel-arrow {
+  left: 12px;
+  translate: -8px -50%;
+}
+
+.prod-root .pba-prose .blog-carousel-edge.is-right .blog-carousel-arrow {
+  right: 12px;
+  translate: 8px -50%;
+}
+
+.prod-root .pba-prose .blog-carousel-edge.is-shown .blog-carousel-arrow {
+  opacity: 1;
+  pointer-events: auto;
+  translate: 0 -50%;
+}
+
+.prod-root .pba-prose .blog-carousel-arrow:hover {
+  color: rgb(255 255 255);
+}
+
+.prod-root .pba-prose .blog-carousel-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+.prod-root .pba-prose .blog-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.prod-root .pba-prose .blog-carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--tc-ink-4, color-mix(in srgb, var(--tc-ink) 25%, transparent));
+  transition-property: background-color, transform;
+  transition-duration: 150ms;
+}
+
+.prod-root .pba-prose .blog-carousel-dot:hover {
+  background: var(--tc-ink-2);
+}
+
+.prod-root .pba-prose .blog-carousel-dot.is-current {
+  background: var(--tc-ink);
+  transform: scale(1.25);
+}
+
+.prod-root .pba-prose .blog-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* the author spotlight (live's class names, blog.css verbatim) */
+.prod-root .pba-prose .author-spotlight {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  min-height: 300px;
+  overflow: hidden;
+  margin-block: 32px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-paper);
+}
+
+.prod-root .pba-prose .author-spotlight-portrait {
+  position: relative;
+  min-height: 300px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--tc-ink) 7%, var(--tc-paper));
+}
+
+.prod-root .pba-prose .author-spotlight-portrait::after {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: -1px;
+  bottom: 0;
+  width: 3px;
+  background: var(--tc-paper);
+  content: '';
+  pointer-events: none;
+}
+
+.prod-root .pba-prose .author-spotlight-image {
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.04);
+  transition: transform 300ms ease;
+}
+
+.prod-root .pba-prose .author-spotlight-portrait:hover .author-spotlight-image {
+  transform: scale(1.025);
+}
+
+.prod-root .pba-prose .author-spotlight-dither {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.prod-root .pba-prose .author-spotlight-dither path,
+.prod-root .pba-prose .author-spotlight-dither-seal {
+  fill: var(--tc-paper);
+}
+
+.prod-root .pba-prose .author-spotlight-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+}
+
+.prod-root .pba-prose .author-spotlight h3 {
+  margin: 0;
+  font-family: var(--tc-sans);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--tc-ink);
+}
+
+.prod-root .pba-prose .author-spotlight-description {
+  max-width: 44ch;
+  margin-top: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.prod-root .pba-prose .author-spotlight-description > :first-child {
+  margin-top: 0;
+}
+
+.prod-root .pba-prose .author-spotlight-description > :last-child {
+  margin-bottom: 0;
+}
+
+.prod-root .pba-prose .author-spotlight-description :is(p, li) {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.prod-root .pba-prose .author-spotlight-description a {
+  color: var(--tc-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prod-root .pba-prose .author-spotlight-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 0;
+}
+
+.prod-root .pba-prose .author-spotlight-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 9px 5px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tc-ink);
+  text-decoration: none;
+  transition: border-color 160ms ease;
+}
+
+.prod-root .pba-prose .author-spotlight-links a:hover {
+  border-color: var(--tc-ink-3);
+}
+
+.prod-root .pba-prose .author-spotlight-links img {
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.prod-root .pba-prose .author-spotlight-github-icon {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+}
+
+.prod-root .pba-prose .author-spotlight-github-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+/* the Fumadocs architecture diagram (live's class names, blog.css values) */
+.prod-root .pba-prose .fumadocs-architecture {
+  --fda-fg: hsl(0, 0%, 3.9%);
+  --fda-muted-fg: hsl(0, 0%, 45.1%);
+  --fda-card: hsl(0, 0%, 94.7%);
+  --fda-popover: hsl(0, 0%, 98%);
+  --fda-secondary: hsl(0, 0%, 93.1%);
+  --fda-border: hsla(0, 0%, 80%, 0.5);
+  --fda-accent: hsla(0, 0%, 82%, 0.5);
+  --fda-dash: hsla(0, 0%, 62%, 0.6);
+
+  width: 100%;
+  margin-block: 32px;
+}
+
+[data-theme='dark'] .prod-root .pba-prose .fumadocs-architecture {
+  --fda-fg: hsl(0, 0%, 92%);
+  --fda-muted-fg: hsla(0, 0%, 70%, 0.8);
+  --fda-card: hsl(0, 0%, 9.8%);
+  --fda-popover: hsl(0, 0%, 11.6%);
+  --fda-secondary: hsl(0, 0%, 12.9%);
+  --fda-border: hsla(0, 0%, 40%, 0.25);
+  --fda-accent: hsla(0, 0%, 40.9%, 0.3);
+  --fda-dash: hsla(0, 0%, 55%, 0.4);
+}
+
+.prod-root .pba-prose .fumadocs-architecture svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.prod-root .pba-prose .fumadocs-architecture :is(.ft, .fl, .fs) {
+  font-family: var(--tc-sans);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .ft {
+  font-size: 13px;
+  /* lint-type: allow live's diagram labels are set at 600 */
+  font-weight: 600;
+  fill: var(--fda-fg);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .fl {
+  font-size: 13.5px;
+  /* lint-type: allow live's diagram labels are set at 600 */
+  font-weight: 600;
+  fill: var(--fda-fg);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .fs {
+  font-size: 11.5px;
+  font-weight: 400;
+  fill: var(--fda-muted-fg);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .fm {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  font-weight: 500;
+  fill: var(--fda-fg);
+}
+
+.prod-root .pba-prose .fumadocs-architecture :is(.cardbox, .cardband) {
+  fill: var(--fda-card);
+  stroke: var(--fda-border);
+  stroke-width: 1;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .popbox {
+  fill: var(--fda-popover);
+  stroke: var(--fda-border);
+  stroke-width: 1;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .secband {
+  fill: var(--fda-secondary);
+  stroke: var(--fda-border);
+  stroke-width: 1;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .secband.core {
+  fill: color-mix(in oklab, var(--tc-accent) 7%, var(--fda-secondary));
+  stroke: color-mix(in oklab, var(--tc-accent) 55%, transparent);
+  stroke-width: 1.25;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .core-label {
+  fill: var(--tc-accent);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .chip.core-chip {
+  fill: color-mix(in oklab, var(--tc-accent) 16%, transparent);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .dashband {
+  fill: none;
+  stroke: var(--fda-dash);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .chip {
+  fill: var(--fda-accent);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .logo {
+  fill: var(--fda-fg);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .lst {
+  fill: none;
+  stroke: var(--fda-fg);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .alg {
+  fill: #003dff;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .wak {
+  fill: #be132d;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .tan {
+  fill: #3a3a38;
+}
+
+[data-theme='dark'] .prod-root .pba-prose .fumadocs-architecture .alg {
+  fill: #5468ff;
+}
+
+[data-theme='dark'] .prod-root .pba-prose .fumadocs-architecture .wak {
+  fill: #e92543;
+}
+
+[data-theme='dark'] .prod-root .pba-prose .fumadocs-architecture .tan {
+  fill: #ece8d1;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .stopP {
+  stop-color: var(--fda-popover);
+}
+
+.prod-root .pba-prose .fumadocs-architecture .stopPT {
+  stop-color: var(--fda-popover);
+  stop-opacity: 0;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .arr {
+  fill: none;
+  stroke: var(--fda-muted-fg);
+  stroke-width: 1.25;
+}
+
+/* the brand marks: live's inline fills, as classes in this repository */
+.prod-root .pba-prose .fumadocs-architecture .brand-vite {
+  fill: #7c3aed;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .brand-graphql {
+  fill: #e10098;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .brand-flexsearch-a {
+  fill: #f4641d;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .brand-flexsearch-b {
+  fill: #30a4dc;
+}
+
+.prod-root .pba-prose .fumadocs-architecture .brand-react-router {
+  fill: #ca4245;
 }
 
 /* The article's first line carries more half-leading above its glyphs
    than the contents label, so equal box tops read as the body sitting
    lower. Each nudge is the label's over-cap leading minus the block's
-   own — computed from the type variables above, so the cap tops align at
-   any font size, line height, or viewport. */
-.prod-root .pba-prose > p:first-child {
+   own, so the cap tops align at any font size or viewport. */
+.prod-root .pba-main .pba-prose > p:first-child {
   margin-top: calc(
     var(--pba-label-overlead) - var(--pba-body-fs) *
       (var(--pba-body-lh) - var(--pba-cap-ratio)) / 2 -
@@ -597,30 +1640,20 @@
   );
 }
 
-.prod-root .pba-prose > h2:first-child {
+.prod-root .pba-main .pba-prose > h2:first-child {
   margin-top: calc(
     var(--pba-label-overlead) - var(--pba-h2-fs) *
       (var(--pba-heading-lh) - var(--pba-heading-cap-ratio)) / 2 -
-      var(--pba-first-line-trim-heading)
+      var(--pba-first-line-trim-h2)
   );
 }
 
-.prod-root .pba-prose > h3:first-child {
+.prod-root .pba-main .pba-prose > h3:first-child {
   margin-top: calc(
     var(--pba-label-overlead) - var(--pba-h3-fs) *
       (var(--pba-heading-lh) - var(--pba-heading-cap-ratio)) / 2 -
       var(--pba-first-line-trim-heading)
   );
-}
-
-/* the control's own note, on the handful of index slugs whose body is
-   not vendored here — filed as a footnote, never as the post's lede */
-.prod-root .pba-stub {
-  padding-top: 18px;
-  border-top: 1px solid var(--tc-hair);
-  font-size: 13px;
-  line-height: 1.62;
-  color: var(--tc-ink-3);
 }
 
 /* ---- the post footer ---- */
@@ -711,13 +1744,12 @@
 .prod-root .pba-card {
   display: flex;
   min-width: 0;
-  flex: 1;
   flex-direction: column;
   overflow: hidden;
   border-radius: 6px;
   background: color-mix(in srgb, var(--tc-ink) 3.5%, transparent);
   text-decoration: none;
-  transition: background-color 140ms ease;
+  transition: background-color 150ms ease;
 }
 
 .prod-root .pba-card:hover {
@@ -735,7 +1767,6 @@
 .prod-root .pba-card-meta {
   display: flex;
   gap: 14px;
-  /* text-xs: 12px on a 16px leading */
   font-size: 12px;
   line-height: 16px;
   color: var(--tc-ink-3);
@@ -746,9 +1777,6 @@
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  /* the shipped card title uses the body token, not the display one; only
-     the neighbour links above it switch to the display token. Both resolve
-     to Inter now. */
   font-size: 21px;
   font-weight: 500;
   letter-spacing: -0.025em;
@@ -771,17 +1799,19 @@
 
 @media (max-width: 980px) {
   .prod-root .pba-grid {
-    grid-template-columns: minmax(0, 1fr);
-    padding-left: 0;
+    display: block;
+    padding-inline: 0;
   }
 
-  /* the rail becomes the docs' popover bar: stuck under the navbar,
-     riding the whole read */
+  /* The rail becomes the docs' popover bar, pinned directly under the
+     navbar; normal block flow keeps WebKit from compositing a sticky grid
+     item while the article scrolls. */
   .prod-root .pba-rail {
     position: sticky;
     z-index: 30;
-    top: var(--pba-nav);
-    order: -1;
+    top: 3.5rem;
+    width: 100%;
+    height: max-content;
     border-block: 1px solid var(--tc-hair);
     background: var(--tc-paper);
   }
@@ -794,15 +1824,15 @@
     display: block;
   }
 
-  /* the prose gets its own inline air once the rail column is gone */
-  .prod-root .pba-prose {
-    padding-inline: clamp(20px, 4vw, 32px);
+  /* match the header's inline padding once the rail column is gone */
+  .prod-root .pba-main .pba-prose {
+    padding-inline: clamp(28px, 5vw, 64px);
   }
 
-  /* the sticky stack over the prose is navbar + popover bar; anchored
-     headings must clear both */
+  /* the sticky stack over the prose is navbar (56px) + popover bar
+     (48px); anchored headings must clear both */
   .prod-root .pba-prose :is(h2, h3) {
-    scroll-margin-top: calc(var(--pba-nav) + var(--pba-bar) + 8px);
+    scroll-margin-top: 112px;
   }
 
   /* the header drops its back-link rail with the body grid, so the title
@@ -813,7 +1843,7 @@
   }
 
   /* the cover-centering equation re-solves for the stacked lead's 22px
-     gap: above = 22 + 22, so below = 44 − the prose's 30px inset */
+     gap: above = 22 + 22, so below = 44 - the prose's 30px inset */
   .prod-root .pba-header {
     padding-bottom: 14px;
   }
@@ -825,13 +1855,23 @@
   }
 }
 
-@media (max-width: 700px) {
-  .prod-root .pba-foot-nav {
+@media (max-width: 720px) {
+  .prod-root .pba-prose .author-spotlight {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .prod-root .pba-foot-link {
-    border-right: 0;
+  .prod-root .pba-prose .author-spotlight-portrait {
+    min-height: 240px;
+  }
+
+  .prod-root .pba-prose .author-spotlight-copy {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .prod-root .pba-foot-nav {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .prod-root .pba-foot-link.is-next {
@@ -879,23 +1919,14 @@
   }
 }
 
-/* ---- dark ---- */
-
-[data-theme='dark'] .prod-root .pba-article {
-  --pba-mark: hsl(213.1 93.9% 67.8%);
-  --pba-dither: #86a8ff;
-}
-
-[data-theme='dark'] .prod-root .pba-prose :is(p, li, h2, h3) > code {
-  border-color: #27272a;
-  background: #27272a;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .prod-root .pba-back,
   .prod-root .pba-ring-arc,
   .prod-root .pba-toc-bar > svg:last-child,
-  .prod-root .pba-share-copy > :is(.is-mark, .is-link) {
+  .prod-root .pba-share-copy > :is(.is-mark, .is-link),
+  .prod-root .pba-prose .blog-carousel-edge,
+  .prod-root .pba-prose .blog-carousel-arrow,
+  .prod-root .pba-prose .blog-carousel-dot {
     transition: none;
   }
 }

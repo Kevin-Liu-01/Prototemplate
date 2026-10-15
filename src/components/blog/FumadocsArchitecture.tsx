@@ -1,4 +1,5 @@
-const svgMarkup = String.raw`<svg viewBox="0 0 680 874" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fumadocs architecture diagram in the fumadocs neutral theme">
+/** The diagram's SVG, also drawn by the production mirror's copy of the post. */
+export const svgMarkup = String.raw`<svg viewBox="0 0 680 874" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fumadocs architecture diagram in the fumadocs neutral theme">
 
     <defs><marker id="fda" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker><linearGradient id="nxg1" x1="0.55" y1="0.55" x2="0.83" y2="0.89"><stop offset="0" class="stopP"/><stop offset="1" class="stopPT"/></linearGradient><linearGradient id="nxg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="stopP"/><stop offset="0.6" class="stopP"/><stop offset="1" class="stopPT"/></linearGradient></defs>
 

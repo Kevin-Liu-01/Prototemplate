@@ -1,0 +1,117 @@
+---
+title: gt-i18n@0.9.0
+headline: Dictionary-backed translations
+date: 2026-05-07
+authors: [ernest]
+tags: ['gt-i18n', 'gt-node', 'dictionaries', 'getTranslations', 'i18n']
+---
+
+## Overview
+
+`gt-i18n` now provides dictionary-backed translations for framework integrations. In Node.js applications, use the public [`getTranslations()`](/docs/node/reference/functions/get-translations) export from `gt-node`; `gt-i18n@0.9.0` does not export it from its package root.
+
+| Package | Version |
+| --- | --- |
+| `gt-i18n` | `0.9.0` |
+| `gt-node` | `0.7.0` |
+
+## Setup
+
+Create a `dictionary.json` file in the root of your project with your source (English) strings:
+
+```json title="dictionary.json"
+{
+  "greeting": {
+    "hello": "Hello!"
+  },
+  "user": {
+    "welcome": "Welcome, {name}!"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "unauthorized": "Access denied"
+  }
+}
+```
+
+When you run the CLI ([`npx gt translate`](/docs/cli/reference/commands/translate)), it detects `dictionary.json` in the project root and translates it for your configured locales.
+
+Configure the Node.js runtime with [`initializeGT`](/docs/node/reference/functions/initialize-gt):
+
+```ts
+import { initializeGT } from 'gt-node';
+import dictionary from './dictionary.json';
+
+initializeGT({
+  defaultLocale: 'en',
+  locales: ['en', 'es'],
+  dictionary,
+});
+```
+
+<Accordions>
+  <Accordion title="Bringing your own dictionaries">
+    If you want to load your own pre-translated dictionaries, pass an async [`loadDictionary`](/docs/node/reference/config#load-dictionary) option when initializing `gt-node`. You still need to provide the default dictionary explicitly — this loader supplies translated locales:
+
+    ```ts
+    import { initializeGT } from 'gt-node';
+    import dictionary from './dictionary.json';
+
+    initializeGT({
+      defaultLocale: 'en',
+      locales: ['en', 'es'],
+      dictionary,
+      loadDictionary: async (locale) => {
+        const dict = await import(`./locales/${locale}.json`);
+        return dict.default;
+      },
+    });
+    ```
+
+    This loader supplies your translated dictionaries instead of fetching generated dictionaries.
+  </Accordion>
+</Accordions>
+
+## Usage
+
+Given the source dictionary above, call [`getTranslations()`](/docs/node/reference/functions/get-translations) to get a `t` function that resolves entries from your dictionary:
+
+```ts
+import { getTranslations, withGT } from 'gt-node';
+
+await withGT('en', async () => {
+  const t = await getTranslations();
+
+  t('greeting.hello'); // "Hello!"
+  t('user.welcome', { name: 'Alice' }); // "Welcome, Alice!"
+});
+```
+
+### Sub-dictionaries with `t.obj()`
+
+`t()` returns a single string. `t.obj()` returns an entire subtree of the dictionary as an object:
+
+```ts
+// Inside the withGT callback above:
+t('errors.notFound'); // "Page not found"
+
+const errors = t.obj('errors');
+// { notFound: "Page not found", unauthorized: "Access denied" }
+```
+
+When a translated dictionary is missing keys, the missing entries are filled in from the source dictionary. This means partial translations won't cause runtime errors — untranslated keys fall back to the source text.
+
+## Lookup behavior
+
+Two rules govern how lookups resolve:
+
+1. **Missing translation → default locale fallback.** If a key exists in the source dictionary but has no translation for the current locale, `t()` returns the source text.
+2. **Missing source entry → error.** If a key doesn't exist in the source dictionary at all, `t()` throws. This is intentional — if a key isn't defined in your source, it's a bug, not a missing translation. This behavior will be applied across all GT libraries in an upcoming refactor.
+
+The second rule assumes that translated dictionaries match the structure of your source dictionary, which is how GT generates translations automatically.
+
+## Links
+
+- [PR #1359](https://github.com/generaltranslation/gt/pull/1359)
+- [`getTranslations` API reference](/docs/node/reference/functions/get-translations)
+- [Dictionaries guide](/docs/react/guides/translating-with-dictionaries)

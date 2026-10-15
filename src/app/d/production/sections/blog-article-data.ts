@@ -1,18 +1,18 @@
 /**
  * PRODUCTION · the blog's own content, vendored as a typed module.
  *
- * The shipped article page reads MDX off disk — apps/landing/src/components/
- * blog/utils.ts walks content/blog/en-US and content/devlog/en-US, a git
- * submodule (generaltranslation/content) this repo does not carry — so the
- * frontmatter is transcribed here instead. Nothing is paraphrased and
- * nothing is added:
+ * The shipped article page reads each post's MDX off disk
+ * (apps/landing/src/components/blog/utils.ts walks content/blog/en-US and
+ * content/devlog/en-US, the generaltranslation/content submodule). This
+ * module transcribes the frontmatter the article header, the index and the
+ * neighbour links read; nothing is paraphrased and nothing is added:
  *
  *   AUTHORS      content/authors/<slug>.mdx: `name` and `avatar`.
  *   BLOG_POSTS   content/blog/en-US: all five posts.
  *   DEVLOG_POSTS content/devlog/en-US: all 55 releases.
  *
- * Source: the public generaltranslation/content repository at 361ec4a8,
- * read on 2026-10-13.
+ * Source: the public generaltranslation/content repository at befd13c1
+ * (2026-10-09), the commit gt-cloud pins, read on 2026-10-15.
  *
  * Both lists are stored in the order getAllPosts resolves: date descending,
  * with a descending numeric-aware title tiebreak. That order is what the
@@ -24,12 +24,8 @@
  * The shipped page prints exactly what the frontmatter holds, which is why
  * most release articles show no summary paragraph.
  *
- * Bodies are separate: the five posts in
- * ../../singularity/company-sections/post-bodies.ts carry real article text.
- * Four of those slugs are still posts on the shipped site and render in full
- * here. The fifth (branch_vs_ternary) has since left the content tree — the
- * live site answers /blog/branch_vs_ternary with "Post not found" — so this
- * control does not file it either.
+ * The bodies are the posts' own MDX files, vendored whole in
+ * content/production/{blog,devlog}/en-US and read by blog-post-source.ts.
  */
 
 export type ArticleAuthor = {
@@ -69,6 +65,8 @@ export type ArticlePost = {
   tags: readonly string[];
   /** Frontmatter `images`: the cover the shipped page renders as a photo. */
   images?: readonly string[];
+  /** Frontmatter `imagesLight`: the cover for the light theme, where a post has one; `images` is then the dark one. */
+  imagesLight?: readonly string[];
 };
 
 /** content/blog/en-US, newest first. */
@@ -90,6 +88,7 @@ export const BLOG_POSTS: readonly ArticlePost[] = [
     summary: 'Why design still matters in the age of AI and our docs design principles to clean up mental clutter.',
     tags: ['craft', 'docs', 'documentation', 'design', 'developer-experience'],
     images: ['/static/blogs/designing-docs.webp?v=20260920-0930'],
+    imagesLight: ['/static/blogs/designing-docs-light.webp?v=20260920-0930'],
   },
   {
     slug: 'rewriting-our-docs',
@@ -99,6 +98,7 @@ export const BLOG_POSTS: readonly ArticlePost[] = [
     summary: 'How we designed the reading experience with a 13,000-word style guide and structured docs for agent-readability.',
     tags: ['craft', 'docs', 'documentation', 'agents', 'llms', 'developer-experience'],
     images: ['/static/blogs/rewriting-our-docs-dark.png?v=20260918-2200'],
+    imagesLight: ['/static/blogs/rewriting-our-docs.png?v=20260918-2200'],
   },
   {
     slug: 'fuma-nama',
