@@ -76,24 +76,20 @@ function LinkedInMark({ className, color, ...rest }: MarkProps) {
  * generaltranslation.com href sent readers off to the live site instead of
  * the page sitting one route away. Only what has no page here stays absolute:
  * the docs and the social venues. The legal column resolves against the
- * concept while it ships /legal/<document> of its own; the production
- * concept dropped its legal pages, so there the column leaves for the live
- * site's documents.
+ * concept too: the production concept ships the live /legal/<document>
+ * pages under /d/production/legal.
  *
  * The production concept follows the live footer-links.tsx (gt-cloud
  * apps/landing/src/components/landing/shell, origin/main): Supported Locales
  * at /supported-locales, the Report Card label, and the Guides rows on their
  * quickstart pages. The social venues are the live addresses for every
  * concept, since they are facts about General Translation. */
-const LIVE = "https://generaltranslation.com";
 const PRODUCTION = "/d/production";
 
 const columns = (
   base: string,
 ): readonly { title: string; links: readonly FooterLink[] }[] => {
   const isProduction = base === PRODUCTION;
-  const legalBase = isProduction ? LIVE : base;
-  const legalExternal = legalBase === LIVE;
   return [
   {
     title: "Guides",
@@ -175,9 +171,9 @@ const columns = (
   {
     title: "Legal",
     links: [
-      { label: "Terms of Service", href: `${legalBase}/legal/terms`, external: legalExternal },
-      { label: "Privacy", href: `${legalBase}/legal/privacy-policy`, external: legalExternal },
-      { label: "Acceptable Use Policy", href: `${legalBase}/legal/acceptable-use`, external: legalExternal },
+      { label: "Terms of Service", href: `${base}/legal/terms` },
+      { label: "Privacy", href: `${base}/legal/privacy-policy` },
+      { label: "Acceptable Use Policy", href: `${base}/legal/acceptable-use` },
       { label: "Manage Cookies", href: "#", action: "cookies" },
     ],
   },

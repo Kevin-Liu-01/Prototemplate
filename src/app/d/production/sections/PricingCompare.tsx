@@ -21,7 +21,7 @@ import {
   type Feature,
   type FeatureGroupId,
 } from './pricing-features';
-import { PLAN_CTAS } from './pricing-links';
+import { PROD_PLAN_CTAS } from './pricing-links';
 import { USAGE_RATES_URL } from './site-links';
 
 import './pricing.css';
@@ -256,7 +256,7 @@ export default function PricingCompare() {
       name: 'Starter',
       cost: 'From $0',
       cta: 'Get Started',
-      href: PLAN_CTAS.starter,
+      href: PROD_PLAN_CTAS.starter,
       featured: false,
     },
     {
@@ -264,7 +264,7 @@ export default function PricingCompare() {
       name: 'Enterprise',
       cost: 'Contact Us',
       cta: 'Contact Us',
-      href: PLAN_CTAS.enterpriseContact,
+      href: PROD_PLAN_CTAS.enterpriseContact,
       featured: true,
     },
   ];

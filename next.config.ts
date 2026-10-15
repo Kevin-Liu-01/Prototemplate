@@ -95,6 +95,16 @@ const nextConfig: NextConfig = {
         destination: '/d/production/enterprise/contact/:partner',
         permanent: true,
       },
+      // The live site's other redirects (gt-cloud apps/landing
+      // next.config.ts): devlog posts moved under /blog, the old pricing
+      // catalog address, and the short legal addresses. Live answers 308
+      // for the permanent ones and 307 for /pricing-catalog.
+      { source: '/d/production/devlog/:slug*', destination: '/d/production/blog/:slug*', permanent: true },
+      { source: '/d/production/pricing-catalog', destination: '/d/production/pricing', permanent: false },
+      { source: '/d/production/privacy', destination: '/d/production/legal/privacy-policy', permanent: true },
+      { source: '/d/production/terms', destination: '/d/production/legal/terms', permanent: true },
+      { source: '/d/production/legal/terms-of-service', destination: '/d/production/legal/terms', permanent: true },
+      { source: '/d/production/data-processing', destination: '/d/production/legal/data-processing', permanent: true },
     ];
   },
 };

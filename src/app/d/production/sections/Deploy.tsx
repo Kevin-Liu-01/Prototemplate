@@ -10,15 +10,13 @@ import './deploy.css';
 
 gsap.registerPlugin(useGSAP);
 
-/* The closing band's CTA targets, as the shipped page resolves them for
-   en-US: Get Started goes to the localized dashboard sign-in
-   (getDashboardSignInHref('en-US') against the deployed dashboard host),
-   and Get a Demo goes to the enterprise contact page. This concept has no
-   /enterprise/contact route of its own, so the demo funnel keeps the real
-   absolute URL rather than a concept-relative dead end. */
+/* The closing band's CTA targets. The shipped page sends Get Started to
+   the localized dashboard sign-in (getDashboardSignInHref('en-US')) and
+   Get a Demo to /enterprise/contact. The mirror carries both pages, so
+   the buttons land on its sign-in and its enterprise contact page. */
 const DEPLOY_CTAS = {
-  getStarted: 'https://dash.generaltranslation.com/en-US/signin',
-  demo: 'https://generaltranslation.com/enterprise/contact',
+  getStarted: '/d/production/signin',
+  demo: '/d/production/enterprise/contact',
 } as const;
 
 /**

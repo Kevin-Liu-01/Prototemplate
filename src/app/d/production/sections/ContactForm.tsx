@@ -8,7 +8,7 @@ import { useState } from 'react';
 import type { ComponentType, FormEvent, SVGProps } from 'react';
 
 import GtHeroFigure from './GtHeroFigure';
-import { PRIVACY_URL, TERMS_URL } from './site-links';
+import { PROD_PRIVACY_URL, PROD_TERMS_URL } from './site-links';
 
 import './contact.css';
 
@@ -212,9 +212,9 @@ export default function ContactForm() {
               <div className='contact-close'>
                 <p className='contact-terms'>
                   By submitting you agree to the{' '}
-                  <a href={TERMS_URL}>Terms of Service</a> and
+                  <a href={PROD_TERMS_URL}>Terms of Service</a> and
                   acknowledge the{' '}
-                  <a href={PRIVACY_URL}>Privacy Policy</a>.
+                  <a href={PROD_PRIVACY_URL}>Privacy Policy</a>.
                 </p>
                 {requiredFieldsFilled ? (
                   <span className='tch-cta'>{submit}</span>

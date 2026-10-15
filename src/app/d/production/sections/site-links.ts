@@ -1,12 +1,20 @@
+const BASE = '/d/production';
+
 /**
- * Destinations on the live site for pages this control does not carry.
- * The legal documents and the usage rates page were prototype routes under
- * /d/production until Kevin removed them, so the links that pointed at them
- * (the sign-in and contact forms' legal lines, the pricing page's rate
- * links) leave for generaltranslation.com instead of a concept path that
- * would 404.
+ * The live addresses of the terms and the privacy policy. The directions
+ * that borrow these constants (calendar-rings) send readers to the live
+ * site, so they keep them.
  */
 export const TERMS_URL = 'https://generaltranslation.com/legal/terms';
 export const PRIVACY_URL = 'https://generaltranslation.com/legal/privacy-policy';
-export const USAGE_RATES_URL = 'https://generaltranslation.com/pricing/usage';
-export const COOKIE_POLICY_URL = 'https://generaltranslation.com/legal/cookie-policy';
+
+/**
+ * The mirror's own addresses for the pages the live forms, the consent
+ * banner and the pricing links point at: the legal documents
+ * (/legal/<document>) and the usage rates page (/pricing/usage), each
+ * rebuilt under /d/production.
+ */
+export const PROD_TERMS_URL = `${BASE}/legal/terms`;
+export const PROD_PRIVACY_URL = `${BASE}/legal/privacy-policy`;
+export const USAGE_RATES_URL = `${BASE}/pricing/usage`;
+export const COOKIE_POLICY_URL = `${BASE}/legal/cookie-policy`;

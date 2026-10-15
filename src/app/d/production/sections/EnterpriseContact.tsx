@@ -9,7 +9,7 @@ import {
 import { useState } from 'react';
 
 import type { ComponentType, FormEvent, SVGProps } from 'react';
-import { PRIVACY_URL, TERMS_URL } from './site-links';
+import { PROD_PRIVACY_URL, PROD_TERMS_URL } from './site-links';
 
 /**
  * The shipped enterprise contact section.
@@ -83,7 +83,18 @@ const TESTIMONIAL = {
   href: 'https://x.com/milichab/status/2010496967848370412',
 };
 
-export default function EnterpriseContact() {
+type EnterpriseContactProps = {
+  /**
+   * The heading's level. The enterprise page's section passes h2
+   * (EnterpriseContactSection.tsx); the bare /enterprise/contact page
+   * mounts the form with the shared ContactForm's default, h1
+   * (EnterpriseContactPage.tsx).
+   */
+  headingLevel?: 'h1' | 'h2';
+};
+
+export default function EnterpriseContact({ headingLevel = 'h2' }: EnterpriseContactProps) {
+  const Heading = headingLevel;
   const [form, setForm] = useState<FormState>(EMPTY);
   const [noticed, setNoticed] = useState(false);
 
@@ -120,9 +131,9 @@ export default function EnterpriseContact() {
         <div className='contact-shell'>
           <div className='contact-layout relative grid items-stretch border-x px-8 py-14 sm:px-10 sm:py-16 md:grid-cols-2 md:px-12'>
             <div className='contact-intro flex flex-col py-6 md:py-8 md:pr-12'>
-              <h2 className='contact-title text-3xl font-semibold tracking-tight md:text-4xl'>
+              <Heading className='contact-title text-3xl font-semibold tracking-tight md:text-4xl'>
                 Talk to our team about enterprise deployment
-              </h2>
+              </Heading>
 
               {/* the shipped markup's inline offset, kept: on the shipped
                   page this 2.5rem BEATS the sheet's plain 34px (the build
@@ -281,14 +292,14 @@ export default function EnterpriseContact() {
                     By submitting you agree to the{' '}
                     <a
                       className='underline underline-offset-4'
-                      href={TERMS_URL}
+                      href={PROD_TERMS_URL}
                     >
                       Terms of Service
                     </a>{' '}
                     and acknowledge the{' '}
                     <a
                       className='underline underline-offset-4'
-                      href={PRIVACY_URL}
+                      href={PROD_PRIVACY_URL}
                     >
                       Privacy Policy
                     </a>

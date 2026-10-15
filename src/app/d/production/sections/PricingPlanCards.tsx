@@ -15,7 +15,7 @@ import type { ReactNode } from 'react';
 import LocadexMark from './LocadexMark';
 import PricingHelp from './PricingHelp';
 import { bayerTile, type ShineTier } from './pricing-bayer';
-import { PLAN_CTAS } from './pricing-links';
+import { PROD_PLAN_CTAS } from './pricing-links';
 import { USAGE_RATES_URL } from './site-links';
 
 import './pricing.css';
@@ -224,7 +224,7 @@ export default function PricingPlanCards() {
               </li>
             </ul>
           </div>
-          <a className='pricing-plan-cta' href={PLAN_CTAS.starter}>
+          <a className='pricing-plan-cta' href={PROD_PLAN_CTAS.starter}>
             Get Started
           </a>
         </article>
@@ -274,7 +274,7 @@ export default function PricingPlanCards() {
           </div>
           <a
             className='pricing-plan-cta is-solid'
-            href={PLAN_CTAS.enterpriseContact}
+            href={PROD_PLAN_CTAS.enterpriseContact}
           >
             Contact Us
           </a>

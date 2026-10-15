@@ -37,9 +37,9 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
 
 /* The primary CTA goes to the product, never an in-page hop: the shipped
    hero resolves getDashboardSignInHref(locale) (apps/landing/src/lib/
-   dashboard.ts), which is the dashboard origin plus /[locale]/signin. This
-   reproduction renders the en-US resolution of that URL. */
-const SIGN_IN_HREF = 'https://dash.generaltranslation.com/en-US/signin';
+   dashboard.ts), the dashboard's /[locale]/signin. The mirror carries that
+   sign-in page, so the button lands there. */
+const SIGN_IN_HREF = '/d/production/signin';
 
 /* The WHOLE headline in each of the window's belt locales — ONE CLOCK:
    the belt below reports whichever locale it centres
