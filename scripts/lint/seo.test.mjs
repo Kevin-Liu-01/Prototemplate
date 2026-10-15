@@ -29,8 +29,10 @@ import {
   staticPrefix,
   topLevelProps,
 } from './seo.mjs';
-import { ALIAS_HOSTS, SITE_URL } from '../../src/lib/seo/policy.ts';
 import { ROOT } from '../lib/root.mjs';
+import { importTs } from '../lib/ts-module.mjs';
+
+const { ALIAS_HOSTS, SITE_URL } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
 
 const rules = (findings) => findings.map((f) => f.rule);
 const HOME = readFileSync(join(ROOT, 'src/app/page.tsx'), 'utf8');

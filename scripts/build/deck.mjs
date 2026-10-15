@@ -71,12 +71,14 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, extname, join } from 'node:path';
 
 import { assemble, DECK, SLIDE_COUNT } from '../../deck/assemble.mjs';
-import { cardPath, OG_HEIGHT, OG_WIDTH } from '../../src/lib/seo/card-url.ts';
-import { SITE_URL } from '../../src/lib/seo/policy.ts';
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { importTs } from '../lib/ts-module.mjs';
 
 helpIfAsked(import.meta.url);
+
+const { cardPath, OG_HEIGHT, OG_WIDTH } = await importTs(new URL('../../src/lib/seo/card-url.ts', import.meta.url));
+const { SITE_URL } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
 
 const ARGS = process.argv.slice(2);
 const flag = (name) => {

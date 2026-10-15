@@ -96,10 +96,12 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { ALIAS_HOSTS, SITE_URL, normalizePath, policyFor, selfUrl } from '../../src/lib/seo/policy.ts';
-import { UPDATED } from '../../src/lib/updated.ts';
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { importTs } from '../lib/ts-module.mjs';
+
+const { ALIAS_HOSTS, SITE_URL, normalizePath, policyFor, selfUrl } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
+const { UPDATED } = await importTs(new URL('../../src/lib/updated.ts', import.meta.url));
 
 helpIfAsked(import.meta.url);
 

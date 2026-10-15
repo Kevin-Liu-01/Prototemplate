@@ -4,7 +4,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import {
+import { importTs } from '../lib/ts-module.mjs';
+
+const {
   ALIAS_HOSTS,
   GT_URL,
   MIRROR_WITHOUT_LIVE,
@@ -12,7 +14,7 @@ import {
   normalizePath,
   policyFor,
   selfUrl,
-} from '../../src/lib/seo/policy.ts';
+} = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
 
 const indexed = (path) => ({ index: true, canonical: path === '/' ? `${SITE_URL}/` : `${SITE_URL}${path}`, inSitemap: true });
 const study = (path) => ({ index: false, canonical: `${SITE_URL}${path}`, inSitemap: false });
