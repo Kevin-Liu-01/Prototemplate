@@ -16,13 +16,15 @@ import type { CardInput } from './card-url';
 
 export const CARD_FONTS = { display: 'Inter Display', text: 'Inter Text' } as const;
 
-const GROUND = '#070707';
-const TEXT = '#f2f2f0';
-const SECONDARY = '#b9bcc3';
-const TITANIUM = '#8a8f98';
-const ACCENT = '#86a8ff';
-/* rgba(242, 242, 240, 0.22) over #070707 */
-const HAIR = '#3b3b3a';
+/* next/og draws outside the page's CSS, so the --pt-* tokens cannot reach
+   it: the card writes the dark theme's token values as rgb() literals. */
+const GROUND = 'rgb(7, 7, 7)';
+const TEXT = 'rgb(242, 242, 240)';
+const SECONDARY = 'rgb(185, 188, 195)';
+const TITANIUM = 'rgb(138, 143, 152)';
+const ACCENT = 'rgb(134, 168, 255)';
+/* rgba(242, 242, 240, 0.22) over the ground */
+const HAIR = 'rgb(59, 59, 58)';
 
 const W = 1200;
 const H = 630;
@@ -38,15 +40,15 @@ function Mark({ size }: { size: number }) {
     <svg width={size} height={size} viewBox='0 0 32 32'>
       <defs>
         <linearGradient id='core' x1='0' y1='0' x2='1' y2='1'>
-          <stop offset='0' stopColor='#4b3bff' />
-          <stop offset='0.34' stopColor='#00b3ff' />
-          <stop offset='0.58' stopColor='#27d17e' />
-          <stop offset='0.8' stopColor='#ffc53b' />
-          <stop offset='1' stopColor='#ff3b6b' />
+          <stop offset='0' stopColor='rgb(75, 59, 255)' />
+          <stop offset='0.34' stopColor='rgb(0, 179, 255)' />
+          <stop offset='0.58' stopColor='rgb(39, 209, 126)' />
+          <stop offset='0.8' stopColor='rgb(255, 197, 59)' />
+          <stop offset='1' stopColor='rgb(255, 59, 107)' />
         </linearGradient>
       </defs>
       <rect x='9' y='9' width='14' height='14' fill='url(#core)' />
-      <g stroke='#ffffff' strokeWidth='2'>
+      <g stroke='rgb(255, 255, 255)' strokeWidth='2'>
         <line x1='0' y1='9' x2='32' y2='9' />
         <line x1='0' y1='23' x2='32' y2='23' />
         <line x1='9' y1='0' x2='9' y2='32' />
@@ -80,6 +82,7 @@ export function Card({ title, section, description, kind, path, capture }: CardP
         height: H,
         background: GROUND,
         color: TEXT,
+        /* lint-type: allow next/og draws with the static Inter instances it is handed by name; no CSS variable reaches it */
         fontFamily: CARD_FONTS.text,
       }}
     >
@@ -103,7 +106,16 @@ export function Card({ title, section, description, kind, path, capture }: CardP
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Mark size={32} />
-          <div style={{ display: 'flex', marginLeft: 14, fontFamily: CARD_FONTS.display, fontSize: 26, letterSpacing: -0.3 }}>
+          <div
+            style={{
+              display: 'flex',
+              marginLeft: 14,
+              /* lint-type: allow next/og draws with the static Inter instances it is handed by name; no CSS variable reaches it */
+              fontFamily: CARD_FONTS.display,
+              fontSize: 26,
+              letterSpacing: -0.3,
+            }}
+          >
             Prototemplate
           </div>
         </div>
@@ -136,6 +148,7 @@ export function Card({ title, section, description, kind, path, capture }: CardP
             style={{
               display: 'block',
               lineClamp: 2,
+              /* lint-type: allow next/og draws with the static Inter instances it is handed by name; no CSS variable reaches it */
               fontFamily: CARD_FONTS.display,
               fontSize: 64,
               lineHeight: 1.08,
