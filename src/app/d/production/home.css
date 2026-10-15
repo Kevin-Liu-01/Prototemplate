@@ -118,3 +118,71 @@
     height: 44px;
   }
 }
+
+/* ---------- the translate window reads the shell tokens ----------
+   gt-cloud's translate-window.css (apps/landing/src/components/landing/
+   home/sections/translate-window.css on main) draws the window's inner
+   rules, chips and dark slabs from the remapped shell tokens. The shared
+   copy in src/app/d/_v0/translate-window.css keeps the earlier literals
+   for singularity-dossier, singularity-signal and craft, so the live
+   values are restated here for the production root only. Each rule
+   carries one class more than the shared rule it replaces, so the order
+   in which the two sheets load never decides a value. */
+.toolchain-root.prod-root .v0-tw .sgdh-app-chrome {
+  border-bottom-color: var(--tc-hair-2);
+}
+
+.toolchain-root.prod-root .v0-tw .sgdh-app-stats {
+  border-top-color: var(--tc-hair-2);
+  border-bottom-color: var(--tc-hair-2);
+}
+
+.toolchain-root.prod-root .v0-tw .sgdh-app-stat + .sgdh-app-stat {
+  border-left-color: var(--tc-hair-2);
+}
+
+.toolchain-root.prod-root .v0-tw .sgdh-app-chart {
+  border-color: var(--tc-hair);
+}
+
+.toolchain-root.prod-root .v0-tw .sgdh-ins-chip {
+  background: var(--tc-card);
+}
+
+.toolchain-root.prod-root .v0-tw .tct-app .tc-seam {
+  --seam-ink-l: var(--tc-hair);
+  --seam-ink-r: var(--tc-hair);
+}
+
+[data-theme='dark'] .toolchain-root.prod-root .v0-tw .tct-app,
+[data-theme='dark'] .toolchain-root.prod-root .v0-tw .sgdh-ins-mark::before,
+[data-theme='dark'] .toolchain-root.prod-root .v0-tw .sgdh-ins-chip,
+[data-theme='dark'] .toolchain-root.prod-root .v0-tw .tct-payload,
+[data-theme='dark'] .toolchain-root.prod-root .v0-tw .tct-app .tc-seam::before {
+  background: var(--tc-card);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw.tct-win {
+  outline-color: var(--tc-hair);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw .tct-app .tc-seam {
+  --seam-ink-r: var(--tc-hair);
+}
+
+/* ---------- the dark bands read the card token ----------
+   gt-cloud's darkband.css (apps/landing/src/components/landing/sections/
+   shared/darkband.css on main) grounds the full-stack and context bands'
+   cards, boxes, CLI cell and terminal on var(--tc-card). The toolchain's
+   darkband-v3.css keeps #101010 and #070707 for the directions that fork
+   it, so the production root restates the live values here. The light
+   theme's re-inks in _v0/v0-pages.css carry more classes and still win. */
+.toolchain-root.prod-root .tcb {
+  --tcb-card: var(--tc-card);
+  --tcb-box: var(--tc-card);
+}
+
+.toolchain-root.prod-root .tcb .tcb-cell-cli,
+.toolchain-root.prod-root .tcb .tcb-term {
+  background: var(--tc-card);
+}

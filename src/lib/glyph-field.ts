@@ -299,6 +299,10 @@ export type GlyphFieldOptions = {
       of a height proportion, so deep-wrapping locales can never cross the
       clearing line into the rain. */
   copyBottom?: () => number | undefined;
+  /** Blank space between the lowest rain glyphs and the canvas edge. Left
+      unset, the bottom seam completes past the edge as before (gt-cloud
+      packages/ui glyph-field.ts on main added it for the deploy band). */
+  bottomClearance?: number;
 };
 
 export type GlyphFieldHandle = { destroy(): void };
@@ -487,8 +491,11 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        completes just PAST it, so edge glyphs still print, clipped, and the
        field runs to the paper's end. The caption keeps its own local
        clearing (wordKeep), so the seam no longer has to carry it. */
-    botB = h + 10;
-    botA = narrow ? Math.max(railY + 10, h - 60) : h - 46;
+    botB =
+      typeof options.bottomClearance === 'number'
+        ? h - Math.max(0, options.bottomClearance)
+        : h + 10;
+    botA = Math.min(narrow ? Math.max(railY + 10, h - 60) : h - 46, botB - 1);
     for (let i = 0; i < POOL; i++) {
       const px = ux[i] ?? 0;
       /* Homes snap to a column pitch, with a small fixed jitter, so the rain

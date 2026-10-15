@@ -57,6 +57,7 @@ export default function Deploy() {
       const field = createGlyphField({
         canvas,
         drift: 'rise',
+        bottomClearance: 16,
         displayFamily: h2 ? getComputedStyle(h2).fontFamily : undefined,
         monoFamily: getComputedStyle(rootEl).getPropertyValue('--tc-mono').trim() || undefined,
         copyBottom: copyEl

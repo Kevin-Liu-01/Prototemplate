@@ -684,11 +684,13 @@
    scroll to the next"): a read gap between consecutive lock-ins is the
    block's own height, and the clock's gap shape (FullStack: hold →
    build → LOCK) spends the gap's tail on the settled next-layer pose —
-   so the extra height buys both a longer read AND a real lock. Only
-   the non-finale beats stretch: the sticky finale's pin math above
+   so the extra height buys both a longer read AND a real lock. One
+   full viewport per layer (gt-cloud fullstack.css on main): anything
+   shorter makes the layers arrive faster than the scroll can read them.
+   Only the non-finale beats stretch: the sticky finale's pin math above
    depends on the base 48vh window and must stay untouched. */
 .toolchain-root .tcb .v0-stack-beat:not(.is-finale) {
-  min-height: clamp(320px, 68vh, 920px);
+  min-height: clamp(480px, 100vh, 1360px);
 }
 
 /* Beat 01 runs one breath longer still (founder: "we should be able to
@@ -696,7 +698,7 @@
    moving") — the assembled code plate holds while the reader scrolls,
    and beat 02's window reaches the read line later. */
 .toolchain-root .tcb .v0-stack-beat:first-child {
-  min-height: clamp(360px, 76vh, 1000px);
+  min-height: clamp(540px, 112vh, 1500px);
 }
 
 /* THE AGENTS DWELL (founder: "we make this go stay on agents a lil
@@ -975,8 +977,8 @@
 
 @media (max-width: 1020px) and (min-height: 500px) {
   .toolchain-root .tcb.v0-stack.is-stage {
-    /* the stage's seat: the sticky nav's 56px bar + its 1px hairline */
-    --v0sm-top: 57px;
+    /* the stage's seat: the sticky nav's 58px bar + its 1px hairline */
+    --v0sm-top: 59px;
     /* dvh (founder call: "on mobile version use 100dvh") — the stage
        takes the REAL viewport, chrome collapse included, so the rail
        and text zone always reach the true screen bottom; the earlier

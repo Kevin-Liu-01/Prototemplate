@@ -7,6 +7,13 @@
    column.
    ============================================================ */
 
+/* the band's own blue: the deep page accent drowns on ink, so the icons,
+   the dark category labels and the dark live threads carry this one value
+   in both themes (gt-cloud developer.css declares it once on the section) */
+.toolchain-root .v0-dev {
+  --v0-dev-band-blue: #86a8ff;
+}
+
 /* the subheader runs ONE line at desktop (founder) — the SSOT's 60ch
    measure broke it in two */
 .toolchain-root .v0-dev .tc-head p {
@@ -67,17 +74,19 @@
 
 /* A third-width column, not the old merged double cell: the nominal type
    size steps down (the diagram still measures and scales from it), and the
-   locale key column narrows to the flag+code chips it actually holds. */
+   locale key column narrows to the flag+code chips it actually holds. The
+   58px key is their measured width plus inset; the reclaimed space keeps
+   the widest delta label clear of the cell's right rule. */
 .toolchain-root .v0-dev .tc-lang.is-lead .lang-sw {
   --lang-sw-size: 14px;
 }
 
 .toolchain-root .v0-dev .lang-sw-row {
-  grid-template-columns: 64px minmax(0, 1fr);
+  grid-template-columns: 58px minmax(0, 1fr);
 }
 
 .toolchain-root .v0-dev .lang-sw-guide {
-  left: 64px;
+  left: 58px;
 }
 
 /* The flag+code chips carry the locale column alone here — the language
@@ -131,19 +140,19 @@
   line-height: 1;
   /* the category names read in the accent (founder: readability) — the
      threads' own theme pair, deep blue on paper, band blue in dark */
-  color: #2f5ce0;
+  color: var(--tc-accent);
   white-space: nowrap;
 }
 
 [data-theme='dark'] .toolchain-root .v0-dev-fork-label {
-  color: #86a8ff;
+  color: var(--v0-dev-band-blue);
 }
 
 /* the category's one mark: the icon carries the stack rail's blue;
    the label beside it stays ink */
 .toolchain-root .v0-dev-fork-ic {
   flex: none;
-  color: #86a8ff;
+  color: var(--v0-dev-band-blue);
 }
 
 /* key | threads | outputs — the fork body. The columns are fixed so
@@ -234,7 +243,7 @@
    band's own blue, the same one the icons carry */
 [data-theme='dark'] .toolchain-root .v0-dev-thread.is-live,
 [data-theme='dark'] .toolchain-root .v0-dev-pulse {
-  stroke: #86a8ff;
+  stroke: var(--v0-dev-band-blue);
 }
 
 /* Three equal landing rows: flex 1 1 0 pins each row's center to the
@@ -341,7 +350,7 @@
 
 .toolchain-root .v0-dev-route-ic {
   flex: none;
-  color: #86a8ff;
+  color: var(--v0-dev-band-blue);
 }
 
 .toolchain-root .v0-dev-route-path {

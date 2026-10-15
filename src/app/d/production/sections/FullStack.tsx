@@ -620,9 +620,15 @@ export default function V0FullStack() {
           const svgR = railSvg.getBoundingClientRect();
           const cellR = railCell.getBoundingClientRect();
           if (svgR.height <= 0 || cellR.height <= 0) return;
+          /* the paint overhangs the cell by --v0sm-bar-gap, read from the
+             extension's used bottom, since its rect carries the driven
+             scaleY (gt-cloud FullStack.tsx on main) */
+          const gap = railExt
+            ? Math.max(0, -parseFloat(getComputedStyle(railExt).bottom) || 0)
+            : 0;
           arrGeo.ppu = svgR.height / TOWER_H;
-          arrGeo.footDy = cellR.bottom - svgR.top;
-          arrGeo.extH = cellR.height;
+          arrGeo.footDy = cellR.bottom + gap - svgR.top;
+          arrGeo.extH = cellR.height + gap;
           arrGeo.ready = true;
         };
         const arrival = { t: 0 };
@@ -1172,6 +1178,13 @@ export default function V0FullStack() {
               start: 'top bottom',
               end: 'bottom bottom',
               onUpdate: (self) => retarget(self.progress),
+              /* a refresh moves the trigger's span, so both clocks take
+                 its new reading and paint once, as gt-cloud does */
+              onRefresh: (self) => {
+                pCur = self.progress;
+                pTarget = self.progress;
+                apply(pCur);
+              },
             });
             /* a deep link or restored scroll lands mid-story: seed BOTH
                clocks from wherever the trigger already reads and paint
