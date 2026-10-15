@@ -624,6 +624,19 @@
   font-size: 0.9em;
 }
 
+/* live's heading code inherits the heading's -0.025em tracking on top of
+   its mono advance; --pba-code-track restates it in the code's own em.
+   The inline code rule's 0.8125em outranks the two sizes above, on live
+   as here, so that is the ratio. The system mono stands taller than
+   Geist Mono, and at the heading's 1.06 line height its inline box grew
+   the line 0.3px; a 1 line height keeps it inside the heading's line, as
+   Geist Mono's is, and moves no glyph. */
+.prod-root .pba-prose :is(h2, h3) code {
+  --pba-code-track: calc(-0.025em / 0.8125);
+
+  line-height: 1;
+}
+
 .prod-root .pba-heading > a {
   color: inherit;
 }
@@ -710,7 +723,7 @@
   font-family: var(--tc-mono);
   font-size: 0.8125em;
   font-weight: 400;
-  letter-spacing: calc(0.6em - 1ch);
+  letter-spacing: calc(var(--pba-code-track, 0em) + 0.6em - 1ch);
   color: var(--pba-fd-fg);
 }
 
