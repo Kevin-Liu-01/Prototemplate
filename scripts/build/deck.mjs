@@ -35,8 +35,9 @@
 //
 // The result is wrapped as a full document (doctype, charset, viewport, the
 // title, the description, the 96px GT mark as its icon, the link preview
-// card (Open Graph title, description and the site's og.png, and a large
-// image Twitter card), and a style for color-scheme, which follows the
+// card (the canonical /deck on www, Open Graph title, description, url and
+// the deck's generated card from /og, and a large image X card naming GT's
+// and Kevin's accounts, as seoRoute writes them for every other route), and a style for color-scheme, which follows the
 // data-theme attribute the head script stamps rather than the OS scheme, and
 // the body margin) and written to public/brand-deck.html. The --out copy has
 // no site beside it, so it takes a noindex meta in place of the icon and the
@@ -70,6 +71,8 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, extname, join } from 'node:path';
 
 import { assemble, DECK, SLIDE_COUNT } from '../../deck/assemble.mjs';
+import { cardPath, OG_HEIGHT, OG_WIDTH } from '../../src/lib/seo/card-url.ts';
+import { SITE_URL } from '../../src/lib/seo/policy.ts';
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
 
@@ -137,11 +140,14 @@ function twoTonePng(abs, out) {
   }
 }
 const TITLE = 'General Translation brand deck';
-const DESCRIPTION = `The General Translation brand in ${SLIDE_COUNT} slides: thesis, values, writing style, mark, color, type, line rules, diagrams, dither, motion, the shipped site and every public surface, docs, blog, content rules, Prototemplate, Glyphfield, fixed points, current status, and mood images between the sections.`;
+/* the head's description: 50 to 160 characters, the length a search snippet shows whole (lint:seo B1) */
+const DESCRIPTION = `The General Translation brand in ${SLIDE_COUNT} slides: values, writing, the mark, color, type, lines, diagrams, dither, motion and every public surface.`;
 /* the same picture as public/brand/no-bg-gt-logo-light.png at 96px, 3.6 KB in place of 45 KB */
 const ICON = '/brand/no-bg-gt-logo-light-96.png';
-/* /deck serves this file itself, so the root layout's Open Graph card never reaches it; a crawler needs the image's full address */
-const OG_IMAGE = 'https://www.prototemplate.com/og.png';
+/* /deck serves this file itself, so no route's metadata reaches it: the head names its canonical, its url and its card in full */
+const CANONICAL = `${SITE_URL}/deck`;
+const OG_IMAGE = `${SITE_URL}${cardPath({ title: 'Brand deck', section: 'Deck', description: DESCRIPTION, kind: 'page', path: '/deck' })}`;
+const attr = (value) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 const IMAGE_REF = /(src|data-dark|data-light|data-tone)="(shots\/[^"]+)"/g;
 const IMAGE = /\.(jpg|jpeg|png|webp|gif)$/i;
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif' };
@@ -250,9 +256,13 @@ const open =
   `<title>${TITLE}</title><meta name="description" content="${DESCRIPTION}">` +
   (OUT_OVERRIDE
     ? '<meta name="robots" content="noindex">'
-    : `<link rel="icon" type="image/png" href="${ICON}">` +
+    : `<link rel="icon" type="image/png" href="${ICON}"><link rel="canonical" href="${CANONICAL}">` +
       `<meta property="og:title" content="${TITLE}"><meta property="og:description" content="${DESCRIPTION}">` +
-      `<meta property="og:image" content="${OG_IMAGE}"><meta name="twitter:card" content="summary_large_image">`) +
+      `<meta property="og:url" content="${CANONICAL}"><meta property="og:site_name" content="Prototemplate"><meta property="og:type" content="website">` +
+      `<meta property="og:image" content="${attr(OG_IMAGE)}"><meta property="og:image:type" content="image/png">` +
+      `<meta property="og:image:width" content="${OG_WIDTH}"><meta property="og:image:height" content="${OG_HEIGHT}"><meta property="og:image:alt" content="${TITLE}">` +
+      `<meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@generaltxn"><meta name="twitter:creator" content="@kevskgs">` +
+      `<meta name="twitter:image" content="${attr(OG_IMAGE)}">`) +
   '<style>:root{color-scheme:light}:root[data-theme="dark"]{color-scheme:dark}body{margin:0}</style></head><body>';
 const html = `${open}${source}\n</body></html>\n`;
 
