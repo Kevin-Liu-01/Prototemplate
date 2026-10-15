@@ -638,7 +638,7 @@
 
 @media (max-width: 760px) {
   .prc-root .prc-hero {
-    min-height: clamp(680px, calc(100svh - 57px), 820px);
+    min-height: clamp(680px, calc(100svh - 58px), 820px);
   }
 
   .prc-root .prc-hero h1 {

@@ -35,7 +35,7 @@
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: stretch;
-  min-height: clamp(690px, calc(100svh - 57px), 820px);
+  min-height: clamp(690px, calc(100svh - 58px), 820px);
   padding: 0;
 }
 
@@ -162,11 +162,14 @@
 
 /* FIELD GRAMMAR — the enterprise contact's: sans labels, boxed paper
    wells with a 26% ink border, the engine's 6px rounding */
+/* live's label keeps text-sm's 1.25rem / 0.875rem leading ratio under
+   the sheet's 12.5px size */
 .toolchain-root .prod-contact .contact-field label {
   color: var(--tc-ink-2);
   font-family: var(--tc-sans);
   font-size: 12.5px;
   font-weight: 500;
+  line-height: calc(1.25 / 0.875);
 }
 
 .toolchain-root .prod-contact .contact-input {
@@ -320,4 +323,12 @@
     min-height: 44px;
     margin-block: 1px;
   }
+}
+
+/* Live's contact section sits in a rail of its own and is no .tc-sec, so
+   the footer's top row draws the only registration crosses on that seam.
+   Here the section is the main rail's .tc-sec, whose bottom crosses
+   (v0-pages.css) would sit 1px above the footer's, so it draws none. */
+.toolchain-root.prod-root .tc-rail > .prod-contact.tc-sec::after {
+  content: none;
 }

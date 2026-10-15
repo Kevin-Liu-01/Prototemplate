@@ -636,6 +636,12 @@
   font-size: 20px;
 }
 
+/* live's space-y-0.5 loses to the landing app's unlayered margin reset,
+   so the desktop header's name and cost sit with no gap */
+.pricing-root .pricing-compare-desktop .pc-plan-id {
+  gap: 0;
+}
+
 .pricing-root .pc-plan-cost {
   font-family: var(--tc-sans);
   font-size: 14px;
@@ -701,8 +707,10 @@
   font-weight: 600;
 }
 
+/* a block-level flex row, as live's div.flex: an inline-flex box sits on
+   the cell's 24px line with its strut and grows the row by 2px */
 .pricing-root .pricing-compare-desktop td[colspan] > span {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
 }
@@ -772,9 +780,9 @@
   background: color-mix(in srgb, var(--pc-emph) 5%, transparent);
 }
 
-.pricing-root .pricing-compare-desktop tbody:last-child tr:last-child td {
-  border-bottom: 1px solid var(--tc-hair);
-}
+/* live's last row draws a bottom border that its collapsed table merges
+   with the table's own; here the table's separate border is that one
+   line, so the last row draws none */
 
 /* ---- the cells' three faces ---- */
 
