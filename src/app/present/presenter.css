@@ -2117,6 +2117,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 .pr-dock-set > *,
+.pr-dock-rate > *,
 .pr-dock > * {
   flex-shrink: 0;
 }
@@ -2180,6 +2181,12 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   height: 20px;
   background: color-mix(in srgb, var(--pt-ink) 14%, transparent);
   margin: 0 5px;
+}
+
+/* The stars and Notes: no box of their own here, so they are the set's
+   flex items; the 480px block makes them one row that wraps whole. */
+.pr-dock-rate {
+  display: contents;
 }
 
 .pr-dock-notes.is-active {
@@ -2574,6 +2581,44 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     height: 44px;
   }
 
+  /* The viewer's dock: its arrows, grid, stars, Notes and Verdict were
+     32px tall. Each is at least a 40px square, its icon or glyph at its
+     own size inside; the label is already 41px. With the pill's 5px
+     padding the one-row dock stays 53px tall. */
+  .pr-dock-set-viewer button {
+    min-width: 40px;
+    height: 40px;
+  }
+
+  /* A phone keeps :hover on the star it tapped, and the 1.2 scale grows
+     a 40px star's hit area 4px past each side, over its neighbours and
+     the label above. The glyph grows by its size instead (16px to 19.2px,
+     14px to 16.8px in the scoreboard) inside a box that keeps its size. */
+  .pr-stars button {
+    transition:
+      color 0.15s,
+      font-size 0.15s;
+  }
+
+  .pr-stars button:hover {
+    transform: none;
+    font-size: 19.2px;
+  }
+
+  .pr-stars-sm button:hover {
+    font-size: 16.8px;
+  }
+
+  /* The notes' close mark keeps its glyph in a 40px square; the negative
+     margins give it the header's padding, so the header grows from 35px
+     to 41px with its rule and the square ends inside the panel's right
+     border. */
+  .pr-notes header button {
+    min-width: 40px;
+    min-height: 40px;
+    margin: -10px -14px -10px 0;
+  }
+
   .pr-score-theme {
     min-height: 44px;
   }
@@ -2747,8 +2792,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   }
 
   .pr-dock .pr-stars button {
-    min-width: 26px;
-    padding: 0 2px;
+    min-width: 40px;
+    padding: 0;
   }
 
   /* the pencil alone; the word stays the button's accessible name */
@@ -2761,7 +2806,12 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 /* An upright phone: one row left the prototype's label about 25px at 320
    wide ("T..."), its name running out of its box over the stage. The label
    takes the dock's first row, centered, and the arrows, the stars and the
-   pencil the second, so every name reads in full above the stage. */
+   pencil the second, so every name reads in full above the stage.
+   That row is eight 40px squares, the stars flush and a 2px gap after each
+   arrow and before the pencil, with no separator: 326px, inside the 336px
+   the pill leaves at 360 wide (100vw - 12px, less its 5px padding and 1px
+   border a side). At 320 it leaves 296px, so the stars and the pencil wrap
+   together to a third row under the arrows. */
 @media (max-width: 480px) {
   .pr-dock[data-mode='viewer'] .pr-dock-set-viewer {
     flex-wrap: wrap;
@@ -2773,6 +2823,15 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     order: -1;
     flex: 1 0 100%;
     align-items: center;
+  }
+
+  .pr-dock[data-mode='viewer'] .pr-dock-sep {
+    display: none;
+  }
+
+  .pr-dock[data-mode='viewer'] .pr-dock-rate {
+    display: flex;
+    gap: 2px;
   }
 }
 

@@ -435,7 +435,7 @@ export function writeReport({ outDir, base, rows, pages, devices, themes, intera
   if (walks.length) {
     const stopNames = [...new Set(walks.flatMap((w) => Object.keys(w.stops ?? {})))];
     md.push(
-      `The walk presses j through the slides; each column is that slide's title on screen with nothing painted over it. close is the "So I built 12" beat with its tile count, grid the prototypes grid with its card count and the cards clear of the dock; both must show ${walks[0].count ?? 'the presenter\'s'} prototypes.`,
+      `The walk presses j through the slides; each column is that slide's title on screen with nothing painted over it. close is the "So I built 12" beat with its tile count, grid the prototypes grid with its card count and the cards clear of the dock; both must show ${walks[0].count ?? 'the presenter\'s'} prototypes. notes names every stop read before it came to rest (the scroll never left, or the stop never held still), whose verdict may be wrong.`,
       '',
       table(
         walks.map((w) => ({
@@ -444,9 +444,10 @@ export function writeReport({ outDir, base, rows, pages, devices, themes, intera
           ...Object.fromEntries(stopNames.map((n) => [n, w.stops?.[n] ?? ''])),
           close: w.close ? `${w.close.verdict}; ${w.close.tiles} tiles${w.close.tiles === w.count ? '' : ` (${w.count} wanted)`}` : '',
           grid: w.grid ? `${w.grid.verdict}; ${w.grid.cards} cards${w.grid.cards === w.count ? '' : ` (${w.count} wanted)`}, ${w.grid.clear} clear of the dock` : '',
+          notes: (w.notes ?? []).join('; '),
           seconds: sec(w.ms),
         })),
-        ['device', 'pass', ...stopNames, 'close', 'grid', 'seconds']
+        ['device', 'pass', ...stopNames, 'close', 'grid', 'notes', 'seconds']
       ),
       ''
     );

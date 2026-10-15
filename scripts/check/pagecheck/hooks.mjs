@@ -118,7 +118,11 @@ export const CONSOLE_ALLOW = /hydrat|did not match|extra attributes from the ser
  * closes with Escape. `count` is how many prototypes the presenter shows
  * (Kevin, 2026-10-08: the first 16, so the close title fits), read on the
  * contact sheet and in the grid. The chrome boxes must not overlap one
- * another.
+ * another. `dock` is what the present-dock interaction reads: the viewer
+ * dock's controls inside `scope` (the dock pill and the notes panel above
+ * it), opened from a contact sheet tile (`tiles`, named by `name`) and read
+ * with the notes panel shut and open, and on a touch screen with `star`
+ * tapped.
  */
 export const PRESENTER = {
   count: 16,
@@ -133,6 +137,7 @@ export const PRESENTER = {
   ],
   close: { slide: 'detail', at: 0.97, title: '.pr-detail-close h3', tiles: '.pr-close-tile' },
   grid: { slide: 'prototypes', key: 'g', panel: '.pr-grid', title: '.pr-grid-head strong', cards: '.pr-grid-cards > button', dock: '.pr-dock', fitFrom: 1280 },
+  dock: { scope: '.pr-bottom', pill: '.pr-dock', tiles: '.pr-close-tile', name: 'strong', label: '.pr-dock-label strong', notes: '.pr-dock-notes', panel: '.pr-notes', close: '.pr-notes header button', star: '.pr-dock .pr-stars button:nth-child(3)' },
   chrome: ['.pr-hud-brand', '.pr-hud-author', '.pr-hud-rail', '.pr-dock', '.pr-notes'],
 };
 

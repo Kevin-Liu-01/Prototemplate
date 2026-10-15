@@ -94,12 +94,25 @@ after and its readings in `interactions/results.json`:
   to rest with the slide's title on screen, its entrance finished (an
   entrance held paused holds still too) and the title, its clipped
   box and the chrome's boxes held still (conditions, not fixed times: a
-  loaded machine starts a smooth scroll late; at most 30s each), and
+  loaded machine starts a smooth scroll late; at most 10s to leave and
+  30s to hold still; a stop read before it came to rest is read as it
+  stands and named in the walk's notes column), and
   checks each slide's title is on screen with nothing painted
   over it, the "So I built 12" close beat and the
   prototypes grid showing the presenter's count (16), the grid's cards
   clear of the dock from 1280 wide, no chrome box over another, and no
   horizontal overflow. `hooks.mjs` `PRESENTER` names the stops
+- `present-dock`, on every dark device of the run: clicks the contact
+  sheet tile of the prototype with the longest name, so the prototype
+  viewer opens on it, samples every frame of the pill's morph into the
+  viewer dock for two controls' boxes crossing, and then, with the notes
+  panel shut and open, checks every dock control is inside the pill (the
+  notes' controls inside their panel) and the screen, no control's
+  drawing is under a neighbour's hit area, no dock text is clipped, the
+  page does not scroll sideways, and on a phone every hit area is at
+  least 40px on its smaller side; on a touch screen it then taps a star,
+  which keeps `:hover` there, and checks it covers no neighbour.
+  `hooks.mjs` `PRESENTER.dock` names the selectors
 - `deck-slides`, once: every slide of the deck, opened by its hash, keeps
   every element inside the 1600x900 sheet
 - `deck-modes`, at 390x844 and 1440x900: the deck's grid and book views

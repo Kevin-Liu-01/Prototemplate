@@ -446,18 +446,22 @@ export default function PrototypeViewer() {
               <Icon name='grid' size={14} />
             </button>
             <i className='pr-dock-sep' />
-            <RatingStars
-              value={review?.rating ?? 0}
-              onChange={(rating) => setReview(current.slug, { rating })}
-            />
-            <button
-              type='button'
-              className={notesOpen || review?.note ? 'pr-dock-notes is-active' : 'pr-dock-notes'}
-              onClick={() => setNotesOpen((open) => !open)}
-            >
-              <Icon name='pencil' size={13} />
-              Notes{review?.note ? ' •' : ''}
-            </button>
+            {/* The stars and Notes wrap as one on a narrow phone; elsewhere
+                the group has no box (presenter.css .pr-dock-rate). */}
+            <div className='pr-dock-rate'>
+              <RatingStars
+                value={review?.rating ?? 0}
+                onChange={(rating) => setReview(current.slug, { rating })}
+              />
+              <button
+                type='button'
+                className={notesOpen || review?.note ? 'pr-dock-notes is-active' : 'pr-dock-notes'}
+                onClick={() => setNotesOpen((open) => !open)}
+              >
+                <Icon name='pencil' size={13} />
+                Notes{review?.note ? ' •' : ''}
+              </button>
+            </div>
             <i className='pr-dock-sep' />
             <button type='button' className='pr-dock-summary' onClick={scrollToScoreboard}>
               Verdict
