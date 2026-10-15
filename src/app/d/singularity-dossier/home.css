@@ -67,21 +67,15 @@
     --lift: -14.5px;
   }
 
-  /* the seam's slab: 64px on the desktop, 44px here, centred on its line.
-     reconcileMarks (_v0/TranslateWindow.tsx) files a mark swept once its
-     square would reach into the slab, so the two never overlap. At rest
-     the line parks 4.5px inside the card's right edge upright and at 88%
-     on its side; the chart's square ended 8.5 or 21px left of it, inside
-     the slab. The chart stops 16px short of its column's right edge, so
-     its square ends 24.5 or 37px left of the line, 2.5 or 15px clear of
-     the slab. Upright, the slab takes a tap from 22px left of the line to
-     the 18.5px the page leaves right of it: 40.5px. The third stat runs
-     to the card's edge at 390px wide and past the line on narrower
-     phones, so its mark files swept there. */
-  .toolchain-root.sgdh-root .v0-tw .tct-app .tc-seam {
-    width: 44px;
-  }
-
+  /* the seam's slab: 64px on the desktop, centred on its line, and 44px
+     below 900px wide (the next block). reconcileMarks
+     (_v0/TranslateWindow.tsx) files a mark swept once its square would
+     reach into the slab, so the two never overlap. At rest the line parks
+     4.5px inside the card's right edge upright and at 88% on its side;
+     the chart's square ended 8.5 or 21px left of it, inside the slab. The
+     chart stops 16px short of its column's right edge, so its square ends
+     24.5 or 37px left of the line: 2.5 or 15px clear of a 44px slab's
+     22px, and 5px clear of a 64px slab's 32px on its side. */
   .toolchain-root.sgdh-root .v0-tw .sgdh-app-chart {
     margin-right: 16px;
   }
@@ -112,6 +106,20 @@
      padding); both reach the floor */
   .toolchain-root.sgdh-root .tcr-door {
     min-height: 44px;
+  }
+}
+
+/* the seam's slab narrows to 44px only below 900px wide. Upright it takes
+   a tap from 22px left of the line to the 18.5px the page leaves right of
+   it: 40.5px. A phone on its side wider than 900px (932x430) keeps the
+   64px slab: the hero's review-rig pills cover its right side from 11px
+   right of the line, so the 32px it keeps on the left holds the tap at
+   43.5px, where a 44px slab left 33.5px. The third stat runs to the
+   card's edge at 390px wide and past the line on narrower phones, so its
+   mark files swept there. */
+@media (max-width: 900px) {
+  .toolchain-root.sgdh-root .v0-tw .tct-app .tc-seam {
+    width: 44px;
   }
 }
 

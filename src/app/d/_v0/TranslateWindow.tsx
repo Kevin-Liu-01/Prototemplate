@@ -628,8 +628,9 @@ const isNarrow = () =>
 const restCut = () => (isNarrow() ? 100 : REST_CUT);
 
 /* ---- the phone's hit areas: the homes' home.css pads each mark into a
-   40px square and narrows the seam's slab to 44px under this query, and
-   the component keeps every mark and belt chip it would let a tap reach
+   40px square and narrows the seam's slab to 44px under this query (the
+   dossier only below 900px wide; wider, its review rig covers the slab's
+   right side, so it keeps the 64px slab), and the component keeps every mark and belt chip it would let a tap reach
    at 40px or more, overlapping nothing. Must agree with those sheets;
    the desktop never matches it. */
 const PHONE_MQ =
@@ -964,8 +965,8 @@ export default function TranslateWindow({
      sits between that line and the card's edge is right of the line and
      files swept, instead of covering the line. On a phone (PHONE_MQ) the
      mark is a 40px square ending at its badge's right edge and the slab
-     is 44px wide, so a mark files swept once its square would reach into
-     the slab: the two hit areas never overlap. */
+     is 44px or 64px wide, so a mark files swept once its square would
+     reach into the slab: the two hit areas never overlap. */
   const reconcileMarks = () => {
     const el = app.current;
     if (!el) return;
