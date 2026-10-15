@@ -1671,3 +1671,40 @@
     border-top: 1px solid var(--tc-panel-rule);
   }
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, every control answers a tap at
+   least 44px on its smaller side; the desktop is untouched. The context
+   demo's two toast buttons, the pricing pages' underlined links and the
+   quote's source link keep their drawing and take the tap on a
+   transparent 44px band through their middle, as wide as they are. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .sgx-toast button,
+  .singularity-root .sgx-link,
+  .singularity-root .sgx-quote figcaption a {
+    position: relative;
+  }
+
+  .singularity-root .sgx-toast button::after,
+  .singularity-root .sgx-link::after,
+  .singularity-root .sgx-quote figcaption a::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}
+
+/* ---------- phones: the rate ledger ----------
+   Below 720px the ledger keeps two columns, the meter and its rate, and
+   a rate held on one line ("$10.00 / 10k input tokens") ran past a 320
+   or 390px screen. On a phone the rate wraps at its spaces inside its
+   column instead; the desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .sgx-rl .sgx-lr em {
+    white-space: normal;
+  }
+}

@@ -694,3 +694,13 @@
 [data-theme='dark'] .prismlight-root .dlv-hot-btn {
   color: #101010;
 }
+
+/* a phone: a fork row's mono label ran past its clip on a 390px card, so
+   on a phone the row wraps its label instead */
+@media (max-width: 900px) {
+  .prismlight-root .dlv-fork-row {
+    flex-wrap: wrap;
+    row-gap: 4px;
+    white-space: normal;
+  }
+}

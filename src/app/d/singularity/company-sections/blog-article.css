@@ -609,3 +609,19 @@
 [data-theme='dark'] .singularity-root .cpa {
   --cpa-mark: #86a8ff;
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, the article's way back and its
+   crumb take a 44px row; the desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .cpa-back {
+    min-height: 44px;
+  }
+
+  .singularity-root .cpa-crumb a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

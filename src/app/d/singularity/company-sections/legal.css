@@ -352,6 +352,38 @@
   }
 }
 
+/* A phone, upright or on its side: the tables' 620px floor ran them past
+   the screen's right edge inside their scroller, where the page check
+   reads every cell as past the edge. The table takes the column's width,
+   its columns share it evenly, and a long cookie name breaks where it
+   must, so every cell shows on the screen. The way back and the links in
+   the prose answer a tap at least 44px tall. The desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .cpg-tablewrap table {
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .singularity-root .cpg-tablewrap th,
+  .singularity-root .cpg-tablewrap td {
+    padding: 9px 8px;
+    overflow-wrap: anywhere;
+  }
+
+  /* the way back to the index takes a 44px row */
+  .singularity-root .cpg-back {
+    min-height: 44px;
+  }
+
+  /* a link in the prose keeps its underline and takes the tap on 13px of
+     transparent padding above and below each of its lines: an inline's
+     padding answers a tap without moving a line, so an address that
+     breaks across two lines is at least 44px tall on each of them */
+  .singularity-root .cpg-doc-body a {
+    padding: 13px 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .singularity-root .cpg-row,
   .singularity-root .cpg-back,

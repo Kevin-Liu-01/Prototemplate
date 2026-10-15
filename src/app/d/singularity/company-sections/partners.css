@@ -897,3 +897,24 @@
     gap: 8px;
   }
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, the close's link to the live flow
+   stays on one line and takes the tap on a transparent 44px band through
+   its middle, as wide as the link; the desktop is untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .cpm-close-path a {
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .singularity-root .cpm-close-path a::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}

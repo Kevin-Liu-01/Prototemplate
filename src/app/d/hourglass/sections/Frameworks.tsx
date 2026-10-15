@@ -212,9 +212,17 @@ export default function Frameworks() {
       if (!list || !bar) return;
 
       const place = (animate: boolean) => {
-        const button = list.querySelectorAll<HTMLButtonElement>('[data-tab]')[active];
-        if (!button) return;
-        const to = { x: button.offsetLeft - list.scrollLeft, width: button.offsetWidth };
+        const buttons = list.querySelectorAll<HTMLButtonElement>('[data-tab]');
+        const button = buttons[active];
+        const last = buttons[buttons.length - 1];
+        if (!button || !last) return;
+        /* On a phone the strip wraps (chip-consistency.css), so the bar rises
+           from the last row to the active tab's row; on one row y is 0. */
+        const to = {
+          x: button.offsetLeft - list.scrollLeft,
+          y: button.getBoundingClientRect().bottom - last.getBoundingClientRect().bottom,
+          width: button.offsetWidth,
+        };
         if (animate) gsap.to(bar, { ...to, duration: 0.42, ease: 'power3.out' });
         else gsap.set(bar, to);
       };

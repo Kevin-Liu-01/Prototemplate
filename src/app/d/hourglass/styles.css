@@ -5046,3 +5046,14 @@
 .hourglass-root .tc-delivery-band {
   border-top: 1px solid var(--tc-hair);
 }
+
+/* a phone: the folded corridor's mock search field held its placeholder
+   and its shortcut on one line, which ran past the field's clip on a
+   390px screen; the field wraps instead, its shortcut on a second line */
+@media (max-width: 900px) {
+  .hourglass-root .hg-m .hg-field {
+    flex-wrap: wrap;
+    row-gap: 4px;
+    white-space: normal;
+  }
+}

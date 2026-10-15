@@ -14,6 +14,7 @@ import StoryCinema from './sections/StoryCinema';
 import TopNav from './sections/TopNav';
 
 import './styles.css';
+import './bay-phone.css';
 
 export const metadata = {
   title: 'Singularity — GT Redesign',

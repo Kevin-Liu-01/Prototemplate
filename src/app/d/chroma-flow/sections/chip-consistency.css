@@ -133,6 +133,33 @@
   mask: var(--mark) center / contain no-repeat;
 }
 
+/* ---------- framework tabs: the strip on a phone ----------
+
+   The six tabs run about 670px in one row, so a phone's strip scrolled
+   four of them past the screen's edge. Below 900px the row wraps when it
+   runs out of width; at phone width it is two even columns of three rows,
+   each label at its own width on the gutter line, so every tab shows at
+   once. Frameworks.tsx moves the underline to the active tab's row. */
+@media (max-width: 900px) {
+  .chromaflow-root .tc-tabs {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  /* one step above styles.css's display: flex, which loads after this file */
+  .chromaflow-root .tc-sec > .tc-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
+
+  .chromaflow-root .tc-tabs .tc-tab {
+    justify-self: start;
+    padding: 13px 0 14px;
+  }
+}
+
 /* ---------- SDK ledger: the React Native mark ---------- */
 
 /* The same badge on the panel ink — at the column's 13px the cutout

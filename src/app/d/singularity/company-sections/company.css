@@ -1152,3 +1152,60 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, every control answers a tap at
+   least 44px on its smaller side; the desktop is untouched. The contact
+   form's fine print wraps its two links wherever the width puts them, so
+   its lines take a 44px pitch, each link stays on one line, and each
+   takes its line's full height on a transparent ::after: links on
+   neighbouring lines meet and never overlap. A link that broke across
+   two lines would centre its band between them, over its neighbour's
+   line. The locale rows stand 44px tall. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .cpk-terms {
+    line-height: 44px;
+  }
+
+  .singularity-root .cpk-terms a {
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .singularity-root .cpk-terms a::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+
+  .singularity-root .cpl-row {
+    min-height: 44px;
+  }
+}
+
+/* ---------- phones: lines that ran past the screen ----------
+   On a phone, upright or on its side; the desktop is untouched. The
+   openings' board address is one unbroken word wider than a 320px
+   column, so it breaks where it must and the refresh note drops under
+   it. The locale filter's field kept its own width beside the count and
+   pushed the count past the screen's right edge; it gives up the room
+   the count needs instead. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .cpc-tsrc {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .singularity-root .cpc-tsrc span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .singularity-root .cpl-filter-in {
+    min-width: 0;
+  }
+}

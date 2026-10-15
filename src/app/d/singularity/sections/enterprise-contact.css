@@ -264,3 +264,36 @@
     border-top: 1px solid rgba(138, 143, 152, 0.28);
   }
 }
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, the desk's small links answer a
+   tap 44px tall; the desktop is untouched. The way back, the quote's
+   source, the YC field's note and the aside's link keep their drawing
+   and take the tap on a transparent 44px band through their middle, as
+   wide as they are. The aside's link stays on one line, since a link
+   broken across two lines would centre its band between them. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .sgec-back,
+  .singularity-root .sgec-quote figcaption a,
+  .singularity-root .sgec-fieldnote,
+  .singularity-root .sgec-aside a {
+    position: relative;
+  }
+
+  .singularity-root .sgec-aside a {
+    white-space: nowrap;
+  }
+
+  .singularity-root .sgec-back::after,
+  .singularity-root .sgec-quote figcaption a::after,
+  .singularity-root .sgec-fieldnote::after,
+  .singularity-root .sgec-aside a::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}

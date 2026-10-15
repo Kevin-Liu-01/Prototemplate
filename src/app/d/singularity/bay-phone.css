@@ -1,0 +1,13 @@
+/* ============================================================
+   SINGULARITY — the contact bay's sheet on a phone
+   EnterpriseContact's band is styled by sections/enterprise.css,
+   which the finals' enterprise pages import and this page never
+   did. Unstyled, the bay's rain canvas and the contact sheet's
+   word field sat in their boxes' flow and sized themselves to
+   those boxes, so every resize grew the box by the canvas and the
+   canvas by the box until the page ran millions of pixels long,
+   and the form lay under the word field. On a phone, upright or
+   on its side, the page loads the bay's sheet; the desktop is
+   untouched.
+   ============================================================ */
+@import './sections/enterprise.css' (max-width: 900px), (pointer: coarse) and (max-height: 500px);

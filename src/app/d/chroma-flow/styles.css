@@ -3421,3 +3421,13 @@
 .chromaflow-root .tc-delivery-band {
   border-top: 1px solid var(--tc-hair);
 }
+
+/* a phone, upright or on its side: the ledger cards' code lines ran past
+   their clip in the narrow cells, so on a phone each line wraps inside its
+   cell instead and breaks a long path where it must */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .chromaflow-root .cf-lg-code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}

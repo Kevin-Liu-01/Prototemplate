@@ -5,7 +5,121 @@
    live-edit caret — moved with the windowed demo into the shared
    component sheet (src/app/d/_v0/translate-window.css, scoped
    `.toolchain-root .v0-tw`), so every home that mounts
-   TranslateWindow carries them. Nothing dossier-only remains;
-   the import stays so future dossier-local overrides have a
-   ruled place to land.
+   TranslateWindow carries them. What stays here is the phone's
+   hit areas, scoped to this home: the inspector marks, the
+   belt's chips and the footer (the shipped page's home.css
+   carries the same block for its own copy of the window).
    ============================================================ */
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, every control answers a tap at
+   least 40px on its smaller side, most of them 44. The desktop is
+   untouched. The selectors carry both root classes so they outrank the
+   shared sheets' (0,2,x) rules whatever order the sheets load in. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  /* the inspector badge: the button is a transparent slab with the 11px
+     badge drawn on the component's top-right corner
+     (_v0/translate-window.css). On a phone the slab grows from a 25px
+     circle to a 40px square whose right edge is the badge's right edge
+     and which runs left over the component the mark names. The square
+     reaches 7px less far right than the 25px slab did, so the marks
+     that rest 13px left of the seam's line at the card's right end stop
+     4px short of its left thread. The badge stays put, drawn by insets,
+     and the padding sets the "!" in it; reconcileMarks reads the badge's
+     centre from the padding.
+     --lift moves the square off the corner's centre (up for a positive
+     value, down for a negative one). */
+  .toolchain-root.sgdh-root .v0-tw .sgdh-ins-mark {
+    --lift: 0px;
+    top: calc(-20.5px - var(--lift));
+    right: -6px;
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    padding: calc(14.5px + var(--lift)) 0 calc(14.5px - var(--lift)) 29px;
+    border-radius: 0;
+    line-height: 11px;
+  }
+
+  .toolchain-root.sgdh-root .v0-tw .sgdh-ins-mark::before {
+    inset: calc(14.5px + var(--lift)) 0 calc(14.5px - var(--lift)) 29px;
+  }
+
+  /* the nav items' marks sit 10px under the window bar, whose locale
+     chips take the bar's 40px above them: their squares start 11.5px
+     above the corner, 1.5px lower than the 25px slab did, and end 28.5px
+     under it. Below them the heading's, the sub's and the stats' corners
+     sit 39, 38.6 and 41.7px apart on a 412 or 430px phone, and the
+     heading's and the sub's squares cross every column of the rows above
+     and below them as their lines type, so each square drops below its
+     corner: the heading's starts 9px above it, the sub's and the stats'
+     6px above it, level with the badge's top. The four rows of squares
+     end 1.5, 1.6 and 1.7px apart there; on every other phone the heading
+     sits lower and only the first gap grows. The action's square starts
+     13.6px or more under the stats' and the chart's sits right of every
+     other column, so theirs stay centred. */
+  .toolchain-root.sgdh-root .v0-tw .sgdh-app-navi .sgdh-ins-mark {
+    --lift: -9px;
+  }
+
+  .toolchain-root.sgdh-root .v0-tw .tct-app-h .sgdh-ins-mark {
+    --lift: -11.5px;
+  }
+
+  .toolchain-root.sgdh-root .v0-tw .tct-app-copy .sgdh-ins-mark,
+  .toolchain-root.sgdh-root .v0-tw .sgdh-app-stat .sgdh-ins-mark {
+    --lift: -14.5px;
+  }
+
+  /* the belt's chips sit 10px under its top edge (their 1px border
+     included), centred in it: their 40px band runs down from that edge
+     and ends 1px above the nav items' squares */
+  .toolchain-root.sgdh-root .v0-tw .v0-tw-belt-track button::after {
+    top: -10px;
+    transform: none;
+  }
+
+  /* the quote's post link sits in a row the 48px avatar already holds open */
+  .toolchain-root.sgdh-root .v0-glob .tcpq-attr > a {
+    min-height: 44px;
+  }
+
+  .toolchain-root.sgdh-root .v0-foot-status {
+    min-height: 44px;
+  }
+
+  /* each link already owns its row; a short label (Blog, X) widens to the floor */
+  .toolchain-root.sgdh-root .v0-foot-col a {
+    min-width: 44px;
+  }
+
+  /* the review doors: 38px on its side, 43.5 upright (the shared 640px
+     padding); both reach the floor */
+  .toolchain-root.sgdh-root .tcr-door {
+    min-height: 44px;
+  }
+}
+
+/* a phone on its side: the shared sheets lift these to 44px only below
+   640 or 720px wide, so landscape gets the same floor here, at the same
+   type size */
+@media (pointer: coarse) and (max-height: 500px) {
+  /* the footer rows take the 44px pitch the upright phone already uses */
+  .toolchain-root.sgdh-root .v0-foot-col ul {
+    gap: 0;
+  }
+
+  .toolchain-root.sgdh-root .v0-foot-col a {
+    min-height: 44px;
+  }
+
+  .toolchain-root.sgdh-root .v0-foot-theme {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .toolchain-root.sgdh-root .tc-btn:not(.tc-btn-sm),
+  .toolchain-root.sgdh-root .v0-dep-btn {
+    height: 44px;
+  }
+}

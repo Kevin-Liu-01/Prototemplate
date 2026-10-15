@@ -1086,6 +1086,22 @@
   }
 }
 
+/* Hero.tsx's stack-mode formulas, which start below 760px (wide = w >=
+   760), so the phone's first paint before the script runs already seats
+   the disc and the core at their measured size: with the 270px default
+   the core ran 421px wide and its headline past both edges of a 320px
+   screen. */
+@media (max-width: 759px) {
+  .singularity-root .eh-hero {
+    --eh-h: clamp(640px, calc(100svh - 58px), 800px);
+    --eh-r: min(40vw, 168px, calc(var(--eh-h) * 0.26));
+    --eh-cy: max(
+      min(calc(var(--eh-h) * 0.46), calc(var(--eh-h) - var(--eh-r) - 172px)),
+      calc(var(--eh-r) + 148px)
+    );
+  }
+}
+
 @media (max-width: 760px) {
   .singularity-root .eh-hero {
     min-height: clamp(640px, calc(100svh - 58px), 800px);
@@ -4879,7 +4895,6 @@
   width: 96px;
   height: 20px;
   overflow: hidden;
-  text-indent: -999px;
   opacity: 0.52;
   background-position: center;
   background-repeat: no-repeat;
@@ -5166,4 +5181,81 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.4);
+}
+
+/* ---------- touch phones: hit areas ----------
+   On a phone, upright or on its side, every control answers a tap at
+   least 40px on its smaller side, most of them 44. Buttons take 44px,
+   text links fill a 44px row, and a control drawn smaller than that (the
+   theme square, the burger, the hero's Talk to Sales, the effects chips,
+   the code panes' Copy and the underlined links) keeps its drawing and
+   takes the tap on a transparent ::after. The hero's core keeps its drawn
+   sizes, since Hero.tsx seats the core inside the horizon. The desktop is
+   untouched. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .singularity-root .tc-btn:not(.eh-core .tc-btn),
+  .singularity-root .tc-btn-sm:not(.eh-core .tc-btn),
+  .singularity-root .tc-copy:not(.eh-core .tc-copy) {
+    height: 44px;
+  }
+
+  .singularity-root .tc-nav-brand {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .singularity-root .tc-foot-cols ul {
+    gap: 0;
+  }
+
+  .singularity-root .tc-foot-cols a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .singularity-root .tc-nav-theme,
+  .singularity-root .tc-nav-burger,
+  .singularity-root .eh-core .tc-btn,
+  .singularity-root .eh-fxm .fxm-chip,
+  .singularity-root .tc-code-copy,
+  .singularity-root .tc-fw-link,
+  .singularity-root .tc-compare a {
+    position: relative;
+  }
+
+  .singularity-root .tc-nav-theme::after,
+  .singularity-root .tc-nav-burger::after,
+  .singularity-root .eh-core .tc-btn::after,
+  .singularity-root .eh-fxm .fxm-chip::after,
+  .singularity-root .tc-code-copy::after,
+  .singularity-root .tc-fw-link::after,
+  .singularity-root .tc-compare a::after {
+    content: '';
+    position: absolute;
+    /* a 44px band through the control's middle, as wide as the control */
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+
+  /* the code bar's Copy: the pane clips at the bar's top edge, 10px
+     above the button, so its band runs down from there */
+  .singularity-root .tc-code-copy::after {
+    top: -10px;
+    transform: none;
+  }
+
+  /* the 32px theme square and the 21 by 27 burger: a 44px square on the
+     drawing's centre, inside the nav's 12px and 26px gaps */
+  .singularity-root .tc-nav-theme::after,
+  .singularity-root .tc-nav-burger::after {
+    left: 50%;
+    right: auto;
+    width: 44px;
+    transform: translate(-50%, -50%);
+  }
 }

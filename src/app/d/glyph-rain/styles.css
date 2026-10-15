@@ -2105,10 +2105,12 @@
     font-size: 14.5px;
   }
 
-  /* Four mono labels across 390px: the tag always survives, the script
-     name clips before it collides with its neighbour. */
+  /* Four mono labels across 390px: the tag keeps the first line and a
+     script name too long for the cell wraps under it, so it never meets
+     its neighbour and never clips. */
   .glyphrain-root .gr-ledger-meta {
-    overflow: hidden;
+    flex-wrap: wrap;
+    row-gap: 2px;
   }
 }
 
