@@ -60,3 +60,98 @@
     font-size: 15px;
   }
 }
+
+/*
+ * The About this picture caption, as gt-cloud's packages/ui plate.css
+ * .plate-caption rules draw it (#5216): the card grows out of its
+ * button. Closed it is the button's 32px circle; open it is the 272px
+ * card with its lower right corner on the circle's, 20px from the
+ * viewport's corner, and the close mark is the bare glyph inside it.
+ * The frozen plate fork's FieldMoodPlate slides a separate card in at
+ * 12px under a circled button, so these rules restyle its three parts
+ * by their test ids from this partner-only sheet. Live shows the
+ * caption from 768px wide; the fork shows it from 1024px.
+ */
+.prpo-plate [data-testid='field-mood-plate'] {
+  --plate-caption-size: 2rem;
+  --plate-caption-inset: 1.25rem;
+  --plate-caption-min: calc(var(--plate-caption-size) - 2px);
+  --plate-caption-w: min(
+    272px,
+    calc(
+      100vw - var(--plate-edge) + var(--plate-pad) - 0.75rem -
+        var(--plate-caption-inset)
+    )
+  );
+}
+
+@media (min-width: 768px) {
+  .prpo-plate [data-testid='field-mood-plate'] {
+    display: block;
+  }
+}
+
+@media (pointer: coarse) {
+  .prpo-plate [data-testid='field-mood-plate'] {
+    --plate-caption-size: 2.75rem;
+    --plate-caption-inset: 0.875rem;
+  }
+}
+
+.prpo-plate [data-testid='field-mood-plate-card'] {
+  display: grid;
+  grid-template-rows: minmax(var(--plate-caption-min), 0fr);
+  grid-template-columns: minmax(0, 1fr);
+  align-content: end;
+  right: var(--plate-caption-inset);
+  bottom: var(--plate-caption-inset);
+  width: var(--plate-caption-size);
+  padding: 0;
+  overflow: hidden;
+  border-radius: calc(var(--plate-caption-size) / 2);
+  visibility: visible;
+  opacity: 1;
+  translate: none;
+  transition-property: grid-template-rows, width, border-radius;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.prpo-plate [data-open='true'] [data-testid='field-mood-plate-card'] {
+  grid-template-rows: minmax(var(--plate-caption-min), 1fr);
+  width: var(--plate-caption-w);
+  border-radius: 6px;
+}
+
+/* The rows keep the open width at the lower right, so they never reflow. */
+.prpo-plate [data-testid='field-mood-plate-card'] > div {
+  width: calc(var(--plate-caption-w) - 2px);
+  align-self: end;
+  justify-self: end;
+  padding: 12px 48px 12px 16px;
+}
+
+/* The fork marks a restored open state with transition-none. */
+.prpo-plate [data-testid='field-mood-plate-card'].transition-none {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prpo-plate [data-testid='field-mood-plate-card'] {
+    transition: none;
+  }
+}
+
+.prpo-plate [data-testid='field-mood-plate-toggle'] {
+  border: 0;
+  background: transparent;
+}
+
+@media (pointer: coarse) {
+  .prpo-plate [data-testid='field-mood-plate-toggle'] {
+    right: 14px;
+    bottom: 14px;
+    width: 44px;
+    height: 44px;
+  }
+}

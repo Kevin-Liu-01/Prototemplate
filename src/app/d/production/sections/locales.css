@@ -3,16 +3,14 @@
    gt-cloud/apps/landing/src/components/pages/supported-locales/
    supported-locales.css. Selector for selector, value for value.
 
-   Two deliberate deviations, both forced by what this repo has:
-     1. --color-emphasis is a Tailwind theme token the real app
-        gets from packages/ui/src/css/shared.css. Nothing serves
-        it here, so the focus ring's two color-mix()es read
-        --loc-emphasis instead, defined below at the real token's
-        own light and dark hsl values.
-     2. the real sheet's 720px block also hides .locales-mast-*
-        selectors left over from an earlier masthead — no such
-        element exists in the real DOM or this one, so those
-        three dead rules are not carried over.
+   One deliberate deviation, forced by what this repo has:
+   --color-emphasis is a Tailwind theme token the real app gets from
+   packages/ui/src/css/shared.css. Nothing serves it here, so the
+   focus ring's two color-mix()es read --loc-emphasis instead,
+   defined below at the real token's own light and dark hsl values.
+   The 720px block carries live's three .locales-mast rules too,
+   which no element on either page matches; they stay so the sheet
+   reads rule for rule like live's.
    ============================================================ */
 
 .locales-root {
@@ -200,6 +198,18 @@
 }
 
 @media (max-width: 720px) {
+  .locales-root .locales-mast-ink {
+    display: none;
+  }
+
+  .locales-root .locales-mast-head {
+    padding-bottom: 30px;
+  }
+
+  .locales-root .locales-mast h1 {
+    font-size: clamp(2.5rem, 11vw, 3.6rem);
+  }
+
   .locales-root .locales-catalog {
     padding-inline: 20px;
   }

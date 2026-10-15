@@ -21,14 +21,13 @@ const DOCS = 'https://generaltranslation.com/docs';
  * ground the theme paints under them.
  *
  * The real page's own words, unchanged:
- *   h1  "Page not found."
+ *   h1  "Page not found"
  *   p   "This route drifted out of view. Head home or keep exploring the docs."
- *   CTA "Go home" → /home          (the real route that serves the landing page)
- *   CTA "Read the docs" → /docs    (fumadocs, kept as its published absolute URL)
+ *   CTA "Go Home" → /home          (the real route that serves the landing page)
+ *   CTA "Read the Docs" → /docs    (fumadocs, kept as its published absolute URL)
  *
- * Destinations: "Go home" resolves against the CURRENT concept's base, the way
- * V0Nav's brand mark does, so /d/<concept>/... never leaks across finals — and
- * the concept's landing page IS what the real /home serves.
+ * Destinations: "Go Home" goes to the /home alias under the current base, as
+ * live's goes to /home; the mirror's /home renders the landing page.
  */
 export default function NotFound() {
   const pathname = usePathname();
@@ -40,14 +39,14 @@ export default function NotFound() {
         <NotFoundHorizon />
 
         <div className='pnf-copy'>
-          <h1>Page not found.</h1>
+          <h1>Page not found</h1>
           <p>
             This route drifted out of view. Head home or keep exploring the
             docs.
           </p>
           <div className='pnf-acts'>
-            <a className='tc-btn tc-btn-onink tc-btn-lg' href={base}>
-              Go home
+            <a className='tc-btn tc-btn-onink tc-btn-lg' href={`${base}/home`}>
+              Go Home
               <ArrowRight aria-hidden='true' size={16} />
             </a>
             <a
@@ -56,7 +55,7 @@ export default function NotFound() {
               rel='noreferrer'
               target='_blank'
             >
-              Read the docs
+              Read the Docs
             </a>
           </div>
         </div>

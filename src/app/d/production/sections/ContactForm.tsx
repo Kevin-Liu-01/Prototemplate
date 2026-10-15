@@ -63,7 +63,7 @@ const FEATURES: readonly Feature[] = [
     icon: ChatBubbleLeftEllipsisIcon,
     title: 'General inquiries.',
     description:
-      'Have a question about General Translation? We’re here to help.',
+      "Have a question about General Translation? We're here to help.",
   },
 ];
 
