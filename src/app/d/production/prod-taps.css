@@ -188,12 +188,6 @@
   [data-theme='dark'] .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-replies-module__'][class*='link'] {
     box-shadow: inset 0 0 0 1px #425364;
   }
-  /* the avatar sits above the author link, whose grown box would
-     otherwise cover the avatar's lower half on a narrow card */
-  .toolchain-root.prod-root .blog-tweet-embed a[class*='tweet-header-module__'][class*='avatar'] {
-    z-index: 2;
-  }
-
   /* the blog index: the search field fills a 44px box inside its 30px
      pill; the filter pills, the RSS circle and the changelog arrows keep
      their drawn 30px inside transparent borders, their rule an inset
