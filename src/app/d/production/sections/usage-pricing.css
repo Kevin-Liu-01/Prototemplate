@@ -461,6 +461,11 @@
   text-decoration-line: none;
 }
 
+/* the example's plain value is font-semibold, above the term's 500 */
+.usage-pricing-root .up-term > .up-chip-value.is-plain {
+  font-weight: 600;
+}
+
 .usage-pricing-root .up-chip:hover .up-chip-value {
   text-decoration-color: var(--up-fg);
 }
@@ -647,7 +652,8 @@
 }
 
 .usage-pricing-root .up-table td:first-child {
-  color: var(--tc-ink);
+  /* text-foreground */
+  color: var(--up-fg);
   font-weight: 500;
   text-align: left;
 }

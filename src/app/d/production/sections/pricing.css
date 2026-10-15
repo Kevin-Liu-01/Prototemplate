@@ -634,6 +634,8 @@
    app's unlayered reset) */
 .pricing-root .pc-plan-id h3 {
   font-size: 20px;
+  /* text-foreground */
+  color: var(--pc-fg);
 }
 
 /* live's space-y-0.5 loses to the landing app's unlayered margin reset,
@@ -820,7 +822,7 @@
 }
 
 .pricing-root .pc-val {
-  color: var(--tc-ink);
+  color: var(--pc-fg);
   font-size: 14px;
 }
 

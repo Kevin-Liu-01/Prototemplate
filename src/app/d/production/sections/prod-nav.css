@@ -389,6 +389,10 @@
     color 0.15s ease;
 }
 
+.toolchain-root .pn-theme .pt-theme-glyph {
+  line-height: 24px;
+}
+
 .toolchain-root .pn-theme:hover {
   color: var(--pn-fg);
   background: color-mix(in srgb, var(--pn-fg) 10%, transparent);

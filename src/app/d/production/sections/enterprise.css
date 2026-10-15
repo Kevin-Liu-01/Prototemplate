@@ -2060,19 +2060,6 @@
   color: var(--pc-muted);
 }
 
-/* the ask is the ui Button's default face: primary over its foreground,
-   80 percent on hover (packages/ui button.tsx) */
-.toolchain-root.enterprise-root .enterprise-contact .tc-btn.tc-btn-solid {
-  border-color: var(--pc-primary);
-  background: var(--pc-primary);
-  color: var(--pc-primary-ink);
-}
-
-.toolchain-root.enterprise-root .enterprise-contact .tc-btn.tc-btn-solid:hover {
-  border-color: color-mix(in srgb, var(--pc-primary) 80%, transparent);
-  background: color-mix(in srgb, var(--pc-primary) 80%, transparent);
-}
-
 /* This repo's globals.css opens with an UNLAYERED `* { margin: 0 }`
    reset, and unlayered declarations outrank anything in Tailwind's
    `utilities` layer — so the shared form's two mt-6 offsets (the

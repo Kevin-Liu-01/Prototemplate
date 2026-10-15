@@ -237,8 +237,9 @@
   flex: 1;
   max-width: 43ch;
   padding-right: 8px;
-  /* text-fd-muted-foreground */
-  color: var(--pc-muted);
+  /* live's contact page draws this line in the engine's ink-3, where the
+     enterprise form keeps the markup's muted zinc (measured 2026-10-15) */
+  color: var(--tc-ink-3);
   font-size: 12px;
   line-height: 1.5;
 }
