@@ -126,8 +126,6 @@
 
 .locales-root .locales-card-flag .fi {
   width: 24px;
-  border-radius: 2px;
-  box-shadow: inset 0 0 0 0.5px rgb(127 127 127 / 30%);
 }
 
 .locales-root .locales-card-globe {
