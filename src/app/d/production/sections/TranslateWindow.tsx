@@ -20,7 +20,7 @@ import {
   SiTanstack,
 } from '@icons-pack/react-simple-icons';
 
-import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import LocaleTag from './LocaleTag';
 
 import RevealSeam from '@/app/d/toolchain/sections/RevealSeam';
 

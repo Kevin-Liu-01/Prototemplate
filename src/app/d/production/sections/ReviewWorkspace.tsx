@@ -8,7 +8,7 @@ import { Download, History, Search } from 'lucide-react';
 import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import type { ComponentType, SVGProps } from 'react';
 
-import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import LocaleTag from './LocaleTag';
 
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 

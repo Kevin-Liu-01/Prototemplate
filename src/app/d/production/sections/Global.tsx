@@ -4,7 +4,7 @@ import { GlobeAltIcon } from '@heroicons/react/24/solid';
 import { ArrowUpRight } from 'lucide-react';
 import { Fragment, useRef } from 'react';
 
-import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import LocaleTag from './LocaleTag';
 import EdgeGlobe from './EdgeGlobe';
 import { BentoCell } from '@/components/shell/Bento';
 

@@ -14,7 +14,7 @@ import {
 import { useRef } from 'react';
 import type { ComponentType, SVGProps } from 'react';
 
-import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import LocaleTag from './LocaleTag';
 import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
 import { prefersReducedMotion, target } from '@/app/d/toolchain/diagrams/lang/lang';
 
