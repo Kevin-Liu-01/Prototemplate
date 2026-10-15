@@ -21,9 +21,13 @@
 // (films/_smoke/film.json is the example): its kind, its render path (software or gpu), fps,
 // workers, the render timeout, the poster and the records its final writes.
 //
-// Renders take turns through one lock at a fixed path, motion/.render.lock: a file whose one
-// JSON line names its owner (the slug, this command's PID and start time, and the render's PID
-// while it runs). A render that waits writes a ticket, motion/.render.queue/<epoch ms>-<slug>-<pid>,
+// Each film renders under its own lock, motion/.render.locks/<slug>/.render.lock, so different
+// films render at the same time and one film never renders twice at once (Kevin, 2026-10-15: no
+// fixed cap on heavy jobs). Each render first waits for Headroom to allow its own estimate, about
+// 2 GB plus 2 GB a worker (`headroom can-start`), and renders at once on a Mac without Headroom.
+// A lock is a file whose one JSON line names its owner (the slug, this command's PID and start
+// time, and the render's PID while it runs). A render that waits for its film's lock writes a
+// ticket, motion/.render.locks/<slug>/.render.queue/<epoch ms>-<slug>-<pid>,
 // and only the oldest ticket whose process is alive may take the lock, so a lane that polls
 // slowly is never starved by one that polls fast. A ticket or a lock whose processes have all
 // exited is cleared; a live lock is never cleared, only reported once it outlives its timeout.
@@ -508,14 +512,36 @@ export function installTrap(root) {
   }
 }
 
-/** Runs `fn` while this run holds the lock; the lock is released when it returns or throws. */
+/** The folder that holds one film's lock and queue, made when first needed. */
+export function filmLockRoot(lockRoot, slug) {
+  const root = join(lockRoot, '.render.locks', slug);
+  mkdirSync(root, { recursive: true });
+  return root;
+}
+
+/** Waits until Headroom allows this film's render (about 2 GB plus 2 GB a worker); without the headroom CLI it returns at once. */
+function headroomGate(film) {
+  const gb = 2 + 2 * film.workers;
+  for (;;) {
+    const r = spawnSync('headroom', ['can-start', '--gb', String(gb), '--label', `film-${film.slug}`], { encoding: 'utf8' });
+    if (r.error) return say('headroom is not installed; rendering without its gate');
+    const why = `${r.stdout || ''}${r.stderr || ''}`.trim();
+    if (r.status === 0) return say(`headroom allows ${gb} GB: ${why}`);
+    say(`headroom holds ${gb} GB: ${why}; waiting`);
+    spawnSync('headroom', ['wait', '--gb', String(gb), '--timeout', '30'], { encoding: 'utf8' });
+  }
+}
+
+/** Runs `fn` while this run holds its film's lock; the lock is released when it returns or throws. */
 async function underLock(ctx, film, command, fn) {
+  ctx.lockRoot = filmLockRoot(ctx.lockRoot, film.slug);
   installTrap(ctx.lockRoot);
   const me = { slug: film.slug, pid: process.pid, start: processStart(process.pid), command, label: null, timeout: film.timeout, host: hostname() };
   const t0 = Date.now();
   await acquireLock(ctx.lockRoot, me, { log: say });
   const waited = Math.round((Date.now() - t0) / 1000);
   say(`lock taken after ${waited} s waiting (${join(ctx.lockRoot, '.render.lock')})`);
+  headroomGate(film);
   try {
     return await fn({ waited, takenAt: stamp() });
   } finally {
@@ -1324,16 +1350,24 @@ function fmtWhen(ms) {
 }
 
 function lockLines(ctx) {
-  const owner = readLock(ctx.lockRoot);
-  const { queue } = queuePaths(ctx.lockRoot);
-  const waiting = [];
-  if (existsSync(queue)) {
-    for (const name of readdirSync(queue).sort()) {
-      const t = parseTicket(name);
-      if (t) waiting.push(`${t.slug} (pid ${t.pid}${pidAlive(t.pid) ? '' : ', exited'})`);
+  // each film's lock and queue (motion/.render.locks/<slug>/), and the shared root's, which a scratch render may still take
+  const base = join(ctx.lockRoot, '.render.locks');
+  const roots = [['shared', ctx.lockRoot], ...(existsSync(base) ? readdirSync(base).sort().map((slug) => [slug, join(base, slug)]) : [])];
+  const lines = [];
+  for (const [name, root] of roots) {
+    const owner = readLock(root);
+    const { queue } = queuePaths(root);
+    const waiting = [];
+    if (existsSync(queue)) {
+      for (const file of readdirSync(queue).sort()) {
+        const t = parseTicket(file);
+        if (t) waiting.push(`${t.slug} (pid ${t.pid}${pidAlive(t.pid) ? '' : ', exited'})`);
+      }
     }
+    if (!owner && !waiting.length) continue;
+    lines.push(`lock ${name}: ${describeOwner(owner)}${owner && !lockAlive(owner) ? ' (its processes have exited; the next render clears it)' : ''}; queue: ${waiting.length ? waiting.join(', ') : 'empty'}`);
   }
-  return [`lock: ${describeOwner(owner)}${owner && !lockAlive(owner) ? ' (its processes have exited; the next render clears it)' : ''}`, `queue: ${waiting.length ? waiting.join(', ') : 'empty'}`];
+  return lines.length ? lines : ['locks: none held; queue: empty'];
 }
 
 function table(rows) {

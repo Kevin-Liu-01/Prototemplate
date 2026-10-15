@@ -56,7 +56,7 @@ The guidance every writer and editor received:
 - The machine is shared and loaded: `kit/film.mjs final` renders twice and compares the pair; say if a render dropped frames.
 - Log every ElevenLabs call's purpose in the film's NOTES.md.
 - Load the `hyperframes` skill before writing a composition.
-- Renders take turns through `kit/film.mjs`: a waiting render writes a ticket in `motion/.render.queue/`, the oldest live ticket takes `motion/.render.lock`, and the lock is released the moment the render ends, success or failure. Never take or clear the lock by hand. (The old `mkdir <scratch>/render.lock` with 30 s and 60 s retries let a fast poller starve a slow one for hours, and the scratch path did not survive a reboot.)
+- Renders go through `kit/film.mjs`, which locks per film: different films render at the same time, a second render of the same film writes a ticket in `motion/.render.locks/<slug>/.render.queue/`, the oldest live ticket takes that film's lock, and the lock is released the moment the render ends, success or failure. Never take or clear the lock by hand. (The old `mkdir <scratch>/render.lock` with 30 s and 60 s retries let a fast poller starve a slow one for hours, and the scratch path did not survive a reboot.)
 - Stop only the processes you started, by their PIDs. Never use pkill, killall or a pattern: every lane runs the same render command, so a pattern stops other lanes' renders (this happened on 2026-10-10).
 - Use a scratch folder named after your slug, never a shared name.
 - No git commands that change state.

@@ -146,7 +146,7 @@ node kit/film.mjs prune [--dry-run]  # superseded drafts and renders to the arch
 ```
 
 - `films/<slug>/film.json` (`kit/film.schema.json`; example `films/_smoke/film.json`) sets the kind, the render path (`software` for series films with large animated type, `gpu` for gem smoke), workers, the timeout, the poster and the records; a tracked one names voices, never IDs.
-- Render only through film.mjs: renders take turns in the queue of `motion/.render.lock` (`references/kit.md`). Stop only processes you started, by PID; never pkill, killall or a pattern (2026-10-10).
+- Render only through film.mjs: each film takes its own lock in `motion/.render.locks/<slug>/` (`references/kit.md`). Stop only processes you started, by PID; never pkill, killall or a pattern (2026-10-10).
 - `final` compares A and B by framemd5 and decoded audio; when they differ it keeps both, takes the one matching the previous master and records PSNR and frame ranges in `renders/final.compare.txt`. It refuses a master that misses section 7's targets, is not faststart or has Google Fonts in a log.
 - Nothing is deleted and nothing goes to `out/v<N>/`: the previous final and its records, the previous draft and the A and B MP4s move to `~/gt/motion-archive/<date>/`, listed in its INDEX.md.
 - **Records** that `final` writes: the poster; the contact sheet, PNG and WebP (two frames a second, 384 px tiles, eight to a row, 3 px white gaps, the grid Kevin asked to keep on 2026-10-06); the checking sheet; the script page from the reviewed table and the final's transcript (one `el.mjs hear` call, or the previous one when the audio is unchanged); the credits; a share copy over 50 MB; a KB film's web copy, captions and VideoObject. Add a dated round entry to NOTES.md.
