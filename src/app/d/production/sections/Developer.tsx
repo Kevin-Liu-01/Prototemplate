@@ -510,6 +510,7 @@ export default function V0Developer({ heading }: V0DeveloperProps) {
         >
           <div className='tc-lang is-lead'>
             <SentenceWidth
+              Tag={LocaleTag}
               samples={[
                 ...SENTENCE_SAMPLES,
                 { tag: 'he', name: 'עברית', lang: 'he', rtl: true, text: 'שמור שינויים', hint: '−18%' },

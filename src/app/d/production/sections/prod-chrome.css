@@ -289,10 +289,12 @@
   }
 }
 
-/* a touch screen wider than 640px (a phone on its side, a tablet): the
-   footer's language button keeps live's 36px row while its box reaches
-   the 44px tap floor; the negative margins give the 8px back. Under
-   641px the rule above already grows the row the way live's does. */
+/* every window from 641px to 900px wide, whatever its pointer, and a
+   touch screen wider than 640px and at most 500px tall (a phone on its
+   side): the footer's language button keeps live's 36px row while its
+   box reaches the 44px tap floor; the negative margins give the 8px
+   back, so the layout matches live with a mouse too. Under 641px the
+   rule above already grows the row the way live's does. */
 @media (min-width: 641px) and (max-width: 900px), (min-width: 641px) and (pointer: coarse) and (max-height: 500px) {
   .toolchain-root.prod-root .v0-foot-lang .pc-lang-btn {
     min-height: 44px;

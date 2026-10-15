@@ -3,6 +3,7 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
+import type { ComponentType } from 'react';
 
 import LocaleTag from '../../components/LocaleTag';
 
@@ -80,7 +81,13 @@ export default function SentenceWidth({
   accent = true,
   title,
   samples = SAMPLES,
-}: LangProps & { samples?: readonly Sample[] }) {
+  Tag = LocaleTag,
+}: LangProps & {
+  samples?: readonly Sample[];
+  /** The locale chip each row draws. Hosts with their own flag map (the
+      production mirror) pass theirs; the default is the toolchain chip. */
+  Tag?: ComponentType<{ code: string }>;
+}) {
   const root = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -224,7 +231,7 @@ export default function SentenceWidth({
           >
             <span className='lang-sw-locale'>
               <span className='lang-tag'>
-                <LocaleTag code={sample.tag} />
+                <Tag code={sample.tag} />
               </span>
               <span className='lang-sw-name' lang={sample.lang} dir={sample.rtl ? 'rtl' : undefined}>
                 {sample.name}
