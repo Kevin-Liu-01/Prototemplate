@@ -70,6 +70,7 @@
   "src/components/shared/StorySection.tsx:770",
   "src/components/shared/story/StoryCodeScene.tsx:256",
   "src/lib/glyph-field.ts:126",
+  "src/app/d/production/sections/glyph-field.ts:77",
   "src/lib/dither.ts:334",
   "src/lib/dither.ts:335"
  ],
