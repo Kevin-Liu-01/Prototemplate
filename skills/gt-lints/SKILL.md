@@ -6,7 +6,7 @@ description: >-
   line auditor, shell token lint, practices ratchet, picture lint, type lint,
   gt-ui oxlint copy, the public scan (lint:public), the copies manifest
   (lint:copies), the registries check (lint:registries), the tools index
-  (lint:tools) and page check, and gt-cloud's oxlint plugins, email
+  (lint:tools), the SEO lint (lint:seo) and page check, and gt-cloud's oxlint plugins, email
   identity check and oxfmt. Also covers how a new rule becomes a lint and the
   gate hygiene that keeps a red gate from passing (chained gates, real exit
   codes, one browser gate at a time). Use before committing in either
