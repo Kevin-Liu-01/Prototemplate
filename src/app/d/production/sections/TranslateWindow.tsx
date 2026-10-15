@@ -638,6 +638,15 @@ const isNarrow = () =>
   typeof window !== 'undefined' && window.matchMedia(NARROW_MQ).matches;
 const restCut = () => (isNarrow() ? 100 : REST_CUT);
 
+/* ---- the phone's mark squares: home.css pads each mark into a 40px
+   square under this query, so a mark the typing carries toward the
+   seam re-files while it moves. Must agree with that sheet; the
+   desktop never matches it and re-files only when the typing ends. */
+const PHONE_MQ =
+  '(max-width: 900px), (pointer: coarse) and (max-height: 500px)';
+const isPhone = () =>
+  typeof window !== 'undefined' && window.matchMedia(PHONE_MQ).matches;
+
 /** A component's inspector mark: the quiet exclamation pinned to its
     component's top-right CORNER — one fixed inset, centred on the corner
     point, the same on every component (founder: no floating offsets).
@@ -1601,14 +1610,15 @@ export default function TranslateWindow({
         return;
       }
 
-      /* the text-hugging marks ride their corners while the lines type,
-         so they re-file against the cut on every tick of the swap, not
-         only once it settles: a mark carried past the line never stays
-         live over it */
+      /* the text-hugging marks land on new corners when the swap
+         settles — re-file them against the cut once the typing is done.
+         On a phone (PHONE_MQ) they ride their corners while the lines
+         type, so they re-file on every tick of the swap as well: a mark
+         carried past the line never stays live over it */
       rewrite.current?.kill();
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
-        onUpdate: reconcileMarks,
+        onUpdate: isPhone() ? reconcileMarks : undefined,
         onComplete: reconcileMarks,
       });
       rewrite.current = tl;

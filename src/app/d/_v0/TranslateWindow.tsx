@@ -629,10 +629,11 @@ const restCut = () => (isNarrow() ? 100 : REST_CUT);
 
 /* ---- the phone's hit areas: the homes' home.css pads each mark into a
    40px square and narrows the seam's slab to 44px under this query (the
-   dossier only below 900px wide; wider, its review rig covers the slab's
-   right side, so it keeps the 64px slab), and the component keeps every mark and belt chip it would let a tap reach
-   at 40px or more, overlapping nothing. Must agree with those sheets;
-   the desktop never matches it. */
+   dossier only below 900px wide; wider, its review rig covers the
+   slab's right side, so it keeps the 64px slab), and the component
+   keeps every mark and belt chip it would let a tap reach at 40px or
+   more, overlapping nothing. Must agree with those sheets; the desktop
+   never matches it, and nothing filed under it runs there. */
 const PHONE_MQ =
   '(max-width: 900px), (pointer: coarse) and (max-height: 500px)';
 const isPhone = () =>
@@ -960,28 +961,29 @@ export default function TranslateWindow({
      whose centre sits right of the cut are filed data-swept (hidden and
      pointer-inert — indistinguishable from being covered), and marks on
      the visible render win their own clicks inside the slab's fringe.
-     The cut is where the seam's line is drawn: at either end the line
-     parks 4.5px inside the card (reveal-seam.css), so a mark whose centre
-     sits between that line and the card's edge is right of the line and
-     files swept, instead of covering the line. On a phone (PHONE_MQ) the
-     mark is a 40px square ending at its badge's right edge and the slab
-     is 44px or 64px wide, so a mark files swept once its square would
-     reach into the slab: the two hit areas never overlap. */
+     On a phone (PHONE_MQ) the mark is a 40px square ending at its
+     badge's right edge and the slab is 44px or 64px wide, so a mark
+     files swept once its square would reach into the slab: the two hit
+     areas never overlap. The slab is centred on the seam's line, which
+     parks 4.5px inside the card at either end (reveal-seam.css); both
+     are read from the dial, not the seam's box, which can still hold
+     the last cut in the frame a write lands. */
   const reconcileMarks = () => {
     const el = app.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
     if (r.width === 0) return;
-    const seam = el.querySelector('.tc-seam')?.getBoundingClientRect();
     const now = parseFloat(getComputedStyle(el).getPropertyValue('--seam-cut'));
-    const cutX = seam?.width
-      ? (seam.left + seam.right) / 2
-      : r.left + (r.width * (Number.isFinite(now) ? now : REST_CUT)) / 100;
-    const phone = isPhone() && !!seam?.width;
+    const pct = Number.isFinite(now) ? now : REST_CUT;
+    const cutX = r.left + (r.width * pct) / 100;
+    const slab = isPhone()
+      ? el.querySelector<HTMLElement>('.tc-seam')?.offsetWidth ?? 0
+      : 0;
+    const line = Math.min(Math.max(cutX, r.left + 4.5), r.right - 4.5);
     for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
       const mr = m.getBoundingClientRect();
-      const swept = phone
-        ? mr.right > (seam?.left ?? cutX)
+      const swept = slab
+        ? mr.right > line - slab / 2
         : mr.left + mr.width / 2 > cutX;
       if (swept) m.setAttribute('data-swept', '');
       else m.removeAttribute('data-swept');
@@ -1171,7 +1173,7 @@ export default function TranslateWindow({
          until the belt carries it back in: the clip, not the chip, would
          take the rest of a tap there, and the belt under it takes the tap
          as a drag. Its look does not change. */
-      const phone = isPhone();
+      const phone = window.matchMedia(PHONE_MQ);
       const fileEdges = () => {
         const zone = beltEl.clientWidth;
         chips.forEach((chip, i) => {
@@ -1184,8 +1186,14 @@ export default function TranslateWindow({
       };
       const setX = () => {
         gsap.set(trackEl, { x: -pos });
-        if (phone) fileEdges();
+        if (phone.matches) fileEdges();
       };
+      /* crossing the query re-files the chips, or frees every one */
+      const onPhone = () => {
+        if (phone.matches) fileEdges();
+        else for (const chip of chips) chip.inert = false;
+      };
+      phone.addEventListener('change', onPhone);
       const chipCenter = (i: number) => (lefts[i] ?? 0) + (widths[i] ?? 0) / 2;
       const seat = (i: number) => {
         pos = wrap(chipCenter(i) - beltEl.clientWidth / 2);
@@ -1541,6 +1549,7 @@ export default function TranslateWindow({
         beltEl.removeEventListener('pointerenter', over);
         beltEl.removeEventListener('pointerleave', out);
         window.removeEventListener('resize', onBeltResize);
+        phone.removeEventListener('change', onPhone);
         beltApi.current = null;
       };
     },

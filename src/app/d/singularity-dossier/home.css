@@ -114,7 +114,7 @@
    it: 40.5px. A phone on its side wider than 900px (932x430) keeps the
    64px slab: the hero's review-rig pills cover its right side from 11px
    right of the line, so the 32px it keeps on the left holds the tap at
-   43.5px, where a 44px slab left 33.5px. The third stat runs to the
+   43px, where a 44px slab left 33px. The third stat runs to the
    card's edge at 390px wide and past the line on narrower phones, so its
    mark files swept there. */
 @media (max-width: 900px) {
