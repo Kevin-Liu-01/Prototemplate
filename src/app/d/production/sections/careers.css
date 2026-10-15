@@ -597,6 +597,17 @@
   white-space: nowrap;
 }
 
+/* On a phone, upright or on its side, the address takes a 44.75px row:
+   10px of padding above and below its 24.75px line (15px at 1.65). The
+   margins give the padding back, so the text sits where it did. */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .prc-root .prc-email {
+    margin-top: 18px;
+    margin-bottom: -10px;
+    padding-block: 10px;
+  }
+}
+
 .prc-root .prc-glyph-scene {
   position: relative;
   min-width: 0;
