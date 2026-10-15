@@ -81,9 +81,9 @@ function LinkedInMark({ className, color, ...rest }: MarkProps) {
  *
  * The production concept follows the live footer-links.tsx (gt-cloud
  * apps/landing/src/components/landing/shell, origin/main): Supported Locales
- * at /supported-locales, the Report Card label, and the Guides rows on their
- * quickstart pages. The social venues are the live addresses for every
- * concept, since they are facts about General Translation. */
+ * at /supported-locales, the Report Card label, the Guides and Documentation
+ * rows on their docs pages, and the live social addresses. The other
+ * concepts keep the addresses they were drawn with. */
 const PRODUCTION = "/d/production";
 
 const columns = (
@@ -96,20 +96,25 @@ const columns = (
     links: [
       {
         label: "Locadex Agent",
-        href: `${DOCS}/platform/locadex/quickstart`,
+        href: isProduction ? `${DOCS}/platform/locadex/quickstart` : DOCS,
         external: true,
         mark: LocadexMark,
       },
       {
         label: "Next.js",
-        href: `${DOCS}/react/nextjs-quickstart`,
+        href: isProduction ? `${DOCS}/react/nextjs-quickstart` : DOCS,
         external: true,
         mark: SiNextdotjs,
       },
-      { label: "React", href: `${DOCS}/react/overview`, external: true, mark: SiReact },
+      {
+        label: "React",
+        href: isProduction ? `${DOCS}/react/overview` : DOCS,
+        external: true,
+        mark: SiReact,
+      },
       {
         label: "React Native",
-        href: `${DOCS}/react/react-native-quickstart`,
+        href: isProduction ? `${DOCS}/react/react-native-quickstart` : DOCS,
         external: true,
         mark: SiReact,
       },
@@ -118,7 +123,11 @@ const columns = (
   {
     title: "Resources",
     links: [
-      { label: "Documentation", href: `${DOCS}/overview/get-started`, external: true },
+      {
+        label: "Documentation",
+        href: isProduction ? `${DOCS}/overview/get-started` : DOCS,
+        external: true,
+      },
       { label: "Blog", href: `${base}/blog` },
       { label: "Pricing", href: `${base}/pricing` },
       {
@@ -143,19 +152,23 @@ const columns = (
       },
       {
         label: "X",
-        href: "https://x.com/generaltxn",
+        href: isProduction ? "https://x.com/generaltxn" : "https://x.com/generaltranslation",
         external: true,
         mark: SiX,
       },
       {
         label: "LinkedIn",
-        href: "https://www.linkedin.com/company/generaltranslation",
+        href: isProduction
+          ? "https://www.linkedin.com/company/generaltranslation"
+          : "https://www.linkedin.com/company/general-translation",
         external: true,
         mark: LinkedInMark,
       },
       {
         label: "Discord",
-        href: "https://discord.gg/SjQwPjZaGa",
+        href: isProduction
+          ? "https://discord.gg/SjQwPjZaGa"
+          : "https://discord.gg/generaltranslation",
         external: true,
         mark: SiDiscord,
       },

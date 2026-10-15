@@ -19,7 +19,7 @@
  * `nameWithRegionCode` — not the capitalized heading the card prints.
  */
 
-import { SUPPORTED_LOCALES, type LocaleProperties } from './locales-data';
+import { PROD_SUPPORTED_LOCALES, type LocaleProperties } from './locales-data';
 
 /** Hardcoded mappings for common alternative names. */
 export const ALTERNATIVE_NAME_MAPPINGS: { [key: string]: string[] } = {
@@ -29,7 +29,7 @@ export const ALTERNATIVE_NAME_MAPPINGS: { [key: string]: string[] } = {
 };
 
 const BY_CODE = new Map<string, LocaleProperties>(
-  SUPPORTED_LOCALES.map((row) => [row.code, row])
+  PROD_SUPPORTED_LOCALES.map((row) => [row.code, row])
 );
 
 /**
@@ -156,7 +156,7 @@ export function capitalizeLanguageName(language: string): string {
 }
 
 /** Every code the roster serves, in the package's own order. */
-export const SUPPORTED_LOCALE_CODES: string[] = SUPPORTED_LOCALES.map(
+export const SUPPORTED_LOCALE_CODES: string[] = PROD_SUPPORTED_LOCALES.map(
   (row) => row.code
 );
 

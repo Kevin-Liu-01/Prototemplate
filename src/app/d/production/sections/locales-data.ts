@@ -36,7 +36,7 @@ export type LocaleProperties = {
   regionName: string;
   /** region named in the locale itself, a search field only */
   nativeRegionName: string;
-  /** ISO 3166-1 alpha-2, or a UN M.49 number ('419', '001') */
+  /** ISO 3166-1 alpha-2, a UN M.49 number ('419', '001'), or a bare subtag ('EL') */
   regionCode: string;
   /** bare language subtag, a search field */
   languageCode: string;
@@ -46,7 +46,7 @@ export type LocaleProperties = {
   flag: string;
 };
 
-export const SUPPORTED_LOCALES: LocaleProperties[] = [
+export const PROD_SUPPORTED_LOCALES: LocaleProperties[] = [
   { code: "af", name: "Afrikaans", nameWithRegionCode: "Afrikaans", nativeName: "Afrikaans", regionName: "South Africa", nativeRegionName: "Suid-Afrika", regionCode: "ZA", languageCode: "af", emoji: "🇿🇦", flag: "za" },
   { code: "am", name: "Amharic", nameWithRegionCode: "Amharic", nativeName: "አማርኛ", regionName: "Ethiopia", nativeRegionName: "ኢትዮጵያ", regionCode: "ET", languageCode: "am", emoji: "🇪🇹", flag: "et" },
   { code: "ar", name: "Arabic", nameWithRegionCode: "Arabic", nativeName: "العربية", regionName: "Egypt", nativeRegionName: "مصر", regionCode: "EG", languageCode: "ar", emoji: "🇪🇬", flag: "eg" },
@@ -180,3 +180,23 @@ export const SUPPORTED_LOCALES: LocaleProperties[] = [
   { code: "zh-SG", name: "Chinese (Singapore)", nameWithRegionCode: "Chinese (SG)", nativeName: "中文（新加坡）", regionName: "Singapore", nativeRegionName: "新加坡", regionCode: "SG", languageCode: "zh", emoji: "🇸🇬", flag: "sg" },
   { code: "zh-TW", name: "Chinese (Taiwan)", nameWithRegionCode: "Chinese (TW)", nativeName: "中文（台灣）", regionName: "Taiwan", nativeRegionName: "台灣", regionCode: "TW", languageCode: "zh", emoji: "🇹🇼", flag: "tw" },
 ];
+
+/**
+ * The 120-row roster as it stood before the 2026-10-13 regeneration, for the
+ * directions that borrow it (apadana-grid, calendar-rings, screenfold-codex,
+ * clay-tablet, raking-relief, brick-lattice). Those pages were drawn against
+ * this list and stay as they are; only /d/production reads the live 132.
+ * It is PROD_SUPPORTED_LOCALES without the thirteen codes the regeneration
+ * added, with el-EL in el-GR's place.
+ */
+const ADDED_2026_10_13 = new Set([
+  'az', 'be', 'ca-ES', 'cnr', 'el-GR', 'en-MX', 'eu', 'eu-ES', 'ga', 'gl',
+  'gl-ES', 'sr-Latn', 'zgh',
+]);
+
+const EL_EL: LocaleProperties = { code: "el-EL", name: "Greek (EL)", nameWithRegionCode: "Greek (EL)", nativeName: "Ελληνικά (EL)", regionName: "EL", nativeRegionName: "EL", regionCode: "EL", languageCode: "el", emoji: "🌍", flag: "el" };
+
+export const SUPPORTED_LOCALES: LocaleProperties[] = PROD_SUPPORTED_LOCALES.flatMap(
+  (row) =>
+    row.code === 'el-GR' ? [EL_EL] : ADDED_2026_10_13.has(row.code) ? [] : [row]
+);
