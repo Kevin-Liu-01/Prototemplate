@@ -268,6 +268,38 @@
   }
 }
 
+/* a phone on its side: the shared sheets lift the footer to 44px only
+   below 640 or 720px wide, so landscape gets the same floor here, at the
+   same type size, on every production page (home.css held it for the home
+   and careers pages only) */
+@media (pointer: coarse) and (max-height: 500px) {
+  /* the footer rows take the 44px pitch the upright phone already uses */
+  .toolchain-root.prod-root .v0-foot-col ul {
+    gap: 0;
+  }
+
+  .toolchain-root.prod-root .v0-foot-col a,
+  .toolchain-root.prod-root .v0-foot-col button {
+    min-height: 44px;
+  }
+
+  .toolchain-root.prod-root .v0-foot-theme {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* a touch screen wider than 640px (a phone on its side, a tablet): the
+   footer's language button keeps live's 36px row while its box reaches
+   the 44px tap floor; the negative margins give the 8px back. Under
+   641px the rule above already grows the row the way live's does. */
+@media (min-width: 641px) and (max-width: 900px), (min-width: 641px) and (pointer: coarse) and (max-height: 500px) {
+  .toolchain-root.prod-root .v0-foot-lang .pc-lang-btn {
+    min-height: 44px;
+    margin-block: -4px;
+  }
+}
+
 /* ---------- the consent banner ---------- */
 
 .prod-root .pc-consent {

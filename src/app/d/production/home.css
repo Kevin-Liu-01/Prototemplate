@@ -100,23 +100,9 @@
 
 /* a phone on its side: the shared sheets lift these to 44px only below
    640 or 720px wide, so landscape gets the same floor here, at the same
-   type size */
+   type size. The footer's landscape floor lives in sections/prod-chrome.css
+   for every production page. */
 @media (pointer: coarse) and (max-height: 500px) {
-  /* the footer rows take the 44px pitch the upright phone already uses */
-  .toolchain-root.prod-root .v0-foot-col ul {
-    gap: 0;
-  }
-
-  .toolchain-root.prod-root .v0-foot-col a,
-  .toolchain-root.prod-root .v0-foot-col button {
-    min-height: 44px;
-  }
-
-  .toolchain-root.prod-root .v0-foot-theme {
-    min-width: 44px;
-    min-height: 44px;
-  }
-
   .toolchain-root.prod-root .tc-btn:not(.tc-btn-sm) {
     height: 44px;
   }
