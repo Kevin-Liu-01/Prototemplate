@@ -79,9 +79,13 @@
     transform: none;
   }
 
-  /* the quote's post link sits in a row the 48px avatar already holds open */
+  /* the quote's post link: its 21px line grows to a 44px target, and the
+     negative block margins give the 23px back, so the attribution row
+     keeps live's 59px height and the text stays on live's line */
   .toolchain-root.prod-root .v0-glob .tcpq-attr > a {
     min-height: 44px;
+    margin-block: -11.5px;
+    align-items: center;
   }
 
   /* the footer's hit areas live in sections/prod-chrome.css for every
@@ -113,8 +117,7 @@
     min-height: 44px;
   }
 
-  .toolchain-root.prod-root .tc-btn:not(.tc-btn-sm),
-  .toolchain-root.prod-root .v0-dep-btn {
+  .toolchain-root.prod-root .tc-btn:not(.tc-btn-sm) {
     height: 44px;
   }
 }
@@ -125,33 +128,37 @@
    rules, chips and dark slabs from the remapped shell tokens. The shared
    copy in src/app/d/_v0/translate-window.css keeps the earlier literals
    for singularity-dossier, singularity-signal and craft, so the live
-   values are restated here for the production root only. Each rule
-   carries one class more than the shared rule it replaces, so the order
-   in which the two sheets load never decides a value. */
-.toolchain-root.prod-root .v0-tw .sgdh-app-chrome {
+   values are restated here for the production root only.
+
+   The shared sheet's dark rules re-ink the app's rules and seam, and its
+   light rule paints the inspector chip white, so live's base values only
+   show in light: the base restatements carry the light guard, which also
+   keeps them under the dark rules. The dark slabs restate live's dark
+   rules one class deeper. */
+:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw .sgdh-app-chrome {
   border-bottom-color: var(--tc-hair-2);
 }
 
-.toolchain-root.prod-root .v0-tw .sgdh-app-stats {
+:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw .sgdh-app-stats {
   border-top-color: var(--tc-hair-2);
   border-bottom-color: var(--tc-hair-2);
 }
 
-.toolchain-root.prod-root .v0-tw .sgdh-app-stat + .sgdh-app-stat {
+:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw .sgdh-app-stat + .sgdh-app-stat {
   border-left-color: var(--tc-hair-2);
 }
 
-.toolchain-root.prod-root .v0-tw .sgdh-app-chart {
+:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw .sgdh-app-chart {
   border-color: var(--tc-hair);
 }
 
-.toolchain-root.prod-root .v0-tw .sgdh-ins-chip {
-  background: var(--tc-card);
-}
-
-.toolchain-root.prod-root .v0-tw .tct-app .tc-seam {
+:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw .tct-app .tc-seam {
   --seam-ink-l: var(--tc-hair);
   --seam-ink-r: var(--tc-hair);
+}
+
+:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw.tct-win {
+  outline-color: var(--tc-hair);
 }
 
 [data-theme='dark'] .toolchain-root.prod-root .v0-tw .tct-app,
@@ -160,14 +167,6 @@
 [data-theme='dark'] .toolchain-root.prod-root .v0-tw .tct-payload,
 [data-theme='dark'] .toolchain-root.prod-root .v0-tw .tct-app .tc-seam::before {
   background: var(--tc-card);
-}
-
-:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw.tct-win {
-  outline-color: var(--tc-hair);
-}
-
-:root:not([data-theme='dark']) .toolchain-root.prod-root .v0-tw .tct-app .tc-seam {
-  --seam-ink-r: var(--tc-hair);
 }
 
 /* ---------- the dark bands read the card token ----------
@@ -185,4 +184,16 @@
 .toolchain-root.prod-root .tcb .tcb-cell-cli,
 .toolchain-root.prod-root .tcb .tcb-term {
   background: var(--tc-card);
+}
+
+/* ---------- the stack beats keep their display lead on phones ----------
+   The shared _v0/v0-pages.css sets every dark band cell heading to the
+   ladder's 22px under 640px, a rule gt-cloud's v0-pages.css no longer
+   carries, so live's beat headings keep fullstack.css's clamp floor of
+   24px. The stage cut (fullstack.css, .is-stage) sets its own 18px and is
+   left to it. */
+@media (max-width: 640px) {
+  .toolchain-root.prod-root .tcb:not(.is-stage) .tcb-cell .v0-stack-beat h3 {
+    font-size: clamp(24px, 2.4vw, 34px);
+  }
 }

@@ -37,7 +37,7 @@
       "path": "src/lib/glyph-field.ts",
       "mode": "fork",
       "from": "gt-cloud:packages/ui/src/lib/glyph-field.ts",
-      "reason": "the explorations' glyph field; gt-cloud's copy is what the landing ships, and the two are not re-synced"
+      "reason": "the explorations' glyph field; gt-cloud's copy is what the landing ships, and the two are not re-synced beyond the bottomClearance option the production deploy band passes (ported 2026-10-14)"
     },
     {
       "path": "src/lib/horizon-field.ts",

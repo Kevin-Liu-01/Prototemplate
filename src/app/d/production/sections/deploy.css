@@ -8,7 +8,9 @@
    the card token (ink black in dark, white on the day plate) —
    one background, never two; the seam to the paper above is the
    remapping hair token, and the footer below meets the plate on
-   the ground change alone.
+   the ground change alone. The CTAs are the shared tc-btn faces,
+   as on live: the toolchain sheet owns their metrics, inks and
+   hover.
    ============================================================ */
 
 .toolchain-root .v0-dep {
@@ -89,50 +91,6 @@
   flex-wrap: wrap;
 }
 
-/* The house button, recut in band ink: solid-inverse and hairline-outline.
-   Translucent hover fills stop at the border — a hair border over a hair
-   fill would composite darker than the page's other hairlines. */
-.toolchain-root .v0-dep-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 38px;
-  padding: 0 17px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background-clip: padding-box;
-  font-family: var(--tc-sans);
-  font-size: 13.5px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  white-space: nowrap;
-  cursor: pointer;
-  transition:
-    background-color 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease;
-}
-
-.toolchain-root .v0-dep-btn-solid {
-  background: #ffffff;
-  color: #070707;
-}
-
-.toolchain-root .v0-dep-btn-solid:hover {
-  background: rgba(255, 255, 255, 0.86);
-}
-
-.toolchain-root .v0-dep-btn-line {
-  border-color: rgba(255, 255, 255, 0.24);
-  color: rgba(255, 255, 255, 0.86);
-  background: transparent;
-}
-
-.toolchain-root .v0-dep-btn-line:hover {
-  border-color: rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.06);
-}
-
 /* Under 881px the canvas box drops below the engine's 880px wide/narrow
    cut: the field re-lays itself with the word bottom-centered and the
    clearing across the TOP — so the copy re-centers up there and the
@@ -169,7 +127,7 @@
 
 /* ---------- light: the closer is a day plate (founder: "no black
    backgrounds on light") ---------- The engine re-inks off the flipped
-   canvas token; the buttons trade families; the rainbow ring stays. */
+   canvas token; the rainbow ring stays. */
 :root:not([data-theme='dark']) .toolchain-root .v0-dep {
   background: #ffffff;
   color: rgba(7, 7, 7, 0.92);
@@ -177,26 +135,6 @@
 
 :root:not([data-theme='dark']) .toolchain-root .v0-dep-field {
   --tc-ink: #070707;
-}
-
-:root:not([data-theme='dark']) .toolchain-root .v0-dep-btn-solid {
-  background: #070707;
-  color: #f5f5f3;
-}
-
-:root:not([data-theme='dark']) .toolchain-root .v0-dep-btn-solid:hover {
-  background: color-mix(in srgb, #070707 86%, transparent);
-}
-
-:root:not([data-theme='dark']) .toolchain-root .v0-dep-btn-line {
-  border-color: rgba(7, 7, 7, 0.24);
-  color: rgba(7, 7, 7, 0.86);
-}
-
-:root:not([data-theme='dark']) .toolchain-root .v0-dep-btn-line:hover {
-  background: transparent;
-  border-color: rgba(7, 7, 7, 0.34);
-  box-shadow: inset 0 0 0 1px rgba(7, 7, 7, 0.34);
 }
 
 :root:not([data-theme='dark']) .toolchain-root .v0-dep h2 {

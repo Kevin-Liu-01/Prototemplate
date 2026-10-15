@@ -1,4 +1,3 @@
-import '@/app/d/_v0/gt-logo-text.css';
 import './gt-logo-text.css';
 
 /**
@@ -9,8 +8,10 @@ import './gt-logo-text.css';
  * page lost the words "General Translation" from their text layer — a
  * screen reader heard "GT" and a copied sentence came out with a hole in
  * it. The shipped component instead carries a visually hidden text node
- * and marks the glyph decorative, which is what this reproduces. The
- * shared token is left alone: the three proposals mount it too.
+ * and marks the glyph decorative, which is what this reproduces. Its sheet,
+ * gt-logo-text.css, mirrors the shipped one: a 1.14em square mark seated
+ * below the baseline. The shared token and its cropped sheet are left
+ * alone: the three proposals mount them.
  */
 export default function GtLogoText({ className }: { className?: string }) {
   return (

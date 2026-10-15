@@ -158,8 +158,12 @@
   padding-top: 0;
 }
 
+/* the last item's floor: live's last:pb utility adds the seam's 1px and
+   takes back the card's own pad (Global.tsx on gt-cloud main), so the
+   rail's last line sits where live's does; calc() clamps it at 0 where
+   the card pad is the larger */
 .toolchain-root .v0-glob-item:last-child {
-  padding-bottom: 0;
+  padding-bottom: calc(clamp(16px, 1.9vw, 24px) + 1px - var(--tc-card-pad));
 }
 
 .toolchain-root .v0-glob-item + .v0-glob-item {
@@ -270,15 +274,11 @@
   color: var(--tc-ink-2);
 }
 
-/* Native names: the UI face, never mono. Base names carry full ink; the
-   script belt's entries stay a step quieter. */
+/* Native names: the UI face, never mono, in full ink for the base rows
+   and the belt alike (live sets text-tc-ink on both in Global.tsx). */
 .toolchain-root .v0-glob-native {
   font-size: 13px;
   line-height: 1.4;
-  color: var(--tc-ink-2);
-}
-
-.toolchain-root .v0-glob-native.is-base {
   color: var(--tc-ink);
 }
 

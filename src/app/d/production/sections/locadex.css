@@ -354,6 +354,15 @@
    the words keep the top and the evidence holds the floor. Everything
    rides the paper tokens (they remap in dark); marks sit one muted step
    under their names; no rules — the row owns every line here. */
+/* the Connect GitHub row: live spaces it with mt-4 mb-5 on the markup
+   (Locadex.tsx). Here the global :where(*) margin reset in
+   src/app/globals.css is unlayered and outranks Tailwind's utilities
+   layer, so the two offsets are stated in the sheet. */
+.toolchain-root .v0-ldx-acts {
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
 .toolchain-root .v0-ldx-works {
   margin-top: auto;
   padding-top: clamp(28px, 3.2vw, 40px);

@@ -81,20 +81,18 @@ export default function Deploy() {
             Join the world’s best developer teams on General Translation
           </p>
           <div className='v0-dep-acts'>
-            {/* the rainbow-ring CTA — the same ring grammar as the hero's
-                Get started */}
-            <span className='v0-dep-cta'>
-              <a
-                className='v0-dep-btn v0-dep-btn-solid'
-                href={DEPLOY_CTAS.getStarted}
-              >
+            {/* live renders the shared Cta faces here (solid with the
+                rainbow ring, then outline), so the band takes the hero's
+                construction: the tch-cta ring around the tc-btn faces */}
+            <span className='tch-cta'>
+              <a className='tc-btn tc-btn-solid' href={DEPLOY_CTAS.getStarted}>
                 Get Started
               </a>
             </span>
             {/* the demo funnel's one instrumented click on the real page
                 (TrackedLink, posthog cta_clicked, location landing-cta) —
                 here it is the plain link to the same destination */}
-            <a className='v0-dep-btn v0-dep-btn-line' href={DEPLOY_CTAS.demo}>
+            <a className='tc-btn tc-btn-line' href={DEPLOY_CTAS.demo}>
               Get a Demo
             </a>
           </div>

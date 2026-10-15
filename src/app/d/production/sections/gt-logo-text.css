@@ -1,10 +1,32 @@
-/* The brand token's hidden copy, which the shared _v0 sheet does not carry.
-   The mark is decoration; this text node is the single source for both
-   assistive technology and a copied sentence, so "General Translation"
-   survives selection and screen readers exactly as it does on the shipped
-   page. Same rule as apps/landing/src/components/landing/shared/gt-logo-text.css. */
-.toolchain-root .v0-gtword-copy,
-.singularity-root .v0-gtword-copy {
+/* ============================================================
+   GT LOGO TEXT — the inline brand token (GtLogoText.tsx), a
+   rescoped mirror of gt-cloud's
+   apps/landing/src/components/landing/shared/gt-logo-text.css
+   on main. One rule pair, em-sized, so the mark rides any run of
+   copy at that copy's own size. The source PNG is a 1198px
+   square whose glyph fills only rows 221–976 (18.4% transparent
+   top and bottom), so the box oversizes to 1.14em square and
+   seats below the baseline: the visible glyph lands at the text
+   face's cap height, and the line keeps the height live gives it.
+
+   The proposals keep the cropped 0.72em recipe in
+   src/app/d/_v0/gt-logo-text.css. Every rule here carries the
+   production root, so it outranks that sheet whichever loads
+   first, and restates each property the shared sheet sets.
+   ============================================================ */
+
+.toolchain-root.prod-root .v0-gtword {
+  position: relative;
+  display: inline-block;
+  align-items: normal;
+  line-height: 0;
+  vertical-align: -0.21em;
+  white-space: nowrap;
+}
+
+/* Keep real text in the selection and accessibility trees. Chromium does
+   not serialize an inline image's alt text into copied plain text. */
+.toolchain-root.prod-root .v0-gtword-copy {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -13,5 +35,23 @@
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  border-width: 0;
+  border: 0;
+}
+
+/* The glyph is the mask's alpha; currentColor fills it, so the mark
+   always wears the surrounding run's own text color in both themes. */
+.toolchain-root.prod-root .v0-gtword-mark {
+  display: block;
+  width: 1.14em;
+  height: 1.14em;
+  vertical-align: baseline;
+  background: currentColor;
+  -webkit-mask-image: url('/brand/no-bg-gt-logo-light.png');
+  mask-image: url('/brand/no-bg-gt-logo-light.png');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
 }

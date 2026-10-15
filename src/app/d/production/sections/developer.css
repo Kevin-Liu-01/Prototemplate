@@ -454,8 +454,11 @@
    single-column cells end with their artwork nearly kissing the card's
    bottom edge — the demos get a real landing strip under them. 1023px,
    not 720: the bento stacks all the way up there, and the first cut's
-   phone-only window left tablets at the old 17px. */
-@media (max-width: 1023px) {
+   phone-only window left tablets at the old 17px. Live sets it with the
+   head's max-lg:mb-6 utility, which the toolchain's unlayered 28px box
+   gap (styles.css, max-width 720px) outranks on phones, so the 24px
+   holds from 721px to 1023px only. */
+@media (min-width: 721px) and (max-width: 1023px) {
   .toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card > .shell-cell-head {
     margin-bottom: 24px;
   }
