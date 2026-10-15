@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
-import { createGlyphField } from '@/lib/glyph-field';
+import { createGlyphField } from './glyph-field';
 
 import './deploy.css';
 

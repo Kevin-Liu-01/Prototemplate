@@ -37,7 +37,7 @@
       "path": "src/lib/glyph-field.ts",
       "mode": "fork",
       "from": "gt-cloud:packages/ui/src/lib/glyph-field.ts",
-      "reason": "the explorations' glyph field; gt-cloud's copy is what the landing ships, and the two are not re-synced beyond the bottomClearance option the production deploy band passes (ported 2026-10-14)"
+      "reason": "the explorations' glyph field; gt-cloud's copy is what the landing ships, and the two are not re-synced; the production mirror reads its own pinned copy, src/app/d/production/sections/glyph-field.ts"
     },
     {
       "path": "src/lib/horizon-field.ts",
@@ -74,6 +74,13 @@
       "mode": "fork",
       "from": "the review sheet tool (sheet.py) of the New Onboarding and Dashboard session's onboarding PRs (2026-10-10)",
       "reason": "the bundled copy uses Pillow's built-in font unless --font names one and writes no fixed path; the session's copy is not re-synced"
+    },
+    {
+      "path": "src/app/d/production/sections/glyph-field.ts",
+      "mode": "pin",
+      "from": "gt-cloud:packages/ui/src/lib/glyph-field.ts",
+      "sha256": "5cceed0be4c2348b810ba728aa886520f60d3b26f3db365dbf6d84a01c3a593c",
+      "reason": "the production mirror's deploy band draws with the shipped engine (bottom clearance, caliper and label as live, gt-cloud main bff971f590, 2026-10-14); src/lib/glyph-field.ts stays the explorations' fork"
     },
     {
       "path": "src/app/d/production/sections/EdgeGlobe.tsx",
