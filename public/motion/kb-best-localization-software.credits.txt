@@ -1,0 +1,74 @@
+kb-best-localization-software: credits and sources
+What is the best localization software for developers? One of General Translation's product
+films (formerly the knowledge base series, film 8), for its Platform page. The end card links the
+docs page generaltranslation.com/docs/overview/get-started.
+Film: the story cut, 43.78 s, 1920 x 1080, 60 fps. Built from 2026-10-12; built again 2026-10-13 for
+the product pages, with an answer that names General Translation and the docs link, and line 4
+without its opening "With General Translation"; and again that evening, with the answer alone on its
+card and npx said as one word; and again 2026-10-14, with the key words of each heading and of the
+answer in the blue accent. It replaces the recited cut (v1, 42.38 s, 2026-10-10).
+
+SCRIPT
+- From the knowledge base article "What is the best localization software for developers?" by
+  Jackie Chen (2026-10-09), generaltranslation/content kb/best-localization-software.mdx. The film
+  tells it as a story: someone in Mexico City gets the article's Home page in English, because its
+  English is in the component and nothing in the project translates it. The answer on the answer
+  card is the article's summary shortened to one sentence (its criterion, without the "instead of"
+  clause), with General Translation as its subject: "General Translation covers the whole pipeline,
+  from your code to translation and delivery." The steps are General Translation's own pipeline
+  from the article and the docs (generaltranslation/content docs/en-US: the gt init and gt
+  translate pages, the Next.js quickstart, the Locadex quickstart and automation pages): npx gt
+  init, the content in a <T> component, one command in the build, and Locadex's pull requests once
+  the repository is connected. Mexico City is a sample place; the film says nothing about anyone
+  there. The code, commands and file names are checked against the docs and the open-source code
+  (generaltranslation/gt main 1e3cc41: gt-next 11.4.11, gt 2.26.1). It names no other company,
+  states no speed or price, and makes no claim about another product. BRIEF.md cites each line.
+
+CODE ON SCREEN
+- app/page.tsx: the article's example, with its paragraph set over two rows (JSX reads it as the
+  same text), first with a fragment where <T> goes and then with its content in <T>.
+- The project's files: create-next-app's App Router files (vercel/next.js), then with
+  gt.config.json, and the repository with public/_gt/ and its three files and the
+  loadTranslations.js that npx gt init writes at the project root.
+- package.json: the Next.js quickstart's build script; "next build" is create-next-app's
+  default. public/_gt/ and its files: the output path npx gt init sets (the quickstart's
+  files.gt.output) for the film's locales, de, ja and es.
+
+THE APP PAGE AND THE PULL REQUEST
+- The page's English strings are the article's: Welcome to our app, This content is translated
+  automatically. The German, Japanese and Spanish strings were written for this film as drafts;
+  they are not output of General Translation's API, and they wait for a native speaker's review.
+  kb.json (scene.screen.blocks) holds every one of them.
+- The language code over the page's corner (es, then de, ja and es) is the language the visitor's
+  browser asks for, which gt-next reads. The page has no language menu.
+- The pull request is a generic drawing (bars, a branch line, the changed files); it shows no
+  other company's interface, and no title, number, author or branch name.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, which kit/kb/kb-story.js names by the text's
+  language; no face is fetched.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Seven takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: five recorded 2026-10-12 (one of them twice), and the answer and line 4
+  recorded again 2026-10-13, the answer with the question sent before it so it reads as a reply,
+  and line 4 once more that evening with npx said as one word. None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js), its screen module (kit/kb/kb-screen.js) for the app page and its kbx
+  module (kit/kb/kbx.js) for the pull request.

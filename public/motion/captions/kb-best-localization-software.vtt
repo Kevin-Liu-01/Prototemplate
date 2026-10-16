@@ -1,0 +1,45 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.550
+In Mexico City, a reader of Spanish
+gets your Home page in English.
+
+2
+00:00:05.980 --> 00:00:10.450
+Its English is in the component, and
+nothing in the project translates it.
+
+3
+00:00:11.320 --> 00:00:13.930
+General Translation
+covers the whole pipeline,
+
+4
+00:00:14.420 --> 00:00:17.050
+from your code to
+translation and delivery.
+
+5
+00:00:17.920 --> 00:00:23.390
+Run npx gt init and wrap the content in
+a T component, with no keys to write.
+
+6
+00:00:24.000 --> 00:00:28.850
+One command in your build writes the
+German, Japanese and Spanish translations.
+
+7
+00:00:29.320 --> 00:00:31.090
+Once your repository is connected,
+
+8
+00:00:31.420 --> 00:00:36.350
+Locadex can open a pull request
+with new translations when you push.
+
+9
+00:00:36.860 --> 00:00:40.230
+In Mexico City, the Home
+page now opens in Spanish.

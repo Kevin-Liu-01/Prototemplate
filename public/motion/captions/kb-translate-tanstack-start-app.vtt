@@ -1,0 +1,54 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.490
+In Kyoto, a Japanese browser gets
+your TanStack Start page in English.
+
+2
+00:00:06.000 --> 00:00:10.090
+The server renders this
+English JSX for every request,
+
+3
+00:00:10.400 --> 00:00:12.430
+and nothing reads its language.
+
+4
+00:00:13.320 --> 00:00:18.630
+General Translation lets you translate a
+TanStack Start app with gt-tanstack-start.
+
+5
+00:00:19.460 --> 00:00:23.210
+Install the experimental
+gt-tanstack-start package,
+
+6
+00:00:23.320 --> 00:00:27.030
+and call initializeGT with
+your languages and a loader.
+
+7
+00:00:27.540 --> 00:00:31.130
+Register gtMiddleware to
+read each request's language,
+
+8
+00:00:31.480 --> 00:00:34.370
+and pass it from the
+root route to GTProvider.
+
+9
+00:00:34.900 --> 00:00:39.910
+Wrap the page in T, sign in,
+and run npx gt translate.
+
+10
+00:00:40.460 --> 00:00:42.900
+Now a Spanish browser
+gets the page in Spanish,
+
+11
+00:00:42.940 --> 00:00:45.250
+and the one in Kyoto gets Japanese.

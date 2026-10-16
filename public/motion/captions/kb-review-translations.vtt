@@ -1,0 +1,53 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:04.610
+In Lima, your reviewer wants a word
+removed from the Spanish start button.
+
+2
+00:00:05.120 --> 00:00:08.570
+The label lives in es.json
+in your repository,
+
+3
+00:00:08.720 --> 00:00:10.890
+and your reviewer does not edit code.
+
+4
+00:00:11.780 --> 00:00:15.760
+General Translation lets you edit any
+translation on the Translations page in
+
+5
+00:00:15.800 --> 00:00:16.670
+the Dashboard.
+
+6
+00:00:17.540 --> 00:00:21.570
+Compare French and Japanese
+with the Spanish side by side.
+
+7
+00:00:22.100 --> 00:00:25.610
+Click the Spanish cell,
+remove the word, and click Save.
+
+8
+00:00:26.180 --> 00:00:29.510
+Add labels and comments so
+your team can track the review.
+
+9
+00:00:29.940 --> 00:00:34.650
+To bring Dashboard edits into your
+repository, run a Locadex automation,
+
+10
+00:00:34.780 --> 00:00:36.490
+which opens a pull request.
+
+11
+00:00:37.000 --> 00:00:41.130
+After the merge, the Spanish
+button in Lima is one word shorter.

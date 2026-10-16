@@ -1,0 +1,63 @@
+kb-translate-srt-subtitles: credits and sources
+How do I translate SRT subtitles? One of General Translation's product films, for its video page
+(/product/video). The end card points to the docs page,
+generaltranslation.com/docs/cli/reference/formats/srt-files.
+Film: the story cut, 51.33 s, 1920 x 1080, 60 fps. Built 2026-10-14.
+
+SCRIPT
+- From General Translation's docs page "SRT" (generaltranslation/content
+  docs/en-US/cli/reference/formats/srt-files.mdx, main 361ec4a8), with the CLI quickstart, the
+  configuration reference, the credentials guide and the gt translate reference beside it. The film
+  tells it as a story: someone in Santiago who reads Spanish turns on the subtitles of a product
+  video and every line is English, because the video has one SRT file and its cues are English. The
+  answer on the answer card is the page's opening line with General Translation as its subject:
+  "General Translation translates the text in SRT subtitle files and keeps every timestamp." The
+  steps are the docs': install gt, list the subtitle files in gt.config.json with a [locale] folder,
+  sign in, set the project ID and run npx gt translate; each new file keeps the timing lines and cue
+  numbers. Santiago is a sample place; the film says nothing about anyone there. The code, commands
+  and file names are checked against the docs and the open-source code (generaltranslation/gt at
+  1048f503, gt 2.26.5). BRIEF.md cites each one. The research brief is by research lane R1 of the
+  Videos session.
+
+CODE ON SCREEN
+- subtitles/en/intro.srt (cue 12 is the video page's cue and timing line, cue 13 the film's own
+  English), Terminal (npm install gt --save-dev, npx gt login, npx gt translate), gt.config.json
+  (the docs' file exactly), .env.local with the docs' placeholder GT_PROJECT_ID=your-project-id,
+  and cue 12 of subtitles/en/intro.srt over cue 12 of subtitles/es/intro.srt. No real project ID or
+  key appears.
+
+THE VIDEO PAGE
+- The cue and its Spanish and French are the strings of General Translation's own video page
+  (gt-cloud apps/landing/src/components/pages/seo/SubtitleStage.tsx); they are drafts written for
+  that page, not output of General Translation's API, and they wait for a native speaker's review.
+  kb.json holds every one of them. The subtitle menu's labels are each language's own name. The
+  video's picture is drawn in bars, with no words. The play glyph is Lucide 0.488.0 play (ISC,
+  Lucide contributors); the menu's chevron is Heroicons 2.2.0 16 solid chevron-down (MIT, Tailwind
+  Labs).
+- The language code over the page's corner (es) is the language the viewer's browser asks for.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Seven takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs, recorded 2026-10-14 (line config recorded twice, the second used), the
+  answer with the question sent before it so it reads as a reply. None is slowed, sped or stretched.
+
+MUSIC
+- The product films' series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js), its screen module (kit/kb/kb-screen.js) and its video module
+  (kit/kb/kb-video.js) for the video page and its player.

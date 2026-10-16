@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:04.410
+In Frankfurt, a reader of German
+plays your product walkthrough,
+
+2
+00:00:04.760 --> 00:00:06.330
+and every word is English.
+
+3
+00:00:06.800 --> 00:00:11.130
+It was recorded once in English, and a
+recording replays the text it captured.
+
+4
+00:00:12.000 --> 00:00:13.840
+General Translation lets you replay a
+
+5
+00:00:13.880 --> 00:00:17.210
+walkthrough with gt-rrweb
+in every language.
+
+6
+00:00:18.120 --> 00:00:24.530
+Install gt-rrweb, and turn on _tagIds
+so each T component carries its hash.
+
+7
+00:00:25.020 --> 00:00:28.390
+Mount GTRecorder with
+your app's catalog loader,
+
+8
+00:00:28.740 --> 00:00:31.690
+and record in English with
+German and Japanese listed.
+
+9
+00:00:32.180 --> 00:00:34.670
+Render GTReplayer with the saved bundle,
+
+10
+00:00:34.840 --> 00:00:37.290
+which carries the German
+and Japanese text.
+
+11
+00:00:37.780 --> 00:00:41.710
+In Frankfurt, the same walkthrough
+switches in place to Japanese,
+
+12
+00:00:41.800 --> 00:00:44.190
+then German, with the same clicks.

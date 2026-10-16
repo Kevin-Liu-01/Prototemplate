@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:03.430
+In Cairo, a browser asks for Arabic,
+
+2
+00:00:03.580 --> 00:00:05.990
+and your page still shows
+its count in English.
+
+3
+00:00:06.440 --> 00:00:09.570
+Its plural comes from a
+check for n equals one,
+
+4
+00:00:09.860 --> 00:00:13.650
+and Arabic needs different
+sentences for two, three and eleven.
+
+5
+00:00:14.520 --> 00:00:18.490
+General Translation handles plurals
+in React with the Plural component.
+
+6
+00:00:19.360 --> 00:00:26.080
+Run npx gt init, sign in, then give
+Plural the count and sentences for zero,
+
+7
+00:00:26.120 --> 00:00:28.030
+for one and for more.
+
+8
+00:00:28.480 --> 00:00:31.770
+Wrap it in a T component,
+with the count inside Num.
+
+9
+00:00:32.580 --> 00:00:36.800
+Run npx gt translate, and it
+writes the sentences that Spanish,
+
+10
+00:00:36.840 --> 00:00:38.670
+Japanese and Arabic need.
+
+11
+00:00:39.140 --> 00:00:42.850
+In Cairo, Plural now picks
+the Arabic sentence for two,
+
+12
+00:00:43.020 --> 00:00:44.910
+for three and for eleven.

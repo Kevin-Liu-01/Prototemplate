@@ -1,0 +1,70 @@
+kb-translate-google-slides: credits and sources
+How do I translate Google Slides? The launch film for Locadex, General Translation's Google
+Workspace add-on, and one of its product films (formerly the knowledge base series), for the
+add-on's launch post, X, the Marketplace listing's promo video slot and the Google Slides page.
+Film: the story cut, 50.3 s, 1920 x 1080, 60 fps. Built 2026-10-12; built again 2026-10-13 for the
+product pages, with an answer that names General Translation; and again that evening, with the
+answer alone on its card; and again 2026-10-14, with the key words of each heading and of the answer
+in the blue accent. It replaces the recited cuts (v1 and v2, 40.43 s, 2026-10-10).
+
+SCRIPT
+- Written for this film from the Locadex listing on the Google Workspace Marketplace
+  (workspace.google.com/marketplace/app/locadex/718285487823, read 2026-10-09), the add-on's source
+  (generaltranslation/gt-google-workspace at 6f6d865: src/Plugin.js, src/Sidebar.html,
+  docs/API_CONTRACT.md) and General Translation's Google Drive docs (generaltranslation/content
+  docs/en-US/integrations/google-drive). The film tells the add-on's use as a story: Acme's team in
+  Berlin needs its launch deck in German and every slide is in English, because Drive holds only
+  the English deck and translated text rarely takes the same space as the English; the question and
+  its answer in the middle of the film ("General Translation lets you choose languages in the
+  Locadex add-on and click Sync and apply."); Extensions, Locadex, the languages and Sync and
+  apply; the copies with the slides' layout kept, next to the original in Drive. Acme is the
+  listing's sample company and Berlin a sample place; the film says nothing about anyone there.
+  BRIEF.md and the script cite each claim.
+
+THE PRODUCT ON SCREEN
+- The Locadex sidebar is the add-on's own: its markup (captured from its own render functions),
+  its stylesheet and its paintProgress, from src/Sidebar.html at 6f6d865
+  (FSL-1.1-ALv2, General Translation), driven with status rows in the shapes of
+  docs/API_CONTRACT.md. Pixel-identical to the add-on at 2x (tools/check-gws.mjs). Its logo is the
+  Locadex mark (generaltranslation.com/brand/locadex-light-no-bg.svg).
+- The Google Slides editor and the Google Drive folder are drawings of those products
+  (after motion/stills/locadex-listing/editor.js). Google Docs, Google Slides and Google Drive are
+  trademarks of Google LLC.
+- The deck, "Launch plan 2027", is a made-up company's (Acme), from
+  motion/stills/locadex-listing/deck.js, in English and its translations. Its translations were
+  written for the Marketplace screenshots; they are not output of General Translation's API, and
+  they wait for a native speaker's review. lib/deck.js holds every one of them.
+- The copies' names follow the integration's rule (gt-cloud
+  packages/integrations/src/providers/google-drive/workflows/copyName.ts).
+- The language code over the panel's corner (de, ja, zh) is the language the team presents in,
+  then the language of the copy on screen.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and in the credit line, the Locadex mark (motion/kit/brand/locadex-mark.svg, cropped) in
+  the credit line, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist (vercel/geist-font, SIL Open Font License 1.1) in the add-on's sidebar, as the add-on sets it.
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for the
+  language code.
+- Japanese and Chinese use this machine's system faces (Hiragino Sans, PingFang SC) through
+  var(--font)'s fallback.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, recorded 2026-10-12
+  through kit/kb/take.mjs and kit/audio/el.mjs (the three lines that say Locadex recorded again
+  that afternoon), and the answer recorded again 2026-10-13, with the question sent before it so it
+  reads as a reply. None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed (kit/kb/audio/series-bed.mp3; ElevenLabs Music API, music_v1,
+  instrumental, composed once for the series on 2026-10-09), played from one of its bar lines by
+  lib/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works and the knowledge base series (motion/kit/kb):
+  black ground, white type, a 2 px panel frame with corner crosses, one blue accent.

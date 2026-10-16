@@ -1,0 +1,72 @@
+kb-translate-conditional-jsx: credits and sources
+How do I translate conditional text in JSX? One of General Translation's product films (formerly
+the knowledge base series, film 6), for its React page. The end card links the docs page
+generaltranslation.com/docs/react/guides/handling-plurals-and-branches.
+Film: the story cut, 46.08 s, 1920 x 1080, 60 fps. Built 2026-10-12; built again 2026-10-13 for the
+product pages, with an answer that names General Translation and the docs link; and again that
+evening, with the answer alone on its card and npx said as one word; and again 2026-10-14, with the
+key words of each heading and of the answer in the blue accent. It replaces the recited cuts (v1,
+38.38 s, and v2, 40.62 s, both 2026-10-10).
+
+SCRIPT
+- From the knowledge base article "How do I translate conditional text in JSX?" by Ernest McCarter
+  (2026-10-09), generaltranslation/content kb/translate-conditional-jsx.mdx. The film tells the
+  article's case as a story: someone in Shanghai opens a page and its lunch sentence is in English,
+  because its place, home or work, comes from a ternary of English words and nothing in the app
+  translates the sentence. The answer on the answer card is the article's summary without its
+  opening "Instead of" clause and its reason clause, with General Translation as its subject:
+  "General Translation lets you wrap whole sentences in T and express conditions with Branch." The
+  steps are the setup (npx gt init, with the languages and the sign-in that npx gt translate
+  needs), the article's <T> with a <Branch>, and npx gt translate. Shanghai is a sample place; the
+  film says nothing about anyone there. The code, commands and claims are checked against General
+  Translation's docs (generaltranslation/content docs/en-US) and the open-source code
+  (generaltranslation/gt main 1e3cc41: gt-react 11.4.11, gt 2.26.1). BRIEF.md and the script cite
+  each one.
+
+CODE ON SCREEN
+- Lunch.jsx, before and after: the article's sentence (lines 59 to 61) with the ternary the
+  article describes (lines 11 to 13 and 28), then with <T> and the article's <Branch>, its props on
+  their own rows, and the import from gt-react.
+- The terminal's npx gt init is the CLI's setup wizard (docs/en-US/cli/reference/commands/init.mdx);
+  gt.config.json is the React quickstart's form with this film's locales, ja and zh.
+- The Chinese translation is the article's (lines 78 to 82), labelled as the translation <T>
+  renders, not code a developer writes.
+
+THE APP PAGE
+- The English sentence is the article's. The Chinese sentences for home and for work are the
+  article's (lines 71 and 72). The Japanese sentence was written for this film and checked in a
+  second pass. None of the page's translations is output of General Translation's API, and each
+  waits for a native speaker's review, as does the reading that both languages put the place
+  before the verb. kb.json (scene.screen.states) holds every one of them.
+- The page has no language menu. The language code over its corner (zh, en, ja) is the language
+  the visitor's browser asks for, which gt-react reads.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans and Chinese in its PingFang SC, named by the kit
+  for text with lang="ja" and lang="zh-Hans" (kit/kb/kb-story.js, langFaces; system faces, fetched
+  from nowhere).
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Seven takes, one per line, recorded 2026-10-12
+  through kit/kb/take.mjs and kit/audio/el.mjs (the init line taken twice), the answer recorded
+  again 2026-10-13, with the question sent before it so it reads as a reply, and the two lines that
+  say npx (init and translate) recorded again that evening, with npx said as one word. None is
+  slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb and its story stage,
+  kit/kb/kb-story.js.

@@ -1,0 +1,73 @@
+kb-translate-react-app: credits and sources
+How do I translate a React app? One of General Translation's product films (formerly the
+knowledge base series, film 10), for its React page. The end card points to the docs page,
+generaltranslation.com/docs/react/react-spa-quickstart.
+Film: the story cut, 48.97 s, 1920 x 1080, 60 fps. Built from 2026-10-12; built again 2026-10-13 for
+the product pages, with an answer that names General Translation; and again that evening, with the
+answer alone on its card and npx said as one word; and again 2026-10-14, with the key words of each
+heading and of the answer in the blue accent, and JSON said "j-sawn". It replaces the recited cut
+(v1, 44.62 s, 2026-10-10).
+
+SCRIPT
+- From General Translation's docs page "React SPA Quickstart" (generaltranslation/content
+  docs/en-US/react/react-spa-quickstart.mdx, main 261320d), with the loader from
+  docs/en-US/react/guides/spa/configuring-vite-spa.mdx. The film covers single-page React apps
+  (Vite); server-rendered and React Router apps have their own quickstarts. It tells the quickstart
+  as a story: someone in Paris gets the app in English although the browser asks for French,
+  because its only text is English and the app loads no other language. The answer on the question
+  card is the quickstart's steps in one sentence with General Translation as its subject: "General
+  Translation lets you initialize gt-react before the app renders and wrap its text in T." The
+  steps are the quickstart's: gt.config.json and a loadTranslations file, an entry file that calls
+  initializeGTSPA before the rest of the app loads, <T>, and sign in, the project ID and npx gt
+  translate; the entry file imports gt-react, and its install stays on the docs page. Paris is a
+  sample place; the film says nothing about anyone there. The code, commands and file names are
+  checked against the docs and the open-source code (generaltranslation/gt: gt-react and
+  @generaltranslation/react-core 11.4.11, gt 2.26.1). BRIEF.md cites each one. The research brief
+  is by the knowledge base series' research lane (BRIEF.md, sections 1 to 8).
+
+CODE ON SCREEN
+- src/components/Welcome.tsx before and after <T>, gt.config.json, src/index.ts, index.html, the
+  terminal commands and .env.local: the quickstart's code; src/loadTranslations.ts: the Vite
+  guide's. Long lines are in Prettier's wrapped form, two trailing comments and one blank row are
+  left out, and src/index.ts and index.html are set at 30 px so each file fits the panel, as
+  BRIEF.md section 9 says.
+- GT_PROJECT_ID uses the docs' placeholder, your-project-id. No key is shown.
+
+THE APP PAGE
+- The page's English strings are the quickstart's: Welcome to my app, This content will be
+  translated automatically. The Spanish, French and Japanese strings are drafts written for this
+  film and film 9; they are not output of General Translation's API, and they wait for a native
+  speaker's review. kb.json (scene.screen.blocks) holds every one of them.
+- The language code over the page's corner (fr, then es, ja and fr) is the language each visitor's
+  browser asks for, which gt-react reads before the app renders. The page has no language menu.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, which kit/kb/kb-story.js names by the text's
+  language; no face is fetched.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: five recorded 2026-10-12, the answer's recorded 2026-10-13 with the question
+  sent before it so it reads as a reply, and two recorded 2026-10-10 for the recited cut, whose
+  lines are the same word for word. The translate line, which says npx, was recorded again
+  2026-10-13 evening, with npx said as one word, in place of its take of 2026-10-10, and the config
+  line, which says JSON, was recorded again 2026-10-14, with JSON said "j-sawn", in place of its
+  take of 2026-10-12. None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js) and its screen module (kit/kb/kb-screen.js) for the app page.

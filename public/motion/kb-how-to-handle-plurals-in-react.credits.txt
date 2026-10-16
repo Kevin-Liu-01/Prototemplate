@@ -1,0 +1,78 @@
+kb-how-to-handle-plurals-in-react: credits and sources
+How do I handle plurals in React? One of General Translation's product films (formerly the
+knowledge base series), for its React page. The end card links the docs page
+generaltranslation.com/docs/react/guides/handling-plurals-and-branches.
+Film: the story cut, 48.42 s, 1920 x 1080, 60 fps. Built 2026-10-12, and built and rendered again
+the same day with the sign-in on the kit's second round (the question card's exit, the Japanese
+face); built again 2026-10-13 for the product pages, with an answer that names General Translation
+and the docs link; and again that evening, with the answer alone on its card and npx said as one
+word; and again 2026-10-14, with the key words of each heading and of the answer in the blue accent.
+It replaces the recited cut (v1, 43.17 s, 2026-10-10).
+
+SCRIPT
+- From the knowledge base article "How do I handle plurals in React?" by Archie McKenzie
+  (2026-10-09), generaltranslation/content kb/how-to-handle-plurals-in-react.mdx. The film tells
+  the article's own case as a story: a browser in Cairo asks for Arabic, and a page whose plural
+  comes from a check for n equals one still shows its count in English, while Arabic needs a
+  different sentence for two, three and eleven (the article's lines 33 and 175 to 183). The answer
+  on the answer card is the article's summary in one sentence with General Translation as its
+  subject: "General Translation handles plurals in React with the Plural component." The steps are
+  the article's, with the setup the result needs: npx gt init with a sign-in, <Plural>, <T> with
+  <Num>, and npx gt translate. Cairo is a sample place; the film says nothing about anyone there.
+  The code, commands and claims are checked against General Translation's docs
+  (generaltranslation/content docs/en-US) and the open-source code (generaltranslation/gt main
+  1e3cc41: gt-react 11.4.11, generaltranslation 9.5.6, gt 2.26.1). BRIEF.md cites each one.
+
+CODE ON SCREEN
+- Example.jsx: the article's three examples (lines 30 to 36, 104 to 112 and 212 to 231), reflowed
+  to fit the panel and, in the last two, without their function wrapper, as BRIEF.md section 9
+  lists. npx gt validate (gt 2.26.1) passes the code as shown.
+- The terminal lines, npx gt init and npx gt translate: the CLI's setup wizard and translate
+  command (docs cli/reference/commands/init and translate).
+- .env.local: the two variables npx gt init writes for a Vite app when the developer signs in,
+  VITE_GT_PROJECT_ID and VITE_GT_DEV_API_KEY (docs cli/reference/commands/init, lines 27 and 41 to
+  44), with their values left out (init writes them unquoted, as NAME=value); npx gt translate
+  reads the project ID from it (gt 1e3cc41, BRIEF.md section 10).
+- gt.config.json: the React quickstart's shape with this film's locales (es, ja, ar) and the output
+  folder npx gt init writes for a Vite app.
+
+THE APP PAGE
+- A page that shows a viewer count in the kit's drawing: one sentence and a list of rows, one per
+  viewer. Its English strings are the article's. The Arabic strings are the article's own examples
+  (lines 180 to 183), set right to left with Latin digits; the Spanish and Japanese strings were
+  written for this film and checked in a second pass. None of the page's translations is output of
+  General Translation's API, the film does not say they are, and every one waits for a native
+  speaker's review. kb.json (scene.screen.states) holds every one of them.
+- The page has no language menu. The language code over its corner (ar, es, ja) is the language
+  the visitor's browser asks for; before the app is translated, the page under the code ar is
+  English.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's own Hiragino Sans (W5), which the story stage names for text in
+  Japanese (kit/kb/kb-story.js); Arabic falls back through var(--font) to the machine's Arial, with
+  Inter's digits. Nothing is fetched.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability
+  0.55, style 0.2, speed 1.0; kit/audio/voice.json). Seven takes, one per line, through
+  kit/kb/take.mjs and kit/audio/el.mjs: four recorded 2026-10-10, the answer's take recorded
+  2026-10-13, with the question sent before it so it reads as a reply, and the two lines that say
+  npx (the setup line, with the sign-in, and the translate line) recorded again that evening, with
+  npx said as one word. None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb and its story stage,
+  kit/kb/kb-story.js, which draws the page, and kit/kb/kbx.js, which draws the .env.local panel.

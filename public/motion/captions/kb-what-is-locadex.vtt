@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:03.610
+In Nagoya, your app
+offers Spanish and French,
+
+2
+00:00:03.740 --> 00:00:05.690
+and a Japanese reader gets English.
+
+3
+00:00:06.180 --> 00:00:10.810
+The app's gt.config.json lists
+Spanish and French, and nothing else.
+
+4
+00:00:11.720 --> 00:00:16.880
+General Translation uses its AI agent
+Locadex to open pull requests that
+
+5
+00:00:16.920 --> 00:00:18.110
+translate your app.
+
+6
+00:00:18.940 --> 00:00:23.030
+Connect GitHub in the Dashboard, and
+create an automation from a template.
+
+7
+00:00:23.560 --> 00:00:28.610
+Run setup with Japanese as a target,
+and Locadex opens a pull request.
+
+8
+00:00:29.140 --> 00:00:34.690
+Turn on auto-merge, and Locadex merges
+its pull requests when checks pass.
+
+9
+00:00:35.220 --> 00:00:39.430
+After the merge, the automation
+translates into every target language.
+
+10
+00:00:40.000 --> 00:00:44.370
+Along with Spanish and French, your
+app now opens in Japanese in Nagoya.

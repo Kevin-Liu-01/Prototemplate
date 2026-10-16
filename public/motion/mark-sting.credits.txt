@@ -1,0 +1,36 @@
+mark-sting: credits and sources
+General Translation's logo sting: the bar monogram assembles and the lockup's wordmark draws under it.
+Film: 6.0 s, 60 fps. mark-sting.mp4 (1920 x 1080), mark-sting-square.mp4 (1080 x 1080, laid out
+again for the square frame), mark-sting-alpha.mov (1920 x 1080, paper mark on a transparent ground)
+and mark-sting-alpha-dark.mov (the same with the mark in ink, for light footage), both ProRes 4444;
+each with sound and as a silent copy. Built 2026-10-09; fix pass 2026-10-10 (the official
+wordmark, the band at 30 degrees, the dark alpha render).
+
+THE LOCKUP (General Translation's own; drawn from its source files, true: no redrawing)
+- The bar monogram, one of the speed marks Kevin Liu chose on 2026-09-29: Prototemplate's
+  scripts/build/speed-marks.mjs and public/marks/bar-monogram.svg (identical to
+  motion/kit/marks/bar-monogram.svg). The film rebuilds it from the script's own ten rectangles,
+  12 degree skew and 8 unit cut so its parts can move; the settled frame is the script's geometry.
+- The wordmark: the official lockup's own artwork, the second path of
+  public/marks/bar-monogram-lockup.svg (identical to motion/kit/marks/bar-monogram-lockup.svg),
+  GENERAL TRANSLATION outlined by build-speed-marks.mjs from Michroma (Copyright 2011 The Michroma
+  Project Authors, https://github.com/googlefonts/Michroma-font, SIL Open Font License 1.1). The
+  film splits the path into its 18 letters (lib/wordmark.py, verbatim) and draws them at the
+  lockup's own size and place. The film sets no type and loads no font.
+- One ink: paper #f2f2f0 on ink #070707; the alpha renders carry the mark only (paper, or ink
+  #070707 in the dark render).
+
+THE SCREEN AND THE BAND
+- kit/dither.js (the 8 by 8 Bayer tile), 3 px cells anchored at the frame's top left: the bars'
+  trails, the letters' print and the specular band.
+- The band's 30 degree window follows the site's DitheredMark (gt-cloud
+  apps/landing/src/components/landing/shared/DitheredMark.tsx).
+
+SOUND
+- Two sound effects from the ElevenLabs sound effects API (the sound generation endpoint,
+  through motion/kit/audio/el.mjs), generated 2026-10-09: a quiet whoosh under the speed bars and
+  a soft landing under the G and T. Mixed by lib/mix.py (high-passed, faded, placed, -21.0 LUFS
+  integrated, true peak -2.0 dBTP). No music, no voice.
+
+TOOLS
+- HyperFrames 0.8.106 (composition and render), GSAP 3.15 (kit/gsap.min.js), FFmpeg (mix and checks).

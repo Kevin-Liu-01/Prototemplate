@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.130
+In Seville, a Spanish browser gets
+an English greeting from your server.
+
+2
+00:00:05.680 --> 00:00:09.290
+The handler returns a fixed
+English string for every request.
+
+3
+00:00:10.140 --> 00:00:12.380
+General Translation lets
+you translate strings
+
+4
+00:00:12.420 --> 00:00:15.170
+into each request's locale with gt-node.
+
+5
+00:00:16.100 --> 00:00:18.210
+Call initializeGT once,
+
+6
+00:00:18.480 --> 00:00:21.550
+with your languages and a loader
+for the translation files.
+
+7
+00:00:22.020 --> 00:00:27.130
+Wrap each request in withGT, using the
+language from its Accept-Language header.
+
+8
+00:00:27.680 --> 00:00:32.450
+In a handler, await getGT,
+and pass each string to gt.
+
+9
+00:00:32.740 --> 00:00:40.110
+List server.js in gt.config.json,
+sign in, and run npx gt translate.
+
+10
+00:00:40.680 --> 00:00:44.870
+Now Japanese, French and Spanish
+browsers each get their own greeting.

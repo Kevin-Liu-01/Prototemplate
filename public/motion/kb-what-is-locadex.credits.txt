@@ -1,0 +1,73 @@
+kb-what-is-locadex: credits and sources
+What does the Locadex agent do? Film 22 of General Translation's knowledge base series, for the
+docs page generaltranslation.com/docs/platform/locadex/quickstart (no knowledge base article yet;
+BRIEF.md proposes kb/what-is-locadex).
+Film: the product cut, 48.48 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(49.17 s, 2026-10-12), which replaced the recited cut (43.82 s, 2026-10-10), built and never
+rendered.
+
+SCRIPT
+- From General Translation's Locadex docs (generaltranslation/content main 261320d,
+  docs/en-US/platform/locadex: the Quickstart, "Configuring Locadex automations", "Auto-merging
+  Locadex PRs" and the Automations reference). The film tells the story of adding a language: a
+  reader in Nagoya gets your app in English, because its gt.config.json lists Spanish and French
+  and nothing else; Locadex's setup adds Japanese, auto-merge is turned on, and after the setup pull
+  request is merged the automation translates into every target language. The app was set up by
+  hand with gt-next, its translation files committed in public/_gt/. Nagoya is a sample place and
+  acme/web an invented repository; the film says nothing about anyone there. The agent's templates,
+  setup, runs, auto-merge and default pull request titles were checked in General Translation's own
+  code (apps/locadex, packages/locadex and the Dashboard). BRIEF.md cites each line and each step.
+
+ON SCREEN
+- Locadex is General Translation's hosted AI agent. The open-source locadex npm package is a
+  separate command line tool and is not shown.
+- gt.config.json: the Next.js quickstart's file with two of its locales.
+- The integrations catalog, the automation templates, the setup dialog, the automation and the two
+  pull requests are generic drawings in the series' line grammar, with the product's own labels
+  (Integrations, Connected, Catalog, All Integrations, Connect, Installed, Select a repository,
+  Automations, Start with a template, Generate code, Generate translations and push, Keep locales
+  in sync, Set up this repository?, Source locale, Target locales, selected, Cancel, Run setup,
+  View pull request, Repository, Target directory, Framework, Target branch, Run when, Auto-merge)
+  and Locadex's default pull request titles. They show no logo, author, number or avatar, and do
+  not imitate GitHub's pages. The setup pull request's files after gt.config.json are drawn as
+  bars, because what setup changes in an app that is already set up is not documented.
+
+THE APP PAGE
+- A page in the kit's drawing, in a browser whose tab and address are bars: a language menu, a
+  heading and a button. Its English strings, Welcome back and Get started, and their Spanish,
+  French and Japanese are the home page demo's shipped strings
+  (gt-cloud apps/landing/src/components/landing/home/sections/TranslateWindow.tsx); in this film
+  they are drafts, not output of General Translation's API, and wait for a native speaker's review
+  before the film is published. The menu's labels are the ones <LocaleSelector> renders, one for
+  each locale the app is configured for. kb.json (scene.screen.app) holds them all.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
+  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
+  end card.
+
+ICONS
+- Heroicons 2.2.0 chevron-down (MIT, Tailwind Labs); Lucide check, plus and arrow outlines (ISC),
+  the icon set the Dashboard uses, redrawn with square line ends.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese uses the machine's system face (Hiragino Sans) through var(--font)'s fallback.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: seven recorded 2026-10-12 (the two step lines that say Locadex recorded
+  again that afternoon) and the answer, recorded again 2026-10-13 with the question sent before it.
+  None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js) and its kbx views.

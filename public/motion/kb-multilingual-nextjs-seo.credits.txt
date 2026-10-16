@@ -1,0 +1,76 @@
+kb-multilingual-nextjs-seo: credits and sources
+How do I set up SEO for a multilingual Next.js app? One of General Translation's product films
+(formerly the knowledge base series, film 7), for its Next.js page. The end card links the docs
+page generaltranslation.com/docs/react/nextjs/app-router-middleware.
+Film: the story cut, 50.02 s, 1920 x 1080, 60 fps. Built 2026-10-12, and rendered again the same day
+on the kit's second round (the question card's exit); built again 2026-10-13 for the product pages,
+with an answer that names General Translation and the docs link; and again that evening, with the
+answer alone on its card; and again 2026-10-14, with the key words of each heading and of the answer
+in the blue accent. It replaces the recited cut (v1, 43.58 s, 2026-10-10).
+
+SCRIPT
+- From the knowledge base article "How do I set up SEO for a multilingual Next.js app?" by the
+  General Translation Team (2026-10-09), generaltranslation/content kb/multilingual-nextjs-seo.mdx.
+  The film tells the article's starting point as a story: someone in Madrid finds the About page in
+  a search, and the result shows the English title and URL, because the Spanish version the app
+  already shows has no URL or title of its own (the article's lines 10, 38 and 39, 229 and 243).
+  The answer on the answer card names General Translation as its subject and holds the article's
+  summary's own first clause: "General Translation lets you give every language its own URL and
+  tell search engines about them." The steps are the article's: the pages in app/[locale] with
+  gt-next's middleware, the html lang attribute from useLocale, canonical and hreflang links from
+  the article's helper with the title translated by getGT, and the sitemap. The film says only what
+  a search result displays and what the code puts in the page's head; it says nothing about which
+  version a search engine indexes, ranks or shows. Madrid is a sample place; the film says nothing
+  about anyone there. The code, commands and file names are checked against General Translation's
+  docs (generaltranslation/content docs/en-US) and the open-source code (generaltranslation/gt main
+  1e3cc41: gt-next 11.4.11), and how Next.js prints the metadata against next 16.2.11. BRIEF.md
+  cites each one.
+
+CODE ON SCREEN
+- The project's files: a create-next-app project (vercel/next.js) with an About page that already
+  uses gt-next, with its gt.config.json, where app/ becomes app/[locale]/.
+- proxy.ts, app/[locale]/layout.tsx, app/[locale]/about/page.tsx and app/sitemap.ts: the article's
+  examples, wrapped to fit the panel as BRIEF.md says. page.tsx shows the article's
+  generateMetadata without its description line, with the helper's result spread in place; the
+  sitemap is the article's function with one comment row standing for its getUrl and languages
+  lines. getI18NMetadata is the article's helper (not shown).
+
+THE BROWSER AND THE SITEMAP
+- A browser in the kit's drawing, at one size: a search page with three results (no search
+  engine's name, mark or layout is drawn), and the About page with its language menu and three
+  rows for what the code puts in the page's head (lang, canonical and hreflang).
+- The addresses, lang values, canonical URLs, hreflang codes and sitemap URLs are what the code
+  produces for example.com, the article's domain, with the film's four locales (en, es, ja, fr; the
+  article's examples list en, fr and es). The title "About Us" is the article's. The language
+  menu's label for Spanish is the locale's own name, as <LocaleSelector> renders it, and the
+  Spanish title was written for this film as a draft; neither is output of General Translation's
+  API, and both wait for a native speaker's review. kb.json (scene.screen) holds both.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: six recorded 2026-10-10 for this cut, the lang line's take kept from the
+  recited cut (recorded the same day), whose words are the same, and the answer's take recorded
+  2026-10-13, with the question sent before it so it reads as a reply. None is slowed, sped or
+  stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage kit/kb/kb-story.js
+  (the browser) and kit/kb/kbx.js (the sitemap.xml panel). The search field's magnifying glass is
+  Heroicons 2.2.0 20 solid magnifying-glass, and the language menu's chevron Heroicons 2.2.0 16
+  solid chevron-down (MIT, Tailwind Labs).

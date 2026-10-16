@@ -1,0 +1,55 @@
+WEBVTT
+
+1
+00:00:00.860 --> 00:00:05.810
+In Hamburg, your Mintlify docs open in
+English, and the site offers no German.
+
+2
+00:00:06.320 --> 00:00:11.710
+The navigation in docs.json lists one
+set of English pages and no languages.
+
+3
+00:00:12.500 --> 00:00:15.030
+General Translation lets
+you choose languages,
+
+4
+00:00:15.100 --> 00:00:18.350
+and Locadex opens a
+translation pull request.
+
+5
+00:00:19.240 --> 00:00:21.530
+Authorize the General
+Translation app on GitHub,
+
+6
+00:00:21.820 --> 00:00:24.510
+and choose your docs
+repository in the Dashboard.
+
+7
+00:00:24.980 --> 00:00:28.760
+Create an automation from the Generate
+translations and push template for
+
+8
+00:00:28.800 --> 00:00:32.150
+Mintlify, then run its
+setup with your languages.
+
+9
+00:00:32.619 --> 00:00:35.460
+Locadex's pull request adds a navigation
+
+10
+00:00:35.500 --> 00:00:38.550
+entry per language and
+the translated pages.
+
+11
+00:00:39.000 --> 00:00:44.030
+The merged site's menu switches the
+docs to Spanish, Japanese and German.

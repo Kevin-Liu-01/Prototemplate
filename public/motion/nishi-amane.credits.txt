@@ -1,0 +1,59 @@
+Nishi Amane and the Japanese vocabulary of philosophy (motion/films/nishi-amane), 95.6 s, 1920 x 1080.
+A General Translation film, translation series.
+Ship this text with the film wherever it is published (the description field
+of the post or the video page). Each picture's credit is also on screen while
+the picture is shown.
+
+Images
+
+- Nishi Amane 西周, 百一新論 Hyakuichi shinron, vol. 2 (published by
+  Yamamoto Kakuma 山本覺馬, permitted August 1873, blocks finished March
+  1874), leaf 35 recto and leaf 35 verso. Source: National Diet Library
+  Digital Collections (国立国会図書館デジタルコレクション), call no. 特70-75,
+  https://dl.ndl.go.jp/pid/753011 (canvases 35 and 36). Public domain.
+  Changes: cropped and printed through the film's dither screen.
+- The frontispiece 西周肖像 (a photograph of Nishi Amane late in life; its
+  photographer is not named) of Mori Ōgai 森鴎外, 西周傳 Nishi Amane den
+  (1898; the book prints its title 西周傳, the library catalogues it as
+  西周伝 and reads it ニシ アマネ デン).
+  Source: National Diet Library Digital Collections,
+  https://dl.ndl.go.jp/pid/781845 (canvas 4). Public domain. Changes: cropped.
+- Zhou Dunyi 周敦頤, 通書 Tongshu, 志學第十, a Japanese printing of 1666
+  (later impression): 国立公文書館所蔵 (Source: National Archives of Japan),
+  通書１, https://www.digital.archives.go.jp/item/4212197 , from the copy on
+  Wikimedia Commons, File:NAJDA-298-0131 通書1.pdf, PDF page 16.
+  Changes: cropped (the archive's mark is outside the crop) and printed
+  through the film's dither screen.
+- Fu Yunlong 傅雲龍, 游歷日本圖經 (printed in Japan, 1889), the table of
+  miscellaneous schools 雜學校科表 and its preface:
+  『游歴日本圖經』（関西大学デジタルアーカイブ.
+  https://www.iiif.ku-orcas.kansai-u.ac.jp/hakuen_bunko/002479052 .より転載）
+  Kansai University Library (KU-ORCAS), 泊園文庫 LH2-2.03-2-9, image 0035,
+  Public Domain Mark. Changes: cropped and printed through the film's dither
+  screen.
+- 幾何原本 Jihe yuanben, vol. 1, sp=8 and sp=23, early 17th-century printing.
+  Library of Congress / National Library of China, World Digital Library,
+  https://www.loc.gov/item/2021666487/ . No known restrictions. Changes:
+  cropped and printed through the film's dither screen.
+- The globe is drawn from Natural Earth's 1:50m land (public domain), through
+  world-atlas 2.0.2 (Mike Bostock, ISC licence).
+
+Texts set in type
+
+- Nishi Amane's postscript of 1861 (the words 「…至吾希哲學一科、則未見其人矣」)
+  and his note of 1873 in 生性發蘊: 『西周全集』 (Ōkubo Toshiaki 大久保利謙,
+  ed., 宗高書房, 1960–81), 1:13 and 1:31, as quoted by Lin Meimao (2013),
+  Bian Chongdao (2008), Harimoto Takashi (2019) and Kosaka Shirō (2008).
+- Wang Guowei 王國維, 「論新學語之輸入」 (1905): the sentence
+  而日本之學者，既先我而定之矣，則沿而用之，何不可之有？, as transcribed on
+  Chinese Wikisource (the text is public domain; the transcription is
+  CC BY-SA 4.0), https://zh.wikisource.org/wiki/論新學語之輸入 .
+- Zhou Dunyi's line in English, Nishi's words and the four words of his
+  1870–71 lectures: from the research brief (BRIEF.md), with the Nihon
+  kokugo daijiten for the earliest recorded uses and Masahiro Ogawa (2011,
+  HERSETEC 5.1) for the Euclid terms.
+
+Type: Inter (Rasmus Andersson), Noto Serif CJK (Adobe and Google) and Geist
+Mono (Vercel), SIL Open Font License 1.1.
+Voices: ElevenLabs (Frederick Surrey, narrator; Hijiri, Japanese reader).
+Music: ElevenLabs Music API. Effects: made from seeded noise.

@@ -1,0 +1,73 @@
+kb-translate-strings-outside-jsx: credits and sources
+How do I translate strings outside JSX? One of General Translation's product films (formerly
+the knowledge base series, film 11), for its Next.js page. The end card points to the docs page,
+generaltranslation.com/docs/react/guides/translating-strings.
+Film: the story cut, 49.15 s, 1920 x 1080, 60 fps. Built from 2026-10-12; built again 2026-10-13 for
+the product pages, with an answer that names General Translation; and again that evening, with the
+answer alone on its card and npx said as one word; and again 2026-10-14, with the key words of each
+heading and of the answer in the blue accent. It replaces the recited cut (v1, 43.88 s, 2026-10-10).
+
+SCRIPT
+- From General Translation's docs guide "Translating strings" (generaltranslation/content
+  docs/en-US/react/guides/translating-strings.mdx, main 261320d), with the references for useGT,
+  getGT, msg and useMessages, the Next.js quickstart and the gt init and gt translate command
+  pages. The film covers gt-next; the guide's other tabs cover gt-react, gt-tanstack-start and
+  gt-react-native. It tells the guide as a story: someone in Vienna opens a product list whose
+  search placeholder and status badges are in English, because the placeholder is an attribute and
+  the badges come from a constant. The answer on the answer card is the guide's answer shortened
+  to one sentence with General Translation as its subject: "General Translation translates
+  placeholders with useGT and constants with msg and useMessages." Its third part, getGT in async
+  components, is a step. The steps are the guide's: useGT for the placeholder, getGT in an async
+  component, msg with useMessages for the constant, and npx gt translate, in an app already set up
+  with npx gt init. Vienna is a sample place; the film says nothing about anyone there. The code,
+  commands and file names are checked against the docs and the open-source code
+  (generaltranslation/gt: gt-next and @generaltranslation/react-core 11.4.11, gt 2.26.1). BRIEF.md
+  cites each one. The research brief is by the knowledge base series' research lane (BRIEF.md,
+  sections 1 to 8).
+
+CODE ON SCREEN
+- Search.tsx and Badge.tsx: the guide's Next.js code, with long lines on more rows (whitespace
+  only) so each fits the panel, and a before state with the strings as plain literals.
+  gt.config.json: the quickstart's form, with this film's locales. The project's files are those
+  npx gt init leaves in an App Router app. The terminal command is the docs'. BRIEF.md section 9
+  lists each change.
+
+THE APP PAGE
+- The page's English strings are the guide's: Search products, Active, Paused. The Spanish,
+  Japanese and German strings are drafts written for this film; they are not output of General
+  Translation's API, and they wait for a native speaker's review. kb.json
+  (scene.screen.blocks) holds every one of them.
+- The language code over the page's corner (de, then es, ja and de) is the language the visitor's
+  browser asks for, which gt-next reads. The page has no language menu.
+- The magnifying glass is Heroicons 2.2.0 20 solid magnifying-glass (MIT, Tailwind Labs).
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, which kit/kb/kb-story.js names by the text's
+  language; no face is fetched.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: six recorded 2026-10-12 (one of them recorded three times), the answer's
+  recorded 2026-10-13 with the question sent before it so it reads as a reply, and one recorded
+  2026-10-10 for the recited cut, whose line is the same word for word. The translate line, which
+  says npx, was recorded again that evening, with npx said as one word. None is slowed, sped or
+  stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js) and its screen and listpage modules (kit/kb/kb-screen.js,
+  kit/kb/kb-listpage.js) for the product list.

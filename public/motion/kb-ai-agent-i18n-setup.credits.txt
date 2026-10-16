@@ -1,0 +1,66 @@
+kb-ai-agent-i18n-setup: credits and sources
+Can an AI coding agent set up i18n for me? Film 19 of General Translation's knowledge base series.
+There is no knowledge base article for this question yet; the end card points to the docs page,
+generaltranslation.com/docs/overview/for-coding-agents (BRIEF.md proposes kb/ai-agent-i18n-setup).
+Film: the product cut, 46.18 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(44.93 s, 2026-10-12), which replaced the recited cut (40.82 s, 2026-10-10), rendered once and
+never delivered.
+
+SCRIPT
+- From General Translation's docs page "Using coding agents" and its start prompt
+  (generaltranslation/content docs/en-US/overview/for-coding-agents.mdx, main 261320d), the text the
+  Setup for Agents button on generaltranslation.com copies. The film tells the page's own warning
+  as a story: someone in Sapporo finds your app still in English, because your coding agent ran
+  gt init without flags and the command waits at its first question; the prompt has the agent
+  sign in with gt login, which a person approves, and run gt init with a flag for every question.
+  Sapporo is a sample place; the film says nothing about anyone there. No agent run was recorded
+  for the film: the commands, the messages and the results on screen are the ones the page and the
+  open-source CLI name (generaltranslation/gt: gt 2.26.1, gt-next 11.4.11), and the page edit is an
+  example of the edit the prompt asks for. BRIEF.md cites each one.
+
+SCREENS
+- The agent's terminal: the CLI's first question as @clack/prompts 1.0.0-alpha.6 draws a confirm
+  (the CLI's prompt library), its banner drawn as bars. The Dashboard's sign-in consent page is
+  drawn from General Translation's own code, its incidental copy as bars.
+- The coding agent is drawn as a generic, unbranded window; no agent product is named or shown.
+- The project ID is the docs' placeholder style, your-project-id. No key or account is shown.
+
+THE APP PAGE
+- A page in the kit's drawing, in a browser whose tab and address are bars: a heading, a button
+  and, after the agent's edit, a language menu. Its English strings, Welcome back and Get started,
+  and their Spanish, French and Japanese are the home page demo's shipped strings
+  (gt-cloud apps/landing/src/components/landing/home/sections/TranslateWindow.tsx); in this film
+  they are drafts, not output of General Translation's API, and wait for a native speaker's review.
+  The menu's labels are the ones <LocaleSelector> renders. kb.json (scene.screen.app) holds them
+  all.
+- The language code over the page's corner (ja, en, es, fr) is the language the visitor's browser
+  asks for, which gt-next reads.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
+  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
+  end card.
+- The chevron in the drawings is Heroicons 2.2.0 16 solid chevron-down (MIT, Tailwind Labs). The
+  arrow mark is drawn for the film.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese uses the machine's system face (Hiragino Sans) through var(--font)'s fallback.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: five recorded 2026-10-12, the answer recorded 2026-10-13 with the question
+  sent before it, and two kept from the cut built on 2026-10-10, whose words are the same. None is
+  slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js) and its kbx views.

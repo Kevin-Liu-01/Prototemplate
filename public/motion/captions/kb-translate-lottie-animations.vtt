@@ -1,0 +1,56 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:04.200
+In Lille, a reader of French
+opens your onboarding page,
+
+2
+00:00:04.240 --> 00:00:06.590
+and the animation's words are English.
+
+3
+00:00:07.040 --> 00:00:11.990
+The words are text inside its .lottie
+file, and only an English file exists.
+
+4
+00:00:12.860 --> 00:00:15.300
+General Translation
+translates Lottie animations
+
+5
+00:00:15.340 --> 00:00:19.510
+with npx gt stage and npx gt download.
+
+6
+00:00:20.380 --> 00:00:24.910
+List the animations and the
+fonts they use in gt.config.json.
+
+7
+00:00:25.460 --> 00:00:30.200
+After you sign in and set your
+project ID, run npx gt stage,
+
+8
+00:00:30.240 --> 00:00:32.050
+which uploads the fonts first.
+
+9
+00:00:32.500 --> 00:00:36.600
+Run npx gt download until the
+Spanish and French files are saved,
+
+10
+00:00:36.640 --> 00:00:38.510
+and review them before you publish.
+
+11
+00:00:39.000 --> 00:00:43.050
+In Lille, the same animation
+plays in Spanish and in French,
+
+12
+00:00:43.220 --> 00:00:44.830
+at its English font size.

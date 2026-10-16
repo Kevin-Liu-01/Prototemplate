@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.690
+In Vienna, your product list shows its
+search placeholder and badges in English.
+
+2
+00:00:06.140 --> 00:00:10.170
+The placeholder is an attribute,
+and the badges come from a constant.
+
+3
+00:00:11.040 --> 00:00:15.760
+General Translation translates
+placeholders with useGT and constants with
+
+4
+00:00:15.800 --> 00:00:17.990
+msg and useMessages.
+
+5
+00:00:18.780 --> 00:00:23.130
+Call useGT, and pass the placeholder
+to the function it returns.
+
+6
+00:00:23.620 --> 00:00:28.870
+In async components, await getGT,
+because they cannot use hooks.
+
+7
+00:00:29.320 --> 00:00:32.579
+For constants, msg registers each string,
+
+8
+00:00:32.619 --> 00:00:35.590
+and useMessages resolves
+it where you render it.
+
+9
+00:00:36.100 --> 00:00:41.530
+Run npx gt translate to write the
+Spanish, Japanese and German strings.
+
+10
+00:00:42.020 --> 00:00:45.550
+In Vienna, the placeholder and
+the badges now read in German.

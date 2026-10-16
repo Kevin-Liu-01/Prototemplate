@@ -1,0 +1,73 @@
+Tyndale, More, and the English vocabulary of the Bible (motion/films/tyndale), 97.35 s, 1920 x 1080.
+A General Translation film, translation series.
+Ship this text with the film wherever it is published (the description field
+of the post or the video page). Each picture's credit is also on screen while
+the picture is shown.
+
+Images
+
+- William Tyndale, The newe Testamēt as it was written/ and caused to be
+  writtē/ by them which herde yt (Worms: [Peter Schoeffer], 1526), the only
+  surviving title page (image 5), fol. cxix recto, St John 1 (image 243),
+  fol. xxii verso and fol. xxiii recto, Matthew 16 (images 50 and 51), and
+  fol. ccxiiii verso, Romans 13 (image 434). Source: Württembergische
+  Landesbibliothek Stuttgart, B engl.152601,
+  http://digital.wlb-stuttgart.de/purl/bsz35126731X . Public Domain Mark 1.0.
+  Changes: cropped (the library's scale bar and the facing pages are outside
+  the crops) and printed through the film's dither screen.
+- William Tyndale, the Pentateuch (Antwerp, 1530; the colophon names
+  "Malborow in the lande of Hesse" and "Hans Luft"), the end of Genesis
+  (canvas 180), Exodus 12 (canvas 236), Exodus 25, fol. XLII (canvas 281),
+  the woodcut of the ark, fol. XLIII (canvas 283), and Leviticus 16 (canvas
+  424). Source: Princeton University Library, William H. Scheide Library
+  109.2, https://dpul.princeton.edu/catalog/0r9677704 . No Known Copyright
+  (rightsstatements.org NKC 1.0). Changes: cropped (this copy's side notes,
+  some of them supplied in pen and ink facsimile, are outside the crops) and
+  printed through the film's dither screen.
+- William Tyndale's letter from Vilvoorde, in Latin, undated (State Archives,
+  Brussels), in the reduced facsimile of Robert Demaus, William Tindale: A
+  Biography, ed. Richard Lovett (London: Religious Tract Society, 1904),
+  page image n566 of https://archive.org/details/williamtindalebi00dema .
+  Public domain. Changes: cropped (Demaus's printed caption is outside the
+  crop) and printed through the film's dither screen.
+- Vilvoorde castle, engraving by Jacobus Harrewijn in Jacques Le Roy,
+  Castella et praetoria nobilium Brabantiae (1696). Source: Wikimedia
+  Commons, File:KasteelVilvoorde.jpg . Public domain. Changes: cropped (the
+  arms and the title are outside the crop) and printed through the film's
+  dither screen.
+- The globe is drawn from Natural Earth's 1:50m land (public domain), through
+  world-atlas 2.0.2 (Mike Bostock, ISC licence).
+
+Texts set in type
+
+- The constitution of 1409 (nemo deinceps textum aliquem sacre scripture
+  auctoritate sua in linguam Anglicanam ... transferat) and its translation:
+  Alfred W. Pollard, ed., Records of the English Bible (Oxford University
+  Press, 1911), pp. 79-81. The date line of Cuthbert Tunstall's order of
+  24 October 1526: John Foxe, Actes and Monuments (1563), in Pollard, pp.
+  131-135. Thomas More, A dyaloge (1529), book 3, chapter 8, in Pollard, p.
+  128. The rules for the translators of 1604, rule 3, in Pollard, p. 53.
+- John 1:1 in Greek, as in Erasmus's printed New Testament.
+- "playnly layde before their eyes in their mother tonge": Tyndale's
+  prologue "W. T. To the Reader" (1530), in J. I. Mombert, ed., William
+  Tyndale's Five Books of Moses (1884), p. 3. The Vulgate's and Luther's
+  readings (phase, id est transitus domini; capro emissario; dem freybock;
+  Gnaden stuel, as Mombert divides it at Exodus 25:17): Mombert's
+  apparatus, pp. 200, 238-239 and 345.
+- The Wycliffite readings: Josiah Forshall and Frederic Madden, eds., The
+  Holy Bible ... by John Wycliffe and his followers (Oxford, 1850), vol. 1,
+  p. 218, and vol. 4, pp. 43 and 329. The 1611 reading of Matthew 16:18:
+  The English Hexapla (London: Samuel Bagster, 1841).
+- The two King James figures, in the words of the abstract: Jon Nielson and
+  Royal Skousen, "How Much of the King James Bible Is William Tyndale's? An
+  Estimation Based on Sampling," Reformation 3 (1998): 49-74,
+  doi:10.1179/ref_1998_3_1_004 .
+- The earliest evidence for passover, scapegoat and mercy seat: the Oxford
+  English Dictionary's entry factsheets, read on 2026-10-09 and 10.
+- Tyndale's request for his Hebrew Bible, grammar and dictionary: Demaus,
+  1904, p. 538.
+
+Type: Inter (Rasmus Andersson) and Geist Mono (Vercel), SIL Open Font
+License 1.1.
+Voices: ElevenLabs (Frederick Surrey, narrator; Jane, reader).
+Music: ElevenLabs Music API.

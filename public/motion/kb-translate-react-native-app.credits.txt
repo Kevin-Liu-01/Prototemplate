@@ -1,0 +1,73 @@
+kb-translate-react-native-app: credits and sources
+How do I translate a React Native app? Film 13 of General Translation's knowledge base series.
+There is no knowledge base article for this question yet; the end card points to the docs page,
+generaltranslation.com/docs/react/react-native-quickstart.
+Film: the product cut, 48.42 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(48.65 s, 2026-10-12), which replaced the recited cut (v1, 43.55 s, 2026-10-10).
+
+SCRIPT
+- From General Translation's docs page "React Native Quickstart" (generaltranslation/content
+  docs/en-US/react/react-native-quickstart.mdx, main 261320d), with the React Native setup and
+  plugin pages. The film tells the quickstart's steps as a story: someone in Lyon opens your app
+  on a phone set to French, and its welcome is in English, because the welcome is a plain Text
+  element that nothing translates. The question card carries the product's name, React Native,
+  and its answer names General Translation: "General Translation lets you translate a React
+  Native app with gt-react-native and T." The steps are the quickstart's Expo Router path: the
+  Babel plugin, initializeGT with a loadTranslations file and the GTProvider, which reads the
+  device language, the welcome marked with the T component, npx gt login and npx gt translate,
+  and, as the page warns, a development build, because the package is experimental and Expo Go
+  is not supported. Lyon is a sample place; the film says nothing about anyone there. The code,
+  commands and file names are checked against the docs and the open-source code
+  (generaltranslation/gt main 1e3cc41: gt-react-native 11.4.11, gt 2.26.1). BRIEF.md cites each
+  one; the script is motion/concepts/kb-story/scripts/kb-translate-react-native-app.md.
+
+CODE ON SCREEN
+- src/Home.tsx before and after, babel.config.js, app/_layout.tsx, loadTranslations.ts and the
+  terminal commands: the quickstart's, with long lines wrapped, the plugin's options written as
+  config: gtConfig (the plugin page's documented equivalent of the quickstart's locales list),
+  the import of gt-react-native in Prettier's wrapped form, the development-only projectId and
+  devApiKey left out, and the loader declared async, as gt-i18n's loader type requires and as
+  content pull request #625 changes the quickstart. The quickstart's language switcher is left
+  out: the phone's language decides. BRIEF.md section 9 lists each change. GT_PROJECT_ID uses the
+  docs' placeholder, your-project-id. No key is shown.
+- The file panel: the project's files, app/ with _layout.tsx and index.tsx, src/Home.tsx,
+  babel.config.js, gt.config.json, loadTranslations.ts and the three translation files npx gt
+  translate writes under src/_gt/.
+
+THE PHONE
+- A plain vector outline with no maker's branding, square corners, a speaker slot and a home bar.
+  The welcome's English is the quickstart's, Welcome to my app. The Spanish, French and Japanese
+  welcomes, and where each breaks into two lines, are drafts written for this film and films 9,
+  10 and 14; they are not output of General Translation's API, and they wait for a native
+  speaker's review. kb.json (scene.screen.blocks) holds every one of them.
+- The language code over the phone's corner (fr, en, es, ja) is the language the phone is set to,
+  which the provider reads.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
+  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
+  end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, named by the kit for text with lang="ja"
+  (kit/kb/kb-story.js, langFaces; a system face, fetched from nowhere).
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability
+  0.55, style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through
+  kit/kb/take.mjs and kit/audio/el.mjs: six recorded 2026-10-12 (two of them retaken once, to
+  send Lyon as "Lee-on"), the answer recorded again 2026-10-13 with the question sent before it,
+  and one, "Add its Babel plugin, which supplies the polyfills React Native needs.", recorded
+  2026-10-10 for the recited cut and kept. None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb and its story stage,
+  kit/kb/kb-story.js, with the kit's phone frame.

@@ -1,0 +1,45 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:04.910
+In Bogotá, a reader of Spanish
+finds your Vue page all in English.
+
+2
+00:00:05.380 --> 00:00:09.690
+The template is plain English, and
+no plugin runs before the app mounts.
+
+3
+00:00:10.540 --> 00:00:15.650
+General Translation lets you register the
+gt-vue plugin and wrap your template in T.
+
+4
+00:00:16.320 --> 00:00:21.650
+Install gt-vue, a 0.x release
+whose API may still change.
+
+5
+00:00:22.220 --> 00:00:25.870
+List your languages, register
+the plugin before the app mounts,
+
+6
+00:00:26.040 --> 00:00:27.730
+and wrap the template in T.
+
+7
+00:00:28.480 --> 00:00:33.450
+Sign in, set your project ID,
+and run npx gt translate.
+
+8
+00:00:34.020 --> 00:00:38.830
+Add a switcher built on useSetLocale,
+which loads a language without a reload.
+
+9
+00:00:39.260 --> 00:00:44.250
+In Bogotá, the page switches in place
+to Japanese, French and Spanish.

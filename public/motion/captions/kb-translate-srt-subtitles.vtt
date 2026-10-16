@@ -1,0 +1,57 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.130
+In Santiago, a viewer turns on the
+subtitles of your product video,
+
+2
+00:00:05.400 --> 00:00:07.230
+and every line is English.
+
+3
+00:00:07.680 --> 00:00:12.350
+The video has one subtitle file,
+and every cue in it is English.
+
+4
+00:00:13.160 --> 00:00:15.300
+General Translation translates the text
+
+5
+00:00:15.340 --> 00:00:19.770
+in SRT subtitle files and
+keeps every timestamp.
+
+6
+00:00:20.600 --> 00:00:26.010
+Install gt, then list the
+subtitle files in gt.config.json,
+
+7
+00:00:26.400 --> 00:00:28.130
+with one folder per locale.
+
+8
+00:00:28.700 --> 00:00:31.130
+Sign in, add your project ID,
+
+9
+00:00:31.280 --> 00:00:35.470
+and run npx gt translate for
+the Spanish and French files.
+
+10
+00:00:35.960 --> 00:00:40.750
+Each new file keeps the timing lines and
+cue numbers, and only the words change.
+
+11
+00:00:41.300 --> 00:00:44.470
+In Santiago, the player
+loads the new files,
+
+12
+00:00:44.680 --> 00:00:47.750
+and the same cue reads
+in French or Spanish.

@@ -1,0 +1,74 @@
+kb-review-translations: credits and sources
+How do I review and edit translations? Film 20 of General Translation's knowledge base series,
+for the docs page generaltranslation.com/docs/platform/dashboard/guides/reviewing-translations
+(no knowledge base article yet; BRIEF.md proposes kb/review-translations).
+Film: the product cut, 45.02 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(44.98 s, 2026-10-12), which replaced the recited cut (32.33 s, 2026-10-10), never delivered.
+
+SCRIPT
+- From General Translation's docs (generaltranslation/content main 261320d, docs/en-US): the
+  Dashboard's guides "Reviewing and editing translations" and "Adding annotations", the Dashboard's
+  Get started page (its FAQ on syncing Dashboard edits to GitHub), and the Locadex Quickstart and
+  automation pages. The film tells the guide's case as a story: your team's reviewer in Lima wants
+  a word removed from the Spanish start button, the label lives in es.json in the repository, and
+  the reviewer does not edit code; the Dashboard's Translations page is where the reviewer makes
+  the edit, and a Locadex automation brings it into the repository as a pull request. The edit is
+  a reviewer's choice of wording, and the narration never calls it a fix. Lima is a sample place
+  and acme/web an invented repository; the film says nothing about anyone there. The Dashboard's
+  labels and the Locadex run were checked in General Translation's own code. BRIEF.md cites each
+  line and each step.
+
+ON SCREEN
+- The repository's files, under the label acme/web: app/page.tsx, gt.config.json, gt-lock.json
+  and public/_gt/es.json, fr.json and ja.json, the files the CLI writes and this project commits.
+- The Translations page, the annotation panel and the automation are generic drawings of General
+  Translation's Dashboard in the series' line grammar, with the product's own labels
+  (Translations, 1 locale, 2 locales, 3 locales, 1 unsaved, Undo, Save, Annotations, Labels,
+  Note, Comments, Approved, Needs review, Generate translations and push, Repository, Target
+  branch, Run when, Auto-merge, Run now). The page shows no Components and Files switch, as the
+  Dashboard shows it only for a project with both kinds of content.
+- The pull request is a generic drawing (its title, bars, a branch line and the changed file). Its
+  title, fix(locadex): update translations, is Locadex's default for a manual translation run of a
+  Next.js project. It shows no other company's interface or logo, and no author, number or branch.
+
+THE APP PAGE AND THE TRANSLATIONS
+- The app's Spanish page, in a browser whose tab and address are bars: its heading and its start
+  button. The table's English strings (Welcome back, Get started, Revenue, Invoices) and their
+  Spanish, French and Japanese are the home page demo's shipped strings
+  (gt-cloud apps/landing/src/components/landing/home/sections/TranslateWindow.tsx). The start
+  button's two Spanish labels, before and after the edit, are the brief's: the demo's label and a
+  reviewer's shorter choice. None is output of General Translation's API, and every one waits for
+  a native speaker's review before the film is published; the two button labels are the film's
+  one non-English string that changes (STORY.md, film 20). kb.json (scene.screen.app and the
+  Dashboard view's table in scene.local) holds them all.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card and in the Dashboard, and
+  the General Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg),
+  on the end card.
+
+ICONS
+- Heroicons 2.2.0 chevron-down (MIT, Tailwind Labs); Lucide comment, play and check outlines (ISC),
+  the icon set the Dashboard uses, redrawn with square line ends.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese uses the machine's system face (Hiragino Sans) through var(--font)'s fallback.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs and
+  kit/audio/el.mjs: six recorded 2026-10-12, the answer recorded 2026-10-13 with the question sent
+  before it, and one kept from the cut built on 2026-10-10, whose words are the same. None is slowed,
+  sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js) and its kbx views.

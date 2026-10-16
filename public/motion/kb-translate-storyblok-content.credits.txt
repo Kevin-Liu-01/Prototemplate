@@ -1,0 +1,79 @@
+kb-translate-storyblok-content: credits and sources
+How do I translate content in Storyblok? Film 18 of General Translation's knowledge base series.
+There is no knowledge base article for this question yet; the end card points to the docs page,
+generaltranslation.com/docs/integrations/storyblok/quickstart.
+Film: the product cut, 49.88 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(49.38 s, 2026-10-12), which replaced the built recited cut (v1, 42.50 s, 2026-10-10), never
+rendered.
+
+SCRIPT
+- From General Translation's docs page "Quickstart" for the Storyblok integration
+  (generaltranslation/content docs/en-US/integrations/storyblok/quickstart.mdx, main 261320d),
+  with the guides "Configuring Storyblok", "Translating content" and "Using translated content".
+  The film tells the quickstart's steps as a story: in Marseille, a French reader sees an English
+  headline on a bakery's site, because the Storyblok story holds one English headline and the
+  space has no other language. The question card carries the product's name, Storyblok, and its
+  answer names General Translation: "General Translation lets you connect your space and translate
+  stories with Sync and apply." The steps are the quickstart's: the target languages added to the
+  space in Storyblok, the space connected in the General Translation Dashboard with its ID, its
+  region and a personal access token, stories and target locales chosen with Auto-enable supported
+  fields checked and Sync and apply clicked, the drafts reviewed and published in Storyblok, and
+  the story requested from Storyblok's Content Delivery API with the language parameter. Marseille
+  is a sample place, and the bakery is the film's sample; the film says nothing about anyone
+  there. The Dashboard's labels and what the integration writes back are checked against General
+  Translation's own code (gt-cloud main 0844414); Storyblok's menu names against Storyblok's own
+  documentation (storyblok.com/docs, read 2026-10-10). BRIEF.md cites each one; the script is
+  motion/concepts/kb-story/scripts/kb-translate-storyblok-content.md.
+
+SCREENS
+- The Dashboard's All Integrations page, Connect Storyblok dialog and the integration's controls
+  are drawn from the Dashboard's code; their figures and other copy are drawn as bars.
+- Storyblok's settings and editor are drawn plainly, in bars and boxes, with readable text only for
+  the labels the steps need. No Storyblok logo appears: where the Dashboard shows it, the film
+  draws a grey square.
+- The space ID typed in the dialog, 123456, is an illustrative number. No token is shown; the
+  token field is drawn as dots, and the delivery request uses the docs' placeholder,
+  YOUR_DELIVERY_TOKEN.
+- The site's home page is drawn plainly in a browser: the tab, the address, the site's name and
+  the copy as bars, the headline as text. The language code over its corner (fr) is the language
+  the reader's browser asks for.
+
+THE STORY'S CONTENT
+- The sample story's English headline, "Fresh bread every morning", is invented for the film. The
+  Spanish, Japanese and French headlines are drafts written for this film; they are not output of
+  General Translation's API, and they wait for a native speaker's review. kb.json holds every one
+  of them.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
+  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
+  end card.
+
+ICONS
+- Heroicons 2.2.0 16 solid chevron-down (MIT, Tailwind Labs); Lucide check, plus and cloud-upload
+  outlines (ISC), the icon set the Dashboard uses, redrawn with square line ends.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, named by the kit for text with lang="ja"
+  (kit/kb/kb-story.js, langFaces; a system face, fetched from nowhere).
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: four recorded 2026-10-12 (the review line retaken once, and the first line
+  recorded again when its words changed), the answer recorded again 2026-10-13 with the question
+  sent before it, and three recorded 2026-10-10 for the built cut and kept, the lines that add the
+  languages, connect the space and run Sync and apply. Storyblok is sent to the voice as "Story
+  block". None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage,
+  kit/kb/kb-story.js, and the kit's product views.

@@ -1,0 +1,66 @@
+kb-translate-node-app: credits and sources
+How do I translate a Node.js app? One of General Translation's product films (formerly the
+knowledge base series, film 15b), for its Node.js library page. The end card points to the docs
+page, generaltranslation.com/docs/node/quickstart.
+Film: the story cut, 48.45 s, 1920 x 1080, 60 fps, built 2026-10-14 in the story format, with
+the key words of each heading and of the answer in the blue accent. It replaces the recited cut (v2,
+43.28 s, delivered 2026-10-14, kept in archive/recited-v2/; v1, 43.58 s, 2026-10-10).
+
+SCRIPT
+- From General Translation's docs page "Quickstart" under Node (generaltranslation/content
+  docs/en-US/node/quickstart.mdx, main 361ec4a), with the loader from "Storing translations locally"
+  (docs/en-US/node/guides/storing-translations.mdx) and the CLI's src setting
+  (docs/en-US/cli/guides/generating-translations.mdx). The film tells it as a story: someone in
+  Seville whose browser asks for Spanish gets an English greeting from your server, because the
+  handler returns a fixed English string for every request. The answer on the answer card names
+  General Translation as its subject: "General Translation lets you translate strings into each
+  request's locale with gt-node." The steps are the quickstart's, with the guide's loader and the
+  CLI's src setting: initializeGT with the languages and a loader, withGT round each request, getGT
+  in the handler, and server.js listed in gt.config.json before npx gt translate. Seville is a
+  sample place; the film says nothing about anyone there. The code, commands and file names are
+  checked against the docs and the open-source code (generaltranslation/gt at 1048f50: gt-node
+  1.0.39, gt 2.26.5), and the film's files were run on those packages with stand-in translation
+  files (BRIEF.md section 10).
+
+CODE ON SCREEN
+- server.js before its steps, its three step excerpts and the terminal commands: the quickstart's
+  code, with the guide's loader; long calls are wrapped over more rows with the same tokens.
+  gt.config.json: the guide's file with ja and src added.
+- GT_PROJECT_ID uses the docs' placeholder, your-project-id. No key is shown.
+
+THE APP PAGE
+- The page shows the greeting the server returns. The English string is the quickstart's: Hello,
+  {name}!, answered as Hello, Alice!. The Spanish, French and Japanese strings are drafts written
+  for this film; they are not output of General Translation's API, and they wait for a native
+  speaker's review. kb.json (scene.screen.blocks) holds every one of them.
+- The language code over the page's corner (es, then ja, fr and es) is the language the visitor's
+  browser asks for, which the server reads from the request's Accept-Language header.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, which kit/kb/kb-story.js names by the text's
+  language; no face is fetched.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: three carried over word for word from the recited cut (two recorded
+  2026-10-10, one 2026-10-14), and five recorded 2026-10-14 for the story cut, the four new lines
+  and line s1 again, word for word, for its pitch. The answer was sent with the question before it
+  so it reads as a reply. None is slowed, sped or stretched.
+
+MUSIC
+- The product films' series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js) and its screen module (kit/kb/kb-screen.js) for the app page.

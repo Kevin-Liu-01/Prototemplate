@@ -1,0 +1,82 @@
+kb-translate-sanity-content: credits and sources
+How do I translate content in Sanity? Film 17 of General Translation's knowledge base series.
+There is no knowledge base article for this question yet; the end card points to the docs page,
+generaltranslation.com/docs/integrations/sanity/quickstart.
+Film: the product cut, 46.55 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(47.02 s, 2026-10-12), which replaced the recited cut (v1, 44.45 s, 2026-10-10).
+
+SCRIPT
+- From General Translation's docs page "Quickstart" for the Sanity integration (generaltranslation/
+  content docs/en-US/integrations/sanity/quickstart.mdx, main 261320d). The film tells the
+  quickstart's steps as a story: someone in Buenos Aires whose browser asks for Spanish finds a
+  site's spring product update only in English, because Sanity stores the article as one English
+  document with no language field. The question card carries the product's name, Sanity, and its
+  answer names General Translation: "General Translation lets you click Translate on a Sanity
+  document with the gt-sanity plugin." The steps are the quickstart's default, document-level setup:
+  gtPlugin in sanity.config.ts with the locales and the document type, a language field on the
+  article type, the API key and project ID in a private secrets document, Translate on the article,
+  the drafts the plugin imports published, and a query by the language field. Field-level
+  localization is on the docs pages. Buenos Aires is a sample place, and the article is the film's
+  sample; the film says nothing about anyone there. The code, labels and commands are checked
+  against the docs and the open-source plugin (generaltranslation/gt main 1e3cc41: gt-sanity 4.0.25;
+  sanity 6.18.0 on npm). BRIEF.md cites each one; the script is
+  motion/concepts/kb-story/scripts/kb-translate-sanity-content.md.
+
+CODE ON SCREEN
+- sanity.config.ts, schema/article.ts, the populateSecrets.js call and the GROQ query: the
+  quickstart's code, with structureTool() kept in the Studio's plugins list, the docs' second
+  document type left out, the schema file's import line and comments left out, and the two long
+  files set at 30 px so each fits the panel, as BRIEF.md section 9 says. The install,
+  npm install gt-sanity, is shown already run.
+- No API key or project ID is shown; the secrets document reads them from GT_API_KEY and
+  GT_PROJECT_ID, the docs' variable names.
+
+THE STUDIO AND THE DIALOG
+- Sanity Studio's document list and editor are drawn plainly, in bars and boxes, without
+  Sanity's logo. The Translations dialog's labels are gt-sanity's own: Translations, Select
+  locales, Spanish, Chinese, Japanese and their codes, Translate, Translation Status, Not
+  translated, Translating…, Imported, Publish Translations.
+
+THE SITE'S PAGE
+- The site's article page is drawn plainly in a browser: the tab, the address, the site's name
+  and the copy as bars, the title as text. The language code over its corner (es, zh, ja) is the
+  language each reader's browser asks for.
+- The sample article's English title, "Spring product update", is invented for the film. The
+  Spanish, Chinese and Japanese titles, and where the Spanish title breaks into two lines, are
+  drafts written for this film; they are not output of General Translation's API, and they wait
+  for a native speaker's review. kb.json holds every one of them.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
+  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
+  end card.
+
+ICONS
+- Lucide check outline (ISC), the icon set the Dashboard uses, redrawn with square line ends.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans and Chinese in its PingFang SC, named by the kit
+  for text with lang="ja" and lang="zh-Hans" (kit/kb/kb-story.js, langFaces; system faces, fetched
+  from nowhere).
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: six recorded 2026-10-12 (the payoff retaken once, and the second line
+  recorded again when its words changed), the answer recorded again 2026-10-13 with the question
+  sent before it (its fourth take of that day, sent with the button's name in lower case so the
+  voice reads "click Translate" whole), and one, "Publish the drafts, then query each language by
+  its language field.", recorded 2026-10-10 for the recited cut and kept. None is slowed, sped or
+  stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage,
+  kit/kb/kb-story.js, and the kit's product views.

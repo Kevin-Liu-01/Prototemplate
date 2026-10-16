@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:04.610
+In Lyon, your app opens in
+English on a phone set to French.
+
+2
+00:00:05.080 --> 00:00:08.530
+Its welcome is a plain Text
+element that nothing translates.
+
+3
+00:00:09.380 --> 00:00:11.320
+General Translation lets you translate a
+
+4
+00:00:11.360 --> 00:00:15.070
+React Native app with
+gt-react-native and T.
+
+5
+00:00:15.800 --> 00:00:20.310
+Add its Babel plugin, which supplies
+the polyfills React Native needs.
+
+6
+00:00:20.800 --> 00:00:25.890
+Call initializeGT with loadTranslations,
+then wrap the app in GTProvider,
+
+7
+00:00:26.220 --> 00:00:27.930
+which reads the device language.
+
+8
+00:00:28.500 --> 00:00:33.690
+Mark the welcome with T, then
+sign in and run npx gt translate.
+
+9
+00:00:34.260 --> 00:00:38.170
+The package is experimental, and
+Expo apps need a development build.
+
+10
+00:00:38.700 --> 00:00:43.710
+Phones set to Spanish or Japanese show
+them, and in Lyon the app opens in French.

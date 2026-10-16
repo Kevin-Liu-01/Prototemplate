@@ -1,0 +1,83 @@
+kb-translate-mintlify-docs: credits and sources
+How do I translate a Mintlify docs site? Film 16 of General Translation's knowledge base series.
+There is no knowledge base article for this question yet; the end card points to the docs page,
+generaltranslation.com/docs/integrations/mintlify/quickstart.
+Film: the product cut, 47.53 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(47.55 s, 2026-10-12), which replaced the recited cut (v1, 44.65 s, 2026-10-10), rendered and
+never delivered.
+
+SCRIPT
+- From General Translation's docs page "Quickstart" under Integrations > Mintlify
+  (generaltranslation/content docs/en-US/integrations/mintlify/quickstart.mdx, main 261320d), with
+  its guides and reference pages. The film tells the quickstart's steps as a story: someone in
+  Hamburg opens a Mintlify docs site that is in English and offers no German, because the
+  navigation in docs.json lists one set of English pages and no languages; after the General
+  Translation app is authorized on GitHub and the docs repository chosen in the Dashboard, an
+  automation is created from the Generate translations and push template for Mintlify and its
+  setup is run, and Locadex's pull request adds a navigation entry per language and the translated
+  pages, the merged site's menu switches the docs to Spanish, Japanese and German. The question
+  card carries the product's name, Mintlify, and its answer names General Translation: "General
+  Translation lets you choose languages, and Locadex opens a translation pull request." Hamburg is
+  a sample place, and acme/docs and its site, Acme, are invented for the film; the film says
+  nothing about anyone there. The research brief is by the knowledge base series' research lane
+  (BRIEF.md, sections 1 to 8); the script is
+  motion/concepts/kb-story/scripts/kb-translate-mintlify-docs.md.
+
+THE DASHBOARD AND THE PULL REQUEST
+- The Dashboard's screens (the Integrations page and its GitHub card, the repository step, the
+  automation templates, the automation's settings and the Run setup dialog) are generic drawings in
+  the series' line grammar, with the Dashboard's own labels, read in its source in gt-cloud main
+  (d633468); copy that does not carry the story is drawn as bars. They show no logo, author,
+  number or avatar.
+- The Run setup dialog's "Hide default locale in URL paths" switch is drawn at its default, on, as
+  the Dashboard starts it. With it on, setup keeps the English pages at their URLs and only the
+  translated languages get a locale prefix, such as /de/.
+- The pull request's title is the one Locadex gives a Mintlify setup (gt-cloud packages/locadex).
+  The docs.json change is what Locadex's setup and the gt CLI 2.26.1 write, shown at its
+  navigation, with [...] standing for the group and its pages. Nothing is drawn in GitHub's
+  interface; no logo of any company appears.
+
+THE SITE
+- The site's docs page is drawn plainly in a browser: the tab, the address and the copy as bars,
+  the site's name, the sidebar and the title as text.
+- The site's English strings (Get started, Quickstart) are the film's sample. The German, Spanish
+  and Japanese strings (Erste Schritte, Schnellstart; Primeros pasos, Inicio rápido; はじめに,
+  クイックスタート) are drafts written for this film; they are not output of General
+  Translation's API or of Locadex, and they wait for a native speaker's review. The language
+  menu's labels (English, Español, 日本語, Deutsch) follow Mintlify's own docs site, which names
+  each language in that language; Deutsch and 日本語 are still to be seen on a merged site.
+  kb.json (scene.screen.docs) holds every one of these strings.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
+  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
+  end card.
+
+ICONS
+- Heroicons 2.2.0 chevron-down (MIT, Tailwind Labs) on the language menu; Lucide check, plus and
+  arrow outlines (ISC), the icon set the Dashboard uses, redrawn with square line ends.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, named by the kit for text with lang="ja"
+  (kit/kb/kb-story.js, langFaces; a system face, fetched from nowhere).
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability
+  0.55, style 0.2, speed 1.0; kit/audio/voice.json). Seven takes are used, one per line, through
+  kit/kb/take.mjs and kit/audio/el.mjs: four first takes recorded 2026-10-12, line 4's second
+  take (the line was reworded after the first draft) and line 7's third (reworded, and recorded
+  again when its second take set the language words too close), and the answer, recorded again
+  2026-10-13 with the question sent before it. Eleven takes were recorded in all. Locadex is
+  sent as "Loh-cuh-decks", the way the team says it. None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js) and its screen, ui and pr modules.

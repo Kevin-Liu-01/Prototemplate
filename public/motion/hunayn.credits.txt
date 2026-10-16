@@ -1,0 +1,70 @@
+Ḥunayn, Ḥubaysh, and the Arabic vocabulary of Galen (motion/films/hunayn), 99.82 s, 1920 x 1080.
+A General Translation film, translation series.
+Ship this text with the film wherever it is published (the description field
+of the post or the video page). Each picture's credit is also on screen while
+the picture is shown.
+
+Images
+
+- Constantine the African, Liber de oculis, in the Codex Gigas (Bohemia,
+  between 1204 and 1230), f. 249r, column a: the prologue with its rubric,
+  and the coats of the eye. National Library of Sweden (Kungliga
+  biblioteket), HS A 148, https://www.manuscripta.se/ms/100500 (IIIF image
+  ms-100500_0495). Photograph: Per B. Adolphson, CC BY 4.0
+  (https://creativecommons.org/licenses/by/4.0/). Changes: cropped, graded
+  for legibility (the channel divided by the parchment's own level, which
+  flattens the water stain), and printed through the film's dither screen.
+  No reading or expansion of the leaf's Latin is set on screen: the leaf's
+  words are lit where the narration names them, without captions. The Latin
+  names in the film's table of the coats of the eye, retina, uvea and cornea,
+  are Constantine's names as the narration says them, in modern spelling (the
+  leaf writes uuea), not a transcription of the leaf.
+- Ḥunayn ibn Isḥāq's diagram of the coats of the eye, from the copy of the
+  Ten Treatises on the Eye dated 1196, as reproduced by Max Meyerhof, The
+  Book of the Ten Treatises on the Eye Ascribed to Hunain ibn Is-hâq
+  (Cairo: Government Press, 1928), Plate 1, and the same book's Arabic
+  p. 80. Wellcome Collection, https://wellcomecollection.org/works/xxrzwgrq
+  (IIIF b31362370_0001_0444 and _0437). Public Domain Mark. Changes: Plate 1
+  cropped to the drawing and turned 90 degrees counterclockwise, so the
+  optic nerve points up as on the manuscript page; both cropped and printed
+  through the film's dither screen.
+- Ḥunayn ibn Isḥāq, Risāla to ʿAlī ibn Yaḥyā, Arabic text ed. Gotthelf
+  Bergsträsser, Ḥunain ibn Isḥāq über die syrischen und arabischen
+  Galen-Übersetzungen (Leipzig, 1925), Arabic pp. 1 to 5, 10, 17 and 18.
+  Wellcome Collection, https://wellcomecollection.org/works/j357bdwz (IIIF
+  b31350598_0080 to _0084, _0073, _0066, _0065). Public Domain Mark.
+  Changes: cropped (the margins with a later reader's pencil notes, the
+  running heads and the apparatus are outside the crops) and printed
+  through the film's dither screen.
+- Galen, To Glaucon, in the Alexandrian summary, the heading naming Ḥunayn
+  ibn Isḥāq as translator. Wellcome Collection, MS Arabic 62, image 0005,
+  https://wellcomecollection.org/works/ynu85x86 . Public Domain Mark.
+  Changes: cropped to the right-hand page's text block and printed through
+  the film's dither screen.
+- The globe is drawn from Natural Earth's 1:50m land (public domain),
+  through world-atlas 2.0.2 (Mike Bostock, ISC licence).
+
+Texts set in type
+
+- The table of the coats of the eye: the Arabic names as Max Meyerhof prints
+  them on Arabic p. 80 of The Book of the Ten Treatises on the Eye (1928),
+  where the Greek names stand beside them in Arabic letters; the Greek names
+  in Greek letters as Meyerhof's English translation gives them (p. 4), with
+  their meanings; the Latin names from Constantine the African's Liber de
+  oculis, in modern spelling.
+- The people's names and dates: after Bergsträsser 1925, Meyerhof 1928,
+  Ibn Abī Uṣaybiʿa (ʿUyūn al-anbāʾ, ch. 8.29 to 8.31) and Ibn al-Qifṭī
+  (Taʾrīkh al-ḥukamāʾ).
+- "This is my habit in everything I translate.": Ḥunayn's sentence on
+  Bergsträsser's Arabic p. 5, l. 7, translated for this film and checked
+  against Bergsträsser's German translation (p. 4).
+- D. W. Tschanz, "Hunayn bin Ishaq: The Great Translator", Journal of the
+  International Society for the History of Islamic Medicine 1, no. 3 (2003),
+  cited as an example of the popular account. Dimitri Gutas, Greek Thought,
+  Arabic Culture (London: Routledge, 1998), pp. 53 to 60; M.-G.
+  Balty-Guesdon (1992); M. Di Branco (2012): titles set in type only.
+
+Type: Inter (Rasmus Andersson), Noto Sans Arabic (the Noto Project Authors)
+and Geist Mono (Vercel), SIL Open Font License 1.1.
+Voices: ElevenLabs (Frederick Surrey, narrator; Ghizlane, Arabic reader).
+Music: ElevenLabs Music API. Effects: made from seeded noise.

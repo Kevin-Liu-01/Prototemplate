@@ -1,0 +1,48 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.350
+In Tokyo, your checkout page opens in
+Japanese with one line still in English.
+
+2
+00:00:05.840 --> 00:00:12.390
+Its key went into en.json,
+and nobody added it to ja.json.
+
+3
+00:00:13.240 --> 00:00:15.320
+General Translation lets you stop writing
+
+4
+00:00:15.360 --> 00:00:19.570
+translation files with
+gt-react or gt-next.
+
+5
+00:00:20.380 --> 00:00:25.150
+Run npx gt init to set up gt-next
+and choose your languages.
+
+6
+00:00:25.660 --> 00:00:31.750
+Write the English inside a T component,
+and nobody has to update ja.json by hand.
+
+7
+00:00:32.200 --> 00:00:35.470
+Then add npx gt translate
+to your build script,
+
+8
+00:00:35.740 --> 00:00:38.070
+and every build writes the Japanese.
+
+9
+00:00:38.600 --> 00:00:40.830
+Now the tax line appears in Spanish,
+
+10
+00:00:40.920 --> 00:00:43.810
+French and Japanese with
+the rest of the page.

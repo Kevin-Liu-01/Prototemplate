@@ -1,0 +1,71 @@
+kb-translate-vue-app: credits and sources
+How do I translate a Vue app? Film 14 of General Translation's knowledge base series. There is no
+knowledge base article for this question yet; the end card points to the docs page,
+generaltranslation.com/docs/vue/quickstart.
+Film: the product cut, 48.60 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(49.75 s, 2026-10-12), which replaced the recited cut (v1, 44.28 s, 2026-10-10).
+
+SCRIPT
+- From General Translation's docs page "Quickstart" under Vue (generaltranslation/content
+  docs/en-US/vue/quickstart.mdx, main 261320d), with the createGT and useSetLocale reference
+  pages (docs/en-US/vue/reference/functions/create-gt.mdx,
+  reference/composables/use-set-locale.mdx). The film tells the quickstart's steps as a story:
+  someone in Bogotá who reads Spanish finds your Vue page all in English, because its template
+  is plain English and no plugin runs before the app mounts. The question card carries the
+  product's name, Vue, and its answer names General Translation: "General Translation lets you
+  register the gt-vue plugin and wrap your template in T." The steps are the quickstart's: the
+  install of gt-vue, which the page says is a 0.x release whose API may still change,
+  gt.config.json, the createGT plugin registered before the app mounts, the T component in the
+  template, npx gt login with the project ID in .env.local and npx gt translate, and a switcher
+  built on useSetLocale, which loads a language without a reload. Bogotá is a sample place; the
+  film says nothing about anyone there. The code, commands and file names are checked against
+  the docs and the open-source code (generaltranslation/gt main 1e3cc41: gt-vue 0.1.21, the gt
+  CLI 2.26.1), and the film's files were run on a fresh create-vue app (BRIEF.md section 9). The
+  script is motion/concepts/kb-story/scripts/kb-translate-vue-app.md.
+
+CODE ON SCREEN
+- src/App.vue before and after, src/main.ts before and after, gt.config.json, an excerpt of
+  package.json's dependencies, the terminal commands and .env.local: the quickstart's code and the
+  create-vue starter's; the createGT call is the createGT reference's; src/LocaleSwitcher.vue is
+  the useSetLocale reference's example with a Spanish option. The <p> text is broken over two
+  rows so each file fits the panel, as BRIEF.md section 9 says. The quickstart's search field and
+  its useGT call are left out: film 11 is the series' film about attributes.
+- GT_PROJECT_ID uses the docs' placeholder, your-project-id. No key is shown.
+
+THE APP PAGE
+- The page's English strings are the quickstart's: Welcome to my app, This content will be
+  translated automatically. The Spanish, French and Japanese strings, and where the French heading
+  and the Japanese paragraph break, are drafts written for this film and films 9, 10 and 13; they
+  are not output of General Translation's API, and they wait for a native speaker's review. The
+  select's labels are the useSetLocale reference example's for English, French and Japanese, and
+  the language's own name for Spanish, which the film adds. kb.json (scene.screen) holds every one
+  of them. The select's chevron is Heroicons 2.2.0 16 solid chevron-down (MIT, Tailwind Labs).
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
+  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
+  end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, named by the kit for text with lang="ja"
+  (kit/kb/kb-story.js, langFaces; a system face, fetched from nowhere).
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability
+  0.55, style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through
+  kit/kb/take.mjs and kit/audio/el.mjs: six recorded 2026-10-12, the answer recorded again
+  2026-10-13 with the question sent before it, and one, "Sign in, set your project ID, and run
+  npx gt translate.", recorded 2026-10-10 for the recited cut and kept. None is slowed, sped or
+  stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb and its story stage,
+  kit/kb/kb-story.js.

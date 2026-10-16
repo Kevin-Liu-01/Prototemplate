@@ -1,0 +1,53 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:01.620
+In Madrid,
+
+2
+00:00:01.660 --> 00:00:05.590
+the search result for your About
+page shows the English title and URL.
+
+3
+00:00:06.100 --> 00:00:08.550
+Your app shows Spanish with gt-next,
+
+4
+00:00:08.640 --> 00:00:11.750
+but that version has no
+URL or title of its own.
+
+5
+00:00:12.580 --> 00:00:17.380
+General Translation lets you give every
+language its own URL and tell search
+
+6
+00:00:17.420 --> 00:00:18.450
+engines about them.
+
+7
+00:00:19.300 --> 00:00:26.270
+Move your pages into app/[locale], and the
+middleware serves Spanish at /es/about.
+
+8
+00:00:26.780 --> 00:00:31.290
+The root layout sets the html
+lang attribute with useLocale.
+
+9
+00:00:31.820 --> 00:00:37.810
+A helper adds canonical and hreflang
+links, and getGT translates the title.
+
+10
+00:00:38.820 --> 00:00:41.930
+A sitemap lists every
+page in every language.
+
+11
+00:00:42.480 --> 00:00:46.430
+In Madrid, the result can now
+show the Spanish title and URL.

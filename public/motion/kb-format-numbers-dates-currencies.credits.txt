@@ -1,0 +1,71 @@
+kb-format-numbers-dates-currencies: credits and sources
+How do I format numbers, dates and currencies for each locale? One of General Translation's
+product films (formerly the knowledge base series, film 12), for its Next.js page. The end card
+points to the docs page, generaltranslation.com/docs/react/guides/formatting-variables.
+Film: the story cut, 44.88 s, 1920 x 1080, 60 fps. Built 2026-10-12; built again 2026-10-13 for the
+product pages, with an answer that names General Translation; and again that evening, with the
+answer alone on its card and npx said as one word; and again 2026-10-14, with the key words of each
+heading and of the answer in the blue accent. It replaces the recited cut (v1, 43.73 s, 2026-10-10).
+
+SCRIPT
+- From General Translation's docs guide "Formatting numbers and dates" (generaltranslation/content
+  docs/en-US/react/guides/formatting-variables.mdx, main 261320d), with the references for Num,
+  Currency, DateTime and RelativeTime and the gt init and gt translate command pages. The film
+  tells the guide's point as a story: someone in Munich opens a page whose total has a decimal
+  point and no euro sign, because the code prints each value as it is. The answer on the question
+  card is the guide's answer in one sentence with General Translation as its subject: "General
+  Translation formats values for each locale with Num, Currency and DateTime." The steps are npx gt
+  init, Num and Currency, DateTime and RelativeTime, and npx gt translate. The film covers gt-next;
+  gt-react exports the same components. Munich is a sample place; the film says nothing about
+  anyone there. The code, commands and file names are checked against the docs and the open-source
+  code (generaltranslation/gt main 1e3cc41: gt-next and @generaltranslation/react-core 11.4.11, gt
+  2.26.1). BRIEF.md and the script cite each one. The research brief is by the knowledge base
+  series' research lane (BRIEF.md, sections 1 to 8).
+
+CODE ON SCREEN
+- Downloads.tsx and Total.tsx, before: the guide's snippets with their components taken out, the
+  values printed as the code holds them. After: the guide's snippets with import lines from
+  gt-next, long lines on more rows. Published.tsx is adapted: the guide's dateStyle and timeStyle
+  options are left out so the options fit one row, which leaves Intl's default numeric date.
+  Activity.tsx is the guide's RelativeTime line. gt.config.json: the quickstart's form, with this
+  film's locales. BRIEF.md section 9 lists each change.
+
+THE VALUES AND THE APP PAGE
+- Every number, amount and date on screen is the output of JavaScript's Intl (Node 24.13.0, ICU
+  77.1, CLDR 47) with the options the components pass, typed in as computed. They are sample app
+  data, not statements about anyone.
+- The page's English sentences are the guide's. The Spanish, Japanese and German sentences are
+  drafts written for this film; they are not output of General Translation's API, and they wait
+  for a native speaker's review. kb.json holds every one of them.
+- The page has no language menu. The language code over its corner (de, en, es, ja) is the
+  language the visitor's browser asks for.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
+  card, and the General Translation lockup, the bar monogram over the name
+  (kit/marks/bar-monogram-lockup.svg), on the end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese is set in the machine's Hiragino Sans, named by the kit for text with lang="ja"
+  (kit/kb/kb-story.js, langFaces; a system face, fetched from nowhere).
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Seven takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs: five recorded 2026-10-12 (the DateTime line taken twice), the answer's
+  recorded 2026-10-13 with the question sent before it so it reads as a reply, and one kept from the
+  recited cut of 2026-10-10 (the translate line), whose words the story cut keeps. The two lines
+  that say npx, init and translate, were recorded again that evening, with npx said as one word, in
+  place of their earlier takes. None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb and its story stage,
+  kit/kb/kb-story.js.

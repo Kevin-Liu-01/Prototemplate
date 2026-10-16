@@ -1,0 +1,74 @@
+kb-translations-in-ci: credits and sources
+How do I keep translations up to date on every deploy? Film 21 of General Translation's knowledge
+base series, for the docs page generaltranslation.com/docs/cli/guides/generating-translations (no
+knowledge base article yet; BRIEF.md proposes kb/translations-in-ci).
+Film: the product cut, 48.72 s, 1920 x 1080, 60 fps. Built 2026-10-13. It replaces the story cut
+(48.18 s, 2026-10-12), which replaced the recited cut (40.30 s, 2026-10-10), whose first delivery
+is defective and is not published.
+
+SCRIPT
+- From General Translation's CLI docs (generaltranslation/content main 261320d, docs/en-US/cli): the
+  Quickstart, "Generating translations", "Configuring the CLI", and the gt translate and gt api-key
+  create references, with the build script from the coding-agent guide. The film tells the docs'
+  case as a story: someone in Montreal opens your French page and finds the line you added this week
+  in English, because the build script runs next build alone, so nothing translated the line since
+  the last translations were committed. The question card carries the product's name, CLI, and its
+  answer names General Translation: "General Translation keeps translations current when your CI
+  runs npx gt translate before the build." Montreal is a sample place; the film says nothing about
+  anyone there. Commands, flags and permission names were checked in the open-source gt CLI
+  (generaltranslation/gt, gt 2.26.1), and the Dashboard's key levels in General Translation's own
+  code. BRIEF.md cites each line and each step.
+
+CODE ON SCREEN
+- package.json: the build script "next build" (create-next-app's default, vercel/next.js), and
+  then "npx gt translate && next build", the docs' form.
+- The terminal: gt login and gt api-key create with the four grants the CLI's own names spell:
+  file read, file write, context write (the project setup step that every gt translate run with
+  files starts with needs it) and translation enqueue. your-project-id and "CI build" are
+  placeholders, and the printed key is drawn as dots.
+- .github/workflows/build.yml: an example written for the film in GitHub Actions' workflow syntax
+  (the docs give no workflow file), with actions/checkout v7 (GitHub, MIT) on GitHub's
+  ubuntu-latest runner image, whose Node.js meets the CLI's requirement.
+- The secrets page is drawn plainly from GitHub's own labels (Actions secrets and variables,
+  Secrets, Variables, Repository secrets, New repository secret) in the series' line grammar; it
+  shows no logo and does not imitate GitHub's page.
+
+THE APP PAGE
+- A page in the kit's drawing, in a browser whose tab and address are bars: a heading, the order
+  line, two copy bars and a button. The heading and the button are the home page demo's shipped
+  strings (gt-cloud apps/landing/src/components/landing/home/sections/TranslateWindow.tsx); the
+  order line, "Your order is on its way.", is the brief's sample, and its Spanish, French and
+  Japanese are the brief's drafts. None is output of General Translation's API, and every one
+  waits for a native speaker's review before the film is published. kb.json
+  (scene.screen.app.blocks) holds them all.
+- The page has no language menu. The language code over its corner (fr, en, es, ja) is the
+  language the visitor's browser asks for, which gt-next reads.
+
+MARKS
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
+  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
+  end card.
+
+TYPE
+- Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
+- Geist Mono 1.701 (vercel/geist-font, SIL Open Font License 1.1, kit/kb/fonts/OFL.txt) for code.
+- Japanese uses the machine's system face (Hiragino Sans) through var(--font)'s fallback.
+
+VOICE
+- Narrator: Frederick Surrey, an ElevenLabs library voice (eleven_multilingual_v2, stability 0.55,
+  style 0.2, speed 1.0; kit/audio/voice.json). Eight takes, one per line, through kit/kb/take.mjs
+  and kit/audio/el.mjs. Seven were recorded 2026-10-12, so that one session reads the film: the
+  failure, the cause and the payoff first, then the build script and workflow lines, then the key
+  and secrets lines, in place of the four takes kept from the cut built on 2026-10-10. The answer
+  was recorded again on 2026-10-13 with the question sent before it, its second take that day, the
+  one nearest the others in pitch. None is slowed, sped or stretched.
+
+MUSIC
+- The knowledge base series bed: composed for the series by the ElevenLabs Music API (music_v1,
+  instrumental, 60 s, 2026-10-09; kit/kb/audio/series-bed.prompt.txt), cut to this film on its own
+  bar lines by kit/kb/mix.py so its held chord falls on the end card.
+
+DRAWING
+- The drawing grammar of films/gif-how-gt-works (vector interface panels, doubled-line connectors,
+  black and white with one blue accent), through motion/kit/kb, its story stage
+  (kit/kb/kb-story.js) and its kbx views.

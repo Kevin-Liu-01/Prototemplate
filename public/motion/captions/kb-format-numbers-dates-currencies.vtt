@@ -1,0 +1,53 @@
+WEBVTT
+
+1
+00:00:00.880 --> 00:00:05.550
+In Munich, your page writes its total
+with a decimal point and no euro sign.
+
+2
+00:00:06.000 --> 00:00:09.850
+The code prints each value as it
+is, unformatted for any locale.
+
+3
+00:00:10.760 --> 00:00:14.160
+General Translation formats
+values for each locale with Num,
+
+4
+00:00:14.200 --> 00:00:15.910
+Currency and DateTime.
+
+5
+00:00:16.800 --> 00:00:20.930
+After npx gt init, Num
+groups the count's digits,
+
+6
+00:00:21.020 --> 00:00:24.050
+and Currency formats the
+total without converting it.
+
+7
+00:00:24.540 --> 00:00:26.790
+The DateTime component formats dates,
+
+8
+00:00:26.920 --> 00:00:30.810
+and the RelativeTime component writes
+phrases such as three days ago.
+
+9
+00:00:31.240 --> 00:00:35.640
+Run npx gt translate, and the
+words are translated into Spanish,
+
+10
+00:00:35.680 --> 00:00:37.110
+Japanese and German.
+
+11
+00:00:37.540 --> 00:00:41.350
+In Munich, the total and the count
+now follow German conventions.
