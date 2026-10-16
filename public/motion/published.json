@@ -69,6 +69,336 @@
         "video": "66b3e12970b82383721ad0cc515f498f378584618a559677a52f263cd71aefcf",
         "audio": "38058636f810e6e62247e871bb7811bb266a804f22121664f44911efe31ed717"
       }
+    },
+    "kb-best-localization-software": {
+      "cut": null,
+      "length": "43.8 s",
+      "film": "/media/best-localization-software-film.mp4",
+      "poster": "/media/best-localization-software-poster.jpg",
+      "streams": {
+        "video": "44766e7d6629d31d78096bd98d3c923090738eeb46730809f99a337b36e071e1",
+        "audio": "334b46a3a21b32867f22e03a5cea822c1a02a950b39f02eccdbb972ee9ed3f00"
+      }
+    },
+    "kb-what-is-locadex": {
+      "cut": null,
+      "length": "47.9 s",
+      "film": "/media/what-is-locadex-film.mp4",
+      "poster": "/media/what-is-locadex-poster.jpg",
+      "streams": {
+        "video": "c6340163aa4b3033f2c58ced4d00be2569d5b021fc288d746bd19159a0dec610",
+        "audio": "b822bd711c63cdcd180e67dfba6f8ba9b61bbd6e41263b96ef8bcd4e2aff3607"
+      }
+    },
+    "kb-i18n-without-translation-files": {
+      "cut": null,
+      "length": "47.4 s",
+      "film": "/media/i18n-without-translation-files-film.mp4",
+      "poster": "/media/i18n-without-translation-files-poster.jpg",
+      "streams": {
+        "video": "df6c87aa5f2009c329ce4b440b2d289976880aff33918c5b5b69ac15882388a7",
+        "audio": "d82d3bcf7c6311fc3c2ac5a90255aa57a144b0dc76f04b7a0e3b076d9fad1254"
+      }
+    },
+    "kb-add-i18n-to-nextjs": {
+      "cut": null,
+      "length": "50.6 s",
+      "film": "/media/add-i18n-to-nextjs-film.mp4",
+      "poster": "/media/add-i18n-to-nextjs-poster.jpg",
+      "streams": {
+        "video": "f8678208ba82abf27a33d4aaffed4e930f4b4d079ee4e0997a6aa5350d1e979f",
+        "audio": "bf93504e8d79efa44c8852d502ad4cf7597323ac9ed271428dbf92dfaa7d3d1b"
+      }
+    },
+    "kb-translate-react-app": {
+      "cut": null,
+      "length": "49.0 s",
+      "film": "/media/translate-react-app-film.mp4",
+      "poster": "/media/translate-react-app-poster.jpg",
+      "streams": {
+        "video": "cdfa03196446332a292d666d488eb767f9b60316f9ba3ac965d17078e3ba18fe",
+        "audio": "cfabcece0c099e48465ee42c3acf511d07a1f0c36a4f82d2f4d4d57b8a8f506f"
+      }
+    },
+    "kb-translate-vue-app": {
+      "cut": null,
+      "length": "47.8 s",
+      "film": "/media/translate-vue-app-film.mp4",
+      "poster": "/media/translate-vue-app-poster.jpg",
+      "streams": {
+        "video": "c88afe91376e87f7ee04aaa78a73bc05a88bc3b5c1e51495a58b3e23fada8eed",
+        "audio": "bbca9d74c613b4b39f7258db2454e1ab595a68cbb0c284a0974acbffaee5da2a"
+      }
+    },
+    "kb-translate-react-native-app": {
+      "cut": null,
+      "length": "47.3 s",
+      "film": "/media/translate-react-native-app-film.mp4",
+      "poster": "/media/translate-react-native-app-poster.jpg",
+      "streams": {
+        "video": "b0fcfc5875f52bca84fd709ebc67d434d3ffc04c180873ed6098cbc526071833",
+        "audio": "5fb5cba8a81d57c242680fd3f7db5271a89a8553d55115e8cac81350b5a5d959"
+      }
+    },
+    "kb-translate-tanstack-start-app": {
+      "cut": null,
+      "length": "48.9 s",
+      "film": "/media/translate-tanstack-start-app-film.mp4",
+      "poster": "/media/translate-tanstack-start-app-poster.jpg",
+      "streams": {
+        "video": "1257db297e9b7317dc734ca90ca1bb6f002fd211995b271574d55d7bff01db3e",
+        "audio": "0de2358b082ecf7211c34c749b6dea6758ce8bf713631a688c23383bc795b37a"
+      }
+    },
+    "kb-translate-node-app": {
+      "cut": null,
+      "length": "48.5 s",
+      "film": "/media/translate-node-app-film.mp4",
+      "poster": "/media/translate-node-app-poster.jpg",
+      "streams": {
+        "video": "58f5aef3a420415edb2902118d7b1895393667afd024b375003038726dd74bd6",
+        "audio": "85c51945f1976bc48c02d59ca055534646691fd9b0b6010ecb26466a6dee9e12"
+      }
+    },
+    "kb-translate-conditional-jsx": {
+      "cut": null,
+      "length": "46.1 s",
+      "film": "/media/translate-conditional-jsx-film.mp4",
+      "poster": "/media/translate-conditional-jsx-poster.jpg",
+      "streams": {
+        "video": "12f3b48a91b197a713d3e3dce98354da300b8a48baacf6933c60741a8477f170",
+        "audio": "736cb938817e4bc78f1f6cf0bfefb9fe47b074375d245150c2a36119b807e7a2"
+      }
+    },
+    "kb-translate-strings-outside-jsx": {
+      "cut": null,
+      "length": "49.1 s",
+      "film": "/media/translate-strings-outside-jsx-film.mp4",
+      "poster": "/media/translate-strings-outside-jsx-poster.jpg",
+      "streams": {
+        "video": "d698dc478cfcf5ae7bd63b04dbb2f734b6e336dbe03bc2d7e43e112f0100dfbc",
+        "audio": "45ed2bedef176bac5d820dbc77d368fe7bcd016683f94aea869e3e416fb91c7e"
+      }
+    },
+    "kb-how-to-handle-plurals-in-react": {
+      "cut": null,
+      "length": "48.4 s",
+      "film": "/media/how-to-handle-plurals-in-react-film.mp4",
+      "poster": "/media/how-to-handle-plurals-in-react-poster.jpg",
+      "streams": {
+        "video": "1ccee3dba8ac6fc093ae017265b3edb2e8f4106791e7b1d052cd56f09292e76f",
+        "audio": "438562149f4fba70f511c2f0e0e8fb576828c6370f99b964349020f905e55cab"
+      }
+    },
+    "kb-format-numbers-dates-currencies": {
+      "cut": null,
+      "length": "44.9 s",
+      "film": "/media/format-numbers-dates-currencies-film.mp4",
+      "poster": "/media/format-numbers-dates-currencies-poster.jpg",
+      "streams": {
+        "video": "64da819c151c576fa7db93430ff5651be8380f22fe07bc2d73e196250f82b267",
+        "audio": "1d2995063f9cd26425c355b132e6a8c735d4ee6a50e7edb0ec882facc205ad81"
+      }
+    },
+    "kb-multilingual-nextjs-seo": {
+      "cut": null,
+      "length": "50.0 s",
+      "film": "/media/multilingual-nextjs-seo-film.mp4",
+      "poster": "/media/multilingual-nextjs-seo-poster.jpg",
+      "streams": {
+        "video": "e1c9244002ef8d465ce475c8791f0d9649bf09b797e7a8a4bcb19b20b9af6a97",
+        "audio": "89c88308c9fd83c12177f53432b36401abf79940416edcedc47b377285e133cc"
+      }
+    },
+    "kb-ai-agent-i18n-setup": {
+      "cut": null,
+      "length": "46.2 s",
+      "film": "/media/ai-agent-i18n-setup-film.mp4",
+      "poster": "/media/ai-agent-i18n-setup-poster.jpg",
+      "streams": {
+        "video": "fb3b17753fa8f706a67dd54e2bcc7d7f156fcd5d6108c65317354d9856377e74",
+        "audio": "21e26558157ad20417ed7cfd5bad874feaf715181677f36b54f49d3a403fdd98"
+      }
+    },
+    "kb-review-translations": {
+      "cut": null,
+      "length": "44.8 s",
+      "film": "/media/review-translations-film.mp4",
+      "poster": "/media/review-translations-poster.jpg",
+      "streams": {
+        "video": "b2869e46cdf46f8cebc776ebd8f84cffac25c4385e0a01bb4749a192b2f67ace",
+        "audio": "0675b269f207d3b13fff555d4af68762dd2f51afa7292626719390dee1fce509"
+      }
+    },
+    "kb-translations-in-ci": {
+      "cut": null,
+      "length": "47.9 s",
+      "film": "/media/translations-in-ci-film.mp4",
+      "poster": "/media/translations-in-ci-poster.jpg",
+      "streams": {
+        "video": "fdb80257db7a84b93388191600499ed41b5c53183f919c5067e8bf3d4d7e2be0",
+        "audio": "fcb31866ea42189040697437b2e27367ef8ad77adc4e34aab5b0160f1e1891ba"
+      }
+    },
+    "kb-translate-mintlify-docs": {
+      "cut": null,
+      "length": "47.6 s",
+      "film": "/media/translate-mintlify-docs-film.mp4",
+      "poster": "/media/translate-mintlify-docs-poster.jpg",
+      "streams": {
+        "video": "b498a04e1ab5bceea39d70ca4d9e8eedefeb0560bad2607fa7a7310d9e03b170",
+        "audio": "f490c4e84d69af1ba0e7da1a64d1645df9447cdd5f803713c6fb35af9bb754c0"
+      }
+    },
+    "kb-translate-sanity-content": {
+      "cut": null,
+      "length": "46.5 s",
+      "film": "/media/translate-sanity-content-film.mp4",
+      "poster": "/media/translate-sanity-content-poster.jpg",
+      "streams": {
+        "video": "de693246f9ea5c5e73dfad85593f332cc2ba09996dc9b857723c9284299985dd",
+        "audio": "d7b6ef687ec6d653b4cc0859bb89ae98fe5758a8752b620775ebbce0cfe3c0a8"
+      }
+    },
+    "kb-translate-storyblok-content": {
+      "cut": null,
+      "length": "49.9 s",
+      "film": "/media/translate-storyblok-content-film.mp4",
+      "poster": "/media/translate-storyblok-content-poster.jpg",
+      "streams": {
+        "video": "6815a90b7e697c4da1ec72a8defe7571032183f98d1538f32c6806999cf808bd",
+        "audio": "b3a6a64c58e37779d43b617f135187f982344f8655981a11bb1b33562f10360f"
+      }
+    },
+    "kb-translate-google-slides": {
+      "cut": null,
+      "length": "50.3 s",
+      "film": "/media/translate-google-slides-film.mp4",
+      "poster": "/media/translate-google-slides-poster.jpg",
+      "streams": {
+        "video": "b34b3ecfa278783cc7d555ec39bfde3b675773b3e2a5ca2933f1264d01c70ba4",
+        "audio": "a7596f4072bb16032c8fe31940b54ea814e7afefe9f51866672358d339941896"
+      }
+    },
+    "kb-translate-srt-subtitles": {
+      "cut": null,
+      "length": "51.3 s",
+      "film": "/media/translate-srt-subtitles-film.mp4",
+      "poster": "/media/translate-srt-subtitles-poster.jpg",
+      "streams": {
+        "video": "892d37172de43c1e6029eb28c0df84db46c37957758e09a3a0fb4cd3991cb1e1",
+        "audio": "9f494670d5b90df1a893a3f9c0bb2f5b480db18f1125d3b0f5d92a0bd8078e84"
+      }
+    },
+    "kb-translate-product-walkthroughs": {
+      "cut": null,
+      "length": "47.8 s",
+      "film": "/media/translate-product-walkthroughs-film.mp4",
+      "poster": "/media/translate-product-walkthroughs-poster.jpg",
+      "streams": {
+        "video": "5865772b08d2511907268077bfc88812d53b21614df914bfa83d90f498ceb780",
+        "audio": "997a8a81d1b9a1af4c0f5bac53cdc75793d99b0ac8466d015995094c1d2595a6"
+      }
+    },
+    "kb-translate-lottie-animations": {
+      "cut": null,
+      "length": "48.5 s",
+      "film": "/media/translate-lottie-animations-film.mp4",
+      "poster": "/media/translate-lottie-animations-poster.jpg",
+      "streams": {
+        "video": "58910f83f432fc7e47ae719a63044cca8d1ed3246c2d5d9571b40064028f9786",
+        "audio": "18e059c0054faff60b3134335ec814f1206f223a0681a63796ed17fef5d7e27d"
+      }
+    },
+    "tyndale": {
+      "cut": null,
+      "length": "97.3 s",
+      "film": "/media/tyndale-film.mp4",
+      "poster": "/media/tyndale-poster.jpg",
+      "streams": {
+        "video": "bd2d79028e9790b3144a1603f5dccaa1e36476c16273f308f85cb00d3775534c",
+        "audio": "2c5c337e0bcf645845c05ea15b520bc3f12a43e04ca156adce18dc1e2762257a"
+      }
+    },
+    "hunayn": {
+      "cut": null,
+      "length": "99.8 s",
+      "film": "/media/hunayn-film.mp4",
+      "poster": "/media/hunayn-poster.jpg",
+      "streams": {
+        "video": "0ba08ac4b4cadfbe662a3cc48d670e5280c4a52e50d92b4292d71c81b8883e97",
+        "audio": "052d1356fa8139346710193c18446c4ef036fb8850f3502dabbbe2cb8a0c28fc"
+      }
+    },
+    "nishi-amane": {
+      "cut": null,
+      "length": "95.6 s",
+      "film": "/media/nishi-amane-film.mp4",
+      "poster": "/media/nishi-amane-poster.jpg",
+      "streams": {
+        "video": "6cbe4dc131ebfb0c6daec4554d8114bea30d56d8ee94af9a1d42630be4ea8c83",
+        "audio": "42729acc1bbf486ab13b6286bd245016d22913706df730a54c0dfd4c179264f5"
+      }
+    },
+    "blog-rewriting-docs": {
+      "cut": "v2",
+      "length": "23.5 s",
+      "film": "/media/rewriting-docs-film.mp4",
+      "poster": "/media/rewriting-docs-poster.jpg",
+      "streams": {
+        "video": "dafc71379c606803520ad19fe33a61c483c1896ee7ad95b968be07f7c42e3ffb",
+        "audio": "8917adb6e12303fafd95f6628944df002fd4c7c94ded170b1d7816c3a58e2183"
+      }
+    },
+    "release-board": {
+      "cut": "v2",
+      "length": "15.0 s",
+      "film": "/media/release-board-film.mp4",
+      "poster": "/media/release-board-poster.jpg",
+      "streams": {
+        "video": "e22ac1c65a740fcca1e603fd5aa2b512819e4df8ca28a597767c6a6b503ce0d6",
+        "audio": "c4845deeaf115207d8abae4c71ce801dd1fc530538f77b8d3d55d4e6962179df"
+      }
+    },
+    "mark-sting": {
+      "cut": null,
+      "length": "6.0 s",
+      "film": "/media/mark-sting-film.mp4",
+      "poster": "/media/mark-sting-poster.jpg",
+      "streams": {
+        "video": "389251f0948b5f66d388691e7399b576716ef143baab78306f0ac3bde4b3719f",
+        "audio": "37c936f7a58d7f1f0d8b5d535e7d32db7ab316a67c0f4b2c90fabe65e374fcf3"
+      }
+    },
+    "slash-announcement-de": {
+      "cut": "v2, from the English v8 (fix round 1)",
+      "length": "37.0 s",
+      "film": "/media/slash-announcement-de-film.mp4",
+      "poster": "/media/slash-announcement-de-poster.jpg",
+      "streams": {
+        "video": "9d80384ef230469239b3bf57464b6d969401acea5bd071bc4f2e9668e6266d43",
+        "audio": "4d9ec0cbf1215374d2dadf39f5287c03178107471cbb202319099cee4f5a394b"
+      }
+    },
+    "slash-announcement-es": {
+      "cut": "v2, from the English v8 (fix round 1)",
+      "length": "38.8 s",
+      "film": "/media/slash-announcement-es-film.mp4",
+      "poster": "/media/slash-announcement-es-poster.jpg",
+      "streams": {
+        "video": "6e62ae4c1e5e4dcb94b654f4330d964474a193230d77ce33be73185115d09d5e",
+        "audio": "b7865dca4373e7e19c15dece0897cdeec2ed6acefe9f8308a47ed03e4ec0415b"
+      }
+    },
+    "slash-announcement-ja": {
+      "cut": "v2, from the English v8 (fix round 1)",
+      "length": "38.4 s",
+      "film": "/media/slash-announcement-ja-film.mp4",
+      "poster": "/media/slash-announcement-ja-poster.jpg",
+      "streams": {
+        "video": "13ad04cfce988c0e082169782d5e6a6ccd10dddfd024749f3b0d52182aeeb1a1",
+        "audio": "f8df12dcc88ef9d95bee7327a6caf961fd997cf6c9bda2f1eba82f05bcc884af"
+      }
     }
   },
   "offSite": [

@@ -280,6 +280,18 @@ His dictionary marks his accepted coinages with a sign of their own. Many words 
 
 The freedoms and the binding rules are the same as jihe-yuanben's. A Hebrew face that sets pointing (niqqud) correctly is needed, and right-to-left lines must render correctly in the browser. Vols. 9 to 16 of the dictionary are in copyright; the brief lists the public-domain scans.
 
+### nishi-amane: Nishi Amane and the Japanese vocabulary of philosophy (60 to 100 s)
+
+Japanese and Chinese write "philosophy" with the same two characters, 哲学: *tetsugaku* in Japanese, *zhexue* in Chinese.
+
+### tyndale: Tyndale, More, and the English vocabulary of the Bible (60 to 100 s)
+
+In 1526 a printer at Worms finished a small New Testament in English.
+
+### hunayn: Ḥunayn, Ḥubaysh, and the Arabic vocabulary of Galen (60 to 100 s)
+
+Ḥunayn ibn Isḥāq (حنين بن إسحق) translated the medical works of the Greek physician Galen into Syriac and Arabic in ninth-century Baghdad.
+
 ### slash-partnership (off the site)
 
 `offSite` in `public/motion/published.json` keeps this film off the site; the site's build needs its slug on this roster.
@@ -290,11 +302,119 @@ The announcement of General Translation's partnership with Slash. Slash supports
 
 Built from Kevin's own script (`films/slash-announcement/BRIEF.md`), read by Frederick Surrey: five of his lines in order (1, 3 without "We bank with Slash", 6, 7 and the first sentence of 8, which Kevin changed on 2026-10-09 to "Your product should exist in every language."). v3 to v8 (2026-10-08 and 2026-10-09) follow his notes: animations about 30 percent quicker with holds of about half a second; the film opens on Slash's white wordmark over Slash's own gold card photo (Kevin's image, cut out and floated in with a highlight across the brushed gold, never dithered); on "for" the globe appears in front and the card slides right behind it while the photo's ground hands over to the dithered light; the approved globe with 24 routes in their original style, drawn at 2.5 px with a dark keyline so they read at phone size, while the count rises to 180+; the lockup pushes in slowly through line 3, then glides into a small corner seat on "So" and stays through the offer; the five surfaces drop in on "localize", just after the credits bar, then Sign in, Pricing, Quickstart, Sales deck and Hero banner each step to their own language; the end card without the legal line. The 3 px screen is used for every dithered piece. The cut is 36.3 s. v7 is in `out/v17/`, v6 in `out/v16/`, v5 in `out/v15/`, v4 in `out/v14/`, v3 in `out/v13/`, v2 in `out/v12/` and v1 in `out/v11/`.
 
+### slash-announcement-de: Supporting Slash companies, in German (35 to 40 s)
+
+The German cut of Supporting Slash companies, read in German by Clemens.
+
+### slash-announcement-es: Supporting Slash companies, in Spanish (35 to 40 s)
+
+The Spanish cut of Supporting Slash companies, read in Spanish by Edoardo.
+
+### slash-announcement-ja: Supporting Slash companies, in Japanese (35 to 40 s)
+
+The Japanese cut of Supporting Slash companies, read in Japanese by Otani.
+
 ### gif-how-gt-works: How General Translation works (15 to 18 s)
 
 A looping product GIF of how General Translation localizes an app, made for OpenAI for Startups: the app's text is wrapped in the T component, one command (npx gt translate) writes the translation files, a reviewer edits a translation in the Dashboard, and the app switches between English, Spanish, French and Japanese.
 
 It uses the drawing grammar of the Designing docs film (vector interface panels, doubled-line connectors, the isometric lift of the translated pages) in black and white on a plain black ground, with one blue accent and no dither or smoke. It has no narration: four short headings carry it, and it closes on a General Translation card. The loop is 17.3 s and seamless; it ships as a 1280 x 720 GIF (1.26 MB) and a 1920 x 1080 MP4. The flow and its sources are in `films/gif-how-gt-works/DESIGN.md` and `NOTES.md`.
+
+### kb-best-localization-software: What is the best localization software for developers? (40 to 52 s)
+
+Look for one system that covers the whole pipeline, from the i18n library in your code to translation and delivery.
+
+### kb-what-is-locadex: What does the Locadex agent do? (40 to 52 s)
+
+Locadex is General Translation's AI agent, which opens pull requests in a GitHub repository that set up internationalization, translate new content into every target language and keep locale files in sync.
+
+### kb-i18n-without-translation-files: Can I do i18n without translation files? (40 to 52 s)
+
+With gt-react or gt-next, text stays inline in your components inside the T component and translations are generated at build time, so there are no keys or per-locale JSON files to keep in sync.
+
+### kb-add-i18n-to-nextjs: How do I add i18n to a Next.js app? (40 to 52 s)
+
+Install gt-next and the gt CLI, wrap your Next.js config with withGTConfig, add the GTProvider, wrap your content in the T component and run npx gt translate before next build.
+
+### kb-translate-react-app: How do I translate a React app? (40 to 52 s)
+
+Install gt-react and the gt CLI, initialize gt-react before your app renders, wrap your text in the T component and run npx gt translate to write a translation file for each language.
+
+### kb-translate-vue-app: How do I translate a Vue app? (40 to 52 s)
+
+Install gt-vue, register its plugin with createGT before you mount the app, wrap your template in the T component and run npx gt translate to write a catalog for each language.
+
+### kb-translate-react-native-app: How do I translate a React Native app? (40 to 52 s)
+
+Install the experimental gt-react-native package, add its Babel plugin, wrap your app in GTProvider, mark text with the T component and run npx gt translate to write a translation file for each language.
+
+### kb-translate-tanstack-start-app: How do I translate a TanStack Start app? (40 to 52 s)
+
+Install the experimental gt-tanstack-start package, register gtMiddleware so each request resolves its locale, pass the locale and its translations from the root route to GTProvider and run npx gt translate.
+
+### kb-translate-node-app: How do I translate a Node.js app? (40 to 52 s)
+
+Install gt-node, call initializeGT once at startup, wrap each request in withGT, translate strings in your handlers with getGT and run npx gt translate to write a translation file for each language.
+
+### kb-translate-conditional-jsx: How do I translate conditional text in JSX? (40 to 52 s)
+
+Wrap the whole sentence in the T component and express the condition with Branch, so the translator sees the full sentence and can reorder it for each language.
+
+### kb-translate-strings-outside-jsx: How do I translate strings outside JSX? (40 to 52 s)
+
+Use the useGT hook for strings such as placeholders and aria labels, getGT in async App Router components, and msg with useMessages for strings defined at module scope.
+
+### kb-how-to-handle-plurals-in-react: How do I handle plurals in React? (40 to 52 s)
+
+A multilingual app needs each locale's plural rules instead of checks like n === 1, and the Plural component from gt-react or gt-next applies them for every language.
+
+### kb-format-numbers-dates-currencies: How do I format numbers, dates and currencies for each locale? (40 to 52 s)
+
+Wrap each value in the component for its type, Num, Currency, DateTime or RelativeTime, which formats it for the active locale with JavaScript's Intl API.
+
+### kb-multilingual-nextjs-seo: How do I set up SEO for a multilingual Next.js app? (40 to 52 s)
+
+Give every language its own URL, set the html lang attribute, point each canonical URL at its own page, add hreflang alternates, translate titles and descriptions, and list every language version in your sitemap.
+
+### kb-ai-agent-i18n-setup: Can an AI coding agent set up i18n for me? (40 to 52 s)
+
+Copy the start prompt with the Setup for Agents button on generaltranslation.com and paste it into your coding agent, which reads the docs, signs in, sets up the project and translates a first page.
+
+### kb-review-translations: How do I review and edit translations? (40 to 52 s)
+
+Open the Translations page in the General Translation Dashboard, choose the locales to compare and click a translation to edit it, and Locadex can open a pull request that brings the edits into your repository.
+
+### kb-translations-in-ci: How do I keep translations up to date on every deploy? (40 to 52 s)
+
+Run npx gt translate in CI before your production build, so each build translates new and changed text and ships current translation files.
+
+### kb-translate-mintlify-docs: How do I translate a Mintlify docs site? (40 to 52 s)
+
+Connect the GitHub repository that holds your Mintlify docs to General Translation and choose your languages, and Locadex opens a pull request that sets up docs.json for multiple languages and adds the translated pages.
+
+### kb-translate-sanity-content: How do I translate content in Sanity? (40 to 52 s)
+
+Install the gt-sanity plugin, add it to your Sanity config with your locales and document types, and click Translate on a document to import each translation as a draft.
+
+### kb-translate-storyblok-content: How do I translate content in Storyblok? (40 to 52 s)
+
+Connect the Storyblok space in the General Translation Dashboard, select stories and locales, and click Sync and apply to write each translation back into its story as a draft.
+
+### kb-translate-google-slides: How do I translate Google Slides? (40 to 52 s)
+
+Open General Translation's Locadex add-on, choose your languages and click Sync and apply, and Locadex makes a copy of the deck for each language with the translated text fitted to each slide.
+
+### kb-translate-srt-subtitles: How do I translate SRT subtitles? (40 to 52 s)
+
+The General Translation CLI translates the cue text of SubRip subtitle files and keeps their cue numbers, timestamps, separators and markup.
+
+### kb-translate-product-walkthroughs: How do I show a product walkthrough in every language? (40 to 52 s)
+
+Install gt-rrweb, record a product walkthrough once, and replay it in every locale from your published translations.
+
+### kb-translate-lottie-animations: How do I translate a Lottie animation? (40 to 52 s)
+
+Translate dotLottie animation files with the General Translation CLI.
 
 ### showreel (assembled last)
 
