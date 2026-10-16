@@ -113,7 +113,11 @@ const GROUP_MARK: Record<FeatureGroupId, ComponentType<MarkProps>> = {
    sticky — the incoming label pushes the pinned one up (they stack),
    and the outgoing one clips away at the band's top edge. Mirrors the
    CSS pin math (58 nav + 130 band − 36 CTA inset − 57/2); the nav in
-   this shell stands 58px, two more than the shipped site's. */
+   this shell stands 58px, two more than the shipped site's. On a
+   phone on its side (UNPINNED_MQ) pricing.css lets the labels scroll
+   with the table, so the handoff stands down there. */
+const UNPINNED_MQ = '(pointer: coarse) and (max-height: 500px)';
+
 function useGroupLabelHandoff() {
   useMountEffect(() => {
     const labels = Array.from(
@@ -125,12 +129,17 @@ function useGroupLabelHandoff() {
     const PIN = 58 + 130 - 36 - 57 / 2;
     const BAND_TOP = 58;
     const H = 57;
+    const unpinned = window.matchMedia(UNPINNED_MQ);
     let raf = 0;
     const settle = () => {
       raf = 0;
       for (const label of labels) {
         const tbody = label.closest('tbody');
-        if (!tbody) continue;
+        if (!tbody || unpinned.matches) {
+          label.style.transform = '';
+          label.style.clipPath = '';
+          continue;
+        }
         const box = tbody.getBoundingClientRect();
         /* where the sticky engine puts the label (flow until the pin
            line, pinned after), then the group's end carries it up */
@@ -146,9 +155,11 @@ function useGroupLabelHandoff() {
       if (!raf) raf = requestAnimationFrame(settle);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    unpinned.addEventListener('change', onScroll);
     settle();
     return () => {
       window.removeEventListener('scroll', onScroll);
+      unpinned.removeEventListener('change', onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
   });

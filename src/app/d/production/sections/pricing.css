@@ -1011,6 +1011,20 @@
   }
 }
 
+/* ---- a phone on its side: the board's head scrolls ----
+   The screen is 390 to 430px tall, and the pinned nav and plan band
+   (58 + 130 = 188px) would hold nearly half of it, so a row's tap at
+   mid-screen would run under the band. There the plan band and the
+   group labels scroll with the table; their rows keep their height,
+   so nothing moves at rest. PricingCompare.tsx's label handoff stands
+   down under the same query. */
+@media (pointer: coarse) and (max-height: 500px) {
+  .pricing-root .pricing-compare-desktop thead th,
+  .pricing-root .pricing-compare-desktop td[colspan] {
+    position: static;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pricing-root .pricing-hero-link svg {
     transition: none;
