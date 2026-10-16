@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import NotFound from '../../singularity/sections/NotFound';
 import SiteFooter from '../../singularity/sections/SiteFooter';
@@ -12,11 +13,15 @@ import '../../singularity/styles.css';
 import '../../singularity/sections/not-found.css';
 import '../styles.css';
 
-export const metadata = {
-  title: '404 — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  robots: { index: false, follow: false },
-};
+/* a not-found page: noindex and no canonical, like the framework's own 404 */
+const route = seoRoute({
+  path: '/d/singularity-dossier/not-found',
+  title: 'Not found, Dossier',
+  kind: 'error',
+  description: 'No page of the Dossier site concept answers this address; the band links back to its home and its blog.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * 404 — the catch-all under the dossier. Any address beneath

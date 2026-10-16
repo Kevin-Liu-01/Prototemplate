@@ -1,5 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import V0Footer from '../_v0/V0Footer';
 import V0Nav from '../_v0/V0Nav';
@@ -23,10 +25,14 @@ import './home.css';
 import '../_v0/v0-pages.css';
 import '@/components/shared/home-terminal-colors.css';
 
-export const metadata = {
-  title: 'Orbit — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-orbit',
+  title: 'Orbit',
+  kind: 'direction',
+  description: directionDescription('singularity-orbit'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity-orbit home, the exploration showcase. The hero and the two

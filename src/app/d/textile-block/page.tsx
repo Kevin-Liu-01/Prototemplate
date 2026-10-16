@@ -1,6 +1,8 @@
 import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Footer from './components/Footer';
 import Hero from './components/Hero';
@@ -27,11 +29,14 @@ const display = localFont({
   adjustFontFallback: 'Times New Roman',
 });
 
-export const metadata = {
-  title: 'textile-block — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/textile-block',
+  title: 'Textile Block',
+  kind: 'direction',
+  description: directionDescription('textile-block'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * textile-block. The General Translation landing page as a relief block

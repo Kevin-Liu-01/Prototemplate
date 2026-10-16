@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
 import EnterpriseEvidence from '../../singularity/sections/EnterpriseEvidence';
@@ -16,10 +17,15 @@ import '../../singularity/styles.css';
 import '../../singularity/sections/enterprise.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Enterprise — Signal — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-signal/enterprise',
+  title: 'Enterprise, Signal',
+  kind: 'direction',
+  description:
+    'The enterprise page of the Signal site concept: General Translation’s case to large teams, its compliance record and the ask to talk to sales.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Signal — the gate, then the broadcast. The shared

@@ -91,7 +91,7 @@ export default function LocadexHero() {
             >
               Connect GitHub
             </a>
-            <a className='tc-btn tc-btn-line' href='/docs/platform/locadex'>
+            <a className='tc-btn tc-btn-line' href='https://generaltranslation.com/docs/platform/locadex'>
               Read the docs
             </a>
             <button className='tc-copy' type='button' onClick={copy}>

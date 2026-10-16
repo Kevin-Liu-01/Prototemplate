@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import LegalDocument from '../../../singularity/company-sections/LegalDocument';
 import { getLegalDoc, LEGAL_DOCS } from '../../../singularity/company-sections/legal-docs';
@@ -25,12 +26,14 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ route: string }> }) {
   const { route } = await params;
   const doc = getLegalDoc(route);
-
-  return {
-    title: doc ? `${doc.title} — Dossier — GT Redesign` : 'Legal — Dossier — GT Redesign',
-    description: doc?.description,
-    icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  };
+  return seoRoute({
+    path: `/d/singularity-dossier/legal/${route}`,
+    title: doc ? `${doc.title}, Dossier` : 'Legal, Dossier',
+    kind: 'direction',
+    description: doc
+      ? `${doc.title} in the Dossier site concept: ${doc.description}`
+      : 'One General Translation legal document in the Dossier site concept, its contents column beside the prose.',
+  }).metadata;
 }
 
 /**

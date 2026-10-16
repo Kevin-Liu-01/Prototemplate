@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import ReassemblerDemo from '../craft/ReassemblerDemo';
@@ -15,17 +14,22 @@ import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import { GtWord, gtText } from '@/components/viewer/GtWord';
 import { PAGE_NAMES } from '@/lib/page-names';
 import { readingMinutes } from '@/lib/reading';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
 import '../prototemplate.css';
 import './brand.css';
 
-export const metadata: Metadata = {
+const route = seoRoute({
+  path: '/brand',
   title: PAGE_NAMES.brand.name,
+  kind: 'page',
   description:
     'General Translation’s identity, laid out: the name, the idea, the character, the mark, color, type, language as material, and where it ships.',
-  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-};
+});
+
+export const metadata = route.metadata;
 
 /** The naming system: every name, what it is, one row each. The short form renders as the mark (gtText); the lowercase package names stay text. */
 const NAMES = [
@@ -153,8 +157,8 @@ const NOTE = (
   <p>
     It is written for anyone who builds with the identity, including our partners at
     basement studio. The visual laws are codified in{' '}
-    <Link href='/docs/design'>the design system</Link>, and every engine runs live
-    in <Link href='/docs'>the documentation</Link>.
+    <Link href='/handbook/design'>the design system</Link>, and every engine runs live
+    in <Link href='/handbook/libraries'>the libraries document</Link>.
   </p>
 );
 
@@ -435,7 +439,7 @@ const PAGES: readonly BrandPage[] = [
         <div className='ptb-devices'>
           {DEVICES.map(([name, what]) => (
             <div className='ptb-device-row' key={name}>
-              <Link href={`/docs#${name}`}>
+              <Link href={`/handbook/libraries#${name}`}>
                 <b>{name}</b>
               </Link>
               <span>{what}</span>
@@ -444,7 +448,7 @@ const PAGES: readonly BrandPage[] = [
         </div>
         <p>
           Every device above runs live, with its API, on{' '}
-          <Link href='/docs'>the docs page</Link>.
+          <Link href='/handbook/libraries'>the libraries document</Link>.
         </p>
       </>
     ),
@@ -658,13 +662,19 @@ const PAGES: readonly BrandPage[] = [
  * The brand book: General Translation's identity laid out in one ruled
  * column, for anyone who has to build with it (including basement studio),
  * read inside the viewer shell. The written canon is BRAND.md (served at
- * /docs/brand), whose reading time is the head's Reading fact; the laws
- * behind the visuals are DESIGN.md; and the engines run live on /docs.
+ * /handbook/brand), whose reading time is the head's Reading fact; the laws
+ * behind the visuals are DESIGN.md; and the engines run live on
+ * /handbook/libraries.
  * The routes that used to close the article (Docs, Deck, Present) are one
  * click away in the index panel's Pages group.
  */
 export default function BrandPage() {
   /* the literal file name keeps the build's file trace to BRAND.md */
   const reading = readingMinutes(readFileSync(join(process.cwd(), 'BRAND.md'), 'utf8'));
-  return <BrandViewer lead={LEAD} note={NOTE} pages={PAGES} updated={requireUpdated('/brand')} readingMinutes={reading} />;
+  return (
+    <>
+      <JsonLd nodes={route.jsonLd} />
+      <BrandViewer lead={LEAD} note={NOTE} pages={PAGES} updated={requireUpdated('/brand')} readingMinutes={reading} />
+    </>
+  );
 }

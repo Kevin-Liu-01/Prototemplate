@@ -66,7 +66,7 @@ export default function Home() {
   );
 }`,
     caps: ['UI', 'Text', 'Numbers', 'Currencies', 'Dates', 'Plurals', 'Functions', 'Context', 'Routing'],
-    docs: '/docs/next',
+    docs: 'https://generaltranslation.com/docs/next',
   },
   {
     id: 'react',
@@ -94,7 +94,7 @@ export default function Home() {
   );
 }`,
     caps: ['UI', 'Text', 'Numbers', 'Currencies', 'Dates', 'Plurals', 'Functions', 'Context', 'Globals'],
-    docs: '/docs/react',
+    docs: 'https://generaltranslation.com/docs/react',
   },
   {
     id: 'react-native',
@@ -119,7 +119,7 @@ export default function Home() {
   );
 }`,
     caps: ['UI', 'Text', 'Numbers', 'Currencies', 'Dates', 'Plurals', 'Functions', 'Context', 'Globals'],
-    docs: '/docs/react-native',
+    docs: 'https://generaltranslation.com/docs/react-native',
   },
   {
     id: 'tanstack',
@@ -146,7 +146,7 @@ function Home() {
   );
 }`,
     caps: ['UI', 'Text', 'Numbers', 'Currencies', 'Dates', 'Plurals', 'Functions', 'Context', 'Routing'],
-    docs: '/docs/tanstack-start',
+    docs: 'https://generaltranslation.com/docs/tanstack-start',
   },
   {
     id: 'node',
@@ -172,7 +172,7 @@ app.get('/', async (req, res) => {
 
 app.listen(3000);`,
     caps: ['Text', 'Numbers', 'Currencies', 'Dates', 'Plurals', 'Functions', 'Context', 'Requests', 'Middleware'],
-    docs: '/docs/node',
+    docs: 'https://generaltranslation.com/docs/node',
   },
   {
     id: 'python',
@@ -197,6 +197,6 @@ def home():
     )
     return {"title": title, "body": body}`,
     caps: ['Text', 'Numbers', 'Currencies', 'Dates', 'Plurals', 'Functions', 'Context', 'Requests', 'Middleware'],
-    docs: '/docs/python',
+    docs: 'https://generaltranslation.com/docs/python',
   },
 ];

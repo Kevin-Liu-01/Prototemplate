@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
@@ -18,10 +19,15 @@ import '../../singularity/styles.css';
 import '../../singularity/product-sections/product.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Pricing — Orbit — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-orbit/pricing',
+  title: 'Pricing, Orbit',
+  kind: 'direction',
+  description:
+    'The pricing page of the Orbit site concept: the two plans, a ruled comparison ledger and the published rate card.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Orbit — the pricing page as an

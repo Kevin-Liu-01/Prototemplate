@@ -1,6 +1,8 @@
 import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import BayerTiers from './diagrams/BayerTiers';
 import Hero from './sections/Hero';
@@ -13,10 +15,14 @@ import WallProof from './sections/WallProof';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'brick-lattice — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/brick-lattice',
+  title: 'Brick Lattice',
+  kind: 'direction',
+  description: directionDescription('brick-lattice'),
+});
+
+export const metadata = route.metadata;
 
 /* the one display face: inscriptional capitals for h1 and h2 only; Inter stays the body */
 const display = localFont({

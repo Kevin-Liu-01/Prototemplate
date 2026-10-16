@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../sections/SiteFooter';
 import TopNav from '../sections/TopNav';
@@ -13,11 +14,15 @@ import '../styles.css';
 import '../sections/logos-icons.css';
 import './careers.css';
 
-export const metadata = {
-  title: 'Careers — Toolchain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain/careers',
+  title: 'Careers, Toolchain',
+  kind: 'direction',
+  description:
+    'The careers page of the Toolchain direction: the open roles from General Translation’s live board in the concept’s type and color.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The careers page, mutated into the toolchain grammar. All content is the

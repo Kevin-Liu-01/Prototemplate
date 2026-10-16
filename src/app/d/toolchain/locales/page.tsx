@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../sections/SiteFooter';
 import TopNav from '../sections/TopNav';
@@ -13,11 +14,15 @@ import '../sections/logos-icons.css';
 import '../styles.css';
 import './locales.css';
 
-export const metadata = {
-  title: 'Supported Locales — Toolchain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain/locales',
+  title: 'Supported locales, Toolchain',
+  kind: 'direction',
+  description:
+    'The supported locales page of the Toolchain direction: every language General Translation supports, read from the live data.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Supported Locales, mutated into the toolchain grammar: the old landing

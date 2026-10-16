@@ -129,7 +129,7 @@ const PAIRS: readonly [Pair, ...Pair[]] = [
     lang: 'es',
     native: 'Español',
     variant: 'comment',
-    en: { title: 'Looks great — ship it', detail: '@mira · just now' },
+    en: { title: 'Looks great, ship it', detail: '@mira · just now' },
     tr: { title: '¡Listo para enviar!', detail: '@mira · ahora mismo' },
   },
   {

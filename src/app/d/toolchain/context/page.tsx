@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../sections/SiteFooter';
 import TopNav from '../sections/TopNav';
@@ -15,11 +16,15 @@ import '../sections/logos-icons.css';
 import '../styles.css';
 import './context.css';
 
-export const metadata = {
-  title: 'Context — Toolchain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain/context',
+  title: 'Context, Toolchain',
+  kind: 'direction',
+  description:
+    'The Context product page of the Toolchain direction: how General Translation reads context, from the context attribute to Context Groups.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The Context product page — the toolchain direction's deep page for the

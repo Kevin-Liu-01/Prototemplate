@@ -1,6 +1,8 @@
 import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Descent from './sections/Descent';
 import Footer from './sections/Footer';
@@ -26,10 +28,14 @@ const display = localFont({
   preload: false,
 });
 
-export const metadata = {
-  title: 'talud-tablero — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/talud-tablero',
+  title: 'Talud-Tablero',
+  kind: 'direction',
+  description: directionDescription('talud-tablero'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * TALUD-TABLERO. The page is a stepped platform in the Teotihuacan profile:

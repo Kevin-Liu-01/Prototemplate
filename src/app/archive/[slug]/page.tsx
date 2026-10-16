@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { ARCHIVE, archiveDate, getArchiveEntry } from '@/lib/archive';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 
 import ArchiveViewer from './ArchiveViewer';
 
@@ -13,15 +15,22 @@ export const dynamicParams = false;
 
 type Params = { params: Promise<{ slug: string }> };
 
+/** The head of one archived capture: a page in the Archive section, indexed with the hub. */
+function archiveRoute(slug: string) {
+  const item = getArchiveEntry(slug);
+  if (!item) notFound();
+  return seoRoute({
+    path: `/archive/${item.slug}`,
+    title: item.name,
+    section: 'Archive',
+    kind: 'page',
+    description: `The retired ${item.name} direction, captured at ${item.width} pixels wide on ${archiveDate(item)} before its route was deleted.`,
+  });
+}
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const item = getArchiveEntry(slug);
-  if (!item) return { title: { absolute: 'Archive' } };
-  return {
-    title: { absolute: `${item.name}, archived` },
-    description: `The retired ${item.name} direction, captured at ${item.width} pixels wide on ${archiveDate(item)} before its route was deleted.`,
-    icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-  };
+  return archiveRoute(slug).metadata;
 }
 
 /**
@@ -33,7 +42,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  */
 export default async function ArchivePage({ params }: Params) {
   const { slug } = await params;
-  const item = getArchiveEntry(slug);
-  if (!item) notFound();
-  return <ArchiveViewer key={item.slug} slug={item.slug} />;
+  const route = archiveRoute(slug);
+  return (
+    <>
+      <JsonLd nodes={route.jsonLd} />
+      <ArchiveViewer key={slug} slug={slug} />
+    </>
+  );
 }

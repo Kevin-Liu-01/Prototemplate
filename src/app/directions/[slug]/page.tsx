@@ -2,9 +2,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { DIRECTION_PAGE_SLUGS, getDirection } from '@/lib/directions';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
 import DirectionViewer from '../DirectionViewer';
+import { directionDescription } from '../descriptions';
 
 export function generateStaticParams() {
   return DIRECTION_PAGE_SLUGS.map((slug) => ({ slug }));
@@ -14,15 +17,28 @@ export const dynamicParams = false;
 
 type Params = { params: Promise<{ slug: string }> };
 
+/**
+ * The head of a direction's presentation page: indexed, since the writing
+ * and the captures here are the lab's own, while the study at /d/<slug>
+ * stays noindex. Home, the gallery, is its parent; the card draws the
+ * direction's dark capture.
+ */
+function directionRoute(slug: string) {
+  const direction = getDirection(slug);
+  if (!direction || direction.reference) notFound();
+  return seoRoute({
+    path: `/directions/${direction.slug}`,
+    title: direction.name,
+    section: 'Directions',
+    kind: 'direction',
+    description: directionDescription(direction.slug),
+    updated: requireUpdated(`/directions/${direction.slug}`),
+  });
+}
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const direction = getDirection(slug);
-  if (!direction || direction.reference) return { title: 'Directions' };
-  return {
-    title: direction.name,
-    description: direction.concept,
-    icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-  };
+  return directionRoute(slug).metadata;
 }
 
 /**
@@ -35,9 +51,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  */
 export default async function DirectionPage({ params }: Params) {
   const { slug } = await params;
-  const direction = getDirection(slug);
-  if (!direction || direction.reference) notFound();
+  const route = directionRoute(slug);
   return (
-    <DirectionViewer key={direction.slug} slug={direction.slug} updated={requireUpdated(`/directions/${direction.slug}`)} />
+    <>
+      <JsonLd nodes={route.jsonLd} />
+      <DirectionViewer key={slug} slug={slug} updated={requireUpdated(`/directions/${slug}`)} />
+    </>
   );
 }

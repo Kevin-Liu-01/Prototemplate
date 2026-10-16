@@ -1,6 +1,8 @@
 import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Dark from './sections/Dark';
 import FretBand from './sections/deco/FretBand';
@@ -26,10 +28,14 @@ const display = localFont({
   preload: false,
 });
 
-export const metadata = {
-  title: 'stepped-fret — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/stepped-fret',
+  title: 'Stepped Fret',
+  kind: 'direction',
+  description: directionDescription('stepped-fret'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * STEPPED-FRET. The page is a sequence of horizontal registers in the

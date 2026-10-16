@@ -1,5 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -13,11 +15,14 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'Paper Foundry — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/paper-foundry',
+  title: 'Paper Foundry',
+  kind: 'direction',
+  description: directionDescription('paper-foundry'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * Paper Foundry — the machine shop translated onto paper. The toolchain shell

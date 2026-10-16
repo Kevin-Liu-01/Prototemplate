@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
@@ -16,10 +17,15 @@ import '../../singularity/styles.css';
 import '../../singularity/product-sections/product.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Context — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/context',
+  title: 'Context, Dossier',
+  kind: 'direction',
+  description:
+    'The Context product page of the Dossier site concept: how General Translation reads context, from the context attribute to Context Groups.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Dossier — the Context product page.

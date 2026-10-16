@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../sections/SiteFooter';
 import TopNav from '../sections/TopNav';
@@ -19,11 +20,15 @@ import '../styles.css';
 import '../sections/logos-icons.css';
 import './pricing.css';
 
-export const metadata = {
-  title: 'Pricing — Toolchain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain/pricing',
+  title: 'Pricing, Toolchain',
+  kind: 'direction',
+  description:
+    'The pricing page of the Toolchain direction: the two plans, a ruled comparison ledger and the published rate card.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The full pricing page in the toolchain grammar: the same ruled column and

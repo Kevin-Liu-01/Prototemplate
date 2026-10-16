@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
@@ -16,10 +17,15 @@ import '../../singularity/styles.css';
 import '../../singularity/product-sections/product.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Context — Orbit — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-orbit/context',
+  title: 'Context, Orbit',
+  kind: 'direction',
+  description:
+    'The Context product page of the Orbit site concept: how General Translation reads context, from the context attribute to Context Groups.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Orbit — the Context product page.

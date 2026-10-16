@@ -5,15 +5,21 @@ import V0Footer from '../../_v0/V0Footer';
 import V0Nav from '../../_v0/V0Nav';
 
 import TryPage from '@/components/try/TryPage';
+import { seoRoute } from '@/lib/seo/route';
 
 import '../../toolchain/styles.css';
 import '@/components/try/try.css';
 import '../../_v0/v0-pages.css';
 
-export const metadata = {
-  title: 'Report card',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/try',
+  title: 'Report card, Dossier',
+  kind: 'direction',
+  description:
+    'The localization report card in the Dossier site concept: the URL form over a glyph field, then the graded report as a framed artifact.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Dossier — the localization report card. The production

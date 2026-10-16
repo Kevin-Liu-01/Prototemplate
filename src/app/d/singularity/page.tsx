@@ -1,5 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -16,11 +18,14 @@ import TopNav from './sections/TopNav';
 import './styles.css';
 import './bay-phone.css';
 
-export const metadata = {
-  title: 'Singularity — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity',
+  title: 'Singularity',
+  kind: 'direction',
+  description: directionDescription('singularity'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity — the event-horizon fork with the component walls removed.

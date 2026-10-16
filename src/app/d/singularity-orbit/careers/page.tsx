@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import { getJobPostings } from '../../singularity/company-sections/careers';
 import CareersClose from '../../singularity/company-sections/CareersClose';
@@ -15,10 +16,15 @@ import '../../singularity/styles.css';
 import '../../singularity/company-sections/company.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Careers — Orbit — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-orbit/careers',
+  title: 'Careers, Orbit',
+  kind: 'direction',
+  description:
+    'The careers page of the Orbit site concept: the open roles from General Translation’s live board in the concept’s type and color.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Careers — the shared company composition in the singularity grammar,

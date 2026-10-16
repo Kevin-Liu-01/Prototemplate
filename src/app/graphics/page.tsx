@@ -1,18 +1,21 @@
-import type { Metadata } from 'next';
-
 import { getPosts } from '@/lib/blog';
 import { getGraphicsBlocks } from '@/lib/graphics';
 import { PAGE_NAMES } from '@/lib/page-names';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
 import GraphicsViewer from './GraphicsViewer';
 
-export const metadata: Metadata = {
+const route = seoRoute({
+  path: '/graphics',
   title: PAGE_NAMES.graphics.name,
+  kind: 'page',
   description:
-    'Every illustration of the docs series on the viewer shell: one row per image with every version it ships in, the covers and social cards, the contact sheets, the glyphfield grounds and the figures of the earlier posts, read as a book or seen as a grid.',
-  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-};
+    'Every illustration of the docs series with every version it ships in: the covers, the social cards, the contact sheets and the glyphfield grounds.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * /graphics: the authoritative set. The blocks are read on the server
@@ -21,5 +24,10 @@ export const metadata: Metadata = {
  * book at its head with every image in the list on the left.
  */
 export default function GraphicsPage() {
-  return <GraphicsViewer blocks={getGraphicsBlocks()} posts={getPosts().length} updated={requireUpdated('/graphics')} />;
+  return (
+    <>
+      <JsonLd nodes={route.jsonLd} />
+      <GraphicsViewer blocks={getGraphicsBlocks()} posts={getPosts().length} updated={requireUpdated('/graphics')} />
+    </>
+  );
 }

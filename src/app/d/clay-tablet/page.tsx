@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import CaseFooter from './sections/CaseFooter';
 import CaseNav from './sections/CaseNav';
@@ -28,10 +29,14 @@ import './styles.css';
  * rates, locales, and customers. Forum is the one display face; Inter is the
  * body.
  */
-export const metadata: Metadata = {
-  title: 'clay-tablet — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/clay-tablet',
+  title: 'Clay Tablet',
+  kind: 'direction',
+  description: directionDescription('clay-tablet'),
+});
+
+export const metadata = route.metadata;
 
 const forum = localFont({
   src: [

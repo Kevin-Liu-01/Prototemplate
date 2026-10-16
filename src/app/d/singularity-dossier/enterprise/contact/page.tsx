@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import EnterpriseContactDesk from '../../../singularity/sections/EnterpriseContactDesk';
 import EnterpriseContactHero from '../../../singularity/sections/EnterpriseContactHero';
@@ -18,10 +19,15 @@ import '../../../singularity/sections/enterprise.css';
 import '../../../singularity/sections/enterprise-contact.css';
 import '../../styles.css';
 
-export const metadata = {
-  title: 'Enterprise Contact — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/enterprise/contact',
+  title: 'Enterprise contact, Dossier',
+  kind: 'direction',
+  description:
+    'The enterprise contact desk of the Dossier site concept: the four deployment commitments beside a form that sends nothing.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Enterprise contact — the sheet behind the enterprise page's "Talk to
