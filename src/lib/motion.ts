@@ -149,7 +149,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
     n: '03',
     title: 'Designing docs for humans',
     length: '50 to 55 s',
-    runtime: '0:54',
+    runtime: '0:56',
     status: 'rendered',
     section: 'motion-films',
     summary: 'The post takes a docs page apart (zones, layers, the reading path, the redline pass, type, alignment, icons, the hit list).',
@@ -166,23 +166,23 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
     },
     post: '/blog/designing-docs-for-humans',
     cut: {
-      label: 'v5',
-      length: '53.5 s',
+      label: 'v7',
+      length: '55.5 s',
       render: 'motion/out/blog-designing-docs.mp4',
     },
     sheet: {
       src: '/motion/sheets/blog-designing-docs.webp',
       width: 3093,
       height: 3063,
-      bytes: 1333574,
-      frames: 107,
+      bytes: 1396260,
+      frames: 111,
       png: '/motion/sheets/blog-designing-docs.png',
-      pngBytes: 5574968,
+      pngBytes: 5956575,
     },
     script: {
       src: '/motion/scripts/blog-designing-docs.md',
-      label: 'v5',
-      length: '53.5 s',
+      label: 'v7',
+      length: '55.5 s',
       voices: 'Narrator: Frederick Surrey',
       lines: 11,
     },
@@ -1922,7 +1922,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
 
 /** Each published script's story and spoken lines as plain text, by film slug: what the search matches a script on. */
 export const MOTION_SCRIPT_WORDS: Readonly<Record<string, string>> = {
-  'blog-designing-docs': 'Most docs readers are now AI agents, but humans still read docs to evaluate a product, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem. Most docs readers are now AI agents. Humans still read docs to evaluate a product. General Translation redesigned its docs from scratch so people would read its writing. Interfaces keep getting more cluttered, which creates mental clutter. The redesign started by deleting extra lines, links, and buttons. The sidebar is now one accordion, which is rare among docs sites. The writing now has more open space around it. Translated pages keep the same spacing and alignment. Each page guides its reader toward the action they want. Docs design is an open problem, and the team keeps working on it.',
+  'blog-designing-docs': 'Most docs readers are now AI agents, which makes an intuitive, intentional docs interface even more important, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem. Most docs readers are now AI agents. An intuitive, intentional docs interface becomes even more important. General Translation redesigned its docs from scratch so people would read its writing. Interfaces keep getting more cluttered, which creates mental clutter. The redesign started by deleting extra lines, links, and buttons. The sidebar is now one accordion, which is rare among docs sites. The writing now has more open space around it. Translated pages keep the same spacing and alignment. Each page guides its reader toward the action they want. Docs design is an open problem, and the team keeps working on it.',
   'blog-rewriting-docs': 'Docs now have two readers, so General Translation rebuilt its docs for both: for people each page starts with what it covers, and for agents every page is also served as raw Markdown. Docs now have two readers: people and AI agents. General Translation rebuilt its docs from scratch for both. For people, each page starts with what it covers and when to use it. For agents, every page is also served as raw Markdown.',
   'blog-fuma-nama': 'One developer, Fuma Nama, created Fumadocs, a docs framework with over 13,000 GitHub stars that Vercel Turborepo, shadcn/ui, Better Auth, Unkey and many others use, and he has built it for three years on top of his schoolwork. He learned to code by modding games and reading code, and he did not read documentation. He designed Fumadocs in four layers that developers can take apart, down to copying only the table of contents into their own code. He thinks he would build it the same shape again, and General Translation has made it its first open-source grantee. One developer created Fumadocs, a docs framework with over 13,000 stars on GitHub. Vercel Turborepo, shadcn/ui, Better Auth, Unkey and many others use it. Fuma Nama has built it for three years, on top of his schoolwork. He learned to code by modding games and reading piles of JavaScript. He did not look at any documentation while he was learning. He designed Fumadocs in four layers that developers can take apart and reshape. The CLI can copy just the table of contents into your codebase. If he started again from scratch, he thinks Fumadocs would probably have the same shape. Fumadocs is General Translation’s first open-source grantee.',
   'release-board': 'A split-flap board fills with the newest releases of General Translation\'s packages, and the newest, gt 2.23, lets you sign in and set up projects from the CLI. This board lists the newest releases of General Translation’s packages. The newest, gt 2.23, lets you sign in and set up projects from the CLI.',
