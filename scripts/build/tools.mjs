@@ -41,6 +41,7 @@ const GROUPS = [
 /** Lines for the commands whose file says nothing usable, or that run no file of their own. */
 const DESCRIBE = {
   dev: 'Starts the dev server on port 3005.',
+  postinstall: "Runs after every install: compiles the docs site's MDX collection (source.config.ts, content/docs) into .source/ with fumadocs-mdx, which the type check and the docs routes import.",
   build: 'Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, then builds the site with next build.',
   start: 'Serves the production build.',
   'lint:code': 'Runs oxlint with the gt-ui plugin (scripts/lint/oxlint-plugins/gt-ui.ts) over the live surfaces under src/.',

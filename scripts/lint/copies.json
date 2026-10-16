@@ -74,6 +74,20 @@
       "mode": "fork",
       "from": "the review sheet tool (sheet.py) of the New Onboarding and Dashboard session's onboarding PRs (2026-10-10)",
       "reason": "the bundled copy uses Pillow's built-in font unless --font names one and writes no fixed path; the session's copy is not re-synced"
+    },
+    {
+      "path": "src/components/docs/SidebarMotion.tsx",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/components/docs/SidebarMotion.tsx at 51cf3bdda5",
+      "ported": "2026-10-15",
+      "reason": "the docs sidebar's motion, copied with only its import line changed (useMountEffect from src/lib/use-mount-effect.ts); its styles are in src/app/docs/docs.css rather than gt-cloud's globals.css, and the copy is not re-synced"
+    },
+    {
+      "path": "src/components/docs/SidebarActiveScroll.tsx",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/components/docs/SidebarActiveScroll.tsx at 51cf3bdda5",
+      "ported": "2026-10-15",
+      "reason": "the docs sidebar's motion, copied with only its import line changed (useMountEffect from src/lib/use-mount-effect.ts); its styles are in src/app/docs/docs.css rather than gt-cloud's globals.css, and the copy is not re-synced"
     }
   ]
 }

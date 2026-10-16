@@ -26,18 +26,26 @@ src/
     compare/              /compare: two directions in synced frames
     present/              the presenter deck (intro, prototypes, scoreboard)
     brand/                /brand: the brand book
-    docs/                 the documents book: registry.ts (the documents),
-                          book.tsx (reads and renders them on the server),
-                          docs-book.ts (the /docs book with the build log
-                          appended; /handbook builds from book.tsx alone),
-                          markdown.tsx and links.ts (the renderer and where
-                          a repository path opens on the site), DocsShell
-                          (the shell for both books)
-    handbook/             /handbook: the handbook's registry and its two
-                          routes, rendered by the same DocsShell
-    craft/                the build log at the end of the /docs readme:
-                          laws, auditors and live library plates
-                          (libraries.ts); /craft redirects to /docs
+    docs/                 /docs: the docs site, fumadocs' notebook layout
+                          outside the viewer shell; layout.tsx, the one
+                          page route [[...slug]] over content/docs (MDX,
+                          read through src/lib/source.ts and
+                          source.config.ts) and docs.css, the adapters
+                          to the site's tokens
+    handbook/             /handbook: the handbook's registry (its own
+                          documents and the canon), its two routes, and
+                          libraries-book.ts, which appends the build log
+                          to the libraries document
+    md/, llms.txt/,       the agent files: the Markdown twins of every
+    llms-full.txt/,       docs page and handbook document (reached at a
+    AGENTS.md/            page's address plus .md), /llms.txt,
+                          /llms-full.txt and /AGENTS.md, generated from
+                          the registries
+    api/search/           the docs site's static search index
+    craft/                the build log after docs/LIBRARIES.md on
+                          /handbook/libraries: laws, auditors and live
+                          library plates (libraries.ts); /craft redirects
+                          there
     skills/               /skills, /skills/<slug> and the raw skill files
     marks/                /marks: the mark explorations
     blog/                 the docs-redesign posts (content/blog) rendered with
@@ -50,7 +58,7 @@ src/
     globals.css           the four color tokens
   components/
     viewer/               the viewer shell every route except /deck,
-                          /present, /blog and /d runs on: ViewerShell,
+                          /present, /blog, /docs and /d runs on: ViewerShell,
                           Sidebar, Toolbar, Sheet, BookView, GridView,
                           IndexPanel, Search, PreviewLayer, tokens.css
     shared/               cross-page instruments: EverySentence, StudioField,
@@ -61,6 +69,14 @@ src/
     blog/                 the blog's MDX components (PostAuthors, PostCover,
                           Carousel, AuthorSpotlight and the figures)
     try/                  the report card the shipped /try page mounts
+    book/                 the handbook's book: BookShell (the shell),
+                          book.tsx (reads and renders the documents on the
+                          server), markdown.tsx and links.ts (the renderer
+                          and where a repository path opens on the site)
+    docs/                 the docs site's parts: the sidebar footer, the
+                          theme button, the page actions, the sidebar
+                          motion copied from gt-cloud, and pages.ts, the
+                          ten pages as the hub's registries list them
     shell/                Bento primitives (Rails / BentoRow / BentoCell)
     plate/                the dashboard's sign-in and onboarding system
                           (frame, field, pages, fixtures) with its state
@@ -160,7 +176,8 @@ skills/                   the curated skills, one folder per skill
                           pnpm skills:install --project .
 motion/                   the films, untracked, owned by the Videos session
 AGENTS.md                 the agent entry point (CLAUDE.md imports it);
-                          served at /docs/agents
+                          served at /handbook/agents and raw at /AGENTS.md
+content/docs/             the docs site's ten MDX pages and meta.json
 ```
 
 ## The direction registry
@@ -204,8 +221,8 @@ re-scope.
 ## Componentized instruments
 
 The signature pieces live as libraries, outside page code. Each has a live
-plate and an API snippet in the build log at the end of the `/docs`
-readme (`src/app/craft/libraries.ts`):
+plate and an API snippet in the build log on `/handbook/libraries`
+(`src/app/craft/libraries.ts`):
 
 | module | what it is |
 | --- | --- |
@@ -258,21 +275,30 @@ the contract between the two ends:
 ## Skills and docs
 
 - `AGENTS.md`: the entry point for an agent, here or in a project that
-  imported the hub (served at /docs/agents; `CLAUDE.md` imports it).
-- `BRAND.md`: the identity canon (the basement-facing brand book; served at /docs/brand and /brand).
+  imported the hub (served at /handbook/agents; `CLAUDE.md` imports it).
+- `BRAND.md`: the identity canon (the basement-facing brand book; served at /handbook/brand and /brand).
 - `DESIGN.md`: the visual canon (this repo's law book).
 - `docs/SHIP-LOOP.md`: the verify/ship procedure every round runs.
-- `docs/LIBRARIES.md`: the library index (defers to the build log on `/docs` for depth).
+- `docs/LIBRARIES.md`: the library index (defers to the build log after it on `/handbook/libraries` for depth).
 - `docs/GRAPHICS.md`: the graphics pipeline: how the blog illustrations
   are made with `graphics/`, and the rules that came out of review.
 - `docs/handbook/`: the handbook, what spans the skills (principles, the
   quality bar, the multi-session playbook, the product map, the glossary,
-  the decisions log). `src/app/handbook/registry.ts` lists it and
-  `/handbook` renders it through the docs shell (`src/app/docs/DocsShell.tsx`
-  with `book='handbook'`). A relative link in any rendered document
-  resolves the way GitHub resolves it (`src/app/docs/links.ts`): a
-  rendered document opens its route, a skill its page, any other file
-  GitHub.
+  the decisions log). `src/app/handbook/registry.ts` lists it with the
+  canon after it (`AGENTS.md`, `BRAND.md`, `DESIGN.md`, this file, the
+  ship loop, the tools, the libraries, the graphics pipeline and the
+  artifact pictures), and `/handbook` renders the whole book through the
+  book shell (`src/components/book/BookShell.tsx`). A relative link in
+  any rendered document resolves the way GitHub resolves it
+  (`src/components/book/links.ts`): a rendered document opens its route,
+  a skill its page, any other file GitHub.
+- `content/docs/`: the docs site, ten MDX pages on how the hub works,
+  rendered at `/docs` by fumadocs (`source.config.ts`, `src/lib/source.ts`,
+  `src/app/docs`, `src/components/docs`). `/docs/template` explains how
+  to lift it into another project.
+- `src/lib/seo/`: the SEO system. Every route's head comes from one
+  `seoRoute()` call under the policy in `policy.ts`; `/docs/seo` explains
+  it.
 - `skills/<slug>/` is the one copy of each curated skill: SKILL.md with
   its frontmatter contract (name, description with "Use when", metadata
   title, areas, updated and origin), its references and scripts.

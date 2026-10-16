@@ -32,8 +32,9 @@ const TEMPLATE_SLUG = 'template';
  */
 function docsRoute(page: Page) {
   const tail = page.slugs.join('/');
+  const rest = tail ? `/${tail}` : '';
   return seoRoute({
-    path: `/docs${tail ? `/${tail}` : ''}`,
+    path: `/docs${rest}`,
     title: page.data.title,
     section: 'Docs',
     kind: 'article',

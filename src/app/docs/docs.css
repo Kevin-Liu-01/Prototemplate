@@ -170,6 +170,13 @@
   display: block;
 }
 
+/* fumadocs shows its sidebar footer row only for its own icon links; here
+   the row holds DocsSidebarFooter, which brings its own padding */
+:is(#nd-sidebar, #nd-sidebar-mobile) > div:has(> [data-docs-sidebar-footer]) {
+  display: block;
+  padding: 0;
+}
+
 /* the theme glyph, the shell's ◐ and ◑ */
 [data-docs-theme] span {
   font-size: 16px;

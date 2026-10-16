@@ -126,7 +126,7 @@ Both types live in `src/lib/shell-data.ts`, which holds pure types and helpers a
 | `title` | The name: the grid caption, the preview title, the filter text, the hover title. |
 | `short` | The sidebar name when the title would run past two lines (2026-10-05 round). |
 | `href` | The item's own page. A row whose href names another path navigates there. |
-| `inPlace: true` | The shell selects it in place even though `href` names another path (the documents on /docs, whose book scrolls and writes the address). |
+| `inPlace: true` | The shell selects it in place even though `href` names another path (the documents on /handbook, whose book scrolls and writes the address). |
 | `url` | An address off the site; the row opens a new tab with the external glyph. |
 | `shot` | `{ light, dark? }` captures for the grid and the thumbnail density. |
 | `desc` | One sentence; the filter matches it and the hover title shows it. |

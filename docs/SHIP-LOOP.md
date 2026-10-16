@@ -26,7 +26,7 @@ node scripts/lint/lines.mjs http://localhost:3005/<page> --theme dark
 
 - Audits at 1440 and 1280; expects **zero** findings in all four classes
   (doubles, missing, selfStacks, invisibles) in both themes.
-- The standing battery: `/`, `/docs`, the three singularity homes
+- The standing battery: `/`, `/handbook`, the three singularity homes
   (`dossier`, `orbit`, `signal`) and every page the round touched.
 - Deliberate devices live on the ALLOW list inside the script; add an owner
   there only for a sanctioned device, never to silence a real double.

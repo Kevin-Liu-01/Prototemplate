@@ -8,10 +8,10 @@ Detail for sections 1 and 2 of `prototemplate`, moved from SKILL.md on 2026-10-1
 | --- | --- | --- |
 | `/` | the design lab: every direction as an article (Book), one live exhibit at a time (Live) or a grid, with the anatomy wall and the capabilities ledger | `src/app/page.tsx`, `src/app/GalleryViewer.tsx`, `src/lib/directions.ts` |
 | `/brand` | the brand book in ten sections | `src/app/brand/`, `brand-sections.ts`, `BRAND.md` |
-| `/docs`, `/docs/<slug>` | the repository documents as one book, with the build log under the readme; `/craft` redirects here | `src/app/docs/registry.ts`, `src/app/craft/CraftArticle.tsx` |
+| `/docs`, `/docs/<slug>` | the docs site: ten MDX pages on how the hub works, in fumadocs' notebook layout outside the shell, with a Markdown twin at each address plus `.md`; `/docs/template` explains how to lift it into another project | `content/docs/`, `src/app/docs/`, `src/components/docs/`, `src/lib/source.ts`, `source.config.ts` |
 | `/deck` | the brand deck in its own viewer: `public/brand-deck.html` itself, through a rewrite in `next.config.ts` | `deck/`, `pnpm build:deck` |
 | `/skills`, `/skills/<slug>` | the curated GT skills by area, each page with its body, files and install line; the raw files at `/skills/<slug>/SKILL.md` and `/skills/index.json` | `skills/<slug>/`, the generated `src/lib/skills.ts`, `src/app/skills/` |
-| `/handbook`, `/handbook/<slug>` | the handbook as one book: operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log, opened by its readme | `docs/handbook/`, `src/app/handbook/registry.ts`, rendered by the docs shell (`src/app/docs/DocsShell.tsx`) |
+| `/handbook`, `/handbook/<slug>` | the handbook as one book: operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log, opened by its readme, then the canon (AGENTS.md, BRAND.md, DESIGN.md, ARCHITECTURE.md, the ship loop, the tools, the libraries with the build log, the graphics pipeline, the artifact pictures); the old `/docs/<slug>` addresses and `/craft` redirect here | `docs/handbook/`, the canon files, `src/app/handbook/registry.ts`, `src/components/book/` |
 | `/marks` | the GT mark explorations: the speed set of seven and the two survivors of the earlier round | `src/lib/marks.ts`, `public/marks/`, `pnpm build:marks` |
 | `/blog`, `/blog/<slug>` | the docs-redesign series as published, outside the shell | `content/blog/`, `src/lib/blog.ts` |
 | `/graphics` | every illustration of the series, by area | `graphics/build/manifest.json`, `src/lib/graphics.ts` |
@@ -73,16 +73,16 @@ src/lib/                 registries (surfaces, search-index, shell-data, directi
 scripts/                 build, capture and lint scripts, pagecheck/, oxlint-plugins/
 deck/                    the deck source: parts/head.html, slides/NN-*.html, parts/tail.html
 graphics/                the blog illustration toolchain
-content/                 the blog posts and their authors
+content/                 the docs site's MDX pages (docs/), the blog posts and their authors
 motion/                  the films, untracked, owned by the Videos session
 skills/<slug>/           the curated GT skills, the canonical copy
-public/                  fonts/, shots/, marks/, media/, brand-deck.html, deck-assets/, llms.txt,
+public/                  fonts/, shots/, marks/, media/, brand-deck.html, deck-assets/,
                          skills/, motion/
 docs/                    the documents, with handbook/, harness/, research/ and reference/
 AGENTS.md, CLAUDE.md     the agent entry point and its pointer
 ```
 
 - `next.config.ts` sets `typescript.ignoreBuildErrors: true`, so `pnpm build` never type-checks. `tsc` is a gate of its own.
-- `next.config.ts` also holds the `/deck` rewrite to `public/brand-deck.html` (with `X-Robots-Tag: noindex` on the file's own address, so only `/deck` is indexed), the cache headers for public files (a day fresh plus a week of stale-while-revalidate for `/shots`, `/media`, `/static`, `/graphics`, `/brand` and `/fonts`; a year, immutable, for the hashed `/deck-assets`), the permanent redirects (`/skills/<slug>.md`, and `/craft` to `/docs`), and `outputFileTracingExcludes` for the prerendered routes that read files through computed paths (`/`, `/docs`, `/handbook`, `/motion`, `/marks`, `/graphics`). A route that turns dynamic must stop reading an excluded path.
+- `next.config.ts` also holds the `/deck` rewrite to `public/brand-deck.html` (with `X-Robots-Tag: noindex` on the file's own address, so only `/deck` is indexed), the cache headers for public files (a day fresh plus a week of stale-while-revalidate for `/shots`, `/media`, `/static`, `/graphics`, `/brand` and `/fonts`; a year, immutable, for the hashed `/deck-assets`), the Markdown twin rewrites (a docs page or a handbook document plus `.md` to `src/app/md/[...path]/route.ts`), the permanent redirects (`/skills/<slug>.md`, each old `/docs/<slug>` canon address to `/handbook/<slug>`, and `/craft` to `/handbook/libraries`), `createMDX()` from `fumadocs-mdx/next` around the whole config, and `outputFileTracingExcludes` for the prerendered routes that read files through computed paths (`/`, `/handbook`, the twins, `/llms-full.txt`, `/AGENTS.md`, `/motion`, `/marks`, `/graphics`). A route that turns dynamic must stop reading an excluded path.
 - `tsconfig.json` includes `**/*.ts`, so a `.ts` file under `skills/` would be type-checked. Skill helpers are `.mjs`.
 - `src/app/d/**` holds self-contained explorations with their own type and colors. The shell's rules do not reach it. The type lint also skips the files its `ALLOW_FILES` list names: `/d/`, `/present` (a type specimen), the plate, the craft demos, `src/components/try`, the shared components only the directions mount, and the unmounted reference components (`StorySection`, `FeatureBento`, `LanguageWheel`).

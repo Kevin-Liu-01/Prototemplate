@@ -48,11 +48,14 @@
  * and onboarding gallery (src/components/plate) is the dashboard's code
  * and does rely on them, so the reset stops at .plate-root: inside it
  * Tailwind's preflight (base layer) zeroes the margins and the utilities
- * win, as they do in the dashboard. :where() keeps the selector at zero
- * specificity, the same as the bare * it replaces, so no direction sheet's
- * element rule changes rank against it.
+ * win, as they do in the dashboard. The docs site (fumadocs' notebook
+ * layout, #nd-notebook-layout) relies on them the same way, and its prose
+ * takes its spacing from the typography plugin's layered rules, so the
+ * reset stops there too. :where() keeps the selector at zero specificity,
+ * the same as the bare * it replaces, so no direction sheet's element rule
+ * changes rank against it.
  */
-:where(*:not(.plate-root, .plate-root *)) {
+:where(*:not(.plate-root, .plate-root *, #nd-notebook-layout, #nd-notebook-layout *)) {
   margin: 0;
   box-sizing: border-box;
 }

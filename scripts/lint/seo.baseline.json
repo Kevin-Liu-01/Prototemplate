@@ -100,16 +100,9 @@
     "src/app/d/toolchain/usage/pricing/page.tsx",
     "src/app/d/wide-rule/page.tsx",
     "src/app/directions/[slug]/page.tsx",
-    "src/app/docs/[slug]/page.tsx",
-    "src/app/docs/page.tsx",
     "src/app/graphics/page.tsx",
-    "src/app/handbook/[slug]/page.tsx",
-    "src/app/handbook/page.tsx",
     "src/app/marks/page.tsx",
-    "src/app/motion/[slug]/page.tsx",
-    "src/app/motion/page.tsx",
     "src/app/present/page.tsx",
-    "src/app/skills/[slug]/page.tsx",
     "src/app/skills/page.tsx"
   ]
 }
