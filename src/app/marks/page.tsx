@@ -1,20 +1,23 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type { Metadata } from 'next';
-
 import { MARKS } from '@/lib/marks';
 import type { MarkArt } from '@/lib/marks';
 import { PAGE_NAMES } from '@/lib/page-names';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
 import MarksViewer from './MarksViewer';
 
-export const metadata: Metadata = {
+const route = seoRoute({
+  path: '/marks',
   title: PAGE_NAMES.marks.name,
-  description: `${MARKS.length} GT marks: the speed set of seven in one register (wide letters, a forward slant, one cut, speed bars), from the bar monogram to its ASCII rendering, and the two survivors of the earlier round, each one color and shown at a run of sizes on paper and on ink.`,
-  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-};
+  kind: 'page',
+  description: `${MARKS.length} GT marks: the speed set of seven in one register, from the bar monogram to its ASCII rendering, and two survivors of the earlier round.`,
+});
+
+export const metadata = route.metadata;
 
 /** A public path (`/marks/x.svg`) read from the public folder at build time. */
 function readSvg(publicPath: string): string {
@@ -52,5 +55,10 @@ export default function MarksPage() {
       return [mark.id, entry];
     })
   );
-  return <MarksViewer art={art} updated={requireUpdated('/marks')} />;
+  return (
+    <>
+      <JsonLd nodes={route.jsonLd} />
+      <MarksViewer art={art} updated={requireUpdated('/marks')} />
+    </>
+  );
 }

@@ -205,7 +205,7 @@ function BrandBook({ lead, note, updated, readingMinutes, pages, onHeading, jump
               key: 'Canon',
               value: (
                 <>
-                  <Link href='/docs/brand'>BRAND.md</Link>, <Link href='/docs/design'>DESIGN.md</Link>
+                  <Link href='/handbook/brand'>BRAND.md</Link>, <Link href='/handbook/design'>DESIGN.md</Link>
                 </>
               ),
             },

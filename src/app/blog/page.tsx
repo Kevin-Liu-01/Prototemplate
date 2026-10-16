@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import PostAuthors from '@/components/blog/PostAuthors';
@@ -8,17 +7,26 @@ import { BookHead } from '@/components/viewer/BookView';
 import { getAuthors, getPosts } from '@/lib/blog';
 import { PAGE_NAMES } from '@/lib/page-names';
 import { readingMinutes } from '@/lib/reading';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 import { pad2 } from '@/lib/shell-data';
 import { requireUpdated } from '@/lib/updated';
 
 import './blog.css';
 
-export const metadata: Metadata = {
+/** GT publishes the posts and serves their feed; the index points at it rather than syndicating them from a second domain. */
+const GT_FEED = 'https://generaltranslation.com/rss.xml';
+
+const route = seoRoute({
+  path: '/blog',
   title: PAGE_NAMES.blog.name,
+  kind: 'page',
   description:
-    'The docs-redesign series as General Translation published it: rewriting the docs for humans and agents, the Fuma Nama interview, and designing docs for humans, with every illustration.',
-  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-};
+    'The docs-redesign series as General Translation published it: three posts on docs for humans and agents, kept here with their sources.',
+  feed: GT_FEED,
+});
+
+export const metadata = route.metadata;
 
 /**
  * /blog lists the posts this repository keeps, newest first, as a book in
@@ -32,6 +40,7 @@ export default function BlogIndexPage() {
   const minutes = readingMinutes(posts.map((post) => post.body).join('\n'));
   return (
     <main className='blog-root is-book'>
+      <JsonLd nodes={route.jsonLd} />
       <div className='pt-book-col'>
         <BookHead
           title={PAGE_NAMES.blog.name}
