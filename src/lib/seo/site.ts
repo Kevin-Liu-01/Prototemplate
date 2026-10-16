@@ -49,5 +49,8 @@ export const HUB_APPLE_ICON = { url: '/apple-touch-icon.png', sizes: '180x180', 
 /** The hub's icon set, as the root layout and seoRoute write it. */
 export const HUB_ICONS = { icon: [HUB_FAVICON, HUB_ICON], apple: [HUB_APPLE_ICON] };
 
-/** The Search Console token, read from the home page's head as the google-site-verification meta tag. */
-export const GOOGLE_SITE_VERIFICATION = 'mvNROFtoLu1hm048arKrTbsx_md-cJS2mZL8L2sQjQ4';
+/** The Search Console tokens, read from the home page's head as google-site-verification meta tags: one per URL-prefix property, the alias's first and www's second. */
+export const GOOGLE_SITE_VERIFICATION: string[] = [
+  'mvNROFtoLu1hm048arKrTbsx_md-cJS2mZL8L2sQjQ4',
+  'RAJ6cY7lePKW8J5V_AwGZeUdQPDR-hHGkvno-vtMu7E',
+];
