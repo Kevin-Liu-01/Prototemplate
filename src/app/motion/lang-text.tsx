@@ -4,7 +4,7 @@ import { gtText } from '@/components/viewer/GtWord';
 
 /**
  * The inline text hook the /motion pages pass to the docs renderer
- * (RenderOptions.text in src/app/docs/markdown.tsx). The research packages
+ * (RenderOptions.text in src/components/book/markdown.tsx). The research packages
  * quote Chinese, Hebrew, Arabic and Greek inside English prose, so each
  * run of another script is set as one shaped text node with its own lang
  * (and dir for the right-to-left scripts), never split per character

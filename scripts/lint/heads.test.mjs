@@ -38,9 +38,9 @@ test('S1: a head carries its props; a page route titles it PAGE_NAMES', () => {
   assert.deepEqual(rules(lintHeadProps('src/app/x/X.tsx', "<BookHead title='The brand' badge={b} lead='x' updated={u} facts={f} />")), ['S1']);
   assert.deepEqual(rules(lintHeadProps('src/app/skills/SkillViewer.tsx', "<BookHead title={skill.title} badge={b} lead='x' updated={u} facts={f} />")), []);
   assert.deepEqual(rules(lintHeadProps('src/app/skills/SkillViewer.tsx', "<BookHead title={skill.title} lead='x' updated={u} facts={f} />")), ['S1']);
-  /* the docs shell renders two books and reads the name by the book's id */
-  assert.deepEqual(rules(lintHeadProps('src/app/docs/DocsShell.tsx', "<BookHead title={PAGE_NAMES[book].name} badge={b} lead='x' updated={u} facts={f} />")), []);
-  assert.deepEqual(rules(lintHeadProps('src/app/docs/DocsShell.tsx', "<BookHead title={TITLES[book]} badge={b} lead='x' updated={u} facts={f} />")), ['S1']);
+  /* the book shell reads the name by the book's id */
+  assert.deepEqual(rules(lintHeadProps('src/components/book/BookShell.tsx', "<BookHead title={PAGE_NAMES[book].name} badge={b} lead='x' updated={u} facts={f} />")), []);
+  assert.deepEqual(rules(lintHeadProps('src/components/book/BookShell.tsx', "<BookHead title={TITLES[book]} badge={b} lead='x' updated={u} facts={f} />")), ['S1']);
 });
 
 test('S2: a route never restyles a standard element or its alias', () => {

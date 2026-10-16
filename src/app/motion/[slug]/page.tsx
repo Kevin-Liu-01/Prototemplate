@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { plainText } from '@/app/docs/markdown';
+import { plainText } from '@/components/book/markdown';
 import { MOTION_PACKAGE_SLUGS, getMotionFilm } from '@/lib/motion';
+import type { MotionFilm } from '@/lib/motion';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
 import { reviewBlock, scriptBlock, sheetBlock } from '../records';
@@ -17,15 +19,28 @@ export const dynamicParams = false;
 
 type Params = { params: Promise<{ slug: string }> };
 
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+/** The longest series line that still takes the closing sentence inside a 160-character description. */
+const SERIES_ALONE = 104;
+
+/** The route's head and JSON-LD: the film's title, and its series line with what the page holds. */
+function packageRoute(slug: string, film: MotionFilm, series: string) {
+  const line = plainText(series).replace(/\*/g, '');
+  return seoRoute({
+    path: `/motion/${slug}`,
+    title: film.title,
+    section: 'Motion',
+    kind: 'page',
+    description: line.length > SERIES_ALONE ? line : `${line} The film, its script and its research package.`,
+    crumbs: [{ name: 'Motion', path: '/motion' }],
+    updated: requireUpdated(`/motion/${slug}`),
+  });
+}
+
+export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
   const film = getMotionFilm(slug);
-  if (!film?.pkg) return { title: 'Motion' };
-  return {
-    title: film.title,
-    description: plainText(film.pkg.series).replace(/\*/g, ''),
-    icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-  };
+  if (!film?.pkg) notFound();
+  return packageRoute(slug, film, film.pkg.series).metadata;
 }
 
 /**
@@ -43,18 +58,21 @@ export default async function MotionPackagePage({ params }: Params) {
   if (!film?.pkg) notFound();
   const page = buildPackage(slug);
   return (
-    <PackageViewer
-      key={slug}
-      slug={slug}
-      lead={page.lead}
-      leadRest={page.leadRest}
-      credits={buildCredits(slug)}
-      sheet={sheetBlock(film)}
-      script={scriptBlock(film)}
-      review={reviewBlock(film)}
-      sections={page.sections}
-      terms={page.terms}
-      updated={requireUpdated(`/motion/${slug}`)}
-    />
+    <>
+      <JsonLd nodes={packageRoute(slug, film, film.pkg.series).jsonLd} />
+      <PackageViewer
+        key={slug}
+        slug={slug}
+        lead={page.lead}
+        leadRest={page.leadRest}
+        credits={buildCredits(slug)}
+        sheet={sheetBlock(film)}
+        script={scriptBlock(film)}
+        review={reviewBlock(film)}
+        sections={page.sections}
+        terms={page.terms}
+        updated={requireUpdated(`/motion/${slug}`)}
+      />
+    </>
   );
 }

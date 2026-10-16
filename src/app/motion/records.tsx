@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 import type { ReactNode } from 'react';
 
-import { renderInline } from '@/app/docs/markdown';
+import { renderInline } from '@/components/book/markdown';
 import type { MotionFilm } from '@/lib/motion';
 
 import { langText, wholeLang } from './lang-text';

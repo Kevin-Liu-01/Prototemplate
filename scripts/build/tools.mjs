@@ -1,4 +1,4 @@
-// Builds docs/TOOLS.md, the index /docs/tools serves: every pnpm command in
+// Builds docs/TOOLS.md, the index /handbook/tools serves: every pnpm command in
 // package.json with the first sentence of the opening comment of the file it
 // runs, grouped by its prefix, then every script a skill bundles
 // (skills/<slug>/scripts/) and the environment the tools read. The file is

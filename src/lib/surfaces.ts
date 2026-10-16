@@ -1,5 +1,5 @@
 import { LIBRARIES } from '@/app/craft/libraries';
-import { DOCS } from '@/app/docs/registry';
+import { DOCS_PAGES } from '@/components/docs/pages';
 import { ARCHIVE, archiveDesc } from '@/lib/archive';
 import { DIRECTIONS, directionPageHref } from '@/lib/directions';
 import { pageLabel } from '@/lib/page-names';
@@ -38,8 +38,8 @@ import type { ShellShot } from '@/lib/shell-data';
  * and Brand sections follow as panel-only groups. Pages holds the three
  * working views of the lab: the gallery, the presenter and the compare rig.
  * Knowledge holds what the site keeps as the General Translation knowledge
- * base: the brand book (/deck), the brand directives (/brand), the
- * repository documents (/docs), the curated skills (/skills), the handbook
+ * base: the brand book (/deck), the brand directives (/brand), the docs
+ * site (/docs), the curated skills (/skills), the handbook
  * (/handbook), the mark explorations (/marks), the blog, the graphics, the motion roster with
  * the translation series' research packages (/motion) and the archive of
  * retired versions. Shipped
@@ -136,7 +136,7 @@ function thumb(stem: string): { shot: string; shotDark: string } {
 const PAGES: readonly Surface[] = [
   internal('gallery', pageLabel('gallery'), '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
   internal('brand', pageLabel('brand'), '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
-  internal('docs', pageLabel('docs'), '/docs', 'The repository documents, read in the browser.', 'Pages', thumb('docs')),
+  internal('docs', pageLabel('docs'), '/docs', 'Ten pages on how Prototemplate works, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
   internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
   internal('present', pageLabel('present'), '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
   internal('compare', pageLabel('compare'), '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
@@ -165,7 +165,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'handbook',
     pageLabel('handbook'),
     '/handbook',
-    'How Kevin runs General Translation work: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log.',
+    'How Kevin runs General Translation work, and the canon: the principles, the quality bar, the decisions, the agent guide, brand, design, the ship loop and the libraries.',
     'Knowledge',
     thumb('handbook')
   ),
@@ -207,12 +207,10 @@ const KNOWLEDGE: readonly Surface[] = [
   ),
 ];
 
-const DOCUMENTS: readonly Surface[] = [
-  internal('docs-readme', 'Readme', '/docs', 'The repository readme.', 'Documents', thumb('docs-readme')),
-  ...DOCS.map((doc) =>
-    internal(`docs-${doc.slug}`, doc.title, `/docs/${doc.slug}`, doc.blurb, 'Documents', thumb(`docs-${doc.slug}`))
-  ),
-];
+/** The docs site's ten pages, in its sidebar's order; each previews its own first fold (`docs-<slug>`). */
+const DOCUMENTS: readonly Surface[] = DOCS_PAGES.map((page) =>
+  internal(`docs-${page.slug}`, page.title, page.href, page.description, 'Documents', thumb(`docs-${page.slug}`))
+);
 
 /** The three full site concepts; the shipped reference has its own group. */
 const SITE_DIRECTIONS = DIRECTIONS.filter((d) => d.site && !d.reference);
@@ -366,7 +364,7 @@ const EXPLORATIONS: readonly Surface[] = EXPLORATION_DIRECTIONS.map((d) =>
 );
 
 const LIBRARY_ROWS: readonly Surface[] = LIBRARIES.map((lib) =>
-  internal(`lib-${lib.name}`, lib.name, `/docs#${lib.name}`, sentence(lib.role), 'Libraries')
+  internal(`lib-${lib.name}`, lib.name, `/handbook/libraries#${lib.name}`, sentence(lib.role), 'Libraries')
 );
 
 const BRAND_SECTIONS: readonly Surface[] = [

@@ -1,15 +1,25 @@
-import type { DocEntry } from '@/app/docs/registry';
-
 /**
  * The handbook registry: the documents /handbook serves, in reading order,
- * read from docs/handbook/ at build time by the docs book builder
- * (src/app/docs/book.tsx). The handbook's readme (docs/handbook/README.md)
- * opens the book at /handbook, the way the repository readme opens /docs.
- * scripts/build/updated.mjs dates /handbook from docs/handbook/ and this
- * route, and scripts/lint/registries.mjs reads the
- * `slug` and `file` lines here against HANDBOOK_HEADINGS in
- * src/lib/search-index.ts, so keep one entry per object in this shape.
+ * read from the repository at build time by the book builder
+ * (src/components/book/book.tsx). The handbook's readme
+ * (docs/handbook/README.md) opens the book at /handbook; the six handbook
+ * documents follow it, then the canon: the agent guide, the brand and
+ * design canons, the architecture map, the ship loop, the tools, the
+ * libraries (with the build log, src/app/handbook/libraries-book.ts), the
+ * graphics pipeline and the artifact pictures. Each blurb is the
+ * document's description in its head, so it runs 50 to 160 characters.
+ * scripts/build/updated.mjs dates each /handbook/<slug> from its file, and
+ * scripts/lint/registries.mjs reads the `slug` and `file` lines here
+ * against HANDBOOK_HEADINGS in src/lib/search-index.ts, so keep one entry
+ * per object in this shape.
  */
+export type DocEntry = {
+  slug: string;
+  file: string;
+  title: string;
+  blurb: string;
+};
+
 export const HANDBOOK_README: DocEntry = {
   slug: 'readme',
   file: 'docs/handbook/README.md',
@@ -23,28 +33,28 @@ export const HANDBOOK: readonly DocEntry[] = [
     file: 'docs/handbook/operating-principles.md',
     title: 'Operating principles',
     blurb:
-      'The eighteen standing rules behind Kevin’s corrections, each with how to apply it, the skill that holds its procedure and the dated directive it comes from.',
+      'The eighteen standing rules behind Kevin’s corrections, each with how to apply it, the skill that holds it and its dated directive.',
   },
   {
     slug: 'quality-bar',
     file: 'docs/handbook/quality-bar.md',
     title: 'Quality bar',
     blurb:
-      'The measurable bar for each kind of artifact (pages, motion, graphics, copy, pull requests, performance, films, charts, repositories) and for done, each row with its owner.',
+      'The measurable bar for each kind of artifact, from pages and motion to copy, pull requests and films, and for done, each row with its owner.',
   },
   {
     slug: 'multi-session-playbook',
     file: 'docs/handbook/multi-session-playbook.md',
     title: 'Multi-session playbook',
     blurb:
-      'How many agent sessions share one machine: lanes, forked sessions, one instruction to several sessions, shared checkouts, collisions, Claude and Codex on one main, relays and resumption.',
+      'How many agent sessions share one machine: lanes, forked sessions, shared checkouts, collisions, Claude and Codex on one main, and resumption.',
   },
   {
     slug: 'gt-product-map',
     file: 'docs/handbook/gt-product-map.md',
     title: 'GT product and architecture map',
     blurb:
-      'What General Translation sells and to whom, how the products fit together, the copy that must be exact, the CLI and agent entry points, and where each part lives.',
+      'What General Translation sells and to whom, how the products fit together, the copy that must be exact, and where each part lives.',
   },
   {
     slug: 'glossary',
@@ -57,7 +67,70 @@ export const HANDBOOK: readonly DocEntry[] = [
     file: 'docs/handbook/decisions.md',
     title: 'Decisions log',
     blurb:
-      'Kevin’s dated rulings on process, product, design and the repositories, what each replaced, his words and the lint, gate or skill that holds it.',
+      'Kevin’s dated rulings on process, product, design and the repositories, what each replaced, his words and the gate that holds it.',
+  },
+  {
+    slug: 'agents',
+    file: 'AGENTS.md',
+    title: 'Agent guide',
+    blurb:
+      'The entry point for an agent: the read order, the principles in brief, the skill for each task, the house rules and using the hub elsewhere.',
+  },
+  {
+    slug: 'brand',
+    file: 'BRAND.md',
+    title: 'Brand',
+    blurb:
+      'The identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and where the identity ships.',
+  },
+  {
+    slug: 'design',
+    file: 'DESIGN.md',
+    title: 'Design system',
+    blurb:
+      'The design canon: the four-color system, the line law, rails and seams, the doubled line, iso, the 1-bit language, moving type and motion.',
+  },
+  {
+    slug: 'architecture',
+    file: 'ARCHITECTURE.md',
+    title: 'Architecture',
+    blurb:
+      'The code map: the direction registry, the toolchain as the single source and fork rescoping, the componentized instruments, the mirror.',
+  },
+  {
+    slug: 'ship-loop',
+    file: 'docs/SHIP-LOOP.md',
+    title: 'Ship loop',
+    blurb:
+      'The verify-and-ship procedure every round runs: the line audit, the page check, the ratchets, types, captures and the gated build.',
+  },
+  {
+    slug: 'tools',
+    file: 'docs/TOOLS.md',
+    title: 'Tools',
+    blurb:
+      'Every pnpm command in the repository and the scripts the skills bundle, each with what it does. Written by pnpm build:tools.',
+  },
+  {
+    slug: 'libraries',
+    file: 'docs/LIBRARIES.md',
+    title: 'Libraries',
+    blurb:
+      'The index of the componentized instruments, then the build log: every library running live with its plates and API snippets.',
+  },
+  {
+    slug: 'graphics',
+    file: 'docs/GRAPHICS.md',
+    title: 'Graphics pipeline',
+    blurb:
+      'How the blog illustrations are made with the toolchain in graphics/: captures, labelled crops, the sizing rules, clips, export and hand-off.',
+  },
+  {
+    slug: 'artifact-pictures',
+    file: 'docs/ARTIFACT-PICTURES.md',
+    title: 'Artifact pictures',
+    blurb:
+      'The standard for the dithered photographs: the rules, the Blue Marble tone grid and screen, the cutter, adding a picture and its lint.',
   },
 ] as const;
 

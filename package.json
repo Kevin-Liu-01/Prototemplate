@@ -8,6 +8,7 @@
     "node": "24.x"
   },
   "scripts": {
+    "postinstall": "fumadocs-mdx",
     "dev": "next dev --turbopack --port 3005",
     "build": "node scripts/lint/public.mjs --keys && node scripts/lint/pictures.mjs && node scripts/lint/type.mjs && node scripts/lint/radius.mjs && node scripts/lint/heads.mjs && node scripts/build/updated.mjs --check && next build && node scripts/lint/seo.mjs --built",
     "start": "next start",

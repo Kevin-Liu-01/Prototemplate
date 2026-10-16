@@ -2,7 +2,7 @@
 
    The roster (/motion) reuses the graphics book's row grammar (gx-, from
    src/app/graphics/graphics.css) and a package page (/motion/<slug>) the
-   docs' prose grammar (ptd-, from src/app/docs/docs.css); this sheet holds
+   book's prose grammar (ptd-, from src/components/book/book.css); this sheet holds
    only what the two pages add, under the mo- prefix. Every value reads the
    shell's --pt- tokens. Nothing here draws a line beside one that already
    exists: the gx and ptd dividers own the section rules, BookHead owns the

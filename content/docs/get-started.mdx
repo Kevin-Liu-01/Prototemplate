@@ -1,0 +1,54 @@
+---
+title: Get started
+description: Clone the repository, install it, check the machine with the doctor, run the dev server, and work beside other sessions in a worktree.
+icon: Command
+---
+
+## Run the site
+
+```bash
+git clone --filter=blob:none https://github.com/Kevin-Liu-01/Prototemplate.git
+cd Prototemplate
+pnpm install
+pnpm run doctor
+git config core.hooksPath .githooks
+pnpm dev
+```
+
+- `--filter=blob:none` makes a blobless clone. The history holds large reference captures, and a blobless clone downloads an old file's contents only when a command reads it.
+- `pnpm install` also writes `.source/`, the compiled docs collection these pages are built from (`fumadocs-mdx`, run as the install's postinstall step).
+- `pnpm run doctor` checks Node at the `.nvmrc` major, pnpm at `package.json`'s `packageManager`, the installed packages, the Chrome for Testing build the browser tools launch (`pnpm exec playwright-core install chromium`, or `CHROME_PATH`), and Python 3 with the packages in `requirements.txt`. ffmpeg and the HyperFrames CLI are optional; only the films need them. Each missing item prints the command that fixes it. Write `pnpm run doctor`: a bare `pnpm doctor` runs pnpm's own command.
+- The pre-push hook in `.githooks/` runs `pnpm lint:public` and stops a push on any finding: a key shape, a machine path or, with `PT_DENYLIST` set, a term from the private denylist.
+- `pnpm dev` serves the site at `http://localhost:3005`.
+
+## Work beside other sessions
+
+Several agent sessions work in one checkout on Kevin's machine. A lane of work runs in its own git worktree, on its own branch and its own port, so no two sessions compile in the same `.next` folder:
+
+```bash
+git worktree add -b k/my-lane ../Prototemplate-wt-my-lane origin/main
+cd ../Prototemplate-wt-my-lane
+pnpm install --frozen-lockfile
+pnpm exec next dev --turbopack --port 3022
+```
+
+- Stage explicit paths and commit with a pathspec. Never run `git add -A` or `git add .`: `motion/` belongs to the Videos session and stays untracked.
+- Never stop the shared server on 3005, and never build in the shared `.next`.
+- The [multi-session playbook](/handbook/multi-session-playbook) holds the rules for lanes, collisions and resuming.
+
+## The repository map
+
+| Folder | What it holds |
+| --- | --- |
+| `src/app` | One folder per route: the gallery, `/brand`, `/docs`, `/handbook`, `/skills`, `/motion`, `/d/<slug>` and the rest |
+| `src/components` | `viewer` (the shell), `shared`, `shell`, `plate` (the sign-in port), `book` (the handbook's renderer) and `docs` (this site's parts) |
+| `src/lib` | Registries, generated data, the engines, and `seo/`, the SEO system |
+| `scripts` | `lib`, `lint`, `check`, `build`, `skills` and `media`; [Scripts and generated files](/docs/scripts) covers them |
+| `content` | `docs/` (these pages), `blog/` and `authors/` |
+| `deck` | The brand deck's slides and parts |
+| `graphics` | The illustration toolchain |
+| `skills` | The curated skills, one folder each |
+| `docs` | The handbook, the ship loop, the libraries index, the graphics pipeline and the tools index |
+| `public` | Captures, thumbnails, fonts, media and the built deck |
+
+`AGENTS.md` at the root is the agent's entry point, and `README.md`, `ARCHITECTURE.md`, `DESIGN.md` and `BRAND.md` hold the routes, the code map, the visual laws and the identity.

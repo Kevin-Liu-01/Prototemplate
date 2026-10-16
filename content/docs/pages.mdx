@@ -1,0 +1,52 @@
+---
+title: Pages and the viewer shell
+description: Every route and what it holds, the viewer shell that frames most of them, the book page standard, and the registries a new page touches.
+icon: Pages
+---
+
+## The routes
+
+| Route | What it holds |
+| --- | --- |
+| `/` | The design lab: the directions read as an article, one live exhibit at a time, or as a grid of captures |
+| `/brand` | The brand book, the identity canon in ten sections |
+| `/docs` | These ten pages |
+| `/deck` | The brand deck, served as its own document |
+| `/present` | The presenter: a full-screen walkthrough of the redesign with the first 16 prototypes live |
+| `/compare` | Two directions side by side in scroll-synced frames |
+| `/skills`, `/skills/<slug>` | The curated skills, one page each, with the raw files beside them |
+| `/handbook`, `/handbook/<slug>` | The handbook and the canon, read as one book |
+| `/marks` | The mark explorations, each drawn in one color |
+| `/blog`, `/blog/<slug>` | The docs-redesign series as GT published it |
+| `/graphics` | Every illustration of the series, by area |
+| `/motion`, `/motion/<slug>` | The film roster and the research packages of the translation series |
+| `/directions/<slug>` | One direction presented with its captures |
+| `/archive/<slug>` | A retired direction, kept as a full-page capture |
+| `/d/<slug>` | The directions themselves, self-contained |
+
+## The viewer shell
+
+`ViewerShell` in `src/components/viewer` frames every route except `/deck`, `/present`, `/blog`, `/docs` and the `/d/` pages. Kevin made the deck's viewer the frame for the site on 2026-09-08. The shell owns the state and draws the chrome: the sidebar, the 52 px toolbar, the stage, the index panel, the search, the help card, the toast and the hover preview. A route renders its content as the shell's children.
+
+- The theme is `html[data-theme]`, dark when nothing is saved, stamped by a script in the root layout before first paint. Dark mode is a remap of the tokens in `src/components/viewer/tokens.css`. These docs read the same attribute.
+- Shell code runs mount work in `useMountEffect` and dependency work in `useLayoutWork`. `pnpm lint:practices` fails a new bare `useEffect`.
+- Chrome draws its colors from `tokens.css`, its corners from the radius tokens and its icons from the Heroicons 20 solid set in `icons.tsx`.
+
+The docs sit outside the shell so that they are the same docs site generaltranslation.com runs, and so that the folder can be lifted into another project ([Use these docs as a template](/docs/template)). The shell's sidebar keeps a Docs row that opens them, and the docs sidebar links back.
+
+## The book page
+
+Every page with a book head renders one structure, set out in [DESIGN.md section 4](/handbook/design): `BookHead` draws the title from `PAGE_NAMES` in `src/lib/page-names.ts`, a lead of one to three lines, a panel with Updated first and three facts after it, then one hatch band. Updated comes from `src/lib/updated.ts`, which `scripts/build/updated.mjs` generates from each page's last commit. `pnpm lint:heads` holds the structure in the source and `pnpm lint:heads:live` in the rendered page.
+
+## The registries a new page touches
+
+A page appears in several lists, and a change updates each list that names it in the same commit:
+
+- `src/lib/surfaces.ts`: the sidebar's site map, the index panel and the preview layer.
+- `src/lib/search-index.ts`: the search palette, with the icon and keywords of each page and the headings of each handbook document.
+- `src/lib/page-names.ts`: the page's plain name.
+- `scripts/build/updated.mjs`: the paths whose last commit dates the page, which also give its `lastmod` in the sitemap.
+- `siteRoutes()` in `scripts/lib/site-pages.mjs`: the route list every browser tool reads.
+- The page's own head, from one `seoRoute()` call ([The SEO system](/docs/seo)).
+
+`pnpm lint:registries` reports the lists a change missed. The [prototemplate skill](/skills/prototemplate) gives the checklist file by file.

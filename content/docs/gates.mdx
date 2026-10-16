@@ -1,0 +1,40 @@
+---
+title: Gates
+description: 'The checks that run before work lands: the static lints, the live audits, the page check, the type check and the build, with their exit codes.'
+icon: Check
+---
+
+Work lands on `main` only after it passes these gates and Kevin has reviewed it on localhost. The [gt-lints skill](/skills/gt-lints) explains each lint and how to fix a failure.
+
+## The gates, in order
+
+1. **`pnpm lint:static`**: every lint and test that needs no server. It chains the shell, practices, type, radius, heads, skills, registries, updated, tools, copies, public, SEO, oxlint and picture checks, then their tests. It is the gate every lane runs.
+2. **`pnpm exec tsc --noEmit`**: the type check, three to five minutes. `next build` never type-checks (`typescript.ignoreBuildErrors` is on), so this is a gate of its own.
+3. **`pnpm lint:all`**: `lint:static`, then the live audits against a running server at `PT_BASE` (default `http://localhost:3005`): `lint:lines:shell`, `lint:type:live`, `lint:radius:live` and `lint:heads:live`.
+4. **`pnpm check:pages --preset quick --pages <ids>`** on the touched pages: eight devices in the dark theme, from phones to the ultrawide, and 1440 by 900 in the light theme, with every interaction run. A page passes with zero defects.
+5. **`pnpm build`** in a scratch worktree, chained with `&&` and never piped, so a failing step stops the chain. The build runs the key scan and the static lints that guard a deploy, checks `src/lib/updated.ts`, runs `next build`, then `node scripts/lint/seo.mjs --built` over every prerendered page.
+
+```bash
+git worktree add --detach ../scratch-build HEAD
+cd ../scratch-build && pnpm install --frozen-lockfile && pnpm build > build.log 2>&1; echo $?
+```
+
+## Exit codes
+
+Every lint prints `file:line rule message` and exits **0** on a pass, **1** on findings and **2** when it could not judge: no build to read, no server to fetch, or a file it needs is missing. `--report` prints the findings without failing where a report is useful.
+
+## Ratchets
+
+Some rules arrived after the code they judge. Their lints keep a baseline of the findings that predate the rule (`scripts/lint/practices.baseline.json`, `type.baseline.json`, `seo.baseline.json`): a finding in the baseline is known debt, a new one fails the run, and the list only shrinks. `--update-baseline` rewrites it after a deliberate cleanup.
+
+## Browser gates run one at a time
+
+The live audits, the page check and the captures each launch Chrome for Testing. Run them one after another: two at once compete for the machine, and on 2026-10-01 a parallel capture made `lint:lines:shell` fail on pages that were correct. On Kevin's machine each heavy command is gated with `headroom can-start`, which reports whether memory allows it.
+
+## Before a push
+
+The pre-push hook runs `pnpm lint:public`, which scans the change for key shapes, machine paths and, with `PT_DENYLIST` set, the private denylist. A finding stops the push.
+
+## A new rule becomes a lint
+
+A defect fixed once is fixed as a class, with the lint that keeps it from coming back ([operating principle 4](/handbook/operating-principles)). A lint has the law in its header with its source, pure checkers that tests import, the `file:line rule message` output and the three exit codes, a passing and a failing fixture per rule, and a line in `lint:static` or the build. Section 4 of the gt-lints skill gives the steps.

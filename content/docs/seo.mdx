@@ -1,0 +1,95 @@
+---
+title: The SEO system
+description: How every route gets its title, canonical, robots, card and structured data from one call, the indexing policy, the sitemap and the agent files.
+icon: Globe
+---
+
+Every route's head comes from one function, `seoRoute()` in `src/lib/seo/route.ts`. It returns the route's complete Next.js metadata and the JSON-LD nodes for its kind, and it writes every field every time. Next.js merges metadata shallowly: a field a route leaves out is inherited from a layout, and a partial `openGraph` object replaces the parent's whole one. Before this system, the root layout's canonical of `/` was inherited by every page on the site.
+
+```tsx
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
+
+const route = seoRoute({
+  path: '/handbook/design',
+  title: 'Design system',
+  section: 'Handbook',
+  kind: 'article',
+  description: 'The design canon: the four-color system, the line law, rails and seams, the doubled line and motion.',
+  markdown: '/handbook/design.md',
+});
+
+export const metadata = route.metadata;
+
+export default function Page() {
+  return <JsonLd nodes={route.jsonLd} />;
+}
+```
+
+A dynamic route calls it in `generateMetadata` and again in the page body with the same input.
+
+## What one call writes
+
+- **The title**: `<title>, <section>, Prototemplate`, dropping the section and then the site name when the result passes 60 characters. The home page is `Prototemplate`.
+- **The description**: 50 to 160 characters, the length a search snippet shows whole.
+- **The canonical**: an absolute URL from the policy below.
+- **Robots**: `index, follow` with large image previews, or `noindex, follow`.
+- **Open Graph and the X card**: the title, the description, the canonical as `og:url`, the card with its size and alt text, `twitter:site` @generaltxn and `twitter:creator` @kevskgs.
+- **The icon**: the Prototemplate mark on the hub, the GT mark on the `/d/` pages and the presenter.
+- **The Markdown alternate**, when the page has a twin, and an RSS alternate where a page names a feed.
+
+## The policy
+
+`policyFor(path)` in `src/lib/seo/policy.ts` is a pure function from a pathname to whether the page is indexed, its canonical and whether the sitemap lists it.
+
+| Paths | Robots | Canonical | Sitemap |
+| --- | --- | --- | --- |
+| The hub's own pages: `/`, `/brand`, `/docs`, `/handbook`, `/skills`, `/motion`, `/directions/<slug>` and the rest | index, follow | itself on www | yes |
+| `/blog/<slug>` | index, follow | the post on generaltranslation.com | no |
+| `/d/production` and each mirror page with a live counterpart | index, follow | the page on generaltranslation.com | no |
+| The dashboard states under `/d/production` | noindex, follow | itself | no |
+| Every other `/d/` page | noindex, follow | itself | no |
+
+- **One canonical host.** www.prototemplate.com is canonical. The two aliases serve the same deployment, and the absolute canonical in every head consolidates them without a redirect.
+- **Mirrors point at the original.** A mirror page carries the same copy as its live page, and GT's domain is the one that should rank for it. The mirror stays crawlable, because a crawler must read a page to honor its canonical.
+- **Explorations stay out of results.** A direction reassembles GT's copy, prices and legal text into a design study. Indexed, it would put stale claims under GT's name on another domain. `src/app/d/layout.tsx` gives the whole folder `noindex, follow`.
+- **Posts point at GT.** The three posts are the files generaltranslation.com publishes.
+- **robots.txt never carries the policy.** A disallowed URL can still be indexed from links, and the crawler never reads its `noindex`. robots.txt allows every agent and names the sitemap.
+
+## The social card
+
+`/og?v=&t=&s=&d=&k=&p=` (`src/app/og/route.tsx`) draws a 1200 by 630 PNG with `next/og` from the query: the version, the title, the section, the description, the kind and the path. The renderer reads TTF only and applies no variable axes, so `pnpm build:inter` cuts two static instances from the self-hosted InterVariable into `src/app/og/`: weight 500 for the title and labels, weight 400 for the text. The card is a pure function of its query, so it is cached for a year, and `OG_VERSION` changes when the design does.
+
+## Structured data
+
+Every page carries the `WebSite` node from the root layout. A page adds a `BreadcrumbList`; an article (a docs page or a handbook document) adds a `TechArticle`; a skill adds a `TechArticle` and a `SoftwareSourceCode` for its folder; a post adds a `BlogPosting` with GT's URL. `serializeJsonLd` escapes every block so no text can close the script tag early.
+
+## The sitemap
+
+`src/app/sitemap.ts` lists the indexable pages: a short list of singleton routes, every page `src/lib/updated.ts` dates, and the handbook documents and archive entries, each filtered through the policy. A page's `lastmod` is the date of its last commit, from `updated.ts`, and is left out where there is none, since a build date tells a crawler nothing. A new indexable page gets an entry in `scripts/build/updated.mjs`.
+
+## The agent files
+
+| Address | What it serves |
+| --- | --- |
+| `/llms.txt` | The site for agents, generated from the registries: the docs, the handbook, the skills, the routes and the directions |
+| `/llms-full.txt` | The text of every docs page and handbook document in reading order |
+| `/AGENTS.md` | The agent guide with its links resolved to site addresses |
+| A docs page or handbook document plus `.md` | Its Markdown twin, with a `Link` header naming the HTML page as canonical |
+| `/skills/<slug>/SKILL.md` | A skill page's twin |
+
+The twins are prerendered and never rendered on demand. Each docs page also links `/llms.txt` with `rel="describedby"` in its head and carries one machine-only `llms.txt` link that readers never see.
+
+## The lint
+
+`scripts/lint/seo.mjs` holds every route to the system in three modes:
+
+- **Static** (`pnpm lint:seo`, in `lint:static`): every route gets its metadata from `seoRoute`; a static route's path matches its file; titles and descriptions hold no em dash and descriptions run 50 to 160 characters; the root layout sets no canonical; no file names an alias host; no page writes its own icons or cards.
+- **Built** (after `next build` in `pnpm build`): every prerendered page has one title, one description, an absolute canonical on the right host, its card with its size, the robots its policy gives and JSON-LD that parses; the sitemap lists only what the policy lists; indexable titles and descriptions are unique.
+- **Live** (`pnpm lint:seo:live` against `next start` or www): every sitemap URL answers 200, every card is the size its head declares, every twin answers Markdown with the right canonical, the agent files answer, and no internal link redirects or breaks.
+
+## Adding a route
+
+1. Call `seoRoute` with the route's path, title, kind and a description of 50 to 160 characters, and render its `jsonLd`.
+2. Add the route's paths to `scripts/build/updated.mjs` and run `pnpm build:updated`, so its `lastmod` is true.
+3. Run `pnpm lint:seo`, then the build, whose built check reads the new page.

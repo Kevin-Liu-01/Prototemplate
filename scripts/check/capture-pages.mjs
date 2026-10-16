@@ -5,7 +5,8 @@
 // 640x360 thumbnails the preview layer reads from these.
 //
 // What is captured, from the shared route list (scripts/lib/site-pages.mjs,
-// the rows tagged `capture`) and the two book registries:
+// the rows tagged `capture`), the docs site's page list and the handbook
+// registry:
 //   - every static page of the shipped direction: src/app/d/production and
 //     each page.tsx under it whose path has no dynamic segment (blog/[slug]
 //     and the catch-all are not pages of their own), with ?chrome=0 so the
@@ -17,12 +18,12 @@
 //   - the Knowledge rows that have a page of their own: /skills (`skills`),
 //     /handbook (`handbook`) and /marks (`marks`), so the sidebar's Skills,
 //     Handbook and Marks rows can preview their first fold
-//   - every document of the two books, the readme first: /docs and
-//     /docs/<slug> (`docs-<slug>`) from src/app/docs/registry.ts, /handbook
-//     and /handbook/<slug> (`handbook-<slug>`) from
+//   - every page of the docs site, /docs and /docs/<slug> (`docs-<slug>`,
+//     the Documents rows) from src/components/docs/pages.ts, and every
+//     document of the handbook, the readme first: /handbook and
+//     /handbook/<slug> (`handbook-<slug>`) from
 //     src/app/handbook/registry.ts; the book lands on the document, so each
-//     capture is that document's first fold, the tile the book's grid and
-//     the Documents rows show
+//     capture is that document's first fold, the tile the book's grid shows
 //   - one direction page (`directions`): /directions/<slug> for the first
 //     exploration in src/lib/directions.ts, the route every site and
 //     exploration row opens (the reference keeps /d/production, which the
@@ -125,12 +126,16 @@ function registrySlugs(rel) {
   return [...readFileSync(join(ROOT, rel), 'utf8').matchAll(/slug: '([^']+)',\s*\n\s*file: '/g)].map((m) => m[1]);
 }
 
-/** [id, path] for every document of both books, each readme first: the docs registry leaves its readme out, the handbook registry lists its own first. */
+/** The docs site's pages (src/components/docs/pages.ts), in its sidebar's order: [slug, href]. */
+function docsPages() {
+  return [...readFileSync(join(ROOT, 'src/components/docs/pages.ts'), 'utf8').matchAll(/slug: '([^']+)',\s*\n\s*href: '([^']+)'/g)].map((m) => [m[1], m[2]]);
+}
+
+/** [id, path] for every docs page (`docs-<slug>`, the Documents rows) and every handbook document, the readme first (the registry lists its own first). */
 function bookDocuments() {
-  const docs = ['readme', ...registrySlugs('src/app/docs/registry.ts')];
   const handbook = registrySlugs('src/app/handbook/registry.ts');
   return [
-    ...docs.map((slug) => [`docs-${slug}`, slug === 'readme' ? '/docs' : `/docs/${slug}`]),
+    ...docsPages().map(([slug, href]) => [`docs-${slug}`, href]),
     ...handbook.map((slug) => [`handbook-${slug}`, slug === 'readme' ? '/handbook' : `/handbook/${slug}`]),
   ];
 }

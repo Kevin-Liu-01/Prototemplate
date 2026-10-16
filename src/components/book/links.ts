@@ -1,27 +1,25 @@
 import { HANDBOOK, HANDBOOK_README } from '@/app/handbook/registry';
 
 import { docHref, README_SLUG } from './model';
-import { DOCS } from './registry';
 
 /**
- * Where a repository path opens on the site. The two book registries say
- * which Markdown files the site renders: the repository documents at /docs
- * and the handbook at /handbook. A link between them, written as a relative
- * path the way GitHub resolves it (`../../BRAND.md` from a handbook page,
- * `docs/SHIP-LOOP.md` from the readme), opens the document's own route. A
+ * Where a repository path opens on the site. The handbook registry says
+ * which Markdown files the site renders at /handbook: the handbook's own
+ * documents and the canon. A link between them, written as a relative path
+ * the way GitHub resolves it (`../../BRAND.md` from a handbook page,
+ * `docs/SHIP-LOOP.md` from AGENTS.md), opens the document's own route. A
  * curated skill's SKILL.md opens its page and any other file of the skill
  * its raw address. Every other repository file opens on GitHub, since the
- * site does not serve it (LICENSE, docs/ARTIFACT-PICTURES.md). Pure data and
- * string functions; the server-side renderers read it.
+ * site does not serve it (LICENSE, README.md, deck/DECK-GRAMMAR.md). Pure
+ * data and string functions; the server-side renderers and the agent
+ * routes (/AGENTS.md, the .md twins) read it.
  */
 
 /** The public repository's file view on main, for repository files the site does not serve. */
 export const REPO_BLOB = 'https://github.com/Kevin-Liu-01/Prototemplate/blob/main/';
 
-/** Every Markdown file the books render, by its repository path, with its route. */
+/** Every Markdown file the handbook renders, by its repository path, with its route. */
 export const DOC_ROUTES: Readonly<Record<string, string>> = {
-  'README.md': docHref(README_SLUG),
-  ...Object.fromEntries(DOCS.map((doc) => [doc.file, docHref(doc.slug)])),
   [HANDBOOK_README.file]: docHref(README_SLUG, 'handbook'),
   ...Object.fromEntries(HANDBOOK.map((doc) => [doc.file, docHref(doc.slug, 'handbook')])),
 };

@@ -30,7 +30,7 @@ import {
 } from './model';
 
 import '../prototemplate.css';
-import '../docs/docs.css';
+import '@/components/book/book.css';
 import './skills.css';
 
 const SKILLS_TITLE = PAGE_NAMES.skills.name;
@@ -119,7 +119,7 @@ type SkillPageProps = {
  * count in the panel, then what it covers and when to use it under the
  * rule), the band, and three sections: Install (the command in the site's
  * copy field and one sentence on where to run it), Instructions (the
- * SKILL.md body in the docs' prose grammar, .ptd-body under .pt-root from
+ * SKILL.md body in the book's prose grammar, .ptd-body under .pt-root from
  * docs.css) and Files (the folder's files linked to their raw addresses).
  * The skills before and after it in the whole set close the page under
  * one rule.

@@ -39,7 +39,23 @@ const found = {
   'retired-rail-vocabulary': [],
   'border-image-none': [],
   'gsap-in-shell': [],
+  'dark-class': [],
 };
+
+/* The theme is html[data-theme] (src/app/layout.tsx stamps it before
+   paint), never a .dark class: a .dark selector or a `dark` class name
+   would style a theme nothing switches. fumadocs writes its dark variant
+   and two Shiki rules on .dark inside node_modules; src/app/docs/docs.css
+   rebinds both to :root[data-theme='dark'] (the SEO and docs plan of
+   2026-10-14, section 3.2), and this check keeps src/ free of the class.
+   Tailwind's dark: variant is bound to data-theme (plate-theme.css,
+   docs.css) and passes. */
+/* .dark as a compound of its own (`.dark .x`, `.dark,`, `:where(.dark *)`);
+   `img.dark`, the dark twin of a capture (IndexPanel), and a file name
+   such as cursor.dark.svg are not theme selectors and pass */
+const DARK_SELECTOR = /(?:^|[\s,(>+~])\.dark(?![-\w.])/;
+/* the class written onto the document: classList.add('dark') or <html className='dark'> */
+const DARK_CLASS_NAME = /classList\.(?:add|toggle)\(\s*["']dark["']|<html\b[^>]*className=\{?\s*["'`][^"'`]*(?<![\w:-])dark(?![\w:-])/;
 
 /* The shell (src/components/viewer) loads on every route and never tweens:
    its dependency work runs in useLayoutWork (src/lib/use-layout-work.ts),
@@ -123,6 +139,8 @@ for (const file of files) {
         found['raw-hex-in-tsx'].push(`${rel}:${i + 1}`);
       if (/calc\(min\(var\(--tc-rail\),\s*100%\)\s*\+/.test(line))
         found['outer-rail-pair'].push(`${rel}:${i + 1}`);
+      if (DARK_CLASS_NAME.test(line))
+        found['dark-class'].push(`${rel}:${i + 1}`);
     });
   }
 
@@ -139,6 +157,9 @@ for (const file of files) {
     // rule blocks with comments blanked (line count kept), so prose never
     // matches and a nested @media rule parses the same as a top-level one
     const bare = text.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));
+    bare.split('\n').forEach((line, i) => {
+      if (DARK_SELECTOR.test(line)) found['dark-class'].push(`${rel}:${i + 1}`);
+    });
     for (const m of bare.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
       const selector = m[1].trim();
       if (!/::?(?:before|after)\b/.test(selector)) continue;
