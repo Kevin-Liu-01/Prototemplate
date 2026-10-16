@@ -1,0 +1,39 @@
+---
+title: Scripts and generated files
+description: 'The scripts/ folders, the files the scripts generate, the rule that only a script changes them, and the one route list every browser tool reads.'
+icon: Code
+---
+
+Every command runs as `pnpm <name>`, and [the tools index](/handbook/tools) lists each one with what it does. Skills and documents name commands, never script paths, so a script can move without breaking them. Every script prints its usage with `--help`.
+
+## The folders
+
+| Folder | What it holds |
+| --- | --- |
+| `scripts/lib` | Shared code: the repository root, the help printer and `site-pages.mjs`, the route list |
+| `scripts/lint` | The lints and their tests: lines, type, radius, heads, practices, registries, copies, public, pictures and SEO |
+| `scripts/check` | The page check (`pagecheck/`), the captures and the gallery shoot |
+| `scripts/build` | The generators: skills, deck, marks, the Inter subsets, thumbnails, motion, tools, updated dates |
+| `scripts/skills` | The skill installer, the usage counter and the skill-script test runner |
+| `scripts/media` | The artifact picture cutter, `mood-tone` |
+
+## Generated files
+
+These files are committed, so the site builds from them alone, and they change only through their scripts:
+
+| File | Written by |
+| --- | --- |
+| `src/lib/updated.ts` | `pnpm build:updated`: each page's last change, from git |
+| `src/lib/skills.ts`, `skills/README.md` | `pnpm build:skills` |
+| `docs/TOOLS.md` | `pnpm build:tools` |
+| `public/brand-deck.html`, `public/deck-assets/` | `pnpm build:deck` |
+| `public/marks/` | `pnpm build:marks` |
+| `public/fonts/inter/`, the social card faces in `src/app/og/` | `pnpm build:inter` |
+| `public/shots/thumb/` | `pnpm build:thumbs`, from the captures `pnpm capture:pages` takes |
+| `src/lib/motion.ts` | `pnpm build:motion`, run only when the Videos session hands a film over |
+
+`pnpm gen:all` runs them in this order: skills, deck, marks, Inter, thumbnails, motion (skipped where the full `motion/` folder is absent), tools, then updated dates last, since it dates the changes the others leave uncommitted. A merge runs it and commits what it writes.
+
+## The route list
+
+`siteRoutes()` in `scripts/lib/site-pages.mjs` is the one list of routes every browser tool walks. Each row names its route, its source folders and its tools: `check` (the page check), `live` (the live lints), `lines` (the line audit of the shell) and `capture` (the thumbnails). The page check, `lint:lines:shell`, the live lints and the captures all read it, so a new page is added in one place.

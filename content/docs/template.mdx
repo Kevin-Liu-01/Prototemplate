@@ -1,0 +1,54 @@
+---
+title: Use these docs as a template
+description: 'Lift this docs site into another Next.js 16 project: the dependencies, the files to copy, the adapters for a design system, and adding a page.'
+icon: Copy
+---
+
+This docs site is built on the stack generaltranslation.com/docs runs: fumadocs with the notebook layout and MDX pages. It imports nothing from the hub's shell or the directions, so the folder lifts into another Next.js 16 project, and every pattern carries over to gt-cloud and back.
+
+## The dependencies
+
+```bash
+pnpm add fumadocs-core@16.16.1 fumadocs-ui@16.16.1 fumadocs-mdx@15.4.6
+pnpm add -D @types/mdx
+```
+
+These are the versions gt-cloud pins. fumadocs-ui 16 needs Next.js 16 and React 19.2, and it is Tailwind 4 only. Prototemplate pins `next` to 16.2.12 so an install cannot move it to 16.3, which holds memory for every prerendered page during a build.
+
+Add `"postinstall": "fumadocs-mdx"` to `package.json`, so a fresh install writes `.source/` before the first type check.
+
+## The files to copy
+
+| Path | What it is |
+| --- | --- |
+| `source.config.ts` | The collection: `content/docs`, processed Markdown kept for the twins, `tokenizeTimeLimit: 0` for Shiki |
+| `src/lib/source.ts` | The loader at `/docs`, with the sidebar's icon names |
+| `content/docs/` | The MDX pages and `meta.json`, the sidebar's order and groups |
+| `src/app/docs/` | `layout.tsx` (the notebook layout and the provider), `[[...slug]]/page.tsx` (one page) and `docs.css` |
+| `src/components/docs/` | The sidebar footer, the theme button, the page actions and the sidebar motion |
+| `src/app/api/search/route.ts` | The static search index |
+| `src/app/md/`, `src/app/llms.txt/`, `src/app/llms-full.txt/` | The Markdown twins and the agent files |
+| `src/lib/seo/` | `seoRoute`, the policy, the JSON-LD builders and the card |
+
+In `next.config.ts`, wrap the config with `createMDX()` from `fumadocs-mdx/next` and add the twin rewrites, which send `/docs.md` and `/docs/<slug>.md` to `/md/docs/<slug>`. In `tsconfig.json`, map `@/.source/*` to `./.source/*`, and add `.source/` to `.gitignore`.
+
+## The four adapters
+
+A project with its own design system needs these four, all in `docs.css`, all unlayered rules so they outrank Tailwind's layered utilities without `!important`:
+
+1. **The theme switch.** fumadocs styles its dark mode on a `.dark` class that next-themes writes. Prototemplate's theme is `html[data-theme]`, so `RootProvider` gets `theme={{ enabled: false }}`, `docs.css` redefines the `dark` variant on `:root[data-theme='dark']`, and fumadocs' two dark Shiki rules are repeated under that selector. `pnpm lint:practices` fails a `.dark` selector anywhere in `src/`.
+2. **The token bridge.** fumadocs reads `--color-fd-background`, `--color-fd-foreground`, `--color-fd-border` and the rest. `docs.css` sets them from the site's tokens on `:root:has(#nd-notebook-layout)`, so they exist only while the docs layout is in the document.
+3. **The weight cap.** fumadocs and its typography plugin draw headings at 600 and 700. Prototemplate's Inter stops at 500, so one rule sets 500 on the docs' headings, labels and strong text.
+4. **The radius map.** fumadocs rounds its panels with `rounded-lg` to `rounded-2xl`; inside the docs those resolve to the site's card corner.
+
+## Adding a page
+
+Write `content/docs/<slug>.mdx` with a `title` and a `description` of 50 to 160 characters, and add the slug to `content/docs/meta.json` where the sidebar should show it. The route, the sidebar, the search index, the table of contents, the Markdown twin, `/llms.txt`, the sitemap and the social card follow from the file. In this repository also add its row to `src/components/docs/pages.ts`, which the hub's own sidebar and search read, and run `pnpm build:updated`.
+
+## Search
+
+The search is fumadocs' Orama index, served as one static JSON file built with the site and searched in the browser. For a few dozen pages that is the whole job, and it works in development. gt-cloud runs Pagefind after `next build` instead, because it indexes hundreds of pages in many locales; switch when the index grows past what one download should carry.
+
+## The checks
+
+Run `pnpm lint:registries`, `pnpm lint:seo`, `pnpm exec tsc --noEmit` and the build. On the running site, `pnpm lint:type:live` and `pnpm lint:radius:live` confirm the adapters hold, and `pnpm lint:seo:live` against `next start` reads every page's head, card and twin.

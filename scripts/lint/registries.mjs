@@ -7,18 +7,23 @@
  * registries, so it needs no TypeScript
  * loader and no dev server.
  *
- *   1. Headings. Every h2 of every document the docs registry serves
- *      (src/app/docs/registry.ts, plus README.md as `readme` with the build
- *      log's CRAFT_SECTIONS after it) against DOC_HEADINGS in
- *      src/lib/search-index.ts, and every h2 of the handbook
- *      (src/app/handbook/registry.ts, plus docs/handbook/README.md as
- *      `readme`) against HANDBOOK_HEADINGS, by the anchor
- *      src/app/docs/markdown.tsx gives a heading (headingId). A heading
- *      missing from a table cannot be searched; a table row with no heading
- *      links to a dead anchor.
+ *   1. Headings. Every h2 of every document the handbook serves
+ *      (src/app/handbook/registry.ts: docs/handbook/README.md as `readme`,
+ *      the handbook's documents and the canon, the libraries document with
+ *      the build log's CRAFT_SECTIONS after its own) against
+ *      HANDBOOK_HEADINGS in src/lib/search-index.ts, by the anchor
+ *      src/components/book/markdown.tsx gives a heading (headingId). A
+ *      heading missing from the table cannot be searched; a table row with
+ *      no heading links to a dead anchor.
+ *   1b. Docs pages. DOCS_PAGES (src/components/docs/pages.ts) against the
+ *      docs site's content: one row per content/docs/*.mdx in the order of
+ *      content/docs/meta.json, each with the title and description of the
+ *      file's frontmatter.
  *   2. Routes. Every Pages and Knowledge row of src/lib/surfaces.ts with a
- *      fixed path, against the sitemap (src/app/sitemap.ts), public/llms.txt,
- *      the shared route list the browser tools read (scripts/lib/site-pages.mjs,
+ *      fixed path, against the sitemap (the singleton list in
+ *      src/app/sitemap.ts, or a key of src/lib/updated.ts, which the
+ *      sitemap lists whole), the shared route list the browser tools read
+ *      (scripts/lib/site-pages.mjs,
  *      siteRoutes: a row's `tools` names the capture list, the page check
  *      and the line audit's shell routes), the sidebar's and the search's
  *      icon maps, the search keywords and the row's WebP thumbnail under
@@ -90,7 +95,7 @@ function block(text, start, end) {
   return stop < 0 ? text.slice(at) : text.slice(at, stop);
 }
 
-/** src/app/docs/markdown.tsx, plainText then headingId. */
+/** src/components/book/markdown.tsx, plainText then headingId. */
 function headingId(text) {
   return text
     .replace(/`([^`]+)`/g, '$1')
@@ -126,16 +131,14 @@ const note = (line) => console.log(`  note ${line}`);
 
 /* ---- 1. headings ---- */
 
-console.log('Headings: documents against DOC_HEADINGS (src/lib/search-index.ts)');
+console.log('Headings: handbook documents against HANDBOOK_HEADINGS (src/lib/search-index.ts)');
 /** The `slug` and `file` pairs of a registry file, in order. */
 function entries(text) {
   return [...text.matchAll(/slug:\s*'([^']+)'[\s\S]*?file:\s*'([^']+)'/g)].map((m) => ({ slug: m[1], file: m[2] }));
 }
 
-const registry = read('src/app/docs/registry.ts');
-const docs = [{ slug: 'readme', file: 'README.md' }, ...entries(registry)];
-/* the handbook registry lists its readme first (HANDBOOK_README), then the documents */
-const handbook = existsSync(join(ROOT, 'src/app/handbook/registry.ts')) ? entries(read('src/app/handbook/registry.ts')) : [];
+/* the handbook registry lists its readme first (HANDBOOK_README), then the documents and the canon */
+const handbook = entries(read('src/app/handbook/registry.ts'));
 
 const searchIndex = read('src/lib/search-index.ts');
 
@@ -151,41 +154,21 @@ function headingRows(name) {
   return rows;
 }
 
-const table = headingRows('DOC_HEADINGS');
 const handbookTable = headingRows('HANDBOOK_HEADINGS');
 
 const craft = block(read('src/app/craft/CraftArticle.tsx'), 'export const CRAFT_SECTIONS', '\n];');
 const craftIds = [...craft.matchAll(/^ {4}id: '([^']+)'/gm)].map((m) => m[1]);
+/* the document src/app/handbook/libraries-book.ts appends the build log to */
+const BUILD_LOG_DOC = 'libraries';
 
 let headingDrift = 0;
-for (const doc of docs) {
-  if (!existsSync(join(ROOT, doc.file))) {
-    fail(`${doc.slug}: ${doc.file} is in the docs registry but not on disk`);
-    continue;
-  }
-  const expected = h2Ids(readFileSync(join(ROOT, doc.file), 'utf8'));
-  if (doc.slug === 'readme') expected.push(...craftIds);
-  const rows = table.get(doc.slug) ?? [];
-  const missing = expected.filter((id) => !rows.includes(id));
-  const stale = rows.filter((id) => !expected.includes(id));
-  if (missing.length === 0 && stale.length === 0) {
-    console.log(`  ok   ${doc.slug}: ${expected.length} headings`);
-    continue;
-  }
-  headingDrift += 1;
-  if (missing.length > 0) fail(`${doc.slug} (${doc.file}): not in DOC_HEADINGS: ${missing.join(', ')}`);
-  if (stale.length > 0) fail(`${doc.slug}: DOC_HEADINGS rows with no heading (dead anchors): ${stale.join(', ')}`);
-}
-for (const key of table.keys()) {
-  if (!docs.some((doc) => doc.slug === key)) fail(`DOC_HEADINGS names '${key}', which the docs registry does not serve`);
-}
-
 for (const doc of handbook) {
   if (!existsSync(join(ROOT, doc.file))) {
     fail(`handbook ${doc.slug}: ${doc.file} is in the handbook registry but not on disk`);
     continue;
   }
   const expected = h2Ids(readFileSync(join(ROOT, doc.file), 'utf8'));
+  if (doc.slug === BUILD_LOG_DOC) expected.push(...craftIds);
   const rows = handbookTable.get(doc.slug) ?? [];
   const missing = expected.filter((id) => !rows.includes(id));
   const stale = rows.filter((id) => !expected.includes(id));
@@ -199,6 +182,45 @@ for (const doc of handbook) {
 }
 for (const key of handbookTable.keys()) {
   if (!handbook.some((doc) => doc.slug === key)) fail(`HANDBOOK_HEADINGS names '${key}', which the handbook registry does not serve`);
+}
+
+/* ---- 1b. docs pages ---- */
+
+console.log('\nDocs pages: DOCS_PAGES (src/components/docs/pages.ts) against content/docs');
+/** A frontmatter string value: `title: Gates` or `title: 'Gates'`. */
+function frontValue(text, key) {
+  const fm = /^---\n([\s\S]*?)\n---/.exec(text)?.[1] ?? '';
+  const raw = new RegExp(`^${key}:\\s*(.*)$`, 'm').exec(fm)?.[1]?.trim() ?? '';
+  return raw.replace(/^(['"])([\s\S]*)\1$/, '$2').replace(/''/g, "'");
+}
+const docsList = read('src/components/docs/pages.ts');
+const docsRows = [...docsList.matchAll(/slug: '([^']+)',\s*\n\s*href: '([^']+)',\s*\n\s*title: '([^']+)',\s*\n\s*description:\s*\n?\s*(?:'([^']*)'|"([^"]*)"),/g)].map((m) => ({
+  slug: m[1],
+  href: m[2],
+  title: m[3],
+  description: m[4] ?? m[5],
+}));
+const metaPages = JSON.parse(read('content/docs/meta.json')).pages.filter((p) => !p.startsWith('---'));
+if (docsRows.map((r) => r.slug).join(' ') !== metaPages.join(' ')) {
+  fail(`DOCS_PAGES runs ${docsRows.map((r) => r.slug).join(', ')}; content/docs/meta.json runs ${metaPages.join(', ')}`);
+}
+for (const row of docsRows) {
+  const file = `content/docs/${row.slug}.mdx`;
+  if (!existsSync(join(ROOT, file))) {
+    fail(`docs ${row.slug}: ${file} is not on disk`);
+    continue;
+  }
+  const text = readFileSync(join(ROOT, file), 'utf8');
+  const href = row.slug === 'index' ? '/docs' : `/docs/${row.slug}`;
+  const problems = [];
+  if (row.href !== href) problems.push(`href ${row.href} is not ${href}`);
+  if (frontValue(text, 'title') !== row.title) problems.push(`title '${row.title}' is not the frontmatter's '${frontValue(text, 'title')}'`);
+  if (frontValue(text, 'description') !== row.description) problems.push(`description differs from the frontmatter's`);
+  if (problems.length > 0) fail(`docs ${row.slug}: ${problems.join('; ')}`);
+  else console.log(`  ok   docs ${row.slug}`);
+}
+for (const file of readdirSync(join(ROOT, 'content/docs')).filter((f) => f.endsWith('.mdx'))) {
+  if (!docsRows.some((row) => `${row.slug}.mdx` === file)) fail(`content/docs/${file} has no DOCS_PAGES row`);
 }
 
 /* ---- 2. routes ---- */
@@ -217,7 +239,8 @@ for (const name of ['const PAGES', 'const KNOWLEDGE']) {
 if (rows.length === 0) fail('found no internal(...) rows in PAGES or KNOWLEDGE; the surfaces shape changed, update this script');
 
 const sitemap = read('src/app/sitemap.ts');
-const llms = read('public/llms.txt');
+/* the sitemap lists every page src/lib/updated.ts dates */
+const updatedKeys = new Set([...read('src/lib/updated.ts').matchAll(/^ {2}'([^']+)': \{/gm)].map((m) => m[1]));
 /* the route list's rows are one line each: `{ id, path, tools: '<tool> <tool>', source }` */
 const routeRows = read('scripts/lib/site-pages.mjs').split('\n');
 const walks = (p, tool) => routeRows.some((line) => line.includes(`path: '${p}'`) && new RegExp(`tools: '[^']*\\b${tool}\\b`).test(line));
@@ -228,13 +251,12 @@ const keywords = block(searchIndex, 'const PAGE_KEYWORDS', '\n};');
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const hasKey = (text, id) => new RegExp(`^\\s*(?:'${escape(id)}'|${escape(id)}):`, 'm').test(text);
 
-const COLUMNS = ['sitemap', 'llms', 'capture', 'pagecheck', 'lines', 'sb-icon', 'search-icon', 'keywords', 'thumb'];
+const COLUMNS = ['sitemap', 'capture', 'pagecheck', 'lines', 'sb-icon', 'search-icon', 'keywords', 'thumb'];
 console.log(`  ${'id'.padEnd(10)} ${'path'.padEnd(10)} ${COLUMNS.map((c) => c.padEnd(11)).join(' ')}`);
 for (const row of rows) {
   const p = row.path;
   const cells = {
-    sitemap: row.dynamic ? 'loop' : sitemap.includes('${SITE_URL}' + p + '`') ? 'yes' : 'NO',
-    llms: row.dynamic ? 'n/a' : new RegExp(`\\]\\(https?://[^/)\\s]+${p === '/' ? '/?' : escape(p)}\\)`).test(llms) ? 'yes' : 'no',
+    sitemap: row.dynamic ? 'loop' : sitemap.includes('${SITE_URL}' + p + '`') || updatedKeys.has(p) ? 'yes' : 'NO',
     capture: row.dynamic ? 'n/a' : walks(p, 'capture') ? 'yes' : 'no',
     pagecheck: row.dynamic ? 'first' : walks(p, 'check') ? 'yes' : 'no',
     lines: row.dynamic ? 'first' : walks(p, 'lines') ? 'yes' : 'no',
@@ -255,8 +277,7 @@ for (const row of rows) {
 }
 note('lower-case "no" and "fallback" are notes and do not fail the run: /present is not on the shell, and a row without a sidebar icon draws the pages glyph');
 
-for (const [book, doc] of [...docs.map((d) => ['docs', d]), ...handbook.map((d) => ['handbook', d])]) {
-  const stem = `${book}-${doc.slug}`;
+for (const stem of [...docsRows.map((d) => `docs-${d.slug}`), ...handbook.map((d) => `handbook-${d.slug}`)]) {
   if (!existsSync(join(ROOT, `public/shots/thumb/${stem}.webp`))) {
     note(`${stem}: no thumbnail; run pnpm capture:pages --only ${stem}, then cut public/shots/pages/${stem}-{light,dark}.jpg into public/shots/thumb (pnpm build:thumbs)`);
   }

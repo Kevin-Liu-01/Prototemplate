@@ -18,7 +18,7 @@
  *
  *   S1 props    a <BookHead> carries title, badge, lead, updated and facts; a page
  *               route's title is PAGE_NAMES.<id>.name, or PAGE_NAMES[book].name
- *               in the docs shell (the records, a film package, a skill and
+ *               in the book shell (the records, a film package, a skill and
  *               a direction, carry their own)
  *   S2 restyle  no rule outside BookView.css and InstallField.css sets a box
  *               or type property on a standard element (.pt-book-head,
@@ -30,12 +30,12 @@
  *   S4 guides   no ::before or ::after with a line or a ground on the head,
  *               the mast or the title
  *   S5 titles   a page route's static metadata title reads PAGE_NAMES and
- *               is never absolute (the home page and /docs's
- *               docWindowTitle aside)
+ *               is never absolute (the home page aside; a route whose
+ *               metadata comes from seoRoute writes no literal)
  *   S6 tokens   the book page's spaces in BookView.css and Sheet.css read
  *               their tokens, never the literal px they stand for
  *
- * Live mode reads /brand, /docs, /docs/design, /handbook, /motion, the
+ * Live mode reads /brand, /handbook, /handbook/design, /motion, the
  * first package, /graphics, /skills, the first skill, /marks, the first
  * direction and /blog at 1440x900 and 390x844 in both themes:
  *
@@ -109,11 +109,11 @@ export const STANDARD = ['pt-book-head', 'pt-book-mast', 'pt-book-lead', 'pt-boo
 const BOX_TYPE = /^(margin|padding|border|gap$|row-gap$|column-gap$|grid-|display$|font|line-height$|letter-spacing$|color$|background|height$|min-height$|width$|max-width$)/;
 
 /** The book routes S3 reads, and the gallery files and the craft article it allows by name. */
-const BOOK_ROUTES = ['src/app/brand/', 'src/app/docs/', 'src/app/handbook/', 'src/app/motion/', 'src/app/graphics/', 'src/app/skills/', 'src/app/marks/', 'src/app/directions/', 'src/app/blog/', 'src/components/viewer/BookView', 'src/components/viewer/InstallField'];
+const BOOK_ROUTES = ['src/app/brand/', 'src/components/book/', 'src/app/handbook/', 'src/app/motion/', 'src/app/graphics/', 'src/app/skills/', 'src/app/marks/', 'src/app/directions/', 'src/app/blog/', 'src/components/viewer/BookView', 'src/components/viewer/InstallField'];
 const HATCH_ALLOWED = ['src/app/prototemplate.css', 'src/app/system-ledger.css', 'src/app/GalleryViewer.tsx', 'src/app/AnatomyWall.tsx', 'src/app/craft/'];
 
-/** S5's exceptions: the home page (the nameplate) and /docs (docWindowTitle writes the whole title). */
-const TITLE_EXCEPT = ['src/app/page.tsx', 'src/app/docs/page.tsx'];
+/** S5's exception: the home page (the nameplate). */
+const TITLE_EXCEPT = ['src/app/page.tsx'];
 
 /** The book page's space tokens and the literal px each stands for (tokens.css, 1440). */
 export const SPACE_PX = { 44: '--pt-title-clear', 14: '--pt-head-gap', 26: '--pt-head-rule-pad', 56: '--pt-head-col-gap or --pt-col-pad-x', 304: '--pt-head-panel', 32: '--pt-book-gap', 48: '--pt-sec-over', 30: '--pt-sec-pad', 42: '--pt-band-h' };
@@ -180,7 +180,7 @@ export function bookHeads(source) {
   return out;
 }
 
-/** A title read from PAGE_NAMES: `PAGE_NAMES.brand.name`, or `PAGE_NAMES[book].name` in a shell that renders more than one book (DocsShell). */
+/** A title read from PAGE_NAMES: `PAGE_NAMES.brand.name`, or `PAGE_NAMES[book].name` in the shell that renders a book (BookShell). */
 const PAGE_NAME = /^PAGE_NAMES(?:\.\w+|\[\w+\])\.name$/;
 
 /** S1 over one TSX file. */
@@ -367,7 +367,7 @@ export function lintHeads(root) {
 /* ------------------------------------------------------------------ */
 
 /** The routes live mode reads, by kind: the single pages and the first of each record (from lint-type's list). */
-const LIVE_PATHS = /^\/(brand|docs|docs\/design|handbook|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|marks|directions\/[\w-]+|blog)$/;
+const LIVE_PATHS = /^\/(brand|handbook|handbook\/design|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|marks|directions\/[\w-]+|blog)$/;
 
 /**
  * Runs in the page: the head's geometry and the lines around it. Every
@@ -815,10 +815,10 @@ export function judgeHead(d, { wide, day, record = null }) {
   };
 }
 
-/** The day src/lib/updated.ts records for a route (a /docs/<slug> reads /docs, a /handbook/<slug> reads /handbook). */
+/** The day src/lib/updated.ts records for a route's head (a /handbook/<slug> shows the book's head, so it reads /handbook). */
 export function updatedDay(root, path) {
   const text = readFileSync(join(root, 'src/lib/updated.ts'), 'utf8');
-  const key = path.startsWith('/docs/') ? '/docs' : path.startsWith('/handbook/') ? '/handbook' : path;
+  const key = path.startsWith('/handbook/') ? '/handbook' : path;
   const m = new RegExp(`^ {2}'${key.replace(/[/]/g, '\\/')}': \\{ day: '([^']+)'`, 'm').exec(text);
   return m ? m[1] : null;
 }

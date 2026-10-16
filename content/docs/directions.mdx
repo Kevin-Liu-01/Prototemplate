@@ -1,0 +1,35 @@
+---
+title: The design lab and the directions
+description: 'The 27 directions under /d: the explorations, the three site concepts, the production mirror, and how the gallery presents them.'
+icon: Swatch
+---
+
+The design lab holds twenty-seven directions for the General Translation website. Each one is a built page that runs live.
+
+- **23 explorations**: single-page directions, each a different answer to the same brief.
+- **3 site concepts** on the Toolchain foundation: Dossier, Orbit and Signal, each a home page plus an enterprise page.
+- **The production mirror** at `/d/production`: the site that shipped at generaltranslation.com, rebuilt page for page, with the dashboard's sign-in and onboarding states (`/d/production/signin`, `/onboarding`, `/consent`, `/device` and `/cli`; `?state=<id>` opens any state).
+
+`src/lib/directions.ts` is the registry: the slug, the name, the concept and the tone of each. The gallery, the presenter, `/directions/<slug>`, the sitemap and the sidebar's Sites and Explorations rows all read it.
+
+## Self-contained by design
+
+Each direction lives under `src/app/d/<slug>` with its own type, colors and stylesheets. The shell's rules do not reach it, and the type lint skips the files its allow list names. A direction can be read, changed or deleted without touching another.
+
+`src/app/d/toolchain` is the single source the three site concepts fork. A fork imports Toolchain's sections and re-skins them by rescoping its root class, and it never edits Toolchain's files. [ARCHITECTURE.md](/handbook/architecture) explains the rule.
+
+## How the hub presents them
+
+- `/` reads the directions as one article, shows one live exhibit at a time, or lays them out as a grid of captures.
+- `/directions/<slug>` presents one direction on the shell: the prototype in a frame, its captures in both themes, and what it was for.
+- `/compare` runs two directions side by side in scroll-synced frames.
+- `/present` is the full-screen walkthrough with the first 16 prototypes live.
+- `/archive/<slug>` keeps a retired direction as a full-page capture with the commit that last held its code.
+
+## Keeping the mirror in step
+
+`/d/production` follows generaltranslation.com. After a gt-cloud pull request changes a page, the change is ported here: one root class per page, the gt-cloud stylesheets as rescoped copies, and every copy recorded in `scripts/lint/copies.json`, which `pnpm lint:copies` checks.
+
+## Search engines
+
+The directions reassemble GT's marketing copy, prices and legal text into design studies, so every `/d/` page is `noindex, follow`. One layout, `src/app/d/layout.tsx`, sets it for the whole folder. The mirror's pages name their generaltranslation.com page as the canonical, since the live page is the original. The `/directions/<slug>` pages hold original writing and captures, and they are indexed. [The SEO system](/docs/seo) gives the reasons.

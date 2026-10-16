@@ -125,7 +125,7 @@ Paths without a prefix are in a Prototemplate checkout. A path marked `gt-cloud:
 | The PR slate | The PR slate answers "give me my PR list" with every open PR across gt-cloud, gt and content in merge order, in nine groups from merge now to the items only Kevin can do. Each line carries the full link, a one-line purpose and its line counts, and the Slack version is lowercase plain text in a code fence. | gt-reporting section 5, `scripts/pr-slate.mjs` |
 | Explorations stay local | Exploration and redesign rounds stay uncommitted or on a branch until Kevin has reviewed them on localhost and says to land them, because Prototemplate main deploys the public site (2026-09-14). | gt-aesthetic section 5; gt-ship section 8; gt-explorations |
 | Kevin merges | An agent merges a PR or runs `gh stack merge` only when Kevin says so in that session. | gt-ship sections 5 and 6 |
-| The agent guide | `AGENTS.md` at the root of Prototemplate is the entry point for an agent: the read order, the principles in brief, which skill to load for a task, the house rules, and how to import the hub into another project. `CLAUDE.md` imports it for Claude Code. | `AGENTS.md`; `/docs/agents` |
+| The agent guide | `AGENTS.md` at the root of Prototemplate is the entry point for an agent: the read order, the principles in brief, which skill to load for a task, the house rules, and how to import the hub into another project. `CLAUDE.md` imports it for Claude Code. | `AGENTS.md`; `/handbook/agents` |
 
 ## Kevin's shorthand
 

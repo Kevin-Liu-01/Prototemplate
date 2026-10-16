@@ -3,8 +3,8 @@ import { join } from 'node:path';
 
 import type { ReactNode } from 'react';
 
-import { parseBlocks, renderBlocks, renderInline, splitDoc } from '@/app/docs/markdown';
-import type { Block } from '@/app/docs/markdown';
+import { parseBlocks, renderBlocks, renderInline, splitDoc } from '@/components/book/markdown';
+import type { Block } from '@/components/book/markdown';
 import { MOTION_BODY_DIR, getMotionFilm } from '@/lib/motion';
 import type { BadgeWord } from '@/components/viewer/BadgeCycle';
 import type { PackageSectionId } from '@/lib/motion';

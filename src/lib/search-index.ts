@@ -1,7 +1,6 @@
-import type { IconName } from '@/components/viewer/icons';
-import { docHref } from '@/app/docs/model';
-import { DOCS } from '@/app/docs/registry';
 import { HANDBOOK, HANDBOOK_README } from '@/app/handbook/registry';
+import { docHref } from '@/components/book/model';
+import type { IconName } from '@/components/viewer/icons';
 import { MOTION_FILMS, MOTION_SCRIPT_WORDS, MOTION_SECTIONS, MOTION_STATUS_LABEL, motionHref } from '@/lib/motion';
 import { SKILL_AREAS, SKILLS, skillHref } from '@/lib/skills';
 import { SITE_SURFACES } from '@/lib/surfaces';
@@ -14,7 +13,7 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * carry the same ids as the index panel and the sidebar: pages, the skill
  * pages, the handbook's documents, the films on the motion roster with the
  * sections of each research package and the contact sheet and script of
- * each published cut, documents and their headings, the sites and explorations (each
+ * each published cut, the docs site's pages, the handbook's headings, the sites and explorations (each
  * opening its page under /directions), the archived versions, the brand
  * sections, the library anchors, and the 93 deck slides, each linking to
  * /deck#n. Pure data, no React, no DOM.
@@ -28,7 +27,7 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * bundle carries) and preview the skills index. The headings and the
  * slide titles are snapshots: the documents are read from disk on the
  * server, and the slide files live under deck/slides, neither reachable
- * from a client module. Heading ids follow src/app/docs/markdown.tsx
+ * from a client module. Heading ids follow src/components/book/markdown.tsx
  * (lowercase, `&` to `and`, apostrophes dropped, runs of anything else to
  * one hyphen). Refresh both tables when a document gains an h2 or a slide
  * is renamed.
@@ -118,7 +117,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
 const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   gallery: 'home index working file directions',
   brand: 'identity book basement mark color type voice directives',
-  docs: 'readme build log craft libraries laws documents',
+  docs: 'documentation how it works get started template fumadocs seo gates scripts',
   deck: 'brand deck slideshow slides identity summary book GT',
   present: 'presenter slides scoreboard',
   compare: 'side by side synced frames',
@@ -316,117 +315,12 @@ const MOTION_RECORDS: readonly SearchEntry[] = MOTION_FILMS.flatMap((film): Sear
   return rows;
 });
 
-/** The h2 rows of each document, in reading order: [id, title]. The readme ends with the build log's seven sections. */
-const DOC_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
-  graphics: [
-    ['what-a-visual-is', 'What a visual is'],
-    ['sizing', 'Sizing'],
-    ['the-files', 'The files'],
-    ['procedure', 'Procedure'],
-    ['capturing', 'Capturing'],
-    ['backgrounds', 'Backgrounds'],
-    ['clips', 'Clips'],
-    ['handing-off-to-a-post', 'Handing off to a post'],
-    ['where-it-went-wrong-and-the-fix', 'Where it went wrong, and the fix'],
-  ],
-  readme: [
-    ['what-is-here', 'What is here'],
-    ['run-it', 'Run it'],
-    ['read-first', 'Read first'],
-    ['skills', 'Skills'],
-    ['import-this-into-another-project', 'Import this into another project'],
-    ['the-one-paragraph-tour', 'The one-paragraph tour'],
-    ['license', 'License'],
-    ['the-system-under-the-system', 'The system under the system'],
-    ['the-line-law-and-the-auditors-that-hold-it', 'The line law, and the auditors that hold it'],
-    ['the-dither-transitions-and-the-grid-they-run-on', 'The dither transitions, and the grid they run on'],
-    ['rails-grounds-and-seams', 'Rails, grounds, and seams'],
-    ['corners-spacers-and-the-second-surface', 'Corners, spacers, and the second surface'],
-    ['the-libraries', 'The libraries'],
-    ['the-moving-type', 'The moving type'],
-  ],
-  brand: [
-    ['1-the-name', '1. The name'],
-    ['2-the-idea', '2. The idea'],
-    ['3-the-character', '3. The character'],
-    ['4-the-mark', '4. The mark'],
-    ['5-color', '5. Color'],
-    ['6-type', '6. Type'],
-    ['7-language-as-material', '7. Language as material'],
-    ['8-where-it-ships', '8. Where it ships'],
-    ['9-context-for-partners', '9. Context for partners'],
-  ],
-  design: [
-    ['1-the-four-color-system', '1. The four-color system'],
-    ['2-the-line-law', '2. The line law'],
-    ['3-the-rails', '3. The rails'],
-    ['4-typography-and-voices', '4. Typography and voices'],
-    ['5-the-doubled-line-thread-grammar', '5. The doubled line (thread grammar)'],
-    ['6-the-isometric-family', '6. The isometric family'],
-    ['7-the-1-bit-language-bayer-dither', '7. The 1-bit language (Bayer dither)'],
-    ['8-the-moving-type-law', '8. The moving type law'],
-    ['9-motion-discipline', '9. Motion discipline'],
-    ['10-the-seam-slide-to-reveal', '10. The seam (slide-to-reveal)'],
-    ['11-engine-lifecycle', '11. Engine lifecycle'],
-    ['12-the-mobile-type-ladder', '12. The mobile type ladder'],
-    ['13-the-svh-dvh-law', '13. The svh/dvh law'],
-    ['14-the-two-read-lines', '14. The two read lines'],
-    ['15-chrome-exceptions-kevin-asked-for', '15. Chrome exceptions Kevin asked for'],
-    ['16-the-sidebars-rows', "16. The sidebar's rows"],
-  ],
-  architecture: [
-    ['the-shape-of-the-app', 'The shape of the app'],
-    ['the-direction-registry', 'The direction registry'],
-    ['the-ssot-rule', 'The SSOT rule'],
-    ['componentized-instruments', 'Componentized instruments'],
-    ['the-gallery-pipeline', 'The gallery pipeline'],
-    ['skills-and-docs', 'Skills and docs'],
-    ['the-mirror', 'The mirror'],
-  ],
-  'artifact-pictures': [
-    ['files', 'Files'],
-    ['the-rules', 'The rules'],
-    ['the-cutter', 'The cutter'],
-    ['adding-a-picture', 'Adding a picture'],
-    ['the-lint', 'The lint'],
-    ['changing-the-standard', 'Changing the standard'],
-    ['retired-pictures', 'Retired pictures'],
-  ],
-  tools: [
-    ['site', 'Site'],
-    ['setup', 'Setup'],
-    ['lints', 'Lints'],
-    ['tests', 'Tests'],
-    ['checks-and-captures', 'Checks and captures'],
-    ['generators', 'Generators'],
-    ['skills', 'Skills'],
-    ['graphics', 'Graphics'],
-    ['skill-scripts', 'Skill scripts'],
-    ['environment', 'Environment'],
-  ],
-  agents: [
-    ['read-in-this-order', 'Read in this order'],
-    ['the-principles-in-brief', 'The principles in brief'],
-    ['which-skill-to-load', 'Which skill to load'],
-    ['the-handbook', 'The handbook'],
-    ['house-rules', 'House rules'],
-    ['working-in-this-repository', 'Working in this repository'],
-    ['using-the-hub-in-another-project', 'Using the hub in another project'],
-    ['ending-a-turn', 'Ending a turn'],
-  ],
-  'ship-loop': [
-    ['0-ground-rules', '0. Ground rules'],
-    ['1-the-line-audit', '1. The line audit'],
-    ['2-the-page-check', '2. The page check'],
-    ['3-the-practices-ratchet', '3. The practices ratchet'],
-    ['4-types', '4. Types'],
-    ['5-film-it', '5. Film it'],
-    ['6-commit-and-back-up', '6. Commit and back up'],
-    ['7-push-to-main', '7. Push to main'],
-  ],
-};
 
-/** The h2 rows of each handbook document, in reading order: [id, title]. A snapshot, like DOC_HEADINGS; scripts/lint/registries.mjs reads both. */
+/**
+ * The h2 rows of each handbook document, in reading order: [id, title]. The
+ * libraries document ends with the build log's seven sections. A snapshot:
+ * scripts/lint/registries.mjs reads it against the files.
+ */
 const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
   readme: [
     ['the-documents', 'The documents'],
@@ -519,11 +413,105 @@ const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [string, str
     ['recorded-elsewhere', 'Recorded elsewhere'],
     ['sources', 'Sources'],
   ],
-};
-
-const DOC_TITLE: Readonly<Record<string, string>> = {
-  readme: 'Readme',
-  ...Object.fromEntries(DOCS.map((doc) => [doc.slug, doc.title])),
+  agents: [
+    ['read-in-this-order', 'Read in this order'],
+    ['the-principles-in-brief', 'The principles in brief'],
+    ['which-skill-to-load', 'Which skill to load'],
+    ['the-handbook', 'The handbook'],
+    ['house-rules', 'House rules'],
+    ['working-in-this-repository', 'Working in this repository'],
+    ['using-the-hub-in-another-project', 'Using the hub in another project'],
+    ['ending-a-turn', 'Ending a turn'],
+  ],
+  brand: [
+    ['1-the-name', '1. The name'],
+    ['2-the-idea', '2. The idea'],
+    ['3-the-character', '3. The character'],
+    ['4-the-mark', '4. The mark'],
+    ['5-color', '5. Color'],
+    ['6-type', '6. Type'],
+    ['7-language-as-material', '7. Language as material'],
+    ['8-where-it-ships', '8. Where it ships'],
+    ['9-context-for-partners', '9. Context for partners'],
+  ],
+  design: [
+    ['1-the-four-color-system', '1. The four-color system'],
+    ['2-the-line-law', '2. The line law'],
+    ['3-the-rails', '3. The rails'],
+    ['4-typography-and-voices', '4. Typography and voices'],
+    ['5-the-doubled-line-thread-grammar', '5. The doubled line (thread grammar)'],
+    ['6-the-isometric-family', '6. The isometric family'],
+    ['7-the-1-bit-language-bayer-dither', '7. The 1-bit language (Bayer dither)'],
+    ['8-the-moving-type-law', '8. The moving type law'],
+    ['9-motion-discipline', '9. Motion discipline'],
+    ['10-the-seam-slide-to-reveal', '10. The seam (slide-to-reveal)'],
+    ['11-engine-lifecycle', '11. Engine lifecycle'],
+    ['12-the-mobile-type-ladder', '12. The mobile type ladder'],
+    ['13-the-svh-dvh-law', '13. The svh/dvh law'],
+    ['14-the-two-read-lines', '14. The two read lines'],
+    ['15-chrome-exceptions-kevin-asked-for', '15. Chrome exceptions Kevin asked for'],
+    ['16-the-sidebars-rows', "16. The sidebar's rows"],
+  ],
+  architecture: [
+    ['the-shape-of-the-app', 'The shape of the app'],
+    ['the-direction-registry', 'The direction registry'],
+    ['the-ssot-rule', 'The SSOT rule'],
+    ['componentized-instruments', 'Componentized instruments'],
+    ['the-gallery-pipeline', 'The gallery pipeline'],
+    ['skills-and-docs', 'Skills and docs'],
+    ['the-mirror', 'The mirror'],
+  ],
+  'ship-loop': [
+    ['0-ground-rules', '0. Ground rules'],
+    ['1-the-line-audit', '1. The line audit'],
+    ['2-the-page-check', '2. The page check'],
+    ['3-the-practices-ratchet', '3. The practices ratchet'],
+    ['4-types', '4. Types'],
+    ['5-film-it', '5. Film it'],
+    ['6-commit-and-back-up', '6. Commit and back up'],
+    ['7-push-to-main', '7. Push to main'],
+  ],
+  tools: [
+    ['site', 'Site'],
+    ['setup', 'Setup'],
+    ['lints', 'Lints'],
+    ['tests', 'Tests'],
+    ['checks-and-captures', 'Checks and captures'],
+    ['generators', 'Generators'],
+    ['skills', 'Skills'],
+    ['graphics', 'Graphics'],
+    ['skill-scripts', 'Skill scripts'],
+    ['environment', 'Environment'],
+  ],
+  libraries: [
+    ['the-system-under-the-system', 'The system under the system'],
+    ['the-line-law-and-the-auditors-that-hold-it', 'The line law, and the auditors that hold it'],
+    ['the-dither-transitions-and-the-grid-they-run-on', 'The dither transitions, and the grid they run on'],
+    ['rails-grounds-and-seams', 'Rails, grounds, and seams'],
+    ['corners-spacers-and-the-second-surface', 'Corners, spacers, and the second surface'],
+    ['the-libraries', 'The libraries'],
+    ['the-moving-type', 'The moving type'],
+  ],
+  graphics: [
+    ['what-a-visual-is', 'What a visual is'],
+    ['sizing', 'Sizing'],
+    ['the-files', 'The files'],
+    ['procedure', 'Procedure'],
+    ['capturing', 'Capturing'],
+    ['backgrounds', 'Backgrounds'],
+    ['clips', 'Clips'],
+    ['handing-off-to-a-post', 'Handing off to a post'],
+    ['where-it-went-wrong-and-the-fix', 'Where it went wrong, and the fix'],
+  ],
+  'artifact-pictures': [
+    ['files', 'Files'],
+    ['the-rules', 'The rules'],
+    ['the-cutter', 'The cutter'],
+    ['adding-a-picture', 'Adding a picture'],
+    ['the-lint', 'The lint'],
+    ['changing-the-standard', 'Changing the standard'],
+    ['retired-pictures', 'Retired pictures'],
+  ],
 };
 
 const HANDBOOK_TITLE: Readonly<Record<string, string>> = {
@@ -532,20 +520,6 @@ const HANDBOOK_TITLE: Readonly<Record<string, string>> = {
 };
 
 const HEADINGS: readonly SearchEntry[] = [
-  ...Object.entries(DOC_HEADINGS).flatMap(([slug, rows]) =>
-    rows.map(
-      ([id, title]): SearchEntry => ({
-        id: `heading-${slug}-${id}`,
-        title,
-        href: `${docHref(slug)}#${id}`,
-        group: 'Headings',
-        meta: `In ${DOC_TITLE[slug] ?? slug}`,
-        icon: 'document',
-        keywords: `${DOC_TITLE[slug] ?? ''} heading section`,
-        surface: `docs-${slug}`,
-      })
-    )
-  ),
   ...Object.entries(HANDBOOK_HEADINGS).flatMap(([slug, rows]) =>
     rows.map(
       ([id, title]): SearchEntry => ({

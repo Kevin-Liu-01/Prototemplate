@@ -260,20 +260,21 @@ const PRODUCTION_SOURCE = ['src/app/d/production', 'src/app/d/_v0', 'src/app/d/t
  * is one row here.
  */
 export function siteRoutes() {
-  const doc = firstSlug('src/app/docs/registry.ts', /slug: '([^']+)'/, 'export const DOCS');
   const skill = firstSlug('src/lib/skills.ts', /id: '([^']+)'/, 'export const SKILLS');
   const pkg = firstSlug('src/lib/motion.ts', /'([^']+)'/, 'export const MOTION_PACKAGE_SLUGS');
   const archive = firstSlug('src/lib/archive.ts', /entry\('([^']+)'/);
   const exploration = firstExplorationSlug();
   const post = newestPostSlug();
   const blog = ['src/app/blog', 'src/components/blog', 'content/blog'];
-  const book = ['src/app/handbook', 'src/app/docs', 'docs/handbook'];
+  const book = ['src/app/handbook', 'src/components/book', 'docs/handbook'];
+  /* the docs site, outside the shell (fumadocs' notebook layout): no `lines`, which reads the shell's list */
+  const docsSite = ['src/app/docs', 'src/components/docs', 'content/docs'];
   const shell = [
     { id: 'gallery', path: '/', tools: 'check live lines capture', source: ['src/app/*'] },
     { id: 'brand', path: '/brand', tools: 'check live lines capture', source: ['src/app/brand'] },
-    { id: 'docs', path: '/docs', tools: 'check live lines capture', source: ['src/app/docs'] },
-    { id: `docs-${doc}`, path: `/docs/${doc}`, tools: 'check', source: ['src/app/docs'] },
-    { id: 'docs-design', path: '/docs/design', tools: 'live', source: ['src/app/docs'] },
+    { id: 'docs', path: '/docs', tools: 'check live capture', source: docsSite },
+    { id: 'docs-seo', path: '/docs/seo', tools: 'check live', source: docsSite },
+    { id: 'docs-template', path: '/docs/template', tools: 'check', source: docsSite },
     { id: 'compare', path: '/compare', tools: 'check live lines capture', source: ['src/app/compare'] },
     { id: 'present', path: '/present', tools: 'check capture', source: ['src/app/present'] },
     /* the built deck itself (next.config.ts rewrites /deck to public/brand-deck.html) */
@@ -283,6 +284,7 @@ export function siteRoutes() {
     { id: `skills-${skill}`, path: `/skills/${skill}`, tools: 'check live lines', source: ['src/app/skills'] },
     { id: 'handbook', path: '/handbook', tools: 'check live lines capture', source: book },
     { id: 'handbook-decisions', path: '/handbook/decisions', tools: 'check', source: book },
+    { id: 'handbook-design', path: '/handbook/design', tools: 'live', source: book },
     { id: 'graphics', path: '/graphics', tools: 'check live lines', source: ['src/app/graphics'] },
     { id: 'motion', path: '/motion', tools: 'check live lines', source: ['src/app/motion'] },
     { id: `motion-${pkg}`, path: `/motion/${pkg}`, tools: 'check live lines', source: ['src/app/motion'] },

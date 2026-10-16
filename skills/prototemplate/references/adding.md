@@ -4,33 +4,42 @@ These are the checklists behind section 6 of the skill. Paths are relative to `$
 
 ## A page on the shell
 
-1. **Write the route.** Create `src/app/<route>/page.tsx` as the server page. It exports `metadata` with a `title`, a one-sentence `description` and `icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] }`, reads the data from disk, and renders the viewer. Create `src/app/<route>/<Name>Viewer.tsx` as the client viewer with `ViewerShell` and the stage (`references/shell.md`). The route's stylesheet sits beside them, and only the viewer imports it. It reads the tokens in `src/components/viewer/tokens.css` and declares no family, no feature list, no weight above 500 and no raw color.
+1. **Write the route.** Create `src/app/<route>/page.tsx` as the server page. It builds its head with `const route = seoRoute({ path, title, kind, description })` (`src/lib/seo/route.ts`; a description of 50 to 160 characters), exports `metadata = route.metadata`, renders `<JsonLd nodes={route.jsonLd} />`, reads the data from disk, and renders the viewer. Create `src/app/<route>/<Name>Viewer.tsx` as the client viewer with `ViewerShell` and the stage (`references/shell.md`). The route's stylesheet sits beside them, and only the viewer imports it. It reads the tokens in `src/components/viewer/tokens.css` and declares no family, no feature list, no weight above 500 and no raw color.
 2. **Add the surface row.** In `src/lib/surfaces.ts`, add `internal('<id>', '<Name>', '/<route>', '<one sentence>', 'Pages' | 'Knowledge', thumb('<id>'))` to `PAGES` or `KNOWLEDGE`. Pages holds the site's own views in Kevin's order (gallery, brand, docs, deck, presenter, compare). Knowledge holds what the hub keeps (skills, marks, blog, graphics, motion, archive). The id is the thumbnail stem, the preview id and the key every other registry uses. The description spells out General Translation, because the panel never prints the letters GT.
 3. **Give it an icon and search words.** Add the id to `PAGE_ICON` in `src/components/viewer/Sidebar.tsx` and to `PAGE_ICON` and `PAGE_KEYWORDS` in `src/lib/search-index.ts`. The icon is a name from `src/components/viewer/icons.tsx`. A new glyph is copied verbatim from the Heroicons 20 solid set (the `heroicons` dev dependency holds it at `node_modules/heroicons/20/solid/<name>.svg`) into `icons.tsx`, with its Heroicons name in the comment above it, and only when something imports it. Raise `EMPTY_PER_GROUP` (Pages 6, Knowledge 3) when the empty palette should show the new row.
 4. **Nest the page's sections.** Every section the page owns sets `under: '<id>'`. Each item carries `href` to its own page, or `inPlace: true` when the page's book scrolls to it.
-5. **List it in the sitemap.** Add a line to the static list in `src/app/sitemap.ts`. A dynamic route adds a loop over its registry, as the docs, skills, packages, posts, directions and archive do.
-6. **Update the prose that lists routes.** Edit `public/llms.txt` (Routes) and the "What is here" list in `README.md`. Edit the description and keywords in `src/app/layout.tsx` when the hub's scope changes.
+5. **Date it.** Add its paths to `scripts/build/updated.mjs` and run `pnpm build:updated`: the sitemap lists every dated page with its last commit as `lastmod`, and `/llms.txt` lists the Pages and Knowledge rows from `surfaces.ts`.
+6. **Update the prose that lists routes.** Edit the "What is here" list in `README.md`, and `SITE_DESCRIPTION` in `src/lib/seo/site.ts` when the hub's scope changes.
 7. **Capture it.** Tag its row (step 8) with `capture`. With the dev server on 3005, run `pnpm capture:pages --only <id>`, then `pnpm build:thumbs`, which uses `sips` and `cwebp` (`brew install webp`) and runs on macOS. Commit `public/shots/pages/<id>-light.jpg`, `public/shots/pages/<id>-dark.jpg`, `public/shots/thumb/<id>.webp` and `public/shots/thumb/<id>-dark.webp`.
 8. **Put it under the gates.** Add `{ id: '<id>', path: '/<route>', tools: 'check live lines capture', source: ['src/app/<route>'] }` to `siteRoutes()` in `scripts/lib/site-pages.mjs`, with the tools that should walk it: `check` (the page check), `live` (the live lints), `lines` (`lint:lines:shell`, which reads list, index and search unless its `STATES` names others) and `capture`. A page off the shell also names its ready selector in `scripts/check/pagecheck/pages.mjs`. Then run the gates in section 9 of the skill on the new route.
 9. **Update the canon.** A page that adds a rule or a code area adds it to `DESIGN.md` or `ARCHITECTURE.md` in the same change.
 
 A page outside the shell (`/blog`, `/present`) still takes steps 2, 3, 5 and 6 and the page check. `/present` is the full-screen presenter with its own chrome in `src/app/present/`, and its `directions.ts` leaves Signal out on Kevin's 2026-09-09 directive and keeps the first 16 of the rest (2026-10-08), one list for the viewer, the contact sheet and the verdict. `/blog` renders `content/blog` with the landing's MDX components (`src/app/blog/mdx-components.tsx`).
 
-## A document
+## A docs page
 
-1. **Write the file.** Canon goes at the repository root (`BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`), and procedures and pipelines go in `docs/`. Open with an h1 and a lead paragraph before the first h2, which the book shows as the lead, then write h2 sections with h3s below them. The renderer in `src/app/docs/markdown.tsx` reads headings, paragraphs, lists, tables, fenced code, inline code, bold, links and rules, and nothing else. It passes plain text through `gtText`, so a standalone GT renders as the mark.
-2. **Register it.** Add `{ slug, file, title, blurb }` to `DOCS` in `src/app/docs/registry.ts`. The route, the Documents rows in `surfaces.ts`, the sitemap and `build/updated.mjs` follow from that entry.
-3. **Its links resolve themselves.** `DOC_ROUTES` in `src/app/docs/links.ts` is built from both book registries, so a relative link from any rendered document, written the way GitHub resolves it, opens `/docs/<slug>`. A link to a file the site does not render opens it on GitHub.
-4. **Index its headings.** Add the document's h2s to `DOC_HEADINGS` in `src/lib/search-index.ts`, one `['<id>', '<title>']` per heading. The id follows `headingId`: lower case, `&` to "and", apostrophes dropped, and every other run of characters to one hyphen, so `## 2. The page check` becomes `2-the-page-check`. Renumbering a document's sections changes every id after the change, so the table changes in the same commit.
-5. **Update the prose.** Add a line to the Documents list of `public/llms.txt` and a row to the "Read first" table of `README.md`.
-6. **Capture the thumbnail.** `capture-pages.mjs` shoots every document of both books from their registries: run `pnpm capture:pages --only docs-<slug>`, then cut the thumbnail (`pnpm build:thumbs`).
+1. **Write the file.** `content/docs/<slug>.mdx` with a `title`, a `description` of 50 to 160 characters (the head's description and the card's text) and an optional `icon` from the list in `src/lib/source.ts`. Write it to `gt-voice` for a reader who has never seen the hub, and check every count, port and path against `package.json` and the registries.
+2. **Place it.** Add the slug to `content/docs/meta.json` where the sidebar should show it, and its row to `DOCS_PAGES` in `src/components/docs/pages.ts` with the same title and description; `pnpm lint:registries` checks the two agree.
+3. **Date it.** `scripts/build/updated.mjs` dates every MDX file under `content/docs`; run `pnpm build:updated`. The route, the sidebar, the search index, the Markdown twin, `/llms.txt`, the sitemap and the card follow.
+4. **Capture the thumbnail** for the Documents row: `pnpm capture:pages --only docs-<slug>`, then `pnpm build:thumbs`.
+
+`/docs/template` explains the docs site's files and adapters for a reader who wants to lift it into another project.
+
+## A canon document
+
+1. **Write the file.** Canon goes at the repository root (`BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`), and procedures and pipelines go in `docs/`. Open with an h1 and a lead paragraph before the first h2, which the book shows as the lead, then write h2 sections with h3s below them. The renderer in `src/components/book/markdown.tsx` reads headings, paragraphs, lists, tables, fenced code, inline code, bold, links and rules, and nothing else. It passes plain text through `gtText`, so a standalone GT renders as the mark.
+2. **Register it.** Add `{ slug, file, title, blurb }` to `HANDBOOK` in `src/app/handbook/registry.ts`, after the handbook's own documents. The blurb is the head's description, so it runs 50 to 160 characters. The route, the sitemap, the Markdown twin, `/llms.txt` and `build/updated.mjs` follow from that entry.
+3. **Its links resolve themselves.** `DOC_ROUTES` in `src/components/book/links.ts` is built from the handbook registry, so a relative link from any rendered document, written the way GitHub resolves it, opens `/handbook/<slug>`. A link to a file the site does not render opens it on GitHub.
+4. **Index its headings.** Add the document's h2s to `HANDBOOK_HEADINGS` in `src/lib/search-index.ts`, one `['<id>', '<title>']` per heading. The id follows `headingId`: lower case, `&` to "and", apostrophes dropped, and every other run of characters to one hyphen, so `## 2. The page check` becomes `2-the-page-check`. Renumbering a document's sections changes every id after the change, so the table changes in the same commit.
+5. **Update the prose.** Add a row to the "Read first" table of `README.md`.
+6. **Capture the thumbnail.** `capture-pages.mjs` shoots every handbook document from the registry: run `pnpm capture:pages --only handbook-<slug>`, then cut the thumbnail (`pnpm build:thumbs`).
 
 ## A handbook document
 
 1. **Write the file** in `docs/handbook/<slug>.md`, to the same subset of Markdown, in the writing rules of `gt-voice`. Link skills as `../../skills/<slug>/SKILL.md` and other handbook pages by their file names, so the links work on GitHub and on the site.
 2. **Register it.** Add `{ slug, file, title, blurb }` to `HANDBOOK` in `src/app/handbook/registry.ts`. The route `/handbook/<slug>`, the run under Knowledge > Handbook, the search rows, the sitemap and `build/updated.mjs` follow.
-3. **Index its headings** in `HANDBOOK_HEADINGS` in `src/lib/search-index.ts`, with the same ids as `DOC_HEADINGS`.
-4. **Update the prose:** its row in `docs/handbook/README.md`, the handbook list in `AGENTS.md`, and a line in the Handbook section of `public/llms.txt`.
+3. **Index its headings** in `HANDBOOK_HEADINGS` in `src/lib/search-index.ts`, with the ids `headingId` gives (above).
+4. **Update the prose:** its row in `docs/handbook/README.md` and the handbook list in `AGENTS.md`.
 5. **Capture its thumbnail** (`pnpm capture:pages --only handbook-<slug>`), then run `pnpm lint:registries`.
 
 ## A direction

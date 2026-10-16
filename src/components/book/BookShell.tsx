@@ -18,18 +18,17 @@ import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import type { BookId, DocPage } from './model';
-import { docHref, docWindowTitle, slugFromPath } from './model';
+import { docHref, slugFromPath } from './model';
 
-import '../prototemplate.css';
-import './docs.css';
+import '@/app/prototemplate.css';
+import './book.css';
 
 const DOCS_MODES: readonly ShellMode[] = ['book', 'grid'];
 
 /** Each book's lead: one to three lines at the lead measure, 200 characters at most. */
 const BOOK_LEADS: Readonly<Record<BookId, string>> = {
-  docs: 'The repository’s documents: the readme and its build log, the brand and design canons, the architecture map, the ship loop, the libraries, the graphics pipeline and the agent guide.',
   handbook:
-    'How Kevin Liu runs General Translation work: the operating principles, the quality bar, the playbook for parallel sessions, the product map, the glossary and the decisions.',
+    'How Kevin Liu runs General Translation work: the principles, the bar, the playbook, the product map, the glossary and the decisions, then the canon from the agent guide to the libraries.',
 };
 
 /**
@@ -92,27 +91,20 @@ function cssEscape(value: string): string {
   return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
 }
 
-/* the longest file name the 128px gutter holds on one line at the meta size (ARCHITECTURE.md, 123px) */
-const GUTTER_NAME_MAX = 15;
-
-/** A divider's second gutter line: the document's file name, or its section count when the name would wrap. */
-function gutterNote(book: BookId, doc: DocPage): string {
-  const name = doc.file.split('/').pop() ?? doc.file;
-  return book === 'docs' && name.length <= GUTTER_NAME_MAX ? name : `${doc.sections.length} sections`;
+/** A divider's second gutter line: the document's section count (a file name such as multi-session-playbook.md would wrap the 128px gutter). */
+function gutterNote(doc: DocPage): string {
+  return `${doc.sections.length} sections`;
 }
 
 /**
  * The documents as the shell's one section, opened as the run under the
- * book's page row in the sidebar (`under`). On /docs the run is the
- * Documents group under Pages > Docs and takes that group's rows with it,
- * so the group leaves the top level there; on /handbook it opens under
- * Knowledge > Handbook, and its documents have no site map rows of their
- * own.
+ * book's page row in the sidebar (`under`): Knowledge > Handbook. Its
+ * documents have no site map rows of their own.
  */
 function docsSections(docs: readonly DocPage[], book: BookId): readonly ShellSection[] {
   return [
     {
-      id: book === 'docs' ? 'documents' : 'handbook-documents',
+      id: `${book}-documents`,
       label: 'Documents',
       under: book,
       items: docs.map((doc) => ({
@@ -122,8 +114,6 @@ function docsSections(docs: readonly DocPage[], book: BookId): readonly ShellSec
         href: doc.href,
         desc: doc.blurb,
         shot: doc.shot,
-        /* the surfaces.ts id, for the preview layer and the sidebar's site map pairing (the Documents rows) */
-        surface: book === 'docs' ? `docs-${doc.slug}` : undefined,
         /* the book scrolls to the document and writes its address itself; the sidebar row never navigates */
         inPlace: true,
       })),
@@ -160,7 +150,7 @@ type DocsBookProps = {
  * selection from anywhere else scrolls the sheet, links to documents and
  * anchors inside the sheet are answered in place, Back and Forward are
  * honored, and the window title names the document. The URL is always the
- * document's own route, `/docs/design#2-the-line-law`, so a copied link
+ * document's own route, `/handbook/design#2-the-line-law`, so a copied link
  * lands on the same place.
  */
 function DocsBook({
@@ -265,10 +255,10 @@ function DocsBook({
   };
 
   /**
-   * The landing on a direct /docs/<slug> visit, with or without a heading
+   * The landing on a direct /handbook/<slug> visit, with or without a heading
    * in the hash. This runs from a layout effect, before the parent Sheet's
    * ref is attached, so the block is looked up on every check rather than
-   * once. The sheet's height also keeps growing after mount (docs.css, the
+   * once. The sheet's height also keeps growing after mount (book.css, the
    * code panels and the thumbs land), so one scrollIntoView lands short:
    * the block is re-checked on the next frame, when the fonts are ready, and
    * every 250ms for three seconds, and scrolled again whenever its top has
@@ -445,7 +435,7 @@ function DocsBook({
       source.current = null;
       const doc = docs.find((d) => d.slug === active);
       if (!doc) return;
-      document.title = docWindowTitle(doc.slug, doc.title, book);
+      document.title = doc.windowTitle;
 
       if (previous === null) {
         url.current = here();
@@ -516,10 +506,8 @@ function DocsBook({
           <div className='ptd-sec pt-book-sec' data-doc={doc.slug}>
             <small>
               <span>Section {i + 1}</span>
-              {/* the file's name in /docs (a folder in front of it would wrap the 128px gutter:
-                  docs/SHIP-LOOP.md); where a name runs past the gutter (over 15 characters:
-                  ARTIFACT-PICTURES.md, multi-session-playbook.md), the count of its sections */}
-              <span>{gutterNote(book, doc)}</span>
+              {/* the count of its sections */}
+              <span>{gutterNote(doc)}</span>
             </small>
             <h2 id={`ptd-${doc.slug}`}>{doc.title}</h2>
           </div>
@@ -554,12 +542,12 @@ function DocsBook({
   );
 }
 
-export type DocsShellProps = {
-  /** which book: the repository documents (/docs) or the handbook (/handbook) */
+export type BookShellProps = {
+  /** which book: the handbook (/handbook) */
   book: BookId;
   /** the document the route names: `readme` on the book's index, the slug on <base>/[slug] */
   active: string;
-  /** from buildDocs() (docs-book.ts) or buildBook() (book.tsx) on the server */
+  /** from buildHandbook() (src/app/handbook/libraries-book.ts) on the server */
   docs: readonly DocPage[];
   /** the book's entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
@@ -569,14 +557,13 @@ export type DocsShellProps = {
 
 /**
  * A book of documents on the viewer shell: the documents as the run under
- * the book's page row in the site map (Pages > Docs, Knowledge >
- * Handbook), the headings of the active document as a deep run under its
- * row, the documents as one book inside the 1280px flow sheet, and their
- * captures as a grid. Flow keys, so Space and the arrows scroll. A direct
- * /docs/<slug> or /handbook/<slug> lands on that document and stays there
- * while the sheet settles.
+ * the book's page row in the site map (Knowledge > Handbook), the headings
+ * of the active document as a deep run under its row, the documents as one
+ * book inside the 1280px flow sheet, and their captures as a grid. Flow
+ * keys, so Space and the arrows scroll. A direct /handbook/<slug> lands on
+ * that document and stays there while the sheet settles.
  */
-export default function DocsShell({ book, active, docs, updated, facts }: DocsShellProps) {
+export default function BookShell({ book, active, docs, updated, facts }: BookShellProps) {
   const [activeHeading, setActiveHeading] = useState<string | null>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const source = useRef<SelectSource | null>(null);

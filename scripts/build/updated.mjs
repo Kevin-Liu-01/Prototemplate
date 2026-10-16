@@ -89,20 +89,33 @@ const POOL = 8;
 
 // ---- the pages ----------------------------------------------------------
 //
-// One entry per route that renders a book head; no other route shows a
-// date, and every listed path must match a file. A plain string is a file
-// or a folder (a folder covers everything under it); a string with * is a
+// One entry per route that renders a book head, and per indexable page the
+// sitemap lists, which takes each entry's date as its lastmod (the SEO
+// plan, section 2.3: an indexable page has an entry here, so its lastmod is
+// true). Every listed path must match a file. A plain string is a file or
+// a folder (a folder covers everything under it); a string with * is a
 // glob. Keys are the route's pathname, so the page check can match a route
 // to its entry. A collection is a function of the slugs it reads from the
-// repository. /docs/<slug> renders the /docs book and reads its entry, and
-// /handbook/<slug> the /handbook book.
+// repository. /handbook is the book's head, dated by every document it
+// holds; each /handbook/<slug> is dated by its own file and the book's
+// code, and each /docs/<slug> by its MDX page and the docs site's code.
 
-/** `src/app/docs/registry.ts`: every `file: '...'` and its slug. */
-function docEntries() {
-  const src = readFileSync(join(ROOT, 'src/app/docs/registry.ts'), 'utf8');
+/** `src/app/handbook/registry.ts`: every `file: '...'` and its slug (the canon and the handbook's own documents). */
+function handbookEntries() {
+  const src = readFileSync(join(ROOT, 'src/app/handbook/registry.ts'), 'utf8');
   const out = [...src.matchAll(/slug: '([^']+)',\s*\n\s*file: '([^']+)'/g)].map((m) => ({ slug: m[1], file: m[2] }));
-  if (out.length === 0) throw new Error('build-updated: no documents read from src/app/docs/registry.ts');
+  if (out.length === 0) throw new Error('build-updated: no documents read from src/app/handbook/registry.ts');
   return out;
+}
+
+/** `content/docs/*.mdx`: the docs site's pages by slug (`index` is /docs). */
+function docsPages() {
+  const dir = join(ROOT, 'content/docs');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.mdx'))
+    .map((f) => f.slice(0, -4))
+    .sort();
 }
 
 /** `skills/<slug>/SKILL.md` folders. */
@@ -135,13 +148,41 @@ function directionSlugs() {
 function pages() {
   const given = option('--pages');
   if (given) return JSON.parse(readFileSync(given, 'utf8'));
-  const docs = docEntries();
+  const handbook = handbookEntries();
+  /* the book's code: the shell and renderer every handbook route shares, the build log the libraries document carries */
+  const book = ['src/components/book', 'src/app/handbook'];
+  /* the docs site's code every docs page shares */
+  const docsSite = ['src/app/docs', 'src/components/docs', 'content/docs/meta.json', 'source.config.ts', 'src/lib/source.ts'];
   return [
+    {
+      id: '/',
+      paths: [
+        'src/app/page.tsx',
+        'src/app/GalleryViewer.tsx',
+        'src/app/GalleryViewer.css',
+        'src/app/AnatomyWall.tsx',
+        'src/app/anatomy-wall.css',
+        'src/app/SystemLedger.tsx',
+        'src/app/system-ledger.css',
+        'src/app/PrototemplateHero.tsx',
+        'src/lib/directions.ts',
+      ],
+    },
     { id: '/brand', paths: ['src/app/brand', 'BRAND.md', 'public/brand'] },
-    { id: '/docs', paths: ['src/app/docs', 'README.md', ...docs.map((d) => d.file)] },
-    // the handbook renders through the docs book (src/app/docs), which is
-    // /docs' own code; /handbook is dated by its documents and its route
-    { id: '/handbook', paths: ['docs/handbook', 'src/app/handbook'] },
+    { id: '/deck', paths: ['deck', 'scripts/build/deck.mjs'] },
+    { id: '/present', paths: ['src/app/present'] },
+    { id: '/compare', paths: ['src/app/compare', 'src/app/SiteCompare.tsx'] },
+    ...docsPages().map((slug) => ({
+      id: slug === 'index' ? '/docs' : `/docs/${slug}`,
+      paths: [`content/docs/${slug}.mdx`, ...docsSite],
+    })),
+    { id: '/handbook', paths: [...book, 'src/app/craft', ...handbook.map((d) => d.file)] },
+    ...handbook
+      .filter((d) => d.slug !== 'readme')
+      .map((d) => ({
+        id: `/handbook/${d.slug}`,
+        paths: [d.file, ...book, ...(d.slug === 'libraries' ? ['src/app/craft'] : [])],
+      })),
     { id: '/skills', paths: ['skills', 'src/app/skills', 'src/lib/skills.ts', 'scripts/skills/install.mjs'] },
     ...skillSlugs().map((s) => ({
       id: `/skills/${s}`,

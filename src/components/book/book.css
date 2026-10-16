@@ -1,0 +1,303 @@
+/* The book: the handbook's documents and the canon on the viewer shell.
+
+   The shell (src/components/viewer) draws the frame and the book's head
+   (BookHead); this sheet draws the rest of the book inside the flow sheet:
+   the contents, the document dividers, the numbered rows, and the prose
+   the markdown renderer emits.
+   Two token families meet here on purpose (decision 6): the book furniture
+   is chrome and reads the shell's --pt- tokens; each row body is article
+   content under .pt-root, so it keeps the titanium hairline family from
+   src/app/prototemplate.css. Nothing here draws a line either layer already
+   owns. */
+
+/* ---------- the book column ----------
+   The column (.pt-book-col), the head, the contents, the band and the
+   document dividers are the shared book classes (BookHead, .pt-book-toc
+   and .pt-book-sec in BookView.css); this sheet draws what is inside a
+   document. */
+
+.ptd-toc a[aria-current] span {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+/* one document: its divider, its lead, its rows */
+.ptd-doc {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.ptd-sec {
+  scroll-margin-top: 20px;
+}
+
+.ptd-sec > small {
+  min-width: 0;
+}
+
+/* a long file path breaks in the gutter instead of being cut */
+.ptd-sec > small span {
+  overflow-wrap: anywhere;
+}
+
+/* row: the section number in the gutter on the heading's baseline, the
+   content beside */
+.ptd-row {
+  display: grid;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  gap: var(--pt-gutter-gap);
+  align-items: baseline;
+  scroll-margin-top: 20px;
+}
+
+.ptd-pn {
+  padding-top: 0;
+}
+
+/* the gutter number takes the size and the baseline of the h2 beside it */
+.ptd-pn b {
+  display: block;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the section being read: its number turns ink, as its row in the list does */
+.ptd-row.is-active .ptd-pn b {
+  color: var(--pt-ink);
+}
+
+/* ---------- the row body: article content on the titanium family ---------- */
+
+.ptd-body {
+  min-width: 0;
+}
+
+/* .pt-root is a page root in prototemplate.css; here it is a token scope */
+.ptd-body.pt-root {
+  min-height: 0;
+  background: transparent;
+}
+
+/* one ink family per book: the article layer reads the shell's inks, so
+   the head's h1 and the h3 under it are the same ink. inherit on a custom
+   property takes the shell's value from the parent; :root lifts the rule
+   over [data-theme='dark'] .pt-root. The article keeps its hairlines. */
+:root .ptd-body.pt-root,
+:root .ptb-book.pt-root {
+  --pt-ink: inherit;
+  --pt-ink-2: inherit;
+  --pt-ink-3: var(--pt-titanium);
+}
+
+/* prose (DESIGN.md section 4, Book type): h2 at d3, h3 at the title step,
+   paragraphs at the body step and measure */
+.ptd-book .ptd-body h2 {
+  margin: 48px 0 0;
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  color: var(--pt-ink);
+}
+
+.ptd-book .ptd-body > h2:first-child {
+  margin-top: 0;
+}
+
+.ptd-book .ptd-body h3 {
+  margin-top: 32px;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+}
+
+/* the library entries name the module, then its role */
+.ptd-book .ptd-body .pt-craft-lib h3 span {
+  color: var(--pt-ink-3);
+  font-weight: var(--pt-w-text);
+}
+
+.ptd-book .ptd-body p {
+  max-width: var(--pt-measure);
+  margin-top: 16px;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+.ptd-book .ptd-body :is(strong, b) {
+  color: var(--pt-ink);
+}
+
+/* the lead has no heading above it */
+.ptd-lead .ptd-body > p:first-child {
+  margin-top: 0;
+}
+
+.ptd-book .ptd-body a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.ptd-book .ptd-body a:hover {
+  color: var(--pt-ink);
+  text-decoration-color: currentColor;
+}
+
+/* inline code: a long path or token breaks rather than widen the column */
+.ptd-book .ptd-body code {
+  padding: 1px 5px;
+  border-radius: var(--pt-radius-chip);
+  font-family: var(--pt-mono);
+  font-size: 0.875em;
+  background: var(--pt-plate);
+  overflow-wrap: anywhere;
+}
+
+/* lists: ruled rows, one hairline per rule; the ordered list numbers its rows in a 40px column */
+.ptd-list {
+  max-width: var(--pt-measure);
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.ptd-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--pt-hair-2);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+.ptd-list.is-ordered {
+  counter-reset: ptd-item;
+}
+
+.ptd-list.is-ordered li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+}
+
+.ptd-list.is-ordered li::before {
+  counter-increment: ptd-item;
+  content: counter(ptd-item, decimal-leading-zero);
+  padding-top: 3px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* fenced code sits on the panel, in both themes; dark adds the one hairline */
+.ptd-code {
+  max-width: 860px;
+  margin: 16px 0 0;
+  padding: 18px 22px;
+  border: 0;
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-panel-ink);
+  color: var(--pt-panel-text);
+  overflow-x: auto;
+  font-family: var(--pt-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+:root[data-theme='dark'] .ptd-code {
+  border: 1px solid var(--pt-hair);
+}
+
+.ptd-book .ptd-body .ptd-code code {
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  overflow-wrap: normal;
+}
+
+/* tables: ruled, one hairline per rule; collapse merges the header's close
+   and the first row's open into one line */
+.ptd-table-wrap {
+  max-width: 860px;
+  margin-top: 16px;
+  overflow-x: auto;
+}
+
+.ptd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  color: var(--pt-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.ptd-table th {
+  padding: 7px 14px 7px 0;
+  border-bottom: 1px solid var(--pt-hair);
+  text-align: left;
+  font-size: var(--pt-t-meta);
+  font-weight: var(--pt-w-label);
+  color: var(--pt-ink);
+}
+
+.ptd-table td {
+  padding: 8px 14px 8px 0;
+  border-bottom: 1px solid var(--pt-hair-2);
+  vertical-align: top;
+}
+
+/* the last row closes the table with the hair rule */
+.ptd-table tr:last-child td {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+/* the --- rule: one hairline with air */
+.ptd-hr {
+  max-width: var(--pt-measure);
+  margin: 30px 0 4px;
+  border: 0;
+  border-top: 1px solid var(--pt-hair);
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .ptd-doc {
+    gap: 24px;
+  }
+
+  .ptd-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* the number sits above the heading at the meta step */
+  .ptd-pn b {
+    font-size: var(--pt-t-meta);
+    line-height: var(--pt-t-meta-lh);
+    letter-spacing: 0;
+  }
+
+  .ptd-lead .ptd-pn {
+    display: none;
+  }
+
+  /* a link in running text is a 44px tap target on a phone: vertical
+     padding on an inline box grows its hit area and leaves the line box
+     alone, so no line moves (the content box is about 20px) */
+  .ptd-book .ptd-body a {
+    padding-block: 12px;
+  }
+}

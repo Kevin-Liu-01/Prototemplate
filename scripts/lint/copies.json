@@ -555,6 +555,20 @@
       "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/react-core-linter_v0_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
       "sha256": "cdd8297adc8e1bc33f1dfbbd3b3722ccf350cd46eab3c332901deb970e30b0b0",
       "reason": "the text of generaltranslation.com/blog/react-core-linter_v0_1_0, vendored 2026-10-15 for /d/production/blog/react-core-linter_v0_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+    },
+    {
+      "path": "src/components/docs/SidebarMotion.tsx",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/components/docs/SidebarMotion.tsx at 51cf3bdda5",
+      "ported": "2026-10-15",
+      "reason": "the docs sidebar's motion, copied with only its import line changed (useMountEffect from src/lib/use-mount-effect.ts); its styles are in src/app/docs/docs.css rather than gt-cloud's globals.css, and the copy is not re-synced"
+    },
+    {
+      "path": "src/components/docs/SidebarActiveScroll.tsx",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/components/docs/SidebarActiveScroll.tsx at 51cf3bdda5",
+      "ported": "2026-10-15",
+      "reason": "the docs sidebar's motion, copied with only its import line changed (useMountEffect from src/lib/use-mount-effect.ts); its styles are in src/app/docs/docs.css rather than gt-cloud's globals.css, and the copy is not re-synced"
     }
   ]
 }

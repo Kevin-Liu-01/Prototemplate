@@ -8,7 +8,7 @@ places:
 | ----------------------------------------- | ------------------------------------------------------------------------------------------ |
 | The plate port's field (`src/components/plate`) | earth, rosetta, calligraphy, tablet, gloss                                           |
 | The brand deck's mood slides (`deck/`)    | earth, rosetta, tablet, calligraphy, lighthouse, devanagari, gloss, cable, wave, compass   |
-| The transition demo on /docs (`src/app/craft`) | earth and rosetta, the deck's grids                                                 |
+| The transition demo on /handbook/libraries (`src/app/craft`) | earth and rosetta, the deck's grids                                                 |
 
 On the plate port, the onboarding steps show earth, rosetta, calligraphy and
 tablet, the OAuth consent states show rosetta, the device flow shows
@@ -34,7 +34,7 @@ The same standard covers gt-cloud's dashboard sign-in and onboarding field
 | `deck/shots/tone/manifest.json`               | One entry per deck grid, written by the wrapper                 |
 | `public/brand/mood/mood-{name}.jpg`           | The plate's tone grids, the same bytes as gt-cloud's            |
 | `public/brand/mood/manifest.json`             | One entry per plate grid, written by the wrapper                |
-| `public/craft/mood-{earth,rosetta}.jpg`       | Byte copies of the deck's earth and rosetta grids for the transition demo on /docs |
+| `public/craft/mood-{earth,rosetta}.jpg`       | Byte copies of the deck's earth and rosetta grids for the transition demo on /handbook/libraries |
 | `src/app/craft/CraftArticle.tsx`              | The text around the transition demo, with the demo's credit line |
 | `src/components/plate/brand/moodPictures.ts`  | The plate registry: src, placement and caption per picture      |
 | `deck/slides/NN-mood-{name}.html`             | The deck's mood slides, one canvas per grid, with the credit    |
@@ -82,7 +82,7 @@ declaration against this rule. Plain English prose never qualifies.
   (gt-cloud branch `k/language-map`, 2026-10-03).
 - The credit is shown with the picture: on the deck slide's plate, in the
   picture's caption in `moodPictures.ts`, which the plate port's field shows,
-  and in the credit line under the transition demo on /docs
+  and in the credit line under the transition demo on /handbook/libraries
   (`CraftArticle.tsx`). The demo's line carries the deck slide's credit for
   each picture the demo shows, without the label ("Image:", "Photograph:").
   The lint checks the deck slides and the demo's line.
@@ -143,7 +143,7 @@ Where each surface states these:
 | ---------- | -------------------------------------- | --------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------- |
 | Plate port | `PICTURE_SCALE` in `FieldStack.tsx`    | `TONE_FLOOR` in `lib/picture-field.ts`  | `BAYER_8` in `lib/dither.ts`           | `--tc-picture-ink`, `--field-picture-opacity` in `plate.css`                    |
 | Deck       | `MOOD_CELL_PX` in `deck/parts/tail.html` | `MOOD_TONE_FLOOR` in `tail.html`      | `bayer8` in `tail.html`                | `--mood-ink`, `--mood-opacity` in `deck/parts/head.html`                        |
-| /docs demo | `CELL` in `TransitionDemo.tsx`         | `TONE_FLOOR` in `TransitionDemo.tsx`    | `BAYER_8` in `src/lib/dither.ts`       | `--ptc-picture-ink`, `--ptc-picture-opacity` in `craft.css`, the dark values, because the plate is dark in both themes |
+| /handbook/libraries demo | `CELL` in `TransitionDemo.tsx`         | `TONE_FLOOR` in `TransitionDemo.tsx`    | `BAYER_8` in `src/lib/dither.ts`       | `--ptc-picture-ink`, `--ptc-picture-opacity` in `craft.css`, the dark values, because the plate is dark in both themes |
 
 The deck engine sizes each mood canvas's backing store to its box on screen
 (`getBoundingClientRect`, because the stage is CSS-scaled), so a cell is 1
@@ -246,7 +246,7 @@ and `pnpm test:pictures` runs them alone. It fails when:
   sits in `deck/shots`, or `public/brand-deck.html` names grid files under
   `public/deck-assets` other than the manifest's (run `pnpm build:deck`);
 - a deck mood slide's plate has no `<div class="credit">`, or the text
-  around the transition demo on /docs does not carry the deck credit of each
+  around the transition demo on /handbook/libraries does not carry the deck credit of each
   picture the demo shows;
 - the transition demo's grids are not byte copies of the deck's, or its disc
   differs from the deck earth's fitted disc;

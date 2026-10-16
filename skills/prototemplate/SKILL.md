@@ -3,9 +3,10 @@ name: prototemplate
 description: >-
   How to work in Prototemplate, Kevin's hub and wiki for General Translation
   work: what each route holds, the repository map, the viewer shell and its
-  props, the registries that move together (surfaces, search index, docs,
-  sitemap, llms.txt, captures), the chrome and sidebar rules, the book page
-  standard, adding a page, a document, a handbook document or a skill, the
+  props, the registries that move together (surfaces, search index, the
+  handbook, the docs pages, src/lib/seo, captures), the chrome and sidebar
+  rules, the book page standard, adding a page, a docs page, a handbook
+  document or a skill, the
   build scripts, the shared checkout and its session lanes, the gates and
   landing, keeping the hub current with gt-cloud, and the curated skills
   with their contract and install. Use when changing anything in the
@@ -14,7 +15,7 @@ description: >-
 metadata:
   title: Working in Prototemplate
   areas: website, components
-  updated: 2026-10-10
+  updated: 2026-10-15
   origin: prototemplate
   owner: P
 ---
@@ -27,7 +28,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`; `git clone htt
 
 ## 1. What the hub holds
 
-The routes are `/` (the design lab), `/brand`, `/docs` and `/docs/<slug>`, `/deck`, `/skills` and `/skills/<slug>`, `/handbook`, `/marks`, `/blog`, `/graphics`, `/motion`, `/compare`, `/present`, `/directions/<slug>`, `/archive/<slug>`, `/d/<slug>` (the directions, self-contained) and `/d/production/...` (the shipped site page for page, with the dashboard's sign-in and onboarding states). The canon documents are `AGENTS.md`, `docs/handbook/`, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, `docs/SHIP-LOOP.md`, `docs/GRAPHICS.md`, `docs/ARTIFACT-PICTURES.md`, `docs/LIBRARIES.md` and `deck/DECK-GRAMMAR.md`; `motion/MOTION.md` is kept by the Videos session and untracked. `references/hub.md` gives each route's contents and source files.
+The routes are `/` (the design lab), `/brand`, `/docs` and `/docs/<slug>` (the docs site, fumadocs outside the shell), `/deck`, `/skills` and `/skills/<slug>`, `/handbook`, `/marks`, `/blog`, `/graphics`, `/motion`, `/compare`, `/present`, `/directions/<slug>`, `/archive/<slug>`, `/d/<slug>` (the directions, self-contained) and `/d/production/...` (the shipped site page for page, with the dashboard's sign-in and onboarding states). The canon documents, served in the handbook at `/handbook/<slug>`, are `AGENTS.md`, `docs/handbook/`, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, `docs/SHIP-LOOP.md`, `docs/GRAPHICS.md`, `docs/ARTIFACT-PICTURES.md`, `docs/LIBRARIES.md` and `deck/DECK-GRAMMAR.md`; `motion/MOTION.md` is kept by the Videos session and untracked. `references/hub.md` gives each route's contents and source files.
 
 - Prototemplate `main` is the primary repository, and canon is edited there first. Files move from gt-cloud's older `apps/redesign` copy one at a time, and no `rsync --delete` ever runs toward Prototemplate, because it would erase the routes that exist only here (`docs/SHIP-LOOP.md` section 7).
 - Prose in the repository drifts from the code (ports, skill names and counts all drifted by 2026-10-05). Trust `package.json` and the registries, and fix the prose in the change that finds the drift.
@@ -55,7 +56,7 @@ Prototemplate is the living reference of GT work only while every deliverable re
 
 ## 3. The viewer shell
 
-`ViewerShell` (`src/components/viewer/ViewerShell.tsx`) frames every route except `/deck`, `/present`, `/blog` and the `/d/` pages. Kevin made the deck's viewer the frame for the whole site on 2026-09-08 ("i really love our deck's navigation and basic interface"). The shell owns the state and draws the chrome: the sidebar, the 52px toolbar, the stage, the index panel, the search, the help card, the toast, the progress line and the one hover preview. The route renders the stage content as children. `references/shell.md` explains every prop and data shape, and `references/chrome.md` holds the detail of the rules below.
+`ViewerShell` (`src/components/viewer/ViewerShell.tsx`) frames every route except `/deck`, `/present`, `/blog`, `/docs` and the `/d/` pages. Kevin made the deck's viewer the frame for the whole site on 2026-09-08 ("i really love our deck's navigation and basic interface"). The shell owns the state and draws the chrome: the sidebar, the 52px toolbar, the stage, the index panel, the search, the help card, the toast, the progress line and the one hover preview. The route renders the stage content as children. `references/shell.md` explains every prop and data shape, and `references/chrome.md` holds the detail of the rules below.
 
 - A link to `/deck` loads it as a document (`src/lib/document-routes.ts`), since a router navigation would fetch the whole deck twice.
 - **The book page.** Every page with a book head renders one structure (DESIGN.md section 4): `BookHead` draws the title from `PAGE_NAMES`, a lead of one to three lines, the panel (Updated from the generated `src/lib/updated.ts`, then three facts), then the one hatch band, and sections open with a `.pt-book-sec` divider. The server page calls `requireUpdated('<route>')`, and a new route needs its paths in `scripts/build/updated.mjs`. `pnpm lint:heads` and `pnpm lint:heads:live` hold the structure (Kevin, 2026-10-06: "standardize our presentation more").
@@ -67,7 +68,7 @@ Prototemplate is the living reference of GT work only while every deliverable re
 
 ## 4. Registries that move together
 
-A page, a document or a skill appears in several hand-kept lists, and a change updates every list that names it in the same commit: `src/lib/surfaces.ts`, `src/lib/search-index.ts` (with `DOC_HEADINGS`, `HANDBOOK_HEADINGS` and `DECK_SLIDES`), the `DOCS` and `HANDBOOK` registries, `src/lib/page-names.ts`, `scripts/build/updated.mjs`, `src/app/docs/links.ts`, `src/lib/directions.ts`, `src/lib/archive.ts`, `src/app/sitemap.ts`, `public/llms.txt`, the metadata in `src/app/layout.tsx`, and `siteRoutes()` in `scripts/lib/site-pages.mjs`. `references/registries.md` gives what each holds and who reads it.
+A page, a document or a skill appears in several hand-kept lists, and a change updates every list that names it in the same commit: `src/lib/surfaces.ts`, `src/lib/search-index.ts` (with `HANDBOOK_HEADINGS` and `DECK_SLIDES`), the `HANDBOOK` registry, `DOCS_PAGES` (`src/components/docs/pages.ts`) with `content/docs/meta.json`, `src/lib/page-names.ts`, `scripts/build/updated.mjs`, `src/components/book/links.ts`, `src/lib/directions.ts`, `src/lib/archive.ts`, the route's own `seoRoute()` call (`src/lib/seo`), and `siteRoutes()` in `scripts/lib/site-pages.mjs`. The sitemap and `/llms.txt` are generated from these. `references/registries.md` gives what each holds and who reads it.
 
 - `src/lib/skills.ts` and `src/lib/motion.ts` are generated. Edit their sources and rerun `pnpm build:skills` or `pnpm build:motion`.
 - Every browser tool finds a first slug by regex in the generated and registry files. A generator that changes its output shape breaks every browser gate.
@@ -91,9 +92,10 @@ Chrome is everything the shell draws around content. The rules are `DESIGN.md` s
 
 `references/adding.md` gives each list file by file, along with directions, shipped pages, films and stills.
 
-- **A page** needs the route's `page.tsx` and viewer, a row in `PAGES` or `KNOWLEDGE` of `surfaces.ts`, `PAGE_ICON` in `Sidebar.tsx` and `search-index.ts`, `PAGE_KEYWORDS`, `under` on its sections, a sitemap line, lines in `llms.txt` and the README, a row in `siteRoutes()` of `scripts/lib/site-pages.mjs` tagged with the tools that walk it, then `pnpm capture:pages --only <id>` and `pnpm build:thumbs`.
-- **A document** needs the file, a `DOCS` entry, its h2s in `DOC_HEADINGS`, lines in `llms.txt` and the README's "Read first" table, and a `docs-<slug>` capture. Its links resolve through `src/app/docs/links.ts`.
-- **A handbook document** needs `docs/handbook/<slug>.md`, a `HANDBOOK` entry in `src/app/handbook/registry.ts`, its h2s in `HANDBOOK_HEADINGS`, its row in `docs/handbook/README.md` and AGENTS.md's handbook list, a line in `llms.txt`, and a `handbook-<slug>` capture.
+- **A page** needs the route's `page.tsx` with its head from `seoRoute()` and its viewer, a row in `PAGES` or `KNOWLEDGE` of `surfaces.ts`, `PAGE_ICON` in `Sidebar.tsx` and `search-index.ts`, `PAGE_KEYWORDS`, `under` on its sections, its paths in `scripts/build/updated.mjs` (its sitemap date), a line in the README, a row in `siteRoutes()` of `scripts/lib/site-pages.mjs` tagged with the tools that walk it, then `pnpm capture:pages --only <id>` and `pnpm build:thumbs`.
+- **A docs page** needs `content/docs/<slug>.mdx` with a title and a 50 to 160 character description, its slug in `content/docs/meta.json`, its row in `src/components/docs/pages.ts`, then `pnpm build:updated` and a `docs-<slug>` capture. `/docs/template` explains the docs site.
+- **A canon document** needs the file, a `HANDBOOK` entry after the handbook's own documents, its h2s in `HANDBOOK_HEADINGS`, a row in the README's "Read first" table, and a `handbook-<slug>` capture. Its links resolve through `src/components/book/links.ts`.
+- **A handbook document** needs `docs/handbook/<slug>.md`, a `HANDBOOK` entry in `src/app/handbook/registry.ts`, its h2s in `HANDBOOK_HEADINGS`, its row in `docs/handbook/README.md` and AGENTS.md's handbook list, and a `handbook-<slug>` capture.
 - **A page with a book head** follows DESIGN.md section 4 (The book page): its `PAGE_NAMES` entry, `BookHead` with three facts, `requireUpdated` from the server page, an entry in `scripts/build/updated.mjs`, its route in `lint/heads.mjs`' live list, then `pnpm build:updated`.
 - **A skill** needs `skills/<slug>/SKILL.md` written to the contract in section 10, then `pnpm build:skills`, then the installer's dry run and its run.
 - **A page ported from gt-cloud** follows `references/porting.md`: one root class, stylesheets as rescoped mirrors, every addition in one compatibility sheet, sections through one transform, and the copy recorded in `scripts/lint/copies.json`.

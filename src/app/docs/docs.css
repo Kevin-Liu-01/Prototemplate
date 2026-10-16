@@ -1,303 +1,291 @@
-/* Docs: the repository documents on the viewer shell.
+/* The docs site's stylesheet: fumadocs' notebook layout on Prototemplate's
+   tokens. Imported by src/app/docs/layout.tsx only, so it loads on /docs
+   and stays out of every other route's first load.
 
-   The shell (src/components/viewer) draws the frame and the book's head
-   (BookHead); this sheet draws the rest of the book inside the flow sheet:
-   the contents, the document dividers, the numbered rows, and the prose
-   the markdown renderer emits.
-   Two token families meet here on purpose (decision 6): the book furniture
-   is chrome and reads the shell's --pt- tokens; each row body is article
-   content under .pt-root, so it keeps the titanium hairline family from
-   src/app/prototemplate.css. Nothing here draws a line either layer already
-   owns. */
+   It is a second Tailwind entry beside src/app/globals.css: the theme and
+   the utilities, scanning only the docs' own code, and no second preflight
+   (globals.css already resets the document). Both sheets write into the
+   same named layers, so a utility here ranks as one in globals.css does.
 
-/* ---------- the book column ----------
-   The column (.pt-book-col), the head, the contents, the band and the
-   document dividers are the shared book classes (BookHead, .pt-book-toc
-   and .pt-book-sec in BookView.css); this sheet draws what is inside a
-   document. */
+   The adapters, in order (the SEO and docs plan of 2026-10-14, section 3.2):
+   1. the font tokens, which Tailwind's theme layer would otherwise reset to
+      its own stacks for the whole document;
+   2. the dark variant, rebound from fumadocs' .dark class to the
+      data-theme attribute the root layout stamps, and fumadocs' two .dark
+      Shiki rules repeated under it;
+   3. the token bridge: --color-fd-* from the --pt-* tokens, scoped to a
+      document that holds the docs layout, so the values never reach
+      another route if this sheet stays loaded after a client navigation;
+   4. the weight cap: Inter at 500 or less, as everywhere on the site;
+   5. the radius remap: cards and panels at the card corner, chips at the
+      chip corner;
+   6. flat surfaces, and the sidebar's rails and pills for SidebarMotion.
+   Every override is an unlayered rule, which outranks the layered
+   utilities without an importance flag. */
 
-.ptd-toc a[aria-current] span {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+@source '.';
+@source '../../components/docs';
+@import 'fumadocs-ui/css/preset.css';
+
+/* 1. the type tokens of src/components/viewer/tokens.css (DESIGN.md section 4) */
+@theme {
+  --font-sans: var(--pt-text);
+  --font-mono: var(--pt-mono);
+  --font-display: var(--pt-display);
 }
 
-/* one document: its divider, its lead, its rows */
-.ptd-doc {
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
+/* 2. the theme is :root[data-theme], never a .dark class */
+@custom-variant dark (&:where(:root[data-theme='dark'], :root[data-theme='dark'] *));
+
+:root[data-theme='dark'] .shiki:not(.not-fumadocs-codeblock *) code span,
+:root[data-theme='dark'] code.shiki:not(.not-fumadocs-code *) span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+}
+:root[data-theme='dark'] .shiki:not(.not-fumadocs-codeblock *) {
+  --fd-counter-color: var(--color-fd-muted-foreground);
 }
 
-.ptd-sec {
-  scroll-margin-top: 20px;
+/* 3. the token bridge. The @theme values exist so Tailwind writes the
+   fd utilities (bg-fd-card, text-fd-muted-foreground); each is a value
+   that changes nothing where the docs are not mounted (fumadocs' base
+   layer paints every border in --color-fd-border and the body in
+   --color-fd-background, and globals.css's unlayered ground wins over the
+   second). The real values are set below, on a document that holds the
+   docs layout, which takes in the search dialog and the popovers fumadocs
+   portals outside the layout. */
+@theme {
+  --color-fd-background: transparent;
+  --color-fd-foreground: currentColor;
+  --color-fd-muted: transparent;
+  --color-fd-muted-foreground: currentColor;
+  --color-fd-popover: transparent;
+  --color-fd-popover-foreground: currentColor;
+  --color-fd-card: transparent;
+  --color-fd-card-foreground: currentColor;
+  --color-fd-border: currentColor;
+  --color-fd-primary: currentColor;
+  --color-fd-primary-foreground: currentColor;
+  --color-fd-secondary: transparent;
+  --color-fd-secondary-foreground: currentColor;
+  --color-fd-accent: transparent;
+  --color-fd-accent-foreground: currentColor;
+  --color-fd-ring: currentColor;
+  --color-fd-overlay: transparent;
 }
 
-.ptd-sec > small {
-  min-width: 0;
+/* the diff and callout colors fumadocs' code blocks and callouts read
+   (its color presets define them; the docs load no preset) */
+@theme static {
+  --color-fd-info: var(--docs-accent);
+  --color-fd-warning: oklch(76.9% 0.188 70.08);
+  --color-fd-error: oklch(63.7% 0.237 25.331);
+  --color-fd-success: oklch(72.3% 0.219 149.579);
+  --color-fd-idea: oklch(70.5% 0.209 60.849);
+  --color-fd-diff-remove: rgba(200, 10, 100, 0.12);
+  --color-fd-diff-remove-symbol: rgb(230, 10, 100);
+  --color-fd-diff-add: rgba(14, 180, 100, 0.1);
+  --color-fd-diff-add-symbol: rgb(10, 200, 100);
 }
 
-/* a long file path breaks in the gutter instead of being cut */
-.ptd-sec > small span {
-  overflow-wrap: anywhere;
+:root:has(#nd-notebook-layout) {
+  /* GT's one accent: the Dossier blue on paper, lifted on ink */
+  --docs-accent: #2f5ce0;
+  --color-fd-background: var(--pt-paper);
+  --color-fd-foreground: var(--pt-ink);
+  --color-fd-muted: var(--pt-plate);
+  --color-fd-muted-foreground: var(--pt-ink-2);
+  --color-fd-popover: var(--pt-paper);
+  --color-fd-popover-foreground: var(--pt-ink);
+  --color-fd-card: var(--pt-paper);
+  --color-fd-card-foreground: var(--pt-ink);
+  --color-fd-border: var(--pt-hair);
+  --color-fd-primary: var(--docs-accent);
+  --color-fd-primary-foreground: var(--pt-paper);
+  --color-fd-secondary: var(--pt-plate);
+  --color-fd-secondary-foreground: var(--pt-ink);
+  --color-fd-accent: var(--pt-plate);
+  --color-fd-accent-foreground: var(--pt-ink);
+  --color-fd-ring: var(--pt-edge);
+  --color-fd-overlay: var(--pt-scrim);
+
+  /* 5. corners: fumadocs' panels, code blocks, callouts and cards take
+     rounded-lg to rounded-2xl, which all resolve to the card corner */
+  --radius-lg: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-lg reads the card corner */
+  --radius-xl: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-xl reads the card corner */
+  --radius-2xl: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-2xl reads the card corner */
+}
+:root[data-theme='dark']:has(#nd-notebook-layout) {
+  --docs-accent: #86a8ff;
 }
 
-/* row: the section number in the gutter on the heading's baseline, the
-   content beside */
-.ptd-row {
-  display: grid;
-  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
-  gap: var(--pt-gutter-gap);
-  align-items: baseline;
-  scroll-margin-top: 20px;
+/* 4. the weight cap: fumadocs and the typography plugin draw 600 and 700
+   in headings, labels, table heads and strong text */
+:root:has(#nd-notebook-layout)
+  :is(#nd-notebook-layout, [role='dialog'], [data-radix-popper-content-wrapper])
+  :is(.font-semibold, .font-bold, h1, h2, h3, h4, h5, h6, strong, b, th, dt) {
+  font-weight: 500;
+}
+#nd-page .prose :is(h1, h2, h3, h4, strong, th, a) {
+  font-weight: 500;
 }
 
-.ptd-pn {
-  padding-top: 0;
-}
-
-/* the gutter number takes the size and the baseline of the h2 beside it */
-.ptd-pn b {
-  display: block;
-  font-weight: var(--pt-w-label);
-  font-size: var(--pt-d3);
-  line-height: var(--pt-d3-lh);
-  letter-spacing: var(--pt-d3-track);
-  color: var(--pt-titanium);
-  font-variant-numeric: tabular-nums;
-}
-
-/* the section being read: its number turns ink, as its row in the list does */
-.ptd-row.is-active .ptd-pn b {
-  color: var(--pt-ink);
-}
-
-/* ---------- the row body: article content on the titanium family ---------- */
-
-.ptd-body {
-  min-width: 0;
-}
-
-/* .pt-root is a page root in prototemplate.css; here it is a token scope */
-.ptd-body.pt-root {
-  min-height: 0;
-  background: transparent;
-}
-
-/* one ink family per book: the article layer reads the shell's inks, so
-   the head's h1 and the h3 under it are the same ink. inherit on a custom
-   property takes the shell's value from the parent; :root lifts the rule
-   over [data-theme='dark'] .pt-root. The article keeps its hairlines. */
-:root .ptd-body.pt-root,
-:root .ptb-book.pt-root {
-  --pt-ink: inherit;
-  --pt-ink-2: inherit;
-  --pt-ink-3: var(--pt-titanium);
-}
-
-/* prose (DESIGN.md section 4, Book type): h2 at d3, h3 at the title step,
-   paragraphs at the body step and measure */
-.ptd-book .ptd-body h2 {
-  margin: 48px 0 0;
-  font-size: var(--pt-d3);
-  line-height: var(--pt-d3-lh);
-  letter-spacing: var(--pt-d3-track);
-  color: var(--pt-ink);
-}
-
-.ptd-book .ptd-body > h2:first-child {
-  margin-top: 0;
-}
-
-.ptd-book .ptd-body h3 {
-  margin-top: 32px;
-  font-size: var(--pt-t-title);
-  line-height: var(--pt-t-title-lh);
-  letter-spacing: var(--pt-track-label);
-  color: var(--pt-ink);
-}
-
-/* the library entries name the module, then its role */
-.ptd-book .ptd-body .pt-craft-lib h3 span {
-  color: var(--pt-ink-3);
-  font-weight: var(--pt-w-text);
-}
-
-.ptd-book .ptd-body p {
-  max-width: var(--pt-measure);
-  margin-top: 16px;
-  font-size: var(--pt-t-body);
-  line-height: var(--pt-t-body-lh);
-  color: var(--pt-ink-2);
-}
-
-.ptd-book .ptd-body :is(strong, b) {
-  color: var(--pt-ink);
-}
-
-/* the lead has no heading above it */
-.ptd-lead .ptd-body > p:first-child {
-  margin-top: 0;
-}
-
-.ptd-book .ptd-body a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--pt-hair);
-  text-underline-offset: 3px;
-}
-
-.ptd-book .ptd-body a:hover {
-  color: var(--pt-ink);
-  text-decoration-color: currentColor;
-}
-
-/* inline code: a long path or token breaks rather than widen the column */
-.ptd-book .ptd-body code {
-  padding: 1px 5px;
+/* inline code: the chip corner and a hairline, in the page and the TOC */
+:is(#nd-page, #nd-toc) .prose :where(code):not(:where(pre code, [class~='not-prose'] *)) {
+  border: 1px solid var(--color-fd-border);
   border-radius: var(--pt-radius-chip);
-  font-family: var(--pt-mono);
-  font-size: 0.875em;
-  background: var(--pt-plate);
-  overflow-wrap: anywhere;
+  background: var(--color-fd-secondary);
 }
 
-/* lists: ruled rows, one hairline per rule; the ordered list numbers its rows in a 40px column */
-.ptd-list {
-  max-width: var(--pt-measure);
-  margin: 16px 0 0;
+/* 6. flat surfaces: no decorative shadow on the page's code blocks,
+   callouts and cards (gt-cloud's fumadocs.css) */
+#nd-page :is(.shadow-xs, .shadow-sm, .shadow-md, .shadow-lg) {
+  box-shadow: none;
+}
+
+/* the page's meta row: the Updated line on the left, the actions on the
+   right, closed by one hairline before the body */
+.docs-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-fd-border);
+}
+.docs-updated {
+  color: var(--color-fd-muted-foreground);
+  font-size: var(--pt-t-meta);
+}
+
+/* the nameplate in the header and the sidebar head */
+[data-docs-nameplate] {
+  font-size: 15px; /* lint-type: allow the nameplate beside the 20px mark sits between the small and body steps */
+  font-weight: 500;
+}
+[data-docs-nameplate] img {
+  display: block;
+}
+
+/* fumadocs shows its sidebar footer row only for its own icon links; here
+   the row holds DocsSidebarFooter, which brings its own padding */
+:is(#nd-sidebar, #nd-sidebar-mobile) > div:has(> [data-docs-sidebar-footer]) {
+  display: block;
   padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--pt-hair);
 }
 
-.ptd-list li {
-  padding: 10px 0;
-  border-bottom: 1px solid var(--pt-hair-2);
+/* the footer's links and theme button take the chip corner */
+[data-docs-sidebar-footer] :is(a, button) {
+  border-radius: var(--pt-radius-chip);
+}
+
+/* the theme glyph, the shell's ◐ and ◑ */
+[data-docs-theme] span {
   font-size: var(--pt-t-body);
-  line-height: var(--pt-t-body-lh);
-  color: var(--pt-ink-2);
+  line-height: 1; /* lint-type: allow a single glyph centred in its button, no text line */
 }
 
-.ptd-list.is-ordered {
-  counter-reset: ptd-item;
-}
-
-.ptd-list.is-ordered li {
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-}
-
-.ptd-list.is-ordered li::before {
-  counter-increment: ptd-item;
-  content: counter(ptd-item, decimal-leading-zero);
-  padding-top: 3px;
+/* ---------- the sidebar (SidebarMotion.tsx, copied from gt-cloud) ----------
+   gt-cloud's globals.css draws the same geometry; this is its desktop part.
+   Rows step 12px in from the panel's edge so the rail SidebarMotion draws
+   12px before the row text sits inside the panel: fumadocs writes each
+   row's inline padding in a style attribute, so the step is a margin. */
+#nd-sidebar [data-radix-scroll-area-viewport] {
   font-size: var(--pt-t-meta);
-  line-height: var(--pt-t-meta-lh);
-  color: var(--pt-ink-3);
-  font-variant-numeric: tabular-nums;
+}
+#nd-sidebar [data-radix-scroll-area-viewport] :is(a[href], button[type='button']) {
+  position: relative;
+  margin-inline-start: 12px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+#nd-sidebar [data-radix-scroll-area-viewport] > div {
+  --docs-rail-color: var(--pt-hair-soft);
+}
+#nd-sidebar [data-radix-scroll-area-viewport] > div > p:not(:first-of-type) {
+  margin-top: 18px;
+}
+#nd-sidebar .docs-sb-hover,
+#nd-sidebar .docs-sb-current {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+  border-radius: var(--pt-radius-control);
+}
+#nd-sidebar .docs-sb-hover {
+  background: var(--pt-sb-pill-hover);
+  transition:
+    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 180ms ease-out,
+    opacity 120ms ease-out;
+}
+#nd-sidebar .docs-sb-hover[data-tone='accent'] {
+  background: color-mix(in oklab, var(--color-fd-primary) 14%, transparent);
+}
+#nd-sidebar .docs-sb-current {
+  background: color-mix(in oklab, var(--color-fd-primary) 10%, transparent);
+  transition:
+    transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 220ms ease-out,
+    opacity 160ms ease-out;
+}
+#nd-sidebar .docs-sb-current[data-landing] {
+  background: color-mix(in oklab, var(--color-fd-primary) 18%, transparent);
+}
+#nd-sidebar .docs-sb-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--docs-rail-color);
+  mask-repeat: no-repeat;
+  mask-position: 0 0;
+}
+#nd-sidebar .docs-sb-thumb,
+#nd-sidebar .docs-sb-thumb-hover {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 0;
+  opacity: 0;
+  transition:
+    top 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 160ms ease-out;
+}
+#nd-sidebar .docs-sb-thumb {
+  background: var(--color-fd-primary);
+}
+#nd-sidebar .docs-sb-thumb-hover {
+  background: color-mix(in oklab, var(--color-fd-primary) 45%, transparent);
+  transition-duration: 160ms, 160ms, 120ms;
+}
+#nd-sidebar :is(.docs-sb-thumb, .docs-sb-thumb-hover, .docs-sb-hover, .docs-sb-current)[data-visible] {
+  opacity: 1;
+}
+/* once the pills exist, the rows paint no fill of their own */
+#nd-sidebar[data-sb-ready] [data-radix-scroll-area-viewport] :is(a[href], button[type='button']):hover,
+#nd-sidebar[data-sb-ready] [data-radix-scroll-area-viewport] a[data-active='true'] {
+  background-color: transparent;
+}
+#nd-sidebar [data-radix-scroll-area-viewport] :is(a[href], button[type='button']) > * {
+  position: relative;
+  z-index: 1;
 }
 
-/* fenced code sits on the panel, in both themes; dark adds the one hairline */
-.ptd-code {
-  max-width: 860px;
-  margin: 16px 0 0;
-  padding: 18px 22px;
-  border: 0;
-  border-radius: var(--pt-radius-card);
-  background: var(--pt-panel-ink);
-  color: var(--pt-panel-text);
-  overflow-x: auto;
-  font-family: var(--pt-mono);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-:root[data-theme='dark'] .ptd-code {
-  border: 1px solid var(--pt-hair);
-}
-
-.ptd-book .ptd-body .ptd-code code {
-  padding: 0;
-  background: none;
-  color: inherit;
-  font-size: inherit;
-  overflow-wrap: normal;
-}
-
-/* tables: ruled, one hairline per rule; collapse merges the header's close
-   and the first row's open into one line */
-.ptd-table-wrap {
-  max-width: 860px;
-  margin-top: 16px;
-  overflow-x: auto;
-}
-
-.ptd-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--pt-t-small);
-  line-height: var(--pt-t-small-lh);
-  color: var(--pt-ink-2);
-  font-variant-numeric: tabular-nums;
-}
-
-.ptd-table th {
-  padding: 7px 14px 7px 0;
-  border-bottom: 1px solid var(--pt-hair);
-  text-align: left;
-  font-size: var(--pt-t-meta);
-  font-weight: var(--pt-w-label);
-  color: var(--pt-ink);
-}
-
-.ptd-table td {
-  padding: 8px 14px 8px 0;
-  border-bottom: 1px solid var(--pt-hair-2);
-  vertical-align: top;
-}
-
-/* the last row closes the table with the hair rule */
-.ptd-table tr:last-child td {
-  border-bottom: 1px solid var(--pt-hair);
-}
-
-/* the --- rule: one hairline with air */
-.ptd-hr {
-  max-width: var(--pt-measure);
-  margin: 30px 0 4px;
-  border: 0;
-  border-top: 1px solid var(--pt-hair);
-}
-
-/* ---------- narrow ---------- */
-
-@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
-  .ptd-doc {
-    gap: 24px;
-  }
-
-  .ptd-row {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  /* the number sits above the heading at the meta step */
-  .ptd-pn b {
-    font-size: var(--pt-t-meta);
-    line-height: var(--pt-t-meta-lh);
-    letter-spacing: 0;
-  }
-
-  .ptd-lead .ptd-pn {
-    display: none;
-  }
-
-  /* a link in running text is a 44px tap target on a phone: vertical
-     padding on an inline box grows its hit area and leaves the line box
-     alone, so no line moves (the content box is about 20px) */
-  .ptd-book .ptd-body a {
-    padding-block: 12px;
+@media (prefers-reduced-motion: reduce) {
+  #nd-sidebar :is(.docs-sb-hover, .docs-sb-current, .docs-sb-thumb, .docs-sb-thumb-hover) {
+    transition: none;
   }
 }

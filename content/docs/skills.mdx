@@ -1,0 +1,30 @@
+---
+title: Skills
+description: 'The curated agent skills in skills/: the contract each one keeps, the build that checks it, where they are served and how to install them.'
+icon: Sparkles
+---
+
+The skills record how General Translation work is done. Each is a folder under `skills/<slug>/` in the SKILL.md format that Claude Code, Codex and other agents load. The set is curated by use: twenty-two skills, each one Kevin's sessions actually load.
+
+## The contract
+
+- **Frontmatter.** `name` (the folder's slug), `description` (what the skill covers, then "Use when", at most 1024 characters) and a `metadata` block of strings: `title`, `areas` (the first files the skill on `/skills`), `updated`, `origin` and `owner`.
+- **Owner.** The session lane that keeps the skill and reviews every change to it: `P` for the Prototemplate session, `V` for the Videos session and `O` for the onboarding and dashboard session.
+- **Body.** An h1 equal to the title and a short lead, the sections, a Review checklist where the skill governs work someone reviews, a Related skills line, and `## Sources` last. The body stays under 24,000 bytes; detail moves to `references/`.
+- **Supporting files** are `.md`, `.mjs`, `.json`, `.py`, `.sh`, `.txt` or `.js`. A script carries a header with its purpose, usage and requirements, and an offline test that `pnpm test:skill-scripts` runs.
+
+`pnpm build:skills` (`scripts/build/skills.mjs`) checks the contract and writes `src/lib/skills.ts`, the registry the pages read, and `skills/README.md`, the list by area. `pnpm lint:skills` fails while either is stale.
+
+## Where they are served
+
+- `/skills` lists the set by area; `/skills/<slug>` renders one skill with its files and its install line.
+- `/skills/<slug>/SKILL.md` and `/skills/<slug>/references/<file>` serve the raw files. Each skill page names its SKILL.md as its Markdown twin.
+- `/skills/index.json` lists the whole set with every file and install line.
+
+## Installing them
+
+From a checkout, `pnpm skills:install --project <dir>` links every skill into `<dir>/.claude/skills` and `<dir>/.agents/skills`. Name slugs to install fewer, add `--copy` to vendor the folders, `--user` to install into the agent home, and `--dry-run` to see each step first. This repository's own `.claude/skills` and `.agents/skills` hold relative links made the same way.
+
+## Kept by use
+
+`pnpm skills:usage` counts how often each skill is loaded over the last thirty days. Thirty days after distribution, a skill with no loads is cut unless Kevin keeps it by name. The [prototemplate skill](/skills/prototemplate) holds the full contract and the steps for adding one.

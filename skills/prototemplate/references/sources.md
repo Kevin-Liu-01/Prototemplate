@@ -29,3 +29,12 @@ Provenance for `prototemplate`. The first list is the skill's sources as written
 | gt-cloud install with `.git/info/exclude` lines; a gt-cloud worktree needs its own links | `references/skills.md` | system v2 decision K1 (Kevin, 2026-10-10); the onboarding session's reply of 2026-10-10 |
 | `pnpm lint:static` and `PT_BASE` in the gates | SKILL.md sections 7 and 9 | `package.json` on origin/main 39ce9645 (2026-10-10) |
 | `pnpm run doctor` in the setup line | SKILL.md intro | `package.json` on origin/main 39ce9645 (2026-10-10) |
+
+## Added or changed on 2026-10-15
+
+| Line | Where | Source |
+| --- | --- | --- |
+| `/docs` is the docs site (fumadocs, outside the shell); the canon is served in the handbook; the old `/docs/<slug>` addresses redirect | SKILL.md sections 1, 3 and 6; `references/hub.md`; `references/adding.md` | Kevin's request and decisions of 2026-10-14 (the SEO and docs plan, sections 3 and 7) |
+| The registries list: `HANDBOOK` with the canon, `DOCS_PAGES` with `meta.json`, `src/components/book/links.ts`, `seoRoute()`; the sitemap and `/llms.txt` generated | SKILL.md section 4, `references/registries.md` | the SEO and docs plan, sections 2.3, 2.6 and 4.4 (2026-10-14); `src/app/sitemap.ts` and `src/app/llms.txt/route.ts` on branch k/seo-2-docs (2026-10-15) |
+| Adding a docs page and a canon document | SKILL.md section 6, `references/adding.md` | the plan, section 3.4 and step 4.4.6 (2026-10-14); `scripts/lint/registries.mjs` on k/seo-2-docs (2026-10-15) |
+| A new page's head comes from `seoRoute()` and its sitemap date from `scripts/build/updated.mjs` | `references/adding.md` | the plan, sections 2.1 and 2.3 (2026-10-14) |

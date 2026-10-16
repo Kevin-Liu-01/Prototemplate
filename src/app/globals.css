@@ -4,17 +4,20 @@
    server's PostCSS deadline), and skills/ holds the SKILL.md files, whose
    prose quotes class names such as text-[var()] that compile to invalid
    CSS. docs/ holds the repository documents, the handbook, the harness
-   scripts and 66 MB of reference pictures; the docs and handbook routes
+   scripts and 66 MB of reference pictures; the handbook routes
    render its Markdown through their own components, so no class the app
-   draws is written there. .claude/skills and .agents/skills hold links to
-   the skill folders (scripts/skills/install.mjs), which the scan would
-   follow. content/production holds the vendored generaltranslation.com
-   posts, whose code samples spell hundreds of class names no page draws;
-   the mirror's post components style the posts with their own sheet. */
+   draws is written there. content/docs holds the docs site's MDX pages,
+   which src/app/docs/docs.css scans through the docs' own components.
+   .claude/skills and .agents/skills hold links to the skill folders
+   (scripts/skills/install.mjs), which the scan would follow.
+   content/production holds the vendored generaltranslation.com posts,
+   whose code samples spell hundreds of class names no page draws; the
+   mirror's post components style the posts with their own sheet. */
 @source not '../../motion';
 @source not '../../content/production';
 @source not '../../skills';
 @source not '../../docs';
+@source not '../../content/docs';
 @source not '../../.claude';
 @source not '../../.agents';
 /* The sign-in and onboarding gallery's Tailwind tokens (src/components/plate):
@@ -49,11 +52,14 @@
  * and onboarding gallery (src/components/plate) is the dashboard's code
  * and does rely on them, so the reset stops at .plate-root: inside it
  * Tailwind's preflight (base layer) zeroes the margins and the utilities
- * win, as they do in the dashboard. :where() keeps the selector at zero
- * specificity, the same as the bare * it replaces, so no direction sheet's
- * element rule changes rank against it.
+ * win, as they do in the dashboard. The docs site (fumadocs' notebook
+ * layout, #nd-notebook-layout) relies on them the same way, and its prose
+ * takes its spacing from the typography plugin's layered rules, so the
+ * reset stops there too. :where() keeps the selector at zero specificity,
+ * the same as the bare * it replaces, so no direction sheet's element rule
+ * changes rank against it.
  */
-:where(*:not(.plate-root, .plate-root *)) {
+:where(*:not(.plate-root, .plate-root *, #nd-notebook-layout, #nd-notebook-layout *)) {
   margin: 0;
   box-sizing: border-box;
 }

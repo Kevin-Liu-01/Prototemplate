@@ -1,16 +1,16 @@
 import { readFileSync } from 'node:fs';
 import { posix, join } from 'node:path';
 
-import { DOC_ROUTES, repoPath } from '@/app/docs/links';
-import { parseBlocks } from '@/app/docs/markdown';
-import type { Block } from '@/app/docs/markdown';
+import { DOC_ROUTES, repoPath } from '@/components/book/links';
+import { parseBlocks } from '@/components/book/markdown';
+import type { Block } from '@/components/book/markdown';
 import { getSkill, skillFileHref, skillHref } from '@/lib/skills';
 
 /**
  * The server side of /skills/[slug]: reads one skill's SKILL.md from the
  * curated folder (skills/<slug>/SKILL.md, relative to process.cwd(), as the
  * docs read theirs), drops its frontmatter, and parses the body with the
- * docs' markdown parser, so the page renders prose the way /docs does.
+ * book's markdown parser, so the page renders prose the way /handbook does.
  * Nothing here reaches a client bundle, and a slug is read only when the
  * generated registry knows it, so the path can name nothing else.
  *

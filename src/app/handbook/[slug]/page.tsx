@@ -1,12 +1,14 @@
-import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { bookFacts, buildBook } from '@/app/docs/book';
-import DocsShell from '@/app/docs/DocsShell';
-import { docWindowTitle } from '@/app/docs/model';
+import { bookFacts } from '@/components/book/book';
+import BookShell from '@/components/book/BookShell';
+import JsonLd from '@/lib/seo/JsonLd';
+import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
+import { buildHandbook } from '../libraries-book';
 import { getHandbookDoc, HANDBOOK } from '../registry';
+import type { DocEntry } from '../registry';
 
 export function generateStaticParams() {
   return HANDBOOK.map((doc) => ({ slug: doc.slug }));
@@ -14,30 +16,45 @@ export function generateStaticParams() {
 
 export const dynamicParams = false;
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
-  const doc = getHandbookDoc(slug);
-  if (!doc) return {};
-  return {
-    title: { absolute: docWindowTitle(doc.slug, doc.title, 'handbook') },
+type Params = { params: Promise<{ slug: string }> };
+
+/** The route's head and JSON-LD: the document as a TechArticle under the handbook, dated by its own file, with its Markdown twin. */
+function handbookRoute(doc: DocEntry) {
+  return seoRoute({
+    path: `/handbook/${doc.slug}`,
+    title: doc.title,
+    section: 'Handbook',
+    kind: 'article',
     description: doc.blurb,
-    icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
-  };
+    crumbs: [{ name: 'Handbook', path: '/handbook' }],
+    updated: requireUpdated(`/handbook/${doc.slug}`),
+    markdown: `/handbook/${doc.slug}.md`,
+  });
 }
 
-/** /handbook/[slug] opens the same book at the named document. */
-export default async function HandbookDocPage({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
   const doc = getHandbookDoc(slug);
   if (!doc) notFound();
-  const docs = buildBook('handbook');
+  return handbookRoute(doc).metadata;
+}
+
+/** /handbook/[slug] opens the same book at the named document. */
+export default async function HandbookDocPage({ params }: Params) {
+  const { slug } = await params;
+  const doc = getHandbookDoc(slug);
+  if (!doc) notFound();
+  const docs = buildHandbook();
   return (
-    <DocsShell
-      book='handbook'
-      active={doc.slug}
-      docs={docs}
-      updated={requireUpdated('/handbook')}
-      facts={bookFacts('handbook', docs)}
-    />
+    <>
+      <JsonLd nodes={handbookRoute(doc).jsonLd} />
+      <BookShell
+        book='handbook'
+        active={doc.slug}
+        docs={docs}
+        updated={requireUpdated('/handbook')}
+        facts={bookFacts('handbook', docs)}
+      />
+    </>
   );
 }

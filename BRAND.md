@@ -191,7 +191,7 @@ Writing systems are the raw material the brand keeps returning to:
 - The **doubled line**: every connector one path stroked twice; the mark's
   own grammar running through every diagram.
 
-All of them run live in the build log at the end of the `/docs` readme,
+All of them run live in the build log on `/handbook/libraries`,
 with their APIs.
 
 ## 8. Where it ships

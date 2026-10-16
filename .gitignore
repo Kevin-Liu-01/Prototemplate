@@ -1,5 +1,7 @@
 node_modules
 .next
+# fumadocs-mdx's generated collection (source.config.ts), written by next dev, next build and fumadocs-mdx
+.source/
 out
 .env*
 .DS_Store

@@ -1,4 +1,4 @@
-// Builds docs/TOOLS.md, the index /docs/tools serves: every pnpm command in
+// Builds docs/TOOLS.md, the index /handbook/tools serves: every pnpm command in
 // package.json with the first sentence of the opening comment of the file it
 // runs, grouped by its prefix, then every script a skill bundles
 // (skills/<slug>/scripts/) and the environment the tools read. The file is
@@ -29,7 +29,7 @@ const MAX_SENTENCE = 280;
 /** The groups, in reading order, each with the script-name test that files a command under it. */
 const GROUPS = [
   ['Site', (name) => ['dev', 'build', 'start'].includes(name)],
-  ['Setup', (name) => name === 'doctor'],
+  ['Setup', (name) => name === 'doctor' || name === 'postinstall'],
   ['Lints', (name) => name.startsWith('lint:')],
   ['Tests', (name) => name.startsWith('test:')],
   ['Checks and captures', (name) => name.startsWith('check:') || name.startsWith('capture:')],
@@ -41,7 +41,8 @@ const GROUPS = [
 /** Lines for the commands whose file says nothing usable, or that run no file of their own. */
 const DESCRIBE = {
   dev: 'Starts the dev server on port 3005.',
-  build: 'Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, then builds the site with next build.',
+  postinstall: "Runs after every install: compiles the docs site's MDX collection (source.config.ts, content/docs) into .source/ with fumadocs-mdx, which the type check and the docs routes import.",
+  build: 'Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, builds the site with next build, then checks every prerendered head with lint:seo --built.',
   start: 'Serves the production build.',
   'lint:code': 'Runs oxlint with the gt-ui plugin (scripts/lint/oxlint-plugins/gt-ui.ts) over the live surfaces under src/.',
   'lint:static': 'Runs every lint and test that needs no running server; the gate CI and each lane run.',

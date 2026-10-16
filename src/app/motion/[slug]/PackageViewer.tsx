@@ -25,7 +25,7 @@ import { cutWords, reviewWords } from '../records-words';
 import { filmById, motionSections } from '../sections';
 
 import '../../prototemplate.css';
-import '../../docs/docs.css';
+import '@/components/book/book.css';
 import '../motion.css';
 
 const TITLE = 'Motion';
@@ -199,7 +199,7 @@ export type PackageViewerProps = {
  * the reading column (the book head with the film's facts, the film's
  * player when its web copy is published, the status line, a contents list,
  * the published cut's contact sheet and script as built, then each package
- * section under its divider in the docs' prose grammar). An IntersectionObserver marks the section under the read
+ * section under its divider in the book's prose grammar). An IntersectionObserver marks the section under the read
  * line in the list; a contents link or a section row jumps the sheet there
  * and writes `#<section>` to the address, which a later visit lands on.
  * The shell ignores that hash, since it names no item. Selecting another

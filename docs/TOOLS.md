@@ -8,7 +8,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 
 | Command | What it does | Runs |
 | --- | --- | --- |
-| `pnpm build` | Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, then builds the site with next build. | `node scripts/lint/public.mjs --keys && node scripts/lint/...` |
+| `pnpm build` | Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, builds the site with next build, then checks every prerendered head with lint:seo --built. | `node scripts/lint/public.mjs --keys && node scripts/lint/...` |
 | `pnpm dev` | Starts the dev server on port 3005. | `next dev --turbopack --port 3005` |
 | `pnpm start` | Serves the production build. | `next start` |
 
@@ -17,6 +17,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | Command | What it does | Runs |
 | --- | --- | --- |
 | `pnpm run doctor` | Checks that this machine can run the repository's tools from a fresh clone. | `scripts/doctor.mjs` |
+| `pnpm postinstall` | Runs after every install: compiles the docs site's MDX collection (source.config.ts, content/docs) into .source/ with fumadocs-mdx, which the type check and the docs routes import. | `fumadocs-mdx` |
 
 ## Lints
 
@@ -40,7 +41,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm lint:shell` | Token discipline for the shell layer: no raw color literals, every stroke and fill must draw a token (var(--shell-*), var(--tc-*), or a local custom property defined at a root class). | `scripts/lint/shell.mjs` |
 | `pnpm lint:skills` | Builds src/lib/skills.ts, the typed registry behind /skills, /skills/<slug> and the raw files under /skills/<slug>/, from the curated skills in this repository: skills/<slug>/SKILL.md and the supporting files beside it. | `scripts/build/skills.mjs --check` |
 | `pnpm lint:static` | Runs every lint and test that needs no running server; the gate CI and each lane run. | `pnpm lint:shell && pnpm lint:practices && pnpm lint:type ...` |
-| `pnpm lint:tools` | Builds docs/TOOLS.md, the index /docs/tools serves: every pnpm command in package.json with the first sentence of the opening comment of the file it runs, grouped by its prefix, then every script a skill bundles (skills/<slug>/scripts/) and the environment the tools read. | `scripts/build/tools.mjs --check` |
+| `pnpm lint:tools` | Builds docs/TOOLS.md, the index /handbook/tools serves: every pnpm command in package.json with the first sentence of the opening comment of the file it runs, grouped by its prefix, then every script a skill bundles (skills/<slug>/scripts/) and the environment the tools read. | `scripts/build/tools.mjs --check` |
 | `pnpm lint:type` | Holds the site's type to one system: the rsms InterVariable through the tokens in src/components/viewer/tokens.css (DESIGN.md section 4, "Book type"; BRAND.md section 6). | `scripts/lint/type.mjs` |
 | `pnpm lint:type:live` | Holds the site's type to one system: the rsms InterVariable through the tokens in src/components/viewer/tokens.css (DESIGN.md section 4, "Book type"; BRAND.md section 6). | `scripts/lint/type.mjs --live` |
 | `pnpm lint:updated` | Builds src/lib/updated.ts: the date each page with a book head last changed, shown in the Updated row of the head's panel (DESIGN.md section 4, The book page). | `scripts/build/updated.mjs --check` |
@@ -77,7 +78,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm build:motion` | Builds src/lib/motion.ts, the typed data behind /motion and /motion/<slug>, and public/motion/<slug>.md, the research package each translation-series page renders, from the motion folder: the roster in motion/MOTION.md (its "## The films" section, one "### <slug>: <title> ... | `scripts/build/motion.mjs` |
 | `pnpm build:skills` | Builds src/lib/skills.ts, the typed registry behind /skills, /skills/<slug> and the raw files under /skills/<slug>/, from the curated skills in this repository: skills/<slug>/SKILL.md and the supporting files beside it. | `scripts/build/skills.mjs` |
 | `pnpm build:thumbs` | Builds the preview thumbnails the preview layer reads (directive 8.6): public/shots/thumb/<stem>.webp and <stem>-dark.webp at 640x360 (the 320x180 card at 2x), cut from the 1440-wide exhibit captures under public/shots. | `scripts/build/thumbs.mjs` |
-| `pnpm build:tools` | Builds docs/TOOLS.md, the index /docs/tools serves: every pnpm command in package.json with the first sentence of the opening comment of the file it runs, grouped by its prefix, then every script a skill bundles (skills/<slug>/scripts/) and the environment the tools read. | `scripts/build/tools.mjs` |
+| `pnpm build:tools` | Builds docs/TOOLS.md, the index /handbook/tools serves: every pnpm command in package.json with the first sentence of the opening comment of the file it runs, grouped by its prefix, then every script a skill bundles (skills/<slug>/scripts/) and the environment the tools read. | `scripts/build/tools.mjs` |
 | `pnpm build:updated` | Builds src/lib/updated.ts: the date each page with a book head last changed, shown in the Updated row of the head's panel (DESIGN.md section 4, The book page). | `scripts/build/updated.mjs` |
 | `pnpm gen:all` | Runs every generator in write mode. | `scripts/build/gen-all.mjs` |
 | `pnpm mood-tone` | Cuts the artifact pictures' tone grids to the house standard and writes the manifest the lint reads (docs/ARTIFACT-PICTURES.md). | `scripts/media/mood-tone/mood-tone.mjs` |

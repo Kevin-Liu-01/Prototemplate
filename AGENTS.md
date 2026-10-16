@@ -29,7 +29,7 @@ The [operating principles](docs/handbook/operating-principles.md) hold all eight
 
 ## Which skill to load
 
-The skills live in `skills/<slug>/SKILL.md`. In this repository they are already linked into `.claude/skills` and `.agents/skills`, so Claude Code, Codex and other Agent Skills loaders find them by name. [skills/README.md](skills/README.md) lists them by area. The Tools column names the pnpm commands for the task, run from this checkout; [docs/TOOLS.md](docs/TOOLS.md), served at /docs/tools, lists every command and the scripts the skills bundle.
+The skills live in `skills/<slug>/SKILL.md`. In this repository they are already linked into `.claude/skills` and `.agents/skills`, so Claude Code, Codex and other Agent Skills loaders find them by name. [skills/README.md](skills/README.md) lists them by area. The Tools column names the pnpm commands for the task, run from this checkout; [docs/TOOLS.md](docs/TOOLS.md), served at /handbook/tools, lists every command and the scripts the skills bundle.
 
 | Task | Skill | Tools |
 | --- | --- | --- |
@@ -66,6 +66,8 @@ The skills live in `skills/<slug>/SKILL.md`. In this repository they are already
 - [GT product and architecture map](docs/handbook/gt-product-map.md): what GT sells, the copy that must be exact, the repositories.
 - [Glossary](docs/handbook/glossary.md): the working vocabulary and where each term lives.
 - [Decisions log](docs/handbook/decisions.md): Kevin's dated rulings and what each replaced.
+
+On the site the canon follows these six in the same book: this guide, BRAND.md, DESIGN.md, ARCHITECTURE.md, the ship loop, the tools, the libraries with the build log, the graphics pipeline and the artifact pictures. The docs site at /docs explains in ten pages how the hub works.
 
 ## House rules
 
@@ -104,7 +106,7 @@ README.md's "Import this into another project" section gives the commands. In sh
 1. Copy `skills/` and `scripts/skills/install.mjs` to the project's root, then run `node scripts/skills/install.mjs --project . --dry-run` there and again without `--dry-run`. The skills land as relative links in `.claude/skills` and `.agents/skills`, the layout this repository uses.
 2. Copy `AGENTS.md`, `BRAND.md`, `DESIGN.md` and `docs/handbook/` beside them, so every link between the skills, the canon and the handbook keeps working, and add a `CLAUDE.md` that imports `AGENTS.md`.
 3. Edit the copied `AGENTS.md`: the project's name and purpose, its own commands and ports, its lanes, and its own gates. Keep the principles, the routing table and the house rules that still apply.
-4. Read the current canon by its address on the site (www.prototemplate.com/docs/design, /handbook, /skills/<slug>), and copy the folders again to take later changes.
+4. Read the current canon by its address on the site (www.prototemplate.com/handbook/design, /handbook, /skills/<slug>), and copy the folders again to take later changes. The docs site's last page, www.prototemplate.com/docs/template, explains how to lift the docs site itself into the project.
 
 ## Ending a turn
 

@@ -1,9 +1,9 @@
 # Design system
 
 The canon for every page in Prototemplate: the laws the directions and the
-shipped site run on, distilled from the founder rounds. The build log at
-the end of the `/docs` readme is the living version of this document, with
-the diagrams drawn and the engines running. This file is the reference you
+shipped site run on, distilled from the founder rounds. The build log on
+`/handbook/libraries` is the living version of this document, with the
+diagrams drawn and the engines running. This file is the reference you
 read before touching a page.
 
 ---
@@ -105,7 +105,7 @@ CSS — so figures must be checked by eye at 2× pixel crops of the junctions.
 ### The reading column
 
 A reading page sits straight on the stage's paper. That covers the book
-mode of /brand, /docs, /handbook, /motion, /graphics, /skills and /marks,
+mode of /brand, /handbook, /motion, /graphics, /skills and /marks,
 their record pages, /directions/<slug> and /archive/<slug>: every route
 that renders `Sheet variant='flow'`. Its column is the deck's book column
 (`deck/parts/head.html` `.book-in`): 1280px at most and centered in the
@@ -209,7 +209,7 @@ Where two bordered components touch, exactly one draws the line:
 | sidebar head and toolbar | each owns its own side of the vertical seam | the two bottom rules meet at the sidebar's edge and never overlap |
 
 The auditor enforces this from computed CSS. `pnpm lint:lines:shell` walks
-`/`, `/docs`, `/brand`, `/compare`, `/archive/<first slug>`,
+`/`, `/brand`, `/compare`, `/archive/<first slug>`,
 `/directions/<first slug>`, `/skills`, `/skills/<first slug>`,
 `/handbook`, `/motion`, `/motion/<first package>`, `/graphics`, `/marks`,
 `/d/production` and `/deck` (the deck's own document) at 1440, 1280 and 390
@@ -334,7 +334,7 @@ display size of its own. The /d/ directions keep their own type.
   ledgers keep the full column.
 - **The book page.** Every page with a book head has one structure, rendered by `BookHead` (BookView.tsx), and differs from another only in its words and its facts:
   1. nothing is drawn in the `--pt-title-clear` space between the toolbar's bottom rule and the title (the reading column's top padding), and no line crosses a title;
-  2. the title, the page's plain name from `src/lib/page-names.ts` (Brand, Documentation, Motion) or a record's own title, at d1 across the mast; after the name, a badge on the title's line (BookHead's `badge`: a 1px `--pt-hair` box at the card corner, its content at most the cap height tall and set on the baseline, hidden from the accessible name) cuts every 1.4s through what the page holds (`src/components/viewer/BadgeCycle.tsx`, steps(n) on one strip, so the count lives in the frames; under reduced motion the first frame stands): /brand the GT monogram and the register's monograms, /marks the register's marks, /docs and /handbook their files, /skills the skill ids, a skill its files, /graphics the numbered visuals' file stems, /motion the film slugs, a translation film its vocabulary in its own script, /blog the post slugs, a direction its pages;
+  2. the title, the page's plain name from `src/lib/page-names.ts` (Brand, Documentation, Motion) or a record's own title, at d1 across the mast; after the name, a badge on the title's line (BookHead's `badge`: a 1px `--pt-hair` box at the card corner, its content at most the cap height tall and set on the baseline, hidden from the accessible name) cuts every 1.4s through what the page holds (`src/components/viewer/BadgeCycle.tsx`, steps(n) on one strip, so the count lives in the frames; under reduced motion the first frame stands): /brand the GT monogram and the register's monograms, /marks the register's marks, /handbook its files, /skills the skill ids, a skill its files, /graphics the numbered visuals' file stems, /motion the film slugs, a translation film its vocabulary in its own script, /blog the post slugs, a direction its pages;
   3. the lead (one to three lines at `--pt-measure-lead`, at most 200 characters, plain declarative sentences) and the panel on one row under the title, both starting on the lead's first line;
   4. the panel: Updated first (the day of the last commit that touched the page's own sources, from `src/lib/updated.ts`, linked to its commit, with a relative hint after hydration), then three facts, or one fact and the install field; each row a Heroicons 20 solid glyph in titanium, a label in ink-2 and a value in ink at 500, one lead line tall with its text centered between 2px of air above and below, and a `--pt-hair-soft` rule between rows, none over the first row or under the last; beside the lead the panel starts 2px under the lead's top, so each row's baseline lands on a lead baseline;
   5. one `--pt-hair` rule `--pt-head-rule-pad` under the taller of lead and panel, across the stage;
@@ -421,7 +421,7 @@ Density ramps render as ordered dither, never alpha veils.
 - Engines: `src/lib/dither.ts` (CPU, any scalar field, 1 device px per cell)
   and `src/lib/studio-field.ts` (GPU, the authentic `BAYER_PRESETS` roster of
   ten variants, one shared GL context, switch by remount).
-- Artifact pictures (the dithered photographs and scans on the plate's field, the deck's mood slides and the transition demo on /docs) follow the Blue Marble standard in `docs/ARTIFACT-PICTURES.md`, held by `scripts/lint/pictures.mjs`.
+- Artifact pictures (the dithered photographs and scans on the plate's field, the deck's mood slides and the transition demo on /handbook/libraries) follow the Blue Marble standard in `docs/ARTIFACT-PICTURES.md`, held by `scripts/lint/pictures.mjs`.
 
 ## 8. The moving type law
 
@@ -595,7 +595,7 @@ sweep does not "fix" it back.
 | Search key chip | `kbd.pt-search-kbd`: ground `--pt-hair-soft`, 11px weight 500 titanium; reads ⌘K, and `Ctrl K` on Windows and Linux (`Search.tsx` swaps the text after mount from the user agent) | `Toolbar.css`, `Search.tsx` |
 | Present | the one `.is-solid` button: `border-radius: 8px` (the one named corner exception, hatched in lint/radius.mjs), 14px sides, the label first and the 12px play glyph after it (`flex-direction: row-reverse`, so ToolButton keeps one markup), hover drops the ink ground for ink text in the ink frame, the old `.pt-nav-present` from 430e3c7 | `ToolButton.css`, `.pt-ib.is-solid`; `Toolbar.tsx` passes `solid` |
 | Prototemplate mark | the rainbow core: five chroma stops (`#4b3bff`, `#00b3ff`, `#27d17e`, `#ffc53b`, `#ff3b6b`, display-p3 where supported) declared as `--pt-mark-c1` to `--pt-mark-c5` on `.pt-mark`, the one color in chrome outside the site icons; hovering the head link (or any `a` or `.pt-mark-host` around the mark) fades the hatched paper fill in over the core, opacity only, over `--pt-dur-enter` (200ms, 0 under reduced motion). The markup is the old nav's span with four `i.pt-mark-line` and `i.pt-mark-fill` | `PtMark.tsx`, `PtMark.css` |
-| Sidebar nameplate | the name beside the mark on every Prototemplate route is `span.pt-brand-word` with `b.pt-face-serif` `proto` in Fraunces 600 and `b.pt-face-grot` `template` in Space Grotesk 500 at 14.5px, two faces outside Inter and a weight above 500; the fonts load from `src/lib/brand-fonts.ts` with their variable classes on the span, so `/docs` and `/brand` carry them too. The deck keeps its Inter title beside the GT mark | `Sidebar.tsx` (head), `Sidebar.css` (head rules) |
+| Sidebar nameplate | the name beside the mark on every Prototemplate route is `span.pt-brand-word` with `b.pt-face-serif` `proto` in Fraunces 600 and `b.pt-face-grot` `template` in Space Grotesk 500 at 14.5px, two faces outside Inter and a weight above 500; the fonts load from `src/lib/brand-fonts.ts` with their variable classes on the span, so `/handbook` and `/brand` carry them too. The deck keeps its Inter title beside the GT mark | `Sidebar.tsx` (head), `Sidebar.css` (head rules) |
 
 Everything else in chrome keeps the rules above: every other toolbar button takes the control corner, the palette and the help card take the card corner, the index panel is a shell column and stays square, and no other element carries a chroma or a face outside Inter.
 
@@ -610,8 +610,8 @@ own item navigates too when its href names a page other than the one the
 reader is on: a direction row on `/` opens `/directions/<slug>`, an archive
 row `/archive/<slug>`, a skill row `/skills/<slug>`. The shell selects in
 place only an item with no address of its own (a slide, a brand section),
-an item that asks for it (`ShellItem.inPlace`, the documents on `/docs`,
-whose book scrolls and writes the address itself), or the item of the page
+an item that asks for it (`ShellItem.inPlace`, the documents on
+`/handbook`, whose book scrolls and writes the address itself), or the item of the page
 the reader is already on. No row scrolls the gallery. The grid's tiles and
 the filter's Enter follow the same rule.
 
