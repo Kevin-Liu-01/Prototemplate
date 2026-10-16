@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import MintlifyClose from '../../singularity/company-sections/MintlifyClose';
 import MintlifyContent from '../../singularity/company-sections/MintlifyContent';
@@ -19,10 +20,15 @@ import '../../singularity/company-sections/company.css';
 import '../../singularity/company-sections/partners.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Mintlify — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/mintlify',
+  title: 'Mintlify, Dossier',
+  kind: 'direction',
+  description:
+    'The Mintlify partner page of the Dossier site concept: the pull request exhibit, the three-step flow and the setup record.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Mintlify — the partner integration page in the singularity grammar,

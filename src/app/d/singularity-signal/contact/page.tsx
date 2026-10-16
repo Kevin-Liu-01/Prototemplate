@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ContactBay from '../../singularity/company-sections/ContactBay';
 import ContactHero from '../../singularity/company-sections/ContactHero';
@@ -13,10 +14,15 @@ import '../../singularity/styles.css';
 import '../../singularity/company-sections/company.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Contact — Signal — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-signal/contact',
+  title: 'Contact, Signal',
+  kind: 'direction',
+  description:
+    'The contact page of the Signal site concept: General Translation’s contact bay rebuilt in the concept’s type and color.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Contact — the shared company composition in the singularity grammar,

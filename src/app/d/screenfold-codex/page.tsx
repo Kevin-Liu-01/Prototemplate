@@ -1,6 +1,8 @@
 import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import BayerDefs from './components/BayerDefs';
 import FoldHinge from './components/FoldHinge';
@@ -16,10 +18,14 @@ import TrustPanel from './sections/TrustPanel';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'screenfold-codex — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/screenfold-codex',
+  title: 'Screenfold Codex',
+  kind: 'direction',
+  description: directionDescription('screenfold-codex'),
+});
+
+export const metadata = route.metadata;
 
 /** The one display face: geometric deco caps for h1, h2, and the hero crown figure. */
 const display = localFont({

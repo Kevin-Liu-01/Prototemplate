@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import LocaleLedger from '../../singularity/company-sections/LocaleLedger';
 import LocalesHero from '../../singularity/company-sections/LocalesHero';
@@ -14,10 +15,15 @@ import '../../singularity/styles.css';
 import '../../singularity/company-sections/company.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Supported Locales — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/locales',
+  title: 'Supported locales, Dossier',
+  kind: 'direction',
+  description:
+    'The supported locales page of the Dossier site concept: every language General Translation supports, read from the live data.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Supported Locales — the shared company composition in the singularity

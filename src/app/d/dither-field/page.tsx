@@ -1,5 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -14,11 +16,14 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'dither-field — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/dither-field',
+  title: 'Dither Field',
+  kind: 'direction',
+  description: directionDescription('dither-field'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * DITHER-FIELD — the HALFTONE fork of toolchain. The ruled column and the

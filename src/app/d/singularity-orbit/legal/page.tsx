@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import LegalLedger from '../../singularity/company-sections/LegalLedger';
 import LegalMasthead from '../../singularity/company-sections/LegalMasthead';
@@ -14,11 +15,15 @@ import '../../singularity/company-sections/company.css';
 import '../../singularity/company-sections/legal.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Legal — Orbit — GT Redesign',
-  description: 'Policies, terms, and data processing information for General Translation.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-orbit/legal',
+  title: 'Legal, Orbit',
+  kind: 'direction',
+  description:
+    'The legal library of the Orbit site concept: General Translation’s policies, terms and data processing documents in one index.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Legal Resources — the index of the published legal library, in the

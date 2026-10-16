@@ -108,7 +108,7 @@ export default function LocadexBand() {
               >
                 Connect GitHub
               </a>
-              <a className='tc-btn tc-btn-line' href='/docs/platform/locadex'>
+              <a className='tc-btn tc-btn-line' href='https://generaltranslation.com/docs/platform/locadex'>
                 Read the docs
               </a>
             </div>

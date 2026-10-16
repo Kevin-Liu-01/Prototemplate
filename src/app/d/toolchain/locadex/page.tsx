@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../sections/SiteFooter';
 import TopNav from '../sections/TopNav';
@@ -17,10 +18,15 @@ import './locadex.css';
 import './locadex-hero2.css';
 import './locadex-iso.css';
 
-export const metadata = {
-  title: 'Locadex — the localization agent · GT Toolchain',
-  icons: { icon: '/brand/no-bg-locadex-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain/locadex',
+  title: 'Locadex, Toolchain',
+  kind: 'direction',
+  description:
+    'The Locadex product page of the Toolchain direction: one agent run filed as its exhibits, from transcript to pull request, then the bill.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The Locadex product page in the toolchain grammar: the same ruled column,

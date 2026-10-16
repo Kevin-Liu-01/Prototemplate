@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
 import EnterpriseEvidence from '../../singularity/sections/EnterpriseEvidence';
@@ -18,10 +19,15 @@ import '../../singularity/sections/enterprise.css';
 import '../../singularity/sections/enterprise-contact.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Enterprise — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/enterprise',
+  title: 'Enterprise, Dossier',
+  kind: 'direction',
+  description:
+    'The enterprise page of the Dossier site concept: General Translation’s case to large teams, its compliance record and the ask to talk to sales.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Dossier — the gate, then the file. The shared enterprise

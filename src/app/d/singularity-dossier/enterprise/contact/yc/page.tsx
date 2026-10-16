@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import EnterpriseContactHero from '../../../../singularity/sections/EnterpriseContactHero';
 import SiteFooter from '../../../../singularity/sections/SiteFooter';
@@ -18,10 +19,15 @@ import '../../../../singularity/sections/enterprise.css';
 import '../../../../singularity/sections/enterprise-contact.css';
 import '../../../styles.css';
 
-export const metadata = {
-  title: 'YC Deal — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/enterprise/contact/yc',
+  title: 'YC deal, Dossier',
+  kind: 'direction',
+  description:
+    'The Y Combinator deal desk of the Dossier site concept: the founder’s claim form, one level below enterprise contact, sending nothing.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The YC claim — the enterprise contact desk's second face, filed one

@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../sections/SiteFooter';
 import TopNav from '../sections/TopNav';
@@ -12,11 +13,15 @@ import '../sections/logos-icons.css';
 import '../styles.css';
 import './contact.css';
 
-export const metadata = {
-  title: 'Contact — Toolchain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain/contact',
+  title: 'Contact, Toolchain',
+  kind: 'direction',
+  description:
+    'The contact page of the Toolchain direction: General Translation’s contact bay rebuilt in the concept’s type and color.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The contact page, re-clothed in the toolchain grammar. Everything on it is

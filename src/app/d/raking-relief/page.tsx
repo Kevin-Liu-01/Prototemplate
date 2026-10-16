@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
 import { DirectionCorner } from '@/components/viewer/DirectionCorner';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Footer from './sections/Footer';
 import Hero from './sections/Hero';
@@ -44,10 +45,14 @@ const display = localFont({
   adjustFontFallback: 'Times New Roman',
 });
 
-export const metadata: Metadata = {
-  title: 'raking-relief — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/raking-relief',
+  title: 'Raking Relief',
+  kind: 'direction',
+  description: directionDescription('raking-relief'),
+});
+
+export const metadata = route.metadata;
 
 export default function RakingReliefPage() {
   return (

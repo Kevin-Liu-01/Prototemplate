@@ -1,6 +1,8 @@
 import localFont from 'next/font/local';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import BondWall from './components/Bond';
 import GlazeDefs from './components/GlazeDefs';
@@ -17,10 +19,14 @@ import Ziggurat from './sections/Ziggurat';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'glazed-bond — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/glazed-bond',
+  title: 'Glazed Bond',
+  kind: 'direction',
+  description: directionDescription('glazed-bond'),
+});
+
+export const metadata = route.metadata;
 
 /* The one display face: Cinzel, inscriptional caps built on Roman
    geometry, for h1, h2 and the crown cartouche only. Inter stays on <html>

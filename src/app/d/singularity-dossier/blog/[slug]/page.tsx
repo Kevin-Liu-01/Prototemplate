@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import BlogArticle from '../../../singularity/company-sections/BlogArticle';
 import { ALL_POSTS, findPost } from '../../../singularity/company-sections/posts';
@@ -28,13 +29,14 @@ export function generateStaticParams(): { slug: string }[] {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const post = findPost(slug);
-  return {
-    title: post
-      ? `${post.title} — Blog — Dossier — GT Redesign`
-      : 'Blog — Dossier — GT Redesign',
-    description: post?.summary,
-    icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  };
+  return seoRoute({
+    path: `/d/singularity-dossier/blog/${slug}`,
+    title: post ? `${post.title}, Dossier` : 'Blog, Dossier',
+    kind: 'direction',
+    description: post
+      ? `${post.title}, one General Translation post set in the Dossier site concept’s article layout.`
+      : 'A General Translation blog post set in the Dossier site concept’s article layout.',
+  }).metadata;
 }
 
 /**

@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import EnterpriseContact from '../../singularity/sections/EnterpriseContact';
 import EnterpriseEvidence from '../../singularity/sections/EnterpriseEvidence';
@@ -16,10 +17,15 @@ import '../../singularity/styles.css';
 import '../../singularity/sections/enterprise.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Enterprise — Orbit — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-orbit/enterprise',
+  title: 'Enterprise, Orbit',
+  kind: 'direction',
+  description:
+    'The enterprise page of the Orbit site concept: General Translation’s case to large teams, its compliance record and the ask to talk to sales.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Orbit — the gate, then gravity as the argument. The shared

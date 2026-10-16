@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
@@ -17,11 +18,15 @@ import '../../singularity/company-sections/company.css';
 import '../../singularity/company-sections/partners.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Y Combinator — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  robots: { index: false, follow: false },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/yc',
+  title: 'Y Combinator, Dossier',
+  kind: 'direction',
+  description:
+    'The Y Combinator programme page of the Dossier site concept: the deal terms, the statement on the record and the claim record.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Y Combinator — the programme page in the singularity grammar, wearing the

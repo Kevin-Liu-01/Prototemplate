@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../sections/SiteFooter';
 import TopNav from '../sections/TopNav';
@@ -14,11 +15,15 @@ import '../sections/logos-icons.css';
 import '../styles.css';
 import './blog.css';
 
-export const metadata = {
-  title: 'Blog — Toolchain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain/blog',
+  title: 'Blog, Toolchain',
+  kind: 'direction',
+  description:
+    'The blog index of the Toolchain direction: General Translation’s posts in the concept’s type and color, a study of the live page.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The blog index, mutated into the toolchain grammar: the old landing page's

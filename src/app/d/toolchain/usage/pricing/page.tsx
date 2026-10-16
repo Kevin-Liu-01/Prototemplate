@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../../sections/SiteFooter';
 import TopNav from '../../sections/TopNav';
@@ -14,11 +15,15 @@ import '../../sections/logos-icons.css';
 import '../../styles.css';
 import './usage-pricing.css';
 
-export const metadata = {
-  title: 'Usage Pricing — Toolchain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain/usage/pricing',
+  title: 'Usage pricing, Toolchain',
+  kind: 'direction',
+  description:
+    'The usage pricing page of the Toolchain direction: four meters, the whole rate card as a ruled ledger and one worked month.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * The usage-pricing page — the toolchain direction's deep page for the meters.

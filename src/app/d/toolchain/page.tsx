@@ -1,5 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -13,11 +15,14 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'Toolchain — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/toolchain',
+  title: 'Toolchain',
+  kind: 'direction',
+  description: directionDescription('toolchain'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * Version 10 — the minimalist option. One ruled column carries the whole page;

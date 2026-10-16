@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../../../singularity/sections/SiteFooter';
 import TopNav from '../../../singularity/sections/TopNav';
@@ -16,10 +17,15 @@ import '../../../singularity/styles.css';
 import '../../../singularity/product-sections/product.css';
 import '../../styles.css';
 
-export const metadata = {
-  title: 'Usage Pricing — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/usage/pricing',
+  title: 'Usage pricing, Dossier',
+  kind: 'direction',
+  description:
+    'The usage pricing page of the Dossier site concept: four meters, the whole rate card as a ruled ledger and one worked month.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Dossier — the usage-pricing page.

@@ -1,5 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Bento from './sections/Bento';
 import ContextGroups from './sections/ContextGroups';
@@ -16,11 +18,14 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'aurora-paper — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/aurora-paper',
+  title: 'Aurora Paper',
+  kind: 'direction',
+  description: directionDescription('aurora-paper'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * AURORA PAPER — the toolchain frame with a new identity. The material is a

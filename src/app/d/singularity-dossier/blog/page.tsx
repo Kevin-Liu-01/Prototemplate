@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import BlogEssays from '../../singularity/company-sections/BlogEssays';
 import BlogFeature from '../../singularity/company-sections/BlogFeature';
@@ -15,10 +16,15 @@ import '../../singularity/styles.css';
 import '../../singularity/company-sections/company.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Blog — Dossier — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-dossier/blog',
+  title: 'Blog, Dossier',
+  kind: 'direction',
+  description:
+    'The blog index of the Dossier site concept: General Translation’s posts in the concept’s type and color, a study of the live page.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Blog — the shared company composition in the singularity grammar,

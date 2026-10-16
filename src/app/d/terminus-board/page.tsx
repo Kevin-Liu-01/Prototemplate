@@ -1,5 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import DarkBand from './sections/DarkBand';
 import Departures from './sections/Departures';
@@ -12,11 +14,14 @@ import TopNav from './sections/TopNav';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'Terminus Board — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/terminus-board',
+  title: 'Terminus Board',
+  kind: 'direction',
+  description: directionDescription('terminus-board'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * Direction 19 — Terminus Board. The toolchain shell carrying a split-flap

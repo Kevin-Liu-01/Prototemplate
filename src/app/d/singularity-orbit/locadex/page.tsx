@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import SiteFooter from '../../singularity/sections/SiteFooter';
 import TopNav from '../../singularity/sections/TopNav';
@@ -15,10 +16,15 @@ import '../../singularity/styles.css';
 import '../../singularity/product-sections/product.css';
 import '../styles.css';
 
-export const metadata = {
-  title: 'Locadex — Orbit — GT Redesign',
-  icons: { icon: '/brand/no-bg-locadex-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/singularity-orbit/locadex',
+  title: 'Locadex, Orbit',
+  kind: 'direction',
+  description:
+    'The Locadex product page of the Orbit site concept: one agent run filed as its exhibits, from transcript to pull request, then the bill.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * Singularity · Orbit — the Locadex product page.

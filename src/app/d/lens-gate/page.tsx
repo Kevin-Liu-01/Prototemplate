@@ -1,5 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { directionDescription } from '@/app/directions/descriptions';
+import { seoRoute } from '@/lib/seo/route';
 
 import Bento from './sections/Bento';
 import DarkBand from './sections/DarkBand';
@@ -15,11 +17,14 @@ import Transit from './sections/Transit';
 
 import './styles.css';
 
-export const metadata = {
-  title: 'Lens Gate — GT Redesign',
-  // Declared so the browser stops probing for a /favicon.ico this app never ships.
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/lens-gate',
+  title: 'Lens Gate',
+  kind: 'direction',
+  description: directionDescription('lens-gate'),
+});
+
+export const metadata = route.metadata;
 
 /**
  * Lens Gate — the toolchain shell with the Concrete Origin identity refracted
