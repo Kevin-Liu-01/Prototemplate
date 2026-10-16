@@ -22,6 +22,27 @@ type Params = { params: Promise<{ slug: string }> };
 /** The longest series line that still takes the closing sentence inside a 160-character description. */
 const SERIES_ALONE = 104;
 
+/** The SEO lint's ceiling for a description (scripts/lint/seo.mjs, B1). */
+const DESCRIPTION_MAX = 160;
+
+/**
+ * A series line longer than the ceiling keeps its whole sentences that fit,
+ * or failing that its whole words, so a long line never fails the build.
+ */
+function fitDescription(line: string): string {
+  if (line.length <= DESCRIPTION_MAX) return line;
+  const sentences = line.match(/[^.!?]+[.!?]+(\s|$)/g) ?? [];
+  let kept = '';
+  for (const sentence of sentences) {
+    if ((kept + sentence).trim().length > DESCRIPTION_MAX) break;
+    kept += sentence;
+  }
+  if (kept.trim().length >= 50) return kept.trim();
+  const words = line.slice(0, DESCRIPTION_MAX - 3).split(' ');
+  words.pop();
+  return `${words.join(' ')}...`;
+}
+
 /** The route's head and JSON-LD: the film's title, and its series line with what the page holds. */
 function packageRoute(slug: string, film: MotionFilm, series: string) {
   const line = plainText(series).replace(/\*/g, '');
@@ -30,7 +51,7 @@ function packageRoute(slug: string, film: MotionFilm, series: string) {
     title: film.title,
     section: 'Motion',
     kind: 'page',
-    description: line.length > SERIES_ALONE ? line : `${line} The film, its script and its research package.`,
+    description: line.length > SERIES_ALONE ? fitDescription(line) : `${line} The film, its script and its research package.`,
     crumbs: [{ name: 'Motion', path: '/motion' }],
     updated: requireUpdated(`/motion/${slug}`),
   });
