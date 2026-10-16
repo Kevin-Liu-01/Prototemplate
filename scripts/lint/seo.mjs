@@ -67,7 +67,8 @@
  *               pages), and each URL src/lib/updated.ts dates carries that
  *               date as lastmod; an undated URL prints a note
  *   B6 robots   robots.txt names the sitemap
- *   B7 unique   indexable pages have unique titles and descriptions
+ *   B7 unique   indexable pages have unique titles and descriptions,
+ *               counting pages that share a canonical as one page
  *
  * A page whose route file is in the baseline skips B1, B2 and B7 (it has
  * no canonical or card of its own yet). Not-found pages are skipped.
@@ -674,7 +675,13 @@ export function judgeSitemap(entries, pages, updated = UPDATED) {
   return [out, notes];
 }
 
-/** B7 over the indexable adopted pages. */
+/**
+ * B7 over the indexable adopted pages. Pages that declare the same
+ * canonical are one document to a search engine (a /blog post and its
+ * /d/production/blog mirror both name the generaltranslation.com post), so
+ * a shared title or description is a finding only when it spans two or
+ * more distinct canonicals.
+ */
 export function judgeUnique(pages) {
   const out = [];
   for (const [field, read] of [
@@ -689,7 +696,8 @@ export function judgeUnique(pages) {
       by.set(value, [...(by.get(value) ?? []), path]);
     }
     for (const [value, paths] of by) {
-      if (paths.length > 1) out.push([paths[0], 'B7', `${paths.length} indexable pages share the ${field} "${value.slice(0, 80)}": ${paths.join(', ')}`]);
+      const canonicals = new Set(paths.map((path) => (pages.get(path).canonical ?? selfUrl(path)).replace(/\/+$/, '')));
+      if (canonicals.size > 1) out.push([paths[0], 'B7', `${paths.length} indexable pages with ${canonicals.size} canonicals share the ${field} "${value.slice(0, 80)}": ${paths.join(', ')}`]);
     }
   }
   return out;

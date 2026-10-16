@@ -35,7 +35,7 @@ import { ROOT } from '../lib/root.mjs';
 /* U+2014, written as an escape so the fixtures hold no literal em dash */
 const EM_DASH = '\u2014';
 
-const { ALIAS_HOSTS, SITE_URL } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
+const { ALIAS_HOSTS, GT_URL, SITE_URL } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
 
 const rules = (findings) => findings.map((f) => f.rule);
 const HOME = readFileSync(join(ROOT, 'src/app/page.tsx'), 'utf8');
@@ -267,6 +267,15 @@ test('B7: indexable pages have unique titles and descriptions', () => {
     ['B7', 'B7'],
   );
   assert.deepEqual(judgeUnique(new Map([['/brand', a], ['/marks', { ...b, adopted: false }]])), []);
+  // a post and its mirror name the same generaltranslation.com canonical: one document, no finding
+  const original = `${GT_URL}/en-US/blog/post`;
+  const post = { ...judgeHead('/blog/post', head({ canonical: original })), adopted: true };
+  const mirror = { ...judgeHead('/d/production/blog/post', head({ canonical: original })), adopted: true };
+  assert.deepEqual(judgeUnique(new Map([['/blog/post', post], ['/d/production/blog/post', mirror]])), []);
+  assert.deepEqual(
+    judgeUnique(new Map([['/blog/post', post], ['/d/production/blog/post', mirror], ['/brand', a]])).map(([, rule]) => rule),
+    ['B7', 'B7'],
+  );
 });
 
 test('route files for built pages: static first, then the fewest dynamic segments', () => {

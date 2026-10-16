@@ -14,6 +14,8 @@
  * the gallery, the archive route, the sitemap and the index panel read one
  * list.
  */
+import { REPO_URL } from './seo/site';
+
 export type ArchiveEntry = {
   /** the route segment the version answered at: /d/<slug> */
   slug: string;
@@ -21,7 +23,7 @@ export type ArchiveEntry = {
   name: string;
   /** the capture date, ISO: 2026-09-08 */
   captured: string;
-  /** the address the capture was taken from */
+  /** the address the capture was taken from; the route is gone, so the page prints it and never links it */
   source: string;
   /** the viewport width of the capture in CSS pixels */
   width: number;
@@ -118,6 +120,11 @@ export function archiveDate(item: ArchiveEntry): string {
 /** `prototemplate.vercel.app/d/concrete-mono`: the address without its scheme. */
 export function archiveHost(item: ArchiveEntry): string {
   return item.source.replace(/^https?:\/\//, '');
+}
+
+/** The route's code at its last commit on GitHub: the one live link to a retired version. */
+export function archiveCode(item: ArchiveEntry): string {
+  return `${REPO_URL}/tree/${item.lastCommit}/src/app/d/${item.slug}`;
 }
 
 /** One plain sentence for a row's description. */

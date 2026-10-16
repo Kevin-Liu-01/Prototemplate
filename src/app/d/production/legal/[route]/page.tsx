@@ -37,6 +37,15 @@ const components = {
 
 export const dynamicParams = false;
 
+/* The meta description for a document whose vendored frontmatter
+   description is shorter than the 50 characters lint:seo B1 requires. The
+   files in content/legal are pinned copies (scripts/lint/copies.json), so
+   the longer text lives here and the page body keeps live's words. */
+const META_DESCRIPTION: Readonly<Record<string, string>> = {
+  'credit-terms':
+    'Terms governing General Translation credits: how they are redeemed for Services, when they expire and their refund rules.',
+};
+
 export function generateStaticParams() {
   return legalRoutes().map((route) => ({ route }));
 }
@@ -50,7 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ route: st
         title: document.title,
         section: 'Shipped',
         kind: 'mirror',
-        description: document.description,
+        description: META_DESCRIPTION[route] ?? document.description,
       })
     : seoRoute({
         path: `/d/production/legal/${route}`,

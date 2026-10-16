@@ -10,6 +10,7 @@ import {
   ARCHIVE_DELETION,
   archiveDate,
   archiveDesc,
+  archiveCode,
   archiveFull,
   archiveHost,
   archiveShot,
@@ -24,14 +25,15 @@ import './archive.css';
 /**
  * The archive on the viewer shell: one retired version at a time, its
  * full-page capture at 1440 pixels wide in the reading column under a ruled
- * record (the name, the capture date, the source address, the last commit
- * that held the code) and a line saying the image is a picture. The shell
+ * record (the name, the capture date, the source address as plain text,
+ * since the route is gone, and the last commit that held the code, linked
+ * to that code on GitHub) and a line saying the image is a picture. The shell
  * draws the site map in its one order (Pages, Documents, Sites,
  * Explorations) and this route's Archive section replaces the Archive
  * group, with the eleven captures as items and the current one marked and
  * scrolled into view. Selecting another version navigates to its address.
  * Keys are flow, so Space and the arrows scroll the capture. The two links
- * that leave the page (the source address, the first-fold crop) carry the
+ * that leave the page (the code at the last commit, the first-fold crop) carry the
  * external glyph from icons.tsx (directive 8.7), never a text arrow.
  */
 const ARCHIVE_TITLE = 'Archive';
@@ -70,16 +72,16 @@ function ArchiveStage({ item }: { item: ArchiveEntry }) {
           </div>
           <div className='ar-cell'>
             <span className='ar-k'>Source</span>
-            <span className='ar-v'>
-              <a href={item.source} target='_blank' rel='noreferrer'>
-                {archiveHost(item)}
-                <Icon name='external' />
-              </a>
-            </span>
+            <span className='ar-v'>{archiveHost(item)}</span>
           </div>
           <div className='ar-cell'>
             <span className='ar-k'>Last commit</span>
-            <span className='ar-v'>{item.lastCommit}</span>
+            <span className='ar-v'>
+              <a href={archiveCode(item)} target='_blank' rel='noreferrer'>
+                {item.lastCommit}
+                <Icon name='external' />
+              </a>
+            </span>
           </div>
         </header>
         <p className='ar-note'>
