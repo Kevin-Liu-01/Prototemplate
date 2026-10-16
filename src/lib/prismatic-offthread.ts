@@ -5,8 +5,9 @@ import { fieldWorker, type OffThreadMessage, type OffThreadReply } from './prism
  * Hands a field's canvas to the prismatic worker (prismatic-worker.ts) and
  * keeps it sized and paused like the shared engine does: drawn at the
  * canvas's CSS size times dpr, and idle while it is more than 120px off
- * screen or the tab is hidden. One worker serves every such field on the
- * page and ends with the last of them.
+ * screen, the tab is hidden or the caller pauses it (a field kept at
+ * opacity 0 still intersects the screen). One worker serves every such
+ * field on the page and ends with the last of them.
  *
  * A canvas can be transferred only once. React runs a layout effect twice
  * in development and again when its dependencies change, so removal waits
@@ -19,6 +20,8 @@ export type OffThreadOptions = {
   speed: number;
   /** False under reduced motion: the worker draws the static frame. */
   animate: boolean;
+  /** Starts the field paused; setPaused changes it later. */
+  paused?: boolean;
   /** The field's first frame is on its canvas. */
   onDrawn: () => void;
   /** The worker could not draw this canvas; the caller can draw a new one. */
@@ -31,8 +34,10 @@ type Entry = {
   removal: number;
   resize: () => void;
   remove: () => void;
-  handle: { destroy: () => void };
+  handle: OffThreadHandle;
 };
+
+export type OffThreadHandle = { destroy: () => void; setPaused: (paused: boolean) => void };
 
 let worker: Worker | null = null;
 let workerUrl = '';
@@ -77,7 +82,7 @@ export function startFieldWorker(): Worker | null {
 export function createOffThreadField(
   canvas: HTMLCanvasElement,
   options: OffThreadOptions
-): { destroy: () => void } | null {
+): OffThreadHandle | null {
   const held = entries.get(canvas);
   if (held) {
     window.clearTimeout(held.removal);
@@ -85,6 +90,7 @@ export function createOffThreadField(
     held.options = options;
     post({ type: 'config', id: held.id, params: options.params, speed: options.speed });
     held.resize();
+    held.handle.setPaused(options.paused ?? false);
     return held.handle;
   }
 
@@ -116,9 +122,10 @@ export function createOffThreadField(
   );
 
   let near = true;
+  let paused = options.paused ?? false;
   let shown = true;
   const show = () => {
-    const on = near && !document.hidden;
+    const on = near && !paused && !document.hidden;
     if (on === shown) return;
     shown = on;
     post({ type: 'show', id, on });
@@ -162,6 +169,10 @@ export function createOffThreadField(
       destroy: () => {
         window.clearTimeout(entry.removal);
         entry.removal = window.setTimeout(entry.remove, 0);
+      },
+      setPaused: (next) => {
+        paused = next;
+        show();
       },
     },
   };

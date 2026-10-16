@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useAfterEntrance, useDeckSetup } from '../deck-setup';
+import { useDeckSetup } from '../deck-setup';
 import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -44,9 +44,11 @@ export default function PrototypeViewer() {
   const [notesSlot, setNotesSlot] = useState<HTMLElement | null>(null);
   const reviews = useReviews();
   // The frame's document hydrates on this page's main thread, so it loads
-  // once the intro's entrance has played instead of with the page. That is
-  // still seconds before anyone can scroll this far.
-  const frameArmed = useAfterEntrance();
+  // only as the deck nears the stage: once the Details slide, the one before
+  // it, comes into view (a deep link arms it at once). It starts frozen
+  // (?frozen=1, read by the root layout's rAF gate) and resumes when the
+  // stage is on screen.
+  const [frameArmed, setFrameArmed] = useState(false);
 
   // The dock is one shared pill in the presenter HUD; this viewer portals
   // its controls (and the notes panel) into the pill's slots.
@@ -72,6 +74,18 @@ export default function PrototypeViewer() {
       const reduced = window.matchMedia(
         '(prefers-reduced-motion: reduce)'
       ).matches;
+
+      // The selector would resolve inside this section (the useGSAP scope),
+      // so the Details slide is looked up on the document.
+      if (ready === 'mount') setFrameArmed(true);
+      ScrollTrigger.create({
+        trigger: document.querySelector('[data-slide="detail"]') ?? root.current,
+        start: 'top bottom',
+        end: 'max',
+        onToggle: (self) => {
+          if (self.isActive) setFrameArmed(true);
+        },
+      });
 
       // Arrow keys page through prototypes only while the stage is on screen.
       activeTrigger.current = ScrollTrigger.create({
@@ -277,7 +291,7 @@ export default function PrototypeViewer() {
     const slug = current.slug;
     const markLoaded = () => {
       setLoadedSlug(slug);
-      if (!onScreen.current?.isActive) setFrozen(el, true);
+      setFrozen(el, !onScreen.current?.isActive);
     };
     const doc = el.contentDocument;
     if (doc?.readyState === 'complete' && doc.body?.childElementCount)
@@ -326,7 +340,7 @@ export default function PrototypeViewer() {
             <iframe
               ref={frame}
               key={current.slug}
-              src={`/d/${current.slug}?chrome=0`}
+              src={`/d/${current.slug}?chrome=0&frozen=1`}
               title={current.name}
               className={isLoaded ? 'is-loaded' : ''}
             />

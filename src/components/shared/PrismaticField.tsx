@@ -1,7 +1,7 @@
 'use client';
 
 import { useGSAP } from '@gsap/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import FieldEffectsMenu from '@/components/shared/FieldEffectsMenu';
 import {
@@ -11,7 +11,7 @@ import {
   type PrismaticFieldHandle,
   type PrismaticParams,
 } from '@/lib/prismatic-field';
-import { createOffThreadField } from '@/lib/prismatic-offthread';
+import { createOffThreadField, type OffThreadHandle } from '@/lib/prismatic-offthread';
 
 const EFFECT_MODES: readonly PrismaticEffectMode[] = ['lens', 'dither', 'chroma'];
 
@@ -64,6 +64,11 @@ export type PrismaticFieldProps = {
   offThread?: boolean;
   /** Called once the field's first frame is on its canvas. */
   onDrawn?: () => void;
+  /**
+   * Stops a worker field's frames while it is not shown, such as one held at
+   * opacity 0 for a cross-fade. The canvas keeps its last frame.
+   */
+  paused?: boolean;
 };
 
 type MenuState = {
@@ -97,6 +102,7 @@ export default function PrismaticField({
   previewAt = [0.24, 0.5],
   offThread = false,
   onDrawn,
+  paused = false,
 }: PrismaticFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const handleRef = useRef<PrismaticFieldHandle | null>(null);
@@ -106,6 +112,9 @@ export default function PrismaticField({
   const [inWorker, setInWorker] = useState(offThread);
   const drawnRef = useRef(onDrawn);
   drawnRef.current = onDrawn;
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+  const workerRef = useRef<OffThreadHandle | null>(null);
 
   /* Stable dependency for the (rare) case of a literal array prop. */
   const effectsKey = effects?.join(' ');
@@ -132,10 +141,17 @@ export default function PrismaticField({
         dpr,
         speed,
         animate: !reduced,
+        paused: pausedRef.current,
         onDrawn: () => drawnRef.current?.(),
         onFail: () => setInWorker(false),
       });
-      if (drawn) return () => drawn.destroy();
+      if (drawn) {
+        workerRef.current = drawn;
+        return () => {
+          workerRef.current = null;
+          drawn.destroy();
+        };
+      }
     }
 
     /* The committed mode persists per page (or per explicit key). */
@@ -178,6 +194,10 @@ export default function PrismaticField({
       field.destroy();
     };
   }, [preset, dpr, speed, effectsKey, inWorker]);
+
+  useEffect(() => {
+    workerRef.current?.setPaused(paused);
+  }, [paused]);
 
   const select = (mode: PrismaticEffectMode | 'off') => {
     setMenu((current) => (current ? { ...current, selected: mode } : current));

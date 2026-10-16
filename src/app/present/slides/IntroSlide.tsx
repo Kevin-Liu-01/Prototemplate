@@ -8,7 +8,7 @@ import { useRef, useState } from 'react';
 import PrismaticField from '@/components/shared/PrismaticField';
 import { startFieldWorker } from '@/lib/prismatic-offthread';
 
-import { entrancePlayed, holdSetup, whenDeckReady } from '../deck-setup';
+import { entrancePlayed } from '../deck-setup';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -20,6 +20,9 @@ if (typeof window !== 'undefined') startFieldWorker();
 export default function IntroSlide() {
   const root = useRef<HTMLElement>(null);
   const [logoField, setLogoField] = useState(0);
+  // Both logo fields draw only during a swap's cross-fade; otherwise the
+  // one at opacity 0 is paused.
+  const [crossFade, setCrossFade] = useState(false);
   const fieldDrawn = useRef(() => {});
 
   useGSAP(
@@ -27,9 +30,8 @@ export default function IntroSlide() {
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       // The field draws in a worker, so it starts a moment after mount.
-      // Its 2 s power2.inOut fade holds at zero until the first frame, and
-      // the deck's setups wait for that frame too (deck-setup.ts). Like the
-      // CSS entrance (presenter.css), the fade runs on the compositor.
+      // Its 2 s power2.inOut fade holds at zero until the first frame. Like
+      // the CSS entrance (presenter.css), the fade runs on the compositor.
       const fade = reduced
         ? undefined
         : root.current
@@ -39,57 +41,91 @@ export default function IntroSlide() {
               { duration: 2000, easing: 'cubic-bezier(0.45, 0, 0.55, 1)' }
             );
       fade?.pause();
-      let fadeAt = 0;
-      const release = holdSetup();
-      const start = () => {
-        if (fadeAt) return;
-        fadeAt = performance.now();
-        fade?.play();
-        release();
-      };
-      fieldDrawn.current = start;
-      // A field that is slow to draw, or cannot, must not hold the deck.
-      const fallback = window.setTimeout(start, 800);
 
-      // The title, byline and cue hold paused (presenter.css) while the
-      // deck sets up, so no setup runs during their motion. They then play
-      // with their stagger intact, the title rising 0.45 s after the fade
-      // began or at once if the setup took longer.
+      // The title, byline and cue hold paused (presenter.css) until the
+      // field's first frame and the faces they are set in are in. They then
+      // play with their stagger intact, the title rising 0.45 s after the
+      // fade began or at once if the faces took longer. No slide is set up
+      // before the entrance has played (deck-setup.ts), so the main thread
+      // is free while the title moves.
       const held = (root.current?.getAnimations({ subtree: true }) ?? []).filter(
         (animation) => animation instanceof CSSAnimation
       );
-      const stopWaiting = whenDeckReady(() => {
+      let fadeAt = 0;
+      let gone = false;
+      let entered = false;
+      let onScreen = true;
+      let swap = 0;
+      let breathe: gsap.core.Tween | undefined;
+      let stopSettle = () => {};
+
+      const swapFields = () => {
+        if (!onScreen) return;
+        // The incoming field draws a frame before its fade starts; the
+        // outgoing one pauses once its 0.9 s fade has ended.
+        setCrossFade(true);
+        requestAnimationFrame(() => setLogoField((f) => (f + 1) % 2));
+        window.setTimeout(() => setCrossFade(false), 1000);
+      };
+
+      const played = () => {
+        if (gone) return;
+        entered = true;
+        breathe?.paused(!onScreen);
+        if (!reduced) swap = window.setInterval(swapFields, 3400);
+        // The root then carries data-settled, the state the page check
+        // reads (scripts/check/pagecheck/pages.mjs): the title in place and
+        // every slide set up.
+        stopSettle = entrancePlayed(() =>
+          root.current?.closest('.pr-root')?.setAttribute('data-settled', '')
+        );
+      };
+
+      const rise = () => {
+        if (gone) return;
         const lead = Math.min(performance.now() - fadeAt, 450);
         for (const animation of held) {
           animation.currentTime = lead;
           animation.play();
         }
-        // Work that waits for the entrance runs once it has played. The
-        // root then carries data-settled, the state the page check reads
-        // (scripts/check/pagecheck/pages.mjs): the deck set up and the
-        // title in place.
         const entrance = fade ? [fade, ...held] : held;
-        const played = () => {
-          root.current?.closest('.pr-root')?.setAttribute('data-settled', '');
-          entrancePlayed();
-        };
         Promise.all(entrance.map((animation) => animation.finished)).then(played, played);
-      });
+      };
+
+      const start = () => {
+        if (fadeAt) return;
+        fadeAt = performance.now();
+        fade?.play();
+        // A face that swaps in mid-rise moves the title: wait for the
+        // pending faces, a second at most.
+        const wait = window.setTimeout(rise, 1000);
+        document.fonts.ready.then(() => {
+          window.clearTimeout(wait);
+          rise();
+        });
+      };
+      fieldDrawn.current = start;
+      // A field that is slow to draw, or cannot, must not hold the title.
+      const fallback = window.setTimeout(start, 500);
 
       const stop = () => {
+        gone = true;
         window.clearTimeout(fallback);
-        release();
-        stopWaiting();
+        window.clearInterval(swap);
+        stopSettle();
       };
       if (reduced) return stop;
 
       // The liquid glass slowly undulates: the displacement field breathes.
-      const breathe = gsap.to('#pr-liquid-turb', {
+      // It is a full repaint of the backdrop filter every frame, so it waits
+      // for the entrance to have played.
+      breathe = gsap.to('#pr-liquid-turb', {
         attr: { baseFrequency: '0.014 0.02' },
         duration: 7,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
+        paused: true,
       });
 
       // The mouse wheel dot drips downward on a loop.
@@ -106,12 +142,6 @@ export default function IntroSlide() {
         }
       );
 
-      // The logo box alternates between two shader moods.
-      let onScreen = true;
-      const swap = window.setInterval(() => {
-        if (onScreen) setLogoField((f) => (f + 1) % 2);
-      }, 3400);
-
       // The loops and the swap stop once the intro has scrolled away.
       ScrollTrigger.create({
         trigger: root.current,
@@ -119,7 +149,8 @@ export default function IntroSlide() {
         end: 'bottom top',
         onToggle: (self) => {
           onScreen = self.isActive;
-          for (const loop of [breathe, drip]) loop.paused(!onScreen);
+          drip.paused(!onScreen);
+          breathe?.paused(!onScreen || !entered);
         },
       });
 
@@ -136,10 +167,7 @@ export default function IntroSlide() {
         },
       });
 
-      return () => {
-        stop();
-        window.clearInterval(swap);
-      };
+      return stop;
     },
     { scope: root }
   );
@@ -186,6 +214,7 @@ export default function IntroSlide() {
             <span className='pr-title-piece pr-title-logo-box'>
               <PrismaticField
                 className={`pr-logo-field${logoField === 0 ? ' is-on' : ''}`}
+                paused={logoField !== 0 && !crossFade}
                 preset='1'
                 dpr={1}
                 speed={0.55}
@@ -194,6 +223,7 @@ export default function IntroSlide() {
               />
               <PrismaticField
                 className={`pr-logo-field${logoField === 1 ? ' is-on' : ''}`}
+                paused={logoField !== 1 && !crossFade}
                 preset='2'
                 dpr={1}
                 speed={0.6}
@@ -211,7 +241,7 @@ export default function IntroSlide() {
           </span>
         </h1>
         <p className='pr-intro-sub pr-intro-byline'>
-          <img src='https://github.com/Kevin-Liu-01.png' alt='' />
+          <img src='/static/avatars/kevin.png' alt='' width={28} height={28} />
           Presented by Kevin Liu
         </p>
       </div>

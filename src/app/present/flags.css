@@ -1,0 +1,52 @@
+/* The flags the Principles slide draws (PrinciplesSlide.tsx), from
+   flag-icons' 4x3 set. The package's full sheet carries every country's
+   rules; a new flag on the slide adds its line here. */
+.fi {
+  position: relative;
+  display: inline-block;
+  width: 1.333333em;
+  line-height: 1em;
+  background-size: contain;
+  background-position: 50%;
+  background-repeat: no-repeat;
+}
+
+.fi::before {
+  content: ' ';
+}
+
+.fi-br {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/br.svg);
+}
+
+.fi-de {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/de.svg);
+}
+
+.fi-es {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/es.svg);
+}
+
+.fi-fr {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/fr.svg);
+}
+
+.fi-gb {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/gb.svg);
+}
+
+.fi-jp {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/jp.svg);
+}
+
+.fi-pl {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/pl.svg);
+}
+
+.fi-sa {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/sa.svg);
+}
+
+.fi-se {
+  background-image: url(../../../node_modules/flag-icons/flags/4x3/se.svg);
+}

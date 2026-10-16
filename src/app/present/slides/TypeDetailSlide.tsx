@@ -9,6 +9,7 @@ import { useRef } from 'react';
 
 import { useDeckSetup } from '../deck-setup';
 import { PRESENT_DIRECTIONS } from '../directions';
+import { googleInter } from '../fonts';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin);
 
@@ -99,6 +100,8 @@ function Specimen({
             className='pr-detail-mark'
             src='https://github.com/rsms.png'
             alt='Rasmus Andersson'
+            loading='lazy'
+            fetchPriority='low'
           />
         )}
       </header>
@@ -154,8 +157,21 @@ export default function TypeDetailSlide() {
       };
       alignBaselines();
 
+      // Google's Inter is named from this turn on (the section's class), so
+      // its face starts loading now: wait for it, not for fonts.ready, which
+      // can resolve before the request starts. Null when nothing is pending.
+      const family = root.current
+        ? getComputedStyle(root.current).getPropertyValue('--font-google-inter').trim()
+        : '';
+      const facesIn =
+        family && !document.fonts.check(`16px ${family}`)
+          ? document.fonts.load(`16px ${family}`).then(() => document.fonts.ready)
+          : document.fonts.status === 'loaded'
+            ? null
+            : document.fonts.ready;
+
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.fonts.ready.then(alignBaselines);
+        facesIn?.then(alignBaselines);
         return;
       }
 
@@ -457,11 +473,11 @@ export default function TypeDetailSlide() {
       // shifts when the webfonts finish loading (the centered stack's origin
       // depends on the red line's width). Re-measure the baseline and force
       // every function-based value to re-evaluate against final geometry.
-      // When the fonts had already landed before this ran (the setup waits
-      // for the intro), everything above measured final geometry, and a
-      // full refresh would be a long task with nothing to change.
-      if (document.fonts.status === 'loaded') return;
-      document.fonts.ready.then(() => {
+      // When the fonts had already landed before this ran, everything above
+      // measured final geometry, and a full refresh would be a long task
+      // with nothing to change.
+      if (!facesIn) return;
+      facesIn.then(() => {
         alignBaselines();
         tl.invalidate();
         ScrollTrigger.refresh();
@@ -474,7 +490,13 @@ export default function TypeDetailSlide() {
   );
 
   return (
-    <section ref={root} className='pr-slide pr-detail' data-slide='detail'>
+    // Google's Inter is named only once the slide is set up, so its face is
+    // not requested in the first layout and the glitch does not run before.
+    <section
+      ref={root}
+      className={`pr-slide pr-detail${ready ? ` is-ready ${googleInter.variable}` : ''}`}
+      data-slide='detail'
+    >
       <div ref={pin} className='pr-pin pr-detail-inner'>
         <div className='pr-detail-main'>
           <div className='pr-detail-head'>

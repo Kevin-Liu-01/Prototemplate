@@ -3,7 +3,7 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 
 import PresenterApp from './PresenterApp';
-import { googleInter, instrument, sora } from './fonts';
+import { instrument, sora } from './fonts';
 
 import './presenter.css';
 
@@ -19,7 +19,7 @@ export const metadata = route.metadata;
 
 export default function PresentPage() {
   return (
-    <div className={`${sora.variable} ${instrument.variable} ${googleInter.variable}`}>
+    <div className={`${sora.variable} ${instrument.variable}`}>
       <JsonLd nodes={route.jsonLd} />
       <PresenterApp />
     </div>

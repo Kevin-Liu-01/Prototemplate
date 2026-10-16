@@ -143,10 +143,10 @@ const THEME_SCRIPT = [
  * animation loops with postMessage({ type: 'gt:freeze', frozen }); queued
  * callbacks flush on resume, so shaders and scroll loops pick up where they
  * left off. The presenter uses it to idle its prototype stage while the
- * stage is off screen.
+ * stage is off screen. A framed page loaded with ?frozen=1 starts frozen.
  */
 const RAF_GATE_SCRIPT =
-  "(function(){var n=window.requestAnimationFrame.bind(window);var q=[];var f=false;window.requestAnimationFrame=function(cb){if(f){q.push(cb);return -1}return n(cb)};window.addEventListener('message',function(e){var d=e&&e.data;if(!d||d.type!=='gt:freeze')return;f=!!d.frozen;if(!f){var p=q;q=[];for(var i=0;i<p.length;i++)n(p[i])}})})();";
+  "(function(){var n=window.requestAnimationFrame.bind(window);var q=[];var f=window.parent!==window&&/[?&]frozen=1(&|$)/.test(location.search);window.requestAnimationFrame=function(cb){if(f){q.push(cb);return -1}return n(cb)};window.addEventListener('message',function(e){var d=e&&e.data;if(!d||d.type!=='gt:freeze')return;f=!!d.frozen;if(!f){var p=q;q=[];for(var i=0;i<p.length;i++)n(p[i])}})})();";
 
 const BOOT_SCRIPTS = `<script>${THEME_SCRIPT}</script><script>${RAF_GATE_SCRIPT}</script>`;
 

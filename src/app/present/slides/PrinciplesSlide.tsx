@@ -1,6 +1,6 @@
 'use client';
 
-import 'flag-icons/css/flag-icons.min.css';
+import '../flags.css';
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';

@@ -1674,6 +1674,12 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   animation: pr-inter-glitch 2.8s steps(1, end) infinite;
 }
 
+/* Until the slide is set up (TypeDetailSlide.tsx), Google's Inter is not
+   named and the glitch holds still. */
+.pr-detail:not(.is-ready) .pr-glitch-inter {
+  animation-play-state: paused;
+}
+
 @keyframes pr-inter-glitch {
   0%,
   100% {
