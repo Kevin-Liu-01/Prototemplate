@@ -1,17 +1,25 @@
 import PlateGallery from '@/components/plate/gallery/PlateGallery';
 import { initialDevStateId } from '@/components/plate/gallery/devStates';
 import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { seoRoute } from '@/lib/seo/route';
 
 import '@/components/plate/plate.css';
 
 /* The title is the dashboard page's own; the description is the dashboard
    dictionary's tagline (apps/dashboard/src/dictionary.ts,
-   metadata.description), as every auth page there carries it. */
-export const metadata = {
-  title: 'CLI — Shipped — GT Redesign',
-  description: "Full-stack localization for the world's best companies",
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+   metadata.description), as every auth page there carries it. Kind
+   direction: the dashboard has no public page, so the policy gives this
+   state noindex, follow and its own canonical. */
+const route = seoRoute({
+  path: '/d/production/cli',
+  title: 'CLI',
+  section: 'Shipped',
+  kind: 'direction',
+  description:
+    "Full-stack localization for the world's best companies",
+});
+
+export const metadata = route.metadata;
 
 type PageProps = {
   /** The address's query; `state` names the state to open on. */

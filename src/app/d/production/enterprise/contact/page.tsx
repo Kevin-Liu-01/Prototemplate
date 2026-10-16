@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import EnterpriseContact from '../../sections/EnterpriseContact';
 import ProdFooter from '../../sections/ProdFooter';
@@ -10,12 +11,16 @@ import '../../../toolchain/styles.css';
 import '../../../_v0/v0-pages.css';
 import '../../sections/enterprise.css';
 
-export const metadata = {
-  title: 'Talk to our team about full-stack localization',
+const route = seoRoute({
+  path: '/d/production/enterprise/contact',
+  title: 'Enterprise contact',
+  section: 'Shipped',
+  kind: 'mirror',
   description:
     'See how General Translation can deliver full-stack localization for your project with dedicated engineering support.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · ENTERPRISE CONTACT: generaltranslation.com/enterprise/contact.

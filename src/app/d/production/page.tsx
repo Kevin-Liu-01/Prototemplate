@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from './sections/ProdFooter';
 import ProdNav from './sections/ProdNav';
@@ -20,12 +21,16 @@ import './home.css';
 import '../_v0/v0-pages.css';
 import '@/components/shared/home-terminal-colors.css';
 
-export const metadata = {
-  title: 'Shipped — GT Redesign',
+const route = seoRoute({
+  path: '/d/production',
+  title: 'Home',
+  section: 'Shipped',
+  kind: 'mirror',
   description:
-    'What the redesign produced: the landing page now live at generaltranslation.com, reproduced section for section.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+    "Full-stack localization for the world's best companies",
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION — what shipped.

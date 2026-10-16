@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
@@ -10,12 +11,16 @@ import '../../toolchain/sections/logos-icons.css';
 import '../../toolchain/styles.css';
 import '../../_v0/v0-pages.css';
 
-export const metadata = {
-  title: 'Contact — Shipped — GT Redesign',
+const route = seoRoute({
+  path: '/d/production/contact',
+  title: 'Contact',
+  section: 'Shipped',
+  kind: 'mirror',
   description:
     "Have a question about General Translation? We're here to help.",
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · CONTACT — the shipped /contact page, reproduced.

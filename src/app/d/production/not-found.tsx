@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from './sections/ProdFooter';
 import ProdNav from './sections/ProdNav';
@@ -11,13 +12,15 @@ import '../toolchain/styles.css';
 import '../_v0/v0-pages.css';
 import './sections/not-found.css';
 
-import type { Metadata } from 'next';
+const route = seoRoute({
+  path: '/d/production',
+  title: 'Page not found',
+  section: 'Shipped',
+  kind: 'error',
+  description: 'The page you asked for is not on the shipped General Translation site.',
+});
 
-export const metadata: Metadata = {
-  title: '404 — Shipped — GT Redesign',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  robots: { index: false, follow: false },
-};
+export const metadata = route.metadata;
 
 /**
  * 404 — the shipped site's own not-found page, reproduced.

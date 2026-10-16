@@ -5,10 +5,12 @@
  * <Partner>Page.tsx on origin/main (#4618 to #5273), and the description
  * is each route's metadata in
  * apps/landing/src/app/[locale]/(home)/enterprise/contact/<partner>/page.tsx.
- * The tab title follows the mirror's own title pattern (partnerMetadata).
+ * The head comes from seoRoute with partnerSeo's fields.
  * The redemption codes live on the server and no page shows them, so none
  * is recorded here.
  */
+
+import type { SeoRouteInput } from '@/lib/seo/route';
 
 export type PartnerSlug =
   | 'yc'
@@ -125,12 +127,13 @@ export const PARTNER_OFFERS: Readonly<Record<PartnerSlug, PartnerOffer>> = {
   },
 };
 
-/** The page's metadata: the mirror's title, the live route's description and the mirror's icon. */
-export function partnerMetadata(slug: PartnerSlug) {
+/**
+ * The page's seoRoute input less its path: the mirror's name as the title,
+ * the live route's description and kind mirror, which the policy gives
+ * generaltranslation.com/en-US/enterprise/contact/<partner> as canonical.
+ * Each page passes its own path literal, so lint:seo can check it.
+ */
+export function partnerSeo(slug: PartnerSlug): Omit<SeoRouteInput, 'path'> {
   const offer = PARTNER_OFFERS[slug];
-  return {
-    title: `${offer.name} — Shipped — GT Redesign`,
-    description: offer.description,
-    icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  };
+  return { title: offer.name, section: 'Shipped', kind: 'mirror', description: offer.description };
 }

@@ -1,5 +1,19 @@
 import { notFound } from 'next/navigation';
 
+import { seoRoute } from '@/lib/seo/route';
+
+/* Kind error: noindex and no canonical, the head the 404 it throws to
+   carries too. */
+const route = seoRoute({
+  path: '/d/production/missing',
+  title: 'Page not found',
+  section: 'Shipped',
+  kind: 'error',
+  description: 'The page you asked for is not on the shipped General Translation site.',
+});
+
+export const metadata = route.metadata;
+
 /**
  * The catch-all under /d/production, 1-1 with the real site's own:
  * apps/landing/src/app/[locale]/[...missing]/page.tsx is four lines that

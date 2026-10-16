@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../../sections/ProdFooter';
 import ProdNav from '../../sections/ProdNav';
@@ -14,11 +15,16 @@ import '../../../_v0/v0-pages.css';
 import '../../sections/pricing.css';
 import '../../sections/usage-pricing.css';
 
-export const metadata = {
+const route = seoRoute({
+  path: '/d/production/pricing/usage',
   title: 'Usage rates',
-  description: 'Usage rates for translation workflows, Google Slides, context, and the Locadex agent.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+  section: 'Shipped',
+  kind: 'mirror',
+  description:
+    'Usage rates for translation workflows, Google Slides, context, and the Locadex agent.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · USAGE RATES: generaltranslation.com/pricing/usage.

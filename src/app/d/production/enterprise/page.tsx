@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
@@ -14,12 +15,16 @@ import '../../toolchain/styles.css';
 import '../../_v0/v0-pages.css';
 import '../sections/enterprise.css';
 
-export const metadata = {
-  title: 'Enterprise — Shipped — GT Redesign',
+const route = seoRoute({
+  path: '/d/production/enterprise',
+  title: 'Enterprise',
+  section: 'Shipped',
+  kind: 'mirror',
   description:
-    'Full-stack localization for enterprises, with white-glove delivery by forward-deployed engineers — the shipped enterprise page, reproduced section for section.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+    'Full-stack localization for enterprises, with white-glove delivery by forward-deployed engineers.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · ENTERPRISE — the shipped page, not a direction.

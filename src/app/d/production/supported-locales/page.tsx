@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
@@ -11,12 +12,16 @@ import '../../toolchain/sections/logos-icons.css';
 import '../../toolchain/styles.css';
 import '../../_v0/v0-pages.css';
 
-export const metadata = {
-  title: 'Supported Locales — Shipped — GT Redesign',
+const route = seoRoute({
+  path: '/d/production/supported-locales',
+  title: 'Supported locales',
+  section: 'Shipped',
+  kind: 'mirror',
   description:
     'Explore all languages and regional variants supported by General Translation',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION — Supported Locales. The control, not a direction.

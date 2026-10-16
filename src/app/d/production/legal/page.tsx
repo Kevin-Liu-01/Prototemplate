@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
@@ -13,11 +14,16 @@ import '../../toolchain/styles.css';
 import '../../_v0/v0-pages.css';
 import '../sections/legal.css';
 
-export const metadata = {
-  title: 'Legal Resources',
-  description: 'Policies, terms, and data processing information for General Translation.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+const route = seoRoute({
+  path: '/d/production/legal',
+  title: 'Legal',
+  section: 'Shipped',
+  kind: 'mirror',
+  description:
+    'Policies, terms, and data processing information for General Translation.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · LEGAL: generaltranslation.com/legal.

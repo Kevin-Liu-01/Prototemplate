@@ -1,21 +1,4 @@
 {
   "note": "Route files not yet on seoRoute (excused S1 and S6). Written only by node scripts/lint/seo.mjs --update-baseline; the list only shrinks.",
-  "files": [
-    "src/app/d/production/[...missing]/page.tsx",
-    "src/app/d/production/blog/[slug]/page.tsx",
-    "src/app/d/production/blog/page.tsx",
-    "src/app/d/production/careers/page.tsx",
-    "src/app/d/production/cli/page.tsx",
-    "src/app/d/production/consent/page.tsx",
-    "src/app/d/production/contact/page.tsx",
-    "src/app/d/production/device/page.tsx",
-    "src/app/d/production/enterprise/page.tsx",
-    "src/app/d/production/not-found.tsx",
-    "src/app/d/production/onboarding/page.tsx",
-    "src/app/d/production/page.tsx",
-    "src/app/d/production/pricing/page.tsx",
-    "src/app/d/production/signin/page.tsx",
-    "src/app/d/production/supported-locales/page.tsx",
-    "src/app/d/production/try/page.tsx"
-  ]
+  "files": []
 }

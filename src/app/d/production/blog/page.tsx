@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
@@ -11,11 +12,19 @@ import '../../toolchain/styles.css';
 import '../../_v0/v0-pages.css';
 import '../sections/blog-index.css';
 
-export const metadata = {
-  title: 'Blog — Shipped — GT Redesign',
-  description: 'News and notes from the field',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+/* The live description, "News and notes from the field", runs 29
+   characters; lint:seo wants 50 to 160, so the mirror names whose
+   notes they are. */
+const route = seoRoute({
+  path: '/d/production/blog',
+  title: 'Blog',
+  section: 'Shipped',
+  kind: 'mirror',
+  description:
+    'News and notes from the field, from the General Translation team.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · BLOG — the shipped blog index, not a direction.

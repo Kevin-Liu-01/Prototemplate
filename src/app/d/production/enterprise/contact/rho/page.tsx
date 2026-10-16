@@ -1,7 +1,11 @@
-import PartnerOffer from '../../../sections/PartnerOffer';
-import { PARTNER_OFFERS, partnerMetadata } from '../../../sections/partner-offers';
+import { seoRoute } from '@/lib/seo/route';
 
-export const metadata = partnerMetadata('rho');
+import PartnerOffer from '../../../sections/PartnerOffer';
+import { PARTNER_OFFERS, partnerSeo } from '../../../sections/partner-offers';
+
+const route = seoRoute({ path: '/d/production/enterprise/contact/rho', ...partnerSeo('rho') });
+
+export const metadata = route.metadata;
 
 /** PRODUCTION · generaltranslation.com/enterprise/contact/rho, the partner credit offer. */
 export default function ProductionRhoCreditsPage() {

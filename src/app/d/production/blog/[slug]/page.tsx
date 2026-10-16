@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../../sections/ProdFooter';
 import ProdNav from '../../sections/ProdNav';
@@ -38,23 +39,28 @@ export function generateStaticParams(): { slug: string }[] {
   return ALL_POSTS.map((post) => ({ slug: post.slug }));
 }
 
+/* Each post's canonical is its generaltranslation.com/en-US/blog URL, from
+   the policy, and a post filed without a summary is described by its title;
+   an unknown slug takes kind error (noindex, no canonical). */
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const post = findPost(slug);
-
-  if (!post) {
-    return {
-      title: 'Post Not Found — Blog — Shipped — GT Redesign',
-      robots: { index: false, follow: false },
-      icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-    };
-  }
-
-  return {
-    title: `${post.title} — Blog — Shipped — GT Redesign`,
-    description: post.summary || undefined,
-    icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  };
+  const route = post
+    ? seoRoute({
+        path: `/d/production/blog/${post.slug}`,
+        title: post.title,
+        section: 'Shipped',
+        kind: 'mirror',
+        description: post.summary || `${post.title}: a post on the General Translation blog.`,
+      })
+    : seoRoute({
+        path: `/d/production/blog/${slug}`,
+        title: 'Post not found',
+        section: 'Shipped',
+        kind: 'error',
+        description: 'No post on the shipped General Translation blog has this address.',
+      });
+  return route.metadata;
 }
 
 /**

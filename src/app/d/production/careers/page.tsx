@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
@@ -18,12 +19,16 @@ import '../home.css';
 import '../../_v0/v0-pages.css';
 import '../sections/careers.css';
 
-export const metadata = {
-  title: 'Careers — Shipped — GT Redesign',
+const route = seoRoute({
+  path: '/d/production/careers',
+  title: 'Careers',
+  section: 'Shipped',
+  kind: 'mirror',
   description:
-    'The shipped careers page, reproduced section for section: hero, customers, mission, open roles, close.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+    'Join us on our mission to build a full internationalization stack, by developers, for developers.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · CAREERS — the shipped page, not a direction.

@@ -9,6 +9,7 @@ import remarkGfm from 'remark-gfm';
 
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import LegalToc from '../../sections/LegalToc';
 import ProdFooter from '../../sections/ProdFooter';
@@ -43,12 +44,22 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ route: string }> }): Promise<Metadata> {
   const { route } = await params;
   const document = getLegalDocument(route);
-  if (!document) return { title: 'Legal Document Not Found' };
-  return {
-    title: document.title,
-    description: document.description,
-    icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-  };
+  const seo = document
+    ? seoRoute({
+        path: `/d/production/legal/${route}`,
+        title: document.title,
+        section: 'Shipped',
+        kind: 'mirror',
+        description: document.description,
+      })
+    : seoRoute({
+        path: `/d/production/legal/${route}`,
+        title: 'Legal document not found',
+        section: 'Shipped',
+        kind: 'error',
+        description: 'No legal document on the shipped General Translation site has this address.',
+      });
+  return seo.metadata;
 }
 
 /**

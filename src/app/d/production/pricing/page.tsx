@@ -1,5 +1,6 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
@@ -14,12 +15,16 @@ import '../../toolchain/styles.css';
 import '../../_v0/v0-pages.css';
 import '../sections/pricing.css';
 
-export const metadata = {
-  title: 'Pricing — Shipped — GT Redesign',
+const route = seoRoute({
+  path: '/d/production/pricing',
+  title: 'Pricing',
+  section: 'Shipped',
+  kind: 'mirror',
   description:
-    'The shipped pricing page, reproduced section for section: the hero, the two plans, and the compare board every other direction is measured against.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+    'Pricing for teams of all sizes. Full-stack localization across build-time, runtime, and review.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · PRICING — the shipped page, not a direction.

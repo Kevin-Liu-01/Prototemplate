@@ -1,6 +1,7 @@
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import TryPage from '@/components/try/TryPage';
+import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../sections/ProdFooter';
 import ProdNav from '../sections/ProdNav';
@@ -9,11 +10,19 @@ import '../../toolchain/styles.css';
 import '@/components/try/try.css';
 import '../../_v0/v0-pages.css';
 
-export const metadata = {
-  title: 'Report card — Shipped — GT Redesign',
-  description: 'Grade any site on six localization categories.',
-  icons: { icon: '/brand/no-bg-gt-logo-light.png' },
-};
+/* The live description, "Grade how localized any site really is.", runs
+   39 characters; lint:seo wants 50 to 160, so the mirror adds the six
+   categories the page grades. */
+const route = seoRoute({
+  path: '/d/production/report-card',
+  title: 'Report card',
+  section: 'Shipped',
+  kind: 'mirror',
+  description:
+    'Grade how localized any site really is, across six localization categories.',
+});
+
+export const metadata = route.metadata;
 
 /**
  * PRODUCTION · REPORT CARD. The shipped /report-card page on the shipped
