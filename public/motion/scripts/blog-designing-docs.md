@@ -1,14 +1,14 @@
 # Designing docs for humans
 
-53.5 s · v4 · Narrator: Frederick Surrey
+53.5 s · v5 · Narrator: Frederick Surrey
 
 Most docs readers are now AI agents, but humans still read docs to evaluate a product, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem.
 
 | Time | Voice | Line | On screen |
 | --- | --- | --- | --- |
 | 0:01.00 | Narrator | Most docs readers are now AI agents. | GT’s old docs page is wired to a column of 28 readers. Pulses run to the 24 AI agents, and 4 are people. |
-| 0:03.98 | Narrator | Humans still read docs to evaluate a product. | “Humans still read docs” builds word by word, with “Humans” in blue. The agents leave and the four people stay, then the page tilts up into the isometric view and lifts apart into plates. |
-| 0:07.74 | Narrator | General Translation redesigned its docs from scratch so people would read its writing. | The heading becomes “General Translation redesigned its docs.” The GT mark lights white, the page’s extra pieces lift highest, and a thumb runs the contents rail as the writing prints white. Then the stack centres and comes down flat. |
+| 0:03.98 | Narrator | Humans still read docs to evaluate a product. | “Humans still read docs” builds word by word, with “Humans” in blue. The agents leave and the four people stay, then the people leave and the old page stays where it is. |
+| 0:07.74 | Narrator | General Translation redesigned its docs from scratch so people would read its writing. | The GT mark lights white and a white line draws up out of the page’s corner and along under “General Translation,” whose words rise onto it. On “redesigned” the page turns into the isometric view where it sits and its layers rise off it one at a time, the extra pieces highest; a thumb runs the contents rail as the writing prints white. Then the stack centres and comes down flat. |
 | 0:14.04 | Narrator | Interfaces keep getting more cluttered, which creates mental clutter. | With no heading, the clutter arrives in three waves: extra lines, links and buttons, a toast over the demo button, then cards spilling into the margin. |
 | 0:18.66 | Narrator | The redesign started by deleting extra lines, links, and buttons. | White boxes outline every piece. A band sweeps the general junk away, then the lines, the links and the buttons each leave on their own word, and the header closes into one row. |
 | 0:24.94 | Narrator | The sidebar is now one accordion, which is rare among docs sites. | The camera pushes into the sidebar. Three old navigation bars connect into it one after another, and the accordion’s rail draws under “One accordion.” Then the camera pulls back until the page is one lit page in a wall of docs sites. |
