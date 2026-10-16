@@ -1,10 +1,19 @@
 import type { Metadata, Viewport } from 'next';
 
+import GoogleAnalytics from '@/lib/analytics';
 import { fontVariables } from '@/lib/fonts';
 import { OG_HEIGHT, OG_WIDTH, cardPath } from '@/lib/seo/card-url';
 import { webSite } from '@/lib/seo/json-ld';
 import JsonLd from '@/lib/seo/JsonLd';
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, TWITTER_CREATOR, TWITTER_SITE } from '@/lib/seo/site';
+import {
+  GOOGLE_SITE_VERIFICATION,
+  HUB_ICONS,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+  TWITTER_CREATOR,
+  TWITTER_SITE,
+} from '@/lib/seo/site';
 
 import ProdSystemTheme from './d/production/ProdSystemTheme';
 
@@ -88,7 +97,8 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  icons: { icon: [{ url: '/pt-mark.svg', type: 'image/svg+xml' }] },
+  icons: HUB_ICONS,
+  verification: { google: GOOGLE_SITE_VERIFICATION },
 };
 
 export const viewport: Viewport = {
@@ -171,6 +181,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* the production mirror's system theme on client navigation, in and
             out of /d/production; it renders nothing */}
         <ProdSystemTheme />
+        <GoogleAnalytics />
       </body>
     </html>
   );
