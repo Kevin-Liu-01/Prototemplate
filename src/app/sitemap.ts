@@ -1,124 +1,62 @@
 import type { MetadataRoute } from 'next';
 
-import { DOCS } from '@/app/docs/registry';
 import { HANDBOOK } from '@/app/handbook/registry';
 import { ARCHIVE } from '@/lib/archive';
-import { DIRECTION_PAGE_SLUGS, DIRECTIONS } from '@/lib/directions';
-import { getPosts } from '@/lib/blog';
-import { MOTION_PACKAGE_SLUGS } from '@/lib/motion';
-import { SKILLS, skillHref } from '@/lib/skills';
-
-const SITE_URL = 'https://prototemplate.vercel.app';
+import { policyFor, SITE_URL } from '@/lib/seo/policy';
+import { UPDATED } from '@/lib/updated';
 
 /**
- * Every route on the site, derived from the registries the pages render
- * from so the sitemap tracks the lineup: the gallery, the presenter, the
- * deck, the brand book, the documents, the handbook and each of its
- * documents, the skills index and each skill's page, the mark explorations, the blog and its posts, the graphics, the
- * motion roster and each research package of the translation series, the
- * compare rig, each direction's own page and its prototype with each site
- * concept's enterprise page, and the archive of retired versions. /craft
- * is a redirect to /docs and is not listed.
+ * The indexable pages, as the union of three sources: the undated
+ * singleton routes below, every page src/lib/updated.ts dates, and the
+ * handbook documents and archive entries. Each URL is on www, deduplicated,
+ * and kept only when the policy (src/lib/seo/policy.ts) lists it, so no
+ * /d/ study and no blog post (both have their canonical elsewhere or are
+ * noindex) can enter.
+ *
+ * lastmod is the commit date updated.ts records for the page, and is left
+ * out where it has none: a build date would tell a crawler nothing, so it
+ * learns to ignore the field. A new indexable page gets an entry in
+ * scripts/build/updated.mjs, so its lastmod is true. changeFrequency and
+ * priority are not written; Google ignores both.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
+const SINGLETONS = [
+  `${SITE_URL}/`,
+  `${SITE_URL}/present`,
+  `${SITE_URL}/deck`,
+  `${SITE_URL}/brand`,
+  `${SITE_URL}/docs`,
+  `${SITE_URL}/skills`,
+  `${SITE_URL}/handbook`,
+  `${SITE_URL}/marks`,
+  `${SITE_URL}/blog`,
+  `${SITE_URL}/graphics`,
+  `${SITE_URL}/motion`,
+  `${SITE_URL}/compare`,
+];
 
-  const entries: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/`, lastModified, changeFrequency: 'weekly', priority: 1 },
-    { url: `${SITE_URL}/present`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${SITE_URL}/deck`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${SITE_URL}/brand`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${SITE_URL}/docs`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${SITE_URL}/skills`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${SITE_URL}/handbook`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${SITE_URL}/marks`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${SITE_URL}/blog`, lastModified, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${SITE_URL}/graphics`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${SITE_URL}/motion`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
+function pathOf(url: string): string {
+  const path = url.slice(SITE_URL.length);
+  return path === '' ? '/' : path;
+}
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const paths = [
+    ...SINGLETONS.map(pathOf),
+    ...Object.keys(UPDATED),
+    ...HANDBOOK.map((doc) => `/handbook/${doc.slug}`),
+    ...ARCHIVE.map((item) => `/archive/${item.slug}`),
   ];
 
-  for (const slug of MOTION_PACKAGE_SLUGS) {
+  const seen = new Set<string>();
+  const entries: MetadataRoute.Sitemap = [];
+  for (const path of paths) {
+    if (seen.has(path) || !policyFor(path).inSitemap) continue;
+    seen.add(path);
+    const updated = UPDATED[path];
     entries.push({
-      url: `${SITE_URL}/motion/${slug}`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.5,
+      url: path === '/' ? `${SITE_URL}/` : `${SITE_URL}${path}`,
+      ...(updated ? { lastModified: new Date(updated.at) } : {}),
     });
   }
-
-  for (const post of getPosts()) {
-    entries.push({
-      url: `${SITE_URL}/blog/${post.slug}`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    });
-  }
-
-  for (const doc of DOCS) {
-    entries.push({
-      url: `${SITE_URL}/docs/${doc.slug}`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    });
-  }
-
-  for (const doc of HANDBOOK) {
-    entries.push({
-      url: `${SITE_URL}/handbook/${doc.slug}`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    });
-  }
-
-  for (const skill of SKILLS) {
-    entries.push({
-      url: `${SITE_URL}${skillHref(skill.id)}`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.4,
-    });
-  }
-
-  entries.push({ url: `${SITE_URL}/compare`, lastModified, changeFrequency: 'monthly', priority: 0.5 });
-
-  /* each site and exploration's own page on the shell; the reference answers /d/production below */
-  for (const slug of DIRECTION_PAGE_SLUGS) {
-    entries.push({
-      url: `${SITE_URL}/directions/${slug}`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    });
-  }
-
-  for (const direction of DIRECTIONS) {
-    entries.push({
-      url: `${SITE_URL}/d/${direction.slug}`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    });
-    if (direction.site) {
-      entries.push({
-        url: `${SITE_URL}/d/${direction.slug}/enterprise`,
-        lastModified,
-        changeFrequency: 'monthly',
-        priority: 0.6,
-      });
-    }
-  }
-
-  for (const item of ARCHIVE) {
-    entries.push({
-      url: `${SITE_URL}/archive/${item.slug}`,
-      lastModified,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    });
-  }
-
   return entries;
 }

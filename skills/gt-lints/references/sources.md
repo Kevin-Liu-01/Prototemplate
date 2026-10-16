@@ -34,3 +34,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 - Section 3, "Gates on open branches", and `references/gt-ui-rules.md` and `references/prototemplate-gates.md`: each branch-only fact tagged with its pull request's state, read with `gh pr view` on 2026-10-10 (#5133, #4977 and #5029 open). Inventory `skills.json` row 9 (gt-lints documents gates that exist only on open branches), plan row N-27.
 - Section 2's per-gate subsections moved to `references/prototemplate-gates.md`, unchanged, with a summary left in `SKILL.md`, to keep the body under the 24,000-byte budget (plan section 2.2).
 - Related skills: `gt-verify` replaces `agent-browser` as the visual check (inventory `skills.json` row 38, plan row N-28).
+
+## Lines added on 2026-10-15 (SEO system, lane 1)
+
+- Section 2, the `lint:seo`, `lint:seo:live` and `test:seo` row, the `build` chain with `seo.mjs --built`, and the build-gate step (`pnpm start -p 3030`, then `PT_BASE=http://localhost:3030 pnpm lint:seo:live`); section 5, the live check never against a dev server: the header of `scripts/lint/seo.mjs` and `package.json` on branch k/seo-1-core, written 2026-10-15; the Prototemplate SEO and docs plan of 2026-10-14, sections 2.7 and 4.3 step 8, and Kevin's decisions of 2026-10-14 in its section 7.

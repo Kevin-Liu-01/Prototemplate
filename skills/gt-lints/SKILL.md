@@ -6,7 +6,7 @@ description: >-
   line auditor, shell token lint, practices ratchet, picture lint, type lint,
   gt-ui oxlint copy, the public scan (lint:public), the copies manifest
   (lint:copies), the registries check (lint:registries), the tools index
-  (lint:tools) and page check, and gt-cloud's oxlint plugins, email
+  (lint:tools), the SEO lint (lint:seo) and page check, and gt-cloud's oxlint plugins, email
   identity check and oxfmt. Also covers how a new rule becomes a lint and the
   gate hygiene that keeps a red gate from passing (chained gates, real exit
   codes, one browser gate at a time). Use before committing in either
@@ -15,7 +15,7 @@ description: >-
 metadata:
   title: Lints and gates
   areas: lints
-  updated: 2026-10-10
+  updated: 2026-10-15
   origin: prototemplate
   owner: P
 ---
@@ -79,6 +79,7 @@ repositories, and gt-cloud's other plugins).
 | `pnpm lint:type`, `pnpm lint:type:live`, `pnpm test:type` | families, stacks, features, weights, heading metrics, tracking and mono off the Inter tokens, in the source and (live) in the rendered pages | `build` (the static mode), `lint:all` (all three) |
 | `pnpm lint:radius`, `pnpm lint:radius:live`, `pnpm test:radius` | a corner written outside the six `--pt-radius-<role>` tokens, a rounded shell or row, a square control, a chip off the chip corner, the token values unpinned, and (live) a computed corner off 0, 4, 5 and 6px or a picture showing past a rounded frame | `build` (the static mode), `lint:all` (all three) |
 | `pnpm lint:heads`, `pnpm lint:heads:live`, `pnpm test:heads` | a book head without its props or with a page name not from `src/lib/page-names.ts`, a route restyling the shared head, band or dividers, a second hatch, a guide over a title, a space off its token, and (live) the head's structure, the title's clearance, the lead, the panel and its Updated day, the mast rule, the band's two rules and the dividers, measured at 1440 and 390 in both themes | `build` (the static mode), `lint:all` (all three) |
+| `pnpm lint:seo`, `pnpm lint:seo:live`, `pnpm test:seo` | a route head not from `seoRoute()` (S1), a path that is not the file's route (S2), an em dash, an exclamation mark or a description off 50 to 160 characters (S3), a root canonical or `og:url` every route inherits (S4), an alias host in `src/` or `scripts/` (S5), a page writing `icons`, `openGraph` or `twitter` (S6), against the shrink-only `scripts/lint/seo.baseline.json`; `--built` reads every prerendered head, the sitemap and robots.txt (B1 to B7); `--live` fetches a `next start` build or www for status, cards, Markdown twins, the agent files and internal links (L1 to L5) | `lint:static` (static mode and tests), `build` (`--built` after `next build`), the build gate (`--live`) |
 | `pnpm lint:updated`, `pnpm test:updated` | a stale `src/lib/updated.ts`: a commit touched a book page after the day the file records, a page's path list changed, a page missing or orphaned, a path that matches nothing, a client module importing the file | `build` (the check, skipped on a shallow clone or Vercel), `lint:all` (both); `pnpm build:updated --staged` before a commit |
 | `pnpm lint:skills`, `pnpm test:skills` | a curated skill off its contract (frontmatter, Sources, em dashes, home paths, emails, a slug the wiki already holds, a missing README row), a stale `src/lib/skills.ts`, and the installer's behaviour | `lint:all` (both) |
 | `pnpm check:pages` | overflow, clipping, errors, tap targets, invariants, layout shift, interactions, the presenter's titles, every deck slide, on phones, tablets and desktops | `--preset quick` by hand on touched pages each round, the full preset on the whole site before a release |
@@ -89,7 +90,7 @@ repositories, and gt-cloud's other plugins).
 | `pnpm test:skill-scripts` | the offline test beside every script a skill bundles | `lint:static` |
 | `pnpm exec tsc --noEmit` | types | by hand, 3 to 5 minutes |
 
-`pnpm lint:all` is `pnpm lint:static` followed by the four live gates (`lint:lines:shell`, `lint:type:live`, `lint:radius:live`, `lint:heads:live`). `pnpm lint:static` chains every static lint and test: shell, practices, type, radius, heads, skills, registries, updated, tools, copies, public and code, then the picture, type, radius, heads, updated, skills, copies and public tests and `test:skill-scripts`; `package.json` is the authority for its order. `pnpm build` runs `public.mjs --keys`, the picture, type, radius and heads lints and `build/updated.mjs --check`, then `next build`. `pnpm gen:all` rewrites every generated file a lint checks. The dev
+`pnpm lint:all` is `pnpm lint:static` followed by the four live gates (`lint:lines:shell`, `lint:type:live`, `lint:radius:live`, `lint:heads:live`). `pnpm lint:static` chains every static lint and test: shell, practices, type, radius, heads, skills, registries, updated, tools, copies, public and code, then the picture, type, radius, heads, updated, skills, copies and public tests and `test:skill-scripts`; `package.json` is the authority for its order. `pnpm build` runs `public.mjs --keys`, the picture, type, radius and heads lints and `build/updated.mjs --check`, then `next build`, then `seo.mjs --built`. After the scratch build, `pnpm start -p 3030` and `PT_BASE=http://localhost:3030 pnpm lint:seo:live`, then stop that server by its PID; never point the live mode at a dev server, which compiles every route on its first request. `pnpm gen:all` rewrites every generated file a lint checks. The dev
 server is `pnpm dev` (`next dev --turbopack --port 3005`); `lint:all` needs it
 running because of the line audit.
 
@@ -231,6 +232,8 @@ finding there.
 - When `lint:all` is red on files the change does not touch, say which gate
   and whose files, and show that the change's own files are clean
   (`docs/SHIP-LOOP.md` section 0).
+- The SEO live check runs against the scratch build under `next start` on
+  port 3030 and against www after a deploy, never against a dev server.
 - The production build in a scratch worktree, the conflict-marker sweep and
   pathspec commits in a shared checkout are part of landing, in `gt-ship`
   section 8.

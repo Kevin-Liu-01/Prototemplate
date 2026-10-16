@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/seo/policy';
 import { SKILL_AREAS, SKILLS, skillFileHref, skillHref } from '@/lib/skills';
 
 import { installLine } from '../model';
@@ -12,8 +13,6 @@ import { installLine } from '../model';
  */
 
 export const dynamic = 'force-static';
-
-const SITE_URL = 'https://prototemplate.vercel.app';
 
 export function GET(): Response {
   const body = {

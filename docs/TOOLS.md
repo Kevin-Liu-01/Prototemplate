@@ -35,6 +35,8 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm lint:radius` | Holds the site's corners to one law: rounded controls, square shells (DESIGN.md section 2, Corners). | `scripts/lint/radius.mjs` |
 | `pnpm lint:radius:live` | Holds the site's corners to one law: rounded controls, square shells (DESIGN.md section 2, Corners). | `scripts/lint/radius.mjs --live` |
 | `pnpm lint:registries` | Reports drift between the registries a Prototemplate page, document or skill has to appear in. | `scripts/lint/registries.mjs` |
+| `pnpm lint:seo` | Holds every route's head to the SEO system: each route gets its title, description, canonical, robots, card and JSON-LD from one call to seoRoute() (src/lib/seo/route.ts), under the policy in src/lib/seo/policy.ts. | `scripts/lint/seo.mjs` |
+| `pnpm lint:seo:live` | Holds every route's head to the SEO system: each route gets its title, description, canonical, robots, card and JSON-LD from one call to seoRoute() (src/lib/seo/route.ts), under the policy in src/lib/seo/policy.ts. | `scripts/lint/seo.mjs --live` |
 | `pnpm lint:shell` | Token discipline for the shell layer: no raw color literals, every stroke and fill must draw a token (var(--shell-*), var(--tc-*), or a local custom property defined at a root class). | `scripts/lint/shell.mjs` |
 | `pnpm lint:skills` | Builds src/lib/skills.ts, the typed registry behind /skills, /skills/<slug> and the raw files under /skills/<slug>/, from the curated skills in this repository: skills/<slug>/SKILL.md and the supporting files beside it. | `scripts/build/skills.mjs --check` |
 | `pnpm lint:static` | Runs every lint and test that needs no running server; the gate CI and each lane run. | `pnpm lint:shell && pnpm lint:practices && pnpm lint:type ...` |
@@ -52,6 +54,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm test:pictures` | Tests for scripts/lint/pictures.mjs: the repository passes, and each kind of defect in a fixture copy of the picture files is reported. | `scripts/lint/pictures.test.mjs` |
 | `pnpm test:public` | Tests for scripts/lint/public.mjs: node --test scripts/lint/public.test.mjs (pnpm test:public). | `scripts/lint/public.test.mjs` |
 | `pnpm test:radius` | Tests for scripts/lint/radius.mjs: a passing and a failing string per static rule, the live judges over recorded corners, and the repository. | `scripts/lint/radius.test.mjs` |
+| `pnpm test:seo` | Tests for scripts/lint/seo.mjs: a passing and a failing fixture per static rule (the passing page fixture is the real src/app/page.tsx), the ratchet, the head and sitemap judges on fixture HTML, the image header reader, and one test that the repository passes. | `scripts/lint/seo.test.mjs scripts/lint/seo-*.test.mjs` |
 | `pnpm test:skill-scripts` | Runs the offline test of every script a skill bundles: each skills/<slug>/scripts/<name>.test.mjs with node --test, <name>.test.py with python3 and <name>.test.sh with sh, from the checkout root. | `scripts/skills/script-tests.mjs` |
 | `pnpm test:skills` | Tests for scripts/skills/install.mjs: node --test scripts/skills/install.test.mjs (pnpm test:skills). | `scripts/skills/install.test.mjs scripts/skills/script-tes...` |
 | `pnpm test:type` | Tests for scripts/lint/type.mjs: the repository passes, and each rule reports its defect in a fixture string and passes the fixed string. | `scripts/lint/type.test.mjs` |
@@ -69,7 +72,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | Command | What it does | Runs |
 | --- | --- | --- |
 | `pnpm build:deck` | Builds public/brand-deck.html, the standalone brand deck viewer, from the deck source checked in at deck/. | `scripts/build/deck.mjs` |
-| `pnpm build:inter` | Split the rsms InterVariable roman and italic into unicode-range subsets (pnpm build:inter; needs fonttools and brotli). | `scripts/build/subset-inter.py` |
+| `pnpm build:inter` | Split the rsms InterVariable roman and italic into unicode-range subsets, and cut the two static Latin TTF instances the social card route draws with (pnpm build:inter; needs fonttools and brotli). | `scripts/build/subset-inter.py` |
 | `pnpm build:marks` | Builds the speed marks under public/marks: the race-type set for General Translation (wide letters, a forward slant, one horizontal cut through the letters, speed bars into the first letter), every file one color in currentColor with a tight viewBox, so the marks page inlines ... | `scripts/build/speed-marks.mjs` |
 | `pnpm build:motion` | Builds src/lib/motion.ts, the typed data behind /motion and /motion/<slug>, and public/motion/<slug>.md, the research package each translation-series page renders, from the motion folder: the roster in motion/MOTION.md (its "## The films" section, one "### <slug>: <title> ... | `scripts/build/motion.mjs` |
 | `pnpm build:skills` | Builds src/lib/skills.ts, the typed registry behind /skills, /skills/<slug> and the raw files under /skills/<slug>/, from the curated skills in this repository: skills/<slug>/SKILL.md and the supporting files beside it. | `scripts/build/skills.mjs` |

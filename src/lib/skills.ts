@@ -140,9 +140,9 @@ export const SKILLS: readonly Skill[] = [
     id: 'gt-lints',
     name: 'gt-lints',
     title: 'Lints and gates',
-    description: 'Every lint and gate that holds General Translation\'s design and copy rules, what each catches, where it runs and how to fix a failure: Prototemplate\'s line auditor, shell token lint, practices ratchet, picture lint, type lint, gt-ui oxlint copy, the public scan (lint:public), the copies manifest (lint:copies), the registries check (lint:registries), the tools index (lint:tools) and page check, and gt-cloud\'s oxlint plugins, email identity check and oxfmt. Also covers how a new rule becomes a lint and the gate hygiene that keeps a red gate from passing (chained gates, real exit codes, one browser gate at a time). Use before committing in either repository, when a lint or a build gate fails, or when Kevin asks for a new rule to be enforced.',
+    description: 'Every lint and gate that holds General Translation\'s design and copy rules, what each catches, where it runs and how to fix a failure: Prototemplate\'s line auditor, shell token lint, practices ratchet, picture lint, type lint, gt-ui oxlint copy, the public scan (lint:public), the copies manifest (lint:copies), the registries check (lint:registries), the tools index (lint:tools), the SEO lint (lint:seo) and page check, and gt-cloud\'s oxlint plugins, email identity check and oxfmt. Also covers how a new rule becomes a lint and the gate hygiene that keeps a red gate from passing (chained gates, real exit codes, one browser gate at a time). Use before committing in either repository, when a lint or a build gate fails, or when Kevin asks for a new rule to be enforced.',
     areas: ['lints'],
-    updated: '2026-10-10',
+    updated: '2026-10-15',
     files: ['references/gt-ui-rules.md', 'references/line-auditor.md', 'references/page-check.md', 'references/prototemplate-gates.md', 'references/sources.md'],
   },
   {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Split the rsms InterVariable roman and italic into unicode-range subsets (pnpm build:inter; needs fonttools and brotli)."""
+"""Split the rsms InterVariable roman and italic into unicode-range subsets, and cut the two static Latin TTF instances the social card route draws with (pnpm build:inter; needs fonttools and brotli)."""
 import pathlib, re, sys
 
 # --help prints the docstring before fontTools is needed
@@ -48,6 +48,23 @@ SUBSETS = [
 ]
 
 LINT_HATCH = '/* lint-type: allow a subset face of the family src/lib/fonts.ts declares */'
+
+# The social card route (src/app/og/route.tsx) renders through next/og, whose
+# renderer reads TTF, OTF and WOFF but not WOFF2, and applies no variable axes
+# and no font-feature-settings. So the route gets two static instances of the
+# same roman file, cut to the latin subset: the display face for the title and
+# the labels, and the text face for the description and the footer. The
+# display face carries the site's display features (--pt-ff-display: cv11, the
+# single-storey a, and ss01, the open digits) by pointing the cmap at the
+# alternate glyphs, since the renderer would not apply the features.
+CARD_DIR = ROOT / 'src' / 'app' / 'og'
+CARD_FACES = [
+    # (file, wght, opsz, cmap features)
+    ('Inter-Display-500.ttf', 500, 32, ('cv11', 'ss01')),
+    ('Inter-Text-400.ttf', 400, 28, ()),
+]
+# the code points the display features remap: a and the ten digits
+CARD_REMAP = [0x61] + list(range(0x30, 0x3A))
 
 
 def parse(ranges):
@@ -100,11 +117,62 @@ def write_subset(src, dest, points):
     subset.save_font(font, str(dest), opts)
 
 
+def feature_mapping(font, tag):
+    """The single substitutions a GSUB feature makes, glyph name to glyph name."""
+    gsub = font['GSUB'].table
+    mapping = {}
+    for record in gsub.FeatureList.FeatureRecord:
+        if record.FeatureTag != tag:
+            continue
+        for index in record.Feature.LookupListIndex:
+            lookup = gsub.LookupList.Lookup[index]
+            for table in lookup.SubTable:
+                if lookup.LookupType == 7:
+                    table = table.ExtSubTable
+                mapping.update(getattr(table, 'mapping', None) or {})
+    if not mapping:
+        raise SystemExit(f'{tag}: the font has no single substitutions for this feature')
+    return mapping
+
+
+def cut_card_faces(latin):
+    """Writes the static card instances into src/app/og; byte-identical on every run."""
+    from fontTools.varLib import instancer
+
+    CARD_DIR.mkdir(exist_ok=True)
+    for name, wght, opsz, features in CARD_FACES:
+        font = TTFont(FONTS / 'InterVariable.woff2', recalcTimestamp=False)
+        font = instancer.instantiateVariableFont(font, {'wght': wght, 'opsz': opsz})
+        font.flavor = None
+        for tag in features:
+            mapping = feature_mapping(font, tag)
+            for table in font['cmap'].tables:
+                if not table.isUnicode():
+                    continue
+                for point in CARD_REMAP:
+                    glyph = table.cmap.get(point)
+                    if glyph in mapping:
+                        table.cmap[point] = mapping[glyph]
+        opts = subset.Options()
+        opts.layout_features = ['kern']
+        opts.hinting = False
+        opts.notdef_outline = True
+        opts.name_IDs = ['*']
+        opts.name_languages = ['*']
+        sub = subset.Subsetter(opts)
+        sub.populate(unicodes=latin)
+        sub.subset(font)
+        font.recalcTimestamp = False
+        dest = CARD_DIR / name
+        font.save(str(dest))
+        print(f'{dest.relative_to(ROOT)}: wght {wght}, opsz {opsz}, {len(latin)} code points, {dest.stat().st_size} bytes')
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     for old in OUT.glob('*.woff2'):
         old.unlink()
-    faces, latin_range = [], None
+    faces, latin_range, latin_points = [], None, None
     for stem, style in SOURCES:
         src = FONTS / f'{stem}.woff2'
         for name, points in split(set(TTFont(src).getBestCmap())):
@@ -112,7 +180,7 @@ def main():
             write_subset(src, dest, points)
             print(f'{dest.relative_to(ROOT)}: {len(points)} code points, {dest.stat().st_size} bytes')
             if style == 'normal' and name == 'latin':
-                latin_range = unicode_range(points)
+                latin_range, latin_points = unicode_range(points), points
                 continue
             faces.append(
                 '@font-face {\n'
@@ -137,6 +205,7 @@ def main():
         raise SystemExit(f"{FONTS_TS.relative_to(ROOT)}: expected one unicode-range declaration, found {n}")
     FONTS_TS.write_text(updated)
     print(f'{CSS.relative_to(ROOT)}: {len(faces)} faces; {FONTS_TS.relative_to(ROOT)}: the latin range')
+    cut_card_faces(latin_points)
 
 
 if __name__ == '__main__':
