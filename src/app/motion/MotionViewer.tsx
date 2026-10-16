@@ -19,6 +19,7 @@ import type { ShellMode } from '@/lib/shell-data';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import type { FilmCutState } from './FilmCutPlayer';
 import FilmCutPlayer, { useFilmCut } from './FilmCutPlayer';
 import { cutWords, megabytes, reviewWords } from './records-words';
 import { motionSections } from './sections';
@@ -67,26 +68,18 @@ function sheetWords(film: MotionFilm): string {
   return film.sheet?.frames ? `${film.sheet.frames} frames` : 'WebP';
 }
 
-type FilmRecordsProps = {
-  film: MotionFilm;
-  /** the full blocks, for a film with no page of its own to link to (records.tsx, rendered on the server) */
-  more?: ReactNode;
-};
-
 /**
  * A roster row's records, compactly: the published cut's contact sheet and
  * script as one line each, linked to their sections on the film's page,
- * and the cut in review by its label and length. A film without a page
- * opens the full blocks in place under the line. A film whose published
+ * and the cut in review by its label and length. A film whose published
  * cut has no records, with a newer cut in review, says so in one line.
  */
-function FilmRecords({ film, more }: FilmRecordsProps) {
+function RecordLine({ film }: { film: MotionFilm }) {
   const { sheet, script, review } = film;
   if (!sheet && !script && !review) return null;
   const page = film.pkg ? `/motion/${film.slug}` : undefined;
   const made = Boolean(sheet || script);
   return (
-    <>
       <dl className='mo-rec'>
         {sheet ? (
           <div>
@@ -135,13 +128,54 @@ function FilmRecords({ film, more }: FilmRecordsProps) {
           </div>
         ) : null}
       </dl>
-      {more ? (
-        <details className='mo-rec-more'>
-          <summary>Contact sheet and script</summary>
-          {more}
-        </details>
+  );
+}
+
+/** A roster row's meta line: the cut's running time, its note, its status and its local path. */
+function MetaLine({ film }: { film: MotionFilm }) {
+  const path = localPath(film);
+  return (
+    <p className='gx-line'>
+      {film.runtime ?? film.length}
+      {film.note ? ` · ${film.note}` : null}
+      {' · '}
+      <span className={cn('mo-status', film.status === 'rendered' && 'is-rendered')}>{MOTION_STATUS_LABEL[film.status]}</span>
+      {path ? (
+        <>
+          {' · '}
+          <code>{path}</code>
+        </>
       ) : null}
-    </>
+    </p>
+  );
+}
+
+type CutStackProps = {
+  state: FilmCutState;
+  line: (film: MotionFilm) => ReactNode;
+};
+
+/**
+ * One line of a film with language versions, drawn for every cut in one
+ * grid cell with only the chosen cut's shown: the cell holds the tallest
+ * cut's line, so a version whose line wraps on a phone moves nothing below
+ * it. The other cuts' lines are hidden and inert. A film with one cut gets
+ * its line alone.
+ */
+function CutStack({ state, line }: CutStackProps) {
+  const { cuts, current } = state;
+  if (cuts.length < 2) return line(current.film);
+  return (
+    <div className='mo-cuts'>
+      {cuts.map((cut) => {
+        const on = cut.key === current.key;
+        return (
+          <div key={cut.key} className={cn('mo-cut', !on && 'is-off')} aria-hidden={on ? undefined : true} inert={!on}>
+            {line(cut.film)}
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -158,12 +192,15 @@ type FilmBodyProps = {
  * versions), the links, the cut's records and its meta line. The toggle
  * swaps everything that belongs to one cut: the video, its poster and
  * captions, its contact sheet and script, its running time and its path.
+ * A film without a page opens the chosen cut's full blocks in place under
+ * the record line. The record and meta lines of a film with versions sit in
+ * a CutStack, so a switch moves nothing below them.
  */
 function FilmBody({ film, summary, records }: FilmBodyProps) {
   const state = useFilmCut(film);
   const { current } = state;
   const view = current.film;
-  const path = localPath(view);
+  const more = records[current.rowId];
   return (
     <div className='gx-body'>
       <h3>{film.title}</h3>
@@ -176,19 +213,14 @@ function FilmBody({ film, summary, records }: FilmBodyProps) {
           {film.post ? <Link href={film.post}>Read the post</Link> : null}
         </p>
       ) : null}
-      <FilmRecords film={view} more={records[current.rowId]} />
-      <p className='gx-line'>
-        {view.runtime ?? view.length}
-        {view.note ? ` · ${view.note}` : null}
-        {' · '}
-        <span className={cn('mo-status', view.status === 'rendered' && 'is-rendered')}>{MOTION_STATUS_LABEL[view.status]}</span>
-        {path ? (
-          <>
-            {' · '}
-            <code>{path}</code>
-          </>
-        ) : null}
-      </p>
+      <CutStack state={state} line={(cut) => <RecordLine film={cut} />} />
+      {more && (view.sheet || view.script || view.review) ? (
+        <details className='mo-rec-more'>
+          <summary>Contact sheet and script</summary>
+          {more}
+        </details>
+      ) : null}
+      <CutStack state={state} line={(cut) => <MetaLine film={cut} />} />
     </div>
   );
 }
@@ -211,7 +243,7 @@ type MotionBookProps = {
  * The roster read top to bottom inside the flow sheet: the head with the
  * counts, a contents list, then the two sections under their dividers as
  * ruled rows, one per film, in the graphics book's row grammar. A film with
- * a published render carries its player and its records (FilmRecords: the
+ * a published render carries its player and its records (RecordLine: the
  * published cut's contact sheet and script, and a newer cut in review); a
  * film of the translation series links its package page. The reading state works as the graphics book's
  * does: an IntersectionObserver selects the row under the read line through

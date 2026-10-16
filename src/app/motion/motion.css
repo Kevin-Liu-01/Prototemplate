@@ -197,6 +197,28 @@
 /* a roster row's records, compactly: one item per record (glyph, label,
    value) at the meta step, in the head panel's glyph, label and value
    colors; the items wrap as one line, and nothing draws a rule */
+/* a film with language versions draws its record and meta lines for every
+   cut in one grid cell (CutStack in MotionViewer.tsx): the cell holds the
+   tallest line, the chosen cut's is shown, and a switch moves nothing */
+.mo-cuts {
+  display: grid;
+}
+
+.mo-cuts > .mo-cut {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.mo-cuts > .mo-cut.is-off {
+  visibility: hidden;
+}
+
+/* the meta line keeps the body paragraph's measure and margins inside the cell */
+.gx-body .mo-cut > p.gx-line {
+  max-width: var(--pt-measure);
+  margin-bottom: 0;
+}
+
 .mo-rec {
   display: flex;
   flex-wrap: wrap;
