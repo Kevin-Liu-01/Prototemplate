@@ -241,7 +241,7 @@ type MotionBookProps = {
 
 /**
  * The roster read top to bottom inside the flow sheet: the head with the
- * counts, a contents list, then the two sections under their dividers as
+ * counts, a contents list, then the three sections under their dividers as
  * ruled rows, one per film, in the graphics book's row grammar. A film with
  * a published render carries its player and its records (RecordLine: the
  * published cut's contact sheet and script, and a newer cut in review); a
@@ -432,8 +432,8 @@ type MotionViewerProps = {
 };
 
 /**
- * The motion roster on the viewer shell: the films and the translation
- * series nested under Knowledge > Motion in the list, the roster as ruled
+ * The motion roster on the viewer shell: the films, the translation series
+ * and the knowledge base nested under Knowledge > Motion in the list, the roster as ruled
  * rows inside the 1280px flow sheet. Flow keys, so Space and the arrows
  * scroll; the sidebar filter matches titles and summaries. The hash names
  * the row in view. A series row in the list opens its package page; the

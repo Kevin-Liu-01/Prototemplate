@@ -7,7 +7,8 @@ import type { ShellItem, ShellSection } from '@/lib/shell-data';
  * pages under /motion/<slug>, so both routes list the same rows in the
  * same order. Pure data on top of the generated src/lib/motion.ts.
  *
- * Both sections open under Knowledge > Motion in the sidebar (`under`),
+ * The three sections (the films, the translation series and the knowledge
+ * base) open under Knowledge > Motion in the sidebar (`under`),
  * as the labelled groups of the Motion row's run.
  * Their ids carry a `motion-` prefix so they never match a site map group
  * (a section named `knowledge` would replace that group) and so their fold
@@ -46,7 +47,7 @@ function filmItem(film: MotionFilm, route: string): ShellItem {
   return { ...base, href: `/motion#${film.id}` };
 }
 
-/** The two sections for a route: `index` for /motion, or the slug of the package page. */
+/** The three sections for a route: `index` for /motion, or the slug of the package page. */
 export function motionSections(route: string): readonly ShellSection[] {
   return MOTION_SECTIONS.map((section) => ({
     id: section.id,

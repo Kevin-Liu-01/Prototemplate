@@ -6,7 +6,10 @@
 // has one. A film whose BRIEF.md opens with "# Brief: <slug>" (the package
 // format) belongs to the translation series; a production brief, such as
 // slash-partnership's "# slash-partnership: the brief", does not. The rest
-// are the roster's other films, kept in roster order.
+// are the roster's other films, kept in roster order, except the films whose
+// slug starts with kb- (KB_PREFIX): the knowledge-base films, each a short
+// answer to one product question, form the last section, under the series,
+// in roster order.
 //
 // Each film's status is read from the files, never written by hand: a film
 // is rendered when its final render exists (a published copy under
@@ -104,17 +107,25 @@ const BLOG_POST = {
   'blog-open-source': 'supporting-open-source-software',
 };
 
-/** The two sections of /motion, in page order; the leads are the page's own copy. */
+/** The slug prefix of a knowledge-base film, whose section is motion-kb. */
+const KB_PREFIX = 'kb-';
+
+/** The three sections of /motion, in page order; the leads are the page's own copy. */
 const SECTIONS = [
   {
     id: 'motion-films',
     label: 'Films',
-    lead: 'The brand film, the mark sting, the blog films, the Lottie film, the release board, the Slash announcement with its German, Spanish and Japanese cuts, How General Translation works, the product films that each answer one question, and the showreel, in the order of the roster.',
+    lead: 'The brand film, the mark sting, the blog films, the Lottie film, the release board, the Slash announcement with its German, Spanish and Japanese cuts, How General Translation works and the showreel, in the order of the roster.',
   },
   {
     id: 'motion-series',
     label: 'Translation series',
     lead: 'Six films about how a translation made the words a language uses. Each one has a research package with a script, a post, a vocabulary table, sources and a fact-check list.',
+  },
+  {
+    id: 'motion-kb',
+    label: 'Knowledge base',
+    lead: 'Short films that each answer one question about General Translation, in the order of the roster: choosing a tool, setting up i18n in each framework, translating text in code, reviewing and shipping translations, and translating docs, CMS content, slides, subtitles and animations.',
   },
 ];
 
@@ -855,7 +866,7 @@ for (const entry of ROSTER_ENTRIES) {
     note,
     runtime,
     status,
-    section: series ? 'motion-series' : 'motion-films',
+    section: series ? 'motion-series' : slug.startsWith(KB_PREFIX) ? 'motion-kb' : 'motion-films',
     summary,
     media,
     local: Object.keys(local).length > 0 ? local : undefined,
@@ -938,7 +949,7 @@ for (const [slug, list] of versionsOf) {
   console.log(`build-motion: ${slug}: one entry with its ${list.map((v) => `${v.language.language} (${v.film.slug})`).join(', ')} cuts behind a language toggle`);
 }
 
-/* page order: the roster's other films, then the series, each in roster order */
+/* page order: the roster's other films, then the series, then the knowledge-base films, each in roster order */
 const ordered = SECTIONS.flatMap((section) => films.filter((film) => film.section === section.id));
 ordered.forEach((film, i) => {
   film.n = String(i + 1).padStart(2, '0');
@@ -1143,7 +1154,7 @@ const out = [
   '  pkg?: MotionPackage;',
   '};',
   '',
-  '/** The two sections of /motion in page order, with their labels and leads. */',
+  '/** The three sections of /motion in page order, with their labels and leads. */',
   'export const MOTION_SECTIONS: readonly { id: MotionSectionId; label: string; lead: string }[] = [',
   ...SECTIONS.map((s) => `  { id: ${quote(s.id)}, label: ${quote(s.label)}, lead: ${quote(s.lead)} },`),
   '];',
