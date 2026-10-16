@@ -2,12 +2,12 @@
   "about": "The cut of each film the site publishes. film and poster are the web copies under public/media; cut and length are the cut's label and length as its script states them (null when the cut was made before the scripts); streams are the SHA-256 of its video and audio streams, from ffmpeg's streamhash with the streams copied. scripts/build-motion.mjs publishes a film's credits, contact sheet and script only from the folder in motion/out whose render has these streams, and lists any other cut in motion/out as in review. Replace a web copy, then run node scripts/build-motion.mjs --pin <slug>. offSite lists roster films the site leaves out entirely.",
   "films": {
     "blog-designing-docs": {
-      "cut": "v7",
+      "cut": "v8",
       "length": "55.5 s",
       "film": "/media/designing-docs-film.mp4",
       "poster": "/media/designing-docs-poster.jpg",
       "streams": {
-        "video": "90f3606083a71a38be64a10da5a84e2c069b43e5122be636d2abdd0159c2b111",
+        "video": "5c130ade5d083db86f23d4c149e58566d0a58e91a3068f2b2830c4e1289e4b4a",
         "audio": "0717e2febf8e33058a3af04c1c5b4f3fcd55f301fd15ae3bb9900b44878fded5"
       }
     },

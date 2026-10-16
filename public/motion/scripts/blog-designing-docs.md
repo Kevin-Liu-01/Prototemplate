@@ -1,6 +1,6 @@
 # Designing docs for humans
 
-55.5 s · v7 · Narrator: Frederick Surrey
+55.5 s · v8 · Narrator: Frederick Surrey
 
 Most docs readers are now AI agents, which makes an intuitive, intentional docs interface even more important, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem.
 
@@ -15,7 +15,7 @@ Most docs readers are now AI agents, which makes an intuitive, intentional docs 
 | 0:33.34 | Narrator | The writing now has more open space around it. | The camera flies into GT’s page. The furniture falls away, and the writing prints line by line with wide margins while a thumb runs down its rail. |
 | 0:38.30 | Narrator | Translated pages keep the same spacing and alignment. | The camera pulls out to the whole page, and a planet of letters lights under it under “Translated pages.” On “same” every letter switches to another writing system, and three dashed guides show the alignment holds. |
 | 0:42.66 | Narrator | Each page guides its reader toward the action they want. | With no heading, one reader’s path draws through the page’s five stops to the demo button, which lights white, and a pulse runs along it. |
-| 0:46.72 | Narrator | Docs design is an open problem, and the team keeps working on it. | “Docs design is an open problem” builds as the page shrinks back among the readers. The path runs on out of the page into one of the people, so the last frame mirrors the first. |
+| 0:46.72 | Narrator | Docs design is an open problem, and the team keeps working on it. | “An open problem” arrives as one title as the page shrinks back among the readers. The path runs on out of the page into one of the people, so the last frame mirrors the first. |
 | 0:50.64 | No voice | End card, no voice. | The shared end card: the GT mark, the post’s title and its link. |
 
 Times are where each line starts in the final, read from the film's own audio.
