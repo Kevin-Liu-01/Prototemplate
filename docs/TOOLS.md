@@ -8,7 +8,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 
 | Command | What it does | Runs |
 | --- | --- | --- |
-| `pnpm build` | Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, then builds the site with next build. | `node scripts/lint/public.mjs --keys && node scripts/lint/...` |
+| `pnpm build` | Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, builds the site with next build, then checks every prerendered head with lint:seo --built. | `node scripts/lint/public.mjs --keys && node scripts/lint/...` |
 | `pnpm dev` | Starts the dev server on port 3005. | `next dev --turbopack --port 3005` |
 | `pnpm start` | Serves the production build. | `next start` |
 
@@ -17,6 +17,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | Command | What it does | Runs |
 | --- | --- | --- |
 | `pnpm run doctor` | Checks that this machine can run the repository's tools from a fresh clone. | `scripts/doctor.mjs` |
+| `pnpm postinstall` | Runs after every install: compiles the docs site's MDX collection (source.config.ts, content/docs) into .source/ with fumadocs-mdx, which the type check and the docs routes import. | `fumadocs-mdx` |
 
 ## Lints
 
@@ -99,12 +100,6 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm graphics:gen` | Writes the illustration pages from graphics/build/manifest.json. | `graphics/build/gen-visuals.js` |
 | `pnpm graphics:render` | Renders the illustrations through agent-browser (docs/GRAPHICS.md). | `graphics/build/render.sh` |
 | `pnpm graphics:serve` | Serves graphics/ on port 8765 for the illustration toolchain (docs/GRAPHICS.md). | `graphics/serve/server.js graphics` |
-
-## Other
-
-| Command | What it does | Runs |
-| --- | --- | --- |
-| `pnpm postinstall` | Runs after every install: compiles the docs site's MDX collection (source.config.ts, content/docs) into .source/ with fumadocs-mdx, which the type check and the docs routes import. | `fumadocs-mdx` |
 
 ## Skill scripts
 

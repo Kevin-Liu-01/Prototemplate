@@ -35,7 +35,7 @@ export default function DocsSidebarFooter({ links }: { links: readonly DocsSideb
             key={link.href}
             href={link.href}
             {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-            className='flex items-center gap-2.5 rounded-md px-2 py-1.5 text-[13px] transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0'
+            className='flex items-center gap-2.5 px-2 py-1.5 text-[13px] transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0'
           >
             <Icon aria-hidden />
             <span>{link.label}</span>
@@ -44,7 +44,7 @@ export default function DocsSidebarFooter({ links }: { links: readonly DocsSideb
       })}
       <div className='mt-1 flex items-center justify-between gap-2 border-t border-fd-border pt-2'>
         <span className='px-2 text-[13px]'>Theme</span>
-        <DocsThemeButton className='grid size-8 cursor-pointer place-items-center rounded-md text-fd-muted-foreground transition-colors hover:text-fd-foreground' />
+        <DocsThemeButton className='grid size-8 cursor-pointer place-items-center text-fd-muted-foreground transition-colors hover:text-fd-foreground' />
       </div>
     </div>
   );

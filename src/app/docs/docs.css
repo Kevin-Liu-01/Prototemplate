@@ -21,7 +21,7 @@
       chip corner;
    6. flat surfaces, and the sidebar's rails and pills for SidebarMotion.
    Every override is an unlayered rule, which outranks the layered
-   utilities without !important. */
+   utilities without an importance flag. */
 
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities) source(none);
@@ -113,9 +113,9 @@
 
   /* 5. corners: fumadocs' panels, code blocks, callouts and cards take
      rounded-lg to rounded-2xl, which all resolve to the card corner */
-  --radius-lg: var(--pt-radius-card);
-  --radius-xl: var(--pt-radius-card);
-  --radius-2xl: var(--pt-radius-card);
+  --radius-lg: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-lg reads the card corner */
+  --radius-xl: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-xl reads the card corner */
+  --radius-2xl: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-2xl reads the card corner */
 }
 :root[data-theme='dark']:has(#nd-notebook-layout) {
   --docs-accent: #86a8ff;
@@ -158,12 +158,12 @@
 }
 .docs-updated {
   color: var(--color-fd-muted-foreground);
-  font-size: 13px;
+  font-size: var(--pt-t-meta);
 }
 
 /* the nameplate in the header and the sidebar head */
 [data-docs-nameplate] {
-  font-size: 15px;
+  font-size: 15px; /* lint-type: allow the nameplate beside the 20px mark sits between the small and body steps */
   font-weight: 500;
 }
 [data-docs-nameplate] img {
@@ -177,10 +177,15 @@
   padding: 0;
 }
 
+/* the footer's links and theme button take the chip corner */
+[data-docs-sidebar-footer] :is(a, button) {
+  border-radius: var(--pt-radius-chip);
+}
+
 /* the theme glyph, the shell's ◐ and ◑ */
 [data-docs-theme] span {
-  font-size: 16px;
-  line-height: 1;
+  font-size: var(--pt-t-body);
+  line-height: 1; /* lint-type: allow a single glyph centred in its button, no text line */
 }
 
 /* ---------- the sidebar (SidebarMotion.tsx, copied from gt-cloud) ----------
@@ -189,7 +194,7 @@
    12px before the row text sits inside the panel: fumadocs writes each
    row's inline padding in a style attribute, so the step is a margin. */
 #nd-sidebar [data-radix-scroll-area-viewport] {
-  font-size: 13px;
+  font-size: var(--pt-t-meta);
 }
 #nd-sidebar [data-radix-scroll-area-viewport] :is(a[href], button[type='button']) {
   position: relative;
