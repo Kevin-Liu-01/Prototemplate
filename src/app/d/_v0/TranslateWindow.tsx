@@ -963,11 +963,11 @@ export default function TranslateWindow({
      the visible render win their own clicks inside the slab's fringe.
      On a phone (PHONE_MQ) the mark is a 40px square ending at its
      badge's right edge and the slab is 44px or 64px wide, so a mark
-     files swept once its square would reach into the slab: the two hit
-     areas never overlap. The slab is centred on the seam's line, which
-     parks 4.5px inside the card at either end (reveal-seam.css); both
-     are read from the dial, not the seam's box, which can still hold
-     the last cut in the frame a write lands. */
+     files swept once its square comes within 1px of the slab: the two
+     hit areas never overlap or share a pixel. The slab is centred on
+     the seam's line, which parks 4.5px inside the card at either end
+     (reveal-seam.css); both are read from the dial, not the seam's box,
+     which can still hold the last cut in the frame a write lands. */
   const reconcileMarks = () => {
     const el = app.current;
     if (!el) return;
@@ -983,7 +983,7 @@ export default function TranslateWindow({
     for (const m of el.querySelectorAll<HTMLElement>('.sgdh-ins-mark')) {
       const mr = m.getBoundingClientRect();
       const swept = slab
-        ? mr.right > line - slab / 2
+        ? mr.right > line - slab / 2 - 1
         : mr.left + mr.width / 2 > cutX;
       if (swept) m.setAttribute('data-swept', '');
       else m.removeAttribute('data-swept');
