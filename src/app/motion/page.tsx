@@ -7,6 +7,7 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
+import { filmCuts } from './cuts';
 import { langText } from './lang-text';
 import MotionViewer from './MotionViewer';
 import { scriptBlock, sheetBlock } from './records';
@@ -26,7 +27,7 @@ export const metadata = route.metadata;
  * /motion: the film roster on the viewer shell. Each film's one-sentence
  * summary is rendered here on the server with the book's inline renderer
  * and the script hook (lang-text.tsx), and so are the contact sheet and
- * script of a film with no page of its own (records.tsx), so the client
+ * script of each cut of a film with no page of its own (records.tsx), so the client
  * receives elements and the markdown renderer never ships in its bundle.
  * The roster itself is the generated src/lib/motion.ts.
  */
@@ -37,15 +38,18 @@ export default function MotionPage() {
     summaries[film.id] = renderInline(film.summary, film.id, { text: langText });
     /* a film with a page shows its records there; the row links to them */
     if (film.pkg) continue;
-    const sheet = sheetBlock(film);
-    const script = scriptBlock(film);
-    if (sheet || script) {
-      records[film.id] = (
-        <>
-          {sheet}
-          {script}
-        </>
-      );
+    /* each cut's own blocks, keyed by its row id, so the language toggle swaps them with the film */
+    for (const cut of filmCuts(film)) {
+      const sheet = sheetBlock(cut.film);
+      const script = scriptBlock(cut.film);
+      if (sheet || script) {
+        records[cut.rowId] = (
+          <>
+            {sheet}
+            {script}
+          </>
+        );
+      }
     }
   }
   return (

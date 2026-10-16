@@ -874,6 +874,70 @@ for (const slug of Object.keys(PINS)) {
   if (!films.some((film) => film.slug === slug)) fail(`published.json pins ${slug}, which is not on the MOTION.md roster`);
 }
 
+/* ---- language versions ---- */
+
+/** The language of every base cut: the roster is written in English and its films are cut in English first. */
+const BASE_LOCALE = 'en';
+
+const ENGLISH_NAMES = new Intl.DisplayNames(['en'], { type: 'language', fallback: 'none' });
+
+/**
+ * The locale a slug suffix names (`de`, `pt-br`, `zh-hant`), canonicalized,
+ * with its English name and its own name (`German`, `Deutsch`); undefined
+ * when the suffix is not a language Intl can name, so `-go` or `-v2` is
+ * never read as one.
+ */
+function languageOf(suffix) {
+  let locale;
+  try {
+    [locale] = Intl.getCanonicalLocales(suffix);
+  } catch {
+    return undefined;
+  }
+  const language = locale ? ENGLISH_NAMES.of(locale) : undefined;
+  if (!language) return undefined;
+  return { locale, language, name: capitalize(new Intl.DisplayNames([locale], { type: 'language' }).of(locale) ?? language) };
+}
+
+/**
+ * The grouping rule. A published film whose slug is a published film's slug
+ * plus `-<locale>` (slash-announcement-de of slash-announcement), in the same
+ * section, is that film's cut in another language: it leaves the roster as
+ * an entry of its own and becomes one of the base film's versions, which the
+ * page offers behind a language toggle with the English base cut first and
+ * selected. The shortest matching base wins, so a regional cut such as
+ * <slug>-pt-br groups under <slug> as Brazilian Portuguese.
+ * Its web copy, poster, credits, captions, sheet and script stay its own
+ * files under its own slug. An unpublished cut (no web copy) stays a roster
+ * entry until its web copy is pinned, since the toggle has nothing to play.
+ */
+const BY_SLUG = new Map(films.map((film) => [film.slug, film]));
+const versionsOf = new Map();
+for (const film of films) {
+  if (!film.media) continue;
+  let match;
+  for (let at = film.slug.indexOf('-'); at > 0; at = film.slug.indexOf('-', at + 1)) {
+    const base = BY_SLUG.get(film.slug.slice(0, at));
+    const language = languageOf(film.slug.slice(at + 1));
+    if (base?.media && base.section === film.section && language && language.locale !== BASE_LOCALE) {
+      match = { base, language };
+      break;
+    }
+  }
+  if (!match) continue;
+  if (!versionsOf.has(match.base.slug)) versionsOf.set(match.base.slug, []);
+  versionsOf.get(match.base.slug).push({ film, language: match.language });
+}
+for (const [slug, list] of versionsOf) {
+  const base = BY_SLUG.get(slug);
+  if (list.some((v) => versionsOf.has(v.film.slug))) fail(`${slug} has a language cut that has language cuts of its own`);
+  base.language = languageOf(BASE_LOCALE);
+  base.versions = list.map(({ film, language }) => ({ ...film, language }));
+  const folded = new Set(list.map((v) => v.film.slug));
+  for (let i = films.length - 1; i >= 0; i -= 1) if (folded.has(films[i].slug)) films.splice(i, 1);
+  console.log(`build-motion: ${slug}: one entry with its ${list.map((v) => `${v.language.language} (${v.film.slug})`).join(', ')} cuts behind a language toggle`);
+}
+
 /* page order: the roster's other films, then the series, each in roster order */
 const ordered = SECTIONS.flatMap((section) => films.filter((film) => film.section === section.id));
 ordered.forEach((film, i) => {
@@ -894,9 +958,28 @@ function objectLines(indent, fields) {
     .map(([key, value]) => `${pad}${key}: ${typeof value === 'number' ? String(value) : quote(value)},`);
 }
 
-/** `key: { ... },` at four spaces, the fields at six; nothing for an absent object. */
-function nested(key, fields) {
-  return fields ? [`    ${key}: {`, ...objectLines(6, fields), '    },'] : [];
+/** `key: { ... },` with the key at `indent` spaces and the fields two deeper; nothing for an absent object. */
+function nested(key, fields, indent = 4) {
+  const pad = ' '.repeat(indent);
+  return fields ? [`${pad}${key}: {`, ...objectLines(indent + 2, fields), `${pad}},`] : [];
+}
+
+/** The fields a language version owns (MotionCutFields, the ones filmLines writes for the base cut): what the toggle swaps. */
+function cutLines(film, indent) {
+  const pad = ' '.repeat(indent);
+  const lines = [];
+  if (film.runtime) lines.push(`${pad}runtime: ${quote(film.runtime)},`);
+  lines.push(`${pad}status: ${quote(film.status)},`);
+  lines.push(...nested('media', film.media, indent), ...nested('local', film.local, indent));
+  if (film.credits) lines.push(`${pad}credits: ${quote(film.credits)},`);
+  if (film.captions) lines.push(`${pad}captions: ${quote(film.captions)},`);
+  lines.push(
+    ...nested('cut', film.cut, indent),
+    ...nested('sheet', film.sheet, indent),
+    ...nested('script', film.script, indent),
+    ...nested('review', film.review, indent)
+  );
+  return lines;
 }
 
 function filmLines(film) {
@@ -911,12 +994,25 @@ function filmLines(film) {
   if (film.note) lines.push(`    note: ${quote(film.note)},`);
   if (film.runtime) lines.push(`    runtime: ${quote(film.runtime)},`);
   lines.push(`    status: ${quote(film.status)},`, `    section: ${quote(film.section)},`, `    summary: ${quote(film.summary)},`);
-  if (film.media) lines.push('    media: {', ...objectLines(6, film.media), '    },');
-  if (film.local) lines.push('    local: {', ...objectLines(6, film.local), '    },');
+  lines.push(...nested('media', film.media), ...nested('local', film.local));
   if (film.post) lines.push(`    post: ${quote(film.post)},`);
   if (film.credits) lines.push(`    credits: ${quote(film.credits)},`);
   if (film.captions) lines.push(`    captions: ${quote(film.captions)},`);
   lines.push(...nested('cut', film.cut), ...nested('sheet', film.sheet), ...nested('script', film.script), ...nested('review', film.review));
+  if (film.versions) {
+    lines.push(...nested('language', film.language), '    versions: [');
+    for (const version of film.versions) {
+      lines.push(
+        '      {',
+        `        slug: ${quote(version.slug)},`,
+        `        id: ${quote(`film-${version.slug}`)},`,
+        ...nested('language', version.language, 8),
+        ...cutLines(version, 8),
+        '      },'
+      );
+    }
+    lines.push('    ],');
+  }
   if (film.pkg) {
     lines.push(
       '    pkg: {',
@@ -977,6 +1073,41 @@ const out = [
   '/** A newer cut in motion/out, in review and not published: its label when its own script names it, and its length. Nothing else of it reaches the site. */',
   'export type MotionReview = { label?: string; length: string };',
   '',
+  '/** A cut\'s language: its BCP 47 locale (`de`), its English name (`German`) and its own name (`Deutsch`), the label the language toggle shows. */',
+  'export type MotionLanguage = { locale: string; language: string; name: string };',
+  '',
+  '/**',
+  ' * What one cut of a film owns: its running time and status, its web copy and its records',
+  ' * under the version rule. A film carries these for its base cut, and each of its',
+  ' * language versions carries its own, which the language toggle swaps in.',
+  ' */',
+  'export type MotionCutFields = {',
+  '  /** the final render\'s running time, `1:40`, read with ffprobe when it was available */',
+  '  runtime?: string;',
+  '  status: MotionStatus;',
+  '  media?: MotionMedia;',
+  '  local?: MotionLocal;',
+  '  /** a published cut\'s credits, copied verbatim from the folder that holds it and served at this root path */',
+  '  credits?: string;',
+  '  /** the published cut\'s captions in its own language, a WebVTT file copied from the folder that holds the cut and served at this root path */',
+  '  captions?: string;',
+  '  /** the published cut, for a cut with a web copy */',
+  '  cut?: MotionCut;',
+  '  /** the published cut\'s contact sheet, when the Videos session made one */',
+  '  sheet?: MotionSheet;',
+  '  /** the published cut\'s script as built, when the Videos session made one */',
+  '  script?: MotionScript;',
+  '  /** the cut in motion/out when it is not the published one */',
+  '  review?: MotionReview;',
+  '};',
+  '',
+  '/**',
+  ' * A film\'s cut in another language: a roster film whose slug is the base film\'s plus',
+  ' * `-<locale>`, folded into the base film\'s entry (scripts/build/motion.mjs, the grouping',
+  ' * rule). Its files keep its own slug; `film-<slug>` is its old row anchor on /motion.',
+  ' */',
+  'export type MotionVersion = MotionCutFields & { slug: string; id: string; language: MotionLanguage };',
+  '',
   'export type MotionPackage = {',
   '  /** the package h1 as plain text (asterisks stripped) */',
   '  title: string;',
@@ -987,7 +1118,7 @@ const out = [
   '  sections: readonly PackageSection[];',
   '};',
   '',
-  'export type MotionFilm = {',
+  'export type MotionFilm = MotionCutFields & {',
   '  /** the roster slug; also /motion/<slug> for a film with a package */',
   '  slug: string;',
   '  /** `film-<slug>`: the shell item id and the row anchor on /motion */',
@@ -1000,28 +1131,15 @@ const out = [
   '  length: string;',
   '  /** a roster parenthetical that is not a length: `assembled last` */',
   '  note?: string;',
-  '  /** the final render\'s running time, `1:40`, read with ffprobe when it was available */',
-  '  runtime?: string;',
-  '  status: MotionStatus;',
   '  section: MotionSectionId;',
   '  /** one sentence of inline markdown */',
   '  summary: string;',
-  '  media?: MotionMedia;',
-  '  local?: MotionLocal;',
   '  /** the blog post the film trails, when it is on this site */',
   '  post?: string;',
-  '  /** a published film\'s credits, copied verbatim from the folder that holds its published cut and served at this root path */',
-  '  credits?: string;',
-  '  /** the published cut\'s English captions, a WebVTT file copied from the folder that holds the cut and served at this root path */',
-  '  captions?: string;',
-  '  /** the published cut, for a film with a web copy */',
-  '  cut?: MotionCut;',
-  '  /** the published cut\'s contact sheet, when the Videos session made one */',
-  '  sheet?: MotionSheet;',
-  '  /** the published cut\'s script as built, when the Videos session made one */',
-  '  script?: MotionScript;',
-  '  /** the cut in motion/out when it is not the published one */',
-  '  review?: MotionReview;',
+  '  /** the base cut\'s language, English, present when the film has language versions */',
+  '  language?: MotionLanguage;',
+  '  /** the film\'s cuts in other languages, in roster order, behind the language toggle */',
+  '  versions?: readonly MotionVersion[];',
   '  pkg?: MotionPackage;',
   '};',
   '',
@@ -1038,9 +1156,12 @@ const out = [
   ...ordered.flatMap(filmLines),
   '];',
   '',
-  '/** Each published script\'s story and spoken lines as plain text, by film slug: what the search matches a script on. */',
+  '/** Each published script\'s story and spoken lines as plain text, by film slug (a film\'s language versions\' scripts after its own): what the search matches a script on. */',
   'export const MOTION_SCRIPT_WORDS: Readonly<Record<string, string>> = {',
-  ...ordered.filter((film) => scriptWords.has(film.slug)).map((film) => `  ${quote(film.slug)}: ${quote(scriptWords.get(film.slug))},`),
+  ...ordered
+    .map((film) => [film.slug, [film, ...(film.versions ?? [])].map((cut) => scriptWords.get(cut.slug)).filter(Boolean).join(' ')])
+    .filter(([, words]) => words)
+    .map(([slug, words]) => `  ${quote(slug)}: ${quote(words)},`),
   '};',
   '',
   '/** The films with a research package, each a page at /motion/<slug>. */',

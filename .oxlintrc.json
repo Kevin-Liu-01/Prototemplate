@@ -61,10 +61,17 @@
       }
     },
     {
-      // This repository has no LocaleFlag component (the rule's remedy); the
-      // principles slide draws its flags from the flag-icons sprite it
-      // imports itself.
+      // The principles slide draws its flags from the flag-icons sprite it
+      // imports itself; it predates this repository's LocaleFlag below.
       "files": ["src/app/present/slides/PrinciplesSlide.tsx"],
+      "rules": {
+        "gt-ui/no-raw-locale-flags": "off"
+      }
+    },
+    {
+      // LocaleFlag is the rule's remedy, gt-cloud's component with the same
+      // API: the one file that writes the fi / fi-xx classes.
+      "files": ["src/components/shared/LocaleFlag.tsx"],
       "rules": {
         "gt-ui/no-raw-locale-flags": "off"
       }

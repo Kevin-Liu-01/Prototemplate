@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import type { MouseEvent, ReactNode } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import BrandFilm from '@/app/brand/BrandFilm';
 import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import type { BadgeWord } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
@@ -15,12 +14,13 @@ import type { SubRows } from '@/components/viewer/Sidebar';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { MOTION_FILMS, MOTION_STATUS_LABEL, getMotionFilm, motionHref } from '@/lib/motion';
-import type { MotionFilm, MotionMedia, MotionStatus, PackageSectionId } from '@/lib/motion';
+import type { MotionFilm, MotionStatus, PackageSectionId } from '@/lib/motion';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import FilmCutPlayer, { useFilmCut } from '../FilmCutPlayer';
 import { cutWords, reviewWords } from '../records-words';
 import { filmById, motionSections } from '../sections';
 
@@ -106,28 +106,33 @@ function RawLink({ slug }: { slug: string }) {
  * conventions (BrandFilm): the poster and a play button that keeps the
  * native control bar off the title card until the first play, the 16:9 box
  * reserved by the width and height before the metadata arrives, and a link
- * that downloads the MP4.
+ * that downloads the MP4. A film with language versions gets the language
+ * toggle over it (FilmCutPlayer), which swaps the film, its poster, its
+ * captions, the MP4 and the credits; the sections below stay the base cut's.
  */
-function FilmHead({ film, media }: { film: MotionFilm; media: MotionMedia }) {
-  const name = `the ${film.title} film`;
+function FilmHead({ film }: { film: MotionFilm }) {
+  const state = useFilmCut(film);
+  const cut = state.current;
+  const media = cut.film.media;
+  const name = `the ${film.title} film${state.cuts.length > 1 && cut.language ? `, in ${cut.language.language}` : ''}`;
   return (
     <>
-      <figure className='mo-film mo-head-film'>
-        <BrandFilm captions={film.captions} name={name} poster={media.poster} src={media.video} />
-      </figure>
-      <p className='mo-send'>
-        <a aria-label={`download the MP4 of ${name}`} download href={media.video}>
-          download the MP4
-        </a>
-        {film.credits ? (
-          <>
-            {' · '}
-            <a aria-label={`download the credits of ${name} as text`} download href={film.credits}>
-              the credits as text
-            </a>
-          </>
-        ) : null}
-      </p>
+      <FilmCutPlayer film={film} state={state} className='mo-film mo-head-film' />
+      {media ? (
+        <p className='mo-send'>
+          <a aria-label={`download the MP4 of ${name}`} download href={media.video}>
+            download the MP4
+          </a>
+          {cut.film.credits ? (
+            <>
+              {' · '}
+              <a aria-label={`download the credits of ${name} as text`} download href={cut.film.credits}>
+                the credits as text
+              </a>
+            </>
+          ) : null}
+        </p>
+      ) : null}
     </>
   );
 }
@@ -414,7 +419,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
             <div className='ptd-row ptd-lead'>
               <div className='ptd-pn' aria-hidden='true' />
               <div className='ptd-body pt-root'>
-                {film.media ? <FilmHead film={film} media={film.media} /> : null}
+                {film.media ? <FilmHead film={film} /> : null}
                 <StatusLine film={film} />
                 {film.review ? <p className='mo-review'>A newer cut is in review: {reviewWords(film.review)}.</p> : null}
                 {credits ? (

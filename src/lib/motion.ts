@@ -39,6 +39,41 @@ export type MotionScript = { src: string; label?: string; length: string; voices
 /** A newer cut in motion/out, in review and not published: its label when its own script names it, and its length. Nothing else of it reaches the site. */
 export type MotionReview = { label?: string; length: string };
 
+/** A cut's language: its BCP 47 locale (`de`), its English name (`German`) and its own name (`Deutsch`), the label the language toggle shows. */
+export type MotionLanguage = { locale: string; language: string; name: string };
+
+/**
+ * What one cut of a film owns: its running time and status, its web copy and its records
+ * under the version rule. A film carries these for its base cut, and each of its
+ * language versions carries its own, which the language toggle swaps in.
+ */
+export type MotionCutFields = {
+  /** the final render's running time, `1:40`, read with ffprobe when it was available */
+  runtime?: string;
+  status: MotionStatus;
+  media?: MotionMedia;
+  local?: MotionLocal;
+  /** a published cut's credits, copied verbatim from the folder that holds it and served at this root path */
+  credits?: string;
+  /** the published cut's captions in its own language, a WebVTT file copied from the folder that holds the cut and served at this root path */
+  captions?: string;
+  /** the published cut, for a cut with a web copy */
+  cut?: MotionCut;
+  /** the published cut's contact sheet, when the Videos session made one */
+  sheet?: MotionSheet;
+  /** the published cut's script as built, when the Videos session made one */
+  script?: MotionScript;
+  /** the cut in motion/out when it is not the published one */
+  review?: MotionReview;
+};
+
+/**
+ * A film's cut in another language: a roster film whose slug is the base film's plus
+ * `-<locale>`, folded into the base film's entry (scripts/build/motion.mjs, the grouping
+ * rule). Its files keep its own slug; `film-<slug>` is its old row anchor on /motion.
+ */
+export type MotionVersion = MotionCutFields & { slug: string; id: string; language: MotionLanguage };
+
 export type MotionPackage = {
   /** the package h1 as plain text (asterisks stripped) */
   title: string;
@@ -49,7 +84,7 @@ export type MotionPackage = {
   sections: readonly PackageSection[];
 };
 
-export type MotionFilm = {
+export type MotionFilm = MotionCutFields & {
   /** the roster slug; also /motion/<slug> for a film with a package */
   slug: string;
   /** `film-<slug>`: the shell item id and the row anchor on /motion */
@@ -62,28 +97,15 @@ export type MotionFilm = {
   length: string;
   /** a roster parenthetical that is not a length: `assembled last` */
   note?: string;
-  /** the final render's running time, `1:40`, read with ffprobe when it was available */
-  runtime?: string;
-  status: MotionStatus;
   section: MotionSectionId;
   /** one sentence of inline markdown */
   summary: string;
-  media?: MotionMedia;
-  local?: MotionLocal;
   /** the blog post the film trails, when it is on this site */
   post?: string;
-  /** a published film's credits, copied verbatim from the folder that holds its published cut and served at this root path */
-  credits?: string;
-  /** the published cut's English captions, a WebVTT file copied from the folder that holds the cut and served at this root path */
-  captions?: string;
-  /** the published cut, for a film with a web copy */
-  cut?: MotionCut;
-  /** the published cut's contact sheet, when the Videos session made one */
-  sheet?: MotionSheet;
-  /** the published cut's script as built, when the Videos session made one */
-  script?: MotionScript;
-  /** the cut in motion/out when it is not the published one */
-  review?: MotionReview;
+  /** the base cut's language, English, present when the film has language versions */
+  language?: MotionLanguage;
+  /** the film's cuts in other languages, in roster order, behind the language toggle */
+  versions?: readonly MotionVersion[];
   pkg?: MotionPackage;
 };
 
@@ -386,140 +408,147 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
       voices: 'Narrator: Frederick Surrey',
       lines: 6,
     },
-  },
-  {
-    slug: 'slash-announcement-de',
-    id: 'film-slash-announcement-de',
-    n: '10',
-    title: 'Supporting Slash companies, in German',
-    length: '35 to 40 s',
-    runtime: '0:37',
-    status: 'rendered',
-    section: 'motion-films',
-    summary: 'The German cut of Supporting Slash companies, read in German by Clemens.',
-    media: {
-      video: '/media/slash-announcement-de-film.mp4',
-      poster: '/media/slash-announcement-de-poster.jpg',
+    language: {
+      locale: 'en',
+      language: 'English',
+      name: 'English',
     },
-    local: {
-      folder: 'motion/films/slash-announcement-de',
-      video: 'motion/out/slash-announcement-de.mp4',
-      poster: 'motion/out/slash-announcement-de.png',
-      sheet: 'motion/out/_sheets/slash-announcement-de.png',
-    },
-    credits: '/motion/slash-announcement-de.credits.txt',
-    cut: {
-      label: 'v2, from the English v8 (fix round 1)',
-      length: '37.0 s',
-      render: 'motion/out/slash-announcement-de.mp4',
-    },
-    sheet: {
-      src: '/motion/sheets/slash-announcement-de.webp',
-      width: 3093,
-      height: 2187,
-      bytes: 597560,
-      frames: 74,
-      png: '/motion/sheets/slash-announcement-de.png',
-      pngBytes: 3316109,
-    },
-    script: {
-      src: '/motion/scripts/slash-announcement-de.md',
-      label: 'v2, from the English v8 (fix round 1)',
-      length: '37.0 s',
-      voices: 'Narrator: Clemens',
-      lines: 6,
-    },
-  },
-  {
-    slug: 'slash-announcement-es',
-    id: 'film-slash-announcement-es',
-    n: '11',
-    title: 'Supporting Slash companies, in Spanish',
-    length: '35 to 40 s',
-    runtime: '0:39',
-    status: 'rendered',
-    section: 'motion-films',
-    summary: 'The Spanish cut of Supporting Slash companies, read in Spanish by Edoardo.',
-    media: {
-      video: '/media/slash-announcement-es-film.mp4',
-      poster: '/media/slash-announcement-es-poster.jpg',
-    },
-    local: {
-      folder: 'motion/films/slash-announcement-es',
-      video: 'motion/out/slash-announcement-es.mp4',
-      poster: 'motion/out/slash-announcement-es.png',
-      sheet: 'motion/out/_sheets/slash-announcement-es.png',
-    },
-    credits: '/motion/slash-announcement-es.credits.txt',
-    cut: {
-      label: 'v2, from the English v8 (fix round 1)',
-      length: '38.8 s',
-      render: 'motion/out/slash-announcement-es.mp4',
-    },
-    sheet: {
-      src: '/motion/sheets/slash-announcement-es.webp',
-      width: 3093,
-      height: 2187,
-      bytes: 594548,
-      frames: 78,
-      png: '/motion/sheets/slash-announcement-es.png',
-      pngBytes: 3183185,
-    },
-    script: {
-      src: '/motion/scripts/slash-announcement-es.md',
-      label: 'v2, from the English v8 (fix round 1)',
-      length: '38.8 s',
-      voices: 'Narrator: Edoardo',
-      lines: 6,
-    },
-  },
-  {
-    slug: 'slash-announcement-ja',
-    id: 'film-slash-announcement-ja',
-    n: '12',
-    title: 'Supporting Slash companies, in Japanese',
-    length: '35 to 40 s',
-    runtime: '0:38',
-    status: 'rendered',
-    section: 'motion-films',
-    summary: 'The Japanese cut of Supporting Slash companies, read in Japanese by Otani.',
-    media: {
-      video: '/media/slash-announcement-ja-film.mp4',
-      poster: '/media/slash-announcement-ja-poster.jpg',
-    },
-    local: {
-      folder: 'motion/films/slash-announcement-ja',
-      video: 'motion/out/slash-announcement-ja.mp4',
-      poster: 'motion/out/slash-announcement-ja.png',
-      sheet: 'motion/out/_sheets/slash-announcement-ja.png',
-    },
-    credits: '/motion/slash-announcement-ja.credits.txt',
-    cut: {
-      label: 'v2, from the English v8 (fix round 1)',
-      length: '38.4 s',
-      render: 'motion/out/slash-announcement-ja.mp4',
-    },
-    sheet: {
-      src: '/motion/sheets/slash-announcement-ja.webp',
-      width: 3093,
-      height: 2187,
-      bytes: 565100,
-      frames: 77,
-      png: '/motion/sheets/slash-announcement-ja.png',
-      pngBytes: 3412908,
-    },
-    script: {
-      src: '/motion/scripts/slash-announcement-ja.md',
-      label: 'v2, from the English v8 (fix round 1)',
-      length: '38.4 s',
-      voices: 'Narrator: Otani',
-      lines: 6,
-    },
+    versions: [
+      {
+        slug: 'slash-announcement-de',
+        id: 'film-slash-announcement-de',
+        language: {
+          locale: 'de',
+          language: 'German',
+          name: 'Deutsch',
+        },
+        runtime: '0:37',
+        status: 'rendered',
+        media: {
+          video: '/media/slash-announcement-de-film.mp4',
+          poster: '/media/slash-announcement-de-poster.jpg',
+        },
+        local: {
+          folder: 'motion/films/slash-announcement-de',
+          video: 'motion/out/slash-announcement-de.mp4',
+          poster: 'motion/out/slash-announcement-de.png',
+          sheet: 'motion/out/_sheets/slash-announcement-de.png',
+        },
+        credits: '/motion/slash-announcement-de.credits.txt',
+        cut: {
+          label: 'v2, from the English v8 (fix round 1)',
+          length: '37.0 s',
+          render: 'motion/out/slash-announcement-de.mp4',
+        },
+        sheet: {
+          src: '/motion/sheets/slash-announcement-de.webp',
+          width: 3093,
+          height: 2187,
+          bytes: 597560,
+          frames: 74,
+          png: '/motion/sheets/slash-announcement-de.png',
+          pngBytes: 3316109,
+        },
+        script: {
+          src: '/motion/scripts/slash-announcement-de.md',
+          label: 'v2, from the English v8 (fix round 1)',
+          length: '37.0 s',
+          voices: 'Narrator: Clemens',
+          lines: 6,
+        },
+      },
+      {
+        slug: 'slash-announcement-es',
+        id: 'film-slash-announcement-es',
+        language: {
+          locale: 'es',
+          language: 'Spanish',
+          name: 'Español',
+        },
+        runtime: '0:39',
+        status: 'rendered',
+        media: {
+          video: '/media/slash-announcement-es-film.mp4',
+          poster: '/media/slash-announcement-es-poster.jpg',
+        },
+        local: {
+          folder: 'motion/films/slash-announcement-es',
+          video: 'motion/out/slash-announcement-es.mp4',
+          poster: 'motion/out/slash-announcement-es.png',
+          sheet: 'motion/out/_sheets/slash-announcement-es.png',
+        },
+        credits: '/motion/slash-announcement-es.credits.txt',
+        cut: {
+          label: 'v2, from the English v8 (fix round 1)',
+          length: '38.8 s',
+          render: 'motion/out/slash-announcement-es.mp4',
+        },
+        sheet: {
+          src: '/motion/sheets/slash-announcement-es.webp',
+          width: 3093,
+          height: 2187,
+          bytes: 594548,
+          frames: 78,
+          png: '/motion/sheets/slash-announcement-es.png',
+          pngBytes: 3183185,
+        },
+        script: {
+          src: '/motion/scripts/slash-announcement-es.md',
+          label: 'v2, from the English v8 (fix round 1)',
+          length: '38.8 s',
+          voices: 'Narrator: Edoardo',
+          lines: 6,
+        },
+      },
+      {
+        slug: 'slash-announcement-ja',
+        id: 'film-slash-announcement-ja',
+        language: {
+          locale: 'ja',
+          language: 'Japanese',
+          name: '日本語',
+        },
+        runtime: '0:38',
+        status: 'rendered',
+        media: {
+          video: '/media/slash-announcement-ja-film.mp4',
+          poster: '/media/slash-announcement-ja-poster.jpg',
+        },
+        local: {
+          folder: 'motion/films/slash-announcement-ja',
+          video: 'motion/out/slash-announcement-ja.mp4',
+          poster: 'motion/out/slash-announcement-ja.png',
+          sheet: 'motion/out/_sheets/slash-announcement-ja.png',
+        },
+        credits: '/motion/slash-announcement-ja.credits.txt',
+        cut: {
+          label: 'v2, from the English v8 (fix round 1)',
+          length: '38.4 s',
+          render: 'motion/out/slash-announcement-ja.mp4',
+        },
+        sheet: {
+          src: '/motion/sheets/slash-announcement-ja.webp',
+          width: 3093,
+          height: 2187,
+          bytes: 565100,
+          frames: 77,
+          png: '/motion/sheets/slash-announcement-ja.png',
+          pngBytes: 3412908,
+        },
+        script: {
+          src: '/motion/scripts/slash-announcement-ja.md',
+          label: 'v2, from the English v8 (fix round 1)',
+          length: '38.4 s',
+          voices: 'Narrator: Otani',
+          lines: 6,
+        },
+      },
+    ],
   },
   {
     slug: 'gif-how-gt-works',
     id: 'film-gif-how-gt-works',
-    n: '13',
+    n: '10',
     title: 'How General Translation works',
     length: '15 to 18 s',
     runtime: '0:17',
@@ -553,7 +582,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-best-localization-software',
     id: 'film-kb-best-localization-software',
-    n: '14',
+    n: '11',
     title: 'What is the best localization software for developers?',
     length: '40 to 52 s',
     runtime: '0:44',
@@ -596,7 +625,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-what-is-locadex',
     id: 'film-kb-what-is-locadex',
-    n: '15',
+    n: '12',
     title: 'What does the Locadex agent do?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -639,7 +668,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-i18n-without-translation-files',
     id: 'film-kb-i18n-without-translation-files',
-    n: '16',
+    n: '13',
     title: 'Can I do i18n without translation files?',
     length: '40 to 52 s',
     runtime: '0:47',
@@ -682,7 +711,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-add-i18n-to-nextjs',
     id: 'film-kb-add-i18n-to-nextjs',
-    n: '17',
+    n: '14',
     title: 'How do I add i18n to a Next.js app?',
     length: '40 to 52 s',
     runtime: '0:51',
@@ -725,7 +754,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-react-app',
     id: 'film-kb-translate-react-app',
-    n: '18',
+    n: '15',
     title: 'How do I translate a React app?',
     length: '40 to 52 s',
     runtime: '0:49',
@@ -768,7 +797,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-vue-app',
     id: 'film-kb-translate-vue-app',
-    n: '19',
+    n: '16',
     title: 'How do I translate a Vue app?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -811,7 +840,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-react-native-app',
     id: 'film-kb-translate-react-native-app',
-    n: '20',
+    n: '17',
     title: 'How do I translate a React Native app?',
     length: '40 to 52 s',
     runtime: '0:47',
@@ -854,7 +883,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-tanstack-start-app',
     id: 'film-kb-translate-tanstack-start-app',
-    n: '21',
+    n: '18',
     title: 'How do I translate a TanStack Start app?',
     length: '40 to 52 s',
     runtime: '0:49',
@@ -897,7 +926,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-node-app',
     id: 'film-kb-translate-node-app',
-    n: '22',
+    n: '19',
     title: 'How do I translate a Node.js app?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -940,7 +969,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-conditional-jsx',
     id: 'film-kb-translate-conditional-jsx',
-    n: '23',
+    n: '20',
     title: 'How do I translate conditional text in JSX?',
     length: '40 to 52 s',
     runtime: '0:46',
@@ -983,7 +1012,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-strings-outside-jsx',
     id: 'film-kb-translate-strings-outside-jsx',
-    n: '24',
+    n: '21',
     title: 'How do I translate strings outside JSX?',
     length: '40 to 52 s',
     runtime: '0:49',
@@ -1026,7 +1055,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-how-to-handle-plurals-in-react',
     id: 'film-kb-how-to-handle-plurals-in-react',
-    n: '25',
+    n: '22',
     title: 'How do I handle plurals in React?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1069,7 +1098,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-format-numbers-dates-currencies',
     id: 'film-kb-format-numbers-dates-currencies',
-    n: '26',
+    n: '23',
     title: 'How do I format numbers, dates and currencies for each locale?',
     length: '40 to 52 s',
     runtime: '0:45',
@@ -1112,7 +1141,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-multilingual-nextjs-seo',
     id: 'film-kb-multilingual-nextjs-seo',
-    n: '27',
+    n: '24',
     title: 'How do I set up SEO for a multilingual Next.js app?',
     length: '40 to 52 s',
     runtime: '0:50',
@@ -1155,7 +1184,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-ai-agent-i18n-setup',
     id: 'film-kb-ai-agent-i18n-setup',
-    n: '28',
+    n: '25',
     title: 'Can an AI coding agent set up i18n for me?',
     length: '40 to 52 s',
     runtime: '0:46',
@@ -1198,7 +1227,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-review-translations',
     id: 'film-kb-review-translations',
-    n: '29',
+    n: '26',
     title: 'How do I review and edit translations?',
     length: '40 to 52 s',
     runtime: '0:45',
@@ -1241,7 +1270,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translations-in-ci',
     id: 'film-kb-translations-in-ci',
-    n: '30',
+    n: '27',
     title: 'How do I keep translations up to date on every deploy?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1284,7 +1313,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-mintlify-docs',
     id: 'film-kb-translate-mintlify-docs',
-    n: '31',
+    n: '28',
     title: 'How do I translate a Mintlify docs site?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1327,7 +1356,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-sanity-content',
     id: 'film-kb-translate-sanity-content',
-    n: '32',
+    n: '29',
     title: 'How do I translate content in Sanity?',
     length: '40 to 52 s',
     runtime: '0:47',
@@ -1370,7 +1399,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-storyblok-content',
     id: 'film-kb-translate-storyblok-content',
-    n: '33',
+    n: '30',
     title: 'How do I translate content in Storyblok?',
     length: '40 to 52 s',
     runtime: '0:50',
@@ -1413,7 +1442,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-google-slides',
     id: 'film-kb-translate-google-slides',
-    n: '34',
+    n: '31',
     title: 'How do I translate Google Slides?',
     length: '40 to 52 s',
     runtime: '0:50',
@@ -1456,7 +1485,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-srt-subtitles',
     id: 'film-kb-translate-srt-subtitles',
-    n: '35',
+    n: '32',
     title: 'How do I translate SRT subtitles?',
     length: '40 to 52 s',
     runtime: '0:51',
@@ -1499,7 +1528,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-product-walkthroughs',
     id: 'film-kb-translate-product-walkthroughs',
-    n: '36',
+    n: '33',
     title: 'How do I show a product walkthrough in every language?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1542,7 +1571,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-lottie-animations',
     id: 'film-kb-translate-lottie-animations',
-    n: '37',
+    n: '34',
     title: 'How do I translate a Lottie animation?',
     length: '40 to 52 s',
     runtime: '0:49',
@@ -1585,7 +1614,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'showreel',
     id: 'film-showreel',
-    n: '38',
+    n: '35',
     title: 'Showreel',
     length: '40 to 50 s',
     note: 'assembled last',
@@ -1596,7 +1625,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'jihe-yuanben',
     id: 'film-jihe-yuanben',
-    n: '39',
+    n: '36',
     title: 'Ricci, Xu Guangqi, and the Chinese vocabulary of Euclid',
     length: '60 to 100 s',
     runtime: '1:15',
@@ -1652,7 +1681,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'journey-to-the-west',
     id: 'film-journey-to-the-west',
-    n: '40',
+    n: '37',
     title: 'Waley, Hu Shih, and the English names of Journey to the West',
     length: '60 to 100 s',
     runtime: '1:13',
@@ -1707,7 +1736,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'modern-hebrew',
     id: 'film-modern-hebrew',
-    n: '41',
+    n: '38',
     title: 'Ben-Yehuda, Pines, and the vocabulary of Modern Hebrew',
     length: '60 to 100 s',
     runtime: '1:10',
@@ -1762,7 +1791,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'nishi-amane',
     id: 'film-nishi-amane',
-    n: '42',
+    n: '39',
     title: 'Nishi Amane and the Japanese vocabulary of philosophy',
     length: '60 to 100 s',
     runtime: '1:36',
@@ -1815,7 +1844,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'tyndale',
     id: 'film-tyndale',
-    n: '43',
+    n: '40',
     title: 'Tyndale, More, and the English vocabulary of the Bible',
     length: '60 to 100 s',
     runtime: '1:37',
@@ -1868,7 +1897,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'hunayn',
     id: 'film-hunayn',
-    n: '44',
+    n: '41',
     title: 'Ḥunayn, Ḥubaysh, and the Arabic vocabulary of Galen',
     length: '60 to 100 s',
     runtime: '1:40',
@@ -1920,16 +1949,13 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   },
 ];
 
-/** Each published script's story and spoken lines as plain text, by film slug: what the search matches a script on. */
+/** Each published script's story and spoken lines as plain text, by film slug (a film's language versions' scripts after its own): what the search matches a script on. */
 export const MOTION_SCRIPT_WORDS: Readonly<Record<string, string>> = {
   'blog-designing-docs': 'Most docs readers are now AI agents, which makes an intuitive, intentional docs interface even more important, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem. Most docs readers are now AI agents. An intuitive, intentional docs interface becomes even more important. General Translation redesigned its docs from scratch so people would read its writing. Interfaces keep getting more cluttered, which creates mental clutter. The redesign started by deleting extra lines, links, and buttons. The sidebar is now one accordion, which is rare among docs sites. The writing now has more open space around it. Translated pages keep the same spacing and alignment. Each page guides its reader toward the action they want. Docs design is an open problem, and the team keeps working on it.',
   'blog-rewriting-docs': 'Docs now have two readers, so General Translation rebuilt its docs for both: for people each page starts with what it covers, and for agents every page is also served as raw Markdown. Docs now have two readers: people and AI agents. General Translation rebuilt its docs from scratch for both. For people, each page starts with what it covers and when to use it. For agents, every page is also served as raw Markdown.',
   'blog-fuma-nama': 'One developer, Fuma Nama, created Fumadocs, a docs framework with over 13,000 GitHub stars that Vercel Turborepo, shadcn/ui, Better Auth, Unkey and many others use, and he has built it for three years on top of his schoolwork. He learned to code by modding games and reading code, and he did not read documentation. He designed Fumadocs in four layers that developers can take apart, down to copying only the table of contents into their own code. He thinks he would build it the same shape again, and General Translation has made it its first open-source grantee. One developer created Fumadocs, a docs framework with over 13,000 stars on GitHub. Vercel Turborepo, shadcn/ui, Better Auth, Unkey and many others use it. Fuma Nama has built it for three years, on top of his schoolwork. He learned to code by modding games and reading piles of JavaScript. He did not look at any documentation while he was learning. He designed Fumadocs in four layers that developers can take apart and reshape. The CLI can copy just the table of contents into your codebase. If he started again from scratch, he thinks Fumadocs would probably have the same shape. Fumadocs is General Translation’s first open-source grantee.',
   'release-board': 'A split-flap board fills with the newest releases of General Translation\'s packages, and the newest, gt 2.23, lets you sign in and set up projects from the CLI. This board lists the newest releases of General Translation’s packages. The newest, gt 2.23, lets you sign in and set up projects from the CLI.',
-  'slash-announcement': 'Slash is building the financial command center for businesses and supports sending and receiving global payments to 180+ countries. General Translation is partnering with Slash, and eligible Slash customers can receive up to $2,000 in translation credits for their app, website, documentation, slides and design files. Slash is building the financial command center for businesses. They support sending and receiving global payments to over 180 countries. We\'re excited to partner with Slash to help ambitious companies reach customers in every language. So if you bank with Slash, we\'re giving you up to two thousand dollars in translation credits to localize any product surface. That covers your app, website, documentation, slides, design files, and more. Your product should exist in every language.',
-  'slash-announcement-de': 'The German version of General Translation\'s Slash announcement: Slash is building the financial command center for businesses and supports global payments to more than 180 countries; General Translation is partnering with Slash, and eligible Slash customers can receive up to $2,000 in translation credits for their app, website, documentation, slides and design files. Draft translation, for a native speaker\'s check. Slash entwickelt die Kommandozentrale für Unternehmensfinanzen. Damit senden und empfangen Unternehmen internationale Zahlungen in mehr als 180 Ländern. Wir freuen uns, als Partner von Slash ambitionierten Unternehmen zu helfen, Kunden in jeder Sprache zu erreichen. Wenn Ihr Unternehmen also Slash nutzt, erhalten Sie von uns bis zu 2.000 Dollar Übersetzungsguthaben, um jeden Teil Ihres Produkts zu lokalisieren. Das umfasst Ihre App, Website, Dokumentation, Folien, Designdateien und mehr. Ihr Produkt sollte in jeder Sprache existieren.',
-  'slash-announcement-es': 'The Spanish version of General Translation\'s Slash announcement: Slash is building the financial command center for businesses and supports global payments to more than 180 countries; General Translation is partnering with Slash, and eligible Slash customers can receive up to $2,000 in translation credits for their app, website, documentation, slides and design files. Draft translation, for a native speaker\'s check. Slash está construyendo el centro de control financiero para empresas. Permite enviar y recibir pagos internacionales en más de 180 países. Nos entusiasma asociarnos con Slash para ayudar a empresas ambiciosas a llegar a clientes en todos los idiomas. Si usas Slash, te damos hasta 2000 dólares en créditos de traducción para localizar cualquier parte de tu producto. Eso incluye tu app, sitio web, documentación, diapositivas, archivos de diseño y más. Tu producto debería existir en todos los idiomas.',
-  'slash-announcement-ja': 'The Japanese version of General Translation\'s Slash announcement: Slash is building the financial command center for businesses and supports global payments to more than 180 countries; General Translation is partnering with Slash, and eligible Slash customers can receive up to $2,000 in translation credits for their app, website, documentation, slides and design files. Draft translation, for a native speaker\'s check. Slashは、企業財務の司令塔をつくっています。送金と受け取りの対応国は、180か国以上です。 Slashと提携し、意欲的な企業があらゆる言語で顧客とつながるお手伝いができて、うれしく思います。 Slashをご利用の方には、最大で2,000ドル分の翻訳クレジットを提供し、プロダクトのどの部分のローカライズにも使えます。 対象は、アプリ、ウェブサイト、ドキュメント、スライド、デザインファイルなどです。 あなたのプロダクトは、あらゆる言語で存在すべきです。',
+  'slash-announcement': 'Slash is building the financial command center for businesses and supports sending and receiving global payments to 180+ countries. General Translation is partnering with Slash, and eligible Slash customers can receive up to $2,000 in translation credits for their app, website, documentation, slides and design files. Slash is building the financial command center for businesses. They support sending and receiving global payments to over 180 countries. We\'re excited to partner with Slash to help ambitious companies reach customers in every language. So if you bank with Slash, we\'re giving you up to two thousand dollars in translation credits to localize any product surface. That covers your app, website, documentation, slides, design files, and more. Your product should exist in every language. The German version of General Translation\'s Slash announcement: Slash is building the financial command center for businesses and supports global payments to more than 180 countries; General Translation is partnering with Slash, and eligible Slash customers can receive up to $2,000 in translation credits for their app, website, documentation, slides and design files. Draft translation, for a native speaker\'s check. Slash entwickelt die Kommandozentrale für Unternehmensfinanzen. Damit senden und empfangen Unternehmen internationale Zahlungen in mehr als 180 Ländern. Wir freuen uns, als Partner von Slash ambitionierten Unternehmen zu helfen, Kunden in jeder Sprache zu erreichen. Wenn Ihr Unternehmen also Slash nutzt, erhalten Sie von uns bis zu 2.000 Dollar Übersetzungsguthaben, um jeden Teil Ihres Produkts zu lokalisieren. Das umfasst Ihre App, Website, Dokumentation, Folien, Designdateien und mehr. Ihr Produkt sollte in jeder Sprache existieren. The Spanish version of General Translation\'s Slash announcement: Slash is building the financial command center for businesses and supports global payments to more than 180 countries; General Translation is partnering with Slash, and eligible Slash customers can receive up to $2,000 in translation credits for their app, website, documentation, slides and design files. Draft translation, for a native speaker\'s check. Slash está construyendo el centro de control financiero para empresas. Permite enviar y recibir pagos internacionales en más de 180 países. Nos entusiasma asociarnos con Slash para ayudar a empresas ambiciosas a llegar a clientes en todos los idiomas. Si usas Slash, te damos hasta 2000 dólares en créditos de traducción para localizar cualquier parte de tu producto. Eso incluye tu app, sitio web, documentación, diapositivas, archivos de diseño y más. Tu producto debería existir en todos los idiomas. The Japanese version of General Translation\'s Slash announcement: Slash is building the financial command center for businesses and supports global payments to more than 180 countries; General Translation is partnering with Slash, and eligible Slash customers can receive up to $2,000 in translation credits for their app, website, documentation, slides and design files. Draft translation, for a native speaker\'s check. Slashは、企業財務の司令塔をつくっています。送金と受け取りの対応国は、180か国以上です。 Slashと提携し、意欲的な企業があらゆる言語で顧客とつながるお手伝いができて、うれしく思います。 Slashをご利用の方には、最大で2,000ドル分の翻訳クレジットを提供し、プロダクトのどの部分のローカライズにも使えます。 対象は、アプリ、ウェブサイト、ドキュメント、スライド、デザインファイルなどです。 あなたのプロダクトは、あらゆる言語で存在すべきです。',
   'kb-best-localization-software': 'Look for one system that covers the whole pipeline, from the i18n library in your code to translation and delivery. In Mexico City, a reader of Spanish gets your Home page in English. Its English is in the component, and nothing in the project translates it. General Translation covers the whole pipeline, from your code to translation and delivery. Run npx gt init and wrap the content in a T component, with no keys to write. One command in your build writes the German, Japanese and Spanish translations. Once your repository is connected, Locadex can open a pull request with new translations when you push. In Mexico City, the Home page now opens in Spanish.',
   'kb-what-is-locadex': 'Locadex is General Translation\'s AI agent. Connected to a GitHub repository, it opens pull requests that set up internationalization, wrap untranslated text in the right i18n calls, translate new content into every target language, and keep locale files in sync. In Nagoya, your app offers Spanish and French, and a Japanese reader gets English. The app\'s gt.config.json lists Spanish and French, and nothing else. General Translation uses its AI agent Locadex to open pull requests that translate your app. Connect GitHub in the Dashboard, and create an automation from a template. Run setup with Japanese as a target, and Locadex opens a pull request. Turn on auto-merge, and Locadex merges its pull requests when checks pass. After the merge, the automation translates into every target language. Along with Spanish and French, your app now opens in Japanese in Nagoya.',
   'kb-i18n-without-translation-files': 'Yes. With gt-react or gt-next, content stays inline in your components inside a <T> component, and translations are generated at build time as output, so there are no keys or per-locale JSON files to write and keep in sync. In Tokyo, your checkout page opens in Japanese with one line still in English. Its key went into en.json, and nobody added it to ja.json. General Translation lets you stop writing translation files with gt-react or gt-next. Run npx gt init to set up gt-next and choose your languages. Write the English inside a T component, and nobody has to update ja.json by hand. Then add npx gt translate to your build script, and every build writes the Japanese. Now the tax line appears in Spanish, French and Japanese with the rest of the page.',

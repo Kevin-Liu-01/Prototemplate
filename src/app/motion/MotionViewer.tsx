@@ -4,7 +4,6 @@ import Link from 'next/link';
 import type { MouseEvent, ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
 
-import BrandFilm from '@/app/brand/BrandFilm';
 import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { Icon } from '@/components/viewer/icons';
@@ -20,6 +19,7 @@ import type { ShellMode } from '@/lib/shell-data';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import FilmCutPlayer, { useFilmCut } from './FilmCutPlayer';
 import { cutWords, megabytes, reviewWords } from './records-words';
 import { motionSections } from './sections';
 
@@ -145,9 +145,57 @@ function FilmRecords({ film, more }: FilmRecordsProps) {
   );
 }
 
+type FilmBodyProps = {
+  film: MotionFilm;
+  summary: ReactNode;
+  /** the full record blocks of each cut without a page, by the cut's row id */
+  records: Readonly<Record<string, ReactNode>>;
+};
+
+/**
+ * A roster row's body: the title and summary, then the chosen cut's player
+ * (FilmCutPlayer, with the language toggle when the film has language
+ * versions), the links, the cut's records and its meta line. The toggle
+ * swaps everything that belongs to one cut: the video, its poster and
+ * captions, its contact sheet and script, its running time and its path.
+ */
+function FilmBody({ film, summary, records }: FilmBodyProps) {
+  const state = useFilmCut(film);
+  const { current } = state;
+  const view = current.film;
+  const path = localPath(view);
+  return (
+    <div className='gx-body'>
+      <h3>{film.title}</h3>
+      <p>{summary}</p>
+      <FilmCutPlayer film={film} state={state} className='mo-film' />
+      {film.pkg || film.post ? (
+        <p className='mo-links'>
+          {film.pkg ? <Link href={`/motion/${film.slug}`}>Read the research package</Link> : null}
+          {film.pkg && film.post ? ' · ' : null}
+          {film.post ? <Link href={film.post}>Read the post</Link> : null}
+        </p>
+      ) : null}
+      <FilmRecords film={view} more={records[current.rowId]} />
+      <p className='gx-line'>
+        {view.runtime ?? view.length}
+        {view.note ? ` · ${view.note}` : null}
+        {' · '}
+        <span className={cn('mo-status', view.status === 'rendered' && 'is-rendered')}>{MOTION_STATUS_LABEL[view.status]}</span>
+        {path ? (
+          <>
+            {' · '}
+            <code>{path}</code>
+          </>
+        ) : null}
+      </p>
+    </div>
+  );
+}
+
 type MotionBookProps = {
   summaries: Readonly<Record<string, ReactNode>>;
-  /** the full record blocks of each film without a page, by film id */
+  /** the full record blocks of each cut of a film without a page, by the cut's row id */
   records: Readonly<Record<string, ReactNode>>;
   /** the flow sheet's scroll region */
   sheetRef: RefObject<HTMLDivElement | null>;
@@ -320,7 +368,6 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
             </div>
             {films.map((film) => {
               const isActive = film.id === active;
-              const path = localPath(film);
               return (
                 <article
                   key={film.id}
@@ -332,42 +379,7 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
                   <div className='gx-n'>
                     <b>{film.n}</b>
                   </div>
-                  <div className='gx-body'>
-                    <h3>{film.title}</h3>
-                    <p>{summaries[film.id]}</p>
-                    {film.media ? (
-                      <figure className='mo-film'>
-                        <BrandFilm
-                          captions={film.captions}
-                          name={`the ${film.title} film`}
-                          poster={film.media.poster}
-                          src={film.media.video}
-                        />
-                      </figure>
-                    ) : null}
-                    {film.pkg || film.post ? (
-                      <p className='mo-links'>
-                        {film.pkg ? <Link href={`/motion/${film.slug}`}>Read the research package</Link> : null}
-                        {film.pkg && film.post ? ' · ' : null}
-                        {film.post ? <Link href={film.post}>Read the post</Link> : null}
-                      </p>
-                    ) : null}
-                    <FilmRecords film={film} more={records[film.id]} />
-                    <p className='gx-line'>
-                      {film.runtime ?? film.length}
-                      {film.note ? ` · ${film.note}` : null}
-                      {' · '}
-                      <span className={cn('mo-status', film.status === 'rendered' && 'is-rendered')}>
-                        {MOTION_STATUS_LABEL[film.status]}
-                      </span>
-                      {path ? (
-                        <>
-                          {' · '}
-                          <code>{path}</code>
-                        </>
-                      ) : null}
-                    </p>
-                  </div>
+                  <FilmBody film={film} summary={summaries[film.id]} records={records} />
                 </article>
               );
             })}
@@ -381,7 +393,7 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
 type MotionViewerProps = {
   /** each film's summary, rendered on the server, by film id */
   summaries: Readonly<Record<string, ReactNode>>;
-  /** the contact sheet and script blocks of each film without a page, rendered on the server, by film id */
+  /** the contact sheet and script blocks of each cut of a film without a page, rendered on the server, by the cut's row id */
   records: Readonly<Record<string, ReactNode>>;
   /** the /motion entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;

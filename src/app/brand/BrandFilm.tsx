@@ -3,6 +3,8 @@
 import { useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
+import { useMountEffect } from '@/lib/use-mount-effect';
+
 import './BrandFilm.css';
 
 type BrandFilmProps = {
@@ -12,8 +14,16 @@ type BrandFilmProps = {
   poster: string;
   /** what the film is called to a screen reader: `the Fuma Nama trailer` */
   name: string;
-  /** its English captions, a WebVTT file as a root path, offered in the native controls and off until chosen */
+  /** its captions, a WebVTT file as a root path, offered in the native controls and off until chosen */
   captions?: string;
+  /** the captions' language: its locale and the name the native menu shows; English when absent */
+  captionsLang?: { locale: string; label: string };
+  /**
+   * starts the film as soon as it mounts, without moving focus: the
+   * language toggle remounts the player with the new cut's source and
+   * passes this when the cut it replaced was playing
+   */
+  autoStart?: boolean;
 };
 
 /**
@@ -33,7 +43,7 @@ type BrandFilmProps = {
  * nothing until the press, and takes the poster attribute then, from the
  * cache, so the frame holds the title card until the first frame paints.
  */
-export default function BrandFilm({ src, poster, name, captions }: BrandFilmProps) {
+export default function BrandFilm({ src, poster, name, captions, captionsLang, autoStart = false }: BrandFilmProps) {
   const video = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
 
@@ -46,6 +56,15 @@ export default function BrandFilm({ src, poster, name, captions }: BrandFilmProp
     flushSync(() => setStarted(true));
     el.focus();
   }
+
+  /* the toggle's swap: the press on the toggle is the gesture that allows the sound; focus stays on the toggle */
+  useMountEffect(() => {
+    if (!autoStart) return;
+    video.current?.play().catch(() => {
+      /* refused: the native controls are on, so the visitor can start it there */
+    });
+    setStarted(true);
+  });
 
   return (
     <div className='ptb-film'>
@@ -60,7 +79,9 @@ export default function BrandFilm({ src, poster, name, captions }: BrandFilmProp
         src={src}
         width={1920}
       >
-        {captions ? <track kind='captions' label='English' src={captions} srcLang='en' /> : null}
+        {captions ? (
+          <track kind='captions' label={captionsLang?.label ?? 'English'} src={captions} srcLang={captionsLang?.locale ?? 'en'} />
+        ) : null}
       </video>
       {started ? null : (
         <button aria-label={`play ${name}`} className='ptb-film-play' onClick={play} type='button'>

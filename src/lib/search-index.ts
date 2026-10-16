@@ -252,6 +252,8 @@ const MOTION_ROWS: readonly SearchEntry[] = MOTION_FILMS.map(
       'film video motion',
       film.slug,
       film.length,
+      /* the language versions behind the row's toggle: their slugs and their languages, in English and in their own names */
+      ...(film.versions ?? []).map((version) => `${version.slug} ${version.language.language} ${version.language.name}`),
       film.pkg ? plainMarkdown(film.pkg.series) : '',
       film.pkg ? film.pkg.sections.map((section) => section.title).join(' ') : '',
     ]
