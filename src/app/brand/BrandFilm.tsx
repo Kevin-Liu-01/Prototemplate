@@ -12,6 +12,8 @@ type BrandFilmProps = {
   poster: string;
   /** what the film is called to a screen reader: `the Fuma Nama trailer` */
   name: string;
+  /** its English captions, a WebVTT file as a root path, offered in the native controls and off until chosen */
+  captions?: string;
 };
 
 /**
@@ -31,7 +33,7 @@ type BrandFilmProps = {
  * nothing until the press, and takes the poster attribute then, from the
  * cache, so the frame holds the title card until the first frame paints.
  */
-export default function BrandFilm({ src, poster, name }: BrandFilmProps) {
+export default function BrandFilm({ src, poster, name, captions }: BrandFilmProps) {
   const video = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
 
@@ -57,7 +59,9 @@ export default function BrandFilm({ src, poster, name }: BrandFilmProps) {
         ref={video}
         src={src}
         width={1920}
-      />
+      >
+        {captions ? <track kind='captions' label='English' src={captions} srcLang='en' /> : null}
+      </video>
       {started ? null : (
         <button aria-label={`play ${name}`} className='ptb-film-play' onClick={play} type='button'>
           <img alt='' className='ptb-film-poster' decoding='async' loading='lazy' src={poster} />

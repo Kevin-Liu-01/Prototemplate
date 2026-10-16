@@ -337,7 +337,12 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
                     <p>{summaries[film.id]}</p>
                     {film.media ? (
                       <figure className='mo-film'>
-                        <BrandFilm name={`the ${film.title} film`} poster={film.media.poster} src={film.media.video} />
+                        <BrandFilm
+                          captions={film.captions}
+                          name={`the ${film.title} film`}
+                          poster={film.media.poster}
+                          src={film.media.video}
+                        />
                       </figure>
                     ) : null}
                     {film.pkg || film.post ? (

@@ -15,9 +15,8 @@
 // motion/films exists, and planned otherwise. A film's current draft is
 // motion/films/<slug>/renders/draft.mp4, which kit/film.mjs writes, or
 // motion/out/_draft-<slug>.mp4, where drafts lived before it. A film
-// with a web copy under public/media (pinned in public/motion/published.json:
-// the two blog films and the three films of the translation series) plays on
-// the site; every other render stays in the motion folder and is listed by
+// with a web copy under public/media (pinned in public/motion/published.json)
+// plays on the site; every other render stays in the motion folder and is listed by
 // its repository-relative path. The script reads motion/ and never writes
 // there, and it never copies a render into public/: the web copies are made
 // by hand, each named <name>-film.mp4 with the moov atom at the front and
@@ -32,16 +31,18 @@
 // against its pin and throws when one differs. It then looks for the
 // published cut in motion/out and in each folder under it that holds the
 // kit's records (sheets/ or scripts/, such as out/series-100s): the folder
-// whose <slug>.mp4 or <slug>-share.mp4 has the pinned streams holds the cut,
-// and its <slug>.credits.txt, sheets/<slug>.webp (with the .png when it is
-// at most SHEET_PNG_CAP) and scripts/<slug>.md are copied to public/motion,
+// whose <slug>.mp4, <slug>-share.mp4 or web/<slug>.mp4 (the Videos
+// session's web encode of the final, which the product films publish) has
+// the pinned streams holds the cut, and its <slug>.credits.txt,
+// sheets/<slug>.webp (with the .png when it is at most SHEET_PNG_CAP),
+// scripts/<slug>.md and captions/<slug>.vtt are copied to public/motion,
 // after the script's label and length are checked against the pin. When no
 // folder holds the cut, the copies already in public/motion stay as they
 // are (their script must still match the pin). A render in motion/out that
 // is not the published cut is listed as in review, by its label (when its
 // own script names it and runs the same length) and its length, and nothing
-// else of it reaches the site: no picture, no sheet, no script, no credits.
-// To publish a new cut, replace the web copy, then run
+// else of it reaches the site: no picture, no sheet, no script, no credits,
+// no captions. To publish a new cut, replace the web copy, then run
 // `node scripts/build/motion.mjs --pin <slug> ...`, which pins the web copy's
 // streams and the label and length of the folder that holds them, and run
 // the script again.
@@ -78,9 +79,10 @@ const MOTION = process.env.MOTION_DIR ?? join(ROOT, 'motion');
 const BODY_DIR = 'public/motion';
 const BODY_OUT = join(ROOT, BODY_DIR);
 
-/** The published copies of the contact sheets and the scripts, served under /motion/sheets/ and /motion/scripts/. */
+/** The published copies of the contact sheets, the scripts and the captions, served under /motion/sheets/, /motion/scripts/ and /motion/captions/. */
 const SHEET_DIR = 'sheets';
 const SCRIPT_DIR = 'scripts';
+const CAPTION_DIR = 'captions';
 
 /** The pinned cut of each published film; hand-edited, or written by --pin. */
 const MANIFEST = join(BODY_OUT, 'published.json');
@@ -107,12 +109,12 @@ const SECTIONS = [
   {
     id: 'motion-films',
     label: 'Films',
-    lead: 'The brand film, the mark sting, the blog films, the Lottie film, the release board and the showreel, in the order of the roster.',
+    lead: 'The brand film, the mark sting, the blog films, the Lottie film, the release board, the Slash announcement with its German, Spanish and Japanese cuts, How General Translation works, the product films that each answer one question, and the showreel, in the order of the roster.',
   },
   {
     id: 'motion-series',
     label: 'Translation series',
-    lead: 'Three films about how a translation made the words a language uses. Each one has a research package with a script, a post, a vocabulary table, sources and a fact-check list.',
+    lead: 'Six films about how a translation made the words a language uses. Each one has a research package with a script, a post, a vocabulary table, sources and a fact-check list.',
   },
 ];
 
@@ -436,16 +438,18 @@ function cutFolders() {
 const FOLDERS = cutFolders();
 
 /**
- * The folder that holds a cut: the first whose <slug>.mp4 or
- * <slug>-share.mp4 has these streams. A render whose duration is not the
- * cut's length is not hashed.
+ * The folder that holds a cut: the first whose <slug>.mp4, <slug>-share.mp4
+ * or web/<slug>.mp4 (a web encode of the final) has these streams. A render
+ * whose duration is not the cut's length to the script's one decimal
+ * (sameLength; a web encode runs a few hundredths past its final) is not
+ * hashed.
  */
 function folderWith(slug, streams, seconds) {
   for (const folder of FOLDERS) {
-    for (const name of [`${slug}.mp4`, `${slug}-share.mp4`]) {
+    for (const name of [`${slug}.mp4`, `${slug}-share.mp4`, `web/${slug}.mp4`]) {
       const file = join(MOTION, folder, name);
       const duration = durationOf(file);
-      if (duration === undefined || Math.abs(duration - seconds) > 0.06) continue;
+      if (duration === undefined || !sameLength(`${seconds} s`, duration)) continue;
       if (sameStreams(streamsOf(file), streams)) return folder;
     }
   }
@@ -467,6 +471,7 @@ function publishedRecords(slug, pin) {
     webp: join(base, SHEET_DIR, `${slug}.webp`),
     png: join(base, SHEET_DIR, `${slug}.png`),
     script: join(base, SCRIPT_DIR, `${slug}.md`),
+    captions: join(base, CAPTION_DIR, `${slug}.vtt`),
   };
   const records = { folder: folder ?? 'public/motion' };
   /* the cut's final render, which the page names: the folder's <slug>.mp4 (a share copy may be what matched) */
@@ -475,6 +480,11 @@ function publishedRecords(slug, pin) {
     if (final) records.render = `${REL}/${folder}/${final}`;
   }
   if (existsSync(files.credits)) records.credits = readFileSync(files.credits, 'utf8');
+  if (existsSync(files.captions)) {
+    const vtt = readFileSync(files.captions, 'utf8');
+    if (!vtt.startsWith('WEBVTT')) fail(`${files.captions.replace(`${ROOT}/`, '')} is not a WebVTT file`);
+    records.captions = vtt;
+  }
   if (existsSync(files.script)) {
     const meta = scriptOf(files.script);
     if (meta.length !== pin.length || (meta.label ?? null) !== pin.cut) {
@@ -606,7 +616,12 @@ function rosterEntries() {
 
 /* ---- the packages ---- */
 
-/** The package body: from the package's own h1 to the end, trimmed, one trailing newline. */
+/**
+ * The package body: from the package's own h1 to the end, trimmed, one
+ * trailing newline. A checking pass's log after section 5 (an unnumbered h2
+ * such as "## Checking pass 1 (2026-10-10)", the lane's working ledger) is
+ * left out with everything below it: the package is the five sections.
+ */
 function packageBody(file) {
   const lines = readLines(file);
   let from = 0;
@@ -618,8 +633,20 @@ function packageBody(file) {
   }
   const h1 = lines.findIndex((line, i) => i >= from && /^#\s+/.test(line) && !/^#\s+Brief:/.test(line));
   if (h1 < 0) fail(`${file} has no package h1`);
-  const body = lines.slice(h1);
-  while (body.length > 0 && body[body.length - 1].trim() === '') body.pop();
+  let end = lines.length;
+  let inFence = false;
+  let fifth = false;
+  for (let i = h1; i < lines.length; i += 1) {
+    if (FENCE.test(lines[i])) inFence = !inFence;
+    if (inFence || !/^## /.test(lines[i])) continue;
+    if (/^## 5\.\s/.test(lines[i])) fifth = true;
+    else if (fifth && !/^## \d+\.\s/.test(lines[i])) {
+      end = i;
+      break;
+    }
+  }
+  const body = lines.slice(h1, end);
+  while (body.length > 0 && (body[body.length - 1].trim() === '' || RULE.test(body[body.length - 1]))) body.pop();
   return `${body.join('\n')}\n`;
 }
 
@@ -720,6 +747,8 @@ const credits = new Map();
 const sheets = new Map();
 /** slug to the published script's text */
 const scripts = new Map();
+/** slug to the published cut's WebVTT captions */
+const captions = new Map();
 /** slug to the published script's words, for the search */
 const scriptWords = new Map();
 /** slug to the folder its records came from, for the log */
@@ -782,6 +811,7 @@ for (const entry of ROSTER_ENTRIES) {
   const review = media ? reviewOf(slug, records.folder) : undefined;
   const creditText = records?.credits;
   if (creditText) credits.set(slug, creditText);
+  if (records?.captions) captions.set(slug, records.captions);
   if (records) recordFolders.set(slug, records.folder);
   let sheet;
   if (records?.sheet) {
@@ -831,6 +861,7 @@ for (const entry of ROSTER_ENTRIES) {
     local: Object.keys(local).length > 0 ? local : undefined,
     post,
     credits: creditText ? `/motion/${slug}.credits.txt` : undefined,
+    captions: records?.captions ? `/motion/${CAPTION_DIR}/${slug}.vtt` : undefined,
     cut: media ? { label: pinned.cut ?? undefined, length: pinned.length, render: records.render } : undefined,
     sheet,
     script,
@@ -884,6 +915,7 @@ function filmLines(film) {
   if (film.local) lines.push('    local: {', ...objectLines(6, film.local), '    },');
   if (film.post) lines.push(`    post: ${quote(film.post)},`);
   if (film.credits) lines.push(`    credits: ${quote(film.credits)},`);
+  if (film.captions) lines.push(`    captions: ${quote(film.captions)},`);
   lines.push(...nested('cut', film.cut), ...nested('sheet', film.sheet), ...nested('script', film.script), ...nested('review', film.review));
   if (film.pkg) {
     lines.push(
@@ -980,6 +1012,8 @@ const out = [
   '  post?: string;',
   '  /** a published film\'s credits, copied verbatim from the folder that holds its published cut and served at this root path */',
   '  credits?: string;',
+  '  /** the published cut\'s English captions, a WebVTT file copied from the folder that holds the cut and served at this root path */',
+  '  captions?: string;',
   '  /** the published cut, for a film with a web copy */',
   '  cut?: MotionCut;',
   '  /** the published cut\'s contact sheet, when the Videos session made one */',
@@ -1048,6 +1082,9 @@ for (const [slug, credit] of credits) {
 for (const [slug, script] of scripts) {
   if (script.includes('/Users/')) fail(`public/motion/${SCRIPT_DIR}/${slug}.md would carry an absolute local path`);
 }
+for (const [slug, vtt] of captions) {
+  if (vtt.includes('/Users/')) fail(`public/motion/${CAPTION_DIR}/${slug}.vtt would carry an absolute local path`);
+}
 
 writeFileSync(OUT, text);
 
@@ -1077,8 +1114,9 @@ for (const [slug, sheet] of sheets) {
   if (sheet.png) wanted.set(`${SHEET_DIR}/${slug}.png`, sheet.png);
 }
 for (const [slug, script] of scripts) wanted.set(`${SCRIPT_DIR}/${slug}.md`, script);
+for (const [slug, vtt] of captions) wanted.set(`${CAPTION_DIR}/${slug}.vtt`, vtt);
 let copied = 0;
-for (const dir of [SHEET_DIR, SCRIPT_DIR]) {
+for (const dir of [SHEET_DIR, SCRIPT_DIR, CAPTION_DIR]) {
   mkdirSync(join(BODY_OUT, dir), { recursive: true });
   for (const entry of readdirSync(join(BODY_OUT, dir))) {
     if (wanted.has(`${dir}/${entry}`)) continue;
@@ -1098,9 +1136,16 @@ console.log(
   `build-motion: ${bodies.size} packages, ${(bytes / 1024).toFixed(0)} KB -> ${BODY_DIR}/<slug>.md, ${credits.size} credit files -> ${BODY_DIR}/<slug>.credits.txt${removed > 0 ? ` (${removed} stale removed)` : ''}`
 );
 for (const film of ordered.filter((f) => f.cut)) {
-  const records = [film.credits && 'credits', film.sheet && (film.sheet.png ? 'sheet (WebP, PNG)' : 'sheet (WebP)'), film.script && 'script'].filter(Boolean);
+  const records = [
+    film.credits && 'credits',
+    film.sheet && (film.sheet.png ? 'sheet (WebP, PNG)' : 'sheet (WebP)'),
+    film.script && 'script',
+    film.captions && 'captions',
+  ].filter(Boolean);
   console.log(
     `build-motion: ${film.slug}: published ${film.cut.label ?? 'cut'}, ${film.cut.length}; ${records.length > 0 ? `${records.join(', ')} from ${recordFolders.get(film.slug)}` : 'no records'}${film.review ? `; in review: ${film.review.label ? `${film.review.label}, ` : ''}${film.review.length}` : ''}`
   );
 }
-console.log(`build-motion: ${sheets.size} sheets and ${scripts.size} scripts -> ${BODY_DIR}/${SHEET_DIR}, ${BODY_DIR}/${SCRIPT_DIR} (${copied} written)`);
+console.log(
+  `build-motion: ${sheets.size} sheets, ${scripts.size} scripts and ${captions.size} captions -> ${BODY_DIR}/${SHEET_DIR}, ${BODY_DIR}/${SCRIPT_DIR}, ${BODY_DIR}/${CAPTION_DIR} (${copied} written)`
+);

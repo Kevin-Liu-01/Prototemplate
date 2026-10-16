@@ -113,7 +113,7 @@ function FilmHead({ film, media }: { film: MotionFilm; media: MotionMedia }) {
   return (
     <>
       <figure className='mo-film mo-head-film'>
-        <BrandFilm name={name} poster={media.poster} src={media.video} />
+        <BrandFilm captions={film.captions} name={name} poster={media.poster} src={media.video} />
       </figure>
       <p className='mo-send'>
         <a aria-label={`download the MP4 of ${name}`} download href={media.video}>

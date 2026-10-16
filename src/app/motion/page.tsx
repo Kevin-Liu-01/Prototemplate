@@ -16,7 +16,7 @@ const route = seoRoute({
   title: PAGE_NAMES.motion.name,
   kind: 'page',
   description:
-    'Every film on the motion roster with its length and status, and the translation series with its three research packages.',
+    'Every film on the motion roster with its length and status, and the translation series with its six research packages.',
   updated: requireUpdated('/motion'),
 });
 
