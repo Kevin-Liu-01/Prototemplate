@@ -43,3 +43,7 @@ MOTION.md applies `BRAND.md` (the name, the idea, the voice, the mark, color, ty
 - Hedges stay. Fuma's "I think" and "probably" are spoken. A BRIEF's contested items stay hedged on screen and in the narration (jihe-yuanben dates the book as translated in 1606 and 1607 and printed in 1607), and captions follow its image notes ("early 17th-century printing", "Qing edition").
 - Star counts are read from the GitHub API on the day and rounded as GitHub rounds them (one decimal under 100,000, whole thousands above).
 - An announcement states only what the partner's post and the GT site state ("Introduced in 2026" stayed off screen in the Slash film: no source said it). Kevin dropped the "subject to approval" legal line from the Slash end card (2026-10-08).
+
+## Headings are headers, not excerpts
+
+A heading is a header, not an excerpt (Kevin, 2026-10-16: "headers should feel like headers not excerpts right"). It is a short title for the beat's idea, 2 to 6 words, a noun phrase or an imperative. It may use the beat's key term or the post's own heading or summary words ("Design still matters", "Run npx gt init"). It is never a clause cut from the narration: no pronoun subject, no mid-sentence run, no comma list. It arrives whole on the line's first word or the nearest 0.5 s beat, not word by word with the voice. This replaces the 2026-10-06 rule that headings were made of the words spoken at that moment and shown in step with them.
