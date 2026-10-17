@@ -6,43 +6,43 @@ In Tokyo, your checkout page opens in
 Japanese with one line still in English.
 
 2
-00:00:05.840 --> 00:00:12.390
+00:00:05.840 --> 00:00:11.690
 Its key went into en.json,
 and nobody added it to ja.json.
 
 3
-00:00:13.240 --> 00:00:15.320
+00:00:12.560 --> 00:00:14.620
 General Translation lets you stop writing
 
 4
-00:00:15.360 --> 00:00:19.570
+00:00:14.660 --> 00:00:18.870
 translation files with
 gt-react or gt-next.
 
 5
-00:00:20.380 --> 00:00:25.150
+00:00:19.680 --> 00:00:24.450
 Run npx gt init to set up gt-next
 and choose your languages.
 
 6
-00:00:25.660 --> 00:00:31.750
+00:00:24.920 --> 00:00:30.770
 Write the English inside a T component,
 and nobody has to update ja.json by hand.
 
 7
-00:00:32.200 --> 00:00:35.470
+00:00:31.240 --> 00:00:34.530
 Then add npx gt translate
 to your build script,
 
 8
-00:00:35.740 --> 00:00:38.070
+00:00:34.800 --> 00:00:37.110
 and every build writes the Japanese.
 
 9
-00:00:38.600 --> 00:00:40.830
+00:00:37.660 --> 00:00:39.870
 Now the tax line appears in Spanish,
 
 10
-00:00:40.920 --> 00:00:43.810
+00:00:39.980 --> 00:00:42.870
 French and Japanese with
 the rest of the page.

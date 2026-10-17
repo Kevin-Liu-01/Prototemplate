@@ -20,7 +20,7 @@ you translate strings
 into each request's locale with gt-node.
 
 5
-00:00:16.100 --> 00:00:18.210
+00:00:16.100 --> 00:00:18.190
 Call initializeGT once,
 
 6
@@ -34,7 +34,7 @@ Wrap each request in withGT, using the
 language from its Accept-Language header.
 
 8
-00:00:27.680 --> 00:00:32.450
+00:00:27.680 --> 00:00:32.430
 In a handler, await getGT,
 and pass each string to gt.
 
@@ -44,6 +44,6 @@ List server.js in gt.config.json,
 sign in, and run npx gt translate.
 
 10
-00:00:40.680 --> 00:00:44.870
+00:00:40.640 --> 00:00:44.830
 Now Japanese, French and Spanish
 browsers each get their own greeting.

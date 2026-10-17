@@ -10,40 +10,40 @@ offers Spanish and French,
 and a Japanese reader gets English.
 
 3
-00:00:06.180 --> 00:00:10.810
+00:00:06.180 --> 00:00:11.410
 The app's gt.config.json lists
 Spanish and French, and nothing else.
 
 4
-00:00:11.720 --> 00:00:16.880
+00:00:12.320 --> 00:00:17.480
 General Translation uses its AI agent
 Locadex to open pull requests that
 
 5
-00:00:16.920 --> 00:00:18.110
+00:00:17.520 --> 00:00:18.710
 translate your app.
 
 6
-00:00:18.940 --> 00:00:23.030
+00:00:19.540 --> 00:00:23.610
 Connect GitHub in the Dashboard, and
 create an automation from a template.
 
 7
-00:00:23.560 --> 00:00:28.610
+00:00:24.160 --> 00:00:29.210
 Run setup with Japanese as a target,
 and Locadex opens a pull request.
 
 8
-00:00:29.140 --> 00:00:34.690
+00:00:29.740 --> 00:00:35.290
 Turn on auto-merge, and Locadex merges
 its pull requests when checks pass.
 
 9
-00:00:35.220 --> 00:00:39.430
+00:00:35.800 --> 00:00:40.010
 After the merge, the automation
 translates into every target language.
 
 10
-00:00:40.000 --> 00:00:44.370
+00:00:40.580 --> 00:00:44.890
 Along with Spanish and French, your
 app now opens in Japanese in Nagoya.

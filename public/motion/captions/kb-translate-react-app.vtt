@@ -1,7 +1,7 @@
 WEBVTT
 
 1
-00:00:00.880 --> 00:00:05.570
+00:00:00.880 --> 00:00:05.590
 In Paris, your React app renders English
 for a browser that asks for French.
 
@@ -20,30 +20,30 @@ gt-react before the app renders and wrap
 its text in T.
 
 5
-00:00:17.860 --> 00:00:23.570
+00:00:17.900 --> 00:00:23.070
 List your languages in gt.config.json,
 and add a loadTranslations file.
 
 6
-00:00:24.100 --> 00:00:30.010
+00:00:23.600 --> 00:00:29.510
 An entry file calls initializeGTSPA
 first, then loads the rest of the app.
 
 7
-00:00:30.500 --> 00:00:34.150
+00:00:30.000 --> 00:00:33.650
 Wrap the page's text in
 T, so the CLI finds it.
 
 8
-00:00:34.640 --> 00:00:39.210
+00:00:34.140 --> 00:00:38.710
 Sign in, set your project ID,
 and run npx gt translate.
 
 9
-00:00:39.840 --> 00:00:43.070
+00:00:39.340 --> 00:00:42.570
 Spanish, Japanese or French
 loads before the app renders,
 
 10
-00:00:43.260 --> 00:00:45.530
+00:00:42.760 --> 00:00:45.030
 and in Paris it opens in French.
