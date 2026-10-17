@@ -14,6 +14,7 @@
  * build:marks) with tight viewBoxes, so the viewer sizes each by height
  * and its own aspect. Two-way and Globe G keep their construction
  * overlays from the earlier round and stand at the end for comparison.
+ * GLOBE_CONCEPTS lists the globe marks that were not chosen.
  * The current doubled-line monogram is kept only as REFERENCE_MARK, the
  * memory the marks are measured against, never as a candidate.
  */
@@ -230,6 +231,32 @@ export const MARKS: readonly Mark[] = [
       'Ring centered (128, 128), outer R 120, inner R 88, stroke 32: a monogram filling the square from 16 to 240. Crossbar y 64 to 96 as a chord from wall to wall, leaving a 24 unit cap above it; stem x 112 to 144 from y 64 down into the inner bottom of the ring; bar y 128 to 160 from the stem to the outer circle. The terminal is the underside of the crossbar extended through the ring at y 96, so the mouth is a 32 unit slot between the crossbar and the bar. One evenodd path: an outer loop plus three holes (the cap, the left counter, the lower right quadrant).',
     use: 'At 16px it reads as a T inside a G ring with a 2px mouth tucked under the crossbar; the cap vanishes, so it is a monogram at small sizes and a globe from 32px up. The weakest letter read of the earlier round: the G depends on the mouth, and the arms of the T merge into the ring.',
   }),
+];
+
+/** A globe concept: the file stem under public/marks/globe, its name, and its public path. */
+export type GlobeConcept = { id: string; name: string; file: string };
+
+function concept(id: string, name: string): GlobeConcept {
+  return { id, name, file: `/marks/globe/${id}.svg` };
+}
+
+/**
+ * The globe concepts, shown at the end of /marks under "Concepts that
+ * didn’t make it": eight marks from the 2026-10 globe round in which the
+ * letters G and T form a globe, kept from its third round with the G’s top
+ * stroke run level and ended square. None was chosen, so they are a record
+ * and never candidates. Each file is one evenodd path in currentColor on a
+ * 256 unit square.
+ */
+export const GLOBE_CONCEPTS: readonly GlobeConcept[] = [
+  concept('orrery-solid', 'Orrery'),
+  concept('occluded-hoop', 'Occluded hoop'),
+  concept('rim-upright', 'Rim upright'),
+  concept('solid-cut', 'Solid cut'),
+  concept('solid-plate', 'Solid plate'),
+  concept('engraved', 'Engraved'),
+  concept('engraved-relief', 'Engraved relief'),
+  concept('sliced-carved', 'Sliced and carved'),
 ];
 
 /** The family record for a mark. */

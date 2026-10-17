@@ -11,6 +11,7 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import {
+  GLOBE_CONCEPTS,
   MARK_FACES,
   MARK_FAMILIES,
   MARK_RULES,
@@ -20,7 +21,7 @@ import {
   REFERENCE_MARK,
   WORDMARK_SIZES,
 } from '@/lib/marks';
-import type { Mark, MarkArt } from '@/lib/marks';
+import type { GlobeConcept, Mark, MarkArt } from '@/lib/marks';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
@@ -35,12 +36,13 @@ const MARKS_MODES: readonly ShellMode[] = ['book', 'grid'];
 
 const REGISTER_ID = 'register';
 const PRESENTATION_ID = 'presentation';
+const CONCEPTS_ID = 'concepts';
 
 const BOOK_LEAD =
   'The speed set is seven General Translation marks in one register, taken from a race-type reference. Two-way and Globe G from the earlier round follow for comparison.';
 
 const BOOK_NOTE =
-  'Every mark is one color and takes the ink of whatever it sits on. Each one is shown positive and reversed at a run of heights, the monograms also as an app icon and a favicon, and every file is linked. The current mark closes the page as the reference.';
+  'Every mark is one color and takes the ink of whatever it sits on. Each one is shown positive and reversed at a run of heights, the monograms also as an app icon and a favicon, and every file is linked. The current mark follows as the reference, and eight globe concepts that were not chosen close the page.';
 
 /**
  * The marks the head's badge cuts between: the register's, less the ones
@@ -58,6 +60,10 @@ const REGISTER_LEAD =
 
 const PRESENTATION_LEAD =
   'The nine marks together at one height, positive and reversed, so the set reads as a set and the two survivors can be compared with it. The current doubled-line mark follows as the reference.';
+
+const CONCEPTS_TITLE = 'Concepts that didn’t make it';
+
+const CONCEPTS_LEAD = 'Eight globe concepts from 2026-10, in which the letters G and T form a globe. None was chosen.';
 
 const REFERENCE_CAPTION =
   'The current mark, the doubled-line GT monogram. It is the reference the marks are measured against, and it is not a candidate.';
@@ -109,7 +115,7 @@ const SPY_MARGIN = '0px 0px -90% 0px';
 /** How long the spy waits for a programmatic scroll to reach its section before it reads the page again. */
 const SETTLE_MS = 1200;
 
-/** The route's list: the register, the nine marks by name, Presentation, as the run under Knowledge > Marks. The marks alone are paged, so digits 1 to 9 pick a mark. */
+/** The route's list: the register, the nine marks by name, Presentation and the concepts, as the run under Knowledge > Marks. The marks alone are paged, so digits 1 to 9 pick a mark. */
 const SECTIONS: readonly ShellSection[] = [
   {
     id: REGISTER_ID,
@@ -142,6 +148,13 @@ const SECTIONS: readonly ShellSection[] = [
         desc: 'The set at one height, positive and reversed, and the current mark for reference.',
       },
     ],
+  },
+  {
+    id: CONCEPTS_ID,
+    label: 'Concepts',
+    under: 'marks',
+    paged: false,
+    items: [{ id: CONCEPTS_ID, n: '', title: CONCEPTS_TITLE, desc: CONCEPTS_LEAD }],
   },
 ];
 
@@ -367,6 +380,59 @@ function MarkSheet({ mark, section, art, active }: MarkSheetProps) {
   );
 }
 
+/**
+ * One globe concept, square, at a height in CSS pixels: the plate's color
+ * masked by the concept's public file, contained. The concepts are drawn
+ * by mask and not inlined because each is shown twelve times and the two
+ * engraved files run past 40 KB; the file loads once, and the plate's
+ * color reaches the mark as currentColor reaches an inlined one.
+ */
+function ConceptArt({ file, height }: { file: string; height: number }) {
+  const style = { '--mk-w': `${height}px`, '--mk-aspect': '1', '--mk-mask': `url('${file}')` } as CSSProperties;
+  return <span className='mk-svg mk-mask' style={style} aria-hidden='true' />;
+}
+
+/** One globe concept: its name and file, then the mark large and at the monogram heights, positive and reversed. */
+function ConceptSheet({ concept }: { concept: GlobeConcept }) {
+  const headingId = `mk-globe-${concept.id}`;
+  const sizeRange = `${MARK_SIZES[0]} to ${MARK_SIZES[MARK_SIZES.length - 1]}px`;
+  return (
+    <article className='mk-concept' aria-labelledby={headingId}>
+      <div className='mk-concept-head'>
+        <h3 id={headingId}>{concept.name}</h3>
+        <a href={concept.file}>{concept.file}</a>
+      </div>
+      <div className='mk-pair'>
+        {GROUNDS.map((ground) => (
+          <figure key={ground} className={cn('mk-plate', groundClass(ground))}>
+            <ConceptArt file={concept.file} height={HERO_PX} />
+            <figcaption>
+              {groundName(ground)}, {HERO_PX}px
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <div className='mk-pair'>
+        {GROUNDS.map((ground) => (
+          <figure key={ground} className={cn('mk-strip', groundClass(ground))}>
+            <div className='mk-strip-row'>
+              {MARK_SIZES.map((size) => (
+                <span key={size} className='mk-size'>
+                  <ConceptArt file={concept.file} height={size} />
+                  <small>{size}</small>
+                </span>
+              ))}
+            </div>
+            <figcaption>
+              {groundName(ground)}, {sizeRange}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </article>
+  );
+}
+
 type MarksBookProps = {
   art: Readonly<Record<string, MarkArt>>;
   /** the flow sheet's scroll region */
@@ -380,8 +446,8 @@ type MarksBookProps = {
 };
 
 /**
- * The book: a head, a contents list, the register, one section per mark
- * and the Presentation, top to bottom inside the flow sheet. Owns the
+ * The book: a head, a contents list, the register, one section per mark,
+ * the Presentation and the concepts, top to bottom inside the flow sheet. Owns the
  * reading state the way the skills book does: an IntersectionObserver on
  * the sheet marks the section under the read line and selects it through
  * the shell (the list and the hash follow); a selection from anywhere else
@@ -533,6 +599,10 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
               <span>Presentation</span>
               <small>Nine together</small>
             </a>
+            <a href={`#${CONCEPTS_ID}`} onClick={(e) => onContents(e, CONCEPTS_ID)}>
+              <span>{CONCEPTS_TITLE}</span>
+              <small>{GLOBE_CONCEPTS.length} globes</small>
+            </a>
           </nav>
         }
       />
@@ -640,6 +710,27 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
         </div>
         <p className='mk-ref-note'>{gtText(REFERENCE_CAPTION)}</p>
       </section>
+
+      <section
+        className={cn('pt-book-part mk-sec', active === CONCEPTS_ID && 'is-active')}
+        data-id={CONCEPTS_ID}
+        aria-labelledby='mk-concepts'
+        aria-current={active === CONCEPTS_ID ? 'true' : undefined}
+      >
+        <div className='mk-div pt-book-sec'>
+          <small>
+            <span>Section {MARKS.length + 3}</span>
+            <span>{GLOBE_CONCEPTS.length} concepts</span>
+          </small>
+          <div>
+            <h2 id='mk-concepts'>{CONCEPTS_TITLE}</h2>
+            <p>{CONCEPTS_LEAD}</p>
+          </div>
+        </div>
+        {GLOBE_CONCEPTS.map((concept) => (
+          <ConceptSheet key={concept.id} concept={concept} />
+        ))}
+      </section>
     </div>
   );
 }
@@ -653,7 +744,7 @@ export type MarksViewerProps = {
 
 /**
  * The marks on the viewer shell: the list holds the register, the nine
- * marks by name and Presentation; the book presents each mark inside the
+ * marks by name, Presentation and the concepts; the book presents each mark inside the
  * 1280px flow sheet; the grid shows every mark as a tile drawn from its
  * own file (marks.css masks the shell's rows with the SVGs). Flow keys,
  * so Space and the arrows scroll; digits 1 to 9 pick a mark. The hash

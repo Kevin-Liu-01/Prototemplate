@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { MARKS } from '@/lib/marks';
+import { GLOBE_CONCEPTS, MARKS } from '@/lib/marks';
 import type { MarkArt } from '@/lib/marks';
 import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
@@ -14,7 +14,7 @@ const route = seoRoute({
   path: '/marks',
   title: PAGE_NAMES.marks.name,
   kind: 'page',
-  description: `${MARKS.length} GT marks: the speed set of seven in one register, from the bar monogram to its ASCII rendering, and two survivors of the earlier round.`,
+  description: `${MARKS.length} GT marks: the speed set of seven in one register and two survivors of the earlier round, then ${GLOBE_CONCEPTS.length} globe concepts that were not chosen.`,
 });
 
 export const metadata = route.metadata;
@@ -44,7 +44,9 @@ function viewBoxAspect(svg: string): number {
  * mark is inlined and takes currentColor from the plate it sits on; the
  * same files stay downloadable at their public paths. The construction
  * overlay is read only for the marks that have one (the two picture
- * marks); the aspect of each clean file's viewBox goes with it.
+ * marks); the aspect of each clean file's viewBox goes with it. The globe
+ * concepts under public/marks/globe are not read here: the viewer draws
+ * them by mask from their public paths.
  */
 export default function MarksPage() {
   const art: Readonly<Record<string, MarkArt>> = Object.fromEntries(

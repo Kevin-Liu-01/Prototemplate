@@ -2,7 +2,7 @@
 
    The shell (src/components/viewer) draws the frame; this sheet draws the
    book inside the flow sheet (the head, the contents, the register's rows,
-   one presentation per mark, the fields at the end) and lays the grid's
+   one presentation per mark, the fields, the globe concepts at the end) and lays the grid's
    rows out as tiles that carry the marks themselves. Everything reads the
    shell's --pt- tokens. The marks are one color by construction: every
    plate sets a ground and a color, and the inlined SVG takes the color as
@@ -406,6 +406,60 @@
   font-size: 15px;
   line-height: 1.5;
   color: var(--pt-ink-2);
+}
+
+/* ---------- concepts: the globe marks that were not chosen ----------
+   Each concept takes the plates and strips of a mark sheet under a name
+   row; its instances are the plate's color masked by the public file
+   (.mk-mask), so a positive plate is ink on paper and a reversed plate is
+   paper on ink, as with an inlined mark. */
+
+.mk-concept {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mk-concept + .mk-concept {
+  margin-top: 24px;
+}
+
+/* the name, and the file at the right on its baseline */
+.mk-concept-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+
+.mk-concept-head h3 {
+  margin: 0;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+}
+
+.mk-concept-head a {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.mk-concept-head a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.mk-mask {
+  background: currentColor;
+  -webkit-mask: var(--mk-mask) center / contain no-repeat;
+  mask: var(--mk-mask) center / contain no-repeat;
 }
 
 /* ---------- the grid: every section as a tile, every mark drawn ----------
