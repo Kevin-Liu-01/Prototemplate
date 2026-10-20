@@ -32,6 +32,7 @@ const SINGLETONS = [
   `${SITE_URL}/graphics`,
   `${SITE_URL}/motion`,
   `${SITE_URL}/compare`,
+  `${SITE_URL}/press`,
 ];
 
 function pathOf(url: string): string {

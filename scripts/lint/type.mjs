@@ -86,6 +86,7 @@ export const PATHS = {
  */
 export const ALLOW_FILES = [
   { path: 'src/app/d/', t3: 'warn', reason: 'the /d/ directions are self-contained explorations with their own type' },
+  { path: 'src/app/press/', t3: 'skip', reason: 'General Translation Press sets Katagami, its own type system, at Kevin\'s request (2026-10-19)' },
   { path: 'src/components/shared/StorySection.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },
   { path: 'src/components/shared/FeatureBento.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },
   { path: 'src/components/shared/LanguageWheel.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },

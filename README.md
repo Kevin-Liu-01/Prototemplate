@@ -46,6 +46,7 @@ at each of them.
 - `/graphics`: every illustration of the series, by area, with what it shows and the glyphfield export it sits on; made with the toolchain in `graphics/`
 - `/motion`: every film on the motion roster with its length and status, the research package of each film in the translation series (`/motion/<slug>`), and the contact sheet and script of each published cut; generated from `motion/` by `pnpm build:motion`, which publishes a film's credits, sheet and script only for the cut `public/motion/published.json` pins and lists a newer cut as in review
 - `/compare`: two directions side by side in scroll-synced frames
+- `/press`: GT Atlas, the magazine; each story is a book with its own cover, and `/press/<slug>` sets it in its own look
 - `/present`: the presenter, a full-screen walkthrough of the redesign with the first 16 prototypes live
 - `/archive`: the retired directions, each kept as a full-page capture with the commit that last held its code
 - `/llms.txt`, `/llms-full.txt` and `/AGENTS.md`: the site for agents, generated from the registries at build time

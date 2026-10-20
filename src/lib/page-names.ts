@@ -11,6 +11,7 @@ export type PageId =
   | 'brand'
   | 'docs'
   | 'deck'
+  | 'press'
   | 'present'
   | 'compare'
   | 'skills'
@@ -28,6 +29,7 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   brand: { name: 'Brand' },
   docs: { name: 'Documentation', short: 'Docs' },
   deck: { name: 'Deck' },
+  press: { name: 'Atlas' },
   present: { name: 'Presenter' },
   compare: { name: 'Compare' },
   skills: { name: 'Skills' },

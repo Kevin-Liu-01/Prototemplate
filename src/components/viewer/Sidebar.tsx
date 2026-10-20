@@ -112,6 +112,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   brand: 'swatch',
   docs: 'document',
   deck: 'deck',
+  press: 'book',
   present: 'present',
   compare: 'compare',
   skills: 'skill',

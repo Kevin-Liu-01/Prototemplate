@@ -102,6 +102,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   present: 'present',
   compare: 'compare',
   deck: 'deck',
+  press: 'book',
   brand: 'swatch',
   docs: 'document',
   skills: 'skill',
@@ -120,6 +121,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   docs: 'documentation how it works get started template fumadocs seo gates scripts',
   deck: 'brand deck slideshow slides identity summary book GT',
   present: 'presenter slides scoreboard',
+  press: 'atlas magazine press stories essays books covers euclid fuma nama designing rewriting docs',
   compare: 'side by side synced frames',
   skills:
     'agent skills SKILL.md install voice humanizer website landing brand Inter aesthetic deck lints gates PR motion films video graphics dither diagrams isometric components Prototemplate',

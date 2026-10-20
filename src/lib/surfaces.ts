@@ -138,6 +138,7 @@ const PAGES: readonly Surface[] = [
   internal('brand', pageLabel('brand'), '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
   internal('docs', pageLabel('docs'), '/docs', 'Ten pages on how Prototemplate works, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
   internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
+  internal('press', pageLabel('press'), '/press', 'GT Atlas, the General Translation magazine: each story a book with its own cover and its own pages.', 'Pages', thumb('press')),
   internal('present', pageLabel('present'), '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
   internal('compare', pageLabel('compare'), '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
 ];

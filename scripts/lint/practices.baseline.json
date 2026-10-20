@@ -72,7 +72,11 @@
   "src/lib/glyph-field.ts:126",
   "src/app/d/production/sections/glyph-field.ts:77",
   "src/lib/dither.ts:334",
-  "src/lib/dither.ts:335"
+  "src/lib/dither.ts:335",
+  "src/app/press/_press/gpu/covers.ts:27",
+  "src/app/press/_press/gpu/covers.ts:29",
+  "src/app/press/_press/gpu/covers.ts:31",
+  "src/app/press/_press/gpu/covers.ts:33"
  ],
  "important-in-css": [
   "src/app/present/presenter.css:2555",
@@ -278,6 +282,7 @@
   "src/components/shared/FeatureBento.css:161",
   "src/components/shared/FeatureBento.css:174",
   "src/components/shared/FeatureBento.css:175",
-  "src/components/shared/FeatureBento.css:180"
+  "src/components/shared/FeatureBento.css:180",
+  "src/app/press/_press/press.css:658"
  ]
 }
