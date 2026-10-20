@@ -4,9 +4,9 @@ description: "Four directions for a blog figure that turns a globe to each city 
 icon: Earth
 ---
 
-General Translation's blog explains translation with interactive figures. The Versions figure sets the first eight definitions of Euclid's Elements in five languages on one rounded plate, and a row of language names switches between them. The globe figure adds where and when each version was made. When a reader picks a language, a globe turns to the city of that version, a label prints the city's coordinates and year, and the eight definitions change row by row into the new language. Read in order, the five stops follow the Elements from Alexandria in 300 BCE to Beijing in 1606.
+General Translation (GT) is building interactive figures for the posts on its blog. The Versions figure sets the first eight definitions of Euclid's Elements in five languages on one rounded plate, and a pill of language names switches between them. It sits on the gt-cloud branch `k/blog-version-switch` and has not been published. The globe figure adds where and when each version was made. When a reader picks a language, a globe turns to the city of that version, a label prints the city's coordinates and year, and the eight definitions change row by row into the new language. Read in order, the five stops follow the Elements from Alexandria in 300 BCE to Beijing in 1606.
 
-The four directions live in the folder `apps/landing/src/components/blog/globe/` on the local branch `k/blog-globe` of gt-cloud, the repository that builds generaltranslation.com. Kevin reviewed them in three rounds. The development route `/en-US/dev/globe` stacks all four, `?v=a` to `?v=d` shows one alone, and production answers the route with a 404. This page records the four directions as they stood after round 3 on 2026-10-19.
+The four directions live in the folder `apps/landing/src/components/blog/globe/` on the local branch `k/blog-globe` of gt-cloud, the repository that builds generaltranslation.com. The development route `/en-US/dev/globe` stacks all four, `?v=a` to `?v=d` shows one alone, and production answers the route with a 404. The directions were built on 2026-10-19 in three rounds. A design review scored and ranked the first build, and its fixes and the clickable cities came next. Round 3 zoomed each globe in, set all eight definitions, replaced each language control with underlined names and printed the coordinates in degrees, minutes and seconds. Every measurement on this page comes from round 3.
 
 ## The five stops
 
@@ -18,13 +18,13 @@ The four directions live in the folder `apps/landing/src/components/blog/globe/`
 | 4 | English | London | 51° 31′ 1.2″ N 0° 5′ 49.2″ W | 1570 |
 | 5 | 文言 (Classical Chinese) | Beijing | 39° 54′ 0″ N 116° 22′ 12″ E | 1606 |
 
-The label under each globe joins the three with middle dots: `31° 12′ 0″ N 29° 55′ 8.4″ E · Alexandria · 300 BCE`. The coordinates are degrees, minutes and seconds (DMS) in tabular figures. Each value keeps the precision of its source: 0.001° is 3.6″, so a coordinate given to three decimal places prints one decimal of a second. Antioch and Beijing are given to two places and print whole seconds. No-break spaces hold each coordinate together, so a label that wraps breaks between the latitude and the longitude.
+Every direction prints the label on two lines under its globe: the coordinates, then the city and the year joined by a middle dot. The coordinates are degrees, minutes and seconds (DMS) in tabular figures. Each value keeps the precision of its source: 0.001° is 3.6″, so a coordinate given to three decimal places prints one decimal of a second. Antioch and Beijing are given to two places and print whole seconds. No-break spaces hold each coordinate together, so a coordinates line that wraps breaks between the latitude and the longitude.
 
 The passage is definitions 1 to 8 of book I, from the point to the plane angle, in the same five texts the Versions figure sets. Each text keeps its own markers: α΄ to η΄ in Greek, I to VIII in Latin, 1 to 8 in English and 第一界 to 第八界 in Chinese. The Arabic carries none. The hops between the stops are 12.4° from Alexandria to Baghdad, 7.3° on to Antioch, 29.9° to London and 73.2° to Beijing.
 
 ## Shared contract
 
-Every direction draws the same five stops with the same passage, language control and city targets. The directions differ in how they draw the globe and the label.
+Every direction draws the same five stops with the same passage, language control and city targets. The directions differ in how they draw the globe and where they place the label.
 
 | Part | What every direction does |
 | --- | --- |
@@ -32,66 +32,68 @@ Every direction draws the same five stops with the same passage, language contro
 | Turn | A pick turns the camera the short way round on power2.inOut with no overshoot, and the turn ends with the city at the window's center. A pick during a turn starts the new turn from the camera on screen. A longer arc takes a longer turn. |
 | Passage | The eight definitions of all five languages sit on shared grid rows in one box. Line N sits at the same height in every language, and the box keeps the tallest language's height. |
 | Dissolve | On a switch each row steps from the old language to the new one through the 8 by 8 Bayer dissolve of the Versions figure: CSS masks of 2 px cells in 65 levels, 150 ms a row, with rows starting 55 ms apart from the top. Eight rows take 535 ms, and the step is centered on the middle of the turn, where the ground moves fastest. No text fades, wipes or slides. |
-| Language control | The five native names sit in one line of plain text, each underlined like a link in the article: a solid line under the current name and a dotted line under the others. Native radio buttons sit under the words, so the choice works without JavaScript, with a screen reader and from the keyboard. Arrow, Home and End wrap at the ends and mirror in right-to-left text. |
+| Language control | The five native names run as plain text, each underlined like a link in the article: a solid line under the current name and a dotted line under the others. Native radio buttons sit under the words, so the choice works without JavaScript, with a screen reader and from the keyboard. Arrow, Home and End wrap at the ends and mirror in right-to-left text. |
 | Cities | Every city inside the window takes a click. A 24 by 24 px target over its mark checks that stop's radio, so a click runs the same turn as a pick in the names. The targets are hidden from assistive technology and left out of the tab order, because the radios already give that access. A city outside the window is neither drawn nor clickable. |
 | Reduced motion | Under `prefers-reduced-motion: reduce` the camera jumps to the stop, the globe draws once and the text cuts. |
 | No JavaScript | The server markup shows stop 1: Alexandria in the window, the Greek passage and its label. The radios and CSS `:has()` still switch the passage and the label. |
-| Height | The figure keeps one height at every stop and through every turn. The round 3 shoot measured it at all five stops at 1440, 375 and 320 px wide in both themes, and each width gave a single height. No direction scrolls sideways at 320 px. |
+| Height | The figure keeps one height at every stop and through every turn. The round 3 shoot recorded every height the figure took at 1440 and 375 px wide in both themes and at 320 px wide in the light theme, and each width gave a single height. No direction scrolls sideways at 320 px. |
 | Type and color | Inter is the only face. Arabic sets in the system face with no Inter in front, because Inter has no Arabic, and Chinese sets at a line height of 1.6. The plate is the Versions figure's: a 12 px corner, a 1 px hairline and a ground of ink at 3.5%. The figure has no flags and no eyebrow labels. |
-| Loading | The 130 dissolve masks decode when the figure comes within one viewport of the screen. Each engine mounts once on the client, reads its inks again when the theme changes and releases its listeners and frames on unmount. |
+| Loading | The 130 dissolve masks decode when the figure comes within one viewport of the screen. Each engine mounts once on the client and releases its listeners and frames on unmount. A and C draw on a canvas, so they read their inks again when the theme changes. |
 
 ## Shared code
 
-| File | What it holds |
+| File | What it does |
 | --- | --- |
-| `stops.ts` | The five stops: language, native name, writing direction, city, coordinates with their precision, year and the eight definitions. `formatCoordinate()` writes the DMS label. |
-| `ortho.ts` | The orthographic projection with a camera that can face any point: `project()`, `unproject()` for drawing a disc cell by cell, `turnToward()` the short way round, and `greatCircle()` for a route between two places |
-| `land.ts` | `landAt(lat, lon)`, the share of land from 0 to 1 at any point, read from a 1-bit mask at 1° held inline in 8.1 KB. The mask was cut from the /world map's grid of Natural Earth 4.1.0 country shapes, and it draws no borders and no names. |
-| `Passage.tsx`, `mount-passage.ts` | The eight-line passage on shared rows and its row dissolve, which runs on its own clock or on the globe's |
-| `LanguageLinks.tsx` | The underlined names over native radios |
-| `CityTargets.tsx`, `targets.ts` | The click targets, moved with the camera by one update per drawn frame with no React render |
+| `stops.ts` | Holds the five stops: language, native name, writing direction, city, coordinates with their precision, year and the eight definitions. `formatCoordinate()` writes the DMS label. |
+| `ortho.ts` | Holds the orthographic projection with a camera that can face any point: `project()`, `unproject()` for drawing a disc cell by cell, `turnToward()` for a turn the short way round, and `greatCircle()` for a route between two places. |
+| `land.ts` | Exports `landAt(lat, lon)`, the share of land from 0 to 1 at any point. It reads a 1-bit mask at 1° (8,100 bytes) held inline as base64. The mask was cut from the grid of the unreleased World Language Map (`/world` on the branch `k/language-map`), which draws Natural Earth 4.1.0 country shapes. The mask carries no borders and no names. |
+| `Passage.tsx`, `mount-passage.ts` | Render the eight-line passage on shared rows and run its row dissolve on the passage's own clock or on the globe's. |
+| `LanguageLinks.tsx` | Renders the underlined names over native radios. |
+| `CityTargets.tsx`, `targets.ts` | Render the click targets and move them with the camera, with one update per drawn frame and no React render. |
+
+The shared files come to 1,253 lines with their three stylesheets. Every direction loads all of them, except that B draws baked coastlines and never loads `land.ts`.
 
 ## Measurements
 
-The round 3 shoot ran each direction in Chromium at 1440, 375 and 320 px wide in both themes. It timed five moves: Arabic to Greek, Greek to Arabic, Arabic to Latin, Latin to English and English to Chinese. No move logged a console error or a frame gap over 20 ms, and every move settled.
+The round 3 shoot ran each direction in Chromium at 1440 and 375 px wide in both themes and at 320 px wide in the light theme. The development route sets the figure in a 712 px column at 1440 px wide, and the window widths below are the drawn window's diameter. At 1440 px in the light theme the shoot timed five moves: Arabic to Greek, Greek to Arabic, Arabic to Latin, Latin to English and English to Chinese. No direction logged a console error, no timed move had a gap of more than 20 ms between frames, and every move settled. The longest frame callback is the longest `requestAnimationFrame` callback in the timed moves, which holds one frame's drawing work.
 
 | | A (dithered) | B (line) | C (glyph) | D (dot) |
 | --- | --- | --- | --- | --- |
-| Drawing | Canvas, 1-bit at 2 px cells | SVG lines | Canvas letters | SVG dots |
-| Window at 1440 px wide | 320 px | at most 280 px | 300 px | 240 px |
-| Window on a phone | 240 px | at most 280 px | 240 px | 240 px |
-| Zoom and cap | 3 times, 39° | 2.5 times, 47° | 3 times, 39° | 2.5 times, 47° |
-| Turn rule | 0.7 s and 5 ms a degree, 0.8 to 1.4 s | 0.7 s and 8 ms a degree, at most 1.5 s | 1 s under 60°, 1.5 s beyond | 0.5 s and 8 ms a degree, at most 1.2 s |
+| Drawing | 1-bit canvas at 2 px cells | SVG lines | Canvas letters | SVG dots |
+| Window across at 1440 px wide | 272 px | 253 px | 272 px | 232 px |
+| Window across at 375 px wide | 240 px | 276 px | 221 px | 232 px |
+| Zoom and cap | 3 times on a 39° cap | 2.5 times on a 47° cap | 3 times on a 39° cap | 2.5 times on a 47° cap |
+| Turn rule | 0.7 s plus 5 ms a degree, within 0.8 to 1.4 s | 0.7 s plus 8 ms a degree, up to 1.5 s | 1 s under 60° and 1.5 s beyond | 0.5 s plus 8 ms a degree, up to 1.2 s |
 | Measured moves | 853 to 1,443 ms | 788 to 1,368 ms | 1,019 to 1,529 ms | 628 to 1,136 ms |
-| Longest engine frame | 5.1 ms | 1.5 ms | 19.8 ms | 2.3 ms |
+| Longest frame callback | 5.1 ms | 1.5 ms | 19.8 ms | 2.3 ms |
 | Figure height at 1440, 375 and 320 px | 595, 900 and 1,021 px | 570, 973 and 1,065 px | 608, 914 and 1,061 px | 575, 921 and 1,064 px |
 | Code in the direction's folder, tests excluded | 1,239 lines | 1,199 lines | 1,201 lines | 671 lines |
 
-The shared code adds 1,322 lines that every direction uses. Each contact sheet below has six rows and four columns. The rows are the five stops and one frame taken 450 ms into a turn from London to Beijing. The columns are 1440 px light, 1440 px dark, 375 px light and 375 px dark. Every shot is scaled by one factor, so the phone column reads at its real size beside the desktop one.
+Each contact sheet below has six rows. The first five rows are the stops in four columns: 1440 px light, 1440 px dark, 375 px light and 375 px dark. The sixth row holds one frame at 1440 px in the light theme, taken 450 ms into a turn from London to Beijing. Every shot is scaled by the same factor, so the phone columns keep their size relative to the desktop ones.
 
 ## The dot globe (D)
 
-D draws the globe as a screen of square dots in SVG. The window is 240 px across at every width on a 240 unit viewBox, so each 4 px cell prints a whole 2 by 2 px dot where the ground under it is land. Every frame reads the land under each cell again, so the earth turns under a screen that stays still. Land prints in ink at 42%. The current city takes the accent with a ring and a cleared halo, and the other cities in the window print in ink. The accent is `#2f5ce0` on paper and `#86a8ff` on ink. The label sits under the window, and the names and the passage sit beside it. On a phone the names and the passage sit under the globe.
+D draws the globe as a screen of square dots in SVG. The drawing is 240 px wide on a 240 unit viewBox at 1440 and 375 px wide. Each 4 px cell prints a whole 2 by 2 px dot where the ground under it is land, and the round window inside the drawing is 232 px across. Every frame reads the land under each cell again, so the earth turns under a screen that stays still. Land prints at 42% of the text color in the light theme and 44% in the dark theme. The current city takes the accent with a ring and a cleared halo, and the other cities in the window print in the text color. The accent is `#2f5ce0` on paper and `#86a8ff` on ink. The label sits under the window, and the names and the passage sit beside it. On a phone the names and the passage sit under the globe.
 
 ![Contact sheet of direction D: a dot globe beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing](/static/docs/blog-globe/d-sheet.webp)
 
-D reuses the Versions figure's plate and the shared passage, names and targets. A sea cell tests four points around its center for land, so Britain, Cyprus and other islands narrower than a cell still print. The figure has no canvas, and CSS alone sets both themes.
+D reuses the Versions figure's plate and the shared passage, names and targets. A sea cell tests four points around its center for land, so Britain, Cyprus and other islands narrower than a cell still print.
 
 ### What works
 
 - D has the least code of the four directions: 671 lines, against 1,199 to 1,239 for the others.
-- It keeps the Versions figure's plate and themes through CSS alone, so it sits closest to the figure already in the post.
-- Its turns are the shortest (628 to 1,136 ms), and its engine's longest frame took 2.3 ms.
+- It draws no canvas, and CSS alone sets both themes.
+- Its turns are the shortest (628 to 1,136 ms), and its longest frame callback took 2.3 ms.
 - The passage steps row by row and the label steps once, both centered on the middle of the turn.
 - Without JavaScript the radios switch the passage, the label and the lit city.
 
 ### What does not work
 
-- The review's main cost for D was that its globe read as a locator beside the text more than as the subject of the figure. The window grew from 160 px to 240 px after the review, and it is still the smallest of the four at 1440 px wide, against A's 320 px.
+- The review's main objection to D was that its globe read as a small locator beside the text. The drawing grew from 160 px to 240 px after the review. Its window is still the smallest of the four at 1440 px wide: 232 px across, against 253 px for B and 272 px for A and C.
 
 ## The dithered globe (A)
 
-A prints the globe on a canvas in General Translation's 1-bit material. Each 2 px cell is screened through the 8 by 8 Bayer matrix in two nested inks: a light ink for the lit sphere and a strong ink for land. The light comes from the upper left with an ambient term and a rim, as on the sign-in page's globe. The window is 320 px across at 3 times zoom, and 240 px on a phone. A long turn pulls back on the way until both ends sit in the middle 80% of the window, then closes in again on the same curve. A pin at the window's center leaves while the ground moves and prints again on arrival. The names run across the top of the plate, the label sits under the window and the passage sits beside it. On a phone the window, the label and the passage stack in one column.
+A prints the globe on a canvas in General Translation's 1-bit material. Each 2 px cell is screened through the 8 by 8 Bayer matrix in two nested inks: a light ink for the lit sphere and a strong ink for land. The light comes from the upper left with an ambient term and a rim, as on the sign-in page's globe. The globe is zoomed 3 times behind the window. The window grows with its column in steps of 4 px up to 320 px, and it is 272 px across in the 712 px column and 240 px at 375 px wide. A long turn pulls back on the way until both ends sit in the middle 80% of the window, then closes in again on the same curve. A pin at the window's center leaves while the ground moves and prints again on arrival. The names run across the top of the plate, the label sits under the window and the passage sits beside it. On a phone the names, the window, the label and the passage stack in one column.
 
 ![Contact sheet of direction A: a blue dithered globe beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing](/static/docs/blog-globe/a-sheet.webp)
 
@@ -105,22 +107,22 @@ A forks `globe()`, the lit sphere the sign-in globe draws, from `packages/ui/src
 
 ### What does not work
 
-- The whole disc prints in the accent and its tint, while the pin is ink. The brand keeps the accent for small elements. The pair is the Versions figure's own, so the post already has the precedent, and the choice is open.
-- A has the most code of the four (1,239 lines), and its engine's longest frame took 5.1 ms.
+- The whole disc prints in the accent and its tint, and the pin prints in ink. The brand keeps the accent for small elements. The Versions figure prints its field in the same blue pair, so the choice has a precedent and is still open.
+- A has the most code of the four (1,239 lines), and its longest frame callback took 5.1 ms.
 
 ## The line globe (B)
 
-B draws the globe in SVG lines through a round lens: coastlines, a 10° graticule cut at the lens, a single 1 px limb and the cities as small squares. A city the route has reached is filled, a city still ahead is open, and the current city takes the accent. The route from Alexandria to the current stop is a doubled line of two 1.5 px lines 3 px apart, and it draws on with the turn. During a move the label counts the coordinates the globe faces and names no city. The leaving city and year step out as the move starts, and the arriving ones step in as the globe lands. The lens is at most 280 px across at 2.5 times zoom.
+B draws the globe in SVG lines through a round lens: coastlines, a 10° graticule cut at the lens, a single 1 px limb and the cities as small squares. A city the route has reached is filled, a city still ahead is open, and the current city takes the accent. The route from Alexandria to the current stop is a doubled line of two 1.5 px lines 3 px apart, and it draws on with the turn. During a move the label counts the coordinates the globe faces and names no city. The leaving city and year step out as the move starts, and the arriving ones step in as the globe lands. The globe is zoomed 2.5 times behind the lens, which is 253 px across in the 712 px column and 276 px at 375 px wide.
 
 ![Contact sheet of direction B: a line globe with coastlines, a graticule and a doubled route line beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing](/static/docs/blog-globe/b-sheet.webp)
 
-B takes the line grammar of the delivery globe on generaltranslation.com's home page (EdgeGlobe) and gives it a moving camera. The route comes from `greatCircle()`. The coastlines were traced once from the shared land mask by marching squares, simplified by Douglas and Peucker at 0.3° and smoothed by corner cutting, then baked into `coasts.ts` as 43 rings, so nothing traces at load.
+B takes the line grammar of the delivery globe on generaltranslation.com's home page (EdgeGlobe) and gives it a moving camera. The route comes from `greatCircle()`. The coastlines were traced once from the shared land mask by marching squares and simplified by Douglas and Peucker at 0.3°, then baked into `coasts.ts` as 43 rings. Two rounds of corner cutting smooth each ring when the module reads it, so no tracing runs at load.
 
 ### What works
 
 - The coastlines read at a glance, and the accent marks only the current city.
 - The route shows the order of the stops as the globe turns. The review called it the best single idea of the round.
-- B has the lightest engine: its longest frame took 1.5 ms. CSS alone sets both themes.
+- B has the lightest engine: its longest frame callback took 1.5 ms. CSS alone sets both themes.
 - Without JavaScript the radios switch the label, the passage, the route and the lit city.
 
 ### What does not work
@@ -130,11 +132,11 @@ B takes the line grammar of the delivery globe on generaltranslation.com's home 
 
 ## The glyph globe (C)
 
-C is a canvas port of the glyph globe on the /world map. An even grid of upright cells, 36 across the window, is anchored to the window's center. Each cell reads the ground under it and prints a letter of the current language where the ground is land, or a small square where it is sea. The letters come from the stop's passage and its native name, so the land is written in Greek, Arabic or Latin letters or in Han characters. Marks shrink toward the window's edge with the sphere's depth. On a switch the letters on the land hand over to the new script through the same 8 by 8 screen as the passage, in the middle of the turn. The window is 300 px across at 3 times zoom, and 240 px on a phone.
+C is a canvas port of the World Language Map's glyph globe. An even grid of upright cells, 36 across the window, is anchored to the window's center. Each cell reads the ground under it and prints a letter of the current language where the ground is land, or a small square where it is sea. The letters come from the stop's first definition and its native name, so the land is written in Greek, Arabic or Latin letters or in Han characters. Each mark's size follows the depth of a sphere seen through the window, so the marks shrink toward its edge. On a switch the letters on the land hand over to the new script through the same 8 by 8 screen as the passage, in the middle of the turn. The globe is zoomed 3 times behind the window, which is 272 px across in the 712 px column and 221 px at 375 px wide.
 
 ![Contact sheet of direction C: a globe drawn in letters of the current script beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing](/static/docs/blog-globe/c-sheet.webp)
 
-C follows the method of `render-globe.ts` on gt-cloud's `k/language-map` branch, which inverts the projection under each screen cell and sizes each glyph by depth. Each cell keeps its letter while the ground turns under it, so only the coast moves. Before the review's fixes, 42% of land cells changed letter on every frame of the turn from London to Beijing.
+C follows the method of `render-globe.ts` on gt-cloud's `k/language-map` branch, which inverts the projection under each screen cell and prints one upright glyph in it. Each cell keeps its letter while the ground turns under it, so only the coast moves. Before the review's fixes, letters changed on 42% of land cells a frame on the turn from London to Beijing, and on 81% at the peak.
 
 ### What works
 
@@ -145,12 +147,12 @@ C follows the method of `render-globe.ts` on gt-cloud's `k/language-map` branch,
 ### What does not work
 
 - At 36 marks across, each mark covers about 1.1° of ground at the window's center, so C is the coarsest globe of the four. The review saw 26 marks across and ranked C last because its globe read least as the Earth.
-- Its engine's longest frame took 19.8 ms on the turn from London to Beijing. The longest frames of the other three took 1.5 to 5.1 ms.
+- Its longest frame callback took 19.8 ms on the turn from London to Beijing. The longest callbacks of the other three took 1.5 to 5.1 ms.
 - Its turns are the longest of the four, at 1,019 to 1,529 ms.
 
 ## Ranking
 
-The review of the first build scored each direction from 1 to 10 on eight criteria. The fixes that followed closed the defects it listed, and the scores were not taken again.
+The design review of the first build scored each direction from 1 to 10 on eight criteria. The fixes that followed closed the defects it listed, and the scores were not taken again.
 
 | Criterion | A | B | C | D |
 | --- | --- | --- | --- | --- |
@@ -164,10 +166,10 @@ The review of the first build scored each direction from 1 to 10 on eight criter
 | Phones | 6 | 5 | 7 | 8 |
 | Total of 80 | 58 | 53 | 53 | 64 |
 
-1. **D, the dot globe**, 64. It is the closest to the Versions figure in the post and has the least code.
-2. **A, the dithered globe**, 58. It has the strongest globe.
-3. **B, the line globe**, 53. Its doubled route line is the best single idea of the round.
-4. **C, the glyph globe**, 53. It draws the land in the current script. B ranks above C at the same total because B's globe reads as the Earth.
+1. D, the dot globe, scored 64. In the first build it sat closest to the Versions figure, and it has the least code.
+2. A, the dithered globe, scored 58. It has the strongest globe.
+3. B, the line globe, scored 53. Its doubled route line is the best single idea of the round.
+4. C, the glyph globe, scored 53 and draws the land in the current script. B ranks above C at the same total because B's globe reads as the Earth.
 
 The review asked for D and A to be shown first. D is the closest to shipping, and A has the strongest globe.
 
@@ -175,15 +177,15 @@ The review asked for D and A to be shown first. D is the closest to shipping, an
 
 The globe figure is an exploration. No direction has shipped, the branch `k/blog-globe` has not been pushed, and no published post carries the figure. Round 3's gates passed on the branch: the lint, the type check and 746 tests in 77 files.
 
-These choices are open for Kevin:
+## Open choices
 
-1. Which direction ships. The review recommends D, with A as the alternative.
-2. A's ink, if A ships: the Versions figure's blue pair across the whole disc, or the globe in ink with the accent on the pin alone.
-3. Whether B's doubled route line joins the chosen direction. The review proposed adding it to D or A.
-4. Whether C's hand-over of the letters on the land joins the chosen direction.
-5. D's window size, if D ships. It is 240 px, against A's 320 px and C's 300 px.
-6. Whether the post turns on the guided tour that A and C support. It is off by default in both.
+1. The direction that ships is still to be chosen. The review recommends D, with A as the alternative.
+2. If A ships, its ink is still to be chosen: the Versions figure's blue pair across the whole disc, or the globe in ink with the accent on the pin alone.
+3. B's doubled route line could join the chosen direction, as the review proposed for D or A.
+4. C's hand-over of the letters on the land could join the chosen direction.
+5. If D ships, its window could grow. It is 232 px across in the 712 px column, against 272 px for A and C.
+6. A and C support a guided tour that moves on to the next stop until the reader picks one. It is off by default in both, and the post that carries the figure can turn it on.
 
-After the pick, the other three direction folders leave the code and stay in the branch's history, and the ease and arc helpers each direction copies move into `ortho.ts`.
+After the pick, the other three direction folders leave the code and stay in the branch's history. The ease and arc helpers that each direction copies move into `ortho.ts`.
 
 The land comes from [Natural Earth](https://www.naturalearthdata.com), which is in the public domain.
