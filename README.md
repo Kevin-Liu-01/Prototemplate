@@ -37,7 +37,7 @@ at each of them.
 
 - `/`: the design lab, the twenty-seven directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall (the flagship cut into section tiles, light and dark, desktop and mobile) and the capabilities ledger (what the system can do, each entry pointing at where it runs live)
 - `/brand`: the brand book, the identity canon in ten sections
-- `/docs`: ten pages on how Prototemplate works, in the fumadocs notebook layout generaltranslation.com/docs runs, outside the viewer shell; `/docs/template` explains how to lift the docs site into another project. Each page has a Markdown twin at its address plus `.md`
+- `/docs`: ten pages on how Prototemplate works and one on the directions for the blog globe figure, in the fumadocs notebook layout generaltranslation.com/docs runs, outside the viewer shell; `/docs/template` explains how to lift the docs site into another project. Each page has a Markdown twin at its address plus `.md`
 - `/deck`: the General Translation brand deck, 93 slides in its own viewer
 - `/skills`: the curated skills, one page per skill with its SKILL.md, its files and its install line, and the raw files at `/skills/<slug>/SKILL.md`
 - `/handbook`: how Kevin runs General Translation work, read as one book: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log, then the canon (the agent guide, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, the ship loop, the tools, the libraries with the build log, the graphics pipeline and the artifact pictures), one address per document (`/handbook/<slug>`) and a Markdown twin at each address plus `.md`
@@ -83,7 +83,7 @@ pnpm dev                              # http://localhost:3005
 
 | doc | what it holds |
 | --- | --- |
-| [`/docs`](https://www.prototemplate.com/docs) | the docs site: ten pages on how the hub works, from what it is to using the docs as a template; the source is `content/docs/` |
+| [`/docs`](https://www.prototemplate.com/docs) | the docs site: ten pages on how the hub works, from what it is to using the docs as a template, and one on the directions for the blog globe figure; the source is `content/docs/` |
 | [`AGENTS.md`](./AGENTS.md) | the entry point for an agent: the read order, the principles in brief, which skill to load for a task, the house rules, and how to use the hub in another project (`CLAUDE.md` imports it); the live version is `/handbook/agents` |
 | [`docs/handbook/`](./docs/handbook/README.md) | how Kevin runs GT work: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log; the live version is `/handbook`, which also serves every document below |
 | [`BRAND.md`](./BRAND.md) | the identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and the context for partners |

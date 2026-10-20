@@ -38,7 +38,7 @@ function body(): string {
     ''
   );
 
-  add('## Docs', '', 'Ten pages on how Prototemplate works, in the docs layout generaltranslation.com runs. The last one explains how to use the docs site as a template.', '');
+  add('## Docs', '', 'Ten pages on how Prototemplate works and one on the directions for the blog globe figure, in the docs layout generaltranslation.com runs. The last one explains how to use the docs site as a template.', '');
   for (const page of docsPages()) {
     add(`- [${page.data.title}](${selfUrl(page.url)}): ${page.data.description ?? ''} Markdown: ${selfUrl(page.url)}.md`);
   }

@@ -1,5 +1,5 @@
 /**
- * The docs site's ten pages as the rest of the hub lists them: the slug,
+ * The docs site's eleven pages as the rest of the hub lists them: the slug,
  * the address, the title and the description each MDX file's frontmatter
  * carries, in the sidebar's order (content/docs/meta.json). The docs routes
  * read the MDX through fumadocs (src/lib/source.ts); this list is for the
@@ -79,6 +79,13 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     title: 'The SEO system',
     description:
       'How every route gets its title, canonical, robots, card and structured data from one call, the indexing policy, the sitemap and the agent files.',
+  },
+  {
+    slug: 'blog-globe',
+    href: '/docs/blog-globe',
+    title: 'The blog globe figure',
+    description:
+      "Four directions for a blog figure that turns a globe to each city on the path of Euclid's Elements: the shared contract, the measurements and the ranking.",
   },
   {
     slug: 'template',

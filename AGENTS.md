@@ -67,7 +67,7 @@ The skills live in `skills/<slug>/SKILL.md`. In this repository they are already
 - [Glossary](docs/handbook/glossary.md): the working vocabulary and where each term lives.
 - [Decisions log](docs/handbook/decisions.md): Kevin's dated rulings and what each replaced.
 
-On the site the canon follows these six in the same book: this guide, BRAND.md, DESIGN.md, ARCHITECTURE.md, the ship loop, the tools, the libraries with the build log, the graphics pipeline and the artifact pictures. The docs site at /docs explains in ten pages how the hub works.
+On the site the canon follows these six in the same book: this guide, BRAND.md, DESIGN.md, ARCHITECTURE.md, the ship loop, the tools, the libraries with the build log, the graphics pipeline and the artifact pictures. The docs site at /docs explains in ten pages how the hub works, and its eleventh page records the directions for the blog globe figure.
 
 ## House rules
 

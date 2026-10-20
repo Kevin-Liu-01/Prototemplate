@@ -136,7 +136,7 @@ function thumb(stem: string): { shot: string; shotDark: string } {
 const PAGES: readonly Surface[] = [
   internal('gallery', pageLabel('gallery'), '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
   internal('brand', pageLabel('brand'), '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
-  internal('docs', pageLabel('docs'), '/docs', 'Ten pages on how Prototemplate works, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
+  internal('docs', pageLabel('docs'), '/docs', 'Ten pages on how Prototemplate works and one on the blog globe figure, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
   internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
   internal('present', pageLabel('present'), '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
   internal('compare', pageLabel('compare'), '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
@@ -207,7 +207,7 @@ const KNOWLEDGE: readonly Surface[] = [
   ),
 ];
 
-/** The docs site's ten pages, in its sidebar's order; each previews its own first fold (`docs-<slug>`). */
+/** The docs site's eleven pages, in its sidebar's order; each previews its own first fold (`docs-<slug>`). */
 const DOCUMENTS: readonly Surface[] = DOCS_PAGES.map((page) =>
   internal(`docs-${page.slug}`, page.title, page.href, page.description, 'Documents', thumb(`docs-${page.slug}`))
 );
