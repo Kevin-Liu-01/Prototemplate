@@ -6,6 +6,7 @@ import type { CSSProperties } from 'react';
 import type { StoryCard } from '../content';
 import { dmsPair } from '../coords';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
+import { bookTitle } from '../titles';
 import type { Lang } from '../stories';
 import Cover from './Cover';
 import GtMark from './GtMark';
@@ -91,9 +92,7 @@ export default function Book({ story, title, lang, playing, on = false, open = f
         <div className='gtp-book-front'>
           <Cover
             slug={story.slug}
-            number={`No. ${pad(story.n)}`}
             title={title}
-            authors={story.authors.join(', ')}
             lang={lang.code}
             dir={lang.dir}
             picture={story.cover}
@@ -107,7 +106,7 @@ export default function Book({ story, title, lang, playing, on = false, open = f
             <GtMark size={28} />
             <dl>
               <dt>Press</dt>
-              <dd>GT Atlas, No. {pad(story.n)}</dd>
+              <dd>GT Atlas</dd>
               <dt>By</dt>
               <dd>{story.authors.join(', ')}</dd>
               {story.date ? (
@@ -131,16 +130,14 @@ export default function Book({ story, title, lang, playing, on = false, open = f
         <GtMark size={26} />
         <p>{story.summary}</p>
         <Seal size={64} className='gtp-book-seal' />
-        <span className='gtp-book-back-line'>
-          No. {pad(story.n)} · {dmsPair(story.dateline)}
-        </span>
+        <span className='gtp-book-back-line'>{dmsPair(story.dateline)}</span>
       </div>
       <div className='gtp-book-face gtp-book-spine'>
         <span className='gtp-book-band' />
         <span className='gtp-book-spine-title' lang={lang.code} dir={lang.dir}>
-          {title}
+          {bookTitle(title, lang.code)}
         </span>
-        <span className='gtp-book-spine-n'>{pad(story.n)}</span>
+        <span className='gtp-book-spine-by'>{story.authors.join(', ')}</span>
         <GtMark size={18} className='gtp-book-spine-mark' />
       </div>
       <div className='gtp-book-face gtp-book-fore' />

@@ -7,12 +7,11 @@ import { drawCoverText } from '../gpu/coverText';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { mountFluid, type FluidHandle } from '../gpu/fluid';
 import { useLayoutWork, useMountEffect } from '../hooks';
+import { bookTitle } from '../titles';
 
 type Props = {
   slug: string;
-  number: string;
   title: string;
-  authors: string;
   lang: string;
   dir: 'ltr' | 'rtl';
   /** The story's picture, printed in the press material where WebGPU is missing. */
@@ -26,7 +25,7 @@ type Props = {
    printed through it, and a pointer stirs it while it plays. Without
    WebGPU it falls back to the story's picture in the dithered material
    with the same type over it. */
-export default function Cover({ slug, number, title, authors, lang, dir, picture, playing, className }: Props) {
+export default function Cover({ slug, title, lang, dir, picture, playing, className }: Props) {
   const gpuCanvas = useRef<HTMLCanvasElement>(null);
   const cpuCanvas = useRef<HTMLCanvasElement>(null);
   const handle = useRef<FluidHandle | null>(null);
@@ -49,7 +48,7 @@ export default function Cover({ slug, number, title, authors, lang, dir, picture
     if (!canvas) return;
     const width = mode === 'cpu' ? canvas.width : canvas.width || 640;
     const height = mode === 'cpu' ? canvas.height : canvas.height || 360;
-    const { mask, plain } = await drawCoverText(width, height, { slug, number, title, authors, lang, dir, paper: spec.paper, art: spec.art, accent: spec.accent, face: spec.face });
+    const { mask, plain } = await drawCoverText(width, height, { slug, title: bookTitle(title, lang), lang, dir, paper: spec.paper, art: spec.art, accent: spec.accent, face: spec.face });
     if (mode === 'gpu') handle.current?.setText(mask);
     if (mode === 'cpu' && cpuCanvas.current) {
       const ctx = cpuCanvas.current.getContext('2d');

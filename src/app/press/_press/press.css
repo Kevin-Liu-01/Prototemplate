@@ -396,11 +396,16 @@
 .gtp-book-spine,
 .gtp-book-fore { width: var(--bd); height: var(--bh); margin: calc(var(--bh) / -2) 0 0 calc(var(--bd) / -2); }
 .gtp-book-spine { transform: rotateY(-90deg) translateZ(calc(var(--bw) / 2)); display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0 0 12px; background: var(--board); color: var(--ink); box-shadow: inset 2px 0 0 rgb(255 255 255 / 0.06), inset -2px 0 0 rgb(0 0 0 / 0.25); }
-.gtp-book-band { flex: none; width: 100%; height: 5%; margin-bottom: 4px; background: var(--band); }
-.gtp-book-spine-title { flex: 1; min-height: 0; overflow: hidden; writing-mode: vertical-rl; font-size: clamp(9px, calc(var(--bd) * 0.42), 12px); font-weight: 500; letter-spacing: 0; white-space: nowrap; text-overflow: ellipsis; }
-.gtp-book-spine-n { font-family: var(--gtp-mono); font-size: 9px; letter-spacing: 0.04em; writing-mode: vertical-rl; opacity: 0.7; }
+/* a thin stripe across the head of the spine */
+.gtp-book-band { flex: none; width: 100%; height: 3px; margin-bottom: 6px; background: var(--band); }
+/* the title runs down the spine on up to two balanced lines; Latin turns sideways as one run (so its quotes and
+   apostrophes turn with it), while Chinese, Japanese and Korean stand upright */
+.gtp-book-spine-title { flex: 1; min-height: 0; overflow: hidden; writing-mode: vertical-rl; text-orientation: sideways; font-family: 'Katagami Serif', var(--gtp-cjk), Georgia, serif; font-size: clamp(8px, calc(var(--bd) * 0.4), 10.5px); line-height: 1.02; font-weight: 400; letter-spacing: 0; text-wrap: balance; }
+.gtp-book-spine-title:is(:lang(zh), :lang(ja), :lang(ko)) { text-orientation: mixed; }
+/* the authors under the title, as a spine carries them */
+.gtp-book-spine-by { flex: none; max-height: 40%; overflow: hidden; writing-mode: vertical-rl; text-orientation: sideways; font-size: clamp(8px, calc(var(--bd) * 0.34), 9.5px); letter-spacing: 0.02em; white-space: nowrap; text-overflow: ellipsis; opacity: 0.72; }
 .gtp-book-spine-mark { flex: none; opacity: 0.85; }
-.gtp-book[data-on='true'] .gtp-book-spine-n { color: var(--gtp-signal); }
+.gtp-book[data-on='true'] .gtp-book-spine-by { opacity: 1; }
 .gtp-book-fore { transform: rotateY(90deg) translateZ(calc(var(--bw) / 2 - 2px)); background: repeating-linear-gradient(90deg, var(--gtp-pages-line) 0 1px, var(--gtp-pages) 1px 3px); box-shadow: inset 2px 0 0 var(--board), inset -2px 0 0 var(--board); }
 .gtp-book-head,
 .gtp-book-tail { width: var(--bw); height: var(--bd); margin: calc(var(--bd) / -2) 0 0 calc(var(--bw) / -2); background: repeating-linear-gradient(0deg, var(--gtp-pages-line) 0 1px, var(--gtp-pages) 1px 3px); box-shadow: inset 0 2px 0 var(--board), inset 0 -2px 0 var(--board), inset 4px 0 0 var(--board); }
@@ -559,7 +564,7 @@
 .gtp-dismiss { position: absolute; top: -6px; right: 0; width: 32px; height: 32px; display: grid; place-items: center; background: var(--gtp-stage-fill); color: var(--gtp-stage-ink); font-size: 18px; line-height: 1; }
 .gtp-dismiss:hover { background: rgb(191 226 241 / 0.16); }
 .gtp-presented-n { color: var(--gtp-signal); }
-.gtp-presented h2 { margin: 0; padding-right: 40px; font-size: clamp(28px, 2.8vw, 42px); line-height: 1.04; font-weight: 500; letter-spacing: -0.035em; text-wrap: balance; }
+.gtp-presented h2 { margin: 0; padding-right: 40px; font-family: 'Katagami Serif', var(--gtp-cjk), Georgia, serif; font-size: clamp(28px, 2.8vw, 42px); line-height: 1.08; font-weight: 400; letter-spacing: -0.015em; text-wrap: balance; }
 .gtp-presented p { margin: 0; font-family: var(--gtp-serif); font-size: 16px; line-height: 1.5; color: var(--gtp-stage-ink-2); }
 .gtp-presented dl { margin: 0; display: grid; grid-template-columns: 16px minmax(0, 1fr); align-items: center; gap: 8px 12px; }
 .gtp-presented dt { margin: 0; color: var(--gtp-stage-ink-2); line-height: 0; }

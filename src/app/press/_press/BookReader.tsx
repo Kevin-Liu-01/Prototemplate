@@ -75,9 +75,7 @@ export default function BookReader({ story, next }: Props) {
           <aside className='gtp-print-frontis' aria-label='Cover'>
             <Cover
               slug={story.slug}
-              number={`No. ${String(story.n).padStart(2, '0')}`}
               title={story.title}
-              authors={story.authors.join(', ')}
               lang='en'
               dir='ltr'
               picture={story.cover}

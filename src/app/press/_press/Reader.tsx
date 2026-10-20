@@ -175,9 +175,7 @@ export default function Reader({ story, next }: Props) {
               <div className='gtp-phone-cover'>
                 <Cover
                   slug={story.slug}
-                  number={`No. ${pad(story.n)}`}
                   title={story.title}
-                  authors={story.authors.join(', ')}
                   lang='en'
                   dir='ltr'
                   picture={story.cover}
@@ -312,9 +310,7 @@ export default function Reader({ story, next }: Props) {
               <section className='gtp-plate gtp-plate-cover' data-on={plate === 0} aria-hidden={plate !== 0} inert={plate !== 0} aria-label='Cover'>
                 <Cover
                   slug={story.slug}
-                  number={`No. ${pad(story.n)}`}
                   title={story.title}
-                  authors={story.authors.join(', ')}
                   lang='en'
                   dir='ltr'
                   picture={story.cover}

@@ -7,6 +7,7 @@ import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointer
 import type { StoryCard } from './content';
 import { useLayoutWork, useMountEffect } from './hooks';
 import { dms, dmsPair, HOME } from './coords';
+import { bookTitle } from './titles';
 import { LANGS, TOPICS, type Lang, type LangCode, type Topic } from './stories';
 import Book, { bookDepth } from './ui/Book';
 import Globe from './ui/Globe';
@@ -330,7 +331,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
               <span aria-hidden='true'>×</span>
             </button>
             <h2 lang={lang.code} dir={lang.dir}>
-              {story.titles[code]}
+              {bookTitle(story.titles[code], lang.code)}
             </h2>
             <p>{story.summary}</p>
             <p className='gtp-presented-meta'>

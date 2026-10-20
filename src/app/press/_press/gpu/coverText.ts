@@ -1,7 +1,7 @@
-/* The cover's type, drawn once into a canvas the cover's size: the number
-   and the monogram along the top, the title and its authors at the foot.
-   The monogram sits at the top left and the number at the top right.
-   The color is the cover's paper; the WebGPU display pass reads only the
+/* The cover's type, drawn once into a canvas the cover's size: the GT
+   monogram at the top left and the title at the foot, nothing else; the
+   authors are on the spine. Titles set in Katagami Serif unless a cover
+   picks another face. The color is the cover's paper; the WebGPU display pass reads only the
    alpha and prints the fluid through it, and the fallback draws it as is. */
 
 import { GT_MARK_PATH } from '../ui/GtMark';
@@ -13,11 +13,9 @@ const SERIF = '"Katagami Serif", "Katagami CJK SC", "Katagami CJK JP", "Katagami
 const FACES = { sans: SANS, serif: SERIF, mono: MONO } as const;
 
 export type CoverText = {
-  /** Picks the emblem. */
+  /** Picks the design. */
   slug: string;
-  number: string;
   title: string;
-  authors: string;
   lang: string;
   dir: 'ltr' | 'rtl';
   paper: string;
@@ -121,7 +119,7 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
   canvas.height = height;
   const ctx = canvas.getContext('2d');
   if (!ctx) return { mask: encodeMask(canvas, await drawLayers(t.slug, width, height)), plain: canvas };
-  const face = FACES[t.face ?? 'sans'];
+  const face = FACES[t.face ?? 'serif'];
   // a title with a colon sets its first part large and the rest as a subtitle
   const split = /^(.+?)\s*[:：]\s*(.+)$/.exec(t.title);
   const main = split ? split[1]! : t.title;
@@ -130,11 +128,9 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
   const short = Math.min(width, height / 0.62);
   const titleSize = Math.round(short * 0.112);
   const subSize = Math.round(short * 0.058);
-  const smallSize = Math.max(9, Math.round(short * 0.034));
   try {
     await Promise.all([
       document.fonts.load(`500 ${titleSize}px ${face}`, t.title),
-      document.fonts.load(`400 ${smallSize}px ${MONO}`, t.number),
     ]);
   } catch {
     // the system faces stand in
@@ -145,7 +141,7 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
   ctx.fillStyle = t.paper;
   ctx.textBaseline = 'alphabetic';
 
-  // the head: the monogram at the left and the number at the right, on one baseline
+  // the head: the monogram at the top left
   const markH = Math.round(short * 0.075);
   const headBase = pad + markH;
   const scale = markH / 771;
@@ -155,17 +151,8 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
   ctx.translate(8, -214);
   ctx.fill(new Path2D(GT_MARK_PATH), 'evenodd');
   ctx.restore();
-  ctx.font = `400 ${smallSize}px ${MONO}`;
-  ctx.letterSpacing = `${(0.06 * smallSize).toFixed(1)}px`;
-  ctx.direction = 'ltr';
-  ctx.textAlign = 'right';
-  ctx.fillText(t.number.toUpperCase(), width - pad, headBase);
-
-  // the foot, from the bottom up: the authors, the subtitle, the title
-  ctx.textAlign = 'left';
+  // the foot, from the bottom up: the subtitle, the title
   let base = height - pad;
-  ctx.fillText(t.authors.toUpperCase(), pad, base);
-  base -= smallSize * 2.4;
 
   ctx.direction = rtl ? 'rtl' : 'ltr';
   ctx.textAlign = rtl ? 'right' : 'left';
@@ -180,10 +167,10 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
     base -= subLines.length * subLead + subSize * 0.5;
   }
   // the serif sets at its book weight and a looser fit; the mono at its own spacing
-  ctx.font = `${t.face === 'serif' ? 400 : 500} ${titleSize}px ${face}`;
-  ctx.letterSpacing = `${((t.face === 'mono' ? -0.04 : t.face === 'serif' ? -0.015 : -0.03) * titleSize).toFixed(1)}px`;
+  ctx.font = `${(t.face ?? 'serif') === 'serif' ? 400 : 500} ${titleSize}px ${face}`;
+  ctx.letterSpacing = `${((t.face === 'mono' ? -0.04 : t.face === 'sans' ? -0.03 : -0.015) * titleSize).toFixed(1)}px`;
   const lines = balance(ctx, main, width - pad * 2);
-  const lead = titleSize * 1.02;
+  const lead = titleSize * 1.06;
   lines.forEach((line, i) => ctx.fillText(line, x, base - (lines.length - 1 - i) * lead));
   // the emblem stops a gap above the title's first line, so a long title never runs into it
   const titleTop = base - (lines.length - 1) * lead - titleSize * 0.78;
