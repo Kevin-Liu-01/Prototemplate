@@ -26,7 +26,7 @@ These pages mount the real components of the hub: the dithered fields, the light
 | [Locale tags and language pieces](/docs/components/language) | `LocaleTag` against `LocaleFlag`, and the seven language diagrams |
 | [Reveal seam and sentence motion](/docs/components/motion) | `RevealSeam` and `EverySentence` |
 | [Speed marks and the GT mark](/docs/components/marks) | The speed marks and the globe concepts, `GtWord` and `gtText()`, `DitheredMark` |
-| [Badges and heads](/docs/components/heads) | `BadgeCycle`, `BadgeWords`, `badgeMark()` and `BookHead` |
+| [Badges and heads](/docs/components/heads) | `BadgeCycle`, `badgeMark()` and `BookHead` |
 
 ## Every component
 
@@ -53,7 +53,7 @@ These pages mount the real components of the hub: the dithered fields, the light
 | `MARKS`, `GLOBE_CONCEPTS` | `src/lib/marks.ts`, `public/marks/` | no | [Marks](/docs/components/marks) |
 | `GtWord`, `gtText`, `GtMark` | `src/components/viewer/GtWord.tsx`, `src/components/viewer/GtMark.tsx` | no | [Marks](/docs/components/marks) |
 | `DitheredMark` | `src/app/d/toolchain/diagrams/DitheredMark.tsx` | no, the host animates | [Marks](/docs/components/marks) |
-| `BadgeCycle`, `BadgeWords`, `badgeMark` | `src/components/viewer/BadgeCycle.tsx` | no | [Heads](/docs/components/heads) |
+| `BadgeCycle`, `badgeMark` | `src/components/viewer/BadgeCycle.tsx` | no | [Heads](/docs/components/heads) |
 | `BookHead` | `src/components/viewer/BookView.tsx` | yes | [Heads](/docs/components/heads) |
 
 Client means the module is a `'use client'` component or a canvas engine that needs the DOM. The rest render on the server and ship no JavaScript of their own. Several components live in `src/app/d/toolchain`, the direction that the later directions fork. The radius, type and oxlint gates skip that folder, and the site imports the components from there.

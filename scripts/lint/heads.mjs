@@ -16,7 +16,8 @@
  *
  * Static mode:
  *
- *   S1 props    a <BookHead> carries title, badge, lead, updated and facts; a page
+ *   S1 props    a <BookHead> carries title, lead, updated and facts, and a badge
+ *               only under src/app/brand (Kevin, 2026-10-21); a page
  *               route's title is PAGE_NAMES.<id>.name, or PAGE_NAMES[book].name
  *               in the book shell (the records, a film package, a skill and
  *               a direction, carry their own)
@@ -187,10 +188,13 @@ export function lintHeadProps(rel, source) {
   const problems = [];
   const record = RECORDS.includes(rel);
   for (const head of bookHeads(source)) {
-    for (const prop of ['title', 'badge', 'lead', 'updated', 'facts']) {
+    for (const prop of ['title', 'lead', 'updated', 'facts']) {
       if (!head.attrs.has(prop) && !(prop === 'facts' && head.spread)) {
-        problems.push({ line: head.line, rule: 'S1', message: `<BookHead> has no ${prop}: every head carries a title, its badge (BadgeCycle.tsx), a lead, the Updated entry and its facts` });
+        problems.push({ line: head.line, rule: 'S1', message: `<BookHead> has no ${prop}: every head carries a title, a lead, the Updated entry and its facts` });
       }
+    }
+    if (head.attrs.has('badge') && rel !== COMPONENT && !rel.startsWith('src/app/brand/')) {
+      problems.push({ line: head.line, rule: 'S1', message: '<BookHead badge>: the badge after the title is /brand\'s alone (BadgeCycle.tsx)' });
     }
     if (record || rel === COMPONENT || !head.attrs.has('title')) continue;
     let title = head.attrs.get('title');

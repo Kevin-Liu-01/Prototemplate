@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useRef, useState } from 'react';
 
-import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { Icon } from '@/components/viewer/icons';
 import type { IconName } from '@/components/viewer/icons';
@@ -198,7 +197,6 @@ function DirectionBook({ direction, updated }: { direction: Direction; updated: 
     <article className='dr-doc pt-book-col'>
       <BookHead
         title={direction.name}
-        badge={<BadgeWords words={pages.map((page) => page.name)} />}
         lead={lead}
         note={
           brief || !note ? (

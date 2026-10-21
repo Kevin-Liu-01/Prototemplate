@@ -1,6 +1,6 @@
 ---
 title: Badges and heads
-description: "The head badge that cuts through what a page holds, and the book head every hub page opens with, live at the desktop and the phone width."
+description: "The badge that cuts through the GT monograms after the Brand title, and the book head every hub page opens with, live at two widths."
 icon: Book
 sources:
   - src/components/docs/demos
@@ -11,36 +11,34 @@ sources:
 
 import { BadgeCycleDemo, HeadFrameDemo } from '@/components/docs/demos/lazy';
 
-Every page of the hub that reads as a book opens with the same head: the title with an optional badge, a lead of one to three lines, a panel of facts, and one hatch band. DESIGN.md section 4 sets the standard and `pnpm lint:heads` holds it. The badge after the title cuts through what the page holds, one frame at a time.
+Every page of the hub that reads as a book opens with the same head: the title, a lead of one to three lines, a panel of facts, and one hatch band. DESIGN.md section 4 sets the standard and `pnpm lint:heads` holds it. /brand alone sets a badge after its title, which cuts through the GT monograms one frame at a time.
 
 ## The head badge
 
-The plate sets a title with its badge as `BookHead` sets it: the badge follows the title's last word and never breaks away from it. Frames switches between mark files, item names and one word in its own scripts, Count sets how many frames the strip holds, and Size sets the title at the page and section steps. Still applies the rule reduced motion applies.
+The plate sets the Brand title with its badge as `BookHead` sets it: the badge follows the title's last word and never breaks away from it. Count sets how many monograms the strip holds, and Size sets the title at the page and section steps. Still applies the rule reduced motion applies.
 
 <BadgeCycleDemo />
 
-Every frame sits side by side in one strip, each exactly one box wide, and a CSS animation steps the strip one box to the left every 1.4 seconds with `steps(n)`, so each change is a hard cut. A hidden sizer stacks every frame in one cell, so the box takes the widest frame's width and never changes size. A name is drawn as generated content, so the frames never join the title's text: copying the title and the h1 a crawler reads hold the title alone.
+Every frame sits side by side in one strip, each exactly one box wide, and a CSS animation steps the strip one box to the left every 1.4 seconds with `steps(n)`, so each change is a hard cut. A hidden sizer stacks every frame in one cell, so the box takes the widest frame's width and never changes size. `BookHead` hides the badge from the accessible name, so the h1 a crawler reads holds the title alone.
 
 ### Import and props
 
 ```tsx
-import { BadgeCycle, BadgeWords, badgeMark } from '@/components/viewer/BadgeCycle';
+import { BadgeCycle, badgeMark } from '@/components/viewer/BadgeCycle';
 
 <BookHead badge={<BadgeCycle frames={files.map((file) => badgeMark(file))} />} />;
-<BookHead badge={<BadgeWords words={['gt-brand', { text: '言語', lang: 'ja' }]} />} />;
 ```
 
 | Export | Props | What it does |
 | --- | --- | --- |
 | `BadgeCycle` | `frames`: `{ key, content }[]` | The strip of frames. With no frames it renders nothing. |
-| `BadgeWords` | `words`: strings, or `{ text, lang?, dir? }` | A badge of names, each with the language and direction of its script. |
 | `badgeMark(src)` | a public file path | One frame that draws the file as an alpha mask in the title's ink. |
 
 The rules live in `src/components/viewer/BookView.css`, so a host outside a book head imports that sheet, as this plate does.
 
 ### When to use it
 
-Every book head on the hub carries a badge. Its frames are the page's own items in page order: mark files on /marks, skill ids on /skills, film slugs on /motion. `BookHead` hides the badge from the accessible name, so the page prints everything the badge shows.
+Only /brand's head carries a badge (Kevin, 2026-10-21): the GT monogram, then the register's monograms. Every other book head sets its title alone, and `pnpm lint:heads` fails a badge outside `src/app/brand`.
 
 ### Reduced motion and themes
 
@@ -48,7 +46,7 @@ Under reduced motion the strip stops on the first frame and the box takes that f
 
 ## The book head
 
-A page keeps one h1, so the plate shows the head in its own document: a live hub page in a frame, scaled to the plate. Page picks the route, and Width lays it out at 1440 or 390 pixels. The head is a container, so at the phone width the panel drops under the lead. The page inside stays live, and its badge keeps cutting.
+A page keeps one h1, so the plate shows the head in its own document: a live hub page in a frame, scaled to the plate. Page picks the route, and Width lays it out at 1440 or 390 pixels. The head is a container, so at the phone width the panel drops under the lead. The page inside stays live.
 
 <HeadFrameDemo />
 
@@ -61,7 +59,6 @@ import { BookHead } from '@/components/viewer/BookView';
 
 <BookHead
   title={PAGE_NAMES.marks.name}
-  badge={<BadgeCycle frames={frames} />}
   lead='The speed set is seven General Translation marks in one register.'
   updated={updated}
   facts={[
@@ -75,7 +72,7 @@ import { BookHead } from '@/components/viewer/BookView';
 | Prop | Type | What it does |
 | --- | --- | --- |
 | `title` | string | The page's plain name from `PAGE_NAMES`, or a record's own title. It is the page's one h1. |
-| `badge` | node | The badge after the title's last word, hidden from the accessible name. |
+| `badge` | node | /brand only: the badge after the title's last word, hidden from the accessible name. |
 | `lead` | node | One to three lines at the lead measure, 200 characters at most. |
 | `updated` | `PageUpdated` | The page's entry in `src/lib/updated.ts`, passed down from its server page. |
 | `facts` | three facts, or one fact with `install` | The panel's rows after Updated, each `{ icon, key, value }`. |

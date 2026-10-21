@@ -160,7 +160,7 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     href: '/docs/components/heads',
     title: 'Badges and heads',
     description:
-      'The head badge that cuts through what a page holds, and the book head every hub page opens with, live at the desktop and the phone width.',
+      'The badge that cuts through the GT monograms after the Brand title, and the book head every hub page opens with, live at two widths.',
   },
   {
     slug: 'blog-globe',
