@@ -15,7 +15,7 @@ description: >-
 metadata:
   title: Working in Prototemplate
   areas: website, components
-  updated: 2026-10-15
+  updated: 2026-10-20
   origin: prototemplate
   owner: P
 ---
@@ -28,7 +28,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`; `git clone htt
 
 ## 1. What the hub holds
 
-The routes are `/` (the design lab), `/brand`, `/docs` and `/docs/<slug>` (the docs site, fumadocs outside the shell), `/deck`, `/skills` and `/skills/<slug>`, `/handbook`, `/marks`, `/blog`, `/graphics`, `/motion`, `/compare`, `/present`, `/directions/<slug>`, `/archive/<slug>`, `/d/<slug>` (the directions, self-contained) and `/d/production/...` (the shipped site page for page, with the dashboard's sign-in and onboarding states). The canon documents, served in the handbook at `/handbook/<slug>`, are `AGENTS.md`, `docs/handbook/`, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, `docs/SHIP-LOOP.md`, `docs/GRAPHICS.md`, `docs/ARTIFACT-PICTURES.md`, `docs/LIBRARIES.md` and `deck/DECK-GRAMMAR.md`; `motion/MOTION.md` is kept by the Videos session and untracked. `references/hub.md` gives each route's contents and source files.
+The routes are `/` (the design lab), `/brand`, `/docs` and `/docs/<slug>` (the docs site, fumadocs outside the shell), `/deck`, `/skills` and `/skills/<slug>`, `/marks`, `/blog`, `/graphics`, `/motion`, `/compare`, `/present`, `/directions/<slug>`, `/archive/<slug>`, `/d/<slug>` (the directions, self-contained) and `/d/production/...` (the shipped site page for page, with the dashboard's sign-in and onboarding states). The docs site holds the component library (`/docs/components`) and the handbook (`/docs/handbook`; `/handbook` redirects there). The canon documents, served at `/docs/handbook/<slug>`, are `AGENTS.md`, `docs/handbook/`, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, `docs/SHIP-LOOP.md`, `docs/GRAPHICS.md`, `docs/ARTIFACT-PICTURES.md`, `docs/LIBRARIES.md` and `deck/DECK-GRAMMAR.md`; `motion/MOTION.md` is kept by the Videos session and untracked. `references/hub.md` gives each route's contents and source files.
 
 - Prototemplate `main` is the primary repository, and canon is edited there first. Files move from gt-cloud's older `apps/redesign` copy one at a time, and no `rsync --delete` ever runs toward Prototemplate, because it would erase the routes that exist only here (`docs/SHIP-LOOP.md` section 7).
 - Prose in the repository drifts from the code (ports, skill names and counts all drifted by 2026-10-05). Trust `package.json` and the registries, and fix the prose in the change that finds the drift.
@@ -93,9 +93,9 @@ Chrome is everything the shell draws around content. The rules are `DESIGN.md` s
 `references/adding.md` gives each list file by file, along with directions, shipped pages, films and stills.
 
 - **A page** needs the route's `page.tsx` with its head from `seoRoute()` and its viewer, a row in `PAGES` or `KNOWLEDGE` of `surfaces.ts`, `PAGE_ICON` in `Sidebar.tsx` and `search-index.ts`, `PAGE_KEYWORDS`, `under` on its sections, its paths in `scripts/build/updated.mjs` (its sitemap date), a line in the README, a row in `siteRoutes()` of `scripts/lib/site-pages.mjs` tagged with the tools that walk it, then `pnpm capture:pages --only <id>` and `pnpm build:thumbs`.
-- **A docs page** needs `content/docs/<slug>.mdx` with a title and a 50 to 160 character description, its slug in `content/docs/meta.json`, its row in `src/components/docs/pages.ts`, then `pnpm build:updated` and a `docs-<slug>` capture. `/docs/template` explains the docs site.
-- **A canon document** needs the file, a `HANDBOOK` entry after the handbook's own documents, its h2s in `HANDBOOK_HEADINGS`, a row in the README's "Read first" table, and a `handbook-<slug>` capture. Its links resolve through `src/components/book/links.ts`.
-- **A handbook document** needs `docs/handbook/<slug>.md`, a `HANDBOOK` entry in `src/app/handbook/registry.ts`, its h2s in `HANDBOOK_HEADINGS`, its row in `docs/handbook/README.md` and AGENTS.md's handbook list, and a `handbook-<slug>` capture.
+- **A docs page** needs `content/docs/<slug>.mdx` (or `<folder>/<slug>.mdx`) with a title and a 50 to 160 character description, its slug in `content/docs/meta.json` (or the folder's), its row in `src/components/docs/pages.ts`, then `pnpm build:updated` and a `docs-<slug>` capture. A live plate loads through `src/components/docs/demos/lazy.tsx`. `/docs/template` explains the docs site.
+- **A canon document** needs the file, a `HANDBOOK` entry after the handbook's own documents, its page in `content/docs/handbook/` that includes the file, its h2s in `HANDBOOK_HEADINGS`, a row in the README's "Read first" table, and a `handbook-<slug>` capture.
+- **A handbook document** needs `docs/handbook/<slug>.md`, a `HANDBOOK` entry in `src/app/handbook/registry.ts`, its page as above, its h2s in `HANDBOOK_HEADINGS`, its row in `docs/handbook/README.md` and AGENTS.md's handbook list, and a `handbook-<slug>` capture. A page that includes its file by headings lists every heading, or the build fails.
 - **A page with a book head** follows DESIGN.md section 4 (The book page): its `PAGE_NAMES` entry, `BookHead` with three facts, `requireUpdated` from the server page, an entry in `scripts/build/updated.mjs`, its route in `lint/heads.mjs`' live list, then `pnpm build:updated`.
 - **A skill** needs `skills/<slug>/SKILL.md` written to the contract in section 10, then `pnpm build:skills`, then the installer's dry run and its run.
 - **A page ported from gt-cloud** follows `references/porting.md`: one root class, stylesheets as rescoped mirrors, every addition in one compatibility sheet, sections through one transform, and the copy recorded in `scripts/lint/copies.json`.

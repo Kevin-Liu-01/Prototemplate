@@ -2,10 +2,13 @@
 title: Glossary
 description: "The terms in Kevin’s messages, the skills and the code, each defined in a sentence or two with where it lives."
 icon: Language
+sources:
+  - src/app/craft/LibraryDemo.tsx
+  - src/app/craft/craft.css
+  - src/components/docs/demos/CraftPlate.tsx
 ---
 
-import LibraryDemo from '@/app/craft/LibraryDemo';
-import '@/app/craft/craft.css';
+import { CraftPlate } from '@/components/docs/demos/lazy';
 
 <include cwd>docs/handbook/glossary.md#glossary</include>
 
@@ -17,7 +20,7 @@ import '@/app/craft/craft.css';
 
 <include cwd>docs/handbook/glossary.md#material-and-motion</include>
 
-<LibraryDemo
+<CraftPlate
   kind="bayer"
   tag="<StudioField preset={…} />"
   label="Interactive demo: the ten authentic Bayer field variants on one plate. Pick a numbered chip to remount the field with that preset."
@@ -25,7 +28,7 @@ import '@/app/craft/craft.css';
 
 This plate mounts the studio field. Each numbered chip remounts it with one of the ten `BAYER_PRESETS`, and chip 02 is bayer-8x8, the field of the landing hero.
 
-<LibraryDemo
+<CraftPlate
   kind="glyph"
   tag="createGlyphField()"
   label='Live demo: glyphs from eight writing systems rain down and condense into the word "language" in one script after another, each word measured by a caliper.'
@@ -33,7 +36,7 @@ This plate mounts the studio field. Each numbered chip remounts it with one of t
 
 This plate runs the glyph field. Glyphs from eight writing systems fall and condense into the word for language in one script after another, and the glyphs of each word become the next word.
 
-<LibraryDemo
+<CraftPlate
   kind="ink"
   tag="createInkField()"
   label="Live demo: paper glyphs rising off an ink plate. Move the pointer to make nearby glyphs wobble; click to burst one with a shockwave."
@@ -41,7 +44,7 @@ This plate runs the glyph field. Glyphs from eight writing systems fall and cond
 
 This plate runs the ink field in its interactive mode. Glyphs rise off the ink, the glyphs near the pointer shiver, and a click bursts the nearest one.
 
-<LibraryDemo
+<CraftPlate
   kind="horizon"
   tag="createHorizonField()"
   label="Live demo: a small event horizon, a bright photon ring around a dark core, with faint ruled lines bending into it."

@@ -56,7 +56,7 @@
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import { promisify } from 'node:util';
 import { ROOT as REPO_ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
@@ -96,26 +96,54 @@ const POOL = 8;
 // a folder (a folder covers everything under it); a string with * is a
 // glob. Keys are the route's pathname, so the page check can match a route
 // to its entry. A collection is a function of the slugs it reads from the
-// repository. /handbook is the book's head, dated by every document it
-// holds; each /handbook/<slug> is dated by its own file and the book's
-// code, and each /docs/<slug> by its MDX page and the docs site's code.
+// repository. Each docs page (/docs/<path>, the handbook under
+// /docs/handbook included) is dated by its MDX file, the repository files
+// its include tags show, the sources its `sources:` frontmatter lists (the
+// components a page mounts) and the docs site's code.
 
-/** `src/app/handbook/registry.ts`: every `file: '...'` and its slug (the canon and the handbook's own documents). */
-function handbookEntries() {
-  const src = readFileSync(join(ROOT, 'src/app/handbook/registry.ts'), 'utf8');
-  const out = [...src.matchAll(/slug: '([^']+)',\s*\n\s*file: '([^']+)'/g)].map((m) => ({ slug: m[1], file: m[2] }));
-  if (out.length === 0) throw new Error('build-updated: no documents read from src/app/handbook/registry.ts');
-  return out;
+/** Every .mdx under content/docs: the docs site's pages by their path there, without .mdx (`index` is /docs, `handbook/index` is /docs/handbook). */
+function docsPages() {
+  const base = join(ROOT, 'content/docs');
+  if (!existsSync(base)) return [];
+  const out = [];
+  const walk = (dir) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, e.name);
+      if (e.isDirectory()) walk(path);
+      else if (e.name.endsWith('.mdx')) out.push(relative(base, path).split(sep).join('/').slice(0, -4));
+    }
+  };
+  walk(base);
+  return out.sort();
 }
 
-/** `content/docs/*.mdx`: the docs site's pages by slug (`index` is /docs). */
-function docsPages() {
-  const dir = join(ROOT, 'content/docs');
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.mdx'))
-    .map((f) => f.slice(0, -4))
-    .sort();
+/** A docs page's route: `index` is /docs, `<folder>/index` is /docs/<folder>. */
+function docsRoute(rel) {
+  if (rel === 'index') return '/docs';
+  return `/docs/${rel.replace(/(^|\/)index$/, '')}`;
+}
+
+/** fumadocs-mdx's include tag, `<include cwd>docs/handbook/glossary.md#glossary</include>` (src/lib/remark-handbook.ts reads the same). */
+const INCLUDE_TAG = /<include\b([^>]*)>([^<]*)<\/include>/g;
+
+/**
+ * What a docs page shows beyond its own MDX, as repository paths: the files
+ * its include tags name (a tag with `cwd` resolves from the repository
+ * root, one without from the page's folder) and the `sources:` list of its
+ * frontmatter, the component code a page mounts. A page that includes a
+ * file also depends on the plugin that renders the include.
+ */
+function docsPageSources(rel) {
+  const text = readFileSync(join(ROOT, 'content/docs', `${rel}.mdx`), 'utf8');
+  const pageDir = join('content/docs', rel.includes('/') ? rel.slice(0, rel.lastIndexOf('/')) : '');
+  const includes = [...text.matchAll(INCLUDE_TAG)].map((m) => {
+    const spec = (m[2] ?? '').trim().replace(/#.*$/, '');
+    return /\bcwd\b/.test(m[1] ?? '') ? spec : join(pageDir, spec).split(sep).join('/');
+  });
+  const front = /^---\n([\s\S]*?)\n---/.exec(text)?.[1] ?? '';
+  const list = /^sources:\s*\n((?:\s+-\s+.+\n?)+)/m.exec(front)?.[1] ?? '';
+  const sources = [...list.matchAll(/^\s+-\s+(.+?)\s*$/gm)].map((m) => m[1].replace(/^(['"])(.*)\1$/, '$2'));
+  return [...new Set([...includes, ...(includes.length ? ['src/lib/remark-handbook.ts'] : []), ...sources])];
 }
 
 /** `skills/<slug>/SKILL.md` folders. */
@@ -148,11 +176,15 @@ function directionSlugs() {
 function pages() {
   const given = option('--pages');
   if (given) return JSON.parse(readFileSync(given, 'utf8'));
-  const handbook = handbookEntries();
-  /* the book's code: the shell and renderer every handbook route shares, the build log the libraries document carries */
-  const book = ['src/components/book', 'src/app/handbook'];
-  /* the docs site's code every docs page shares */
-  const docsSite = ['src/app/docs', 'src/components/docs', 'content/docs/meta.json', 'source.config.ts', 'src/lib/source.ts'];
+  /* the docs site's code every docs page shares; the plates under src/components/docs/demos date only the pages that list them */
+  const docsSite = [
+    'src/app/docs',
+    'src/components/docs/*.ts',
+    'src/components/docs/*.tsx',
+    'content/docs/meta.json',
+    'source.config.ts',
+    'src/lib/source.ts',
+  ];
   return [
     {
       id: '/',
@@ -174,17 +206,10 @@ function pages() {
     { id: '/compare', paths: ['src/app/compare', 'src/app/SiteCompare.tsx'] },
     { id: '/press', paths: ['src/app/press', 'public/press'] },
     { id: '/atlas', paths: ['src/app/atlas', 'public/shots/atlas'] },
-    ...docsPages().map((slug) => ({
-      id: slug === 'index' ? '/docs' : `/docs/${slug}`,
-      paths: [`content/docs/${slug}.mdx`, ...docsSite],
+    ...docsPages().map((rel) => ({
+      id: docsRoute(rel),
+      paths: [`content/docs/${rel}.mdx`, ...docsPageSources(rel), ...docsSite],
     })),
-    { id: '/handbook', paths: [...book, 'src/app/craft', ...handbook.map((d) => d.file)] },
-    ...handbook
-      .filter((d) => d.slug !== 'readme')
-      .map((d) => ({
-        id: `/handbook/${d.slug}`,
-        paths: [d.file, ...book, ...(d.slug === 'libraries' ? ['src/app/craft'] : [])],
-      })),
     { id: '/skills', paths: ['skills', 'src/app/skills', 'src/lib/skills.ts', 'scripts/skills/install.mjs'] },
     ...skillSlugs().map((s) => ({
       id: `/skills/${s}`,

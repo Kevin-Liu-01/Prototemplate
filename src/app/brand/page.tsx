@@ -157,8 +157,8 @@ const NOTE = (
   <p>
     It is written for anyone who builds with the identity, including our partners at
     basement studio. The visual laws are codified in{' '}
-    <Link href='/handbook/design'>the design system</Link>, and every engine runs live
-    in <Link href='/handbook/libraries'>the libraries document</Link>.
+    <Link href='/docs/handbook/design'>the design system</Link>, and every engine runs live
+    in <Link href='/docs/handbook/libraries'>the libraries document</Link>.
   </p>
 );
 
@@ -439,7 +439,7 @@ const PAGES: readonly BrandPage[] = [
         <div className='ptb-devices'>
           {DEVICES.map(([name, what]) => (
             <div className='ptb-device-row' key={name}>
-              <Link href={`/handbook/libraries#${name}`}>
+              <Link href={`/docs/handbook/libraries#${name}`}>
                 <b>{name}</b>
               </Link>
               <span>{what}</span>
@@ -448,7 +448,7 @@ const PAGES: readonly BrandPage[] = [
         </div>
         <p>
           Every device above runs live, with its API, on{' '}
-          <Link href='/handbook/libraries'>the libraries document</Link>.
+          <Link href='/docs/handbook/libraries'>the libraries document</Link>.
         </p>
       </>
     ),
@@ -662,9 +662,9 @@ const PAGES: readonly BrandPage[] = [
  * The brand book: General Translation's identity laid out in one ruled
  * column, for anyone who has to build with it (including basement studio),
  * read inside the viewer shell. The written canon is BRAND.md (served at
- * /handbook/brand), whose reading time is the head's Reading fact; the laws
+ * /docs/handbook/brand), whose reading time is the head's Reading fact; the laws
  * behind the visuals are DESIGN.md; and the engines run live on
- * /handbook/libraries.
+ * /docs/handbook/libraries.
  * The routes that used to close the article (Docs, Deck, Present) are one
  * click away in the index panel's Pages group.
  */

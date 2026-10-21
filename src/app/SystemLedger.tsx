@@ -22,8 +22,8 @@ const CAPABILITIES: Capability[] = [
   {
     name: 'Glyph field',
     law: 'Text rasterized to a brick lattice; every mote lands on real ink. Live on the dossier hero.',
-    href: '/handbook/libraries',
-    see: '/handbook/libraries',
+    href: '/docs/handbook/libraries',
+    see: '/docs/handbook/libraries',
   },
   {
     name: 'Hero morph',
@@ -46,14 +46,14 @@ const CAPABILITIES: Capability[] = [
   {
     name: 'Iso kit',
     law: 'Isometric tower and plate primitives with shape and image APIs, and a dithered-logo layer.',
-    href: '/handbook/libraries',
-    see: '/handbook/libraries',
+    href: '/docs/handbook/libraries',
+    see: '/docs/handbook/libraries',
   },
   {
     name: 'Bayer dither',
     law: 'Eight authentic ordered-dither presets, switchable.',
-    href: '/handbook/libraries',
-    see: '/handbook/libraries',
+    href: '/docs/handbook/libraries',
+    see: '/docs/handbook/libraries',
   },
   {
     name: 'Seam compare',
@@ -63,8 +63,8 @@ const CAPABILITIES: Capability[] = [
   {
     name: 'Sentence reassembler',
     law: 'Words fly to their seats in reading order.',
-    href: '/handbook/libraries',
-    see: '/handbook/libraries',
+    href: '/docs/handbook/libraries',
+    see: '/docs/handbook/libraries',
   },
   {
     name: 'Prismatic field',

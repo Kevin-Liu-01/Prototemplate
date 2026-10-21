@@ -266,15 +266,21 @@ export function siteRoutes() {
   const exploration = firstExplorationSlug();
   const post = newestPostSlug();
   const blog = ['src/app/blog', 'src/components/blog', 'content/blog'];
-  const book = ['src/app/handbook', 'src/components/book', 'docs/handbook'];
   /* the docs site, outside the shell (fumadocs' notebook layout): no `lines`, which reads the shell's list */
   const docsSite = ['src/app/docs', 'src/components/docs', 'content/docs'];
+  /* the handbook's pages show the repository's Markdown through their include tags */
+  const handbook = [...docsSite, 'docs/handbook', 'src/lib/remark-handbook.ts'];
+  /* the Components pages mount the plates in src/components/docs/demos */
+  const components = [...docsSite, 'src/components/docs/demos'];
   const shell = [
     { id: 'gallery', path: '/', tools: 'check live lines capture', source: ['src/app/*'] },
     { id: 'brand', path: '/brand', tools: 'check live lines capture', source: ['src/app/brand'] },
     { id: 'docs', path: '/docs', tools: 'check live capture', source: docsSite },
     { id: 'docs-seo', path: '/docs/seo', tools: 'check live', source: docsSite },
     { id: 'docs-template', path: '/docs/template', tools: 'check', source: docsSite },
+    { id: 'docs-components', path: '/docs/components', tools: 'check live capture', source: components },
+    { id: 'docs-components-globes', path: '/docs/components/globes', tools: 'check', source: [...components, 'src/components/blog-globe'] },
+    { id: 'docs-blog-globe', path: '/docs/blog-globe', tools: 'check capture', source: [...docsSite, 'src/components/blog-globe', 'src/app/d/blog-globe'] },
     { id: 'compare', path: '/compare', tools: 'check live lines capture', source: ['src/app/compare'] },
     { id: 'press', path: '/press', tools: 'check capture', source: ['src/app/press'] },
     { id: 'atlas', path: '/atlas', tools: 'check live lines capture', source: ['src/app/atlas'] },
@@ -284,9 +290,9 @@ export function siteRoutes() {
     { id: 'marks', path: '/marks', tools: 'check live lines capture', source: ['src/app/marks'] },
     { id: 'skills', path: '/skills', tools: 'check live lines capture', source: ['src/app/skills'] },
     { id: `skills-${skill}`, path: `/skills/${skill}`, tools: 'check live lines', source: ['src/app/skills'] },
-    { id: 'handbook', path: '/handbook', tools: 'check live lines capture', source: book },
-    { id: 'handbook-decisions', path: '/handbook/decisions', tools: 'check', source: book },
-    { id: 'handbook-design', path: '/handbook/design', tools: 'live', source: book },
+    { id: 'handbook', path: '/docs/handbook', tools: 'check live capture', source: handbook },
+    { id: 'handbook-decisions', path: '/docs/handbook/decisions', tools: 'check', source: handbook },
+    { id: 'handbook-design', path: '/docs/handbook/design', tools: 'live', source: [...handbook, 'DESIGN.md'] },
     { id: 'graphics', path: '/graphics', tools: 'check live lines', source: ['src/app/graphics'] },
     { id: 'motion', path: '/motion', tools: 'check live lines', source: ['src/app/motion'] },
     { id: `motion-${pkg}`, path: `/motion/${pkg}`, tools: 'check live lines', source: ['src/app/motion'] },

@@ -21,16 +21,17 @@ Add `"postinstall": "fumadocs-mdx"` to `package.json`, so a fresh install writes
 
 | Path | What it is |
 | --- | --- |
-| `source.config.ts` | The collection: `content/docs`, processed Markdown kept for the twins, `tokenizeTimeLimit: 0` for Shiki |
+| `source.config.ts` | The collection: `content/docs`, processed Markdown kept for the twins, `tokenizeTimeLimit: 0` for Shiki, and the remark plugin for pages that include repository files |
+| `src/lib/remark-handbook.ts` | The plugin a page that shows a repository Markdown file needs: it drops the file's h1, resolves its relative links and prints raw HTML as text |
 | `src/lib/source.ts` | The loader at `/docs`, with the sidebar's icon names |
 | `content/docs/` | The MDX pages and `meta.json`, the sidebar's order and groups |
 | `src/app/docs/` | `layout.tsx` (the notebook layout and the provider), `[[...slug]]/page.tsx` (one page) and `docs.css` |
-| `src/components/docs/` | The sidebar footer, the theme button, the page actions and the sidebar motion |
+| `src/components/docs/` | The sidebar footer, the theme button, the page actions and the sidebar motion; `demos/` holds the live plates, each loaded through `demos/lazy.tsx` |
 | `src/app/api/search/route.ts` | The static search index |
 | `src/app/md/`, `src/app/llms.txt/`, `src/app/llms-full.txt/` | The Markdown twins and the agent files |
 | `src/lib/seo/` | `seoRoute`, the policy, the JSON-LD builders and the card |
 
-In `next.config.ts`, wrap the config with `createMDX()` from `fumadocs-mdx/next` and add the twin rewrites, which send `/docs.md` and `/docs/<slug>.md` to `/md/docs/<slug>`. In `tsconfig.json`, map `@/.source/*` to `./.source/*`, and add `.source/` to `.gitignore`.
+In `next.config.ts`, wrap the config with `createMDX()` from `fumadocs-mdx/next` and add the twin rewrites, which send `/docs.md`, `/docs/<slug>.md` and `/docs/<folder>/<slug>.md` to the twin route under `/md/docs`. In `tsconfig.json`, map `@/.source/*` to `./.source/*`, and add `.source/` to `.gitignore`.
 
 ## The four adapters
 
@@ -44,6 +45,12 @@ A project with its own design system needs these four, all in `docs.css`, all un
 ## Adding a page
 
 Write `content/docs/<slug>.mdx` with a `title` and a `description` of 50 to 160 characters, and add the slug to `content/docs/meta.json` where the sidebar should show it. The route, the sidebar, the search index, the table of contents, the Markdown twin, `/llms.txt`, the sitemap and the social card follow from the file. In this repository also add its row to `src/components/docs/pages.ts`, which the hub's own sidebar and search read, and run `pnpm build:updated`.
+
+A section of several pages is a folder, such as `content/docs/components/`, with its own `meta.json` and an `index.mdx` for the folder's own page. The root `meta.json` lifts the folder's pages into its list with a `...components` row under a `---Components---` separator. The page's slug in `pages.ts` is its path, `components/dither`.
+
+A page that shows a repository Markdown file, as each handbook page does, includes it with fumadocs-mdx's tag, `<include cwd>docs/handbook/glossary.md</include>`, so the file stays the one source. To set a live figure between two sections, include the file one heading at a time; the build then fails if the page leaves a heading of the file out.
+
+A page that mounts a live component imports it from `src/components/docs/demos/lazy.tsx`, which wraps each plate in `next/dynamic`. fumadocs-mdx imports every page into one route, so a plate imported directly would load its code and its stylesheet on every docs page. A sentence beside each plate says what it shows, since the Markdown twin prints the plate as a bare tag. List the files the plate runs under `sources:` in the frontmatter, so `pnpm build:updated` dates the page when they change.
 
 ## Search
 

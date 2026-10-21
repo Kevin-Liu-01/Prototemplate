@@ -2,10 +2,12 @@
 title: The blog globe figure
 description: "Four directions for a blog figure that turns a globe to each city on the path of Euclid's Elements: the shared contract, the measurements and the ranking."
 icon: Earth
+sources:
+  - src/components/blog-globe
+  - src/app/d/blog-globe
 ---
 
-import GlobeFigure from '@/components/blog-globe/GlobeFigure';
-import GlobeGrid from '@/components/blog-globe/GlobeGrid';
+import { GlobeFigure, GlobeGrid } from '@/components/docs/demos/lazy';
 
 General Translation (GT) is building interactive figures for the posts on its blog. The Versions figure sets the first eight definitions of Euclid's Elements in five languages on one rounded plate, and a pill of language names switches between them. It sits on the gt-cloud branch `k/blog-version-switch` and has not been published. The globe figure adds where and when each version was made. When a reader picks a language, a globe turns to the city of that version, a label prints the city's coordinates and year, and the eight definitions change row by row into the new language. Read in order, the five stops follow the Elements from Alexandria in 300 BCE to Beijing in 1606.
 

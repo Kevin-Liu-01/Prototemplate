@@ -38,3 +38,12 @@ Provenance for `prototemplate`. The first list is the skill's sources as written
 | The registries list: `HANDBOOK` with the canon, `DOCS_PAGES` with `meta.json`, `src/components/book/links.ts`, `seoRoute()`; the sitemap and `/llms.txt` generated | SKILL.md section 4, `references/registries.md` | the SEO and docs plan, sections 2.3, 2.6 and 4.4 (2026-10-14); `src/app/sitemap.ts` and `src/app/llms.txt/route.ts` on branch k/seo-2-docs (2026-10-15) |
 | Adding a docs page and a canon document | SKILL.md section 6, `references/adding.md` | the plan, section 3.4 and step 4.4.6 (2026-10-14); `scripts/lint/registries.mjs` on k/seo-2-docs (2026-10-15) |
 | A new page's head comes from `seoRoute()` and its sitemap date from `scripts/build/updated.mjs` | `references/adding.md` | the plan, sections 2.1 and 2.3 (2026-10-14) |
+
+## Added or changed on 2026-10-20
+
+| Line | Where | Source |
+| --- | --- | --- |
+| The handbook is a section of the docs site at `/docs/handbook`, each page including its repository file; `/handbook` and its documents redirect there | SKILL.md section 1, `references/hub.md`, `references/registries.md` | Kevin's request of 2026-10-20 to put the handbook into the docs; the decisions log row of 2026-10-20 |
+| The Components section at `/docs/components` and the blog globe rounds live on `/docs/blog-globe` | SKILL.md section 1, `references/hub.md` | Kevin's request of 2026-10-20 for the globes and more components in the docs |
+| Adding a docs page in a folder, the `sources:` frontmatter, plates through `src/components/docs/demos/lazy.tsx` | SKILL.md section 6, `references/adding.md` | `scripts/build/updated.mjs`, `scripts/lint/registries.mjs` and `content/docs/` on branch docs/blog-globe-directions (2026-10-20) |
+| A canon or handbook document gets its page in `content/docs/handbook/`; a page that includes by headings lists every heading; heading ids are github-slugger's | SKILL.md section 6, `references/adding.md` | `src/lib/remark-handbook.ts` and `scripts/lint/registries.mjs` on branch docs/blog-globe-directions (2026-10-20) |

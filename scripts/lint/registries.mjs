@@ -11,14 +11,19 @@
  *      (src/app/handbook/registry.ts: docs/handbook/README.md as `readme`,
  *      the handbook's documents and the canon, the libraries document with
  *      the build log's CRAFT_SECTIONS after its own) against
- *      HANDBOOK_HEADINGS in src/lib/search-index.ts, by the anchor
- *      src/components/book/markdown.tsx gives a heading (headingId). A
- *      heading missing from the table cannot be searched; a table row with
- *      no heading links to a dead anchor.
- *   1b. Docs pages. DOCS_PAGES (src/components/docs/pages.ts) against the
- *      docs site's content: one row per content/docs/*.mdx in the order of
- *      content/docs/meta.json, each with the title and description of the
- *      file's frontmatter.
+ *      HANDBOOK_HEADINGS in src/lib/search-index.ts, by the anchor the docs
+ *      page gives the heading (headingId, the slug of github-slugger, which
+ *      fumadocs' remark-heading runs). A heading missing from the table
+ *      cannot be searched; a table row with no heading links to a dead
+ *      anchor.
+ *   1b. Docs pages. The docs site's pages in the order of
+ *      content/docs/meta.json, a `...folder` row lifting in that folder's
+ *      own meta.json: DOCS_PAGES (src/components/docs/pages.ts) holds one
+ *      row per page outside content/docs/handbook, each with the title and
+ *      description of the file's frontmatter; the handbook registry holds
+ *      the handbook's pages, its readme as the folder's index (titled
+ *      Handbook), each page carrying its entry's title and blurb and the
+ *      include tag of its file. Every .mdx under content/docs has a row.
  *   2. Routes. Every Pages and Knowledge row of src/lib/surfaces.ts with a
  *      fixed path, against the sitemap (the singleton list in
  *      src/app/sitemap.ts, or a key of src/lib/updated.ts, which the
@@ -95,7 +100,12 @@ function block(text, start, end) {
   return stop < 0 ? text.slice(at) : text.slice(at, stop);
 }
 
-/** src/components/book/markdown.tsx, plainText then headingId. */
+/**
+ * The anchor a docs page gives a heading: its plain text slugged the way
+ * github-slugger does (lowercase, every character but a letter, a digit, a
+ * mark, a space, a hyphen or an underscore dropped, spaces to hyphens),
+ * which fumadocs' remark-heading runs on the handbook pages.
+ */
 function headingId(text) {
   return text
     .replace(/`([^`]+)`/g, '$1')
@@ -103,10 +113,8 @@ function headingId(text) {
     .replace(/\[([^\]]+)\]\([^)\s]+\)/g, '$1')
     .trim()
     .toLowerCase()
-    .replace(/&/g, ' and ')
-    .replace(/['’]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/[^\p{L}\p{N}\p{M}\p{Pc} -]/gu, '')
+    .replace(/ /g, '-');
 }
 
 /** The h2 anchors of a markdown file, fenced code skipped. */
@@ -158,7 +166,7 @@ const handbookTable = headingRows('HANDBOOK_HEADINGS');
 
 const craft = block(read('src/app/craft/CraftArticle.tsx'), 'export const CRAFT_SECTIONS', '\n];');
 const craftIds = [...craft.matchAll(/^ {4}id: '([^']+)'/gm)].map((m) => m[1]);
-/* the document src/app/handbook/libraries-book.ts appends the build log to */
+/* the handbook page that ends with the build log (content/docs/handbook/libraries.mdx) */
 const BUILD_LOG_DOC = 'libraries';
 
 let headingDrift = 0;
@@ -187,6 +195,11 @@ for (const key of handbookTable.keys()) {
 /* ---- 1b. docs pages ---- */
 
 console.log('\nDocs pages: DOCS_PAGES (src/components/docs/pages.ts) against content/docs');
+/** A string as a literal in a regular expression. */
+function escapeRe(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /** A frontmatter string value: `title: Gates` or `title: 'Gates'`. */
 function frontValue(text, key) {
   const fm = /^---\n([\s\S]*?)\n---/.exec(text)?.[1] ?? '';
@@ -200,12 +213,39 @@ const docsRows = [...docsList.matchAll(/slug: '([^']+)',\s*\n\s*href: '([^']+)',
   title: m[3],
   description: m[4] ?? m[5],
 }));
-const metaPages = JSON.parse(read('content/docs/meta.json')).pages.filter((p) => !p.startsWith('---'));
+
+/** The folder of content/docs the handbook registry holds instead of DOCS_PAGES. */
+const HANDBOOK_FOLDER = 'handbook';
+
+/**
+ * The docs pages in the sidebar's order, by their path under content/docs
+ * without .mdx: meta.json's rows, separators skipped, a `...folder` row
+ * replaced by the rows of that folder's meta.json. A folder's `index` is the
+ * folder's own page, so it reads as the folder's path.
+ */
+function metaOrder(dir = '') {
+  const meta = JSON.parse(read(join('content/docs', dir, 'meta.json')));
+  return (meta.pages ?? [])
+    .filter((p) => !p.startsWith('---'))
+    .flatMap((p) => {
+      if (p.startsWith('...')) return metaOrder(dir ? `${dir}/${p.slice(3)}` : p.slice(3));
+      if (p === 'index' && dir) return [dir];
+      return [dir ? `${dir}/${p}` : p];
+    });
+}
+/** A docs page's file: `<slug>.mdx`, or the folder's `index.mdx`. */
+function docsFile(slug) {
+  const folderIndex = `content/docs/${slug}/index.mdx`;
+  return existsSync(join(ROOT, folderIndex)) ? folderIndex : `content/docs/${slug}.mdx`;
+}
+const inHandbook = (slug) => slug === HANDBOOK_FOLDER || slug.startsWith(`${HANDBOOK_FOLDER}/`);
+const order = metaOrder();
+const metaPages = order.filter((slug) => !inHandbook(slug));
 if (docsRows.map((r) => r.slug).join(' ') !== metaPages.join(' ')) {
   fail(`DOCS_PAGES runs ${docsRows.map((r) => r.slug).join(', ')}; content/docs/meta.json runs ${metaPages.join(', ')}`);
 }
 for (const row of docsRows) {
-  const file = `content/docs/${row.slug}.mdx`;
+  const file = docsFile(row.slug);
   if (!existsSync(join(ROOT, file))) {
     fail(`docs ${row.slug}: ${file} is not on disk`);
     continue;
@@ -219,8 +259,44 @@ for (const row of docsRows) {
   if (problems.length > 0) fail(`docs ${row.slug}: ${problems.join('; ')}`);
   else console.log(`  ok   docs ${row.slug}`);
 }
-for (const file of readdirSync(join(ROOT, 'content/docs')).filter((f) => f.endsWith('.mdx'))) {
-  if (!docsRows.some((row) => `${row.slug}.mdx` === file)) fail(`content/docs/${file} has no DOCS_PAGES row`);
+
+/* the handbook's pages: the registry's readme and documents, in its order, as content/docs/handbook */
+const handbookEntries = [
+  ...read('src/app/handbook/registry.ts').matchAll(/slug: '([^']+)',\s*file: '([^']+)',\s*title: '([^']+)',\s*blurb:\s*'([^']*)'/g),
+].map((m) => ({ slug: m[1], file: m[2], title: m[3], blurb: m[4] }));
+const handbookPages = handbookEntries.map((entry) => (entry.slug === 'readme' ? HANDBOOK_FOLDER : `${HANDBOOK_FOLDER}/${entry.slug}`));
+const handbookOrder = order.filter(inHandbook);
+if (handbookOrder.join(' ') !== handbookPages.join(' ')) {
+  fail(`the handbook registry runs ${handbookPages.join(', ')}; content/docs/${HANDBOOK_FOLDER}/meta.json runs ${handbookOrder.join(', ')}`);
+}
+handbookEntries.forEach((entry, i) => {
+  const slug = handbookPages[i];
+  const file = docsFile(slug);
+  if (!existsSync(join(ROOT, file))) {
+    fail(`docs ${slug}: ${file} is not on disk`);
+    return;
+  }
+  const text = readFileSync(join(ROOT, file), 'utf8');
+  const title = entry.slug === 'readme' ? 'Handbook' : entry.title;
+  const problems = [];
+  if (frontValue(text, 'title') !== title) problems.push(`title '${frontValue(text, 'title')}' is not the registry's '${title}'`);
+  if (frontValue(text, 'description') !== entry.blurb) problems.push(`description differs from the registry's blurb`);
+  if (!new RegExp(`<include cwd>${escapeRe(entry.file)}(#[^<]*)?</include>`).test(text)) problems.push(`it includes no part of ${entry.file}`);
+  if (problems.length > 0) fail(`docs ${slug}: ${problems.join('; ')}`);
+  else console.log(`  ok   docs ${slug}`);
+});
+
+/** Every .mdx under a folder of content/docs, as its page slug. */
+function mdxSlugs(dir = '') {
+  return readdirSync(join(ROOT, 'content/docs', dir), { withFileTypes: true }).flatMap((e) => {
+    const rel = dir ? `${dir}/${e.name}` : e.name;
+    if (e.isDirectory()) return mdxSlugs(rel);
+    if (!e.name.endsWith('.mdx')) return [];
+    return [rel === `${dir}/index.mdx` && dir ? dir : rel.slice(0, -4)];
+  });
+}
+for (const slug of mdxSlugs()) {
+  if (!docsRows.some((row) => row.slug === slug) && !handbookPages.includes(slug)) fail(`${docsFile(slug)} has no DOCS_PAGES or handbook registry row`);
 }
 
 /* ---- 2. routes ---- */
@@ -248,7 +324,7 @@ const sidebarIcons = block(read('src/components/viewer/Sidebar.tsx'), 'const PAG
 const searchIcons = block(searchIndex, 'const PAGE_ICON', '\n};');
 const keywords = block(searchIndex, 'const PAGE_KEYWORDS', '\n};');
 
-const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escape = escapeRe;
 const hasKey = (text, id) => new RegExp(`^\\s*(?:'${escape(id)}'|${escape(id)}):`, 'm').test(text);
 
 const COLUMNS = ['sitemap', 'capture', 'pagecheck', 'lines', 'sb-icon', 'search-icon', 'keywords', 'thumb'];
@@ -279,7 +355,7 @@ for (const row of rows) {
 }
 note('lower-case "no" and "fallback" are notes and do not fail the run: /present is not on the shell, and a row without a sidebar icon draws the pages glyph');
 
-for (const stem of [...docsRows.map((d) => `docs-${d.slug}`), ...handbook.map((d) => `handbook-${d.slug}`)]) {
+for (const stem of [...docsRows.map((d) => `docs-${d.slug.replaceAll('/', '-')}`), ...handbook.map((d) => `handbook-${d.slug}`)]) {
   if (!existsSync(join(ROOT, `public/shots/thumb/${stem}.webp`))) {
     note(`${stem}: no thumbnail; run pnpm capture:pages --only ${stem}, then cut public/shots/pages/${stem}-{light,dark}.jpg into public/shots/thumb (pnpm build:thumbs)`);
   }

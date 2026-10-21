@@ -2,11 +2,15 @@
 title: GT product and architecture map
 description: "What General Translation sells and to whom, how the products fit together, the copy that must be exact, and where each part lives."
 icon: Map
+sources:
+  - src/app/craft/LibraryDemo.tsx
+  - src/app/craft/craft.css
+  - src/components/docs/demos/CraftPlate.tsx
+  - src/components/docs/demos/LocalePills.tsx
+  - src/app/d/toolchain/components/LocaleTag.tsx
 ---
 
-import LibraryDemo from '@/app/craft/LibraryDemo';
-import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
-import '@/app/craft/craft.css';
+import { CraftPlate, LocalePills } from '@/components/docs/demos/lazy';
 
 <include cwd>docs/handbook/gt-product-map.md#gt-product-and-architecture-map</include>
 
@@ -16,7 +20,7 @@ import '@/app/craft/craft.css';
 
 <include cwd>docs/handbook/gt-product-map.md#3-products</include>
 
-<LibraryDemo
+<CraftPlate
   kind="globe"
   tag="<EdgeGlobe />"
   label="Live demo: the orthographic edge globe (five points of presence, one accent route serving a request) over its dithered Bayer atmosphere."
@@ -36,19 +40,11 @@ This plate runs `EdgeGlobe`, the drawing of the translation CDN that the home pa
 
 <include cwd>docs/handbook/gt-product-map.md#9-site-behaviour</include>
 
-<div className="ptc-plate is-pills" role="img" aria-label="The production locale roster of generaltranslation.com as locale pills: en-US, es, fr, zh, ja, it, ru and en-GB.">
-  <div className="ptc-pills">
-    <span className="ptc-pill"><LocaleTag code="en-US" /></span>
-    <span className="ptc-pill"><LocaleTag code="es" /></span>
-    <span className="ptc-pill"><LocaleTag code="fr" /></span>
-    <span className="ptc-pill"><LocaleTag code="zh" /></span>
-    <span className="ptc-pill"><LocaleTag code="ja" /></span>
-    <span className="ptc-pill"><LocaleTag code="it" /></span>
-    <span className="ptc-pill"><LocaleTag code="ru" /></span>
-    <span className="ptc-pill"><LocaleTag code="en-GB" /></span>
-  </div>
-  <span className="ptc-plate-tag" aria-hidden="true">gt.config.json</span>
-</div>
+<LocalePills
+  codes={['en-US', 'es', 'fr', 'zh', 'ja', 'it', 'ru', 'en-GB']}
+  tag="gt.config.json"
+  label="The production locale roster of generaltranslation.com as locale pills: en-US, es, fr, zh, ja, it, ru and en-GB."
+/>
 
 This plate sets the production roster of the landing app in `LocaleTag` pills: en-US as the source and seven target locales. The staging build translates `es` alone.
 

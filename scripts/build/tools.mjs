@@ -1,6 +1,6 @@
-// Builds docs/TOOLS.md, the index /handbook/tools serves: every pnpm command in
-// package.json with the first sentence of the opening comment of the file it
-// runs, grouped by its prefix, then every script a skill bundles
+// Builds docs/TOOLS.md, the index /docs/handbook/tools serves: every pnpm
+// command in package.json with the first sentence of the opening comment of
+// the file it runs, grouped by its prefix, then every script a skill bundles
 // (skills/<slug>/scripts/) and the environment the tools read. The file is
 // committed, so the site builds from it alone.
 //
@@ -104,7 +104,17 @@ function fileOf(command) {
   return m?.[1];
 }
 
-const cell = (s) => s.replace(/\|/g, '\\|');
+/**
+ * A table cell: pipes escaped, and every `<` outside a code span escaped,
+ * so GitHub prints a placeholder such as <slug> instead of reading it as
+ * an HTML tag.
+ */
+const cell = (s) =>
+  s
+    .replace(/\|/g, '\\|')
+    .split('`')
+    .map((part, i) => (i % 2 === 1 ? part : part.replace(/</g, '\\<')))
+    .join('`');
 
 /* script names pnpm runs as its own command when called bare; these are called through `pnpm run` */
 const PNPM_BUILTINS = new Set(['doctor']);

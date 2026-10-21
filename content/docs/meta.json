@@ -13,8 +13,12 @@
     "scripts",
     "gates",
     "seo",
+    "---Components---",
+    "...components",
     "---Blog figures---",
     "blog-globe",
+    "---Handbook---",
+    "...handbook",
     "---Template---",
     "template"
   ]

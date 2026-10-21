@@ -37,10 +37,10 @@ at each of them.
 
 - `/`: the design lab, the twenty-seven directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall (the flagship cut into section tiles, light and dark, desktop and mobile) and the capabilities ledger (what the system can do, each entry pointing at where it runs live)
 - `/brand`: the brand book, the identity canon in ten sections
-- `/docs`: ten pages on how Prototemplate works and one on the directions for the blog globe figure, in the fumadocs notebook layout generaltranslation.com/docs runs, outside the viewer shell; `/docs/template` explains how to lift the docs site into another project. Each page has a Markdown twin at its address plus `.md`
+- `/docs`: the docs site, in the fumadocs notebook layout generaltranslation.com/docs runs, outside the viewer shell: the pages on how Prototemplate works, the live component library under `/docs/components` (every instrument mounted with controls for its props, its import path and its reduced-motion still), the blog globe figure with all three rounds of its four directions live, and the handbook under `/docs/handbook`; `/docs/template` explains how to lift the docs site into another project. Each page has a Markdown twin at its address plus `.md`
 - `/deck`: the General Translation brand deck, 93 slides in its own viewer
 - `/skills`: the curated skills, one page per skill with its SKILL.md, its files and its install line, and the raw files at `/skills/<slug>/SKILL.md`
-- `/handbook`: how Kevin runs General Translation work, read as one book: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log, then the canon (the agent guide, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, the ship loop, the tools, the libraries with the build log, the graphics pipeline and the artifact pictures), one address per document (`/handbook/<slug>`) and a Markdown twin at each address plus `.md`
+- `/docs/handbook`: how Kevin runs General Translation work, one section of the docs site: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log, then the canon (the agent guide, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, the ship loop, the tools, the libraries with the build log, the graphics pipeline and the artifact pictures), one page per document (`/docs/handbook/<slug>`) showing the repository file, and a Markdown twin at each address plus `.md`; `/handbook` and `/handbook/<slug>` answer 308 with these pages
 - `/marks`: the mark explorations, every candidate drawn in one color
 - `/blog`: the docs-redesign series as General Translation published it, three posts with their sources under `content/`
 - `/graphics`: every illustration of the series, by area, with what it shows and the glyphfield export it sits on; made with the toolchain in `graphics/`
@@ -79,24 +79,24 @@ pnpm dev                              # http://localhost:3005
 - To load the skills in your agents, run `pnpm skills:install --user`
   (your agent home) or `pnpm skills:install --project <dir>` (one
   project); Skills below has the details.
-- [`docs/TOOLS.md`](./docs/TOOLS.md) (`/handbook/tools`) lists every command.
+- [`docs/TOOLS.md`](./docs/TOOLS.md) (`/docs/handbook/tools`) lists every command.
 
 ## Read first
 
 | doc | what it holds |
 | --- | --- |
-| [`/docs`](https://www.prototemplate.com/docs) | the docs site: ten pages on how the hub works, from what it is to using the docs as a template, and one on the directions for the blog globe figure; the source is `content/docs/` |
-| [`AGENTS.md`](./AGENTS.md) | the entry point for an agent: the read order, the principles in brief, which skill to load for a task, the house rules, and how to use the hub in another project (`CLAUDE.md` imports it); the live version is `/handbook/agents` |
-| [`docs/handbook/`](./docs/handbook/README.md) | how Kevin runs GT work: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log; the live version is `/handbook`, which also serves every document below |
+| [`/docs`](https://www.prototemplate.com/docs) | the docs site: the pages on how the hub works, from what it is to using the docs as a template, the live component library, the directions for the blog globe figure and the handbook; the source is `content/docs/` |
+| [`AGENTS.md`](./AGENTS.md) | the entry point for an agent: the read order, the principles in brief, which skill to load for a task, the house rules, and how to use the hub in another project (`CLAUDE.md` imports it); the live version is `/docs/handbook/agents` |
+| [`docs/handbook/`](./docs/handbook/README.md) | how Kevin runs GT work: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log; the live version is `/docs/handbook`, which also serves every document below |
 | [`BRAND.md`](./BRAND.md) | the identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and the context for partners |
 | [`DESIGN.md`](./DESIGN.md) | the visual canon: the four-color system, the line law, rails/grounds/seams, the doubled line, iso, the 1-bit language, moving type, motion discipline, the mobile type ladder, the svh/dvh law, the two read lines |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | the code map: directions registry, the toolchain SSOT + fork rescoping, the component inventory |
 | [`docs/SHIP-LOOP.md`](./docs/SHIP-LOOP.md) | the verify/ship procedure every round runs (line audit, page check, ratchets, tsc, captures, the gated push to main) |
-| [`docs/TOOLS.md`](./docs/TOOLS.md) | every pnpm command and the scripts the skills bundle, written by `pnpm build:tools`; the live version is `/handbook/tools` |
+| [`docs/TOOLS.md`](./docs/TOOLS.md) | every pnpm command and the scripts the skills bundle, written by `pnpm build:tools`; the live version is `/docs/handbook/tools` |
 | [`docs/archive/`](./docs/archive/README.md) | finished round specs kept as design history |
-| [`docs/LIBRARIES.md`](./docs/LIBRARIES.md) | the library index; the live version is `/handbook/libraries`, where the build log follows it with every library running |
+| [`docs/LIBRARIES.md`](./docs/LIBRARIES.md) | the library index; the live version is `/docs/handbook/libraries`, where the build log follows it with every library running |
 | [`public/media/`](./public/media/README.md) | finished artwork made with the system: the Open Source announcement reel, the X banner, two blog films and three partnership globes, shown live in `/brand`, and the three translation series films, which play on `/motion` |
-| [`docs/GRAPHICS.md`](./docs/GRAPHICS.md) | the graphics pipeline: how the blog illustrations are captured, composed, rendered, clipped and handed to a post; the live version is `/handbook/graphics`, and the set is `/graphics` |
+| [`docs/GRAPHICS.md`](./docs/GRAPHICS.md) | the graphics pipeline: how the blog illustrations are captured, composed, rendered, clipped and handed to a post; the live version is `/docs/handbook/graphics`, and the set is `/graphics` |
 | [`graphics/`](./graphics/README.md) | the toolchain itself: the generator, the renderer, the exports, the captures and the recordings |
 
 ## Skills
@@ -231,8 +231,8 @@ printf '# CLAUDE.md\n\n@AGENTS.md\n' > CLAUDE.md
   `LICENSE`, `docs/ARTIFACT-PICTURES.md`). Read them on the site or on
   GitHub. To take later changes, copy the folders again; to read the
   current canon without copying, use its address on the site
-  (www.prototemplate.com/handbook/design, /handbook/brand, /handbook,
-  /skills/<slug>).
+  (www.prototemplate.com/docs/handbook/design, `/docs/handbook/brand`,
+  `/docs/handbook`, `/skills/<slug>`).
 - The page check and the line audit run against any site from this
   checkout: `pnpm check:pages --base <url> --pages-module <file>` and
   `node scripts/lint/lines.mjs <url>` (the `prototemplate` skill, "Using the

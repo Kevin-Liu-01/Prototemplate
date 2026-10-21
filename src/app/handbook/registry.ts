@@ -1,17 +1,19 @@
 /**
- * The handbook registry: the documents /handbook serves, in reading order,
- * read from the repository at build time by the book builder
- * (src/components/book/book.tsx). The handbook's readme
- * (docs/handbook/README.md) opens the book at /handbook; the six handbook
- * documents follow it, then the canon: the agent guide, the brand and
- * design canons, the architecture map, the ship loop, the tools, the
- * libraries (with the build log, src/app/handbook/libraries-book.ts), the
- * graphics pipeline and the artifact pictures. Each blurb is the
- * document's description in its head, so it runs 50 to 160 characters.
- * scripts/build/updated.mjs dates each /handbook/<slug> from its file, and
- * scripts/lint/registries.mjs reads the `slug` and `file` lines here
- * against HANDBOOK_HEADINGS in src/lib/search-index.ts, so keep one entry
- * per object in this shape.
+ * The handbook registry: the documents the handbook section of the docs
+ * site shows, in reading order, each on its page under /docs/handbook
+ * (content/docs/handbook/<slug>.mdx, which includes the file). The
+ * handbook's readme (docs/handbook/README.md) is the section's index at
+ * /docs/handbook; the six handbook documents follow it, then the canon:
+ * the agent guide, the brand and design canons, the architecture map, the
+ * ship loop, the tools, the libraries (with the build log, mounted by its
+ * page), the graphics pipeline and the artifact pictures. Each blurb is
+ * the page's description, so it runs 50 to 160 characters.
+ * scripts/lint/registries.mjs holds each page's title, description,
+ * include tag and sidebar order to its entry, and its `slug` and `file`
+ * lines against HANDBOOK_HEADINGS in src/lib/search-index.ts, so keep one
+ * entry per object in this shape. The links between the files
+ * (src/components/book/links.ts), the search rows and the captures read
+ * this list too.
  */
 export type DocEntry = {
   slug: string;

@@ -2,17 +2,28 @@ import { loader } from 'fumadocs-core/source';
 import { createElement } from 'react';
 import type { ReactElement } from 'react';
 import {
+  ArrowPathIcon,
   BookOpenIcon,
   CheckBadgeIcon,
   CodeBracketIcon,
   CommandLineIcon,
+  CubeIcon,
   DocumentDuplicateIcon,
   GlobeAltIcon,
   GlobeEuropeAfricaIcon,
+  LanguageIcon,
+  MapIcon,
+  PhotoIcon,
   PresentationChartBarIcon,
+  PuzzlePieceIcon,
   RectangleGroupIcon,
+  ScaleIcon,
+  ShieldCheckIcon,
   SparklesIcon,
+  Squares2X2Icon,
   SwatchIcon,
+  UserGroupIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/20/solid';
 
 import { docs } from '@/.source/server';
@@ -33,12 +44,23 @@ const ICONS: Readonly<Record<string, () => ReactElement>> = {
   Code: () => createElement(CodeBracketIcon),
   Command: () => createElement(CommandLineIcon),
   Copy: () => createElement(DocumentDuplicateIcon),
+  Cube: () => createElement(CubeIcon),
   Globe: () => createElement(GlobeAltIcon),
   Deck: () => createElement(PresentationChartBarIcon),
   Earth: () => createElement(GlobeEuropeAfricaIcon),
+  Language: () => createElement(LanguageIcon),
+  Loop: () => createElement(ArrowPathIcon),
+  Map: () => createElement(MapIcon),
   Pages: () => createElement(RectangleGroupIcon),
+  Photo: () => createElement(PhotoIcon),
+  Puzzle: () => createElement(PuzzlePieceIcon),
+  Scale: () => createElement(ScaleIcon),
+  Shield: () => createElement(ShieldCheckIcon),
   Sparkles: () => createElement(SparklesIcon),
+  Squares: () => createElement(Squares2X2Icon),
   Swatch: () => createElement(SwatchIcon),
+  Users: () => createElement(UserGroupIcon),
+  Wrench: () => createElement(WrenchScrewdriverIcon),
 };
 
 export const source = loader({

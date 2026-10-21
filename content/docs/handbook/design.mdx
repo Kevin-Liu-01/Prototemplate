@@ -1,0 +1,101 @@
+---
+title: Design system
+description: "The design canon: the four-color system, the line law, rails and seams, the doubled line, iso, the 1-bit language, moving type and motion."
+icon: Pages
+sources:
+  - src/app/craft/LibraryDemo.tsx
+  - src/app/craft/craft.css
+  - src/components/docs/demos/CraftPlate.tsx
+---
+
+import { CraftPlate } from '@/components/docs/demos/lazy';
+
+<include cwd>DESIGN.md#design-system</include>
+
+<include cwd>DESIGN.md#1-the-four-color-system</include>
+
+<include cwd>DESIGN.md#2-the-line-law</include>
+
+<include cwd>DESIGN.md#ownership</include>
+
+<include cwd>DESIGN.md#the-named-antipattern</include>
+
+<include cwd>DESIGN.md#sanctioned-devices</include>
+
+<include cwd>DESIGN.md#the-reading-column</include>
+
+<include cwd>DESIGN.md#line-law-for-chrome</include>
+
+<include cwd>DESIGN.md#corners-rounded-controls-square-shells</include>
+
+<include cwd>DESIGN.md#3-the-rails</include>
+
+<include cwd>DESIGN.md#4-typography-and-voices</include>
+
+<include cwd>DESIGN.md#book-type</include>
+
+<include cwd>DESIGN.md#5-the-doubled-line-thread-grammar</include>
+
+<CraftPlate
+  kind="threads"
+  tag="<DoubledLine />"
+  label="Two doubled-line connectors merging into one trunk: each pair one white thread over one gray, with a static accent pulse carved into the trunk."
+/>
+
+This plate draws `DoubledLine`. Two source paths merge into one trunk, each path is one stroke carved into two hairlines by the plate's ink, and the trunk carries a static accent window in its pulse slot.
+
+<include cwd>DESIGN.md#6-the-isometric-family</include>
+
+<CraftPlate
+  kind="iso"
+  tag="project(x, y, z)"
+  label="A raised isometric plate drawn with the kit: an extruded slab carrying two box chips and one hexagonal prism, faces lit from the upper left, hairline rim and front edges."
+/>
+
+This plate draws with the isometric kit: a slab extruded from its rounded silhouette carries two boxes and one hexagonal prism, every face lit from the upper left.
+
+<include cwd>DESIGN.md#7-the-1-bit-language-bayer-dither</include>
+
+<CraftPlate
+  kind="dither"
+  tag="createDitherLoop()"
+  label="Live demo: wavy 1-bit streak bands sweeping across the plate, every dot a single Bayer-thresholded pixel."
+/>
+
+This plate runs `createDitherLoop()`: wavy streak bands pass through the 8x8 Bayer screen, and every dot is one cell thresholded against the matrix.
+
+<include cwd>DESIGN.md#8-the-moving-type-law</include>
+
+<CraftPlate
+  kind="reassembler"
+  tag="<EverySentence />"
+  label="Live demo: one shaped sentence dissolving into glyph dust and reassembling in the next language, measuring guides bracketing the shaped width."
+/>
+
+This plate runs `EverySentence`: one shaped sentence breaks into glyphs and reassembles in the next language, and its width moves once per change, measured from a hidden probe. The chips set the number of re-spread beats from 1 to 5.
+
+<include cwd>DESIGN.md#9-motion-discipline</include>
+
+<include cwd>DESIGN.md#10-the-seam-slide-to-reveal</include>
+
+<CraftPlate
+  kind="seam"
+  tag="<RevealSeam />"
+  label="Interactive demo: drag or arrow-key the seam handle to reveal the served translation payload beneath the rendered string."
+/>
+
+This plate mounts `RevealSeam`. Drag the handle, or focus it and press the arrow keys, to reveal the served translation payload under the rendered string.
+
+<include cwd>DESIGN.md#11-engine-lifecycle</include>
+
+<include cwd>DESIGN.md#12-the-mobile-type-ladder</include>
+
+<include cwd>DESIGN.md#the-box-air-standard</include>
+
+<include cwd>DESIGN.md#13-the-svhdvh-law</include>
+
+<include cwd>DESIGN.md#14-the-two-read-lines</include>
+
+<include cwd>DESIGN.md#15-chrome-exceptions-kevin-asked-for</include>
+
+<include cwd>DESIGN.md#16-the-sidebars-rows</include>

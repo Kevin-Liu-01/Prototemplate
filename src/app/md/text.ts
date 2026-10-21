@@ -1,21 +1,18 @@
-import { HANDBOOK, HANDBOOK_README } from '@/app/handbook/registry';
-import type { DocEntry } from '@/app/handbook/registry';
-import { readDoc } from '@/components/book/book';
 import { siteHref } from '@/components/book/links';
 import { SITE_URL, selfUrl } from '@/lib/seo/policy';
 import { source } from '@/lib/source';
 import type { DocsPage } from '@/lib/source';
 
 /**
- * The text the agent files serve: the Markdown twin of every docs page and
- * every handbook document (src/app/md/[...path]/route.ts), /llms-full.txt
+ * The text the agent files serve: the Markdown twin of every docs page,
+ * the handbook's included (src/app/md/[...path]/route.ts), /llms-full.txt
  * and /AGENTS.md. A docs page's twin is its processed Markdown
  * (page.data.getText('processed'), kept by includeProcessedMarkdown in
- * source.config.ts); a handbook document's is its repository file. Every
- * relative link resolves to the address the site serves it at, made
- * absolute on www, so a twin read on its own still links out correctly.
- * Each twin opens with its title and canonical URL and closes with a
- * pointer to /llms.txt, the index of the rest.
+ * source.config.ts); a handbook page's carries the repository file its
+ * include tag shows. Every relative link resolves to the address the site
+ * serves it at, made absolute on www, so a twin read on its own still
+ * links out correctly. Each twin opens with its title and canonical URL
+ * and closes with a pointer to /llms.txt, the index of the rest.
  */
 
 /** The served Markdown's content type. */
@@ -59,34 +56,6 @@ function twin(title: string, pagePath: string, body: string, description?: strin
 export async function docsMarkdown(page: DocsPage): Promise<string> {
   const body = await page.data.getText('processed');
   return twin(page.data.title, page.url, absoluteLinks(body), page.data.description);
-}
-
-/** The handbook's documents in the book's order, the readme first, each with its pathname. */
-export function handbookDocs(): readonly { entry: DocEntry; path: string }[] {
-  return [HANDBOOK_README, ...HANDBOOK].map((entry) => ({
-    entry,
-    path: entry.slug === HANDBOOK_README.slug ? '/handbook' : `/handbook/${entry.slug}`,
-  }));
-}
-
-/** The repository folder a file sits in, for its relative links. */
-function folderOf(file: string): string {
-  const at = file.lastIndexOf('/');
-  return at < 0 ? '' : file.slice(0, at);
-}
-
-/** A handbook document's text with its relative links made absolute, its own h1 dropped (the twin writes the title). */
-export function handbookText(entry: DocEntry): string {
-  return absoluteLinks(readDoc(entry.file), folderOf(entry.file)).replace(/^# .*\n+/, '');
-}
-
-/** A handbook document's twin. The libraries document's build log is React on its page; the twin says where to read it. */
-export function handbookMarkdown(entry: DocEntry, path: string): string {
-  const note =
-    entry.slug === 'libraries'
-      ? `\n\nThe build log, with every library running live, follows this index on ${selfUrl(path)}.`
-      : '';
-  return twin(entry.title === 'Readme' ? 'Handbook' : entry.title, path, `${handbookText(entry)}${note}`, entry.blurb);
 }
 
 /** Every docs page in the sidebar's order (content/docs/meta.json). */

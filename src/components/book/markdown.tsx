@@ -80,13 +80,12 @@ export function renderInline(text: string, keyBase: string, opts?: RenderOptions
     const link = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(part);
     if (link?.[1] && link[2]) {
       const href = siteHref(link[2], opts?.dir);
-      /* a handbook route or an anchor: a plain link the book intercepts
-         and answers in place, so the shell never remounts; a docs site
-         page (/docs, its own layout outside the shell) loads as a
-         document; a file the site serves as it is (a skill's raw SKILL.md
-         or reference) has no page for the router to fetch, so it is a
-         plain link too */
-      if (href.startsWith('/docs') || href.startsWith('/handbook') || href.startsWith('#') || RAW_FILE.test(href)) {
+      /* a docs site page (/docs and the handbook under /docs/handbook, its
+         own layout outside the shell) loads as a document; an anchor stays
+         on the page; a file the site serves as it is (a skill's raw
+         SKILL.md or reference) has no page for the router to fetch, so it
+         is a plain link too */
+      if (href.startsWith('/docs') || href.startsWith('#') || RAW_FILE.test(href)) {
         out.push(
           <a href={href} key={key}>
             {renderInline(link[1], key, opts)}

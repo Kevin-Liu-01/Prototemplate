@@ -9,12 +9,19 @@
  * - tokenizeTimeLimit: 0 lets Shiki tokenize a long code block whole; with
  *   the default limit a block that runs past it renders unhighlighted
  *   (gt-cloud #5269).
+ * - remarkHandbook (src/lib/remark-handbook.ts) runs after fumadocs-mdx's
+ *   include step on the handbook pages (content/docs/handbook), which show
+ *   the repository's Markdown files through `<include cwd>`: it drops each
+ *   included h1, resolves relative links to their site addresses and
+ *   prints raw HTML as text.
  *
  * The same file runs in gt-cloud's apps/landing; /docs/template says what
  * to keep when it is copied into another project.
  */
 import { rehypeCodeDefaultOptions } from 'fumadocs-core/mdx-plugins';
 import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
+
+import { remarkHandbook } from './src/lib/remark-handbook';
 
 export const docs = defineDocs({
   dir: 'content/docs',
@@ -25,6 +32,7 @@ export const docs = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
+    remarkPlugins: [remarkHandbook],
     rehypeCodeOptions: {
       ...rehypeCodeDefaultOptions,
       tokenizeTimeLimit: 0,

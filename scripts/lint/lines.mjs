@@ -40,7 +40,7 @@
 //     [--only /docs] [--width 1440] [--theme dark] [--jobs 3] [--report] [--json]
 //   Walks the routes scripts/lib/site-pages.mjs tags `lines` (/, /docs, /brand,
 //   /compare, /archive/<first slug>, /directions/<first exploration>,
-//   /skills, /skills/<first slug>, /handbook, /motion,
+//   /skills, /skills/<first slug>, /motion,
 //   /motion/<first package>, /graphics, /marks, /d/production and /deck,
 //   the deck's own document) at 1440, 1280 and 390 in both themes
 //   against the dev server, and on each page audits the resting state, the

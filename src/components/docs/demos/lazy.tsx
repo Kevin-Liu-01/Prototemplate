@@ -9,7 +9,9 @@ import dynamic from 'next/dynamic';
  * route, so a plate imported directly would put its code and its
  * stylesheets (the engines, flag-icons, the language diagrams' sheet,
  * demos.css) into every docs page's first load. Through next/dynamic a
- * plate's code and CSS load only on a page that renders it. The server
+ * plate's code and CSS load only on a page that renders it. The handbook's
+ * plates (the build log's LibraryDemo, the locale pills, the build log
+ * itself, all with craft.css) and the blog globe figures load the same way. The server
  * still renders each plate, so the HTML holds its markup and its still,
  * and the chunk is preloaded on that page. The fallback below shows only
  * during a client navigation, at about the plate's height, so the page
@@ -25,13 +27,17 @@ function slot(height: number) {
 export const BadgeCycleDemo = dynamic(() => import('./BadgeCycleDemo'), { loading: slot(330) });
 export const BayerTiersDemo = dynamic(() => import('./BayerTiersDemo'), { loading: slot(390) });
 export const BlogGlobeDemo = dynamic(() => import('./BlogGlobeDemo'), { loading: slot(760) });
+export const BuildLog = dynamic(() => import('./BuildLog'), { loading: slot(9000) });
 export const ConnectorDemo = dynamic(() => import('./ConnectorDemo'), { loading: slot(470) });
+export const CraftPlate = dynamic(() => import('./CraftPlate'), { loading: slot(420) });
 export const DitherGlobeDemo = dynamic(() => import('./DitherGlobeDemo'), { loading: slot(500) });
 export const DitherLoopDemo = dynamic(() => import('./DitherLoopDemo'), { loading: slot(480) });
 export const DitheredMarkDemo = dynamic(() => import('./DitheredMarkDemo'), { loading: slot(400) });
 export const DoubledLineDemo = dynamic(() => import('./DoubledLineDemo'), { loading: slot(440) });
 export const EdgeGlobeDemo = dynamic(() => import('./EdgeGlobeDemo'), { loading: slot(430) });
 export const EverySentenceDemo = dynamic(() => import('./EverySentenceDemo'), { loading: slot(330) });
+export const GlobeFigure = dynamic(() => import('@/components/blog-globe/GlobeFigure'), { loading: slot(700) });
+export const GlobeGrid = dynamic(() => import('@/components/blog-globe/GlobeGrid'), { loading: slot(1400) });
 export const GlyphFieldDemo = dynamic(() => import('./GlyphFieldDemo'), { loading: slot(440) });
 export const GtWordDemo = dynamic(() => import('./GtWordDemo'), { loading: slot(330) });
 export const HeadFrameDemo = dynamic(() => import('./HeadFrameDemo'), { loading: slot(540) });
@@ -40,6 +46,7 @@ export const InkFieldDemo = dynamic(() => import('./InkFieldDemo'), { loading: s
 export const IsoKitDemo = dynamic(() => import('./IsoKitDemo'), { loading: slot(450) });
 export const LangDiagramDemo = dynamic(() => import('./LangDiagramDemo'), { loading: slot(500) });
 export const LocaleTagDemo = dynamic(() => import('./LocaleTagDemo'), { loading: slot(400) });
+export const LocalePills = dynamic(() => import('./LocalePills'), { loading: slot(160) });
 export const MarksPlate = dynamic(() => import('./MarksPlate'), { loading: slot(500) });
 export const PrismaticFieldDemo = dynamic(() => import('./PrismaticFieldDemo'), { loading: slot(420) });
 export const RevealSeamDemo = dynamic(() => import('./RevealSeamDemo'), { loading: slot(330) });

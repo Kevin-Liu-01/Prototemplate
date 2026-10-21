@@ -35,8 +35,7 @@
  *   S6 tokens   the book page's spaces in BookView.css and Sheet.css read
  *               their tokens, never the literal px they stand for
  *
- * Live mode reads /brand, /handbook, /handbook/design, /motion, the
- * first package, /graphics, /skills, the first skill, /marks, the first
+ * Live mode reads /brand, /motion, the first package, /graphics, /skills, the first skill, /marks, the first
  * direction and /blog at 1440x900 and 390x844 in both themes:
  *
  *   H1 structure  one header.pt-book-head; the mast is h1, the lead, the
@@ -109,7 +108,7 @@ export const STANDARD = ['pt-book-head', 'pt-book-mast', 'pt-book-lead', 'pt-boo
 const BOX_TYPE = /^(margin|padding|border|gap$|row-gap$|column-gap$|grid-|display$|font|line-height$|letter-spacing$|color$|background|height$|min-height$|width$|max-width$)/;
 
 /** The book routes S3 reads, and the gallery files and the craft article it allows by name. */
-const BOOK_ROUTES = ['src/app/brand/', 'src/components/book/', 'src/app/handbook/', 'src/app/motion/', 'src/app/graphics/', 'src/app/skills/', 'src/app/marks/', 'src/app/directions/', 'src/app/blog/', 'src/components/viewer/BookView', 'src/components/viewer/InstallField'];
+const BOOK_ROUTES = ['src/app/brand/', 'src/components/book/', 'src/app/motion/', 'src/app/graphics/', 'src/app/skills/', 'src/app/marks/', 'src/app/directions/', 'src/app/blog/', 'src/components/viewer/BookView', 'src/components/viewer/InstallField'];
 const HATCH_ALLOWED = ['src/app/prototemplate.css', 'src/app/system-ledger.css', 'src/app/GalleryViewer.tsx', 'src/app/AnatomyWall.tsx', 'src/app/craft/'];
 
 /** S5's exception: the home page (the nameplate). */
@@ -367,7 +366,7 @@ export function lintHeads(root) {
 /* ------------------------------------------------------------------ */
 
 /** The routes live mode reads, by kind: the single pages and the first of each record (from lint-type's list). */
-const LIVE_PATHS = /^\/(brand|handbook|handbook\/design|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|marks|directions\/[\w-]+|blog)$/;
+const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|marks|directions\/[\w-]+|blog)$/;
 
 /**
  * Runs in the page: the head's geometry and the lines around it. Every
@@ -815,11 +814,10 @@ export function judgeHead(d, { wide, day, record = null }) {
   };
 }
 
-/** The day src/lib/updated.ts records for a route's head (a /handbook/<slug> shows the book's head, so it reads /handbook). */
+/** The day src/lib/updated.ts records for a route's head. */
 export function updatedDay(root, path) {
   const text = readFileSync(join(root, 'src/lib/updated.ts'), 'utf8');
-  const key = path.startsWith('/handbook/') ? '/handbook' : path;
-  const m = new RegExp(`^ {2}'${key.replace(/[/]/g, '\\/')}': \\{ day: '([^']+)'`, 'm').exec(text);
+  const m = new RegExp(`^ {2}'${path.replace(/[/]/g, '\\/')}': \\{ day: '([^']+)'`, 'm').exec(text);
   return m ? m[1] : null;
 }
 
