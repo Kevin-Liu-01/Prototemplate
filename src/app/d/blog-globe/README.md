@@ -29,13 +29,13 @@ The docs frames that embed the figures live in `src/components/blog-globe/`. The
 
 - `GlobeDevPage.tsx` imports `port-compat.css` in place of the landing's three stylesheets, wraps the round in `globe-root globe-<round>` and takes `base` in place of the locale.
 - `GlobeDevStage.tsx` drops the rule that hid gt-cloud's cookie banner inside a frame, and marks the embedded figure's `main` with `globe-embed`, which sets the figure's outer margins to 0.
-- `rounds.ts` gives round 3 its commit, `5ba413acfb`, since it is a copy here.
+- `rounds.ts` gives round 3 its commit, `5ba413acfb`, since it is a copy here, and types the list (`GlobeRound`, with `commit: string | null`) instead of reading the keys from an `as const` array: with every round frozen, the stage's label for a live round would narrow to `never` and fail the type check.
 - The comments name the routes under `/d/blog-globe`.
 
 ## Copying a later gt-cloud round
 
 1. Extract the folder from the commit, not a working tree: `git archive <sha> apps/landing/src/components/blog/globe | tar -x -C <scratch>`.
-2. Copy `rounds/r1` and `rounds/r2` to `_rounds/r1` and `_rounds/r2`, and the folder without `rounds`, `stage` and every `__tests__` to `_rounds/r3`. A new round goes to `_rounds/r<N>` with a route of its own, in the shape of `r2/page.tsx`, and an entry in `_stage/rounds.ts`.
+2. Copy `rounds/r1` and `rounds/r2` to `_rounds/r1` and `_rounds/r2`, and the folder without `rounds`, `stage` and every `__tests__` to `_rounds/r3`. A new round goes to `_rounds/r<N>` with a route of its own, in the shape of `r2/page.tsx`, and an entry in `_stage/rounds.ts` with its key added to `GlobeRoundKey`.
 3. In the `.ts` and `.tsx` files, rewrite the import paths in this order:
    - `@/components/blog/globe/rounds/r<N>/` to `@/app/d/blog-globe/_rounds/r<N>/`
    - `@/components/blog/globe/` to `@/app/d/blog-globe/_rounds/r3/`

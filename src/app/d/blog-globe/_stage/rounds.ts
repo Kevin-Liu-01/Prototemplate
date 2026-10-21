@@ -5,18 +5,22 @@ import type { CSSProperties, ReactNode } from 'react';
    route below /d/blog-globe; the last round is served at /d/blog-globe
    itself. In gt-cloud round 3 is the live code, so here it is frozen at the
    commit it was copied from. */
-export const GLOBE_ROUNDS = [
-  { key: 'r1', number: 1, path: '/r1', commit: 'c7031e2ca8' },
-  { key: 'r2', number: 2, path: '/r2', commit: 'ee19373e96' },
-  { key: 'r3', number: 3, path: '', commit: '5ba413acfb' },
-] as const satisfies readonly {
-  key: string;
+export type GlobeRoundKey = 'r1' | 'r2' | 'r3';
+
+/* commit is typed string | null, so the stage's label for a live round (no
+   commit) still type-checks while every round here is frozen */
+export type GlobeRound = {
+  key: GlobeRoundKey;
   number: number;
   path: string;
   commit: string | null;
-}[];
+};
 
-export type GlobeRoundKey = (typeof GLOBE_ROUNDS)[number]['key'];
+export const GLOBE_ROUNDS: readonly GlobeRound[] = [
+  { key: 'r1', number: 1, path: '/r1', commit: 'c7031e2ca8' },
+  { key: 'r2', number: 2, path: '/r2', commit: 'ee19373e96' },
+  { key: 'r3', number: 3, path: '', commit: '5ba413acfb' },
+];
 
 export const GLOBE_VARIANT_KEYS = ['a', 'b', 'c', 'd'] as const;
 
