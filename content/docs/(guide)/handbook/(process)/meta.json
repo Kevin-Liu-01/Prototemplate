@@ -3,6 +3,10 @@
   "pages": [
     "quality-bar",
     "multi-session-playbook",
-    "decisions"
+    "decisions",
+    "shared-machine",
+    "workflows",
+    "pull-requests",
+    "review"
   ]
 }

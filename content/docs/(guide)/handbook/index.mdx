@@ -6,23 +6,29 @@ icon: Book
 
 import {
   ArrowPathIcon,
+  ArrowsRightLeftIcon,
+  CheckBadgeIcon,
   CodeBracketIcon,
   CommandLineIcon,
+  CubeIcon,
   GlobeEuropeAfricaIcon,
+  InformationCircleIcon,
+  LanguageIcon,
+  MapIcon,
   PhotoIcon,
+  PuzzlePieceIcon,
   RectangleGroupIcon,
+  ScaleIcon,
+  ShieldCheckIcon,
   Squares2X2Icon,
   SwatchIcon,
+  UserGroupIcon,
   WrenchScrewdriverIcon,
 } from '@heroicons/react/24/solid';
 
 <include cwd>docs/handbook/README.md#handbook</include>
 
-<include cwd>docs/handbook/README.md#the-documents</include>
-
-## The canon
-
-After the six handbook documents, the section carries the nine canon documents: the files at the repository's root and in `docs/` that hold the agent guide, the brand, the design system and the working procedures.
+## Guide and principles
 
 <Cards>
   <Card
@@ -31,6 +37,83 @@ After the six handbook documents, the section carries the nine canon documents: 
     href="/docs/handbook/agents"
     description="The entry point for an agent: the read order, the principles in brief, the skill for each task, the house rules and using the hub elsewhere."
   />
+  <Card
+    icon={<ShieldCheckIcon />}
+    title="Operating principles"
+    href="/docs/handbook/operating-principles"
+    description="The eighteen standing rules behind Kevin’s corrections, each with how to apply it, the skill that holds it and its dated directive."
+  />
+</Cards>
+
+## Process
+
+<Cards>
+  <Card
+    icon={<CheckBadgeIcon />}
+    title="Quality bar"
+    href="/docs/handbook/quality-bar"
+    description="The measurable bar for each kind of artifact, from pages and motion to copy, pull requests and films, and for done, each row with its owner."
+  />
+  <Card
+    icon={<UserGroupIcon />}
+    title="Multi-session playbook"
+    href="/docs/handbook/multi-session-playbook"
+    description="How many agent sessions share one machine: lanes, forked sessions, shared checkouts, collisions, Claude and Codex on one main, and resumption."
+  />
+  <Card
+    icon={<ScaleIcon />}
+    title="Decisions log"
+    href="/docs/handbook/decisions"
+    description="Kevin’s dated rulings on process, product, design and the repositories, what each replaced, his words and the gate that holds it."
+  />
+  <Card
+    icon={<CubeIcon />}
+    title="Agents on one machine"
+    href="/docs/handbook/shared-machine"
+    description="Agent sessions on one workstation: stopping processes by id, zsh traps, exit-status gates, memory and disk, long commands and shared checkouts."
+  />
+  <Card
+    icon={<PuzzlePieceIcon />}
+    title="Agent workflows"
+    href="/docs/handbook/workflows"
+    description="Subagent workflows: lane prompts that survive relayed messages, resuming by run id, workflow shapes, refuters, kinds of check and paid model runs."
+  />
+  <Card
+    icon={<ArrowsRightLeftIcon />}
+    title="Pull requests and CI"
+    href="/docs/handbook/pull-requests"
+    description="Pull requests on gt-cloud: CI signals that mislead, review bots, size and shape, parity for redesigned flows, ratcheted lints and git on shared trees."
+  />
+  <Card
+    icon={<InformationCircleIcon />}
+    title="Reviewing with Kevin"
+    href="/docs/handbook/review"
+    description="How Kevin’s review words map to measures, one exemplar before a set, how a result reaches him, the five ship states and the ask ledger."
+  />
+</Cards>
+
+## Reference
+
+<Cards>
+  <Card
+    icon={<MapIcon />}
+    title="GT product and architecture map"
+    href="/docs/handbook/gt-product-map"
+    description="What General Translation sells and to whom, how the products fit together, the copy that must be exact, and where each part lives."
+  />
+  <Card
+    icon={<LanguageIcon />}
+    title="Glossary"
+    href="/docs/handbook/glossary"
+    description="The terms in Kevin’s messages, the skills and the code, each defined in a sentence or two with where it lives."
+  />
+</Cards>
+
+## Canon
+
+The canon is the eight files at the repository's root and in `docs/` that hold the brand, the design system and the working procedures.
+
+<Cards>
   <Card
     icon={<SwatchIcon />}
     title="Brand"
@@ -42,24 +125,6 @@ After the six handbook documents, the section carries the nine canon documents: 
     title="Design system"
     href="/docs/handbook/design"
     description="The design canon: the four-color system, the line law, rails and seams, the doubled line, iso, the 1-bit language, moving type and motion."
-  />
-  <Card
-    icon={<CodeBracketIcon />}
-    title="Architecture"
-    href="/docs/handbook/architecture"
-    description="The code map: the direction registry, the toolchain as the single source and fork rescoping, the componentized instruments, the mirror."
-  />
-  <Card
-    icon={<ArrowPathIcon />}
-    title="Ship loop"
-    href="/docs/handbook/ship-loop"
-    description="The verify-and-ship procedure every round runs: the line audit, the page check, the ratchets, types, captures and the gated build."
-  />
-  <Card
-    icon={<WrenchScrewdriverIcon />}
-    title="Tools"
-    href="/docs/handbook/tools"
-    description="Every pnpm command in the repository and the scripts the skills bundle, each with what it does. Written by pnpm build:tools."
   />
   <Card
     icon={<Squares2X2Icon />}
@@ -79,7 +144,27 @@ After the six handbook documents, the section carries the nine canon documents: 
     href="/docs/handbook/artifact-pictures"
     description="The standard for the dithered photographs: the rules, the Blue Marble tone grid and screen, the cutter, adding a picture and its lint."
   />
+  <Card
+    icon={<CodeBracketIcon />}
+    title="Architecture"
+    href="/docs/handbook/architecture"
+    description="The code map: the direction registry, the toolchain as the single source and fork rescoping, the componentized instruments, the mirror."
+  />
+  <Card
+    icon={<ArrowPathIcon />}
+    title="Ship loop"
+    href="/docs/handbook/ship-loop"
+    description="The verify-and-ship procedure every round runs: the line audit, the page check, the ratchets, types, captures and the gated build."
+  />
+  <Card
+    icon={<WrenchScrewdriverIcon />}
+    title="Tools"
+    href="/docs/handbook/tools"
+    description="Every pnpm command in the repository and the scripts the skills bundle, each with what it does. Written by pnpm build:tools."
+  />
 </Cards>
+
+<include cwd>docs/handbook/README.md#the-documents</include>
 
 <include cwd>docs/handbook/README.md#how-the-handbook-relates-to-the-skills</include>
 

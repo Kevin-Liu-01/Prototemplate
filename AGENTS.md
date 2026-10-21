@@ -63,11 +63,15 @@ The skills live in `skills/<slug>/SKILL.md`. In this repository they are already
 - [Operating principles](docs/handbook/operating-principles.md): the standing rules and where each procedure lives.
 - [Quality bar](docs/handbook/quality-bar.md): the bar for each kind of artifact and for done.
 - [Multi-session playbook](docs/handbook/multi-session-playbook.md): lanes, forks, shared checkouts, collisions, Claude and Codex on one main.
+- [Decisions log](docs/handbook/decisions.md): Kevin's dated rulings and what each replaced.
+- [Agents on one machine](docs/handbook/shared-machine.md): stopping processes by id, zsh traps, exit-status gates, memory and disk, long commands.
+- [Agent workflows](docs/handbook/workflows.md): lane prompts, resuming a run, workflow shapes, refuters, kinds of check, paid model runs.
+- [Pull requests and CI](docs/handbook/pull-requests.md): misleading CI signals, review bots, size and crops, parity, git on shared trees.
+- [Reviewing with Kevin](docs/handbook/review.md): his review words as measures, one exemplar first, showing results, ship states, the ask ledger.
 - [GT product and architecture map](docs/handbook/gt-product-map.md): what GT sells, the copy that must be exact, the repositories.
 - [Glossary](docs/handbook/glossary.md): the working vocabulary and where each term lives.
-- [Decisions log](docs/handbook/decisions.md): Kevin's dated rulings and what each replaced.
 
-On the site the handbook is one section of the docs site, and the canon follows these six in it: this guide, BRAND.md, DESIGN.md, ARCHITECTURE.md, the ship loop, the tools, the libraries with the build log, the graphics pipeline and the artifact pictures. Each file has a page under `content/docs/handbook/` that shows it through fumadocs-mdx's include tag, so the Markdown file stays the one source. A document added to the handbook or the canon gets its page there, and a page that includes its file one heading at a time (to set a live plate between two sections) lists every heading of the file, or the build fails. The rest of the docs site at /docs explains how the hub works, holds the live component library under /docs/components and records the directions for the blog globe figure.
+On the site the handbook is one section of the docs site. It opens with this guide and the operating principles, then three folders: Process (the quality bar, the playbook, the decisions log, and the documents on one machine, workflows, pull requests and review), Reference (the product map and the glossary) and Canon (BRAND.md, DESIGN.md, the libraries with the build log, the graphics pipeline, the artifact pictures, ARCHITECTURE.md, the ship loop and the tools). Each file has a page under `content/docs/(guide)/handbook/` that shows it through fumadocs-mdx's include tag, so the Markdown file stays the one source. A document added to the handbook or the canon gets its page there, and a page that includes its file one heading at a time (to set a live plate between two sections) lists every heading of the file, or the build fails. The rest of the docs site at /docs explains how the hub works, holds the live component library under /docs/components and records the directions for the blog globe figure.
 
 ## House rules
 

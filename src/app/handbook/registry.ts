@@ -5,7 +5,9 @@
  * readme (docs/handbook/README.md) is the section's index at /docs/handbook;
  * the agent guide and the operating principles follow it, then the Process
  * documents (the quality bar, the multi-session playbook, the decisions
- * log), the Reference documents (the product map, the glossary) and the
+ * log, agents on one machine, agent workflows, pull requests and CI,
+ * reviewing with Kevin), the Reference documents (the product map, the
+ * glossary) and the
  * canon: the brand and design canons, the libraries (with the build log,
  * mounted by its page), the graphics pipeline, the artifact pictures, the
  * architecture map, the ship loop and the tools. Each blurb is
@@ -66,6 +68,34 @@ export const HANDBOOK: readonly DocEntry[] = [
     title: 'Decisions log',
     blurb:
       'Kevin’s dated rulings on process, product, design and the repositories, what each replaced, his words and the gate that holds it.',
+  },
+  {
+    slug: 'shared-machine',
+    file: 'docs/handbook/shared-machine.md',
+    title: 'Agents on one machine',
+    blurb:
+      'Agent sessions on one workstation: stopping processes by id, zsh traps, exit-status gates, memory and disk, long commands and shared checkouts.',
+  },
+  {
+    slug: 'workflows',
+    file: 'docs/handbook/workflows.md',
+    title: 'Agent workflows',
+    blurb:
+      'Subagent workflows: lane prompts that survive relayed messages, resuming by run id, workflow shapes, refuters, kinds of check and paid model runs.',
+  },
+  {
+    slug: 'pull-requests',
+    file: 'docs/handbook/pull-requests.md',
+    title: 'Pull requests and CI',
+    blurb:
+      'Pull requests on gt-cloud: CI signals that mislead, review bots, size and shape, parity for redesigned flows, ratcheted lints and git on shared trees.',
+  },
+  {
+    slug: 'review',
+    file: 'docs/handbook/review.md',
+    title: 'Reviewing with Kevin',
+    blurb:
+      'How Kevin’s review words map to measures, one exemplar before a set, how a result reaches him, the five ship states and the ask ledger.',
   },
   {
     slug: 'gt-product-map',
