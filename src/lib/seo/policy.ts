@@ -7,6 +7,7 @@
  *   /d/production/<dashboard state>      noindex, self canonical, not listed (no public page exists)
  *   every other /d/ page                 noindex, self canonical, not listed (a design study of GT copy)
  *   /blog/<slug>                         index, canonical on generaltranslation.com/en-US/blog, not listed
+ *   /press/<slug> of a GT post           index, canonical on generaltranslation.com/en-US/blog, not listed
  *   every other path                     index, self canonical on www, listed
  *
  * www.prototemplate.com is canonical (decision log, 2026-10-10); the two
@@ -38,6 +39,9 @@ export const MIRROR_PREFIX = '/d/production';
 
 /** The dashboard states under the mirror: they render states of the dashboard, which has no public page to point at. */
 export const MIRROR_WITHOUT_LIVE: readonly string[] = ['signin', 'onboarding', 'consent', 'device', 'cli'];
+
+/** The GT Atlas stories that are GT blog posts: like /blog/<slug>, each takes the post as its canonical. */
+export const PRESS_POSTS: readonly string[] = ['designing-docs-for-humans', 'rewriting-our-docs', 'fuma-nama'];
 
 export type SeoPolicy = {
   /** index, follow when true; noindex, follow when false */
@@ -82,6 +86,10 @@ export function policyFor(path: string): SeoPolicy {
 
   if (/^\/blog\/[^/]+$/.test(p)) {
     return { index: true, canonical: `${GT_URL}/${GT_LOCALE}${p}`, inSitemap: false };
+  }
+  const press = /^\/press\/([^/]+)$/.exec(p);
+  if (press && PRESS_POSTS.includes(press[1] ?? '')) {
+    return { index: true, canonical: `${GT_URL}/${GT_LOCALE}/blog/${press[1]}`, inSitemap: false };
   }
 
   return { index: true, canonical: self, inSitemap: true };

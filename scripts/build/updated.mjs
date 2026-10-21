@@ -172,6 +172,8 @@ function pages() {
     { id: '/deck', paths: ['deck', 'scripts/build/deck.mjs'] },
     { id: '/present', paths: ['src/app/present'] },
     { id: '/compare', paths: ['src/app/compare', 'src/app/SiteCompare.tsx'] },
+    { id: '/press', paths: ['src/app/press', 'public/press'] },
+    { id: '/atlas', paths: ['src/app/atlas', 'public/shots/atlas'] },
     ...docsPages().map((slug) => ({
       id: slug === 'index' ? '/docs' : `/docs/${slug}`,
       paths: [`content/docs/${slug}.mdx`, ...docsSite],

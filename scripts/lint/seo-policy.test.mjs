@@ -59,6 +59,16 @@ test('posts: index, canonical on generaltranslation.com/en-US/blog, not listed',
   });
 });
 
+test('GT Atlas: a story that is a GT post takes the post as its canonical; the rest are their own', () => {
+  assert.deepEqual(policyFor('/press/fuma-nama'), {
+    index: true,
+    canonical: 'https://generaltranslation.com/en-US/blog/fuma-nama',
+    inSitemap: false,
+  });
+  assert.deepEqual(policyFor('/press'), indexed('/press'));
+  assert.deepEqual(policyFor('/press/translating-euclid'), indexed('/press/translating-euclid'));
+});
+
 test('the mirror: index with the GT canonical; the dashboard states noindex with their own', () => {
   assert.deepEqual(policyFor('/d/production'), { index: true, canonical: 'https://generaltranslation.com/en-US', inSitemap: false });
   assert.deepEqual(policyFor('/d/production/pricing'), { index: true, canonical: 'https://generaltranslation.com/en-US/pricing', inSitemap: false });

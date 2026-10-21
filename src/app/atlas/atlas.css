@@ -1,0 +1,56 @@
+/* Atlas notes: the reasons for GT Atlas and its looks, on the viewer shell.
+
+   The column, the head, the contents and the section dividers are the
+   shared book classes (BookHead, .pt-book-toc and .pt-book-sec in
+   BookView.css). This sheet draws only a part's prose and its captures:
+   the prose at the body size in the second ink, under the divider's lead,
+   and each capture full width with a hairline and the card corner. */
+
+.at-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scroll-margin-top: 20px;
+}
+
+/* the prose and the captures line up with the divider's heading, past its gutter */
+.at-body {
+  display: grid;
+  gap: 16px;
+  padding-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
+}
+
+.at-body p {
+  margin: 0;
+  max-width: var(--pt-measure);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+.at-fig {
+  margin: 8px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.at-fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+}
+
+.at-fig figcaption {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+@media (max-width: 900px) {
+  .at-body {
+    padding-left: 0;
+  }
+}

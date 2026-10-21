@@ -138,6 +138,11 @@ const PAGES: readonly Surface[] = [
   internal('brand', pageLabel('brand'), '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
   internal('docs', pageLabel('docs'), '/docs', 'Ten pages on how Prototemplate works and one on the blog globe figure, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
   internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
+  internal('press', pageLabel('press'), '/press', 'GT Atlas, the General Translation magazine: each story a book with its own cover and its own pages.', 'Pages', thumb('press')),
+  {
+    ...internal('turboslide', 'Turboslide', 'https://www.turboslide.com/home', 'Turboslide, the slides editor built from the brand deck: agents edit the slides, and a deck exports to PPTX.', 'Pages', thumb('turboslide')),
+    host: 'turboslide.com',
+  },
   internal('present', pageLabel('present'), '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
   internal('compare', pageLabel('compare'), '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
 ];
@@ -184,6 +189,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'The docs-redesign series as General Translation published it: the content rewrite, the Fuma Nama interview, and designing docs for humans.',
     'Knowledge'
   ),
+  internal('atlas', pageLabel('atlas'), '/atlas', 'Why General Translation publishes long writing as GT Atlas, and the looks a story is set in so far.', 'Knowledge', thumb('atlas')),
   internal(
     'graphics',
     pageLabel('graphics'),
