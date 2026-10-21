@@ -7,7 +7,7 @@ import type { Inline as InlineNode } from '../parse';
 import type { LiveKind, Localized } from '../stories';
 import StopSlider, { type Stop } from '../ui/StopSlider';
 import FrameView from './FrameView';
-import { CornersDemo, FUMA_ROWS, GlobeDemo, HitListDemo, StopsDemo, ThemeWipe, TocDemo } from './Live';
+import { CornersDemo, FUMA_ROWS, GlobeDemo, HitListDemo, ThemeWipe, TocDemo, VersionsDemo } from './Live';
 
 export const LIVE_CAPTION: Record<LiveKind, string> = {
   toc: 'The table of contents rebuilt in this page. The blue thumb follows the pointer and stays on the heading you click.',
@@ -15,7 +15,7 @@ export const LIVE_CAPTION: Record<LiveKind, string> = {
   hitlist: 'The hit list as a checklist. Click an anti-pattern to strike it.',
   globe: 'The title of this essay in nine languages. The globe turns to a city where each one is spoken.',
   wipe: 'The same picture in the dark theme and the light theme. Drag across it to compare them.',
-  stops: 'Euclid’s first definition in the five languages that carried Elements, at the city and the year of each version.',
+  stops: 'Euclid’s first definition in eight versions, from Alexandria to Beijing, each at the city and the year it was made.',
   clerk: 'The Fumadocs table of contents rebuilt in this page. The thumb shows only where the line runs, so it follows the line into the nested headings.',
 };
 
@@ -25,7 +25,7 @@ const LIVE_STOP: Record<LiveKind, string> = {
   hitlist: 'Live',
   globe: 'Live',
   wipe: 'Both themes',
-  stops: 'Five versions',
+  stops: 'Eight versions',
   clerk: 'Live',
 };
 
@@ -93,7 +93,7 @@ function LiveView({ kind, figure, titles, hitItems }: { kind: LiveKind; figure: 
     case 'globe':
       return <GlobeDemo titles={titles} />;
     case 'stops':
-      return <StopsDemo />;
+      return <VersionsDemo />;
     case 'clerk':
       return <TocDemo rows={FUMA_ROWS} start={9} />;
     case 'wipe': {

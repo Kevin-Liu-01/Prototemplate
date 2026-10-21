@@ -26,7 +26,7 @@ const SETTLE_MS = 1200;
 const LEAD =
   'GT Atlas is where General Translation publishes long writing. Each story is a book on a shelf, with a cover of its own, and it opens in pages set for what it is about.';
 const NOTE =
-  'These notes give the reasons for a magazine, then show the three ways a story is set so far: the docs reader, Fumadocs’ own interface and a printed page, followed by the covers and the languages.';
+  'These notes give the reasons for a magazine, then show the three ways a story is set so far: the docs reader, Fumadocs’ own interface and a printed page. The covers, Taylor Fang’s seven directions for the cover and the languages follow.';
 
 /** The head's badge: Atlas in the languages the magazine reads in. */
 const ATLAS_WORDS = [
@@ -38,8 +38,10 @@ const ATLAS_WORDS = [
   { text: 'アトラス', lang: 'ja' },
 ];
 
-type Figure = { src: string; alt: string; caption: string };
-type Part = { id: string; title: string; note: string; lead: string; body: readonly string[]; figures: readonly Figure[] };
+/** A capture; 1440 by 900 unless it says otherwise. */
+type Figure = { src: string; alt: string; caption: string; width?: number; height?: number };
+type Link = { label: string; href: string; text: string };
+type Part = { id: string; title: string; note: string; lead: string; body: readonly string[]; links?: readonly Link[]; figures: readonly Figure[] };
 
 const PARTS: readonly Part[] = [
   {
@@ -84,7 +86,7 @@ const PARTS: readonly Part[] = [
     body: [
       'Everything is in Katagami Serif and in sentence case. Paragraphs part by a blank line, not an indent. Each figure sits in the flow of the text with its caption under it, and a figure with several pages shows the page chosen above a row of all of them.',
       'The reader’s place shows as a line along the top of the page. A rail down the left and a ring around the imprint are the other two options on trial.',
-      'The first figure is the locator: the first definition of Elements in Greek, Arabic, Latin, English and Chinese, each at the city and the year of its version, on a globe with its coordinate lines.',
+      'The first figure shows the first definition of Elements in eight versions at once, from Alexandria to Beijing: each city pinned on a globe with its coordinate lines, and a leader from each pin to its line.',
     ],
     figures: [
       { src: '/shots/atlas/book.webp', alt: 'Translating Euclid as a magazine page', caption: 'Translating Euclid: the cover across the page, then the title, the byline and the date.' },
@@ -103,6 +105,23 @@ const PARTS: readonly Part[] = [
       'Fuma Nama is orange, with Luna, the Fumadocs moon, drawn as a crescent, an orbit and his table of contents line.',
     ],
     figures: [],
+  },
+  {
+    id: 'directions',
+    title: 'Seven cover directions',
+    note: 'Taylor Fang',
+    lead: 'Taylor Fang drew seven directions for opening Atlas on a single issue, the first Chinese translation of Euclid, as one cover that fills the screen. Each has its own page under /press/directions, and the number keys move between them.',
+    body: [],
+    links: [
+      { label: 'Riffle', href: '/press/directions/riffle', text: 'The issue as a thin paper magazine on the Atlas shelf. A click riffles every page past, and a scroll turns one page at a time.' },
+      { label: 'Atlas book', href: '/press/directions/atlas', text: 'The Atlas shelf reduced to one book, which opens on Book I as it was set in 1607.' },
+      { label: 'Signal', href: '/press/directions/signal', text: 'A General Translation poster: a Morse field, the first definition in five languages and the coordinates of each city.' },
+      { label: 'Proof poster', href: '/press/directions/proof', text: 'A printer’s proof: grey type, construction lines at the letter boundaries and a second page of definitions.' },
+      { label: 'Light poster', href: '/press/directions/light', text: 'A column of light and film grain behind Book I, Proposition 1, drawn with a compass and lettered as in 1607.' },
+      { label: 'Route', href: '/press/directions/route', text: 'Wayfinding signage for Matteo Ricci’s road from Macau to Peking, with a sign that changes at each stop.' },
+      { label: 'Measure', href: '/press/directions/measure', text: 'A drafting sheet: Book I, Proposition 47 in heavy black, dimensioned 30, 40 and 50, with a title block.' },
+    ],
+    figures: [{ src: '/shots/atlas/directions.webp', alt: 'The seven cover directions, then Riffle opened on its spread', caption: 'The seven directions in order, then Riffle opened on its spread.', width: 1436, height: 1812 }],
   },
   {
     id: 'languages',
@@ -160,7 +179,7 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
   const settling = useRef<Element | null>(null);
   const settleTimer = useRef(0);
 
-  const sectionFor = (id: string): HTMLElement | null => sheetRef.current?.querySelector<HTMLElement>(`.at-sec[data-id="${cssEscape(id)}"]`) ?? null;
+  const sectionFor = (id: string): HTMLElement | null => sheetRef.current?.querySelector<HTMLElement>(`.an-sec[data-id="${cssEscape(id)}"]`) ?? null;
 
   const scrollTo = (id: string, behavior: ScrollBehavior) => {
     const el = sectionFor(id);
@@ -179,7 +198,7 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
   useMountEffect(() => {
     const root = sheetRef.current;
     if (!root || typeof IntersectionObserver === 'undefined') return;
-    const sections = Array.from(root.querySelectorAll<HTMLElement>('.at-sec'));
+    const sections = Array.from(root.querySelectorAll<HTMLElement>('.an-sec'));
     const order = new Map<Element, number>(sections.map((el, i) => [el, i]));
     const visible = new Set<Element>();
     const observer = new IntersectionObserver(
@@ -241,7 +260,7 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
   };
 
   return (
-    <div className='at-book pt-book-col'>
+    <div className='an-book pt-book-col'>
       <BookHead
         title={TITLE}
         badge={<BadgeWords words={ATLAS_WORDS} />}
@@ -251,10 +270,10 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
         facts={[
           { icon: 'book', key: 'Stories', value: 4 },
           { icon: 'columns', key: 'Looks', value: 3 },
-          { icon: 'globe', key: 'Languages', value: 9 },
+          { icon: 'sparkles', key: 'Cover directions', value: 7 },
         ]}
         contents={
-          <nav className='at-toc pt-book-toc' aria-label='Contents'>
+          <nav className='an-toc pt-book-toc' aria-label='Contents'>
             {PARTS.map((part, i) => (
               <a key={part.id} href={`#${part.id}`} onClick={(e) => onContents(e, part.id)}>
                 <span>{part.title}</span>
@@ -268,12 +287,12 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
       {PARTS.map((part, i) => (
         <section
           key={part.id}
-          className={cn('pt-book-part at-sec', active === part.id && 'is-active')}
+          className={cn('pt-book-part an-sec', active === part.id && 'is-active')}
           data-id={part.id}
           aria-labelledby={`at-${part.id}`}
           aria-current={active === part.id ? 'true' : undefined}
         >
-          <div className='at-div pt-book-sec'>
+          <div className='an-div pt-book-sec'>
             <small>
               <span>Section {i + 1}</span>
               <span>{part.note}</span>
@@ -283,14 +302,24 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
               <p>{part.lead}</p>
             </div>
           </div>
-          <div className='at-body'>
+          <div className='an-body'>
             {part.body.map((text) => (
               <p key={text}>{text}</p>
             ))}
+            {part.links ? (
+              <ul className='an-links'>
+                {part.links.map((link) => (
+                  <li key={link.href}>
+                    <a href={link.href}>{link.label}</a>
+                    <span>{link.text}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             {part.figures.map((figure) => (
-              <figure key={figure.src} className='at-fig'>
+              <figure key={figure.src} className='an-fig'>
                 {/* eslint-disable-next-line @next/next/no-img-element -- a capture of the press page, at its own size */}
-                <img src={figure.src} alt={figure.alt} width={1440} height={900} loading='lazy' decoding='async' />
+                <img src={figure.src} alt={figure.alt} width={figure.width ?? 1440} height={figure.height ?? 900} loading='lazy' decoding='async' />
                 <figcaption>{figure.caption}</figcaption>
               </figure>
             ))}

@@ -70,6 +70,12 @@ test('GT Atlas: a story that is a GT post takes the post as its canonical; the r
   assert.deepEqual(policyFor('/press/translating-euclid'), indexed('/press/translating-euclid'));
 });
 
+test('GT Atlas directions: design studies of the press page, noindex with their own canonical', () => {
+  for (const path of ['/press/directions', '/press/directions/riffle', '/press/directions/measure']) {
+    assert.deepEqual(policyFor(path), study(path), path);
+  }
+});
+
 test('the mirror: index with the GT canonical; the dashboard states noindex with their own', () => {
   assert.deepEqual(policyFor('/d/production'), { index: true, canonical: 'https://generaltranslation.com/en-US', inSitemap: false });
   assert.deepEqual(policyFor('/d/production/pricing'), { index: true, canonical: 'https://generaltranslation.com/en-US/pricing', inSitemap: false });
