@@ -632,7 +632,8 @@ the page's next visit. A labelled group opens when the run has 40 rows or
 fewer, and past 40 only the group holding the active item opens; those
 folds persist under `gt-shell-groups`. A route section that stands for a
 site map group (Shipped, Sites, Explorations, Archive) keeps replacing that
-group. The sidebar is 208px, the deck's column.
+group. The sidebar is 208px in outline density and 256px with thumbnails,
+the same two columns as the deck's list.
 
 **The rail marks the place.** In outline density each top-level group
 carries one rail: a 1px `--pt-hair-soft` line drawn by `.pt-sb-rail`

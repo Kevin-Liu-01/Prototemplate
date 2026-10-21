@@ -13,6 +13,13 @@ The brand deck is General Translation's identity in 93 slides. Its sources live 
 - Icons come from the Heroicons 20 solid sprite. Mood slides carry dithered artifact pictures ([Artifact pictures](/docs/handbook/artifact-pictures)).
 - `deck/DECK-GRAMMAR.md` is the written grammar: what a slide may hold and how a story is told across slides.
 
+## The viewer
+
+The viewer around the sheet follows the one Turboslide draws for the same deck at [turboslide.com/deck/gt-brand](https://www.turboslide.com/deck/gt-brand), the editor the deck grew into.
+
+- The list is 256px wide with thumbnails and 208px in outline density. Its nameplate links to the Prototemplate home at `/`, a filter row narrows the slides by title or number, and each section folds under its head.
+- The toolbar holds Previous and Next around the slide counter, the deck's name, the Slide, Grid and Book switch, Surfaces, Theme, a Turboslide link that opens the deck there, and Present. When the bar runs out of room, `tighten()` in `deck/parts/tail.html` drops labels in three steps.
+
 ## The build
 
 `pnpm build:deck` (`scripts/build/deck.mjs`) assembles the slides into `public/brand-deck.html` and writes each picture to `public/deck-assets/` under a name made from a hash of its bytes, so a changed picture never shows its old bytes from a cache. The build also writes the deck's head: its title, its description, its canonical (`https://www.prototemplate.com/deck`), `og:url` and its social card.
