@@ -1,0 +1,88 @@
+---
+title: Horizon and prismatic fields
+description: "The two light fields on the shared WebGL engine, live: the event-horizon shader and the prismatic burst, with their cursor effects and their stills."
+icon: Sun
+sources:
+  - src/components/docs/demos
+  - src/lib/horizon-field.ts
+  - src/lib/prismatic-field.ts
+  - src/components/shared/PrismaticField.tsx
+---
+
+import { HorizonFieldDemo, PrismaticFieldDemo } from '@/components/docs/demos/lazy';
+
+Two more fields draw light instead of dither. The horizon field bends a page's ruled lines and an accretion glow around a circular rim. The prismatic field converges streaks of thin-film spectrum on a dark center. Both run on the same architecture as the studio field: one WebGL context for the session, an offscreen GL canvas, and a blit into each mount's own 2D canvas. Both can opt into cursor effects that bend or requantize the light around the pointer.
+
+## The horizon field
+
+The plate runs `createHorizonField` on an ink stage with white rules. Move the pointer over the stage: with Lens the light bends and swirls around the pointer, with Dither the field is requantized through the 8 by 8 screen around it, and with Redshift the bright flank turns toward it. Radius sizes the horizon, and exposure, chroma, doppler and swirl go to the running engine through `setParams`.
+
+<HorizonFieldDemo />
+
+The shader draws nothing until it has a center and a radius in CSS pixels, so the host measures its canvas and passes both, and passes them again on every resize.
+
+### Import and props
+
+```ts
+import { createHorizonField } from '@/lib/horizon-field';
+
+const field = createHorizonField(canvas, {
+  speed: 0.5,
+  params: { ink: [1, 1, 1], exposure: 2.6 },
+  effects: { host: plate, modes: ['lens', 'dither', 'redshift'] },
+});
+field?.setParams({ center: [w / 2, h / 2], radius: Math.min(w, h) * 0.3 });
+```
+
+| Param | Default | What it does |
+| --- | --- | --- |
+| `center`, `radius` | none | The horizon in canvas pixels. Below a radius of 2 the shader draws nothing. |
+| `exposure` | `2.1` | The tone-map knee. Higher pushes the field back under content. |
+| `chroma` | `0.55` | The arcs' spectral saturation, from 0 white to 1 the full palette. |
+| `doppler`, `dopplerAngle` | `0.62`, `2.55` | How much brighter one flank runs, and the direction of that flank in radians. |
+| `swirl` | `1.15` | The twist of the streaks near the ring. |
+| `pitch`, `gauge`, `ruleAlpha` | `44`, `1`, `0.07` | The page's ruled lines that the lens bends, matched to the CSS rule layer around the canvas. |
+| `ink`, `core` | near-black | The rules' ink and the dark core, as RGB triples from 0 to 1. |
+
+The handle returns `setParams`, `pause`, `resume`, `renderStatic`, `setEffectMode`, `previewPulse`, `previewRelease` and `destroy`, or null when WebGL is missing.
+
+### When to use it
+
+Use the horizon field in a hero built around one dark disc, where the page's own ruled lines continue into the shader and bend at the rim. It needs the CSS rule layer around it to match its `pitch`, `gauge` and `ruleAlpha`, so it belongs in a hero that draws those rules.
+
+### Reduced motion and themes
+
+Under reduced motion the engine draws one static frame at an instant chosen mid-arc, and the cursor effects never attach. It pauses offscreen. Its palette is tuned to its own core, so the plate stays dark in both themes.
+
+## The prismatic field
+
+The plate runs `createPrismaticField`. Preset 1 is a wide horizontal burst and preset 2 an arc over a dark core. Exposure scale is the dimmer, and depth moves the camera through the field. Move the pointer over the stage to see the cursor effect: Lens bends the burst around the pointer, Dither requantizes it through the Bayer screen, and Chroma splits its color.
+
+<PrismaticFieldDemo />
+
+The shader is a raw WebGL port of a reference shader with its GLSL kept verbatim. The effects compose with the burst: they bend its input coordinates or requantize its output, and a field with no cursor engaged costs what it always did.
+
+### Import and props
+
+```tsx
+import PrismaticField from '@/components/shared/PrismaticField';
+
+<PrismaticField preset='2' params={{ exposureScale: 4200 }} effects={['lens', 'dither', 'chroma']} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `preset` | `'1'` or `'2'` | `'1'` | The wide burst or the arc over a dark core. |
+| `params` | `Partial<PrismaticParams>` | the preset's | `exposureScale` above all: 4200 or more behind hero content. |
+| `effects` | modes | none | Opts the field into `'lens'`, `'dither'` and `'chroma'`, with the docked effects menu. |
+| `defaultEffect`, `effectsMenu`, `persistKey` | | | The mode on mount, the menu's presence and the key the chosen mode is stored under. |
+| `offThread` | boolean | `false` | Draws the field in a worker, so main-thread work never stalls it. |
+| `dpr`, `speed`, `paused`, `onDrawn` | | `1`, `1`, `false` | The pixel cap (the soft upscale is part of the look), the clock, a pause for a worker field, and a callback after the first frame. |
+
+### When to use it
+
+Use the prismatic field as a band's light behind content, with the exposure scale raised until the dark center frames the content. At the preset values the burst floods the canvas and the dark center disappears. Use the studio field instead where the surface should read as print.
+
+### Reduced motion and themes
+
+Under reduced motion the engine draws one static frame and the cursor effects never attach. Offscreen fields are skipped by the shared engine. The palette is the burst's own spectrum on ink, so the plate stays dark in both themes.

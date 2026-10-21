@@ -1,0 +1,563 @@
+/* Globe variant A, the dithered globe (GlobeA.tsx, engine.ts): a rounded
+   plate holding the globe in the Versions figure's two inks, a pin at the
+   disc's centre with its label beside it, the passage and the Versions
+   figure's pill. CSS alone shows the checked passage and label on the
+   first stop's globe, so the figure reads without JavaScript. */
+
+@property --ga-k {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.globe-r1 .ga {
+  --ga-r: 12px;
+  --ga-ink: var(--tc-ink);
+  --ga-ink-2: var(--tc-ink-2);
+  --ga-ground: color-mix(in srgb, var(--tc-ink) 3.5%, var(--tc-paper));
+  --ga-hair: var(--tc-hair);
+  --ga-cap: #6e737c;
+  --ga-pill: #ffffff;
+  --ga-pill-line: rgba(7, 7, 7, 0.12);
+  --ga-thumb: #070707;
+  --ga-thumb-ink: #ffffff;
+  --ga-focus: #2f5ce0;
+  --ga-sign: 1;
+  --stop-w: 104px;
+  /* the field's inks, read by the engine: the Versions plate's pair */
+  --ga-cell-1: #b4c8ff;
+  --ga-cell-2: #2f5ce0;
+  --ga-dot: #070707;
+
+  container: ga / inline-size;
+  margin: 2.25rem 0 2.5rem;
+  color: var(--ga-ink);
+  font-family: var(--tc-sans);
+}
+
+[data-theme='dark'] .globe-r1 .ga {
+  --ga-cap: #8a8f98;
+  --ga-pill: #0e0e10;
+  --ga-pill-line: rgba(255, 255, 255, 0.14);
+  --ga-thumb: #ffffff;
+  --ga-thumb-ink: #070707;
+  --ga-focus: #86a8ff;
+  --ga-cell-1: #2448b0;
+  --ga-cell-2: #86a8ff;
+  --ga-dot: #ffffff;
+}
+
+.globe-r1 .ga:dir(rtl) {
+  --ga-sign: -1;
+}
+
+/* without the engine the thumb slides on its own; with it, the turn's
+   clock writes --ga-k every frame */
+.globe-r1 .ga:not([data-live]) {
+  transition: --ga-k 420ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* ---------- the plate: the globe and the passage, the pill at the foot ---------- */
+
+.globe-r1 .ga-plate {
+  --pad: clamp(18px, 5cqi, 40px);
+  --fs: clamp(19px, 4cqi, 30px);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: clamp(22px, 5cqi, 32px);
+  padding: var(--pad);
+  border: 1px solid var(--ga-hair);
+  border-radius: var(--ga-r);
+  background: var(--ga-ground);
+}
+
+@container ga (min-width: 600px) {
+  .globe-r1 .ga-plate {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    column-gap: clamp(28px, 5cqi, 48px);
+    align-items: center;
+  }
+
+  .globe-r1 .ga-ctl {
+    grid-column: 1 / -1;
+  }
+}
+
+.globe-r1 .ga-stage {
+  min-width: 0;
+}
+
+/* The disc's width is a whole number of 4 px, so its centre, the pin and
+   the cells share one pixel grid. --ga-x and --ga-y place the pin: the
+   disc's centre, where the engine keeps every stop. */
+.globe-r1 .ga-disc {
+  --ga-lead: 30px; /* from the pin up to the label */
+  --ga-run-w: 14px;
+  --ga-x: 50%;
+  --ga-y: 50%;
+
+  position: relative;
+  width: min(100%, 380px);
+  width: round(down, min(100%, 380px), 4px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+/* one buffer pixel per 2 CSS px cell, upscaled square */
+.globe-r1 .ga-field,
+.globe-r1 .ga-still {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* the still's cells: each ink's runs stroked one cell wide */
+.globe-r1 .ga-still {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.globe-r1 .ga-still [data-ink='1'] {
+  stroke: var(--ga-cell-1);
+}
+
+.globe-r1 .ga-still [data-ink='2'] {
+  stroke: var(--ga-cell-2);
+}
+
+.globe-r1 .ga[data-live] .ga-still {
+  visibility: hidden;
+}
+
+/* ---------- the pin, its leader and the label ---------- */
+
+.globe-r1 .ga-pin,
+.globe-r1 .ga-lead,
+.globe-r1 .ga-run {
+  position: absolute;
+  z-index: 1;
+  background: var(--ga-ink);
+  pointer-events: none;
+}
+
+.globe-r1 .ga-pin {
+  top: calc(var(--ga-y) - 4px);
+  left: calc(var(--ga-x) - 4px);
+  width: 8px;
+  height: 8px;
+  outline: 2px solid var(--ga-ground);
+}
+
+/* while the ground turns under it the pin would mark the wrong land: its
+   cleared square stays as the aim, and it prints again on arrival */
+.globe-r1 .ga[data-turning] .ga-pin {
+  visibility: hidden;
+}
+
+.globe-r1 .ga-lead {
+  bottom: calc(100% - var(--ga-y) + 6px);
+  left: var(--ga-x);
+  width: 1px;
+  height: calc(var(--ga-lead) - 6px);
+}
+
+.globe-r1 .ga-run {
+  display: none;
+}
+
+/* narrow: the label sits above the pin, centred on it */
+.globe-r1 .ga-labels {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% - var(--ga-y) + var(--ga-lead) + 4px);
+  left: 0;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* wide: the leader turns and runs to the label beside the pin */
+@container ga (min-width: 600px) {
+  .globe-r1 .ga-run {
+    bottom: calc(100% - var(--ga-y) + var(--ga-lead) - 1px);
+    left: var(--ga-x);
+    display: block;
+    width: var(--ga-run-w);
+    height: 1px;
+  }
+
+  .globe-r1 .ga-labels {
+    top: calc(var(--ga-y) - var(--ga-lead) - 8px);
+    right: auto;
+    bottom: auto;
+    left: calc(var(--ga-x) + var(--ga-run-w) + 6px);
+    justify-items: start;
+    text-align: start;
+  }
+}
+
+.globe-r1 .ga-label {
+  grid-area: 1 / 1;
+  margin: -2px -6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 16px;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.globe-r1 .ga-coords {
+  display: block;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.globe-r1 .ga-where {
+  display: block;
+  color: var(--ga-ink-2);
+}
+
+/* read between the two lines, never seen */
+.globe-r1 .ga-sep {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- the passage ---------- */
+
+.globe-r1 .ga-passages {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.globe-r1 .ga-passage {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: var(--fs);
+  line-height: 1.4;
+  text-align: start;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+  visibility: hidden;
+}
+
+/* Inter has no Arabic, and the stack's fallback has no 500: a system face
+   with no Inter in front keeps the joins, as on the Versions figure */
+.globe-r1 .ga-passage:lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: calc(var(--fs) * 1.1);
+  line-height: 1.5;
+}
+
+.globe-r1 .ga-passage:is(:lang(zh), :lang(ja), :lang(ko)) {
+  line-height: 1.6;
+}
+
+/* during a step each row passes through the 8 by 8 screen at 2px cells */
+.globe-r1 .ga[data-mixing] :is(.ga-label, .ga-passage) {
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+/* the engine marks the words on screen */
+.globe-r1 .ga[data-live] :is(.ga-label, .ga-passage)[data-on] {
+  visibility: visible;
+}
+
+/* Before the engine runs, and without JavaScript: the globe stays at the
+   first stop, and the checked radio shows its passage and its label on a
+   ground of their own (no field clears around them). */
+.globe-r1 .ga:not([data-live]) .ga-label {
+  background: var(--ga-ground);
+}
+
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(1) > :checked)
+  :is(.ga-passage, .ga-label):nth-child(1),
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(2) > :checked)
+  :is(.ga-passage, .ga-label):nth-child(2),
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(3) > :checked)
+  :is(.ga-passage, .ga-label):nth-child(3),
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(4) > :checked)
+  :is(.ga-passage, .ga-label):nth-child(4),
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(5) > :checked)
+  :is(.ga-passage, .ga-label):nth-child(5) {
+  visibility: visible;
+}
+
+@supports not selector(:has(*)) {
+  .globe-r1 .ga:not([data-live]) :is(.ga-passage, .ga-label):first-child {
+    visibility: visible;
+  }
+}
+
+/* A later stop picked without the engine: the pin moves to that city on
+   the first stop's globe (GlobeA.tsx writes the places), the leader rises
+   from it and the label opens toward the disc's centre. */
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(2) > :checked)
+  .ga-disc {
+  --ga-x: var(--ga-x-1);
+  --ga-y: var(--ga-y-1);
+  --ga-tx: var(--ga-tx-1);
+  --ga-j: var(--ga-j-1);
+}
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(3) > :checked)
+  .ga-disc {
+  --ga-x: var(--ga-x-2);
+  --ga-y: var(--ga-y-2);
+  --ga-tx: var(--ga-tx-2);
+  --ga-j: var(--ga-j-2);
+}
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(4) > :checked)
+  .ga-disc {
+  --ga-x: var(--ga-x-3);
+  --ga-y: var(--ga-y-3);
+  --ga-tx: var(--ga-tx-3);
+  --ga-j: var(--ga-j-3);
+}
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(5) > :checked)
+  .ga-disc {
+  --ga-x: var(--ga-x-4);
+  --ga-y: var(--ga-y-4);
+  --ga-tx: var(--ga-tx-4);
+  --ga-j: var(--ga-j-4);
+}
+
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(n + 2) > :checked)
+  .ga-run {
+  display: none;
+}
+
+.globe-r1
+  .ga:not([data-live]):has(.ga-opt:nth-of-type(n + 2) > :checked)
+  .ga-labels {
+  top: auto;
+  right: auto;
+  bottom: calc(100% - var(--ga-y) + var(--ga-lead) + 4px);
+  left: var(--ga-x);
+  justify-items: var(--ga-j);
+  text-align: var(--ga-j);
+  transform: translateX(var(--ga-tx));
+}
+
+/* ---------- the pill: real radios, so it works without JavaScript ---------- */
+
+.globe-r1 .ga-ctl {
+  display: flex;
+  justify-content: center;
+}
+
+.globe-r1 .ga-pill {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, var(--stop-w)));
+  max-width: 100%;
+  padding: 3px;
+  border: 1px solid var(--ga-pill-line);
+  border-radius: 999px;
+  background: var(--ga-pill);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.globe-r1 .ga-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  inset-inline-start: 3px;
+  width: calc((100% - 6px) / var(--n));
+  border-radius: 999px;
+  background: var(--ga-thumb);
+  transform: translateX(calc(var(--ga-k) * 100% * var(--ga-sign)));
+}
+
+.globe-r1 .ga-opt {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 34px;
+  padding: 0 8px;
+  color: var(--ga-ink-2);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.006em;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 140ms ease-out;
+}
+
+.globe-r1 .ga-opt:hover {
+  color: var(--ga-ink);
+}
+
+.globe-r1 .ga-opt input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the same names in the thumb's ink, cut to the thumb: one --ga-k moves both */
+.globe-r1 .ga-lens {
+  position: absolute;
+  inset: 3px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  color: var(--ga-thumb-ink);
+  pointer-events: none;
+  clip-path: inset(
+    0 calc(100% - (var(--ga-k) + 1) * 100% / var(--n)) 0
+      calc(var(--ga-k) * 100% / var(--n)) round 999px
+  );
+}
+
+.globe-r1 .ga:dir(rtl) .ga-lens {
+  clip-path: inset(
+    0 calc(var(--ga-k) * 100% / var(--n)) 0
+      calc(100% - (var(--ga-k) + 1) * 100% / var(--n)) round 999px
+  );
+}
+
+.globe-r1 .ga-lens .ga-opt {
+  color: inherit;
+}
+
+.globe-r1 .ga-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.globe-r1 .ga-name:lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: 1.1em;
+  letter-spacing: 0;
+}
+
+.globe-r1 .ga-name:is(:lang(zh), :lang(ja), :lang(ko)) {
+  letter-spacing: 0;
+}
+
+.globe-r1 .ga-pill:has(input:focus-visible) .ga-thumb {
+  outline: 2px solid var(--ga-focus);
+  outline-offset: 2px;
+}
+
+.globe-r1 .ga:has(.ga-opt:nth-of-type(2) > :checked) {
+  --ga-k: 1;
+}
+.globe-r1 .ga:has(.ga-opt:nth-of-type(3) > :checked) {
+  --ga-k: 2;
+}
+.globe-r1 .ga:has(.ga-opt:nth-of-type(4) > :checked) {
+  --ga-k: 3;
+}
+.globe-r1 .ga:has(.ga-opt:nth-of-type(5) > :checked) {
+  --ga-k: 4;
+}
+
+/* the tour's sentence keeps its line from the first paint, so showing or
+   hiding it never moves the page */
+.globe-r1 .ga-tour {
+  visibility: hidden;
+}
+
+.globe-r1 .ga[data-touring] .ga-tour {
+  visibility: visible;
+}
+
+.globe-r1 .ga-cap {
+  margin: 12px 0 0;
+  color: var(--ga-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  text-wrap: pretty;
+}
+
+/* Narrow: the stops share the pill's width by their names', and the
+   chosen one takes the thumb's ink. */
+@container ga (max-width: 559px) {
+  .globe-r1 .ga-pill {
+    display: flex;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .globe-r1 .ga-thumb,
+  .globe-r1 .ga-lens {
+    display: none;
+  }
+
+  .globe-r1 .ga-opt {
+    flex: 1 1 auto;
+    height: 32px;
+    padding: 0 4px;
+    border-radius: 999px;
+    font-size: 13px;
+    transition:
+      color 140ms ease-out,
+      background-color 140ms ease-out;
+  }
+
+  .globe-r1 .ga-opt:has(input:checked) {
+    background: var(--ga-thumb);
+    color: var(--ga-thumb-ink);
+  }
+
+  .globe-r1 .ga-opt:has(input:focus-visible) {
+    outline: 2px solid var(--ga-focus);
+    outline-offset: 2px;
+  }
+}
+
+/* the 320 px column: the names a half pixel smaller, so all five fit */
+@container ga (max-width: 299px) {
+  .globe-r1 .ga-opt {
+    font-size: 12.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-r1 .ga,
+  .globe-r1 .ga-opt {
+    transition: none;
+  }
+}

@@ -1,0 +1,87 @@
+---
+title: Doubled lines and connectors
+description: "The brand's doubled line as a component, with live gauge, gap, two-tone and pulse controls, and the production connector that carries a translation."
+icon: Link
+sources:
+  - src/components/docs/demos
+  - src/components/shared/diagrams/DoubledLine.tsx
+  - src/app/d/toolchain/diagrams/TranslationFlow.tsx
+  - src/app/d/toolchain/diagrams/flow.css
+---
+
+import { ConnectorDemo, DoubledLineDemo } from '@/components/docs/demos/lazy';
+
+The doubled line is the General Translation connector: two parallel hairlines at a constant gap along any curve. It is one center path stroked twice, a full-width stroke in ink and a narrower stroke in the ground's color on top, so the ground carves the ink into two threads. Both strokes share one geometry, so the gap never drifts on a bend. The `gt-diagrams` skill holds the rules for drawing with it.
+
+## The doubled line
+
+The plate draws two sources that merge into a trunk and a trunk that fans out to three outputs, each connector one `DoubledLine`. Gauge and gap set the thread width and the space between the threads. Two-Tone draws the upper thread in full ink and the lower one at half ink. Show Core paints the carving stroke in the accent, so the construction is visible.
+
+<DoubledLineDemo />
+
+The forks and the outputs draw first and the trunk draws last, so its core paints both junctions back into one clean pair with no offset-curve math. The moving pulse is geometry: each path is sampled once, and on every frame the pulse's `d` is rewritten to the slice under a traveling window. One window runs per journey, from a source through the trunk to one output, and it crosses each junction as one object because both slices come from one head coordinate.
+
+### Import and props
+
+```tsx
+import DoubledLine from '@/components/shared/diagrams/DoubledLine';
+
+<svg viewBox='0 0 720 240' aria-hidden='true'>
+  <DoubledLine d='M330 120 L680 120' core='var(--pt-paper)' ink='var(--pt-ink)'>
+    {/* the pulse slot: a stroke at the full width, gauge * 2 + gap */}
+    <path d='M470 120 L590 120' fill='none' stroke='var(--docs-accent)' strokeWidth={6} vectorEffect='non-scaling-stroke' />
+  </DoubledLine>
+</svg>;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `d` | string | required | The center path, the only geometry. |
+| `core` | CSS color | required | The color that carves. It must match the ground behind the line, or it shows as a stripe. |
+| `gauge` | number | `1.5` | Pixels per thread, held in screen pixels by `non-scaling-stroke`. |
+| `gap` | number | `3` | Pixels between the threads. |
+| `ink` | CSS color | `rgba(255, 255, 255, 0.88)` | The thread ink, white for an ink ground. Pass the ink token on paper. |
+| `inkB` | CSS color | none | A second ink for the other thread. Needs `splitD`. |
+| `splitD` | string | none | The center path closed off one side of the view box; the `ink` thread takes that side. |
+| `children` | SVG | none | The pulse layer, drawn between the threads and the core, so the core splits it into two hairlines. |
+
+`DoubledLine` is a server component: it renders three paths and ships no JavaScript. The moving pulse needs a client component that samples the path and rewrites the pulse's `d`, as this plate and `TranslationFlow` do.
+
+### When to use it
+
+Use the doubled line for every connector in a GT diagram: a flow from a source to its outputs, a route, a merge. Keep the defaults, 1.5 and 3, on the site and in the deck. A pulse is the drawing's one accent only when nothing else in the drawing takes the accent; otherwise it runs in the page ink. Never use the doubled line as a page rail beside the reading column, because it is a connector.
+
+### Reduced motion and themes
+
+`DoubledLine` itself does not move. The host's pulse ships hidden and never starts under reduced motion; the still is a static window on the trunk, which this plate shows in place of the moving pulse. The threads read the stage's ink token and the core reads its ground token, so the line follows the docs theme.
+
+## The connector in production
+
+The plate mounts `TranslationFlow` from the Toolchain direction as it ships. A real source component on the left forks into the three output files `gt.config.json` declares, one doubled trunk leaves the panel and splits at a drawn junction, and a pulse window carries each transfer from the trunk onto its branch. Replay remounts it, which restarts the staggered journeys.
+
+<ConnectorDemo />
+
+Its three journeys leave 2.4 seconds apart and share one speed of 40 units a second, so branches of different lengths move alike.
+
+### Import and props
+
+```tsx
+import TranslationFlow from '@/app/d/toolchain/diagrams/TranslationFlow';
+
+<TranslationFlow title='A source component forked into its translated output files' />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `title` | string | none | The accessible name. |
+| `className` | string | none | A class on the root grid. |
+
+The diagram reads `--tc-plate` as the ground its cores carve, `--tc-panel` as the source panel's ground and `--tc-ink` as the pulse's ink, so a host sets those three on an ancestor.
+
+### When to use it
+
+Use it where a page explains what the build produces: one source file and the files it becomes. It is a whole figure with real content and a fixed set of files, so it takes a band or a plate of its own, up to 680 pixels wide.
+
+### Reduced motion and themes
+
+Under reduced motion the loop never starts and the fork holds its still. The source panel stays ink in both themes, and the threads and the files follow the host's tokens.

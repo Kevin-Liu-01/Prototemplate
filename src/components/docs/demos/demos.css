@@ -1,0 +1,1040 @@
+/* The live plates of the Components pages (content/docs/components): the
+   frame, the controls row and each demo's own stage. Every class starts
+   with .dmo- so nothing here reaches another docs page's prose. Corners
+   come from the radius tokens (the plate is a card, a control the control
+   corner, a chip the chip corner) and type from the type tokens.
+
+   The stage follows the docs theme through the --pt- tokens. A night
+   stage (.is-night) is ink in both themes, for the GPU fields whose
+   palettes are tuned to an ink ground; it restates the ink tokens in their
+   dark values so a component inside reads a light ink on it. */
+
+.dmo-plate {
+  --dmo-night: #070707;
+  --dmo-night-ink: #f2f2f0;
+  --dmo-night-ink-2: #b9bcc3;
+  --dmo-night-hair: rgba(242, 242, 240, 0.22);
+
+  margin: 24px 0 12px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-paper);
+  background-clip: padding-box;
+  overflow: hidden;
+  color: var(--pt-ink);
+}
+
+.dmo-stage {
+  /* the ink the engines and drawings read on a page stage */
+  --tc-ink: var(--pt-ink);
+  --dmo-ink: var(--pt-ink);
+  --dmo-ground: var(--pt-paper);
+  --dmo-accent: var(--docs-accent, #2f5ce0);
+
+  position: relative;
+  height: var(--dmo-h, 300px);
+  background: var(--dmo-ground);
+  overflow: hidden;
+}
+
+.dmo-stage.is-night {
+  --tc-ink: var(--dmo-night-ink);
+  --dmo-ink: var(--dmo-night-ink);
+  --dmo-ground: var(--dmo-night);
+  --dmo-accent: #86a8ff;
+  --pt-ink: var(--dmo-night-ink);
+  --pt-ink-2: var(--dmo-night-ink-2);
+  --pt-hair: var(--dmo-night-hair);
+
+  color: var(--dmo-night-ink);
+  color-scheme: dark;
+}
+
+/* the Toolchain direction's tokens, which its diagrams read (flow.css,
+   lang.css, edge-globe-v2.css), bridged to this stage's ground and ink at
+   the direction's own alphas, in both themes */
+.dmo-stage {
+  --tc-paper: var(--dmo-ground);
+  --tc-card: var(--dmo-ground);
+  --tc-plate: var(--dmo-ground);
+  --tc-ink-2: color-mix(in srgb, var(--dmo-ink) 64%, transparent);
+  --tc-ink-3: color-mix(in srgb, var(--dmo-ink) 46%, transparent);
+  --tc-ink-4: color-mix(in srgb, var(--dmo-ink) 28%, transparent);
+  --tc-hair: rgba(138, 143, 152, 0.26);
+  --tc-hair-2: rgba(138, 143, 152, 0.15);
+  --tc-panel: #101010;
+  --tc-accent: var(--dmo-accent);
+  --tc-sans: var(--pt-text);
+  --tc-disp: var(--pt-text);
+  --tc-mono: var(--pt-mono);
+  --iso-accent: var(--dmo-accent);
+  --iso-mono: var(--pt-mono);
+}
+
+:root[data-theme='dark'] .dmo-stage,
+.dmo-stage.is-night {
+  --tc-hair: rgba(138, 143, 152, 0.5);
+  --tc-hair-2: rgba(138, 143, 152, 0.4);
+}
+
+@media (max-width: 640px) {
+  .dmo-stage {
+    height: var(--dmo-h-sm, var(--dmo-h, 300px));
+  }
+}
+
+/* a canvas engine fills the stage */
+.dmo-fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* the entry point's name: an opaque chip, so it never sits translucent on a field */
+.dmo-plate-tag {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 3;
+  padding: 2px 7px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  background: var(--dmo-ground);
+  max-width: calc(100% - 20px);
+  overflow: hidden;
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* ---------- the controls row ---------- */
+
+.dmo-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 18px;
+  padding: 12px 14px 14px;
+  border-top: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+}
+
+.dmo-bar-note {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dmo-field-label {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+/* the choice: a segmented row on the control corner; the checked option
+   fills with ink as a chip 2px inside the row */
+.dmo-choice {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  max-width: 100%;
+  padding: 2px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+}
+
+.dmo-opt {
+  min-height: 26px;
+  margin: 0;
+  padding: 0 9px;
+  border: 0;
+  border-radius: var(--pt-radius-chip);
+  background: transparent;
+  font: inherit;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  cursor: pointer;
+  transition:
+    background var(--pt-dur-fast) var(--pt-ease-out),
+    color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.dmo-opt:hover {
+  background: var(--pt-plate);
+  color: var(--pt-ink);
+}
+
+.dmo-opt.is-on {
+  background: var(--pt-ink);
+  color: var(--pt-paper);
+}
+
+.dmo-opt:focus-visible,
+.dmo-btn:focus-visible,
+.dmo-range input:focus-visible,
+.dmo-input:focus-visible {
+  outline: 2px solid var(--docs-accent, #2f5ce0);
+  outline-offset: 1px;
+}
+
+/* the range: the native track at the control's height, its value printed after it */
+.dmo-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+}
+
+.dmo-range input {
+  width: 132px;
+  margin: 0;
+  accent-color: var(--pt-ink);
+}
+
+.dmo-range-value {
+  min-width: 4ch;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-ink);
+}
+
+/* the buttons: the control corner, a hairline frame, ink when pressed */
+.dmo-btn {
+  min-height: 32px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: transparent;
+  font: inherit;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
+  cursor: pointer;
+  transition:
+    background var(--pt-dur-fast) var(--pt-ease-out),
+    border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.dmo-btn:hover {
+  background: var(--pt-plate);
+  border-color: var(--pt-edge);
+}
+
+.dmo-btn.is-on {
+  background: var(--pt-ink);
+  border-color: var(--pt-ink);
+  color: var(--pt-paper);
+}
+
+.dmo-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* a text field: 16px type so a phone does not zoom on focus */
+.dmo-input {
+  width: 168px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-paper);
+  font-family: var(--pt-text);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dmo-opt,
+  .dmo-btn {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .dmo-bar {
+    gap: 10px 14px;
+    padding: 10px 12px 12px;
+  }
+
+  .dmo-range input {
+    width: 112px;
+  }
+}
+
+/* a stage that takes its content's height */
+.dmo-stage.is-fit {
+  height: auto;
+  min-height: 0;
+  padding: 52px 20px 24px;
+}
+
+/* a status line in the controls row, read as the plate changes */
+.dmo-bar-status {
+  align-self: center;
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-num {
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-ink);
+}
+
+.dmo-field-wide {
+  flex: 1 1 260px;
+}
+
+.dmo-input-wide {
+  width: 100%;
+}
+
+/* a link drawn as a button, for leaving the plate */
+.dmo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* ---------- the Bayer tiers ---------- */
+
+.dmo-tiers {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: center;
+  padding: 24px;
+}
+
+.dmo-tiers-matrix {
+  display: grid;
+  gap: 1px;
+  max-width: 240px;
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid var(--pt-hair);
+  background: var(--pt-hair);
+}
+
+.dmo-tiers-token {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  background: var(--dmo-ground);
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  color: var(--pt-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.dmo-tiers-token.is-lit {
+  background: var(--dmo-ink);
+  color: var(--dmo-ground);
+}
+
+.dmo-tiers-right {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.dmo-tiers-swatch {
+  display: block;
+  width: 100%;
+  height: 150px;
+  border: 1px solid var(--pt-hair);
+  image-rendering: pixelated;
+}
+
+.dmo-tiers-ink {
+  fill: var(--dmo-ink);
+}
+
+.dmo-tiers-ramp {
+  display: grid;
+  gap: 2px;
+}
+
+.dmo-tiers-step {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  outline: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-tiers-step.is-on {
+  outline: 2px solid var(--dmo-accent);
+  outline-offset: 1px;
+}
+
+@media (max-width: 640px) {
+  .dmo-tiers {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .dmo-tiers-matrix {
+    max-width: 168px;
+  }
+
+  .dmo-tiers-swatch {
+    height: 96px;
+  }
+}
+
+/* ---------- the glyph and ink fields ---------- */
+
+.dmo-glyph-copy {
+  position: absolute;
+  z-index: 2;
+  max-width: 280px;
+  pointer-events: none;
+}
+
+.dmo-glyph-copy.is-left {
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 36%;
+}
+
+.dmo-glyph-copy.is-top {
+  left: 20px;
+  right: 20px;
+  top: 46px;
+  max-width: none;
+}
+
+.dmo-glyph-head {
+  margin: 0;
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  font-weight: var(--pt-w-display);
+  color: var(--dmo-ink);
+}
+
+.dmo-glyph-lead {
+  margin: 6px 0 0;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-ink-canvas {
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.dmo-ink-copy {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  padding: 12px 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ---------- the doubled line ---------- */
+
+.dmo-dl {
+  --dmo-ink-soft: color-mix(in srgb, var(--dmo-ink) 45%, transparent);
+  --dmo-core-shown: color-mix(in srgb, var(--dmo-accent) 70%, var(--dmo-ground));
+
+  position: absolute;
+  inset: 36px 12px 12px;
+  width: calc(100% - 24px);
+  height: calc(100% - 48px);
+}
+
+.dmo-dl-trace path {
+  fill: none;
+  stroke: none;
+}
+
+/* the production connector: its source panel stays ink, its core carves the stage */
+.dmo-flow {
+  display: grid;
+  justify-items: center;
+}
+
+/* ---------- the globes ---------- */
+
+.dmo-globe {
+  --dmo-signin: #2f5ce0;
+
+  display: grid;
+  place-items: center;
+  padding: 36px 16px 12px;
+}
+
+:root[data-theme='dark'] .dmo-globe {
+  --dmo-signin: #9db9ff;
+}
+
+.dmo-globe-box {
+  position: relative;
+  width: min(520px, 100%);
+}
+
+.dmo-globe-halo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.dmo-globe-dots {
+  fill: color-mix(in srgb, var(--dmo-ink) 16%, transparent);
+}
+
+.dmo-globe-square {
+  position: relative;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 1;
+}
+
+.dmo-globe-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- the language diagrams and the locale tags ---------- */
+
+.dmo-lang {
+  display: grid;
+  place-items: center;
+  min-height: 380px;
+}
+
+.dmo-lang-box {
+  width: min(640px, 100%);
+}
+
+.dmo-locale {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.dmo-locale-compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-hair);
+  overflow: hidden;
+}
+
+.dmo-locale-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px;
+  background: var(--dmo-ground);
+}
+
+.dmo-locale-name {
+  margin: 0;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  font-weight: var(--pt-w-label);
+  color: var(--pt-ink);
+}
+
+.dmo-locale-why {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-locale-code {
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  color: var(--pt-ink);
+}
+
+.dmo-locale-verdict {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 10px 16px;
+  background: var(--dmo-ground);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-locale-verdict.is-split {
+  color: var(--dmo-accent);
+}
+
+.dmo-locale-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* the host chip: LocaleTag fills a box its host supplies */
+.dmo-pill-tag,
+.dmo-bare-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
+}
+
+.dmo-pill-tag {
+  padding: 3px 9px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  background: var(--pt-plate);
+}
+
+.dmo-pill-tag .lct,
+.dmo-bare-tag .lct,
+.dmo-flag-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-style: normal;
+}
+
+.dmo-flag.fi {
+  width: 15px;
+  height: 11px;
+  background-size: cover;
+}
+
+@media (max-width: 640px) {
+  .dmo-locale-compare {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- the reveal seam ---------- */
+
+.dmo-seam {
+  --dmo-under: color-mix(in srgb, var(--dmo-ink) 6%, var(--dmo-ground));
+}
+
+.dmo-seam-box {
+  position: absolute;
+  inset: 48px 6% 22px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+}
+
+.dmo-seam-main,
+.dmo-seam-under {
+  position: absolute;
+  inset: 0;
+  padding: 14px 18px;
+}
+
+.dmo-seam-main p {
+  margin: 10px 0 0;
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  color: var(--pt-ink);
+}
+
+.dmo-seam-under {
+  display: flex;
+  justify-content: flex-end;
+  clip-path: inset(0 0 0 var(--seam-cut, 58%) round 0 5px 5px 0);
+  background: var(--dmo-under);
+}
+
+.dmo-seam-under-in {
+  width: 40%;
+  min-width: min(260px, 100%);
+}
+
+.dmo-seam-file {
+  display: block;
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-seam-code {
+  margin: 10px 0 0;
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
+  white-space: pre-wrap;
+  overflow: hidden;
+}
+
+/* the handle: a 48px hitbox carrying the doubled thread and a grip tab */
+.dmo-seam .tc-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: clamp(4.5px, var(--seam-cut, 58%), calc(100% - 4.5px));
+  z-index: 3;
+  width: 48px;
+  transform: translateX(-50%);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.dmo-seam .tc-seam::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 7px;
+  transform: translateX(-50%);
+  border-left: 1px solid var(--pt-edge);
+  border-right: 1px solid var(--pt-edge);
+  background: var(--dmo-ground);
+  background-clip: padding-box;
+}
+
+.dmo-seam .tc-seam::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-chip);
+  background-color: var(--dmo-ground);
+  background-image:
+    linear-gradient(var(--pt-ink-2), var(--pt-ink-2)),
+    linear-gradient(var(--pt-ink-2), var(--pt-ink-2));
+  background-size: 1px 14px, 1px 14px;
+  background-position: calc(50% - 2px) 50%, calc(50% + 2px) 50%;
+  background-repeat: no-repeat;
+  transition: transform var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.dmo-seam .tc-seam:hover::after,
+.dmo-seam .tc-seam:active::after {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.dmo-seam .tc-seam:focus-visible {
+  outline: none;
+}
+
+.dmo-seam .tc-seam:focus-visible::after {
+  box-shadow: 0 0 0 2px var(--docs-accent, #2f5ce0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dmo-seam .tc-seam::after {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .dmo-seam-box {
+    inset: 46px 12px 16px;
+  }
+
+  .dmo-seam-main p {
+    font-size: var(--pt-t-lead);
+    line-height: var(--pt-t-lead-lh);
+    letter-spacing: 0;
+  }
+}
+
+/* the blog globe frame sits on the stage with no corner tag */
+.dmo-stage.dmo-blogglobe {
+  padding: 16px;
+}
+
+/* ---------- the sentence ---------- */
+
+.dmo-every {
+  display: grid;
+  place-items: center;
+}
+
+.dmo-every-line {
+  justify-self: stretch;
+  min-width: 0;
+  margin: 0 20px;
+  text-align: center;
+  font-size: var(--pt-d2);
+  line-height: var(--pt-d2-lh);
+  letter-spacing: var(--pt-d2-track);
+  font-weight: var(--pt-w-display);
+  color: var(--pt-ink);
+}
+
+.dmo-every-line em.every-sentence {
+  font-style: normal;
+}
+
+/* ---------- the marks ---------- */
+
+.dmo-marks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 44px 16px 20px;
+}
+
+.dmo-marks.is-paper,
+.dmo-marks.is-ink {
+  --pt-ink-2: color-mix(in srgb, var(--dmo-ink) 64%, transparent);
+  --pt-hair: color-mix(in srgb, var(--dmo-ink) 22%, transparent);
+
+  color: var(--dmo-ink);
+}
+
+/* the ground is absolute in both themes: positive on paper, reversed on ink */
+.dmo-marks.is-paper {
+  --dmo-ground: #ffffff;
+  --dmo-ink: #070707;
+}
+
+.dmo-marks.is-ink {
+  --dmo-ground: #070707;
+  --dmo-ink: #f2f2f0;
+}
+
+.dmo-marks-row,
+.dmo-marks-ladder {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 24px;
+  max-width: 100%;
+  color: var(--dmo-ink);
+}
+
+.dmo-mark {
+  display: block;
+  max-width: 100%;
+  flex: none;
+}
+
+.dmo-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dmo-gtword {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.dmo-gtword-line {
+  margin: 0;
+  color: var(--pt-ink);
+  overflow-wrap: anywhere;
+}
+
+.dmo-gtword-line.is-meta {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+
+.dmo-gtword-line.is-body {
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+}
+
+.dmo-gtword-line.is-lead {
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  font-weight: var(--pt-w-display);
+}
+
+.dmo-gtword-line.is-title {
+  font-size: var(--pt-d1);
+  line-height: var(--pt-d1-lh);
+  letter-spacing: var(--pt-d1-track);
+  font-weight: var(--pt-w-display);
+}
+
+.dmo-gtword-marks {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  color: var(--pt-ink);
+}
+
+/* ---------- the dithered shine ---------- */
+
+.dmo-shine {
+  display: grid;
+  place-items: center;
+  padding: 40px 12px 12px;
+}
+
+.dmo-shine-svg {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+}
+
+.dmo-shine-ink {
+  fill: color-mix(in srgb, var(--dmo-ink) 30%, transparent);
+}
+
+.dmo-shine-glint {
+  fill: var(--dmo-ink);
+}
+
+.dmo-shine.is-accent .dmo-shine-glint {
+  fill: var(--dmo-accent);
+}
+
+/* ---------- badges and heads ---------- */
+
+.dmo-badge {
+  display: grid;
+  place-items: center;
+  padding: 0 16px;
+}
+
+.dmo-badge-title {
+  margin: 0;
+  color: var(--pt-ink);
+  font-weight: var(--pt-w-display);
+}
+
+.dmo-badge-title.is-title {
+  font-size: var(--pt-d1);
+  line-height: var(--pt-d1-lh);
+  letter-spacing: var(--pt-d1-track);
+}
+
+.dmo-badge-title.is-section {
+  font-size: var(--pt-d2);
+  line-height: var(--pt-d2-lh);
+  letter-spacing: var(--pt-d2-track);
+}
+
+/* Still: the rule the badge's own reduced-motion query applies */
+.dmo-badge.is-still .pt-cycle-strip {
+  animation: none;
+}
+
+.dmo-badge.is-still .pt-cycle-size > :not(:first-child) {
+  display: none;
+}
+
+.dmo-stage.dmo-frame {
+  padding: 0;
+}
+
+.dmo-frame-box {
+  position: relative;
+  width: 100%;
+  height: calc(var(--dmo-frame-h) * var(--dmo-frame-s));
+  overflow: hidden;
+}
+
+.dmo-frame-doc {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: var(--dmo-frame-w);
+  height: var(--dmo-frame-h);
+  border: 0;
+  transform: translateX(-50%) scale(var(--dmo-frame-s));
+  transform-origin: 50% 0;
+}
+
+/* ---------- the isometric kit: the extrusion recipe in the stage's ink ---------- */
+
+.dmo-iso {
+  display: grid;
+  place-items: center;
+  padding: 36px 12px 8px;
+}
+
+.dmo-iso-svg {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+}
+
+.dmo-iso-hull {
+  fill: var(--dmo-ground);
+}
+
+.dmo-iso-top {
+  fill: color-mix(in srgb, var(--dmo-ink) 4%, transparent);
+}
+
+.dmo-iso-left {
+  fill: color-mix(in srgb, var(--dmo-ink) 9%, transparent);
+}
+
+.dmo-iso-right {
+  fill: color-mix(in srgb, var(--dmo-ink) 15%, transparent);
+}
+
+.dmo-iso-line,
+.dmo-iso-hair {
+  fill: none;
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.dmo-iso-line {
+  stroke: color-mix(in srgb, var(--dmo-ink) 58%, transparent);
+}
+
+.dmo-iso-hair {
+  stroke: color-mix(in srgb, var(--dmo-ink) 26%, transparent);
+}
+
+.dmo-iso-mark {
+  fill: var(--dmo-ink);
+}

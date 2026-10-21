@@ -1,0 +1,318 @@
+/* Globe variant A, the dithered globe (GlobeA.tsx, engine.ts): a rounded
+   plate holding a round window on the globe in the Versions figure's two
+   inks, a pin at the window's centre and the city's label under the window,
+   the eight-line passage beside them and the language links over both. CSS alone shows the
+   checked passage and label on the first stop's still, so the figure reads
+   without JavaScript. */
+
+.globe-r3 .ga {
+  --ga-r: 12px;
+  --ga-ink: var(--tc-ink);
+  --ga-ink-2: var(--tc-ink-2);
+  --ga-ground: color-mix(in srgb, var(--tc-ink) 3.5%, var(--tc-paper));
+  --ga-hair: var(--tc-hair);
+  --ga-cap: #6e737c;
+  /* the field's inks, read by the engine: the Versions plate's pair */
+  --ga-cell-1: #b4c8ff;
+  --ga-cell-2: #2f5ce0;
+  --ga-dot: #070707;
+
+  container: ga / inline-size;
+  margin: 2.25rem 0 2.5rem;
+  color: var(--ga-ink);
+  font-family: var(--tc-sans);
+}
+
+[data-theme='dark'] .globe-r3 .ga {
+  --ga-cap: #8a8f98;
+  --ga-cell-1: #2448b0;
+  --ga-cell-2: #86a8ff;
+  --ga-dot: #ffffff;
+}
+
+/* ---------- the plate: the links, then the window beside the passage ---------- */
+
+.globe-r3 .ga-plate {
+  --pad: clamp(18px, 5cqi, 40px);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: clamp(20px, 5cqi, 28px);
+  padding: var(--pad);
+  border: 1px solid var(--ga-hair);
+  border-radius: var(--ga-r);
+  background: var(--ga-ground);
+}
+
+@container ga (min-width: 600px) {
+  .globe-r3 .ga-plate {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    column-gap: clamp(28px, 5cqi, 44px);
+    align-items: center;
+  }
+
+  .globe-r3 .ga-links {
+    grid-column: 1 / -1;
+  }
+}
+
+.globe-r3 .ga-stage {
+  display: grid;
+  row-gap: 12px;
+  min-width: 0;
+}
+
+/* The window's width is a whole number of 4 px, so its centre, the pin and
+   the cells share one pixel grid. --ga-x and --ga-y place the pin: the
+   window's centre, where the engine keeps every stop. */
+.globe-r3 .ga-disc {
+  --ga-size: 320px;
+  --ga-x: 50%;
+  --ga-y: 50%;
+
+  position: relative;
+  width: min(100%, var(--ga-size));
+  width: round(down, min(100%, var(--ga-size)), 4px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+/* one buffer pixel per 2 CSS px cell, upscaled square */
+.globe-r3 .ga-field,
+.globe-r3 .ga-still {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* the still's cells: each ink's runs stroked one cell wide */
+.globe-r3 .ga-still {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.globe-r3 .ga-still [data-ink='1'] {
+  stroke: var(--ga-cell-1);
+}
+
+.globe-r3 .ga-still [data-ink='2'] {
+  stroke: var(--ga-cell-2);
+}
+
+.globe-r3 .ga[data-live] .ga-still {
+  visibility: hidden;
+}
+
+/* A city outside the window, or under the pin (engine.ts marks it), loses
+   its target with the dot: the field shows no city there to click. */
+.globe-r3 .ga .gct-target[data-off] {
+  display: none;
+}
+
+/* ---------- the pin, and the label under the window ---------- */
+
+.globe-r3 .ga-pin {
+  position: absolute;
+  top: calc(var(--ga-y) - 4px);
+  left: calc(var(--ga-x) - 4px);
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  outline: 2px solid var(--ga-ground);
+  background: var(--ga-ink);
+  pointer-events: none;
+}
+
+/* while the ground turns under it the pin would mark the wrong land: its
+   cleared square stays as the aim, and it prints again on arrival */
+.globe-r3 .ga[data-turning] .ga-pin {
+  visibility: hidden;
+}
+
+.globe-r3 .ga-labels {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.globe-r3 .ga-label {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: 13px;
+  line-height: 16px;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.globe-r3 .ga-coords {
+  display: block;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.globe-r3 .ga-where {
+  display: block;
+  color: var(--ga-ink-2);
+}
+
+/* read between the two lines, never seen */
+.globe-r3 .ga-sep {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* during a step the label passes through the 8 by 8 screen at 2px cells */
+.globe-r3 .ga[data-mixing] .ga-label {
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+/* the engine marks the label on screen */
+.globe-r3 .ga[data-live] .ga-label[data-on] {
+  visibility: visible;
+}
+
+/* ---------- the links and the passage ---------- */
+
+/* The names as words in a line: a wrapped line breaks between names and
+   balances, so no name is left alone on the last line. */
+.globe-r3 .ga .ga-links {
+  display: block;
+  font-size: 15px;
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.globe-r3 .ga .ga-links .gl-opt {
+  margin-inline-end: 0.9em;
+}
+
+.globe-r3 .ga .ga-links .gl-opt:last-child {
+  margin-inline-end: 0;
+}
+
+.globe-r3 .ga-passage {
+  --gp-gap: 0.45em;
+  --gp-lh: 1.45;
+
+  font-size: 16px;
+}
+
+/* Narrow: the window, the links and the passage in one column. A smaller
+   window and passage keep all eight definitions within a phone's screen. */
+@container ga (max-width: 599px) {
+  .globe-r3 .ga-disc {
+    --ga-size: 240px;
+  }
+
+  /* all five names on one line at 375 */
+  .globe-r3 .ga .ga-links .gl-opt {
+    margin-inline-end: 0.8em;
+  }
+
+  .globe-r3 .ga-passage {
+    --gp-gap: 0.35em;
+    --gp-lh: 1.4;
+
+    font-size: 15px;
+  }
+}
+
+/* ---------- without the engine ---------- */
+
+/* Before the engine runs, and without JavaScript: the window stays at the
+   first stop, and the checked link shows its label. Passage.tsx shows the
+   checked passage. */
+.globe-r3 .ga:not([data-live]) .ga-label:first-child,
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(2) > :checked)
+  .ga-label:nth-child(2),
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(3) > :checked)
+  .ga-label:nth-child(3),
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(4) > :checked)
+  .ga-label:nth-child(4),
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(5) > :checked)
+  .ga-label:nth-child(5) {
+  visibility: visible;
+}
+
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(n + 2) > :checked)
+  .ga-label:first-child {
+  visibility: hidden;
+}
+
+/* A later stop picked without the engine: the pin moves to that city on
+   the first stop's still (GlobeA.tsx writes the places); a city outside
+   the window has no pin. */
+.globe-r3 .ga:not([data-live]) .ga-pin {
+  visibility: var(--ga-pin, visible);
+}
+
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(2) > :checked)
+  .ga-disc {
+  --ga-x: var(--ga-x-1);
+  --ga-y: var(--ga-y-1);
+  --ga-pin: var(--ga-pin-1);
+}
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(3) > :checked)
+  .ga-disc {
+  --ga-x: var(--ga-x-2);
+  --ga-y: var(--ga-y-2);
+  --ga-pin: var(--ga-pin-2);
+}
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(4) > :checked)
+  .ga-disc {
+  --ga-x: var(--ga-x-3);
+  --ga-y: var(--ga-y-3);
+  --ga-pin: var(--ga-pin-3);
+}
+.globe-r3
+  .ga:not([data-live]):has(.gl-opt:nth-of-type(5) > :checked)
+  .ga-disc {
+  --ga-x: var(--ga-x-4);
+  --ga-y: var(--ga-y-4);
+  --ga-pin: var(--ga-pin-4);
+}
+
+/* ---------- the caption ---------- */
+
+/* the tour's sentence keeps its line from the first paint, so showing or
+   hiding it never moves the page */
+.globe-r3 .ga-tour {
+  visibility: hidden;
+}
+
+.globe-r3 .ga[data-touring] .ga-tour {
+  visibility: visible;
+}
+
+.globe-r3 .ga-cap {
+  margin: 12px 0 0;
+  color: var(--ga-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  text-wrap: pretty;
+}

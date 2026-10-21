@@ -39,7 +39,7 @@ export type SeoImage = {
 };
 
 export type SeoRouteInput = {
-  /** '/handbook/design': no host, no query, no trailing slash */
+  /** '/docs/handbook/design': no host, no query, no trailing slash */
   path: string;
   /** the page's own name: 'Design system' */
   title: string;

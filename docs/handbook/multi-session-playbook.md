@@ -10,11 +10,11 @@ One session owns one lane. ListAgents prints the live list of sessions, and the 
 
 | Session | Owns | Where it works |
 | --- | --- | --- |
-| Prototemplate | The site at prototemplate.com, its viewer shell, the deck build, the skills and the docs | The shared checkout (`$PROTOTEMPLATE`), with the dev server at http://localhost:3005 |
+| Prototemplate | The site at prototemplate.com, its viewer shell, the deck build, the skills and the docs | The shared checkout (`$PROTOTEMPLATE`), with the dev server at `http://localhost:3005` |
 | Videos | The films, their kit and `MOTION.md` | Prototemplate `motion/`, which stays untracked. Its Prototemplate commits carry only film and poster files in `public/media`. |
-| Glyph Map | The `/world` page on generaltranslation.com | gt-cloud `k/language-map` in its own worktree, port 3031 |
+| Glyph Map | A page of generaltranslation.com that has not shipped | Its own gt-cloud worktree and dev port |
 | New Onboarding and Dashboard | The dashboard sign-in and onboarding PRs, and in Prototemplate the mood slides in `deck/`, `src/components/plate`, `src/app/craft` and `public/brand/mood` | Its own gt-cloud worktrees. It pushes Prototemplate main from its own worktree. |
-| Lottie | The blog's Lottie translation figure | gt-cloud #5068, `k/blog-lottie-translation` in its own worktree, port 3024 |
+| Lottie | The blog's Lottie translation figure | Its own gt-cloud worktree and dev port |
 | docs redesign | The docs site on generaltranslation.com | Its own gt-cloud worktrees |
 
 Kevin's personal projects run in sessions and repositories of their own. They share the machine with the GT lanes (section 10) and nothing else.
@@ -146,7 +146,7 @@ Plans, lane specs, ask ledgers and outputs live in files, so a session that rest
 ## Sources
 
 - Prototemplate: `skills/gt-ship/SKILL.md` sections 1, 2, 5 and 8; `skills/prototemplate/SKILL.md` sections 8 and 9; `skills/gt-orchestration/SKILL.md` sections 2, 6 and 8; `docs/SHIP-LOOP.md` section 0; `docs/handbook/glossary.md` (working terms).
-- Kevin's gt-cloud memory notes `session-lanes-prototemplate`, `ship-loop-hard-gates`, `scratch-worktree-disk`, `lost-work-audit-2026-09`, `gt-motion-films`, `world-language-map`, `blog-lottie-figure`, `signin-field-transition` and `landing-hero-agent-button`.
-- The Claude Code transcripts of the gt-cloud project under `~/.claude/projects/`: the fork lineage read from each transcript's inherited `sessionId` and title records; the 2026-08-06 instruction and the four sessions' responses; the 2026-10-03 handover to Videos; the 2026-09-29 and 2026-09-30 messages between the sign-in sessions; the 2026-10-05 messages from New Onboarding and Dashboard and Videos; and the desktop app's notice that another chat's dev server is out of the Browser pane's reach (2026-09-29). The Codex sessions under `~/.codex/sessions/2026/09/` hold the shared-main audit of 2026-09-22 and the relay of 2026-09-26.
+- Kevin's private gt-cloud memory notes on lanes, ship gates, worktree disk use, the lost-work audit and four lanes' handoffs.
+- Kevin's Claude Code and Codex session transcripts for the gt-cloud project, which stay private: the fork lineage read from each transcript's inherited `sessionId` and title records; the 2026-08-06 instruction and the four sessions' responses; the 2026-10-03 handover to Videos; the 2026-09-29 and 2026-09-30 messages between the sign-in sessions; the 2026-10-05 messages from New Onboarding and Dashboard and Videos; and the desktop app's notice that another chat's dev server is out of the Browser pane's reach (2026-09-29). The Codex sessions of September 2026 hold the shared-main audit of 2026-09-22 and the relay of 2026-09-26.
 - Kevin's messages to Claude Code and Codex from 2026-07-30 to 2026-10-05, for the rulings quoted above. Quotes keep his spelling.
 - Dates are in UTC, as the transcripts record them.

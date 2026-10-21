@@ -1,0 +1,23 @@
+{
+  "title": "Handbook",
+  "icon": "Book",
+  "pages": [
+    "index",
+    "operating-principles",
+    "quality-bar",
+    "multi-session-playbook",
+    "gt-product-map",
+    "glossary",
+    "decisions",
+    "---Canon---",
+    "agents",
+    "brand",
+    "design",
+    "architecture",
+    "ship-loop",
+    "tools",
+    "libraries",
+    "graphics",
+    "artifact-pictures"
+  ]
+}

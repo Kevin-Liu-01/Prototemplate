@@ -14,8 +14,8 @@ const PUBLIC_ASSETS = ['/shots/:path+', '/media/:path+', '/static/:path+', '/gra
 const DAY_THEN_REVALIDATE = 'public, max-age=86400, stale-while-revalidate=604800';
 
 /**
- * The file trace. book.tsx (the handbook and its Markdown twins),
- * marks/page.tsx and the motion pages read files
+ * The file trace. book.tsx (the Markdown twins, /llms-full.txt and
+ * /AGENTS.md), marks/page.tsx and the motion pages read files
  * through paths computed at runtime, so Next's trace takes in the whole
  * checkout (public/, motion/, deck/) for these routes. Every one of them
  * prerenders, so nothing reads those files at request time. If one of
@@ -43,17 +43,19 @@ const PRODUCTION_KB_REDIRECTS: readonly (readonly [from: string, article: string
   ['branch_vs_ternary', 'translate-conditional-jsx'],
 ];
 
-/** The canon documents the /docs book served at /docs/<slug>; each now lives at /handbook/<slug>. */
+/** The canon documents the /docs book served at /docs/<slug>; each now lives at /docs/handbook/<slug>. */
 const CANON_MOVED = ['brand', 'design', 'architecture', 'ship-loop', 'libraries', 'graphics', 'artifact-pictures', 'tools', 'agents'];
 
 /**
  * The Markdown twins' public addresses, rewritten to the one twin route.
  * Plain segments only, so a twin path never matches a page: /docs.md,
- * /docs/<slug>.md, /handbook.md and /handbook/<slug>.md, each also as .mdx.
+ * /docs/<slug>.md and /docs/<folder>/<slug>.md (the handbook and the
+ * components), each also as .mdx.
  */
 const TWIN_REWRITES = [
-  { source: '/:book(docs|handbook).:ext(md|mdx)', destination: '/md/:book' },
-  { source: '/:book(docs|handbook)/:slug([a-z0-9-]+).:ext(md|mdx)', destination: '/md/:book/:slug' },
+  { source: '/docs.:ext(md|mdx)', destination: '/md/docs' },
+  { source: '/docs/:slug([a-z0-9-]+).:ext(md|mdx)', destination: '/md/docs/:slug' },
+  { source: '/docs/:dir([a-z0-9-]+)/:slug([a-z0-9-]+).:ext(md|mdx)', destination: '/md/docs/:dir/:slug' },
 ];
 
 const nextConfig: NextConfig = {
@@ -74,7 +76,6 @@ const nextConfig: NextConfig = {
   },
   outputFileTracingExcludes: {
     '/': UNTRACED,
-    '/handbook{,/**}': UNTRACED,
     '/md/[...path]': UNTRACED,
     '/llms-full.txt': UNTRACED,
     '/AGENTS.md': UNTRACED,
@@ -96,8 +97,8 @@ const nextConfig: NextConfig = {
       // /deck is the built deck itself (scripts/build/deck.mjs); its relative
       // deck-assets/ paths resolve from / at either address
       { source: '/deck', destination: '/brand-deck.html' },
-      // The Markdown twins (src/app/md/[...path]/route.ts): a docs page or a
-      // handbook document plus .md or .mdx answers its processed Markdown
+      // The Markdown twins (src/app/md/[...path]/route.ts): a docs page plus
+      // .md or .mdx answers its processed Markdown
       ...TWIN_REWRITES,
     ];
   },
@@ -113,11 +114,20 @@ const nextConfig: NextConfig = {
       { source: '/skills/gt-isometric', destination: '/skills/gt-diagrams', permanent: true },
       { source: '/skills/gt-isometric/:path*', destination: '/skills/gt-diagrams', permanent: true },
       // The build log hangs off the libraries document in the handbook.
-      { source: '/craft', destination: '/handbook/libraries', permanent: true },
+      { source: '/craft', destination: '/docs/handbook/libraries', permanent: true },
+      // The handbook moved into the docs site on 2026-10-20: the book at
+      // /handbook and each document, with its Markdown twin, answer with the
+      // same page under /docs/handbook. A fragment rides along; the pages
+      // print the same headings with the same ids, except the one DESIGN.md
+      // heading with a slash (svh/dvh), which the docs slug without it.
+      { source: '/handbook', destination: '/docs/handbook', permanent: true },
+      { source: '/handbook/:slug([a-z0-9-]+)', destination: '/docs/handbook/:slug', permanent: true },
+      { source: '/handbook.:ext(md|mdx)', destination: '/docs/handbook.:ext', permanent: true },
+      { source: '/handbook/:slug([a-z0-9-]+).:ext(md|mdx)', destination: '/docs/handbook/:slug.:ext', permanent: true },
       // The repository documents moved from the /docs book to the handbook
-      // when the docs site replaced it (2026-10-15); a fragment rides along,
-      // and the handbook renders the same headings with the same ids.
-      ...CANON_MOVED.map((slug) => ({ source: `/docs/${slug}`, destination: `/handbook/${slug}`, permanent: true })),
+      // when the docs site replaced it (2026-10-15), and with the handbook
+      // into /docs/handbook on 2026-10-20.
+      ...CANON_MOVED.map((slug) => ({ source: `/docs/${slug}`, destination: `/docs/handbook/${slug}`, permanent: true })),
       // The live site renamed its report card from /try to /report-card
       // (gt-cloud #4557) and redirects the old path; the mirror does the same.
       { source: '/d/production/try', destination: '/d/production/report-card', permanent: true },

@@ -1,0 +1,60 @@
+---
+title: Isometric drawings
+description: "The isometric kit live: one 30 degree projection, one corner radius and one light, with boxes and prisms built on a slab and a mark seated on a face."
+icon: Cube
+sources:
+  - src/components/docs/demos
+  - src/app/d/toolchain/diagrams/iso.ts
+  - src/app/d/toolchain/diagrams/IsoFrame.tsx
+---
+
+import { IsoKitDemo } from '@/components/docs/demos/lazy';
+
+The isometric family draws GT's infrastructure: stacks, chips, plates and the Locadex iso. Every drawing goes through one module, `src/app/d/toolchain/diagrams/iso.ts`, with one 30 degree projection, one corner radius and one light from the upper left, so separate drawings read as one set. The `gt-diagrams` skill holds the rules, and its reference drawings include the Locadex iso.
+
+## The kit
+
+The plate builds a solid on a slab with the kit's own functions. Width, depth and height size a box, and Solid swaps the box for a hexagonal or octagonal prism extruded from its plan polygon the same way. Mark seats the GT mark on the solid's top face with `plane(z)`.
+
+<IsoKitDemo />
+
+Each solid is drawn in the extrusion recipe: the opaque hull first, which hides whatever stands behind it, then the three visible faces, then only the hairlines that the silhouette and the top contour do not already draw. A later solid painted over an earlier one occludes it with no depth sorting.
+
+### Import and functions
+
+```tsx
+import { frontEdge, leftFace, plane, rightFace, roundedPolygon, segment, silhouette, topFace, type IsoBox } from '@/app/d/toolchain/diagrams/iso';
+
+const box: IsoBox = { x: -28, y: -24, z: 4.2, w: 56, d: 48, h: 18 };
+const [a, b] = frontEdge(box);
+
+<g>
+  <path className='hull' d={roundedPolygon(silhouette(box))} />
+  <path className='right' d={roundedPolygon(rightFace(box))} />
+  <path className='left' d={roundedPolygon(leftFace(box))} />
+  <path className='top' d={roundedPolygon(topFace(box))} />
+  <path className='line' d={roundedPolygon(silhouette(box))} />
+  <path className='hair' d={roundedPolygon(topFace(box))} />
+  <path className='line' d={segment(a, b)} />
+</g>;
+```
+
+| Function | What it returns |
+| --- | --- |
+| `project(x, y, z)` | A world point on screen: +x runs down to the right, +y down to the left, +z straight up. |
+| `topFace`, `leftFace`, `rightFace`, `silhouette`, `frontEdge` | The faces, the outline and the near vertical edge of an `IsoBox` `{ x, y, z, w, d, h }`. |
+| `prismTop`, `prismFaces`, `prismSilhouette`, `prismFrontEdges` | The same for an `IsoPrism` `{ points, z, h }`, any convex plan polygon. Each face says whether it takes the left or the right shade. |
+| `roundedPolygon(points, r)` | A path through the points with the family's corner radius, `ISO_RADIUS` (2.4). |
+| `plane(z, ox, oy)` | The SVG transform that lays plan content on the face at height z, for marks, labels and chip seats. |
+| `markPath(x, y, w, d, z)` | A flat rounded rectangle on a face: a content bar or a mark's plinth. |
+| `depth(x, y, z)` | How near the camera a point sits; its sign splits an object's front from its back. |
+
+`IsoFrame` wraps a drawing in the family's 240 by 180 frame and its props, `className`, `strokeWidth`, `accent` and `title`, which every drawing in the family takes.
+
+### When to use it
+
+Use the kit for infrastructure: a stack of layers, a device, a plate of chips, a mark on a slab. Keep the light from the upper left and the shading in its order: the top lightest, the front-left face in the middle and the front-right face darkest. Spend the accent on one object at most. A diagram of a flow between parts uses the doubled line instead.
+
+### Reduced motion and themes
+
+The kit draws still geometry; a host that animates it, as the stack tower does, runs its own timeline and holds a still under reduced motion. The plate's faces are the stage's ink at 4, 9 and 15 percent, so on paper they shade like daylight, and on ink they take the night shading the dark bands use.

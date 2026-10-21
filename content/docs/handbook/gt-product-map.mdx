@@ -1,0 +1,53 @@
+---
+title: GT product and architecture map
+description: "What General Translation sells and to whom, how the products fit together, the copy that must be exact, and where each part lives."
+icon: Map
+sources:
+  - src/app/craft/LibraryDemo.tsx
+  - src/app/craft/craft.css
+  - src/components/docs/demos/CraftPlate.tsx
+  - src/components/docs/demos/LocalePills.tsx
+  - src/app/d/toolchain/components/LocaleTag.tsx
+---
+
+import { CraftPlate, LocalePills } from '@/components/docs/demos/lazy';
+
+<include cwd>docs/handbook/gt-product-map.md#gt-product-and-architecture-map</include>
+
+<include cwd>docs/handbook/gt-product-map.md#1-positioning</include>
+
+<include cwd>docs/handbook/gt-product-map.md#2-audience-and-the-sale</include>
+
+<include cwd>docs/handbook/gt-product-map.md#3-products</include>
+
+<CraftPlate
+  kind="globe"
+  tag="<EdgeGlobe />"
+  label="Live demo: the orthographic edge globe (five points of presence, one accent route serving a request) over its dithered Bayer atmosphere."
+/>
+
+This plate runs `EdgeGlobe`, the drawing of the translation CDN that the home page of generaltranslation.com uses. A request travels to the closest point of presence, where the translation already sits, and the payload returns along the same route.
+
+<include cwd>docs/handbook/gt-product-map.md#4-context</include>
+
+<include cwd>docs/handbook/gt-product-map.md#5-enterprise-and-plans</include>
+
+<include cwd>docs/handbook/gt-product-map.md#6-copy-that-must-be-exact</include>
+
+<include cwd>docs/handbook/gt-product-map.md#7-cli-and-agent-entry-points</include>
+
+<include cwd>docs/handbook/gt-product-map.md#8-repositories</include>
+
+<include cwd>docs/handbook/gt-product-map.md#9-site-behaviour</include>
+
+<LocalePills
+  codes={['en-US', 'es', 'fr', 'zh', 'ja', 'it', 'ru', 'en-GB']}
+  tag="gt.config.json"
+  label="The production locale roster of generaltranslation.com as locale pills: en-US, es, fr, zh, ja, it, ru and en-GB."
+/>
+
+This plate sets the production roster of the landing app in `LocaleTag` pills: en-US as the source and seven target locales. The staging build translates `es` alone.
+
+<include cwd>docs/handbook/gt-product-map.md#10-public-surfaces</include>
+
+<include cwd>docs/handbook/gt-product-map.md#sources</include>

@@ -57,7 +57,7 @@ metadata:
 `AGENTS.md` and README.md's "Import this into another project" section give the steps.
 
 - Copy `skills/`, `scripts/skills/install.mjs`, `AGENTS.md`, `BRAND.md`, `DESIGN.md` and `docs/handbook/` into the project at the same paths, then run the copied installer there with `--project .` (dry run first). Every relative link between the skills, the canon and the handbook keeps working. On Kevin's machine a project can instead link to this checkout (`--project <dir>` from here).
-- Link the canon by its address on the site (www.prototemplate.com/handbook/design, /handbook/brand, /skills/<slug>), so a reader in another repository reads the current version.
+- Link the canon by its address on the site (www.prototemplate.com/docs/handbook/design, `/docs/handbook/brand`, `/skills/<slug>`), so a reader in another repository reads the current version.
 - `pnpm check:pages --base <url> --pages-module <file>`, run in `$PROTOTEMPLATE`, checks another site. The module exports `pages()` in the shape of `scripts/check/pagecheck/pages.mjs`, and `--hooks-module` adds that site's invariants (`scripts/check/pagecheck/README.md`). Both paths resolve against the Prototemplate checkout, so pass absolute paths.
 - `node scripts/lint/lines.mjs <url> --theme dark` audits the lines of any page at 1440 and 1280 (with no URL it audits `http://localhost:3005/d/toolchain`). Section 7 gives its Chrome path.
 - `LICENSE` reserves all rights to General Translation, Inc. The repository is public to read, and reuse of its code, writing or designs outside a GitHub fork needs written permission. Third-party fonts, icons and adapted skills keep their own licenses.

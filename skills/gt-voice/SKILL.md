@@ -12,7 +12,7 @@ description: >-
 metadata:
   title: Voice and the humanizer
   areas: voice
-  updated: 2026-10-10
+  updated: 2026-10-20
   origin: prototemplate
   owner: P
 ---
@@ -359,7 +359,7 @@ cd "$GT_CLOUD" && pnpm lint
 cd "$GT_CLOUD" && pnpm exec oxlint --quiet apps/landing/src/components
 
 # Em and en dashes in the deck, the blog copies and the Markdown that /docs
-# and /handbook render (the lists are in src/app/docs/registry.ts).
+# renders, the handbook's files among it (src/app/handbook/registry.ts).
 cd "$PROTOTEMPLATE" && grep -rnE $'\xe2\x80\x94|\xe2\x80\x93' deck/slides content \
   BRAND.md DESIGN.md ARCHITECTURE.md AGENTS.md docs/SHIP-LOOP.md docs/LIBRARIES.md \
   docs/GRAPHICS.md docs/handbook

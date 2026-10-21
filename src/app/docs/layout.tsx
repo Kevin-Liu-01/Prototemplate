@@ -12,7 +12,7 @@ import './docs.css';
 
 const FOOTER_LINKS: readonly DocsSidebarFooterLink[] = [
   { label: 'Hub', href: '/', icon: 'hub' },
-  { label: 'Handbook', href: '/handbook', icon: 'handbook' },
+  { label: 'Handbook', href: '/docs/handbook', icon: 'handbook' },
   { label: 'Skills', href: '/skills', icon: 'skills' },
   { label: 'GitHub', href: 'https://github.com/Kevin-Liu-01/Prototemplate', icon: 'github' },
 ];

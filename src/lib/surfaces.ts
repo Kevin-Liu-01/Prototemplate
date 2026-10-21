@@ -1,4 +1,5 @@
 import { LIBRARIES } from '@/app/craft/libraries';
+import { docHref } from '@/components/book/model';
 import { DOCS_PAGES } from '@/components/docs/pages';
 import { ARCHIVE, archiveDesc } from '@/lib/archive';
 import { DIRECTIONS, directionPageHref } from '@/lib/directions';
@@ -40,7 +41,7 @@ import type { ShellShot } from '@/lib/shell-data';
  * Knowledge holds what the site keeps as the General Translation knowledge
  * base: the brand book (/deck), the brand directives (/brand), the docs
  * site (/docs), the curated skills (/skills), the handbook
- * (/handbook), the mark explorations (/marks), the blog, the graphics, the motion roster with
+ * (/docs/handbook), the mark explorations (/marks), the blog, the graphics, the motion roster with
  * the translation series' research packages (/motion) and the archive of
  * retired versions. Shipped
  * (directive 8.10) holds the direction that shipped and its pages:
@@ -136,7 +137,7 @@ function thumb(stem: string): { shot: string; shotDark: string } {
 const PAGES: readonly Surface[] = [
   internal('gallery', pageLabel('gallery'), '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
   internal('brand', pageLabel('brand'), '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
-  internal('docs', pageLabel('docs'), '/docs', 'Ten pages on how Prototemplate works, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
+  internal('docs', pageLabel('docs'), '/docs', 'How Prototemplate works, the live component library, the blog globe figure and the handbook, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
   internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
   internal('press', pageLabel('press'), '/press', 'GT Atlas, the General Translation magazine: each story a book with its own cover and its own pages.', 'Pages', thumb('press')),
   {
@@ -154,7 +155,7 @@ const PAGES: readonly Surface[] = [
  * with the initial stands in until the cuts exist); the archive row opens
  * the first retired version, since the archive has no index page of its
  * own. The sidebar hangs the curated skills under the Skills row as one
- * numbered run, the handbook's documents under Handbook, the graphics'
+ * numbered run, the graphics'
  * areas under Graphics and the films under Motion.
  */
 const KNOWLEDGE: readonly Surface[] = [
@@ -169,7 +170,7 @@ const KNOWLEDGE: readonly Surface[] = [
   internal(
     'handbook',
     pageLabel('handbook'),
-    '/handbook',
+    '/docs/handbook',
     'How Kevin runs General Translation work, and the canon: the principles, the quality bar, the decisions, the agent guide, brand, design, the ship loop and the libraries.',
     'Knowledge',
     thumb('handbook')
@@ -213,10 +214,15 @@ const KNOWLEDGE: readonly Surface[] = [
   ),
 ];
 
-/** The docs site's ten pages, in its sidebar's order; each previews its own first fold (`docs-<slug>`). */
-const DOCUMENTS: readonly Surface[] = DOCS_PAGES.map((page) =>
-  internal(`docs-${page.slug}`, page.title, page.href, page.description, 'Documents', thumb(`docs-${page.slug}`))
-);
+/**
+ * The docs site's pages outside the handbook, in its sidebar's order; each
+ * previews its own first fold (`docs-<slug>`, a folder's slash a hyphen:
+ * `docs-components-dither`). The handbook is the Knowledge row above.
+ */
+const DOCUMENTS: readonly Surface[] = DOCS_PAGES.map((page) => {
+  const id = `docs-${page.slug.replaceAll('/', '-')}`;
+  return internal(id, page.title, page.href, page.description, 'Documents', thumb(id));
+});
 
 /** The three full site concepts; the shipped reference has its own group. */
 const SITE_DIRECTIONS = DIRECTIONS.filter((d) => d.site && !d.reference);
@@ -385,7 +391,7 @@ const EXPLORATIONS: readonly Surface[] = EXPLORATION_DIRECTIONS.map((d) =>
 );
 
 const LIBRARY_ROWS: readonly Surface[] = LIBRARIES.map((lib) =>
-  internal(`lib-${lib.name}`, lib.name, `/handbook/libraries#${lib.name}`, sentence(lib.role), 'Libraries')
+  internal(`lib-${lib.name}`, lib.name, `${docHref('libraries')}#${lib.name}`, sentence(lib.role), 'Libraries')
 );
 
 const BRAND_SECTIONS: readonly Surface[] = [

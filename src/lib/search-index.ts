@@ -325,11 +325,13 @@ const MOTION_RECORDS: readonly SearchEntry[] = MOTION_FILMS.flatMap((film): Sear
 
 
 /**
- * The h2 rows of each handbook document, in reading order: [id, title]. The
- * libraries document ends with the build log's seven sections. A snapshot:
+ * The h2 rows of each handbook document, in reading order: [id, title], the
+ * id as the docs page slugs the heading. The libraries document ends with
+ * the build log's seven sections, which its page's table of contents also
+ * reads from here (src/app/docs/[[...slug]]/page.tsx). A snapshot:
  * scripts/lint/registries.mjs reads it against the files.
  */
-const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
+export const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [string, string])[]>> = {
   readme: [
     ['the-documents', 'The documents'],
     ['how-the-handbook-relates-to-the-skills', 'How the handbook relates to the skills'],
@@ -455,7 +457,7 @@ const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [string, str
     ['10-the-seam-slide-to-reveal', '10. The seam (slide-to-reveal)'],
     ['11-engine-lifecycle', '11. Engine lifecycle'],
     ['12-the-mobile-type-ladder', '12. The mobile type ladder'],
-    ['13-the-svh-dvh-law', '13. The svh/dvh law'],
+    ['13-the-svhdvh-law', '13. The svh/dvh law'],
     ['14-the-two-read-lines', '14. The two read lines'],
     ['15-chrome-exceptions-kevin-asked-for', '15. Chrome exceptions Kevin asked for'],
     ['16-the-sidebars-rows', "16. The sidebar's rows"],

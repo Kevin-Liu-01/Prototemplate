@@ -4,7 +4,7 @@ import { docHref, README_SLUG } from './model';
 
 /**
  * Where a repository path opens on the site. The handbook registry says
- * which Markdown files the site renders at /handbook: the handbook's own
+ * which Markdown files the site renders at /docs/handbook: the handbook's own
  * documents and the canon. A link between them, written as a relative path
  * the way GitHub resolves it (`../../BRAND.md` from a handbook page,
  * `docs/SHIP-LOOP.md` from AGENTS.md), opens the document's own route. A
@@ -28,7 +28,7 @@ export const DOC_ROUTES: Readonly<Record<string, string>> = {
 const PAGE_PATHS: Readonly<Record<string, string>> = {
   skills: '/skills',
   'skills/README.md': '/skills',
-  'docs/handbook': '/handbook',
+  'docs/handbook': '/docs/handbook',
 };
 
 /* skills/<slug>/<file>: the skill's page for its SKILL.md, the raw file for anything beside it */

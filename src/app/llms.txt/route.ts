@@ -1,18 +1,20 @@
-import { docsPages, handbookDocs } from '@/app/md/text';
+import { docsPages } from '@/app/md/text';
+import { docHref } from '@/components/book/model';
 import { DIRECTIONS } from '@/lib/directions';
 import { selfUrl, SITE_URL } from '@/lib/seo/policy';
 import { SITE_DESCRIPTION } from '@/lib/seo/site';
 import { SKILLS } from '@/lib/skills';
+import type { DocsPage } from '@/lib/source';
 import { SITE_SURFACES } from '@/lib/surfaces';
 
 /**
  * /llms.txt: the site described for agents (llmstxt.org), generated at
  * build time from the registries the pages render from, so it lists every
- * docs page, every handbook document, every skill and every route the day
- * each one is added: the docs site (content/docs through src/lib/source.ts),
- * the handbook registry, the generated skills registry, the surfaces'
- * Pages and Knowledge rows and the directions. Every link is on www, and
- * every docs page and handbook document names its Markdown twin. It
+ * docs page, every skill and every route the day each one is added: the
+ * docs site (content/docs through src/lib/source.ts, split into the docs,
+ * the components and the handbook by folder), the generated skills
+ * registry, the surfaces' Pages and Knowledge rows and the directions.
+ * Every link is on www, and every docs page names its Markdown twin. It
  * replaced the hand-kept public/llms.txt on 2026-10-15.
  */
 export const dynamic = 'force-static';
@@ -21,6 +23,16 @@ export const dynamic = 'force-static';
 function sentence(text: string): string {
   const end = text.search(/[.!?](\s|$)/);
   return (end >= 0 ? text.slice(0, end + 1) : text).trim();
+}
+
+/** A docs page's list line: its title, its address, its description and its Markdown twin. */
+function docsLine(page: DocsPage): string {
+  return `- [${page.data.title}](${selfUrl(page.url)}): ${page.data.description ?? ''} Markdown: ${selfUrl(page.url)}.md`;
+}
+
+/** A docs page in a folder of content/docs: its index or a page under it. */
+function inFolder(page: DocsPage, folder: string): boolean {
+  return page.url === `/docs/${folder}` || page.url.startsWith(`/docs/${folder}/`);
 }
 
 function body(): string {
@@ -32,24 +44,25 @@ function body(): string {
     '',
     `> ${SITE_DESCRIPTION} General Translation (https://generaltranslation.com) is the localization platform for developers.`,
     '',
-    `Prototemplate is served at ${SITE_URL}, the canonical address, and every link here uses it. Every docs page and handbook document has a Markdown twin at its address plus .md, and ${SITE_URL}/llms-full.txt holds the text of all of them in reading order.`,
+    `Prototemplate is served at ${SITE_URL}, the canonical address, and every link here uses it. Every docs page, the handbook's included, has a Markdown twin at its address plus .md, and ${SITE_URL}/llms-full.txt holds the text of all of them in reading order.`,
     '',
-    `An agent starts with the agent guide (${SITE_URL}/AGENTS.md, and ${selfUrl('/handbook/agents')} on the site), then the operating principles in the handbook, then the skill for its task.`,
+    `An agent starts with the agent guide (${SITE_URL}/AGENTS.md, and ${selfUrl(docHref('agents'))} on the site), then the operating principles in the handbook, then the skill for its task.`,
     ''
   );
 
-  add('## Docs', '', 'Ten pages on how Prototemplate works, in the docs layout generaltranslation.com runs. The last one explains how to use the docs site as a template.', '');
-  for (const page of docsPages()) {
-    add(`- [${page.data.title}](${selfUrl(page.url)}): ${page.data.description ?? ''} Markdown: ${selfUrl(page.url)}.md`);
-  }
-  add('');
+  const pages = docsPages();
+  const components = pages.filter((page) => inFolder(page, 'components'));
+  const handbook = pages.filter((page) => inFolder(page, 'handbook'));
+  const docs = pages.filter((page) => !components.includes(page) && !handbook.includes(page));
+
+  add('## Docs', '', 'The pages on how Prototemplate works and one on the directions for the blog globe figure, in the docs layout generaltranslation.com runs. The last page explains how to use the docs site as a template.', '');
+  add(...docs.map(docsLine), '');
+
+  add('## Components', '', 'The live component library: every instrument of the hub mounted on its page with controls, its import path, its props and its reduced-motion still.', '');
+  add(...components.map(docsLine), '');
 
   add('## Handbook', '', 'How Kevin runs General Translation work, and the canon: the agent guide, the brand and design canons, the architecture map, the ship loop, the tools, the libraries, the graphics pipeline and the artifact pictures.', '');
-  for (const { entry, path } of handbookDocs()) {
-    const title = entry.title === 'Readme' ? 'Handbook readme' : entry.title;
-    add(`- [${title}](${selfUrl(path)}): ${entry.blurb} Markdown: ${selfUrl(path)}.md`);
-  }
-  add('');
+  add(...handbook.map(docsLine), '');
 
   add(
     '## Skills',
@@ -80,7 +93,7 @@ function body(): string {
   }
   add('');
 
-  add('## Optional', '', `- [Full text](${SITE_URL}/llms-full.txt): every docs page, every handbook document and the agent guide in reading order.`, `- [Sitemap](${SITE_URL}/sitemap.xml): every indexable page with its last change.`, '');
+  add('## Optional', '', `- [Full text](${SITE_URL}/llms-full.txt): every docs page in reading order, the components and the handbook with its agent guide included.`, `- [Sitemap](${SITE_URL}/sitemap.xml): every indexable page with its last change.`, '');
   return lines.join('\n');
 }
 

@@ -1,0 +1,93 @@
+---
+title: Locale tags and language pieces
+description: "Locale chips with their flags, the two flag resolvers side by side, and seven animated language diagrams built from real text in real scripts."
+icon: Language
+sources:
+  - src/components/docs/demos
+  - src/app/d/toolchain/components/LocaleTag.tsx
+  - src/components/shared/LocaleFlag.tsx
+  - src/app/d/toolchain/diagrams/lang
+---
+
+import { LangDiagramDemo, LocaleTagDemo } from '@/components/docs/demos/lazy';
+
+A locale code in a GT interface is a chip with its flag first and the code in mono after it. Two components draw the flag, and they answer from different data. The language diagrams next door show what localization does to text: width, plural rules, direction, context and script. They are built from HTML text, so the browser shapes Arabic, stacks Devanagari and resolves bidi.
+
+## Locale tags and flags
+
+The plate resolves one locale code with both components. Type any code or pick one of the examples, and switch the host chip between a pill and bare text. The set under the comparison shows LocaleTag across twelve codes in the chosen chip.
+
+<LocaleTagDemo />
+
+`LocaleTag` reads its own map of 20 languages, and an explicit region in the code wins, so `en-GB` shows the British flag and `zh-Hant` resolves through `zh`. `LocaleFlag` asks `Intl.Locale` for the likely region, the CLDR data gt-cloud's own resolver reads. The two agree on most codes. They differ on a few, such as `ar`, for which LocaleTag shows the flag of Saudi Arabia and LocaleFlag the flag of Egypt. A code neither knows renders with no flag, as `tlh` does.
+
+### Import and props
+
+```tsx
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import LocaleFlag from '@/components/shared/LocaleFlag';
+
+<span className='chip'>
+  <LocaleTag code='ja' />
+</span>;
+<LocaleFlag locale='pt-BR' />;
+```
+
+| Component | Prop | Type | What it does |
+| --- | --- | --- | --- |
+| `LocaleTag` | `code` | string | The locale code, printed as it is after its flag. |
+| `LocaleTag` | `className` | string | Added to the `.lct` span. The host supplies the chip's box. |
+| `LocaleFlag` | `locale` | string | The locale whose likely region's flag it draws. |
+| `LocaleFlag` | `className` and span props | | Passed to the `fi fi-<country>` span, which is hidden from assistive technology. |
+
+Both draw the flag-icons SVG pack through its `fi fi-<country>` classes, so every platform prints the same flag at text size, and neither ever draws an emoji.
+
+### When to use it
+
+Use `LocaleTag` inside any chip, cell or label that shows a bare locale code. Use `LocaleFlag` beside a language's name in a selector, where it matches gt-cloud's shared `LocaleFlag` component. Flags render only through these two. A hand-written `fi` class fails the `gt-ui/no-raw-locale-flags` lint, and BRAND.md rules out an emoji flag.
+
+### Reduced motion and themes
+
+Neither moves. The flag artwork has its own colors in both themes, and the code takes the ink of its host.
+
+## Language diagrams
+
+The plate mounts the Toolchain direction's seven language diagrams one at a time. Sentence width measures one sentence in four locales against the English width, Plurals cycles one count through the plural rules of English, Polish and Japanese, and Right to left mirrors one panel by its `dir` attribute alone. Context resolves "Save" to two German verbs, Expansion charts how much room each locale needs, Scripts sets the word for language in eight writing systems, and One term prints one interface term in every locale it ships in.
+
+<LangDiagramDemo />
+
+Accent spends the accent hue on the diagram's one accent element, and Replay remounts the diagram, which restarts its loop.
+
+### Import and props
+
+```tsx
+import PluralForms from '@/app/d/toolchain/diagrams/lang/PluralForms';
+
+<PluralForms accent title='One count against the plural rules of English, Polish and Japanese' />;
+```
+
+Every diagram takes the same three props, the `LangProps` contract in `src/app/d/toolchain/diagrams/lang/lang.ts`.
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `accent` | boolean | `true` | Spends the accent on the diagram's one accent element. |
+| `title` | string | none | The accessible name. Without one the diagram is decorative and hidden. |
+| `className` | string | none | Added to the `.lang` root. |
+
+| Diagram | File | What it shows |
+| --- | --- | --- |
+| Sentence width | `SentenceWidth.tsx` | One sentence in four locales, every width measured by the browser, Arabic anchored to the right |
+| Plurals | `PluralForms.tsx` | The plural form CLDR selects for one count in three languages |
+| Right to left | `RtlMirror.tsx` | One panel twice, identical markup with only `dir` changed |
+| Context | `ContextResolve.tsx` | "Save" as `speichern` for a file and `sparen` for money |
+| Expansion | `ExpansionBars.tsx` | Text expansion per locale as a diverging chart around English |
+| Scripts | `ScriptSampler.tsx` | The word for language in eight writing systems at once |
+| One term | `WordMorph.tsx` | One interface term in every locale it ships in |
+
+### When to use it
+
+Use a language diagram to make one claim about localization in a feature cell or a docs page, with the claim written beside it. Each diagram is complete at rest, so a still or a screenshot reads on its own.
+
+### Reduced motion and themes
+
+Under reduced motion every diagram freezes at its most legible frame. The ink derives from `currentColor` and the accent from `--iso-accent`, so the diagrams follow the docs theme, and the same ancestor themes the isometric drawings.

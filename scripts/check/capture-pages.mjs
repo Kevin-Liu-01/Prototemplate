@@ -16,14 +16,13 @@
 //   - the routes the Pages group lists: the gallery (`gallery`), /brand,
 //     /docs, /compare, /present and /deck, under their own ids
 //   - the Knowledge rows that have a page of their own: /skills (`skills`),
-//     /handbook (`handbook`) and /marks (`marks`), so the sidebar's Skills,
-//     Handbook and Marks rows can preview their first fold
-//   - every page of the docs site, /docs and /docs/<slug> (`docs-<slug>`,
-//     the Documents rows) from src/components/docs/pages.ts, and every
-//     document of the handbook, the readme first: /handbook and
-//     /handbook/<slug> (`handbook-<slug>`) from
-//     src/app/handbook/registry.ts; the book lands on the document, so each
-//     capture is that document's first fold, the tile the book's grid shows
+//     /docs/handbook (`handbook`) and /marks (`marks`), so the sidebar's
+//     Skills, Handbook and Marks rows can preview their first fold
+//   - every page of the docs site, /docs and /docs/<path> (`docs-<path>`
+//     with a folder's slash a hyphen, the Documents rows) from
+//     src/components/docs/pages.ts, and every page of the handbook, the
+//     readme first: /docs/handbook and /docs/handbook/<slug>
+//     (`handbook-<slug>`) from src/app/handbook/registry.ts
 //   - one direction page (`directions`): /directions/<slug> for the first
 //     exploration in src/lib/directions.ts, the route every site and
 //     exploration row opens (the reference keeps /d/production, which the
@@ -131,12 +130,12 @@ function docsPages() {
   return [...readFileSync(join(ROOT, 'src/components/docs/pages.ts'), 'utf8').matchAll(/slug: '([^']+)',\s*\n\s*href: '([^']+)'/g)].map((m) => [m[1], m[2]]);
 }
 
-/** [id, path] for every docs page (`docs-<slug>`, the Documents rows) and every handbook document, the readme first (the registry lists its own first). */
+/** [id, path] for every docs page (`docs-<path>`, the Documents rows) and every handbook page, the readme first (the registry lists its own first). */
 function bookDocuments() {
   const handbook = registrySlugs('src/app/handbook/registry.ts');
   return [
-    ...docsPages().map(([slug, href]) => [`docs-${slug}`, href]),
-    ...handbook.map((slug) => [`handbook-${slug}`, slug === 'readme' ? '/handbook' : `/handbook/${slug}`]),
+    ...docsPages().map(([slug, href]) => [`docs-${slug.replaceAll('/', '-')}`, href]),
+    ...handbook.map((slug) => [`handbook-${slug}`, slug === 'readme' ? '/docs/handbook' : `/docs/handbook/${slug}`]),
   ];
 }
 
@@ -159,7 +158,11 @@ function targets() {
   /* the shipped pages first, as the captures have always been ordered */
   const shipped = routes.filter(([id]) => id.startsWith('production'));
   const rest = routes.filter(([id]) => !id.startsWith('production'));
-  const all = [...shipped, ...rest, ...bookDocuments()].map(([id, path]) => [id, `${BASE}${path}`]);
+  /* a docs page the route list also tags `capture` is shot once */
+  const seen = new Set();
+  const all = [...shipped, ...rest, ...bookDocuments()]
+    .filter(([id]) => !seen.has(id) && seen.add(id))
+    .map(([id, path]) => [id, `${BASE}${path}`]);
   return ONLY ? all.filter(([id]) => ONLY.includes(id)) : all;
 }
 

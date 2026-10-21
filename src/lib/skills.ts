@@ -61,7 +61,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Voice and the humanizer',
     description: 'How Kevin writes for General Translation: plain technical English for site copy, docs, decks, captions, films, UI strings, PR text and Slack; sentence shape; the heading and casing rules; writing for a stranger; the humanizer pass that strips AI patterns; code comments, commit messages and PR descriptions; and the first-person register for Kevin\'s own posts and reviews. Use when writing or editing any text Kevin will ship, publish or read, including code comments and PR descriptions, and before showing him a draft.',
     areas: ['voice'],
-    updated: '2026-10-10',
+    updated: '2026-10-20',
     files: ['references/ai-patterns.md', 'references/before-after.md', 'references/launch-posts.md', 'references/messages.md', 'references/sources.md'],
   },
   {
@@ -79,7 +79,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Working in Prototemplate',
     description: 'How to work in Prototemplate, Kevin\'s hub and wiki for General Translation work: what each route holds, the repository map, the viewer shell and its props, the registries that move together (surfaces, search index, the handbook, the docs pages, src/lib/seo, captures), the chrome and sidebar rules, the book page standard, adding a page, a docs page, a handbook document or a skill, the build scripts, the shared checkout and its session lanes, the gates and landing, keeping the hub current with gt-cloud, and the curated skills with their contract and install. Use when changing anything in the Prototemplate repository, when adding a route, document or skill to it, or when building on it from another project.',
     areas: ['website', 'components'],
-    updated: '2026-10-15',
+    updated: '2026-10-20',
     files: ['references/adding.md', 'references/build-scripts.md', 'references/chrome.md', 'references/hub.md', 'references/porting.md', 'references/registries.md', 'references/shell.md', 'references/skills.md', 'references/sources.md'],
   },
   {

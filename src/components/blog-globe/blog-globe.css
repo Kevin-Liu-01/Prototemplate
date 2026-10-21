@@ -1,0 +1,133 @@
+/* The docs frames of the blog globe figures (GlobeFrame, GlobeFigure,
+   GlobeGrid). The figures inside the frames are styled by their own
+   rounds in src/app/d/blog-globe; this sheet only places and sizes the
+   frames, on the shell's tokens.
+
+   GlobeFrame sets on .bgf-frame:
+     --bgf-ratio  712 / the figure's height at the review column
+     --bgf-phone  the figure's height at the box's own width, below 600 px
+     --bgf-w, --bgf-h, --bgf-s  the frame's layout box and its scale */
+
+/* ---------- one frame ---------- */
+
+.bgf-fit {
+  container: bgf / inline-size;
+}
+
+/* The box's size is set here alone, so the first paint holds the figure's
+   space before the frame loads: the review column's layout scaled to the
+   box, or, for a 'fit' frame under 600 px, the figure's phone height. */
+.bgf-frame {
+  position: relative;
+  width: min(100%, 712px);
+  aspect-ratio: var(--bgf-ratio);
+  overflow: hidden;
+}
+
+@container bgf (max-width: 599.98px) {
+  .bgf-frame[data-layout='fit'] {
+    width: 100%;
+    aspect-ratio: auto;
+    height: var(--bgf-phone);
+  }
+}
+
+/* until the figure reports its height, the box shows the plate and the
+   frame stays transparent, so the stage's own first render never shows */
+.bgf-frame:not([data-ready]) {
+  background: var(--pt-plate);
+  border-radius: var(--pt-radius-card);
+}
+
+.bgf-frame iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: var(--bgf-w);
+  height: var(--bgf-h);
+  border: 0;
+  transform: scale(var(--bgf-s));
+  transform-origin: 0 0;
+  opacity: 0;
+}
+
+.bgf-frame[data-ready] iframe {
+  opacity: 1;
+}
+
+/* ---------- one figure with its rounds ---------- */
+
+.bgf {
+  margin-block: 8px;
+}
+
+.bgf-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  width: min(100%, 712px);
+  margin-bottom: 16px;
+}
+
+.bgf-link,
+.bgg-cap a {
+  color: var(--pt-ink-2);
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.bgf-link {
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+}
+
+.bgf-link:hover,
+.bgg-cap a:hover {
+  color: var(--pt-ink);
+  text-decoration-color: currentColor;
+}
+
+.bgf-still {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 16px;
+  border-radius: var(--pt-radius-card);
+}
+
+/* ---------- every round of every figure ---------- */
+
+.bgg {
+  container: bgg / inline-size;
+  margin-block: 8px;
+}
+
+.bgg-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px 16px;
+}
+
+@container bgg (min-width: 600px) {
+  .bgg-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.bgg-cell {
+  min-width: 0;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.bgg-cap {
+  margin-bottom: 8px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}

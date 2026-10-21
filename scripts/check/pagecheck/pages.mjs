@@ -40,9 +40,13 @@ const READY = {
   blog: '.blog-root',
 };
 
-/** The ready selector of a route: its own, the blog's root for a post, the body for a shipped page, the shell's stamp otherwise. */
+/** The docs site's layout (fumadocs' notebook), outside the shell: every /docs page, the handbook's included. */
+const DOCS_READY = '#nd-notebook-layout';
+
+/** The ready selector of a route: its own, the docs layout for a docs page, the blog's root for a post, the body for a shipped page, the shell's stamp otherwise. */
 function readyOf(route) {
   if (READY[route.id]) return READY[route.id];
+  if (route.path === '/docs' || route.path.startsWith('/docs/')) return DOCS_READY;
   if (route.id.startsWith('blog-')) return READY.blog;
   if (route.id.startsWith('production')) return 'body';
   return SHELL_READY;

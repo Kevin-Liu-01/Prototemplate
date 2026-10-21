@@ -112,7 +112,7 @@ Kevin, 2026-09-10: "be vendor agnostic, dont just ennforce claude code".
 
 ## 18. Privacy on public surfaces
 
-Prototemplate is public at www.prototemplate.com and github.com/Kevin-Liu-01/Prototemplate. Nothing in it carries keys, account ids, email addresses, personal details, customer names beyond BRAND.md section 9, unannounced plans, or business numbers such as funding, revenue and headcount (`gt-brand` section 8, `gt-voice` "Facts and public surfaces"). Colleagues appear by role. `pnpm lint:public` scans every file for key shapes, machine paths and the terms on a private denylist, and the pre-push hook in `.githooks/` runs it.
+Prototemplate is public at www.prototemplate.com and github.com/Kevin-Liu-01/Prototemplate. Nothing in it carries keys, account ids, email addresses, personal details, customer names that generaltranslation.com does not show, unannounced plans, or business numbers such as funding, revenue and headcount (`gt-brand` section 8, `gt-voice` "Facts and public surfaces"). Colleagues appear by role. `pnpm lint:public` scans every file for key shapes, machine paths and the terms on a private denylist, and the pre-push hook in `.githooks/` runs it.
 
 The rule dates from the brand questionnaire round (2026-08-06 and 2026-08-11) and from 2026-10-05, when Kevin made Prototemplate his public hub for GT work.
 
@@ -142,4 +142,4 @@ Kevin's wiki skill `agent-iteration-loop` holds the general loop of implementing
 
 - Kevin's messages to Claude Code and Codex from 2026-07-20 to 2026-10-05, about 5,800 in all. Quotes keep his spelling. Rules 1, 4, 5 and 8 recur most: about 90 messages ask to continue or resume, 137 to revert or restore an earlier state, 177 for a change "everywhere" or "for all", and 86 to be shown the result. The counts include copies in forked sessions.
 - Prototemplate: BRAND.md section 9; `skills/gt-aesthetic` sections 2 and 5; `skills/gt-ship` sections 3, 4 and 8; `skills/gt-lints` sections 1, 4 and 6; `skills/gt-components` (Standardization); `skills/gt-brand` sections 5 and 8; `skills/gt-dither` section 5; `skills/gt-voice` (Hard rules, Facts and public surfaces); `skills/gt-website` section 8; `skills/gt-local-dev` sections 1 and 5; `skills/prototemplate` sections 8 and 10; `docs/handbook/quality-bar.md` and `docs/handbook/glossary.md`.
-- Kevin's gt-cloud memory notes `redesign-v0-verdict`, `pr-size-discipline`, `explorations-stay-local`, `plain-technical-english` and `sentence-order-rules`, which hold earlier statements of rules 2, 3, 4 and 12 and the writing rules this page follows; `always-simplify` (2026-10-06) and `careers-team-photo` (2026-10-08), read 2026-10-10 for the additions to rules 12 and 15.
+- Kevin's private gt-cloud memory notes, which hold earlier statements of rules 2, 3, 4 and 12 and the writing rules this page follows, and two notes read on 2026-10-10 for the additions to rules 12 and 15.

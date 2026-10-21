@@ -955,7 +955,7 @@ async function runLive({ report, base }) {
     else if (file === '/llms.txt') llms = await response.text();
   }
   if (llms) {
-    for (const path of sitemapPaths.filter((p) => /^\/(docs|handbook)(\/|$)/.test(p))) {
+    for (const path of sitemapPaths.filter((p) => /^\/docs(\/|$)/.test(p))) {
       if (!llms.includes(selfUrl(path))) add('/llms.txt', 'L4', `does not link ${selfUrl(path)}`);
     }
   }

@@ -1,0 +1,92 @@
+---
+title: Components
+description: "Prototemplate's live component library: every instrument mounted on its page with controls, its import path, its props and its reduced-motion still."
+icon: Puzzle
+sources:
+  - src/components/docs/demos
+  - src/lib/studio-field.ts
+---
+
+import { StudioFieldDemo } from '@/components/docs/demos/lazy';
+
+These pages mount the real components of the hub: the dithered fields, the light fields, the glyph rain, the doubled line, the isometric kit, the globes, the locale chips, the moving text, the marks and the heads. Every plate is the component itself, running, with controls for its props. Each section gives the import path, the props, when to use the component and what it does under reduced motion. The plate below is the studio field, the dithered material of the landing hero, with its ten presets.
+
+<StudioFieldDemo compact />
+
+## The pages
+
+| Page | Components |
+| --- | --- |
+| [Dither and the studio field](/docs/components/dither) | The ordered Bayer screens, the CPU dither loop and its field factories, the ten studio field presets |
+| [Horizon and prismatic fields](/docs/components/fields) | The event-horizon shader and the prismatic burst, with their cursor effects |
+| [Glyph field and ink field](/docs/components/glyph-field) | The eight-script glyph rain, the ink field and its pointer play |
+| [Doubled lines and connectors](/docs/components/lines) | `DoubledLine` with its pulse, and `TranslationFlow`, the connector in production |
+| [Isometric drawings](/docs/components/iso) | The isometric kit: boxes, prisms, faces and a seated mark |
+| [Globes and maps](/docs/components/globes) | `EdgeGlobe`, the dithered globe field, the blog globe figures in all three rounds |
+| [Locale tags and language pieces](/docs/components/language) | `LocaleTag` against `LocaleFlag`, and the seven language diagrams |
+| [Reveal seam and sentence motion](/docs/components/motion) | `RevealSeam` and `EverySentence` |
+| [Speed marks and the GT mark](/docs/components/marks) | The speed marks and the globe concepts, `GtWord` and `gtText()`, `DitheredMark` |
+| [Badges and heads](/docs/components/heads) | `BadgeCycle`, `BadgeWords`, `badgeMark()` and `BookHead` |
+
+## Every component
+
+| Component | File | Client | Page |
+| --- | --- | --- | --- |
+| `createDitherLoop` and the field factories | `src/lib/dither.ts` | yes | [Dither](/docs/components/dither) |
+| `BAYER_8`, `BAYER4` | `src/lib/dither.ts`, `src/app/d/toolchain/diagrams/DitheredMark.tsx` | no | [Dither](/docs/components/dither) |
+| `StudioField`, `createStudioField` | `src/components/shared/StudioField.tsx`, `src/lib/studio-field.ts` | yes | [Dither](/docs/components/dither) |
+| `createHorizonField` | `src/lib/horizon-field.ts` | yes | [Fields](/docs/components/fields) |
+| `PrismaticField`, `createPrismaticField` | `src/components/shared/PrismaticField.tsx`, `src/lib/prismatic-field.ts` | yes | [Fields](/docs/components/fields) |
+| `createGlyphField` | `src/lib/glyph-field.ts` | yes | [Glyph field](/docs/components/glyph-field) |
+| `createInkField` | `src/app/d/glyph-rain/sections/band/inkField.ts` | yes | [Glyph field](/docs/components/glyph-field) |
+| `DoubledLine` | `src/components/shared/diagrams/DoubledLine.tsx` | no | [Lines](/docs/components/lines) |
+| `TranslationFlow` | `src/app/d/toolchain/diagrams/TranslationFlow.tsx` | yes | [Lines](/docs/components/lines) |
+| The isometric kit, `IsoFrame` | `src/app/d/toolchain/diagrams/iso.ts`, `IsoFrame.tsx` | no | [Isometric](/docs/components/iso) |
+| `EdgeGlobe` | `src/app/d/toolchain/diagrams/EdgeGlobe.tsx` | yes | [Globes](/docs/components/globes) |
+| `globe()` | `src/lib/dither.ts` | yes | [Globes](/docs/components/globes) |
+| `GlobeFrame` | `src/components/blog-globe/GlobeFrame.tsx` | yes | [Globes](/docs/components/globes) |
+| `LocaleTag` | `src/app/d/toolchain/components/LocaleTag.tsx` | no | [Language](/docs/components/language) |
+| `LocaleFlag` | `src/components/shared/LocaleFlag.tsx` | no | [Language](/docs/components/language) |
+| The language diagrams | `src/app/d/toolchain/diagrams/lang/` | yes | [Language](/docs/components/language) |
+| `RevealSeam` | `src/app/d/toolchain/sections/RevealSeam.tsx` | yes | [Motion](/docs/components/motion) |
+| `EverySentence` | `src/components/shared/EverySentence.tsx` | yes | [Motion](/docs/components/motion) |
+| `MARKS`, `GLOBE_CONCEPTS` | `src/lib/marks.ts`, `public/marks/` | no | [Marks](/docs/components/marks) |
+| `GtWord`, `gtText`, `GtMark` | `src/components/viewer/GtWord.tsx`, `src/components/viewer/GtMark.tsx` | no | [Marks](/docs/components/marks) |
+| `DitheredMark` | `src/app/d/toolchain/diagrams/DitheredMark.tsx` | no, the host animates | [Marks](/docs/components/marks) |
+| `BadgeCycle`, `BadgeWords`, `badgeMark` | `src/components/viewer/BadgeCycle.tsx` | no | [Heads](/docs/components/heads) |
+| `BookHead` | `src/components/viewer/BookView.tsx` | yes | [Heads](/docs/components/heads) |
+
+Client means the module is a `'use client'` component or a canvas engine that needs the DOM. The rest render on the server and ship no JavaScript of their own. Several components live in `src/app/d/toolchain`, the direction that the later directions fork. The radius, type and oxlint gates skip that folder, and the site imports the components from there.
+
+## The lifecycle every instrument keeps
+
+1. **Mount late.** A canvas or WebGL engine starts when its plate comes within 180 pixels of the viewport, through one IntersectionObserver that disconnects after it fires.
+2. **Pause when unseen.** From then on the engine pauses itself when it leaves the viewport and when the tab is hidden.
+3. **Draw one still under reduced motion.** With `prefers-reduced-motion: reduce` an engine draws one designed frame and schedules no animation frames. A Still control on a plate shows that frame without changing the system setting.
+4. **Release on unmount.** `destroy()` disconnects every observer and listener. The WebGL contexts of the studio, horizon and prismatic fields persist for the session, one per engine, because a context per mount exhausts the browser's budget.
+5. **Follow the theme.** The theme is `html[data-theme]`. An engine reads its ink from a custom property and reads it again when the attribute changes; an SVG drawing reads `currentColor` and the tokens.
+
+The fields tuned to an ink ground, the studio, horizon, prismatic and ink fields, sit on an ink plate in both themes. Everything else follows the docs theme.
+
+## Mounting a component in a docs page
+
+A docs page imports a component at the top of its MDX file and renders it as JSX. The page and its MDX are server components, so a component with state, a canvas or GSAP must be a `'use client'` module. fumadocs-mdx imports every docs page into the one `/docs/[[...slug]]` route, so a plate imported directly would put its code and its stylesheets into every docs page's first load. The pages therefore import their plates from `src/components/docs/demos/lazy.tsx`, which wraps each one in `next/dynamic`: the server still renders the plate, and its chunk and CSS load only on the page that shows it.
+
+```mdx
+import { StudioFieldDemo } from '@/components/docs/demos/lazy';
+
+The plate runs the studio field with its ten presets.
+
+<StudioFieldDemo />
+```
+
+Put a sentence beside every plate that says what it shows. The Markdown twin of the page and `/llms-full.txt` drop the import and keep the plate as a bare tag, such as `<StudioFieldDemo />`, so the sentence is what a reader of the twin gets.
+
+The plates on these pages are built from one small kit in `src/components/docs/demos/`:
+
+| Part | What it does |
+| --- | --- |
+| `Plate` | The card: the stage, the entry point's name in its corner, and the controls row. `night` pins the stage to ink, `lazy` mounts the children when the plate nears the viewport, `fit` takes the content's height, and `moves` adds the reduced-motion note. |
+| `Choice`, `Range`, `Toggle`, `Action` | The controls: a radio group drawn as a segmented row, a range with its value, a pressed button and a plain button. |
+| `useArmed`, `useReducedMotion`, `useTheme`, `readToken`, `useReplay` | The lifecycle hooks behind the list above. |
+| `lazy.tsx` | Every plate wrapped in `next/dynamic`, with a fallback at about the plate's height for a client navigation. A new plate gets its line here. |

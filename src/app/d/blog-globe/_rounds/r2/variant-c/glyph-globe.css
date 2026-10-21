@@ -1,0 +1,383 @@
+/* Globe variant C, the glyph globe (GlobeC.tsx, engine in
+   mount-glyph-globe.ts): the passage beside a globe whose land is printed in
+   the passage's letters, on the Versions figure's plate, with a pill of
+   native radios at its foot. CSS alone shows the checked stop, so the figure
+   switches passage and label without JavaScript. The globe is the plate's
+   one material: no field behind it. */
+
+.globe-r2 .gvc {
+  --gvc-r: 12px;
+  --gvc-ink: var(--tc-ink);
+  --gvc-cap: #6e737c;
+  --gvc-plate: rgba(7, 7, 7, 0.035);
+  --gvc-hair: var(--tc-hair);
+  --gvc-pill: #ffffff;
+  --gvc-pill-line: rgba(7, 7, 7, 0.12);
+  --gvc-stop-ink: var(--tc-ink-2);
+  --gvc-thumb: #070707;
+  --gvc-thumb-ink: #ffffff;
+  --gvc-focus: #2f5ce0;
+  /* the globe's inks, read by the engine: the land prints in ink in both
+     themes and the sea's squares at a third, so both read at these sizes */
+  --gvc-land: var(--tc-ink);
+  --gvc-sea: rgba(7, 7, 7, 0.34);
+  --gvc-city: var(--tc-ink);
+  --gvc-accent: #2f5ce0;
+  --gvc-limb: rgba(7, 7, 7, 0.12);
+
+  container: gvc / inline-size;
+  margin: 2.25rem 0 2.5rem;
+  color: var(--gvc-ink);
+  font-family: var(--tc-sans);
+}
+
+[data-theme='dark'] .globe-r2 .gvc {
+  --gvc-cap: #8a8f98;
+  --gvc-plate: rgba(255, 255, 255, 0.035);
+  --gvc-pill: #0e0e10;
+  --gvc-pill-line: rgba(255, 255, 255, 0.14);
+  --gvc-thumb: #ffffff;
+  --gvc-thumb-ink: #070707;
+  --gvc-focus: #86a8ff;
+  --gvc-sea: rgba(255, 255, 255, 0.3);
+  --gvc-accent: #86a8ff;
+  --gvc-limb: rgba(255, 255, 255, 0.14);
+}
+
+/* ---------- the plate ---------- */
+
+.globe-r2 .gvc-plate {
+  --pad: clamp(20px, 6cqi, 44px);
+
+  position: relative;
+  border-radius: var(--gvc-r);
+  background: var(--gvc-plate);
+}
+
+.globe-r2 .gvc-plate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--gvc-hair);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.globe-r2 .gvc-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(20px, 5cqi, 40px);
+  padding: var(--pad) var(--pad) 0;
+}
+
+/* ---------- the globe: the server's still, then the canvas ---------- */
+
+.globe-r2 .gvc-globe {
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1;
+}
+
+.globe-r2 .gvc-still,
+.globe-r2 .gvc-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.globe-r2 .gvc-canvas {
+  visibility: hidden;
+}
+
+.globe-r2 .gvc[data-live] .gvc-canvas {
+  visibility: visible;
+}
+
+.globe-r2 .gvc[data-live] .gvc-still {
+  visibility: hidden;
+}
+
+.globe-r2 .gvc-still text {
+  font-weight: 400;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.globe-r2 .gvc-land {
+  fill: var(--gvc-land);
+}
+
+.globe-r2 .gvc-sea {
+  fill: var(--gvc-sea);
+}
+
+.globe-r2 .gvc-limb,
+.globe-r2 .gvc-ring {
+  fill: none;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.globe-r2 .gvc-limb {
+  stroke: var(--gvc-limb);
+}
+
+.globe-r2 .gvc-ring {
+  stroke: var(--gvc-accent);
+}
+
+.globe-r2 .gvc-here {
+  fill: var(--gvc-accent);
+}
+
+.globe-r2 .gvc-city {
+  fill: var(--gvc-city);
+}
+
+/* ---------- the passage and its label ---------- */
+
+/* Every stop holds the same two rows (subgrid), so the passage and the label
+   sit at one height in every language and a switch never moves the page. */
+.globe-r2 .gvc-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+}
+
+.globe-r2 .gvc-stop {
+  display: grid;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  grid-template-rows: subgrid;
+  text-align: start;
+  visibility: hidden;
+}
+
+.globe-r2 .gvc .gvc-passage {
+  /* every passage fills its row and sets its text at the row's foot, so the
+     leaving and arriving passages share one box and their masks interlock */
+  display: grid;
+  align-content: end;
+  margin: 0;
+  font-size: clamp(21px, 4.2cqi, 28px);
+  font-weight: 500;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1,
+    'cv11' 1,
+    'ss01' 1;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* Inter has no Arabic, and the stack's fallback has no 500: a system face
+   with no Inter in front keeps the weight and the joins */
+.globe-r2 .gvc .gvc-passage:lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: calc(1.1 * clamp(21px, 4.2cqi, 28px));
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.globe-r2 .gvc .gvc-passage:is(:lang(zh), :lang(ja), :lang(ko)) {
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.globe-r2 .gvc .gvc-label {
+  margin: 0;
+  padding-top: 14px;
+  text-wrap: balance;
+  color: var(--gvc-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.globe-r2 .gvc-label span {
+  white-space: nowrap;
+}
+
+/* the checked radio shows its stop; a leaving stop stays for its step */
+.globe-r2 .gvc:has(.gvc-opt:nth-of-type(1) > :checked) .gvc-stop:nth-child(1),
+.globe-r2 .gvc:has(.gvc-opt:nth-of-type(2) > :checked) .gvc-stop:nth-child(2),
+.globe-r2 .gvc:has(.gvc-opt:nth-of-type(3) > :checked) .gvc-stop:nth-child(3),
+.globe-r2 .gvc:has(.gvc-opt:nth-of-type(4) > :checked) .gvc-stop:nth-child(4),
+.globe-r2 .gvc:has(.gvc-opt:nth-of-type(5) > :checked) .gvc-stop:nth-child(5),
+.globe-r2 .gvc-stop[data-leaving] {
+  visibility: visible;
+}
+
+/* without :has() the rules above drop out whole: show the first stop */
+@supports not selector(:has(*)) {
+  .globe-r2 .gvc-stop:first-child {
+    visibility: visible;
+  }
+}
+
+/* during a switch the passage and the label step through the 8 by 8 screen at 2px cells */
+.globe-r2 .gvc-stage[data-mixing] .gvc-stop > * {
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+/* ---------- the pill: real radios, so it works without JavaScript ---------- */
+
+.globe-r2 .gvc-ctl {
+  display: flex;
+  justify-content: center;
+  padding: clamp(24px, 5cqi, 36px) 12px clamp(16px, 4cqi, 24px);
+}
+
+.globe-r2 .gvc-pill {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 104px));
+  max-width: 100%;
+  padding: 3px;
+  border: 1px solid var(--gvc-pill-line);
+  border-radius: 999px;
+  background: var(--gvc-pill);
+}
+
+.globe-r2 .gvc-opt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: var(--gvc-stop-ink);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color 140ms ease-out,
+    background-color 140ms ease-out;
+}
+
+.globe-r2 .gvc-opt:hover {
+  color: var(--gvc-ink);
+}
+
+.globe-r2 .gvc-opt:has(> input:checked) {
+  background: var(--gvc-thumb);
+  color: var(--gvc-thumb-ink);
+}
+
+.globe-r2 .gvc-opt:has(> input:focus-visible) {
+  outline: 2px solid var(--gvc-focus);
+  outline-offset: 2px;
+}
+
+.globe-r2 .gvc-opt input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* a name wider than its stop ends in an ellipsis; the stop's title holds it whole */
+.globe-r2 .gvc-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.globe-r2 .gvc-name:lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: 1.1em;
+  letter-spacing: 0;
+}
+
+.globe-r2 .gvc-name:is(:lang(zh), :lang(ja), :lang(ko)) {
+  letter-spacing: 0;
+}
+
+/* the tour's line keeps its space from the first paint, so it never moves the page */
+.globe-r2 .gvc-tour {
+  visibility: hidden;
+}
+
+.globe-r2 .gvc[data-touring] .gvc-tour {
+  visibility: visible;
+}
+
+.globe-r2 .gvc-cap {
+  margin: 12px 0 0;
+  color: var(--gvc-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  text-wrap: pretty;
+}
+
+/* ---------- narrow: the globe above the passage, the stops sized to their names ---------- */
+
+@container gvc (max-width: 539px) {
+  .globe-r2 .gvc-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .globe-r2 .gvc-globe {
+    max-width: 260px;
+  }
+
+  /* a forced break, not a block, so the lines keep the passage's side */
+  .globe-r2 .gvc-at::after {
+    content: '\A';
+    white-space: pre;
+  }
+
+  /* kept in the text for screen readers and copying, drawn at no width */
+  .globe-r2 .gvc-sep {
+    font-size: 0;
+  }
+
+  .globe-r2 .gvc-ctl {
+    padding-inline: 8px;
+  }
+
+  /* the stops share the plate's width and never cut a name; below about
+     270px of plate they wrap rather than clip */
+  .globe-r2 .gvc-pill {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    border-radius: 19px;
+  }
+
+  .globe-r2 .gvc-opt {
+    flex: 1 0 auto;
+    min-width: max-content;
+    padding: 0 4px;
+    font-size: 12.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-r2 .gvc-opt {
+    transition: none;
+  }
+}

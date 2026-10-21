@@ -1,0 +1,16 @@
+{
+  "title": "Components",
+  "pages": [
+    "index",
+    "dither",
+    "fields",
+    "glyph-field",
+    "lines",
+    "iso",
+    "globes",
+    "language",
+    "motion",
+    "marks",
+    "heads"
+  ]
+}

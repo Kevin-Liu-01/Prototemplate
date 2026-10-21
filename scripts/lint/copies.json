@@ -569,6 +569,34 @@
       "from": "gt-cloud:apps/landing/src/components/docs/SidebarActiveScroll.tsx at 51cf3bdda5",
       "ported": "2026-10-15",
       "reason": "the docs sidebar's motion, copied with only its import line changed (useMountEffect from src/lib/use-mount-effect.ts); its styles are in src/app/docs/docs.css rather than gt-cloud's globals.css, and the copy is not re-synced"
+    },
+    {
+      "path": "src/app/d/blog-globe/_rounds",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/components/blog/globe (k/blog-globe; r1 and r2 from its rounds/ folder, r3 from the live folder)",
+      "ported": "5ba413acfb (2026-10-20)",
+      "reason": "the three review rounds of the blog globe figure, live on /d/blog-globe; import paths point into this folder and each round's CSS is scoped under .globe-r<N>, nothing else changes"
+    },
+    {
+      "path": "src/app/d/blog-globe/_stage",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/components/blog/globe/stage (k/blog-globe)",
+      "ported": "5ba413acfb (2026-10-20)",
+      "reason": "the dev stage, embed protocol and comparison frames; hand edits listed in src/app/d/blog-globe/README.md"
+    },
+    {
+      "path": "src/app/d/blog-globe/_shared/ditherMask.ts",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/components/blog/ditherMask.ts (k/blog-globe)",
+      "ported": "5ba413acfb (2026-10-20)",
+      "reason": "a whole copy for the globe rounds; src/lib/dither.ts has the same matrix but no CSS mask builder"
+    },
+    {
+      "path": "src/app/d/blog-globe/_shared/versions-field.ts",
+      "mode": "fork",
+      "from": "gt-cloud:apps/landing/src/components/blog/versions-field.ts (k/blog-globe)",
+      "ported": "5ba413acfb (2026-10-20)",
+      "reason": "only the eight exports the globes import, verbatim; the Versions field and mountVersions are left out"
     }
   ]
 }

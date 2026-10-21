@@ -1,0 +1,132 @@
+/* The globe figures' passage (Passage.tsx, mount-passage.ts): every stop's lines
+   on shared rows (subgrid) in one box, so line N sits at one height in
+   every language and the box keeps the tallest. Type comes from the
+   figure; this sets the rows, the markers and the per-script faces. The
+   space between lines is each line's own padding, so a row that is not
+   shown takes no room. Rules that touch li carry three classes to beat
+   the prose rules. */
+
+.globe-r3 .gp {
+  --gp-mark: #6e737c;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: repeat(var(--gp-rows), auto);
+  line-height: var(--gp-lh, 1.45);
+}
+
+[data-theme='dark'] .globe-r3 .gp {
+  --gp-mark: #8a8f98;
+}
+
+.globe-r3 .gp-panel {
+  display: grid;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: subgrid;
+  column-gap: 0.6em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: start;
+  visibility: hidden;
+}
+
+.globe-r3 .gp-panel[data-numbered] {
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+.globe-r3 .gp .gp-panel > li {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  margin: 0;
+  padding: calc(var(--gp-gap, 0.35em) / 2) 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* lines='fit': all eight on a wide screen, the first five on a phone */
+@media (max-width: 599px) {
+  .globe-r3 .gp[data-fit] .gp-panel > li:nth-child(n + 6) {
+    display: none;
+  }
+}
+
+.globe-r3 .gp-n {
+  justify-self: end;
+  color: var(--gp-mark);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.globe-r3 .gp-t {
+  grid-column: -2;
+  min-width: 0;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+/* with the engine, the shown stop and any stop leaving in a step */
+.globe-r3 .gp[data-live] > :is([data-shown], [data-leaving]) {
+  visibility: visible;
+}
+
+/* without it, the first stop, or the stop checked in the figure's links */
+.globe-r3 .gp:not([data-live]) > .gp-panel:first-child {
+  visibility: visible;
+}
+
+@supports selector(:has(*)) {
+  .globe-r3
+    figure:has(.gl-opt:nth-of-type(n + 2) > :checked)
+    .gp:not([data-live])
+    > .gp-panel:first-child {
+    visibility: hidden;
+  }
+
+  .globe-r3
+    figure:has(.gl-opt:nth-of-type(2) > :checked)
+    .gp:not([data-live])
+    > .gp-panel:nth-child(2),
+  .globe-r3
+    figure:has(.gl-opt:nth-of-type(3) > :checked)
+    .gp:not([data-live])
+    > .gp-panel:nth-child(3),
+  .globe-r3
+    figure:has(.gl-opt:nth-of-type(4) > :checked)
+    .gp:not([data-live])
+    > .gp-panel:nth-child(4),
+  .globe-r3
+    figure:has(.gl-opt:nth-of-type(5) > :checked)
+    .gp:not([data-live])
+    > .gp-panel:nth-child(5) {
+    visibility: visible;
+  }
+}
+
+/* Inter has no Arabic, and the stack's fallback has no 500: a system face
+   with no Inter in front keeps the joins */
+.globe-r3 .gp-panel:lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: 1.1em;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.globe-r3 .gp-panel:is(:lang(zh), :lang(ja), :lang(ko)) {
+  column-gap: 0.3em;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
+/* during a step each row passes through the 8 by 8 screen at 2px cells */
+.globe-r3 .gp[data-mixing] .gp-panel > li {
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}

@@ -2,8 +2,8 @@
 
 The index of the componentized instruments. The living version, with the
 bodies, live plates and API snippets, is "The libraries" in the build log
-that follows this index on `/handbook/libraries` (`src/app/craft/libraries.ts`;
-`/craft` redirects there). Keep the two in step: when an engine gains an option,
+that follows this index on `/docs/handbook/libraries`
+(`src/app/craft/libraries.ts`; `/craft` redirects there). Keep the two in step: when an engine gains an option,
 update its entry in `libraries.ts` in the same round. Once perfected these
 graduate to their own repos.
 

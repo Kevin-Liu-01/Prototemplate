@@ -51,3 +51,9 @@ Provenance for `gt-voice`. The first list is the skill's sources as written on 2
 | The before and after table moved unchanged to `references/before-after.md`, under the 24,000-byte body budget | SKILL.md "Before and after" | system v2 plan section 2.2 and gate 5.2 (2026-10-10) |
 | The humanizer conflict stays recorded as written; the decision on aligning the wiki skill is Kevin's (plan decision K13: gt-voice applies to GT work, and Kevin edits the wiki skill if he wants them aligned) | SKILL.md "The humanizer pass" | inventory skills items 0 and 35 (2026-10-10) |
 | `metadata.owner: P` | frontmatter | system v2 plan section 2.2 (2026-10-10) |
+
+## Changed on 2026-10-20
+
+| Change | Where | Source |
+| --- | --- | --- |
+| The dash scan's comment names the handbook's files as the docs site renders them, and the registry that lists them | SKILL.md, the scan commands | the handbook's move into `/docs/handbook` (decisions log, 2026-10-20) |

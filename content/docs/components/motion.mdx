@@ -1,0 +1,97 @@
+---
+title: Reveal seam and sentence motion
+description: "The slide-to-reveal seam between a rendered string and its served file, and the headline that dissolves into glyphs and reassembles in the next language."
+icon: Arrows
+sources:
+  - src/components/docs/demos
+  - src/app/d/toolchain/sections/RevealSeam.tsx
+  - src/components/shared/EverySentence.tsx
+---
+
+import { EverySentenceDemo, RevealSeamDemo } from '@/components/docs/demos/lazy';
+
+Two instruments move text without moving layout. The reveal seam uncovers the source behind a rendered result as the reader drags its handle, and neither layer moves. The sentence reassembler changes a headline's language by turning its ink into glyph dust and printing the next sentence through it, and the box tweens its width once per change.
+
+## The reveal seam
+
+The plate stacks two full-width layers in one box: the rendered interface on top and the translation file the build served for it beneath. Drag the seam, or focus it and press the arrow keys, and the file is uncovered in place. Locale switches both layers, Tour drives the cut from outside the component as a guided intro would, and Reset returns it to rest.
+
+<RevealSeamDemo />
+
+The seam writes one custom property, `--seam-cut`, on the box, and causes no React render while it moves. The lower layer clips itself with `clip-path: inset(0 0 0 var(--seam-cut))`, so the window moves and the picture stays put.
+
+### Import and props
+
+```tsx
+import RevealSeam from '@/app/d/toolchain/sections/RevealSeam';
+
+const box = useRef<HTMLDivElement>(null);
+
+<div ref={box} className='seam-box' style={{ '--seam-cut': '58%' }}>
+  <div className='seam-top'>{rendered}</div>
+  <div className='seam-under'>{source}</div>
+  <RevealSeam boxRef={box} ariaLabel='Reveal the served translation file' defaultCut={58} />
+</div>;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `boxRef` | ref | required | The stacked box the seam cuts. It receives `--seam-cut`. |
+| `ariaLabel` | string | required | The slider's accessible name. |
+| `defaultCut` | number | `70` | The resting cut in percent, for the initial `aria-valuenow`. Set the box's `--seam-cut` to the same value. |
+| `onInteract` | `() => void` | none | Fires on the first touch or key press, so a host can stop a guided tour. |
+| `onCutChange` | `(pct, box) => void` | none | Fires on every cut the seam applies, to drive companion values. |
+
+The handle is a `span` with the full slider role. The arrow keys move it 5 percent, and the pointer is captured so a fast drag and a touch drag hold. The host's stylesheet draws the handle (`.tc-seam`) and the clip, so each surface sets its own threads and grip.
+
+### When to use it
+
+Use the seam wherever a page shows a result and the source behind it: a rendered string and its JSON, a page and its translation, a before and an after of one layout. Both layers have to be full width and pinned, so the comparison reads cell for cell.
+
+### Reduced motion and themes
+
+The seam only moves when the reader moves it. The grip's hover scale has no transition under reduced motion, and a host's guided tour must not start, which is why Tour is off on this plate under reduced motion. The threads and the grip read this page's tokens, so the seam follows the docs theme.
+
+## The sentence reassembler
+
+The plate mounts `EverySentence` with the dossier hero's own headline in seven languages. On every change the sentence dissolves into glyph dust seated on its own ink, the dust disperses, and the next sentence prints through the settled swarm behind a hard clip front. Locale calls `setLocale` once, Hops sets how many arrangements the dust takes on the way, and Auto runs the host's clock, one locale every 3.8 seconds.
+
+<EverySentenceDemo />
+
+The component runs no timer. The host owns the one clock and calls `setLocale` on the ref; calls are debounced by a quarter second, a call during the dissolve retargets the coming print, and a call during the print stops it and dissolves again.
+
+### Import and props
+
+```tsx
+import EverySentence, { type EverySentenceHandle } from '@/components/shared/EverySentence';
+
+const every = useRef<EverySentenceHandle>(null);
+
+<EverySentence
+  ref={every}
+  initial='en'
+  hops={2}
+  words={{
+    en: { text: 'Launch in every language', lang: 'en' },
+    ja: { text: 'あらゆる言語でローンチ', lang: 'ja' },
+  }}
+/>;
+
+every.current?.setLocale('ja');
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `words` | `Record<string, { text, lang, rtl? }>` | required | The sentence in every locale. An unknown locale is ignored. |
+| `initial` | string | required | The locale the server renders. It must be a key of `words`. |
+| `hops` | number | `2` | Arrangements the dust takes between sentences, 1 to 5. A change lands at the next print. |
+| `armDelay` | number | `1.8` | Seconds before the first morph may run. 0 arms at once. |
+| `ref` | `Ref<EverySentenceHandle>` | none | `setLocale(locale)`, the only way in. Calls before the engine boots are kept and served at boot. |
+
+### When to use it
+
+Use the reassembler for one headline whose subject is that it reads in every language, driven by a locale belt or a slow clock. Its width follows the moving-type law: the whole sentence is measured from a hidden probe carrying its own `lang` and `dir`, and the box tweens once per change, so Arabic keeps its joins and Devanagari its conjuncts. Keep every beat longer than the print, about 3.2 seconds, so each morph completes.
+
+### Reduced motion and themes
+
+Under reduced motion the change is a plain swap of the text, `lang` and `dir`, and this plate's Auto clock never starts. Under 720 pixels the dissolve runs as a cheaper cut with fewer motes. Every color derives from `currentColor` and the type from the host's computed font, so the sentence follows the docs theme and face.

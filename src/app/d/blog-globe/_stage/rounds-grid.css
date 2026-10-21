@@ -1,0 +1,57 @@
+/* /d/blog-globe/all: a row per variant, a column per round. RoundFrame sets
+   --grr-w (the stage's column), --grr-h (the embedded figure's height at
+   the frame's width) and --grr-s (the cell's width over the column). */
+
+.grr-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 48px 24px;
+}
+
+.grr-cell {
+  min-width: 0;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--tc-hair);
+}
+
+.grr-caption {
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--tc-ink-3);
+}
+
+.grr-caption a {
+  color: inherit;
+}
+
+.grr-frame {
+  height: var(--grr-h);
+  overflow: hidden;
+}
+
+.grr-frame iframe {
+  display: block;
+  width: 100%;
+  height: var(--grr-h);
+  border: 0;
+}
+
+/* Three rounds side by side: each figure keeps the stage's column width
+   and is scaled down to the cell, never up. */
+@media (min-width: 1100px) {
+  .grr-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grr-frame {
+    height: calc(var(--grr-h) * var(--grr-s));
+  }
+
+  .grr-frame iframe {
+    width: var(--grr-w);
+    transform: scale(var(--grr-s));
+    transform-origin: 0 0;
+  }
+}

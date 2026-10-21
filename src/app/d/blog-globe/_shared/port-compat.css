@@ -1,0 +1,75 @@
+/* The context the globe figures had on gt-cloud's dev stage, restated for
+   Prototemplate (skills/prototemplate/references/porting.md, step 3).
+
+   On gt-cloud every figure sits inside .toolchain-root .blog-root, whose
+   sheets give it the --tc-* tokens, the doubled line's gauge and a few
+   element rules. The rounds' own stylesheets are mirrors under their own
+   roots (.globe-r1, .globe-r2, .globe-r3) and are never edited by hand, so
+   everything the port adds lives here, under .globe-root.
+
+   The token values are the toolchain direction's (src/app/d/toolchain/
+   styles.css), which is where Prototemplate keeps the landing's palette:
+   the same paper and inks as gt-cloud, and the house hairline. */
+
+.globe-root {
+  --tc-paper: #ffffff;
+  --tc-ink: #070707;
+  --tc-ink-2: rgba(7, 7, 7, 0.63);
+  --tc-ink-3: rgba(7, 7, 7, 0.45);
+  --tc-hair: rgba(138, 143, 152, 0.26);
+  --tc-sans: var(--pt-text);
+  --thread-gauge: 1.5px;
+  --thread-gap: 3px;
+
+  position: relative;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font-family: var(--tc-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-theme='dark'] .globe-root {
+  --tc-paper: #070707;
+  --tc-ink: #ffffff;
+  --tc-ink-2: rgba(255, 255, 255, 0.66);
+  --tc-ink-3: rgba(255, 255, 255, 0.48);
+  --tc-hair: rgba(138, 143, 152, 0.5);
+}
+
+/* the landing's element rules the figures were drawn against */
+.globe-root *,
+.globe-root *::before,
+.globe-root *::after {
+  box-sizing: border-box;
+}
+
+.globe-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.globe-root h1,
+.globe-root h2,
+.globe-root h3,
+.globe-root h4 {
+  font-family: var(--tc-sans);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  margin: 0;
+}
+
+.globe-root p {
+  margin: 0;
+}
+
+/* An embedded figure (?v=<x>&embed=1) is sized by its parent from the
+   height it reports, so its document never scrolls, and the page around
+   the frame spaces it, so the figure's own article margins go. */
+html[data-globe-embed] {
+  overflow: hidden;
+}
+
+.globe-root .globe-embed > figure {
+  margin-block: 0;
+}

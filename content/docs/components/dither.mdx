@@ -1,0 +1,133 @@
+---
+title: Dither and the studio field
+description: "The 1-bit material live: the CPU dither loop with its field factories, the Bayer screen's coverage tiers, and the ten studio field presets on WebGL."
+icon: Swatch
+sources:
+  - src/components/docs/demos
+  - src/lib/dither.ts
+  - src/lib/studio-field.ts
+  - src/components/shared/StudioField.tsx
+  - src/app/d/toolchain/diagrams/DitheredMark.tsx
+---
+
+import { BayerTiersDemo, DitherLoopDemo, StudioFieldDemo } from '@/components/docs/demos/lazy';
+
+General Translation draws its signature texture as 1-bit cells: every cell is either ink or ground, and an ordered Bayer screen decides which. Prototemplate has two engines for it. The CPU dither loop in `src/lib/dither.ts` thresholds any function of position and time on a 2D canvas. The studio field in `src/lib/studio-field.ts` runs ten tuned presets as WebGL shaders on one shared context. The `gt-dither` skill holds the rules for where each one goes.
+
+## The ordered screen
+
+The plate below shows the threshold matrix, one tile repeated at the chosen coverage, and the ramp of every tier. Move the coverage to light more cells, and switch between the 4 by 4 and the 8 by 8 matrix.
+
+<BayerTiersDemo />
+
+A cell is lit when its threshold sits under the coverage. Every lit cell of one tier stays lit in every higher tier, so the tiers nest. That property lets a figure fill neighboring regions with different tiers on one shared grid without drawing any cell twice, which is how the edge globe's halo and the dithered shine are built.
+
+### Import
+
+```ts
+import { BAYER_8 } from '@/lib/dither'; // 8 by 8, thresholds 0 to 63
+import { BAYER4 } from '@/app/d/toolchain/diagrams/DitheredMark'; // 4 by 4, thresholds 0 to 15
+```
+
+### Where each screen runs
+
+| Screen | Levels | Where it runs |
+| --- | --- | --- |
+| 4 by 4 | 17 | The studio field's `bayer4` and most of its presets, the edge globe's halo, the dithered shine |
+| 8 by 8 | 65 | The CPU dither loop, the picture cutter, the deck's ramp, studio presets 02 and 10 and `bayerSphere` |
+| 2 by 2 | 5 | Studio preset 07, `bayer-chunk`, only |
+
+Cells are square screen pixels. A canvas engine writes one buffer pixel per cell and lets CSS upscale the buffer with `image-rendering: pixelated`, and an SVG dither sets `shape-rendering: crispEdges`.
+
+## The dither loop
+
+The plate runs `createDitherLoop` on a canvas with five field factories: a radial burst, a lit globe, streak bands, a gradient ramp and a dithered letterform. The cell, bias, gamma, speed and invert controls change the running loop through `setOptions`. A field change hands a new field to the same loop through `setField`, so the canvas is never rebuilt.
+
+<DitherLoopDemo />
+
+The ink is the docs theme's ink, read from the stage's `--dmo-ink` token and read again whenever `html[data-theme]` changes. The paper is transparent, so the stage's own ground shows through the unlit cells.
+
+### Import and props
+
+```ts
+import {
+  createDitherLoop,
+  globe,
+  gradientRamp,
+  makeGlyphField,
+  mixFields,
+  multiplyFields,
+  radialBurst,
+  streakBands,
+} from '@/lib/dither';
+
+const loop = createDitherLoop(canvas, globe({ aspect: 2 }), { scale: 3, ink: 'rgb(7, 7, 7)', paper: 'transparent' });
+loop.setOptions({ bias: 0.1 });
+loop.destroy();
+```
+
+A field is a function `(u, v, t) => number` that returns 0 to 1 for a position in the box and a time in seconds. The factories take an options object whose fields are all optional, and `multiplyFields`, `maxFields`, `mixFields` and `mapField` combine fields.
+
+| Option | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `scale` | number | `3` | Width of one cell in CSS pixels. It sets both the look and the cost. |
+| `ink` | CSS color | `'#fff'` | Color of a lit cell. |
+| `paper` | CSS color | `'#000'` | Color of an unlit cell. `'transparent'` composites over the page. |
+| `bias` | number | `0` | Added to the field before thresholding: lighter or darker without a new field. |
+| `gamma` | number | `1` | Exponent on the field. Above 1 darkens the midtones. |
+| `invert` | boolean | `false` | Swaps ink and paper. |
+| `phase` | `{ x, y }` | `{ x: 0, y: 0 }` | Offsets the tile in cells, so two canvases can share one page grid. |
+| `speed` | number | `1` | Multiplier on elapsed seconds. |
+| `fps` | number | `30` | Frame budget. The loop skips ticks to hold it. |
+| `reducedMotionTime` | number | `0` | The time of the one frame drawn under reduced motion. |
+| `observeResize` | boolean | `true` | Draws again when the canvas resizes. |
+| `pauseOffscreen` | boolean | `true` | Stops while the canvas is out of view. |
+
+The handle returns `render(time)`, `start()`, `stop()`, `running`, `setField(fn)`, `setOptions(patch)` and `destroy()`.
+
+### When to use it
+
+Use the dither loop for a texture whose field is a formula: a globe, a burst, a ramp, a letterform, or a picture cut into a tone grid. It runs on the main thread and its cost grows with the number of cells, so a larger cell or a smaller canvas costs less. Use the studio field instead for a full-bleed hero, where the shader runs on the GPU.
+
+### Reduced motion and themes
+
+Under `prefers-reduced-motion: reduce` the loop draws one frame at `reducedMotionTime` and never schedules an animation frame. Otherwise it stops when the canvas leaves the viewport or the tab is hidden. The loop does not watch the theme by itself: the host reads its ink token and calls `setOptions({ ink })` when `html[data-theme]` changes, as this plate does. `redrawDithers()` does the same for every `canvas.dither` the brand deck draws.
+
+## The studio field
+
+The plate runs `createStudioField` with the ten presets of `BAYER_PRESETS`. Grain, strength, rotation and brightness go to the running engine through `setParams`. A preset or speed change remounts the engine, and Still pauses it and draws its static frame.
+
+<StudioFieldDemo />
+
+The presets vary the matrix order (2 by 2, 4 by 4 or 8 by 8), the cell scale, the tone field under the screen, the motion and the balance of ink and blue. Preset 02, `bayer-8x8`, is the default and the material of the landing hero.
+
+### Import and props
+
+```tsx
+import StudioField from '@/components/shared/StudioField';
+import { BAYER_PRESETS, createStudioField } from '@/lib/studio-field';
+
+<StudioField className='hero-field' preset='bayer8' speed={1} />;
+
+const field = createStudioField(canvas, { preset: 'bayerHot', params: { grain: 40 } });
+field?.setParams({ rotation: 30 });
+field?.destroy();
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `preset` | `StudioPreset` | `'bayer'` | One of the eleven shaders: the ten in `BAYER_PRESETS` and `bayerSphere`. |
+| `params` | `Partial<StudioParams>` | the preset's | Overrides at mount: `colorA`, `colorB`, `colorC`, `strength`, `detail`, `frequency`, `grain`, `amplitude`, `brightness`, `rotation`. |
+| `speed` | number | `1` | Multiplier on the shader clock. |
+| `dpr` | number | `min(devicePixelRatio, 2)` | The device pixel cap. The cells are per device pixel, so the cap stays at 2. |
+| `className` | string | none | The canvas's class. The caller positions it and keeps a dark plate behind it. |
+
+`createStudioField` returns `setParams`, `pause`, `resume`, `renderStatic` and `destroy`, or null when WebGL is missing. The wrapper takes its options once, so a change of preset is a remount with a new `key`.
+
+### When to use it
+
+Use the studio field for the one dithered material of a product surface or a hero band, on an ink ground. Its palettes are the house blues over ink, so the plate stays dark in both themes. Use the CPU dither loop instead on paper, or where the field has to follow the page's ink.
+
+### Reduced motion and themes
+
+Under reduced motion the engine draws one static frame and stops. It also pauses when the canvas leaves the viewport or the tab is hidden. Every mount shares one WebGL context for the session, and `destroy()` releases the mount but keeps the context, because creating a context per mount exhausts the browser's budget.

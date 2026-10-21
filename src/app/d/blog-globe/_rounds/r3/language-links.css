@@ -1,0 +1,96 @@
+/* The globe figures' language choice (LanguageLinks.tsx): the five native
+   names as running text in the figure's type, each underlined like a link
+   in the article. Solid under the current name, dotted and lighter under
+   the rest, darker on hover. No box, no fill, no flag. The radios are
+   kept, out of sight, under the words. */
+
+.globe-r3 .gl {
+  --gl-ink: var(--tc-ink);
+  --gl-ink-2: var(--tc-ink-2);
+  --gl-line: color-mix(in srgb, var(--tc-ink) 36%, transparent);
+  --gl-cap: #6e737c;
+  --gl-focus: #2f5ce0;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--gl-gap, 0.9em);
+  row-gap: 0;
+}
+
+[data-theme='dark'] .globe-r3 .gl {
+  --gl-cap: #8a8f98;
+  --gl-focus: #86a8ff;
+}
+
+.globe-r3 .gl-opt {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  padding-block: 4px;
+  color: var(--gl-ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 140ms ease-out;
+}
+
+.globe-r3 .gl-name {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--gl-line);
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color 140ms ease-out;
+}
+
+.globe-r3 .gl-opt:hover {
+  color: var(--gl-ink);
+}
+
+.globe-r3 .gl-opt:hover .gl-name {
+  text-decoration-color: var(--gl-ink);
+}
+
+.globe-r3 .gl-opt:has(:checked) {
+  color: var(--gl-ink);
+}
+
+.globe-r3 .gl-opt:has(:checked) .gl-name {
+  text-decoration-style: solid;
+  text-decoration-color: currentColor;
+}
+
+.globe-r3 .gl-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.globe-r3 .gl-opt:has(:focus-visible) {
+  border-radius: 3px;
+  outline: 2px solid var(--gl-focus);
+  outline-offset: 2px;
+}
+
+.globe-r3 .gl-year {
+  color: var(--gl-cap);
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+}
+
+.globe-r3 .gl-name:lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: 1.1em;
+  letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-r3 :is(.gl-opt, .gl-name) {
+    transition: none;
+  }
+}

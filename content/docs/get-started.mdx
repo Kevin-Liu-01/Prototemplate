@@ -34,14 +34,14 @@ pnpm exec next dev --turbopack --port 3022
 
 - Stage explicit paths and commit with a pathspec. Never run `git add -A` or `git add .`: `motion/` belongs to the Videos session and stays untracked.
 - Never stop the shared server on 3005, and never build in the shared `.next`.
-- The [multi-session playbook](/handbook/multi-session-playbook) holds the rules for lanes, collisions and resuming.
+- The [multi-session playbook](/docs/handbook/multi-session-playbook) holds the rules for lanes, collisions and resuming.
 
 ## The repository map
 
 | Folder | What it holds |
 | --- | --- |
-| `src/app` | One folder per route: the gallery, `/brand`, `/docs`, `/handbook`, `/skills`, `/motion`, `/d/<slug>` and the rest |
-| `src/components` | `viewer` (the shell), `shared`, `shell`, `plate` (the sign-in port), `book` (the handbook's renderer) and `docs` (this site's parts) |
+| `src/app` | One folder per route: the gallery, `/brand`, `/docs`, `/skills`, `/motion`, `/d/<slug>` and the rest |
+| `src/components` | `viewer` (the shell), `shared`, `shell`, `plate` (the sign-in port), `book` (the handbook's addresses and the Markdown renderer the skills pages use), `docs` (this site's parts, with `docs/demos`, the live plates) and `blog-globe` (the globe figures) |
 | `src/lib` | Registries, generated data, the engines, and `seo/`, the SEO system |
 | `scripts` | `lib`, `lint`, `check`, `build`, `skills` and `media`; [Scripts and generated files](/docs/scripts) covers them |
 | `content` | `docs/` (these pages), `blog/` and `authors/` |

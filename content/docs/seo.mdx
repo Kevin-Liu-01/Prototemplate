@@ -11,12 +11,12 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 
 const route = seoRoute({
-  path: '/handbook/design',
+  path: '/docs/handbook/design',
   title: 'Design system',
-  section: 'Handbook',
+  section: 'Docs',
   kind: 'article',
   description: 'The design canon: the four-color system, the line law, rails and seams, the doubled line and motion.',
-  markdown: '/handbook/design.md',
+  markdown: '/docs/handbook/design.md',
 });
 
 export const metadata = route.metadata;
@@ -44,7 +44,7 @@ A dynamic route calls it in `generateMetadata` and again in the page body with t
 
 | Paths | Robots | Canonical | Sitemap |
 | --- | --- | --- | --- |
-| The hub's own pages: `/`, `/brand`, `/docs`, `/handbook`, `/skills`, `/motion`, `/directions/<slug>` and the rest | index, follow | itself on www | yes |
+| The hub's own pages: `/`, `/brand`, `/docs` (the handbook under `/docs/handbook`), `/skills`, `/motion`, `/directions/<slug>` and the rest | index, follow | itself on www | yes |
 | `/blog/<slug>` | index, follow | the post on generaltranslation.com | no |
 | `/d/production` and each mirror page with a live counterpart | index, follow | the page on generaltranslation.com | no |
 | The dashboard states under `/d/production` | noindex, follow | itself | no |
@@ -66,13 +66,13 @@ Every page carries the `WebSite` node from the root layout. A page adds a `Bread
 
 ## The sitemap
 
-`src/app/sitemap.ts` lists the indexable pages: a short list of singleton routes, every page `src/lib/updated.ts` dates, and the handbook documents and archive entries, each filtered through the policy. A page's `lastmod` is the date of its last commit, from `updated.ts`, and is left out where there is none, since a build date tells a crawler nothing. A new indexable page gets an entry in `scripts/build/updated.mjs`.
+`src/app/sitemap.ts` lists the indexable pages: a short list of singleton routes, every page `src/lib/updated.ts` dates (the docs pages, the handbook's among them), and the archive entries, each filtered through the policy. A page's `lastmod` is the date of its last commit, from `updated.ts`, and is left out where there is none, since a build date tells a crawler nothing. A new indexable page gets an entry in `scripts/build/updated.mjs`.
 
 ## The agent files
 
 | Address | What it serves |
 | --- | --- |
-| `/llms.txt` | The site for agents, generated from the registries: the docs, the handbook, the skills, the routes and the directions |
+| `/llms.txt` | The site for agents, generated from the registries: the docs, the components, the handbook, the skills, the routes and the directions |
 | `/llms-full.txt` | The text of every docs page and handbook document in reading order |
 | `/AGENTS.md` | The agent guide with its links resolved to site addresses |
 | A docs page or handbook document plus `.md` | Its Markdown twin, with a `Link` header naming the HTML page as canonical |

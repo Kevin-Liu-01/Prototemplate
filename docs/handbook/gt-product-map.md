@@ -26,13 +26,13 @@ Kevin, 2026-07-30: "the whole point is that were a full stack localization, end 
 - The positioning is the Vercel model applied to localization. GT pairs open-source developer tools with the hosted infrastructure that runs them best (BRAND.md section 2). This is the one comparison GT copy makes (gt-voice, hard rule 2).
 - The thesis is "Every product in every language" (BRAND.md section 2). Copy quotes it as written.
 - Pricing is usage-based. Legacy translation management systems (TMS) charge per seat and cover part of the stack. Because GT owns the whole stack, it can own the whole customer experience (BRAND.md section 9).
-- The careers mission Kevin set on 2026-08-14 said that context and developer-first infrastructure now limit translation quality more than model quality does. The careers page read on 2026-10-05 carries a later mission text without that sentence, so copy states the claim only from a current source.
+- Copy states the mission only as the live careers page states it.
 
 ## 2. Audience and the sale
 
 - The audience has two ends, which Kevin calls a barbell (2026-07-30). Developers and small teams start self-serve at one end. Enterprises buy through sales at the other. A page carries enterprise presence and developer comfort together.
 - BRAND.md section 9 names the buyer: technical and product executives at growth-stage startups, whose engineering and growth teams use the product. The open source carries a community register and the platform an enterprise register (BRAND.md section 2).
-- GT runs a challenger sale (Kevin, 2026-07-30). Many buyers cannot yet tell localization, translation and internationalization (i18n) apart. Pages show what localization does: translated copy, changed code, converted currency, reformatted dates and numbers, and layout rearranged for a script. The terms themselves stay on the page for evaluators who check for them. The docs define them on [Key concepts](https://generaltranslation.com/docs/overview/key-concepts).
+- Many buyers cannot yet tell localization, translation and internationalization (i18n) apart, so pages show what localization does: translated copy, changed code, converted currency, reformatted dates and numbers, and layout rearranged for a script. The terms themselves stay on the page for evaluators who check for them. The docs define them on [Key concepts](https://generaltranslation.com/docs/overview/key-concepts).
 - Heroes and demos show the product working. Kevin, 2026-08-11, on the enterprise page: "far less telling, more showing, so same content but less text and more better diagrams".
 
 ## 3. Products
@@ -104,7 +104,7 @@ Kevin set the four enterprise pillars on 2026-08-15, and the enterprise page car
 | Geography | Content about places is organized by language. It names no country or territory, draws no borders, takes its facts from CLDR, and treats disputed areas through one policy. | Kevin, 2026-10-03: "avoid political sensitivity without making it look forced" |
 | Infrastructure diagrams | Edge nodes carry real cloud region names such as `us-east-1`, shortened where a label would clip. | Kevin, 2026-08-06 |
 | Names | Product tokens keep their exact form (`gt`, `gt-next`, `gt login`), Locadex is never translated, and the naming table is BRAND.md section 1. | BRAND.md, gt-voice |
-| Public facts | Customer names come only from BRAND.md section 9. No surface states funding, revenue, headcount or the timing of an unannounced launch. | gt-brand section 8 |
+| Public facts | A customer or partner is named only where generaltranslation.com shows it, and BRAND.md section 9 follows the site. No surface states funding, revenue, headcount or the timing of an unannounced launch. | gt-brand section 8; the decisions log, 2026-10-10 |
 
 ## 7. CLI and agent entry points
 
@@ -174,7 +174,7 @@ Every address below answered HTTP 200 on 2026-10-10. [BRAND.md](../../BRAND.md) 
 | Dashboard sign-in | https://dash.generaltranslation.com |
 | Social | https://x.com/generaltxn, https://www.linkedin.com/company/generaltranslation/ |
 | Open source | https://github.com/generaltranslation |
-| Design hub (this repository) | https://www.prototemplate.com, with /brand, /docs, /handbook, /skills, /deck, /motion, /graphics, /marks, /blog and /d/production |
+| Design hub (this repository) | https://www.prototemplate.com, with /brand, /docs (this handbook is /docs/handbook), /skills, /deck, /motion, /graphics, /marks, /blog and /d/production |
 | Companion tooling | https://glyphfield.com, the shader and animation studio behind several graphics and films |
 
 ## Sources
@@ -185,5 +185,5 @@ Every address below answered HTTP 200 on 2026-10-10. [BRAND.md](../../BRAND.md) 
 - `generaltranslation/content` at origin/main (2026-10-05): `AGENTS.md`, Public authentication boundary.
 - generaltranslation.com, read 2026-10-10: `/pricing` (section 5) and the addresses in section 10, each fetched with curl. Read 2026-10-05: the home page, `/en-US/pricing`, `/en-US/enterprise`, `/en-US/careers`, `/ja`, `/llms.txt`, `/llms-index.txt`, `/agent-prompt.md`, `/openapi.yaml` and the docs guide Defining context for translations.
 - npm and PyPI package pages, and the public repository list of the `generaltranslation` GitHub organization, read 2026-10-05.
-- Kevin's rulings: the full stack, the barbell and the challenger sale, and the context layers (2026-07-30); layout, review surfaces, formatting and region names (2026-08-06); locale heroes and staging (2026-08-08); showing over telling (2026-08-11); the mission text (2026-08-14); the enterprise pillars and CDN copy (2026-08-15); the enterprise order and the pricing cards (2026-08-15 and 2026-08-16); en-GB routing (2026-08-17); the copy page menu (2026-09-11); the agent button and AX (2026-09-30); the interactive CLI (2026-10-01); geography by language (2026-10-03).
+- Kevin's rulings: the full stack, the barbell, the buyers who cannot yet name localization, and the context layers (2026-07-30); layout, review surfaces, formatting and region names (2026-08-06); locale heroes and staging (2026-08-08); showing over telling (2026-08-11); the enterprise pillars and CDN copy (2026-08-15); the enterprise order and the pricing cards (2026-08-15 and 2026-08-16); en-GB routing (2026-08-17); the copy page menu (2026-09-11); the agent button and AX (2026-09-30); the interactive CLI (2026-10-01); geography by language (2026-10-03).
 - The list of brand surfaces sent to the brand agency on 2026-09-04, from which section 10 is rebuilt and checked against the live addresses.

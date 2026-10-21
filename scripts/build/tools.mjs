@@ -1,6 +1,6 @@
-// Builds docs/TOOLS.md, the index /handbook/tools serves: every pnpm command in
-// package.json with the first sentence of the opening comment of the file it
-// runs, grouped by its prefix, then every script a skill bundles
+// Builds docs/TOOLS.md, served at /docs/handbook/tools: every pnpm command
+// in package.json with the first sentence of the opening comment of the file
+// it runs, grouped by its prefix, then every script a skill bundles
 // (skills/<slug>/scripts/) and the environment the tools read. The file is
 // committed, so the site builds from it alone.
 //
@@ -46,7 +46,7 @@ const DESCRIBE = {
   start: 'Serves the production build.',
   'lint:code': 'Runs oxlint with the gt-ui plugin (scripts/lint/oxlint-plugins/gt-ui.ts) over the live surfaces under src/.',
   'lint:static': 'Runs every lint and test that needs no running server; the gate CI and each lane run.',
-  'lint:all': 'Runs lint:static, then the live lints against PT_BASE (default http://localhost:3005).',
+  'lint:all': 'Runs lint:static, then the live lints against PT_BASE (default `http://localhost:3005`).',
   'lint:lines': 'Renders the pages it is given and audits the hairlines they draw: doubled lines from two owners, missing seams between sections and two owners on one seam.',
   'lint:lines:shell': 'Audits the shell routes at PT_BASE the same way, and holds every chrome border to its three line tokens.',
   'graphics:serve': 'Serves graphics/ on port 8765 for the illustration toolchain (docs/GRAPHICS.md).',
@@ -104,7 +104,17 @@ function fileOf(command) {
   return m?.[1];
 }
 
-const cell = (s) => s.replace(/\|/g, '\\|');
+/**
+ * A table cell: pipes escaped, and every `<` outside a code span escaped,
+ * so GitHub prints a placeholder such as <slug> instead of reading it as
+ * an HTML tag.
+ */
+const cell = (s) =>
+  s
+    .replace(/\|/g, '\\|')
+    .split('`')
+    .map((part, i) => (i % 2 === 1 ? part : part.replace(/</g, '\\<')))
+    .join('`');
 
 /* script names pnpm runs as its own command when called bare; these are called through `pnpm run` */
 const PNPM_BUILTINS = new Set(['doctor']);
