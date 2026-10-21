@@ -1,0 +1,114 @@
+---
+title: Globes and maps
+description: "Every globe in the library, live: the edge delivery globe, the dithered globe field in two looks, and the blog globe directions from all three rounds."
+icon: Earth
+---
+
+import { BlogGlobeDemo, DitherGlobeDemo, EdgeGlobeDemo } from '@/components/docs/demos/lazy';
+
+Prototemplate draws the Earth three ways. The edge globe is an SVG drawing of the translation CDN. The globe field is a lit sphere thresholded by the CPU dither loop. The blog globe figures turn a globe to the city of each version of Euclid's Elements, and their four directions in three rounds are recorded on [The blog globe figure](/docs/blog-globe).
+
+## The edge globe
+
+The plate mounts `EdgeGlobe`: five points of presence stand on a sparse graticule, and one route carries a request from the user to the closest edge and the payload back in 12 ms. Accent spends the accent on the route and the arrival flashes, Halo adds the dithered atmosphere, Stroke width sets the line weight in view box units, and Replay restarts the loop.
+
+<EdgeGlobeDemo />
+
+The halo is four rings outside the limb, each filled with one coverage tier of the 4 by 4 screen on one shared grid, so crossing a ring only ever turns cells off.
+
+### Import and props
+
+```tsx
+import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
+
+<EdgeGlobe accent title='One request served from the closest edge in 12 ms' />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `accent` | boolean | `true` | Spends the accent on the route and the arrival flashes. Off, the whole drawing is the quiet ink. |
+| `strokeWidth` | number | `0.85` | The line weight in view box units, written to `--eg-sw`. |
+| `title` | string | none | The accessible name. Without one the drawing is decorative and hidden. |
+| `className` | string | none | A class on the SVG. |
+
+The drawing reads `currentColor` and the `--iso-ink`, `--iso-accent` and `--iso-mono` tokens, so one ancestor themes it. A fork with Heroicons glyphs lives at `src/app/d/production/sections/EdgeGlobe.tsx` for the production mirror.
+
+### When to use it
+
+Use the edge globe where a page explains delivery: a request, the closest edge, a latency. It tells one sentence with one route, so it stands alone in a cell or a band. Use the globe field instead for a globe that is texture with no labels.
+
+### Reduced motion and themes
+
+Under reduced motion the payload chip rests mid-route, the dot, the rings and the flashes are removed, and the still rests in the quiet ink. The drawing follows the docs theme through `currentColor`.
+
+## The globe field
+
+The plate runs `globe()` from `src/lib/dither.ts`: a lambert-shaded sphere with a graticule and a noise landmass, thresholded by the 8 by 8 screen. Each slider builds a new field and hands it to the running loop with `setField`, so the spin keeps its clock. The two looks load the field as the Dither field direction draws it and as the dashboard's sign-in plate draws it.
+
+<DitherGlobeDemo />
+
+The Dither field look is `globe()` at a 3 pixel cell with a graticule of 0.3, twelve meridians, seven parallels and a spin of 0.18 radians a second. The sign-in look has no graticule, a landmass of 0.42 and a spin of 0.14 at a 2 pixel cell and 24 frames a second, in GT blue: `#2f5ce0` on paper and `#9db9ff` on ink.
+
+### Import and props
+
+```ts
+import { createDitherLoop, globe } from '@/lib/dither';
+
+const loop = createDitherLoop(canvas, globe({ graticule: 0.3, landmass: 0.22, spin: 0.18 }), { scale: 3, paper: 'transparent' });
+loop.setField(globe({ graticule: 0, landmass: 0.42 }));
+```
+
+| Option | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `cx`, `cy`, `radius` | number | `0.5`, `0.5`, `0.38` | The center and the radius in the field's 0 to 1 space. |
+| `lightX`, `lightY`, `lightZ` | number | `-0.45`, `-0.62`, `0.65` | The light's direction, normalized. The house light comes from the upper left. |
+| `ambient`, `rim` | number | `0.08`, `0.22` | The shading's floor and the rim light at the silhouette. |
+| `graticule` | number | `0.3` | The strength of the latitude and longitude lines. 0 removes them. |
+| `meridians`, `parallels` | number | `12`, `7` | How many lines the graticule draws. |
+| `landmass` | number | `0.22` | The contrast of the noise continents. 0 removes them. |
+| `spin` | number | `0.18` | Radians a second about the polar axis. |
+| `tilt` | number | `0.41` | The axial tilt in radians, about 23.4 degrees. |
+| `aspect` | number | `1` | The canvas's width over its height, so the sphere stays round. |
+
+### When to use it
+
+Use the globe field for a turning Earth as material, behind a sign-in form or in a band, where its texture matters and its geography does not: the landmass is noise and carries no real coastlines. Use a blog globe direction for a globe that has to show real places.
+
+### Reduced motion and themes
+
+Under reduced motion the loop draws one frame at its `reducedMotionTime` (8 seconds on the sign-in plate) and never starts. The host reads its ink token again on every theme change, as `FieldStack.tsx` does on the sign-in plate.
+
+## The blog globe figures
+
+The plate shows one blog globe direction live in its round's own document. Round picks the build, Direction picks the drawing, and the figure keeps its own controls: the underlined language names, the clickable cities and the arrow keys. Open Stage opens the figure on its stage page.
+
+<BlogGlobeDemo />
+
+The four directions draw the same five stops of Euclid's Elements from Alexandria in 300 BCE to Beijing in 1606. A is a dithered globe, B a line globe, C a glyph globe and D a dot globe, and the design review ranked D first. Round 1 has no clickable cities, round 2 adds them, and round 3 zooms each globe in and sets all eight definitions. [The blog globe figure](/docs/blog-globe) records the measurements and the ranking, and `/d/blog-globe/all` lays all twelve figures side by side.
+
+### Import and props
+
+```tsx
+import GlobeFrame from '@/components/blog-globe/GlobeFrame';
+
+<GlobeFrame round='r3' variant='d' title='The dot globe, round 3' layout='fit' />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `round` | `'r1'`, `'r2'` or `'r3'` | required | The round, each a frozen copy under `src/app/d/blog-globe/_rounds`. |
+| `variant` | `'a'`, `'b'`, `'c'` or `'d'` | required | The direction. |
+| `title` | string | required | The frame's accessible name. |
+| `layout` | `'scale'` or `'fit'` | `'fit'` | `'scale'` lays the figure out at the 712 pixel review column and scales it down. `'fit'` does the same from 600 pixels up and lays the figure out at the box's own width below that. |
+
+### When to use it
+
+Use a frame wherever a page shows a round's figure as it was reviewed: each round keeps its own stylesheets, and the page loads none of the figures' code. The frame arms when it comes within 320 pixels of the viewport.
+
+### Reduced motion and themes
+
+Under reduced motion every direction jumps the camera to the stop, draws once and cuts the text. With no JavaScript the radios and CSS `:has()` still switch the passage and the label. The frame passes the docs theme to the figure, and directions A and C read their inks again when it changes.
+
+## Other globes
+
+The GT Atlas magazine at [/press](/press) draws a dithered orthographic Earth with a 4 by 4 screen and a pin with its coordinates. The magazine session keeps it, and it is not part of this library yet.

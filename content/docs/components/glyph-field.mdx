@@ -1,0 +1,87 @@
+---
+title: Glyph field and ink field
+description: "The eight-script glyph rain that condenses into the word for language, and its inverse on ink that bursts where the reader clicks, both live."
+icon: Sparkles
+---
+
+import { GlyphFieldDemo, InkFieldDemo } from '@/components/docs/demos/lazy';
+
+Two canvas engines draw language as a material. The glyph field rains letters from eight scripts and condenses them into the word for language in one script after another. The ink field is its inverse for an ink band: paper glyphs rise slowly and keep a measured block of content clear. Both draw every glyph as a pre-measured sprite from one atlas and allocate nothing per frame.
+
+## The glyph field
+
+The plate runs `createGlyphField` with no copy block, so the rain runs edge to edge and the word prints in the middle. Drift turns the fall into a rise, Copy reserves a block on the left or across the top as a hero's text would take, and Glyph scale sizes the rain without changing the printed word. Each option is read once at mount, so every change remounts the engine, and Replay restarts it on the first script.
+
+<GlyphFieldDemo />
+
+The status line follows the engine's `onScript` callback, which fires each time the field commits to the next script. The order is Han, Arabic, Devanagari, Cyrillic, Hangul, Greek, Thai and Latin, and each word is a real translation of "language".
+
+### Import and props
+
+```tsx
+import { createGlyphField, SCRIPTS } from '@/lib/glyph-field';
+
+const field = createGlyphField({
+  canvas,
+  drift: 'rise',
+  copy: 'none',
+  displayFamily: getComputedStyle(canvas).fontFamily,
+  onScript: (index) => console.info(SCRIPTS[index]?.script),
+});
+field?.destroy();
+```
+
+| Option | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `canvas` | `HTMLCanvasElement` | required | The canvas it draws on, sized by CSS. |
+| `drift` | `'fall'` or `'rise'` | `'fall'` | The rain's direction. The landing's `GlyphRain` runs `'rise'`. |
+| `copy` | `'auto'`, `'left'`, `'top'` or `'none'` | `'auto'` | Where the host's copy block sits. `'auto'` picks left or top from the width, and `'none'` is a standalone plate. |
+| `copyBottom` | `() => number` | none | The copy block's bottom edge in canvas pixels, read at every layout, so a long locale never crosses into the rain on the narrow fold. |
+| `glyphScale` | number | `1` | Multiplier on the rain's glyph sizes. The printed word keeps its size. |
+| `displayFamily`, `monoFamily` | string | Inter, then the system mono | The faces the canvas draws with, read off the page so the canvas type matches it. |
+| `onScript` | `(index) => void` | none | Fires when the field commits to a script, as an index into `SCRIPTS`. |
+
+The function returns `{ destroy }`, or null when the canvas has no 2D context.
+
+### When to use it
+
+Use the glyph field behind a hero or a closing band whose subject is language, with the copy block reserved through `copy` and `copyBottom`. Its frame-time governor lowers the work per frame on a slow device, and it pauses offscreen, so it can stay mounted for the life of the page. Use the studio field for a texture that carries no words, and the ink field on an ink band.
+
+### Reduced motion and themes
+
+Under reduced motion the engine draws one frame, the printed word with its caliper, and never starts the loop. It pauses when the canvas leaves the viewport. Its ink is the `--tc-ink` token read off the canvas, and it reads the token again when `html[data-theme]` changes, so the rain turns from ink on paper to white on ink with the page. This plate sets `--tc-ink` from the docs theme's ink.
+
+## The ink field
+
+The plate runs `createInkField` in its interactive mode on an ink stage. Glyphs shiver as the pointer comes near, and a click bursts the nearest one, which pushes its neighbors aside before the field heals. Clearing switches between a flooded canvas and one that keeps a text block clear.
+
+<InkFieldDemo />
+
+With the measured clearing the engine reads the block's box off the DOM and keeps the glyphs out of it, and the edge of the clearing is a dithered density falloff with no visible box.
+
+### Import and props
+
+```ts
+import { createInkField } from '@/app/d/glyph-rain/sections/band/inkField';
+
+const field = createInkField({ canvas, clearEl: copyBlock, interactive: false, fpsCap: 30 });
+field?.destroy();
+```
+
+| Option | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `canvas` | `HTMLCanvasElement` | required | The canvas it draws on. |
+| `clearing` | `'measured'` or `'none'` | `'measured'` | Keep the content block clear, or flood the canvas. |
+| `clearEl`, `clearTopEl` | `HTMLElement` | none | The content block, and a head block whose full-width strip also stays clear. |
+| `interactive` | boolean | `false` | Pointer play: the shiver and the click burst. Ignored under reduced motion. |
+| `minWidth` | number | none | Below this canvas width the field parks: the loop stops and the canvas clears. |
+| `dprCap`, `fpsCap` | number | none | The device pixel ceiling and the frame cap. The band mounts pass 1.5 and 30. |
+| `displayFamily` | string | Inter | The face the glyphs draw with. |
+
+### When to use it
+
+Use the ink field on a closing band of ink around a content column, and set `interactive` only on a plate made for play, as this one is. A band's margins are decoration, so pass `minWidth` to park the field on a phone. The glyphs are paper on ink, so the field never goes on a paper ground.
+
+### Reduced motion and themes
+
+Under reduced motion the engine draws one composed frame and the pointer play is off. It pauses when the canvas leaves the viewport. Its glyphs are a fixed paper ink on an ink ground, so its plate stays dark in both themes.

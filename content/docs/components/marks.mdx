@@ -1,0 +1,130 @@
+---
+title: Speed marks and the GT mark
+description: "The speed marks and the globe concepts at every size on paper and ink, the GT mark set inline as a word, and a mark with a dithered shine."
+icon: Swatch
+---
+
+import { DitheredMarkDemo, GtWordDemo } from '@/components/docs/demos/lazy';
+import MarksDemo from '@/components/docs/demos/MarksDemo';
+
+Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. The speed marks and the globe concepts are SVG files under `public/marks`, listed with their notes in `src/lib/marks.ts` and shown in full at [/marks](/marks). The current GT mark, the doubled-line monogram, is a path that `GtMark` and `GtWord` draw inline.
+
+## The marks
+
+The plate draws any mark at the heights `/marks` shows it: a monogram from the 16 pixel favicon to the 128 pixel app icon, a wordmark at 48, 96 and 144. Family switches between the seven speed marks, the two picture marks of the earlier round and the eight globe concepts. Ground switches paper and ink, and Construction shows the build overlay of a picture mark.
+
+<MarksDemo />
+
+Under a monogram the plate repeats it at 16, 24 and 32 pixels at their true size, where a mark either holds up as a favicon or does not. The server half of the demo reads the files at build time and passes them to the client inline, as the `/marks` page does, so the page fetches no mark files.
+
+### Import and data
+
+```ts
+import { GLOBE_CONCEPTS, MARKS, MARK_SIZES, REFERENCE_MARK, WORDMARK_SIZES } from '@/lib/marks';
+
+const speed = MARKS.filter((mark) => mark.family === 'speed'); // seven marks, each at /marks/<id>.svg
+```
+
+| Export | What it holds |
+| --- | --- |
+| `MARKS` | Nine marks: `id`, `name`, `family` (`'speed'` or `'picture'`), `kind` (`'monogram'` or `'wordmark'`), `thesis`, `construction`, `use` and the public `file` |
+| `GLOBE_CONCEPTS` | The eight globe marks that were not chosen, each a file under `/marks/globe/` |
+| `MARK_SIZES`, `WORDMARK_SIZES` | The heights in CSS pixels: 16, 24, 32, 64 and 128, then 48, 96 and 144 |
+| `REFERENCE_MARK` | The current doubled-line monogram as one even-odd path and its view box |
+
+`pnpm build:marks` generates the seven speed files from `scripts/build/speed-marks.mjs` with tight view boxes, so a viewer sizes each mark by height and its own aspect.
+
+### When to use it
+
+Draw a mark inline, or as an alpha mask in `currentColor`, so it takes the ink of its ground. The register's one-color rule holds for every use: no second tone, no gradient, no stroke and no shadow. The plate mark is the one mark that brings its own ground: its letters and stripes are holes, so it is an ink plate on paper and a paper plate on ink.
+
+### Reduced motion and themes
+
+The marks do not move. On the ink ground the same file draws in paper ink.
+
+## The mark as a word
+
+The plate runs `gtText()` over the copy in the field. Every standalone "GT" becomes `GtWord`, the monogram sized to the text around it. Type a sentence to test the rule, and switch the size from a caption to a page title.
+
+<GtWordDemo />
+
+The mark is 0.74em tall with its foot on the baseline, so it sits in the line at any size. The letters stay in the DOM as hidden text, so copy, find in page and screen readers still read "GT". Lowercase package names such as `gt`, hyphen-joined forms such as GT-format and letters inside other words such as GTM stay text. The three marks under the sentence are `GtMark` at the sizes the chrome uses: 25 by 16 in the sidebar and the toolbar, 28 by 18 in the sheet frame, and 50 by 32.
+
+### Import and props
+
+```tsx
+import { GtMark } from '@/components/viewer/GtMark';
+import { GtWord, gtText } from '@/components/viewer/GtWord';
+
+<p>
+  <GtWord /> ships every locale.
+</p>;
+<p>{gtText(skill.description)}</p>;
+<GtMark width={28} height={18} />;
+```
+
+| Export | Props | What it does |
+| --- | --- | --- |
+| `GtWord` | none | The mark as a word in the running text, with "GT" kept as hidden text |
+| `gtText(text, keyBase)` | a string, and a key prefix (default `'gt'`) | The string with every standalone GT replaced by `GtWord`. A string with none comes back unchanged. |
+| `GtMark` | `width` (25), `height` (16) | The mark alone as a block SVG in `currentColor` |
+
+### When to use it
+
+Every standalone "GT" in rendered prose on the site is the mark. Place `GtWord` in JSX copy and pass any string that arrives as data, such as a skill's description, through `gtText()`. Code, URLs, attribute values such as `alt` and `title`, document titles and metadata keep the letters.
+
+### Reduced motion and themes
+
+`GtWord` does not move. It fills `currentColor`, so it takes the ink of its line in both themes.
+
+## The dithered shine
+
+The plate seats the GT mark as an alpha mask and sweeps a specular band through it, quantized by the 4 by 4 screen into five nested coverage tiers. The cells never move; two clip windows carry the light across them, and the counter-sheen runs half a lap behind. Seat lays the mark flat or on the isometric top plane, Glint picks the light's ink, and the speed is in drawing units a second.
+
+<DitheredMarkDemo />
+
+The mask holds the mark's seat transform inside it, so the masked rectangles stay in screen space and every cell stays a square screen pixel, even on the isometric plane. The tiers nest, so the band reads as one falloff from a solid core to a sparse fringe.
+
+### Import and props
+
+```tsx
+import DitheredMark, { shineTravel } from '@/app/d/toolchain/diagrams/DitheredMark';
+import { plane } from '@/app/d/toolchain/diagrams/iso';
+
+const cover = { x: -48, y: -37, w: 58, h: 37 };
+const { from, to } = shineTravel(cover); // the sweep's endpoints
+
+<DitheredMark
+  id='ldx'
+  href='/brand/locadex-mark.svg'
+  plane={plane(14)}
+  markHalf={35}
+  cover={cover}
+  inkClassName='mark-ink'
+  glintClassName='mark-glint'
+  shineClassName='mark-shine'
+/>;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `id` | string | required | A prefix for the mask, pattern and clip ids, which are global in the document. |
+| `href` or `maskContent` | string or SVG | one required | The mark as an image file, or any SVG content filled white. |
+| `plane` | string | required | The seat transform, applied inside the mask. `plane(z)` from `iso.ts` seats it on an isometric face. |
+| `markHalf` | number | required | Half the image box, for an `href` mark. |
+| `cover` | `{ x, y, w, h }` | required | The screen rectangle the ink and the shine span. The sweep derives from it. |
+| `maskBox` | `{ x, y, w, h }` | `-120, -80, 240, 160` | The mask's bounds in user space. |
+| `cell` | number | `1.05` | The dither cell's edge in drawing units. |
+| `tiers` | `ShineTier[]` | `SHINE_TIERS` | The band's coverage tiers, center out: 16, 10, 6, 3 and 1 of 16. |
+| `inkClassName`, `glintClassName`, `shineClassName` | string | required | The resting ink, the glint cells and the shine group. |
+| `stripeData` | two attribute names | `data-ldx-stripe`, `data-ldx-stripe2` | The attributes on the two bands that the host's tween targets. |
+
+The component draws and the host animates. The host tweens the elements carrying each stripe attribute along x from `from` to `to` with no easing on repeat, and starts the counter-sheen's tween half a lap in, as the stack tower does at 56 units a second.
+
+### When to use it
+
+Use the shine on one mark that is the drawing's subject, such as the Locadex mark on the capstone of the stack tower, where the metal should read alive.
+
+### Reduced motion and themes
+
+Under reduced motion the host never starts the tweens, and the markup's own pose stays: the primary band mid-glyph and the counter-sheen parked clear. The resting ink and the glint read this page's ink, so the mark follows the docs theme.

@@ -1,0 +1,89 @@
+---
+title: Badges and heads
+description: "The head badge that cuts through what a page holds, and the book head every hub page opens with, live at the desktop and the phone width."
+icon: Book
+---
+
+import { BadgeCycleDemo, HeadFrameDemo } from '@/components/docs/demos/lazy';
+
+Every page of the hub that reads as a book opens with the same head: the title with an optional badge, a lead of one to three lines, a panel of facts, and one hatch band. DESIGN.md section 4 sets the standard and `pnpm lint:heads` holds it. The badge after the title cuts through what the page holds, one frame at a time.
+
+## The head badge
+
+The plate sets a title with its badge as `BookHead` sets it: the badge follows the title's last word and never breaks away from it. Frames switches between mark files, item names and one word in its own scripts, Count sets how many frames the strip holds, and Size sets the title at the page and section steps. Still applies the rule reduced motion applies.
+
+<BadgeCycleDemo />
+
+Every frame sits side by side in one strip, each exactly one box wide, and a CSS animation steps the strip one box to the left every 1.4 seconds with `steps(n)`, so each change is a hard cut. A hidden sizer stacks every frame in one cell, so the box takes the widest frame's width and never changes size. A name is drawn as generated content, so the frames never join the title's text: copying the title and the h1 a crawler reads hold the title alone.
+
+### Import and props
+
+```tsx
+import { BadgeCycle, BadgeWords, badgeMark } from '@/components/viewer/BadgeCycle';
+
+<BookHead badge={<BadgeCycle frames={files.map((file) => badgeMark(file))} />} />;
+<BookHead badge={<BadgeWords words={['gt-brand', { text: '言語', lang: 'ja' }]} />} />;
+```
+
+| Export | Props | What it does |
+| --- | --- | --- |
+| `BadgeCycle` | `frames`: `{ key, content }[]` | The strip of frames. With no frames it renders nothing. |
+| `BadgeWords` | `words`: strings, or `{ text, lang?, dir? }` | A badge of names, each with the language and direction of its script. |
+| `badgeMark(src)` | a public file path | One frame that draws the file as an alpha mask in the title's ink. |
+
+The rules live in `src/components/viewer/BookView.css`, so a host outside a book head imports that sheet, as this plate does.
+
+### When to use it
+
+Every book head on the hub carries a badge. Its frames are the page's own items in page order: mark files on /marks, skill ids on /skills, film slugs on /motion. `BookHead` hides the badge from the accessible name, so the page prints everything the badge shows.
+
+### Reduced motion and themes
+
+Under reduced motion the strip stops on the first frame and the box takes that frame's width. The frames draw in the title's ink, so the badge follows the theme.
+
+## The book head
+
+A page keeps one h1, so the plate shows the head in its own document: a live hub page in a frame, scaled to the plate. Page picks the route, and Width lays it out at 1440 or 390 pixels. The head is a container, so at the phone width the panel drops under the lead. The page inside stays live, and its badge keeps cutting.
+
+<HeadFrameDemo />
+
+The frame follows the docs theme through the root layout's theme script, and it loads only when the plate comes near the viewport.
+
+### Import and props
+
+```tsx
+import { BookHead } from '@/components/viewer/BookView';
+
+<BookHead
+  title={PAGE_NAMES.marks.name}
+  badge={<BadgeCycle frames={frames} />}
+  lead='The speed set is seven General Translation marks in one register.'
+  updated={updated}
+  facts={[
+    { icon: 'swatch', key: 'Marks', value: 9 },
+    { icon: 'speed', key: 'Speed set', value: 7 },
+    { icon: 'archive', key: 'Earlier round', value: 2 },
+  ]}
+/>;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `title` | string | The page's plain name from `PAGE_NAMES`, or a record's own title. It is the page's one h1. |
+| `badge` | node | The badge after the title's last word, hidden from the accessible name. |
+| `lead` | node | One to three lines at the lead measure, 200 characters at most. |
+| `updated` | `PageUpdated` | The page's entry in `src/lib/updated.ts`, passed down from its server page. |
+| `facts` | three facts, or one fact with `install` | The panel's rows after Updated, each `{ icon, key, value }`. |
+| `install` | string | An install command in a copy field, in place of the second and third facts. |
+| `note` | node | The rest of the introduction, under the mast's rule. |
+| `contents` | node | The page's contents nav, left out on a page of fewer than two sections. |
+
+The server page calls `requireUpdated('<route>')` and passes the entry down, because a client module may not import `src/lib/updated.ts`. A new route also needs its paths in `scripts/build/updated.mjs`.
+
+### When to use it
+
+Use `BookHead` on every hub page with a book head; a page differs from another only in its words and its facts. Pages outside the shell, such as these docs, the deck and the `/d/` directions, have heads of their own.
+
+### Reduced motion and themes
+
+The head itself does not move; its badge holds its first frame under reduced motion. Every value is a `--pt-` token, so the head follows the theme.
