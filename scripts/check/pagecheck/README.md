@@ -86,9 +86,10 @@ cell takes as long as its page needs, not a fixed wait.
 Declared in `interactions.mjs`, in dark, each with a capture before and
 after and its readings in `interactions/results.json`:
 
-- `theme-flip`, `index-preview`, `search`, `docs-toc`, `sidebar-rails`,
+- `theme-flip`, `index-preview`, `search`, `sidebar-rails`,
   `present-controls` and `deck-advance`, on what the shell code says each
-  control does (the file's head names each)
+  control does, and `docs-theme-flip` and `docs-toc` on the docs site's
+  own controls (the file's head names each)
 - `present-walk`, on every dark device of the run: presses j through the
   presenter's slides, waits each time for the scroll to leave and come
   to rest with the slide's title on screen, its entrance finished (an

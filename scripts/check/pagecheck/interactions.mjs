@@ -32,10 +32,12 @@
 //   deck-modes        the deck's grid (G) and book (B) views lay out inside
 //                     the viewport with no overflow, nothing past the edge
 //                     and no clipped text (probes.mjs readPage)
-//   docs-toc          a contents link in the docs book is answered in place
-//                     (DocsShell.tsx, the sheet's click handler): the
-//                     address becomes the document's and its heading lands
-//                     under the read line
+//   docs-theme-flip   the docs sidebar's theme button (DocsThemeButton.tsx)
+//                     flips html[data-theme] and stores it, at desktop
+//                     width, where the sidebar shows its footer
+//   docs-toc          a link in the docs page's table of contents
+//                     (fumadocs' #nd-toc) sets the address's hash and lands
+//                     its heading near the top of the viewport
 //   present-controls  the presenter dock's Next slide button advances the
 //                     count (PresenterApp.tsx goTo)
 //   present-walk      the presenter on every device: j through the slides,
@@ -96,7 +98,7 @@ const inside = (b, cell) => Boolean(b) && b.x >= -1 && b.y >= -1 && b.right <= c
 export const INTERACTIONS = [
   {
     id: 'theme-flip',
-    pages: ['gallery', 'docs'],
+    pages: ['gallery'],
     devices: BOTH,
     run: async (page) => {
       const before = await page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem('gt-theme') }));
@@ -232,34 +234,37 @@ export const INTERACTIONS = [
     },
   },
   {
-    id: 'docs-toc',
-    pages: ['docs'],
-    devices: BOTH,
+    id: 'docs-theme-flip',
+    pages: ['docs', 'handbook'],
+    devices: ['1440x900'],
     run: async (page) => {
-      const link = page.locator('.ptd-toc a').nth(1);
-      const href = await link.getAttribute('href');
-      const slug = href?.split('/').pop() ?? '';
+      const before = await page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem('gt-theme') }));
+      await page.click('[data-docs-theme]');
+      await page.waitForTimeout(300);
+      const after = await page.evaluate(() => ({ theme: document.documentElement.dataset.theme, stored: localStorage.getItem('gt-theme') }));
+      return { pass: before.theme === 'dark' && after.theme === 'light' && after.stored === 'light', before, after };
+    },
+  },
+  {
+    id: 'docs-toc',
+    pages: ['docs', 'handbook-decisions'],
+    devices: ['1440x900'],
+    run: async (page) => {
+      const link = page.locator('#nd-toc a').nth(1);
+      const href = (await link.getAttribute('href')) ?? '';
       await link.click();
-      await page.waitForTimeout(2000);
-      const after = await page.evaluate((s) => {
-        const flow = document.querySelector('.sheet-flow');
-        const h2 = document.getElementById(`ptd-${s}`);
-        const fb = flow?.getBoundingClientRect();
-        const hb = h2?.getBoundingClientRect();
-        return {
-          pathname: location.pathname,
-          headingOffset: fb && hb ? Math.round(hb.top - fb.top) : null,
-          activeRow: document.querySelector('.ptd-toc a[aria-current]')?.textContent?.trim() ?? null,
-          activeDoc: document.querySelector('.ptd-doc.is-active h2')?.textContent?.trim() ?? null,
-        };
-      }, slug);
-      const landed = after.headingOffset != null && after.headingOffset >= -2 && after.headingOffset <= 160;
-      return { pass: after.pathname === href && landed, href, ...after };
+      await page.waitForTimeout(1500);
+      const after = await page.evaluate((h) => {
+        const heading = document.getElementById(decodeURIComponent(h.slice(1)));
+        return { hash: location.hash, top: heading ? Math.round(heading.getBoundingClientRect().top) : null };
+      }, href);
+      const landed = after.top != null && after.top >= -2 && after.top <= 200;
+      return { pass: href.startsWith('#') && after.hash === href && landed, href, ...after };
     },
   },
   {
     id: 'sidebar-rails',
-    pages: ['brand', 'docs'],
+    pages: ['brand'],
     devices: ['1440x900'],
     run: async (page) => {
       const live = await page.evaluate(() => Boolean(document.querySelector('.pt-sb[data-rails]')));
