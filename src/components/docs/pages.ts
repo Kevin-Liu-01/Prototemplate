@@ -122,6 +122,118 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
       'The badge that cuts through the GT monograms after the Brand title, and the book head every hub page opens with, live at two widths.',
   },
   {
+    slug: 'craft',
+    href: '/docs/craft',
+    title: 'Design numbers and traps',
+    description:
+      'The numbers, traps and reasons behind the rules the hub’s instruments follow: type, lines, SVG motion, dither, writing, interface details and films.',
+  },
+  {
+    slug: 'craft/type',
+    href: '/docs/craft/type',
+    title: 'The correct Inter in practice',
+    description:
+      'Keeping the browser from replacing or degrading the rsms InterVariable 4.1: binding, features, optical size, tracking, measure, scripts and checks.',
+  },
+  {
+    slug: 'craft/lines',
+    href: '/docs/craft/lines',
+    title: 'Lines and seams',
+    description:
+      'The arithmetic of 1px rules: composite greys, self-stacks, rails as borders, full-width rules, stacking contexts over seams and what the auditor counts.',
+  },
+  {
+    slug: 'craft/svg-motion',
+    href: '/docs/craft/svg-motion',
+    title: 'SVG lines in motion',
+    description:
+      'Dash traps with their proofs, GSAP seen from outside the page, timing numbers, first-paint transitions, stretched viewBoxes, symbols and masks.',
+  },
+  {
+    slug: 'craft/dither',
+    href: '/docs/craft/dither',
+    title: 'Dither in practice',
+    description:
+      'Why ordered dither, why cells are screen pixels, transitions on one grid, material strength, and the story and placement of dithered pictures.',
+  },
+  {
+    slug: 'craft/writing',
+    href: '/docs/craft/writing',
+    title: 'Writing',
+    description:
+      'The house register with before and after rewrites, writing for a reader who knows nothing about the work, and the rules for slides and cards.',
+  },
+  {
+    slug: 'craft/interface-details',
+    href: '/docs/craft/interface-details',
+    title: 'Interface details',
+    description:
+      'Glyph gaps, copy controls, tap slabs, layout-shift cases with measured jumps, third-party themes, contrast numbers, carousels and hit areas.',
+  },
+  {
+    slug: 'craft/films',
+    href: '/docs/craft/films',
+    title: 'Deterministic films and sound',
+    description:
+      'Rendering films that match frame for frame: framemd5 pairs, the image race, fonts, chroma on odd pixels, thin lines over dither, the mix and speech.',
+  },
+  {
+    slug: 'engineering',
+    href: '/docs/engineering',
+    title: 'Browser and build traps',
+    description:
+      'What breaks in a Next.js 16, fumadocs, canvas or SVG site, learned on this one: each trap with its symptom, its cause, the fix and the numbers.',
+  },
+  {
+    slug: 'engineering/docs-traps',
+    href: '/docs/engineering/docs-traps',
+    title: 'Docs site traps on Next.js 16 and fumadocs',
+    description:
+      'Intermediate frames, marks lost at hydration, sidebar fixes, Markdown twins, stable highlighting, the cascade and builds on a fumadocs site.',
+  },
+  {
+    slug: 'engineering/engines',
+    href: '/docs/engineering/engines',
+    title: 'Canvas and WebGL engines',
+    description:
+      'The context budget, shared canvases, readback, quality from frame time, what a field costs, galleries of live previews and engine lifecycles.',
+  },
+  {
+    slug: 'engineering/verification',
+    href: '/docs/engineering/verification',
+    title: 'Proving a visual change',
+    description:
+      'Turning it looks right into readings: seam greys, probes before edits, the stress matrix, real gestures, WebKit and parity across an upgrade.',
+  },
+  {
+    slug: 'engineering/performance',
+    href: '/docs/engineering/performance',
+    title: 'Performance without visual loss',
+    description:
+      'Measuring honestly, field against lab on a real docs site, bytes before scripts, shader and module weight, and judging dependencies on their merits.',
+  },
+  {
+    slug: 'engineering/lottie',
+    href: '/docs/engineering/lottie',
+    title: 'Lottie on canvas',
+    description:
+      'Eight lottie-web canvas traps, each proven, with the before and after numbers and the recipe that proves a fix.',
+  },
+  {
+    slug: 'engineering/i18n-routing',
+    href: '/docs/engineering/i18n-routing',
+    title: 'Localized routing',
+    description:
+      'Locale guards, the gt-next Link and an agent prompt that must run unchanged: routing traps on a localized Next.js site.',
+  },
+  {
+    slug: 'engineering/dev-servers',
+    href: '/docs/engineering/dev-servers',
+    title: 'Dev servers and builds',
+    description:
+      'How next dev fails under load and after large pulls, with the symptom of each failure and the one-line fix.',
+  },
+  {
     slug: 'internals',
     href: '/docs/internals',
     title: 'How Prototemplate is built',

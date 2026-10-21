@@ -1,0 +1,16 @@
+{
+  "title": "Craft",
+  "description": "The numbers, traps and reasons behind the design rules: type, lines, motion, dither, writing, interface details and films",
+  "icon": "Swatch",
+  "root": true,
+  "pages": [
+    "index",
+    "type",
+    "lines",
+    "svg-motion",
+    "dither",
+    "writing",
+    "interface-details",
+    "films"
+  ]
+}

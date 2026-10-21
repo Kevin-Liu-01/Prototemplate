@@ -3,6 +3,8 @@
   "pages": [
     "(guide)",
     "components",
+    "craft",
+    "engineering",
     "(internals)"
   ]
 }

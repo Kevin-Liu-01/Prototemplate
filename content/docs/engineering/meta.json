@@ -1,0 +1,16 @@
+{
+  "title": "Engineering",
+  "description": "What breaks in a Next.js, fumadocs, canvas or SVG site, learned on this one, with the fixes and their numbers",
+  "icon": "Bolt",
+  "root": true,
+  "pages": [
+    "index",
+    "docs-traps",
+    "engines",
+    "verification",
+    "performance",
+    "lottie",
+    "i18n-routing",
+    "dev-servers"
+  ]
+}
