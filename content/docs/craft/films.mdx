@@ -2,6 +2,142 @@
 title: 'Deterministic films and sound'
 description: 'Rendering films that match frame for frame: framemd5 pairs, the image race, fonts, chroma on odd pixels, thin lines over dither, the mix and speech.'
 icon: Photo
+sources:
+  - skills/gt-films/SKILL.md
+  - skills/gt-films/references/traps.md
+  - skills/gt-films/references/sound.md
+  - skills/gt-films/references/kit.md
+  - skills/gt-films/references/look.md
+  - skills/gt-graphics/references/traps.md
+  - skills/gt-motion/references/traps.md
 ---
 
-Rendering films that match frame for frame: framemd5 pairs, the image race, fonts, chroma on odd pixels, thin lines over dither, the mix and speech.
+General Translation makes its blog films, announcement films and translation-history films as HyperFrames compositions: HTML pages with one paused GSAP timeline that the HyperFrames command-line tool seeks and renders frame by frame to MP4. The published cuts are on [/motion](/motion). A render can come out different from its twin, lose a layer, fetch the wrong font or grey a coloured line, and the renderer reports success in every case. The numbers below were measured on HyperFrames 0.8.106 while the films were built in October 2026. The [gt-films](/skills/gt-films) skill holds the full rules.
+
+## Compare every render pair
+
+Render every delivery twice and compare the pair frame by frame. HyperFrames renders are not guaranteed identical when the machine is under load, on either rendering path.
+
+| Path and load | What differed |
+| --- | --- |
+| Hardware GPU, load average near 240 | 240 of 5,738 frames, by a mean of 0.002 to 0.037 levels and at most 34, starting on a large character whose font size changed every frame; the audio was identical |
+| `--no-browser-gpu` on the same film | Nothing: the pair was byte-identical, and it rendered faster |
+| `--no-browser-gpu`, load average near 120 | 116 of 5,989 frames on a moving globe overlay, PSNR at least 52.7dB, largest difference 45 of 255 |
+| The same build rendered in two sittings | 867 frames |
+
+Compare each pair by `framemd5` and by decoded audio. When they differ, keep both, take the one that matches the previous master frame for frame where the round changed nothing, and record the PSNR and the frame ranges. Compare builds rendered in one sitting. Films with large animated type render on the software path. Films with the gem smoke shader stay on the GPU path, because the software path moved the smoke by up to 7 levels.
+
+Two Chrome behaviours make renders drift, and the film kit works around both. Whether Chrome puts a large 2D canvas on the GPU depends on its memory budget at that moment, so every 2D canvas is created with `willReadFrequently: true`, which keeps it in software. Inside a moving 3D layer Chrome re-rasters an `<img>` or an SVG at a scale that depends on what the worker drew before, so scans and marks are painted into canvas textures in the timeline's `onUpdate`.
+
+## Images and the first timeline update
+
+Never cache a read from an image until it is complete. HyperFrames 0.8.106 opens a composition at `domcontentloaded`, runs one timeline update so `onUpdate` fires, and only then waits for images. A picture still downloading already reports `naturalWidth`, but `drawImage` draws nothing from it until it is complete.
+
+A film's dither kit cached its picture read on that first update and held black for the whole render. One of two renders lost its dither field in 179 of 180 frames, PSNR 14dB against its pair, and the render reported success. The fix guards every cached picture read with `img.complete && img.naturalWidth > 0`. A pair in which one render lost a whole layer is this race, and GPU noise never removes a layer. Found on 2026-10-11.
+
+## Fonts in a composition
+
+Type in a composition goes through the kit's `var(--font)`. Any literal `font-family: 'Inter'` in a composition's CSS makes the HyperFrames compiler fetch that family from Google Fonts, and the log reads "Fetched 11 font face(s)". The fetched static Inter overrides the self-hosted variable face, comes out about 5% wider, and clips the films' line masks.
+
+| Rule | Reason |
+| --- | --- |
+| Grep every render log for "Google Fonts" | The log line is where the swap is reported, and the kit refuses a master whose log has it |
+| Set fallback families for CJK, Arabic and Devanagari glyph text from JavaScript | The compiler reads family names from `<style>` text only |
+| Build a `FontFace` with `featureSettings` for canvas text | A canvas ignores `font-feature-settings`, and a heading with two single-storey a's came out 12px short |
+| Seat headings from Inter's metrics: the baseline 0.8638em below a line-height-1 box's top, the cap height 0.7275em | A clip's elements may not be laid out while the clip is outside its window |
+
+[The correct Inter in practice](/docs/craft/type) covers the same face on the web.
+
+## Thin coloured strokes in H.264
+
+Put a thin coloured stroke on even frame pixels. H.264 at 4:2:0 stores colour for 2 by 2 pixel blocks, so a 2px line that starts on an odd pixel half-covers two blocks, and its colour averages with the ground. A 2px `#2f5ce0` box stroke read (47, 92, 224) in the composition snapshot and slate grey, from (65, 91, 113) to (84, 101, 155), in the encoded draft wherever it started on an odd pixel. Sample stroke colours in the encoded file. Text and hairline grey strokes are barely affected. Found on 2026-10-12.
+
+## Thin lines over a dithered ground
+
+Check every thin line at 640 by 360, the size a film plays at on a phone. On a lit dithered globe, 1px routes disappeared at that size. Routes drawn at 2.5px with 2px crosses over a 1px keyline in the film's olive at 60% on each side read. Every GT film uses the 8 by 8 Bayer screen at 3px cells.
+
+| Rule | Number |
+| --- | --- |
+| Distances on a cell grid run centre to centre | A 40px clearance on screen needs 44px between cell centres, because a cell's nearest pixel can sit 3px nearer than its centre |
+| Lower the tone in a clearance ramp and never scale it | Scaling and subtracting together compressed a taper to about 20px with a hard edge; lowering alone keeps the taper as long as the ramp |
+| A soft knee at the bottom of the tone | Nothing under 0.014, then a smoothstep to 0.07, so thin wisps leave no lone cells |
+
+[Dither in practice](/docs/craft/dither) has the screen itself.
+
+## The mix and its traps
+
+A film's sound meets fixed loudness targets, and the renderer has several behaviours that move a mix away from them without an error.
+
+| Target | Value |
+| --- | --- |
+| The film | -16 LUFS within 0.5 |
+| True peak | At or below -1 dBTP |
+| The music bed under speech | About -26 LUFS |
+| The bed alone | About -20 LUFS, a 6dB duck in loudness terms |
+| Fades | 0.3 to 0.8s |
+
+The final check is `ffmpeg -i out.mp4 -af ebur128=peak=true -f null -`.
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| A louder mix came out quieter | HyperFrames measures the mixed AAC and, when its true peak passes -1 dBTP, lowers the whole track to -1.5 dBTP | Compare an audio-only render with the sum of its stems; a uniform gap means the correction fired |
+| Peaks pass the renderer's limiter | The limiter has no lookahead, so waveform peaks pass by their crest factor | Put peak control in the ffmpeg masters |
+| A bump at the start of a clip | A clip at full level from its first sample with any gain gets a 5ms low-frequency bump of up to about 9dB at about 0.14 and 0.37s | Start every file with 0.1s of silence |
+| The encoder overshoots on downbeats | Sub-bass downbeats made the AAC encoder overshoot by up to 2.6dB | A -9dB low shelf at 100Hz |
+| Clicks on a gain ramp | ffmpeg's `volume` with `eval=frame` updates once per decoded frame (1,152 samples for MP3), so a ramp becomes a staircase | Use `aeval` for any gain curve |
+| About 56ms missing from the head | `adelay` then `apad` in one filter graph | Pad in a separate pass |
+| One channel's drone notched by 21dB at a join | The join was chosen on the mono fold-down while the two channels were near anti-phase | Choose joins on each channel and on the fold-down |
+| The bed pumps between lines | A duck that releases in gaps under about 1.2s | Hold the duck across short gaps |
+| A take ends on the narrator's next breath | The take ran past the line | End a take no later than 0.4s past its last word |
+
+## Speech synthesis
+
+These facts were measured on 2026-10-06 and matter when a film is voiced again in another language or a script is written to a time budget.
+
+| Fact | Measurement |
+| --- | --- |
+| Never generate below speed 1.0 | Every measurement found slowing a voice raised its pitch wobble; slowed takes read 1.6 to 1.7% median frame-to-frame wobble |
+| ElevenLabs `eleven_v4` ignores `voice_settings.speed` | One English sentence measured 2.80s unset, at 0.8 and at 1.2; a German one 3.52s at all three |
+| `eleven_flash_v2_5` and `eleven_multilingual_v2` follow it | Within 7% of the default span divided by the speed, from 0.7 to 1.2 |
+| Inline pace tags on `eleven_v4` | `[fast-paced]` shortened a line by about x0.83 and `[slowly]` lengthened it by about x1.15; one pass brought 14 of 18 lines within 10% of their slots |
+| Natural-language pace instructions on Gemini TTS | "15 percent faster" gave x0.72 to x0.78 of the default span, "15 percent slower" x1.60 to x1.91 |
+| A seed on `gemini-3.8-flash-tts` | Does not reproduce audio; no take of 16 lines was byte-identical across three requests |
+| A prompt's length floor | Asked for translations no shorter than 0.85 of a target length, a language model still wrote 26.5% (German) and 22.0% (Japanese) of its candidates below it, so selection must reject short candidates |
+| The narrator's rate | 2.60 words a second; scripts are planned on it, and a take is never sped up or time-stretched |
+
+Respell a name only in the request text, and keep the script and its captions as written. Vercel is sent as "Vursell" and shadcn as "shad C N". `npx gt` is sent as "NPX GT", because the spelled-out "N P X G T" was read as "N P", a pause, then "X G T". JSON is sent as "jaysonn".
+
+Open-weight licences decide which engines a commercial film may use. OmniVoice, F5-TTS, E2-TTS, MaskGCT, Llasa, Voxtral TTS, Spark-TTS and XTTS-v2 have non-commercial weights. MOSS-TTS v1.5, VoxCPM2, Qwen3-TTS, CosyVoice and Kokoro are Apache-2.0. Rubber Band is GPL-2.0-or-later, and ffmpeg's `rubberband` filter makes the FFmpeg build GPL.
+
+## Frames, probes and disks
+
+Each of these made a check read the wrong frame or a render fail for reasons outside the film.
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| A still pulled from a render came out near black | `ffmpeg -ss t -frames:v 1` on these renders | Select by index: `-vf "select='eq(n\,N)'" -vsync 0` with N = round(t x fps) |
+| A render looked fine in the log and was an error page | The page behind it failed to load | A flat error page has a grey standard deviation under about 20; check every frame set in one pass |
+| The disk filled during a render | With several workers a render writes every frame before it encodes, about 0.33GB for a 40s film | `--workers 1` streams frames; free 5GiB before a render, 8GiB for several workers |
+| Every clip showed at once in a Playwright probe | A plain Playwright page has no HyperFrames runtime | Set each clip's visibility from `data-start` and `data-duration` before seeking |
+| `page.evaluate(() => tl.seek(t))` hung | It returns the timeline, and serialising it never ends | Return a number from `evaluate` |
+| `hyperframes check` reported a DOM read inside a timeline callback that never happens | The check follows calls by scanning text and reads an expression-bodied arrow as running to the next top-level comma | Write helpers as function declarations or block-bodied arrows |
+| A master over 100MB could not be committed | GitHub refuses files over 100MB | A share copy at `libx264 -crf 22` with faststart took a 153MB master to 39MB |
+
+Stop only the process IDs you started. Parallel render jobs run the same command, so a `pkill` by pattern on 2026-10-10 stopped every other job's render.
+
+## Pacing and scripts
+
+A film states its stakes early, moves one thing at a time and never hangs on a still. These rules come from Kevin's notes on the films between 2026-10-01 and 2026-10-16.
+
+| Rule | Number |
+| --- | --- |
+| The stakes land | In the first 6 to 8s |
+| Headings in a film | 4 to 6, each a 2 to 6 word title that arrives whole on a beat, written as a header and never as an excerpt of the spoken line |
+| Quotes | At most one in a film |
+| Picture events | About two a second at most, one main motion at a time |
+| A shot's hold once it reads | About 0.5s |
+| The longest still | About 2s, except the end card |
+| A connecting element | Never waits about 2s for what it connects |
+| Reading hold for on-screen text | (words / 3) + 1s after it has fully arrived |
+
+Lengthen the film with pauses between lines before cramming events into it. When one object leads into the next shot, it moves physically: it slides, passes behind something or is hidden by it. A film never shrinks an object to a dot or morphs a card into a globe. A revision keeps every set piece Kevin has already seen and retimes or reorders it instead. The narration tells its own story, and on 2026-10-10 Kevin rejected a film that read an article's points as headings over code panels even though every fact in it was right. A title card carries one statement with the mark small in a corner, and [Writing](/docs/craft/writing) has the mock-ups that settled it.

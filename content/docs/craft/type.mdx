@@ -2,6 +2,214 @@
 title: 'The correct Inter in practice'
 description: 'Keeping the browser from replacing or degrading the rsms InterVariable 4.1: binding, features, optical size, tracking, measure, scripts and checks.'
 icon: Language
+sources:
+  - skills/gt-brand/references/type.md
+  - skills/gt-aesthetic/references/measures.md
+  - skills/gt-films/references/traps.md
+  - skills/gt-performance/references/recipes.md
+  - src/lib/fonts.ts
+  - src/app/inter-subsets.css
+  - src/components/viewer/tokens.css
+  - src/app/docs/docs.css
+  - scripts/build/subset-inter.py
+  - scripts/lint/type.mjs
+  - DESIGN.md
 ---
 
-Keeping the browser from replacing or degrading the rsms InterVariable 4.1: binding, features, optical size, tracking, measure, scripts and checks.
+Prototemplate sets one face, the rsms InterVariable 4.1, self-hosted from `public/fonts/`. The roman file is 352,240 bytes with sha1 `f55b18fd`, and it has two axes: optical size (`opsz`, 14 to 32) and weight (`wght`, 100 to 900). Most of the work is keeping the browser from replacing that file or degrading it, and the browser reports none of these failures. The measurements below come from a type audit on 2026-10-05 (Chrome for Testing, dark theme, 1440 and 390 wide, read after `document.fonts.ready`) and from a probe of these docs on 2026-10-21. The [gt-brand](/skills/gt-brand) skill holds the rules, and `scripts/lint/type.mjs` enforces them.
+
+## The binding
+
+Bind a self-hosted font to an identifier that no installed font carries. next/font under Turbopack names the CSS family after the JavaScript identifier, so a binding named `inter` produces `font-family: inter`. CSS family names are case-insensitive, which makes that family the same name as a desktop "Inter".
+
+| State of the web font | What the page renders |
+| --- | --- |
+| Loading | The web font hides the installed family at every weight |
+| Failed to load | The installed family takes the name back, and next/font's metric-matched `inter Fallback` never engages |
+
+On a machine with desktop Inter 3 installed, a failed file therefore renders Inter 3, which has no optical-size axis and different metrics. The same collision happens between pages of one site. Eight of the hub's `/d/` direction pages declared `const display = localFont(...)`, Turbopack gave every one the family `display`, and a client-side navigation could swap one page's face for another's. Give every `localFont` call a unique identifier.
+
+The hub binds the roman's latin subset as `ptInter` in `src/lib/fonts.ts` and publishes it as `--font-inter`. In a page, `getComputedStyle(document.body).getPropertyValue('--font-inter')` starts with `"ptInter"`. The type lint's rule T3 fails any other binding in that file.
+
+## Subsets and glyph names
+
+Keep glyph names when you subset a variable font. pyftsubset's default writes a format 3 `post` table with no glyph names, and Chrome on macOS rasterises such a subset a shade differently from the full file at every weight. `scripts/build/subset-inter.py` passes `glyph_names`, and its subsets match the full file pixel for pixel.
+
+| File | Bytes | How it loads |
+| --- | --- | --- |
+| Full roman | 352,240 | The source of the subsets; the brand deck inlines it whole as a data URI |
+| Roman latin subset | 112,748 | Preloaded on every route through `ptInter` |
+| Roman latin-ext, latin-ext-a, Greek, Cyrillic, Vietnamese and symbols subsets | 15,000 to 130,984 each | `@font-face` rules with a `unicode-range` in `src/app/inter-subsets.css`, fetched only where a page draws a code point in the range |
+| Italic subsets | 15,016 to 143,800 each | The same, in the same `ptInter` family |
+
+The latin subset also carries the arrows, the command key, the check, the play glyph, the star, the bullet and the comparison signs that the shell draws beside Latin text, so a page of Latin text needs no symbols file. `pnpm build:inter` writes the subsets. Every `localFont` call outside `src/lib/fonts.ts` and the nameplate's `src/lib/brand-fonts.ts` sets `preload: false`, and lint rule T3 holds that.
+
+## Contextual alternates under letter-spacing
+
+Name `calt` in the feature list of any tracked text. Chrome turns off contextual alternates under any non-zero letter-spacing unless the feature list names `calt`. Without them a tracked heading loses the `->` arrow, the colon centred between digits, the hyphen raised between capitals and the parentheses fitted to capitals.
+
+| Setting at 44px, weight 500 | Width of `a -> b => c 10:30 A-B` |
+| --- | --- |
+| Untracked | 399.94px |
+| Untracked, `calt` off | 421.64px |
+| Tracked -0.025em | 398.55px |
+| Tracked -0.025em, `calt` off | 398.55px |
+| Tracked -0.025em with `'calt' 1, 'liga' 1` | 380.81px |
+
+The tracked width equals the tracked width with `calt` off, so the tracking had already turned the feature off. rsms.me's own stylesheet writes `font-feature-settings: 'liga' 1, 'calt' 1` with the comment "fix for Chrome".
+
+`font-feature-settings` is one property, and a rule that sets it replaces the inherited list. Every element in the hub therefore reads one of two tokens from `src/components/viewer/tokens.css`.
+
+| Token | Value | Where it applies |
+| --- | --- | --- |
+| `--pt-ff-text` | `'liga' 1, 'calt' 1` | Every element |
+| `--pt-ff-display` | `'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1` | h1, h2 and display sentences (`cv11` is the single-storey a, `ss01` the open digits) |
+
+A rule that needs aligned figures adds `font-variant-numeric: tabular-nums`, which composes with either token. The brand deck's headings still list `'cv11', 'ss01'` without `calt`, and the 2026-10-05 audit named that as the deck's only type defect. Lint rule T4 fails a feature list outside the two tokens, and the live rule L7 fails tracking without `calt`.
+
+## Optical size
+
+Let the optical-size axis do the tracking. With `font-optical-sizing: auto` the browser sets opsz to the font size in CSS pixels, clamped to 14 to 32, and the audit found that mapping on every run. From 32px the Display design is in effect, and the axis narrows glyphs and spacing together.
+
+| Size | Width at opsz auto | Width at opsz pinned to 14 | Width at opsz pinned to 32 |
+| --- | --- | --- | --- |
+| 14px | 223.03px | 223.03px | 205.67px |
+| 24px | 365.80px | 382.34px | 352.56px |
+| 32px | 470.09px | 509.80px | 470.09px |
+| 44px | 646.38px | 700.97px | 646.38px |
+
+The widths are for "General Translation Motion brand" at weight 500. The axis tightens the spacing by about -0.004em a character at 16px, -0.022em at 24px and -0.039em from 32px. Inter 3's Dynamic Metrics formula is obsolete under Inter 4, and rsms.me no longer serves that page.
+
+Never write `font-variation-settings`. It pins opsz and wght for the element and everything that inherits from it, and the automatic mapping stops. `font-optical-sizing: none` stops it too. Lint rule T5 fails both.
+
+## Tracking by role
+
+Tracking tightens with size and weight, and weight 400 text is never tracked. Nothing on Inter is tracked positive in the hub's shell, and lint rule T8 fails a positive value.
+
+| Role | Size and weight | Tracking | Token |
+| --- | --- | --- | --- |
+| Page and section titles | 32px and up at 500 | -0.025em | `--pt-d1-track`, `--pt-d2-track` |
+| Figures and 24px heads | 24px at 500 | -0.02em | `--pt-d3-track` |
+| Display quotes | 27 to 34px at 500 | -0.015em | none in the shell; the deck's `.say .q` |
+| Labels, row keys, contents links | 13 to 20px at 500 | -0.01em | `--pt-track-label` |
+| Group labels | 12 to 12.5px at 500 | -0.005em | `--pt-track-group` |
+| Running text | any size at 400 | 0 | none |
+
+The deck's -0.025em on display sizes is a house choice on top of the Display design, and nothing goes tighter. A first pass of a dashboard used one flat -0.028em at every size, and Kevin's review of 2026-09-25 read "kerning needs to be adjusted". Literal tracking values are ratcheted per file by the lint's rule R2.
+
+## Measure
+
+Set a measure in em. The `ch` unit is the advance of the zero, about 0.63em in Inter, while Inter prose averages about 0.45em a character, so a measure in `ch` holds about 35 to 40% more characters than its number suggests.
+
+| Measure | Font size | Characters a line |
+| --- | --- | --- |
+| `max-width: 62ch` (662px) | 17px | 83 to 86 |
+| 30em (`--pt-measure-lead`) | 17px | about 66 |
+| 32em (`--pt-measure`, 512px) | 16px | 61 to 71, measured in the `/brand` prose |
+
+The brand deck's book-view lead used `62ch` and measured 84 characters a line over four lines at 1440. On 2026-10-05 the `/motion` lead ran seven lines at 1440 and fourteen at 390. A lead should read in two or three lines. `skills/gt-aesthetic/scripts/measure-type.mjs --strict` exits 1 on prose wider than 75 characters, and the live lint's L8 warns on a head lead past three lines.
+
+## Scripts and the Arial fallback
+
+Set a script's stack on its own rule when the script needs its own face. next/font writes a fallback face for each binding (`ptInter Fallback`) as `local("Arial")` with `size-adjust: 107.89%`. Arial has Hebrew and Arabic glyphs, so in any stack that starts with the Inter variable those scripts render in Arial, and a Hebrew or Arabic face listed later never sees them. Chinese, Japanese, Korean and Devanagari are absent from Arial and fall through to the faces listed after it.
+
+The fix is a stack with no Inter variable in front, applied by a `:lang()` selector or a class. The brand deck's `.lang .ar` rule does this for Arabic. On `/motion`, Hebrew renders in Arial by design, and `src/app/motion/motion.css` says so. Inter itself covers Latin, Greek and Cyrillic.
+
+## Weight and stack traps
+
+Each of these rendered a different weight or face than the stylesheet appeared to ask for.
+
+| Symptom | Cause | Fix | Found |
+| --- | --- | --- | --- |
+| Section numerals in a weight 500 block render at 700 | The browser's `bolder` computes `b` and `strong` to 700 | A base rule sets `b, strong` to 500 | The brand book, 2026-10-05 type audit |
+| A ported blog's headings render at 600 | The port kept its old heading rules | Port the content and read the system's tokens | The blog port, 2026-10-05 type audit |
+| Docs headings render at 600 and 700 | fumadocs and its typography plugin set those weights | A weight cap in the docs stylesheet ([template](/docs/template)) | The docs site's first build, 2026-10-15 |
+| A label draws a different `a` from the row beside it | A feature list set on the label alone | Labels read the text token, and a state changes weight or colour without touching letterforms | 2026-10-05 type audit |
+| A second Inter appears only while the page loads | A bare `'Inter'` in a stack is a second binding | Stacks read `var(--font-inter), system-ui, sans-serif` | 2026-10-05 type audit |
+| `'Helvetica Neue', Arial` after the variable never render | next/font's fallback is already a metric-matched Arial | Remove them | 2026-10-05 type audit |
+
+Lint rule T6 fails a weight above 500 outside the nameplate and the specimens, and T2 fails a bare Inter.
+
+## Seating display type
+
+Seat each line of a heading by its first glyph's ink. A heading box is not where its ink sits, and Inter's metrics give the offsets.
+
+| Metric | Value |
+| --- | --- |
+| Cap height | 1490 of 2048 units, 0.728em |
+| Baseline below the top of a line-height-1 box | 0.8638em |
+| Side bearing of `t` and `v` at 120 to 130px | 7px from the box edge |
+
+Seating only the first line of a two-line heading leaves the second wherever its first glyph's side bearing puts it. Set the heading at the leftmost line's position and step the other lines in.
+
+Chrome rounds the ascent and descent to whole pixels and floors the half-leading, so a heading's lift above its label steps with its size. On a GT blog page the descent of an h2 over 26.95px rounds from 6 to 7px, which happens from 1348px wide. There the heading sat 1.85px above its label instead of 1px. A 0.15px trim inside that media query measured 1.0px at 1360 and up. Fix a rounding step with a trim in the range where it occurs, and leave the cap ratio alone, because no single ratio fits a step function.
+
+## Canvas text
+
+A 2D canvas ignores `font-feature-settings`. A heading with two single-storey a's painted on a canvas with plain Inter came out 12px shorter than the same heading in the DOM. Build a `FontFace` from the Inter file with `featureSettings` (`cv11` for headings, `tnum` for figures) and load it before the first paint.
+
+WebKit adds two more differences. Its canvas picks the optical size from the painted pixel size, so an export paints with copies of the font pinned to one opsz. `text-rendering: optimizeLegibility` turns automatic optical sizing on in WebKit even under `font-optical-sizing: none`, so canvas text uses `text-rendering: auto`. `geometricPrecision` softens Chromium's small text. The [gt-films](/skills/gt-films) skill carries the film kit's version of this rule.
+
+## Preloads that leak across routes
+
+Preload only the face every route draws. next/font preloads every face a module declares on every page that imports the module, and Turbopack shares CSS chunks between routes, so a face meant for one page reaches others.
+
+| Case | Measured |
+| --- | --- |
+| generaltranslation.com's docs on 2026-09-25 | 9 font preloads, 858KB; the 379KB italic never rendered, because its family re-point did not reach the prose |
+| A second display face on that site's landing | 6 files, 112,676 bytes, preloaded on every landing route |
+| An italic joined to the main family | Fetched by the home page for its empty icon `<i>` elements, which are italic by the browser's default style |
+
+Of Inter, the hub preloads only the roman latin subset, and the nameplate's two faces are its only other preloads. Every other face sets `preload: false`, and a face used on one route gets a family name that only that route's CSS names, so it cannot leak. The [performance page](/docs/engineering/performance) has the measurement recipe.
+
+## The rendered instance
+
+Read the instance Chrome rasterised. The DevTools protocol's `CSS.getPlatformFontsForNode` names it, with both axes in 16.16 fixed point.
+
+| Instance name | opsz | wght | Element |
+| --- | --- | --- | --- |
+| `InterVariable_opsz200000_wght1F40000` | 0x200000 / 0x10000 = 32 | 0x1F40000 / 0x10000 = 500 | The 44px page title on `/skills/gt-brand` |
+| `InterVariable_opsz180000_wght1F40000` | 0x180000 / 0x10000 = 24 | 500 | A 24px prose h2 on the same page |
+
+The 17px lead on that page reads `opsz110000`, which is 17. A run that reports any other family is a defect unless the exceptions below name it. Check the files with `shasum public/fonts/InterVariable*.woff2`. The brand deck inlines the roman as a data URI, and decoding it gives the same bytes. The live lint (`pnpm lint:type:live`) reads the same values at 1440 and 390 for every visible text group.
+
+## Glyphs outside the subsets
+
+A character the font does not map falls through to a system face without any warning. The theme button's half-disc `◑` (U+25D1) is outside every Inter subset and renders in Hiragino Sans on macOS, on the hub and in these docs. The live lint's rule L1 reports a Latin run in another face, and its range (`INTER_RANGE` in `scripts/lint/type.mjs`) stops at U+25A0 to U+25A1 in that block, so it never reports this glyph. Read a symbol's face with `CSS.getPlatformFontsForNode`.
+
+## The nameplate and the docs header
+
+The hub's nameplate is the one place its chrome leaves Inter. `span.pt-brand-word` sets `proto` in Fraunces 600 and `template` in Space Grotesk 500 at 14.5px, loaded by `src/lib/brand-fonts.ts`. The probe read `proto` at -0.2175px tracking in Fraunces SemiBold and `template` at -0.435px in Space Grotesk Medium, both with `font-feature-settings: normal`. On 2026-10-21 the docs header drew `[data-docs-nameplate]`, the word "Prototemplate" in Inter 15px at weight 500, so these pages did not show the nameplate. [The design canon](/docs/handbook/design) lists every chrome exception in its section 15.
+
+| Exception | Where | Reason |
+| --- | --- | --- |
+| Fraunces 600 and Space Grotesk 500 | The nameplate | Kevin asked for the old nameplate back |
+| Grotesk labels and mono numerals | The gallery on `/` | The Prototemplate chrome, kept apart from the product brand |
+| Mono | Hex values, locale codes, code names, paths | They are code artifacts |
+| Their own faces | The `/d/` direction pages | Self-contained explorations |
+| Weights 300 to 800 | Deck slide 27 and the specimen on `/brand` | They show the weights on purpose |
+| Sora and Instrument Sans | The presenter's intro lockup | Its type beats set other faces beside Inter on purpose |
+| Michroma, Orbitron and Anybody | The speed marks | Converted to outlines at build time, so no page loads them |
+
+## Where these docs stand
+
+On 2026-10-21 these docs drew the right file and missed the house type. The type base in `tokens.css` sits on the shell's roots, and fumadocs' root (`#nd-notebook-layout`) is not one of them. Every docs element therefore inherits Tailwind preflight's `html` rule, `font-feature-settings: normal`. The live lint found 288 problems on five docs routes at 1440 and 390.
+
+| Live lint rule | Findings | Cause |
+| --- | --- | --- |
+| L2, features that do not match the role | 261 | Every element inherits `normal` |
+| L3, a display size off the ladder | 10 | fumadocs' title is `text-[1.75em]`, 28px |
+| L6, an unbalanced heading | 17 | The title, the contents title and the card titles on `/docs/handbook` |
+
+A 28px title also lands at opsz 28, an intermediate instance short of the Display design. A fix that adds the docs root to the base rules and gives `docs.css` a ladder section was injected into the rendered pages and measured on `/docs/handbook/design` at 1440.
+
+| Part | Before | With the fix |
+| --- | --- | --- |
+| Title | 28/42px, untracked, features `normal`, opsz 28 | 44/45.76px, -1.1px, display list, balanced, opsz 32 |
+| Lead | 18/28px, 840px wide, 69 characters a line | 17/26.35px, 510px wide |
+| Body | 16/28px, 840px wide, 107 characters a line | 16/25.6px, 512px wide, 64 characters a line |
+| Prose h2 | 24/32px, untracked | 24/30px, -0.48px, display list, balanced |
+| Table cells | 14/24px | 14/21.7px, tabular figures |
+| Live lint findings | 288 | 0 |
+
+The cascade behind the `normal` features, and why the obvious one-token fix leaks to every route after a client navigation, are on the [docs site traps](/docs/engineering/docs-traps) page.

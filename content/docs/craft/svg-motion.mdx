@@ -2,6 +2,149 @@
 title: 'SVG lines in motion'
 description: 'Dash traps with their proofs, GSAP seen from outside the page, timing numbers, first-paint transitions, stretched viewBoxes, symbols and masks.'
 icon: Loop
+sources:
+  - skills/gt-motion/SKILL.md
+  - skills/gt-motion/references/traps.md
+  - skills/gt-motion/references/web.md
+  - skills/gt-diagrams/SKILL.md
+  - skills/gt-diagrams/references/dashes.md
+  - skills/gt-diagrams/references/isometric.md
+  - skills/gt-deck/references/type.md
+  - skills/gt-landing-pages/references/type-on-the-page.md
+  - src/app/d/production/sections/locadex.css
+  - src/lib/glyph-field.ts
+  - docs/handbook/quality-bar.md
+  - DESIGN.md
 ---
 
-Dash traps with their proofs, GSAP seen from outside the page, timing numbers, first-paint transitions, stretched viewBoxes, symbols and masks.
+The hub's diagrams draw their connectors as SVG strokes and animate them with dash offsets and GSAP tweens. SVG dashes behave in ways a reader of the specification would not predict, and none of the failures raises an error: the line draws from the wrong end, tiles, or leaves a fleck. Each trap below was confirmed by a headless render, a measurement or a rejected review round. The [gt-motion](/skills/gt-motion) and [gt-diagrams](/skills/gt-diagrams) skills hold the rules, and the components that use them are on [Doubled lines and connectors](/docs/components/lines) and [Speed marks and the GT mark](/docs/components/marks).
+
+## Five dash traps
+
+### pathLength under a non-scaling stroke
+
+A dash meant as a fraction of a path drew as a short fleck. Chromium computes dash patterns in screen space under `vector-effect: non-scaling-stroke` and ignores `pathLength` there, so `pathLength=100` with `stroke-dasharray: 25 100` drew a fleck 25 screen pixels long where a quarter of the path was intended. A progress ring therefore drops both attributes and writes its dash in user units, because in SVG a CSS pixel is one user unit. The Locadex progress ring's path has a perimeter of 402.832 units, and the dash rides a GSAP-tweened custom property:
+
+```css
+/* 4.02832px is one percent of the ring's 402.832-unit perimeter */
+.v0-ldx-ring {
+  stroke-dasharray: calc(var(--ldx-fill) * 4.02832px) 403px;
+  stroke-dashoffset: calc(var(--ldx-off) * -4.02832px);
+}
+```
+
+Found on the Locadex border ring and the enterprise launch rail in August 2026.
+
+### A travelling dash that tiles
+
+A single pulse meant to travel along a line showed up as several pulses. The pulse was a dash as long as the path with an animated offset, and under a non-scaling stroke on a scaled SVG the screen-space period repeats along the path. Move a pulse as geometry instead: translate a short `<line>` segment in user units with `transform: translateX(...)`, and keep `non-scaling-stroke` for a constant weight. Dashed pulses on an SVG that scales uniformly can drop `non-scaling-stroke` instead. With it, a normalized `22 200` dash repeated about every 222 screen pixels and stranded accent fragments along the wires. Found in the same August 2026 work.
+
+### Dashes on a closed path
+
+An arc parked mid-perimeter on a closed shape left everything past the path's start unpainted. Dashes clip at the end of a closed subpath and never wrap around the loop. Start the path where the arc starts, as the Locadex ring's path does, or use a period equal to the perimeter: `stroke-dasharray: d (L - d)` for a dash `d` on a path of length `L`.
+
+### The sign of the parked offset
+
+A draw-on ran backwards, from the end of the line toward its owner. The sign of the offset a dash is parked at picks the end it reveals from.
+
+| Parked offset, tweened to 0 | Reveals from | Headless Chromium check on a 100-unit path |
+| --- | --- | --- |
+| Positive, +100 | The path's first point | Offset 50 inks the first half |
+| Negative, -100 | The path's last point | Offset -50 inks the last half |
+
+The stack tower's rail taps are authored plate first and park at -101, so the bend grows out of the rail into the plate. The write wires run from the chip to the row and park at +101, so they draw out of the chip. Kevin rejected a backwards draw three rounds running in August 2026, and the check above was run on 2026-10-05. When a draw-on looks backwards, read the first point of `d` before touching the timing.
+
+### A fleck at the end of the path
+
+A sub-pixel accent fleck stayed at the end of a line that should have been empty. With a bare `100` dash the pattern wraps at exactly 100, and Chromium's dash rounding bleeds the next dash's edge onto the path's end; at exactly -100 the fleck measured 2px. `stroke-dasharray='100 200'` parked at 101 or -101 keeps every dash edge clear of both ends, and offset 0 still covers the whole path. Found on the stack tower's taps.
+
+### Rounding, cached paths and empty paths
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| A dash froze for about four frames, then jumped a whole unit | GSAP integer-rounds pixel CSS properties | `autoRound: false` on every dash-offset tween, and `pathLength` 1000 on a looping dash so one unit is sub-pixel |
+| A rerun of an effect traced an empty path | A pulse that rewrites `d` every tick blanked the source | Store the authored `d` once in `el.dataset.traceD` and restore it before measuring |
+| An animation threw on mount | `getPointAtLength` throws on an empty path | Guard the empty path before sampling it |
+
+The line auditor cannot see SVG strokes, so every drawn junction is read by eye at 2x crops in both themes. [Lines and seams](/docs/craft/lines) covers the auditor.
+
+## GSAP from outside the page
+
+A test harness cannot freeze GSAP from outside the page, so a capture follows the page's own clock.
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| `window.gsap` is undefined in the page | The ESM build does not expose a global | Read state from the page, such as a computed CSS-variable dial |
+| Overriding `requestAnimationFrame` does not freeze the animation | GSAP's ticker caches the original `requestAnimationFrame` when it wakes | Poll the dial and aim each capture about 100ms early, so capture latency lands the frame inside the target window |
+| A harness that seeks a timeline gets frames with stale state | `tl.seek(t)` suppresses callbacks by default | Call `tl.seek(t, false)` so `onUpdate` runs |
+| A shimmer's sweep landed about 180 units off its mark | A `rotate()` clip window moved with GSAP's SVG transform-origin compensation | Pre-rotated 60 degree window paths swept by a pure horizontal translate (`DitheredMark`) |
+
+Clearing what a tween set is part of the same discipline: a standing `will-change` or a leftover 0px transform creates a stacking context that paints over 1px seams. [Lines and seams](/docs/craft/lines) has that case.
+
+## Timing numbers
+
+The house motion runs on a few fixed numbers. Bounce, elastic and back overshoot are not used.
+
+| Use | Value |
+| --- | --- |
+| An arrival (fast in, long settle) | `expo.out` or `power3.out` in films; `power2.out` on the web |
+| A move from one place to another | `power2.inOut` |
+| A process: a scan, a pulse, a counter, a scrubbed rise | `none` |
+| Film beat grid | 0.5s; arrivals and scene changes land on beats |
+| Reading hold after a sentence has fully arrived | (words / 3) + 1s |
+| Stagger | 40 to 90ms, in reading direction |
+| Landing reveal | 0.62s with a 0.055s stagger, from 16px down |
+| Plate row reveal | 180ms `ease-out`, from 4px down |
+| Shell chrome | 120 to 220ms, 0 under reduced motion |
+| Camera drift | Scale 1.00 to 1.04 over a scene, on a picture or a field and never on type |
+
+A language morph must last longer than 0.5s so the glyphs visibly regroup, and it must finish inside the time its locale holds the screen. Kevin's review of 2026-08-05 found the morphs "still way too fast", under 0.5s, and later that day he called a slower morph too long. The reassembler keeps each beat longer than the print, about 3.2s.
+
+In an assembly, one group moves at a time with rests of 0.25s or more between groups. A film's triangle reassembly sent twenty slivers flying with 3D tilts while the camera moved, and four rounds of path planning still read as scatter. The cut that passed moves one pair in the plane, rests 0.25s and prints the rest in place. When path planning cannot make a move calm, change the idea.
+
+## Transitions at first paint
+
+A CSS `transition` alone never runs on the first frame of these sites. next-themes' `disableAnimation` sheet is in the head when the first frame lands, so the transition has nothing to animate from. A fade at first paint is a keyframe animation: the field region's 240ms `ease-out` opacity keyframe runs once, when the first tone is drawn. A control that mounts on the client also reserves its height in the server markup, or it shifts the layout under it; [Interface details](/docs/craft/interface-details) has the measured jumps.
+
+## Moving type
+
+The moving type law in [the design canon](/docs/handbook/design) section 8 says one shaped text node morphs and only its width animates. These are its working numbers.
+
+| Part | Value |
+| --- | --- |
+| Width measurement | A hidden probe with the word's own `lang` and `dir`, the whole roster in one batched pass, cached, snapped to device pixels, measured again on a debounced resize and on `document.fonts.ready` |
+| Width tween | One per cycle, 0.7s `power2.inOut` |
+| Locale requests | Debounced 0.25s, leading and trailing |
+| A locale with the same text | Retags `lang` and `dir` only |
+| Under 720px | The em pins to the column, so a sentence that folds to two lines never tweens layout |
+| Glyph field words | Hold 4.0s and morph 2.4s |
+| Mobile hero h1 | Reserves two lines with `min-height: 2.2em`, sized `clamp(2.1rem, 10.9vw, 2.7rem)` |
+
+The width tween is off under 720px because a review found it slow and laggy on phones. The hero's size comes from the longest of its sixteen sentences: at 390px the French sentence tips to a third line at 2.75rem, so the clamp stays just under it.
+
+The glyph field conserves matter. The outgoing word's dust becomes the next word, only the deficit is recruited from rain visible on screen, and surplus dust flies home to its rain slot. On `document.fonts.ready` the field measures again and never resamples, because a resample deals the particles out again and glyphs jump across the screen.
+
+## Drawing under a stretched viewBox
+
+A stretched SVG holds straight lines and no text. `preserveAspectRatio="none"` lets a connector strip fill a fluid column, and under it straight segments stay straight while curves warp, because their control points stretch with the box. Circles become ellipses and text distorts. Strokes hold their width only with `vector-effect: non-scaling-stroke`.
+
+| Rule | Number |
+| --- | --- |
+| Size text after the scale | An 800-unit viewBox that renders at 0.914 sets its labels at 22px so they land at 20.1px |
+| Put a 1px line at 1:1 on a half-pixel coordinate | `y1="70.5"` fills one row of device pixels |
+| Run a leader past the vertex it meets | 2 units, buried under the opaque hull drawn after it, so no anti-aliased seam shows |
+| Mark a step or a value | An 11px filled ink square or a short perpendicular tick; no arrowheads |
+
+A stretched strip uses straight taps with one elbow, and its labels live in HTML beside it. The sign-in workflow diagram replaced its curved connectors with straight taps for this reason. Under 620px the translation flow figure hides its fork and stacks its panels, because a figure that cannot hold its shape on a phone reflows. `skills/gt-diagrams/scripts/figure-check.mjs` prints every label's rendered size and fails a stroke in a stretched viewBox without `non-scaling-stroke`.
+
+## Symbols and masks
+
+SVG references resolve in coordinate systems that are easy to get wrong, and the result is a mark that renders off its box with no error.
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| The GT monogram rendered 214 units too high, with its top cut off | A `<use href="#gt-mark">` sat inside an svg that copied the symbol's own viewBox, `-8 214 1213 771` | Reference the symbol from an svg with a plain width and height in the mark's aspect (about 1.573, such as 132 by 84) and no viewBox, or render the path directly |
+| A mask landed away from the shape it masks | With `maskUnits="userSpaceOnUse"` the mask resolves in the user space of the element that uses it | Write mask coordinates in the same plan coordinates as the masked rect |
+| A second copy of a figure drew the first copy's mask or pattern | SVG ids are global to the document | Give every mask, pattern and clip id a unique prefix (`DitheredMark` takes an `id` prop for this) |
+
+Brand marks render as alpha masks so the shape takes the surface's ink, and the mask reads alpha only, so the light and dark variants of a mark image give the same result. The [gt-diagrams](/skills/gt-diagrams) skill covers seating a mask on an isometric face.

@@ -2,6 +2,117 @@
 title: 'Lines and seams'
 description: 'The arithmetic of 1px rules: composite greys, self-stacks, rails as borders, full-width rules, stacking contexts over seams and what the auditor counts.'
 icon: Squares
+sources:
+  - DESIGN.md
+  - skills/gt-verify/references/cases.md
+  - skills/gt-lints/references/line-auditor.md
+  - skills/gt-landing-pages/references/rail-and-bands.md
+  - skills/gt-landing-pages/references/engine.md
+  - skills/gt-motion/references/traps.md
+  - skills/prototemplate/references/porting.md
+  - src/components/viewer/tokens.css
+  - scripts/lint/lines.mjs
+  - scripts/lint/practices.mjs
 ---
 
-The arithmetic of 1px rules: composite greys, self-stacks, rails as borders, full-width rules, stacking contexts over seams and what the auditor counts.
+Structure on these pages comes from 1px hairlines, and the design canon's line law says every line is drawn exactly once. The hairlines are translucent, so a line drawn twice composites darker than its neighbours and reads as another colour. Most doubles come from two elements that each draw a correct line on the same edge, and a full-page screenshot hides them. This page gives the arithmetic for reading a seam, the cases that stack strokes without an obvious second border, and what the line auditor counts. [The design canon](/docs/handbook/design) states the law in its sections 2 and 3.
+
+## Reading a seam by its grey
+
+A seam's grey says how many strokes drew it. A stroke of alpha `a` and colour `L` over a ground `G` composites to `a*L + (1 - a)*G`, and two stacked strokes composite at alpha `1 - (1 - a)^2`. With the shell's hairline token the expected readings are fixed numbers.
+
+| Line | One stroke | Two strokes |
+| --- | --- | --- |
+| `--pt-hair` in dark: 242 at 0.22 over 7 | 59 | 99 |
+| `--pt-hair` in light: 7 at 0.18 over 255 | 210 | 174 |
+| A titanium stroke at 0.5 over ink | about rgb(72, 75, 80) | 101 to 110 |
+
+A reading near the two-stroke value means a double line or one stroke over a brighter backing such as a shader glow. Check the neighbouring pixels to tell them apart: a glow raises them too, and a double leaves them at the ground. On 2026-10-05 a scan across the toolbar's bottom rule read 59 in Chromium and 58 in WebKit, which is one stroke.
+
+An opaque hairline keeps its grey when it is doubled. The GT landing's main hairline `--tc-hair` is opaque, so there a double shows as a run twice as wide: 4 device pixels at 2x for two 1px rules. Read every seam at a device scale factor of 2.
+
+The probe in the [gt-verify](/skills/gt-verify) skill reads seams this way. `node skills/gt-verify/scripts/probe.mjs <url> --scan x,y,down,24 --dsf 2` groups the device pixels along a 24px segment into runs of one grey, prints each run's width in device pixels and marks the runs that are lines. The coordinates are CSS pixels in the viewport.
+
+## Self-stacks and stacked grounds
+
+A background paints to the border box by default, so a translucent border over the element's own translucent fill paints darker than every other hairline on the page. This is the self-stack, one of the line law's four defect classes. Two stacked translucent grounds do the same: two grounds at 0.26 alpha composite to about 0.45.
+
+| Case | Fix |
+| --- | --- |
+| A bordered element with a translucent fill | `background-clip: padding-box`, so the fill stops inside the border |
+| A cell with a ground inside a row with a ground | Cells stay transparent, and the row paints the one ground |
+| A framed cell in a ruled row | A 1px padding gap shows the row's ground as the frame, so the cell draws no border |
+
+Every button face on the GT landing carries `background-clip: padding-box`, because a hair border over a hair fill composited darker than the page's other hairlines. The line auditor gates a self-stack only when the fill alpha is 0.12 to 0.95 and the edge is 120px or longer, so chips and small controls are reported without failing.
+
+## Rails drawn as borders
+
+Draw a page's column lines as a border. A border rounds to whole device pixels at any zoom, and a background-filled box does not. The column wrapper draws its two lines once with `border-inline`, and a band inside the wrapper draws no side lines of its own. A full-bleed band outside the wrapper draws its own pair once, at the column edges, from its inner column.
+
+The GT landing's rail token is 1104px because its original pages ran `max-w-[1120px] px-2`, which put their side lines 1104px apart. A first rail of 1100px doubled every hairline against the old sections by 2px a side. The retired second pair of lines at plus or minus 10px came from a `::before` inset -10px from the padding box, and the padding box sits 1px inside the border, so its real offset was 9px. Any band pseudo-element that did not use the shared token jogged 1px at the junctions.
+
+The practices lint (`scripts/lint/practices.mjs`) fails a pseudo-element that pushes an inline border pair outside its box, the retired token and prose that still recommends the retired pair.
+
+## Rules that run the full width
+
+A structural rule can run across the whole stage while its element keeps the column's layout. The element keeps its 1px border for layout and paints it as a border image outset 100vmax past both ends. The outset never scrolls, and the scroll region clips it at the stage's edges. Kevin asked for full-width rules on 2026-10-07.
+
+| Trap | Cause | Fix |
+| --- | --- | --- |
+| A rule that should be gone still paints | Lightning CSS, Turbopack's CSS compiler, writes `border-image: none` out as `border-image: ;`, which browsers drop | Remove a border image with `border-image-source: none` |
+| A border image paints on an element with a border of 0 | An explicit pixel border-image width ignores the border width | The same longhand removal |
+| Rules keep their author colour in forced colours | Chromium keeps author colours in border images | The hairline tokens become `CanvasText` under `forced-colors` |
+| A grid of links draws stacked lines | Every link in a row drew the same rule | Only the first link of each row draws it (`4n+1`, and `2n+1` under 900px) |
+| A hover-scale reset in CSS does nothing | Lightning CSS folds a standalone `scale` into `transform` | Reset the scale in the markup |
+
+The practices lint's `border-image-none` check fails the shorthand in any stylesheet under `src/`.
+
+## Stacking contexts over seams
+
+A stacking context paints over neighbouring 1px seams. A standing `will-change` or a leftover transform of 0px creates one. On the GT landing, reveal tweens left transforms on framed cards, and the cards then painted over the top rule of the hatch band below them.
+
+| Fix | Where |
+| --- | --- |
+| Set `will-change` only for the length of the tween and clear it on complete | The tween's `onComplete` |
+| Clear exactly what a tween set: `strokeDashoffset`, `transform`, `opacity`, `visibility` | The cleanup of any band that wrote them |
+| Give a band that must stay on top its own context | The hatch band carries `position: relative; z-index: 2` |
+
+The [gt-motion](/skills/gt-motion) skill lists this trap with the GSAP ones, and [SVG lines in motion](/docs/craft/svg-motion) covers the rest of them.
+
+## Registration crosses and horizontal clipping
+
+A registration cross marks the point where a section seam meets the rail. The GT landing draws it with 9px arms, 1px thick, hanging 5px past the rail, in ink at 0.38 in light and white at 0.34 in dark. One pseudo-element per seam is enough, because the next section's top corners are the same points. A full-bleed band clips its own pseudo-elements, so the section after it paints its own top pair.
+
+The arms reach 5px past the rail, so the page root needs horizontal clipping. `overflow: hidden` makes the root a scroll container, and every `position: sticky` figure further down the page stops sticking. The root takes `overflow-x: clip`, which clips without creating a scroll container.
+
+## The line auditor's thresholds
+
+`scripts/lint/lines.mjs` renders pages in Chrome for Testing and rebuilds lines from computed CSS. Each element is first clamped to its nearest clipping ancestor, so the audit reads the geometry the page shows. Construction lines drawn at plus or minus 100vh once produced phantom doubles, and the clamp removed them.
+
+| Counted as a line | Threshold |
+| --- | --- |
+| A border side | 1 to 2.5px wide, at least 24px long, in a visible colour |
+| An outline ring | 1 to 2.5px wide, at its offset |
+| A box-shadow used as a border | No offset, blur of 1.5px or less, spread of 1 to 2.5px |
+| A thin filled box | 2.5px thick or less and longer than 24px |
+| An exposed-ground strip | 1 to 2.5px of padding over a visible fill on a side with no border |
+| A positioned `::before` or `::after` | A border or a thin fill, including `translateX(-50%)` centring |
+
+| Finding | Rule |
+| --- | --- |
+| Double | Two parallel lines from different owners 1 to 4px apart, overlapping 75% of the shorter line and at least 80px, both visible at two of three sample points |
+| Junction | The same pair under 1px apart: two owners draw one seam and the alphas stack |
+| Invisible seam | A 1 to 2.5px strip within 45 summed RGB steps of the page's ground |
+| Self-stack | A border with alpha under 0.95 over the element's own fill at 0.12 to 0.95, on an edge of 120px or longer |
+
+It skips SVG and canvas subtrees, elements under a `matrix3d` transform or a mask image, hidden elements and anything at opacity 0.05 or less. SVG junctions are read by eye at 2x crops.
+
+Three incidents set its exit codes, because each one made a broken page pass. The shell mode adds a fourth exit 2, for a state such as the open search that did not open.
+
+| Symptom | Cause | Fix | Found |
+| --- | --- | --- | --- |
+| A run over several pages reported clean | It audited only the first URL given and passed the rest | Every positional URL is audited | 2026-08-02 |
+| A missing page reported clean | A 404 page audits at about one line | An HTTP status of 400 or more exits 2 | 2026-08-02 |
+| A list of URLs ran as one malformed URL | zsh does not split an unquoted variable | A URL with whitespace exits 2; pass lists as arrays | 2026-08-02 |
+
+After those fixes the first full battery, 25 pages in two themes at two widths, was 100 audits with zero findings. The [gt-lints](/skills/gt-lints) skill holds the auditor's reference, and [the gates page](/docs/gates) shows where it runs.

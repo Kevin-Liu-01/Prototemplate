@@ -2,6 +2,99 @@
 title: 'Writing'
 description: 'The house register with before and after rewrites, writing for a reader who knows nothing about the work, and the rules for slides and cards.'
 icon: Book
+sources:
+  - skills/gt-voice/SKILL.md
+  - skills/gt-voice/references/ai-patterns.md
+  - skills/gt-voice/references/before-after.md
+  - skills/gt-deck/references/type.md
+  - docs/handbook/quality-bar.md
 ---
 
-The house register with before and after rewrites, writing for a reader who knows nothing about the work, and the rules for slides and cards.
+General Translation copy reads like a technical specification: complete declarative sentences, concrete nouns, and a number or a mechanism where marketing would put an adjective. The site, these docs, the brand deck, the films, UI strings and pull request text all use this register. The rules below come from Kevin's reviews of GT writing between August and October 2026. The [gt-voice](/skills/gt-voice) skill holds them with their dates, and every page in this tab was written to them.
+
+## The hard rules
+
+Each rule removes a pattern that reads as machine-written or as marketing.
+
+| Rule | Breaks it | Meets it |
+| --- | --- | --- |
+| No em dashes; an en dash or a double hyphen counts too, and ranges read "X to Y" | Two slide numbers joined by an en dash | "slides 17 to 23" |
+| No metaphors or analogies | "Localization is a growth lever." | "Numbers, currency, and dates localize too." |
+| No contrast pairs such as "X, not Y" or "not just X but Y" | "It's not a library, it's a platform." | State the positive claim, with an example when the contrast carries information |
+| No fragment rhythm | "Open-source libraries and a closed platform, built together." | "GT builds both the open-source libraries and the closed platform." |
+| No signposts or content labels | "Three facts matter." followed by the facts | The three facts, each its own sentence |
+| No eyebrows: a small uppercase tracked line above a heading | "REACH EVERY USER" above a heading | The heading and one lead paragraph, nothing above |
+| No marketing vocabulary | "Supercharge your global growth with cutting-edge AI." | "Translations are generated at build time and deploy with the app." |
+| No exclamation marks, rhetorical questions or emojis | "Ready to go global?" | A statement of what the product does |
+
+The one sanctioned comparison is the company's own positioning, stated plainly: the Vercel model applied to localization. Headings use sentence case, end without a period and name a thing; the claim moves into the first body sentence. Title Case appears only on buttons.
+
+## Sentence shape
+
+Every sentence has a subject and a verb, captions included, and a few ordering rules keep it readable.
+
+| Rule | Before | After |
+| --- | --- | --- |
+| A data label carries no comma tail | "16px, favicon" | "16px favicon" |
+| A subject longer than about six words is reordered: short frame first, long content last | "The detail that X is one most people would miss." | "The detail most people would miss is that X." |
+| No comma-bounded aside between subject and verb or before a colon | "The rail, which the wrapper draws once, is a border." | "The wrapper draws the rail once. The rail is a border." |
+| A title is a plain noun | "The identity has to work at small sizes" | "Small sizes" |
+| A metaphor becomes the mechanism | "The ground is the seam." | "A framed cell has a 1px padding gap that shows the surface underneath, so the cell draws no border." |
+
+Kevin's review of 2026-09-08 named the comma-tail heading and strings of short fragments as patterns that read as AI to him. The rules on long subjects and asides followed on 2026-09-20.
+
+## Code comments
+
+A code comment states the code's contract or a constraint the code cannot show, in one or two lines of present tense. The justification for a feature belongs in the pull request.
+
+| Before | After |
+| --- | --- |
+| `// Identity values pass through untranslated, since translating a model_uid would corrupt data, which is worse than the bill this feature saves.` | `// 'identity': every value of the field is byte-identical to its translation. 'translated': at least one value differs.` |
+
+Kevin reads comment lines as part of a pull request's size. On 2026-10-02 he sent back a pull request whose product comments were 20% of its added lines.
+
+## The humanizer pass
+
+Every draft gets one pass against the pattern catalog before anyone reviews it. The pass reads the draft once, marks every pattern and broken rule, rewrites, then scores five axes from 1 to 10: directness, rhythm, trust, authenticity and density. A total under 35 of 50 means another revision.
+
+| Pattern group | Tells |
+| --- | --- |
+| Inflation | stands as, is a testament to, pivotal, crucial, underscores |
+| Superficial analysis | a trailing "-ing" clause: highlighting, showcasing, reflecting |
+| AI vocabulary | delve, tapestry, landscape (abstract), interplay, intricate, enhance, foster, additionally |
+| Copula avoidance | serves as, boasts, features, where "is" or "has" would do |
+| Forced structure | the rule of three, synonym cycling, false ranges such as "from startups to enterprises" |
+| Formatting | mechanical bold, a bold label at the start of every bullet, Title Case headings |
+
+The lint `gt-ui/no-em-dash` reads JavaScript and TypeScript strings only. Markdown, MDX, the deck's HTML and pull request bodies are checked by hand:
+
+```sh
+grep -rnE $'\xe2\x80\x94|\xe2\x80\x93' content deck/slides docs DESIGN.md BRAND.md
+```
+
+## Writing for a stranger
+
+Public writing is for a developer who has never heard of GT or of the people who built the page. Kevin wanted it "so much more straightforward and clear to a user who has no idea who I am" (2026-09-10).
+
+- Define the product and the site once, in plain words.
+- Open each section with the point a stranger can reuse, and give the implementation and the numbers after it as the evidence.
+- Cut pull request numbers, colleagues' names, process narration and file names that teach nothing.
+- Keep an API or a component name when the reader can act on it, such as Next.js `notFound()` or the `Accept: text/markdown` header.
+- Keep every fact verified: an edit may reword, cut or add context, and it never changes a fact.
+
+Every line should state a number or a mechanism. A line that could appear unchanged in a competitor's copy is cut. The [quality bar](/docs/handbook/quality-bar) lists this test in its copy rows.
+
+## Slides and cards
+
+A slide or a card carries one statement, and the headline leads. On 2026-10-13 Kevin wrote "i hate eyebrow text" about a set of generated slides, and the rules below follow from that review.
+
+| Rule | Number |
+| --- | --- |
+| Title size on a 16:9 slide | About 6 to 8% of the slide's height per line |
+| Tracking on large display type | -0.01 to -0.025em |
+| Tracking on body text | 0 |
+| Tracking on lowercase | Never positive |
+| Kerning | On, with real glyph pairs checked at export size |
+| Smallest text on the brand deck's 1600 by 900 sheet | 15px, and 18px for SVG labels |
+
+Metadata such as a product name, a date or a number goes after the content or in a footer, never stacked above a headline. A film's mid-film card stacked the GT mark and a product label over a 140px question and an 80px answer. Four mock-ups were compared, and the answer alone, with the mark small in a corner, was chosen. The [gt-deck](/skills/gt-deck) skill holds the deck's own type sizes.

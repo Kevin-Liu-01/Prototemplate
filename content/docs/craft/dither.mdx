@@ -2,6 +2,118 @@
 title: 'Dither in practice'
 description: 'Why ordered dither, why cells are screen pixels, transitions on one grid, material strength, and the story and placement of dithered pictures.'
 icon: Sun
+sources:
+  - skills/gt-dither/SKILL.md
+  - skills/gt-dither/references/engines.md
+  - skills/gt-dither/references/pictures.md
+  - skills/gt-dither/references/cutter.md
+  - skills/gt-motion/SKILL.md
+  - skills/gt-motion/references/traps.md
+  - skills/gt-aesthetic/references/measures.md
+  - docs/ARTIFACT-PICTURES.md
+  - docs/GRAPHICS.md
+  - src/lib/dither.ts
+  - src/lib/studio-field.ts
+  - src/app/craft/libraries.ts
 ---
 
-Why ordered dither, why cells are screen pixels, transitions on one grid, material strength, and the story and placement of dithered pictures.
+General Translation draws its signature texture as 1-bit cells: every cell is ink or ground, and an ordered Bayer screen decides which. The texture appears as animated fields behind product pages, as a dithered globe and dithered photographs on the sign-in and onboarding plates, and in the brand deck and the films. This page gives the reasons behind the screen, the numbers that keep cells crisp, the rules for changing one picture into another, and the standard every dithered photograph is cut to. The engines and their props are on [Dither and the studio field](/docs/components/dither), which also has what a field costs per frame and why a dither pattern on a moving sprite flickers. The [gt-dither](/skills/gt-dither) skill holds the rules.
+
+## Ordered dither
+
+Use an ordered screen for any texture that moves or has to read as print. Error diffusion (Floyd-Steinberg) is serial, because each pixel's rounding error is added to the pixels after it, so its output reads as noise and shimmers when it animates. A Bayer matrix is a fixed threshold map: each cell is decided alone, the same tone always lights the same cells, and the repeating structure reads as a print halftone.
+
+| Screen | Construction | Levels | Where it runs |
+| --- | --- | --- | --- |
+| 8 by 8 (`BAYER_8`) | M(2n) = [[4M, 4M+2], [4M+3, 4M+1]], an exact permutation of 0 to 63 | 65 | The CPU dither loop, the picture cutter, the deck, studio presets 02 and 10 |
+| 8 by 8 on the GPU | Three octaves of the 2 by 2: `bayer2(p / 4) / 16 + bayer2(p / 2) / 4 + bayer2(p)` | 65 | The studio field's `bayer8` |
+| 4 by 4 | Rows `0 8 2 10`, `12 4 14 6`, `3 11 1 9`, `15 7 13 5` | 17 | Most studio presets, the dithered shine on marks |
+
+A constant tone k/64 lights exactly k cells in every 8 by 8 tile, so the screen has 65 tonally linear levels. A cell is lit when its tone exceeds `(m + 0.5) / 64` for its threshold `m`. The tiers nest: every cell lit at one tone stays lit at every higher tone, so neighbouring regions filled with different tiers compose an exact ramp on one grid.
+
+## Cells are screen pixels
+
+A dither cell must land on whole screen pixels, or the screen collapses into flat grey. The CPU engine therefore never renders at `devicePixelRatio`: on a retina screen a cell would be subpixel. It writes one buffer pixel per cell and lets CSS upscale the canvas with `image-rendering: pixelated`. The GPU studio field computes cells from device pixels (`gl_FragCoord`), so its `dpr` defaults to `min(devicePixelRatio, 2)`, and a dpr of 1 upscaled softly blurs the cells together.
+
+| Cell width | How it reads | Where it is used |
+| --- | --- | --- |
+| 1 CSS px | Fidelity | Dithered photographs on the web |
+| 2 CSS px | Fine texture | The sign-in globe, the deck's ramp |
+| 3 CSS px | Halftone | The default for a full-bleed field; every film |
+| 4 CSS px | Halftone | An animated radial burst, which costs too much per frame at 3 |
+| 6 CSS px | Halftone that reads when small | Small still images such as the partnership globes |
+
+Eight times the cell width is the grain the eye reads, and at 8px or more a screen reads as pixel art. Every film uses 3px cells, set on 2026-10-08 when Kevin found the films' coarser screens "a lil TOO dithered".
+
+Blog graphics met the same rule in a different form. At 1x the dither's one-pixel dots landed on less than a device pixel and aliased into noise, which first looked like a resolution problem. Drawn at 2x the stage height with `image-rendering: pixelated`, a 1920 export shows as crisp 2px dots. SVG dithers take `shape-rendering: crispEdges`, and a transform that would foreshorten cells, such as an isometric plane, goes inside the alpha mask so the cells stay square.
+
+## Transitions on one grid
+
+A dithered field changes from one state to another by five rules, which the build log on [/docs/handbook/libraries](/docs/handbook/libraries) states as `TRANSITION_RULES`.
+
+1. One cell grid: both states are read at the same cells and one cell size, and the size never changes inside a transition.
+2. One anchored tile: the Bayer tile keeps its phase from one page cell, so a transition's first frame is the last frame of the state before it.
+3. One smoothstep: the tone mixes on `k * k * (3 - 2 * k)`, and the ink is interpolated on the same curve.
+4. Brightness held across a resolve: the incoming picture's curve is solved so its mean tone equals the outgoing field's.
+5. The end state under reduced motion, drawn once as a still.
+
+A resolve from the globe into a picture takes 350ms and a step from picture to picture 150ms. Both were halved from 700 and 300ms on Kevin's request of 2026-09-29: "make the dither transitions 2x faster".
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| A flash at the start of a transition | An unanchored tile re-dithers the same tone into other cells | A canvas `n` cells below another takes `phase.y = n % 8`, so both share the page's tile |
+| Quick steps flash back to a picture that has gone | A new mix started from the previous target | Each mix frame is a fresh closure, and a new target takes `from: current`, the frame on screen |
+| A step through a new level became a cut | A CSS mask image that is still loading counts as transparent | Decode all 65 mask levels with `decode()` before the first step and keep the images referenced |
+| A picture's edge fades in grey cells | A fading CSS mask prints the cells at partial alpha | The picture layer takes a hard cut at the plate's edge and dissolves by multiplying its tone in the field |
+| A field arrives as a fade | An opacity change on the layer | A field enters by raising its tone from 0 and leaves by lowering it to 0 |
+| A film's mix eases twice | The film kit's `mix` applies the smoothstep itself | Drive its progress with ease `none` |
+
+The [gt-motion](/skills/gt-motion) skill holds these with the rest of the motion rules.
+
+## Material strength
+
+A product surface carries one dithered material at the strength of the GT landing hero or under it. Kevin set that bar on 2026-09-25: the fields "should be as tasteful as our dither shader in hero of landing". The hero's composite is measured, so new work copies its numbers.
+
+| Part | Value |
+| --- | --- |
+| Shader | Studio preset 02, `bayer-8x8` |
+| Canvas | Opacity 0.55, `mix-blend-mode: screen`, inside an isolated dark cell |
+| Mask | Seven horizontal stops, from 0.72 at the edges to 0.12 behind the terminal window in the centre |
+| Light theme | `filter: invert(1) hue-rotate(180deg) brightness(1.07) saturate(1.15)`, so the clouds print pale blue on paper |
+| Pictures in dark | White cells at opacity 0.62 over `#070707` |
+| Pictures in light | `#070707` cells at opacity 0.7 over white |
+
+The light theme uses a filter because a screen blend is inert in an isolated host with a transparent backdrop. A horizon ring drawn at page scale was judged too heavy and deleted. The material never becomes a pattern, a border, a boxed plate or a heavier form. Glyph rain stays solid type with no dither, because a dither pattern on moving glyphs flickers with every step.
+
+## The picture standard
+
+Every dithered photograph is cut to the statistics of one reference, NASA's Blue Marble on the onboarding field, and only four things are chosen per picture: the crop, the channel, the polarity and the kind. [The artifact pictures document](/docs/handbook/artifact-pictures) states the standard in full.
+
+| Setting | Value | Reason |
+| --- | --- | --- |
+| Target for a scene | Mean tone 0.361, standard deviation 0.342 | The Blue Marble's own statistics |
+| Accepted window for a scene | Mean 0.30 to 0.42, standard deviation 0.28 to 0.44, measured over the region shown | The picture lint holds every grid to it |
+| Black and white points | Solved by the cutter, never set by hand; levels 80 and 230 for the earth | Every picture lands on the same tone |
+| Gamma | 1.2 | Fixed for every picture |
+| Autocontrast | 0.5% clipped at each tail | Fixed for every picture |
+| Blur | None | A blur with a sigma of 3 cost the Rosetta Stone its inscriptions, as the next paragraph tells |
+| File | 8-bit grey JPEG at quality 82, 75 when 82 is over the 573,440-byte cap | The cap holds every grid under 560KB |
+| Tone floor | Bytes at or under 10 read as 0 | The tile's lowest threshold, 1/128, would print the JPEG's ringing on black as stray cells |
+| Cell | 1 CSS px, screened live at display size | A pre-screened bitmap that is then scaled loses its cells |
+
+The standard came from a failure. An earlier cutter blurred the deck's two-tone files back to tone with a sigma of 3, then baked in gamma 1.3 and 1.6 and a gain. The Rosetta Stone printed 5.7% of its cells lit against the deck's 8.9%, and its inscriptions disappeared. The next round printed the deck's own cells, and those 2px two-tone cells read as blocky on manuscripts. On 2026-09-29 Kevin asked to "make the dither a lot less strong so the images are more high fidelity". The pictures moved to continuous-tone grids cut from the original photographs and screened at 1px cells, and the solver replaced hand-set levels.
+
+Sources are pinned. Each source's sha256 is recorded, the originals stay outside the repository, and the cutter (`pnpm mood-tone`) refuses a file whose hash differs. The Metropolitan Museum of Art later served the tablet picture with different bytes, and the cutter refused them. `node scripts/lint/pictures.mjs` runs before every build and fails a grid whose hash, recipe settings or region statistics are off the standard.
+
+## Placing a picture on a field
+
+Anchor a picture to a share of the field's ramp. On the onboarding plate the field fades in from the plate's edge across a ramp, and the earth is drawn as a disc 1.7 times the stack's height with its left limb five sevenths of the way along the ramp. The first placement put the limb on the ramp's start, so the left third of the disc sat under the thinnest part of the ramp, and a 2000 by 1163 window read as empty with a sliver at the right.
+
+Two sampling rules keep the picture on the loop's own cells.
+
+| Rule | Reason |
+| --- | --- |
+| Snap every read to the loop's cell centres (`atCellCentres`) | The loop's `u = x / (cols - 1)` drifts by a cell across the canvas |
+| A loop cell that covers more than one grid cell reads the area average | A grid drawn smaller re-screens at the loop's cell without moire |
+
+The picture sampler is `src/components/plate/lib/picture-field.ts`, and its placements (`cover`, `disc` and `region`) are stated in the 1600 by 900 file space.

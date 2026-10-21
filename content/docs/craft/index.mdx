@@ -2,6 +2,67 @@
 title: 'Design numbers and traps'
 description: 'The numbers, traps and reasons behind the rules the hub’s instruments follow: type, lines, SVG motion, dither, writing, interface details and films.'
 icon: Scale
+sources:
+  - skills/gt-brand/references/type.md
+  - skills/gt-verify/references/cases.md
+  - skills/gt-diagrams/references/dashes.md
+  - skills/gt-dither/SKILL.md
+  - skills/gt-aesthetic/references/measures.md
+  - skills/gt-films/references/sound.md
+  - docs/ARTIFACT-PICTURES.md
 ---
 
-The numbers, traps and reasons behind the rules the hub’s instruments follow: type, lines, SVG motion, dither, writing, interface details and films.
+The Components tab shows each of the hub's instruments running. This tab gives the measurements, the failure modes and the reasons behind the rules those instruments and General Translation's sites follow. Each page states a rule a stranger can reuse, then the number that settled it and the fix, and names the file, lint or skill that holds it. The facts come from renders, browser probes and review rounds between August and October 2026.
+
+<Cards>
+  <Card
+    title="The correct Inter in practice"
+    href="/docs/craft/type"
+    description="Binding a self-hosted variable font, contextual alternates under tracking, optical size, measure, the Arial fallback, preloads and reading the rendered instance."
+  />
+  <Card
+    title="Lines and seams"
+    href="/docs/craft/lines"
+    description="Reading a 1px seam by its composite grey, self-stacks, rails drawn as borders, full-width rules, stacking contexts and what the line auditor counts."
+  />
+  <Card
+    title="SVG lines in motion"
+    href="/docs/craft/svg-motion"
+    description="Five dash traps with their proofs, GSAP seen from a test harness, the timing numbers, stretched viewBoxes, symbols and masks."
+  />
+  <Card
+    title="Dither in practice"
+    href="/docs/craft/dither"
+    description="Why the screen is ordered, why cells are screen pixels, transitions on one grid, the hero's material strength and the picture standard."
+  />
+  <Card
+    title="Writing"
+    href="/docs/craft/writing"
+    description="The plain technical register with before and after rewrites, sentence shape, writing for a stranger, and type on slides and cards."
+  />
+  <Card
+    title="Interface details"
+    href="/docs/craft/interface-details"
+    description="Glyph gaps, the copy control, tap targets, measured layout shifts, third-party themes, contrast ratios, carousels and hit areas."
+  />
+  <Card
+    title="Deterministic films and sound"
+    href="/docs/craft/films"
+    description="Render pairs compared by framemd5, the image race, fonts, chroma on odd pixels, thin lines over dither, the mix targets and speech synthesis."
+  />
+</Cards>
+
+## Ten numbers
+
+| Number | What it means | Page |
+| --- | --- | --- |
+| 398.55px and 380.81px | A line of type tracked -0.025em at 44px, without and with `'calt' 1, 'liga' 1`: Chrome turns contextual alternates off under any letter-spacing | [Type](/docs/craft/type#contextual-alternates-under-letter-spacing) |
+| 83 to 86 characters | What `max-width: 62ch` holds at 17px, because `ch` is the width of a zero; 30em holds about 66 | [Type](/docs/craft/type#measure) |
+| 14 to 32 | The optical-size range Inter's axis follows the font size through; from 32px the Display design is in effect | [Type](/docs/craft/type#optical-size) |
+| 59 and 99 | The grey of one and of two stacked hairlines in the dark theme, so a seam's grey counts its strokes | [Lines and seams](/docs/craft/lines#reading-a-seam-by-its-grey) |
+| -101 with `'100 200'` | Where a draw-on dash parks so it grows from the path's end with no fleck; +101 grows from the start | [SVG lines in motion](/docs/craft/svg-motion#the-sign-of-the-parked-offset) |
+| 350ms and 150ms | A dithered resolve and a dithered step, on one cell grid with one anchored tile | [Dither in practice](/docs/craft/dither#transitions-on-one-grid) |
+| 0.361 and 0.342 | The mean tone and standard deviation every dithered photograph is cut to | [Dither in practice](/docs/craft/dither#the-picture-standard) |
+| 44px and 40px | The phone tap target, and the size under which the page check fails one | [Interface details](/docs/craft/interface-details#tap-targets-that-keep-the-look) |
+| 0.001 | The layout-shift entry above which a jump is a defect, including the ones within 500ms of an input that CLS leaves out | [Interface details](/docs/craft/interface-details#layout-shifts) |
+| -16 LUFS and -1 dBTP | A film's loudness within 0.5 and its true-peak ceiling | [Deterministic films and sound](/docs/craft/films#the-mix-and-its-traps) |

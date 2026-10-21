@@ -2,6 +2,127 @@
 title: 'Interface details'
 description: 'Glyph gaps, copy controls, tap slabs, layout-shift cases with measured jumps, third-party themes, contrast numbers, carousels and hit areas.'
 icon: Cube
+sources:
+  - skills/gt-landing-pages/SKILL.md
+  - skills/gt-components/references/behavior.md
+  - skills/gt-local-dev/SKILL.md
+  - skills/gt-performance/SKILL.md
+  - skills/gt-aesthetic/references/measures.md
+  - skills/gt-aesthetic/references/verdicts.md
+  - skills/gt-verify/SKILL.md
+  - skills/gt-verify/references/recipes.md
+  - skills/gt-motion/references/traps.md
+  - skills/gt-website/references/blog.md
+  - docs/handbook/operating-principles.md
+  - src/app/docs/docs.css
+  - BRAND.md
 ---
 
-Glyph gaps, copy controls, tap slabs, layout-shift cases with measured jumps, third-party themes, contrast numbers, carousels and hit areas.
+These are the small behaviours that decide whether an interface feels finished: gaps that look equal, controls that never move, hit areas that fit a thumb, and widgets that follow the site's theme. Each one came from a review of GT's landing, its dashboard's sign-in and onboarding plates, or this hub, and most carry the measurement that settled them. The [gt-components](/skills/gt-components) skill holds the behaviour rules, and [gt-aesthetic](/skills/gt-aesthetic) holds the measures.
+
+## Gaps beside a glyph
+
+Match the gap the eye sees between a label and its icon. Lucide glyphs sit differently inside their 24-unit boxes: ArrowRight draws from unit 5 and Copy from unit 2, so two buttons with the same CSS gap show different visible gaps. Measure from the label's right edge to the glyph's first drawn column, and from the glyph's last drawn column to the button's edge, then match those numbers across the buttons in a row. A report of the fix states the measured value, such as "both buttons read 9.5px from label to glyph". Kevin set this rule on 2026-10-01.
+
+A button whose label changes with its state, such as a hero button that reads Copied or Copy Failed after a click, sizes its face from the idle label through a grid sizer. The face keeps its width, so a centred row of buttons never moves. The [gt-landing-pages](/skills/gt-landing-pages) skill holds both rules.
+
+## The copy control
+
+A copy control shows its state in the icon and leaves the label alone.
+
+| Part | Rule |
+| --- | --- |
+| Label | Never changes to "Copied" |
+| Icon | The copy icon becomes a check, and the check turns blue |
+| Layout | The copy and check icons share one box, so nothing moves |
+| Click | Copies without selecting text; selection is the fallback when the clipboard write fails |
+| Copied state | Holds about 1.6s and is announced to screen readers |
+| Strict Content Security Policy | The one copy script is allowed by its sha256 hash |
+
+Test a copy button in Chrome. The in-app browser pane of a desktop agent app blocks clipboard writes, so a copy that fails there proves nothing. In the hub the one copy control is `InstallField` (`src/components/viewer/InstallField.tsx`).
+
+## Tap targets that keep the look
+
+Grow the hit area and leave the paint where it is. The page check fails a phone target under 40px, notes 40 to 43px as a warning and aims at 44px.
+
+| Case | Drawing | Hit area | How |
+| --- | --- | --- | --- |
+| A marker on the GT landing's translation window figure | An 11px badge | 25px | An invisible button paints its badge with `::before` inset 7px, so hover and pin rules target the pseudo-element and the box-centre math still works |
+| The hub toolbar's icon buttons on a touch phone | 32px | 44px | A transparent `::after` reaches into the gap beside the button |
+
+
+## Layout shifts
+
+A control that appears, changes size or remounts after the first paint moves everything under it. Each case below was measured.
+
+| Symptom | Cause | Fix | Found |
+| --- | --- | --- | --- |
+| The button and the foot of the device page jumped 30px | The one-time code slots mounted at hydration in a row the server drew 18px tall | The container reserves `min-h-12` in the server markup | 2026-09-30 |
+| The foot of the payment step jumped 340px | A 27rem spinner box collapsed to one error row | One 44px row is held while loading or failed, and the tall box wraps only a mounted form | The onboarding plates |
+| The theme and sign-out controls moved when the language changed | A locale switch changes the `[locale]` segment and remounts the page, and a variable-width label sat left of fixed controls | The language anchors left and the theme toggle right, with the copyright or sign-out between them | 2026-09-29 |
+| A card grew when its description expanded | The card took its content's height | Cards keep fixed heights | 2026-08-13 |
+
+Two rules come out of these cases. A highlight turns blue and does not expand or scale, so nothing shifts. An auto height animates with a CSS grid row from `0fr` to `1fr`, which needs no ResizeObserver and no component state. A caption card that measured its own height drew Kevin's reply of 2026-10-06, "Beautiful but don't complicate. Always simplify."
+
+Layout shifts within 500ms of an input carry `hadRecentInput` and stay out of the CLS score, but a reader still sees them. Measure the entries around one interaction with a `PerformanceObserver`, and treat every entry over 0.001 as a defect. The [gt-verify](/skills/gt-verify) skill has the recipe, and [Proving a visual change](/docs/engineering/verification) covers the rest of the checks.
+
+## Third-party widgets and the site's theme
+
+A third-party widget follows the site's theme toggle. Cloudflare Turnstile's `theme: 'auto'` reads `prefers-color-scheme`, so on the sign-in form it drew a white card on a dark page whenever the visitor's system theme and the site's theme disagreed. The fix passes next-themes' `resolvedTheme` as the widget's theme, defaults to light before mount, and keys the widget on the theme so it remounts when the theme loads or flips. This is the one place the resolved theme is read in JavaScript, because the widget takes no CSS. Found on 2026-08-14.
+
+| Widget or field | Rule |
+| --- | --- |
+| Stripe Elements | Takes the house field look through its appearance API |
+| Inputs below the `md` breakpoint | 16px or larger, so iOS does not zoom on focus |
+
+## Contrast
+
+These ratios were computed with the WCAG formula on 2026-10-05. Text under 24px needs 4.5:1.
+
+| Text | Ground | Ratio |
+| --- | --- | --- |
+| Ink `#070707` | White | 20.14 |
+| Ink-2 `#3a3d44` | White | 10.88 |
+| Titanium `#8a8f98` | White | 3.25, under the floor |
+| A darker light titanium `#6e737c` | White | 4.77 |
+| Titanium `#8a8f98` | Ink `#070707` | 6.20 |
+| GT blue `#2f5ce0` | White | 5.63 |
+| GT blue's dark-theme lift `#86a8ff` | Ink `#070707` | 8.69 |
+
+Titanium fails the floor for small text in the light theme, so the dashboard's plate pages set their 13px captions in `#6e737c`, and other light surfaces set text a reader needs in ink-2. The GT landing holds three more floors.
+
+| Floor | Value |
+| --- | --- |
+| Dim text on the ink panel | At least 0.5 white |
+| Dim text where the light skin turns the panel white | At least 0.58 black |
+| The quietest tone real text may take in the language diagrams | A 62% mix of `currentColor` |
+
+The tower figure's inactive beats at opacity 0.38 fail AA on purpose. They are dimmed so the current step stands out, and raising them is a design decision.
+
+## Carousels and galleries
+
+A carousel accepts one command at a time and stops moving when a reader is busy with it.
+
+| Behaviour | Number |
+| --- | --- |
+| Commands within 350ms of the previous one | Dropped, so a double click moves one slide |
+| Autoplay | Every 4.5s; pauses on hover, on focus and off screen; off under reduced motion |
+| Click | The left half goes back and the right half goes forward |
+
+Hover and click are one interaction: hover reveals, a click pins, leaving hides and Escape closes. A tooltip with a separate card is two interactions for one thing. Dropdowns are built as custom components with real icons or flags, and a native select is not used.
+
+## A still hit area for a moving target
+
+An element that moves on hover slides out from under the pointer, loses the hover, moves back and flickers. Give each slot a still hit area and draw the moving part inside it, so the pointer stays over the same box while the drawing moves. Found on 2026-10-20 on a shelf of book spines that lifted on hover.
+
+## Shadows and blur from a component library
+
+A component library brings its own shadows and blurs, and a scoped rule misses the ones it portals out of the page. The house look is flat: the brand takes depth from lines and material and never from shadows, and its avoid list includes glassmorphism. These docs remove decorative shadows with a rule scoped to `#nd-page`, the article. On 2026-10-21 three surfaces outside that scope still drew them.
+
+| Surface | Classes it carried | Why the page rule missed it |
+| --- | --- | --- |
+| The search dialog | `shadow-2xl shadow-black/50` | fumadocs portals the dialog into `body` |
+| The search dialog's overlay | `backdrop-blur-xs` | The same portal |
+| The phone drawer | `shadow-lg` | It sits in the layout, outside the article |
+
+A flat rule for a fumadocs site needs selectors for the dialog, its overlay and the drawer themselves. The [docs site traps](/docs/engineering/docs-traps) page covers the other fumadocs traps.
