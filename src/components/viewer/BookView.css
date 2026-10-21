@@ -70,7 +70,7 @@
 }
 
 /* a badge after the title: a card-cornered box on the title's line that
-   cuts through what the page holds (BadgeCycle.tsx). Its content is the
+   cuts through the GT monograms (BadgeCycle.tsx), on /brand alone. Its content is the
    cap height tall and sits on the baseline; the padding stays inside the
    title's line box, so the line keeps its height. The title's last word
    and the badge never break apart (.pt-book-title-end), so a narrow title
@@ -151,19 +151,6 @@
   display: block;
   width: auto;
   height: 100%;
-}
-
-/* a name: the label step's weight and tracking at about 16px under a
-   44px title, drawn from its data-word as generated content */
-.pt-cycle-word {
-  font-size: 0.36em;
-  font-weight: var(--pt-w-label);
-  letter-spacing: var(--pt-track-label);
-  white-space: nowrap;
-}
-
-.pt-cycle-word::before {
-  content: attr(data-word);
 }
 
 /* a mark: its file as an alpha mask in the title's ink, fit in a 2.2em

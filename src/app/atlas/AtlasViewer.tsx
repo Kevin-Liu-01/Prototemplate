@@ -3,7 +3,6 @@
 import type { MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
-import { BadgeWords } from '@/components/viewer/BadgeCycle';
 import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
@@ -27,16 +26,6 @@ const LEAD =
   'GT Atlas is where General Translation publishes long writing. Each story is a book on a shelf, with a cover of its own, and it opens in pages set for what it is about.';
 const NOTE =
   'These notes give the reasons for a magazine, then show the three ways a story is set so far: the docs reader, Fumadocs’ own interface and a printed page. The covers, Taylor Fang’s seven directions for the cover and the languages follow.';
-
-/** The head's badge: Atlas in the languages the magazine reads in. */
-const ATLAS_WORDS = [
-  { text: 'Atlas', lang: 'en' },
-  { text: '地图集', lang: 'zh' },
-  { text: 'एटलस', lang: 'hi' },
-  { text: 'أطلس', lang: 'ar', dir: 'rtl' as const },
-  { text: '아틀라스', lang: 'ko' },
-  { text: 'アトラス', lang: 'ja' },
-];
 
 /** A capture; 1440 by 900 unless it says otherwise. */
 type Figure = { src: string; alt: string; caption: string; width?: number; height?: number };
@@ -263,7 +252,6 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
     <div className='an-book pt-book-col'>
       <BookHead
         title={TITLE}
-        badge={<BadgeWords words={ATLAS_WORDS} />}
         lead={LEAD}
         note={NOTE}
         updated={updated}

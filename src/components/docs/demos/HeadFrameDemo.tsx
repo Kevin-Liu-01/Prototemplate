@@ -60,8 +60,8 @@ function FrameStage({ route, width }: FrameProps) {
 
 /**
  * A live book page in a frame, scaled to the plate: the real route with
- * its real head (BookHead), its badge, its lead and its panel, at the
- * desktop or the phone width. A page keeps one h1, so the head is shown in
+ * its real head (BookHead), its lead and its panel, at the desktop or the
+ * phone width. A page keeps one h1, so the head is shown in
  * its own document; the frame is same-origin and follows the docs theme
  * through the root layout's theme script. It loads only when the plate
  * nears the viewport, and the page inside stays fully interactive.

@@ -334,7 +334,7 @@ display size of its own. The /d/ directions keep their own type.
   ledgers keep the full column.
 - **The book page.** Every page with a book head has one structure, rendered by `BookHead` (BookView.tsx), and differs from another only in its words and its facts:
   1. nothing is drawn in the `--pt-title-clear` space between the toolbar's bottom rule and the title (the reading column's top padding), and no line crosses a title;
-  2. the title, the page's plain name from `src/lib/page-names.ts` (Brand, Documentation, Motion) or a record's own title, at d1 across the mast; after the name, a badge on the title's line (BookHead's `badge`: a 1px `--pt-hair` box at the card corner, its content at most the cap height tall and set on the baseline, hidden from the accessible name) cuts every 1.4s through what the page holds (`src/components/viewer/BadgeCycle.tsx`, steps(n) on one strip, so the count lives in the frames; under reduced motion the first frame stands): /brand the GT monogram and the register's monograms, /marks the register's marks, /skills the skill ids, a skill its files, /graphics the numbered visuals' file stems, /motion the film slugs, a translation film its vocabulary in its own script, /blog the post slugs, a direction its pages;
+  2. the title, the page's plain name from `src/lib/page-names.ts` (Brand, Documentation, Motion) or a record's own title, at d1 across the mast; on /brand alone (Kevin, 2026-10-21), a badge after the name on the title's line (BookHead's `badge`: a 1px `--pt-hair` box at the card corner, its content at most the cap height tall and set on the baseline, hidden from the accessible name) cuts every 1.4s through the GT monogram and the register's monograms (`src/components/viewer/BadgeCycle.tsx`, steps(n) on one strip, so the count lives in the frames; under reduced motion the first frame stands), and `pnpm lint:heads` fails a badge on any other page;
   3. the lead (one to three lines at `--pt-measure-lead`, at most 200 characters, plain declarative sentences) and the panel on one row under the title, both starting on the lead's first line;
   4. the panel: Updated first (the day of the last commit that touched the page's own sources, from `src/lib/updated.ts`, linked to its commit, with a relative hint after hydration), then three facts, or one fact and the install field; each row a Heroicons 20 solid glyph in titanium, a label in ink-2 and a value in ink at 500, one lead line tall with its text centered between 2px of air above and below, and a `--pt-hair-soft` rule between rows, none over the first row or under the last; beside the lead the panel starts 2px under the lead's top, so each row's baseline lands on a lead baseline;
   5. one `--pt-hair` rule `--pt-head-rule-pad` under the taller of lead and panel, across the stage;
@@ -632,7 +632,8 @@ the page's next visit. A labelled group opens when the run has 40 rows or
 fewer, and past 40 only the group holding the active item opens; those
 folds persist under `gt-shell-groups`. A route section that stands for a
 site map group (Shipped, Sites, Explorations, Archive) keeps replacing that
-group. The sidebar is 208px, the deck's column.
+group. The sidebar is 208px in outline density and 256px with thumbnails,
+the same two columns as the deck's list.
 
 **The rail marks the place.** In outline density each top-level group
 carries one rail: a 1px `--pt-hair-soft` line drawn by `.pt-sb-rail`

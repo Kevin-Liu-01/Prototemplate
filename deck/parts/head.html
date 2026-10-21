@@ -178,8 +178,8 @@
   @keyframes cut { from { opacity: 0; } to { opacity: 1; } }
 
   /* ---------- viewer chrome ---------- */
-  :root { --edge: rgba(7, 7, 7, 0.62); --thumb: rgba(7, 7, 7, 0.32); --bar-h: 52px; --panel-w: 460px; }
-    :root[data-theme="dark"] { --edge: rgba(242, 242, 240, 0.55); --thumb: rgba(242, 242, 240, 0.32); }
+  :root { --edge: rgba(7, 7, 7, 0.62); --thumb: rgba(7, 7, 7, 0.32); --ground: rgba(7, 7, 7, 0.06); --bar-h: 52px; --panel-w: 460px; --sb-w: 256px; --radius: 6px; --radius-in: 5px; }
+    :root[data-theme="dark"] { --edge: rgba(242, 242, 240, 0.55); --thumb: rgba(242, 242, 240, 0.32); --ground: rgba(242, 242, 240, 0.08); }
   html, body { height: 100%; }
   body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--text); font-optical-sizing: auto; overflow: hidden; -webkit-font-smoothing: antialiased; }
   [hidden] { display: none !important; }
@@ -201,21 +201,40 @@
   .slide a:hover { text-decoration-color: var(--ink); }
   .rows.links span { color: var(--ink-2); }
 
-  .viewer { position: fixed; inset: 0; display: grid; grid-template-columns: 208px minmax(0, 1fr); grid-template-rows: 100%; background: var(--paper); }
+  .viewer { position: fixed; inset: 0; display: grid; grid-template-columns: var(--sb-w) minmax(0, 1fr); grid-template-rows: 100%; background: var(--paper); }
   .viewer.no-sb, .viewer.is-overview { grid-template-columns: 0 minmax(0, 1fr); }
   .viewer.no-sb .sb, .viewer.is-overview .sb { display: none; }
 
-  /* sidebar: the slide list */
+  /* sidebar: the slide list, laid out as Turboslide's viewer lays out its own (www.turboslide.com/deck/gt-brand): the
+     nameplate is the link home with the density toggle beside it, a filter row under it, then each section under a
+     sticky head that folds it */
   .sb { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--hair); background: var(--paper); }
-  .sb-head { height: var(--bar-h); flex: 0 0 var(--bar-h); display: flex; align-items: center; gap: 8px; padding: 0 12px; border-bottom: 1px solid var(--hair); }
-  .sb-head svg { width: 22px; height: 14px; color: var(--ink); flex: 0 0 auto; }
-  .sb-head b { font-family: var(--display); font-weight: 500; font-size: 13.5px; letter-spacing: -0.01em; white-space: nowrap; }
-  .sb-head span { margin-left: auto; font-size: 12px; color: var(--titanium); font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .thumbs { flex: 1 1 auto; padding: 6px 8px 28px 8px; display: flex; flex-direction: column; gap: 10px; }
-  .sec-label { font-family: var(--display); font-weight: 500; font-size: 12px; letter-spacing: -0.005em; color: var(--titanium); padding: 14px 0 0 26px; }
-  .sec-label:first-child { padding-top: 8px; }
-  .thumb { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 6px; align-items: start; cursor: pointer; }
-  .thumb .n { font-family: var(--display); font-weight: 500; font-size: 12px; color: var(--titanium); padding-top: 3px; font-variant-numeric: tabular-nums; text-align: right; }
+  .sb-head { height: var(--bar-h); flex: 0 0 var(--bar-h); display: flex; align-items: center; gap: 8px; padding: 0 6px 0 10px; border-bottom: 1px solid var(--hair); }
+  .sb-home, .bar-brand { display: inline-flex; align-items: center; gap: 8px; min-width: 0; height: 32px; padding: 0 8px 0 4px; border: 1px solid transparent; border-radius: var(--radius); color: var(--ink); text-decoration: none; }
+  .sb-home { flex: 1 1 auto; margin-left: -5px; }
+  .sb-home:hover, .bar-brand:hover { border-color: var(--hair); }
+  .sb-home:focus-visible, .bar-brand:focus-visible { outline: 1px solid var(--ink); outline-offset: -1px; }
+  .sb-home svg, .bar-brand svg { width: 22px; height: 14px; flex: 0 0 auto; }
+  .sb-home b, .bar-brand b { font-family: var(--display); font-weight: 500; font-size: 13.5px; letter-spacing: -0.01em; white-space: nowrap; }
+  .sb-tools { flex: 0 0 40px; height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 6px 0 10px; border-bottom: 1px solid var(--hair-soft); }
+  .filter { flex: 1 1 auto; min-width: 0; height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 4px 0 9px; border: 1px solid var(--hair); border-radius: var(--radius); background: var(--paper); color: var(--titanium); cursor: text; transition: border-color 120ms ease-out, color 120ms ease-out; }
+  .filter:focus-within { border-color: var(--ink); color: var(--ink); }
+  .filter svg { width: 14px; height: 14px; fill: currentColor; flex: 0 0 auto; }
+  .filter input { flex: 1 1 auto; min-width: 0; height: 100%; padding: 0; border: 0; background: none; color: var(--ink); font: 13px var(--text); outline: none; -webkit-appearance: none; appearance: none; }
+  .filter input::placeholder { color: var(--titanium); }
+  .filter input::-webkit-search-cancel-button { -webkit-appearance: none; }
+  .filter-count { flex: 0 0 auto; font-size: 12px; line-height: 1; color: var(--titanium); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .thumbs { flex: 1 1 auto; padding: 8px 0 28px; display: flex; flex-direction: column; }
+  .sec-label { appearance: none; position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px; width: 100%; height: 24px; flex: 0 0 auto; margin: 6px 0 0; padding: 0 10px; border: 0; border-radius: 0; background: var(--paper); color: var(--titanium); font-family: var(--display); font-weight: 500; font-size: 12.5px; letter-spacing: -0.005em; text-align: left; cursor: pointer; transition: color 120ms ease-out; }
+  .sec-label:first-child { margin-top: 0; }
+  .sec-label:hover { color: var(--ink); }
+  .sec-label:focus-visible { outline: 1px solid var(--ink); outline-offset: -1px; }
+  .sec-label svg { width: 16px; height: 16px; padding: 2px; flex: 0 0 auto; fill: currentColor; transition: transform 180ms ease-out; }
+  .sec-label[aria-expanded="false"] svg { transform: rotate(-90deg); }
+  .sb .is-folded, .sb .is-out { display: none; }
+  .thumb { display: grid; flex: 0 0 auto; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; padding: 6px 10px 8px 12px; cursor: pointer; }
+  .thumb:focus-visible { outline: 1px solid var(--ink); outline-offset: -1px; }
+  .thumb .n { font-family: var(--display); font-weight: 500; font-size: 12px; color: var(--titanium); padding-top: 3px; font-variant-numeric: tabular-nums; }
   .thumb.is-active .n { color: var(--ink); }
   .thumb-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--edge); overflow: hidden; background: var(--paper); }
   .thumb:hover .thumb-frame { border-color: var(--ink); }
@@ -224,31 +243,52 @@
   .thumb-frame .mini .slide { display: block; }
   .thumb-title { font-size: 12px; line-height: 1.35; color: var(--ink-2); margin-top: 6px; }
   .thumb.is-active .thumb-title { color: var(--ink); }
+  /* the outline density: a row of the number and the title, 28px tall, in the 208px column the site shell's outline takes */
+  .viewer.is-outline { --sb-w: 208px; }
+  .viewer.is-outline .sb .thumb { height: 28px; padding: 0 10px 0 12px; align-items: center; }
+  .viewer.is-outline .sb .thumb .n { padding-top: 0; }
+  .viewer.is-outline .sb .thumb-frame { display: none; }
+  .viewer.is-outline .sb .thumb-title { margin-top: 0; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .viewer.is-outline .sb .thumb.is-active .thumb-title { font-family: var(--display); font-weight: 500; }
+  .viewer.is-outline .sb .thumb:hover .thumb-title { color: var(--ink); }
 
   /* main column: toolbar, stage, progress */
   .main { grid-column: 2; grid-row: 1; position: relative; display: grid; grid-template-rows: var(--bar-h) minmax(0, 1fr) 2px; min-width: 0; min-height: 0; background: var(--paper); }
-  .toolbar { grid-row: 1; height: var(--bar-h); display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 0 12px 0 10px; border-bottom: 1px solid var(--hair); min-width: 0; }
-  .bar-l, .bar-r { display: flex; align-items: center; gap: 4px; }
-  .toolbar .count { font-size: 13px; color: var(--titanium); font-variant-numeric: tabular-nums; padding: 0 4px; white-space: nowrap; }
+  /* the toolbar, as Turboslide's viewer draws it: labelled Previous and Next around a counter field, the deck's name
+     beside the view switch, Theme, the link to the deck in Turboslide and a solid Present. When the bar runs out of room,
+     tighten() in parts/tail.html drops labels in three steps (.t1, then .t2, then .t3 and the name) */
+  .toolbar { grid-row: 1; height: var(--bar-h); display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 0 12px 0 10px; border-bottom: 1px solid var(--hair); min-width: 0; }
+  .bar-l, .bar-r { display: flex; align-items: center; gap: 8px; }
+  .toolbar .count { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 10px; border: 1px solid var(--hair); border-radius: var(--radius); font-size: 13px; color: var(--titanium); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .toolbar .count b { color: var(--ink); font-weight: 500; font-family: var(--display); font-size: 14px; }
-  .toolbar .sep { width: 1px; height: 22px; background: var(--hair); margin: 0 8px; }
-  .bar-brand { display: none; align-items: center; gap: 10px; padding: 0 6px; }
-  .bar-brand svg { width: 25px; height: 16px; color: var(--ink); }
-  .bar-brand b { font-family: var(--display); font-weight: 500; font-size: 14.5px; letter-spacing: -0.01em; white-space: nowrap; }
+  .toolbar .sep { width: 1px; height: 22px; flex: 0 0 auto; background: var(--hair); }
+  .bar-brand { display: none; }
   .viewer.no-sb .bar-brand, .viewer.is-overview .bar-brand { display: inline-flex; }
-  .ib { appearance: none; background: none; border: 1px solid transparent; color: var(--ink-2); font: 13px/1 var(--text); height: 32px; padding: 0 10px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; white-space: nowrap; border-radius: 0; }
+  .bar-deck { flex: 0 0 auto; max-width: 260px; padding: 0 8px; overflow: hidden; color: var(--ink); font-family: var(--display); font-weight: 500; font-size: 14.5px; letter-spacing: -0.01em; white-space: nowrap; text-overflow: ellipsis; }
+  .ib { appearance: none; background: none; border: 1px solid transparent; color: var(--ink-2); font: 13px/1 var(--text); height: 32px; padding: 0 10px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; white-space: nowrap; border-radius: var(--radius); text-decoration: none; transition: color 120ms ease-out, background-color 120ms ease-out, border-color 120ms ease-out; }
   .ib svg { width: 16px; height: 16px; fill: currentColor; flex: 0 0 auto; }
   .ib .theme-glyph { display: inline-block; width: 16px; font-size: 16px; line-height: 16px; text-align: center; font-weight: 400; } /* the theme's text glyph, ◐ in light and ◑ in dark, as the Prototemplate shell draws it (directive 8.4) */
   .ib:hover { color: var(--ink); border-color: var(--hair); }
   .ib:focus-visible { outline: 1px solid var(--ink); outline-offset: -1px; }
   .ib.is-on { color: var(--ink); border-color: var(--ink); }
+  .ib.is-solid { background: var(--ink); border-color: var(--ink); color: var(--paper); padding: 0 14px; }
+  .ib.is-solid:hover { background: var(--ink-2); border-color: var(--ink-2); color: var(--paper); }
+  .ib.is-solid:focus-visible { outline-offset: 2px; }
   .ib.icon { width: 32px; padding: 0; justify-content: center; font-family: var(--display); font-weight: 500; font-size: 14px; }
-  .seg { display: inline-flex; border: 1px solid var(--hair); height: 32px; }
-  .seg .ib { height: 30px; border: 0; border-right: 1px solid var(--hair); padding: 0 12px; }
+  .toolbar.is-tight-1 .t1 .lb, .toolbar.is-tight-2 .t2 .lb, .toolbar.is-tight-3 .lb, .toolbar.is-tight-3 .bar-deck { display: none; }
+  .toolbar.is-tight-1 .ib.t1, .toolbar.is-tight-2 .ib.t2, .toolbar.is-tight-3 .ib.t3 { width: 32px; padding: 0; justify-content: center; gap: 0; }
+  .toolbar.is-tight-3 .seg .ib { padding: 0 9px; gap: 0; }
+  .seg { display: inline-flex; flex: 0 0 auto; border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden; height: 32px; }
+  .seg .ib { height: 30px; border: 0; border-radius: 0; border-right: 1px solid var(--hair); padding: 0 12px; }
   .seg .ib:last-child { border-right: 0; }
   .seg .ib:hover { background: var(--plate); }
   .seg .ib.is-on { background: var(--ink); color: var(--paper); }
-  .stagewrap { grid-row: 2; position: relative; overflow: hidden; min-height: 0; background: var(--plate); }
+  .seg .ib.is-on:focus-visible { outline-color: var(--paper); }
+  /* the small switch: the list's density, two 28px squares */
+  .seg.is-small { height: 28px; }
+  .seg.is-small .ib { height: 26px; width: 28px; padding: 0; justify-content: center; }
+  .seg.is-small .ib svg { width: 14px; height: 14px; }
+  .stagewrap { grid-row: 2; position: relative; overflow: hidden; min-height: 0; background: var(--ground); }
   /* a full-picture slide (an opener or a mood slide) paints its image over the whole stage area, not only the sheet: the backdrop carries the active slide's current image at object-fit cover (an opener's image, or a mood slide's tone grid screened on the backdrop's canvas), the sheet goes transparent and loses its edge, and the slide's own copy of the image hides so the two crops never show together; the rails, the plate and the chrome stay on the sheet */
   .backdrop { position: absolute; inset: 0; z-index: 0; display: none; pointer-events: none; background: var(--paper); }
   .backdrop img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -270,9 +310,10 @@
   /* grid: every slide at once */
   .grid { position: absolute; inset: 0; background: var(--paper); z-index: 2; }
   .grid .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 26px 26px; align-content: start; padding: 22px 34px 56px; overflow: visible; }
-  .grid .sec-label { grid-column: 1 / -1; padding: 16px 0 0; margin-top: 10px; border-top: 1px solid var(--hair); font-size: 13.5px; color: var(--ink); }
+  .grid .sec-label { grid-column: 1 / -1; position: static; height: auto; padding: 16px 0 0; margin-top: 10px; border-top: 1px solid var(--hair); background: none; font-size: 13.5px; color: var(--ink); cursor: default; pointer-events: none; }
   .grid .sec-label:first-child { border-top: 0; margin-top: 0; padding-top: 4px; }
-  .grid .thumb { grid-template-columns: 26px minmax(0, 1fr); }
+  .grid .sec-label svg { display: none; }
+  .grid .thumb { grid-template-columns: 26px minmax(0, 1fr); gap: 6px; padding: 0; }
 
   /* book: the deck read top to bottom */
   .book { position: absolute; inset: 0; background: var(--paper); z-index: 2; }
@@ -307,7 +348,7 @@
   .panel-head b { font-family: var(--display); font-weight: 500; font-size: 14.5px; letter-spacing: -0.01em; }
   .panel-head span { font-size: 12.5px; color: var(--titanium); margin-left: auto; font-variant-numeric: tabular-nums; }
   .panel-tools { padding: 12px 18px; border-bottom: 1px solid var(--hair-soft); }
-  .panel-tools input { width: 100%; height: 34px; border: 1px solid var(--hair); background: var(--paper); color: var(--ink); font: 13.5px var(--text); padding: 0 10px; border-radius: 0; outline: none; -webkit-appearance: none; appearance: none; }
+  .panel-tools input { width: 100%; height: 34px; border: 1px solid var(--hair); background: var(--paper); color: var(--ink); font: 13.5px var(--text); padding: 0 10px; border-radius: var(--radius); outline: none; -webkit-appearance: none; appearance: none; }
   .panel-tools input:focus { border-color: var(--ink); }
   .panel-tools input::placeholder { color: var(--titanium); }
   .panel-tools input::-webkit-search-cancel-button { -webkit-appearance: none; }
@@ -346,7 +387,12 @@
   .toast.is-on { opacity: 1; }
   @media (prefers-reduced-motion: reduce) { .panel-r, .progress i, .toast { transition: none; } }
 
-  @media (max-width: 1180px) { .lb { display: none; } .seg .ib { padding: 0 9px; } .ib { gap: 0; } }
+  @media (max-width: 1180px) {
+    .lb, .bar-deck { display: none; }
+    .seg .ib { padding: 0 9px; }
+    .ib { gap: 0; }
+    .toolbar .ib.t1, .toolbar .ib.t2, .toolbar .ib.t3 { width: 32px; padding: 0; justify-content: center; }
+  }
   @media (max-width: 900px) {
     .viewer { grid-template-columns: 0 minmax(0, 1fr); }
     .viewer .sb { display: none; }
@@ -354,6 +400,8 @@
     /* a phone has no keyboard card to open and no element fullscreen, so help and fullscreen go with the other hide-sm
        controls; the bar scrolls sideways if a narrow phone still runs out of room */
     .toolbar { gap: 8px; padding: 0 8px; overflow-x: auto; scrollbar-width: none; }
+    .bar-l, .bar-r { gap: 4px; }
+    .toolbar .count { padding: 0 6px; }
     /* three classes deep so the brand stays off in the grid too (.viewer.is-overview .bar-brand above) */
     .toolbar .hide-sm, .toolbar .sep, .viewer .toolbar .bar-brand { display: none; }
     .book-in { padding: 24px 16px 80px; gap: 24px; }
@@ -373,32 +421,44 @@
 
 <div class="viewer" id="viewer">
   <aside class="sb" id="sb" aria-label="Slides">
-    <div class="sb-head"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>Brand deck</b><span id="sb-count"></span></div>
+    <div class="sb-head">
+      <a class="sb-home" href="/" title="Prototemplate home"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>Prototemplate</b></a>
+      <div class="seg is-small" role="group" aria-label="List density">
+        <button type="button" class="ib is-on" data-density="thumbs" title="Thumbnails" aria-label="Thumbnails" aria-pressed="true"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M1 5.25A2.25 2.25 0 0 1 3.25 3h13.5A2.25 2.25 0 0 1 19 5.25v9.5A2.25 2.25 0 0 1 16.75 17H3.25A2.25 2.25 0 0 1 1 14.75v-9.5Zm1.5 5.81v3.69c0 .414.336.75.75.75h13.5a.75.75 0 0 0 .75-.75v-2.69l-2.22-2.219a.75.75 0 0 0-1.06 0l-1.91 1.909.47.47a.75.75 0 1 1-1.06 1.06L6.53 8.091a.75.75 0 0 0-1.06 0l-2.97 2.97ZM12 7a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg></button>
+        <button type="button" class="ib" data-density="outline" title="Outline" aria-label="Outline" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 4.5A2.5 2.5 0 0 1 4.5 2h11a2.5 2.5 0 0 1 0 5h-11A2.5 2.5 0 0 1 2 4.5ZM2.75 9.083a.75.75 0 0 0 0 1.5h14.5a.75.75 0 0 0 0-1.5H2.75ZM2.75 12.663a.75.75 0 0 0 0 1.5h14.5a.75.75 0 0 0 0-1.5H2.75ZM2.75 16.25a.75.75 0 0 0 0 1.5h14.5a.75.75 0 1 0 0-1.5H2.75Z"/></svg></button>
+      </div>
+    </div>
+    <div class="sb-tools">
+      <label class="filter"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"/></svg><input type="search" id="sb-filter" placeholder="Filter" aria-label="Filter slides" autocomplete="off" spellcheck="false"></label>
+      <span class="filter-count" id="sb-count"></span>
+    </div>
     <div class="thumbs scroll" id="thumbs"></div>
   </aside>
   <section class="main" id="main">
     <div class="toolbar" role="toolbar" aria-label="Deck controls">
       <div class="bar-l">
         <button type="button" class="ib icon" data-act="sb" title="Show or hide the slide list ([)" aria-label="Show or hide the slide list"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75Zm0 10.5a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Z"/></svg></button>
-        <span class="bar-brand"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>Brand deck</b></span>
+        <a class="bar-brand" href="/" title="Prototemplate home"><svg fill="currentColor" aria-hidden="true"><use href="#gt-mark"/></svg><b>Prototemplate</b></a>
         <span class="sep"></span>
-        <button type="button" class="ib icon" data-act="prev" title="Previous slide (left arrow)" aria-label="Previous slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"/></svg></button>
-        <span class="count"><b id="bar-n">01</b><span class="of"> / </span><span id="bar-total">93</span></span>
-        <button type="button" class="ib icon" data-act="next" title="Next slide (right arrow)" aria-label="Next slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"/></svg></button>
+        <button type="button" class="ib t3" data-act="prev" title="Previous slide (left arrow)" aria-label="Previous slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"/></svg><span class="lb">Previous</span></button>
+        <span class="count"><b id="bar-n">01</b><span class="of">/</span><span id="bar-total">93</span></span>
+        <button type="button" class="ib t3" data-act="next" title="Next slide (right arrow)" aria-label="Next slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"/></svg><span class="lb">Next</span></button>
       </div>
       <div class="bar-r">
+        <span class="bar-deck">Brand deck</span>
         <div class="seg" role="group" aria-label="View">
           <button type="button" class="ib is-on" data-mode="slide" title="One slide at a time (Esc)" aria-pressed="true"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.127 3.502 5.25 3.5h9.5c.041 0 .082 0 .123.002A2.251 2.251 0 0 0 12.75 2h-5.5a2.25 2.25 0 0 0-2.123 1.502ZM1 10.25A2.25 2.25 0 0 1 3.25 8h13.5A2.25 2.25 0 0 1 19 10.25v5.5A2.25 2.25 0 0 1 16.75 18H3.25A2.25 2.25 0 0 1 1 15.75v-5.5ZM3.25 6.5c-.04 0-.082 0-.123.002A2.25 2.25 0 0 1 5.25 5h9.5c.98 0 1.814.627 2.123 1.502a3.819 3.819 0 0 0-.123-.002H3.25Z"/></svg><span class="lb">Slide</span></button>
           <button type="button" class="ib" data-mode="grid" title="Every slide as a grid (G)" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v2.5A2.25 2.25 0 0 0 4.25 9h2.5A2.25 2.25 0 0 0 9 6.75v-2.5A2.25 2.25 0 0 0 6.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 2 13.25v2.5A2.25 2.25 0 0 0 4.25 18h2.5A2.25 2.25 0 0 0 9 15.75v-2.5A2.25 2.25 0 0 0 6.75 11h-2.5Zm9-9A2.25 2.25 0 0 0 11 4.25v2.5A2.25 2.25 0 0 0 13.25 9h2.5A2.25 2.25 0 0 0 18 6.75v-2.5A2.25 2.25 0 0 0 15.75 2h-2.5Zm0 9A2.25 2.25 0 0 0 11 13.25v2.5A2.25 2.25 0 0 0 13.25 18h2.5A2.25 2.25 0 0 0 18 15.75v-2.5A2.25 2.25 0 0 0 15.75 11h-2.5Z"/></svg><span class="lb">Grid</span></button>
           <button type="button" class="ib" data-mode="book" title="Read the deck as a book (B)" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10.75 16.82A7.462 7.462 0 0 1 15 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0 0 18 15.06v-11a.75.75 0 0 0-.546-.721A9.006 9.006 0 0 0 15 3a8.963 8.963 0 0 0-4.25 1.065V16.82ZM9.25 4.065A8.963 8.963 0 0 0 5 3c-.85 0-1.673.118-2.454.339A.75.75 0 0 0 2 4.06v11a.75.75 0 0 0 .954.721A7.506 7.506 0 0 1 5 15.5c1.579 0 3.042.487 4.25 1.32V4.065Z"/></svg><span class="lb">Book</span></button>
         </div>
         <span class="sep"></span>
-        <button type="button" class="ib" data-act="surfaces" title="Every public surface, with previews and links (R)" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4.75A.75.75 0 0 1 6.75 4h10.5a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 4.75ZM6 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 10Zm0 5.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H6.75a.75.75 0 0 1-.75-.75ZM1.99 4.75a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1v-.01ZM1.99 15.25a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1v-.01ZM1.99 10a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1V10Z"/></svg><span class="lb">Surfaces</span></button>
-        <button type="button" class="ib icon" data-act="theme" title="Dark or light (D)" aria-label="Dark or light"><span class="theme-glyph" aria-hidden="true">◑</span></button>
-        <button type="button" class="ib icon hide-sm" data-act="present" title="Presentation mode, chrome hidden (P)" aria-label="Presentation mode"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.841Z"/></svg></button>
+        <button type="button" class="ib t1" data-act="surfaces" title="Every public surface, with previews and links (R)" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4.75A.75.75 0 0 1 6.75 4h10.5a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 4.75ZM6 10a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 10Zm0 5.25a.75.75 0 0 1 .75-.75h10.5a.75.75 0 0 1 0 1.5H6.75a.75.75 0 0 1-.75-.75ZM1.99 4.75a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1v-.01ZM1.99 15.25a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1v-.01ZM1.99 10a1 1 0 0 1 1-1H3a1 1 0 0 1 1 1v.01a1 1 0 0 1-1 1h-.01a1 1 0 0 1-1-1V10Z"/></svg><span class="lb">Surfaces</span></button>
+        <button type="button" class="ib t2" data-act="theme" title="Dark or light (D)" aria-label="Dark or light"><span class="theme-glyph" aria-hidden="true">◑</span><span class="lb">Theme</span></button>
+        <a class="ib t2 hide-sm" href="https://www.turboslide.com/deck/gt-brand" target="_blank" rel="noreferrer" title="Open the brand deck in Turboslide, the slides editor" aria-label="Open in Turboslide"><svg class="ts-mark" viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><path d="M2 2h12v3h-12zM7 5h3v3h-3zM2 7h4v1h-4zM2 9h3v1h-3zM6 9h3v3h-3zM2 12h2v2h-2zM5 12h3v2h-3z"/></svg><span class="lb">Turboslide</span></a>
+        <button type="button" class="ib t3 is-solid hide-sm" data-act="present" title="Presentation mode, chrome hidden (P)" aria-label="Present"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.841Z"/></svg><span class="lb">Present</span></button>
         <button type="button" class="ib icon hide-sm" data-act="full" title="Fullscreen (F)" aria-label="Fullscreen"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m13.28 7.78 3.22-3.22v2.69a.75.75 0 0 0 1.5 0v-4.5a.75.75 0 0 0-.75-.75h-4.5a.75.75 0 0 0 0 1.5h2.69l-3.22 3.22a.75.75 0 0 0 1.06 1.06ZM2 17.25v-4.5a.75.75 0 0 1 1.5 0v2.69l3.22-3.22a.75.75 0 0 1 1.06 1.06L4.56 16.5h2.69a.75.75 0 0 1 0 1.5h-4.5a.747.747 0 0 1-.75-.75ZM12.22 13.28l3.22 3.22h-2.69a.75.75 0 0 0 0 1.5h4.5a.747.747 0 0 0 .75-.75v-4.5a.75.75 0 0 0-1.5 0v2.69l-3.22-3.22a.75.75 0 1 0-1.06 1.06ZM3.5 4.56l3.22 3.22a.75.75 0 0 0 1.06-1.06L4.56 3.5h2.69a.75.75 0 0 0 0-1.5h-4.5a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0V4.56Z"/></svg></button>
         <button type="button" class="ib icon hide-sm" data-act="link" title="Copy a link to this slide" aria-label="Copy a link to this slide"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z"/><path d="M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z"/></svg></button>
-        <button type="button" class="ib icon hide-sm" data-act="help" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM8.94 6.94a.75.75 0 1 1-1.061-1.061 3 3 0 1 1 2.871 5.026v.345a.75.75 0 0 1-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 1 0 8.94 6.94ZM10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg></button>
+        <button type="button" class="ib t1 hide-sm" data-act="help" title="Keyboard shortcuts (?)" aria-label="Help"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM8.94 6.94a.75.75 0 1 1-1.061-1.061 3 3 0 1 1 2.871 5.026v.345a.75.75 0 0 1-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 1 0 8.94 6.94ZM10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span class="lb">Help</span></button>
       </div>
     </div>
     <div class="stagewrap" id="stagewrap">
