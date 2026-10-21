@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useRef, useState, type CSSProperties } from 'react';
 
 import type { PlateFigure, Story } from './content';
@@ -11,11 +12,12 @@ import Inline from './ui/Inline';
 import PressMark from './ui/PressMark';
 import StopSlider, { SliderStyleContext } from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
+import { landed, move, plainClick } from './transition';
 
 type Props = { story: Story; next: { slug: string; title: string } | null };
 
-/** The reader's place in the story, drawn three ways while Kevin picks one: a line along the top, a rail down the left with a tick per section, or a ring around the imprint. */
-const PROGRESS = ['line', 'rail', 'ring'] as const;
+/** The reader's place in the story: a rail down the left with a tick per section, or a ring around the imprint. */
+const PROGRESS = ['rail', 'ring'] as const;
 type Progress = (typeof PROGRESS)[number];
 
 /* A story set like a magazine page: the cover picture across the page,
@@ -23,12 +25,15 @@ type Progress = (typeof PROGRESS)[number];
    the flow of the text and their captions under them. One face throughout,
    in sentence case; paragraphs part by a blank line, not an indent. */
 export default function BookReader({ story, next }: Props) {
+  const router = useRouter();
   const { blocks, figures } = story;
-  const [progress, setProgress] = useState<Progress>('line');
+  const [progress, setProgress] = useState<Progress>('rail');
   const [ticks, setTicks] = useState<number[]>([]);
   const root = useRef<HTMLDivElement>(null);
 
   useMountEffect(() => {
+    // the move from the shelf can run now that the story is on the page
+    landed();
     const asked = new URLSearchParams(location.search).get('progress');
     const known = PROGRESS.find((p) => p === asked);
     if (known) setProgress(known);
@@ -39,6 +44,9 @@ export default function BookReader({ story, next }: Props) {
       frame = requestAnimationFrame(() => {
         const max = document.documentElement.scrollHeight - innerHeight;
         root.current?.style.setProperty('--p', String(max > 0 ? Math.min(1, scrollY / max) : 0));
+        // the rail waits until the cover has scrolled mostly away, so it never runs over the picture
+        const cover = root.current?.querySelector<HTMLElement>('.gtp-print-cover');
+        if (root.current) root.current.dataset.read = String(!cover || scrollY > cover.offsetHeight * 0.6);
       });
     };
     // where each section starts, as a share of the scroll, for the rail's ticks
@@ -72,7 +80,16 @@ export default function BookReader({ story, next }: Props) {
 
   return (
     <SliderStyleContext value='book'>
-      <div ref={root} className='gtp gtp-print' data-progress={progress}>
+      <div ref={root} className='gtp gtp-print' data-progress={progress}
+      onClickCapture={(e) => {
+        // every link home runs the move backwards: this story's cover shrinks into its book on the shelf
+        const home = e.target instanceof Element ? e.target.closest('a[href="/press"]') : null;
+        if (!home || !plainClick(e)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        move((href) => router.push(href), '/press', 'home', null, story.slug);
+      }}
+      >
         <Link href='/press' className='gtp-print-home' aria-label='GT Atlas, all stories'>
           <PressMark size={22} />
           {progress === 'ring' ? (
@@ -83,7 +100,6 @@ export default function BookReader({ story, next }: Props) {
           ) : null}
         </Link>
         <ThemeSwitch className='gtp-print-theme' />
-        {progress === 'line' ? <span className='gtp-print-line' aria-hidden='true' /> : null}
         {progress === 'rail' ? (
           <span className='gtp-print-rail' aria-hidden='true'>
             {ticks.map((at, i) => (

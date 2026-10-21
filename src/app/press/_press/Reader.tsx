@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMemo, useRef, useState } from 'react';
 
 import type { Story } from './content';
@@ -14,6 +15,7 @@ import MaskToc from './ui/MaskToc';
 import Rail, { type RailMark } from './ui/Rail';
 import { SliderStyleContext } from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
+import { landed, move, plainClick } from './transition';
 import Cover from './ui/Cover';
 import { ArrowIcon, CalendarIcon, ClockIcon, IndexIcon, LiveIcon, LoopIcon, PenIcon, PinIcon, StillIcon, ViewsIcon } from './ui/icons';
 
@@ -37,6 +39,7 @@ function platesFor(blocks: Block[], figureIndex: Map<number, number>): number[] 
    left edge. On a narrow screen the stage goes away and each figure's
    plate sits in the text where the figure was. */
 export default function Reader({ story, next }: Props) {
+  const router = useRouter();
   const { blocks, figures } = story;
   const [plate, setPlate] = useState(0);
   const [section, setSection] = useState(0);
@@ -70,6 +73,8 @@ export default function Reader({ story, next }: Props) {
   };
 
   useMountEffect(() => {
+    // the move from the shelf can run now that the story is on the page
+    landed();
     const media = matchMedia(WIDE);
     const sync = () => setWide(media.matches);
     sync();
@@ -144,7 +149,16 @@ export default function Reader({ story, next }: Props) {
 
   return (
     <SliderStyleContext value={story.look === 'fuma' ? 'mask' : 'stops'}>
-    <div className='gtp gtp-reader' data-look={story.look}>
+    <div className='gtp gtp-reader' data-look={story.look}
+      onClickCapture={(e) => {
+        // every link home runs the move backwards: this story's cover shrinks into its book on the shelf
+        const home = e.target instanceof Element ? e.target.closest('a[href="/press"]') : null;
+        if (!home || !plainClick(e)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        move((href) => router.push(href), '/press', 'home', null, story.slug);
+      }}
+    >
       <span ref={progress} className='gtp-top-progress' aria-hidden='true' />
       <ThemeSwitch className='gtp-reader-theme' />
       <Link href='/press' className='gtp-float-home' aria-label='GT Atlas, all stories'>

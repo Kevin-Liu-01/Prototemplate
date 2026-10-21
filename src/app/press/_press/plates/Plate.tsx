@@ -15,7 +15,7 @@ export const LIVE_CAPTION: Record<LiveKind, string> = {
   hitlist: 'The hit list as a checklist. Click an anti-pattern to strike it.',
   globe: 'The title of this essay in nine languages. The globe turns to a city where each one is spoken.',
   wipe: 'The same picture in the dark theme and the light theme. Drag across it to compare them.',
-  stops: 'Euclid’s first definition in eight versions, from Alexandria to Beijing, each at the city and the year it was made.',
+  stops: 'The first eight definitions of Book I in eight versions, from Alexandria to Beijing, each at the city and the year it was made. Choose a version to read its eight lines.',
   clerk: 'The Fumadocs table of contents rebuilt in this page. The thumb shows only where the line runs, so it follows the line into the nested headings.',
 };
 

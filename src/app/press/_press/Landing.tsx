@@ -9,6 +9,7 @@ import { dms } from './coords';
 import { useLayoutWork, useMountEffect } from './hooks';
 import { LANGS, TOPIC_NAMES, TOPICS, type Lang, type LangCode, type Topic } from './stories';
 import { bookTitle } from './titles';
+import { landed, move, plainClick, takeLeaving } from './transition';
 import Book, { bookDepth } from './ui/Book';
 import Flag from './ui/Flag';
 import FlipText from './ui/FlipText';
@@ -123,6 +124,27 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
 
   useLayoutWork(anchor, { dependencies: [mode] });
 
+  /** Opens a story: its book's cover grows into the story's cover (transition.ts). */
+  const open = (i: number) => {
+    const s = catalog[i];
+    if (!s) return;
+    // the cover itself, not the board around it, so no board edge rides along
+    const front = shelf.current?.querySelectorAll('.gtp-shelf-item')[i]?.querySelector('.gtp-book-front .gtp-cover');
+    move((href) => router.push(href), `/press/${s.slug}`, s.look, front);
+  };
+
+  // back from a story: its book takes the cover's name, so the story's cover shrinks into it, then the move runs
+  useMountEffect(() => {
+    const from = takeLeaving();
+    const i = from ? catalog.findIndex((s) => s.slug === from) : -1;
+    if (i >= 0) {
+      reveal(i);
+      const front = shelf.current?.querySelectorAll('.gtp-shelf-item')[i]?.querySelector<HTMLElement>('.gtp-book-front .gtp-cover');
+      if (front) front.style.viewTransitionName = 'gtp-cover';
+    }
+    landed();
+  });
+
   useMountEffect(() => {
     const asked = new URLSearchParams(location.search).get('topic');
     const known = TOPICS.find((x) => x === asked);
@@ -142,7 +164,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
         e.preventDefault();
         browse(a - 1);
       } else if (e.key === 'Enter' && (!target || target === document.body)) {
-        router.push(`/press/${catalog[a]?.slug}`);
+        open(a);
       }
     };
     addEventListener('keydown', onKey);
@@ -286,6 +308,8 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
                   if (drag.current.moved) return;
                   setActive(i);
                   setHover(i);
+                  // fetch the story while the pointer is on its book, so the move can start as soon as it is clicked
+                  router.prefetch(`/press/${s.slug}`);
                 }}
                 onPointerMove={(e) => {
                   if (drag.current.moved) return;
@@ -316,6 +340,11 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
                   className='gtp-shelf-hit'
                   href={`/press/${s.slug}`}
                   aria-label={bookTitle(s.titles[code], code)}
+                  onClick={(e) => {
+                    if (!plainClick(e)) return;
+                    e.preventDefault();
+                    open(i);
+                  }}
                   onFocus={() => {
                     setActive(i);
                     setHover(i);

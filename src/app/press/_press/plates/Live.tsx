@@ -286,22 +286,122 @@ export function ThemeWipe({ dark, light, alt }: { dark: string; light: string; a
 
 /* ---------- Euclid's first definition, city by city ---------- */
 
-type Version = { lang: string; language: string; dir: 'ltr' | 'rtl'; city: string; year: string; lat: number; lon: number; passage: string };
+type Version = { lang: string; language: string; dir: 'ltr' | 'rtl'; city: string; year: string; lat: number; lon: number; lines: readonly string[] };
 
 /**
- * The first definition of Elements in eight versions, each with its
- * language, the city and the year it was made. Draft wording, to check
- * against the editions.
+ * The first eight definitions of Book I in eight versions, each with its
+ * language, the city and the year it was made. Drafted from the editions'
+ * wording as best known: Euclid's Greek, Clavius, Byrne and Ricci and Xu
+ * are close to the printed texts; Billingsley's spelling, Adelard,
+ * Campanus (who folds definitions together, so his first eight run on)
+ * and the Arabic need checking against the sources before this is
+ * published.
  */
 const EDITIONS: readonly Version[] = [
-  { lang: 'en', language: 'English, Billingsley', dir: 'ltr', city: 'London', year: '1570', lat: 51.5138, lon: -0.0984, passage: 'A signe or point is that, which hath no part.' },
-  { lang: 'en', language: 'English, Byrne', dir: 'ltr', city: 'London', year: '1847', lat: 51.5138, lon: -0.0984, passage: 'A point is that which has no parts.' },
-  { lang: 'la', language: 'Latin, Campanus', dir: 'ltr', city: 'Venice', year: '1482', lat: 45.4408, lon: 12.3155, passage: 'Punctus est cuius pars non est.' },
-  { lang: 'la', language: 'Latin, Clavius', dir: 'ltr', city: 'Rome', year: '1574', lat: 41.9028, lon: 12.4964, passage: 'Punctum est, cuius pars nulla est.' },
-  { lang: 'zh-Hant', language: 'Chinese, Ricci and Xu', dir: 'ltr', city: 'Beijing', year: '1607', lat: 39.9042, lon: 116.4074, passage: '點者，無分。' },
-  { lang: 'la', language: 'Latin, Adelard', dir: 'ltr', city: 'Antioch', year: 'c. 1120', lat: 36.2021, lon: 36.1604, passage: 'Punctus est cui pars non est.' },
-  { lang: 'ar', language: 'Arabic, al-Ḥajjāj', dir: 'rtl', city: 'Baghdad', year: 'c. 800', lat: 33.3152, lon: 44.3661, passage: 'النقطة هي ما لا جزء له.' },
-  { lang: 'grc', language: 'Greek, Euclid', dir: 'ltr', city: 'Alexandria', year: 'c. 300 BCE', lat: 31.2001, lon: 29.9187, passage: 'Σημεῖόν ἐστιν, οὗ μέρος οὐθέν.' },
+  {
+    lang: 'en', language: 'English, Billingsley', dir: 'ltr', city: 'London', year: '1570', lat: 51.5138, lon: -0.0984,
+    lines: [
+      'A signe or point is that, which hath no part.',
+      'A line is length without breadth.',
+      'The endes or limittes of a line, are pointes.',
+      'A right line is that which lieth equally betwene his pointes.',
+      'A superficies is that, which hath onely length and breadth.',
+      'The extremities of a superficies, are lines.',
+      'A plaine superficies is that, which lieth equally betwene his lines.',
+      'A plaine angle is an inclination or bowing of two lines the one to the other, the one touching the other, and not being directly ioyned together.',
+    ],
+  },
+  {
+    lang: 'en', language: 'English, Byrne', dir: 'ltr', city: 'London', year: '1847', lat: 51.5138, lon: -0.0984,
+    lines: [
+      'A point is that which has no parts.',
+      'A line is length without breadth.',
+      'The extremities of a line are points.',
+      'A straight or right line is that which lies evenly between its extremities.',
+      'A surface is that which has length and breadth only.',
+      'The extremities of a surface are lines.',
+      'A plane surface is that which lies evenly between its extremities.',
+      'A plane angle is the inclination of two lines to one another, in a plane, which meet together, but are not in the same direction.',
+    ],
+  },
+  {
+    lang: 'la', language: 'Latin, Campanus', dir: 'ltr', city: 'Venice', year: '1482', lat: 45.4408, lon: 12.3155,
+    lines: [
+      'Punctus est cuius pars non est.',
+      'Linea est longitudo sine latitudine, cuius quidem extremitates sunt duo puncta.',
+      'Linea recta est ab uno puncto ad alium brevissima extensio, in extremitates suas utrumque eorum recipiens.',
+      'Superficies est quae longitudinem et latitudinem tantum habet, cuius termini quidem sunt lineae.',
+      'Superficies plana est ab una linea ad aliam extensio, in extremitates suas eas recipiens.',
+      'Angulus planus est duarum linearum alternus contactus, quarum expansio est super superficiem, applicatioque non directa.',
+      'Quando autem angulum continent duae lineae rectae, rectilineus angulus nominatur.',
+      'Quando recta linea super rectam steterit, duoque anguli utrobique fuerint aequales, eorum uterque rectus erit.',
+    ],
+  },
+  {
+    lang: 'la', language: 'Latin, Clavius', dir: 'ltr', city: 'Rome', year: '1574', lat: 41.9028, lon: 12.4964,
+    lines: [
+      'Punctum est, cuius pars nulla est.',
+      'Linea vero, longitudo latitudinis expers.',
+      'Lineae autem termini, sunt puncta.',
+      'Recta linea est, quae ex aequo sua interiacet puncta.',
+      'Superficies est, quae longitudinem, latitudinemque tantum habet.',
+      'Superficiei autem extrema, sunt lineae.',
+      'Plana superficies est, quae ex aequo suas interiacet lineas.',
+      'Planus autem angulus, est duarum linearum in plano se mutuo tangentium, et non in directum iacentium, alterius ad alteram inclinatio.',
+    ],
+  },
+  {
+    lang: 'zh-Hant', language: 'Chinese, Ricci and Xu', dir: 'ltr', city: 'Beijing', year: '1607', lat: 39.9042, lon: 116.4074,
+    lines: [
+      '點者無分。',
+      '線有長無廣。',
+      '線之界是點。',
+      '直線止有兩端，兩端之間上下更無一點。',
+      '面者止有長有廣。',
+      '面之界是線。',
+      '平面一面平在界之內。',
+      '平角者兩直線於平面縱橫相遇交接處。',
+    ],
+  },
+  {
+    lang: 'la', language: 'Latin, Adelard', dir: 'ltr', city: 'Antioch', year: 'c. 1120', lat: 36.2021, lon: 36.1604,
+    lines: [
+      'Punctus est cui pars non est.',
+      'Linea est longitudo sine latitudine.',
+      'Cuius quidem extremitates duo puncta sunt.',
+      'Linea recta est ab uno puncto ad alium extensio in extremitates suas utrumque eorum recipiens.',
+      'Superficies est quod longitudinem et latitudinem tantum habet.',
+      'Cuius termini quidem lineae sunt.',
+      'Superficies plana est ab una linea ad aliam extensio in extremitates suas eas recipiens.',
+      'Angulus planus est duarum linearum alternus contactus quarum expansio est super superficiem applicatioque non directa.',
+    ],
+  },
+  {
+    lang: 'ar', language: 'Arabic, al-Ḥajjāj', dir: 'rtl', city: 'Baghdad', year: 'c. 800', lat: 33.3152, lon: 44.3661,
+    lines: [
+      'النقطة هي ما لا جزء له.',
+      'والخط طول لا عرض له.',
+      'ونهايتا الخط نقطتان.',
+      'والخط المستقيم هو الموضوع على استقامة بين النقط التي عليه.',
+      'والسطح هو ما له طول وعرض فقط.',
+      'ونهايات السطح خطوط.',
+      'والسطح المستوي هو الموضوع على استقامة بين الخطوط التي عليه.',
+      'والزاوية المسطحة هي ميل أحد خطين متلاقيين في سطح مستو إلى الآخر من غير أن يكونا على استقامة.',
+    ],
+  },
+  {
+    lang: 'grc', language: 'Greek, Euclid', dir: 'ltr', city: 'Alexandria', year: 'c. 300 BCE', lat: 31.2001, lon: 29.9187,
+    lines: [
+      'Σημεῖόν ἐστιν, οὗ μέρος οὐθέν.',
+      'Γραμμὴ δὲ μῆκος ἀπλατές.',
+      'Γραμμῆς δὲ πέρατα σημεῖα.',
+      'Εὐθεῖα γραμμή ἐστιν, ἥτις ἐξ ἴσου τοῖς ἐφ’ ἑαυτῆς σημείοις κεῖται.',
+      'Ἐπιφάνεια δέ ἐστιν, ὃ μῆκος καὶ πλάτος μόνον ἔχει.',
+      'Ἐπιφανείας δὲ πέρατα γραμμαί.',
+      'Ἐπίπεδος ἐπιφάνειά ἐστιν, ἥτις ἐξ ἴσου ταῖς ἐφ’ ἑαυτῆς εὐθείαις κεῖται.',
+      'Ἐπίπεδος δὲ γωνία ἐστὶν ἡ ἐν ἐπιπέδῳ δύο γραμμῶν ἁπτομένων ἀλλήλων καὶ μὴ ἐπ’ εὐθείας κειμένων πρὸς ἀλλήλας τῶν γραμμῶν κλίσις.',
+    ],
+  },
 ];
 
 /** Where the globe looks: between London and Beijing, so every city is on the near side. */
@@ -317,8 +417,9 @@ const VERSIONS: readonly Version[] = [...EDITIONS].sort((a, b) => {
 });
 
 /* All eight at once: a pin at each city on the globe, a hairline from each
-   pin to its line of the definition, and the chosen version's pin and
-   leader in the ink with its coordinates under the globe. The leaders are
+   pin to its version in the list, and the chosen version's pin and leader
+   in the ink, its coordinates under the globe and its first eight
+   definitions set as a poem under the figure. The leaders are
    drawn in an SVG over the figure, from where the globe placed each pin to
    where its line sits, and drawn again whenever either moves. */
 export function VersionsDemo() {
@@ -397,16 +498,20 @@ export function VersionsDemo() {
         {VERSIONS.map((v, i) => (
           <li key={`${v.city}-${v.year}`}>
             <button type='button' className='gtp-version' aria-pressed={i === chosen} onClick={() => setChosen(i)}>
-              <span className='gtp-version-text' lang={v.lang} dir={v.dir}>
-                {v.passage}
-              </span>
+              <span className='gtp-version-text'>{v.language}</span>
               <span className='gtp-version-meta'>
-                {v.language}, {v.city}, {v.year}
+                {v.city}, {v.year}
               </span>
             </button>
           </li>
         ))}
       </ol>
+      {/* the chosen version's first eight definitions, a line each; a new version fades its lines in */}
+      <blockquote key={chosen} className='gtp-versions-poem' lang={version.lang} dir={version.dir}>
+        {version.lines.map((line) => (
+          <span key={line}>{line}</span>
+        ))}
+      </blockquote>
       <svg className='gtp-versions-leaders' aria-hidden='true'>
         {paths.map((d, i) => (d ? <path key={i} d={d} data-on={i === chosen} /> : null))}
       </svg>
