@@ -348,7 +348,7 @@ export function VersionsDemo() {
     });
     // each leader turns in a lane of its own in the gutter: the ones climbing to their row take lanes outward down the
     // list, the ones dropping take them outward up the list, so no lane crosses another leader's run
-    // a row nearly level with its pin needs no lane: its leader runs straight across and eases into the row
+    // a row nearly level with its pin needs no lane: its leader runs straight across and steps to the row just before it
     const LEVEL = 18;
     const lane = new Array<number>(VERSIONS.length).fill(0);
     const up = ends.flatMap((e, i) => (e && e.my - e.ry >= LEVEL ? [i] : []));
@@ -358,7 +358,7 @@ export function VersionsDemo() {
     const gutter = globe.right - box.left + 16;
     const next = ends.map((e, i) => {
       if (!e) return '';
-      if (Math.abs(e.ry - e.my) < LEVEL) return `M${e.mx.toFixed(1)} ${e.my.toFixed(1)}H${(e.rx - 24).toFixed(1)}L${e.rx.toFixed(1)} ${e.ry.toFixed(1)}`;
+      if (Math.abs(e.ry - e.my) < LEVEL) return `M${e.mx.toFixed(1)} ${e.my.toFixed(1)}H${(e.rx - 12).toFixed(1)}V${e.ry.toFixed(1)}H${e.rx.toFixed(1)}`;
       const x = gutter + (lane[i] ?? 0) * 9;
       return `M${e.mx.toFixed(1)} ${e.my.toFixed(1)}H${x.toFixed(1)}V${e.ry.toFixed(1)}H${e.rx.toFixed(1)}`;
     });
