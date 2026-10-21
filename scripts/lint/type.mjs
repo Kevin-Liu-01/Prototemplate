@@ -138,6 +138,7 @@ export const MONO = {
     '.sl-fig-mono', // the ledger figures' CSS tokens: non-scaling-stroke and the property names
     '.blog-fumadocs-architecture .fm', // the Fumadocs figure's package names: fumadocs-mdx, fumadocs-core, base-ui
     '.dmo-plate-tag', // the Components plates' entry points: createStudioField(), <EdgeGlobe />
+    '.dmo-tiers-token', // the Bayer tiers plate's threshold numbers
   ],
   reason: 'numbers, code identifiers, paths, hex values and locale codes (DESIGN.md section 4, BRAND.md section 6)',
 };

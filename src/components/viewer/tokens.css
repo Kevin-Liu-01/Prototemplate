@@ -237,22 +237,27 @@
    their own type. The display features reach h1 and h2 only (the deck's
    rule, head.html:62); every other element takes the text features. The
    /d/production blog port carries .blog-root beside .toolchain-root and
-   keeps its own type: :where() leaves the exclusion at no specificity. */
-:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-preview, .pt-corner, .pt-toast, .pt-root, .blog-root:not(:where(.toolchain-root))) {
+   keeps its own type: :where() leaves the exclusion at no specificity.
+   The docs site's root (fumadocs' #nd-notebook-layout) carries .pt-docs
+   from src/app/docs/layout.tsx, a class so the lists keep their
+   specificity; it skips the form controls rule, because preflight's
+   button rule already inherits the features there and the text list
+   would strip the display list from a button inside a heading. */
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-preview, .pt-corner, .pt-toast, .pt-root, .blog-root:not(:where(.toolchain-root)), .pt-docs) {
   font-family: var(--pt-text);
   font-feature-settings: var(--pt-ff-text);
   font-optical-sizing: auto;
   font-weight: var(--pt-w-text);
 }
 
-:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root))) :is(h1, h2) {
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root)), .pt-docs) :is(h1, h2) {
   font-family: var(--pt-display);
   font-feature-settings: var(--pt-ff-display);
   font-weight: var(--pt-w-display);
   text-wrap: balance;
 }
 
-:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root))) :is(h3, h4) {
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root)), .pt-docs) :is(h3, h4) {
   font-weight: var(--pt-w-label);
   text-wrap: balance;
 }
@@ -264,12 +269,12 @@
 }
 
 /* stops the UA's bolder computing 700 (the brand section numerals, prose strong) */
-:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root))) :is(b, strong) {
+:is(.pt-viewer, .pt-search, .pt-panel, .pt-help, .pt-root, .blog-root:not(:where(.toolchain-root)), .pt-docs) :is(b, strong) {
   font-weight: var(--pt-w-strong);
 }
 
 /* kbd stays Inter: the search key chip and the help card's keys are labels (DESIGN.md section 15) */
-:is(.pt-viewer, .pt-root, .blog-root:not(:where(.toolchain-root))) :is(code, pre, samp) {
+:is(.pt-viewer, .pt-root, .blog-root:not(:where(.toolchain-root)), .pt-docs) :is(code, pre, samp) {
   font-family: var(--pt-mono);
   letter-spacing: 0;
 }

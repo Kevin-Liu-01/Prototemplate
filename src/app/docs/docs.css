@@ -9,7 +9,9 @@
 
    The adapters, in order (the SEO and docs plan of 2026-10-14, section 3.2):
    1. the font tokens, which Tailwind's theme layer would otherwise reset to
-      its own stacks for the whole document;
+      its own stacks for the whole document; the type base itself (family,
+      the two feature lists, optical size, weights, balanced headings) comes
+      from tokens.css, which types the layout through its pt-docs class;
    2. the dark variant, rebound from fumadocs' .dark class to the
       data-theme attribute the root layout stamps, and fumadocs' two .dark
       Shiki rules repeated under it;
@@ -18,8 +20,12 @@
       another route if this sheet stays loaded after a client navigation;
    4. the weight cap: Inter at 500 or less, as everywhere on the site;
    5. the radius remap: cards and panels at the card corner, chips at the
-      chip corner;
-   6. flat surfaces, and the sidebar's rails and pills for SidebarMotion.
+      chip corner, controls at the control corner;
+   6. flat surfaces, and the sidebar's rails and pills for SidebarMotion;
+   7. the type ladder: the title, the lead, the prose, the tables and the
+      two rails on the hub's steps;
+   8. the corners the remap leaves: the TOC's dot, the key caps and the
+      sidebar's scroll thumb.
    Every override is an unlayered rule, which outranks the layered
    utilities without an importance flag. */
 
@@ -112,23 +118,27 @@
   --color-fd-overlay: var(--pt-scrim);
 
   /* 5. corners: fumadocs' panels, code blocks, callouts and cards take
-     rounded-lg to rounded-2xl, which all resolve to the card corner */
+     rounded-lg to rounded-2xl, which all resolve to the card corner;
+     rounded-sm and rounded-md follow the chip and control tokens */
   --radius-lg: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-lg reads the card corner */
   --radius-xl: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-xl reads the card corner */
   --radius-2xl: var(--pt-radius-card); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-2xl reads the card corner */
+  --radius-sm: var(--pt-radius-chip); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-sm reads the chip corner */
+  --radius-md: var(--pt-radius-control); /* lint-radius: allow the plan's radius remap, fumadocs' rounded-md reads the control corner */
 }
 :root[data-theme='dark']:has(#nd-notebook-layout) {
   --docs-accent: #86a8ff;
 }
 
 /* 4. the weight cap: fumadocs and the typography plugin draw 600 and 700
-   in headings, labels, table heads and strong text */
+   in headings, labels, table heads and strong text (the nameplate's
+   Fraunces word keeps its 600) */
 :root:has(#nd-notebook-layout)
   :is(#nd-notebook-layout, [role='dialog'], [data-radix-popper-content-wrapper])
-  :is(.font-semibold, .font-bold, h1, h2, h3, h4, h5, h6, strong, b, th, dt) {
+  :is(.font-semibold, .font-bold, h1, h2, h3, h4, h5, h6, strong, b, th, dt):not(.pt-face-serif) {
   font-weight: 500;
 }
-#nd-page .prose :is(h1, h2, h3, h4, strong, th, a) {
+#nd-page .prose :is(h1, h2, h3, h4, strong, th) {
   font-weight: 500;
 }
 
@@ -161,14 +171,35 @@
   font-size: var(--pt-t-meta);
 }
 
-/* the nameplate in the header and the sidebar head */
+/* the nameplate in the header and the sidebar head (DESIGN.md section
+   15): the hub sidebar head's mark and words, proto in Fraunces 600 and
+   template in Space Grotesk 500 at its size and tracking, then Docs */
 [data-docs-nameplate] {
   gap: 8px;
-  font-size: 15px; /* lint-type: allow the nameplate beside the 20px mark sits between the small and body steps */
+  font-size: 14.5px; /* lint-type: allow the nameplate's size, Sidebar.css .pt-sb-head .pt-brand-word */
   font-weight: 500;
 }
-[data-docs-nameplate] img {
-  display: block;
+[data-docs-nameplate] .pt-brand-word {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1; /* lint-type: allow one line of two faces on one baseline, no text block */
+  color: var(--pt-ink);
+  white-space: nowrap;
+}
+[data-docs-nameplate] .pt-face-serif {
+  font-family: var(--pt-face-serif);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  font-feature-settings: normal;
+}
+[data-docs-nameplate] .pt-face-grot {
+  font-family: var(--pt-face-grot);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-feature-settings: normal;
+}
+[data-docs-nameplate] .docs-nameplate-docs {
+  letter-spacing: var(--pt-track-label);
 }
 
 /* fumadocs shows its sidebar footer row only for its own icon links; here
@@ -200,8 +231,9 @@
 #nd-sidebar [data-radix-scroll-area-viewport] :is(a[href], button[type='button']) {
   position: relative;
   margin-inline-start: 12px;
-  padding-top: 6px;
+  padding-top: 5px;
   padding-bottom: 6px;
+  line-height: 17px; /* lint-type: allow the hub's sidebar row, Sidebar.css .pt-orow-name at 13/17 */
 }
 #nd-sidebar [data-radix-scroll-area-viewport] > div {
   --docs-rail-color: var(--pt-hair-soft);
@@ -289,4 +321,113 @@
   #nd-sidebar :is(.docs-sb-hover, .docs-sb-current, .docs-sb-thumb, .docs-sb-thumb-hover) {
     transition: none;
   }
+}
+
+/* ---------- 7. the type ladder (DESIGN.md section 4, Book type) ----------
+   tokens.css types the layout through its pt-docs class (family, the two
+   feature lists, weights, balanced headings); these rules put fumadocs'
+   parts on the hub's steps, the values /skills/<slug> renders. Scoped to
+   #nd-page and the rails, because fumadocs gives every TOC row the prose
+   class too. */
+#nd-page > h1 {
+  font-size: var(--pt-d1);
+  line-height: var(--pt-d1-lh);
+  letter-spacing: var(--pt-d1-track);
+}
+#nd-page > .docs-lead {
+  max-width: var(--pt-measure-lead);
+  font-size: var(--pt-t-lead);
+  line-height: var(--pt-t-lead-lh);
+  color: var(--pt-ink);
+  text-wrap: pretty;
+}
+#nd-page .prose {
+  --tw-prose-body: var(--pt-ink-2);
+  line-height: var(--pt-t-body-lh);
+}
+/* body lines at the hub's measure; tables, code and plates keep the column */
+#nd-page .prose > :is(p, ul, ol, blockquote) {
+  max-width: var(--pt-measure);
+}
+#nd-page .prose h2 {
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+}
+#nd-page .prose h3 {
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+}
+#nd-page .prose h4 {
+  letter-spacing: var(--pt-track-label);
+}
+/* a link in running text is running text */
+#nd-page .prose a:not([data-card]) {
+  font-weight: var(--pt-w-text);
+}
+#nd-page .prose table {
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  font-variant-numeric: tabular-nums;
+}
+#nd-page .prose th {
+  font-size: var(--pt-t-meta);
+}
+/* the page's actions at the hub's button step (fumadocs sets 12px) */
+[data-docs-actions] button {
+  font-size: var(--pt-t-meta);
+}
+
+/* the two rails on one step: the TOC at the meta step, the sidebar's
+   group labels at the group step in titanium (the hub's .pt-grp-head) */
+#toc-title {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  letter-spacing: var(--pt-track-label);
+}
+#nd-toc a {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-radix-scroll-area-viewport] > div > p {
+  font-size: var(--pt-t-group);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-group);
+  color: var(--pt-titanium);
+}
+/* the phone drawer's rows on the desktop rows' step (fumadocs sets 15px) */
+#nd-sidebar-mobile [data-radix-scroll-area-viewport] :is(a[href], button[type='button']) {
+  font-size: var(--pt-t-meta);
+  line-height: 17px; /* lint-type: allow the hub's sidebar row, Sidebar.css .pt-orow-name at 13/17 */
+}
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-radix-scroll-area-viewport] a[data-active='true'] {
+  font-weight: var(--pt-w-label);
+}
+
+/* the portals: the search dialog and the popovers render into body,
+   outside the pt-docs root */
+:root:has(.pt-docs) :is([role='dialog'], [data-radix-popper-content-wrapper]) {
+  font-family: var(--pt-text);
+  font-feature-settings: var(--pt-ff-text);
+}
+/* the key caps and the dialog's ESC key are labels, in Inter like the
+   hub's key chips (preflight sets kbd in the mono stack) */
+:root:has(.pt-docs) :is(#nd-notebook-layout kbd, [role='dialog'] kbd, [role='dialog'] button.font-mono) {
+  font-family: var(--pt-text);
+  font-feature-settings: var(--pt-ff-text);
+}
+
+/* ---------- 8. the corners the remap leaves ----------
+   The TOC's dot is a dot on a 4px square (the only element in the TOC
+   with an inline offset-path), the key caps are chips, and the sidebar's
+   scroll thumb is a shell: 6px wide, so 50% would draw an ellipse. */
+#nd-toc [style*='offset-path'] {
+  border-radius: var(--pt-radius-round);
+}
+:is(#nd-notebook-layout, [role='dialog']) kbd {
+  border-radius: var(--pt-radius-chip);
+}
+:is(#nd-sidebar, #nd-sidebar-mobile) [data-radix-scroll-area-viewport] ~ [data-orientation] > * {
+  border-radius: var(--pt-radius-shell);
 }

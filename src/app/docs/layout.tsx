@@ -24,8 +24,10 @@ const FOOTER_LINKS: readonly DocsSidebarFooterLink[] = [
  * (Guide, Components, Internals) fumadocs draws as the tab dropdown, its own
  * header and its own search (the static index at /api/search). RootProvider
  * leaves the theme to the root layout's data-theme (theme.enabled false),
- * and docs.css bridges fumadocs' tokens to the site's. Three ways lead back
- * to the hub's home at /, each visible at every width (Kevin, 2026-10-21:
+ * and docs.css bridges fumadocs' tokens to the site's. The layout's root
+ * carries pt-docs, which joins the roots tokens.css types (DESIGN.md
+ * section 4). Three ways lead back to the hub's home at /, each visible
+ * at every width (Kevin, 2026-10-21:
  * "be able to go back to prototemplate main from docs"): the nameplate, the
  * labelled Prototemplate home link (the header from 1024 px, the first
  * sidebar row below), and the search dialog's links. The sidebar footer
@@ -46,6 +48,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     >
       <DocsLayout
         tree={source.getPageTree()}
+        containerProps={{ className: 'pt-docs' }}
         themeSwitch={{ enabled: false }}
         links={[{ type: 'main', text: 'Prototemplate home', url: '/', icon: <HomeIcon aria-hidden /> }]}
         nav={{ title: DocsNameplate, url: '/' }}

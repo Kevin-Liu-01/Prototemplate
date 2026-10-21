@@ -125,7 +125,7 @@ export default async function Page({ params }: Params) {
         llms.txt
       </a>
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
+      <DocsDescription className='docs-lead'>{page.data.description}</DocsDescription>
       <div className='docs-meta' data-docs-meta=''>
         <p className='docs-updated'>
           Updated <time dateTime={updated.at}>{updatedLabel(updated.day)}</time>
