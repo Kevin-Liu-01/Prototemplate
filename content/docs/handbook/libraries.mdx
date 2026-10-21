@@ -1,0 +1,16 @@
+---
+title: Libraries
+description: "The index of the componentized instruments, then the build log: every library running live with its plates and API snippets."
+icon: Squares
+---
+
+import { CRAFT_SECTIONS } from '@/app/craft/CraftArticle';
+import '@/app/craft/craft.css';
+
+<include cwd>docs/LIBRARIES.md</include>
+
+{CRAFT_SECTIONS.map((section) => (
+  <section key={section.id} id={section.id}>
+    {section.body}
+  </section>
+))}

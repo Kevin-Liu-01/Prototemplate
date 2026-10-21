@@ -1,0 +1,57 @@
+---
+title: GT product and architecture map
+description: "What General Translation sells and to whom, how the products fit together, the copy that must be exact, and where each part lives."
+icon: Map
+---
+
+import LibraryDemo from '@/app/craft/LibraryDemo';
+import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import '@/app/craft/craft.css';
+
+<include cwd>docs/handbook/gt-product-map.md#gt-product-and-architecture-map</include>
+
+<include cwd>docs/handbook/gt-product-map.md#1-positioning</include>
+
+<include cwd>docs/handbook/gt-product-map.md#2-audience-and-the-sale</include>
+
+<include cwd>docs/handbook/gt-product-map.md#3-products</include>
+
+<LibraryDemo
+  kind="globe"
+  tag="<EdgeGlobe />"
+  label="Live demo: the orthographic edge globe (five points of presence, one accent route serving a request) over its dithered Bayer atmosphere."
+/>
+
+This plate runs `EdgeGlobe`, the drawing of the translation CDN that the home page of generaltranslation.com uses. A request travels to the closest point of presence, where the translation already sits, and the payload returns along the same route.
+
+<include cwd>docs/handbook/gt-product-map.md#4-context</include>
+
+<include cwd>docs/handbook/gt-product-map.md#5-enterprise-and-plans</include>
+
+<include cwd>docs/handbook/gt-product-map.md#6-copy-that-must-be-exact</include>
+
+<include cwd>docs/handbook/gt-product-map.md#7-cli-and-agent-entry-points</include>
+
+<include cwd>docs/handbook/gt-product-map.md#8-repositories</include>
+
+<include cwd>docs/handbook/gt-product-map.md#9-site-behaviour</include>
+
+<div className="ptc-plate is-pills" role="img" aria-label="The production locale roster of generaltranslation.com as locale pills: en-US, es, fr, zh, ja, it, ru and en-GB.">
+  <div className="ptc-pills">
+    <span className="ptc-pill"><LocaleTag code="en-US" /></span>
+    <span className="ptc-pill"><LocaleTag code="es" /></span>
+    <span className="ptc-pill"><LocaleTag code="fr" /></span>
+    <span className="ptc-pill"><LocaleTag code="zh" /></span>
+    <span className="ptc-pill"><LocaleTag code="ja" /></span>
+    <span className="ptc-pill"><LocaleTag code="it" /></span>
+    <span className="ptc-pill"><LocaleTag code="ru" /></span>
+    <span className="ptc-pill"><LocaleTag code="en-GB" /></span>
+  </div>
+  <span className="ptc-plate-tag" aria-hidden="true">gt.config.json</span>
+</div>
+
+This plate sets the production roster of the landing app in `LocaleTag` pills: en-US as the source and seven target locales. The staging build translates `es` alone.
+
+<include cwd>docs/handbook/gt-product-map.md#10-public-surfaces</include>
+
+<include cwd>docs/handbook/gt-product-map.md#sources</include>
