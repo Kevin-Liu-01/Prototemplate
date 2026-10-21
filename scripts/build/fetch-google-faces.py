@@ -34,6 +34,21 @@ WANT = [
     ('Anybody', 0, 900, 'latin', 'ital,wdth,wght@0,150,900', 'anybody-150-900.woff2'),
     ('Anybody', 1, 900, 'latin', 'ital,wdth,wght@1,150,900', 'anybody-150-900-italic.woff2'),
     ('Anybody', 1, 500, 'latin', 'ital,wdth,wght@1,150,500', 'anybody-150-500-italic.woff2'),
+    # the press directions (src/app/press/directions): the faces of the seven studies, set through
+    # @font-face in _directions/faces.css, latin plus greek for Euclid's first definition; Newsreader
+    # keeps its optical-size axis, which the proof's large wordmark uses
+    ('Inter Tight', 0, 400, 'latin'), ('Inter Tight', 0, 500, 'latin'),
+    ('Fragment Mono', 0, 400, 'latin'),
+    ('Geist', 0, 400, 'latin'), ('Geist', 0, 500, 'latin'), ('Geist', 0, 600, 'latin'),
+    ('Newsreader', 0, 400, 'latin', 'opsz,wght@6..72,400', 'newsreader-opsz-400.woff2'),
+    ('Newsreader', 1, 400, 'latin', 'ital,opsz,wght@1,6..72,400', 'newsreader-opsz-400-italic.woff2'),
+    ('EB Garamond', 0, 400, 'latin'), ('EB Garamond', 1, 400, 'latin'),
+    ('EB Garamond', 0, 400, 'greek'), ('EB Garamond', 0, 400, 'greek-ext'),
+    ('Courier Prime', 0, 400, 'latin'),
+    ('IBM Plex Mono', 0, 500, 'latin'),
+    ('Archivo', 0, 500, 'latin'), ('Archivo', 0, 600, 'latin'),
+    ('Arimo', 0, 400, 'latin'), ('Arimo', 0, 700, 'latin'), ('Arimo', 1, 400, 'latin'),
+    ('Noto Sans', 0, 400, 'greek'), ('Noto Sans', 0, 400, 'greek-ext'),
 ]
 # the presenter's Details slide (src/app/present/slides/TypeDetailSlide.tsx) sets Google's Inter in red over the rsms
 # build; css2's text= parameter returns Google's own cut of a face holding only the given characters, with its wght
@@ -43,6 +58,17 @@ TEXT_CUTS = [
     ('Inter', 'wght@100..900',
      'Gg Ra 0123 Illegal 10Ol 0 skips in 100 songs a little while ago General Translation Inter '
      'abcdefghijklmnopqrstuvwxyz', 'inter-specimen.woff2'),
+    # the press directions: each cut holds the characters the directions print in its script, the
+    # Chinese of the 1607 page, the seal, the route and the figures, and the story's title in Simplified
+    # Chinese, Japanese, Korean, Arabic and Hindi (_press/stories.ts); a new character needs a new cut
+    ('Noto Serif TC', 'wght@400..900', '。一丁三丙中之乙事京何依先光六凡分別利則北十南卷厚原受口名吳啟地始展屬州工巧幾府度廣引律徐從慶所技故數文昌是曰有本樂歷法泰淞澳為無狹理瑪用甲界當皆目短積竇章第筆算線者肇自薄藝西解言說論諸譯賴造長門面韶首體點，', 'noto-serif-tc-directions.woff2'),
+    ('Noto Sans TC', 'wght@400..500', '。一丁三丙中之乙事京何依先光六凡分別利則北十南卷厚原受口名吳啟地始展屬州工巧幾府度廣引律徐從慶所技故數文昌是曰有本樂歷法泰淞澳為無狹理瑪用甲界當皆目短積竇章第筆算線者肇自薄藝西解言說論諸譯賴造長門面韶首體點，', 'noto-sans-tc-directions.woff2'),
+    ('Noto Sans SC', 'wght@400..700', '《》一个中何几原得文本欧的第译里', 'noto-sans-sc-directions.woff2'),
+    ('Noto Sans JP', 'wght@400..700', '『』のクッドユリー中初原国最訳語論', 'noto-sans-jp-directions.woff2'),
+    ('Noto Sans KR', 'wght@400..700', ' 『』국드론리번어역원유의중첫클', 'noto-sans-kr-directions.woff2'),
+    ('Noto Sans Arabic', 'wght@400..700', ' .ءأإابةتجدرزسصطعقكلمنهوىي', 'noto-sans-arabic-directions.woff2'),
+    ('Noto Naskh Arabic', 'wght@400', ' .ءابةجرزطعقلمنهي', 'noto-naskh-arabic-directions.woff2'),
+    ('Noto Sans Devanagari', 'wght@400..700', ' ंअएकचटडदनपमयलवसहािीुूे्', 'noto-sans-devanagari-directions.woff2'),
 ]
 
 def fetch(url):

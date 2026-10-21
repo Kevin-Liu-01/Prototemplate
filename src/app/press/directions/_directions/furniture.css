@@ -1,0 +1,72 @@
+/* The current site's edge furniture, which the Riffle and Atlas book
+   directions keep (furniture.ts): the shelf's palette, the mark, the
+   coordinates, the topics, the globe, the language buttons and the toggle. */
+
+.pdx .v-atlas {
+  --bg: #0c0c0b;
+  --fg: #f1efe9;
+  --mute: #84827c;
+  --chip: #1d1d1b;
+  --chip-fg: #a9a7a0;
+  --accent: #ff5c26;
+  --paper: #ece4ce;
+  --paper-ink: #1c1a15;
+  --seal: #c3381f;
+  --sans: "Inter Tight", "Helvetica Neue", Arial, sans-serif;
+  --bh: min(76svh, 820px);
+  --bw: calc(var(--bh) * .68);
+  --bt: calc(var(--bw) * .045);
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  color-scheme: dark;
+}
+.pdx .v-atlas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 55% at 50% 52%, rgba(255,246,226,.055), transparent 70%);
+  pointer-events: none;
+}
+.pdx .at-tl, .pdx .at-tr, .pdx .at-bl, .pdx .at-br { position: absolute; z-index: 5; }
+.pdx .at-tl { top: var(--pt); left: var(--pl); }
+.pdx .at-tr { top: var(--pt); right: var(--pr); display: grid; justify-items: end; gap: 22px; }
+.pdx .at-bl { bottom: var(--pb); left: var(--pl); display: flex; align-items: center; gap: 18px; }
+.pdx .at-br { bottom: var(--pb); right: var(--pr); }
+.pdx .at-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--fg); }
+.pdx .at-logo svg { width: 34px; height: 46px; display: block; }
+.pdx .at-logo span { font: 400 clamp(30px, 3.4vw, 50px)/1 var(--sans); letter-spacing: -.035em; }
+.pdx .at-coord { font: 400 12.5px/1.75 var(--mono); letter-spacing: .04em; text-align: right; color: var(--fg); font-variant-numeric: tabular-nums; }
+.pdx .at-coord span { display: block; white-space: pre; }
+.pdx .at-topics { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.pdx .at-topics li { font: 400 10.5px/1 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--chip-fg); background: var(--chip); padding: 7px 9px; border-radius: 4px; }
+.pdx .at-topics li.on { color: var(--fg); background: #2b2a27; }
+.pdx .at-globe { width: 58px; height: 58px; display: block; }
+.pdx .at-city { font: 400 10.5px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); margin-bottom: 10px; display: flex; gap: 10px; }
+.pdx .at-city b { font-weight: 400; color: var(--fg); }
+.pdx .at-langs { display: flex; gap: 2px; }
+.pdx .at-langs button { position: relative; font: 400 11px/1 var(--mono); letter-spacing: .06em; color: var(--mute); padding: 7px 6px 9px; border-radius: 3px; transition: color .2s; }
+.pdx .at-langs button:hover { color: var(--fg); }
+.pdx .at-langs button[aria-checked="true"] { color: var(--fg); }
+.pdx .at-langs button[aria-checked="true"]::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: 0; height: 2px; background: var(--accent); }
+.pdx .at-toggle { display: flex; padding: 4px; gap: 2px; background: var(--chip); border-radius: 8px; }
+.pdx .at-toggle button { width: 44px; height: 34px; border-radius: 5px; display: grid; place-items: center; color: var(--mute); transition: background .25s, color .25s; }
+.pdx .at-toggle button[aria-pressed="true"] { background: var(--fg); color: #111; }
+.pdx .at-toggle svg { width: 18px; height: 14px; }
+
+/* the furniture fades in at the corners */
+.pdx .is-in .at-tl, .pdx .is-in .at-tr, .pdx .is-in .at-bl, .pdx .is-in .at-br { animation: pdx-fade .9s ease both; }
+.pdx .is-in .at-tr { animation-delay: .08s; } .pdx .is-in .at-bl { animation-delay: .16s; } .pdx .is-in .at-br { animation-delay: .24s; }
+
+@media (max-width: 1180px) {
+  .pdx .at-topics { display: none; }
+}
+@media (max-width: 640px) {
+  .pdx .at-logo svg { width: 24px; height: 32px; }
+  .pdx .at-logo span { font-size: 28px; }
+  .pdx .at-coord { font-size: 10px; }
+  .pdx .at-bl { bottom: calc(var(--pb) + 44px); left: 50%; transform: translateX(-50%); gap: 10px; }
+  .pdx .at-globe { display: none; }
+  .pdx .at-city { justify-content: center; }
+  .pdx .at-br { display: none; }
+}
