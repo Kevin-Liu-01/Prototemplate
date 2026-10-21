@@ -137,6 +137,7 @@ export const MONO = {
     '.ptb-device-row b', // the brand device names: doubled-line, locale-tag, horizon-field (component identifiers)
     '.sl-fig-mono', // the ledger figures' CSS tokens: non-scaling-stroke and the property names
     '.blog-fumadocs-architecture .fm', // the Fumadocs figure's package names: fumadocs-mdx, fumadocs-core, base-ui
+    '.dmo-plate-tag', // the Components plates' entry points: createStudioField(), <EdgeGlobe />
   ],
   reason: 'numbers, code identifiers, paths, hex values and locale codes (DESIGN.md section 4, BRAND.md section 6)',
 };
@@ -810,7 +811,8 @@ async function runLive(root, argv) {
          live direction pages in iframes, whose load the lint does not need */
       const resp = await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded', timeout: 240000 });
       if (!resp || resp.status() >= 400) throw new Error(`HTTP ${resp ? resp.status() : 'none'}`);
-      await page.waitForSelector('.pt-viewer, .viewer, .blog-root', { timeout: 240000 });
+      /* the shell, a direction, the blog, or the docs site's notebook layout (/docs, the handbook among it) */
+      await page.waitForSelector('.pt-viewer, .viewer, .blog-root, #nd-notebook-layout', { timeout: 240000 });
       await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(1500);
       const out = [];
