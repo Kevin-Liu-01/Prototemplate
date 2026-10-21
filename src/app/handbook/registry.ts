@@ -7,7 +7,7 @@
  * documents (the quality bar, the multi-session playbook, the decisions
  * log, agents on one machine, agent workflows, pull requests and CI,
  * reviewing with Kevin), the Reference documents (the product map, the
- * glossary) and the
+ * glossary, the numbers and the traps and fixes) and the
  * canon: the brand and design canons, the libraries (with the build log,
  * mounted by its page), the graphics pipeline, the artifact pictures, the
  * architecture map, the ship loop and the tools. Each blurb is
@@ -109,6 +109,20 @@ export const HANDBOOK: readonly DocEntry[] = [
     file: 'docs/handbook/glossary.md',
     title: 'Glossary',
     blurb: 'The terms in Kevin’s messages, the skills and the code, each defined in a sentence or two with where it lives.',
+  },
+  {
+    slug: 'numbers',
+    file: 'docs/handbook/numbers.md',
+    title: 'Numbers',
+    blurb:
+      'Every load-bearing number in one place, grouped by area, each with its reason, its token or constant, the lint that holds it and the page that explains it.',
+  },
+  {
+    slug: 'traps',
+    file: 'docs/handbook/traps.md',
+    title: 'Traps and fixes',
+    blurb:
+      'One line per trap met in GT work, grouped by area: the symptom a reader sees, the fix in a few words and the section that explains the cause.',
   },
   {
     slug: 'brand',

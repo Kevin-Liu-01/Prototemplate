@@ -55,12 +55,17 @@ export function repoPath(dir: string, target: string): string | null {
   return parts.join('/');
 }
 
+/** The site's own origin as a Markdown file writes it, so the link works on GitHub too. */
+const SITE_ORIGIN = /^https:\/\/(?:www\.)?prototemplate\.com(?=\/|$)/;
+
 /**
  * The site address for a link written in a repository Markdown file that
- * lives in `dir` (`''` for the root, `docs/handbook` for the handbook). An
- * absolute URL, a site path or an anchor comes back unchanged.
+ * lives in `dir` (`''` for the root, `docs/handbook` for the handbook). A
+ * link to the site's own origin becomes its path, so it opens in place; any
+ * other absolute URL, a site path or an anchor comes back unchanged.
  */
 export function siteHref(href: string, dir = ''): string {
+  if (SITE_ORIGIN.test(href)) return href.replace(SITE_ORIGIN, '') || '/';
   if (NOT_RELATIVE.test(href)) return href;
   const hash = href.indexOf('#');
   const target = hash >= 0 ? href.slice(0, hash) : href;
