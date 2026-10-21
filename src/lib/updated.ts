@@ -16,7 +16,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/present': { day: '2026-10-15', at: '2026-10-15T22:49:19-07:00', commit: 'ff579dd', src: '1849c182' },
   '/compare': { day: '2026-10-15', at: '2026-10-15T19:36:36-07:00', commit: '3285f60', src: '1489450f' },
   '/press': { day: '2026-10-20', at: '2026-10-20', commit: null, src: 'aa185952' },
-  '/atlas': { day: '2026-10-20', at: '2026-10-20T20:32:37-07:00', commit: 'df9b355', src: '0c4f4789' },
+  '/atlas': { day: '2026-10-20', at: '2026-10-20', commit: null, src: '0c4f4789' },
   '/docs/deck': { day: '2026-10-15', at: '2026-10-15T19:30:03-07:00', commit: 'edb0681', src: 'c32f9497' },
   '/docs/directions': { day: '2026-10-15', at: '2026-10-15T19:30:03-07:00', commit: 'edb0681', src: 'b72bd8e1' },
   '/docs/gates': { day: '2026-10-15', at: '2026-10-15T19:30:03-07:00', commit: 'edb0681', src: '973da763' },

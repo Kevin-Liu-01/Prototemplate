@@ -6,7 +6,7 @@
    the prose at the body size in the second ink, under the divider's lead,
    and each capture full width with a hairline and the card corner. */
 
-.at-sec {
+.an-sec {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -14,13 +14,13 @@
 }
 
 /* the prose and the captures line up with the divider's heading, past its gutter */
-.at-body {
+.an-body {
   display: grid;
   gap: 16px;
   padding-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
 }
 
-.at-body p {
+.an-body p {
   margin: 0;
   max-width: var(--pt-measure);
   font-size: var(--pt-t-body);
@@ -29,13 +29,42 @@
   text-wrap: pretty;
 }
 
-.at-fig {
+/* the directions: each name a link, its line after it */
+.an-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  max-width: var(--pt-measure);
+}
+
+.an-links li {
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+.an-links a {
+  margin-right: 8px;
+  color: var(--pt-ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.an-links a:hover {
+  text-decoration-color: currentColor;
+}
+
+.an-fig {
   margin: 8px 0 0;
   display: grid;
   gap: 8px;
 }
 
-.at-fig img {
+.an-fig img {
   display: block;
   width: 100%;
   height: auto;
@@ -43,14 +72,14 @@
   border-radius: var(--pt-radius-card);
 }
 
-.at-fig figcaption {
+.an-fig figcaption {
   font-size: var(--pt-t-meta);
   line-height: var(--pt-t-meta-lh);
   color: var(--pt-titanium);
 }
 
 @media (max-width: 900px) {
-  .at-body {
+  .an-body {
     padding-left: 0;
   }
 }
