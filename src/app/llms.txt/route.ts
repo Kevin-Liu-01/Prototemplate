@@ -64,7 +64,8 @@ function body(): string {
 
   add('## Routes', '');
   for (const row of SITE_SURFACES.filter((s) => s.group === 'Pages' || s.group === 'Knowledge')) {
-    add(`- [${row.name}](${selfUrl(row.href)}): ${row.desc}`);
+    // a row that links off the site (Turboslide) keeps its own address
+    add(`- [${row.name}](${/^https?:\/\//.test(row.href) ? row.href : selfUrl(row.href)}): ${row.desc}`);
   }
   add('');
 
