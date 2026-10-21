@@ -46,7 +46,9 @@ const GRID = 15;
  * Mounts on a canvas inside a square box. `pin` is moved to the target's
  * place on the disc (left/top in percent) and hidden behind the limb; the
  * box carries the same place as --px and --py, for a leader line to a
- * readout. `graticule` prints the parallels and meridians every 15 degrees.
+ * readout. Any element in the box with data-lat and data-lon is placed the
+ * same way, and the box fires gtp-globe-placed after each placing.
+ * `graticule` prints the parallels and meridians every 15 degrees.
  */
 export function mountGlobe(
   canvas: HTMLCanvasElement,
@@ -183,6 +185,14 @@ export function mountGlobe(
     const box = canvas.parentElement;
     box?.style.setProperty('--px', `${p.x}%`);
     box?.style.setProperty('--py', `${p.y}%`);
+    // any other places marked in the box (data-lat, data-lon) move with the globe too
+    box?.querySelectorAll<HTMLElement>('[data-lat][data-lon]').forEach((mark) => {
+      const q = project({ ...camera, radius: 50, cx: 50, cy: 50 }, { lat: Number(mark.dataset.lat), lon: Number(mark.dataset.lon) });
+      mark.style.left = `${q.x}%`;
+      mark.style.top = `${q.y}%`;
+      mark.dataset.hidden = q.near ? 'false' : 'true';
+    });
+    box?.dispatchEvent(new Event('gtp-globe-placed'));
   }
 
   function turnTo(next: LatLon, ms = 1100) {

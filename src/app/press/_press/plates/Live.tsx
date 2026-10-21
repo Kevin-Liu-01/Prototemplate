@@ -2,11 +2,15 @@
 
 import { useId, useMemo, useRef, useState, type CSSProperties } from 'react';
 
-import { dmsPair } from '../coords';
+import { useMountEffect } from '../hooks';
+
+import { dms, dmsPair } from '../coords';
 import type { Inline as InlineNode } from '../parse';
 import { LANGS, type LangCode, type Localized } from '../stories';
+import { project } from '../geo/ortho';
+import { cameraFor } from '../globe';
 import Globe from '../ui/Globe';
-import Locator from '../ui/Locator';
+import FlipText from '../ui/FlipText';
 import Inline from '../ui/Inline';
 import StopSlider from '../ui/StopSlider';
 
@@ -282,34 +286,127 @@ export function ThemeWipe({ dark, light, alt }: { dark: string; light: string; a
 
 /* ---------- Euclid's first definition, city by city ---------- */
 
-type EuclidStop = { code: string; name: string; dir: 'ltr' | 'rtl'; city: string; year: string; lat: number; lon: number; passage: string };
+type Version = { lang: string; language: string; dir: 'ltr' | 'rtl'; city: string; year: string; lat: number; lon: number; passage: string };
 
-/** The first definition of Elements in the five languages that carried it, at the city and year of each version (after the blog's globe figure). */
-const EUCLID: readonly EuclidStop[] = [
-  { code: 'grc', name: 'Ἑλληνική', dir: 'ltr', city: 'Alexandria', year: '300 BCE', lat: 31.2, lon: 29.919, passage: 'Σημεῖόν ἐστιν, οὗ μέρος οὐθέν.' },
-  { code: 'ar', name: 'العربية', dir: 'rtl', city: 'Baghdad', year: '800 CE', lat: 33.345, lon: 44.345, passage: 'النقطة هي ما لا جزء له.' },
-  { code: 'la', name: 'Latina', dir: 'ltr', city: 'Antioch', year: '1130', lat: 36.2, lon: 36.16, passage: 'Punctum est, cuius pars nulla est.' },
-  { code: 'en', name: 'English', dir: 'ltr', city: 'London', year: '1570', lat: 51.517, lon: -0.097, passage: 'A point is that which has no part.' },
-  { code: 'zh-Hant', name: '文言', dir: 'ltr', city: 'Beijing', year: '1607', lat: 39.9, lon: 116.37, passage: '點者，無分。' },
+/**
+ * The first definition of Elements in eight versions, each with its
+ * language, the city and the year it was made. Draft wording, to check
+ * against the editions.
+ */
+const EDITIONS: readonly Version[] = [
+  { lang: 'en', language: 'English, Billingsley', dir: 'ltr', city: 'London', year: '1570', lat: 51.5138, lon: -0.0984, passage: 'A signe or point is that, which hath no part.' },
+  { lang: 'en', language: 'English, Byrne', dir: 'ltr', city: 'London', year: '1847', lat: 51.5138, lon: -0.0984, passage: 'A point is that which has no parts.' },
+  { lang: 'la', language: 'Latin, Campanus', dir: 'ltr', city: 'Venice', year: '1482', lat: 45.4408, lon: 12.3155, passage: 'Punctus est cuius pars non est.' },
+  { lang: 'la', language: 'Latin, Clavius', dir: 'ltr', city: 'Rome', year: '1574', lat: 41.9028, lon: 12.4964, passage: 'Punctum est, cuius pars nulla est.' },
+  { lang: 'zh-Hant', language: 'Chinese, Ricci and Xu', dir: 'ltr', city: 'Beijing', year: '1607', lat: 39.9042, lon: 116.4074, passage: '點者，無分。' },
+  { lang: 'la', language: 'Latin, Adelard', dir: 'ltr', city: 'Antioch', year: 'c. 1120', lat: 36.2021, lon: 36.1604, passage: 'Punctus est cui pars non est.' },
+  { lang: 'ar', language: 'Arabic, al-Ḥajjāj', dir: 'rtl', city: 'Baghdad', year: 'c. 800', lat: 33.3152, lon: 44.3661, passage: 'النقطة هي ما لا جزء له.' },
+  { lang: 'grc', language: 'Greek, Euclid', dir: 'ltr', city: 'Alexandria', year: 'c. 300 BCE', lat: 31.2001, lon: 29.9187, passage: 'Σημεῖόν ἐστιν, οὗ μέρος οὐθέν.' },
 ];
 
-/** The definition in one version at a time: the locator at the city and year of the version, the passage under it, and the versions to choose from. */
-export function StopsDemo() {
-  const [code, setCode] = useState(EUCLID[0]!.code);
-  const stop = EUCLID.find((s) => s.code === code) ?? EUCLID[0]!;
+/** Where the globe looks: between London and Beijing, so every city is on the near side. */
+const MIDDLE = { lat: 38, lon: 52, city: '' };
+
+/* The versions in the order their pins sit on the globe, top to bottom: the
+   list follows that order, so every leader can leave its pin sideways to the
+   gutter and turn down or up to its line without crossing another. */
+const VERSIONS: readonly Version[] = [...EDITIONS].sort((a, b) => {
+  const camera = cameraFor(MIDDLE, 0);
+  const at = (v: Version) => project({ ...camera, radius: 50, cx: 50, cy: 50 }, v).y;
+  return at(a) - at(b);
+});
+
+/* All eight at once: a pin at each city on the globe, a hairline from each
+   pin to its line of the definition, and the chosen version's pin and
+   leader in the ink with its coordinates under the globe. The leaders are
+   drawn in an SVG over the figure, from where the globe placed each pin to
+   where its line sits, and drawn again whenever either moves. */
+export function VersionsDemo() {
+  const [chosen, setChosen] = useState(() => Math.max(0, VERSIONS.findIndex((v) => v.city === 'Beijing')));
+  const root = useRef<HTMLDivElement>(null);
+  const [paths, setPaths] = useState<string[]>([]);
+  const version = VERSIONS[chosen] ?? VERSIONS[0]!;
+
+  const draw = () => {
+    const el = root.current;
+    if (!el) return;
+    const box = el.getBoundingClientRect();
+    const globe = el.querySelector('.gtp-versions-globe')?.getBoundingClientRect();
+    const marks = el.querySelectorAll<HTMLElement>('.gtp-globe-mark');
+    const rows = el.querySelectorAll<HTMLElement>('.gtp-version');
+    if (!globe) return;
+    const ends = VERSIONS.map((_, i) => {
+      const m = marks[i]?.getBoundingClientRect();
+      const r = rows[i]?.getBoundingClientRect();
+      if (!m || !r) return null;
+      return {
+        mx: m.left + m.width / 2 - box.left,
+        my: m.top + m.height / 2 - box.top,
+        rx: r.left - box.left - 8,
+        ry: r.top + Math.min(r.height / 2, 14) - box.top,
+      };
+    });
+    // each leader turns in a lane of its own in the gutter: the ones climbing to their row take lanes outward down the
+    // list, the ones dropping take them outward up the list, so no lane crosses another leader's run
+    const lane = new Array<number>(VERSIONS.length).fill(0);
+    const up = ends.flatMap((e, i) => (e && e.ry < e.my ? [i] : []));
+    const down = ends.flatMap((e, i) => (e && e.ry >= e.my ? [i] : [])).reverse();
+    up.forEach((i, k) => (lane[i] = k));
+    down.forEach((i, k) => (lane[i] = k));
+    const gutter = globe.right - box.left + 16;
+    const next = ends.map((e, i) => {
+      if (!e) return '';
+      const x = gutter + (lane[i] ?? 0) * 9;
+      return `M${e.mx.toFixed(1)} ${e.my.toFixed(1)}H${x.toFixed(1)}V${e.ry.toFixed(1)}H${e.rx.toFixed(1)}`;
+    });
+    setPaths(next);
+  };
+
+  useMountEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const globe = el.querySelector('.gtp-globe');
+    globe?.addEventListener('gtp-globe-placed', draw);
+    const observer = new ResizeObserver(draw);
+    observer.observe(el);
+    void document.fonts?.ready.then(draw);
+    draw();
+    return () => {
+      globe?.removeEventListener('gtp-globe-placed', draw);
+      observer.disconnect();
+    };
+  });
+
   return (
-    <div className='gtp-stops-demo'>
-      <Locator place={{ ...stop, locale: stop.code }} note={stop.year} className='gtp-stops-demo-locator' />
-      <p className='gtp-stops-demo-passage' lang={stop.code} dir={stop.dir}>
-        {stop.passage}
-      </p>
-      <StopSlider
-        stops={EUCLID.map((s) => ({ value: s.code, label: s.name, lang: s.code, dir: s.dir }))}
-        value={code}
-        onChange={setCode}
-        label='Version'
-        tone='stage'
-      />
+    <div ref={root} className='gtp-versions'>
+      <div className='gtp-versions-map'>
+        <Globe place={MIDDLE} cell={2} tilt={0} graticule label={false} className='gtp-versions-globe'>
+          {VERSIONS.map((v, i) => (
+            <span key={`${v.city}-${v.year}`} className='gtp-globe-mark' data-lat={v.lat} data-lon={v.lon} data-on={i === chosen} aria-hidden='true' />
+          ))}
+        </Globe>
+        <p className='gtp-versions-coords' aria-label={`${version.city}: ${dms(version.lat, 'lat')}, ${dms(version.lon, 'lon')}`}>
+          <FlipText value={dms(version.lat, 'lat')} />
+          <FlipText value={dms(version.lon, 'lon')} />
+        </p>
+      </div>
+      <ol className='gtp-versions-list'>
+        {VERSIONS.map((v, i) => (
+          <li key={`${v.city}-${v.year}`}>
+            <button type='button' className='gtp-version' aria-pressed={i === chosen} onClick={() => setChosen(i)}>
+              <span className='gtp-version-text' lang={v.lang} dir={v.dir}>
+                {v.passage}
+              </span>
+              <span className='gtp-version-meta'>
+                {v.language}, {v.city}, {v.year}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      <svg className='gtp-versions-leaders' aria-hidden='true'>
+        {paths.map((d, i) => (d ? <path key={i} d={d} data-on={i === chosen} /> : null))}
+      </svg>
     </div>
   );
 }

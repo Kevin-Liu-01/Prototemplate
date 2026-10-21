@@ -6,7 +6,7 @@ import { useRef, useState, type CSSProperties } from 'react';
 import type { PlateFigure, Story } from './content';
 import { useMountEffect } from './hooks';
 import { LIVE_CAPTION } from './plates/Plate';
-import { StopsDemo } from './plates/Live';
+import { VersionsDemo } from './plates/Live';
 import Inline from './ui/Inline';
 import PressMark from './ui/PressMark';
 import StopSlider, { SliderStyleContext } from './ui/StopSlider';
@@ -92,19 +92,25 @@ export default function BookReader({ story, next }: Props) {
           </span>
         ) : null}
 
-        {story.cover ? (
-          // eslint-disable-next-line @next/next/no-img-element -- the story's own cover picture, full width
-          <img className='gtp-print-cover' src={story.cover} alt='' />
-        ) : null}
-
-        <article className='gtp-print-page'>
-          <header className='gtp-print-titlepage'>
+        <header className='gtp-print-opener'>
+          {story.cover ? (
+            <div className='gtp-print-cover'>
+              {/* eslint-disable-next-line @next/next/no-img-element -- the story's own cover picture, full width */}
+              <img src={story.cover} alt='' />
+            </div>
+          ) : null}
+          <div className='gtp-print-card'>
             <h1>{story.title}</h1>
             <p className='gtp-print-sub'>{story.summary}</p>
-            <p className='gtp-print-by'>By {story.authors.join(', ')}</p>
-            <p className='gtp-print-date'>{longDate(story.date)}</p>
-          </header>
+            <p className='gtp-print-byline'>
+              <span>By {story.authors.join(', ')}</span>
+              <span>{longDate(story.date)}</span>
+              <span>{story.minutes} minute read</span>
+            </p>
+          </div>
+        </header>
 
+        <article className='gtp-print-page'>
           {blocks.map((block, i) => {
             switch (block.kind) {
               case 'heading':
@@ -195,7 +201,7 @@ function PrintFigure({ figure }: { figure: PlateFigure }) {
   const many = frames.length > 1;
   return (
     <figure className='gtp-print-fig' data-live={figure.live ? true : undefined}>
-      {figure.live === 'stops' ? <StopsDemo /> : null}
+      {figure.live === 'stops' ? <VersionsDemo /> : null}
       {frame ? (
         // eslint-disable-next-line @next/next/no-img-element -- the story's own scans, sized by the column
         <img className='gtp-print-media' src={frame.src} alt={frame.alt} loading='lazy' decoding='async' />
