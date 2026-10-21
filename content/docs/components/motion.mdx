@@ -1,7 +1,7 @@
 ---
 title: Reveal seam and sentence motion
 description: "The slide-to-reveal seam between a rendered string and its served file, and the headline that dissolves into glyphs and reassembles in the next language."
-icon: Sparkles
+icon: Arrows
 sources:
   - src/components/docs/demos
   - src/app/d/toolchain/sections/RevealSeam.tsx
@@ -10,7 +10,7 @@ sources:
 
 import { EverySentenceDemo, RevealSeamDemo } from '@/components/docs/demos/lazy';
 
-Two instruments move text without moving layout. The reveal seam pulls a rendered result back to the source that produced it, and nothing travels with the handle. The sentence reassembler changes a headline's language by turning its ink into glyph dust and printing the next sentence through it, and the box tweens its width once per change.
+Two instruments move text without moving layout. The reveal seam uncovers the source behind a rendered result as the reader drags its handle, and neither layer moves. The sentence reassembler changes a headline's language by turning its ink into glyph dust and printing the next sentence through it, and the box tweens its width once per change.
 
 ## The reveal seam
 

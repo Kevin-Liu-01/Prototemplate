@@ -1,7 +1,7 @@
 ---
 title: Horizon and prismatic fields
 description: "The two light fields on the shared WebGL engine, live: the event-horizon shader and the prismatic burst, with their cursor effects and their stills."
-icon: Sparkles
+icon: Sun
 sources:
   - src/components/docs/demos
   - src/lib/horizon-field.ts
@@ -15,7 +15,7 @@ Two more fields draw light instead of dither. The horizon field bends a page's r
 
 ## The horizon field
 
-The plate runs `createHorizonField` on an ink stage with white rules. Move the pointer over the stage: with Lens the pointer is a second body that swirls the light, with Dither the field is requantized through the 8 by 8 screen around it, and with Redshift the bright flank turns toward it. Radius sizes the horizon, and exposure, chroma, doppler and swirl go to the running engine through `setParams`.
+The plate runs `createHorizonField` on an ink stage with white rules. Move the pointer over the stage: with Lens the light bends and swirls around the pointer, with Dither the field is requantized through the 8 by 8 screen around it, and with Redshift the bright flank turns toward it. Radius sizes the horizon, and exposure, chroma, doppler and swirl go to the running engine through `setParams`.
 
 <HorizonFieldDemo />
 
@@ -56,7 +56,7 @@ Under reduced motion the engine draws one static frame at an instant chosen mid-
 
 ## The prismatic field
 
-The plate runs `createPrismaticField`. Preset 1 is a wide horizontal burst and preset 2 an arc over a dark core. Exposure scale is the dimmer, and depth moves the camera through the field. Move the pointer over the stage to see the cursor effect: Lens bends the burst around the pointer like a mass, Dither requantizes it through the Bayer screen, and Chroma splits its color.
+The plate runs `createPrismaticField`. Preset 1 is a wide horizontal burst and preset 2 an arc over a dark core. Exposure scale is the dimmer, and depth moves the camera through the field. Move the pointer over the stage to see the cursor effect: Lens bends the burst around the pointer, Dither requantizes it through the Bayer screen, and Chroma splits its color.
 
 <PrismaticFieldDemo />
 

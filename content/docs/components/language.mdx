@@ -1,7 +1,7 @@
 ---
 title: Locale tags and language pieces
 description: "Locale chips with their flags, the two flag resolvers side by side, and seven animated language diagrams built from real text in real scripts."
-icon: Globe
+icon: Language
 sources:
   - src/components/docs/demos
   - src/app/d/toolchain/components/LocaleTag.tsx
@@ -19,7 +19,7 @@ The plate resolves one locale code with both components. Type any code or pick o
 
 <LocaleTagDemo />
 
-`LocaleTag` reads its own map of 20 languages, and an explicit region in the code wins, so `en-GB` flies the British flag and `zh-Hant` resolves through `zh`. `LocaleFlag` asks `Intl.Locale` for the likely region, the CLDR data gt-cloud's own resolver reads. The two agree on most codes. They differ on a few, such as `ar`, which LocaleTag flies as Saudi Arabia and LocaleFlag as Egypt. A code neither knows renders with no flag, as `tlh` does.
+`LocaleTag` reads its own map of 20 languages, and an explicit region in the code wins, so `en-GB` shows the British flag and `zh-Hant` resolves through `zh`. `LocaleFlag` asks `Intl.Locale` for the likely region, the CLDR data gt-cloud's own resolver reads. The two agree on most codes. They differ on a few, such as `ar`, for which LocaleTag shows the flag of Saudi Arabia and LocaleFlag the flag of Egypt. A code neither knows renders with no flag, as `tlh` does.
 
 ### Import and props
 

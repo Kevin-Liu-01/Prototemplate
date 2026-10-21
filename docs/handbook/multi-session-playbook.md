@@ -10,7 +10,7 @@ One session owns one lane. ListAgents prints the live list of sessions, and the 
 
 | Session | Owns | Where it works |
 | --- | --- | --- |
-| Prototemplate | The site at prototemplate.com, its viewer shell, the deck build, the skills and the docs | The shared checkout (`$PROTOTEMPLATE`), with the dev server at http://localhost:3005 |
+| Prototemplate | The site at prototemplate.com, its viewer shell, the deck build, the skills and the docs | The shared checkout (`$PROTOTEMPLATE`), with the dev server at `http://localhost:3005` |
 | Videos | The films, their kit and `MOTION.md` | Prototemplate `motion/`, which stays untracked. Its Prototemplate commits carry only film and poster files in `public/media`. |
 | Glyph Map | A page of generaltranslation.com that has not shipped | Its own gt-cloud worktree and dev port |
 | New Onboarding and Dashboard | The dashboard sign-in and onboarding PRs, and in Prototemplate the mood slides in `deck/`, `src/components/plate`, `src/app/craft` and `public/brand/mood` | Its own gt-cloud worktrees. It pushes Prototemplate main from its own worktree. |

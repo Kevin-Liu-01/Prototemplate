@@ -3,6 +3,8 @@ import { createElement } from 'react';
 import type { ReactElement } from 'react';
 import {
   ArrowPathIcon,
+  ArrowsRightLeftIcon,
+  BoltIcon,
   BookOpenIcon,
   CheckBadgeIcon,
   CodeBracketIcon,
@@ -12,6 +14,7 @@ import {
   GlobeAltIcon,
   GlobeEuropeAfricaIcon,
   LanguageIcon,
+  LinkIcon,
   MapIcon,
   PhotoIcon,
   PresentationChartBarIcon,
@@ -21,6 +24,7 @@ import {
   ShieldCheckIcon,
   SparklesIcon,
   Squares2X2Icon,
+  SunIcon,
   SwatchIcon,
   UserGroupIcon,
   WrenchScrewdriverIcon,
@@ -39,6 +43,8 @@ import { docs } from '@/.source/server';
  * Lucide, which is the landing's rule for controls.
  */
 const ICONS: Readonly<Record<string, () => ReactElement>> = {
+  Arrows: () => createElement(ArrowsRightLeftIcon),
+  Bolt: () => createElement(BoltIcon),
   Book: () => createElement(BookOpenIcon),
   Check: () => createElement(CheckBadgeIcon),
   Code: () => createElement(CodeBracketIcon),
@@ -49,6 +55,7 @@ const ICONS: Readonly<Record<string, () => ReactElement>> = {
   Deck: () => createElement(PresentationChartBarIcon),
   Earth: () => createElement(GlobeEuropeAfricaIcon),
   Language: () => createElement(LanguageIcon),
+  Link: () => createElement(LinkIcon),
   Loop: () => createElement(ArrowPathIcon),
   Map: () => createElement(MapIcon),
   Pages: () => createElement(RectangleGroupIcon),
@@ -58,6 +65,7 @@ const ICONS: Readonly<Record<string, () => ReactElement>> = {
   Shield: () => createElement(ShieldCheckIcon),
   Sparkles: () => createElement(SparklesIcon),
   Squares: () => createElement(Squares2X2Icon),
+  Sun: () => createElement(SunIcon),
   Swatch: () => createElement(SwatchIcon),
   Users: () => createElement(UserGroupIcon),
   Wrench: () => createElement(WrenchScrewdriverIcon),

@@ -9,9 +9,9 @@ sources:
 
 import { GlobeFigure, GlobeGrid } from '@/components/docs/demos/lazy';
 
-General Translation (GT) is building interactive figures for the posts on its blog. The Versions figure sets the first eight definitions of Euclid's Elements in five languages on one rounded plate, and a pill of language names switches between them. It sits on the gt-cloud branch `k/blog-version-switch` and has not been published. The globe figure adds where and when each version was made. When a reader picks a language, a globe turns to the city of that version, a label prints the city's coordinates and year, and the eight definitions change row by row into the new language. Read in order, the five stops follow the Elements from Alexandria in 300 BCE to Beijing in 1606.
+General Translation (GT) is building interactive figures for the posts on its blog. The Versions figure sets the first eight definitions of Euclid's Elements in five languages on one rounded plate, and a pill of language names switches between them. It has not been published yet. The globe figure adds where and when each version was made. When a reader picks a language, a globe turns to the city of that version, a label prints the city's coordinates and year, and the eight definitions change row by row into the new language. Read in order, the five stops follow the Elements from Alexandria in 300 BCE to Beijing in 1606.
 
-The four directions live in the folder `apps/landing/src/components/blog/globe/` on the local branch `k/blog-globe` of gt-cloud, the repository that builds generaltranslation.com. The development route `/en-US/dev/globe` stacks all four, `?v=a` to `?v=d` shows one alone, and production answers the route with a 404. The directions were built on 2026-10-19 in three rounds. A design review scored and ranked the first build, and its fixes and the clickable cities came next. Round 3 zoomed each globe in, set all eight definitions, replaced each language control with underlined names and printed the coordinates in degrees, minutes and seconds. Every measurement on this page comes from round 3. All three rounds of the four directions also run live on this site, copied from gt-cloud at commit `5ba413acfb`.
+The four directions were built in three rounds on 2026-10-19 in gt-cloud, the repository that builds generaltranslation.com. A design review scored and ranked the first build, and its fixes and the clickable cities came next. Round 3 zoomed each globe in, set all eight definitions, replaced each language control with underlined names and printed the coordinates in degrees, minutes and seconds. Every measurement on this page comes from round 3. All three rounds of the four directions also run live on this site, copied from gt-cloud at commit `5ba413acfb`.
 
 ## The rounds
 
@@ -74,7 +74,7 @@ The shared files come to 1,253 lines with their three stylesheets. Every directi
 
 ## Measurements
 
-The round 3 shoot ran each direction in Chromium at 1440 and 375 px wide in both themes and at 320 px wide in the light theme. The development route sets the figure in a 712 px column at 1440 px wide, and the window widths below are the drawn window's diameter. At 1440 px in the light theme the shoot timed five moves: Arabic to Greek, Greek to Arabic, Arabic to Latin, Latin to English and English to Chinese. No direction logged a console error, no timed move had a gap of more than 20 ms between frames, and every move settled. The longest frame callback is the longest `requestAnimationFrame` callback in the timed moves, which holds one frame's drawing work.
+The round 3 shoot ran each direction in Chromium at 1440 and 375 px wide in both themes and at 320 px wide in the light theme. The review sets the figure in a 712 px column at 1440 px wide, and the window widths below are the drawn window's diameter. At 1440 px in the light theme the shoot timed five moves: Arabic to Greek, Greek to Arabic, Arabic to Latin, Latin to English and English to Chinese. No direction logged a console error, no timed move had a gap of more than 20 ms between frames, and every move settled. The longest frame callback is the longest `requestAnimationFrame` callback in the timed moves, which holds one frame's drawing work.
 
 | | A (dithered) | B (line) | C (glyph) | D (dot) |
 | --- | --- | --- | --- | --- |
@@ -226,7 +226,7 @@ The review asked for D and A to be shown first. D is the closest to shipping, an
 
 ## Status
 
-The globe figure is an exploration. No direction has shipped, the branch `k/blog-globe` has not been pushed, and no published post carries the figure. Round 3's gates passed on the branch: the lint, the type check and 746 tests in 77 files.
+The globe figure is an exploration. No direction has shipped, and no published post carries the figure. Round 3's gates passed in gt-cloud: the lint, the type check and 746 tests in 77 files.
 
 ## Open choices
 
