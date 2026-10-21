@@ -1,0 +1,472 @@
+/* Globe variant D (GlobeD.tsx, globe-d.ts): a dot globe beside the
+   passage on a rounded plate, the place and year in one line under it, and
+   a slider of native radios at the foot. CSS alone shows the checked stop,
+   its passage, its label and its accent mark, so the figure works without
+   JavaScript. The pill is the Versions figure's (versions.css), without
+   the flags. */
+
+@property --gd-k {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.globe-r1 .gd {
+  --gd-ink: var(--tc-ink);
+  --gd-cap: #6e737c;
+  --gd-hair: var(--tc-hair);
+  --gd-limb: rgba(7, 7, 7, 0.24);
+  --gd-land: rgba(7, 7, 7, 0.42);
+  --gd-city: #070707;
+  --gd-accent: #2f5ce0;
+  --gd-pill: #ffffff;
+  --gd-pill-line: rgba(7, 7, 7, 0.12);
+  --gd-stop-ink: var(--tc-ink-2);
+  --gd-thumb: #070707;
+  --gd-thumb-ink: #ffffff;
+  --gd-sign: 1;
+  /* the 240 unit viewBox at whole px per unit: 240 is a 4 px cell and a
+     2 px dot, 120 a 2 px cell and a 1 px dot */
+  --gd-size: 240px;
+  --stop-w: 104px;
+
+  container: gd / inline-size;
+  margin: 2.25rem 0 2.5rem;
+  color: var(--gd-ink);
+  font-family: var(--tc-sans);
+}
+
+/* without the engine the thumb slides on its own; with it, the turn's
+   clock writes --gd-k every frame */
+.globe-r1 .gd:not([data-live]) {
+  transition: --gd-k 420ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+[data-theme='dark'] .globe-r1 .gd {
+  --gd-cap: #8a8f98;
+  --gd-limb: rgba(255, 255, 255, 0.26);
+  --gd-land: rgba(255, 255, 255, 0.44);
+  --gd-city: #ffffff;
+  --gd-accent: #86a8ff;
+  --gd-pill: #0e0e10;
+  --gd-pill-line: rgba(255, 255, 255, 0.14);
+  --gd-thumb: #ffffff;
+  --gd-thumb-ink: #070707;
+}
+
+.globe-r1 .gd:dir(rtl) {
+  --gd-sign: -1;
+}
+
+/* ---------- the plate: the globe beside the passage, the label under it ---------- */
+
+.globe-r1 .gd-plate {
+  --pad: clamp(20px, 6cqi, 40px);
+  /* the plate is opaque, so a city's halo can be drawn in its colour */
+  --gd-ground: color-mix(in srgb, var(--gd-ink) 3.5%, var(--tc-paper));
+
+  border: 1px solid var(--gd-hair);
+  border-radius: 12px;
+  background: var(--gd-ground);
+}
+
+.globe-r1 .gd-stage {
+  display: grid;
+  grid-template-columns: var(--gd-size) minmax(0, 1fr);
+  grid-template-rows: 1fr auto auto 1fr;
+  grid-template-areas:
+    'globe .'
+    'globe text'
+    'globe cap'
+    'globe .';
+  column-gap: clamp(24px, 6cqi, 48px);
+  padding: var(--pad) var(--pad) 0;
+}
+
+.globe-r1 .gd-globe {
+  grid-area: globe;
+  display: block;
+  width: var(--gd-size);
+  height: var(--gd-size);
+  overflow: visible;
+}
+
+.globe-r1 .gd-limb {
+  fill: none;
+  stroke: var(--gd-limb);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.globe-r1 .gd-land {
+  fill: var(--gd-land);
+}
+
+/* the five places, each clearing the land dots under it; the checked one
+   in the accent, with its ring and a wider halo */
+.globe-r1 .gd-city {
+  color: var(--gd-city);
+}
+
+.globe-r1 .gd-halo {
+  fill: var(--gd-ground);
+  transform: scale(calc(0.5 + var(--gd-on, 0) * 0.5));
+}
+
+.globe-r1 .gd-dot {
+  fill: currentColor;
+}
+
+.globe-r1 .gd-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-opacity: var(--gd-on, 0);
+  vector-effect: non-scaling-stroke;
+}
+
+/* every stop's passage and label share one cell, so the box keeps the
+   tallest one's height and a switch never moves the page */
+.globe-r1 .gd-texts,
+.globe-r1 .gd-caps {
+  display: grid;
+  min-width: 0;
+}
+
+.globe-r1 .gd-texts {
+  grid-area: text;
+  font-size: clamp(22px, 4.4cqi, 30px);
+  line-height: 1.25;
+}
+
+.globe-r1 .gd-caps {
+  grid-area: cap;
+  margin-top: 14px;
+}
+
+.globe-r1 .gd .gd-text,
+.globe-r1 .gd .gd-cap {
+  grid-area: 1 / 1;
+  margin: 0;
+  text-align: start;
+  visibility: hidden;
+}
+
+/* a passage shorter than the tallest sits on the label */
+.globe-r1 .gd .gd-text {
+  align-self: end;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: inherit;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* Inter has no Arabic, and the stack's fallback has no 500: a system face
+   with no Inter in front keeps the joins (as versions.css sets it) */
+.globe-r1 .gd .gd-text:lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+
+.globe-r1 .gd .gd-cap {
+  color: var(--gd-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.globe-r1 .gd-cap span {
+  white-space: nowrap;
+}
+
+/* the two coordinates may part at their comma on the narrowest plate */
+.globe-r1 .gd-cap .gd-at {
+  white-space: normal;
+}
+
+/* a plate too narrow for the label on one line: the coordinates on a line
+   of their own, the first separator kept in the text at no width */
+@container gd (max-width: 699px) {
+  .globe-r1 .gd-at::after {
+    content: '\A';
+    white-space: pre;
+  }
+
+  .globe-r1 .gd-sep:not(.gd-sep-2) {
+    font-size: 0;
+  }
+}
+
+/* the narrowest: the city and the year on lines of their own too */
+@container gd (max-width: 299px) {
+  .globe-r1 .gd-place::after {
+    content: '\A';
+    white-space: pre;
+  }
+
+  .globe-r1 .gd-sep-2 {
+    font-size: 0;
+  }
+}
+
+/* the checked radio shows its stop; a leaving stop stays for its step */
+.globe-r1
+  .gd:has(.gd-opt:nth-of-type(1) > :checked)
+  :is(.gd-text, .gd-cap):nth-child(1),
+.globe-r1
+  .gd:has(.gd-opt:nth-of-type(2) > :checked)
+  :is(.gd-text, .gd-cap):nth-child(2),
+.globe-r1
+  .gd:has(.gd-opt:nth-of-type(3) > :checked)
+  :is(.gd-text, .gd-cap):nth-child(3),
+.globe-r1
+  .gd:has(.gd-opt:nth-of-type(4) > :checked)
+  :is(.gd-text, .gd-cap):nth-child(4),
+.globe-r1
+  .gd:has(.gd-opt:nth-of-type(5) > :checked)
+  :is(.gd-text, .gd-cap):nth-child(5),
+.globe-r1 .gd [data-leaving] {
+  visibility: visible;
+}
+
+.globe-r1 .gd:has(.gd-opt:nth-of-type(1) > :checked) .gd-city:nth-child(1),
+.globe-r1 .gd:has(.gd-opt:nth-of-type(2) > :checked) .gd-city:nth-child(2),
+.globe-r1 .gd:has(.gd-opt:nth-of-type(3) > :checked) .gd-city:nth-child(3),
+.globe-r1 .gd:has(.gd-opt:nth-of-type(4) > :checked) .gd-city:nth-child(4),
+.globe-r1 .gd:has(.gd-opt:nth-of-type(5) > :checked) .gd-city:nth-child(5) {
+  --gd-on: 1;
+  color: var(--gd-accent);
+}
+
+/* without :has() the rules above drop out whole: show the first stop */
+@supports not selector(:has(*)) {
+  .globe-r1 .gd :is(.gd-text, .gd-cap):first-child {
+    visibility: visible;
+  }
+}
+
+/* during a step the rows take the 8 by 8 screen at 2 px cells */
+.globe-r1 .gd[data-mixing] :is(.gd-text, .gd-cap) {
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+/* ---------- the slider: real radios, so it works without JavaScript ---------- */
+
+.globe-r1 .gd-ctl {
+  display: flex;
+  justify-content: center;
+  padding: clamp(24px, 5cqi, 36px) 12px clamp(16px, 4cqi, 24px);
+}
+
+.globe-r1 .gd-pill {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, var(--stop-w)));
+  max-width: 100%;
+  padding: 3px;
+  border: 1px solid var(--gd-pill-line);
+  border-radius: 999px;
+  background: var(--gd-pill);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.globe-r1 .gd-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  inset-inline-start: 3px;
+  width: calc((100% - 6px) / var(--n));
+  border-radius: 999px;
+  background: var(--gd-thumb);
+  transform: translateX(calc(var(--gd-k) * 100% * var(--gd-sign)));
+}
+
+.globe-r1 .gd-opt {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 34px;
+  padding: 0 8px;
+  color: var(--gd-stop-ink);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.006em;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 140ms ease-out;
+}
+
+.globe-r1 .gd-opt:hover {
+  color: var(--gd-ink);
+}
+
+.globe-r1 .gd-opt input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the same names in the thumb's ink, cut to the thumb: one --gd-k moves both */
+.globe-r1 .gd-lens {
+  position: absolute;
+  inset: 3px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  color: var(--gd-thumb-ink);
+  pointer-events: none;
+  clip-path: inset(
+    0 calc(100% - (var(--gd-k) + 1) * 100% / var(--n)) 0
+      calc(var(--gd-k) * 100% / var(--n)) round 999px
+  );
+}
+
+.globe-r1 .gd:dir(rtl) .gd-lens {
+  clip-path: inset(
+    0 calc(var(--gd-k) * 100% / var(--n)) 0
+      calc(100% - (var(--gd-k) + 1) * 100% / var(--n)) round 999px
+  );
+}
+
+.globe-r1 .gd-lens .gd-opt {
+  color: inherit;
+}
+
+.globe-r1 .gd-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.globe-r1 .gd-name:lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: 1.1em;
+  letter-spacing: 0;
+}
+
+.globe-r1 .gd-pill:has(input:focus-visible) .gd-thumb {
+  outline: 2px solid var(--gd-accent);
+  outline-offset: 2px;
+}
+
+.globe-r1 .gd:has(.gd-opt:nth-of-type(2) > :checked) {
+  --gd-k: 1;
+}
+.globe-r1 .gd:has(.gd-opt:nth-of-type(3) > :checked) {
+  --gd-k: 2;
+}
+.globe-r1 .gd:has(.gd-opt:nth-of-type(4) > :checked) {
+  --gd-k: 3;
+}
+.globe-r1 .gd:has(.gd-opt:nth-of-type(5) > :checked) {
+  --gd-k: 4;
+}
+
+.globe-r1 .gd-caption {
+  margin: 12px 0 0;
+  color: var(--gd-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  text-wrap: pretty;
+}
+
+/* Narrow: the globe at 120 px beside its label, the passage across the
+   plate under both; the stops share the pill's width by their names' and
+   the chosen one takes the thumb's ink. */
+@container gd (max-width: 599px) {
+  .globe-r1 .gd-stage {
+    --gd-size: 120px;
+
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'globe cap'
+      'text text';
+    column-gap: 16px;
+    row-gap: 20px;
+  }
+
+  .globe-r1 .gd-caps {
+    align-self: end;
+    margin: 0;
+  }
+
+  .globe-r1 .gd .gd-text {
+    align-self: start;
+  }
+
+  .globe-r1 .gd .gd-cap {
+    text-wrap: balance;
+  }
+
+  .globe-r1 .gd-ctl {
+    padding-inline: 6px;
+  }
+
+  .globe-r1 .gd-pill {
+    display: flex;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .globe-r1 .gd-thumb,
+  .globe-r1 .gd-lens {
+    display: none;
+  }
+
+  .globe-r1 .gd-opt {
+    flex: 1 1 auto;
+    height: 32px;
+    padding: 0 4px;
+    border-radius: 999px;
+    font-size: 13px;
+    transition:
+      color 140ms ease-out,
+      background-color 140ms ease-out;
+  }
+
+  .globe-r1 .gd-opt:has(input:checked) {
+    background: var(--gd-thumb);
+    color: var(--gd-thumb-ink);
+  }
+
+  .globe-r1 .gd-opt:has(input:focus-visible) {
+    outline: 2px solid var(--gd-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* the 320 px column: the names a half pixel smaller, so all five fit */
+@container gd (max-width: 299px) {
+  .globe-r1 .gd-ctl {
+    padding-inline: 4px;
+  }
+
+  .globe-r1 .gd-opt {
+    font-size: 12.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-r1 .gd,
+  .globe-r1 .gd-opt {
+    transition: none;
+  }
+}

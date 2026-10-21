@@ -1,0 +1,242 @@
+/* Globe variant D (GlobeD.tsx, globe-d.ts): a zoomed dot globe in a round
+   window with the place and year under it, and beside it the five
+   languages as underlined words (LanguageLinks) over Euclid's eight
+   definitions (Passage), on a rounded plate. CSS alone shows the checked
+   stop's label and lights its city, so the figure works without
+   JavaScript. */
+
+.globe-r3 .gd {
+  --gd-ink: var(--tc-ink);
+  --gd-cap: #6e737c;
+  --gd-hair: var(--tc-hair);
+  --gd-rim: rgba(7, 7, 7, 0.24);
+  --gd-land: rgba(7, 7, 7, 0.42);
+  --gd-city: #070707;
+  --gd-accent: #2f5ce0;
+  /* the 240 unit viewBox at a whole px per unit: a 4 px cell and a 2 px dot */
+  --gd-size: 240px;
+
+  container: gd / inline-size;
+  margin: 2.25rem 0 2.5rem;
+  color: var(--gd-ink);
+  font-family: var(--tc-sans);
+}
+
+[data-theme='dark'] .globe-r3 .gd {
+  --gd-cap: #8a8f98;
+  --gd-rim: rgba(255, 255, 255, 0.26);
+  --gd-land: rgba(255, 255, 255, 0.44);
+  --gd-city: #ffffff;
+  --gd-accent: #86a8ff;
+}
+
+/* ---------- the plate: the globe and its label beside the reading ---------- */
+
+.globe-r3 .gd-plate {
+  --pad: clamp(20px, 6cqi, 40px);
+  /* the plate is opaque, so a city's halo can be drawn in its colour */
+  --gd-ground: color-mix(in srgb, var(--gd-ink) 3.5%, var(--tc-paper));
+
+  display: grid;
+  grid-template-columns: var(--gd-size) minmax(0, 1fr);
+  align-items: start;
+  column-gap: clamp(28px, 6cqi, 44px);
+  padding: var(--pad);
+  border: 1px solid var(--gd-hair);
+  border-radius: 12px;
+  background: var(--gd-ground);
+}
+
+.globe-r3 .gd-map {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-self: center;
+  justify-items: center;
+  row-gap: 14px;
+  min-width: 0;
+}
+
+/* the drawing's box, which the city targets (CityTargets.tsx) cover */
+.globe-r3 .gd-disc {
+  position: relative;
+  width: var(--gd-size);
+  max-width: 100%;
+  aspect-ratio: 1;
+}
+
+.globe-r3 .gd-globe {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.globe-r3 .gd-rim {
+  fill: none;
+  stroke: var(--gd-rim);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.globe-r3 .gd-land {
+  fill: var(--gd-land);
+}
+
+/* the five places, each clearing the land dots under it; the checked one
+   in the accent, with its ring and a wider halo */
+.globe-r3 .gd-city {
+  color: var(--gd-city);
+}
+
+.globe-r3 .gd-halo {
+  fill: var(--gd-ground);
+  transform: scale(calc(0.5 + var(--gd-on, 0) * 0.5));
+}
+
+.globe-r3 .gd-dot {
+  fill: currentColor;
+}
+
+.globe-r3 .gd-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-opacity: var(--gd-on, 0);
+  vector-effect: non-scaling-stroke;
+}
+
+/* every stop's label shares one cell, so the box keeps the tallest */
+.globe-r3 .gd-caps {
+  display: grid;
+  width: 100%;
+}
+
+.globe-r3 .gd .gd-cap {
+  grid-area: 1 / 1;
+  margin: 0;
+  color: var(--gd-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  visibility: hidden;
+}
+
+.globe-r3 .gd-cap > span {
+  display: block;
+}
+
+/* ---------- the reading: the languages over the definitions ---------- */
+
+.globe-r3 .gd-read {
+  display: grid;
+  row-gap: 18px;
+  min-width: 0;
+}
+
+.globe-r3 .gd-links {
+  margin-top: -4px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.globe-r3 .gd-passage {
+  --gp-lh: 1.45;
+  --gp-gap: 0.5em;
+
+  margin-top: -0.25em;
+  font-size: 16px;
+  letter-spacing: -0.005em;
+}
+
+/* the checked radio shows its stop's label; a leaving label stays for its step */
+.globe-r3 .gd:has(.gl-opt:nth-of-type(1) > :checked) .gd-cap:nth-child(1),
+.globe-r3 .gd:has(.gl-opt:nth-of-type(2) > :checked) .gd-cap:nth-child(2),
+.globe-r3 .gd:has(.gl-opt:nth-of-type(3) > :checked) .gd-cap:nth-child(3),
+.globe-r3 .gd:has(.gl-opt:nth-of-type(4) > :checked) .gd-cap:nth-child(4),
+.globe-r3 .gd:has(.gl-opt:nth-of-type(5) > :checked) .gd-cap:nth-child(5),
+.globe-r3 .gd .gd-cap[data-leaving] {
+  visibility: visible;
+}
+
+.globe-r3 .gd:has(.gl-opt:nth-of-type(1) > :checked) .gd-city:nth-child(1),
+.globe-r3 .gd:has(.gl-opt:nth-of-type(2) > :checked) .gd-city:nth-child(2),
+.globe-r3 .gd:has(.gl-opt:nth-of-type(3) > :checked) .gd-city:nth-child(3),
+.globe-r3 .gd:has(.gl-opt:nth-of-type(4) > :checked) .gd-city:nth-child(4),
+.globe-r3 .gd:has(.gl-opt:nth-of-type(5) > :checked) .gd-city:nth-child(5) {
+  --gd-on: 1;
+  color: var(--gd-accent);
+}
+
+/* A city under the pointer (its target carries data-hover, targets.ts)
+   takes the chosen city's ring and wider halo in ink, so a click reads as
+   turning that mark blue. The overlay's own 18 px ring is dropped here; the
+   city's name still shows in the overlay's chip. */
+.globe-r3 .gd .gct-target::before {
+  display: none;
+}
+
+@media (hover: hover) {
+  .globe-r3
+    .gd:has(.gct-target:nth-child(1)[data-hover])
+    .gd-city:nth-child(1),
+  .globe-r3
+    .gd:has(.gct-target:nth-child(2)[data-hover])
+    .gd-city:nth-child(2),
+  .globe-r3
+    .gd:has(.gct-target:nth-child(3)[data-hover])
+    .gd-city:nth-child(3),
+  .globe-r3
+    .gd:has(.gct-target:nth-child(4)[data-hover])
+    .gd-city:nth-child(4),
+  .globe-r3
+    .gd:has(.gct-target:nth-child(5)[data-hover])
+    .gd-city:nth-child(5) {
+    --gd-on: 1;
+  }
+}
+
+/* without :has() the rules above drop out whole: show the first stop */
+@supports not selector(:has(*)) {
+  .globe-r3 .gd .gd-cap:first-child {
+    visibility: visible;
+  }
+}
+
+/* during a step the label takes the 8 by 8 screen at 2 px cells */
+.globe-r3 .gd-caps[data-mixing] .gd-cap {
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+.globe-r3 .gd-caption {
+  margin: 12px 0 0;
+  color: var(--gd-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  text-wrap: pretty;
+}
+
+/* Narrow: the globe and its label over the reading, which spans the plate. */
+@container gd (max-width: 599px) {
+  .globe-r3 .gd-plate {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 24px;
+  }
+
+  .globe-r3 .gd-links {
+    --gl-gap: 0.85em;
+
+    margin-top: 0;
+    font-size: 14px;
+  }
+
+  .globe-r3 .gd-passage {
+    font-size: 15px;
+  }
+}

@@ -1,0 +1,98 @@
+/* The globe figures' city targets (CityTargets.tsx, targets.ts): a 24 by
+   24 CSS px box per stop (WCAG 2.5.8's minimum) centred on its city, moved
+   by a transform from the variant's engine. Nothing shows at rest, since
+   the variant draws its own cities. The engine marks the hovered target
+   (data-hover), the one whose city is nearest the pointer where targets
+   overlap on a small globe: it rises above the others, draws an ink ring
+   and names the city in a chip above it. The chosen city's target sits
+   under the others and takes no hover. */
+
+.globe-r3 .gct {
+  --gct-size: 24px;
+  --gct-ink: var(--tc-ink);
+  --gct-accent: #2f5ce0;
+
+  position: absolute;
+  inset: 0;
+  /* above a variant's own pin, leader and label */
+  z-index: 3;
+  pointer-events: none;
+}
+
+[data-theme='dark'] .globe-r3 .gct {
+  --gct-accent: #86a8ff;
+}
+
+/* hidden until the engine places it on the facing side */
+.globe-r3 .gct-target {
+  position: absolute;
+  top: calc(var(--gct-size) / -2);
+  left: calc(var(--gct-size) / -2);
+  z-index: 1;
+  width: var(--gct-size);
+  height: var(--gct-size);
+  outline: none;
+  cursor: pointer;
+  pointer-events: auto;
+  visibility: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.globe-r3 .gct-target::before {
+  position: absolute;
+  inset: 3px;
+  border: 1.5px solid var(--gct-ink);
+  border-radius: 50%;
+  content: '';
+  visibility: hidden;
+}
+
+.globe-r3 .gct-target[data-hover]::before {
+  visibility: inherit;
+}
+
+.globe-r3 .gct-target:focus-visible::before {
+  outline: 2px solid var(--gct-accent);
+  outline-offset: 2px;
+  visibility: inherit;
+}
+
+.globe-r3 .gct-name {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  padding: 2px 6px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 4px;
+  background: var(--tc-paper);
+  color: var(--gct-ink);
+  font-family: var(--tc-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+  translate: -50% 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+@media (hover: hover) {
+  .globe-r3 .gct-target[data-hover] .gct-name {
+    visibility: inherit;
+  }
+}
+
+.globe-r3 .gct-target[data-current] {
+  z-index: 0;
+  cursor: default;
+}
+
+/* on top, so the cursor is the hovered target's own */
+.globe-r3 .gct-target[data-hover] {
+  z-index: 2;
+}
+
+.globe-r3 .gct-target[data-current]::before,
+.globe-r3 .gct-target[data-current] .gct-name {
+  visibility: hidden;
+}

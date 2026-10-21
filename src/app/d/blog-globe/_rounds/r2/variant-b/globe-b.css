@@ -1,0 +1,554 @@
+/* Variant B of the globe figure (GlobeB.tsx): a line globe with the route,
+   a vertical timeline of native radios and the passage in a ruled band.
+   CSS alone shows the checked stop's label, passage, route and timeline, so
+   the figure works without JavaScript; engine.ts turns the globe, steps the
+   words and writes --gbb-k (how far along the route has drawn, in stops) on
+   every frame. */
+
+.globe-r2 .gbb {
+  --gbb-r: 12px;
+  --gbb-ink: var(--tc-ink);
+  --gbb-mid: var(--tc-ink-2);
+  --gbb-hair: var(--tc-hair);
+  /* the plate, opaque, so the doubled lines' cores match it exactly */
+  --gbb-ground: color-mix(in srgb, var(--tc-ink) 3.5%, var(--tc-paper));
+  --gbb-chip: color-mix(in srgb, var(--tc-ink) 6%, var(--gbb-ground));
+  --gbb-accent: #2f5ce0;
+  --gbb-cap: #6e737c;
+  --gbb-k: 0;
+
+  container: gbb / inline-size;
+  margin: 2.25rem 0 2.5rem;
+  color: var(--gbb-ink);
+  font-family: var(--tc-sans);
+}
+
+[data-theme='dark'] .globe-r2 .gbb {
+  --gbb-accent: #86a8ff;
+  --gbb-cap: #8a8f98;
+}
+
+/* the checked stop sets how far the route has drawn */
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(2) > :checked) {
+  --gbb-k: 1;
+}
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(3) > :checked) {
+  --gbb-k: 2;
+}
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(4) > :checked) {
+  --gbb-k: 3;
+}
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(5) > :checked) {
+  --gbb-k: 4;
+}
+
+.globe-r2 .gbb-plate {
+  --pad: clamp(16px, 5cqi, 36px);
+
+  border: 1px solid var(--gbb-hair);
+  border-radius: var(--gbb-r);
+  background: var(--gbb-ground);
+}
+
+/* ---------- the stage: the globe and its label, the timeline, the passage ---------- */
+
+/* narrow: the passage under the globe, so a pick, the globe and the words
+   read together, and the timeline below them */
+.globe-r2 .gbb-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'globe'
+    'passage'
+    'tl';
+  row-gap: 20px;
+  padding: var(--pad);
+}
+
+@container gbb (min-width: 560px) {
+  .globe-r2 .gbb-stage {
+    grid-template-columns: minmax(0, 13.5rem) minmax(0, 1fr);
+    grid-template-areas:
+      'tl globe'
+      'passage passage';
+    column-gap: clamp(16px, 4cqi, 36px);
+    row-gap: var(--pad);
+  }
+}
+
+.globe-r2 .gbb-globe {
+  display: grid;
+  grid-area: globe;
+  justify-items: center;
+  row-gap: 10px;
+}
+
+/* the drawing's box, which the city targets (CityTargets.tsx) cover */
+.globe-r2 .gbb-disc {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+}
+
+.globe-r2 .gbb-svg {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  overflow: visible;
+}
+
+.globe-r2 .gbb-svg * {
+  vector-effect: non-scaling-stroke;
+}
+
+/* hairline graticule, mid coastlines, the limb in ink; the route alone is
+   a doubled line */
+.globe-r2 .gbb-grid,
+.globe-r2 .gbb-coast,
+.globe-r2 .gbb-limb,
+.globe-r2 .gbb-thread,
+.globe-r2 .gbb-core {
+  fill: none;
+  stroke-linecap: butt;
+}
+
+.globe-r2 .gbb-limb {
+  stroke: var(--gbb-ink);
+  stroke-width: 1px;
+}
+
+.globe-r2 .gbb-grid {
+  stroke: var(--gbb-hair);
+  stroke-width: 1px;
+}
+
+.globe-r2 .gbb-coast {
+  stroke: var(--gbb-mid);
+  stroke-width: 1px;
+}
+
+.globe-r2 .gbb-thread {
+  stroke: var(--gbb-ink);
+  stroke-width: calc(var(--thread-gauge, 1.5px) * 2 + var(--thread-gap, 3px));
+}
+
+.globe-r2 .gbb-core {
+  stroke: var(--gbb-ground);
+  stroke-width: var(--thread-gap, 3px);
+}
+
+/* without the engine, the checked stop's route as seen from Alexandria */
+.globe-r2 .gbb-route,
+.globe-r2 .gbb:not([data-live]) .gbb-route-now {
+  display: none;
+}
+
+.globe-r2
+  .gbb:not([data-live]):has(.gbb-stop:nth-of-type(2) > :checked)
+  .gbb-route:nth-of-type(2),
+.globe-r2
+  .gbb:not([data-live]):has(.gbb-stop:nth-of-type(3) > :checked)
+  .gbb-route:nth-of-type(3),
+.globe-r2
+  .gbb:not([data-live]):has(.gbb-stop:nth-of-type(4) > :checked)
+  .gbb-route:nth-of-type(4),
+.globe-r2
+  .gbb:not([data-live]):has(.gbb-stop:nth-of-type(5) > :checked)
+  .gbb-route:nth-of-type(5) {
+  display: inline;
+}
+
+/* a city the route has reached is filled, one still ahead is open, the chosen one is the accent */
+.globe-r2 .gbb-city {
+  --on: clamp(0, (var(--gbb-k) - var(--i) + 0.002) * 1000, 1);
+}
+
+.globe-r2 .gbb-dot {
+  fill: color-mix(
+    in srgb,
+    var(--gbb-ink) calc(var(--on) * 100%),
+    var(--gbb-ground)
+  );
+  stroke: var(--gbb-ink);
+  stroke-width: 1.5px;
+}
+
+.globe-r2 .gbb-ring {
+  fill: none;
+  stroke: none;
+}
+
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(1) > :checked)
+  .gbb-city:nth-of-type(1),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(2) > :checked)
+  .gbb-city:nth-of-type(2),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(3) > :checked)
+  .gbb-city:nth-of-type(3),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(4) > :checked)
+  .gbb-city:nth-of-type(4),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(5) > :checked)
+  .gbb-city:nth-of-type(5) {
+  --gbb-ink: var(--gbb-accent);
+  --on: 1;
+}
+
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(1) > :checked)
+  .gbb-city:nth-of-type(1)
+  .gbb-ring,
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(2) > :checked)
+  .gbb-city:nth-of-type(2)
+  .gbb-ring,
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(3) > :checked)
+  .gbb-city:nth-of-type(3)
+  .gbb-ring,
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(4) > :checked)
+  .gbb-city:nth-of-type(4)
+  .gbb-ring,
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(5) > :checked)
+  .gbb-city:nth-of-type(5)
+  .gbb-ring {
+  stroke: var(--gbb-accent);
+  stroke-width: 1px;
+}
+
+/* A city under the pointer on the globe (its target in CityTargets.tsx
+   carries data-hover) takes the chosen city's square ring in ink, and its
+   row in the timeline takes the row's hover look, so the reader sees the
+   language a click picks. The square stands in for the overlay's round
+   ring wherever :has() draws it. */
+@supports selector(:has(*)) {
+  .globe-r2 .gbb .gct-target[data-hover]::before {
+    border-color: transparent;
+  }
+}
+
+.globe-r2
+  .gbb:has(.gct-target:nth-child(1)[data-hover]:not([data-current]))
+  .gbb-city:nth-of-type(1)
+  .gbb-ring,
+.globe-r2
+  .gbb:has(.gct-target:nth-child(2)[data-hover]:not([data-current]))
+  .gbb-city:nth-of-type(2)
+  .gbb-ring,
+.globe-r2
+  .gbb:has(.gct-target:nth-child(3)[data-hover]:not([data-current]))
+  .gbb-city:nth-of-type(3)
+  .gbb-ring,
+.globe-r2
+  .gbb:has(.gct-target:nth-child(4)[data-hover]:not([data-current]))
+  .gbb-city:nth-of-type(4)
+  .gbb-ring,
+.globe-r2
+  .gbb:has(.gct-target:nth-child(5)[data-hover]:not([data-current]))
+  .gbb-city:nth-of-type(5)
+  .gbb-ring {
+  stroke: var(--gbb-ink);
+  stroke-width: 1px;
+}
+
+.globe-r2
+  .gbb:has(.gct-target:nth-child(1)[data-hover]:not([data-current]))
+  .gbb-stop:nth-of-type(1),
+.globe-r2
+  .gbb:has(.gct-target:nth-child(2)[data-hover]:not([data-current]))
+  .gbb-stop:nth-of-type(2),
+.globe-r2
+  .gbb:has(.gct-target:nth-child(3)[data-hover]:not([data-current]))
+  .gbb-stop:nth-of-type(3),
+.globe-r2
+  .gbb:has(.gct-target:nth-child(4)[data-hover]:not([data-current]))
+  .gbb-stop:nth-of-type(4),
+.globe-r2
+  .gbb:has(.gct-target:nth-child(5)[data-hover]:not([data-current]))
+  .gbb-stop:nth-of-type(5) {
+  background: var(--gbb-chip);
+  color: var(--gbb-ink);
+}
+
+/* ---------- the label under the globe: coordinates, city and year ---------- */
+
+.globe-r2 .gbb-label {
+  display: grid;
+  margin: 0;
+  color: var(--gbb-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.globe-r2 .gbb-where {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.globe-r2 .gbb-coord,
+.globe-r2 .gbb-place {
+  display: block;
+}
+
+.globe-r2 .gbb-coord {
+  color: var(--gbb-mid);
+}
+
+/* read between the two lines, never seen */
+.globe-r2 .gbb-sep {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* During a move the label counts the coordinates the globe faces and
+   names no city: the leaving city keeps its line only for its step out,
+   and the arriving one stays hidden until it steps in on landing. */
+.globe-r2 .gbb-where[data-leaving] {
+  visibility: visible;
+}
+
+.globe-r2 .gbb-where[data-leaving] .gbb-coord,
+.globe-r2 .gbb[data-counting] .gbb-where:not([data-leaving]) .gbb-place {
+  visibility: hidden;
+}
+
+/* ---------- the timeline: native radios, so it works without JavaScript ---------- */
+
+.globe-r2 .gbb-tl {
+  --row: 44px;
+  --mark-x: 19px;
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-area: tl;
+  grid-template-columns: 22px max-content minmax(0, 1fr);
+  grid-template-rows: repeat(5, var(--row));
+  align-content: center;
+  column-gap: 12px;
+}
+
+@container gbb (min-width: 560px) {
+  .globe-r2 .gbb-tl {
+    --row: 60px;
+  }
+}
+
+/* a hairline from the first mark to the last; the run over it is the route drawn so far, doubled */
+.globe-r2 .gbb-track {
+  position: absolute;
+  z-index: 1;
+  top: calc(50% - 2 * var(--row));
+  bottom: calc(50% - 2 * var(--row));
+  left: var(--mark-x);
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--gbb-hair);
+}
+
+.globe-r2 .gbb-run {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  box-sizing: border-box;
+  width: calc(var(--thread-gauge, 1.5px) * 2 + var(--thread-gap, 3px));
+  height: calc(var(--gbb-k) / 4 * 100%);
+  border-inline: var(--thread-gauge, 1.5px) solid var(--gbb-ink);
+  background: var(--gbb-ground);
+  transform: translateX(-50%);
+}
+
+.globe-r2 .gbb-stop {
+  position: relative;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  margin: 2px 0;
+  padding-inline: 8px 12px;
+  border-radius: 6px;
+  color: var(--gbb-mid);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color 140ms ease-out,
+    background-color 140ms ease-out;
+}
+
+.globe-r2 .gbb-stop:hover,
+.globe-r2 .gbb-stop:has(> :checked) {
+  background: var(--gbb-chip);
+  color: var(--gbb-ink);
+}
+
+.globe-r2 .gbb-stop:has(> :focus-visible) {
+  outline: 2px solid var(--gbb-accent);
+  outline-offset: 2px;
+}
+
+.globe-r2 .gbb-stop input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.globe-r2 .gbb-mark {
+  --on: clamp(0, (var(--gbb-k) - var(--i) + 0.002) * 1000, 1);
+
+  position: relative;
+  z-index: 2;
+  justify-self: center;
+  box-sizing: border-box;
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--gbb-ink);
+  background: color-mix(
+    in srgb,
+    var(--gbb-ink) calc(var(--on) * 100%),
+    var(--gbb-ground)
+  );
+}
+
+.globe-r2 .gbb-year {
+  font-size: 13px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.globe-r2 .gbb-name {
+  justify-self: start;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  unicode-bidi: isolate;
+}
+
+/* ---------- the passage: every language in one cell, so the box keeps one height ---------- */
+
+/* a ruled band across the plate: between the globe and the timeline on a
+   narrow plate, at the foot on a wide one */
+.globe-r2 .gbb-passage {
+  display: grid;
+  grid-area: passage;
+  margin-inline: calc(-1 * var(--pad));
+  padding: calc(var(--pad) * 0.9) var(--pad);
+  border-block: 1px solid var(--gbb-hair);
+  font-size: clamp(20px, 4cqi, 28px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1,
+    'cv11' 1,
+    'ss01' 1;
+}
+
+@container gbb (min-width: 560px) {
+  .globe-r2 .gbb-passage {
+    margin-bottom: calc(-1 * var(--pad));
+    padding-bottom: var(--pad);
+    border-bottom: 0;
+  }
+}
+
+.globe-r2 .gbb-text {
+  grid-area: 1 / 1;
+  margin: 0;
+  text-align: start;
+  text-wrap: pretty;
+  unicode-bidi: isolate;
+  visibility: hidden;
+}
+
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(1) > :checked) .gbb-text:nth-child(1),
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(2) > :checked) .gbb-text:nth-child(2),
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(3) > :checked) .gbb-text:nth-child(3),
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(4) > :checked) .gbb-text:nth-child(4),
+.globe-r2 .gbb:has(.gbb-stop:nth-of-type(5) > :checked) .gbb-text:nth-child(5),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(1) > :checked)
+  .gbb-where:nth-child(1),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(2) > :checked)
+  .gbb-where:nth-child(2),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(3) > :checked)
+  .gbb-where:nth-child(3),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(4) > :checked)
+  .gbb-where:nth-child(4),
+.globe-r2
+  .gbb:has(.gbb-stop:nth-of-type(5) > :checked)
+  .gbb-where:nth-child(5),
+.globe-r2 .gbb-text[data-leaving] {
+  visibility: visible;
+}
+
+/* during a step the passage and the city pass through the 8 by 8 screen at 2px cells */
+.globe-r2 .gbb[data-mixing] :is(.gbb-text, .gbb-place) {
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+/* without :has() the rules above drop out whole: show the first stop */
+@supports not selector(:has(*)) {
+  .globe-r2 .gbb-text:first-child,
+  .globe-r2 .gbb-where:first-child {
+    visibility: visible;
+  }
+}
+
+/* Inter has no Arabic, and the stack's fallback has no 500: a system face
+   with no Inter in front keeps the weight and the joins (as versions.css) */
+.globe-r2 .gbb :is(.gbb-text, .gbb-name):lang(ar) {
+  font-family: system-ui, sans-serif;
+  font-size: 1.1em;
+  letter-spacing: 0;
+}
+
+.globe-r2 .gbb :is(.gbb-text, .gbb-name):is(:lang(zh), :lang(ja), :lang(ko)) {
+  letter-spacing: 0;
+}
+
+.globe-r2 .gbb-cap {
+  margin: 12px 0 0;
+  color: var(--gbb-cap);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-r2 .gbb-stop {
+    transition: none;
+  }
+}

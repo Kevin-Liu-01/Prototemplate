@@ -4,9 +4,26 @@ description: "Four directions for a blog figure that turns a globe to each city 
 icon: Earth
 ---
 
+import GlobeFigure from '@/components/blog-globe/GlobeFigure';
+import GlobeGrid from '@/components/blog-globe/GlobeGrid';
+
 General Translation (GT) is building interactive figures for the posts on its blog. The Versions figure sets the first eight definitions of Euclid's Elements in five languages on one rounded plate, and a pill of language names switches between them. It sits on the gt-cloud branch `k/blog-version-switch` and has not been published. The globe figure adds where and when each version was made. When a reader picks a language, a globe turns to the city of that version, a label prints the city's coordinates and year, and the eight definitions change row by row into the new language. Read in order, the five stops follow the Elements from Alexandria in 300 BCE to Beijing in 1606.
 
-The four directions live in the folder `apps/landing/src/components/blog/globe/` on the local branch `k/blog-globe` of gt-cloud, the repository that builds generaltranslation.com. The development route `/en-US/dev/globe` stacks all four, `?v=a` to `?v=d` shows one alone, and production answers the route with a 404. The directions were built on 2026-10-19 in three rounds. A design review scored and ranked the first build, and its fixes and the clickable cities came next. Round 3 zoomed each globe in, set all eight definitions, replaced each language control with underlined names and printed the coordinates in degrees, minutes and seconds. Every measurement on this page comes from round 3.
+The four directions live in the folder `apps/landing/src/components/blog/globe/` on the local branch `k/blog-globe` of gt-cloud, the repository that builds generaltranslation.com. The development route `/en-US/dev/globe` stacks all four, `?v=a` to `?v=d` shows one alone, and production answers the route with a 404. The directions were built on 2026-10-19 in three rounds. A design review scored and ranked the first build, and its fixes and the clickable cities came next. Round 3 zoomed each globe in, set all eight definitions, replaced each language control with underlined names and printed the coordinates in degrees, minutes and seconds. Every measurement on this page comes from round 3. All three rounds of the four directions also run live on this site, copied from gt-cloud at commit `5ba413acfb`.
+
+## The rounds
+
+Each round runs on its own route of this site, so the rounds keep their own stylesheets and none of them changes when another does. The routes are left out of search results and the sitemap.
+
+| Round | Route | Code | What it shows |
+| --- | --- | --- | --- |
+| 1 | [/d/blog-globe/r1](/d/blog-globe/r1) | frozen from `c7031e2ca8` | The whole globe, one line of the passage, a language control of its own in each direction (a pill, chips or a year timeline) and decimal coordinates |
+| 2 | [/d/blog-globe/r2](/d/blog-globe/r2) | frozen from `ee19373e96` | Round 1 with a click target on every city on the globe |
+| 3 | [/d/blog-globe](/d/blog-globe) | copied at `5ba413acfb` | A zoomed globe, the eight definitions changing row by row, underlined language names and coordinates in degrees, minutes and seconds |
+
+The grid below holds every round of every direction: a row per direction in the order the review reads them (D, A, B and C) and a column per round. Each figure runs live in a frame of its round's route, laid out at the 712 px column it was reviewed in and scaled down to its cell. A pick in the names or a click on a city works in every cell, and each caption opens its figure alone at full size. [/d/blog-globe/all](/d/blog-globe/all) sets the same grid across a whole screen.
+
+<GlobeGrid />
 
 ## The five stops
 
@@ -69,13 +86,21 @@ The round 3 shoot ran each direction in Chromium at 1440 and 375 px wide in both
 | Figure height at 1440, 375 and 320 px | 595, 900 and 1,021 px | 570, 973 and 1,065 px | 608, 914 and 1,061 px | 575, 921 and 1,064 px |
 | Code in the direction's folder, tests excluded | 1,239 lines | 1,199 lines | 1,201 lines | 671 lines |
 
-Each contact sheet below has six rows. The first five rows are the stops in four columns: 1440 px light, 1440 px dark, 375 px light and 375 px dark. The sixth row holds one frame at 1440 px in the light theme, taken 450 ms into a turn from London to Beijing. Every shot is scaled by the same factor, so the phone columns keep their size relative to the desktop ones.
+Each direction's section below runs its figure live in a frame of its round's route: at the 712 px column on a wide screen, scaled down a little on a narrower one, and at the column's own width on a phone. A switch over each figure loads its rounds 2 and 1. The round 3 shoot's contact sheets stay in `public/static/docs/blog-globe/`, one per direction. Each has five rows of stops at 1440 and 375 px wide in both themes, and one frame taken 450 ms into the turn from London to Beijing. A reader without JavaScript sees each direction's sheet in its section instead.
 
 ## The dot globe (D)
 
 D draws the globe as a screen of square dots in SVG. The drawing is 240 px wide on a 240 unit viewBox at 1440 and 375 px wide. Each 4 px cell prints a whole 2 by 2 px dot where the ground under it is land, and the round window inside the drawing is 232 px across. Every frame reads the land under each cell again, so the earth turns under a screen that stays still. Land prints at 42% of the text color in the light theme and 44% in the dark theme. The current city takes the accent with a ring and a cleared halo, and the other cities in the window print in the text color. The accent is `#2f5ce0` on paper and `#86a8ff` on ink. The label sits under the window, and the names and the passage sit beside it. On a phone the names and the passage sit under the globe.
 
-![Contact sheet of direction D: a dot globe beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing](/static/docs/blog-globe/d-sheet.webp)
+<GlobeFigure
+  variant='d'
+  fallback={{
+    src: '/static/docs/blog-globe/d-sheet.webp',
+    alt: 'Contact sheet of direction D: a dot globe beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing',
+  }}
+/>
+
+Round 3 of D runs live above, and its switch loads rounds 2 and 1. [/d/blog-globe?v=d](/d/blog-globe?v=d) shows the figure alone.
 
 D reuses the Versions figure's plate and the shared passage, names and targets. A sea cell tests four points around its center for land, so Britain, Cyprus and other islands narrower than a cell still print.
 
@@ -95,7 +120,15 @@ D reuses the Versions figure's plate and the shared passage, names and targets. 
 
 A prints the globe on a canvas in General Translation's 1-bit material. Each 2 px cell is screened through the 8 by 8 Bayer matrix in two nested inks: a light ink for the lit sphere and a strong ink for land. The light comes from the upper left with an ambient term and a rim, as on the sign-in page's globe. The globe is zoomed 3 times behind the window. The window grows with its column in steps of 4 px up to 320 px, and it is 272 px across in the 712 px column and 240 px at 375 px wide. A long turn pulls back on the way until both ends sit in the middle 80% of the window, then closes in again on the same curve. A pin at the window's center leaves while the ground moves and prints again on arrival. The names run across the top of the plate, the label sits under the window and the passage sits beside it. On a phone the names, the window, the label and the passage stack in one column.
 
-![Contact sheet of direction A: a blue dithered globe beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing](/static/docs/blog-globe/a-sheet.webp)
+<GlobeFigure
+  variant='a'
+  fallback={{
+    src: '/static/docs/blog-globe/a-sheet.webp',
+    alt: 'Contact sheet of direction A: a blue dithered globe beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing',
+  }}
+/>
+
+Round 3 of A runs live above, and its switch loads rounds 2 and 1. [/d/blog-globe?v=a](/d/blog-globe?v=a) shows the figure alone.
 
 A forks `globe()`, the lit sphere the sign-in globe draws, from `packages/ui/src/lib/dither.ts` in gt-cloud. The fork faces any point and reads `landAt()` in place of noise. Its two inks are the Versions figure's pair: `#b4c8ff` and `#2f5ce0` on paper, `#2448b0` and `#86a8ff` on ink. Without JavaScript the window shows an SVG still of the first stop, drawn from each ink's runs of cells on a 160 unit viewBox by the same functions as the canvas.
 
@@ -114,7 +147,15 @@ A forks `globe()`, the lit sphere the sign-in globe draws, from `packages/ui/src
 
 B draws the globe in SVG lines through a round lens: coastlines, a 10° graticule cut at the lens, a single 1 px limb and the cities as small squares. A city the route has reached is filled, a city still ahead is open, and the current city takes the accent. The route from Alexandria to the current stop is a doubled line of two 1.5 px lines 3 px apart, and it draws on with the turn. During a move the label counts the coordinates the globe faces and names no city. The leaving city and year step out as the move starts, and the arriving ones step in as the globe lands. The globe is zoomed 2.5 times behind the lens, which is 253 px across in the 712 px column and 276 px at 375 px wide.
 
-![Contact sheet of direction B: a line globe with coastlines, a graticule and a doubled route line beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing](/static/docs/blog-globe/b-sheet.webp)
+<GlobeFigure
+  variant='b'
+  fallback={{
+    src: '/static/docs/blog-globe/b-sheet.webp',
+    alt: 'Contact sheet of direction B: a line globe with coastlines, a graticule and a doubled route line beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing',
+  }}
+/>
+
+Round 3 of B runs live above, and its switch loads rounds 2 and 1. [/d/blog-globe?v=b](/d/blog-globe?v=b) shows the figure alone.
 
 B takes the line grammar of the delivery globe on generaltranslation.com's home page (EdgeGlobe) and gives it a moving camera. The route comes from `greatCircle()`. The coastlines were traced once from the shared land mask by marching squares and simplified by Douglas and Peucker at 0.3°, then baked into `coasts.ts` as 43 rings. Two rounds of corner cutting smooth each ring when the module reads it, so no tracing runs at load.
 
@@ -134,7 +175,15 @@ B takes the line grammar of the delivery globe on generaltranslation.com's home 
 
 C is a canvas port of the World Language Map's glyph globe. An even grid of upright cells, 36 across the window, is anchored to the window's center. Each cell reads the ground under it and prints a letter of the current language where the ground is land, or a small square where it is sea. The letters come from the stop's first definition and its native name, so the land is written in Greek, Arabic or Latin letters or in Han characters. Each mark's size follows the depth of a sphere seen through the window, so the marks shrink toward its edge. On a switch the letters on the land hand over to the new script through the same 8 by 8 screen as the passage, in the middle of the turn. The globe is zoomed 3 times behind the window, which is 272 px across in the 712 px column and 221 px at 375 px wide.
 
-![Contact sheet of direction C: a globe drawn in letters of the current script beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing](/static/docs/blog-globe/c-sheet.webp)
+<GlobeFigure
+  variant='c'
+  fallback={{
+    src: '/static/docs/blog-globe/c-sheet.webp',
+    alt: 'Contact sheet of direction C: a globe drawn in letters of the current script beside the eight definitions at the five stops in both themes at 1440 and 375 px, and one frame from the middle of the turn from London to Beijing',
+  }}
+/>
+
+Round 3 of C runs live above, and its switch loads rounds 2 and 1. [/d/blog-globe?v=c](/d/blog-globe?v=c) shows the figure alone.
 
 C follows the method of `render-globe.ts` on gt-cloud's `k/language-map` branch, which inverts the projection under each screen cell and prints one upright glyph in it. Each cell keeps its letter while the ground turns under it, so only the coast moves. Before the review's fixes, letters changed on 42% of land cells a frame on the turn from London to Beijing, and on 81% at the peak.
 
