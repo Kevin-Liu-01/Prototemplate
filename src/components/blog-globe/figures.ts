@@ -14,7 +14,7 @@ import {
 /** The route of the last round; the earlier rounds sit below it (/r1, /r2). */
 export const GLOBE_BASE = '/d/blog-globe';
 
-/** Each variant's drawing, as /docs/blog-globe names it. */
+/** Each variant's drawing, as /docs/components/blog-globe names it. */
 export const VARIANT_NAMES: Record<GlobeVariantKey, string> = {
   a: 'dithered',
   b: 'line',

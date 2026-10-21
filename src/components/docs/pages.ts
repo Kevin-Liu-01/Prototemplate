@@ -1,10 +1,11 @@
 /**
  * The docs site's pages outside the handbook as the rest of the hub lists
- * them: the slug (the path under content/docs, `components/dither`; a
- * folder's index is the folder's path), the address, the title and the
- * description each MDX file's frontmatter carries, in the sidebar's order
- * (content/docs/meta.json, with each `...folder` row lifting that folder's
- * own meta.json in). The handbook's pages (content/docs/handbook) are
+ * them: the slug (the page's URL after /docs/, `components/dither`; folder
+ * groups such as `(internals)` add no segment, and a folder's index is the
+ * folder), the address, the title and the description each MDX file's
+ * frontmatter carries, in the sidebar's order (the tabs of
+ * content/docs/meta.json, each folder's meta.json in turn). The handbook's
+ * pages (/docs/handbook) are
  * listed by the handbook registry (src/app/handbook/registry.ts) instead.
  * The docs routes read the MDX through fumadocs (src/lib/source.ts); this
  * list is for the modules that cannot, the shell's Documents rows
@@ -14,7 +15,7 @@
  * docs adds its row here.
  */
 export type DocsPageEntry = {
-  /** the file's path under content/docs without .mdx; `index` is /docs, a folder's index its folder (`components`) */
+  /** the URL after /docs/; `index` is /docs, a folder's index its folder (`components`) */
   slug: string;
   href: string;
   title: string;
@@ -35,6 +36,97 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     title: 'Get started',
     description:
       'Clone the repository, install it, check the machine with the doctor, run the dev server, and work beside other sessions in a worktree.',
+  },
+  {
+    slug: 'components',
+    href: '/docs/components',
+    title: 'The component library',
+    description:
+      "Prototemplate's live component library: every instrument mounted on its page with controls, its import path, its props and its reduced-motion still.",
+  },
+  {
+    slug: 'components/dither',
+    href: '/docs/components/dither',
+    title: 'Dither and the studio field',
+    description:
+      "The 1-bit material live: the CPU dither loop with its field factories, the Bayer screen's coverage tiers, and the ten studio field presets on WebGL.",
+  },
+  {
+    slug: 'components/fields',
+    href: '/docs/components/fields',
+    title: 'Horizon and prismatic fields',
+    description:
+      'The two light fields on the shared WebGL engine, live: the event-horizon shader and the prismatic burst, with their cursor effects and their stills.',
+  },
+  {
+    slug: 'components/glyph-field',
+    href: '/docs/components/glyph-field',
+    title: 'Glyph field and ink field',
+    description:
+      'The eight-script glyph rain that condenses into the word for language, and its inverse on ink that bursts where the reader clicks, both live.',
+  },
+  {
+    slug: 'components/lines',
+    href: '/docs/components/lines',
+    title: 'Doubled lines and connectors',
+    description:
+      "The brand's doubled line as a component, with live gauge, gap, two-tone and pulse controls, and the production connector that carries a translation.",
+  },
+  {
+    slug: 'components/iso',
+    href: '/docs/components/iso',
+    title: 'Isometric drawings',
+    description:
+      'The isometric kit live: one 30 degree projection, one corner radius and one light, with boxes and prisms built on a slab and a mark seated on a face.',
+  },
+  {
+    slug: 'components/globes',
+    href: '/docs/components/globes',
+    title: 'Globes and maps',
+    description:
+      'Every globe in the library, live: the edge delivery globe, the dithered globe field in two looks, and the blog globe directions from all three rounds.',
+  },
+  {
+    slug: 'components/blog-globe',
+    href: '/docs/components/blog-globe',
+    title: 'The blog globe figure',
+    description:
+      "Four directions for a blog figure that turns a globe to each city on the path of Euclid's Elements: the shared contract, the measurements and the ranking.",
+  },
+  {
+    slug: 'components/language',
+    href: '/docs/components/language',
+    title: 'Locale tags and language pieces',
+    description:
+      'Locale chips with their flags, the two flag resolvers side by side, and seven animated language diagrams built from real text in real scripts.',
+  },
+  {
+    slug: 'components/motion',
+    href: '/docs/components/motion',
+    title: 'Reveal seam and sentence motion',
+    description:
+      'The slide-to-reveal seam between a rendered string and its served file, and the headline that dissolves into glyphs and reassembles in the next language.',
+  },
+  {
+    slug: 'components/marks',
+    href: '/docs/components/marks',
+    title: 'Speed marks and the GT mark',
+    description:
+      'The speed marks and the globe concepts at every size on paper and ink, the GT mark set inline as a word, and a mark with a dithered shine.',
+  },
+  {
+    slug: 'components/heads',
+    href: '/docs/components/heads',
+    title: 'Badges and heads',
+    description:
+      'The badge that cuts through the GT monograms after the Brand title, and the book head every hub page opens with, live at two widths.',
+  },
+  {
+    slug: 'internals',
+    href: '/docs/internals',
+    title: 'How Prototemplate is built',
+    description:
+      'How the hub is built and changed: its routes and the deck, the skills, scripts and gates, the SEO system and the docs template.',
   },
   {
     slug: 'pages',
@@ -84,90 +176,6 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     title: 'The SEO system',
     description:
       'How every route gets its title, canonical, robots, card and structured data from one call, the indexing policy, the sitemap and the agent files.',
-  },
-  {
-    slug: 'components',
-    href: '/docs/components',
-    title: 'Components',
-    description:
-      "Prototemplate's live component library: every instrument mounted on its page with controls, its import path, its props and its reduced-motion still.",
-  },
-  {
-    slug: 'components/dither',
-    href: '/docs/components/dither',
-    title: 'Dither and the studio field',
-    description:
-      "The 1-bit material live: the CPU dither loop with its field factories, the Bayer screen's coverage tiers, and the ten studio field presets on WebGL.",
-  },
-  {
-    slug: 'components/fields',
-    href: '/docs/components/fields',
-    title: 'Horizon and prismatic fields',
-    description:
-      'The two light fields on the shared WebGL engine, live: the event-horizon shader and the prismatic burst, with their cursor effects and their stills.',
-  },
-  {
-    slug: 'components/glyph-field',
-    href: '/docs/components/glyph-field',
-    title: 'Glyph field and ink field',
-    description:
-      'The eight-script glyph rain that condenses into the word for language, and its inverse on ink that bursts where the reader clicks, both live.',
-  },
-  {
-    slug: 'components/lines',
-    href: '/docs/components/lines',
-    title: 'Doubled lines and connectors',
-    description:
-      "The brand's doubled line as a component, with live gauge, gap, two-tone and pulse controls, and the production connector that carries a translation.",
-  },
-  {
-    slug: 'components/iso',
-    href: '/docs/components/iso',
-    title: 'Isometric drawings',
-    description:
-      'The isometric kit live: one 30 degree projection, one corner radius and one light, with boxes and prisms built on a slab and a mark seated on a face.',
-  },
-  {
-    slug: 'components/globes',
-    href: '/docs/components/globes',
-    title: 'Globes and maps',
-    description:
-      'Every globe in the library, live: the edge delivery globe, the dithered globe field in two looks, and the blog globe directions from all three rounds.',
-  },
-  {
-    slug: 'components/language',
-    href: '/docs/components/language',
-    title: 'Locale tags and language pieces',
-    description:
-      'Locale chips with their flags, the two flag resolvers side by side, and seven animated language diagrams built from real text in real scripts.',
-  },
-  {
-    slug: 'components/motion',
-    href: '/docs/components/motion',
-    title: 'Reveal seam and sentence motion',
-    description:
-      'The slide-to-reveal seam between a rendered string and its served file, and the headline that dissolves into glyphs and reassembles in the next language.',
-  },
-  {
-    slug: 'components/marks',
-    href: '/docs/components/marks',
-    title: 'Speed marks and the GT mark',
-    description:
-      'The speed marks and the globe concepts at every size on paper and ink, the GT mark set inline as a word, and a mark with a dithered shine.',
-  },
-  {
-    slug: 'components/heads',
-    href: '/docs/components/heads',
-    title: 'Badges and heads',
-    description:
-      'The badge that cuts through the GT monograms after the Brand title, and the book head every hub page opens with, live at two widths.',
-  },
-  {
-    slug: 'blog-globe',
-    href: '/docs/blog-globe',
-    title: 'The blog globe figure',
-    description:
-      "Four directions for a blog figure that turns a globe to each city on the path of Euclid's Elements: the shared contract, the measurements and the ranking.",
   },
   {
     slug: 'template',

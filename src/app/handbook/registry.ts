@@ -1,12 +1,14 @@
 /**
  * The handbook registry: the documents the handbook section of the docs
  * site shows, in reading order, each on its page under /docs/handbook
- * (content/docs/handbook/<slug>.mdx, which includes the file). The
- * handbook's readme (docs/handbook/README.md) is the section's index at
- * /docs/handbook; the six handbook documents follow it, then the canon:
- * the agent guide, the brand and design canons, the architecture map, the
- * ship loop, the tools, the libraries (with the build log, mounted by its
- * page), the graphics pipeline and the artifact pictures. Each blurb is
+ * (content/docs/(guide)/handbook/, which includes the file). The handbook's
+ * readme (docs/handbook/README.md) is the section's index at /docs/handbook;
+ * the agent guide and the operating principles follow it, then the Process
+ * documents (the quality bar, the multi-session playbook, the decisions
+ * log), the Reference documents (the product map, the glossary) and the
+ * canon: the brand and design canons, the libraries (with the build log,
+ * mounted by its page), the graphics pipeline, the artifact pictures, the
+ * architecture map, the ship loop and the tools. Each blurb is
  * the page's description, so it runs 50 to 160 characters.
  * scripts/lint/registries.mjs holds each page's title, description,
  * include tag and sidebar order to its entry, and its `slug` and `file`
@@ -31,6 +33,13 @@ export const HANDBOOK_README: DocEntry = {
 
 export const HANDBOOK: readonly DocEntry[] = [
   {
+    slug: 'agents',
+    file: 'AGENTS.md',
+    title: 'Agent guide',
+    blurb:
+      'The entry point for an agent: the read order, the principles in brief, the skill for each task, the house rules and using the hub elsewhere.',
+  },
+  {
     slug: 'operating-principles',
     file: 'docs/handbook/operating-principles.md',
     title: 'Operating principles',
@@ -52,6 +61,13 @@ export const HANDBOOK: readonly DocEntry[] = [
       'How many agent sessions share one machine: lanes, forked sessions, shared checkouts, collisions, Claude and Codex on one main, and resumption.',
   },
   {
+    slug: 'decisions',
+    file: 'docs/handbook/decisions.md',
+    title: 'Decisions log',
+    blurb:
+      'Kevin’s dated rulings on process, product, design and the repositories, what each replaced, his words and the gate that holds it.',
+  },
+  {
     slug: 'gt-product-map',
     file: 'docs/handbook/gt-product-map.md',
     title: 'GT product and architecture map',
@@ -63,20 +79,6 @@ export const HANDBOOK: readonly DocEntry[] = [
     file: 'docs/handbook/glossary.md',
     title: 'Glossary',
     blurb: 'The terms in Kevin’s messages, the skills and the code, each defined in a sentence or two with where it lives.',
-  },
-  {
-    slug: 'decisions',
-    file: 'docs/handbook/decisions.md',
-    title: 'Decisions log',
-    blurb:
-      'Kevin’s dated rulings on process, product, design and the repositories, what each replaced, his words and the gate that holds it.',
-  },
-  {
-    slug: 'agents',
-    file: 'AGENTS.md',
-    title: 'Agent guide',
-    blurb:
-      'The entry point for an agent: the read order, the principles in brief, the skill for each task, the house rules and using the hub elsewhere.',
   },
   {
     slug: 'brand',
@@ -91,27 +93,6 @@ export const HANDBOOK: readonly DocEntry[] = [
     title: 'Design system',
     blurb:
       'The design canon: the four-color system, the line law, rails and seams, the doubled line, iso, the 1-bit language, moving type and motion.',
-  },
-  {
-    slug: 'architecture',
-    file: 'ARCHITECTURE.md',
-    title: 'Architecture',
-    blurb:
-      'The code map: the direction registry, the toolchain as the single source and fork rescoping, the componentized instruments, the mirror.',
-  },
-  {
-    slug: 'ship-loop',
-    file: 'docs/SHIP-LOOP.md',
-    title: 'Ship loop',
-    blurb:
-      'The verify-and-ship procedure every round runs: the line audit, the page check, the ratchets, types, captures and the gated build.',
-  },
-  {
-    slug: 'tools',
-    file: 'docs/TOOLS.md',
-    title: 'Tools',
-    blurb:
-      'Every pnpm command in the repository and the scripts the skills bundle, each with what it does. Written by pnpm build:tools.',
   },
   {
     slug: 'libraries',
@@ -133,6 +114,27 @@ export const HANDBOOK: readonly DocEntry[] = [
     title: 'Artifact pictures',
     blurb:
       'The standard for the dithered photographs: the rules, the Blue Marble tone grid and screen, the cutter, adding a picture and its lint.',
+  },
+  {
+    slug: 'architecture',
+    file: 'ARCHITECTURE.md',
+    title: 'Architecture',
+    blurb:
+      'The code map: the direction registry, the toolchain as the single source and fork rescoping, the componentized instruments, the mirror.',
+  },
+  {
+    slug: 'ship-loop',
+    file: 'docs/SHIP-LOOP.md',
+    title: 'Ship loop',
+    blurb:
+      'The verify-and-ship procedure every round runs: the line audit, the page check, the ratchets, types, captures and the gated build.',
+  },
+  {
+    slug: 'tools',
+    file: 'docs/TOOLS.md',
+    title: 'Tools',
+    blurb:
+      'Every pnpm command in the repository and the scripts the skills bundle, each with what it does. Written by pnpm build:tools.',
   },
 ] as const;
 

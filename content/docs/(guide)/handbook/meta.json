@@ -1,23 +1,12 @@
 {
   "title": "Handbook",
   "icon": "Book",
+  "defaultOpen": true,
   "pages": [
-    "index",
-    "operating-principles",
-    "quality-bar",
-    "multi-session-playbook",
-    "gt-product-map",
-    "glossary",
-    "decisions",
-    "---Canon---",
     "agents",
-    "brand",
-    "design",
-    "architecture",
-    "ship-loop",
-    "tools",
-    "libraries",
-    "graphics",
-    "artifact-pictures"
+    "operating-principles",
+    "(process)",
+    "(reference)",
+    "(canon)"
   ]
 }

@@ -1,16 +1,13 @@
 {
   "title": "Components",
+  "description": "The live component library: each instrument with its controls, import path, props and still",
+  "icon": "Puzzle",
+  "root": true,
   "pages": [
     "index",
-    "dither",
-    "fields",
-    "glyph-field",
-    "lines",
-    "iso",
-    "globes",
-    "language",
-    "motion",
-    "marks",
-    "heads"
+    "(fields)",
+    "(drawings)",
+    "(language-and-motion)",
+    "(marks-and-heads)"
   ]
 }

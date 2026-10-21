@@ -1,0 +1,12 @@
+{
+  "title": "Internals",
+  "description": "How the hub is built: routes, the deck, skills, scripts, gates, SEO and the docs template",
+  "icon": "Wrench",
+  "root": true,
+  "pages": [
+    "internals",
+    "(routes)",
+    "(tooling)",
+    "(publishing)"
+  ]
+}

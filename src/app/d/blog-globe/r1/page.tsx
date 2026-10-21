@@ -17,7 +17,7 @@ export const metadata = route.metadata;
 
 /* Round 1 of the globe figures, frozen in gt-cloud from c7031e2ca8 and
    copied at 5ba413acfb. Its own route keeps its stylesheets off every other
-   round's page. Only /docs/blog-globe and the other rounds link here. */
+   round's page. Only /docs/components/blog-globe and the other rounds link here. */
 export default function GlobeRound1Page() {
   return (
     <GlobeDevPage

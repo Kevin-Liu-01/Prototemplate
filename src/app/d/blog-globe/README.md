@@ -1,6 +1,6 @@
 # Blog globe rounds
 
-The blog globe figure's four variants (A dithered, B line globe with a route, C glyph globe, D dot globe) in all three review rounds, live. The code is a copy of the folder `apps/landing/src/components/blog/globe/` in gt-cloud, taken from the branch `k/blog-globe` at commit `5ba413acfb`. `/docs/blog-globe` records the directions, their measurements and the ranking, and it is the only page that links here.
+The blog globe figure's four variants (A dithered, B line globe with a route, C glyph globe, D dot globe) in all three review rounds, live. The code is a copy of the folder `apps/landing/src/components/blog/globe/` in gt-cloud, taken from the branch `k/blog-globe` at commit `5ba413acfb`. `/docs/components/blog-globe` records the directions, their measurements and the ranking, and it is the only page that links here.
 
 | Round | Code | Route | What it shows |
 | --- | --- | --- | --- |
@@ -44,4 +44,4 @@ The docs frames that embed the figures live in `src/components/blog-globe/`. The
    - `gt-next` and `gt-next/server` to `@/app/d/blog-globe/_shared/i18n`
 4. In each round's stylesheets, rewrite `:is([data-theme='dark'], .dark) .blog-root` to `[data-theme='dark'] .globe-r<N>`, then `.blog-root` to `.globe-r<N>`.
 5. Search the copy for `@/components/blog`, `@generaltranslation`, `gt-next` and `blog-root`. Each search must find nothing.
-6. Measure each figure's height at 712 and 343 px wide with its margins at 0, update `FIGURE_HEIGHTS` in `src/components/blog-globe/figures.ts`, then load `/docs/blog-globe` and `/d/blog-globe/all`.
+6. Measure each figure's height at 712 and 343 px wide with its margins at 0, update `FIGURE_HEIGHTS` in `src/components/blog-globe/figures.ts`, then load `/docs/components/blog-globe` and `/d/blog-globe/all`.

@@ -19,7 +19,7 @@ export const metadata = route.metadata;
    gt-cloud's k/blog-globe at 5ba413acfb. ?v=a|b|c|d shows one alone, and
    ?v=<x>&embed=1 shows the figure alone for a frame. Rounds 1 and 2 have
    their own routes (/r1, /r2), and /all shows every round side by side.
-   Only /docs/blog-globe links here. */
+   Only /docs/components/blog-globe links here. */
 export default function GlobeRound3Page() {
   return (
     <GlobeDevPage

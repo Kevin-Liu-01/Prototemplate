@@ -80,7 +80,7 @@ src/
                           registries list them) and demos/, the live
                           plates the Components pages and the handbook
                           mount, each loaded through demos/lazy.tsx
-    blog-globe/           the blog globe figures on /docs/blog-globe, each
+    blog-globe/           the blog globe figures on /docs/components/blog-globe, each
                           a frame of its round's route under
                           src/app/d/blog-globe
     shell/                Bento primitives (Rails / BentoRow / BentoCell)

@@ -137,7 +137,7 @@ function thumb(stem: string): { shot: string; shotDark: string } {
 const PAGES: readonly Surface[] = [
   internal('gallery', pageLabel('gallery'), '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
   internal('brand', pageLabel('brand'), '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
-  internal('docs', pageLabel('docs'), '/docs', 'How Prototemplate works, the live component library, the blog globe figure and the handbook, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
+  internal('docs', pageLabel('docs'), '/docs', 'The handbook, the live component library with the blog globe figure, and how the hub is built, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
   internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
   internal('press', pageLabel('press'), '/press', 'GT Atlas, the General Translation magazine: each story a book with its own cover and its own pages.', 'Pages', thumb('press')),
   {

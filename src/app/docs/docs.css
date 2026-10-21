@@ -163,6 +163,7 @@
 
 /* the nameplate in the header and the sidebar head */
 [data-docs-nameplate] {
+  gap: 8px;
   font-size: 15px; /* lint-type: allow the nameplate beside the 20px mark sits between the small and body steps */
   font-weight: 500;
 }

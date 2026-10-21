@@ -128,6 +128,10 @@ const nextConfig: NextConfig = {
       // when the docs site replaced it (2026-10-15), and with the handbook
       // into /docs/handbook on 2026-10-20.
       ...CANON_MOVED.map((slug) => ({ source: `/docs/${slug}`, destination: `/docs/handbook/${slug}`, permanent: true })),
+      // The blog globe figure moved into the Components tab, beside Globes
+      // and maps, when the docs took tabs (2026-10-21).
+      { source: '/docs/blog-globe', destination: '/docs/components/blog-globe', permanent: true },
+      { source: '/docs/blog-globe.:ext(md|mdx)', destination: '/docs/components/blog-globe.:ext', permanent: true },
       // The live site renamed its report card from /try to /report-card
       // (gt-cloud #4557) and redirects the old path; the mirror does the same.
       { source: '/d/production/try', destination: '/d/production/report-card', permanent: true },

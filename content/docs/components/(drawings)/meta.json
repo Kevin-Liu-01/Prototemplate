@@ -1,0 +1,10 @@
+{
+  "title": "Drawings",
+  "defaultOpen": true,
+  "pages": [
+    "lines",
+    "iso",
+    "globes",
+    "blog-globe"
+  ]
+}

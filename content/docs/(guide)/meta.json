@@ -1,0 +1,11 @@
+{
+  "title": "Guide",
+  "description": "What Prototemplate is, running it, and the handbook of how GT work is done",
+  "icon": "Book",
+  "root": true,
+  "pages": [
+    "index",
+    "get-started",
+    "handbook"
+  ]
+}

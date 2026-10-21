@@ -1,0 +1,9 @@
+{
+  "title": "Fields",
+  "defaultOpen": true,
+  "pages": [
+    "dither",
+    "fields",
+    "glyph-field"
+  ]
+}

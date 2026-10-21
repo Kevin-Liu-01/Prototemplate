@@ -17,7 +17,7 @@ export const metadata = route.metadata;
 
 /* Every round of the globe figure's variants side by side, each one live
    in a frame of its own round's route, so no round's stylesheets reach
-   another. Only /docs/blog-globe and the round stages link here. */
+   another. Only /docs/components/blog-globe and the round stages link here. */
 export default function GlobeAllRoundsPage() {
   const base = '/d/blog-globe';
   return (

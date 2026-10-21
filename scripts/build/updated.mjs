@@ -117,10 +117,14 @@ function docsPages() {
   return out.sort();
 }
 
-/** A docs page's route: `index` is /docs, `<folder>/index` is /docs/<folder>. */
+/**
+ * A docs page's route: a folder group, `(name)`, adds no segment (fumadocs
+ * skips it), then `index` is /docs and `<folder>/index` is /docs/<folder>.
+ */
 function docsRoute(rel) {
-  if (rel === 'index') return '/docs';
-  return `/docs/${rel.replace(/(^|\/)index$/, '')}`;
+  const path = rel.split('/').filter((part) => !/^\(.+\)$/.test(part)).join('/');
+  if (path === 'index') return '/docs';
+  return `/docs/${path.replace(/(^|\/)index$/, '')}`;
 }
 
 /** fumadocs-mdx's include tag, `<include cwd>docs/handbook/glossary.md#glossary</include>` (src/lib/remark-handbook.ts reads the same). */

@@ -1,25 +1,8 @@
 {
   "title": "Prototemplate",
   "pages": [
-    "---Overview---",
-    "index",
-    "get-started",
-    "---The site---",
-    "pages",
-    "directions",
-    "deck",
-    "---The system---",
-    "skills",
-    "scripts",
-    "gates",
-    "seo",
-    "---Components---",
-    "...components",
-    "---Blog figures---",
-    "blog-globe",
-    "---Handbook---",
-    "...handbook",
-    "---Template---",
-    "template"
+    "(guide)",
+    "components",
+    "(internals)"
   ]
 }

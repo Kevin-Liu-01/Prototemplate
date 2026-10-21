@@ -1,5 +1,5 @@
 import type { ComponentType, SVGProps } from 'react';
-import { BookOpenIcon, Squares2X2Icon, WrenchScrewdriverIcon } from '@heroicons/react/20/solid';
+import { WrenchScrewdriverIcon } from '@heroicons/react/24/solid';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 
 import DocsThemeButton from './DocsThemeButton';
@@ -7,20 +7,19 @@ import DocsThemeButton from './DocsThemeButton';
 export type DocsSidebarFooterLink = {
   label: string;
   href: string;
-  icon: 'hub' | 'handbook' | 'skills' | 'github';
+  icon: 'skills' | 'github';
 };
 
-/* Heroicons 20 solid for the hub's places, the GitHub mark from the brand set */
+/* a Heroicons solid glyph for the hub's place, the GitHub mark from the brand set */
 const ICONS: Record<DocsSidebarFooterLink['icon'], ComponentType<SVGProps<SVGSVGElement>>> = {
-  hub: Squares2X2Icon,
-  handbook: BookOpenIcon,
   skills: WrenchScrewdriverIcon,
   github: SiGithub,
 };
 
 /**
- * The sidebar's foot, as gt-cloud's docs draw it: a short list of links
- * back into the hub, then the theme button. On phones the drawer is the
+ * The sidebar's foot, as gt-cloud's docs draw it: the skills and the
+ * repository, then the theme button (the way home is the nameplate and
+ * the labelled link above). On phones the drawer is the
  * only place the theme can be switched, so the same footer renders there.
  * fumadocs places it in its own footer row; docs.css styles it.
  */

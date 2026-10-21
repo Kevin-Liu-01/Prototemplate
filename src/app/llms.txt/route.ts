@@ -30,7 +30,7 @@ function docsLine(page: DocsPage): string {
   return `- [${page.data.title}](${selfUrl(page.url)}): ${page.data.description ?? ''} Markdown: ${selfUrl(page.url)}.md`;
 }
 
-/** A docs page in a folder of content/docs: its index or a page under it. */
+/** A docs page under a URL folder of /docs: its index or a page under it. */
 function inFolder(page: DocsPage, folder: string): boolean {
   return page.url === `/docs/${folder}` || page.url.startsWith(`/docs/${folder}/`);
 }
@@ -53,16 +53,21 @@ function body(): string {
   const pages = docsPages();
   const components = pages.filter((page) => inFolder(page, 'components'));
   const handbook = pages.filter((page) => inFolder(page, 'handbook'));
-  const docs = pages.filter((page) => !components.includes(page) && !handbook.includes(page));
+  /* the Internals tab's pages sit in the (internals) folder group, which adds no URL segment */
+  const internals = pages.filter((page) => page.path.startsWith('(internals)/'));
+  const guide = pages.filter((page) => !components.includes(page) && !handbook.includes(page) && !internals.includes(page));
 
-  add('## Docs', '', 'The pages on how Prototemplate works and one on the directions for the blog globe figure, in the docs layout generaltranslation.com runs. The last page explains how to use the docs site as a template.', '');
-  add(...docs.map(docsLine), '');
+  add('## Guide', '', 'What Prototemplate is and how to run it, in the docs layout generaltranslation.com runs.', '');
+  add(...guide.map(docsLine), '');
 
-  add('## Components', '', 'The live component library: every instrument of the hub mounted on its page with controls, its import path, its props and its reduced-motion still.', '');
+  add('## Handbook', '', 'How Kevin runs General Translation work, and the canon: the agent guide, the operating principles, the process and reference documents, then the brand and design canons, the libraries, the graphics pipeline, the artifact pictures, the architecture map, the ship loop and the tools.', '');
+  add(...handbook.map(docsLine), '');
+
+  add('## Components', '', 'The live component library: every instrument of the hub mounted on its page with controls, its import path, its props and its reduced-motion still, and the blog globe figure in all its rounds.', '');
   add(...components.map(docsLine), '');
 
-  add('## Handbook', '', 'How Kevin runs General Translation work, and the canon: the agent guide, the brand and design canons, the architecture map, the ship loop, the tools, the libraries, the graphics pipeline and the artifact pictures.', '');
-  add(...handbook.map(docsLine), '');
+  add('## Internals', '', 'How the hub is built: its routes and the deck, the skills, the scripts and the gates, the SEO system, and how to use the docs site as a template.', '');
+  add(...internals.map(docsLine), '');
 
   add(
     '## Skills',

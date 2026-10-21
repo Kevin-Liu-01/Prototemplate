@@ -17,9 +17,10 @@
  *      cannot be searched; a table row with no heading links to a dead
  *      anchor.
  *   1b. Docs pages. The docs site's pages in the order of
- *      content/docs/meta.json, a `...folder` row lifting in that folder's
- *      own meta.json: DOCS_PAGES (src/components/docs/pages.ts) holds one
- *      row per page outside content/docs/handbook, each with the title and
+ *      content/docs/meta.json, a folder row (a tab, a folder group `(name)`
+ *      or a `...folder` spread) lifting in that folder's own meta.json, each
+ *      page by its URL after /docs/: DOCS_PAGES (src/components/docs/pages.ts)
+ *      holds one row per page outside /docs/handbook, each with the title and
  *      description of the file's frontmatter; the handbook registry holds
  *      the handbook's pages, its readme as the folder's index (titled
  *      Handbook), each page carrying its entry's title and blurb and the
@@ -214,29 +215,50 @@ const docsRows = [...docsList.matchAll(/slug: '([^']+)',\s*\n\s*href: '([^']+)',
   description: m[4] ?? m[5],
 }));
 
-/** The folder of content/docs the handbook registry holds instead of DOCS_PAGES. */
+/** The docs folder (by its URL) the handbook registry holds instead of DOCS_PAGES. */
 const HANDBOOK_FOLDER = 'handbook';
 
+/** A docs file's page slug, the URL after /docs/: folder groups, `(name)`, add no segment, and a folder's `index` is the folder (`index` alone is /docs). */
+function urlSlug(rel) {
+  const path = rel.split('/').filter((part) => !/^\(.+\)$/.test(part)).join('/');
+  return path === 'index' ? 'index' : path.replace(/\/index$/, '');
+}
+
+/** Every .mdx under content/docs by its path there without .mdx. */
+function mdxFiles(dir = '') {
+  return readdirSync(join(ROOT, 'content/docs', dir), { withFileTypes: true }).flatMap((e) => {
+    const rel = dir ? `${dir}/${e.name}` : e.name;
+    if (e.isDirectory()) return mdxFiles(rel);
+    return e.name.endsWith('.mdx') ? [rel.slice(0, -4)] : [];
+  });
+}
+/** Each page slug's file. */
+const FILE_OF = new Map(mdxFiles().map((rel) => [urlSlug(rel), `content/docs/${rel}.mdx`]));
+
 /**
- * The docs pages in the sidebar's order, by their path under content/docs
- * without .mdx: meta.json's rows, separators skipped, a `...folder` row
- * replaced by the rows of that folder's meta.json. A folder's `index` is the
- * folder's own page, so it reads as the folder's path.
+ * The docs pages in the sidebar's order, as page slugs: meta.json's rows,
+ * separators skipped, a `...folder` row replaced by that folder's rows, and
+ * a folder row (a folder group or a real folder) by its own meta.json's
+ * rows. A folder's `index.mdx` leads its rows when its meta.json does not
+ * list it (fumadocs makes it the folder row's link); a root folder lists it.
  */
 function metaOrder(dir = '') {
   const meta = JSON.parse(read(join('content/docs', dir, 'meta.json')));
-  return (meta.pages ?? [])
-    .filter((p) => !p.startsWith('---'))
-    .flatMap((p) => {
-      if (p.startsWith('...')) return metaOrder(dir ? `${dir}/${p.slice(3)}` : p.slice(3));
-      if (p === 'index' && dir) return [dir];
-      return [dir ? `${dir}/${p}` : p];
-    });
+  const rows = (meta.pages ?? []).filter((p) => !p.startsWith('---'));
+  const lead = dir && !rows.includes('index') && existsSync(join(ROOT, 'content/docs', dir, 'index.mdx')) ? [urlSlug(`${dir}/index`)] : [];
+  return [
+    ...lead,
+    ...rows.flatMap((p) => {
+      const spread = p.startsWith('...');
+      const rel = dir ? `${dir}/${spread ? p.slice(3) : p}` : spread ? p.slice(3) : p;
+      if (existsSync(join(ROOT, 'content/docs', rel, 'meta.json'))) return metaOrder(rel);
+      return [urlSlug(rel)];
+    }),
+  ];
 }
-/** A docs page's file: `<slug>.mdx`, or the folder's `index.mdx`. */
+/** A docs page's file, by its page slug. */
 function docsFile(slug) {
-  const folderIndex = `content/docs/${slug}/index.mdx`;
-  return existsSync(join(ROOT, folderIndex)) ? folderIndex : `content/docs/${slug}.mdx`;
+  return FILE_OF.get(slug) ?? `content/docs/${slug}.mdx`;
 }
 const inHandbook = (slug) => slug === HANDBOOK_FOLDER || slug.startsWith(`${HANDBOOK_FOLDER}/`);
 const order = metaOrder();
@@ -260,14 +282,14 @@ for (const row of docsRows) {
   else console.log(`  ok   docs ${row.slug}`);
 }
 
-/* the handbook's pages: the registry's readme and documents, in its order, as content/docs/handbook */
+/* the handbook's pages: the registry's readme and documents, in its order, under /docs/handbook */
 const handbookEntries = [
   ...read('src/app/handbook/registry.ts').matchAll(/slug: '([^']+)',\s*file: '([^']+)',\s*title: '([^']+)',\s*blurb:\s*'([^']*)'/g),
 ].map((m) => ({ slug: m[1], file: m[2], title: m[3], blurb: m[4] }));
 const handbookPages = handbookEntries.map((entry) => (entry.slug === 'readme' ? HANDBOOK_FOLDER : `${HANDBOOK_FOLDER}/${entry.slug}`));
 const handbookOrder = order.filter(inHandbook);
 if (handbookOrder.join(' ') !== handbookPages.join(' ')) {
-  fail(`the handbook registry runs ${handbookPages.join(', ')}; content/docs/${HANDBOOK_FOLDER}/meta.json runs ${handbookOrder.join(', ')}`);
+  fail(`the handbook registry runs ${handbookPages.join(', ')}; the handbook folder's meta.json runs ${handbookOrder.join(', ')}`);
 }
 handbookEntries.forEach((entry, i) => {
   const slug = handbookPages[i];
@@ -286,16 +308,7 @@ handbookEntries.forEach((entry, i) => {
   else console.log(`  ok   docs ${slug}`);
 });
 
-/** Every .mdx under a folder of content/docs, as its page slug. */
-function mdxSlugs(dir = '') {
-  return readdirSync(join(ROOT, 'content/docs', dir), { withFileTypes: true }).flatMap((e) => {
-    const rel = dir ? `${dir}/${e.name}` : e.name;
-    if (e.isDirectory()) return mdxSlugs(rel);
-    if (!e.name.endsWith('.mdx')) return [];
-    return [rel === `${dir}/index.mdx` && dir ? dir : rel.slice(0, -4)];
-  });
-}
-for (const slug of mdxSlugs()) {
+for (const slug of FILE_OF.keys()) {
   if (!docsRows.some((row) => row.slug === slug) && !handbookPages.includes(slug)) fail(`${docsFile(slug)} has no DOCS_PAGES or handbook registry row`);
 }
 

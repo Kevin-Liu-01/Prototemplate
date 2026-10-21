@@ -13,12 +13,14 @@ import {
   DocumentDuplicateIcon,
   GlobeAltIcon,
   GlobeEuropeAfricaIcon,
+  InformationCircleIcon,
   LanguageIcon,
   LinkIcon,
   MapIcon,
   PhotoIcon,
   PresentationChartBarIcon,
   PuzzlePieceIcon,
+  RocketLaunchIcon,
   RectangleGroupIcon,
   ScaleIcon,
   ShieldCheckIcon,
@@ -28,7 +30,7 @@ import {
   SwatchIcon,
   UserGroupIcon,
   WrenchScrewdriverIcon,
-} from '@heroicons/react/20/solid';
+} from '@heroicons/react/24/solid';
 
 import { docs } from '@/.source/server';
 
@@ -37,7 +39,7 @@ import { docs } from '@/.source/server';
  * (source.config.ts) under /docs. The page tree, the routes, the search
  * index and the agent files all read this one loader.
  *
- * A page's `icon` frontmatter names a Heroicons 20 solid glyph from the
+ * A page's `icon` frontmatter names a Heroicons solid glyph from the
  * list below, the house set for marks that carry meaning; an unknown name
  * draws no icon. fumadocs' own control glyphs (chevrons, search, copy) stay
  * Lucide, which is the landing's rule for controls.
@@ -52,6 +54,7 @@ const ICONS: Readonly<Record<string, () => ReactElement>> = {
   Copy: () => createElement(DocumentDuplicateIcon),
   Cube: () => createElement(CubeIcon),
   Globe: () => createElement(GlobeAltIcon),
+  Info: () => createElement(InformationCircleIcon),
   Deck: () => createElement(PresentationChartBarIcon),
   Earth: () => createElement(GlobeEuropeAfricaIcon),
   Language: () => createElement(LanguageIcon),
@@ -61,6 +64,7 @@ const ICONS: Readonly<Record<string, () => ReactElement>> = {
   Pages: () => createElement(RectangleGroupIcon),
   Photo: () => createElement(PhotoIcon),
   Puzzle: () => createElement(PuzzlePieceIcon),
+  Rocket: () => createElement(RocketLaunchIcon),
   Scale: () => createElement(ScaleIcon),
   Shield: () => createElement(ShieldCheckIcon),
   Sparkles: () => createElement(SparklesIcon),
