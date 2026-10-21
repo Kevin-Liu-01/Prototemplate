@@ -1,10 +1,8 @@
-/* The cover's type, drawn once into a canvas the cover's size: the GT
-   monogram at the top left and the title at the foot, nothing else; the
-   authors are on the spine. Titles set in Katagami Serif unless a cover
+/* The cover's type, drawn once into a canvas the cover's size: the title
+   at the foot and nothing else; the authors are on the spine. Titles set in Katagami Serif unless a cover
    picks another face. The color is the cover's paper; the WebGPU display pass reads only the
    alpha and prints the fluid through it, and the fallback draws it as is. */
 
-import { GT_MARK_PATH } from '../ui/GtMark';
 import { drawLayers, type Layers } from './emblems';
 
 const SANS = '"Katagami Text", "Katagami CJK SC", "Katagami CJK JP", "Katagami CJK KR", system-ui, sans-serif';
@@ -29,7 +27,8 @@ export type CoverText = {
 function wrap(ctx: CanvasRenderingContext2D, text: string, max: number): string[] {
   const lines: string[] = [];
   let line = '';
-  const tokens = /\s/.test(text) ? text.split(/(\s+)/) : Array.from(text);
+  // CJK breaks between characters, but never inside a title in 《》 brackets
+  const tokens = /\s/.test(text) ? text.split(/(\s+)/) : (text.match(/《[^》]*》|[\s\S]/gu) ?? []);
   for (const token of tokens) {
     const next = line + token;
     if (ctx.measureText(next.trim()).width <= max || !line.trim()) {
@@ -141,16 +140,6 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
   ctx.fillStyle = t.paper;
   ctx.textBaseline = 'alphabetic';
 
-  // the head: the monogram at the top left
-  const markH = Math.round(short * 0.075);
-  const headBase = pad + markH;
-  const scale = markH / 771;
-  ctx.save();
-  ctx.translate(pad, headBase - markH);
-  ctx.scale(scale, scale);
-  ctx.translate(8, -214);
-  ctx.fill(new Path2D(GT_MARK_PATH), 'evenodd');
-  ctx.restore();
   // the foot, from the bottom up: the subtitle, the title
   let base = height - pad;
 

@@ -13,6 +13,7 @@ import PressMark from './ui/PressMark';
 import MaskToc from './ui/MaskToc';
 import Rail, { type RailMark } from './ui/Rail';
 import { SliderStyleContext } from './ui/StopSlider';
+import ThemeSwitch from './ui/ThemeSwitch';
 import Cover from './ui/Cover';
 import { ArrowIcon, CalendarIcon, ClockIcon, IndexIcon, LiveIcon, LoopIcon, PenIcon, PinIcon, StillIcon, ViewsIcon } from './ui/icons';
 
@@ -145,6 +146,7 @@ export default function Reader({ story, next }: Props) {
     <SliderStyleContext value={story.look === 'fuma' ? 'mask' : 'stops'}>
     <div className='gtp gtp-reader' data-look={story.look}>
       <span ref={progress} className='gtp-top-progress' aria-hidden='true' />
+      <ThemeSwitch className='gtp-reader-theme' />
       <Link href='/press' className='gtp-float-home' aria-label='GT Atlas, all stories'>
         <PressMark size={26} />
       </Link>

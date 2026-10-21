@@ -31,7 +31,8 @@ OUT = ROOT / 'public' / 'fonts' / 'katagami'
 FLAGS_OUT = ROOT / 'public' / 'press' / 'flags'
 FLAGS_IN = ROOT / 'node_modules' / 'flag-icons' / 'flags' / '4x3'
 # the language picker's countries: en us, es es, pt br, de de, ar eg, hi in, zh cn, ko kr, ja jp
-FLAGS = ['us', 'es', 'br', 'de', 'eg', 'in', 'cn', 'kr', 'jp']
+# every country a language's places fly (src/app/press/_press/stories.ts)
+FLAGS = ['us', 'gb', 'au', 'ca', 'ng', 'mx', 'es', 'ar', 'co', 'cn', 'tw', 'sg', 'de', 'at', 'ch', 'in', 'br', 'pt', 'ao', 'eg', 'sa', 'ae', 'ma', 'kr', 'jp']
 PRESS = ROOT / 'src' / 'app' / 'press'
 
 COPY = [

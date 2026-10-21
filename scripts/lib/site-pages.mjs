@@ -277,6 +277,7 @@ export function siteRoutes() {
     { id: 'docs-template', path: '/docs/template', tools: 'check', source: docsSite },
     { id: 'compare', path: '/compare', tools: 'check live lines capture', source: ['src/app/compare'] },
     { id: 'press', path: '/press', tools: 'check capture', source: ['src/app/press'] },
+    { id: 'atlas', path: '/atlas', tools: 'check live lines capture', source: ['src/app/atlas'] },
     { id: 'present', path: '/present', tools: 'check capture', source: ['src/app/present'] },
     /* the built deck itself (next.config.ts rewrites /deck to public/brand-deck.html) */
     { id: 'deck', path: '/deck', tools: 'check live lines capture', source: ['deck/parts'] },

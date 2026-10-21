@@ -113,11 +113,13 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   docs: 'document',
   deck: 'deck',
   press: 'book',
+  turboslide: 'deck',
   present: 'present',
   compare: 'compare',
   skills: 'skill',
   handbook: 'book',
   marks: 'swatch',
+  atlas: 'book',
   motion: 'film',
 };
 

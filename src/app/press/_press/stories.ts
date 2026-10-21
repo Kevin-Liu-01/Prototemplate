@@ -7,25 +7,77 @@ import type { LatLon } from './coords';
 
 export type LangCode = 'en' | 'es' | 'pt' | 'de' | 'ar' | 'hi' | 'zh' | 'ko' | 'ja';
 
+/** A city where a language is spoken: its locale and the country whose flag it flies. */
+export type Place = LatLon & {
+  city: string;
+  /** BCP 47: 'es-MX' */
+  locale: string;
+  /** ISO 3166 alpha-2 in lower case, for the flag: 'mx' */
+  country: string;
+};
+
 export type Lang = LatLon & {
   code: LangCode;
   /** The language's own name. */
   name: string;
   city: string;
   dir: 'ltr' | 'rtl';
+  /** Major cities that speak it, the first being the language's own place above; the globe tours them. */
+  places: readonly Place[];
 };
 
-/* West to east, so the globe turns one way through the slider. */
+const place = (city: string, locale: string, country: string, lat: number, lon: number): Place => ({ city, locale, country, lat, lon });
+
+/** Each language in its first city, with the others it is spoken in. */
+function lang(code: LangCode, name: string, dir: 'ltr' | 'rtl', places: Place[]): Lang {
+  const first = places[0]!;
+  return { code, name, dir, city: first.city, lat: first.lat, lon: first.lon, places };
+}
+
+/* The order Kevin set for the flags: English, Spanish, Chinese, German, Hindi, then the rest. */
 export const LANGS: readonly Lang[] = [
-  { code: 'en', name: 'English', city: 'San Francisco', dir: 'ltr', lat: 37.7749, lon: -122.4194 },
-  { code: 'pt', name: 'Português', city: 'São Paulo', dir: 'ltr', lat: -23.5505, lon: -46.6333 },
-  { code: 'es', name: 'Español', city: 'Madrid', dir: 'ltr', lat: 40.4168, lon: -3.7038 },
-  { code: 'de', name: 'Deutsch', city: 'Berlin', dir: 'ltr', lat: 52.52, lon: 13.405 },
-  { code: 'ar', name: 'العربية', city: 'Cairo', dir: 'rtl', lat: 30.0444, lon: 31.2357 },
-  { code: 'hi', name: 'हिन्दी', city: 'New Delhi', dir: 'ltr', lat: 28.6139, lon: 77.209 },
-  { code: 'zh', name: '中文', city: 'Beijing', dir: 'ltr', lat: 39.9042, lon: 116.4074 },
-  { code: 'ko', name: '한국어', city: 'Seoul', dir: 'ltr', lat: 37.5665, lon: 126.978 },
-  { code: 'ja', name: '日本語', city: 'Tokyo', dir: 'ltr', lat: 35.6762, lon: 139.6503 },
+  lang('en', 'English', 'ltr', [
+    place('San Francisco', 'en-US', 'us', 37.7749, -122.4194),
+    place('London', 'en-GB', 'gb', 51.5074, -0.1278),
+    place('Sydney', 'en-AU', 'au', -33.8688, 151.2093),
+    place('Toronto', 'en-CA', 'ca', 43.6532, -79.3832),
+    place('Lagos', 'en-NG', 'ng', 6.5244, 3.3792),
+  ]),
+  lang('es', 'Español', 'ltr', [
+    place('Mexico City', 'es-MX', 'mx', 19.4326, -99.1332),
+    place('Madrid', 'es-ES', 'es', 40.4168, -3.7038),
+    place('Buenos Aires', 'es-AR', 'ar', -34.6037, -58.3816),
+    place('Bogotá', 'es-CO', 'co', 4.711, -74.0721),
+  ]),
+  lang('zh', '中文', 'ltr', [
+    place('Beijing', 'zh-CN', 'cn', 39.9042, 116.4074),
+    place('Shanghai', 'zh-CN', 'cn', 31.2304, 121.4737),
+    place('Taipei', 'zh-TW', 'tw', 25.033, 121.5654),
+    place('Singapore', 'zh-SG', 'sg', 1.3521, 103.8198),
+  ]),
+  lang('de', 'Deutsch', 'ltr', [
+    place('Berlin', 'de-DE', 'de', 52.52, 13.405),
+    place('Vienna', 'de-AT', 'at', 48.2082, 16.3738),
+    place('Zürich', 'de-CH', 'ch', 47.3769, 8.5417),
+  ]),
+  lang('hi', 'हिन्दी', 'ltr', [
+    place('New Delhi', 'hi-IN', 'in', 28.6139, 77.209),
+    place('Lucknow', 'hi-IN', 'in', 26.8467, 80.9462),
+    place('Jaipur', 'hi-IN', 'in', 26.9124, 75.7873),
+  ]),
+  lang('pt', 'Português', 'ltr', [
+    place('São Paulo', 'pt-BR', 'br', -23.5505, -46.6333),
+    place('Lisbon', 'pt-PT', 'pt', 38.7223, -9.1393),
+    place('Luanda', 'pt-AO', 'ao', -8.839, 13.2894),
+  ]),
+  lang('ar', 'العربية', 'rtl', [
+    place('Cairo', 'ar-EG', 'eg', 30.0444, 31.2357),
+    place('Riyadh', 'ar-SA', 'sa', 24.7136, 46.6753),
+    place('Dubai', 'ar-AE', 'ae', 25.2048, 55.2708),
+    place('Casablanca', 'ar-MA', 'ma', 33.5731, -7.5898),
+  ]),
+  lang('ko', '한국어', 'ltr', [place('Seoul', 'ko-KR', 'kr', 37.5665, 126.978), place('Busan', 'ko-KR', 'kr', 35.1796, 129.0756)]),
+  lang('ja', '日本語', 'ltr', [place('Tokyo', 'ja-JP', 'jp', 35.6762, 139.6503), place('Osaka', 'ja-JP', 'jp', 34.6937, 135.5023)]),
 ];
 
 export type Localized = Record<LangCode, string>;
@@ -49,8 +101,11 @@ export type LiveKind = 'toc' | 'corners' | 'hitlist' | 'globe' | 'wipe' | 'stops
 export type Look = 'docs' | 'fuma' | 'book';
 
 /** The topics the home page filters the shelf by. */
-export const TOPICS = ['docs', 'design', 'open source', 'translation'] as const;
+export const TOPICS = ['translation', 'open-source', 'craft'] as const;
 export type Topic = (typeof TOPICS)[number];
+
+/** Each topic as its tag reads. */
+export const TOPIC_NAMES: Record<Topic, string> = { translation: 'Translation', 'open-source': 'Open Source', craft: 'Craft' };
 
 export type StoryEntry = {
   slug: string;
@@ -81,7 +136,7 @@ export const STORIES: readonly StoryEntry[] = [
   },
   {
     slug: 'designing-docs-for-humans',
-    topics: ['docs', 'design'],
+    topics: ['craft'],
     titles: {
       en: 'Designing docs for humans',
       es: 'Diseñar documentación para personas',
@@ -103,7 +158,7 @@ export const STORIES: readonly StoryEntry[] = [
   },
   {
     slug: 'rewriting-our-docs',
-    topics: ['docs'],
+    topics: ['craft'],
     titles: {
       en: 'Rewriting docs for humans and agents',
       es: 'Reescribir la documentación para personas y agentes',
@@ -118,7 +173,7 @@ export const STORIES: readonly StoryEntry[] = [
   },
   {
     slug: 'fuma-nama',
-    topics: ['docs', 'open source'],
+    topics: ['open-source', 'craft'],
     titles: {
       en: 'Fuma Nama: The philosophy of an open-sourcerer',
       es: 'Fuma Nama: la filosofía de un hechicero del código abierto',

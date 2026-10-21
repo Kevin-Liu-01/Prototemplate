@@ -16,11 +16,13 @@ const COUNTRY: Record<LangCode, string> = {
   ja: 'jp',
 };
 
-export default function Flag({ code, size = 18 }: { code: LangCode; size?: number }) {
+/** A language's flag, or with `country` a place's own (en-GB flies the British flag). */
+export default function Flag({ code, country, size = 18 }: { code?: LangCode; country?: string; size?: number }) {
+  const file = country ?? (code ? COUNTRY[code] : 'us');
   return (
     <span className='gtp-flag' style={{ width: size, height: Math.round(size * 0.75) }} aria-hidden='true'>
       {/* eslint-disable-next-line @next/next/no-img-element -- a 1 KB SVG, drawn at its own size */}
-      <img src={`/press/flags/${COUNTRY[code]}.svg`} alt='' width={size} height={Math.round(size * 0.75)} />
+      <img src={`/press/flags/${file}.svg`} alt='' width={size} height={Math.round(size * 0.75)} />
     </span>
   );
 }

@@ -9,7 +9,6 @@ import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { bookTitle } from '../titles';
 import type { Lang } from '../stories';
 import Cover from './Cover';
-import GtMark from './GtMark';
 import Seal from './Seal';
 
 export type BookStory = Pick<StoryCard, 'slug' | 'n' | 'authors' | 'cover' | 'summary' | 'minutes' | 'dateline'> &
@@ -43,7 +42,7 @@ export function bookDepth(): number {
    outside carries the live fluid and the title, its inside the colophon,
    and under it the first page holds the contents, each section a link into
    the article. The back carries the blurb and the seal; the spine takes the
-   board color with a band of the cover's first dye; the three page edges
+   board color and carries the title and the authors; the three page edges
    are cream with the boards showing at their ends. The size comes from
    --bw and --bh and is the same for every story. */
 export default function Book({ story, title, lang, playing, on = false, open = false, inside = false, className, style, onClick }: Props) {
@@ -103,7 +102,6 @@ export default function Book({ story, title, lang, playing, on = false, open = f
         </div>
         {inside ? (
           <div className='gtp-book-inside'>
-            <GtMark size={28} />
             <dl>
               <dt>Press</dt>
               <dd>GT Atlas</dd>
@@ -127,18 +125,15 @@ export default function Book({ story, title, lang, playing, on = false, open = f
       </div>
 
       <div className='gtp-book-face gtp-book-back'>
-        <GtMark size={26} />
         <p>{story.summary}</p>
         <Seal size={64} className='gtp-book-seal' />
         <span className='gtp-book-back-line'>{dmsPair(story.dateline)}</span>
       </div>
       <div className='gtp-book-face gtp-book-spine'>
-        <span className='gtp-book-band' />
         <span className='gtp-book-spine-title' lang={lang.code} dir={lang.dir}>
           {bookTitle(title, lang.code)}
         </span>
         <span className='gtp-book-spine-by'>{story.authors.join(', ')}</span>
-        <GtMark size={18} className='gtp-book-spine-mark' />
       </div>
       <div className='gtp-book-face gtp-book-fore' />
       <div className='gtp-book-face gtp-book-head' />

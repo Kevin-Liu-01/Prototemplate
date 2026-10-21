@@ -255,11 +255,13 @@ const COLUMNS = ['sitemap', 'capture', 'pagecheck', 'lines', 'sb-icon', 'search-
 console.log(`  ${'id'.padEnd(10)} ${'path'.padEnd(10)} ${COLUMNS.map((c) => c.padEnd(11)).join(' ')}`);
 for (const row of rows) {
   const p = row.path;
+  /* a row that links off the site (Turboslide) is no route here: the sitemap and the browser tools leave it out */
+  const away = /^https?:\/\//.test(p);
   const cells = {
-    sitemap: row.dynamic ? 'loop' : sitemap.includes('${SITE_URL}' + p + '`') || updatedKeys.has(p) ? 'yes' : 'NO',
-    capture: row.dynamic ? 'n/a' : walks(p, 'capture') ? 'yes' : 'no',
-    pagecheck: row.dynamic ? 'first' : walks(p, 'check') ? 'yes' : 'no',
-    lines: row.dynamic ? 'first' : walks(p, 'lines') ? 'yes' : 'no',
+    sitemap: row.dynamic ? 'loop' : away ? 'off-site' : sitemap.includes('${SITE_URL}' + p + '`') || updatedKeys.has(p) ? 'yes' : 'NO',
+    capture: row.dynamic || away ? 'n/a' : walks(p, 'capture') ? 'yes' : 'no',
+    pagecheck: row.dynamic ? 'first' : away ? 'n/a' : walks(p, 'check') ? 'yes' : 'no',
+    lines: row.dynamic ? 'first' : away ? 'n/a' : walks(p, 'lines') ? 'yes' : 'no',
     'sb-icon': hasKey(sidebarIcons, row.id) ? 'yes' : 'fallback',
     'search-icon': hasKey(searchIcons, row.id) ? 'yes' : 'NO',
     keywords: hasKey(keywords, row.id) ? 'yes' : 'no',

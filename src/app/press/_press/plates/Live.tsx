@@ -6,6 +6,7 @@ import { dmsPair } from '../coords';
 import type { Inline as InlineNode } from '../parse';
 import { LANGS, type LangCode, type Localized } from '../stories';
 import Globe from '../ui/Globe';
+import Locator from '../ui/Locator';
 import Inline from '../ui/Inline';
 import StopSlider from '../ui/StopSlider';
 
@@ -292,19 +293,16 @@ const EUCLID: readonly EuclidStop[] = [
   { code: 'zh-Hant', name: '文言', dir: 'ltr', city: 'Beijing', year: '1607', lat: 39.9, lon: 116.37, passage: '點者，無分。' },
 ];
 
-/** `globe` off sets it as a printed page does: the passage, its place, and the versions. */
-export function StopsDemo({ globe = true }: { globe?: boolean }) {
+/** The definition in one version at a time: the locator at the city and year of the version, the passage under it, and the versions to choose from. */
+export function StopsDemo() {
   const [code, setCode] = useState(EUCLID[0]!.code);
   const stop = EUCLID.find((s) => s.code === code) ?? EUCLID[0]!;
   return (
-    <div className='gtp-globe-demo' data-globe={globe}>
-      {globe ? <Globe place={stop} className='gtp-globe-demo-globe' /> : null}
-      <div className='gtp-globe-demo-text'>
-        <p className='gtp-globe-demo-title' lang={stop.code} dir={stop.dir}>
-          {stop.passage}
-        </p>
-        <p className='gtp-globe-demo-meta'>{globe ? `${stop.city} · ${stop.year} · ${dmsPair(stop)}` : `${stop.city}, ${stop.year}`}</p>
-      </div>
+    <div className='gtp-stops-demo'>
+      <Locator place={{ ...stop, locale: stop.code }} note={stop.year} className='gtp-stops-demo-locator' />
+      <p className='gtp-stops-demo-passage' lang={stop.code} dir={stop.dir}>
+        {stop.passage}
+      </p>
       <StopSlider
         stops={EUCLID.map((s) => ({ value: s.code, label: s.name, lang: s.code, dir: s.dir }))}
         value={code}

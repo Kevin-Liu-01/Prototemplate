@@ -39,16 +39,22 @@ export function cameraFor(p: LatLon, tilt = 14): GlobeCamera {
 
 const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 
+/** Degrees between the coordinate lines. */
+const GRID = 15;
+
 /**
  * Mounts on a canvas inside a square box. `pin` is moved to the target's
- * place on the disc (left/top in percent) and hidden behind the limb.
+ * place on the disc (left/top in percent) and hidden behind the limb; the
+ * box carries the same place as --px and --py, for a leader line to a
+ * readout. `graticule` prints the parallels and meridians every 15 degrees.
  */
 export function mountGlobe(
   canvas: HTMLCanvasElement,
   pin: HTMLElement | null,
   start: LatLon,
   cell = 3,
-  tilt = 14
+  tilt = 14,
+  graticule = false
 ): GlobeHandle {
   const ctx = canvas.getContext('2d');
   let camera = cameraFor(start, tilt);
@@ -132,6 +138,15 @@ export function mountGlobe(
           value = 0.02 + 0.08 * lit;
           ink = sea;
         }
+        // the coordinate lines: a cell wide at the disc's middle, wider toward the limb where a cell spans more of the sphere
+        let line = false;
+        if (graticule) {
+          const half = (57.3 / size) / Math.max(pz, 0.3);
+          const offLat = Math.abs(lat - Math.round(lat / GRID) * GRID);
+          const along = wrap180(lon);
+          const offLon = Math.abs(along - Math.round(along / GRID) * GRID) * Math.cos(lat * RAD);
+          line = offLat < half || (offLon < half && Math.abs(lat) < 76);
+        }
         // the limb, printed as a thin lit ring
         if (pz < 0.16) {
           value = Math.max(value, 0.42 * (1 - pz / 0.16) + 0.08);
@@ -143,6 +158,12 @@ export function mountGlobe(
           data[o + 1] = ink[1]!;
           data[o + 2] = ink[2]!;
           data[o + 3] = 255;
+        } else if (line) {
+          // a coordinate line where no dot prints: a faint solid cell, so the line runs unbroken through the screen
+          data[o] = rim[0]!;
+          data[o + 1] = rim[1]!;
+          data[o + 2] = rim[2]!;
+          data[o + 3] = 96;
         } else {
           data[o + 3] = 0;
         }
@@ -159,6 +180,9 @@ export function mountGlobe(
     pin.style.top = `${p.y}%`;
     pin.dataset.hidden = p.near ? 'false' : 'true';
     pin.dataset.side = p.x > 62 ? 'left' : 'right';
+    const box = canvas.parentElement;
+    box?.style.setProperty('--px', `${p.x}%`);
+    box?.style.setProperty('--py', `${p.y}%`);
   }
 
   function turnTo(next: LatLon, ms = 1100) {

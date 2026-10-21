@@ -37,3 +37,7 @@ export const DownIcon = icon('M8 12.5l-6-6 1.2-1.2L8 10.1l4.8-4.8L14 6.5z');
 export const RowIcon = icon('M1 3h4v10H1z M6 3h4v10H6z M11 3h4v10h-4z');
 /** Books in a stack, spines out. */
 export const StackIcon = icon('M2 2.5h12v3H2z M1 6.5h13v3H1z M2.5 10.5h12v3h-12z');
+/** The light theme's switch: a sun, its disc and eight rays. */
+export const SunIcon = icon('M8 4.6a3.4 3.4 0 1 1 0 6.8 3.4 3.4 0 0 1 0-6.8z M7.25 0.5h1.5v2.2h-1.5z M7.25 13.3h1.5v2.2h-1.5z M0.5 7.25h2.2v1.5H0.5z M13.3 7.25h2.2v1.5h-2.2z M2.2 3.26l1.06-1.06 1.56 1.56-1.06 1.06z M11.18 12.24l1.06-1.06 1.56 1.56-1.06 1.06z M2.2 12.74l1.56-1.56 1.06 1.06-1.56 1.56z M11.18 3.76l1.56-1.56 1.06 1.06-1.56 1.56z');
+/** The dark theme's switch: a crescent. */
+export const MoonIcon = icon('M9.6 1.3A6.9 6.9 0 1 0 14.7 10a5.6 5.6 0 0 1-5.1-8.7z');
