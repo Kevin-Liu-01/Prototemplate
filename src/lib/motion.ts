@@ -132,44 +132,9 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
     summary: 'The company in one breath.',
   },
   {
-    slug: 'mark-sting',
-    id: 'film-mark-sting',
-    n: '02',
-    title: 'The bar monogram sting',
-    length: '6 s',
-    runtime: '0:06',
-    status: 'rendered',
-    section: 'motion-films',
-    summary: 'A logo sting for the start and end of any video.',
-    media: {
-      video: '/media/mark-sting-film.mp4',
-      poster: '/media/mark-sting-poster.jpg',
-    },
-    local: {
-      folder: 'motion/films/mark-sting',
-      video: 'motion/out/mark-sting.mp4',
-      poster: 'motion/out/mark-sting.png',
-      sheet: 'motion/out/_sheets/mark-sting.png',
-    },
-    credits: '/motion/mark-sting.credits.txt',
-    cut: {
-      length: '6.0 s',
-      render: 'motion/out/mark-sting.mp4',
-    },
-    sheet: {
-      src: '/motion/sheets/mark-sting.webp',
-      width: 3093,
-      height: 435,
-      bytes: 18650,
-      frames: 12,
-      png: '/motion/sheets/mark-sting.png',
-      pngBytes: 40105,
-    },
-  },
-  {
     slug: 'blog-designing-docs',
     id: 'film-blog-designing-docs',
-    n: '03',
+    n: '02',
     title: 'Designing docs for humans',
     length: '50 to 55 s',
     runtime: '0:56',
@@ -213,7 +178,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'blog-rewriting-docs',
     id: 'film-blog-rewriting-docs',
-    n: '04',
+    n: '03',
     title: 'Rewriting docs for humans and agents',
     length: '20 to 24 s',
     runtime: '0:24',
@@ -257,7 +222,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'blog-fuma-nama',
     id: 'film-blog-fuma-nama',
-    n: '05',
+    n: '04',
     title: 'Fuma Nama, the philosophy of an open-sourcerer',
     length: '55 to 60 s',
     runtime: '1:00',
@@ -300,7 +265,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'blog-open-source',
     id: 'film-blog-open-source',
-    n: '06',
+    n: '05',
     title: 'Supporting open-source software',
     length: '14 to 18 s',
     status: 'planned',
@@ -310,7 +275,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'lottie-translation',
     id: 'film-lottie-translation',
-    n: '07',
+    n: '06',
     title: 'Translated Lottie animations',
     length: '18 to 22 s',
     runtime: '0:19',
@@ -327,7 +292,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'release-board',
     id: 'film-release-board',
-    n: '08',
+    n: '07',
     title: 'The release board',
     length: '14 to 18 s',
     runtime: '0:15',
@@ -370,7 +335,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'slash-announcement',
     id: 'film-slash-announcement',
-    n: '09',
+    n: '08',
     title: 'Supporting Slash companies',
     length: '35 to 40 s',
     runtime: '0:36',
@@ -549,7 +514,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'gif-how-gt-works',
     id: 'film-gif-how-gt-works',
-    n: '10',
+    n: '09',
     title: 'How General Translation works',
     length: '15 to 18 s',
     runtime: '0:17',
@@ -583,7 +548,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'showreel',
     id: 'film-showreel',
-    n: '11',
+    n: '10',
     title: 'Showreel',
     length: '40 to 50 s',
     note: 'assembled last',
@@ -594,7 +559,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'jihe-yuanben',
     id: 'film-jihe-yuanben',
-    n: '12',
+    n: '11',
     title: 'Ricci, Xu Guangqi, and the Chinese vocabulary of Euclid',
     length: '60 to 100 s',
     runtime: '1:15',
@@ -650,7 +615,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'journey-to-the-west',
     id: 'film-journey-to-the-west',
-    n: '13',
+    n: '12',
     title: 'Waley, Hu Shih, and the English names of Journey to the West',
     length: '60 to 100 s',
     runtime: '1:13',
@@ -705,7 +670,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'modern-hebrew',
     id: 'film-modern-hebrew',
-    n: '14',
+    n: '13',
     title: 'Ben-Yehuda, Pines, and the vocabulary of Modern Hebrew',
     length: '60 to 100 s',
     runtime: '1:10',
@@ -760,7 +725,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'nishi-amane',
     id: 'film-nishi-amane',
-    n: '15',
+    n: '14',
     title: 'Nishi Amane and the Japanese vocabulary of philosophy',
     length: '60 to 100 s',
     runtime: '1:36',
@@ -813,7 +778,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'tyndale',
     id: 'film-tyndale',
-    n: '16',
+    n: '15',
     title: 'Tyndale, More, and the English vocabulary of the Bible',
     length: '60 to 100 s',
     runtime: '1:37',
@@ -866,7 +831,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'hunayn',
     id: 'film-hunayn',
-    n: '17',
+    n: '16',
     title: 'Ḥunayn, Ḥubaysh, and the Arabic vocabulary of Galen',
     length: '60 to 100 s',
     runtime: '1:40',
@@ -919,7 +884,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-best-localization-software',
     id: 'film-kb-best-localization-software',
-    n: '18',
+    n: '17',
     title: 'What is the best localization software for developers?',
     length: '40 to 52 s',
     runtime: '0:44',
@@ -962,7 +927,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-what-is-locadex',
     id: 'film-kb-what-is-locadex',
-    n: '19',
+    n: '18',
     title: 'What does the Locadex agent do?',
     length: '40 to 52 s',
     runtime: '0:49',
@@ -1005,7 +970,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-i18n-without-translation-files',
     id: 'film-kb-i18n-without-translation-files',
-    n: '20',
+    n: '19',
     title: 'Can I do i18n without translation files?',
     length: '40 to 52 s',
     runtime: '0:46',
@@ -1048,7 +1013,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-add-i18n-to-nextjs',
     id: 'film-kb-add-i18n-to-nextjs',
-    n: '21',
+    n: '20',
     title: 'How do I add i18n to a Next.js app?',
     length: '40 to 52 s',
     runtime: '0:51',
@@ -1091,7 +1056,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-react-app',
     id: 'film-kb-translate-react-app',
-    n: '22',
+    n: '21',
     title: 'How do I translate a React app?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1134,7 +1099,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-vue-app',
     id: 'film-kb-translate-vue-app',
-    n: '23',
+    n: '22',
     title: 'How do I translate a Vue app?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1177,7 +1142,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-react-native-app',
     id: 'film-kb-translate-react-native-app',
-    n: '24',
+    n: '23',
     title: 'How do I translate a React Native app?',
     length: '40 to 52 s',
     runtime: '0:47',
@@ -1220,7 +1185,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-tanstack-start-app',
     id: 'film-kb-translate-tanstack-start-app',
-    n: '25',
+    n: '24',
     title: 'How do I translate a TanStack Start app?',
     length: '40 to 52 s',
     runtime: '0:49',
@@ -1263,7 +1228,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-node-app',
     id: 'film-kb-translate-node-app',
-    n: '26',
+    n: '25',
     title: 'How do I translate a Node.js app?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1306,7 +1271,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-conditional-jsx',
     id: 'film-kb-translate-conditional-jsx',
-    n: '27',
+    n: '26',
     title: 'How do I translate conditional text in JSX?',
     length: '40 to 52 s',
     runtime: '0:46',
@@ -1349,7 +1314,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-strings-outside-jsx',
     id: 'film-kb-translate-strings-outside-jsx',
-    n: '28',
+    n: '27',
     title: 'How do I translate strings outside JSX?',
     length: '40 to 52 s',
     runtime: '0:49',
@@ -1392,7 +1357,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-how-to-handle-plurals-in-react',
     id: 'film-kb-how-to-handle-plurals-in-react',
-    n: '29',
+    n: '28',
     title: 'How do I handle plurals in React?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1435,7 +1400,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-format-numbers-dates-currencies',
     id: 'film-kb-format-numbers-dates-currencies',
-    n: '30',
+    n: '29',
     title: 'How do I format numbers, dates and currencies for each locale?',
     length: '40 to 52 s',
     runtime: '0:45',
@@ -1478,7 +1443,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-multilingual-nextjs-seo',
     id: 'film-kb-multilingual-nextjs-seo',
-    n: '31',
+    n: '30',
     title: 'How do I set up SEO for a multilingual Next.js app?',
     length: '40 to 52 s',
     runtime: '0:50',
@@ -1521,7 +1486,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-ai-agent-i18n-setup',
     id: 'film-kb-ai-agent-i18n-setup',
-    n: '32',
+    n: '31',
     title: 'Can an AI coding agent set up i18n for me?',
     length: '40 to 52 s',
     runtime: '0:46',
@@ -1564,7 +1529,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-review-translations',
     id: 'film-kb-review-translations',
-    n: '33',
+    n: '32',
     title: 'How do I review and edit translations?',
     length: '40 to 52 s',
     runtime: '0:45',
@@ -1607,7 +1572,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translations-in-ci',
     id: 'film-kb-translations-in-ci',
-    n: '34',
+    n: '33',
     title: 'How do I keep translations up to date on every deploy?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1650,7 +1615,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-mintlify-docs',
     id: 'film-kb-translate-mintlify-docs',
-    n: '35',
+    n: '34',
     title: 'How do I translate a Mintlify docs site?',
     length: '40 to 52 s',
     runtime: '0:47',
@@ -1693,7 +1658,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-sanity-content',
     id: 'film-kb-translate-sanity-content',
-    n: '36',
+    n: '35',
     title: 'How do I translate content in Sanity?',
     length: '40 to 52 s',
     runtime: '0:47',
@@ -1736,7 +1701,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-storyblok-content',
     id: 'film-kb-translate-storyblok-content',
-    n: '37',
+    n: '36',
     title: 'How do I translate content in Storyblok?',
     length: '40 to 52 s',
     runtime: '0:50',
@@ -1779,7 +1744,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-google-slides',
     id: 'film-kb-translate-google-slides',
-    n: '38',
+    n: '37',
     title: 'How do I translate Google Slides?',
     length: '40 to 52 s',
     runtime: '0:50',
@@ -1822,7 +1787,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-srt-subtitles',
     id: 'film-kb-translate-srt-subtitles',
-    n: '39',
+    n: '38',
     title: 'How do I translate SRT subtitles?',
     length: '40 to 52 s',
     runtime: '0:51',
@@ -1865,7 +1830,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-product-walkthroughs',
     id: 'film-kb-translate-product-walkthroughs',
-    n: '40',
+    n: '39',
     title: 'How do I show a product walkthrough in every language?',
     length: '40 to 52 s',
     runtime: '0:48',
@@ -1908,7 +1873,7 @@ export const MOTION_FILMS: readonly MotionFilm[] = [
   {
     slug: 'kb-translate-lottie-animations',
     id: 'film-kb-translate-lottie-animations',
-    n: '41',
+    n: '40',
     title: 'How do I translate a Lottie animation?',
     length: '40 to 52 s',
     runtime: '0:49',

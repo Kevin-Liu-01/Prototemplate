@@ -360,16 +360,6 @@
         "audio": "c4845deeaf115207d8abae4c71ce801dd1fc530538f77b8d3d55d4e6962179df"
       }
     },
-    "mark-sting": {
-      "cut": null,
-      "length": "6.0 s",
-      "film": "/media/mark-sting-film.mp4",
-      "poster": "/media/mark-sting-poster.jpg",
-      "streams": {
-        "video": "389251f0948b5f66d388691e7399b576716ef143baab78306f0ac3bde4b3719f",
-        "audio": "37c936f7a58d7f1f0d8b5d535e7d32db7ab316a67c0f4b2c90fabe65e374fcf3"
-      }
-    },
     "slash-announcement-de": {
       "cut": "v2, from the English v8 (fix round 1)",
       "length": "37.0 s",
@@ -402,6 +392,7 @@
     }
   },
   "offSite": [
-    "slash-partnership"
+    "slash-partnership",
+    "mark-sting"
   ]
 }

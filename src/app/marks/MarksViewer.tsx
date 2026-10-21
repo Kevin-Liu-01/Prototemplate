@@ -3,6 +3,7 @@
 import type { CSSProperties, MouseEvent, RefObject } from 'react';
 import { useRef } from 'react';
 
+import BrandFilm from '@/app/brand/BrandFilm';
 import { BookHead } from '@/components/viewer/BookView';
 import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -240,8 +241,9 @@ type MarkSheetProps = {
  * One mark, presented the way a logo reel presents a logo: the mark large,
  * positive and reversed; a run of heights on both grounds; for a monogram
  * the app icon and the favicon in a tab, and for the two picture marks the
- * clean mark beside its construction; then the thesis, the construction,
- * the use note and the files as ruled rows. Every instance is sized by
+ * clean mark beside its construction; a mark's film when it has one (the
+ * bar monogram sting); then the thesis, the construction, the use note and
+ * the files as ruled rows. Every instance is sized by
  * height and the file's own aspect, so a wide mark (every speed mark) lays
  * its plates out full width, one above the other, and a square mark keeps
  * them side by side. The notes arrive as strings from marks.ts, so they
@@ -340,6 +342,15 @@ function MarkSheet({ mark, section, art, active }: MarkSheetProps) {
             </>
           )}
         </div>
+      )}
+
+      {mark.film && (
+        <figure className='mk-film'>
+          <BrandFilm src={mark.film.src} poster={mark.film.poster} name={mark.film.name} />
+          <figcaption>
+            Motion, {mark.film.length}. {gtText(mark.film.summary)}
+          </figcaption>
+        </figure>
       )}
 
       <dl className='mk-notes'>

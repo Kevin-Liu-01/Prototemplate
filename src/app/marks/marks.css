@@ -164,6 +164,31 @@
   white-space: nowrap;
 }
 
+/* a mark's film (the bar monogram sting): BrandFilm brings its play button
+   and badge; the video takes the frame role and the card corner, as on
+   /motion, and the caption sits under it, clear of the native controls */
+.mk-film {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.mk-film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-panel-ink);
+  background-clip: padding-box;
+}
+
+.mk-film figcaption {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
 /* the applications: the app icon and the favicon in a tab for a monogram;
    the clean mark beside its construction for the two picture marks */
 .mk-apps {

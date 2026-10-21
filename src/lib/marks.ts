@@ -43,7 +43,12 @@ export type Mark = {
   constructionFile?: string;
   /** the plain characters, a public path, for the ASCII rendering */
   textFile?: string;
+  /** the mark's motion piece: a film built on the mark alone, its web copy and poster under public/media */
+  film?: MarkFilm;
 };
+
+/** A film made from one mark, played in that mark's section of /marks. */
+export type MarkFilm = { name: string; summary: string; length: string; src: string; poster: string };
 
 /** A mark's files as read from disk by the server page, and the aspect of its viewBox (width over height). */
 export type MarkArt = { clean: string; construction?: string; aspect: number };
@@ -137,6 +142,13 @@ export const MARKS: readonly Mark[] = [
       'Ten rectangles on a 120 unit cap height under a 12 degree skew. The G is a stem, a top arm, a bottom arm, a chin and a right stem; the T is a crossbar and a stem; the three speed bars run 20, 80 and 50 units past the stem of the G at the top arm, at mid height and at the bottom arm. One 8 unit cut at mid height runs through both letters and splits the middle bar into two lines. The cut is applied to the geometry, so the file is plain polygons in one path, with no font, no mask and no id.',
     use:
       'There is no font in the file; the letters are geometry, so the mark holds at 16px and reads in either polarity. At 16px the cut and the thin bars fall to one pixel and the two letters carry the mark; from 32px the three bars read as bars.',
+    film: {
+      name: 'the bar monogram sting',
+      summary: 'A logo sting for the start and end of any video, built on the bar monogram alone, with sound and no narration.',
+      length: '6 s',
+      src: '/media/mark-sting-film.mp4',
+      poster: '/media/mark-sting-poster.jpg',
+    },
   }),
   mark({
     id: 'bar-monogram-lockup',
