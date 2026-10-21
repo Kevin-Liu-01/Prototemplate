@@ -8,6 +8,7 @@
  *   every other /d/ page                 noindex, self canonical, not listed (a design study of GT copy)
  *   /blog/<slug>                         index, canonical on generaltranslation.com/en-US/blog, not listed
  *   /press/<slug> of a GT post           index, canonical on generaltranslation.com/en-US/blog, not listed
+ *   /press/directions and its pages      noindex, self canonical, not listed (design studies of the press page)
  *   every other path                     index, self canonical on www, listed
  *
  * www.prototemplate.com is canonical (decision log, 2026-10-10); the two
@@ -81,6 +82,10 @@ export function policyFor(path: string): SeoPolicy {
   }
 
   if (p === '/d' || p.startsWith('/d/')) {
+    return { index: false, canonical: self, inSitemap: false };
+  }
+
+  if (p === '/press/directions' || p.startsWith('/press/directions/')) {
     return { index: false, canonical: self, inSitemap: false };
   }
 

@@ -1,0 +1,66 @@
+/* 03 Signal: the GT poster, a Morse field, the definition in five languages and the coordinates of each city. */
+
+.pdx .v-signal {
+  --sky: #c8e8fa;
+  --ink: #0e0f10;
+  --dim: rgba(14,15,16,.4);
+  --g-sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+  background: var(--sky);
+  color: var(--ink);
+  font-family: var(--g-sans);
+}
+.pdx .sg-field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.pdx .sg-tl { position: absolute; top: var(--pt); left: var(--pl); z-index: 3; display: grid; gap: 18px; max-width: 360px; }
+.pdx .sg-copy { font: 400 12px/1.25 var(--g-sans); }
+.pdx .sg-title { font: 500 clamp(15px, 1.25vw, 19px)/1.22 var(--g-sans); letter-spacing: -.01em; text-wrap: balance; }
+.pdx .sg-title a { text-decoration: none; }
+.pdx .sg-nums { position: absolute; z-index: 3; left: 62%; top: var(--pt); display: grid; gap: clamp(14px, 3.4vh, 34px); }
+.pdx .sg-nums li { display: grid; grid-template-columns: 34px auto; align-items: baseline; font: 400 13px/1 var(--g-sans); font-variant-numeric: tabular-nums; transition: opacity .4s ease; opacity: .38; }
+.pdx .sg-nums li.on { opacity: 1; }
+.pdx .sg-nums li span:last-child { font-size: 12px; opacity: 0; transform: translateX(-6px); transition: opacity .4s ease, transform .5s var(--ease); white-space: nowrap; }
+.pdx .sg-nums li.on span:last-child { opacity: 1; transform: none; }
+.pdx .sg-chips { position: absolute; z-index: 3; left: var(--pl); top: 40%; display: flex; gap: 8px; }
+.pdx .sg-chips button { width: 27px; height: 27px; border-radius: 50%; background: var(--ink); color: #fff; font: 600 8.5px/1 var(--g-sans); letter-spacing: .02em; display: grid; place-items: center; transition: background .25s, color .25s, box-shadow .25s; }
+.pdx .sg-chips button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 0 0 1.5px var(--ink) inset; }
+.pdx .sg-lines { position: absolute; z-index: 3; left: var(--pl); right: 38%; top: 49%; bottom: calc(var(--pb) + 40px); }
+.pdx .sg-sm { position: absolute; font: 400 clamp(15px, 1.45vw, 22px)/1.2 var(--g-sans); white-space: nowrap; transition: opacity .35s ease, transform .5s var(--ease); }
+.pdx .sg-sm:lang(grc) { font-family: "Noto Sans", var(--g-sans); }
+.pdx .sg-sm:lang(ar) { font-family: "Noto Sans Arabic", var(--g-sans); }
+.pdx .sg-sm:lang(zh-Hant) { font-family: var(--cjk-sans); }
+.pdx .sg-sm.s0 { top: 0; left: 0; }
+.pdx .sg-sm.s1 { top: 9%; left: 2.4vw; }
+.pdx .sg-sm.s2 { top: 71%; left: 3.2vw; }
+.pdx .sg-sm.s3 { top: 80%; left: 1.2vw; }
+.pdx .sg-big { position: absolute; top: 18%; left: .2vw; right: 0; height: 48%; display: flex; align-items: center; }
+.pdx .sg-big p { font: 400 clamp(64px, 10vw, 158px)/1 var(--cjk-sans); letter-spacing: .01em; white-space: nowrap; }
+.pdx .sg-big p:not(:lang(zh-Hant)) { font: 400 clamp(32px, 3.9vw, 62px)/1.05 var(--g-sans); letter-spacing: -.03em; white-space: normal; max-width: 13em; text-wrap: balance; }
+.pdx .sg-big p:lang(grc) { font-family: "Noto Sans", var(--g-sans); letter-spacing: -.02em; }
+.pdx .sg-big p:lang(ar) { font-family: "Noto Sans Arabic", var(--g-sans); letter-spacing: 0; line-height: 1.35; }
+.pdx .sg-big p.out { opacity: 0; transform: translateY(-.14em); filter: blur(6px); transition: opacity .28s ease, transform .3s ease, filter .3s ease; }
+.pdx .sg-big p.in { animation: pdx-sg-in .7s var(--ease) both; }
+@keyframes pdx-sg-in { from { opacity: 0; transform: translateY(.18em); filter: blur(8px); } }
+.pdx .sg-coord { position: absolute; z-index: 3; right: var(--pr); bottom: calc(var(--pb) + 30px); font: 400 clamp(40px, 6.6vw, 104px)/.98 var(--g-sans); letter-spacing: -.045em; font-variant-numeric: tabular-nums; text-align: right; }
+.pdx .sg-coord div { display: flex; justify-content: flex-end; gap: .38em; }
+.pdx .sg-coord .h { width: .7em; text-align: left; }
+.pdx .sg-roll { display: inline-block; position: relative; overflow: hidden; vertical-align: top; height: 1em; line-height: 1; }
+.pdx .sg-roll > span { display: block; height: 1em; }
+.pdx .sg-roll.go > span { animation: pdx-sg-roll .62s var(--ease) both; animation-delay: var(--d, 0ms); }
+@keyframes pdx-sg-roll { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+.pdx .sg-legend { position: absolute; z-index: 3; left: var(--pl); bottom: var(--pb); font: 400 10.5px/1.4 var(--mono); letter-spacing: .04em; }
+.pdx .sg-legend span { opacity: .55; }
+.pdx .is-in .sg-tl, .pdx .is-in .sg-nums, .pdx .is-in .sg-chips, .pdx .is-in .sg-legend { animation: pdx-fade .9s ease both 1s; }
+.pdx .is-in .sg-lines { animation: pdx-fade 1s ease both 1.3s; }
+.pdx .is-in .sg-coord { animation: pdx-up 1s var(--ease) both 1.4s; }
+
+@media (max-width: 860px) {
+  .pdx .sg-nums { display: none; }
+  .pdx .sg-tl { right: var(--pr); }
+  .pdx .sg-chips { top: 26%; }
+  .pdx .sg-lines { right: var(--pr); top: 33%; bottom: 24%; }
+  .pdx .sg-sm { font-size: 15px; }
+  .pdx .sg-big { top: 17%; height: 50%; }
+  .pdx .sg-big p { font-size: clamp(48px, 15vw, 96px); }
+  .pdx .sg-big p:not(:lang(zh-Hant)) { font-size: clamp(28px, 7.4vw, 44px); }
+  .pdx .sg-coord { font-size: clamp(34px, 10.4vw, 64px); bottom: calc(var(--pb) + 64px); }
+  .pdx .sg-legend { display: none; }
+}

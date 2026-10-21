@@ -1,0 +1,64 @@
+/* 06 Route: wayfinding signage for Ricci’s road to Peking, guide lines, a lime block and a sign that changes stops. */
+
+.pdx .v-route {
+  --white: #fbfbf9;
+  --ink: #111111;
+  --rule: #cfcfcc;
+  --lime: #d6f55b;
+  --grey: #8c8c88;
+  --ar: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --u: clamp(30px, 3.3vw, 54px);
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--ar);
+}
+.pdx .rt-grid { position: absolute; inset: 0; pointer-events: none; }
+.pdx .rt-grid i { position: absolute; background: var(--rule); }
+.pdx .rt-grid i.gv { top: 0; bottom: 0; width: 1px; transform-origin: 50% 0; }
+.pdx .rt-grid i.gh { left: 0; right: 0; height: 1px; transform-origin: 0 50%; }
+.pdx .is-in .rt-grid i.gv { animation: pdx-grow-y 1.1s var(--ease-io) both; animation-delay: calc(var(--d) * 60ms); }
+.pdx .is-in .rt-grid i.gh { animation: pdx-grow-x 1.2s var(--ease-io) both; animation-delay: calc(var(--d) * 50ms + 200ms); }
+.pdx .rt-block { position: absolute; background: var(--lime); transform-origin: 0 50%; }
+.pdx .is-in .rt-block { animation: pdx-rt-wipe .9s var(--ease-io) both .5s; }
+@keyframes pdx-rt-wipe { from { transform: scaleX(0); } }
+.pdx .rt-sign { position: absolute; z-index: 2; font: 500 var(--u)/1 var(--ar); font-stretch: 100%; letter-spacing: -.005em; text-transform: uppercase; }
+.pdx .rt-row { position: absolute; left: 0; height: var(--u); display: flex; align-items: center; gap: .55em; white-space: nowrap; }
+.pdx .rt-slot { display: inline-block; position: relative; height: 1.2em; line-height: 1.2em; overflow: hidden; vertical-align: middle; }
+.pdx .rt-slot > span { display: block; }
+.pdx .rt-slot.flip > span { animation: pdx-rt-flip .55s var(--ease) both; }
+@keyframes pdx-rt-flip { from { transform: translateY(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+.pdx .rt-zh { font: 400 calc(var(--u) * .78)/1 var(--cjk-sans); letter-spacing: .9em; margin-right: -.9em; text-transform: none; }
+.pdx .rt-oval { display: inline-grid; place-items: center; height: .92em; padding: 0 .3em; min-width: 1.6em; border: 2px solid var(--grey); border-radius: 50%; color: var(--grey); font-size: .62em; font-weight: 500; letter-spacing: 0; }
+.pdx .rt-km { font-variant-numeric: tabular-nums; }
+.pdx .rt-head { position: absolute; z-index: 2; font: 600 12px/1.35 var(--ar); letter-spacing: .08em; text-transform: uppercase; }
+.pdx .rt-head span { color: var(--grey); }
+.pdx .rt-fig { position: absolute; z-index: 2; margin: 0; }
+.pdx .rt-fig img { width: 100%; height: auto; filter: grayscale(1) contrast(1.06); }
+.pdx .rt-fig figcaption { font: 600 10.5px/1.4 var(--ar); letter-spacing: .08em; text-transform: uppercase; margin-top: 10px; }
+.pdx .rt-fig figcaption span { color: var(--grey); }
+.pdx .rt-strip { position: absolute; z-index: 2; }
+.pdx .rt-strip .track { position: absolute; left: 0; right: 0; top: 50%; height: 3px; margin-top: -1.5px; background: var(--rule); }
+.pdx .rt-strip .done { position: absolute; left: 0; top: 50%; height: 3px; margin-top: -1.5px; background: var(--ink); transition: width .9s var(--ease-io); }
+.pdx .rt-strip button { position: absolute; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; display: grid; place-items: center; }
+.pdx .rt-strip button i { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid var(--ink); background: var(--white); transition: background .3s, transform .4s var(--ease); }
+.pdx .rt-strip button.past i { background: var(--ink); }
+.pdx .rt-strip button.on i { background: var(--lime); transform: scale(1.5); }
+.pdx .rt-strip button .zh { position: absolute; bottom: 100%; font: 500 14px/1 var(--cjk-sans); letter-spacing: .2em; margin-right: -.2em; white-space: nowrap; }
+.pdx .rt-strip button .en { position: absolute; top: 100%; font: 600 10px/1.4 var(--ar); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; text-align: center; }
+.pdx .rt-strip button .en span { display: block; color: var(--grey); }
+.pdx .rt-c { position: absolute; z-index: 3; font: 600 11px/1.5 var(--ar); letter-spacing: .08em; text-transform: uppercase; }
+.pdx .rt-c.tl { top: var(--pt); left: var(--pl); }
+.pdx .rt-c.tl a { text-decoration: none; font-size: 20px; letter-spacing: -.01em; text-transform: none; font-weight: 600; }
+.pdx .rt-c.tr { top: var(--pt); right: var(--pr); text-align: right; font-variant-numeric: tabular-nums; }
+.pdx .rt-c.br { bottom: var(--pb); right: var(--pr); text-align: right; }
+.pdx .rt-c.bl { bottom: var(--pb); left: var(--pl); }
+.pdx .rt-c button { font: inherit; letter-spacing: inherit; text-transform: inherit; border-bottom: 2px solid var(--ink); padding-bottom: 1px; }
+.pdx .rt-c .grey { color: var(--grey); }
+.pdx .is-in :is(.rt-sign, .rt-head, .rt-fig, .rt-strip, .rt-c) { animation: pdx-fade .8s ease both; animation-delay: calc(.9s + var(--d, 0) * 120ms); }
+
+@media (max-width: 860px) {
+  .pdx .v-route { --u: clamp(24px, 7.6vw, 40px); }
+  .pdx .rt-strip button .en { display: none; }
+  .pdx .rt-c.bl { bottom: calc(var(--pb) + 50px); }
+  .pdx .rt-c.br, .pdx .rt-c.tl, .pdx .rt-c.tr { display: none; }
+}

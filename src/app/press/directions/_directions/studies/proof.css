@@ -1,0 +1,65 @@
+/* 04 Proof poster: grey type on grey stock, construction lines at the letter boundaries, a second page of definitions. */
+
+.pdx .v-proof {
+  --paper: #e9e8e4;
+  --rule: rgba(58,57,53,.42);
+  --grey: #a3a29c;
+  --grey-2: #8f8e89;
+  --label: #6c6b66;
+  --serif: "Newsreader", "Times New Roman", Times, serif;
+  background: var(--paper);
+  color: var(--grey);
+  font-family: var(--serif);
+  padding-left: 0;
+  padding-right: 0;
+}
+.pdx .pf-flip { position: absolute; inset: 0; z-index: 1; }
+.pdx .pf-page { position: absolute; inset: 0; background: var(--paper); overflow: hidden; cursor: pointer; }
+.pdx .pf-page::before { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .35; mix-blend-mode: multiply; pointer-events: none; z-index: 4; }
+.pdx .pf-page::after { content: ""; position: absolute; inset: 0; background-image: var(--grain-coarse); opacity: .09; mix-blend-mode: multiply; pointer-events: none; z-index: 4; transform: scale(2.2); }
+.pdx .pf-lines { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.pdx .pf-lines i { position: absolute; background: var(--rule); }
+.pdx .pf-lines i.gv { top: 0; bottom: 0; width: 1px; transform-origin: 50% 0; }
+.pdx .pf-lines i.gh { left: 0; right: 0; height: 1px; transform-origin: 0 50%; }
+.pdx .pf-lines b { position: absolute; font: 400 11px/1 var(--serif); color: var(--label); transform: translateX(-50%); font-variant-numeric: tabular-nums; }
+.pdx .pf-mark { position: absolute; z-index: 2; left: 0; top: 0; font: 400 clamp(84px, 11.6vw, 196px)/1 var(--serif); font-optical-sizing: auto; letter-spacing: -.02em; color: var(--grey); white-space: nowrap; }
+.pdx .pf-mark sup { font-size: .32em; vertical-align: .95em; margin-left: .04em; letter-spacing: 0; position: static; line-height: inherit; }
+.pdx .pf-sub { position: absolute; z-index: 2; font: 400 clamp(20px, 2.3vw, 38px)/1.12 var(--serif); color: var(--grey-2); white-space: nowrap; }
+.pdx .pf-sub .gap { display: inline-block; width: 2.2em; }
+.pdx .pf-fig { position: absolute; z-index: 2; margin: 0; }
+.pdx .pf-fig img { width: 100%; height: auto; filter: grayscale(1) contrast(.82) brightness(1.12); mix-blend-mode: multiply; opacity: .78; }
+.pdx .pf-fig figcaption { font: italic 400 12px/1.4 var(--serif); color: var(--label); margin-top: 10px; }
+.pdx .pf-chrome { position: absolute; z-index: 5; font: 400 12px/1.5 var(--serif); color: var(--label); }
+.pdx .pf-chrome.tl { top: var(--pt); left: max(16px, env(safe-area-inset-left, 0px), 3.4vw); }
+.pdx .pf-chrome.tr { top: var(--pt); right: max(16px, env(safe-area-inset-right, 0px), 3.4vw); text-align: right; font-variant-numeric: tabular-nums; }
+.pdx .pf-chrome.bl { bottom: var(--pb); left: max(16px, env(safe-area-inset-left, 0px), 3.4vw); }
+.pdx .pf-chrome.br { bottom: var(--pb); right: max(16px, env(safe-area-inset-right, 0px), 3.4vw); text-align: right; }
+.pdx .pf-langs { display: flex; gap: 10px; }
+.pdx .pf-langs button { font: 400 12px/1 var(--serif); color: var(--label); padding: 3px 0; }
+.pdx .pf-langs button[aria-checked="true"] { color: #2d2c29; text-decoration: underline; text-underline-offset: 3px; }
+.pdx .pf-chrome i { font-style: italic; }
+/* page 2 */
+.pdx .pf-defs { position: absolute; z-index: 2; inset: 0; }
+.pdx .pf-def { position: absolute; left: 0; white-space: nowrap; font: 400 clamp(26px, 3.3vw, 54px)/1 var(--serif); color: var(--grey); }
+.pdx .pf-def:lang(grc) { font-family: "EB Garamond", var(--serif); }
+.pdx .pf-def:lang(ar) { font-family: "Noto Naskh Arabic", var(--serif); font-size: clamp(26px, 3.1vw, 50px); }
+.pdx .pf-def:lang(zh-Hant) { font-family: var(--cjk-serif); letter-spacing: .1em; }
+.pdx .pf-src { position: absolute; z-index: 2; font: italic 400 13px/1.3 var(--serif); color: var(--label); white-space: nowrap; }
+.pdx .pf-h { position: absolute; z-index: 2; font: italic 400 clamp(18px, 1.7vw, 26px)/1.2 var(--serif); color: var(--grey-2); }
+.pdx .pf-read { position: absolute; z-index: 6; font: 400 clamp(18px, 1.6vw, 24px)/1 var(--serif); color: #45443f; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 3px; }
+/* intro */
+.pdx .pf-anim .pf-lines i.gv { animation: pdx-grow-y 1.2s var(--ease-io) both; animation-delay: calc(var(--d) * 70ms + 150ms); }
+.pdx .pf-anim .pf-lines i.gh { animation: pdx-grow-x 1.3s var(--ease-io) both; animation-delay: calc(var(--d) * 90ms + 450ms); }
+.pdx .pf-anim .pf-lines b { animation: pdx-fade .8s ease both; animation-delay: calc(var(--d) * 70ms + 1100ms); }
+.pdx .pf-anim :is(.pf-mark, .pf-sub, .pf-def, .pf-h) { animation: pdx-pf-print 1.5s var(--ease) both; animation-delay: calc(var(--d, 0) * 160ms + 1250ms); }
+.pdx .pf-anim :is(.pf-fig, .pf-src, .pf-read) { animation: pdx-fade 1.4s ease both; animation-delay: calc(var(--d, 0) * 120ms + 1900ms); }
+@keyframes pdx-pf-print { from { clip-path: inset(0 100% 0 0); filter: blur(3px); opacity: .3; } 60% { filter: blur(0); } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+.pdx .is-in .pf-chrome { animation: pdx-fade 1s ease both 1.6s; }
+
+@media (max-width: 760px) {
+  .pdx .pf-mark { font-size: 27vw; }
+  .pdx .pf-sub { font-size: 5.2vw; white-space: normal; width: calc(100vw - 2 * var(--gx, 20px)); }
+  .pdx .pf-chrome.tr, .pdx .pf-chrome.bl, .pdx .pf-chrome.br { display: none; }
+  .pdx .pf-def { font-size: 6.4vw; }
+  .pdx .pf-def:lang(ar) { font-size: 6vw; }
+}
