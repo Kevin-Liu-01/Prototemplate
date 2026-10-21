@@ -113,6 +113,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   atlas: 'book',
   graphics: 'gallery',
   motion: 'film',
+  transcreate: 'language',
   archive: 'archive',
 };
 
@@ -136,6 +137,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   motion:
     'films videos hyperframes roster trailers translation series jihe yuanben euclid ricci journey to the west monkey waley hebrew ben-yehuda',
   marks: 'logo mark monogram wordmark lockup GT speed race bars cut plate livery ascii dither',
+  transcreate: 'video translation japanese english on-screen text side by side stacked columns notion linear ramp asana stripe miro credits',
   archive: 'retired versions captures history',
 };
 
@@ -661,6 +663,30 @@ function hayOf(entry: SearchEntry): string {
 }
 
 /** Every site map row, then the skill pages, the films, the headings and the slides, each with its haystack built: the panel groups and orders them. */
+/* the Transcreate pages under its Knowledge row (src/app/transcreate/sections.ts); the overview is the row itself */
+const TRANSCREATE_ROWS: readonly SearchEntry[] = [
+  {
+    id: 'heading-transcreate-videos',
+    title: 'Transcreate videos',
+    href: '/transcreate/videos',
+    group: 'Headings',
+    meta: 'In Transcreate',
+    icon: 'film',
+    keywords: 'eight videos english japanese side by side stacked notion linear ramp asana stripe miro',
+    surface: 'transcreate',
+  },
+  {
+    id: 'heading-transcreate-credits',
+    title: 'Transcreate credits',
+    href: '/transcreate/credits',
+    group: 'Headings',
+    meta: 'In Transcreate',
+    icon: 'link',
+    keywords: 'credits originals companies youtube notion linear ramp asana stripe miro',
+    surface: 'transcreate',
+  },
+];
+
 export const SEARCH_INDEX: readonly SearchEntry[] = [
   ...SITE_SURFACES.map(fromSurface),
   ...SKILL_ROWS,
@@ -669,6 +695,7 @@ export const SEARCH_INDEX: readonly SearchEntry[] = [
   ...HEADINGS,
   ...MOTION_HEADINGS,
   ...MOTION_RECORDS,
+  ...TRANSCREATE_ROWS,
   ...SLIDES,
 ].map((entry) => ({ ...entry, hay: hayOf(entry) }));
 

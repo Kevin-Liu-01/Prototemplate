@@ -9,6 +9,7 @@
  *   /blog/<slug>                         index, canonical on generaltranslation.com/en-US/blog, not listed
  *   /press/<slug> of a GT post           index, canonical on generaltranslation.com/en-US/blog, not listed
  *   /press/directions and its pages      noindex, self canonical, not listed (design studies of the press page)
+ *   each private page and its subpages   noindex, nofollow, self canonical, not listed (PRIVATE_PATHS)
  *   every other path                     index, self canonical on www, listed
  *
  * www.prototemplate.com is canonical (decision log, 2026-10-10); the two
@@ -41,12 +42,24 @@ export const MIRROR_PREFIX = '/d/production';
 /** The dashboard states under the mirror: they render states of the dashboard, which has no public page to point at. */
 export const MIRROR_WITHOUT_LIVE: readonly string[] = ['signin', 'onboarding', 'consent', 'device', 'cli'];
 
+/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos. */
+export const PRIVATE_PATHS: readonly string[] = ['/transcreate'];
+
+/** True for a private page or a page under one; false for anything that is not a pathname (an off-site address). */
+export function isPrivatePath(path: string): boolean {
+  if (!path.startsWith('/')) return false;
+  const p = normalizePath(path);
+  return PRIVATE_PATHS.some((base) => p === base || p.startsWith(`${base}/`));
+}
+
 /** The GT Atlas stories that are GT blog posts: like /blog/<slug>, each takes the post as its canonical. */
 export const PRESS_POSTS: readonly string[] = ['designing-docs-for-humans', 'rewriting-our-docs', 'fuma-nama'];
 
 export type SeoPolicy = {
   /** index, follow when true; noindex, follow when false */
   index: boolean;
+  /** false on a private page alone, which answers noindex, nofollow */
+  follow?: false;
   /** the absolute canonical URL */
   canonical: string;
   /** whether src/app/sitemap.ts lists the page */
@@ -83,6 +96,10 @@ export function policyFor(path: string): SeoPolicy {
 
   if (p === '/d' || p.startsWith('/d/')) {
     return { index: false, canonical: self, inSitemap: false };
+  }
+
+  if (isPrivatePath(p)) {
+    return { index: false, follow: false, canonical: self, inSitemap: false };
   }
 
   if (p === '/press/directions' || p.startsWith('/press/directions/')) {

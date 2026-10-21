@@ -235,6 +235,9 @@ test('B1 to B4: the head judge on fixture HTML', () => {
   assert.deepEqual(judged('/d/toolchain', head({ canonical: '' }), { adopted: false }), ['B3']);
   assert.deepEqual(judged('/d/singularity-dossier/yc', head({ canonical: '', robots: 'noindex, nofollow' }), { adopted: false }), []);
   assert.deepEqual(judged('/d/toolchain', head({ canonical: `${SITE_URL}/d/toolchain`, robots: 'noindex, nofollow' })), ['B3']);
+  /* a private page: noindex, nofollow */
+  assert.deepEqual(judged('/transcreate', head({ canonical: `${SITE_URL}/transcreate`, robots: 'noindex, nofollow' })), []);
+  assert.deepEqual(judged('/transcreate', head({ canonical: `${SITE_URL}/transcreate`, robots: 'noindex, follow' })), ['B3']);
 });
 
 test('B5: the sitemap judge', () => {

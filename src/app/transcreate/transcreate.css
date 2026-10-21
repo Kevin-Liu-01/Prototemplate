@@ -1,0 +1,142 @@
+/* The Transcreate pages: the English to Japanese videos on the viewer shell.
+
+   The book column, the head, the band and the dividers are the shared book
+   classes (BookView.css); the rows, their gutter numbers, titles and meta
+   lines are the graphics book's (graphics.css). This sheet draws the
+   layout switch, the video frames and the credits, in the tokens of
+   tokens.css: the frame grammar /motion gives a film (a 1px --pt-edge
+   border at the card corner, ink while its row is read), no shadow and no
+   rule of its own. */
+
+/* the layout switch above a video (Seg); the frame sits under it at the
+   toggle's gap on /motion, so a switch moves the frame and never the switch */
+.tc-seg {
+  margin-top: 14px;
+  max-width: 100%;
+}
+
+.tc-film {
+  margin: 14px 0 0;
+}
+
+.tc-seg + .tc-film {
+  margin-top: 10px;
+}
+
+/* a stacked view is taller than it is wide: drawn at 560px, it fits a
+   900px window with its switch */
+.tc-film.is-narrow {
+  max-width: 560px;
+}
+
+/* the video takes its copy's ratio from --tc-ratio (the figure's style),
+   over the 16:9 box BrandFilm's width and height attributes reserve, so the
+   lazy poster fills the frame uncropped before the video loads */
+.tc-film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--tc-ratio, 16 / 9);
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-panel-ink);
+  background-clip: padding-box;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.gx-row.is-active .tc-film video {
+  border-color: var(--pt-ink);
+}
+
+/* the play button's badge in the bottom right corner, where BrandFilm sets
+   it on a phone: centred, it covers the label the grid of all eight carries
+   at the frame's middle, Notion Mail's */
+.tc-film .ptb-film-play {
+  place-items: end;
+  padding: 12px;
+}
+
+/* the credits: each product's name, then its original in a sentence */
+.tc-credits {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--pt-gutter-gap);
+  row-gap: 8px;
+  margin: 14px 0 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+}
+
+.tc-credits > div {
+  display: contents;
+}
+
+.tc-credits dt {
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+}
+
+.tc-credits dd {
+  margin: 0;
+  color: var(--pt-ink-2);
+}
+
+.tc-credits a {
+  color: var(--pt-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.tc-credits a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-film video {
+    transition: none;
+  }
+}
+
+/* ---------- narrow ---------- */
+
+/* a touch phone, upright or on its side: each layout option answers a tap
+   44px tall while its drawing keeps its size, as the toolbar's controls do
+   (Toolbar.css). The options touch, so the hit box grows only up and down,
+   7px each way, inside the air above the switch and the 10px under it. */
+@media (pointer: coarse) and (max-width: 600px), (pointer: coarse) and (max-height: 500px) {
+  .tc-seg {
+    overflow: visible;
+  }
+
+  .tc-seg .pt-ib {
+    position: relative;
+  }
+
+  .tc-seg .pt-ib::after {
+    content: '';
+    position: absolute;
+    inset: -7px 0;
+  }
+}
+
+/* BrandFilm.css's phone query, where its badge is 28px and 8px clear */
+@media (max-width: 760px), (pointer: coarse) and (max-height: 500px) {
+  .tc-film .ptb-film-play {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  /* the name above its sentence, and air between the products */
+  .tc-credits {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+
+  .tc-credits dd {
+    margin-bottom: 10px;
+  }
+}

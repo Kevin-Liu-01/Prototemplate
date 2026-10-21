@@ -105,6 +105,9 @@ const INDEX_ROBOTS: NonNullable<Metadata['robots']> = {
 
 const NOINDEX_ROBOTS: NonNullable<Metadata['robots']> = { index: false, follow: true };
 
+/** A private page's robots (policy.ts, PRIVATE_PATHS). */
+const PRIVATE_ROBOTS: NonNullable<Metadata['robots']> = { index: false, follow: false };
+
 export function seoRoute(input: SeoRouteInput): SeoRoute {
   const path = normalizePath(input.path);
   const policy = policyFor(path);
@@ -139,7 +142,7 @@ export function seoRoute(input: SeoRouteInput): SeoRoute {
     alternates: isError
       ? undefined
       : { canonical, ...(Object.keys(types).length ? { types } : {}) },
-    robots: isError ? { index: false } : policy.index ? INDEX_ROBOTS : NOINDEX_ROBOTS,
+    robots: isError ? { index: false } : policy.index ? INDEX_ROBOTS : policy.follow === false ? PRIVATE_ROBOTS : NOINDEX_ROBOTS,
     openGraph: {
       title: ogTitle,
       description: input.description,

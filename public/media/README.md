@@ -95,6 +95,18 @@ kept here as proof of what the identity does off the page.
 | `gt-globe-glyphs-light.png` | the glyph globe in light, 2048x2048 on paper `#ffffff`: land in ink `#070707`, ocean in `#2f5ce0` thinning to `#86a8ff` in the highlight, the halftone run the other way so ink carries the shadow. |
 | `gt-globe-*-transparent.png` | each globe's twin: the same art on an alpha ground, for laying beside a partner's mark. A dark twin is for a dark ground and a light twin for a light one. |
 | `gt-globe-*.webp` | each globe on its ground in lossless WebP, pixel-identical to its PNG. `/brand` shows these files, and its download links keep to the PNGs. |
+| `transcreate/all-side.mp4` | the eight Transcreate videos at once, from English to Japanese: a 2 by 4 grid of product videos, each cell labelled with the product's name and holding the English original on the left and the Japanese version on the right, 2560x1440, 30.1 s at 30 fps, H.264 with no sound and the moov atom at the front (11.9 MB). |
+| `transcreate/all-columns.mp4` | the same eight videos as columns, each with the English original on top and the Japanese version below, 4096x576, 30.1 s at 30 fps, H.264 with no sound and the moov atom at the front (8.5 MB). |
+| `transcreate/<slug>-side.mp4` | one Transcreate video with the English original on the left and the Japanese version on the right, each panel labelled and 1280x720 (1280x640 for Linear Releases), 29.2 to 30.0 s at the original's frame rate, H.264 and AAC with the original's sound and the moov atom at the front. The slugs are `notion`, `linear-releases`, `linear-agents`, `ramp-budgets`, `asana`, `notion-mail`, `stripe-sessions` and `miro-canvas`. |
+| `transcreate/<slug>-stacked.mp4` | the same video with the English original on top and the Japanese version below, 1280x1440 (1280x1280 for Linear Releases). |
+| `transcreate/*.jpg` | each Transcreate video's poster frame, at the video's size. |
+
+The Transcreate videos play on `/transcreate`, which holds the grid of all
+eight, and on `/transcreate/videos`, which holds each video side by side or
+stacked. Each original video belongs to its company: Notion, Linear, Ramp,
+Asana, Stripe or Miro. `/transcreate/credits` names each original, with its
+title and address where they are recorded, and each clip shows 29 to 30
+seconds of its original.
 
 The reel, the blog films and the globes are shown live in `/brand` under
 Made with the system. The blog films, the mark sting, the release board,
