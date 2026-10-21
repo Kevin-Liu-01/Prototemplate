@@ -156,7 +156,8 @@ const PAGES: readonly Surface[] = [
  * the first retired version, since the archive has no index page of its
  * own. The sidebar hangs the curated skills under the Skills row as one
  * numbered run, the graphics'
- * areas under Graphics and the films under Motion.
+ * areas under Graphics, the films under Motion and the Transcreate pages
+ * under Transcreate.
  */
 const KNOWLEDGE: readonly Surface[] = [
   internal(
@@ -204,6 +205,14 @@ const KNOWLEDGE: readonly Surface[] = [
     '/motion',
     'Every film on the motion roster with its status, and the research packages of the translation series.',
     'Knowledge'
+  ),
+  internal(
+    'transcreate',
+    pageLabel('transcreate'),
+    '/transcreate',
+    'Eight product videos with their on-screen text translated from English to Japanese, each beside its original, and the credits of the originals.',
+    'Knowledge',
+    thumb('transcreate')
   ),
   internal(
     'archive',

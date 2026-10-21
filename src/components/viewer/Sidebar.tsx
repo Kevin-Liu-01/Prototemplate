@@ -121,6 +121,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   marks: 'swatch',
   atlas: 'book',
   motion: 'film',
+  transcreate: 'language',
 };
 
 /* the sites, on their color tokens */

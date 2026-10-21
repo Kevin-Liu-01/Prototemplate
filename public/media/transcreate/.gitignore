@@ -1,0 +1,11 @@
+# The web copies the /transcreate pages play, with their posters.
+*
+!.gitignore
+!all-side.mp4
+!all-side.jpg
+!all-columns.mp4
+!all-columns.jpg
+!*-side.mp4
+!*-side.jpg
+!*-stacked.mp4
+!*-stacked.jpg

@@ -37,7 +37,7 @@
  *               their tokens, never the literal px they stand for
  *
  * Live mode reads /brand, /motion, the first package, /graphics, /skills, the first skill, /marks, the first
- * direction and /blog at 1440x900 and 390x844 in both themes:
+ * direction, /blog and the three Transcreate pages at 1440x900 and 390x844 in both themes:
  *
  *   H1 structure  one header.pt-book-head; the mast is h1, the lead, the
  *                 panel; after the header an optional contents, the band,
@@ -370,7 +370,7 @@ export function lintHeads(root) {
 /* ------------------------------------------------------------------ */
 
 /** The routes live mode reads, by kind: the single pages and the first of each record (from lint-type's list). */
-const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|marks|directions\/[\w-]+|blog)$/;
+const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|marks|directions\/[\w-]+|blog|transcreate(\/[\w-]+)?)$/;
 
 /**
  * Runs in the page: the head's geometry and the lines around it. Every

@@ -58,7 +58,8 @@
  *   B2 host     the canonical is the page's own URL on www, or on
  *               generaltranslation.com where the policy maps it there;
  *               og:url equals the canonical
- *   B3 robots   robots matches policyFor(path); a page still in the
+ *   B3 robots   robots matches policyFor(path), nofollow on a private
+ *               page alone; a page still in the
  *               baseline matches its layout's index state instead (noindex
  *               under /d/, index elsewhere), whatever its follow value
  *   B4 json-ld  every application/ld+json block parses and has @context
@@ -622,11 +623,13 @@ export function judgeHead(path, html, { adopted = true } = {}) {
 
   const robots = (head.meta('robots')[0] ?? 'index, follow').toLowerCase();
   const wantIndex = adopted ? policy.index : !(path === '/d' || path.startsWith('/d/'));
+  /* a private page (policy.ts, PRIVATE_PATHS) is the one adopted page that answers nofollow */
+  const wantFollow = !adopted || policy.follow !== false;
   const indexed = !/\bnoindex\b/.test(robots);
   const followed = !/\bnofollow\b/.test(robots);
   /* a page still in the baseline may set its own follow value until it adopts seoRoute; only its index state is held */
-  if (wantIndex !== indexed || (adopted && !followed)) {
-    out.push(['B3', `robots "${robots}"; ${adopted ? 'the policy' : "the layout's default"} gives ${wantIndex ? 'index, follow' : 'noindex, follow'}`]);
+  if (wantIndex !== indexed || (adopted && followed !== wantFollow)) {
+    out.push(['B3', `robots "${robots}"; ${adopted ? 'the policy' : "the layout's default"} gives ${wantIndex ? 'index, follow' : wantFollow ? 'noindex, follow' : 'noindex, nofollow'}`]);
   }
 
   head.jsonLd.forEach((block, index) => {

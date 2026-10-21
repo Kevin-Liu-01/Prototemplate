@@ -1,7 +1,7 @@
 import { docsPages } from '@/app/md/text';
 import { docHref } from '@/components/book/model';
 import { DIRECTIONS } from '@/lib/directions';
-import { selfUrl, SITE_URL } from '@/lib/seo/policy';
+import { isPrivatePath, selfUrl, SITE_URL } from '@/lib/seo/policy';
 import { SITE_DESCRIPTION } from '@/lib/seo/site';
 import { SKILLS } from '@/lib/skills';
 import type { DocsPage } from '@/lib/source';
@@ -81,7 +81,8 @@ function body(): string {
   add('');
 
   add('## Routes', '');
-  for (const row of SITE_SURFACES.filter((s) => s.group === 'Pages' || s.group === 'Knowledge')) {
+  /* a private page (policy.ts, PRIVATE_PATHS) stays off the list, as it stays off the sitemap */
+  for (const row of SITE_SURFACES.filter((s) => (s.group === 'Pages' || s.group === 'Knowledge') && !isPrivatePath(s.href))) {
     // a row that links off the site (Turboslide) keeps its own address
     add(`- [${row.name}](${/^https?:\/\//.test(row.href) ? row.href : selfUrl(row.href)}): ${row.desc}`);
   }
