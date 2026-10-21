@@ -2,6 +2,151 @@
 title: 'Performance without visual loss'
 description: 'Measuring honestly, field against lab on a real docs site, bytes before scripts, shader and module weight, and judging dependencies on their merits.'
 icon: Bolt
+sources:
+  - skills/gt-performance/SKILL.md
+  - skills/gt-performance/references/recipes.md
+  - skills/gt-performance/scripts/frame-probe.mjs
+  - skills/gt-performance/scripts/pixel-diff.mjs
+  - skills/gt-website/references/docs.md
+  - skills/gt-brand/references/type.md
+  - src/lib/fonts.ts
+  - src/app/inter-subsets.css
 ---
 
-Measuring honestly, field against lab on a real docs site, bytes before scripts, shader and module weight, and judging dependencies on their merits.
+Performance work on this site and on generaltranslation.com, General Translation's site, makes a surface faster and leaves every pixel where it was. The rule comes from Kevin Liu, who reviews the work, on 2026-08-05: "fix the lighthouse without changing anything aesthetically". An audit whose fix would change the design, such as a contrast or a tap-target change, is listed with its measured gain for him to decide. The [gt-performance skill](/skills/gt-performance) holds every rule below with its date.
+
+## Measure honestly
+
+A timing is evidence only together with the conditions it was taken under. Each trap below produced a number that looked like a regression or a win and was neither.
+
+| Trap | What it did | What to do |
+| --- | --- | --- |
+| Machine load | Parallel agent pipelines pushed the one-minute load average to between 100 and 370 on an 18-core machine in September 2026, and every timing read slow | Record `uptime` beside every timing, and take the before and after runs back to back under similar load |
+| A route's first compile | The first probe of a hero after the dev server compiled it read 21 fps with a 1.6 s frame; unthrottled repeats read 118 fps (2026-08-07) | Discard the first probe after a compile |
+| Lighthouse on a dev server | A run against the dev server in an everyday Chrome scored 0.65, and Lighthouse warned that extensions slowed the load (2026-08-05) | Run a production build in a clean profile, three runs a cell, and report medians with the range |
+| Cache replay | Playwright's `response` events replay memory-cache hits across loads in one context | Count requests in a fresh context with `Network.setCacheDisabled` |
+| Bot protection | About 200 automated loads put a machine behind Vercel's Security Checkpoint (2026-10-08) | Measure bytes against a local `next start` |
+| Software WebGL | A headless Chrome that renders WebGL in SwiftShader measures the CPU | Read the renderer string: headless Chrome on a Mac reads ANGLE Metal, and SwiftShader means rerun headed |
+| A paused pane | An embedded browser pane that reports `document.hidden` pauses `requestAnimationFrame` | Measure motion in a real Chrome ([Proving a visual change](/docs/engineering/verification#the-in-app-browser-pane)) |
+
+Frame time comes from the frame probe in the gt-performance skill, run from a checkout of this repository, which has playwright-core:
+
+```bash
+F=skills/gt-performance/scripts/frame-probe.mjs
+node $F http://localhost:3005/<path> --runs 3                  # median, p95, worst, slow share, long tasks, contexts, load
+node $F <url> --cpu 12 --seconds 12                            # a weak device
+node $F <url> --scroll --size 390x844 --dpr 3                  # a phone, scrolling through the window
+node $F <url> --runs 3 --max-median 17.5 --max-contexts 1      # a budget: exits 1 on a breach
+```
+
+Lighthouse runs against a production build with a fresh profile, which the CLI launches itself:
+
+```bash
+pnpm build && pnpm start
+mkdir -p lh
+CHROME_PATH="<path to Chrome>" \
+  npx -y lighthouse@12 http://localhost:3000/<path> \
+  --output=json --output=html --output-path=./lh/<name>
+# add --preset=desktop for desktop; mobile is the default
+# add --throttling-method=devtools for real throttling in place of the simulation
+```
+
+The [quality bar](/docs/handbook/quality-bar) requires the frame probe before and after a change and the load average beside every timing.
+
+## Field data against lab data
+
+A complaint about a slow first paint is answered with field data. On 2026-09-14 Kevin flagged the first contentful paint and the server response time of generaltranslation.com's docs as slow. His numbers came from PageSpeed Insights field data, the Chrome UX Report's 75th percentile for the origin, which includes redirect time. A lab run of the same page on desktop scored 95 with a 0.3 s first contentful paint and did not answer the complaint.
+
+The production docs, read on 2026-09-25, paid for three things on every page:
+
+- The locale `not-found.tsx` was serialized into every docs page's React Server Components payload, together with the marketing 404's CSS and scripts.
+- The full sidebar tree was in the payload of every page.
+- The sidebar prefetched every link it rendered.
+
+The pull request was cut to the changes that carried the measured win: the heavy 404 moved under a catch-all route, sidebar prefetch moved to hover and touch intent, and Inter became one preloaded subset with the italic loaded on demand. Kevin removed a redirect map, a font split and the stripping of the sidebar tree from it as "doing too much for such little changes". Over three runs each, production read 73 to 75 on mobile Lighthouse and the branch 79 to 80.
+
+Two readings needed a cause before they could be trusted:
+
+- Lighthouse's simulated mobile LCP charges hydration JavaScript to the largest paint. A throttled real Chrome (`--throttling-method=devtools`) painted at 1,284 ms in every run, so mobile gains past that point need cuts to framework JavaScript.
+- A late font split one branch's score between 79 and 70. On localhost the italic file finished just before the observed first paint in five of seven runs, and the simulation charged it to the paint.
+
+On a Vercel site the cache is checked per variant and locale with one request each. The docs at generaltranslation.com pick their framework variant from a `gt-fw-pref` cookie:
+
+```bash
+curl -sI -b 'gt-fw-pref=next' -w '%header{x-vercel-cache} %header{x-matched-path}\n' -o /dev/null \
+  https://generaltranslation.com/en-US/docs/overview/get-started
+```
+
+A concrete matched path with `HIT` is the goal. The record of the round is in the docs reference of the [gt-website skill](/skills/gt-website), and [Docs site traps](/docs/engineering/docs-traps#inline-css-built-and-reverted) has the experiment that was built and reverted.
+
+## Bytes before scripts
+
+A first load that is slow on a fast machine is usually paying for bytes. A round on this site on 2026-10-08 measured every route cold under `next start` on a production build, in one fresh browser context per run, at 1440 by 900 and at 390 by 844 with touch, three runs each, and found the cost in bytes. Bytes are deterministic, and timings move with the load average.
+
+```js
+// Playwright and CDP: encoded bytes by resource type for one cold load
+const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+const page = await context.newPage();
+const cdp = await context.newCDPSession(page);
+await cdp.send('Network.enable');
+await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+const types = new Map();
+const bytes = {};
+cdp.on('Network.responseReceived', (e) => types.set(e.requestId, e.type));
+cdp.on('Network.loadingFinished', (e) => {
+  const type = types.get(e.requestId) ?? 'Other';
+  bytes[type] = (bytes[type] ?? 0) + e.encodedDataLength;
+});
+await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+console.log(bytes);
+await context.close();
+```
+
+| Cause | Fix |
+| --- | --- |
+| next/font preloads every face a module declares on every page that imports the module, and Turbopack shares CSS chunks between routes, so a display face used on one page loaded on all of them | Only the roman Inter preloads; every other `localFont` sets `preload: false`; a face used on one route gets a family name that only that route's CSS names |
+| A family re-pointed for one route leaked: a face joined to `inter` in blog CSS was fetched by the home page | Scope a route's rules under its root class |
+| React 19 hoists an eager `<img>` into a high-priority preload | `loading='lazy'` on every picture outside the first view |
+| A `<video poster>` is fetched at load wherever the video sits | Paint the poster as a lazy image and preload nothing until play |
+| Work for hover devices, such as preview preloads, ran on phones | Check `(hover: hover) and (pointer: fine)` first |
+| Data and panels used only after an open shipped with the page | `import()` on the first open, or on the first hover or focus of the trigger |
+| GSAP loaded on routes with no tween | Load it only where a tween runs |
+
+This site preloads one font file, the roman Inter's latin subset at 112,748 bytes, out of a 352,240-byte full roman. The other subsets and the italic (387,976 bytes whole) are `@font-face` rules with a `unicode-range` in the same family, so a browser fetches one only where a page draws a character in its range. The binding is in `src/lib/fonts.ts` and `src/app/inter-subsets.css`, and lint-type's T3 rule checks every next/font binding. [Type](/docs/craft/type) covers the subsets.
+
+## Shader and module weight
+
+Weight is reported as the source, the gzipped module and the tree-shaken bytes a page ships, with the number of route chunks that carry the module. Find the chunks by a string the minifier keeps and only that module holds, such as a GLSL uniform name:
+
+```bash
+pnpm build
+for f in $(grep -l '<token>' .next/static/chunks/*.js); do
+  printf '%s raw %s gzip %s\n' "$f" "$(wc -c < "$f" | tr -d ' ')" "$(gzip -9c "$f" | wc -c | tr -d ' ')"
+done
+```
+
+A cut to shader or module code is proven with a pixel diff of a deterministic frame. Reduced motion renders one such frame for every engine that follows the lifecycle contract. Capture the baseline twice and confirm the two match at zero, because a baseline that differs from itself proves nothing:
+
+```bash
+P=skills/gt-performance/scripts/pixel-diff.mjs
+node $P capture http://localhost:3005/<path> --out before.png
+node $P capture http://localhost:3005/<path> --out before-2.png
+node $P compare before.png before-2.png                  # must read 0 channels
+# make the change, then
+node $P capture http://localhost:3005/<path> --out after.png
+node $P compare before.png after.png --diff diff.png     # exits 1 on any difference
+```
+
+[Canvas and WebGL engines](/docs/engineering/engines#shader-source-weight) has the measured cuts, the `#version` trap and the residue a GPU driver leaves.
+
+## Every dependency on its own merits
+
+A package added for one feature is judged alone, and each one that stays carries a one-line comment saying why. Three packages arrived on generaltranslation.com for one feature in August 2026, and Kevin answered that he would "prefer to not have package bloat":
+
+| Package | Verdict | Reason |
+| --- | --- | --- |
+| cheerio | Replaced | A small tag scanner, verified byte-identical against an 11-case reference harness and the live results; ten packages left the lockfile |
+| franc | Kept | Nothing else in the repository detected language |
+| undici | Kept | Its DNS-pinning `Agent` is missing from the global `fetch` |
+
+The rule sits in section 5 of the gt-performance skill, with the ledger to give when a weight target is out of reach without loss.

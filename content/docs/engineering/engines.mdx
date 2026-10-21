@@ -2,6 +2,278 @@
 title: 'Canvas and WebGL engines'
 description: 'The context budget, shared canvases, readback, quality from frame time, what a field costs, galleries of live previews and engine lifecycles.'
 icon: Cube
+sources:
+  - skills/gt-performance/SKILL.md
+  - skills/gt-performance/references/webgl-lifecycles.md
+  - skills/gt-performance/scripts/frame-probe.mjs
+  - skills/gt-dither/references/engines.md
+  - skills/gt-components/references/react.md
+  - skills/gt-motion/references/web.md
+  - src/lib/studio-field.ts
+  - src/lib/prismatic-field.ts
+  - src/lib/horizon-field.ts
+  - src/lib/glyph-field.ts
+  - src/lib/use-mount-effect.ts
+  - src/app/layout.tsx
+  - src/app/present/viewer/LazyFrame.tsx
 ---
 
-The context budget, shared canvases, readback, quality from frame time, what a field costs, galleries of live previews and engine lifecycles.
+An engine that draws into a canvas has a budget of contexts, a cost per cell and a lifecycle, and the browser reports none of its failures. The lessons come from the engines behind this site's live fields (the studio field, the horizon and prismatic shaders and the glyph field, each a module in `src/lib/`) and from their copies on generaltranslation.com, General Translation's site. The [gt-performance skill](/skills/gt-performance) holds every rule below with its date.
+
+## The context budget
+
+Chrome keeps about 16 live WebGL contexts. Past that, `getContext` returns null and a field draws black with no error in the console. On 2026-07-29 a design exploration's shader rendered on a fresh load and was black after 12 client-side switches between explorations, because each mount had created a context of its own.
+
+The fix is one engine per engine module for the whole session:
+
+- One offscreen GL canvas draws every field and blits into each field's own 2D canvas from one `requestAnimationFrame` loop.
+- The context stays when a field's `destroy()` runs, so it survives route switches.
+- `preserveDrawingBuffer: true` lets the blit read the frame in the same task as the draw.
+- A lost context sets the engine to null, and the next draw rebuilds it.
+- A preset whose shader fails to compile stays failed for the session, and the other presets keep working.
+- With no field on screen, the loop stops.
+
+A component that owns its context releases all of it on unmount. A footer mark on generaltranslation.com leaked one context per mount until a review caught it on 2026-08-08.
+
+```ts
+function releaseGl(gl: WebGL2RenderingContext, program: WebGLProgram, shaders: WebGLShader[], buffer: WebGLBuffer): void {
+  gl.deleteBuffer(buffer);
+  gl.deleteProgram(program);
+  for (const shader of shaders) gl.deleteShader(shader);
+  gl.getExtension('WEBGL_lose_context')?.loseContext();
+}
+```
+
+Count contexts without creating any. A probe that calls `getContext` on the page's canvases creates contexts and exhausts the budget it measures, so wrap `getContext` before the page's scripts run:
+
+```js
+// Playwright: install before page.goto, read with page.evaluate(() => window.__glContexts)
+await page.addInitScript(() => {
+  const seen = new WeakSet();
+  window.__glContexts = 0;
+  for (const proto of [HTMLCanvasElement.prototype, globalThis.OffscreenCanvas?.prototype]) {
+    if (!proto?.getContext) continue;
+    const original = proto.getContext;
+    proto.getContext = function (type, ...rest) {
+      const ctx = original.call(this, type, ...rest);
+      if (ctx && /webgl/i.test(String(type)) && !seen.has(ctx)) {
+        seen.add(ctx);
+        window.__glContexts += 1;
+      }
+      return ctx;
+    };
+  }
+});
+```
+
+The studio, prismatic and horizon engines in `src/lib/` follow the one-engine rule, and the frame probe in the gt-performance skill counts contexts this way in its `gl` column.
+
+## A shared canvas that only grows
+
+Setting a canvas's `width` or `height` reallocates its drawing buffer. An engine that resized its one GL canvas to each field reallocated it twice a frame once two fields of different sizes were on screen. On 2026-10-08 a full-bleed field and two 125 px logo fields kept the main thread busy about 1,000 ms of every second for that alone.
+
+The fix grows the canvas to the largest field, draws each field into the bottom-left corner, which is GL's origin, and blits that rectangle:
+
+```ts
+const glCanvas = gl.canvas as HTMLCanvasElement;
+if (glCanvas.width < width) glCanvas.width = width;
+if (glCanvas.height < height) glCanvas.height = height;
+gl.viewport(0, 0, width, height);
+// ...draw the field...
+target.drawImage(glCanvas, 0, glCanvas.height - height, width, height, 0, 0, width, height);
+```
+
+The pattern is in `src/lib/prismatic-field.ts`.
+
+## Readback canvases and the blit path
+
+A canvas created with `willReadFrequently` stays in CPU memory, so every `drawImage` from it uploads its pixels to the GPU. That upload was the glyph rain's lag on phones, worst on WebKit. The glyph atlas needs `getImageData` while it is built, so it keeps the flag, and each build snapshots the finished atlas into an `ImageBitmap` for the per-frame blits:
+
+```ts
+let atlasSource: CanvasImageSource = atlas;
+let generation = 0;
+
+function snapshotAtlas(): void {
+  if (atlasSource instanceof ImageBitmap) atlasSource.close();
+  atlasSource = atlas; // blit from the canvas until the snapshot lands
+  const current = ++generation;
+  createImageBitmap(atlas).then((bitmap) => {
+    if (current === generation) atlasSource = bitmap;
+    else bitmap.close();
+  });
+}
+```
+
+The shipped version is `atlasSrc` in `src/lib/glyph-field.ts`. Films set the same flag on purpose, to keep a canvas in software so every render is identical ([Films](/docs/craft/films)).
+
+## Browser zoom
+
+Browser zoom changes `devicePixelRatio` and leaves the CSS box alone, so an engine that only listens to a ResizeObserver keeps blitting at the old ratio and goes soft. A media query on the current resolution fires once when the ratio changes, so it is re-armed on every change:
+
+```ts
+function watchPixelRatio(onChange: () => void): () => void {
+  let query = matchMedia(`(resolution: ${devicePixelRatio}dppx)`);
+  const handle = (): void => {
+    query.removeEventListener('change', handle);
+    onChange();
+    query = matchMedia(`(resolution: ${devicePixelRatio}dppx)`);
+    query.addEventListener('change', handle);
+  };
+  query.addEventListener('change', handle);
+  return () => query.removeEventListener('change', handle);
+}
+```
+
+Coalesce the ResizeObserver callbacks into one animation frame, keep `resize()` idempotent for when both fire, and remap positions that are in flight by the ratio of the old box to the new one. gt-cloud's `glyph-field.ts` in `packages/ui` holds the zoom watcher, as the gt-performance skill records.
+
+## Quality from measured frame time
+
+A quality tier chosen from the window width gives a wide window on weak hardware the heaviest tier. The glyph rain now picks its tier from measured frame time, with these numbers:
+
+| Setting | Value |
+| --- | --- |
+| Warmup before judging | 2.5 s |
+| Window | 120 counted frames |
+| An interval treated as a hidden tab and skipped | over 900 ms |
+| A slow frame | over 22 ms |
+| Trip | 35% or more of a window's frames slow, a sustained cadence under about 45 fps |
+| Tier 1 | the device-pixel cap drops from 2 to 1.25 through one `resize()` |
+| Tier 2 | the lean pool of 560 glyphs out of 1,280, switched once no glyph is in flight |
+
+The trip counts slow frames. A first draft watched a rolling median near 20 ms and missed throttled hardware that went over budget on 34% of its frames while the median stayed healthy. On 2026-08-07 a 12x CPU throttle stepped down to tier 2 inside one window, and a 10 s unthrottled control never tripped.
+
+```ts
+const BUDGET_MS = 22, WINDOW = 120, TRIP = 0.35, WARMUP_MS = 2500, GAP_MS = 900;
+let bornAt = 0, counted = 0, slow = 0, tier = 0;
+
+function govern(now: number, intervalMs: number, stepDown: (tier: number) => void): void {
+  if (tier >= 2 || intervalMs > GAP_MS) return;
+  if (bornAt === 0) bornAt = now;
+  if (now - bornAt < WARMUP_MS) return;
+  counted += 1;
+  if (intervalMs > BUDGET_MS) slow += 1;
+  if (counted < WINDOW) return;
+  const trip = slow / counted >= TRIP;
+  counted = 0;
+  slow = 0;
+  if (trip) stepDown(++tier);
+}
+```
+
+The ladder only steps down, so it never oscillates, and the pool switch waits until no glyph is moving. A loop capped at 30 fps judges the raw `requestAnimationFrame` cadence, or each skipped draw reads as a slow frame. The shipped version is `govern()` in `src/lib/glyph-field.ts`, and the frame probe's `--cpu 12` reproduces the proof.
+
+## Shader source weight
+
+A minifier cannot remove text inside a template literal, so every comment in GLSL source ships to every visitor. Moving the shader's notes into a TypeScript comment beside the literal cut the shipped bytes with no change to the output.
+
+| Measure | Before | After |
+| --- | --- | --- |
+| Horizon fragment shader literal | 6.5 KB | 4.4 KB |
+| Horizon module, gzipped | about 7.4 KB | 4.6 KB |
+
+```ts
+// The notes live in this comment, which the minifier removes. The literal holds GLSL only,
+// and #version must be its first characters.
+const FRAG = `#version 300 es
+precision highp float;
+out vec4 color;
+void main() { color = vec4(1.0); }`;
+```
+
+A newline before `#version 300 es` failed the compile silently, and only the fallback disc rendered until a screenshot pass caught it. After any edit to shader text, check that the shader draws and the fallback is hidden. Report weight as the source, the gzipped module and the tree-shaken bytes a page ships: on 2026-08-13 the dither library (`src/lib/dither.ts`) was 47.3 KB of source, 4.8 KB gzipped, and 2.8 KB gzipped for what the sign-in page imports. One module can also sit in several route chunks; on 2026-10-01 the horizon shader sat in four chunks of 11.7 to 19.3 KB gzipped.
+
+A cut that folded about twelve uniforms into constants and deleted `pause`, `resume` and `renderStatic` saved 2.5 KB gzipped and was reversed, because the engines are a library and every parameter stays a uniform with a setter. Identity is proven with a pixel diff of a deterministic frame, with the baseline captured twice first; a constant fold left 4 of 4,039,200 channels off by 1/255, because GPU drivers can fuse multiply-adds differently after any source change. [Performance without visual loss](/docs/engineering/performance#shader-and-module-weight) has the commands.
+
+## Galleries of live previews
+
+A wall of live previews lags even when every preview is frozen. Twenty-two live iframes running shaders made a presenter wall lag on 2026-07-31, and every page on this site now carries a gate that queues `requestAnimationFrame` callbacks while a parent says so:
+
+```js
+// In each page's head, before other scripts
+(function () {
+  const native = window.requestAnimationFrame.bind(window);
+  let queue = [];
+  let frozen = window.parent !== window && /[?&]frozen=1(&|$)/.test(location.search);
+  window.requestAnimationFrame = (callback) => {
+    if (frozen) {
+      queue.push(callback);
+      return -1;
+    }
+    return native(callback);
+  };
+  window.addEventListener('message', (event) => {
+    if (event.data?.type !== 'gt:freeze') return;
+    frozen = Boolean(event.data.frozen);
+    if (frozen) return;
+    const pending = queue;
+    queue = [];
+    for (const callback of pending) native(callback);
+  });
+})();
+```
+
+The parent freezes a frame with `frame.contentWindow.postMessage({ type: 'gt:freeze', frozen: true }, location.origin)`. A frozen same-origin frame still hydrates, composites and runs its CSS animations on the parent's main thread, so freezing was not enough:
+
+| Measure on 2026-10-08 | Value |
+| --- | --- |
+| Live pages held by a gallery that froze each frame 2.8 s after load | 12 |
+| WebGL contexts in that gallery | 4 |
+| Renderer memory | about 1.3 GB |
+| Main thread busy at rest | about 950 ms of every second |
+| One stage left live while off screen | about 110 ms of every second |
+
+The fix shows a thumbnail on every card and mounts the live page only while the pointer is over it, and freezes a stage whenever no part of it is on screen. The gate wraps `requestAnimationFrame` only, so a loop on `setInterval` or `setTimeout` keeps running inside a frozen preview. The root layout (`src/app/layout.tsx`) installs the gate, and `src/app/present/viewer/LazyFrame.tsx` mounts on hover.
+
+## Strict mode and effects
+
+React strict mode runs an effect's setup, cleanup and setup again in development, so a mount effect that appends nodes and does not remove them leaves duplicates. On 2026-08-07 a headline engine left a dead duplicate canvas and a pair of guide elements in the DOM. Every effect removes every node it creates, and a check after mount and after a hot reload confirms exactly one canvas exists.
+
+Both gt-cloud and this repository fail a bare `useEffect` in their lints (`gt-ui/no-use-effect` and `pnpm lint:practices`), and each case has its own form:
+
+| Situation | Write this |
+| --- | --- |
+| A value derived from props or state | Compute it during render |
+| An expensive derivation | `useMemo` |
+| Reset state when a prop changes | A `key` on the component |
+| Respond to a click, submit or drag | The event handler |
+| Sync with something outside React once on mount | `useMountEffect` |
+| A mount effect that runs only under a condition | A wrapper that checks the condition around a child that runs `useMountEffect` |
+| A fresh mount effect when an id changes | `key={id}` on the child |
+
+This site's `src/lib/use-mount-effect.ts` defers its cleanup by one task, so strict mode's simulated rerun cancels it and a real unmount still cleans up once. gt-cloud's version is a plain mount-only effect, and neither is copied over the other. The [gt-components skill](/skills/gt-components) holds the table.
+
+## Inherited properties on a moving subtree
+
+Writing an inherited custom property on an element restyles its whole subtree on every write. The reveal seam keeps its position in `--seam-cut` on its box, so each drag frame restyles everything under it. A figure drawn as SVG with 27,800 nodes under the seam dragged at 5 fps at 4x CPU throttle; drawn into one canvas, the same drag reached 56 fps.
+
+The fix keeps the subtree under a moving variable small, such as one canvas, and leaves the shared seam component as it is. [Lottie on canvas](/docs/engineering/lottie) has the rest of that figure's round, and the gt-motion skill's web reference holds the rule.
+
+## Static pages with live values
+
+A prerendered page bakes whatever its build fetched into the HTML. On 2026-08-18 a GitHub star badge rendered on localhost and was empty in production, because the prerender's fetch had failed. The fix keeps the page static with a known minimum as its first label, and fetches the live value through a cached same-origin route:
+
+```ts
+// app/api/stars/route.ts
+const CACHE = 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400';
+
+export async function GET(): Promise<Response> {
+  try {
+    const res = await fetch('https://api.github.com/repos/<owner>/<repo>', {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(5000),
+    });
+    const body: unknown = await res.json();
+    const count = typeof body === 'object' && body !== null && 'stargazers_count' in body ? body.stargazers_count : null;
+    if (!res.ok || typeof count !== 'number') throw new Error('unexpected response');
+    return Response.json({ count }, { headers: { 'Cache-Control': CACHE } });
+  } catch {
+    return Response.json({ count: null }, { status: 503, headers: { 'Cache-Control': 'no-store' } });
+  }
+}
+```
+
+The client fetches the route once on mount, aborts on unmount, ignores a value under the known minimum and holds its slot invisible while the label resolves, so nothing shifts. Any count, status or price that changes after the build uses the same shape, as section 7 of the gt-performance skill records.
+
+## Dither fields
+
+What a dither field costs per frame, and why a dithered pattern on a moving sprite flickers unless it moves by whole cells, are measured on [Dither and the studio field](/docs/components/dither).

@@ -2,6 +2,132 @@
 title: 'Lottie on canvas'
 description: 'Eight lottie-web canvas traps, each proven, with the before and after numbers and the recipe that proves a fix.'
 icon: Sparkles
+sources:
+  - skills/gt-motion/references/traps.md
+  - skills/gt-motion/references/recipes.md
+  - skills/gt-motion/references/tools.md
+  - skills/gt-motion/references/web.md
+  - skills/gt-website/references/blog.md
 ---
 
-Eight lottie-web canvas traps, each proven, with the before and after numbers and the recipe that proves a fix.
+The canvas renderer of lottie-web 5.13 draws a whole Lottie animation into one canvas element, where its SVG renderer builds a DOM node for every shape. In October 2026 a figure moved from the SVG renderer to the canvas renderer. It plays one animation in several translated versions and compares two of them under a draggable seam. The move met eight traps, and each was proven by a render or a measurement before its fix went in. The traps and their proofs are recorded in the [gt-motion skill](/skills/gt-motion).
+
+## A missing glyph stops the frame
+
+A translated animation drew nothing after one of its text layers, and the console stayed empty. A Lottie file with glyph-based text lists every character it can draw. For a character missing from that list, lottie-web's `FontManager.getCharData` returns a placeholder with an empty `shapes` array, `CVTextElement.buildNewText` reads `shapes[0].it` and throws, and no layer after it draws. The SVG renderer skips such a character, so the bug appears only on canvas. The error surfaces as the animation's `error` event and never in the console.
+
+Two inputs trigger it: a `\r` used as a line break with no glyph entry, and the `\r` that lottie-web writes where it wraps box text. A longer translation wraps where the source did not, so it breaks where the source played. The fix gives every character the text can draw an empty entry, plus `\r`, `\u0003` and the capitals that all-caps text draws:
+
+```ts
+type Glyph = { ch: string; style: string; fFamily: string; size: number; w: number };
+
+function fillGlyphs(chars: Glyph[], text: string, style: string, fFamily: string): void {
+  const known = new Set(chars.map((g) => `${g.ch}\u0000${g.style}\u0000${g.fFamily}`));
+  for (const ch of new Set([...text, ...text.toUpperCase(), '\r', '\u0003'])) {
+    const key = `${ch}\u0000${style}\u0000${fFamily}`;
+    if (known.has(key)) continue;
+    known.add(key);
+    chars.push({ ch, style, fFamily, size: 0, w: 0 });
+  }
+}
+```
+
+An entry with no `data` draws nothing and advances nothing, which is what the SVG renderer did for the same character.
+
+## Track-matte buffers are sized once
+
+After the canvas grew, everything under a track matte stayed clipped to the canvas's first size. The canvas renderer makes two offscreen buffers per matte layer at the canvas size when it builds the layer, and never resizes them. A canvas parked at 0 by 0 makes `drawImage` throw outside lottie-web's own try and catch.
+
+The fix sets every buffer to the canvas size after each resize and redraws once more:
+
+```ts
+import type { AnimationItem } from 'lottie-web';
+
+type MatteElement = { buffers?: { width: number; height: number }[] } | null;
+type CanvasInternals = { renderer: { elements?: MatteElement[] } };
+
+function fitMatteBuffers(anim: AnimationItem, canvas: HTMLCanvasElement): void {
+  const { renderer } = anim as unknown as CanvasInternals;
+  for (const element of renderer.elements ?? []) {
+    for (const buffer of element?.buffers ?? []) {
+      buffer.width = canvas.width;
+      buffer.height = canvas.height;
+    }
+  }
+  anim.resize();
+}
+```
+
+A hidden player parks at `resize(1, 1)`. The proof builds the figure at 700 px, widens the window to 1440 px and diffs the result against a figure built at 1440 px under reduced motion: identical with the fit, different without it.
+
+## Subframes redraw at display rate
+
+A playing animation redrew on every animation frame, 120 times a second in headless Chromium, although the file has far fewer frames. By default the player renders interpolated subframes. Calling `setSubframe(false)` floors the frame number, and the renderer then skips a frame it has already drawn.
+
+The `enterFrame` event still fires on every animation frame, so per-frame work runs only when `currentFrame` changes:
+
+```ts
+anim.setSubframe(false);
+let lastFrame = -1;
+anim.addEventListener('enterFrame', () => {
+  if (anim.currentFrame === lastFrame) return;
+  lastFrame = anim.currentFrame;
+  // work for a new frame only
+});
+```
+
+## Hidden layers that keep their box
+
+A layer hidden with the `hidden` attribute built its canvas at the wrong size. Tailwind 4's preflight sets `[hidden]:where(:not([hidden='until-found'])) { display: none !important }`, so a hidden layer has no box, and lottie-web sizes its canvas from the box when it builds. A layer that must keep its box while hidden takes a class with `visibility: hidden` instead of the attribute.
+
+## Two players on one clock drift
+
+Two players meant to show the same moment, such as the shown language and the compared one, stayed up to a frame apart for good. Starting one player from another's `currentFrame`, which is floored once subframes are off, loses the fraction. Resyncing one player from inside the other's `enterFrame` advances it twice in that tick.
+
+The leader keeps the clock, and every follower stays paused and is set from the leader's raw frame:
+
+```ts
+let lastFrame = -1;
+leader.addEventListener('enterFrame', () => {
+  // enterFrame fires every animation frame even with subframes off
+  if (leader.currentFrame === lastFrame) return;
+  lastFrame = leader.currentFrame;
+  for (const follower of followers) follower.goToAndStop(leader.currentRawFrame, true);
+});
+```
+
+A newly shown player starts from the old one's `currentRawFrame`.
+
+## The loop is a cut
+
+An animation whose last frame differs from its first jumps at every loop. The figure plays with `loop: false` and listens for `complete`. On `complete` it copies the canvas with `drawImage` into a still laid over the layer, restarts the animation at 0, and dithers the still away. The player draws frame `totalFrames - 1` before it fires `complete`, so the copy holds a full picture.
+
+## A poster frame for reduced motion
+
+Frame 0 of these animations is empty. Under reduced motion the figure holds a poster frame: the middle of the longest stretch where its strings are on screen.
+
+## Canvas text costs JavaScript
+
+On canvas, lottie-web replays the glyph paths of every character on every frame, so the cost of text is script time on the main thread. Lowering the canvas resolution barely helps, because the cost is in replaying the glyphs.
+
+## Before and after
+
+The figure's heaviest animation measured at 4x CPU throttle while dragging the compare seam:
+
+| Measure | SVG renderer | Canvas renderer |
+| --- | --- | --- |
+| Nodes under the seam | 27,800 | one canvas |
+| Seam drag | 5 fps | 56 fps |
+
+The seam writes an inherited custom property on its box, so every drag frame restyles the subtree under it; a canvas keeps that subtree to one element. [Canvas and WebGL engines](/docs/engineering/engines#inherited-properties-on-a-moving-subtree) has that rule.
+
+## The proof recipe
+
+A renderer change is proven by pixels:
+
+1. Load the SVG build and the canvas build of the same animation into one page, side by side, with autoplay off.
+2. Step both with `goToAndStop(frame, true)` to the same fixed frames, including one with every string on screen.
+3. Capture each container and diff the pair. A difference is a trap until it is explained.
+4. For matte and resize fixes, build at 700 px, widen to 1440 px, and diff against a build at 1440 px under reduced motion.
+
+The pixel-diff script in the [gt-performance skill](/skills/gt-performance) captures and compares in one command each. The dither step between two languages has a trap of its own, a mask image that counts as transparent while it decodes, and [Dither in practice](/docs/craft/dither) covers it.

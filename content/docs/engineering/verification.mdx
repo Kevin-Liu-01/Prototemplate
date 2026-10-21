@@ -2,6 +2,178 @@
 title: 'Proving a visual change'
 description: 'Turning it looks right into readings: seam greys, probes before edits, the stress matrix, real gestures, WebKit and parity across an upgrade.'
 icon: Check
+sources:
+  - skills/gt-verify/SKILL.md
+  - skills/gt-verify/references/cases.md
+  - skills/gt-verify/references/recipes.md
+  - skills/gt-verify/references/parity-review.md
+  - skills/gt-verify/scripts/probe.mjs
+  - skills/gt-verify/scripts/stress.mjs
+  - skills/gt-motion/references/traps.md
+  - skills/gt-ship/references/prototemplate.md
+  - scripts/lint/type.mjs
+  - scripts/lint/radius.mjs
+  - src/components/viewer/tokens.css
 ---
 
-Turning it looks right into readings: seam greys, probes before edits, the stress matrix, real gestures, WebKit and parity across an upgrade.
+A visual change is proven by readings taken from the rendered page. A typecheck, a clean lint and a passing structural audit are gates, and none of them says what renders or what a reader can do, so an item that passed only gates is reported as unverified. The scripts named below are in this repository under `skills/gt-verify/scripts/` and run headless from a checkout of it, which has playwright-core. The [gt-verify skill](/skills/gt-verify) holds the definition of done and every case with its date.
+
+## A seam's composite grey
+
+The grey a seam renders says how many strokes drew it. A stroke of alpha `a` and colour `L` over a ground `G` composites to `a*L + (1 - a)*G`, and two stacked strokes composite at alpha `1 - (1 - a)^2`. The site's hairline token `--pt-hair` reads:
+
+| Theme | Stroke over ground | One stroke | Two strokes |
+| --- | --- | --- | --- |
+| Dark | 242 at 0.22 over 7 | 59 | 99 |
+| Light | 7 at 0.18 over 255 | 210 | 174 |
+
+A reading near the two-stroke value is a double line or one stroke over a brighter backing such as a shader glow. A glow raises the neighbouring pixels as well, and a double line leaves them at the ground. An opaque hairline keeps its grey when two rules touch, so there a double line shows as a run twice as wide: 4 device pixels at 2x for two 1 px rules. On 2026-10-05 the toolbar's bottom rule on the brand page read 59 in Chromium and 58 in WebKit, which is one stroke.
+
+```bash
+# runs of one grey along 24 CSS px downward from (280, 40), at 4x
+node skills/gt-verify/scripts/probe.mjs http://localhost:3005/ --point 280,52 --scan 280,40,down,24 --dsf 4
+```
+
+The `--point` flag lists every element that paints at a viewport point, with its borders, background, opacity, shadow and outline. [Lines and seams](/docs/craft/lines) has the line law these readings check.
+
+## The spot before the edit
+
+Computed values are the evidence, and class names only say what was intended. On 2026-08-05 padding was trimmed in three sections when the gap came from a margin, and all of it was undone. On 2026-08-01 the gaps between locale words on an orbit were evened from a capture at rest, and a wider gap appeared on the flank, where one word had rolled over and its neighbour had not.
+
+| Flag | What it reads |
+| --- | --- |
+| `--sel <css>` | The box model per side, type and paint values, the parent's gap and the space to each sibling, with a crop plus 24 px |
+| `--point x,y` | Every element under a point, top first, with what each paints |
+| `--scan x,y,down,24` | Device pixels along a segment, grouped into runs, with the lines marked |
+| `--frames 12 --every 120` | Twelve readings 120 ms apart, for every state of a moving element |
+| `--a11y --strict` | Controls with no accessible name, the name and state of every icon-only control, `user-select: none` text |
+| `--browser webkit`, `--dsf 4`, `--theme light` | The engine, the device scale and the seeded theme |
+
+```bash
+node skills/gt-verify/scripts/probe.mjs http://localhost:3005/brand --sel ".pt-book-title h1" --theme dark --out <scratch>/probe
+```
+
+Quote the box model before editing, then crop corners, junctions and seams at 2x or 4x, where one 1 px line is 2 or 4 device pixels.
+
+## The in-app browser pane
+
+An embedded browser pane in a desktop app can report `document.hidden` as true and pause `requestAnimationFrame`. Shader and dither canvases then come back blank, scroll-triggered reveals below the fold never fire, and GSAP entrance tweens still complete through their timeout fallback, so the page looks loaded with every field missing. Measure with JavaScript in the pane and take pixels with Playwright driving Chrome for Testing.
+
+Four capture rules apply on the Playwright side:
+
+- Seed the theme before load and assert it took. Call `context.addInitScript(() => localStorage.setItem('gt-theme', 'dark'))` before `goto`, then read `document.documentElement.dataset.theme`. This site's key is `gt-theme`, and another app's theme provider names its own.
+- Emulate reduced motion before `goto` with `page.emulateMedia({ reducedMotion: 'reduce' })`, then check that the page shows its designed still and no loop ticks.
+- Slow `requestAnimationFrame` 12x inside the capture script to see a dither step's cells, with the page's code unchanged.
+- Scroll through the page before a full-page capture, so lazy engines and reveals have armed.
+
+The traps are recorded in the verification section of the [gt-motion skill](/skills/gt-motion).
+
+## The stress matrix
+
+A scroll story or a pinned stage is verified through the whole matrix before it is called fixed. On 2026-08-08 three failures surfaced in one evening: three layers stacked for a moment after a reload, a story that locked in a different place scrolling up than scrolling down, and text rewriting that looked wrong under 10x CPU throttling.
+
+| Case | What must hold |
+| --- | --- |
+| Every beat, the last ones included | Each beat locks at its read line |
+| Slow, fast and reverse scrolling | The same position shows the same state from either direction |
+| Reload mid-page, or a restored scroll position | The first painted frame is already right |
+| A deep link into the story | The linked beat shows lit with no extra scroll |
+| Zoom out and back in | The story reads as it did before |
+| CPU throttled 10x | Settled states equal the unthrottled run; only the frame rate drops |
+| Every width | One composition per width, with no hybrid of desktop logic and mobile layout |
+
+The stress script (`stress.mjs`) walks the phases first, slow, fast, reverse, reload, deep link, zoom and throttle at 1440 by 900, 1920 by 1080, 1100 by 800, 868 by 525 and 390 by 844, captures the first frames 0, 150, 400, 1000 and 2500 ms after load, and writes `REPORT.md` with a sheet of every capture:
+
+```bash
+node skills/gt-verify/scripts/stress.mjs http://localhost:3001/en-US \
+  --copy ".v0-stack-beat" --story "#platform" --hash platform --theme dark --out <scratch>/stress
+```
+
+A throttled run is judged by the timing of the story's events against the wall clock. On 2026-08-08 a headline rewrite followed each crossing of a locale belt by 2.46 s at 1x and by 2.43 to 2.50 s at 10x while frames fell to 4 to 6 a second, so the logic was right and the run was frame-starved. A run whose settled states or timings differ is wrong.
+
+The standing page check misses these sizes, so add them:
+
+| Case | Size |
+| --- | --- |
+| Phones on their side | 844 by 390, 932 by 430 |
+| Intermediate widths | 900, 1100 and 1279 wide, one pixel under the 1280 devices |
+| Short windows | 1280 by 600, 1440 by 700 |
+| 150% browser zoom | about 868 by 525 CSS px |
+
+At 150% zoom a band fell to one column that was shorter than its stage's 640 px floor, and the desktop scroll logic drove the one-column layout. On 2026-10-05 a consent banner covered the lit beat of a story at 390 by 844 on every step of a first visit; report such an overlay, then pass `--hide "<css>"` to read the story under it.
+
+## Real gestures
+
+A gesture is proven by performing it. On 2026-09-02 a label fix was first shown with a Range API selection, which painted a highlight on the fixed label and proved nothing about a drag. A real drag read back the text:
+
+```js
+const box = await page.getByText('Project name', { exact: true }).boundingBox();
+await page.mouse.move(box.x + 2, box.y + box.height / 2);
+await page.mouse.down();
+await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 12 });
+await page.mouse.up();
+console.log(await page.evaluate(() => window.getSelection().toString())); // "Project name"
+```
+
+The same drag returned an empty string with `select-none` restored, which proved the fix. Three more rules come from the same kind of miss:
+
+- Never pass `click({ force: true })` in a verification run. It skips the checks a covered or disabled control fails.
+- Build every harness URL as `new URL(ORIGIN + path)`. With `new URL(path, ORIGIN)`, a path that starts with `//` is protocol-relative and leaves the origin; a routing review on 2026-09-09 first read an off-origin redirect that was its own request.
+- Expected values in a test come from real output, and a test is seen failing with the fix reversed before it counts.
+
+```bash
+git diff -- <fix files> > <scratch>/fix.patch
+git apply -R <scratch>/fix.patch && pnpm exec vitest run <test file>   # must fail
+git apply <scratch>/fix.patch && pnpm exec vitest run <test file>      # must pass
+```
+
+## WebKit
+
+A layout can break in one engine only. On 2026-08-18 the blog index's lead card broke in Safari alone, because WebKit resolved the cover's `height: 100%` against the whole two-row subgrid. The fix was verified with one invariant in Chromium and WebKit at desktop and tablet widths: the cover ends at its frame, and the post body starts after it.
+
+Both scripts take `--browser webkit`, and Playwright launches it with `require('playwright-core').webkit.launch({ headless: true })` once `pnpm exec playwright-core install chromium webkit` has downloaded the browsers. Layout-shift entries exist in Chromium only, so shift is measured there.
+
+## States that mount on demand
+
+A lint that reads a page at rest misses every element that mounts later. On this site's docs the search dialog mounts when it opens, and the sidebar's scroll thumb mounts only while the pointer is on the list. With the dialog open, its ESC key rendered in a system mono face. The thumb carried a 33,554,400 px corner. A rest-state run saw neither.
+
+The live lints take a list of keys to press per route (`LIVE_KEYS` in `scripts/lint/type.mjs`), and the thumb needs a hover, a 300 px wheel and a wait of up to 5 s for `[data-orientation="vertical"] > *`. [Docs site traps](/docs/engineering/docs-traps#markup-that-hides-from-a-lint) lists the fumadocs markup that hides this way.
+
+## Parity across an upgrade
+
+A change that touches every page at once, such as a framework upgrade or a layout rewrite, is checked route by route against the reference build, with production read as a third side. A review of a fumadocs upgrade on generaltranslation.com on 2026-10-07 compared 475 page fetches a side.
+
+```bash
+python3 skills/gt-verify/scripts/compare-signatures.py fetch \
+  --before http://localhost:3051 --after http://localhost:3052 \
+  --routes <scratch>/routes.txt --dir <scratch>/parity
+python3 skills/gt-verify/scripts/compare-signatures.py compare --dir <scratch>/parity
+python3 skills/gt-verify/scripts/row-diff.py <scratch>/shots <scratch>/row-diff
+```
+
+What that review taught:
+
+- Take the route list from the source or the sitemap. A dev server rewrites its prerender manifest while it serves, and the list was read truncated.
+- Compare machine files (`llms.txt`, the sitemap, the twins) byte for byte. A changed order in an index whose order carries meaning is a finding.
+- Diff screenshots row by row after aligning the rows (SequenceMatcher over row hashes), so an inserted band does not mark everything below it, with a second before capture as the noise pair.
+- Count the client code each page downloads. The upgrade made every docs page download a component that 24 pages use, which no structural diff shows.
+- Read the server HTML before hydration. A sample host read `example.com` until hydration swapped it.
+- Compare code highlighting on production builds. A dev server highlights nondeterministically, and a dark screenshot showed two code blocks as identical while their token spans differed.
+
+Each difference gets one label: introduced by the change, inherited, kept on purpose, pre-existing, or no fix needed. The method is in the parity reference of the gt-verify skill.
+
+## Whether it is live
+
+A merged change is live when a production build of its commit serves the page. While builds fail, the site keeps serving the last good deployment, and a merge stays invisible. Three readings settle it:
+
+```bash
+git merge-base --is-ancestor <your sha> origin/main && echo ON_MAIN
+curl -s https://www.prototemplate.com/ | grep -oE 'dpl_[A-Za-z0-9]+' | sort -u
+vercel inspect <deployment url> --scope <team>
+```
+
+The longest `dpl_` id on the live page names the deployment that serves it, and it must equal the newest Ready production deployment built from a commit that contains yours. Read the stamp on the production host itself, because another alias can serve another project's build. Social cards are read live after the deploy, answer `200 image/png`, and get opened and looked at. A failed preview is retried with `vercel redeploy`, which posts fresh statuses. This site self-hosts its Google faces because Turbopack's Google font loader failed builds at random (vercel/next.js#99114). The deploy check is in the Prototemplate reference of the [gt-ship skill](/skills/gt-ship).
+
+## A red browser gate
+
+The live audits, the page check and the captures each launch Chrome for Testing, and two at once compete for the machine; on 2026-10-01 a parallel capture made the line audit fail on pages that were correct. [Gates](/docs/gates#browser-gates-run-one-at-a-time) runs them one at a time, and its exit codes tell a finding from a run that could not judge.

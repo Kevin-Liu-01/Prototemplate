@@ -2,6 +2,66 @@
 title: 'Browser and build traps'
 description: 'What breaks in a Next.js 16, fumadocs, canvas or SVG site, learned on this one: each trap with its symptom, its cause, the fix and the numbers.'
 icon: Shield
+sources:
+  - skills/gt-website/references/docs.md
+  - skills/gt-performance/references/webgl-lifecycles.md
+  - skills/gt-performance/SKILL.md
+  - skills/gt-verify/SKILL.md
+  - skills/gt-motion/references/traps.md
+  - skills/gt-local-dev/SKILL.md
 ---
 
-What breaks in a Next.js 16, fumadocs, canvas or SVG site, learned on this one: each trap with its symptom, its cause, the fix and the numbers.
+A Next.js 16 site with fumadocs docs and live canvas fields fails in ways the browser rarely reports: a field draws black, a click paints an empty layout, two builds of one page differ. This site and generaltranslation.com, General Translation's site, met each of these traps between July and October 2026, and every fix comes with its numbers and the file, lint or skill that keeps it from coming back.
+
+<Cards>
+  <Card
+    title="Docs site traps on Next.js 16 and fumadocs"
+    href="/docs/engineering/docs-traps"
+    description="Intermediate frames from in-render redirects, sidebar marks at hydration, the fumadocs 16.16 sidebar, Markdown twins, Shiki's time limit, the lint findings fumadocs leaves, the cascade and builds."
+  />
+  <Card
+    title="Canvas and WebGL engines"
+    href="/docs/engineering/engines"
+    description="Chrome's budget of about 16 contexts, a shared canvas that only grows, readback canvases, zoom, a frame-time governor, shader weight, galleries of live previews and live values on static pages."
+  />
+  <Card
+    title="Proving a visual change"
+    href="/docs/engineering/verification"
+    description="Seam greys that count strokes, probes before edits, the blank in-app pane, the stress matrix, real gestures, WebKit, parity across an upgrade and the live deployment stamp."
+  />
+  <Card
+    title="Performance without visual loss"
+    href="/docs/engineering/performance"
+    description="Measurements that lie under load, field data against lab data on a real docs site, first-load bytes, module weight with a pixel-identity proof and dependencies judged one by one."
+  />
+  <Card
+    title="Lottie on canvas"
+    href="/docs/engineering/lottie"
+    description="Eight lottie-web canvas traps, from the missing glyph that stops a frame to matte buffers sized once, with the seam drag at 5 and 56 fps and the proof recipe."
+  />
+  <Card
+    title="Localized routing"
+    href="/docs/engineering/i18n-routing"
+    description="A locale guard ahead of every rewrite, the routing matrix, the gt-next Link, strings the extractor misses and a start prompt that has to run unchanged."
+  />
+  <Card
+    title="Dev servers and builds"
+    href="/docs/engineering/dev-servers"
+    description="Every next dev failure mode by its symptom, the listen-only kill, filtered installs, CI without the content submodule and pnpm's minimum release age."
+  />
+</Cards>
+
+## Ten traps
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| [A WebGL field draws black after a dozen client-side navigations, with no error](/docs/engineering/engines#the-context-budget) | Chrome keeps about 16 live WebGL contexts, and each mount made one | One engine and one context per engine module for the session |
+| [Every route of the dev server answers 500 with "Unexpected non-whitespace character after JSON"](/docs/engineering/dev-servers#failure-modes-of-next-dev) | `next dev` under load left its prerender manifest half written | Stop the server by PID, delete `.next/dev`, start it again |
+| [A click on a docs folder paints the layout with no article for about 280 ms](/docs/engineering/docs-traps#links-that-point-at-leaf-pages) | The page threw `redirect()` during render | Link to the leaf page; redirect in `next.config.ts` |
+| [Two builds of one page ship different code colours](/docs/engineering/docs-traps#code-highlighting-across-builds) | Shiki stops tokenizing a line after 500 ms on a loaded machine | `tokenizeTimeLimit: 0` |
+| [A Markdown twin answers 200 locally and 500 in production](/docs/engineering/docs-traps#markdown-twins-in-production) | The route read MDX from disk, which the deployed function does not have | Prerender every twin with `dynamicParams = false` |
+| [Utilities such as `font-semibold` and `mt-6` do nothing on headings](/docs/engineering/docs-traps#unlayered-rules-and-layered-utilities) | An unlayered reset outranks Tailwind 4's layered utilities | Metrics in the section's stylesheet, gaps on the parent |
+| [A canvas goes soft after browser zoom](/docs/engineering/engines#browser-zoom) | Zoom changes `devicePixelRatio` without resizing the box | Watch the resolution media query and re-arm it on every change |
+| [Shader and dither canvases come back blank in an embedded browser pane](/docs/engineering/verification#the-in-app-browser-pane) | The pane reports the page hidden and pauses `requestAnimationFrame` | Take pixels with Playwright in Chrome for Testing |
+| [A translated Lottie animation draws nothing after one text layer](/docs/engineering/lottie#a-missing-glyph-stops-the-frame) | A character missing from the glyph list throws inside lottie-web's canvas text | An empty glyph entry for every drawable character |
+| [Strings render in English in every locale](/docs/engineering/i18n-routing#links-routers-and-strings-in-gt-next) | The `gt generate` command does not follow a `gt` destructured out of `Promise.all` | `const gt = await getGT();` on its own line |

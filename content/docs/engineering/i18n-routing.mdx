@@ -2,6 +2,108 @@
 title: 'Localized routing'
 description: 'Locale guards, the gt-next Link and an agent prompt that must run unchanged: routing traps on a localized Next.js site.'
 icon: Globe
+sources:
+  - skills/gt-website/SKILL.md
+  - skills/gt-website/references/docs.md
+  - skills/gt-website/references/gt-next-integration.md
+  - skills/gt-website/references/pages.md
+  - skills/gt-website/references/routing-cases.txt
+  - skills/gt-website/scripts/routing-matrix.sh
+  - skills/gt-verify/references/cases.md
 ---
 
-Locale guards, the gt-next Link and an agent prompt that must run unchanged: routing traps on a localized Next.js site.
+A localized Next.js site sends every request through a locale layer, and its routing traps show up as 500s, 404s, extra redirect hops and English strings on translated pages. The cases come from generaltranslation.com, which General Translation (GT) localizes with its own open-source library, `gt-next`, and from fitting that library into another Next.js site. The [gt-website skill](/skills/gt-website) holds each rule with its date.
+
+## Middleware order
+
+A locale prefix outside the roster reached a docs rewrite and answered 500. On 2026-09-04 `/en/docs/platform` failed while the roster held `en-US` and `en-GB`: a docs rewrite in the middleware returned before the internationalization step, so the docs source was asked for a page tree in a locale it does not have. Paths outside the docs never hit that rewrite and were canonicalized, and that difference pointed at the rewrite.
+
+The fix is an unsupported-locale guard as the first step, with every docs rewrite below it:
+
+| Prefix | Answer |
+| --- | --- |
+| A roster tag | Passes, or 301s to its canonical casing |
+| A region variant of a published language, such as `fr-FR` when `fr` is published | 307 to the language |
+| Anything else | 301 to the default locale |
+
+Four more rules apply to the layer:
+
+- Redirects in `next.config.ts` run before the middleware, so a bare `/en/docs` takes two hops: one config redirect, then the guard.
+- A middleware matcher that skips dotted paths never sees `.md`, `.json` or asset URLs, so rules for those live in `next.config.ts` or the route.
+- Every branch that returns early carries the ad click id onto its response, because ad landing URLs point at docs pages and the redirect is the last chance to keep it.
+- A redirect for moved content deploys only after the moved pages exist. On 2026-09-03 301s shipped before the content they pointed at, and every old URL redirected to a 404.
+
+Every routing change passes a routing matrix before its pull request and again on production after the deploy. Each case is one GET with no redirect following, read as a status and a target, and the script exits with the number of failed cases:
+
+```text
+# label | path | expected status | expected target (- for none, * for any)
+real page | /en-US/docs/react/react-quickstart | 200 | -
+plural stripped | /en-US/docs/quickstarts | 307 | /en-US/docs/overview/get-started
+```
+
+```bash
+sh skills/gt-website/scripts/routing-matrix.sh --base http://localhost:3001   # before the pull request
+sh skills/gt-website/scripts/routing-matrix.sh                                # production, after the deploy
+echo $?                                                                       # failed cases, 0 when all hold
+
+# one case by hand
+curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' https://generaltranslation.com/en/docs
+```
+
+Routing defects reached production three times in September 2026, before the matrix gated every routing change: 301s into 404s on 2026-09-03, the 500 on 2026-09-04, and a legacy redirect that sent a CLI page to a dead URL on 2026-09-25. The matrix holds 41 cases, and its last run against production on 2026-10-10 passed all of them. The script and its cases are public in the gt-website skill.
+
+## Links, routers and strings in gt-next
+
+The library's components and its string extraction have three traps that look like bugs elsewhere.
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Links to files at the app root (`/openapi.json`, `/sitemap.xml`, a `.md` twin) answer 404 | The library's `Link` adds the locale to every href that starts with `/` | A plain `<a>` for root files |
+| A programmatic navigation loses the locale | The library exports no router, and Next's `useRouter().push` drops the locale prefix | Push a path that already carries the locale |
+| Strings render in English in every locale | The `gt generate` command does not follow a `gt` destructured out of a `Promise.all` | Call `getGT()` on its own line |
+
+The extractor misses strings in this form:
+
+```tsx
+const [posts, gt] = await Promise.all([loadPosts(), getGT()]);
+```
+
+and finds them in this one:
+
+```tsx
+const gt = await getGT();
+const posts = await loadPosts();
+```
+
+One sweep of generaltranslation.com in October 2026 found 65 of 96 literals in 26 files missing from the source table, which grew from 739 to 799 entries once they were extracted.
+
+Fitting the library into another Next.js site in October 2026 met five more:
+
+- The config wrapper `withGTConfig` refuses a prop that conflicts with `gt.config.json`. Keep the locale roster in `gt.config.json` for the CLI, give `withGTConfig` a routing-only config file of its own, and pass the URL locales as props.
+- Importing `withGTConfig` into `next.config.mjs` fails with "require is not defined", because the library's ESM entry calls `require`. A `next.config.ts` works.
+- Static generation needs `experimental.rootParams`, a `getLocale` that reads `next/root-params`, a `getRegion` that returns `undefined`, and `enableSmartRouting: false`, so an unprefixed URL stays in the default locale.
+- Behind the proxy, `usePathname()` returns the internal path the default locale is served from. Client code that builds links or marks the current page maps it back to the public path; missing this broke the language menu on every default-locale page. Test the language switcher from default-locale pages as well as translated ones.
+- Translated MDX left the frontmatter untranslated on about 40 pages per locale, and `**` or `_` next to CJK text came back escaped. Check titles and descriptions per locale, and write that emphasis as `<strong>` and `<em>`.
+
+A hydration mismatch that appeared at random under `next dev` left the production build clean, so judge one on a production build before chasing it. The integration notes are in the gt-next reference of the gt-website skill.
+
+## A start prompt that must run unchanged
+
+A prompt that takes a coding agent from an empty project to a first translation is proven by handing it unchanged to a fresh agent on a fresh app until a real translation renders. The site at generaltranslation.com serves such a prompt at `/agent-prompt.md`, and the home page's Setup for Agents button copies it. Kevin Liu set the rule on 2026-09-30: "test it yourself". Two runs that September found nine defects in the first draft and none in the second.
+
+The prompt depends on these facts about the `gt` CLI, checked against version 2.23.1 on 2026-10-01:
+
+| CLI behaviour | What the prompt does |
+| --- | --- |
+| The commands `gt init` and `gt configure` ask unanswered questions interactively and wait forever under an agent's terminal | Every step runs with `--no-interactive` and a flag for each answer |
+| With `--no-interactive`, a missing answer exits 1 and lists the missing flags | The agent reads the list and adds the flags |
+| There is no `--version` flag; each command's banner prints the version | The agent reads the banner |
+| A development key in `.env.local` makes `next build` fail | The key goes in `.env.development.local` |
+| The command `gt login --no-browser` prints the device URL | The agent can sign in without opening a browser |
+
+```bash
+npx gt@latest init --no-interactive --json --defaults --default-locale en --locales fr \
+  --no-locadex --react-setup --file-formats none --no-dev-credentials --package-manager npm
+```
+
+Each run records whether it used an existing CLI login, which skips steps a new user meets, and a separate verifier grades the result and the wording. Any change to the prompt, the CLI or the quickstarts is followed by another run. The case is in the agent prompts section of the [gt-verify skill](/skills/gt-verify).

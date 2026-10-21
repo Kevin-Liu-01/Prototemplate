@@ -2,6 +2,242 @@
 title: 'Docs site traps on Next.js 16 and fumadocs'
 description: 'Intermediate frames, marks lost at hydration, sidebar fixes, Markdown twins, stable highlighting, the cascade and builds on a fumadocs site.'
 icon: Code
+sources:
+  - skills/gt-website/references/docs.md
+  - skills/gt-website/references/deploys.md
+  - skills/gt-website/references/blog.md
+  - skills/gt-motion/references/traps.md
+  - skills/gt-landing-pages/references/type-on-the-page.md
+  - src/app/docs/docs.css
+  - src/app/docs/layout.tsx
+  - src/components/docs/SidebarMotion.tsx
+  - src/components/viewer/tokens.css
+  - 'src/app/md/[...path]/route.ts'
+  - source.config.ts
+  - scripts/lint/type.mjs
+  - scripts/lint/radius.mjs
+  - package.json
 ---
 
-Intermediate frames, marks lost at hydration, sidebar fixes, Markdown twins, stable highlighting, the cascade and builds on a fumadocs site.
+A docs site on Next.js 16 and fumadocs paints intermediate frames, drops marks at hydration and differs between builds unless a few rules hold. The cases come from this site, which runs fumadocs 16.16 on Next.js 16.2, and from the docs at generaltranslation.com, which General Translation (GT) builds on the same stack in gt-cloud, its product repository.
+
+## Links that point at leaf pages
+
+A click on a docs folder URL painted the docs layout with the section picker and no article, and the article replaced it about 280 ms later. The page threw `redirect()` during its render, and Next.js commits the layout above the page at the old URL before the redirect target arrives. A redirect in `next.config.ts` is answered before any layout renders and paints no such frame.
+
+The fix is to make every link the site renders point at the resolved leaf page, and to keep the in-render redirect only for crawlers and old links. A folder that needs a redirect for typed URLs gets it in the config:
+
+```ts
+// next.config.ts
+const nextConfig = {
+  async redirects() {
+    return [{ source: '/docs/guides', destination: '/docs/guides/install', permanent: false }];
+  },
+};
+
+export default nextConfig;
+```
+
+Found on generaltranslation.com's docs on 2026-09-02, where a test now holds the footer to leaf URLs. The trap is recorded in the first-paint section of the [gt-motion skill](/skills/gt-motion).
+
+## Marks that exist at first paint
+
+The docs sidebar showed no rail and no current-row tint until hydration, then popped them in. The sidebar's motion layer (`SidebarMotion`) draws its rail, pill and thumb in a mount effect, and a mount effect runs after the first paint. The rails fumadocs draws itself sit about 10 px inboard of the drawn path, so showing them before hydration made the rail jump sideways and read as two parallel lines.
+
+The fix is to gate only the mark whose CSS geometry matches the drawn one. The row tint fumadocs paints stays until the mount effect finishes and sets `data-sb-ready` on the sidebar, and the drawn pill takes over from there:
+
+```css
+#nd-sidebar[data-sb-ready] [data-radix-scroll-area-viewport] :is(a[href], button[type='button']):hover,
+#nd-sidebar[data-sb-ready] [data-radix-scroll-area-viewport] a[data-active='true'] {
+  background-color: transparent;
+}
+```
+
+Check sidebar work on a page with a nested folder open. A top-level page has no open folder and hides every nested defect. Found on generaltranslation.com's docs in September 2026; the rule is in `src/app/docs/docs.css` and `src/components/docs/SidebarMotion.tsx`.
+
+## The sidebar after fumadocs 16.16
+
+Version 16.16 of fumadocs changed how the notebook layout's folders collapse and scroll, and a sidebar drawn over it needed six fixes. The docs at generaltranslation.com moved to 16.16 on 2026-10-07, and the last fix landed on 2026-10-13.
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| The rail runs past the remaining rows while a folder folds | 16.16 added a list div that keeps its height while the collapsible animates to 0 | Read whether a folder is open from the collapsible: `:scope > div[data-state]` with `offsetHeight > 0` |
+| The pill and thumb stay on a row that is folding away | The folded row stays mounted until the collapse animation ends | Treat an active link inside `div[data-state] > div[data-state="closed"]` as not current |
+| The list jumps when a folder reopens | fumadocs calls the viewport's `scroll()` whenever an active row mounts, reopened folders included | Replace the desktop viewport's `scroll()` with a no-op and place the viewport by writing `scrollTop` |
+| The list scrolls when a folder opens near its end | Scroll anchoring | `overflow-anchor: none` on the viewport |
+| The sticky sidebar lifts at the end of the page | A page height that ends in half a pixel | `margin-bottom: -1px` on the sidebar's grid column from 768 px |
+| A loading row, and the thumb on a top-level row, vanish | The motion layer skipped every node whose class contained `docs-sb-` | Skip the motion layer's own nodes by exact class |
+
+This site's `src/components/docs/SidebarMotion.tsx` carries the four script fixes (rows 1, 2, 3 and 6). The full record is in the docs reference of the [gt-website skill](/skills/gt-website).
+
+## Markdown twins in production
+
+A Markdown twin route (the page's address plus `.md`) worked locally and returned 500 from the deployed function. The route read the page's MDX from disk on demand, and the deployed function has no copy of the content.
+
+The fix is to prerender every twin and refuse every other path:
+
+```ts
+// src/app/md/[...path]/route.ts
+export const dynamic = 'force-static';
+export const dynamicParams = false;
+export const revalidate = false;
+
+export function generateStaticParams(): { path: string[] }[] {
+  return docsPages().map((page) => ({ path: ['docs', ...page.slugs] }));
+}
+```
+
+A middleware matcher that excludes dotted paths skips every `.md` URL, so the rules for twins live in `next.config.ts` rewrites or in the route itself. Agent-readability checkers count links in the server-rendered body, and a Copy page menu that unmounts its rows while closed hides them, so the page also renders machine-only anchors with `sr-only`, `aria-hidden`, `tabIndex={-1}` and `data-pagefind-ignore`. Found on generaltranslation.com in September 2026. [The SEO system](/docs/seo) describes this site's twins, its agent files and the shallow metadata merge behind its canonicals.
+
+## Code highlighting across builds
+
+Two builds of the same page shipped different code colours. Shiki stops tokenizing a line after 500 ms by default (`tokenizeTimeLimit`), and on a loaded build machine the limit fires, so the rest of the line ships as one plain span or in the previous token's colour.
+
+| Run on the ten code fences of one page | Coloured spans |
+| --- | --- |
+| A forced limit, first pipeline | 64 |
+| A forced limit, second pipeline | 47 |
+| `tokenizeTimeLimit: 0`, every run | 73 |
+
+When the limit does not fire, the output with 0 is byte-identical to the default. Set the option wherever Shiki runs, in the fumadocs collection and on every rehype Shiki call:
+
+```ts
+// source.config.ts
+import { rehypeCodeDefaultOptions } from 'fumadocs-core/mdx-plugins';
+import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
+
+export const docs = defineDocs({ dir: 'content/docs' });
+
+export default defineConfig({
+  mdxOptions: {
+    rehypeCodeOptions: { ...rehypeCodeDefaultOptions, tokenizeTimeLimit: 0 },
+  },
+});
+```
+
+Measured on generaltranslation.com's docs in October 2026; this site sets it in `source.config.ts`.
+
+## MDX that drops props
+
+A blog carousel rendered with its `items` prop undefined, and the build reported nothing. The blog compiles MDX through `next-mdx-remote` with JavaScript expressions blocked, which removes every `prop={expression}` and every `{expression}` before compiling. Docs pages compile through fumadocs and keep expressions.
+
+The fix is components that take string attributes and child elements. Three publishing rules follow from the same pipeline on generaltranslation.com, where the posts live in a separate content repository checked out as a submodule:
+
+- The content repository's preview app needs a stand-in for every new component, or its build fails.
+- Every deploy checks out the tip of the content repository's main branch whatever the submodule pointer records, so merging the content pull request publishes the post, and the code side merges first.
+- The content repository squash-merges, so a pointer at a branch commit never becomes an ancestor of its main branch.
+
+The handbook's [graphics document](/docs/handbook/graphics) carries the hand-off to a post.
+
+## What fumadocs leaves for the lints
+
+A fumadocs page draws the right font file and still fails a strict type system, because fumadocs' elements carry their own sizes and feature settings. This site's live type lint read five docs routes at 1440 and 390 px on 2026-10-21 and found 288 problems; the live radius lint found 5.
+
+| Lint and rule | Findings | What it read |
+| --- | --- | --- |
+| type L2, features that match the role | 261 | `font-feature-settings: normal` on the search button, the nameplate, the sidebar rows, the prose, the tables and the table of contents |
+| type L3, the h1 on the display ladder | 10 | The page title at fumadocs' `text-[1.75em]`, 28 px where the ladder's steps are 44, 32 and 24 px |
+| type L6, balanced headings | 17 | `text-wrap: auto` on the title, the "On this page" heading and the card titles |
+| radius L3, legal corners | 5 | The table-of-contents dot's `rounded-full`, computed as 33,554,400 px |
+
+On `/docs/handbook/design` at 1440 px in the dark theme, the fix below changes these values when it is injected into the rendered page:
+
+| Part | fumadocs alone | With the fix |
+| --- | --- | --- |
+| Title | 28/42, untracked, features `normal`, opsz 28 | 44/45.76 at -0.025em, display features, balanced, opsz 32 |
+| Lead | 18/28, 840 px wide, 69 characters a line | 17/26.35, 510 px wide |
+| Body | 16/28, 840 px wide, 107 characters a line | 16/25.6, 512 px wide, 64 characters a line |
+| Table cells | 14/24 | 14/21.7 with tabular figures |
+| Sidebar rows | 13/18.57 on a 30.6 px pitch | 13/17 on a 28 px pitch |
+| Table-of-contents dot | 33,554,400 px corner | 50% on its 4 by 4 box |
+
+The fix gives the docs root a class that joins the roots `tokens.css` already types, puts the title, lead, prose and tables on the ladder in `docs.css`, and gives the leftover corners legal values:
+
+```tsx
+// src/app/docs/layout.tsx
+<DocsLayout tree={source.getPageTree()} containerProps={{ className: 'pt-docs' }}>
+```
+
+```css
+/* tokens.css: .pt-docs joins each base list */
+:is(.pt-viewer, .pt-root, .pt-docs) :is(h1, h2) {
+  font-family: var(--pt-display);
+  font-feature-settings: var(--pt-ff-display);
+  text-wrap: balance;
+}
+
+/* docs.css: the ladder and the corners */
+#nd-page > h1 {
+  font-size: var(--pt-d1);
+  line-height: var(--pt-d1-lh);
+  letter-spacing: var(--pt-d1-track);
+}
+#nd-toc [style*='offset-path'] {
+  border-radius: var(--pt-radius-round);
+}
+```
+
+Injected into the rendered pages on 2026-10-21, the rules took the live type lint from 288 findings to 0 and the live radius lint from 5 to 0 on the same routes, at rest and with the search dialog open. The 28 px title is the `DocsTitle` of fumadocs-ui 16.16.1. The rules are held by `scripts/lint/type.mjs` and `scripts/lint/radius.mjs`, which [Gates](/docs/gates) runs. [Type](/docs/craft/type) explains the ladder and the features.
+
+## Features that compute normal
+
+Every docs element computed `font-feature-settings: normal` while the family was right. Tailwind 4's preflight sets `font-feature-settings: --theme(--default-font-feature-settings, normal)` on `html`, and the theme resolves that variable from `--font-sans--font-feature-settings`. The docs sheet sets `--font-sans: var(--pt-text)` and no features sub-token, so `html` computes `normal` and every docs element inherits it.
+
+Setting `--font-sans--font-feature-settings` in the docs sheet's `@theme` fixes the docs and leaks. React keeps a route's stylesheet in the document after a client navigation, so the token reaches `html` on every route the reader visits afterwards, including design explorations that keep their own type. To see it, open `/brand`, click Docs in the sidebar and go back: the docs chunk is still linked on `/brand`.
+
+The fix scopes every docs rule to docs-only ids, attributes or `:root:has(#nd-notebook-layout)`, and types the docs through a class on their root. Found on this site on 2026-10-21; the header of `src/app/docs/docs.css` states the scoping rule.
+
+## Markup that hides from a lint
+
+A live lint reads the elements present when it runs, and fumadocs renders four kinds of markup that a rest-state reading misses.
+
+| Markup | Why a lint misses it | How to read it |
+| --- | --- | --- |
+| Prose h2 and h3 text inside `a[data-card]` with a copy-link button | A lint that reads only elements whose own text sits in a heading never checks prose heading tracking | Read a heading through an anchor child that holds all its text |
+| The search dialog, portaled into `body` outside the layout | No lint opens it. Open, its ESC key renders in Menlo, 10 findings across five routes at two widths | Open it with the shortcut (`Meta+k`) before collecting |
+| The sidebar's scroll thumb (Radix ScrollArea) | It mounts only while the pointer is on the list, and its `rounded-full` computes 33,554,400 px | Hover the list, wheel 300 px, wait up to 5 s for `[data-orientation="vertical"] > *` |
+| Tailwind type utilities in component class strings (`text-[13px]`, `text-xs`) | The type lint reads stylesheets and inline style objects | A class-string rule like the radius lint's check on `rounded-*` |
+
+Every row of the table of contents also carries the `prose` class, so a prose override scoped to `.prose` alone restyles the table of contents. Scope it to `#nd-page .prose`. Found on this site on 2026-10-21; the live lints' collectors are in `scripts/lint/type.mjs` and `scripts/lint/radius.mjs`.
+
+## The cascade
+
+### Unlayered rules and layered utilities
+
+Tailwind 4 puts its utilities in a cascade layer, and any unlayered rule outranks every layered rule whatever their specificities. For normal declarations the order is unlayered, then utilities, components, base and theme. An unlayered heading reset such as `h1 { font-weight: 500; letter-spacing: -0.028em; margin: 0 }` silently defeats `font-semibold`, `tracking-*` and margin utilities on every h1.
+
+Heading and paragraph metrics therefore live in the section's own stylesheet, and siblings are spaced by a gap on the parent. The docs adapters use the same rule on purpose: every override in `docs.css` is unlayered, so it outranks fumadocs' utilities with no `!important`. DESIGN.md section 12 and the [gt-landing-pages skill](/skills/gt-landing-pages) hold the rule.
+
+### Specificity of an is() list
+
+A `:is()` list takes the specificity of its most specific argument. One ID added to a list of root classes, such as `:is(.pt-viewer, .pt-root, #nd-notebook-layout)`, lifts every rule built on the list from (0,1,1) to (1,0,1), and those base rules then override component rules across the site. The docs root joins the lists as the class `.pt-docs`, at (0,1,0) like every root already listed. Found on this site on 2026-10-21.
+
+### The typography plugin in the utilities layer
+
+The docs sheet loads Tailwind's theme and utilities layers and no components layer, so the typography plugin's `.prose` rules land in the utilities layer. There they tie with utilities at (0,1,0), and the rule emitted later wins: a table-of-contents row carries both `prose` and `text-sm`, and `text-sm` wins. Found on this site on 2026-10-21; the head of `src/app/docs/docs.css` lists the layers it imports.
+
+### The full round corner
+
+Tailwind 4's `rounded-full` is `calc(infinity * 1px)`, which Chrome computes as 33,554,400 px, so a corner lint that lists legal values reports that exact number. A square box takes `50%`: the table-of-contents dot is 4 by 4 px. The sidebar's scroll thumb is 6 px wide and taller than that, so `50%` would draw an ellipse, and it takes the square shell corner. The legal corners are pinned in `scripts/lint/radius.mjs`.
+
+### Tailwind 4 build traps
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| A token is missing from the built CSS | A token in a plain `@theme` block that no utility uses is removed | Declare tokens read by inline styles or third-party CSS in `@theme static`; grep the built chunk for the name |
+| The CSS build breaks after an edit to a comment | Tailwind scans comments for class candidates, and a bracketed utility written in a comment is one | Fix the comment, then `rm -rf .next`, because the candidate cache persists |
+| Classes added to a workspace package never compile | The app's dev server has not rescanned its sources | Run `touch` on the app's `globals.css` |
+| A colour token is invalid | The tokens are bare HSL triples | Read them as `hsl(var(--border))` |
+| A size from a variable becomes a colour | Tailwind 4 reads `text-[var(--x)]` as a colour | `text-[length:var(--x)]` |
+
+The callouts and diff lines of fumadocs read `--color-fd-info`, `--color-fd-warning` and the other status colours, which no utility on this site uses, so `src/app/docs/docs.css` declares them in `@theme static`. The traps were met on generaltranslation.com in 2026 and are recorded in the deploys reference of the [gt-website skill](/skills/gt-website).
+
+## Builds
+
+### Inline CSS, built and reverted
+
+The Next.js option `experimental.inlineCss` made the docs heavier. Next.js 16.2 embeds the entry CSS twice, once in a style tag and once in the flight data, and generaltranslation.com's docs HTML grew from 245 KB to 731 KB. The change was built, measured, reverted and listed in the pull request body, which is the rule for any idea that measures worse. Measured in September 2026; [Performance without visual loss](/docs/engineering/performance) has the rest of that round.
+
+### Prerender memory on Next.js 16.3
+
+Next.js 16.3 retains memory for every prerendered page (vercel/next.js#97464). On generaltranslation.com the build worker was killed at page 1,779 of 7,117, where 16.2 builds the same pages in under a minute. The fix pins `next` 16.2.12 in the app's own `package.json` while the workspace catalog moves on, with the trade-off recorded: 16.3.8 is a security release for image optimization with allow-listed remote hosts. Found on 2026-10-01. This site pins the same version, and [Use these docs as a template](/docs/template) names the pin.

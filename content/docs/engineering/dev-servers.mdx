@@ -2,6 +2,92 @@
 title: 'Dev servers and builds'
 description: 'How next dev fails under load and after large pulls, with the symptom of each failure and the one-line fix.'
 icon: Command
+sources:
+  - skills/gt-local-dev/SKILL.md
+  - skills/gt-website/SKILL.md
+  - skills/gt-website/references/deploys.md
+  - skills/gt-website/references/pages.md
+  - skills/gt-ship/references/prototemplate.md
+  - skills/prototemplate/SKILL.md
+  - skills/gt-films/SKILL.md
+  - tsconfig.json
+  - next.config.ts
 ---
 
-How next dev fails under load and after large pulls, with the symptom of each failure and the one-line fix.
+The Next.js 16 dev server fails in a few repeatable ways under load, after large pulls and when two processes share one build folder, and each failure has a symptom that names it. The cases come from this site's shared dev server, which several agent sessions use at once, and from the worktrees of generaltranslation.com, General Translation's site. The [gt-local-dev skill](/skills/gt-local-dev) holds the order of checks when a change does not show.
+
+## Failure modes of next dev
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| A second `next dev` for the same checkout refuses to start | Next.js 16 holds `.next/dev/lock` while a dev server runs | One server per checkout; another worktree runs its own server on its own port |
+| Every route answers 404 after a restart | Two `next dev` processes share one `.next` | Stop both by PID, `rm -rf .next`, start one |
+| Every route answers 500 with "Unexpected non-whitespace character after JSON" | Under load, with several sessions compiling routes at once, `next dev` leaves `.next/dev/prerender-manifest.json` half written | Stop the server by PID, delete `.next/dev`, start it again |
+| The server answers nothing after a large fast-forward (47 commits on 2026-10-09) | The dev server's state no longer matches the tree | The same restart |
+| The disk fills | A long-running shared server's `.next/dev` grew to 64 GB | Delete `.next/dev` at the restart |
+| A changed image still shows the old version | `next dev` keeps old `_next/image` variants | `rm -rf .next` and restart |
+| A cold image request hangs for 900 s or more and times out a page check | The image optimizer on a loaded dev server | Server state: retry once the load drops |
+| `next start` serves the old build after a rebuild reported success | A stale `.next` | Delete `.next` in the scratch tree before diagnosing |
+| Every docs page answers 404 after a merge, with nothing in the log | A dependency missing from the worktree (2026-09-24) | `pnpm install --frozen-lockfile` and a restart |
+| `Module not found` for a workspace package after its sources changed | The package resolves from a stale `dist/` | Build it, for example `pnpm turbo run build --filter='<app>^...'` |
+| A pending navigation lasts longer than in production | `next dev` never prefetches `<Link>` | Judge navigation timing on a production build |
+
+A server is ready when a real page returns 200 with no build error in its body. The first request to a route compiles it, so a status alone can pass while the page body holds the error overlay:
+
+```bash
+curl -sL -o page.html -w '%{http_code}\n' http://localhost:<port>/<page>
+grep -c 'Module not found\|Build Error' page.html    # a 200 with 0 here passes
+```
+
+Stop a server by the process that listens on its port:
+
+```bash
+lsof -nP -iTCP:<port> -sTCP:LISTEN          # who listens, with the PID
+kill $(lsof -ti tcp:<port> -sTCP:LISTEN)    # stop that listener only
+```
+
+Without `-sTCP:LISTEN`, `lsof -ti` also lists a browser connected to the port, and the kill closes it. On a machine shared by several sessions, a process is stopped by its PID, and only by the session that started it. A kill by name or pattern, such as `pkill` or `killall`, stops other sessions' servers as well (2026-10-10). Section 2 of the gt-local-dev skill and section 8 of the [prototemplate skill](/skills/prototemplate) hold the restart recipe for this site's shared server.
+
+## Type checks and the scratch build
+
+The production build never type-checks here, because `next.config.ts` sets `typescript.ignoreBuildErrors`, so `pnpm exec tsc --noEmit` is a gate of its own. The build gate runs in a scratch worktree, because the dev server owns the shared `.next`, and `tsconfig.json` includes the types the dev server generates under `.next/dev/types`. [Gates](/docs/gates) has both commands and their order.
+
+## Filtered installs and project references
+
+Every deploy of generaltranslation.com failed at the start of October 2026 with `TS6306: Referenced project packages/email must have setting composite`. The app's `tsconfig.json` referenced a workspace package it never imported. The deploy installs with a filter (`pnpm i --filter=landing... --filter=. --frozen-lockfile`), which installs only the app and the packages it depends on, so the referenced package had no `node_modules`, and its own config could not resolve.
+
+The fix is that an app's `tsconfig.json` references only the packages the app imports. The trap is recorded in the deploys reference of the [gt-website skill](/skills/gt-website).
+
+## CI without the content submodule
+
+The site at generaltranslation.com keeps its docs and blog posts in a separate content repository checked out as a submodule, and its CI never initializes that submodule. Code that reads content at build time returns null when the content is absent, and a test that reads real pages skips when the file is missing. The guard sits on the read itself, because `describe.skipIf` still runs its callback to collect the tests:
+
+```ts
+import { existsSync, readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+
+const page = 'content/docs/en-US/overview/for-coding-agents.mdx';
+const present = existsSync(page);
+
+describe.skipIf(!present)('the agent prompt page', () => {
+  const source = present ? readFileSync(page, 'utf8') : '';
+  it('holds the fenced prompt', () => {
+    expect(source).toContain('agent-prompt.md');
+  });
+});
+```
+
+A build-time read that returns null degrades its feature: on generaltranslation.com the Setup for Agents button becomes a link to the docs when the prompt cannot be read, so a docs edit never fails the site's build. The rule is in the pages reference of the gt-website skill.
+
+## A minimum release age for dependencies
+
+With `minimumReleaseAge: 2880` in `pnpm-workspace.yaml`, pnpm refuses any version published less than 2,880 minutes (two days) ago, so `pnpm add` can fail on an unrelated dependency that had a recent release. A full re-resolve to get past it churns lockfile lines that have nothing to do with the change. The fix adds the one dependency by hand:
+
+```bash
+# add the dependency to package.json first, then
+pnpm install --config.minimumReleaseAge=0
+git diff pnpm-lock.yaml          # keep only the lines the new dependency needs, restore the rest
+pnpm install --frozen-lockfile   # confirms the trimmed lockfile matches package.json
+```
+
+Restart any dev server that ran during the relink. Until then it fails with "Can't resolve 'gt-next/link'" or a similar import. Section 2 of the gt-website skill holds the steps.
