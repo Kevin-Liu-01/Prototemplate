@@ -6,6 +6,52 @@ icon: Info
 
 Prototemplate is Kevin Liu's hub and working wiki for his work at General Translation (GT), the localization platform for developers. It is a Next.js 16 site served at [www.prototemplate.com](https://www.prototemplate.com), the canonical address, with prototemplate.vercel.app and prototemplate.kevinliu.studio as aliases. Two Vercel projects deploy the `main` branch of the public repository, [Kevin-Liu-01/Prototemplate](https://github.com/Kevin-Liu-01/Prototemplate): the General Translation team's project serves www, and Kevin's personal project serves the two aliases.
 
+## The five tabs
+
+The docs sit in five tabs, and the menu at the top of the sidebar switches between them. The Guide card opens the handbook, and every other card opens its tab's first page.
+
+<Cards>
+  <Card
+    title="Guide"
+    href="/docs/handbook"
+    description="This page, Get started and the handbook, which records how Kevin runs GT work: the agent guide, the operating principles, the process documents, the reference and the canon."
+  />
+  <Card
+    title="Components"
+    href="/docs/components"
+    description="The live component library: every instrument mounted with controls for its props, its import path and its reduced-motion still, in four groups."
+  />
+  <Card
+    title="Craft"
+    href="/docs/craft"
+    description="The numbers, traps and reasons behind the design rules: type, lines, SVG motion, dither, writing, interface details and films."
+  />
+  <Card
+    title="Engineering"
+    href="/docs/engineering"
+    description="What breaks in a Next.js 16, fumadocs, canvas or SVG site, learned on this one, with the symptom, the cause, the fix and the numbers."
+  />
+  <Card
+    title="Internals"
+    href="/docs/internals"
+    description="How the hub is built and changed: the routes, the deck, the skills, scripts and gates, the SEO system and the docs template."
+  />
+</Cards>
+
+## The order to read it in
+
+An agent reads three things before it works:
+
+1. The [agent guide](/docs/handbook/agents).
+2. The [operating principles](/docs/handbook/operating-principles).
+3. The skill for its task at [/skills](/skills). The skill's Review checklist is the bar for the work.
+
+A person new to the hub reads in this order:
+
+1. [Get started](/docs/get-started), to run the site.
+2. The [handbook](/docs/handbook), for how the work is done.
+3. The tab for the work at hand: [Components](/docs/components) to build a surface, [Craft](/docs/craft) for the design numbers, [Engineering](/docs/engineering) for the browser and build traps, and [Internals](/docs/internals) to change the hub itself.
+
 ## What it holds
 
 - **The design lab** at `/`: twenty-seven directions for the GT website, each a built page that runs live, with the anatomy wall and the capabilities ledger.
@@ -13,31 +59,10 @@ Prototemplate is Kevin Liu's hub and working wiki for his work at General Transl
 - **The handbook** at [/docs/handbook](/docs/handbook), a section of these docs: how Kevin runs GT work, and the canon: the agent guide, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, the ship loop, the tools, the libraries, the graphics pipeline and the artifact pictures.
 - **The skills** at [/skills](/skills): the curated agent skills, each installable in any project.
 - **The marks**, **the graphics** and **the films** at `/marks`, `/graphics` and `/motion`.
-- **These docs** at `/docs`, in the layout generaltranslation.com/docs runs: the pages on how the hub works, the live component library at [/docs/components](/docs/components), the directions for the blog globe figure and the handbook.
+- **These docs** at `/docs`, in the layout generaltranslation.com/docs runs, in five tabs: the Guide with the handbook, the live component library at [/docs/components](/docs/components) with the blog globe figure under Drawings, Craft, Engineering and Internals.
 
 ## Who reads it
 
 - **Kevin**, who reviews every change on localhost before it reaches `main`.
 - **Agents** working in this repository, and agents in other repositories that installed its skills or copied its handbook.
 - **The brand agency**, which reads the brand book, the deck and the design lab.
-
-## The order to read it in
-
-An agent reads the [agent guide](/docs/handbook/agents) first, then the [operating principles](/docs/handbook/operating-principles), then the skill for its task, whose Review checklist is the bar for the work. A person new to the hub reads these docs in order.
-
-## The other pages
-
-| Page | What it covers |
-| --- | --- |
-| [Get started](/docs/get-started) | Running the site, the doctor, worktrees and the repository map |
-| [Pages and the viewer shell](/docs/pages) | Every route, the shell that frames most of them, the book page and the registries |
-| [The design lab and the directions](/docs/directions) | The 27 directions under `/d`, the Toolchain foundation and the production mirror |
-| [The brand deck](/docs/deck) | The deck's sheet, its grammar and its build |
-| [Skills](/docs/skills) | The skill contract, the build, where skills are served and how they install |
-| [Scripts and generated files](/docs/scripts) | The `scripts/` folders and the files only a script may change |
-| [Gates](/docs/gates) | The lints, the page check, the type check and the build that run before work lands |
-| [The SEO system](/docs/seo) | Titles, canonicals, robots, social cards, structured data, the sitemap and the agent files |
-| [Components](/docs/components) | The live component library: the dithered and light fields, the glyph rain, the doubled line, iso, the globes, the locale pieces, the moving text, the marks and the heads, each with controls, props and its reduced-motion still |
-| [The blog globe figure](/docs/components/blog-globe) | Four directions for a blog figure that turns a globe along the path of Euclid's Elements, with all three rounds live and their ranking |
-| [Handbook](/docs/handbook) | How Kevin runs GT work: the principles, the quality bar, the playbook, the product map, the glossary and the decisions, then the nine canon documents |
-| [Use these docs as a template](/docs/template) | Lifting this docs site into another Next.js project |

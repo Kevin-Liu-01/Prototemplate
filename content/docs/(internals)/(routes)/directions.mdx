@@ -2,6 +2,10 @@
 title: The design lab and the directions
 description: 'The 27 directions under /d: the explorations, the three site concepts, the production mirror, and how the gallery presents them.'
 icon: Swatch
+sources:
+  - skills/prototemplate/references/porting.md
+  - scripts/lint/copies.json
+  - src/app/d/terminus-board/sections/locale-icons.css
 ---
 
 The design lab holds twenty-seven directions for the General Translation website. Each one is a built page that runs live.
@@ -18,6 +22,36 @@ Each direction lives under `src/app/d/<slug>` with its own type, colors and styl
 
 `src/app/d/toolchain` is the single source the three site concepts fork. A fork imports Toolchain's sections and re-skins them by rescoping its root class, and it never edits Toolchain's files. [ARCHITECTURE.md](/docs/handbook/architecture) explains the rule.
 
+## Forking Toolchain
+
+1. Give the fork's root element its own class, such as `.terminusboard-root`, and set the fork's tokens on it.
+2. Import Toolchain's sections, diagrams and components from `@/app/d/toolchain/...`. Imports run one way, from a fork to the source, so a fix in Toolchain reaches every fork. Canvas and shader engines that several forks share live once in `src/lib`.
+3. A component whose stylesheet is scoped by its own class (`.tflow`, `.eg`, `.iso`) and reads `var(--tc-*)` with fallbacks needs nothing more. A stylesheet scoped to `.toolchain-root` needs a rescoped copy in the fork, because its selectors match nothing under another root.
+4. Dark mode is a token remap under `[data-theme='dark'] .<fork>-root` and nothing else. A plate that is always dark never remaps, and a canvas reads its ink from a CSS variable and reads it again when `html[data-theme]` changes.
+5. Change Toolchain itself only when the change is meant for every fork.
+
+Terminus Board shows step 3. It imports `LocaleTag` from Toolchain, and the tag's rules live in `toolchain/components/icons.css` under `.toolchain-root`, so none of those rules would match on the fork. The fork carries the same rules under its own root in `terminus-board/sections/locale-icons.css`:
+
+```css
+/* before: src/app/d/toolchain/components/icons.css, matches only under Toolchain */
+.toolchain-root .lct {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-style: normal;
+}
+
+/* after: src/app/d/terminus-board/sections/locale-icons.css, the same rule rescoped */
+.terminusboard-root .lct {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-style: normal;
+}
+```
+
+On 2026-10-08 the frozen local copies of Toolchain sections that two forks still carried were deleted, since nothing imported them. Before adding a copy, import the source and rescope only the CSS.
+
 ## How the hub presents them
 
 - `/` reads the directions as one article, shows one live exhibit at a time, or lays them out as a grid of captures.
@@ -29,6 +63,16 @@ Each direction lives under `src/app/d/<slug>` with its own type, colors and styl
 ## Keeping the mirror in step
 
 `/d/production` follows generaltranslation.com. After a gt-cloud pull request changes a page, the change is ported here: one root class per page, the gt-cloud stylesheets as rescoped copies, and every copy recorded in `scripts/lint/copies.json`, which `pnpm lint:copies` checks.
+
+### The port recipe
+
+1. Put the whole port under one root class on its root element, and scope every rule it adds under that class.
+2. Copy each gt-cloud stylesheet the page uses whole, then transform it: its source roots (`.enterprise-root`, `.toolchain-root`) become the port's root, a doubled root collapses to one, `--color-emphasis` becomes `--tc-accent`, and `!important` is stripped. A mirror holds nothing else, so a re-sync replaces it in one copy.
+3. Put everything the port adds, such as bridges to the hub's tokens and explicit form margins, in one compatibility sheet, `port-compat.css`. Mirrors are never edited by hand.
+4. Pass each section file through the same transform: `gt-next` is stripped, so `<T>` and `gt()` become plain strings; `LocaleFlag` becomes `flag-icons`; and `Cta` is ported locally with link shims.
+5. Record the copy in `scripts/lint/copies.json` in one of three modes: `pin`, where gt-cloud is the source and the copy is frozen at a sha256; `source`, where this repository is the source; or `fork`, where the copies differ on purpose and `from` and `reason` say why.
+
+Two traps meet every port. Tailwind's margin utilities are dead on a ported route, because the family's unlayered reset outranks Tailwind's utilities layer, so margins go in the compatibility sheet. Lightning CSS folds a standalone `scale` into `transform`, so a hover-scale reset happens in the markup.
 
 ## Search engines
 

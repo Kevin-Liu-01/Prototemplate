@@ -7,6 +7,7 @@ sources:
   - src/components/viewer/BadgeCycle.tsx
   - src/components/viewer/BookView.tsx
   - src/components/viewer/BookView.css
+  - src/components/viewer/tokens.css
 ---
 
 import { BadgeCycleDemo, HeadFrameDemo } from '@/components/docs/demos/lazy';
@@ -89,3 +90,8 @@ Use `BookHead` on every hub page with a book head; a page differs from another o
 ### Reduced motion and themes
 
 The head itself does not move; its badge holds its first frame under reduced motion. Every value is a `--pt-` token, so the head follows the theme.
+
+## The head's numbers
+
+The panel's column is 304 px (`--pt-head-panel` in `src/components/viewer/tokens.css`), sized for its longest value: a date with its hint, such as "Sep 10, 2026 4 weeks ago", which measures 168 px. The panel's rows sit on the lead's line pitch, 26.35 px, so a fact lines up with a line of the lead beside it. [Pages and the viewer shell](/docs/pages) holds every number of the book page with what it measures.
+

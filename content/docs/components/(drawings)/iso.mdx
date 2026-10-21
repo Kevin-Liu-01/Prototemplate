@@ -6,6 +6,7 @@ sources:
   - src/components/docs/demos
   - src/app/d/toolchain/diagrams/iso.ts
   - src/app/d/toolchain/diagrams/IsoFrame.tsx
+  - skills/gt-diagrams/references/isometric.md
 ---
 
 import { IsoKitDemo } from '@/components/docs/demos/lazy';
@@ -58,3 +59,29 @@ Use the kit for infrastructure: a stack of layers, a device, a plate of chips, a
 ### Reduced motion and themes
 
 The kit draws still geometry; a host that animates it, as the stack tower does, runs its own timeline and holds a still under reduced motion. The plate's faces are the stage's ink at 4, 9 and 15 percent, so on paper they shade like daylight, and on ink they take the night shading the dark bands use.
+
+## Numbers and traps
+
+The projection and the light make the drawings agree on angle and shade. These proportions and alphas make them agree on weight, so a stack drawn for one page sits beside a chip drawn for another as one set.
+
+| What | Value | Measured on or held by |
+| --- | --- | --- |
+| Plate thickness | about 4% of the footprint | The stack tower: footprint 104, thickness 4.2 |
+| Air between stacked plates | about 40% of the footprint | The stack tower: 42 between plates |
+| Corner radius | `ISO_RADIUS` 2.4, clamped to half of each adjoining edge | `roundedPolygon`, so a thin slab keeps its side faces |
+| Corner radius on diff slats | 1.2 | At 2.4 a thin slat reads as a capsule |
+| Rim alpha, plate `i` of `n` | 0.12 + 0.08 d, where d = i / (n - 1) | 0 at the bottom plate, 1 at the top |
+| Top edge alpha | 0.24 + 0.24 d | The same d |
+| Front edge alpha | 0.08 | Every plate |
+| Labels beside a drawing | sans at 9 to 10 user units, about 0.6 alpha, leaders at 0.14 | Mono only on numbers |
+| Glyphs on a chip | `<T>`, `en` and `ja` at 6.5 px | Short glyphs read at chip scale, and words do not |
+| The Locadex mark's box | a 500-unit viewBox around a glyph 199 by 222 | `markHalf = glyphWidth * (500 / 199) / 2` sizes the image box from the glyph |
+
+- Depth comes from each plate's stroke alpha. Group opacity carries no depth in this family. The pricing board's `is-dim` at opacity 0.32 marks a selection and says nothing about depth.
+- A hand-written `scale(1 0.5) rotate(45)` is the 2:1 dimetric squash. Its y to x ratio is 0.5 where the 30 degree face needs 0.577, so a mark placed that way lies flatter than the face under it. Seat flat art with `plane(z, ox, oy)`. Its matrix is the flat-to-iso map in one step, and it agrees with `project()` on that plane: rotate 45 degrees, scale y by tan 30 (0.577), then scale the whole by the square root of 1.5.
+- Every point goes through `project()` or `plane()`, the two functions that hold the 30 degree projection.
+- Plates are opaque. The first plates were frosted glass, a near-opaque hull under a diagonal white sheen, and BRAND.md section 9 lists glassmorphism under Avoid. The stack tower and the Locadex iso use opaque plates with no sheen.
+- The line audit reads lines from computed CSS and cannot see SVG strokes, so check every junction of a drawing by eye in 2x crops.
+
+The `gt-diagrams` skill's [isometric reference](/skills/gt-diagrams/references/isometric.md) holds the face tones for each material, the extrusion recipe and the shimmer.
+

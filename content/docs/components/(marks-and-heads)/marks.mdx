@@ -9,6 +9,8 @@ sources:
   - src/components/viewer/GtWord.tsx
   - src/components/viewer/GtMark.tsx
   - src/app/d/toolchain/diagrams/DitheredMark.tsx
+  - skills/gt-diagrams/references/isometric.md
+  - skills/gt-deck/references/type.md
 ---
 
 import { DitheredMarkDemo, GtWordDemo } from '@/components/docs/demos/lazy';
@@ -135,3 +137,13 @@ Use the shine on one mark that is the drawing's subject, such as the Locadex mar
 ### Reduced motion and themes
 
 Under reduced motion the host never starts the tweens, and the markup's own pose stays: the primary band mid-glyph and the counter-sheen parked clear. The resting ink and the glint read this page's ink, so the mark follows the docs theme.
+
+## Traps
+
+[SVG lines in motion](/docs/craft/svg-motion) explains each of these with its fix.
+
+- The brand deck's `#gt-mark` symbol (`deck/parts/head.html`) carries its own viewBox, `-8 214 1213 771`. Copied onto the outer svg, that viewBox draws the mark 214 units too high and cuts off its top. Reference the symbol from an svg with a width and height in the mark's aspect, about 1.573 (132 by 84, for example), and no viewBox ([symbols and masks](/docs/craft/svg-motion#symbols-and-masks)).
+- A mask with `maskUnits="userSpaceOnUse"` resolves in the user space of the element that uses it, so the mask's coordinates are written in the same plan coordinates as the masked rectangle ([symbols and masks](/docs/craft/svg-motion#symbols-and-masks)).
+- SVG ids are global to the document. Two marks on one page with the same `id` share one mask, so each `DitheredMark` gets its own prefix ([symbols and masks](/docs/craft/svg-motion#symbols-and-masks)).
+- A `rotate()` clip window moves with GSAP's SVG transform origin, and it shifted the shine's sweep about 180 units off the mark. `DitheredMark` sweeps windows drawn pre-rotated at 60 degrees by a pure horizontal translate for that reason ([GSAP from outside the page](/docs/craft/svg-motion#gsap-from-outside-the-page)).
+

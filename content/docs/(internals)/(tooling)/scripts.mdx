@@ -2,6 +2,9 @@
 title: Scripts and generated files
 description: 'The scripts/ folders, the files the scripts generate, the rule that only a script changes them, and the one route list every browser tool reads.'
 icon: Code
+sources:
+  - scripts/lib/site-pages.mjs
+  - scripts/lint/registries.mjs
 ---
 
 Every command runs as `pnpm <name>`, and [the tools index](/docs/handbook/tools) lists each one with what it does. Skills and documents name commands, never script paths, so a script can move without breaking them. Every script prints its usage with `--help`.
@@ -37,3 +40,18 @@ These files are committed, so the site builds from them alone, and they change o
 ## The route list
 
 `siteRoutes()` in `scripts/lib/site-pages.mjs` is the one list of routes every browser tool walks. Each row names its route, its source folders and its tools: `check` (the page check), `live` (the live lints), `lines` (the line audit of the shell) and `capture` (the thumbnails). The page check, `lint:lines:shell`, the live lints and the captures all read it, so a new page is added in one place.
+
+### First slugs read by regex
+
+Five rows of the route list point at a page whose slug comes from data: the first skill, the first motion package, the first archive entry, the first exploration and the newest post. `siteRoutes()` reads each slug from its source file with a regular expression, so the list follows the data with no second registry to keep.
+
+| Route | Read from | What the expression matches |
+| --- | --- | --- |
+| The first skill | `src/lib/skills.ts`, generated | the first `id: '<slug>'` after `export const SKILLS` |
+| The first motion package | `src/lib/motion.ts`, generated | the first quoted string after `export const MOTION_PACKAGE_SLUGS` |
+| The first archive entry | `src/lib/archive.ts` | the first `entry('<slug>'` |
+| The first exploration | `src/lib/directions.ts` | the first `slug: '<slug>'` in a `DIRECTIONS` entry without `site: true` |
+| The newest post | `content/blog/*.mdx` | the latest `date:` in the frontmatter |
+
+The expressions read single quotes and exact field names. A generator that changes its output shape, by writing double quotes or renaming a field, breaks every browser gate at once: the page check, `lint:lines:shell`, the live lints and the captures all start from this list. `firstSlug()` throws when a file holds no match, so a renamed registry fails the run with the file's name instead of auditing a 404 page as if it were clean. Check 3 of `pnpm lint:registries` runs the four registry expressions in `lint:static`, so the break shows before any browser starts.
+

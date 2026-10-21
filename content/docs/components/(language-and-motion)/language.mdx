@@ -7,6 +7,8 @@ sources:
   - src/app/d/toolchain/components/LocaleTag.tsx
   - src/components/shared/LocaleFlag.tsx
   - src/app/d/toolchain/diagrams/lang
+  - skills/gt-brand/references/type.md
+  - skills/gt-motion/references/traps.md
 ---
 
 import { LangDiagramDemo, LocaleTagDemo } from '@/components/docs/demos/lazy';
@@ -91,3 +93,9 @@ Use a language diagram to make one claim about localization in a feature cell or
 ### Reduced motion and themes
 
 Under reduced motion every diagram freezes at its most legible frame. The ink derives from `currentColor` and the accent from `--iso-accent`, so the diagrams follow the docs theme, and the same ancestor themes the isometric drawings.
+
+## Traps
+
+- The fallback face next/font writes for the Inter binding is `local("Arial")` with `size-adjust: 107.89%`. Arial has Hebrew and Arabic glyphs, so in any stack that starts with the Inter variable those two scripts render in Arial and never reach a script face listed after it. CJK and Devanagari are absent from Arial and fall through to the listed faces. Set an Arabic or Hebrew stack on its own rule, a `:lang()` selector or a class, with no Inter variable in front, as the deck's `.lang .ar` does ([The correct Inter in practice](/docs/craft/type#scripts-and-the-arial-fallback)).
+- The canvas renderer of lottie-web stops drawing a frame at a character missing from the animation's glyph list, and no layer after it draws. The `\r` that lottie-web writes where it wraps box text counts as such a character, so a longer translation can break where the source did not. The error surfaces only as the animation's `error` event and never in the console. Give every drawable character an empty glyph entry, plus `\r` and `\u0003` ([Lottie on canvas](/docs/engineering/lottie#a-missing-glyph-stops-the-frame)).
+

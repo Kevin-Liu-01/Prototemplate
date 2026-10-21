@@ -6,6 +6,8 @@ sources:
   - src/components/docs/demos
   - src/lib/glyph-field.ts
   - src/app/d/glyph-rain/sections/band/inkField.ts
+  - skills/gt-performance/SKILL.md
+  - skills/gt-performance/references/webgl-lifecycles.md
 ---
 
 import { GlyphFieldDemo, InkFieldDemo } from '@/components/docs/demos/lazy';
@@ -89,3 +91,9 @@ Use the ink field on a closing band of ink around a content column, and set `int
 ### Reduced motion and themes
 
 Under reduced motion the engine draws one composed frame and the pointer play is off. It pauses when the canvas leaves the viewport. Its glyphs are a fixed paper ink on an ink ground, so its plate stays dark in both themes.
+
+## Traps
+
+- A canvas created with `willReadFrequently` lives in CPU memory, so every `drawImage` from it uploads to the GPU. The glyph atlas is read back with `getImageData`, and blitting from it directly was the rain's lag on phones, worst on WebKit. Each build now snapshots the finished atlas into an `ImageBitmap` and the frame loop blits from the snapshot (`atlasSrc` in `src/lib/glyph-field.ts`) ([Canvas and WebGL engines](/docs/engineering/engines#readback-canvases-and-the-blit-path)).
+- The rain once picked its quality tier from the window width, so a wide window on weak hardware got the heaviest tier. The governor judges windows of 120 counted frames after a 2.5 s warmup, skips any interval over 900 ms as a hidden tab, and trips when 35% or more of a window's frames exceed 22 ms, a sustained cadence under about 45 fps. Tier 1 lowers the pixel-ratio cap from 2 to 1.25, and tier 2 switches to the lean pool of 560 of the 1,280 glyphs. A first draft watched the median frame time and missed throttled hardware that missed the budget on 34% of its frames, so the governor counts slow frames ([Canvas and WebGL engines](/docs/engineering/engines#quality-from-measured-frame-time)).
+

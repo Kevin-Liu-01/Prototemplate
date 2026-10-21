@@ -2,6 +2,11 @@
 title: Pages and the viewer shell
 description: Every route and what it holds, the viewer shell that frames most of them, the book page standard, and the registries a new page touches.
 icon: Pages
+sources:
+  - src/components/viewer/tokens.css
+  - src/app/layout.tsx
+  - src/lib/use-mount-effect.ts
+  - scripts/lint/heads.mjs
 ---
 
 ## The routes
@@ -10,7 +15,7 @@ icon: Pages
 | --- | --- |
 | `/` | The design lab: the directions read as an article, one live exhibit at a time, or as a grid of captures |
 | `/brand` | The brand book, the identity canon in ten sections |
-| `/docs` | These docs: the pages on the hub, the Components section, the blog globe figure and the handbook |
+| `/docs` | These docs, in five tabs: the Guide with the handbook, Components with the blog globe figure, Craft, Engineering and Internals |
 | `/deck` | The brand deck, served as its own document |
 | `/present` | The presenter: a full-screen walkthrough of the redesign with the first 16 prototypes live |
 | `/compare` | Two directions side by side in scroll-synced frames |
@@ -34,9 +39,42 @@ icon: Pages
 
 The docs sit outside the shell so that they are the same docs site generaltranslation.com runs, and so that the folder can be lifted into another project ([Use these docs as a template](/docs/template)). The shell's sidebar keeps a Docs row that opens them, and the docs sidebar links back.
 
+### State before first paint
+
+The root layout (`src/app/layout.tsx`) runs a small inline script before the first paint. It stamps `html[data-theme]` from the saved `gt-theme` choice, dark when nothing is saved, so the first frame is in the right theme and the shell's check after hydration agrees with it. It also stamps the saved list state, `gt-shell-sb` and `gt-shell-density`, as `data-shell-sb` and `data-shell-density`. `ViewerShell.css` reads those attributes until the shell has settled, so a reader who closed the list or chose thumbnails sees that layout in the first frame, and hydration never shifts it.
+
+- The mirror under `/d/production` follows `prefers-color-scheme`, as generaltranslation.com does, until the visitor picks a theme. It marks the root `data-theme-from='system'`.
+- A same-origin frame, such as a gallery exhibit or a compare pane, follows the parent's toggle through the `storage` event with no code of its own. In a private window, where storage cannot carry it, the parent also posts `{ type: 'gt-theme', theme }` to every frame.
+- The root layout also installs the rAF gate: a parent can freeze a framed page's animation loops with `postMessage({ type: 'gt:freeze', frozen })`, and the queued callbacks run on resume.
+
+### Effects under strict mode
+
+React strict mode, which `next.config.ts` turns on, runs an effect's setup, its cleanup and its setup again on mount in development. A plain "ran once" guard would skip the second setup and leave the effect torn down, so every listener it registered would be dead in development. `useMountEffect` (`src/lib/use-mount-effect.ts`) defers its cleanup by one task: the simulated second run lands first and cancels it, and a real unmount, which has no second run, lets it fire. An effect still removes every node it creates, and a check in development finds exactly one canvas after mount and after a hot reload. [Canvas and WebGL engines](/docs/engineering/engines#strict-mode-and-effects) records the duplicate canvas that strict mode left behind and the alternatives to `useEffect`.
+
 ## The book page
 
 Every page with a book head renders one structure, set out in [DESIGN.md section 4](/docs/handbook/design): `BookHead` draws the title from `PAGE_NAMES` in `src/lib/page-names.ts`, a lead of one to three lines, a panel with Updated first and three facts after it, then one hatch band. Updated comes from `src/lib/updated.ts`, which `scripts/build/updated.mjs` generates from each page's last commit. `pnpm lint:heads` holds the structure in the source and `pnpm lint:heads:live` in the rendered page.
+
+### The book page's numbers
+
+Every space of the book page is a token in `src/components/viewer/tokens.css`, and `BookView.css` and `Sheet.css` read them. The rule S6 of `pnpm lint:heads` fails a book stylesheet that writes the literal pixel value where its token belongs, so a change to the standard is one edit. The values in brackets apply under 900 px wide, and on a phone on its side.
+
+| Token | Value | What it measures |
+| --- | --- | --- |
+| `--pt-title-clear` | 44 px (24) | The stage's top, under the toolbar's rule, to the h1's box. Nothing is drawn in it, and no line crosses a title. |
+| `--pt-d1` | 44 px (32) | The page title, at line height 1.04 and tracking -0.025em |
+| `--pt-head-gap` | 14 px | The h1's box to the lead's box |
+| `--pt-head-col-gap` | 56 px | The lead's column to the panel |
+| `--pt-head-panel` | 304 px | The panel's column. Its longest value, a date with its hint such as "Sep 10, 2026 4 weeks ago", measures 168 px. |
+| `--pt-row` | 26.35 px | One line of the lead, 17 px at line height 1.55, and the panel's row pitch, so every fact sits on a baseline of the lead |
+| `--pt-head-rule-pad` | 26 px | The taller of the lead and the panel to the mast's rule |
+| `--pt-band-h` | 42 px | The hatch band, both of its rules included |
+| `--pt-sec-over` | 48 px (40) | The block above a rule to the rule: the contents to the band, a section to the next divider |
+| `--pt-sec-pad` | 30 px | A rule to the h2's box under it |
+| `--pt-book-gap` | 32 px (24) | Between the blocks of a book column |
+| `--pt-col-pad-x` | 56 px (16) | The reading column's side padding |
+
+`pnpm lint:heads:live` measures the result on the rendered pages at 1440 by 900 and 390 by 844 in both themes. At 1440 the mast's rule under a one-line title sits 193.16 px below the title's top on every page. The panel's four rows, 4 by 26.35 or 105.4 px, are the tallest part of that sum, so the panel sets where the rule falls. Every section's h2 sits 35.5 px under its rule at 1440 and 79 px at 390. A page whose numbers differ fails the run.
 
 ## The registries a new page touches
 

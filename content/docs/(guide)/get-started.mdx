@@ -36,6 +36,16 @@ pnpm exec next dev --turbopack --port 3022
 - Never stop the shared server on 3005, and never build in the shared `.next`.
 - The [multi-session playbook](/docs/handbook/multi-session-playbook) holds the rules for lanes, collisions and resuming.
 
+## Rules for a shared machine
+
+Several sessions on one machine share its processes and its shell, so a command that is safe for a single user can stop another session's work.
+
+1. Kill a process by its PID only. macOS ships BSD `pkill`, which stops reading options at the first pattern, so every option after it becomes another pattern. On 2026-10-01 `pkill -f "<pattern>" -P 1` signalled every process whose command line contained "1": about 140 Chrome processes, other sessions' dev servers, a test run and the session's own renders. Record `$!` for each process you start, check it with `ps -o pid,ppid,command -p <pid>`, and stop it with `kill <pid>`.
+2. Quote and brace every variable in zsh, the macOS default shell. A variable named `path` is zsh's array view of `PATH`, so assigning it makes every later command "not found". In `"$B:apps/web"` zsh reads `:a` as a modifier on `$B`, so write `"${B}:apps/web"`. An unquoted variable does not split into words, a glob with no match aborts the whole command line, and a word that starts with `=` is a command lookup, so `echo ====` fails and stops a `&&` chain.
+3. Stop a server by the process that listens on its port: `kill $(lsof -ti tcp:<port> -sTCP:LISTEN)`. Without `-sTCP:LISTEN`, `lsof` also returns the browser connected to the port, and the command kills it.
+
+[Agents on one machine](/docs/handbook/shared-machine) holds the full set, with memory, disk and long-running commands. [Dev servers and builds](/docs/engineering/dev-servers#failure-modes-of-next-dev) covers the failures of `next dev` itself, such as the half-written `.next/dev/prerender-manifest.json` that turns every route into a 500 with "Unexpected non-whitespace character after JSON".
+
 ## The repository map
 
 | Folder | What it holds |

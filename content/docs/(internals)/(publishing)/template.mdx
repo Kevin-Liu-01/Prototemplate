@@ -2,6 +2,11 @@
 title: Use these docs as a template
 description: 'Lift this docs site into another Next.js 16 project: the dependencies, the files to copy, the adapters for a design system, and adding a page.'
 icon: Copy
+sources:
+  - src/app/docs/docs.css
+  - source.config.ts
+  - scripts/lint/registries.mjs
+  - scripts/build/updated.mjs
 ---
 
 This docs site is built on the stack generaltranslation.com/docs runs: fumadocs with the notebook layout and MDX pages. It imports nothing from the hub's shell or the directions, so the folder lifts into another Next.js 16 project, and every pattern carries over to gt-cloud and back.
@@ -24,7 +29,7 @@ Add `"postinstall": "fumadocs-mdx"` to `package.json`, so a fresh install writes
 | `source.config.ts` | The collection: `content/docs`, processed Markdown kept for the twins, `tokenizeTimeLimit: 0` for Shiki, and the remark plugin for pages that include repository files |
 | `src/lib/remark-handbook.ts` | The plugin a page that shows a repository Markdown file needs: it drops the file's h1, resolves its relative links and prints raw HTML as text |
 | `src/lib/source.ts` | The loader at `/docs`, with the sidebar's icon names |
-| `content/docs/` | The MDX pages and `meta.json`, the sidebar's order and groups |
+| `content/docs/` | The MDX pages and a `meta.json` per folder: the sidebar's tabs, folders and order |
 | `src/app/docs/` | `layout.tsx` (the notebook layout and the provider), `[[...slug]]/page.tsx` (one page) and `docs.css` |
 | `src/components/docs/` | The sidebar footer, the theme button, the page actions and the sidebar motion; `demos/` holds the live plates, each loaded through `demos/lazy.tsx` |
 | `src/app/api/search/route.ts` | The static search index |
@@ -33,24 +38,56 @@ Add `"postinstall": "fumadocs-mdx"` to `package.json`, so a fresh install writes
 
 In `next.config.ts`, wrap the config with `createMDX()` from `fumadocs-mdx/next` and add the twin rewrites, which send `/docs.md`, `/docs/<slug>.md` and `/docs/<folder>/<slug>.md` to the twin route under `/md/docs`. In `tsconfig.json`, map `@/.source/*` to `./.source/*`, and add `.source/` to `.gitignore`.
 
-## The four adapters
+## The adapters
 
-A project with its own design system needs these four, all in `docs.css`, all unlayered rules so they outrank Tailwind's layered utilities without `!important`:
+A project with its own design system needs these adapters, all in `docs.css`, all unlayered rules so they outrank Tailwind's layered utilities without `!important`. The header of `docs.css` lists them in order.
 
-1. **The theme switch.** fumadocs styles its dark mode on a `.dark` class that next-themes writes. Prototemplate's theme is `html[data-theme]`, so `RootProvider` gets `theme={{ enabled: false }}`, `docs.css` redefines the `dark` variant on `:root[data-theme='dark']`, and fumadocs' two dark Shiki rules are repeated under that selector. `pnpm lint:practices` fails a `.dark` selector anywhere in `src/`.
-2. **The token bridge.** fumadocs reads `--color-fd-background`, `--color-fd-foreground`, `--color-fd-border` and the rest. `docs.css` sets them from the site's tokens on `:root:has(#nd-notebook-layout)`, so they exist only while the docs layout is in the document.
-3. **The weight cap.** fumadocs and its typography plugin draw headings at 600 and 700. Prototemplate's Inter stops at 500, so one rule sets 500 on the docs' headings, labels and strong text.
-4. **The radius map.** fumadocs rounds its panels with `rounded-lg` to `rounded-2xl`; inside the docs those resolve to the site's card corner.
+1. **The font tokens.** Tailwind's theme layer would reset `--font-sans` and `--font-mono` to its own stacks for the whole document, so the sheet's `@theme` block points them at the site's type tokens (`--pt-text`, `--pt-mono`, `--pt-display`).
+2. **The theme switch.** fumadocs styles its dark mode on a `.dark` class that next-themes writes. Prototemplate's theme is `html[data-theme]`, so `RootProvider` gets `theme={{ enabled: false }}`, `docs.css` redefines the `dark` variant on `:root[data-theme='dark']`, and fumadocs' two dark Shiki rules are repeated under that selector. `pnpm lint:practices` fails a `.dark` selector anywhere in `src/`.
+3. **The token bridge.** fumadocs reads `--color-fd-background`, `--color-fd-foreground`, `--color-fd-border` and the rest. `docs.css` sets them from the site's tokens on `:root:has(#nd-notebook-layout)`, so they exist only while the docs layout is in the document.
+4. **The weight cap.** fumadocs and its typography plugin draw headings at 600 and 700. Prototemplate's Inter stops at 500, so one rule sets 500 on the docs' headings, labels and strong text.
+5. **The radius map.** fumadocs rounds its panels with `rounded-lg` to `rounded-2xl`; inside the docs those resolve to the site's card corner.
+6. **Flat surfaces and the sidebar's marks.** The docs' surfaces are flat, and the sheet draws the rails and pills that `SidebarMotion` moves in the sidebar.
 
 ## Adding a page
 
-Write `content/docs/<slug>.mdx` with a `title` and a `description` of 50 to 160 characters, and add the slug to `content/docs/meta.json` where the sidebar should show it. The route, the sidebar, the search index, the table of contents, the Markdown twin, `/llms.txt`, the sitemap and the social card follow from the file. In this repository also add its row to `src/components/docs/pages.ts`, which the hub's own sidebar and search read, and run `pnpm build:updated`.
+A page lives in a tab, and inside a tab in a folder. Choose both first, because the folder decides the URL and the sidebar row.
 
-A section of several pages is a folder, such as `content/docs/components/`, with its own `meta.json` and an `index.mdx` for the folder's own page. The root `meta.json` lifts the folder's pages into its list with a `...components` row under a `---Components---` separator. The page's slug in `pages.ts` is its path, `components/dither`.
+| Tab | Folder | URL of `<slug>.mdx` |
+| --- | --- | --- |
+| Guide | `content/docs/(guide)/` | `/docs/<slug>` |
+| Components | `content/docs/components/`, then one of `(fields)`, `(drawings)`, `(language-and-motion)`, `(marks-and-heads)` | `/docs/components/<slug>` |
+| Craft | `content/docs/craft/` | `/docs/craft/<slug>` |
+| Engineering | `content/docs/engineering/` | `/docs/engineering/<slug>` |
+| Internals | `content/docs/(internals)/`, then one of `(routes)`, `(tooling)`, `(publishing)` | `/docs/<slug>` |
+
+- A folder named in parentheses, such as `(tooling)`, is a folder group: it draws a sidebar folder and adds no URL segment, so `content/docs/(internals)/(tooling)/gates.mdx` serves `/docs/gates`. A plain folder such as `craft` adds its name to the URL.
+- A tab is a folder whose `meta.json` sets `"root": true`. fumadocs draws every root folder as a tab in the menu at the top of the sidebar, with the `title`, `description` and `icon` of that `meta.json`. The root `content/docs/meta.json` lists the five tabs in order.
+- Write `<slug>.mdx` in the chosen folder with a `title` and a `description` of 50 to 160 characters, then add the slug to that folder's `meta.json` `pages` list where the sidebar should show it. A root folder lists its own `index` as its first row. A folder that is not a root takes its `index.mdx` as the folder row's link, so its `meta.json` leaves `index` out.
+- A new folder group gets its own `meta.json` with a `title`, the `pages` in order and `"defaultOpen": true` when it should start open, and the parent's `meta.json` lists it by its name, parentheses included.
+- A script that turns a file path into a route drops every `(name)` segment, as `scripts/build/updated.mjs` and `scripts/lint/registries.mjs` do. A script that keeps it looks for `/docs/(internals)/gates`, a page that does not exist.
+
+The route, the sidebar, the search index, the table of contents, the Markdown twin, `/llms.txt`, the sitemap and the social card follow from the file. In this repository also add its row to `src/components/docs/pages.ts` in sidebar order, with the URL after `/docs/` as its slug (`components/dither`, `gates`), and run `pnpm build:updated`. `pnpm lint:registries` follows every `meta.json` from the root and fails when the rows, their titles or their descriptions differ from the files. A page under `/docs/handbook` is held to the handbook registry instead.
 
 A page that shows a repository Markdown file, as each handbook page does, includes it with fumadocs-mdx's tag, `<include cwd>docs/handbook/glossary.md</include>`, so the file stays the one source. To set a live figure between two sections, include the file one heading at a time; the build then fails if the page leaves a heading of the file out.
 
 A page that mounts a live component imports it from `src/components/docs/demos/lazy.tsx`, which wraps each plate in `next/dynamic`. fumadocs-mdx imports every page into one route, so a plate imported directly would load its code and its stylesheet on every docs page. A sentence beside each plate says what it shows, since the Markdown twin prints the plate as a bare tag. List the files the plate runs under `sources:` in the frontmatter, so `pnpm build:updated` dates the page when they change.
+
+## Traps
+
+This site met each of these traps on fumadocs and Next.js 16, and each line gives the fix it uses. [Docs site traps on Next.js 16 and fumadocs](/docs/engineering/docs-traps) explains each one with its measurements.
+
+- A `redirect()` thrown inside a page render paints the layout above the page at the old URL first. A click on a docs folder URL painted the layout with no article, then replaced it about 280 ms later, so every link the site renders points at the leaf page ([links that point at leaf pages](/docs/engineering/docs-traps#links-that-point-at-leaf-pages)).
+- A sidebar whose rail and current-row tint are drawn in a mount effect shows neither until hydration. fumadocs' own rails sit inboard of the drawn path and jump sideways at hydration, so only the mark whose geometry matches, the row tint, is shown before `#nd-sidebar[data-sb-ready]` ([marks that exist at first paint](/docs/engineering/docs-traps#marks-that-exist-at-first-paint)).
+- Shiki stops tokenizing a line after 500 ms by default, so two builds of one page can differ. On ten code fences a forced limit gave 64 coloured spans in one pipeline and 47 in another, and `tokenizeTimeLimit: 0` in `source.config.ts` gives the same output on every run ([code highlighting across builds](/docs/engineering/docs-traps#code-highlighting-across-builds)).
+- Tailwind's preflight sets `font-feature-settings` on `html` from a theme token the docs sheet never set, so every docs element computed `normal` and lost `liga` and `calt` while the family was right ([features that compute normal](/docs/engineering/docs-traps#features-that-compute-normal)).
+- A docs rule that sets a global token leaks to other routes. React keeps a route's stylesheet in the document after a client navigation, so the token bridge is scoped to `:root:has(#nd-notebook-layout)` and its values exist only while the docs layout is in the document ([features that compute normal](/docs/engineering/docs-traps#features-that-compute-normal)).
+- An ID inside an `:is()` list lifts the whole list's specificity: one `#nd-notebook-layout` among the shell's root classes would raise every rule built on the list from (0,1,1) to (1,0,1), and those base rules would then beat component rules across the site. A docs root that joins those lists joins as a class, at (0,1,0) like the roots already there ([specificity of an is() list](/docs/engineering/docs-traps#specificity-of-an-is-list)).
+- The docs sheet loads no components layer, so the typography plugin's `.prose` rules land in the utilities layer and tie with utilities at (0,1,0). The rule emitted later wins, and a table-of-contents row that carries both `prose` and `text-sm` gets `text-sm` ([the typography plugin in the utilities layer](/docs/engineering/docs-traps#the-typography-plugin-in-the-utilities-layer)).
+- Tailwind 4's `rounded-full` is `calc(infinity * 1px)`, which Chrome computes as a 33,554,400 px corner, so a corner lint reports that number. A 4 by 4 dot takes `50%` ([the full round corner](/docs/engineering/docs-traps#the-full-round-corner)).
+- fumadocs and its typography plugin draw headings at 600 and 700, and a `b` or `strong` inside weight 500 computes 700 through the browser's `bolder`. The weight cap sets 500 on the docs' headings, labels and strong text ([what fumadocs leaves for the lints](/docs/engineering/docs-traps#what-fumadocs-leaves-for-the-lints)).
+- fumadocs portals the search dialog and its popovers into `body`, outside the layout. An adapter scoped to `#nd-notebook-layout` alone misses them, so the weight cap also names `[role='dialog']` and `[data-radix-popper-content-wrapper]`, and a lint that reads the page at rest never opens them ([markup that hides from a lint](/docs/engineering/docs-traps#markup-that-hides-from-a-lint)).
+- The Markdown twin prints a live plate as a bare tag, so every plate has a sentence beside it that says what it shows.
 
 ## Search
 

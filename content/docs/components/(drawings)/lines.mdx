@@ -7,6 +7,8 @@ sources:
   - src/components/shared/diagrams/DoubledLine.tsx
   - src/app/d/toolchain/diagrams/TranslationFlow.tsx
   - src/app/d/toolchain/diagrams/flow.css
+  - skills/gt-motion/references/traps.md
+  - skills/gt-diagrams/SKILL.md
 ---
 
 import { ConnectorDemo, DoubledLineDemo } from '@/components/docs/demos/lazy';
@@ -85,3 +87,17 @@ Use it where a page explains what the build produces: one source file and the fi
 ### Reduced motion and themes
 
 Under reduced motion the loop never starts and the fork holds its still. The source panel stays ink in both themes, and the threads and the files follow the host's tokens.
+
+## Traps
+
+[SVG lines in motion](/docs/craft/svg-motion) explains each of these with its proof.
+
+- Under `vector-effect: non-scaling-stroke`, Chromium measures dashes in screen pixels and ignores `pathLength`: `pathLength=100` with `dasharray 25 100` draws a 25-pixel fleck where a quarter of the path was meant. Author a progress ring's dash in user units ([pathLength under a non-scaling stroke](/docs/craft/svg-motion#pathlength-under-a-non-scaling-stroke)).
+- A single travelling dash, its dasharray equal to the path length and its offset animated, tiles into several dashes on a scaled SVG under `non-scaling-stroke`. Translate a short `<line>` in user units instead ([a travelling dash that tiles](/docs/craft/svg-motion#a-travelling-dash-that-tiles)).
+- A dash clips at the end of a closed subpath and never wraps the loop. Start the path where the arc starts, or use `dasharray d (L - d)` ([dashes on a closed path](/docs/craft/svg-motion#dashes-on-a-closed-path)).
+- The sign of the parked offset picks the end a draw starts from: an offset tweened from +100 to 0 reveals from the path's first point, and from -100 from its last. A backwards draw was rejected three review rounds running in August 2026, so read the first point of `d` before touching the timing ([the sign of the parked offset](/docs/craft/svg-motion#the-sign-of-the-parked-offset)).
+- A bare `100` dash bleeds a sub-pixel fleck at the path's end in Chromium. `strokeDasharray='100 200'` parked at 101 or -101 keeps both ends clear, and offset 0 still covers the whole path ([a fleck at the end of the path](/docs/craft/svg-motion#a-fleck-at-the-end-of-the-path)).
+- GSAP rounds offsets to whole numbers, so fine dash motion normalizes `pathLength` to 1000 ([rounding, cached paths and empty paths](/docs/craft/svg-motion#rounding-cached-paths-and-empty-paths)).
+- An SVG stretched with `preserveAspectRatio="none"` keeps straight segments straight, warps curves, turns circles into ellipses and distorts text. A stretched strip holds straight taps with one elbow and no text, and its labels live in HTML beside it. TranslationFlow's fork predates the rule and still bends its branches with cubic curves, which the gt-diagrams figure check warns on ([drawing under a stretched viewBox](/docs/craft/svg-motion#drawing-under-a-stretched-viewbox)).
+- The line audit rebuilds lines from computed CSS and cannot see SVG strokes, so check every junction of a connector by eye in 2x crops.
+

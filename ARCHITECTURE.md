@@ -184,9 +184,12 @@ motion/                   the films, untracked, owned by the Videos session
 AGENTS.md                 the agent entry point (CLAUDE.md imports it);
                           served at /docs/handbook/agents and raw at
                           /AGENTS.md
-content/docs/             the docs site's MDX pages and meta.json, with
-                          components/ (the live component library) and
-                          handbook/ (a page per handbook and canon file)
+content/docs/             the docs site's MDX pages, one folder per tab,
+                          each with its meta.json: (guide)/ with
+                          handbook/ (a page per handbook and canon file),
+                          components/ (the live component library),
+                          craft/, engineering/ and (internals)/; a folder
+                          group (name) adds no URL segment
 ```
 
 ## The direction registry
@@ -285,7 +288,7 @@ the contract between the two ends:
 
 - `AGENTS.md`: the entry point for an agent, here or in a project that
   imported the hub (served at /docs/handbook/agents; `CLAUDE.md` imports it).
-- `BRAND.md`: the identity canon (the basement-facing brand book; served at /docs/handbook/brand and /brand).
+- `BRAND.md`: the identity canon (the brand book the agency reads; served at /docs/handbook/brand and /brand).
 - `DESIGN.md`: the visual canon (this repo's law book).
 - `docs/SHIP-LOOP.md`: the verify/ship procedure every round runs.
 - `docs/LIBRARIES.md`: the library index (defers to the build log after it on `/docs/handbook/libraries` for depth).
@@ -297,7 +300,7 @@ the contract between the two ends:
   canon after it (`AGENTS.md`, `BRAND.md`, `DESIGN.md`, this file, the
   ship loop, the tools, the libraries, the graphics pipeline and the
   artifact pictures), and `/docs/handbook` shows each file on a docs page
-  of its own (`content/docs/handbook/<slug>.mdx`, through fumadocs-mdx's
+  of its own (`content/docs/(guide)/handbook/`, through fumadocs-mdx's
   include tag; `src/lib/remark-handbook.ts` drops the file's h1 and
   prints raw HTML as text). A relative link in any shown document
   resolves the way GitHub resolves it (`src/components/book/links.ts`):
@@ -306,11 +309,15 @@ the contract between the two ends:
   page under `/docs/handbook`.
 - `content/docs/`: the docs site, rendered at `/docs` by fumadocs
   (`source.config.ts`, `src/lib/source.ts`, `src/app/docs`,
-  `src/components/docs`): the pages on how the hub works, the Components
-  section (`content/docs/components/`, every instrument live with its
-  controls, props and reduced-motion still), the blog globe figure with
-  all three rounds live, and the handbook. `/docs/template` explains how
-  to lift it into another project.
+  `src/components/docs`) in five tabs, each a folder whose `meta.json`
+  sets `"root": true`: the Guide (`(guide)/`, with the handbook), the
+  Components (`components/`, every instrument live with its controls,
+  props and reduced-motion still, and the blog globe figure with all
+  three rounds live), Craft (`craft/`), Engineering (`engineering/`) and
+  Internals (`(internals)/`). A folder named in parentheses groups pages
+  in the sidebar and adds no URL segment. `/docs/template` explains how
+  to lift it into another project and how a page picks its tab and
+  folder.
 - `src/lib/seo/`: the SEO system. Every route's head comes from one
   `seoRoute()` call under the policy in `policy.ts`; `/docs/seo` explains
   it.

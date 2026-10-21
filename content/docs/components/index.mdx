@@ -5,6 +5,7 @@ icon: Puzzle
 sources:
   - src/components/docs/demos
   - src/lib/studio-field.ts
+  - skills/gt-performance/references/webgl-lifecycles.md
 ---
 
 import { StudioFieldDemo } from '@/components/docs/demos/lazy';
@@ -15,18 +16,82 @@ These pages mount the real components of the hub: the dithered fields, the light
 
 ## The pages
 
-| Page | Components |
-| --- | --- |
-| [Dither and the studio field](/docs/components/dither) | The ordered Bayer screens, the CPU dither loop and its field factories, the ten studio field presets |
-| [Horizon and prismatic fields](/docs/components/fields) | The event-horizon shader and the prismatic burst, with their cursor effects |
-| [Glyph field and ink field](/docs/components/glyph-field) | The eight-script glyph rain, the ink field and its pointer play |
-| [Doubled lines and connectors](/docs/components/lines) | `DoubledLine` with its pulse, and `TranslationFlow`, the connector in production |
-| [Isometric drawings](/docs/components/iso) | The isometric kit: boxes, prisms, faces and a seated mark |
-| [Globes and maps](/docs/components/globes) | `EdgeGlobe`, the dithered globe field, the blog globe figures in all three rounds |
-| [Locale tags and language pieces](/docs/components/language) | `LocaleTag` against `LocaleFlag`, and the seven language diagrams |
-| [Reveal seam and sentence motion](/docs/components/motion) | `RevealSeam` and `EverySentence` |
-| [Speed marks and the GT mark](/docs/components/marks) | The speed marks and the globe concepts, `GtWord` and `gtText()`, `DitheredMark` |
-| [Badges and heads](/docs/components/heads) | `BadgeCycle`, `badgeMark()` and `BookHead` |
+The pages sit in four groups, as the sidebar shows them. Each card names the components its page mounts.
+
+### Fields
+
+<Cards>
+  <Card
+    title="Dither and the studio field"
+    href="/docs/components/dither"
+    description="The ordered Bayer screens, the CPU dither loop and its field factories, the ten studio field presets."
+  />
+  <Card
+    title="Horizon and prismatic fields"
+    href="/docs/components/fields"
+    description="The event-horizon shader and the prismatic burst, with their cursor effects."
+  />
+  <Card
+    title="Glyph field and ink field"
+    href="/docs/components/glyph-field"
+    description="The eight-script glyph rain, the ink field and its pointer play."
+  />
+</Cards>
+
+### Drawings
+
+<Cards>
+  <Card
+    title="Doubled lines and connectors"
+    href="/docs/components/lines"
+    description="DoubledLine with its pulse, and TranslationFlow, the connector in production."
+  />
+  <Card
+    title="Isometric drawings"
+    href="/docs/components/iso"
+    description="The isometric kit: boxes, prisms, faces and a seated mark, with the numbers that make separate drawings one set."
+  />
+  <Card
+    title="Globes and maps"
+    href="/docs/components/globes"
+    description="EdgeGlobe, the dithered globe field, the blog globe figures in all three rounds."
+  />
+  <Card
+    title="The blog globe figure"
+    href="/docs/components/blog-globe"
+    description="Four directions for a blog figure that turns a globe along the path of Euclid's Elements, with all three rounds live and their ranking."
+  />
+</Cards>
+
+### Language and motion
+
+<Cards>
+  <Card
+    title="Locale tags and language pieces"
+    href="/docs/components/language"
+    description="LocaleTag against LocaleFlag, and the seven language diagrams."
+  />
+  <Card
+    title="Reveal seam and sentence motion"
+    href="/docs/components/motion"
+    description="RevealSeam and EverySentence."
+  />
+</Cards>
+
+### Marks and heads
+
+<Cards>
+  <Card
+    title="Speed marks and the GT mark"
+    href="/docs/components/marks"
+    description="The speed marks and the globe concepts, GtWord and gtText(), DitheredMark."
+  />
+  <Card
+    title="Badges and heads"
+    href="/docs/components/heads"
+    description="BadgeCycle, badgeMark() and BookHead."
+  />
+</Cards>
 
 ## Every component
 
@@ -68,6 +133,22 @@ Client means the module is a `'use client'` component or a canvas engine that ne
 
 The fields tuned to an ink ground, the studio, horizon, prismatic and ink fields, sit on an ink plate in both themes. Everything else follows the docs theme.
 
+### The numbers behind it
+
+The browser keeps a fixed budget of live WebGL contexts, and a page that runs past it gets a black canvas and no error in the console. The lifecycle above keeps every page inside that budget, and these numbers set it.
+
+| Number | Value | What it decides | Where it is held |
+| --- | --- | --- | --- |
+| Live WebGL contexts in Chrome | about 16 | Past the budget `getContext` returns null and a field draws black. On 2026-07-29 a direction's shader rendered on a fresh load and was black after 12 client-side switches between directions. | One module-level engine per engine type, each drawing into one offscreen GL canvas and blitting into every mount's 2D canvas: `src/lib/studio-field.ts`, `horizon-field.ts`, `prismatic-field.ts` |
+| Contexts per engine module | 1 for the session | The context survives a mount's `destroy()`, so route changes never create another. | The same three modules |
+| Contexts a probe may create | 0 | A probe that calls `getContext` on the page's canvases to count them creates contexts and exhausts the budget it measures. | Wrap `getContext` before the page's scripts run, or screenshot after real navigation |
+| Contexts a component may leak | 0 | A component that owns its context deletes its buffer, its program and both shaders, then calls `WEBGL_lose_context.loseContext()` on unmount. A footer mark that skipped this leaked one context per mount (2026-08-08). | The component's own cleanup |
+| Arm margin | 180 px | A lazy plate mounts its engine when it first comes within 180 px of the viewport. A plate the reader never scrolls near never starts its engine. | `rootMargin: '180px'` in `src/components/docs/demos/hooks.ts` |
+| Live previews on one page | stills until hover | 22 live iframes running shaders made the presenter wall lag (2026-07-31). A gallery that froze each frame 2.8 s after load still held 12 live pages, 4 WebGL contexts and about 1.3 GB of renderer memory, and stayed busy about 950 ms of every second at rest (2026-10-08). A frozen same-origin frame still hydrates, composites and runs its CSS animations on the parent's main thread. | `src/app/present/viewer/LazyFrame.tsx` shows a thumbnail and mounts the live page only while a mouse is over the card |
+| An off-screen live stage | about 110 ms of every second | The presenter's live prototype stage cost that much through the slides before it, so it is frozen whenever no part of its section is on screen. | The rAF gate in `src/app/layout.tsx`, driven by `postMessage({ type: 'gt:freeze', frozen })` |
+
+The rAF gate wraps `requestAnimationFrame` only, so a loop on `setInterval` or `setTimeout` keeps running inside a frozen preview. [Canvas and WebGL engines](/docs/engineering/engines#the-context-budget) explains each of these with the shared canvas that only grows, the readback canvases, zoom and the quality governor.
+
 ## Mounting a component in a docs page
 
 A docs page imports a component at the top of its MDX file and renders it as JSX. The page and its MDX are server components, so a component with state, a canvas or GSAP must be a `'use client'` module. fumadocs-mdx imports every docs page into the one `/docs/[[...slug]]` route, so a plate imported directly would put its code and its stylesheets into every docs page's first load. The pages therefore import their plates from `src/components/docs/demos/lazy.tsx`, which wraps each one in `next/dynamic`: the server still renders the plate, and its chunk and CSS load only on the page that shows it.
@@ -90,3 +171,15 @@ The plates on these pages are built from one small kit in `src/components/docs/d
 | `Choice`, `Range`, `Toggle`, `Action` | The controls: a radio group drawn as a segmented row, a range with its value, a pressed button and a plain button. |
 | `useArmed`, `useReducedMotion`, `useTheme`, `readToken`, `useReplay` | The lifecycle hooks behind the list above. |
 | `lazy.tsx` | Every plate wrapped in `next/dynamic`, with a fallback at about the plate's height for a client navigation. A new plate gets its line here. |
+
+## The build log
+
+The handbook's Libraries document indexes the same instruments and ends with the build log, where every library runs with its plates and API snippets.
+
+<Cards>
+  <Card
+    title="Libraries"
+    href="/docs/handbook/libraries"
+    description="The index of the componentized instruments, then the build log: every library running live with its plates and API snippets."
+  />
+</Cards>

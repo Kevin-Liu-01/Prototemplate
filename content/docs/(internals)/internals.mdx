@@ -2,6 +2,10 @@
 title: How Prototemplate is built
 description: 'How the hub is built and changed: its routes and the deck, the skills, scripts and gates, the SEO system and the docs template.'
 icon: Cube
+sources:
+  - skills/prototemplate/references/adding.md
+  - skills/prototemplate/references/registries.md
+  - scripts/lint/registries.mjs
 ---
 
 Prototemplate is a Next.js 16 site in one repository. This tab explains how its parts are built and what a change to each one touches.
@@ -36,3 +40,18 @@ Prototemplate is a Next.js 16 site in one repository. This tab explains how its 
   <Card title='Ship loop' href='/docs/handbook/ship-loop'>How a change moves from a worktree to production.</Card>
   <Card title='Tools' href='/docs/handbook/tools'>Every script in the repository and what it does.</Card>
 </Cards>
+
+## What a change touches
+
+A page, a document or a skill appears in several hand-kept lists, and a change updates every list that names it in the same commit. Each row below gives the files a kind of change touches and the check that fails when one is missed. `pnpm lint:static` runs every lint named in the last column, and the [prototemplate skill](/skills/prototemplate) gives each list step by step.
+
+| Change | Files and registries it touches | What catches a miss |
+| --- | --- | --- |
+| A page on the shell | `src/app/<route>/page.tsx` with its head from `seoRoute()`; a row in `PAGES` or `KNOWLEDGE` of `src/lib/surfaces.ts`; `PAGE_ICON` in `src/components/viewer/Sidebar.tsx`; `PAGE_ICON` and `PAGE_KEYWORDS` in `src/lib/search-index.ts`; `under` on each of its sections; its paths in `scripts/build/updated.mjs`; a row in `siteRoutes()` of `scripts/lib/site-pages.mjs`; the route list in `README.md`; its captures and thumbnails under `public/shots/` | `pnpm lint:registries` checks the surface row against the sitemap, the route list, both icon maps, the keywords and the thumbnail. `pnpm lint:seo` fails a head that does not come from `seoRoute()`, and `pnpm lint:updated` a stale `src/lib/updated.ts`. |
+| A docs page | `<slug>.mdx` in a tab's folder or folder group, that folder's `meta.json`, its row in `DOCS_PAGES` (`src/components/docs/pages.ts`), `pnpm build:updated`, and a `docs-<slug>` capture with a folder's slash as a hyphen | `pnpm lint:registries` follows every `meta.json` from the root and fails when `DOCS_PAGES` differs from the files in order, title or description, or when an `.mdx` file has no row. |
+| A handbook document | `docs/handbook/<slug>.md`; a `HANDBOOK` entry in `src/app/handbook/registry.ts`; its page under `content/docs/(guide)/handbook/` with the include tag, placed in that folder's `meta.json` in the registry's order; its h2s in `HANDBOOK_HEADINGS` of `src/lib/search-index.ts`; its row in `docs/handbook/README.md` and the handbook list in `AGENTS.md`; a `handbook-<slug>` capture | `pnpm lint:registries` fails a heading missing from `HANDBOOK_HEADINGS` or a row with no heading, and a page whose title, description, include tag or order differs from the registry. The build fails when a page that includes its file by headings leaves one out. |
+| A skill | `skills/<slug>/SKILL.md` to the contract, with `references/sources.md` citing every line; its row in the Skills table of `README.md`; its slug in `ORDER` of `scripts/build/skills.mjs`; then `pnpm build:skills`, which writes `src/lib/skills.ts` and `skills/README.md`, and the installer's dry run | `pnpm lint:skills` fails a skill off the contract, a body over 24,000 bytes and a stale `src/lib/skills.ts` or `skills/README.md`. `pnpm lint:registries` checks the contract too. |
+| A direction | An entry in `DIRECTIONS` of `src/lib/directions.ts`, its route under `src/app/d/<slug>/`, its first fold captured in both themes under `public/shots/light/` and `public/shots/dark/`, then `pnpm build:thumbs` | `pnpm lint:registries` checks the expression that finds the first exploration, which every browser gate reads. The page check covers the route. |
+| A copy of a gt-cloud file | The copy, and its entry in `scripts/lint/copies.json` as `pin`, `source` or `fork` | `pnpm lint:copies` compares a pinned copy with its recorded sha256. |
+| A generated file | Its script, never the file: `pnpm build:skills`, `build:deck`, `build:marks`, `build:inter`, `build:thumbs`, `build:motion`, `build:tools` or `build:updated`. `pnpm gen:all` runs them in order and dates pages last. | `pnpm lint:skills`, `pnpm lint:tools` and `pnpm lint:updated` exit 1 while `src/lib/skills.ts`, `docs/TOOLS.md` or `src/lib/updated.ts` is stale, and the build checks `src/lib/updated.ts` again. |
+

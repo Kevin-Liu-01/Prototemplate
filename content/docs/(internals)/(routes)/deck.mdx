@@ -2,6 +2,9 @@
 title: The brand deck
 description: 'The brand deck in deck/: its slides on a 1600 by 900 sheet, the grammar they follow, and the build that serves it at /deck.'
 icon: Deck
+sources:
+  - deck/parts/head.html
+  - skills/gt-brand/references/type.md
 ---
 
 The brand deck is General Translation's identity in 93 slides. Its sources live in `deck/` and its built file is `public/brand-deck.html`.
@@ -12,6 +15,8 @@ The brand deck is General Translation's identity in 93 slides. Its sources live 
 - `deck/parts/` holds the head, the tail and the shared styles: the Inter type sizes, the color tokens for both themes and the layout classes.
 - Icons come from the Heroicons 20 solid sprite. Mood slides carry dithered artifact pictures ([Artifact pictures](/docs/handbook/artifact-pictures)).
 - `deck/DECK-GRAMMAR.md` is the written grammar: what a slide may hold and how a story is told across slides.
+
+The deck's heading rule in `deck/parts/head.html` tracks h1 and h2 at -0.025em and writes `font-feature-settings: 'cv11', 'ss01'` without `liga` and `calt`. Chrome turns contextual alternates off under any letter-spacing unless the feature list names `calt`, so the deck's headings lose the `->` arrow, the colon centred between digits and the hyphen raised between capitals. The type audit of 2026-10-05 named this the deck's one type defect. `head.html` changes only on its owner's instruction, so the fix waits for the deck's owner. [The correct Inter in practice](/docs/craft/type#contextual-alternates-under-letter-spacing) gives the measurement and the two feature tokens the hub uses instead.
 
 ## The viewer
 

@@ -2,6 +2,12 @@
 title: Gates
 description: 'The checks that run before work lands: the static lints, the live audits, the page check, the type check and the build, with their exit codes.'
 icon: Check
+sources:
+  - scripts/lint/lines.mjs
+  - skills/gt-lints/SKILL.md
+  - skills/gt-lints/references/line-auditor.md
+  - skills/gt-lints/references/prototemplate-gates.md
+  - tsconfig.json
 ---
 
 Work lands on `main` only after it passes these gates and Kevin has reviewed it on localhost. The [gt-lints skill](/skills/gt-lints) explains each lint and how to fix a failure.
@@ -19,17 +25,30 @@ git worktree add --detach ../scratch-build HEAD
 cd ../scratch-build && pnpm install --frozen-lockfile && pnpm build > build.log 2>&1; echo $?
 ```
 
+A pipe reports the status of its last command. On 2026-08-11 `pnpm build 2>&1 | tail -2 && git ...` pushed through a failing build, because zsh without `pipefail` returned the status of `tail`, and on 2026-08-07 a `;` after the build let a failed build reach the push. Capture the output to a file and chain the next step with `&&`, or `set -o pipefail` first. [Agents on one machine](/docs/handbook/shared-machine#exit-status-gates) holds the same rule for every gated command.
+
 ## Exit codes
 
 Every lint prints `file:line rule message` and exits **0** on a pass, **1** on findings and **2** when it could not judge: no build to read, no server to fetch, or a file it needs is missing. `--report` prints the findings without failing where a report is useful.
+
+A gate never passes when it could not judge. Exit 2 exists so that a missing server, a missing build or a page that did not open stops the chain as loudly as a finding does. Under `--report` the line audit drops both its exit 1 and its exit 2 for a state that did not open, so a clean exit under `--report` proves nothing about the page.
 
 ## Ratchets
 
 Some rules arrived after the code they judge. Their lints keep a baseline of the findings that predate the rule (`scripts/lint/practices.baseline.json`, `type.baseline.json`, `seo.baseline.json`): a finding in the baseline is known debt, a new one fails the run, and the list only shrinks. `--update-baseline` rewrites it after a deliberate cleanup.
 
+- The baselines count findings per file, never per line. Parallel sessions move lines all the time, and a per-file count stays the same when a line moves, so a moved line never reads as a new finding.
+- A baseline above the real count lets a new violation into that file without a failure. Lower the baseline in the commit that cleans a file up, and read the JSON diff before committing it, because `--update-baseline` also records any new violation present at that moment.
+- A deleted file or direction takes its baseline entries with it in the same commit.
+- Every exemption carries its reason in the config beside it: `.oxlintrc.json` takes a comment above each override, and the line audit's allow list names the device and why its parallel strokes are one drawing.
+
 ## Browser gates run one at a time
 
 The live audits, the page check and the captures each launch Chrome for Testing. Run them one after another: two at once compete for the machine, and on 2026-10-01 a parallel capture made `lint:lines:shell` fail on pages that were correct. On Kevin's machine each heavy command is gated with `headroom can-start`, which reports whether memory allows it.
+
+### Before trusting a red browser gate
+
+A red browser gate can mean the page is wrong, or that the machine or the server was. The capture above failed `lint:lines:shell` on correct pages, and a rerun on its own passed. Load one route by hand before reading the findings. A dev server that answers 500 makes the line audit exit 2 on its first route: on 2026-10-05 the cause was a Turbopack worker that timed out on `globals.css`. Restart the server only when your session owns it, and rerun the gate alone.
 
 ## Before a push
 
@@ -38,3 +57,36 @@ The pre-push hook runs `pnpm lint:public`, which scans the change for key shapes
 ## A new rule becomes a lint
 
 A defect fixed once is fixed as a class, with the lint that keeps it from coming back ([operating principle 4](/docs/handbook/operating-principles)). A lint has the law in its header with its source, pure checkers that tests import, the `file:line rule message` output and the three exit codes, a passing and a failing fixture per rule, and a line in `lint:static` or the build. Section 4 of the gt-lints skill gives the steps.
+
+## What the line auditor counts
+
+`scripts/lint/lines.mjs` is the line auditor. It walks every element under `body` and rebuilds lines from computed CSS, so it judges what the page paints rather than what the class names say. It counts these as lines:
+
+- a border side 1 to 2.5 px wide and at least 24 px long, in a visible color;
+- an outline ring 1 to 2.5 px wide, placed at its offset;
+- a box-shadow with no offset, a blur of 1.5 px or less and a spread of 1 to 2.5 px, which is a border drawn by other means;
+- a filled box 2.5 px thick or less and longer than 24 px;
+- an exposed-ground strip, where a box with a visible fill has 1 to 2.5 px of padding on a side with no border;
+- an absolutely positioned `::before` or `::after` with a border or a thin fill, its `translateX(-50%)` centering included.
+
+Each element is clamped to its nearest clipping ancestor first, and an edge the clip removes is dropped, so the audit reads the geometry the eye sees and never the layout box under a clip.
+
+| Finding | Rule | Gates |
+| --- | --- | --- |
+| Double | Two parallel lines from different owners 1 to 4 px apart, overlapping 75% of the shorter line and at least 80 px, both visible at two of three sample points | Yes |
+| Junction | The same pair under 1 px apart: two owners draw one seam and their alphas stack | Yes |
+| Color | A chrome border off `--pt-hair`, `--pt-hair-soft` and `--pt-edge`, or an ink border away from an active state | Yes, shell mode |
+| Self-stack | A translucent border (alpha under 0.95) over the element's own translucent fill (alpha 0.12 to 0.95) with no `background-clip: padding-box` | Only when the edge is 120 px or longer |
+| Invisible seam | An opaque fill with a 1 to 2.5 px padding strip within 45 summed RGB steps of the page's ground | Yes |
+
+- It skips elements inside `svg` or `canvas`, under a `matrix3d` transform or a mask image, hidden ones, and anything at opacity 0.05 or less. SVG strokes and canvas pixels are checked by eye in 2x crops of every junction.
+- It never hovers, so a hover border is checked by hand.
+- An earlier version audited only the first URL on its command line and passed the rest unread. Every positional URL is now audited.
+- A URL that contains whitespace exits 2. It is a quoting accident: zsh does not split an unquoted variable, so a list of URLs arrives as one argument and would load as a 404. An HTTP status of 400 or more also exits 2, because a 404 page has almost no lines and would pass.
+
+The [gt-lints skill](/skills/gt-lints) holds the allow list with its reasons, and [Lines and seams](/docs/craft/lines) gives the line law the auditor holds.
+
+## The type check
+
+`next build` never type-checks here, because `next.config.ts` sets `typescript.ignoreBuildErrors`, so `pnpm exec tsc --noEmit` is a gate of its own. `tsconfig.json` includes `.next/dev/types/**/*.ts`, the route types a running dev server writes. A dev server can leave one of those files half written while it serves, and `tsc` then reports errors in a generated file that no change touched. Run the type check in the scratch worktree that runs the build, where no dev server writes, or rerun it after the server finishes writing. [Dev servers and builds](/docs/engineering/dev-servers#failure-modes-of-next-dev) covers the other states a dev server leaves in `.next`.
+

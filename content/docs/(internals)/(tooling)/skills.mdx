@@ -2,6 +2,10 @@
 title: Skills
 description: 'The curated agent skills in skills/: the contract each one keeps, the build that checks it, where they are served and how to install them.'
 icon: Sparkles
+sources:
+  - scripts/skills/install.mjs
+  - scripts/build/skills.budget.json
+  - skills/prototemplate/references/skills.md
 ---
 
 The skills record how General Translation work is done. Each is a folder under `skills/<slug>/` in the SKILL.md format that Claude Code, Codex and other agents load. The set is curated by use: twenty-two skills, each one Kevin's sessions actually load.
@@ -12,6 +16,8 @@ The skills record how General Translation work is done. Each is a folder under `
 - **Owner.** The session lane that keeps the skill and reviews every change to it: `P` for the Prototemplate session, `V` for the Videos session and `O` for the onboarding and dashboard session.
 - **Body.** An h1 equal to the title and a short lead, the sections, a Review checklist where the skill governs work someone reviews, a Related skills line, and `## Sources` last. The body stays under 24,000 bytes; detail moves to `references/`.
 - **Supporting files** are `.md`, `.mjs`, `.json`, `.py`, `.sh`, `.txt` or `.js`. A script carries a header with its purpose, usage and requirements, and an offline test that `pnpm test:skill-scripts` runs.
+
+A skill over the 24,000-byte body budget fails `pnpm lint:skills` unless `scripts/build/skills.budget.json` exempts it with a written reason and an expiry date. An entry that has expired, has no reason, or names a skill already under the budget also fails, so the list only shrinks, and the commit that trims a skill removes its entry. Trimming moves a rule into `references/` and never deletes it.
 
 `pnpm build:skills` (`scripts/build/skills.mjs`) checks the contract and writes `src/lib/skills.ts`, the registry the pages read, and `skills/README.md`, the list by area. `pnpm lint:skills` fails while either is stale.
 
@@ -24,6 +30,15 @@ The skills record how General Translation work is done. Each is a folder under `
 ## Installing them
 
 From a checkout, `pnpm skills:install --project <dir>` links every skill into `<dir>/.claude/skills` and `<dir>/.agents/skills`. Name slugs to install fewer, add `--copy` to vendor the folders, `--user` to install into the agent home, and `--dry-run` to see each step first. This repository's own `.claude/skills` and `.agents/skills` hold relative links made the same way.
+
+## Slug collisions
+
+A skill's folder name is its slug, so a skills folder holds one skill per slug. An install that writes over an entry of the same name replaces a skill the project already depends on, and nothing reports it. The installer and the set's naming rule prevent that.
+
+- The installer owns an entry only when it is a link that resolves to the canonical `skills/<slug>/` folder, or a folder whose SKILL.md carries `origin: prototemplate`. It replaces its own entries in place.
+- Any other entry with the same name is left alone and counted as refused, and the run exits 1. `--force` moves that entry aside to `<slug>.replaced-<timestamp>` before it installs, and never deletes it.
+- The home-folder guard resolves each target folder to its real path. When the path lies inside another git work tree, as it does on a machine whose agent home links into a wiki checkout, the installer refuses to write there unless `--into` names that folder.
+- No slug in the set exists in the agent home folders (`~/.claude/skills`, `~/.agents/skills`) or in gt-cloud's `.agents/skills`. A new slug is checked against all three before it is added, and `--dry-run` shows every action before anything is written.
 
 ## Kept by use
 

@@ -6,6 +6,8 @@ sources:
   - src/components/docs/demos
   - src/app/d/toolchain/sections/RevealSeam.tsx
   - src/components/shared/EverySentence.tsx
+  - skills/gt-motion/references/traps.md
+  - skills/gt-motion/references/web.md
 ---
 
 import { EverySentenceDemo, RevealSeamDemo } from '@/components/docs/demos/lazy';
@@ -95,3 +97,10 @@ Use the reassembler for one headline whose subject is that it reads in every lan
 ### Reduced motion and themes
 
 Under reduced motion the change is a plain swap of the text, `lang` and `dir`, and this plate's Auto clock never starts. Under 720 pixels the dissolve runs as a cheaper cut with fewer motes. Every color derives from `currentColor` and the type from the host's computed font, so the sentence follows the docs theme and face.
+
+## Traps
+
+- The seam's `--seam-cut` is an inherited custom property, so every move of the seam restyles the whole subtree of its box. An SVG figure of 27,800 nodes under the seam dragged at 5 fps at 4x CPU throttle, and the same figure drawn on a canvas dragged at 56 fps. Keep the subtree under a moving variable small, and leave the shared seam as it is ([Canvas and WebGL engines](/docs/engineering/engines#inherited-properties-on-a-moving-subtree)).
+- A standing `will-change` or a leftover 0 px transform makes a stacking context, and a stacking context paints over the 1 px seams beside it. Set `willChange` only for the length of a tween, and clear what the tween set (`transform`, `opacity`, `visibility`, `strokeDashoffset`) when it completes ([Lines and seams](/docs/craft/lines#stacking-contexts-over-seams)).
+- GSAP cannot be frozen from outside the page. Its ESM build exposes no `window.gsap`, and its ticker keeps the `requestAnimationFrame` it found when it woke, so a test that overrides `requestAnimationFrame` changes nothing. A capture synced to a state polls a computed CSS variable and fires about 100 ms early, so the capture's own latency lands it inside the state ([SVG lines in motion](/docs/craft/svg-motion#gsap-from-outside-the-page)).
+

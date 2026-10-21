@@ -8,6 +8,8 @@ sources:
   - src/lib/studio-field.ts
   - src/components/shared/StudioField.tsx
   - src/app/d/toolchain/diagrams/DitheredMark.tsx
+  - skills/gt-dither/references/engines.md
+  - skills/gt-motion/references/traps.md
 ---
 
 import { BayerTiersDemo, DitherLoopDemo, StudioFieldDemo } from '@/components/docs/demos/lazy';
@@ -131,3 +133,35 @@ Use the studio field for the one dithered material of a product surface or a her
 ### Reduced motion and themes
 
 Under reduced motion the engine draws one static frame and stops. It also pauses when the canvas leaves the viewport or the tab is hidden. Every mount shares one WebGL context for the session, and `destroy()` releases the mount but keeps the context, because creating a context per mount exhausts the browser's budget.
+
+## What a field costs
+
+The CPU loop calls the field once per cell per frame, so its cost is linear in the number of cells. The cell count grows with the square of the inverse cell size: halving `scale` quadruples the work. These are the field evaluation times per frame at 144k cells, `scale` 3 on a 1440 by 900 box:
+
+| Field | Milliseconds a frame |
+| --- | --- |
+| `gradientRamp` | 0.8 |
+| `makeGlyphField` | 1.9 |
+| `globe` | 4.8, or 1.4 with `graticule` and `landmass` at 0 |
+| `streakBands` | 5.3 |
+| `radialBurst` | 15.1 |
+
+- The same box at `scale` 1 is 1.3 million field calls a frame, so a full-bleed field never animates at scale 1. The artifact pictures run at scale 1 because they are stills between short mixes.
+- `radialBurst` animates at `scale` 4 or more, which costs about 8 ms, or it renders once. Its dials are `layers` and `warpOctaves`; the globe's are `graticule` and `landmass`.
+- The loop writes every cell through one reused `ImageData` with a `Uint32Array` view and blits once with `putImageData`. That costs about 1 ms, where a `fillRect` per cell on 144k cells costs tens of milliseconds, so `src/lib/dither.ts` has no per-cell `fillRect`.
+
+## Dither on a moving sprite
+
+A dither pattern on something that moves flickers unless the pattern moves by whole cells, and in practice it flickers even then. The glyph rain first moved its dithered sprites by whole CSS pixels to keep the Bayer pattern rigid, and slow rises stepped at about 15 Hz. Kevin reported them as looking "less than 60fps". The atlas then moved to device-pixel cells blitted on whole device pixels, so each step moved the pattern by whole cells, and the rain still flickered. On 2026-08-06 the dither came off the moving rain. Its depth now reads by glyph size and a quantized alpha (`TIER_COVER` in `src/lib/glyph-field.ts`), and the dither stays for still consumers. A later pass that redrew the rain as two-tone pixel type was reverted.
+
+Put dither on a field or a still. A moving sprite carries solid ink.
+
+## Engine copies and canvas traps
+
+- The two copies of the CPU engine differ. gt-cloud's `packages/ui/src/lib/dither.ts` keeps field time across pauses, so a loop that was off screen resumes where it stopped, and its `stop()` holds the loop so the observers cannot restart it. Prototemplate's `src/lib/dither.ts` restarts field time at 0 on every `start()` and has no hold: its IntersectionObserver and its `visibilitychange` handler restart a stopped loop. Only Prototemplate's copy has the `phase` option.
+- A canvas that was never drawn keeps its default 300 by 150 backing store, and CSS stretches that store across the box for a frame. `createDitherLoop` paints one frame synchronously before it schedules any `requestAnimationFrame` for this reason.
+- A cloned canvas carries no bitmap. `redrawDithers()` therefore draws the deck's ramp canvases again from the computed `--pt-paper` and `--pt-ink` tokens, and again on every `html[data-theme]` change. It sizes each canvas from `clientWidth` and `clientHeight`, because a clone inside a scaled thumbnail is laid out at full size and only transformed down.
+- Two canvases share one page grid only when their phases differ by their offset. A canvas whose top-left cell sits `n` cells below another's takes `phase: { x: 0, y: n % 8 }`, or one tone lights different cells on each side of the seam.
+
+[Dither in practice](/docs/craft/dither) gives the reasons behind ordered dither, cell sizes, transitions on one grid and the picture standard.
+

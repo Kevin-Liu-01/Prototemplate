@@ -7,6 +7,7 @@ sources:
   - src/lib/horizon-field.ts
   - src/lib/prismatic-field.ts
   - src/components/shared/PrismaticField.tsx
+  - skills/gt-performance/references/webgl-lifecycles.md
 ---
 
 import { HorizonFieldDemo, PrismaticFieldDemo } from '@/components/docs/demos/lazy';
@@ -86,3 +87,8 @@ Use the prismatic field as a band's light behind content, with the exposure scal
 ### Reduced motion and themes
 
 Under reduced motion the engine draws one static frame and the cursor effects never attach. Offscreen fields are skipped by the shared engine. The palette is the burst's own spectrum on ink, so the plate stays dark in both themes.
+
+## Traps
+
+- Setting a canvas's width or height reallocates its drawing buffer. The prismatic engine first resized its one GL canvas to each field in turn, so with a full-bleed field and two 125 px logo fields on the presenter's intro it reallocated twice a frame and kept the main thread busy about 1,000 ms of every second (2026-10-08). The canvas now only grows to the largest field, each field draws into the bottom-left corner, GL's origin, and the blit reads that rectangle: `drawImage(source, 0, source.height - height, width, height, 0, 0, width, height)` in `src/lib/prismatic-field.ts` ([Canvas and WebGL engines](/docs/engineering/engines#a-shared-canvas-that-only-grows)).
+

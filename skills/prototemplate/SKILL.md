@@ -15,7 +15,7 @@ description: >-
 metadata:
   title: Working in Prototemplate
   areas: website, components
-  updated: 2026-10-20
+  updated: 2026-10-21
   origin: prototemplate
   owner: P
 ---
@@ -93,8 +93,8 @@ Chrome is everything the shell draws around content. The rules are `DESIGN.md` s
 `references/adding.md` gives each list file by file, along with directions, shipped pages, films and stills.
 
 - **A page** needs the route's `page.tsx` with its head from `seoRoute()` and its viewer, a row in `PAGES` or `KNOWLEDGE` of `surfaces.ts`, `PAGE_ICON` in `Sidebar.tsx` and `search-index.ts`, `PAGE_KEYWORDS`, `under` on its sections, its paths in `scripts/build/updated.mjs` (its sitemap date), a line in the README, a row in `siteRoutes()` of `scripts/lib/site-pages.mjs` tagged with the tools that walk it, then `pnpm capture:pages --only <id>` and `pnpm build:thumbs`.
-- **A docs page** needs `content/docs/<slug>.mdx` (or `<folder>/<slug>.mdx`) with a title and a 50 to 160 character description, its slug in `content/docs/meta.json` (or the folder's), its row in `src/components/docs/pages.ts`, then `pnpm build:updated` and a `docs-<slug>` capture. A live plate loads through `src/components/docs/demos/lazy.tsx`. `/docs/template` explains the docs site.
-- **A canon document** needs the file, a `HANDBOOK` entry after the handbook's own documents, its page in `content/docs/handbook/` that includes the file, its h2s in `HANDBOOK_HEADINGS`, a row in the README's "Read first" table, and a `handbook-<slug>` capture.
+- **A docs page** needs `<slug>.mdx` with a title and a 50 to 160 character description in a tab's folder or `(group)` folder (no URL segment), its slug in that folder's `meta.json`, its row in `src/components/docs/pages.ts`, then `pnpm build:updated` and a `docs-<slug>` capture. A plate loads through `src/components/docs/demos/lazy.tsx`. `/docs/template` explains the docs site.
+- **A canon document** needs the file, a `HANDBOOK` entry after the handbook's own documents, its page in `content/docs/(guide)/handbook/` that includes the file, its h2s in `HANDBOOK_HEADINGS`, a row in the README's "Read first" table, and a `handbook-<slug>` capture.
 - **A handbook document** needs `docs/handbook/<slug>.md`, a `HANDBOOK` entry in `src/app/handbook/registry.ts`, its page as above, its h2s in `HANDBOOK_HEADINGS`, its row in `docs/handbook/README.md` and AGENTS.md's handbook list, and a `handbook-<slug>` capture. A page that includes its file by headings lists every heading, or the build fails.
 - **A page with a book head** follows DESIGN.md section 4 (The book page): its `PAGE_NAMES` entry, `BookHead` with three facts, `requireUpdated` from the server page, an entry in `scripts/build/updated.mjs`, its route in `lint/heads.mjs`' live list, then `pnpm build:updated`.
 - **A skill** needs `skills/<slug>/SKILL.md` written to the contract in section 10, then `pnpm build:skills`, then the installer's dry run and its run.
