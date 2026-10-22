@@ -66,6 +66,27 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
       'The eight-script glyph rain that condenses into the word for language, and its inverse on ink that bursts where the reader clicks, both live.',
   },
   {
+    slug: 'components/dither-lab',
+    href: '/docs/components/dither-lab',
+    title: 'The dither lab',
+    description:
+      'Pictures, gradients and noise through ordered dither, error diffusion and halftone, side by side and live, with every screen and threshold exposed.',
+  },
+  {
+    slug: 'components/dither-type',
+    href: '/docs/components/dither-type',
+    title: 'Dithered type and marks',
+    description:
+      'Type and marks set in dither cells: words built from Bayer tiers, a mark that erodes and resolves, and glyph screens drawn from the house face.',
+  },
+  {
+    slug: 'components/dither-motion',
+    href: '/docs/components/dither-motion',
+    title: 'Dithered transitions and brushes',
+    description:
+      'Tone-mix wipes on one cell grid, a lens that reveals a picture under the screen, and a brush that paints in dither cells.',
+  },
+  {
     slug: 'components/lines',
     href: '/docs/components/lines',
     title: 'Doubled lines and connectors',
@@ -94,6 +115,41 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
       "Four directions for a blog figure that turns a globe to each city on the path of Euclid's Elements: the shared contract, the measurements and the ranking.",
   },
   {
+    slug: 'components/three-scenes',
+    href: '/docs/components/three-scenes',
+    title: '3D scenes',
+    description:
+      'three.js scenes in the house material: an extruded GT mark, a lit globe and an isometric stack, each through a Bayer post pass with live controls.',
+  },
+  {
+    slug: 'components/canvas-2d',
+    href: '/docs/components/canvas-2d',
+    title: '2D canvas pieces',
+    description:
+      'Canvas 2D pieces drawn in the house ink: particle fields, generative line work and glyph rain, each with its frame budget and its still.',
+  },
+  {
+    slug: 'components/controls',
+    href: '/docs/components/controls',
+    title: 'Controls',
+    description:
+      'The shell and site controls live: segmented switches, toggles, sliders, steppers, the install field and copy buttons, with their states and keys.',
+  },
+  {
+    slug: 'components/navigation',
+    href: '/docs/components/navigation',
+    title: 'Search, filters and menus',
+    description:
+      'The command search, the list filter, the language selector, the help card and the toast, each mounted with its keyboard behaviour.',
+  },
+  {
+    slug: 'components/kinetic',
+    href: '/docs/components/kinetic',
+    title: 'Kinetic text and carousels',
+    description:
+      'Split-flap text, the language wheel and the carousel: moving pieces with their timing, their reduced-motion stills and their controls.',
+  },
+  {
     slug: 'components/language',
     href: '/docs/components/language',
     title: 'Locale tags and language pieces',
@@ -120,6 +176,62 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     title: 'Badges and heads',
     description:
       'The badge that cuts through the GT monograms after the Brand title, and the book head every hub page opens with, live at two widths.',
+  },
+  {
+    slug: 'components/artifact-pictures',
+    href: '/docs/components/artifact-pictures',
+    title: 'Artifact pictures',
+    description:
+      'Dithered photographs under the Blue Marble standard: the tone grid, the screen, the presets and both themes, cut live from a picture.',
+  },
+  {
+    slug: 'components/covers-and-cards',
+    href: '/docs/components/covers-and-cards',
+    title: 'Covers and social cards',
+    description:
+      'Post covers, social cards and banners generated from a title and a field, at their export sizes, with the type and the mark set by the rules.',
+  },
+  {
+    slug: 'components/films-and-sheets',
+    href: '/docs/components/films-and-sheets',
+    title: 'Films and contact sheets',
+    description:
+      'The film player, contact sheets of frames, and the report card: how the system presents a finished artifact on the page.',
+  },
+  {
+    slug: 'components/rails-and-bands',
+    href: '/docs/components/rails-and-bands',
+    title: 'Rails, bands and spacers',
+    description:
+      'The landing grammar as live parts: one rail, full-width bands, hatch spacers and heads, with the widths and paddings at every breakpoint.',
+  },
+  {
+    slug: 'components/grids-and-bentos',
+    href: '/docs/components/grids-and-bentos',
+    title: 'Grids and bentos',
+    description:
+      'Bento grids, feature grids and the viewer grid view, with their columns, gaps and spans adjustable and the line law holding at every junction.',
+  },
+  {
+    slug: 'components/shells',
+    href: '/docs/components/shells',
+    title: 'Shells and frames',
+    description:
+      'The viewer shell, the sheet frame and the plate: the frames every hub page and figure sits in, taken apart and adjustable.',
+  },
+  {
+    slug: 'components/page-gallery',
+    href: '/docs/components/page-gallery',
+    title: 'Page gallery',
+    description:
+      'Every shipped page of the production mirror, live in a frame at the desktop and the phone width in both themes, picked from one list.',
+  },
+  {
+    slug: 'components/page-templates',
+    href: '/docs/components/page-templates',
+    title: 'Page templates',
+    description:
+      'The page types the hub builds from: the book page, the docs page, the article and the error page, each assembled from its parts.',
   },
   {
     slug: 'craft',

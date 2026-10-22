@@ -1,0 +1,8 @@
+{
+  "title": "2D and 3D",
+  "defaultOpen": true,
+  "pages": [
+    "three-scenes",
+    "canvas-2d"
+  ]
+}

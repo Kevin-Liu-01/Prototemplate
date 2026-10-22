@@ -1,0 +1,9 @@
+{
+  "title": "Interactables",
+  "defaultOpen": true,
+  "pages": [
+    "controls",
+    "navigation",
+    "kinetic"
+  ]
+}

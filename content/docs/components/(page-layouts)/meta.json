@@ -1,0 +1,9 @@
+{
+  "title": "Page layouts",
+  "defaultOpen": true,
+  "pages": [
+    "rails-and-bands",
+    "grids-and-bentos",
+    "shells"
+  ]
+}

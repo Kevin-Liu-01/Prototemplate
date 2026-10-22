@@ -1,0 +1,9 @@
+{
+  "title": "Dither lab",
+  "defaultOpen": true,
+  "pages": [
+    "dither-lab",
+    "dither-type",
+    "dither-motion"
+  ]
+}
