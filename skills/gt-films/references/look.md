@@ -27,7 +27,7 @@ MOTION.md applies `BRAND.md` (the name, the idea, the voice, the mark, color, ty
 ## Logos, marks and the frame
 
 - Logos appear where they say more than words and where the source supports them. A logo keeps its drawing and proportions; a one-color mark is recolored only to the film's ink, paper or material tones, and on a colored photographic ground such as Slash's gold a logo is white (Kevin, 2026-10-09). Fuma Nama's adopters beat shows true marks with GitHub star counts, using Turborepo's mark for "Vercel Turborepo" so one repository's stars are never credited to a whole organization.
-- The hero mark is the bar monogram (`kit/marks/bar-monogram.svg`); the doubled-line GT monogram (`kit/brand/gt-mark.svg`) is the small product mark. One ink, never a third color, gradient or shadow.
+- The GT logo in a film is the doubled-line GT monogram alone (`kit/brand/gt-mark.svg`, the site header's mark), on the end card, a close, a corner and the answer card (Kevin, 2026-10-21: "make sure they use our actual logo, a bunch show a wrong exploration at the end"; 27 films that ended on the bar-monogram lockup were re-rendered that day). `kit/marks` holds the speed set and the globe explorations, shown on /marks; they never stand in for the logo, and appear only in a film about the marks themselves, such as the mark sting. One ink, never a third color, gradient or shadow.
 - **No series frame** on the blog films (Kevin, 2026-10-04: "remove the frame that seems to be overlaid on top of everything"). The end card's frame is off by default.
 - **Safe areas.** No text closer than 120 px to an edge at 1920 x 1080, and 160 px for titles and the heading axis.
 

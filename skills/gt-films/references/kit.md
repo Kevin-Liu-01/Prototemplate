@@ -44,7 +44,7 @@ These stay in the local `motion/` folder; `vendor.mjs` writes the twins and `pic
 
 | path | what it is |
 | --- | --- |
-| `kit/marks/`, `kit/brand/` | the speed marks (bar monogram, lockup, dithered, ASCII, plate inverted, double cut, livery stack, two-way, globe G) and the doubled-line GT mark (tracked) |
+| `kit/marks/`, `kit/brand/` | the speed marks (bar monogram, lockup, dithered, ASCII, plate inverted, double cut, livery stack, two-way, globe G), explorations shown on /marks and never the logo, and the doubled-line GT mark (`kit/brand/gt-mark.svg`), the logo in every film (tracked) |
 | `kit/logos/`, `kit/logos/adopters/` | Fumadocs, MDX, Next.js, React, TanStack and Mintlify marks; the marks and GitHub avatars of Fumadocs' adopters |
 | `kit/fonts/` | InterVariable and its italic |
 | `kit/gem-shapes/*.png` | processed shapes for gem smoke glass (`gt-bar-monogram`, `gt-mark`, `fumadocs-moon`), written by `make.mjs` |
