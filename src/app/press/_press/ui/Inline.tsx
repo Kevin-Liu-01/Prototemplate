@@ -26,6 +26,15 @@ export default function Inline({ nodes }: { nodes: InlineNode[] }) {
                 <Inline nodes={node.c} />
               </em>
             );
+          case 'br':
+            return <br key={i} />;
+          case 'fn':
+            // the note's number; the book look sets the note beside it in the margin
+            return (
+              <sup key={i} className='gtp-fn' id={`fnref-${node.n}`}>
+                <a href={`#fn-${node.n}`}>{node.n}</a>
+              </sup>
+            );
           case 'link':
             return node.href.startsWith('/press') ? (
               <Link key={i} href={node.href}>

@@ -18,13 +18,15 @@ type Props = {
   graticule?: boolean;
   /** The pin's own label with the city and its coordinates; off where a readout beside the globe carries them. */
   label?: boolean;
+  /** How the globe turns to a new place: how long, in ms, and on what curve; a quick ease-out when not given. */
+  turn?: { ms: number; curve?: (t: number) => number };
   /** Drawn inside the globe's box, which carries the pin's place as --px and --py. */
   children?: ReactNode;
 };
 
 /* The dithered globe with its pin: a crosshair at the place and its
    coordinates, which flips to the pin's left near the right limb. */
-export default function Globe({ place, className, cell = 3, tilt = 14, graticule = false, label = true, children }: Props) {
+export default function Globe({ place, className, cell = 3, tilt = 14, graticule = false, label = true, turn, children }: Props) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const pin = useRef<HTMLSpanElement>(null);
   const handle = useRef<GlobeHandle | null>(null);
@@ -37,7 +39,7 @@ export default function Globe({ place, className, cell = 3, tilt = 14, graticule
 
   useLayoutWork(
     () => {
-      handle.current?.turnTo(place);
+      handle.current?.turnTo(place, turn?.ms, turn?.curve);
     },
     { dependencies: [place.lat, place.lon] }
   );

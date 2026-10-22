@@ -5,10 +5,9 @@ import { useId, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useMountEffect } from '../hooks';
 
 import { dms, dmsPair } from '../coords';
+import { easeInOut } from '../globe';
 import type { Inline as InlineNode } from '../parse';
 import { LANGS, type LangCode, type Localized } from '../stories';
-import { project } from '../geo/ortho';
-import { cameraFor } from '../globe';
 import Globe from '../ui/Globe';
 import FlipText from '../ui/FlipText';
 import Inline from '../ui/Inline';
@@ -284,237 +283,231 @@ export function ThemeWipe({ dark, light, alt }: { dark: string; light: string; a
   );
 }
 
-/* ---------- Euclid's first definition, city by city ---------- */
+/* ---------- Euclid's first definitions, city by city ---------- */
 
-type Version = { lang: string; language: string; dir: 'ltr' | 'rtl'; city: string; year: string; lat: number; lon: number; lines: readonly string[] };
+/** One definition as an edition prints it: its numbering (α΄., IIII., 第四界：, 4.) and its words. */
+type Line = { n: string; text: string };
+type Version = { lang: string; language: string; dir: 'ltr' | 'rtl'; city: string; year: string; lat: number; lon: number; lines: readonly Line[] };
+
+const lines = (...rows: [string, string][]): Line[] => rows.map(([n, text]) => ({ n, text }));
 
 /**
- * The first eight definitions of Book I in eight versions, each with its
- * language, the city and the year it was made. Drafted from the editions'
- * wording as best known: Euclid's Greek, Clavius, Byrne and Ricci and Xu
- * are close to the printed texts; Billingsley's spelling, Adelard,
- * Campanus (who folds definitions together, so his first eight run on)
- * and the Arabic need checking against the sources before this is
- * published.
+ * The first eight definitions of Elements in five versions, each with its
+ * language, its maker, and the city and year it was made, in each edition's
+ * own numbering. The Arabic carries none. English comes first, the one the
+ * reader reads; the rest follow in the order they were made.
  */
 const EDITIONS: readonly Version[] = [
   {
-    lang: 'en', language: 'English, Billingsley', dir: 'ltr', city: 'London', year: '1570', lat: 51.5138, lon: -0.0984,
-    lines: [
-      'A signe or point is that, which hath no part.',
-      'A line is length without breadth.',
-      'The endes or limittes of a line, are pointes.',
-      'A right line is that which lieth equally betwene his pointes.',
-      'A superficies is that, which hath onely length and breadth.',
-      'The extremities of a superficies, are lines.',
-      'A plaine superficies is that, which lieth equally betwene his lines.',
-      'A plaine angle is an inclination or bowing of two lines the one to the other, the one touching the other, and not being directly ioyned together.',
-    ],
-  },
-  {
-    lang: 'en', language: 'English, Byrne', dir: 'ltr', city: 'London', year: '1847', lat: 51.5138, lon: -0.0984,
-    lines: [
-      'A point is that which has no parts.',
-      'A line is length without breadth.',
-      'The extremities of a line are points.',
-      'A straight or right line is that which lies evenly between its extremities.',
-      'A surface is that which has length and breadth only.',
-      'The extremities of a surface are lines.',
-      'A plane surface is that which lies evenly between its extremities.',
-      'A plane angle is the inclination of two lines to one another, in a plane, which meet together, but are not in the same direction.',
-    ],
-  },
-  {
-    lang: 'la', language: 'Latin, Campanus', dir: 'ltr', city: 'Venice', year: '1482', lat: 45.4408, lon: 12.3155,
-    lines: [
-      'Punctus est cuius pars non est.',
-      'Linea est longitudo sine latitudine, cuius quidem extremitates sunt duo puncta.',
-      'Linea recta est ab uno puncto ad alium brevissima extensio, in extremitates suas utrumque eorum recipiens.',
-      'Superficies est quae longitudinem et latitudinem tantum habet, cuius termini quidem sunt lineae.',
-      'Superficies plana est ab una linea ad aliam extensio, in extremitates suas eas recipiens.',
-      'Angulus planus est duarum linearum alternus contactus, quarum expansio est super superficiem, applicatioque non directa.',
-      'Quando autem angulum continent duae lineae rectae, rectilineus angulus nominatur.',
-      'Quando recta linea super rectam steterit, duoque anguli utrobique fuerint aequales, eorum uterque rectus erit.',
-    ],
-  },
-  {
-    lang: 'la', language: 'Latin, Clavius', dir: 'ltr', city: 'Rome', year: '1574', lat: 41.9028, lon: 12.4964,
-    lines: [
-      'Punctum est, cuius pars nulla est.',
-      'Linea vero, longitudo latitudinis expers.',
-      'Lineae autem termini, sunt puncta.',
-      'Recta linea est, quae ex aequo sua interiacet puncta.',
-      'Superficies est, quae longitudinem, latitudinemque tantum habet.',
-      'Superficiei autem extrema, sunt lineae.',
-      'Plana superficies est, quae ex aequo suas interiacet lineas.',
-      'Planus autem angulus, est duarum linearum in plano se mutuo tangentium, et non in directum iacentium, alterius ad alteram inclinatio.',
-    ],
-  },
-  {
-    lang: 'zh-Hant', language: 'Chinese, Ricci and Xu', dir: 'ltr', city: 'Beijing', year: '1607', lat: 39.9042, lon: 116.4074,
-    lines: [
-      '點者無分。',
-      '線有長無廣。',
-      '線之界是點。',
-      '直線止有兩端，兩端之間上下更無一點。',
-      '面者止有長有廣。',
-      '面之界是線。',
-      '平面一面平在界之內。',
-      '平角者兩直線於平面縱橫相遇交接處。',
-    ],
-  },
-  {
-    lang: 'la', language: 'Latin, Adelard', dir: 'ltr', city: 'Antioch', year: 'c. 1120', lat: 36.2021, lon: 36.1604,
-    lines: [
-      'Punctus est cui pars non est.',
-      'Linea est longitudo sine latitudine.',
-      'Cuius quidem extremitates duo puncta sunt.',
-      'Linea recta est ab uno puncto ad alium extensio in extremitates suas utrumque eorum recipiens.',
-      'Superficies est quod longitudinem et latitudinem tantum habet.',
-      'Cuius termini quidem lineae sunt.',
-      'Superficies plana est ab una linea ad aliam extensio in extremitates suas eas recipiens.',
-      'Angulus planus est duarum linearum alternus contactus quarum expansio est super superficiem applicatioque non directa.',
-    ],
-  },
-  {
-    lang: 'ar', language: 'Arabic, al-Ḥajjāj', dir: 'rtl', city: 'Baghdad', year: 'c. 800', lat: 33.3152, lon: 44.3661,
-    lines: [
-      'النقطة هي ما لا جزء له.',
-      'والخط طول لا عرض له.',
-      'ونهايتا الخط نقطتان.',
-      'والخط المستقيم هو الموضوع على استقامة بين النقط التي عليه.',
-      'والسطح هو ما له طول وعرض فقط.',
-      'ونهايات السطح خطوط.',
-      'والسطح المستوي هو الموضوع على استقامة بين الخطوط التي عليه.',
-      'والزاوية المسطحة هي ميل أحد خطين متلاقيين في سطح مستو إلى الآخر من غير أن يكونا على استقامة.',
-    ],
+    lang: 'en', language: 'English, Heath', dir: 'ltr', city: 'Cambridge', year: '1908', lat: 52.2053, lon: 0.1218,
+    lines: lines(
+      ['1.', 'A point is that which has no part.'],
+      ['2.', 'A line is breadthless length.'],
+      ['3.', 'The extremities of a line are points.'],
+      ['4.', 'A straight line is a line which lies evenly with the points on itself.'],
+      ['5.', 'A surface is that which has length and breadth only.'],
+      ['6.', 'The extremities of a surface are lines.'],
+      ['7.', 'A plane surface is a surface which lies evenly with the straight lines on itself.'],
+      ['8.', 'A plane angle is the inclination to one another of two lines in a plane which meet one another and do not lie in a straight line.'],
+    ),
   },
   {
     lang: 'grc', language: 'Greek, Euclid', dir: 'ltr', city: 'Alexandria', year: 'c. 300 BCE', lat: 31.2001, lon: 29.9187,
-    lines: [
-      'Σημεῖόν ἐστιν, οὗ μέρος οὐθέν.',
-      'Γραμμὴ δὲ μῆκος ἀπλατές.',
-      'Γραμμῆς δὲ πέρατα σημεῖα.',
-      'Εὐθεῖα γραμμή ἐστιν, ἥτις ἐξ ἴσου τοῖς ἐφ’ ἑαυτῆς σημείοις κεῖται.',
-      'Ἐπιφάνεια δέ ἐστιν, ὃ μῆκος καὶ πλάτος μόνον ἔχει.',
-      'Ἐπιφανείας δὲ πέρατα γραμμαί.',
-      'Ἐπίπεδος ἐπιφάνειά ἐστιν, ἥτις ἐξ ἴσου ταῖς ἐφ’ ἑαυτῆς εὐθείαις κεῖται.',
-      'Ἐπίπεδος δὲ γωνία ἐστὶν ἡ ἐν ἐπιπέδῳ δύο γραμμῶν ἁπτομένων ἀλλήλων καὶ μὴ ἐπ’ εὐθείας κειμένων πρὸς ἀλλήλας τῶν γραμμῶν κλίσις.',
-    ],
+    lines: lines(
+      ['α΄.', 'Σημεῖόν ἐστιν, οὗ μέρος οὐθέν.'],
+      ['β΄.', 'Γραμμὴ δὲ μῆκος ἀπλατές.'],
+      ['γ΄.', 'Γραμμῆς δὲ πέρατα σημεῖα.'],
+      ['δ΄.', "Εὐθεῖα γραμμή ἐστιν, ἥτις ἐξ ἴσου τοῖς ἐφ' ἑαυτῆς σημείοις κεῖται."],
+      ['ε΄.', 'Ἐπιφάνεια δέ ἐστιν, ὃ μῆκος καὶ πλάτος μόνον ἔχει.'],
+      ['ϛ΄.', 'Ἐπιφανείας δὲ πέρατα γραμμαί.'],
+      ['ζ΄.', "Ἐπίπεδος ἐπιφάνειά ἐστιν, ἥτις ἐξ ἴσου ταῖς ἐφ' ἑαυτῆς εὐθείαις κεῖται."],
+      ['η΄.', "Ἐπίπεδος δὲ γωνία ἐστὶν ἡ ἐν ἐπιπέδῳ δύο γραμμῶν ἁπτομένων ἀλλήλων καὶ μὴ ἐπ' εὐθείας κειμένων πρὸς ἀλλήλας τῶν γραμμῶν κλίσις."],
+    ),
+  },
+  {
+    lang: 'ar', language: 'Arabic, al-Ḥajjāj', dir: 'rtl', city: 'Baghdad', year: 'c. 800', lat: 33.3152, lon: 44.3661,
+    lines: lines(
+      ['', 'النقطة هي ما لا جزء له.'],
+      ['', 'والخط طول بلا عرض.'],
+      ['', 'ونهايتا الخط نقطتان.'],
+      ['', 'والخط المستقيم هو الذي يقع على استقامة ما عليه من النقط.'],
+      ['', 'والسطح ما له طول وعرض فقط.'],
+      ['', 'ونهايات السطح خطوط.'],
+      ['', 'والسطح المستوي هو الذي يقع على استقامة ما عليه من الخطوط المستقيمة.'],
+      ['', 'والزاوية المسطحة هي ميل أحد خطين يلتقيان في سطح واحد على الآخر، وليسا على استقامة واحدة.'],
+    ),
+  },
+  {
+    lang: 'la', language: 'Latin, Clavius', dir: 'ltr', city: 'Rome', year: '1574', lat: 41.9028, lon: 12.4964,
+    lines: lines(
+      ['I.', 'Punctum est, cuius pars nulla est.'],
+      ['II.', 'Linea vero, longitudo latitudinis expers.'],
+      ['III.', 'Lineae autem termini, sunt puncta.'],
+      ['IIII.', 'Recta linea est, quae ex aequo sua interiacet puncta.'],
+      ['V.', 'Superficies est, quae longitudinem, & latitudinem tantum habet.'],
+      ['VI.', 'Superficiei autem extrema, sunt lineae.'],
+      ['VII.', 'Plana superficies est, quae ex aequo suas interiacet lineas.'],
+      ['VIII.', 'Planus angulus est, duarum linearum in plano se mutuo tangentium, & non in directum iacentium, alterius ad alteram inclinatio.'],
+    ),
+  },
+  {
+    lang: 'zh-Hant', language: 'Chinese, Ricci and Xu', dir: 'ltr', city: 'Beijing', year: '1607', lat: 39.9042, lon: 116.4074,
+    lines: lines(
+      ['第一界：', '點者，無分。'],
+      ['第二界：', '線，有長無廣。'],
+      ['第三界：', '線之界是點。'],
+      ['第四界：', '直線止有兩端，兩端之間上下更無一點。'],
+      ['第五界：', '面者，止有長有廣。'],
+      ['第六界：', '面之界是線。'],
+      ['第七界：', '平面，一面平在界之內。'],
+      ['第八界：', '平角者，兩直線於平面縱橫相遇交接處。'],
+    ),
   },
 ];
 
-/** Where the globe looks: between London and Beijing, so every city is on the near side. */
-const MIDDLE = { lat: 38, lon: 52, city: '' };
+/** Each version's name for its own language, as the switch writes it. */
+const NATIVE: Record<string, string> = { grc: 'Ἑλληνική', ar: 'العربية', la: 'Latin', 'zh-Hant': '中文', en: 'English' };
 
-/* The versions in the order their pins sit on the globe, top to bottom: the
-   list follows that order, so every leader can leave its pin sideways to the
-   gutter and turn down or up to its line without crossing another. */
-const VERSIONS: readonly Version[] = [...EDITIONS].sort((a, b) => {
-  const camera = cameraFor(MIDDLE, 0);
-  const at = (v: Version) => project({ ...camera, radius: 50, cx: 50, cy: 50 }, v).y;
-  return at(a) - at(b);
-});
+/** The order the switch offers them: by the year each was made. */
+const VERSIONS: readonly (Version & { key: string })[] = EDITIONS.map((v) => ({ ...v, key: v.lang }));
 
-/* All eight at once: a pin at each city on the globe, a hairline from each
-   pin to its version in the list, and the chosen version's pin and leader
-   in the ink, its coordinates under the globe and its first eight
-   definitions set as a poem under the figure. The leaders are
-   drawn in an SVG over the figure, from where the globe placed each pin to
-   where its line sits, and drawn again whenever either moves. */
+/** A version as the figure names it: its language, a period, then its maker, city and year. 'Chinese. Ricci and Xu, Beijing, 1607' */
+function titleOf(v: Version): string {
+  const [language = v.language, maker] = v.language.split(/,\s*/);
+  return `${language}. ${maker ? `${maker}, ` : ''}${v.city}, ${v.year}`;
+}
+
+/** How long each version stands before the next, while the reader leaves the switch alone; the turn below is part of it. */
+const DWELL = 6000;
+
+/** The globe's turn from one city to the next: slow, setting off and landing gently. */
+const TURN = { ms: 3500, curve: easeInOut };
+
+/** The coordinates tick over at half the board's usual speed, in step with the slow turn. */
+const TICK_PACE = 2;
+
+/* One version at a time: the globe turns to the city it was made in, the
+   version's name and its coordinates tick over under it, and its eight
+   definitions replace the last version's with a slow fade, each numbered
+   as its edition numbers them. The first time it is shown it comes in part
+   by part (press.css). It steps through the versions on its own while it is
+   shown, until the reader picks one from the switch or a dot. */
 export function VersionsDemo() {
-  const [chosen, setChosen] = useState(() => Math.max(0, VERSIONS.findIndex((v) => v.city === 'Beijing')));
+  const [chosen, setChosen] = useState(0);
+  const [held, setHeld] = useState(false);
+  // the definitions fade only once a change has happened, so the figure is whole before anything moves
+  const [moved, setMoved] = useState(false);
+  // null until mounted, so the figure is whole without script; false until it is first shown, then true
+  const [shown, setShown] = useState<boolean | null>(null);
   const root = useRef<HTMLDivElement>(null);
-  const [paths, setPaths] = useState<string[]>([]);
   const version = VERSIONS[chosen] ?? VERSIONS[0]!;
 
-  const draw = () => {
-    const el = root.current;
-    if (!el) return;
-    const box = el.getBoundingClientRect();
-    const globe = el.querySelector('.gtp-versions-globe')?.getBoundingClientRect();
-    const marks = el.querySelectorAll<HTMLElement>('.gtp-globe-mark');
-    const rows = el.querySelectorAll<HTMLElement>('.gtp-version');
-    if (!globe) return;
-    const ends = VERSIONS.map((_, i) => {
-      const m = marks[i]?.getBoundingClientRect();
-      const r = rows[i]?.getBoundingClientRect();
-      if (!m || !r) return null;
-      return {
-        mx: m.left + m.width / 2 - box.left,
-        my: m.top + m.height / 2 - box.top,
-        rx: r.left - box.left - 8,
-        ry: r.top + Math.min(r.height / 2, 14) - box.top,
-      };
-    });
-    // each leader turns in a lane of its own in the gutter: the ones climbing to their row take lanes outward down the
-    // list, the ones dropping take them outward up the list, so no lane crosses another leader's run
-    // a row nearly level with its pin needs no lane: its leader runs straight across and steps to the row just before it
-    const LEVEL = 18;
-    const lane = new Array<number>(VERSIONS.length).fill(0);
-    const up = ends.flatMap((e, i) => (e && e.my - e.ry >= LEVEL ? [i] : []));
-    const down = ends.flatMap((e, i) => (e && e.ry - e.my >= LEVEL ? [i] : [])).reverse();
-    up.forEach((i, k) => (lane[i] = k));
-    down.forEach((i, k) => (lane[i] = k));
-    const gutter = globe.right - box.left + 16;
-    const next = ends.map((e, i) => {
-      if (!e) return '';
-      if (Math.abs(e.ry - e.my) < LEVEL) return `M${e.mx.toFixed(1)} ${e.my.toFixed(1)}H${(e.rx - 12).toFixed(1)}V${e.ry.toFixed(1)}H${e.rx.toFixed(1)}`;
-      const x = gutter + (lane[i] ?? 0) * 9;
-      return `M${e.mx.toFixed(1)} ${e.my.toFixed(1)}H${x.toFixed(1)}V${e.ry.toFixed(1)}H${e.rx.toFixed(1)}`;
-    });
-    setPaths(next);
+  const show = (i: number) => {
+    setMoved(true);
+    setChosen(i);
+  };
+  // the reader's own choice, from the switch or a dot, stops the clock
+  const pick = (i: number) => {
+    setHeld(true);
+    show(i);
   };
 
+  // shown: on the book's stage when the stage turns to it, in a page when it scrolls well into view
   useMountEffect(() => {
     const el = root.current;
-    if (!el) return;
-    const globe = el.querySelector('.gtp-globe');
-    globe?.addEventListener('gtp-globe-placed', draw);
-    const observer = new ResizeObserver(draw);
+    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setShown(false);
+    const item = el.closest<HTMLElement>('.gtp-print-stage-item');
+    if (item) {
+      const check = () => {
+        if (item.dataset.shown === 'true') setShown(true);
+      };
+      const watch = new MutationObserver(check);
+      watch.observe(item, { attributes: true, attributeFilter: ['data-shown'] });
+      check();
+      return () => watch.disconnect();
+    }
+    const seen = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setShown(true);
+      },
+      { rootMargin: '0px 0px -25% 0px' }
+    );
+    seen.observe(el);
+    return () => seen.disconnect();
+  });
+
+  // the clock: each version stands a few seconds once shown, then the next, until the reader picks one
+  useMountEffect(() => {
+    const el = root.current;
+    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const item = el.closest<HTMLElement>('.gtp-print-stage-item');
+    let visible = false;
+    let since = 0;
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = Boolean(entry?.isIntersecting);
+    });
     observer.observe(el);
-    void document.fonts?.ready.then(draw);
-    draw();
+    const timer = window.setInterval(() => {
+      const onScreen = visible && el.dataset.shown === 'true' && (!item || item.dataset.shown === 'true');
+      if (!onScreen || el.dataset.held === 'true') {
+        since = 0;
+        return;
+      }
+      const now = performance.now();
+      if (!since) since = now;
+      else if (now - since >= DWELL) {
+        since = now;
+        show((Number(el.dataset.chosen ?? 0) + 1) % VERSIONS.length);
+      }
+    }, 250);
     return () => {
-      globe?.removeEventListener('gtp-globe-placed', draw);
       observer.disconnect();
+      window.clearInterval(timer);
     };
   });
 
   return (
-    <div ref={root} className='gtp-versions'>
+    <div ref={root} className='gtp-versions' data-chosen={chosen} data-held={held} data-moved={moved} data-shown={shown ?? undefined}>
       <div className='gtp-versions-map'>
-        <Globe place={MIDDLE} cell={2} tilt={0} graticule label={false} className='gtp-versions-globe'>
+        <Globe place={version} cell={2} tilt={0} graticule label={false} turn={TURN} className='gtp-versions-globe'>
+          {/* each city's dot chooses the version made there */}
           {VERSIONS.map((v, i) => (
-            <span key={`${v.city}-${v.year}`} className='gtp-globe-mark' data-lat={v.lat} data-lon={v.lon} data-on={i === chosen} aria-hidden='true' />
+            <button
+              key={v.key}
+              type='button'
+              className='gtp-globe-mark'
+              data-lat={v.lat}
+              data-lon={v.lon}
+              data-on={i === chosen}
+              aria-pressed={i === chosen}
+              aria-label={titleOf(v)}
+              onClick={() => pick(i)}
+            />
           ))}
         </Globe>
+        <p className='gtp-version-meta'>{titleOf(version)}</p>
         <p className='gtp-versions-coords' aria-label={`${version.city}: ${dms(version.lat, 'lat')}, ${dms(version.lon, 'lon')}`}>
-          <FlipText value={dms(version.lat, 'lat')} />
-          <FlipText value={dms(version.lon, 'lon')} />
+          <FlipText value={dms(version.lat, 'lat')} pace={TICK_PACE} />
+          <FlipText value={dms(version.lon, 'lon')} pace={TICK_PACE} />
         </p>
       </div>
-      <ol className='gtp-versions-list'>
-        {VERSIONS.map((v, i) => (
-          <li key={`${v.city}-${v.year}`}>
-            <button type='button' className='gtp-version' aria-pressed={i === chosen} onClick={() => setChosen(i)}>
-              <span className='gtp-version-text'>{v.language}</span>
-              <span className='gtp-version-meta'>
-                {v.city}, {v.year}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ol>
-      {/* the chosen version's first eight definitions, a line each; a new version fades its lines in */}
-      <blockquote key={chosen} className='gtp-versions-poem' lang={version.lang} dir={version.dir}>
-        {version.lines.map((line) => (
-          <span key={line}>{line}</span>
-        ))}
-      </blockquote>
-      <svg className='gtp-versions-leaders' aria-hidden='true'>
-        {paths.map((d, i) => (d ? <path key={i} d={d} data-on={i === chosen} /> : null))}
-      </svg>
+      <div className='gtp-versions-reader'>
+        <StopSlider
+          stops={VERSIONS.map((v) => ({ value: v.key, label: NATIVE[v.key] ?? v.language, lang: v.lang, dir: v.dir }))}
+          value={version.key}
+          onChange={(key) => pick(Math.max(0, VERSIONS.findIndex((v) => v.key === key)))}
+          label='Version'
+        />
+        <ol key={version.key} className='gtp-version-lines' lang={version.lang} dir={version.dir}>
+          {version.lines.map((line) => (
+            <li key={line.n + line.text} className='gtp-version-line'>
+              {line.n ? <span className='gtp-version-n'>{line.n}</span> : null}
+              <span className='gtp-version-text'>{line.text}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }

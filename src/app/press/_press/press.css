@@ -14,6 +14,11 @@
 @font-face { font-family: 'Katagami CJK SC'; src: url('/fonts/katagami/KatagamiCJKSC-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Katagami CJK JP'; src: url('/fonts/katagami/KatagamiCJKJP-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Katagami CJK KR'; src: url('/fonts/katagami/KatagamiCJKKR-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+/* the book reader's face, Newsreader, scaled to Katagami Serif's x-height (0.498 of the size) at the text's 18px:
+   its own 0.426 comes up 17%. The scale is the face's own, so the Chinese and the faces that fill in for it
+   (Katagami Serif for Greek and the marked Latin letters) keep their size */
+@font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; size-adjust: 117%; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-400-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; size-adjust: 117%; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 .gtp {
   --gtp-cjk: 'Katagami CJK SC', 'Katagami CJK JP', 'Katagami CJK KR';
@@ -713,6 +718,9 @@
 
 /* ---------- Translating Euclid: the reader, set as a printed page ---------- */
 
+/* The shared reader's book look. Translating Euclid keeps its own page (BookReader, the next section), so no
+   story takes this look for now; it stays for a story that reads in the shared reader as a printed page. */
+
 /* The same split reader as the other stories, in the look of a printed
    page: light brown paper taken from the cover scan's own paper, one face
    (Katagami Serif, Song for Chinese) in sentence case throughout, large
@@ -790,35 +798,333 @@
 /* the theme switch on a paper disc, so it shows over the cover picture */
 .gtp-reader[data-look='book'] .gtp-reader-theme { width: 40px; height: 40px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); }
 
+/* ---------- Euclid: a magazine page ---------- */
+
+/* Light brown paper, one face (Katagami Serif) in sentence case throughout,
+   the cover picture across the page, then one centred column of large text
+   with a blank line between paragraphs. The figures sit in the flow, their
+   captions under them. */
+/* the reader's place, a number from 0 to 1, typed so the book page can ease it between scroll steps:
+   the rail's line, its ticks, the line along the top and the ring all glide rather than jump */
+@property --p { syntax: '<number>'; inherits: true; initial-value: 0; }
+:root .gtp.gtp-print { transition: --p 0.45s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@media (prefers-reduced-motion: reduce) { :root .gtp.gtp-print { transition: none; } }
+
+:root .gtp.gtp-print {
+  /* the paper is the cover scan's own paper (#dcb987) let out toward white, so the page continues the cover */
+  --gtp-paper: #efe2c6;
+  --gtp-ink: #24190d;
+  --gtp-ink-2: #5e4a31;
+  --gtp-ink-3: #957d5c;
+  --gtp-rule: rgb(31 26 20 / 0.14);
+  --gtp-fill: rgb(31 26 20 / 0.04);
+  --gtp-fill-2: rgb(31 26 20 / 0.08);
+  --gtp-stage: #efe2c6;
+  --gtp-stage-ink: #24190d;
+  --gtp-stage-ink-2: #5e4a31;
+  --gtp-stage-fill: rgb(31 26 20 / 0.07);
+  --gtp-signal: #b8321c;
+  /* the globe printed in sepia on the paper */
+  --gtp-globe-land: #7a5a33;
+  --gtp-globe-sea: #d6bf95;
+  --gtp-globe-rim: #3a2814;
+  --gtp-print-measure: 620px;
+  /* the one story set in the serif, Newsreader, with Katagami Serif for the letters it lacks; Chinese, Japanese and
+     Korean fall to a serif (Songti, Noto Serif), so they match it, since Katagami's own CJK is sans */
+  --gtp-serif: 'Newsreader', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
+  --gtp-sans: var(--gtp-serif);
+  --gtp-mono: var(--gtp-serif);
+  font-family: var(--gtp-serif);
+  font-feature-settings: 'kern', 'liga';
+}
+:root:not([data-theme='light']) .gtp.gtp-print {
+  /* the scan's ink (#806947) taken down to a night paper */
+  --gtp-paper: #1d150c;
+  --gtp-ink: #efe2c6;
+  --gtp-ink-2: #c4ad88;
+  --gtp-ink-3: #8c7655;
+  --gtp-rule: rgb(236 228 211 / 0.15);
+  --gtp-fill: rgb(236 228 211 / 0.05);
+  --gtp-fill-2: rgb(236 228 211 / 0.09);
+  --gtp-stage: #1d150c;
+  --gtp-stage-ink: #efe2c6;
+  --gtp-stage-ink-2: #c4ad88;
+  --gtp-stage-fill: rgb(236 228 211 / 0.08);
+  --gtp-signal: #e0623f;
+  --gtp-globe-land: #d6bf95;
+  --gtp-globe-sea: #5a4426;
+  --gtp-globe-rim: #f3e5c4;
+}
+
+/* the press sets CJK in Katagami's sans by language (.gtp :lang(zh) and the rest); this page keeps them in its serif */
+.gtp-print :lang(zh),
+.gtp-print :lang(ja),
+.gtp-print :lang(ko) { font-family: var(--gtp-serif); }
+/* the live figure is as wide as its poem, and so is its caption */
+.gtp-print-fig[data-live] .gtp-print-caption { width: min(940px, 100%); }
+
+/* the imprint home and the theme, floating at the top corners */
+.gtp-print-home { position: fixed; z-index: 6; left: 24px; top: 20px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 1px 6px rgb(0 0 0 / 0.12); }
+.gtp-theme.gtp-print-theme { position: fixed; z-index: 6; right: 24px; top: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 1px 6px rgb(0 0 0 / 0.12); }
+
+
+/* the opening (BookReader, Opener): an open book, its title page and the cover */
+.gtp-print-opener { position: relative; display: grid; justify-items: center; }
+.gtp-head-pic img { display: block; width: 100%; height: auto; }
+/* at night the scan comes down a little, so it does not glare over the dark page */
+:root:not([data-theme='light']) .gtp.gtp-print :is(.gtp-head-pic, .gtp-print-stage-cover) img { filter: brightness(0.8) saturate(0.9); }
+/* no weight of its own, so the title page's own spacing below wins */
+.gtp-print-opener :where(.gtp-head-by, .gtp-head-date) { margin: 0; }
+
+/* frontispiece: an open book set as the press's other stories open, the cover edge to edge across the
+   right half of the screen at its full height, and the title page on the left half with its imprint at the foot */
+.gtp-head-spread { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: stretch; width: 100%; min-height: 100dvh; }
+.gtp-head-spread .gtp-head-leaf { display: grid; }
+.gtp-head-spread .gtp-head-pic { position: relative; grid-column: 2; grid-row: 1; overflow: clip; }
+.gtp-head-spread .gtp-head-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+.gtp-head-spread .gtp-head-title { --above: 1fr; --below: 1.5fr; grid-column: 1; grid-row: 1; grid-template-rows: var(--above) auto auto auto var(--below) auto; justify-items: center; padding: 96px 10% 44px; text-align: center; }
+.gtp-head-spread h1 { grid-row: 2; margin: 0; max-width: 13em; font-size: clamp(28px, 2.5vw, 36px); line-height: 1.2; font-weight: 400; text-wrap: balance; }
+/* the short rule between the title and the author */
+.gtp-head-mark { grid-row: 3; width: 40px; height: 1px; margin-top: 30px; background: var(--gtp-ink-3); }
+.gtp-head-spread .gtp-head-by { grid-row: 4; margin-top: 26px; font-size: 17px; color: var(--gtp-ink-2); }
+.gtp-head-spread .gtp-head-date { grid-row: 6; font-size: 15px; color: var(--gtp-ink-2); }
+@media (max-width: 899px) {
+  .gtp-head-spread { grid-template-columns: 100%; min-height: 0; }
+  .gtp-head-spread .gtp-head-pic { grid-column: auto; grid-row: auto; height: 56vh; }
+  .gtp-head-spread .gtp-head-title { grid-column: auto; grid-row: auto; grid-template-rows: auto; gap: 0; padding: 40px 20px 72px; }
+  .gtp-head-spread :is(h1, .gtp-head-mark, .gtp-head-by, .gtp-head-date) { grid-row: auto; }
+  .gtp-head-spread .gtp-head-date { margin-top: 8px; }
+}
+
+.gtp-print-page { width: min(var(--gtp-print-measure), calc(100% - 40px)); margin: 0 auto; padding: 72px 0 160px; }
+
+.gtp-print-page h2 { margin: 64px 0 24px; font-size: 30px; line-height: 1.2; font-weight: 400; letter-spacing: -0.01em; scroll-margin-top: 80px; }
+.gtp-print-page p, .gtp-print-page li { margin: 0 0 1.5em; font-size: 18px; line-height: 1.5; text-wrap: pretty; word-break: keep-all; overflow-wrap: anywhere; }
+.gtp-print-page em { font-style: italic; }
+.gtp-print-page a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: var(--gtp-ink-3); }
+.gtp-print-page a:hover { text-decoration-color: currentColor; }
+.gtp-print-page ul, .gtp-print-page ol:not(.gtp-print-multiples) { margin: 0 0 1.5em; padding-left: 1.3em; }
+.gtp-print-page li { margin-bottom: 0.4em; }
+.gtp-print-quote { margin: 0 0 1.5em 1.5em; }
+.gtp-print-quote p { font-size: 18px; }
+/* the epigraph that opens a story: the words, their translation, and who wrote them */
+.gtp-print-epigraph { margin: 0 0 64px; text-align: center; }
+
+/* the frontispiece's opening as three slides, as a long read's opening turns: the title page holds while it
+   fades out as one; the epigraph fades in where it stood, holds a moment and fades out as one; then the
+   story fades in where it will stand, at the top of the window, as the globe comes onto the stage, and only
+   then scrolls on. All on the scroll, so scrolling back plays it backward, and the cover never moves. The
+   opening is 240dvh tall and its frame is pinned for the 140dvh of scroll before the story stands at the top.
+   Below the wide width, under reduced motion, and where a browser cannot tie animation to scroll, the
+   epigraph simply heads the story. */
+.gtp-print-opening-next { display: none; }
+@supports (animation-timeline: view()) {
+  @media (min-width: 1250px) and (prefers-reduced-motion: no-preference) {
+    .gtp-print-text { timeline-scope: --opening; }
+    .gtp-print-opening { height: 240dvh; view-timeline: --opening block; }
+    .gtp-print-opening-frame { position: sticky; top: 0; display: grid; height: 100dvh; }
+    .gtp-print-opening-frame > * { grid-area: 1 / 1; }
+    .gtp-print-opening .gtp-head-title { animation: gtp-slide-out cubic-bezier(0.55, 0, 1, 0.45) both; animation-timeline: --opening; animation-range: contain 0% contain 22%; }
+    .gtp-print-opening-next {
+      display: grid; align-content: center;
+      padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2) max(40px, (100% - var(--gtp-print-measure)) / 2);
+      animation: gtp-epigraph-slide linear both; animation-timeline: --opening; animation-range: contain 28.6% contain 70%;
+    }
+    .gtp-print-opening-next .gtp-print-epigraph { margin: 0; }
+    /* the story starts a window up, over the pinned frame (whose slides are out by then), so it stands at the top
+       when the frame lets go; while it fades in, a translate holds it in place against the scroll, then it scrolls
+       on as the page */
+    .gtp-print-opening ~ .gtp-print-page {
+      position: relative; z-index: 1; margin-top: -100dvh; padding-top: 112px;
+      animation: gtp-story-hold linear both, gtp-story-in cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-timeline: --opening, --opening;
+      animation-range: contain 75% contain 100%, contain 75% contain 100%;
+    }
+    .gtp-print-opening ~ .gtp-print-page .gtp-print-epigraph { display: none; }
+  }
+}
+@keyframes gtp-slide-out { to { opacity: 0; translate: 0 -24px; } }
+/* in over the first 22vh of its run, held for 14vh, out over the last 22vh */
+@keyframes gtp-epigraph-slide {
+  0% { opacity: 0; translate: 0 24px; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+  37.9% { opacity: 1; translate: 0 0; }
+  62.1% { opacity: 1; translate: 0 0; animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  100% { opacity: 0; translate: 0 -24px; }
+}
+/* the story's natural place moves 35vh up over its fade; this moves it back by the same, less 16px it rises */
+@keyframes gtp-story-hold { from { translate: 0 calc(-35vh + 16px); } }
+@keyframes gtp-story-in { from { opacity: 0; } }
+:is(.gtp-print-page, .gtp-print-opening-next) .gtp-print-epigraph p { margin: 0 auto 0.6em; max-width: 30em; font-size: 16px; line-height: 1.5; color: var(--gtp-ink-2); text-wrap: balance; }
+:is(.gtp-print-page, .gtp-print-opening-next) .gtp-print-epigraph p:first-child { font-size: 19px; color: var(--gtp-ink); }
+:is(.gtp-print-page, .gtp-print-opening-next) .gtp-print-epigraph p:last-child { margin-top: 1em; font-size: 13px; color: var(--gtp-ink-3); }
+/* the sources: small, each hanging from its first line */
+.gtp-print-page .gtp-print-sources p { margin: 0 0 12px; padding-left: 1.5em; text-indent: -1.5em; font-size: 15px; line-height: 1.45; color: var(--gtp-ink-2); overflow-wrap: anywhere; }
+.gtp-print-page .gtp-print-sources a { text-decoration-color: var(--gtp-rule); }
+/* a picture's caption ends in (Source), linked to where the picture comes from; the full citation is in the sources */
+.gtp-print-page .gtp-print-source { color: inherit; text-decoration-color: var(--gtp-rule); }
+.gtp-print-page .gtp-print-source:hover { text-decoration-color: currentColor; }
+/* the sources show their first few; a small arrow under them opens the rest, and turns over to close them */
+
+/* a figure: wider than the text, centred, its caption under it */
+.gtp-print-fig { width: min(940px, calc(100vw - 40px)); margin: 40px 0 48px 50%; transform: translateX(-50%); display: grid; justify-items: center; gap: 14px; }
+.gtp-print-media { display: block; max-width: 100%; max-height: 78vh; width: auto; height: auto; border-radius: 3px; }
+/* a picture's caption small and muted, as the margin's captions were, and centred under its picture */
+.gtp-print-caption { width: min(30em, 100%); display: grid; gap: 4px; font-size: 14px; line-height: 1.45; color: var(--gtp-ink-3); text-align: center; text-wrap: pretty; }
+.gtp-print-count { font-size: 14px; color: var(--gtp-ink-3); }
+.gtp-print-multiples { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; justify-content: center; align-items: end; gap: 12px; }
+.gtp-print-multiples button { display: block; padding: 0; opacity: 0.45; transition: opacity 0.2s var(--gtp-ease); }
+.gtp-print-multiples button:hover, .gtp-print-multiples button[aria-pressed='true'] { opacity: 1; }
+.gtp-print-multiples img { display: block; height: 76px; width: auto; border-radius: 2px; }
+
 /* the first definition, all eight at once: the globe with a pin at each city, a hairline to each line */
-.gtp-versions { position: relative; width: min(940px, 100%); display: grid; grid-template-columns: 300px minmax(0, 1fr); align-items: center; gap: 0 104px; }
+.gtp-versions { position: relative; width: min(940px, 100%); display: grid; grid-template-columns: 300px minmax(0, 1fr); align-items: center; gap: 0 72px; }
 .gtp-versions-map { display: grid; gap: 14px; justify-items: center; }
 .gtp-versions-globe { width: 300px; }
 .gtp-versions-globe > .gtp-globe-pin { display: none; }
 .gtp-globe-mark { position: absolute; z-index: 2; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--gtp-ink-2); box-shadow: 0 0 0 2px var(--gtp-paper); transition: transform 0.25s var(--gtp-ease), background 0.25s var(--gtp-ease); }
 .gtp-globe-mark[data-hidden='true'] { opacity: 0; }
 .gtp-globe-mark[data-on='true'] { z-index: 3; background: var(--gtp-ink); transform: scale(1.5); }
-.gtp-versions-coords { margin: 0; display: grid; justify-items: center; gap: 1px; font-size: 15px; line-height: 1.4; color: var(--gtp-ink-2); font-variant-numeric: tabular-nums; }
-.gtp-versions-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; }
-.gtp-version { display: grid; gap: 2px; width: 100%; padding: 5px 0; text-align: left; color: var(--gtp-ink-2); transition: color 0.2s var(--gtp-ease); }
-.gtp-version:hover, .gtp-version[aria-pressed='true'] { color: var(--gtp-ink); }
-.gtp-version-text { font-size: 19px; line-height: 1.3; }
-/* the chosen version's eight lines, across the figure under the globe and the list */
-.gtp-versions-poem { grid-column: 1 / -1; margin: 40px 0 0; padding-top: 28px; display: grid; gap: 8px; border-top: 1px solid var(--gtp-rule); font-size: 22px; line-height: 1.42; color: var(--gtp-ink); animation: gtp-poem-in 0.45s var(--gtp-ease) both; }
-.gtp-versions-poem[dir='rtl'] { text-align: right; }
-@keyframes gtp-poem-in { from { opacity: 0; transform: translateY(6px); } }
-/* every line starts at the leader's end, Arabic included */
-.gtp-version-text[dir='rtl'] { text-align: left; unicode-bidi: isolate; }
-.gtp-version-meta { font-size: 14px; line-height: 1.35; color: var(--gtp-ink-2); opacity: 0.85; }
-.gtp-versions-leaders { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.gtp-versions-leaders path { fill: none; stroke: var(--gtp-ink-2); stroke-width: 1; stroke-linejoin: round; opacity: 0.68; transition: opacity 0.25s var(--gtp-ease); }
-.gtp-versions-leaders path[data-on='true'] { stroke: var(--gtp-ink); opacity: 1; }
+/* the versions' dots are buttons, each with a wider hit than its dot; one on the far side cannot be pressed */
+button.gtp-globe-mark { padding: 0; border: 0; cursor: pointer; }
+button.gtp-globe-mark::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; }
+button.gtp-globe-mark:hover { background: var(--gtp-ink); }
+button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
+.gtp-versions-coords { margin: 0; display: grid; justify-items: center; gap: 1px; font-size: 12px; line-height: 1.4; color: var(--gtp-ink-2); font-variant-numeric: tabular-nums; }
+/* one version at a time: under the globe its coordinates and its name; beside it the switch, each version
+   named in its own language and the chosen one underlined, then its eight definitions, small, each numbered
+   as its edition numbers them */
+.gtp-versions-reader { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.gtp-version-meta { margin: 0; font-size: 12px; line-height: 1.4; color: var(--gtp-ink-2); text-align: center; }
+.gtp-versions .gtp-stops[data-style='book'] { margin-left: -8px; } /* the first name's letters start where the definitions do */
+.gtp-versions .gtp-stops[data-style='book'] .gtp-stop { font-size: 15px; }
+.gtp-versions .gtp-stops[data-style='book'] .gtp-stop[data-on='true'] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+/* the numbering column is as wide as the version's widest number, so each version's text sits the same short step after it */
+.gtp-version-lines { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 0.6em; font-size: 13px; line-height: 1.45; }
+.gtp-version-line { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; align-items: baseline; color: var(--gtp-ink); }
+.gtp-version-n { color: var(--gtp-ink-3); font-variant-numeric: tabular-nums; }
+/* the Arabic carries no numbering: its lines take the full width and read from the right edge */
+.gtp-version-text:only-child { grid-column: 1 / -1; }
+/* the first time the figure is shown it comes in part by part, as the opening's slides do: the globe, then its name
+   and coordinates, then the switch, then the definitions (Live.tsx, VersionsDemo) */
+.gtp-versions[data-shown='false'] :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { opacity: 0; }
+.gtp-versions[data-shown='true'] :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { animation: gtp-version-in 0.9s ease-in-out both; }
+.gtp-versions[data-shown='true'] :is(.gtp-version-meta, .gtp-versions-coords) { animation-delay: 0.35s; }
+.gtp-versions[data-shown='true'] .gtp-stops { animation-delay: 0.7s; }
+.gtp-versions[data-shown='true'] .gtp-version-lines { animation-delay: 1.05s; }
+/* a new version's definitions fade in once the reader or the clock has changed it */
+.gtp-versions[data-moved='true'] .gtp-version-lines { animation: gtp-version-in 1s ease-in-out both; } /* as slow and even as the globe's turn beside it */
+@keyframes gtp-version-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gtp-versions:is([data-moved='true'], [data-shown='true']) :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { animation: none; } }
+/* in the book's page and on its stage, the page's own sizes for paragraphs and lists give way to the figure's */
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions p { margin: 0; }
+:is(.gtp-print-page, .gtp-print-stage) :is(.gtp-versions-coords, .gtp-version-meta) { font-size: 12px; line-height: 1.4; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-version-lines { margin: 0; padding: 0; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-version-line { margin: 0; font-size: inherit; line-height: inherit; }
+/* on the stage the globe stands over its reader, so the definitions keep a full line in the narrower room */
+.gtp-print-stage .gtp-versions { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 28px 0; }
+.gtp-print-stage .gtp-versions-map { width: min(300px, 100%); }
+/* in the book, the globe's switch sits centred under it, as its label and coordinates do, and the definitions fill a
+   box exactly as wide as the switch's names: the box takes the switch's width alone (the definitions are contained
+   so they add none), and each definition is justified across it with its number before it */
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions-reader { justify-self: center; max-width: 100%; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-stops[data-style='book'] { justify-self: center; justify-content: center; margin-left: 0; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-version-lines { display: grid; grid-template-columns: minmax(0, 1fr); max-width: none; padding-inline: 8px; contain: inline-size; text-align: justify; hyphens: auto; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-version-line { display: block; grid-column: auto; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-version-n { margin-inline-end: 0.5em; }
 
 /* the book's slider: the chosen word is the dark one; no rule under it */
 .gtp-stops[data-style='book'] { padding: 0; gap: 2px; background: none; border-radius: 0; flex-wrap: wrap; }
 .gtp-stops[data-style='book'] .gtp-stop { height: 32px; padding: 0 8px; font-family: var(--gtp-serif); font-size: 18px; color: var(--gtp-ink-3); }
 .gtp-stops[data-style='book'] .gtp-stop:hover, .gtp-stops[data-style='book'] .gtp-stop[data-on='true'] { color: var(--gtp-ink); }
 .gtp-stops[data-style='book'] .gtp-stops-thumb { display: none; }
+
+/* the reader's place, on a rail down the left with a tick per section */
+.gtp-print-rail { position: fixed; z-index: 5; left: 32px; top: 22vh; bottom: 22vh; width: 25px; background: linear-gradient(var(--gtp-rule) 0 0) 12px 0 / 1px 100% no-repeat; opacity: 0; visibility: hidden; transition: opacity 0.4s var(--gtp-ease), visibility 0.4s; }
+/* the rail shows once the cover heading a narrow page has mostly scrolled away, so it never runs over the picture (BookReader) */
+.gtp-print[data-read='true'] .gtp-print-rail { opacity: 1; visibility: visible; }
+.gtp-print-rail::after { content: ''; position: absolute; left: 12px; top: 0; width: 1px; height: calc(var(--p, 0) * 100%); background: var(--gtp-ink); pointer-events: none; }
+/* the line itself moves the reader to that share of the story */
+.gtp-print-track { position: absolute; inset: 0; padding: 0; border: 0; background: none; cursor: pointer; }
+/* each tick is a section's start, the same length either side of the line. As the line reaches it the ink flows
+   into it from the line outward, both ways at once, over the next stretch of the story (--fill runs 0 to 1 as
+   --p passes --at), so the line runs on through the tick rather than skipping it */
+.gtp-print-tick { --fill: clamp(0, (var(--p, 0) - var(--at)) * 30, 1); position: absolute; z-index: 1; left: 12.5px; top: calc(var(--at) * 100%); width: 22px; height: 15px; margin: -7.5px 0 0 -11px; padding: 0; border: 0; background: none; cursor: pointer; }
+/* a hairline, grey ahead of the reader like the line it crosses and as dark as the line's filled part once passed */
+.gtp-print-tick::before { content: ''; position: absolute; left: 6px; top: 7px; width: 10px; height: 1px; background: linear-gradient(var(--gtp-ink) 0 0) 50% 0 / calc(var(--fill) * 100%) 100% no-repeat, var(--gtp-ink-3); }
+.gtp-print-tick:hover::before, .gtp-print-tick:focus-visible::before { background: var(--gtp-ink); }
+/* the section's name beside its tick, on hover or focus */
+/* the label's box is trimmed to its capitals and baseline, so the words sit centred on the tick's dash, as far from it above as below, whatever the face */
+.gtp-print-tick::after { content: attr(data-label); position: absolute; left: 26px; top: 50%; transform: translateY(-50%); padding: 6px 8px; border-radius: 4px; background: var(--gtp-paper); color: var(--gtp-ink); font-size: 14px; line-height: 1.3; text-box: trim-both cap alphabetic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s var(--gtp-ease); }
+.gtp-print-tick:hover::after, .gtp-print-tick:focus-visible::after { opacity: 1; }
+
+/* notes, when a story has them, in a margin right of the column, level with
+   their lines, as the story is written in Paper; below the wide width each
+   note follows its paragraph */
+.gtp-print-page { position: relative; }
+.gtp-fn { margin-left: 0.06em; font-size: 0.6em; line-height: 0; vertical-align: 0.55em; color: var(--gtp-ink-3); transition: color 0.15s var(--gtp-ease); }
+.gtp-print-page .gtp-fn a { color: inherit; text-decoration: none; }
+.gtp-print-m { font-size: 14px; line-height: 1.4; color: var(--gtp-ink-3); text-wrap: pretty; transition: color 0.15s var(--gtp-ease); }
+.gtp-print-page .gtp-print-m p { margin: 0; font-size: inherit; line-height: inherit; }
+.gtp-print-page .gtp-print-m a { text-decoration-color: var(--gtp-rule); }
+.gtp-fn.is-lit, .gtp-print-m.is-lit { color: var(--gtp-ink); }
+.gtp-print-n { margin-right: 0.4em; }
+/* the marks that hold each picture's place for the stage (BookReader, showStage), and the stage itself, wide screens only */
+.gtp-print-at { display: block; height: 0; }
+.gtp-print-stage { display: none; }
+@media (min-width: 1250px) {
+  .gtp-print-m { position: absolute; top: auto; left: calc(100% + 48px); width: min(210px, (100vw - 100%) / 2 - 88px); }
+  /* the text keeps to the left, clear of the rail, and the stage holds the right at the window's height,
+     as the press's other stories set their figures, the two in the golden section (61.8 to 38.2);
+     the pictures show on the stage, not in the text */
+  .gtp-print-body { display: grid; grid-template-columns: minmax(0, 61.8fr) minmax(0, 38.2fr); }
+  .gtp-print-text { min-width: 0; }
+  /* the story spans the whole column and its words keep the measure, clear of the rail on the left */
+  .gtp-print-text .gtp-print-page { box-sizing: border-box; width: 100%; padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2) max(40px, (100% - var(--gtp-print-measure)) / 2); }
+  .gtp-print-text .gtp-print-fig { display: none; }
+  /* the line that leads into a live figure reads only where the figure follows it in the text */
+  .gtp-print-text .gtp-print-page p:has(+ .gtp-print-at[data-live]) { display: none; }
+  .gtp-print-stage { position: sticky; top: 0; display: block; height: 100dvh; overflow: hidden; background: color-mix(in srgb, var(--gtp-ink) 6%, var(--gtp-paper)); }
+  /* one picture at a time, centred with its caption under it and holding still; the scroll fades one into the
+     next (BookReader, showStage), and before that runs the one shown simply shows */
+  .gtp-print-stage-item { position: absolute; inset: 0; display: grid; place-items: center; padding: 88px 64px 64px; opacity: 0; pointer-events: none; }
+  .gtp-print-stage-item[data-shown='true'] { opacity: 1; pointer-events: auto; }
+  .gtp-print-stage-cover { padding: 0; }
+  .gtp-print-stage-cover img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+  .gtp-print-stage .gtp-print-fig { width: 100%; margin: 0; transform: none; }
+  /* the frontispiece's cover is the stage's first picture, so the opening keeps only its title page, which
+     scrolls up with the story while the cover holds beside it */
+  .gtp-head-spread { grid-template-columns: 100%; }
+  .gtp-head-spread .gtp-head-pic { display: none; }
+}
+
+/* the reader's place shows on the rail, so the page has no scroll bar of its own */
+:root:has(.gtp-print) { scrollbar-width: none; }
+:root:has(.gtp-print)::-webkit-scrollbar { display: none; width: 0; }
+
+/* light paper is printed flat: no shadow under the corner buttons */
+:root[data-theme='light'] :is(.gtp-print-home, .gtp-theme.gtp-print-theme) { box-shadow: none; }
+@media (max-width: 1249.98px) {
+  .gtp-print-note { margin: -18px 0 24px; }
+  .gtp-print-note + .gtp-print-note { margin-top: -18px; }
+}
+
+@media (max-width: 899px) {
+  /* narrower and smaller on a phone, so the text keeps a margin each side and stays clear of the rail */
+  .gtp-print-page { width: calc(100% - 72px); padding-top: 40px; }
+  .gtp-print-page p, .gtp-print-page li { font-size: 15px; line-height: 1.55; }
+  .gtp-print-page h2 { font-size: 25px; }
+  .gtp-print-fig { width: calc(100vw - 72px); }
+  .gtp-print-page .gtp-print-epigraph p { font-size: 16px; }
+  .gtp-print-page .gtp-print-epigraph p:first-child { font-size: 19px; }
+  /* as much room under the epigraph as the title page leaves above it */
+  .gtp-print-page .gtp-print-epigraph { margin-bottom: 112px; }
+  .gtp-print-page .gtp-print-sources p { font-size: 14px; }
+  /* captions smaller, and upright pictures a fifth smaller again than on a wide screen (BookReader, sized) */
+  .gtp-print-caption { font-size: 12.5px; }
+  .gtp-print-page { --gtp-upright: 0.68; }
+  .gtp-print-rail { left: -2px; width: 18px; }
+  .gtp-versions { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
 
 /* the eight versions on the stage: a smaller globe, the list beside it, the poem under both */
 /* sized to its contents and centred on the stage, the globe as large as the list allows so its pins spread */
@@ -834,11 +1140,11 @@
 
 @media (max-width: 999px) {
   .gtp-reader[data-look='book'] .gtp-text :is(p, li) { font-size: 19px; }
-  .gtp-versions { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .gtp-reader .gtp-versions { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .gtp-plate .gtp-versions { grid-template-columns: minmax(0, 1fr); }
-  .gtp-versions-leaders { display: none; }
-  .gtp-version-text { font-size: 17px; }
-  .gtp-versions-poem { font-size: 18px; }
+  .gtp-reader .gtp-versions-leaders { display: none; }
+  .gtp-reader .gtp-version-text { font-size: 17px; }
+  .gtp-reader .gtp-versions-poem { font-size: 18px; }
   .gtp-byline { font-size: 15px; }
 }
 
@@ -889,32 +1195,38 @@
 
 /* the split-flap: a changed character falls into place from its top edge */
 .gtp-flip { display: inline-flex; }
-.gtp-flip-ch { display: inline-block; white-space: pre; transform-origin: 50% 0; animation: gtp-flap 0.2s var(--gtp-ease); }
+.gtp-flip-ch { display: inline-block; white-space: pre; transform-origin: 50% 0; animation: gtp-flap var(--flap, 0.2s) var(--gtp-ease); }
 @keyframes gtp-flap {
   from { transform: perspective(160px) rotateX(-78deg); opacity: 0.25; }
   to { transform: none; opacity: 1; }
 }
 
-/* the imprint riffles open on its spine and shuts when its link is hovered or pressed (the home page's wordmark is no link and stays still) */
+/* the imprint riffles like a magazine when its link is hovered or pressed: the soft cover
+   bends open, the pages flick over one after another, each bending as it goes, rest a
+   moment, then fall back, and the cover closes over them last (the home page's wordmark
+   is no link and stays still) */
 .gtp-mark { overflow: visible; }
 /* the leaves show only while they turn, and lie hidden under the board otherwise */
 .gtp-mark-leaf { opacity: 0; }
 .gtp-mark-leaf,
 .gtp-mark-board { transform-box: view-box; transform-origin: 11px 0; }
-a:is(:hover, :focus-visible, :active) .gtp-mark-board { animation: gtp-riffle 0.95s var(--gtp-ease) both; }
-a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { animation: gtp-riffle-leaf 0.95s var(--gtp-ease) both; }
-@keyframes gtp-riffle {
-  0% { transform: scaleX(1); }
-  42% { transform: scaleX(-1); }
-  58% { transform: scaleX(-1); }
-  100% { transform: scaleX(1); }
+a:is(:hover, :focus-visible, :active) .gtp-mark-board { animation: gtp-riffle-cover 2.3s cubic-bezier(0.3, 0.1, 0.3, 1) both; }
+a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { opacity: 1; animation: gtp-riffle-leaf 1.7s cubic-bezier(0.3, 0.1, 0.3, 1) both; animation-delay: calc(0.12s + var(--leaf) * 0.07s); }
+@keyframes gtp-riffle-cover {
+  0% { transform: none; }
+  10% { transform: scaleX(0.05) skewY(-9deg); }
+  18% { transform: scaleX(-1); }
+  86% { transform: scaleX(-1); }
+  93% { transform: scaleX(0.05) skewY(6deg); }
+  100% { transform: none; }
 }
 @keyframes gtp-riffle-leaf {
-  0% { transform: scaleX(1); opacity: 1; }
-  42% { transform: scaleX(-1); opacity: 1; }
-  58% { transform: scaleX(-1); opacity: 1; }
-  96% { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
+  0% { transform: none; }
+  13% { transform: scaleX(0.04) skewY(-16deg); }
+  24% { transform: scaleX(-1) skewY(-2deg); }
+  62% { transform: scaleX(-1); }
+  81% { transform: scaleX(0.04) skewY(9deg); }
+  100% { transform: none; }
 }
 .gtp-hall-head { pointer-events: auto; }
 
@@ -954,16 +1266,16 @@ a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { animation: gtp-riffle-lea
 html[data-gtp-vt='docs']::view-transition-new(gtp-read) { animation: gtp-vt-from-left 0.7s cubic-bezier(0.2, 0, 0, 1) 0.25s both; }
 /* into Fuma's card the column settles, as Fumadocs' panels do */
 html[data-gtp-vt='fuma']::view-transition-new(gtp-read) { animation: gtp-vt-settle 0.7s cubic-bezier(0.2, 0, 0, 1) 0.25s both; }
-/* into Euclid the column rises like a page laid down, once the cover has nearly settled */
-html[data-gtp-vt='book']::view-transition-new(gtp-read) { animation: gtp-vt-rise 0.7s cubic-bezier(0.2, 0, 0, 1) 0.55s both; }
 html[data-gtp-vt='home']::view-transition-old(gtp-read) { animation: gtp-vt-out 0.3s cubic-bezier(0.2, 0, 0, 1) both; }
 
 @keyframes gtp-vt-out { to { opacity: 0; } }
 @keyframes gtp-vt-in { from { opacity: 0; } }
 @keyframes gtp-vt-from-left { from { opacity: 0; transform: translateX(-36px); } }
 @keyframes gtp-vt-settle { from { opacity: 0; transform: translateY(12px) scale(0.985); } }
-@keyframes gtp-vt-rise { from { opacity: 0; transform: translateY(40px); } }
 
 /* the light theme draws no drop shadows: edges come from the paper and the rules */
-:root[data-theme='light'] .gtp :is(.gtp-lens, .gtp-langs, .gtp-float-home) { box-shadow: none; }
+:root[data-theme='light'] .gtp :is(.gtp-lens, .gtp-langs, .gtp-float-home, .gtp-print-home, .gtp-print-theme) { box-shadow: none; }
 :root[data-theme='light'] .gtp .gtp-shelf-shadow { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .gtp-print-stage-item { transition: opacity 0.3s linear; }
+}

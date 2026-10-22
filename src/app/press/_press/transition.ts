@@ -1,8 +1,9 @@
 /* The move between the shelf and a story, as a view transition: the
-   book's cover grows into the story's cover on its stage (Fuma's in his card,
-   Euclid's as its picture), the rest of the page fades, and the story's text comes in
+   book's cover grows into the story's cover (the stage's or Fuma's
+   card's), the rest of the page fades, and the story's text comes in
    the way its look does (press.css, ::view-transition). Going home runs it
-   backwards: the story's cover shrinks into its book on the shelf.
+   backwards: the story's cover shrinks into its book on the shelf. Euclid
+   opens and closes without it (Landing.tsx).
 
    The page being left names its cover gtp-cover just before the old view
    is captured; the page arriving names its own and calls landed() once it
@@ -12,7 +13,7 @@
 type Navigate = (href: string) => void;
 
 /** The look the move is going into, read by press.css from <html data-gtp-vt>. */
-export type Move = 'docs' | 'fuma' | 'book' | 'home';
+export type Move = 'docs' | 'fuma' | 'home';
 
 let arrive: (() => void) | null = null;
 /** The story a move home came from, so the shelf can name that book's cover. */
