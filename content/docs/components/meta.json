@@ -6,8 +6,14 @@
   "pages": [
     "index",
     "(fields)",
+    "(dither-lab)",
     "(drawings)",
+    "(2d-and-3d)",
+    "(interactables)",
     "(language-and-motion)",
-    "(marks-and-heads)"
+    "(marks-and-heads)",
+    "(artifacts)",
+    "(page-layouts)",
+    "(pages)"
   ]
 }

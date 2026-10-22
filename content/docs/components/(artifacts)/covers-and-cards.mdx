@@ -1,0 +1,142 @@
+---
+title: 'Covers and social cards'
+description: 'Post covers, social cards and banners generated from a title and a field, at their export sizes, with the type and the mark set by the rules.'
+icon: Newspaper
+sources:
+  - src/components/blog/PostCover.tsx
+  - src/app/d/production/sections/BlogPostCover.tsx
+  - src/app/d/production/sections/BlogFeatureDither.tsx
+  - src/app/og/route.tsx
+  - src/lib/seo/card.tsx
+  - src/lib/seo/card-url.ts
+  - public/media/README.md
+  - skills/gt-graphics/SKILL.md
+  - src/components/docs/demos/artifacts
+---
+
+import { CoverGeneratorDemo, FallbackCoverDemo, SocialCardDemo } from '@/components/docs/demos/artifacts/lazy';
+
+Three exports carry a title outside the page it belongs to. The post cover sits at the head of a blog post and on its card in the index. The social card is the image X, LinkedIn and Slack draw when someone shares a link. The X banner is the header of the General Translation profile. Each one is a still at a fixed size, made in a dark and a light version at the same framing.
+
+## Generator
+
+Type a title and pick a field and a theme. The plate draws the post cover, the social card and the X banner from it, each at its export aspect ratio.
+
+<CoverGeneratorDemo />
+
+Every length inside a frame is written in the export's own pixels, so the type, the mark and the rules keep their export sizes at any preview width. The field takes one side of the frame and the type sits on solid ground: a dithered cover shades one large form on a quiet ground and keeps the type on solid ink or paper. The dither field is the sign-in globe at the settings of the partnership globes, with cells of 6 export px drawn at each frame's scale. The glyph field is the glyph rain, and the horizon is the careers page's horizon in its still frame. The card keeps the rails and rules of the site's own card, and the banner keeps the shipped banner's split, with the field on the left 30 percent.
+
+### The exports
+
+| Export | Size | File | Field | Title | Mark and name |
+| --- | --- | --- | --- | --- | --- |
+| Post cover | 1920 by 1080 | 3840 by 2160 WebP at quality 95, dark and light | right 864 px | 80 px | mark 40 px tall, name 32 px |
+| Social card | 1200 by 630 | 2400 by 1260 PNG, dark and light | 472 by 340 px in the body's right half | 64 px | mark 24 px tall, name 26 px |
+| X banner | 1500 by 500 | 3000 by 1000 lossless WebP and a 1500 by 500 PNG | left 450 px | 64 px | mark 24 px tall, name 26 px |
+
+### The type
+
+| Rule | Value |
+| --- | --- |
+| Face | Inter at weight 500 for the title and the name, 400 for the address |
+| Title | display features, tracking -0.025em, line height 1.04, two lines at most |
+| Smallest text | 26 px on a 1600 px stage after it is fit to the blog column, which is 31 px on the 1920 px cover; 22 px on the card |
+| Doubled line | two 1 px lines 4 px apart, 120 px long on the card and 180 px on the cover |
+| Mark | the doubled-line GT monogram in the frame's one ink |
+| Inks | `#f2f2f0` on `#070707` in the dark version, `#070707` on `#ffffff` in the light one |
+
+A cover at the head of a post is about 700 px wide in the article column, so a 1920 px cover shows at about 0.36x. The 80 px title then reads at 29 px.
+
+## Social card
+
+The site draws its social card on request at `GET /og` with next/og. Type a title and a description, and the plate asks the route for the card a page with those fields carries.
+
+<SocialCardDemo />
+
+`seoRoute()` builds each page's card address with `cardPath()`, and the route parses it with `parseCard()`, so the two always agree. The card is a pure function of its query, and `v` changes whenever the design changes, so each card is cached for a year. A title over 90 characters and a description over 200 are cut on a word with an ellipsis. A direction's card also draws that direction's dark capture in the right half of its body.
+
+### Import and props
+
+```ts
+import { cardPath } from '@/lib/seo/card-url';
+
+const src = cardPath({
+  title: 'Covers and social cards',
+  description: 'Post covers, social cards and banners generated from a title and a field.',
+  section: 'Docs',
+  kind: 'page',
+  path: '/docs/components/covers-and-cards',
+});
+// /og?v=1&t=Covers+and+social+cards&s=Docs&d=…&k=page&p=%2Fdocs%2Fcomponents%2Fcovers-and-cards
+```
+
+| Field | Type | What it does |
+| --- | --- | --- |
+| `title` | string | The card's title, cut to 90 characters. |
+| `description` | string | Two lines under the title, cut to 200 characters. |
+| `section` | `SeoSection` | The label at the top right with its accent square: Docs, Handbook, Skills, Directions, Shipped, Blog, Motion, Archive or Deck. Any other value draws none. |
+| `kind` | `SeoKind` | `page`, `article`, `skill`, `post`, `direction`, `mirror` or `error`. A mirror's footer names generaltranslation.com, and a direction draws its capture. |
+| `path` | string | The page's path, printed in the footer after `www.prototemplate.com`. |
+
+### The card's numbers
+
+| Part | Value |
+| --- | --- |
+| Size | 1200 by 630, 1.91 to 1 |
+| Rails | 1 px at x 64 and x 1136, the full height |
+| Rules | 1 px at y 96 and y 534, the full width |
+| Mark and name | the Prototemplate mark at 32 px, its name at 26 px |
+| Title | 64 px Inter Display 500 at -1.6 px tracking, two lines |
+| Description | 28 px at line height 1.36, two lines |
+| Section and footer | 22 px in titanium `#8a8f98` |
+| Colors | `#070707` ground, `#f2f2f0` text, one `#86a8ff` square |
+
+## Fallback cover
+
+A blog post without a cover image gets a motif plate: one word from its title, cut out of a ramp of Bayer coverage tiers. Type a post title to see the word and the ramp it picks.
+
+<FallbackCoverDemo />
+
+`motifFor` reads the title first and the tags second. A release title such as `gt-react@11.1.2` speaks its package name. A topic speaks its word, from SEO, Next.js, i18n, JSX, AI, plurals and React, and any other post about localization speaks 語. The word is sized by its length to fill the 400 by 225 plate, and the ramp turns by an angle seeded from the slug, so every post keeps its own plate.
+
+### Import and props
+
+```tsx
+import BlogFeatureDither, { motifFor } from '@/app/d/production/sections/BlogFeatureDither';
+
+<BlogFeatureDither id='plurals-in-react' motif={motifFor({ slug, title, tags })} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `motif` | `FeatureMotif` | none | The word, its size on the plate, the ramp's angle in degrees and its tracking, from `motifFor`. |
+| `id` | string | none | Unique on the page. It namespaces the SVG pattern and mask ids. |
+| `scale` | number | `1` | Shrinks the word for a short plate, so the slice never cuts it. |
+| `className` | string | none | Added to the plate's span. |
+
+### The ramp's numbers
+
+| Part | Value |
+| --- | --- |
+| Plate | 400 by 225, drawn with `preserveAspectRatio` slice |
+| Ramp | solid (64 of 64) for 260 units, then 58, 52, 46, 40, 34, 28, 22, 16 and 12 of 64, 38 units each |
+| Cell | 1 unit, an 8 by 8 tile |
+| Angle | 12 to 23 degrees, either way, from the slug |
+| Word size | 170 for a CJK word; by length 155, 138, 132, 100, 80, 66, 56, 48 and 42 |
+
+## Post covers on the blog
+
+`PostCover` draws a post's cover at the head of the post. When the post has a light cover too, both images are in the document and the stylesheet shows the one for the current theme, so a theme switch swaps them without a request. The optimizer serves each at the width it is shown from the 3840 px master, at quality 95. `BlogPostCover` is the index card's cover on the shipped blog: the post's own image when the frontmatter names one, and the fallback cover when it does not.
+
+```tsx
+import PostCover from '@/components/blog/PostCover';
+
+<PostCover post={{ image: '/static/blogs/post-dark.webp', imageLight: '/static/blogs/post-light.webp' }} priority />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `post` | `{ image, imageLight }` | none | The dark cover and the optional light one. Nothing renders without `image`. |
+| `priority` | boolean | `false` | Loads the cover first. The header cover sets it; cards load lazily. |
+| `sizes` | string | `BLOG_COLUMN_SIZES` | The width the cover renders at, for the optimizer. |
+| `className` | string | none | Added to each image. |

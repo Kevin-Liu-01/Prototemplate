@@ -1,0 +1,180 @@
+/* The page layout plates (content/docs/components/(page-layouts)): the
+   scaled model every plate lays a page part out in, the readout of its
+   numbers, and the small controls the composers add to the shared row.
+   Every class starts with .dmo-lay-. Lines take the three roles
+   (--pt-hair, --pt-hair-soft, --pt-edge), corners the radius tokens, type
+   the type tokens; a model's own sizes arrive as custom properties from
+   its plate, which reads them from the code it models. */
+
+/* the stage of a plate that holds a model: the tag's row, then the model */
+.dmo-plate .dmo-stage.dmo-lay-stage {
+  padding: 46px 16px 16px;
+}
+
+/* the model's box: its own aspect ratio, capped by the plate's height, so
+   the box is the right size before the scale is measured */
+.dmo-lay-fit {
+  position: relative;
+  width: min(100%, var(--lay-w));
+  aspect-ratio: var(--lay-ratio);
+  max-height: var(--lay-max-h, none);
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.dmo-lay-model {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform-origin: 50% 0;
+}
+
+.dmo-lay-over {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* a model taller than the plate scrolls inside it */
+.dmo-lay-scroll {
+  max-height: 560px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (max-width: 640px) {
+  .dmo-plate .dmo-stage.dmo-lay-stage {
+    padding: 44px 12px 12px;
+  }
+
+  .dmo-lay-scroll {
+    max-height: 440px;
+  }
+}
+
+/* ---------- skeleton type: one bar per line, at the line's own height ---------- */
+
+.dmo-lay-model {
+  --dmo-lay-text: color-mix(in srgb, var(--pt-ink) 16%, transparent);
+  --dmo-lay-strong: color-mix(in srgb, var(--pt-ink) 34%, transparent);
+}
+
+.dmo-lay-ln {
+  display: flex;
+  align-items: center;
+  height: calc(var(--ln-size) * var(--ln-lh));
+  font-size: var(--ln-size);
+}
+
+.dmo-lay-ln > i {
+  display: block;
+  width: var(--ln-w);
+  height: 0.5em;
+  background: var(--dmo-lay-text);
+}
+
+.dmo-lay-ln.is-strong > i {
+  height: 0.66em;
+  background: var(--dmo-lay-strong);
+}
+
+/* ---------- the readout: the numbers at this width, in ruled rows ---------- */
+
+.dmo-lay-readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  column-gap: 20px;
+  margin: 14px 0 0;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-readout > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-readout dt {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-lay-readout dd {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--pt-ink);
+}
+
+/* ---------- the composers' controls ---------- */
+
+/* an icon button: the control corner, a hairline box, a glyph from the shell's set */
+.dmo-lay-ib {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: transparent;
+  color: var(--pt-ink-2);
+  cursor: pointer;
+  transition:
+    background var(--pt-dur-fast) var(--pt-ease-out),
+    color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.dmo-lay-ib:hover {
+  background: var(--pt-plate);
+  color: var(--pt-ink);
+}
+
+.dmo-lay-ib:disabled {
+  opacity: 0.4;
+  cursor: default;
+  background: transparent;
+}
+
+.dmo-lay-ib:focus-visible {
+  outline: 2px solid var(--docs-accent, #2f5ce0);
+  outline-offset: 1px;
+}
+
+.dmo-lay-ib.is-up svg {
+  transform: rotate(180deg);
+}
+
+/* a mark the plate's own audit draws: the one accent on the plate */
+.dmo-lay-fault {
+  position: absolute;
+  height: 2px;
+  background: var(--docs-accent, #2f5ce0);
+}
+
+.dmo-lay-fault-chip {
+  position: absolute;
+  right: 6px;
+  top: 5px;
+  padding: 1px 6px;
+  border-radius: var(--pt-radius-chip);
+  background: var(--docs-accent, #2f5ce0);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-paper);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dmo-lay-ib {
+    transition: none;
+  }
+}

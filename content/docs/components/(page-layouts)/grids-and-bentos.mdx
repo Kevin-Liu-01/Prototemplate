@@ -1,0 +1,120 @@
+---
+title: 'Grids and bentos'
+description: 'Bento grids, feature grids and the viewer grid view, with their columns, gaps and spans adjustable and the line law holding at every junction.'
+icon: Table
+sources:
+  - src/components/docs/demos/layouts
+  - src/components/shell/Bento.tsx
+  - src/components/shell/shell.css
+  - src/components/shared/FeatureBento.tsx
+  - src/components/shared/FeatureBento.css
+  - src/app/d/toolchain/sections/Bento.tsx
+  - src/app/d/toolchain/styles.css
+  - src/components/viewer/GridView.tsx
+  - src/components/viewer/GridView.css
+---
+
+import { GridSeamsDemo, GridViewDemo } from '@/components/docs/demos/layouts/lazy';
+
+A bento is a grid of cells whose seams are hairlines. Neighboring cells touch, so every seam is shared by two of them, and the grammar gives it one owner: the row. The shell's `BentoRow` draws every seam as a 1px gap over a hairline ground, and its cells have no border props at all, so a doubled line cannot be written with it.
+
+## Seams
+
+Seams picks who draws the lines. Each setting opens in the shape its code was written for, and Columns, Cells and Gap then change the grid; a click on a cell widens it or makes it taller. The plate audits itself the way `scripts/lint/lines.mjs` audits a page: it reads every border from computed CSS, counts the strips of a row's ground as strokes, and marks each fault in the accent.
+
+<GridSeamsDemo />
+
+Row Ground mounts the live `BentoRow` and `BentoCell`. Their 1px gap is the seam, so a wider gap shows the ground as a bar, and a last row that does not fill shows it as a block. Below 1024 pixels of viewport the row stacks its cells, as the shipped pages do. Row Rules is the toolchain's `.tc-row`, which draws a rule on the left of every cell after the first: it holds one line of cells, and once it wraps, the first cell of the next line draws a rule against the column's line and nothing separates the two lines. Cell Borders is `FeatureBento`'s rule set: the grid draws its own frame, and each cell its right and bottom edges, with `nth-child` exclusions written for eight cells at 2, 3 or 4 columns. Any other count, column number or span leaves a cell edge on the frame. The plate keeps `FeatureBento`'s desktop rules at every width. Cell Frames gives every cell its own box: two frames under 4 pixels apart double, and further apart the cells read as separate bordered cards, which the landing grammar does not use.
+
+| Fault | What the audit marks |
+| --- | --- |
+| Doubled line | two strokes from two owners 1 to 4 pixels apart along most of their run |
+| Coincident pair | two strokes from two owners on one row |
+| Missing seam | two touching cells with no stroke between them |
+| Seam wider than 1px | a strip of the row's ground wider than a hairline |
+| Ground showing as a block | grid area no cell covers, painted in the ground's hairline ink |
+
+### Import and props
+
+```tsx
+import { BentoCell, BentoRow } from '@/components/shell/Bento';
+
+<BentoRow cols='minmax(0, 1.32fr) minmax(0, 1fr)'>
+  <BentoCell framed={false} sub='One sentence about the cell.' title='Code'>
+    {copy}
+  </BentoCell>
+  <BentoCell cell='is-tall'>{figure}</BentoCell>
+</BentoRow>;
+```
+
+| Export | Prop | Type | Default | What it does |
+| --- | --- | --- | --- | --- |
+| `BentoRow` | `cols` | a `grid-template-columns` value | two equal columns | The row's template; one column at 1023px and under. |
+| | `eqHeads` | boolean | `true` | Gives every cell head in the row one height, so the first line under each head lands at one y. |
+| | `headH` | a length | `112px` | The aligned head height. |
+| | `className` | string | none | The page's variant classes, such as `is-lead`. |
+| `BentoCell` | `framed` | boolean | `true` | Mounts the nested `.tc-card` and carries `.is-framed`, so the row's ground shows as a 1px strip around the card. |
+| | `cell` | string | none | Variant classes on `.tc-cell`, such as `is-tall`. |
+| | `title`, `sub`, `head` | node | none | The cell head: an h3, a paragraph, and anything under them. |
+| | `style` | `CSSProperties` | none | Spans and other per-cell layout. |
+| `Rails` | none | | | Draws the column's pair for a full-bleed band outside a wrapper; a band inside a wrapper renders none. |
+
+The row and the cell write the class grammar (`.tc-row`, `.tc-cell`, `.tc-card`) that each page's stylesheet styles, so a cell's ground, padding and card corner come from the page.
+
+### Row templates
+
+The toolchain engine names its rows by their templates. Every one stacks to a single column at 1023 pixels and under, the same width `BentoRow` folds at.
+
+| Class | `grid-template-columns` | Where the toolchain uses it |
+| --- | --- | --- |
+| `is-lead` | `1.32fr 1fr` | a wide first cell beside a narrow one |
+| `is-split` | `1.04fr 0.96fr` | copy beside a framed artifact |
+| `is-three` | `1.13fr 0.93fr 0.94fr` | three diagrams of different widths |
+| `is-wide-left` | `1.58fr 1fr` | a wide figure beside a short list |
+| `is-wide-right` | `1fr 1.34fr` | the mirror of the above |
+| `is-even` | `1fr 1fr` | two equal cells |
+| `is-tilt` | `0.82fr 1fr` | a stat list beside a wider field |
+| `is-grammar` | `0.93fr 1fr` | the two grammar diagrams |
+| `is-one` | `1fr` | one cell across the column |
+
+A flat cell pads `clamp(26px, 3vw, 36px)` over and `clamp(30px, 3.4vw, 40px)` under, with the gutter at each side. A framed cell has no padding: its card sits on the hairline ground with a 1px strip around it, and the card pads itself by `clamp(17px, 1.9vw, 21px)`, 36px over and 38px under at 720px and under. Where a framed row meets the column's line, the strip on that side is dropped, so no strip runs beside a line.
+
+### The feature grid
+
+`FeatureBento` sets eight modules, each a heading, a sentence and a line drawing, at 4, 3 or 2 columns: two at 1023px and under, and one at 560px and under. Its cells pad 26px, 24px and 30px with a 268px floor. It draws its seams with the cell borders the plate's Cell Borders setting copies, in two inks: the grid's frame at `--gtb-line` and the cell seams at `--gtb-line-2`. Its stylesheet is skinned through `--gtb-*` custom properties, and a pointer-tracked wash lights each cell unless `spotlight` is off. No page on this site mounts it today.
+
+```tsx
+import FeatureBento from '@/components/shared/FeatureBento';
+
+<FeatureBento columns={3} heading='The full stack for localization' spotlight={false} />;
+```
+
+## The grid view
+
+The shell's grid mode lays a route's items out as captured frames over the stage. The plate mounts the live `GridView` with the ten /brand sections in it and reads the columns the browser resolved, so the readout is the grid's own answer.
+
+<GridViewDemo />
+
+The grid fills its columns with `repeat(auto-fill, minmax(300px, 1fr))` and a 26px gap, inside 22px of padding over, 34px at each side and 56px under. A section label spans every column over a `--pt-hair` rule, and the first label has none. Each item is a 26px number column beside a 16:9 frame with a `--pt-edge` border on the card corner, so every tile owns its frame and no two tiles share an edge. The active tile draws its frame in ink with a 1px ink outline 2px outside it.
+
+| Window | Stage | Columns |
+| --- | --- | --- |
+| 1720, list closed | 1720px | 5 at 308.8px |
+| 1440, list in outline density | 1232px | 3 at 369.3px |
+| 1440, list in thumbnail density | 1184px | 3 at 353.3px |
+| 1440, list closed | 1440px | 4 at 322.5px |
+| 1280, list in outline density | 1072px | 3 at 316px |
+| 1024, list in outline density | 816px | 2 at 359px |
+| 390, a phone | 390px | 1 at 318px |
+
+The grid is a scroll region, so its 4px scrollbar gutter comes off the width before the padding does. Under a 372px stage the content is narrower than one 300px column, and the column keeps its 300px, so the frames run past the right edge.
+
+```tsx
+import { GridView } from '@/components/viewer/GridView';
+
+<GridView>
+  <ThumbList density='thumbs' sections={sections} thumb='shot' />
+</GridView>;
+```
+
+`GridView` takes its children and an accessible `label`, which reads Every item as a grid when it is left out. `ViewerShell` renders it over the stage while the mode is grid, with a `ThumbList` of the route's sections inside.

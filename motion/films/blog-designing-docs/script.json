@@ -1,6 +1,6 @@
 {
  "title": "Designing docs for humans",
- "story": "Most docs readers are now AI agents, but humans still read docs to evaluate a product, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem.",
+ "story": "Most docs readers are now AI agents, which makes an intuitive, intentional docs interface even more important, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem.",
  "lines": [
   {
    "n": 1,
@@ -12,16 +12,16 @@
   {
    "n": 2,
    "who": "N",
-   "said": "Humans still read docs to evaluate a product.",
+   "said": "An intuitive, intentional docs interface becomes even more important.",
    "sub": null,
-   "screen": "“Humans still read docs” builds word by word, with “Humans” in blue. The agents leave and the four people stay, then the page tilts up into the isometric view and lifts apart into plates."
+   "screen": "“Design still matters” arrives over the old page as one title. The agents leave and the four people stay, their links to the page light white on “interface,” and once the line ends the people leave and the page stays where it is."
   },
   {
    "n": 3,
    "who": "N",
    "said": "General Translation redesigned its docs from scratch so people would read its writing.",
    "sub": null,
-   "screen": "The heading becomes “General Translation redesigned its docs.” The GT mark lights white, the page’s extra pieces lift highest, and a thumb runs the contents rail as the writing prints white. Then the stack centres and comes down flat."
+   "screen": "The GT mark lights white and a white line draws up out of the page’s corner and along under “General Translation,” whose words rise onto it. On “redesigned” the page turns into the isometric view where it sits and its layers rise off it one at a time, the extra pieces highest; a thumb runs the contents rail as the writing prints white. Then the stack centres and comes down flat."
   },
   {
    "n": 4,
@@ -70,7 +70,7 @@
    "who": "N",
    "said": "Docs design is an open problem, and the team keeps working on it.",
    "sub": null,
-   "screen": "“Docs design is an open problem” builds as the page shrinks back among the readers. The path runs on out of the page into one of the people, so the last frame mirrors the first."
+   "screen": "“An open problem” arrives as one title as the page shrinks back among the readers. The path runs on out of the page into one of the people, so the last frame mirrors the first."
   },
   {
    "n": "end",

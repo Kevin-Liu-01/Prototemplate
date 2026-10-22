@@ -1,0 +1,152 @@
+---
+title: '3D scenes'
+description: 'three.js scenes in the house material: an extruded GT mark, a lit globe and an isometric stack, each through a Bayer post pass with live controls.'
+icon: CubeOpen
+sources:
+  - src/components/docs/demos/2d-3d
+  - src/lib/marks.ts
+  - src/app/d/blog-globe/_rounds/r3/land.ts
+  - skills/gt-performance/references/webgl-lifecycles.md
+  - skills/gt-diagrams/references/isometric.md
+---
+
+import { EarthSceneDemo, MarkSceneDemo, StackSceneDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+Three scenes draw General Translation's material in three.js. Each scene renders into an offscreen target, and a fullscreen pass prints that target through the house Bayer screen in the stage's ink and paper, so the 3D work reads as the same 1-bit print as the [dither engines](/docs/components/dither). Each plate holds one WebGL context while it is near the viewport and releases it when you scroll away. The page loads three.js for itself, and no other docs page carries it.
+
+## The extruded mark
+
+The GT mark is parsed from its SVG outline, extruded and turned under one light. Pass shows the screen, the continuous light the screen reads, or both on either side of a seam, and a drag or the arrow keys turn the mark by hand.
+
+<MarkSceneDemo />
+
+The outline is `REFERENCE_MARK` from `src/lib/marks.ts`, the evenodd path the deck draws as `#gt-mark`, so the gaps between the doubled lines come from the fill rule. The extrusion is 150 path units deep with no bevel. Every face is flat, and each inner wall of a doubled line takes the light on its own. Edges that turn 28 degrees or more are drawn as hairlines, which keeps the contours and the corners and drops the seams between the short facets of the G's arc. The mark swings 54 degrees each way on a 12.6 second sine. The light stays 38 degrees above the horizon while Light moves it around the mark.
+
+### Import and props
+
+```tsx
+import { MarkSceneDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+<MarkSceneDemo matrix={8} cell={2} light={-50} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `matrix` | `2`, `4` or `8` | `8` | The Bayer matrix's side at mount. |
+| `cell` | number | `2` | A cell's side in CSS pixels at mount. The pass rounds it to whole device pixels. |
+| `light` | number | `-50` | The light's azimuth in degrees. 0 faces the viewer and a negative angle comes from the left. |
+
+The scene is `buildMarkScene(env, read)` in `mark-scene.ts`. It parses and extrudes the outline once per page, and every later context uploads the same buffers.
+
+## The lit globe
+
+The globe carries the real coastlines and a sun the reader can swing. The coast and a 15 degree graticule are hairlines one device pixel wide at every cell size.
+
+<EarthSceneDemo />
+
+The land is the blog globe's 1 degree mask, drawn from Natural Earth 4.1.0 (public domain) and read into a 360 by 180 texture. The GPU's linear filter interpolates between the cells, and the shader draws the coast where the filtered value crosses 0.5, measured with `fwidth` so the line is one pixel wide wherever it falls. Land takes more of the light than the sea, the sea carries a specular glint, and the axis leans 23.44 degrees. A ring at the limb, sized for the perspective camera, keeps the night side's outline on a dark ground. The globe prints its light in ink on both grounds, as the [globe field](/docs/components/globes) does, so on paper its night side is paper with a few cells of ink.
+
+### Import and props
+
+```tsx
+import { EarthSceneDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+<EarthSceneDemo matrix={8} cell={2} sun={-85} lines='both' />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `matrix` | `2`, `4` or `8` | `8` | The Bayer matrix's side at mount. |
+| `cell` | number | `2` | A cell's side in CSS pixels at mount. |
+| `sun` | number | `-85` | The sun's azimuth in degrees, 18 degrees above the horizon. At -85 the sun stands almost square to the left and the terminator crosses the disc near its middle. |
+| `lines` | `'both'`, `'coast'`, `'grid'` or `'none'` | `'both'` | The hairlines the shader draws. |
+
+The scene is `buildEarthScene(env, read)` in `earth-scene.ts`. It turns at 0.16 radians a second, one turn in 39 seconds.
+
+## The pipeline stack
+
+Content, translation and the CDN stand as three isometric plates that open and close on one clock. A drag turns the stack about its axis, and the stack eases back to the isometric view on release.
+
+<StackSceneDemo />
+
+The camera is orthographic and looks down the (1, 1, 1) diagonal, which is the iso kit's 30 degree projection. The plates keep the isometric family's proportions: a footprint of 2 units, 4 percent of it thick, and 40 percent of it as air when the stack is open. Each face carries its artifact in its own plane. Content carries the `<T>` component, translation carries the `en`, `fr` and `ja` locale chips with `ja` as the drawing's one accent object, and the CDN carries a square marker for each point of presence. A leader leaves each plate's left vertex at mid-thickness and runs to its label.
+
+Light comes from the upper left. On paper the top face takes the least ink, the left face more and the right face the most, and on ink the top face carries the most lit cells, so the top reads lightest in both themes. The lap is 7.2 seconds: closed for 1.6, opening over 1.2 with the top plate leading by 90 ms a plate, open for 2.4, and closing over 1.2 with the bottom plate leading, so no plate passes through the plate below it. The still is the open stack.
+
+### Import and props
+
+```tsx
+import { StackSceneDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+<StackSceneDemo matrix={4} cell={2} light={-70} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `matrix` | `2`, `4` or `8` | `4` | The Bayer matrix's side at mount. |
+| `cell` | number | `2` | A cell's side in CSS pixels at mount. |
+| `light` | number | `-70` | The light's azimuth from the viewer's line of sight, in degrees, 58 degrees above the plates. The control runs from -135 to 0. |
+
+The scene is `buildStackScene(env, read, fonts)` in `stack-scene.ts`, and `openness(t, i)` returns how open plate `i` stands at time `t`, from 0 to 1.
+
+## The stage and its pass
+
+All three plates run on `createDitherStage`. The scene renders into a target whose four channels hold data: red is the light a surface receives, green marks the accent object, blue is a hairline's strength, and alpha says a surface was drawn there. The pass divides the canvas into square cells of a whole number of device pixels, anchored at the top left so the screen's phase matches the CPU engines. It reads the light at each cell's centre and lights the cell when the coverage is over the matrix threshold.
+
+Hairlines add to blue through additive blending, so a line never changes the tone of a cell it crosses. The pass reads them per pixel: a line takes the ground where it crosses dense cells and the ink everywhere else. On ink the coverage is the light. On paper a solid prints its shade, one minus the light, so a lit face reads as paper with sparse ink. A floor of 1.5 percent on ink and 5 percent on paper keeps a few cells on the brightest face, and the accent object keeps at least 30 percent coverage so it reads on a lit face.
+
+The stage creates its renderer and a new canvas when the host comes within 300 pixels of the viewport. It builds the scene in the next task and compiles the shaders with `compileAsync` before the first frame, which uses `KHR_parallel_shader_compile` where the browser has it. It releases everything 1.5 seconds after the host leaves that margin, or on `destroy()`: the scene's `dispose()`, the target, the pass, `renderer.dispose()` and `renderer.forceContextLoss()`, and then the canvas leaves the DOM. The loop runs only while the host is on screen and the tab is visible. Under reduced motion the stage draws one still and draws again only when a control or a drag changes the picture. The pixel ratio is capped at 2.
+
+### Import and props
+
+```ts
+import { createDitherStage } from '@/components/docs/demos/2d-3d/dither-stage';
+import { readInks } from '@/components/docs/demos/2d-3d/ink';
+import { buildMarkScene } from '@/components/docs/demos/2d-3d/mark-scene';
+
+const stage = createDitherStage({
+  host,
+  build: (env) => buildMarkScene(env, () => state),
+  pass: { matrix: 8, cell: 2, mode: 'dither', split: 0.5 },
+  inks: readInks(host),
+  stillTime: 1.1,
+});
+stage.setPass({ matrix: 4 });
+stage.destroy();
+```
+
+| Option | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `host` | `HTMLElement` | required | The box the canvas fills. Its distance from the viewport decides when the context exists. |
+| `build` | `(env) => SceneInstance` | required | Builds the scene for each new context. `env` holds the renderer, the size and the pixel ratio. |
+| `pass` | `PassSettings` | required | `matrix` (2, 4 or 8), `cell` in CSS pixels, `mode` (`'dither'`, `'tone'` or `'split'`) and the seam's place `split` from 0 to 1. |
+| `inks` | `StageInks` | required | The ink, ground and accent as sRGB channels. `readInks(el)` reads them from the stage's `--dmo-ink`, `--dmo-ground` and `--dmo-accent`. |
+| `stillTime` | number | required | The instant on the scene's clock that reduced motion and a paused plate show. |
+| `speed`, `playing` | number, boolean | `1`, `true` | The clock's rate, and false for the still. |
+| `onCost`, `onFail` | callbacks | none | The smoothed main-thread time of a frame, at most twice a second, and a call when WebGL is unavailable. |
+
+The handle returns `setPass`, `setInks`, `setSpeed`, `setPlaying`, `invalidate` and `destroy`. A scene returns `scene`, `camera`, `update(time, delta)`, `resize(width, height)` and `dispose()`, with three optional fields: `afterRender()` for DOM labels that follow the scene, `gain` to scale the coverage on each ground, and `onPaper: 'light'` to print the light in ink on paper. Its materials come from `materials.ts`: `inkMaterial` for lit faces, `lineMaterial` for hairlines and `glyphMaterial` for artwork laid in a face.
+
+## Numbers
+
+The numbers below come from headless Chrome for Testing drawing through ANGLE on Metal on an Apple M5 Max laptop, at 1440 by 900 and a pixel ratio of 2, with each plate scrolled into view and its frames sampled for 6 seconds. The machine was shared with other work, and its one-minute load average read between 33 and 106 during the runs. A frame's main-thread time is the plate's own measure, the one its controls row prints; the GPU's time is not in it.
+
+| Scene | Main thread a frame | Frame interval, median and p95 | Frames over 22 ms | Main thread at 4x CPU throttle |
+| --- | --- | --- | --- | --- |
+| The extruded mark | 0.20 ms | 16.7 and 16.7 ms | 0 | 0.71 ms, no frame over 22 ms |
+| The lit globe | 0.21 ms | 16.7 and 16.7 ms | 0 | 0.63 ms, no frame over 22 ms |
+| The pipeline stack | 0.18 ms | 16.7 and 16.8 ms | 0 | 1.48 ms, no frame over 22 ms |
+
+- Each plate renders 1676 by 760 to 1676 by 880 device pixels twice a frame, once into the target and once through the pass, and held 60 frames a second at that size.
+- Creating a context takes three tasks. Over three runs the renderer took 9 to 29 ms, the scene and the shader compile 18 to 28 ms, and the first frame 9 to 24 ms. In one task the same work took 42 to 69 ms and landed on a single frame of the scroll.
+- A scroll from the top of the page to the bottom created 3 contexts and held at most 2 at once. The mark's context was released after the plate left the 300 pixel margin.
+
+## Traps
+
+- three.js r185 deprecates `SVGLoader.createShapes` and logs a warning for every call. `path.toShapes()` reads the path's `fill-rule`, so an evenodd outline keeps its holes. The type definitions still ask for an argument that the r185 code ignores.
+- A context lost through `forceContextLoss()` stays with its canvas, and `getContext` on that canvas returns the lost context. The stage makes a new canvas for every context.
+- A geometry cached for the page still needs `dispose()` when its context goes. The call unhooks the released renderer's listeners, and the next context uploads the same buffers again.
+- Hairlines drawn into the same target as the faces fight them for depth. The faces take a polygon offset of 1, so a line on a face's edge always passes the depth test.
+- A hairline that wrote the light channel would set the tone of every cell whose centre it crossed. The lines add to blue only and leave red and alpha as the face wrote them.
+- A cell of 2 CSS pixels at a pixel ratio of 1.25 is 2.5 device pixels, which prints columns of 2 and 3. The pass rounds every cell to whole device pixels.
+- Printing the shade on paper made the globe's night side a disc of solid ink. The globe sets `onPaper: 'light'` and prints its light in ink on both grounds, and the two solids keep the shade.

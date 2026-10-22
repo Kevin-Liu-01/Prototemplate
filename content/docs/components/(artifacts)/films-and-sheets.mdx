@@ -1,0 +1,132 @@
+---
+title: 'Films and contact sheets'
+description: 'The film player, contact sheets of frames, and the report card: how the system presents a finished artifact on the page.'
+icon: Film
+sources:
+  - src/app/brand/BrandFilm.tsx
+  - public/motion/published.json
+  - src/lib/motion.ts
+  - scripts/build/motion.mjs
+  - src/components/try/ReportCard.tsx
+  - src/components/docs/demos/artifacts
+---
+
+import { ContactSheetDemo, FilmPlayerDemo, ReportCardDemo } from '@/components/docs/demos/artifacts/lazy';
+import { PUBLISHED_FILMS } from '@/components/docs/demos/artifacts/films';
+
+A finished film reaches the site as three files: the web copy that plays, its poster (the film's title card) and a contact sheet of its frames. `public/motion/published.json` pins the cut of each published film by the hashes of its video and audio streams, and `pnpm build:motion` writes the registry the pages read, `src/lib/motion.ts`. The site publishes 39 cuts: 9 films, 6 films of the translation series and 24 knowledge base films, with the German, Spanish and Japanese cuts of one film counted among the 9.
+
+## Film player
+
+Pick a published film. The player shows its poster until the first press, then plays the web copy with the browser's own controls.
+
+<FilmPlayerDemo films={PUBLISHED_FILMS} />
+
+The poster is a lazy image inside a play button, and the video has no `poster` attribute until it plays, because a browser fetches that attribute at page load wherever the video sits. The video preloads nothing. The first press starts the film, turns on the native controls and moves focus to the video, so the keyboard reaches those controls next. The width and height attributes reserve the 16:9 box before anything arrives, so nothing shifts. Captions are offered in the native menu and stay off until the viewer chooses them.
+
+### Import and props
+
+```tsx
+import BrandFilm from '@/app/brand/BrandFilm';
+
+<BrandFilm
+  src='/media/designing-docs-film.mp4'
+  poster='/media/designing-docs-poster.jpg'
+  name='the Designing docs for humans film'
+/>;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `src` | string | none | The web copy under `/media`, as a root path. |
+| `poster` | string | none | The title card, shown in the play button until the first press. |
+| `name` | string | none | What the film is called to a screen reader. The play button reads `play` and this name. |
+| `captions` | string | none | A WebVTT file, offered in the native controls and off until chosen. |
+| `captionsLang` | `{ locale, label }` | English | The captions' locale and the name the native menu shows. |
+| `autoStart` | boolean | `false` | Starts the film on mount without moving focus. A language toggle passes it when the cut it replaces was playing. |
+
+The host sizes and frames the video. The player's own stylesheet draws only the play button and its badge, a 56 px paper plate on the poster, which moves to the lower right corner at 28 px on a phone so it never covers a title card's title.
+
+### The published films
+
+| Part | Value |
+| --- | --- |
+| Video | 1920 by 1080 MP4 under `/media`, 15 to 99.8 seconds |
+| Poster | 1920 px JPEG, 60 KB to 505 KB |
+| Captions | WebVTT under `/motion/captions`, on 24 of the 39 cuts |
+| Films | 9 films, 6 translation series films, 24 knowledge base films |
+
+## Contact sheet
+
+A contact sheet holds two frames a second of a cut, eight to a row. Drag across the frame or the strip under it, step with the Frame control, or play the sheet at the rate it was cut at.
+
+<ContactSheetDemo films={PUBLISHED_FILMS} />
+
+The sheet is one WebP. The plate shows one tile at a time as a crop of that image, sized so a 384 px tile spans the frame and moved to the tile's column and row, so scrubbing loads nothing new. Frame k is taken from the middle of the half second from k / 2 to (k + 1) / 2 seconds. `pnpm build:motion` counts a sheet's frames only when its size matches the grid for its cut's length, so a page never states a count it cannot read from the picture.
+
+### Import and props
+
+```ts
+import { SHEET_TILE } from '@/components/docs/demos/artifacts/film-list';
+
+/* frame k of a sheet with `columns` tiles to a row, cropped into a box one tile wide */
+const scale = box.clientWidth / SHEET_TILE.width;
+const x = (k % columns) * (SHEET_TILE.width + SHEET_TILE.gap) * scale;
+const y = Math.floor(k / columns) * (SHEET_TILE.height + SHEET_TILE.gap) * scale;
+box.style.backgroundImage = `url(${sheet.src})`;
+box.style.backgroundSize = `${sheet.width * scale}px auto`;
+box.style.backgroundPosition = `${-x}px ${-y}px`;
+```
+
+| Field | Type | What it holds |
+| --- | --- | --- |
+| `src` | string | The sheet's WebP under `/motion/sheets`. |
+| `width`, `height` | number | The sheet's pixel size. |
+| `frames` | number | Two a second for the cut's length, rounded up. |
+| `columns`, `rows` | number | The grid: `(width + 3) / 387` and `(height + 3) / 219`. |
+
+### The sheet's numbers
+
+| Part | Value |
+| --- | --- |
+| Tile | 384 by 216 px |
+| Gap | 3 px |
+| Row | 8 tiles, 3093 px wide; the How General Translation works sheet has 6 to a row |
+| Rate | 2 frames a second from frame 0 |
+| Frames | 30 to 200 per sheet |
+| File | WebP, 0.2 MB to 2.4 MB, with the full PNG beside it when the PNG is at most 20 MB |
+
+## Report card
+
+The report card is the result of the `/report-card` page, which grades how well a site is localized. Here it stands alone with a sample report for example.com; switch its state to see the empty card, the wait and the filled card.
+
+<ReportCardDemo />
+
+The card draws its whole structure from the first paint: the meter, a ghost score and the six named rows with their grade scales unlit. While the grader runs, the rows wait in place, and the report fills them without moving anything below. A filled row opens its evidence in a dialog: the captured markup, the expanded findings and a prompt to paste into a coding agent. The empty card is `inert` and hidden from assistive technology, so a screen reader never hears ghost rows.
+
+### Import and props
+
+```tsx
+import ReportCard from '@/components/try/ReportCard';
+import '@/components/try/try.css';
+
+<div className='try-root'>
+  <ReportCard report={report} state='done' />
+</div>;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `report` | `Report` or `null` | The graded report from `analyze()`; `null` draws the empty card. |
+| `state` | `idle`, `loading`, `settling`, `done` or `error` | The run's phase. `loading` and `settling` hold the waiting look. |
+
+The card's stylesheet scopes every rule under `.try-root` and reads the toolchain's color tokens (`--tc-paper`, `--tc-ink`, `--tc-hair`, `--tc-accent`), so a host sets those or sits inside a page that does.
+
+### The card's numbers
+
+| Part | Value |
+| --- | --- |
+| Score | 0 to 100, with a grade from A to F |
+| Meter ticks | 0, 18, 38, 63, 88 and 100, the grade boundaries |
+| Categories | hreflang tags, language declaration, locale routing, translated metadata, content language, charset and direction |
+| Evidence | at most 4 snippets of 1200 characters and 12 findings per category |

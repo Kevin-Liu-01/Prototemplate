@@ -37,9 +37,8 @@ THE APP PAGE
   asks for, which gt-next reads.
 
 MARKS
-- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
-  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
-  end card.
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the same
+  mark, larger, on the end card.
 - The chevron in the drawings is Heroicons 2.2.0 16 solid chevron-down (MIT, Tailwind Labs). The
   arrow mark is drawn for the film.
 

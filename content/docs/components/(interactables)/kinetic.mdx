@@ -1,0 +1,133 @@
+---
+title: 'Kinetic text and carousels'
+description: 'Split-flap text, the language wheel and the carousel: moving pieces with their timing, their reduced-motion stills and their controls.'
+icon: Queue
+sources:
+  - src/components/docs/demos/interactables
+  - src/app/d/production/sections/FlapText.tsx
+  - src/app/d/production/sections/FlapPhrase.tsx
+  - src/app/d/production/sections/flap.ts
+  - src/components/shared/LanguageWheel.tsx
+  - src/components/shared/LanguageWheel.css
+  - src/components/blog/Carousel.tsx
+  - src/components/blog/CarouselGallery.tsx
+  - skills/gt-motion/SKILL.md
+---
+
+import { CarouselDemo, FlapDemo, LanguageWheelDemo } from '@/components/docs/demos/interactables/lazy';
+
+Three pieces on the site move on their own: the split-flap board that spells the blog's masthead, the language wheel with its orbiting scripts, and the blog's image gallery with its autoplay. Each plate mounts the real component with controls for its timing, and each has a still that a reader with reduced motion sees. The pieces follow the motion rules: one clock per piece, loops that pause off screen, and the designed still in the markup before any script runs.
+
+## Split-flap text
+
+`FlapChars` renders a string as cells, and the flap engine flips them. Each cell holds an invisible ghost of its settled glyph in the flow, which keeps the measure, and a face drawn over it, which is the only node the engine touches. The line cannot reflow during a flip, and it reads as plain text before any script runs.
+
+<FlapDemo />
+
+`flipUp` folds each face shut over 26ms, swaps its glyph at the squeeze and unfolds it over 30ms, passing through Latin and Greek capitals, CJK, Hangul, digits and marks. Each tile folds `cycles` times, the last fold landing its own glyph, and every odd tile folds once more. The landing glyph unfolds over 90ms with a short overshoot as the flap hits its stop, the one overshoot the motion rules allow. With the flash, the landed glyph holds the accent for 120ms and cools to its ink over 850ms. The tiles start `per` seconds apart from left to right. At FlapPhrase's settings, 13ms apart and two cycles, the masthead's 22 tiles have landed after 0.5 seconds, and with the flash the last glyph has cooled at 1.41 seconds. Tiles draws the ghost tile the masthead sets under every settled character.
+
+### Import and props
+
+```tsx
+import FlapPhrase from '@/app/d/production/sections/FlapPhrase';
+import { blankLine, flipUp } from '@/app/d/production/sections/flap';
+import { FlapChars } from '@/app/d/production/sections/FlapText';
+
+<FlapPhrase text='General Translation Blog' flash={false} />;
+
+<span ref={line} data-tb-line aria-hidden>
+  <FlapChars text={text} />
+</span>;
+blankLine(line.current);
+flipUp(line.current, { per: 0.013, cycles: 2, flash: true });
+```
+
+| Export | Props | What it does |
+| --- | --- | --- |
+| `FlapPhrase` | `text`, `flash` (default true) | Flips the phrase once as it scrolls into view, at 88 percent of the viewport, with a text twin for screen readers. |
+| `FlapChars` | `text` | The cells; words wrap only at real spaces. |
+| `blankLine(line)` | an element | Empties every face; the ghosts keep the layout. |
+| `flipUp(line, options)` | `per` (seconds, default 0.016), `cycles` (default 2), `flash` (default true) | Flips every face to its target and returns the GSAP timeline. |
+
+The flash takes `--tb-flash`, then `--tc-accent`, then the face's own ink. The cells' rules (`.tb-ch`, `.tb-ch-g`, `.tb-ch-f`, `.tb-word`, `.tb-sr`) live in the host's stylesheet: the blog index scopes them under `.blog-root`, and this plate under its own stage.
+
+### Reduced motion and themes
+
+Under reduced motion `FlapPhrase` never blanks the line, so the settled text is the still; Still on the plate shows it. The faces take the line's ink and the ghost tiles mix their tone from it, so both follow the theme.
+
+## The language wheel
+
+`LanguageWheel` is a machined dial: a metal bezel, a bright arc that laps the ring, script glyphs that orbit and sink toward the bezel, and the GT mark at the center. Lap sets the seconds per revolution, Arc the share of the ring the arc covers, and Size the dial's width.
+
+<LanguageWheelDemo />
+
+The arc is one circle stroke with a `pathLength` of 100 and a dash of the arc's share, rotated a full turn per lap with no easing. A ScrollTrigger plays it while the wheel is on screen and pauses it off screen. Each orbiting glyph keeps its own spin on GSAP's ticker, on an ellipse 0.62 as tall as it is wide; its radius shrinks 7px a second, it fades as it nears the bezel, and it starts again at the outside. The ticker runs while the wheel is mounted and stops on a hidden tab. The lens stacks three `backdrop-filter` shells with radial masks, so the plate runs a band of language names behind the wheel for it to bend.
+
+### Import and props
+
+```tsx
+import LanguageWheel from '@/components/shared/LanguageWheel';
+
+<LanguageWheel size={244} arcDuration={3.6} arcSweep={17} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `size` | number | `--gtw-size`, 244px | The dial's diameter in pixels. The orbit radii are read from it on mount and on a window resize. |
+| `arcDuration` | number | 3.6 | Seconds for one lap of the arc. |
+| `arcSweep` | number | 17 | The arc's share of the ring, 0 to 100. |
+| `orbit` | boolean | true | The orbiting glyphs. |
+| `glyphs` | string | 20 script glyphs | The glyphs that orbit, one per character. |
+| `lens` | boolean | true | The three backdrop-filter shells. |
+| `logoSrc`, `logoAlt`, `logoSize` | string, string, number | the GT mark, empty, 34.4 percent of the dial | The mark at the center. |
+| `priority` | boolean | false | Loads the mark first, for a hero. |
+| `className` | string | none | Extra classes on the root. |
+
+The bezel, the arc, the track, the glyphs, the halo and the core read `--gtw-` custom properties, so a host restyles the wheel from its own sheet. The glyphs' face reads `--gtw-mono`, which this plate sets to the house face. The wheel is hidden from assistive technology.
+
+### Reduced motion and themes
+
+Under reduced motion, and with the orbit off, the glyphs park at their starting places at 0.4 opacity and the arc holds still. The wheel's colors are tuned to an ink ground, so the plate is ink in both themes.
+
+## The carousel
+
+`CarouselGallery` is the blog's image gallery: a scroll-snap track that loops, a click on the left half of the image that goes back and on the right half that goes forward, chevrons over soft scrims that surface on hover or focus, and dots. The plate shows the docs redesign post's four figures of its UI primitives. Autoplay sets the interval, and Images shows the one-image form, which has no arrows, no dots and no autoplay.
+
+<CarouselDemo />
+
+The track is the source of truth for the visible slide, and a relative command steps from the last requested slide, so quick presses land one slide each. Two commands within 350ms are one, so a double click or a held key moves one slide. A press that travels more than 8px is a drag, and it does not step. Autoplay pauses while the pointer is over the gallery, while focus is inside it, while less than half of it is on screen, on a hidden tab, and for one interval after the reader's last command.
+
+### Import and props
+
+```tsx
+import CarouselGallery from '@/components/blog/CarouselGallery';
+import Carousel, { CarouselItem } from '@/components/blog/Carousel';
+
+<CarouselGallery label='UI primitives' items={[{ src, alt, width: 3840, height: 2160 }]} />;
+
+<Carousel label='UI primitives' width='3840' height='2160'>
+  <CarouselItem src='/static/blogs/figure.webp' alt='What the figure shows' />
+</Carousel>;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `items` | `{ src, alt, width?, height? }[]` | required | The images in order. |
+| `label` | string | none | The gallery's accessible name. |
+| `interval` | number | 4500 | Milliseconds between automatic steps; 0 turns autoplay off. Read on mount. |
+
+`Carousel` is the MDX face. Blog MDX blocks JavaScript expressions, so a post lists its images as `CarouselItem` children with string attributes, and `Carousel` turns them into the items the gallery takes. The gallery's rules live in `src/app/blog/blog.css`.
+
+### Keys
+
+| Key | Action |
+| --- | --- |
+| Tab | Focuses the track, then the Previous and Next arrows, then each dot |
+| Left, Right arrows on the track | Previous and next image |
+| Enter, Space on an arrow or a dot | Steps, or jumps to that image |
+
+A live region reads the position, as in `2 / 4`, after each move.
+
+### Reduced motion and themes
+
+Under reduced motion autoplay stays off, a step jumps to the image with no scroll animation, and the scrims, arrows and dots change state with no transition. The dots read the page tokens. The scrims stay dark and the arrows white over the image in both themes.

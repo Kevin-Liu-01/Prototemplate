@@ -1,0 +1,185 @@
+---
+title: 'Shells and frames'
+description: 'The viewer shell, the sheet frame and the plate: the frames every hub page and figure sits in, taken apart and adjustable.'
+icon: Stack
+sources:
+  - src/components/docs/demos/layouts
+  - src/components/viewer/ViewerShell.tsx
+  - src/components/viewer/ViewerShell.css
+  - src/components/viewer/Sheet.tsx
+  - src/components/viewer/Sheet.css
+  - src/components/viewer/SheetFrame.tsx
+  - src/components/viewer/SheetFrame.css
+  - src/components/viewer/tokens.css
+  - src/components/docs/demos/Plate.tsx
+---
+
+import { PlateDemo, SheetDemo, ShellAnatomyDemo } from '@/components/docs/demos/layouts/lazy';
+
+Every page of the hub sits in the viewer shell: a sidebar, a 52px toolbar, a stage and an index panel that slides over it. A slide on the stage sits in the fixed sheet, which scales a 1600 by 900 artifact to fit and draws the deck's edge grid on it. Every live figure on these docs pages sits in a plate. This page takes the three frames apart.
+
+## The viewer shell
+
+`ViewerShell` is a fixed frame over the whole viewport, so the plate draws a model of it at a window size: every region stands where the shell's stylesheets put it and draws only the edges the junction table gives it. The stage holds the live parts: the fixed `Sheet` with its `SheetFrame` in slide mode, the `GridView` in grid mode, and the flow `Sheet` holding a book page in book mode.
+
+<ShellAnatomyDemo />
+
+Window sets the model's size, and Stage switches the mode as the toolbar's segmented control does. List density picks the sidebar's two widths, List and Index open and close the sidebar and the index panel, and Present takes the chrome away. At 900 pixels and under the list starts closed and floats over the stage above a scrim when it opens, and the sheet pads 12 pixels and sits under the toolbar. A click on either half of the slide pages it.
+
+| Region | Size | The edge it owns |
+| --- | --- | --- |
+| Sidebar | 208px in outline density, 256px in thumbnail density; at 900px and under an overlay `min(84vw, 300px)` wide | its right edge |
+| Sidebar head | 52px: the mark, the title and the density toggle | its bottom edge |
+| Filter row | 40px | its bottom edge |
+| List rows | 28px in outline density with one rail in the row role down each group; 44px with a 64 by 36 capture in thumbnail density; group headers 24px with 16px above | none |
+| Toolbar | 52px, its two groups 8px apart inside | its bottom edge |
+| Stage | the main region between the toolbar and the progress line | none |
+| Index panel | 460px from the toolbar's rule to the main region's foot, over the progress line, on a 28 percent ink scrim | its left edge |
+| Progress line | 2px: a `--pt-hair-soft` track with an ink fill | none |
+
+The shell counts as narrow at 900 pixels and under, and on a phone on its side, which matches `(pointer: coarse) and (max-height: 500px)`. Present closes the sidebar's column and removes the toolbar and the progress line, so the stage is the window.
+
+| Junction | Owner | The other side |
+| --- | --- | --- |
+| Sidebar and stage | the sidebar's right edge | the main region draws no left edge |
+| Toolbar and stage | the toolbar's bottom edge | the stage and the index panel draw no top edge |
+| Index panel and stage | the panel's left edge | a fixed sheet's ring runs under the panel |
+| Sidebar head and toolbar | each its own side of the seam | the two bottom rules meet at the sidebar's edge and never overlap |
+
+### Import and props
+
+```tsx
+import { ViewerShell } from '@/components/viewer/ViewerShell';
+
+<ViewerShell
+  count='52 slides'
+  id='deck'
+  keys='paged'
+  mark='gt'
+  modes={['slide', 'grid', 'book']}
+  sections={sections}
+  surfaces={surfaces}
+  thumb='shot'
+  title='Deck'
+>
+  <Sheet variant='fixed'>{slides}</Sheet>
+</ViewerShell>;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `id` | string | The storage namespace for the saved mode, and `body[data-shell]`. |
+| `title`, `mark`, `count` | string, `'gt'` or `'pt'`, string | The sidebar head and the toolbar's brand; the count is already worded. |
+| `sections` | `ShellSection[]` | The route's items, grouped; the sidebar, the grid and the count read them. |
+| `modes` | `ShellMode[]` | The modes the route offers, in the toolbar's fixed order; the first is the default. |
+| `keys` | `'paged'`, `'flow'` or a function of the mode | Paged routes take the arrows and Space; flow routes let them scroll. |
+| `thumb` | `'shot'` or `'row'` | Captured frames or frameless rows in the list and the grid. |
+| `surfaces` | `SurfaceSet` | The registry the index panel opens on. |
+| `toolbarSlot` | node | The route's own controls, first in the toolbar's right group. |
+| `children` | node | The stage content: a `Sheet`, and a `BookView` while the mode is book. |
+
+Children read the shell's state with `usePtShell()`: the mode, the active item, the count, `narrow` and `present`, and the setters.
+
+## The fixed sheet
+
+The fixed sheet is the edge of a fixed-size artifact: a slide, a site exhibit at 1440 pixels, a pane of the compare rig. The plate mounts the live `Sheet` and `SheetFrame` on a stage of the size the sliders give, inside the two contexts `ViewerShell` would publish, and prints what `fitSheet()` returns. Previous and Next page it, and so does a click on either half of the sheet.
+
+<SheetDemo />
+
+`fitSheet()` scales the 1600 by 900 stage to the space left after the pad and centers it, then places the sheet's border box one pixel out, so the border sits around the scaled content and never over it. The ring is drawn as a mat with no shadow: a 1px `--pt-hair` border on the sheet, a 1px gap of paper, and a 1px `--pt-hair-soft` outline. The stage around it paints `--pt-plate`, the letterbox. At 900 pixels and under the pad drops to 12 pixels and the sheet sits under the toolbar, and Present removes the ring, the plate and the pad.
+
+| Part | Value |
+| --- | --- |
+| Stage | 1600 by 900 for a slide, 1440 by 900 for a site exhibit, scaled by `fitSheet()` |
+| Pad | 28px, 12px at 900px and under, 0 while presenting |
+| Ring | a 1px `--pt-hair` border, a 1px paper gap, a 1px `--pt-hair-soft` outline |
+| Rails | 1px `--pt-hair`, 56px in from the left and right edges |
+| Rules | 1px `--pt-hair`, 56px in from the top and bottom edges |
+| Crosses | 11 by 11 at `--pt-cross`, centered on the four meeting points |
+| Wordmark | the GT mark at 28 by 18, 72px from the left and 18px from the bottom, in titanium |
+| Counter | 13px tabular figures in titanium, 72px from the right and 22px from the bottom |
+| Paging | a click on either half of the sheet, or a 40px swipe; chevrons show at the edges on hover |
+
+### Import and props
+
+```tsx
+import { Sheet, fitSheet } from '@/components/viewer/Sheet';
+
+<Sheet variant='fixed' w={1600} h={900}>
+  {slides}
+</Sheet>;
+<Sheet variant='flow' scrollRef={region}>
+  {book}
+</Sheet>;
+const fit = fitSheet({ aw: 1232, ah: 846, w: 1600, h: 900, pad: 28 });
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `variant` | `'fixed'` or `'flow'` | required | The scaled artifact on the plate, or a reading page in the book column. |
+| `w`, `h` | number | 1600, 900 | The fixed stage's size before scaling. |
+| `frame` | boolean | `true` | Mounts `SheetFrame`: the rails, rules, crosses, wordmark and counter. Site exhibits turn it off. |
+| `fit` | `'contain'` or `'height'` | `'contain'` | `height` fills the stage's height and pans sideways. |
+| `caption` | node or `false` | the item and its width | The 24px line under a frameless sheet. |
+| `itemKey` | string | none | Keys the children by item, so the leaving slide fades while the next one rises in. |
+| `scrollRef` | ref | none | The flow sheet's scroll region, for the progress line and scroll spies. |
+
+`SheetFrame` takes `wordmark` and `counter`, both on by default; thumbnail and page clones turn both off to carry the grid alone.
+
+### The reading column
+
+The flow sheet holds the deck's book column: 1280 pixels at most, padded by `--pt-col-pad-x` at each side, `--pt-title-clear` over the title and 120 pixels under the last block. The column draws no border, no ground and no mat, and every structural rule of a book runs across the whole stage. The book mode of the plate above draws a book page as a skeleton at these values.
+
+| Token | Value | 900px and under |
+| --- | --- | --- |
+| `--pt-col-pad-x` | 56px | 16px |
+| `--pt-title-clear` | 44px | 24px |
+| `--pt-d1` (the title) | 44px on 1.04, -0.025em | 32px |
+| `--pt-head-gap` | 14px from the title to the lead | 14px |
+| `--pt-head-col-gap`, `--pt-head-panel` | 56px, then a 304px panel beside the lead | the panel stacks under the lead below 880px of head width |
+| `--pt-row` | 26.35px, one lead line, the panel's row pitch | the same |
+| `--pt-head-rule-pad` | 26px to the mast's rule | 26px |
+| `--pt-sec-over` | 48px from the block above to the band | 40px |
+| `--pt-band-h` | 42px, both rules included | 42px |
+| `--pt-sec-pad` | 30px from a divider's rule to its h2 | 30px |
+
+## The plate
+
+Every live demo on these pages is a `Plate`: a card with the stage on top and the controls row under it, one hairline between them. This plate's own props are its controls, so the stage, the corner tag and the ground change as they are set.
+
+<PlateDemo />
+
+The stage follows the docs theme unless `night` pins it to ink, which the GPU fields need because their palettes are tuned to an ink ground. A `fit` stage takes its content's height, padded 52 pixels over so the corner tag clears it. A `lazy` plate mounts its children only when it comes within 180 pixels of the viewport, and a `moves` plate says in its controls row when reduced motion holds it still.
+
+| Part | Value |
+| --- | --- |
+| Frame | 1px `--pt-hair` on the 6px card corner, 24px over the plate and 12px under it |
+| Stage | 300px tall by default, `phoneHeight` under 640px; `fit` pads 52px, 20px and 24px |
+| Tag | 10px from the stage's corner, a chip on the stage's ground, in mono at the group size |
+| Controls row | a `--pt-hair` rule over it, 12px and 18px gaps, 12px, 14px and 14px of padding |
+
+### Import and props
+
+```tsx
+import { Choice, Range, Toggle } from '@/components/docs/demos/controls';
+import Plate from '@/components/docs/demos/Plate';
+
+<Plate controls={<Range label='Gap' max={7} min={1} step={0.5} value={gap} onChange={setGap} />} height={280} moves tag='<DoubledLine />'>
+  {drawing}
+</Plate>;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `tag` | string | required | The entry point's name in the stage's corner. |
+| `label` | string | required | What the plate shows, for assistive technology. |
+| `controls` | node | none | The controls row: `Choice`, `Range`, `Toggle` and `Action` from `controls.tsx`. |
+| `height`, `phoneHeight` | number | 300, the height | The stage's height at desktop width and under 640px. |
+| `night` | boolean | `false` | An ink stage in both themes. |
+| `fit` | boolean | `false` | The stage takes its content's height. |
+| `bare` | boolean | `false` | No corner tag, for a drawing that fills the stage. |
+| `lazy` | boolean | `false` | Mounts the children only once the plate nears the viewport. |
+| `moves` | boolean | `false` | Under reduced motion, the controls row says the plate shows its still. |
+| `stageClassName` | string | none | A class on the stage, for the demo's own layout. |
+
+The plates on the page layout pages lay a page part out at its own width and scale it into the stage, so a 1440 pixel page reads inside the docs column without overflowing it. The media queries inside a model still follow the real viewport, so each model reads its breakpoint values from the width it is given.

@@ -22,6 +22,6 @@ Japanese and Chinese both write “philosophy” 哲學. Nishi Amane took 希 fr
 | 1:10.26 | Narrator | In 1905 the scholar Wang Guowei wrote that Japanese scholars had fixed such terms first, so Chinese could use them. | Wang Guowei’s sentence of 1905 set as type, lit in two phrases. Heading: Japanese scholars had fixed such terms first. |
 | 1:19.26 | Narrator | Two words first recorded in Nishi’s lectures replaced the words Matteo Ricci and Xu Guangqi chose for Euclid in 1607. | The Jihe yuanben: 界說 lights on “Matteo”, 題 on “Xu Guangqi”, and a slip printed 定義 slides down over 界說. The take’s pause after “Two words,” is closed to 0.25 s. |
 | 1:28.32 | Narrator | Chinese now uses them for definition and proposition. | A slip printed 命題 slides in over 題, and the caption adds 題 → 命題. Heading: Definition and proposition. |
-| 1:31.63 | No voice |  | The globe, the pin on Tsuwano, Nishi Amane’s former residence, and the General Translation lockup. |
+| 1:31.63 | No voice |  | The globe, the pin on Tsuwano, Nishi Amane’s former residence, and the General Translation logo. |
 
 Times are where each line starts in the final, read from the film's own audio.

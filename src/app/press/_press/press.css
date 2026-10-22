@@ -716,6 +716,88 @@
   .gtp-fuma-nav { display: none; }
 }
 
+/* ---------- Translating Euclid: the reader, set as a printed page ---------- */
+
+/* The shared reader's book look. Translating Euclid keeps its own page (BookReader, the next section), so no
+   story takes this look for now; it stays for a story that reads in the shared reader as a printed page. */
+
+/* The same split reader as the other stories, in the look of a printed
+   page: light brown paper taken from the cover scan's own paper, one face
+   (Katagami Serif, Song for Chinese) in sentence case throughout, large
+   text with a blank line between paragraphs, the cover picture on the
+   stage in place of a live cover, and the stage a shade deeper than the
+   page. */
+:root .gtp.gtp-reader[data-look='book'] {
+  --gtp-paper: #efe2c6;
+  --gtp-ink: #24190d;
+  --gtp-ink-2: #5e4a31;
+  --gtp-ink-3: #957d5c;
+  --gtp-rule: rgb(36 25 13 / 0.14);
+  --gtp-fill: rgb(36 25 13 / 0.04);
+  --gtp-fill-2: rgb(36 25 13 / 0.08);
+  --gtp-stage: #e6d4b2;
+  --gtp-stage-ink: #24190d;
+  --gtp-stage-ink-2: #5e4a31;
+  --gtp-stage-fill: rgb(36 25 13 / 0.07);
+  --gtp-signal: #b8321c;
+  --gtp-link: #24190d;
+  --gtp-globe-land: #7a5a33;
+  --gtp-globe-sea: #d6bf95;
+  --gtp-globe-rim: #3a2814;
+  --gtp-serif: 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
+  --gtp-sans: var(--gtp-serif);
+  --gtp-mono: var(--gtp-serif);
+  font-family: var(--gtp-serif);
+}
+:root:not([data-theme='light']) .gtp.gtp-reader[data-look='book'] {
+  --gtp-paper: #1d150c;
+  --gtp-ink: #efe2c6;
+  --gtp-ink-2: #c4ad88;
+  --gtp-ink-3: #8c7655;
+  --gtp-rule: rgb(239 226 198 / 0.15);
+  --gtp-fill: rgb(239 226 198 / 0.05);
+  --gtp-fill-2: rgb(239 226 198 / 0.09);
+  --gtp-stage: #261c10;
+  --gtp-stage-ink: #efe2c6;
+  --gtp-stage-ink-2: #c4ad88;
+  --gtp-stage-fill: rgb(239 226 198 / 0.08);
+  --gtp-signal: #e0623f;
+  --gtp-link: #efe2c6;
+  --gtp-globe-land: #d6bf95;
+  --gtp-globe-sea: #5a4426;
+  --gtp-globe-rim: #f3e5c4;
+}
+/* the press sets CJK in Katagami's sans by language; this look keeps every script in its serif */
+.gtp-reader[data-look='book'] :is(:lang(zh), :lang(ja), :lang(ko)) { font-family: var(--gtp-serif); }
+
+/* the cover picture fills the stage's opening plate */
+.gtp-cover-picture { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+:root:not([data-theme='light']) .gtp-reader[data-look='book'] .gtp-cover-picture { filter: brightness(0.82) saturate(0.9); }
+
+/* the head: a modest title, a lighter subtitle, and one byline row */
+.gtp-reader[data-look='book'] .gtp-title h1 { font-size: clamp(34px, 3.2vw, 44px); line-height: 1.12; font-weight: 400; letter-spacing: -0.01em; }
+/* the head's paragraphs keep their own spacing, past the text's blank-line rule */
+.gtp-reader[data-look='book'] .gtp-text .gtp-summary { margin: 26px 0 0; font-size: 21px; color: var(--gtp-ink-2); }
+.gtp-reader[data-look='book'] .gtp-text .gtp-byline { margin: 34px 0 0; }
+/* who on one line, when and how long on the next, under a rule */
+.gtp-byline { margin: 34px 0 0; padding-top: 20px; display: grid; gap: 2px; border-top: 1px solid var(--gtp-rule); font-size: 16px; line-height: 1.45; color: var(--gtp-ink-2); }
+.gtp-byline span:first-child { color: var(--gtp-ink); }
+.gtp-byline span + span { white-space: nowrap; }
+
+/* the text: large, no section numbers, a blank line between paragraphs, no indent */
+.gtp-reader[data-look='book'] .gtp-h-n { display: none; }
+.gtp-reader[data-look='book'] .gtp-text h2 { font-size: 30px; line-height: 1.2; font-weight: 400; letter-spacing: -0.01em; }
+.gtp-reader[data-look='book'] .gtp-text :is(p, li) { font-size: 21px; line-height: 1.5; }
+.gtp-reader[data-look='book'] .gtp-text p { margin: 0 0 1.5em; }
+.gtp-reader[data-look='book'] .gtp-text a { text-decoration-color: var(--gtp-ink-3); }
+/* the rail and the figures' names in the one face, in sentence case */
+.gtp-reader[data-look='book'] :is(.gtp-rail-caption, .gtp-meta dt, .gtp-end-label, .gtp-stub .gtp-mono, .gtp-plate-n) { text-transform: none; letter-spacing: 0; }
+/* a figure's name wraps rather than stopping short, and reads at night */
+.gtp-reader[data-look='book'] .gtp-stub { color: var(--gtp-ink-2); }
+.gtp-reader[data-look='book'] .gtp-stub-text { white-space: normal; }
+/* the theme switch on a paper disc, so it shows over the cover picture */
+.gtp-reader[data-look='book'] .gtp-reader-theme { width: 40px; height: 40px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); }
+
 /* ---------- Euclid: a magazine page ---------- */
 
 /* Light brown paper, one face (Katagami Serif) in sentence case throughout,
@@ -1042,6 +1124,28 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
   .gtp-print-page { --gtp-upright: 0.68; }
   .gtp-print-rail { left: -2px; width: 18px; }
   .gtp-versions { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
+
+/* the eight versions on the stage: a smaller globe, the list beside it, the poem under both */
+/* sized to its contents and centred on the stage, the globe as large as the list allows so its pins spread */
+.gtp-plate .gtp-versions { width: auto; max-width: 100%; grid-template-columns: 280px max-content; gap: 0 64px; }
+.gtp-plate .gtp-versions-globe { width: 280px; }
+.gtp-plate .gtp-version-text { font-size: 17px; }
+.gtp-plate .gtp-version-meta { font-size: 13px; }
+.gtp-plate .gtp-versions-poem { margin-top: 26px; padding-top: 20px; gap: 6px; font-size: 19px; line-height: 1.38; }
+/* on a phone the plate grows to hold the figure, and the leaders give way to the list */
+.gtp-inline-plate:has(.gtp-versions) { height: auto; }
+.gtp-inline-plate:has(.gtp-versions) .gtp-plate { position: relative; }
+.gtp-inline-plate:has(.gtp-versions) .gtp-plate-view { position: relative; inset: auto; container-type: normal; }
+
+@media (max-width: 999px) {
+  .gtp-reader[data-look='book'] .gtp-text :is(p, li) { font-size: 19px; }
+  .gtp-reader .gtp-versions { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .gtp-plate .gtp-versions { grid-template-columns: minmax(0, 1fr); }
+  .gtp-reader .gtp-versions-leaders { display: none; }
+  .gtp-reader .gtp-version-text { font-size: 17px; }
+  .gtp-reader .gtp-versions-poem { font-size: 18px; }
+  .gtp-byline { font-size: 15px; }
 }
 
 /* the theme switch on a reading page, over the stage's top corner */

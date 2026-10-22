@@ -1,0 +1,130 @@
+/* The 2D and 3D plates (content/docs/components/(2d-and-3d)): the hosts
+   the engines draw into and the few marks laid over them. Every class
+   starts with .d23- so nothing reaches another page; colors come from the
+   stage's own tokens (--dmo-ink, --dmo-ground, --dmo-accent in demos.css),
+   so each plate follows the docs theme. */
+
+.d23-host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  outline: none;
+}
+
+/* a host that turns: horizontal drags turn the scene, vertical swipes still scroll the page */
+.d23-host.is-turn {
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.d23-host.is-turn:active {
+  cursor: grabbing;
+}
+
+.d23-host:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--dmo-accent);
+}
+
+.d23-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* a CPU canvas holds one pixel per cell; CSS scales it to whole CSS pixels per cell */
+.d23-cells {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  image-rendering: pixelated;
+}
+
+.d23-fail {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+/* the stack's labels: placed by the scene at each leader's end, set right-aligned against it */
+.d23-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  margin: 0;
+  padding-right: 8px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--dmo-ink);
+  white-space: nowrap;
+  pointer-events: none;
+  translate: -100% -50%;
+  visibility: hidden;
+}
+
+.d23-label[data-ready='true'] {
+  visibility: visible;
+}
+
+/* the reading of the glyph rain's hovered column: the script's name and its code */
+.d23-read {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  max-width: calc(100% - 20px);
+  margin: 0;
+  padding: 2px 8px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  background: var(--dmo-ground);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--dmo-ink);
+  pointer-events: none;
+}
+
+.d23-read-tag {
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  color: var(--pt-ink-2);
+}
+
+.d23-read-sample {
+  color: var(--pt-ink-2);
+}
+
+/* the 2D canvases take the pointer: a crosshair, and vertical swipes still scroll the page */
+.d23-host.is-pointer {
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+
+/* the pad takes every gesture, so a finger paints in any direction */
+.d23-host.is-paint {
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.d23-cost {
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
+  .d23-cost {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+}

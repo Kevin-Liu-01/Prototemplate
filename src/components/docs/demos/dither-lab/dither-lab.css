@@ -1,0 +1,153 @@
+/* The dither lab's plates (content/docs/components, the Dither lab
+   group). Every class starts with .dl- and sits inside a .dmo-stage, so
+   the frame, the controls row and the tokens come from demos.css. A
+   canvas holds one buffer pixel per cell and CSS scales it up by a whole
+   number of device pixels, so the cells stay square and sharp.
+
+   The palettes a plate can print in: the theme's ink and paper, black on
+   white and white on black in both themes, and the docs accent on the
+   theme's paper. raster.ts reads them by name. */
+
+.dl-box {
+  --dl-print-ink: #070707;
+  --dl-print-paper: #ffffff;
+  --dl-night-ink: #f2f2f0;
+  --dl-night-paper: #070707;
+  --dl-blue: var(--docs-accent, #2f5ce0);
+
+  position: absolute;
+  inset: 44px 12px 12px;
+}
+
+/* the canvas runs under the plate's corner tag, edge to edge */
+.dl-box.is-flush {
+  inset: 0;
+}
+
+.dl-fill {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.dl-frame {
+  position: relative;
+}
+
+.dl-canvas {
+  display: block;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+.dl-glyph-canvas {
+  display: block;
+}
+
+/* a tile's name and its measured share, in the strip under the tile */
+.dl-label {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding-top: 5px;
+  overflow: hidden;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  white-space: nowrap;
+}
+
+.dl-label.is-top {
+  flex-wrap: wrap;
+  column-gap: 8px;
+  row-gap: 0;
+  padding-top: 2px;
+}
+
+.dl-num {
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-ink);
+}
+
+/* the file input the Open Picture button clicks; the button is the control */
+.dl-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dl-drop {
+  position: absolute;
+  inset: 10px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0 16px;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-paper);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  color: var(--pt-ink);
+  text-align: center;
+  pointer-events: none;
+}
+
+.dl-status {
+  flex-basis: 100%;
+}
+
+.dl-status.is-error {
+  color: var(--docs-accent, #2f5ce0);
+}
+
+/* two lines reserved, so the bar does not jump as the sentence changes */
+.dl-walk-line {
+  min-height: 3em;
+}
+
+.dl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dl-ladder-code {
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  color: var(--pt-ink);
+}
+
+.dl-lens {
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+
+.dl-lens:focus-visible {
+  outline: 2px solid var(--docs-accent, #2f5ce0);
+  outline-offset: 2px;
+}
+
+.dl-brush {
+  cursor: crosshair;
+  touch-action: none;
+}
+
+@media (max-width: 640px) {
+  .dl-box {
+    inset: 40px 10px 10px;
+  }
+
+  .dl-box.is-flush {
+    inset: 0;
+  }
+}

@@ -1,0 +1,202 @@
+---
+title: 'Controls'
+description: 'The shell and site controls live: segmented switches, toggles, sliders, steppers, the install field and copy buttons, with their states and keys.'
+icon: Sliders
+sources:
+  - src/components/docs/demos/interactables
+  - src/components/viewer/Toolbar.tsx
+  - src/components/viewer/Toolbar.css
+  - src/components/viewer/Seg.tsx
+  - src/components/viewer/Seg.css
+  - src/components/viewer/ToolButton.tsx
+  - src/components/viewer/ToolButton.css
+  - src/components/viewer/ThemeButton.tsx
+  - src/components/viewer/InstallField.tsx
+  - src/components/viewer/InstallField.css
+  - src/components/viewer/Progress.tsx
+  - src/components/viewer/tokens.css
+---
+
+import { InstallFieldDemo, SegDemo, ShellToolbarDemo, ToolButtonDemo } from '@/components/docs/demos/interactables/lazy';
+
+The shell's controls come from one small set in `src/components/viewer`: the tool button, the segmented switch built from tool buttons, the count that steps through items, the theme button and the install field. `tokens.css` owns their states, so a hover, a focus ring or a pressed frame looks the same in the toolbar, the index panel and a page head. The plates mount the real components. The toolbar, the install field and the panels read the shell's state through `usePtShell`, which throws outside `ViewerShell`, so those plates mount them inside a small provider in `src/components/docs/demos/interactables/demo-shell.tsx` that publishes the same state.
+
+## The toolbar
+
+The plate mounts `Toolbar` over a stage of the brand deck's first twelve slides, with the index panel, the help card, the progress line and the toast that the shell draws around it. Every button acts: the count steps, the seg changes the view, Index slides the panel in, and Theme flips this page.
+
+<ShellToolbarDemo />
+
+The bar measures its two groups against its own box and collapses labels in tiers until they fit. Tier one takes the words off Copy link and Fullscreen, tier two off Previous and Next, tier three off Theme, and tier four off Index, Help and Present while the Search field narrows to 120px. Route views shows the bar adapting to the views a route offers: with two views Present leaves, and with one view the seg leaves too. At 900px and below the bar is one 52px row of icon squares, and at 600px and below Previous, Next and Copy link leave.
+
+The count is the stepper. Click it and type a number, and Enter goes there. Escape or a click away closes the field, and a number past the end says `No slide 40` in the toast. Previous and Next clamp at the first and last item, and the slider under the plate drives the same active slide.
+
+### Import and props
+
+```tsx
+import { Toolbar } from '@/components/viewer/Toolbar';
+
+<Toolbar title='Brand deck' mark='gt' />;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `title` | string | The route's name, shown beside the mark while the list column is closed. |
+| `mark` | `'gt'` or `'pt'` | The mark beside the title. |
+| `slot` | node | The route's own controls, first in the right group. |
+| `modeLabels` | partial record of view to word | The route's own words for the seg, such as `{ slide: 'Live' }`. |
+
+Everything else comes from the shell's state: the views, the key table, the item noun, the active item and the open panels. `Progress` takes an optional `value` from 0 to 1; on a paged route it fills to the active item's place as a `scaleX` transform over 160ms.
+
+### Keys
+
+The plate binds these keys while focus is inside it. In the shell they act anywhere on the page, and Cmd K or Ctrl K opens the search; this page keeps Cmd K for its own search, so the plate opens it with the slash.
+
+| Key | Action |
+| --- | --- |
+| Right arrow, Space | Next slide |
+| Left arrow, Shift Space | Previous slide |
+| Home, End | First and last slide |
+| G, B | Grid view, book view |
+| / | Open the search |
+| R | Open or close the index panel |
+| ? | Open or close the keyboard shortcuts |
+| D | Flip the theme |
+| Esc | Back one layer: the shortcuts, the index, then the first view |
+
+### Reduced motion and themes
+
+Under reduced motion every `--pt-dur-` token is 0ms, so the seg's indicator, the panel's slide, the progress fill and the toast land at once. Every color is a `--pt-` token, so the bar follows the theme.
+
+## The segmented switch
+
+`Seg` is a ruled group of tool buttons with one active option, shown here in the three forms the shell uses: the toolbar's view switch, the index panel's set switch and the sidebar's icon-only density toggle. Slow stretches the indicator's move to 900ms so it can be watched.
+
+<SegDemo />
+
+One ink pill slides under the options. It sits 2px inside the active option with the chip corner, and its place and width move together over 180ms. The group measures the pill with a `ResizeObserver`, so the first measurement forces no layout; until then the active option fills itself, and a render without scripts still shows the choice. A click on the active option returns to the first option when the active one is not the first, as the deck viewer does. After a pick the option lets go of focus.
+
+### Import and props
+
+```tsx
+import { Seg } from '@/components/viewer/Seg';
+
+<Seg label='View' options={options} value={mode} onChange={setMode} />;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `options` | `{ value, label, icon?, title }[]` | The options in order. `title` is the tooltip and names the key, as in `Everything as a grid (G)`. |
+| `value` | string | The active option's value. |
+| `onChange` | `(value) => void` | Called with the picked value, or with the first value on a click of the active option. |
+| `label` | string | The group's accessible name. |
+| `iconOnly` | boolean | Icon squares with the label as each option's accessible name. |
+| `className` | string | Extra classes; `is-small` is the sidebar's 28px form. |
+
+### Keys
+
+| Key | Action |
+| --- | --- |
+| Tab | Moves to the next option; every option is in the tab order |
+| Enter, Space | Picks the focused option |
+
+### States
+
+| State | What draws it |
+| --- | --- |
+| Rest | The option's text in `--pt-ink-2` |
+| Hover | A plate pill 2px inside the option |
+| Focus | A 1px ink ring on the option's pill; paper, 3px inside, on the active option |
+| Active | The shared ink pill under paper text |
+
+## Tool buttons
+
+`ToolButton` is every button in the shell: a 32px button whose `title` names its key. With a label it is a text button; without one it is a 32px icon square, and its accessible name is the title without the key. Point at a button in the row or focus it, and the readout prints its tooltip and the name a screen reader hears. The specimen under it draws each state at rest from the shell's own hover and focus rules.
+
+<ToolButtonDemo />
+
+The tooltip is the native `title` attribute. A toggle carries `aria-pressed`; `quiet` keeps the attribute and drops the ink frame for a toggle whose state shows elsewhere, as the list toggle does while the list is open. `solid` is the one filled button, Present, which keeps the old nav's 8px corner and draws its play glyph after the word. A tool button has no disabled state: the shell leaves out a control that cannot act, and Previous and Next clamp at the ends.
+
+The theme button is a tool button with a text glyph: ◐ in the light theme and ◑ in the dark. Its accessible name says where it goes next (`Switch to light`). The choice lives on `html[data-theme]`, persists under `gt-theme` and reaches every same-origin frame on the page.
+
+### Import and props
+
+```tsx
+import { ThemeButton } from '@/components/viewer/ThemeButton';
+import { ToolButton } from '@/components/viewer/ToolButton';
+
+<ToolButton icon='index' label='Index' title='Show or hide the index (R)' pressed={open} onClick={toggle} />;
+<ThemeButton />;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `title` | string | The tooltip; names the key in parentheses, as in `Dark or light (D)`. |
+| `onClick` | `() => void` | The action. |
+| `icon` | icon name | A 16px Heroicons solid glyph from `icons.tsx`. |
+| `label` | string | The word; absent makes the button an icon square. |
+| `pressed` | boolean | Sets `aria-pressed` and the ink frame; leave it out on a button that does not toggle. |
+| `quiet` | boolean | `aria-pressed` without the ink frame. |
+| `solid` | boolean | The filled call to action. |
+| `hideSm` | boolean | Hidden at 900px and below. |
+| `ariaLabel` | string | The accessible name, when the title without its key is not it. |
+| `children` | node | Replaces the icon, as the theme button's glyph does. |
+
+`ThemeButton` takes `label` (the word Theme, and the D key in the title) and `className`. The label is on unless a className is passed, so a className alone gives the direction navs' icon square.
+
+### Keys
+
+| Key | Action |
+| --- | --- |
+| Tab | Moves to the next button |
+| Enter, Space | Presses the focused button |
+
+### States
+
+| State | What draws it |
+| --- | --- |
+| Rest | `--pt-ink-2` text, no frame |
+| Hover | Ink text and a 1px `--pt-hair` frame |
+| Focus | A 1px ink outline on the button's edge |
+| Pressed | Ink text and a 1px ink frame |
+| Solid | An ink ground under paper text; hover drops the ground for ink text in the ink frame |
+
+Text color, ground and frame move over 120ms with `ease-out`, and nothing else on the button animates.
+
+## The install field
+
+`InstallField` is the site's one copy control: the command in the mono face in a field at the control corner, with the copy button as the field's last segment. A command breaks only between its groups, and a flag keeps its value, so `--project <dir>` never splits. Width sets the field at the book head panel's 304px, a wider column or a 220px box.
+
+<InstallFieldDemo />
+
+A click on the button writes the command to the clipboard, says so in the shell's toast and shows the check glyph for 1.6 seconds. Without a clipboard the toast shows the command itself. One click on the command selects all of it for a manual copy. At 900px and below the copy segment is a 44px target.
+
+### Import and props
+
+```tsx
+import { InstallField } from '@/components/viewer/InstallField';
+
+<InstallField command='pnpm skills:install gt-voice --project <dir>' />;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `command` | string | The command as a reader would type it. |
+
+The field calls the shell's `say()`, so it mounts under `ViewerShell` or a provider that publishes the same state. `commandGroups(command)` returns the groups a line may break between.
+
+### Keys
+
+| Key | Action |
+| --- | --- |
+| Tab | Moves to the copy button; the field's frame turns ink |
+| Enter, Space | Copies the command |
+
+### States
+
+| State | What draws it |
+| --- | --- |
+| Rest | A 1px `--pt-hair` frame |
+| Hover | The frame in `--pt-ink-2` |
+| Focus | The frame in ink while the copy button has focus |
+| Copied | The check glyph in ink for 1.6 seconds |

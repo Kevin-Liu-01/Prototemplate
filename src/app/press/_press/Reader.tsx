@@ -148,7 +148,7 @@ export default function Reader({ story, next }: Props) {
   let figureCount = 0;
 
   return (
-    <SliderStyleContext value={story.look === 'fuma' ? 'mask' : 'stops'}>
+    <SliderStyleContext value={story.look === 'fuma' ? 'mask' : story.look === 'book' ? 'book' : 'stops'}>
     <div className='gtp gtp-reader' data-look={story.look}
       onClickCapture={(e) => {
         // every link home runs the move backwards: this story's cover shrinks into its book on the shelf
@@ -189,42 +189,44 @@ export default function Reader({ story, next }: Props) {
           <header className='gtp-title' data-plate={0} data-section={0}>
             {wide ? null : (
               <div className='gtp-phone-cover'>
-                <Cover
-                  slug={story.slug}
-                  title={story.title}
-                  lang='en'
-                  dir='ltr'
-                  picture={story.cover}
-                  playing
-                />
+                <StoryCover story={story} playing />
               </div>
             )}
             <h1>{story.title}</h1>
             <p className='gtp-summary'>{story.summary}</p>
-            <dl className='gtp-meta'>
-              <dt>
-                <PenIcon size={13} />
-                By
-              </dt>
-              <dd>{story.authors.join(', ')}</dd>
-              <dt>
-                <CalendarIcon size={13} />
-                Published
-              </dt>
-              <dd>{story.date}</dd>
-              <dt>
-                <ClockIcon size={13} />
-                Reading
-              </dt>
-              <dd>
-                {story.minutes} minutes, {figures.length} figures
-              </dd>
-              <dt>
-                <PinIcon size={13} />
-                Filed from
-              </dt>
-              <dd className='gtp-mono'>{dmsPair(story.dateline)}</dd>
-            </dl>
+            {story.look === 'book' ? (
+              <p className='gtp-byline'>
+                <span>By {story.authors.join(', ')}</span>
+                <span>
+                  {longDate(story.date)} · {story.minutes} minute read
+                </span>
+              </p>
+            ) : (
+              <dl className='gtp-meta'>
+                <dt>
+                  <PenIcon size={13} />
+                  By
+                </dt>
+                <dd>{story.authors.join(', ')}</dd>
+                <dt>
+                  <CalendarIcon size={13} />
+                  Published
+                </dt>
+                <dd>{story.date}</dd>
+                <dt>
+                  <ClockIcon size={13} />
+                  Reading
+                </dt>
+                <dd>
+                  {story.minutes} minutes, {figures.length} figures
+                </dd>
+                <dt>
+                  <PinIcon size={13} />
+                  Filed from
+                </dt>
+                <dd className='gtp-mono'>{dmsPair(story.dateline)}</dd>
+              </dl>
+            )}
           </header>
 
           {blocks.map((block, i) => {
@@ -324,14 +326,7 @@ export default function Reader({ story, next }: Props) {
           {wide ? (
             <div className='gtp-stage'>
               <section className='gtp-plate gtp-plate-cover' data-on={plate === 0} aria-hidden={plate !== 0} inert={plate !== 0} aria-label='Cover'>
-                <Cover
-                  slug={story.slug}
-                  title={story.title}
-                  lang='en'
-                  dir='ltr'
-                  picture={story.cover}
-                  playing={plate === 0}
-                />
+                <StoryCover story={story} playing={plate === 0} />
               </section>
               {figures.map((figure) => (
                 <Plate
@@ -350,6 +345,21 @@ export default function Reader({ story, next }: Props) {
     </div>
     </SliderStyleContext>
   );
+}
+
+/** '2026-10-19' as a printed page gives it: 19 October 2026, never split across lines. */
+function longDate(iso: string): string {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).replace(/ /g, '\u00a0');
+}
+
+/** A story's cover: its own picture for the book look, the live cover for the others. */
+function StoryCover({ story, playing }: { story: Story; playing: boolean }) {
+  if (story.look === 'book') {
+    // eslint-disable-next-line @next/next/no-img-element -- the story's own cover picture, filling the plate
+    return <img className='gtp-cover gtp-cover-picture' src={story.cover} alt='' />;
+  }
+  return <Cover slug={story.slug} title={story.title} lang='en' dir='ltr' picture={story.cover} playing={playing} />;
 }
 
 /** The kind of figure, as the stub and the plate head show it. */

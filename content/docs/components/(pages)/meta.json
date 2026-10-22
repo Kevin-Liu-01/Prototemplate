@@ -1,0 +1,8 @@
+{
+  "title": "Pages",
+  "defaultOpen": true,
+  "pages": [
+    "page-gallery",
+    "page-templates"
+  ]
+}

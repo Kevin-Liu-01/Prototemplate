@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 
 import { Icon } from '@/components/viewer/icons';
 import type { IconName } from '@/components/viewer/icons';
@@ -20,7 +20,8 @@ import './ToolButton.css';
 export type ToolButtonProps = {
   /** tooltip; names the key in parentheses, as in 'Dark or light (D)' */
   title: string;
-  onClick: () => void;
+  /** the button's click; the event tells a pointer press (detail above 0) from a key press */
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   /** the 16px solid glyph from icons.tsx */
   icon?: IconName;
   /** text label in .pt-lb; absent makes the button an icon square */

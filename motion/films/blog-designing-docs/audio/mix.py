@@ -11,7 +11,8 @@ index.html, where O[n] is the film time of line n's first word, and the
 scene clock `const B = {...}` (the card's cut and the film's end).
 
 Narrator (audio/vo-N.master.wav, 48 kHz, dual mono). Each ElevenLabs take
-(Frederick Surrey, kit/audio/voice.json, speed 1.0, one take per line; line 6 retaken once) is trimmed to
+(Frederick Surrey, kit/audio/voice.json, speed 1.0, one take per line; line 6 retaken once; line 2 rewritten and
+recorded again for v6, 2026-10-16) is trimmed to
 30 ms before its first sound (or 0.05 s before its first word, whichever is
 earlier; scribe_v1 word times in audio/vo-N.stt.json can start after a soft
 onset) and at least 0.30 s after its last word (and 80 ms past its last
@@ -65,7 +66,7 @@ P = lambda *a: os.path.join(HERE, *a)
 
 LINES = [
     'Most docs readers are now AI agents.',
-    'Humans still read docs to evaluate a product.',
+    'An intuitive, intentional docs interface becomes even more important.',
     'General Translation redesigned its docs from scratch so people would read its writing.',
     'Interfaces keep getting more cluttered, which creates mental clutter.',
     'The redesign started by deleting extra lines, links, and buttons.',

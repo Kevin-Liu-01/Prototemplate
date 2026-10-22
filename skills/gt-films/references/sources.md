@@ -34,6 +34,7 @@ Where each rule of `gt-films` comes from, with dates. Paths are relative to `$PR
 - 2026-10-09: a plain physical move instead of a morph; thin lines at phone size; white logos on Slash's gold; the 19.5 s Slash cut taken off the site; the standing rules and the lane rules written down for every lane.
 - 2026-10-10: answer films tell a story; never stop renders by a pattern; the `motion/` allowlist (decision K3 of the system v2 plan).
 - 2026-10-11: "clean up our videos a lot our folder in prototemplate is so messy. make the way we do and generate things a lot more cleaned up": earlier cuts and set-aside builds moved to `~/gt/motion-archive/2026-10-11/` (6.2 GB), and one command, `kit/film.mjs`, for drafts, finals and the archive, with the render queue that replaced the `mkdir` lock (a 60 s poller lost to 30 s pollers for hours) and the pair rule from hunayn's fix round 2.
+- 2026-10-21: "make sure they use our actual logo, a bunch show a wrong exploration at the end": the logo in a film is the doubled-line GT mark alone, and `kit/marks` holds explorations (`references/look.md`, Logos, marks and the frame; MOTION.md's brief corrected the same day, the Videos session's logo batch).
 
 ## Memory notes and research
 

@@ -1,0 +1,565 @@
+/* The artifact plates of /docs/components/artifact-pictures,
+   /docs/components/covers-and-cards and /docs/components/films-and-sheets.
+   Every class starts with .dmo-art-, .dmo-cg-, .dmo-og-, .dmo-fc-,
+   .dmo-film- or .dmo-sheet-, so nothing here reaches another page. Corners
+   come from the radius tokens and type from the type tokens, as in
+   demos.css. The export frames (covers, cards, the banner) are drawn in
+   their own theme, whatever the page's, so their colors are the brand's
+   absolute values. */
+
+/* ---------- the artifact pictures ---------- */
+
+.dmo-art-panes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* a pane is the picture file's 16:9 at the theme's ground */
+.dmo-art-pane {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+}
+
+.dmo-art-pane.is-dark {
+  background: rgb(7, 7, 7);
+}
+
+.dmo-art-pane.is-light {
+  background: rgb(255, 255, 255);
+}
+
+.dmo-art-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/* a label on a picture: an opaque chip in the pane's own theme */
+.dmo-art-chip {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 2;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: var(--pt-radius-chip);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.dmo-art-pane.is-dark .dmo-art-chip {
+  background: rgb(7, 7, 7);
+  border-color: rgba(242, 242, 240, 0.22);
+  color: rgb(242, 242, 240);
+}
+
+.dmo-art-pane.is-light .dmo-art-chip {
+  background: rgb(255, 255, 255);
+  border-color: rgba(7, 7, 7, 0.18);
+  color: rgb(7, 7, 7);
+}
+
+.dmo-art-caption {
+  margin: 12px 0 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-art-caption-title {
+  font-weight: var(--pt-w-label);
+  color: var(--pt-ink);
+}
+
+/* the compare stage: the grid and its screen at one framing, a seam between */
+.dmo-art-cmp {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: ew-resize;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.dmo-art-cmp-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.dmo-art-cmp-layer.is-after {
+  clip-path: inset(0 0 0 var(--art-seam, 50%));
+}
+
+/* both layers zoom about the centre, so the cells grow in place */
+.dmo-art-zoom {
+  position: absolute;
+  inset: 0;
+  transform: scale(var(--art-zoom, 1));
+  transform-origin: 50% 50%;
+}
+
+.dmo-art-grid {
+  position: absolute;
+  display: block;
+  max-width: none;
+  image-rendering: pixelated;
+  opacity: 0.7;
+  filter: invert(1);
+}
+
+:root[data-theme='dark'] .dmo-art-grid {
+  opacity: 0.62;
+  filter: none;
+}
+
+.dmo-art-cmp .dmo-art-canvas {
+  opacity: 0.7;
+}
+
+:root[data-theme='dark'] .dmo-art-cmp .dmo-art-canvas {
+  opacity: 0.62;
+}
+
+.dmo-art-cmp-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--art-seam, 50%);
+  z-index: 2;
+  width: 1px;
+  background: var(--dmo-accent);
+  pointer-events: none;
+}
+
+.dmo-art-cmp .dmo-art-chip {
+  border-color: var(--pt-hair);
+  background: var(--dmo-ground);
+  color: var(--pt-ink);
+}
+
+.dmo-art-cmp .dmo-art-chip.is-right {
+  left: auto;
+  right: 8px;
+}
+
+@media (max-width: 640px) {
+  .dmo-art-panes {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- the cover generator ---------- */
+
+/* the cover and the card side by side at one height (their widths in the
+   ratio of their aspects, 16:9 to 1.91:1), the banner across under them */
+.dmo-cg {
+  display: grid;
+  grid-template-columns: minmax(0, 1.778fr) minmax(0, 1.905fr);
+  gap: 18px 16px;
+}
+
+.dmo-cg-figure {
+  margin: 0;
+  min-width: 0;
+}
+
+.dmo-cg-figure:last-child {
+  grid-column: 1 / -1;
+}
+
+.dmo-cg-caption {
+  margin-top: 8px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+/* a frame: square corners, as the file is; one export px is --u */
+.dmo-cg-frame {
+  --u: calc(100cqw / var(--cg-w));
+
+  position: relative;
+  container-type: inline-size;
+  overflow: hidden;
+  outline: 1px solid var(--pt-hair);
+  background: var(--cg-ground);
+  color: var(--cg-ink);
+}
+
+.dmo-cg-frame.is-dark {
+  --cg-ground: rgb(7, 7, 7);
+  --cg-ink: rgb(242, 242, 240);
+  --cg-quiet: rgb(138, 143, 152);
+  --cg-hair: rgb(59, 59, 58);
+  --tc-ink: var(--cg-ink);
+}
+
+.dmo-cg-frame.is-light {
+  --cg-ground: rgb(255, 255, 255);
+  --cg-ink: rgb(7, 7, 7);
+  --cg-quiet: rgb(110, 115, 124);
+  --cg-hair: rgb(210, 210, 210);
+  --tc-ink: var(--cg-ink);
+}
+
+.dmo-cg-field {
+  position: absolute;
+}
+
+.dmo-cg-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.dmo-cg-head {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--u));
+}
+
+.dmo-cg-mark {
+  display: block;
+  flex: none;
+  aspect-ratio: 1213 / 771;
+}
+
+.dmo-cg-mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.dmo-cg-name {
+  font-size: calc(26 * var(--u));
+  line-height: var(--pt-d1-lh);
+  font-weight: var(--pt-w-label);
+  white-space: nowrap;
+}
+
+.dmo-cg-copy {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+/* the doubled line over the title: two 1 export px lines with 4 between
+   them (the box is border-box), never closer than 1 screen px */
+.dmo-cg-double {
+  display: block;
+  width: calc(120 * var(--u));
+  height: max(3px, calc(6 * var(--u)));
+  margin-bottom: calc(28 * var(--u));
+  border-top: max(1px, var(--u)) solid var(--cg-ink);
+  border-bottom: max(1px, var(--u)) solid var(--cg-ink);
+}
+
+.dmo-cg-title {
+  display: -webkit-box;
+  margin: 0;
+  /* room for the descenders of the second line inside the clamp's clip */
+  padding-bottom: 0.1em;
+  overflow: hidden;
+  font-size: calc(64 * var(--u));
+  line-height: var(--pt-d1-lh);
+  letter-spacing: var(--pt-d1-track);
+  font-weight: var(--pt-w-display);
+  font-feature-settings: var(--pt-ff-display);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.dmo-cg-rule {
+  position: absolute;
+  background: var(--cg-hair);
+}
+
+.dmo-cg-rule.is-rail-l,
+.dmo-cg-rule.is-rail-r {
+  top: 0;
+  bottom: 0;
+  width: max(1px, var(--u));
+}
+
+.dmo-cg-rule.is-rail-l {
+  left: calc(64 * var(--u));
+}
+
+.dmo-cg-rule.is-rail-r {
+  left: calc(1136 * var(--u));
+}
+
+.dmo-cg-rule.is-rule-t,
+.dmo-cg-rule.is-rule-b {
+  left: 0;
+  right: 0;
+  height: max(1px, var(--u));
+}
+
+.dmo-cg-rule.is-rule-t {
+  top: calc(96 * var(--u));
+}
+
+.dmo-cg-rule.is-rule-b {
+  top: calc(534 * var(--u));
+}
+
+.dmo-cg-foot {
+  position: absolute;
+  left: calc(104 * var(--u));
+  top: calc(535 * var(--u));
+  height: calc(95 * var(--u));
+  display: flex;
+  align-items: center;
+  font-size: calc(22 * var(--u));
+  line-height: var(--pt-t-meta-lh);
+  color: var(--cg-quiet);
+}
+
+/* the post cover, 1920 by 1080: the field on the right 45 percent, the
+   mark and the name at the top left, the title at the bottom left */
+.dmo-cg-frame.is-cover .dmo-cg-field {
+  left: calc(1056 * var(--u));
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.dmo-cg-frame.is-cover .dmo-cg-head {
+  left: calc(96 * var(--u));
+  top: calc(96 * var(--u));
+}
+
+.dmo-cg-frame.is-cover .dmo-cg-mark {
+  height: calc(40 * var(--u));
+}
+
+.dmo-cg-frame.is-cover .dmo-cg-name {
+  font-size: calc(32 * var(--u));
+}
+
+.dmo-cg-frame.is-cover .dmo-cg-copy {
+  left: calc(96 * var(--u));
+  bottom: calc(96 * var(--u));
+  width: calc(864 * var(--u));
+}
+
+.dmo-cg-frame.is-cover .dmo-cg-double {
+  width: calc(180 * var(--u));
+  height: max(3px, calc(10 * var(--u)));
+  margin-bottom: calc(40 * var(--u));
+  border-top-width: max(1px, calc(2 * var(--u)));
+  border-bottom-width: max(1px, calc(2 * var(--u)));
+}
+
+.dmo-cg-frame.is-cover .dmo-cg-title {
+  font-size: calc(80 * var(--u));
+}
+
+/* the social card, 1200 by 630: the site card's rails at x 64 and 1136
+   and rules at y 96 and 534, the field in the right half of the body */
+.dmo-cg-frame.is-card .dmo-cg-field {
+  left: calc(624 * var(--u));
+  top: calc(146 * var(--u));
+  width: calc(472 * var(--u));
+  height: calc(340 * var(--u));
+}
+
+.dmo-cg-frame.is-card .dmo-cg-head {
+  left: calc(104 * var(--u));
+  top: 0;
+  height: calc(96 * var(--u));
+}
+
+.dmo-cg-frame.is-card .dmo-cg-mark {
+  height: calc(24 * var(--u));
+}
+
+.dmo-cg-frame.is-card .dmo-cg-copy {
+  left: calc(104 * var(--u));
+  top: calc(97 * var(--u));
+  width: calc(472 * var(--u));
+  height: calc(437 * var(--u));
+  justify-content: center;
+}
+
+/* the X banner, 1500 by 500: the field on the left 30 percent, as the
+   shipped banner's globe and glyph rain, the mark and the title right of it */
+.dmo-cg-frame.is-banner .dmo-cg-field {
+  left: 0;
+  top: 0;
+  width: calc(450 * var(--u));
+  bottom: 0;
+}
+
+.dmo-cg-frame.is-banner .dmo-cg-head {
+  left: calc(546 * var(--u));
+  top: calc(128 * var(--u));
+}
+
+.dmo-cg-frame.is-banner .dmo-cg-mark {
+  height: calc(24 * var(--u));
+}
+
+.dmo-cg-frame.is-banner .dmo-cg-copy {
+  left: calc(546 * var(--u));
+  top: calc(196 * var(--u));
+  width: calc(858 * var(--u));
+}
+
+@media (max-width: 640px) {
+  .dmo-cg {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- the social card and the fallback cover ---------- */
+
+/* an export shown whole: square corners, as the file is */
+.dmo-og-card {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 630;
+  outline: 1px solid var(--pt-hair);
+  background: rgb(7, 7, 7);
+}
+
+.dmo-fc {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.dmo-fc-cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--pt-ink) 4%, transparent);
+}
+
+.dmo-fc-cover svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  shape-rendering: crispEdges;
+}
+
+.dmo-fc-cover text {
+  font-family: inherit;
+  font-weight: var(--pt-w-display);
+}
+
+.dmo-fc-cover pattern path {
+  fill: #2f5ce0;
+}
+
+:root[data-theme='dark'] .dmo-fc-cover pattern path {
+  fill: #86a8ff;
+}
+
+/* ---------- the films and the contact sheets ---------- */
+
+/* the picker: a native select drawn as the field control (16px type, so a
+   phone does not zoom on focus) */
+.dmo-art-select {
+  width: 100%;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-paper);
+  font-family: var(--pt-text);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink);
+}
+
+.dmo-art-select:focus-visible {
+  outline: 2px solid var(--docs-accent, #2f5ce0);
+  outline-offset: 1px;
+}
+
+/* the player reserves its 16:9 before the poster arrives */
+.dmo-film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background: rgb(7, 7, 7);
+}
+
+.dmo-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dmo-sheet-view,
+.dmo-sheet-strip {
+  cursor: ew-resize;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.dmo-sheet-view,
+.dmo-sheet-thumb {
+  container-type: inline-size;
+  overflow: hidden;
+  background: rgb(7, 7, 7);
+}
+
+.dmo-sheet-view {
+  border: 1px solid var(--pt-hair);
+}
+
+/* one tile of the sheet: --k is screen px per sheet px, so the 384 px tile
+   spans the box, and the tiles sit on a 387 by 219 pitch */
+.dmo-sheet-tile {
+  --k: calc(100cqw / 384);
+
+  aspect-ratio: 384 / 216;
+  background-repeat: no-repeat;
+  background-size: calc(var(--sheet-w) * var(--k)) auto;
+  background-position: calc(var(--sheet-col) * -387 * var(--k)) calc(var(--sheet-row) * -219 * var(--k));
+}
+
+.dmo-sheet-strip {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.dmo-sheet-thumb {
+  outline: 1px solid var(--pt-hair);
+}
+
+.dmo-sheet-thumb.is-on {
+  outline: 2px solid var(--dmo-accent);
+  outline-offset: 1px;
+}
+
+/* ---------- the report card ---------- */
+
+/* the card's sheet (src/components/try/try.css) reads the toolchain
+   tokens, which the stage bridges; this one has no bridge of its own */
+.dmo-try {
+  --tc-hair-band-strong: color-mix(in srgb, var(--dmo-ink) 36%, transparent);
+}

@@ -1,0 +1,218 @@
+---
+title: 'Search, filters and menus'
+description: 'The command search, the list filter, the language selector, the help card and the toast, each mounted with its keyboard behaviour.'
+icon: Search
+sources:
+  - src/components/docs/demos/interactables
+  - src/components/viewer/Search.tsx
+  - src/components/viewer/Search.css
+  - src/components/viewer/SidebarFilter.tsx
+  - src/components/viewer/SidebarFilter.css
+  - src/components/viewer/HelpCard.tsx
+  - src/components/viewer/Toast.tsx
+  - src/components/viewer/IndexPanel.tsx
+  - src/components/viewer/useShellKeys.ts
+  - src/app/d/production/sections/LanguageSelector.tsx
+  - src/lib/search-index.ts
+  - src/lib/surfaces.ts
+---
+
+import { FilterDemo, HelpToastDemo, IndexPanelDemo, LanguageSelectorDemo, SearchDemo } from '@/components/docs/demos/interactables/lazy';
+
+The shell finds things in three ways: the search palette over every page, document, heading and slide; the filter at the head of a list; and the index panel of every page on the site. The help card lists the keys, and the toast confirms an action in one line. Each plate mounts the real component. The palette, the help card and the toast are fixed to the window in the shell, so each plate's stage is a containing block and they open inside it. The help card and the index panel read the shell's state, so their plates mount them in the small provider described on [Controls](/docs/components/controls). The language selector comes from the production mirror of the live site.
+
+## The search palette
+
+The trigger is the toolbar's field-shaped button: the search glyph, the word Search and a key chip that reads ⌘K, or Ctrl K on Windows and Linux. It opens a card over a scrim with a 34px filter, a count and the results as ruled rows in groups, each row a glyph, a title and its address. Trigger switches to the labeled tool button the direction corner stacks.
+
+<SearchDemo />
+
+The index covers pages, documents and their headings, directions, archive versions, brand sections, library anchors and the deck's slides. It is a chunk of its own, about 59K, loaded on the first open or as soon as the pointer or focus reaches the trigger. An empty query shows a short map of the site that fits the card without a scroll region. A plain click on a row opens it, and a click with a modifier keeps the browser's meaning. A row is a real link, so opening one leaves this page.
+
+### Import and props
+
+```tsx
+import { openSearch, Search } from '@/components/viewer/Search';
+
+<Search />;
+openSearch(); // opens the mounted palette from a key owner
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `trigger` | `'field'` or `'tool'` | The toolbar's field-shaped button, or a labeled tool button. Default `'field'`. |
+| `className` | string | Extra classes on the overlay. |
+| `onOpen` | `() => void` | Called as the palette opens, from the button or from a key. |
+
+`openSearch()` fires one document event that every mounted palette answers, so the key owner never holds the palette's state. `preloadSearch()` starts loading the index ahead of the first open.
+
+### Keys
+
+| Key | Action |
+| --- | --- |
+| Cmd K, Ctrl K | Opens the palette in the shell (on this page, / while focus is inside the plate) |
+| Up, Down arrows | Move the active row |
+| Home, End | First and last row, while the query is empty |
+| Enter | Opens the active row |
+| Esc | Closes the palette |
+
+The pointer makes the row under it the active one.
+
+### Reduced motion and themes
+
+The scrim fades in over 160ms and the card fades and rises 8px over 200ms; under reduced motion both appear at once. The card is paper with a `--pt-hair` frame in both themes. At 900px and below the addresses leave the rows, and at 600px and below the key line at the foot leaves too.
+
+## The list filter
+
+`SidebarFilter` is the filter row at the head of a list: the field with the search glyph, a clear button while it holds text, and the count at the row's right end. It is controlled, so the host owns the query and the keys. The plate filters the docs pages by title and address. Size sets the field at the index panel's 34px and 13.5px or the sidebar's 30px and 13px.
+
+<FilterDemo />
+
+In the sidebar, Enter opens the first match. On the plate, Enter marks the first match and moves focus to it, and Enter on a focused row follows its link. The clear button empties the field and puts focus back in it.
+
+### Import and props
+
+```tsx
+import { SidebarFilter } from '@/components/viewer/SidebarFilter';
+
+<SidebarFilter value={query} onChange={setQuery} onKeyDown={onKey} placeholder='Filter pages' count='14 pages' inputRef={input} />;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `value` | string | The query. |
+| `onChange` | `(value) => void` | Called on every edit and on clear. |
+| `onKeyDown` | keyboard handler | The host's keys. |
+| `placeholder` | string | The field's placeholder, as in `Filter pages`. |
+| `label` | string | The accessible name; the placeholder when absent. |
+| `count` | string | The count at the row's right end, as in `14 pages`. |
+| `inputRef` | ref | The input, for the host's focus moves. |
+| `className` | string | Extra classes on the row. |
+
+`--pt-filter-h` and `--pt-filter-fs`, set on `.pt-filter`, size the field.
+
+### Keys
+
+These are the sidebar's keys, which the plate's host repeats.
+
+| Key | Action |
+| --- | --- |
+| Esc | Clears the query; with the field empty, lets go of focus |
+| Down arrow | Moves focus to the first row |
+| Enter | Takes the first match while the field holds text |
+| Up, Down arrows on a row | Walk the rows; Up on the first row returns to the field |
+| Home, End on a row | First and last row |
+
+### States
+
+| State | What draws it |
+| --- | --- |
+| Rest | A 1px `--pt-hair` frame, the glyph and placeholder in titanium |
+| Focus | The frame and the glyph in ink |
+| Text | The clear button inside the field, 4px from its end |
+
+## The language selector
+
+The live site's footer seats its language selector at the right end of its last strip. The trigger is the language glyph, the current language's name and a chevron, and it opens a popover of the site's eight locales above itself. The plate mounts the production mirror's rebuild, which is a stub: choosing a language closes the popover and changes nothing.
+
+<LanguageSelectorDemo />
+
+The popover's right edge sits on the trigger's right edge, 4px above it. Where that would put its left edge inside 16px of the window's edge, as on a phone, it moves right. Each flag is a flag-icons sprite at 16px, and the active row carries a check.
+
+### Import and props
+
+```tsx
+import LanguageSelector from '@/app/d/production/sections/LanguageSelector';
+
+<div className='toolchain-root prod-root'>
+  <LanguageSelector />
+</div>;
+```
+
+The selector takes no props. Its rules live in `prod-chrome.css` under `.prod-root`, and its colors under `.toolchain-root.prod-root`, so the host carries both classes. The live site's selector is `LanguageSelector.tsx` in gt-cloud's shared UI package.
+
+### Keys
+
+| Key | Action |
+| --- | --- |
+| Enter, Space | Opens the popover from the trigger |
+| Tab | Walks the rows |
+| Enter, Space on a row | Picks it and closes the popover |
+| Esc | Closes the popover and returns focus to the trigger |
+
+A pointer press outside the selector also closes it. The mirror's rows are radios in a radio group with no arrow-key movement, so Tab walks them.
+
+## The help card and the toast
+
+`HelpCard` lists the keys of the route it opens on. Its rows come from the shell's one key table (`shellKeyRows`), grouped as Move, View, Panels and Theme, so Route switches between a paged route and a flow route and the card follows: the paging rows and the view letters appear only where they act. `Toast` is the one-line notice over everything; Say shows it for its hold, and a second Say restarts the timer.
+
+<HelpToastDemo />
+
+A click anywhere on the card closes it. The key owner handles Escape: in the shell that is `useShellKeys`, and on the plate it is the plate's own handler.
+
+### Import and props
+
+```tsx
+import { HelpCard } from '@/components/viewer/HelpCard';
+import { Toast, useToast } from '@/components/viewer/Toast';
+
+const toast = useToast();
+<HelpCard />;
+<Toast message={toast.message} on={toast.on} />;
+toast.say('Link to slide 12 copied');
+```
+
+| Export | Props | What it does |
+| --- | --- | --- |
+| `HelpCard` | `rows?`, `note?` | The card for the shell's route. `rows` replaces the derived rows and `note` the footnote; an empty note hides it. |
+| `Toast` | `message`, `on` | The notice. It keeps its text through the fade and is a polite live region. |
+| `useToast(hold?)` | hold in ms, default 1400 | Returns `{ message, on, say }`; `say(msg, hold?)` shows a message and restarts the timer. |
+
+Inside the shell, components call `say()` from `usePtShell()` and never mount a toast of their own.
+
+### Keys
+
+| Key | Action |
+| --- | --- |
+| ? | Opens and closes the card (on this page, while focus is inside the plate) |
+| Esc | Closes the card |
+
+### Reduced motion and themes
+
+The card's scrim fades over 160ms and the card fades and rises 8px over 200ms. On close the card stays mounted for 160ms so both can fade back out. The toast fades and rises 4px over 160ms, centered 22px above the bottom edge, and at 600px and below it hangs 8px under the toolbar. Under reduced motion none of them moves. The toast is paper text on an ink plate with a 1px paper outline, so it separates from dark content in either theme.
+
+## The index panel
+
+`IndexPanel` is a 460px column that slides in from the right over a scrimmed stage, under the toolbar. It lists one of two sets from `src/lib/surfaces.ts` in groups, each row a 96 by 54 preview, a name, an address and a line of description, with a switch between the pages on this site and the public places General Translation is live. Opens on picks the set the panel starts on.
+
+<IndexPanelDemo />
+
+The panel builds its rows on its first open, so a route where it stays closed computes nothing. It focuses its filter on every open at desktop width. The filter is a case-insensitive match on a row's text and address, and a group with no match hides. A row on this site opens in place, and a public place opens in a new tab, so a row on the plate leaves this page.
+
+### Import and props
+
+```tsx
+import { IndexPanel } from '@/components/viewer/IndexPanel';
+
+<IndexPanel set='site' />;
+```
+
+| Prop | Type | What it does |
+| --- | --- | --- |
+| `set` | `'site'` or `'public'` | The set the panel opens on. |
+| `ref` | ref | The aside, for the shell's measure of the panel's width. |
+
+The panel reads `panelOpen` and `setPanel` from the shell. The shell draws the scrim (`.pt-panel-scrim`) inside the stage, so a click on it closes the panel.
+
+### Keys
+
+| Key | Action |
+| --- | --- |
+| R | Opens and closes the panel (on this page, while focus is inside the plate) |
+| Enter in the filter | Opens the first match |
+| Esc | Closes the panel and lets go of focus |
+| Tab | Walks the set switch, the filter and the rows |
+
+### Reduced motion and themes
+
+The panel and its scrim move over 180ms; under reduced motion the panel appears in place. Each preview shows its light or dark capture with the theme, and a row without a capture shows its initial on a blank plate.

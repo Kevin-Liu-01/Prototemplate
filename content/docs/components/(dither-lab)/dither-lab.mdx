@@ -1,0 +1,134 @@
+---
+title: 'The dither lab'
+description: 'Pictures, gradients and noise through ordered dither, error diffusion and halftone, side by side and live, with every screen and threshold exposed.'
+icon: Beaker
+sources:
+  - src/components/docs/demos/dither-lab/ScreenBenchDemo.tsx
+  - src/components/docs/demos/dither-lab/DiffusionStepDemo.tsx
+  - src/components/docs/demos/dither-lab/ShimmerDemo.tsx
+  - src/components/docs/demos/dither-lab/screens.ts
+  - src/components/docs/demos/dither-lab/sources.ts
+  - src/components/docs/demos/dither-lab/raster.ts
+  - src/components/plate/lib/picture-field.ts
+  - src/components/plate/brand/moodPictures.ts
+  - src/lib/dither.ts
+---
+
+import { DiffusionStepDemo, ScreenBenchDemo, ShimmerDemo } from '@/components/docs/demos/dither-lab/lazy';
+
+A dither prints a continuous tone as cells that are either ink or paper. General Translation draws all of its texture with one kind of dither, an ordered Bayer screen, and these plates set that screen beside the other common kinds on the same pictures. Every plate runs on a 2D canvas in the browser: it samples its source into a grid of tones once, then screens the grid again whenever a control changes. The [dither and studio field](/docs/components/dither) page covers the house engines themselves.
+
+## Eight screens on one source
+
+The bench screens one source eight ways at once and prints, under each tile, the share of the tile's cells that came out as ink. Pick one of the five artifact pictures, the ramp or the noise, or open a picture of your own with Open Picture or by dropping it on the plate.
+
+<ScreenBenchDemo />
+
+Threshold, Gamma and Ink act on every tile together. Gamma raises each tone to its power first, and Threshold then adds 0.5 minus its value, so the plain threshold tile cuts at exactly the value shown while the other screens print lighter or darker. Ink switches between the theme's ink and paper, black on white, white on black, and the docs blue on the theme's paper.
+
+The status line prints the mean tone after the curve. On all seven sources at a 1440px wide page, the three Bayer screens and Floyd-Steinberg print within 0.3 points of that mean, and white noise and the halftone within 1 point, because each of them keeps the average tone and only moves where the ink falls. Atkinson prints up to 3.2 points under the mean, on the Rosetta Stone, because the quarter of each error it drops never reaches the page. The plain threshold prints every cell above the cut and nothing else, so its share counts the bright cells and ignores how bright they are: 3.0 percent ink on the Rosetta Stone against a mean of 11.5.
+
+A picture you open stays in this browser. The plate reads it with `FileReader`, cover-fits it into the 1600 by 900 frame the house pictures use, converts it to gray by Rec. 709 luma, stretches its levels so 0.5 percent of the pixels clip at each end, and raises the result to the power 1.2, which is the curve the picture cutter applies. Nothing is uploaded, and the picture is gone when the page closes.
+
+### Import and props
+
+```ts
+import { screenTone } from '@/components/docs/demos/dither-lab/screens';
+import { fillTone, loadSource } from '@/components/docs/demos/dither-lab/sources';
+
+const source = await loadSource('rosetta', null);
+const tone = fillTone(source, cols, rows, 2, new Float32Array(cols * rows));
+const bits = new Uint8Array(cols * rows);
+const lit = screenTone('bayer8', tone, cols, rows, bits, cols, 0, 0, { gamma: 1, bias: 0 });
+```
+
+`screenTone(id, tone, w, h, out, stride, ox, oy, options)` reads a `w` by `h` grid of tones from 0 to 1 and writes 1 for ink and 0 for paper into `out`, a buffer `stride` cells wide, starting at cell `ox`, `oy`. It returns the number of ink cells. `fillTone` samples a source at the centre of every cell, and a cell that covers several pixels of a picture reads their area average.
+
+| Screen | `id` | Levels a tile can print | How a cell is decided |
+| --- | --- | --- | --- |
+| Threshold | `'threshold'` | 2 | Its tone against 0.5 |
+| Bayer 2 by 2 | `'bayer2'` | 5 | Its tone against one of 4 thresholds |
+| Bayer 4 by 4 | `'bayer4'` | 17 | Its tone against one of 16 thresholds |
+| Bayer 8 by 8 | `'bayer8'` | 65 | Its tone against one of 64 thresholds |
+| White noise | `'random'` | Any, as an average | Its tone against a hash of its position |
+| Floyd-Steinberg | `'floyd'` | Any | Its tone plus the error of the cells before it |
+| Atkinson | `'atkinson'` | Any | The same, with a quarter of each error dropped |
+| Halftone | `'halftone'` | One round dot per period | Its tone against a ranked cosine spot on a 45 degree grid |
+
+| Option | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `gamma` | number | `1` | Raises each tone to this power before screening. |
+| `bias` | number | `0` | Added to each tone after the gamma. |
+| `phaseX`, `phaseY` | number | `0` | Offsets the ordered and halftone tiles in cells, so a part of a grid can be screened at its place in the whole. |
+| `pitch` | number | `6` | The halftone's dot spacing in cells. |
+| `serpentine` | boolean | `true` | The diffusions walk odd rows from right to left, which breaks up the diagonal chains of cells a one-way walk leaves. |
+
+The Bayer matrices are built by one rule, M(2n) = [[4M, 4M + 2], [4M + 3, 4M + 1]] from M(1) = [0]. The 8 by 8 result equals `BAYER_8` in `src/lib/dither.ts` and the 4 by 4 equals the studio field's `bayer4`, so the lab's screens are the house screens.
+
+### Numbers
+
+Measured in Node 24 on Apple silicon over a ramp of 180 by 170 cells, the size of one tile at 2px cells on a 1440px wide page:
+
+| Screen | Milliseconds a tile |
+| --- | --- |
+| Bayer 2 by 2, 4 by 4 or 8 by 8 | 0.8 to 1.0 |
+| Threshold, white noise, halftone | 1.5 to 1.8 |
+| Floyd-Steinberg | 6.3 |
+| Atkinson | 7.5 |
+
+The ordered screens cost one comparison a cell. A diffusion visits every cell in order and writes to four or six neighbours, so it costs six to eight times more, and it cannot be split across cells or threads, because each cell waits for the error of the cells before it. By these numbers the bench's eight tiles cost about 21 ms together at 2px cells and about four times that at 1px.
+
+## Error diffusion, one cell at a time
+
+Error diffusion decides cells in reading order. A cell prints ink when its value is over 0.5, and the difference between its value and what it printed, its error, is added to cells the walk has not reached yet. This plate runs the walk on a coarse grid at 10 or 48 cells a second so each step can be followed.
+
+<DiffusionStepDemo />
+
+A pending cell shows its tone plus the error it has received so far, printed as a small 8 by 8 patch. A decided cell is solid ink or paper. The accent frames mark the cell just decided and the cells its error went to, and the line under the plate prints the arithmetic of that step. Step decides one cell and pauses the walk, and Restart starts it again from the first cell.
+
+Floyd-Steinberg passes all of the error on, 7, 3, 5 and 1 sixteenths to the right, lower left, lower and lower right neighbours. Atkinson passes an eighth to each of six neighbours and drops the last quarter. A dropped error never reaches the page, so Atkinson prints near-white areas as paper and near-black areas as ink, with more contrast and less detail at both ends of the ramp.
+
+### Import and props
+
+```ts
+import { ATKINSON, FLOYD, type Kernel } from '@/components/docs/demos/dither-lab/screens';
+
+// each entry is [dx, dy, weight]; dx flips on the rows a serpentine walk runs backward
+const kernel: Kernel = FLOYD;
+```
+
+| Kernel | Taps | Weights | Error passed on |
+| --- | --- | --- | --- |
+| `FLOYD` | 4 | 7/16, 3/16, 5/16, 1/16 | All |
+| `ATKINSON` | 6 | 1/8 each | Three quarters |
+
+### Reduced motion
+
+The walk is created paused and plays only while the plate is on screen and the tab is visible. Under reduced motion the plate draws the walk stopped 45 percent of the way through, with that step's frames and arithmetic shown, and Step still works.
+
+## Screens in motion
+
+The same moving field runs through the house 8 by 8 screen on the left and through error diffusion or white noise on the right. Each side prints the share of its cells that changed since the previous frame, averaged over the last few frames.
+
+<ShimmerDemo />
+
+On the Bayer side a cell changes only when its own tone crosses its own fixed threshold, so a slow change touches a few cells along the moving edges of the field. On the diffusion side a small change anywhere alters the error carried to every cell after it in the walk, so about a third of the cells change every frame, all over the field. The house screen is ordered for this reason.
+
+### Numbers
+
+Measured in Node 24 over 60 frames at 30 frames a second, on one half of the plate at a 1440px wide page:
+
+| Field | Bayer 8 by 8 | White noise | Floyd-Steinberg | Atkinson |
+| --- | --- | --- | --- | --- |
+| Noise drifting, 3px cells | 0.76% | 0.74% | 33.0% | 24.6% |
+| Ramp scrolling, 3px cells | 0.26% | 0.26% | 31.5% | 25.2% |
+
+White noise changes as few cells as the Bayer screen, because it is also a fixed threshold map. Its still frame is worse: its thresholds have no structure, so neighbouring cells clump into grain, where the Bayer tile spreads every level as evenly as the grid allows.
+
+Earth sways its sampling window by up to 2.5 cells, under 3 percent of the half's width at a 1440px wide page, which is the drift the motion rules allow on a still field. Under reduced motion the plate draws one frame and prints the change between it and the frame 1/30 s before it.
+
+### Traps
+
+- A diffusion's pattern depends on the walk's start. Two canvases that cover halves of one field and run their own walks print different cells along the seam where they meet, even at the same tones.
+- A cell that never changes tone can still change under a diffusion, because its value includes the errors of the cells before it. Comparing the tone grids of two frames therefore says nothing about which cells a diffusion will flip.
+- A serpentine walk breaks up diagonal chains and leaves the change rate where it was: the rates above are with it on.

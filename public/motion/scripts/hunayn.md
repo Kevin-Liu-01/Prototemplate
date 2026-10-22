@@ -20,6 +20,6 @@ The word retina is already in a Latin version of Ḥunayn ibn Isḥāq’s Arabi
 | 1:20.48 | Narrator | Popular histories put Ḥunayn in charge of an academy called the House of Wisdom. | حنين, and بيت الحكمة in grey; a line drawn from حنين toward it as it comes up to white, Bayt al-Ḥikma. Heading: The House of Wisdom. |
 | 1:24.56 | Narrator | His letter never mentions it and names the people he translated for. | The line draws back and بيت الحكمة greys; four lines of the letter, the patrons’ names lit in turn, each with its English under it: Muḥammad ibn Mūsā, Bukhtīshūʿ ibn Jibrīl, Salmawayh, ʿAlī ibn Yaḥyā. |
 | 1:30.24 | Narrator | The historian Dimitri Gutas argues that it was a library in the caliphs' administration. | Dimitri Gutas, Greek Thought, Arabic Culture, 1998, set in type beside بيت الحكمة, which lights on “library”. |
-| 1:35.82 | No voice |  | The globe, the pin on Monte Cassino, where Constantine the African was a monk; the General Translation lockup. |
+| 1:35.82 | No voice |  | The globe, the pin on Monte Cassino, where Constantine the African was a monk; the General Translation logo. |
 
 Times are where each line starts in the final, read from the film's own audio.

@@ -49,9 +49,8 @@ THE SITE
   kb.json (scene.screen.docs) holds every one of these strings.
 
 MARKS
-- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the General
-  Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg), on the
-  end card.
+- The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card, and the same
+  mark, larger, on the end card.
 
 ICONS
 - Heroicons 2.2.0 chevron-down (MIT, Tailwind Labs) on the language menu; Lucide check, plus and

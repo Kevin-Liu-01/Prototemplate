@@ -44,8 +44,7 @@ THE APP PAGE AND THE TRANSLATIONS
 
 MARKS
 - The doubled-line GT mark (kit/brand/gt-mark.svg) on the question card and in the Dashboard, and
-  the General Translation lockup, the bar monogram over the name (kit/marks/bar-monogram-lockup.svg),
-  on the end card.
+  the same mark, larger, on the end card.
 
 ICONS
 - Heroicons 2.2.0 chevron-down (MIT, Tailwind Labs); Lucide comment, play and check outlines (ISC),
