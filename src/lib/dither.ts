@@ -298,7 +298,9 @@ function rasteriseColour(input: string): number {
 /**
  * Get (or lazily build) the reusable ImageData for a canvas at the given cell
  * dimensions. Reallocates only when the size actually changes, so steady-state
- * animation allocates nothing at all.
+ * animation allocates nothing at all. The canvas's own backing size is checked
+ * too: code outside this module that resizes the same canvas would otherwise
+ * leave the reused buffer covering only part of it.
  */
 function getCache(
   canvas: HTMLCanvasElement,
@@ -306,7 +308,7 @@ function getCache(
   height: number
 ): CanvasCache | null {
   const existing = caches.get(canvas);
-  if (existing && existing.width === width && existing.height === height) {
+  if (existing && existing.width === width && existing.height === height && canvas.width === width && canvas.height === height) {
     return existing;
   }
 
