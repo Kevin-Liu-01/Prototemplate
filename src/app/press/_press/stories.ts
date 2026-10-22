@@ -131,7 +131,7 @@ export const STORIES: readonly StoryEntry[] = [
       ko: '유클리드 『원론』의 첫 중국어 번역',
       ja: 'ユークリッド『原論』の最初の中国語訳',
     },
-    live: { 'the-first-definition-city-by-city': 'stops' },
+    live: { 'the-first-definitions-city-by-city': 'stops' },
     look: 'book',
   },
   {

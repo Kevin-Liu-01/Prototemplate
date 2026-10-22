@@ -71,15 +71,14 @@ const PARTS: readonly Part[] = [
     id: 'printed-page',
     title: 'A printed page',
     note: 'Translating Euclid',
-    lead: 'Translating Euclid is the history of a book, so it is set as a magazine page: light brown paper, the cover picture across the page, then one centred column of large serif text.',
+    lead: 'Translating Euclid is the history of a book, so the reader is set as a printed page: light brown paper taken from the cover scan’s own paper, one serif face, and a stage a shade deeper than the page.',
     body: [
-      'Everything is in Katagami Serif and in sentence case. Paragraphs part by a blank line, not an indent. Each figure sits in the flow of the text with its caption under it, and a figure with several pages shows the page chosen above a row of all of them.',
-      'The reader’s place shows as a line along the top of the page. A rail down the left and a ring around the imprint are the other two options on trial.',
-      'The first figure shows the first definition of Elements in eight versions at once, from Alexandria to Beijing: each city pinned on a globe with its coordinate lines, and a leader from each pin to its line.',
+      'It is the same reader as the docs essays: the text on the left, the stage on the right showing the figure the reader has reached, and the rail of ticks down the left edge. Everything is in Katagami Serif, with the Chinese in a Song face, all in sentence case. Paragraphs part by a blank line, not an indent, and the stage opens on the cover picture.',
+      'The first figure shows the first eight definitions of Book I in eight versions, from Alexandria to Beijing: each city pinned on a globe with its coordinate lines, a leader from each pin to its edition, and the chosen edition’s eight lines set as a poem under them.',
     ],
     figures: [
-      { src: '/shots/atlas/book.webp', alt: 'Translating Euclid as a magazine page', caption: 'Translating Euclid: the cover across the page, then the title, the byline and the date.' },
-      { src: '/shots/atlas/figure.webp', alt: 'The locator in Translating Euclid', caption: 'The first definition at Alexandria, 300 BCE, with the other four versions under the passage.' },
+      { src: '/shots/atlas/book.webp', alt: 'Translating Euclid in the reader, set as a printed page', caption: 'Translating Euclid: the text on paper on the left, the cover picture on the stage.' },
+      { src: '/shots/atlas/figure.webp', alt: 'The eight versions of the first definitions in Translating Euclid', caption: 'The first eight definitions in Ricci and Xu’s Chinese, with the seven other editions pinned on the globe.' },
     ],
   },
   {

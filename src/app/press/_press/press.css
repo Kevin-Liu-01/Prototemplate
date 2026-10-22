@@ -711,105 +711,84 @@
   .gtp-fuma-nav { display: none; }
 }
 
-/* ---------- Euclid: a magazine page ---------- */
+/* ---------- Translating Euclid: the reader, set as a printed page ---------- */
 
-/* Light brown paper, one face (Katagami Serif) in sentence case throughout,
-   the cover picture across the page, then one centred column of large text
-   with a blank line between paragraphs. The figures sit in the flow, their
-   captions under them. */
-:root .gtp.gtp-print {
-  /* the paper is the cover scan's own paper (#dcb987) let out toward white, so the page continues the cover */
+/* The same split reader as the other stories, in the look of a printed
+   page: light brown paper taken from the cover scan's own paper, one face
+   (Katagami Serif, Song for Chinese) in sentence case throughout, large
+   text with a blank line between paragraphs, the cover picture on the
+   stage in place of a live cover, and the stage a shade deeper than the
+   page. */
+:root .gtp.gtp-reader[data-look='book'] {
   --gtp-paper: #efe2c6;
   --gtp-ink: #24190d;
   --gtp-ink-2: #5e4a31;
   --gtp-ink-3: #957d5c;
-  --gtp-rule: rgb(31 26 20 / 0.14);
-  --gtp-fill: rgb(31 26 20 / 0.04);
-  --gtp-fill-2: rgb(31 26 20 / 0.08);
-  --gtp-stage: #efe2c6;
+  --gtp-rule: rgb(36 25 13 / 0.14);
+  --gtp-fill: rgb(36 25 13 / 0.04);
+  --gtp-fill-2: rgb(36 25 13 / 0.08);
+  --gtp-stage: #e6d4b2;
   --gtp-stage-ink: #24190d;
   --gtp-stage-ink-2: #5e4a31;
-  --gtp-stage-fill: rgb(31 26 20 / 0.07);
+  --gtp-stage-fill: rgb(36 25 13 / 0.07);
   --gtp-signal: #b8321c;
-  /* the globe printed in sepia on the paper */
+  --gtp-link: #24190d;
   --gtp-globe-land: #7a5a33;
   --gtp-globe-sea: #d6bf95;
   --gtp-globe-rim: #3a2814;
-  --gtp-print-measure: 700px;
-  /* the one story set in the serif: the press's text face elsewhere stands in for it */
-  /* Chinese, Japanese and Korean fall to a serif (Songti, Noto Serif), so they match Katagami Serif; Katagami's own CJK is sans */
   --gtp-serif: 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
   --gtp-sans: var(--gtp-serif);
   --gtp-mono: var(--gtp-serif);
   font-family: var(--gtp-serif);
-  font-feature-settings: 'kern', 'liga';
 }
-:root:not([data-theme='light']) .gtp.gtp-print {
-  /* the scan's ink (#806947) taken down to a night paper */
+:root:not([data-theme='light']) .gtp.gtp-reader[data-look='book'] {
   --gtp-paper: #1d150c;
   --gtp-ink: #efe2c6;
   --gtp-ink-2: #c4ad88;
   --gtp-ink-3: #8c7655;
-  --gtp-rule: rgb(236 228 211 / 0.15);
-  --gtp-fill: rgb(236 228 211 / 0.05);
-  --gtp-fill-2: rgb(236 228 211 / 0.09);
-  --gtp-stage: #1d150c;
+  --gtp-rule: rgb(239 226 198 / 0.15);
+  --gtp-fill: rgb(239 226 198 / 0.05);
+  --gtp-fill-2: rgb(239 226 198 / 0.09);
+  --gtp-stage: #261c10;
   --gtp-stage-ink: #efe2c6;
   --gtp-stage-ink-2: #c4ad88;
-  --gtp-stage-fill: rgb(236 228 211 / 0.08);
+  --gtp-stage-fill: rgb(239 226 198 / 0.08);
   --gtp-signal: #e0623f;
+  --gtp-link: #efe2c6;
   --gtp-globe-land: #d6bf95;
   --gtp-globe-sea: #5a4426;
   --gtp-globe-rim: #f3e5c4;
 }
+/* the press sets CJK in Katagami's sans by language; this look keeps every script in its serif */
+.gtp-reader[data-look='book'] :is(:lang(zh), :lang(ja), :lang(ko)) { font-family: var(--gtp-serif); }
 
-/* the press sets CJK in Katagami's sans by language (.gtp :lang(zh) and the rest); this page keeps them in its serif */
-.gtp-print :lang(zh),
-.gtp-print :lang(ja),
-.gtp-print :lang(ko) { font-family: var(--gtp-serif); }
-/* the live figure is as wide as its poem, and so is its caption */
-.gtp-print-fig[data-live] .gtp-print-caption { width: min(940px, 100%); }
+/* the cover picture fills the stage's opening plate */
+.gtp-cover-picture { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
+:root:not([data-theme='light']) .gtp-reader[data-look='book'] .gtp-cover-picture { filter: brightness(0.82) saturate(0.9); }
 
-/* the imprint home and the theme, floating at the top corners */
-.gtp-print-home { position: fixed; z-index: 6; left: 24px; top: 20px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 1px 6px rgb(0 0 0 / 0.12); }
-.gtp-theme.gtp-print-theme { position: fixed; z-index: 6; right: 24px; top: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 1px 6px rgb(0 0 0 / 0.12); }
+/* the head: a modest title, a lighter subtitle, and one byline row */
+.gtp-reader[data-look='book'] .gtp-title h1 { font-size: clamp(34px, 3.2vw, 44px); line-height: 1.12; font-weight: 400; letter-spacing: -0.01em; }
+/* the head's paragraphs keep their own spacing, past the text's blank-line rule */
+.gtp-reader[data-look='book'] .gtp-text .gtp-summary { margin: 26px 0 0; font-size: 21px; color: var(--gtp-ink-2); }
+.gtp-reader[data-look='book'] .gtp-text .gtp-byline { margin: 34px 0 0; }
+/* who on one line, when and how long on the next, under a rule */
+.gtp-byline { margin: 34px 0 0; padding-top: 20px; display: grid; gap: 2px; border-top: 1px solid var(--gtp-rule); font-size: 16px; line-height: 1.45; color: var(--gtp-ink-2); }
+.gtp-byline span:first-child { color: var(--gtp-ink); }
+.gtp-byline span + span { white-space: nowrap; }
 
-/* the opener: the cover across the page, fading into the paper at its foot, and the title card set over that fade */
-.gtp-print-opener { position: relative; display: grid; justify-items: center; }
-.gtp-print-cover { position: relative; width: 100%; height: min(66vh, 58vw); overflow: hidden; }
-.gtp-print-cover img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
-/* at night the scan comes down a little, so it does not glare over the dark page */
-:root:not([data-theme='light']) .gtp-print-cover img { filter: brightness(0.8) saturate(0.9); }
-.gtp-print-cover::after { content: ''; position: absolute; inset: auto 0 0; height: 46%; background: linear-gradient(to bottom, transparent, var(--gtp-paper)); pointer-events: none; }
-.gtp-print-card { position: relative; z-index: 1; width: min(760px, calc(100% - 40px)); margin-top: -132px; padding: 52px 64px 40px; border-radius: 6px; background: var(--gtp-paper); box-shadow: 0 1px 0 var(--gtp-rule), 0 24px 60px -36px rgb(36 25 13 / 0.45); text-align: center; }
-.gtp-print-card h1 { margin: 0; font-size: clamp(32px, 3vw, 42px); line-height: 1.14; font-weight: 400; letter-spacing: -0.01em; text-wrap: balance; }
-.gtp-print-sub { margin: 18px auto 0; max-width: 34ch; font-size: 21px; line-height: 1.42; color: var(--gtp-ink-2); text-wrap: balance; }
-/* one line of who, when and how long, under a short rule */
-.gtp-print-byline { margin: 30px 0 0; padding-top: 22px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 0; font-size: 16px; line-height: 1.4; color: var(--gtp-ink-2); background: linear-gradient(var(--gtp-rule) 0 0) top center / 56px 1px no-repeat; }
-.gtp-print-byline span + span::before { content: ''; display: inline-block; width: 3px; height: 3px; margin: 0 14px; border-radius: 50%; background: var(--gtp-ink-3); vertical-align: middle; }
-.gtp-print-byline span:first-child { color: var(--gtp-ink); }
-
-.gtp-print-page { width: min(var(--gtp-print-measure), calc(100% - 40px)); margin: 0 auto; padding: 72px 0 160px; }
-
-.gtp-print-page h2 { margin: 64px 0 24px; font-size: 30px; line-height: 1.2; font-weight: 400; letter-spacing: -0.01em; scroll-margin-top: 80px; }
-.gtp-print-page p, .gtp-print-page li { margin: 0 0 1.5em; font-size: 21px; line-height: 1.5; text-wrap: pretty; word-break: keep-all; overflow-wrap: anywhere; }
-.gtp-print-page em { font-style: italic; }
-.gtp-print-page a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: var(--gtp-ink-3); }
-.gtp-print-page a:hover { text-decoration-color: currentColor; }
-.gtp-print-page ul, .gtp-print-page ol:not(.gtp-print-multiples) { margin: 0 0 1.5em; padding-left: 1.3em; }
-.gtp-print-page li { margin-bottom: 0.4em; }
-.gtp-print-quote { margin: 0 0 1.5em 1.5em; }
-.gtp-print-quote p { font-size: 18px; }
-
-/* a figure: wider than the text, centred, its caption under it */
-.gtp-print-fig { width: min(940px, calc(100vw - 40px)); margin: 40px 0 48px 50%; transform: translateX(-50%); display: grid; justify-items: center; gap: 14px; }
-.gtp-print-media { display: block; max-width: 100%; max-height: 78vh; width: auto; height: auto; border-radius: 3px; }
-.gtp-print-caption { width: min(var(--gtp-print-measure), 100%); display: grid; gap: 4px; font-size: 16px; line-height: 1.45; color: var(--gtp-ink-2); text-wrap: pretty; }
-.gtp-print-count { font-size: 14px; color: var(--gtp-ink-3); }
-.gtp-print-multiples { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; justify-content: center; align-items: end; gap: 12px; }
-.gtp-print-multiples button { display: block; padding: 0; opacity: 0.45; transition: opacity 0.2s var(--gtp-ease); }
-.gtp-print-multiples button:hover, .gtp-print-multiples button[aria-pressed='true'] { opacity: 1; }
-.gtp-print-multiples img { display: block; height: 76px; width: auto; border-radius: 2px; }
+/* the text: large, no section numbers, a blank line between paragraphs, no indent */
+.gtp-reader[data-look='book'] .gtp-h-n { display: none; }
+.gtp-reader[data-look='book'] .gtp-text h2 { font-size: 30px; line-height: 1.2; font-weight: 400; letter-spacing: -0.01em; }
+.gtp-reader[data-look='book'] .gtp-text :is(p, li) { font-size: 21px; line-height: 1.5; }
+.gtp-reader[data-look='book'] .gtp-text p { margin: 0 0 1.5em; }
+.gtp-reader[data-look='book'] .gtp-text a { text-decoration-color: var(--gtp-ink-3); }
+/* the rail and the figures' names in the one face, in sentence case */
+.gtp-reader[data-look='book'] :is(.gtp-rail-caption, .gtp-meta dt, .gtp-end-label, .gtp-stub .gtp-mono, .gtp-plate-n) { text-transform: none; letter-spacing: 0; }
+/* a figure's name wraps rather than stopping short, and reads at night */
+.gtp-reader[data-look='book'] .gtp-stub { color: var(--gtp-ink-2); }
+.gtp-reader[data-look='book'] .gtp-stub-text { white-space: normal; }
+/* the theme switch on a paper disc, so it shows over the cover picture */
+.gtp-reader[data-look='book'] .gtp-reader-theme { width: 40px; height: 40px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); }
 
 /* the first definition, all eight at once: the globe with a pin at each city, a hairline to each line */
 .gtp-versions { position: relative; width: min(940px, 100%); display: grid; grid-template-columns: 300px minmax(0, 1fr); align-items: center; gap: 0 104px; }
@@ -841,37 +820,26 @@
 .gtp-stops[data-style='book'] .gtp-stop:hover, .gtp-stops[data-style='book'] .gtp-stop[data-on='true'] { color: var(--gtp-ink); }
 .gtp-stops[data-style='book'] .gtp-stops-thumb { display: none; }
 
-.gtp-print-end { margin-top: 96px; padding-top: 24px; border-top: 1px solid var(--gtp-rule); display: grid; gap: 14px; }
-.gtp-print-page .gtp-print-end a { text-decoration: none; }
-.gtp-print-next { font-size: 24px; line-height: 1.3; }
-.gtp-print-index { font-size: 17px; color: var(--gtp-ink-2); }
+/* the eight versions on the stage: a smaller globe, the list beside it, the poem under both */
+/* sized to its contents and centred on the stage, the globe as large as the list allows so its pins spread */
+.gtp-plate .gtp-versions { width: auto; max-width: 100%; grid-template-columns: 280px max-content; gap: 0 64px; }
+.gtp-plate .gtp-versions-globe { width: 280px; }
+.gtp-plate .gtp-version-text { font-size: 17px; }
+.gtp-plate .gtp-version-meta { font-size: 13px; }
+.gtp-plate .gtp-versions-poem { margin-top: 26px; padding-top: 20px; gap: 6px; font-size: 19px; line-height: 1.38; }
+/* on a phone the plate grows to hold the figure, and the leaders give way to the list */
+.gtp-inline-plate:has(.gtp-versions) { height: auto; }
+.gtp-inline-plate:has(.gtp-versions) .gtp-plate { position: relative; }
+.gtp-inline-plate:has(.gtp-versions) .gtp-plate-view { position: relative; inset: auto; container-type: normal; }
 
-/* the reader's place: the rail by default, or the ring */
-.gtp-print-rail { position: fixed; z-index: 5; left: 44px; top: 22vh; bottom: 22vh; width: 1px; background: var(--gtp-rule); opacity: 0; transition: opacity 0.4s var(--gtp-ease); }
-.gtp-print[data-read='true'] .gtp-print-rail { opacity: 1; }
-.gtp-print-rail::after { content: ''; position: absolute; left: -0.5px; top: 0; width: 2px; height: calc(var(--p, 0) * 100%); background: var(--gtp-ink); }
-.gtp-print-tick { position: absolute; left: -4px; top: calc(var(--at) * 100%); width: 9px; height: 1px; background: var(--gtp-ink-3); }
-.gtp-print-ring { position: absolute; inset: -2px; width: calc(100% + 4px); height: calc(100% + 4px); transform: rotate(-90deg); fill: none; stroke-width: 1.5; }
-.gtp-print-ring circle { stroke: var(--gtp-rule); }
-.gtp-print-ring circle.gtp-print-ring-fill { stroke: var(--gtp-ink); stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p, 0)); }
-
-/* the switch between the rail and the ring, at the foot */
-.gtp-print-try { position: fixed; z-index: 6; right: 24px; bottom: 20px; padding: 4px 8px; border-radius: 10px; background: color-mix(in srgb, var(--gtp-paper) 90%, transparent); }
-.gtp-print-try .gtp-stop { font-size: 15px; }
-
-@media (max-width: 899px) {
-  .gtp-print-try { display: none; }
-  .gtp-print-page { padding-top: 40px; }
-  .gtp-print-page p, .gtp-print-page li { font-size: 19px; }
-  .gtp-print-rail { left: 10px; }
+@media (max-width: 999px) {
+  .gtp-reader[data-look='book'] .gtp-text :is(p, li) { font-size: 19px; }
   .gtp-versions { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .gtp-plate .gtp-versions { grid-template-columns: minmax(0, 1fr); }
   .gtp-versions-leaders { display: none; }
   .gtp-version-text { font-size: 17px; }
-  .gtp-versions-poem { font-size: 19px; }
-  .gtp-print-card { margin-top: -64px; padding: 36px 22px 28px; }
-  .gtp-print-sub { font-size: 19px; }
-  .gtp-print-byline { flex-direction: column; align-items: center; gap: 2px; font-size: 15px; }
-  .gtp-print-byline span + span::before { display: none; }
+  .gtp-versions-poem { font-size: 18px; }
+  .gtp-byline { font-size: 15px; }
 }
 
 /* the theme switch on a reading page, over the stage's top corner */
@@ -970,10 +938,8 @@ a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { animation: gtp-riffle-lea
 /* transition.ts names the clicked book's cover gtp-cover; each story's own cover carries the name here, and its
    reading column or title card is gtp-read, which comes in the way the story's look does */
 .gtp-reader .gtp-plate-cover[data-on='true'] > .gtp-cover,
-.gtp-phone-cover > .gtp-cover,
-.gtp-print-cover { view-transition-name: gtp-cover; }
-.gtp-reader .gtp-text,
-.gtp-print-card { view-transition-name: gtp-read; }
+.gtp-phone-cover > .gtp-cover { view-transition-name: gtp-cover; }
+.gtp-reader .gtp-text { view-transition-name: gtp-read; }
 
 /* the cover is clipped to its box while it grows, so a tall book cover never spills over a wide band */
 ::view-transition-group(gtp-cover) { overflow: clip; animation-duration: 0.8s; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
@@ -988,7 +954,7 @@ a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { animation: gtp-riffle-lea
 html[data-gtp-vt='docs']::view-transition-new(gtp-read) { animation: gtp-vt-from-left 0.7s cubic-bezier(0.2, 0, 0, 1) 0.25s both; }
 /* into Fuma's card the column settles, as Fumadocs' panels do */
 html[data-gtp-vt='fuma']::view-transition-new(gtp-read) { animation: gtp-vt-settle 0.7s cubic-bezier(0.2, 0, 0, 1) 0.25s both; }
-/* into Euclid the title card rises out of the cover's fade once the cover has nearly settled, so its edge never crosses the card */
+/* into Euclid the column rises like a page laid down, once the cover has nearly settled */
 html[data-gtp-vt='book']::view-transition-new(gtp-read) { animation: gtp-vt-rise 0.7s cubic-bezier(0.2, 0, 0, 1) 0.55s both; }
 html[data-gtp-vt='home']::view-transition-old(gtp-read) { animation: gtp-vt-out 0.3s cubic-bezier(0.2, 0, 0, 1) both; }
 
@@ -999,5 +965,5 @@ html[data-gtp-vt='home']::view-transition-old(gtp-read) { animation: gtp-vt-out 
 @keyframes gtp-vt-rise { from { opacity: 0; transform: translateY(40px); } }
 
 /* the light theme draws no drop shadows: edges come from the paper and the rules */
-:root[data-theme='light'] .gtp :is(.gtp-lens, .gtp-langs, .gtp-float-home, .gtp-print-home, .gtp-print-theme, .gtp-print-card) { box-shadow: none; }
+:root[data-theme='light'] .gtp :is(.gtp-lens, .gtp-langs, .gtp-float-home) { box-shadow: none; }
 :root[data-theme='light'] .gtp .gtp-shelf-shadow { display: none; }

@@ -5,7 +5,6 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 
-import BookReader from '../_press/BookReader';
 import { getCatalog, getStory, storySlugs, type Story } from '../_press/content';
 import { plain } from '../_press/parse';
 import Reader from '../_press/Reader';
@@ -61,7 +60,7 @@ export default async function PressStoryPage({ params }: Params) {
   return (
     <>
       <JsonLd nodes={storyRoute(story).jsonLd} />
-      {story.look === 'book' ? <BookReader story={story} next={next} /> : <Reader story={story} next={next} />}
+      <Reader story={story} next={next} />
     </>
   );
 }

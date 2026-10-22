@@ -1,6 +1,6 @@
 /* The move between the shelf and a story, as a view transition: the
-   book's cover grows into the story's cover (the stage's, Fuma's card's, or
-   Euclid's band), the rest of the page fades, and the story's text comes in
+   book's cover grows into the story's cover on its stage (Fuma's in his card,
+   Euclid's as its picture), the rest of the page fades, and the story's text comes in
    the way its look does (press.css, ::view-transition). Going home runs it
    backwards: the story's cover shrinks into its book on the shelf.
 
