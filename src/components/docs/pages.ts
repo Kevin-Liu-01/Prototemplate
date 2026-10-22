@@ -180,7 +180,7 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
   {
     slug: 'components/artifact-pictures',
     href: '/docs/components/artifact-pictures',
-    title: 'Artifact pictures',
+    title: 'Live artifact pictures',
     description:
       'Dithered photographs under the Blue Marble standard: the tone grid, the screen, the presets and both themes, cut live from a picture.',
   },
