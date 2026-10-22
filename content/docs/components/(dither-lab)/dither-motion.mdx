@@ -2,6 +2,102 @@
 title: 'Dithered transitions and brushes'
 description: 'Tone-mix wipes on one cell grid, a lens that reveals a picture under the screen, and a brush that paints in dither cells.'
 icon: Brush
+sources:
+  - src/components/docs/demos/dither-lab/ToneMixDemo.tsx
+  - src/components/docs/demos/dither-lab/ScreenLensDemo.tsx
+  - src/components/docs/demos/dither-lab/DitherBrushDemo.tsx
+  - src/components/docs/demos/dither-lab/screens.ts
+  - src/components/docs/demos/dither-lab/raster.ts
+  - src/lib/dither.ts
+  - skills/gt-motion/SKILL.md
 ---
 
-Tone-mix wipes on one cell grid, a lens that reveals a picture under the screen, and a brush that paints in dither cells.
+import { DitherBrushDemo, ScreenLensDemo, ToneMixDemo } from '@/components/docs/demos/dither-lab/lazy';
+
+These plates change a dithered picture while it is on screen: a transition from one picture to another, a lens that shows what the screen hides, and a brush. All three hold the house rule for a dithered field in motion. The field stays on one grid of cells and one anchored tile, and it changes only by changing the tones the tile reads.
+
+## Tone mix
+
+Two pictures share one grid of cells and one 8 by 8 tile. Mix moves every cell's tone from the first picture's tone to the second's on one smoothstep, and the screen prints the result. Drag Mix to scrub it, or press the button to run it at one of the house durations.
+
+<ToneMixDemo />
+
+Each cell's tone moves in one direction past one fixed threshold, so a cell changes at most once during a tone mix. The line under the plate counts both numbers for each run: after a tone mix the count of changes equals the count of cells that changed. Pressing the button during a mix turns it around from the frame on screen, so the picture never jumps back to where the mix began.
+
+For comparison the plate also runs the two methods the gt-motion skill refuses for any dithered field.
+
+- Alpha fade screens both pictures and fades the second over the first. Every cell that differs between them passes through 32 steps of gray for the length of the fade.
+- Moved tile mixes by tone but moves the tile 3 cells right and 2 cells down halfway through, as two canvases with unaligned phases would. At that frame thousands of cells that the tone mix leaves alone are decided again against other thresholds, and the eye reads a flash.
+
+Measured on a 1440px wide page at 2px cells, one 2 s mix from the Earth to the Rosetta Stone changes the field this much:
+
+| Method | Cells that changed | Changes in all |
+| --- | --- | --- |
+| Tone mix | 16,961 | 16,961 |
+| Moved tile | 27,391 | 38,034 |
+| Alpha fade | 16,963 | 542,816 |
+
+The durations are the house ones: 150 ms for a step from one picture to the next and 350 ms for a resolve. The 2 s choice is slow enough to watch the tiers fill. Under reduced motion the button draws the end state at once.
+
+### Import and props
+
+```ts
+import { createDitherLoop, mixFields } from '@/lib/dither';
+
+const smoothstep = (k: number) => k * k * (3 - 2 * k);
+loop.setField(mixFields(fieldA, fieldB, smoothstep(elapsed / duration)));
+```
+
+In the house engine a transition is `mixFields(a, b, k)` handed to the running loop through `setField` on every tick, with `k` on a smoothstep of the elapsed time. Both fields are read at the loop's own cells, and the loop keeps its `phase`, so the tile never moves.
+
+| Rule | Held by |
+| --- | --- |
+| One grid | Both pictures are sampled at the same cells, at one cell size for the whole mix. |
+| One anchored tile | The 8 by 8 tile keeps its phase from the first frame to the last. |
+| One smoothstep | `k = t * t * (3 - 2 * t)` drives the tone; ink and paper stay fixed. |
+| Restart from the screen | A new target starts from the current `k`. |
+| Reduced motion | The end state is drawn once. |
+
+## A lens over the screen
+
+A picture prints through a coarse screen, and a round lens follows the pointer. Inside the lens the plate shows what the screen hides. On a keyboard, focus the picture with Tab and move the lens with the arrow keys.
+
+<ScreenLensDemo />
+
+| Lens shows | What is drawn inside the lens |
+| --- | --- |
+| Tone | The tone grid the screen reads, in 64 gray steps between paper and ink |
+| 8 by 8 at 1px | The same picture through the 8 by 8 screen at 1px cells, the screen of the house's artifact pictures |
+| Thresholds | The base screen's threshold at each cell, which is the tile itself, in the same 64 steps |
+| Loupe 4x | The base screen's cells under the lens at four times their size |
+
+The plate samples the picture once at 1px cells and builds the base screen, the 1px screen and the threshold map from that one grid. A move of the lens redraws only the rectangle under the old and the new lens: it copies the cached base back into that rectangle, draws the lens, and puts only that rectangle on the canvas with `putImageData`'s dirty rectangle. The lens radius runs from 32 to 130px, so a move rewrites at most two squares about 264 cells on a side, on a canvas of more than 200,000 cells at a 1440px wide page.
+
+### Traps
+
+- The tone view is a picture of the source, drawn for reading the screen. A house field never shows tone as gray: the screen prints every level as cells.
+- The lens follows a touch only on press, because the plate keeps vertical scrolling for the page (`touch-action: pan-y`). A tap moves the lens to the tapped point.
+
+## A brush that paints in cells
+
+The canvas holds one tone per cell. Paint raises the tone under the brush, Erase lowers it, and Reveal picture moves it toward the tone of Karahisari's calligraphy, so painting brings the calligraphy into the screen.
+
+<DitherBrushDemo />
+
+A dab changes the tone under it by a falloff of (1 minus d²)² times Flow, where d is the distance from the dab's centre as a share of its radius. A stroke lays a dab every third of a radius along the pointer's path, and after each move the plate screens only the cells under the new dabs, at their own place in the tile. The rest of the canvas keeps its cells, so a stroke never shifts the dither around it. A new cell size keeps the painting: the plate reads the old tone at the centres of the new cells. Sample Stroke paints a wave whose width swells and thins, and Clear empties the canvas.
+
+### Import and props
+
+```ts
+import { screenTone } from '@/components/docs/demos/dither-lab/screens';
+
+// re-screen the cells x0..x1, y0..y1 of a grid `cols` wide at their place in the tile
+screenTone('bayer8', sub, x1 - x0, y1 - y0, bits, cols, x0, y0, { phaseX: x0, phaseY: y0 });
+```
+
+The phase options make a part of a grid print exactly the cells the whole grid would print there. Without them the tile would restart at the rectangle's corner, and every stroke would leave a seam where its cells meet the cells around it.
+
+### Traps
+
+- Painting needs the pointer, so the canvas sets `touch-action: none` and a finger on it paints instead of scrolling. The plate's height on a phone leaves room above and below it to scroll the page.
+- Flow adds up. A stroke lays about three dabs over each point, so a flow of 0.35 brings untouched paper to about 0.7 in one pass.

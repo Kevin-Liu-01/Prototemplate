@@ -2,6 +2,99 @@
 title: 'Dithered type and marks'
 description: 'Type and marks set in dither cells: words built from Bayer tiers, a mark that erodes and resolves, and glyph screens drawn from the house face.'
 icon: Fingerprint
+sources:
+  - src/components/docs/demos/dither-lab/DitherWordDemo.tsx
+  - src/components/docs/demos/dither-lab/MarkTiersDemo.tsx
+  - src/components/docs/demos/dither-lab/GlyphScreenDemo.tsx
+  - src/components/docs/demos/dither-lab/shapes.ts
+  - src/components/docs/demos/dither-lab/screens.ts
+  - src/lib/marks.ts
+  - src/lib/glyph-field.ts
+  - public/marks
 ---
 
-Type and marks set in dither cells: words built from Bayer tiers, a mark that erodes and resolves, and glyph screens drawn from the house face.
+import { DitherWordDemo, GlyphScreenDemo, MarkTiersDemo } from '@/components/docs/demos/dither-lab/lazy';
+
+These plates print type and marks in dither cells. The first two rasterize a shape at three pixels a cell and measure its exact signed distance field: for every cell, the distance in cells to the shape's outline, negative inside. Every style below is a function of that one number per cell, so a style change never redraws the shape. The third plate prints a picture with a character in each cell.
+
+## Words in the house face
+
+Type a line or pick the word "language" in one of eight scripts, then choose how the distance field becomes tone. The screen, the cell size and the ink change the print without touching the shape.
+
+<DitherWordDemo />
+
+The plate draws the line at weight 500 in the page's own face, the rsms InterVariable that `--pt-text` resolves to, and waits for `document.fonts.ready` so the shape is measured from the webfont and never from a fallback. It fits the line to 88 percent of the plate's width and at most 64 percent of its height. Inter covers Latin, Greek and Cyrillic; Han, Arabic, Devanagari, Hangul and Thai come from the system's faces for those scripts, shaped by the canvas's own text engine.
+
+| Style | Tone of a cell |
+| --- | --- |
+| Fringe | 1 inside and 0 outside, with a smoothstep 1.4 cells to each side of the outline, so the edge is a band of tiers |
+| Ramp | Inside the letters, from 1 at the line's left edge down to 0.08 at its right |
+| Shade | Inside the letters, from 0.14 at the outline up to 1 at the stroke's spine |
+| Glow | 1 inside, paper for 1.2 cells around the letters, then from 0.55 down to 0 by 45 percent of the cap height out |
+| Shadow | Solid letters, a gap of 1.5 cells, then a shadow at tone 0.42 offset by 9 percent of the cap height |
+
+### Import and props
+
+```ts
+import { textShape, wordTone } from '@/components/docs/demos/dither-lab/shapes';
+import { screenTone } from '@/components/docs/demos/dither-lab/screens';
+
+const family = getComputedStyle(canvas).fontFamily;
+const shape = textShape('Every language', family, cols, rows);
+const tone = wordTone(shape, 'shade', new Float32Array(cols * rows));
+screenTone('bayer8', tone, cols, rows, bits, cols);
+```
+
+| Function | Returns | Notes |
+| --- | --- | --- |
+| `textShape(text, family, cols, rows, ss?, fill?)` | `CellShape` | `ss` is the pixels drawn per cell (3), `fill` the share of the width the line may take (0.88). |
+| `wordTone(shape, style, out)` | the filled `out` | `style` is `'fringe'`, `'ramp'`, `'shade'`, `'glow'` or `'shadow'`. |
+
+A `CellShape` holds `cols`, `rows`, `sd` (the signed distance per cell, in cells), `box` (the ink's bounding box in cells) and `depth` (the deepest inside distance).
+
+### Traps
+
+- A canvas draws text in whatever face is loaded at the moment it draws. A shape built before the webfont arrives keeps the fallback's metrics, so the plate rebuilds when `document.fonts.ready` resolves.
+- The distance field is measured on the 3x mask and read at cell centres. Reading a 1x mask instead gives only a one-cell edge, and the fringe and shade styles lose their bands.
+
+## A mark through the tiers
+
+The plate holds a mark as a signed distance field and prints it at one level of the screen, from 0 to 64 on the 8 by 8 and 0 to 16 on the 4 by 4. Drag Level, or let Play run the cycle.
+
+<MarkTiersDemo />
+
+With the Tiers order every cell inside the mark gets the level's tone, so level k on the 8 by 8 lights exactly k of the 64 cells in every whole tile inside the mark. The tiers nest: every cell lit at one level stays lit at every higher level. A step up therefore only adds cells and a step down only removes them, and no cell moves. The other orders spread the level across a band of 35 percent of the ramp. Core out fills each stroke from its spine to its outline, Edge in fills from the outline to the spine, and Sweep fills from left to right.
+
+Play runs one cycle on smoothsteps: the mark resolves in 1.4 s, holds for 1.2 s, erodes in 1.4 s and holds empty for 1.2 s. Dragging Level stops the cycle. Under reduced motion the plate draws the mark resolved, and Level still works. The marks are the GT mark from `REFERENCE_MARK` in `src/lib/marks.ts` and four marks from `public/marks`.
+
+### Import and props
+
+```ts
+import { loadMark, markShape } from '@/components/docs/demos/dither-lab/shapes';
+
+const art = await loadMark('bar-monogram');
+const shape = markShape(art, cols, rows);
+```
+
+| Function | Returns | Notes |
+| --- | --- | --- |
+| `loadMark(id)` | `Promise<MarkArt>` | `'gt'` draws the reference path with the even-odd rule; the others decode `/marks/<id>.svg` once at 2048px wide. |
+| `markShape(art, cols, rows, ss?, fill?)` | `CellShape` | Fits the mark to 80 percent of the width and 76 percent of the height, centred. |
+
+The marks in `public/marks` draw their cuts with SVG masks and white shapes over black. The plate rasterizes each file as an image and counts a pixel as ink only when it is opaque and dark, so a white knockout stays paper.
+
+## A glyph screen
+
+Each cell of this screen is a character. The source picker is the bench's: the five pictures, the ramp, the noise or your own picture.
+
+<GlyphScreenDemo />
+
+The plate draws every glyph of the chosen set once in the house face, measures the share of its cell each glyph inks, and sorts them into a ladder. A glyph joins the ladder only when it inks at least 1.5 percent more than the step before it, measured against the densest glyph, so every step is a visible step in tone. A cell's tone then picks a step. With Dither on, a tone between two steps takes the upper step where the remainder is over the cell's 8 by 8 Bayer threshold, so the tile carries the tones between glyphs the same way it carries tone between ink and paper. With Dither off, each cell takes the nearer step, and the picture shows bands where the tone crosses a step.
+
+Cells are 1.5 times as tall as they are wide, close to a line of text. Eight scripts uses the glyph field's inventory of letters from the eight words for "language", and Digits uses the ten digits.
+
+### Traps
+
+- Glyphs here stay still. The house glyph rain moves its glyphs and keeps every one as solid type, because a dither pattern on moving type flickers with every step.
+- The canvas draws at the device pixel ratio, capped at 2. Each glyph is drawn once into an atlas at the cell's size in canvas pixels and copied to whole pixels of the canvas, so no glyph is resampled where it is placed.
+- A glyph that is wider than its cell would ink its neighbours. The plate measures the widest glyph of the set and shrinks the face until it fits within 104 percent of the cell's width.
