@@ -79,7 +79,8 @@ function showStage(page: HTMLElement, stage: Element | null): number {
   const begins = [innerHeight * 0.5 - (top + scrollY), ...starts, last + innerHeight * 0.5];
   const share = (k: number, length: number) => Math.min(1, Math.max(0, (read - (begins[k] ?? 0)) / Math.max(1, length)));
   const turn = (k: number) => (begins[k + 1] ?? 0) - (begins[k] ?? 0);
-  const arrived = at === 0 ? 1 : share(at, Math.min(innerHeight / 3, turn(at)));
+  // the cover gives way to the first figure in half the scroll the others take, so the story opens on it
+  const arrived = at === 0 ? 1 : share(at, Math.min(at === 1 ? innerHeight / 6 : innerHeight / 3, turn(at)));
   const clamp = (v: number) => Math.min(1, Math.max(0, v));
   items.forEach((el, k) => {
     const opacity = k === at ? clamp((arrived - 0.4) / 0.6) : k === at - 1 ? clamp(1 - arrived / 0.6) : 0;

@@ -746,7 +746,7 @@
   --gtp-globe-land: #7a5a33;
   --gtp-globe-sea: #d6bf95;
   --gtp-globe-rim: #3a2814;
-  --gtp-print-measure: 660px;
+  --gtp-print-measure: 620px;
   /* the one story set in the serif, Newsreader, with Katagami Serif for the letters it lacks; Chinese, Japanese and
      Korean fall to a serif (Songti, Noto Serif), so they match it, since Katagami's own CJK is sans */
   --gtp-serif: 'Newsreader', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
@@ -832,21 +832,21 @@
    fades out as one; the epigraph fades in where it stood, holds a moment and fades out as one; then the
    story fades in where it will stand, at the top of the window, as the globe comes onto the stage, and only
    then scrolls on. All on the scroll, so scrolling back plays it backward, and the cover never moves. The
-   opening is 290dvh tall and its frame is pinned for the 190dvh of scroll before the story stands at the top.
+   opening is 240dvh tall and its frame is pinned for the 140dvh of scroll before the story stands at the top.
    Below the wide width, under reduced motion, and where a browser cannot tie animation to scroll, the
    epigraph simply heads the story. */
 .gtp-print-opening-next { display: none; }
 @supports (animation-timeline: view()) {
   @media (min-width: 1250px) and (prefers-reduced-motion: no-preference) {
     .gtp-print-text { timeline-scope: --opening; }
-    .gtp-print-opening { height: 290dvh; view-timeline: --opening block; }
+    .gtp-print-opening { height: 240dvh; view-timeline: --opening block; }
     .gtp-print-opening-frame { position: sticky; top: 0; display: grid; height: 100dvh; }
     .gtp-print-opening-frame > * { grid-area: 1 / 1; }
-    .gtp-print-opening .gtp-head-title { animation: gtp-slide-out cubic-bezier(0.55, 0, 1, 0.45) both; animation-timeline: --opening; animation-range: contain 0% contain 16.3%; }
+    .gtp-print-opening .gtp-head-title { animation: gtp-slide-out cubic-bezier(0.55, 0, 1, 0.45) both; animation-timeline: --opening; animation-range: contain 0% contain 22%; }
     .gtp-print-opening-next {
       display: grid; align-content: center;
       padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2) max(40px, (100% - var(--gtp-print-measure)) / 2);
-      animation: gtp-epigraph-slide linear both; animation-timeline: --opening; animation-range: contain 24.7% contain 76.3%;
+      animation: gtp-epigraph-slide linear both; animation-timeline: --opening; animation-range: contain 28.6% contain 70%;
     }
     .gtp-print-opening-next .gtp-print-epigraph { margin: 0; }
     /* the story starts a window up, over the pinned frame (whose slides are out by then), so it stands at the top
@@ -856,17 +856,17 @@
       position: relative; z-index: 1; margin-top: -100dvh; padding-top: 112px;
       animation: gtp-story-hold linear both, gtp-story-in cubic-bezier(0.22, 1, 0.36, 1) both;
       animation-timeline: --opening, --opening;
-      animation-range: contain 81.6% contain 100%, contain 81.6% contain 100%;
+      animation-range: contain 75% contain 100%, contain 75% contain 100%;
     }
     .gtp-print-opening ~ .gtp-print-page .gtp-print-epigraph { display: none; }
   }
 }
 @keyframes gtp-slide-out { to { opacity: 0; translate: 0 -24px; } }
-/* in over the first 34vh of its run, held for 34vh, out over the last 30vh */
+/* in over the first 22vh of its run, held for 14vh, out over the last 22vh */
 @keyframes gtp-epigraph-slide {
   0% { opacity: 0; translate: 0 24px; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
-  34.7% { opacity: 1; translate: 0 0; }
-  69.4% { opacity: 1; translate: 0 0; animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  37.9% { opacity: 1; translate: 0 0; }
+  62.1% { opacity: 1; translate: 0 0; animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
   100% { opacity: 0; translate: 0 -24px; }
 }
 /* the story's natural place moves 35vh up over its fade; this moves it back by the same, less 16px it rises */
