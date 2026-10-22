@@ -2,6 +2,52 @@
 title: 'Page gallery'
 description: 'Every shipped page of the production mirror, live in a frame at the desktop and the phone width in both themes, picked from one list.'
 icon: Window
+sources:
+  - src/components/docs/demos/pages
+  - src/app/d/production
+  - src/components/plate/gallery/devStates.ts
+  - src/lib/surfaces.ts
+  - scripts/lib/site-pages.mjs
+  - public/shots/thumb
 ---
 
-Every shipped page of the production mirror, live in a frame at the desktop and the phone width in both themes, picked from one list.
+import { PageGalleryDemo } from '@/components/docs/demos/pages/lazy';
+
+The production mirror at [/d/production](/d/production) rebuilds generaltranslation.com page for page, together with the dashboard's sign-in and onboarding states. The gallery holds every page the mirror ships and the hub's own pages, and it shows one of them at a time as the live page.
+
+## Gallery
+
+Pick a page in the list under the frame to load it. Width lays the page out at 1440 or 390 pixels, and Theme starts on the docs theme and follows it.
+
+<PageGalleryDemo />
+
+Each tile shows the page's still in the plate's theme, and only the page you pick runs live. A sign-in or onboarding page adds State, which opens any state of the journey through the page's `?state=` address. A page with no still shows its path on a blank tile. Open Page leaves the docs for the page itself.
+
+### Kinds
+
+| Kind | Pages | Routes |
+| --- | --- | --- |
+| Home | Home | `/d/production` |
+| Product | Report card, supported locales | `/report-card`, `/supported-locales` |
+| Pricing | Pricing, usage rates | `/pricing`, `/pricing/usage` |
+| Enterprise | Enterprise, enterprise contact and the seven partner credit pages | `/enterprise`, `/enterprise/contact`, `/enterprise/contact/<partner>` |
+| Company | Careers, contact | `/careers`, `/contact` |
+| Blog | The index, a post and a release | `/blog`, `/blog/<slug>` |
+| Legal | The index and two of the seven documents | `/legal`, `/legal/<document>` |
+| Sign-in and onboarding | Sign in, onboarding, consent, device code and CLI, each with every state | `/signin`, `/onboarding`, `/consent`, `/device`, `/cli` |
+| Errors | The 404 page and the blog's missing post | any address the mirror does not hold, `/blog/<unknown slug>` |
+| Hub | Gallery, brand, docs, deck, press, present, compare, skills, handbook, marks, blog, atlas, graphics, motion, transcreate | `/`, `/brand`, `/docs` and the rest |
+
+Every route in the first nine rows sits under `/d/production`. The 404 page answers with HTTP status 404, as the shipped site does, and a missing post renders the blog's own not-found page with the closest posts.
+
+### Frames and stills
+
+A plate keeps at most one live page. The frame is created when the plate comes within 180 pixels of the viewport and removed when the plate leaves it, so a page you have scrolled past holds no memory and runs no scripts. In the presenter, 12 live pages held about 1.3 GB of renderer memory and a wall of 22 made it lag, so the list is drawn from stills.
+
+The stills are the 640 by 360 cuts of each page's 1440 first fold that `pnpm build:thumbs` writes to `public/shots/thumb`, one for each theme. They load lazily at their own size. The picked page's still also stands in the frame's place until the page has loaded.
+
+The frame is a same-origin iframe scaled to the plate, on the pattern of the [book head plate](/docs/components/heads). The plate sends the page the theme with the root layout's `gt-theme` message on load and on every change, so the page shows the plate's theme even when no theme is saved in storage. A mirror page loads with `?chrome=0`, which hides the direction corner.
+
+### New pages
+
+A page added to the mirror takes a row in `siteRoutes()` and in `src/lib/surfaces.ts`, then its captures with `pnpm capture:pages --only <id>` and `pnpm build:thumbs`. Its row in the gallery is one line in `src/components/docs/demos/pages/gallery-pages.ts`, under its kind, with `still` set once the captures exist.

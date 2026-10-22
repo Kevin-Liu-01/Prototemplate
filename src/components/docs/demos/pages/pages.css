@@ -1,0 +1,306 @@
+/* The page plates of content/docs/components/(pages): the live frame's
+   still and its fade-in, the anatomy overlay of the page templates, and
+   the page gallery's list. Every class starts with .pgx-. The frame box
+   and the frame are demos.css's .dmo-frame-box and .dmo-frame-doc, which
+   set --dmo-frame-w, --dmo-frame-h and --dmo-frame-s; the rules here read
+   the same three. Corners and type come from the tokens. */
+
+/* ---------- the frame ---------- */
+
+/* holds the frame's size for the box and the overlay drawn over it */
+.pgx-frame {
+  position: relative;
+}
+
+/* the plate ground shows while a frame has neither a still nor a page */
+.pgx-box {
+  background: var(--pt-plate);
+}
+
+/* the page's 1440 still, the width the frame is drawn at, until the page has loaded */
+.pgx-back {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: calc(var(--dmo-frame-w) * var(--dmo-frame-s));
+  height: auto;
+  transform: translateX(-50%);
+}
+
+.pgx-doc {
+  background: var(--pt-paper);
+  opacity: 0;
+  transition: opacity var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pgx-doc.is-on {
+  opacity: 1;
+}
+
+/* the line the stage shows until the page is live: an opaque chip, as the plate tag is */
+.pgx-status {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  padding: 2px 7px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  background: var(--pt-paper);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  pointer-events: none;
+}
+
+/* ---------- the anatomy overlay ---------- */
+
+/* the frame's own box, so a part outside the page's viewport is clipped */
+.pgx-anatomy {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  width: calc(var(--dmo-frame-w) * var(--dmo-frame-s));
+  height: calc(var(--dmo-frame-h) * var(--dmo-frame-s));
+  overflow: hidden;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.pgx-part,
+.pgx-gap,
+.pgx-label {
+  position: absolute;
+}
+
+.pgx-part {
+  box-sizing: border-box;
+  border: 1px solid var(--docs-accent);
+}
+
+.pgx-part.is-round {
+  border-radius: var(--pt-radius-round);
+}
+
+/* a spacing token's extent: the accent at a low alpha under a 1px diagonal */
+.pgx-gap {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--docs-accent) 55%, transparent) 0 1px,
+      transparent 1px 5px
+    ),
+    color-mix(in srgb, var(--docs-accent) 14%, transparent);
+}
+
+.pgx-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  max-width: calc(100% - 4px);
+  padding: 1px 6px;
+  border-radius: var(--pt-radius-chip);
+  background: var(--docs-accent);
+  font-size: var(--pt-t-group);
+  font-weight: var(--pt-w-label);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-paper);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.pgx-label-token {
+  font-family: var(--pt-mono);
+  font-weight: var(--pt-w-text);
+}
+
+.pgx-label-value {
+  font-weight: var(--pt-w-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* a narrow overlay's label: the part's number, which the legend under the frame names */
+.pgx-label.is-n,
+.pgx-legend-n {
+  justify-content: center;
+  min-width: 18px;
+  padding: 1px 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.pgx-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 4px 16px;
+  margin: 0;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--pt-hair);
+  list-style: none;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.pgx-legend li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.pgx-legend-n {
+  display: inline-flex;
+  flex: none;
+  border-radius: var(--pt-radius-chip);
+  background: var(--docs-accent);
+  font-size: var(--pt-t-group);
+  font-weight: var(--pt-w-label);
+  color: var(--pt-paper);
+}
+
+.pgx-legend-token {
+  font-family: var(--pt-mono);
+  overflow-wrap: anywhere;
+}
+
+.pgx-legend-value {
+  color: var(--pt-ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- the gallery's list ---------- */
+
+.pgx-select {
+  width: auto;
+  max-width: min(100%, 300px);
+}
+
+.pgx-where {
+  flex: 1 1 160px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.pgx-where-path {
+  font-family: var(--pt-mono);
+}
+
+.pgx-list {
+  flex: 1 1 100%;
+  max-height: 344px;
+  margin: 2px -14px -14px;
+  padding: 12px 10px 14px 14px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.pgx-kind + .pgx-kind {
+  margin-top: 16px;
+}
+
+.pgx-kind-label {
+  margin: 0 0 6px;
+  font-size: var(--pt-t-group);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.pgx-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 8px;
+}
+
+.pgx-tile {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-paper);
+  overflow: hidden;
+  font: inherit;
+  text-align: left;
+  color: var(--pt-ink-2);
+  cursor: pointer;
+  transition:
+    border-color var(--pt-dur-fast) var(--pt-ease-out),
+    color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pgx-tile:hover {
+  border-color: var(--pt-edge);
+  color: var(--pt-ink);
+}
+
+.pgx-tile.is-on {
+  border-color: var(--pt-ink);
+  color: var(--pt-ink);
+}
+
+.pgx-tile:focus-visible {
+  outline: 2px solid var(--docs-accent);
+  outline-offset: 1px;
+}
+
+.pgx-tile-img,
+.pgx-tile-blank {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: var(--pt-plate);
+}
+
+.pgx-tile-img {
+  object-fit: cover;
+}
+
+.pgx-tile-blank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px;
+  overflow: hidden;
+}
+
+.pgx-tile-path {
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.pgx-tile-name {
+  padding: 5px 8px 6px;
+  border-top: 1px solid var(--pt-hair-soft);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+
+@media (max-width: 640px) {
+  .pgx-list {
+    max-height: 300px;
+    margin: 2px -12px -12px;
+    padding: 10px 8px 12px 12px;
+  }
+
+  .pgx-tiles {
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pgx-doc,
+  .pgx-tile {
+    transition: none;
+  }
+}
