@@ -10,7 +10,7 @@ type Props = {
   /** The place the globe turns to and pins. */
   place: LatLon & { city: string };
   className?: string;
-  /** CSS pixels per dither cell. */
+  /** CSS pixels per dither cell, rounded to whole device pixels. */
   cell?: number;
   /** Degrees the place sits above the disc's centre. */
   tilt?: number;

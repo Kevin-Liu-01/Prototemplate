@@ -85,7 +85,10 @@ export function mountGlobe(
 
   function resize() {
     const css = canvas.parentElement?.clientWidth ?? canvas.clientWidth;
-    const next = Math.max(48, Math.floor(css / cell));
+    // each cell a whole number of device pixels, so the screen prints evenly at any pixel ratio
+    const ratio = window.devicePixelRatio || 1;
+    const step = Math.max(1, Math.round(cell * ratio)) / ratio;
+    const next = Math.max(48, Math.floor(css / step));
     if (next === size) return;
     size = next;
     canvas.width = size;

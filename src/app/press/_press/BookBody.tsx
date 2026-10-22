@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Fragment, useMemo, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 
 import type { PlateFigure, Story } from './content';
@@ -9,11 +8,8 @@ import { useMountEffect } from './hooks';
 import { LIVE_CAPTION } from './plates/Plate';
 import { VersionsDemo } from './plates/Live';
 import Inline from './ui/Inline';
-import PressMark from './ui/PressMark';
-import { SliderStyleContext } from './ui/StopSlider';
-import ThemeSwitch from './ui/ThemeSwitch';
 
-type Props = { story: Story; next: { slug: string; title: string } | null };
+type Props = { story: Story };
 
 /** From this width the text keeps to the left half and the pictures show on a stage across the right half; below it each picture follows its paragraph. */
 const WIDE = '(min-width: 1250px)';
@@ -242,13 +238,14 @@ function placeMargin(page: HTMLElement) {
   }
 }
 
-/* A story set like a book and laid out as the press's other stories: on a
-   wide screen the title page and then the text keep to the left half, and a
-   stage across the right half shows the cover and then each picture with its
-   caption as the reader reaches it. On a narrow screen the cover heads the
-   page and each picture follows its paragraph. One face throughout, in
-   sentence case; paragraphs part by a blank line, not an indent. */
-export default function BookReader({ story }: Props) {
+/* The book look's body, inside the shared reader (Reader.tsx), which keeps
+   the theme switch, the monogram home and the crossfade: on a wide screen
+   the title page and then the text keep to the left 61.8%, and a stage
+   across the rest shows the cover and then each picture with its caption as
+   the reader reaches it. On a narrow screen the cover heads the page and
+   each picture follows its paragraph. One face throughout, in sentence case;
+   paragraphs part by a blank line, not an indent. */
+export default function BookBody({ story }: Props) {
   const { blocks, figures } = story;
   const [ticks, setTicks] = useState<Tick[]>([]);
   const root = useRef<HTMLDivElement>(null);
@@ -266,8 +263,6 @@ export default function BookReader({ story }: Props) {
     });
   }, [blocks, figures]);
   const [stage, setStage] = useState(0);
-  // the epigraph that heads the story, which the opening shows as its second slide
-  const epigraph = blocks[0]?.kind === 'note' && blocks[0].name === 'Epigraph' ? blocks[0] : null;
   const notes = useMemo(() => new Map(blocks.flatMap((b) => (b.kind === 'footnote' ? [[b.n, b.inline] as const] : []))), [blocks]);
 
   useMountEffect(() => {
@@ -362,139 +357,123 @@ export default function BookReader({ story }: Props) {
   let figureCount = 0;
 
   return (
-    <SliderStyleContext value='book'>
-      <div ref={root} className='gtp gtp-print'>
-        <Link href='/press' className='gtp-print-home' aria-label='GT Atlas, all stories'>
-          <PressMark size={22} />
-        </Link>
-        <ThemeSwitch className='gtp-print-theme' />
-        <nav className='gtp-print-rail' aria-label='Sections'>
-          <button type='button' className='gtp-print-track' tabIndex={-1} aria-hidden='true' onClick={seek} />
-          {ticks.map((t) => (
-            <button
-              key={t.id}
-              type='button'
-              className='gtp-print-tick'
-              style={{ '--at': t.at } as CSSProperties}
-              data-label={t.label}
-              aria-label={t.label}
-              onClick={() => toSection(t.id)}
-            />
-          ))}
-        </nav>
+    <div ref={root} className='gtp-print'>
+      <nav className='gtp-print-rail' aria-label='Sections'>
+        <button type='button' className='gtp-print-track' tabIndex={-1} aria-hidden='true' onClick={seek} />
+        {ticks.map((t) => (
+          <button
+            key={t.id}
+            type='button'
+            className='gtp-print-tick'
+            style={{ '--at': t.at } as CSSProperties}
+            data-label={t.label}
+            aria-label={t.label}
+            onClick={() => toSection(t.id)}
+          />
+        ))}
+      </nav>
 
-        <div className='gtp-print-body'>
-          <div className='gtp-print-text'>
-            {/* the opening as slides on a wide screen: the title page, then the epigraph where it stood, then the story (press.css, the opening) */}
-            <div className='gtp-print-opening'>
-              <div className='gtp-print-opening-frame'>
-                <Opener story={story} />
-                {epigraph ? (
-                  <div className='gtp-print-opening-next'>
-                    <Quote block={epigraph} />
-                  </div>
-                ) : null}
-              </div>
-            </div>
+      <div className='gtp-print-body'>
+        <div className='gtp-print-text'>
+          <Opener story={story} />
 
-            <article ref={page} className='gtp-print-page'>
-              {blocks.map((block, i) => {
-                switch (block.kind) {
-                  case 'heading':
-                    return (
-                      <h2 key={i} id={block.id}>
-                        {block.text}
-                      </h2>
-                    );
-                  case 'para':
-                    return (
-                      <Fragment key={i}>
-                        <p>
-                          <Inline nodes={block.inline} />
-                        </p>
-                        {marginNotes(block.inline)}
-                      </Fragment>
-                    );
-                  case 'list': {
-                    const Tag = block.ordered ? 'ol' : 'ul';
-                    return (
-                      <Fragment key={i}>
-                        <Tag>
-                          {block.items.map((item, k) => (
-                            <li key={k}>
-                              <Inline nodes={item} />
-                            </li>
-                          ))}
-                        </Tag>
-                        {marginNotes(block.items.flat())}
-                      </Fragment>
-                    );
-                  }
-                  case 'rules':
-                    return (
-                      <ul key={i}>
-                        {block.items.map((rule, k) => (
+          <article ref={page} className='gtp-print-page'>
+            {blocks.map((block, i) => {
+              switch (block.kind) {
+                case 'heading':
+                  return (
+                    <h2 key={i} id={block.id}>
+                      {block.text}
+                    </h2>
+                  );
+                case 'para':
+                  return (
+                    <Fragment key={i}>
+                      <p>
+                        <Inline nodes={block.inline} />
+                      </p>
+                      {marginNotes(block.inline)}
+                    </Fragment>
+                  );
+                case 'list': {
+                  const Tag = block.ordered ? 'ol' : 'ul';
+                  return (
+                    <Fragment key={i}>
+                      <Tag>
+                        {block.items.map((item, k) => (
                           <li key={k}>
-                            <Inline nodes={rule.inline} />
+                            <Inline nodes={item} />
                           </li>
                         ))}
-                      </ul>
-                    );
-                  case 'note':
-                    if (block.name === 'Sources')
-                      return (
-                        <div key={i} id='gtp-sources' className='gtp-print-sources'>
-                          {block.paras.map((p, k) => (
-                            <p key={k}>
-                              <Inline nodes={p} />
-                            </p>
-                          ))}
-                        </div>
-                      );
-                    return <Quote key={i} block={block} />;
-                  case 'figure': {
-                    const figure = figures[figureCount++];
-                    if (!figure) return null;
-                    // the mark holds the picture's place for the stage; the picture itself shows here only on a narrow screen
-                    return (
-                      <Fragment key={i}>
-                        <span className='gtp-print-at' data-live={figure.live ? true : undefined} aria-hidden='true' />
-                        <PrintFigure figure={figure} />
-                      </Fragment>
-                    );
-                  }
-                  case 'side':
-                    return (
-                      <Fragment key={i}>
-                        <span className='gtp-print-at' aria-hidden='true' />
-                        <PrintFigure figure={sideFigure(block)} />
-                      </Fragment>
-                    );
-                  default:
-                    return null;
+                      </Tag>
+                      {marginNotes(block.items.flat())}
+                    </Fragment>
+                  );
                 }
-              })}
-            </article>
-          </div>
-
-          {/* the stage across the right half on a wide screen: the cover, then each picture in turn; only the pictures beside the one shown are mounted, so the next is ready to fade in */}
-          <aside className='gtp-print-stage' aria-label='Pictures'>
-            <div className='gtp-print-stage-item gtp-print-stage-cover' data-shown={stage === 0}>
-              {story.cover ? (
-                // eslint-disable-next-line @next/next/no-img-element -- the story's own cover picture, across the stage
-                <img src={story.cover} alt='' />
-              ) : null}
-            </div>
-            {pictures.map((figure, k) => (
-              <div key={figure.id} className='gtp-print-stage-item' data-shown={stage === k + 1}>
-                {Math.abs(stage - (k + 1)) <= 1 ? <PrintFigure figure={figure} tallest={STAGE_TALLEST} /> : null}
-              </div>
-            ))}
-          </aside>
+                case 'rules':
+                  return (
+                    <ul key={i}>
+                      {block.items.map((rule, k) => (
+                        <li key={k}>
+                          <Inline nodes={rule.inline} />
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                case 'note':
+                  if (block.name === 'Sources')
+                    return (
+                      <div key={i} id='gtp-sources' className='gtp-print-sources'>
+                        {block.paras.map((p, k) => (
+                          <p key={k}>
+                            <Inline nodes={p} />
+                          </p>
+                        ))}
+                      </div>
+                    );
+                  return <Quote key={i} block={block} />;
+                case 'figure': {
+                  const figure = figures[figureCount++];
+                  if (!figure) return null;
+                  // the mark holds the picture's place for the stage; the picture itself shows here only on a narrow screen
+                  return (
+                    <Fragment key={i}>
+                      <span className='gtp-print-at' data-live={figure.live ? true : undefined} aria-hidden='true' />
+                      <PrintFigure figure={figure} />
+                    </Fragment>
+                  );
+                }
+                case 'side':
+                  return (
+                    <Fragment key={i}>
+                      <span className='gtp-print-at' aria-hidden='true' />
+                      <PrintFigure figure={sideFigure(block)} />
+                    </Fragment>
+                  );
+                default:
+                  return null;
+              }
+            })}
+          </article>
         </div>
 
+        {/* the stage across the right half on a wide screen: the cover, then each picture in turn; only the pictures beside the one shown are mounted, so the next is ready to fade in */}
+        <aside className='gtp-print-stage' aria-label='Pictures'>
+          <div className='gtp-print-stage-item gtp-print-stage-cover' data-shown={stage === 0}>
+            {story.cover ? (
+              // eslint-disable-next-line @next/next/no-img-element -- the story's own cover picture, across the stage
+              <img src={story.cover} alt='' />
+            ) : null}
+          </div>
+          {pictures.map((figure, k) => (
+            <div key={figure.id} className='gtp-print-stage-item' data-shown={stage === k + 1}>
+              {Math.abs(stage - (k + 1)) <= 1 ? <PrintFigure figure={figure} tallest={STAGE_TALLEST} /> : null}
+            </div>
+          ))}
+        </aside>
       </div>
-    </SliderStyleContext>
+
+    </div>
   );
 }
 
@@ -523,16 +502,10 @@ function Opener({ story }: { story: Story }) {
   );
 }
 
-/** '2026-10-19' as the page prints it: October 19th, 2026. */
+/** '2026-10-19' as the page prints it: 19 October 2026, never split across lines. */
 function longDate(iso: string): string {
   const date = new Date(`${iso}T00:00:00Z`);
-  if (Number.isNaN(date.getTime())) return iso;
-  const day = date.getUTCDate();
-  const teen = day % 100 >= 11 && day % 100 <= 13;
-  const suffix = teen ? 'th' : (({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[day % 10] ?? 'th');
-  const month = date.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' });
-  // no-break spaces, so the date never splits across lines
-  return `${month}\u00a0${day}${suffix},\u00a0${date.getUTCFullYear()}`;
+  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).replace(/ /g, '\u00a0');
 }
 
 /** One figure in the flow of the text, its caption under it; a carousel shows the frame chosen above a row of all of them. */

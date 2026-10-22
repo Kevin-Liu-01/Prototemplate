@@ -25,7 +25,7 @@ const SETTLE_MS = 1200;
 const LEAD =
   'GT Atlas is where General Translation publishes long writing. Each story is a book on a shelf, with a cover of its own, and it opens in pages set for what it is about.';
 const NOTE =
-  'These notes give the reasons for a magazine, then show the three ways a story is set so far: the docs reader, Fumadocs’ own interface and a printed page. The covers, Taylor Fang’s seven directions for the cover and the languages follow.';
+  'These notes give the reasons for a magazine, then show the three ways a story is set so far: the docs reader, Fumadocs’ own interface and a printed book. The covers, Taylor Fang’s seven directions for the cover and the languages follow.';
 
 /** A capture; 1440 by 900 unless it says otherwise. */
 type Figure = { src: string; alt: string; caption: string; width?: number; height?: number };
@@ -42,7 +42,7 @@ const PARTS: readonly Part[] = [
       'Atlas sets a story’s text and its figures side by side. The figure beside the text changes as the reader reaches the paragraph that discusses it. A figure can be live: the table of contents, the corner radii and the hit list from the docs essays are rebuilt in the page, so the reader can use what the paragraph describes.',
       'The model is Stripe Press: a shelf of books, each with a cover designed for it. Atlas gives each of our stories the same treatment, and the shelf is the index.',
       'General Translation translates software, so the magazine reads in nine languages. The flags under the shelf set every title in the reader’s language, and the globe shows a city where each language is spoken.',
-      'A story can be set in the look of its subject. Fuma Nama’s profile is set in Fumadocs, the interface he made, and the history of Euclid’s Elements is set as a printed page.',
+      'A story can be set in the look of its subject. Fuma Nama’s profile is set in Fumadocs, the interface he made, and the history of Euclid’s Elements is set as a printed book.',
       'Atlas is one module, src/app/press/_press in Prototemplate, with its own type and colors, so it can move to a General Translation subdomain without the hub around it.',
     ],
     figures: [{ src: '/shots/atlas/shelf.webp', alt: 'The GT Atlas shelf: four books in a row, turned to show their spines', caption: 'The shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' }],
@@ -69,16 +69,16 @@ const PARTS: readonly Part[] = [
   },
   {
     id: 'printed-page',
-    title: 'A printed page',
+    title: 'A printed book',
     note: 'Translating Euclid',
-    lead: 'Translating Euclid is the history of a book, so the reader is set as a printed page: light brown paper taken from the cover scan’s own paper, one serif face, and a stage a shade deeper than the page.',
+    lead: 'Translating Euclid is the history of a book, so Taylor Fang set it as one: light brown paper taken from the cover scan’s own paper, one serif face (Newsreader), a title page, and a stage beside the text for its pictures.',
     body: [
-      'It is the same reader as the docs essays: the text on the left, the stage on the right showing the figure the reader has reached, and the rail of ticks down the left edge. Everything is in Katagami Serif, with the Chinese in a Song face, all in sentence case. Paragraphs part by a blank line, not an indent, and the stage opens on the cover picture.',
-      'The first figure shows the first eight definitions of Book I in eight versions, from Alexandria to Beijing: each city pinned on a globe with its coordinate lines, a leader from each pin to its edition, and the chosen edition’s eight lines set as a poem under them.',
+      'On a wide screen the text keeps to the left 61.8% at a 620px measure and the stage holds the rest: the cover, then each of the story’s 21 pictures with a short caption that links to its source, fading from one to the next as the reader reaches the paragraph about it. The stage empties at the sources. Notes sit in the margin level with their numbers, and on a phone each picture and note follows its paragraph.',
+      'It is still the shared reader, with the same theme switch, monogram home and crossfade from the shelf as the other stories. The first figure shows the first eight definitions of Book I in five versions, English, Greek, Arabic, Latin and Chinese: the globe turns to each city in turn every six seconds until the reader picks one.',
     ],
     figures: [
-      { src: '/shots/atlas/book.webp', alt: 'Translating Euclid in the reader, set as a printed page', caption: 'Translating Euclid: the text on paper on the left, the cover picture on the stage.' },
-      { src: '/shots/atlas/figure.webp', alt: 'The eight versions of the first definitions in Translating Euclid', caption: 'The first eight definitions in Ricci and Xu’s Chinese, with the seven other editions pinned on the globe.' },
+      { src: '/shots/atlas/book.webp', alt: 'Translating Euclid set as a printed book', caption: 'Translating Euclid: the text on paper on the left, a picture and its caption on the stage.' },
+      { src: '/shots/atlas/figure.webp', alt: 'The first eight definitions of Book I in five versions in Translating Euclid', caption: 'The first eight definitions on the stage, the globe turned to the version shown.' },
     ],
   },
   {

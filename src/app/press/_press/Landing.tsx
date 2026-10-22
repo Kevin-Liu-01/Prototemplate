@@ -9,7 +9,7 @@ import { dms } from './coords';
 import { useLayoutWork, useMountEffect } from './hooks';
 import { LANGS, TOPIC_NAMES, TOPICS, type Lang, type LangCode, type Topic } from './stories';
 import { bookTitle } from './titles';
-import { landed, move, plainClick, takeLeaving } from './transition';
+import { landed, move, plainClick } from './transition';
 import Book, { bookDepth } from './ui/Book';
 import Flag from './ui/Flag';
 import FlipText from './ui/FlipText';
@@ -124,28 +124,14 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
 
   useLayoutWork(anchor, { dependencies: [mode] });
 
-  /** Opens a story: its book's cover grows into the story's cover (transition.ts). Euclid's book opens without the move. */
+  /** Opens a story through the press's crossfade (transition.ts). */
   const open = (i: number) => {
     const s = catalog[i];
-    if (!s) return;
-    if (s.look === 'book') {
-      router.push(`/press/${s.slug}`);
-      return;
-    }
-    // the cover itself, not the board around it, so no board edge rides along
-    const front = shelf.current?.querySelectorAll('.gtp-shelf-item')[i]?.querySelector('.gtp-book-front .gtp-cover');
-    move((href) => router.push(href), `/press/${s.slug}`, s.look, front);
+    if (s) move((href) => router.push(href), `/press/${s.slug}`);
   };
 
-  // back from a story: its book takes the cover's name, so the story's cover shrinks into it, then the move runs
+  // back from a story: the crossfade can capture the shelf now
   useMountEffect(() => {
-    const from = takeLeaving();
-    const i = from ? catalog.findIndex((s) => s.slug === from) : -1;
-    if (i >= 0) {
-      reveal(i);
-      const front = shelf.current?.querySelectorAll('.gtp-shelf-item')[i]?.querySelector<HTMLElement>('.gtp-book-front .gtp-cover');
-      if (front) front.style.viewTransitionName = 'gtp-cover';
-    }
     landed();
   });
 
@@ -373,7 +359,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
         <div className='gtp-band'>
           <div className='gtp-instrument'>
             <button type='button' className='gtp-globe-button' aria-expanded={globeOpen} aria-label='Languages on the globe' onClick={() => setGlobeOpen((g) => !g)}>
-              <Globe place={place} className='gtp-instrument-globe' cell={2} graticule label={false} />
+              <Globe place={place} className='gtp-instrument-globe' cell={1} graticule label={false} />
             </button>
             <div className='gtp-flags' role='radiogroup' aria-label='Language of the titles'>
               {flags(20, false)}

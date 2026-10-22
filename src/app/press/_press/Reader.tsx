@@ -15,6 +15,7 @@ import MaskToc from './ui/MaskToc';
 import Rail, { type RailMark } from './ui/Rail';
 import { SliderStyleContext } from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
+import BookBody from './BookBody';
 import { landed, move, plainClick } from './transition';
 import Cover from './ui/Cover';
 import { ArrowIcon, CalendarIcon, ClockIcon, IndexIcon, LiveIcon, LoopIcon, PenIcon, PinIcon, StillIcon, ViewsIcon } from './ui/icons';
@@ -34,12 +35,48 @@ function platesFor(blocks: Block[], figureIndex: Map<number, number>): number[] 
   });
 }
 
-/* The reading view: the text on the left in Katagami Text, the stage on
-   the right with the figure the reader has reached, and the ruler at the
-   left edge. On a narrow screen the stage goes away and each figure's
-   plate sits in the text where the figure was. */
+/* Every story's page: the press's one reader. It owns what every look
+   shares (the root with the story's look, the theme switch, the monogram
+   home, the crossfade in and out) and sets the story's body in its look: the
+   book look (Translating Euclid) as a printed book with its pictures on a
+   stage (BookBody), the others split between the text and the stage. */
 export default function Reader({ story, next }: Props) {
   const router = useRouter();
+
+  // the crossfade from the shelf can run now that the story is on the page
+  useMountEffect(() => {
+    landed();
+  });
+
+  return (
+    <SliderStyleContext value={story.look === 'fuma' ? 'mask' : story.look === 'book' ? 'book' : 'stops'}>
+      <div
+        className='gtp gtp-reader'
+        data-look={story.look}
+        onClickCapture={(e) => {
+          // every link home runs the crossfade
+          const home = e.target instanceof Element ? e.target.closest('a[href="/press"]') : null;
+          if (!home || !plainClick(e)) return;
+          e.preventDefault();
+          e.stopPropagation();
+          move((href) => router.push(href), '/press');
+        }}
+      >
+        <ThemeSwitch className='gtp-reader-theme' />
+        <Link href='/press' className='gtp-float-home' aria-label='GT Atlas, all stories'>
+          <PressMark size={26} />
+        </Link>
+        {story.look === 'book' ? <BookBody story={story} /> : <SplitBody story={story} next={next} />}
+      </div>
+    </SliderStyleContext>
+  );
+}
+
+/* The split reading view: the text on the left in Katagami Text, the stage
+   on the right with the figure the reader has reached, and the ruler at the
+   left edge. On a narrow screen the stage goes away and each figure's plate
+   sits in the text where the figure was. */
+function SplitBody({ story, next }: Props) {
   const { blocks, figures } = story;
   const [plate, setPlate] = useState(0);
   const [section, setSection] = useState(0);
@@ -73,8 +110,6 @@ export default function Reader({ story, next }: Props) {
   };
 
   useMountEffect(() => {
-    // the move from the shelf can run now that the story is on the page
-    landed();
     const media = matchMedia(WIDE);
     const sync = () => setWide(media.matches);
     sync();
@@ -148,23 +183,8 @@ export default function Reader({ story, next }: Props) {
   let figureCount = 0;
 
   return (
-    <SliderStyleContext value={story.look === 'fuma' ? 'mask' : story.look === 'book' ? 'book' : 'stops'}>
-    <div className='gtp gtp-reader' data-look={story.look}
-      onClickCapture={(e) => {
-        // every link home runs the move backwards: this story's cover shrinks into its book on the shelf
-        const home = e.target instanceof Element ? e.target.closest('a[href="/press"]') : null;
-        if (!home || !plainClick(e)) return;
-        e.preventDefault();
-        e.stopPropagation();
-        move((href) => router.push(href), '/press', 'home', null, story.slug);
-      }}
-    >
+    <>
       <span ref={progress} className='gtp-top-progress' aria-hidden='true' />
-      <ThemeSwitch className='gtp-reader-theme' />
-      <Link href='/press' className='gtp-float-home' aria-label='GT Atlas, all stories'>
-        <PressMark size={26} />
-      </Link>
-
       <div className='gtp-reader-body'>
         {story.look === 'fuma' ? (
           <div className='gtp-fuma-nav'>
@@ -194,39 +214,30 @@ export default function Reader({ story, next }: Props) {
             )}
             <h1>{story.title}</h1>
             <p className='gtp-summary'>{story.summary}</p>
-            {story.look === 'book' ? (
-              <p className='gtp-byline'>
-                <span>By {story.authors.join(', ')}</span>
-                <span>
-                  {longDate(story.date)} · {story.minutes} minute read
-                </span>
-              </p>
-            ) : (
-              <dl className='gtp-meta'>
-                <dt>
-                  <PenIcon size={13} />
-                  By
-                </dt>
-                <dd>{story.authors.join(', ')}</dd>
-                <dt>
-                  <CalendarIcon size={13} />
-                  Published
-                </dt>
-                <dd>{story.date}</dd>
-                <dt>
-                  <ClockIcon size={13} />
-                  Reading
-                </dt>
-                <dd>
-                  {story.minutes} minutes, {figures.length} figures
-                </dd>
-                <dt>
-                  <PinIcon size={13} />
-                  Filed from
-                </dt>
-                <dd className='gtp-mono'>{dmsPair(story.dateline)}</dd>
-              </dl>
-            )}
+            <dl className='gtp-meta'>
+              <dt>
+                <PenIcon size={13} />
+                By
+              </dt>
+              <dd>{story.authors.join(', ')}</dd>
+              <dt>
+                <CalendarIcon size={13} />
+                Published
+              </dt>
+              <dd>{story.date}</dd>
+              <dt>
+                <ClockIcon size={13} />
+                Reading
+              </dt>
+              <dd>
+                {story.minutes} minutes, {figures.length} figures
+              </dd>
+              <dt>
+                <PinIcon size={13} />
+                Filed from
+              </dt>
+              <dd className='gtp-mono'>{dmsPair(story.dateline)}</dd>
+            </dl>
           </header>
 
           {blocks.map((block, i) => {
@@ -342,23 +353,12 @@ export default function Reader({ story, next }: Props) {
           ) : null}
         </aside>
       </div>
-    </div>
-    </SliderStyleContext>
+    </>
   );
 }
 
-/** '2026-10-19' as a printed page gives it: 19 October 2026, never split across lines. */
-function longDate(iso: string): string {
-  const date = new Date(`${iso}T00:00:00Z`);
-  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).replace(/ /g, '\u00a0');
-}
-
-/** A story's cover: its own picture for the book look, the live cover for the others. */
+/** A story's live cover. */
 function StoryCover({ story, playing }: { story: Story; playing: boolean }) {
-  if (story.look === 'book') {
-    // eslint-disable-next-line @next/next/no-img-element -- the story's own cover picture, filling the plate
-    return <img className='gtp-cover gtp-cover-picture' src={story.cover} alt='' />;
-  }
   return <Cover slug={story.slug} title={story.title} lang='en' dir='ltr' picture={story.cover} playing={playing} />;
 }
 

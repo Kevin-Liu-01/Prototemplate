@@ -470,7 +470,7 @@ export function VersionsDemo() {
   return (
     <div ref={root} className='gtp-versions' data-chosen={chosen} data-held={held} data-moved={moved} data-shown={shown ?? undefined}>
       <div className='gtp-versions-map'>
-        <Globe place={version} cell={2} tilt={0} graticule label={false} turn={TURN} className='gtp-versions-globe'>
+        <Globe place={version} cell={1.5} tilt={0} graticule label={false} turn={TURN} className='gtp-versions-globe'>
           {/* each city's dot chooses the version made there */}
           {VERSIONS.map((v, i) => (
             <button

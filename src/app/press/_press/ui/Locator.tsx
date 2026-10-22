@@ -18,7 +18,7 @@ type Props = {
   /** A line under the city: the year of a historical version. */
   note?: string;
   className?: string;
-  /** CSS pixels per dither cell. */
+  /** CSS pixels per dither cell, rounded to whole device pixels. */
   cell?: number;
 };
 
@@ -26,7 +26,7 @@ type Props = {
    lines, and a leader line from the pin to the readout, which gives the
    locale over the city and the latitude and the longitude on a line each.
    The coordinates change like a split-flap board when the place moves. */
-export default function Locator({ place, note, className, cell = 2 }: Props) {
+export default function Locator({ place, note, className, cell = 1.5 }: Props) {
   return (
     <div className={['gtp-locator', className].filter(Boolean).join(' ')}>
       <Globe place={place} cell={cell} graticule label={false} className='gtp-locator-globe'>
