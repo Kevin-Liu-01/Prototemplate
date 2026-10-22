@@ -21,6 +21,6 @@ William Tyndale translated scripture into English while church law forbade it. H
 | 1:21.52 | Narrator | He was arrested in Antwerp in 1535. | The globe, a pin on Antwerp. |
 | 1:25.10 | Narrator | In prison he asked for his Hebrew Bible, grammar and dictionary. | His letter from Vilvoorde in Demaus’s facsimile: Bibliā hebraicā, grāmaticā hebraicā and vocabulariū hebraicū light on their words, then the signature. Heading: His Hebrew Bible, grammar and dictionary. |
 | 1:30.76 | Narrator | In 1536 he was strangled and burned at Vilvoorde. | Vilvoorde castle, where he was held, in Harrewijn’s engraving of 1696; on “at” the close cuts in: the globe, the pin landing on Vilvoorde. |
-| 1:33.35 | No voice |  | The globe, the pin on Vilvoorde, 1536, and the General Translation lockup. |
+| 1:33.35 | No voice |  | The globe, the pin on Vilvoorde, 1536, and the General Translation logo. |
 
 Times are where each line starts in the final, read from the film's own audio.

@@ -41,9 +41,8 @@ THE PRODUCT ON SCREEN
 
 MARKS
 - The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
-  card, and in the credit line, the Locadex mark (motion/kit/brand/locadex-mark.svg, cropped) in
-  the credit line, and the General Translation lockup, the bar monogram over the name
-  (kit/marks/bar-monogram-lockup.svg), on the end card.
+  card, in the credit line, and larger on the end card under "Locadex by"; the Locadex mark
+  (motion/kit/brand/locadex-mark.svg, cropped) in the credit line.
 
 TYPE
 - Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).

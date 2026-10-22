@@ -38,8 +38,7 @@ THE VIDEO PAGE
 
 MARKS
 - The doubled-line GT mark (kit/brand/gt-mark.svg), small in the lower left corner of the answer
-  card, and the General Translation lockup, the bar monogram over the name
-  (kit/marks/bar-monogram-lockup.svg), on the end card.
+  card, and the same mark, larger, on the end card.
 
 TYPE
 - Inter (rsms/inter, SIL Open Font License 1.1), kit/fonts/InterVariable.woff2, through var(--font).
