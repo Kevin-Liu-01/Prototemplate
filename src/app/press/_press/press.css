@@ -1138,14 +1138,8 @@ a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { opacity: 1; animation: gt
 /* transition.ts names the clicked book's cover gtp-cover; each story's own cover carries the name here, and its
    reading column or title card is gtp-read, which comes in the way the story's look does */
 .gtp-reader .gtp-plate-cover[data-on='true'] > .gtp-cover,
-.gtp-phone-cover > .gtp-cover,
-.gtp-print-stage-cover,
-.gtp-head-spread .gtp-head-pic { view-transition-name: gtp-cover; }
-.gtp-reader .gtp-text,
-.gtp-head-spread .gtp-head-title { view-transition-name: gtp-read; }
-/* Euclid's cover is on its stage on a wide screen and heads its page on a narrow one, never both at once */
-@media (min-width: 1250px) { .gtp-head-spread .gtp-head-pic { view-transition-name: none; } }
-@media (max-width: 1249.98px) { .gtp-print-stage-cover { view-transition-name: none; } }
+.gtp-phone-cover > .gtp-cover { view-transition-name: gtp-cover; }
+.gtp-reader .gtp-text { view-transition-name: gtp-read; }
 
 /* the cover is clipped to its box while it grows, so a tall book cover never spills over a wide band */
 ::view-transition-group(gtp-cover) { overflow: clip; animation-duration: 0.8s; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }
@@ -1160,15 +1154,12 @@ a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { opacity: 1; animation: gt
 html[data-gtp-vt='docs']::view-transition-new(gtp-read) { animation: gtp-vt-from-left 0.7s cubic-bezier(0.2, 0, 0, 1) 0.25s both; }
 /* into Fuma's card the column settles, as Fumadocs' panels do */
 html[data-gtp-vt='fuma']::view-transition-new(gtp-read) { animation: gtp-vt-settle 0.7s cubic-bezier(0.2, 0, 0, 1) 0.25s both; }
-/* into Euclid the title page rises out of the cover's fade once the cover has nearly settled */
-html[data-gtp-vt='book']::view-transition-new(gtp-read) { animation: gtp-vt-rise 0.7s cubic-bezier(0.2, 0, 0, 1) 0.55s both; }
 html[data-gtp-vt='home']::view-transition-old(gtp-read) { animation: gtp-vt-out 0.3s cubic-bezier(0.2, 0, 0, 1) both; }
 
 @keyframes gtp-vt-out { to { opacity: 0; } }
 @keyframes gtp-vt-in { from { opacity: 0; } }
 @keyframes gtp-vt-from-left { from { opacity: 0; transform: translateX(-36px); } }
 @keyframes gtp-vt-settle { from { opacity: 0; transform: translateY(12px) scale(0.985); } }
-@keyframes gtp-vt-rise { from { opacity: 0; transform: translateY(40px); } }
 
 /* the light theme draws no drop shadows: edges come from the paper and the rules */
 :root[data-theme='light'] .gtp :is(.gtp-lens, .gtp-langs, .gtp-float-home, .gtp-print-home, .gtp-print-theme) { box-shadow: none; }

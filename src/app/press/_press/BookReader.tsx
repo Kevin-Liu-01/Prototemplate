@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Fragment, useMemo, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 
 import type { PlateFigure, Story } from './content';
@@ -13,7 +12,6 @@ import Inline from './ui/Inline';
 import PressMark from './ui/PressMark';
 import { SliderStyleContext } from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
-import { landed, move, plainClick } from './transition';
 
 type Props = { story: Story; next: { slug: string; title: string } | null };
 
@@ -250,7 +248,6 @@ function placeMargin(page: HTMLElement) {
    page and each picture follows its paragraph. One face throughout, in
    sentence case; paragraphs part by a blank line, not an indent. */
 export default function BookReader({ story }: Props) {
-  const router = useRouter();
   const { blocks, figures } = story;
   const [ticks, setTicks] = useState<Tick[]>([]);
   const root = useRef<HTMLDivElement>(null);
@@ -273,8 +270,6 @@ export default function BookReader({ story }: Props) {
   const notes = useMemo(() => new Map(blocks.flatMap((b) => (b.kind === 'footnote' ? [[b.n, b.inline] as const] : []))), [blocks]);
 
   useMountEffect(() => {
-    // the move from the shelf can run now that the story is on the page
-    landed();
     let frame = 0;
     const onScroll = () => {
       if (page.current) setStage(showStage(page.current, root.current?.querySelector('.gtp-print-stage') ?? null));
@@ -367,18 +362,7 @@ export default function BookReader({ story }: Props) {
 
   return (
     <SliderStyleContext value='book'>
-      <div
-        ref={root}
-        className='gtp gtp-print'
-        onClickCapture={(e) => {
-          // every link home runs the move backwards: this story's cover shrinks into its book on the shelf
-          const home = e.target instanceof Element ? e.target.closest('a[href="/press"]') : null;
-          if (!home || !plainClick(e)) return;
-          e.preventDefault();
-          e.stopPropagation();
-          move((href) => router.push(href), '/press', 'home', null, story.slug);
-        }}
-      >
+      <div ref={root} className='gtp gtp-print'>
         <Link href='/press' className='gtp-print-home' aria-label='GT Atlas, all stories'>
           <PressMark size={22} />
         </Link>

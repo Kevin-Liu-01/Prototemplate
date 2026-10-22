@@ -124,10 +124,14 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
 
   useLayoutWork(anchor, { dependencies: [mode] });
 
-  /** Opens a story: its book's cover grows into the story's cover (transition.ts). */
+  /** Opens a story: its book's cover grows into the story's cover (transition.ts). Euclid's book opens without the move. */
   const open = (i: number) => {
     const s = catalog[i];
     if (!s) return;
+    if (s.look === 'book') {
+      router.push(`/press/${s.slug}`);
+      return;
+    }
     // the cover itself, not the board around it, so no board edge rides along
     const front = shelf.current?.querySelectorAll('.gtp-shelf-item')[i]?.querySelector('.gtp-book-front .gtp-cover');
     move((href) => router.push(href), `/press/${s.slug}`, s.look, front);
