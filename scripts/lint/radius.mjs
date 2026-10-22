@@ -89,7 +89,7 @@ export const ALLOW = [
   { path: 'src/app/press/', reason: 'General Translation Press is square throughout, after Direction 01' },
   { path: 'src/components/shared/StorySection.css', reason: 'mounted nowhere: a reference component the skills cite' },
   { path: 'src/components/shared/FeatureBento.css', reason: 'mounted nowhere: a reference component the skills cite' },
-  { path: 'src/components/shared/LanguageWheel.css', reason: 'mounted nowhere: a reference component the skills cite' },
+  { path: 'src/components/shared/LanguageWheel.css', reason: 'a reference component the skills cite, mounted only by its plate on /docs/components/kinetic' },
   { path: 'src/components/shared/HeroFieldSwitcher.css', reason: 'mounted only by the directions' },
   { path: 'src/components/shared/field-effects-menu.css', reason: 'mounted only by the directions' },
   { path: 'src/components/shared/diagrams/', reason: 'mounted only by the directions and the craft demos' },

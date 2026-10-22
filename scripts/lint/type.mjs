@@ -89,7 +89,7 @@ export const ALLOW_FILES = [
   { path: 'src/app/press/', t3: 'skip', reason: 'General Translation Press sets Katagami, its own type system, at Kevin\'s request (2026-10-19)' },
   { path: 'src/components/shared/StorySection.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },
   { path: 'src/components/shared/FeatureBento.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },
-  { path: 'src/components/shared/LanguageWheel.css', t3: 'skip', reason: 'mounted nowhere: a reference component the skills cite' },
+  { path: 'src/components/shared/LanguageWheel.css', t3: 'skip', reason: 'a reference component the skills cite, mounted only by its plate on /docs/components/kinetic' },
   { path: 'src/components/shared/HeroFieldSwitcher.css', t3: 'skip', reason: 'mounted only by the directions' },
   { path: 'src/components/shared/field-effects-menu.css', t3: 'skip', reason: 'mounted only by the directions' },
   { path: 'src/components/shared/diagrams/', t3: 'skip', reason: 'mounted only by the directions and the craft demos' },
