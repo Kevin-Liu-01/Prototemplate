@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { HOME, type LatLon } from './coords';
-import { parseBody, splitFrontmatter, wordCount, type Block, type Figure } from './parse';
+import { parseBody, parseInline, plain, splitFrontmatter, wordCount, type Block, type Figure, type Inline } from './parse';
 import { AUTHORS, STORIES, type LiveKind, type Localized, type Look, type Topic } from './stories';
 
 const CONTENT = process.env.PRESS_CONTENT ?? path.join(process.cwd(), 'content/production/blog/en-US');
@@ -26,6 +26,8 @@ export type Story = {
   slug: string;
   n: number;
   title: string;
+  /** The title as the frontmatter writes it, with any **bold** or *italics* it marks, for the page's own heading; `title` is its plain text, for the page's name, its metadata and every list. */
+  titleInline: Inline[];
   titles: Localized;
   topics: readonly Topic[];
   look: Look;
@@ -105,10 +107,12 @@ function load(slug: string, n: number): Story | null {
   const cover = images[0] ?? figures[0]?.frames[0]?.src ?? '';
   const words = wordCount(blocks);
   const authors = ((data.authors as string[] | undefined) ?? []).map((a) => AUTHORS[a] ?? a);
+  const titleInline = parseInline(String(data.title ?? entry.titles.en));
   return {
     slug,
     n,
-    title: String(data.title ?? entry.titles.en),
+    title: plain(titleInline),
+    titleInline,
     titles: entry.titles,
     topics: entry.topics,
     look: entry.look ?? 'docs',

@@ -18,7 +18,7 @@ const LIGHT = (() => {
 })();
 
 export type GlobeHandle = {
-  turnTo(target: LatLon, ms?: number): void;
+  turnTo(target: LatLon, ms?: number, curve?: (t: number) => number): void;
   repaint(): void;
   destroy(): void;
 };
@@ -38,6 +38,9 @@ export function cameraFor(p: LatLon, tilt = 14): GlobeCamera {
 }
 
 const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+
+/** In and out, for a slow turn that sets off and lands gently. */
+export const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /** Degrees between the coordinate lines. */
 const GRID = 15;
@@ -195,7 +198,7 @@ export function mountGlobe(
     box?.dispatchEvent(new Event('gtp-globe-placed'));
   }
 
-  function turnTo(next: LatLon, ms = 1100) {
+  function turnTo(next: LatLon, ms = 1100, curve = ease) {
     cancelAnimationFrame(frame);
     target = next;
     const from = camera;
@@ -208,7 +211,7 @@ export function mountGlobe(
     const t0 = performance.now();
     const step = (now: number) => {
       const k = Math.min(1, (now - t0) / ms);
-      camera = turnToward(from, to, ease(k));
+      camera = turnToward(from, to, curve(k));
       draw();
       if (k < 1) frame = requestAnimationFrame(step);
     };
