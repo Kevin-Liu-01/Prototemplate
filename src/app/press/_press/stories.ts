@@ -190,14 +190,19 @@ export const STORIES: readonly StoryEntry[] = [
   },
 ];
 
-/** A pull quote: words from the story set large after the paragraph that holds `after`, and who said them when it is a quotation. */
+/** A story's name as a magazine's credit line carries it in English, where the title is too long for one line. */
+export const SHORT_TITLES: Record<string, string> = {
+  'translating-euclid': 'Translating Euclid',
+};
+
+/** A pull quote: words from the story set large near the paragraph that holds `after` (a title in *asterisks* sets roman), and who said them when it is a quotation. */
 export type Pull = { after: string; text: string; by?: string };
 
 /* The magazine's pull quotes, each the story's own words, set after the
    paragraph they come from (Feature.tsx). */
 export const PULLS: Record<string, readonly Pull[]> = {
   'translating-euclid': [
-    { after: 'Very few texts have been passed to the modern world through a more serpentine path', text: 'Very few texts have been passed to the modern world through a more serpentine path than Euclid’s Elements.' },
+    { after: 'Very few texts have been passed to the modern world through a more serpentine path', text: 'Very few texts have been passed to the modern world through a more serpentine path than Euclid’s *Elements*.' },
     { after: 'the deductive method is not self-evident', text: 'The deductive method is not self-evident, as we tend to treat it centuries later, but a system of conventions.' },
   ],
   'designing-docs-for-humans': [
@@ -209,7 +214,7 @@ export const PULLS: Record<string, readonly Pull[]> = {
     { after: 'A cloud agent also runs daily and syncs docs with shipped behavior', text: 'A cloud agent runs daily and syncs the docs with shipped behavior.' },
   ],
   'fuma-nama': [
-    { after: 'What someone else might feel in drawing, I feel in coding', text: 'What someone else might feel in drawing, I feel in coding.', by: 'Fuma Nama' },
+    { after: 'What someone else might feel in drawing, I feel in coding', text: 'What someone else might feel in drawing, I\u00a0feel in coding.', by: 'Fuma Nama' },
     { after: 'Even if I started again from scratch', text: 'Even if I started again from scratch, I think Fumadocs would probably be the same shape.', by: 'Fuma Nama' },
     { after: 'Zero issues on my repositories', text: 'Zero issues on my repositories, that’s kind of my goal.', by: 'Fuma Nama' },
   ],

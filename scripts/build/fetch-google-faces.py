@@ -55,6 +55,8 @@ WANT = [
     ('Bodoni Moda', 1, 400, 'latin', 'ital,opsz,wght@1,6..96,400..900', 'bodoni-moda-opsz-italic.woff2'),
     ('Newsreader', 0, 400, 'latin', 'opsz,wght@6..72,400..700', 'newsreader-opsz-wght.woff2'),
     ('Newsreader', 1, 400, 'latin', 'ital,opsz,wght@1,6..72,400..700', 'newsreader-opsz-wght-italic.woff2'),
+    ('Newsreader', 0, 400, 'latin-ext', 'opsz,wght@6..72,400..700', 'newsreader-opsz-wght-latin-ext.woff2'),
+    ('Newsreader', 1, 400, 'latin-ext', 'ital,opsz,wght@1,6..72,400..700', 'newsreader-opsz-wght-italic-latin-ext.woff2'),
     # and GFS Didot, a Didone with Greek, for the Greek in a headline (Euclid's Στοιχεία)
     ('GFS Didot', 0, 400, 'greek'),
 ]

@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { ditherCover } from '../dither';
 import { drawCoverText } from '../gpu/coverText';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
+import type { ArtBox } from '../gpu/emblems';
 import { mountFluid, type FluidHandle } from '../gpu/fluid';
 import { useLayoutWork, useMountEffect } from '../hooks';
 import { bookTitle } from '../titles';
@@ -19,13 +20,15 @@ type Props = {
   /** Runs the fluid; a still otherwise. It also stops off screen and under reduced motion. */
   playing: boolean;
   className?: string;
+  /** Where the design draws on this cover, as fractions; a book's place when not given. */
+  artAt?: ArtBox;
 };
 
 /* A story's cover: the Fluid Energy marbling on WebGPU with the title
    printed through it, and a pointer stirs it while it plays. Without
    WebGPU it falls back to the story's picture in the dithered material
    with the same type over it. */
-export default function Cover({ slug, title, lang, dir, picture, playing, className }: Props) {
+export default function Cover({ slug, title, lang, dir, picture, playing, className, artAt }: Props) {
   const gpuCanvas = useRef<HTMLCanvasElement>(null);
   const cpuCanvas = useRef<HTMLCanvasElement>(null);
   const handle = useRef<FluidHandle | null>(null);
@@ -48,7 +51,7 @@ export default function Cover({ slug, title, lang, dir, picture, playing, classN
     if (!canvas) return;
     const width = mode === 'cpu' ? canvas.width : canvas.width || 640;
     const height = mode === 'cpu' ? canvas.height : canvas.height || 360;
-    const { mask, plain } = await drawCoverText(width, height, { slug, title: bookTitle(title, lang), lang, dir, paper: spec.paper, art: spec.art, accent: spec.accent, face: spec.face });
+    const { mask, plain } = await drawCoverText(width, height, { slug, title: bookTitle(title, lang), lang, dir, paper: spec.paper, art: spec.art, accent: spec.accent, face: spec.face, artAt });
     if (mode === 'gpu') handle.current?.setText(mask);
     if (mode === 'cpu' && cpuCanvas.current) {
       const ctx = cpuCanvas.current.getContext('2d');

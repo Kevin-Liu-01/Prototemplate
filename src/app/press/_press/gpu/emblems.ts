@@ -3,12 +3,15 @@
 
    - The emblem layer goes in the mask's red: the display pass prints it
      through the dither in the cover's lighter inks, or, on a cover with an
-     accent, as a solid accent ink (Euclid's seal, the proof marks).
+     accent, as a solid accent ink (the proof marks).
    - The art layer goes in the blue: printed crisp in the cover's art ink.
 
    Shapes are drawn in white; only their alpha counts. */
 
 type Box = { x: number; y: number; w: number; h: number };
+
+/** Where a design draws, as fractions of the cover's width and height, for a cover laid out differently. */
+export type ArtBox = { x: number; y: number; w: number; h: number };
 type Draw = (ctx: CanvasRenderingContext2D, box: Box) => void | Promise<void>;
 type Design = { emblem?: Draw; art?: Draw };
 
@@ -38,7 +41,7 @@ function image(src: string): Promise<HTMLImageElement | null> {
   return found;
 }
 
-/* ---------- Translating Euclid: the 1607 page, with a collector's seal ---------- */
+/* ---------- Translating Euclid: the 1607 page ---------- */
 
 const JIHE = '/press/euclid/emblem-jihe-yuanben.png';
 
@@ -76,44 +79,6 @@ const euclidPage: Draw = async (ctx, box) => {
   ctx.strokeStyle = 'rgb(255 255 255 / 0.55)';
   ctx.lineWidth = Math.max(1, box.w / 400);
   ctx.strokeRect(r.x - gap + 0.5, r.y - gap + 0.5, r.w + gap * 2 - 1, r.h + gap * 2 - 1);
-};
-
-/** A square vermilion seal reading 幾何原本, stamped over the page's lower right corner. */
-const euclidSeal: Draw = async (ctx, box) => {
-  const img = await image(JIHE);
-  if (!img) return;
-  const r = pageRect(img, box);
-  const side = Math.round(Math.min(box.w, box.h) * 0.3);
-  const x = Math.min(r.x + r.w - side * 0.62, box.x + box.w - side);
-  const y = r.y + r.h - side * 0.7;
-  const face = `600 ${Math.round(side * 0.38)}px "Katagami CJK SC", "Katagami CJK JP", serif`;
-  try {
-    await document.fonts.load(face, '幾何原本');
-  } catch {
-    // the system face stands in
-  }
-  ctx.save();
-  ctx.translate(x, y);
-  // a seal is pressed by hand: a few degrees off square
-  ctx.rotate(-0.035);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, side, side);
-  // the characters and the frame are cut away, so the paper shows through them
-  ctx.globalCompositeOperation = 'destination-out';
-  ctx.lineWidth = side * 0.035;
-  ctx.strokeRect(side * 0.08, side * 0.08, side * 0.84, side * 0.84);
-  ctx.font = face;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  // read down the right column, then the left
-  const cell = side * 0.4;
-  const right = side / 2 + cell / 2;
-  const left = side / 2 - cell / 2;
-  ctx.fillText('幾', right, side / 2 - cell / 2);
-  ctx.fillText('何', right, side / 2 + cell / 2);
-  ctx.fillText('原', left, side / 2 - cell / 2);
-  ctx.fillText('本', left, side / 2 + cell / 2);
-  ctx.restore();
 };
 
 /* ---------- Designing docs for humans: the docs page, exploded in isometric ---------- */
@@ -314,7 +279,7 @@ const fumaHalo: Draw = (ctx, box) => {
 };
 
 const DESIGNS: Record<string, Design> = {
-  'translating-euclid': { art: euclidPage, emblem: euclidSeal },
+  'translating-euclid': { art: euclidPage },
   'designing-docs-for-humans': { emblem: (ctx, box) => isoDocs(ctx, box, 'fill'), art: (ctx, box) => isoDocs(ctx, box, 'line') },
   'rewriting-our-docs': { art: proofLines, emblem: proofMarks },
   'fuma-nama': { art: fumaMoon, emblem: fumaHalo },
@@ -332,9 +297,9 @@ async function layer(draw: Draw | undefined, width: number, height: number, box:
 }
 
 /** The story's two layers on transparent canvases the cover's size, above `bottom`; none when the room is too small. */
-export async function drawLayers(slug: string, width: number, height: number, bottom = height): Promise<Layers> {
+export async function drawLayers(slug: string, width: number, height: number, bottom = height, at?: ArtBox): Promise<Layers> {
   const design = DESIGNS[slug];
-  const box = stage(width, height, bottom);
+  const box = at ? { x: width * at.x, y: height * at.y, w: width * at.w, h: height * at.h } : stage(width, height, bottom);
   if (!design || box.h < height * 0.08) return { emblem: null, art: null };
   const [emblem, art] = await Promise.all([layer(design.emblem, width, height, box), layer(design.art, width, height, box)]);
   return { emblem, art };

@@ -3,12 +3,14 @@
 import Link from 'next/link';
 import type { CSSProperties } from 'react';
 
-import type { StoryCard } from '../content';
+import type { MagazineIssue, StoryCard } from '../content';
 import { dmsPair } from '../coords';
 import { storyHref, useEdition } from '../edition';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { bookTitle } from '../titles';
-import type { Lang } from '../stories';
+import { SHORT_TITLES, type Lang } from '../stories';
+import type { ArtBox } from '../gpu/emblems';
+import { darkStock, issueMonth, pad } from '../riffle/print';
 import Cover from './Cover';
 import Seal from './Seal';
 
@@ -32,43 +34,89 @@ type Props = {
   onClick?: () => void;
   /** A hardcover (the shelf), or a thin magazine with its cover lines over the art (the rack). */
   format?: 'book' | 'magazine';
+  /** A magazine's inside, printed on the page under its front, which shows when a corner lifts. */
+  issue?: MagazineIssue;
 };
-
-const pad = (n: number) => String(n).padStart(2, '0');
 
 /** Every book is the same size and thickness, whatever the story's length; a magazine is a few sheets. */
 export function bookDepth(format: 'book' | 'magazine' = 'book'): number {
   return format === 'magazine' ? 5 : 24;
 }
 
-/** A magazine's cover line: the title as the story writes it, in sentence case; a title with a colon breaks there, the rest set under it. */
-function MagazineTitle({ title, lang }: { title: string; lang: Pick<Lang, 'code' | 'dir'> }) {
-  const split = /^(.+?)\s*[:：]\s*(.+)$/.exec(title);
+/** Where a magazine's design draws, as Riffle sets its photograph: left of the middle, a third of the way down, with open paper around it. */
+export const MAGAZINE_ART: ArtBox = { x: 0.06, y: 0.3, w: 0.45, h: 0.42 };
+
+/* A magazine's front page, in Riffle's form, the first of Taylor Fang's
+   directions, on the story's own stock: its cover's colors and marbling
+   with its own design (gpu/emblems.ts) left of the middle, the scan's
+   folds, specks and grain over it, turned a different way on each issue;
+   up the right edge the story's name as Riffle's credit line; the folio at
+   the foot. Every line is Katagami Text in the cover's ink. The gloss
+   follows the pointer (--hx, --hy, set by the shelf).
+
+   With the story's issue, the page under the front is printed too: the
+   inside, Riffle's feature page. When the shelf lifts a corner (the slot's
+   data-peel) the front is cut along the fold, the flap shows the back of
+   the cover, and the inside shows through (rack.css). */
+function MagazinePage({ story, title, lang, playing, issue }: { story: BookStory; title: string; lang: Pick<Lang, 'code' | 'dir'>; playing: boolean; issue?: MagazineIssue }) {
+  const name = (lang.code === 'en' ? SHORT_TITLES[story.slug] : null) ?? title.split(/\s*[:：]\s*/)[0] ?? title;
+  const spec = COVERS[story.slug] ?? FALLBACK_COVER;
   return (
-    <p className='gtp-mag-title' lang={lang.code} dir={lang.dir}>
-      {split ? split[1] : title}
-      {split ? <span className='gtp-mag-sub'>{split[2]}</span> : null}
-    </p>
+    <>
+      {issue ? <InsidePage story={story} title={title} lang={lang} issue={issue} /> : null}
+      <div className='gtp-mag-page' data-turn={story.n % 4} data-stock={darkStock(spec.colors[0]) ? 'dark' : 'light'}>
+        <Cover slug={story.slug} title='' lang={lang.code} dir={lang.dir} picture={story.cover} playing={playing} artAt={MAGAZINE_ART} />
+        <p className='gtp-mag-cred' lang={lang.code} dir={lang.dir}>
+          {name}
+        </p>
+        <p className='gtp-mag-folio'>
+          <b>{pad(story.n)}</b>
+          <span>Atlas</span>
+          <span>{issueMonth(story.date)}</span>
+        </p>
+        <i className='gtp-mag-mottle' aria-hidden='true' />
+        <i className='gtp-mag-grain' aria-hidden='true' />
+      </div>
+      {issue ? <i className='gtp-mag-flap' aria-hidden='true' /> : null}
+    </>
   );
 }
 
-/** '2026-10-19' as a cover dates its issue: October 2026. */
-function issueMonth(iso: string | undefined): string {
-  const date = iso ? new Date(`${iso}T00:00:00Z`) : null;
-  return date && !Number.isNaN(date.getTime()) ? date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }) : '';
+/* The magazine's inside, under its front: Riffle's feature page on white
+   uncoated stock, the story's title as the headline, its summary as the
+   deck, the byline, and its opening paragraph in two columns with a drop cap
+   in the story's accent; the folio at the foot. Only the corner the shelf
+   lifts shows it, so its lower right is where the text runs. */
+function InsidePage({ story, title, lang, issue }: { story: BookStory; title: string; lang: Pick<Lang, 'code' | 'dir'>; issue: MagazineIssue }) {
+  const spec = COVERS[story.slug] ?? FALLBACK_COVER;
+  const accent = spec.accent ?? spec.colors[1];
+  return (
+    <div className='gtp-mag-inside' style={{ '--accent': accent } as CSSProperties} aria-hidden='true'>
+      {/* the page is the size container, so its type scales with it; the margins live on this inner block */}
+      <div className='gtp-mag-inside-in'>
+        <p className='gtp-mag-inside-h' lang={lang.code} dir={lang.dir}>
+          {title}
+        </p>
+        {story.summary ? <p className='gtp-mag-inside-dek'>{story.summary}</p> : null}
+        <p className='gtp-mag-inside-by'>
+          By <b>{story.authors.join(' and ')}</b> • {story.minutes} minute read
+        </p>
+        <div className='gtp-mag-inside-body'>
+          {issue.paras.slice(0, 2).map((para, k) => (
+            <p key={k}>{para}</p>
+          ))}
+        </div>
+      </div>
+      <p className='gtp-mag-inside-folio'>
+        <b>{pad(story.n * 2 + 1)}</b>
+      </p>
+      <i className='gtp-mag-mottle' aria-hidden='true' />
+      <i className='gtp-mag-grain' aria-hidden='true' />
+    </div>
+  );
 }
 
-/* A story as a hardcover. The front board is hinged on the spine: its
-   outside carries the live fluid and the title, its inside the colophon,
-   and under it the first page holds the contents, each section a link into
-   the article. The back carries the blurb and the seal; the spine takes the
-   board color and carries the title and the authors; the three page edges
-   are cream with the boards showing at their ends. The size comes from
-   --bw and --bh and is the same for every story. As a magazine (the rack's
-   format) it is a few sheets thick, its art carries no title, and its own
-   cover lines frame the art: the masthead over it, and under it the title,
-   the issue and the authors on the cover's own color. */
-export default function Book({ story, title, lang, playing, on = false, open = false, inside = false, className, style, onClick, format = 'book' }: Props) {
+export default function Book({ story, title, lang, playing, on = false, open = false, inside = false, className, style, onClick, format = 'book', issue }: Props) {
   const edition = useEdition();
   const spec = COVERS[story.slug] ?? FALLBACK_COVER;
   const magazine = format === 'magazine';
@@ -114,30 +162,13 @@ export default function Book({ story, title, lang, playing, on = false, open = f
 
       <div className='gtp-book-board'>
         <div className='gtp-book-front'>
-          {/* a magazine sets its own cover lines over the art, so the art carries no title */}
-          <Cover
-            slug={story.slug}
-            title={magazine ? '' : title}
-            lang={lang.code}
-            dir={lang.dir}
-            picture={story.cover}
-            playing={playing}
-          />
           {magazine ? (
-            <div className='gtp-mag-cover'>
-              <p className='gtp-mag-masthead'>Atlas</p>
-              <div className='gtp-mag-lines'>
-                <MagazineTitle title={title} lang={lang} />
-                <p className='gtp-mag-foot'>
-                  <span>
-                    No. {pad(story.n)}, {issueMonth(story.date)}
-                  </span>
-                  <span>{story.authors.join(' and ')}</span>
-                </p>
-              </div>
-            </div>
+            <MagazinePage story={story} title={title} lang={lang} playing={playing} issue={issue} />
           ) : (
-            <span className='gtp-book-hinge' />
+            <>
+              <Cover slug={story.slug} title={title} lang={lang.code} dir={lang.dir} picture={story.cover} playing={playing} />
+              <span className='gtp-book-hinge' />
+            </>
           )}
           <span className='gtp-book-sheen' />
         </div>

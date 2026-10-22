@@ -667,5 +667,29 @@
     "source": "https://fonts.gstatic.com/s/gfsdidot/v18/Jqzh5TybZ9vZMWFssvwSE-3HNyOWAbdA.woff2",
     "bytes": 7220,
     "license": "SIL Open Font License 1.1"
+  },
+  {
+    "file": "newsreader-opsz-wght-latin-ext.woff2",
+    "family": "Newsreader",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin-ext",
+    "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+    "source": "https://fonts.gstatic.com/s/newsreader/v26/cY9AfjOCX1hbuyalUrK439DyjIJFJpeBZQ.woff2",
+    "bytes": 86628,
+    "license": "SIL Open Font License 1.1",
+    "axis": "opsz,wght@6..72,400..700"
+  },
+  {
+    "file": "newsreader-opsz-wght-italic-latin-ext.woff2",
+    "family": "Newsreader",
+    "weight": 400,
+    "style": "italic",
+    "subset": "latin-ext",
+    "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF",
+    "source": "https://fonts.gstatic.com/s/newsreader/v26/cY9CfjOCX1hbuyalUrK439vCgIhCBJWxZCPp.woff2",
+    "bytes": 95412,
+    "license": "SIL Open Font License 1.1",
+    "axis": "ital,opsz,wght@1,6..72,400..700"
   }
 ]

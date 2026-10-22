@@ -147,3 +147,34 @@ export function getCatalog(): StoryCard[] {
 export function storySlugs(): string[] {
   return STORIES.map((s) => s.slug);
 }
+
+/** What a story's magazine prints inside (the rack's lifted corner and its magazine view): its opening paragraphs as plain text and its first pictures. */
+export type MagazineIssue = { paras: string[]; pictures: { src: string; alt: string }[] };
+
+/** How many opening paragraphs, and how much of each, a magazine prints. */
+const ISSUE_PARAS = 6;
+const ISSUE_PARA_CHARS = 640;
+
+/* The inside of every story's magazine, built on the server from its text:
+   the first paragraphs long enough to read as prose (an epigraph, a lead-in
+   to a figure and a line ending in a colon are left out), each cut at a word,
+   and the first still pictures, their light twins where the blog has them,
+   since the magazine prints on white paper. */
+export function getMagazineIssues(): Record<string, MagazineIssue> {
+  const issues: Record<string, MagazineIssue> = {};
+  STORIES.forEach((entry, i) => {
+    const story = load(entry.slug, i + 1);
+    if (!story) return;
+    const paras = story.blocks
+      .flatMap((b) => (b.kind === 'para' ? [plain(b.inline).trim()] : []))
+      .filter((text) => text.length >= 80 && !text.endsWith(':'))
+      .slice(0, ISSUE_PARAS)
+      .map((text) => (text.length <= ISSUE_PARA_CHARS ? text : `${text.slice(0, text.lastIndexOf(' ', ISSUE_PARA_CHARS))}…`));
+    const pictures = story.figures
+      .filter((figure) => !figure.live && figure.frames[0] && !figure.frames[0].video)
+      .slice(0, 3)
+      .map((figure) => ({ src: figure.light ?? figure.frames[0]!.src, alt: figure.frames[0]!.alt }));
+    issues[entry.slug] = { paras, pictures };
+  });
+  return issues;
+}

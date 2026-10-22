@@ -23,7 +23,7 @@ const EUCLID = {
 } as const;
 
 export const COVERS: Record<string, CoverSpec> = {
-  // vellum: the paper barely moving, the 1607 page printed in full ink, a vermilion seal
+  // vellum: the paper barely moving, the 1607 page printed in full ink
   'translating-euclid': { ...EUCLID, calm: 0.22, colors: ['#ece3cc', '#e2d6b9', '#f7f1e2'], paper: '#1d1a14', art: '#1d1a14', accent: '#b8321c', seed: 21 },
   // a blueprint: the exploded page drawn in sky over its dithered panels
   'designing-docs-for-humans': { ...EUCLID, brightness: 1.18, colors: ['#0b1636', '#2a4bf0', '#bfe2f1'], paper: '#f4f6fb', art: '#bfe2f1', seed: 12 },

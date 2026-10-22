@@ -7,15 +7,26 @@ import type { Block, Inline as InlineNode } from './parse';
 import { useMountEffect } from './hooks';
 import { LIVE_CAPTION } from './plates/Plate';
 import { VersionsDemo } from './plates/Live';
+import { isShort, leadOf, Mark, placePulls, PullQuote, useSlideIn } from './ui/Decor';
 import Inline from './ui/Inline';
 
-type Props = { story: Story };
+type Props = {
+  story: Story;
+  /** The magazine edition: the opening as slides, and the magazine's drop cap, section marks and pull quotes (ui/Decor.tsx). */
+  decorated?: boolean;
+};
 
 /** From this width the text keeps to the left half and the pictures show on a stage across the right half; below it each picture follows its paragraph. */
 const WIDE = '(min-width: 1250px)';
 
+/** The magazine's opening slides: a stop every 16% of the window, and the few pixels of scroll past one that turn to the next. */
+const OPENING_STEP = 0.16;
+const OPENING_NUDGE = 36;
+
 /** How tall a picture may stand on the stage, leaving room for its caption, and 15% short of that so it does not fill the stage. */
 const STAGE_TALLEST = 'calc((100dvh - 300px) * 0.85)';
+/** The magazine's stage gives its pictures more of the window, as a New York Times story does. */
+const STAGE_TALLEST_FULL = 'calc((100dvh - 220px) * 0.94)';
 
 /* Which picture the stage shows: the cover
    until the reader reaches the first picture, then each in turn, as the
@@ -39,7 +50,7 @@ const STAGE_TALLEST = 'calc((100dvh - 300px) * 0.85)';
    Positions come from the layout (offsetTop, never a box that a scroll
    animation may have moved), since the pictures themselves are not in the
    text on a wide screen. */
-function showStage(page: HTMLElement, stage: Element | null): number {
+function showStage(page: HTMLElement, stage: Element | null, timed = false): number {
   const places: number[] = [];
   for (const mark of page.querySelectorAll<HTMLElement>('.gtp-print-at')) {
     if (mark.dataset.live) {
@@ -47,7 +58,7 @@ function showStage(page: HTMLElement, stage: Element | null): number {
       continue;
     }
     let above = mark.previousElementSibling;
-    while (above?.matches('.gtp-print-at, .gtp-print-m, .gtp-print-fig')) above = above.previousElementSibling;
+    while (above?.matches('.gtp-print-at, .gtp-print-m, .gtp-print-fig, .gtm-pull')) above = above.previousElementSibling;
     places.push(above instanceof HTMLElement ? above.offsetTop : mark.offsetTop);
   }
   // the sources heading is one more stop, with nothing on it, so the last picture goes when the sources begin
@@ -67,7 +78,8 @@ function showStage(page: HTMLElement, stage: Element | null): number {
   const at = starts.filter((start) => start <= read).length;
 
   const items = stage ? [...stage.querySelectorAll<HTMLElement>('.gtp-print-stage-item')] : [];
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !matchMedia(WIDE).matches) {
+  // timed (the magazine): the picture changes as one fade once its paragraph is reached (magazine.css), not with the scroll
+  if (timed || matchMedia('(prefers-reduced-motion: reduce)').matches || !matchMedia(WIDE).matches) {
     for (const el of items) el.style.removeProperty('opacity');
     return at;
   }
@@ -116,7 +128,7 @@ function Quote({ block }: { block: Extract<Block, { kind: 'note' }> }) {
 }
 
 /** A small picture as a one-frame figure, so it shows as every picture does: on the stage beside the text, or centred in the text on a narrow screen. */
-export function sideFigure(b: Extract<Block, { kind: 'side' }>): PlateFigure {
+function sideFigure(b: Extract<Block, { kind: 'side' }>): PlateFigure {
   return { id: b.frame.src, label: null, frames: [b.frame], caption: b.caption, credit: b.credit, n: 0, live: null, light: null };
 }
 
@@ -244,12 +256,16 @@ function placeMargin(page: HTMLElement) {
    across the rest shows the cover and then each picture with its caption as
    the reader reaches it. On a narrow screen the cover heads the page and
    each picture follows its paragraph. One face throughout, in sentence case;
-   paragraphs part by a blank line, not an indent. */
-export default function BookBody({ story }: Props) {
+   paragraphs part by a blank line, not an indent. In the magazine edition
+   (decorated) the opening runs as Taylor's slides, and the text takes the
+   magazine's drop cap, section marks and pull quotes. */
+export default function BookBody({ story, decorated = false }: Props) {
   const { blocks, figures } = story;
   const [ticks, setTicks] = useState<Tick[]>([]);
   const root = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLElement>(null);
+  const opening = useRef<HTMLDivElement>(null);
+  useSlideIn(page, decorated);
   // the stage's pictures in the order of the page, after the cover: each figure, and each small picture as a one-frame figure
   const pictures = useMemo(() => {
     let n = 0;
@@ -264,11 +280,34 @@ export default function BookBody({ story }: Props) {
   }, [blocks, figures]);
   const [stage, setStage] = useState(0);
   const notes = useMemo(() => new Map(blocks.flatMap((b) => (b.kind === 'footnote' ? [[b.n, b.inline] as const] : []))), [blocks]);
+  // the magazine's pull quotes and the paragraph that opens on the drop cap
+  const pulls = useMemo(() => placePulls(decorated ? blocks : [], story.slug), [blocks, story.slug, decorated]);
+  const lead = decorated ? leadOf(blocks) : -1;
+  // the epigraph that heads the story, which the magazine's opening shows as its second slide
+  const epigraph = decorated && blocks[0]?.kind === 'note' && blocks[0].name === 'Epigraph' ? blocks[0] : null;
 
   useMountEffect(() => {
     let frame = 0;
+    // the magazine's opening: a short scroll past each stop brings the next slide in (press.css, data-slide)
+    if (opening.current) opening.current.dataset.armed = '';
+    const turnOpening = () => {
+      const el = opening.current;
+      if (!el) return;
+      const y = scrollY - docTop(el);
+      const step = innerHeight * OPENING_STEP;
+      const slide = y < OPENING_NUDGE ? 0 : y < step + OPENING_NUDGE && epigraph ? 1 : 2;
+      el.dataset.slide = String(slide);
+    };
+    // the stage's picture for this place; the cover holds through the opening's slides, until the story stands at the top
+    const stageNow = () => {
+      if (!page.current) return 0;
+      const at = showStage(page.current, root.current?.querySelector('.gtp-print-stage') ?? null, decorated);
+      const el = opening.current;
+      return el?.dataset.armed !== undefined && el.dataset.slide !== '2' ? 0 : at;
+    };
     const onScroll = () => {
-      if (page.current) setStage(showStage(page.current, root.current?.querySelector('.gtp-print-stage') ?? null));
+      turnOpening();
+      setStage(stageNow());
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const max = document.documentElement.scrollHeight - innerHeight;
@@ -296,7 +335,7 @@ export default function BookBody({ story }: Props) {
     const reflow = () => {
       measure();
       place();
-      if (page.current) setStage(showStage(page.current, root.current?.querySelector('.gtp-print-stage') ?? null));
+      setStage(stageNow());
     };
     // a note's number and the note light up together
     const lit = (on: boolean) => (e: MouseEvent) => {
@@ -375,26 +414,48 @@ export default function BookBody({ story }: Props) {
 
       <div className='gtp-print-body'>
         <div className='gtp-print-text'>
-          <Opener story={story} />
+          {decorated ? (
+            // the opening as slides on a wide screen: the title page, then the epigraph where it stood, then the story (press.css, the opening)
+            <div ref={opening} className='gtp-print-opening' data-slide='0'>
+              <div className='gtp-print-opening-frame'>
+                <Opener story={story} />
+                {epigraph ? (
+                  <div className='gtp-print-opening-next'>
+                    <Quote block={epigraph} />
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <Opener story={story} />
+          )}
 
           <article ref={page} className='gtp-print-page'>
             {blocks.map((block, i) => {
               switch (block.kind) {
                 case 'heading':
-                  return (
+                  return decorated && block.id !== 'sources' ? (
+                    <h2 key={i} id={block.id} className='gtm-h2'>
+                      <Mark slug={story.slug} />
+                      <span>{block.text}</span>
+                    </h2>
+                  ) : (
                     <h2 key={i} id={block.id}>
                       {block.text}
                     </h2>
                   );
-                case 'para':
+                case 'para': {
+                  const pull = pulls.get(i);
                   return (
                     <Fragment key={i}>
-                      <p>
+                      <p className={i === lead ? 'gtm-lead' : undefined} data-short={i === lead && isShort(block) ? '' : undefined}>
                         <Inline nodes={block.inline} />
                       </p>
                       {marginNotes(block.inline)}
+                      {pull ? <PullQuote pull={pull} /> : null}
                     </Fragment>
                   );
+                }
                 case 'list': {
                   const Tag = block.ordered ? 'ol' : 'ul';
                   return (
@@ -467,7 +528,7 @@ export default function BookBody({ story }: Props) {
           </div>
           {pictures.map((figure, k) => (
             <div key={figure.id} className='gtp-print-stage-item' data-shown={stage === k + 1}>
-              {Math.abs(stage - (k + 1)) <= 1 ? <PrintFigure figure={figure} tallest={STAGE_TALLEST} /> : null}
+              {Math.abs(stage - (k + 1)) <= 1 ? <PrintFigure figure={figure} tallest={decorated ? STAGE_TALLEST_FULL : STAGE_TALLEST} /> : null}
             </div>
           ))}
         </aside>
@@ -481,6 +542,15 @@ export default function BookBody({ story }: Props) {
    short rule, the author and the date at its foot, on the left half, and
    the cover edge to edge across the right half at the screen's full height
    (on a wide screen the cover is the stage's first picture instead). */
+/** Each possessive held to the word after it, so a title never breaks between "Euclid’s" and "Elements". */
+function holdPossessives(nodes: InlineNode[]): InlineNode[] {
+  return nodes.map((node, i) => {
+    if (node.t !== 'text') return node;
+    const v = node.v.replace(/(['’]s) (?=\S)/g, '$1\u00a0');
+    return { ...node, v: nodes[i + 1] && /['’]s $/.test(v) ? v.replace(/ $/, '\u00a0') : v };
+  });
+}
+
 function Opener({ story }: { story: Story }) {
   return (
     <header className='gtp-print-opener gtp-head-spread'>
@@ -492,7 +562,7 @@ function Opener({ story }: { story: Story }) {
       </div>
       <div className='gtp-head-leaf gtp-head-title'>
         <h1>
-          <Inline nodes={story.titleInline} />
+          <Inline nodes={holdPossessives(story.titleInline)} />
         </h1>
         <span className='gtp-head-mark' aria-hidden='true' />
         <p className='gtp-head-by'>By {story.authors.join(', ')}</p>
@@ -509,7 +579,7 @@ function longDate(iso: string): string {
 }
 
 /** One figure in the flow of the text, its caption under it; a carousel shows the frame chosen above a row of all of them. */
-export function PrintFigure({ figure, tallest = '78vh' }: { figure: PlateFigure; tallest?: string }) {
+function PrintFigure({ figure, tallest = '78vh' }: { figure: PlateFigure; tallest?: string }) {
   const [shown, setShown] = useState(0);
   const frames = figure.frames;
   const frame = frames[shown];

@@ -3,7 +3,7 @@
    picks another face. The color is the cover's paper; the WebGPU display pass reads only the
    alpha and prints the fluid through it, and the fallback draws it as is. */
 
-import { drawLayers, type Layers } from './emblems';
+import { drawLayers, type ArtBox, type Layers } from './emblems';
 
 const SANS = '"Katagami Text", "Katagami CJK SC", "Katagami CJK JP", "Katagami CJK KR", system-ui, sans-serif';
 const MONO = '"Katagami Mono", ui-monospace, monospace';
@@ -21,6 +21,8 @@ export type CoverText = {
   art?: string;
   accent?: string;
   face?: keyof typeof FACES;
+  /** Where the design draws, when the cover is laid out other than as a book's (a magazine's page). */
+  artAt?: ArtBox;
 };
 
 /** Breaks at spaces, and inside a word that is wider than the line (CJK has no spaces). */
@@ -117,7 +119,7 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
-  if (!ctx) return { mask: encodeMask(canvas, await drawLayers(t.slug, width, height)), plain: canvas };
+  if (!ctx) return { mask: encodeMask(canvas, await drawLayers(t.slug, width, height, height, t.artAt)), plain: canvas };
   const face = FACES[t.face ?? 'serif'];
   // a title with a colon sets its first part large and the rest as a subtitle
   const split = /^(.+?)\s*[:：]\s*(.+)$/.exec(t.title);
@@ -163,6 +165,6 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
   lines.forEach((line, i) => ctx.fillText(line, x, base - (lines.length - 1 - i) * lead));
   // the emblem stops a gap above the title's first line, so a long title never runs into it
   const titleTop = base - (lines.length - 1) * lead - titleSize * 0.78;
-  const layers = await drawLayers(t.slug, width, height, titleTop - short * 0.06);
+  const layers = await drawLayers(t.slug, width, height, titleTop - short * 0.06, t.artAt);
   return { mask: encodeMask(canvas, layers), plain: withLayers(canvas, layers, t) };
 }

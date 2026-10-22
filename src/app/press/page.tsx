@@ -2,7 +2,7 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 
-import { getCatalog } from './_press/content';
+import { getCatalog, getMagazineIssues } from './_press/content';
 import Landing from './_press/Landing';
 
 const route = seoRoute({
@@ -18,7 +18,7 @@ export default function PressPage() {
   return (
     <>
       <JsonLd nodes={route.jsonLd} />
-      <Landing catalog={getCatalog()} />
+      <Landing catalog={getCatalog()} issues={getMagazineIssues()} />
     </>
   );
 }

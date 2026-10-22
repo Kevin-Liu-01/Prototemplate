@@ -20,6 +20,10 @@
 @font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; size-adjust: 117%; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-400-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; size-adjust: 117%; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
+/* and its Latin Extended, at the same scale, for the marked letters of romanized Chinese (Jǐhé Yuánběn) */
+@font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-wght-latin-ext.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; size-adjust: 117%; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-wght-italic-latin-ext.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; size-adjust: 117%; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
 .gtp {
   --gtp-cjk: 'Katagami CJK SC', 'Katagami CJK JP', 'Katagami CJK KR';
   /* Katagami Text for everything but code and figures, which take Katagami Mono */
@@ -832,11 +836,42 @@
 .gtp-print-quote p { font-size: 18px; }
 /* the epigraph that opens a story: the words, their translation, and who wrote them */
 .gtp-print-epigraph { margin: 0 0 64px; text-align: center; }
+/* the frontispiece's opening as three slides (BookBody, decorated, in the magazine edition): the title page, then
+   the epigraph where it stood, then the story at the top of the window. The frame is pinned while the reader scrolls
+   two short stops (16% of the window each); a few pixels of scroll past a stop turns to the next slide, which comes
+   in as one timed fade and rise, so the reader never scrubs through it. What leaves goes first and quickly, and what
+   arrives waits for it, so no two slides' text ever shows at once. Scrolling back turns back. Until the script
+   arms it (data-armed), below the wide width and under reduced motion, the epigraph simply heads the story. */
+.gtp-print-opening-next { display: none; }
+@media (min-width: 1250px) and (prefers-reduced-motion: no-preference) {
+  .gtp-print-opening[data-armed] { --step: 16dvh; height: calc(100dvh + 2 * var(--step)); }
+  .gtp-print-opening[data-armed] .gtp-print-opening-frame { position: sticky; top: 0; display: grid; height: 100dvh; }
+  .gtp-print-opening[data-armed] .gtp-print-opening-frame > * { grid-area: 1 / 1; }
+  .gtp-print-opening[data-armed] .gtp-head-title { transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
+  .gtp-print-opening[data-armed]:not([data-slide='0']) .gtp-head-title { opacity: 0; translate: 0 -24px; transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45); }
+  .gtp-print-opening[data-armed] .gtp-print-opening-next {
+    display: grid; align-content: center;
+    padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2) max(40px, (100% - var(--gtp-print-measure)) / 2);
+    opacity: 0; translate: 0 24px; pointer-events: none;
+    transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  .gtp-print-opening[data-armed][data-slide='1'] .gtp-print-opening-next { opacity: 1; translate: 0 0; transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
+  .gtp-print-opening[data-armed][data-slide='2'] .gtp-print-opening-next { opacity: 0; translate: 0 -24px; }
+  .gtp-print-opening-next .gtp-print-epigraph { margin: 0; }
+  /* the story starts a window up, over the pinned frame, and fades in at the top of the window on the last stop */
+  .gtp-print-opening[data-armed] ~ .gtp-print-page {
+    position: relative; z-index: 1; margin-top: -100dvh; padding-top: 112px;
+    opacity: 0; translate: 0 24px; pointer-events: none;
+    transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45);
+  }
+  .gtp-print-opening[data-armed][data-slide='2'] ~ .gtp-print-page { opacity: 1; translate: 0 0; pointer-events: auto; transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
+  .gtp-print-opening[data-armed] ~ .gtp-print-page .gtp-print-epigraph { display: none; }
+}
 
 /* the epigraph heads the story, the words, their translation, and who wrote them */
-.gtp-print-page .gtp-print-epigraph p { margin: 0 auto 0.6em; max-width: 30em; font-size: 16px; line-height: 1.5; color: var(--gtp-ink-2); text-wrap: balance; }
-.gtp-print-page .gtp-print-epigraph p:first-child { font-size: 19px; color: var(--gtp-ink); }
-.gtp-print-page .gtp-print-epigraph p:last-child { margin-top: 1em; font-size: 13px; color: var(--gtp-ink-3); }
+:is(.gtp-print-page, .gtp-print-opening-next) .gtp-print-epigraph p { margin: 0 auto 0.6em; max-width: 30em; font-size: 16px; line-height: 1.5; color: var(--gtp-ink-2); text-wrap: balance; }
+:is(.gtp-print-page, .gtp-print-opening-next) .gtp-print-epigraph p:first-child { font-size: 19px; color: var(--gtp-ink); }
+:is(.gtp-print-page, .gtp-print-opening-next) .gtp-print-epigraph p:last-child { margin-top: 1em; font-size: 13px; color: var(--gtp-ink-3); }
 /* the sources: small, each hanging from its first line */
 .gtp-print-page .gtp-print-sources p { margin: 0 0 12px; padding-left: 1.5em; text-indent: -1.5em; font-size: 15px; line-height: 1.45; color: var(--gtp-ink-2); overflow-wrap: anywhere; }
 .gtp-print-page .gtp-print-sources a { text-decoration-color: var(--gtp-rule); }

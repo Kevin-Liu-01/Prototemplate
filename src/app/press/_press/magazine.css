@@ -1,320 +1,234 @@
-/* GT Atlas as a magazine: the rack on the front page (each story a thin
-   magazine, Book.tsx with format='magazine') and every story as a magazine
-   feature (Feature.tsx). Bodoni Moda for the display type, set at a low
-   optical size so its hairlines hold on both papers; Newsreader for the
-   text at a size made for reading; Katagami Text for the small print. Each
-   story brings its own palette for both themes ([data-story]); the shared
-   grammar reads only the --gtm-* and --gtp-* tokens. */
+/* GT Atlas as a magazine: each story keeps its own layout and type (the
+   printed book for Euclid, the docs reader, Fumadocs' own look) and takes
+   the magazine's text decorations over them (ui/Decor.tsx): a Bodoni drop
+   cap and Bodoni pull quotes in the story's accent, the story's mark over
+   each section head, its headline in its own hand, a deck and a byline.
+   Only the magazine edition (data-edition='magazine') is touched; the shelf
+   reads as it did. As a New York Times story reads: the stage is the same
+   paper as the text, so the figures sit in the page; the text has room; a
+   short scroll past each section brings it in as one timed slide. Euclid's
+   heads set in Newsreader's display cut, the reading face repeated. */
 
 @font-face { font-family: 'Atlas Display'; src: url('/fonts/google/bodoni-moda-opsz.woff2') format('woff2'); font-weight: 400 900; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: 'Atlas Display'; src: url('/fonts/google/bodoni-moda-opsz-italic.woff2') format('woff2'); font-weight: 400 900; font-style: italic; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+/* Newsreader's Latin Extended, for the marked letters of romanized Chinese (ǐ, ě) */
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-latin-ext.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic-latin-ext.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 /* Greek, which Bodoni and Newsreader lack: GFS Didot for the display type, EB Garamond for the text, each a family of
-   its own next in the stack, so a bold head draws its Greek bold from the one regular weight */
+   its own next in the stack, so a bold line draws its Greek bold from the one regular weight */
 @font-face { font-family: 'Atlas Display Greek'; src: url('/fonts/google/gfs-didot-400-greek.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
 @font-face { font-family: 'Atlas Text Greek'; src: url('/fonts/google/eb-garamond-400-greek.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
-@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 .gtp {
   /* the Greek faces fill in Greek, Katagami Serif the marked Latin letters Bodoni and Newsreader lack, a Song face the Chinese */
   --gtm-display: 'Atlas Display', 'Atlas Display Greek', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', var(--gtp-cjk), Georgia, serif;
   --gtm-text: 'Atlas Text', 'Atlas Text Greek', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', var(--gtp-cjk), Georgia, serif;
-  --gtm-sans: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif;
-  --gtm-song: 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', var(--gtp-cjk), serif;
+  --gtm-head: var(--gtm-text);
 }
 
-/* ---------- the rack: each story a thin magazine ---------- */
+/* ---------- each story's accent ---------- */
 
-/* a magazine's page, letter size, a touch shorter than a book's */
-.gtp-landing[data-edition='magazine'] .gtp-shelf-track { --shelf-bw: min(300px, 36vh); --shelf-bh: calc(var(--shelf-bw) * 1.3); --gap: 40px; --baseline: calc(52% + var(--shelf-bh) / 2); }
-.gtp-landing[data-edition='magazine'] .gtp-shelf-item { --slot-h: calc(var(--slot-w) * 1.3); }
-/* standing, it faces the reader square, so its cover reads; the one under the pointer still lifts and leans */
-.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-book-shelf { --ty: 0deg; }
-.gtp-landing[data-edition='magazine'][data-drag='true'] .gtp-shelf-item .gtp-book-shelf { --ty: 0deg; }
-/* the hall's nameplate in the magazine's own face, so the page and the covers carry one Atlas */
-.gtp-landing[data-edition='magazine'] .gtp-wordmark-word { font-family: var(--gtm-display); font-weight: 800; letter-spacing: -0.03em; font-optical-sizing: none; font-variation-settings: 'opsz' 40; }
+/* the ink of the drop cap, the marks, the pull quotes and the headline's own touches: dark by default, light under
+   html[data-theme='light'] */
+:root .gtp.gtp-reader[data-edition='magazine'] { --gtm-accent: var(--gtp-signal); }
+:root .gtp.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] { --gtm-accent: #e8663f; }
+:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] { --gtm-accent: #b8321c; }
+:root .gtp.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] { --gtm-accent: #8ea7ff; }
+:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] { --gtm-accent: #2a4bf0; }
+:root .gtp.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] { --gtm-accent: #ff6a4a; }
+:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] { --gtm-accent: #d63a17; }
+:root .gtp.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] { --gtm-accent: #ff8f3f; }
+:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] { --gtm-accent: #d24f08; }
 
-/* the sheets: white edges, the cover's own color at the fold */
-.gtp-mag .gtp-book-spine { padding: 0; background: var(--board); box-shadow: none; }
-.gtp-mag :is(.gtp-book-fore, .gtp-book-head, .gtp-book-tail) { background: #f4f1ea; box-shadow: none; }
-/* the art's box sits a little lower and shorter than the cover, so its design (drawn between 17% and 57% of the box)
-   clears the masthead's foot above and the title below */
-.gtp-mag .gtp-book-front > .gtp-cover { inset: 7% 0 auto; height: 82%; }
-/* a coated cover: one soft highlight that follows the pointer, as the hardcover's sheen does */
-.gtp-mag .gtp-book-sheen { background: radial-gradient(120% 70% at calc(30% + var(--hx, 0) * 80%) calc(10% + var(--hy, 0) * 60%), rgb(255 255 255 / 0.2), transparent 60%); }
+/* ---------- the stage on the text's own paper ---------- */
 
-/* the cover lines frame the art: the masthead over it, which the art may run behind, and under it, on the cover's
-   own color, the title and the foot line. The art (emblems.ts) draws between 17% and 57% of the cover's height, so
-   it stops above the title */
-.gtp-mag-cover { position: absolute; inset: 0; z-index: 2; display: grid; grid-template-rows: auto 1fr; padding: 6% 7% 7%; color: var(--ink); pointer-events: none; }
-.gtp-mag-cover::before { content: ''; position: absolute; inset: 57% 0 0; z-index: -1; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--board) 94%, transparent) 18%); }
-.gtp-mag-masthead { margin: 0; font-family: var(--gtm-display); font-size: calc(var(--bw) * 0.31); line-height: 0.8; font-weight: 800; letter-spacing: -0.035em; font-optical-sizing: none; font-variation-settings: 'opsz' 40; }
-.gtp-mag-lines { align-self: end; display: grid; gap: calc(var(--bw) * 0.035); }
-.gtp-mag-title { margin: 0; font-family: var(--gtm-display); font-size: calc(var(--bw) * 0.088); line-height: 1.04; font-weight: 700; letter-spacing: -0.01em; font-optical-sizing: none; font-variation-settings: 'opsz' 28; text-wrap: balance; }
-.gtp-mag-sub { display: block; margin-top: 0.3em; font-size: 0.62em; line-height: 1.2; font-style: italic; font-weight: 500; }
-.gtp-mag-title:is(:lang(zh), :lang(ja), :lang(ko)) { font-family: var(--gtm-song); font-weight: 700; letter-spacing: 0; }
-.gtp-mag-title:is(:lang(ar), :lang(hi)) { font-family: var(--gtp-sans); font-weight: 600; letter-spacing: 0; line-height: 1.25; }
-.gtp-mag-title[dir='rtl'] { text-align: right; }
-/* the foot: the issue on one line, the authors on the next, neither ever wrapping */
-.gtp-mag-foot { margin: 0; display: grid; gap: 2px; padding-top: calc(var(--bw) * 0.025); border-top: 1px solid color-mix(in srgb, var(--ink) 50%, transparent); font-family: var(--gtm-sans); font-size: max(13px, calc(var(--bw) * 0.043)); line-height: 1.25; font-weight: 500; }
-.gtp-mag-foot span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.gtp-mag-foot span:last-child { opacity: 0.86; }
-/* the stack lays the magazines flat; their lines turn with them */
-.gtp-landing[data-edition='magazine'][data-mode='stack'] .gtp-mag-cover { opacity: 0; transition: opacity 0.4s var(--gtp-ease); }
-
-/* ---------- the feature: tokens ---------- */
-
-/* each story's paper and inks, dark by default and light under html[data-theme='light']; --gtp-* follow, so the
-   figures the press shares (the plates, the globe) print in the story's colors */
-:root .gtp.gtp-reader[data-edition='magazine'][data-story] {
-  --gtm-paper: #121110;
-  --gtm-ink: #f3f1ec;
-  --gtm-ink-2: #c9c5bc;
-  --gtm-ink-3: #9a958b;
-  --gtm-accent: #ff6a4a;
-  --gtm-rule: rgb(243 241 236 / 0.16);
-  --gtm-box: rgb(243 241 236 / 0.06);
-  --gtp-paper: var(--gtm-paper);
-  --gtp-ink: var(--gtm-ink);
-  --gtp-ink-2: var(--gtm-ink-2);
-  --gtp-ink-3: var(--gtm-ink-3);
-  --gtp-rule: var(--gtm-rule);
-  --gtp-signal: var(--gtm-accent);
-  --gtp-link: var(--gtm-ink);
-  --gtp-serif: var(--gtm-text);
-  --gtp-sans: var(--gtm-sans);
-  background: var(--gtm-paper);
-  color: var(--gtm-ink);
+/* the plates and the live figures print on the page's paper and inks, not on a panel of their own */
+:root .gtp.gtp-reader[data-edition='magazine'],
+:root:not([data-theme='light']) .gtp.gtp-reader[data-edition='magazine'][data-look] {
+  --gtp-stage: var(--gtp-paper);
+  --gtp-stage-ink: var(--gtp-ink);
+  --gtp-stage-ink-2: var(--gtp-ink-2);
+  --gtp-stage-fill: var(--gtp-fill);
 }
-:root .gtp.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] {
-  --gtm-paper: #15110b; --gtm-ink: #f1e8d4; --gtm-ink-2: #cdbf9f; --gtm-ink-3: #9d8d6f; --gtm-accent: #e8663f;
-  --gtm-rule: rgb(241 232 212 / 0.16); --gtm-box: rgb(241 232 212 / 0.06);
-  --gtp-stage: #15110b; --gtp-stage-ink: #f1e8d4; --gtp-stage-ink-2: #cdbf9f; --gtp-stage-fill: rgb(241 232 212 / 0.08);
-  --gtp-globe-land: #d6bf95; --gtp-globe-sea: #5a4426; --gtp-globe-rim: #f3e5c4;
+.gtp-reader[data-edition='magazine'] .gtp-print-stage { background: var(--gtp-paper); }
+/* Fuma's card opens out into the page */
+.gtp-reader[data-edition='magazine'][data-look='fuma'] .gtp-stage { top: 0; height: 100dvh; margin: 0; border: 0; border-radius: 0; }
+/* a figure changes on the stage once its paragraph is reached: the one leaving fades out first and quickly, then the
+   one arriving fades in and rises, so two captions never show at once (BookBody, timed; the plates the same) */
+.gtp-reader[data-edition='magazine'] .gtp-print-stage-item { translate: 0 14px; transition: opacity 0.25s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45); }
+.gtp-reader[data-edition='magazine'] .gtp-print-stage-item[data-shown='true'] { translate: 0 0; transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.28s, translate 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.28s; }
+.gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover) { transition: opacity 0.25s cubic-bezier(0.55, 0, 1, 0.45), transform 0.3s cubic-bezier(0.55, 0, 1, 0.45), visibility 0s linear 0.25s; }
+.gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover)[data-on='true'] { transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.28s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.28s, visibility 0s; }
+/* the text carries no figure stubs and no figure numbers: the stage changes by itself as the reader reaches each one */
+@media (min-width: 1000px) {
+  .gtp-reader[data-edition='magazine'] .gtp-text .gtp-stub { display: none; }
 }
-:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] {
-  --gtm-paper: #f3ebd8; --gtm-ink: #1d1a14; --gtm-ink-2: #4c4232; --gtm-ink-3: #74654c; --gtm-accent: #b8321c;
-  --gtm-rule: rgb(29 26 20 / 0.16); --gtm-box: rgb(29 26 20 / 0.05);
-  --gtp-stage: #f3ebd8; --gtp-stage-ink: #1d1a14; --gtp-stage-ink-2: #4c4232; --gtp-stage-fill: rgb(29 26 20 / 0.06);
-  --gtp-globe-land: #7a5a33; --gtp-globe-sea: #d6bf95; --gtp-globe-rim: #3a2814;
+.gtp-reader[data-edition='magazine'] .gtp-plate-n { display: none; }
+.gtp-reader[data-edition='magazine'] .gtp-plate-foot { grid-template-columns: minmax(0, 1fr) auto; }
+/* the theme switch as a chip of the page's paper, so it shows over any stage; on a wide screen Fuma's sits at the foot
+   of its contents, off his stage */
+.gtp-reader[data-edition='magazine'] .gtp-theme.gtp-reader-theme { width: 40px; height: 40px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 0 0 1px color-mix(in srgb, var(--gtp-ink) 22%, transparent); }
+@media (min-width: 1000px) {
+  .gtp-reader[data-edition='magazine'][data-look='fuma'] .gtp-reader-theme { top: auto; right: auto; left: 28px; bottom: 28px; }
 }
-:root .gtp.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] {
-  --gtm-paper: #0a1230; --gtm-ink: #eef2ff; --gtm-ink-2: #bcc6ec; --gtm-ink-3: #8a96c6; --gtm-accent: #8ea7ff;
-  --gtm-rule: rgb(238 242 255 / 0.16); --gtm-box: rgb(238 242 255 / 0.06);
-  --gtp-stage: #13245a; --gtp-stage-ink: #eef2ff; --gtp-stage-ink-2: #bcc6ec; --gtp-stage-fill: rgb(238 242 255 / 0.08);
+@media (max-width: 999px) {
+  .gtp-reader[data-edition='magazine'] .gtp-reader-theme { top: 16px; right: 16px; }
 }
-:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] {
-  --gtm-paper: #f5f7fc; --gtm-ink: #0b1636; --gtm-ink-2: #34406b; --gtm-ink-3: #5a6592; --gtm-accent: #2a4bf0;
-  --gtm-rule: rgb(11 22 54 / 0.14); --gtm-box: rgb(42 75 240 / 0.06);
-  --gtp-stage: #e6ebfa; --gtp-stage-ink: #0b1636; --gtp-stage-ink-2: #34406b; --gtp-stage-fill: rgb(11 22 54 / 0.05);
+
+/* the opening's cover fills the stage edge to edge; when the reader moves on it rises out of the stage like a blind,
+   over everything under it, its art lagging a little as it goes, and uncovers the paper stage with the first figure
+   on it; scrolling back lowers it again. Its foot is a hairline, and in the dark theme a soft shadow. Euclid's cover
+   on its stage does the same */
+.gtp-reader[data-edition='magazine'] .gtp-plate.gtp-plate-cover { z-index: 2; overflow: hidden; padding: 0; opacity: 1; transform: none; translate: 0 0; box-shadow: 0 1px 0 var(--gtp-rule); transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s linear 0.9s; }
+.gtp-reader[data-edition='magazine'] .gtp-plate.gtp-plate-cover[data-on='true'] { transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s; }
+.gtp-reader[data-edition='magazine'] .gtp-plate.gtp-plate-cover[data-on='false'] { translate: 0 -101%; }
+.gtp-reader[data-edition='magazine'] :is(.gtp-plate-cover > .gtp-cover, .gtp-print-stage-cover img) { transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1); }
+.gtp-reader[data-edition='magazine'] .gtp-plate-cover[data-on='false'] > .gtp-cover { translate: 0 16%; }
+:root:not([data-theme='light']) .gtp-reader[data-edition='magazine'] :is(.gtp-plate.gtp-plate-cover, .gtp-print-stage-item.gtp-print-stage-cover) { box-shadow: 0 1px 0 rgb(255 255 255 / 0.1), 0 18px 40px rgb(0 0 0 / 0.5); }
+@media (min-width: 1250px) {
+  .gtp-reader[data-edition='magazine'] .gtp-print-stage-item.gtp-print-stage-cover { z-index: 2; overflow: hidden; padding: 0; opacity: 1; translate: 0 0; box-shadow: 0 1px 0 var(--gtp-rule); transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1); }
+  .gtp-reader[data-edition='magazine'] .gtp-print-stage-cover[data-shown='false'] { translate: 0 -101%; pointer-events: none; }
+  .gtp-reader[data-edition='magazine'] .gtp-print-stage-cover[data-shown='false'] img { translate: 0 16%; }
 }
-:root .gtp.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] {
-  --gtm-paper: #121212; --gtm-ink: #f4f4f2; --gtm-ink-2: #c6c6c1; --gtm-ink-3: #92928c; --gtm-accent: #ff6a4a;
-  --gtp-stage: #1d1d1c; --gtp-stage-ink: #f4f4f2; --gtp-stage-ink-2: #c6c6c1; --gtp-stage-fill: rgb(244 244 242 / 0.07);
+@media (prefers-reduced-motion: reduce) {
+  .gtp-reader[data-edition='magazine'] :is(.gtp-plate.gtp-plate-cover, .gtp-print-stage-cover, .gtp-plate-cover > .gtp-cover, .gtp-print-stage-cover img) { transition: none; }
 }
-:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] {
-  --gtm-paper: #f6f5f1; --gtm-ink: #121212; --gtm-ink-2: #3d3d3a; --gtm-ink-3: #6a6a65; --gtm-accent: #d63a17;
-  --gtm-rule: rgb(18 18 18 / 0.14); --gtm-box: rgb(18 18 18 / 0.045);
-  --gtp-stage: #e9e8e2; --gtp-stage-ink: #121212; --gtp-stage-ink-2: #3d3d3a; --gtp-stage-fill: rgb(18 18 18 / 0.05);
+
+/* the stage's own pictures larger, as a New York Times story sets them */
+.gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover) { padding: 28px 40px 28px 32px; }
+@media (min-width: 1250px) {
+  /* Euclid's book: the text column a little narrower and set against the stage, so the two read as one spread */
+  .gtp-reader[data-edition='magazine'] .gtp-print-body { grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); }
+  .gtp-reader[data-edition='magazine'] .gtp-print-text .gtp-print-page { padding-inline: max(88px, 100% - var(--gtp-print-measure) - 48px) 48px; }
+  .gtp-reader[data-edition='magazine'] .gtp-print-opening[data-armed] .gtp-print-opening-next { padding-inline: max(88px, 100% - var(--gtp-print-measure) - 48px) 48px; }
+  .gtp-reader[data-edition='magazine'] .gtp-print-stage-item:not(.gtp-print-stage-cover) { padding: 56px 44px 44px; }
+  .gtp-reader[data-edition='magazine'] .gtp-print-stage .gtp-versions-map { width: min(420px, 100%); }
+  .gtp-reader[data-edition='magazine'] .gtp-print-stage .gtp-versions-globe { width: 100%; }
 }
-:root .gtp.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] {
-  --gtm-paper: #150a03; --gtm-ink: #fff1e6; --gtm-ink-2: #e3c6ad; --gtm-ink-3: #ab8a6e; --gtm-accent: #ff8f3f;
-  --gtm-rule: rgb(255 241 230 / 0.16); --gtm-box: rgb(255 241 230 / 0.06);
-  --gtp-stage: #24140a; --gtp-stage-ink: #fff1e6; --gtp-stage-ink-2: #e3c6ad; --gtp-stage-fill: rgb(255 241 230 / 0.07);
+/* captions set left, under their picture; the globe's coordinates go, the place and the year say where; a plate's
+   caption goes too, since the text beside it says what it shows, and so do the wipe's Dark and Light tags */
+.gtp-reader[data-edition='magazine'] .gtp-print-caption { text-align: left; }
+.gtp-reader[data-edition='magazine'] :is(.gtp-plate-caption, .gtp-wipe-tag) { display: none; }
+.gtp-reader[data-edition='magazine'] .gtp-versions-coords { display: none; }
+/* the rail keeps its ticks and drops its numbers */
+.gtp-reader[data-edition='magazine'] .gtp-rail-major button { color: transparent; }
+.gtp-reader[data-edition='magazine'] .gtp-rail-tip { color: var(--gtp-ink); }
+
+/* ---------- room in the text, and the text close to its stage ---------- */
+
+@media (min-width: 1000px) {
+  /* the column sits against the stage's edge, as a New York Times story sets its text by its graphic */
+  .gtp-reader[data-edition='magazine'] .gtp-text { padding: 140px 44px 240px clamp(40px, 5vw, 96px); }
+  .gtp-reader[data-edition='magazine'] .gtp-text > * { margin-right: 0; }
+  .gtp-reader[data-edition='magazine'] .gtp-title { margin-bottom: 140px; }
+  .gtp-reader[data-edition='magazine'] .gtp-text > h2 { margin-top: 136px; margin-bottom: 30px; }
 }
-:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] {
-  --gtm-paper: #fff7ef; --gtm-ink: #1c0d03; --gtm-ink-2: #573a24; --gtm-ink-3: #876247; --gtm-accent: #d24f08;
-  --gtm-rule: rgb(28 13 3 / 0.14); --gtm-box: rgb(210 79 8 / 0.06);
-  --gtp-stage: #f9e6d4; --gtp-stage-ink: #1c0d03; --gtp-stage-ink-2: #573a24; --gtp-stage-fill: rgb(28 13 3 / 0.05);
-}
-/* the press sets CJK in Katagami's sans by language; the feature keeps every script in its serif, and never slants or
-   thickens a face that has no italic or bold of its own */
-.gtp-reader[data-edition='magazine'] .gtm :is(:lang(zh), :lang(ja), :lang(ko)) { font-family: var(--gtm-text); }
-/* the epigraph's Chinese stands upright: Song has no italic, and a slanted one would be a forgery */
-.gtm-text .gtm-epigraph p:first-child { font-synthesis: none; }
+.gtp-reader[data-edition='magazine'] .gtp-text > p { margin-bottom: 1.45em; }
+.gtp-reader[data-edition='magazine'] .gtp-print-page p { margin-bottom: 1.6em; }
+/* the blog's bold runs read as plain text: the magazine marks nothing in a paragraph but italics */
+.gtp-reader[data-edition='magazine'] :is(.gtp-text, .gtp-print-page) > :is(p, ul, ol) strong { font-weight: inherit; }
 
-/* the monogram home and the theme switch, as paper discs at the top corners, ringed so they show over any part of the page */
-.gtp-reader[data-edition='magazine'] .gtp-float-home { position: fixed; z-index: 30; left: 20px; top: 20px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gtm-paper); color: var(--gtm-ink); box-shadow: 0 0 0 1px color-mix(in srgb, var(--gtm-ink) 24%, transparent); }
-.gtp-reader[data-edition='magazine'] .gtp-theme.gtp-reader-theme { z-index: 30; right: 20px; top: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--gtm-paper); color: var(--gtm-ink); box-shadow: 0 0 0 1px color-mix(in srgb, var(--gtm-ink) 24%, transparent); }
-/* the light theme takes the press's shadows off its floating parts (press.css); the ring is a line, not a shadow, so it stays */
-:root[data-theme='light'] .gtp-reader[data-edition='magazine'] :is(.gtp-float-home, .gtp-theme.gtp-reader-theme) { box-shadow: 0 0 0 1px color-mix(in srgb, var(--gtm-ink) 24%, transparent); }
+/* ---------- the drop cap ---------- */
 
-/* the reader's place, a line of the story's accent along the top */
-.gtm-progress { position: fixed; z-index: 31; top: 0; left: 0; right: 0; height: 3px; transform-origin: left; transform: scaleX(var(--p, 0)); background: var(--gtm-accent); pointer-events: none; }
-
-/* the display type at a low optical size, so its hairlines hold on both papers */
-.gtm :is(.gtm-title, .gtm-sub, .gtm-h2, .gtm-next),
-.gtm-text .gtm-pull p,
-.gtm-text .gtm-epigraph p:first-child { font-optical-sizing: none; font-variation-settings: 'opsz' 28; }
-
-/* ---------- the opening spread ---------- */
-
-.gtm { --gtm-measure: 680px; --gtm-wide: min(1080px, calc(100vw - 48px)); }
-.gtm-opener { position: relative; display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); min-height: 100svh; }
-.gtm-art { position: relative; grid-column: 2; grid-row: 1; overflow: clip; background: var(--gtp-stage, var(--gtm-box)); }
-.gtm-art-picture { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
-/* the live cover draws its design between 17% and 57% of its height; set taller than the panel, the design sits in the
-   panel's middle and the marbling fills the rest */
-.gtm-art > .gtp-cover { inset: 0 0 auto; height: 136%; }
-:root:not([data-theme='light']) .gtm-art-picture { filter: brightness(0.86) saturate(0.92); }
-.gtm-head { grid-column: 1; grid-row: 1; position: relative; display: grid; align-content: end; padding: 112px clamp(32px, 4.6vw, 80px) 72px clamp(40px, 6vw, 104px); }
-
-/* the folio along the page's top edge, as a magazine page carries it */
-.gtm-folio { position: absolute; left: clamp(84px, 6vw, 104px); right: clamp(32px, 4.6vw, 80px); top: 32px; margin: 0; display: flex; gap: 20px; font-family: var(--gtm-sans); font-size: 13px; line-height: 1; font-weight: 500; color: var(--gtm-ink-2); }
-.gtm-folio span:first-child { color: var(--gtm-ink); }
-
-.gtm-title { margin: 0; font-family: var(--gtm-display); font-size: clamp(50px, 5.6vw, 100px); line-height: 0.98; font-weight: 700; letter-spacing: -0.018em; text-wrap: balance; color: var(--gtm-ink); }
-.gtm-title em { font-style: italic; font-weight: 600; }
-.gtm-accent { color: var(--gtm-accent); }
-.gtm-sub { margin: 0.4em 0 0; font-family: var(--gtm-display); font-size: clamp(28px, 2.6vw, 44px); line-height: 1.1; font-weight: 500; color: var(--gtm-ink); text-wrap: balance; }
-.gtm-deck { margin: 32px 0 0; max-width: 32em; font-family: var(--gtm-text); font-size: clamp(20px, 1.5vw, 24px); line-height: 1.42; font-style: italic; color: var(--gtm-ink-2); text-wrap: pretty; }
-.gtm-byline { margin: 36px 0 0; padding-top: 18px; display: flex; flex-wrap: wrap; gap: 6px 22px; border-top: 1px solid var(--gtm-rule); font-family: var(--gtm-sans); font-size: 14px; line-height: 1.4; color: var(--gtm-ink-2); }
-.gtm-byline b { font-weight: 600; color: var(--gtm-ink); }
-
-/* Rewriting docs: a proofreader's caret after "humans", sitting on the baseline and holding to the word, and "and
-   agents" set in the proof's red as the insertion */
-.gtm-insert-at { white-space: nowrap; }
-.gtm-caret { display: inline-block; width: 0.42em; height: 0.56em; margin-left: 0.05em; vertical-align: -0.2em; fill: none; stroke: var(--gtm-accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
-.gtm-insert { font-style: italic; font-weight: 600; color: var(--gtm-accent); }
-
-/* Euclid: the 1607 title in Chinese on a vellum strip down the spread's inner edge, the full height of the page, and
-   the vermilion chop in the scan's corner; both keep their own colors in either theme */
-.gtm-art-vertical { position: absolute; z-index: 1; left: 0; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; padding: 0 0.24em; writing-mode: vertical-rl; font-family: var(--gtm-song); font-size: clamp(44px, 7.4vh, 84px); line-height: 1; font-weight: 700; letter-spacing: 0.14em; background: #e4d3ae; color: #1d1a14; box-shadow: inset -1px 0 0 rgb(29 26 20 / 0.3); }
-/* the chop: four characters in two columns, read right to left, on a square of vermilion */
-.gtm-art-chop { position: absolute; z-index: 1; right: 40px; bottom: 56px; display: flex; flex-direction: column; writing-mode: vertical-rl; gap: 2px; padding: 7px; border-radius: 1px; background: #b8321c; color: #f8efdd; font-family: var(--gtm-song); font-size: 24px; line-height: 1.02; font-weight: 700; }
-
-/* ---------- the text ---------- */
-
-.gtm-text { padding: 96px 24px 40px; }
-.gtm-text > * { max-width: var(--gtm-measure); margin-left: auto; margin-right: auto; }
-/* the body's own blocks only, so nothing here reaches into a figure's captions or demos */
-.gtm-text > p,
-.gtm-text > .gtm-list > li,
-.gtm-box p,
-.gtm-rules li { font-family: var(--gtm-text); color: var(--gtm-ink); text-wrap: pretty; word-break: keep-all; overflow-wrap: anywhere; }
-.gtm-text > p,
-.gtm-text > .gtm-list > li { font-size: 20px; line-height: 1.65; }
-.gtm-text > p { margin-top: 0; margin-bottom: 1.15em; }
-/* the blog's bold runs read as plain text in the feature; the magazine marks nothing in a paragraph but italics */
-.gtm-text > :is(p, .gtm-list, .gtm-box) strong { font-weight: inherit; }
-.gtm-text > :is(p, .gtm-list, .gtm-box, .gtm-rules) a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--gtm-accent) 70%, transparent); }
-.gtm-text > :is(p, .gtm-list, .gtm-box, .gtm-rules) a:hover { text-decoration-color: currentColor; }
-.gtm-text > :is(p, .gtm-list, .gtm-box, .gtm-rules) code { font-family: var(--gtp-mono); font-size: 0.84em; padding: 0.05em 0.25em; border-radius: 3px; background: var(--gtm-box); white-space: nowrap; }
-.gtm-text .gtp-fn { margin-left: 0.08em; font-family: var(--gtm-sans); font-size: 0.62em; line-height: 0; vertical-align: 0.6em; }
-.gtm-text .gtp-fn a { color: var(--gtm-accent); text-decoration: none; }
-
-/* the drop cap, three lines deep, in the story's accent */
-.gtm-lead::first-letter { float: left; margin: 0.06em 0.1em 0 -0.02em; font-family: var(--gtm-display); font-size: 4.3em; line-height: 0.8; font-weight: 800; font-optical-sizing: none; font-variation-settings: 'opsz' 12; color: var(--gtm-accent); }
+/* three lines deep, in Bodoni at a low optical size so its hairlines hold, in the story's accent */
+.gtp-reader[data-edition='magazine'] .gtm-lead::first-letter { float: left; margin: 0.06em 0.22em 0 -0.02em; font-family: var(--gtm-display); font-size: 4.3em; line-height: 0.8; font-weight: 800; font-style: normal; font-optical-sizing: none; font-variation-settings: 'opsz' 12; color: var(--gtm-accent); }
 @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
-  .gtm-lead::first-letter { float: none; margin: 0 0.12em 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
+  .gtp-reader[data-edition='magazine'] .gtm-lead::first-letter { float: none; margin: 0; letter-spacing: 0.12em; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
+  .gtp-reader[data-edition='magazine'] .gtm-lead[data-short]::first-letter { -webkit-initial-letter: 2; initial-letter: 2; }
 }
 
-/* a section's head under the story's own mark */
-.gtm-h2 { margin: 104px auto 30px; display: grid; justify-items: start; gap: 16px; font-family: var(--gtm-display); font-size: clamp(34px, 3.2vw, 48px); line-height: 1.06; font-weight: 700; letter-spacing: -0.012em; color: var(--gtm-ink); text-wrap: balance; scroll-margin-top: 80px; }
-.gtm-mark { width: 30px; height: 30px; fill: none; stroke: var(--gtm-accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.gtm-mark .gtm-mark-thumb { stroke-width: 3.6; }
+/* ---------- section heads under the story's mark ---------- */
 
-.gtm-list { padding-left: 1.2em; margin-top: 0; margin-bottom: 1.3em; list-style: disc; }
-ol.gtm-list { list-style: decimal; }
-.gtm-list li { margin-bottom: 0.45em; padding-left: 0.2em; }
-.gtm-list li::marker { color: var(--gtm-accent); }
+.gtp-reader[data-edition='magazine'] .gtm-h2 { display: grid; justify-items: start; gap: 16px; }
+.gtm-mark { width: 34px; height: 34px; fill: none; stroke: var(--gtm-accent); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+.gtm-mark .gtm-mark-thumb { stroke-width: 3; }
 
-/* do and do not, as a checklist with a mark of the story's accent */
-.gtm-rules { margin-top: 0; margin-bottom: 1.6em; padding: 20px 24px; list-style: none; display: grid; gap: 12px; border-radius: 6px; background: var(--gtm-box); }
-.gtm-rules li { display: grid; grid-template-columns: 1.4em minmax(0, 1fr); gap: 8px; font-size: 18px; line-height: 1.5; }
-.gtm-rule-mark { font-family: var(--gtm-sans); font-weight: 600; color: var(--gtm-accent); }
-.gtm-rules li[data-ok='false'] .gtm-rule-mark { color: var(--gtm-ink-3); }
+/* ---------- pull quotes ---------- */
 
-/* a note set apart in the text, as a magazine's box */
-.gtm-box { margin-top: 8px; margin-bottom: 1.8em; padding: 24px 28px; border-left: 3px solid var(--gtm-accent); background: var(--gtm-box); }
-.gtm-box p { margin: 0 0 1em; font-size: 18px; line-height: 1.55; }
-.gtm-box p:last-child { margin-bottom: 0; }
+/* the story's words large and hard in Bodoni italic under a rule of the accent, the opening mark hung in the margin
+   so every line starts flush */
+.gtp-reader[data-edition='magazine'] .gtm-pull { position: relative; margin: 96px auto 100px; padding-top: 36px; border-top: 3px solid var(--gtm-accent); }
+.gtp-reader[data-edition='magazine'] .gtm-pull blockquote { margin: 0; }
+.gtp-reader[data-edition='magazine'] .gtm-pull blockquote p { position: relative; max-width: none; margin: 0; word-spacing: 0.04em; font-family: var(--gtm-display); font-size: clamp(36px, 3.4vw, 52px); line-height: 1.08; font-style: italic; font-weight: 600; letter-spacing: -0.012em; color: var(--gtp-ink); text-wrap: pretty; font-optical-sizing: none; font-variation-settings: 'opsz' 36; }
+.gtp-reader[data-edition='magazine'] .gtm-pull blockquote p::before { content: '\201C'; position: absolute; right: calc(100% + 0.1em); top: -0.08em; font-size: 2.2em; line-height: 1; font-style: normal; font-weight: 800; color: var(--gtm-accent); }
+/* a book's or a story's title inside the quote sets roman, as italic text marks one */
+.gtp-reader[data-edition='magazine'] .gtm-pull blockquote p em { font-style: normal; }
+/* in Euclid's book the column sits close to the rail, so its mark hangs a little less far */
+.gtp-reader[data-edition='magazine'][data-look='book'] .gtm-pull blockquote p::before { font-size: 1.8em; top: -0.02em; }
+.gtp-reader[data-edition='magazine'] .gtm-pull figcaption { margin-top: 20px; font-family: var(--gtp-sans); font-size: 15px; font-weight: 600; color: var(--gtp-ink); }
+.gtp-reader[data-edition='magazine'] .gtm-pull figcaption::before { content: '\2014\2002'; color: var(--gtm-accent); }
 
-/* the epigraph that opens a story: the words large and centred, who wrote them small under them */
-.gtm-epigraph { margin-top: 0; margin-bottom: 80px; text-align: center; }
-.gtm-text .gtm-epigraph p { margin: 0 auto 0.7em; max-width: 30em; font-family: var(--gtm-text); font-size: 18px; line-height: 1.5; color: var(--gtm-ink-2); text-wrap: balance; }
-.gtm-text .gtm-epigraph p:first-child { font-family: var(--gtm-display); font-size: clamp(26px, 2.2vw, 32px); line-height: 1.28; font-style: italic; font-weight: 500; color: var(--gtm-ink); }
-/* the translation under the original, in the display italic */
-.gtm-text .gtm-epigraph p:nth-child(2):not(:last-child) { font-family: var(--gtm-display); font-size: 22px; line-height: 1.35; font-style: italic; font-weight: 500; color: var(--gtm-ink); font-optical-sizing: none; font-variation-settings: 'opsz' 28; }
-/* titles of works in the small print keep a true italic, from the text face */
-.gtm :is(.gtm-epigraph p:last-child, .gtp-print-caption, .gtp-plate-caption, .gtm-sources, .gtm-notes) em { font-family: var(--gtm-text); font-style: italic; }
-.gtm-text .gtm-epigraph p:last-child { margin-top: 1.1em; font-family: var(--gtm-sans); font-size: 14px; color: var(--gtm-ink-3); }
+/* ---------- each magazine's own drop cap and quotes ---------- */
 
-/* a pull quote: the story's words large, under a rule of the accent, the opening mark hung in the margin so every
-   line starts flush */
-.gtm-pull { position: relative; margin: 56px auto 60px; padding-top: 34px; border-top: 2px solid var(--gtm-accent); }
-.gtm-pull blockquote { margin: 0; }
-.gtm-text .gtm-pull p { position: relative; margin: 0; font-family: var(--gtm-display); font-size: clamp(30px, 2.8vw, 42px); line-height: 1.16; font-style: italic; font-weight: 500; letter-spacing: -0.005em; color: var(--gtm-ink); text-wrap: balance; }
-.gtm-text .gtm-pull p::before { content: '\201C'; position: absolute; right: calc(100% + 0.1em); top: -0.08em; font-size: 2.2em; line-height: 1; font-style: normal; font-weight: 800; color: var(--gtm-accent); }
-.gtm-pull figcaption { margin-top: 18px; font-family: var(--gtm-sans); font-size: 14px; font-weight: 500; color: var(--gtm-ink-2); }
+/* The Bodoni cap and the Bodoni italic quote above are Euclid's, a book's. The other three take their own world's:
+   Designing docs a cobalt tile and a docs callout; Rewriting docs a proofreader's circled letter and quotes in the
+   proof's mono under a red rule and caret; Fuma Nama a heavy orange sans cap and a Fumadocs callout card. */
 
-/* ---------- figures, wider than the text ---------- */
+/* Designing docs: the cap a cobalt tile, two lines deep, its letter cut out in the docs' own sans */
+.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-lead::first-letter {
+  /* three lines deep: two line heights and a cap height of the 19px text at 1.62 (3.96em), as tile and padding */
+  float: left; margin: 0.1em 0.26em 0 0; padding: 0.08em 0.2em; -webkit-initial-letter: normal; initial-letter: normal;
+  font-family: var(--gtp-sans); font-size: 3.41em; line-height: 1; font-weight: 700; font-style: normal; font-variation-settings: normal;
+  background: var(--gtm-accent); color: var(--gtp-paper); border-radius: 6px;
+}
+/* its quotes a docs callout: cobalt bar down the left, a faint cobalt ground, the words in the docs' sans */
+.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-pull { padding: 30px 34px; border-top: 0; border-left: 4px solid var(--gtm-accent); border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--gtm-accent) 9%, transparent); }
+.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-pull blockquote p { font-family: var(--gtp-sans); font-size: clamp(28px, 2.4vw, 38px); line-height: 1.16; font-style: normal; font-weight: 600; letter-spacing: -0.025em; font-variation-settings: normal; }
+.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-pull blockquote p::before { content: none; }
 
-.gtm-text > .gtm-figure { max-width: var(--gtm-wide); margin: 48px auto 56px; }
-.gtm-figure .gtp-inline-plate { margin: 0; height: min(62vw, 700px); border-radius: 6px; }
-/* the plates' foot in the feature's small print: the figure's number in the accent, then its caption */
-.gtm .gtp-plate-foot { align-items: baseline; }
-.gtm .gtp-plate-n { font-family: var(--gtm-sans); font-size: 14px; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--gtm-accent); }
-.gtm .gtp-plate-caption { font-family: var(--gtm-sans); font-size: 14px; line-height: 1.5; color: var(--gtp-stage-ink-2); }
-/* Euclid's pictures: the picture centred, its sourced caption under it in the same small print */
-.gtm .gtp-print-fig { width: 100%; margin: 0; transform: none; display: grid; justify-items: center; gap: 16px; }
-.gtm .gtp-print-media { max-height: 82vh; border-radius: 3px; }
-/* on light paper a scan prints into the page, so its own grey backing does not sit on the vellum as a slab */
-:root[data-theme='light'] .gtm .gtp-print-media { mix-blend-mode: multiply; }
-.gtm .gtp-print-caption { width: min(var(--gtm-measure), 100%); font-family: var(--gtm-sans); font-size: 14px; line-height: 1.5; color: var(--gtm-ink-2); text-align: left; }
-.gtm .gtp-print-source { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--gtm-ink-2) 55%, transparent); }
-.gtm-figure[data-kind='side'] { --gtp-upright: 0.7; }
-.gtm-text > .gtm-figure[data-kind='side'] { max-width: min(760px, calc(100vw - 48px)); }
-/* the versions of the first definitions on the page itself, the globe beside the reader */
-.gtm .gtp-versions { width: min(940px, 100%); margin: 0 auto; }
-.gtm .gtp-versions p { margin: 0; font-size: inherit; line-height: inherit; }
-.gtm .gtp-versions-reader { justify-self: center; max-width: 100%; }
-.gtm .gtp-versions .gtp-stops[data-style='book'] { justify-self: start; justify-content: flex-start; margin-left: -8px; }
-.gtm .gtp-versions .gtp-version-lines { margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); font-family: var(--gtm-text); font-size: 17px; line-height: 1.5; text-align: left; }
-.gtm .gtp-version-line { display: block; grid-column: auto; margin: 0; font-size: inherit; line-height: inherit; padding-left: 1.6em; text-indent: -1.6em; }
-.gtm .gtp-version-n { display: inline-block; min-width: 1.6em; text-indent: 0; margin-inline-end: 0; }
-.gtm .gtp-version-meta, .gtm .gtp-versions-coords { font-family: var(--gtm-sans); font-size: 13px; color: var(--gtm-ink-2); }
-.gtm .gtp-print-fig[data-live] .gtp-print-caption { width: min(var(--gtm-measure), 100%); }
+/* Rewriting docs: the cap a proofreader's circled letter in red, in the proof's mono */
+.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] .gtm-lead::first-letter {
+  float: left; margin: 0.1em 0.28em 0 0; padding: 0.14em 0.3em; -webkit-initial-letter: normal; initial-letter: normal;
+  font-family: var(--gtp-mono); font-size: 2.93em; line-height: 1; font-weight: 600; font-style: normal; font-variation-settings: normal;
+  color: var(--gtm-accent); border: 2px solid var(--gtm-accent); border-radius: 50%;
+}
+/* its quotes set in the mono as a proof under a straight red rule, with a proofreader's caret, cap high, at the
+   first line */
+.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] .gtm-pull { border-top-width: 2px; }
+.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] .gtm-pull blockquote p { font-family: var(--gtp-mono); font-size: clamp(26px, 2.2vw, 34px); line-height: 1.3; font-style: normal; font-weight: 500; letter-spacing: -0.03em; font-variation-settings: normal; }
+.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] .gtm-pull blockquote p::before { content: ''; top: 0.04em; right: calc(100% + 0.32em); width: 0.56em; height: 0.7em; font-size: 1em; background: var(--gtm-accent); -webkit-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 30'%3E%3Cpath d='M3 28 L12 6 L21 28' fill='none' stroke='black' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 30'%3E%3Cpath d='M3 28 L12 6 L21 28' fill='none' stroke='black' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
 
-/* ---------- the back of the feature ---------- */
+/* Fuma Nama: the cap a heavy orange sans, three lines deep, as his Fumadocs marks set a heading */
+/* floated rather than an initial letter, since Chrome lays an initial letter's text tight against a sans W */
+.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-lead::first-letter { float: left; margin: 0.1em 0.14em 0 0; -webkit-initial-letter: normal; initial-letter: normal; font-family: var(--gtp-sans); font-size: 3.6em; line-height: 0.78; font-weight: 800; font-style: normal; font-variation-settings: normal; letter-spacing: 0; }
+/* its quotes a Fumadocs callout card: hairline border, rounded, the orange bar inside its left edge */
+.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-pull { padding: 28px 32px 26px 32px; border: 1px solid var(--gtp-rule); border-left: 4px solid var(--gtm-accent); border-radius: 0 12px 12px 0; background: var(--gtp-fill); }
+.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-pull blockquote p { font-family: var(--gtp-sans); font-size: clamp(26px, 2.2vw, 34px); line-height: 1.22; font-style: normal; font-weight: 600; letter-spacing: -0.025em; font-variation-settings: normal; }
+.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-pull blockquote p::before { content: none; }
 
-.gtm-back-h { margin: 96px auto 20px; padding-top: 22px; border-top: 1px solid var(--gtm-rule); font-family: var(--gtm-sans); font-size: 15px; line-height: 1.3; font-weight: 600; color: var(--gtm-ink); }
-.gtm-notes { max-width: var(--gtm-measure); margin: 0 auto; }
-.gtm-notes ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
-.gtm-notes li { display: grid; grid-template-columns: 2em minmax(0, 1fr); gap: 4px; font-family: var(--gtm-sans); font-size: 15px; line-height: 1.5; color: var(--gtm-ink-2); }
-.gtm-note-n { color: var(--gtm-accent); text-decoration: none; font-variant-numeric: tabular-nums; }
-.gtm-notes li:target { color: var(--gtm-ink); }
-.gtm-sources { columns: 2 300px; column-gap: 40px; }
-.gtm-text > .gtm-sources { max-width: min(960px, calc(100vw - 48px)); }
-.gtm-text .gtm-sources p { margin: 0 0 12px; padding-left: 1.4em; text-indent: -1.4em; break-inside: avoid; font-family: var(--gtm-sans); font-size: 14px; line-height: 1.5; color: var(--gtm-ink-2); overflow-wrap: anywhere; }
-.gtm-text .gtm-sources a { color: inherit; text-decoration-color: var(--gtm-rule); }
+/* ---------- the headline's own touches ---------- */
 
-.gtm-end { max-width: var(--gtm-measure); margin: 0 auto; padding: 72px 24px 140px; display: grid; gap: 22px; justify-items: start; border-top: 1px solid var(--gtm-rule); box-sizing: content-box; }
-.gtm-next { font-family: var(--gtm-display); font-size: clamp(28px, 2.6vw, 38px); line-height: 1.12; font-weight: 600; color: var(--gtm-ink-2); text-decoration: none; text-wrap: balance; }
-.gtm-next span { font-style: italic; color: var(--gtm-ink); }
-.gtm-next:hover span { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; text-decoration-color: var(--gtm-accent); }
-.gtm-all { font-family: var(--gtm-sans); font-size: 15px; font-weight: 500; color: var(--gtm-ink-2); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--gtm-rule); }
+.gtm-accent { color: var(--gtm-accent); font-style: italic; }
+/* Rewriting docs: a proofreader's caret after "humans", sitting on the baseline and holding to the word, and "and
+   agents" in the proof's red as the insertion */
+.gtm-insert-at { white-space: nowrap; }
+.gtm-caret { display: inline-block; width: 0.5em; height: 0.66em; margin-left: 0.06em; vertical-align: -0.24em; fill: none; stroke: var(--gtm-accent); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.gtm-insert { font-style: italic; color: var(--gtm-accent); }
 
-/* ---------- narrow screens ---------- */
+/* ---------- the docs reader and Fumadocs' look: the head as a magazine's ---------- */
+
+/* a title with a colon: its first part the headline, the rest a line under it in the look's own face */
+.gtp-reader[data-edition='magazine'] .gtp-title .gtm-sub { margin: 18px 0 0; font-size: clamp(22px, 1.9vw, 30px); line-height: 1.2; font-weight: 400; letter-spacing: -0.015em; color: var(--gtp-ink); text-wrap: balance; }
+/* the byline on one rule: who, when, how long */
+.gtp-reader[data-edition='magazine'] .gtp-text .gtm-byline { margin: 34px 0 0; padding-top: 16px; display: flex; flex-wrap: wrap; gap: 6px 22px; border-top: 1px solid var(--gtp-rule); font-family: var(--gtp-sans); font-size: 14px; line-height: 1.4; color: var(--gtp-ink-2); }
+.gtp-reader[data-edition='magazine'] .gtp-text .gtm-byline b { font-weight: 600; color: var(--gtp-ink); }
+
+/* ---------- Euclid's book: heads in Newsreader's display cut ---------- */
+
+.gtp-reader[data-edition='magazine'][data-look='book'] .gtp-head-spread h1 { font-family: var(--gtm-head); font-size: clamp(34px, 3vw, 46px); line-height: 1.1; font-weight: 500; letter-spacing: -0.02em; }
+.gtp-reader[data-edition='magazine'][data-look='book'] .gtp-print-page h2.gtm-h2 { margin: 120px 0 30px; font-family: var(--gtm-head); font-size: clamp(36px, 3vw, 46px); line-height: 1.08; font-weight: 500; letter-spacing: -0.022em; }
+
+/* ---------- each new section slides in as it is reached ---------- */
+
+/* a section's head and each pull quote wait a little low and clear until the reader brings them a short way into the
+   window, then rise 28px and fade in as one timed slide (ui/Decor.tsx, useSlideIn); under reduced motion they stand */
+@media (prefers-reduced-motion: no-preference) {
+  .gtp-reader[data-edition='magazine'] :is(.gtm-h2, .gtm-pull)[data-in] { transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), translate 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+  .gtp-reader[data-edition='magazine'] :is(.gtm-h2, .gtm-pull)[data-in='false'] { opacity: 0; translate: 0 28px; }
+}
 
 @media (max-width: 999px) {
-  .gtm-opener { grid-template-columns: minmax(0, 1fr); min-height: 0; }
-  /* the art heads the page at 5:4, with a hairline under it so it never runs into a page of the same tone */
-  .gtm-art { grid-column: 1; grid-row: 1; aspect-ratio: 5 / 4; border-bottom: 1px solid var(--gtm-rule); }
-  .gtm-head { grid-column: 1; grid-row: 2; padding: 32px 20px 24px; align-content: start; }
-  .gtm-folio { position: static; margin-bottom: 28px; font-size: 12px; gap: 14px; }
-  .gtm-title { font-size: clamp(40px, 10.6vw, 64px); }
-  .gtm-deck { font-size: 19px; }
-  /* the strip starts under the monogram home, so the button sits on the scan and not across the seam */
-  .gtm-art-vertical { top: 76px; font-size: 30px; }
-  .gtm-art-chop { right: 16px; bottom: 16px; padding: 5px; font-size: 17px; }
-  .gtm-text { padding: 56px 20px 24px; }
-  .gtm-text > p, .gtm-text > .gtm-list > li { font-size: 18px; line-height: 1.62; }
-  .gtm-h2 { margin-top: 72px; }
-  .gtm-text .gtm-pull p::before { position: static; margin-right: 0.04em; font-size: 1em; }
-  .gtm-text > .gtm-figure { max-width: none; margin-left: -20px; margin-right: -20px; }
-  .gtm-figure .gtp-inline-plate { height: min(92vw, 560px); border-radius: 0; }
-  .gtm .gtp-versions { grid-template-columns: minmax(0, 1fr); gap: 20px; justify-items: center; padding: 0 20px; }
-  .gtm .gtp-print-caption { padding: 0 20px; }
-  .gtm-end { padding: 56px 20px 120px; }
+  .gtp-reader[data-edition='magazine'] .gtm-pull blockquote p::before { position: static; margin-right: 0.04em; font-size: 1em; }
 }

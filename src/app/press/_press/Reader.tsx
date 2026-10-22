@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMemo, useRef, useState } from 'react';
+import { Fragment, useMemo, useRef, useState } from 'react';
 
 import type { Story } from './content';
 import { dmsPair } from './coords';
@@ -17,9 +17,10 @@ import { SliderStyleContext } from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
 import BookBody from './BookBody';
 import { EditionContext, homeOf, storyHref, useEdition, type Edition } from './edition';
-import FeatureBody from './Feature';
 import { landed, move, plainClick } from './transition';
 import Cover from './ui/Cover';
+import type { ArtBox } from './gpu/emblems';
+import { Headline, isShort, leadOf, Mark, placePulls, PullQuote, subtitleOf, useSlideIn } from './ui/Decor';
 import { ArrowIcon, CalendarIcon, ClockIcon, IndexIcon, LiveIcon, LoopIcon, PenIcon, PinIcon, StillIcon, ViewsIcon } from './ui/icons';
 
 type Props = { story: Story; next: { slug: string; title: string } | null; edition?: Edition };
@@ -39,11 +40,12 @@ function platesFor(blocks: Block[], figureIndex: Map<number, number>): number[] 
 
 /* Every story's page: the press's one reader. It owns what every look
    shares (the root with the story's look, the theme switch, the monogram
-   home, the crossfade in and out) and sets the story's body for its edition
-   and look. In the magazine (/press) every story is a magazine feature
-   (Feature.tsx). On the shelf (/press/shelf) the book look (Translating
-   Euclid) is a printed book with its pictures on a stage (BookBody), and the
-   others are split between the text and the stage. */
+   home, the crossfade in and out) and sets the story's body in its look: the
+   book look (Translating Euclid) as a printed book with its pictures on a
+   stage (BookBody), the others split between the text and the stage. In the
+   magazine (/press) the body takes the magazine's text decorations
+   (ui/Decor.tsx, magazine.css); on the shelf (/press/shelf) it reads as it
+   did before the magazine. */
 export default function Reader({ story, next, edition = 'magazine' }: Props) {
   const router = useRouter();
   const home = homeOf(edition);
@@ -74,7 +76,7 @@ export default function Reader({ story, next, edition = 'magazine' }: Props) {
         <Link href={home} className='gtp-float-home' aria-label='GT Atlas, all stories'>
           <PressMark size={26} />
         </Link>
-        {edition === 'magazine' ? <FeatureBody story={story} next={next} /> : story.look === 'book' ? <BookBody story={story} /> : <SplitBody story={story} next={next} />}
+        {story.look === 'book' ? <BookBody story={story} decorated={edition === 'magazine'} /> : <SplitBody story={story} next={next} decorated={edition === 'magazine'} />}
       </div>
     </SliderStyleContext>
     </EditionContext>
@@ -85,9 +87,13 @@ export default function Reader({ story, next, edition = 'magazine' }: Props) {
    on the right with the figure the reader has reached, and the ruler at the
    left edge. On a narrow screen the stage goes away and each figure's plate
    sits in the text where the figure was. */
-function SplitBody({ story, next }: Props) {
+function SplitBody({ story, next, decorated = false }: Props & { decorated?: boolean }) {
   const edition = useEdition();
   const { blocks, figures } = story;
+  // the magazine's pull quotes and the paragraph that opens on the drop cap
+  const pulls = useMemo(() => placePulls(decorated ? blocks : [], story.slug), [blocks, story.slug, decorated]);
+  const lead = decorated ? leadOf(blocks) : -1;
+  const sub = decorated ? subtitleOf(story.title) : null;
   const [plate, setPlate] = useState(0);
   const [section, setSection] = useState(0);
   const [seen, setSeen] = useState<Set<number>>(() => new Set([0, 1]));
@@ -96,6 +102,7 @@ function SplitBody({ story, next }: Props) {
   const text = useRef<HTMLElement>(null);
   const progress = useRef<HTMLSpanElement>(null);
   const rail = useRef<HTMLElement>(null);
+  useSlideIn(text, decorated);
 
   const { plateOf, sectionOf, headings } = useMemo(() => {
     const figureIndex = new Map<number, number>();
@@ -125,6 +132,17 @@ function SplitBody({ story, next }: Props) {
     sync();
     media.addEventListener('change', sync);
 
+    // the figure and section for the reader's place: the last block on the page whose top has passed the reading line,
+    // so a jump or a fast scroll that lands between blocks still shows the right figure
+    const settle = () => {
+      const placed = [...(text.current?.querySelectorAll<HTMLElement>('[data-plate]') ?? [])];
+      // a figure's stub is hidden in the magazine, so only blocks on the page count
+      const last = placed.filter((el) => el.offsetHeight > 0 && el.getBoundingClientRect().top <= innerHeight * 0.4).at(-1);
+      if (!last) return;
+      show(Number(last.dataset.plate ?? 0));
+      setSection(Number(last.dataset.section ?? 0));
+    };
+    requestAnimationFrame(settle);
     // the reader's place: the rail's lit lines, and the line along the top on a phone
     let frame = 0;
     const onScroll = () => {
@@ -134,6 +152,7 @@ function SplitBody({ story, next }: Props) {
         const p = max > 0 ? Math.min(1, scrollY / max) : 0;
         progress.current?.style.setProperty('--p', String(p));
         rail.current?.style.setProperty('--p', String(p));
+        settle();
       });
     };
     addEventListener('scroll', onScroll, { passive: true });
@@ -211,7 +230,7 @@ function SplitBody({ story, next }: Props) {
             onJump={jump}
             railRef={rail}
             label='Sections'
-            caption={`${pad(section)}  ${sectionLabel}`}
+            caption={decorated ? undefined : `${pad(section)}  ${sectionLabel}`}
           />
         )}
 
@@ -219,35 +238,53 @@ function SplitBody({ story, next }: Props) {
           <header className='gtp-title' data-plate={0} data-section={0}>
             {wide ? null : (
               <div className='gtp-phone-cover'>
-                <StoryCover story={story} playing />
+                <StoryCover story={story} playing bare={decorated} />
               </div>
             )}
-            <h1>{story.title}</h1>
-            <p className='gtp-summary'>{story.summary}</p>
-            <dl className='gtp-meta'>
-              <dt>
-                <PenIcon size={13} />
-                By
-              </dt>
-              <dd>{story.authors.join(', ')}</dd>
-              <dt>
-                <CalendarIcon size={13} />
-                Published
-              </dt>
-              <dd>{story.date}</dd>
-              <dt>
-                <ClockIcon size={13} />
-                Reading
-              </dt>
-              <dd>
-                {story.minutes} minutes, {figures.length} figures
-              </dd>
-              <dt>
-                <PinIcon size={13} />
-                Filed from
-              </dt>
-              <dd className='gtp-mono'>{dmsPair(story.dateline)}</dd>
-            </dl>
+            {decorated ? (
+              <>
+                <h1>
+                  <Headline story={story} />
+                </h1>
+                {sub ? <p className='gtm-sub'>{sub[1]}</p> : null}
+                <p className='gtm-byline'>
+                  <span>
+                    By <b>{story.authors.join(', ')}</b>
+                  </span>
+                  <span>{longDate(story.date)}</span>
+                  <span>{story.minutes} minute read</span>
+                </p>
+              </>
+            ) : (
+              <>
+                <h1>{story.title}</h1>
+                <p className='gtp-summary'>{story.summary}</p>
+                <dl className='gtp-meta'>
+                  <dt>
+                    <PenIcon size={13} />
+                    By
+                  </dt>
+                  <dd>{story.authors.join(', ')}</dd>
+                  <dt>
+                    <CalendarIcon size={13} />
+                    Published
+                  </dt>
+                  <dd>{story.date}</dd>
+                  <dt>
+                    <ClockIcon size={13} />
+                    Reading
+                  </dt>
+                  <dd>
+                    {story.minutes} minutes, {figures.length} figures
+                  </dd>
+                  <dt>
+                    <PinIcon size={13} />
+                    Filed from
+                  </dt>
+                  <dd className='gtp-mono'>{dmsPair(story.dateline)}</dd>
+                </dl>
+              </>
+            )}
           </header>
 
           {blocks.map((block, i) => {
@@ -255,17 +292,22 @@ function SplitBody({ story, next }: Props) {
             switch (block.kind) {
               case 'heading':
                 return (
-                  <h2 key={i} id={block.id} {...at}>
-                    <span className='gtp-h-n'>{pad(sectionOf[i] ?? 0)}</span>
-                    {block.text}
+                  <h2 key={i} id={block.id} className={decorated ? 'gtm-h2' : undefined} {...at}>
+                    {decorated ? <Mark slug={story.slug} /> : <span className='gtp-h-n'>{pad(sectionOf[i] ?? 0)}</span>}
+                    {decorated ? <span>{block.text}</span> : block.text}
                   </h2>
                 );
-              case 'para':
+              case 'para': {
+                const pull = pulls.get(i);
                 return (
-                  <p key={i} {...at}>
-                    <Inline nodes={block.inline} />
-                  </p>
+                  <Fragment key={i}>
+                    <p className={i === lead ? 'gtm-lead' : undefined} data-short={i === lead && isShort(block) ? '' : undefined} {...at}>
+                      <Inline nodes={block.inline} />
+                    </p>
+                    {pull ? <PullQuote pull={pull} {...at} /> : null}
+                  </Fragment>
                 );
+              }
               case 'list': {
                 const Tag = block.ordered ? 'ol' : 'ul';
                 return (
@@ -347,7 +389,7 @@ function SplitBody({ story, next }: Props) {
           {wide ? (
             <div className='gtp-stage'>
               <section className='gtp-plate gtp-plate-cover' data-on={plate === 0} aria-hidden={plate !== 0} inert={plate !== 0} aria-label='Cover'>
-                <StoryCover story={story} playing={plate === 0} />
+                <StoryCover story={story} playing={plate === 0} bare={decorated} />
               </section>
               {figures.map((figure) => (
                 <Plate
@@ -367,10 +409,19 @@ function SplitBody({ story, next }: Props) {
   );
 }
 
-/** A story's live cover. */
-function StoryCover({ story, playing }: { story: Story; playing: boolean }) {
-  return <Cover slug={story.slug} title={story.title} lang='en' dir='ltr' picture={story.cover} playing={playing} />;
+/** '2026-10-19' as a byline prints it: 19 October 2026, never split across lines. */
+function longDate(iso: string): string {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).replace(/ /g, '\u00a0');
 }
+
+/** A story's live cover; bare, its art alone and centred, where the headline beside it already says the title. */
+function StoryCover({ story, playing, bare = false }: { story: Story; playing: boolean; bare?: boolean }) {
+  return <Cover slug={story.slug} title={bare ? '' : story.title} lang='en' dir='ltr' picture={story.cover} playing={playing} artAt={bare ? ART_CENTRE : undefined} />;
+}
+
+/** Where a bare cover's design draws: across the middle, with no title under it to make room for. */
+const ART_CENTRE: ArtBox = { x: 0.12, y: 0.22, w: 0.76, h: 0.56 };
 
 /** The kind of figure, as the stub and the plate head show it. */
 export function FigureIcon({ figure }: { figure: Story['figures'][number] }) {

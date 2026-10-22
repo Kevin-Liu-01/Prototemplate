@@ -1,0 +1,113 @@
+/* GT Atlas's front page as a rack of magazines (Landing.tsx with
+   edition='magazine', Book.tsx with format='magazine'): each story a thin
+   magazine in the form of Taylor Fang's Riffle, printed on the story's own
+   stock. */
+
+/* ---------- the rack: each story a thin magazine in Riffle's form, on its own stock ---------- */
+
+@property --gtp-glint { syntax: '<percentage>'; inherits: true; initial-value: -40%; }
+
+/* a magazine's page, Riffle's proportions */
+.gtp-landing[data-edition='magazine'] .gtp-shelf-track { --shelf-bw: min(300px, 36vh); --shelf-bh: calc(var(--shelf-bw) * 1.316); --gap: 40px; --baseline: calc(52% + var(--shelf-bh) / 2); }
+.gtp-landing[data-edition='magazine'] .gtp-shelf-item { --slot-h: calc(var(--slot-w) * 1.316); }
+/* on a wide screen the row fills the hall between the furniture's edges (the wordmark at 56px, the coordinates 64px
+   from the right) and is centred between them */
+@media (min-width: 1000px) {
+  .gtp-landing[data-edition='magazine'] .gtp-shelf-track {
+    --shelf-bw: min(300px, 36vh, calc((100vw - 120px - (var(--n) - 1) * var(--gap)) / var(--n)));
+    --pad: max(56px, calc(56px + (100vw - 120px - var(--span) * var(--shelf-bw) - (var(--n) - 1) * var(--gap)) / 2));
+  }
+}
+/* standing, it faces the reader square; the one under the pointer still lifts and leans toward it */
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-book-shelf { --ty: 0deg; }
+.gtp-landing[data-edition='magazine'][data-drag='true'] .gtp-shelf-item .gtp-book-shelf { --ty: 0deg; }
+/* the hall a little lit behind the rack, as Riffle's is; in the light theme a warm grey, so white paper has a ground */
+:root:not([data-theme='light']) .gtp-landing[data-edition='magazine'] { background: radial-gradient(70% 60% at 50% 48%, #141413, #090909 72%); }
+:root[data-theme='light'] .gtp-landing[data-edition='magazine'] { background: #e7e5df; }
+/* the cast shadow under each magazine, deeper than a book's, in the dark theme only */
+:root:not([data-theme='light']) .gtp-landing[data-edition='magazine'] .gtp-shelf-shadow { left: 2%; right: 2%; height: 36px; background: radial-gradient(closest-side, rgb(0 0 0 / 0.85), transparent); }
+
+/* the sheets: the cover's own stock outside, the edges of a few white leaves */
+.gtp-mag :is(.gtp-book-front, .gtp-book-back) { background: var(--board); color: var(--ink); }
+/* the front's edge: the leaves under it stepping out at the side and foot in warm greys, as Riffle's page does */
+.gtp-mag .gtp-book-front { overflow: visible; }
+.gtp-mag-page { box-shadow: 1px 1px 0 #dcd9d1, 2px 2px 0 #c6c3bb, 3px 3px 0 #b1aea6, 4px 4px 0 #8d8a83; }
+/* a dark stock takes a light hairline along its top and left, so the page never melts into a dark hall */
+.gtp-mag-page[data-stock='dark'] { box-shadow: inset 1px 1px 0 rgb(255 255 255 / 0.16), 1px 1px 0 #dcd9d1, 2px 2px 0 #c6c3bb, 3px 3px 0 #b1aea6, 4px 4px 0 #8d8a83; }
+.gtp-mag .gtp-book-spine { padding: 0; background: color-mix(in srgb, var(--board) 82%, #000); box-shadow: none; }
+.gtp-mag .gtp-book-fore { background: repeating-linear-gradient(90deg, #d6d3cb 0 1px, #f3f1ec 1px 2px); box-shadow: none; }
+.gtp-mag :is(.gtp-book-head, .gtp-book-tail) { background: repeating-linear-gradient(0deg, #d6d3cb 0 1px, #f3f1ec 1px 2px); box-shadow: none; }
+.gtp-mag .gtp-book-sheen { display: none; }
+
+/* the page: the story's cover (its colors, its marbling and its design), then the scan's folds and specks, its grain,
+   the light falling across it, and the gloss; every line in Katagami Text */
+.gtp-mag-page { position: absolute; inset: 0; overflow: hidden; container-type: size; isolation: isolate; background: var(--board); color: var(--ink); font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; animation: gtp-mag-glint 2s cubic-bezier(0.45, 0.05, 0.3, 1) 0.8s both; }
+.gtp-mag-page::before { content: ''; position: absolute; inset: 0; z-index: 20; pointer-events: none; background: linear-gradient(158deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0) 38%, rgb(0 0 0 / 0) 55%, rgb(0 0 0 / 0.15)); }
+/* matte stock: a faint highlight that follows the pointer, and one sweep of light as the rack loads */
+.gtp-mag-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 21;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(80% 58% at calc(50% + var(--hx, -0.14) * 120%) calc(32% + var(--hy, -0.15) * 120%), rgb(255 255 255 / 0.084), rgb(255 255 255 / 0) 72%),
+    linear-gradient(116deg, rgb(255 255 255 / 0) calc(var(--gtp-glint) - 11%), rgb(255 255 255 / 0.1) var(--gtp-glint), rgb(255 255 255 / 0) calc(var(--gtp-glint) + 11%));
+}
+@keyframes gtp-mag-glint { from { --gtp-glint: -40%; } to { --gtp-glint: 145%; } }
+.gtp-mag-page > .gtp-cover { z-index: 0; }
+/* on a dark stock the folds and specks print light, as a scan of dark paper shows them */
+.gtp-mag-page[data-stock='dark'] :is(.gtp-mag-mottle, .gtp-mag-grain) { filter: invert(1); mix-blend-mode: screen; }
+.gtp-mag-page[data-stock='dark'] .gtp-mag-mottle { opacity: 0.6; }
+.gtp-mag-page[data-stock='dark'] .gtp-mag-grain { opacity: 0.1; }
+/* each issue's sheet turned a different way, so the folds never repeat along the rack */
+.gtp-mag-page[data-turn='1'] .gtp-mag-mottle { transform: scaleX(-1); }
+.gtp-mag-page[data-turn='2'] .gtp-mag-mottle { transform: scaleY(-1); }
+.gtp-mag-page[data-turn='3'] .gtp-mag-mottle { transform: scale(-1, -1); }
+.gtp-mag-mottle { position: absolute; inset: 0; z-index: 18; pointer-events: none; background: url('/press/directions/paper-specks.webp') 0 0 / 100% 100% no-repeat, url('/press/directions/paper-folds.webp') 0 0 / 100% 100% no-repeat; mix-blend-mode: multiply; }
+.gtp-mag-grain { position: absolute; inset: 0; z-index: 19; pointer-events: none; opacity: 0.13; mix-blend-mode: multiply; background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* the story's name as Riffle's credit line, up the right edge from the foot, large enough to read on the rack */
+.gtp-mag-cred { position: absolute; z-index: 3; right: 3.4cqw; bottom: 4.6cqh; max-height: 90cqh; margin: 0; writing-mode: vertical-rl; text-orientation: sideways; transform: rotate(180deg); font-size: max(15px, 4.1cqh); line-height: 1.14; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; }
+/* the folio at the foot: the issue's number, the name, the month */
+.gtp-mag-folio { position: absolute; z-index: 3; left: 3.4cqw; bottom: 3cqh; margin: 0; display: flex; gap: 1.4em; font-size: max(11px, 2.8cqh); line-height: 1; font-weight: 500; color: var(--ink); }
+.gtp-mag-folio b { font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .gtp-mag-page { animation: none; } }
+
+
+/* ---------- the corner that lifts ---------- */
+
+/* Under the pointer a magazine's bottom right corner peels back (Landing.tsx sets the slot's data-peel from its
+   corner button): the front is cut along a 45 degree fold --peel from the corner, the flap shows the back of the
+   cover, and the inside page (Book.tsx, InsidePage) shows through. Quick and short, and none under reduced motion. */
+@property --peel { syntax: '<length>'; inherits: true; initial-value: 0px; }
+.gtp-mag .gtp-book-front { --peel: 0px; transition: --peel 0.18s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.gtp-shelf-item[data-peel='true'] .gtp-mag .gtp-book-front { --peel: calc(var(--bw) * 0.36); transition-duration: 0.24s; }
+/* the cut runs past the page by 12px each way, so the stepped edge stays whole while the corner is down */
+.gtp-mag-page { z-index: 1; clip-path: polygon(-12px -12px, calc(100% + 12px) -12px, calc(100% + 12px) calc(100% - var(--peel) - 12px), calc(100% - var(--peel) - 12px) calc(100% + 12px), -12px calc(100% + 12px)); }
+/* the flap: the cut corner folded back over the page, the paper of the cover's back, darker toward the fold */
+.gtp-mag-flap { position: absolute; z-index: 2; right: 0; bottom: 0; width: var(--peel); height: var(--peel); pointer-events: none; clip-path: polygon(0 0, 100% 0, 0 100%); background: linear-gradient(135deg, #fdfcf9 0%, #f0ede6 30%, #dad6cc 45%, #c4bfb3 50%, transparent 50%); }
+
+/* the inside: Riffle's feature page on white uncoated stock, its lower right, where the corner lifts, full of text */
+.gtp-mag-inside { position: absolute; inset: 0; z-index: 0; overflow: hidden; container-type: size; background: #fbfbf8; color: #141414; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; }
+.gtp-mag-inside-in { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 7cqh 6cqw 6cqh 8cqw; }
+.gtp-mag-inside p { margin: 0; }
+.gtp-mag-inside-h { margin-top: 5cqh; font-size: 7.4cqw; line-height: 1; font-weight: 700; letter-spacing: -0.035em; text-wrap: balance; }
+.gtp-mag-inside-dek { margin-top: 3cqh; font-size: 3.6cqw; line-height: 1.3; letter-spacing: -0.01em; text-wrap: pretty; }
+.gtp-mag-inside-by { margin-top: 2cqh; font-size: 2.6cqw; line-height: 1.4; }
+.gtp-mag-inside-by b { font-weight: 700; }
+.gtp-mag-inside-body { margin-top: auto; columns: 2; column-gap: 4cqw; font-size: 2.8cqw; line-height: 1.42; hyphens: auto; }
+.gtp-mag-inside-body p + p { text-indent: 1.2em; }
+.gtp-mag-inside-body p:first-child::first-letter { float: left; margin: 0.06em 0.08em 0 0; font-size: 3.1em; line-height: 0.82; font-weight: 700; color: var(--accent); }
+.gtp-mag-inside-folio { position: absolute; right: 4cqw; bottom: 3cqh; font-size: 2.8cqw; line-height: 1; }
+.gtp-mag-inside-folio b { font-weight: 700; }
+
+/* the corner's hit area: a triangle at the slot's bottom right, so the rest of the magazine still opens the story */
+.gtp-shelf-corner { position: absolute; z-index: 2; right: 0; bottom: 0; width: calc(var(--slot-w) * 0.36); height: calc(var(--slot-w) * 0.36); padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.gtp-shelf-corner:focus-visible { outline: none; }
+.gtp-landing[data-mode='stack'] .gtp-shelf-corner { display: none; }
+@media (prefers-reduced-motion: reduce) { .gtp-mag .gtp-book-front { transition: none; } }
+
+/* the corner opposite the masthead: the coordinates, and the theme switch to their right */
+.gtp-landing[data-edition='magazine'] .gtp-hall-coords { grid-auto-flow: column; align-items: center; gap: 18px; }

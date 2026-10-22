@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 
-import type { StoryCard } from './content';
+import type { MagazineIssue, StoryCard } from './content';
 import { dms } from './coords';
 import { EditionContext, homeOf, storyHref, type Edition } from './edition';
 import { useLayoutWork, useMountEffect } from './hooks';
@@ -18,6 +18,7 @@ import Globe from './ui/Globe';
 import Locator from './ui/Locator';
 import PressMark from './ui/PressMark';
 import { RowIcon, StackIcon } from './ui/icons';
+import MagazineView from './riffle/MagazineView';
 import StopSlider from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
 
@@ -46,8 +47,13 @@ const FIRST_PLACES = Object.fromEntries(LANGS.map((l) => [l.code, 0])) as Record
    beside them opens into the locator, the city on the globe with its
    coordinates. On the magazine's front page (/press) each story stands as a
    thin magazine with its cover lines; on the shelf kept from the direction
-   before (/press/shelf), as a hardcover. */
-export default function Landing({ catalog, edition = 'magazine' }: { catalog: StoryCard[]; edition?: Edition }) {
+   before (/press/shelf), as a hardcover.
+
+   On the rack a magazine's bottom right corner lifts under the pointer and
+   shows its inside page; a click there opens the magazine over the hall
+   (riffle/MagazineView), where its pages turn. A click anywhere else on the
+   magazine opens the story's web page, as before. */
+export default function Landing({ catalog, edition = 'magazine', issues }: { catalog: StoryCard[]; edition?: Edition; issues?: Record<string, MagazineIssue> }) {
   const router = useRouter();
   const format = edition === 'magazine' ? 'magazine' : 'book';
   const home = homeOf(edition);
@@ -64,10 +70,14 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
   const [topic, setTopic] = useState<Topic | null>(null);
   /** The globe opened out into the locator. */
   const [globeOpen, setGlobeOpen] = useState(false);
+  /** The magazine whose corner is lifted, and the one open over the hall. */
+  const [peel, setPeel] = useState<number | null>(null);
+  const [reading, setReading] = useState<number | null>(null);
+  const magazine = edition === 'magazine';
   /** Set by the press that closes the locator, so its click is swallowed. */
   const closing = useRef(false);
-  const state = useRef({ active: 0, mode: 'row' as Mode, globeOpen: false });
-  state.current = { active, mode, globeOpen };
+  const state = useRef({ active: 0, mode: 'row' as Mode, globeOpen: false, reading: null as number | null });
+  state.current = { active, mode, globeOpen, reading };
   const wheel = useRef({ sum: 0, last: 0 });
   const drag = useRef({ id: -1, x: 0, scroll: 0, moved: false, swallow: false });
   const shelf = useRef<HTMLDivElement>(null);
@@ -129,10 +139,18 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
 
   useLayoutWork(anchor, { dependencies: [mode] });
 
-  /** Opens a story through the press's crossfade (transition.ts). */
-  const open = (i: number) => {
+  /** Opens a story through the press's crossfade (transition.ts), at one of its sections when `hash` names one. */
+  const open = (i: number, hash = '') => {
     const s = catalog[i];
-    if (s) move((href) => router.push(href), storyHref(edition, s.slug));
+    if (s) move((href) => router.push(href), `${storyHref(edition, s.slug)}${hash ? `#${hash}` : ''}`);
+  };
+
+  /** Closes the open magazine and gives the focus back to the corner that opened it. */
+  const closeMagazine = () => {
+    const i = state.current.reading;
+    setReading(null);
+    setPeel(null);
+    if (i !== null) requestAnimationFrame(() => shelf.current?.querySelectorAll<HTMLElement>('.gtp-shelf-corner')[i]?.focus());
   };
 
   // back from a story: the crossfade can capture the shelf now
@@ -141,6 +159,7 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
   });
 
   useMountEffect(() => {
+    if (edition !== 'shelf') return;
     const asked = new URLSearchParams(location.search).get('topic');
     const known = TOPICS.find((x) => x === asked);
     if (known) setTopic(known);
@@ -150,7 +169,9 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
     const onKey = (e: KeyboardEvent) => {
       const target = e.target instanceof Element ? e.target : null;
       if (target?.closest('input, textarea, [role="radiogroup"]')) return;
-      const { active: a, globeOpen: g } = state.current;
+      const { active: a, globeOpen: g, reading: r } = state.current;
+      // the open magazine takes the keys for its pages
+      if (r !== null) return;
       if (e.key === 'Escape' && g) setGlobeOpen(false);
       else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
@@ -257,21 +278,24 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
             <FlipText value={dms(place.lat, 'lat')} />
             <FlipText value={dms(place.lon, 'lon')} />
           </p>
-          <nav className='gtp-tags' aria-label='Topics'>
-            {TOPICS.map((x) => (
-              <a
-                key={x}
-                href={`${home}?topic=${x}`}
-                aria-current={topic === x ? 'true' : undefined}
-                onClick={(e) => {
-                  e.preventDefault();
-                  pickTopic(topic === x ? null : x);
-                }}
-              >
-                {TOPIC_NAMES[x]}
-              </a>
-            ))}
-          </nav>
+          {/* the shelf keeps its topic tags; the magazine's front page carries only the coordinates and the theme */}
+          {edition === 'shelf' ? (
+            <nav className='gtp-tags' aria-label='Topics'>
+              {TOPICS.map((x) => (
+                <a
+                  key={x}
+                  href={`${home}?topic=${x}`}
+                  aria-current={topic === x ? 'true' : undefined}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    pickTopic(topic === x ? null : x);
+                  }}
+                >
+                  {TOPIC_NAMES[x]}
+                </a>
+              ))}
+            </nav>
+          ) : null}
           <ThemeSwitch />
         </div>
 
@@ -300,6 +324,7 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
                 data-on={hover === i}
                 data-pressed={pressed === i}
                 data-dim={topic !== null && !s.topics.includes(topic)}
+                data-peel={peel === i}
                 style={{ '--i': i, '--k': sizes[i], '--before': before[i], '--stack-y': `${heights[i]}px`, '--sbd': `${depths[i]}px` } as CSSProperties}
                 onPointerEnter={() => {
                   if (drag.current.moved) return;
@@ -319,6 +344,7 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
                   e.currentTarget.style.removeProperty('--hy');
                   setPressed((p) => (p === i ? null : p));
                   setHover((h) => (h === i ? null : h));
+                  setPeel((k) => (k === i ? null : k));
                 }}
                 onPointerDown={() => setPressed(i)}
                 onPointerUp={() => setPressed(null)}
@@ -327,6 +353,7 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
                 <Book
                   className='gtp-book-shelf'
                   format={format}
+                  issue={magazine ? issues?.[s.slug] : undefined}
                   story={s}
                   title={s.titles[code]}
                   lang={lang}
@@ -349,6 +376,26 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
                   }}
                   onBlur={() => setHover((h) => (h === i ? null : h))}
                 />
+                {magazine && issues?.[s.slug] ? (
+                  // the corner that lifts: a pointer over it peels the page back, a click opens the magazine
+                  <button
+                    type='button'
+                    className='gtp-shelf-corner'
+                    aria-label={`Open ${bookTitle(s.titles[code], code)} as a magazine`}
+                    onPointerEnter={() => setPeel(i)}
+                    onPointerLeave={() => setPeel((k) => (k === i ? null : k))}
+                    onFocus={() => {
+                      setActive(i);
+                      setHover(i);
+                      setPeel(i);
+                    }}
+                    onBlur={() => setPeel((k) => (k === i ? null : k))}
+                    onClick={() => {
+                      if (drag.current.swallow) return;
+                      setReading(i);
+                    }}
+                  />
+                ) : null}
               </li>
             ))}
           </ol>
@@ -388,6 +435,15 @@ export default function Landing({ catalog, edition = 'magazine' }: { catalog: St
           </div>
         </div>
       </main>
+      {reading !== null && catalog[reading] && issues?.[catalog[reading]!.slug] ? (
+        <MagazineView
+          story={catalog[reading]!}
+          issue={issues[catalog[reading]!.slug]!}
+          href={storyHref(edition, catalog[reading]!.slug)}
+          onRead={(hash) => open(reading, hash)}
+          onClose={closeMagazine}
+        />
+      ) : null}
     </div>
     </EditionContext>
   );
