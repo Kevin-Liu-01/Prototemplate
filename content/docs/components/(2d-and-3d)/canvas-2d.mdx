@@ -2,6 +2,146 @@
 title: '2D canvas pieces'
 description: 'Canvas 2D pieces drawn in the house ink: particle fields, generative line work and glyph rain, each with its frame budget and its still.'
 icon: Eye
+sources:
+  - src/components/docs/demos/2d-3d
+  - src/lib/dither.ts
+  - src/lib/glyph-field.ts
+  - skills/gt-performance/SKILL.md
 ---
 
-Canvas 2D pieces drawn in the house ink: particle fields, generative line work and glyph rain, each with its frame budget and its still.
+import { ContourDemo, DitherPadDemo, FlowFieldDemo, GlyphRainDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+Four pieces draw on a plain canvas 2D context in the stage's ink. Two of them print through the house Bayer screen at one buffer pixel per cell, which CSS scales up with `image-rendering: pixelated`. The other two draw hairlines and type at the device's pixel ratio. Each piece states its frame budget beside its measured cost, and the controls row of each animated piece prints its live cost. A piece runs only while it is on screen, and reduced motion shows its still.
+
+## The smoke rake
+
+Particles leave a rake of nozzles on the left edge and ride a stream that parts around the pointer. Each filament leaves its nozzle one cell wide and spreads into a dithered band as it travels.
+
+<FlowFieldDemo />
+
+The stream is a uniform flow of 64 pixels a second plus three travelling cells of a stream function, whose velocity is exact and has no divergence, so particles never bunch or thin out on their own. Around the obstacle the uniform flow becomes the potential flow past a cylinder, and the cells fade out within 2.4 radii, so each filament splits ahead of the pointer and closes behind it. Spread sets a random walk's diffusivity: at 0 the filaments stay thin, and at 10 a filament spreads about 16 pixels either side over one crossing of the stage. Every particle adds to a density grid at its cell, the grid decays by e<sup>−3t</sup>, and the paint thresholds the grid through the matrix.
+
+The obstacle follows the pointer and stays where the pointer leaves it, and a tap places it on a phone. Before the first paint the field runs one crossing of the stage at 20 steps a second, so it starts full. The still is the obstacle at 30 percent across the stage with the field simulated around it, and with the plate still, a click simulates it again around the new spot.
+
+### Import and props
+
+```tsx
+import { FlowFieldDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+<FlowFieldDemo cell={2} count={2400} spread={2} matrix={8} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `cell` | number | `2` | A cell's side in CSS pixels. |
+| `count` | number | `2400` | Particles in the field, up to 6,000. |
+| `spread` | number | `2` | The random walk's diffusivity in square pixels a second. The control offers 0, 2 and 10. |
+| `matrix` | `2`, `4` or `8` | `8` | The Bayer matrix's side. |
+
+The engine is `createFlowField({ canvas, cell, count, spread, matrix, ink })` in `flow-field.ts`. It returns `point(x, y, settle)`, `set(patch)` and the `resize`, `step`, `paint` and `still` that `createCanvasLoop` drives.
+
+The budget is 2 ms of main thread a frame. The piece measures 1.1 ms at 1440 by 900 and 0.84 ms at 390, and about 14 percent of its cells are lit.
+
+## Contours and hachures
+
+Contour lines and hachures are the two ways engraved maps draw relief, and this plate draws one drifting height field with either or both. A hill rises under the pointer and stays where the pointer leaves it.
+
+<ContourDemo />
+
+The field is four Gaussian hills and basins on slow Lissajous paths, two long waves and the pointer's hill, sampled every 6 CSS pixels (5 under 520). Marching squares turn each level into segments, linearly interpolated, with a saddle split by its cell's mean. Every fifth level is an index contour at 1.5 pixels in full ink, and the rest are 1 pixel lines at half strength. Hachures are short strokes down the slope on a jittered lattice, longer where the slope is steeper. A stroke stays where the slope faces away from a light at the upper left, and a 4 by 4 Bayer threshold per lattice point decides which strokes stay, so the hachures thin out in the Bayer order and the pattern holds still while the field moves.
+
+The still is the field at 18 seconds with the hill at 68 percent across. With the plate still, the hill jumps to the pointer and the frame is drawn again.
+
+### Import and props
+
+```tsx
+import { ContourDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+<ContourDemo mode='both' interval={0.05} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `mode` | `'both'`, `'contours'` or `'hachures'` | `'both'` | The line work drawn. |
+| `interval` | number | `0.05` | The height between two contours. The field spans about 0 to 1.2, and the control offers 0.035, 0.05 and 0.08. |
+
+The engine is `createContours({ canvas, mode, interval, ink })` in `contours.ts`. It returns `point(x, y, snap)`, `set(patch)` and `counts()`, the segments drawn in the last paint.
+
+The budget is 2 ms of main thread a frame. The piece measures 1.07 ms at 1440 by 900 and 0.67 to 0.81 ms at 390.
+
+## Glyph rain
+
+Sixteen scripts rain down a typeset grid. The cells around the pointer light up by their distance from it, and the plate names the script of the column under the pointer with the word for language in that script.
+
+<GlyphRainDemo />
+
+Every column is set in one script, and every cell holds one glyph of it, so the stage is a grid of type before anything moves. A drop is a lit window that steps down its column one row at a time. Its head prints at full ink and its tail fades in six alpha steps. The glyphs never move, and a quarter of the cells change their glyph each second. Depth comes from two grids: a far grid of 10.5 pixel glyphs at a third of the ink under a near grid of 15 pixel glyphs. The scripts are Latin, Greek, Cyrillic, Armenian, Georgian, Hebrew, Arabic, Devanagari, Bengali, Tamil, Thai, Ethiopic, Khmer, Han, Kana and Hangul, each named by its ISO 15924 code.
+
+Every frame is a function of the clock alone: a drop's row is the clock times its speed plus its phase, modulo its lap. The still is any instant, and the plate shows 9 seconds, when the grid is already full.
+
+### Import and props
+
+```tsx
+import { GlyphRainDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+<GlyphRainDemo drops={1} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `drops` | number | `1` | Drops a column. The control offers 1, 2 and 3. |
+
+The engine is `createGlyphRain({ canvas, drops, ink, family })` in `glyph-rain.ts`, and `RAIN_SCRIPTS` lists each script with its code, its name, its word for language and the glyphs the rain draws. `point(x, y)` lights the cells around a point and returns the script under it, and `point(null, 0)` turns them off.
+
+The budget is 1 ms of main thread a frame. The piece measures 0.32 ms at 1440 by 900 and 0.17 to 0.20 ms at 390.
+
+## The dither pad
+
+Paint tone into the pad and the screen prints it. A stroke adds tone or takes it away, and Matrix and Cell reprint the same tone through another screen.
+
+<DitherPadDemo />
+
+The tone is a grid with one value a cell. A stroke lays a soft round brush 28 CSS pixels across every 7 pixels along the pointer's path, and the paint thresholds the grid at once. The tiers nest, so adding tone only turns cells on: a lit cell stays lit as the tone under it rises. Reset draws the starting picture, a ramp across the lower part and a soft disc above it, and the status line prints the share of lit cells. The pad has no loop and draws only on a stroke, so its still is the pad itself.
+
+### Import and props
+
+```tsx
+import { DitherPadDemo } from '@/components/docs/demos/2d-3d/lazy';
+
+<DitherPadDemo matrix={8} cell={4} />;
+```
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `matrix` | `2`, `4` or `8` | `8` | The Bayer matrix's side at mount. |
+| `cell` | number | `4` | A cell's side in CSS pixels at mount. The control offers 2, 4, 6 and 8. |
+
+The engine is `createDitherPad({ canvas, cell, matrix, ink })` in `dither-pad.ts`. It returns `dab`, `stroke`, `reset`, `clear`, `paint`, `set` and `coverage()`.
+
+The budget is 1 ms of main thread a pointer move. A move measures 0.13 ms on a pad of 210 by 80 cells, and the pad costs nothing at rest.
+
+## The loop
+
+The three animated pieces run on `createCanvasLoop({ host, engine, playing, onCost })` in `canvas-loop.ts`, the 2D counterpart of the 3D page's stage. The engine supplies `resize`, `step`, `paint` and `still`. The loop paints once at creation, so a piece never shows an empty frame, then steps and paints once per animation frame while the host is on screen, the tab is visible and the plate is playing. It reads the host's size and pixel ratio through a resize observer and a resolution query, so zooming the page resizes the backing store. The handle returns `setPlaying`, `setSpeed`, `invalidate`, `running` and `destroy`.
+
+## Numbers
+
+The numbers come from headless Chrome for Testing on an Apple M5 Max laptop at a pixel ratio of 2, with each plate scrolled into view and its frames sampled for 6 seconds. The machine was shared with other work, and its one-minute load average read between 35 and 85 during the runs. A frame's main-thread time is the piece's own measure, the one its controls row prints.
+
+| Piece | Budget | Main thread at 1440 | Frames over 22 ms | Main thread at 4x CPU throttle |
+| --- | --- | --- | --- | --- |
+| The smoke rake | 2 ms | 1.10 ms | 0 | 5.39 ms, 0.6 percent of frames over 22 ms |
+| Contours and hachures | 2 ms | 1.07 ms | 0 | 5.64 ms, no frame over 22 ms |
+| Glyph rain | 1 ms | 0.32 ms | 0 | 1.39 ms, no frame over 22 ms |
+| The dither pad | 1 ms a move | 0.13 ms a move | no loop | not measured |
+
+Every frame interval had a median of 16.7 ms and a p95 of 16.7 or 16.8 ms at full speed.
+
+## Traps
+
+- The 8 by 8 screen's lowest threshold is 0.5 / 64, under 1 percent, so a density that decays toward zero keeps lighting cells long after it looks gone. The first draft of the flow field spread its particles evenly and decayed slowly, and most of the stage printed. Decaying faster left short dashes that read as noise at 7 percent of the cells. Emitting from a rake of nozzles gave the field lines that hold together, at 14 percent.
+- The contour field cost 3.0 ms a frame while each grid node evaluated every term with its own sines and exponentials. Each term separates into a column factor times a row factor, and computing those once per column and once per row brought the frame to 1.07 ms.
+- A dither pattern on a moving glyph shimmers with every step, so the rain moves no glyph. A drop lights cells in place, and depth comes from size and alpha.
+- The rain's atlas is drawn in white, and every frame ends with one `source-in` fill in the ink. A theme change sets one color, and the atlas is drawn again only when the pixel ratio or the layout changes, or when the page's faces finish loading.
+- A finger lifts and leaves the stage in the same gesture, so a `pointerleave` after a tap would turn the lit cells off at once. Only a mouse leaving turns them off.
+- The plates mount their stages only when they near the viewport. An engine created in the plate's own mount effect finds no canvas and never starts, so every engine is created in a child component that renders with the stage.
