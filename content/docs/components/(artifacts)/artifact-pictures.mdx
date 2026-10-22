@@ -2,6 +2,122 @@
 title: 'Artifact pictures'
 description: 'Dithered photographs under the Blue Marble standard: the tone grid, the screen, the presets and both themes, cut live from a picture.'
 icon: Camera
+sources:
+  - docs/ARTIFACT-PICTURES.md
+  - scripts/media/mood-tone/standard.json
+  - public/brand/mood/manifest.json
+  - deck/shots/tone/manifest.json
+  - deck/parts/tail.html
+  - src/components/plate/lib/picture-field.ts
+  - src/components/plate/brand/moodPictures.ts
+  - src/components/docs/demos/artifacts
 ---
 
-Dithered photographs under the Blue Marble standard: the tone grid, the screen, the presets and both themes, cut live from a picture.
+import { MoodCompareDemo, MoodScreenDemo } from '@/components/docs/demos/artifacts/lazy';
+
+An artifact picture is a photograph or a scan of an object, an artwork or a place, printed through the house ordered dither. The cutter turns the photograph into a tone grid once: an 8-bit gray JPEG with the crop, the channel and the tone curve already applied. The page then screens the grid live at its size on screen, one cell per CSS pixel, so the picture stays sharp at any width and redraws in either theme. The settings are the Blue Marble standard in `scripts/media/mood-tone/standard.json`, named after the picture they were measured on.
+
+Two sets of grids ship. The plate set in `public/brand/mood` holds the five pictures of the sign-in and onboarding field. The deck set in `deck/shots/tone` holds the ten mood slides of the brand deck, which the deck build serves from `public/deck-assets`.
+
+## The screen
+
+The plate screens one picture in both themes at once with the standard's settings. The cell size and each theme's opacity are controls, and Standard puts them back.
+
+<MoodScreenDemo />
+
+A cell is lit when its tone is over the 8 by 8 Bayer threshold `(m + 0.5) / 64`. The screen runs at gamma 1 and bias 0, because the whole tone curve is already in the grid. Bytes at or under 10 read as 0, which keeps the JPEG's ringing on black from printing stray cells. An unlit cell is clear, so the ground shows through it. At a cell of 2 px or more, each cell reads the area average of the grid cells under it: the picture keeps its tone and loses its detail, which is why the standard holds the cell at 1 px.
+
+### Import and props
+
+```ts
+import { loadPictureTone, pictureField } from '@/components/plate/lib/picture-field';
+import { ditherToCanvas } from '@/lib/dither';
+
+const tone = await loadPictureTone('/brand/mood/mood-rosetta.jpg');
+const field = pictureField(tone, {
+  placement: { kind: 'cover', focusX: 0, focusY: 0.5 },
+  canvasWidth: canvas.clientWidth,
+  canvasHeight: canvas.clientHeight,
+});
+ditherToCanvas(canvas, field, { scale: 1, ink: 'white', paper: 'transparent' });
+canvas.style.opacity = '0.62';
+```
+
+`loadPictureTone(src)` decodes a grid once per address and returns its width, its height and its tone as numbers from 0 to 1, with the floor applied. `pictureField` returns a field that the dither engine reads once per cell.
+
+| Option | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `placement` | `cover`, `disc` or `region` | none | Where the picture's 1600 by 900 file space lands on the canvas. `cover` fills the canvas and keeps `focusX` and `focusY` in view. `disc` scales the file so the circle at `cx`, `cy` of radius `r` is `diameter` CSS px across, centred on `centre`. `region` fits a rectangle of the file inside `frame`. |
+| `canvasWidth`, `canvasHeight` | number | none | The canvas box in CSS px. |
+| `cellSize` | number | `1` | The dither cell in CSS px. A cell that covers more than one grid cell reads their area average. |
+
+The plate on this page runs the plate port's sampler and `ditherToCanvas` once per change; nothing animates. The brand deck screens the same grids with its own engine in `deck/parts/tail.html`. There `moodTaps` lists, for each output cell on one axis, the grid cells it covers and their weights, and `paintMood` sums them and thresholds the result. The sign-in field draws with `createDitherLoop`. `pnpm lint:pictures` holds every surface's constants to the standard.
+
+### The screen's numbers
+
+| Setting | Value |
+| --- | --- |
+| Matrix | 8 by 8 Bayer, a cell lit over `(m + 0.5) / 64` |
+| Cell | 1 CSS px, screened at the size on screen |
+| Tone floor | 10 of 255 reads as 0 |
+| Gamma and bias | 1 and 0 |
+| Dark theme | `#ffffff` cells at 0.62 opacity over `#070707` |
+| Light theme | `#070707` cells at 0.7 opacity over `#ffffff` |
+
+## Tone grid and screen
+
+The plate splits one picture at a seam, with the tone grid on the left and its screen on the right at the same framing. Drag across the picture or use the Seam control to move the seam, and zoom to 4x or 8x to see single cells.
+
+<MoodCompareDemo />
+
+The photograph itself never ships. The cutter, `pnpm mood-tone`, reads it from a sources folder outside the repository. It crops the photograph, takes the red or the gray channel, inverts it when the subject should print lit on black, solves the black and white points and writes the grid. The grid is therefore the first stage a page can show. A lit cell prints ink on paper in the light theme, so the plate inverts the gray grid there to match the screen.
+
+### The grid's numbers
+
+| Setting | Value |
+| --- | --- |
+| Blur | none |
+| Gamma | 1.2 |
+| Autocontrast | clips 0.5 percent at each tail |
+| File | 8-bit gray JPEG at quality 82, or 75 when 82 is over the cap |
+| Cover grid | 1600 by 900 |
+| Disc grid | 2400 by 1350 |
+| Byte cap | 573,440 |
+
+The cutter solves the black and white points per picture. A scene lands on the Blue Marble's mean tone of 0.361 and standard deviation of 0.342 over the part of the grid that is shown, or over its subject alone when the subject sits on a plain ground. A marks picture (writing, engraving or lines on a plain ground) puts the ground at black and the 90th percentile of the marks at white. The lint holds each grid to its kind's window:
+
+| Kind | Mean | Standard deviation | At white (250 and up) | At the floor (10 and under) |
+| --- | --- | --- | --- | --- |
+| Scene | 0.30 to 0.42 | 0.28 to 0.44 | at least 2 percent | at least 5 percent |
+| Marks | at most 0.35 | any | at least 0.5 percent | at least 50 percent |
+
+## The pictures
+
+A picture never shows a page of plain English prose, because readable copy competes with the text beside it. Writing is welcome when it is the subject: a carved inscription, calligraphy, a manuscript in another script, signs pressed in clay, or the lettering engraved on a chart. Each source is public domain or Creative Commons, and the credit is shown with the picture.
+
+The plate set, measured over the part of each grid the sign-in field shows right of its ramp, or over the subject alone where the cutter masks one (the earth's disc):
+
+| Picture | Kind | Grid | Mean | Std | Credit |
+| --- | --- | --- | --- | --- | --- |
+| The Blue Marble | scene | 2400 by 1350 | 0.360 | 0.342 | Image: NASA, Reto Stöckli, 2007, public domain |
+| The Rosetta Stone | scene | 1600 by 900 | 0.362 | 0.345 | Photograph: Hans Hillewaert, CC BY-SA 4.0 |
+| Karahisari's Calligraphy | marks | 1600 by 900 | 0.191 | 0.337 | Calligraphy: Ahmed Karahisari, 16th century, public domain |
+| Proto-Cuneiform Tablet | scene | 1600 by 900 | 0.365 | 0.335 | Photograph: The Metropolitan Museum of Art, public domain |
+| A Marginal Gloss | marks | 1600 by 900 | 0.141 | 0.288 | MS f Med. 23, Boston Public Library, public domain |
+
+The deck set, all 1600 by 900, measured over the frame, or over the subject alone where the cutter masks one:
+
+| Picture | Kind | Mean | Std | Credit |
+| --- | --- | --- | --- | --- |
+| The Blue Marble | scene | 0.358 | 0.342 | Image: NASA, Reto Stöckli, 2007, public domain |
+| The Rosetta Stone | scene | 0.365 | 0.339 | Photograph: Hans Hillewaert, CC BY-SA 4.0 |
+| A proto-cuneiform tablet | scene | 0.361 | 0.342 | Photograph: The Metropolitan Museum of Art, Open Access, public domain |
+| Karahisari's calligraphy | marks | 0.176 | 0.326 | Calligraphy: Ahmed Karahisari, 16th century, public domain |
+| Louisbourg lighthouse | scene | 0.334 | 0.397 | Photograph: Ken Heaton, CC BY-SA 4.0 |
+| A Devanagari manuscript | marks | 0.305 | 0.429 | Photograph: Ms Sarah Welch, CC BY-SA 4.0 |
+| A marginal gloss | marks | 0.140 | 0.300 | Image: MS f Med. 23, Boston Public Library, public domain |
+| The Eastern Telegraph cable chart | marks | 0.121 | 0.254 | Map: Eastern Telegraph Company, 1901, public domain |
+| The Great Wave off Kanagawa | scene | 0.358 | 0.401 | Print: Katsushika Hokusai, about 1831, public domain |
+| Bowen's compass rose | marks | 0.103 | 0.244 | Engraving: Emanuel Bowen, 1748, public domain |
+
+`docs/ARTIFACT-PICTURES.md` gives the steps to add or retire a picture, the licence order and the full list of what `pnpm lint:pictures` checks. [Dither and the studio field](/docs/components/dither) covers the Bayer screen and the dither engine these plates run on.
