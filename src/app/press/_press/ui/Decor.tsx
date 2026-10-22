@@ -42,6 +42,8 @@ export function useSlideIn(root: RefObject<HTMLElement | null>, on: boolean) {
       { rootMargin: '0px 0px -12% 0px' }
     );
     el.querySelectorAll<HTMLElement>('.gtm-h2, .gtm-pull').forEach((item) => {
+      // what is already on the screen when the page opens stands as it is, so nothing pops in on arrival
+      if (item.getBoundingClientRect().top < innerHeight * 0.88) return;
       item.dataset.in = 'false';
       observer.observe(item);
     });

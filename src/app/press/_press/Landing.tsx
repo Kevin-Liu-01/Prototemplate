@@ -14,6 +14,7 @@ import { landed, move, plainClick } from './transition';
 import Book, { bookDepth } from './ui/Book';
 import Flag from './ui/Flag';
 import FlipText from './ui/FlipText';
+import HallGuides from './ui/HallGuides';
 import Globe from './ui/Globe';
 import Locator from './ui/Locator';
 import PressMark from './ui/PressMark';
@@ -153,9 +154,13 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
     if (i !== null) requestAnimationFrame(() => shelf.current?.querySelectorAll<HTMLElement>('.gtp-shelf-corner')[i]?.focus());
   };
 
-  // back from a story: the crossfade can capture the shelf now
+  // back from a story: the crossfade can capture the shelf now; then, once the browser is idle, every story is
+  // fetched ahead, so a click opens it at once
   useMountEffect(() => {
     landed();
+    const fetchAll = () => catalog.forEach((s) => router.prefetch(storyHref(edition, s.slug)));
+    const idle = typeof requestIdleCallback === 'function' ? requestIdleCallback(fetchAll, { timeout: 2500 }) : window.setTimeout(fetchAll, 1200);
+    return () => (typeof cancelIdleCallback === 'function' ? cancelIdleCallback(idle) : window.clearTimeout(idle));
   });
 
   useMountEffect(() => {
@@ -266,15 +271,31 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
       }}
     >
       <main className='gtp-hall'>
+        {edition === 'magazine' ? <HallGuides /> : null}
         <header className='gtp-hall-head'>
-          <h1 className='gtp-wordmark' aria-label='GT Atlas'>
-            <PressMark className='gtp-wordmark-mark' />
-            <span className='gtp-wordmark-word'>Atlas</span>
-          </h1>
+          {edition === 'magazine' ? (
+            // the magazine's nameplate: Atlas in Bodoni across the first three columns of the sheet
+            <h1 className='gtp-nameplate' aria-label='GT Atlas'>
+              <span className='gtp-nameplate-word' aria-hidden='true'>
+                Atlas
+              </span>
+            </h1>
+          ) : (
+            <h1 className='gtp-wordmark' aria-label='GT Atlas'>
+              <PressMark className='gtp-wordmark-mark' />
+              <span className='gtp-wordmark-word'>Atlas</span>
+            </h1>
+          )}
         </header>
 
         <div className='gtp-hall-coords'>
           <p className='gtp-hall-dms' aria-label={place.city}>
+            {edition === 'magazine' ? (
+              <svg className='gtp-hall-crosshair' viewBox='-12 -12 24 24' aria-hidden='true'>
+                <circle r='6' />
+                <path d='M-12 0 H-3 M3 0 H12 M0 -12 V-3 M0 3 V12' />
+              </svg>
+            ) : null}
             <FlipText value={dms(place.lat, 'lat')} />
             <FlipText value={dms(place.lon, 'lon')} />
           </p>

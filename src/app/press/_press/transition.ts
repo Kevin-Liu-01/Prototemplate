@@ -10,8 +10,8 @@ type Navigate = (href: string) => void;
 
 let arrive: (() => void) | null = null;
 
-/** How long the leaving page waits for the arriving one before the transition runs without it. */
-const WAIT_MS = 2500;
+/** How long the leaving page waits for the arriving one before the transition runs without it: short, so a move never holds the reader (every story is prefetched from the shelf, so it is nearly always ready). */
+const WAIT_MS = 700;
 
 function canTransition(): boolean {
   return typeof document !== 'undefined' && 'startViewTransition' in document && !matchMedia('(prefers-reduced-motion: reduce)').matches;

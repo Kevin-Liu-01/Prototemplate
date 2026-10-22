@@ -163,8 +163,9 @@
 /* ---------- each magazine's own drop cap and quotes ---------- */
 
 /* The Bodoni cap and the Bodoni italic quote above are Euclid's, a book's. The other three take their own world's:
-   Designing docs a cobalt tile and a docs callout; Rewriting docs a proofreader's circled letter and quotes in the
-   proof's mono under a red rule and caret; Fuma Nama a heavy orange sans cap and a Fumadocs callout card. */
+   Designing docs a cobalt tile and quotes in cobalt sans; Rewriting docs a proofreader's circled letter and quotes in
+   the proof's mono with a caret; Fuma Nama a heavy orange sans cap and heavy sans quotes. Every quote sits under a
+   full rule of its story's color, and none in a box. */
 
 /* Designing docs: the cap a cobalt tile, two lines deep, its letter cut out in the docs' own sans */
 .gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-lead::first-letter {
@@ -173,9 +174,8 @@
   font-family: var(--gtp-sans); font-size: 3.41em; line-height: 1; font-weight: 700; font-style: normal; font-variation-settings: normal;
   background: var(--gtm-accent); color: var(--gtp-paper); border-radius: 6px;
 }
-/* its quotes a docs callout: cobalt bar down the left, a faint cobalt ground, the words in the docs' sans */
-.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-pull { padding: 30px 34px; border-top: 0; border-left: 4px solid var(--gtm-accent); border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--gtm-accent) 9%, transparent); }
-.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-pull blockquote p { font-family: var(--gtp-sans); font-size: clamp(28px, 2.4vw, 38px); line-height: 1.16; font-style: normal; font-weight: 600; letter-spacing: -0.025em; font-variation-settings: normal; }
+/* its quotes in the docs' sans, set in cobalt under a cobalt rule */
+.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-pull blockquote p { font-family: var(--gtp-sans); font-size: clamp(30px, 2.6vw, 40px); line-height: 1.14; font-style: normal; font-weight: 600; letter-spacing: -0.03em; font-variation-settings: normal; color: var(--gtm-accent); }
 .gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-pull blockquote p::before { content: none; }
 
 /* Rewriting docs: the cap a proofreader's circled letter in red, in the proof's mono */
@@ -193,9 +193,8 @@
 /* Fuma Nama: the cap a heavy orange sans, three lines deep, as his Fumadocs marks set a heading */
 /* floated rather than an initial letter, since Chrome lays an initial letter's text tight against a sans W */
 .gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-lead::first-letter { float: left; margin: 0.1em 0.14em 0 0; -webkit-initial-letter: normal; initial-letter: normal; font-family: var(--gtp-sans); font-size: 3.6em; line-height: 0.78; font-weight: 800; font-style: normal; font-variation-settings: normal; letter-spacing: 0; }
-/* its quotes a Fumadocs callout card: hairline border, rounded, the orange bar inside its left edge */
-.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-pull { padding: 28px 32px 26px 32px; border: 1px solid var(--gtp-rule); border-left: 4px solid var(--gtm-accent); border-radius: 0 12px 12px 0; background: var(--gtp-fill); }
-.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-pull blockquote p { font-family: var(--gtp-sans); font-size: clamp(26px, 2.2vw, 34px); line-height: 1.22; font-style: normal; font-weight: 600; letter-spacing: -0.025em; font-variation-settings: normal; }
+/* its quotes in his sans, heavy and large under an orange rule */
+.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-pull blockquote p { font-family: var(--gtp-sans); font-size: clamp(32px, 2.8vw, 44px); line-height: 1.1; font-style: normal; font-weight: 700; letter-spacing: -0.035em; font-variation-settings: normal; }
 .gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-pull blockquote p::before { content: none; }
 
 /* ---------- the headline's own touches ---------- */
@@ -232,3 +231,6 @@
 @media (max-width: 999px) {
   .gtp-reader[data-edition='magazine'] .gtm-pull blockquote p::before { position: static; margin-right: 0.04em; font-size: 1em; }
 }
+
+/* the next story's title at the foot, alone with its arrow */
+.gtp-reader[data-edition='magazine'] .gtp-end a svg { margin-left: 0.3em; vertical-align: -0.06em; color: var(--gtm-accent); }

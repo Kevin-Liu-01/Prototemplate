@@ -236,7 +236,9 @@
 .gtp-plate-caption { margin: 0; max-width: 70ch; font-size: 13px; line-height: 1.5; color: var(--gtp-stage-ink-2); text-wrap: pretty; }
 
 .gtp-picture { position: relative; display: block; max-width: 100%; max-height: 100%; line-height: 0; cursor: zoom-in; }
-.gtp-picture img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+.gtp-picture img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: opacity 0.4s var(--gtp-ease); }
+/* a picture shows once it has decoded, never in halves */
+.gtp-picture img[data-loaded='false'] { opacity: 0; }
 /* the picture wraps its image, centred in the plate; the image fits the plate's box */
 .gtp-plate-view > .gtp-picture img { max-width: 100cqw; max-height: 100cqh; }
 .gtp-lens { position: absolute; width: 220px; height: 220px; transform: translate(-50%, -50%); background-repeat: no-repeat; background-color: var(--gtp-stage); box-shadow: 0 0 0 1px var(--gtp-signal), 0 18px 40px rgb(0 0 0 / 0.45); opacity: 0; pointer-events: none; transition: opacity 0.15s var(--gtp-ease); }
@@ -583,6 +585,16 @@
 
 /* ---------- narrow screens ---------- */
 
+/* the reader carries both forms of each figure from the first paint, a stub for the stage and an inline plate, and
+   the phone's cover box; each width shows its own, so the page never moves when it learns its width (Reader.tsx) */
+@media (min-width: 1000px) {
+  .gtp-reader .gtp-inline-plate,
+  .gtp-reader .gtp-phone-cover { display: none; }
+}
+@media (max-width: 999px) {
+  .gtp-reader .gtp-stub { display: none; }
+}
+
 .gtp-float-home,
 .gtp-top-progress { display: none; }
 
@@ -838,13 +850,14 @@
 .gtp-print-epigraph { margin: 0 0 64px; text-align: center; }
 /* the frontispiece's opening as three slides (BookBody, decorated, in the magazine edition): the title page, then
    the epigraph where it stood, then the story at the top of the window. The frame is pinned while the reader scrolls
-   two short stops (16% of the window each); a few pixels of scroll past a stop turns to the next slide, which comes
+   two stops (36% of the window each, BookBody's OPENING_STEP); 120px of scroll past a stop turns to the next slide, which comes
    in as one timed fade and rise, so the reader never scrubs through it. What leaves goes first and quickly, and what
-   arrives waits for it, so no two slides' text ever shows at once. Scrolling back turns back. Until the script
-   arms it (data-armed), below the wide width and under reduced motion, the epigraph simply heads the story. */
+   arrives waits for it, so no two slides' text ever shows at once. Scrolling back turns back. It is laid out from
+   the first paint; without scripts, below the wide width and under reduced motion, the epigraph simply heads the
+   story. */
 .gtp-print-opening-next { display: none; }
 @media (min-width: 1250px) and (prefers-reduced-motion: no-preference) {
-  .gtp-print-opening[data-armed] { --step: 16dvh; height: calc(100dvh + 2 * var(--step)); }
+  .gtp-print-opening[data-armed] { --step: 36dvh; height: calc(100dvh + 2 * var(--step)); }
   .gtp-print-opening[data-armed] .gtp-print-opening-frame { position: sticky; top: 0; display: grid; height: 100dvh; }
   .gtp-print-opening[data-armed] .gtp-print-opening-frame > * { grid-area: 1 / 1; }
   .gtp-print-opening[data-armed] .gtp-head-title { transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
@@ -860,12 +873,20 @@
   .gtp-print-opening-next .gtp-print-epigraph { margin: 0; }
   /* the story starts a window up, over the pinned frame, and fades in at the top of the window on the last stop */
   .gtp-print-opening[data-armed] ~ .gtp-print-page {
-    position: relative; z-index: 1; margin-top: -100dvh; padding-top: 112px;
+    position: relative; z-index: 1; margin-top: -100dvh; padding-top: 24dvh;
     opacity: 0; translate: 0 24px; pointer-events: none;
     transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45);
   }
   .gtp-print-opening[data-armed][data-slide='2'] ~ .gtp-print-page { opacity: 1; translate: 0 0; pointer-events: auto; transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
   .gtp-print-opening[data-armed] ~ .gtp-print-page .gtp-print-epigraph { display: none; }
+}
+/* without scripts nothing turns the slides, so the opening lies flat and the story shows */
+@media (scripting: none) {
+  .gtp-print-opening[data-armed] { height: auto; }
+  .gtp-print-opening[data-armed] .gtp-print-opening-frame { position: static; height: auto; }
+  .gtp-print-opening[data-armed] .gtp-print-opening-next { display: none; }
+  .gtp-print-opening[data-armed] ~ .gtp-print-page { margin-top: 0; opacity: 1; translate: none; pointer-events: auto; }
+  .gtp-print-opening[data-armed] ~ .gtp-print-page .gtp-print-epigraph { display: block; }
 }
 
 /* the epigraph heads the story, the words, their translation, and who wrote them */
@@ -883,6 +904,9 @@
 /* a figure: wider than the text, centred, its caption under it */
 .gtp-print-fig { width: min(940px, calc(100vw - 40px)); margin: 40px 0 48px 50%; transform: translateX(-50%); display: grid; justify-items: center; gap: 14px; }
 .gtp-print-media { display: block; max-width: 100%; max-height: 78vh; width: auto; height: auto; border-radius: 3px; }
+/* a scan shows once it has decoded, never in halves */
+.gtp-print-media { transition: opacity 0.4s var(--gtp-ease); }
+.gtp-print-media[data-loaded='false'] { opacity: 0; }
 /* a picture's caption small and muted, as the margin's captions were, and centred under its picture */
 .gtp-print-caption { width: min(30em, 100%); display: grid; gap: 4px; font-size: 14px; line-height: 1.45; color: var(--gtp-ink-2); text-align: center; text-wrap: pretty; }
 .gtp-print-count { font-size: 14px; color: var(--gtp-ink-3); }

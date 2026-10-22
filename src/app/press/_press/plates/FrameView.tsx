@@ -1,12 +1,16 @@
 'use client';
 
+import { getImageProps } from 'next/image';
 import { useRef, useState } from 'react';
 
 import type { Frame } from '../parse';
-import { useLayoutWork } from '../hooks';
+import { useLayoutWork, useMountEffect } from '../hooks';
 
-/* One recorded frame on a plate. A picture takes a loupe: hover it and a
-   square lens shows the spot at up to three times. A loop plays muted with a ruler to scrub it; it plays only
+/* One recorded frame on a plate. A picture comes from the image optimizer
+   at the width the stage needs (the masters are 3840px wide) and fades in
+   once decoded, so it never paints in halves; it takes a loupe: hover it
+   and a square lens shows the spot at up to three times, from the master,
+   which loads only on the first hover. A loop plays muted with a ruler to scrub it; it plays only
    while its plate is the one shown. */
 export default function FrameView({ frame, active, eager }: { frame: Frame; active: boolean; eager?: boolean }) {
   return frame.video ? (
@@ -16,10 +20,20 @@ export default function FrameView({ frame, active, eager }: { frame: Frame; acti
   );
 }
 
+/** The stage is about half the window wide on a wide screen and the whole of it on a phone. */
+const PLATE_SIZES = '(min-width: 1000px) 48vw, 100vw';
+
 function Picture({ frame, eager }: { frame: Frame; eager?: boolean }) {
   const img = useRef<HTMLImageElement>(null);
   const lens = useRef<HTMLSpanElement>(null);
   const [loupe, setLoupe] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
+  const { props: sized } = getImageProps({ src: frame.src, alt: frame.alt, fill: true, sizes: PLATE_SIZES, quality: 95 });
+  // a picture already in the cache can finish before the page hydrates, and its load event is then missed
+  useMountEffect(() => {
+    if (img.current?.complete) setLoaded(true);
+  });
 
   const move = (clientX: number, clientY: number) => {
     const el = img.current;
@@ -38,6 +52,7 @@ function Picture({ frame, eager }: { frame: Frame; eager?: boolean }) {
     l.style.top = `${v * 100}%`;
     l.style.backgroundSize = `${box.width * zoom}px ${box.height * zoom}px`;
     l.style.backgroundPosition = `${size / 2 - u * box.width * zoom}px ${size / 2 - v * box.height * zoom}px`;
+    setZoomed(true);
     setLoupe(true);
   };
 
@@ -51,8 +66,19 @@ function Picture({ frame, eager }: { frame: Frame; eager?: boolean }) {
       onPointerLeave={() => setLoupe(false)}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- the blog's own files, sized by the plate */}
-      <img ref={img} src={frame.src} alt={frame.alt} loading={eager ? 'eager' : 'lazy'} decoding='async' draggable={false} />
-      <span ref={lens} className='gtp-lens' aria-hidden='true' style={{ backgroundImage: `url("${frame.src}")` }} />
+      <img
+        ref={img}
+        src={sized.src}
+        srcSet={sized.srcSet}
+        sizes={sized.sizes}
+        alt={frame.alt}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding='async'
+        draggable={false}
+        data-loaded={loaded}
+        onLoad={() => setLoaded(true)}
+      />
+      <span ref={lens} className='gtp-lens' aria-hidden='true' style={zoomed ? { backgroundImage: `url("${frame.src}")` } : undefined} />
     </span>
   );
 }

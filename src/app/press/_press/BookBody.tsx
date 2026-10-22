@@ -1,5 +1,6 @@
 'use client';
 
+import { getImageProps } from 'next/image';
 import { Fragment, useMemo, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 
 import type { PlateFigure, Story } from './content';
@@ -19,9 +20,9 @@ type Props = {
 /** From this width the text keeps to the left half and the pictures show on a stage across the right half; below it each picture follows its paragraph. */
 const WIDE = '(min-width: 1250px)';
 
-/** The magazine's opening slides: a stop every 16% of the window, and the few pixels of scroll past one that turn to the next. */
-const OPENING_STEP = 0.16;
-const OPENING_NUDGE = 36;
+/** The magazine's opening slides: a stop every 36% of the window (press.css --step), and the scroll past one that turns to the next. */
+const OPENING_STEP = 0.36;
+const OPENING_NUDGE = 120;
 
 /** How tall a picture may stand on the stage, leaving room for its caption, and 15% short of that so it does not fill the stage. */
 const STAGE_TALLEST = 'calc((100dvh - 300px) * 0.85)';
@@ -279,6 +280,9 @@ export default function BookBody({ story, decorated = false }: Props) {
     });
   }, [blocks, figures]);
   const [stage, setStage] = useState(0);
+  // the furthest picture the stage has shown: it and the two after it stay mounted, so each is loaded before it is reached
+  const [reached, setReached] = useState(0);
+  if (stage > reached) setReached(stage);
   const notes = useMemo(() => new Map(blocks.flatMap((b) => (b.kind === 'footnote' ? [[b.n, b.inline] as const] : []))), [blocks]);
   // the magazine's pull quotes and the paragraph that opens on the drop cap
   const pulls = useMemo(() => placePulls(decorated ? blocks : [], story.slug), [blocks, story.slug, decorated]);
@@ -288,8 +292,8 @@ export default function BookBody({ story, decorated = false }: Props) {
 
   useMountEffect(() => {
     let frame = 0;
-    // the magazine's opening: a short scroll past each stop brings the next slide in (press.css, data-slide)
-    if (opening.current) opening.current.dataset.armed = '';
+    // the magazine's opening: a scroll past each stop brings the next slide in (press.css, data-slide); it is laid
+    // out from the first paint (data-armed is in the markup), so the page never shows the story and then hides it
     const turnOpening = () => {
       const el = opening.current;
       if (!el) return;
@@ -416,7 +420,7 @@ export default function BookBody({ story, decorated = false }: Props) {
         <div className='gtp-print-text'>
           {decorated ? (
             // the opening as slides on a wide screen: the title page, then the epigraph where it stood, then the story (press.css, the opening)
-            <div ref={opening} className='gtp-print-opening' data-slide='0'>
+            <div ref={opening} className='gtp-print-opening' data-slide='0' data-armed=''>
               <div className='gtp-print-opening-frame'>
                 <Opener story={story} />
                 {epigraph ? (
@@ -528,7 +532,7 @@ export default function BookBody({ story, decorated = false }: Props) {
           </div>
           {pictures.map((figure, k) => (
             <div key={figure.id} className='gtp-print-stage-item' data-shown={stage === k + 1}>
-              {Math.abs(stage - (k + 1)) <= 1 ? <PrintFigure figure={figure} tallest={decorated ? STAGE_TALLEST_FULL : STAGE_TALLEST} /> : null}
+              {k + 1 <= reached + 2 ? <PrintFigure figure={figure} tallest={decorated ? STAGE_TALLEST_FULL : STAGE_TALLEST} /> : null}
             </div>
           ))}
         </aside>
@@ -578,6 +582,41 @@ function longDate(iso: string): string {
   return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).replace(/ /g, '\u00a0');
 }
 
+/** The stage is the right 38% of a wide window, the column's width on a narrow one. */
+const PRINT_SIZES = '(min-width: 1250px) 40vw, 100vw';
+
+/* A scan from the image optimizer at the width it is shown, holding its
+   place from its known size and fading in once decoded, so it never paints
+   in halves or pushes the text. */
+function PrintPicture({ frame, tallest }: { frame: PlateFigure['frames'][number]; tallest: string }) {
+  const img = useRef<HTMLImageElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  // a scan already in the cache can finish before the page hydrates, and its load event is then missed
+  useMountEffect(() => {
+    if (img.current?.complete) setLoaded(true);
+  });
+  const known = frame.width && frame.height ? { width: frame.width, height: frame.height } : { fill: true as const };
+  const { props } = getImageProps({ src: frame.src, alt: frame.alt, sizes: PRINT_SIZES, quality: 95, ...known });
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- the optimizer's sources on a plain img, sized by the column
+    <img
+      ref={img}
+      className='gtp-print-media'
+      src={props.src}
+      srcSet={props.srcSet}
+      sizes={props.sizes}
+      alt={frame.alt}
+      width={frame.width}
+      height={frame.height}
+      style={sized(frame, tallest)}
+      loading='lazy'
+      decoding='async'
+      data-loaded={loaded}
+      onLoad={() => setLoaded(true)}
+    />
+  );
+}
+
 /** One figure in the flow of the text, its caption under it; a carousel shows the frame chosen above a row of all of them. */
 function PrintFigure({ figure, tallest = '78vh' }: { figure: PlateFigure; tallest?: string }) {
   const [shown, setShown] = useState(0);
@@ -591,8 +630,7 @@ function PrintFigure({ figure, tallest = '78vh' }: { figure: PlateFigure; talles
     <figure className='gtp-print-fig' data-live={figure.live ? true : undefined}>
       {figure.live === 'stops' ? <VersionsDemo /> : null}
       {frame ? (
-        // eslint-disable-next-line @next/next/no-img-element -- the story's own scans, sized by the column
-        <img className='gtp-print-media' src={frame.src} alt={frame.alt} width={frame.width} height={frame.height} style={sized(frame, tallest)} loading='lazy' decoding='async' />
+        <PrintPicture frame={frame} tallest={tallest} />
       ) : null}
       {many ? (
         <ol className='gtp-print-multiples' aria-label='Every view of this figure'>

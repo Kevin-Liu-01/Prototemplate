@@ -50,9 +50,12 @@ export default function Reader({ story, next, edition = 'magazine' }: Props) {
   const router = useRouter();
   const home = homeOf(edition);
 
-  // the crossfade from the shelf can run now that the story is on the page
+  // the crossfade from the shelf can run now that the story is on the page; the way home and the next story are
+  // fetched ahead, so leaving is as quick as arriving
   useMountEffect(() => {
     landed();
+    router.prefetch(home);
+    if (next) router.prefetch(storyHref(edition, next.slug));
   });
 
   return (
@@ -123,7 +126,8 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
 
   const show = (p: number) => {
     setPlate(p);
-    setSeen((prev) => (prev.has(p) && prev.has(p + 1) ? prev : new Set([...prev, p - 1, p, p + 1])));
+    // the plates either side and the two ahead stay mounted, so each is loaded before the reader reaches it
+    setSeen((prev) => (prev.has(p) && prev.has(p + 2) ? prev : new Set([...prev, p - 1, p, p + 1, p + 2])));
   };
 
   useMountEffect(() => {
@@ -236,11 +240,8 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
 
         <article ref={text} className='gtp-text'>
           <header className='gtp-title' data-plate={0} data-section={0}>
-            {wide ? null : (
-              <div className='gtp-phone-cover'>
-                <StoryCover story={story} playing bare={decorated} />
-              </div>
-            )}
+            {/* the cover's box is in the page from the first paint (shown below the wide width), so the text never moves down */}
+            <div className='gtp-phone-cover'>{wide ? null : <StoryCover story={story} playing bare={decorated} />}</div>
             {decorated ? (
               <>
                 <h1>
@@ -346,24 +347,20 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
               case 'figure': {
                 const figure = figures[figureCount++];
                 if (!figure) return null;
-                return wide ? (
-                  <button
-                    key={i}
-                    type='button'
-                    className='gtp-stub'
-                    data-on={plate === figure.n}
-                    onClick={() => show(figure.n)}
-                    {...at}
-                  >
-                    <FigureIcon figure={figure} />
-                    <span className='gtp-mono'>Fig. {pad(figure.n)}</span>
-                    <span className='gtp-stub-text'>{figure.label ?? figure.frames[0]?.alt}</span>
-                    <ArrowIcon size={14} />
-                  </button>
-                ) : (
-                  <div key={i} className='gtp-inline-plate' {...at}>
-                    <Plate figure={figure} titles={story.titles} hitItems={hitItems} active mounted />
-                  </div>
+                // both forms are in the page from the first paint and CSS shows one per width, so nothing moves when
+                // the page learns its width; the inline plate mounts its figure only where it shows
+                return (
+                  <Fragment key={i}>
+                    <button type='button' className='gtp-stub' data-on={plate === figure.n} onClick={() => show(figure.n)} {...at}>
+                      <FigureIcon figure={figure} />
+                      <span className='gtp-mono'>Fig. {pad(figure.n)}</span>
+                      <span className='gtp-stub-text'>{figure.label ?? figure.frames[0]?.alt}</span>
+                      <ArrowIcon size={14} />
+                    </button>
+                    <div className='gtp-inline-plate' {...at}>
+                      {wide ? null : <Plate figure={figure} titles={story.titles} hitItems={hitItems} active mounted />}
+                    </div>
+                  </Fragment>
                 );
               }
               default:
@@ -374,8 +371,12 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
           <footer className='gtp-end'>
             {next ? (
               <>
-                <span className='gtp-end-label'>Next</span>
-                <Link href={storyHref(edition, next.slug)}>{next.title}</Link>
+                {/* the magazine sets the next story's title alone, with its arrow; the shelf keeps its label */}
+                {decorated ? null : <span className='gtp-end-label'>Next</span>}
+                <Link href={storyHref(edition, next.slug)}>
+                  {next.title}
+                  {decorated ? <ArrowIcon size={22} /> : null}
+                </Link>
               </>
             ) : null}
             <Link className='gtp-end-index' href={homeOf(edition)}>

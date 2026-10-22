@@ -22,8 +22,8 @@
 .gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-book-shelf { --ty: 0deg; }
 .gtp-landing[data-edition='magazine'][data-drag='true'] .gtp-shelf-item .gtp-book-shelf { --ty: 0deg; }
 /* the hall a little lit behind the rack, as Riffle's is; in the light theme a warm grey, so white paper has a ground */
-:root:not([data-theme='light']) .gtp-landing[data-edition='magazine'] { background: radial-gradient(70% 60% at 50% 48%, #141413, #090909 72%); }
-:root[data-theme='light'] .gtp-landing[data-edition='magazine'] { background: #e7e5df; }
+:root:not([data-theme='light']) .gtp-landing[data-edition='magazine'] { --hall: #090909; background: radial-gradient(70% 60% at 50% 48%, #141413, var(--hall) 72%); }
+:root[data-theme='light'] .gtp-landing[data-edition='magazine'] { --hall: #e7e5df; background: var(--hall); }
 /* the cast shadow under each magazine, deeper than a book's, in the dark theme only */
 :root:not([data-theme='light']) .gtp-landing[data-edition='magazine'] .gtp-shelf-shadow { left: 2%; right: 2%; height: 36px; background: radial-gradient(closest-side, rgb(0 0 0 / 0.85), transparent); }
 
@@ -111,3 +111,110 @@
 
 /* the corner opposite the masthead: the coordinates, and the theme switch to their right */
 .gtp-landing[data-edition='magazine'] .gtp-hall-coords { grid-auto-flow: column; align-items: center; gap: 18px; }
+
+/* ---------- the hall as a layout sheet (ui/HallGuides.tsx) ---------- */
+
+/* the guides print in the hall's own ink, faint enough to sit behind everything */
+/* three weights: the horizon strongest, then the margins and the construction, then the columns, alike in both themes */
+.gtp-landing[data-edition='magazine'] { --guide: color-mix(in srgb, var(--gtp-ink) 9%, transparent); --guide-2: color-mix(in srgb, var(--gtp-ink) 15%, transparent); --guide-3: color-mix(in srgb, var(--gtp-ink) 32%, transparent); --margin: 56px; }
+/* the nameplate's size, three columns' worth of Bodoni; the column guides start just under its foot */
+.gtp-landing[data-edition='magazine'] { --nameplate: calc((100vw - 2 * var(--margin)) / 4 * 0.42); --head-band: calc(58px + var(--nameplate) * 0.76 + 22px); }
+:root[data-theme='light'] .gtp-landing[data-edition='magazine'] { --guide: color-mix(in srgb, var(--gtp-ink) 9%, transparent); --guide-2: color-mix(in srgb, var(--gtp-ink) 13%, transparent); --guide-3: color-mix(in srgb, var(--gtp-ink) 30%, transparent); }
+.gtp-guides { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+/* twelve columns between the margins, and the margins' own lines; the columns start under the head band, just below
+   the nameplate's foot at every width, so no guide runs through the nameplate or the readout */
+.gtp-guides-cols { position: absolute; top: 0; bottom: 0; left: var(--margin); right: var(--margin); -webkit-mask: linear-gradient(transparent 0 var(--head-band), #000 var(--head-band)); mask: linear-gradient(transparent 0 var(--head-band), #000 var(--head-band)); border-inline: 1px solid var(--guide-2); background: linear-gradient(to right, var(--guide) 1px, transparent 1px) 0 0 / calc(100% / 12) 100%; }
+.gtp-guides-rows { position: absolute; left: 0; right: 0; top: 40px; bottom: 132px; border-block: 1px solid var(--guide-2); }
+/* the horizon the magazines stand on, across the whole sheet, drawn by the track so it sits on their own baseline */
+.gtp-landing[data-edition='magazine'] .gtp-shelf-track::before { content: ''; position: absolute; left: -100vw; right: -100vw; top: var(--baseline); height: 1px; background: var(--guide-3); pointer-events: none; }
+/* Euclid's first construction, behind the rack and sized from it: the rack's height is the shelf's (rack.css,
+   --shelf-bh), and the circles' radius about 0.69 of it, so their tops clear the covers at every width, and never so
+   large that their feet come within 24px of the bottom rule */
+.gtp-guides { --bh: calc(min(300px, 36vh) * 1.316); }
+@media (min-width: 1000px) {
+  .gtp-guides { --bh: calc(min((100vw - 2 * var(--margin)) / 4 - 32px, 40vh) * 1.316); }
+}
+.gtp-guides-figure { position: absolute; left: 50%; top: 52%; height: min(var(--bh) * 1.9, (48vh - 156px) * 2.75); aspect-ratio: 300 / 220; translate: -50% -50%; fill: none; stroke: var(--guide-2); stroke-width: 1; vector-effect: non-scaling-stroke; overflow: visible; }
+.gtp-guides-figure * { vector-effect: non-scaling-stroke; }
+/* a fine grain over the whole sheet, as on printed stock */
+.gtp-guides::after { content: ''; position: absolute; inset: 0; opacity: 0.06; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* the magazine under the pointer is measured by two guides at its edges, top to bottom of the sheet */
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-shelf-item::before,
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-shelf-item::after { content: ''; position: absolute; top: -100vh; bottom: -100vh; width: 1px; background: color-mix(in srgb, var(--gtp-ink) 30%, transparent); opacity: 0; transition: opacity 0.25s var(--gtp-ease); pointer-events: none; }
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-shelf-item::before { left: 0; }
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-shelf-item::after { right: 0; }
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-shelf-item[data-on='true']::before,
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-shelf-item[data-on='true']::after { opacity: 1; }
+
+/* ---------- the nameplate ---------- */
+
+/* Atlas in Bodoni at its display cut, across the first three columns of the sheet, its A on the left margin */
+.gtp-landing[data-edition='magazine'] .gtp-hall-head { left: calc(var(--margin) - 0.04em); top: 58px; }
+.gtp-nameplate { margin: 0; color: var(--gtp-ink); line-height: 0.76; }
+.gtp-nameplate-word { display: block; font-family: var(--gtm-display); font-size: var(--nameplate); font-weight: 800; letter-spacing: -0.045em; font-optical-sizing: none; font-variation-settings: 'opsz' 72; }
+
+/* ---------- the coordinates and the globe ---------- */
+
+/* the coordinates as an instrument's readout: a fine crosshair, then the two lines in the mono, quieter than the
+   nameplate, in the head band where no column guide runs; the theme switch beside them as a bare icon */
+.gtp-landing[data-edition='magazine'] .gtp-hall-coords { top: 60px; right: var(--margin); }
+.gtp-landing[data-edition='magazine'] .gtp-hall-dms { grid-template-columns: auto auto; align-items: center; column-gap: 12px; row-gap: 3px; font-family: var(--gtp-mono); font-size: 12px; letter-spacing: 0.02em; color: color-mix(in srgb, var(--gtp-ink) 62%, transparent); }
+.gtp-hall-crosshair { grid-row: 1 / span 2; width: 16px; height: 16px; fill: none; stroke: var(--gtp-signal); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.gtp-hall-crosshair * { vector-effect: non-scaling-stroke; }
+.gtp-landing[data-edition='magazine'] .gtp-hall-coords .gtp-theme { background: none; color: color-mix(in srgb, var(--gtp-ink) 62%, transparent); }
+.gtp-landing[data-edition='magazine'] .gtp-hall-coords .gtp-theme:hover { color: var(--gtp-ink); }
+/* the globe set in a dial: a ring with a tick every 15 degrees, the globe inside it */
+.gtp-landing[data-edition='magazine'] .gtp-band { left: var(--margin); right: var(--margin); bottom: 30px; align-items: center; }
+.gtp-landing[data-edition='magazine'] .gtp-instrument { gap: 20px; }
+.gtp-landing[data-edition='magazine'] .gtp-globe-button { position: relative; padding: 11px; border-radius: 50%; }
+.gtp-landing[data-edition='magazine'] .gtp-globe-button::before { content: ''; position: absolute; inset: 0; border: 1px solid var(--guide-2); border-radius: 50%; pointer-events: none; }
+.gtp-landing[data-edition='magazine'] .gtp-globe-button::after { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; background: repeating-conic-gradient(from -0.35deg, color-mix(in srgb, var(--gtp-ink) 70%, transparent) 0 0.7deg, transparent 0.7deg 90deg), repeating-conic-gradient(from -0.35deg, color-mix(in srgb, var(--gtp-ink) 35%, transparent) 0 0.7deg, transparent 0.7deg 15deg); -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 6px), black calc(100% - 5px)); mask: radial-gradient(circle closest-side, transparent calc(100% - 6px), black calc(100% - 5px)); transition: rotate 0.9s var(--gtp-ease); }
+.gtp-landing[data-edition='magazine'] .gtp-globe-button:hover::after { rotate: 15deg; }
+.gtp-landing[data-edition='magazine'] .gtp-instrument-globe { width: 80px; }
+/* the globe printed in the hall's own inks, its sea and coordinate lines faint, its pin in the crosshair's red; the
+   canvas reads these as literal colors (globe.ts), so they are hex values, one set per theme */
+.gtp-landing[data-edition='magazine'] .gtp-instrument-globe { --gtp-globe-land: #f4f4f5; --gtp-globe-sea: #3f3f46; --gtp-globe-rim: #52525b; }
+:root[data-theme='light'] .gtp-landing[data-edition='magazine'] .gtp-instrument-globe { --gtp-globe-land: #18181b; --gtp-globe-sea: #c4c4c8; --gtp-globe-rim: #a1a1aa; }
+.gtp-landing[data-edition='magazine'] .gtp-instrument-globe .gtp-globe-pin::before { background: var(--gtp-signal); }
+.gtp-landing[data-edition='magazine'] .gtp-flags { gap: 12px; }
+
+@media (max-width: 999px) {
+  .gtp-landing[data-edition='magazine'] { --margin: 20px; }
+  .gtp-guides-cols { background-size: calc(100% / 4) 100%; }
+  .gtp-guides-rows { top: 24px; bottom: 116px; }
+  .gtp-landing[data-edition='magazine'] .gtp-hall-head { top: 30px; }
+  .gtp-landing[data-edition='magazine'] .gtp-instrument-globe { width: 64px; }
+  .gtp-landing[data-edition='magazine'] .gtp-globe-button { padding: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gtp-landing[data-edition='magazine'] .gtp-globe-button::after { transition: none; }
+}
+
+/* ---------- the rack on the grid ---------- */
+
+/* on a wide screen each magazine stands centred in a cell three columns wide, so the column guides fall in the gaps
+   between them and the row runs margin to margin at every width */
+@media (min-width: 1000px) {
+  .gtp-landing[data-edition='magazine'] .gtp-shelf-track {
+    --cell: calc((100vw - 2 * var(--margin)) / 4);
+    --shelf-bw: min(calc(var(--cell) - 32px), 40vh);
+    --gap: calc(var(--cell) - var(--shelf-bw));
+    --pad: calc(var(--margin) + (var(--cell) - var(--shelf-bw)) / 2);
+  }
+}
+@media (max-width: 999px) {
+  .gtp-landing[data-edition='magazine'] { --nameplate: calc((100vw - 2 * var(--margin)) / 2 * 0.42); --head-band: calc(30px + var(--nameplate) * 0.76 + 18px); }
+  .gtp-nameplate-word { font-variation-settings: 'opsz' 28; }
+}
+
+/* the row and stack switch as two bare icons, the chosen one in full ink over a hairline, the other faint */
+.gtp-landing[data-edition='magazine'] .gtp-view { padding: 0; background: none; }
+.gtp-landing[data-edition='magazine'] .gtp-view .gtp-stop { color: color-mix(in srgb, var(--gtp-ink) 40%, transparent); }
+.gtp-landing[data-edition='magazine'] .gtp-view .gtp-stop:has(input:checked) { color: var(--gtp-ink); }
+.gtp-landing[data-edition='magazine'] .gtp-view .gtp-stops-thumb { top: auto; bottom: 0; height: 1px; background: var(--gtp-ink); box-shadow: none; }
+
+/* on a phone the construction gives way: only slivers of it would show between the covers */
+@media (max-width: 999px) {
+  .gtp-guides-figure { display: none; }
+}
