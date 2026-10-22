@@ -1,0 +1,648 @@
+/* The Interactables plates (content/docs/components/(interactables)): the
+   small shell's viewport and its stages, the specimens under the shell's
+   own controls, and the kinetic plates. Every class starts with .ixa- so
+   nothing here reaches another docs page; the shell's components bring
+   their own sheets, and this one only seats them. Corners, type and
+   colors come from the tokens in src/components/viewer/tokens.css. */
+
+/* ---------- the small shell ---------- */
+
+/* the viewport fills the stage and is a containing block for fixed
+   children (layout and paint containment), so the search palette, the
+   help card and the toast open inside the plate */
+.ixa-viewport {
+  --pt-toolbar-h: var(--pt-bar-h);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+  contain: layout paint;
+}
+
+.ixa-viewport > .pt-toolbar,
+.ixa-viewport > .pt-progress {
+  flex: none;
+}
+
+.ixa-stagewrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* the stage under the bar: focusable, so its keys can be reached by Tab or a click */
+.ixa-sheet {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  outline: none;
+}
+
+.ixa-sheet:focus-visible {
+  outline: 2px solid var(--docs-accent, #2f5ce0);
+  outline-offset: -2px;
+}
+
+/* the entry point's name, low on the stage, where the bar leaves it room */
+.dmo-plate-tag.ixa-sheet-tag {
+  top: auto;
+  bottom: 10px;
+}
+
+/* the overlays, seated in the plate: the palette 12px under the bar, the
+   help card inside the stage's padding */
+.ixa-viewport .pt-search {
+  padding: calc(var(--pt-bar-h) + 12px) 16px 16px;
+}
+
+.ixa-viewport .pt-search-card {
+  max-height: 100%;
+}
+
+.ixa-viewport .pt-help {
+  grid-template-rows: minmax(0, 1fr);
+  padding: 16px;
+}
+
+.ixa-viewport .pt-help-card {
+  min-width: min(400px, 100%);
+  max-width: 100%;
+  max-height: 100%;
+}
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .ixa-viewport .pt-help-card {
+    width: 100%;
+  }
+}
+
+/* ---------- the toolbar's stage: one slide, the grid, the book ---------- */
+
+.ixa-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 24px 44px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ixa-slide-n,
+.ixa-tile-n {
+  font-size: var(--pt-t-group);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+.ixa-slide-t {
+  max-width: 18ch;
+  margin: 0;
+  font-size: var(--pt-d2);
+  line-height: var(--pt-d2-lh);
+  letter-spacing: var(--pt-d2-track);
+  font-weight: var(--pt-w-display);
+  color: var(--pt-ink);
+  text-wrap: balance;
+}
+
+.ixa-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-content: start;
+  gap: 12px;
+  padding: 16px 16px 44px;
+  overflow-y: auto;
+}
+
+.ixa-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 72px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-paper);
+  font: inherit;
+  text-align: left;
+  color: var(--pt-ink-2);
+  cursor: pointer;
+  transition:
+    border-color var(--pt-dur-fast) var(--pt-ease-out),
+    color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.ixa-tile:hover {
+  border-color: var(--pt-edge);
+  color: var(--pt-ink);
+}
+
+.ixa-tile.is-on {
+  border-color: var(--pt-ink);
+  color: var(--pt-ink);
+}
+
+.ixa-tile-t {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+
+.ixa-book {
+  position: absolute;
+  inset: 0;
+  padding: 6px 18px 44px;
+  overflow-y: auto;
+}
+
+/* the book's rows: ruled, each owning the line under it, the active one
+   marked with the sidebar's 2px ink bar */
+.ixa-book-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 10px 8px 10px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--pt-ink-2);
+  cursor: pointer;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.ixa-book-row:last-child {
+  border-bottom: 0;
+}
+
+.ixa-book-row:hover,
+.ixa-book-row.is-on {
+  color: var(--pt-ink);
+}
+
+.ixa-book-row.is-on::before,
+.ixa-filter-row.is-on::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--pt-ink);
+}
+
+.ixa-book-t {
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+}
+
+.ixa-tile:focus-visible,
+.ixa-book-row:focus-visible,
+.ixa-filter-row:focus-visible {
+  outline: 2px solid var(--docs-accent, #2f5ce0);
+  outline-offset: -2px;
+}
+
+@media (max-width: 640px) {
+  .ixa-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 12px 12px 44px;
+  }
+
+  .ixa-book {
+    padding: 6px 12px 44px;
+  }
+}
+
+/* ---------- the segmented controls ---------- */
+
+.ixa-segs {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  justify-content: center;
+  align-items: center;
+  gap: 16px 18px;
+}
+
+.ixa-seg-row {
+  display: contents;
+}
+
+.ixa-seg-name {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.ixa-segs .pt-seg {
+  justify-self: start;
+}
+
+/* Slow: the shared indicator's place and width over 900ms; under reduced
+   motion Seg.css sets no transition at all, which this leaves alone */
+.ixa-segs.is-slow .pt-seg-ind {
+  transition-duration: 900ms;
+}
+
+@media (max-width: 640px) {
+  .ixa-segs {
+    grid-template-columns: max-content;
+    justify-content: start;
+    gap: 6px;
+  }
+
+  .ixa-seg-name:not(:first-child) {
+    margin-top: 10px;
+  }
+}
+
+/* ---------- the tool buttons and their states ---------- */
+
+.ixa-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.ixa-tools-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* the readout and the specimen: ruled cells on the hair ground, one owner per seam */
+.ixa-readout,
+.ixa-states {
+  display: grid;
+  gap: 1px;
+  width: min(640px, 100%);
+  margin: 0;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-hair);
+  overflow: hidden;
+}
+
+.ixa-readout {
+  grid-template-columns: 1.4fr 1fr 1fr;
+}
+
+.ixa-readout > div {
+  min-width: 0;
+  padding: 8px 12px 9px;
+  background: var(--dmo-ground);
+}
+
+.ixa-readout dt,
+.ixa-state-name {
+  font-size: var(--pt-t-group);
+  color: var(--pt-titanium);
+}
+
+.ixa-readout dd {
+  margin: 2px 0 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
+  overflow-wrap: anywhere;
+}
+
+.ixa-states {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.ixa-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 8px 14px;
+  background: var(--dmo-ground);
+}
+
+@media (max-width: 640px) {
+  .ixa-readout,
+  .ixa-states {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ixa-state {
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 8px 12px;
+  }
+
+  .ixa-state-name {
+    margin-right: auto;
+  }
+}
+
+/* ---------- the install field ---------- */
+
+.ixa-install {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 44px 20px 20px;
+}
+
+.ixa-install-box {
+  width: 100%;
+}
+
+.ixa-install-box.is-panel {
+  max-width: var(--pt-head-panel);
+}
+
+.ixa-install-box.is-column {
+  max-width: 480px;
+}
+
+.ixa-install-box.is-narrow {
+  max-width: 220px;
+}
+
+/* ---------- the search stage: the palette's keys ---------- */
+
+.ixa-keylist {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 0;
+}
+
+.ixa-keylist > div {
+  display: contents;
+}
+
+.ixa-keylist dt {
+  justify-self: end;
+}
+
+.ixa-keylist dd {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+/* ---------- a route's stage: its name and how it moves ---------- */
+
+.ixa-sheet.ixa-route {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 24px 48px;
+  text-align: center;
+}
+
+.ixa-route-t {
+  margin: 0;
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  font-weight: var(--pt-w-display);
+  color: var(--pt-ink);
+}
+
+.ixa-route-line {
+  max-width: 44ch;
+  margin: 0;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  color: var(--pt-ink-2);
+}
+
+/* ---------- the list filter ---------- */
+
+.ixa-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* the sidebar's size of the shared field (Sidebar.css sets the same two values) */
+.ixa-filter.is-sidebar .pt-filter {
+  --pt-filter-h: 30px;
+  --pt-filter-fs: 13px;
+}
+
+.ixa-filter-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border-top: 1px solid var(--pt-hair);
+}
+
+.ixa-filter-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 8px 8px 12px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  color: var(--pt-ink-2);
+  text-decoration: none;
+  transition: color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.ixa-filter-list > div:last-of-type .ixa-filter-row {
+  border-bottom: 0;
+}
+
+.ixa-filter-row:hover,
+.ixa-filter-row.is-on {
+  color: var(--pt-ink);
+}
+
+.ixa-filter-t {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ixa-filter-path {
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  color: var(--pt-titanium);
+  white-space: nowrap;
+}
+
+.ixa-filter-empty {
+  margin: 0;
+  padding: 14px 12px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+@media (max-width: 640px) {
+  .ixa-filter-path {
+    display: none;
+  }
+}
+
+/* ---------- the language selector: the live footer's strip ---------- */
+
+.dmo-stage.ixa-lang {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.ixa-lang-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 56px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--pt-hair);
+}
+
+/* ---------- split-flap text ---------- */
+
+.dmo-stage.ixa-flap {
+  --tb-flash: var(--dmo-accent);
+
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+}
+
+.ixa-flap-line {
+  max-width: 100%;
+  margin: 0;
+  text-align: center;
+  font-size: var(--pt-d1);
+  line-height: var(--pt-d1-lh);
+  letter-spacing: var(--pt-d1-track);
+  font-weight: var(--pt-w-display);
+  color: var(--pt-ink);
+}
+
+/* the cells (blog-index.css, rescoped): an in-flow ghost holds the
+   measure and the face rides above it, so a flip never reflows the line */
+.ixa-flap .tb-ch {
+  position: relative;
+  display: inline-block;
+}
+
+.ixa-flap .tb-ch-g {
+  visibility: hidden;
+}
+
+.ixa-flap .tb-ch-f {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  white-space: nowrap;
+  transform-origin: 50% 54%;
+}
+
+.ixa-flap .tb-word {
+  white-space: nowrap;
+}
+
+.ixa-flap .tb-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Tiles: each character stands on a ghost tile, a seam over a lit upper
+   leaf, the hinge and a shaded lower leaf (the blog masthead's rule) */
+.ixa-flap.is-tiles .tb-ch::before {
+  content: '';
+  position: absolute;
+  inset: 0.03em 0.014em;
+  border-radius: var(--pt-radius-chip);
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 6%, transparent);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, currentColor 2.5%, transparent) 0,
+    color-mix(in srgb, currentColor 2.5%, transparent) calc(54% - 1px),
+    color-mix(in srgb, currentColor 9%, transparent) calc(54% - 1px),
+    color-mix(in srgb, currentColor 9%, transparent) 54%,
+    color-mix(in srgb, currentColor 4.5%, transparent) 54%,
+    color-mix(in srgb, currentColor 4.5%, transparent) 100%
+  );
+}
+
+/* ---------- the language wheel ---------- */
+
+.dmo-stage.ixa-wheel {
+  display: grid;
+  place-items: center;
+}
+
+/* the house face for the orbiting script glyphs (the wheel's fallback is a mono stack) */
+.ixa-wheel .gtw {
+  --gtw-mono: var(--pt-text);
+}
+
+.ixa-wheel-band {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 0;
+  transform: translateY(-50%);
+  font-size: var(--pt-t-lead);
+  line-height: var(--pt-t-lead-lh);
+  color: color-mix(in srgb, var(--dmo-ink) 34%, transparent);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ---------- the carousel ---------- */
+
+.ixa-carousel .blog-carousel {
+  margin: 0;
+}
+
+/* the brand names the route only while the list column is closed: the
+   effect of Toolbar.css's .pt-viewer rule, keyed here to the small shell's
+   own stamp, since the plate has no viewer root */
+.ixa-viewport[data-sb]:not([data-sb='0']) .pt-bar-brand {
+  display: none;
+}
