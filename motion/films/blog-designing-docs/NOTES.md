@@ -4,12 +4,14 @@ The trailer for "Designing docs for humans" by Kevin Liu and Taylor Fang,
 published September 17, 2026 at
 generaltranslation.com/blog/designing-docs-for-humans.
 
-- Duration: 53.5 s (the v4 cut after the critic's fix round, 2026-10-06):
-  49.5 s of story and the 4.0 s end card. 1920 x 1080, 60 fps, H.264 High with
-  AAC-LC stereo 48 kHz (narrator and music bed); audio and video both 53.500 s.
+- Duration: 55.5 s (v8: the v4 cut after the critic's fix round of
+  2026-10-06, with the opening round of 2026-10-15, and the new line 2 and
+  headings 1 and 5 as titles of 2026-10-16, below): 51.5 s of story and the 4.0 s end card. 1920 x 1080, 60
+  fps, H.264 High with AAC-LC stereo 48 kHz (narrator and music bed); audio and
+  video both 55.500 s.
 - Renders: `out/blog-designing-docs.mp4` (delivery, faststart),
   `out/blog-designing-docs.png` (poster: the settled series end card, the
-  film's last frame, frame 3209), `out/sheets/blog-designing-docs.png` and
+  film's last frame, frame 3329), `out/sheets/blog-designing-docs.png` and
   `.webp` (the kit's contact sheet, two frames a second). Earlier cuts: round
   3 in `out/v3/`, the silent round 4 final in `out/v4/`, the round 5 narrated
   cut in `out/v5/`, the round 7c cut in `out/v7/`, the first round 7d cut in
@@ -18,13 +20,27 @@ generaltranslation.com/blog/designing-docs-for-humans.
   build (Frederick Surrey, 41.5 s, md5 60658809c0d09d461a98cd212f3f99e4) in
   `out/v10/` with its poster and contact sheet, and the v4 cut before the fix
   round (50.5 s, md5 ca97807253797ab2a6aefc92516ba309) in `out/v11/` with its
-  poster and contact sheet.
-- Composition (v4): `index.html`, one standalone file with one paused GSAP
-  timeline (`window.__timelines.main`); `render(t)` runs from the timeline's
-  `onUpdate` and draws every layer from film time only. One stage clip (`#sS`,
-  0 to 46.5) holds all the picture layers, each shown only inside its own
-  window; one flat camera (`camF`) carries the page from the landing to the
-  close. The shared drawing (palette, the 3 px cell buffer, the page model with
+  poster and contact sheet; those `out/v<N>/` folders moved on 2026-10-11 to
+  `~/gt/motion-archive/2026-10-11/out/`. The v4 cut after the fix round (md5
+  e09d28d09d89daf4055d61491ccb18e5) and its records moved to
+  `~/gt/motion-archive/2026-10-15/out/` when film.mjs wrote the v5 final, and
+  the v5 cut (md5 fdd6b0c992539d2fc0b8ea1e2f3d3900) and its records to
+  `~/gt/motion-archive/2026-10-16/out/` when it wrote the v6 final, and the v6
+  cut (md5 60e323c64d42ff6d2abcf8a10126df5d) to
+  `~/gt/motion-archive/2026-10-16/103321/out/` when it wrote the v7 final,
+  and the v7 cut (md5 9529f6ca207c0a93b042e51dbe29efbf) to
+  `~/gt/motion-archive/2026-10-16/120212/out/` when it wrote the v8 final.
+- Composition (v4, with the v5 opening, the v6 line 2, the v7 heading 1 and
+  the v8 heading 5):
+  `index.html`, one standalone file
+  with one paused GSAP timeline (`window.__timelines.main`); `render(t)` runs
+  from the timeline's `onUpdate` and draws every layer from film time only.
+  One stage clip (`#sS`, 0 to 51.5) holds all the picture layers, each shown
+  only inside its own window; the old page and its turn into the iso map are
+  `drawOpen` on `camera(t)`, the seam into heading 2 is `drawSeam` on `#vS`,
+  and one flat camera (`camF`) carries the page from the landing to the
+  close. `film.json` holds the render settings for `kit/film.mjs`. The
+  shared drawing (palette, the 3 px cell buffer, the page model with
   its old-page extras, the kind-tagged clutter, the wall's miniatures, the glyph
   globe, doubled-line geometry, the Heroicons and the tone masks) is
   `lib/film.js`; the canvas face is `lib/fonts/InterCanvas.woff2`. The film ends
@@ -32,8 +48,9 @@ generaltranslation.com/blog/designing-docs-for-humans.
 - Words and pictures: `DESIGN-v4.md` (the v4 design: clock, headings, picture,
   transition map, pacing, scale, set pieces, sound); `SCRIPT-v3.md` keeps the
   lines, the takes and the facts. Beats and cues: `STORYBOARD.md` (rewritten for
-  v4). Narrator: Frederick Surrey (`kit/audio/voice.json`), the ten v3 takes as
-  recorded.
+  v4, its opening revised for v5 and its clock for v6). Narrator: Frederick
+  Surrey (`kit/audio/voice.json`), the v3 takes as recorded, with line 2's v6
+  take.
 - Sound: `audio/make-bed.py` builds the bed at the film's length from the
   round 5 generation (`audio/bed.mp3`) into `audio/bed-edit.wav` (now with as
   many six-bar jumps as the card needs) and writes the joins' film times to
@@ -42,7 +59,17 @@ generaltranslation.com/blog/designing-docs-for-humans.
   bed: the masters (`vo-N.master.wav`, `music.master.wav`), `film-premix.wav`
   (for measuring) and `mix-report.json`, and it rewrites the `<audio>` start
   and duration attributes from the cue table `O` in `index.html`.
-- Set aside, not deleted: the v4 composition before the fix round in
+- Set aside, not deleted: the v7 composition in `archive/v7-2026-10-16/` and
+  the v6 composition in `archive/v6-2026-10-16/`
+  (`index.html`, `lib/`, `STORYBOARD.md`, `script.json`, `script.stt.json`,
+  `film.json`); the v5 composition in `archive/v5-2026-10-15/`
+  (`index.html`, `lib/`, `STORYBOARD.md`, `script.json`, `film.json`) with the
+  sound files the v6 round replaced in `audio/archive-v5/`, and line 2's v6 take
+  as recorded in `audio/takes-v6/`; the v4 composition after the fix round,
+  before the opening round, in `archive/v4-fix-round-2026-10-06/` (`index.html`,
+  `lib/`, `STORYBOARD.md`). The folders listed next moved on 2026-10-11 to
+  `~/gt/motion-archive/2026-10-11/films/blog-designing-docs/`, at the same
+  paths: the v4 composition before the fix round in
   `archive-v4/` (`index.html`, `lib/`, `STORYBOARD.md`) with its sound files
   in `audio/archive-v4/` (`mix.py`, `make-bed.py`, `mix-report.json`,
   `music.master.wav`, `bed-edit.wav`, `film-premix.wav`); the v3 composition in `archive-v3/` (`index.html`,
@@ -56,6 +83,550 @@ generaltranslation.com/blog/designing-docs-for-humans.
   Clara build in `archive-v3-stopped/`; the v3 build's first final, before the
   critic's fixes, in `archive-v3-build1/`; line 7's retake in
   `audio/takes-7d/` and line 6's unused first take in `audio/takes-v3fs/`.
+
+## 2026-10-16, v8: heading 5 as a title
+
+Kevin wants heading 5 to be a header too (relayed by the lead). This round
+changes heading 5 only and renders the v8 cut; everything else is v7's,
+headings 3 and 4 included. Before changing anything I copied the v7
+composition (`index.html`, `lib/`, `STORYBOARD.md`, `script.json`,
+`script.stt.json`, `film.json`) to `archive/v7-2026-10-16/`, after the lead's
+own v7 draft had finished, so no edit landed under a running render.
+
+- **The words:** "An open problem", from line 10 ("Docs design is an open
+  problem, and the team keeps working on it."), in place of "Docs design is /
+  an open problem".
+- **The look:** heading 1's: the film's heading type (144 px, Inter 500,
+  -0.035 em), one line on the grid (ink x 161 to 1177, first baseline 252),
+  white.
+- **The timing:** it arrives whole on line 10's first word (46.70, `H5_IN =
+  O[10]`): opacity 0 to 1 and a 12 px rise in 0.6 s, expo.out, one tween on
+  its three words (`#h5 .w`), as heading 1's. The nearest 0.5 s beat, 46.50,
+  would have put it on screen before the line starts, so it rides the word,
+  with the page's shrink back (also 46.70). It is half up at 46.73 and fully up
+  by 46.80. Its floor (three words) ends at 49.30; it holds through the line,
+  the threads' return and the path into the person, and leaves on the card's
+  cut at 51.50, as v7's heading 5 did. Its calm still comes up over 46.30 to
+  46.70 and now covers one line.
+
+### Measured
+
+- `hyperframes check` (film.mjs, before the final): "Check passed", 0
+  errors, 7 warnings, as in v7.
+- Frames around line 10, probed before the final (46.2 to 51.52 s) and read
+  from the delivered master by index (46.68 to 51.50 s): the title is not
+  drawn at 46.70, is half up at 46.73 and fully up by 46.80, holds to 51.48,
+  and the end card cuts in at 51.50. Its ink is x 161 to 1177, y 147 to 287.
+- The final, `node kit/film.mjs final blog-designing-docs --no-hear` (the audio
+  is v7's, so the transcript was reused and no ElevenLabs call was made):
+  renders A (741 s) and B (871 s) back to back on the gpu path, 3 workers,
+  machine load 88 to 290; no "CONTEXT_LOST" and no Google Fonts line in either
+  log. **The pair is identical**: 3330 of 3330 frames by framemd5, and the
+  decoded audio (md5 f360a21e8564af26ddbe7fea94793736).
+- The master: `out/blog-designing-docs.mp4`, md5
+  bee31f4b0039d78d57bcddc78a9e194d, 81.9 MB, H.264 1920 x 1080 at 60 fps,
+  3330 frames, 55.500 s; AAC 55.500 s; faststart. Stream sha256: video
+  5c130ade5d083db86f23d4c149e58566d0a58e91a3068f2b2830c4e1289e4b4a, audio
+  0717e2febf8e33058a3af04c1c5b4f3fcd55f301fd15ae3bb9900b44878fded5 (v6's and
+  v7's). -15.9 LUFS integrated, true peak -2.6 dBTP.
+- The records: the poster `out/blog-designing-docs.png` (frame 3329, the end
+  card, as before), the contact sheet `out/sheets/blog-designing-docs.png` and
+  `.webp`, the checking sheet `out/_sheets/blog-designing-docs.png`, the script
+  page `out/scripts/blog-designing-docs.md` (v8) and the share copy
+  `out/blog-designing-docs-share.mp4`. The v7 final (md5
+  9529f6ca207c0a93b042e51dbe29efbf) is in
+  `~/gt/motion-archive/2026-10-16/120212/out/`.
+- The draft: `node kit/film.mjs draft blog-designing-docs`, after the final,
+  so `renders/draft.mp4` is v8's (30 fps, 423 s, md5
+  0a9eefd20e579cd9ddafa6a1a4bcce50, the final's composition hash c7b1044a0d9377a2;
+  no near-black frame, no single-frame flicker, the largest change on the card's
+  cut). The v7 draft the lead rendered before this round is in the motion
+  archive.
+
+## 2026-10-16, v7: heading 1 as a title
+
+Kevin on v6's heading 1 ("An intuitive, intentional / docs interface"),
+relayed by the lead: "i still dont like the header here. headers should feel
+like headers not excerpts right." This round changes heading 1 only and
+renders the v7 cut. The narration, its takes, the mix, line 2's picture cues,
+the seam into heading 2 and every time after it are v6's. Before changing
+anything I copied the v6 composition (`index.html`, `lib/`, `STORYBOARD.md`,
+`script.json`, `script.stt.json`, `film.json`) to `archive/v6-2026-10-16/`.
+
+### Heading 1
+
+- **The words:** "Design still matters", from the post's summary ("Why design
+  still matters in the age of AI and our docs design principles to clean up
+  mental clutter."). It states the beat's idea as a title and shares no word
+  with line 2, which is spoken under it.
+- **The look:** the film's heading type (144 px, Inter 500 through
+  `var(--font)`, tracking -0.035 em, kerning on), one line on the grid (ink
+  from x 170 to 1278, first baseline 252). It is white, like headings 2 to 5.
+  The film's one accented word was heading 1's "Humans", which went with its
+  line in v6; a title in one color reads as one unit, and the film's blue
+  already marks the page's own pieces.
+- **The timing:** it arrives whole, not word by word, on the 0.5 s beat at
+  line 2's first word (4.00; the word starts at 3.98): opacity 0 to 1 and a 12
+  px rise in 0.6 s, expo.out, one tween that moves its three words together
+  (`#h1 .w`), so the entry never shares an element with the exit on `#h1`. Its
+  floor (three words) ends at 6.60; it holds through line 2 and the pause and
+  leaves at 9.55, 0.17 s before line 3's first word (0.45 s, 8 px up), as
+  v6's did, so the seam into heading 2 runs as before. The field's calm round it comes up over 3.60 to 4.00 and
+  covers its one line.
+- **The rule it departs from:** the gt-films skill (SKILL.md section 2 and
+  `references/look.md`) still says each heading is "made of the words spoken
+  at that moment and shown in step with them" (Kevin, 2026-10-06), and it
+  retired round 7's rule that a heading shares no content word with its line.
+  Kevin's note of 2026-10-16 turns that around for heading 1. Whether it holds
+  for every heading, and the edit to MOTION.md and the skill, is the lead's
+  call; headings 2 to 5 are unchanged.
+
+### Headings 3 to 5, read against Kevin's note (unchanged)
+
+Each is a run of the line spoken under it, shown as it is spoken, so by the
+test Kevin applied to v6's heading 1 all three are excerpts. "One accordion"
+(line 6) and "Translated pages" (line 8) are two-word noun phrases and look
+like labels more than v6's heading 1 did; "Docs design is / an open problem"
+(line 10) is the line's first clause word for word and reads as a quote.
+
+### Measured
+
+- `hyperframes check` (film.mjs, before each final): "Check passed", 0
+  errors, 7 warnings, as in v6.
+- Frames 3 to 10 s, probed at 15 a second before the first final, and the
+  delivered renders' entry frame by frame at 60 fps (3.97 to 4.67 s): the
+  title is not drawn at 4.00, is half up at 4.03 and fully up by 4.13, and its
+  rise settles by about 4.3; it holds through line 2 and leaves 9.55 to 10.00
+  as the seam starts. Its ink is x 170 to 1278, y 147 to 287 (one line), so the
+  old page is 183 px under it.
+- Three finals, each `node kit/film.mjs final blog-designing-docs --no-hear`
+  (the audio is v6's, so the transcript was reused and no ElevenLabs call was
+  made), gpu path, 3 workers, no "CONTEXT_LOST" and no Google Fonts line in
+  any log:
+  - The first two moved the title's line (`#h1 .ln`). Both pairs differed
+    from about 9.95 s to the next keyframe at 12.50 s (153 and 159 frames,
+    PSNR at least 47.9 dB), where v6's pair, whose heading moved its words,
+    matched frame for frame; the second also differed for 7 frames at 41.17 s.
+  - So the third moves the three words in one tween (`#h1 .w`), the same look.
+    Its pair matches on every frame from 0 to 41.10 s, the whole stretch any
+    round since v4 changed, and differs on 260 frames from 41.12 to 45.45 s
+    (the end of the planet beat, the move into the page box and the reader's
+    path, unchanged since v4): a 39 px spot of up to 11 levels at 41.12 s that
+    the encoder carries to the next keyframe, PSNR at least 46.6 dB and 50.1 on
+    average. v5's pair
+    differed in the same beat (39.02 to 39.55 s on its clock). The decoded audio
+    is identical (md5 f360a21e8564af26ddbe7fea94793736, v6's). film.mjs kept
+    both and took A, which equals the previous master on 250 of those 260
+    frames.
+- The master: `out/blog-designing-docs.mp4`, md5
+  9529f6ca207c0a93b042e51dbe29efbf, 81.2 MB, H.264 1920 x 1080 at 60 fps,
+  3330 frames, 55.500 s; AAC 55.500 s; faststart. Stream sha256: video
+  90f3606083a71a38be64a10da5a84e2c069b43e5122be636d2abdd0159c2b111, audio
+  0717e2febf8e33058a3af04c1c5b4f3fcd55f301fd15ae3bb9900b44878fded5 (v6's).
+  -15.9 LUFS integrated, true peak -2.6 dBTP.
+- The records: the poster `out/blog-designing-docs.png` (frame 3329, the end
+  card), the contact sheet `out/sheets/blog-designing-docs.png` and `.webp`,
+  the checking sheet `out/_sheets/blog-designing-docs.png`, the script page
+  `out/scripts/blog-designing-docs.md` (v7, on the reused transcript) and the
+  share copy `out/blog-designing-docs-share.mp4`. In the motion archive: the
+  v6 final in `~/gt/motion-archive/2026-10-16/103321/out/`, the first two v7
+  masters in `104550/out/` (md5 e0683e8daed8d5245bd34623bb4fcd08) and
+  `110656/out/` (md5 3af60bc21a9db92396ae7f6abac80113), and every pair's A and
+  B beside them.
+
+## 2026-10-16, v6: the new line 2 and heading 1
+
+Kevin's note on line 2 and heading 1 of the v5 cut, which is published on
+Prototemplate main (653cffc9), relayed by the Prototemplate session: "its not
+humans still read docs. the idea were trying to convey is that regardless of
+more agents reading docs, you still need to present docs to people in a good
+manner (obv word better)". This round replaces line 2 and heading 1, re-cues
+line 2's picture to the new words, moves everything after line 2 2.0 s later
+(the take's extra 1.68 s, rounded up to the beat), rebuilds the bed and the
+mix, and renders the v6 cut.
+
+Before changing anything I copied the v5 composition (`index.html`, `lib/`,
+`STORYBOARD.md`, `script.json`, `film.json`) to `archive/v5-2026-10-15/`, and
+the sound files this round replaces (`mix.py`, `make-bed.py`,
+`mix-report.json`, `bed-edit.json`, `bed-edit.wav`, `music.master.wav`,
+`film-premix.wav` and line 2's take and master) to `audio/archive-v5/`.
+
+### The new line 2
+
+"An intuitive, intentional docs interface becomes even more important." (9
+words), an exact run of the post's thesis sentence ("We believe an intuitive,
+intentional docs interface becomes even more important in the world of AI
+slop.", the third paragraph of "Why design docs?"). Why this one:
+
+- It is the post's own statement of what Kevin describes: as agents read more
+  of the docs, how the docs are presented to people matters more, not less.
+  After line 1, "even more important" carries the contrast with the agents
+  without naming them again.
+- It keeps the narration verbatim from the post. "In the world of AI slop" is
+  left out: the short line already answers line 1, and that phrase is the
+  post's one jab, which the narrator does not need to make.
+- The post's other candidate, "Humans increasingly need interfaces which clean
+  up mental clutter and guide their attention to what's important.", repeats
+  line 4's "mental clutter" and starts again from "Humans", the framing Kevin
+  turned down.
+
+### Heading 1
+
+"An intuitive, intentional / docs interface": the line's first five words, its
+subject, in two lines on the film's grid (ink x 161 to 1484 and 165 to 1007,
+baselines 252 and 402), each word entering on its own word start (3.98, 4.10,
+4.82, 5.48, 5.90). It names the thing the line says matters, and it sits over
+the page, which is that interface. It is white: the film's one accented word
+was "Humans", and nothing in the new heading needs an accent (the unused
+`.hd .acc` rule is gone). It arrives at 6.20 and its floor (five words) ends
+at 8.87; it holds through "becomes even more important" and the pause and
+leaves at 9.55, 0.17 s before line 3's first word, as heading 1 left in v5, so
+the seam into heading 2 runs exactly as v5 built it.
+
+### The take
+
+`node kit/audio/el.mjs line audio/takes-v6/vo-2.mp3 "An intuitive, intentional
+docs interface becomes even more important." --prev "Most docs readers are
+now AI agents." --next "General Translation redesigned its docs from scratch
+so people would read its writing."` from the film folder: the narrator from
+`kit/audio/voice.json` (Frederick Surrey, eleven_multilingual_v2, stability
+0.55, style 0.2, speed 1.0), no `--voice`. The take's `.json` holds the same
+voice id, model and speed 1 as the v3 takes. Nothing was cut, slowed, sped or
+stretched. It is copied to `audio/vo-2.mp3`, `.json` and `.stt.json`.
+
+| call | purpose | sent | result | kept |
+| --- | --- | --- | --- | --- |
+| `el.mjs line` | line 2 for v6 | the line (69 characters), lines 1 and 3 as context | `audio/takes-v6/vo-2.mp3`, 5.53 s; speech 0.10 to 4.22 s (4.12 s, 2.18 words a second; the old line 2 was 2.44 s) | yes |
+| `el.mjs hear` | check the take | the take | word for word: "An intuitive Intentional Docs interface becomes even more important" (the capitals are the transcriber's) | |
+| `el.mjs hear` | the script page's transcript | the v6 master (film.mjs final) | 100 words for the script's 100, in order; line 2 word for word, its words at 4.00 to 7.54 as the cue table has them; "docs sites" heard as "doc sites" as on every hear since v4 | |
+
+Pitch, with `kit/sound/tones/pitch.py` (the tones tools' YIN tracker with a 70
+Hz floor): the new take's median is 101 Hz, against 86 to 95 Hz for the other
+nine takes (their median 90 Hz) and 94 Hz for the old line 2, so it sits about
+2 semitones above the film's median take. Its 10th to 90th percentile is 76 to
+125 Hz, inside the old line 2's 77 to 138 Hz, and it falls to 78 Hz on
+"important" as line 1 falls to 73 Hz on "agents"; the higher median comes from
+"An intuitive" and "even more" (102 to 107 Hz). `kit/sound/tones/tones.py`
+itself floors at 140 Hz for the Mandarin readers and reads every take of this
+voice at 140 to 489 Hz (the floor and octave errors), as its own note warns,
+so `pitch.py` is the read for Frederick. `kit/sound/clicks.py` finds the same
+consonant transients in the new master as in the published ones (40 hits at
+the default threshold and 3 in the high band, all inside sounds).
+
+### The clock
+
+The take is 1.68 s longer than the old line 2's. Everything after line 2 runs
+2.0 s later, the take's 1.68 s rounded up to the 0.5 s beat:
+
+- `O = [0, 1.0, 3.98, 9.72, 16.04, 20.66, 26.94, 33.33, 38.29, 42.65, 46.7]`;
+  the gap after line 2 is 1.62 s (was 1.30) and the other gaps are v5's.
+- Every `B` time is 2.0 s later (rise 10.76, iso 11.76, recent 14.88, land
+  17.18, push 25.68, back6 29.88, fly 32.73, out 37.19, back 46.70), as are the
+  card (51.50) and the end (55.50), `HX`, `WRITE3` and the heading clips. The
+  film is 55.5 s (was 53.5).
+- Why 2.0 and not 1.68: every later beat, the end card and the bed's two joins
+  then keep their v5 places against the words (join 1 under "read its
+  writing", join 2 0.45 s after "sites", the resolution on the card's cut), and
+  the card stays on the first 0.5 s beat after the last word plus 0.6 s, with
+  heading 5's floor inside it. At 1.68 the card would still have had to move
+  2.0 s, and the joins would have moved 0.32 s against the words.
+- Line 2's picture is re-cued to its words: the agents leave on "An" (3.98 to
+  4.48), the four people hold, their stubs mix to white on "interface" (5.90),
+  and the people, their stubs and the threads tone out once the line has ended
+  (8.10, 0.3 s), so the page holds alone under heading 1 from 8.40 to 9.55
+  (v5's page held alone 1.30 s). The turn stays on "redesigned", now 10.76.
+
+### The sound
+
+`make-bed.py` and `mix.py` ran as they are, with line 2's new text in
+`mix.py`. The bed: 55.5 s, two jumps of 18.007 s, film 0 = source 8.863 (was
+10.863), joins at 13.510 and 31.532, the resolution at 51.532 on the card's
+cut. The mix: the narrator -15.0 LUFS and the bed under speech -29.1 LUFS, as
+in v5; the largest 400 ms loudness in each gap -27.8 (gap 1, held down), then
+-23.7, -25.5, -26.4, -25.5, -23.2, -24.6, -25.1 and -28.0 LUFS (v5: -26.5, then
+-22.4 to -26.1), because the bed now starts 2 s earlier in its source, where it
+is quieter; the open -20.0 and the card's first second -19.8; the premix -15.8
+LUFS, -2.5 dBTP.
+
+### Measured
+
+- `hyperframes check` (run by film.mjs before the draft and the final): "Check
+  passed", 0 errors, 7 warnings (the file's length and six clips with nested
+  children, as in v5).
+- The composition, probed: heading 1's ink spans x 161 to 1484 and 165 to 1007
+  (inside the title-safe 160 px); the nearest drawn piece to it is the old
+  page's top edge, 33 px under its second line; heading 2's clearance and the
+  stack's box are v5's, 2.0 s later (the stack x 412 to 1068, y 482 to 1024
+  while heading 2 is up; nearest 33 px).
+- The draft, `node kit/film.mjs draft blog-designing-docs` (30 fps, 3
+  workers, 423 s, md5 e1e99cfa0eeddeafa03af431b778e3cd, 55.500 s): scan.mjs
+  found no near-black frame and no single-frame flicker, and the largest change
+  is the card's cut (51.500); -15.9 LUFS, -2.6 dBTP. I read 0 to 16 s at 4
+  frames a second (0 to 6, 10 to 16 s) and 15 a second (6 to 10 s), and the
+  full frame at 7.0 s. It needed no fix round.
+- The final, `node kit/film.mjs final blog-designing-docs`: renders A (467 s)
+  and B (307 s) back to back on the gpu path, 3 workers, machine load 77 to
+  179; no "CONTEXT_LOST" line and no Google Fonts line in either log. **The
+  pair is identical**: 3330 of 3330 frames by framemd5, and the decoded audio
+  (md5 f360a21e8564af26ddbe7fea94793736).
+- The master: `out/blog-designing-docs.mp4`, md5
+  60e323c64d42ff6d2abcf8a10126df5d, 80.4 MB, H.264 1920 x 1080 at 60 fps,
+  3330 frames, 55.500 s; AAC 55.500 s; faststart. Stream sha256: video
+  4b3a4e1f77614715e8d4397e4865715a2a54d9b977515c81cfe49a07ca0bd1b0, audio
+  0717e2febf8e33058a3af04c1c5b4f3fcd55f301fd15ae3bb9900b44878fded5. -15.9 LUFS
+  integrated, true peak -2.6 dBTP.
+- The records: the poster `out/blog-designing-docs.png` (frame 3329, the
+  settled end card), the contact sheet `out/sheets/blog-designing-docs.png` and
+  `.webp` (111 frames, 8 by 14), the checking sheet
+  `out/_sheets/blog-designing-docs.png` (55 frames), the script page
+  `out/scripts/blog-designing-docs.md` (v6; 11 rows, 10 placed from the audio,
+  on the new transcript, which this folder's `script.stt.json` now copies) and
+  the share copy `out/blog-designing-docs-share.mp4` (38.4 MB). The v5 final
+  and its records are in `~/gt/motion-archive/2026-10-16/out/`.
+- Against the v5 final, frame by frame at 480 x 270 grey: the first frame
+  whose mean difference is over 0.5 is 3.983 s, line 2's first word. Before it
+  the picture is v5's: the frames differ only by encoding, the encoder's
+  look-ahead from 2.85 s (largest frame mean 0.5), and by heading 1's two-line
+  calm, which clears the smoke round its second line from 3.58 s.
+- The frame-difference trace of render A (480 x 270 grey, 60 fps, 0 to 18 s):
+  no single-frame spike. Under heading 1 the picture holds while the smoke
+  drifts: 6.30 to 8.10 (the people with their white links, 1.8 s) and 8.40 to
+  9.55 (the page alone, 1.15 s).
+
+### Open items
+
+- Kevin's ear on the new take (its median is about 2 semitones above the
+  film's median take) and on the 1.62 s pause after it.
+- No person has listened to the gaps or the two joins since v4.
+
+## 2026-10-15, the opening round: the way into heading 2 and the isometric stack
+
+Kevin reviewed the published v4 cut and paused it at 0:08: "lets start with
+like something that properly transitions into the title of the next scene /
+and then for the image make the isometric thing properly coming from
+something and dont make it cut off". At 0:08 the v4 frame shows heading 1's
+cells half way through reassembling as "General Translation" and the iso
+stack parked at the lower right with its content plate past the foot. This
+round fixes both and renders the v5 cut. No take was made or changed, no
+music was generated and no ElevenLabs call was made: the final ran with
+`--no-hear` and reused the previous transcript, which film.mjs allows only
+when the master's decoded audio equals the previous master's.
+
+Before changing anything I copied the v4 composition (`index.html`, `lib/`,
+`STORYBOARD.md`) to `archive/v4-fix-round-2026-10-06/`. The v4 final (md5
+e09d28d09d89daf4055d61491ccb18e5), its poster and its records went to the
+motion archive when film.mjs wrote the new final: `~/gt/motion-archive/2026-10-15/out/`,
+listed in that folder's INDEX.md, with renders A and B and the 2026-10-02
+draft under `~/gt/motion-archive/2026-10-15/films/blog-designing-docs/renders/`.
+
+### Why the v4 way into heading 2 read as a jump
+
+From the v4 final's frames at 60 fps, 6.0 to 10.0 s:
+
+- The moving type paired heading 1's cells with heading 2's first line in
+  reading order. The two lines share a baseline and a left edge and are
+  close in width (ink x 170 to 1510 and 166 to 1314), so most cells moved a
+  few px, with a seeded lift of up to 6 px. From 7.80 to 8.30 the line was an
+  unreadable scatter in place ("General Tr" over the end of "docs" at 8.00);
+  nothing travelled far enough for the eye to follow.
+- The picture changed at the same time: the turn into the iso map had landed
+  at 7.40 and was still drifting, the field's calm switched from heading 1's
+  to heading 2's (7.35 to 8.35), and the GT mark turned white on "General"
+  (7.72).
+- The two scenes shared no object the eye could follow. The page's logo, the
+  one thing in the picture that says "General Translation", was about 30 px
+  wide at the lower right, about 1000 px from the title.
+
+### Why the stack looked parked and cut off
+
+- The turn (5.94 to 7.40) also carried the page 734 px right and 222 px down
+  while it shrank, and it landed at k 0.53 with the content plate's far corner
+  past the foot: the stack's box was past the foot from 6.6 s and reached y
+  1283, 203 px below the frame, by 12.8 s (the probe below). By 0:08 the move
+  was over, so nothing on screen showed where the stack came from.
+- The three plates lifted together on one curve inside the turn, so the lift
+  read as part of the move, not as the page coming apart.
+
+### What changed
+
+- **The seam into heading 2 (MOTION.md's hairline seam).** Heading 1 leaves
+  whole on its floor (7.55 to 8.00, the exit every heading uses). On
+  "General" (7.72) the page's logo mixes to white as before, and from 7.76 a
+  3 px white seam draws out of the page's top-left corner, straight up the
+  line of the page's left edge to y 264, 13 px under heading 2's first
+  baseline, then along under "General Translation" to the line's ink end at
+  x 1314: one move, power2.inOut, 0.7 s. Each word rises onto the seam as
+  the front passes its left end ("General" at 7.95, "Translation" at 8.12),
+  by the heading system's own entry (12 px, 0.3 s, power2.out). The seam
+  tones out from 8.46 to 8.76, before line 2's first word. It reads because
+  it carries a real object, the page's corner beside its logo, into the
+  title on one continuous path; because the page's left edge and the
+  headings' left edge are the same line (x 160), so the path runs straight
+  up and then in reading order; and because nothing else moves while it
+  runs (the page waits flat until the title is up). The moving type, its
+  clip `#sM` and its code are gone; the seam is `#vS` and `drawSeam`.
+- **The turn moved to "redesigned" and happens where the page sits.** The
+  old page stays flat in its opening rect to 8.76. On "redesigned" one
+  zero-speed curve turns it into the 30 degree map about its own place
+  (centre x 608 to 740, y 750 to 824; k 0.694 to 0.352), 8.76 to 9.76. The
+  scale leads the tilt a little (it lands at u 0.34, the tilt at 0.42), so
+  the page's far corner stays 40 px or more inside the foot while it swings
+  round (43 px at its lowest, 9.27).
+- **The layers rise one at a time.** Once the turn has landed they rise off
+  the content plate lowest first, each on its own 2 px dashed drop lines: the
+  contents rail to +110 (9.56), the sidebar to +210 (9.71) and the header to
+  +330 (9.86), 0.5 s each, power3.out (`PLATES[].up`, `sepOf(t, u, pl)`).
+  The four extras lift off their plates to +450 last (10.26, 0.6 s), where v4
+  lifted them on "redesigned". Everything comes down in the flatten as
+  before.
+- **The framing.** k 0.352 drifting 2 percent to 0.36, centre (740, 824) to
+  (740, 822). That is the largest scale at which the whole stack, the extras
+  at +450 included, stays in the frame (40 px or more from every edge) and
+  28 px clear of heading 2's two lines anywhere under them; I searched it on
+  the stack's real geometry (every plate and extra corner, slab foot and drop
+  line), checked it against the probe on v4 (the model gave v4's box and
+  heading clearance to within 0.4 px), and took the centre under the
+  heading's middle. While heading 2 is up the stack spans x 412 to 1068, y
+  482 to 1024. The re-centre (12.88 to 13.58) now starts from k 0.36 at
+  (740, 822) and lands on v4's k 0.63 at (1000, 672).
+- **The stack's calm.** The smoke clears round the turning page and the
+  stack by tone, within 20 px of the convex hull of its outline and back to
+  full 130 px away (`hullCalm`, from `STACK`, which `drawOpen` fills each
+  frame). It comes up over the turn, follows the camera through the drift and
+  the re-centre, and goes as the page lands in the page box (14.38 to 15.18),
+  so the dashed drop lines read over dark ground.
+- **The headings' calms.** Heading 1's calm goes down over its exit (7.55 to
+  8.00) and heading 2's comes up over the 0.4 s before "General" rises (7.55
+  to 7.95), so the ground round the title's line stays clear through the
+  hand-over.
+- **The script table.** This folder's `script.json` now describes this cut on
+  screen for lines 2 and 3 (the spoken lines are unchanged), and `film.json`
+  points the script page at it. `out/scripts/source/blog-designing-docs.json`
+  still holds the v4 text.
+- **`film.json`** is new (the v4 finals were made by hand): kind blog, the
+  gpu path, 60 fps, 3 workers as every v4 render, a 40 minute timeout, the
+  poster at frame 3209 as v4's, the records poster, sheets, checking and
+  script, and the script page labelled v5.
+
+### The clock
+
+`O`, the takes and the mix are unchanged. `B.rise` is 8.76 (was 5.94) and
+`B.iso` 9.76 (was 7.40); every other `B` time is v4's. Heading 1 leaves 7.55
+to 8.00 (was the moving type, 7.55 to 8.35), heading 2's first line enters at
+7.95 and 8.12 (was readable at 8.35, off heading 1's cells), and heading 2
+still arrives at 9.76 and leaves 12.43 to 12.88. No beat after 15.2 s moved
+(measured below).
+
+### Measured
+
+- `node kit/film.mjs check blog-designing-docs` (`npx -y hyperframes@0.8.106
+  check .`): "Check passed", 0 errors, 7 warnings (the file's length and six
+  clips with nested children), runtime 0, layout 0 issues over 9 samples,
+  motion 0, contrast 7 of 7.
+- The draft, `node kit/film.mjs draft blog-designing-docs` (30 fps, 3 workers,
+  219 s, md5 e57dce5ea2d6dfa57100a8e041d4bd71): scan.mjs found no near-black
+  frame and no single-frame flicker, and the largest change is the card's cut
+  (49.500). I read it at 4 frames a second over 0 to 6 and 10 to 16 s and 15 a
+  second over 6 to 10 s, with full-size crops of the seam (7.80 to 8.40) and of
+  the turn and the layers (8.8 to 10.4, every 0.2 s) and 640 x 360 views of
+  the seam (8.2) and the stack (10.4). It needed no fix round.
+- The final, `node kit/film.mjs final blog-designing-docs --no-hear`: renders A
+  (562 s) and B (548 s) back to back on the gpu path, 3 workers, machine load
+  117 to 248; no "CONTEXT_LOST" line and no Google Fonts line in either log.
+- The pair is not byte-identical. framemd5 matches 3178 of 3210 frames,
+  including every frame of 6.0 to 15.2 s, the stretch this round changed;
+  frames 2341 to 2372 (39.017 to 39.550 s, the planet beat, which this round
+  did not touch) differ, PSNR min 60.4 dB and average 63.6 dB, and at 480 x
+  270 grey their largest frame mean is 0.014 with no pixel more than 6 apart.
+  The decoded audio is identical (md5 7f8c1b4890ef2b31e44e7b44a14afcf6, the v4
+  master's). film.mjs kept both and took A (`renders/final.compare.txt`).
+- The master: `out/blog-designing-docs.mp4`, md5
+  fdd6b0c992539d2fc0b8ea1e2f3d3900, 78.4 MB, H.264 1920 x 1080 at 60 fps,
+  3210 frames, 53.500 s; AAC 53.500 s; faststart (ftyp, moov, free, mdat).
+  Stream sha256: video
+  374c3387636b6ce2b04e5526ea126956aa8f1b02a497b6b62377453d3674478b, audio
+  4d681bc1d5b65751109ad21b243d0678de5ad76a988dea78419df16735a4dd25 (the
+  published v4's audio stream). -16.1 LUFS integrated, true peak -2.5 dBTP, as
+  v4.
+- The records: the poster `out/blog-designing-docs.png` (frame 3209, the
+  settled end card, byte for byte v4's), the contact sheet
+  `out/sheets/blog-designing-docs.png` and `.webp` (107 frames, 8 by 14), the
+  checking sheet `out/_sheets/blog-designing-docs.png` (53 frames), the script
+  page `out/scripts/blog-designing-docs.md` (v5; 11 rows, 10 placed from the
+  audio, on the reused transcript) and the share copy
+  `out/blog-designing-docs-share.mp4` (36.9 MB; new, because the master is over
+  50 MB).
+- Against the v4 final, frame by frame at 480 x 270 grey: every frame whose
+  mean difference is over 0.5 lies between 6.08 and 14.82 s, the stretch this
+  round changed. Outside it the only differences are encoder residue and the
+  planet beat: 5.23 to 5.88 s (largest frame mean 0.05, the encoder's
+  look-ahead before the change), 15.30 to 16.65 s (0.22, until the next
+  keyframe after it) and 38.87 to 39.53 s (the planet's GPU difference); the
+  end card is identical.
+- The stack's bounding box, from the probe on every 60 fps frame from 5.90 to
+  15.20 s (559 frames; the drawn geometry of `#vbr`: plate tops, slab faces,
+  rims, drop lines and the extras, with half the stroke width):
+  - 5.90 to 8.76, the flat page: x 160 to 1057, y 470 to 1031.
+  - 8.76 to 9.76, the turn: x 160 to 1061, y 470 to 1037 (43 px from the foot
+    at its lowest, 9.27).
+  - 9.76 to 12.88, the layers rising and the stack held under heading 2: x 412
+    to 1068, y 482 to 1024.
+  - 12.88 to 13.58, the re-centre: x 412 to 1573, y 77 to 1025.
+  - 13.58 to 14.27, the layers coming down: x 421 to 1632, y 77 to 1080.
+  - 14.27 to 15.17, the page growing into the page box: it crosses the foot
+    and lands on the page box (x 561 to 1854, y 456 to 1264); the flat page
+    takes over at 15.18.
+  - v4, by the same probe (5 frames a second): past the foot from 6.6 s,
+    reaching y 1283 (203 px below the frame) by 12.8 s.
+- Heading clearance, on every 60 fps frame with a heading line visible: heading
+  2 (291 frames, 7.97 to 12.80) none under 28 px, the nearest 33.0 px (the flat
+  page's top edge under line 2 at 8.77, before the turn); heading 1 (5.90 to
+  8.00) nothing within 183 px. The seam is not counted (Deviations).
+- The frame-difference trace of render A (480 x 270 grey, 60 fps, 5.9 to 16
+  s): no single-frame spike; the seam's stretch peaks at 0.76 grey levels a
+  frame, the turn at 2.11 and the re-centre at 5.68 (v4's re-centre 6.2).
+- After the final I corrected three comments in `index.html` that still gave
+  the first framing's numbers or the old order (the stage clip's note, one
+  line of the old page's note and two lines of the iso camera's note). The
+  code is the rendered file's once comments are stripped, and the script
+  parses (`node --check`), so the
+  master's composition hash (1b9b6b234cb44102, in its comment) is the file
+  before those comment fixes. A re-run of `film.mjs check` after them hung
+  in Chrome's launch at a machine load of about 260 and was stopped.
+
+### Deviations, and why
+
+- **The seam draws on power2.inOut**, where MOTION.md draws a line out of
+  its owner on expo.out or power3.out. On an arrival ease its first 204 px
+  (the rise out of the page) passed in 0.04 s, too fast to see; power2.inOut
+  starts from rest, so the rise out of the corner reads and the front still
+  reaches the title's start at 7.95.
+- **"General" enters 0.23 s after its word starts** (7.72), because heading 1
+  holds to its floor (7.55) and its exit ends at 8.00. "General" is up by
+  8.25 and "Translation" by 8.42; v4's line formed at 8.35.
+- **The layers rise 0.15 s apart**, past the 40 to 90 ms stagger, because
+  Kevin's note asks for the stack's origin to read: at 90 ms all three rises
+  would sit inside the first plate's 0.5 s rise and read as one move.
+- **The seam is 3 px wide**, one cell, not a 1 px hairline, so it reads at 640
+  x 360 over the cleared ground (checked on the draft at 8.2 s).
+- **The seam runs 10 px under the title's glyphs**, inside the 28 px keep-out,
+  because it is the heading's carrier, not part of the picture: it is drawn
+  only while line 1 arrives and is gone before line 2's first word. The
+  stack, the page and every other piece keep the 28 px.
+- **From 14.27 s, as its last layers land, the page grows into the page box**,
+  whose lower part has been below the frame since 2026-10-05 (lines 4 and 5
+  are framed that way). The stack itself, with any layer lifted, never leaves
+  the frame.
+
+### Open items
+
+- Kevin's eye on the seam, and on the stack's size under heading 2 (k 0.36;
+  it grows to 0.63 in the re-centre once the heading has gone).
+- `out/scripts/source/blog-designing-docs.json` still holds the v4 on-screen
+  text; this folder's `script.json` is the table for v5.
+- The 7 check warnings are the structural advice of every round (the file's
+  length and six clips with nested children); the moving type's clip and its
+  warning are gone.
 
 ## 2026-10-06, v4 flow and headings: the critic's fixes
 
