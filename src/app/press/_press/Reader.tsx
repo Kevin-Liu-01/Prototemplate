@@ -16,11 +16,13 @@ import Rail, { type RailMark } from './ui/Rail';
 import { SliderStyleContext } from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
 import BookBody from './BookBody';
+import { EditionContext, homeOf, storyHref, useEdition, type Edition } from './edition';
+import FeatureBody from './Feature';
 import { landed, move, plainClick } from './transition';
 import Cover from './ui/Cover';
 import { ArrowIcon, CalendarIcon, ClockIcon, IndexIcon, LiveIcon, LoopIcon, PenIcon, PinIcon, StillIcon, ViewsIcon } from './ui/icons';
 
-type Props = { story: Story; next: { slug: string; title: string } | null };
+type Props = { story: Story; next: { slug: string; title: string } | null; edition?: Edition };
 
 const WIDE = '(min-width: 1000px)';
 
@@ -37,11 +39,14 @@ function platesFor(blocks: Block[], figureIndex: Map<number, number>): number[] 
 
 /* Every story's page: the press's one reader. It owns what every look
    shares (the root with the story's look, the theme switch, the monogram
-   home, the crossfade in and out) and sets the story's body in its look: the
-   book look (Translating Euclid) as a printed book with its pictures on a
-   stage (BookBody), the others split between the text and the stage. */
-export default function Reader({ story, next }: Props) {
+   home, the crossfade in and out) and sets the story's body for its edition
+   and look. In the magazine (/press) every story is a magazine feature
+   (Feature.tsx). On the shelf (/press/shelf) the book look (Translating
+   Euclid) is a printed book with its pictures on a stage (BookBody), and the
+   others are split between the text and the stage. */
+export default function Reader({ story, next, edition = 'magazine' }: Props) {
   const router = useRouter();
+  const home = homeOf(edition);
 
   // the crossfade from the shelf can run now that the story is on the page
   useMountEffect(() => {
@@ -49,26 +54,30 @@ export default function Reader({ story, next }: Props) {
   });
 
   return (
+    <EditionContext value={edition}>
     <SliderStyleContext value={story.look === 'fuma' ? 'mask' : story.look === 'book' ? 'book' : 'stops'}>
       <div
         className='gtp gtp-reader'
+        data-edition={edition}
         data-look={story.look}
+        data-story={story.slug}
         onClickCapture={(e) => {
           // every link home runs the crossfade
-          const home = e.target instanceof Element ? e.target.closest('a[href="/press"]') : null;
-          if (!home || !plainClick(e)) return;
+          const link = e.target instanceof Element ? e.target.closest(`a[href="${home}"]`) : null;
+          if (!link || !plainClick(e)) return;
           e.preventDefault();
           e.stopPropagation();
-          move((href) => router.push(href), '/press');
+          move((href) => router.push(href), home);
         }}
       >
         <ThemeSwitch className='gtp-reader-theme' />
-        <Link href='/press' className='gtp-float-home' aria-label='GT Atlas, all stories'>
+        <Link href={home} className='gtp-float-home' aria-label='GT Atlas, all stories'>
           <PressMark size={26} />
         </Link>
-        {story.look === 'book' ? <BookBody story={story} /> : <SplitBody story={story} next={next} />}
+        {edition === 'magazine' ? <FeatureBody story={story} next={next} /> : story.look === 'book' ? <BookBody story={story} /> : <SplitBody story={story} next={next} />}
       </div>
     </SliderStyleContext>
+    </EditionContext>
   );
 }
 
@@ -77,6 +86,7 @@ export default function Reader({ story, next }: Props) {
    left edge. On a narrow screen the stage goes away and each figure's plate
    sits in the text where the figure was. */
 function SplitBody({ story, next }: Props) {
+  const edition = useEdition();
   const { blocks, figures } = story;
   const [plate, setPlate] = useState(0);
   const [section, setSection] = useState(0);
@@ -188,7 +198,7 @@ function SplitBody({ story, next }: Props) {
       <div className='gtp-reader-body'>
         {story.look === 'fuma' ? (
           <div className='gtp-fuma-nav'>
-            <Link href='/press' className='gtp-fuma-home' aria-label='GT Atlas, all stories'>
+            <Link href={homeOf(edition)} className='gtp-fuma-home' aria-label='GT Atlas, all stories'>
               <PressMark size={24} />
             </Link>
             <MaskToc items={headings} current={section} label='Sections' />
@@ -323,10 +333,10 @@ function SplitBody({ story, next }: Props) {
             {next ? (
               <>
                 <span className='gtp-end-label'>Next</span>
-                <Link href={`/press/${next.slug}`}>{next.title}</Link>
+                <Link href={storyHref(edition, next.slug)}>{next.title}</Link>
               </>
             ) : null}
-            <Link className='gtp-end-index' href='/press'>
+            <Link className='gtp-end-index' href={homeOf(edition)}>
               <IndexIcon size={14} />
               Back to the index
             </Link>

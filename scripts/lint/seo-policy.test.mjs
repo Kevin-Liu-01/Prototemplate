@@ -73,7 +73,7 @@ test('GT Atlas: a story that is a GT post takes the post as its canonical; the r
 });
 
 test('GT Atlas directions: design studies of the press page, noindex with their own canonical', () => {
-  for (const path of ['/press/directions', '/press/directions/riffle', '/press/directions/measure']) {
+  for (const path of ['/press/directions', '/press/directions/riffle', '/press/directions/measure', '/press/shelf', '/press/shelf/translating-euclid', '/press/shelf/fuma-nama']) {
     assert.deepEqual(policyFor(path), study(path), path);
   }
 });

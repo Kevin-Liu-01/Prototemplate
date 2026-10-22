@@ -116,7 +116,7 @@ function Quote({ block }: { block: Extract<Block, { kind: 'note' }> }) {
 }
 
 /** A small picture as a one-frame figure, so it shows as every picture does: on the stage beside the text, or centred in the text on a narrow screen. */
-function sideFigure(b: Extract<Block, { kind: 'side' }>): PlateFigure {
+export function sideFigure(b: Extract<Block, { kind: 'side' }>): PlateFigure {
   return { id: b.frame.src, label: null, frames: [b.frame], caption: b.caption, credit: b.credit, n: 0, live: null, light: null };
 }
 
@@ -509,7 +509,7 @@ function longDate(iso: string): string {
 }
 
 /** One figure in the flow of the text, its caption under it; a carousel shows the frame chosen above a row of all of them. */
-function PrintFigure({ figure, tallest = '78vh' }: { figure: PlateFigure; tallest?: string }) {
+export function PrintFigure({ figure, tallest = '78vh' }: { figure: PlateFigure; tallest?: string }) {
   const [shown, setShown] = useState(0);
   const frames = figure.frames;
   const frame = frames[shown];

@@ -23,9 +23,9 @@ const SPY_MARGIN = '0px 0px -90% 0px';
 const SETTLE_MS = 1200;
 
 const LEAD =
-  'GT Atlas is where General Translation publishes long writing. Each story is a book on a shelf, with a cover of its own, and it opens in pages set for what it is about.';
+  'GT Atlas is where General Translation publishes long writing. Each story is an issue of a magazine, with a cover, art and colors of its own, and it reads as a magazine feature.';
 const NOTE =
-  'These notes give the reasons for a magazine, then show the three ways a story is set so far: the docs reader, Fumadocs’ own interface and a printed book. The covers, Taylor Fang’s seven directions for the cover and the languages follow.';
+  'These notes give the reasons for a magazine and show the magazine as it stands. Then come the shelf it grew from, kept to explore, and the shelf’s three ways of setting a story: the docs reader, Fumadocs’ own interface and a printed book. The covers, Taylor Fang’s seven directions for the cover and the languages follow.';
 
 /** A capture; 1440 by 900 unless it says otherwise. */
 type Figure = { src: string; alt: string; caption: string; width?: number; height?: number };
@@ -39,19 +39,35 @@ const PARTS: readonly Part[] = [
     note: 'Long writing',
     lead: 'Our long posts carry many figures, and the blog sets every figure in the text column. A reader scrolls past each picture to keep reading and loses the paragraph that explains it.',
     body: [
-      'Atlas sets a story’s text and its figures side by side. The figure beside the text changes as the reader reaches the paragraph that discusses it. A figure can be live: the table of contents, the corner radii and the hit list from the docs essays are rebuilt in the page, so the reader can use what the paragraph describes.',
-      'The model is Stripe Press: a shelf of books, each with a cover designed for it. Atlas gives each of our stories the same treatment, and the shelf is the index.',
+      'A figure in Atlas can be live: the table of contents, the corner radii and the hit list from the docs essays are rebuilt in the page, so the reader can use what the paragraph describes.',
+      'The first model was Stripe Press: a shelf of books, each with a cover designed for it. The magazine keeps a cover for every story and sets each one as a feature, with its own art, headline and colors.',
       'General Translation translates software, so the magazine reads in nine languages. The flags under the shelf set every title in the reader’s language, and the globe shows a city where each language is spoken.',
-      'A story can be set in the look of its subject. Fuma Nama’s profile is set in Fumadocs, the interface he made, and the history of Euclid’s Elements is set as a printed book.',
+      'A story takes its look from its subject. In the magazine each story’s colors and drawings come from what it is about; on the shelf, Fuma Nama’s profile was set in Fumadocs, the interface he made, and the history of Euclid’s Elements as a printed book.',
       'Atlas is one module, src/app/press/_press in Prototemplate, with its own type and colors, so it can move to a General Translation subdomain without the hub around it.',
     ],
-    figures: [{ src: '/shots/atlas/shelf.webp', alt: 'The GT Atlas shelf: four books in a row, turned to show their spines', caption: 'The shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' }],
+    figures: [{ src: '/shots/atlas/rack.webp', alt: 'The GT Atlas front page: four magazines in a row, each with its cover lines', caption: 'The front page. The magazine under the pointer turns to face the reader and lifts; a click opens the story.' }],
+  },
+  {
+    id: 'magazine',
+    title: 'The magazine',
+    note: 'Every story',
+    lead: 'Every story reads as a magazine feature: an opening spread with the story’s art, a Bodoni headline, a deck and the byline, then one column of Newsreader at 20px with a drop cap, section heads under the story’s own mark, pull quotes in its own words, and figures set wider than the text.',
+    body: [
+      'Each story brings its own colors for both themes and its own drawings. Euclid opens on the 1607 scan, with its title in Chinese down the edge of the spread and the vermilion seal, and its sections open under the first construction of Book I. Designing docs sets the people it is for in cobalt italics and marks its sections with the docs page as stacked panels. Rewriting docs sets “and agents” into its headline as a proofreader’s insertion over a red caret. Fuma Nama’s name stands alone over his philosophy, and his sections open under the line of the Fumadocs table of contents.',
+      'On the front page each story is a thin magazine with its cover lines over its art: the masthead, the issue, the title in the reader’s language, the deck and the authors. It follows Riffle, the first of Taylor Fang’s directions, with the lines set large enough to read.',
+      'The shelf, the direction before the magazine, is kept to explore: the same stories as hardcovers on a shelf, each read in the look the next three parts describe.',
+    ],
+    links: [{ label: 'The shelf', href: '/press/shelf', text: 'GT Atlas before the magazine: each story a book on one shelf, read in a look of its own.' }],
+    figures: [
+      { src: '/shots/atlas/feature.webp', alt: 'Translating Euclid as a magazine feature: the headline beside the 1607 scan', caption: 'Translating Euclid’s opening spread: the headline and deck on the paper, the scan with its title in Chinese and the seal.' },
+      { src: '/shots/atlas/shelf.webp', alt: 'The GT Atlas shelf: four books in a row, turned to show their spines', caption: 'The shelf, kept at /press/shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' },
+    ],
   },
   {
     id: 'docs-reader',
     title: 'The docs reader',
     note: 'Designing docs, Rewriting docs',
-    lead: 'The two docs essays use the split reader: the text on the left, a stage on the right that shows the figure the reader has reached, and a rail of ticks at the left edge that marks each section.',
+    lead: 'On the shelf, the two docs essays use the split reader: the text on the left, a stage on the right that shows the figure the reader has reached, and a rail of ticks at the left edge that marks each section.',
     body: [
       'A figure with several views has a slider in its foot, a pill whose labels show through the thumb as it passes. The stage opens on the story’s live cover.',
     ],
@@ -61,7 +77,7 @@ const PARTS: readonly Part[] = [
     id: 'fumadocs',
     title: 'Fumadocs’ own look',
     note: 'Fuma Nama',
-    lead: 'Fuma Nama’s profile is set in the interface he built: Fumadocs’ neutral greys, sans text, cards with a hairline border, and his orange.',
+    lead: 'On the shelf, Fuma Nama’s profile is set in the interface he built: Fumadocs’ neutral greys, sans text, cards with a hairline border, and his orange.',
     body: [
       'His table of contents replaces the rail. It is the one Fumadocs ships: a line down the headings, drawn as an SVG path and used as a mask, so the orange thumb shows only where the line runs and follows it into the nested headings. Every slider in the story is drawn the same way, as a stepped line under its labels.',
     ],
@@ -71,7 +87,7 @@ const PARTS: readonly Part[] = [
     id: 'printed-page',
     title: 'A printed book',
     note: 'Translating Euclid',
-    lead: 'Translating Euclid is the history of a book, so Taylor Fang set it as one: light brown paper taken from the cover scan’s own paper, one serif face (Newsreader), a title page, and a stage beside the text for its pictures.',
+    lead: 'On the shelf, Translating Euclid is set as the book it is about, by Taylor Fang: light brown paper taken from the cover scan’s own paper, one serif face (Newsreader), a title page, and a stage beside the text for its pictures.',
     body: [
       'On a wide screen the text keeps to the left 61.8% at a 620px measure and the stage holds the rest: the cover, then each of the story’s 21 pictures with a short caption that links to its source, fading from one to the next as the reader reaches the paragraph about it. The stage empties at the sources. Notes sit in the margin level with their numbers, and on a phone each picture and note follows its paragraph.',
       'It is still the shared reader, with the same theme switch, monogram home and crossfade from the shelf as the other stories. The first figure shows the first eight definitions of Book I in five versions, English, Greek, Arabic, Latin and Chinese: the globe turns to each city in turn every six seconds until the reader picks one.',
@@ -256,7 +272,7 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
         updated={updated}
         facts={[
           { icon: 'book', key: 'Stories', value: 4 },
-          { icon: 'columns', key: 'Looks', value: 3 },
+          { icon: 'columns', key: 'Editions', value: 2 },
           { icon: 'sparkles', key: 'Cover directions', value: 7 },
         ]}
         contents={

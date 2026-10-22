@@ -190,6 +190,31 @@ export const STORIES: readonly StoryEntry[] = [
   },
 ];
 
+/** A pull quote: words from the story set large after the paragraph that holds `after`, and who said them when it is a quotation. */
+export type Pull = { after: string; text: string; by?: string };
+
+/* The magazine's pull quotes, each the story's own words, set after the
+   paragraph they come from (Feature.tsx). */
+export const PULLS: Record<string, readonly Pull[]> = {
+  'translating-euclid': [
+    { after: 'Very few texts have been passed to the modern world through a more serpentine path', text: 'Very few texts have been passed to the modern world through a more serpentine path than Euclid’s Elements.' },
+    { after: 'the deductive method is not self-evident', text: 'The deductive method is not self-evident, as we tend to treat it centuries later, but a system of conventions.' },
+  ],
+  'designing-docs-for-humans': [
+    { after: 'becomes even more important in the world of AI slop', text: 'An intuitive, intentional docs interface becomes even more important in the world of AI slop.' },
+    { after: 'are telltale signs of AI design', text: 'Eyebrow text, random animations that move in multiple dimensions, and extraneous boxes with rounded corners are telltale signs of AI design.' },
+  ],
+  'rewriting-our-docs': [
+    { after: 'agents now comprise a majority of docs readers', text: 'Agents now comprise a majority of docs readers.' },
+    { after: 'A cloud agent also runs daily and syncs docs with shipped behavior', text: 'A cloud agent runs daily and syncs the docs with shipped behavior.' },
+  ],
+  'fuma-nama': [
+    { after: 'What someone else might feel in drawing, I feel in coding', text: 'What someone else might feel in drawing, I feel in coding.', by: 'Fuma Nama' },
+    { after: 'Even if I started again from scratch', text: 'Even if I started again from scratch, I think Fumadocs would probably be the same shape.', by: 'Fuma Nama' },
+    { after: 'Zero issues on my repositories', text: 'Zero issues on my repositories, that’s kind of my goal.', by: 'Fuma Nama' },
+  ],
+};
+
 export const AUTHORS: Record<string, string> = {
   kevin: 'Kevin Liu',
   taylor: 'Taylor Fang',

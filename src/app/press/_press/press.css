@@ -606,6 +606,9 @@
   .gtp-shelf-item { top: calc(46% - var(--shelf-bh) / 2); scroll-snap-align: center; scroll-margin-left: 0; }
   .gtp-dismiss { top: 16px; right: 16px; }
   .gtp-band { left: 20px; right: 20px; bottom: 16px; }
+  /* the flags wrap under one another beside the globe, so the view switch keeps its place at the right edge */
+  .gtp-band .gtp-instrument { flex: 1; min-width: 0; }
+  .gtp-band .gtp-flags { flex-wrap: wrap; gap: 4px 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

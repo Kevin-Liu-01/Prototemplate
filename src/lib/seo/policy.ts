@@ -9,6 +9,7 @@
  *   /blog/<slug>                         index, canonical on generaltranslation.com/en-US/blog, not listed
  *   /press/<slug> of a GT post           index, canonical on generaltranslation.com/en-US/blog, not listed
  *   /press/directions and its pages      noindex, self canonical, not listed (design studies of the press page)
+ *   /press/shelf and its pages           noindex, self canonical, not listed (the shelf direction, kept explorable)
  *   each private page and its subpages   noindex, nofollow, self canonical, not listed (PRIVATE_PATHS)
  *   every other path                     index, self canonical on www, listed
  *
@@ -102,7 +103,7 @@ export function policyFor(path: string): SeoPolicy {
     return { index: false, follow: false, canonical: self, inSitemap: false };
   }
 
-  if (p === '/press/directions' || p.startsWith('/press/directions/')) {
+  if (p === '/press/directions' || p.startsWith('/press/directions/') || p === '/press/shelf' || p.startsWith('/press/shelf/')) {
     return { index: false, canonical: self, inSitemap: false };
   }
 

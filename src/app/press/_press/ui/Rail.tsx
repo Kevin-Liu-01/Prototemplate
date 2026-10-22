@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRef, type CSSProperties, type Ref } from 'react';
 
+import { homeOf, useEdition } from '../edition';
 import PressMark from './PressMark';
 
 export type RailMark = { key: string; label: string; at: number };
@@ -30,6 +31,7 @@ type Props = {
    caption at the foot names where the reader is. */
 export default function Rail({ marks, current, onSeek, onJump, railRef, label, start = 0, caption }: Props) {
   const track = useRef<HTMLDivElement>(null);
+  const home = homeOf(useEdition());
   const dragging = useRef(false);
 
   const seek = (clientY: number) => {
@@ -41,7 +43,7 @@ export default function Rail({ marks, current, onSeek, onJump, railRef, label, s
 
   return (
     <nav ref={railRef} className='gtp-rail' aria-label={label}>
-      <Link href='/press' className='gtp-rail-home' aria-label='GT Atlas, all stories'>
+      <Link href={home} className='gtp-rail-home' aria-label='GT Atlas, all stories'>
         <PressMark size={30} />
       </Link>
       <div

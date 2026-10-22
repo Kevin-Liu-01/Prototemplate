@@ -6,6 +6,7 @@ import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointer
 
 import type { StoryCard } from './content';
 import { dms } from './coords';
+import { EditionContext, homeOf, storyHref, type Edition } from './edition';
 import { useLayoutWork, useMountEffect } from './hooks';
 import { LANGS, TOPIC_NAMES, TOPICS, type Lang, type LangCode, type Topic } from './stories';
 import { bookTitle } from './titles';
@@ -43,9 +44,13 @@ const FIRST_PLACES = Object.fromEntries(LANGS.map((l) => [l.code, 0])) as Record
    at the foot set the titles' language and move the coordinates in the
    corner to one of its cities, flipping like a split-flap board; the globe
    beside them opens into the locator, the city on the globe with its
-   coordinates. */
-export default function Landing({ catalog }: { catalog: StoryCard[] }) {
+   coordinates. On the magazine's front page (/press) each story stands as a
+   thin magazine with its cover lines; on the shelf kept from the direction
+   before (/press/shelf), as a hardcover. */
+export default function Landing({ catalog, edition = 'magazine' }: { catalog: StoryCard[]; edition?: Edition }) {
   const router = useRouter();
+  const format = edition === 'magazine' ? 'magazine' : 'book';
+  const home = homeOf(edition);
   const [active, setActive] = useState(0);
   const [mode, setMode] = useState<Mode>('row');
   const [pressed, setPressed] = useState<number | null>(null);
@@ -77,7 +82,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
   const span = sizes.reduce((sum, k) => sum + k, 0);
 
   // the stack, first story on top: each book's centre height from the stack's middle, y down
-  const depths = catalog.map(() => Math.round(bookDepth() * SHELF_DEPTH));
+  const depths = catalog.map(() => Math.round(bookDepth(format) * SHELF_DEPTH));
   const total = depths.reduce((sum, d) => sum + d, 0) + STACK_GAP * (n - 1);
   let top = -total / 2;
   const heights = depths.map((d) => {
@@ -127,7 +132,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
   /** Opens a story through the press's crossfade (transition.ts). */
   const open = (i: number) => {
     const s = catalog[i];
-    if (s) move((href) => router.push(href), `/press/${s.slug}`);
+    if (s) move((href) => router.push(href), storyHref(edition, s.slug));
   };
 
   // back from a story: the crossfade can capture the shelf now
@@ -220,8 +225,10 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
     ));
 
   return (
+    <EditionContext value={edition}>
     <div
       className='gtp gtp-landing'
+      data-edition={edition}
       data-mode={mode}
       data-drag={dragging}
       data-langs={globeOpen}
@@ -254,7 +261,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
             {TOPICS.map((x) => (
               <a
                 key={x}
-                href={`/press?topic=${x}`}
+                href={`${home}?topic=${x}`}
                 aria-current={topic === x ? 'true' : undefined}
                 onClick={(e) => {
                   e.preventDefault();
@@ -299,7 +306,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
                   setActive(i);
                   setHover(i);
                   // fetch the story while the pointer is on its book, so the move can start as soon as it is clicked
-                  router.prefetch(`/press/${s.slug}`);
+                  router.prefetch(storyHref(edition, s.slug));
                 }}
                 onPointerMove={(e) => {
                   if (drag.current.moved) return;
@@ -319,6 +326,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
                 <span className='gtp-shelf-shadow' aria-hidden='true' />
                 <Book
                   className='gtp-book-shelf'
+                  format={format}
                   story={s}
                   title={s.titles[code]}
                   lang={lang}
@@ -328,7 +336,7 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
                 />
                 <Link
                   className='gtp-shelf-hit'
-                  href={`/press/${s.slug}`}
+                  href={storyHref(edition, s.slug)}
                   aria-label={bookTitle(s.titles[code], code)}
                   onClick={(e) => {
                     if (!plainClick(e)) return;
@@ -381,5 +389,6 @@ export default function Landing({ catalog }: { catalog: StoryCard[] }) {
         </div>
       </main>
     </div>
+    </EditionContext>
   );
 }

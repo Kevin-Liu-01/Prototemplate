@@ -9,7 +9,7 @@ const route = seoRoute({
   path: '/press',
   title: PAGE_NAMES.press.name,
   kind: 'page',
-  description: 'GT Atlas, the General Translation magazine: each story is a book with its own cover, set in pages of its own.',
+  description: 'GT Atlas, the General Translation magazine: each story is an issue with its own cover, its own art and its own palette.',
 });
 
 export const metadata = route.metadata;

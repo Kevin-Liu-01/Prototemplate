@@ -608,5 +608,64 @@
     "bytes": 22980,
     "license": "SIL Open Font License 1.1",
     "axis": "wght@400..700"
+  },
+  {
+    "file": "bodoni-moda-opsz.woff2",
+    "family": "Bodoni Moda",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/bodonimoda/v28/aFTQ7PxzY382XsXX63LUYJSKSKjWXFBP.woff2",
+    "bytes": 46248,
+    "license": "SIL Open Font License 1.1",
+    "axis": "opsz,wght@6..96,400..900"
+  },
+  {
+    "file": "bodoni-moda-opsz-italic.woff2",
+    "family": "Bodoni Moda",
+    "weight": 400,
+    "style": "italic",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/bodonimoda/v28/aFTS7PxzY382XsXX63LUYJSPeKrcW3JNsao.woff2",
+    "bytes": 53640,
+    "license": "SIL Open Font License 1.1",
+    "axis": "ital,opsz,wght@1,6..96,400..900"
+  },
+  {
+    "file": "newsreader-opsz-wght.woff2",
+    "family": "Newsreader",
+    "weight": 400,
+    "style": "normal",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/newsreader/v26/cY9AfjOCX1hbuyalUrK4397yjIJFJpc.woff2",
+    "bytes": 131848,
+    "license": "SIL Open Font License 1.1",
+    "axis": "opsz,wght@6..72,400..700"
+  },
+  {
+    "file": "newsreader-opsz-wght-italic.woff2",
+    "family": "Newsreader",
+    "weight": 400,
+    "style": "italic",
+    "subset": "latin",
+    "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    "source": "https://fonts.gstatic.com/s/newsreader/v26/cY9CfjOCX1hbuyalUrK439vCjohCBJWxZA.woff2",
+    "bytes": 147060,
+    "license": "SIL Open Font License 1.1",
+    "axis": "ital,opsz,wght@1,6..72,400..700"
+  },
+  {
+    "file": "gfs-didot-400-greek.woff2",
+    "family": "GFS Didot",
+    "weight": 400,
+    "style": "normal",
+    "subset": "greek",
+    "unicodeRange": "U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF",
+    "source": "https://fonts.gstatic.com/s/gfsdidot/v18/Jqzh5TybZ9vZMWFssvwSE-3HNyOWAbdA.woff2",
+    "bytes": 7220,
+    "license": "SIL Open Font License 1.1"
   }
 ]

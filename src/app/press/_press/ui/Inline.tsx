@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { Fragment } from 'react';
 
+import { useEdition } from '../edition';
 import type { Inline as InlineNode } from '../parse';
 
-/* The parsed inline text: links inside the press route through Next, the
-   rest open in place. */
+/* The parsed inline text: links inside the press route through Next and
+   stay in the edition the reader is in, the rest open in place. */
 export default function Inline({ nodes }: { nodes: InlineNode[] }) {
+  const edition = useEdition();
   return (
     <>
       {nodes.map((node, i) => {
@@ -37,7 +39,7 @@ export default function Inline({ nodes }: { nodes: InlineNode[] }) {
             );
           case 'link':
             return node.href.startsWith('/press') ? (
-              <Link key={i} href={node.href}>
+              <Link key={i} href={edition === 'shelf' && !node.href.startsWith('/press/shelf') ? node.href.replace(/^\/press/, '/press/shelf') : node.href}>
                 <Inline nodes={node.c} />
               </Link>
             ) : (
