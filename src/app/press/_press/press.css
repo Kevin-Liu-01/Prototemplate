@@ -922,23 +922,31 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
 .gtp-version-n { color: var(--gtp-ink-3); font-variant-numeric: tabular-nums; }
 /* the Arabic carries no numbering: its lines take the full width and read from the right edge */
 .gtp-version-text:only-child { grid-column: 1 / -1; }
+/* the first time the figure is shown it comes in part by part, as the opening's slides do: the globe, then its name
+   and coordinates, then the switch, then the definitions (Live.tsx, VersionsDemo) */
+.gtp-versions[data-shown='false'] :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { opacity: 0; }
+.gtp-versions[data-shown='true'] :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { animation: gtp-version-in 0.9s ease-in-out both; }
+.gtp-versions[data-shown='true'] :is(.gtp-version-meta, .gtp-versions-coords) { animation-delay: 0.35s; }
+.gtp-versions[data-shown='true'] .gtp-stops { animation-delay: 0.7s; }
+.gtp-versions[data-shown='true'] .gtp-version-lines { animation-delay: 1.05s; }
 /* a new version's definitions fade in once the reader or the clock has changed it */
 .gtp-versions[data-moved='true'] .gtp-version-lines { animation: gtp-version-in 1s ease-in-out both; } /* as slow and even as the globe's turn beside it */
 @keyframes gtp-version-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .gtp-versions[data-moved='true'] .gtp-version-lines { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .gtp-versions:is([data-moved='true'], [data-shown='true']) :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { animation: none; } }
 /* in the book's page and on its stage, the page's own sizes for paragraphs and lists give way to the figure's */
 :is(.gtp-print-page, .gtp-print-stage) .gtp-versions p { margin: 0; }
 :is(.gtp-print-page, .gtp-print-stage) :is(.gtp-versions-coords, .gtp-version-meta) { font-size: 12px; line-height: 1.4; }
-:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-version-lines { max-width: 420px; margin: 0; padding: 0; } /* a measure of its own, so the Arabic reads from a near right edge */
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-version-lines { margin: 0; padding: 0; }
 :is(.gtp-print-page, .gtp-print-stage) .gtp-version-line { margin: 0; font-size: inherit; line-height: inherit; }
 /* on the stage the globe stands over its reader, so the definitions keep a full line in the narrower room */
 .gtp-print-stage .gtp-versions { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 28px 0; }
 .gtp-print-stage .gtp-versions-map { width: min(300px, 100%); }
-.gtp-print-stage .gtp-versions-reader { width: min(420px, 100%); }
-/* in the book, the globe's switch and its definitions sit centred under it, as its label and coordinates do:
-   the names centred in a row, each definition a centred line with its number before it */
+/* in the book, the globe's switch sits centred under it, as its label and coordinates do, and the definitions fill a
+   box exactly as wide as the switch's names: the box takes the switch's width alone (the definitions are contained
+   so they add none), and each definition is justified across it with its number before it */
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions-reader { justify-self: center; max-width: 100%; }
 :is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-stops[data-style='book'] { justify-self: center; justify-content: center; margin-left: 0; }
-:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-version-lines { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; margin-inline: auto; text-align: center; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-version-lines { display: grid; grid-template-columns: minmax(0, 1fr); max-width: none; padding-inline: 8px; contain: inline-size; text-align: justify; hyphens: auto; }
 :is(.gtp-print-page, .gtp-print-stage) .gtp-version-line { display: block; grid-column: auto; }
 :is(.gtp-print-page, .gtp-print-stage) .gtp-version-n { margin-inline-end: 0.5em; }
 

@@ -383,19 +383,22 @@ const DWELL = 6000;
 /** The globe's turn from one city to the next: slow, setting off and landing gently. */
 const TURN = { ms: 3500, curve: easeInOut };
 
-/** The coordinates tick over at a third of the board's usual speed, in step with the slow turn. */
-const TICK_PACE = 3;
+/** The coordinates tick over at half the board's usual speed, in step with the slow turn. */
+const TICK_PACE = 2;
 
 /* One version at a time: the globe turns to the city it was made in, the
    version's name and its coordinates tick over under it, and its eight
    definitions replace the last version's with a slow fade, each numbered
-   as its edition numbers them. It steps through the versions on its own
-   while in view, until the reader picks one from the switch or a dot. */
+   as its edition numbers them. The first time it is shown it comes in part
+   by part (press.css). It steps through the versions on its own while it is
+   shown, until the reader picks one from the switch or a dot. */
 export function VersionsDemo() {
   const [chosen, setChosen] = useState(0);
   const [held, setHeld] = useState(false);
   // the definitions fade only once a change has happened, so the figure is whole before anything moves
   const [moved, setMoved] = useState(false);
+  // null until mounted, so the figure is whole without script; false until it is first shown, then true
+  const [shown, setShown] = useState<boolean | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const version = VERSIONS[chosen] ?? VERSIONS[0]!;
 
@@ -409,19 +412,55 @@ export function VersionsDemo() {
     show(i);
   };
 
-  // the clock: on to the next version every few seconds while the figure is in view and the reader has not picked one
+  // shown: on the book's stage when the stage turns to it, in a page when it scrolls well into view
   useMountEffect(() => {
     const el = root.current;
     if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    setShown(false);
+    const item = el.closest<HTMLElement>('.gtp-print-stage-item');
+    if (item) {
+      const check = () => {
+        if (item.dataset.shown === 'true') setShown(true);
+      };
+      const watch = new MutationObserver(check);
+      watch.observe(item, { attributes: true, attributeFilter: ['data-shown'] });
+      check();
+      return () => watch.disconnect();
+    }
+    const seen = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setShown(true);
+      },
+      { rootMargin: '0px 0px -25% 0px' }
+    );
+    seen.observe(el);
+    return () => seen.disconnect();
+  });
+
+  // the clock: each version stands a few seconds once shown, then the next, until the reader picks one
+  useMountEffect(() => {
+    const el = root.current;
+    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const item = el.closest<HTMLElement>('.gtp-print-stage-item');
     let visible = false;
+    let since = 0;
     const observer = new IntersectionObserver(([entry]) => {
       visible = Boolean(entry?.isIntersecting);
     });
     observer.observe(el);
     const timer = window.setInterval(() => {
-      if (!visible || el.dataset.held === 'true') return;
-      show((Number(el.dataset.chosen ?? 0) + 1) % VERSIONS.length);
-    }, DWELL);
+      const onScreen = visible && el.dataset.shown === 'true' && (!item || item.dataset.shown === 'true');
+      if (!onScreen || el.dataset.held === 'true') {
+        since = 0;
+        return;
+      }
+      const now = performance.now();
+      if (!since) since = now;
+      else if (now - since >= DWELL) {
+        since = now;
+        show((Number(el.dataset.chosen ?? 0) + 1) % VERSIONS.length);
+      }
+    }, 250);
     return () => {
       observer.disconnect();
       window.clearInterval(timer);
@@ -429,7 +468,7 @@ export function VersionsDemo() {
   });
 
   return (
-    <div ref={root} className='gtp-versions' data-chosen={chosen} data-held={held} data-moved={moved}>
+    <div ref={root} className='gtp-versions' data-chosen={chosen} data-held={held} data-moved={moved} data-shown={shown ?? undefined}>
       <div className='gtp-versions-map'>
         <Globe place={version} cell={2} tilt={0} graticule label={false} turn={TURN} className='gtp-versions-globe'>
           {/* each city's dot chooses the version made there */}
