@@ -60,6 +60,7 @@ type Indicator = { x: number; w: number };
 /** The pill's inset inside the active option on every side (Seg.css .pt-seg-ind). */
 const IND_INSET = 2;
 
+/* after a pointer press the focus ring would stay on the option; a key press (a click whose detail is 0) keeps focus where the reader is */
 function letGo(): void {
   const focused = document.activeElement;
   if (focused instanceof HTMLElement && focused.closest('.pt-seg')) focused.blur();
@@ -84,10 +85,10 @@ function SegControl<T extends string>({ options, value, onChange, label, iconOnl
   const [ind, setInd] = useState<Indicator | null>(null);
 
   const first = options[0]?.value;
-  const pick = (next: T) => {
+  const pick = (next: T, pointer: boolean) => {
     if (next === value && first !== undefined && next !== first) onChange(first);
     else onChange(next);
-    letGo();
+    if (pointer) letGo();
   };
 
   const place = () => {
@@ -143,7 +144,7 @@ function SegControl<T extends string>({ options, value, onChange, label, iconOnl
           ariaLabel={iconOnly ? option.label : undefined}
           title={option.title}
           pressed={option.value === value}
-          onClick={() => pick(option.value)}
+          onClick={(event) => pick(option.value, event.detail > 0)}
         />
       ))}
     </div>

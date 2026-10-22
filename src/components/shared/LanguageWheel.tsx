@@ -98,7 +98,10 @@ export default function LanguageWheel({
         return;
       }
 
+      /* the orbits and the arc run only while the wheel is on screen */
+      let visible = true;
       const tick = (_t: number, deltaTime: number) => {
+        if (!visible) return;
         const dt = Math.min(deltaTime, 64) / 1000;
         for (const o of orbs) {
           o.ang += o.spin * dt;
@@ -121,7 +124,11 @@ export default function LanguageWheel({
         trigger: el,
         start: 'top bottom',
         end: 'bottom top',
-        onToggle: (self) => (self.isActive ? sweep.play() : sweep.pause()),
+        onToggle: (self) => {
+          visible = self.isActive;
+          if (visible) sweep.play();
+          else sweep.pause();
+        },
       });
 
       return () => {
