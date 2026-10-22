@@ -2,6 +2,126 @@
 title: 'Rails, bands and spacers'
 description: 'The landing grammar as live parts: one rail, full-width bands, hatch spacers and heads, with the widths and paddings at every breakpoint.'
 icon: Columns
+sources:
+  - src/components/docs/demos/layouts
+  - src/app/d/toolchain/styles.css
+  - src/app/d/_v0/v0-pages.css
+  - src/app/d/production/prod-shell.css
+  - src/app/d/production/sections/hero-agent.css
+  - src/app/d/toolchain/sections/darkband-v3.css
+  - src/app/prototemplate.css
+  - src/components/viewer/Sheet.css
 ---
 
-The landing grammar as live parts: one rail, full-width bands, hatch spacers and heads, with the widths and paddings at every breakpoint.
+import { HeadCtaDemo, JunctionDemo, PageSkeletonDemo } from '@/components/docs/demos/layouts/lazy';
+
+A General Translation landing page is one ruled column. The column draws its two lines once, the bands inside it close each seam with one rule, hatch spacers sit between the bands, and each section opens with a head: a heading and one lead. The production mirror at [/d/production](/d/production) rebuilds the shipped site page for page, and every number on this page comes from its stylesheets and the toolchain engine under them.
+
+## The page skeleton
+
+Add, remove and reorder the parts of a page, then move the width between 390 and 1440 pixels. Each part stands at the height the engine's numbers give it at that width, and the plate checks every seam for one owner.
+
+<PageSkeletonDemo />
+
+Rail picks the column: 1104 pixels for the production mirror, or 1170 for the toolchain engine and the hub's own article. Rules switches between the shipped ownership, where a section gives up its bottom rule to a spacer or a band under it, and a page where every part draws its own edges. A doubled seam is marked in the accent on the skeleton and in the list of parts. Measures tints each part's padding, and the readout under the skeleton lists the numbers at the current width. Text is drawn as bars, so the skeleton reads at any scale.
+
+### The column
+
+| Column | Width | Lines | Source |
+| --- | --- | --- | --- |
+| Production mirror | `min(1104px, 100%)` | `border-inline` on the wrapper, removed at 620px and under | `prod-shell.css` |
+| Toolchain engine | `min(1170px, 100%)` | the same | `toolchain/styles.css` |
+| Hub article | `min(1170px, 100%)` (`--pt-rail`) | `border-inline` on the wrapper | `prototemplate.css` |
+| Reading column | 1280px at most, 56px padding a side (16px at 900px and under) | none: the toolbar's rule and the sidebar's edge are the only lines beside it | `Sheet.css` |
+
+The wrapper draws both lines with its own `border-inline`, and a band inside it draws no side rails. A full-bleed band sits outside the wrapper and draws the pair from its own inner column at the same two x positions, so each line runs through the band unbroken. On production pages a registration cross sits where each seam meets a line: 9 pixels across, at 38 percent ink in light and 34 percent in dark.
+
+### Bands and spacers
+
+Every value below is a `clamp()` of the viewport width, so a band's padding moves continuously between the breakpoints. The columns give the resolved values at four widths.
+
+| Value | Rule | 1440 | 1024 | 720 | 390 |
+| --- | --- | --- | --- | --- | --- |
+| Gutter (`--tc-gut`) | `clamp(20px, 3.1vw, 36px)` | 36 | 31.7 | 22.3 | 20 |
+| Head, over (production) | `clamp(26px, 2.8vw, 36px)`, 72px at 720 and under | 36 | 28.7 | 72 | 72 |
+| Head, over (toolchain) | `clamp(54px, 6.4vw, 82px)`, 72px at 720 and under | 82 | 65.5 | 72 | 72 |
+| Head, under | `clamp(28px, 3.2vw, 38px)`, 36px at 720 and under | 38 | 32.8 | 36 | 36 |
+| Hatch spacer | `clamp(28px, 3.4vw, 40px)`; 36px (production) or 40px (toolchain) at 720 and under | 40 | 34.8 | 36 | 36 |
+| Cell, over | `clamp(26px, 3vw, 36px)`, `clamp(34px, 6vw, 42px)` at 720 and under | 36 | 30.7 | 42 | 34 |
+| Cell, under | `clamp(30px, 3.4vw, 40px)`, `clamp(38px, 6.5vw, 46px)` at 720 and under | 40 | 34.8 | 46 | 38 |
+| Band column, over (production) | `clamp(28px, 3vw, 40px)`, 36px at 720 and under | 40 | 30.7 | 36 | 36 |
+| Band column, over (toolchain) | `clamp(60px, 7vw, 96px)` | 96 | 71.7 | 60 | 60 |
+| Band column, under | `clamp(56px, 7vw, 88px)` | 88 | 71.7 | 56 | 56 |
+| Hero, over and under | `clamp(44px, 5.6vw, 72px)` and `clamp(40px, 5vw, 64px)` | 72, 64 | 57.3, 51.2 | 44, 40 | 44, 40 |
+
+| Width | What changes |
+| --- | --- |
+| 1023px and under | Bento rows stack to one column: `BentoRow`, `shell.css` and every `.tc-row` variant fold at the same width. |
+| 760px and up | A production head holds one line (`white-space: nowrap`); an authored break still splits it in two. |
+| 720px and under | The mobile ladder: heads 72px over and 36px under, the heading at 36px on 1.18, the lead at 17px on 1.55 and 18px under the heading, buttons at 44px, the head's watermark and its authored break hidden. |
+| 620px and under | The column's two lines are removed, and the hero's buttons fill the column up to 440px. |
+
+The production spacer (`.v0-hatch`) is a 45 degree diagonal, 1 pixel in every 8 at 8.5 percent ink, between two rules it draws itself. The section above it gives up its bottom rule, and the spacer gives up its own bottom rule to a band below it, whose top rule closes that seam. The hub article's spacer is 42 pixels at minus 45 degrees and draws its bottom rule only, because every section of that article closes itself with its own bottom rule.
+
+## The head and the Cta row
+
+A head is a heading and at most one lead in a ruled box. The plate sets the production heads in real type at the width the slider gives and reads the heading's lines back: two at most, and one at desktop on production pages unless an authored break splits it.
+
+<HeadCtaDemo />
+
+Cta Row shows the hero's two buttons. The solid face with the ring is the page's primary action, and the outline face sits beside it. The two sit in equal columns as wide as the wider label, and at 620 pixels and under they fill the column up to 440 pixels, half the row each when both labels fit.
+
+| Part | Desktop | 720px and under |
+| --- | --- | --- |
+| Heading | `clamp(1.62rem, 2.5vw, 2.2rem)` on 1.06, -0.028em, weight 500 | 36px on 1.18 |
+| Lead | 15px on 1.62 in ink-2, 60ch wide, 13px under the heading | 17px on 1.55, 18px under the heading |
+| Watermark | a Heroicons solid glyph at 240px and 5 percent ink, 48px off the right edge; the Locadex mark at 343px | hidden |
+| Button | 38px tall, a 13.5px label, 17px of side padding, the 6px control corner | 44px tall, a 15px label |
+| Cta row | equal columns, a 10px gap, centered | fills the column up to 440px at 620px and under |
+| Ring | a blurred spectrum 2px outside the face at 60 percent opacity, on an 8px corner | the same |
+
+### Import and props
+
+The shipped site renders every button through gt-cloud's `Cta`; the mirror on this site writes the same `tc-btn` faces directly.
+
+```tsx
+import Cta from '@/components/landing/shared/Cta';
+
+<Cta ring href={SIGN_IN_HREF}>Get Started</Cta>;
+<Cta variant='outline' href='/docs'>Read the Docs</Cta>;
+```
+
+| Prop | Values | What it does |
+| --- | --- | --- |
+| `variant` | `'solid'`, `'outline'`, `'on-ink-solid'`, `'on-ink-outline'` | The ink face (white in dark), the hairline face, or the two faces for a hero on the black-hole field. |
+| `ring` | boolean | The spectrum ring that marks the page's primary action, once per band at most. |
+| `size` | `'sm'`, `'md'`, `'lg'` | 32, 38 or 44 pixels; at 720px and under every face is 44px and `sm` is 38px. |
+| `href`, `external` | string, boolean | A link, an external anchor, or a `<button>` when `href` is absent. |
+| `tracked` | an existing location slug | Fires the `cta_clicked` event with that slug; the slugs are fixed. |
+
+Labels are Title Case, with short function words lowercase after the first: Get Started, Get a Demo, Talk to Us, Read the Docs.
+
+## The line law
+
+Every seam is drawn once, by one owner. The plate draws one junction a pixel at a time, at about 20 times its size: the column's left line, a section above and a hatch spacer below. Each pixel is composited by the browser from the shell's own token alphas, so the plate reads the same in both themes. The inset at the corner is the same crop at its real size.
+
+<JunctionDemo />
+
+Seam picks who draws the rule. Spacer and Section are the two shipped arrangements, and the other three are the defect classes the line auditor (`scripts/lint/lines.mjs`) reports. Clip Ground turns off `background-clip: padding-box`, so the spacer's diagonals run under its own rule.
+
+| Case | What the auditor sees | The fix |
+| --- | --- | --- |
+| Doubled | two strokes from two owners 1 to 4 pixels apart along most of their run | one owner yields its edge |
+| Coincident | two strokes on one row, whose translucent inks stack darker | one owner yields its edge |
+| Missing | a junction between two blocks that no stroke closes | the owner the table names draws it |
+| Self-stack | a translucent border over the element's own translucent ground | `background-clip: padding-box` |
+
+| Junction | Owner | The other side |
+| --- | --- | --- |
+| The column and a band inside it | the wrapper's `border-inline` | the band draws no side rails |
+| The column and a full-bleed band | the band's inner column, at the column's edges | nothing beside the column |
+| A section and the next section | the upper section's bottom rule | the lower section draws no top |
+| A section and a spacer | the spacer's top rule | the section drops its bottom rule |
+| A spacer and a band | the band's top rule | the spacer drops its bottom rule |
+| A head and its bento row | the row's top rule | the head draws none |
+| Two cells in a row | the row's 1px gap over the hairline ground | the cells draw no borders |

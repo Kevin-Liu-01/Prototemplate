@@ -1,0 +1,479 @@
+/* The rails and bands plates: the page skeleton, the head and its Cta row,
+   and the junction under magnification. The skeleton's parts stand at the
+   heights PageSkeletonDemo computes from the engine's numbers; this sheet
+   draws their rules, their hatch and their skeleton type. */
+
+.dmo-lay-page {
+  --dmo-lay-tint: color-mix(in srgb, var(--pt-ink) 7%, transparent);
+  --dmo-lay-band: color-mix(in srgb, var(--pt-ink) 4%, var(--pt-paper));
+
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+}
+
+/* the column: one line at each edge, drawn once by the wrapper */
+.dmo-lay-rail {
+  position: relative;
+  box-sizing: border-box;
+  width: var(--lay-col);
+  margin-inline: auto;
+}
+
+.dmo-lay-rail.has-lines,
+.dmo-lay-band-in.has-lines {
+  border-inline: 1px solid var(--pt-hair);
+}
+
+/* a part: its own rules only where the owners give it one */
+.dmo-lay-part {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-clip: padding-box;
+}
+
+.dmo-lay-part.has-top {
+  border-top: 1px solid var(--pt-hair);
+}
+
+.dmo-lay-part.has-bottom {
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.dmo-lay-part.is-hatch {
+  background-image: repeating-linear-gradient(45deg, var(--pt-hatch) 0 1px, transparent 1px 8px);
+}
+
+/* a band runs the page's width; its own column draws the pair at the rail */
+.dmo-lay-part.is-band {
+  background-color: var(--dmo-lay-band);
+}
+
+.dmo-lay-band-in {
+  box-sizing: border-box;
+  width: var(--lay-col);
+  height: 100%;
+  margin-inline: auto;
+}
+
+/* Measures: the paddings take a tint and the content box keeps the ground */
+.dmo-lay-part.is-measured .dmo-lay-pad {
+  background: var(--dmo-lay-tint);
+}
+
+.dmo-lay-part.is-measured .dmo-lay-copy {
+  background: var(--pt-paper);
+}
+
+.dmo-lay-part.is-band.is-measured .dmo-lay-copy {
+  background: var(--dmo-lay-band);
+}
+
+/* ---------- skeleton parts ---------- */
+
+.dmo-lay-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.dmo-lay-copy.is-center .dmo-lay-ln {
+  justify-content: center;
+}
+
+.dmo-lay-gap {
+  display: block;
+  flex: none;
+}
+
+.dmo-lay-fig {
+  display: block;
+  flex: none;
+  width: 100%;
+  background: var(--pt-plate);
+}
+
+/* the Cta row: the solid face and the outline face at the button height */
+.dmo-lay-ctas {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dmo-lay-ctas.is-fill {
+  width: min(100%, 440px);
+  margin-inline: auto;
+}
+
+.dmo-lay-btn {
+  flex: none;
+  box-sizing: border-box;
+  width: 128px;
+  height: 100%;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+}
+
+.dmo-lay-btn.is-solid {
+  width: 116px;
+  border-color: var(--pt-ink);
+  background: var(--pt-ink);
+}
+
+.dmo-lay-ctas.is-fill .dmo-lay-btn {
+  flex: 1 1 0;
+  width: auto;
+}
+
+/* the bento row: the row's ground is the seam, its top rule the head's close */
+.dmo-lay-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(0, 1fr);
+  gap: 1px;
+  border-top: 1px solid var(--pt-hair);
+  background: var(--pt-hair);
+  background-clip: padding-box;
+}
+
+.dmo-lay-row.is-stacked {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.dmo-lay-cell {
+  min-width: 0;
+  background: var(--pt-paper);
+}
+
+/* the registration crosses: 9px, centered on each seam where it meets the rail */
+.dmo-lay-cross-row {
+  position: absolute;
+  left: 50%;
+  width: var(--lay-col);
+  height: 9px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.dmo-lay-cross-row > i {
+  position: absolute;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  background:
+    linear-gradient(var(--pt-cross), var(--pt-cross)) 4px 0 / 1px 9px no-repeat,
+    linear-gradient(var(--pt-cross), var(--pt-cross)) 0 4px / 9px 1px no-repeat;
+}
+
+.dmo-lay-cross-row > i:first-child {
+  left: -4px;
+}
+
+.dmo-lay-cross-row > i:last-child {
+  right: -4px;
+}
+
+/* ---------- the parts list in the controls row ---------- */
+
+.dmo-lay-parts {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-parts > li {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 9.5em) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 10px;
+  min-height: 40px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-parts-n {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-titanium);
+}
+
+.dmo-lay-parts-name {
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+}
+
+.dmo-lay-parts-note {
+  min-width: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-lay-parts > li.is-fault .dmo-lay-parts-note {
+  color: var(--docs-accent, #2f5ce0);
+}
+
+.dmo-lay-parts-acts {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.dmo-lay-adds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .dmo-lay-parts > li {
+    grid-template-columns: 22px minmax(0, 1fr) auto;
+  }
+
+  .dmo-lay-parts-note {
+    grid-column: 2 / -1;
+    grid-row: 2;
+  }
+}
+
+/* ---------- the head and the Cta row, in real type ---------- */
+
+.dmo-lay-hc .dmo-lay-rail {
+  background: var(--pt-paper);
+}
+
+/* the head: a heading and one lead in a ruled box; the row under it owns
+   the next seam, so the head's own rule is the box's close */
+.dmo-lay-head {
+  position: relative;
+  overflow: hidden;
+  padding: var(--m-head-top) var(--m-gut) var(--m-head-bottom);
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.dmo-lay-h2 {
+  position: relative;
+  margin: 0;
+  font-size: var(--m-h2);
+  line-height: var(--m-h2-lh);
+  letter-spacing: var(--m-h2-track);
+  font-weight: var(--pt-w-display);
+  font-feature-settings: var(--pt-ff-display);
+  color: var(--pt-ink);
+  text-wrap: balance;
+}
+
+.dmo-lay-h2.is-nowrap {
+  white-space: nowrap;
+}
+
+.dmo-lay-lead {
+  position: relative;
+  max-width: 60ch;
+  margin: var(--m-lead-gap) 0 0;
+  font-size: var(--m-lead);
+  line-height: var(--m-lead-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+/* the watermark: a meaning mark at 240px and 5 percent ink, 48px off the right edge */
+.dmo-lay-head-mark {
+  position: absolute;
+  right: -48px;
+  top: 50%;
+  width: 240px;
+  height: 240px;
+  transform: translateY(-50%);
+  color: var(--pt-ink);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.dmo-lay-head-mark.is-locadex {
+  display: block;
+  width: 343px;
+  height: 343px;
+  transform: translate(25%, -50%);
+  background-color: currentColor;
+  mask: url('/brand/locadex-mark.svg') center / contain no-repeat;
+}
+
+/* the hero's row: equal columns as wide as the wider face, centered */
+.dmo-lay-hero {
+  padding: 28px var(--m-gut);
+}
+
+.dmo-lay-acts {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 10px;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+/* 620px and under: the faces fill the column up to 440px, half the row each when both labels fit */
+.dmo-lay-acts.is-fill {
+  display: flex;
+  flex-wrap: wrap;
+  width: auto;
+  max-width: 440px;
+}
+
+.dmo-lay-acts.is-fill > * {
+  flex: 1 1 calc(50% - 5.05px);
+  min-width: max-content;
+}
+
+.dmo-lay-ring {
+  position: relative;
+  display: inline-flex;
+}
+
+/* the ring: the shared Cta's blurred spectrum two pixels outside the face */
+.dmo-lay-ring.is-on::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  /* lint-radius: allow the Cta ring's 8px corner, two past the face's 6px (v0-pages.css .tch-cta) */
+  border-radius: 8px;
+  background: linear-gradient(90deg, #db2777, #2563eb, #9333ea, #16a34a);
+  filter: blur(4px);
+  opacity: 0.6;
+}
+
+.dmo-lay-face {
+  position: relative;
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  box-sizing: border-box;
+  height: var(--m-btn);
+  padding: 0 17px;
+  border: 1px solid transparent;
+  border-radius: var(--pt-radius-control);
+  background-clip: padding-box;
+  font-size: var(--m-btn-type);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--m-btn-track);
+  white-space: nowrap;
+}
+
+.dmo-lay-face.is-solid {
+  background-color: var(--pt-ink);
+  color: var(--pt-paper);
+}
+
+/* the copy glyph sits 1.8px closer to its label than the arrow, so this face adds it back */
+.dmo-lay-face.is-copy {
+  gap: 8.8px;
+  padding-right: 18.8px;
+  border-color: var(--pt-hair);
+  color: var(--pt-ink);
+}
+
+.dmo-lay-acts.is-fill .dmo-lay-face {
+  padding-inline: 6px;
+}
+
+.dmo-lay-acts.is-fill .dmo-lay-face.is-copy {
+  padding-right: 7.8px;
+}
+
+/* ---------- the junction, magnified: one SVG unit per CSS pixel ---------- */
+
+.dmo-lay-jx {
+  position: relative;
+  width: min(100%, 560px);
+  margin-inline: auto;
+}
+
+.dmo-lay-jx-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.dmo-lay-jx-paper {
+  fill: var(--pt-paper);
+}
+
+.dmo-lay-jx-hatch {
+  fill: var(--pt-hatch);
+}
+
+.dmo-lay-jx-hair {
+  fill: var(--pt-hair);
+}
+
+.dmo-lay-jx-cross {
+  fill: var(--pt-cross);
+}
+
+/* the pixel grid: a paper line between pixels, so a 2px band shows its two rows */
+.dmo-lay-jx-grid {
+  fill: none;
+  stroke: var(--pt-paper);
+  stroke-width: 0.06;
+}
+
+.dmo-lay-jx-chip,
+.dmo-lay-jx-real {
+  position: absolute;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  background: var(--pt-paper);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  white-space: nowrap;
+}
+
+.dmo-lay-jx-chip {
+  padding: 1px 7px;
+}
+
+.dmo-lay-jx-chip.is-tl {
+  left: 8px;
+  top: 8px;
+}
+
+.dmo-lay-jx-chip.is-tr {
+  right: 8px;
+  top: 8px;
+}
+
+.dmo-lay-jx-chip.is-br {
+  right: 8px;
+  bottom: 8px;
+}
+
+/* the same crop at its real size */
+.dmo-lay-jx-real {
+  left: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px 5px 5px;
+}
+
+.dmo-lay-jx-real svg {
+  display: block;
+}
+
+/* the inline GT mark in a lead (GtLogoText): a 1.14em mask seated 0.21em under the baseline */
+.dmo-lay-gtword {
+  display: inline-block;
+  width: 1.14em;
+  height: 1.14em;
+  vertical-align: -0.21em;
+  background-color: currentColor;
+  mask: url('/brand/no-bg-gt-logo-light.png') center / contain no-repeat;
+}

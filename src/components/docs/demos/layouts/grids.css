@@ -1,0 +1,164 @@
+/* The grids and bentos plates: four ways a grid draws its seams, the
+   plate's own audit marks, and the shell's grid view at a stage width. */
+
+/* the frame stands for the column's two lines and the section's rules: the
+   grid inside sits flush to it when the row owns its seams, and inset when
+   the cells or the grid draw their own boxes */
+.dmo-lay-gs-frame {
+  --tc-hair: var(--pt-hair);
+
+  position: relative;
+  border: 1px solid var(--pt-hair);
+}
+
+.dmo-lay-gs-frame.is-borders,
+.dmo-lay-gs-frame.is-frames {
+  padding: 20px;
+}
+
+.dmo-lay-gs-grid {
+  display: grid;
+  gap: var(--gs-gap, 1px);
+}
+
+.dmo-lay-gs-cell {
+  position: relative;
+  min-width: 0;
+  min-height: 76px;
+  background: var(--pt-paper);
+}
+
+/* Row rules: the toolchain row draws a rule on the left of every cell but the first */
+.dmo-lay-gs-grid.is-rules > * + * {
+  border-left: 1px solid var(--pt-hair);
+}
+
+/* Cell borders: FeatureBento's rules, with its nth-child exclusions for eight cells */
+.dmo-lay-gs-grid.is-borders {
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  overflow: hidden;
+}
+
+.dmo-lay-gs-grid.is-borders > * {
+  border-right: 1px solid var(--pt-hair-soft);
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-gs-grid.is-borders[data-columns='4'] > :nth-child(4n),
+.dmo-lay-gs-grid.is-borders[data-columns='3'] > :nth-child(3n),
+.dmo-lay-gs-grid.is-borders[data-columns='2'] > :nth-child(2n) {
+  border-right: 0;
+}
+
+.dmo-lay-gs-grid.is-borders[data-columns='4'] > :nth-child(n + 5),
+.dmo-lay-gs-grid.is-borders[data-columns='3'] > :nth-child(n + 7),
+.dmo-lay-gs-grid.is-borders[data-columns='2'] > :nth-child(n + 7) {
+  border-bottom: 0;
+}
+
+/* Cell frames: every cell its own box */
+.dmo-lay-gs-grid.is-frames > * {
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+}
+
+/* the whole cell is the button that widens it or makes it taller */
+.dmo-lay-gs-hit {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: var(--pt-ink);
+  cursor: pointer;
+  transition: background var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.dmo-lay-gs-hit:hover {
+  background: var(--pt-plate);
+}
+
+.dmo-lay-gs-hit:focus-visible {
+  outline: 2px solid var(--docs-accent, #2f5ce0);
+  outline-offset: -2px;
+}
+
+.dmo-lay-gs-n {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-titanium);
+}
+
+.dmo-lay-gs-span {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-ink-2);
+}
+
+/* the audit's marks, in the plate's one accent */
+.dmo-lay-gs-marks {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.dmo-lay-gs-mark {
+  fill: var(--docs-accent, #2f5ce0);
+}
+
+.dmo-lay-gs-mark.is-missing {
+  fill: none;
+  stroke: var(--docs-accent, #2f5ce0);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.dmo-lay-gs-mark.is-bar {
+  fill: none;
+  stroke: var(--docs-accent, #2f5ce0);
+  stroke-width: 1.5;
+}
+
+.dmo-lay-gs-void {
+  fill: color-mix(in srgb, var(--docs-accent, #2f5ce0) 14%, transparent);
+  stroke: var(--docs-accent, #2f5ce0);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+@media (max-width: 640px) {
+  .dmo-lay-gs-frame.is-borders,
+  .dmo-lay-gs-frame.is-frames {
+    padding: 12px;
+  }
+
+  .dmo-lay-gs-cell {
+    min-height: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dmo-lay-gs-hit {
+    transition: none;
+  }
+}
+
+/* ---------- the grid view: the shell's stage, holding GridView ---------- */
+
+.dmo-lay-gv {
+  background: var(--pt-paper);
+}

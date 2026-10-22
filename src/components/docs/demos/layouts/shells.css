@@ -1,0 +1,541 @@
+/* The shells and frames plates: a model of the viewer shell with every
+   region where ViewerShell.css puts it, the slide and book bodies its
+   stage holds, the fixed sheet close up, and the plate's own parts. Each
+   region draws only the edges the junction table in DESIGN.md section 2
+   gives it: the sidebar its right edge, the toolbar its bottom edge, the
+   index panel its left edge. */
+
+.dmo-lay-shell {
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  overflow: hidden;
+}
+
+/* a model of a phone: the book tokens take their 900px-and-under values
+   here, since the media queries follow the real viewport (tokens.css) */
+.dmo-lay-shell.is-narrow,
+.dmo-lay-sheet.is-narrow {
+  --pt-d1: 32px;
+  --pt-d2: 26px;
+  --pt-d2-lh: 1.15;
+  --pt-d3: 21px;
+  --pt-title-clear: 24px;
+  --pt-book-gap: 24px;
+  --pt-sec-over: 40px;
+  --pt-col-pad-x: 16px;
+}
+
+.dmo-lay-shell > * {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+/* ---------- the sidebar: a 52px head, a 40px filter row, then the tree ---------- */
+
+.dmo-lay-sh-sb {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+}
+
+.dmo-lay-sh-sb.is-overlay {
+  z-index: 10;
+}
+
+.dmo-lay-sh-sb-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 10px 0 14px;
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.dmo-lay-sh-mark {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  background: var(--pt-ink);
+}
+
+.dmo-lay-sh-bar {
+  display: block;
+  height: 9px;
+  background: var(--dmo-lay-strong);
+}
+
+.dmo-lay-sh-bar.is-title {
+  flex: 1;
+  max-width: 96px;
+}
+
+.dmo-lay-sh-sb-head .dmo-lay-sh-ib {
+  margin-left: auto;
+}
+
+.dmo-lay-sh-sb-filter {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 40px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.dmo-lay-sh-field {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 28px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+}
+
+.dmo-lay-sh-sb-list {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 8px;
+}
+
+.dmo-lay-sh-grp {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.dmo-lay-sh-grp + .dmo-lay-sh-grp {
+  margin-top: 16px;
+}
+
+/* outline density: one rail down each group's rows, in the row role */
+.dmo-lay-sh-sb-list:not(.is-thumbs) .dmo-lay-sh-grp::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 24px;
+  bottom: 0;
+  width: 1px;
+  background: var(--pt-hair-soft);
+}
+
+.dmo-lay-sh-grp-head {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+}
+
+.dmo-lay-sh-grp-head > i {
+  display: block;
+  width: 64px;
+  height: 7px;
+  background: color-mix(in srgb, var(--pt-titanium) 60%, transparent);
+}
+
+.dmo-lay-sh-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 10px 0 24px;
+}
+
+.dmo-lay-sh-row > i {
+  display: block;
+  height: 7px;
+  background: var(--dmo-lay-text);
+}
+
+.dmo-lay-sh-icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--pt-radius-chip);
+  background: var(--dmo-lay-text);
+}
+
+/* thumbnail density: 44px rows, each with its 64x36 capture in the frame role */
+.dmo-lay-sh-sb-list.is-thumbs .dmo-lay-sh-row {
+  height: 44px;
+  padding-left: 10px;
+}
+
+.dmo-lay-sh-cap {
+  flex: none;
+  box-sizing: border-box;
+  width: 64px;
+  height: 36px;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-plate);
+}
+
+/* ---------- the toolbar: one 52px row, its bottom edge the seam over the stage ---------- */
+
+.dmo-lay-sh-bar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 0 10px;
+  border-bottom: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+}
+
+.dmo-lay-sh-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dmo-lay-sh-ib,
+.dmo-lay-sh-count,
+.dmo-lay-sh-search,
+.dmo-lay-sh-seg {
+  flex: none;
+  box-sizing: border-box;
+  height: 32px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+}
+
+.dmo-lay-sh-ib {
+  display: block;
+  width: 32px;
+}
+
+.dmo-lay-sh-count {
+  width: 70px;
+}
+
+.dmo-lay-sh-search {
+  width: 200px;
+}
+
+.dmo-lay-sh-seg {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+}
+
+.dmo-lay-sh-seg > span {
+  width: 64px;
+  border-radius: var(--pt-radius-chip);
+}
+
+.dmo-lay-sh-seg > span.is-on {
+  background: var(--pt-ink);
+}
+
+.dmo-lay-sh-bar-row.is-narrow .dmo-lay-sh-search {
+  width: 32px;
+}
+
+.dmo-lay-sh-bar-row.is-narrow .dmo-lay-sh-seg > span {
+  width: 28px;
+}
+
+/* ---------- the stage, the index panel and the progress line ---------- */
+
+.dmo-lay-sh-stage {
+  overflow: hidden;
+  background: var(--pt-paper);
+}
+
+.dmo-lay-sh-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: var(--pt-scrim);
+}
+
+.dmo-lay-sh-scrim.is-list {
+  z-index: 9;
+}
+
+.dmo-lay-sh-panel {
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--pt-hair);
+  background: var(--pt-paper);
+}
+
+.dmo-lay-sh-panel-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 12px 0 16px;
+  border-bottom: 1px solid var(--pt-hair);
+}
+
+.dmo-lay-sh-panel-tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 44px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-sh-panel-row {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-sh-shot {
+  flex: none;
+  box-sizing: border-box;
+  width: 96px;
+  height: 54px;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-plate);
+}
+
+.dmo-lay-sh-panel-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.dmo-lay-sh-panel-copy > i {
+  display: block;
+  height: 7px;
+  background: var(--dmo-lay-text);
+}
+
+.dmo-lay-sh-panel-copy > i:first-child {
+  background: var(--dmo-lay-strong);
+}
+
+.dmo-lay-sh-progress {
+  background: var(--pt-hair-soft);
+}
+
+.dmo-lay-sh-progress > i {
+  display: block;
+  height: 100%;
+  background: var(--pt-ink);
+}
+
+/* the region names, drawn over the scaled model at the plate's own size */
+.dmo-lay-sh-label {
+  position: absolute;
+  z-index: 5;
+  padding: 1px 7px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  background: var(--pt-paper);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+  color: var(--pt-ink);
+  white-space: nowrap;
+}
+
+.dmo-lay-sh-label.is-bar {
+  transform: translate(-50%, -50%);
+}
+
+.dmo-lay-sh-label.is-prog {
+  transform: translateX(-50%);
+}
+
+/* ---------- the stage's bodies: a deck slide, and a book page as a skeleton ---------- */
+
+.dmo-lay-slide {
+  position: absolute;
+  inset: 57px;
+  padding: 72px 80px;
+}
+
+.dmo-lay-slide-h2 {
+  margin: 0 0 18px;
+  font-size: var(--sl-h2);
+  line-height: var(--sl-h2-lh);
+  letter-spacing: var(--pt-d1-track);
+  font-weight: var(--pt-w-display);
+  font-feature-settings: var(--pt-ff-display);
+  color: var(--pt-ink);
+  text-wrap: balance;
+}
+
+.dmo-lay-slide-p {
+  max-width: 40em;
+  margin: 0;
+  font-size: var(--sl-p);
+  line-height: var(--sl-p-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-lay-book {
+  display: flex;
+  flex-direction: column;
+}
+
+.dmo-lay-book-mast {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--pt-head-panel);
+  grid-template-areas:
+    'title title'
+    'lead panel';
+  column-gap: var(--pt-head-col-gap);
+  row-gap: var(--pt-head-gap);
+  align-items: start;
+  padding-bottom: var(--pt-head-rule-pad);
+  border-bottom: 1px solid var(--pt-hair);
+  border-image: linear-gradient(var(--pt-hair) 0 0) var(--pt-bleed-bottom);
+}
+
+.dmo-lay-book.is-narrow .dmo-lay-book-mast {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'title'
+    'lead'
+    'panel';
+}
+
+.dmo-lay-book-title {
+  grid-area: title;
+  margin: 0;
+  font-size: var(--pt-d1);
+  line-height: var(--pt-d1-lh);
+  letter-spacing: var(--pt-d1-track);
+  font-weight: var(--pt-w-display);
+  font-feature-settings: var(--pt-ff-display);
+  color: var(--pt-ink);
+}
+
+.dmo-lay-book-lead {
+  grid-area: lead;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--pt-measure-lead);
+}
+
+.dmo-lay-book-panel {
+  grid-area: panel;
+  margin: 2px 0 0;
+}
+
+.dmo-lay-book-panel > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  height: var(--pt-row);
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-book-panel > div:last-child {
+  border-bottom: 0;
+}
+
+.dmo-lay-book-panel dt {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.dmo-lay-book-panel dd {
+  margin: 0;
+}
+
+.dmo-lay-book-panel dd > i {
+  display: block;
+  width: 88px;
+  height: 7px;
+  background: var(--dmo-lay-strong);
+}
+
+/* the band: 42px, both rules its own, its rules and its diagonals across the stage */
+.dmo-lay-book-band {
+  position: relative;
+  height: var(--pt-band-h);
+  margin-top: var(--pt-sec-over);
+  border-block: 1px solid var(--pt-hair);
+  border-image: linear-gradient(var(--pt-hair) 0 0) var(--pt-bleed-block);
+}
+
+.dmo-lay-book-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-image: repeating-linear-gradient(-45deg, transparent 0 6px, var(--pt-hatch) 6px 7px) fill 0 / 0 / 0 100vmax;
+}
+
+/* the first section: the band's rule is its divider, then the pad, the gutter note and the h2 */
+.dmo-lay-book-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: var(--pt-sec-pad);
+}
+
+.dmo-lay-book-note {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+/* ---------- the plate, on itself ---------- */
+
+.dmo-plate .dmo-stage.dmo-lay-pl-stage {
+  display: grid;
+  align-content: center;
+  padding: 44px 20px 16px;
+}
+
+.dmo-lay-pl {
+  width: min(100%, 600px);
+  margin: 0 auto;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-stage.is-night .dmo-lay-pl {
+  --pt-hair-soft: color-mix(in srgb, var(--dmo-night-ink) 12%, transparent);
+}
+
+.dmo-lay-pl > div {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr);
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+}
+
+.dmo-lay-pl dt {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+}
+
+.dmo-lay-pl dd {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+@media (max-width: 640px) {
+  .dmo-lay-pl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
