@@ -28,8 +28,16 @@
 
 .gtp-riffle-stage { position: relative; display: grid; place-items: center; min-height: 0; perspective: 2400px; perspective-origin: 50% 42%; }
 .gtp-riffle-mag { width: var(--mz-pw); height: var(--mz-ph); }
-.gtp-riffle-foot { margin: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 8px 28px; padding: 0 20px 28px; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: 14px; line-height: 1.4; }
+.gtp-riffle-foot { display: flex; justify-content: center; align-items: center; gap: 28px; padding: 0 20px 24px; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: 14px; line-height: 1.4; }
 .gtp-riffle-foot a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+/* the arrows either side of the way to read the story: back a page, on a page */
+.gtp-riffle-turn { width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: rgb(255 255 255 / 0.08); color: inherit; cursor: pointer; }
+.gtp-riffle-turn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.gtp-riffle-turn:hover:not(:disabled) { background: rgb(255 255 255 / 0.16); }
+.gtp-riffle-turn:disabled { opacity: 0.3; cursor: default; }
+:root[data-theme='light'] .gtp-riffle-turn { background: rgb(0 0 0 / 0.06); }
+:root[data-theme='light'] .gtp-riffle-turn:hover:not(:disabled) { background: rgb(0 0 0 / 0.12); }
+.gtp-riffle-turn:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .gtp-riffle-close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: rgb(255 255 255 / 0.08); color: inherit; font-size: 22px; line-height: 1; cursor: pointer; }
 .gtp-riffle-close:hover { background: rgb(255 255 255 / 0.16); }
 :root[data-theme='light'] .gtp-riffle-close { background: rgb(0 0 0 / 0.06); }
@@ -78,8 +86,7 @@
 .gtp-riffle .mag-page.is-blank { background: var(--paper, #f6f5f1); }
 
 /* the sheet in 3D */
-.gtp-riffle .sh { position: relative; transform-style: preserve-3d; transform: translateX(calc(var(--shift, 0) * 100%)); touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
-.gtp-riffle .sh:active { cursor: grabbing; }
+.gtp-riffle .sh { position: relative; transform-style: preserve-3d; transform: translateX(calc(var(--shift, 0) * 100%)); touch-action: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
 .gtp-riffle .sh > .mag-pw { transform: translateZ(0); }
 .gtp-riffle .sh-shadow { position: absolute; top: 1.5%; bottom: -1.6%; left: 0; width: 100%; box-shadow: 0 46px 90px -22px rgba(0,0,0,.95), 0 14px 30px -6px rgba(0,0,0,.75); pointer-events: none; transform: translateZ(-2px); }
 .gtp-riffle .sh-under, .gtp-riffle .sh-lunder { position: absolute; top: 0; height: 100%; width: 100%; pointer-events: none; opacity: 0; transform: translateZ(.4px); }
@@ -96,68 +103,112 @@
 
 /* ---------- the pages ---------- */
 
+/* Riffle's issue (directions/_directions/editorial.css) set for each story (riffle/pages.ts): its measures and its
+   order, a size up so the text reads, in Katagami Text; the titles in Newsreader and the pull quotes in Bodoni */
 .gtp-riffle .mag-page.gtr-paper { --paper: #fbfbf8; }
-.gtp-riffle .gtr { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; padding: 7cqh 7cqw 6cqh 8cqw; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; color: #141414; }
+/* the magazine's pages keep the scan's folds but not its specks, which read as stray points among the words; on the
+   text pages the folds print under the type */
+.gtp-riffle .mag-page .mottle { background: var(--paper-folds) 0 0 / 100% 100% no-repeat; }
+.gtp-riffle .mag-page.gtr-paper .mottle { z-index: 2; }
+.gtp-riffle .gtr { --mute: #4a4945; --line: rgb(18 18 18 / 0.18); position: absolute; inset: 0; z-index: 3; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; color: #121212; }
 .gtp-riffle .gtr p { margin: 0; }
 .gtp-riffle .gtr a { color: inherit; }
-.gtp-riffle .gtr img { display: block; max-width: 100%; height: auto; }
+.gtp-riffle .gtr ol { margin: 0; padding: 0; list-style: none; }
+/* the text block, its wider margin at the spine: a right page's on the left, a left page's (.l) on the right */
+.gtp-riffle .gtr-in { display: flex; flex-direction: column; padding: 7cqh 7cqw 9cqh 9cqw; }
+.gtp-riffle .gtr-in.l { padding: 7cqh 9cqw 9cqh 7cqw; }
 /* the folio, at the foot's outer corner */
-.gtp-riffle .gtr-folio { position: absolute; left: 6cqw; bottom: 3.4cqh; display: flex; gap: 1.2em; font-size: max(11px, 2.4cqw); line-height: 1; font-weight: 500; }
-.gtp-riffle .gtr-folio.rt { left: auto; right: 6cqw; }
+.gtp-riffle .gtr-folio { position: absolute; left: 4cqw; bottom: 3cqh; display: flex; gap: 1.6em; font-size: max(10px, 1.5cqh); line-height: 1; color: #2a2a28; }
+.gtp-riffle .gtr-folio.rt { left: auto; right: 4cqw; }
 .gtp-riffle .gtr-folio b { font-weight: 700; }
 
-/* the cover, on the story's stock: its picture left of the middle, the credit lines up the right edge, in its ink */
-.gtp-riffle .gtr-cover { padding: 0; background: var(--board); color: var(--ink); }
+/* the cover: the story's design on its stock, its credit up the right edge from the foot, small then large, in its ink */
+.gtp-riffle .gtr-cover { background: var(--board); color: var(--ink); }
 .gtp-riffle .gtr-cover-art { position: absolute; inset: 0; width: 100%; height: 100%; }
-.gtp-riffle .gtr-cover-photo { position: absolute; left: 6cqw; top: 30cqh; width: 46cqw; margin: 0; overflow: hidden; }
-.gtp-riffle .gtr-cover-photo img { width: 100%; filter: grayscale(1) contrast(1.12); mix-blend-mode: multiply; }
-.gtp-riffle .gtr-dark .gtr-cover-photo img { mix-blend-mode: screen; }
-.gtp-riffle .gtr-cred { position: absolute; right: 3.4cqw; bottom: 4.6cqh; max-height: 90cqh; writing-mode: vertical-rl; text-orientation: sideways; transform: rotate(180deg); font-size: max(16px, 4.2cqh); line-height: 1.14; font-weight: 600; letter-spacing: -0.02em; }
-.gtp-riffle .gtr-cover .gtr-folio { left: 3.4cqw; bottom: 3cqh; }
+.gtp-riffle .gtr-cred { position: absolute; right: 3.4cqw; bottom: 4.6cqh; max-height: 90cqh; writing-mode: vertical-rl; transform: rotate(180deg); }
+.gtp-riffle .gtr-cred .sm { font-size: max(10px, 1.45cqh); line-height: 1.4; }
+.gtp-riffle .gtr-cred .lg { margin-block-start: 0.6cqh; font-size: max(16px, 4.2cqh); line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; }
+.gtp-riffle .gtr-cred b { font-weight: 700; }
+.gtp-riffle .gtr-cover .gtr-folio { left: 3.4cqw; color: inherit; }
 /* a dark stock prints the scan's folds light */
 .gtp-riffle .mag-page.gtr-dark .mottle { filter: invert(1); mix-blend-mode: screen; opacity: 0.55; }
 .gtp-riffle .mag-page.gtr-dark .grain { filter: invert(1); mix-blend-mode: screen; opacity: 0.1; }
 
-/* a picture across the page, its caption under it */
-.gtp-riffle .gtr-picture { justify-content: center; gap: 2.4cqh; }
-.gtp-riffle .gtr-picture figure,
-.gtp-riffle .gtr-quote figure { margin: 0; display: grid; gap: 1.6cqh; }
-.gtp-riffle :is(.gtr-picture, .gtr-quote) img { width: 100%; max-height: 52cqh; object-fit: contain; filter: grayscale(1) contrast(1.08); mix-blend-mode: multiply; }
-.gtp-riffle :is(.gtr-picture, .gtr-quote) figcaption { font-size: max(11px, 2.4cqw); line-height: 1.45; color: #3c3b38; text-wrap: pretty; }
+/* a photograph as Riffle prints one: in greys with a fine halftone over it, and the light catching it */
+.gtp-riffle .gtr-photo { position: absolute; margin: 0; overflow: hidden; }
+.gtp-riffle .gtr-photo img { display: block; width: 100%; height: 100%; object-fit: contain; filter: grayscale(1) contrast(1.12) brightness(1.03); mix-blend-mode: multiply; }
+.gtp-riffle .gtr-photo::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background-image: radial-gradient(circle, rgb(0 0 0 / 0.2) 0.55px, transparent 0.9px); background-size: 2.6px 2.6px; mix-blend-mode: multiply; opacity: 0.5; }
+.gtp-riffle .gtr-photo i { position: absolute; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: screen; background: radial-gradient(70% 60% at var(--lx, 34%) var(--ly, 14%), rgb(255 255 255 / 0.22), rgb(255 255 255 / 0) 70%); }
+.gtp-riffle .gtr-cover-photo { left: 6cqw; top: 30cqh; width: 46cqw; height: 40cqh; }
+.gtp-riffle .gtr-dark .gtr-photo img { mix-blend-mode: screen; }
+/* the picture page: the picture across the page, its caption up the outer edge as the cover's credit runs */
+.gtp-riffle .gtr-plate .gtr-photo { left: 13cqw; right: 6cqw; top: 9cqh; bottom: 12cqh; }
+/* the picture is fitted inside its box, so the box's halftone and light would print as a frame round it */
+.gtp-riffle .gtr-plate .gtr-photo::before,
+.gtp-riffle .gtr-plate .gtr-photo i { display: none; }
+.gtp-riffle .gtr-side { position: absolute; left: 4cqw; bottom: 12cqh; max-height: 79cqh; writing-mode: vertical-rl; transform: rotate(180deg); font-size: max(10px, 1.45cqh); line-height: 1.4; color: #3c3b38; }
 
-/* the opening: headline, deck, byline, and the text in two columns with a drop cap in the story's accent */
-.gtp-riffle .gtr-h { margin: 5cqh 0 0; font-size: 7.2cqw; line-height: 1; font-weight: 700; letter-spacing: -0.035em; text-wrap: balance; }
-.gtp-riffle .gtr-dek { margin-top: 2.6cqh; font-size: 3.4cqw; line-height: 1.32; letter-spacing: -0.01em; text-wrap: pretty; }
-.gtp-riffle .gtr-by { margin-top: 2cqh; font-size: max(11px, 2.4cqw); line-height: 1.4; }
+/* the opening: headline, deck, byline, then the text in two columns at the foot with a drop cap in the story's accent */
+.gtp-riffle .gtr-h { margin: 10cqh 0 0; font-size: 7.6cqw; line-height: 0.96; font-weight: 700; letter-spacing: -0.045em; text-wrap: balance; }
+.gtp-riffle .gtr-h[data-long] { font-size: 6.2cqw; }
+.gtp-riffle .gtr-dek { margin-top: 3.4cqh; max-width: 78cqw; font-size: 3cqw; line-height: 1.28; letter-spacing: -0.01em; text-wrap: pretty; }
+.gtp-riffle .gtr-by { margin-top: 2.6cqh; font-size: max(10px, 1.5cqh); line-height: 1.4; }
 .gtp-riffle .gtr-by b { font-weight: 700; }
-.gtp-riffle .gtr-body { columns: 2; column-gap: 4.6cqw; font-size: max(12px, 2.7cqw); line-height: 1.45; hyphens: auto; }
+.gtp-riffle .gtr-body { columns: 2; column-gap: 4.6cqw; font-size: max(11px, 2.35cqw); line-height: 1.42; hyphens: auto; text-wrap: pretty; }
+.gtp-riffle .gtr-body p + p { text-indent: 1.4em; }
 .gtp-riffle .gtr-open .gtr-body { margin-top: auto; }
-.gtp-riffle .gtr-body p + p { text-indent: 1.2em; }
 .gtp-riffle .gtr-lead p:first-child::first-letter { float: left; margin: 0.06em 0.08em 0 0; font-size: 3.1em; line-height: 0.82; font-weight: 700; color: var(--accent); }
-/* the text continued, a pull quote across both columns */
-.gtp-riffle .gtr-cont { gap: 3cqh; }
-.gtp-riffle .gtr-pull { margin: 0; padding: 2.6cqh 0; border-block: 2px solid var(--accent); }
-.gtp-riffle .gtr-pull p { font-size: 5cqw; line-height: 1.16; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; }
-.gtp-riffle .gtr-pull p::before { content: '\201C'; color: var(--accent); }
-.gtp-riffle .gtr-pull cite { display: block; margin-top: 1.4cqh; font-size: max(11px, 2.4cqw); font-style: normal; font-weight: 500; }
-/* a second picture and the other pull quote under it */
-.gtp-riffle .gtr-quote { justify-content: space-between; gap: 3cqh; }
-.gtp-riffle .gtr-quote .gtr-pull { margin-bottom: 4cqh; }
-/* the sections, each a link into the web page, then the way to read it */
-.gtp-riffle .gtr-h3 { margin: 4cqh 0 0; font-size: 5cqw; line-height: 1.1; font-weight: 700; letter-spacing: -0.025em; }
-.gtp-riffle .gtr-sections ol { margin: 4cqh 0 0; padding: 0; list-style: none; border-top: 1px solid #141414; }
-.gtp-riffle .gtr-sections li a { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); gap: 1em; padding: 1.4cqh 0; border-bottom: 1px solid rgb(20 20 20 / 0.18); font-size: max(12px, 2.8cqw); line-height: 1.3; text-decoration: none; }
-.gtp-riffle .gtr-sections li a span { font-weight: 700; color: var(--accent); }
-.gtp-riffle .gtr-sections li a:hover { text-decoration: underline; text-underline-offset: 3px; }
-.gtp-riffle .gtr-read { margin-top: auto !important; padding-top: 2.4cqh; display: flex; justify-content: space-between; align-items: baseline; gap: 4cqw; border-top: 1px solid #141414; margin-bottom: 4cqh !important; }
-.gtp-riffle .gtr-read a { font-size: 5cqw; line-height: 1; font-weight: 700; letter-spacing: -0.025em; text-decoration: none; }
-.gtp-riffle .gtr-read a:hover { text-decoration: underline; text-underline-offset: 0.12em; }
-/* the back cover, on the stock: the name at the foot, the issue opposite, the way to read the story */
-.gtp-riffle .gtr-back { background: var(--board); color: var(--ink); justify-content: flex-end; padding: 0 8cqw 8cqh; }
-.gtp-riffle .gtr-back-name { font-size: 12cqw; line-height: 0.9; font-weight: 700; letter-spacing: -0.045em; }
-.gtp-riffle .gtr-back-issue { margin-top: 4cqh; font-size: max(11px, 2.4cqw); line-height: 1.5; font-variant-numeric: tabular-nums; opacity: 0.85; }
-.gtp-riffle .gtr-back-read { margin-top: 4cqh; font-size: 4.4cqw; font-weight: 600; }
-.gtp-riffle .gtr-back-read a { text-decoration: underline; text-underline-offset: 0.14em; text-decoration-thickness: 1px; }
+/* the text continued: two columns, the pull quote across them under a rule */
+.gtp-riffle .gtr-cont { gap: 3.6cqh; }
+.gtp-riffle .gtr-cont .gtr-body:last-of-type { flex: 1; min-height: 0; overflow: hidden; }
+.gtp-riffle .gtr-pull { margin: 0; padding-top: 2.4cqh; border-top: 1px solid #121212; }
+.gtp-riffle .gtr-pull p { font-family: var(--gtm-display); font-size: 5.4cqw; line-height: 1.08; font-weight: 600; letter-spacing: -0.015em; font-optical-sizing: none; font-variation-settings: 'opsz' 28; text-wrap: balance; }
+.gtp-riffle .gtr-pull cite { display: block; margin-top: 1.4cqh; font-size: max(10px, 1.5cqh); font-style: normal; color: var(--mute); }
+
+/* a table in Riffle's form: a heavy rule over it, a hairline under each row, the number, the line, and the detail at
+   the side, right aligned */
+.gtp-riffle .gtr-h2 { margin: 0 0 2.6cqh; font-size: 4.4cqw; line-height: 1; font-weight: 700; letter-spacing: -0.035em; text-wrap: balance; }
+.gtp-riffle .gtr-defs { margin-top: auto; display: grid; border-top: 1px solid #121212; }
+.gtp-riffle .gtr-defs li { display: grid; grid-template-columns: 4.6cqw minmax(0, 1fr) auto; align-items: baseline; gap: 2.4cqw 5cqw; padding: 1.25cqh 0 1.35cqh; border-bottom: 1px solid var(--line); }
+.gtp-riffle .gtr-defs .n { font-size: max(10px, 1.7cqw); font-weight: 700; }
+.gtp-riffle .gtr-defs q { quotes: none; font-family: var(--gtm-text); font-size: max(12px, 2.55cqw); line-height: 1.2; text-wrap: balance; }
+.gtp-riffle .gtr-defs q:is(:lang(zh), :lang(ja), :lang(ko)) { font-family: var(--gtp-cjk), var(--gtm-text); }
+.gtp-riffle .gtr-defs q:lang(ar) { line-height: 1.5; }
+.gtp-riffle .gtr-defs small { font-size: max(10px, 1.55cqw); line-height: 1.3; text-align: right; white-space: nowrap; color: #3c3b38; }
+.gtp-riffle .gtr-defs small b { display: block; font-weight: 700; color: #121212; }
+/* the second picture with its caption small and centred under it, as the Euclid book sets one, then the pull quote */
+.gtp-riffle .gtr-figure { justify-content: space-between; gap: 4cqh; }
+.gtp-riffle .gtr-figure figure { margin: 0; display: grid; gap: 1.6cqh; min-height: 0; }
+.gtp-riffle .gtr-figure img { display: block; width: 100%; max-height: 50cqh; object-fit: contain; filter: grayscale(1) contrast(1.08); mix-blend-mode: multiply; }
+.gtp-riffle .gtr-figure figcaption { font-size: max(10px, 1.5cqh); line-height: 1.45; text-align: center; color: #3c3b38; text-wrap: balance; }
+.gtp-riffle .gtr-figure .gtr-pull { margin-bottom: 1cqh; }
+.gtp-riffle .gtr-figure.gtr-alone { justify-content: center; }
+/* the sections as Riffle sets Ricci's road: the number and the section, each a link into the web page */
+/* the rows share the page between the two heavy rules, however many sections the story has */
+.gtp-riffle .gtr-route { flex: 1; margin-top: 3cqh; display: grid; grid-auto-rows: minmax(auto, 1fr); border-top: 1px solid #121212; }
+.gtp-riffle .gtr-route li { display: grid; }
+.gtp-riffle .gtr-route a { display: grid; grid-template-columns: 8cqw minmax(0, 1fr); gap: 2.4cqw; align-items: center; padding: 1.6cqh 0; border-bottom: 1px solid var(--line); font-size: max(13px, 3.4cqw); line-height: 1.2; letter-spacing: -0.01em; text-decoration: none; }
+.gtp-riffle .gtr-route li:last-child a { border-bottom: 0; }
+.gtp-riffle .gtr-route b { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.gtp-riffle .gtr-route a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+/* the way to read it, at the foot over a heavy rule, who wrote it and when at the side */
+.gtp-riffle .gtr-read { margin-top: 3cqh; margin-bottom: 3cqh; display: flex; justify-content: space-between; align-items: end; gap: 4cqw; padding-top: 2.4cqh; border-top: 1px solid #121212; }
+.gtp-riffle .gtr-read a { font-size: 4.2cqw; line-height: 1; font-weight: 700; letter-spacing: -0.035em; text-decoration: none; }
+.gtp-riffle .gtr-read a:hover { text-decoration: underline; text-underline-offset: 0.12em; text-decoration-thickness: 0.06em; }
+.gtp-riffle .gtr-read p { font-size: max(10px, 1.5cqw); line-height: 1.4; text-align: right; color: var(--mute); }
+
+/* the back cover, on the stock: the imprint and the name at the foot, the issue and where it was filed from opposite */
+.gtp-riffle .gtr-back { background: var(--board); color: var(--ink); }
+.gtp-riffle .gtr-back .mk { position: absolute; left: 9cqw; bottom: 8cqh; display: flex; align-items: flex-end; gap: 2.4cqw; }
+.gtp-riffle .gtr-back .mk svg { width: 6cqw; height: auto; }
+.gtp-riffle .gtr-back .mk b { display: block; font-size: 7cqw; line-height: 0.9; font-weight: 700; letter-spacing: -0.04em; }
+.gtp-riffle .gtr-back .mk span { display: block; margin-top: 0.8cqh; font-size: max(10px, 1.45cqh); line-height: 1.4; opacity: 0.8; }
+.gtp-riffle .gtr-back .co { position: absolute; right: 7cqw; bottom: 8cqh; text-align: right; font-size: max(10px, 1.4cqh); line-height: 1.5; font-variant-numeric: tabular-nums; opacity: 0.8; }
+
+/* a phone's page holds one column: the text continued keeps its first part, fading out at the foot */
 @container (max-width: 380px) {
   .gtp-riffle .gtr-body { columns: 1; }
+  .gtp-riffle .gtr-cont .gtr-body:first-of-type { flex: 1; min-height: 0; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent); mask-image: linear-gradient(to bottom, #000 78%, transparent); }
+  .gtp-riffle .gtr-cont .gtr-body:last-of-type { display: none; }
+  .gtp-riffle .gtr-defs small span { display: none; }
 }

@@ -15,6 +15,7 @@ import Book, { bookDepth } from './ui/Book';
 import Flag from './ui/Flag';
 import FlipText from './ui/FlipText';
 import HallGuides from './ui/HallGuides';
+import LanguagePicker from './ui/LanguagePicker';
 import Globe from './ui/Globe';
 import Locator from './ui/Locator';
 import PressMark from './ui/PressMark';
@@ -22,6 +23,7 @@ import { RowIcon, StackIcon } from './ui/icons';
 import MagazineView from './riffle/MagazineView';
 import StopSlider from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
+import ViewSwitch from './ui/ViewSwitch';
 
 type Mode = 'row' | 'stack';
 
@@ -274,8 +276,9 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
         {edition === 'magazine' ? <HallGuides /> : null}
         <header className='gtp-hall-head'>
           {edition === 'magazine' ? (
-            // the magazine's nameplate: Atlas in Bodoni across the first three columns of the sheet
+            // the magazine's nameplate: the book imprint, its GT cut through the board, as tall as the capitals, then Atlas in Bodoni
             <h1 className='gtp-nameplate' aria-label='GT Atlas'>
+              <PressMark className='gtp-nameplate-mark' />
               <span className='gtp-nameplate-word' aria-hidden='true'>
                 Atlas
               </span>
@@ -289,17 +292,20 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
         </header>
 
         <div className='gtp-hall-coords'>
-          <p className='gtp-hall-dms' aria-label={place.city}>
-            {edition === 'magazine' ? (
-              <svg className='gtp-hall-crosshair' viewBox='-12 -12 24 24' aria-hidden='true'>
-                <circle r='6' />
-                <path d='M-12 0 H-3 M3 0 H12 M0 -12 V-3 M0 3 V12' />
-              </svg>
-            ) : null}
-            <FlipText value={dms(place.lat, 'lat')} />
-            <FlipText value={dms(place.lon, 'lon')} />
-          </p>
-          {/* the shelf keeps its topic tags; the magazine's front page carries only the coordinates and the theme */}
+          {edition === 'magazine' ? (
+            // the magazine's controls in one box, centred on the nameplate: the row or the stack, then the theme
+            <div className='gtp-hall-tools'>
+              <ViewSwitch value={mode} onChange={setMode} />
+              <i className='gtp-hall-tools-rule' aria-hidden='true' />
+              <ThemeSwitch />
+            </div>
+          ) : (
+            <p className='gtp-hall-dms' aria-label={place.city}>
+              <FlipText value={dms(place.lat, 'lat')} />
+              <FlipText value={dms(place.lon, 'lon')} />
+            </p>
+          )}
+          {/* the shelf keeps its topic tags and its theme switch here */}
           {edition === 'shelf' ? (
             <nav className='gtp-tags' aria-label='Topics'>
               {TOPICS.map((x) => (
@@ -317,7 +323,7 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
               ))}
             </nav>
           ) : null}
-          <ThemeSwitch />
+          {edition === 'shelf' ? <ThemeSwitch /> : null}
         </div>
 
         <div
@@ -435,24 +441,44 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
         <div className='gtp-band'>
           <div className='gtp-instrument'>
             <button type='button' className='gtp-globe-button' aria-expanded={globeOpen} aria-label='Languages on the globe' onClick={() => setGlobeOpen((g) => !g)}>
-              <Globe place={place} className='gtp-instrument-globe' cell={1} graticule label={false} />
+              <Globe place={place} className='gtp-instrument-globe' cell={0.5} graticule label={false} />
             </button>
-            <div className='gtp-flags' role='radiogroup' aria-label='Language of the titles'>
-              {flags(20, false)}
-            </div>
+            {edition === 'magazine' ? (
+              <LanguagePicker value={code} onPick={pick} />
+            ) : (
+              <div className='gtp-flags' role='radiogroup' aria-label='Language of the titles'>
+                {flags(20, false)}
+              </div>
+            )}
           </div>
           <div className='gtp-band-view'>
-            <StopSlider
-              stops={[
-                { value: 'row', label: <RowIcon size={14} /> },
-                { value: 'stack', label: <StackIcon size={14} /> },
-              ]}
-              value={mode}
-              onChange={(v) => setMode(v as Mode)}
-              label='Lay the books out in a row or a stack'
-              className='gtp-view'
-              tone='stage'
-            />
+            {edition === 'magazine' ? (
+              // the dateline: the city the titles are set for, and its coordinates under it beside a fine crosshair
+              <div className='gtp-dateline'>
+                <p className='gtp-dateline-city'>{place.city}</p>
+                <p className='gtp-hall-dms' aria-label={place.city}>
+                  <svg className='gtp-hall-crosshair' viewBox='-12 -12 24 24' aria-hidden='true'>
+                    <circle r='6' />
+                    <path d='M-12 0 H-3 M3 0 H12 M0 -12 V-3 M0 3 V12' />
+                  </svg>
+                  <FlipText value={dms(place.lat, 'lat')} />
+                  <br />
+                  <FlipText value={dms(place.lon, 'lon')} />
+                </p>
+              </div>
+            ) : (
+              <StopSlider
+                stops={[
+                  { value: 'row', label: <RowIcon size={14} /> },
+                  { value: 'stack', label: <StackIcon size={14} /> },
+                ]}
+                value={mode}
+                onChange={(v) => setMode(v as Mode)}
+                label='Lay the books out in a row or a stack'
+                className='gtp-view'
+                tone='stage'
+              />
+            )}
           </div>
         </div>
       </main>

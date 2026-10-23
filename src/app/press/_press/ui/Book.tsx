@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { CSSProperties } from 'react';
+import { useId, type CSSProperties } from 'react';
 
 import type { MagazineIssue, StoryCard } from '../content';
 import { dmsPair } from '../coords';
@@ -10,7 +10,7 @@ import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { bookTitle } from '../titles';
 import { SHORT_TITLES, type Lang } from '../stories';
 import type { ArtBox } from '../gpu/emblems';
-import { darkStock, issueMonth, pad } from '../riffle/print';
+import { darkStock, folioOf, issueMonth, pad } from '../riffle/print';
 import Cover from './Cover';
 import Seal from './Seal';
 
@@ -56,8 +56,8 @@ export const MAGAZINE_ART: ArtBox = { x: 0.06, y: 0.3, w: 0.45, h: 0.42 };
 
    With the story's issue, the page under the front is printed too: the
    inside, Riffle's feature page. When the shelf lifts a corner (the slot's
-   data-peel) the front is cut along the fold, the flap shows the back of
-   the cover, and the inside shows through (rack.css). */
+   data-peel) the front is cut along the fold, the corner curls back over
+   it (PageCurl), and the inside shows through (rack.css). */
 function MagazinePage({ story, title, lang, playing, issue }: { story: BookStory; title: string; lang: Pick<Lang, 'code' | 'dir'>; playing: boolean; issue?: MagazineIssue }) {
   const name = (lang.code === 'en' ? SHORT_TITLES[story.slug] : null) ?? title.split(/\s*[:：]\s*/)[0] ?? title;
   const spec = COVERS[story.slug] ?? FALLBACK_COVER;
@@ -77,8 +77,46 @@ function MagazinePage({ story, title, lang, playing, issue }: { story: BookStory
         <i className='gtp-mag-mottle' aria-hidden='true' />
         <i className='gtp-mag-grain' aria-hidden='true' />
       </div>
-      {issue ? <i className='gtp-mag-flap' aria-hidden='true' /> : null}
+      {issue ? <PageCurl /> : null}
     </>
+  );
+}
+
+/* The lifted corner as a page curls back: the back of the cover, which is
+   uncoated white paper, folded over the front along the fold. Its two free
+   edges bow in a little and its tip rounds off, as a curled sheet's do; it
+   is darkest in the crease, catches the light just past it, and dims
+   toward the tip. The inside page under the fold is shaded where the
+   lifted paper keeps the light off it, and in the dark theme the curl
+   lays a soft shade along the crease. Drawn in a 100 unit square that
+   rack.css sizes to the peel (--peel), so it grows with the lift. */
+function PageCurl() {
+  const id = useId().replace(/:/g, '');
+  const curl = 'M0 100 L100 0 Q42 15 11 8 Q7 7 8 11 Q15 42 0 100 Z';
+  return (
+    <svg className='gtp-mag-flap' viewBox='0 0 100 100' preserveAspectRatio='none' aria-hidden='true'>
+      <defs>
+        {/* the stops take their colors from rack.css (.gtp-mag-flap stop) */}
+        <linearGradient id={`${id}u`} className='gtp-mag-flap-under' gradientUnits='userSpaceOnUse' x1='50' y1='50' x2='100' y2='100'>
+          <stop offset='0' />
+          <stop offset='0.3' />
+          <stop offset='1' />
+        </linearGradient>
+        <linearGradient id={`${id}b`} className='gtp-mag-flap-paper' gradientUnits='userSpaceOnUse' x1='50' y1='50' x2='6' y2='6'>
+          <stop offset='0' />
+          <stop offset='0.07' />
+          <stop offset='0.2' />
+          <stop offset='0.62' />
+          <stop offset='1' />
+        </linearGradient>
+        <filter id={`${id}s`} x='-20%' y='-20%' width='140%' height='140%'>
+          <feGaussianBlur stdDeviation='2.4' />
+        </filter>
+      </defs>
+      <path d='M0 100 L100 0 L100 100 Z' fill={`url(#${id}u)`} />
+      <path className='gtp-mag-flap-cast' d={curl} transform='translate(3 3)' filter={`url(#${id}s)`} />
+      <path className='gtp-mag-flap-back' d={curl} fill={`url(#${id}b)`} />
+    </svg>
   );
 }
 
@@ -108,7 +146,7 @@ function InsidePage({ story, title, lang, issue }: { story: BookStory; title: st
         </div>
       </div>
       <p className='gtp-mag-inside-folio'>
-        <b>{pad(story.n * 2 + 1)}</b>
+        <b>{pad(folioOf(story.n, 2))}</b>
       </p>
       <i className='gtp-mag-mottle' aria-hidden='true' />
       <i className='gtp-mag-grain' aria-hidden='true' />

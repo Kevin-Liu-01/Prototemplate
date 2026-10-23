@@ -100,7 +100,7 @@ function parts(v: number, pos: string, neg: string, places = 0): Parts {
 }
 
 export const coord = {
-  /** The press's own reading, seconds to four places: 37° 46' 29.6400'' N. */
+  /** The press's own reading, seconds to four places: 37° 46′ 29.6400″ N. */
   site: (lat: number, lon: number): [string, string] => [dms(lat, 'lat'), dms(lon, 'lon')],
   /** Primes and whole seconds: 39°54′15″ N. */
   prime(lat: number, lon: number): [string, string] {

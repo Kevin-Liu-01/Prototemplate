@@ -31,7 +31,8 @@
   --gtp-serif: var(--gtp-sans);
   --gtp-mono: 'Katagami Mono', ui-monospace, monospace;
 
-  --gtp-signal: #f0502a;
+  /* the press's one accent: blue (Kevin, 2026-10-22: black, white and blue, no red) */
+  --gtp-signal: #6f8cff;
   --gtp-cobalt: #2a4bf0;
   --gtp-sky: #bfe2f1;
   --gtp-navy: #0b1636;
@@ -71,6 +72,7 @@
 }
 
 :root[data-theme='light'] .gtp {
+  --gtp-signal: #2a4bf0;
   --gtp-paper: #ffffff;
   --gtp-ink: #09090b;
   --gtp-ink-2: #52525b;
@@ -933,6 +935,10 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
    named in its own language and the chosen one underlined, then its eight definitions, small, each numbered
    as its edition numbers them */
 .gtp-versions-reader { display: grid; gap: 16px; align-content: start; min-width: 0; }
+/* every version in one cell: the unseen ones hold the box at the longest version's height, the shown one lies over them */
+.gtp-version-stack { display: grid; min-width: 0; }
+.gtp-version-stack > .gtp-version-lines { grid-area: 1 / 1; }
+.gtp-version-stack > .gtp-version-sizer { visibility: hidden; }
 .gtp-version-meta { margin: 0; font-size: 12px; line-height: 1.4; color: var(--gtp-ink-2); text-align: center; }
 .gtp-versions .gtp-stops[data-style='book'] { margin-left: -8px; } /* the first name's letters start where the definitions do */
 .gtp-versions .gtp-stops[data-style='book'] .gtp-stop { font-size: 15px; }
@@ -1118,33 +1124,6 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
   to { transform: none; opacity: 1; }
 }
 
-/* the imprint riffles like a magazine when its link is hovered or pressed: the soft cover
-   bends open, the pages flick over one after another, each bending as it goes, rest a
-   moment, then fall back, and the cover closes over them last (the home page's wordmark
-   is no link and stays still) */
-.gtp-mark { overflow: visible; }
-/* the leaves show only while they turn, and lie hidden under the board otherwise */
-.gtp-mark-leaf { opacity: 0; }
-.gtp-mark-leaf,
-.gtp-mark-board { transform-box: view-box; transform-origin: 11px 0; }
-a:is(:hover, :focus-visible, :active) .gtp-mark-board { animation: gtp-riffle-cover 2.3s cubic-bezier(0.3, 0.1, 0.3, 1) both; }
-a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { opacity: 1; animation: gtp-riffle-leaf 1.7s cubic-bezier(0.3, 0.1, 0.3, 1) both; animation-delay: calc(0.12s + var(--leaf) * 0.07s); }
-@keyframes gtp-riffle-cover {
-  0% { transform: none; }
-  10% { transform: scaleX(0.05) skewY(-9deg); }
-  18% { transform: scaleX(-1); }
-  86% { transform: scaleX(-1); }
-  93% { transform: scaleX(0.05) skewY(6deg); }
-  100% { transform: none; }
-}
-@keyframes gtp-riffle-leaf {
-  0% { transform: none; }
-  13% { transform: scaleX(0.04) skewY(-16deg); }
-  24% { transform: scaleX(-1) skewY(-2deg); }
-  62% { transform: scaleX(-1); }
-  81% { transform: scaleX(0.04) skewY(9deg); }
-  100% { transform: none; }
-}
 .gtp-hall-head { pointer-events: auto; }
 
 @media (max-width: 999px) {
@@ -1157,9 +1136,7 @@ a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { opacity: 1; animation: gt
   .gtp-locator-coords { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gtp-flip-ch,
-  a:is(:hover, :focus-visible, :active) .gtp-mark-board,
-  a:is(:hover, :focus-visible, :active) .gtp-mark-leaf { animation: none; }
+  .gtp-flip-ch { animation: none; }
 }
 
 /* ---------- the move between the shelf and a story ---------- */

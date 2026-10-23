@@ -3,6 +3,9 @@
 
 export const pad = (n: number) => String(n).padStart(2, '0');
 
+/** A page's number in its issue: each issue runs eight pages (riffle/pages.ts), so issue 2's opening, its third page, is 18. */
+export const folioOf = (issue: number, page: number) => issue * 8 + page;
+
 /** Whether a stock is dark, by its relative luminance: the scan's folds then print light, and the page takes a hairline edge. */
 export function darkStock(hex: string): boolean {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());

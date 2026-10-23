@@ -15,6 +15,21 @@ export type PageSpec = {
   mottle?: boolean;
 };
 
+/** Runs work when the browser is idle, or soon where it has no idle callback. */
+const onIdle = (fn: () => void): number =>
+  typeof requestIdleCallback === 'function' ? requestIdleCallback(fn, { timeout: 600 }) : window.setTimeout(fn, 60);
+const cancelIdle = (id: number) => (typeof cancelIdleCallback === 'function' ? cancelIdleCallback(id) : window.clearTimeout(id));
+
+/**
+ * Puts a leaf to rest or wakes it. A leaf at rest is invisible and skipped
+ * by the renderer (content-visibility), but keeps its layout, so it costs
+ * nothing while another leaf moves and shows at once when its turn comes.
+ */
+const rest = (leaf: HTMLElement, on: boolean) => {
+  leaf.style.visibility = on ? 'hidden' : '';
+  leaf.style.setProperty('content-visibility', on ? 'hidden' : '');
+};
+
 const mk = <K extends keyof HTMLElementTagNameMap>(tag: K, cls: string) => Object.assign(document.createElement(tag), { className: cls });
 const smooth = (t: number) => t * t * (3 - 2 * t);
 
@@ -57,6 +72,8 @@ type SheetOptions = {
   dur?: number;
   /** Strips per leaf. */
   strips?: number;
+  /** What a click does: riffle every page to the end (or back to the cover), or turn one page. */
+  click?: 'riffle' | 'turn';
   onChange?: (state: number) => void;
   onInteract?: () => void;
 };
@@ -93,7 +110,7 @@ export class Sheet {
 
   constructor(el: HTMLElement, o: SheetOptions) {
     this.el = el;
-    this.o = { breakpoint: 760, dur: 1250, strips: 36, ...o };
+    this.o = { breakpoint: 760, dur: 1250, strips: 36, click: 'riffle', ...o };
     el.classList.add('sh');
     el.innerHTML =
       '<i class="sh-shadow" aria-hidden="true"></i><i class="sh-under" aria-hidden="true"></i><i class="sh-lunder" aria-hidden="true"></i>';
@@ -107,7 +124,9 @@ export class Sheet {
       return page;
     };
     this.pages = this.o.pages.map((p, i) => wrap(makePage(p, i)));
+    // the back of a leaf with no page of its own: blank paper, with the same grain and scan as the pages
     this.blank = wrap(mk('div', 'mag-page is-blank'));
+    this.blank.innerHTML = '<i class="mottle" aria-hidden="true"></i><i class="grain" aria-hidden="true"></i>';
     this.bind();
     this.build();
   }
@@ -132,17 +151,34 @@ export class Sheet {
     this.t = this.leaves.map((_, i) => (i < s ? 1 : 0));
     this.render();
     this.emit(true);
-    clearTimeout(this.pb);
-    // build the next leaf ahead of the first turn
-    this.pb = window.setTimeout(() => {
-      const i = Math.min(this.state, this.max - 1);
-      if (i >= 0 && this.leaves[i]) this.leafEl(i);
-    }, 400);
+    this.warm();
+  }
+
+  /**
+   * Builds the leaves the next turns need (this one, the two after it and the
+   * one before it) while the browser is idle, one leaf a slot, and lays each
+   * out there and then, so a turn never stops to cut its strips or to lay
+   * out their copies of the page. Nothing is built while a leaf is moving.
+   */
+  private warm() {
+    cancelIdle(this.pb);
+    const want = [this.state, this.state + 1, this.state - 1, this.state + 2].find((i) => i >= 0 && i < this.leaves.length && !this.leafEls[i]);
+    if (want === undefined) return;
+    this.pb = onIdle(() => {
+      if (this.busy || this.drag) return this.warm();
+      if (this.leaves[want] && this.W) {
+        const leaf = this.leafEl(want);
+        void leaf.offsetHeight;
+        rest(leaf, true);
+      }
+      this.warm();
+    });
   }
 
   stop() {
     this.tw.forEach((cancel) => cancel());
     this.tw.clear();
+    cancelIdle(this.pb);
     clearTimeout(this.ht);
     this.busy = this.hinting = false;
     this.peeking = false;
@@ -162,6 +198,7 @@ export class Sheet {
     const changed = st !== this.state || !this.ready;
     this.state = st;
     this.ready = true;
+    if (changed) this.warm();
     if (this.o.onChange && (!silent || changed)) this.o.onChange(st);
   }
 
@@ -172,7 +209,8 @@ export class Sheet {
     const N = this.o.strips;
     const W = this.W;
     const w = W / N;
-    const ov = 0.7;
+    // each strip runs a pixel into the next, so no seam of the page under it shows between them
+    const ov = 1;
     const [front, back0] = this.leaves[i]!;
     let back = back0;
     if (!back) {
@@ -181,8 +219,9 @@ export class Sheet {
       if (paper) back.style.setProperty('--paper', paper);
       else back.style.removeProperty('--paper');
     }
+    // invisible until it turns, but laid out, so the turn does not wait for it (warm, rest)
     const leaf = mk('div', 'sh-leaf');
-    leaf.hidden = true;
+    leaf.style.visibility = 'hidden';
     const strips: Strip[] = [];
     for (let k = 0; k < N; k++) {
       const st = mk('div', 'sh-strip');
@@ -306,13 +345,13 @@ export class Sheet {
       const l = this.leafEls[i];
       if (t > 0 && t < 1) {
         const el = this.leafEl(i);
-        if (el.hidden) el.hidden = false;
+        if (el.style.visibility) rest(el, false);
         const r = this.pose(i);
         moving = true;
         first ??= r;
         top = r;
         if (r.minX < minX) minX = r.minX;
-      } else if (l && !l.hidden) l.hidden = true;
+      } else if (l && !l.style.visibility) rest(l, true);
     });
     // the shading on the page underneath, and on the page the sheet lands on
     const over = top as Pose | null;
@@ -536,7 +575,8 @@ export class Sheet {
       }
       if (!d.moved) {
         this.calm(-1);
-        this.riffle(d.fwd ? this.max : 0);
+        if (this.o.click === 'turn') this.turn(d.fwd);
+        else this.riffle(d.fwd ? this.max : 0);
         return;
       }
       const t = this.t[d.i]!;

@@ -377,6 +377,20 @@ function titleOf(v: Version): string {
   return `${language}. ${maker ? `${maker}, ` : ''}${v.city}, ${v.year}`;
 }
 
+/** A version's definitions, each numbered as its edition numbers them; as a sizer, unseen and unheard, holding the box's height. */
+function VersionLines({ version, className }: { version: Version; className?: string }) {
+  return (
+    <ol className={['gtp-version-lines', className].filter(Boolean).join(' ')} lang={version.lang} dir={version.dir} aria-hidden={className ? true : undefined}>
+      {version.lines.map((line) => (
+        <li key={line.n + line.text} className='gtp-version-line'>
+          {line.n ? <span className='gtp-version-n'>{line.n}</span> : null}
+          <span className='gtp-version-text'>{line.text}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 /** How long each version stands before the next, while the reader leaves the switch alone; the turn below is part of it. */
 const DWELL = 6000;
 
@@ -389,9 +403,12 @@ const TICK_PACE = 2;
 /* One version at a time: the globe turns to the city it was made in, the
    version's name and its coordinates tick over under it, and its eight
    definitions replace the last version's with a slow fade, each numbered
-   as its edition numbers them. The first time it is shown it comes in part
-   by part (press.css). It steps through the versions on its own while it is
-   shown, until the reader picks one from the switch or a dot. */
+   as its edition numbers them. Every version is laid out, unseen, in the
+   same place, so the box is always as tall as the longest and the switch
+   never moves under the pointer from one script to the next. The first
+   time it is shown it comes in part by part (press.css). It steps through
+   the versions on its own while it is shown, until the reader picks one
+   from the switch or a dot. */
 export function VersionsDemo() {
   const [chosen, setChosen] = useState(0);
   const [held, setHeld] = useState(false);
@@ -470,7 +487,7 @@ export function VersionsDemo() {
   return (
     <div ref={root} className='gtp-versions' data-chosen={chosen} data-held={held} data-moved={moved} data-shown={shown ?? undefined}>
       <div className='gtp-versions-map'>
-        <Globe place={version} cell={1.5} tilt={0} graticule label={false} turn={TURN} className='gtp-versions-globe'>
+        <Globe place={version} cell={1} tilt={0} graticule label={false} turn={TURN} className='gtp-versions-globe'>
           {/* each city's dot chooses the version made there */}
           {VERSIONS.map((v, i) => (
             <button
@@ -499,14 +516,12 @@ export function VersionsDemo() {
           onChange={(key) => pick(Math.max(0, VERSIONS.findIndex((v) => v.key === key)))}
           label='Version'
         />
-        <ol key={version.key} className='gtp-version-lines' lang={version.lang} dir={version.dir}>
-          {version.lines.map((line) => (
-            <li key={line.n + line.text} className='gtp-version-line'>
-              {line.n ? <span className='gtp-version-n'>{line.n}</span> : null}
-              <span className='gtp-version-text'>{line.text}</span>
-            </li>
+        <div className='gtp-version-stack'>
+          {VERSIONS.map((v) => (
+            <VersionLines key={v.key} version={v} className='gtp-version-sizer' />
           ))}
-        </ol>
+          <VersionLines key={version.key} version={version} />
+        </div>
       </div>
     </div>
   );

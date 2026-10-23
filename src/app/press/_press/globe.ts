@@ -1,8 +1,10 @@
 /* The press globe: an orthographic Earth printed in the house 1-bit
-   material, one canvas pixel per cell and a 4x4 Bayer screen, upscaled by
-   CSS with image-rendering: pixelated. It draws once per camera and only
-   animates while it turns to a new place. Inks come from the canvas's CSS
-   custom properties, so a theme change repaints it in the new colors. */
+   material, one canvas pixel per cell and a 4x4 Bayer screen, the cells as
+   small as a device pixel so the dither reads as a tone, not as squares;
+   over it the coordinate lines and the limb are stroked as clean vector
+   lines. It draws once per camera and only animates while it turns to a
+   new place. Inks come from the canvas's CSS custom properties, so a theme
+   change repaints it in the new colors. */
 
 import type { LatLon } from './coords';
 import { landAt } from './geo/land';
@@ -43,7 +45,7 @@ const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 export const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /** Degrees between the coordinate lines. */
-const GRID = 15;
+const GRID = 30;
 
 /**
  * Mounts on a canvas inside a square box. `pin` is moved to the target's
@@ -146,39 +148,61 @@ export function mountGlobe(
           value = 0.02 + 0.08 * lit;
           ink = sea;
         }
-        // the coordinate lines: a cell wide at the disc's middle, wider toward the limb where a cell spans more of the sphere
-        let line = false;
-        if (graticule) {
-          const half = (57.3 / size) / Math.max(pz, 0.3);
-          const offLat = Math.abs(lat - Math.round(lat / GRID) * GRID);
-          const along = wrap180(lon);
-          const offLon = Math.abs(along - Math.round(along / GRID) * GRID) * Math.cos(lat * RAD);
-          line = offLat < half || (offLon < half && Math.abs(lat) < 76);
-        }
-        // the limb, printed as a thin lit ring
-        if (pz < 0.16) {
-          value = Math.max(value, 0.42 * (1 - pz / 0.16) + 0.08);
-          ink = rim;
-        }
         const threshold = (BAYER_4[(y & 3) * 4 + (x & 3)]! + 0.5) / 16;
         if (value > threshold) {
           data[o] = ink[0]!;
           data[o + 1] = ink[1]!;
           data[o + 2] = ink[2]!;
           data[o + 3] = 255;
-        } else if (line) {
-          // a coordinate line where no dot prints: a faint solid cell, so the line runs unbroken through the screen
-          data[o] = rim[0]!;
-          data[o + 1] = rim[1]!;
-          data[o + 2] = rim[2]!;
-          data[o + 3] = 96;
         } else {
           data[o + 3] = 0;
         }
       }
     }
     ctx.putImageData(image, 0, 0);
+    strokeLines(rim);
     placePin();
+  }
+
+  /** The coordinate lines every 30 degrees on the side facing the reader, and the limb, as clean strokes over the dither. */
+  function strokeLines(rim: number[]) {
+    if (!ctx) return;
+    const view = { ...camera, radius: size / 2 - 0.5, cx: size / 2, cy: size / 2 };
+    const color = `rgb(${rim[0]} ${rim[1]} ${rim[2]} /`;
+    ctx.lineWidth = 1;
+    if (graticule) {
+      ctx.strokeStyle = `${color} 0.3)`;
+      ctx.beginPath();
+      const trace = (points: LatLon[]) => {
+        let pen = false;
+        for (const point of points) {
+          const p = project(view, point);
+          if (!p.near) {
+            pen = false;
+            continue;
+          }
+          if (pen) ctx.lineTo(p.x, p.y);
+          else ctx.moveTo(p.x, p.y);
+          pen = true;
+        }
+      };
+      for (let lat = -90 + GRID; lat < 90; lat += GRID) {
+        const ring: LatLon[] = [];
+        for (let lon = -180; lon <= 180; lon += 2) ring.push({ lat, lon });
+        trace(ring);
+      }
+      for (let lon = -180; lon < 180; lon += GRID) {
+        const meridian: LatLon[] = [];
+        for (let lat = -76; lat <= 76; lat += 2) meridian.push({ lat, lon });
+        trace(meridian);
+      }
+      ctx.stroke();
+    }
+    // the limb, one clean ring
+    ctx.strokeStyle = `${color} 0.7)`;
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2 - 0.5, 0, Math.PI * 2);
+    ctx.stroke();
   }
 
   function placePin() {
