@@ -216,11 +216,17 @@ function fill(col: HTMLElement, queue: Part[], away: Part[]) {
       return done();
     }
     el.remove();
-    if (alone) {
+    if (alone && piece.kind === 'fig') {
       // a picture taller than a whole column (one shortened by a band) goes to a page of its own, and the text runs on
       away.push({ ...piece, place: 'gallery' });
       queue.shift();
       continue;
+    }
+    if (alone) {
+      // anything else taller than a whole column (a head on a very short page) stands in it as it is, and the text runs on
+      col.append(el);
+      queue.shift();
+      return done();
     }
     if (piece.kind === 'fig') {
       held.push(queue.shift()!);

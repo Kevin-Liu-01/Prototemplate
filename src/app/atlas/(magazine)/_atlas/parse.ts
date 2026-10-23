@@ -233,10 +233,10 @@ export function parseBody(body: string, media: (src: string) => string | undefin
     while (i < lines.length) {
       const next = (lines[i] ?? '').trim();
       if (!next || /^#{2,4}\s/.test(next) || IMAGE.test(next) || /^<[A-Z]/.test(next) || LIST.test(next) || FOOTNOTE.test(next)) break;
-      para.push(next);
+      para.push(/ {2,}$/.test(lines[i] ?? '') ? `${next}\\` : next);
       i++;
     }
-    // a line ending in a backslash breaks there; the others run on
+    // a line ending in a backslash or in two spaces breaks there; the others run on
     const joined = para.map((line, k) => (k === para.length - 1 ? line : line.endsWith('\\') ? `${line.slice(0, -1).trimEnd()}\n` : `${line} `)).join('');
     blocks.push({ kind: 'para', inline: parseInline(joined) });
   }

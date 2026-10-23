@@ -81,7 +81,7 @@ function load(slug: string, n: number): Story | null {
     const relink = (nodes: typeof block.inline): typeof block.inline =>
       nodes.map((node) => {
         if (node.t === 'link') {
-          const m = /generaltranslation\.com\/(?:[a-z]{2}(?:-[A-Z]{2})?\/)?blog\/([a-z0-9-]+)(#[^\s)]*)?/.exec(node.href);
+          const m = /generaltranslation\.com\/(?:[a-z]{2}(?:-[A-Z]{2})?\/)?blog\/([a-z0-9-]+)\/?(#[^\s)]*)?/.exec(node.href);
           const inPress = m && STORIES.some((s) => s.slug === m[1]);
           // the story's section, when the link names one, comes along
           return { ...node, href: inPress ? `/atlas/${m[1]}${m[2] ?? ''}` : node.href };

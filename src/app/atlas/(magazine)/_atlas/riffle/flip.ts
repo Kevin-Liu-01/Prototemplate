@@ -19,7 +19,7 @@ type Options = {
   onChange?: (state: number) => void;
 };
 
-type Leaf = { el: HTMLElement; shades: [HTMLElement, HTMLElement]; turns: Animation[]; fwd: boolean };
+type Leaf = { el: HTMLElement; faces: [HTMLElement, HTMLElement]; shades: [HTMLElement, HTMLElement]; turns: Animation[]; fwd: boolean };
 
 const EASE = 'cubic-bezier(0.45, 0.05, 0.2, 1)';
 // each leaf sits half a pixel over the spine, so the two pages of a spread overlap there and no hairline of the hall shows
@@ -91,7 +91,7 @@ export class Flip {
     b.append(sb);
     el.append(f, b);
     this.el.append(el);
-    return { el, shades: [sf, sb], turns: [], fwd: false };
+    return { el, faces: [f, b], shades: [sf, sb], turns: [], fwd: false };
   }
 
   /** Stacks the leaves, shows only the ones that can be seen, and moves a closed cover to the middle. */
@@ -103,6 +103,10 @@ export class Flip {
       leaf.el.style.zIndex = String(moving ? 3 * n : leaf.fwd ? n + i : 2 * n - i);
       // on a phone a turned leaf has gone off the page's left, so it is not drawn at all
       leaf.el.hidden = !moving && (i < this.state - 2 || i > this.state + 1 || (!this.spread && leaf.fwd));
+      // only the faces a reader sees take focus or reach a screen reader: the right page's front, and on a spread the
+      // left page's back; a leaf in a turn is neither
+      leaf.faces[0].inert = moving || i !== this.state;
+      leaf.faces[1].inert = moving || !this.spread || i !== this.state - 1;
     });
     this.el.dataset.open = !this.spread || this.state === 0 ? 'false' : this.state > this.max - 1 ? 'back' : 'true';
   }
