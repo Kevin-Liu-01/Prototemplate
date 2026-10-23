@@ -1,0 +1,20 @@
+import type { ReactNode } from 'react';
+import { preload } from 'react-dom';
+
+import './_atlas/press.css';
+import './_atlas/magazine.css';
+import './_atlas/rack.css';
+import './_atlas/riffle/riffle.css';
+
+/** The faces every press page opens on: its sans and its serif, Katagami Text and Katagami Serif. */
+const FACES = ['/fonts/katagami/KatagamiText.woff2', '/fonts/katagami/KatagamiSerif.woff2'];
+
+/* GT Atlas, General Translation's magazine, kept here at /atlas, the path
+   it has on generaltranslation.com. Outside the viewer shell, with its own type and
+   colors; each route's head comes from seoRoute like every other page. The
+   faces it opens on are preloaded, so the text does not change face once it
+   has painted. */
+export default function PressLayout({ children }: { children: ReactNode }) {
+  for (const href of FACES) preload(href, { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
+  return children;
+}

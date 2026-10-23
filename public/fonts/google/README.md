@@ -18,7 +18,7 @@ Noto Naskh Arabic, Noto Sans, Noto Sans Arabic, Noto Sans Devanagari, Noto Sans
 JP, Noto Sans KR, Noto Sans SC, Noto Sans TC, Noto Serif TC, Sora, Space
 Grotesk.
 
-The press directions (src/app/press/directions) load their faces through the
+The press directions (src/app/atlas/(magazine)/directions) load their faces through the
 `@font-face` rules in `_directions/faces.css`. The `-directions` files are
 `text=` cuts like the specimen below: each holds only the characters the
 directions print in its script.

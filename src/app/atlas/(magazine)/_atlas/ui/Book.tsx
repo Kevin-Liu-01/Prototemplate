@@ -1,0 +1,257 @@
+'use client';
+
+import Link from 'next/link';
+import { useId, type CSSProperties } from 'react';
+
+import type { MagazineIssue, StoryCard } from '../content';
+import { dmsPair } from '../coords';
+import { storyHref, useEdition } from '../edition';
+import { COVERS, FALLBACK_COVER } from '../gpu/covers';
+import { bookTitle } from '../titles';
+import { SHORT_TITLES, type Lang } from '../stories';
+import type { ArtBox } from '../gpu/emblems';
+import { darkStock, issueMonth, pad } from '../riffle/print';
+import Cover from './Cover';
+import MapSheet from './MapSheet';
+import Seal from './Seal';
+
+export type BookStory = Pick<StoryCard, 'slug' | 'n' | 'authors' | 'cover' | 'summary' | 'minutes' | 'dateline'> &
+  Partial<Pick<StoryCard, 'sections' | 'date' | 'figureCount'>>;
+
+type Props = {
+  story: BookStory;
+  title: string;
+  lang: Pick<Lang, 'code' | 'dir'>;
+  /** Runs the cover's fluid; a still otherwise. */
+  playing: boolean;
+  /** The chosen book in a row. */
+  on?: boolean;
+  /** Swings the front board open on the spine to show the colophon and the contents. */
+  open?: boolean;
+  /** Draws the inside: the colophon on the board and the contents page under it. */
+  inside?: boolean;
+  className?: string;
+  style?: CSSProperties;
+  onClick?: () => void;
+  /** A hardcover (the shelf), or a thin magazine with its cover lines over the art (the rack). */
+  format?: 'book' | 'magazine';
+  /** A magazine's inside, printed on the page under its front, which shows when a corner lifts. */
+  issue?: MagazineIssue;
+};
+
+/** Every book is the same size and thickness, whatever the story's length; a magazine is a few sheets. */
+export function bookDepth(format: 'book' | 'magazine' = 'book'): number {
+  return format === 'magazine' ? 5 : 24;
+}
+
+/** Where a magazine's design draws, as Riffle sets its photograph: left of the middle, a third of the way down, with open paper around it. */
+export const MAGAZINE_ART: ArtBox = { x: 0.06, y: 0.3, w: 0.45, h: 0.42 };
+
+/* A magazine's front page, in Riffle's form, the first of Taylor Fang's
+   directions, on the story's own stock: its cover's colors and marbling
+   with its own design (gpu/emblems.ts) left of the middle, the scan's
+   folds, specks and grain over it, turned a different way on each issue;
+   up the right edge the story's name as Riffle's credit line; the folio at
+   the foot. Every line is Katagami Text in the cover's ink. The gloss
+   follows the pointer (--hx, --hy, set by the shelf).
+
+   With the story's issue, the page under the front is printed too: the
+   inside, Riffle's feature page. When the shelf lifts a corner (the slot's
+   data-peel) the front is cut along the fold, the corner curls back over
+   it (PageCurl), and the inside shows through (rack.css). */
+/** The story's name as the magazine prints it on its credit line and its spine: the title before its colon, or its short English name. */
+function magazineName(story: BookStory, title: string, lang: Pick<Lang, 'code'>): string {
+  return (lang.code === 'en' ? SHORT_TITLES[story.slug] : null) ?? title.split(/\s*[:：]\s*/)[0] ?? title;
+}
+
+function MagazinePage({ story, title, lang, playing, issue }: { story: BookStory; title: string; lang: Pick<Lang, 'code' | 'dir'>; playing: boolean; issue?: MagazineIssue }) {
+  const name = magazineName(story, title, lang);
+  const spec = COVERS[story.slug] ?? FALLBACK_COVER;
+  return (
+    <>
+      {issue ? <InsidePage story={story} title={title} lang={lang} issue={issue} /> : null}
+      <div className='gtp-mag-page' data-turn={story.n % 4} data-stock={darkStock(spec.colors[0]) ? 'dark' : 'light'}>
+        <Cover slug={story.slug} title='' lang={lang.code} dir={lang.dir} picture={story.cover} playing={playing} artAt={MAGAZINE_ART} />
+        <p className='gtp-mag-cred' lang={lang.code} dir={lang.dir}>
+          {name}
+        </p>
+        <p className='gtp-mag-folio'>
+          <b>{pad(story.n)}</b>
+          <span>Atlas</span>
+          <span>{issueMonth(story.date)}</span>
+        </p>
+        <i className='gtp-mag-mottle' aria-hidden='true' />
+        <i className='gtp-mag-grain' aria-hidden='true' />
+      </div>
+      {issue ? <PageCurl /> : null}
+    </>
+  );
+}
+
+/* The lifted corner as a page curls back: the back of the cover, which is
+   uncoated white paper, folded over the front along the fold. Its two free
+   edges bow in a little and its tip rounds off, as a curled sheet's do; it
+   is darkest in the crease, catches the light just past it, and dims
+   toward the tip. The inside page under the fold is shaded where the
+   lifted paper keeps the light off it, and in the dark theme the curl
+   lays a soft shade along the crease. Drawn in a 100 unit square that
+   rack.css sizes to the peel (--peel), so it grows with the lift. */
+function PageCurl() {
+  const id = useId().replace(/:/g, '');
+  const curl = 'M0 100 L100 0 Q42 15 11 8 Q7 7 8 11 Q15 42 0 100 Z';
+  return (
+    <svg className='gtp-mag-flap' viewBox='0 0 100 100' preserveAspectRatio='none' aria-hidden='true'>
+      <defs>
+        {/* the stops take their colors from rack.css (.gtp-mag-flap stop) */}
+        <linearGradient id={`${id}u`} className='gtp-mag-flap-under' gradientUnits='userSpaceOnUse' x1='50' y1='50' x2='100' y2='100'>
+          <stop offset='0' />
+          <stop offset='0.3' />
+          <stop offset='1' />
+        </linearGradient>
+        <linearGradient id={`${id}b`} className='gtp-mag-flap-paper' gradientUnits='userSpaceOnUse' x1='50' y1='50' x2='6' y2='6'>
+          <stop offset='0' />
+          <stop offset='0.07' />
+          <stop offset='0.2' />
+          <stop offset='0.62' />
+          <stop offset='1' />
+        </linearGradient>
+        <filter id={`${id}s`} x='-20%' y='-20%' width='140%' height='140%'>
+          <feGaussianBlur stdDeviation='2.4' />
+        </filter>
+      </defs>
+      <path d='M0 100 L100 0 L100 100 Z' fill={`url(#${id}u)`} />
+      <path className='gtp-mag-flap-cast' d={curl} transform='translate(3 3)' filter={`url(#${id}s)`} />
+      <path className='gtp-mag-flap-back' d={curl} fill={`url(#${id}b)`} />
+    </svg>
+  );
+}
+
+/* The magazine's inside, under its front: Riffle's feature page on white
+   uncoated stock, the story's title as the headline, its summary as the
+   deck, the byline, and its opening paragraph in two columns with a drop cap
+   in the story's accent; the folio at the foot. Only the corner the shelf
+   lifts shows it, so its lower right is where the text runs. */
+function InsidePage({ story, title, lang, issue }: { story: BookStory; title: string; lang: Pick<Lang, 'code'>; issue: MagazineIssue }) {
+  const spec = COVERS[story.slug] ?? FALLBACK_COVER;
+  // the story's own place and road in its accent, or in its cover's ink where it has none, so they stand clear of the sea
+  const accent = spec.accent ?? spec.paper;
+  return (
+    <div className='gtp-mag-inside' style={{ '--accent': accent, '--map-sea': spec.colors[0], '--map-ink': spec.paper } as CSSProperties} aria-hidden='true'>
+      <MapSheet sheet={issue.sheet} n={pad(story.n)} title={magazineName(story, title, lang)} month={issueMonth(story.date)} />
+      <i className='gtp-mag-mottle' aria-hidden='true' />
+      <i className='gtp-mag-grain' aria-hidden='true' />
+    </div>
+  );
+}
+
+export default function Book({ story, title, lang, playing, on = false, open = false, inside = false, className, style, onClick, format = 'book', issue }: Props) {
+  const edition = useEdition();
+  const spec = COVERS[story.slug] ?? FALLBACK_COVER;
+  const magazine = format === 'magazine';
+  const vars = {
+    '--board': spec.colors[0],
+    '--band': spec.accent ?? spec.colors[1],
+    '--ink': spec.paper,
+    '--bd': `${bookDepth(format)}px`,
+    ...style,
+  } as CSSProperties;
+  return (
+    <div
+      className={['gtp-book', magazine ? 'gtp-mag' : null, className].filter(Boolean).join(' ')}
+      data-on={on}
+      data-open={open}
+      style={vars}
+      onClick={onClick}
+    >
+      {inside ? (
+        <div className='gtp-book-page'>
+          <p className='gtp-page-title'>Contents</p>
+          <ol>
+            <li>
+              <Link href={storyHref(edition, story.slug)} tabIndex={open ? 0 : -1}>
+                <span>00</span>
+                Opening
+              </Link>
+            </li>
+            {(story.sections ?? []).map((section, i) => (
+              <li key={section.id}>
+                <Link href={`${storyHref(edition, story.slug)}#${section.id}`} tabIndex={open ? 0 : -1}>
+                  <span>{pad(i + 1)}</span>
+                  {section.text}
+                </Link>
+              </li>
+            ))}
+          </ol>
+          <p className='gtp-page-foot'>
+            {story.minutes} minutes{story.figureCount ? `, ${story.figureCount} figures` : ''}
+          </p>
+        </div>
+      ) : null}
+
+      <div className='gtp-book-board'>
+        <div className='gtp-book-front'>
+          {magazine ? (
+            <MagazinePage story={story} title={title} lang={lang} playing={playing} issue={issue} />
+          ) : (
+            <>
+              <Cover slug={story.slug} title={title} lang={lang.code} dir={lang.dir} picture={story.cover} playing={playing} />
+              <span className='gtp-book-hinge' />
+            </>
+          )}
+          <span className='gtp-book-sheen' />
+        </div>
+        {inside ? (
+          <div className='gtp-book-inside'>
+            <dl>
+              <dt>Press</dt>
+              <dd>GT Atlas</dd>
+              <dt>By</dt>
+              <dd>{story.authors.join(', ')}</dd>
+              {story.date ? (
+                <>
+                  <dt>Published</dt>
+                  <dd>{story.date}</dd>
+                </>
+              ) : null}
+              <dt>Filed from</dt>
+              <dd>San Francisco, {dmsPair(story.dateline)}</dd>
+              <dt>Set in</dt>
+              <dd>Katagami Text, Serif and Mono</dd>
+              <dt>Cover</dt>
+              <dd>Fluid Energy, from Glyphfield</dd>
+            </dl>
+          </div>
+        ) : null}
+      </div>
+
+      <div className='gtp-book-face gtp-book-back'>
+        <p>{story.summary}</p>
+        <Seal size={64} className='gtp-book-seal' />
+        <span className='gtp-book-back-line'>{dmsPair(story.dateline)}</span>
+      </div>
+      <div className='gtp-book-face gtp-book-spine'>
+        {magazine ? (
+          // printed as a perfect-bound magazine's spine: the issue's number and name, then Atlas and the month at the foot
+          <>
+            <b>{pad(story.n)}</b>
+            <span className='gtp-mag-spine-name' lang={lang.code} dir={lang.dir}>
+              {magazineName(story, title, lang)}
+            </span>
+            <span>Atlas</span>
+            <span>{issueMonth(story.date)}</span>
+          </>
+        ) : (
+          <>
+            <span className='gtp-book-spine-title' lang={lang.code} dir={lang.dir}>
+              {bookTitle(title, lang.code)}
+            </span>
+            <span className='gtp-book-spine-by'>{story.authors.join(', ')}</span>
+          </>
+        )}
+      </div>
+      <div className='gtp-book-face gtp-book-fore' />
+      <div className='gtp-book-face gtp-book-head' />
+      <div className='gtp-book-face gtp-book-tail' />
+    </div>
+  );
+}

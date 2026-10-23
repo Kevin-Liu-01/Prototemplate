@@ -283,8 +283,8 @@ export function siteRoutes() {
     { id: 'docs-components-globes', path: '/docs/components/globes', tools: 'check', source: [...components, 'src/components/blog-globe'] },
     { id: 'docs-components-blog-globe', path: '/docs/components/blog-globe', tools: 'check capture', source: [...docsSite, 'src/components/blog-globe', 'src/app/d/blog-globe'] },
     { id: 'compare', path: '/compare', tools: 'check live lines capture', source: ['src/app/compare'] },
-    { id: 'press', path: '/press', tools: 'check capture', source: ['src/app/press'] },
-    { id: 'atlas', path: '/atlas', tools: 'check live lines capture', source: ['src/app/atlas'] },
+    { id: 'press', path: '/atlas', tools: 'check capture', source: ['src/app/atlas/(magazine)'] },
+    { id: 'atlas', path: '/atlas/notes', tools: 'check live lines capture', source: ['src/app/atlas/notes'] },
     { id: 'present', path: '/present', tools: 'check capture', source: ['src/app/present'] },
     /* the built deck itself (next.config.ts rewrites /deck to public/brand-deck.html) */
     { id: 'deck', path: '/deck', tools: 'check live lines capture', source: ['deck/parts'] },

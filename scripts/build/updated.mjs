@@ -208,8 +208,8 @@ function pages() {
     { id: '/deck', paths: ['deck', 'scripts/build/deck.mjs'] },
     { id: '/present', paths: ['src/app/present'] },
     { id: '/compare', paths: ['src/app/compare', 'src/app/SiteCompare.tsx'] },
-    { id: '/press', paths: ['src/app/press', 'public/press'] },
-    { id: '/atlas', paths: ['src/app/atlas', 'public/shots/atlas'] },
+    { id: '/atlas', paths: ['src/app/atlas/(magazine)', 'public/atlas'] },
+    { id: '/atlas/notes', paths: ['src/app/atlas/notes', 'public/shots/atlas'] },
     ...docsPages().map((rel) => ({
       id: docsRoute(rel),
       paths: [`content/docs/${rel}.mdx`, ...docsPageSources(rel), ...docsSite],

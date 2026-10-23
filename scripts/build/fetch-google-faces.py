@@ -34,7 +34,7 @@ WANT = [
     ('Anybody', 0, 900, 'latin', 'ital,wdth,wght@0,150,900', 'anybody-150-900.woff2'),
     ('Anybody', 1, 900, 'latin', 'ital,wdth,wght@1,150,900', 'anybody-150-900-italic.woff2'),
     ('Anybody', 1, 500, 'latin', 'ital,wdth,wght@1,150,500', 'anybody-150-500-italic.woff2'),
-    # the press directions (src/app/press/directions): the faces of the seven studies, set through
+    # the press directions (src/app/atlas/(magazine)/directions): the faces of the seven studies, set through
     # @font-face in _directions/faces.css, latin plus greek for Euclid's first definition; Newsreader
     # keeps its optical-size axis, which the proof's large wordmark uses
     ('Inter Tight', 0, 400, 'latin'), ('Inter Tight', 0, 500, 'latin'),
@@ -49,7 +49,7 @@ WANT = [
     ('Archivo', 0, 500, 'latin'), ('Archivo', 0, 600, 'latin'),
     ('Arimo', 0, 400, 'latin'), ('Arimo', 0, 700, 'latin'), ('Arimo', 1, 400, 'latin'),
     ('Noto Sans', 0, 400, 'greek'), ('Noto Sans', 0, 400, 'greek-ext'),
-    # GT Atlas as a magazine (src/app/press/_press/magazine.css): Bodoni Moda for the display type, with its
+    # GT Atlas as a magazine (src/app/atlas/(magazine)/_atlas/magazine.css): Bodoni Moda for the display type, with its
     # optical-size axis, and Newsreader across its weights for the text, so bold reads as drawn rather than smeared
     ('Bodoni Moda', 0, 400, 'latin', 'opsz,wght@6..96,400..900', 'bodoni-moda-opsz.woff2'),
     ('Bodoni Moda', 1, 400, 'latin', 'ital,opsz,wght@1,6..96,400..900', 'bodoni-moda-opsz-italic.woff2'),
@@ -70,7 +70,7 @@ TEXT_CUTS = [
      'abcdefghijklmnopqrstuvwxyz', 'inter-specimen.woff2'),
     # the press directions: each cut holds the characters the directions print in its script, the
     # Chinese of the 1607 page, the seal, the route and the figures, and the story's title in Simplified
-    # Chinese, Japanese, Korean, Arabic and Hindi (_press/stories.ts); a new character needs a new cut
+    # Chinese, Japanese, Korean, Arabic and Hindi (_atlas/stories.ts); a new character needs a new cut
     ('Noto Serif TC', 'wght@400..900', '。一丁三丙中之乙事京何依先光六凡分別利則北十南卷厚原受口名吳啟地始展屬州工巧幾府度廣引律徐從慶所技故數文昌是曰有本樂歷法泰淞澳為無狹理瑪用甲界當皆目短積竇章第筆算線者肇自薄藝西解言說論諸譯賴造長門面韶首體點，', 'noto-serif-tc-directions.woff2'),
     ('Noto Sans TC', 'wght@400..500', '。一丁三丙中之乙事京何依先光六凡分別利則北十南卷厚原受口名吳啟地始展屬州工巧幾府度廣引律徐從慶所技故數文昌是曰有本樂歷法泰淞澳為無狹理瑪用甲界當皆目短積竇章第筆算線者肇自薄藝西解言說論諸譯賴造長門面韶首體點，', 'noto-sans-tc-directions.woff2'),
     ('Noto Sans SC', 'wght@400..700', '《》一个中何几原得文本欧的第译里', 'noto-sans-sc-directions.woff2'),

@@ -15,8 +15,8 @@ const DAY_THEN_REVALIDATE = 'public, max-age=86400, stale-while-revalidate=60480
 
 /**
  * The file trace. book.tsx (the Markdown twins, /llms-full.txt and
- * /AGENTS.md), marks/page.tsx, the press's article JSON
- * (press/[slug]/issue) and the motion pages read files
+ * /AGENTS.md), marks/page.tsx, GT Atlas's article JSON
+ * (atlas/[slug]/issue) and the motion pages read files
  * through paths computed at runtime, so Next's trace takes in the whole
  * checkout (public/, motion/, deck/) for these routes. Every one of them
  * prerenders, so nothing reads those files at request time. If one of
@@ -83,7 +83,7 @@ const nextConfig: NextConfig = {
     '/motion{,/**}': UNTRACED,
     '/marks': UNTRACED,
     '/graphics': UNTRACED,
-    '/press/[slug]/issue': UNTRACED,
+    '/atlas/[slug]/issue': UNTRACED,
   },
   async headers() {
     return [
@@ -117,6 +117,10 @@ const nextConfig: NextConfig = {
       { source: '/skills/gt-isometric/:path*', destination: '/skills/gt-diagrams', permanent: true },
       // The build log hangs off the libraries document in the handbook.
       { source: '/craft', destination: '/docs/handbook/libraries', permanent: true },
+      // GT Atlas moved from /press to /atlas on 2026-10-23, the path it has on
+      // generaltranslation.com; every page and picture under /press answers
+      // with the same one under /atlas.
+      { source: '/press/:path*', destination: '/atlas/:path*', permanent: true },
       // The handbook moved into the docs site on 2026-10-20: the book at
       // /handbook and each document, with its Markdown twin, answer with the
       // same page under /docs/handbook. A fragment rides along; the pages

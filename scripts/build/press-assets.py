@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Copy the Katagami web fonts and the country flags the /press pages use.
+"""Copy the Katagami web fonts and the country flags the /atlas pages use.
 
 The press sets Katagami Text for its text, Katagami Mono for code and
 figures, and Katagami Serif for its serif type. Their Latin, Arabic and Devanagari slices are
@@ -8,10 +8,10 @@ and Katagami Serif's italics are cut from the Katagami repository's variable
 fonts to the characters of the roman Latin slices, when KATAGAMI_REPO names a
 checkout. The CJK companions are 1.5 to 3 MB
 each, so each one is cut down to the Han, kana and Hangul characters that
-appear in src/app/press, and the cut is written as Katagami<CJK>-press.woff2.
+appear in src/app/atlas/(magazine), and the cut is written as Katagami<CJK>-press.woff2.
 Run it again after adding CJK text to the press. The flags are the
 flag-icons set gt-cloud's LocaleFlag draws (4x3 SVGs from node_modules),
-copied into public/press/flags for the language picker.
+copied into public/atlas/flags for the language picker.
 
 Usage:
   KATAGAMI_SITE=<Katagami-Website checkout> [KATAGAMI_REPO=<Katagami checkout>] python3 scripts/build/press-assets.py
@@ -31,12 +31,12 @@ from fontTools import subset
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'public' / 'fonts' / 'katagami'
-FLAGS_OUT = ROOT / 'public' / 'press' / 'flags'
+FLAGS_OUT = ROOT / 'public' / 'atlas' / 'flags'
 FLAGS_IN = ROOT / 'node_modules' / 'flag-icons' / 'flags' / '4x3'
 # the language picker's countries: en us, es es, pt br, de de, ar eg, hi in, zh cn, ko kr, ja jp
-# every country a language's places fly (src/app/press/_press/stories.ts)
+# every country a language's places fly (src/app/atlas/(magazine)/_atlas/stories.ts)
 FLAGS = ['us', 'gb', 'au', 'ca', 'ng', 'mx', 'es', 'ar', 'co', 'cn', 'tw', 'sg', 'de', 'at', 'ch', 'in', 'br', 'pt', 'ao', 'eg', 'sa', 'ae', 'ma', 'kr', 'jp']
-PRESS = ROOT / 'src' / 'app' / 'press'
+PRESS = ROOT / 'src' / 'app' / 'atlas' / '(magazine)'
 
 COPY = [
     'KatagamiText.woff2',
