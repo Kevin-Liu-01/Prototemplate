@@ -20,7 +20,8 @@ import { EditionContext, homeOf, storyHref, useEdition, type Edition } from './e
 import { landed, move, plainClick } from './transition';
 import Cover from './ui/Cover';
 import type { ArtBox } from './gpu/emblems';
-import { Headline, isShort, leadOf, Mark, placePulls, PullQuote, subtitleOf, useSlideIn } from './ui/Decor';
+import { placePulls } from './pulls';
+import { Headline, isShort, leadOf, Mark, PullQuote, subtitleOf, useSlideIn } from './ui/Decor';
 import { ArrowIcon, CalendarIcon, ClockIcon, IndexIcon, LiveIcon, LoopIcon, PenIcon, PinIcon, StillIcon, ViewsIcon } from './ui/icons';
 
 type Props = { story: Story; next: { slug: string; title: string } | null; edition?: Edition };

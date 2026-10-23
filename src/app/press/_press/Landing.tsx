@@ -20,7 +20,7 @@ import Globe from './ui/Globe';
 import Locator from './ui/Locator';
 import PressMark from './ui/PressMark';
 import { RowIcon, StackIcon } from './ui/icons';
-import MagazineView from './riffle/MagazineView';
+import MagazineView, { loadArticle } from './riffle/MagazineView';
 import StopSlider from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
 import ViewSwitch from './ui/ViewSwitch';
@@ -276,7 +276,7 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
         {edition === 'magazine' ? <HallGuides /> : null}
         <header className='gtp-hall-head'>
           {edition === 'magazine' ? (
-            // the magazine's nameplate: the book imprint, its GT cut through the board, as tall as the capitals, then Atlas in Bodoni
+            // the magazine's nameplate: the book imprint, its GT cut through the board, as tall as the capitals, then Atlas in Katagami Serif
             <h1 className='gtp-nameplate' aria-label='GT Atlas'>
               <PressMark className='gtp-nameplate-mark' />
               <span className='gtp-nameplate-word' aria-hidden='true'>
@@ -409,12 +409,17 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
                     type='button'
                     className='gtp-shelf-corner'
                     aria-label={`Open ${bookTitle(s.titles[code], code)} as a magazine`}
-                    onPointerEnter={() => setPeel(i)}
+                    onPointerEnter={() => {
+                      setPeel(i);
+                      // the magazine's article, fetched as the corner lifts, so the magazine opens at once
+                      void loadArticle(storyHref(edition, s.slug));
+                    }}
                     onPointerLeave={() => setPeel((k) => (k === i ? null : k))}
                     onFocus={() => {
                       setActive(i);
                       setHover(i);
                       setPeel(i);
+                      void loadArticle(storyHref(edition, s.slug));
                     }}
                     onBlur={() => setPeel((k) => (k === i ? null : k))}
                     onClick={() => {
@@ -485,7 +490,6 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
       {reading !== null && catalog[reading] && issues?.[catalog[reading]!.slug] ? (
         <MagazineView
           story={catalog[reading]!}
-          issue={issues[catalog[reading]!.slug]!}
           href={storyHref(edition, catalog[reading]!.slug)}
           onRead={(hash) => open(reading, hash)}
           onClose={closeMagazine}

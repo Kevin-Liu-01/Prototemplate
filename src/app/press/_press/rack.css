@@ -149,13 +149,13 @@
 
 /* ---------- the nameplate and the controls ---------- */
 
-/* both set in the nameplate's Bodoni at its size, so one cap (1cap) is the same height in each: the word's box is
+/* both set in the nameplate's Katagami Serif at its size, so one cap (1cap) is the same height in each: the word's box is
    trimmed to its cap height and baseline, the book imprint is exactly one cap tall and stands on the baseline, and
    the controls' corner is one cap tall beside them, its box centred in it */
 .gtp-nameplate,
-.gtp-landing[data-edition='magazine'] .gtp-hall-coords { font-family: var(--gtm-display); font-size: var(--nameplate); font-weight: 800; line-height: 1; font-optical-sizing: none; font-variation-settings: 'opsz' 40; }
+.gtp-landing[data-edition='magazine'] .gtp-hall-coords { font-family: var(--gtm-display); font-size: var(--nameplate); font-weight: 800; line-height: 1; }
 .gtp-landing[data-edition='magazine'] .gtp-hall-head { left: var(--edge); top: var(--top); }
-.gtp-nameplate { margin: 0; display: flex; align-items: flex-end; gap: 0.12em; color: var(--gtp-ink); letter-spacing: -0.04em; }
+.gtp-nameplate { margin: 0; display: flex; align-items: flex-end; gap: 0.12em; color: var(--gtp-ink); letter-spacing: -0.02em; }
 .gtp-nameplate-mark { display: block; flex: none; width: auto; height: 1cap; }
 .gtp-nameplate-word { display: block; text-box: trim-both cap alphabetic; }
 
@@ -199,18 +199,16 @@
 .gtp-langpick-codes button[aria-checked='true'] { color: var(--gtp-signal); background: color-mix(in srgb, var(--gtp-ink) 10%, transparent); }
 .gtp-langpick-codes button:focus-visible { outline: 1.5px solid var(--gtp-signal); outline-offset: -1.5px; }
 
-/* the dateline at the band's right end: the city in Bodoni's italic, and its coordinates under it in the mono with a
+/* the dateline at the band's right end: the city in Katagami Serif's italic, and its coordinates under it in the mono with a
    fine crosshair beside them, both right aligned on the last magazine's edge */
 .gtp-dateline { display: grid; justify-items: end; gap: 10px; text-align: right; }
-.gtp-dateline-city { margin: 0; font-family: var(--gtm-display); font-size: 28px; font-style: italic; font-weight: 500; line-height: 1; letter-spacing: -0.01em; color: var(--gtp-ink); font-optical-sizing: none; font-variation-settings: 'opsz' 28; text-box: trim-both cap alphabetic; }
+.gtp-dateline-city { margin: 0; font-family: var(--gtm-display); font-size: 26px; font-style: italic; font-weight: 500; line-height: 1; letter-spacing: -0.01em; color: var(--gtp-ink); text-box: trim-both cap alphabetic; }
 .gtp-landing[data-edition='magazine'] .gtp-hall-dms { position: relative; display: block; font-family: var(--gtp-mono); font-size: 12px; line-height: 1.6; letter-spacing: 0.02em; color: color-mix(in srgb, var(--gtp-ink) 62%, transparent); text-box: trim-both cap alphabetic; }
 .gtp-hall-crosshair { position: absolute; right: calc(100% + 10px); top: 50%; width: 14px; height: 14px; margin-top: -7px; fill: none; stroke: var(--gtp-signal); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .gtp-hall-crosshair * { vector-effect: non-scaling-stroke; }
 
 @media (max-width: 999px) {
   .gtp-landing[data-edition='magazine'] { --margin: 20px; --edge: 20px; --nameplate: calc((100vw - 2 * var(--margin)) / 2 * 0.36); --top: 30px; }
-  .gtp-nameplate,
-  .gtp-landing[data-edition='magazine'] .gtp-hall-coords { font-variation-settings: 'opsz' 28; }
   /* on a phone the row scrolls on its own: the controls' box keeps the theme alone, and the dateline steps out so the
      codes take the foot */
   .gtp-landing[data-edition='magazine'] .gtp-hall-coords { display: flex; }

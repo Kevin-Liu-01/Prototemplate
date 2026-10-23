@@ -243,6 +243,12 @@ export function parseInline(source: string): Inline[] {
   };
   let i = 0;
   while (i < source.length) {
+    // a backslash escapes Markdown's own punctuation, which then prints as written: \[React\] is [React]
+    if (source[i] === '\\' && /[\\`*_{}[\]()#+\-.!|<>~]/.test(source[i + 1] ?? '')) {
+      text += source[i + 1];
+      i += 2;
+      continue;
+    }
     const rest = source.slice(i);
     const note = /^\[\^(\d+)\]/.exec(rest);
     if (note) {

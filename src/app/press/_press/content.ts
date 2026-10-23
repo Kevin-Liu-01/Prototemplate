@@ -45,7 +45,8 @@ export type Story = {
 
 export type StoryCard = Omit<Story, 'blocks' | 'figures'> & { figureCount: number; sections: { id: string; text: string }[] };
 
-function publicFile(src: string): string {
+/** A picture's file in the public folder, from the path the page asks for. */
+export function publicFile(src: string): string {
   return path.join(PUBLIC, (src.split('?')[0] ?? src).replace(/^\//, ''));
 }
 
@@ -148,18 +149,17 @@ export function storySlugs(): string[] {
   return STORIES.map((s) => s.slug);
 }
 
-/** What a story's magazine prints inside (the rack's lifted corner and its magazine view): its opening paragraphs as plain text and its first pictures. */
-export type MagazineIssue = { paras: string[]; pictures: { src: string; alt: string }[] };
+/** What the rack's lifted corner shows of a story's magazine: its opening paragraphs as plain text. The magazine view fetches the whole article (riffle/article.ts). */
+export type MagazineIssue = { paras: string[] };
 
-/** How many opening paragraphs, and how much of each, a magazine prints. */
-const ISSUE_PARAS = 6;
+/** How many opening paragraphs, and how much of each, the lifted corner shows. */
+const ISSUE_PARAS = 2;
 const ISSUE_PARA_CHARS = 640;
 
-/* The inside of every story's magazine, built on the server from its text:
-   the first paragraphs long enough to read as prose (an epigraph, a lead-in
-   to a figure and a line ending in a colon are left out), each cut at a word,
-   and the first still pictures, their light twins where the blog has them,
-   since the magazine prints on white paper. */
+/* The inside page under every story's front, built on the server from its
+   text: the first paragraphs long enough to read as prose (an epigraph, a
+   lead-in to a figure and a line ending in a colon are left out), each cut
+   at a word. */
 export function getMagazineIssues(): Record<string, MagazineIssue> {
   const issues: Record<string, MagazineIssue> = {};
   STORIES.forEach((entry, i) => {
@@ -170,11 +170,7 @@ export function getMagazineIssues(): Record<string, MagazineIssue> {
       .filter((text) => text.length >= 80 && !text.endsWith(':'))
       .slice(0, ISSUE_PARAS)
       .map((text) => (text.length <= ISSUE_PARA_CHARS ? text : `${text.slice(0, text.lastIndexOf(' ', ISSUE_PARA_CHARS))}…`));
-    const pictures = story.figures
-      .filter((figure) => !figure.live && figure.frames[0] && !figure.frames[0].video)
-      .slice(0, 3)
-      .map((figure) => ({ src: figure.light ?? figure.frames[0]!.src, alt: figure.frames[0]!.alt }));
-    issues[entry.slug] = { paras, pictures };
+    issues[entry.slug] = { paras };
   });
   return issues;
 }

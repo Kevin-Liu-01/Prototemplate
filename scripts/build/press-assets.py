@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Copy the Katagami web fonts and the country flags the /press pages use.
 
-The press sets Katagami Text for everything but code and figures,
-Katagami Mono for those, and Katagami Serif for the word Atlas. Their Latin, Arabic and Devanagari slices are
-copied as they are. The CJK companions are 1.5 to 3 MB
+The press sets Katagami Text for its text, Katagami Mono for code and
+figures, and Katagami Serif for its serif type. Their Latin, Arabic and Devanagari slices are
+copied as they are. The website carries no italics yet, so Katagami Text's
+and Katagami Serif's italics are cut from the Katagami repository's variable
+fonts to the characters of the roman Latin slices, when KATAGAMI_REPO names a
+checkout. The CJK companions are 1.5 to 3 MB
 each, so each one is cut down to the Han, kana and Hangul characters that
 appear in src/app/press, and the cut is written as Katagami<CJK>-press.woff2.
 Run it again after adding CJK text to the press. The flags are the
@@ -11,11 +14,11 @@ flag-icons set gt-cloud's LocaleFlag draws (4x3 SVGs from node_modules),
 copied into public/press/flags for the language picker.
 
 Usage:
-  KATAGAMI_SITE=<Katagami-Website checkout> python3 scripts/build/press-assets.py
+  KATAGAMI_SITE=<Katagami-Website checkout> [KATAGAMI_REPO=<Katagami checkout>] python3 scripts/build/press-assets.py
   python3 scripts/build/press-assets.py <Katagami-Website checkout>
 
 Requires: python3 with fontTools and brotli (pip install fonttools brotli).
-Last real run: 2026-10-19, Press session.
+Last real run: 2026-10-23, Press session (the italics).
 """
 
 import os
@@ -46,6 +49,35 @@ CJK = ['KatagamiCJKJP.woff2', 'KatagamiCJKSC.woff2', 'KatagamiCJKKR.woff2']
 
 # Han, kana, Hangul, CJK punctuation and fullwidth forms.
 CJK_CHARS = re.compile('[　-ヿ㐀-䶿一-鿿가-힯＀-￯]')
+
+
+# the italics cut from the Katagami repository: each to the characters of its roman slice above
+ITALICS = [
+    ('KatagamiText.woff2', 'text/KatagamiText-Italic[wght].ttf'),
+    ('KatagamiSerif.woff2', 'serif/KatagamiSerif-Italic[wght].ttf'),
+]
+
+
+def cut_italics() -> None:
+    repo = os.environ.get('KATAGAMI_REPO')
+    if not repo:
+        print('press-fonts: KATAGAMI_REPO not set, so the italics are left as they are')
+        return
+    from fontTools.ttLib import TTFont
+
+    for roman, italic in ITALICS:
+        options = subset.Options()
+        options.flavor = 'woff2'
+        options.layout_features = ['*']
+        options.name_IDs = ['*']
+        font = subset.load_font(str(Path(repo).expanduser() / 'fonts' / italic), options)
+        chars = set(TTFont(OUT / roman).getBestCmap()) & set(font.getBestCmap())
+        cutter = subset.Subsetter(options)
+        cutter.populate(unicodes=sorted(chars))
+        cutter.subset(font)
+        name = roman.replace('.woff2', '-Italic.woff2')
+        subset.save_font(font, str(OUT / name), options)
+        print(f'press-fonts: {name}, {len(chars)} characters')
 
 
 def site_fonts() -> Path:
@@ -83,6 +115,7 @@ def main() -> None:
         subsetter.subset(font)
         target = OUT / name.replace('.woff2', '-press.woff2')
         subset.save_font(font, str(target), options)
+    cut_italics()
     FLAGS_OUT.mkdir(parents=True, exist_ok=True)
     for code in FLAGS:
         shutil.copyfile(FLAGS_IN / f'{code}.svg', FLAGS_OUT / f'{code}.svg')

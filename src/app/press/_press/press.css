@@ -9,21 +9,13 @@
 @font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-52F, U+1D00-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
 @font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-arabic.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+600-8FF, U+FB50-FEFF; }
 @font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-devanagari.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+900-97F, U+1CD0-1CF9, U+A8E0-A8FF; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-52F, U+1D00-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-52F, U+1D00-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
 @font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-52F, U+1D00-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
 @font-face { font-family: 'Katagami Mono'; src: url('/fonts/katagami/KatagamiMono.woff2') format('woff2'); font-weight: 100 700; font-display: swap; unicode-range: U+0-52F, U+1D00-2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
 @font-face { font-family: 'Katagami CJK SC'; src: url('/fonts/katagami/KatagamiCJKSC-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Katagami CJK JP'; src: url('/fonts/katagami/KatagamiCJKJP-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Katagami CJK KR'; src: url('/fonts/katagami/KatagamiCJKKR-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
-/* the book reader's face, Newsreader, scaled to Katagami Serif's x-height (0.498 of the size) at the text's 18px:
-   its own 0.426 comes up 17%. The scale is the face's own, so the Chinese and the faces that fill in for it
-   (Katagami Serif for Greek and the marked Latin letters) keep their size */
-@font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; size-adjust: 117%; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-400-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; size-adjust: 117%; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-
-/* and its Latin Extended, at the same scale, for the marked letters of romanized Chinese (Jǐhé Yuánběn) */
-@font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-wght-latin-ext.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; size-adjust: 117%; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-@font-face { font-family: 'Newsreader'; src: url('/fonts/google/newsreader-opsz-wght-italic-latin-ext.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; size-adjust: 117%; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-
 .gtp {
   --gtp-cjk: 'Katagami CJK SC', 'Katagami CJK JP', 'Katagami CJK KR';
   /* Katagami Text for everything but code and figures, which take Katagami Mono */
@@ -740,7 +732,7 @@
 /* ---------- Translating Euclid: the book look ---------- */
 
 /* The shared reader's book look (Reader.tsx, BookBody.tsx): light brown
-   paper, one face (Newsreader) in sentence case throughout, a title page,
+   paper, one face (Katagami Serif) in sentence case throughout, a title page,
    then the text on the left 61.8% with a blank line between paragraphs and
    the pictures on a stage across the rest, their captions under them. The
    tokens sit on the reader's root, so its theme switch and monogram home
@@ -770,9 +762,9 @@
   --gtp-globe-sea: #d6bf95;
   --gtp-globe-rim: #3a2814;
   --gtp-print-measure: 620px;
-  /* the one story set in the serif, Newsreader, with Katagami Serif for the letters it lacks; Chinese, Japanese and
-     Korean fall to a serif (Songti, Noto Serif), so they match it, since Katagami's own CJK is sans */
-  --gtp-serif: 'Newsreader', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
+  /* the one story set in the serif, Katagami Serif; Chinese, Japanese and Korean fall to a serif (Songti, Noto Serif),
+     so they match it, since Katagami's own CJK is sans */
+  --gtp-serif: 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
   --gtp-sans: var(--gtp-serif);
   --gtp-mono: var(--gtp-serif);
   font-family: var(--gtp-serif);

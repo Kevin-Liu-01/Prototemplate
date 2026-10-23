@@ -15,7 +15,8 @@ const DAY_THEN_REVALIDATE = 'public, max-age=86400, stale-while-revalidate=60480
 
 /**
  * The file trace. book.tsx (the Markdown twins, /llms-full.txt and
- * /AGENTS.md), marks/page.tsx and the motion pages read files
+ * /AGENTS.md), marks/page.tsx, the press's article JSON
+ * (press/[slug]/issue) and the motion pages read files
  * through paths computed at runtime, so Next's trace takes in the whole
  * checkout (public/, motion/, deck/) for these routes. Every one of them
  * prerenders, so nothing reads those files at request time. If one of
@@ -82,6 +83,7 @@ const nextConfig: NextConfig = {
     '/motion{,/**}': UNTRACED,
     '/marks': UNTRACED,
     '/graphics': UNTRACED,
+    '/press/[slug]/issue': UNTRACED,
   },
   async headers() {
     return [

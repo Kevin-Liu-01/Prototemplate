@@ -3,16 +3,18 @@
 import { useRef, useState } from 'react';
 
 import { Sheet } from '../../directions/_directions/sheet';
-import type { MagazineIssue, StoryCard } from '../content';
+import type { StoryCard } from '../content';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { drawLayers } from '../gpu/emblems';
 import { useMountEffect } from '../hooks';
 import { MAGAZINE_ART } from '../ui/Book';
-import { issuePages } from './pages';
+import type { Piece } from './article';
+import { issuePages, openingHead } from './pages';
+import { paginate } from './paginate';
+import { BASE } from './print';
 
 type Props = {
   story: StoryCard;
-  issue: MagazineIssue;
   /** The story's web page. */
   href: string;
   /** Opens the web page, as a click on the magazine on the rack does. */
@@ -28,10 +30,12 @@ const WHEEL_REST = 300;
    shows its issue: Taylor's Sheet turns the pages (issuePages), bending
    each leaf in strips. A click on the right page turns it forward and a
    click on the left page turns it back, as do the arrows under the
-   magazine, the arrow keys and a scroll; a drag turns a leaf by hand. Esc
-   or the close control goes back to the rack; "Read the story" and the
-   sections open the web page. The cover prints the story's design flat in
-   its inks (coverArt), drawn once per story and size. */
+   magazine, the arrow keys and a scroll; a drag turns a leaf by hand. The
+   pages hold the whole article (riffle/article.ts), fetched as the corner
+   lifts and set into pages the magazine's size (riffle/paginate.ts). Esc or
+   the close control goes back to the rack; "Read the story" opens the web
+   page. The cover prints the story's design flat in its inks (coverArt),
+   drawn once per story and size. */
 
 /** Each story's cover art by size, kept for the visit, so a magazine opens again at once. */
 const ARTS = new Map<string, Promise<string | null>>();
@@ -79,7 +83,32 @@ async function drawCover(slug: string, width: number, height: number): Promise<s
   return blob ? URL.createObjectURL(blob) : null;
 }
 
-export default function MagazineView({ story, issue, href, onRead, onClose }: Props) {
+/** Each story's article, fetched once for the visit (press/[slug]/issue). */
+const ARTICLES = new Map<string, Promise<Piece[]>>();
+
+/** A story's article by its page's path; the rack asks for it as a corner lifts, so the magazine opens at once. */
+export function loadArticle(href: string): Promise<Piece[]> {
+  let article = ARTICLES.get(href);
+  if (!article) {
+    article = fetch(`${BASE}${href}/issue`)
+      .then((response) => (response.ok ? (response.json() as Promise<Piece[]>) : Promise.reject(new Error(String(response.status)))))
+      .catch(() => {
+        // a failed fetch is not kept, so the next opening asks again
+        ARTICLES.delete(href);
+        return [];
+      });
+    ARTICLES.set(href, article);
+  }
+  return article;
+}
+
+/** The width from which two pages show at once (the Sheet's breakpoint). */
+const SPREAD = 760;
+
+/** The faces the pages are set in, loaded before they are measured, so the measured page is the shown one. */
+const FACES = ['400 16px "Katagami Text"', '700 16px "Katagami Text"', '400 16px "Katagami Serif"', '700 16px "Katagami Serif"'];
+
+export default function MagazineView({ story, href, onRead, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const turner = useRef<Sheet | null>(null);
@@ -94,13 +123,30 @@ export default function MagazineView({ story, issue, href, onRead, onClose }: Pr
     const sync = () => {
       if (sheet) setAt({ state: sheet.state, max: sheet.max });
     };
-    const scale = Math.min(2, devicePixelRatio || 1);
-    void coverArt(story.slug, Math.round(el.offsetWidth * scale), Math.round(el.offsetHeight * scale)).then((art) => {
+    // the page size the article was set for; a resize to another sets it again, at the same place in the story
+    let size = '';
+    const make = async (place = 0) => {
+      const scale = Math.min(2, devicePixelRatio || 1);
+      const [art, pieces] = await Promise.all([
+        coverArt(story.slug, Math.round(el.offsetWidth * scale), Math.round(el.offsetHeight * scale)),
+        loadArticle(href),
+        Promise.all(FACES.map((face) => document.fonts.load(face))).catch(() => []),
+      ]);
       if (gone) return;
-      sheet = new Sheet(el, { pages: issuePages(story, issue, href, art), strips: 20, dur: 820, click: 'turn', onChange: sync });
+      size = `${el.offsetWidth}x${el.offsetHeight}`;
+      // the page's exact size, fractions and all, so the measured lines break where the shown ones do
+      const box = el.getBoundingClientRect();
+      const article = paginate(el.closest<HTMLElement>('.gtp-riffle') ?? el, box.width, box.height, openingHead(story), pieces);
+      sheet?.stop();
+      sheet = new Sheet(el, { pages: issuePages(story, art, article, innerWidth >= SPREAD), breakpoint: SPREAD, strips: 20, dur: 820, click: 'turn', onChange: sync });
+      if (place) {
+        sheet.state = Math.round(place * sheet.max);
+        sheet.build();
+      }
       turner.current = sheet;
       sync();
-    });
+    };
+    void make();
     close.current?.focus();
 
     const wheel = { sum: 0, last: 0 };
@@ -124,20 +170,19 @@ export default function MagazineView({ story, issue, href, onRead, onClose }: Pr
         sheet?.prev();
       }
     };
-    // a link on a page (a section, "Read the story") opens the web page; the Sheet leaves links to their own clicks
-    const onClick = (e: MouseEvent) => {
-      const link = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>('a[data-read]') : null;
-      if (!link || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      e.preventDefault();
-      onRead(link.dataset.read ?? '');
-    };
+    let settle = 0;
     const onResize = () => {
-      sheet?.build();
-      sync();
+      window.clearTimeout(settle);
+      settle = window.setTimeout(() => {
+        if (`${el.offsetWidth}x${el.offsetHeight}` !== size) void make(sheet?.max ? sheet.state / sheet.max : 0);
+        else {
+          sheet?.build();
+          sync();
+        }
+      }, 200);
     };
     const stage = el.parentElement;
     stage?.addEventListener('wheel', onWheel, { passive: false });
-    el.addEventListener('click', onClick);
     addEventListener('keydown', onKey);
     addEventListener('resize', onResize);
     return () => {
@@ -145,7 +190,7 @@ export default function MagazineView({ story, issue, href, onRead, onClose }: Pr
       sheet?.stop();
       turner.current = null;
       stage?.removeEventListener('wheel', onWheel);
-      el.removeEventListener('click', onClick);
+      window.clearTimeout(settle);
       removeEventListener('keydown', onKey);
       removeEventListener('resize', onResize);
     };
@@ -163,7 +208,7 @@ export default function MagazineView({ story, issue, href, onRead, onClose }: Pr
           </svg>
         </button>
         <a
-          href={href}
+          href={`${BASE}${href}`}
           onClick={(e) => {
             if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
             e.preventDefault();

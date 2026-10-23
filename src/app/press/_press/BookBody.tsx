@@ -8,7 +8,8 @@ import type { Block, Inline as InlineNode } from './parse';
 import { useMountEffect } from './hooks';
 import { LIVE_CAPTION } from './plates/Plate';
 import { VersionsDemo } from './plates/Live';
-import { isShort, leadOf, Mark, placePulls, PullQuote, useSlideIn } from './ui/Decor';
+import { placePulls } from './pulls';
+import { isShort, leadOf, Mark, PullQuote, useSlideIn } from './ui/Decor';
 import Inline from './ui/Inline';
 
 type Props = {

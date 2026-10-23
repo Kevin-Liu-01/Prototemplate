@@ -6,8 +6,8 @@ import './_press/magazine.css';
 import './_press/rack.css';
 import './_press/riffle/riffle.css';
 
-/** The faces every press page opens on: its sans, the nameplate's Bodoni and the reading Newsreader. */
-const FACES = ['/fonts/katagami/KatagamiText.woff2', '/fonts/google/bodoni-moda-opsz.woff2', '/fonts/google/newsreader-opsz-wght.woff2'];
+/** The faces every press page opens on: its sans and its serif, Katagami Text and Katagami Serif. */
+const FACES = ['/fonts/katagami/KatagamiText.woff2', '/fonts/katagami/KatagamiSerif.woff2'];
 
 /* GT Atlas, General Translation's magazine, kept here as /press and meant
    for a GT subdomain. Outside the viewer shell, with its own type and

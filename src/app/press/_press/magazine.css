@@ -1,30 +1,19 @@
 /* GT Atlas as a magazine: each story keeps its own layout and type (the
    printed book for Euclid, the docs reader, Fumadocs' own look) and takes
-   the magazine's text decorations over them (ui/Decor.tsx): a Bodoni drop
-   cap and Bodoni pull quotes in the story's accent, the story's mark over
+   the magazine's text decorations over them (ui/Decor.tsx): a drop cap and
+   pull quotes in Katagami Serif in the story's accent, the story's mark over
    each section head, its headline in its own hand, a deck and a byline.
    Only the magazine edition (data-edition='magazine') is touched; the shelf
    reads as it did. As a New York Times story reads: the stage is the same
    paper as the text, so the figures sit in the page; the text has room; a
    short scroll past each section brings it in as one timed slide. Euclid's
-   heads set in Newsreader's display cut, the reading face repeated. */
-
-@font-face { font-family: 'Atlas Display'; src: url('/fonts/google/bodoni-moda-opsz.woff2') format('woff2'); font-weight: 400 900; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: 'Atlas Display'; src: url('/fonts/google/bodoni-moda-opsz-italic.woff2') format('woff2'); font-weight: 400 900; font-style: italic; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-/* Newsreader's Latin Extended, for the marked letters of romanized Chinese (ǐ, ě) */
-@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-latin-ext.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic-latin-ext.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-/* Greek, which Bodoni and Newsreader lack: GFS Didot for the display type, EB Garamond for the text, each a family of
-   its own next in the stack, so a bold line draws its Greek bold from the one regular weight */
-@font-face { font-family: 'Atlas Display Greek'; src: url('/fonts/google/gfs-didot-400-greek.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
-@font-face { font-family: 'Atlas Text Greek'; src: url('/fonts/google/eb-garamond-400-greek.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
+   heads set in Katagami Serif, the reading face repeated. */
 
 .gtp {
-  /* the Greek faces fill in Greek, Katagami Serif the marked Latin letters Bodoni and Newsreader lack, a Song face the Chinese */
-  --gtm-display: 'Atlas Display', 'Atlas Display Greek', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', var(--gtp-cjk), Georgia, serif;
-  --gtm-text: 'Atlas Text', 'Atlas Text Greek', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', var(--gtp-cjk), Georgia, serif;
+  /* the magazine's serif, Katagami Serif, for its display and its text alike, with Greek and the marked Latin letters
+     of its own, and a Song face for the Chinese */
+  --gtm-display: 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', var(--gtp-cjk), Georgia, serif;
+  --gtm-text: var(--gtm-display);
   --gtm-head: var(--gtm-text);
 }
 
@@ -132,8 +121,8 @@
 
 /* ---------- the drop cap ---------- */
 
-/* three lines deep, in Bodoni at a low optical size so its hairlines hold, in the story's accent */
-.gtp-reader[data-edition='magazine'] .gtm-lead::first-letter { float: left; margin: 0.06em 0.22em 0 -0.02em; font-family: var(--gtm-display); font-size: 4.3em; line-height: 0.8; font-weight: 800; font-style: normal; font-optical-sizing: none; font-variation-settings: 'opsz' 12; color: var(--gtm-accent); }
+/* three lines deep, in Katagami Serif, in the story's accent */
+.gtp-reader[data-edition='magazine'] .gtm-lead::first-letter { float: left; margin: 0.06em 0.22em 0 -0.02em; font-family: var(--gtm-display); font-size: 4.3em; line-height: 0.8; font-weight: 800; font-style: normal; color: var(--gtm-accent); }
 @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
   .gtp-reader[data-edition='magazine'] .gtm-lead::first-letter { float: none; margin: 0; letter-spacing: 0.12em; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
   .gtp-reader[data-edition='magazine'] .gtm-lead[data-short]::first-letter { -webkit-initial-letter: 2; initial-letter: 2; }
@@ -147,11 +136,11 @@
 
 /* ---------- pull quotes ---------- */
 
-/* the story's words large and hard in Bodoni italic under a rule of the accent, the opening mark hung in the margin
-   so every line starts flush */
+/* the story's words large and hard in Katagami Serif's italic under a rule of the accent, the opening mark hung in the
+   margin so every line starts flush; no slanted copy of a face stands in for an italic it lacks */
 .gtp-reader[data-edition='magazine'] .gtm-pull { position: relative; margin: 96px auto 100px; padding-top: 36px; border-top: 3px solid var(--gtm-accent); }
 .gtp-reader[data-edition='magazine'] .gtm-pull blockquote { margin: 0; }
-.gtp-reader[data-edition='magazine'] .gtm-pull blockquote p { position: relative; max-width: none; margin: 0; word-spacing: 0.04em; font-family: var(--gtm-display); font-size: clamp(36px, 3.4vw, 52px); line-height: 1.08; font-style: italic; font-weight: 600; letter-spacing: -0.012em; color: var(--gtp-ink); text-wrap: pretty; font-optical-sizing: none; font-variation-settings: 'opsz' 36; }
+.gtp-reader[data-edition='magazine'] .gtm-pull blockquote p { position: relative; max-width: none; margin: 0; word-spacing: 0.04em; font-synthesis-style: none; hyphens: manual; font-family: var(--gtm-display); font-size: clamp(36px, 3.4vw, 52px); line-height: 1.08; font-style: italic; font-weight: 700; letter-spacing: -0.012em; color: var(--gtp-ink); text-wrap: pretty; }
 .gtp-reader[data-edition='magazine'] .gtm-pull blockquote p::before { content: '\201C'; position: absolute; right: calc(100% + 0.1em); top: -0.08em; font-size: 2.2em; line-height: 1; font-style: normal; font-weight: 800; color: var(--gtm-accent); }
 /* a book's or a story's title inside the quote sets roman, as italic text marks one */
 .gtp-reader[data-edition='magazine'] .gtm-pull blockquote p em { font-style: normal; }
@@ -162,7 +151,7 @@
 
 /* ---------- each magazine's own drop cap and quotes ---------- */
 
-/* The Bodoni cap and the Bodoni italic quote above are Euclid's, a book's. The other three take their own world's:
+/* The serif cap and the serif quote above are Euclid's, a book's. The other three take their own world's:
    Designing docs a cobalt tile and quotes in cobalt sans; Rewriting docs a proofreader's circled letter and quotes in
    the proof's mono with a caret; Fuma Nama a heavy orange sans cap and heavy sans quotes. Every quote sits under a
    full rule of its story's color, and none in a box. */
@@ -214,7 +203,7 @@
 .gtp-reader[data-edition='magazine'] .gtp-text .gtm-byline { margin: 34px 0 0; padding-top: 16px; display: flex; flex-wrap: wrap; gap: 6px 22px; border-top: 1px solid var(--gtp-rule); font-family: var(--gtp-sans); font-size: 14px; line-height: 1.4; color: var(--gtp-ink-2); }
 .gtp-reader[data-edition='magazine'] .gtp-text .gtm-byline b { font-weight: 600; color: var(--gtp-ink); }
 
-/* ---------- Euclid's book: heads in Newsreader's display cut ---------- */
+/* ---------- Euclid's book: heads in Katagami Serif ---------- */
 
 .gtp-reader[data-edition='magazine'][data-look='book'] .gtp-head-spread h1 { font-family: var(--gtm-head); font-size: clamp(34px, 3vw, 46px); line-height: 1.1; font-weight: 500; letter-spacing: -0.02em; }
 .gtp-reader[data-edition='magazine'][data-look='book'] .gtp-print-page h2.gtm-h2 { margin: 120px 0 30px; font-family: var(--gtm-head); font-size: clamp(36px, 3vw, 46px); line-height: 1.08; font-weight: 500; letter-spacing: -0.022em; }

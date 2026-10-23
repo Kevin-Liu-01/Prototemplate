@@ -3,6 +3,9 @@
 
 export const pad = (n: number) => String(n).padStart(2, '0');
 
+/** The path the press is served under: none here; gt-cloud's Atlas app serves it under /atlas. */
+export const BASE = '';
+
 /** A page's number in its issue: each issue runs eight pages (riffle/pages.ts), so issue 2's opening, its third page, is 18. */
 export const folioOf = (issue: number, page: number) => issue * 8 + page;
 
