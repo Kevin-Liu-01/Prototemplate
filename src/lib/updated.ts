@@ -15,7 +15,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/deck': { day: '2026-10-21', at: '2026-10-21T13:08:03-07:00', commit: '8d959c8', src: '6b517bc6' },
   '/present': { day: '2026-10-15', at: '2026-10-15T22:49:19-07:00', commit: 'ff579dd', src: '1849c182' },
   '/compare': { day: '2026-10-15', at: '2026-10-15T19:36:36-07:00', commit: '3285f60', src: '1489450f' },
-  '/atlas': { day: '2026-10-23', at: '2026-10-23', commit: null, src: '7d295619' },
+  '/atlas': { day: '2026-10-23', at: '2026-10-23T23:33:06-07:00', commit: 'cf664da', src: '7d295619' },
   '/atlas/notes': { day: '2026-10-23', at: '2026-10-23T15:45:24-07:00', commit: 'c604786', src: '5479c97a' },
   '/docs/get-started': { day: '2026-10-21', at: '2026-10-21T19:03:31-07:00', commit: 'ee2e431', src: '1a2d9fc4' },
   '/docs/handbook/architecture': { day: '2026-10-21', at: '2026-10-21T19:03:31-07:00', commit: 'ee2e431', src: '0103d128' },

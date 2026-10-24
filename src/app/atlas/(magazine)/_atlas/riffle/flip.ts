@@ -37,6 +37,8 @@ export class Flip {
   private readonly pages: HTMLElement[];
   private leaves: Leaf[] = [];
   private spread = false;
+  /** The timer for rest(), once no turn is in flight. */
+  private reveal = 0;
 
   constructor(el: HTMLElement, o: Options) {
     this.el = el;
@@ -68,7 +70,7 @@ export class Flip {
       leaf.el.style.transform = i < this.state ? OVER : FLAT;
       leaf.fwd = i < this.state;
     });
-    this.settle();
+    this.settle(true);
     this.o.onChange?.(this.state);
   }
 
@@ -95,21 +97,44 @@ export class Flip {
   }
 
   /** Stacks the leaves, shows only the ones that can be seen, and moves a closed cover to the middle. */
-  private settle() {
+  private settle(now = false) {
     const n = this.leaves.length;
     this.leaves.forEach((leaf, i) => {
       const moving = leaf.turns.length > 0;
       // the turning leaf over everything; then the nearest turned leaf on the left and the nearest unturned on the right
       leaf.el.style.zIndex = String(moving ? 3 * n : leaf.fwd ? n + i : 2 * n - i);
-      // on a phone a turned leaf has gone off the page's left, so it is not drawn at all
-      leaf.el.hidden = !moving && (i < this.state - 2 || i > this.state + 1 || (!this.spread && leaf.fwd));
-      // only the faces a reader sees take focus or reach a screen reader: the right page's front, and on a spread the
-      // left page's back; a leaf in a turn is neither
-      leaf.faces[0].inert = moving || i !== this.state;
-      leaf.faces[1].inert = moving || !this.spread || i !== this.state - 1;
+      // a leaf out of reach goes at once; one that comes into reach shows at once only if it holds an open page or lies
+      // beside a turning leaf, and otherwise once no turn is in flight (rest())
+      const away = this.away(leaf, i);
+      if (away !== leaf.el.hidden && (away || this.needed(i))) leaf.el.hidden = away;
     });
     this.el.dataset.open = !this.spread || this.state === 0 ? 'false' : this.state > this.max - 1 ? 'back' : 'true';
+    // Safari paints on the main thread, so a leaf drawn, or a face made inert or not, while a turn starts or lands holds
+    // that frame back; that is done once no turn is in flight
+    window.clearTimeout(this.reveal);
+    if (now) this.rest();
+    else if (!this.leaves.some((leaf) => leaf.turns.length)) this.reveal = window.setTimeout(this.rest, 100);
   }
+
+  /** Whether a leaf has to be drawn now: it holds an open page or lies beside a turning leaf. */
+  private needed(i: number) {
+    return i === this.state || (this.spread && i === this.state - 1) || !!this.leaves[i - 1]?.turns.length || !!this.leaves[i + 1]?.turns.length;
+  }
+
+  /** Whether a leaf is out of reach, and so not drawn: more than a turn from the open spread, or on a phone turned off the page's left. */
+  private away(leaf: Leaf, i: number) {
+    return !leaf.turns.length && (i < this.state - 2 || i > this.state + 1 || (!this.spread && leaf.fwd));
+  }
+
+  /** Draws only the leaves in reach, and lets only the open pages take focus or reach a screen reader. */
+  private rest = () => {
+    this.leaves.forEach((leaf, i) => {
+      leaf.el.hidden = this.away(leaf, i);
+      // the right page's front, and on a spread the left page's back
+      leaf.faces[0].inert = i !== this.state;
+      leaf.faces[1].inert = !this.spread || i !== this.state - 1;
+    });
+  };
 
   private turn(i: number, fwd: boolean) {
     const leaf = this.leaves[i];
@@ -173,6 +198,7 @@ export class Flip {
 
   destroy() {
     this.stop();
+    window.clearTimeout(this.reveal);
     this.el.removeEventListener('click', this.onClick);
   }
 
