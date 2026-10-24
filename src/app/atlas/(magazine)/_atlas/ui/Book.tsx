@@ -71,7 +71,7 @@ function MagazinePage({ story, title, lang, playing, issue }: { story: BookStory
     <>
       {issue ? <InsidePage story={story} title={title} lang={lang} issue={issue} /> : null}
       <div className='gtp-mag-page' data-turn={story.n % 4} data-stock={darkStock(spec.colors[0]) ? 'dark' : 'light'}>
-        <Cover slug={story.slug} title='' lang={lang.code} dir={lang.dir} picture={story.cover} playing={playing} artAt={MAGAZINE_ART} />
+        <Cover slug={story.slug} title='' lang={lang.code} dir={lang.dir} picture={story.cover} playing={playing} artAt={MAGAZINE_ART} poster={`/atlas/covers/${story.slug}.webp`} />
         <p className='gtp-mag-cred' lang={lang.code} dir={lang.dir}>
           {name}
         </p>

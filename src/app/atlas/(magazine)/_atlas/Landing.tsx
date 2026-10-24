@@ -13,7 +13,6 @@ import { bookTitle } from './titles';
 import { landed, move, plainClick } from './transition';
 import Book, { bookDepth } from './ui/Book';
 import Flag from './ui/Flag';
-import FlipText from './ui/FlipText';
 import HallGuides from './ui/HallGuides';
 import LanguageRing from './ui/LanguageRing';
 import Globe from './ui/Globe';
@@ -21,7 +20,7 @@ import Locator from './ui/Locator';
 import HomeMark from './ui/HomeMark';
 import PressMark from './ui/PressMark';
 import { RowIcon, StackIcon } from './ui/icons';
-import MagazineView, { loadArticle } from './riffle/MagazineView';
+import MagazineView, { loadArticle, prepareIssues } from './riffle/MagazineView';
 import StopSlider from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
 import ViewSwitch from './ui/ViewSwitch';
@@ -161,11 +160,14 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
     if (i !== null) requestAnimationFrame(() => shelf.current?.querySelectorAll<HTMLElement>('.gtp-shelf-corner')[i]?.focus());
   };
 
-  // back from a story: the crossfade can capture the shelf now; then, once the browser is idle, every story is
-  // fetched ahead, so a click opens it at once
+  // back from a story: the crossfade can capture the shelf now; then, once the browser is idle, every story and its
+  // magazine is fetched ahead, so a click opens it at once
   useMountEffect(() => {
     landed();
-    const fetchAll = () => catalog.forEach((s) => router.prefetch(storyHref(edition, s.slug)));
+    const fetchAll = () => {
+      catalog.forEach((s) => router.prefetch(storyHref(edition, s.slug)));
+      if (edition === 'magazine') prepareIssues(catalog.map((s) => storyHref(edition, s.slug)));
+    };
     const idle = typeof requestIdleCallback === 'function' ? requestIdleCallback(fetchAll, { timeout: 2500 }) : window.setTimeout(fetchAll, 1200);
     return () => (typeof cancelIdleCallback === 'function' ? cancelIdleCallback(idle) : window.clearTimeout(idle));
   });
@@ -340,8 +342,8 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
             </div>
           ) : (
             <p className='gtp-hall-dms' aria-label={place.city}>
-              <FlipText value={dms(place.lat, 'lat')} />
-              <FlipText value={dms(place.lon, 'lon')} />
+              <span>{dms(place.lat, 'lat')}</span>
+              <span>{dms(place.lon, 'lon')}</span>
             </p>
           )}
           {/* the shelf keeps its topic tags and its theme switch here */}
@@ -511,15 +513,15 @@ export default function Landing({ catalog, edition = 'magazine', issues }: { cat
                     <circle r='6' />
                     <path d='M-12 0 H-3 M3 0 H12 M0 -12 V-3 M0 3 V12' />
                   </svg>
-                  <FlipText value={here.city} />
+                  <span>{here.city}</span>
                 </dd>
                 <dt>Lat</dt>
                 <dd className='gtp-hall-dms'>
-                  <FlipText value={dms(here.lat, 'lat')} />
+                  {dms(here.lat, 'lat')}
                 </dd>
                 <dt>Lon</dt>
                 <dd className='gtp-hall-dms'>
-                  <FlipText value={dms(here.lon, 'lon')} />
+                  {dms(here.lon, 'lon')}
                 </dd>
               </dl>
             ) : (

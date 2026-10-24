@@ -61,7 +61,8 @@ export default function MapSheet({ sheet, n, title, month }: { sheet: Sheet; n: 
 
   const spots = sheet.places.map((place) => ({ place, xy: at(place.lat, place.lon) }));
   const distance = scaleOf(48, km);
-  const bar = distance / km;
+  // rounded, so the server's and the browser's number formatting agree (Safari prints one digit fewer)
+  const bar = Math.round((distance / km) * 100) / 100;
   const lines = titleLines(title);
   // the legend's box in the map's bottom right corner, its right and bottom sides on the frame's: those sides, then its size
   const [bx, by, bw, bh] = [x1, y1, 104, 68];

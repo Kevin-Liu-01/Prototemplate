@@ -2,7 +2,6 @@
 
 import { dms, type LatLon } from '../coords';
 import Flag from './Flag';
-import FlipText from './FlipText';
 import Globe from './Globe';
 
 export type LocatorPlace = LatLon & {
@@ -39,8 +38,8 @@ export default function Locator({ place, note, className, cell = 1 }: Props) {
           <span className='gtp-locator-city'>{place.city}</span>
           {note ? <span className='gtp-locator-note'>{note}</span> : null}
           <span className='gtp-locator-coords'>
-            <FlipText value={dms(place.lat, 'lat')} />
-            <FlipText value={dms(place.lon, 'lon')} />
+            <span>{dms(place.lat, 'lat')}</span>
+            <span>{dms(place.lon, 'lon')}</span>
           </span>
         </div>
       </Globe>

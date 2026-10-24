@@ -21,8 +21,16 @@
 /* the ink of the drop cap, the marks and the headline's own touches: dark by default, light under
    html[data-theme='light'] */
 :root .gtp.gtp-reader[data-edition='magazine'] { --gtm-accent: var(--gtp-signal); }
-:root .gtp.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] { --gtm-accent: #e8663f; }
-:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] { --gtm-accent: #b8321c; }
+/* Euclid's seal: a vermilion square stamped with the N cut out of it, in the story's accent for each theme; its edges
+   and its letter worn as a stamp leaves them, specks where the paste did not take (built from Newsreader's N, centred) */
+:root .gtp.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] {
+  --gtm-accent: #e8663f;
+  --gtm-seal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cfilter id='i' x='-6%' y='-6%' width='112%' height='112%' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='3' seed='11' result='w'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='w' scale='3' xChannelSelector='R' yChannelSelector='G' result='d'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' seed='4' result='s'/%3E%3CfeColorMatrix in='s' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -9 5.35' result='m'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='2' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.1 0.38' result='v'/%3E%3CfeComposite in='m' in2='v' operator='arithmetic' k1='1' result='a'/%3E%3CfeComposite in='d' in2='a' operator='in'/%3E%3C/filter%3E%3Cpath filter='url(%23i)' fill='%23e8663f' fill-rule='evenodd' d='M3.4 4.3L96.4 3.4L96.9 96.2L3.8 96.7ZM26.95 76.35V24.17L18.69 21.23V20H41.94L73.42 65.08L71.17 70.16V23.23L63.7 21.4V20H81.31V21.4L74.37 23.23V80H67.57L28.79 24.52L29.84 23.52V76.35L37.31 78.17V79.56H20.01V78.17Z'/%3E%3C/svg%3E");
+}
+:root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] {
+  --gtm-accent: #b8321c;
+  --gtm-seal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cfilter id='i' x='-6%' y='-6%' width='112%' height='112%' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='3' seed='11' result='w'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='w' scale='3' xChannelSelector='R' yChannelSelector='G' result='d'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' seed='4' result='s'/%3E%3CfeColorMatrix in='s' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -9 5.35' result='m'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='2' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.1 0.38' result='v'/%3E%3CfeComposite in='m' in2='v' operator='arithmetic' k1='1' result='a'/%3E%3CfeComposite in='d' in2='a' operator='in'/%3E%3C/filter%3E%3Cpath filter='url(%23i)' fill='%23b8321c' fill-rule='evenodd' d='M3.4 4.3L96.4 3.4L96.9 96.2L3.8 96.7ZM26.95 76.35V24.17L18.69 21.23V20H41.94L73.42 65.08L71.17 70.16V23.23L63.7 21.4V20H81.31V21.4L74.37 23.23V80H67.57L28.79 24.52L29.84 23.52V76.35L37.31 78.17V79.56H20.01V78.17Z'/%3E%3C/svg%3E");
+}
 :root .gtp.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] { --gtm-accent: #8ea7ff; }
 :root[data-theme='light'] .gtp.gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] { --gtm-accent: #2a4bf0; }
 :root .gtp.gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] { --gtm-accent: #ff6a4a; }
@@ -95,9 +103,8 @@
   .gtp-reader[data-edition='magazine'] .gtp-print-stage .gtp-versions-map { width: min(420px, 100%); }
   .gtp-reader[data-edition='magazine'] .gtp-print-stage .gtp-versions-globe { width: 100%; }
 }
-/* captions set left, under their picture; the globe's coordinates go, the place and the year say where; a plate's
-   caption goes too, since the text beside it says what it shows, and so do the wipe's Dark and Light tags */
-.gtp-reader[data-edition='magazine'] .gtp-print-caption { text-align: left; }
+/* captions centred under their picture (press.css); the globe's coordinates go, the place and the year say where; a
+   plate's caption goes too, since the text beside it says what it shows, and so do the wipe's Dark and Light tags */
 .gtp-reader[data-edition='magazine'] :is(.gtp-plate-caption, .gtp-wipe-tag) { display: none; }
 .gtp-reader[data-edition='magazine'] .gtp-versions-coords { display: none; }
 /* the rail keeps its ticks and drops its numbers */
@@ -115,8 +122,6 @@
 }
 .gtp-reader[data-edition='magazine'] .gtp-text > p { margin-bottom: 1.45em; }
 .gtp-reader[data-edition='magazine'] .gtp-print-page p { margin-bottom: 1.6em; }
-/* the blog's bold runs read as plain text: the magazine marks nothing in a paragraph but italics */
-.gtp-reader[data-edition='magazine'] :is(.gtp-text, .gtp-print-page) > :is(p, ul, ol) strong { font-weight: inherit; }
 
 /* ---------- the drop cap ---------- */
 
@@ -139,16 +144,18 @@
 /* Each story's cap takes its own world's: Euclid a vermilion seal, Designing docs a cobalt tile, Rewriting docs a
    proofreader's circled letter, Fuma Nama a heavy orange sans. */
 
-/* Translating Euclid: the cap cut out of a vermilion seal, as a Chinese seal prints a character in paper on red: a
-   square from the first line's cap height to the third line's baseline, the N centred in it. In the letter's own em
-   (3.07em of the text, so the text's cap height of 0.698 is 0.2274em and its em 0.3257em): the side is two of the
-   text's lines (2lh, which in line-height is the paragraph's) and a cap height; the padding either side of the N's
-   0.738em makes it square (1lh is now the side); and the square drops by the space over the first line's capitals,
-   half a line less a third of the text's em (side / 4 - 0.1653em) */
+/* Translating Euclid: the cap is a vermilion seal stamped with the N cut out of it, as a Chinese seal prints a
+   character in paper on red (--gtm-seal, drawn with the N centred); the letter itself stays in the text, unseen, for
+   copying and for screen readers. The seal is a square from the first line's cap height to the third line's baseline.
+   In the letter's own em (3.07em of the text, whose face is Newsreader: its cap height of 0.67 is 0.2182em): the side
+   is two of the text's lines (2lh, which in line-height is the paragraph's) and a cap height; the unseen letter is
+   set in Katagami Serif, whose N is 0.738em wide, and the padding either side of it makes the box square (1lh is now
+   the side); the square drops to the first line's capitals, a quarter of the side less 0.1963em (from Newsreader's
+   ascent and descent, 0.735 and 0.265) */
 .gtp-reader[data-edition='magazine'][data-story='translating-euclid'] .gtm-lead::first-letter {
-  float: left; margin: calc(0.25lh - 0.1653em) 0.2em 0 0; padding: 0 calc((1lh - 0.738em) / 2); -webkit-initial-letter: normal; initial-letter: normal;
-  font-family: var(--gtm-display); font-size: 3.07em; line-height: calc(2lh + 0.2274em); font-weight: 500; font-style: normal; letter-spacing: 0;
-  background: var(--gtm-accent); color: var(--gtp-paper);
+  float: left; margin: calc(0.25lh - 0.1963em) 0.2em 0 0; padding: 0 calc((1lh - 0.738em) / 2); -webkit-initial-letter: normal; initial-letter: normal;
+  font-family: 'Katagami Serif', Georgia, serif; font-size: 3.07em; line-height: calc(2lh + 0.2182em); font-weight: 500; font-style: normal; letter-spacing: 0;
+  color: transparent; background: var(--gtm-seal) center / 100% 100% no-repeat;
 }
 /* the paragraph holds the seal, so where it runs two lines the next one starts under the seal, not beside it */
 .gtp-reader[data-edition='magazine'][data-story='translating-euclid'] .gtm-lead { display: flow-root; }

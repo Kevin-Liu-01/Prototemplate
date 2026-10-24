@@ -116,7 +116,17 @@ const FACES = [
   '400 16px "Katagami Serif"',
   '700 16px "Katagami Serif"',
   'italic 400 16px "Katagami Serif"',
+  // Euclid's issue, set in Newsreader
+  '400 16px "Atlas Text"',
+  '700 16px "Atlas Text"',
+  'italic 400 16px "Atlas Text"',
 ];
+
+/** Fetches every story's article and the pages' faces ahead, so a magazine opens without waiting on the network. */
+export function prepareIssues(hrefs: string[]) {
+  for (const href of hrefs) void loadArticle(href);
+  void Promise.all(FACES.map((face) => document.fonts.load(face))).catch(() => []);
+}
 
 export default function MagazineView({ story, href, onRead, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
@@ -220,7 +230,7 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
   });
 
   return (
-    <div className='gtp-riffle' role='dialog' aria-modal='true' aria-label={`${story.title}, as a magazine`}>
+    <div className='gtp-riffle' data-look={story.look} role='dialog' aria-modal='true' aria-label={`${story.title}, as a magazine`}>
       {/* first in the order the keyboard moves through, where the focus starts; the page behind is inert while it is open */}
       <button ref={close} type='button' className='gtp-riffle-close' onClick={onClose} aria-label='Close the magazine'>
         <svg viewBox='0 0 20 20' aria-hidden='true'>

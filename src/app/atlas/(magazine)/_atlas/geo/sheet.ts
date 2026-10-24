@@ -32,7 +32,9 @@ export function project(sheet: MapSheet, x0: number, y0: number, x1: number, y1:
   const lonMin = sheet.lon - sheet.span / 2;
   const latMax = sheet.lat + (y1 - y0) / ky / 2;
   const latMin = sheet.lat - (y1 - y0) / ky / 2;
-  const at = (lat: number, lon: number): [number, number] => [x0 + (lon - lonMin) * k, y0 + (latMax - lat) * ky];
+  // rounded, so the server and every browser print the same numbers into the drawing
+  const r2 = (v: number) => Math.round(v * 100) / 100;
+  const at = (lat: number, lon: number): [number, number] => [r2(x0 + (lon - lonMin) * k), r2(y0 + (latMax - lat) * ky)];
   const step = [1, 0.5, 0.25].find((s) => s * k <= cell * 1.25) ?? 0.25;
   const dot = 0.62 * Math.min(k, ky) * step;
   let land = '';

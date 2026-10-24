@@ -109,6 +109,11 @@
 .gtp-riffle .mag-page .mottle { background: var(--paper-folds) 0 0 / 100% 100% no-repeat; }
 .gtp-riffle .mag-page.gtr-paper .mottle { z-index: 2; opacity: 0.5; }
 .gtp-riffle .gtr { --mute: #4a4945; position: absolute; inset: 0; z-index: 3; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; color: #121212; font-synthesis-style: none; }
+/* Euclid's issue is set wholly in the serif its web page is set in, Newsreader, the text as well as the heads */
+.gtp-riffle[data-look='book'] { --gtm-display: var(--gtp-euclid); }
+.gtp-riffle[data-look='book'] .gtr { font-family: var(--gtp-euclid); }
+/* the other issues are set wholly in Katagami Text, their heads and drop caps as well, as their web pages are */
+.gtp-riffle:not([data-look='book']) { --gtm-display: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; }
 /* Katagami Text and Katagami Serif carry their own italics; no slanted copy stands in where a face has none */
 .gtp-riffle .gtr p { margin: 0; }
 .gtp-riffle .gtr a { color: inherit; text-decoration: none; }
@@ -117,7 +122,8 @@
    magazine, the month) at the foot's, both in small tracked capitals */
 .gtp-riffle .gtr-in { display: flex; flex-direction: column; padding: 9.5cqh 8cqw 10.5cqh 11cqw; }
 .gtp-riffle .gtr-in.l { padding: 9.5cqh 11cqw 10.5cqh 8cqw; }
-.gtp-riffle :is(.gtr-run, .gtr-folio) { position: absolute; margin: 0; display: flex; gap: 1.3em; font-size: max(8px, 1.25cqh); line-height: 1; letter-spacing: 0.14em; text-transform: uppercase; }
+/* the running head and the folio, the story's name, its date and the page numbers, in Katagami Text in every issue */
+.gtp-riffle :is(.gtr-run, .gtr-folio) { position: absolute; margin: 0; display: flex; gap: 1.3em; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: max(8px, 1.25cqh); line-height: 1; letter-spacing: 0.14em; text-transform: uppercase; }
 .gtp-riffle .gtr-run { top: 4.6cqh; right: 8cqw; color: var(--mute); }
 .gtp-riffle .l > .gtr-run { right: auto; left: 8cqw; }
 .gtp-riffle .gtr-folio { left: 8cqw; bottom: 4.6cqh; color: #2a2a28; }
@@ -146,10 +152,16 @@
 .gtp-riffle .gtr-col { min-height: 0; overflow: hidden; font-size: max(9.5px, 2.05cqw); line-height: 1.5; hyphens: auto; overflow-wrap: break-word; }
 .gtp-riffle .gtr-col > :first-child { margin-top: 0; }
 .gtp-riffle .gtr-col p + p { text-indent: 1.3em; }
-/* the blog's bold runs read as plain text, as the magazine's web pages set them (magazine.css) */
-.gtp-riffle .gtr-col p b { font-weight: inherit; }
 .gtp-riffle .gtr-col p.lead { text-indent: 0; }
 .gtp-riffle .gtr-col p.lead::first-letter { float: left; margin: 0.06em 0.08em 0 0; font-family: var(--gtm-display); font-size: 3.2em; line-height: 0.82; font-weight: 700; color: var(--accent); }
+/* Euclid's issue opens on the web page's seal (magazine.css), in the ink that prints on the page's white, sized and
+   placed by the same measures */
+.gtp-riffle[data-look='book'] .gtr-col p.lead::first-letter {
+  margin: calc(0.25lh - 0.1963em) 0.2em 0 0; padding: 0 calc((1lh - 0.738em) / 2);
+  font-family: 'Katagami Serif', Georgia, serif; font-size: 3.07em; line-height: calc(2lh + 0.2182em); font-weight: 500; letter-spacing: 0;
+  color: transparent;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cfilter id='i' x='-6%' y='-6%' width='112%' height='112%' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='3' seed='11' result='w'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='w' scale='3' xChannelSelector='R' yChannelSelector='G' result='d'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='2' seed='4' result='s'/%3E%3CfeColorMatrix in='s' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -9 5.35' result='m'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='2' seed='9' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.1 0.38' result='v'/%3E%3CfeComposite in='m' in2='v' operator='arithmetic' k1='1' result='a'/%3E%3CfeComposite in='d' in2='a' operator='in'/%3E%3C/filter%3E%3Cpath filter='url(%23i)' fill='%23b8321c' fill-rule='evenodd' d='M3.4 4.3L96.4 3.4L96.9 96.2L3.8 96.7ZM26.95 76.35V24.17L18.69 21.23V20H41.94L73.42 65.08L71.17 70.16V23.23L63.7 21.4V20H81.31V21.4L74.37 23.23V80H67.57L28.79 24.52L29.84 23.52V76.35L37.31 78.17V79.56H20.01V78.17Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
 .gtp-riffle .gtr-col :where(h3, h4, figure, ul, ol) { margin: 0.9em 0; }
 .gtp-riffle .gtr-col :where(h3) { margin: 1.1em 0 0.45em; }
 .gtp-riffle .gtr-col h3 { font-family: var(--gtm-display); font-size: 1.45em; line-height: 1.15; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; hyphens: manual; }
@@ -166,9 +178,13 @@
 .gtp-riffle .gtr-col li + li { margin-top: 0.3em; }
 /* the epigraph in the serif with a line's room under it, the sources and the footnotes small, their addresses
    never hyphenated */
-.gtp-riffle .gtr-col p.note { font-family: var(--gtm-display); font-size: 1.1em; line-height: 1.4; text-indent: 0; }
-.gtp-riffle .gtr-col p.note + p.note { margin-top: 0.4em; }
-.gtp-riffle .gtr-col p.note + p:not(.note) { margin-top: 1.45em; }
+/* the epigraph as the story's web page sets it: centred and balanced, the words, their translation under them in grey,
+   and who wrote them smaller */
+.gtp-riffle .gtr-col p.note { font-family: var(--gtm-display); font-size: 0.95em; line-height: 1.45; text-indent: 0; text-align: center; text-wrap: balance; hyphens: manual; color: var(--mute); }
+.gtp-riffle .gtr-col p.note:not(p.note + p.note) { font-size: 1.12em; color: inherit; }
+.gtp-riffle .gtr-col p.note + p.note { margin-top: 0.5em; }
+.gtp-riffle .gtr-col p.note + p.note:not(:has(+ p.note)) { margin-top: 0.9em; font-size: 0.8em; }
+.gtp-riffle .gtr-col p.note + p:not(.note) { margin-top: 1.8em; }
 .gtp-riffle .gtr-col p:is(.ref, .fn) { font-size: 0.82em; line-height: 1.4; text-indent: 0; }
 .gtp-riffle .gtr-col p:is(.ref, .fn) + p:is(.ref, .fn) { margin-top: 0.4em; }
 .gtp-riffle .gtr-col a { hyphens: manual; }
@@ -204,10 +220,10 @@
 /* a picture in a band across the top of a text page, its caption under it in the second column */
 .gtp-riffle .gtr-band { flex: none; margin-bottom: 4cqh; }
 .gtp-riffle .gtr-band figure { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 5cqw; }
-.gtp-riffle .gtr-band img { grid-column: 1 / -1; display: block; width: 100%; height: auto; max-height: 46cqh; object-fit: contain; object-position: left top; }
+.gtp-riffle .gtr-band img { grid-column: 1 / -1; display: block; width: 100%; height: auto; max-height: 46cqh; object-fit: contain; object-position: center top; }
 /* a picture filling a text page's second column from its head, with the column's white under it */
 .gtp-riffle .gtr-col-pic figure { margin: 0; }
-.gtp-riffle .gtr-col.gtr-col-pic figure img { display: block; width: 100%; height: auto; max-height: 66cqh; object-fit: contain; object-position: left top; }
+.gtp-riffle .gtr-col.gtr-col-pic figure img { display: block; width: 100%; height: auto; max-height: 66cqh; object-fit: contain; object-position: center top; }
 /* a picture's page of its own: to the edges, with the band under it for its caption and the folio */
 .gtp-riffle .gtr-plate figure { margin: 0; }
 /* the picture takes what its caption leaves, so a long caption never reaches the folio */
@@ -221,18 +237,16 @@
    measures them unshrunk, through --shrink) */
 .gtp-riffle .gtr-gallery :is(.gtr-pics, figure, img) { flex: 0 var(--shrink, 1) auto; min-height: 0; }
 .gtp-riffle .gtr-gallery :is(.gtr-pics, figure) { display: flex; flex-direction: column; }
-.gtp-riffle .gtr-gallery img { display: block; width: 100%; height: auto; max-height: 62cqh; object-fit: contain; object-position: left top; }
+.gtp-riffle .gtr-gallery img { display: block; width: 100%; height: auto; max-height: 62cqh; object-fit: contain; object-position: center top; }
 .gtp-riffle .gtr-gallery figcaption { margin-top: 2.4cqh; }
 .gtp-riffle .gtr-gallery figure + figure { margin-top: 5cqh; }
 /* two pictures share the page's height; one alone stands at the grid's head or, in turn, its foot */
 .gtp-riffle .gtr-gallery[data-at='foot'] { justify-content: safe flex-end; }
 /* every caption beside a picture set apart from the text, small and grey */
 .gtp-riffle :is(.gtr-band, .gtr-col-pic, .gtr-plate) figcaption { font-size: max(8px, 1.6cqw); line-height: 1.42; color: var(--mute); text-wrap: pretty; }
-/* a caption under a picture that spans the grid sets in its two columns, what the picture shows in the first and whom
-   it credits in the second; in a column the credit goes under the caption, smaller */
-.gtp-riffle :is(.gtr-band, .gtr-bleed, .gtr-gallery) figcaption { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 5cqw; align-items: start; }
+/* every caption centred under its picture, and the credit under the caption, smaller */
+.gtp-riffle figcaption { text-align: center; }
 .gtp-riffle figcaption .cr { display: block; margin-top: 0.4em; font-size: 0.88em; opacity: 0.85; }
-.gtp-riffle :is(.gtr-band, .gtr-bleed, .gtr-gallery) figcaption .cr { margin-top: 0; font-size: 1em; }
 .gtp-riffle .gtr-band figcaption { grid-column: 1 / -1; margin-top: 1.4cqh; }
 .gtp-riffle .gtr-col-pic figcaption { margin-top: 1.2cqh; }
 /* two band pictures side by side, a column each, each with its caption under it */
@@ -259,7 +273,7 @@
 .gtp-riffle .gtr-back { background: var(--board); color: var(--ink); }
 .gtp-riffle .gtr-back .mk { position: absolute; left: 9cqw; bottom: 8cqh; display: flex; align-items: flex-end; gap: 2.4cqw; }
 .gtp-riffle .gtr-back .mk svg { width: 6cqw; height: auto; }
-.gtp-riffle .gtr-back .mk b { display: block; font-family: var(--gtm-display); font-size: 7cqw; line-height: 0.9; font-weight: 400; letter-spacing: -0.04em; }
+.gtp-riffle .gtr-back .mk b { display: block; font-family: 'Katagami Serif', var(--gtp-cjk), Georgia, serif; font-size: 7cqw; line-height: 0.9; font-weight: 400; letter-spacing: -0.04em; }
 
 /* one page at a time, as on a phone, has no spine to widen a margin for: every page keeps the same margins, so the
    text never shifts between pages (the text block is as wide either way) */
@@ -276,6 +290,4 @@
   .gtp-riffle .gtr-col { font-size: 11.5px; }
   .gtp-riffle :is(.gtr-band, .gtr-col-pic, .gtr-plate) figcaption { font-size: 9.5px; }
   .gtp-riffle :is(.gtr-run, .gtr-folio) { font-size: 9px; }
-  .gtp-riffle :is(.gtr-band, .gtr-bleed, .gtr-gallery) figcaption { grid-template-columns: minmax(0, 1fr); }
-  .gtp-riffle :is(.gtr-band, .gtr-bleed, .gtr-gallery) figcaption .cr { margin-top: 0.4em; font-size: 0.88em; }
 }

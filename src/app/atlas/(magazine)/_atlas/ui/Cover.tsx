@@ -22,13 +22,15 @@ type Props = {
   className?: string;
   /** Where the design draws on this cover, as fractions; a book's place when not given. */
   artAt?: ArtBox;
+  /** A capture of this cover as WebGPU draws it at rest, shown from the first paint until the canvas has drawn its art, and kept in place of the fallback. */
+  poster?: string;
 };
 
 /* A story's cover: the Fluid Energy marbling on WebGPU with the title
    printed through it, and a pointer stirs it while it plays. Without
    WebGPU it falls back to the story's picture in the dithered material
-   with the same type over it. */
-export default function Cover({ slug, title, lang, dir, picture, playing, className, artAt }: Props) {
+   with the same type over it, or to its poster when it has one. */
+export default function Cover({ slug, title, lang, dir, picture, playing, className, artAt, poster }: Props) {
   const gpuCanvas = useRef<HTMLCanvasElement>(null);
   const cpuCanvas = useRef<HTMLCanvasElement>(null);
   const handle = useRef<FluidHandle | null>(null);
@@ -36,6 +38,8 @@ export default function Cover({ slug, title, lang, dir, picture, playing, classN
   const want = useRef(playing);
   want.current = playing;
   const [mode, setMode] = useState<'pending' | 'gpu' | 'cpu'>('pending');
+  // the canvas has printed its art; until then press.css hides it over a poster, so the poster shows
+  const [drawn, setDrawn] = useState(false);
   const spec = COVERS[slug] ?? FALLBACK_COVER;
   const reduce = useRef(false);
 
@@ -52,7 +56,10 @@ export default function Cover({ slug, title, lang, dir, picture, playing, classN
     const width = mode === 'cpu' ? canvas.width : canvas.width || 640;
     const height = mode === 'cpu' ? canvas.height : canvas.height || 360;
     const { mask, plain } = await drawCoverText(width, height, { slug, title: bookTitle(title, lang), lang, dir, paper: spec.paper, art: spec.art, accent: spec.accent, face: spec.face, artAt });
-    if (mode === 'gpu') handle.current?.setText(mask);
+    if (mode === 'gpu' && handle.current) {
+      handle.current.setText(mask);
+      setDrawn(true);
+    }
     if (mode === 'cpu' && cpuCanvas.current) {
       const ctx = cpuCanvas.current.getContext('2d');
       ctx?.drawImage(plain, 0, 0);
@@ -108,9 +115,10 @@ export default function Cover({ slug, title, lang, dir, picture, playing, classN
   );
 
   return (
-    <span className={['gtp-cover', className].filter(Boolean).join(' ')} data-mode={mode}>
+    <span className={['gtp-cover', className].filter(Boolean).join(' ')} data-mode={mode} data-drawn={drawn}>
+      {poster ? <img className='gtp-cover-poster' src={poster} alt='' aria-hidden='true' decoding='sync' fetchPriority='high' /> : null}
       <canvas ref={gpuCanvas} className='gtp-cover-gpu' aria-hidden='true' />
-      {mode === 'cpu' ? <canvas ref={cpuCanvas} className='gtp-cover-cpu' aria-hidden='true' /> : null}
+      {mode === 'cpu' && !poster ? <canvas ref={cpuCanvas} className='gtp-cover-cpu' aria-hidden='true' /> : null}
     </span>
   );
 }

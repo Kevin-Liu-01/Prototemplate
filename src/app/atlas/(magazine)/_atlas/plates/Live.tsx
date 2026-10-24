@@ -9,7 +9,6 @@ import { easeInOut } from '../globe';
 import type { Inline as InlineNode } from '../parse';
 import { LANGS, type LangCode, type Localized } from '../stories';
 import Globe from '../ui/Globe';
-import FlipText from '../ui/FlipText';
 import Inline from '../ui/Inline';
 import StopSlider from '../ui/StopSlider';
 import { EDITIONS, NATIVE, type Version } from './editions';
@@ -315,11 +314,8 @@ const DWELL = 6000;
 /** The globe's turn from one city to the next: slow, setting off and landing gently. */
 const TURN = { ms: 3500, curve: easeInOut };
 
-/** The coordinates tick over at half the board's usual speed, in step with the slow turn. */
-const TICK_PACE = 2;
-
 /* One version at a time: the globe turns to the city it was made in, the
-   version's name and its coordinates tick over under it, and its eight
+   version's name and its coordinates change under it, and its eight
    definitions replace the last version's with a slow fade, each numbered
    as its edition numbers them. Every version is laid out, unseen, in the
    same place, so the box is always as tall as the longest and the switch
@@ -330,15 +326,12 @@ const TICK_PACE = 2;
 export function VersionsDemo() {
   const [chosen, setChosen] = useState(0);
   const [held, setHeld] = useState(false);
-  // the definitions fade only once a change has happened, so the figure is whole before anything moves
-  const [moved, setMoved] = useState(false);
   // null until mounted, so the figure is whole without script; false until it is first shown, then true
   const [shown, setShown] = useState<boolean | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const version = VERSIONS[chosen] ?? VERSIONS[0]!;
 
   const show = (i: number) => {
-    setMoved(true);
     setChosen(i);
   };
   // the reader's own choice, from the switch or a dot, stops the clock
@@ -403,7 +396,7 @@ export function VersionsDemo() {
   });
 
   return (
-    <div ref={root} className='gtp-versions' data-chosen={chosen} data-held={held} data-moved={moved} data-shown={shown ?? undefined}>
+    <div ref={root} className='gtp-versions' data-chosen={chosen} data-held={held} data-shown={shown ?? undefined}>
       <div className='gtp-versions-map'>
         <Globe place={version} cell={1} tilt={0} graticule label={false} turn={TURN} className='gtp-versions-globe'>
           {/* each city's dot chooses the version made there */}
@@ -423,8 +416,8 @@ export function VersionsDemo() {
         </Globe>
         <p className='gtp-version-meta'>{titleOf(version)}</p>
         <p className='gtp-versions-coords' aria-label={`${version.city}: ${dms(version.lat, 'lat')}, ${dms(version.lon, 'lon')}`}>
-          <FlipText value={dms(version.lat, 'lat')} pace={TICK_PACE} />
-          <FlipText value={dms(version.lon, 'lon')} pace={TICK_PACE} />
+          <span>{dms(version.lat, 'lat')}</span>
+          <span>{dms(version.lon, 'lon')}</span>
         </p>
       </div>
       <div className='gtp-versions-reader'>

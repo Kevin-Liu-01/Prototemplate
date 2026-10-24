@@ -16,8 +16,18 @@
 @font-face { font-family: 'Katagami CJK SC'; src: url('/fonts/katagami/KatagamiCJKSC-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Katagami CJK JP'; src: url('/fonts/katagami/KatagamiCJKJP-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Katagami CJK KR'; src: url('/fonts/katagami/KatagamiCJKKR-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+/* Euclid's own serif, Newsreader, for its text and its heads, with its Latin Extended for the marked letters of romanized
+   Chinese (ǐ, ě), and EB Garamond for the Greek it lacks */
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-latin-ext.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic-latin-ext.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Atlas Text Greek'; src: url('/fonts/google/eb-garamond-400-greek.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
+
 .gtp {
   --gtp-cjk: 'Katagami CJK SC', 'Katagami CJK JP', 'Katagami CJK KR';
+  /* Euclid's serif stack: Newsreader, its Greek, then a Song face for the Chinese */
+  --gtp-euclid: 'Atlas Text', 'Atlas Text Greek', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
   /* Katagami Text for everything but code and figures, which take Katagami Mono */
   --gtp-sans: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif;
   --gtp-serif: var(--gtp-sans);
@@ -226,7 +236,7 @@
 .gtp-plate-foot { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 16px; }
 .gtp-plate-foot .gtp-plate-n { padding-top: 2px; color: var(--gtp-signal); white-space: nowrap; }
 .gtp-plate-foot .gtp-plate-stops { margin: -4px 0 0; }
-.gtp-plate-caption { margin: 0; max-width: 70ch; font-size: 13px; line-height: 1.5; color: var(--gtp-stage-ink-2); text-wrap: pretty; }
+.gtp-plate-caption { justify-self: center; margin: 0; max-width: 70ch; font-size: 13px; line-height: 1.5; color: var(--gtp-stage-ink-2); text-align: center; text-wrap: pretty; }
 
 .gtp-picture { position: relative; display: block; max-width: 100%; max-height: 100%; line-height: 0; cursor: zoom-in; }
 .gtp-picture img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: opacity 0.4s var(--gtp-ease); }
@@ -359,6 +369,10 @@
 .gtp-cover canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .gtp-cover-cpu { image-rendering: pixelated; }
 .gtp-cover[data-mode='cpu'] .gtp-cover-gpu { visibility: hidden; }
+/* a magazine's poster, the cover as WebGPU draws it at rest, is in the first paint; the canvas over it stays hidden
+   until it has printed its art, then covers it exactly, as it is opaque */
+.gtp-cover-poster { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; user-select: none; }
+.gtp-cover[data-drawn='false'] > .gtp-cover-poster ~ .gtp-cover-gpu { opacity: 0; }
 
 /* ---------- the book: six faces around one box ---------- */
 
@@ -439,6 +453,8 @@
 
 .gtp-landing { height: 100dvh; overflow: hidden; background: var(--gtp-paper); color: var(--gtp-ink); }
 .gtp-hall { position: relative; height: 100%; min-width: 0; overflow: hidden; }
+/* under an open magazine the hall stops drawing once the magazine has faded in over it, so only its pages render */
+.gtp-hall[inert] { visibility: hidden; transition: visibility 0s linear 0.3s; }
 
 /* the masthead: the one word, the line under it */
 .gtp-hall-head { position: absolute; z-index: 5; left: 56px; top: 48px; pointer-events: none; transition: opacity 0.45s var(--gtp-ease); }
@@ -518,6 +534,8 @@
   cursor: pointer;
   transform: translate3d(var(--dx), var(--dy), 0) perspective(1800px) rotateX(var(--tx)) rotateZ(var(--tz)) rotateY(var(--ty)) scale3d(var(--s), var(--s), var(--s));
   transition: transform 0.95s var(--gtp-ease);
+  /* each book keeps its own layer, so a change of pose only moves it and never paints it again first */
+  will-change: transform;
 }
 /* row: standing, each turned a little so its spine shows; the book under the pointer turns to face it, lifts and leans, and dips when pressed */
 .gtp-landing[data-mode='row'] .gtp-book-shelf { --ty: 22deg; }
@@ -784,9 +802,12 @@
   --gtp-globe-sea: #d6bf95;
   --gtp-globe-rim: #3a2814;
   --gtp-print-measure: 620px;
-  /* the one story set in the serif, Katagami Serif; Chinese, Japanese and Korean fall to a serif (Songti, Noto Serif),
-     so they match it, since Katagami's own CJK is sans */
-  --gtp-serif: 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
+  /* the one story set wholly in a serif, Newsreader, text and heads alike; Chinese, Japanese and Korean fall to a serif
+     (Songti, Noto Serif), so they match it */
+  --gtp-serif: var(--gtp-euclid);
+  --gtm-display: var(--gtp-euclid);
+  --gtm-text: var(--gtp-euclid);
+  --gtm-head: var(--gtp-euclid);
   --gtp-sans: var(--gtp-serif);
   --gtp-mono: var(--gtp-serif);
   font-family: var(--gtp-serif);
@@ -970,10 +991,8 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
 .gtp-versions[data-shown='true'] :is(.gtp-version-meta, .gtp-versions-coords) { animation-delay: 0.35s; }
 .gtp-versions[data-shown='true'] .gtp-stops { animation-delay: 0.7s; }
 .gtp-versions[data-shown='true'] .gtp-version-lines { animation-delay: 1.05s; }
-/* a new version's definitions fade in once the reader or the clock has changed it */
-.gtp-versions[data-moved='true'] .gtp-version-lines { animation: gtp-version-in 1s ease-in-out both; } /* as slow and even as the globe's turn beside it */
 @keyframes gtp-version-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .gtp-versions:is([data-moved='true'], [data-shown='true']) :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .gtp-versions[data-shown='true'] :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { animation: none; } }
 /* in the book's page and on its stage, the page's own sizes for paragraphs and lists give way to the figure's */
 :is(.gtp-print-page, .gtp-print-stage) .gtp-versions p { margin: 0; }
 :is(.gtp-print-page, .gtp-print-stage) :is(.gtp-versions-coords, .gtp-version-meta) { font-size: 12px; line-height: 1.4; }
@@ -1130,14 +1149,6 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
 .gtp-locator-note { font-size: 15px; color: var(--gtp-stage-ink-2); }
 .gtp-locator-coords { display: grid; gap: 1px; margin-top: 10px; font-size: 15px; line-height: 1.45; font-variant-numeric: tabular-nums; color: var(--gtp-stage-ink); }
 
-/* the split-flap: a changed character falls into place from its top edge */
-.gtp-flip { display: inline-flex; }
-.gtp-flip-ch { display: inline-block; white-space: pre; transform-origin: 50% 0; animation: gtp-flap var(--flap, 0.2s) var(--gtp-ease); }
-@keyframes gtp-flap {
-  from { transform: perspective(160px) rotateX(-78deg); opacity: 0.25; }
-  to { transform: none; opacity: 1; }
-}
-
 .gtp-hall-head { pointer-events: auto; }
 
 @media (max-width: 999px) {
@@ -1148,9 +1159,6 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
   .gtp-langs-locator { --globe: 150px; --reach: 16px; }
   .gtp-locator-city { font-size: 21px; }
   .gtp-locator-coords { font-size: 12px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .gtp-flip-ch { animation: none; }
 }
 
 /* ---------- the move between the shelf and a story ---------- */

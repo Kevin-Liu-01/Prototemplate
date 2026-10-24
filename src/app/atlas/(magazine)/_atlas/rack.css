@@ -5,21 +5,25 @@
 
 /* ---------- the rack: each story a thin magazine in Riffle's form, on its own stock ---------- */
 
-@property --gtp-glint { syntax: '<percentage>'; inherits: true; initial-value: -40%; }
 
 /* a magazine's page, Riffle's proportions */
 .gtp-landing[data-edition='magazine'] .gtp-shelf-track { --shelf-bw: var(--mag-w); --shelf-bh: calc(var(--shelf-bw) * 1.316); --gap: 40px; --baseline: calc(52% + var(--shelf-bh) / 2); }
 .gtp-landing[data-edition='magazine'] .gtp-shelf-item { --slot-h: calc(var(--slot-w) * 1.316); }
 /* standing, it faces the reader square; the one under the pointer rises a few pixels and leans a little toward it */
 .gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-book-shelf { --ty: 0deg; }
+/* standing square, a magazine shows its front alone and exactly its slot's size: the front on the magazine's middle
+   plane, so the perspective never widens it onto the guides beside it, and its edges hidden, which seen edge-on would
+   draw hairlines beside the guides (the stack, spines out, shows them) */
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-mag .gtp-book-board { transform: none; }
+.gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-mag :is(.gtp-book-fore, .gtp-book-spine) { visibility: hidden; }
 .gtp-landing[data-edition='magazine'][data-mode='row']:not([data-open='true']) .gtp-shelf-item[data-on='true'] .gtp-book-shelf { --dy: -6px; --tx: calc(var(--hy, 0) * -4deg); --ty: calc(var(--hx, 0) * 5deg); }
 .gtp-landing[data-edition='magazine'][data-mode='row']:not([data-open='true']) .gtp-shelf-item[data-pressed='true'] .gtp-book-shelf { --dy: -2px; }
 .gtp-landing[data-edition='magazine'][data-drag='true'] .gtp-shelf-item .gtp-book-shelf { --ty: 0deg; }
 /* the hall a little lit behind the rack, as Riffle's is; in the light theme a warm grey, so white paper has a ground */
 :root:not([data-theme='light']) .gtp-landing[data-edition='magazine'] { --hall: #090909; background: radial-gradient(70% 60% at 50% 48%, #141413, var(--hall) 72%); }
 :root[data-theme='light'] .gtp-landing[data-edition='magazine'] { --hall: #e7e5df; background: var(--hall); }
-/* the cast shadow under each magazine, deeper than a book's, in the dark theme only */
-:root:not([data-theme='light']) .gtp-landing[data-edition='magazine'] .gtp-shelf-shadow { left: 2%; right: 2%; height: 36px; background: radial-gradient(closest-side, rgb(0 0 0 / 0.85), transparent); }
+/* a magazine stands without a cast shadow */
+.gtp-landing[data-edition='magazine'] .gtp-shelf-shadow { display: none; }
 
 /* the sheets: the cover's own stock outside, the edges of a few white leaves */
 .gtp-mag :is(.gtp-book-front, .gtp-book-back) { background: var(--board); color: var(--ink); }
@@ -39,9 +43,9 @@
 
 /* the page: the story's cover (its colors, its marbling and its design), then the scan's folds and specks, its grain,
    the light falling across it, and the gloss; every line in Katagami Text */
-.gtp-mag-page { position: absolute; inset: 0; overflow: hidden; container-type: size; isolation: isolate; background: var(--board); color: var(--ink); font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; animation: gtp-mag-glint 2s cubic-bezier(0.45, 0.05, 0.3, 1) 0.8s both; }
+.gtp-mag-page { position: absolute; inset: 0; overflow: hidden; container-type: size; isolation: isolate; background: var(--board); color: var(--ink); font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; }
 .gtp-mag-page::before { content: ''; position: absolute; inset: 0; z-index: 20; pointer-events: none; background: linear-gradient(158deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0) 38%, rgb(0 0 0 / 0) 55%, rgb(0 0 0 / 0.15)); }
-/* matte stock: a faint highlight that follows the pointer, and one sweep of light as the rack loads */
+/* matte stock: a faint highlight that follows the pointer */
 .gtp-mag-page::after {
   content: '';
   position: absolute;
@@ -49,11 +53,8 @@
   z-index: 21;
   pointer-events: none;
   mix-blend-mode: screen;
-  background:
-    radial-gradient(80% 58% at calc(50% + var(--hx, -0.14) * 120%) calc(32% + var(--hy, -0.15) * 120%), rgb(255 255 255 / 0.084), rgb(255 255 255 / 0) 72%),
-    linear-gradient(116deg, rgb(255 255 255 / 0) calc(var(--gtp-glint) - 11%), rgb(255 255 255 / 0.1) var(--gtp-glint), rgb(255 255 255 / 0) calc(var(--gtp-glint) + 11%));
+  background: radial-gradient(80% 58% at calc(50% + var(--hx, -0.14) * 120%) calc(32% + var(--hy, -0.15) * 120%), rgb(255 255 255 / 0.084), rgb(255 255 255 / 0) 72%);
 }
-@keyframes gtp-mag-glint { from { --gtp-glint: -40%; } to { --gtp-glint: 145%; } }
 .gtp-mag-page > .gtp-cover { z-index: 0; }
 /* on a dark stock the folds and specks print light, as a scan of dark paper shows them */
 .gtp-mag-page[data-stock='dark'] :is(.gtp-mag-mottle, .gtp-mag-grain) { filter: invert(1); mix-blend-mode: screen; }
@@ -73,7 +74,6 @@
 /* the folio at the foot: the issue's number, the name, the month */
 .gtp-mag-folio { position: absolute; z-index: 3; left: 3.4cqw; bottom: 3cqh; margin: 0; display: flex; gap: 1.4em; font-size: max(11px, 2.8cqh); line-height: 1; font-weight: 500; color: var(--ink); }
 .gtp-mag-folio b { font-weight: 700; }
-@media (prefers-reduced-motion: reduce) { .gtp-mag-page { animation: none; } }
 
 
 /* ---------- the corner that lifts ---------- */
@@ -222,6 +222,8 @@
 .gtp-nameplate { margin: 0; display: flex; align-items: flex-end; gap: 0.12em; color: var(--gtp-ink); letter-spacing: -0.02em; }
 .gtp-nameplate-mark { position: relative; display: block; flex: none; height: 1cap; aspect-ratio: 112 / 140; }
 .gtp-nameplate-mark svg { display: block; width: 100%; height: 100%; overflow: visible; }
+/* the imprint's spine lies over the sheet's margin guide, so the guide runs into the spine rather than beside it */
+.gtp-landing[data-edition='magazine'] .gtp-nameplate-mark svg { translate: -1px 0; }
 /* the imprint's GT is a link to the General Translation home (ui/HomeMark.tsx): a click swings the cover open on the
    spine, over to the left as a front board opens, and the first page's lines show under it before the page leaves */
 .gtp-homemark-gt { position: absolute; left: 19%; top: 7%; width: 48%; height: 30%; border-radius: 4px; }
@@ -346,6 +348,9 @@
   .gtp-landing[data-edition='magazine'] .gtp-dateline { box-sizing: border-box; width: var(--rack-bw); height: 100%; margin: 0; display: grid; grid-template-columns: 46px minmax(0, 1fr); grid-template-rows: repeat(3, 1fr); gap: 0; justify-items: stretch; padding: 0; text-align: left; }
   .gtp-landing[data-edition='magazine'] .gtp-dateline > * { margin: 0; display: flex; align-items: center; padding: 0 14px; }
   .gtp-landing[data-edition='magazine'] .gtp-dateline > :nth-child(n + 3) { border-top: 1px solid var(--guide); }
+  /* each value on one line at any width: the type gives way where the cell narrows (18 characters of the mono, the
+     field names' column and the padding), so the box never grows past the dial's guides */
+  .gtp-landing[data-edition='magazine'] .gtp-dateline > dd { white-space: nowrap; font-size: min(12px, calc((var(--rack-bw) - 74px) / 11.8)); }
   .gtp-landing[data-edition='magazine'] .gtp-dateline > dd { border-left: 1px solid var(--guide); }
   .gtp-landing[data-edition='magazine'] .gtp-dateline > dt { justify-content: center; padding: 0; font-family: var(--gtp-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: color-mix(in srgb, var(--gtp-ink) 45%, transparent); }
   /* the controls in the cell the guides draw at the top right, the last magazine's column across the nameplate's band:

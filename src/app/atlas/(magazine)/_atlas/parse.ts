@@ -49,6 +49,9 @@ export type Block =
 
 export type Frontmatter = Record<string, string | string[]>;
 
+/** A value YAML reads: a scalar, a list or a map. */
+type YamlValue = string | number | boolean | null | YamlValue[] | { [key: string]: YamlValue };
+
 /** Components a story uses that draw a fixed figure, each set in the text as that figure's picture. */
 const DRAWN: Record<string, { src: string; alt: string; caption: string }> = {
   FumadocsArchitecture: {
@@ -62,10 +65,10 @@ const DRAWN: Record<string, { src: string; alt: string; caption: string }> = {
 export function splitFrontmatter(source: string): { data: Frontmatter; body: string } {
   const match = /^---\s*\n([\s\S]*?)\n---\s*\n/.exec(source);
   if (!match) return { data: {}, body: source };
-  const head: unknown = parseYaml(match[1] ?? '');
+  const head: YamlValue = parseYaml(match[1] ?? '');
   const data: Frontmatter = {};
   if (head && typeof head === 'object' && !Array.isArray(head)) {
-    for (const [key, value] of Object.entries(head as Record<string, unknown>)) {
+    for (const [key, value] of Object.entries(head)) {
       if (Array.isArray(value)) data[key] = value.map((item) => String(item));
       else if (value !== null && value !== undefined) data[key] = String(value);
     }
