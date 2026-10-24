@@ -61,6 +61,9 @@ const SHELF_DEPTH = 1.7;
 /** How far a press has to travel before it counts as a drag and not a click. */
 const DRAG_SLOP = 6;
 
+/** How long the pointer rests on a corner before its magazine is set ahead, so a pass over it costs nothing. */
+const PREPARE_DWELL = 250;
+
 /** Every language starts at its first place. */
 const FIRST_PLACES = Object.fromEntries(
   LANGS.map((l) => [l.code, 0])
@@ -113,6 +116,9 @@ export default function Landing({
   /** The magazine whose corner is lifted, and the one open over the hall. */
   const [peel, setPeel] = useState<number | null>(null);
   const [reading, setReading] = useState<number | null>(null);
+  // the magazine set ahead, hidden, as its corner lifts, so a click only shows pages already laid out
+  const [prepared, setPrepared] = useState<number | null>(null);
+  const preparing = useRef(0);
   const magazine = edition === 'magazine';
   /** Set by the press that closes the locator, so its click is swallowed. */
   const closing = useRef(false);
@@ -243,6 +249,28 @@ export default function Landing({
     if (s) move((href) => router.push(href), storyHref(edition, s.slug));
   };
 
+  /**
+   * Sets a magazine ahead as its corner lifts: its article and faces now, and once the pointer has stayed a moment and
+   * the browser is idle, the magazine itself, mounted hidden so its pages are laid out before a click. The lift's own
+   * animation runs first, so the long layout never stalls it.
+   */
+  const prepare = (i: number) => {
+    const s = catalog[i];
+    if (!s) return;
+    prepareMagazine(s, storyHref(edition, s.slug));
+    window.clearTimeout(preparing.current);
+    preparing.current = window.setTimeout(() => {
+      const mount = () => {
+        if (state.current.reading === null) setPrepared(i);
+      };
+      if (typeof requestIdleCallback === 'function')
+        requestIdleCallback(mount, { timeout: 600 });
+      else mount();
+    }, PREPARE_DWELL);
+  };
+
+  useMountEffect(() => () => window.clearTimeout(preparing.current));
+
   /** Closes the open magazine and gives the focus back to the corner that opened it. */
   const closeMagazine = () => {
     const slug =
@@ -250,6 +278,8 @@ export default function Landing({
         ? null
         : catalog[state.current.reading]?.slug;
     setReading(null);
+    // the closed magazine goes, so the next opening starts at its cover; the corner's focus sets it ahead again
+    setPrepared(null);
     setPeel(null);
     if (slug)
       requestAnimationFrame(() =>
@@ -406,8 +436,9 @@ export default function Landing({
     setDragging(false);
   };
 
-  // the story whose magazine is open
-  const opened = reading === null ? undefined : catalog[reading];
+  // the story whose magazine is open, or set ahead and hidden
+  const mounted = reading ?? prepared;
+  const opened = mounted === null ? undefined : catalog[mounted];
 
   const flags = (size: number, named: boolean) =>
     LANGS.map((l) => (
@@ -649,17 +680,18 @@ export default function Landing({
                       aria-label={`Open ${bookTitle(s.titles[code], code)} as a magazine`}
                       onPointerEnter={() => {
                         setPeel(i);
-                        // the magazine's article, fetched as the corner lifts, so the magazine opens at once
-                        prepareMagazine(s, storyHref(edition, s.slug));
+                        prepare(i);
                       }}
-                      onPointerLeave={() =>
-                        setPeel((k) => (k === i ? null : k))
-                      }
+                      onPointerLeave={() => {
+                        setPeel((k) => (k === i ? null : k));
+                        // a pass over the corner on the way elsewhere sets nothing ahead
+                        window.clearTimeout(preparing.current);
+                      }}
                       onFocus={() => {
                         setActive(i);
                         setHover(i);
                         setPeel(i);
-                        prepareMagazine(s, storyHref(edition, s.slug));
+                        prepare(i);
                       }}
                       onBlur={() => setPeel((k) => (k === i ? null : k))}
                       onClick={() => {
@@ -764,11 +796,14 @@ export default function Landing({
             </div>
           </div>
         </main>
-        {reading !== null && opened && issues?.[opened.slug] ? (
+        {mounted !== null && opened && issues?.[opened.slug] ? (
+          // keyed by its story, so a click on another corner than the one set ahead mounts that magazine afresh
           <MagazineView
+            key={opened.slug}
             story={opened}
             href={storyHref(edition, opened.slug)}
-            onRead={() => open(reading)}
+            open={reading !== null}
+            onRead={() => open(mounted)}
             onClose={closeMagazine}
           />
         ) : null}

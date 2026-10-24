@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 import type { StoryCard } from '../content';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { drawLayers } from '../gpu/emblems';
-import { useMountEffect } from '../hooks';
+import { useLayoutWork, useMountEffect } from '../hooks';
 import { plainClick } from '../transition';
 import { MAGAZINE_ART } from '../ui/Book';
 import { CloseIcon } from '../ui/icons';
@@ -19,6 +19,9 @@ type Props = {
   story: StoryCard;
   /** The story's web page. */
   href: string;
+  /** Shown over the hall. While false the magazine is set ahead, hidden and inert, as its corner lifts, so that opening
+      it only shows pages already laid out. */
+  open: boolean;
   /** Opens the web page, as a click on the magazine on the rack does. */
   onRead: () => void;
   onClose: () => void;
@@ -185,14 +188,31 @@ export function prepareMagazine(story: StoryCard, href: string) {
   void loadFaces(story.look);
 }
 
-export default function MagazineView({ story, href, onRead, onClose }: Props) {
+export default function MagazineView({
+  story,
+  href,
+  open,
+  onRead,
+  onClose,
+}: Props) {
   const host = useRef<HTMLDivElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   const turner = useRef<Flip | null>(null);
+  // the window's keys and the stage's wheel turn pages only while the magazine shows
+  const shown = useRef(open);
+  shown.current = open;
   /** The spread showing and the last one, for the arrows. */
   const [at, setAt] = useState({ state: 0, max: 0 });
   /** The article could not be fetched, so there are no pages to turn. */
   const [failed, setFailed] = useState(false);
+
+  // the focus goes to the close control as the magazine shows, where the keyboard starts
+  useLayoutWork(
+    () => {
+      if (open) close.current?.focus();
+    },
+    { dependencies: [open] }
+  );
 
   useMountEffect(() => {
     const el = host.current;
@@ -262,12 +282,11 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
       sync();
     };
     void make();
-    close.current?.focus();
 
     const wheel = { sum: 0, last: 0 };
     const onWheel = (e: WheelEvent) => {
       // a pinch or Ctrl and the wheel zooms the page, as everywhere else
-      if (e.ctrlKey) return;
+      if (!shown.current || e.ctrlKey) return;
       e.preventDefault();
       wheel.sum +=
         Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
@@ -280,6 +299,7 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
       wheel.last = now;
     };
     const onKey = (e: KeyboardEvent) => {
+      if (!shown.current) return;
       // Space on a button or a link presses it; the page turns only when nothing that takes Space has the focus
       if (
         e.key === ' ' &&
@@ -331,6 +351,9 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
       role='dialog'
       aria-modal='true'
       aria-label={`${story.title}, as a magazine`}
+      data-shown={open}
+      aria-hidden={!open || undefined}
+      inert={!open}
     >
       {/* first in the order the keyboard moves through, where the focus starts; the page behind is inert while it is open */}
       <button

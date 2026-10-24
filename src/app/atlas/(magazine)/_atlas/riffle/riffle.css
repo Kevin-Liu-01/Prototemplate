@@ -16,14 +16,16 @@
   grid-template-rows: minmax(0, 1fr) auto;
   background: radial-gradient(70% 60% at 50% 46%, rgb(22 22 21 / 0.97), rgb(8 8 8 / 0.98) 72%);
   color: #f3f1ec;
-  animation: gtp-riffle-in 0.22s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
+/* a magazine set ahead as its corner lifts (MagazineView, open false) is laid out but not seen; it fades in as it opens */
+.gtp-riffle[data-shown='false'] { visibility: hidden; pointer-events: none; }
+.gtp-riffle[data-shown='true'] { animation: gtp-riffle-in 0.22s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 :root[data-theme='light'] .gtp-riffle { background: rgb(231 229 223 / 0.97); color: #141414; }
 /* the light theme draws no shadows: the open magazine keeps only its stepped edges */
 :root[data-theme='light'] .gtp-riffle .fl-shadow { display: none; }
 @media (max-width: 759px) { .gtp-riffle { --mz-ph: min(64svh, calc((100vw - 40px) / 0.76)); } }
 @keyframes gtp-riffle-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .gtp-riffle { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .gtp-riffle[data-shown='true'] { animation: none; } }
 
 .gtp-riffle-stage { position: relative; display: grid; place-items: center; min-height: 0; perspective: 2400px; perspective-origin: 50% 42%; }
 /* an article that did not load: the line in place of the pages, the way to the web page under it as ever */
