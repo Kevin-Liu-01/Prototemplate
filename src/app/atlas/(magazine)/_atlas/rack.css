@@ -7,8 +7,10 @@
 
 
 /* a magazine's page, Riffle's proportions */
-.gtp-landing[data-edition='magazine'] .gtp-shelf-track { --shelf-bw: var(--mag-w); --shelf-bh: calc(var(--shelf-bw) * 1.316); --gap: 40px; --baseline: calc(52% + var(--shelf-bh) / 2); }
-.gtp-landing[data-edition='magazine'] .gtp-shelf-item { --slot-h: calc(var(--slot-w) * 1.316); }
+/* in whole pixels, its height and the line it stands on, so its foot and its top fall on the pixels the guides measure
+   by the same rounding (.gtp-g-top, .gtp-g-foot) */
+.gtp-landing[data-edition='magazine'] .gtp-shelf-track { --shelf-bw: var(--mag-w); --shelf-bh: round(calc(var(--shelf-bw) * 1.316), 1px); --gap: 40px; --baseline: round(calc(52% + var(--shelf-bh) / 2), 1px); }
+.gtp-landing[data-edition='magazine'] .gtp-shelf-item { --slot-h: round(calc(var(--slot-w) * 1.316), 1px); }
 /* standing, it faces the reader square; the one under the pointer rises a few pixels and leans a little toward it */
 .gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-book-shelf { --ty: 0deg; }
 /* standing square, a magazine shows its front alone and exactly its slot's size: the front on the magazine's middle
@@ -155,7 +157,11 @@
   --guide-3: color-mix(in srgb, var(--gtp-ink) 20%, transparent);
   --margin: 56px;
   --cell: calc((100vw - 2 * var(--margin)) / 4);
-  --rack-bw: min(calc(var(--cell) - 32px), 40vh);
+  /* a magazine's width in whole pixels, and the last column's left edge and the row's right edge from it, so every
+     edge on the rack falls on a whole pixel and its guide on the pixel beside it */
+  --rack-bw: round(down, min(calc(var(--cell) - 32px), 40vh), 1px);
+  --col-3: round(calc(var(--edge) + 3 * var(--cell)), 1px);
+  --row-r: calc(var(--col-3) + var(--rack-bw));
   --edge: round(calc(var(--margin) + (var(--cell) - var(--rack-bw)) / 2), 1px);
   --globe: 80px;
   --dial-pad: 11px;
@@ -167,25 +173,24 @@
 /* the guides print faintly in the hall's own ink, all one weight, each measured from an edge the page has and running
    the sheet's full width or height behind everything on it */
 /* the row's middle, where the magazines stand centred (press.css centres a narrow screen's at 46%) */
-.gtp-guides { position: absolute; inset: 0; z-index: 1; pointer-events: none; --mid: 52%; --cap: calc(var(--nameplate) * 0.6982); --mag-h: calc(var(--mag-w) * 1.316); --dial: calc(var(--globe) + 2 * var(--dial-pad)); }
+.gtp-guides { position: absolute; inset: 0; z-index: 1; pointer-events: none; --mid: 52%; --cap: calc(var(--nameplate) * 0.6982); --mag-h: round(calc(var(--mag-w) * 1.316), 1px); --foot: round(calc(var(--mid) + var(--mag-h) / 2), 1px); --dial: calc(var(--globe) + 2 * var(--dial-pad)); }
 /* each guide a hairline placed by the page's own measures (ui/HallGuides.tsx), on the pixel just outside the edge it
    frames (before a leading edge, after a trailing one), so the sheet is drawn with the page and never moves */
 .gtp-g-x, .gtp-g-y { position: absolute; display: block; background: var(--guide); }
 .gtp-g-x { top: 0; bottom: 0; width: 1px; }
 .gtp-g-y { left: 0; right: 0; height: 1px; }
-.gtp-g-mag-l { left: calc(round(down, calc(var(--edge) + var(--i) * var(--cell)), 1px) - 1px); }
-.gtp-g-mag-r { left: round(up, calc(var(--edge) + var(--i) * var(--cell) + var(--mag-w)), 1px); }
+.gtp-g-mag-l { left: calc(round(calc(var(--edge) + var(--i) * var(--cell)), 1px) - 1px); }
+.gtp-g-mag-r { left: calc(round(calc(var(--edge) + var(--i) * var(--cell)), 1px) + var(--mag-w)); }
 .gtp-g-margin-l { left: calc(var(--edge) - 1px); }
 .gtp-g-margin-r { left: calc(100% - var(--edge)); }
+/* a wide screen's right margin is the row's right edge, the last magazine's, one line */
+@media (min-width: 1000px) { .gtp-g-margin-r { left: var(--row-r); } }
 .gtp-g-tools-l { left: calc(round(down, calc(100% - var(--edge) - var(--cap)), 1px) - 1px); }
 .gtp-g-globe { left: round(up, calc(var(--edge) + var(--dial) / 2), 1px); }
-/* the end of the word Atlas: it starts 0.12em past the imprint, which is 0.8 of a cap (0.5586em) wide; Katagami Serif sets
-   it 2.1887em across at -0.02em, and its ink ends 0.0211em short of that */
-.gtp-g-word { left: round(up, calc(var(--edge) + var(--nameplate) * 2.8462), 1px); }
 .gtp-g-cap { top: calc(var(--top) - 1px); }
 .gtp-g-base { top: round(up, calc(var(--top) + var(--cap)), 1px); }
-.gtp-g-top { top: calc(round(down, calc(var(--mid) - var(--mag-h) / 2), 1px) - 1px); }
-.gtp-g-foot { top: round(up, calc(var(--mid) + var(--mag-h) / 2), 1px); }
+.gtp-g-top { top: calc(var(--foot) - var(--mag-h) - 1px); }
+.gtp-g-foot { top: var(--foot); }
 .gtp-g-dial-t { top: calc(round(down, calc(100% - 30px - var(--dial)), 1px) - 1px); }
 .gtp-g-dial-b { top: calc(100% - 30px); }
 /* the grid references, as an atlas indexes its sheet: a letter over each magazine's column, a number beside each row */
@@ -308,6 +313,8 @@
 
 @media (max-width: 999px) {
   .gtp-landing[data-edition='magazine'] { --margin: 20px; --edge: 20px; --globe: 56px; --dial-pad: 8px; --top: 30px; }
+  /* the row stands at 46%, its foot on a whole pixel as the guides round it */
+  .gtp-landing[data-edition='magazine'] .gtp-shelf-item { top: calc(round(calc(46% + var(--shelf-bh) / 2), 1px) - var(--shelf-bh)); }
   /* on a phone the row scrolls on its own: the controls' box keeps the theme alone, and the dateline steps out so the
      codes take the foot */
   .gtp-landing[data-edition='magazine'] .gtp-hall-coords { display: flex; }
@@ -320,8 +327,8 @@
   .gtp-landing .gtp-hall-tools .gtp-theme { width: 100%; height: 100%; border-radius: 0; }
   /* the row's magazines stand centred one at a time, each as wide as the sheet between the theme's cell and its mirror
      at the left, so the one in view stands on the guides at both sides */
-  .gtp-landing[data-edition='magazine'] { --mag-w: min(300px, 40vh, calc(100vw - 2 * (var(--edge) + var(--nameplate) * 0.6982) - 2px)); }
-  .gtp-landing[data-edition='magazine'] .gtp-shelf-track { --pad: calc((100vw - var(--mag-w)) / 2); }
+  .gtp-landing[data-edition='magazine'] { --mag-w: round(down, min(300px, 40vh, calc(100vw - 2 * (var(--edge) + var(--nameplate) * 0.6982) - 2px)), 1px); }
+  .gtp-landing[data-edition='magazine'] .gtp-shelf-track { --pad: round(down, calc((100vw - var(--mag-w)) / 2), 1px); }
   /* no room round the dial: open, the codes stand in a line out to its right along its centre, each a finger wide */
   .gtp-ring-code { --step: min(30px, calc((100vw - 2 * var(--edge) - 2 * var(--rim) - 15px) / 8)); --at: 0; padding: 8px 4px; transform: translateX(calc(var(--r) + var(--at) * var(--step))) translate(-50%, -50%); }
   .gtp-dial:is(:hover, :has(:focus-visible), [data-open]):not([data-shut]) .gtp-ring-code { --at: var(--k); }
@@ -340,6 +347,11 @@
 @media (min-width: 1000px) {
   .gtp-landing[data-edition='magazine'] { --mag-w: var(--rack-bw); }
   .gtp-landing[data-edition='magazine'] .gtp-shelf-track { --gap: calc(var(--cell) - var(--rack-bw)); --pad: var(--edge); }
+  /* each magazine's left edge on a whole pixel, by the same rounding as its guides (.gtp-g-mag-l, .gtp-g-mag-r) */
+  .gtp-landing[data-edition='magazine'] .gtp-shelf-item { --slot-x: round(calc(var(--edge) + var(--i) * var(--cell)), 1px); }
+  /* the controls' box and the dateline end where the row does, on the last magazine's right edge */
+  .gtp-landing[data-edition='magazine'] .gtp-hall-coords { right: auto; left: var(--col-3); }
+  .gtp-landing[data-edition='magazine'] .gtp-band { right: auto; width: calc(var(--row-r) - var(--edge)); }
   /* the dateline in the cell the guides draw at the foot's right: from the dial's top to its foot, across the last
      magazine's column; its city and coordinates set from the cell's left */
   .gtp-landing[data-edition='magazine'] .gtp-band-view { align-self: stretch; }

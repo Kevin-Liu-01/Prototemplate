@@ -108,24 +108,30 @@ const MIN_PAGE = 160;
 /** The width from which two pages show at once. */
 const SPREAD = 760;
 
-/** The faces the pages are set in, the italics too, loaded before they are measured, so the measured page is the shown one. */
-const FACES = [
-  '400 16px "Katagami Text"',
-  '700 16px "Katagami Text"',
-  'italic 400 16px "Katagami Text"',
-  '400 16px "Katagami Serif"',
-  '700 16px "Katagami Serif"',
-  'italic 400 16px "Katagami Serif"',
-  // Euclid's issue, set in Newsreader
-  '400 16px "Atlas Text"',
-  '700 16px "Atlas Text"',
-  'italic 400 16px "Atlas Text"',
+/**
+ * The faces the pages are set in, the italics too, loaded before the pages are measured, so the measured page is the
+ * shown one. Each comes with a sample of its letters: a face split by unicode-range loads only the files its sample
+ * needs, so Euclid's Newsreader asks for its Latin Extended (ǐ, ě) and its Greek face for the Greek.
+ */
+const FACES: [font: string, sample?: string][] = [
+  ['400 16px "Katagami Text"'],
+  ['700 16px "Katagami Text"'],
+  ['italic 400 16px "Katagami Text"'],
+  ['400 16px "Katagami Serif"'],
+  ['700 16px "Katagami Serif"'],
+  ['italic 400 16px "Katagami Serif"'],
+  ['400 16px "Atlas Text"', 'Aǐě'],
+  ['700 16px "Atlas Text"', 'Aǐě'],
+  ['italic 400 16px "Atlas Text"', 'Aǐě'],
+  ['400 16px "Atlas Text Greek"', 'αβγ'],
 ];
+
+const loadFaces = () => Promise.all(FACES.map(([font, sample]) => document.fonts.load(font, sample))).catch(() => []);
 
 /** Fetches every story's article and the pages' faces ahead, so a magazine opens without waiting on the network. */
 export function prepareIssues(hrefs: string[]) {
   for (const href of hrefs) void loadArticle(href);
-  void Promise.all(FACES.map((face) => document.fonts.load(face))).catch(() => []);
+  void loadFaces();
 }
 
 export default function MagazineView({ story, href, onRead, onClose }: Props) {
@@ -153,7 +159,7 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
       const [art, pieces] = await Promise.all([
         coverArt(story.slug, Math.round(el.offsetWidth * scale), Math.round(el.offsetHeight * scale)),
         loadArticle(href),
-        Promise.all(FACES.map((face) => document.fonts.load(face))).catch(() => []),
+        loadFaces(),
       ]);
       if (gone || mine !== made) return;
       size = `${el.offsetWidth}x${el.offsetHeight}`;

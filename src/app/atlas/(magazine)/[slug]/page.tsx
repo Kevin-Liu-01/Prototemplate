@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { preload } from 'react-dom';
 
 import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
@@ -55,6 +56,8 @@ export default async function PressStoryPage({ params }: Params) {
   const { slug } = await params;
   const story = getStory(slug);
   if (!story) notFound();
+  // Euclid is set in Newsreader: its text face loads with the page, so the story never paints in another face first
+  if (story.look === 'book') preload('/fonts/google/newsreader-opsz-wght.woff2', { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
   const catalog = getCatalog();
   const i = catalog.findIndex((s) => s.slug === slug);
   const after = catalog[(i + 1) % catalog.length];

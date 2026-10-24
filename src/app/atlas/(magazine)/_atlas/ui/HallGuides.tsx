@@ -3,9 +3,8 @@ import type { CSSProperties } from 'react';
 /* The magazine's front page over a layout sheet. Every guide runs the
    sheet's full width or height, behind everything on the page, along an
    edge the page really has: each magazine's sides, their tops and the
-   horizon they stand on; the nameplate's cap height and baseline, the end
-   of its word, and the imprint's right side, which is the globe's centre
-   line; the globe dial's top and foot; the sheet's margins and the
+   horizon they stand on; the nameplate's cap height and baseline, and the
+   imprint's right side, which is the globe's centre line; the globe dial's top and foot; the sheet's margins and the
    controls' cell. Euclid's first construction circles the middle two
    magazines, each circle through the other's centre, and grid references
    letter the magazines' columns and number the rows, as an atlas's index
@@ -41,7 +40,6 @@ export default function HallGuides({ count }: Props) {
       <i className='gtp-g-x gtp-g-tools-l' />
       <i className='gtp-g-x gtp-g-snap' />
       <i className='gtp-g-x gtp-g-globe' />
-      <i className='gtp-g-x gtp-g-word' />
       <i className='gtp-g-y gtp-g-cap' />
       <i className='gtp-g-y gtp-g-base' />
       <i className='gtp-g-y gtp-g-top' />
