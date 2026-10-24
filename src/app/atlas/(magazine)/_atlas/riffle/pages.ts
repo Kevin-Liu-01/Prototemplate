@@ -58,14 +58,17 @@ function inks(story: StoryCard) {
 /** The opening's head in its two parts: the headline, and the deck, the issue and the byline. */
 function headParts(story: StoryCard): [string, string] {
   const by = story.authors.map((a) => escapeHtml(a)).join(' and ');
-  const date = longDate(story.date);
-  const meta = [`Atlas No. ${pad(story.n)}`, date, `${story.minutes} minutes`]
-    .filter(Boolean)
-    .map((line) => `<span>${escapeHtml(line)}</span>`)
-    .join('');
+  // the byline on one rule, as the story's web page sets it: who, then when and how long
+  const line = [
+    by ? `<b>By ${by}</b>` : '',
+    ...[longDate(story.date), `${story.minutes} minutes`]
+      .filter(Boolean)
+      .map((part) => `<span>${escapeHtml(part)}</span>`),
+  ].join('');
   return [
     `<h2 class="gtr-h"${story.title.length > LONG_TITLE ? ' data-long' : ''}>${escapeHtml(story.title)}</h2>`,
-    `${story.summary ? `<p class="gtr-dek">${escapeHtml(story.summary)}</p>` : ''}<p class="gtr-meta">${meta}</p><p class="gtr-by">${by}</p>`,
+    // the deck and the byline in one box as wide as the wider of them, so the byline's rule runs as far as the text
+    `<div class="gtr-stand">${story.summary ? `<p class="gtr-dek">${escapeHtml(story.summary)}</p>` : ''}<p class="gtr-byline">${line}</p></div>`,
   ];
 }
 

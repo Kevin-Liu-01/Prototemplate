@@ -149,9 +149,13 @@
 .gtp-riffle .gtr-head { margin-bottom: 5cqh; }
 .gtp-riffle .gtr-h { margin: 0; font-family: var(--gtm-display); font-size: 6cqw; line-height: 1.02; font-weight: 400; letter-spacing: -0.03em; text-wrap: balance; }
 .gtp-riffle .gtr-h[data-long] { font-size: 5cqw; }
-.gtp-riffle .gtr-head .gtr-dek { margin-top: 1.8cqh; font-size: 2.5cqw; line-height: 1.28; color: var(--mute); text-wrap: pretty; }
-.gtp-riffle .gtr-head .gtr-meta { margin-top: 3.4cqh; display: flex; flex-direction: column; gap: 0.5em; font-size: max(8.5px, 1.3cqh); line-height: 1; letter-spacing: 0.14em; text-transform: uppercase; }
-.gtp-riffle .gtr-head .gtr-by { margin-top: 2.6cqh; font-size: max(10px, 1.6cqh); line-height: 1.3; font-weight: 700; }
+.gtp-riffle .gtr-stand { width: fit-content; max-width: 100%; margin-top: 2cqh; }
+.gtp-riffle .gtr-stand .gtr-dek { margin: 0; max-width: 36ch; font-size: 2.4cqw; line-height: 1.3; color: var(--mute); text-wrap: pretty; }
+/* the byline on one rule, as the story's web page sets it (magazine.css, .gtm-byline): the name in the ink, the date and
+   the reading time quieter beside it, in Katagami Text in every look, as the running head and the folio are */
+.gtp-riffle .gtr-stand .gtr-byline { margin-top: 1.9cqh; padding-top: 1.5cqh; display: flex; flex-wrap: wrap; gap: 0.3em 1.5em; border-top: 1px solid color-mix(in srgb, currentColor 22%, transparent); font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: max(9.5px, 1.55cqh); line-height: 1.35; }
+.gtp-riffle .gtr-stand .gtr-byline b { font-weight: 600; }
+.gtp-riffle .gtr-stand .gtr-byline span { color: var(--mute); }
 .gtp-riffle .gtr-cols { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 5cqw; }
 .gtp-riffle .gtr-col { min-height: 0; overflow: hidden; font-size: max(9.5px, 2.05cqw); line-height: 1.5; hyphens: auto; overflow-wrap: break-word; }
 .gtp-riffle .gtr-col > :first-child { margin-top: 0; }
