@@ -39,12 +39,14 @@ type Props = {
   active: boolean;
   /** Mount the media; plates far from the reader stay empty until reached. */
   mounted: boolean;
+  /** Set in the text on a narrow page, where every plate shows and `active` only picks the one that plays. */
+  inline?: boolean;
 };
 
 /* A figure on the stage: the media, and under it the figure's number, the
    caption of the view shown and, when the figure has more than one view (a
    live demo first, then each recorded frame), a slider across them. */
-export default function Plate({ figure, titles, hitItems, active, mounted }: Props) {
+export default function Plate({ figure, titles, hitItems, active, mounted, inline = false }: Props) {
   const frames = figure.frames;
   // the magazine shows a live figure alone, with no switch to its still picture
   const liveOnly = useEdition() === 'magazine' && figure.live !== null;
@@ -58,9 +60,11 @@ export default function Plate({ figure, titles, hitItems, active, mounted }: Pro
   const [stop, setStop] = useState(stops[0]?.value ?? '0');
   const shown = stop === 'live' ? null : frames[Number(stop)];
   const caption = stop === 'live' && figure.live ? LIVE_CAPTION[figure.live] : (shown?.alt ?? '');
+  // on the stage only the active plate shows, so the rest take no focus and reach no screen reader
+  const hidden = !inline && !active;
 
   return (
-    <section className='gtp-plate' data-on={active} aria-hidden={!active} inert={!active} aria-label={`Figure ${figure.n}`}>
+    <section className='gtp-plate' data-on={active} aria-hidden={hidden} inert={hidden} aria-label={`Figure ${figure.n}`}>
       <div className='gtp-plate-media'>
         {mounted
           ? stops.map((s) => (

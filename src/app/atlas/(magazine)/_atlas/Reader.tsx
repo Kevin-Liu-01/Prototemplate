@@ -353,7 +353,7 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
                       <ArrowIcon size={14} />
                     </button>
                     <div className='gtp-inline-plate' {...at}>
-                      {wide ? null : <Plate figure={figure} titles={story.titles} hitItems={hitItems} active={plate === figure.n} mounted={seen.has(figure.n)} />}
+                      {wide ? null : <Plate figure={figure} titles={story.titles} hitItems={hitItems} active={plate === figure.n} mounted={seen.has(figure.n)} inline />}
                     </div>
                   </Fragment>
                 );

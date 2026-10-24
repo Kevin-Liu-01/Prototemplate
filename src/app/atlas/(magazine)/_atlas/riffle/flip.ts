@@ -109,11 +109,13 @@ export class Flip {
       if (away !== leaf.el.hidden && (away || this.needed(i))) leaf.el.hidden = away;
     });
     this.el.dataset.open = !this.spread || this.state === 0 ? 'false' : this.state > this.max - 1 ? 'back' : 'true';
-    // Safari paints on the main thread, so a leaf drawn, or a face made inert or not, while a turn starts or lands holds
-    // that frame back; that is done once no turn is in flight
     window.clearTimeout(this.reveal);
+    if (this.leaves.some((leaf) => leaf.turns.length)) return;
+    // the open pages take clicks and focus as the last turn lands; Safari paints on the main thread, so a leaf drawn as
+    // a turn starts or lands holds that frame back, and drawing the leaves in reach waits until no turn is in flight
+    this.open();
     if (now) this.rest();
-    else if (!this.leaves.some((leaf) => leaf.turns.length)) this.reveal = window.setTimeout(this.rest, 100);
+    else this.reveal = window.setTimeout(this.rest, 100);
   }
 
   /** Whether a leaf has to be drawn now: it holds an open page or lies beside a turning leaf. */
@@ -126,13 +128,18 @@ export class Flip {
     return !leaf.turns.length && (i < this.state - 2 || i > this.state + 1 || (!this.spread && leaf.fwd));
   }
 
-  /** Draws only the leaves in reach, and lets only the open pages take focus or reach a screen reader. */
+  /** Lets only the open pages take focus or reach a screen reader: the right page's front, and on a spread the left page's back. */
+  private open() {
+    this.leaves.forEach((leaf, i) => {
+      leaf.faces[0].inert = i !== this.state;
+      leaf.faces[1].inert = !this.spread || i !== this.state - 1;
+    });
+  }
+
+  /** Draws only the leaves in reach. */
   private rest = () => {
     this.leaves.forEach((leaf, i) => {
       leaf.el.hidden = this.away(leaf, i);
-      // the right page's front, and on a spread the left page's back
-      leaf.faces[0].inert = i !== this.state;
-      leaf.faces[1].inert = !this.spread || i !== this.state - 1;
     });
   };
 

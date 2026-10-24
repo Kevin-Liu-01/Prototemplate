@@ -7,7 +7,7 @@ import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 
 import { getCatalog, getStory, storySlugs, type Story } from '../_atlas/content';
-import { plain } from '../_atlas/parse';
+import { plain } from '../_atlas/plain';
 import Reader from '../_atlas/Reader';
 
 type Params = { params: Promise<{ slug: string }> };

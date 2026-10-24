@@ -6,7 +6,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { HOME, type LatLon } from './coords';
-import { parseBody, parseInline, plain, splitFrontmatter, wordCount, type Block, type Figure, type Inline } from './parse';
+import { parseBody, parseInline, splitFrontmatter, wordCount, type Block, type Figure, type Inline } from './parse';
+import { plain } from './plain';
 import { AUTHORS, HOME_SHEET, SHEETS, STORIES, type LiveKind, type Localized, type Look, type MapSheet, type Topic } from './stories';
 
 const CONTENT = process.env.PRESS_CONTENT ?? path.join(process.cwd(), 'content/production/blog/en-US');

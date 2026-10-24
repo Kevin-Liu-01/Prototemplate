@@ -2,7 +2,8 @@ import type { ReactNode, RefObject } from 'react';
 
 import type { Story } from '../content';
 import { useMountEffect } from '../hooks';
-import { plain, type Block } from '../parse';
+import type { Block } from '../parse';
+import { plain } from '../plain';
 import Inline from './Inline';
 
 /* The magazine's text decorations, set over each story's own layout in the
