@@ -6,6 +6,8 @@
    once it has mounted, which lets the transition capture it. Without view
    transitions, or under reduced motion, it is a plain navigation. */
 
+import { prefersReducedMotion } from './motion';
+
 type Navigate = (href: string) => void;
 
 let arrive: (() => void) | null = null;
@@ -14,7 +16,11 @@ let arrive: (() => void) | null = null;
 const WAIT_MS = 700;
 
 function canTransition(): boolean {
-  return typeof document !== 'undefined' && 'startViewTransition' in document && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return (
+    typeof document !== 'undefined' &&
+    'startViewTransition' in document &&
+    !prefersReducedMotion()
+  );
 }
 
 /** Moves to `href` through the press's crossfade. */
@@ -47,6 +53,12 @@ export function landed(): void {
 }
 
 /** A plain left click: the kind a transition may take over; a modified click opens a tab as usual. */
-export function plainClick(e: { button: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; altKey: boolean }): boolean {
+export function plainClick(e: {
+  button: number;
+  metaKey: boolean;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  altKey: boolean;
+}): boolean {
   return e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 }

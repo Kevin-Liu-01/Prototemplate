@@ -1,17 +1,15 @@
-import type { ReactNode, RefObject } from 'react';
+import type { ReactNode } from 'react';
 
 import type { Story } from '../content';
-import { useMountEffect } from '../hooks';
 import type { Block } from '../parse';
 import { plain } from '../plain';
 import Inline from './Inline';
+import { splitTitle } from '../stories';
 
 /* The magazine's text decorations, set over each story's own layout in the
    magazine edition (Reader.tsx, magazine.css): each story's headline and
    the mark over each section head. The drop cap is a class on the first
-   paragraph (leadOf, gtm-lead); each section head slides in as the reader
-   reaches it, and the text around it fades in and out with the scroll
-   (useSlideIn). */
+   paragraph (leadOf, gtm-lead). */
 
 /** The story's first paragraph, which opens on the drop cap. */
 export function leadOf(blocks: Block[]): number {
@@ -21,57 +19,6 @@ export function leadOf(blocks: Block[]): number {
 /** A paragraph too short to run three lines beside a drop cap, which takes a two-line one (magazine.css, data-short). */
 export function isShort(block: Block | undefined): boolean {
   return block?.kind === 'para' && plain(block.inline).length < 120;
-}
-
-/** What fades: each section head, and each paragraph, list and quotation of the text. */
-const FADES = '.gtm-h2, p, ul, ol, blockquote';
-/** A paragraph inside one of these goes with it, and a note or a picture beside the text keeps still. */
-const HELD = 'blockquote, ul, ol, figure, aside, header';
-
-/**
- * Fades the text in and out with the scroll (magazine.css, [data-fade]):
- * each section head, paragraph, list and quotation comes in as it rises a
- * short way out of the window's foot (the heads sliding up as they do) and goes out once it passes under the window's
- * head, timed rather than tied to the scroll, and comes back as the reader
- * scrolls back to it. What is on the screen when the page opens stands, so
- * nothing pops in on arrival. Off when `on` is false.
- */
-export function useSlideIn(root: RefObject<HTMLElement | null>, on: boolean) {
-  useMountEffect(() => {
-    const el = root.current;
-    if (!on || !el || typeof IntersectionObserver === 'undefined') return;
-    const seen = new WeakSet<Element>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const item = entry.target as HTMLElement;
-          const first = !seen.has(item);
-          seen.add(item);
-          const box = entry.boundingClientRect;
-          if (entry.isIntersecting || (first && box.top < innerHeight && box.bottom > 0)) item.dataset.fade = 'in';
-          else item.dataset.fade = box.top > (entry.rootBounds?.top ?? 0) ? 'below' : 'above';
-        }
-      },
-      { rootMargin: '-8% 0px -10% 0px' }
-    );
-    el.querySelectorAll<HTMLElement>(FADES).forEach((item) => {
-      const holder = item.parentElement?.closest(HELD);
-      if (holder && el.contains(holder)) return;
-      observer.observe(item);
-    });
-    // a jump carries the text past the window without crossing it, so nothing reports: once the scroll stops, what
-    // lies above the window is above, and comes back down in place rather than rising from the foot
-    const settle = () => {
-      el.querySelectorAll<HTMLElement>('[data-fade="below"]').forEach((item) => {
-        if (item.getBoundingClientRect().bottom < 0) item.dataset.fade = 'above';
-      });
-    };
-    addEventListener('scrollend', settle);
-    return () => {
-      observer.disconnect();
-      removeEventListener('scrollend', settle);
-    };
-  });
 }
 
 /* Euclid's section marks, one a section in the order of its opening
@@ -88,7 +35,11 @@ const EUCLID_MARKS: readonly ReactNode[] = [
   </>,
   <>
     <g transform='translate(-6 0)'>
-      <path d='M10.5 36.4 L22.3 25.1 L37 19.2 L25 5.6' strokeDasharray='3 2.6' strokeLinecap='butt' />
+      <path
+        d='M10.5 36.4 L22.3 25.1 L37 19.2 L25 5.6'
+        strokeDasharray='3 2.6'
+        strokeLinecap='butt'
+      />
       <circle className='gtm-mark-dot' cx='22.3' cy='25.1' r='1.9' />
       <circle className='gtm-mark-dot' cx='37' cy='19.2' r='1.9' />
       <circle className='gtm-mark-dot' cx='10.5' cy='36.4' r='2.6' />
@@ -146,9 +97,9 @@ export function Mark({ slug, n = 0 }: { slug: string; n?: number }) {
    marks; Designing docs with the people it is for in its accent's italics;
    Rewriting docs with a proofreader's caret after "humans" and "and agents"
    set in red as the insertion. A title with a colon gives its first part
-   here and the rest to the line under it (subtitleOf). */
+   here and the rest to the line under it (splitTitle). */
 export function Headline({ story }: { story: Story }) {
-  const main = subtitleOf(story.title)?.[0];
+  const main = splitTitle(story.title)?.[0];
   if (main) return <>{main}</>;
   if (story.slug === 'rewriting-our-docs') {
     const m = /^(.*?)\s+(and agents)$/.exec(story.title);
@@ -180,10 +131,4 @@ export function Headline({ story }: { story: Story }) {
       );
   }
   return <Inline nodes={story.titleInline} />;
-}
-
-/** A title with a colon as its headline and the line under it: 'Fuma Nama: The philosophy…' gives both; a title without one, none. */
-export function subtitleOf(title: string): [string, string] | null {
-  const m = /^(.+?)\s*:\s*(.+)$/.exec(title);
-  return m ? [m[1]!, m[2]!] : null;
 }

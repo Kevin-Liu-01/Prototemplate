@@ -9,6 +9,7 @@
    leaf at once. */
 
 import { makePage, type PageSpec } from '../../directions/_directions/sheet';
+import { prefersReducedMotion } from '../motion';
 
 type Options = {
   pages: PageSpec[];
@@ -19,7 +20,13 @@ type Options = {
   onChange?: (state: number) => void;
 };
 
-type Leaf = { el: HTMLElement; faces: [HTMLElement, HTMLElement]; shades: [HTMLElement, HTMLElement]; turns: Animation[]; fwd: boolean };
+type Leaf = {
+  el: HTMLElement;
+  faces: [HTMLElement, HTMLElement];
+  shades: [HTMLElement, HTMLElement];
+  turns: Animation[];
+  fwd: boolean;
+};
 
 const EASE = 'cubic-bezier(0.45, 0.05, 0.2, 1)';
 // each leaf sits half a pixel over the spine, so the two pages of a spread overlap there and no hairline of the hall shows
@@ -27,7 +34,8 @@ const EASE = 'cubic-bezier(0.45, 0.05, 0.2, 1)';
 const FLAT = 'perspective(2600px) rotateY(0deg) translateX(-0.5px)';
 const OVER = 'perspective(2600px) rotateY(-180deg) translateX(-0.5px)';
 
-const mk = (cls: string) => Object.assign(document.createElement('div'), { className: cls });
+const mk = (cls: string) =>
+  Object.assign(document.createElement('div'), { className: cls });
 
 export class Flip {
   readonly el: HTMLElement;
@@ -44,7 +52,12 @@ export class Flip {
     this.el = el;
     this.o = o;
     el.classList.add('fl');
-    el.replaceChildren(Object.assign(document.createElement('i'), { className: 'fl-shadow', ariaHidden: 'true' }));
+    el.replaceChildren(
+      Object.assign(document.createElement('i'), {
+        className: 'fl-shadow',
+        ariaHidden: 'true',
+      })
+    );
     this.pages = o.pages.map((p, i) => makePage(p, i));
     el.addEventListener('click', this.onClick);
     this.build();
@@ -59,12 +72,17 @@ export class Flip {
     this.el.classList.toggle('is-spread', this.spread);
     this.leaves.forEach((leaf) => leaf.el.remove());
     const pairs: [HTMLElement, HTMLElement | null][] = [];
-    if (this.spread) for (let i = 0; i < this.pages.length; i += 2) pairs.push([this.pages[i]!, this.pages[i + 1] ?? null]);
+    if (this.spread)
+      for (let i = 0; i < this.pages.length; i += 2)
+        pairs.push([this.pages[i]!, this.pages[i + 1] ?? null]);
     else this.pages.forEach((p) => pairs.push([p, null]));
     this.leaves = pairs.map(([front, back]) => this.leaf(front, back));
     // on a spread the last leaf turns too, to close the magazine on its back cover; on a phone the back cover is the last page
     this.max = this.spread ? this.leaves.length : this.leaves.length - 1;
-    if (!first && was !== this.spread) this.state = this.spread ? Math.ceil(this.state / 2) : Math.max(0, 2 * this.state - 1);
+    if (!first && was !== this.spread)
+      this.state = this.spread
+        ? Math.ceil(this.state / 2)
+        : Math.max(0, 2 * this.state - 1);
     this.state = Math.min(Math.max(this.state, 0), this.max);
     this.leaves.forEach((leaf, i) => {
       leaf.el.style.transform = i < this.state ? OVER : FLAT;
@@ -85,7 +103,8 @@ export class Flip {
     else {
       // the back of a leaf with no page of its own: blank paper, with the grain and folds of the pages
       const blank = mk('mag-page is-blank');
-      blank.innerHTML = '<i class="mottle" aria-hidden="true"></i><i class="grain" aria-hidden="true"></i>';
+      blank.innerHTML =
+        '<i class="mottle" aria-hidden="true"></i><i class="grain" aria-hidden="true"></i>';
       const paper = front.style.getPropertyValue('--paper');
       if (paper) blank.style.setProperty('--paper', paper);
       b.append(blank);
@@ -102,13 +121,21 @@ export class Flip {
     this.leaves.forEach((leaf, i) => {
       const moving = leaf.turns.length > 0;
       // the turning leaf over everything; then the nearest turned leaf on the left and the nearest unturned on the right
-      leaf.el.style.zIndex = String(moving ? 3 * n : leaf.fwd ? n + i : 2 * n - i);
+      leaf.el.style.zIndex = String(
+        moving ? 3 * n : leaf.fwd ? n + i : 2 * n - i
+      );
       // a leaf out of reach goes at once; one that comes into reach shows at once only if it holds an open page or lies
       // beside a turning leaf, and otherwise once no turn is in flight (rest())
       const away = this.away(leaf, i);
-      if (away !== leaf.el.hidden && (away || this.needed(i))) leaf.el.hidden = away;
+      if (away !== leaf.el.hidden && (away || this.needed(i)))
+        leaf.el.hidden = away;
     });
-    this.el.dataset.open = !this.spread || this.state === 0 ? 'false' : this.state > this.max - 1 ? 'back' : 'true';
+    this.el.dataset.open =
+      !this.spread || this.state === 0
+        ? 'false'
+        : this.state > this.max - 1
+          ? 'back'
+          : 'true';
     window.clearTimeout(this.reveal);
     if (this.leaves.some((leaf) => leaf.turns.length)) return;
     // the open pages take clicks and focus as the last turn lands; Safari paints on the main thread, so a leaf drawn as
@@ -120,12 +147,20 @@ export class Flip {
 
   /** Whether a leaf has to be drawn now: it holds an open page or lies beside a turning leaf. */
   private needed(i: number) {
-    return i === this.state || (this.spread && i === this.state - 1) || !!this.leaves[i - 1]?.turns.length || !!this.leaves[i + 1]?.turns.length;
+    return (
+      i === this.state ||
+      (this.spread && i === this.state - 1) ||
+      !!this.leaves[i - 1]?.turns.length ||
+      !!this.leaves[i + 1]?.turns.length
+    );
   }
 
   /** Whether a leaf is out of reach, and so not drawn: more than a turn from the open spread, or on a phone turned off the page's left. */
   private away(leaf: Leaf, i: number) {
-    return !leaf.turns.length && (i < this.state - 2 || i > this.state + 1 || (!this.spread && leaf.fwd));
+    return (
+      !leaf.turns.length &&
+      (i < this.state - 2 || i > this.state + 1 || (!this.spread && leaf.fwd))
+    );
   }
 
   /** Lets only the open pages take focus or reach a screen reader: the right page's front, and on a spread the left page's back. */
@@ -155,16 +190,30 @@ export class Flip {
       return;
     }
     leaf.fwd = fwd;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (prefersReducedMotion()) {
       leaf.el.style.transform = fwd ? OVER : FLAT;
       return;
     }
     leaf.el.hidden = false;
-    const opts: KeyframeAnimationOptions = { duration: this.o.dur, easing: EASE, fill: 'forwards' };
-    const frames = fwd ? [{ transform: FLAT }, { transform: OVER }] : [{ transform: OVER }, { transform: FLAT }];
+    const opts: KeyframeAnimationOptions = {
+      duration: this.o.dur,
+      easing: EASE,
+      fill: 'forwards',
+    };
+    const frames = fwd
+      ? [{ transform: FLAT }, { transform: OVER }]
+      : [{ transform: OVER }, { transform: FLAT }];
     // the front darkens as it turns away from the light and the back lightens as it lands
-    const front = [{ opacity: 0 }, { opacity: 0.38, offset: 0.5 }, { opacity: 0.38 }];
-    const back = [{ opacity: 0.38 }, { opacity: 0.38, offset: 0.5 }, { opacity: 0 }];
+    const front = [
+      { opacity: 0 },
+      { opacity: 0.38, offset: 0.5 },
+      { opacity: 0.38 },
+    ];
+    const back = [
+      { opacity: 0.38 },
+      { opacity: 0.38, offset: 0.5 },
+      { opacity: 0 },
+    ];
     leaf.turns = [
       leaf.el.animate(frames, opts),
       leaf.shades[0].animate(fwd ? front : [...front].reverse(), opts),
@@ -203,16 +252,22 @@ export class Flip {
     });
   }
 
+  /** Lets go of the clicks and drops any turn in flight without landing it, so nothing writes to the host after a new
+      page turner has taken it over. */
   destroy() {
-    this.stop();
+    this.leaves.forEach((leaf) => {
+      leaf.turns.forEach((a) => a.cancel());
+    });
     window.clearTimeout(this.reveal);
     this.el.removeEventListener('click', this.onClick);
   }
 
   private onClick = (e: MouseEvent) => {
-    if ((e.target as Element).closest('a')) return;
+    if (e.target instanceof Element && e.target.closest('a')) return;
     const box = this.el.getBoundingClientRect();
-    const back = this.spread ? e.clientX < box.left : e.clientX < box.left + box.width * 0.3;
+    const back = this.spread
+      ? e.clientX < box.left
+      : e.clientX < box.left + box.width * 0.3;
     if (back) this.prev();
     else this.next();
   };

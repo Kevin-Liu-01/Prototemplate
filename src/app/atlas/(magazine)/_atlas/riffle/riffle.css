@@ -1,7 +1,7 @@
 /* GT Atlas's magazine view (riffle/MagazineView.tsx): a story's magazine
-   opened over the hall, its pages turned by riffle/flip.ts. The paper is
-   Taylor Fang's sheet.css under the press's root; the pages
-   (riffle/pages.ts) are set here in the Katagami faces. */
+   opened over the hall, its pages turned by riffle/flip.ts: the paper under
+   the press's root, and the pages (riffle/pages.ts) set in the Katagami
+   faces. */
 
 .gtp-riffle {
   --mz-ph: min(72svh, calc((100vw - 96px) / 1.52));
@@ -26,6 +26,8 @@
 @media (prefers-reduced-motion: reduce) { .gtp-riffle { animation: none; } }
 
 .gtp-riffle-stage { position: relative; display: grid; place-items: center; min-height: 0; perspective: 2400px; perspective-origin: 50% 42%; }
+/* an article that did not load: the line in place of the pages, the way to the web page under it as ever */
+.gtp-riffle-failed { margin: 0; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: 15px; color: inherit; opacity: 0.8; }
 .gtp-riffle-mag { width: var(--mz-pw); height: var(--mz-ph); }
 .gtp-riffle-foot { display: flex; justify-content: center; align-items: center; gap: 28px; padding: 0 20px 24px; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: 14px; line-height: 1.4; }
 .gtp-riffle-foot a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }

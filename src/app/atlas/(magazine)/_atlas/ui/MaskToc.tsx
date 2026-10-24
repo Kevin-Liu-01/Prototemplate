@@ -30,7 +30,10 @@ export default function MaskToc({ items, current, label }: Props) {
       return `${i ? 'L' : 'M'}1 ${top}L1 ${bottom}`;
     });
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 ${height}"><path d="${d.join('')}" stroke="black" stroke-width="2" fill="none"/></svg>`;
-    el.style.setProperty('--mask', `url("data:image/svg+xml,${encodeURIComponent(svg)}")`);
+    el.style.setProperty(
+      '--mask',
+      `url("data:image/svg+xml,${encodeURIComponent(svg)}")`
+    );
     el.style.setProperty('--mh', `${height}px`);
     const on = links[current - 1];
     el.style.setProperty('--t', `${on ? on.offsetTop : 0}px`);
@@ -57,7 +60,12 @@ export default function MaskToc({ items, current, label }: Props) {
       <ol>
         {items.map((item, i) => (
           <li key={item.id}>
-            <a className='gtp-mtoc-item' href={`#${item.id}`} data-on={current === i + 1} aria-current={current === i + 1 ? 'location' : undefined}>
+            <a
+              className='gtp-mtoc-item'
+              href={`#${item.id}`}
+              data-on={current === i + 1}
+              aria-current={current === i + 1 ? 'location' : undefined}
+            >
               {item.text}
             </a>
           </li>

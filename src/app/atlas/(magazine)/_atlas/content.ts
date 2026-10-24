@@ -5,15 +5,40 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { HOME, type LatLon } from './coords';
-import { parseBody, parseInline, splitFrontmatter, wordCount, type Block, type Figure, type Inline } from './parse';
-import { plain } from './plain';
-import { AUTHORS, HOME_SHEET, SHEETS, STORIES, type LiveKind, type Localized, type Look, type MapSheet, type Topic } from './stories';
+import { cache } from 'react';
 
-const CONTENT = process.env.PRESS_CONTENT ?? path.join(process.cwd(), 'content/production/blog/en-US');
+import { HOME, type LatLon } from './coords';
+import {
+  parseBody,
+  parseInline,
+  splitFrontmatter,
+  wordCount,
+  type Block,
+  type Figure,
+  type Inline,
+} from './parse';
+import { plain } from './plain';
+import {
+  AUTHORS,
+  HOME_SHEET,
+  SHEETS,
+  STORIES,
+  type LiveKind,
+  type Localized,
+  type Look,
+  type MapSheet,
+  type Topic,
+} from './stories';
+
+const CONTENT =
+  process.env.PRESS_CONTENT ??
+  path.join(process.cwd(), 'content/production/blog/en-US');
 const PUBLIC = process.env.PRESS_PUBLIC ?? path.join(process.cwd(), 'public');
 /** Stories still in draft, which the blog does not carry yet. */
-const DRAFTS = path.join(process.cwd(), 'src/app/atlas/(magazine)/_atlas/drafts');
+const DRAFTS = path.join(
+  process.cwd(),
+  'src/app/atlas/(magazine)/_atlas/drafts'
+);
 
 export type PlateFigure = Figure & {
   /** 1-based figure number in the story. */
@@ -36,7 +61,6 @@ export type Story = {
   date: string;
   authors: string[];
   cover: string;
-  coverLight: string | null;
   words: number;
   minutes: number;
   dateline: LatLon;
@@ -44,7 +68,10 @@ export type Story = {
   figures: PlateFigure[];
 };
 
-export type StoryCard = Omit<Story, 'blocks' | 'figures'> & { figureCount: number; sections: { id: string; text: string }[] };
+export type StoryCard = Omit<Story, 'blocks' | 'figures'> & {
+  figureCount: number;
+  sections: { id: string; text: string }[];
+};
 
 /** A picture's file in the public folder, from the path the page asks for. */
 export function publicFile(src: string): string {
@@ -70,27 +97,84 @@ function videoFor(src: string): string | undefined {
   return exists(mp4) ? mp4 : undefined;
 }
 
-function load(slug: string, n: number): Story | null {
-  const entry = STORIES.find((s) => s.slug === slug);
+/** A link to another story stays in Atlas, at its section when it names one. */
+const BLOG_POST =
+  /generaltranslation\.com\/(?:[a-z]{2}(?:-[A-Z]{2})?\/)?blog\/([a-z0-9-]+)\/?(#[^\s)]*)?/;
+
+function relink(href: string): string {
+  const m = BLOG_POST.exec(href);
+  return m && STORIES.some((s) => s.slug === m[1])
+    ? `/atlas/${m[1]}${m[2] ?? ''}`
+    : href;
+}
+
+/** Every link in a run of inline text through `to`, inside bold, italics and other links too. */
+function mapLinks(nodes: Inline[], to: (href: string) => string): Inline[] {
+  return nodes.map((node) =>
+    node.t === 'link'
+      ? { ...node, href: to(node.href), c: mapLinks(node.c, to) }
+      : node.t === 'strong' || node.t === 'em'
+        ? { ...node, c: mapLinks(node.c, to) }
+        : node
+  );
+}
+
+/** A block's links through `to`, wherever its text is: paragraphs, lists, rules, notes, captions and credits. */
+function relinkBlock(block: Block, to: (href: string) => string): Block {
+  const run = (nodes: Inline[]) => mapLinks(nodes, to);
+  switch (block.kind) {
+    case 'para':
+    case 'footnote':
+      return { ...block, inline: run(block.inline) };
+    case 'list':
+      return { ...block, items: block.items.map(run) };
+    case 'rules':
+      return {
+        ...block,
+        items: block.items.map((r) => ({ ...r, inline: run(r.inline) })),
+      };
+    case 'note':
+      return { ...block, paras: block.paras.map(run) };
+    case 'side':
+      return {
+        ...block,
+        caption: run(block.caption),
+        credit: run(block.credit),
+      };
+    case 'figure': {
+      const { caption, credit } = block.figure;
+      return {
+        ...block,
+        figure: {
+          ...block.figure,
+          ...(caption ? { caption: run(caption) } : {}),
+          ...(credit ? { credit: run(credit) } : {}),
+        },
+      };
+    }
+    default:
+      return block;
+  }
+}
+
+/** A frontmatter value as a list: a list as it is, one value as a list of one, nothing as none. */
+function listOf(value: string | string[] | undefined): string[] {
+  return Array.isArray(value) ? value : value ? [value] : [];
+}
+
+/** A story from its MDX, read and parsed once per request however many times a page asks for it. */
+const load = cache((slug: string): Story | null => {
+  const n = STORIES.findIndex((s) => s.slug === slug) + 1;
+  const entry = STORIES[n - 1];
   const published = path.join(CONTENT, `${slug}.mdx`);
-  const file = fs.existsSync(published) ? published : path.join(DRAFTS, `${slug}.mdx`);
+  const file = fs.existsSync(published)
+    ? published
+    : path.join(DRAFTS, `${slug}.mdx`);
   if (!entry || !fs.existsSync(file)) return null;
   const { data, body } = splitFrontmatter(fs.readFileSync(file, 'utf8'));
-  const blocks = parseBody(body, videoFor).map((block) => {
-    if (block.kind !== 'para') return block;
-    // links to another story in the press stay in the press
-    const relink = (nodes: typeof block.inline): typeof block.inline =>
-      nodes.map((node) => {
-        if (node.t === 'link') {
-          const m = /generaltranslation\.com\/(?:[a-z]{2}(?:-[A-Z]{2})?\/)?blog\/([a-z0-9-]+)\/?(#[^\s)]*)?/.exec(node.href);
-          const inPress = m && STORIES.some((s) => s.slug === m[1]);
-          // the story's section, when the link names one, comes along
-          return { ...node, href: inPress ? `/atlas/${m[1]}${m[2] ?? ''}` : node.href };
-        }
-        return node.t === 'strong' || node.t === 'em' ? { ...node, c: relink(node.c) } : node;
-      });
-    return { ...block, inline: relink(block.inline) };
-  });
+  const blocks = parseBody(body, videoFor).map((block) =>
+    relinkBlock(block, relink)
+  );
 
   let count = 0;
   const figures: PlateFigure[] = [];
@@ -106,10 +190,10 @@ function load(slug: string, n: number): Story | null {
     });
   }
 
-  const images = (data.images as string[] | undefined) ?? [];
+  const images = listOf(data.images);
   const cover = images[0] ?? figures[0]?.frames[0]?.src ?? '';
   const words = wordCount(blocks);
-  const authors = ((data.authors as string[] | undefined) ?? []).map((a) => AUTHORS[a] ?? a);
+  const authors = listOf(data.authors).map((a) => AUTHORS[a] ?? a);
   const titleInline = parseInline(String(data.title ?? entry.titles.en));
   return {
     slug,
@@ -123,27 +207,27 @@ function load(slug: string, n: number): Story | null {
     date: String(data.date ?? ''),
     authors,
     cover: cover.split('?')[0] ?? cover,
-    coverLight: lightTwin(cover),
     words,
     minutes: Math.max(1, Math.round(words / 230)),
     dateline: HOME,
     blocks,
     figures,
   };
-}
+});
 
 export function getStory(slug: string): Story | null {
-  const index = STORIES.findIndex((s) => s.slug === slug);
-  return index === -1 ? null : load(slug, index + 1);
+  return load(slug);
 }
 
 export function getCatalog(): StoryCard[] {
-  return STORIES.map((entry, i) => load(entry.slug, i + 1))
+  return STORIES.map((entry) => load(entry.slug))
     .filter((story): story is Story => story !== null)
     .map(({ blocks, figures, ...card }) => ({
       ...card,
       figureCount: figures.length,
-      sections: blocks.flatMap((b) => (b.kind === 'heading' ? [{ id: b.id, text: b.text }] : [])),
+      sections: blocks.flatMap((b) =>
+        b.kind === 'heading' ? [{ id: b.id, text: b.text }] : []
+      ),
     }));
 }
 
@@ -158,8 +242,9 @@ export type MagazineIssue = { sheet: MapSheet };
    home where it has none of its own. */
 export function getMagazineIssues(): Record<string, MagazineIssue> {
   const issues: Record<string, MagazineIssue> = {};
-  STORIES.forEach((entry, i) => {
-    if (load(entry.slug, i + 1)) issues[entry.slug] = { sheet: SHEETS[entry.slug] ?? HOME_SHEET };
+  STORIES.forEach((entry) => {
+    if (load(entry.slug))
+      issues[entry.slug] = { sheet: SHEETS[entry.slug] ?? HOME_SHEET };
   });
   return issues;
 }

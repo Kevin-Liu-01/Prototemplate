@@ -6,7 +6,9 @@ import type { StoryCard } from '../content';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { drawLayers } from '../gpu/emblems';
 import { useMountEffect } from '../hooks';
+import { plainClick } from '../transition';
 import { MAGAZINE_ART } from '../ui/Book';
+import { CloseIcon } from '../ui/icons';
 import type { Piece } from './article';
 import { issuePages, openerOf, openingHead } from './pages';
 import { paginate } from './paginate';
@@ -18,7 +20,7 @@ type Props = {
   /** The story's web page. */
   href: string;
   /** Opens the web page, as a click on the magazine on the rack does. */
-  onRead: (hash: string) => void;
+  onRead: () => void;
   onClose: () => void;
 };
 
@@ -26,8 +28,8 @@ type Props = {
 const WHEEL_STEP = 40;
 const WHEEL_REST = 300;
 
-/* A story's magazine opened over the hall, as Riffle (Taylor Fang's PR 1)
-   shows its issue, its pages (issuePages) turned by riffle/flip.ts. A
+/* A story's magazine opened over the hall, its pages (issuePages) turned
+   by riffle/flip.ts. A
    click on the right page turns it forward and a click on the left page
    turns it back, as do the arrows under the magazine, the arrow keys and a
    scroll. The
@@ -37,16 +39,26 @@ const WHEEL_REST = 300;
    page. The cover prints the story's design flat in its inks (coverArt),
    drawn once per story and size. */
 
-/** Each story's cover art by size, kept for the visit, so a magazine opens again at once. */
-const ARTS = new Map<string, Promise<string | null>>();
+/** Each story's cover art at the size it was last drawn, kept for the visit, so a magazine opens again at once. */
+const ARTS = new Map<string, { size: string; art: Promise<string | null> }>();
 
-function coverArt(slug: string, width: number, height: number): Promise<string | null> {
-  const key = `${slug} ${width}x${height}`;
-  let art = ARTS.get(key);
-  if (!art) {
-    art = drawCover(slug, width, height).catch(() => null);
-    ARTS.set(key, art);
-  }
+function coverArt(
+  slug: string,
+  width: number,
+  height: number
+): Promise<string | null> {
+  const size = `${width}x${height}`;
+  const kept = ARTS.get(slug);
+  if (kept?.size === size) return kept.art;
+  const art = drawCover(slug, width, height).catch(() => null);
+  ARTS.set(slug, { size, art });
+  // the art a resize replaces is let go once the new art is drawn, after the pages that showed it are rebuilt
+  if (kept)
+    void art.then(() =>
+      kept.art.then((url) => {
+        if (url) requestAnimationFrame(() => URL.revokeObjectURL(url));
+      })
+    );
   return art;
 }
 
@@ -56,9 +68,19 @@ function coverArt(slug: string, width: number, height: number): Promise<string |
  * crescent, the 1607 page) stays solid where the glow runs under it. A blob URL rather than a data URL, as
  * every strip of a turning leaf copies the cover's markup.
  */
-async function drawCover(slug: string, width: number, height: number): Promise<string | null> {
+async function drawCover(
+  slug: string,
+  width: number,
+  height: number
+): Promise<string | null> {
   const spec = COVERS[slug] ?? FALLBACK_COVER;
-  const { emblem, art } = await drawLayers(slug, width, height, height, MAGAZINE_ART);
+  const { emblem, art } = await drawLayers(
+    slug,
+    width,
+    height,
+    height,
+    MAGAZINE_ART
+  );
   const out = document.createElement('canvas');
   out.width = width;
   out.height = height;
@@ -79,27 +101,39 @@ async function drawCover(slug: string, width: number, height: number): Promise<s
   };
   print(emblem, spec.accent ?? spec.colors[1]);
   print(art, spec.art ?? spec.paper);
-  const blob = await new Promise<Blob | null>((done) => out.toBlob(done, 'image/png'));
+  const blob = await new Promise<Blob | null>((done) =>
+    out.toBlob(done, 'image/png')
+  );
   return blob ? URL.createObjectURL(blob) : null;
 }
 
 /** Each story's article, fetched once for the visit (atlas/[slug]/issue). */
 const ARTICLES = new Map<string, Promise<Piece[]>>();
 
-/** A story's article by its page's path; the rack asks for it as a corner lifts, so the magazine opens at once. */
-export function loadArticle(href: string): Promise<Piece[]> {
+/** A story's article by its page's path; it rejects when the fetch fails, and a failed fetch is not kept, so the
+    next opening asks again. */
+function loadArticle(href: string): Promise<Piece[]> {
   let article = ARTICLES.get(href);
   if (!article) {
     article = fetch(`${BASE}${href}/issue`)
-      .then((response) => (response.ok ? (response.json() as Promise<Piece[]>) : Promise.reject(new Error(String(response.status)))))
-      .catch(() => {
-        // a failed fetch is not kept, so the next opening asks again
+      .then((response) =>
+        response.ok
+          ? (response.json() as Promise<Piece[]>)
+          : Promise.reject(new Error(`${href}/issue: ${response.status}`))
+      )
+      .catch((error) => {
         ARTICLES.delete(href);
-        return [];
+        throw error;
       });
     ARTICLES.set(href, article);
   }
   return article;
+}
+
+/** Fetches a story's article ahead, as a corner lifts, so the magazine opens at once; one that fails is fetched again
+    when the magazine opens, which then shows the failure. */
+export function prefetchArticle(href: string): void {
+  loadArticle(href).catch(() => undefined);
 }
 
 /** The least width and height, in pixels, a page is set at. */
@@ -113,25 +147,42 @@ const SPREAD = 760;
  * shown one. Each comes with a sample of its letters: a face split by unicode-range loads only the files its sample
  * needs, so Euclid's Newsreader asks for its Latin Extended (ǐ, ě) and its Greek face for the Greek.
  */
-const FACES: [font: string, sample?: string][] = [
+type Face = [font: string, sample?: string];
+
+const FACES: Face[] = [
   ['400 16px "Katagami Text"'],
   ['700 16px "Katagami Text"'],
   ['italic 400 16px "Katagami Text"'],
   ['400 16px "Katagami Serif"'],
   ['700 16px "Katagami Serif"'],
   ['italic 400 16px "Katagami Serif"'],
+];
+
+/** The book look's own faces, Newsreader and its Greek, which only a story in that look loads. */
+const BOOK_FACES: Face[] = [
   ['400 16px "Atlas Text"', 'Aǐě'],
   ['700 16px "Atlas Text"', 'Aǐě'],
   ['italic 400 16px "Atlas Text"', 'Aǐě'],
   ['400 16px "Atlas Text Greek"', 'αβγ'],
 ];
 
-const loadFaces = () => Promise.all(FACES.map(([font, sample]) => document.fonts.load(font, sample))).catch(() => []);
+/** Loads the faces a story's pages are set in; a face that fails to load leaves its fallback, as on the web page. */
+const loadFaces = (look: StoryCard['look']) =>
+  Promise.all(
+    [...FACES, ...(look === 'book' ? BOOK_FACES : [])].map(([font, sample]) =>
+      document.fonts.load(font, sample)
+    )
+  ).catch(() => []);
 
-/** Fetches every story's article and the pages' faces ahead, so a magazine opens without waiting on the network. */
+/** Fetches every story's article ahead, in idle time, so a magazine opens without waiting on the network. */
 export function prepareIssues(hrefs: string[]) {
-  for (const href of hrefs) void loadArticle(href);
-  void loadFaces();
+  for (const href of hrefs) prefetchArticle(href);
+}
+
+/** Readies one magazine as its corner lifts: its article, if not fetched yet, and the faces its pages are set in. */
+export function prepareMagazine(story: StoryCard, href: string) {
+  prefetchArticle(href);
+  void loadFaces(story.look);
 }
 
 export default function MagazineView({ story, href, onRead, onClose }: Props) {
@@ -140,6 +191,8 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
   const turner = useRef<Flip | null>(null);
   /** The spread showing and the last one, for the arrows. */
   const [at, setAt] = useState({ state: 0, max: 0 });
+  /** The article could not be fetched, so there are no pages to turn. */
+  const [failed, setFailed] = useState(false);
 
   useMountEffect(() => {
     const el = host.current;
@@ -156,12 +209,23 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
     const make = async (place = 0) => {
       const mine = ++made;
       const scale = Math.min(2, devicePixelRatio || 1);
-      const [art, pieces] = await Promise.all([
-        coverArt(story.slug, Math.round(el.offsetWidth * scale), Math.round(el.offsetHeight * scale)),
-        loadArticle(href),
-        loadFaces(),
-      ]);
+      const article = loadArticle(href);
+      const loaded = await Promise.all([
+        coverArt(
+          story.slug,
+          Math.round(el.offsetWidth * scale),
+          Math.round(el.offsetHeight * scale)
+        ),
+        article,
+        loadFaces(story.look),
+      ]).catch(() => null);
       if (gone || mine !== made) return;
+      if (!loaded) {
+        setFailed(true);
+        return;
+      }
+      setFailed(false);
+      const [art, pieces] = loaded;
       size = `${el.offsetWidth}x${el.offsetHeight}`;
       // the page's exact size, fractions and all, so the measured lines break where the shown ones do; a page with no
       // room yet (a hidden window) waits for the resize that gives it some, rather than setting a word a page
@@ -171,11 +235,25 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
       // head sits over the first page's columns
       const spread = innerWidth >= SPREAD;
       const cover = pieces.find((p) => p.kind === 'cover');
-      const opener = spread && cover?.kind === 'cover' && cover.ratio ? openerOf(cover.src, cover.ratio, box.width, box.height) : null;
+      const opener =
+        spread && cover?.kind === 'cover' && cover.ratio
+          ? openerOf(cover.src, cover.ratio, box.width, box.height)
+          : null;
       const body = pieces.filter((p) => p.kind !== 'cover');
-      const article = paginate(el.closest<HTMLElement>('.gtp-riffle') ?? el, box.width, box.height, opener ? '' : openingHead(story), body);
+      const laid = paginate(
+        el.closest<HTMLElement>('.gtp-riffle') ?? el,
+        box.width,
+        box.height,
+        opener ? '' : openingHead(story),
+        body
+      );
       sheet?.destroy();
-      sheet = new Flip(el, { pages: issuePages(story, art, article, spread, opener), breakpoint: SPREAD, dur: 480, onChange: sync });
+      sheet = new Flip(el, {
+        pages: issuePages(story, art, laid, spread, opener),
+        breakpoint: SPREAD,
+        dur: 480,
+        onChange: sync,
+      });
       if (place) {
         sheet.state = Math.round(place * sheet.max);
         sheet.build();
@@ -188,10 +266,14 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
 
     const wheel = { sum: 0, last: 0 };
     const onWheel = (e: WheelEvent) => {
+      // a pinch or Ctrl and the wheel zooms the page, as everywhere else
+      if (e.ctrlKey) return;
       e.preventDefault();
-      wheel.sum += Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      wheel.sum +=
+        Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
       const now = performance.now();
-      if (now - wheel.last < WHEEL_REST || Math.abs(wheel.sum) < WHEEL_STEP) return;
+      if (now - wheel.last < WHEEL_REST || Math.abs(wheel.sum) < WHEEL_STEP)
+        return;
       if (wheel.sum > 0) sheet?.next();
       else sheet?.prev();
       wheel.sum = 0;
@@ -199,8 +281,14 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
     };
     const onKey = (e: KeyboardEvent) => {
       // Space on a button or a link presses it; the page turns only when nothing that takes Space has the focus
-      if (e.key === ' ' && e.target instanceof Element && e.target.closest('button, a, input, textarea, select')) return;
+      if (
+        e.key === ' ' &&
+        e.target instanceof Element &&
+        e.target.closest('button, a, input, textarea, select')
+      )
+        return;
       if (e.key === 'Escape') onClose();
+      else if (e.altKey || e.metaKey || e.ctrlKey) return;
       else if (e.key === 'ArrowRight' || e.key === ' ') {
         e.preventDefault();
         sheet?.next();
@@ -213,7 +301,8 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
     const onResize = () => {
       window.clearTimeout(settle);
       settle = window.setTimeout(() => {
-        if (`${el.offsetWidth}x${el.offsetHeight}` !== size) void make(sheet?.max ? sheet.state / sheet.max : 0);
+        if (`${el.offsetWidth}x${el.offsetHeight}` !== size)
+          void make(sheet?.max ? sheet.state / sheet.max : 0);
         else {
           sheet?.build();
           sync();
@@ -236,33 +325,67 @@ export default function MagazineView({ story, href, onRead, onClose }: Props) {
   });
 
   return (
-    <div className='gtp-riffle' data-look={story.look} role='dialog' aria-modal='true' aria-label={`${story.title}, as a magazine`}>
+    <div
+      className='gtp-riffle'
+      data-look={story.look}
+      role='dialog'
+      aria-modal='true'
+      aria-label={`${story.title}, as a magazine`}
+    >
       {/* first in the order the keyboard moves through, where the focus starts; the page behind is inert while it is open */}
-      <button ref={close} type='button' className='gtp-riffle-close' onClick={onClose} aria-label='Close the magazine'>
-        <svg viewBox='0 0 20 20' aria-hidden='true'>
-          <path d='M5.5 5.5l9 9M14.5 5.5l-9 9' />
-        </svg>
+      <button
+        ref={close}
+        type='button'
+        className='gtp-riffle-close'
+        onClick={onClose}
+        aria-label='Close the magazine'
+        data-testid='atlas-magazine-close'
+      >
+        <CloseIcon />
       </button>
       <div className='gtp-riffle-stage'>
         <div ref={host} className='gtp-riffle-mag' />
+        {failed ? (
+          <p className='gtp-riffle-failed' role='alert'>
+            This magazine did not load.
+          </p>
+        ) : null}
       </div>
+      <p className='gtp-sr' aria-live='polite'>
+        {at.max ? `Page ${at.state + 1} of ${at.max + 1}` : ''}
+      </p>
       <div className='gtp-riffle-foot'>
-        <button type='button' className='gtp-riffle-turn' onClick={() => turner.current?.prev()} disabled={at.state <= 0} aria-label='Previous page'>
+        <button
+          type='button'
+          className='gtp-riffle-turn'
+          onClick={() => turner.current?.prev()}
+          disabled={at.state <= 0}
+          aria-label='Previous page'
+          data-testid='atlas-magazine-prev'
+        >
           <svg viewBox='0 0 20 20' aria-hidden='true'>
             <path d='M12.5 4.5 7 10l5.5 5.5' />
           </svg>
         </button>
         <a
           href={`${BASE}${href}`}
+          data-testid='atlas-magazine-read'
           onClick={(e) => {
-            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            if (!plainClick(e)) return;
             e.preventDefault();
-            onRead('');
+            onRead();
           }}
         >
           Read the story
         </a>
-        <button type='button' className='gtp-riffle-turn' onClick={() => turner.current?.next()} disabled={at.state >= at.max} aria-label='Next page'>
+        <button
+          type='button'
+          className='gtp-riffle-turn'
+          onClick={() => turner.current?.next()}
+          disabled={at.state >= at.max}
+          aria-label='Next page'
+          data-testid='atlas-magazine-next'
+        >
           <svg viewBox='0 0 20 20' aria-hidden='true'>
             <path d='M7.5 4.5 13 10l-5.5 5.5' />
           </svg>

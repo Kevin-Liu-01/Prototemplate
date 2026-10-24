@@ -9,9 +9,10 @@
 import type { LatLon } from './coords';
 import { landAt } from './geo/land';
 import { project, turnToward, wrap180, type GlobeCamera } from './geo/ortho';
+import { prefersReducedMotion } from './motion';
+import { BAYER_4 } from './dither';
 
 const RAD = Math.PI / 180;
-const BAYER_4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 /* light from the upper left, in view space (x right, y up, z toward the reader) */
 const LIGHT = (() => {
   const v = [-0.55, 0.6, 0.58];
@@ -36,13 +37,17 @@ function hex(value: string, fallback: number[]): number[] {
 
 /** Where the camera sits to show `p` above and right of the disc's centre; `tilt` is how far above, in degrees. */
 export function cameraFor(p: LatLon, tilt = 14): GlobeCamera {
-  return { lat0: Math.max(-60, Math.min(60, p.lat - tilt)), lon0: wrap180(p.lon - 22) };
+  return {
+    lat0: Math.max(-60, Math.min(60, p.lat - tilt)),
+    lon0: wrap180(p.lon - 22),
+  };
 }
 
 const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 
 /** In and out, for a slow turn that sets off and lands gently. */
-export const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+export const easeInOut = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
 /** Degrees between the coordinate lines. */
 const GRID = 30;
@@ -74,15 +79,19 @@ export function mountGlobe(
   let ny = new Float32Array(0);
   let nz = new Float32Array(0);
 
-  const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = typeof matchMedia === 'function' && prefersReducedMotion();
 
+  // the inks are read once and again only when the theme changes, so a turning globe reads no style per frame
+  let read: Inks | null = null;
   function inks(): Inks {
+    if (read) return read;
     const style = getComputedStyle(canvas);
-    return {
+    read = {
       land: hex(style.getPropertyValue('--gtp-globe-land'), [96, 132, 255]),
       sea: hex(style.getPropertyValue('--gtp-globe-sea'), [36, 62, 160]),
       rim: hex(style.getPropertyValue('--gtp-globe-rim'), [191, 226, 241]),
     };
+    return read;
   }
 
   function resize() {
@@ -167,7 +176,12 @@ export function mountGlobe(
   /** The coordinate lines every 30 degrees on the side facing the reader, and the limb, as clean strokes over the dither. */
   function strokeLines(rim: number[]) {
     if (!ctx) return;
-    const view = { ...camera, radius: size / 2 - 0.5, cx: size / 2, cy: size / 2 };
+    const view = {
+      ...camera,
+      radius: size / 2 - 0.5,
+      cx: size / 2,
+      cy: size / 2,
+    };
     const color = `rgb(${rim[0]} ${rim[1]} ${rim[2]} /`;
     ctx.lineWidth = 1;
     if (graticule) {
@@ -216,12 +230,17 @@ export function mountGlobe(
     box?.style.setProperty('--px', `${p.x}%`);
     box?.style.setProperty('--py', `${p.y}%`);
     // any other places marked in the box (data-lat, data-lon) move with the globe too
-    box?.querySelectorAll<HTMLElement>('[data-lat][data-lon]').forEach((mark) => {
-      const q = project({ ...camera, radius: 50, cx: 50, cy: 50 }, { lat: Number(mark.dataset.lat), lon: Number(mark.dataset.lon) });
-      mark.style.left = `${q.x}%`;
-      mark.style.top = `${q.y}%`;
-      mark.dataset.hidden = q.near ? 'false' : 'true';
-    });
+    box
+      ?.querySelectorAll<HTMLElement>('[data-lat][data-lon]')
+      .forEach((mark) => {
+        const q = project(
+          { ...camera, radius: 50, cx: 50, cy: 50 },
+          { lat: Number(mark.dataset.lat), lon: Number(mark.dataset.lon) }
+        );
+        mark.style.left = `${q.x}%`;
+        mark.style.top = `${q.y}%`;
+        mark.dataset.hidden = q.near ? 'false' : 'true';
+      });
     box?.dispatchEvent(new Event('gtp-globe-placed'));
   }
 
@@ -253,8 +272,14 @@ export function mountGlobe(
     if (size !== before) draw();
   });
   if (canvas.parentElement) observer.observe(canvas.parentElement);
-  const themes = new MutationObserver(() => draw());
-  themes.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+  const themes = new MutationObserver(() => {
+    read = null;
+    draw();
+  });
+  themes.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme', 'class'],
+  });
 
   return {
     turnTo,

@@ -1,21 +1,29 @@
 /* GT Atlas. Its own type (Katagami Text, and Katagami Mono for code), its own colors
-   (Direction 01: navy plates, orange-red signal, cobalt and sky for the
+   (Direction 01: navy plates, a blue signal, cobalt and sky for the
    dithered material) and one root class, .gtp, so it travels to another
    app unchanged. Rows are split by space, not rules; the few lines left
    are the masthead's, the rail's track and the loupe's crosshair. Dark by
    default; html[data-theme='light'] turns the paper white. The stage
    stays navy in both themes. */
 
-@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-52F, U+1D00-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+/* each Katagami face in two files: its Latin subset, which nearly every page needs and the layout preloads, and the
+   whole face for every other character, which loads only when a page uses one */
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
 @font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-arabic.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+600-8FF, U+FB50-FEFF; }
 @font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-devanagari.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+900-97F, U+1CD0-1CF9, U+A8E0-A8FF; }
-@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-52F, U+1D00-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
-@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-52F, U+1D00-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
-@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-52F, U+1D00-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
-@font-face { font-family: 'Katagami Mono'; src: url('/fonts/katagami/KatagamiMono.woff2') format('woff2'); font-weight: 100 700; font-display: swap; unicode-range: U+0-52F, U+1D00-2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
-@font-face { font-family: 'Katagami CJK SC'; src: url('/fonts/katagami/KatagamiCJKSC-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: 'Katagami CJK JP'; src: url('/fonts/katagami/KatagamiCJKJP-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: 'Katagami CJK KR'; src: url('/fonts/katagami/KatagamiCJKKR-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-Italic-latin.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif-Italic-latin.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Mono'; src: url('/fonts/katagami/KatagamiMono-latin.woff2') format('woff2'); font-weight: 100 700; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Mono'; src: url('/fonts/katagami/KatagamiMono.woff2') format('woff2'); font-weight: 100 700; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+/* the CJK faces cover only CJK, kana, hangul and their punctuation, so a Latin line never loads them */
+@font-face { font-family: 'Katagami CJK SC'; src: url('/fonts/katagami/KatagamiCJKSC-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+2E80-2FDF, U+3000-33FF, U+3400-4DBF, U+4E00-9FFF, U+A960-A97F, U+AC00-D7FF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF, U+20000-2FA1F; }
+@font-face { font-family: 'Katagami CJK JP'; src: url('/fonts/katagami/KatagamiCJKJP-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+2E80-2FDF, U+3000-33FF, U+3400-4DBF, U+4E00-9FFF, U+A960-A97F, U+AC00-D7FF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF, U+20000-2FA1F; }
+@font-face { font-family: 'Katagami CJK KR'; src: url('/fonts/katagami/KatagamiCJKKR-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+2E80-2FDF, U+3000-33FF, U+3400-4DBF, U+4E00-9FFF, U+A960-A97F, U+AC00-D7FF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF, U+20000-2FA1F; }
 /* Euclid's own serif, Newsreader, for its text and its heads, with its Latin Extended for the marked letters of romanized
    Chinese (ǐ, ě), and EB Garamond for the Greek it lacks */
 @font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
@@ -33,7 +41,7 @@
   --gtp-serif: var(--gtp-sans);
   --gtp-mono: 'Katagami Mono', ui-monospace, monospace;
 
-  /* the press's one accent: blue (Kevin, 2026-10-22: black, white and blue, no red) */
+  /* the press's one accent: blue; the palette is black, white and blue, with no red */
   --gtp-signal: #6f8cff;
   --gtp-cobalt: #2a4bf0;
   --gtp-sky: #bfe2f1;
@@ -110,7 +118,6 @@
 .gtp-mono { font-family: var(--gtp-mono); font-size: 11px; letter-spacing: 0.02em; text-transform: uppercase; }
 
 /* the press's name in the signal color */
-.gtp-brand-press { color: var(--gtp-signal); }
 
 /* ---------- the rail: the monogram home, the progress lines, where the reader is ---------- */
 
@@ -413,14 +420,12 @@
 .gtp-book-fore { width: var(--bd); height: var(--bh); margin: calc(var(--bh) / -2) 0 0 calc(var(--bd) / -2); }
 .gtp-book-spine { transform: rotateY(-90deg) translateZ(calc(var(--bw) / 2)); display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 16px 0 14px; background: var(--board); color: var(--ink); box-shadow: inset 2px 0 0 rgb(255 255 255 / 0.06), inset -2px 0 0 rgb(0 0 0 / 0.25); }
 /* a thin stripe across the head of the spine */
-.gtp-book-band { flex: none; width: 100%; height: 3px; margin-bottom: 6px; background: var(--band); }
 /* the title runs down the spine on up to two balanced lines; Latin turns sideways as one run (so its quotes and
    apostrophes turn with it), while Chinese, Japanese and Korean stand upright */
 .gtp-book-spine-title { flex: 1; min-height: 0; overflow: hidden; writing-mode: vertical-rl; text-orientation: sideways; font-family: 'Katagami Serif', var(--gtp-cjk), Georgia, serif; font-size: clamp(8px, calc(var(--bd) * 0.4), 10.5px); line-height: 1.02; font-weight: 400; letter-spacing: 0; text-wrap: balance; }
 .gtp-book-spine-title:is(:lang(zh), :lang(ja), :lang(ko)) { text-orientation: mixed; }
 /* the authors under the title, as a spine carries them */
 .gtp-book-spine-by { flex: none; max-height: 40%; overflow: hidden; writing-mode: vertical-rl; text-orientation: sideways; font-size: clamp(8px, calc(var(--bd) * 0.34), 9.5px); letter-spacing: 0.02em; white-space: nowrap; text-overflow: ellipsis; opacity: 0.72; }
-.gtp-book-spine-mark { flex: none; opacity: 0.85; }
 .gtp-book[data-on='true'] .gtp-book-spine-by { opacity: 1; }
 .gtp-book-fore { transform: rotateY(90deg) translateZ(calc(var(--bw) / 2 - 2px)); background: repeating-linear-gradient(90deg, var(--gtp-pages-line) 0 1px, var(--gtp-pages) 1px 3px); box-shadow: inset 2px 0 0 var(--board), inset -2px 0 0 var(--board); }
 .gtp-book-head,
@@ -429,25 +434,7 @@
 .gtp-book-tail { transform: rotateX(-90deg) translateZ(calc(var(--bh) / 2 - 2px)); }
 .gtp-book-hinge { position: absolute; top: 0; bottom: 0; left: 6%; width: 2px; background: linear-gradient(to right, rgb(0 0 0 / 0.3), rgb(255 255 255 / 0.1)); pointer-events: none; }
 
-/* in a stack: on its back cover, spine out, head to the left */
-.gtp-book-lying {
-  transform: translate3d(0, var(--y, 0px), 0) rotateZ(-90deg) rotateY(90deg);
-  transition: transform 0.6s var(--gtp-ease);
-  cursor: pointer;
-}
-.gtp-book-lying[data-on='true'] { transform: translate3d(0, var(--y, 0px), calc(var(--bw) * 0.3)) rotateZ(-90deg) rotateY(90deg); }
 
-/* stood up and turned to show its spine and head */
-.gtp-book-standing {
-  transform: rotateY(var(--ry, 24deg)) rotateX(var(--rx, -6deg));
-  transition: transform 0.7s var(--gtp-ease);
-  animation: gtp-book-in 0.8s var(--gtp-ease) backwards;
-}
-@keyframes gtp-book-in {
-  from { transform: rotateY(84deg) rotateX(-6deg) translateZ(-60px); }
-}
-.gtp-tilt { position: relative; width: 100%; height: 100%; perspective: 1500px; }
-.gtp-tilt::after { content: ''; position: absolute; left: 50%; top: calc(50% + var(--shadow-at, 200px)); width: 52%; height: 28px; transform: translateX(-50%); background: radial-gradient(closest-side, rgb(0 0 0 / 0.45), transparent); pointer-events: none; }
 
 /* ---------- landing: one hall ---------- */
 
@@ -462,8 +449,6 @@
 .gtp-wordmark-mark { width: auto; height: 0.86em; margin-right: 0.14em; color: var(--gtp-ink); align-self: center; }
 /* Atlas, in Katagami Serif, a little shorter than the imprint */
 .gtp-wordmark-word { font-family: 'Katagami Serif', var(--gtp-sans); font-weight: 400; font-size: 0.96em; letter-spacing: -0.035em; color: var(--gtp-ink); }
-.gtp-tagline { margin: 16px 0 0; max-width: 40ch; font-family: var(--gtp-serif); font-size: 18px; line-height: 1.45; color: var(--gtp-stage-ink-2); }
-.gtp-tagline[dir='rtl'] { text-align: right; }
 
 /* the coordinates and the topics, opposite the masthead */
 .gtp-hall-coords { position: absolute; z-index: 5; right: 64px; top: 52px; display: grid; justify-items: end; gap: 4px; color: var(--gtp-stage-ink); }
@@ -564,12 +549,6 @@
 .gtp-landing[data-drag='true'] .gtp-shelf { cursor: grabbing; scroll-snap-type: none; }
 .gtp-landing[data-drag='true'] .gtp-shelf-item > * { pointer-events: none; }
 
-.gtp-shelf-label { position: absolute; left: 0; right: 0; top: calc(100% + 24px); display: grid; gap: 6px; text-align: left; color: var(--gtp-stage-ink-2); transition: opacity 0.35s var(--gtp-ease), color 0.25s var(--gtp-ease); }
-.gtp-shelf-n { color: var(--gtp-stage-ink-2); }
-.gtp-shelf-title { font-size: 17px; line-height: 1.2; font-weight: 500; letter-spacing: -0.015em; color: var(--gtp-stage-ink); }
-.gtp-shelf-title[dir='rtl'] { text-align: right; }
-.gtp-shelf-item[data-on='true'] .gtp-shelf-n { color: var(--gtp-signal); }
-.gtp-landing[data-mode='stack'] .gtp-shelf-label { opacity: 0; pointer-events: none; }
 
 .gtp-dismiss { position: absolute; top: -6px; right: 0; width: 32px; height: 32px; display: grid; place-items: center; background: var(--gtp-stage-fill); color: var(--gtp-stage-ink); font-size: 18px; line-height: 1; }
 .gtp-dismiss svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
@@ -586,7 +565,6 @@
 .gtp-landing .gtp-shelf { transition: opacity 0.3s var(--gtp-ease); }
 .gtp-instrument-globe .gtp-globe-label { display: none; }
 .gtp-instrument-globe .gtp-globe-pin::before { left: -2.5px; top: -2.5px; width: 5px; height: 5px; border-radius: 50%; background: var(--gtp-ink); box-shadow: none; }
-.gtp-instrument-body { display: grid; gap: 8px; min-width: 0; }
 .gtp-band-view { margin-left: auto; display: grid; justify-items: end; gap: 8px; color: var(--gtp-stage-ink-2); }
 .gtp-view .gtp-stop { padding: 0 12px; }
 
@@ -625,7 +603,6 @@
   .gtp-landing .gtp-rail { display: none; }
   .gtp-hall-head { left: 20px; right: 20px; top: 28px; }
   .gtp-wordmark { font-size: 40px; }
-  .gtp-tagline { font-size: 15px; }
   .gtp-hall-coords { display: none; }
   .gtp-shelf-track { --shelf-bw: 210px; --gap: 28px; --pad: max(20px, calc((100vw - var(--span) * var(--shelf-bw) - (var(--n) - 1) * var(--gap)) / 2)); }
   .gtp-hall-coords { display: none; }
@@ -667,8 +644,6 @@
   .gtp *::after { transition-duration: 0s !important; animation: none !important; }
 }
 
-.gtp-poster { width: 100%; height: 100%; }
-.gtp-poster .gtp-book-standing { --bw: min(290px, 36vh); --bh: calc(var(--bw) * 1.42); }
 
 /* the article's opening: its cover, full bleed */
 .gtp-plate-cover { padding: 0; display: block; }
@@ -683,7 +658,7 @@
    and the books keep their square edges, since they bleed or stand as objects. */
 .gtp-flag { border-radius: 2px; }
 .gtp-text code:not(:where(.gtp-inline-plate *)), .gtp-rail-tip, .gtp-globe-label, .gtp-wipe-tag, .gtp-tags a, .gtp-book-page a, .gtp-hits-mark { border-radius: 4px; }
-.gtp-stub, .gtp-loop-play, .gtp-ruler-input, .gtp-stops, .gtp-dismiss, .gtp-read, .gtp-langs-list button, .gtp-float-home, .gtp-lens,
+.gtp-stub, .gtp-loop-play, .gtp-ruler-input, .gtp-stops, .gtp-dismiss, .gtp-float-home, .gtp-lens,
 .gtp-picture img, .gtp-loop video, .gtp-text-button { border-radius: 6px; }
 .gtp-note, .gtp-wipe { border-radius: 8px; }
 .gtp-wipe { overflow: hidden; }
@@ -777,11 +752,10 @@
    the pictures on a stage across the rest, their captions under them. The
    tokens sit on the reader's root, so its theme switch and monogram home
    take the paper too. */
-/* the reader's place, a number from 0 to 1, typed so the book page can ease it between scroll steps:
-   the rail's line and its ticks glide rather than jump */
+/* the reader's place, a number from 0 to 1, typed so the book page can ease it between scroll steps: the rail's line
+   and its ticks glide rather than jump. BookBody writes it on the rail alone, so a scroll restyles the rail and its
+   ticks, never the page */
 @property --p { syntax: '<number>'; inherits: true; initial-value: 0; }
-.gtp-print { transition: --p 0.45s cubic-bezier(0.2, 0.7, 0.2, 1); }
-@media (prefers-reduced-motion: reduce) { .gtp-print { transition: none; } }
 
 :root .gtp.gtp-reader[data-look='book'] {
   /* the paper is the cover scan's own paper (#dcb987) let out toward white, so the page continues the cover */
@@ -886,26 +860,28 @@
 /* the epigraph that opens a story: the words, their translation, and who wrote them */
 .gtp-print-epigraph { margin: 0 0 64px; text-align: center; }
 /* the frontispiece's opening as three slides (BookBody, decorated, in the magazine edition): the title page, then
-   the epigraph where it stood, then the story at the top of the window. The frame is pinned while the reader scrolls
-   two stops (36% of the window each, BookBody's OPENING_STEP); 120px of scroll past a stop turns to the next slide, which comes
-   in as one timed fade and rise, so the reader never scrubs through it. What leaves goes first and quickly, and what
-   arrives waits for it, so no two slides' text ever shows at once. Scrolling back turns back. It is laid out from
-   the first paint; without scripts, below the wide width and under reduced motion, the epigraph simply heads the
-   story. */
+   the epigraph where it stood, then the story at the top of the window. The frame is pinned while the reader scrolls;
+   120px of scroll turns the title page to the epigraph, which then holds for 90% of the window (--hold, BookBody's
+   OPENING_HOLD) so an ordinary scroll lands on it, and the story follows 36% of the window (--step) further down.
+   Each slide comes in as one timed fade and rise, so the reader never scrubs through it. What leaves goes first and
+   quickly, and what arrives waits for it, so no two slides' text ever shows at once. Scrolling back turns back. It
+   is laid out from the first paint; without scripts, below the wide width and under reduced motion, the epigraph
+   simply heads the story. */
 .gtp-print-opening-next { display: none; }
 @media (min-width: 1250px) and (prefers-reduced-motion: no-preference) {
-  .gtp-print-opening[data-armed] { --step: 36dvh; height: calc(100dvh + 2 * var(--step)); }
+  .gtp-print-opening[data-armed] { --step: 36dvh; --hold: 0px; height: calc(100dvh + var(--hold) + var(--step)); }
+  .gtp-print-opening[data-armed]:has(.gtp-print-opening-next) { --hold: 90dvh; }
   .gtp-print-opening[data-armed] .gtp-print-opening-frame { position: sticky; top: 0; display: grid; height: 100dvh; }
   .gtp-print-opening[data-armed] .gtp-print-opening-frame > * { grid-area: 1 / 1; }
   .gtp-print-opening[data-armed] .gtp-head-title { transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
-  .gtp-print-opening[data-armed]:not([data-slide='0']) .gtp-head-title { opacity: 0; translate: 0 -24px; transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45); }
+  .gtp-print-opening[data-armed]:not([data-slide='0']) .gtp-head-title { opacity: 0; translate: 0 -24px; transition: opacity 0.18s cubic-bezier(0.55, 0, 1, 0.45), translate 0.2s cubic-bezier(0.55, 0, 1, 0.45); }
   .gtp-print-opening[data-armed] .gtp-print-opening-next {
     display: grid; align-content: center;
     padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2) max(40px, (100% - var(--gtp-print-measure)) / 2);
     opacity: 0; translate: 0 24px; pointer-events: none;
-    transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45);
+    transition: opacity 0.18s cubic-bezier(0.55, 0, 1, 0.45), translate 0.2s cubic-bezier(0.55, 0, 1, 0.45);
   }
-  .gtp-print-opening[data-armed][data-slide='1'] .gtp-print-opening-next { opacity: 1; translate: 0 0; transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
+  .gtp-print-opening[data-armed][data-slide='1'] .gtp-print-opening-next { opacity: 1; translate: 0 0; transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.18s, translate 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.18s; }
   .gtp-print-opening[data-armed][data-slide='2'] .gtp-print-opening-next { opacity: 0; translate: 0 -24px; }
   .gtp-print-opening-next .gtp-print-epigraph { margin: 0; }
   /* the story starts a window up, over the pinned frame, and fades in at the top of the window on the last stop */
@@ -914,7 +890,7 @@
     opacity: 0; translate: 0 24px; pointer-events: none;
     transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45);
   }
-  .gtp-print-opening[data-armed][data-slide='2'] ~ .gtp-print-page { opacity: 1; translate: 0 0; pointer-events: auto; transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
+  .gtp-print-opening[data-armed][data-slide='2'] ~ .gtp-print-page { opacity: 1; translate: 0 0; pointer-events: auto; transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.18s, translate 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.18s; }
   .gtp-print-opening[data-armed] ~ .gtp-print-page .gtp-print-epigraph { display: none; }
 }
 /* without scripts nothing turns the slides, so the opening lies flat and the story shows */
@@ -1017,10 +993,11 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
 .gtp-stops[data-style='book'] .gtp-stops-thumb { display: none; }
 
 /* the reader's place, on a rail down the left with a tick per section */
-.gtp-print-rail { position: fixed; z-index: 5; left: 32px; top: 22vh; bottom: 22vh; width: 25px; background: linear-gradient(var(--gtp-rule) 0 0) 12px 0 / 1px 100% no-repeat; opacity: 0; visibility: hidden; transition: opacity 0.4s var(--gtp-ease), visibility 0.4s; }
+.gtp-print-rail { position: fixed; z-index: 5; left: 32px; top: 22vh; bottom: 22vh; width: 25px; background: linear-gradient(var(--gtp-rule) 0 0) 12px 0 / 1px 100% no-repeat; opacity: 0; visibility: hidden; transition: --p 0.45s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.4s var(--gtp-ease), visibility 0.4s; }
+@media (prefers-reduced-motion: reduce) { .gtp-print-rail { transition: opacity 0.4s var(--gtp-ease), visibility 0.4s; } }
 /* the rail shows once the cover heading a narrow page has mostly scrolled away, so it never runs over the picture (BookReader) */
 .gtp-print[data-read='true'] .gtp-print-rail { opacity: 1; visibility: visible; }
-.gtp-print-rail::after { content: ''; position: absolute; left: 12px; top: 0; width: 1px; height: calc(var(--p, 0) * 100%); background: var(--gtp-ink); pointer-events: none; }
+.gtp-print-rail::after { content: ''; position: absolute; left: 12px; top: 0; width: 1px; height: 100%; transform-origin: top; transform: scaleY(var(--p, 0)); background: var(--gtp-ink); pointer-events: none; }
 /* the line itself moves the reader to that share of the story */
 .gtp-print-track { position: absolute; inset: 0; padding: 0; border: 0; background: none; cursor: pointer; }
 /* each tick is a section's start, the same length either side of the line. As the line reaches it the ink flows
@@ -1146,7 +1123,6 @@ button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
 .gtp-locator-readout { position: absolute; left: calc(100% + var(--reach) + 14px); top: var(--py, 40%); transform: translateY(-0.72em); display: grid; gap: 3px; white-space: nowrap; }
 .gtp-locator-locale { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; line-height: 1.4; color: var(--gtp-stage-ink-2); }
 .gtp-locator-city { font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; }
-.gtp-locator-note { font-size: 15px; color: var(--gtp-stage-ink-2); }
 .gtp-locator-coords { display: grid; gap: 1px; margin-top: 10px; font-size: 15px; line-height: 1.45; font-variant-numeric: tabular-nums; color: var(--gtp-stage-ink); }
 
 .gtp-hall-head { pointer-events: auto; }

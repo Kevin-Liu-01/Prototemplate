@@ -4,5 +4,15 @@
 import type { Inline } from './parse';
 
 export function plain(inline: Inline[]): string {
-  return inline.map((node) => (node.t === 'text' || node.t === 'code' ? node.v : node.t === 'fn' ? '' : node.t === 'br' ? ' ' : plain(node.c))).join('');
+  return inline
+    .map((node) =>
+      node.t === 'text' || node.t === 'code'
+        ? node.v
+        : node.t === 'fn'
+          ? ''
+          : node.t === 'br'
+            ? ' '
+            : plain(node.c)
+    )
+    .join('');
 }

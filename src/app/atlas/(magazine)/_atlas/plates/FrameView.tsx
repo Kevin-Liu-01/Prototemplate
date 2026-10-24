@@ -4,7 +4,9 @@ import { getImageProps } from 'next/image';
 import { useRef, useState } from 'react';
 
 import type { Frame } from '../parse';
-import { useLayoutWork, useMountEffect } from '../hooks';
+import { useLayoutWork } from '../hooks';
+import { prefersReducedMotion } from '../motion';
+import { useImageLoaded } from '../ui/useImageLoaded';
 
 /* One recorded frame on a plate. A picture comes from the image optimizer
    at the width the stage needs (the masters are 3840px wide) and fades in
@@ -12,7 +14,15 @@ import { useLayoutWork, useMountEffect } from '../hooks';
    and a square lens shows the spot at up to three times, from the master,
    which loads only on the first hover. A loop plays muted with a ruler to scrub it; it plays only
    while its plate is the one shown. */
-export default function FrameView({ frame, active, eager }: { frame: Frame; active: boolean; eager?: boolean }) {
+export default function FrameView({
+  frame,
+  active,
+  eager,
+}: {
+  frame: Frame;
+  active: boolean;
+  eager?: boolean;
+}) {
   return frame.video ? (
     <Loop src={frame.video} label={frame.alt} active={active} />
   ) : (
@@ -24,17 +34,17 @@ export default function FrameView({ frame, active, eager }: { frame: Frame; acti
 const PLATE_SIZES = '(min-width: 1000px) 48vw, 100vw';
 
 function Picture({ frame, eager }: { frame: Frame; eager?: boolean }) {
-  const img = useRef<HTMLImageElement>(null);
+  const { img, loaded, onLoad, onError } = useImageLoaded();
   const lens = useRef<HTMLSpanElement>(null);
   const [loupe, setLoupe] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const [zoomed, setZoomed] = useState(false);
-  const { props: sized } = getImageProps({ src: frame.src, alt: frame.alt, fill: true, sizes: PLATE_SIZES, quality: 95 });
-  // a picture already in the cache can finish before the page hydrates, and its load event is then missed
-  useMountEffect(() => {
-    if (img.current?.complete) setLoaded(true);
+  const { props: sized } = getImageProps({
+    src: frame.src,
+    alt: frame.alt,
+    fill: true,
+    sizes: PLATE_SIZES,
+    quality: 95,
   });
-
   const move = (clientX: number, clientY: number) => {
     const el = img.current;
     const l = lens.current;
@@ -76,18 +86,37 @@ function Picture({ frame, eager }: { frame: Frame; eager?: boolean }) {
         decoding='async'
         draggable={false}
         data-loaded={loaded}
-        onLoad={() => setLoaded(true)}
+        onLoad={onLoad}
+        onError={onError}
       />
-      <span ref={lens} className='gtp-lens' aria-hidden='true' style={zoomed ? { backgroundImage: `url("${frame.src}")` } : undefined} />
+      <span
+        ref={lens}
+        className='gtp-lens'
+        aria-hidden='true'
+        style={zoomed ? { backgroundImage: `url("${frame.src}")` } : undefined}
+      />
     </span>
   );
 }
 
-function Loop({ src, label, active }: { src: string; label: string; active: boolean }) {
+function Loop({
+  src,
+  label,
+  active,
+}: {
+  src: string;
+  label: string;
+  active: boolean;
+}) {
   const video = useRef<HTMLVideoElement>(null);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [paused, setPaused] = useState(false);
+
+  // under reduced motion a recording waits for the reader to play it
+  useLayoutWork(() => {
+    if (prefersReducedMotion()) setPaused(true);
+  });
 
   useLayoutWork(
     () => {
@@ -125,7 +154,10 @@ function Loop({ src, label, active }: { src: string; label: string; active: bool
             </svg>
           ) : (
             <svg viewBox='0 0 12 12' aria-hidden='true'>
-              <path d='M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z' fill='currentColor' />
+              <path
+                d='M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z'
+                fill='currentColor'
+              />
             </svg>
           )}
         </button>

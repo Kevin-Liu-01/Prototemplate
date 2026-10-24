@@ -71,7 +71,7 @@ const nextConfig: NextConfig = {
     // variant near its device-pixel width.
     deviceSizes: [640, 680, 720, 750, 828, 900, 960, 1080, 1200, 1360, 1440, 1620, 1920, 2048, 2160, 3840],
     // 95 keeps the dither and text edges through the re-encode
-    qualities: [75, 95],
+    qualities: [75, 85, 95],
     // blog assets carry a ?v= cache stamp; everything else stays query-free
     localPatterns: [{ pathname: '/**', search: '' }, { pathname: '/static/blogs/**' }],
   },

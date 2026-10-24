@@ -17,12 +17,31 @@ const COUNTRY: Record<LangCode, string> = {
 };
 
 /** A language's flag, or with `country` a place's own (en-GB flies the British flag). */
-export default function Flag({ code, country, size = 18 }: { code?: LangCode; country?: string; size?: number }) {
+export default function Flag({
+  code,
+  country,
+  size = 18,
+}: {
+  code?: LangCode;
+  country?: string;
+  size?: number;
+}) {
   const file = country ?? (code ? COUNTRY[code] : 'us');
   return (
-    <span className='gtp-flag' style={{ width: size, height: Math.round(size * 0.75) }} aria-hidden='true'>
+    <span
+      className='gtp-flag'
+      style={{ width: size, height: Math.round(size * 0.75) }}
+      aria-hidden='true'
+    >
       {/* eslint-disable-next-line @next/next/no-img-element -- a 1 KB SVG, drawn at its own size */}
-      <img src={`/atlas/flags/${file}.svg`} alt='' width={size} height={Math.round(size * 0.75)} />
+      <img
+        src={`/atlas/flags/${file}.svg`}
+        alt=''
+        width={size}
+        height={Math.round(size * 0.75)}
+        // lazy, so React does not preload every flag in the page's head
+        loading='lazy'
+      />
     </span>
   );
 }

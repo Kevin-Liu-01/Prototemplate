@@ -1,9 +1,8 @@
 /* GT Atlas's front page as a rack of magazines (Landing.tsx with
    edition='magazine', Book.tsx with format='magazine'): each story a thin
-   magazine in the form of Taylor Fang's Riffle, printed on the story's own
-   stock. */
+   magazine printed on the story's own stock. */
 
-/* ---------- the rack: each story a thin magazine in Riffle's form, on its own stock ---------- */
+/* ---------- the rack: each story a thin magazine on its own stock ---------- */
 
 
 /* a magazine's page, Riffle's proportions */
@@ -83,12 +82,14 @@
 /* Under the pointer a magazine's bottom right corner peels back (Landing.tsx sets the slot's data-peel from its
    corner button): the front is cut along a 45 degree fold --peel from the corner, the flap shows the back of the
    cover, and the inside page (Book.tsx, InsidePage) shows through. Quick and short, and none under reduced motion. */
-@property --peel { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --peel { syntax: '<length>'; inherits: false; initial-value: 0px; }
 /* at rest every corner is already turned up a little, clear of the credit line, so the reader sees there is a page to
    lift; the pointer on the corner lifts it; lying in a stack it lies flat */
-.gtp-mag .gtp-book-front { --peel: calc(var(--bw) * 0.05); transition: --peel 0.18s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.gtp-shelf-item[data-peel='true'] .gtp-mag .gtp-book-front { --peel: calc(var(--bw) * 0.38); transition-duration: 0.24s; }
-.gtp-landing[data-mode='stack'] .gtp-mag .gtp-book-front { --peel: 0px; }
+/* --peel is set on the two parts that read it, the page and the curl, and does not inherit, so a lift restyles those
+   two alone and never the cover under them */
+.gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: calc(var(--bw) * 0.05); transition: --peel 0.18s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.gtp-shelf-item[data-peel='true'] .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: calc(var(--bw) * 0.38); transition-duration: 0.24s; }
+.gtp-landing[data-mode='stack'] .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: 0px; transition: none; }
 /* the cut runs past the page by 12px each way, so the stepped edge stays whole while the corner is down */
 .gtp-mag-page { z-index: 1; clip-path: polygon(-12px -12px, calc(100% + 12px) -12px, calc(100% + 12px) calc(100% - var(--peel) - 12px), calc(100% - var(--peel) - 12px) calc(100% + 12px), -12px calc(100% + 12px)); }
 /* the curl: the cut corner turned back over the page (Book.tsx, PageCurl), drawn in the square the fold cuts off; its
@@ -142,8 +143,10 @@
 /* the corner's hit area: a triangle at the slot's bottom right, so the rest of the magazine still opens the story */
 .gtp-shelf-corner { position: absolute; z-index: 2; right: 0; bottom: 0; width: calc(var(--slot-w) * 0.36); height: calc(var(--slot-w) * 0.36); padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
 .gtp-shelf-corner:focus-visible { outline: none; }
+/* where forced colors flatten the lifting corner, the focused corner keeps a ring */
+@media (forced-colors: active) { .gtp-shelf-corner:focus-visible { clip-path: none; outline: 2px solid Highlight; outline-offset: -2px; } }
 .gtp-landing[data-mode='stack'] .gtp-shelf-corner { display: none; }
-@media (prefers-reduced-motion: reduce) { .gtp-mag .gtp-book-front { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { transition: none; } }
 
 /* ---------- the hall as a layout sheet (ui/HallGuides.tsx) ---------- */
 

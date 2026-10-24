@@ -9,6 +9,7 @@ import type { ArtBox } from '../gpu/emblems';
 import { mountFluid, type FluidHandle } from '../gpu/fluid';
 import { useLayoutWork, useMountEffect } from '../hooks';
 import { bookTitle } from '../titles';
+import { prefersReducedMotion } from '../motion';
 
 type Props = {
   slug: string;
@@ -19,7 +20,6 @@ type Props = {
   picture: string;
   /** Runs the fluid; a still otherwise. It also stops off screen and under reduced motion. */
   playing: boolean;
-  className?: string;
   /** Where the design draws on this cover, as fractions; a book's place when not given. */
   artAt?: ArtBox;
   /** A capture of this cover as WebGPU draws it at rest, shown from the first paint until the canvas has drawn its art, and kept in place of the fallback. */
@@ -30,7 +30,16 @@ type Props = {
    printed through it, and a pointer stirs it while it plays. Without
    WebGPU it falls back to the story's picture in the dithered material
    with the same type over it, or to its poster when it has one. */
-export default function Cover({ slug, title, lang, dir, picture, playing, className, artAt, poster }: Props) {
+export default function Cover({
+  slug,
+  title,
+  lang,
+  dir,
+  picture,
+  playing,
+  artAt,
+  poster,
+}: Props) {
   const gpuCanvas = useRef<HTMLCanvasElement>(null);
   const cpuCanvas = useRef<HTMLCanvasElement>(null);
   const handle = useRef<FluidHandle | null>(null);
@@ -55,7 +64,17 @@ export default function Cover({ slug, title, lang, dir, picture, playing, classN
     if (!canvas) return;
     const width = mode === 'cpu' ? canvas.width : canvas.width || 640;
     const height = mode === 'cpu' ? canvas.height : canvas.height || 360;
-    const { mask, plain } = await drawCoverText(width, height, { slug, title: bookTitle(title, lang), lang, dir, paper: spec.paper, art: spec.art, accent: spec.accent, face: spec.face, artAt });
+    const { mask, plain } = await drawCoverText(width, height, {
+      slug,
+      title: bookTitle(title, lang),
+      lang,
+      dir,
+      paper: spec.paper,
+      art: spec.art,
+      accent: spec.accent,
+      face: spec.face,
+      artAt,
+    });
     if (mode === 'gpu' && handle.current) {
       handle.current.setText(mask);
       setDrawn(true);
@@ -67,23 +86,32 @@ export default function Cover({ slug, title, lang, dir, picture, playing, classN
   };
 
   useMountEffect(() => {
-    reduce.current = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    reduce.current = prefersReducedMotion();
     let dead = false;
     const canvas = gpuCanvas.current;
     if (!canvas) return;
-    void mountFluid(canvas, spec).then((h) => {
-      if (dead) {
-        h?.destroy();
-        return;
-      }
-      if (!h) {
-        setMode('cpu');
-        return;
-      }
-      handle.current = h;
-      setMode('gpu');
-      sync();
-    });
+    // without WebGPU, or once it fails or its device is lost, the cover falls back to its poster or the dithered picture
+    const fallBack = () => {
+      if (dead) return;
+      handle.current = null;
+      setDrawn(false);
+      setMode('cpu');
+    };
+    mountFluid(canvas, spec, fallBack)
+      .then((h) => {
+        if (dead) {
+          h?.destroy();
+          return;
+        }
+        if (!h) {
+          fallBack();
+          return;
+        }
+        handle.current = h;
+        setMode('gpu');
+        sync();
+      })
+      .catch(fallBack);
     const observer = new IntersectionObserver(([entry]) => {
       visible.current = entry?.isIntersecting ?? true;
       sync();
@@ -111,14 +139,26 @@ export default function Cover({ slug, title, lang, dir, picture, playing, classN
         return ditherCover(canvas, picture, () => void typeset());
       }
     },
-    { dependencies: [mode, title, lang], revertOnUpdate: true }
+    // a cover with no title prints no type, so a change of language leaves it as it is
+    { dependencies: [mode, title, title ? lang : ''], revertOnUpdate: true }
   );
 
   return (
-    <span className={['gtp-cover', className].filter(Boolean).join(' ')} data-mode={mode} data-drawn={drawn}>
-      {poster ? <img className='gtp-cover-poster' src={poster} alt='' aria-hidden='true' decoding='sync' fetchPriority='high' /> : null}
+    <span className='gtp-cover' data-mode={mode} data-drawn={drawn}>
+      {poster ? (
+        <img
+          className='gtp-cover-poster'
+          src={poster}
+          alt=''
+          aria-hidden='true'
+          decoding='sync'
+          fetchPriority='high'
+        />
+      ) : null}
       <canvas ref={gpuCanvas} className='gtp-cover-gpu' aria-hidden='true' />
-      {mode === 'cpu' && !poster ? <canvas ref={cpuCanvas} className='gtp-cover-cpu' aria-hidden='true' /> : null}
+      {mode === 'cpu' && !poster ? (
+        <canvas ref={cpuCanvas} className='gtp-cover-cpu' aria-hidden='true' />
+      ) : null}
     </span>
   );
 }

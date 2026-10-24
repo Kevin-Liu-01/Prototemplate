@@ -2,10 +2,8 @@
    printed book for Euclid, the docs reader, Fumadocs' own look) and takes
    the magazine's text decorations over them (ui/Decor.tsx): a drop cap in
    the story's accent, the story's mark over each section head, its headline in its own hand, a deck and a byline.
-   Only the magazine edition (data-edition='magazine') is touched; the shelf
-   reads as it did. As a New York Times story reads: the stage is the same
-   paper as the text, so the figures sit in the page; the text has room; a
-   short scroll past each section brings it in as one timed slide. Euclid's
+   Only the magazine edition (data-edition='magazine') is touched. The stage
+   is the same paper as the text, so the figures sit in the page. Euclid's
    heads set in Katagami Serif, the reading face repeated. */
 
 .gtp {
@@ -92,7 +90,7 @@
   .gtp-reader[data-edition='magazine'] :is(.gtp-plate.gtp-plate-cover, .gtp-print-stage-cover, .gtp-plate-cover > .gtp-cover, .gtp-print-stage-cover img) { transition: none; }
 }
 
-/* the stage's own pictures larger, as a New York Times story sets them */
+/* the stage's own pictures larger */
 .gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover) { padding: 28px 40px 28px 32px; }
 @media (min-width: 1250px) {
   /* Euclid's book: the text column a little narrower and set against the stage, so the two read as one spread */
@@ -114,7 +112,7 @@
 /* ---------- room in the text, and the text close to its stage ---------- */
 
 @media (min-width: 1000px) {
-  /* the column sits against the stage's edge, as a New York Times story sets its text by its graphic */
+  /* the column sits against the stage's edge */
   .gtp-reader[data-edition='magazine'] .gtp-text { padding: 140px 44px 240px clamp(40px, 5vw, 96px); }
   .gtp-reader[data-edition='magazine'] .gtp-text > * { margin-right: 0; }
   .gtp-reader[data-edition='magazine'] .gtp-title { margin-bottom: 140px; }
@@ -201,19 +199,6 @@
 
 .gtp-reader[data-edition='magazine'][data-look='book'] .gtp-head-spread h1 { font-family: var(--gtm-head); font-size: clamp(34px, 3vw, 46px); line-height: 1.1; font-weight: 500; letter-spacing: -0.02em; }
 .gtp-reader[data-edition='magazine'][data-look='book'] .gtp-print-page h2.gtm-h2 { margin: 120px 0 30px; font-family: var(--gtm-head); font-size: clamp(36px, 3vw, 46px); line-height: 1.08; font-weight: 500; letter-spacing: -0.022em; }
-
-/* ---------- the text fades in and out with the scroll ---------- */
-
-/* each paragraph, list and quotation waits clear and a little low under the window's foot until the reader brings it a
-   short way in, then fades in as it rises 12px; a section's head rises 28px. Past the window's
-   head each fades out where it stands, and comes back when the reader scrolls back (ui/Decor.tsx, useSlideIn).
-   Timed rather than tied to the scroll; under reduced motion everything stands */
-@media (prefers-reduced-motion: no-preference) {
-  .gtp-reader[data-edition='magazine'] [data-fade] { transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), translate 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
-  .gtp-reader[data-edition='magazine'] [data-fade='below'] { opacity: 0; translate: 0 12px; }
-  .gtp-reader[data-edition='magazine'] [data-fade='above'] { opacity: 0; }
-}
-
 
 /* the next story's title at the foot, alone with its arrow */
 .gtp-reader[data-edition='magazine'] .gtp-end a svg { margin-left: 0.3em; vertical-align: -0.06em; color: var(--gtm-accent); }

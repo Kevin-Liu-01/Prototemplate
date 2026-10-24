@@ -18,6 +18,7 @@
    place by its shape, so nothing waits for it to load. */
 
 import type { Piece } from './article';
+import { escapeHtml } from './html';
 
 /** The fewest words a column ends a paragraph on (about two lines) before it carries the whole paragraph on. */
 const MIN_WORDS = 10;
@@ -38,18 +39,24 @@ const BACKLOG = 3;
 export type Place = 'inset' | 'top' | 'column' | 'bleed' | 'gallery';
 
 /** A page as it is set: text in columns, or pictures on a page of their own; a gallery page's pictures stand at its head or its foot. */
-export type Laid = { kind: 'text'; html: string } | { kind: 'plate'; place: 'bleed' | 'gallery'; html: string; at?: 'head' | 'foot' };
+export type Laid =
+  /** `headed`: the page opens on the story's head, so it runs no head over it. */
+  | { kind: 'text'; html: string; headed: boolean }
+  | {
+      kind: 'plate';
+      place: 'bleed' | 'gallery';
+      html: string;
+      at?: 'head' | 'foot';
+    };
 
 /** A piece part way through: a paragraph run on from the column before, a numbered list counting on; a picture with its place. */
 type Part = Piece & { cont?: boolean; start?: number; place?: Place };
 
 type Fig = Extract<Part, { kind: 'fig' }>;
 
-/** The optimizer's copy of a picture wide enough for a page or a band, where an inset asks for one a column wide. */
-const wide = (src: string) => src.replace(/([?&]w=)\d+/, '$11200');
-
-function figure(piece: Extract<Part, { kind: 'fig' }>, big: boolean, cls = ''): string {
-  const src = big ? wide(piece.src) : piece.src;
+/** A picture as the page prints it: the page-wide copy for a page or a band, the column-wide one for an inset. */
+function figure(piece: Fig, big: boolean, cls = ''): string {
+  const src = escapeHtml(big ? piece.wide : piece.src);
   const credit = piece.credit ? `<span class="cr">${piece.credit}</span>` : '';
   return `<figure${cls ? ` class="${cls}"` : ''}><img src="${src}" alt="${piece.alt}" style="aspect-ratio:${piece.ratio ?? '4 / 3'}" loading="lazy" decoding="async"><figcaption><span>${piece.caption}</span>${credit}</figcaption></figure>`;
 }
@@ -58,7 +65,12 @@ function markup(piece: Part): string {
   switch (piece.kind) {
     case 'p': {
       // a paragraph run on keeps its part (a source stays small) but not the lead's drop cap
-      const cls = [piece.cont && piece.cls === 'lead' ? '' : piece.cls, piece.cont ? 'cont' : ''].filter(Boolean).join(' ');
+      const cls = [
+        piece.cont && piece.cls === 'lead' ? '' : piece.cls,
+        piece.cont ? 'cont' : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
       return `<p${cls ? ` class="${cls}"` : ''}>${piece.words.join(' ')}</p>`;
     }
     case 'h':
@@ -69,8 +81,11 @@ function markup(piece: Part): string {
       return '';
     case 'list': {
       const tag = piece.ordered ? 'ol' : 'ul';
-      const start = piece.ordered && piece.start ? ` start="${piece.start}"` : '';
-      const lang = piece.lang ? ` class="defs" lang="${piece.lang}" dir="${piece.dir ?? 'ltr'}"` : '';
+      const start =
+        piece.ordered && piece.start ? ` start="${piece.start}"` : '';
+      const lang = piece.lang
+        ? ` class="defs" lang="${piece.lang}" dir="${piece.dir ?? 'ltr'}"`
+        : '';
       return `<${tag}${start}${lang}>${piece.items.map((item) => `<li>${item}</li>`).join('')}</${tag}>`;
     }
   }
@@ -87,14 +102,20 @@ const crop = (r: number, frame: number) => 1 - Math.min(r / frame, frame / r);
  * column, a gallery page or an inset in turn. On a phone's one-column page
  * a column picture sets as an inset.
  */
-function placed(pieces: Piece[], width: number, height: number, narrow: boolean): Part[] {
+function placed(
+  pieces: Piece[],
+  width: number,
+  height: number,
+  narrow: boolean
+): Part[] {
   const frame = width / (height * BLEED);
   const turn = { bleed: 0, wide: 0, tall: 0 };
   return pieces.map((piece): Part => {
     if (piece.kind !== 'fig') return piece;
     const r = piece.ratio ?? 4 / 3;
     let place: Place;
-    if (crop(r, frame) <= MAX_CROP) place = turn.bleed++ % 2 ? 'column' : 'bleed';
+    if (crop(r, frame) <= MAX_CROP)
+      place = turn.bleed++ % 2 ? 'column' : 'bleed';
     else if (r >= 1.25) place = turn.wide++ % 3 === 1 ? 'gallery' : 'top';
     else place = (['column', 'gallery', 'inset'] as const)[turn.tall++ % 3]!;
     if (narrow && place === 'column') place = 'inset';
@@ -106,19 +127,33 @@ function placed(pieces: Piece[], width: number, height: number, narrow: boolean)
 function cut(piece: Part, k: number): [Part, Part | null] {
   if (piece.kind === 'p') {
     const rest = piece.words.slice(k);
-    return [{ ...piece, words: piece.words.slice(0, k) }, rest.length ? { ...piece, words: rest, cont: true } : null];
+    return [
+      { ...piece, words: piece.words.slice(0, k) },
+      rest.length ? { ...piece, words: rest, cont: true } : null,
+    ];
   }
   if (piece.kind === 'list') {
     const rest = piece.items.slice(k);
-    return [{ ...piece, items: piece.items.slice(0, k) }, rest.length ? { ...piece, items: rest, start: (piece.start ?? 1) + k } : null];
+    return [
+      { ...piece, items: piece.items.slice(0, k) },
+      rest.length
+        ? { ...piece, items: rest, start: (piece.start ?? 1) + k }
+        : null,
+    ];
   }
   return [piece, null];
 }
 
-const units = (piece: Part) => (piece.kind === 'p' ? piece.words.length : piece.kind === 'list' ? piece.items.length : 0);
+const units = (piece: Part) =>
+  piece.kind === 'p'
+    ? piece.words.length
+    : piece.kind === 'list'
+      ? piece.items.length
+      : 0;
 
 /** Whether a picture leaves the text for a page of its own, a band or a column. */
-const leaves = (piece: Part) => piece.kind === 'fig' && piece.place !== undefined && piece.place !== 'inset';
+const leaves = (piece: Part) =>
+  piece.kind === 'fig' && piece.place !== undefined && piece.place !== 'inset';
 
 function element(html: string): HTMLElement {
   const holder = document.createElement('div');
@@ -133,7 +168,12 @@ function element(html: string): HTMLElement {
  * is what counts; a head followed by nothing but pictures stays only if the
  * first of them fits whole.
  */
-function keepsHead(col: HTMLElement, head: HTMLElement, after: Part[], over: () => boolean): boolean {
+function keepsHead(
+  col: HTMLElement,
+  head: HTMLElement,
+  after: Part[],
+  over: () => boolean
+): boolean {
   const text = after.find((part) => part.kind !== 'fig');
   if (!text || text.kind === 'h') {
     const first = after.find((part) => !leaves(part));
@@ -145,7 +185,11 @@ function keepsHead(col: HTMLElement, head: HTMLElement, after: Part[], over: () 
     return fits;
   }
   const line = parseFloat(getComputedStyle(col).lineHeight) || 16;
-  return col.clientHeight - (head.getBoundingClientRect().bottom - col.getBoundingClientRect().top) >= KEEP_LINES * line;
+  return (
+    col.clientHeight -
+      (head.getBoundingClientRect().bottom - col.getBoundingClientRect().top) >=
+    KEEP_LINES * line
+  );
 }
 
 /** The most words or items of a piece that fit where `el` stands, found by halves; `el` is put back as it was. */
@@ -169,7 +213,10 @@ function fill(col: HTMLElement, queue: Part[], away: Part[]) {
   const over = () => {
     const last = col.lastElementChild;
     if (!last) return false;
-    const foot = last.getBoundingClientRect().bottom + parseFloat(getComputedStyle(last).marginBottom) - col.getBoundingClientRect().top;
+    const foot =
+      last.getBoundingClientRect().bottom +
+      parseFloat(getComputedStyle(last).marginBottom) -
+      col.getBoundingClientRect().top;
     return foot > col.clientHeight - SLACK;
   };
   // inset pictures that do not fit wait, in their order, to open the next column, while the text after them fills this one
@@ -191,7 +238,11 @@ function fill(col: HTMLElement, queue: Part[], away: Part[]) {
     const el = element(markup(piece));
     col.append(el);
     if (!over()) {
-      if (piece.kind === 'h' && col.children.length > 1 && !keepsHead(col, el, queue.slice(1), over)) {
+      if (
+        piece.kind === 'h' &&
+        col.children.length > 1 &&
+        !keepsHead(col, el, queue.slice(1), over)
+      ) {
         el.remove();
         return done();
       }
@@ -203,7 +254,12 @@ function fill(col: HTMLElement, queue: Part[], away: Part[]) {
     if (n) {
       const lo = most(el, piece, over);
       // a paragraph leaves a few words at least to open the next column, and a list never its last item alone
-      const k = piece.kind === 'p' && n - lo > 0 && n - lo < MIN_REST ? n - MIN_REST : piece.kind === 'list' && n - lo === 1 && lo > 1 ? lo - 1 : lo;
+      const k =
+        piece.kind === 'p' && n - lo > 0 && n - lo < MIN_REST
+          ? n - MIN_REST
+          : piece.kind === 'list' && n - lo === 1 && lo > 1
+            ? lo - 1
+            : lo;
       const least = piece.kind === 'p' ? Math.min(n, MIN_WORDS) : 1;
       if (k >= least || alone) {
         const [head, rest] = cut(piece, Math.max(k, 1));
@@ -243,7 +299,8 @@ function bleed(piece: Fig): Laid {
 }
 
 /** The pictures of a gallery page: one, or two side by side in its columns (riffle.css). */
-const pics = (figs: string[], row = false) => `<div class="gtr-pics" data-n="${figs.length}"${row ? ' data-row' : ''}>${figs.join('')}</div>`;
+const pics = (figs: string[], row = false) =>
+  `<div class="gtr-pics" data-n="${figs.length}"${row ? ' data-row' : ''}>${figs.join('')}</div>`;
 
 /** An upright picture, which a gallery page sets a column wide so it ends on the grid. */
 const upright = (piece: Fig) => (piece.ratio ?? 4 / 3) < 0.95;
@@ -254,7 +311,12 @@ const upright = (piece: Fig) => (piece.ratio ?? 4 / 3) < 0.95;
  * but not one meant for the edges), measured in the hidden page. A page of one picture stands at the grid's head or its
  * foot, in turn, so the white falls differently across the spreads.
  */
-function gallery(page: HTMLElement, first: Fig, away: Part[], foot: boolean): Laid {
+function gallery(
+  page: HTMLElement,
+  first: Fig,
+  away: Part[],
+  foot: boolean
+): Laid {
   const next = away[0];
   if (next?.kind === 'fig' && next.place !== 'bleed') {
     // two pictures stand side by side, a column each, so each ends on the grid
@@ -262,13 +324,24 @@ function gallery(page: HTMLElement, first: Fig, away: Part[], foot: boolean): La
     // measured at the pictures' own sizes, which the stylesheet would otherwise shrink to fit the page
     page.innerHTML = `<div class="gtr gtr-in gtr-plate gtr-gallery" style="--shrink:0">${pair}</div>`;
     const block = page.firstElementChild as HTMLElement;
-    const end = block.getBoundingClientRect().bottom - parseFloat(getComputedStyle(block).paddingBottom);
-    if ([...block.querySelectorAll('figure')].every((f) => f.getBoundingClientRect().bottom <= end - SLACK)) {
+    const end =
+      block.getBoundingClientRect().bottom -
+      parseFloat(getComputedStyle(block).paddingBottom);
+    if (
+      [...block.querySelectorAll('figure')].every(
+        (f) => f.getBoundingClientRect().bottom <= end - SLACK
+      )
+    ) {
       away.shift();
       return { kind: 'plate', place: 'gallery', html: pair };
     }
   }
-  return { kind: 'plate', place: 'gallery', html: pics([figure(first, true, upright(first) ? 'col' : '')]), at: foot ? 'foot' : 'head' };
+  return {
+    kind: 'plate',
+    place: 'gallery',
+    html: pics([figure(first, true, upright(first) ? 'col' : '')]),
+    at: foot ? 'foot' : 'head',
+  };
 }
 
 /**
@@ -278,16 +351,27 @@ function gallery(page: HTMLElement, first: Fig, away: Part[], foot: boolean): La
  * inside the magazine view, so its stylesheet applies; `width` and `height`
  * are a page's.
  */
-export function paginate(stage: HTMLElement, width: number, height: number, head: string, pieces: Piece[]): Laid[] {
+export function paginate(
+  stage: HTMLElement,
+  width: number,
+  height: number,
+  head: string,
+  pieces: Piece[]
+): Laid[] {
   const page = document.createElement('div');
   page.className = 'mag-page gtr-paper';
-  page.style.cssText = `position:absolute;left:${-4 * width}px;top:0;width:${width}px;height:${height}px;visibility:hidden;pointer-events:none`;
+  // the measuring page is its own layout: setting a word in it never lays out the page around it
+  page.style.cssText = `position:absolute;left:${-4 * width}px;top:0;width:${width}px;height:${height}px;visibility:hidden;pointer-events:none;contain:strict`;
   stage.append(page);
   const pages: Laid[] = [];
   try {
     // a phone's page shows one column (riffle.css), where a column picture cannot stand beside the text
-    page.innerHTML = '<div class="gtr gtr-in gtr-flow"><div class="gtr-cols"><div class="gtr-col"></div><div class="gtr-col"></div></div></div>';
-    const narrow = [...page.querySelectorAll<HTMLElement>('.gtr-col')].filter((col) => getComputedStyle(col).display !== 'none').length < 2;
+    page.innerHTML =
+      '<div class="gtr gtr-in gtr-flow"><div class="gtr-cols"><div class="gtr-col"></div><div class="gtr-col"></div></div></div>';
+    const narrow =
+      [...page.querySelectorAll<HTMLElement>('.gtr-col')].filter(
+        (col) => getComputedStyle(col).display !== 'none'
+      ).length < 2;
     const queue = placed(pieces, width, height, narrow);
     // the pictures that have left the text, in order, each waiting for its page, band or column
     const away: Part[] = [];
@@ -296,14 +380,23 @@ export function paginate(stage: HTMLElement, width: number, height: number, head
     while (queue.length || away.length) {
       const next = away[0];
       // a page of pictures goes out as one is meant to, and once the text has run out
-      if (next?.kind === 'fig' && (next.place === 'bleed' || next.place === 'gallery' || !queue.length)) {
+      if (
+        next?.kind === 'fig' &&
+        (next.place === 'bleed' || next.place === 'gallery' || !queue.length)
+      ) {
         away.shift();
-        pages.push(next.place === 'bleed' ? bleed(next) : gallery(page, next, away, galleries++ % 2 === 1));
+        pages.push(
+          next.place === 'bleed'
+            ? bleed(next)
+            : gallery(page, next, away, galleries++ % 2 === 1)
+        );
         continue;
       }
       // and when three are waiting, so they never pile up after the text: the first not meant for a band or the edges
       if (away.length >= BACKLOG) {
-        const at = away.findIndex((p) => p.kind === 'fig' && p.place !== 'top' && p.place !== 'bleed');
+        const at = away.findIndex(
+          (p) => p.kind === 'fig' && p.place !== 'top' && p.place !== 'bleed'
+        );
         const pic = at >= 0 ? away.splice(at, 1)[0] : undefined;
         if (pic?.kind === 'fig') {
           pages.push(gallery(page, pic, away, galleries++ % 2 === 1));
@@ -311,24 +404,42 @@ export function paginate(stage: HTMLElement, width: number, height: number, head
         }
       }
       // the opening page carries the head alone; any later page may open on the next band or column picture
-      const lead = !first && next?.kind === 'fig' ? (away.shift() as Extract<Part, { kind: 'fig' }>) : null;
+      const lead = !first && next?.kind === 'fig' ? next : null;
+      if (lead) away.shift();
       // a band takes the next waiting band picture beside its own, a column each, so wide pictures never queue up
-      const twin = lead?.place === 'top' && away[0]?.kind === 'fig' && away[0].place === 'top' ? (away.shift() as Fig) : null;
+      const waiting = away[0];
+      const twin =
+        lead?.place === 'top' &&
+        waiting?.kind === 'fig' &&
+        waiting.place === 'top'
+          ? waiting
+          : null;
+      if (twin) away.shift();
       const band =
         lead?.place === 'top'
           ? twin
             ? `<div class="gtr-band gtr-band-pair">${figure(lead, false)}${figure(twin, false)}</div>`
             : `<div class="gtr-band">${figure(lead, true)}</div>`
           : '';
-      const side = lead?.place === 'column' ? `<div class="gtr-col gtr-col-pic">${figure(lead, false)}</div>` : '<div class="gtr-col"></div>';
+      const side =
+        lead?.place === 'column'
+          ? `<div class="gtr-col gtr-col-pic">${figure(lead, false)}</div>`
+          : '<div class="gtr-col"></div>';
       page.innerHTML = `<div class="gtr gtr-in gtr-flow">${first ? head : ''}${band}<div class="gtr-cols"><div class="gtr-col"></div>${side}</div></div>`;
       const [count, front] = [queue.length, queue[0]];
-      const cols = [...page.querySelectorAll<HTMLElement>('.gtr-col:not(.gtr-col-pic)')].filter((col) => getComputedStyle(col).display !== 'none');
+      const cols = [
+        ...page.querySelectorAll<HTMLElement>('.gtr-col:not(.gtr-col-pic)'),
+      ].filter((col) => getComputedStyle(col).display !== 'none');
       for (const col of cols) fill(col, queue, away);
-      pages.push({ kind: 'text', html: page.firstElementChild!.innerHTML });
+      pages.push({
+        kind: 'text',
+        html: page.firstElementChild?.innerHTML ?? '',
+        headed: first && head !== '',
+      });
       first = false;
       // a page that took nothing and opened on no picture would repeat for ever: it takes the next piece as it is
-      if (!lead && queue.length === count && queue[0] === front && !away.length) queue.shift();
+      if (!lead && queue.length === count && queue[0] === front && !away.length)
+        queue.shift();
     }
   } finally {
     page.remove();

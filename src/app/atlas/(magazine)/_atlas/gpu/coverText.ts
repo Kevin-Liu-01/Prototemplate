@@ -4,10 +4,16 @@
    alpha and prints the fluid through it, and the fallback draws it as is. */
 
 import { drawLayers, type ArtBox, type Layers } from './emblems';
+import { splitTitle } from '../stories';
 
-const SANS = '"Katagami Text", "Katagami CJK SC", "Katagami CJK JP", "Katagami CJK KR", system-ui, sans-serif';
+// Every 2D canvas here is read back with getImageData, so each is kept in CPU memory (willReadFrequently): a
+// GPU-backed canvas would make each read wait for the covers' WebGPU work.
+
+const SANS =
+  '"Katagami Text", "Katagami CJK SC", "Katagami CJK JP", "Katagami CJK KR", system-ui, sans-serif';
 const MONO = '"Katagami Mono", ui-monospace, monospace';
-const SERIF = '"Katagami Serif", "Katagami CJK SC", "Katagami CJK JP", "Katagami CJK KR", Georgia, serif';
+const SERIF =
+  '"Katagami Serif", "Katagami CJK SC", "Katagami CJK JP", "Katagami CJK KR", Georgia, serif';
 const FACES = { sans: SANS, serif: SERIF, mono: MONO } as const;
 
 export type CoverText = {
@@ -26,11 +32,17 @@ export type CoverText = {
 };
 
 /** Breaks at spaces, and inside a word that is wider than the line (CJK has no spaces). */
-function wrap(ctx: CanvasRenderingContext2D, text: string, max: number): string[] {
+function wrap(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  max: number
+): string[] {
   const lines: string[] = [];
   let line = '';
   // CJK breaks between characters, but never inside a title in 《》 brackets
-  const tokens = /\s/.test(text) ? text.split(/(\s+)/) : (text.match(/《[^》]*》|[\s\S]/gu) ?? []);
+  const tokens = /\s/.test(text)
+    ? text.split(/(\s+)/)
+    : (text.match(/《[^》]*》|[\s\S]/gu) ?? []);
   for (const token of tokens) {
     const next = line + token;
     if (ctx.measureText(next.trim()).width <= max || !line.trim()) {
@@ -45,7 +57,11 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, max: number): string[
 }
 
 /** Breaks into as many lines as a greedy wrap needs, then narrows the measure until the lines are as even as they can be. */
-function balance(ctx: CanvasRenderingContext2D, text: string, max: number): string[] {
+function balance(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  max: number
+): string[] {
   const lines = wrap(ctx, text, max);
   if (lines.length < 2) return lines;
   let lo = max * 0.4;
@@ -59,16 +75,23 @@ function balance(ctx: CanvasRenderingContext2D, text: string, max: number): stri
 }
 
 /** One canvas for the shader: the emblem's (or accent's) coverage in red, the type's in green, the art's in blue, opaque throughout. */
-function encodeMask(text: HTMLCanvasElement, { emblem, art }: Layers = { emblem: null, art: null }): HTMLCanvasElement {
+function encodeMask(
+  text: HTMLCanvasElement,
+  { emblem, art }: Layers = { emblem: null, art: null }
+): HTMLCanvasElement {
   const out = document.createElement('canvas');
   out.width = text.width;
   out.height = text.height;
-  const ctx = out.getContext('2d');
-  const tctx = text.getContext('2d');
+  const ctx = out.getContext('2d', { willReadFrequently: true });
+  const tctx = text.getContext('2d', { willReadFrequently: true });
   if (!ctx || !tctx) return out;
   const tp = tctx.getImageData(0, 0, text.width, text.height).data;
-  const ep = emblem?.getContext('2d')?.getImageData(0, 0, text.width, text.height).data;
-  const ap = art?.getContext('2d')?.getImageData(0, 0, text.width, text.height).data;
+  const ep = emblem
+    ?.getContext('2d', { willReadFrequently: true })
+    ?.getImageData(0, 0, text.width, text.height).data;
+  const ap = art
+    ?.getContext('2d', { willReadFrequently: true })
+    ?.getImageData(0, 0, text.width, text.height).data;
   const image = ctx.createImageData(text.width, text.height);
   const px = image.data;
   for (let i = 0; i < px.length; i += 4) {
@@ -82,18 +105,22 @@ function encodeMask(text: HTMLCanvasElement, { emblem, art }: Layers = { emblem:
 }
 
 /** The fallback's own print: the art and the accent tinted in their inks, under the type. */
-function withLayers(text: HTMLCanvasElement, { emblem, art }: Layers, t: CoverText): HTMLCanvasElement {
+function withLayers(
+  text: HTMLCanvasElement,
+  { emblem, art }: Layers,
+  t: CoverText
+): HTMLCanvasElement {
   const out = document.createElement('canvas');
   out.width = text.width;
   out.height = text.height;
-  const ctx = out.getContext('2d');
+  const ctx = out.getContext('2d', { willReadFrequently: true });
   if (!ctx) return text;
   const tint = (layer: HTMLCanvasElement | null, ink: string | undefined) => {
     if (!layer || !ink) return;
     const tmp = document.createElement('canvas');
     tmp.width = layer.width;
     tmp.height = layer.height;
-    const c = tmp.getContext('2d');
+    const c = tmp.getContext('2d', { willReadFrequently: true });
     if (!c) return;
     c.drawImage(layer, 0, 0);
     c.globalCompositeOperation = 'source-in';
@@ -114,25 +141,32 @@ export type CoverLayers = {
   plain: HTMLCanvasElement;
 };
 
-export async function drawCoverText(width: number, height: number, t: CoverText): Promise<CoverLayers> {
+export async function drawCoverText(
+  width: number,
+  height: number,
+  t: CoverText
+): Promise<CoverLayers> {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return { mask: encodeMask(canvas, await drawLayers(t.slug, width, height, height, t.artAt)), plain: canvas };
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  if (!ctx)
+    return {
+      mask: encodeMask(
+        canvas,
+        await drawLayers(t.slug, width, height, height, t.artAt)
+      ),
+      plain: canvas,
+    };
   const face = FACES[t.face ?? 'serif'];
   // a title with a colon sets its first part large and the rest as a subtitle
-  const split = /^(.+?)\s*[:：]\s*(.+)$/.exec(t.title);
-  const main = split ? split[1]! : t.title;
-  const sub = split ? split[2]! : '';
+  const [main, sub] = splitTitle(t.title) ?? [t.title, ''];
   // sized from the short side, so portrait book covers and wide plates both hold the title
   const short = Math.min(width, height / 0.62);
   const titleSize = Math.round(short * 0.112);
   const subSize = Math.round(short * 0.058);
   try {
-    await Promise.all([
-      document.fonts.load(`500 ${titleSize}px ${face}`, t.title),
-    ]);
+    await document.fonts.load(`500 ${titleSize}px ${face}`, t.title);
   } catch {
     // the system faces stand in
   }
@@ -153,7 +187,9 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
     ctx.globalAlpha = 0.8;
     const subLines = balance(ctx, sub, width - pad * 2);
     const subLead = subSize * 1.18;
-    subLines.forEach((line, i) => ctx.fillText(line, x, base - (subLines.length - 1 - i) * subLead));
+    subLines.forEach((line, i) =>
+      ctx.fillText(line, x, base - (subLines.length - 1 - i) * subLead)
+    );
     ctx.globalAlpha = 1;
     base -= subLines.length * subLead + subSize * 0.5;
   }
@@ -162,9 +198,20 @@ export async function drawCoverText(width: number, height: number, t: CoverText)
   ctx.letterSpacing = `${((t.face === 'mono' ? -0.04 : t.face === 'sans' ? -0.03 : -0.015) * titleSize).toFixed(1)}px`;
   const lines = balance(ctx, main, width - pad * 2);
   const lead = titleSize * 1.06;
-  lines.forEach((line, i) => ctx.fillText(line, x, base - (lines.length - 1 - i) * lead));
+  lines.forEach((line, i) =>
+    ctx.fillText(line, x, base - (lines.length - 1 - i) * lead)
+  );
   // the emblem stops a gap above the title's first line, so a long title never runs into it
   const titleTop = base - (lines.length - 1) * lead - titleSize * 0.78;
-  const layers = await drawLayers(t.slug, width, height, titleTop - short * 0.06, t.artAt);
-  return { mask: encodeMask(canvas, layers), plain: withLayers(canvas, layers, t) };
+  const layers = await drawLayers(
+    t.slug,
+    width,
+    height,
+    titleTop - short * 0.06,
+    t.artAt
+  );
+  return {
+    mask: encodeMask(canvas, layers),
+    plain: withLayers(canvas, layers, t),
+  };
 }

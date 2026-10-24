@@ -39,7 +39,14 @@ export default function Inline({ nodes }: { nodes: InlineNode[] }) {
             );
           case 'link':
             return node.href.startsWith('/atlas') ? (
-              <Link key={i} href={edition === 'shelf' && !node.href.startsWith('/atlas/shelf') ? node.href.replace(/^\/atlas/, '/atlas/shelf') : node.href}>
+              <Link
+                key={i}
+                href={
+                  edition === 'shelf' && !node.href.startsWith('/atlas/shelf')
+                    ? node.href.replace(/^\/atlas/, '/atlas/shelf')
+                    : node.href
+                }
+              >
                 <Inline nodes={node.c} />
               </Link>
             ) : (

@@ -1,16 +1,25 @@
 'use client';
 
 import { getImageProps } from 'next/image';
-import { Fragment, useMemo, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
+import {
+  Fragment,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 
 import type { PlateFigure, Story } from './content';
-import type { Block, Inline as InlineNode } from './parse';
+import type { Block, Frame, Inline as InlineNode } from './parse';
 import { useMountEffect } from './hooks';
 import { LIVE_CAPTION } from './plates/Plate';
 import { VersionsDemo } from './plates/Live';
-import { isShort, leadOf, Mark, useSlideIn } from './ui/Decor';
+import { isShort, leadOf, Mark } from './ui/Decor';
 import Inline from './ui/Inline';
 import { bylineDate } from './riffle/print';
+import { prefersReducedMotion } from './motion';
+import { useImageLoaded } from './ui/useImageLoaded';
 
 type Props = {
   story: Story;
@@ -21,14 +30,43 @@ type Props = {
 /** From this width the text keeps to the left half and the pictures show on a stage across the right half; below it each picture follows its paragraph. */
 const WIDE = '(min-width: 1250px)';
 
-/** The magazine's opening slides: a stop every 36% of the window (press.css --step), and the scroll past one that turns to the next. */
-const OPENING_STEP = 0.36;
+/** The magazine's opening slides: the scroll that turns the title page to the epigraph, and the scroll the epigraph then
+    holds for, 90% of the window (press.css --hold), so an ordinary scroll lands on it rather than past it. */
 const OPENING_NUDGE = 120;
+const OPENING_HOLD = 0.9;
 
 /** How tall a picture may stand on the stage, leaving room for its caption, and 15% short of that so it does not fill the stage. */
 const STAGE_TALLEST = 'calc((100dvh - 300px) * 0.85)';
-/** The magazine's stage gives its pictures more of the window, as a New York Times story does. */
+/** The magazine's stage gives its pictures more of the window. */
 const STAGE_TALLEST_FULL = 'calc((100dvh - 220px) * 0.94)';
+
+/** The layout showStage reads: where each picture comes on (the top of the paragraph before it), the page's top in the
+    document and the document's height. Measured when the page reflows, so a scroll reads no layout. */
+type StageLayout = { places: number[]; pageTop: number; height: number };
+
+function stageLayout(page: HTMLElement): StageLayout {
+  const places: number[] = [];
+  for (const mark of page.querySelectorAll<HTMLElement>('.gtp-print-at')) {
+    if (mark.dataset.live) {
+      places.push(places.at(-1) ?? innerHeight * 0.15);
+      continue;
+    }
+    let above = mark.previousElementSibling;
+    while (above?.matches('.gtp-print-at, .gtp-print-m, .gtp-print-fig'))
+      above = above.previousElementSibling;
+    places.push(
+      above instanceof HTMLElement ? above.offsetTop : mark.offsetTop
+    );
+  }
+  // the sources heading is one more stop, with nothing on it, so the last picture goes when the sources begin
+  const sources = page.querySelector<HTMLElement>('h2#sources');
+  if (sources) places.push(sources.offsetTop);
+  return {
+    places,
+    pageTop: docTop(page),
+    height: document.documentElement.scrollHeight,
+  };
+}
 
 /* Which picture the stage shows: the cover
    until the reader reaches the first picture, then each in turn, as the
@@ -52,48 +90,58 @@ const STAGE_TALLEST_FULL = 'calc((100dvh - 220px) * 0.94)';
    Positions come from the layout (offsetTop, never a box that a scroll
    animation may have moved), since the pictures themselves are not in the
    text on a wide screen. */
-function showStage(page: HTMLElement, stage: Element | null, timed = false): number {
-  const places: number[] = [];
-  for (const mark of page.querySelectorAll<HTMLElement>('.gtp-print-at')) {
-    if (mark.dataset.live) {
-      places.push(places.at(-1) ?? innerHeight * 0.15);
-      continue;
-    }
-    let above = mark.previousElementSibling;
-    while (above?.matches('.gtp-print-at, .gtp-print-m, .gtp-print-fig')) above = above.previousElementSibling;
-    places.push(above instanceof HTMLElement ? above.offsetTop : mark.offsetTop);
-  }
-  // the sources heading is one more stop, with nothing on it, so the last picture goes when the sources begin
-  const sources = page.querySelector<HTMLElement>('h2#sources');
-  if (sources) places.push(sources.offsetTop);
-  const top = docTop(page) - scrollY;
+function showStage(
+  { places, pageTop, height }: StageLayout,
+  stage: Element | null,
+  timed = false
+): number {
+  const top = pageTop - scrollY;
   const read = innerHeight * 0.5 - top;
   // the furthest the reading line goes, with the page scrolled to its end
-  const last = document.documentElement.scrollHeight - innerHeight - scrollY + innerHeight * 0.5 - top - 40;
+  const last = height - innerHeight - scrollY + innerHeight * 0.5 - top - 40;
   const hold = innerHeight * 0.15;
   const starts = places.slice();
-  for (let k = 1; k < starts.length; k++) starts[k] = Math.max(starts[k] ?? 0, (starts[k - 1] ?? 0) + hold);
+  for (let k = 1; k < starts.length; k++)
+    starts[k] = Math.max(starts[k] ?? 0, (starts[k - 1] ?? 0) + hold);
   for (let k = starts.length - 1, cap = last; k >= 0; k--) {
     starts[k] = Math.min(starts[k] ?? 0, cap);
     cap = (starts[k] ?? 0) - hold;
   }
   const at = starts.filter((start) => start <= read).length;
 
-  const items = stage ? [...stage.querySelectorAll<HTMLElement>('.gtp-print-stage-item')] : [];
+  const items = stage
+    ? [...stage.querySelectorAll<HTMLElement>('.gtp-print-stage-item')]
+    : [];
   // timed (the magazine): the picture changes as one fade once its paragraph is reached (magazine.css), not with the scroll
-  if (timed || matchMedia('(prefers-reduced-motion: reduce)').matches || !matchMedia(WIDE).matches) {
+  if (timed || prefersReducedMotion() || !matchMedia(WIDE).matches) {
     for (const el of items) el.style.removeProperty('opacity');
     return at;
   }
   // each item's turn on the stage, from where it comes on to where the next does; the cover's from the page's top
-  const begins = [innerHeight * 0.5 - (top + scrollY), ...starts, last + innerHeight * 0.5];
-  const share = (k: number, length: number) => Math.min(1, Math.max(0, (read - (begins[k] ?? 0)) / Math.max(1, length)));
+  const begins = [
+    innerHeight * 0.5 - (top + scrollY),
+    ...starts,
+    last + innerHeight * 0.5,
+  ];
+  const share = (k: number, length: number) =>
+    Math.min(1, Math.max(0, (read - (begins[k] ?? 0)) / Math.max(1, length)));
   const turn = (k: number) => (begins[k + 1] ?? 0) - (begins[k] ?? 0);
   // the cover gives way to the first figure in half the scroll the others take, so the story opens on it
-  const arrived = at === 0 ? 1 : share(at, Math.min(at === 1 ? innerHeight / 6 : innerHeight / 3, turn(at)));
+  const arrived =
+    at === 0
+      ? 1
+      : share(
+          at,
+          Math.min(at === 1 ? innerHeight / 6 : innerHeight / 3, turn(at))
+        );
   const clamp = (v: number) => Math.min(1, Math.max(0, v));
   items.forEach((el, k) => {
-    const opacity = k === at ? clamp((arrived - 0.4) / 0.6) : k === at - 1 ? clamp(1 - arrived / 0.6) : 0;
+    const opacity =
+      k === at
+        ? clamp((arrived - 0.4) / 0.6)
+        : k === at - 1
+          ? clamp(1 - arrived / 0.6)
+          : 0;
     el.style.opacity = String(Math.round(opacity * 1000) / 1000);
   });
   return at;
@@ -102,7 +150,12 @@ function showStage(page: HTMLElement, stage: Element | null, timed = false): num
 /** Where an element sits in the page, by the layout alone: a scroll animation's translate does not move it. */
 function docTop(el: HTMLElement): number {
   let y = 0;
-  for (let node: HTMLElement | null = el; node; node = node.offsetParent instanceof HTMLElement ? node.offsetParent : null) y += node.offsetTop;
+  for (
+    let node: HTMLElement | null = el;
+    node;
+    node = node.offsetParent instanceof HTMLElement ? node.offsetParent : null
+  )
+    y += node.offsetTop;
   return y;
 }
 
@@ -110,16 +163,26 @@ function docTop(el: HTMLElement): number {
 type Tick = { id: string; label: string; at: number };
 
 /** A picture's box from its known size, so the page holds its place before it loads: as wide as the room allows, no taller than `tallest`; an upright picture smaller by the page's --gtp-upright (85%, less on a phone). */
-function sized(frame: { width?: number; height?: number }, tallest: string): CSSProperties | undefined {
+function sized(
+  frame: { width?: number; height?: number },
+  tallest: string
+): CSSProperties | undefined {
   if (!frame.width || !frame.height) return undefined;
   const scale = frame.height > frame.width ? 'var(--gtp-upright, 0.85)' : '1';
-  return { width: `min(${scale} * 100%, ${tallest} * ${scale} * ${frame.width / frame.height})`, aspectRatio: `${frame.width} / ${frame.height}` };
+  return {
+    width: `min(${scale} * 100%, ${tallest} * ${scale} * ${frame.width / frame.height})`,
+    aspectRatio: `${frame.width} / ${frame.height}`,
+  };
 }
 
 /** A quotation the story sets apart: the epigraph at its head, or a quotation in its text. */
 function Quote({ block }: { block: Extract<Block, { kind: 'note' }> }) {
   return (
-    <blockquote className={block.name === 'Epigraph' ? 'gtp-print-epigraph' : 'gtp-print-quote'}>
+    <blockquote
+      className={
+        block.name === 'Epigraph' ? 'gtp-print-epigraph' : 'gtp-print-quote'
+      }
+    >
       {block.paras.map((p, k) => (
         <p key={k}>
           <Inline nodes={p} />
@@ -131,7 +194,16 @@ function Quote({ block }: { block: Extract<Block, { kind: 'note' }> }) {
 
 /** A small picture as a one-frame figure, so it shows as every picture does: on the stage beside the text, or centred in the text on a narrow screen. */
 function sideFigure(b: Extract<Block, { kind: 'side' }>): PlateFigure {
-  return { id: b.frame.src, label: null, frames: [b.frame], caption: b.caption, credit: b.credit, n: 0, live: null, light: null };
+  return {
+    id: b.frame.src,
+    label: null,
+    frames: [b.frame],
+    caption: b.caption,
+    credit: b.credit,
+    n: 0,
+    live: null,
+    light: null,
+  };
 }
 
 /** Where a picture's (Source) leads: the first link its credit carries, else the list of sources. */
@@ -151,9 +223,18 @@ function sourceOf(credit: InlineNode[] | undefined): string | null {
 }
 
 /** A picture's caption ending in a link to its source, as one sentence: … (Source). The full citation stays in the list of sources. */
-function Captioned({ caption, credit }: { caption?: InlineNode[]; credit?: InlineNode[] }) {
+function Captioned({
+  caption,
+  credit,
+}: {
+  caption?: InlineNode[];
+  credit?: InlineNode[];
+}) {
   const href = sourceOf(credit);
-  const away = href && !href.startsWith('#') ? { target: '_blank', rel: 'noreferrer' } : {};
+  const away =
+    href && !href.startsWith('#')
+      ? { target: '_blank', rel: 'noreferrer' }
+      : {};
   return (
     <>
       {caption?.length ? <Inline nodes={caption} /> : null}
@@ -178,12 +259,13 @@ function glide(to: number) {
   gliding?.();
   const from = scrollY;
   const distance = to - from;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches || Math.abs(distance) < 2) {
+  if (prefersReducedMotion() || Math.abs(distance) < 2) {
     scrollTo({ top: to, behavior: 'instant' });
     return;
   }
   const duration = Math.min(1800, 800 + Math.abs(distance) * 0.06);
-  const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+  const ease = (t: number) =>
+    t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
   let start = 0;
   let frame = 0;
   const stop = () => {
@@ -209,13 +291,20 @@ function glide(to: number) {
 
 /** The note numbers in a run of text, in order. */
 function notesIn(nodes: InlineNode[]): string[] {
-  return nodes.flatMap((node) => (node.t === 'fn' ? [node.n] : node.t === 'strong' || node.t === 'em' || node.t === 'link' ? notesIn(node.c) : []));
+  return nodes.flatMap((node) =>
+    node.t === 'fn'
+      ? [node.n]
+      : node.t === 'strong' || node.t === 'em' || node.t === 'link'
+        ? notesIn(node.c)
+        : []
+  );
 }
 
 /** A zero-size box set just before a node gives the baseline of its line. */
 function baseline(node: Element): number {
   const mark = document.createElement('span');
-  mark.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+  mark.style.cssText =
+    'display:inline-block;width:0;height:0;vertical-align:baseline';
   node.before(mark);
   const y = mark.getBoundingClientRect().top;
   mark.remove();
@@ -233,7 +322,11 @@ function placeMargin(page: HTMLElement) {
   }
   const box = page.getBoundingClientRect();
   const edge = box.right + 24;
-  const blocked = [...page.querySelectorAll('.gtp-print-media, .gtp-print-multiples, .gtp-versions')]
+  const blocked = [
+    ...page.querySelectorAll(
+      '.gtp-print-media, .gtp-print-multiples, .gtp-versions'
+    ),
+  ]
     .map((el) => el.getBoundingClientRect())
     .filter((r) => r.right > edge)
     .map((r) => ({ top: r.top - box.top, bottom: r.bottom - box.top }));
@@ -242,11 +335,14 @@ function placeMargin(page: HTMLElement) {
   for (const el of items) {
     const ref = el.dataset.ref ? document.getElementById(el.dataset.ref) : null;
     if (!ref) continue;
-    const lead = baseline(el.querySelector('.gtp-print-n') ?? el) - el.getBoundingClientRect().top;
+    const lead =
+      baseline(el.querySelector('.gtp-print-n') ?? el) -
+      el.getBoundingClientRect().top;
     const want = baseline(ref) - box.top - lead;
     const h = el.offsetHeight;
     let y = Math.max(want, floor);
-    for (const r of blocked) if (y < r.bottom + 24 && y + h > r.top - 24) y = r.bottom + 24;
+    for (const r of blocked)
+      if (y < r.bottom + 24 && y + h > r.top - 24) y = r.bottom + 24;
     el.style.top = `${Math.round(y)}px`;
     floor = y + h + 16;
   }
@@ -259,7 +355,7 @@ function placeMargin(page: HTMLElement) {
    the reader reaches it. On a narrow screen the cover heads the page and
    each picture follows its paragraph. One face throughout, in sentence case;
    paragraphs part by a blank line, not an indent. In the magazine edition
-   (decorated) the opening runs as Taylor's slides, and the text takes the
+   (decorated) the opening runs as slides, and the text takes the
    magazine's drop cap and section marks. */
 export default function BookBody({ story, decorated = false }: Props) {
   const { blocks, figures } = story;
@@ -267,7 +363,7 @@ export default function BookBody({ story, decorated = false }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLElement>(null);
   const opening = useRef<HTMLDivElement>(null);
-  useSlideIn(page, decorated);
+  const rail = useRef<HTMLElement>(null);
   // the stage's pictures in the order of the page, after the cover: each figure, and each small picture as a one-frame figure
   const pictures = useMemo(() => {
     let n = 0;
@@ -284,55 +380,105 @@ export default function BookBody({ story, decorated = false }: Props) {
   // the furthest picture the stage has shown: it and the two after it stay mounted, so each is loaded before it is reached
   const [reached, setReached] = useState(0);
   if (stage > reached) setReached(stage);
-  const notes = useMemo(() => new Map(blocks.flatMap((b) => (b.kind === 'footnote' ? [[b.n, b.inline] as const] : []))), [blocks]);
+  const notes = useMemo(
+    () =>
+      new Map(
+        blocks.flatMap((b) =>
+          b.kind === 'footnote' ? [[b.n, b.inline] as const] : []
+        )
+      ),
+    [blocks]
+  );
   // the paragraph that opens on the magazine's drop cap
   const lead = decorated ? leadOf(blocks) : -1;
   // each section head's place among the story's sections, which picks its mark
-  const sections = useMemo(() => new Map(blocks.flatMap((b, i) => (b.kind === 'heading' ? [i] : [])).map((at, n) => [at, n])), [blocks]);
+  const sections = useMemo(
+    () =>
+      new Map(
+        blocks
+          .flatMap((b, i) => (b.kind === 'heading' ? [i] : []))
+          .map((at, n) => [at, n])
+      ),
+    [blocks]
+  );
   // the epigraph that heads the story, which the magazine's opening shows as its second slide
-  const epigraph = decorated && blocks[0]?.kind === 'note' && blocks[0].name === 'Epigraph' ? blocks[0] : null;
+  const epigraph =
+    decorated && blocks[0]?.kind === 'note' && blocks[0].name === 'Epigraph'
+      ? blocks[0]
+      : null;
 
   useMountEffect(() => {
     let frame = 0;
+    // the page's layout as of its last reflow: a scroll reads only scrollY against it
+    let layout: StageLayout | null = null;
+    let openingTop = 0;
+    let coverHeight = 0;
+    const measureStage = () => {
+      layout = page.current ? stageLayout(page.current) : null;
+      openingTop = opening.current ? docTop(opening.current) : 0;
+      coverHeight =
+        root.current?.querySelector<HTMLElement>('.gtp-head-pic')
+          ?.offsetHeight ?? 0;
+    };
     // the magazine's opening: a scroll past each stop brings the next slide in (press.css, data-slide); it is laid
     // out from the first paint (data-armed is in the markup), so the page never shows the story and then hides it
     const turnOpening = () => {
       const el = opening.current;
       if (!el) return;
-      const y = scrollY - docTop(el);
-      const step = innerHeight * OPENING_STEP;
-      const slide = y < OPENING_NUDGE ? 0 : y < step + OPENING_NUDGE && epigraph ? 1 : 2;
+      const y = scrollY - openingTop;
+      const hold = epigraph ? innerHeight * OPENING_HOLD : 0;
+      const slide = y < OPENING_NUDGE ? 0 : y < OPENING_NUDGE + hold ? 1 : 2;
       el.dataset.slide = String(slide);
     };
     // the stage's picture for this place; the cover holds through the opening's slides, until the story stands at the top
     const stageNow = () => {
-      if (!page.current) return 0;
-      const at = showStage(page.current, root.current?.querySelector('.gtp-print-stage') ?? null, decorated);
+      if (!layout) return 0;
+      const at = showStage(
+        layout,
+        root.current?.querySelector('.gtp-print-stage') ?? null,
+        decorated
+      );
       const el = opening.current;
-      return el?.dataset.armed !== undefined && el.dataset.slide !== '2' ? 0 : at;
+      return el?.dataset.armed !== undefined && el.dataset.slide !== '2'
+        ? 0
+        : at;
     };
     const onScroll = () => {
       turnOpening();
       setStage(stageNow());
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const max = document.documentElement.scrollHeight - innerHeight;
-        root.current?.style.setProperty('--p', String(max > 0 ? Math.min(1, scrollY / max) : 0));
+        const max = (layout?.height ?? 0) - innerHeight;
+        rail.current?.style.setProperty(
+          '--p',
+          String(max > 0 ? Math.min(1, scrollY / max) : 0)
+        );
         // where the cover heads the page (a narrow screen), the rail waits until it has scrolled mostly away
-        const cover = root.current?.querySelector<HTMLElement>('.gtp-head-pic');
-        if (root.current) root.current.dataset.read = String(!cover?.offsetHeight || scrollY > cover.offsetHeight * 0.6);
+        if (root.current)
+          root.current.dataset.read = String(
+            !coverHeight || scrollY > coverHeight * 0.6
+          );
       });
     };
     // where each section starts, as a share of the scroll, for the rail's ticks; the pictures hold their size, so these stay put
     const measure = () => {
       const max = document.documentElement.scrollHeight - innerHeight;
       if (max <= 0) return;
-      const marks = [...document.querySelectorAll<HTMLElement>('.gtp-print-page h2')].map((h) => ({
+      const marks = [
+        ...document.querySelectorAll<HTMLElement>('.gtp-print-page h2'),
+      ].map((h) => ({
         id: h.id,
         label: h.textContent ?? '',
-        at: Math.round(Math.min(1, Math.max(0, (docTop(h) - 120) / max)) * 1000) / 1000,
+        at:
+          Math.round(Math.min(1, Math.max(0, (docTop(h) - 120) / max)) * 1000) /
+          1000,
       }));
-      setTicks((old) => (old.length === marks.length && old.every((t, k) => t.at === marks[k]?.at) ? old : marks));
+      setTicks((old) =>
+        old.length === marks.length &&
+        old.every((t, k) => t.at === marks[k]?.at)
+          ? old
+          : marks
+      );
     };
     // the margin, set again whenever the page reflows: a font arriving, a picture loading, the window resizing
     const place = () => {
@@ -341,18 +487,25 @@ export default function BookBody({ story, decorated = false }: Props) {
     const reflow = () => {
       measure();
       place();
+      measureStage();
+      turnOpening();
       setStage(stageNow());
     };
     // a note's number and the note light up together
     const lit = (on: boolean) => (e: MouseEvent) => {
-      const hit = e.target instanceof Element ? e.target.closest<HTMLElement>('.gtp-fn, .gtp-print-note') : null;
+      const hit =
+        e.target instanceof Element
+          ? e.target.closest<HTMLElement>('.gtp-fn, .gtp-print-note')
+          : null;
       if (!hit) return;
       const n = hit.id.replace(/^fn(ref)?-/, '');
-      for (const id of [`fn-${n}`, `fnref-${n}`]) document.getElementById(id)?.classList.toggle('is-lit', on);
+      for (const id of [`fn-${n}`, `fnref-${n}`])
+        document.getElementById(id)?.classList.toggle('is-lit', on);
     };
     const over = lit(true);
     const out = lit(false);
     addEventListener('scroll', onScroll, { passive: true });
+    measureStage();
     onScroll();
     const resize = new ResizeObserver(reflow);
     if (root.current) resize.observe(root.current);
@@ -361,12 +514,15 @@ export default function BookBody({ story, decorated = false }: Props) {
     addEventListener('load', reflow);
     void document.fonts?.ready.then(reflow);
     reflow();
-    root.current?.addEventListener('mouseover', over);
-    root.current?.addEventListener('mouseout', out);
+    // the elements as they are now: the cleanup runs after React has let go of the refs
+    const rootEl = root.current;
+    const pageEl = page.current;
+    rootEl?.addEventListener('mouseover', over);
+    rootEl?.addEventListener('mouseout', out);
     // a picture loading anywhere in the page moves what follows it (load does not bubble, so it is caught on the way down)
-    page.current?.addEventListener('load', reflow, true);
+    pageEl?.addEventListener('load', reflow, true);
     return () => {
-      page.current?.removeEventListener('load', reflow, true);
+      pageEl?.removeEventListener('load', reflow, true);
       margin.removeEventListener('change', reflow);
       removeEventListener('load', reflow);
       removeEventListener('scroll', onScroll);
@@ -374,8 +530,8 @@ export default function BookBody({ story, decorated = false }: Props) {
       // a glide under way stops with the page, so it never scrolls the next one
       gliding?.();
       resize.disconnect();
-      root.current?.removeEventListener('mouseover', over);
-      root.current?.removeEventListener('mouseout', out);
+      rootEl?.removeEventListener('mouseover', over);
+      rootEl?.removeEventListener('mouseout', out);
     };
   });
 
@@ -395,7 +551,12 @@ export default function BookBody({ story, decorated = false }: Props) {
     notesIn(nodes).map((n) => {
       const note = notes.get(n);
       return note ? (
-        <aside key={`fn-${n}`} id={`fn-${n}`} data-ref={`fnref-${n}`} className='gtp-print-m gtp-print-note'>
+        <aside
+          key={`fn-${n}`}
+          id={`fn-${n}`}
+          data-ref={`fnref-${n}`}
+          className='gtp-print-m gtp-print-note'
+        >
           <span className='gtp-print-n'>{n}.</span> <Inline nodes={[...note]} />
         </aside>
       ) : null;
@@ -405,13 +566,20 @@ export default function BookBody({ story, decorated = false }: Props) {
 
   return (
     <div ref={root} className='gtp-print'>
-      <nav className='gtp-print-rail' aria-label='Sections'>
-        <button type='button' className='gtp-print-track' tabIndex={-1} aria-hidden='true' onClick={seek} />
+      <nav ref={rail} className='gtp-print-rail' aria-label='Sections'>
+        <button
+          type='button'
+          className='gtp-print-track'
+          tabIndex={-1}
+          aria-hidden='true'
+          onClick={seek}
+        />
         {ticks.map((t) => (
           <button
             key={t.id}
             type='button'
             className='gtp-print-tick'
+            data-testid={`atlas-tick-${t.id}`}
             style={{ '--at': t.at } as CSSProperties}
             data-label={t.label}
             aria-label={t.label}
@@ -424,7 +592,12 @@ export default function BookBody({ story, decorated = false }: Props) {
         <div className='gtp-print-text'>
           {decorated ? (
             // the opening as slides on a wide screen: the title page, then the epigraph where it stood, then the story (press.css, the opening)
-            <div ref={opening} className='gtp-print-opening' data-slide='0' data-armed=''>
+            <div
+              ref={opening}
+              className='gtp-print-opening'
+              data-slide='0'
+              data-armed=''
+            >
               <div className='gtp-print-opening-frame'>
                 <Opener story={story} />
                 {epigraph ? (
@@ -455,7 +628,12 @@ export default function BookBody({ story, decorated = false }: Props) {
                 case 'para':
                   return (
                     <Fragment key={i}>
-                      <p className={i === lead ? 'gtm-lead' : undefined} data-short={i === lead && isShort(block) ? '' : undefined}>
+                      <p
+                        className={i === lead ? 'gtm-lead' : undefined}
+                        data-short={
+                          i === lead && isShort(block) ? '' : undefined
+                        }
+                      >
                         <Inline nodes={block.inline} />
                       </p>
                       {marginNotes(block.inline)}
@@ -489,7 +667,11 @@ export default function BookBody({ story, decorated = false }: Props) {
                 case 'note':
                   if (block.name === 'Sources')
                     return (
-                      <div key={i} id='gtp-sources' className='gtp-print-sources'>
+                      <div
+                        key={i}
+                        id='gtp-sources'
+                        className='gtp-print-sources'
+                      >
                         {block.paras.map((p, k) => (
                           <p key={k}>
                             <Inline nodes={p} />
@@ -504,7 +686,11 @@ export default function BookBody({ story, decorated = false }: Props) {
                   // the mark holds the picture's place for the stage; the picture itself shows here only on a narrow screen
                   return (
                     <Fragment key={i}>
-                      <span className='gtp-print-at' data-live={figure.live ? true : undefined} aria-hidden='true' />
+                      <span
+                        className='gtp-print-at'
+                        data-live={figure.live ? true : undefined}
+                        aria-hidden='true'
+                      />
                       <PrintFigure figure={figure} />
                     </Fragment>
                   );
@@ -525,37 +711,53 @@ export default function BookBody({ story, decorated = false }: Props) {
 
         {/* the stage across the right half on a wide screen: the cover, then each picture in turn; only the pictures beside the one shown are mounted, so the next is ready to fade in */}
         <aside className='gtp-print-stage' aria-label='Pictures'>
-          <div className='gtp-print-stage-item gtp-print-stage-cover' data-shown={stage === 0}>
+          <div
+            className='gtp-print-stage-item gtp-print-stage-cover'
+            data-shown={stage === 0}
+          >
             {story.cover ? (
               // eslint-disable-next-line @next/next/no-img-element -- the story's own cover picture, across the stage
               <img src={story.cover} alt='' />
             ) : null}
           </div>
           {pictures.map((figure, k) => (
-            <div key={figure.id} className='gtp-print-stage-item' data-shown={stage === k + 1} aria-hidden={stage !== k + 1} inert={stage !== k + 1}>
-              {k + 1 <= reached + 2 ? <PrintFigure figure={figure} tallest={decorated ? STAGE_TALLEST_FULL : STAGE_TALLEST} /> : null}
+            <div
+              key={figure.id}
+              className='gtp-print-stage-item'
+              data-shown={stage === k + 1}
+              aria-hidden={stage !== k + 1}
+              inert={stage !== k + 1}
+            >
+              {k + 1 <= reached + 2 ? (
+                <PrintFigure
+                  figure={figure}
+                  tallest={decorated ? STAGE_TALLEST_FULL : STAGE_TALLEST}
+                />
+              ) : null}
             </div>
           ))}
         </aside>
       </div>
-
     </div>
   );
+}
+
+/** Each possessive held to the word after it, so a title never breaks between "Euclid’s" and "Elements". */
+function holdPossessives(nodes: InlineNode[]): InlineNode[] {
+  return nodes.map((node, i) => {
+    if (node.t !== 'text') return node;
+    const v = node.v.replace(/(['’]s) (?=\S)/g, '$1\u00a0');
+    return {
+      ...node,
+      v: nodes[i + 1] && /['’]s $/.test(v) ? v.replace(/ $/, '\u00a0') : v,
+    };
+  });
 }
 
 /* The story's opening, as an open book: the title page, with the title, a
    short rule, the author and the date at its foot, on the left half, and
    the cover edge to edge across the right half at the screen's full height
    (on a wide screen the cover is the stage's first picture instead). */
-/** Each possessive held to the word after it, so a title never breaks between "Euclid’s" and "Elements". */
-function holdPossessives(nodes: InlineNode[]): InlineNode[] {
-  return nodes.map((node, i) => {
-    if (node.t !== 'text') return node;
-    const v = node.v.replace(/(['’]s) (?=\S)/g, '$1\u00a0');
-    return { ...node, v: nodes[i + 1] && /['’]s $/.test(v) ? v.replace(/ $/, '\u00a0') : v };
-  });
-}
-
 function Opener({ story }: { story: Story }) {
   return (
     <header className='gtp-print-opener gtp-head-spread'>
@@ -583,15 +785,20 @@ const PRINT_SIZES = '(min-width: 1250px) 40vw, 100vw';
 /* A scan from the image optimizer at the width it is shown, holding its
    place from its known size and fading in once decoded, so it never paints
    in halves or pushes the text. */
-function PrintPicture({ frame, tallest }: { frame: PlateFigure['frames'][number]; tallest: string }) {
-  const img = useRef<HTMLImageElement>(null);
-  const [loaded, setLoaded] = useState(false);
-  // a scan already in the cache can finish before the page hydrates, and its load event is then missed
-  useMountEffect(() => {
-    if (img.current?.complete) setLoaded(true);
+function PrintPicture({ frame, tallest }: { frame: Frame; tallest: string }) {
+  const { img, loaded, onLoad, onError } = useImageLoaded();
+  const known =
+    frame.width && frame.height
+      ? { width: frame.width, height: frame.height }
+      : { fill: true as const };
+  const { props } = getImageProps({
+    src: frame.src,
+    alt: frame.alt,
+    sizes: PRINT_SIZES,
+    // the scans are photographs, which hold up at 85; the plates' dithered captures keep 95 (FrameView)
+    quality: 85,
+    ...known,
   });
-  const known = frame.width && frame.height ? { width: frame.width, height: frame.height } : { fill: true as const };
-  const { props } = getImageProps({ src: frame.src, alt: frame.alt, sizes: PRINT_SIZES, quality: 95, ...known });
   return (
     // eslint-disable-next-line @next/next/no-img-element -- the optimizer's sources on a plain img, sized by the column
     <img
@@ -607,31 +814,48 @@ function PrintPicture({ frame, tallest }: { frame: PlateFigure['frames'][number]
       loading='lazy'
       decoding='async'
       data-loaded={loaded}
-      onLoad={() => setLoaded(true)}
+      onLoad={onLoad}
+      onError={onError}
     />
   );
 }
 
 /** One figure in the flow of the text, its caption under it; a carousel shows the frame chosen above a row of all of them. */
-function PrintFigure({ figure, tallest = '78vh' }: { figure: PlateFigure; tallest?: string }) {
+function PrintFigure({
+  figure,
+  tallest = '78vh',
+}: {
+  figure: PlateFigure;
+  tallest?: string;
+}) {
   const [shown, setShown] = useState(0);
   const frames = figure.frames;
   const frame = frames[shown];
   const many = frames.length > 1;
   const said = Boolean(figure.caption?.length || figure.credit?.length);
   // a live figure without a caption of its own shows none
-  const plain = figure.live && !frame ? LIVE_CAPTION[figure.live] : (frame?.alt ?? '');
+  const plain =
+    figure.live && !frame ? LIVE_CAPTION[figure.live] : (frame?.alt ?? '');
   return (
-    <figure className='gtp-print-fig' data-live={figure.live ? true : undefined}>
+    <figure
+      className='gtp-print-fig'
+      data-live={figure.live ? true : undefined}
+    >
       {figure.live === 'stops' ? <VersionsDemo /> : null}
-      {frame ? (
-        <PrintPicture frame={frame} tallest={tallest} />
-      ) : null}
+      {frame ? <PrintPicture frame={frame} tallest={tallest} /> : null}
       {many ? (
-        <ol className='gtp-print-multiples' aria-label='Every view of this figure'>
+        <ol
+          className='gtp-print-multiples'
+          aria-label='Every view of this figure'
+        >
           {frames.map((f, k) => (
             <li key={f.src}>
-              <button type='button' aria-pressed={k === shown} aria-label={f.alt} onClick={() => setShown(k)}>
+              <button
+                type='button'
+                aria-pressed={k === shown}
+                aria-label={f.alt}
+                onClick={() => setShown(k)}
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element -- the story's own scans, as small multiples */}
                 <img src={f.src} alt='' loading='lazy' decoding='async' />
               </button>
@@ -642,8 +866,16 @@ function PrintFigure({ figure, tallest = '78vh' }: { figure: PlateFigure; talles
       {said || plain || many ? (
         <figcaption className='gtp-print-caption'>
           {/* one span, so the caption's italics stay in its line rather than becoming rows of the caption's grid */}
-          <span>{said ? <Captioned caption={figure.caption} credit={figure.credit} /> : plain}</span>
-          {many ? <span className='gtp-print-count'>{`${shown + 1} of ${frames.length}`}</span> : null}
+          <span>
+            {said ? (
+              <Captioned caption={figure.caption} credit={figure.credit} />
+            ) : (
+              plain
+            )}
+          </span>
+          {many ? (
+            <span className='gtp-print-count'>{`${shown + 1} of ${frames.length}`}</span>
+          ) : null}
         </figcaption>
       ) : null}
     </figure>

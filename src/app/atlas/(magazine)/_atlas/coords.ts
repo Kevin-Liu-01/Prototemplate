@@ -32,3 +32,20 @@ export function dmsPair(point: LatLon, places = 4): string {
 
 /** San Francisco, where General Translation works from. */
 export const HOME: LatLon = { lat: 37.7749, lon: -122.4194 };
+
+/** Where a reader is: a city and its coordinates (where/route.ts reads it from the host's edge). */
+export type Where = LatLon & { city: string };
+
+/** Whether a place read from JSON is whole: a city named, and two coordinates in range. */
+export function isWhere(value: Partial<Where> | null): value is Where {
+  if (!value || typeof value !== 'object') return false;
+  const { city, lat, lon } = value;
+  return (
+    typeof city === 'string' &&
+    city !== '' &&
+    typeof lat === 'number' &&
+    typeof lon === 'number' &&
+    Math.abs(lat) <= 90 &&
+    Math.abs(lon) <= 180
+  );
+}

@@ -5,6 +5,7 @@ import { useRef, type CSSProperties, type Ref } from 'react';
 
 import { homeOf, useEdition } from '../edition';
 import PressMark from './PressMark';
+import { pad } from '../riffle/print';
 
 export type RailMark = { key: string; label: string; at: number };
 
@@ -29,7 +30,16 @@ type Props = {
    section or story and the orange line at the place itself. Press anywhere
    on the lines and drag to scrub; the numbered lines are buttons. The
    caption at the foot names where the reader is. */
-export default function Rail({ marks, current, onSeek, onJump, railRef, label, start = 0, caption }: Props) {
+export default function Rail({
+  marks,
+  current,
+  onSeek,
+  onJump,
+  railRef,
+  label,
+  start = 0,
+  caption,
+}: Props) {
   const track = useRef<HTMLDivElement>(null);
   const home = homeOf(useEdition());
   const dragging = useRef(false);
@@ -43,7 +53,11 @@ export default function Rail({ marks, current, onSeek, onJump, railRef, label, s
 
   return (
     <nav ref={railRef} className='gtp-rail' aria-label={label}>
-      <Link href={home} className='gtp-rail-home' aria-label='GT Atlas, all stories'>
+      <Link
+        href={home}
+        className='gtp-rail-home'
+        aria-label='GT Atlas, all stories'
+      >
         <PressMark size={30} />
       </Link>
       <div
@@ -66,9 +80,21 @@ export default function Rail({ marks, current, onSeek, onJump, railRef, label, s
         <span className='gtp-rail-lines' aria-hidden='true' />
         <span className='gtp-rail-lines gtp-rail-lit' aria-hidden='true' />
         {marks.map((mark, i) => (
-          <span key={mark.key} className='gtp-rail-major' data-on={i === current} data-past={i < current} style={{ top: `${mark.at * 100}%` } as CSSProperties}>
-            <button type='button' onClick={() => onJump(i)} aria-current={i === current ? 'true' : undefined} aria-label={mark.label}>
-              {String(i + start).padStart(2, '0')}
+          <span
+            key={mark.key}
+            className='gtp-rail-major'
+            data-on={i === current}
+            data-past={i < current}
+            style={{ top: `${mark.at * 100}%` } as CSSProperties}
+          >
+            <button
+              type='button'
+              onClick={() => onJump(i)}
+              data-testid={`atlas-rail-${mark.key}`}
+              aria-current={i === current ? 'true' : undefined}
+              aria-label={mark.label}
+            >
+              {pad(i + start)}
               <span className='gtp-rail-tip'>{mark.label}</span>
             </button>
           </span>

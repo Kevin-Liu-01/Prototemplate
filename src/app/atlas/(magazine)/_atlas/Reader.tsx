@@ -8,7 +8,7 @@ import type { Story } from './content';
 import { dmsPair } from './coords';
 import { useMountEffect } from './hooks';
 import type { Block } from './parse';
-import Plate, { pad } from './plates/Plate';
+import Plate from './plates/Plate';
 import Inline from './ui/Inline';
 import PressMark from './ui/PressMark';
 import MaskToc from './ui/MaskToc';
@@ -16,25 +16,51 @@ import Rail, { type RailMark } from './ui/Rail';
 import { SliderStyleContext } from './ui/StopSlider';
 import ThemeSwitch from './ui/ThemeSwitch';
 import BookBody from './BookBody';
-import { EditionContext, homeOf, storyHref, useEdition, type Edition } from './edition';
+import {
+  EditionContext,
+  homeOf,
+  storyHref,
+  useEdition,
+  type Edition,
+} from './edition';
 import { landed, move, plainClick } from './transition';
 import Cover from './ui/Cover';
 import type { ArtBox } from './gpu/emblems';
-import { Headline, isShort, leadOf, Mark, subtitleOf, useSlideIn } from './ui/Decor';
-import { ArrowIcon, CalendarIcon, ClockIcon, IndexIcon, LiveIcon, LoopIcon, PenIcon, PinIcon, StillIcon, ViewsIcon } from './ui/icons';
-import { bylineDate } from './riffle/print';
+import { Headline, isShort, leadOf, Mark } from './ui/Decor';
+import {
+  ArrowIcon,
+  CalendarIcon,
+  ClockIcon,
+  IndexIcon,
+  LiveIcon,
+  LoopIcon,
+  PenIcon,
+  PinIcon,
+  StillIcon,
+  ViewsIcon,
+} from './ui/icons';
+import { bylineDate, pad } from './riffle/print';
+import { splitTitle } from './stories';
 
-type Props = { story: Story; next: { slug: string; title: string } | null; edition?: Edition };
+type Props = {
+  story: Story;
+  next: { slug: string; title: string } | null;
+  edition?: Edition;
+};
 
 const WIDE = '(min-width: 1000px)';
 
 /** Which plate each block shows: a figure from the paragraph that introduces it until the next one; the cover before the first. */
-function platesFor(blocks: Block[], figureIndex: Map<number, number>): number[] {
+function platesFor(
+  blocks: Block[],
+  figureIndex: Map<number, number>
+): number[] {
   let current = 0;
   return blocks.map((block, i) => {
     const next = blocks[i + 1];
     if (block.kind === 'figure') current = figureIndex.get(i) ?? current;
-    else if (next?.kind === 'figure') current = figureIndex.get(i + 1) ?? current;
+    else if (next?.kind === 'figure')
+      current = figureIndex.get(i + 1) ?? current;
     return current;
   });
 }
@@ -44,9 +70,8 @@ function platesFor(blocks: Block[], figureIndex: Map<number, number>): number[] 
    home, the crossfade in and out) and sets the story's body in its look: the
    book look (Translating Euclid) as a printed book with its pictures on a
    stage (BookBody), the others split between the text and the stage. In the
-   magazine (/atlas) the body takes the magazine's text decorations
-   (ui/Decor.tsx, magazine.css); on the shelf (/atlas/shelf) it reads as it
-   did before the magazine. */
+   magazine the body takes the magazine's text decorations (ui/Decor.tsx,
+   magazine.css); on the shelf it reads without them. */
 export default function Reader({ story, next, edition = 'magazine' }: Props) {
   const router = useRouter();
   const home = homeOf(edition);
@@ -61,28 +86,51 @@ export default function Reader({ story, next, edition = 'magazine' }: Props) {
 
   return (
     <EditionContext value={edition}>
-    <SliderStyleContext value={story.look === 'fuma' ? 'mask' : story.look === 'book' ? 'book' : 'stops'}>
-      <div
-        className='gtp gtp-reader'
-        data-edition={edition}
-        data-look={story.look}
-        data-story={story.slug}
-        onClickCapture={(e) => {
-          // every link home runs the crossfade
-          const link = e.target instanceof Element ? e.target.closest(`a[href="${home}"]`) : null;
-          if (!link || !plainClick(e)) return;
-          e.preventDefault();
-          e.stopPropagation();
-          move((href) => router.push(href), home);
-        }}
+      <SliderStyleContext
+        value={
+          story.look === 'fuma'
+            ? 'mask'
+            : story.look === 'book'
+              ? 'book'
+              : 'stops'
+        }
       >
-        <ThemeSwitch className='gtp-reader-theme' />
-        <Link href={home} className='gtp-float-home' aria-label='GT Atlas, all stories'>
-          <PressMark size={26} />
-        </Link>
-        {story.look === 'book' ? <BookBody story={story} decorated={edition === 'magazine'} /> : <SplitBody story={story} next={next} decorated={edition === 'magazine'} />}
-      </div>
-    </SliderStyleContext>
+        <div
+          className='gtp gtp-reader'
+          data-edition={edition}
+          data-look={story.look}
+          data-story={story.slug}
+          onClickCapture={(e) => {
+            // every link home runs the crossfade
+            const link =
+              e.target instanceof Element
+                ? e.target.closest(`a[href="${home}"]`)
+                : null;
+            if (!link || !plainClick(e)) return;
+            e.preventDefault();
+            e.stopPropagation();
+            move((href) => router.push(href), home);
+          }}
+        >
+          <ThemeSwitch className='gtp-reader-theme' />
+          <Link
+            href={home}
+            className='gtp-float-home'
+            aria-label='GT Atlas, all stories'
+          >
+            <PressMark size={26} />
+          </Link>
+          {story.look === 'book' ? (
+            <BookBody story={story} decorated={edition === 'magazine'} />
+          ) : (
+            <SplitBody
+              story={story}
+              next={next}
+              decorated={edition === 'magazine'}
+            />
+          )}
+        </div>
+      </SliderStyleContext>
     </EditionContext>
   );
 }
@@ -91,12 +139,16 @@ export default function Reader({ story, next, edition = 'magazine' }: Props) {
    on the right with the figure the reader has reached, and the ruler at the
    left edge. On a narrow screen the stage goes away and each figure's plate
    sits in the text where the figure was. */
-function SplitBody({ story, next, decorated = false }: Props & { decorated?: boolean }) {
+function SplitBody({
+  story,
+  next,
+  decorated = false,
+}: Props & { decorated?: boolean }) {
   const edition = useEdition();
   const { blocks, figures } = story;
   // the paragraph that opens on the magazine's drop cap
   const lead = decorated ? leadOf(blocks) : -1;
-  const sub = decorated ? subtitleOf(story.title) : null;
+  const sub = decorated ? splitTitle(story.title) : null;
   const [plate, setPlate] = useState(0);
   const [section, setSection] = useState(0);
   const [seen, setSeen] = useState<Set<number>>(() => new Set([0, 1]));
@@ -105,7 +157,6 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
   const text = useRef<HTMLElement>(null);
   const progress = useRef<HTMLSpanElement>(null);
   const rail = useRef<HTMLElement>(null);
-  useSlideIn(text, decorated);
 
   const { plateOf, sectionOf, headings } = useMemo(() => {
     const figureIndex = new Map<number, number>();
@@ -120,14 +171,20 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
   }, [blocks]);
 
   const hitItems = useMemo(() => {
-    const lists = blocks.filter((b): b is Extract<Block, { kind: 'list' }> => b.kind === 'list');
+    const lists = blocks.filter(
+      (b): b is Extract<Block, { kind: 'list' }> => b.kind === 'list'
+    );
     return lists.at(-1)?.items ?? [];
   }, [blocks]);
 
   const show = (p: number) => {
     setPlate(p);
     // the plates either side and the two ahead stay mounted, so each is loaded before the reader reaches it
-    setSeen((prev) => (prev.has(p) && prev.has(p + 2) ? prev : new Set([...prev, p - 1, p, p + 1, p + 2])));
+    setSeen((prev) =>
+      prev.has(p) && prev.has(p + 2)
+        ? prev
+        : new Set([...prev, p - 1, p, p + 1, p + 2])
+    );
   };
 
   useMountEffect(() => {
@@ -139,16 +196,26 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
     // the figure and section for the reader's place: the last block on the page whose top has passed the reading line,
     // so a jump or a fast scroll that lands between blocks still shows the right figure
     const settle = () => {
-      const placed = [...(text.current?.querySelectorAll<HTMLElement>('[data-plate]') ?? [])];
+      const placed = [
+        ...(text.current?.querySelectorAll<HTMLElement>('[data-plate]') ?? []),
+      ];
       // a figure's stub is hidden in the magazine, so only blocks on the page count
-      const last = placed.filter((el) => el.offsetHeight > 0 && el.getBoundingClientRect().top <= innerHeight * 0.4).at(-1);
+      const last = placed
+        .filter(
+          (el) =>
+            el.offsetHeight > 0 &&
+            el.getBoundingClientRect().top <= innerHeight * 0.4
+        )
+        .at(-1);
       if (!last) return;
       show(Number(last.dataset.plate ?? 0));
       setSection(Number(last.dataset.section ?? 0));
     };
     requestAnimationFrame(settle);
-    // the reader's place: the rail's lit lines, and the line along the top on a phone
+    // the reader's place: the rail's lit lines, and the line along the top on a phone; once the scroll rests, the
+    // block on the reading line picks the figure, in case a jump carried it past the observer's band below
     let frame = 0;
+    let rest = 0;
     const onScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
@@ -156,8 +223,9 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
         const p = max > 0 ? Math.min(1, scrollY / max) : 0;
         progress.current?.style.setProperty('--p', String(p));
         rail.current?.style.setProperty('--p', String(p));
-        settle();
       });
+      window.clearTimeout(rest);
+      rest = window.setTimeout(settle, 120);
     };
     addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -166,15 +234,17 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const el = entry.target as HTMLElement;
+          const el = entry.target;
+          if (!entry.isIntersecting || !(el instanceof HTMLElement)) continue;
           show(Number(el.dataset.plate ?? 0));
           setSection(Number(el.dataset.section ?? 0));
         }
       },
       { rootMargin: '-38% 0px -57% 0px' }
     );
-    text.current?.querySelectorAll('[data-plate]').forEach((el) => observer.observe(el));
+    text.current
+      ?.querySelectorAll('[data-plate]')
+      .forEach((el) => observer.observe(el));
 
     // the rail's numbered ticks sit where each section's heading reaches the top
     const measure = () => {
@@ -183,7 +253,11 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
       const list: RailMark[] = [{ key: 'top', label: story.title, at: 0 }];
       text.current?.querySelectorAll<HTMLElement>('h2[id]').forEach((h) => {
         const top = h.getBoundingClientRect().top + scrollY - 40;
-        list.push({ key: h.id, label: h.textContent ?? '', at: Math.max(0, Math.min(1, top / max)) });
+        list.push({
+          key: h.id,
+          label: h.textContent ?? '',
+          at: Math.max(0, Math.min(1, top / max)),
+        });
       });
       setMarks(list);
     };
@@ -195,6 +269,7 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
       media.removeEventListener('change', sync);
       removeEventListener('scroll', onScroll);
       cancelAnimationFrame(frame);
+      window.clearTimeout(rest);
       observer.disconnect();
       resize.disconnect();
     };
@@ -212,7 +287,8 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
     el?.scrollIntoView({ block: 'start' });
   };
 
-  const sectionLabel = section === 0 ? 'Opening' : (headings[section - 1]?.text ?? '');
+  const sectionLabel =
+    section === 0 ? 'Opening' : (headings[section - 1]?.text ?? '');
   let figureCount = 0;
 
   return (
@@ -221,7 +297,11 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
       <div className='gtp-reader-body'>
         {story.look === 'fuma' ? (
           <div className='gtp-fuma-nav'>
-            <Link href={homeOf(edition)} className='gtp-fuma-home' aria-label='GT Atlas, all stories'>
+            <Link
+              href={homeOf(edition)}
+              className='gtp-fuma-home'
+              aria-label='GT Atlas, all stories'
+            >
               <PressMark size={24} />
             </Link>
             <MaskToc items={headings} current={section} label='Sections' />
@@ -241,7 +321,11 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
         <article ref={text} className='gtp-text'>
           <header className='gtp-title' data-plate={0} data-section={0}>
             {/* the cover's box is in the page from the first paint (shown below the wide width), so the text never moves down */}
-            <div className='gtp-phone-cover'>{wide ? null : <StoryCover story={story} playing bare={decorated} />}</div>
+            <div className='gtp-phone-cover'>
+              {wide ? null : (
+                <StoryCover story={story} playing bare={decorated} />
+              )}
+            </div>
             {decorated ? (
               <>
                 <h1>
@@ -289,18 +373,35 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
           </header>
 
           {blocks.map((block, i) => {
-            const at = { 'data-plate': plateOf[i], 'data-section': sectionOf[i] };
+            const at = {
+              'data-plate': plateOf[i],
+              'data-section': sectionOf[i],
+            };
             switch (block.kind) {
               case 'heading':
                 return (
-                  <h2 key={i} id={block.id} className={decorated ? 'gtm-h2' : undefined} {...at}>
-                    {decorated ? <Mark slug={story.slug} /> : <span className='gtp-h-n'>{pad(sectionOf[i] ?? 0)}</span>}
+                  <h2
+                    key={i}
+                    id={block.id}
+                    className={decorated ? 'gtm-h2' : undefined}
+                    {...at}
+                  >
+                    {decorated ? (
+                      <Mark slug={story.slug} />
+                    ) : (
+                      <span className='gtp-h-n'>{pad(sectionOf[i] ?? 0)}</span>
+                    )}
                     {decorated ? <span>{block.text}</span> : block.text}
                   </h2>
                 );
               case 'para':
                 return (
-                  <p key={i} className={i === lead ? 'gtm-lead' : undefined} data-short={i === lead && isShort(block) ? '' : undefined} {...at}>
+                  <p
+                    key={i}
+                    className={i === lead ? 'gtm-lead' : undefined}
+                    data-short={i === lead && isShort(block) ? '' : undefined}
+                    {...at}
+                  >
                     <Inline nodes={block.inline} />
                   </p>
                 );
@@ -321,8 +422,11 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
                   <ul key={i} className='gtp-rules' {...at}>
                     {block.items.map((rule, k) => (
                       <li key={k} data-ok={rule.ok}>
-                        <span className='gtp-rule-mark' aria-label={rule.ok ? 'Do' : 'Do not'}>
+                        <span className='gtp-rule-mark' aria-hidden='true'>
                           {rule.ok ? '✓' : '✕'}
+                        </span>
+                        <span className='gtp-sr'>
+                          {rule.ok ? 'Do: ' : 'Do not: '}
                         </span>
                         <Inline nodes={rule.inline} />
                       </li>
@@ -346,14 +450,33 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
                 // the page learns its width; the inline plate mounts its figure only where it shows, and only as the reader nears it
                 return (
                   <Fragment key={i}>
-                    <button type='button' className='gtp-stub' data-on={plate === figure.n} onClick={() => show(figure.n)} {...at}>
+                    <button
+                      type='button'
+                      className='gtp-stub'
+                      data-testid={`atlas-figure-${figure.n}`}
+                      aria-pressed={plate === figure.n}
+                      data-on={plate === figure.n}
+                      onClick={() => show(figure.n)}
+                      {...at}
+                    >
                       <FigureIcon figure={figure} />
                       <span className='gtp-mono'>Fig. {pad(figure.n)}</span>
-                      <span className='gtp-stub-text'>{figure.label ?? figure.frames[0]?.alt}</span>
+                      <span className='gtp-stub-text'>
+                        {figure.label ?? figure.frames[0]?.alt}
+                      </span>
                       <ArrowIcon size={14} />
                     </button>
                     <div className='gtp-inline-plate' {...at}>
-                      {wide ? null : <Plate figure={figure} titles={story.titles} hitItems={hitItems} active={plate === figure.n} mounted={seen.has(figure.n)} inline />}
+                      {wide ? null : (
+                        <Plate
+                          figure={figure}
+                          titles={story.titles}
+                          hitItems={hitItems}
+                          active={plate === figure.n}
+                          mounted={seen.has(figure.n)}
+                          inline
+                        />
+                      )}
                     </div>
                   </Fragment>
                 );
@@ -384,8 +507,18 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
         <aside className='gtp-stage-col' aria-label='Figures'>
           {wide ? (
             <div className='gtp-stage'>
-              <section className='gtp-plate gtp-plate-cover' data-on={plate === 0} aria-hidden={plate !== 0} inert={plate !== 0} aria-label='Cover'>
-                <StoryCover story={story} playing={plate === 0} bare={decorated} />
+              <section
+                className='gtp-plate gtp-plate-cover'
+                data-on={plate === 0}
+                aria-hidden={plate !== 0}
+                inert={plate !== 0}
+                aria-label='Cover'
+              >
+                <StoryCover
+                  story={story}
+                  playing={plate === 0}
+                  bare={decorated}
+                />
               </section>
               {figures.map((figure) => (
                 <Plate
@@ -406,8 +539,26 @@ function SplitBody({ story, next, decorated = false }: Props & { decorated?: boo
 }
 
 /** A story's live cover; bare, its art alone and centred, where the headline beside it already says the title. */
-function StoryCover({ story, playing, bare = false }: { story: Story; playing: boolean; bare?: boolean }) {
-  return <Cover slug={story.slug} title={bare ? '' : story.title} lang='en' dir='ltr' picture={story.cover} playing={playing} artAt={bare ? ART_CENTRE : undefined} />;
+function StoryCover({
+  story,
+  playing,
+  bare = false,
+}: {
+  story: Story;
+  playing: boolean;
+  bare?: boolean;
+}) {
+  return (
+    <Cover
+      slug={story.slug}
+      title={bare ? '' : story.title}
+      lang='en'
+      dir='ltr'
+      picture={story.cover}
+      playing={playing}
+      artAt={bare ? ART_CENTRE : undefined}
+    />
+  );
 }
 
 /** Where a bare cover's design draws: across the middle, with no title under it to make room for. */

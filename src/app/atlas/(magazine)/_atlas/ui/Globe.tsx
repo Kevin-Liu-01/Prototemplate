@@ -26,14 +26,30 @@ type Props = {
 
 /* The dithered globe with its pin: a crosshair at the place and its
    coordinates, which flips to the pin's left near the right limb. */
-export default function Globe({ place, className, cell = 3, tilt = 14, graticule = false, label = true, turn, children }: Props) {
+export default function Globe({
+  place,
+  className,
+  cell = 3,
+  tilt = 14,
+  graticule = false,
+  label = true,
+  turn,
+  children,
+}: Props) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const pin = useRef<HTMLSpanElement>(null);
   const handle = useRef<GlobeHandle | null>(null);
 
   useMountEffect(() => {
     if (!canvas.current) return;
-    handle.current = mountGlobe(canvas.current, pin.current, place, cell, tilt, graticule);
+    handle.current = mountGlobe(
+      canvas.current,
+      pin.current,
+      place,
+      cell,
+      tilt,
+      graticule
+    );
     return () => handle.current?.destroy();
   });
 

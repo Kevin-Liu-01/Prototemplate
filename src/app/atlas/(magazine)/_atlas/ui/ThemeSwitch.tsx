@@ -17,11 +17,15 @@ export default function ThemeSwitch({ className }: { className?: string }) {
 
   useMountEffect(() => {
     const html = document.documentElement;
-    const read = () => setTheme(html.dataset.theme === 'light' ? 'light' : 'dark');
+    const read = () =>
+      setTheme(html.dataset.theme === 'light' ? 'light' : 'dark');
     read();
     // the hub's boot script, another tab or another switch can change it too
     const observer = new MutationObserver(read);
-    observer.observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+    observer.observe(html, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
     return () => observer.disconnect();
   });
 
@@ -37,7 +41,13 @@ export default function ThemeSwitch({ className }: { className?: string }) {
   };
 
   return (
-    <button type='button' className={['gtp-theme', className].filter(Boolean).join(' ')} onClick={flip} aria-label={theme === 'light' ? 'Dark theme' : 'Light theme'}>
+    <button
+      type='button'
+      className={['gtp-theme', className].filter(Boolean).join(' ')}
+      data-testid='atlas-theme'
+      onClick={flip}
+      aria-label={theme === 'light' ? 'Dark theme' : 'Light theme'}
+    >
       {theme === 'light' ? <MoonIcon size={15} /> : <SunIcon size={15} />}
     </button>
   );

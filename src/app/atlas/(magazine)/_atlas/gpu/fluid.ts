@@ -5,7 +5,11 @@
    owner pauses it off screen. mountFluid answers null where WebGPU is
    missing, and the owner draws its fallback. */
 
-import { FLUID_SLOT_BYTES, FLUID_UNIFORM_BYTES, FLUID_WGSL } from './fluid-wgsl';
+import {
+  FLUID_SLOT_BYTES,
+  FLUID_UNIFORM_BYTES,
+  FLUID_WGSL,
+} from './fluid-wgsl';
 
 export type CoverSpec = {
   /** Ground, first dye, second dye. */
@@ -46,9 +50,35 @@ export type FluidHandle = {
   destroy(): void;
 };
 
-type PassName = 'emitVel' | 'emitDye' | 'curl' | 'vorticity' | 'divergence' | 'scale' | 'pressure' | 'gradient' | 'advVel' | 'advDye' | 'display';
-const SLOTS: PassName[] = ['emitVel', 'emitDye', 'curl', 'vorticity', 'divergence', 'scale', 'pressure', 'gradient', 'advVel', 'advDye', 'display'];
-const SLOT = Object.fromEntries(SLOTS.map((name, i) => [name, i])) as Record<PassName, number>;
+type PassName =
+  | 'emitVel'
+  | 'emitDye'
+  | 'curl'
+  | 'vorticity'
+  | 'divergence'
+  | 'scale'
+  | 'pressure'
+  | 'gradient'
+  | 'advVel'
+  | 'advDye'
+  | 'display';
+const SLOTS: PassName[] = [
+  'emitVel',
+  'emitDye',
+  'curl',
+  'vorticity',
+  'divergence',
+  'scale',
+  'pressure',
+  'gradient',
+  'advVel',
+  'advDye',
+  'display',
+];
+const SLOT = Object.fromEntries(SLOTS.map((name, i) => [name, i])) as Record<
+  PassName,
+  number
+>;
 const FLOATS = FLUID_SLOT_BYTES / 4;
 const PRESSURE_ITERATIONS = 20;
 const WARMUP_STEPS = 120;
@@ -58,7 +88,8 @@ let devicePromise: Promise<GPUDevice | null> | null = null;
 export function gpuDevice(): Promise<GPUDevice | null> {
   devicePromise ??= (async () => {
     if (typeof navigator === 'undefined' || !navigator.gpu) return null;
-    const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
+    // the default adapter: a cover asks for no more than the integrated GPU gives, and a dual-GPU Mac stays on it
+    const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) return null;
     const device = await adapter.requestDevice();
     void device.lost.then(() => {
@@ -83,13 +114,35 @@ function kitFor(device: GPUDevice, canvasFormat: GPUTextureFormat): Kit {
   const module = device.createShaderModule({ code: FLUID_WGSL });
   const layout = device.createBindGroupLayout({
     entries: [
-      { binding: 0, visibility: GPUShaderStage.FRAGMENT, buffer: { type: 'uniform', hasDynamicOffset: true, minBindingSize: FLUID_UNIFORM_BYTES } },
-      { binding: 1, visibility: GPUShaderStage.FRAGMENT, sampler: { type: 'filtering' } },
-      { binding: 2, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'float' } },
-      { binding: 3, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'float' } },
+      {
+        binding: 0,
+        visibility: GPUShaderStage.FRAGMENT,
+        buffer: {
+          type: 'uniform',
+          hasDynamicOffset: true,
+          minBindingSize: FLUID_UNIFORM_BYTES,
+        },
+      },
+      {
+        binding: 1,
+        visibility: GPUShaderStage.FRAGMENT,
+        sampler: { type: 'filtering' },
+      },
+      {
+        binding: 2,
+        visibility: GPUShaderStage.FRAGMENT,
+        texture: { sampleType: 'float' },
+      },
+      {
+        binding: 3,
+        visibility: GPUShaderStage.FRAGMENT,
+        texture: { sampleType: 'float' },
+      },
     ],
   });
-  const pipelineLayout = device.createPipelineLayout({ bindGroupLayouts: [layout] });
+  const pipelineLayout = device.createPipelineLayout({
+    bindGroupLayouts: [layout],
+  });
   const make = (entryPoint: string, format: GPUTextureFormat) =>
     device.createRenderPipeline({
       layout: pipelineLayout,
@@ -99,7 +152,12 @@ function kitFor(device: GPUDevice, canvasFormat: GPUTextureFormat): Kit {
     });
   const kit: Kit = {
     layout,
-    sampler: device.createSampler({ magFilter: 'linear', minFilter: 'linear', addressModeU: 'clamp-to-edge', addressModeV: 'clamp-to-edge' }),
+    sampler: device.createSampler({
+      magFilter: 'linear',
+      minFilter: 'linear',
+      addressModeU: 'clamp-to-edge',
+      addressModeV: 'clamp-to-edge',
+    }),
     pipelines: {
       emitVel: make('emit', 'rg16float'),
       emitDye: make('emit', 'rgba16float'),
@@ -135,7 +193,15 @@ function linear(hex: string): [number, number, number] {
 /** Glyphfield's three slow orbiting jets; pure functions of time. */
 function jets(time: number, frequency: number) {
   const motion = time * (0.42 + frequency * 0.025);
-  const orbit = (phase: number, rateX: number, rateY: number, radiusX: number, radiusY: number, cx: number, cy: number) => {
+  const orbit = (
+    phase: number,
+    rateX: number,
+    rateY: number,
+    radiusX: number,
+    radiusY: number,
+    cx: number,
+    cy: number
+  ) => {
     const x = cx + Math.sin(motion * rateX + phase) * radiusX;
     const y = cy + Math.cos(motion * rateY + phase) * radiusY;
     const dx = Math.cos(motion * rateX + phase) * radiusX * rateX;
@@ -152,15 +218,28 @@ function jets(time: number, frequency: number) {
 
 function fitShortSide(width: number, height: number, short: number) {
   const aspect = width / Math.max(1, height);
-  return aspect >= 1 ? { w: Math.round(short * aspect), h: short } : { w: short, h: Math.round(short / aspect) };
+  return aspect >= 1
+    ? { w: Math.round(short * aspect), h: short }
+    : { w: short, h: Math.round(short / aspect) };
 }
 
-type Target = { texture: GPUTexture; view: GPUTextureView; w: number; h: number };
+type Target = {
+  texture: GPUTexture;
+  view: GPUTextureView;
+  w: number;
+  h: number;
+};
 type Pair = { read: Target; write: Target };
 
-export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Promise<FluidHandle | null> {
+/** Mounts a cover's fluid on the canvas, or resolves null without WebGPU; `onLost` runs if the GPU device is lost later. */
+export async function mountFluid(
+  canvas: HTMLCanvasElement,
+  spec: CoverSpec,
+  onLost?: () => void
+): Promise<FluidHandle | null> {
   const device = await gpuDevice();
   if (!device) return null;
+  if (onLost) void device.lost.then(onLost);
   const context = canvas.getContext('webgpu');
   if (!context) return null;
   const format = navigator.gpu.getPreferredCanvasFormat();
@@ -174,20 +253,43 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
   canvas.height = height;
 
   const owned: GPUTexture[] = [];
-  const target = (w: number, h: number, format: GPUTextureFormat, extra = 0): Target => {
-    const texture = device.createTexture({ size: [w, h], format, usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING | extra });
+  const target = (
+    w: number,
+    h: number,
+    format: GPUTextureFormat,
+    extra = 0
+  ): Target => {
+    const texture = device.createTexture({
+      size: [w, h],
+      format,
+      usage:
+        GPUTextureUsage.RENDER_ATTACHMENT |
+        GPUTextureUsage.TEXTURE_BINDING |
+        extra,
+    });
     owned.push(texture);
     return { texture, view: texture.createView(), w, h };
   };
-  const pair = (w: number, h: number, format: GPUTextureFormat): Pair => ({ read: target(w, h, format), write: target(w, h, format) });
+  const pair = (w: number, h: number, format: GPUTextureFormat): Pair => ({
+    read: target(w, h, format),
+    write: target(w, h, format),
+  });
   const swap = (p: Pair) => {
     const read = p.read;
     p.read = p.write;
     p.write = read;
   };
 
-  const sim = fitShortSide(width, height, Math.round(Math.min(224, Math.max(96, 96 + spec.detail * 14))));
-  const dyeSize = fitShortSide(width, height, Math.min(1024, Math.max(192, Math.min(width, height))));
+  const sim = fitShortSide(
+    width,
+    height,
+    Math.round(Math.min(224, Math.max(96, 96 + spec.detail * 14)))
+  );
+  const dyeSize = fitShortSide(
+    width,
+    height,
+    Math.min(1024, Math.max(192, Math.min(width, height)))
+  );
   const velocity = pair(sim.w, sim.h, 'rg16float');
   const pressure = pair(sim.w, sim.h, 'r16float');
   const curl = target(sim.w, sim.h, 'r16float');
@@ -195,16 +297,43 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
   const dye = pair(dyeSize.w, dyeSize.h, 'rgba16float');
   let text = target(width, height, 'rgba8unorm', GPUTextureUsage.COPY_DST);
 
-  const uniforms = device.createBuffer({ size: SLOTS.length * FLUID_SLOT_BYTES, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+  const uniforms = device.createBuffer({
+    size: SLOTS.length * FLUID_SLOT_BYTES,
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  });
   const data = new Float32Array(SLOTS.length * FLOATS);
   const palette = spec.colors.map(linear) as [number, number, number][];
   const ground = palette[0]!;
   const paper = hexToRgb(spec.paper);
   const rate = Math.min(3, Math.sqrt(Math.min(1.5, spec.speed)) * 2.1);
   const pace = spec.pace ?? 1;
-  const pointer = { x: 0.5, y: 0.5, lastX: 0.5, lastY: 0.5, vx: 0, vy: 0, until: 0 };
+  const pointer = {
+    x: 0.5,
+    y: 0.5,
+    lastX: 0.5,
+    lastY: 0.5,
+    vx: 0,
+    vy: 0,
+    until: 0,
+  };
 
-  const put = (slot: PassName, values: Partial<Record<'texel' | 'velTexel', [number, number]>> & Partial<Record<'dt' | 'curl' | 'dissipation' | 'edgeFade' | 'aspect' | 'count' | 'value' | 'time', number>>) => {
+  const put = (
+    slot: PassName,
+    values: Partial<Record<'texel' | 'velTexel', [number, number]>> &
+      Partial<
+        Record<
+          | 'dt'
+          | 'curl'
+          | 'dissipation'
+          | 'edgeFade'
+          | 'aspect'
+          | 'count'
+          | 'value'
+          | 'time',
+          number
+        >
+      >
+  ) => {
     const o = SLOT[slot] * FLOATS;
     if (values.texel) data.set(values.texel, o);
     if (values.dt !== undefined) data[o + 2] = values.dt;
@@ -217,7 +346,10 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
     if (values.value !== undefined) data[o + 10] = values.value;
     if (values.time !== undefined) data[o + 11] = values.time;
   };
-  const splats = (slot: PassName, points: { x: number; y: number; r: number; v: [number, number, number] }[]) => {
+  const splats = (
+    slot: PassName,
+    points: { x: number; y: number; r: number; v: [number, number, number] }[]
+  ) => {
     const o = SLOT[slot] * FLOATS;
     points.slice(0, 4).forEach((p, k) => {
       data.set([p.x, p.y, p.r, 0], o + 20 + k * 4);
@@ -228,38 +360,80 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
 
   // what never changes between steps
   const simTexel: [number, number] = [1 / sim.w, 1 / sim.h];
-  for (const slot of ['curl', 'vorticity', 'divergence', 'pressure', 'gradient', 'advVel', 'advDye'] as const) put(slot, { texel: simTexel });
+  for (const slot of [
+    'curl',
+    'vorticity',
+    'divergence',
+    'pressure',
+    'gradient',
+    'advVel',
+    'advDye',
+  ] as const)
+    put(slot, { texel: simTexel });
   put('vorticity', { curl: 14 + spec.strength * 22 });
   put('scale', { value: 0.8 });
   put('advVel', { velTexel: simTexel, dissipation: 0.25, edgeFade: 0 });
-  put('advDye', { velTexel: simTexel, dissipation: 2.1 - Math.min(1.5, spec.density) * 0.8, edgeFade: 6 });
+  put('advDye', {
+    velTexel: simTexel,
+    dissipation: 2.1 - Math.min(1.5, spec.density) * 0.8,
+    edgeFade: 6,
+  });
   put('emitVel', { aspect: sim.w / sim.h });
   put('emitDye', { aspect: dyeSize.w / dyeSize.h });
-  put('display', { texel: [1 / dyeSize.w, 1 / dyeSize.h], velTexel: [width, height] });
+  put('display', {
+    texel: [1 / dyeSize.w, 1 / dyeSize.h],
+    velTexel: [width, height],
+  });
   {
     const o = SLOT.display * FLOATS;
     data.set([...ground, spec.brightness], o + 12);
     data.set([...paper, spec.grain], o + 16);
     // the dither: a one CSS pixel cell, on or off, the calm and the zoom, then the three inks in sRGB
     const cell = Math.max(1, Math.round(dpr));
-    data.set([cell, spec.dither === false ? 0 : 1, spec.calm ?? 1, spec.zoom ?? 1], o + 20);
-    spec.colors.forEach((hex, k) => data.set([...hexToRgb(hex), 1], o + 36 + k * 4));
+    data.set(
+      [cell, spec.dither === false ? 0 : 1, spec.calm ?? 1, spec.zoom ?? 1],
+      o + 20
+    );
+    spec.colors.forEach((hex, k) =>
+      data.set([...hexToRgb(hex), 1], o + 36 + k * 4)
+    );
     // the crisp art's ink after the three, and the accent ink with its switch in the second point
     data.set([...hexToRgb(spec.art ?? spec.paper), 1], o + 48);
-    data.set([...hexToRgb(spec.accent ?? spec.paper), spec.accent ? 1 : 0], o + 24);
+    data.set(
+      [...hexToRgb(spec.accent ?? spec.paper), spec.accent ? 1 : 0],
+      o + 24
+    );
   }
 
-  const pass = (encoder: GPUCommandEncoder, name: PassName, out: GPUTextureView, a: Target, b: Target = a) => {
+  const pass = (
+    encoder: GPUCommandEncoder,
+    name: PassName,
+    out: GPUTextureView,
+    a: Target,
+    b: Target = a
+  ) => {
     const group = device.createBindGroup({
       layout: kit.layout,
       entries: [
-        { binding: 0, resource: { buffer: uniforms, size: FLUID_UNIFORM_BYTES } },
+        {
+          binding: 0,
+          resource: { buffer: uniforms, size: FLUID_UNIFORM_BYTES },
+        },
         { binding: 1, resource: kit.sampler },
         { binding: 2, resource: a.view },
         { binding: 3, resource: b.view },
       ],
     });
-    const render = encoder.beginRenderPass({ colorAttachments: [{ view: out, loadOp: 'clear', storeOp: 'store', clearValue: [0, 0, 0, 1] }] });
+    const render = encoder.beginRenderPass({
+      colorAttachments: [
+        {
+          view: out,
+          loadOp: 'clear',
+          storeOp: 'store',
+          clearValue: [0, 0, 0, 1],
+        },
+      ],
+    });
     render.setPipeline(kit.pipelines[name]);
     render.setBindGroup(0, group, [SLOT[name] * FLUID_SLOT_BYTES]);
     render.draw(3);
@@ -271,15 +445,43 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
     const acceleration = (5 + spec.strength * 9) * sim.h * dt;
     const dyeRate = (2.4 + spec.density * 3) * dt;
     const js = jets(time, spec.frequency);
-    const vel = js.map((j) => ({ x: j.x, y: j.y, r: radius, v: [j.dx * acceleration, j.dy * acceleration, 0] as [number, number, number] }));
+    const vel = js.map((j) => ({
+      x: j.x,
+      y: j.y,
+      r: radius,
+      v: [j.dx * acceleration, j.dy * acceleration, 0] as [
+        number,
+        number,
+        number,
+      ],
+    }));
     const ink = js.map((j) => {
       const c = palette[j.color]!;
-      return { x: j.x, y: j.y, r: radius * 0.8, v: [c[0] * dyeRate, c[1] * dyeRate, c[2] * dyeRate] as [number, number, number] };
+      return {
+        x: j.x,
+        y: j.y,
+        r: radius * 0.8,
+        v: [c[0] * dyeRate, c[1] * dyeRate, c[2] * dyeRate] as [
+          number,
+          number,
+          number,
+        ],
+      };
     });
     if (live) {
-      vel.push({ x: pointer.x, y: pointer.y, r: radius * 0.7, v: [pointer.vx * sim.h * 6, pointer.vy * sim.h * 6, 0] });
+      vel.push({
+        x: pointer.x,
+        y: pointer.y,
+        r: radius * 0.7,
+        v: [pointer.vx * sim.h * 6, pointer.vy * sim.h * 6, 0],
+      });
       const c = palette[2]!;
-      ink.push({ x: pointer.x, y: pointer.y, r: radius * 0.6, v: [c[0] * 0.35, c[1] * 0.35, c[2] * 0.35] });
+      ink.push({
+        x: pointer.x,
+        y: pointer.y,
+        r: radius * 0.6,
+        v: [c[0] * 0.35, c[1] * 0.35, c[2] * 0.35],
+      });
     }
     splats('emitVel', vel);
     splats('emitDye', ink);
@@ -303,7 +505,13 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
       pass(encoder, 'pressure', pressure.write.view, pressure.read, divergence);
       swap(pressure);
     }
-    pass(encoder, 'gradient', velocity.write.view, pressure.read, velocity.read);
+    pass(
+      encoder,
+      'gradient',
+      velocity.write.view,
+      pressure.read,
+      velocity.read
+    );
     swap(velocity);
     pass(encoder, 'advVel', velocity.write.view, velocity.read, velocity.read);
     swap(velocity);
@@ -314,9 +522,21 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
 
   const draw = (time: number) => {
     put('display', { time });
-    device.queue.writeBuffer(uniforms, SLOT.display * FLUID_SLOT_BYTES, data, SLOT.display * FLOATS, FLOATS);
+    device.queue.writeBuffer(
+      uniforms,
+      SLOT.display * FLUID_SLOT_BYTES,
+      data,
+      SLOT.display * FLOATS,
+      FLOATS
+    );
     const encoder = device.createCommandEncoder();
-    pass(encoder, 'display', context.getCurrentTexture().createView(), dye.read, text);
+    pass(
+      encoder,
+      'display',
+      context.getCurrentTexture().createView(),
+      dye.read,
+      text
+    );
     device.queue.submit([encoder.finish()]);
   };
 
@@ -335,7 +555,11 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
     last = now;
     clock += (ms / 1000) * rate * pace;
     const live = now < pointer.until;
-    step(Math.min(1 / 30, (ms / 1000) * (0.72 + rate * 0.6)) * pace, clock, live);
+    step(
+      Math.min(1 / 30, (ms / 1000) * (0.72 + rate * 0.6)) * pace,
+      clock,
+      live
+    );
     pointer.vx *= 0.82;
     pointer.vy *= 0.82;
     draw(clock);
@@ -369,9 +593,18 @@ export async function mountFluid(canvas: HTMLCanvasElement, spec: CoverSpec): Pr
     setText(source) {
       if (source.width !== text.w || source.height !== text.h) {
         text.texture.destroy();
-        text = target(source.width, source.height, 'rgba8unorm', GPUTextureUsage.COPY_DST);
+        text = target(
+          source.width,
+          source.height,
+          'rgba8unorm',
+          GPUTextureUsage.COPY_DST
+        );
       }
-      device.queue.copyExternalImageToTexture({ source }, { texture: text.texture }, [source.width, source.height]);
+      device.queue.copyExternalImageToTexture(
+        { source },
+        { texture: text.texture },
+        [source.width, source.height]
+      );
       if (!playing) draw(clock);
     },
     destroy() {

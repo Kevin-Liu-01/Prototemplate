@@ -1,11 +1,18 @@
 'use client';
 
-import { createContext, useContext, useId, useRef, type CSSProperties, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useId,
+  useRef,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 
 import { useLayoutWork, useMountEffect } from '../hooks';
 
-export type Stop = {
-  value: string;
+export type Stop<V extends string = string> = {
+  value: V;
   label: ReactNode;
   lang?: string;
   dir?: 'ltr' | 'rtl';
@@ -26,16 +33,17 @@ function maskPath(options: HTMLElement[]): string {
     .map((o, i) => {
       const y = i % 2 ? 1 + STEP + 1.5 : 1.5;
       const x0 = o.offsetLeft + (i ? STEP : 0);
-      const x1 = o.offsetLeft + o.offsetWidth - (i < options.length - 1 ? STEP : 0);
+      const x1 =
+        o.offsetLeft + o.offsetWidth - (i < options.length - 1 ? STEP : 0);
       return `${i ? 'L' : 'M'}${x0} ${y}L${x1} ${y}`;
     })
     .join('');
 }
 
-type Props = {
-  stops: readonly Stop[];
-  value: string;
-  onChange: (value: string) => void;
+type Props<V extends string> = {
+  stops: readonly Stop<V>[];
+  value: V;
+  onChange: (value: V) => void;
   label: string;
   /** 'ink' sits on the paper, 'stage' on the navy plates. */
   tone?: 'ink' | 'stage';
@@ -49,7 +57,14 @@ type Props = {
    arrow keys step it; a drag across the row picks the stop under the
    pointer. A story can set it otherwise (SliderStyleContext): Fuma Nama's
    draws the Fumadocs masked line, Euclid's a rule under a word. */
-export default function StopSlider({ stops, value, onChange, label, tone = 'ink', className }: Props) {
+export default function StopSlider<V extends string>({
+  stops,
+  value,
+  onChange,
+  label,
+  tone = 'ink',
+  className,
+}: Props<V>) {
   const name = useId();
   const look = useContext(SliderStyleContext);
   const root = useRef<HTMLDivElement>(null);
@@ -65,9 +80,14 @@ export default function StopSlider({ stops, value, onChange, label, tone = 'ink'
     el.style.setProperty('--x', `${on.offsetLeft}px`);
     el.style.setProperty('--w', `${on.offsetWidth}px`);
     if (look !== 'mask') return;
-    const options = [...el.querySelectorAll<HTMLElement>('.gtp-stop[data-value]')];
+    const options = [
+      ...el.querySelectorAll<HTMLElement>('.gtp-stop[data-value]'),
+    ];
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${el.clientWidth} ${MASK_H}"><path d="${maskPath(options)}" stroke="black" stroke-width="1.5" fill="none"/></svg>`;
-    el.style.setProperty('--mask', `url("data:image/svg+xml,${encodeURIComponent(svg)}")`);
+    el.style.setProperty(
+      '--mask',
+      `url("data:image/svg+xml,${encodeURIComponent(svg)}")`
+    );
   };
 
   useLayoutWork(place, { dependencies: [value, stops.length] });
@@ -85,11 +105,13 @@ export default function StopSlider({ stops, value, onChange, label, tone = 'ink'
   const pick = (clientX: number) => {
     const el = root.current;
     if (!el) return;
-    for (const option of el.querySelectorAll<HTMLElement>('.gtp-stop[data-value]')) {
+    for (const option of el.querySelectorAll<HTMLElement>(
+      '.gtp-stop[data-value]'
+    )) {
       const box = option.getBoundingClientRect();
       if (clientX >= box.left && clientX <= box.right) {
-        const next = option.dataset.value;
-        if (next && next !== value) latest.current(next);
+        const next = stops.find((s) => s.value === option.dataset.value);
+        if (next && next.value !== value) latest.current(next.value);
         return;
       }
     }
@@ -122,7 +144,12 @@ export default function StopSlider({ stops, value, onChange, label, tone = 'ink'
     >
       <span className='gtp-stops-thumb' aria-hidden='true' />
       {stops.map((stop) => (
-        <label key={stop.value} className='gtp-stop' data-value={stop.value} data-on={stop.value === value}>
+        <label
+          key={stop.value}
+          className='gtp-stop'
+          data-value={stop.value}
+          data-on={stop.value === value}
+        >
           <input
             type='radio'
             name={name}

@@ -12,6 +12,7 @@ import Globe from '../ui/Globe';
 import Inline from '../ui/Inline';
 import StopSlider from '../ui/StopSlider';
 import { EDITIONS, NATIVE, type Version } from './editions';
+import { prefersReducedMotion } from '../motion';
 
 /* The live stops that open a figure: each rebuilds in the page what the
    figure's recording shows, so the reader can work the thing the paragraph
@@ -61,13 +62,20 @@ function railPath(rows: TocRow[]): string {
     const top = i * ROW;
     const prev = rows[i - 1];
     if (!prev) d += `M${x} ${top}`;
-    else if (prev.level !== row.level) d += `L${1 + prev.level * NEST} ${top - 6}L${x} ${top + 6}`;
+    else if (prev.level !== row.level)
+      d += `L${1 + prev.level * NEST} ${top - 6}L${x} ${top + 6}`;
     d += `L${x} ${top + ROW}`;
   });
   return d;
 }
 
-export function TocDemo({ rows = TOC_ROWS, start = 4 }: { rows?: TocRow[]; start?: number }) {
+export function TocDemo({
+  rows = TOC_ROWS,
+  start = 4,
+}: {
+  rows?: TocRow[];
+  start?: number;
+}) {
   const [active, setActive] = useState(start);
   const [hover, setHover] = useState<number | null>(null);
   const mask = useId();
@@ -76,10 +84,24 @@ export function TocDemo({ rows = TOC_ROWS, start = 4 }: { rows?: TocRow[]; start
   const height = rows.length * ROW;
   return (
     <div className='gtp-toc' onPointerLeave={() => setHover(null)}>
-      <svg className='gtp-toc-rail' viewBox={`0 0 ${NEST + 2} ${height}`} width={NEST + 2} height={height} aria-hidden='true'>
+      <svg
+        className='gtp-toc-rail'
+        viewBox={`0 0 ${NEST + 2} ${height}`}
+        width={NEST + 2}
+        height={height}
+        aria-hidden='true'
+      >
         <defs>
           <mask id={mask} maskUnits='userSpaceOnUse'>
-            <rect className='gtp-toc-window' x='-4' y='0' width={NEST + 10} height={ROW} fill='#fff' style={{ transform: `translateY(${at * ROW}px)` }} />
+            <rect
+              className='gtp-toc-window'
+              x='-4'
+              y='0'
+              width={NEST + 10}
+              height={ROW}
+              fill='#fff'
+              style={{ transform: `translateY(${at * ROW}px)` }}
+            />
           </mask>
         </defs>
         <path d={path} className='gtp-toc-line' />
@@ -119,12 +141,27 @@ export function CornersDemo() {
   const [radius, setRadius] = useState('6');
   const pill = radius === '999';
   return (
-    <div className='gtp-corners' data-pill={pill} style={{ '--r': `${radius}px` } as CSSProperties}>
+    <div
+      className='gtp-corners'
+      data-pill={pill}
+      style={{ '--r': `${radius}px` } as CSSProperties}
+    >
       <div className='gtp-corners-specimen'>
         <span className='gtp-corners-search'>
           <svg viewBox='0 0 16 16' aria-hidden='true'>
-            <circle cx='7' cy='7' r='4.5' fill='none' stroke='currentColor' strokeWidth='1.25' />
-            <path d='M10.5 10.5L14 14' stroke='currentColor' strokeWidth='1.25' />
+            <circle
+              cx='7'
+              cy='7'
+              r='4.5'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='1.25'
+            />
+            <path
+              d='M10.5 10.5L14 14'
+              stroke='currentColor'
+              strokeWidth='1.25'
+            />
           </svg>
           Search docs
           <kbd>⌘K</kbd>
@@ -137,10 +174,22 @@ export function CornersDemo() {
           <strong>Quickstart</strong>
           <span>Set up General Translation in a Next.js app.</span>
         </span>
-        {pill ? <span className='gtp-corners-strike' aria-hidden='true' /> : null}
+        {pill ? (
+          <span className='gtp-corners-strike' aria-hidden='true' />
+        ) : null}
       </div>
-      <p className='gtp-live-note'>{pill ? 'The pill is the shape the redesign removed.' : `Every box at ${radius} px.`}</p>
-      <StopSlider stops={RADII} value={radius} onChange={setRadius} label='Corner radius' tone='stage' />
+      <p className='gtp-live-note'>
+        {pill
+          ? 'The pill is the shape the redesign removed.'
+          : `Every box at ${radius} px.`}
+      </p>
+      <StopSlider
+        stops={RADII}
+        value={radius}
+        onChange={setRadius}
+        label='Corner radius'
+        tone='stage'
+      />
     </div>
   );
 }
@@ -172,7 +221,13 @@ export function HitListDemo({ items }: { items: InlineNode[][] }) {
         <button
           type='button'
           className='gtp-text-button'
-          onClick={() => setStruck(struck.size === items.length ? new Set() : new Set(items.map((_, i) => i)))}
+          onClick={() =>
+            setStruck(
+              struck.size === items.length
+                ? new Set()
+                : new Set(items.map((_, i) => i))
+            )
+          }
         >
           {struck.size === items.length ? 'Reset' : 'Strike all'}
         </button>
@@ -188,7 +243,11 @@ export function HitListDemo({ items }: { items: InlineNode[][] }) {
                 const i = from + k;
                 return (
                   <li key={i}>
-                    <button type='button' aria-pressed={struck.has(i)} onClick={() => toggle(i)}>
+                    <button
+                      type='button'
+                      aria-pressed={struck.has(i)}
+                      onClick={() => toggle(i)}
+                    >
                       <span className='gtp-hits-mark' aria-hidden='true' />
                       <span className='gtp-hits-text'>
                         <Inline nodes={item} />
@@ -222,9 +281,14 @@ export function GlobeDemo({ titles }: { titles: Localized }) {
         </p>
       </div>
       <StopSlider
-        stops={LANGS.map((l) => ({ value: l.code, label: l.name, lang: l.code, dir: l.dir }))}
+        stops={LANGS.map((l) => ({
+          value: l.code,
+          label: l.name,
+          lang: l.code,
+          dir: l.dir,
+        }))}
         value={code}
-        onChange={(v) => setCode(v as LangCode)}
+        onChange={setCode}
         label='Language'
         tone='stage'
       />
@@ -234,7 +298,15 @@ export function GlobeDemo({ titles }: { titles: Localized }) {
 
 /* ---------- dark and light ---------- */
 
-export function ThemeWipe({ dark, light, alt }: { dark: string; light: string; alt: string }) {
+export function ThemeWipe({
+  dark,
+  light,
+  alt,
+}: {
+  dark: string;
+  light: string;
+  alt: string;
+}) {
   const [at, setAt] = useState(50);
   const box = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
@@ -262,7 +334,13 @@ export function ThemeWipe({ dark, light, alt }: { dark: string; light: string; a
       {/* eslint-disable-next-line @next/next/no-img-element -- the blog's own files */}
       <img src={dark} alt={alt} draggable={false} />
       {/* eslint-disable-next-line @next/next/no-img-element -- the blog's own files */}
-      <img className='gtp-wipe-light' src={light} alt='' aria-hidden='true' draggable={false} />
+      <img
+        className='gtp-wipe-light'
+        src={light}
+        alt=''
+        aria-hidden='true'
+        draggable={false}
+      />
       <span className='gtp-wipe-handle' aria-hidden='true' />
       <span className='gtp-wipe-tag' data-side='dark'>
         Dark
@@ -286,7 +364,10 @@ export function ThemeWipe({ dark, light, alt }: { dark: string; light: string; a
 /* ---------- Euclid's first definitions, city by city ---------- */
 
 /** The order the switch offers them: by the year each was made. */
-const VERSIONS: readonly (Version & { key: string })[] = EDITIONS.map((v) => ({ ...v, key: v.lang }));
+const VERSIONS: readonly (Version & { key: string })[] = EDITIONS.map((v) => ({
+  ...v,
+  key: v.lang,
+}));
 
 /** A version as the figure names it: its language, a period, then its maker, city and year. 'Chinese. Ricci and Xu, Beijing, 1607' */
 function titleOf(v: Version): string {
@@ -295,9 +376,20 @@ function titleOf(v: Version): string {
 }
 
 /** A version's definitions, each numbered as its edition numbers them; as a sizer, unseen and unheard, holding the box's height. */
-function VersionLines({ version, className }: { version: Version; className?: string }) {
+function VersionLines({
+  version,
+  className,
+}: {
+  version: Version;
+  className?: string;
+}) {
   return (
-    <ol className={['gtp-version-lines', className].filter(Boolean).join(' ')} lang={version.lang} dir={version.dir} aria-hidden={className ? true : undefined}>
+    <ol
+      className={['gtp-version-lines', className].filter(Boolean).join(' ')}
+      lang={version.lang}
+      dir={version.dir}
+      aria-hidden={className ? true : undefined}
+    >
       {version.lines.map((line) => (
         <li key={line.n + line.text} className='gtp-version-line'>
           {line.n ? <span className='gtp-version-n'>{line.n}</span> : null}
@@ -343,7 +435,7 @@ export function VersionsDemo() {
   // shown: on the book's stage when the stage turns to it, in a page when it scrolls well into view
   useMountEffect(() => {
     const el = root.current;
-    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!el || prefersReducedMotion()) return;
     setShown(false);
     const item = el.closest<HTMLElement>('.gtp-print-stage-item');
     if (item) {
@@ -351,7 +443,10 @@ export function VersionsDemo() {
         if (item.dataset.shown === 'true') setShown(true);
       };
       const watch = new MutationObserver(check);
-      watch.observe(item, { attributes: true, attributeFilter: ['data-shown'] });
+      watch.observe(item, {
+        attributes: true,
+        attributeFilter: ['data-shown'],
+      });
       check();
       return () => watch.disconnect();
     }
@@ -368,7 +463,7 @@ export function VersionsDemo() {
   // the clock: each version stands a few seconds once shown, then the next, until the reader picks one
   useMountEffect(() => {
     const el = root.current;
-    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!el || prefersReducedMotion()) return;
     const item = el.closest<HTMLElement>('.gtp-print-stage-item');
     let visible = false;
     let since = 0;
@@ -377,7 +472,10 @@ export function VersionsDemo() {
     });
     observer.observe(el);
     const timer = window.setInterval(() => {
-      const onScreen = visible && el.dataset.shown === 'true' && (!item || item.dataset.shown === 'true');
+      const onScreen =
+        visible &&
+        el.dataset.shown === 'true' &&
+        (!item || item.dataset.shown === 'true');
       if (!onScreen || el.dataset.held === 'true') {
         since = 0;
         return;
@@ -396,9 +494,23 @@ export function VersionsDemo() {
   });
 
   return (
-    <div ref={root} className='gtp-versions' data-chosen={chosen} data-held={held} data-shown={shown ?? undefined}>
+    <div
+      ref={root}
+      className='gtp-versions'
+      data-chosen={chosen}
+      data-held={held}
+      data-shown={shown ?? undefined}
+    >
       <div className='gtp-versions-map'>
-        <Globe place={version} cell={1} tilt={0} graticule label={false} turn={TURN} className='gtp-versions-globe'>
+        <Globe
+          place={version}
+          cell={1}
+          tilt={0}
+          graticule
+          label={false}
+          turn={TURN}
+          className='gtp-versions-globe'
+        >
           {/* each city's dot chooses the version made there */}
           {VERSIONS.map((v, i) => (
             <button
@@ -415,21 +527,40 @@ export function VersionsDemo() {
           ))}
         </Globe>
         <p className='gtp-version-meta'>{titleOf(version)}</p>
-        <p className='gtp-versions-coords' aria-label={`${version.city}: ${dms(version.lat, 'lat')}, ${dms(version.lon, 'lon')}`}>
+        <p
+          className='gtp-versions-coords'
+          aria-label={`${version.city}: ${dms(version.lat, 'lat')}, ${dms(version.lon, 'lon')}`}
+        >
           <span>{dms(version.lat, 'lat')}</span>
           <span>{dms(version.lon, 'lon')}</span>
         </p>
       </div>
       <div className='gtp-versions-reader'>
         <StopSlider
-          stops={VERSIONS.map((v) => ({ value: v.key, label: NATIVE[v.key] ?? v.language, lang: v.lang, dir: v.dir }))}
+          stops={VERSIONS.map((v) => ({
+            value: v.key,
+            label: NATIVE[v.key] ?? v.language,
+            lang: v.lang,
+            dir: v.dir,
+          }))}
           value={version.key}
-          onChange={(key) => pick(Math.max(0, VERSIONS.findIndex((v) => v.key === key)))}
+          onChange={(key) =>
+            pick(
+              Math.max(
+                0,
+                VERSIONS.findIndex((v) => v.key === key)
+              )
+            )
+          }
           label='Version'
         />
         <div className='gtp-version-stack'>
           {VERSIONS.map((v) => (
-            <VersionLines key={v.key} version={v} className='gtp-version-sizer' />
+            <VersionLines
+              key={v.key}
+              version={v}
+              className='gtp-version-sizer'
+            />
           ))}
           <VersionLines key={version.key} version={version} />
         </div>

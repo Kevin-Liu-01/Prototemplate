@@ -3,9 +3,18 @@
    join a figure's recorded frames. The text itself comes from the blog's
    MDX (content.ts). */
 
-import type { LatLon } from './coords';
+import { HOME, type LatLon } from './coords';
 
-export type LangCode = 'en' | 'es' | 'pt' | 'de' | 'ar' | 'hi' | 'zh' | 'ko' | 'ja';
+export type LangCode =
+  | 'en'
+  | 'es'
+  | 'pt'
+  | 'de'
+  | 'ar'
+  | 'hi'
+  | 'zh'
+  | 'ko'
+  | 'ja';
 
 /** A city where a language is spoken: its locale and the country whose flag it flies. */
 export type Place = LatLon & {
@@ -26,18 +35,37 @@ export type Lang = LatLon & {
   places: readonly Place[];
 };
 
-const place = (city: string, locale: string, country: string, lat: number, lon: number): Place => ({ city, locale, country, lat, lon });
+const place = (
+  city: string,
+  locale: string,
+  country: string,
+  lat: number,
+  lon: number
+): Place => ({ city, locale, country, lat, lon });
 
 /** Each language in its first city, with the others it is spoken in. */
-function lang(code: LangCode, name: string, dir: 'ltr' | 'rtl', places: Place[]): Lang {
+function lang(
+  code: LangCode,
+  name: string,
+  dir: 'ltr' | 'rtl',
+  places: Place[]
+): Lang {
   const first = places[0]!;
-  return { code, name, dir, city: first.city, lat: first.lat, lon: first.lon, places };
+  return {
+    code,
+    name,
+    dir,
+    city: first.city,
+    lat: first.lat,
+    lon: first.lon,
+    places,
+  };
 }
 
-/* The order Kevin set for the flags: English, Spanish, Chinese, German, Hindi, then the rest. */
+/* The flags' order: English, Spanish, Chinese, German, Hindi, then the rest. */
 export const LANGS: readonly Lang[] = [
   lang('en', 'English', 'ltr', [
-    place('San Francisco', 'en-US', 'us', 37.7749, -122.4194),
+    place('San Francisco', 'en-US', 'us', HOME.lat, HOME.lon),
     place('London', 'en-GB', 'gb', 51.5074, -0.1278),
     place('Sydney', 'en-AU', 'au', -33.8688, 151.2093),
     place('Toronto', 'en-CA', 'ca', 43.6532, -79.3832),
@@ -76,26 +104,27 @@ export const LANGS: readonly Lang[] = [
     place('Dubai', 'ar-AE', 'ae', 25.2048, 55.2708),
     place('Casablanca', 'ar-MA', 'ma', 33.5731, -7.5898),
   ]),
-  lang('ko', '한국어', 'ltr', [place('Seoul', 'ko-KR', 'kr', 37.5665, 126.978), place('Busan', 'ko-KR', 'kr', 35.1796, 129.0756)]),
-  lang('ja', '日本語', 'ltr', [place('Tokyo', 'ja-JP', 'jp', 35.6762, 139.6503), place('Osaka', 'ja-JP', 'jp', 34.6937, 135.5023)]),
+  lang('ko', '한국어', 'ltr', [
+    place('Seoul', 'ko-KR', 'kr', 37.5665, 126.978),
+    place('Busan', 'ko-KR', 'kr', 35.1796, 129.0756),
+  ]),
+  lang('ja', '日本語', 'ltr', [
+    place('Tokyo', 'ja-JP', 'jp', 35.6762, 139.6503),
+    place('Osaka', 'ja-JP', 'jp', 34.6937, 135.5023),
+  ]),
 ];
 
 export type Localized = Record<LangCode, string>;
 
-export const TAGLINE: Localized = {
-  en: 'Essays on design, engineering and language from General Translation.',
-  es: 'Ensayos sobre diseño, ingeniería y lenguaje de General Translation.',
-  pt: 'Ensaios sobre design, engenharia e linguagem da General Translation.',
-  de: 'Essays über Design, Engineering und Sprache von General Translation.',
-  ar: 'مقالات عن التصميم والهندسة واللغة من General Translation.',
-  hi: 'General Translation की ओर से डिज़ाइन, इंजीनियरिंग और भाषा पर निबंध।',
-  zh: '来自 General Translation 的设计、工程与语言随笔。',
-  ko: 'General Translation이 전하는 디자인, 엔지니어링, 언어에 관한 에세이.',
-  ja: 'General Translation によるデザイン、エンジニアリング、言語についてのエッセイ。',
-};
-
 /** A demo built in the page that joins a figure as its first stop. */
-export type LiveKind = 'toc' | 'corners' | 'hitlist' | 'globe' | 'wipe' | 'stops' | 'clerk';
+export type LiveKind =
+  | 'toc'
+  | 'corners'
+  | 'hitlist'
+  | 'globe'
+  | 'wipe'
+  | 'stops'
+  | 'clerk';
 
 /** How a story's pages are set: the docs reader, Fumadocs' own look for Fuma Nama, or a printed book for Euclid. */
 export type Look = 'docs' | 'fuma' | 'book';
@@ -105,7 +134,11 @@ export const TOPICS = ['translation', 'open-source', 'craft'] as const;
 export type Topic = (typeof TOPICS)[number];
 
 /** Each topic as its tag reads. */
-export const TOPIC_NAMES: Record<Topic, string> = { translation: 'Translation', 'open-source': 'Open Source', craft: 'Craft' };
+export const TOPIC_NAMES: Record<Topic, string> = {
+  translation: 'Translation',
+  'open-source': 'Open Source',
+  craft: 'Craft',
+};
 
 export type StoryEntry = {
   slug: string;
@@ -191,7 +224,12 @@ export const STORIES: readonly StoryEntry[] = [
 ];
 
 /** A place on a story's map sheet; `home` marks where the story was filed from or lived. */
-export type SheetPlace = { name: string; lat: number; lon: number; home?: true };
+export type SheetPlace = {
+  name: string;
+  lat: number;
+  lon: number;
+  home?: true;
+};
 
 /**
  * The map sheet printed inside a story's magazine, which the rack's lifted
@@ -199,9 +237,29 @@ export type SheetPlace = { name: string; lat: number; lon: number; home?: true }
  * it spans, its places in order, whether a route joins them, and the line
  * under its title.
  */
-export type MapSheet = { lat: number; lon: number; span: number; places: readonly SheetPlace[]; route?: string; note: string };
+export type MapSheet = {
+  lat: number;
+  lon: number;
+  span: number;
+  places: readonly SheetPlace[];
+  route?: string;
+  note: string;
+};
 
-const SAN_FRANCISCO: SheetPlace = { name: 'San Francisco', lat: 37.7749, lon: -122.4194, home: true };
+const SAN_FRANCISCO: SheetPlace = {
+  name: 'San Francisco',
+  ...HOME,
+  home: true,
+};
+
+/** The sheet of a story with none of its own: General Translation's home. */
+export const HOME_SHEET: MapSheet = {
+  lat: 37.5,
+  lon: -121,
+  span: 24,
+  note: 'Filed from San Francisco',
+  places: [SAN_FRANCISCO],
+};
 
 export const SHEETS: Record<string, MapSheet> = {
   // Ricci's road from Macau to Peking, by the cities he stopped in
@@ -220,18 +278,47 @@ export const SHEETS: Record<string, MapSheet> = {
       { name: 'Peking', lat: 39.9042, lon: 116.4074, home: true },
     ],
   },
-  'designing-docs-for-humans': { lat: 37.5, lon: -121, span: 24, note: 'Filed from San Francisco', places: [SAN_FRANCISCO] },
-  'rewriting-our-docs': { lat: 34, lon: -112, span: 60, note: 'Filed from San Francisco', places: [SAN_FRANCISCO] },
-  'fuma-nama': { lat: 22.8, lon: 113.8, span: 12, note: 'Where Fuma Nama grew up', places: [{ name: 'Hong Kong', lat: 22.3193, lon: 114.1694, home: true }] },
+  'designing-docs-for-humans': HOME_SHEET,
+  'rewriting-our-docs': {
+    lat: 34,
+    lon: -112,
+    span: 60,
+    note: 'Filed from San Francisco',
+    places: [SAN_FRANCISCO],
+  },
+  'fuma-nama': {
+    lat: 22.8,
+    lon: 113.8,
+    span: 12,
+    note: 'Where Fuma Nama grew up',
+    places: [{ name: 'Hong Kong', lat: 22.3193, lon: 114.1694, home: true }],
+  },
 };
-
-/** The sheet of a story with none of its own: General Translation's home. */
-export const HOME_SHEET: MapSheet = { lat: 37.5, lon: -121, span: 24, note: 'Filed from San Francisco', places: [SAN_FRANCISCO] };
 
 /** A story's name as a magazine's credit line carries it in English, where the title is too long for one line. */
-export const SHORT_TITLES: Record<string, string> = {
+const SHORT_TITLES: Record<string, string> = {
   'translating-euclid': 'Translating Euclid',
 };
+
+/** A title with a colon, half-width or full-width (：), as its headline and the line under it; a title without one, null. */
+export function splitTitle(title: string): [string, string] | null {
+  const m = /^(.+?)\s*[:：]\s*(.+)$/.exec(title);
+  return m?.[1] && m[2] ? [m[1], m[2]] : null;
+}
+
+/** A story's name as a magazine prints it on its credit line, spine and running head: its short English name where it
+    has one, or the title before its colon. */
+export function magazineName(
+  slug: string,
+  title: string,
+  english = true
+): string {
+  return (
+    (english ? SHORT_TITLES[slug] : undefined) ??
+    splitTitle(title)?.[0] ??
+    title
+  );
+}
 
 export const AUTHORS: Record<string, string> = {
   kevin: 'Kevin Liu',

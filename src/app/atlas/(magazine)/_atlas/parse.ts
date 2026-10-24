@@ -63,14 +63,21 @@ export type Block =
 export type Frontmatter = Record<string, string | string[]>;
 
 /** A value YAML reads: a scalar, a list or a map. */
-type YamlValue = string | number | boolean | null | YamlValue[] | { [key: string]: YamlValue };
+type YamlValue =
+  | string
+  | number
+  | boolean
+  | null
+  | YamlValue[]
+  | { [key: string]: YamlValue };
 
 /** Components a story uses that draw a fixed figure, each set in the text as that figure's picture. */
 const DRAWN: Record<string, { src: string; alt: string; caption: string }> = {
   FumadocsArchitecture: {
     src: '/atlas/fumadocs-architecture.png',
     alt: 'The Fumadocs architecture: a content layer, fumadocs-core, the UI layer, the React frameworks it runs on, and its dev tooling',
-    caption: 'Fumadocs layer by layer: content sources feed `fumadocs-core`, which the UI layer and every React framework build on.',
+    caption:
+      'Fumadocs layer by layer: content sources feed `fumadocs-core`, which the UI layer and every React framework build on.',
   },
 };
 
@@ -79,7 +86,10 @@ const mdx = remark().use(remarkMdx).use(remarkGfm);
 const md = remark().use(remarkGfm);
 
 /** A JSX element, written on lines of its own (flow) or inside a paragraph (text). */
-type Jsx = Extract<RootContent, { type: 'mdxJsxFlowElement' | 'mdxJsxTextElement' }>;
+type Jsx = Extract<
+  RootContent,
+  { type: 'mdxJsxFlowElement' | 'mdxJsxTextElement' }
+>;
 
 /** Splits the YAML head from the body: each key a string, or a list of strings. */
 export function splitFrontmatter(source: string): {
@@ -110,12 +120,16 @@ export function slugify(text: string): string {
 /** 'designing-docs-E5-localized.webp?v=1' -> 'E5-localized' */
 function figureId(src: string): string {
   const file = src.split('?')[0]?.split('/').pop() ?? src;
-  return file.replace(/\.[a-z0-9]+$/i, '').replace(/^[a-z]+(?:-[a-z]+)*?-(?=[A-Z]\d)/, '');
+  return file
+    .replace(/\.[a-z0-9]+$/i, '')
+    .replace(/^[a-z]+(?:-[a-z]+)*?-(?=[A-Z]\d)/, '');
 }
 
 /** An attribute written as a string, src="/a.png"; an expression, style={{ ... }}, is not read. */
 function attr(node: Jsx, name: string): string | null {
-  for (const a of node.attributes) if (a.type === 'mdxJsxAttribute' && a.name === name) return typeof a.value === 'string' ? a.value : null;
+  for (const a of node.attributes)
+    if (a.type === 'mdxJsxAttribute' && a.name === name)
+      return typeof a.value === 'string' ? a.value : null;
   return null;
 }
 
@@ -151,7 +165,9 @@ function inline(nodes: readonly RootContent[]): Inline[] {
   for (const node of nodes) {
     switch (node.type) {
       case 'text':
-        push(out, [{ t: 'text', v: node.value.replace(/[ \t]*\n[ \t]*/g, ' ') }]);
+        push(out, [
+          { t: 'text', v: node.value.replace(/[ \t]*\n[ \t]*/g, ' ') },
+        ]);
         break;
       case 'html':
         push(out, [{ t: 'text', v: node.value }]);
@@ -206,7 +222,9 @@ function captioned(children: readonly RootContent[]): {
   caption: Inline[];
   credit: Inline[];
 } {
-  const rule = children.findIndex((n) => n.type === 'thematicBreak' || (n.type === 'heading' && n.depth === 2));
+  const rule = children.findIndex(
+    (n) => n.type === 'thematicBreak' || (n.type === 'heading' && n.depth === 2)
+  );
   if (rule === -1) return { caption: joined(children), credit: [] };
   const end = children[rule]?.type === 'heading' ? rule + 1 : rule;
   return {
@@ -215,9 +233,12 @@ function captioned(children: readonly RootContent[]): {
   };
 }
 
-const isBlank = (node: PhrasingContent) => node.type === 'text' && !node.value.trim();
+const isBlank = (node: PhrasingContent) =>
+  node.type === 'text' && !node.value.trim();
 
-const isRule = (node: PhrasingContent) => node.type === 'mdxJsxTextElement' && (node.name === 'Check' || node.name === 'X');
+const isRule = (node: PhrasingContent) =>
+  node.type === 'mdxJsxTextElement' &&
+  (node.name === 'Check' || node.name === 'X');
 
 /** <Check /> and <X /> rules, each to the next one: a paragraph that opens with one is a set of rules. */
 function readRules(children: readonly PhrasingContent[]): Rule[] {
@@ -248,14 +269,25 @@ function readRules(children: readonly PhrasingContent[]): Rule[] {
 /** A list's items, one a paragraph; a list inside an item adds its items after it. */
 function listItems(list: List): Inline[][] {
   return list.children.flatMap((item) =>
-    item.children.flatMap((child) => (child.type === 'paragraph' ? [inline(child.children)] : child.type === 'list' ? listItems(child) : [])),
+    item.children.flatMap((child) =>
+      child.type === 'paragraph'
+        ? [inline(child.children)]
+        : child.type === 'list'
+          ? listItems(child)
+          : []
+    )
   );
 }
 
 /** The elements of one name among these nodes, wherever they sit inside them. */
 function descendants(nodes: readonly RootContent[], name: string): Jsx[] {
   return nodes.flatMap((node) => {
-    if ((node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') && node.name === name) return [node];
+    if (
+      (node.type === 'mdxJsxFlowElement' ||
+        node.type === 'mdxJsxTextElement') &&
+      node.name === name
+    )
+      return [node];
     return 'children' in node ? descendants(node.children, name) : [];
   });
 }
@@ -267,7 +299,11 @@ type Reader = {
 };
 
 /** A component: a side picture or a picture with its caption, a carousel, a drawn figure, or a box of text. */
-function component(node: Jsx, children: readonly RootContent[], reader: Reader): Block[] {
+function component(
+  node: Jsx,
+  children: readonly RootContent[],
+  reader: Reader
+): Block[] {
   const name = node.name ?? '';
   const { frame } = reader;
   const own = frame(attr(node, 'src') ?? '', attr(node, 'alt') ?? '', node);
@@ -287,7 +323,9 @@ function component(node: Jsx, children: readonly RootContent[], reader: Reader):
     ];
   }
   if (name === 'Carousel') {
-    const frames = descendants(node.children, 'CarouselItem').map((item) => frame(attr(item, 'src') ?? '', attr(item, 'alt') ?? '', item));
+    const frames = descendants(node.children, 'CarouselItem').map((item) =>
+      frame(attr(item, 'src') ?? '', attr(item, 'alt') ?? '', item)
+    );
     const label = attr(node, 'label');
     return [
       {
@@ -314,15 +352,31 @@ function component(node: Jsx, children: readonly RootContent[], reader: Reader):
       },
     ];
   const body = read(children, reader);
-  const paras = body.filter((b): b is Extract<Block, { kind: 'para' }> => b.kind === 'para').map((b) => b.inline);
+  const paras = body
+    .filter((b): b is Extract<Block, { kind: 'para' }> => b.kind === 'para')
+    .map((b) => b.inline);
   // a box of paragraphs is a note; one that also holds a list, a set of rules (a style guide's callout) or a box
   // of its own keeps every part, in order, in the text, so nothing in it is lost
-  if (name === 'Epigraph' || name === 'Sources' || body.every((b) => b.kind === 'para')) return paras.length ? [{ kind: 'note', paras, name }] : [];
-  return body.filter((b) => b.kind === 'para' || b.kind === 'list' || b.kind === 'rules' || b.kind === 'note');
+  if (
+    name === 'Epigraph' ||
+    name === 'Sources' ||
+    body.every((b) => b.kind === 'para')
+  )
+    return paras.length ? [{ kind: 'note', paras, name }] : [];
+  return body.filter(
+    (b) =>
+      b.kind === 'para' ||
+      b.kind === 'list' ||
+      b.kind === 'rules' ||
+      b.kind === 'note'
+  );
 }
 
 /** A paragraph: a picture alone, a set of rules, a component written on one line, or text. */
-function paragraph(children: readonly PhrasingContent[], reader: Reader): Block[] {
+function paragraph(
+  children: readonly PhrasingContent[],
+  reader: Reader
+): Block[] {
   const content = children.filter((n) => !isBlank(n));
   const only = content.length === 1 ? content[0] : undefined;
   if (only?.type === 'image')
@@ -338,8 +392,15 @@ function paragraph(children: readonly PhrasingContent[], reader: Reader): Block[
     ];
   // <Callout>Important note.</Callout> on a line of its own is the component, with its words as its paragraph
   if (only?.type === 'mdxJsxTextElement' && !isRule(only))
-    return component(only, only.children.length ? [{ type: 'paragraph', children: only.children }] : [], reader);
-  if (content[0] && isRule(content[0])) return [{ kind: 'rules', items: readRules(content) }];
+    return component(
+      only,
+      only.children.length
+        ? [{ type: 'paragraph', children: only.children }]
+        : [],
+      reader
+    );
+  if (content[0] && isRule(content[0]))
+    return [{ kind: 'rules', items: readRules(content) }];
   const words = inline(children);
   return words.length ? [{ kind: 'para', inline: words }] : [];
 }
@@ -364,7 +425,8 @@ function read(nodes: readonly RootContent[], reader: Reader): Block[] {
       case 'paragraph': {
         const found = paragraph(node.children, reader);
         // rules a blank line apart are one set
-        if (found[0]?.kind === 'rules' && prev?.kind === 'rules') prev.items.push(...found[0].items);
+        if (found[0]?.kind === 'rules' && prev?.kind === 'rules')
+          prev.items.push(...found[0].items);
         else blocks.push(...found);
         break;
       }
@@ -399,7 +461,10 @@ function read(nodes: readonly RootContent[], reader: Reader): Block[] {
 }
 
 /** Reads the body into blocks. `media(src)` may name a video to play in place of a GIF. */
-export function parseBody(body: string, media: (src: string) => string | undefined = () => undefined): Block[] {
+export function parseBody(
+  body: string,
+  media: (src: string) => string | undefined = () => undefined
+): Block[] {
   const root = mdx.parse(body);
   return read(root.children, { frame: framer(media), headings: 0 });
 }
