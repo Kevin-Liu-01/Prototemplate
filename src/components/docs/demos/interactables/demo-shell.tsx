@@ -5,7 +5,7 @@ import type { KeyboardEvent, ReactNode } from 'react';
 
 import { ShellContext } from '@/components/viewer/shell-context';
 import type { ShellDir, ShellState } from '@/components/viewer/shell-context';
-import { toggleTheme } from '@/components/viewer/ThemeButton';
+import { toggleTheme } from '@/lib/theme';
 import { Toast, useToast } from '@/components/viewer/Toast';
 import type { ToastState } from '@/components/viewer/Toast';
 import type { ShellItem, ShellKeys, ShellMode } from '@/lib/shell-data';

@@ -59,9 +59,10 @@
    its rows are square (a shell and its rows), the pills take the control
    corner and the thumbnails the card corner. Motion is the rail's thumbs
    and pills (transform and opacity) and the chevrons' turn; row colors
-   change at once; nothing moves under reduced motion. Top-level rows skip
-   painting off screen (content-visibility) at their exact height; run rows
-   always paint.
+   change at once; nothing moves under reduced motion. Top-level rows of
+   the fixed 28px height skip painting off screen (content-visibility);
+   outline rows, which wrap to a second line, and run rows always paint,
+   so no row off screen grows when the rails first measure it.
 
    The grid re-uses the tail of this sheet: ThumbList renders .pt-thumbs
    with .pt-sec-label and .pt-thumb frames, and GridView.css re-lays it
@@ -125,8 +126,8 @@
    (25px for GT, 22px for Prototemplate, its hit area folded into negative
    margins), two 6px gaps, the 58px toggle, 6px pad, which leaves the name
    100px. The deck's Inter title `Brand deck` fits at 13.5px; the
-   Prototemplate routes carry the old nameplate instead (Kevin's directive;
-   DESIGN.md, chrome exceptions), `proto` in Fraunces 600 and `template` in
+   Prototemplate routes carry the nameplate instead (a chrome exception,
+   DESIGN.md section 15), `proto` in Fraunces 600 and `template` in
    Space Grotesk 500 at 14.5px, measured at 97px with both faces loaded.
    The mark is the rainbow one (PtMark.css); hovering it, link or not,
    fades the hatched fill in over the core. ---- */
@@ -438,7 +439,7 @@ a.pt-sb-mark:focus-visible {
   height: auto;
   min-height: 28px;
   padding-block: 5px 6px;
-  contain-intrinsic-size: auto 17px; /* the content box: a 28px row off screen */
+  content-visibility: visible;
 }
 
 .pt-thumbs:not(.is-shots) .pt-orow-name {
@@ -1202,6 +1203,13 @@ a.pt-sb-mark:focus-visible {
   border-color: var(--pt-ink);
   outline: 1px solid var(--pt-ink);
   outline-offset: 2px;
+}
+
+/* focus on the active thumb thickens its ring within the same 3px, so the
+   keyboard position still shows where hover and focus look alike */
+.pt-thumb.is-active:focus-visible .pt-thumb-frame {
+  outline-width: 2px;
+  outline-offset: 1px;
 }
 
 .pt-thumb-title {

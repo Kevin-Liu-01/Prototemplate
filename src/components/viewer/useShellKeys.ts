@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 
+import { scrollBehavior } from '@/lib/reduced-motion';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { openSearch } from './Search';
@@ -91,9 +92,54 @@ export function shellKeyRows(
   return rows;
 }
 
+/** A field that takes typing: every key but Escape belongs to it. */
 function isEditable(target: EventTarget | null): target is HTMLElement {
   if (!(target instanceof HTMLElement)) return false;
-  return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+  if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') return true;
+  return target.isContentEditable || target.matches('[role="combobox"], [role="textbox"]');
+}
+
+/**
+ * A focused control that Space presses: Space belongs to it, not to the
+ * pager. A link is not one, so Space still pages from a focused row.
+ */
+const SPACE_CONTROL =
+  'button, summary, [role="button"], [role="tab"], [role="radio"], [role="checkbox"], [role="switch"], [role="option"], [role="menuitem"], [role="slider"]';
+
+/** The stage's scroller on a flow route: the first .pt-scroll in the stage that has somewhere to scroll. */
+function stageScroller(): HTMLElement | null {
+  for (const el of document.querySelectorAll<HTMLElement>('.pt-stagewrap .pt-scroll')) {
+    if (el.scrollHeight > el.clientHeight) return el;
+  }
+  return null;
+}
+
+/**
+ * The scroll a flow route's keys ask for when nothing is focused, as a
+ * distance from the scroller's top, or null for any other key. The shell
+ * fills the viewport and the document never scrolls, so the browser's own
+ * key scrolling would move nothing.
+ */
+function flowScrollTop(key: string, shift: boolean, el: HTMLElement): number | null {
+  const page = el.clientHeight * 0.9;
+  switch (key) {
+    case 'ArrowDown':
+      return el.scrollTop + 40;
+    case 'ArrowUp':
+      return el.scrollTop - 40;
+    case ' ':
+      return el.scrollTop + (shift ? -page : page);
+    case 'PageDown':
+      return el.scrollTop + page;
+    case 'PageUp':
+      return el.scrollTop - page;
+    case 'Home':
+      return 0;
+    case 'End':
+      return el.scrollHeight;
+    default:
+      return null;
+  }
 }
 
 /**
@@ -111,7 +157,8 @@ function isEditable(target: EventTarget | null): target is HTMLElement {
  * before the defaultPrevented bail so it wins over a focused thumb's own
  * Enter activation, as in the deck. Every other event a component already
  * handled (defaultPrevented) passes through, so Space on a focused thumb
- * selects it and does not also page.
+ * selects it and does not also page, and Space on any focused button or
+ * widget is left to that control.
  *
  * Paged routes: Right, Space, PageDown, J, L next; Left, PageUp, K, H,
  * Backspace previous; Down and Up page in book mode only; Home and End.
@@ -120,7 +167,10 @@ function isEditable(target: EventTarget | null): target is HTMLElement {
  * it opens the slide first), F fullscreen, ? help. Escape steps back one
  * layer: help, then the index, then the list filter, then a non-default
  * mode, then present when not fullscreen, then the open narrow sidebar.
- * Flow routes drop the paging keys so Space and the arrows scroll the sheet.
+ * Flow routes drop the paging keys: Space, the arrows, PageUp, PageDown,
+ * Home and End scroll the stage's scroller when nothing has focus (or the
+ * skip link has put focus on the stage), and scroll whatever has focus
+ * otherwise.
  */
 export function useShellKeys(state: ShellState, options: ShellKeyOptions): void {
   /* assigned every render so the mount-time listener reads current state */
@@ -191,8 +241,26 @@ export function useShellKeys(state: ShellState, options: ShellKeyOptions): void 
 
       const paged = s.keys === 'paged';
       const inBook = s.mode === 'book';
+      /* Space on a focused button or widget presses it */
+      const spaceOnControl = key === ' ' && e.target instanceof Element && e.target.closest(SPACE_CONTROL) !== null;
 
-      if (paged) {
+      const unfocused =
+        e.target === document.body ||
+        e.target === document.documentElement ||
+        (e.target instanceof HTMLElement && e.target.id === 'pt-stage');
+      if (!paged && unfocused) {
+        const scroller = stageScroller();
+        const top = scroller ? flowScrollTop(key, e.shiftKey, scroller) : null;
+        if (scroller && top !== null) {
+          e.preventDefault();
+          /* an arrow steps at once, as the browser's own arrow scroll does under key repeat */
+          const arrow = key === 'ArrowDown' || key === 'ArrowUp';
+          scroller.scrollTo({ top, behavior: arrow ? 'auto' : scrollBehavior() });
+          return;
+        }
+      }
+
+      if (paged && !spaceOnControl) {
         if (
           key === 'ArrowRight' ||
           key === ' ' ||

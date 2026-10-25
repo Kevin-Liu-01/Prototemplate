@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 
+import ProdSystemTheme from '@/components/viewer/ProdSystemTheme';
 import GoogleAnalytics from '@/lib/analytics';
 import { fontVariables } from '@/lib/fonts';
 import { OG_HEIGHT, OG_WIDTH, cardPath } from '@/lib/seo/card-url';
@@ -14,8 +15,6 @@ import {
   TWITTER_CREATOR,
   TWITTER_SITE,
 } from '@/lib/seo/site';
-
-import ProdSystemTheme from './d/production/ProdSystemTheme';
 
 import './globals.css';
 import './inter-subsets.css';
@@ -115,14 +114,14 @@ export const viewport: Viewport = {
  * first paint, except under /d/production: the mirror of generaltranslation
  * follows prefers-color-scheme as the live site does, marks the html with
  * data-theme-from='system', and keeps following the system setting until
- * the visitor picks a theme (src/app/d/production/ProdSystemTheme.tsx
+ * the visitor picks a theme (src/components/viewer/ProdSystemTheme.tsx
  * handles arriving and leaving by client navigation).
  *
  * A same-origin frame (the gallery exhibit, the compare panes) receives the
  * parent's write as a storage event, so every loaded frame follows the
  * toggle with no per-frame code. A framed page also follows a same-origin
  * postMessage({ type: 'gt-theme', theme }) from the page around it
- * (ThemeButton.tsx posts one to every frame on each toggle), which reaches
+ * (src/lib/theme.ts posts one to every frame on each toggle), which reaches
  * it when storage cannot, in a private window; a theme set that way is
  * marked data-theme-from='message' and the system setting no longer moves
  * it.
@@ -149,14 +148,25 @@ const THEME_SCRIPT = [
 ].join('');
 
 /**
- * The rAF gate: an embedding parent can freeze and resume this page's
- * animation loops with postMessage({ type: 'gt:freeze', frozen }); queued
- * callbacks flush on resume, so shaders and scroll loops pick up where they
- * left off. The presenter uses it to idle its prototype stage while the
- * stage is off screen. A framed page loaded with ?frozen=1 starts frozen.
+ * The rAF gate: an embedding page of the same origin can freeze and resume
+ * this page's animation loops with postMessage({ type: 'gt:freeze', frozen }).
+ * While frozen, requestAnimationFrame queues the callback under a negative
+ * id, which cancelAnimationFrame can still remove; on resume the queue runs
+ * on the next frame, so shaders and scroll loops pick up where they left
+ * off. The presenter uses it to idle its prototype stage while the stage is
+ * off screen. A framed page loaded with ?frozen=1 starts frozen.
  */
-const RAF_GATE_SCRIPT =
-  "(function(){var n=window.requestAnimationFrame.bind(window);var q=[];var f=window.parent!==window&&/[?&]frozen=1(&|$)/.test(location.search);window.requestAnimationFrame=function(cb){if(f){q.push(cb);return -1}return n(cb)};window.addEventListener('message',function(e){var d=e&&e.data;if(!d||d.type!=='gt:freeze')return;f=!!d.frozen;if(!f){var p=q;q=[];for(var i=0;i<p.length;i++)n(p[i])}})})();";
+const RAF_GATE_SCRIPT = [
+  '(function(){',
+  'var n=window.requestAnimationFrame.bind(window),c=window.cancelAnimationFrame.bind(window);',
+  'var q=new Map(),r=new Map(),k=0;',
+  "var f=window.parent!==window&&/[?&]frozen=1(&|$)/.test(location.search);",
+  'window.requestAnimationFrame=function(cb){if(!f)return n(cb);k--;q.set(k,cb);return k};',
+  'window.cancelAnimationFrame=function(h){if(h>=0)return c(h);q.delete(h);if(r.has(h)){c(r.get(h));r.delete(h)}};',
+  "window.addEventListener('message',function(e){var d=e&&e.data;if(!d||d.type!=='gt:freeze'||e.origin!==location.origin)return;f=!!d.frozen;if(f)return;",
+  'q.forEach(function(cb,h){r.set(h,n(function(t){r.delete(h);cb(t)}))});q.clear()})',
+  '})();',
+].join('');
 
 const BOOT_SCRIPTS = `<script>${THEME_SCRIPT}</script><script>${RAF_GATE_SCRIPT}</script>`;
 

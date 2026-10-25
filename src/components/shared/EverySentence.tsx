@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useImperativeHandle, useRef, type Ref } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import './every-sentence.css';
 
 gsap.registerPlugin(useGSAP);
@@ -105,11 +107,11 @@ export default function EverySentence({
   }));
 
   useGSAP(
-    () => {
+    (context) => {
       const em = emRef.current;
       const word = em?.querySelector<HTMLElement>('[data-every-word]');
 
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (prefersReducedMotion()) {
         /* the sanctioned still: the sentence swaps instantly to whatever
            the (static) clock reports — the one-clock contract holds
            without a single tween */
@@ -256,11 +258,10 @@ export default function EverySentence({
           }
         };
 
-        /* THE DISSOLVE RUNS AT EVERY WIDTH (founder: "do the dissolving
-           instead of fade in fade out") — the old mobile crossfade branch
-           is gone. The mobile cut of the morph is CHEAP instead: ~200
-           motes, the dust plate capped at 1.5x, and no per-tick width
-           tween (the em is pinned to the column above). */
+        /* The dissolve runs at every width (founder: "do the dissolving
+           instead of fade in fade out"). The mobile cut of the morph is
+           cheap instead: about 200 motes and no per-tick width tween (the
+           em is pinned to the column above). */
         {
           const guideL = document.createElement('span');
           guideL.className = 'tc-eg is-l';
@@ -305,10 +306,10 @@ export default function EverySentence({
           dust.setAttribute('aria-hidden', 'true');
           em.append(guideL, guideR, dust);
           const dctx = dust.getContext('2d');
-          /* the plate renders at up to 2x everywhere — the old mobile
-             1.5x cap read soft on 3x phones (founder: "without becoming
-             blurry"); 2x is the crisp/cheap knee, and the clear already
-             sweeps CSS-pixel space so the cost stays bounded */
+          /* the plate renders at up to 2x everywhere: a lower cap reads
+             soft on 3x phones (founder: "without becoming blurry"); 2x is
+             the crisp/cheap knee, and the clear already sweeps CSS-pixel
+             space so the cost stays bounded */
           let cdpr = Math.min(2, dpr);
           let dustFont = '';
           let dustInk = '';
@@ -476,9 +477,9 @@ export default function EverySentence({
             let sh = ch;
             if (compactEvery) {
               /* the REAL vertical metrics: the DOM line box seats its
-                 baseline at half-leading + the font's true ascent — the
-                 old 0.8em guess printed the sampled ink ~0.1em above the
-                 DOM's, so the cloud stood visibly higher than the sentence
+                 baseline at half-leading + the font's true ascent; a fixed
+                 0.8em ascent prints the sampled ink about 0.1em above the
+                 DOM's, so the cloud stands higher than the sentence
                  (founder: "the actual sentence is below the glyphed
                  text"). The same metrics size the raster past the last
                  baseline, so descenders survive sampling (founder: "the gs
@@ -514,9 +515,9 @@ export default function EverySentence({
             } else {
               /* the single-line seat, same law as the wrap branch: the
                  em's own box IS the line box, baseline at half-leading +
-                 true ascent (the 0.85 guess sat the ink ~2px low), and
-                 the raster runs past the baseline by the full descent —
-                 the old height cut descenders flat at the canvas edge
+                 true ascent (a fixed 0.85em seats the ink about 2px low),
+                 and the raster runs past the baseline by the full descent,
+                 so descenders are not cut flat at the canvas edge
                  (founder: "the glyphs are cut off at the bottom") */
               const fmet = ctx.measureText('Hg');
               const asc = fmet.fontBoundingBoxAscent || fontPx * 0.8;
@@ -684,10 +685,9 @@ export default function EverySentence({
             // script's reading side, and each glyph is absorbed the
             // instant the front passes its point. Surplus glyphs thin out.
             // The cloud flies STRAIGHT from the dissolve pose to the
-            // letterforms (founder: the swarm reordered three times before
-            // the word — now two: disperse, then condense; the old
-            // re-spread across the incoming span is folded into this one
-            // longer flight, and the bounds glide alongside it). The
+            // letterforms in two moves, disperse then condense; the
+            // re-spread across the incoming span is part of this one longer
+            // flight, and the bounds glide alongside it. The
             // flight runs in span FRACTIONS: a mote laid out over the
             // outgoing width rescales with the gliding bounds each frame,
             // and its landing fraction times the settled span is exactly
@@ -812,10 +812,9 @@ export default function EverySentence({
               /* ——— hops=1 / 3..5: THE ADDITIVE LADDER ———
                  The shipped corridor holds exactly ONE intermediary
                  arrangement between the dissolved cloud and the condense:
-                 the cloud's re-spread across the incoming span — the old
-                 explicit cloudX(w1)/cloudY wave folded into the 0.7s
-                 power2.inOut bounds glide the swarm rides in fraction
-                 space, fronted by the condense's 0.15s lead. hops=1 SKIPS
+                 the cloud's re-spread across the incoming span, carried by
+                 the 0.7s power2.inOut bounds glide the swarm rides in
+                 fraction space, fronted by the condense's 0.15s lead. hops=1 SKIPS
                  that one beat: the condense launches the instant the form
                  opens (condenseAt 0) and each pour runs the freed 0.15s
                  longer, so every landing (1.0 + u·0.25), the print (1.33)
@@ -976,9 +975,9 @@ export default function EverySentence({
             }
             /* the timeline sweeps the pool dark AFTER the front has passed */
             tl.to(parts, { a: 0, duration: 0.12, ease: 'none', overwrite: 'auto' }, '>-0.12');
-            /* the guides BREATHE out with the finished print (founder:
-               "much more smoothly" — the old 0.07s snap-out read as a
-               glitch, not an exhale) */
+            /* the guides breathe out with the finished print over 0.6s
+               (founder: "much more smoothly"); a snap-out reads as a
+               glitch, not an exhale */
             tl.to([guideL, guideR], { opacity: 0, duration: 0.6, ease: 'power1.inOut' }, '>-0.45');
 
             killForm = () => {
@@ -1113,7 +1112,6 @@ export default function EverySentence({
             }
             startCycle();
           };
-          void tlLive;
 
           /* ---- THE VIEWPORT IS LIVE (founder: "someone goes into inspect
              and chooses the iPhone screen width") ----
@@ -1209,6 +1207,13 @@ export default function EverySentence({
             ro.disconnect();
             repassCall?.kill();
             widthTw?.kill();
+            /* the morph runs outside every context (see the driver below),
+               so its live pieces are killed by hand */
+            trailingCall?.kill();
+            killForm?.();
+            tlLive?.kill();
+            printCall?.kill();
+            glideTw?.kill();
             /* the engine's created DOM leaves with the effect: under dev
                double-effects the rebuilt engine must not inherit a dead
                canvas or guide pair (and the drawer must not keep ticking
@@ -1225,7 +1230,11 @@ export default function EverySentence({
            this effect ran are staged as pending; the first morph still
            waits out the capture window (any still taken while the run
            settles shows the word whole, not dust). */
-        driver.current = { request: requestWord };
+        /* a host calls setLocale from inside its own GSAP context (a
+           useGSAP callback, a timeline's .call); run under ignore, the
+           morph's tweens join no context, so no host keeps every morph it
+           ever asked for until it unmounts */
+        driver.current = { request: (w) => context.ignore(() => requestWord(w)) };
         const init = words[pendingLoc.current];
         if (init) target = init;
         gsap.delayedCall(Math.max(0, armDelay), () => {

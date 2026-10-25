@@ -13,13 +13,12 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 import './Search.css';
 
 /**
- * The search bar (directive 8.3), the primary way to get anywhere: the
- * palette from 430e3c7 restyled in the shell's grammar. A field-shaped
- * button in the toolbar (the old nav's pill, kept at Kevin's request: the
- * search glyph, the word Search, a kbd chip reading ⌘K, or Ctrl K on
- * Windows and Linux, in titanium; an icon square at or below 900px) opens
- * a card over a scrim:
- * the 34px filter with the search glyph and a count, then the results as
+ * The search bar (directive 8.3), the primary way to get anywhere, in the
+ * shell's grammar. A field-shaped button in the toolbar (a pill, a chrome
+ * exception in DESIGN.md section 15: the search glyph, the word Search, a
+ * kbd chip reading ⌘K, or Ctrl K on Windows and Linux, in titanium; an icon
+ * square at or below 900px) opens a card over a scrim: the 34px filter
+ * with the search glyph and a count, then the results as
  * ruled rows grouped under 12.5px titanium labels, each row a Heroicon, a
  * title and its address, the active row marked with the 2px ink bar. The
  * arrows move, Enter opens, Escape closes; hovering a row makes it the
@@ -45,10 +44,12 @@ import './Search.css';
  * headings and slide names) is a separate chunk, loaded on the first open
  * or earlier when the pointer or focus reaches the trigger (preloadSearch,
  * which the direction corner also calls); until it lands the card shows
- * its field and no rows. An empty query shows a short map of the
- * site (search-index.ts, searchGroups) that fits the card without a scroll
- * region, so opening it mounts a few rows and the preview layer preloads
- * only what a reader can see.
+ * its field and no rows, and a failed load says so and retries on Enter.
+ * Closing the card returns focus to what held it before the card opened.
+ * An empty query shows a short map of the site (search-index.ts,
+ * searchGroups) that fits the card without a scroll region, so opening it
+ * mounts a few rows and the preview layer preloads only what a reader can
+ * see.
  */
 export type SearchProps = {
   /** `field`: the toolbar's field-shaped button; `tool`: a labeled ToolButton for the direction corner's stack */
@@ -85,7 +86,7 @@ export function preloadSearch(): void {
 }
 
 /** The document event that opens the palette; fired by openSearch(). */
-export const SEARCH_OPEN_EVENT = 'pt:search-open';
+const SEARCH_OPEN_EVENT = 'pt:search-open';
 
 /** Open the mounted search palette from anywhere: the key owners call this. */
 export function openSearch(): void {
@@ -125,6 +126,11 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
   /* the key chip's text: ⌘K as rendered on the server and on Apple platforms, Ctrl K everywhere else */
   const [chip, setChip] = useState(MAC_CHIP);
   const card = useRef<HTMLDivElement>(null);
+  const input = useRef<HTMLInputElement>(null);
+  /* what held focus before the card opened, which takes it back on close */
+  const opener = useRef<HTMLElement | null>(null);
+  /* the index chunk failed to load; Enter in the field tries again */
+  const [failed, setFailed] = useState(false);
   /* the mount-time listener reads the latest callback through this ref */
   const onOpenRef = useRef(onOpen);
   onOpenRef.current = onOpen;
@@ -136,18 +142,28 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
   const rows: readonly SearchEntry[] = groups.flatMap((entry) => entry.rows);
   const at = Math.min(sel, Math.max(rows.length - 1, 0));
 
+  const load = () => {
+    setFailed(false);
+    if (!searchIndex) loadIndex().then(() => setIndexReady(true), () => setFailed(true));
+  };
+
   const show = () => {
+    const focused = document.activeElement;
+    opener.current = focused instanceof HTMLElement && focused !== document.body ? focused : null;
     setQuery('');
     setSel(0);
     setOpen(true);
     onOpenRef.current?.();
-    if (!searchIndex) loadIndex().then(() => setIndexReady(true), () => undefined);
+    load();
   };
 
   const close = () => {
     setOpen(false);
     const focused = document.activeElement;
-    if (focused instanceof HTMLElement && card.current?.contains(focused)) focused.blur();
+    if (!(focused instanceof HTMLElement) || !card.current?.contains(focused)) return;
+    const back = opener.current;
+    if (back?.isConnected) back.focus({ preventScroll: true });
+    else focused.blur();
   };
 
   useMountEffect(() => {
@@ -201,13 +217,24 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
       move(rows.length - 1);
     } else if (event.key === 'Enter') {
       event.preventDefault();
+      if (failed) {
+        load();
+        return;
+      }
       const entry = rows[at];
       if (entry) go(entry);
     }
   };
 
-  /* Escape anywhere in the card closes it; prevented so the shell's ladder does not also step */
+  /* Escape anywhere in the card closes it, prevented so the shell's ladder
+     does not also step; Tab stays on the field, since the arrows move
+     through the rows */
   const onCardKey = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      input.current?.focus();
+      return;
+    }
     if (event.key !== 'Escape') return;
     event.preventDefault();
     close();
@@ -263,6 +290,7 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
               <label className='pt-search-field'>
                 <Icon name='search' />
                 <input
+                  ref={input}
                   type='search'
                   value={query}
                   autoFocus
@@ -282,12 +310,16 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
                   enterKeyHint='go'
                 />
               </label>
-              <span className='pt-search-count'>{loaded ? loaded.searchCount(rows.length) : ''}</span>
+              <span className='pt-search-count' aria-live='polite'>
+                {loaded ? loaded.searchCount(rows.length) : ''}
+              </span>
             </div>
             <div id='pt-search-list' className='pt-search-list pt-scroll' role='listbox' aria-label='Results'>
-              {groups.map((entry) => (
-                <div className='pt-search-group' key={entry.group}>
-                  <h4>{entry.group}</h4>
+              {groups.map((entry, g) => (
+                <div className='pt-search-group' key={entry.group} role='group' aria-labelledby={`pt-search-g-${g}`}>
+                  <h4 id={`pt-search-g-${g}`} role='presentation'>
+                    {entry.group}
+                  </h4>
                   {entry.rows.map((row) => {
                     index += 1;
                     const i = index;
@@ -323,6 +355,7 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
                 </div>
               ))}
               {loaded && rows.length === 0 ? <p className='pt-search-empty'>Nothing matches</p> : null}
+              {failed && !loaded ? <p className='pt-search-empty'>Search could not load; press Enter to try again</p> : null}
             </div>
             <p className='pt-search-foot' aria-hidden='true'>
               <span>Up and down arrows move</span>

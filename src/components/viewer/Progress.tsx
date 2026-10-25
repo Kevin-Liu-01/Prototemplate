@@ -25,10 +25,10 @@ import './Progress.css';
  * fill to it (a transform animation on a ScrollTimeline of that box), and
  * the browser moves the fill from then on: later scroll events of the same
  * box read nothing, so no scroll forces a style or layout pass. Elsewhere
- * the scroll range (scrollHeight less clientHeight) of each box is cached
- * and refreshed by a ResizeObserver on the box and its direct children (for
- * a reading page, .pt-flow-col), so a scroll event reads only scrollTop. A
- * paged state drops the binding, so its inline fraction shows. A value prop
+ * the frame reads the box's scroll range (scrollHeight less clientHeight)
+ * and scrollTop once, so content added after the first scroll still
+ * counts. A paged state drops the binding, so its inline fraction shows.
+ * A value prop
  * overrides both for routes that measure their own progress.
  */
 
@@ -75,34 +75,16 @@ export function Progress({ value }: ProgressProps) {
 
   useMountEffect(() => {
     let frame = 0;
-    let next = 0;
-    /* each scroll box's range, kept current by one observer */
-    const ranges = new WeakMap<Element, number>();
-    const measure = (el: HTMLElement) => ranges.set(el, el.scrollHeight - el.clientHeight);
-    const observer =
-      typeof ResizeObserver === 'undefined'
-        ? null
-        : new ResizeObserver((entries) => {
-            const seen = new Set<HTMLElement>();
-            for (const entry of entries) {
-              const target = entry.target;
-              const owner = ranges.has(target) ? target : target.parentElement;
-              if (owner instanceof HTMLElement && ranges.has(owner) && !seen.has(owner)) {
-                seen.add(owner);
-                measure(owner);
-              }
-            }
-          });
-    const watch = (el: HTMLElement) => {
-      measure(el);
-      if (!observer) return;
-      observer.observe(el);
-      for (const child of el.children) observer.observe(child);
-    };
+    /* the scroll box the next frame measures; its range is read then, so
+       content added since the last scroll (folds, late images) counts */
+    let scrolled: HTMLElement | null = null;
     const paint = () => {
       frame = 0;
       const el = fill.current;
-      if (el && fixedRef.current === null) el.style.transform = scaleOf(next);
+      const box = scrolled;
+      if (!el || !box || fixedRef.current !== null) return;
+      const range = box.scrollHeight - box.clientHeight;
+      el.style.transform = scaleOf(range > 0 ? clamp(box.scrollTop / range) : 0);
     };
     const Timeline = scrollTimeline();
     let bound: { box: Element; anim: Animation } | null = null;
@@ -127,16 +109,13 @@ export function Progress({ value }: ProgressProps) {
         bound = { box, anim };
         return;
       }
-      if (!ranges.has(box)) watch(box);
-      const range = ranges.get(box) ?? 0;
-      next = range > 0 ? clamp(box.scrollTop / range) : 0;
+      scrolled = box;
       if (!frame) frame = requestAnimationFrame(paint);
     };
     document.addEventListener('scroll', onScroll, { passive: true, capture: true });
     return () => {
       document.removeEventListener('scroll', onScroll, { capture: true });
       unbind();
-      observer?.disconnect();
       if (frame) cancelAnimationFrame(frame);
     };
   });

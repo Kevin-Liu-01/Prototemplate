@@ -11,10 +11,11 @@ import { PtMark } from '@/components/viewer/PtMark';
 import { openSearch, preloadSearch, Search } from '@/components/viewer/Search';
 import { ShellContext } from '@/components/viewer/shell-context';
 import type { ShellState } from '@/components/viewer/shell-context';
-import { toggleTheme } from '@/components/viewer/ThemeButton';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import type { ShellKeyRow } from '@/components/viewer/useShellKeys';
 import { cn } from '@/lib/cn';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+import { toggleTheme } from '@/lib/theme';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -42,8 +43,7 @@ const CornerLayers = dynamic(() => import('@/components/viewer/CornerLayers'), {
  * ?chrome=0, which the gallery's
  * exhibit, the compare panes and every screenshot pass depend on. No
  * toolbar and no sheet: the page stays a full document with its own nav.
- * Replaces src/components/shared/DirectionDock.tsx with the same prop
- * shape, { slug }, plus `placement`: 'right' puts the corner at the top
+ * It takes { slug } and `placement`: 'right' puts the corner at the top
  * right, as a row, under 768px (DirectionCorner.css), for a page whose
  * column starts at the left edge under the corner, as the plate pages do,
  * and `suspense`: false mounts the corner without its Suspense boundary on
@@ -150,11 +150,6 @@ function isEditable(target: EventTarget | null): target is HTMLElement {
   return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 }
 
-/** The reader has asked for no motion: the list leaves at once. */
-function reducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
 function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
   const params = useSearchParams();
   const [list, setList] = useState(false);
@@ -187,7 +182,7 @@ function Corner({ slug, placement = 'left' }: DirectionCornerProps) {
       }
       if (!wasList.current) return;
       wasList.current = false;
-      if (reducedMotion()) return;
+      if (prefersReducedMotion()) return;
       setLeaving(true);
       leaveTimer.current = window.setTimeout(() => setLeaving(false), LEAVE_MS);
     },

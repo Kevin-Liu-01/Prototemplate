@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { shellKeyRows } from '@/components/viewer/useShellKeys';
 import type { ShellKeyGroup, ShellKeyRow } from '@/components/viewer/useShellKeys';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import type { ShellKeys } from '@/lib/shell-data';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -36,7 +37,7 @@ const GROUPS: readonly ShellKeyGroup[] = ['Move', 'View', 'Panels', 'Theme'];
 const OUT_MS = 160;
 
 /** The footnote for a route. */
-export function helpNote(keys: ShellKeys): string {
+function helpNote(keys: ShellKeys): string {
   return keys === 'paged'
     ? 'Click the left or right half of the sheet to move, or swipe on touch. In the book view, click a page to open it. The URL hash tracks your place.'
     : 'The sheet scrolls in place; the sidebar tracks the section in view. The URL hash tracks your place.';
@@ -60,7 +61,7 @@ export function HelpCard({ rows, note }: HelpCardProps) {
       }
       if (!wasOpen.current) return;
       wasOpen.current = false;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       setClosing(true);
       timer.current = window.setTimeout(() => setClosing(false), OUT_MS);
     },
@@ -81,7 +82,7 @@ export function HelpCard({ rows, note }: HelpCardProps) {
       aria-hidden={!helpOpen}
       onClick={() => shell.setHelp(false)}
     >
-      <div className='pt-help-card' role='dialog' aria-modal='true' aria-label='Keyboard shortcuts'>
+      <div className='pt-help-card' role='dialog' aria-label='Keyboard shortcuts'>
         <h3>Keyboard shortcuts</h3>
         <table>
           {groups.map((entry) => (

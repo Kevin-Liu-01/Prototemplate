@@ -1,9 +1,9 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { useRef, useState } from 'react';
 
 import { BAYER_DEFAULT_ID, BAYER_PRESETS, createStudioField } from '@/lib/studio-field';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './HeroFieldSwitcher.css';
@@ -30,21 +30,18 @@ import './HeroFieldSwitcher.css';
 
 const STORE_KEY = 'gt-hero-field-variant';
 
-/* The roster moved to src/lib/studio-field.ts (BAYER_PRESETS) — the
-   codified family, shared with the craft plate's switcher. */
-const VARIANTS = BAYER_PRESETS;
-
 /** One stage, one engine: keyed per variant so every switch starts clean. */
 function FieldStage({ variant }: { variant: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const def = VARIANTS.find((v) => v.id === variant) ?? VARIANTS[0];
+  const def = BAYER_PRESETS.find((v) => v.id === variant) ?? BAYER_PRESETS[0];
 
-  useGSAP(() => {
+  /* keyed per variant, so the work runs once per stage */
+  useLayoutWork(() => {
     const canvas = canvasRef.current;
     if (!canvas || !def) return;
     const field = createStudioField(canvas, { preset: def.preset });
     return field ? () => field.destroy() : undefined;
-  }, [variant]);
+  });
 
   // The shared classes carry the band's mask, blend and light-theme
   // inversion for every variant alike.
@@ -59,7 +56,7 @@ export default function HeroFieldSwitcher() {
   useMountEffect(() => {
     try {
       const saved = window.localStorage.getItem(STORE_KEY);
-      if (saved && VARIANTS.some((v) => v.id === saved)) setVariant(saved);
+      if (saved && BAYER_PRESETS.some((v) => v.id === saved)) setVariant(saved);
     } catch {
       /* storage unavailable — the default stands */
     }
@@ -80,7 +77,7 @@ export default function HeroFieldSwitcher() {
           outgoing field's destroy always runs before the incoming one draws */}
       <FieldStage key={variant} variant={variant} />
       <div aria-label='Hero field variant (review rig)' className='hfs' role='group'>
-        {VARIANTS.map((v) => (
+        {BAYER_PRESETS.map((v) => (
           <button
             className='hfs-chip'
             data-on={variant === v.id}

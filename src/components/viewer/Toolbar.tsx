@@ -36,9 +36,9 @@ import './Toolbar.css';
  * order (Slides, Grid, Book) when the route offers more than one mode, then
  * Index, Theme, Present (in slide mode only, where it has a slide to
  * present), Fullscreen, Copy link and Help. Every control is a labeled
- * ToolButton with a title naming its key (decision 7). Two of them keep
- * the old nav's look at Kevin's request (DESIGN.md, chrome exceptions):
- * the Search field is the 6px pill with its ⌘K chip, and Present is the
+ * ToolButton with a title naming its key (decision 7). Two of them are
+ * chrome exceptions (DESIGN.md section 15): the Search field is the 6px
+ * pill with its ⌘K chip, and Present is the
  * solid call to action with the 8px corner and the play glyph after its
  * word (ToolButton.css), even though after directive 7.1 it is a mode
  * toggle that Escape leaves. Every other button is square. The
@@ -333,7 +333,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   };
 
   return (
-    <div ref={bar} className={TIGHT_CLASS[tight]} role='toolbar' aria-label='Viewer controls'>
+    <div ref={bar} className={TIGHT_CLASS[tight]} role='group' aria-label='Viewer controls'>
       <div className='pt-bar-l'>
         <ToolButton
           icon='sidebar'

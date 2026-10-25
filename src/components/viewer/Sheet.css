@@ -41,6 +41,13 @@
   display: none;
 }
 
+/* the sheet and its caption wait for the stage's first measure: the server
+   and the first client frame know no size, and a sheet fitted to none
+   would paint at the top and then move into place */
+.pt-sheet-stage:not([data-measured]) > * {
+  visibility: hidden;
+}
+
 /* the panning sheet (fit 'height'): wider than the stage, scrolled sideways.
    Its scrollbar is the shell's thin one (directive 8.11): tokens.css owns
    the values under .pt-scroll-x, the sideways variant of .pt-scroll, and

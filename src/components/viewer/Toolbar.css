@@ -25,9 +25,9 @@
    touch phone each control's tap area reaches 40px, and where the bar is
    still short the count and then Help leave (the last block).
 
-   The search trigger (directive 8.3) is the one field-shaped button, and
-   it keeps the old nav's pill (Kevin's directive; DESIGN.md, chrome
-   exceptions): a 32px --pt-hair box with the control corner
+   The search trigger (directive 8.3) is the one field-shaped button, a
+   pill (a chrome exception, DESIGN.md section 15): a 32px --pt-hair box
+   with the control corner
    (--pt-radius-control, 6px, the corner every control and field takes),
    the search glyph, the word Search in ink-2 and the key chip at its right
    end, a chip-corner (--pt-radius-chip, 4px)
@@ -76,9 +76,8 @@
   gap: 8px;
 }
 
-/* the search trigger: the old nav's pill, a glyph, a word and the key chip
-   (the pill takes the control corner, which this pill set for every
-   control; the chip inside it takes the chip corner) */
+/* the search trigger: a pill holding a glyph, a word and the key chip (the
+   pill takes the control corner; the chip inside it takes the chip corner) */
 .pt-toolbar .pt-search-btn {
   min-width: 176px;
   height: 32px;

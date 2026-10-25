@@ -7,7 +7,7 @@ import {
   cliCallbackPage,
   type CliCallbackState,
 } from '@/components/plate/lib/cliCallbackPages';
-import { readTheme, type Theme } from '@/components/viewer/ThemeButton';
+import { readTheme, type Theme } from '@/lib/theme';
 
 type CliCallbackSnapshotProps = {
   state: CliCallbackState;

@@ -12,7 +12,7 @@ import {
   type GlobeVariantKey,
 } from '@/app/d/blog-globe/_stage/rounds';
 import { FIGURE_HEIGHTS, embedHref } from '@/components/blog-globe/figures';
-import { postTheme, readTheme } from '@/components/viewer/ThemeButton';
+import { postTheme, readTheme } from '@/lib/theme';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './blog-globe.css';

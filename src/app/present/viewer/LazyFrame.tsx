@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 
-import { postTheme, type Theme } from '@/components/viewer/ThemeButton';
+import { postTheme, type Theme } from '@/lib/theme';
 
 /**
  * A verdict card's preview: the direction's 640x360 thumbnail at rest, and a

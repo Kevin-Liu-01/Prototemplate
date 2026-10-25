@@ -22,8 +22,8 @@
   padding: 0 12px;
 }
 
-/* the solid call to action, Present, keeps the old nav's .pt-nav-present
-   (Kevin's directive; DESIGN.md, chrome exceptions): an 8px corner (the
+/* the solid call to action, Present (a chrome exception, DESIGN.md
+   section 15): an 8px corner (the
    one named corner exception, hatched in lint/radius.mjs), 14px
    sides, the word first and the 12px play glyph after it (the row is
    reversed here so ToolButton keeps its one icon-then-label markup), and a
@@ -33,7 +33,7 @@
   flex-direction: row-reverse;
   gap: 7px;
   padding: 0 14px;
-  border-radius: 8px; /* lint-radius: allow Present keeps the old nav button's 8px, DESIGN.md section 15 */
+  border-radius: 8px; /* lint-radius: allow Present's 8px corner, DESIGN.md section 15 */
 }
 
 .pt-ib.is-solid svg {

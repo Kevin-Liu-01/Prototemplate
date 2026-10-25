@@ -47,12 +47,13 @@ import './PreviewLayer.css';
  * once, at most two hover decodes are in flight, and a newer hover
  * supersedes the oldest of them (its source is cleared, which aborts the
  * fetch and settles its promise; the file is not marked broken). On a
- * device that can hover, one IntersectionObserver per scroll region (the
- * list the rows sit in) preloads the captures of rows while they are in
- * view, one at a time in the background and only while no hover decode is
- * in flight, and again for the other theme's twins when the theme
- * changes; a touch screen preloads nothing, since it opens a preview only
- * from focus. A hover for a capture still waiting in the preload line
+ * device that can hover, from the first time the pointer reaches a row,
+ * one IntersectionObserver per scroll region (the list the rows sit in)
+ * preloads the captures of rows while they are in view, one at a time in
+ * the background and only while no hover decode is in flight, and again
+ * for the other theme's twins when the theme changes; a page view that
+ * never points at a row fetches no capture, and a touch screen preloads
+ * nothing, since it opens a preview only from focus. A hover for a capture still waiting in the preload line
  * takes it out and starts it.
  * Every queued job remembers the element that asked for it and is dropped
  * when that element has left the document (a search wiped by typing, a
@@ -627,8 +628,11 @@ export function PreviewLayer() {
       });
     };
     let mutations: MutationObserver | null = null;
-    /* a touch screen never opens a preview from a pointer, so it preloads nothing */
-    if (hover && typeof IntersectionObserver !== 'undefined') {
+    /* the preloads start on the pointer's first row; a touch screen never
+       opens a preview from a pointer, so it preloads nothing */
+    const startPreloads = (event: MouseEvent) => {
+      if (!(event.target instanceof Element) || !event.target.closest('[data-preview]')) return;
+      document.removeEventListener('mouseover', startPreloads);
       watch();
       /* the card's own updates (its title, its capture) never rescan the document */
       mutations = new MutationObserver((records) => {
@@ -637,6 +641,9 @@ export function PreviewLayer() {
         schedule();
       });
       mutations.observe(document.body, { childList: true, subtree: true });
+    };
+    if (hover && typeof IntersectionObserver !== 'undefined') {
+      document.addEventListener('mouseover', startPreloads, { passive: true });
     }
 
     /* the theme changed: the open card shows the other twin in the same
@@ -671,6 +678,7 @@ export function PreviewLayer() {
       window.clearTimeout(sweepTimer.current);
       window.clearTimeout(clearTimer.current);
       theme.disconnect();
+      document.removeEventListener('mouseover', startPreloads);
       mutations?.disconnect();
       if (frameId) cancelAnimationFrame(frameId);
       observers.forEach((observer) => observer.disconnect());

@@ -3,8 +3,8 @@
 import { useState } from 'react';
 
 import { ToolButton } from '@/components/viewer/ToolButton';
-import { readTheme, toggleTheme } from '@/components/viewer/ThemeButton';
-import type { Theme } from '@/components/viewer/ThemeButton';
+import { readTheme, toggleTheme } from '@/lib/theme';
+import type { Theme } from '@/lib/theme';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './prod-chrome.css';

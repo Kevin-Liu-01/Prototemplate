@@ -158,7 +158,7 @@ export default function FeatureBento({
       });
       return () => cleanups.forEach((c) => c());
     },
-    { scope: root, dependencies: [spotlight] }
+    { scope: root, dependencies: [spotlight], revertOnUpdate: true }
   );
 
   return (

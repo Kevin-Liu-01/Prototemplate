@@ -1,6 +1,5 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
 import { useRef } from 'react';
 
 import {
@@ -9,6 +8,7 @@ import {
   type StudioParams,
   type StudioPreset,
 } from '@/lib/studio-field';
+import { useLayoutWork } from '@/lib/use-layout-work';
 
 export type StudioFieldProps = {
   /**
@@ -37,21 +37,18 @@ export type StudioFieldProps = {
 export default function StudioField({ preset = 'bayer', params, dpr, speed = 1, className }: StudioFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useGSAP(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    // The shared engine already skips fields that are scrolled out of view.
-    const field: StudioFieldHandle | null = createStudioField(canvas, {
-      preset,
-      dpr,
-      speed,
-      params,
-    });
-    if (!field) return;
-
-    return () => field.destroy();
-  }, [preset, dpr, speed]);
+  /* a new preset, scale or speed destroys the last field before the next
+     one starts; the shared engine already skips fields scrolled out of view */
+  useLayoutWork(
+    () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const field: StudioFieldHandle | null = createStudioField(canvas, { preset, dpr, speed, params });
+      if (!field) return;
+      return () => field.destroy();
+    },
+    { dependencies: [preset, dpr, speed] }
+  );
 
   return <canvas ref={canvasRef} className={className} aria-hidden />;
 }

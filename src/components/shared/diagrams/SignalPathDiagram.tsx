@@ -12,8 +12,6 @@ export type SignalPathDiagramProps = {
   scale?: number;
 };
 
-type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
-
 const VIEW_W = 920;
 const VIEW_Y = 30;
 const VIEW_H = 116;
@@ -30,7 +28,7 @@ export default function SignalPathDiagram({
   pulseStrokeWidth = 2.8,
   scale = 1,
 }: SignalPathDiagramProps) {
-  const style: StyleVars = {
+  const style: CSSProperties = {
     '--gtd-stroke': strokeWidth,
     '--gtd-pulse-stroke': pulseStrokeWidth,
   };

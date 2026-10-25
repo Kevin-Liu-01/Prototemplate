@@ -1,7 +1,6 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import FieldEffectsMenu from '@/components/shared/FieldEffectsMenu';
 import {
@@ -12,6 +11,8 @@ import {
   type PrismaticParams,
 } from '@/lib/prismatic-field';
 import { createOffThreadField, type OffThreadHandle } from '@/lib/prismatic-offthread';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+import { useLayoutWork } from '@/lib/use-layout-work';
 
 const EFFECT_MODES: readonly PrismaticEffectMode[] = ['lens', 'dither', 'chroma'];
 
@@ -29,15 +30,10 @@ export type PrismaticFieldProps = {
   speed?: number;
   className?: string;
   /**
-   * Retained for call-site compatibility. Offscreen fields are always skipped
-   * by the shared engine, so this no longer has an effect.
-   */
-  pauseOffscreen?: boolean;
-  /**
    * Cursor-reactive effect modes for this field — hover the field and the
    * burst reacts around the cursor. Opting in is explicit: either this prop,
    * or a `data-fx="lens dither chroma"` attribute on any ancestor of the
-   * mount. Every field without either behaves exactly as before.
+   * mount. A field with neither draws without cursor effects.
    */
   effects?: readonly PrismaticEffectMode[];
   /** Mode engaged on mount before any stored choice. Defaults to the first of `effects`. */
@@ -119,85 +115,93 @@ export default function PrismaticField({
   /* Stable dependency for the (rare) case of a literal array prop. */
   const effectsKey = effects?.join(' ');
 
-  useGSAP(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  /* a new preset, scale or effect set, or the fall back from the worker,
+     destroys the last field before the next one starts */
+  useLayoutWork(
+    () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    /* The declarative tag: any ancestor carrying data-fx opts the field in
-       and becomes the pointer host ("a tag where I can add hover effects").
-       Searched from the parent — the canvas reflects data-fx itself, and
-       closest() would otherwise match the mount. */
-    const declaredHost = canvas.parentElement?.closest<HTMLElement>('[data-fx]') ?? null;
-    const requested: readonly string[] =
-      effects ?? (declaredHost?.dataset.fx ?? '').split(/\s+/).filter(Boolean);
-    const modes = requested.filter(isEffectMode);
-    const host = declaredHost ?? canvas.parentElement;
+      /* The declarative tag: any ancestor carrying data-fx opts the field in
+         and becomes the pointer host ("a tag where I can add hover effects").
+         Searched from the parent — the canvas reflects data-fx itself, and
+         closest() would otherwise match the mount. */
+      const declaredHost = canvas.parentElement?.closest<HTMLElement>('[data-fx]') ?? null;
+      const requested: readonly string[] =
+        effects ?? (declaredHost?.dataset.fx ?? '').split(/\s+/).filter(Boolean);
+      const modes = requested.filter(isEffectMode);
+      const host = declaredHost ?? canvas.parentElement;
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = prefersReducedMotion();
 
-    if (inWorker && modes.length === 0) {
-      const drawn = createOffThreadField(canvas, {
-        params: { ...PRISMATIC_PRESETS[preset], ...params },
+      if (inWorker && modes.length === 0) {
+        const drawn = createOffThreadField(canvas, {
+          params: { ...PRISMATIC_PRESETS[preset], ...params },
+          dpr,
+          speed,
+          animate: !reduced,
+          paused: pausedRef.current,
+          onDrawn: () => drawnRef.current?.(),
+          onFail: () => setInWorker(false),
+        });
+        if (drawn) {
+          workerRef.current = drawn;
+          return () => {
+            workerRef.current = null;
+            drawn.destroy();
+          };
+        }
+      }
+
+      /* The committed mode persists per page (or per explicit key). */
+      storageKeyRef.current = persistKey ?? `gt-fx:${window.location.pathname}`;
+      let initial: PrismaticEffectMode | 'off' = defaultEffect ?? modes[0] ?? 'off';
+      if (modes.length > 0) {
+        try {
+          const stored = window.localStorage.getItem(storageKeyRef.current);
+          if (stored === 'off' || (stored !== null && isEffectMode(stored) && modes.includes(stored))) {
+            initial = stored as PrismaticEffectMode | 'off';
+          }
+        } catch {
+          /* storage unavailable (private mode) — the default stands */
+        }
+      }
+
+      const field = createPrismaticField(canvas, {
+        preset,
         dpr,
         speed,
-        animate: !reduced,
-        paused: pausedRef.current,
-        onDrawn: () => drawnRef.current?.(),
-        onFail: () => setInWorker(false),
+        params,
+        effects:
+          !reduced && modes.length > 0 && host !== null
+            ? { host, modes, initial }
+            : undefined,
       });
-      if (drawn) {
-        workerRef.current = drawn;
-        return () => {
-          workerRef.current = null;
-          drawn.destroy();
-        };
+      if (!field) return;
+      handleRef.current = field;
+      // The engine draws on its next animation frame.
+      const drawn = requestAnimationFrame(() => drawnRef.current?.());
+      canvas.dataset.fxMode = field.getEffectMode();
+
+      if (!reduced && modes.length > 0 && (effectsMenu ?? true)) {
+        setMenu({ modes, selected: field.getEffectMode() });
       }
-    }
 
-    /* The committed mode persists per page (or per explicit key). */
-    storageKeyRef.current = persistKey ?? `gt-fx:${window.location.pathname}`;
-    let initial: PrismaticEffectMode | 'off' = defaultEffect ?? modes[0] ?? 'off';
-    if (modes.length > 0) {
-      try {
-        const stored = window.localStorage.getItem(storageKeyRef.current);
-        if (stored === 'off' || (stored !== null && isEffectMode(stored) && modes.includes(stored))) {
-          initial = stored as PrismaticEffectMode | 'off';
-        }
-      } catch {
-        /* storage unavailable (private mode) — the default stands */
-      }
-    }
+      return () => {
+        cancelAnimationFrame(drawn);
+        handleRef.current = null;
+        field.destroy();
+      };
+    },
+    { dependencies: [preset, dpr, speed, effectsKey, inWorker] }
+  );
 
-    const field = createPrismaticField(canvas, {
-      preset,
-      dpr,
-      speed,
-      params,
-      effects:
-        !reduced && modes.length > 0 && host !== null
-          ? { host, modes, initial }
-          : undefined,
-    });
-    if (!field) return;
-    handleRef.current = field;
-    // The engine draws on its next animation frame.
-    const drawn = requestAnimationFrame(() => drawnRef.current?.());
-    canvas.dataset.fxMode = field.getEffectMode();
-
-    if (!reduced && modes.length > 0 && (effectsMenu ?? true)) {
-      setMenu({ modes, selected: field.getEffectMode() });
-    }
-
-    return () => {
-      cancelAnimationFrame(drawn);
-      handleRef.current = null;
-      field.destroy();
-    };
-  }, [preset, dpr, speed, effectsKey, inWorker]);
-
-  useEffect(() => {
-    workerRef.current?.setPaused(paused);
-  }, [paused]);
+  useLayoutWork(
+    () => {
+      workerRef.current?.setPaused(paused);
+    },
+    { dependencies: [paused] }
+  );
 
   const select = (mode: PrismaticEffectMode | 'off') => {
     setMenu((current) => (current ? { ...current, selected: mode } : current));

@@ -9,7 +9,7 @@ import {
   readTheme,
   toggleTheme,
   type Theme,
-} from '@/components/viewer/ThemeButton';
+} from '@/lib/theme';
 
 type PlateThemeToggleProps = {
   className?: string;

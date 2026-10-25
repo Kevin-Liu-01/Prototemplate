@@ -4,6 +4,7 @@ import { memo, useRef, useState } from 'react';
 
 import type { IconName } from '@/components/viewer/icons';
 import { ToolButton } from '@/components/viewer/ToolButton';
+import { cn } from '@/lib/cn';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -125,10 +126,8 @@ function SegControl<T extends string>({ options, value, onChange, label, iconOnl
     return () => observer.disconnect();
   });
 
-  const classes = ['pt-seg', ind ? 'has-ind' : '', className ?? ''].filter(Boolean).join(' ');
-
   return (
-    <div ref={root} className={classes} role='group' aria-label={label}>
+    <div ref={root} className={cn('pt-seg', ind && 'has-ind', className)} role='group' aria-label={label}>
       {ind ? (
         <span
           className='pt-seg-ind'

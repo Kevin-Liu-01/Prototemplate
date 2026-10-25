@@ -7,6 +7,8 @@ import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import './LanguageWheel.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -35,8 +37,6 @@ export type LanguageWheelProps = {
   /** Priority-load the centre mark (use in a hero). */
   priority?: boolean;
 };
-
-type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
 
 const DEFAULT_GLYPHS = '語한文عñßЖ中れ글अй€çك日字ه한ю';
 
@@ -67,7 +67,7 @@ export default function LanguageWheel({
     () => {
       const el = root.current;
       if (!el) return;
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = prefersReducedMotion();
 
       /* Radii are authored against a 244px dial, then scaled to the rendered
          one — so a direction can shrink the wheel from CSS and the orbit follows. */
@@ -138,10 +138,11 @@ export default function LanguageWheel({
         pause.kill();
       };
     },
-    { scope: root, dependencies: [arcDuration, orbit] }
+    /* a new duration or orbit reverts the last run's ticker, tween and trigger first */
+    { scope: root, dependencies: [arcDuration, orbit], revertOnUpdate: true }
   );
 
-  const style: StyleVars | undefined = size ? { '--gtw-size': `${size}px` } : undefined;
+  const style: CSSProperties | undefined = size ? { '--gtw-size': `${size}px` } : undefined;
 
   return (
     <div

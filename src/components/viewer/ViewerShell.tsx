@@ -5,6 +5,7 @@ import { memo, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 import { cn } from '@/lib/cn';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import type {
   ShellDensity,
   ShellKeysProp,
@@ -15,6 +16,7 @@ import type {
 } from '@/lib/shell-data';
 import { flattenShellItems, pagedShellItems, resolveShellKeys } from '@/lib/shell-data';
 import type { SurfaceSet } from '@/lib/surfaces';
+import { toggleTheme } from '@/lib/theme';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -27,7 +29,6 @@ import { createStageStore, ShellContext, StageContext } from './shell-context';
 import type { ShellDir, ShellState, ShellTransition } from './shell-context';
 import { Sidebar, ThumbList } from './Sidebar';
 import type { SidebarFilter, SubRows } from './Sidebar';
-import { toggleTheme } from './ThemeButton';
 import { Toast, useToast } from './Toast';
 import { Toolbar } from './Toolbar';
 import { useShellKeys } from './useShellKeys';
@@ -238,11 +239,6 @@ function isDensity(value: string | null): value is ShellDensity {
   return value === 'outline' || value === 'thumbs';
 }
 
-/** The reader has asked for no motion: every transition commits at once. */
-function reducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
 export function ViewerShell({
   id,
   title,
@@ -364,7 +360,7 @@ export function ViewerShell({
      list stays in the DOM through a close (sidebarShown) */
   const moveSidebar = (kind: SidebarMotion) => {
     window.clearTimeout(sbTimer.current);
-    if (reducedMotion()) {
+    if (prefersReducedMotion()) {
       setSbMotion(null);
       return;
     }
@@ -407,7 +403,7 @@ export function ViewerShell({
     const done = () => {
       if (transitionStamp.current === stamp) setTransition(null);
     };
-    if (!settled.current || reducedMotion()) {
+    if (!settled.current || prefersReducedMotion()) {
       commitMode(to);
       setTransition(null);
       return;
@@ -670,6 +666,31 @@ export function ViewerShell({
 
   const grid = mode === 'grid';
   const overlayOpen = narrow && sidebarShown;
+
+  /* The narrow list is an overlay over an inert main region: opening it
+     moves focus to the current row (or the filter), and closing it with
+     focus inside the list or dropped to the page hands focus to the List
+     button. Only a change acts, so a load never moves focus. */
+  const overlayWas = useRef(overlayOpen);
+  useLayoutWork(
+    () => {
+      if (overlayWas.current === overlayOpen) return;
+      overlayWas.current = overlayOpen;
+      const root = rootRef.current;
+      if (!root) return;
+      const list = root.querySelector<HTMLElement>('.pt-sb');
+      if (overlayOpen) {
+        const target = list?.querySelector<HTMLElement>('[aria-current="page"]') ?? list?.querySelector<HTMLElement>('input');
+        target?.focus({ preventScroll: true });
+        return;
+      }
+      const active = document.activeElement;
+      if (active === document.body || (active && list?.contains(active))) {
+        root.querySelector<HTMLElement>('.pt-list')?.focus({ preventScroll: true });
+      }
+    },
+    { dependencies: [overlayOpen] }
+  );
   /* the sidebar column: closed, or open at the density's width */
   const sb = present || narrow || !listOpen ? '0' : density;
 
@@ -688,6 +709,18 @@ export function ViewerShell({
           onTouchStart={narrow ? onTouchStart : undefined}
           onTouchEnd={narrow ? onTouchEnd : undefined}
         >
+          {/* the first Tab stop: past the site map to the stage (WCAG 2.4.1); a
+              click handler, so the route's own hash is left alone */}
+          <a
+            className='pt-skip'
+            href='#pt-stage'
+            onClick={(e) => {
+              e.preventDefault();
+              stageRef.current?.focus();
+            }}
+          >
+            Skip to content
+          </a>
           {overlayOpen ? (
             <button
               type='button'
@@ -707,9 +740,9 @@ export function ViewerShell({
             filter={filter}
             onCurrentPage={onCurrentPage}
           />
-          <section className='pt-main'>
+          <main className='pt-main' inert={overlayOpen}>
             <ToolbarMemo title={title} mark={mark} slot={toolbarSlot} modeLabels={modeLabels} />
-            <div ref={stageRef} className='pt-stagewrap'>
+            <div ref={stageRef} id='pt-stage' className='pt-stagewrap' tabIndex={-1}>
               {children}
               {grid ? (
                 <GridView>
@@ -738,7 +771,7 @@ export function ViewerShell({
             {/* a child of .pt-main, not of the stage: its top and bottom are written against the toolbar and the progress line */}
             <IndexPanelMemo set={surfaces} />
             <ProgressMemo />
-          </section>
+          </main>
         </div>
         <HelpCardMemo />
         <Toast message={toast.message} on={toast.on} />

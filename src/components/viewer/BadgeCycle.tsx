@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 /** One frame of a head badge, keyed for React. */
 export type BadgeFrame = { key: string; content: ReactNode };
@@ -16,7 +16,7 @@ export type BadgeFrame = { key: string; content: ReactNode };
 export function BadgeCycle({ frames }: { frames: readonly BadgeFrame[] }) {
   if (frames.length === 0) return null;
   return (
-    <span className='pt-cycle' style={{ '--n': frames.length } as CSSProperties}>
+    <span className='pt-cycle' style={{ '--n': frames.length }}>
       <span className='pt-cycle-size'>
         {frames.map((frame) => (
           <span key={frame.key}>{frame.content}</span>

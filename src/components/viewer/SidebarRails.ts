@@ -44,6 +44,8 @@
  * line auditor reads. It never writes a row's class, aria or content.
  */
 
+import { REDUCED_MOTION_QUERY } from '@/lib/reduced-motion';
+
 type Seg = {
   row: HTMLElement;
   run: Run;
@@ -189,7 +191,7 @@ export function createSidebarRails(list: HTMLElement): SidebarRails | null {
   /* the shell root; DirectionCorner's list has none and counts as settled */
   const viewer = aside.closest<HTMLElement>('.pt-viewer');
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reduce = window.matchMedia(REDUCED_MOTION_QUERY);
   const dense = window.matchMedia('(min-resolution: 2dppx)');
   const runs = new Map<HTMLElement, Run>();
   const segs = new Map<HTMLElement, Seg>();

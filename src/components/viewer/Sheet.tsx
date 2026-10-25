@@ -240,6 +240,7 @@ function FixedSheet({
     <div
       className={cn('pt-sheet-stage', fitMode === 'height' && 'is-pan', present && 'is-present')}
       data-dir={dir ?? 'next'}
+      data-measured={stageSize.width > 0 ? '' : undefined}
       hidden={!shown}
       onClick={onClick}
       onTouchStart={onTouchStart}

@@ -163,6 +163,37 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
   view-transition-name: pt-stage;
 }
 
+/* the stage takes focus from the skip link; the next Tab moves into it */
+.pt-stagewrap:focus {
+  outline: none;
+}
+
+/* the skip link: hidden until it holds keyboard focus, then a control over
+   the shell's top left corner */
+.pt-skip {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 30;
+  padding: 7px 12px;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  text-decoration: none;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
+.pt-skip:focus-visible {
+  border-color: var(--pt-ink);
+  outline: none;
+  clip-path: none;
+  pointer-events: auto;
+}
+
 /* the scrim under the narrow overlay list */
 .pt-sb-scrim {
   position: absolute;

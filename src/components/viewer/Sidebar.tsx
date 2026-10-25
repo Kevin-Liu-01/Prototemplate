@@ -8,6 +8,7 @@ import { Fragment, memo, useCallback, useMemo, useRef, useState } from 'react';
 import { brandFontVariables } from '@/lib/brand-fonts';
 import { cn } from '@/lib/cn';
 import { isDocumentHref, openSiteHref } from '@/lib/document-routes';
+import { scrollBehavior } from '@/lib/reduced-motion';
 import type { ShellDensity, ShellItem, ShellMark, ShellSection, ShellShot, ShellSubRow, ShellThumb } from '@/lib/shell-data';
 import { previewId } from '@/lib/shell-data';
 import { isExternalSurface, surfaceGroups } from '@/lib/surfaces';
@@ -545,15 +546,6 @@ function navigates(row: Row, pathname: string): boolean {
   if (!row.item || row.external) return true;
   if (row.item.inPlace || !row.item.href) return false;
   return pathOf(row.href) !== pathname;
-}
-
-/** Smooth unless the reader asked for less motion. */
-function scrollBehavior(): ScrollBehavior {
-  try {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-  } catch {
-    return 'auto';
-  }
 }
 
 /**
@@ -1586,20 +1578,28 @@ export function Sidebar({
   const rendered = groups.map((group) => renderGroup(group)).filter((node) => node !== null);
   const gallery = id === 'gallery';
   const markNode = MARK_NODES[mark];
-  /* the mark, a link back to the gallery on every other route; memoized, so the list's renders skip it */
+  /* the mark, a link back to the gallery on every other route, with prefetch
+     off as on the rows, so no route fetches the gallery's chunks while it
+     is read; memoized, so the list's renders skip it */
   const markLink = useMemo(
     () =>
       gallery ? (
         <span className='pt-sb-mark pt-mark-host'>{markNode}</span>
       ) : (
-        <Link className='pt-sb-mark pt-mark-host' href='/' title='Back to the gallery' aria-label='Back to the gallery'>
+        <Link
+          className='pt-sb-mark pt-mark-host'
+          href='/'
+          prefetch={false}
+          title='Back to the gallery'
+          aria-label='Back to the gallery'
+        >
           {markNode}
         </Link>
       ),
     [gallery, markNode]
   );
-  /* the name beside the mark: the old nameplate on every Prototemplate route
-     (Kevin's directive; DESIGN.md, chrome exceptions), `proto` in Fraunces
+  /* the name beside the mark: the nameplate on every Prototemplate route (a
+     chrome exception, DESIGN.md section 15), `proto` in Fraunces
      and `template` in Space Grotesk, with the two font variables on the
      span itself so they resolve on /docs and /brand as on /; the deck keeps
      its Inter title beside the GT mark. The aside is still named by the

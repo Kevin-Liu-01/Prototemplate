@@ -1,7 +1,7 @@
 /**
- * Class joiner for the shell components. Dependency-free on purpose (this
- * app ships standalone to Prototemplate); if utility conflicts ever need
- * resolving, graduate to clsx + tailwind-merge behind this same signature.
+ * Joins the truthy class names with spaces. The site's class names are
+ * plain, so nothing needs merging; the plate keeps clsx with tailwind-merge
+ * for its utility classes (src/components/plate/lib/utils.ts).
  */
 export function cn(
   ...inputs: Array<string | false | null | undefined>

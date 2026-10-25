@@ -22,9 +22,6 @@ export type DiagramProps = {
   title?: string;
 };
 
-/** CSS custom properties are legal inline styles but absent from CSSProperties. */
-type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
-
 const VIEW_W = 200;
 const VIEW_H = 74;
 
@@ -41,7 +38,7 @@ export default function DiagramFrame({
   title,
   children,
 }: DiagramProps & { children: ReactNode }) {
-  const style: StyleVars = {
+  const style: CSSProperties = {
     '--gtd-stroke': strokeWidth,
     '--gtd-accent-stroke': accentStrokeWidth,
   };

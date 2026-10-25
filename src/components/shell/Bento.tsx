@@ -54,8 +54,8 @@ export function BentoRow({
   children?: ReactNode;
 }) {
   const style: CSSProperties = {};
-  if (cols) style['--shell-cols' as never] = cols as never;
-  if (headH) style['--shell-head-h' as never] = headH as never;
+  if (cols) style['--shell-cols'] = cols;
+  if (headH) style['--shell-head-h'] = headH;
   return (
     <div
       className={cn(

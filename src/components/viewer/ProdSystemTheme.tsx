@@ -2,22 +2,14 @@
 
 import { usePathname } from 'next/navigation';
 
-import { THEME_KEY } from '@/components/viewer/ThemeButton';
+import { loadTheme } from '@/lib/theme';
+import type { Theme } from '@/lib/theme';
 import { useLayoutWork } from '@/lib/use-layout-work';
 
 /* the boot script in src/app/layout.tsx uses the same test */
 const PRODUCTION_PATH = /^\/d\/production(\/|$)/;
 
-function savedTheme(): 'light' | 'dark' | null {
-  try {
-    const saved = localStorage.getItem(THEME_KEY);
-    return saved === 'light' || saved === 'dark' ? saved : null;
-  } catch {
-    return null;
-  }
-}
-
-function systemTheme(): 'light' | 'dark' {
+function systemTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
@@ -43,7 +35,7 @@ export default function ProdSystemTheme() {
   useLayoutWork(
     () => {
       const root = document.documentElement;
-      const saved = savedTheme();
+      const saved = loadTheme();
       if (PRODUCTION_PATH.test(pathname)) {
         /* a not-found render can rebuild <html> without the boot script's
            attribute; the saved choice is stamped again, as ThemeButton

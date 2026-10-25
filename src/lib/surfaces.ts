@@ -1,4 +1,4 @@
-import { LIBRARIES } from '@/app/craft/libraries';
+import { LIBRARY_INDEX } from '@/app/craft/library-index';
 import { docHref } from '@/components/book/model';
 import { DOCS_PAGES } from '@/components/docs/pages';
 import { ARCHIVE, archiveDesc } from '@/lib/archive';
@@ -399,7 +399,7 @@ const EXPLORATIONS: readonly Surface[] = EXPLORATION_DIRECTIONS.map((d) =>
   internal(d.slug, d.name, directionPageHref(d.slug), d.concept, 'Explorations', directionShots(d.slug))
 );
 
-const LIBRARY_ROWS: readonly Surface[] = LIBRARIES.map((lib) =>
+const LIBRARY_ROWS: readonly Surface[] = LIBRARY_INDEX.map((lib) =>
   internal(`lib-${lib.name}`, lib.name, `${docHref('libraries')}#${lib.name}`, sentence(lib.role), 'Libraries')
 );
 

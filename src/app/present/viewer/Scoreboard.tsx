@@ -5,8 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
 
-import { readTheme, toggleTheme } from '@/components/viewer/ThemeButton';
-import type { Theme } from '@/components/viewer/ThemeButton';
+import { readTheme, toggleTheme } from '@/lib/theme';
+import type { Theme } from '@/lib/theme';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { useDeckSetup } from '../deck-setup';

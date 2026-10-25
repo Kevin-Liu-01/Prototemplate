@@ -730,7 +730,7 @@ export default function StorySection({
         pulse.kill();
       };
     },
-    { scope: root, dependencies: [popup] }
+    { scope: root, dependencies: [popup], revertOnUpdate: true }
   );
 
   return (

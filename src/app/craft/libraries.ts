@@ -1,9 +1,11 @@
 /**
  * The craft article's data: the audit and ownership rules, the teaching
- * snippets, and the LIBRARIES roster — pure strings, importable by the
- * article and by the search index without dragging any demo code along.
+ * snippets and the LIBRARIES roster, as plain strings the article imports
+ * without any demo code. The index panel reads only library-index.ts.
  */
+import { libraryEntry } from './library-index';
 import type { LibraryDemoKind } from './LibraryDemo';
+
 export const AUDITS = [
   'Doubled lines: two parallel strokes from different owners within 4px of each other, including coincident strokes that composite darker than either.',
   'Missing seams: section and row junctions that no rule closes.',
@@ -377,8 +379,7 @@ export type Library = {
 
 export const LIBRARIES: readonly Library[] = [
   {
-    name: 'horizon-field',
-    role: 'the singularity visual',
+    ...libraryEntry('horizon-field'),
     body:
       'The lensing black hole: a photon ring, wrapped accretion arcs, and the page’s own ruled lines bending into the mass, in one WebGL fragment shader on one quad. Twenty-one tunable parameters (geometry, doppler, chroma, exposure, breathing), a full runtime handle (setParams, pause, resume, renderStatic, destroy), and GLSL kept comment-free by design so the shipped source stays a fraction of the page it lights.',
     demo: {
@@ -391,8 +392,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: HORIZON_SNIPPET,
   },
   {
-    name: 'glyph-field',
-    role: 'the glyph rain visual',
+    ...libraryEntry('glyph-field'),
     body:
       'A canvas-2D particle field of 1,280 glyphs from eight writing systems that condenses into the word "language" in script after script. One preallocated typed-array pool, a 1-bit Bayer-dithered atlas, and morphs that conserve matter: the outgoing word’s dust is the next word’s material, and nothing ever spawns mid-air or vanishes mid-flight. The dossier home hardened it into a real library: a drift option runs the rain down or up on the same negative-safe wrap math (its closing band rises), per-sprite ink bounds cut the blitted area several-fold, depth alpha is quantized so the loop touches globalAlpha a handful of times per pass instead of per glyph, the field is host-aspect-true (homes live in unit coordinates and re-lay onto the live box every resize, so nothing about it is square), and a frame-time governor watches the real cadence: a wide viewport on weak silicon steps down the same quality ladder the phone cut uses (lean device-pixel cap, then the lean pool), down only, with pool cuts waiting for idle rain.',
     demo: {
@@ -405,8 +405,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: GLYPH_SNIPPET,
   },
   {
-    name: 'ink-field',
-    role: 'the band margins’ rising rain',
+    ...libraryEntry('ink-field'),
     body:
       'The closing band’s material as its own engine: the glyph-field’s eight-script inventory rising off the ink in the same set 34px columns, with a content clearing measured off the live DOM box so glyphs own only the margins. The band mounts run it gated: parked entirely below the tc narrow cut, the header’s full-width strip kept clear so glyphs own only the sides and the foot, a 1.5x device-pixel ceiling and a 30fps cap for the slow drift, and the frame-time governor underneath. It inherited every one of the hero’s flicker lessons: solid tiers on a tier-batched alpha ramp (dither never rides moving glyphs), integer-snapped device-px blits, hysteresis on the clearing rim. On this plate it plays: glyphs shiver as the pointer nears, and a click blows the nearest one up, its shockwave shoving the column neighbors before the field heals.',
     demo: {
@@ -419,8 +418,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: INK_SNIPPET,
   },
   {
-    name: 'prismatic-field',
-    role: 'the chroma wash',
+    ...libraryEntry('prismatic-field'),
     body:
       'The spectral light behind every dark terminal and band: a flowing wide-gamut wash with presets, speed and exposure control, masked so the light owns the edges and the content owns the dark center.',
     demo: {
@@ -433,8 +431,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: PRISMATIC_SNIPPET,
   },
   {
-    name: 'dither',
-    role: 'the 1-bit Bayer renderer',
+    ...libraryEntry('dither'),
     body:
       'Any continuous field fn(u, v, t) → 0..1, rendered as pure 1-bit ordered dither: each cell compares the field against the 8×8 Bayer matrix, an exact permutation of 0..63, so a flat field lights exactly k pixels per tile and the ramp has 65 tonally linear levels. It draws one device pixel per cell into a small buffer and lets CSS upscale it pixelated, writes every frame through one reused Uint32 view, and ships field factories (radial bursts, a lit globe, streak bands, ramps, a true text SDF) plus combinators to multiply, max and mix them. The loop caps at 30fps, pauses offscreen and on hidden tabs, and renders exactly one still under reduced motion.',
     demo: {
@@ -447,8 +444,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: DITHER_SNIPPET,
   },
   {
-    name: 'studio-field',
-    role: 'the authentic Bayer family',
+    ...libraryEntry('studio-field'),
     body:
       'The GPU sibling of the CPU renderer above: the house Bayer looks themselves, codified. Ten variants live in one module as fragment shaders on a single session-singleton WebGL context, exported as the BAYER_PRESETS roster: slot 01 is the founder’s first-survey pick untouched, and the rest move along real axes: matrix order (2×2, 4×4, 8×8), cell scale from poster to near-grain, the tone field under the matrix (flow, contours, flank radials, sweeps, interference, breath), motion, and palette balance from ink-dominant to the one white-hot variant. Anything that shows or switches the family maps over that one list, the hero review rig and this plate included. Switching is a remount: programs compile lazily and cache for the session, destroy() keeps the shared context, so cycling never grows the context count.',
     demo: {
@@ -461,8 +457,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: STUDIO_SNIPPET,
   },
   {
-    name: 'iso',
-    role: 'the isometric drawing kit',
+    ...libraryEntry('iso'),
     body:
       'Every isometric illustration in the family goes through one 30° axonometric map: project(x, y, z) seats the camera at (+,+,+), so exactly three faces of any solid are visible, always lit in the same order from the upper left. A solid is extruded by recipe: an opaque hull from the rounded silhouette occludes whatever sits below, face fills shade it, then the hairlines: rim, top contour, and the interior front edges the silhouette does not already draw. Boxes are no longer the whole kit: IsoPrism extrudes any convex plan polygon with the same visibility and three-tone law, plane(z) is the exported matrix that seats whole flat drawings (glyph strokes, masked brand marks) into any surface, markPath() lays rounded bars in a face, and DitheredMark renders a logo as masked ink with the Bayer-quantized shimmer the tower’s capstone wears. Thickness runs about four percent of footprint, one corner radius serves the whole family, and every drawing spends its accent on exactly one element.',
     demo: {
@@ -475,8 +470,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: ISO_SNIPPET,
   },
   {
-    name: 'doubled-line',
-    role: 'the two-thread diagram stroke',
+    ...libraryEntry('doubled-line'),
     body:
       'The brand’s connector is one SVG path stroked twice: a full-gauge ink stroke underneath and a narrower surface-colored core on top, carving the ink into two parallel hairline threads at a constant gap along any curve. Because both strokes share one geometry the gap cannot drift on a bend, and non-scaling-stroke holds the gauge in screen pixels even under a stretched viewBox. Now a component: DoubledLine takes the center path, the carving surface, the gauges, and a pulse slot, and it two-tones the pair, one white thread and one gray, by clipping the white copy to a half-plane closed along the same geometry, so the split seam hides inside the carve on every bend (offset clones collapse on curves; concentric restrokes can only make symmetric rings). Draw a later one over an earlier one and the junction re-carves itself into one clean pair: merges cost zero parallel-curve math. This is also the one sanctioned double: one owner, one path, stroked twice; the auditor’s allow list holds it by name.',
     demo: {
@@ -489,8 +483,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: THREADS_SNIPPET,
   },
   {
-    name: 'edge-globe',
-    role: 'the delivery drawing',
+    ...libraryEntry('edge-globe'),
     body:
       'The translation CDN as an orthographic globe, drawn entirely in ink: front graticule arcs at the family’s regular weight, far arcs as dashed hairlines. Depth is said once, with ink, no fills and no shading. Five points of presence stand on graticule intersections with corner-routed leaders that never cross; one bowed great-circle route from the user to the answering PoP is the drawing’s single accent, and one GSAP loop rides it: request dot out, arrival ring, payload chip back. Behind it the dossier home seats a static Bayer atmosphere: four non-overlapping annuli filled with nested coverage tiers of the ordered matrix on one shared grid, so crossing a ring boundary only ever turns dots off and no cell is painted twice.',
     demo: {
@@ -503,8 +496,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: GLOBE_SNIPPET,
   },
   {
-    name: 'locale-tag',
-    role: 'the locale pill',
+    ...libraryEntry('locale-tag'),
     body:
       'Every bare locale code on every page renders through one component: flag first (a fixed 15×11 print from an SVG flag pack, corners barely eased, never a shadow), then the code in the host surface’s own mono, seated on the text baseline with the flag centered against it. The component carries no box of its own; hosts supply the chip (the hairline pill on light surfaces, the translucent-bordered terminal pill on dark), so the same tag drops into ledgers, capability marquees, diagram key columns and the infinite locale belt. Explicit region subtags fly their own flag (en-GB, ar-EG), bases resolve through a twenty-language map, and an unknown locale degrades to a flagless code rather than a wrong flag.',
     demo: {
@@ -517,8 +509,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: PILLS_SNIPPET,
   },
   {
-    name: 'reveal-seam',
-    role: 'the slide-to-reveal instrument',
+    ...libraryEntry('reveal-seam'),
     body:
       'A hundred-line dependency-free slider that drags one CSS custom property, --seam-cut, onto a host box; the top layer clips to it, so the underlayer is revealed in place and content never travels a pixel with the handle. State lives in the CSS var rather than React state: drags cause zero re-renders, GSAP intros and cinema beat scrubs drive the same dial by writing the var directly, and the keyboard path re-reads the live computed value so every writer stays in agreement. The handle is the brand’s doubled line in the dossier refit: two solid threads at the house gap, the run between them filled with the payload’s own ink, bridged by a rectangular grip tab on a 64px hitbox, with a full slider role, arrow-key nudges, and a statically parked cut under reduced motion.',
     demo: {
@@ -531,8 +522,7 @@ export const LIBRARIES: readonly Library[] = [
     snippet: SEAM_SNIPPET,
   },
   {
-    name: 'glyph-reassembler',
-    role: 'the sentence-rewriting morph',
+    ...libraryEntry('glyph-reassembler'),
     body:
       'Now a component: EverySentence owns the dossier hero’s headline engine. One shaped sentence morphs between locales by dissolving into 440 canvas-drawn glyph motes seated on the outgoing text’s own sampled ink, dispersing into a cloud, then reassembling: every glyph flies to exactly one point sampled on a brick lattice and the real text node prints through the settled swarm behind a hard clip front that absorbs each glyph as it passes, mirrored for RTL. It never runs on a timer. The host owns the one clock through a ref handle’s setLocale. Requests debounce a quarter second; one landing mid-dissolve retargets the form boundary, one landing mid-form kills the timeline and re-dissolves, and a same-text locale change retags lang and dir only. Width follows the moving-type law: one shaped probe measure per word, cached, device-pixel snapped, tweened once per cycle. The dossier hero drives it from the locale belt; the plate below drives the same handle from a plain interval.',
     demo: {
@@ -545,64 +535,56 @@ export const LIBRARIES: readonly Library[] = [
     snippet: REASSEMBLER_SNIPPET,
   },
   {
-    name: 'locale-belt',
-    role: 'the marquee that drives the page',
+    ...libraryEntry('locale-belt'),
     body:
       'The translate window’s strip zone is an infinite conveyor of locale chips, and the belt is the demo’s clock, not its decoration: the track carries the fifteen-locale roster twice and its position wraps at one run’s width (the house marquee, ticker-driven so the wrap and the centre logic share one clock), and whichever chip crosses the zone’s centre becomes the active locale, so the rendered page and the payload’s translated leaves retype from the belt’s own output, never a timer’s. Each chip owns the centre for six seconds; hovering pauses the belt, any manual interaction holds it until a quiet spell passes, and a pinned inspector or the Terminal face freezes it outright. Clicking a chip slides the belt the short way round (jumping the position by exactly one run is frame-identical, so the recentre picks the least-travel pairing that stays on the doubled track), with crossings suppressed while it travels, so only the picked locale fires. The window carries one additive vent, onLocaleChange, for a host that wants to run on the belt’s clock (the dossier hero’s morphing headline does); passed nothing, nothing changes. Reduced motion parks the belt with es centred, and clicks recentre instantly.',
     file: 'src/app/d/_v0/TranslateWindow.tsx',
     snippet: BELT_SNIPPET,
   },
   {
-    name: 'nameplate-take',
-    role: 'the landing hero’s morph',
+    ...libraryEntry('nameplate-take'),
     body:
       'The nameplate as a working type-specimen sheet: prototype in serif off the destination line’s upper left, template in grotesk off its lower right, the destination between them as empty outlined text, and every word held by a crop frame, four border-touching rules that move with their word. The take is physical: type falls out and the serif frame’s right rule slides in to re-hug the shorter word; both words then travel inward, frames riding along, until they park inside the outline, and the parked words ARE the nameplate, lowercase, so nothing ever crossfades. Every travel delta is measured from live rects, so the module never encodes where the sources sit; fonts are awaited before anything is measured, a resize rebuilds the sheet, and reduced motion holds the settled nameplate rather than replaying the take.',
     file: 'src/app/PrototemplateHero.tsx',
     snippet: NAMEPLATE_SNIPPET,
   },
   {
-    name: 'stack-story',
-    role: 'the scroll-scrubbed stage',
+    ...libraryEntry('stack-story'),
     body:
       'The stack story’s scroll engine, and the two laws that keep a pinned read honest. One scrubbed dial spans the whole read, and a piecewise time map (measured lock-ins in, beat end-times out) converts scroll into story time, so every layer seats exactly as its beat’s copy reaches the read line whatever the beats’ real heights are. A lock-in is the copy block’s centre taking the 55% read line, measured from flow geometry (the finale is sticky, so its own rect would report the stuck pose), and the whole map re-anchors on every refresh. Between scroll and paint sits the stage’s damper: the trigger only moves a target, and one gsap.ticker lerp chases it, calling apply() once per frame. Taps, cap wires, typing and rail all ride one damped clock, the stage’s equivalent of scrub: 0.35. The ticker detaches when settled, parking dead on target so no residue leaks into the beat math, and re-attaches on new input, so a resting stage burns nothing.',
     file: 'src/app/d/_v0/sections/FullStack.tsx',
     snippet: STACK_STORY_SNIPPET,
   },
   {
-    name: 'site-compare',
-    role: 'the two-face compare rig',
+    ...libraryEntry('site-compare'),
     body:
       'The landing wall’s compare instrument: two faces of one site (the home and the enterprise page) overlaid with the house seam between them, the reveal-seam recipe refit for a wall of stills. The cut lives in one CSS custom property on the stage, so a drag re-renders nothing; pointer capture on the stage keeps the sweep when the pointer leaves the box mid-drag; and a hidden range control drives the same var, so keyboards and readers get a real slider rather than a pantomime of one. Every face image carries draggable={false}, since one native image-drag would steal the pointer stream and freeze the seam mid-sweep, and each face is a light/dark pair, so the rig follows the page theme without a re-shoot.',
     file: 'src/app/SiteCompare.tsx',
     snippet: COMPARE_SNIPPET,
   },
   {
-    name: 'gallery-shoot',
-    role: 'the wall’s tile shooter',
+    ...libraryEntry('gallery-shoot'),
     body:
       'The harness that stocks the landing wall: a real Chromium at the dev server, shooting the flagship home’s sections, both themes at both cuts. Element screenshots, never scroll depths: each tile is one section’s own box, so side-by-side pairs align whatever the viewport was. Theme is seeded through the same pre-boot door the site itself uses (an init script writes gt-theme to localStorage before navigation, the root script stamps it before first paint), one full scroll pass settles every lazy-armed section before the first shot, and a selector that misses is reported and skipped, never fatal. The run’s last act writes a manifest of the tiles beside them. The wall renders what was actually shot, so a missing tile is a skipped cell rather than a broken image.',
     file: 'scripts/check/gallery-shoot.mjs',
     snippet: SHOOT_SNIPPET,
   },
   {
-    name: 'mobile-type-ladder',
-    role: 'the compact type slots',
+    ...libraryEntry('mobile-type-ladder'),
     body:
       'Not an engine: the system that makes a whole page’s mobile typography one decision. Under 720px the page root publishes a ladder of slots: heading sizes with their own line heights, lead, body, small and kicker steps, head and cell paddings, box air, and a 20px seam floor, the least air card copy may keep off a ground strip. Every floor below consumes the slots instead of restating sizes, so a compact-cut change is one token edit rather than a hunt across sections. The block’s position is itself a law: it is the last 720px block in the sheet, because several base rules it overrides appear after the earlier one, and these same-specificity declarations only win by following them. The ladder outranks by order, never by escalating selectors.',
     file: 'src/app/d/toolchain/styles.css',
     snippet: LADDER_SNIPPET,
   },
   {
-    name: 'pre-boot',
-    role: 'the before-first-paint contract',
+    ...libraryEntry('pre-boot'),
     body:
       'Two inline scripts in the document head run before the app exists, and everything that films or embeds the site leans on them. The first stamps the persisted theme onto the root element before first paint. Dark mode is a token remap, so one attribute set early is the difference between no flash and a white flash on every dark load; the screenshot harness enters by the same door, seeding localStorage before navigation. The second is the rAF gate: requestAnimationFrame is wrapped so an embedding parent can freeze and resume every animation loop on the page with one postMessage. Queued callbacks flush on resume, so shaders and scroll loops pick up exactly where they stopped rather than rebooting. That gate is how the presenter idles a whole wall of live thumbnails without touching any engine’s own code.',
     file: 'src/app/layout.tsx',
     snippet: PREBOOT_SNIPPET,
   },
   {
-    name: 'four-color',
-    role: 'the palette everything resolves from',
+    ...libraryEntry('four-color'),
     body:
       'Not an engine: the ground the engines stand on. Four absolute colors: ink, raised ink, titanium, paper. Structural color everywhere derives from these (every text step is ink or white at some alpha, every hairline is titanium at some alpha, every hatch is a thin ink or white veil), and each page adds exactly one spectral accent on top. Pages never touch the raw values: each root class publishes a semantic layer (surfaces, ink steps, hairlines, hatch), and dark mode is a pure custom-property remap in which the paper family collapses onto ink, ink flips to white, and hairline alphas rise so a 1px seam still survives between two ink surfaces.',
     file: 'src/app/globals.css',

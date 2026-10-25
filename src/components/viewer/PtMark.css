@@ -1,9 +1,7 @@
-/* PtMark: the Prototemplate mark as the old nav drew it (prototemplate.css
-   at 430e3c7, .pt-mark at lines 97 to 140 and the HDR core at 1355 to
-   1405). A 22x22 box, four 1px hairlines in --pt-ink at 5px and 16px, and
-   the 10px core they frame at 6px.
+/* PtMark: the Prototemplate mark. A 22x22 box, four 1px hairlines in
+   --pt-ink at 5px and 16px, and the 10px core they frame at 6px.
 
-   Kevin's exception (DESIGN.md, chrome exceptions): the core is the one
+   A chrome exception (DESIGN.md section 15): the core is the one
    place chrome carries chroma. Its five stops are declared here as custom
    properties on the mark, sRGB first and display-p3 where the screen can
    carry it, so tokens.css stays the shell's palette and the mark's color

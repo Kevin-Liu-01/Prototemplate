@@ -57,7 +57,7 @@ const NOTE: Record<SurfaceSet, string> = {
 };
 
 /** `14 pages`, `23 places`: the head count for a set. */
-export function surfaceCount(set: SurfaceSet, n: number): string {
+function surfaceCount(set: SurfaceSet, n: number): string {
   const one = set === 'site' ? 'page' : 'place';
   return `${n} ${n === 1 ? one : `${one}s`}`;
 }
@@ -74,11 +74,14 @@ const FOCUS_TRIES = 12;
  * Mounted only while the panel is open: focuses the filter as soon as the
  * browser lets it (the panel is visible from its first open frame, but a
  * style recalc can lag a frame, and focus() on a not yet visible input is
- * refused silently), retrying for a few frames, and lets go of the focus
- * when the panel closes.
+ * refused silently), retrying for a few frames. When the panel closes with
+ * focus still in the filter or dropped to the page, focus returns to what
+ * held it before the panel opened.
  */
 function FocusOnOpen({ target }: { target: RefObject<HTMLInputElement | null> }) {
   useMountEffect(() => {
+    const held = document.activeElement;
+    const opener = held instanceof HTMLElement && held !== document.body ? held : null;
     let frame = 0;
     let tries = 0;
     const attempt = () => {
@@ -93,7 +96,10 @@ function FocusOnOpen({ target }: { target: RefObject<HTMLInputElement | null> })
     return () => {
       if (frame) cancelAnimationFrame(frame);
       const input = target.current;
-      if (input && document.activeElement === input) input.blur();
+      const active = document.activeElement;
+      if (active !== input && active !== document.body) return;
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+      else if (input && active === input) input.blur();
     };
   });
   return null;
