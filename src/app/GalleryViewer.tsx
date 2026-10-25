@@ -17,9 +17,9 @@ import { DIRECTIONS, directionPageHref } from '@/lib/directions';
 import type { ShellItem, ShellKeysProp, ShellMode, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import AtlasSheet from './AtlasSheet';
 import { DirectionFrame, FRAME_H, FRAME_W } from './directions/DirectionFrame';
 import { DIRECTION_ITEMS, DIRECTION_SECTIONS, directionTitle, EXPLORATIONS, REFERENCE, SITES } from './directions/sections';
-import PrototemplateHero from './PrototemplateHero';
 import SiteCompare from './SiteCompare';
 
 import './GalleryViewer.css';
@@ -360,11 +360,13 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
 
   return (
     <div ref={root} className={cn('pt-root', 'gv-article', fontClass)}>
-      <div className='pt-rail'>
-        <section className='pt-sec' data-gv-top=''>
-          <PrototemplateHero />
-        </section>
+      {/* the first screen is a sheet of Atlas, full bleed across the stage like the magazine's own pages; the book's
+          rail starts under it */}
+      <section className='pt-sec' data-gv-top=''>
+        <AtlasSheet />
+      </section>
 
+      <div className='pt-rail'>
         <div className='pt-hatch' aria-hidden='true' />
 
         {/* ---- the post: a short article (motivation, research, discovery,

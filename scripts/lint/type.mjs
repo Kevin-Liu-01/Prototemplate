@@ -111,8 +111,8 @@ export const NAMEPLATE = {
 };
 
 export const GROTESK_LABELS = {
-  selectors: ['.pt-line.is-h i', '.pt-src-spec', '.pt-funnel-t', '.aw-chip', '.sl-cap-name', '.sl-fig-label', '.sl-fig-word'],
-  reason: "the gallery's grotesk labels (DESIGN.md section 4, the grotesk for labels): Space Grotesk with positive tracking",
+  selectors: ['.pt-line.is-h i', '.pt-src-spec', '.pt-funnel-t', '.aw-chip', '.sl-cap-name', '.sl-fig-label', '.sl-fig-word', '.ah-city', '.gtp-g-ref'],
+  reason: "the gallery's grotesk labels (DESIGN.md section 4, the grotesk for labels): Space Grotesk with positive tracking, and Katagami Text on the home's Atlas sheet (its city and Atlas's grid references)",
 };
 
 export const SPECIMENS = {
@@ -140,6 +140,8 @@ export const MONO = {
     '.blog-fumadocs-architecture .fm', // the Fumadocs figure's package names: fumadocs-mdx, fumadocs-core, base-ui
     '.dmo-plate-tag', // the Components plates' entry points: createStudioField(), <EdgeGlobe />
     '.dmo-tiers-token', // the Bayer tiers plate's threshold numbers
+    '.ah-dms', // the home sheet's coordinates, 37° 46′ 29.6400″ N
+    '.ah-chip-path', // the home sheet's volume paths, /brand to /atlas
   ],
   reason: 'numbers, code identifiers, paths, hex values and locale codes (DESIGN.md section 4, BRAND.md section 6)',
 };
