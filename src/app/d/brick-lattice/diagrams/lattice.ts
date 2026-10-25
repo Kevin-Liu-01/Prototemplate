@@ -323,6 +323,9 @@ export const PATTERN_BOOK: readonly PatternEntry[] = [
 /* the renderer                                                        */
 
 export type LatticeRenderOptions = {
+  /** the canvas's CSS box in px */
+  width: number;
+  height: number;
   /** stretcher width in CSS px; rounded to an even integer so the half-brick offset is whole */
   brick: number;
   /** the section's offset from the document top in CSS px */
@@ -341,8 +344,8 @@ export type LatticeRenderOptions = {
  * only when the glaze changes, which on a dithered field is rare.
  */
 export function renderLattice(canvas: HTMLCanvasElement, field: LatticeField, o: LatticeRenderOptions): void {
-  const w = canvas.clientWidth;
-  const h = canvas.clientHeight;
+  const w = o.width;
+  const h = o.height;
   if (w < 2 || h < 2) return;
   const bw = Math.max(8, Math.round(o.brick / 2) * 2);
   const bh = bw / 2;
@@ -416,6 +419,8 @@ export type LatticeLoopOptions = {
   readDocTop: () => number;
   readAnchor: () => LatticeBox | null;
   readDrive: () => number;
+  /** elements besides the section and the body whose resize moves the field, such as the anchor */
+  watch?: readonly Element[];
 };
 
 export type LatticeLoopHandle = {
@@ -435,16 +440,19 @@ export function createLatticeLoop(canvas: HTMLCanvasElement, o: LatticeLoopOptio
   let destroyed = false;
   let elapsed = 0;
 
+  /* the layout reads: taken on resize, on a theme flip and on render(), never per frame */
+  const measure = () => ({
+    width: canvas.clientWidth,
+    height: canvas.clientHeight,
+    brick: o.readBrick(),
+    docTop: o.readDocTop(),
+    anchor: o.readAnchor(),
+  });
+  let geometry = measure();
+
   const draw = (time: number) => {
     elapsed = time;
-    renderLattice(canvas, o.field, {
-      brick: o.readBrick(),
-      docTop: o.readDocTop(),
-      palette,
-      time,
-      drive: animate ? o.readDrive() : 0,
-      anchor: o.readAnchor(),
-    });
+    renderLattice(canvas, o.field, { ...geometry, palette, time, drive: animate ? o.readDrive() : 0 });
   };
 
   const tick = (now: number) => {
@@ -477,6 +485,7 @@ export function createLatticeLoop(canvas: HTMLCanvasElement, o: LatticeLoopOptio
   const redraw = () => {
     if (destroyed) return;
     palette = o.readPalette();
+    geometry = measure();
     draw(running ? elapsed : 0);
   };
 
@@ -486,6 +495,7 @@ export function createLatticeLoop(canvas: HTMLCanvasElement, o: LatticeLoopOptio
     if (canvas.parentElement) resize.observe(canvas.parentElement);
     /* a taller section above shifts this one: the document body's height is the tell */
     resize.observe(document.body);
+    for (const el of o.watch ?? []) resize.observe(el);
   }
 
   const theme = new MutationObserver(redraw);
@@ -511,7 +521,10 @@ export function createLatticeLoop(canvas: HTMLCanvasElement, o: LatticeLoopOptio
   if (animate) start();
 
   return {
-    render: (time) => draw(time ?? 0),
+    render: (time) => {
+      geometry = measure();
+      draw(time ?? 0);
+    },
     destroy: () => {
       destroyed = true;
       stop();

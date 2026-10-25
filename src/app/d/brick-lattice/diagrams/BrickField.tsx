@@ -19,6 +19,9 @@ import type { FieldName, LatticeBox, LatticePalette } from './lattice';
  * overrides them), and the document offset from the section's own box.
  * `anchor` names an element inside the section whose box the field may
  * centre on: the hero passes its claim panel, the wall its source brick.
+ * The engine takes these layout reads on resize, never per frame, and
+ * watches the anchor's size, since the hero's panel grows and shrinks with
+ * the locale of its claim.
  * The host may write data-bl-drive (0..1) and the field reads it as `k`;
  * the wall's timeline uses it to send the firing wave through the lattice.
  */
@@ -54,11 +57,11 @@ export default function BrickField({ field, animate = false, anchor, fps = 12 }:
 
     const readDocTop = () => host.getBoundingClientRect().top + window.scrollY;
 
+    const anchorEl = anchor ? host.querySelector(anchor) : null;
+
     const readAnchor = (): LatticeBox | null => {
-      if (!anchor) return null;
-      const el = host.querySelector(anchor);
-      if (!el) return null;
-      const a = el.getBoundingClientRect();
+      if (!anchorEl) return null;
+      const a = anchorEl.getBoundingClientRect();
       const b = host.getBoundingClientRect();
       return { x: a.left - b.left, y: a.top - b.top, w: a.width, h: a.height };
     };
@@ -77,6 +80,7 @@ export default function BrickField({ field, animate = false, anchor, fps = 12 }:
       readDocTop,
       readAnchor,
       readDrive,
+      watch: anchorEl ? [anchorEl] : [],
     });
 
     /* webfont swaps move the anchor panel; one more still once they settle */
