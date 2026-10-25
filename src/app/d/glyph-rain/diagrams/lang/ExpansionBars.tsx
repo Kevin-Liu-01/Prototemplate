@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
 import { langA11y, langClass, prefersReducedMotion, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);
@@ -85,6 +86,7 @@ export default function ExpansionBars({ className, accent = true, title }: LangP
       }
 
       tl.duration(ROWS.length * DWELL);
+      pauseWhileHidden(rootEl, [tl]);
     },
     { scope: root },
   );

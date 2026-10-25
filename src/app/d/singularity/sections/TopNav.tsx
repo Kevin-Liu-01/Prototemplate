@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import type { ComponentType, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import {
   SiDiscord,
@@ -17,7 +17,6 @@ import {
   BookOpen,
   Boxes,
   Briefcase,
-  ChevronDown,
   Languages,
   LayoutDashboard,
   Mail,
@@ -28,23 +27,9 @@ import {
 import TcMobileNav from '@/components/shared/TcMobileNav';
 import { ThemeButton } from '@/components/viewer/ThemeButton';
 
+import NavMenu, { type MenuColumn } from '@/app/d/toolchain/components/NavMenu';
+
 import './topnav-menu.css';
-
-type IconProps = { className?: string; color?: string; size?: number; strokeWidth?: number; 'aria-hidden'?: boolean };
-
-type MenuItem = {
-  label: string;
-  desc: string;
-  href: string;
-  icon?: ComponentType<IconProps>;
-  /** Image-file marks (brand glyphs that aren't currentColor components). */
-  img?: string;
-  /** Dark mode inverts drawn-dark glyph files, same trick as the footer. */
-  invertsInDark?: boolean;
-  external?: boolean;
-};
-
-type MenuColumn = { title: string; items: readonly MenuItem[] };
 
 const DOCS = 'https://generaltranslation.com/docs';
 
@@ -103,60 +88,6 @@ function docsMenu(base: string): readonly MenuColumn[] {
   ];
 }
 
-function MenuMark({ item }: { item: MenuItem }) {
-  if (item.img) {
-    return (
-      <Image
-        alt=''
-        aria-hidden
-        className={item.invertsInDark ? 'tc-menu-glyph is-inverting' : 'tc-menu-glyph'}
-        height={15}
-        loading='eager'
-        src={item.img}
-        unoptimized
-        width={15}
-      />
-    );
-  }
-  const Icon = item.icon;
-  return Icon ? <Icon aria-hidden className='tc-menu-glyph' color='currentColor' size={15} strokeWidth={1.75} /> : null;
-}
-
-function Menu({ label, columns, wide }: { label: string; columns: readonly MenuColumn[]; wide?: boolean }) {
-  return (
-    <div className='tc-nav-drop'>
-      <button className='tc-nav-drop-trigger' type='button' aria-haspopup='true'>
-        {label}
-        <ChevronDown aria-hidden size={13} strokeWidth={2} />
-      </button>
-      <div className={wide ? 'tc-nav-panel is-wide' : 'tc-nav-panel'} role='menu'>
-        {columns.map((column) => (
-          <div className='tc-nav-col' key={column.title}>
-            <h5>{column.title}</h5>
-            {column.items.map((item) => (
-              <a
-                href={item.href}
-                key={item.label}
-                rel={item.external ? 'noreferrer' : undefined}
-                role='menuitem'
-                target={item.external ? '_blank' : undefined}
-              >
-                <span className='tc-menu-plate'>
-                  <MenuMark item={item} />
-                </span>
-                <span className='tc-menu-text'>
-                  <b>{item.label}</b>
-                  <small>{item.desc}</small>
-                </span>
-              </a>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 /** Slim, ruled, and quiet — the column's top edge more than a navigation bar.
     Resources and Docs open ruled flyouts (CSS :hover/:focus-within, ported
     from the toolchain nav and re-inked to this system's tokens). */
@@ -175,8 +106,8 @@ export default function TopNav(): ReactNode {
         </a>
 
         <nav className='tc-nav-links'>
-          <Menu columns={resources(base)} label='Resources' />
-          <Menu columns={docsMenu(base)} label='Docs' wide />
+          <NavMenu columns={resources(base)} label='Resources' />
+          <NavMenu columns={docsMenu(base)} label='Docs' wide />
           <a href={`${base}/locadex`}>Locadex</a>
           <a href={`${base}/pricing`}>Pricing</a>
           <a href={`${base}/enterprise`}>Enterprise</a>

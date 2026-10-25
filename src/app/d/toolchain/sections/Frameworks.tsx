@@ -21,7 +21,7 @@ import {
   Type,
 } from 'lucide-react';
 import { useRef, useState } from 'react';
-import type { ComponentType, CSSProperties, ReactNode } from 'react';
+import type { ComponentType, CSSProperties, KeyboardEvent, ReactNode } from 'react';
 
 import {
   SiNextdotjs,
@@ -211,33 +211,44 @@ export default function Frameworks({
   const panel = useRef<HTMLDivElement>(null);
   const settled = useRef(false);
   const [active, setActive] = useState(0);
+  /* the active tab for the resize listener, which subscribes once */
+  const current = useRef(0);
 
   useQuietReveal(root);
 
+  /** Moves the underline under tab `index`, gliding or at once. */
+  const place = (index: number, animate: boolean) => {
+    const list = tabs.current;
+    const bar = list?.querySelector<HTMLElement>('[data-underline]');
+    if (!list || !bar) return;
+    const buttons = list.querySelectorAll<HTMLButtonElement>('[data-tab]');
+    const button = buttons[index];
+    const last = buttons[buttons.length - 1];
+    if (!button || !last) return;
+    /* On a phone the strip wraps (chip-consistency.css), so the bar rises
+       from the last row to the active tab's row; on one row y is 0. */
+    const to = {
+      x: button.offsetLeft - list.scrollLeft,
+      y: button.getBoundingClientRect().bottom - last.getBoundingClientRect().bottom,
+      width: button.offsetWidth,
+    };
+    if (animate) gsap.to(bar, { ...to, duration: 0.42, ease: 'power3.out' });
+    else gsap.set(bar, to);
+  };
+
+  /* Inter loads after first paint and the strip reflows on resize; the
+     underline is measured type, so it is measured again after either. */
+  useGSAP(() => {
+    const settle = () => place(current.current, false);
+    void document.fonts?.ready.then(settle);
+    window.addEventListener('resize', settle);
+    return () => window.removeEventListener('resize', settle);
+  });
+
   useGSAP(
     () => {
-      const list = tabs.current;
-      const bar = list?.querySelector<HTMLElement>('[data-underline]');
-      if (!list || !bar) return;
-
-      const place = (animate: boolean) => {
-        const buttons = list.querySelectorAll<HTMLButtonElement>('[data-tab]');
-        const button = buttons[active];
-        const last = buttons[buttons.length - 1];
-        if (!button || !last) return;
-        /* On a phone the strip wraps (chip-consistency.css), so the bar rises
-           from the last row to the active tab's row; on one row y is 0. */
-        const to = {
-          x: button.offsetLeft - list.scrollLeft,
-          y: button.getBoundingClientRect().bottom - last.getBoundingClientRect().bottom,
-          width: button.offsetWidth,
-        };
-        if (animate) gsap.to(bar, { ...to, duration: 0.42, ease: 'power3.out' });
-        else gsap.set(bar, to);
-      };
-
-      place(settled.current);
-
+      current.current = active;
+      place(active, settled.current);
       if (settled.current && panel.current) {
         gsap.fromTo(
           panel.current,
@@ -246,16 +257,27 @@ export default function Frameworks({
         );
       }
       settled.current = true;
-
-      /* Inter loads after first paint; the underline is measured type, so it
-         has to be measured again once the real face is in. */
-      const settle = () => place(false);
-      void document.fonts?.ready.then(settle);
-      window.addEventListener('resize', settle);
-      return () => window.removeEventListener('resize', settle);
     },
     { dependencies: [active] }
   );
+
+  /* Arrow keys, Home and End move the selection along the strip and take
+     focus with it, so one Tab stop reaches every framework. */
+  const onTabKey = (event: KeyboardEvent<HTMLDivElement>) => {
+    const count = FRAMEWORKS.length;
+    const targets: Partial<Record<string, number>> = {
+      ArrowRight: active + 1,
+      ArrowLeft: active - 1 + count,
+      Home: 0,
+      End: count - 1,
+    };
+    const target = targets[event.key];
+    if (target === undefined) return;
+    const next = target % count;
+    event.preventDefault();
+    setActive(next);
+    tabs.current?.querySelectorAll<HTMLButtonElement>('[data-tab]')[next]?.focus();
+  };
 
   const framework = FRAMEWORKS[active] ?? FRAMEWORKS[0];
   if (!framework) return null;
@@ -270,7 +292,7 @@ export default function Frameworks({
         </p>
       </div>
 
-      <div className='tc-tabs' ref={tabs} role='tablist' aria-label='Frameworks'>
+      <div className='tc-tabs' ref={tabs} role='tablist' aria-label='Frameworks' onKeyDown={onTabKey}>
         {FRAMEWORKS.map((item, i) => {
           const Mark = TAB_MARKS[item.id];
           return (
@@ -284,6 +306,7 @@ export default function Frameworks({
               role='tab'
               aria-selected={i === active}
               aria-controls='tc-fw-panel'
+              tabIndex={i === active ? 0 : -1}
               onClick={() => setActive(i)}
             >
               {Mark ? <Mark className='tc-tab-mark' color='currentColor' aria-hidden /> : null}

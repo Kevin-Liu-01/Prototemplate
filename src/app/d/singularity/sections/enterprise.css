@@ -311,34 +311,19 @@
   cursor: default;
 }
 
-/* the error line: a hairline statement, never a colored pill */
-.singularity-root .sge-error {
+/* the notice a submit shows: a hairline statement that nothing was sent */
+.singularity-root .sge-notice {
   border: 1px solid rgba(255, 255, 255, 0.5);
   padding: 10px 13px;
   font-size: 13px;
+  line-height: 1.55;
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* the received state stands where the form stood — same column, no theater */
-.singularity-root .sge-received {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 320px;
-}
-
-.singularity-root .sge-received h3 {
-  font-size: 21px;
-  letter-spacing: -0.015em;
+.singularity-root .sge-notice a {
   color: #ffffff;
-}
-
-.singularity-root .sge-received p {
-  margin-top: 10px;
-  max-width: 34ch;
-  font-size: 14px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ---- the compliance row closes the band ---- */

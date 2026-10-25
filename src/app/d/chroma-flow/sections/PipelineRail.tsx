@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 
 /**
  * M05 — the six-station rail. The whole pipeline stated once, in order, so
@@ -172,6 +173,7 @@ export default function PipelineRail() {
       });
       /* Close the loop: walk back to station one before repeating. */
       timeline.to(dot, { left: `${100 / 12}%`, duration: 0.45, ease: 'power2.inOut' });
+      if (root.current) pauseWhileHidden(root.current, [timeline]);
     },
     { scope: root }
   );

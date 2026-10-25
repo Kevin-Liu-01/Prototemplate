@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { useRef } from 'react';
 
 import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);
@@ -80,6 +81,7 @@ export default function RtlMirror({ className, accent = true, title }: LangProps
       });
 
       tl.duration(PANELS.length * DWELL);
+      pauseWhileHidden(rootEl, [tl]);
     },
     { scope: root },
   );

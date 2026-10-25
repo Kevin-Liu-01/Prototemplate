@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 import PrismaticField from '@/components/shared/PrismaticField';
 import GlyphRain from '../../singularity/sections/GlyphRain';
 
@@ -40,6 +41,7 @@ export default function TransmissionLog() {
         .to(lines, { autoAlpha: 1, duration: 0.08, stagger: 0.92, ease: 'none' })
         .to({}, { duration: 3.2 })
         .to(lines, { autoAlpha: 0, duration: 0.35, ease: 'none' });
+      if (root.current) pauseWhileHidden(root.current, [tl]);
 
       return () => {
         tl.kill();
@@ -59,7 +61,7 @@ export default function TransmissionLog() {
             rest. Context, terminology, review, delivery.
           </p>
         </header>
-        <div className='sgs-log' role='log'>
+        <div className='sgs-log'>
           {LOG.map(([t, line], i) => (
             <div className='sgs-log-line' data-sgs-line key={i}>
               <span className='sgs-log-t'>{t}</span>

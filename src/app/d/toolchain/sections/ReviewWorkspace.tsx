@@ -9,6 +9,7 @@ import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 import LocaleTag from '../components/LocaleTag';
 
 import { useQuietReveal } from './reveal';
+import { pauseWhileHidden } from './visibility';
 
 import './review-workspace.css';
 
@@ -345,6 +346,8 @@ export default function ReviewWorkspace({
         once: true,
         onEnter: () => tl.play(),
       });
+
+      pauseWhileHidden(scope, [tl]);
 
       /* GSAP reverts styles on cleanup but not text it wrote — restore the
          finished still by hand so hot reloads never strand a half-typed row. */

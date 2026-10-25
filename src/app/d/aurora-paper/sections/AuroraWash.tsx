@@ -79,7 +79,7 @@ export default function AuroraWash({
       observer?.disconnect();
       wash.destroy();
     };
-  }, [preset, darkPreset, dpr, speed]);
+  }, { dependencies: [preset, darkPreset, dpr, speed], revertOnUpdate: true });
 
   return <canvas ref={canvasRef} className={className} aria-hidden />;
 }

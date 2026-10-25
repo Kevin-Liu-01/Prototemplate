@@ -4,7 +4,10 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import LocaleTag from '../components/LocaleTag';
+import { pauseWhileHidden } from '../sections/visibility';
 
 import './flow.css';
 
@@ -205,7 +208,7 @@ export default function TranslationFlow({ className, title }: TranslationFlowPro
       if (!rootEl) return;
       /* The pulse ships hidden in CSS; a reader who asked for less movement
          simply never sees it, and the fork holds its canonical still. */
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const branchPulses = gsap.utils.toArray<SVGPathElement>('[data-tf-branch-pulse]', rootEl);
       const trunkPulses = gsap.utils.toArray<SVGPathElement>('[data-tf-trunk-pulse]', rootEl);
@@ -215,6 +218,7 @@ export default function TranslationFlow({ className, title }: TranslationFlowPro
       const trunk = tracePath(firstTrunk);
       if (!trunk) return;
       const cycle = PULSE_STAGGER * FORK.length;
+      const clocks: gsap.core.Tween[] = [];
 
       branchPulses.forEach((branchPulse, k) => {
         const trunkPulse = trunkPulses[k];
@@ -237,7 +241,7 @@ export default function TranslationFlow({ className, title }: TranslationFlowPro
         trunkPulse.setAttribute('d', '');
         gsap.set([trunkPulse, branchPulse], { opacity: 1 });
 
-        gsap.to(state, {
+        const clock = gsap.to(state, {
           head: journey,
           duration: journey / PULSE_SPEED,
           ease: 'none',
@@ -249,7 +253,10 @@ export default function TranslationFlow({ className, title }: TranslationFlowPro
             branchPulse.setAttribute('d', windowPath(branch, state.head - seg - trunk.length, state.head - trunk.length));
           },
         });
+        clocks.push(clock);
       });
+      /* the pulses share one stagger, so they pause and resume together */
+      pauseWhileHidden(rootEl, clocks);
     },
     { scope: root },
   );

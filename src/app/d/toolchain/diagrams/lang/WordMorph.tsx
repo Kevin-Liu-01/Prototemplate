@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import LocaleTag from '../../components/LocaleTag';
 
 import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from './lang';
+import { pauseWhileHidden } from '../../sections/visibility';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);
@@ -110,6 +111,7 @@ export default function WordMorph({ className, accent = true, title }: LangProps
       }
 
       tl.duration(WORDS.length * STEP);
+      pauseWhileHidden(rootEl, [tl]);
     },
     { scope: root },
   );

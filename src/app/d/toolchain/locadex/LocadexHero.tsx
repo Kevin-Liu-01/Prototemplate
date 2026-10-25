@@ -3,11 +3,12 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 
 import LocaleTag from '../components/LocaleTag';
+import { useCopied } from '../components/use-copied';
 
 gsap.registerPlugin(useGSAP);
 
@@ -26,15 +27,7 @@ const LOCALES = ['es', 'fr', 'ja', 'de', 'zh'] as const;
  */
 export default function LocadexHero() {
   const root = useRef<HTMLElement>(null);
-  const [copied, setCopied] = useState(false);
-  const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx locadex@latest start');
-    setCopied(true);
-    clearTimeout(copyTimer.current);
-    copyTimer.current = setTimeout(() => setCopied(false), 1600);
-  };
+  const { copied, copy } = useCopied('npx locadex@latest start');
 
   useGSAP(
     () => {

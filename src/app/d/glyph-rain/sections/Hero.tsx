@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef, useState } from 'react';
 
+import { useCopied } from '@/app/d/toolchain/components/use-copied';
+
 import { SCRIPTS, createGlyphField, POOL } from '@/lib/glyph-field';
 
 gsap.registerPlugin(useGSAP);
@@ -33,15 +35,7 @@ export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLCanvasElement>(null);
   const [active, setActive] = useState(0);
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx gt@latest');
-    setCopied(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1600);
-  };
+  const { copied, copy } = useCopied('npx gt@latest');
 
   useGSAP(
     () => {

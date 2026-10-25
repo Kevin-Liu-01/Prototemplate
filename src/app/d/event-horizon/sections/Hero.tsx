@@ -5,7 +5,9 @@ import 'flag-icons/css/flag-icons.min.css';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+
+import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 import { createHorizonField, type HorizonFieldHandle } from '@/lib/horizon-field';
 
@@ -594,15 +596,7 @@ export default function Hero() {
   const orbitRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<SVGSVGElement>(null);
   const capRef = useRef<HTMLParagraphElement>(null);
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx gt@latest');
-    setCopied(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1600);
-  };
+  const { copied, copy } = useCopied('npx gt@latest');
 
   useGSAP(
     () => {
@@ -821,22 +815,25 @@ export default function Hero() {
         };
       }
 
-      /* Offscreen/hidden-tab guard for the per-frame conveyor. */
-      let active = true;
+      /* The per-frame conveyor rides GSAP's ticker only while the hero is
+         near the screen, so the ticker can sleep once nothing else runs. */
+      const tick = () => {
+        if (document.hidden) return;
+        frame(gsap.ticker.time + T0);
+      };
+      let ticking = true;
+      gsap.ticker.add(tick);
       const io = new IntersectionObserver(
         (entries) => {
-          const entry = entries[0];
-          active = entry ? entry.isIntersecting : true;
+          const near = entries[entries.length - 1]?.isIntersecting ?? true;
+          if (near === ticking) return;
+          ticking = near;
+          if (near) gsap.ticker.add(tick);
+          else gsap.ticker.remove(tick);
         },
         { rootMargin: '120px' }
       );
       io.observe(hero);
-
-      const tick = () => {
-        if (!active || document.hidden) return;
-        frame(gsap.ticker.time + T0);
-      };
-      gsap.ticker.add(tick);
 
       /* Entrance: the walls slide their last stretch of rail INTO the hole
          while fading up (flow.e gates every strip's alpha; the ticker is

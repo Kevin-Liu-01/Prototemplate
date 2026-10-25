@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import LocaleTag from '../../components/LocaleTag';
 
 import { langA11y, langClass, prefersReducedMotion, type LangProps } from './lang';
+import { pauseWhileHidden } from '../../sections/visibility';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);
@@ -61,6 +62,7 @@ export default function ScriptSampler({ className, accent = true, title }: LangP
       if (!rootEl) return;
 
       const items = gsap.utils.toArray<HTMLElement>('[data-ss-item]', rootEl);
+      const drifts: gsap.core.Tween[] = [];
 
       items.forEach((item, i) => {
         const depth = SAMPLES[i]?.depth ?? 0;
@@ -69,13 +71,16 @@ export default function ScriptSampler({ className, accent = true, title }: LangP
         const period = PERIOD[i] ?? 10;
 
         /* Seeded mid-flight rather than delayed, so no sample waits to start. */
-        gsap
-          .to(item, { y: travel, duration: period, repeat: -1, yoyo: true, ease: 'sine.inOut' })
-          .progress(i / items.length);
-        gsap
-          .to(item, { x: travel * 0.4, duration: period * 1.37, repeat: -1, yoyo: true, ease: 'sine.inOut' })
-          .progress(((i * 3) % items.length) / items.length);
+        drifts.push(
+          gsap
+            .to(item, { y: travel, duration: period, repeat: -1, yoyo: true, ease: 'sine.inOut' })
+            .progress(i / items.length),
+          gsap
+            .to(item, { x: travel * 0.4, duration: period * 1.37, repeat: -1, yoyo: true, ease: 'sine.inOut' })
+            .progress(((i * 3) % items.length) / items.length)
+        );
       });
+      pauseWhileHidden(rootEl, drifts);
     },
     { scope: root },
   );

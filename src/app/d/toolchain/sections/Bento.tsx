@@ -38,6 +38,7 @@ import { BentoCell } from '@/components/shell/Bento';
 
 import CodeBlock from './code';
 import { useQuietReveal } from './reveal';
+import { pauseWhileHidden } from './visibility';
 import './bento-motion.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -304,6 +305,7 @@ function useQuadMotion(scope: RefObject<HTMLElement | null>) {
           loops.forEach((tl) => tl.play(0));
         },
       });
+      pauseWhileHidden(quad, loops);
     },
     { scope },
   );

@@ -36,6 +36,7 @@ import PreviewSurface from '@/app/d/toolchain/diagrams/surface/PreviewSurface';
 
 import CodeBlock from '../sections/code';
 import { useQuietReveal } from '../sections/reveal';
+import { pauseWhileHidden } from '../sections/visibility';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -293,6 +294,7 @@ function useQuadMotion(scope: RefObject<HTMLElement | null>) {
           loops.forEach((tl) => tl.play(0));
         },
       });
+      pauseWhileHidden(quad, loops);
     },
     { scope },
   );

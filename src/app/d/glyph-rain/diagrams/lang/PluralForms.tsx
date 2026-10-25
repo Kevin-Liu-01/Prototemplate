@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
 import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);
@@ -145,6 +146,7 @@ export default function PluralForms({ className, accent = true, title }: LangPro
       }
 
       tl.duration(COUNTS.length * STEP);
+      pauseWhileHidden(rootEl, [tl]);
     },
     { scope: root },
   );

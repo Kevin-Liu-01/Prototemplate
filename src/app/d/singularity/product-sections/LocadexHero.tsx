@@ -3,7 +3,10 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+
+import { useCopied } from '@/app/d/toolchain/components/use-copied';
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
@@ -24,15 +27,7 @@ const LOCALES = ['es', 'fr', 'ja', 'de', 'zh'] as const;
  */
 export default function LocadexHero() {
   const root = useRef<HTMLElement>(null);
-  const [copied, setCopied] = useState(false);
-  const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx locadex@latest start');
-    setCopied(true);
-    clearTimeout(copyTimer.current);
-    copyTimer.current = setTimeout(() => setCopied(false), 1600);
-  };
+  const { copied, copy } = useCopied('npx locadex@latest start');
 
   useGSAP(
     () => {
@@ -46,7 +41,7 @@ export default function LocadexHero() {
         { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.12, ease: 'power1.out', delay: 0.25 }
       );
 
-      gsap.to('.sgx-caret', {
+      const blink = gsap.to('.sgx-caret', {
         opacity: 0,
         duration: 0.55,
         repeat: -1,
@@ -54,6 +49,7 @@ export default function LocadexHero() {
         ease: 'steps(1)',
         delay: 2.2,
       });
+      pauseWhileHidden(scope, [blink]);
     },
     { scope: root }
   );

@@ -4,7 +4,9 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 
 import { ArrowRight } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+
+import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 import { createGlyphField } from '@/lib/glyph-field';
 
@@ -36,15 +38,7 @@ const CUSTOMERS: readonly { name: string; mark: string }[] = [
 export default function HomeHero() {
   const root = useRef<HTMLElement>(null);
   const stage = useRef<HTMLCanvasElement>(null);
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx gt@latest');
-    setCopied(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1600);
-  };
+  const { copied, copy } = useCopied('npx gt@latest');
 
   useGSAP(
     () => {

@@ -25,6 +25,7 @@ import RoutingLadder from '../diagrams/delivery/RoutingLadder';
 
 import CodeBlock from '@/app/d/toolchain/sections/code';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 
 /* surface.css is the one diagram sheet scoped by ROOT class, not by diagram
    class — the surface components now come from toolchain, so the fork's
@@ -185,6 +186,7 @@ function usePreviewMotion(scope: RefObject<HTMLElement | null>) {
           tl.play(0);
         },
       });
+      pauseWhileHidden(host, [tl]);
     },
     { scope },
   );

@@ -6,7 +6,9 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+
+import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -614,15 +616,7 @@ function Wall({ side }: { side: 'src' | 'out' }) {
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText('npx gt@latest');
-    setCopied(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1600);
-  };
+  const { copied, copy } = useCopied('npx gt@latest');
 
   useGSAP(
     () => {

@@ -35,6 +35,7 @@ import PreviewSurface from '@/app/d/toolchain/diagrams/surface/PreviewSurface';
 
 import CodeBlock from '@/app/d/toolchain/sections/code';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 import './bento-motion.css';
 /* The surface diagrams' toolchain sheet targets .toolchain-root and is inert
    here; this fork's rescoped copy styles the four surfaces. */
@@ -296,6 +297,7 @@ function useQuadMotion(scope: RefObject<HTMLElement | null>) {
           loops.forEach((tl) => tl.play(0));
         },
       });
+      pauseWhileHidden(quad, loops);
     },
     { scope },
   );

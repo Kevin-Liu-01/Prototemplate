@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Fragment, useRef } from 'react';
 
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
+
 import './review-workspace.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -205,6 +207,8 @@ export default function ReviewWorkspace() {
         once: true,
         onEnter: () => tl.play(),
       });
+
+      pauseWhileHidden(scope, [tl]);
 
       /* GSAP reverts styles on cleanup but not text it wrote — restore the
          finished still by hand so hot reloads never strand a half-typed row. */

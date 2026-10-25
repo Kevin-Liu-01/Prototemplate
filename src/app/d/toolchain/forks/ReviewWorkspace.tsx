@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Fragment, useRef, type ReactNode } from 'react';
 
 import { useQuietReveal } from '../sections/reveal';
+import { pauseWhileHidden } from '../sections/visibility';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -209,6 +210,8 @@ export default function ReviewWorkspace({ title = 'Edit in context.' }: { title?
         once: true,
         onEnter: () => tl.play(),
       });
+
+      pauseWhileHidden(scope, [tl]);
 
       /* GSAP reverts styles on cleanup but not text it wrote — restore the
          finished still by hand so hot reloads never strand a half-typed row. */

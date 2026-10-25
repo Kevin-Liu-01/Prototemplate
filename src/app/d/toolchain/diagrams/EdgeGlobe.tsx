@@ -5,8 +5,10 @@ import gsap from 'gsap';
 import { FileJson2, Server, User } from 'lucide-react';
 import { useRef, type CSSProperties } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
+import { pauseWhileHidden } from '../sections/visibility';
 import type { IsoProps } from './IsoFrame';
-import { prefersReducedMotion } from './lang/lang';
 
 import './edge-globe-v2.css';
 
@@ -374,6 +376,9 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
           2.35,
         );
       }
+
+      const svg = root.current;
+      if (svg) pauseWhileHidden(svg, [tl]);
     },
     { scope: root },
   );

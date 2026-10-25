@@ -489,22 +489,25 @@ export default function Hero() {
         };
       }
 
-      /* Offscreen/hidden-tab guard for the per-frame orbit. */
-      let active = true;
+      /* The per-frame orbit rides GSAP's ticker only while the hero is near
+         the screen, so the ticker can sleep once nothing else runs. */
+      const tick = () => {
+        if (document.hidden) return;
+        placeChips(gsap.ticker.time);
+      };
+      let ticking = true;
+      gsap.ticker.add(tick);
       const io = new IntersectionObserver(
         (entries) => {
-          const entry = entries[0];
-          active = entry ? entry.isIntersecting : true;
+          const near = entries[entries.length - 1]?.isIntersecting ?? true;
+          if (near === ticking) return;
+          ticking = near;
+          if (near) gsap.ticker.add(tick);
+          else gsap.ticker.remove(tick);
         },
         { rootMargin: '120px' }
       );
       io.observe(hero);
-
-      const tick = () => {
-        if (!active || document.hidden) return;
-        placeChips(gsap.ticker.time);
-      };
-      gsap.ticker.add(tick);
 
       gsap.from('[data-hero-in]', {
         y: 14,

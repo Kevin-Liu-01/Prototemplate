@@ -78,19 +78,27 @@ export default function RevealSeam({
     dragging.current = false;
   };
 
+  /* The slider keys: arrows step 5 points, Page Up and Page Down step 20,
+     Home and End go to either edge. */
   const key = (e: ReactKeyboardEvent<HTMLSpanElement>) => {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const steps: Partial<Record<string, number>> = { ArrowLeft: -5, ArrowRight: 5, PageDown: -20, PageUp: 20 };
+    const step = steps[e.key];
+    if (step === undefined && e.key !== 'Home' && e.key !== 'End') return;
     e.preventDefault();
-    /* while the seam is focused the arrows are the slider's — keep them
+    /* while the seam is focused these keys are the slider's — keep them
        from the presenter dock's window-level prev/next navigation */
     e.stopPropagation();
     onInteract?.();
     const box = boxRef.current;
     if (!box) return;
+    if (step === undefined) {
+      apply(e.currentTarget, e.key === 'Home' ? 0 : 100);
+      return;
+    }
     /* read the live value so keys stay in step with tweens and drags */
     const now = parseFloat(getComputedStyle(box).getPropertyValue('--seam-cut'));
     const from = Number.isFinite(now) ? now : defaultCut;
-    apply(e.currentTarget, from + (e.key === 'ArrowLeft' ? -5 : 5));
+    apply(e.currentTarget, from + step);
   };
 
   return (

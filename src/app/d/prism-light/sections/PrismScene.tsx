@@ -315,10 +315,13 @@ export default function PrismScene({
       renderer.render(scene, camera);
     };
 
-    let visible = true;
+    /* The render loop runs only while the scene is near the screen; the
+       clock's step is capped, so the first frame back does not jump. */
+    const loop = () => render(Math.min(clock.getDelta(), 0.1));
     const io = new IntersectionObserver(
       (entries) => {
-        visible = entries[entries.length - 1]?.isIntersecting ?? true;
+        const near = entries[entries.length - 1]?.isIntersecting ?? true;
+        renderer.setAnimationLoop(near && !reduced ? loop : null);
       },
       { rootMargin: '80px' }
     );
@@ -327,10 +330,7 @@ export default function PrismScene({
     if (reduced) {
       render(4.2);
     } else {
-      renderer.setAnimationLoop(() => {
-        const dt = Math.min(clock.getDelta(), 0.1);
-        if (visible) render(dt);
-      });
+      renderer.setAnimationLoop(loop);
     }
 
     return () => {
@@ -350,6 +350,7 @@ export default function PrismScene({
       edges.geometry.dispose();
       (edges.material as THREE.Material).dispose();
       renderer.dispose();
+      renderer.forceContextLoss();
       renderer.domElement.remove();
     };
   }, []);

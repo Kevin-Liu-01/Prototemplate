@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import LocaleTag from '../../components/LocaleTag';
 
 import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from './lang';
+import { pauseWhileHidden } from '../../sections/visibility';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);
@@ -187,13 +188,14 @@ export default function ContextResolve({ className, accent = true, title }: Lang
          timeline below; which window is VISIBLE is the timeline's call, and
          by the shared arithmetic every gate flips while both windows are
          resting between runs — nothing ever fades mid-travel. */
+      const clocks: gsap.core.Animation[] = [];
       pulses.forEach((pulse, k) => {
         const trace = traces[k];
         if (!trace) return;
         const seg = trace.length * PULSE_SEG;
         const journey = trace.length + seg;
         const state = { head: 0 };
-        gsap.to(state, {
+        const clock = gsap.to(state, {
           head: journey,
           duration: PULSE_TRAVERSE,
           ease: 'none',
@@ -204,6 +206,7 @@ export default function ContextResolve({ className, accent = true, title }: Lang
             pulse.setAttribute('d', windowPath(trace, state.head - seg, state.head));
           },
         });
+        clocks.push(clock);
       });
 
       /* One even loop, two identical swaps, each ending flush on a dwell
@@ -237,6 +240,8 @@ export default function ContextResolve({ className, accent = true, title }: Lang
       });
 
       tl.duration(BRANCHES.length * DWELL);
+      /* the clocks and the loop pause and resume together, so they stay in phase */
+      pauseWhileHidden(rootEl, [...clocks, tl]);
     },
     { scope: root },
   );

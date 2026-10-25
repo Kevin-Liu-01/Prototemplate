@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
 import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
+import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);
@@ -159,13 +160,14 @@ export default function ContextResolve({ className, accent = true, title }: Lang
          which one is VISIBLE is decided by the timeline below — so the swap
          lands exactly on the beat the cards swap, and mid-travel handoffs
          stay smooth fades. */
+      const clocks: gsap.core.Animation[] = [];
       pulses.forEach((pulse, k) => {
         const trace = traces[k];
         if (!trace) return;
         const seg = trace.length * PULSE_SEG;
         const journey = trace.length + seg;
         const state = { head: 0 };
-        gsap.to(state, {
+        const clock = gsap.to(state, {
           head: journey,
           duration: PULSE_TRAVERSE,
           ease: 'none',
@@ -176,6 +178,7 @@ export default function ContextResolve({ className, accent = true, title }: Lang
             pulse.setAttribute('d', windowPath(trace, state.head - seg, state.head));
           },
         });
+        clocks.push(clock);
       });
 
       const tl = gsap.timeline({ repeat: -1, defaults: { ease: 'power2.inOut' } });
@@ -199,6 +202,8 @@ export default function ContextResolve({ className, accent = true, title }: Lang
       });
 
       tl.duration(BRANCHES.length * DWELL);
+      /* the clocks and the loop pause and resume together, so they stay in phase */
+      pauseWhileHidden(rootEl, [...clocks, tl]);
     },
     { scope: root },
   );

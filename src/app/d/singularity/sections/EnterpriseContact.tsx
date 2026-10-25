@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { usePathname } from 'next/navigation';
 import { useRef, useState } from 'react';
 
+import { LIVE_ENTERPRISE_CONTACT } from './enterprise-contact-data';
 import GlyphRain from './GlyphRain';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { createGlyphField, SCRIPTS, type GlyphFieldHandle } from '@/lib/glyph-field';
@@ -41,28 +42,15 @@ const COMPLIANCE = [
   'Custom SLA',
 ] as const;
 
-/* The contact API's stable error codes (apps/landing/src/lib/contactErrorCodes.ts)
-   mapped to the same lines the production form shows. */
-const ERROR_LINES: Readonly<Record<string, string>> = {
-  rate_limited: 'Too many requests. Please try again later.',
-  missing_fields: 'Please fill in all required fields.',
-  invalid_email: 'Please provide a valid email address.',
-  enterprise_email_rejected: 'Please use a company email address.',
-};
-
-const GENERIC_ERROR = 'Something went wrong. Please try again later.';
-
-type SubmitState = 'idle' | 'sending' | 'sent';
-
 /**
  * The contact bay — the section the hero's CTA lands on. A full-bleed ink
  * band: the pitch and the three enterprise commitments up top, then the
  * ruled contact sheet — the form written into the sheet's margin while the
  * glyph rain condenses into the word "language" in script after script on
  * the paper beside it (the glyph-field engine, panel-scale). Focusing any
- * field quiets the rain. The form is the old landing's real enterprise
- * form: same fields, same endpoint, same error codes — success only when
- * the API says so.
+ * field quiets the rain. The form carries the live enterprise form's
+ * fields, but this study has no contact API: a submit sends nothing and
+ * says so, with a link to the live form.
  */
 type Props = {
   /** Path of the full contact desk, appended to the concept base. Only the
@@ -78,8 +66,7 @@ export default function EnterpriseContact({ deskPath }: Props) {
   const pathname = usePathname();
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/singularity';
   const [scriptIndex, setScriptIndex] = useState(0);
-  const [submit, setSubmit] = useState<SubmitState>('idle');
-  const [error, setError] = useState<string | null>(null);
+  const [noticed, setNoticed] = useState(false);
 
   useQuietReveal(root);
 
@@ -102,36 +89,11 @@ export default function EnterpriseContact({ deskPath }: Props) {
     { scope: root }
   );
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const payload = {
-      name: String(data.get('name') ?? ''),
-      email: String(data.get('email') ?? ''),
-      companyName: String(data.get('companyName') ?? ''),
-      message: String(data.get('message') ?? ''),
-    };
-    setSubmit('sending');
-    setError(null);
-    try {
-      const res = await fetch('/api/contact?type=enterprise', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const body = (await res.json().catch(() => ({}))) as { code?: string };
-        setError((body.code !== undefined && ERROR_LINES[body.code]) || GENERIC_ERROR);
-        setSubmit('idle');
-        return;
-      }
-      /* The form unmounts on success, so it cannot be resubmitted. */
-      setSubmit('sent');
-    } catch {
-      setError(GENERIC_ERROR);
-      setSubmit('idle');
-    }
+    setNoticed(true);
   }
+
 
   const script = SCRIPTS[scriptIndex] ?? SCRIPTS[0];
 
@@ -170,79 +132,77 @@ export default function EnterpriseContact({ deskPath }: Props) {
           />
           <div className='sge-grid'>
             <div className='sge-formcol'>
-              {submit === 'sent' ? (
-                <div className='sge-received' role='status'>
-                  <h3>Message received</h3>
-                  <p>Thank you for reaching out. We&rsquo;ll be in touch soon.</p>
-                </div>
-              ) : (
-                <form className='sge-form' onSubmit={onSubmit}>
-                  {error !== null ? (
-                    <div className='sge-error' role='alert'>
-                      {error}
-                    </div>
-                  ) : null}
-                  <div className='sge-row'>
-                    <label className='sge-fieldbox'>
-                      <span>Full Name</span>
-                      <input name='name' type='text' autoComplete='name' required placeholder='Your name' />
-                    </label>
-                    <label className='sge-fieldbox'>
-                      <span>Company Email</span>
-                      <input
-                        name='email'
-                        type='email'
-                        autoComplete='email'
-                        required
-                        placeholder='you@yourcompany.com'
-                      />
-                    </label>
-                  </div>
+              <form className='sge-form' onSubmit={onSubmit}>
+                {noticed ? (
+                  <p className='sge-notice' role='status'>
+                    Nothing was sent. This design study is not connected to the contact API;
+                    the live form at{' '}
+                    <a href={LIVE_ENTERPRISE_CONTACT} rel='noreferrer noopener' target='_blank'>
+                      generaltranslation.com/enterprise/contact
+                    </a>{' '}
+                    reaches the team.
+                  </p>
+                ) : null}
+                <div className='sge-row'>
                   <label className='sge-fieldbox'>
-                    <span>Company Name</span>
+                    <span>Full Name</span>
+                    <input name='name' type='text' autoComplete='name' required placeholder='Your name' />
+                  </label>
+                  <label className='sge-fieldbox'>
+                    <span>Company Email</span>
                     <input
-                      name='companyName'
-                      type='text'
-                      autoComplete='organization'
+                      name='email'
+                      type='email'
+                      autoComplete='email'
                       required
-                      placeholder='Your company'
+                      placeholder='you@yourcompany.com'
                     />
                   </label>
-                  <label className='sge-fieldbox'>
-                    <span>How can we help?</span>
-                    <textarea
-                      name='message'
-                      rows={5}
-                      required
-                      placeholder='Tell us how we can help with localization, including timeline and requirements.'
-                    />
-                  </label>
-                  <div className='sge-form-foot'>
-                    <p className='sge-terms'>
-                      By submitting you agree to the{' '}
-                      <a
-                        href='https://generaltranslation.com/legal/terms'
-                        target='_blank'
-                        rel='noopener noreferrer'
-                      >
-                        Terms of Service
-                      </a>{' '}
-                      and acknowledge the{' '}
-                      <a
-                        href='https://generaltranslation.com/legal/privacy-policy'
-                        target='_blank'
-                        rel='noopener noreferrer'
-                      >
-                        Privacy Policy
-                      </a>
-                      .
-                    </p>
-                    <button className='sge-submit' type='submit' disabled={submit === 'sending'}>
-                      {submit === 'sending' ? 'Sending…' : 'Continue'}
-                    </button>
-                  </div>
-                </form>
-              )}
+                </div>
+                <label className='sge-fieldbox'>
+                  <span>Company Name</span>
+                  <input
+                    name='companyName'
+                    type='text'
+                    autoComplete='organization'
+                    required
+                    placeholder='Your company'
+                  />
+                </label>
+                <label className='sge-fieldbox'>
+                  <span>How can we help?</span>
+                  <textarea
+                    name='message'
+                    rows={5}
+                    required
+                    placeholder='Tell us how we can help with localization, including timeline and requirements.'
+                  />
+                </label>
+                <div className='sge-form-foot'>
+                  <p className='sge-terms'>
+                    By submitting you agree to the{' '}
+                    <a
+                      href='https://generaltranslation.com/legal/terms'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      Terms of Service
+                    </a>{' '}
+                    and acknowledge the{' '}
+                    <a
+                      href='https://generaltranslation.com/legal/privacy-policy'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      Privacy Policy
+                    </a>
+                    .
+                  </p>
+                  <button className='sge-submit' type='submit'>
+                    Continue
+                  </button>
+                </div>
+              </form>
               {deskPath !== undefined ? (
                 <p className='sgec-aside'>
                   Need the full sheet?{' '}

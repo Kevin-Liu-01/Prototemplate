@@ -1,7 +1,8 @@
 'use client';
 
 import { Check, Copy } from 'lucide-react';
-import { useRef, useState } from 'react';
+
+import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 /**
  * A five-tone highlighter — comment, string, keyword, tag, GT symbol — and
@@ -87,15 +88,7 @@ function findWrap(lines: readonly string[]): { start: number; end: number } | nu
 }
 
 export default function CodeBlock({ file, code, numbers = true }: CodeBlockProps) {
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const copy = () => {
-    void navigator.clipboard?.writeText(code);
-    setCopied(true);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), 1600);
-  };
+  const { copied, copy } = useCopied(code);
 
   const lines = code.replace(/\n$/, '').split('\n');
   /* The bracket's offsets assume the numbered gutter; the unnumbered config
