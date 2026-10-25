@@ -163,14 +163,13 @@ evaluation only:
 | copy | file | note |
 | --- | --- | --- |
 | Prototemplate | `src/lib/studio-field.ts` | carries `BAYER_PRESETS` and `BAYER_DEFAULT_ID` |
-| Prototemplate plate port | `src/components/plate/lib/studio-field.ts` | the dashboard's copy |
 | landing | `$GT_CLOUD/apps/landing/src/lib/studio-field.ts` | the hero's engine |
 | dashboard | `$GT_CLOUD/packages/ui/src/lib/studio-field.ts` | on `k/dashboard-shell-ia`, PR #4977 |
 
-On 2026-10-05 the shader strings and preset values are identical in all
-four. The landing's and `packages/ui`'s files are byte-identical, the plate
-port's differs from them only in comments, and Prototemplate's `src/lib`
-copy also exports the `BAYER_PRESETS` roster and is formatted wider.
+On 2026-10-05 the shader strings and preset values were identical in every
+copy. The landing's and `packages/ui`'s files are byte-identical, and
+Prototemplate's `src/lib` copy also exports the `BAYER_PRESETS` roster and is
+formatted wider.
 
 ## The picture sampler (`src/components/plate/lib/picture-field.ts`)
 

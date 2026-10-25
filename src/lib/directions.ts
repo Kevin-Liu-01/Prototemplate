@@ -1,6 +1,6 @@
 import type { ShellShot } from '@/lib/shell-data';
 
-export type Tone = 'dark' | 'light' | 'alt';
+export type Tone = 'dark' | 'light';
 
 export type Direction = {
   /** Original exploration number from the 20-sample round. */

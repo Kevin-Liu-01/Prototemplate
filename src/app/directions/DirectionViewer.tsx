@@ -47,7 +47,7 @@ import './directions.css';
  */
 const DIRECTIONS_MODES: readonly ShellMode[] = ['book'];
 
-const TONE_LABEL: Readonly<Record<Tone, string>> = { light: 'Light', dark: 'Dark', alt: 'Alternating' };
+const TONE_LABEL: Readonly<Record<Tone, string>> = { light: 'Light', dark: 'Dark' };
 
 function kindLabel(d: Direction): string {
   if (d.reference) return 'Shipped';
