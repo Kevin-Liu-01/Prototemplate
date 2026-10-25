@@ -1,4 +1,5 @@
 import { REFERENCE_MARK } from '@/lib/marks';
+import { smoothstep } from '@/lib/math';
 
 /**
  * Shapes for the type plates: a word or a mark rasterized into a binary
@@ -241,11 +242,6 @@ export function markShape(art: MarkArt, cols: number, rows: number, ss = 3, fill
 }
 
 export type WordStyle = 'fringe' | 'ramp' | 'shade' | 'glow' | 'shadow';
-
-function smoothstep(a: number, b: number, x: number): number {
-  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
-  return t * t * (3 - 2 * t);
-}
 
 /**
  * The tone of every cell for one style, from the word's signed distance in

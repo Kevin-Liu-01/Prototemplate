@@ -40,6 +40,8 @@
  *   and its caliper — and never starts the loop.
  */
 
+import { clamp01, mulberry32, smoothstep } from '@/lib/math';
+
 export type ScriptSample = {
   tag: string;
   script: string;
@@ -219,29 +221,8 @@ const BAYER: readonly (readonly number[])[] = [
   [15, 7, 13, 5],
 ];
 
-/** Deterministic PRNG so a reload composes the same field. */
-function mulberry32(seed: number): () => number {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 function easeInOutCubic(u: number): number {
   return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
-}
-
-function smoothstep(a: number, b: number, x: number): number {
-  const u = Math.min(1, Math.max(0, (x - a) / (b - a)));
-  return u * u * (3 - 2 * u);
-}
-
-function clamp01(x: number): number {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
 }
 
 /**

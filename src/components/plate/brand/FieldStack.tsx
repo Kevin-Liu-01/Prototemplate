@@ -22,6 +22,7 @@ import {
   MOOD_PICTURES,
   type PictureName,
 } from '@/components/plate/brand/moodPictures';
+import { smoothstep } from '@/lib/math';
 
 export type FieldStackProps = {
   /** 0: the sign-in material, the halftone globe. 1: the onboarding material, one picture. */
@@ -112,11 +113,6 @@ function makeGlobe(): FieldFn {
     landmass: 0.42,
     spin: 0.14,
   });
-}
-
-function smoothstep(x: number): number {
-  const k = x <= 0 ? 0 : x >= 1 ? 1 : x;
-  return k * k * (3 - 2 * k);
 }
 
 function resolveInk(el: Element): string {
@@ -251,7 +247,7 @@ function rampField(fn: FieldFn, ramp: Ramp, width: number): FieldFn {
     const x = u * width;
     if (x <= ramp.start) return 0;
     if (x >= ramp.end) return fn(u, v, t);
-    return fn(u, v, t) * smoothstep((x - ramp.start) / length);
+    return fn(u, v, t) * smoothstep(0, 1, (x - ramp.start) / length);
   };
 }
 
@@ -402,7 +398,7 @@ function mountScene1(args: Scene1Args): () => void {
   };
   const stepMix = (ts: number): void => {
     if (destroyed || !mix) return;
-    const k = smoothstep((ts - mix.t0) / STEP_MS);
+    const k = smoothstep(0, 1, (ts - mix.t0) / STEP_MS);
     if (k >= 1) {
       const { toName, to } = mix;
       mixRaf = 0;

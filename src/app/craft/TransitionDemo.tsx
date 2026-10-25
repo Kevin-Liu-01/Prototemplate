@@ -13,6 +13,7 @@ import {
   type DitherLoopOptions,
   type FieldFn,
 } from '@/lib/dither';
+import { smoothstep } from '@/lib/math';
 
 // the plate sheet travels with the demo, so any host outside CraftArticle has the plate rules
 import './craft.css';
@@ -77,11 +78,6 @@ type Fields = { turning: FieldFn; earth: FieldFn | null; rosetta: FieldFn | null
 type GlobeTone = { gain: number; t: number };
 /** Red, green and blue on 0..255 and alpha on 0..1. */
 type Rgba = readonly [number, number, number, number];
-
-function smoothstep(x: number): number {
-  const k = x <= 0 ? 0 : x >= 1 ? 1 : x;
-  return k * k * (3 - 2 * k);
-}
 
 /** `#rgb`, `#rrggbb`, `rgb()` or `rgba()` to its channels; null for any other form. */
 function parseRgba(color: string): Rgba | null {
@@ -414,18 +410,18 @@ export default function TransitionDemo() {
           solvedCycle = cycle;
           solveGain();
         }
-        const k = smoothstep((now - resolveAt) / RESOLVE_MS);
+        const k = smoothstep(0, 1, (now - resolveAt) / RESOLVE_MS);
         loop.setField(mixFields(fields.turning, earth, k));
         loop.setOptions({ ink: lerpInk(inks.globe, inks.picture, k) });
       } else if (now < stepAt) {
         apply(earth, inks.picture);
       } else if (now < stepAt + STEP_MS) {
-        const k = smoothstep((now - stepAt) / STEP_MS);
+        const k = smoothstep(0, 1, (now - stepAt) / STEP_MS);
         apply(mixFields(earth, rosetta, k), inks.picture);
       } else if (now < returnAt) {
         apply(rosetta, inks.picture);
       } else {
-        const k = smoothstep((now - returnAt) / RESOLVE_MS);
+        const k = smoothstep(0, 1, (now - returnAt) / RESOLVE_MS);
         loop.setField(mixFields(rosetta, fields.turning, k));
         loop.setOptions({ ink: lerpInk(inks.picture, inks.globe, k) });
       }

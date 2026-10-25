@@ -61,6 +61,8 @@
  * under `prefers-reduced-motion`.
  */
 
+import { clamp01, smoothstep } from '@/lib/math';
+
 /**
  * The 8x8 Bayer (ordered-dither) threshold matrix, values 0..63.
  *
@@ -85,6 +87,7 @@
  * top-right, bottom-left, so successively-added dots always land as far from
  * each other as the current scale allows.
  */
+
 export const BAYER_8: readonly (readonly number[])[] = [
   [0, 32, 8, 40, 2, 34, 10, 42],
   [48, 16, 56, 24, 50, 18, 58, 26],
@@ -606,16 +609,6 @@ export function createDitherLoop(
  * ------------------------------------------------------------------------ */
 
 const TAU = Math.PI * 2;
-
-function clamp01(x: number): number {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
-}
-
-function smoothstep(edge0: number, edge1: number, x: number): number {
-  if (edge0 === edge1) return x < edge0 ? 0 : 1;
-  const t = clamp01((x - edge0) / (edge1 - edge0));
-  return t * t * (3 - 2 * t);
-}
 
 /** Deterministic 2D value hash, 0..1. Cheap integer bit-mixing, no tables. */
 function hash2(x: number, y: number): number {
