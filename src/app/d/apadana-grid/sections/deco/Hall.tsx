@@ -103,11 +103,11 @@ export type HallProps = {
  * `rail / (cols + 2 * aisle)`, resolved by the stylesheet.
  */
 export function Hall({ cols, base, aisle = 0.5, className, children, under, over }: HallProps) {
-  const style = {
+  const style: CSSProperties = {
     '--apg-c': cols,
     '--apg-aisle': aisle,
     '--apg-base': `${base}px`,
-  } as CSSProperties;
+  };
   const feet = [...Array(cols + 1).keys()];
   return (
     <div className={className ? `apg-plan ${className}` : 'apg-plan'} style={style}>
@@ -116,7 +116,7 @@ export function Hall({ cols, base, aisle = 0.5, className, children, under, over
         {children}
         <div className='apg-foot' aria-hidden='true'>
           {feet.map((k) => (
-            <ColumnBase key={k} className='is-foot' style={{ '--apg-k': k } as CSSProperties} />
+            <ColumnBase key={k} className='is-foot' style={{ '--apg-k': k }} />
           ))}
         </div>
       </div>

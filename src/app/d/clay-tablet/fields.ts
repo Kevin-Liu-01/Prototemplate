@@ -21,13 +21,13 @@
  * paused offscreen and on hidden tabs, released on destroy.
  */
 import { BAYER_8 } from '@/lib/dither';
+import { clamp01 } from '@/lib/math';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 export type WedgeField = (u: number, v: number, t: number) => number;
 export type WedgeOrient = 'v' | 'h';
 
 const round = (n: number) => Math.round(n * 10) / 10;
-const clamp01 = (x: number) => (x < 0 ? 0 : x > 1 ? 1 : x);
 
 /**
  * One wedge as an SVG subpath in a cell of size `c` whose top-left corner is

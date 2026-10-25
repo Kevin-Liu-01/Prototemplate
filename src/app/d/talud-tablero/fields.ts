@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import { createDitherLoop } from '@/lib/dither';
 import type { DitherLoopOptions, FieldFn } from '@/lib/dither';
+import { clamp01 } from '@/lib/math';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -15,10 +16,6 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  */
 
 /* ------------------------------------------------------------ helpers */
-
-function clamp01(x: number): number {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
-}
 
 function mix(a: number, b: number, t: number): number {
   return a + (b - a) * t;

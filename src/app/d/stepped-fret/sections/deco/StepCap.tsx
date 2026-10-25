@@ -21,7 +21,7 @@ export default function StepCap({ tiers }: StepCapProps) {
   return (
     <div className='sf-cap' aria-hidden='true'>
       {setbacks.map((depth) => (
-        <div className='sf-cap-tier' key={depth} style={{ '--depth': depth } as CSSProperties}>
+        <div className='sf-cap-tier' key={depth} style={{ '--depth': depth }}>
           <FretBand fret='lozenge' scale='fine' tone='ornament' edges='none' />
         </div>
       ))}

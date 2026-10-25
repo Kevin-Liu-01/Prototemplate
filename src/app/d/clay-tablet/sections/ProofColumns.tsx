@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import type { ReactNode } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { PROOF_LOCALES } from './content';
 
@@ -29,7 +30,7 @@ export default function ProofColumns({ source }: ProofColumnsProps) {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const scope = root.current;
       if (!scope) return;
       const columns = [...scope.querySelectorAll<HTMLElement>('.ct-proof-loc')];

@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { useRef } from 'react';
 
 import { GtMark } from '@/components/viewer/GtMark';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import BrickField from '../diagrams/BrickField';
 import Rosette from '../diagrams/Rosette';
@@ -42,7 +43,7 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const h1 = claim.current;
       const bar = course.current;
       if (!h1 || !bar) return;

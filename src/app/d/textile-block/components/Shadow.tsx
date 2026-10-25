@@ -18,14 +18,12 @@ import { Block, Course, Plaque, Relief } from './Wall';
  * both themes.
  */
 
-type TierVars = { '--tier': number; '--tile': string };
-
 export default function Shadow() {
   return (
     <div className='tb-shadow'>
       <div aria-hidden='true' className='tb-shade'>
         {SHADE_STEPS.map((cover) => (
-          <span key={cover} style={{ '--tile': bayerTileUri(cover) } as CSSProperties} />
+          <span key={cover} style={{ '--tile': bayerTileUri(cover) }} />
         ))}
       </div>
 
@@ -53,9 +51,9 @@ export default function Shadow() {
         <Block className='tb-zig-block' span={{ c: 4, r: 5, cMd: 4, rMd: 5, cSm: 6, rSm: 6 }}>
           <ol aria-label='The stack, top platform first' className='tb-zig'>
             {TIERS.map((tier, i) => {
-              const vars: TierVars = { '--tier': i, '--tile': bayerTileUri(tier.cover) };
+              const vars: CSSProperties = { '--tier': i, '--tile': bayerTileUri(tier.cover) };
               return (
-                <li className='tb-tier' key={tier.name} style={vars as CSSProperties}>
+                <li className='tb-tier' key={tier.name} style={vars}>
                   <b>{tier.name}</b>
                 </li>
               );

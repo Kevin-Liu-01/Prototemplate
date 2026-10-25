@@ -7,9 +7,9 @@ import { Check, Copy } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 import { GtMark } from '@/components/viewer/GtMark';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { CLAIMS, DOCS_HREF, HERO_SUB, INSTALL_COMMAND, SIGN_IN_HREF } from '../data';
-import { reducedMotion } from '../reveal';
 import FretUnit from './deco/FretUnit';
 import HeroFret from './HeroFret';
 
@@ -43,7 +43,7 @@ export default function Hero() {
     () => {
       const el = claim.current;
       const hero = root.current;
-      if (!el || !hero || reducedMotion()) return;
+      if (!el || !hero || prefersReducedMotion()) return;
 
       let index = 0;
       const apply = (i: number) => {

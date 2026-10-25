@@ -4,6 +4,7 @@ import { useRef } from 'react';
 
 import { createDitherLoop } from '@/lib/dither';
 import type { DitherLoopHandle, FieldFn } from '@/lib/dither';
+import { smoothstep } from '@/lib/math';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 /**
@@ -23,11 +24,6 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 export type LightCanvasProps = { kind: 'hero' | 'shadow' };
 
 type Box = { wide: boolean };
-
-function smoothstep(a: number, b: number, x: number): number {
-  const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
-  return t * t * (3 - 2 * t);
-}
 
 /** Ink density rises away from the claim block; the hole nearest it is brightest. */
 function heroField(box: Box): FieldFn {

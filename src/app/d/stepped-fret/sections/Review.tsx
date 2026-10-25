@@ -5,8 +5,10 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { REVIEW_ROWS } from '../data';
-import { reducedMotion, useRise } from '../reveal';
+import { useRise } from '../reveal';
 import Register from './deco/Register';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -33,7 +35,7 @@ export default function Review() {
   useGSAP(
     () => {
       const el = field.current;
-      if (!el || reducedMotion()) return;
+      if (!el || prefersReducedMotion()) return;
       const rows = gsap.utils.toArray<HTMLElement>('[data-row]', el);
       const tl = gsap.timeline({ paused: true });
 

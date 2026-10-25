@@ -30,7 +30,7 @@ export function Trust() {
             <a key={customer.id} className='cr-wm-link' href={customer.href} rel='noreferrer' target='_blank'>
               <span
                 className={`cr-wm is-${customer.id}`}
-                style={{ height: customer.height, aspectRatio: String(customer.aspect) } as CSSProperties}
+                style={{ height: customer.height, aspectRatio: String(customer.aspect) }}
               >
                 {customer.name}
               </span>

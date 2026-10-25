@@ -28,7 +28,7 @@ export type RegisterProps = {
 
 export default function Register({ k, id, className, children }: RegisterProps) {
   const patternId = `sf-gutter-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
-  const style = { '--k': k } as CSSProperties;
+  const style: CSSProperties = { '--k': k };
   return (
     <section id={id} className={['sf-reg', className].filter(Boolean).join(' ')} data-k={k} style={style}>
       {k > 0 ? (

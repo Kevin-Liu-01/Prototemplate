@@ -4,6 +4,7 @@ import { useRef } from 'react';
 
 import { createDitherLoop, gradientRamp } from '@/lib/dither';
 import type { DitherLoopHandle, FieldFn } from '@/lib/dither';
+import { clamp01, smoothstep } from '@/lib/math';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 /**
@@ -22,15 +23,6 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * host's ground. The loop pauses offscreen and on hidden tabs, renders one
  * still under reduced motion, and is destroyed on unmount.
  */
-
-function clamp01(x: number): number {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
-}
-
-function smoothstep(e0: number, e1: number, x: number): number {
-  const t = clamp01((x - e0) / (e1 - e0));
-  return t * t * (3 - 2 * t);
-}
 
 /** The sun disc: disc, rings, rays. `aspect` keeps the circle round. */
 function sunField(aspect: number): FieldFn {

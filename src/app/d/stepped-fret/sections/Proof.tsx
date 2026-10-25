@@ -63,7 +63,7 @@ export default function Proof() {
                 one below it and the top tread still spans three columns */}
             <ol
               className='sf-steps'
-              style={{ gridTemplateColumns: `repeat(${count + 2}, minmax(0, 1fr))` } as CSSProperties}
+              style={{ gridTemplateColumns: `repeat(${count + 2}, minmax(0, 1fr))` }}
               aria-label='The same string, one locale per step'
             >
               {STEPS.map((step, i) => {
@@ -72,7 +72,7 @@ export default function Proof() {
                   <li
                     key={step.code}
                     className={['sf-step', top ? 'is-active' : ''].filter(Boolean).join(' ')}
-                    style={{ gridColumn: `${i + 1} / -1`, gridRow: count - i } as CSSProperties}
+                    style={{ gridColumn: `${i + 1} / -1`, gridRow: count - i }}
                     data-rise
                   >
                     <span className='sf-step-riser'>

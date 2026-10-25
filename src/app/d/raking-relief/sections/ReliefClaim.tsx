@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { CLAIMS } from './content';
 
 gsap.registerPlugin(useGSAP);
@@ -25,7 +27,7 @@ export default function ReliefClaim() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const face = scope.current;
       if (!face) return;
 

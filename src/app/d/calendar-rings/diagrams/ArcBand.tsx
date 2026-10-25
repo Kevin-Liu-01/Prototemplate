@@ -152,7 +152,7 @@ export function ArcBand({
     <div
       ref={ref}
       className={className ? `cr-arc ${className}` : 'cr-arc'}
-      style={{ '--cr-sag': `${sag}px` } as CSSProperties}
+      style={{ '--cr-sag': `${sag}px` }}
     >
       <svg
         className='cr-arc-svg'
@@ -176,7 +176,7 @@ export function ArcBand({
       {/* the template travels as a variable so the flat cut below 860px can override it in the sheet */}
       <Cells
         className='cr-arc-cells'
-        style={{ '--cr-cols': ws.map((x) => `${x}fr`).join(' ') } as CSSProperties}
+        style={{ '--cr-cols': ws.map((x) => `${x}fr`).join(' ') }}
         aria-label={label}
       >
         {cells.map((cell, i) => {
@@ -186,7 +186,7 @@ export function ArcBand({
             <Cell
               key={i}
               className={cellClassName ? `cr-arc-cell ${cellClassName}` : 'cr-arc-cell'}
-              style={{ '--cr-k': k.toFixed(3) } as CSSProperties}
+              style={{ '--cr-k': k.toFixed(3) }}
             >
               {numerals ? (
                 <span className='cr-arc-num'>

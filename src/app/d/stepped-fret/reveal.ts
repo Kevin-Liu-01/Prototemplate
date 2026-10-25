@@ -5,12 +5,9 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { RefObject } from 'react';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
-/** True when the reader has asked the OS to reduce motion. */
-export function reducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
  * The page's one entrance: every `[data-rise]` descendant settles from 16px
@@ -25,7 +22,7 @@ export function useRise(root: RefObject<HTMLElement | null>) {
   useGSAP(
     () => {
       const el = root.current;
-      if (!el || reducedMotion()) return;
+      if (!el || prefersReducedMotion()) return;
       const items = gsap.utils.toArray<HTMLElement>('[data-rise]', el);
       if (items.length === 0) return;
       gsap.to(items, {

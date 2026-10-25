@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { CLAIMS } from '../data';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -36,7 +38,7 @@ export default function GateClaim() {
     () => {
       const el = ref.current;
       if (!el) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       let index = 0;
       gsap.set(el, { clipPath: REST });

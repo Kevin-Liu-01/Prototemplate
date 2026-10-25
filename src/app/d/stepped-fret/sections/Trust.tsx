@@ -22,7 +22,7 @@ export default function Trust() {
   return (
     <Register k={0} id='customers' className='sf-trust'>
       <p className='sf-trust-lead'>{TRUST_LEAD}</p>
-      <div className='sf-trust-row' style={{ '--pilaster': PILASTER } as CSSProperties}>
+      <div className='sf-trust-row' style={{ '--pilaster': PILASTER }}>
         {CUSTOMERS.map((customer) => (
           <a
             key={customer.id}
@@ -34,13 +34,11 @@ export default function Trust() {
           >
             <span
               className='sf-wm'
-              style={
-                {
-                  '--wm': `url('/logos/${customer.id}.light.svg')`,
-                  '--wm-ratio': customer.ratio,
-                  '--wm-h': `${customer.height}px`,
-                } as CSSProperties
-              }
+              style={{
+                '--wm': `url('/logos/${customer.id}.light.svg')`,
+                '--wm-ratio': customer.ratio,
+                '--wm-h': `${customer.height}px`,
+              }}
               aria-hidden='true'
             />
           </a>

@@ -1,4 +1,5 @@
 import type { FieldFn } from '@/lib/dither';
+import { smoothstep } from '@/lib/math';
 
 /**
  * The greca system. Every fret on the page is one centerline polyline on an
@@ -306,11 +307,6 @@ function toSegments(points: readonly Pt[]): Segment[] {
     s += len;
   }
   return out;
-}
-
-function smoothstep(a: number, b: number, x: number): number {
-  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
-  return t * t * (3 - 2 * t);
 }
 
 /**

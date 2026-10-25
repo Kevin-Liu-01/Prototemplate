@@ -11,10 +11,10 @@ import type { Customer } from '../data';
  * mark itself is a painted span.
  */
 export default function Wordmark({ customer }: { customer: Customer }) {
-  const style = {
+  const style: CSSProperties = {
     '--wm': `url('/logos/${customer.id}.light.svg')`,
     '--wm-ratio': customer.ratio,
-  } as CSSProperties;
+  };
   return (
     <a aria-label={customer.name} className='tb-wm' href={customer.href} rel='noreferrer' target='_blank'>
       <span aria-hidden='true' className='tb-wm-print' style={style} />

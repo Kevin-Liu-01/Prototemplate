@@ -47,6 +47,7 @@
  */
 
 import { BAYER_8 } from '@/lib/dither';
+import { clamp01, smoothstep } from '@/lib/math';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /** One brick, at evaluation time. Positions are CSS px from the section's top-left. */
@@ -87,16 +88,6 @@ export type LatticeBox = { x: number; y: number; w: number; h: number };
 
 /* ------------------------------------------------------------------ */
 /* helpers                                                             */
-
-function clamp01(x: number): number {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
-}
-
-function smoothstep(a: number, b: number, x: number): number {
-  if (a === b) return x < a ? 0 : 1;
-  const t = clamp01((x - a) / (b - a));
-  return t * t * (3 - 2 * t);
-}
 
 function mod(n: number, m: number): number {
   return ((n % m) + m) % m;

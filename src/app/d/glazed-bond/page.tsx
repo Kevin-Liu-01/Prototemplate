@@ -44,10 +44,10 @@ const cinzel = localFont({
 });
 
 /* The latin-ext glyphs (the Polish claim's ę, ś and ż) ship as a second face
-   that styles.css lists right after the latin one, so the browser takes those
-   characters from it the way Google's unicode-range pair used to. The metrics
-   fallback hangs off this face, not the latin one: otherwise it would sit
-   between the two and Times would supply the accented letters first. */
+   that styles.css lists right after the latin one, and the face's
+   unicode-range sends those characters to it. The metrics fallback hangs
+   off this face, not the latin one: otherwise it would sit between the two
+   and Times would supply the accented letters first. */
 const cinzelExt = localFont({
   src: [
     { path: '../../../../public/fonts/google/cinzel-400-latin-ext.woff2', weight: '400', style: 'normal' },

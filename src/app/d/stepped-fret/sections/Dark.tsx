@@ -71,14 +71,14 @@ export default function Dark() {
                 column per tier and the top plate still spans three */}
             <ol
               className='sf-dark-stair'
-              style={{ gridTemplateColumns: `repeat(${count + 2}, minmax(0, 1fr))` } as CSSProperties}
+              style={{ gridTemplateColumns: `repeat(${count + 2}, minmax(0, 1fr))` }}
               aria-label='The platform as a stair, from the SDKs at the base to Locadex at the top'
             >
               {TIERS.map((tier, i) => (
                 <li
                   className='sf-dark-step'
                   key={tier.name}
-                  style={{ gridColumn: `${i + 1} / -1`, gridRow: count - i } as CSSProperties}
+                  style={{ gridColumn: `${i + 1} / -1`, gridRow: count - i }}
                 >
                   <span className='sf-dark-step-name'>
                     {i === count - 1 ? (

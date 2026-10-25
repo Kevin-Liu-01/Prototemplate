@@ -53,7 +53,7 @@ function footBox(ring: number): CSSProperties {
   return {
     '--cr-foot-left': `${(50 - 50 * outer).toFixed(2)}%`,
     '--cr-foot-width': `${(50 * (outer - inner)).toFixed(2)}%`,
-  } as CSSProperties;
+  };
 }
 
 function svgPoint(rf: number, deg: number): string {

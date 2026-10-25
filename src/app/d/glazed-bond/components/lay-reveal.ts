@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { RefObject } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
@@ -22,7 +24,7 @@ export function useLayReveal(root: RefObject<HTMLElement | null>, selector: stri
     () => {
       const host = root.current;
       if (!host) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const items = gsap.utils.toArray<HTMLElement>(selector, host);
       if (items.length === 0) return;

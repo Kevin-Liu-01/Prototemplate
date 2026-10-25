@@ -17,11 +17,12 @@ import { useRef } from 'react';
 
 import { createDitherLoop } from '@/lib/dither';
 import type { DitherLoopHandle, DitherLoopOptions, FieldFn } from '@/lib/dither';
+import { clamp01 } from '@/lib/math';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 /** Quantize a 0..1 value onto `steps` even tiers, the way a ramp is cut into rings. */
 function tier(value: number, steps: number): number {
-  return Math.round(Math.min(1, Math.max(0, value)) * steps) / steps;
+  return Math.round(clamp01(value) * steps) / steps;
 }
 
 /**

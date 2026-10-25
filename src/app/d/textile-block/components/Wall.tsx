@@ -35,21 +35,15 @@ export type Span = {
   rSm?: number;
 };
 
-type Vars = Record<string, string | number>;
-
 /** The span as custom properties; styles.css reads them per breakpoint. */
-function spanVars(span: Span): Vars {
-  const vars: Vars = { '--c': span.c };
+function spanStyle(span: Span): CSSProperties {
+  const vars: CSSProperties = { '--c': span.c };
   if (span.r !== undefined) vars['--r'] = span.r;
   if (span.cMd !== undefined) vars['--c-md'] = span.cMd;
   if (span.rMd !== undefined) vars['--r-md'] = span.rMd;
   if (span.cSm !== undefined) vars['--c-sm'] = span.cSm;
   if (span.rSm !== undefined) vars['--r-sm'] = span.rSm;
   return vars;
-}
-
-export function spanStyle(span: Span): CSSProperties {
-  return spanVars(span) as CSSProperties;
 }
 
 /** The section head's span and the relief that closes its course row. */
@@ -108,7 +102,7 @@ export type ReliefProps = ReliefBase &
 /** A region of relief modules keyed to one block of the library. Decorative. */
 export function Relief(props: ReliefProps) {
   const { span, className } = props;
-  const vars = spanVars(span);
+  const vars = spanStyle(span);
   const classes = ['tb-relief', `is-${props.relief}`];
   if (className) classes.push(className);
   if (props.light) {
@@ -120,7 +114,7 @@ export function Relief(props: ReliefProps) {
     vars['--tb-motif'] = RELIEFS[props.relief].motif;
   }
   return (
-    <div aria-hidden='true' className={classes.join(' ')} style={vars as CSSProperties}>
+    <div aria-hidden='true' className={classes.join(' ')} style={vars}>
       {props.light ? <LightCanvas kind={props.light} /> : null}
       {props.light ? <span className='tb-relief-face' /> : null}
       <span className='tb-relief-motif' />
@@ -141,12 +135,12 @@ export type SwatchProps = { relief: ReliefId; className?: string };
 
 /** One tile of a relief, off the grid: the plaque's key to its course. */
 export function Swatch({ relief, className }: SwatchProps) {
-  const vars: Vars = { '--tb-motif': RELIEFS[relief].motif };
+  const vars: CSSProperties = { '--tb-motif': RELIEFS[relief].motif };
   return (
     <span
       aria-hidden='true'
       className={className ? `tb-swatch ${className}` : 'tb-swatch'}
-      style={vars as CSSProperties}
+      style={vars}
     >
       <span className='tb-swatch-motif' />
     </span>

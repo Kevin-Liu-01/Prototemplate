@@ -58,7 +58,7 @@ export default function Material() {
         <div className='sf-atlas'>
           <div className='sf-atlas-table' data-rise>
             {LOCALE_ROWS.map((row, i) => (
-              <div className='sf-atlas-row' style={{ '--i': i } as CSSProperties} key={row.tag}>
+              <div className='sf-atlas-row' style={{ '--i': i }} key={row.tag}>
                 <span className='sf-atlas-tag'>{row.tag}</span>
                 <span className='sf-atlas-name'>{row.name}</span>
                 <span className='sf-atlas-variants'>
@@ -73,7 +73,7 @@ export default function Material() {
                 </span>
               </div>
             ))}
-            <div className='sf-atlas-row is-tail' style={{ '--i': LOCALE_ROWS.length } as CSSProperties}>
+            <div className='sf-atlas-row is-tail' style={{ '--i': LOCALE_ROWS.length }}>
               <span className='sf-atlas-tag' aria-hidden='true' />
               <span className='sf-atlas-name is-muted'>and the long tail</span>
               <span className='sf-atlas-variants is-muted'>

@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { HERO_WORDS } from './content';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -26,7 +28,7 @@ export default function HeroClaim() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const el = word.current;
       const trigger = heading.current;
       if (!el || !trigger) return;
