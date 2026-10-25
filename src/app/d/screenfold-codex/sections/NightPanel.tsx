@@ -130,6 +130,8 @@ export default function NightPanel() {
                 alt='Locadex'
                 width={40}
                 height={40}
+                loading='lazy'
+                decoding='async'
               />
               <span className='sfc-p'>Locadex runs on your repository and opens the pull request.</span>
             </div>

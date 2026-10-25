@@ -15,8 +15,24 @@ export default function Footer() {
         <footer className='tt-foot'>
           <div className='tt-foot-top'>
             <div className='tt-foot-brand'>
-              <img className='tt-foot-mark is-light' src='/brand/no-bg-gt-logo-light.png' alt='General Translation' width={40} height={40} />
-              <img className='tt-foot-mark is-dark' src='/brand/no-bg-gt-logo-dark.png' alt='General Translation' width={40} height={40} />
+              <img
+                className='tt-foot-mark is-light'
+                src='/brand/no-bg-gt-logo-light.png'
+                alt='General Translation'
+                width={40}
+                height={40}
+                loading='lazy'
+                decoding='async'
+              />
+              <img
+                className='tt-foot-mark is-dark'
+                src='/brand/no-bg-gt-logo-dark.png'
+                alt='General Translation'
+                width={40}
+                height={40}
+                loading='lazy'
+                decoding='async'
+              />
               <p>{FOOTER_SENTENCE}</p>
             </div>
             <div className='tt-foot-cols'>

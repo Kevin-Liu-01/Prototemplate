@@ -128,6 +128,8 @@ export default function SurfacesPanel() {
                   alt='Locadex'
                   width={22}
                   height={22}
+                  loading='lazy'
+                  decoding='async'
                 />
                 <h3>Locadex</h3>
                 <Fig n={218}>PR #218</Fig>

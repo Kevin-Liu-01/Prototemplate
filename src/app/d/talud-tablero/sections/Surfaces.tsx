@@ -82,7 +82,15 @@ export default function Surfaces() {
 
           <article className='tt-object is-locadex'>
             <h3>
-              <img className='tt-lx-mark' src='/brand/no-bg-locadex-logo-light.png' alt='' width={18} height={18} />
+              <img
+                className='tt-lx-mark'
+                src='/brand/no-bg-locadex-logo-light.png'
+                alt=''
+                width={18}
+                height={18}
+                loading='lazy'
+                decoding='async'
+              />
               Locadex
             </h3>
             <p>The agent that internationalizes your repo in guarded pull requests.</p>

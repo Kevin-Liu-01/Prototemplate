@@ -13,7 +13,17 @@ import type { FooterLink } from './content';
 function Mark({ mark }: { mark: FooterLink['mark'] }) {
   switch (mark) {
     case 'locadex':
-      return <img className='ct-foot-lx' src='/brand/no-bg-locadex-logo-light.png' alt='' width={14} height={14} />;
+      return (
+        <img
+          className='ct-foot-lx'
+          src='/brand/no-bg-locadex-logo-light.png'
+          alt=''
+          width={14}
+          height={14}
+          loading='lazy'
+          decoding='async'
+        />
+      );
     case 'next':
       return <SiNextdotjs size={14} aria-hidden='true' />;
     case 'react':
@@ -38,8 +48,18 @@ export default function CaseFooter() {
             alt='General Translation'
             width={30}
             height={30}
+            loading='lazy'
+            decoding='async'
           />
-          <img className='ct-foot-mark is-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={30} height={30} />
+          <img
+            className='ct-foot-mark is-dark'
+            src='/brand/no-bg-gt-logo-dark.png'
+            alt=''
+            width={30}
+            height={30}
+            loading='lazy'
+            decoding='async'
+          />
           <p>{FOOTER_SENTENCE}</p>
         </div>
         <div className='ct-foot-cols'>

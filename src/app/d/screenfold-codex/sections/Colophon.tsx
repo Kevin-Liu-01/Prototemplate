@@ -23,7 +23,15 @@ function Mark({ mark }: { mark: FooterLink['mark'] }) {
       return <SiDiscord className='sfc-foot-ico' color='currentColor' aria-hidden />;
     case 'locadex':
       return (
-        <img className='sfc-foot-ico is-locadex' src='/brand/no-bg-locadex-logo-light.png' alt='' width={14} height={14} />
+        <img
+          className='sfc-foot-ico is-locadex'
+          src='/brand/no-bg-locadex-logo-light.png'
+          alt=''
+          width={14}
+          height={14}
+          loading='lazy'
+          decoding='async'
+        />
       );
     default:
       return null;
@@ -35,8 +43,24 @@ export default function Colophon() {
     <footer className='sfc-foot'>
       <div className='sfc-foot-brand'>
         <span className='sfc-foot-mark'>
-          <img className='is-light' src='/brand/no-bg-gt-logo-light.png' alt='General Translation' width={44} height={44} />
-          <img className='is-dark' src='/brand/no-bg-gt-logo-dark.png' alt='General Translation' width={44} height={44} />
+          <img
+            className='is-light'
+            src='/brand/no-bg-gt-logo-light.png'
+            alt='General Translation'
+            width={44}
+            height={44}
+            loading='lazy'
+            decoding='async'
+          />
+          <img
+            className='is-dark'
+            src='/brand/no-bg-gt-logo-dark.png'
+            alt='General Translation'
+            width={44}
+            height={44}
+            loading='lazy'
+            decoding='async'
+          />
         </span>
         <p className='sfc-p'>General Translation builds full-stack infrastructure for localizing apps, docs, and websites.</p>
       </div>

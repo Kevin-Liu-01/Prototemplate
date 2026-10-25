@@ -97,6 +97,8 @@ export default function SurfacesTablet() {
                 alt=''
                 width={22}
                 height={22}
+                loading='lazy'
+                decoding='async'
               />
               Locadex
             </h3>
