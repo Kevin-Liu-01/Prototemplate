@@ -45,6 +45,24 @@ type RelayResult = {
   error?: string;
 };
 
+/**
+ * A signal that aborts when either input does. AbortSignal.any where the
+ * browser has it (Safari 17.4, Firefox 124); elsewhere a controller that
+ * forwards the first abort and its reason.
+ */
+function eitherSignal(a: AbortSignal, b: AbortSignal): AbortSignal {
+  if (typeof AbortSignal.any === 'function') return AbortSignal.any([a, b]);
+  const controller = new AbortController();
+  for (const input of [a, b]) {
+    if (input.aborted) {
+      controller.abort(input.reason);
+      return controller.signal;
+    }
+    input.addEventListener('abort', () => controller.abort(input.reason), { once: true, signal: controller.signal });
+  }
+  return controller.signal;
+}
+
 export function normalizeUserUrl(raw: string): string {
   const trimmed = raw.trim();
   return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
@@ -112,7 +130,7 @@ export function createRelayFetcher(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url, acceptLanguage, timeoutMs }),
-        signal: signal ? AbortSignal.any([signal, deadline]) : deadline,
+        signal: signal ? eitherSignal(signal, deadline) : deadline,
       });
       const data = (await res.json().catch(() => null)) as
         | (RelayResult & { error?: string })

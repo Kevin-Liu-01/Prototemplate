@@ -6,8 +6,8 @@ import { remarkHeading } from 'fumadocs-core/mdx-plugins/remark-heading';
 import { siteHref } from '@/components/book/links';
 
 /**
- * The handbook pages (content/docs/handbook/*.mdx) show repository Markdown
- * through fumadocs-mdx's include tag: a whole file,
+ * The handbook pages (the MDX files under content/docs/(guide)/handbook)
+ * show repository Markdown through fumadocs-mdx's include tag: a whole file,
  * `<include cwd>docs/handbook/glossary.md</include>`, or one heading of it at
  * a time, `<include cwd>DESIGN.md#6-the-isometric-family</include>`, so a page
  * can set a live figure between two sections. The files keep their GitHub

@@ -35,7 +35,7 @@ export type UrlGateResult =
   | { ok: true; url: URL }
   | { ok: false; reason: string };
 
-export function gateUrl(raw: string): UrlGateResult {
+function gateUrl(raw: string): UrlGateResult {
   let url: URL;
   try {
     url = new URL(raw);

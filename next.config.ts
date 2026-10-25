@@ -29,7 +29,6 @@ const UNTRACED = [
   'graphics/**',
   'docs/reference-shots/**',
   'docs/composites/**',
-  'docs/harness/**',
   '.pagecheck/**',
   'tsconfig.tsbuildinfo',
 ];

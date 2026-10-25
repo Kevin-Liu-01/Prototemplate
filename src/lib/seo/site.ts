@@ -39,12 +39,12 @@ export const TWITTER_SITE = '@generaltxn';
 export const TWITTER_CREATOR = '@kevskgs';
 
 /** The tab icons: the Prototemplate mark on the hub, the GT mark on the GT design studies and the presenter. */
-export const HUB_ICON = { url: '/pt-mark.svg', type: 'image/svg+xml' } as const;
+const HUB_ICON = { url: '/pt-mark.svg', type: 'image/svg+xml' } as const;
 export const GT_ICON = { url: '/brand/no-bg-gt-logo-light.png', type: 'image/png' } as const;
 
 /** The hub mark's raster copies, in its dark-scheme ink on the dark ground: favicon.ico holds 16, 32 and 48 px for Google and older browsers, and apple-touch-icon.png is the 180 px home screen icon. */
-export const HUB_FAVICON = { url: '/favicon.ico', sizes: '48x48' } as const;
-export const HUB_APPLE_ICON = { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' } as const;
+const HUB_FAVICON = { url: '/favicon.ico', sizes: '48x48' } as const;
+const HUB_APPLE_ICON = { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' } as const;
 
 /** The hub's icon set, as the root layout and seoRoute write it. */
 export const HUB_ICONS = { icon: [HUB_FAVICON, HUB_ICON], apple: [HUB_APPLE_ICON] };

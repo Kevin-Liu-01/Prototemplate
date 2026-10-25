@@ -41,6 +41,8 @@ export type OffThreadHandle = { destroy: () => void; setPaused: (paused: boolean
 
 let worker: Worker | null = null;
 let workerUrl = '';
+/* set when the worker failed: later fields draw on the main thread */
+let workerFailed = false;
 let nextId = 1;
 const entries = new Map<HTMLCanvasElement, Entry>();
 
@@ -54,7 +56,7 @@ function post(message: OffThreadMessage, transfer: Transferable[] = []) {
  */
 export function startFieldWorker(): Worker | null {
   if (worker) return worker;
-  if (typeof OffscreenCanvas === 'undefined') return null;
+  if (workerFailed || typeof OffscreenCanvas === 'undefined') return null;
   workerUrl = URL.createObjectURL(
     new Blob([`(${fieldWorker.toString()})()`], { type: 'text/javascript' })
   );
@@ -71,7 +73,13 @@ export function startFieldWorker(): Worker | null {
       else entry.options.onFail();
     }
   };
+  /* a worker that failed takes no more fields: its fields fall back to the
+     main thread, and so does every field created after */
   worker.onerror = () => {
+    workerFailed = true;
+    worker?.terminate();
+    worker = null;
+    URL.revokeObjectURL(workerUrl);
     for (const entry of entries.values()) entry.options.onFail();
   };
   post({ type: 'init', vert: VERT, frag: FRAG, keys: UNIFORM_KEYS });

@@ -765,7 +765,7 @@ const TRANSCREATE_ROWS: readonly SearchEntry[] = [
   },
 ];
 
-export const SEARCH_INDEX: readonly SearchEntry[] = [
+const SEARCH_INDEX: readonly SearchEntry[] = [
   ...SITE_SURFACES.map(fromSurface),
   ...SKILL_ROWS,
   ...HANDBOOK_ROWS,
@@ -778,7 +778,7 @@ export const SEARCH_INDEX: readonly SearchEntry[] = [
 ].map((entry) => ({ ...entry, hay: hayOf(entry) }));
 
 /** Every term of the query, in order, has to appear somewhere in the row's words. */
-export function searchMatches(entry: SearchEntry, query: string): boolean {
+function searchMatches(entry: SearchEntry, query: string): boolean {
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (terms.length === 0) return true;
   const hay = entry.hay ?? hayOf(entry);

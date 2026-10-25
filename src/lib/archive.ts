@@ -40,7 +40,7 @@ export type ArchiveEntry = {
 };
 
 /** Where the capture files live. */
-export const ARCHIVE_DIR = '/shots/archive';
+const ARCHIVE_DIR = '/shots/archive';
 
 /** The commit that deleted the routes: the child of every lastCommit below. */
 export const ARCHIVE_DELETION = {

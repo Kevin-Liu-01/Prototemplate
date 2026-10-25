@@ -27,8 +27,8 @@
  *   margins — integer-snapped in device px (1:1, no per-glyph filtering),
  *   with the depth fade quantized so alpha state changes a handful of
  *   times per pass instead of once per glyph. (An offscreen lower-DPR
- *   rain layer was tried and measured SLOWER: compositing a same-frame
- *   offscreen canvas forces a synchronous flush inside drawImage.)
+ *   rain layer measures slower: compositing a same-frame offscreen canvas
+ *   forces a synchronous flush inside drawImage.)
  * - The type column, the held word's own paper, and the bottom seam are
  *   all dithered density falloffs (per-particle threshold) — no alpha
  *   veil ever sits behind content. The word's paper is a rounded distance
@@ -41,6 +41,7 @@
  */
 
 import { clamp01, mulberry32, smoothstep } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 export type ScriptSample = {
   tag: string;
@@ -140,9 +141,8 @@ const WORD_FEATHER = 30;
  * The narrow layout's rain keep: phones draw roughly HALF the wide field
  * (founder, mobile round: "the glyph rain and dissolving and coming
  * together is really slow and laggy") — the cull is the deepest lever the
- * field has, since frame cost scales with live blits. The earlier 0.72
- * was legibility-tuned before the perf round; 0.5 still reads as weather
- * in a phone column while cutting the per-frame draw load by ~30%.
+ * field has, since frame cost scales with live blits. Half still reads as
+ * weather in a phone column and draws about 30% less per frame than 0.72.
  */
 const NARROW_KEEP = 0.5;
 /**
@@ -159,10 +159,10 @@ const NARROW_KEEP = 0.5;
 const NARROW_POOL = 560;
 /**
  * Device-pixel caps: wide layouts render at up to 2x for crispness; the
- * narrow cut caps at 1.25x — 61% fewer device px per blit than 2x. The
- * first mobile round's 1.5x was not enough (founder: "glyph rain is
- * incredibly laggy"), and at rain sizes the extra quarter-step of softness
- * reads as atmosphere, not blur. resize() is the only writer of dpr,
+ * narrow cut caps at 1.25x — 61% fewer device px per blit than 2x. 1.5x
+ * is still too slow on phones (founder: "glyph rain is incredibly
+ * laggy"), and at rain sizes the extra quarter-step of softness reads as
+ * atmosphere, not blur. resize() is the only writer of dpr,
  * so the canvas, the atlas and every blit re-derive together on any
  * width crossing.
  */
@@ -293,8 +293,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
 
   const disp = options.displayFamily || "'Inter', ui-sans-serif, system-ui, sans-serif";
   const mono = options.monoFamily || "ui-monospace, 'SF Mono', Menlo, Consolas, monospace";
-  const reduced =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = prefersReducedMotion();
 
   /* Additive hosts' knobs: drift sign rides the same wrap math (it is
      negative-safe), the scale multiplies only the rain tiers. */
@@ -455,8 +454,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
       const left = w * 0.47;
       zoneW = Math.max(240, w - 40 - left);
       zoneCx = left + zoneW / 2;
-      /* 0.585, not 0.55 (founder: the word read a little high) — the
-         word + caliper GROUP now optically centres in the band */
+      /* 0.585 centres the word and caliper group optically in the band
+         (founder: at 0.55 the word read a little high) */
       baselineY = h * 0.585;
       maxFont = Math.min(h * 0.36, 232);
       fadeB = w * 0.43;
@@ -467,7 +466,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
        empty bar): density holds until ~46px above the edge and the falloff
        completes just PAST it, so edge glyphs still print, clipped, and the
        field runs to the paper's end. The caption keeps its own local
-       clearing (wordKeep), so the seam no longer has to carry it. */
+       clearing (wordKeep), so the seam does not carry it. */
     botB = h + 10;
     botA = narrow ? Math.max(railY + 10, h - 60) : h - 46;
     for (let i = 0; i < POOL; i++) {
@@ -626,10 +625,10 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   let formedRtl = false;
   /* The caliper annotation's three voices and their measured widths,
      fixed for the whole hold. Measured at print/remeasure time, never in
-     the frame loop: measureText is layout work, and running it three
-     times per visible frame was one of the loop's few remaining stalls
-     in the founder's mobile round ("really slow and laggy") — the label
-     never changes while it stands, so the frame only blits. */
+     the frame loop: measureText is layout work, and three calls per
+     visible frame stall a phone ("really slow and laggy", the founder's
+     mobile round); the label never changes while it stands, so the frame
+     only blits. */
   type CaliperRun = { text: string; a: number };
   let formedRuns: readonly CaliperRun[] = [];
   let formedRunW: readonly number[] = [];
@@ -691,7 +690,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
      — measureText, fillText, getImageData over up to 2048x1024 and the
      pixel scan — cost a ~200ms first-frame stall on throttled mobile
      (founder: "the glyph rain and dissolving and coming together is
-     really slow and laggy"), so the hold now queues it through
+     really slow and laggy"), so the hold queues it through
      requestIdleCallback (setTimeout fallback) and the morph only deals
      targets. One-shot; resize (geometry: zoneW/maxFont/zoneCx) and late
      webfont arrival invalidate it, since both change what the raster
@@ -1016,8 +1015,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
   /**
    * A word's clearing at (x, y), 0…1: a rounded distance field off the
    * word's actual glyph box — a capsule, tight to the type, feathered over
-   * WORD_FEATHER px — never the old rectangular falloff (founder: no
-   * square around the word). The caliper keeps its own small local
+   * WORD_FEATHER px, never a rectangular falloff (founder: no square
+   * around the word). The caliper keeps its own small local
    * clearing, a slimmer capsule around the dimension line and its value.
    */
   function wordKeep(x: number, y: number, gate: number, left: number, right: number, px: number): number {
@@ -1198,8 +1197,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     /* The narrow cut swaps in its own pool view — the same far-to-near
        order, first NARROW_POOL slots only, far tier already filtered out —
        so a phone frame WALKS a fraction of the wide loop instead of
-       skipping inside it. Wide iterates the untouched full order,
-       byte-identical to before the cut. */
+       skipping inside it. Wide iterates the full order. */
     const ord = lean ? orderN : order;
     const ordCount = lean ? orderNCount : POOL;
     let curQ = -1;
@@ -1223,8 +1221,8 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
           /* HYSTERESIS on the dithered cull (founder: the flank glyphs
              flickered): a drawn glyph only culls once its keep drops a
              band BELOW its threshold, and a culled one only returns a
-             band ABOVE it — the iso-line no longer strobes as the rain
-             sways across it. Density statistics are unchanged. */
+             band ABOVE it, so the iso-line does not strobe as the rain
+             sways across it. Density statistics are the same. */
           const keep = keepAt(x, y, morph >= 0);
           /* a hard-cleared zone (keep 0) culls regardless of hysteresis —
              otherwise a low-threshold glyph drawn at boot survives forever
@@ -1377,7 +1375,7 @@ export function createGlyphField(options: GlyphFieldOptions): GlyphFieldHandle |
     }
 
     /* The caliper: the printed word's measured advance, drawn as a real
-       drafting dimension (founder: the old square bracket and flat label
+       drafting dimension (founder: a square bracket and a flat label
        read crude). A 1px hairline GROWS from the word's centre outward,
        its crossing end ticks riding the growing ends and landing on the
        true extents; the annotation sits centred beneath in three voices —

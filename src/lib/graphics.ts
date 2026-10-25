@@ -28,8 +28,6 @@ export type Visual = {
   animated: boolean;
 };
 
-export type { Block, Entry, Variant } from '@/lib/graphics-model';
-export { backgroundLabel } from '@/lib/graphics-model';
 import type { Block, Entry, Variant } from '@/lib/graphics-model';
 
 const AREA_NAMES: Readonly<Record<string, { name: string; slot: string }>> = {
@@ -64,7 +62,7 @@ export function readManifest(): readonly Visual[] {
 }
 
 /** The 3840-wide export of a visual. */
-export function visualSrc(id: string): string {
+function visualSrc(id: string): string {
   return `/static/blogs/designing-docs-${id}.webp`;
 }
 

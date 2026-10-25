@@ -63,6 +63,8 @@
  * what it always did, and prefers-reduced-motion never attaches the system.
  */
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 export type HorizonParams = {
   /** Disc center in CSS px, canvas-relative, y-down. */
   center: [number, number];
@@ -190,9 +192,8 @@ void main() {
 }
 `;
 
-/* SHADER NOTES — the narration that used to live inside the GLSL string
-   (hoisted out so it never ships in the bundle; minifiers cannot strip
-   comments inside template literals):
+/* SHADER NOTES, kept out of the GLSL string so they never ship in the
+   bundle (minifiers cannot strip comments inside template literals):
    - pal/toneMap are the house prismatic-field palette + tanh tone map.
    - lay() is a standard OVER onto a premultiplied accumulator.
    - Pixel coords are y-down so DOM measurements map directly.
@@ -474,6 +475,7 @@ type Subscriber = {
   visible: boolean;
   startTime: number;
   observer?: IntersectionObserver;
+  resize?: ResizeObserver;
   effect?: EffectState;
 };
 
@@ -740,7 +742,8 @@ function tick(now: number) {
 }
 
 function schedule() {
-  if (frameId) return;
+  /* an engine that could not rebuild its context draws nothing: no frames */
+  if (frameId || engineFailed) return;
   let anyActive = false;
   for (const sub of subscribers) {
     // A field draws while it animates — and also while a cursor is engaged
@@ -883,8 +886,7 @@ export function createHorizonField(
   const blit = canvas.getContext('2d');
   if (!blit) return null;
 
-  const reduced =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = prefersReducedMotion();
 
   const sub: Subscriber = {
     target: canvas,
@@ -914,6 +916,15 @@ export function createHorizonField(
       { rootMargin: '120px' }
     );
     sub.observer.observe(canvas);
+  }
+
+  // A stilled field (reduced motion or paused) re-renders its one frame at a
+  // new size; a running field re-measures every frame.
+  if (typeof ResizeObserver !== 'undefined') {
+    sub.resize = new ResizeObserver(() => {
+      if (!sub.running) renderSubscriber(sub, STATIC_TIME);
+    });
+    sub.resize.observe(canvas);
   }
 
   if (reduced) renderSubscriber(sub, STATIC_TIME);
@@ -984,6 +995,7 @@ export function createHorizonField(
     destroy() {
       sub.effect?.detach();
       sub.observer?.disconnect();
+      sub.resize?.disconnect();
       subscribers.delete(sub);
       // The engine context is deliberately kept for the session — tearing it
       // down per unmount is what exhausted the browser's context budget.

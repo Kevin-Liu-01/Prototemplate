@@ -73,7 +73,7 @@ export type SeoRoute = { metadata: Metadata; jsonLd: JsonLdNode[] };
 export const TITLE_MAX = 60;
 
 /** `<title>, <section>, Prototemplate`, dropping the section and then the site name past 60 characters; the home page is the site name. */
-export function seoTitle(title: string, section?: SeoSection): string {
+function seoTitle(title: string, section?: SeoSection): string {
   if (title === SITE_NAME) return SITE_NAME;
   const candidates = [section ? `${title}, ${section}, ${SITE_NAME}` : null, `${title}, ${SITE_NAME}`];
   for (const candidate of candidates) {

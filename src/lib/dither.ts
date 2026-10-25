@@ -111,7 +111,7 @@ const BAYER_8_THRESHOLDS: Float64Array = (() => {
   const out = new Float64Array(64);
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8; x++) {
-      out[(y << 3) | x] = (BAYER_8[y]![x]! + 0.5) / 64;
+      out[(y << 3) | x] = (BAYER_8[y][x] + 0.5) / 64;
     }
   }
   return out;
@@ -251,10 +251,10 @@ function parseColour(input: string): number {
     const expand = (c: string) => parseInt(c + c, 16);
     if (hex.length === 3 || hex.length === 4) {
       packed = packRGBA(
-        expand(hex[0]!),
-        expand(hex[1]!),
-        expand(hex[2]!),
-        hex.length === 4 ? expand(hex[3]!) : 255
+        expand(hex[0]),
+        expand(hex[1]),
+        expand(hex[2]),
+        hex.length === 4 ? expand(hex[3]) : 255
       );
     } else if (hex.length === 6 || hex.length === 8) {
       packed = packRGBA(
@@ -272,7 +272,7 @@ function parseColour(input: string): number {
       .map(Number);
     if (nums.length >= 3 && nums.every((n) => !Number.isNaN(n))) {
       const alpha = nums.length > 3 ? Math.round((nums[3] ?? 1) * 255) : 255;
-      packed = packRGBA(nums[0]!, nums[1]!, nums[2]!, alpha);
+      packed = packRGBA(nums[0], nums[1], nums[2], alpha);
     }
   }
 
@@ -416,7 +416,7 @@ export function ditherToCanvas(
       if (applyGamma) {
         value = value <= 0 ? 0 : Math.pow(value, gamma);
       }
-      if (value > BAYER_8_THRESHOLDS[row | ((x + phaseX) & 7)]!) {
+      if (value > BAYER_8_THRESHOLDS[row | ((x + phaseX) & 7)]) {
         pixels[i] = inkPixel;
         lit++;
       } else {
@@ -728,7 +728,7 @@ export function radialBurst(opts: RadialBurstOptions = {}): FieldFn {
     // free: no extra noise evaluation.
     warpScale[i] = 1 + i * 0.37;
     phases[i] = i * 2.399963;
-    weightSum += weights[i]!;
+    weightSum += weights[i];
   }
   // Normalising by the weight sum (not the layer count) keeps overall
   // brightness stable when `layers` changes.
@@ -766,12 +766,12 @@ export function radialBurst(opts: RadialBurstOptions = {}): FieldFn {
       const q =
         1 -
         Math.abs(
-          Math.sin((angle + baseWarp * warpScale[i]!) * freqs[i]! + phases[i]!)
+          Math.sin((angle + baseWarp * warpScale[i]) * freqs[i] + phases[i])
         );
       const streak = q * q * q;
 
       // Radial energy: bright just outside the core, decaying outward.
-      sum += (streak * weights[i]!) / (1 + radialPow * radialK[i]!);
+      sum += (streak * weights[i]) / (1 + radialPow * radialK[i]);
     }
 
     let value = sum * gain;
@@ -1227,13 +1227,13 @@ export function makeGlyphField(opts: GlyphFieldOptions): GlyphField {
     z[1] = INF;
     for (let q = 1; q < n; q++) {
       let s =
-        (f[q]! + q * q - (f[vtx[k]!]! + vtx[k]! * vtx[k]!)) /
-        (2 * q - 2 * vtx[k]!);
-      while (s <= z[k]!) {
+        (f[q] + q * q - (f[vtx[k]] + vtx[k] * vtx[k])) /
+        (2 * q - 2 * vtx[k]);
+      while (s <= z[k]) {
         k--;
         s =
-          (f[q]! + q * q - (f[vtx[k]!]! + vtx[k]! * vtx[k]!)) /
-          (2 * q - 2 * vtx[k]!);
+          (f[q] + q * q - (f[vtx[k]] + vtx[k] * vtx[k])) /
+          (2 * q - 2 * vtx[k]);
       }
       k++;
       vtx[k] = q;
@@ -1242,9 +1242,9 @@ export function makeGlyphField(opts: GlyphFieldOptions): GlyphField {
     }
     k = 0;
     for (let q = 0; q < n; q++) {
-      while (z[k + 1]! < q) k++;
-      const dq = q - vtx[k]!;
-      d[q] = dq * dq + f[vtx[k]!]!;
+      while (z[k + 1] < q) k++;
+      const dq = q - vtx[k];
+      d[q] = dq * dq + f[vtx[k]];
     }
   };
 
@@ -1258,16 +1258,16 @@ export function makeGlyphField(opts: GlyphFieldOptions): GlyphField {
 
     // Columns.
     for (let x = 0; x < size; x++) {
-      for (let y = 0; y < size; y++) line[y] = grid[y * size + x]!;
+      for (let y = 0; y < size; y++) line[y] = grid[y * size + x];
       edt1d(line, size, out);
-      for (let y = 0; y < size; y++) grid[y * size + x] = out[y]!;
+      for (let y = 0; y < size; y++) grid[y * size + x] = out[y];
     }
     // Rows.
     for (let y = 0; y < size; y++) {
       const base = y * size;
-      for (let x = 0; x < size; x++) line[x] = grid[base + x]!;
+      for (let x = 0; x < size; x++) line[x] = grid[base + x];
       edt1d(line, size, out);
-      for (let x = 0; x < size; x++) grid[base + x] = out[x]!;
+      for (let x = 0; x < size; x++) grid[base + x] = out[x];
     }
     return grid;
   };
@@ -1278,7 +1278,7 @@ export function makeGlyphField(opts: GlyphFieldOptions): GlyphField {
   // Signed distance in grid cells: negative inside the glyph.
   for (let i = 0; i < inside.length; i++) {
     inside[i] =
-      mask[i] === 1 ? -Math.sqrt(distInside[i]!) : Math.sqrt(distOutside[i]!);
+      mask[i] === 1 ? -Math.sqrt(distInside[i]) : Math.sqrt(distOutside[i]);
   }
 
   /**
@@ -1315,10 +1315,10 @@ export function makeGlyphField(opts: GlyphFieldOptions): GlyphField {
     const y1 = Math.min(size - 1, y0 + 1);
     const fx = gx - x0;
     const fy = gy - y0;
-    const a = inside[y0 * size + x0]!;
-    const b = inside[y0 * size + x1]!;
-    const c = inside[y1 * size + x0]!;
-    const d = inside[y1 * size + x1]!;
+    const a = inside[y0 * size + x0];
+    const b = inside[y0 * size + x1];
+    const c = inside[y1 * size + x0];
+    const d = inside[y1 * size + x1];
     const top = a + (b - a) * fx;
     const bottom = c + (d - c) * fx;
     return top + (bottom - top) * fy + outside;
@@ -1356,7 +1356,7 @@ export function makeGlyphField(opts: GlyphFieldOptions): GlyphField {
 export function multiplyFields(...fields: FieldFn[]): FieldFn {
   return (u, v, t) => {
     let out = 1;
-    for (let i = 0; i < fields.length; i++) out *= fields[i]!(u, v, t);
+    for (let i = 0; i < fields.length; i++) out *= fields[i](u, v, t);
     return out;
   };
 }
@@ -1366,7 +1366,7 @@ export function maxFields(...fields: FieldFn[]): FieldFn {
   return (u, v, t) => {
     let out = 0;
     for (let i = 0; i < fields.length; i++) {
-      const value = fields[i]!(u, v, t);
+      const value = fields[i](u, v, t);
       if (value > out) out = value;
     }
     return out;

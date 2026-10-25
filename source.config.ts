@@ -10,10 +10,10 @@
  *   the default limit a block that runs past it renders unhighlighted
  *   (gt-cloud #5269).
  * - remarkHandbook (src/lib/remark-handbook.ts) runs after fumadocs-mdx's
- *   include step on the handbook pages (content/docs/handbook), which show
- *   the repository's Markdown files through `<include cwd>`: it drops each
- *   included h1, resolves relative links to their site addresses and
- *   prints raw HTML as text.
+ *   include step on the handbook pages (content/docs/(guide)/handbook),
+ *   which show the repository's Markdown files through `<include cwd>`: it
+ *   drops each included h1, resolves relative links to their site
+ *   addresses and prints raw HTML as text.
  *
  * The same file runs in gt-cloud's apps/landing; /docs/template says what
  * to keep when it is copied into another project.

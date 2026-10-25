@@ -74,7 +74,7 @@ for (const [subnet, prefix] of allowedIpv6Subnets) {
   allowedIpv6.addSubnet(subnet, prefix, 'ipv6');
 }
 
-export function isBlockedIp(ip: string): boolean {
+function isBlockedIp(ip: string): boolean {
   const family = net.isIP(ip);
   if (family === 4) return blockedIpv4.check(ip, 'ipv4');
   if (family === 6) {

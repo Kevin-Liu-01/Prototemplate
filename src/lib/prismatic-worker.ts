@@ -43,6 +43,7 @@ export function fieldWorker() {
     onmessage: ((event: MessageEvent<OffThreadMessage>) => void) | null;
     postMessage: (message: OffThreadReply) => void;
     requestAnimationFrame?: (callback: (now: number) => void) => number;
+    setTimeout: (callback: () => void, ms: number) => number;
   };
   type Program = {
     resolution: WebGLUniformLocation | null;
@@ -70,7 +71,7 @@ export function fieldWorker() {
   const nextFrame = (callback: (now: number) => void) =>
     scope.requestAnimationFrame
       ? scope.requestAnimationFrame(callback)
-      : (setTimeout(() => callback(performance.now()), 16) as unknown as number);
+      : scope.setTimeout(() => callback(performance.now()), 16);
 
   const compile = (gl: WebGLRenderingContext, type: number, src: string) => {
     const shader = gl.createShader(type);

@@ -1,10 +1,9 @@
 /**
- * Studio field — THE BAYER FAMILY. The rig started as a survey (five dither
- * geometries, five light washes, ported from the founder's glyphfield studio
- * — glyphfield.com/studio, his own MIT repo); the founder picked 01 bayer
- * dither and asked for "a bunch of options based off of this instead", so
- * the module is now ten Bayer materials: the original flow untouched, and
- * nine variations that move along real axes rather than nudging knobs —
+ * Studio field — THE BAYER FAMILY: ten Bayer materials from the founder's
+ * glyphfield studio (glyphfield.com/studio, an MIT repository), the 01 bayer
+ * dither the founder picked ("a bunch of options based off of this
+ * instead") and nine variations that move along real axes rather than
+ * nudging knobs —
  * matrix order (2×2 / 4×4 / 8×8), cell scale (poster chunks ↔ near-grain),
  * the tone field under the matrix (flow-clouds, contour bands, off-center
  * radials, diagonal sweeps, interference waves, a breathing field), motion
@@ -50,6 +49,8 @@
  * Reduced motion renders ONE static frame and stops; document.hidden pauses
  * the loop; a per-subscriber ResizeObserver keeps stills crisp on reflow.
  */
+
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 export type StudioVec3 = [number, number, number];
 
@@ -856,7 +857,8 @@ function tick(now: number) {
 }
 
 function schedule() {
-  if (frameId) return;
+  /* an engine that could not rebuild its context draws nothing: no frames */
+  if (frameId || engineFailed) return;
   let anyActive = false;
   for (const sub of subscribers) {
     if (sub.running && sub.visible) {
@@ -882,8 +884,7 @@ export function createStudioField(
   const blit = canvas.getContext('2d');
   if (!blit) return null;
 
-  const reduced =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = prefersReducedMotion();
 
   const preset = options.preset ?? 'bayer';
   const sub: Subscriber = {

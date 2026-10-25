@@ -57,7 +57,7 @@ import type { ShellShot } from '@/lib/shell-data';
  */
 export type SurfaceSet = 'site' | 'public';
 
-export const SITE_GROUPS = [
+const SITE_GROUPS = [
   'Pages',
   'Knowledge',
   'Shipped',
@@ -69,7 +69,7 @@ export const SITE_GROUPS = [
   'Brand sections',
 ] as const;
 
-export const PUBLIC_GROUPS = [
+const PUBLIC_GROUPS = [
   'Live product',
   'Editorial',
   'Social and community',
@@ -714,7 +714,7 @@ export function surfaceShot(id: string): ShellShot | undefined {
   return { light: row.shot, dark: row.shotDark };
 }
 
-export function surfacesFor(set: SurfaceSet): readonly Surface[] {
+function surfacesFor(set: SurfaceSet): readonly Surface[] {
   return set === 'site' ? SITE_SURFACES : PUBLIC_SURFACES;
 }
 

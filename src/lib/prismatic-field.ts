@@ -41,6 +41,8 @@
  * and a single rAF loop can skip any field that is offscreen or paused.
  */
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 export type PrismaticParams = {
   initialDepth: number;
   safeMinimum: number;
@@ -497,8 +499,12 @@ type Subscriber = {
   visible: boolean;
   startTime: number;
   observer?: IntersectionObserver;
+  resize?: ResizeObserver;
   effect?: EffectState;
 };
+
+/** The moment a still field shows: under reduced motion, while paused, and for renderStatic(). */
+const STATIC_TIME = 10;
 
 let engine: Engine | null = null;
 let engineFailed = false;
@@ -720,7 +726,8 @@ function tick(now: number) {
 }
 
 function schedule() {
-  if (frameId) return;
+  /* an engine that could not rebuild its context draws nothing: no frames */
+  if (frameId || engineFailed) return;
   let anyActive = false;
   for (const sub of subscribers) {
     // A field draws while it animates — and also while a cursor is engaged
@@ -862,9 +869,7 @@ export function createPrismaticField(
   const blit = canvas.getContext('2d');
   if (!blit) return null;
 
-  const reduced =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = prefersReducedMotion();
 
   const sub: Subscriber = {
     target: canvas,
@@ -896,13 +901,22 @@ export function createPrismaticField(
     sub.observer.observe(canvas);
   }
 
-  if (reduced) renderSubscriber(sub, 10);
+  // A stilled field (reduced motion or paused) re-renders its one frame at a
+  // new size; a running field re-measures every frame.
+  if (typeof ResizeObserver !== 'undefined') {
+    sub.resize = new ResizeObserver(() => {
+      if (!sub.running) renderSubscriber(sub, STATIC_TIME);
+    });
+    sub.resize.observe(canvas);
+  }
+
+  if (reduced) renderSubscriber(sub, STATIC_TIME);
   else schedule();
 
   return {
     setParams(patch) {
       Object.assign(sub.params, patch);
-      if (!sub.running) renderSubscriber(sub, 10);
+      if (!sub.running) renderSubscriber(sub, STATIC_TIME);
     },
     pause() {
       sub.running = false;
@@ -913,7 +927,7 @@ export function createPrismaticField(
       sub.startTime = performance.now();
       schedule();
     },
-    renderStatic(time = 10) {
+    renderStatic(time = STATIC_TIME) {
       renderSubscriber(sub, time);
     },
     setEffectMode(mode) {
@@ -964,6 +978,7 @@ export function createPrismaticField(
     destroy() {
       sub.effect?.detach();
       sub.observer?.disconnect();
+      sub.resize?.disconnect();
       subscribers.delete(sub);
       // The engine context is deliberately kept for the session: it is a single
       // context, and tearing it down per unmount is what made repeated
