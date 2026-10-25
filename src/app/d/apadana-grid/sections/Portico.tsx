@@ -20,7 +20,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { GtMark } from '@/components/viewer/GtMark';
-import { prefersReducedMotion } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { CUSTOMERS, DOCS_URL, EVERY, HERO_SUB, INSTALL_COMMAND, SIGNIN_URL, TRUST_LEAD } from '../data';
 import { sunDisk, useDither } from '../fields';

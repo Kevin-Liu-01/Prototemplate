@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
-import { prefersReducedMotion } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { CLAIMS } from '../data';
 import { playWhileVisible } from './motion';

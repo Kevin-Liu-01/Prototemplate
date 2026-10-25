@@ -62,6 +62,7 @@
  */
 
 import { clamp01, smoothstep } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /**
  * The 8x8 Bayer (ordered-dither) threshold matrix, values 0..63.
@@ -428,12 +429,6 @@ export function ditherToCanvas(
 
   const cells = width * height;
   return { width, height, cells, litRatio: cells === 0 ? 0 : lit / cells };
-}
-
-/** True when the user has asked the OS to reduce motion. */
-export function prefersReducedMotion(): boolean {
-  if (typeof window === 'undefined' || !window.matchMedia) return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 export type DitherLoopOptions = DitherOptions & {

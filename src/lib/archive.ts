@@ -14,6 +14,8 @@
  * the gallery, the archive route, the sitemap and the index panel read one
  * list.
  */
+import { formatLongDay } from '@/lib/dates';
+
 import { REPO_URL } from './seo/site';
 
 export type ArchiveEntry = {
@@ -95,26 +97,9 @@ export function archiveFull(item: ArchiveEntry): string {
   return `${ARCHIVE_DIR}/${item.full}`;
 }
 
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-] as const;
-
-/** `2026-09-08` becomes `September 8, 2026`. A fixed table, not Intl, so the server and the client agree. */
+/** `2026-09-08` becomes `September 8, 2026`. */
 export function archiveDate(item: ArchiveEntry): string {
-  const [year, month, day] = item.captured.split('-').map((part) => parseInt(part, 10));
-  const name = MONTHS[(month ?? 1) - 1] ?? MONTHS[0];
-  return `${name} ${day ?? 1}, ${year ?? ''}`.trim();
+  return formatLongDay(item.captured);
 }
 
 /** `prototemplate.vercel.app/d/concrete-mono`: the address without its scheme. */

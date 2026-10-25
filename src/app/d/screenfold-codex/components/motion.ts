@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { RefObject } from 'react';
 
-import { prefersReducedMotion } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 

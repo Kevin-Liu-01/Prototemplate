@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 
-import { createDitherLoop, prefersReducedMotion } from '@/lib/dither';
+import { createDitherLoop } from '@/lib/dither';
 import type { DitherLoopOptions, FieldFn } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 /**

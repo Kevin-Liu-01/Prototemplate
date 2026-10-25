@@ -5,6 +5,7 @@ import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { HANDBOOK, HANDBOOK_README } from '@/app/handbook/registry';
 import { REPO_BLOB } from '@/components/book/links';
 import DocsPageActions from '@/components/docs/DocsPageActions';
+import { formatLongDay } from '@/lib/dates';
 import { HANDBOOK_HEADINGS } from '@/lib/search-index';
 import { selfUrl } from '@/lib/seo/policy';
 import JsonLd from '@/lib/seo/JsonLd';
@@ -97,12 +98,6 @@ export async function generateMetadata({ params }: Params) {
   return docsRoute(page).metadata;
 }
 
-/** The date the page last changed, as the panel on the hub's book pages writes it. */
-function updatedLabel(day: string): string {
-  const date = new Date(`${day}T12:00:00Z`);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
-}
-
 /**
  * /docs and /docs/<slug>: one MDX page of the docs site in the notebook
  * layout. The head carries the describedby link to /llms.txt, and the body
@@ -128,7 +123,7 @@ export default async function Page({ params }: Params) {
       <DocsDescription className='docs-lead'>{page.data.description}</DocsDescription>
       <div className='docs-meta' data-docs-meta=''>
         <p className='docs-updated'>
-          Updated <time dateTime={updated.at}>{updatedLabel(updated.day)}</time>
+          Updated <time dateTime={updated.at}>{formatLongDay(updated.day)}</time>
         </p>
         <DocsPageActions
           markdownUrl={`${page.url}.md`}

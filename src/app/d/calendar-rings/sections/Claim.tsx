@@ -17,7 +17,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
-import { prefersReducedMotion } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { CLAIM_WORDS } from '../data';
 

@@ -20,7 +20,8 @@
  * the house engine's lifecycle contract: one still under reduced motion,
  * paused offscreen and on hidden tabs, released on destroy.
  */
-import { BAYER_8, prefersReducedMotion } from '@/lib/dither';
+import { BAYER_8 } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 export type WedgeField = (u: number, v: number, t: number) => number;
 export type WedgeOrient = 'v' | 'h';

@@ -152,18 +152,6 @@ export function getAuthors(slugs: readonly string[]): readonly Author[] {
   return slugs.map(getAuthor).filter((author): author is Author => author !== undefined);
 }
 
-/** `2026-09-17` as `17 Sep 2026`. */
-export function formatDate(iso: string): string {
-  const [y, m, d] = iso.split('-').map(Number);
-  if (!y || !m || !d) return iso;
-  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  });
-}
-
 /** The `![alt](src)` figures of a post body, in order. */
 export function postFigures(body: string): readonly { alt: string; src: string }[] {
   return [...body.matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)/g)].map((m) => ({ alt: m[1] ?? '', src: m[2] ?? '' }));

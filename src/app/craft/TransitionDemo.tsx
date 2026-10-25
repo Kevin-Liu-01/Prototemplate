@@ -8,12 +8,12 @@ import {
   createDitherLoop,
   globe,
   mixFields,
-  prefersReducedMotion,
   type DitherLoopHandle,
   type DitherLoopOptions,
   type FieldFn,
 } from '@/lib/dither';
 import { smoothstep } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 // the plate sheet travels with the demo, so any host outside CraftArticle has the plate rules
 import './craft.css';

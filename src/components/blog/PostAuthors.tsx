@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import type { Author } from '@/lib/blog';
-import { formatDate } from '@/lib/blog';
+import { formatPostDay } from '@/lib/dates';
 
 /**
  * The byline: avatars stacked in author order (the first on top), the names, the date.
@@ -33,7 +33,7 @@ export default function PostAuthors({ authors, date }: { authors: readonly Autho
       <span className='blog-byline-dot' aria-hidden='true'>
         ·
       </span>
-      <time dateTime={date}>{formatDate(date)}</time>
+      <time dateTime={date}>{formatPostDay(date)}</time>
     </p>
   );
 }

@@ -46,7 +46,8 @@
  * strings; nothing here names a color.
  */
 
-import { BAYER_8, prefersReducedMotion } from '@/lib/dither';
+import { BAYER_8 } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /** One brick, at evaluation time. Positions are CSS px from the section's top-left. */
 export type LatticeCell = {

@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
 
-import { prefersReducedMotion } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { FORMATS, HELLO_WORLD, SOURCE_FILE, SOURCE_INSTALL, SOURCE_PKG } from '../data';

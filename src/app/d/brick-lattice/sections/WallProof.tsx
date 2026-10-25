@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
-import { prefersReducedMotion } from '@/lib/dither';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import BrickField from '../diagrams/BrickField';
 import PatternSwatch from '../diagrams/PatternSwatch';

@@ -9,6 +9,21 @@
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const;
 
+const LONG_MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+] as const;
+
 const DAY_MS = 86_400_000;
 
 function parts(day: string): [number, number, number] {
@@ -20,6 +35,28 @@ function parts(day: string): [number, number, number] {
 export function formatDay(day: string): string {
   const [y, m, d] = parts(day);
   return `${MONTHS[m - 1] ?? ''} ${d}, ${y}`;
+}
+
+/** `2026-10-05` as `October 5, 2026`: the archive's capture dates and the docs pages' Updated line. */
+export function formatLongDay(day: string): string {
+  const [y, m, d] = parts(day);
+  return `${LONG_MONTHS[m - 1] ?? ''} ${d}, ${y}`;
+}
+
+/**
+ * `2026-09-17` as `17 Sep 2026`, the blog's byline as generaltranslation.com
+ * writes it, through Intl's en-GB short month (September is `Sept`); an
+ * input that is not a day comes back unchanged.
+ */
+export function formatPostDay(day: string): string {
+  const [y, m, d] = day.split('-').map(Number);
+  if (!y || !m || !d) return day;
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 }
 
 /** Today in the reader's time zone, `YYYY-MM-DD`. */
