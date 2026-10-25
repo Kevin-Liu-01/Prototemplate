@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { useRef, useState } from 'react';
 
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { scrollBehavior } from '@/lib/reduced-motion';
+import { pad2 } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { useDeckSetup } from './deck-setup';
@@ -31,6 +33,10 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * and jumps stay accurate at any viewport size.
  */
 type SlideSub = { label: string; f: number };
+
+/** Controls Space presses natively: a focused one keeps the key, so the pager never takes it. */
+const SPACE_CONTROL =
+  'button, a[href], summary, [role="button"], [role="tab"], [role="radio"], [role="checkbox"], [role="switch"], [role="option"], [role="menuitem"], [role="slider"]';
 
 const SLIDES: { id: string; label: string; jump: number; subs?: SlideSub[] }[] = [
   { id: 'intro', label: 'Intro', jump: 0 },
@@ -222,7 +228,7 @@ export default function PresenterApp() {
           (subFraction !== undefined
             ? subFraction * pinLength(clamped)
             : (SLIDES[clamped]?.jump ?? 0) * window.innerHeight);
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        window.scrollTo({ top: y, behavior: scrollBehavior() });
       };
       goToRef.current = goTo;
 
@@ -238,6 +244,7 @@ export default function PresenterApp() {
           return;
 
         const { key } = event;
+        if (key === ' ' && target instanceof Element && target.closest(SPACE_CONTROL)) return;
         if (key === ' ' || key === 'ArrowDown' || key === 'PageDown' || key === 'j')
           goTo(activeRef.current + 1);
         else if (key === 'ArrowUp' || key === 'PageUp' || key === 'k')
@@ -279,7 +286,7 @@ export default function PresenterApp() {
             className={`pr-hud-brand${railHidden ? ' is-hidden' : ''}`}
             aria-label='Back to the index'
           >
-            <img src='/brand/no-bg-gt-logo-dark.png' alt='General Translation' />
+            <img src='/brand/no-bg-gt-logo-dark-256.png' alt='General Translation' />
             <span>Redesign</span>
           </Link>
           <div className={`pr-hud-author${railHidden ? ' is-hidden' : ''}`}>Kevin Liu</div>
@@ -292,7 +299,7 @@ export default function PresenterApp() {
                 key={slide.id}
                 className={i === active ? 'pr-hud-item is-active' : 'pr-hud-item'}
               >
-                <button type='button' onClick={() => goToRef.current(i)}>
+                <button type='button' aria-current={i === active ? 'step' : undefined} onClick={() => goToRef.current(i)}>
                   <i />
                   <em>{slide.label}</em>
                 </button>
@@ -306,7 +313,8 @@ export default function PresenterApp() {
                           className={
                             i === active && j === activeSub ? 'is-here' : ''
                           }
-                          style={{ '--i': j } as React.CSSProperties}
+                          aria-current={i === active && j === activeSub ? 'step' : undefined}
+                          style={{ '--i': j }}
                           onClick={() => goToRef.current(i, sub.f)}
                         >
                           <i />
@@ -343,8 +351,8 @@ export default function PresenterApp() {
                   <Icon name='arrow-down' size={15} />
                 </button>
                 <span className='pr-hud-count'>
-                  {String(active + 1).padStart(2, '0')} /{' '}
-                  {String(SLIDES.length).padStart(2, '0')}
+                  {pad2(active + 1)} /{' '}
+                  {pad2(SLIDES.length)}
                 </span>
               </div>
               <div id='pr-dock-viewer-slot' className='pr-dock-set pr-dock-set-viewer' />

@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { useDeckSetup } from '../deck-setup';
 import Icon, { type IconName } from '../icons';
 
@@ -50,7 +52,7 @@ export default function WhySlide() {
   useGSAP(
     () => {
       if (!ready) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const big = SplitText.create('.pr-why-big', {
         type: 'chars',
@@ -97,9 +99,8 @@ export default function WhySlide() {
   return (
     <section ref={root} className='pr-slide pr-why' data-slide='why'>
       <div ref={pin} className='pr-pin'>
-        <h2 className='pr-why-big' aria-hidden>
-          Why?
-        </h2>
+        {/* SplitText labels the heading and hides its split characters (aria: 'auto') */}
+        <h2 className='pr-why-big'>Why?</h2>
         <div className='pr-phase pr-why-list'>
           <ol>
             {REASONS.map((reason) => (

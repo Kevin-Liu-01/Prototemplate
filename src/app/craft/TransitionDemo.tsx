@@ -437,7 +437,12 @@ export default function TransitionDemo() {
         rebuild();
       })
       .catch(() => {
-        // a grid that never arrives leaves the globe turning
+        // a grid that never arrives leaves the globe turning; under reduced
+        // motion, where the plate waited blank for the picture, the globe
+        // is drawn as a still
+        if (dead || !reduced) return;
+        loop.setOptions({ ink: inks.globe });
+        loop.setField(fields.turning);
       });
 
     const resize =

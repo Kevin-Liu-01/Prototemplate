@@ -7,6 +7,7 @@ import { useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
 import { startFieldWorker } from '@/lib/prismatic-offthread';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { entrancePlayed } from '../deck-setup';
 
@@ -27,7 +28,7 @@ export default function IntroSlide() {
 
   useGSAP(
     () => {
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = prefersReducedMotion();
 
       // The field draws in a worker, so it starts a moment after mount.
       // Its 2 s power2.inOut fade holds at zero until the first frame. Like
@@ -230,7 +231,7 @@ export default function IntroSlide() {
                 offThread
                 params={{ exposureScale: 4600 }}
               />
-              <img src='/brand/no-bg-gt-logo-dark.png' alt='General Translation' />
+              <img src='/brand/no-bg-gt-logo-dark-256.png' alt='General Translation' />
             </span>
           </span>
           <span className='pr-title-mask'>

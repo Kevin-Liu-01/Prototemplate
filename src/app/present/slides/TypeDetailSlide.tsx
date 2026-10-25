@@ -7,6 +7,8 @@ import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { useDeckSetup } from '../deck-setup';
 import { PRESENT_DIRECTIONS } from '../directions';
 import { googleInter } from '../fonts';
@@ -170,7 +172,7 @@ export default function TypeDetailSlide() {
             ? null
             : document.fonts.ready;
 
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (prefersReducedMotion()) {
         facesIn?.then(alignBaselines);
         return;
       }
@@ -178,7 +180,7 @@ export default function TypeDetailSlide() {
 
       // The convergence is driven by a proxy so the target can be re-measured
       // on every frame: cached end values go stale when fonts or refreshes
-      // shift the anchor, which used to land the pair off-register and then
+      // shift the anchor, which would land the pair off-register and then
       // visibly snap. With a live target, the flight ends exactly on the
       // anchor, every time, with nothing left to correct. Origins are
       // captured on the first moving frame (transforms backed out) and reset
@@ -469,15 +471,34 @@ export default function TypeDetailSlide() {
         )
         .to({}, { duration: 0.5 });
 
+      // The Inter glitch holds still while no part of the slide is on
+      // screen (presenter.css reads data-offscreen).
+      const section = root.current;
+      const setOffscreen = (onScreen: boolean) => {
+        if (!section) return;
+        if (onScreen) delete section.dataset.offscreen;
+        else section.dataset.offscreen = '';
+      };
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        onToggle: (self) => setOffscreen(self.isActive),
+        onRefresh: (self) => setOffscreen(self.isActive),
+      });
+
       // The flight getters measure the overlay's layout, and that layout
       // shifts when the webfonts finish loading (the centered stack's origin
       // depends on the red line's width). Re-measure the baseline and force
       // every function-based value to re-evaluate against final geometry.
       // When the fonts had already landed before this ran, everything above
       // measured final geometry, and a full refresh would be a long task
-      // with nothing to change.
+      // with nothing to change. A slide unmounted before the fonts land
+      // skips the work.
       if (!facesIn) return;
+      let live = true;
       facesIn.then(() => {
+        if (!live) return;
         alignBaselines();
         tl.invalidate();
         ScrollTrigger.refresh();
@@ -485,6 +506,9 @@ export default function TypeDetailSlide() {
         // will re-run the placement, so do it once here.
         placePair();
       });
+      return () => {
+        live = false;
+      };
     },
     { scope: root, dependencies: [ready] }
   );

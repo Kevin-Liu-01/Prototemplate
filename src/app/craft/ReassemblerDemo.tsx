@@ -8,6 +8,7 @@ import EverySentence, {
   type EverySentenceHandle,
   type EveryWord,
 } from '@/components/shared/EverySentence';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 // the plate sheet travels with the demo: /brand mounts it outside CraftArticle
 import './craft.css';
@@ -43,7 +44,7 @@ export default function ReassemblerDemo() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       let i = 0;
       const step = () => {
         const loc = ORDER[i % ORDER.length];
@@ -88,6 +89,8 @@ export default function ReassemblerDemo() {
           <button
             className='ptc-bayer-chip'
             data-on={n === hops}
+            aria-pressed={n === hops}
+            aria-label={`${n} ${n === 1 ? 'hop' : 'hops'}`}
             key={n}
             type='button'
             onClick={() => setHops(n)}

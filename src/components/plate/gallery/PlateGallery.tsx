@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useRef, useState } from 'react';
 
 import FieldPicture from '@/components/plate/brand/FieldPicture';
 import PlateFrame from '@/components/plate/frame/PlateFrame';
@@ -50,21 +51,39 @@ const CLI_CALLBACK_STATES: Record<string, CliCallbackState> = {
  * they did under the dashboard's gallery, which navigates per state;
  * without the key the component kept whatever it had read into state at
  * its first mount, the previous state's values.
+ *
+ * A move announces the new state's title in a polite region that stays
+ * mounted. When the move unmounted the control that had focus (a step's
+ * Continue), focus goes to the new state's heading, so a keyboard user
+ * keeps their place.
  */
 function Gallery() {
   const { current } = useFlow();
   const state = findDevState(current);
+  const [announced, setAnnounced] = useState('');
+  const first = useRef(true);
 
   useLayoutWork(
     () => {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('state') === current) return;
-      params.set('state', current);
-      window.history.replaceState(
-        window.history.state,
-        '',
-        `${window.location.pathname}?${params.toString()}`
-      );
+      if (params.get('state') !== current) {
+        params.set('state', current);
+        window.history.replaceState(
+          window.history.state,
+          '',
+          `${window.location.pathname}?${params.toString()}`
+        );
+      }
+      if (first.current) {
+        first.current = false;
+        return;
+      }
+      setAnnounced(state.title);
+      if (document.activeElement !== document.body) return;
+      const heading = document.querySelector<HTMLElement>('.plate-root h1');
+      if (!heading) return;
+      if (!heading.hasAttribute('tabindex')) heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
     },
     { dependencies: [current] }
   );
@@ -123,6 +142,9 @@ function Gallery() {
       {content}
       <div className='plate-root'>
         <DevStateConsole states={devStates} currentId={state.id} />
+        <p className='sr-only' aria-live='polite'>
+          {announced}
+        </p>
       </div>
     </>
   );

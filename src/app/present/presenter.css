@@ -56,10 +56,10 @@
   --pr-mint: #0f6b45;
 }
 
-/* the brand mark files are the white mark (no-bg-gt-logo-dark.png, cut for
-   the ink ground); on paper it is inverted to the black mark, the same
+/* the brand mark file is the white mark (no-bg-gt-logo-dark-256.png, cut
+   for the ink ground); on paper it is inverted to the black mark, the same
    monochrome shape, so the title and the HUD carry the mark in both themes */
-:root:not([data-theme='dark']) .pr-root img[src$='no-bg-gt-logo-dark.png'] {
+:root:not([data-theme='dark']) .pr-root img[src$='no-bg-gt-logo-dark-256.png'] {
   filter: invert(1);
 }
 
@@ -220,12 +220,17 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 /* The rail steps aside while the prototype viewer owns the screen, and
-   returns once every prototype has been walked. */
+   returns once every prototype has been walked. Hidden, it also leaves the
+   Tab order: visibility flips once the fade has run. */
 .pr-hud-rail.is-hidden,
 .pr-hud-brand.is-hidden,
 .pr-hud-author.is-hidden {
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s linear 0.3s;
 }
 
 /* The intro's shader stays unshaded: no scrim on the first section unless
@@ -250,18 +255,21 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   color: var(--pt-ink);
 }
 
-/* Subsections: every beat of a slide, revealed on hover and for the
-   active section. Grid-rows animation gives an exact-height, eased
-   expansion; items cascade in with a per-row delay. */
+/* Subsections: every beat of a slide, revealed on hover, on keyboard
+   focus and for the active section. Grid-rows animation gives an
+   exact-height, eased expansion; items cascade in with a per-row delay.
+   Collapsed, the beats leave the Tab order once the fold has run. */
 .pr-hud-subs {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
+  visibility: hidden;
   margin-left: 10px;
   transition:
     grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.3s ease,
-    margin 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    margin 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.45s;
 }
 
 .pr-hud-subs-inner {
@@ -282,13 +290,21 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 .pr-hud-item:hover .pr-hud-subs,
+.pr-hud-item:focus-within .pr-hud-subs,
 .pr-hud-item.is-active .pr-hud-subs {
   grid-template-rows: 1fr;
   opacity: 1;
+  visibility: inherit;
   margin-top: 3px;
+  transition:
+    grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease,
+    margin 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
 }
 
 .pr-hud-item:hover .pr-hud-subs button,
+.pr-hud-item:focus-within .pr-hud-subs button,
 .pr-hud-item.is-active .pr-hud-subs button {
   opacity: 1;
   transform: none;
@@ -309,7 +325,8 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   transform: translateX(-4px);
 }
 
-.pr-hud-rail:hover .pr-hud-subs button em {
+.pr-hud-rail:hover .pr-hud-subs button em,
+.pr-hud-rail:focus-within .pr-hud-subs button em {
   opacity: 1;
   transform: none;
 }
@@ -1675,8 +1692,10 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 }
 
 /* Until the slide is set up (TypeDetailSlide.tsx), Google's Inter is not
-   named and the glitch holds still. */
-.pr-detail:not(.is-ready) .pr-glitch-inter {
+   named and the glitch holds still; it also holds while the slide is off
+   screen (data-offscreen, set by the slide's trigger). */
+.pr-detail:not(.is-ready) .pr-glitch-inter,
+.pr-detail[data-offscreen] .pr-glitch-inter {
   animation-play-state: paused;
 }
 
@@ -2850,6 +2869,14 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 @media (prefers-reduced-motion: reduce) {
   .pr-slide {
     height: auto !important;
+  }
+
+  /* the endless loops hold still: the Principles marquee, the Inter glitch
+     and the loading veil's pulse */
+  .pr-vmarquee-track,
+  .pr-glitch-inter,
+  .pr-stage-veil {
+    animation: none;
   }
 
   .pr-pin {

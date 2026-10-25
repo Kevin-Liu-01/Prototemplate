@@ -1,0 +1,42 @@
+/* The carousel's pause control, shared by every page that mounts the
+   gallery (the blog and the production blog mirror): a 24px button at the
+   right end of the dots row, placed over the row so the row keeps the
+   dots' height. Autoplay is off under reduced motion, so the control is
+   too. */
+.blog-carousel-dots {
+  position: relative;
+}
+
+.blog-carousel-pause {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--pt-radius-control);
+  background: none;
+  color: inherit;
+  opacity: 0.55;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.blog-carousel-pause:hover,
+.blog-carousel-pause:focus-visible {
+  opacity: 1;
+}
+
+.blog-carousel-pause:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-carousel-pause {
+    display: none;
+  }
+}

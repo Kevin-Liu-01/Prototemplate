@@ -1,12 +1,15 @@
 'use client';
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import Image from 'next/image';
 import type { MouseEvent, PointerEvent, UIEvent } from 'react';
 import { useRef, useState } from 'react';
 
 import { BLOG_COLUMN_SIZES } from '@/lib/blog-image-sizes';
+import { prefersReducedMotion, scrollBehavior } from '@/lib/reduced-motion';
 import { useMountEffect } from '@/lib/use-mount-effect';
+
+import './carousel.css';
 
 export type CarouselImage = {
   src: string;
@@ -35,9 +38,12 @@ const DEBOUNCE_MS = 350;
  * scroll-snap track that loops, a click on the left half of the image
  * going back and on the right half forward, 16px chevrons over soft
  * scrims that surface on hover or focus, dots, and autoplay that pauses on
- * hover, focus and off-screen and stays off under reduced motion. The
- * track is the source of truth for the visible slide; relative commands
- * step from the last requested slide so rapid presses land one slide each.
+ * hover, focus and off-screen, stops at the pause button beside the dots
+ * and stays off under reduced motion. The slide counter is announced only
+ * while nothing advances on its own, so autoplay never talks over the
+ * page. The track is the source of truth for the visible slide; relative
+ * commands step from the last requested slide so rapid presses land one
+ * slide each.
  */
 export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }: CarouselGalleryProps) {
   const rootRef = useRef<HTMLElement>(null);
@@ -47,16 +53,16 @@ export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }
   const indexRef = useRef(0);
   const targetRef = useRef(0);
   const pendingRef = useRef<number | null>(null);
-  const holdRef = useRef({ hover: false, focus: false, visible: false, lastInteraction: 0 });
+  const holdRef = useRef({ hover: false, focus: false, visible: false, paused: false, lastInteraction: 0 });
   const pressRef = useRef<{ x: number; y: number; dragged: boolean } | null>(null);
   const [index, setIndex] = useState(0);
   const [pointerOver, setPointerOver] = useState(false);
   const [focusWithin, setFocusWithin] = useState(false);
+  const [paused, setPaused] = useState(false);
   const count = items.length;
   const autoplay = count > 1 && interval > 0;
   const shown = pointerOver || focusWithin;
-
-  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const advancing = autoplay && !paused && !focusWithin;
 
   const goTo = (next: number, byUser = true) => {
     const track = trackRef.current;
@@ -74,7 +80,7 @@ export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }
       return;
     }
     pendingRef.current = target;
-    track.scrollTo({ left, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    track.scrollTo({ left, behavior: scrollBehavior() });
   };
   const step = (delta: number) => goTo(targetRef.current + delta);
 
@@ -144,8 +150,8 @@ export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }
     );
     if (rootRef.current) observer.observe(rootRef.current);
     const timer = window.setInterval(() => {
-      if (reduceMotion()) return;
-      if (document.hidden || !hold.visible || hold.hover || hold.focus) return;
+      if (prefersReducedMotion()) return;
+      if (document.hidden || !hold.visible || hold.hover || hold.focus || hold.paused) return;
       if (Date.now() - hold.lastInteraction < interval) return;
       goTo(targetRef.current + 1, false);
     }, interval);
@@ -195,6 +201,8 @@ export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }
         <div
           ref={trackRef}
           className='blog-carousel-track'
+          role={multiple ? 'group' : undefined}
+          aria-label={multiple ? 'Slides; the arrow keys move between them' : undefined}
           tabIndex={multiple ? 0 : -1}
           onScroll={onTrackScroll}
           onKeyDown={(event) => {
@@ -216,7 +224,7 @@ export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }
                 height={item.height ?? 2160}
                 sizes={BLOG_COLUMN_SIZES}
                 quality={95}
-                loading={i === 0 ? 'eager' : 'lazy'}
+                loading='lazy'
               />
             </div>
           ))}
@@ -240,7 +248,20 @@ export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }
               aria-current={i === index ? 'true' : undefined}
             />
           ))}
-          <span className='blog-sr-only' aria-live='polite'>
+          {autoplay ? (
+            <button
+              type='button'
+              className='blog-carousel-pause'
+              aria-label={paused ? 'Play the slideshow' : 'Pause the slideshow'}
+              onClick={() => {
+                holdRef.current.paused = !paused;
+                setPaused(!paused);
+              }}
+            >
+              {paused ? <Play aria-hidden='true' size={12} strokeWidth={2} /> : <Pause aria-hidden='true' size={12} strokeWidth={2} />}
+            </button>
+          ) : null}
+          <span className='blog-sr-only' aria-live={advancing ? 'off' : 'polite'}>
             {index + 1} / {count}
           </span>
         </div>

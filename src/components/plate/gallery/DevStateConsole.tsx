@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/plate/ui/select';
+import { useLayoutWork } from '@/lib/use-layout-work';
 
 type DevStateConsoleProps = {
   states: DevState[];
@@ -263,6 +264,10 @@ function Console({ states, currentId }: DevStateConsoleProps) {
   const [open, setOpen] = useState(false);
   const asideRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const handleRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  /** set by the phone's open and close, so the next commit moves focus there */
+  const focusAfterToggle = useRef(false);
   /* Whether the state list is open; the key listener reads it to stand
      aside while the list has the keys. */
   const listOpenRef = useRef(false);
@@ -436,8 +441,10 @@ function Console({ states, currentId }: DevStateConsoleProps) {
     function onKey(event: KeyboardEvent) {
       /* The open state list owns the keys: its arrows move the
          highlight, never the state. */
-      if (listOpenRef.current) return;
+      if (listOpenRef.current || event.defaultPrevented) return;
       const target = event.target as HTMLElement | null;
+      /* an open dialog (the evidence and payment sheets) keeps its keys */
+      if (target?.closest('[role="dialog"]')) return;
       if (target) {
         /* A field that has something for the arrows to do keeps them: a
            select, editable text, and an input or textarea with text (the
@@ -464,6 +471,22 @@ function Console({ states, currentId }: DevStateConsoleProps) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   });
+
+  /* the phone's console takes focus on its close button when it opens and
+     gives it back to the handle when it closes, since each control hides
+     itself as it is pressed */
+  function closeConsole() {
+    focusAfterToggle.current = true;
+    setOpen(false);
+  }
+  useLayoutWork(
+    () => {
+      if (!focusAfterToggle.current) return;
+      focusAfterToggle.current = false;
+      (open ? closeRef : handleRef).current?.focus();
+    },
+    { dependencies: [open] }
+  );
 
   if (params.get('chrome') === '0') return null;
 
@@ -498,7 +521,11 @@ function Console({ states, currentId }: DevStateConsoleProps) {
             : 'bg-background text-foreground fixed top-4 left-4 z-50 flex size-11 items-center justify-center rounded-full border md:hidden'
         }
         data-testid='dev-state-console-handle-phone'
-        onClick={() => setOpen(true)}
+        ref={handleRef}
+        onClick={() => {
+          focusAfterToggle.current = true;
+          setOpen(true);
+        }}
       >
         <Menu aria-hidden='true' className='size-4' />
       </button>
@@ -513,6 +540,12 @@ function Console({ states, currentId }: DevStateConsoleProps) {
         aria-label='State console'
         className={`width-before-scroll-bar bg-background fixed top-4 right-4 z-50 flex w-[280px] flex-col gap-2 rounded-md border p-2 max-md:top-auto max-md:right-4 max-md:bottom-4 max-md:left-4 max-md:w-auto ${open ? '' : 'max-md:hidden'}`}
         data-testid='dev-state-console'
+        onKeyDown={(event) => {
+          /* Escape closes the phone's console; a key in the portaled state list is the list's */
+          if (event.key !== 'Escape' || !open) return;
+          if (!event.currentTarget.contains(event.target as Node)) return;
+          closeConsole();
+        }}
         style={
           position && !phone
             ? {
@@ -548,11 +581,12 @@ function Console({ states, currentId }: DevStateConsoleProps) {
               {pathPosition.step + 1} / {devPath.length}
             </p>
             <Button
+              ref={closeRef}
               variant='outline'
               size='icon'
               className='size-11 shrink-0 md:hidden'
               aria-label='Close the state console'
-              onClick={() => setOpen(false)}
+              onClick={closeConsole}
             >
               <X aria-hidden='true' className='size-4' />
             </Button>

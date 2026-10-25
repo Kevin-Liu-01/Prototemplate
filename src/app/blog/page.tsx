@@ -69,7 +69,7 @@ export default function BlogIndexPage() {
           <ol className='blog-index'>
             {posts.map((post) => (
               <li key={post.slug} className='blog-card'>
-                <Link href={`/blog/${post.slug}`} className='blog-card-cover'>
+                <Link href={`/blog/${post.slug}`} className='blog-card-cover' aria-hidden='true' tabIndex={-1}>
                   <PostCover post={post} />
                 </Link>
                 <div className='blog-card-copy'>

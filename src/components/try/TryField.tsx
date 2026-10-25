@@ -3,12 +3,17 @@
 import { useRef } from 'react';
 
 import { mulberry32 } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+import { onThemeChange } from '@/lib/theme';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 /* Port of the try-gt prototype's ambient hero field: seeded drifting
    glyphs, depth-graded, no assembled word. The shared glyph-field engine
    prints its "language" centerpiece, which collides with this hero's
-   heading, so the page carries its own quiet field instead. */
+   heading, so the page carries its own quiet field instead. The loop runs
+   at 30 fps only while the field is on screen, holds its last frame when
+   it leaves, and re-reads its ink when the theme flips; under reduced
+   motion it draws one still. */
 
 const GLYPHS = [
   'l',
@@ -75,9 +80,7 @@ export default function TryField({
     const canvas: HTMLCanvasElement = canvasOrNull;
     const ctx: CanvasRenderingContext2D = ctxOrNull;
 
-    const reduceMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
+    const reduceMotion = prefersReducedMotion();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rand = mulberry32(0x67746c67);
     const motes: Mote[] = [];
@@ -86,6 +89,8 @@ export default function TryField({
     let count = 0;
     let raf = 0;
     let last = 0;
+    /** the time of the frame on the canvas, redrawn when a resize or a theme flip lands while the loop is stopped */
+    let shown = 0;
     /* resize() runs before any draw and reads the real ink and face from
        the host's computed style, so no literal placeholder is needed. */
     let ink = '';
@@ -124,15 +129,19 @@ export default function TryField({
       ctx.globalAlpha = 1;
     }
 
+    function readStyle() {
+      const styles = getComputedStyle(host);
+      ink = styles.color;
+      family = styles.fontFamily;
+    }
+
     /* Resizes only re-project: motes keep normalized positions, so the
        field never visibly resets. */
     function resize() {
       const box = canvas.getBoundingClientRect();
       const nw = Math.max(1, box.width);
       const nh = Math.max(1, box.height);
-      const styles = getComputedStyle(host);
-      ink = styles.color;
-      family = styles.fontFamily;
+      readStyle();
       if (count && Math.abs(nw - w) < 1 && Math.abs(nh - h) < 1) return;
       w = nw;
       h = nh;
@@ -141,24 +150,42 @@ export default function TryField({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       count = Math.min(320, Math.max(60, Math.round((w * h) / 7000)));
       while (motes.length < count) motes.push(makeMote());
-      if (reduceMotion) draw(0);
+      /* setting the canvas size cleared it: a stopped field draws its frame again */
+      if (!raf && (reduceMotion || shown > 0)) draw(shown);
     }
 
     function frame(t: number) {
       raf = requestAnimationFrame(frame);
       if (t - last < 33) return;
       last = t;
+      shown = t;
       draw(t);
     }
 
     resize();
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
-    if (reduceMotion) draw(0);
-    else raf = requestAnimationFrame(frame);
+
+    const presence = new IntersectionObserver(([entry]) => {
+      if (reduceMotion) return;
+      if (entry?.isIntersecting) {
+        if (!raf) raf = requestAnimationFrame(frame);
+      } else if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    });
+    presence.observe(host);
+
+    const stopTheme = onThemeChange(() => {
+      readStyle();
+      if (!raf && (reduceMotion || shown > 0)) draw(shown);
+    });
 
     return () => {
       observer.disconnect();
+      presence.disconnect();
+      stopTheme();
       if (raf) cancelAnimationFrame(raf);
     };
   });

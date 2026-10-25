@@ -28,6 +28,8 @@ export default function BayerDemo() {
           <button
             className='ptc-bayer-chip'
             data-on={v.id === id}
+            aria-pressed={v.id === id}
+            aria-label={v.name}
             key={v.id}
             type='button'
             onClick={() => setId(v.id)}

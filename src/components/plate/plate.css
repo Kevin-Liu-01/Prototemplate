@@ -169,6 +169,25 @@
   font-weight: 500;
 }
 
+/*
+ * Keyboard focus on a filled control. A filled button's border and a
+ * checked checkbox's border already are the ring color, so the base's
+ * border change shows nothing there; these draw a 2px ring in the ring
+ * color outside the control, over a 2px gap of the page ground.
+ */
+.plate-root [data-slot='button']:is([data-variant='default'], [data-variant='rainbow']):focus-visible,
+.plate-root button[role='checkbox'][data-state='checked']:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* The language list's rows show keyboard focus as the ring inside the row,
+   since a row's ground already marks the hovered and the chosen locale. */
+.plate-root .plate-locale-row:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: -2px;
+}
+
 /* Depth comes from lines and material. No surface in the frame casts a shadow. */
 :is(.plate-root, .plate-root *):is(
     .shadow,

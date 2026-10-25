@@ -22,8 +22,11 @@
   cursor: grabbing;
 }
 
+/* an outline drawn inside the host: an inset box-shadow would sit under the
+   canvas the host holds, which paints over it */
 .d23-host:focus-visible {
-  box-shadow: inset 0 0 0 2px var(--dmo-accent);
+  outline: 2px solid var(--dmo-accent);
+  outline-offset: -2px;
 }
 
 .d23-canvas {

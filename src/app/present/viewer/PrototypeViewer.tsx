@@ -3,12 +3,16 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+
+import { prefersReducedMotion, scrollBehavior } from '@/lib/reduced-motion';
+import { pad2 } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { useDeckSetup } from '../deck-setup';
 import { PRESENT_DIRECTIONS as DIRECTIONS } from '../directions';
-import { useMountEffect } from '@/lib/use-mount-effect';
 
 import Icon from '../icons';
 import RatingStars from './RatingStars';
@@ -16,9 +20,9 @@ import { setReview, useReviews } from './reviewStore';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-/** Freezes or resumes a frame's rAF loops through the root layout's gate. */
+/** Freezes or resumes a frame's rAF loops through the root layout's gate; the frame is same-origin, so the message names this origin. */
 function setFrozen(frame: HTMLIFrameElement | null, frozen: boolean) {
-  frame?.contentWindow?.postMessage({ type: 'gt:freeze', frozen }, '*');
+  frame?.contentWindow?.postMessage({ type: 'gt:freeze', frozen }, window.location.origin);
 }
 
 /**
@@ -35,6 +39,10 @@ export default function PrototypeViewer() {
   const frame = useRef<HTMLIFrameElement>(null);
   const activeTrigger = useRef<ScrollTrigger | null>(null);
   const onScreen = useRef<ScrollTrigger | null>(null);
+  /** true while the trigger that maps the deck's scroll onto the frame's exists; the wheel forwarder acts only then */
+  const driving = useRef(false);
+  const gridPanel = useRef<HTMLDivElement>(null);
+  const notesButton = useRef<HTMLButtonElement>(null);
   const [index, setIndex] = useState(0);
   const [loadedSlug, setLoadedSlug] = useState<string | null>(null);
   const [notesOpen, setNotesOpen] = useState(false);
@@ -71,9 +79,7 @@ export default function PrototypeViewer() {
   useGSAP(
     () => {
       if (!ready) return;
-      const reduced = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches;
+      const reduced = prefersReducedMotion();
 
       // The selector would resolve inside this section (the useGSAP scope),
       // so the Details slide is looked up on the document.
@@ -149,7 +155,26 @@ export default function PrototypeViewer() {
         };
       })();
 
-      if (reduced) return cleanupDeepLink;
+      // The dock is the presenter's shared pill: this viewer only announces
+      // mode over pr:chrome and the pill morphs itself.
+      const setChrome = (on: boolean) => {
+        if (!on) setNotesOpen(false);
+        window.dispatchEvent(new CustomEvent('pr:chrome', { detail: on }));
+      };
+
+      // Under reduced motion nothing tweens and the section is one screen
+      // tall, so the deck cannot drive the frame's scroll: the frame keeps
+      // its own wheel, and the dock switches faces while the stage holds the
+      // middle of the viewport.
+      if (reduced) {
+        ScrollTrigger.create({
+          trigger: root.current,
+          start: 'top 60%',
+          end: 'bottom 40%',
+          onToggle: (self) => setChrome(self.isActive),
+        });
+        return cleanupDeepLink;
+      }
 
       // The frame grows from a slide-sized card into the full viewport.
       // scrub:true (no lag) so the frame is visually docked at the exact
@@ -169,15 +194,9 @@ export default function PrototypeViewer() {
           { scale: 1, borderRadius: 0, ease: 'none' }
         );
 
-      // The dock is the presenter's shared pill: this viewer only announces
-      // mode over pr:chrome and the pill morphs itself. Entering docked, the
-      // pill expands while the roll slides in; leaving back up, the pill
-      // contracts while the roll slides away; leaving down into the verdict
-      // the chrome just cuts as the stage scrolls off.
-      const setChrome = (on: boolean) => {
-        if (!on) setNotesOpen(false);
-        window.dispatchEvent(new CustomEvent('pr:chrome', { detail: on }));
-      };
+      // Entering docked, the pill expands while the roll slides in; leaving
+      // back up, the pill contracts while the roll slides away; leaving down
+      // into the verdict the chrome just cuts as the stage scrolls off.
       gsap.set('.pr-side', { y: 0, yPercent: -50, xPercent: 118, visibility: 'hidden' });
 
       gsap
@@ -214,6 +233,7 @@ export default function PrototypeViewer() {
       // dwell is a deadzone — you scroll to get INTO the preview, it settles
       // fully docked, and only then does further scroll move the page inside.
       const DEADZONE = 0.08;
+      driving.current = true;
       ScrollTrigger.create({
         trigger: root.current,
         start: 'top top',
@@ -234,12 +254,15 @@ export default function PrototypeViewer() {
         },
       });
 
-      return cleanupDeepLink;
+      return () => {
+        driving.current = false;
+        cleanupDeepLink();
+      };
     },
     { scope: root, dependencies: [ready] }
   );
 
-  useEffect(() => {
+  useMountEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (!activeTrigger.current?.isActive) return;
@@ -271,7 +294,7 @@ export default function PrototypeViewer() {
         root.current.getBoundingClientRect().top +
         window.scrollY +
         window.innerHeight * 1.05;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: y, behavior: scrollBehavior() });
     };
 
     window.addEventListener('keydown', onKey);
@@ -280,56 +303,93 @@ export default function PrototypeViewer() {
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('pr:goto', onGoto);
     };
-  }, []);
+  });
 
   // Watch the frame's load natively and treat an already-complete document
   // as loaded, so the veil always lifts. A page that loads while the stage
-  // is off screen is frozen at once.
-  useEffect(() => {
-    const el = frame.current;
-    if (!el) return;
-    const slug = current.slug;
-    const markLoaded = () => {
-      setLoadedSlug(slug);
-      setFrozen(el, !onScreen.current?.isActive);
-    };
-    const doc = el.contentDocument;
-    if (doc?.readyState === 'complete' && doc.body?.childElementCount)
-      markLoaded();
-    el.addEventListener('load', markLoaded);
-    return () => el.removeEventListener('load', markLoaded);
-  }, [current.slug, frameArmed]);
-
-  // The frame takes the pointer once loaded (hover states inside the
-  // prototype must work in presenter mode), but the deck keeps the wheel:
-  // wheel events inside the same-origin frame are cancelled there and
-  // replayed on the presenter's own scroll, so scroll-driving never strands.
-  useEffect(() => {
-    if (!isLoaded) return;
-    const win = frame.current?.contentWindow;
-    if (!win) return;
-    const forward = (e: WheelEvent) => {
-      e.preventDefault();
-      window.scrollBy(0, e.deltaY);
-    };
-    win.addEventListener('wheel', forward, { passive: false, capture: true });
-    return () =>
-      win.removeEventListener('wheel', forward, { capture: true });
-  }, [isLoaded]);
+  // is off screen is frozen at once. The frame takes the pointer once loaded
+  // (hover states inside the prototype must work in presenter mode), but
+  // while the deck drives the frame's scroll the deck keeps the wheel: wheel
+  // events inside the same-origin frame are cancelled there and replayed on
+  // the presenter's own scroll, so scroll-driving never strands. The
+  // forwarder binds on every load, so a page followed inside the frame
+  // forwards too.
+  useLayoutWork(
+    () => {
+      const el = frame.current;
+      if (!el) return;
+      const slug = current.slug;
+      let win: Window | null = null;
+      const forward = (e: WheelEvent) => {
+        if (!driving.current) return;
+        e.preventDefault();
+        window.scrollBy(0, e.deltaY);
+      };
+      const unbind = () => win?.removeEventListener('wheel', forward, { capture: true });
+      const markLoaded = () => {
+        setLoadedSlug(slug);
+        setFrozen(el, !onScreen.current?.isActive);
+        unbind();
+        win = el.contentWindow;
+        win?.addEventListener('wheel', forward, { passive: false, capture: true });
+      };
+      const doc = el.contentDocument;
+      if (doc?.readyState === 'complete' && doc.body?.childElementCount) markLoaded();
+      el.addEventListener('load', markLoaded);
+      return () => {
+        el.removeEventListener('load', markLoaded);
+        unbind();
+      };
+    },
+    { dependencies: [current.slug, frameArmed] }
+  );
 
   // Keep the roll scrolled so the current card sits mid-rail.
-  useEffect(() => {
-    const container = roll.current;
-    const item = container?.querySelector<HTMLElement>('.is-current');
-    if (!container || !item) return;
-    container.scrollTo({
-      top: item.offsetTop - container.clientHeight / 2 + item.clientHeight / 2,
-      behavior: 'smooth',
-    });
-  }, [index]);
+  useLayoutWork(
+    () => {
+      const container = roll.current;
+      const item = container?.querySelector<HTMLElement>('.is-current');
+      if (!container || !item) return;
+      container.scrollTo({
+        top: item.offsetTop - container.clientHeight / 2 + item.clientHeight / 2,
+        behavior: scrollBehavior(),
+      });
+    },
+    { dependencies: [index] }
+  );
+
+  // The grid of all prototypes takes focus on its current card when it
+  // opens and gives it back to the control that opened it when it closes,
+  // so a keyboard user is never left on a control that has left the screen.
+  const gridOpener = useRef<HTMLElement | null>(null);
+  useLayoutWork(
+    () => {
+      if (gridOpen) {
+        const opener = document.activeElement;
+        gridOpener.current = opener instanceof HTMLElement && opener !== document.body ? opener : null;
+        gridPanel.current?.querySelector<HTMLElement>('.is-current')?.focus();
+        return;
+      }
+      const opener = gridOpener.current;
+      gridOpener.current = null;
+      if (opener?.isConnected) opener.focus();
+    },
+    { dependencies: [gridOpen] }
+  );
+
+  // Closing the notes while focus is inside them returns it to Notes.
+  const notesWereOpen = useRef(false);
+  useLayoutWork(
+    () => {
+      const closed = notesWereOpen.current && !notesOpen;
+      notesWereOpen.current = notesOpen;
+      if (closed && document.activeElement === document.body) notesButton.current?.focus();
+    },
+    { dependencies: [notesOpen] }
+  );
 
   const scrollToScoreboard = () => {
-    document.getElementById('pr-scoreboard')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('pr-scoreboard')?.scrollIntoView({ behavior: scrollBehavior() });
   };
 
   return (
@@ -394,7 +454,7 @@ export default function PrototypeViewer() {
 
         {gridOpen && (
           <div className='pr-grid' onClick={() => setGridOpen(false)}>
-            <div className='pr-grid-panel' onClick={(event) => event.stopPropagation()}>
+            <div ref={gridPanel} className='pr-grid-panel' onClick={(event) => event.stopPropagation()}>
               <div className='pr-grid-head'>
                 <strong>All prototypes</strong>
                 <span>
@@ -440,10 +500,11 @@ export default function PrototypeViewer() {
             <button
               type='button'
               className='pr-dock-label'
+              aria-expanded={gridOpen}
               onClick={() => setGridOpen((open) => !open)}
             >
               <span>
-                {current.label} · {String(index + 1).padStart(2, '0')}/
+                {current.label} · {pad2(index + 1)}/
                 {DIRECTIONS.length}
               </span>
               <strong>{current.name}</strong>
@@ -456,6 +517,7 @@ export default function PrototypeViewer() {
               className='pr-dock-grid'
               onClick={() => setGridOpen((open) => !open)}
               aria-label='All prototypes'
+              aria-expanded={gridOpen}
             >
               <Icon name='grid' size={14} />
             </button>
@@ -468,8 +530,10 @@ export default function PrototypeViewer() {
                 onChange={(rating) => setReview(current.slug, { rating })}
               />
               <button
+                ref={notesButton}
                 type='button'
                 className={notesOpen || review?.note ? 'pr-dock-notes is-active' : 'pr-dock-notes'}
+                aria-expanded={notesOpen}
                 onClick={() => setNotesOpen((open) => !open)}
               >
                 <Icon name='pencil' size={13} />
@@ -499,6 +563,7 @@ export default function PrototypeViewer() {
               // eslint-disable-next-line jsx-a11y/no-autofocus -- opened by an explicit click; focus should land in the field
               autoFocus
               value={review?.note ?? ''}
+              aria-label={`Notes on ${current.name}`}
               placeholder='What works, what doesn’t…'
               onChange={(event) =>
                 setReview(current.slug, { note: event.target.value })

@@ -32,7 +32,8 @@ async function captureFor(path: string, origin: string): Promise<string | undefi
   const slug = DIRECTION_PATH.exec(path)?.[1];
   if (!slug || slug === 'production') return undefined;
   try {
-    const response = await fetch(`${origin}/shots/dark/${slug}.jpg`);
+    /* a capture that has not arrived in 3 s leaves the card without it */
+    const response = await fetch(`${origin}/shots/dark/${slug}.jpg`, { signal: AbortSignal.timeout(3000) });
     if (!response.ok || !response.headers.get('content-type')?.startsWith('image/')) return undefined;
     const bytes = Buffer.from(await response.arrayBuffer());
     return `data:image/jpeg;base64,${bytes.toString('base64')}`;

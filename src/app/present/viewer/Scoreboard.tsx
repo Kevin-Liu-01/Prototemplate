@@ -5,7 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
 
-import { readTheme, toggleTheme } from '@/lib/theme';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+import { THEME_GLYPH, readTheme, toggleTheme } from '@/lib/theme';
 import type { Theme } from '@/lib/theme';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -50,7 +51,7 @@ export default function Scoreboard() {
   useGSAP(
     () => {
       if (!ready) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       gsap.utils.toArray<HTMLElement>('.pr-gal-card').forEach((card, i) => {
         gsap.from(card, {
           autoAlpha: 0,
@@ -86,11 +87,11 @@ export default function Scoreboard() {
           }}
           aria-label={
             theme === 'light'
-              ? 'View previews in dark mode'
-              : 'View previews in light mode'
+              ? 'Light, switch the previews to dark'
+              : 'Dark, switch the previews to light'
           }
         >
-          <i>{theme === 'light' ? '◐' : '◑'}</i>
+          <i aria-hidden='true'>{THEME_GLYPH[theme]}</i>
           {theme === 'light' ? 'Light' : 'Dark'}
         </button>
       </header>

@@ -46,15 +46,16 @@ function LocaleDropdownItem({
       type='button'
       onMouseDown={(e) => e.preventDefault()}
       onClick={onSelect}
+      aria-current={isActive ? 'true' : undefined}
       className={cn(
-        'flex w-full items-center gap-3 rounded-md px-2.5 py-2 text-left text-sm transition-colors outline-none max-md:min-h-11',
+        'plate-locale-row flex w-full items-center gap-3 rounded-md px-2.5 py-2 text-left text-sm transition-colors outline-none max-md:min-h-11',
         isActive
           ? 'bg-accent text-accent-foreground font-medium'
           : 'hover:bg-accent hover:text-accent-foreground'
       )}
     >
       <span>{locale.name}</span>
-      {isActive && <Check className='ml-auto size-3.5 shrink-0' />}
+      {isActive && <Check aria-hidden='true' className='ml-auto size-3.5 shrink-0' />}
     </button>
   );
 }

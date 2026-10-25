@@ -124,6 +124,7 @@ export default function SurveyStep({
   const [mountSubstep] = useState(values.currentSubstep);
   const websiteTimer = useRef<number | null>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
+  const frameworksRef = useRef<HTMLDivElement>(null);
 
   usePlateMountEffect(() => () => {
     if (websiteTimer.current !== null) {
@@ -176,9 +177,13 @@ export default function SurveyStep({
   }
 
   // The quiet exit: opens the frameworks row and the Submit without a size
-  // or a source, through the same monotonic step an answer takes.
+  // or a source, through the same monotonic step an answer takes. The link
+  // leaves with the press, so focus moves to the first framework.
   function skipTheRest() {
     answer({}, FRAMEWORKS_ROW);
+    requestAnimationFrame(() => {
+      frameworksRef.current?.querySelector<HTMLElement>('button')?.focus({ preventScroll: true });
+    });
   }
 
   // Where the dashboard's wizard routes to the next step, the gallery
@@ -519,6 +524,7 @@ export default function SurveyStep({
               <T>Which frameworks are you using?</T>
             </Label>
             <div
+              ref={frameworksRef}
               className='flex flex-wrap gap-2'
               data-testid='survey-frameworks'
             >
