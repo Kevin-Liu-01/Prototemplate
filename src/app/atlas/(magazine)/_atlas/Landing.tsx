@@ -69,7 +69,7 @@ const FIRST_PLACES = Object.fromEntries(
   LANGS.map((l) => [l.code, 0])
 ) as Record<LangCode, number>;
 
-/* GT Atlas's front page. The books stand in a row that scrolls sideways
+/* Atlas's front page. The books stand in a row that scrolls sideways
    (drag it, wheel it or swipe it), each turned a little so its spine shows;
    the book under the pointer turns to face it and lifts. The switch at the
    foot gathers them into a stack of spines. A click on a book opens its
@@ -118,7 +118,8 @@ export default function Landing({
   const [reading, setReading] = useState<number | null>(null);
   // the magazine set ahead, hidden, as its corner lifts, so a click only shows pages already laid out
   const [prepared, setPrepared] = useState<number | null>(null);
-  const preparing = useRef(0);
+  // the pending dwell before a magazine is set ahead, and the idle callback that then mounts it
+  const preparing = useRef({ dwell: 0, idle: 0 });
   const magazine = edition === 'magazine';
   /** Set by the press that closes the locator, so its click is swallowed. */
   const closing = useRef(false);
@@ -258,18 +259,25 @@ export default function Landing({
     const s = catalog[i];
     if (!s) return;
     prepareMagazine(s, storyHref(edition, s.slug));
-    window.clearTimeout(preparing.current);
-    preparing.current = window.setTimeout(() => {
+    cancelPrepare();
+    preparing.current.dwell = window.setTimeout(() => {
       const mount = () => {
         if (state.current.reading === null) setPrepared(i);
       };
       if (typeof requestIdleCallback === 'function')
-        requestIdleCallback(mount, { timeout: 600 });
+        preparing.current.idle = requestIdleCallback(mount, { timeout: 600 });
       else mount();
     }, PREPARE_DWELL);
   };
 
-  useMountEffect(() => () => window.clearTimeout(preparing.current));
+  /** Drops a magazine not yet set ahead: the pointer or the focus left its corner before the dwell or the idle mount. */
+  const cancelPrepare = () => {
+    window.clearTimeout(preparing.current.dwell);
+    if (typeof cancelIdleCallback === 'function')
+      cancelIdleCallback(preparing.current.idle);
+  };
+
+  useMountEffect(() => cancelPrepare);
 
   /** Closes the open magazine and gives the focus back to the corner that opened it. */
   const closeMagazine = () => {
@@ -424,7 +432,11 @@ export default function Landing({
       setPressed(null);
       e.currentTarget.setPointerCapture(e.pointerId);
     }
-    if (d.moved) e.currentTarget.scrollLeft = d.scroll - dx;
+    if (d.moved) {
+      e.currentTarget.scrollLeft = d.scroll - dx;
+      // the row moves under the pointer, so the hovered magazine's box is read again
+      gloss.current.box = null;
+    }
   };
   const dragEnd = (e: ReactPointerEvent<HTMLDivElement>) => {
     const d = drag.current;
@@ -513,14 +525,14 @@ export default function Landing({
           <header className='gtp-hall-head'>
             {edition === 'magazine' ? (
               // the magazine's nameplate: the book imprint as tall as the capitals, its GT a link home, then Atlas in Katagami Serif
-              <h1 className='gtp-nameplate' aria-label='GT Atlas'>
+              <h1 className='gtp-nameplate' aria-label='Atlas'>
                 <HomeMark className='gtp-nameplate-mark' />
                 <span className='gtp-nameplate-word' aria-hidden='true'>
                   Atlas
                 </span>
               </h1>
             ) : (
-              <h1 className='gtp-wordmark' aria-label='GT Atlas'>
+              <h1 className='gtp-wordmark' aria-label='Atlas'>
                 <PressMark className='gtp-wordmark-mark' />
                 <span className='gtp-wordmark-word'>Atlas</span>
               </h1>
@@ -685,7 +697,7 @@ export default function Landing({
                       onPointerLeave={() => {
                         setPeel((k) => (k === i ? null : k));
                         // a pass over the corner on the way elsewhere sets nothing ahead
-                        window.clearTimeout(preparing.current);
+                        cancelPrepare();
                       }}
                       onFocus={() => {
                         setActive(i);
@@ -693,7 +705,11 @@ export default function Landing({
                         setPeel(i);
                         prepare(i);
                       }}
-                      onBlur={() => setPeel((k) => (k === i ? null : k))}
+                      onBlur={() => {
+                        setPeel((k) => (k === i ? null : k));
+                        // focus that moves on before the dwell sets nothing ahead, as a pointer that leaves does
+                        cancelPrepare();
+                      }}
                       onClick={() => {
                         if (drag.current.swallow) return;
                         setReading(i);
