@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 import { CircleCheck } from 'lucide-react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * "One codebase. Every language." — the live page's benefit section. The

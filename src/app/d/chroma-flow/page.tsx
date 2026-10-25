@@ -4,14 +4,20 @@ import { directionDescription } from '@/app/directions/descriptions';
 import { seoRoute } from '@/lib/seo/route';
 
 import Delivery from './sections/Delivery';
-import Frameworks from './sections/Frameworks';
+/* A fork sheet follows the shared section it styles, so the cascade keeps
+   the order the sections are imported in. */
+import Frameworks from '@/app/d/toolchain/sections/Frameworks';
+import './sections/icons.css';
+import './sections/chip-consistency.css';
+import './sections/logos-icons.css';
 import Hero from './sections/Hero';
 import LocadexBand from './sections/LocadexBand';
 import PipelineRail from './sections/PipelineRail';
 import Pricing from './sections/Pricing';
-import Review from './sections/Review';
-import SiteFooter from './sections/SiteFooter';
-import TopNav from './sections/TopNav';
+import ReviewWorkspace from '@/app/d/toolchain/forks/ReviewWorkspace';
+import './sections/review-workspace.css';
+import SiteFooter from '@/app/d/toolchain/sections/SiteFooter';
+import TopNav from '@/app/d/toolchain/forks/TopNav';
 
 import './styles.css';
 
@@ -36,21 +42,21 @@ export default function ChromaFlowPage() {
   return (
     <SmoothScroll>
       <div className='chromaflow-root'>
-        <TopNav />
+        <TopNav blogHref='#pipeline' enterpriseHref='#locadex' />
 
         <div className='tc-rail'>
           <Hero />
           <PipelineRail />
-          <Frameworks />
+          <Frameworks href='#pipeline' />
         </div>
 
         <LocadexBand />
 
         <div className='tc-rail'>
-          <Review />
+          <ReviewWorkspace />
           <Delivery />
           <Pricing />
-          <SiteFooter />
+          <SiteFooter hrefs={{}} />
         </div>
       </div>
       <DirectionCorner slug='chroma-flow' />

@@ -9,7 +9,7 @@ import { useRef } from 'react';
 import { blankLine, flipUp } from '../lib/flap';
 import FlapPhrase from './FlapPhrase';
 import { FlapChars } from './FlapText';
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useRef, useState } from 'react';
 
 import GlyphRain from './GlyphRain';
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { createGlyphField, SCRIPTS, type GlyphFieldHandle } from '@/lib/glyph-field';
 
 gsap.registerPlugin(useGSAP);

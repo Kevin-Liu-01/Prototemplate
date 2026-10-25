@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { ESSAYS, INDEX_FROM, INDEX_TO, RELEASES } from './posts';
 
 /**

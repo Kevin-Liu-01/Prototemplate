@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import { GitBranch, Globe } from 'lucide-react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * "How it works" — the live page's three-step diagram, filed as three ruled

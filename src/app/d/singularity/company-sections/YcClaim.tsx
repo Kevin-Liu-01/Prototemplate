@@ -8,7 +8,7 @@ import { useRef, useState } from 'react';
 import { BadgeCheck, MessageSquareText, ShieldCheck } from 'lucide-react';
 
 import GlyphRain from '../sections/GlyphRain';
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The claim record — YcContactForm.tsx (embedded) landed on this direction's

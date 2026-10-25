@@ -7,14 +7,19 @@ import Bento from './sections/Bento';
 import ContextGroups from './sections/ContextGroups';
 import DarkBand from './sections/DarkBand';
 import Editor from './sections/Editor';
-import Frameworks from './sections/Frameworks';
+/* A fork sheet follows the shared section it styles, so the cascade keeps
+   the order the sections are imported in. */
+import Frameworks from '@/app/d/toolchain/sections/Frameworks';
+import './sections/icons.css';
+import './sections/chip-consistency.css';
+import './sections/logos-icons.css';
 import Hero from './sections/Hero';
 import Platform from './sections/Platform';
-import Pricing from './sections/Pricing';
+import Pricing from '@/app/d/toolchain/forks/Pricing';
 import Proof from './sections/Proof';
 import ReviewFlow from './sections/ReviewFlow';
-import SiteFooter from './sections/SiteFooter';
-import TopNav from './sections/TopNav';
+import SiteFooter from '@/app/d/toolchain/sections/SiteFooter';
+import TopNav from '@/app/d/toolchain/forks/TopNav';
 
 import './styles.css';
 
@@ -57,7 +62,7 @@ export default function AuroraPaperPage() {
 
         <div className='tc-rail'>
           <Pricing />
-          <SiteFooter />
+          <SiteFooter hrefs={{}} />
         </div>
       </div>
       <DirectionCorner slug='aurora-paper' />

@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { ASHBY_JOB_BOARD, type Position } from './careers';
 
 /**

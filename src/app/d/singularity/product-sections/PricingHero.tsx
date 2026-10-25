@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /** One itemized line of the dry-run estimate. Rates are the published ones
  *  ($10 / 10k input tokens build time; +$0.10 / 10k per 500 context tokens);

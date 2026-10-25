@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * M16 — one quote, unedited, from a named person. Nothing else. The band sits

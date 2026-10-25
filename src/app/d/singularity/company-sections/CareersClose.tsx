@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The old page's general-application card as the quiet close: the same

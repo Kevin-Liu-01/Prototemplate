@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /* CONTENT LAW (docs/research/enterprise-live-content.md): the five client
    expansion stories below are VERBATIM from the live enterprise page, and

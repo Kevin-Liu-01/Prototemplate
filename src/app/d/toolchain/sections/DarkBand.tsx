@@ -92,8 +92,21 @@ const MARK = { size: 12, color: 'currentColor' } as const;
  * connector is a doubled rail the planes tap off with radiused corners.
  * Scroll reveals are one-shot and legible at any stop; reduced motion gets
  * the finished still with instant hover states.
+ *
+ * A fork mounts this band with its own rescoped `darkband-v3.css`. `title`
+ * replaces the heading's text, `cursorEffects={false}` keeps the CLI cell's
+ * field still under the pointer, and `backdrop` renders behind the band's
+ * content.
  */
-export default function DarkBand() {
+export default function DarkBand({
+  title = 'Everything you need, in one toolchain.',
+  cursorEffects = true,
+  backdrop,
+}: {
+  title?: ReactNode;
+  cursorEffects?: boolean;
+  backdrop?: ReactNode;
+}) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -292,9 +305,10 @@ export default function DarkBand() {
 
   return (
     <section className='tc-band tcb' id='toolchain' ref={root}>
+      {backdrop}
       <div className='tcb-in'>
         <div className='tcb-head' data-cell>
-          <h2>Everything you need, in one toolchain.</h2>
+          <h2>{title}</h2>
           <p>Buildtime, runtime, and review — one project, one config, one bill.</p>
         </div>
 
@@ -341,18 +355,21 @@ export default function DarkBand() {
           {/* The band's one light moment: a real `gt translate` run floating
               in the dark centre of the prismatic panel. Five lines, no more. */}
           <div className='tcb-cell tcb-cell-cli' data-cell>
-            {/* The conversion band's field opts into cursor effects too; the
-                cell is too tight for the options menu, so it rides the page
-                default (lens) without chrome. */}
-            <PrismaticField
-              className='tcb-cli-field'
-              preset='1'
-              speed={0.4}
-              params={{ exposureScale: 1600 }}
-              effects={['lens', 'dither', 'chroma']}
-              defaultEffect='lens'
-              effectsMenu={false}
-            />
+            {/* With cursor effects on, the cell is too tight for the options
+                menu, so the field uses the lens effect without chrome. */}
+            {cursorEffects ? (
+              <PrismaticField
+                className='tcb-cli-field'
+                preset='1'
+                speed={0.4}
+                params={{ exposureScale: 1600 }}
+                effects={['lens', 'dither', 'chroma']}
+                defaultEffect='lens'
+                effectsMenu={false}
+              />
+            ) : (
+              <PrismaticField className='tcb-cli-field' preset='1' speed={0.4} params={{ exposureScale: 1600 }} />
+            )}
             <div className='tcb-term'>
               <div className='tcb-term-bar'>
                 <span>gt cli</span>

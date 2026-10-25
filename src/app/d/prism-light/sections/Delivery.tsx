@@ -23,8 +23,8 @@ import HotReloadSplit from '../diagrams/delivery/HotReloadSplit';
 import OtaPipeline from '../diagrams/delivery/OtaPipeline';
 import RoutingLadder from '../diagrams/delivery/RoutingLadder';
 
-import CodeBlock from './code';
-import { useQuietReveal } from './reveal';
+import CodeBlock from '@/app/d/toolchain/sections/code';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /* surface.css is the one diagram sheet scoped by ROOT class, not by diagram
    class — the surface components now come from toolchain, so the fork's

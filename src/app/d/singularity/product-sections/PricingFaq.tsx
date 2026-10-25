@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 type FaqRow = { id: string; q: ReactNode; a: ReactNode };
 

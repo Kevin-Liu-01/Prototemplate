@@ -3,14 +3,22 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 import { directionDescription } from '@/app/directions/descriptions';
 import { seoRoute } from '@/lib/seo/route';
 
-import DarkBand from './sections/DarkBand';
+/* A fork sheet follows the shared section it styles, so the cascade keeps
+   the order the sections are imported in. */
+import DarkBand from '@/app/d/toolchain/sections/DarkBand';
+import './sections/darkband-v3.css';
 import Departures from './sections/Departures';
-import Frameworks from './sections/Frameworks';
+import FlapPhrase from './sections/FlapPhrase';
+import Frameworks from '@/app/d/toolchain/sections/Frameworks';
+import './sections/locale-icons.css';
+import './sections/chip-consistency.css';
+import './sections/logos-icons.css';
 import Hero from './sections/Hero';
-import Pricing from './sections/Pricing';
-import Review from './sections/Review';
-import SiteFooter from './sections/SiteFooter';
-import TopNav from './sections/TopNav';
+import Pricing from '@/app/d/toolchain/forks/Pricing';
+import ReviewWorkspace from '@/app/d/toolchain/forks/ReviewWorkspace';
+import './sections/review-workspace.css';
+import SiteFooter from '@/app/d/toolchain/sections/SiteFooter';
+import TopNav from '@/app/d/toolchain/forks/TopNav';
 
 import './styles.css';
 
@@ -38,15 +46,40 @@ export default function TerminusBoardPage() {
         <div className='tc-rail'>
           <Hero />
           <Departures />
-          <Frameworks />
-          <Review />
+          <Frameworks
+            title={
+              <>
+                One toolchain, <FlapPhrase text='every stack.' />
+              </>
+            }
+          />
+          <ReviewWorkspace
+            title={
+              <>
+                Edit <FlapPhrase text='in context.' />
+              </>
+            }
+          />
         </div>
 
-        <DarkBand />
+        <DarkBand
+          cursorEffects={false}
+          title={
+            <>
+              Everything you need, <FlapPhrase text='in one toolchain.' />
+            </>
+          }
+        />
 
         <div className='tc-rail'>
-          <Pricing />
-          <SiteFooter />
+          <Pricing
+            title={
+              <>
+                Pricing <FlapPhrase text='for everyone.' />
+              </>
+            }
+          />
+          <SiteFooter hrefs={{}} />
         </div>
       </div>
       <DirectionCorner slug='terminus-board' />

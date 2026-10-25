@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { localeFlag } from '@/app/d/toolchain/components/LocaleTag';
 
 import { MINTLIFY_LANGUAGES, MINTLIFY_SUPPORTED_LANGUAGES } from './mintlify-languages';
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 import 'flag-icons/css/flag-icons.min.css';
 

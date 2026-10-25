@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { ESSAY_ROWS, postHref } from './posts';
 import { useConceptBase } from './use-concept-base';
 

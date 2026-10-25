@@ -3,8 +3,8 @@
 import { ArrowLeft } from 'lucide-react';
 import { Fragment, useRef, type ReactNode } from 'react';
 
-import CodeBlock from '../sections/code';
-import { useQuietReveal } from '../sections/reveal';
+import CodeBlock from '@/app/d/toolchain/sections/code';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import BlogArticleRail from './BlogArticleRail';
 import BlogPostCover from './BlogPostCover';
 import BlogPostFooter from './BlogPostFooter';

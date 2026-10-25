@@ -4,7 +4,7 @@ import { SiGithub } from '@icons-pack/react-simple-icons';
 import Image from 'next/image';
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /* Every claim below is sourced: the compliance shields and enterprise plan
    list (feature-inventory §25/§35/§37, trust.inc/generaltranslation), the

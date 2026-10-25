@@ -4,7 +4,7 @@ import { Stamp } from 'lucide-react';
 import { useRef } from 'react';
 
 import ReviewWorkspace from './ReviewWorkspace';
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The regeneration diff — what "see diffs when translations are regenerated"

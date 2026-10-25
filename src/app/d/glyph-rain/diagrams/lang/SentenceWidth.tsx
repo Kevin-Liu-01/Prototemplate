@@ -6,7 +6,7 @@ import { useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
-import { langA11y, langClass, onFontsReady, type LangProps } from './lang';
+import { langA11y, langClass, onFontsReady, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);

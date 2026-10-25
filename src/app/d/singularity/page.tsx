@@ -3,16 +3,27 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 import { directionDescription } from '@/app/directions/descriptions';
 import { seoRoute } from '@/lib/seo/route';
 
-import Bento from './sections/Bento';
-import DarkBand from './sections/DarkBand';
+/* A fork sheet follows the shared section it styles, so the cascade keeps
+   the order the sections are imported in. */
+import Bento from '@/app/d/toolchain/forks/Bento';
+import './sections/bento-motion.css';
+import './diagrams/surface/surface.css';
+import DarkBand from '@/app/d/toolchain/sections/DarkBand';
+import GlyphRain from './sections/GlyphRain';
+import './sections/darkband-v3.css';
 import EnterpriseContact from './sections/EnterpriseContact';
-import Frameworks from './sections/Frameworks';
+import Frameworks from '@/app/d/toolchain/sections/Frameworks';
+import './components/icons.css';
+import './sections/chip-consistency.css';
+import './sections/logos-icons.css';
 import Hero from './sections/Hero';
-import Pricing from './sections/Pricing';
-import Review from './sections/Review';
+import Pricing from '@/app/d/toolchain/forks/Pricing';
+import ReviewWorkspace from '@/app/d/toolchain/forks/ReviewWorkspace';
+import './sections/review-workspace.css';
 import SiteFooter from './sections/SiteFooter';
-import Story from './sections/Story';
-import StoryCinema from './sections/StoryCinema';
+import Story from '@/app/d/toolchain/forks/Story';
+import './sections/story/story.css';
+import StoryCinema from '@/app/d/toolchain/forks/StoryCinema';
 import TopNav from './sections/TopNav';
 
 import './styles.css';
@@ -52,10 +63,13 @@ export default function SingularityPage() {
           <Bento />
           <Story />
           <StoryCinema />
-          <Review />
+          <ReviewWorkspace />
         </div>
 
-        <DarkBand />
+        <DarkBand
+          cursorEffects={false}
+          backdrop={<GlyphRain className='tcb-rain' intensity={0.55} />}
+        />
 
         <div className='tc-rail'>
           <Pricing />

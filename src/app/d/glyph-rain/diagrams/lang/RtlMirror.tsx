@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
-import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from './lang';
+import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);

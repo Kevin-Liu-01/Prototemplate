@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 import { Code, FileText, FolderTree, Network, RefreshCw, Zap } from 'lucide-react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * "Translate Markdown and MDX" — the live page's content section. On the

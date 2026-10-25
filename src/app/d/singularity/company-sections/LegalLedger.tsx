@@ -4,7 +4,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { formatLegalDate, LEGAL_DOCS } from './legal-docs';
 
 /**

@@ -3,14 +3,22 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 import { directionDescription } from '@/app/directions/descriptions';
 import { seoRoute } from '@/lib/seo/route';
 
-import DarkBand from './sections/DarkBand';
-import Frameworks from './sections/Frameworks';
+/* A fork sheet follows the shared section it styles, so the cascade keeps
+   the order the sections are imported in. */
+import DarkBand from '@/app/d/toolchain/sections/DarkBand';
+import './sections/darkband-v3.css';
+import Frameworks from '@/app/d/toolchain/sections/Frameworks';
+import './sections/icons.css';
+import './sections/chip-consistency.css';
+import './sections/logos-icons.css';
 import Hero from './sections/Hero';
-import Pricing from './sections/Pricing';
-import Review from './sections/Review';
+import Pricing from '@/app/d/toolchain/forks/Pricing';
+import ReviewWorkspace from '@/app/d/toolchain/forks/ReviewWorkspace';
+import './sections/review-workspace.css';
 import SiteFooter from './sections/SiteFooter';
-import Story from './sections/Story';
-import TopNav from './sections/TopNav';
+import Story from '@/app/d/toolchain/forks/Story';
+import './sections/story/story.css';
+import TopNav from '@/app/d/toolchain/forks/TopNav';
 
 import './styles.css';
 
@@ -35,16 +43,16 @@ export default function WideRulePage() {
   return (
     <SmoothScroll>
       <div className='widerule-root'>
-        <TopNav />
+        <TopNav blogHref='#toolchain' enterpriseHref='#toolchain' />
 
         <div className='tc-rail'>
           <Hero />
-          <Frameworks />
+          <Frameworks href='#toolchain' />
           <Story />
-          <Review />
+          <ReviewWorkspace />
         </div>
 
-        <DarkBand />
+        <DarkBand cursorEffects={false} />
 
         <div className='tc-rail'>
           <Pricing />

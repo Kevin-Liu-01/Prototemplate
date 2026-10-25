@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 
 import GlyphRain from './GlyphRain';
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import {
   CURSOR_QUOTE,
   ENTERPRISE_CONTACT_HEADING,

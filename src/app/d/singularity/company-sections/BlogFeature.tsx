@@ -2,8 +2,8 @@
 
 import { useRef } from 'react';
 
-import CodeBlock from '../sections/code';
-import { useQuietReveal } from '../sections/reveal';
+import CodeBlock from '@/app/d/toolchain/sections/code';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { FEATURED, postHref } from './posts';
 import { useConceptBase } from './use-concept-base';
 

@@ -15,7 +15,7 @@ import LocaleVariants from '../diagrams/lang/LocaleVariants';
 import ScriptSampler from '../diagrams/lang/ScriptSampler';
 import WordMorph from '../diagrams/lang/WordMorph';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * M13 — the locales section. "100+ languages" is converted into a technical

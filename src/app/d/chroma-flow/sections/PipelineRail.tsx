@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * M05 — the six-station rail. The whole pipeline stated once, in order, so

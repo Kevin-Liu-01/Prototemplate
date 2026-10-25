@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 import { SiYcombinator } from '@icons-pack/react-simple-icons';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The YC programme page's masthead. The lockup, the headline and the single

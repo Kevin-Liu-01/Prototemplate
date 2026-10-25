@@ -20,7 +20,7 @@ import {
   SiVite,
 } from '@icons-pack/react-simple-icons';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 type MarkProps = { className?: string; color?: string; size?: number; 'aria-hidden'?: boolean };
 

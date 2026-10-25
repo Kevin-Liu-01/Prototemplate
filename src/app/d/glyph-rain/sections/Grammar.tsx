@@ -7,7 +7,7 @@ import PluralForms from '../diagrams/lang/PluralForms';
 import RtlMirror from '../diagrams/lang/RtlMirror';
 
 import CodeBlock from './code';
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The grammar section: plural rules and writing direction — the two places

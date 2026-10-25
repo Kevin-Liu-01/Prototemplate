@@ -1,6 +1,6 @@
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
-import { tokenize } from '../../sections/code';
+import { tokenize } from '@/app/d/toolchain/sections/code';
 
 import './delivery.css';
 

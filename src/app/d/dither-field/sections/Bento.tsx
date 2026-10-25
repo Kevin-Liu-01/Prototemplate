@@ -28,17 +28,17 @@ import RtlMirror from '@/app/d/toolchain/diagrams/lang/RtlMirror';
 import ScriptSampler from '@/app/d/toolchain/diagrams/lang/ScriptSampler';
 import SentenceWidth from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
 import WordMorph from '@/app/d/toolchain/diagrams/lang/WordMorph';
-/* The surface family is the one diagram stylesheet namespaced to its page
-   root, so these four come from THIS fork's re-namespaced copies — importing
-   the toolchain versions leaves the panels bare on this page. */
-import CustomSurface from '../diagrams/surface/CustomSurface';
-import GlossarySurface from '../diagrams/surface/GlossarySurface';
-import LiveSurface from '../diagrams/surface/LiveSurface';
-import PreviewSurface from '../diagrams/surface/PreviewSurface';
+import CustomSurface from '@/app/d/toolchain/diagrams/surface/CustomSurface';
+import GlossarySurface from '@/app/d/toolchain/diagrams/surface/GlossarySurface';
+import LiveSurface from '@/app/d/toolchain/diagrams/surface/LiveSurface';
+import PreviewSurface from '@/app/d/toolchain/diagrams/surface/PreviewSurface';
 
-import CodeBlock from './code';
-import { useQuietReveal } from './reveal';
+import CodeBlock from '@/app/d/toolchain/sections/code';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import './bento-motion.css';
+/* The surface diagrams' toolchain sheet targets .toolchain-root and is inert
+   here; this fork's rescoped copy styles the four surfaces. */
+import '../diagrams/surface/surface.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 

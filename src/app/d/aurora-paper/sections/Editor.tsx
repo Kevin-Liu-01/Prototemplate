@@ -3,7 +3,7 @@
 import { SquarePen } from 'lucide-react';
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 type CellState = 'approved' | 'review' | 'editing' | undefined;
 

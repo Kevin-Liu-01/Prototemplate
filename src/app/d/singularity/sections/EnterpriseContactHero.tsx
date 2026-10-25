@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The masthead the two enterprise contact desks share: the route's own

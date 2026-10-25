@@ -9,7 +9,7 @@ import { SiDiscord, SiGithub, SiX } from '@icons-pack/react-simple-icons';
 import { CircleDot, Mail } from 'lucide-react';
 
 import GlyphRain from '../sections/GlyphRain';
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The contact bay — the same ink band the enterprise pages land on, kept as

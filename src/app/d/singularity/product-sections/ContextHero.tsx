@@ -4,8 +4,8 @@ import { useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
-import CodeBlock from '../sections/code';
-import { useQuietReveal } from '../sections/reveal';
+import CodeBlock from '@/app/d/toolchain/sections/code';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /* the .lct locale-chip base, singularity-scoped */
 import '../components/icons.css';

@@ -7,7 +7,6 @@ type MarkProps = { className?: string; color?: string; 'aria-hidden'?: boolean }
 
 type FooterLink = {
   label: string;
-  href?: string;
   /** Brand mark, only where the cell names a tool. Functional, never ornament. */
   mark?: ComponentType<MarkProps>;
 };
@@ -31,7 +30,7 @@ const COLUMNS: readonly { title: string; links: readonly FooterLink[] }[] = [
   {
     title: 'Guides',
     links: [
-      { label: 'Locadex Agent', href: '/d/toolchain/locadex', mark: LocadexMark },
+      { label: 'Locadex Agent', mark: LocadexMark },
       { label: 'Next.js', mark: SiNextdotjs },
       { label: 'React', mark: SiReact },
       { label: 'React Native', mark: SiReact },
@@ -66,8 +65,16 @@ const COLUMNS: readonly { title: string; links: readonly FooterLink[] }[] = [
   },
 ];
 
-/** Quiet close: the same rules, one more time, then nothing. */
-export default function SiteFooter() {
+/** The link targets the toolchain's own pages give, keyed by label. */
+const TOOLCHAIN_HREFS: Readonly<Record<string, string>> = { 'Locadex Agent': '/d/toolchain/locadex' };
+
+/** Quiet close: the same rules, one more time, then nothing. `hrefs` maps a
+    link label to its target; every other link jumps to the top of the page. */
+export default function SiteFooter({
+  hrefs = TOOLCHAIN_HREFS,
+}: {
+  hrefs?: Readonly<Record<string, string>>;
+}) {
   return (
     <footer className='tc-sec'>
       <div className='tc-foot'>
@@ -99,7 +106,7 @@ export default function SiteFooter() {
                   const Mark = link.mark;
                   return (
                     <li key={link.label}>
-                      <a href={link.href ?? '#top'}>
+                      <a href={hrefs[link.label] ?? '#top'}>
                         {Mark ? (
                           <Mark className='tc-foot-mark' color='currentColor' aria-hidden />
                         ) : null}

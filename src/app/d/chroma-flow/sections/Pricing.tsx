@@ -3,7 +3,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /* The published rates — M17's closed set, verbatim; no other number may
    appear here. The ledger is the section's artifact: the price of a

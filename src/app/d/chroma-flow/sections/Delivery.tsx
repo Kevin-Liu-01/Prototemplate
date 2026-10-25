@@ -3,8 +3,8 @@
 import { Send } from 'lucide-react';
 import { useRef } from 'react';
 
-import CodeBlock from './code';
-import { useQuietReveal } from './reveal';
+import CodeBlock from '@/app/d/toolchain/sections/code';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * M11 — what happens after translation, as one three-across band: development

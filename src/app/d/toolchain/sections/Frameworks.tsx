@@ -21,7 +21,7 @@ import {
   Type,
 } from 'lucide-react';
 import { useRef, useState } from 'react';
-import type { ComponentType, CSSProperties } from 'react';
+import type { ComponentType, CSSProperties, ReactNode } from 'react';
 
 import {
   SiNextdotjs,
@@ -194,8 +194,18 @@ function CapMarquee({ caps }: { caps: readonly string[] }) {
  * The oxc pattern: one row of stacks, an underline that slides to the active
  * one, and a sample plus capability list that swap beneath it. The underline is
  * the only thing that travels — the panel below resolves in place.
+ *
+ * A fork mounts this section with its own rescoped `icons.css`,
+ * `chip-consistency.css` and `logos-icons.css`; `title` replaces the heading's
+ * text and `href` is the in-page anchor of the closing link.
  */
-export default function Frameworks() {
+export default function Frameworks({
+  title = 'One toolchain, every stack.',
+  href = '#platform',
+}: {
+  title?: ReactNode;
+  href?: string;
+}) {
   const root = useRef<HTMLElement>(null);
   const tabs = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
@@ -254,7 +264,7 @@ export default function Frameworks() {
     <section className='tc-sec' id='frameworks' ref={root}>
       <div className='tc-head'>
         <Wrench className='tc-head-icon' strokeWidth={1} aria-hidden />
-        <h2 data-reveal>One toolchain, every stack.</h2>
+        <h2 data-reveal>{title}</h2>
         <p data-reveal>
           Developer-first SDKs to translate everything from simple sites to complex user experiences.
         </p>
@@ -325,7 +335,7 @@ export default function Frameworks() {
               beside them. */}
           <CapMarquee caps={framework.caps} />
 
-          <a className='tc-fw-link' href='#platform'>
+          <a className='tc-fw-link' href={href}>
             {framework.pkg} reference
             <ArrowUpRight className='tc-ico-arrow' aria-hidden />
           </a>

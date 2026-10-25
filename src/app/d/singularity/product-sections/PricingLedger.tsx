@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /** A cell is a check, an em-dash, or a real value — never a badge or a pill.
  *  State is type, per the founder's ban on status ornaments. */

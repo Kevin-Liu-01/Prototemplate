@@ -3,7 +3,7 @@
 import { LayoutDashboard } from 'lucide-react';
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The context cell's artifact: the gt.config.json from the gt next-ssg

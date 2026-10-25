@@ -34,9 +34,9 @@ import GlossarySurface from '@/app/d/toolchain/diagrams/surface/GlossarySurface'
 import LiveSurface from '@/app/d/toolchain/diagrams/surface/LiveSurface';
 import PreviewSurface from '@/app/d/toolchain/diagrams/surface/PreviewSurface';
 
-import CodeBlock from './code';
+import CodeBlock from '@/app/d/toolchain/sections/code';
 import { usePlateCascade } from './cascade';
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import './bento-motion.css';
 /* toolchain's surface.css is scoped to .toolchain-root and inert here; this
    fork's rescoped copy styles the four surfaces */

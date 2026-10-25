@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /** Quiet close: the number, the cap, and the door back to the plans. */
 export default function UsageClose() {

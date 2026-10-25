@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The whole rate card as a ruled audit ledger — every published rate, one

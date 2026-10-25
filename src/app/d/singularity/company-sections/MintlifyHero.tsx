@@ -7,7 +7,7 @@ import { ArrowRight, Check, FileCode2, GitPullRequest } from 'lucide-react';
 
 import { localeFlag } from '@/app/d/toolchain/components/LocaleTag';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 import 'flag-icons/css/flag-icons.min.css';
 

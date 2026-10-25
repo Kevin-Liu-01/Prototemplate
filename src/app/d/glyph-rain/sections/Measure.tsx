@@ -7,7 +7,7 @@ import ExpansionBars from '../diagrams/lang/ExpansionBars';
 import SentenceWidth from '../diagrams/lang/SentenceWidth';
 
 import CodeBlock from './code';
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * M07 — translation as a layout problem. The section leads with the two

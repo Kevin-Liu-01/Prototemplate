@@ -4,7 +4,7 @@ import { Languages } from 'lucide-react';
 import { useRef } from 'react';
 
 import DitherGlobe from '../diagrams/DitherGlobe';
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * M13 — Locales. "100+ languages" converted from a marketing number into a

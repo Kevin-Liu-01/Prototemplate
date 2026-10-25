@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /** The published rate card, verbatim — quoted per 10,000 input tokens except
  *  where the unit says otherwise. Nothing here is estimated. */

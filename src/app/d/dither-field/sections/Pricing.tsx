@@ -3,7 +3,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import { useRef } from 'react';
 
-import { useQuietReveal } from './reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * M17 — Pricing, the LEDGER way. A price is a number in a column, so the

@@ -9,9 +9,10 @@ import { useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
-import { tokenize } from './code';
-import RevealSeam from './RevealSeam';
+import { tokenize } from '@/app/d/toolchain/sections/code';
+import RevealSeam from '@/app/d/toolchain/sections/RevealSeam';
 
+import './reveal-seam.css';
 import './icons.css';
 import './story-cinema-v3.css';
 

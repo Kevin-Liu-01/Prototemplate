@@ -3,13 +3,22 @@ import SmoothScroll from '@/components/shared/SmoothScroll';
 import { directionDescription } from '@/app/directions/descriptions';
 import { seoRoute } from '@/lib/seo/route';
 
-import Bento from './sections/Bento';
-import DarkBand from './sections/DarkBand';
-import Frameworks from './sections/Frameworks';
+/* A fork sheet follows the shared section it styles, so the cascade keeps
+   the order the sections are imported in. */
+import Bento from '@/app/d/toolchain/forks/Bento';
+import './sections/bento-motion.css';
+import './diagrams/surface/surface.css';
+import DarkBand from '@/app/d/toolchain/sections/DarkBand';
+import './sections/darkband-v3.css';
+import Frameworks from '@/app/d/toolchain/sections/Frameworks';
+import './sections/icons.css';
+import './sections/chip-consistency.css';
+import './sections/logos-icons.css';
 import Hero from './sections/Hero';
-import Pricing from './sections/Pricing';
-import Review from './sections/Review';
-import SiteFooter from './sections/SiteFooter';
+import Pricing from '@/app/d/toolchain/forks/Pricing';
+import ReviewWorkspace from '@/app/d/toolchain/forks/ReviewWorkspace';
+import './sections/review-workspace.css';
+import SiteFooter from '@/app/d/toolchain/sections/SiteFooter';
 import TopNav from './sections/TopNav';
 
 import './styles.css';
@@ -43,14 +52,14 @@ export default function HourglassPage() {
         <div className='tc-rail'>
           <Frameworks />
           <Bento />
-          <Review />
+          <ReviewWorkspace />
         </div>
 
-        <DarkBand />
+        <DarkBand cursorEffects={false} />
 
         <div className='tc-rail'>
           <Pricing />
-          <SiteFooter />
+          <SiteFooter hrefs={{}} />
         </div>
       </div>
       <DirectionCorner slug='hourglass' />

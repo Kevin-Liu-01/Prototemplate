@@ -6,7 +6,7 @@ import { useRef } from 'react';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 
 import GlyphRain from '../sections/GlyphRain';
-import { useQuietReveal } from '../sections/reveal';
+import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 
 /**
  * The live page's close, landed on this direction's one ink band: the same
