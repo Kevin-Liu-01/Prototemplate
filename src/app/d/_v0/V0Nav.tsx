@@ -195,7 +195,6 @@ function Menu({ label, columns, wide, open, onOpenChange }: MenuProps) {
     >
       <button
         aria-expanded={open}
-        aria-haspopup='true'
         className='v0-nav-drop-trigger'
         // type sits before onClick: the practices scanner reads a tag only
         // up to the first close-angle, and the handler's arrow hides
@@ -218,7 +217,6 @@ function Menu({ label, columns, wide, open, onOpenChange }: MenuProps) {
              section. */
           if (event.target instanceof Element && event.target.closest('a')) onOpenChange(false);
         }}
-        role='menu'
       >
         {columns.map((column) => (
           <div className='v0-nav-col' key={column.title}>
@@ -228,7 +226,6 @@ function Menu({ label, columns, wide, open, onOpenChange }: MenuProps) {
                 href={item.href}
                 key={item.label}
                 rel={item.external ? 'noreferrer' : undefined}
-                role='menuitem'
                 target={item.external ? '_blank' : undefined}
               >
                 <span className='v0-menu-plate'>

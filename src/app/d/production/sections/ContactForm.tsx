@@ -194,20 +194,24 @@ export default function ContactForm() {
                 />
               </div>
 
-              {noticed ? (
-                <p className='contact-notice' role='status'>
-                  Nothing was sent. This reproduction isn&rsquo;t wired to the
-                  API; the live form at{' '}
-                  <a
-                    href='https://generaltranslation.com/contact'
-                    rel='noreferrer'
-                    target='_blank'
-                  >
-                    generaltranslation.com/contact
-                  </a>{' '}
-                  delivers to the team.
-                </p>
-              ) : null}
+              {/* mounted empty from the start, so the notice is announced when it
+                 fills; empty, the stylesheet gives it no box */}
+              <p className='contact-notice' role='status'>
+                {noticed ? (
+                  <>
+                    Nothing was sent. This reproduction isn&rsquo;t wired to the
+                    API; the live form at{' '}
+                    <a
+                      href='https://generaltranslation.com/contact'
+                      rel='noreferrer'
+                      target='_blank'
+                    >
+                      generaltranslation.com/contact
+                    </a>{' '}
+                    delivers to the team.
+                  </>
+                ) : null}
+              </p>
 
               <div className='contact-close'>
                 <p className='contact-terms'>

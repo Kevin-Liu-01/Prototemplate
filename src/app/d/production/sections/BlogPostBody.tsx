@@ -12,7 +12,7 @@ import Carousel, { CarouselItem } from '@/components/blog/Carousel';
 import PostAuthorSpotlight from './PostAuthorSpotlight';
 import PostFumadocsArchitecture from './PostFumadocsArchitecture';
 import PostGitHub from './PostGitHub';
-import { PostAccordion, PostAccordions, PostCodeBlock, PostHeading } from './PostMdxControls';
+import { PostAccordion, PostAccordions, PostCodeBlock, PostHeading, PostVideo } from './PostMdxControls';
 import PostTweet from './PostTweet';
 
 /**
@@ -157,11 +157,6 @@ function PostCheck({ className = '' }: { className?: string }) {
 
 function PostCross({ className = '' }: { className?: string }) {
   return <XMarkIcon aria-hidden='true' className={`pba-mdx-icon${className.includes('text-red') ? ' is-no' : ''}`} />;
-}
-
-/** apps/landing/src/components/docs/Video.tsx */
-function PostVideo({ src }: { src: string }) {
-  return <video autoPlay className='pba-video' controls loop playsInline src={src} />;
 }
 
 type Heading = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';

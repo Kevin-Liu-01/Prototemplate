@@ -5,7 +5,7 @@ import 'flag-icons/css/flag-icons.min.css';
 import { useMemo, useState } from 'react';
 
 import { Search } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -36,15 +36,20 @@ import './locales.css';
  *   - `?search=` round-trips through the URL with router.replace, and a
  *     popstate listener pulls the query back out of the address bar.
  *
+ * One departure: live reads `?search=` with useSearchParams, which leaves
+ * the prerendered page with an empty catalog that fills in after
+ * hydration and pushes the footer down. Here the default catalog is
+ * prerendered, and the mount effect reads the query from the address bar.
+ * Each card is a link inside a list item, named by its visible text.
+ *
  * The flag slot follows the real page's own test: an ISO flag whenever the
  * locale resolves a real country region, and the locale's globe emoji
  * otherwise, which is Esperanto (001) and Latin American Spanish (419).
  */
 export default function LocalesCatalog() {
-  const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const [q, setQ] = useState(() => searchParams.get('search') ?? '');
+  const [q, setQ] = useState('');
   const [expanded, setExpanded] = useState(false);
 
   const filtered = useMemo(() => {
@@ -62,13 +67,14 @@ export default function LocalesCatalog() {
       const params = new URLSearchParams(window.location.search);
       setQ(params.get('search') ?? '');
     };
+    onPopState();
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   });
 
   const handleSearchChange = (value: string) => {
     setQ(value);
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     if (value.trim()) params.set('search', value);
     else params.delete('search');
     const query = params.toString();
@@ -118,43 +124,42 @@ export default function LocalesCatalog() {
                 properties.regionName !== properties.regionCode;
 
               return (
-                <a
-                  className='locales-card'
-                  href={`https://wikipedia.org/wiki/List_of_ISO_639_language_codes#${code}`}
-                  key={code}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  role='listitem'
-                  aria-label={`Open locale ${code}`}
-                >
-                  <span className='locales-card-flag' aria-hidden='true'>
-                    {hasIsoFlag ? (
-                      properties.flag ? (
-                        <span
-                          aria-hidden='true'
-                          className={`fi inline-block shrink-0 fi-${properties.flag}`}
-                        />
-                      ) : null
-                    ) : (
-                      /* no ISO flag for this region — the roster's
-                         own globe stands in */
-                      <span className='locales-card-globe'>
-                        {properties.emoji}
+                <div className='locales-item' key={code} role='listitem'>
+                  <a
+                    className='locales-card'
+                    href={`https://wikipedia.org/wiki/List_of_ISO_639_language_codes#${code}`}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <span className='locales-card-flag' aria-hidden='true'>
+                      {hasIsoFlag ? (
+                        properties.flag ? (
+                          <span
+                            aria-hidden='true'
+                            className={`fi inline-block shrink-0 fi-${properties.flag}`}
+                          />
+                        ) : null
+                      ) : (
+                        /* no ISO flag for this region — the roster's
+                           own globe stands in */
+                        <span className='locales-card-globe'>
+                          {properties.emoji}
+                        </span>
+                      )}
+                    </span>
+                    <span className='locales-card-body'>
+                      <strong>{languageName}</strong>
+                      <span className='locales-card-region'>
+                        {properties.regionName || '–'}
                       </span>
-                    )}
-                  </span>
-                  <span className='locales-card-body'>
-                    <strong>{languageName}</strong>
-                    <span className='locales-card-region'>
-                      {properties.regionName || '–'}
+                      <span className='locales-card-code'>
+                        <code>{code}</code>
+                        <i>•</i>
+                        {properties.nativeName || '–'}
+                      </span>
                     </span>
-                    <span className='locales-card-code'>
-                      <code>{code}</code>
-                      <i>•</i>
-                      {properties.nativeName || '–'}
-                    </span>
-                  </span>
-                </a>
+                  </a>
+                </div>
               );
             })}
           </div>

@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-
 import DirectionCorner from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import { seoRoute } from '@/lib/seo/route';
@@ -39,8 +37,8 @@ export const metadata = route.metadata;
  * /d/production's landing page already carries, instead of the singularity
  * family's TopNav/SiteFooter.
  *
- * Suspense wraps the catalog for the same reason the real route does: the
- * component reads `?search=` through useSearchParams.
+ * The catalog prerenders with the default list; it reads `?search=` from
+ * the address bar after mount, so no Suspense boundary holds it back.
  */
 export default function ProductionSupportedLocalesPage() {
   return (
@@ -52,9 +50,7 @@ export default function ProductionSupportedLocalesPage() {
         <ProdNav />
 
         <main className='tc-rail'>
-          <Suspense>
-            <LocalesCatalog />
-          </Suspense>
+          <LocalesCatalog />
           <ProdFooter />
         </main>
       </div>

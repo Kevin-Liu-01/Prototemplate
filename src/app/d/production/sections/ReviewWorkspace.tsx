@@ -684,7 +684,11 @@ export default function ReviewWorkspace({
               <>
                 {/* the web face stays in flow and keeps the frame's height;
                     the other two lie over it and cover it when chosen */}
-                <div className='tcr-face is-web' data-on={face === 'web' || undefined}>
+                <div
+                  aria-hidden={face !== 'web'}
+                  className='tcr-face is-web'
+                  data-on={face === 'web' || undefined}
+                >
                   {webBody}
                 </div>
                 <div

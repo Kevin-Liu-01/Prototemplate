@@ -550,6 +550,26 @@
   }
 }
 
+/* the sheet's own close control: visually hidden (.pn-sr) until keyboard
+   focus lands on it, then a chip at the sheet's top right */
+.toolchain-root .pn-sheet-close:focus-visible {
+  top: 8px;
+  right: 16px;
+  z-index: 1;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 6px 12px;
+  overflow: visible;
+  clip-path: none;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-paper);
+  color: var(--tc-ink);
+  font: inherit;
+  font-size: 14px;
+}
+
 .toolchain-root .pn-sheet-in {
   display: flex;
   flex-direction: column;

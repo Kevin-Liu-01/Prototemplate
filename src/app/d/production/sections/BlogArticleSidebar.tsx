@@ -1,8 +1,9 @@
 'use client';
 
 import { AlignLeft, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import BlogArticleShare from './BlogArticleShare';
@@ -24,7 +25,9 @@ import type { PostHeading } from './blog-post-source';
  * toc Observer, and this port runs the same rule: every heading at least
  * 90% inside the viewport is active, the most recently activated one is
  * the current section, and when none is in view the heading nearest the
- * viewport's top edge stands in.
+ * viewport's top edge stands in. The current section's link carries
+ * aria-current. The small-screen popover closes on Escape, which returns
+ * focus to its bar, and on a pointer press outside it.
  */
 
 type Anchor = { id: string; active: boolean; fallback: boolean; t: number };
@@ -49,6 +52,7 @@ function ProgressRing({ value }: { value: number }) {
     <svg
       aria-valuemax={100}
       aria-valuemin={0}
+      aria-label='Reading progress'
       aria-valuenow={Math.round(value * 100)}
       className='pba-ring'
       role='progressbar'
@@ -76,6 +80,22 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
   const [active, setActive] = useState<readonly string[]>([]);
   const [current, setCurrent] = useState<string | undefined>(undefined);
   const [open, setOpen] = useState(false);
+  const popRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLButtonElement>(null);
+
+  /* while the popover is open, a press anywhere outside it closes it */
+  useLayoutWork(
+    () => {
+      if (!open) return;
+      const onDown = (event: PointerEvent) => {
+        const target = event.target;
+        if (!(target instanceof Node && popRef.current?.contains(target))) setOpen(false);
+      };
+      document.addEventListener('pointerdown', onDown);
+      return () => document.removeEventListener('pointerdown', onDown);
+    },
+    { dependencies: [open] }
+  );
 
   /* Mount-only by contract: the heading set is fixed for the life of an
      article, and the caller keys this component by slug so a different
@@ -137,6 +157,7 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
     <div className='pba-toc-list'>
       {headings.map((heading) => (
         <a
+          aria-current={heading.id === current ? 'location' : undefined}
           className='pba-toc-item'
           data-active={active.includes(heading.id)}
           data-depth={heading.level}
@@ -155,8 +176,11 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
       {headings.length > 0 ? (
         <div
           className='pba-toc-pop'
+          ref={popRef}
           onKeyDown={(event) => {
-            if (event.key === 'Escape') setOpen(false);
+            if (event.key !== 'Escape' || !open) return;
+            setOpen(false);
+            barRef.current?.focus();
           }}
         >
           {/* `type` leads the attribute list on purpose: the practices lint
@@ -167,6 +191,7 @@ export default function BlogArticleSidebar({ headings, postTitle }: Props) {
             aria-controls='pba-toc-panel'
             aria-expanded={open}
             className='pba-toc-bar'
+            ref={barRef}
             onClick={() => setOpen(!open)}
           >
             <ProgressRing value={progress} />

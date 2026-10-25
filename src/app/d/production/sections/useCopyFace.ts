@@ -15,12 +15,13 @@ export const COPIED_MS = 1600;
 
 /**
  * One copy control's state: the outcome it is showing, and the write that
- * sets it. A control shows copied for COPIED_MS after a successful clipboard
- * write and failed for as long after a rejected one, then returns to idle.
- * A write that settles after a later copy or after the unmount is dropped,
+ * sets it. A control shows copied for `holdMs` (COPIED_MS unless the
+ * control's live original holds longer) after a successful clipboard write
+ * and failed for as long after a rejected one, then returns to idle. A
+ * write that settles after a later copy or after the unmount is dropped,
  * so an outcome never shows for something no longer on screen.
  */
-export function useCopyFace() {
+export function useCopyFace(holdMs = COPIED_MS) {
   const [outcome, setOutcome] = useState<CopyOutcome | null>(null);
   const timer = useRef<number | null>(null);
   /* Bumped by every copy and by the unmount: a clipboard write that settles
@@ -48,7 +49,7 @@ export function useCopyFace() {
     timer.current = window.setTimeout(() => {
       timer.current = null;
       setOutcome(null);
-    }, COPIED_MS);
+    }, holdMs);
   }
 
   return { copy, outcome };

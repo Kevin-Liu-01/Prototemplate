@@ -1414,7 +1414,16 @@
    cannot run, so on JS visits (the rail's js-arm stamp) the track hides
    until the clocks seat it — it appears already centred on the page's
    locale instead of painting the raw markup pose and snapping. A no-JS
-   visit never arms and keeps the visible markup pose. */
+   visit never arms and keeps the visible markup pose, and the 3s
+   failsafe shows that pose if hydration never seats the track, so a
+   failed boot cannot leave an empty strip. */
 .js-arm .v0-tw .v0-tw-belt-track:not(.is-seated) {
   visibility: hidden;
+  animation: v0-tw-belt-unarm 0s 3s forwards;
+}
+
+@keyframes v0-tw-belt-unarm {
+  to {
+    visibility: visible;
+  }
 }

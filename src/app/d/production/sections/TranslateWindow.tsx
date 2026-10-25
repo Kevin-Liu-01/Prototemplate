@@ -23,6 +23,8 @@ import {
 import LocaleTag from './LocaleTag';
 
 import RevealSeam from '@/app/d/toolchain/sections/RevealSeam';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+import { useLayoutWork } from '@/lib/use-layout-work';
 
 import '@/app/d/toolchain/sections/chip-consistency.css';
 import '@/app/d/toolchain/sections/hero-terminal.css';
@@ -889,8 +891,10 @@ export default function TranslateWindow({
   /* the exported clock: ploc IS the active locale — the ticker's centre
      crossing and a chip's click both land in setPloc, so one
      [ploc]-keyed effect reports the initial locale on mount and every
-     change after it, and no writer can slip past the host unheard */
-  useGSAP(
+     change after it, and no writer can slip past the host unheard. It runs
+     outside any GSAP context, so the tweens a host starts in its handler
+     belong to the host and never collect in this window's context. */
+  useLayoutWork(
     () => {
       onLocaleChange?.(ploc);
     },
@@ -1028,7 +1032,7 @@ export default function TranslateWindow({
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (prefersReducedMotion()) {
         /* the still must carry the whole argument: divider parked mid, both
            panes of the reveal legible — except on narrow, where a mid cut
            clips the JSON into half-words: the still rests shut there */
@@ -1233,9 +1237,7 @@ export default function TranslateWindow({
       seat(0);
       trackEl.classList.add('is-seated');
 
-      const reduced = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches;
+      const reduced = prefersReducedMotion();
 
       beltApi.current = {
         center: (el: HTMLElement) => {
@@ -1472,6 +1474,18 @@ export default function TranslateWindow({
       };
       beltEl.addEventListener('pointerenter', over);
       beltEl.addEventListener('pointerleave', out);
+      /* keyboard focus on a chip holds the belt the way a parked mouse
+         does, so the chip a Tab lands on stays put; the focus a click
+         leaves behind matches no :focus-visible and holds nothing */
+      let focused = false;
+      const focusIn = (e: FocusEvent) => {
+        focused = e.target instanceof Element && e.target.matches(':focus-visible');
+      };
+      const focusOut = (e: FocusEvent) => {
+        if (!(e.relatedTarget instanceof Node && beltEl.contains(e.relatedTarget))) focused = false;
+      };
+      beltEl.addEventListener('focusin', focusIn);
+      beltEl.addEventListener('focusout', focusOut);
 
       /* Offscreen the conveyor idles — without this the hero keeps ticking
          (and rewriting the mock) from the foot of the page; profiling put
@@ -1491,6 +1505,7 @@ export default function TranslateWindow({
           flick?.isActive() ||
           sliding ||
           hover ||
+          focused ||
           pinnedRef.current ||
           viewRef.current !== 'preview'
         )
@@ -1546,6 +1561,8 @@ export default function TranslateWindow({
         io.disconnect();
         beltEl.removeEventListener('pointerenter', over);
         beltEl.removeEventListener('pointerleave', out);
+        beltEl.removeEventListener('focusin', focusIn);
+        beltEl.removeEventListener('focusout', focusOut);
         window.removeEventListener('resize', onBeltResize);
         beltApi.current = null;
       };
@@ -1573,22 +1590,19 @@ export default function TranslateWindow({
      own instant swap. */
   const shown = useRef<Partial<Record<RwKey, string>>>({});
   const prevLoc = useRef<PreviewLoc>(ploc);
-  /* the swap in flight. useGSAP does not revert on a dependency change, so
-     without this every locale change STACKS another timeline on the same
-     text nodes: at drag/flick speed the crossings arrive far inside the
-     0.55s swap, and N timelines type over each other at N× the cost. One
-     runs at a time; the killed one leaves its partial in `shown`, which is
-     exactly what the next swap deletes from. */
-  const rewrite = useRef<gsap.core.Timeline | null>(null);
-  useGSAP(
+  /* One swap runs at a time: at drag or flick speed the crossings arrive
+     far inside the 0.55s swap, so the cleanup kills the swap in flight
+     before the next one builds, and the killed one leaves its partial in
+     `shown`, which is exactly what the next swap deletes from. The swap is
+     built outside any GSAP context, so a killed timeline is released at
+     once instead of held until the window unmounts. */
+  useLayoutWork(
     () => {
       const scope = root.current;
       if (!scope) return;
       const prev = prevLoc.current;
       prevLoc.current = ploc;
-      const reduced = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches;
+      const reduced = prefersReducedMotion();
       const lineEls = (key: RwKey) => {
         const els: HTMLElement[] = [];
         const ui = scope.querySelector<HTMLElement>(`[data-rw='${key}']`);
@@ -1612,13 +1626,11 @@ export default function TranslateWindow({
          On a phone (PHONE_MQ) they ride their corners while the lines
          type, so they re-file on every tick of the swap as well: a mark
          carried past the line never stays live over it */
-      rewrite.current?.kill();
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
         onUpdate: isPhone() ? reconcileMarks : undefined,
         onComplete: reconcileMarks,
       });
-      rewrite.current = tl;
       RW_LINES.forEach(({ key, read }, i) => {
         const nodes = lineEls(key);
         if (nodes.length === 0) return;
@@ -1655,7 +1667,7 @@ export default function TranslateWindow({
         );
       });
       tl.fromTo(
-        '[data-rwf]',
+        scope.querySelectorAll('[data-rwf]'),
         { autoAlpha: 0.15 },
         {
           autoAlpha: 1,
@@ -1666,22 +1678,26 @@ export default function TranslateWindow({
         },
         0.08
       );
+      return () => {
+        tl.kill();
+      };
     },
-    { scope: root, dependencies: [ploc] }
+    { dependencies: [ploc] }
   );
 
   /* Every stack-answering line re-settles the same way when a stack is
-     picked — Detected, the written files, the scan root and count. */
+     picked — Detected, the written files, the scan root and count. A pick
+     reverts the last pick's tween before it starts its own. */
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       gsap.fromTo(
         '[data-detected], [data-stackline], [data-count-scan]',
         { autoAlpha: 0.25 },
         { autoAlpha: 1, duration: 0.32, ease: 'power1.out', stagger: 0.05 }
       );
     },
-    { scope: root, dependencies: [stack] }
+    { scope: root, dependencies: [stack], revertOnUpdate: true }
   );
 
   /* The reveal announces itself once per entry: the payload pane eases open
@@ -1694,7 +1710,7 @@ export default function TranslateWindow({
       /* narrow rests shut (restCut 100): there is no teaser to announce,
          so the intro stays desktop-only — the sheet's rest already holds */
       if (isNarrow()) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const dial = { v: 97 };
       gsap.to(dial, {
         v: REST_CUT,
@@ -1704,7 +1720,7 @@ export default function TranslateWindow({
         onUpdate: () => setCut(dial.v),
       });
     },
-    { scope: root, dependencies: [view] }
+    { scope: root, dependencies: [view], revertOnUpdate: true }
   );
 
   /* ---- a pinned inspector rolls the seam open ----
@@ -1718,7 +1734,8 @@ export default function TranslateWindow({
      re-rolls it to the reveal cut even if the reader dragged the pane
      shut in between (founder note: consistent behavior per click).
      While pinned, Escape and any pointer-down outside a mark dismiss.
-     Reduced motion jump-cuts both ways. */
+     Each change reverts the last run, so its seam tween stops and its two
+     document listeners leave with it. Reduced motion jump-cuts both ways. */
   const wasPinned = useRef<RwKey | null>(null);
   useGSAP(
     () => {
@@ -1733,7 +1750,7 @@ export default function TranslateWindow({
       dragged.current = true;
       /* unpinning returns to the width's own rest — shut on narrow */
       const target = pinned ? CUT_MIN : restCut();
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (prefersReducedMotion()) {
         setCut(target);
       } else {
         const now = parseFloat(
@@ -1769,7 +1786,7 @@ export default function TranslateWindow({
         document.removeEventListener('pointerdown', onDown);
       };
     },
-    { scope: root, dependencies: [pinned] }
+    { scope: root, dependencies: [pinned], revertOnUpdate: true }
   );
 
   /* marks also re-file on the geometry changes no cut writer sees:
@@ -1822,6 +1839,7 @@ export default function TranslateWindow({
                 <button
                   type='button'
                   key={s.name}
+                  aria-pressed={stack.name === s.name}
                   data-on={stack.name === s.name}
                   onClick={() => pickStack(s)}
                 >
@@ -1858,6 +1876,7 @@ export default function TranslateWindow({
                   <button
                     type='button'
                     key={`${copy}-${loc}`}
+                    aria-pressed={ploc === loc}
                     data-on={ploc === loc}
                     tabIndex={copy === 1 ? -1 : undefined}
                     aria-hidden={copy === 1 || undefined}
@@ -1879,6 +1898,7 @@ export default function TranslateWindow({
           <button
             type='button'
             data-on={view === 'preview'}
+            aria-pressed={view === 'preview'}
             aria-label='Preview'
             onClick={() => pickView('preview')}
           >
@@ -1888,6 +1908,7 @@ export default function TranslateWindow({
           <button
             type='button'
             data-on={view === 'term'}
+            aria-pressed={view === 'term'}
             aria-label='Terminal'
             onClick={() => pickView('term')}
           >

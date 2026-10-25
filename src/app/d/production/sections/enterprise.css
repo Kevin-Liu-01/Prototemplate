@@ -1653,6 +1653,12 @@
   line-height: 1.6;
 }
 
+.enterprise-root .enterprise-contact .contact-notice:empty {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
 .enterprise-root .enterprise-contact .contact-notice a {
   color: var(--tc-ink);
   text-decoration: underline;

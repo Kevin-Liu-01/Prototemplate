@@ -5,6 +5,8 @@ import { useState } from 'react';
 
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { useCopyFace } from './useCopyFace';
+
 /**
  * PRODUCTION · the article's share row — the shipped SideBar's own
  * controls (apps/landing/src/components/blog/SideBar.tsx): LinkedIn, X,
@@ -16,6 +18,9 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * inlined rather than imported so this control never drifts with an icon
  * package. The copy button is the shipped CopyLinkButton without the design
  * system's Button shell: same icon swap, same 2s hold, same live region.
+ * The check and "Link copied" show only after the clipboard write lands; a
+ * denied or missing clipboard keeps the link glyph and announces the
+ * failure.
  *
  * The share URL is the page's own address, so it can only be read after
  * mount — the shipped page reads it through useMounted for the same reason.
@@ -47,8 +52,12 @@ function XGlyph() {
   );
 }
 
+/** The shipped CopyLinkButton's hold on the check. */
+const LINK_COPIED_MS = 2000;
+
 function CopyLinkButton({ url }: { url: string }) {
-  const [copied, setCopied] = useState(false);
+  const { copy, outcome } = useCopyFace(LINK_COPIED_MS);
+  const copied = outcome === 'copied';
 
   return (
     <button
@@ -57,13 +66,7 @@ function CopyLinkButton({ url }: { url: string }) {
       className='pba-share-copy'
       data-copied={copied ? 'true' : undefined}
       title='Copy link to clipboard'
-      onClick={() => {
-        void navigator.clipboard.writeText(url);
-        setCopied(true);
-        setTimeout(() => {
-          setCopied(false);
-        }, 2000);
-      }}
+      onClick={() => void copy(url)}
     >
       <span aria-hidden='true' className='is-mark'>
         <Check />
@@ -72,7 +75,7 @@ function CopyLinkButton({ url }: { url: string }) {
         <LinkIcon />
       </span>
       <span role='status' className='sr-only'>
-        {copied ? 'Link copied' : ''}
+        {copied ? 'Link copied' : outcome === 'failed' ? 'Copy failed' : ''}
       </span>
     </button>
   );

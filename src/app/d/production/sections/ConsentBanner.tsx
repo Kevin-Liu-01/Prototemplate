@@ -7,6 +7,7 @@ import { ChevronDown, X } from 'lucide-react';
 
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { holdTab } from './focus-trap';
 import { COOKIE_POLICY_URL } from './site-links';
 
 import './prod-chrome.css';
@@ -21,6 +22,11 @@ import './prod-chrome.css';
  * analytics, so the choice is only remembered in this browser's
  * localStorage under CONSENT_KEY: nothing is captured, no cookie is set
  * and no General Translation service is called.
+ *
+ * The dialog holds Tab inside itself while open. Closing it returns focus
+ * to the control that opened it: the footer's Manage Cookies button, or,
+ * when Customize opened it and the banner comes back, the banner's
+ * Customize button.
  */
 export const CONSENT_KEY = 'pt-mirror-consent';
 
@@ -89,6 +95,7 @@ function SettingsDialog({ onClose }: { onClose: () => void }) {
     dialogRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
+      else if (dialogRef.current) holdTab(dialogRef.current, event);
     };
     document.addEventListener('keydown', onKeyDown);
     return () => {
@@ -166,13 +173,30 @@ export default function ConsentBanner() {
      the first client render agree and show nothing */
   const [decided, setDecided] = useState(true);
   const [settings, setSettings] = useState(false);
+  /* where focus goes when the dialog closes: the element that had focus
+     when it opened, or the banner's Customize button once it remounts */
+  const opener = useRef<HTMLElement | null>(null);
+  const refocusCustomize = useRef(false);
 
   useMountEffect(() => {
     setDecided(readConsent() !== null);
-    const open = () => setSettings(true);
+    const open = () => {
+      opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      setSettings(true);
+    };
     window.addEventListener(OPEN_SETTINGS, open);
     return () => window.removeEventListener(OPEN_SETTINGS, open);
   });
+
+  const closeSettings = () => {
+    const undecided = readConsent() === null;
+    setSettings(false);
+    setDecided(!undecided);
+    const back = opener.current;
+    opener.current = null;
+    if (back?.isConnected) back.focus();
+    else refocusCustomize.current = undecided;
+  };
 
   const choose = (value: Consent) => {
     writeConsent(value);
@@ -198,7 +222,19 @@ export default function ConsentBanner() {
                   Reject all
                 </button>
               </div>
-              <button className='pc-btn' type='button' onClick={() => setSettings(true)}>
+              <button
+                type='button'
+                className='pc-btn'
+                ref={(el) => {
+                  if (!el || !refocusCustomize.current) return;
+                  refocusCustomize.current = false;
+                  el.focus();
+                }}
+                onClick={() => {
+                  opener.current = null;
+                  setSettings(true);
+                }}
+              >
                 Customize
               </button>
             </div>
@@ -206,12 +242,7 @@ export default function ConsentBanner() {
         </div>
       ) : null}
       {settings ? (
-        <SettingsDialog
-          onClose={() => {
-            setSettings(false);
-            setDecided(readConsent() !== null);
-          }}
-        />
+        <SettingsDialog onClose={closeSettings} />
       ) : null}
     </>
   );

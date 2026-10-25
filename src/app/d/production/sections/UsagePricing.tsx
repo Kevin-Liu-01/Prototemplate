@@ -12,9 +12,10 @@ import {
   PresentationChartBarIcon,
   TagIcon,
 } from '@heroicons/react/24/solid';
-import { HelpCircle, Plus, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useState, type ComponentType, type ReactNode, type SVGProps } from 'react';
 
+import PricingHelp from './PricingHelp';
 import {
   BASE_RATES,
   EXAMPLE,
@@ -37,22 +38,6 @@ import {
  * focus open them, and a click keeps one open while its trigger holds
  * focus, where live pins a Radix tooltip in a portal.
  */
-
-/** One help bubble: the HelpCircle trigger by default, or the chip given as `trigger`. */
-function UsageTip({ children, trigger }: { children: ReactNode; trigger?: ReactNode }) {
-  return (
-    <span className='pricing-help'>
-      {trigger ?? (
-        <button aria-label='More information' type='button'>
-          <HelpCircle aria-hidden='true' strokeWidth={1.8} />
-        </button>
-      )}
-      <span className='pricing-help-bubble' role='tooltip'>
-        {children}
-      </span>
-    </span>
-  );
-}
 
 function FormulaTerm({
   icon: Icon,
@@ -102,18 +87,18 @@ function ExampleChip({
   tip: ReactNode;
 }) {
   return (
-    <UsageTip
-      trigger={
-        <button className={badge ? 'up-chip has-badge' : 'up-chip'} type='button'>
+    <PricingHelp
+      trigger={(describedBy) => (
+        <button aria-describedby={describedBy} className={badge ? 'up-chip has-badge' : 'up-chip'} type='button'>
           <Icon aria-hidden className='up-emph' />
           <span className='up-sr'>{label}</span>
           <span className='up-chip-value'>{value}</span>
           {badge ? <span className='up-badge up-chip-badge'>{badge}</span> : null}
         </button>
-      }
+      )}
     >
       <span>{tip}</span>
-    </UsageTip>
+    </PricingHelp>
   );
 }
 
@@ -343,7 +328,7 @@ export default function UsagePricing() {
               label: (
                 <span className='up-cell-row'>
                   <span>{rate.label}</span>
-                  {rate.help ? <UsageTip>{rate.help}</UsageTip> : null}
+                  {rate.help ? <PricingHelp>{rate.help}</PricingHelp> : null}
                 </span>
               ),
               cost: rate.cost,
@@ -362,7 +347,7 @@ export default function UsagePricing() {
                 label: (
                   <span className='up-cell-row is-inline'>
                     {rate.label}
-                    <UsageTip>{rate.help}</UsageTip>
+                    <PricingHelp>{rate.help}</PricingHelp>
                   </span>
                 ),
                 cost: rate.cost,
@@ -380,10 +365,10 @@ export default function UsagePricing() {
                   label: (
                     <span className='up-cell-row'>
                       <span>GT Platform Context</span>
-                      <UsageTip>
+                      <PricingHelp>
                         Platform Context includes the glossary terms and directives applied to your project to guide
                         terminology, tone, and style.
-                      </UsageTip>
+                      </PricingHelp>
                     </span>
                   ),
                   cost: `+ ${RATE_TEXT.context} per 1,000 input tokens per 1,000 context tokens`,
@@ -414,7 +399,7 @@ export default function UsagePricing() {
                 <span className='up-cell-row'>
                   <span aria-hidden className='up-locadex' />
                   <span>Locadex Compute Unit (LCU)</span>
-                  <UsageTip>Locadex Compute Units (LCUs) meter the resource costs for an agent to run end-to-end.</UsageTip>
+                  <PricingHelp>Locadex Compute Units (LCUs) meter the resource costs for an agent to run end-to-end.</PricingHelp>
                 </span>
               ),
               cost: `${RATE_TEXT.lcu} / LCU`,

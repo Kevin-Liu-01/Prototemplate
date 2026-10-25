@@ -272,20 +272,24 @@ export default function EnterpriseContact({ headingLevel = 'h2' }: EnterpriseCon
                   />
                 </div>
 
-                {noticed ? (
-                  <p className='contact-notice' role='status'>
-                    Nothing was sent. This reproduction isn&rsquo;t wired to the
-                    API; the live form at{' '}
-                    <a
-                      href='https://generaltranslation.com/enterprise'
-                      rel='noreferrer'
-                      target='_blank'
-                    >
-                      generaltranslation.com/enterprise
-                    </a>{' '}
-                    delivers to the team.
-                  </p>
-                ) : null}
+                {/* mounted empty from the start, so the notice is announced when it
+                   fills; empty, the stylesheet gives it no box */}
+                <p className='contact-notice' role='status'>
+                  {noticed ? (
+                    <>
+                      Nothing was sent. This reproduction isn&rsquo;t wired to the
+                      API; the live form at{' '}
+                      <a
+                        href='https://generaltranslation.com/enterprise'
+                        rel='noreferrer'
+                        target='_blank'
+                      >
+                        generaltranslation.com/enterprise
+                      </a>{' '}
+                      delivers to the team.
+                    </>
+                  ) : null}
+                </p>
 
                 <div className='mt-6 flex items-center justify-between gap-4'>
                   <p className='contact-consent flex-1 pr-2 text-xs'>

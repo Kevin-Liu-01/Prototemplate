@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
 
 import {
   BookOpenIcon,
@@ -33,6 +33,7 @@ import { ChevronDown, Search } from 'lucide-react';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import ConsentBanner from './ConsentBanner';
+import { holdTab } from './focus-trap';
 import LanguageSelector from './LanguageSelector';
 import ProdThemeToggle, { ProdSheetThemeToggle } from './ProdThemeToggle';
 
@@ -350,18 +351,38 @@ function SheetMenu({ menu, onNavigate }: { menu: NavMenu; onNavigate: () => void
  * closes on Escape, as the live MobileMenuPanel does. It seats on the bar's
  * rule wherever the bar sits: the viewer's corner bar pushes the page down
  * on a phone, so a fixed 56px would cover the header.
+ *
+ * The sheet is a modal dialog, so its own close control sits inside it:
+ * hidden until it holds keyboard focus, since the header's toggle is the
+ * visible close. Opening moves focus to it, Tab stays inside the sheet,
+ * and closing returns focus to the toggle. Widening the window to 1024px,
+ * where the stylesheet hides the sheet and the toggle, closes it too, so
+ * the page never stays locked behind a sheet no one can see.
  */
-function Sheet({ onClose, top }: { onClose: () => void; top: number }) {
+function Sheet({ onClose, top, toggle }: { onClose: () => void; top: number; toggle: RefObject<HTMLButtonElement | null> }) {
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   useMountEffect(() => {
     const previous = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') {
+        /* an Escape the language popover handled closes only the popover */
+        if (!event.defaultPrevented) onClose();
+      } else if (sheetRef.current) holdTab(sheetRef.current, event);
+    };
+    const wide = window.matchMedia('(min-width: 1024px)');
+    const onWide = () => {
+      if (wide.matches) onClose();
     };
     document.addEventListener('keydown', onKeyDown);
+    wide.addEventListener('change', onWide);
     return () => {
       document.body.style.overflow = previous;
       document.removeEventListener('keydown', onKeyDown);
+      wide.removeEventListener('change', onWide);
+      toggle.current?.focus();
     };
   });
   return (
@@ -370,9 +391,13 @@ function Sheet({ onClose, top }: { onClose: () => void; top: number }) {
       aria-modal='true'
       className='pn-sheet'
       id='pn-sheet'
+      ref={sheetRef}
       role='dialog'
       style={{ top }}
     >
+      <button className='pn-sr pn-sheet-close' ref={closeRef} type='button' onClick={onClose}>
+        Close Menu
+      </button>
       <div className='pn-sheet-in'>
         <div className='pn-sheet-list'>
           {MENUS.map((menu) => (
@@ -402,6 +427,7 @@ export default function ProdNav() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [sheetTop, setSheetTop] = useState<number | null>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   /* A hover-opened sheet never holds focus, so Escape is caught here too. */
   useMountEffect(() => {
@@ -476,6 +502,7 @@ export default function ProdNav() {
               aria-expanded={sheetTop !== null}
               aria-label={sheetTop !== null ? 'Close Menu' : 'Open Menu'}
               className='pn-toggle'
+              ref={toggleRef}
               type='button'
               onClick={() => {
                 const bottom = headerRef.current?.getBoundingClientRect().bottom ?? 57;
@@ -487,7 +514,7 @@ export default function ProdNav() {
           </div>
         </div>
       </header>
-      {sheetTop !== null ? <Sheet top={sheetTop} onClose={() => setSheetTop(null)} /> : null}
+      {sheetTop !== null ? <Sheet toggle={toggleRef} top={sheetTop} onClose={() => setSheetTop(null)} /> : null}
       <ConsentBanner />
     </>
   );

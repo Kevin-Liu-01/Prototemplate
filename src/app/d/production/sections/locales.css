@@ -103,7 +103,13 @@
   margin-top: 44px;
 }
 
+.locales-root .locales-item {
+  display: flex;
+  min-width: 0;
+}
+
 .locales-root .locales-card {
+  flex: 1;
   display: flex;
   align-items: flex-start;
   gap: 12px;

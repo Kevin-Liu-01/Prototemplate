@@ -3,6 +3,9 @@
 import { Check, ChevronRight, Clipboard, CopyCheck, Link as LinkIcon } from 'lucide-react';
 import { useRef, useState, type ComponentProps, type ReactNode } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+import { useMountEffect } from '@/lib/use-mount-effect';
+
 /**
  * PRODUCTION · the interactive parts of a post body, ported from the
  * fumadocs-ui 16.16.1 components live's MDX map spreads in
@@ -12,16 +15,18 @@ import { useRef, useState, type ComponentProps, type ReactNode } from 'react';
  * classes in blog-article.css, since this repository carries no fumadocs.
  */
 
-/** fumadocs' useCopyButton: the check shows for 1.5s after a copy lands. */
+/** fumadocs' useCopyButton: the check shows for 1.5s after a copy lands; a rejected copy leaves the idle face. */
 function useCopied(): [boolean, (copy: () => Promise<void> | undefined) => void] {
   const [checked, setChecked] = useState(false);
   const timer = useRef(0);
   const run = (copy: () => Promise<void> | undefined) => {
     window.clearTimeout(timer.current);
-    void Promise.resolve(copy()).then(() => {
-      setChecked(true);
-      timer.current = window.setTimeout(() => setChecked(false), 1500);
-    });
+    Promise.resolve(copy())
+      .then(() => {
+        setChecked(true);
+        timer.current = window.setTimeout(() => setChecked(false), 1500);
+      })
+      .catch(() => setChecked(false));
   };
   return [checked, run];
 }
@@ -121,4 +126,21 @@ export function PostAccordion({ title, children }: { title?: string; children?: 
       ) : null}
     </div>
   );
+}
+
+/**
+ * apps/landing/src/components/docs/Video.tsx: a looping inline video with
+ * controls. It plays muted, so the browser lets it start on its own, and it
+ * starts only after mount and only when the reader allows motion; under
+ * reduced motion it waits on its first frame for the play control.
+ */
+export function PostVideo({ src }: { src: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useMountEffect(() => {
+    if (prefersReducedMotion()) return;
+    ref.current?.play().catch(() => {
+      /* a blocked autoplay leaves the controls to start it */
+    });
+  });
+  return <video className='pba-video' controls loop muted playsInline ref={ref} src={src} />;
 }

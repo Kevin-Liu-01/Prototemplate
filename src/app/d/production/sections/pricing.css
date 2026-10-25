@@ -465,6 +465,12 @@
   visibility: visible;
 }
 
+/* Escape hides an open bubble until the pointer and focus leave it */
+.pricing-root .pricing-help[data-dismissed] .pricing-help-bubble {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .pricing-root .pricing-help-more {
   text-decoration: underline;
   text-underline-offset: 3px;
