@@ -1,6 +1,8 @@
-import { MOTION_FILMS, MOTION_SECTIONS } from '@/lib/motion';
-import type { MotionFilm } from '@/lib/motion';
+import type { MOTION_SECTIONS, MotionFilm } from '@/lib/motion';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
+
+/** One of the three roster sections: its id, label and lead. */
+export type MotionSectionInfo = (typeof MOTION_SECTIONS)[number];
 
 /**
  * The films as the shell's sections, shared by /motion and the package
@@ -19,6 +21,10 @@ import type { ShellItem, ShellSection } from '@/lib/shell-data';
  * page. Another film on /motion is selected in place (the book scrolls to
  * its row); on a package page it is a link to its row on /motion, whose
  * shell reads the hash on mount.
+ *
+ * The functions take the roster as arguments and this module imports only
+ * types from the generated src/lib/motion.ts, so a client that receives the
+ * roster as props never bundles the generated module.
  */
 
 /** The text of a summary without its inline markup, for the sidebar filter. */
@@ -48,16 +54,20 @@ function filmItem(film: MotionFilm, route: string): ShellItem {
 }
 
 /** The three sections for a route: `index` for /motion, or the slug of the package page. */
-export function motionSections(route: string): readonly ShellSection[] {
-  return MOTION_SECTIONS.map((section) => ({
+export function motionSections(
+  route: string,
+  films: readonly MotionFilm[],
+  sections: readonly MotionSectionInfo[]
+): readonly ShellSection[] {
+  return sections.map((section) => ({
     id: section.id,
     label: section.label,
     under: 'motion',
-    items: MOTION_FILMS.filter((film) => film.section === section.id).map((film) => filmItem(film, route)),
+    items: films.filter((film) => film.section === section.id).map((film) => filmItem(film, route)),
   }));
 }
 
 /** The film a shell item id names. */
-export function filmById(id: string): MotionFilm | undefined {
-  return MOTION_FILMS.find((film) => film.id === id);
+export function filmById(films: readonly MotionFilm[], id: string): MotionFilm | undefined {
+  return films.find((film) => film.id === id);
 }

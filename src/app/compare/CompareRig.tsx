@@ -12,6 +12,7 @@ import { ToolButton } from '@/components/viewer/ToolButton';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { DIRECTIONS, getDirection } from '@/lib/directions';
 import type { ShellMode } from '@/lib/shell-data';
+import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import {
@@ -350,6 +351,8 @@ export default function CompareRig() {
   const frameB = useRef<HTMLIFrameElement>(null);
   const frames: Frames = { a: frameA, b: frameB };
   const mute = useRef<Record<PaneKey, number>>({ a: 0, b: 0 });
+  /** whether any of each pane is on screen; a pane panned out of the stage is frozen */
+  const onScreen = useRef<Record<PaneKey, boolean>>({ a: true, b: true });
 
   const [pair, setPairState] = useState<Pair>(DEFAULT_PAIR);
   const [target, setTargetState] = useState<PaneKey>('a');
@@ -422,12 +425,40 @@ export default function CompareRig() {
     }
   };
 
+  /* A pane panned out of the stage (the other pane's view) holds its loops
+     through the root layout's gt:freeze gate, and resumes when any of it
+     comes back on screen; a new document starts unfrozen, so each load
+     sends the pane's state again. */
+  const freeze = (key: PaneKey) => {
+    frames[key].current?.contentWindow?.postMessage({ type: 'gt:freeze', frozen: !onScreen.current[key] }, window.location.origin);
+  };
+
+  useLayoutWork(
+    () => {
+      if (typeof IntersectionObserver === 'undefined') return;
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          const key: PaneKey = entry.target === frames.a.current ? 'a' : 'b';
+          onScreen.current[key] = entry.isIntersecting;
+          freeze(key);
+        }
+      });
+      PANE_KEYS.forEach((key) => {
+        const el = frames[key].current;
+        if (el) observer.observe(el);
+      });
+      return () => observer.disconnect();
+    },
+    { dependencies: [pair] }
+  );
+
   /* Wired per inner document: navigation replaces the inner window (and
      its listeners die with it), while the flag stops the mount pass and
      onLoad from stacking a second listener on one document. */
   const wire = (key: PaneKey) => {
     const win = frames[key].current?.contentWindow;
     if (!win) return;
+    freeze(key);
     try {
       const doc = win.document as Document & { ptCmpWired?: boolean };
       if (doc.ptCmpWired) return;

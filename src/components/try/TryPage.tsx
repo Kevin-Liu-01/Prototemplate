@@ -2,17 +2,17 @@
 
 import { useRef, useState } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import ReportCard from './ReportCard';
 import TryField from './TryField';
 import TryFigure from './TryFigure';
 
-import type { CSSProperties, FormEvent } from 'react';
+import type { FormEvent } from 'react';
 import type { Report } from '@/lib/try/analyze';
 import type { Grade } from '@/lib/try/grade';
 
-import { analyze } from '@/lib/try/analyze';
 import { createRelayFetcher, normalizeUserUrl } from '@/lib/try/fetcher';
 
 type Slot<Value> =
@@ -69,6 +69,9 @@ async function runReport(url: string): Promise<Report> {
     }, CLIENT_TIMEOUT_MS);
   });
   try {
+    /* the analyzer carries franc's language tables (about 135 KB gzipped),
+       so it loads on the first run, not with the page */
+    const { analyze } = await import('@/lib/try/analyze');
     return await Promise.race([
       analyze(normalizeUserUrl(url), createRelayFetcher(10, controller.signal)),
       deadline,
@@ -159,10 +162,7 @@ export default function TryPage() {
     setReport({ state: 'loading' });
     try {
       const value = await runReport(url);
-      const reduced = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches;
-      if (reduced) {
+      if (prefersReducedMotion()) {
         // reduced motion: no sweep — instant lock, instant reveal
         setReport({ state: 'done', value });
       } else {
@@ -184,7 +184,9 @@ export default function TryPage() {
         state: 'error',
         message: timedOut
           ? 'The report is taking longer than expected. Give it a moment and try again.'
-          : (err as Error).message,
+          : err instanceof Error && err.message
+            ? err.message
+            : 'The report could not be finished. Try again.',
       });
     }
     running.current = false;
@@ -335,9 +337,9 @@ export default function TryPage() {
                 role='status'
                 style={
                   report.state === 'done'
-                    ? ({
+                    ? {
                         '--try-strip-grade': `var(--try-grade-${report.value.overall.grade.toLowerCase()})`,
-                      } as CSSProperties)
+                      }
                     : undefined
                 }
               >

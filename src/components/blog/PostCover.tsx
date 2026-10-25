@@ -16,13 +16,15 @@ type PostCoverProps = {
  * A post's cover. When the post has a light-theme cover too, both are in
  * the document and blog.css shows the one for the current theme
  * (html[data-theme='dark'] picks the dark one), so a theme switch swaps
- * covers without a request. The optimizer serves each at the width it is
- * shown, from the 3840px master, so the browser never resizes it.
+ * covers without a request. Only the dark cover, the default theme's, takes
+ * `priority`; the light twin loads lazily, and the browser does not fetch a
+ * lazy image while it is hidden. The optimizer serves each at the width it
+ * is shown, from the 3840px master, so the browser never resizes it.
  */
 export default function PostCover({ post, className, priority = false, sizes = BLOG_COLUMN_SIZES }: PostCoverProps) {
   if (!post.image) return null;
   const classes = className ? ` ${className}` : '';
-  const cover = (src: string, extra = '') => (
+  const cover = (src: string, extra = '', first = priority) => (
     <Image
       className={`blog-cover${extra}${classes}`}
       src={src}
@@ -31,14 +33,14 @@ export default function PostCover({ post, className, priority = false, sizes = B
       height={1080}
       sizes={sizes}
       quality={95}
-      priority={priority}
+      priority={first}
     />
   );
   if (!post.imageLight) return cover(post.image);
   return (
     <>
       {cover(post.image, ' blog-cover-dark')}
-      {cover(post.imageLight, ' blog-cover-light')}
+      {cover(post.imageLight, ' blog-cover-light', false)}
     </>
   );
 }

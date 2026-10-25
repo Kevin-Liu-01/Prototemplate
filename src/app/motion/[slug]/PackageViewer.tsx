@@ -12,7 +12,7 @@ import type { SubRows } from '@/components/viewer/Sidebar';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
-import { MOTION_FILMS, MOTION_STATUS_LABEL, getMotionFilm, motionHref } from '@/lib/motion';
+import { MOTION_FILMS, MOTION_SECTIONS, MOTION_STATUS_LABEL, getMotionFilm, motionHref } from '@/lib/motion';
 import type { MotionFilm, MotionStatus, PackageSectionId } from '@/lib/motion';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
@@ -242,7 +242,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
   /* the shell's props, stable across this route's renders so the memoized
      list and toolbar skip them: the sections, the toolbar's link, and the
      package's own headings as the deep run under the film's row */
-  const shellSections = useMemo(() => motionSections(slug), [slug]);
+  const shellSections = useMemo(() => motionSections(slug, MOTION_FILMS, MOTION_SECTIONS), [slug]);
   const rawLink = useMemo(() => <RawLink slug={slug} />, [slug]);
   /* the published cut's records, between the film and the package */
   const parts: readonly RecordPart[] = useMemo(() => {
@@ -299,7 +299,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
       writeHash(null);
       return;
     }
-    const next = filmById(id);
+    const next = filmById(MOTION_FILMS, id);
     if (next) router.push(motionHref(next));
   };
 

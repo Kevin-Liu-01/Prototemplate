@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 
 import { renderInline } from '@/components/book/markdown';
-import { MOTION_FILMS } from '@/lib/motion';
+import { MOTION_FILMS, MOTION_SECTIONS, MOTION_STATUS_LABEL } from '@/lib/motion';
+import type { MotionFilm, MotionLocal, MotionVersion } from '@/lib/motion';
 import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
@@ -10,7 +11,9 @@ import { requireUpdated } from '@/lib/updated';
 import { filmCuts } from './cuts';
 import { langText } from './lang-text';
 import MotionViewer from './MotionViewer';
+import type { MotionRoster } from './MotionViewer';
 import { scriptBlock, sheetBlock } from './records';
+import { motionSections } from './sections';
 
 const route = seoRoute({
   path: '/motion',
@@ -22,6 +25,21 @@ const route = seoRoute({
 });
 
 export const metadata = route.metadata;
+
+/** The local paths a roster row prints: the folder of a film in production and the final render of an unpublished one. */
+function rosterLocal(local: MotionLocal | undefined): MotionLocal | undefined {
+  return local && { folder: local.folder, video: local.video };
+}
+
+/** A language version as the client roster reads it: without the published cut's credits and render, which the roster never shows. */
+function rosterVersion({ credits, cut, local, ...version }: MotionVersion): MotionVersion {
+  return { ...version, local: rosterLocal(local) };
+}
+
+/** A film as the client roster reads it: without the published cut's credits and render, which the roster never shows. */
+function rosterFilm({ credits, cut, local, versions, ...film }: MotionFilm): MotionFilm {
+  return { ...film, local: rosterLocal(local), versions: versions?.map(rosterVersion) };
+}
 
 /**
  * /motion: the film roster on the viewer shell. Each film's one-sentence
@@ -52,10 +70,16 @@ export default function MotionPage() {
       }
     }
   }
+  const roster: MotionRoster = {
+    films: MOTION_FILMS.map(rosterFilm),
+    sections: MOTION_SECTIONS,
+    statusLabel: MOTION_STATUS_LABEL,
+    shellSections: motionSections('index', MOTION_FILMS, MOTION_SECTIONS),
+  };
   return (
     <>
       <JsonLd nodes={route.jsonLd} />
-      <MotionViewer summaries={summaries} records={records} updated={requireUpdated('/motion')} />
+      <MotionViewer roster={roster} summaries={summaries} records={records} updated={requireUpdated('/motion')} />
     </>
   );
 }

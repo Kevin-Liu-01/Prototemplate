@@ -38,6 +38,8 @@ export default function Layout({ children }: { children: ReactNode }) {
     <RootProvider
       theme={{ enabled: false }}
       search={{
+        /* the dialog's chunks (about 96 KB gzipped) load on the first open, not with every page */
+        preload: false,
         options: { type: 'static', api: '/api/search' },
         links: [
           ['Prototemplate home', '/'],

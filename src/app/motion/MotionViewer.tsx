@@ -11,32 +11,39 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
-import { MOTION_FILMS, MOTION_SECTIONS, MOTION_STATUS_LABEL } from '@/lib/motion';
 import type { MotionFilm, MotionStatus } from '@/lib/motion';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import { rangeText } from '@/lib/shell-data';
-import type { ShellMode } from '@/lib/shell-data';
+import type { ShellMode, ShellSection } from '@/lib/shell-data';
 
 import type { FilmCutState } from './FilmCutPlayer';
 import FilmCutPlayer, { useFilmCut } from './FilmCutPlayer';
 import { cutWords, megabytes, reviewWords } from './records-words';
-import { motionSections } from './sections';
+import type { MotionSectionInfo } from './sections';
 
 import '../graphics/graphics.css';
 import './motion.css';
 
 const TITLE = PAGE_NAMES.motion.name;
 const MODES: readonly ShellMode[] = ['book'];
-const SECTIONS = motionSections('index');
 const LEAD =
   'Every film on the General Translation motion roster, with its length and its status. Each rendered film plays here from the copy the site publishes.';
 const NOTE =
   'A film is rendered when its final render exists, in production when its folder or research package exists, and planned otherwise. A final render without a web copy stays in the motion folder, and its row gives the path.';
 
-function countOf(status: MotionStatus): number {
-  return MOTION_FILMS.filter((film) => film.status === status).length;
-}
+/**
+ * The roster as the server page passes it: the films with the fields this
+ * page reads (page.tsx, rosterFilm), the three sections, the status words
+ * and the shell's sections, so the client never bundles the generated
+ * src/lib/motion.ts with its search text.
+ */
+export type MotionRoster = {
+  films: readonly MotionFilm[];
+  sections: readonly MotionSectionInfo[];
+  statusLabel: Readonly<Record<MotionStatus, string>>;
+  shellSections: readonly ShellSection[];
+};
 
 /** The film's local path the meta line names: the final render when it is not published, the folder while the film is in production. */
 function localPath(film: MotionFilm): string | undefined {
@@ -115,14 +122,14 @@ function RecordLine({ film }: { film: MotionFilm }) {
 }
 
 /** A roster row's meta line: the cut's running time, its note, its status and its local path. */
-function MetaLine({ film }: { film: MotionFilm }) {
+function MetaLine({ film, statusLabel }: { film: MotionFilm; statusLabel: MotionRoster['statusLabel'] }) {
   const path = localPath(film);
   return (
     <p className='gx-line'>
       {film.runtime ?? film.length}
       {film.note ? ` · ${film.note}` : null}
       {' · '}
-      <span className={cn('mo-status', film.status === 'rendered' && 'is-rendered')}>{MOTION_STATUS_LABEL[film.status]}</span>
+      <span className={cn('mo-status', film.status === 'rendered' && 'is-rendered')}>{statusLabel[film.status]}</span>
       {path ? (
         <>
           {' · '}
@@ -165,6 +172,7 @@ function CutStack({ state, line }: CutStackProps) {
 type FilmBodyProps = {
   film: MotionFilm;
   summary: ReactNode;
+  statusLabel: MotionRoster['statusLabel'];
   /** the full record blocks of each cut without a page, by the cut's row id */
   records: Readonly<Record<string, ReactNode>>;
 };
@@ -179,7 +187,7 @@ type FilmBodyProps = {
  * the record line. The record and meta lines of a film with versions sit in
  * a CutStack, so a switch moves nothing below them.
  */
-function FilmBody({ film, summary, records }: FilmBodyProps) {
+function FilmBody({ film, summary, statusLabel, records }: FilmBodyProps) {
   const state = useFilmCut(film);
   const { current } = state;
   const view = current.film;
@@ -203,12 +211,13 @@ function FilmBody({ film, summary, records }: FilmBodyProps) {
           {more}
         </details>
       ) : null}
-      <CutStack state={state} line={(cut) => <MetaLine film={cut} />} />
+      <CutStack state={state} line={(cut) => <MetaLine film={cut} statusLabel={statusLabel} />} />
     </div>
   );
 }
 
 type MotionBookProps = {
+  roster: MotionRoster;
   summaries: Readonly<Record<string, ReactNode>>;
   /** the full record blocks of each cut of a film without a page, by the cut's row id */
   records: Readonly<Record<string, ReactNode>>;
@@ -233,7 +242,9 @@ type MotionBookProps = {
  * selected through the shell, and a selection from anywhere else jumps the
  * sheet to its row. Jumps are instant.
  */
-function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated }: MotionBookProps) {
+function MotionBook({ roster, summaries, records, sheetRef, jumpRef, activeOut, updated }: MotionBookProps) {
+  const { films, sections, statusLabel } = roster;
+  const countOf = (status: MotionStatus) => films.filter((film) => film.status === status).length;
   const { active, select } = usePtShell();
   activeOut.current = active;
 
@@ -248,14 +259,14 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
         note={NOTE}
         updated={updated}
         facts={[
-          { icon: 'done', key: 'Rendered', value: `${countOf('rendered')} of ${MOTION_FILMS.length}` },
+          { icon: 'done', key: 'Rendered', value: `${countOf('rendered')} of ${films.length}` },
           { icon: 'in-progress', key: 'In production', value: countOf('in-production') },
           { icon: 'planned', key: 'Planned', value: countOf('planned') },
         ]}
         contents={
           <nav className='gx-toc pt-book-toc' aria-label='Contents'>
-            {MOTION_SECTIONS.map((section) => {
-              const run = MOTION_FILMS.filter((film) => film.section === section.id);
+            {sections.map((section) => {
+              const run = films.filter((film) => film.section === section.id);
               const first = run[0];
               if (!first) return null;
               return (
@@ -269,8 +280,8 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
         }
       />
 
-      {MOTION_SECTIONS.filter((section) => MOTION_FILMS.some((film) => film.section === section.id)).map((section, i) => {
-        const run = MOTION_FILMS.filter((film) => film.section === section.id);
+      {sections.filter((section) => films.some((film) => film.section === section.id)).map((section, i) => {
+        const run = films.filter((film) => film.section === section.id);
         return (
           <section key={section.id} className='pt-book-part gx-cat' aria-labelledby={`mo-${section.id}`}>
             <div className='gx-sec pt-book-sec'>
@@ -296,7 +307,7 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
                   <div className='gx-n'>
                     <b>{film.n}</b>
                   </div>
-                  <FilmBody film={film} summary={summaries[film.id]} records={records} />
+                  <FilmBody film={film} summary={summaries[film.id]} statusLabel={statusLabel} records={records} />
                 </article>
               );
             })}
@@ -308,6 +319,7 @@ function MotionBook({ summaries, records, sheetRef, jumpRef, activeOut, updated 
 }
 
 type MotionViewerProps = {
+  roster: MotionRoster;
   /** each film's summary, rendered on the server, by film id */
   summaries: Readonly<Record<string, ReactNode>>;
   /** the contact sheet and script blocks of each cut of a film without a page, rendered on the server, by the cut's row id */
@@ -324,18 +336,18 @@ type MotionViewerProps = {
  * the row in view. A series row in the list opens its package page; the
  * spy only selects, so scrolling past a series row never navigates.
  */
-export default function MotionViewer({ summaries, records, updated }: MotionViewerProps) {
+export default function MotionViewer({ roster, summaries, records, updated }: MotionViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
-  const activeOut = useRef(MOTION_FILMS[0]?.id ?? '');
+  const activeOut = useRef(roster.films[0]?.id ?? '');
 
   return (
     <ViewerShell
       id='motion'
       title={TITLE}
       mark='pt'
-      count={`${MOTION_FILMS.length} films`}
-      sections={SECTIONS}
+      count={`${roster.films.length} films`}
+      sections={roster.shellSections}
       modes={MODES}
       thumb='row'
       surfaces='site'
@@ -348,6 +360,7 @@ export default function MotionViewer({ summaries, records, updated }: MotionView
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
         <MotionBook
+          roster={roster}
           summaries={summaries}
           records={records}
           sheetRef={sheetRef}
