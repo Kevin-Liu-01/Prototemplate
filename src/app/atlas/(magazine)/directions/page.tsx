@@ -7,7 +7,7 @@ const route = seoRoute({
   title: 'Press directions',
   kind: 'page',
   description:
-    'Seven directions for the GT Atlas press page, each opening on one issue, the first Chinese translation of Euclid, as a single full-screen cover.',
+    'Seven directions for the Atlas press page, each opening on one issue, the first Chinese translation of Euclid, as a single full-screen cover.',
   crumbs: [{ name: PAGE_NAMES.press.name, path: '/atlas' }],
 });
 

@@ -56,7 +56,7 @@ export default function Rail({
       <Link
         href={home}
         className='gtp-rail-home'
-        aria-label='GT Atlas, all stories'
+        aria-label='Atlas, all stories'
       >
         <PressMark size={30} />
       </Link>

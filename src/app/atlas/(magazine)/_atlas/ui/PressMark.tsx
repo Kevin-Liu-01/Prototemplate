@@ -2,7 +2,7 @@ import { useId } from 'react';
 
 import { GT_MARK_PATH } from './GtMark';
 
-/* The GT Atlas imprint: a book stood upright, its board, spine and page
+/* The Atlas imprint: a book stood upright, its board, spine and page
    block drawn in lines of one weight, the spine running from the cap height
    to the baseline as the board's top and the page block's foot do. Inside
    the board is its cover, a solid panel with a small GT monogram cut

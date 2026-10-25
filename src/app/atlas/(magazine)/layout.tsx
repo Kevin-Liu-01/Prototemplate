@@ -10,7 +10,7 @@ import './_atlas/styles/decorations.css';
 /** The faces every press page opens on: its sans and its serif, Katagami Text and Katagami Serif. */
 const FACES = ['/fonts/katagami/KatagamiText-latin.woff2', '/fonts/katagami/KatagamiSerif-latin.woff2'];
 
-/* GT Atlas, General Translation's magazine, kept here at /atlas, the path
+/* Atlas, General Translation's magazine, kept here at /atlas, the path
    it has on generaltranslation.com. Outside the viewer shell, with its own type and
    colors; each route's head comes from seoRoute like every other page. The
    faces it opens on are preloaded, so the text does not change face once it

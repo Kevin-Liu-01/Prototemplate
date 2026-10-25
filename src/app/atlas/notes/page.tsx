@@ -9,12 +9,12 @@ const route = seoRoute({
   path: '/atlas/notes',
   title: PAGE_NAMES.atlas.name,
   kind: 'page',
-  description: 'Why General Translation publishes long writing as GT Atlas, a shelf of books, and the three looks a story is set in so far.',
+  description: 'Why General Translation publishes long writing as Atlas, a shelf of books, and the three looks a story is set in so far.',
 });
 
 export const metadata = route.metadata;
 
-/** /atlas/notes: the notes on GT Atlas, read as one book on the viewer shell. */
+/** /atlas/notes: the notes on Atlas, read as one book on the viewer shell. */
 export default function AtlasPage() {
   return (
     <>

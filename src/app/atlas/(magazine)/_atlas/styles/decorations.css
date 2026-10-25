@@ -1,4 +1,4 @@
-/* GT Atlas's magazine decorations (ui/Decor.tsx): each story keeps its own
+/* Atlas's magazine decorations (ui/Decor.tsx): each story keeps its own
    layout and type, and in the magazine edition (data-edition='magazine')
    takes the magazine's decorations over them: its accent, a drop cap in it,
    the story's mark over each section head, its headline in its own hand, a

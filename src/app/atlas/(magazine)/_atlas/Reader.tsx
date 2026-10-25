@@ -116,7 +116,7 @@ export default function Reader({ story, next, edition = 'magazine' }: Props) {
           <Link
             href={home}
             className='gtp-float-home'
-            aria-label='GT Atlas, all stories'
+            aria-label='Atlas, all stories'
           >
             <PressMark size={26} />
           </Link>
@@ -300,7 +300,7 @@ function SplitBody({
             <Link
               href={homeOf(edition)}
               className='gtp-fuma-home'
-              aria-label='GT Atlas, all stories'
+              aria-label='Atlas, all stories'
             >
               <PressMark size={24} />
             </Link>

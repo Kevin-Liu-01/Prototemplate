@@ -4,7 +4,7 @@ import { createContext, useContext } from 'react';
 
 import { HOME, type Where } from './coords';
 
-/* Which edition of GT Atlas a page belongs to. The magazine is /atlas: each
+/* Which edition of Atlas a page belongs to. The magazine is /atlas: each
    story a magazine on the rack and a magazine feature to read. The shelf is
    the direction before it, kept explorable at /atlas/shelf: each story a
    book on the shelf, read in its own look (the docs reader, Fumadocs' own

@@ -28,7 +28,7 @@ function shelfRoute(story: Story) {
     path: `/atlas/shelf/${story.slug}`,
     title: `${story.title}, on the shelf`,
     kind: 'page',
-    description: `${story.title}, as GT Atlas set it before the magazine: ${LOOKS[story.look]}.`.slice(0, 160),
+    description: `${story.title}, as Atlas set it before the magazine: ${LOOKS[story.look]}.`.slice(0, 160),
     crumbs: [
       { name: PAGE_NAMES.press.name, path: '/atlas' },
       { name: 'The shelf', path: '/atlas/shelf' },

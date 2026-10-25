@@ -207,7 +207,7 @@ export function issuePages(
   // that keeps its place is the issue's colophon: the imprint, the issue, how it was set and where it was filed from
   const colophon = paper(
     () => `<div class="gtr gtr-in gtr-colophon${(opening.length + body.length) % 2 ? '' : ' l'}" style="${vars}">
-      <div class="gtr-colo">${atlasMark('var(--paper)')}<p><b>GT Atlas</b> No. ${pad(story.n)}, ${month}</p><p>Set in Katagami Text and Katagami Serif. Compiled and published on the web by General Translation.</p><p>Filed from San Francisco, ${escapeHtml(dms(story.dateline.lat, 'lat'))} ${escapeHtml(dms(story.dateline.lon, 'lon'))}</p></div>
+      <div class="gtr-colo">${atlasMark('var(--paper)')}<p><b>Atlas</b> No. ${pad(story.n)}, ${month}</p><p>Set in Katagami Text and Katagami Serif. Compiled and published on the web by General Translation.</p><p>Filed from San Francisco, ${escapeHtml(dms(story.dateline.lat, 'lat'))} ${escapeHtml(dms(story.dateline.lon, 'lon'))}</p></div>
     </div>`
   );
   const blank = spread && (opening.length + body.length) % 2 ? [colophon] : [];

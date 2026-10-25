@@ -62,7 +62,7 @@ test('posts: index, canonical on generaltranslation.com/en-US/blog, not listed',
   });
 });
 
-test('GT Atlas: a story that is a GT post takes the post as its canonical; the rest are their own', () => {
+test('Atlas: a story that is a GT post takes the post as its canonical; the rest are their own', () => {
   assert.deepEqual(policyFor('/atlas/fuma-nama'), {
     index: true,
     canonical: 'https://generaltranslation.com/en-US/blog/fuma-nama',
@@ -73,7 +73,7 @@ test('GT Atlas: a story that is a GT post takes the post as its canonical; the r
   assert.deepEqual(policyFor('/atlas/notes'), indexed('/atlas/notes'));
 });
 
-test('GT Atlas directions: design studies of the magazine page, noindex with their own canonical', () => {
+test('Atlas directions: design studies of the magazine page, noindex with their own canonical', () => {
   for (const path of ['/atlas/directions', '/atlas/directions/riffle', '/atlas/directions/measure', '/atlas/shelf', '/atlas/shelf/translating-euclid', '/atlas/shelf/fuma-nama']) {
     assert.deepEqual(policyFor(path), study(path), path);
   }

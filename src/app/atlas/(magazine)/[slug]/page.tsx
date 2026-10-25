@@ -42,7 +42,7 @@ function storyRoute(story: Story) {
     published: story.date,
     authors: story.authors,
     // the issue's own share card (public/atlas/og)
-    image: { url: `/atlas/og/${story.slug}.png`, width: 1200, height: 630, type: 'image/png', alt: `${story.title}, GT Atlas` },
+    image: { url: `/atlas/og/${story.slug}.png`, width: 1200, height: 630, type: 'image/png', alt: `${story.title}, Atlas` },
   });
 }
 

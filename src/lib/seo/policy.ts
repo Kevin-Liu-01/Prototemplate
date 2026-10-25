@@ -53,7 +53,7 @@ export function isPrivatePath(path: string): boolean {
   return PRIVATE_PATHS.some((base) => p === base || p.startsWith(`${base}/`));
 }
 
-/** The GT Atlas stories that are GT blog posts: like /blog/<slug>, each takes the post as its canonical. */
+/** The Atlas stories that are GT blog posts: like /blog/<slug>, each takes the post as its canonical. */
 export const PRESS_POSTS: readonly string[] = ['designing-docs-for-humans', 'rewriting-our-docs', 'fuma-nama'];
 
 export type SeoPolicy = {

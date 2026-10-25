@@ -7,15 +7,15 @@ import Landing from '../_atlas/Landing';
 
 const route = seoRoute({
   path: '/atlas/shelf',
-  title: 'GT Atlas, the shelf',
+  title: 'Atlas, the shelf',
   kind: 'page',
-  description: 'The direction GT Atlas took before the magazine, kept to explore: each story a hardcover on a shelf, read in a look of its own.',
+  description: 'The direction Atlas took before the magazine, kept to explore: each story a hardcover on a shelf, read in a look of its own.',
   crumbs: [{ name: PAGE_NAMES.press.name, path: '/atlas' }],
 });
 
 export const metadata = route.metadata;
 
-/* The shelf: GT Atlas as it stood before the magazine, every story a book
+/* The shelf: Atlas as it stood before the magazine, every story a book
    on one shelf and read in its own look (the docs reader, Fumadocs' own
    look, the printed book). Its links stay on the shelf. */
 export default function PressShelfPage() {

@@ -318,7 +318,7 @@ export default function Book({
           <div className='gtp-book-inside'>
             <dl>
               <dt>Press</dt>
-              <dd>GT Atlas</dd>
+              <dd>Atlas</dd>
               <dt>By</dt>
               <dd>{story.authors.join(', ')}</dd>
               {story.date ? (

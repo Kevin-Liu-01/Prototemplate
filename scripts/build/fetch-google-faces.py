@@ -49,7 +49,7 @@ WANT = [
     ('Archivo', 0, 500, 'latin'), ('Archivo', 0, 600, 'latin'),
     ('Arimo', 0, 400, 'latin'), ('Arimo', 0, 700, 'latin'), ('Arimo', 1, 400, 'latin'),
     ('Noto Sans', 0, 400, 'greek'), ('Noto Sans', 0, 400, 'greek-ext'),
-    # GT Atlas as a magazine (src/app/atlas/(magazine)/_atlas/magazine.css): Bodoni Moda for the display type, with its
+    # Atlas as a magazine (src/app/atlas/(magazine)/_atlas/magazine.css): Bodoni Moda for the display type, with its
     # optical-size axis, and Newsreader across its weights for the text, so bold reads as drawn rather than smeared
     ('Bodoni Moda', 0, 400, 'latin', 'opsz,wght@6..96,400..900', 'bodoni-moda-opsz.woff2'),
     ('Bodoni Moda', 1, 400, 'latin', 'ital,opsz,wght@1,6..96,400..900', 'bodoni-moda-opsz-italic.woff2'),

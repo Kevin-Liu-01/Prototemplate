@@ -23,7 +23,7 @@ const SPY_MARGIN = '0px 0px -90% 0px';
 const SETTLE_MS = 1200;
 
 const LEAD =
-  'GT Atlas is where General Translation publishes long writing. Each story is an issue of a magazine, with a cover, art and colors of its own, and it reads as a magazine feature.';
+  'Atlas is where General Translation publishes long writing. Each story is an issue of a magazine, with a cover, art and colors of its own, and it reads as a magazine feature.';
 const NOTE =
   'These notes give the reasons for a magazine and show the magazine as it stands. Then come the shelf it grew from, kept to explore, and the shelf’s three ways of setting a story: the docs reader, Fumadocs’ own interface and a printed book. The covers, Taylor Fang’s seven directions for the cover and the languages follow.';
 
@@ -45,7 +45,7 @@ const PARTS: readonly Part[] = [
       'A story takes its look from its subject. In the magazine each story’s colors and drawings come from what it is about; on the shelf, Fuma Nama’s profile was set in Fumadocs, the interface he made, and the history of Euclid’s Elements as a printed book.',
       'Atlas is one module, src/app/atlas/(magazine)/_atlas in Prototemplate, with its own type and colors, so gt-cloud’s Atlas app serves the same module at generaltranslation.com/atlas without the hub around it.',
     ],
-    figures: [{ src: '/shots/atlas/rack.webp', alt: 'The GT Atlas front page: four paper magazines in a row', caption: 'The front page. The magazine under the pointer lifts and leans toward it; a click opens the story.' }],
+    figures: [{ src: '/shots/atlas/rack.webp', alt: 'The Atlas front page: four paper magazines in a row', caption: 'The front page. The magazine under the pointer lifts and leans toward it; a click opens the story.' }],
   },
   {
     id: 'magazine',
@@ -57,10 +57,10 @@ const PARTS: readonly Part[] = [
       'On the front page each story is a thin magazine in the form of Riffle, the first of Taylor Fang’s directions, printed on the story’s own stock: its cover’s colors, marbling and design, with the folds, specks and grain of a scanned sheet over them, its name up the right edge in Katagami Text, and the folio at the foot. A click opens the story. Lifting a corner shows the inside page, a survey sheet of the story’s place drawn from the globe’s land at a dot to the degree in the magazine’s own colours, its legend and scale bar where the corner lifts (Ricci’s road from Macau to Peking for Euclid, Hong Kong for Fuma Nama, San Francisco for the docs essays), and a click on the lifted corner opens the magazine itself over the hall: a click on the right page turns it, a click on the left page turns it back, as do the arrows under it, each leaf one rigid sheet turned by the compositor in under half a second. The magazine holds the whole article, fetched as the corner lifts and set on a Swiss grid after a printed museum magazine: an opening spread of the story’s picture across the gutter over the headline and the deck, with a legend at its foot as a map’s (an inset map of the story’s place beside the issue, the byline and the date), then every paragraph, list and note in two columns with a drop cap under a running head and over a folio line, and each picture placed by its shape: to the edges over a band for its caption, on a page of its own inside the margins, in a band across the top of a page, in a whole column beside the text, or within a column. Every line is in Katagami Text and Katagami Serif. The front page is drawn over a layout sheet whose guides are measured from the page: each magazine’s sides and top, the horizon its leaves stand on, the nameplate’s cap height and baseline, and the globe’s centre, with Euclid’s first construction faint behind the middle magazines. The guides run the sheet’s full width and height in one ink, and grid references letter each magazine’s column and number the rows between them, as an atlas indexes a sheet. The nameplate takes its size from the globe’s dial, so the imprint’s right side and the globe’s centre stand on one guide. The nameplate is the book imprint drawn in lines of one weight, exactly as tall as the capitals, then Atlas in Katagami Serif at its regular weight, with the view and theme controls opposite it in the cell the guides draw there, three parts between hairlines; along the foot run the globe with the languages round its dial, the chosen one at its right (under the pointer the others stand out round it, and a pick turns the ring until the chosen one is at the right), and, in the cell between the lines over and under the globe, the city the reader is in with its coordinates, as the host’s edge reads it from their address (San Francisco until then, or where it cannot say).',
       'The shelf, the direction before the magazine, is kept to explore: the same stories as hardcovers on one shelf, read in the same looks without the magazine’s text.',
     ],
-    links: [{ label: 'The shelf', href: '/atlas/shelf', text: 'GT Atlas before the magazine: each story a book on one shelf, read in a look of its own.' }],
+    links: [{ label: 'The shelf', href: '/atlas/shelf', text: 'Atlas before the magazine: each story a book on one shelf, read in a look of its own.' }],
     figures: [
       { src: '/shots/atlas/feature.webp', alt: 'Translating Euclid in the magazine: the opening paragraph with its drop cap beside the globe', caption: 'Translating Euclid in the magazine: Taylor Fang’s book with its Katagami Serif drop cap, and the globe on the stage beside it.' },
-      { src: '/shots/atlas/shelf.webp', alt: 'The GT Atlas shelf: four books in a row, turned to show their spines', caption: 'The shelf, kept at /atlas/shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' },
+      { src: '/shots/atlas/shelf.webp', alt: 'The Atlas shelf: four books in a row, turned to show their spines', caption: 'The shelf, kept at /atlas/shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' },
     ],
   },
   {
