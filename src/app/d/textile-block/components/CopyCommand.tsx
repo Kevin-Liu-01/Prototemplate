@@ -36,7 +36,12 @@ export default function CopyCommand() {
         $
       </span>
       <code>{INSTALL_COMMAND}</code>
-      <button aria-label='Copy the install command' className='tb-cmd-copy' onClick={copy} type='button'>
+      <button
+        aria-label={copied ? 'Copied' : 'Copy the install command'}
+        className='tb-cmd-copy'
+        onClick={copy}
+        type='button'
+      >
         {copied ? 'copied' : 'copy'}
       </button>
     </div>

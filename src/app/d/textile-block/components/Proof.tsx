@@ -79,7 +79,12 @@ function CopySource() {
   };
 
   return (
-    <button aria-label='Copy the source file' className='tb-cmd-copy' onClick={copy} type='button'>
+    <button
+      aria-label={copied ? 'Copied' : 'Copy the source file'}
+      className='tb-cmd-copy'
+      onClick={copy}
+      type='button'
+    >
       {copied ? 'copied' : 'copy'}
     </button>
   );

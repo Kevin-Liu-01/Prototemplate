@@ -66,7 +66,7 @@ export default function InnerCourt() {
                 </header>
                 <GlazeCode code={NEXT?.code ?? ''} />
                 <footer className='gb-tab-foot'>
-                  <div className='gb-tab-chips' aria-label='Libraries'>
+                  <div className='gb-tab-chips' role='group' aria-label='Libraries'>
                     {PACKAGES.map((pkg) => (
                       <CodeChip key={pkg}>{pkg}</CodeChip>
                     ))}
@@ -166,7 +166,7 @@ export default function InnerCourt() {
                       <li key={finding}>{finding}</li>
                     ))}
                   </ol>
-                  <pre className='gb-lx-diff' aria-label='Diff'>
+                  <pre className='gb-lx-diff' role='group' aria-label='Diff'>
                     {LOCADEX_DIFF.map((line) => (
                       <span className={line.sign === '+' ? 'is-add' : 'is-del'} key={line.line}>
                         {line.sign} {line.line}

@@ -74,7 +74,7 @@ export function GreatHall() {
         ))}
       </Hall>
 
-      <div className='apg-register' aria-label='Regional variants'>
+      <div className='apg-register' role='group' aria-label='Regional variants'>
         <div className='apg-reg-rows'>
           {VARIANT_ROWS.map((row) => (
             <div className='apg-reg-row' key={row.tag}>

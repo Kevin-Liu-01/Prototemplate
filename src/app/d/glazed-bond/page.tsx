@@ -86,42 +86,44 @@ export default function GlazedBondPage() {
       <div className={`glazed-bond-root ${cinzel.variable} ${cinzelExt.variable}`}>
         <GlazeDefs />
         <Lintel />
-        <Gate />
+        <main>
+          <Gate />
 
-        <div className='gb-elevation'>
-          {/* the flank towers below the gate: the same bond, one continuous strip each */}
-          <aside className='gb-flank is-left' aria-hidden='true'>
-            <BondWall />
-          </aside>
-          <aside className='gb-flank is-right' aria-hidden='true'>
-            <BondWall />
-          </aside>
+          <div className='gb-elevation'>
+            {/* the flank towers below the gate: the same bond, one continuous strip each */}
+            <aside className='gb-flank is-left' aria-hidden='true'>
+              <BondWall />
+            </aside>
+            <aside className='gb-flank is-right' aria-hidden='true'>
+              <BondWall />
+            </aside>
 
-          <Threshold />
+            <Threshold />
 
-          <div className='gb-band' aria-hidden='true'>
-            <RosetteBand />
+            <div className='gb-band' aria-hidden='true'>
+              <RosetteBand />
+            </div>
+            <BondCourse />
+
+            <div className='gb-band' aria-hidden='true'>
+              <RosetteBand />
+            </div>
+            <RosetteCourse />
+
+            {/* no band here: the court's own crenellation is the seam above it */}
+            <InnerCourt />
+
+            <div className='gb-band' aria-hidden='true'>
+              <RosetteBand />
+            </div>
+            <Ziggurat />
+
+            <div className='gb-band' aria-hidden='true'>
+              <RosetteBand />
+            </div>
+            <Plaques />
           </div>
-          <BondCourse />
-
-          <div className='gb-band' aria-hidden='true'>
-            <RosetteBand />
-          </div>
-          <RosetteCourse />
-
-          {/* no band here: the court's own crenellation is the seam above it */}
-          <InnerCourt />
-
-          <div className='gb-band' aria-hidden='true'>
-            <RosetteBand />
-          </div>
-          <Ziggurat />
-
-          <div className='gb-band' aria-hidden='true'>
-            <RosetteBand />
-          </div>
-          <Plaques />
-        </div>
+        </main>
 
         <Foundation />
       </div>

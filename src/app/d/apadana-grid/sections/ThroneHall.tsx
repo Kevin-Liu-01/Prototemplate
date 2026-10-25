@@ -11,7 +11,8 @@
  * tiers. The band stays dark in both themes; its tokens never remap.
  */
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import type { KeyboardEvent } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
@@ -33,15 +34,36 @@ import { Rosette } from './deco/Rosette';
 import { Bay, Hall, Row } from './deco/Hall';
 import { LocaleChip } from './LocaleChip';
 
+/** Arrow keys step through the tabs and wrap; Home and End take the first and the last. */
+const TAB_STEP: Readonly<Record<string, number>> = { ArrowLeft: -1, ArrowRight: 1 };
+
 function Libraries() {
   const first = FRAMEWORKS[0];
   const [active, setActive] = useState(first?.id ?? 'next');
+  const tabs = useRef<HTMLDivElement>(null);
   const current = FRAMEWORKS.find((fw) => fw.id === active) ?? first;
   if (!current) return null;
+
+  /* one tab stop: the arrows, Home and End move the selection and its focus together */
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const at = FRAMEWORKS.indexOf(current);
+    const step = TAB_STEP[e.key];
+    let next: number;
+    if (step !== undefined) next = (at + step + FRAMEWORKS.length) % FRAMEWORKS.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = FRAMEWORKS.length - 1;
+    else return;
+    e.preventDefault();
+    const fw = FRAMEWORKS[next];
+    if (!fw) return;
+    setActive(fw.id);
+    tabs.current?.querySelector<HTMLElement>(`#apg-tab-${fw.id}`)?.focus();
+  };
+
   return (
     <div className='apg-room'>
       <h3 className='apg-room-h'>Libraries</h3>
-      <div className='apg-tabs' role='tablist' aria-label='Frameworks'>
+      <div className='apg-tabs' role='tablist' aria-label='Frameworks' ref={tabs} onKeyDown={onKeyDown}>
         {FRAMEWORKS.map((fw) => (
           <button
             key={fw.id}

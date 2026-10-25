@@ -7,8 +7,9 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 /**
  * The page's one copy control: a button that writes `text` to the
  * clipboard and says so for a moment. Used for the hero command and the
- * code tablet's bar. The label flips to `copied` and back; the timer is
- * cleared on unmount.
+ * code tablet's bar. The label flips to `copied` only once the write has
+ * succeeded, and back; when the clipboard is blocked the label stays and
+ * the text stays selectable. The timer is cleared on unmount.
  */
 export type CopyButtonProps = {
   text: string;
@@ -25,11 +26,15 @@ export default function CopyButton({ text, className, children, idle = 'copy' }:
 
   useMountEffect(() => () => window.clearTimeout(timer.current));
 
-  const copy = () => {
-    void navigator.clipboard?.writeText(text);
-    setDone(true);
-    window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setDone(false), 1400);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setDone(true);
+      window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setDone(false), 1400);
+    } catch {
+      // clipboard blocked: the text stays selectable on the page
+    }
   };
 
   return (

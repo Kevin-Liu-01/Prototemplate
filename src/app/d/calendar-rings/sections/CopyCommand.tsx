@@ -27,7 +27,7 @@ export function CopyCommand() {
   return (
     <div className='cr-cmd'>
       <code className='cr-cmd-text'>{INSTALL_COMMAND}</code>
-      <button type='button' className='cr-cmd-btn' onClick={copy} aria-label='Copy the install command'>
+      <button type='button' className='cr-cmd-btn' onClick={copy} aria-label={copied ? 'Copied' : 'Copy the install command'}>
         {copied ? 'Copied' : 'Copy'}
       </button>
     </div>

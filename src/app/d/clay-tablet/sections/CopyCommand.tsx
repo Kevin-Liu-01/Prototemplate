@@ -30,7 +30,7 @@ export default function CopyCommand({ text, compact = false, label = 'Copy' }: C
 
   if (compact) {
     return (
-      <button type='button' className='ct-copy is-compact' onClick={copy} aria-label={`${label} ${text}`}>
+      <button type='button' className='ct-copy is-compact' onClick={copy} aria-label={copied ? 'Copied' : `${label} ${text}`}>
         {copied ? 'Copied' : label}
       </button>
     );
@@ -39,7 +39,7 @@ export default function CopyCommand({ text, compact = false, label = 'Copy' }: C
   return (
     <div className='ct-cmd'>
       <code className='ct-cmd-text'>{text}</code>
-      <button type='button' className='ct-copy' onClick={copy} aria-label={`${label} ${text}`}>
+      <button type='button' className='ct-copy' onClick={copy} aria-label={copied ? 'Copied' : `${label} ${text}`}>
         {copied ? 'Copied' : label}
       </button>
     </div>

@@ -56,9 +56,13 @@ export default function ApadanaGridPage() {
       <div className={`apadana-grid-root ${display.variable}`}>
         <div className='apg-rail'>
           <Nav />
-          <Portico />
-          <Proof />
-          <GreatHall />
+          {/* the main landmark holds the first rail's halls: the nav is sticky
+              inside this rail, so the rail itself cannot move into a wrapper */}
+          <main>
+            <Portico />
+            <Proof />
+            <GreatHall />
+          </main>
         </div>
         <ThroneHall />
         <div className='apg-rail is-lower'>
