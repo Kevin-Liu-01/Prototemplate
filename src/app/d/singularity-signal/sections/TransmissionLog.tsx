@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { useRef } from 'react';
 
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
-import PrismaticField from '@/components/shared/PrismaticField';
+import LazyPrismaticField from '@/app/d/toolchain/components/LazyPrismaticField';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 import GlyphRain from '../../singularity/sections/GlyphRain';
 
@@ -72,7 +72,7 @@ export default function TransmissionLog() {
           <span className='sgs-caret' aria-hidden />
         </div>
       </div>
-      <PrismaticField className='sgs-beam' preset='1' speed={0.35} params={{ exposureScale: 1500 }} />
+      <LazyPrismaticField className='sgs-beam' preset='1' speed={0.35} params={{ exposureScale: 1500 }} />
     </section>
   );
 }

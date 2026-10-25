@@ -17,7 +17,7 @@ import {
 import { useRef, type RefObject } from 'react';
 
 import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
-import PrismaticField from '@/components/shared/PrismaticField';
+import LazyPrismaticField from '../components/LazyPrismaticField';
 import LocaleRouting from '@/app/d/toolchain/diagrams/LocaleRouting';
 import SdkLedger from '@/app/d/toolchain/diagrams/SdkLedger';
 import StatRow from '@/app/d/toolchain/diagrams/StatRow';
@@ -543,7 +543,7 @@ export default function Bento() {
 
       {/* ---- shell 6: delivery as a full-bleed inverse band, the field behind it ---- */}
       <div className='tc-delivery-band'>
-        <PrismaticField
+        <LazyPrismaticField
           className='tc-delivery-field'
           preset='1'
           speed={0.4}

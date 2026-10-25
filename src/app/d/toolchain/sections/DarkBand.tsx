@@ -7,7 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CheckCircle, Code2, Globe, Layers, Play, Terminal } from 'lucide-react';
 import { useRef, type ReactNode } from 'react';
 
-import PrismaticField from '@/components/shared/PrismaticField';
+import LazyPrismaticField from '../components/LazyPrismaticField';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import LocaleTag from '../components/LocaleTag';
@@ -52,7 +52,7 @@ const CAP_MARKS: Record<string, ReactNode> = {
   'edge-cdn': <Globe {...CAP_ICON} />,
   review: <CheckCircle {...CAP_ICON} />,
   context: <Layers {...CAP_ICON} />,
-  locadex: <img className='tcb-cap-lx' src='/brand/no-bg-locadex-logo-light.png' alt='' />,
+  locadex: <img className='tcb-cap-lx' src='/brand/no-bg-locadex-logo-light.png' alt='' loading='lazy' decoding='async' />,
   'gt-cli': <Terminal {...CAP_ICON} />,
   'app-code': <Code2 {...CAP_ICON} />,
 };
@@ -359,7 +359,7 @@ export default function DarkBand({
             {/* With cursor effects on, the cell is too tight for the options
                 menu, so the field uses the lens effect without chrome. */}
             {cursorEffects ? (
-              <PrismaticField
+              <LazyPrismaticField
                 className='tcb-cli-field'
                 preset='1'
                 speed={0.4}
@@ -369,7 +369,7 @@ export default function DarkBand({
                 effectsMenu={false}
               />
             ) : (
-              <PrismaticField className='tcb-cli-field' preset='1' speed={0.4} params={{ exposureScale: 1600 }} />
+              <LazyPrismaticField className='tcb-cli-field' preset='1' speed={0.4} params={{ exposureScale: 1600 }} />
             )}
             <div className='tcb-term'>
               <div className='tcb-term-bar'>

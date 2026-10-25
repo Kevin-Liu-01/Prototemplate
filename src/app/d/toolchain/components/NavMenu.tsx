@@ -28,7 +28,7 @@ function MenuMark({ item }: { item: MenuItem }) {
         aria-hidden
         className={item.invertsInDark ? 'tc-menu-glyph is-inverting' : 'tc-menu-glyph'}
         height={15}
-        loading='eager'
+        loading='lazy'
         src={item.img}
         unoptimized
         width={15}

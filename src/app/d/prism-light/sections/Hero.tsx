@@ -2,6 +2,7 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useRef } from 'react';
 
@@ -10,13 +11,19 @@ import { startEveryMorph } from '@/app/d/toolchain/sections/every-morph';
 import PrismaticField from '@/components/shared/PrismaticField';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
-import PrismScene from './PrismScene';
-
 import './chip-consistency.css';
 import './hero-every.css';
 import './hero-terminal.css';
 
 gsap.registerPlugin(useGSAP);
+
+/* three.js (about 140 KB compressed) loads after the page renders: the server
+   renders the scene's empty holder, and the glass mounts into the same box
+   once the chunk arrives. */
+const PrismScene = dynamic(() => import('./PrismScene'), {
+  ssr: false,
+  loading: () => <div className='plh-p-scene' aria-hidden />,
+});
 
 /**
  * THE PRISM DELIVERY PANEL — this fork's hero, recomposed side by side.

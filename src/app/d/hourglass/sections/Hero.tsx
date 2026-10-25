@@ -630,6 +630,10 @@ export default function Hero() {
         col: number;
         strip: number;
         shown: boolean;
+        /* the dim and rail-glow values last written, so a frame that leaves
+           them unchanged does not restyle the strip's gradients */
+        dim: string;
+        glow: string;
       };
 
       const slots: StripSlot[] = gsap.utils.toArray<HTMLElement>('.hg-strip', stage).map((el) => ({
@@ -638,6 +642,8 @@ export default function Hero() {
         col: Number(el.dataset.col ?? '0'),
         strip: Number(el.dataset.strip ?? '0'),
         shown: true,
+        dim: '',
+        glow: '',
       }));
 
       let rail = buildRail(stage.clientWidth);
@@ -676,8 +682,16 @@ export default function Hero() {
           slot.shown = true;
           style.visibility = 'visible';
           style.opacity = alpha.toFixed(3);
-          style.setProperty('--hgd', dimAt(mid).toFixed(3));
-          style.setProperty('--hgr', railGlowAt(mid).toFixed(3));
+          const dim = dimAt(mid).toFixed(3);
+          if (dim !== slot.dim) {
+            slot.dim = dim;
+            style.setProperty('--hgd', dim);
+          }
+          const glow = railGlowAt(mid).toFixed(3);
+          if (glow !== slot.glow) {
+            slot.glow = glow;
+            style.setProperty('--hgr', glow);
+          }
           style.transform = `translate3d(${(sign * (p0.x + half)).toFixed(2)}px, 0px, ${p0.z.toFixed(2)}px) rotateY(${(sign * turn).toFixed(5)}rad)`;
         }
       };

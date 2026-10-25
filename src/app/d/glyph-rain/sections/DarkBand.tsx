@@ -9,7 +9,7 @@ import { useRef, type ReactNode } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import TcStackIso, { STACK_LAYERS } from '@/app/d/toolchain/diagrams/tc-stack-iso';
-import PrismaticField from '@/components/shared/PrismaticField';
+import LazyPrismaticField from '@/app/d/toolchain/components/LazyPrismaticField';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { createInkField } from './band/inkField';
@@ -53,7 +53,7 @@ const CAP_MARKS: Record<string, ReactNode> = {
   'edge-cdn': <Globe {...CAP_ICON} />,
   review: <CheckCircle {...CAP_ICON} />,
   context: <Layers {...CAP_ICON} />,
-  locadex: <img className='tcb-cap-lx' src='/brand/no-bg-locadex-logo-light.png' alt='' />,
+  locadex: <img className='tcb-cap-lx' src='/brand/no-bg-locadex-logo-light.png' alt='' loading='lazy' decoding='async' />,
   'gt-cli': <Terminal {...CAP_ICON} />,
   'app-code': <Code2 {...CAP_ICON} />,
 };
@@ -368,7 +368,7 @@ export default function DarkBand() {
           {/* The band's one light moment: a real `gt translate` run floating
               in the dark centre of the prismatic panel. Five lines, no more. */}
           <div className='tcb-cell tcb-cell-cli' data-cell>
-            <PrismaticField className='tcb-cli-field' preset='1' speed={0.4} params={{ exposureScale: 1600 }} />
+            <LazyPrismaticField className='tcb-cli-field' preset='1' speed={0.4} params={{ exposureScale: 1600 }} />
             <div className='tcb-term'>
               <div className='tcb-term-bar'>
                 <span>gt cli</span>

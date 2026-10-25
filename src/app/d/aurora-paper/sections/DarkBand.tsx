@@ -52,7 +52,7 @@ const CAP_MARKS: Record<string, ReactNode> = {
   'edge-cdn': <Globe {...CAP_ICON} />,
   review: <CheckCircle {...CAP_ICON} />,
   context: <Layers {...CAP_ICON} />,
-  locadex: <img className='tcb-cap-lx' src='/brand/no-bg-locadex-logo-light.png' alt='' />,
+  locadex: <img className='tcb-cap-lx' src='/brand/no-bg-locadex-logo-light.png' alt='' loading='lazy' decoding='async' />,
   'gt-cli': <Terminal {...CAP_ICON} />,
   'app-code': <Code2 {...CAP_ICON} />,
 };

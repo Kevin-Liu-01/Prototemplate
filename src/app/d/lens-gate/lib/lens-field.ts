@@ -683,8 +683,14 @@ export function createLensField(
     destroy() {
       sub.observer?.disconnect();
       subscribers.delete(sub);
-      // The engine context is deliberately kept for the session — tearing it
-      // down per unmount is what exhausted the browser's context budget.
+      /* The engine's context stays for the session, since a context per
+         mount exhausts the browser's budget; its drawing buffer shrinks to
+         one pixel once nothing draws through it, and the next draw sizes it
+         again. */
+      if (subscribers.size === 0 && engine) {
+        engine.canvas.width = 1;
+        engine.canvas.height = 1;
+      }
     },
   };
 }

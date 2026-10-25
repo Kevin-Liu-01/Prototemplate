@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
-import PrismaticField from '@/components/shared/PrismaticField';
+import LazyPrismaticField from '../components/LazyPrismaticField';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { tokenize } from '../sections/code';
@@ -661,7 +661,7 @@ export default function StoryCinema() {
               field under the page, dark until the translation sweep, spent
               fully when the merged site returns. */}
           <div className='tc-cinema-light' data-field aria-hidden>
-            <PrismaticField className='tc-cinema-light-canvas' preset='1' speed={0.5} params={{ exposureScale: 2300 }} />
+            <LazyPrismaticField className='tc-cinema-light-canvas' preset='1' speed={0.5} params={{ exposureScale: 2300 }} />
           </div>
 
           <div className='tc-cinema-demo' data-page>
