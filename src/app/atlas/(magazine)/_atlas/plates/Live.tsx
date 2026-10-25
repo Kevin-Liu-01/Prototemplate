@@ -412,7 +412,7 @@ const TURN = { ms: 3500, curve: easeInOut };
    as its edition numbers them. Every version is laid out, unseen, in the
    same place, so the box is always as tall as the longest and the switch
    never moves under the pointer from one script to the next. The first
-   time it is shown it comes in part by part (press.css). It steps through
+   time it is shown it comes in part by part (plates.css). It steps through
    the versions on its own while it is shown, until the reader picks one
    from the switch or a dot. */
 export function VersionsDemo() {

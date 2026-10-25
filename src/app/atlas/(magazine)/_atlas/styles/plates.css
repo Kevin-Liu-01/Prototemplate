@@ -1,0 +1,168 @@
+/* The plates a story's stage shows (plates/Plate.tsx, FrameView.tsx,
+   Live.tsx): a picture under its loupe, a loop with its ruler, and the live
+   figures, Translating Euclid's versions of the first definition among
+   them. */
+
+/* ---------- pictures and loops ---------- */
+
+.gtp-picture { position: relative; display: block; max-width: 100%; max-height: 100%; line-height: 0; cursor: zoom-in; }
+.gtp-picture img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: opacity 0.4s var(--gtp-ease); }
+/* a picture shows once it has decoded, never in halves */
+.gtp-picture img[data-loaded='false'] { opacity: 0; }
+/* the picture wraps its image, centred in the plate; the image fits the plate's box */
+.gtp-plate-view > .gtp-picture img { max-width: 100cqw; max-height: 100cqh; }
+.gtp-lens { position: absolute; width: 220px; height: 220px; transform: translate(-50%, -50%); background-repeat: no-repeat; background-color: var(--gtp-stage); box-shadow: 0 0 0 1px var(--gtp-signal), 0 18px 40px rgb(0 0 0 / 0.45); opacity: 0; pointer-events: none; transition: opacity 0.15s var(--gtp-ease); }
+.gtp-lens::before,
+.gtp-lens::after { content: ''; position: absolute; background: var(--gtp-signal); opacity: 0.6; }
+.gtp-lens::before { left: 50%; top: 42%; bottom: 42%; width: 1px; }
+.gtp-lens::after { top: 50%; left: 42%; right: 42%; height: 1px; }
+.gtp-picture[data-loupe='on'] .gtp-lens { opacity: 1; }
+
+.gtp-loop { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 14px; width: 100%; height: 100%; }
+.gtp-loop video { width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.gtp-loop-bar { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.gtp-loop-play { width: 30px; height: 30px; display: grid; place-items: center; background: var(--gtp-stage-fill); }
+.gtp-loop-play svg { width: 11px; height: 11px; }
+.gtp-loop-play:hover { background: rgb(191 226 241 / 0.14); }
+.gtp-loop-time { font-family: var(--gtp-mono); font-size: 10px; color: var(--gtp-stage-ink-2); }
+.gtp-ruler-input { appearance: none; -webkit-appearance: none; width: 100%; height: 4px; margin: 0; background: var(--gtp-stage-fill); cursor: ew-resize; }
+.gtp-ruler-input::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--gtp-signal); }
+.gtp-ruler-input::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 0; background: var(--gtp-signal); }
+.gtp-ruler-input::-webkit-slider-thumb { border-radius: 3px; }
+.gtp-ruler-input::-moz-range-thumb { border-radius: 3px; }
+
+/* ---------- live demos ---------- */
+
+.gtp-live-note { margin: 0; font-size: 13px; color: var(--gtp-stage-ink-2); }
+
+.gtp-toc { position: relative; display: grid; grid-template-columns: 14px auto; padding: 28px 36px; background: var(--gtp-paper); color: var(--gtp-ink); }
+.gtp-toc-rail { overflow: visible; }
+.gtp-toc-line { fill: none; stroke: var(--gtp-rule); stroke-width: 1.5; }
+.gtp-toc-thumb { fill: none; stroke: var(--gtp-cobalt); stroke-width: 2; }
+:root:not([data-theme='light']) .gtp-toc-thumb { stroke: #6f8cff; }
+.gtp-toc-window { transition: transform 0.35s var(--gtp-ease); }
+.gtp-toc-list { margin: 0; padding: 0; list-style: none; }
+.gtp-toc-list li { height: 30px; }
+.gtp-toc-list button { height: 30px; display: flex; align-items: center; padding-left: calc(12px + var(--lvl) * 12px); font-size: 14px; color: var(--gtp-ink-2); white-space: nowrap; }
+.gtp-toc-list button:hover { color: var(--gtp-ink); }
+.gtp-toc-list button[data-on='true'] { color: var(--gtp-ink); font-weight: 500; }
+
+.gtp-corners { display: grid; justify-items: center; gap: 20px; }
+.gtp-corners-specimen { position: relative; display: grid; gap: 14px; width: min(420px, 100%); padding: 28px; background: var(--gtp-paper); color: var(--gtp-ink); }
+.gtp-corners-search { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px; border-radius: var(--r); background: var(--gtp-fill-2); font-size: 14px; color: var(--gtp-ink-2); transition: border-radius 0.4s var(--gtp-ease); }
+.gtp-corners-search svg { width: 15px; height: 15px; }
+.gtp-corners-search kbd { margin-left: auto; font-family: var(--gtp-mono); font-size: 11px; padding: 2px 5px; border-radius: min(var(--r), 4px); background: var(--gtp-fill-2); }
+.gtp-corners-row { display: flex; gap: 10px; }
+.gtp-corners-button,
+.gtp-corners-ghost { display: inline-flex; align-items: center; height: 36px; padding: 0 16px; font-size: 14px; border-radius: var(--r); transition: border-radius 0.4s var(--gtp-ease); }
+.gtp-corners-button { background: var(--gtp-ink); color: var(--gtp-paper); font-weight: 500; }
+.gtp-corners-ghost { background: var(--gtp-fill-2); }
+.gtp-corners-card { display: grid; gap: 4px; padding: 16px; border-radius: min(var(--r), 24px); background: var(--gtp-fill); font-size: 13px; color: var(--gtp-ink-2); transition: border-radius 0.4s var(--gtp-ease); }
+.gtp-corners-card strong { font-size: 15px; font-weight: 500; color: var(--gtp-ink); }
+.gtp-corners-strike { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top right, transparent calc(50% - 1px), var(--gtp-signal) calc(50% - 1px), var(--gtp-signal) calc(50% + 1px), transparent calc(50% + 1px)); }
+
+.gtp-hits { width: min(520px, 100%); max-height: 100%; overflow: auto; padding: 22px 26px; background: var(--gtp-paper); color: var(--gtp-ink); }
+.gtp-hits-head { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 8px; }
+.gtp-hits-count { font-family: var(--gtp-mono); font-size: 11px; text-transform: uppercase; color: var(--gtp-signal); }
+.gtp-text-button { font-size: 13px; color: var(--gtp-ink-2); text-decoration: underline; text-underline-offset: 3px; }
+.gtp-text-button:hover { color: var(--gtp-ink); }
+.gtp-hits-group h4 { margin: 16px 0 4px; font-family: var(--gtp-mono); font-size: 11px; font-weight: 400; text-transform: uppercase; color: var(--gtp-ink-3); }
+.gtp-hits-group ul { margin: 0; padding: 0; list-style: none; }
+.gtp-hits-group button { position: relative; display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: center; width: 100%; padding: 6px 0; text-align: left; font-size: 15px; }
+.gtp-hits-mark { position: relative; width: 14px; height: 14px; background: var(--gtp-fill-2); }
+.gtp-hits-group button[aria-pressed='true'] .gtp-hits-mark { background: none; }
+.gtp-hits-group button[aria-pressed='true'] .gtp-hits-mark::before,
+.gtp-hits-group button[aria-pressed='true'] .gtp-hits-mark::after { content: ''; position: absolute; left: -2px; right: -2px; top: 6.5px; height: 1.5px; background: var(--gtp-signal); transform: rotate(45deg); }
+.gtp-hits-group button[aria-pressed='true'] .gtp-hits-mark::after { transform: rotate(-45deg); }
+.gtp-hits-text { position: relative; justify-self: start; transition: color 0.2s; }
+.gtp-hits-text::after { content: ''; position: absolute; left: 0; top: 52%; height: 1.5px; width: 100%; background: var(--gtp-signal); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--gtp-ease); }
+.gtp-hits-group button[aria-pressed='true'] .gtp-hits-text { color: var(--gtp-ink-3); }
+.gtp-hits-group button[aria-pressed='true'] .gtp-hits-text::after { transform: scaleX(1); }
+
+.gtp-globe-demo { display: grid; justify-items: center; align-content: center; gap: 20px; width: 100%; height: 100%; }
+.gtp-globe-demo-globe { width: min(44vh, 66%); }
+.gtp-globe-demo-text { text-align: center; display: grid; gap: 6px; }
+.gtp-globe-demo-title { margin: 0; font-size: clamp(22px, 2.4vw, 34px); line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; }
+.gtp-globe-demo-meta { margin: 0; font-family: var(--gtp-mono); font-size: 10px; letter-spacing: 0.02em; text-transform: uppercase; color: var(--gtp-stage-ink-2); }
+.gtp-globe-demo .gtp-stops { justify-self: center; }
+
+.gtp-wipe { position: relative; max-width: 100%; max-height: 100%; line-height: 0; cursor: ew-resize; touch-action: pan-y; user-select: none; }
+.gtp-wipe img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; }
+.gtp-wipe img.gtp-wipe-light { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: inset(0 0 0 var(--at)); }
+.gtp-wipe-handle { position: absolute; top: 0; bottom: 0; left: var(--at); width: 2px; margin-left: -1px; background: var(--gtp-signal); }
+.gtp-wipe-handle::before { content: ''; position: absolute; top: 50%; left: -7px; width: 16px; height: 16px; transform: translateY(-50%); background: var(--gtp-signal); }
+.gtp-wipe-tag { position: absolute; top: 10px; padding: 4px 7px; font-family: var(--gtp-mono); font-size: 10px; line-height: 1; text-transform: uppercase; background: var(--gtp-navy); color: var(--gtp-sky); }
+.gtp-wipe-tag[data-side='dark'] { left: 10px; }
+.gtp-wipe-tag[data-side='light'] { right: 10px; background: #fff; color: var(--gtp-navy); }
+.gtp-wipe-input { position: absolute; inset: auto 0 0 0; opacity: 0; pointer-events: none; }
+.gtp-wipe:has(.gtp-wipe-input:focus-visible) { outline: 1px solid var(--gtp-signal); outline-offset: 4px; }
+
+/* ---------- the first definition's versions ---------- */
+
+/* the first definition, all eight at once: the globe with a pin at each city, a hairline to each line */
+.gtp-versions { position: relative; width: min(940px, 100%); display: grid; grid-template-columns: 300px minmax(0, 1fr); align-items: center; gap: 0 72px; }
+.gtp-versions-map { display: grid; gap: 14px; justify-items: center; }
+.gtp-versions-globe { width: 300px; }
+.gtp-versions-globe > .gtp-globe-pin { display: none; }
+.gtp-globe-mark { position: absolute; z-index: 2; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--gtp-ink-2); box-shadow: 0 0 0 2px var(--gtp-paper); transition: transform 0.25s var(--gtp-ease), background 0.25s var(--gtp-ease); }
+.gtp-globe-mark[data-hidden='true'] { opacity: 0; }
+.gtp-globe-mark[data-on='true'] { z-index: 3; background: var(--gtp-ink); transform: scale(1.5); }
+/* the versions' dots are buttons, each with a wider hit than its dot; one on the far side cannot be pressed */
+button.gtp-globe-mark { padding: 0; border: 0; cursor: pointer; }
+button.gtp-globe-mark::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; }
+button.gtp-globe-mark:hover { background: var(--gtp-ink); }
+button.gtp-globe-mark[data-hidden='true'] { pointer-events: none; }
+.gtp-versions-coords { margin: 0; display: grid; justify-items: center; gap: 1px; font-size: 12px; line-height: 1.4; color: var(--gtp-ink-2); font-variant-numeric: tabular-nums; }
+/* one version at a time: under the globe its coordinates and its name; beside it the switch, each version
+   named in its own language and the chosen one underlined, then its eight definitions, small, each numbered
+   as its edition numbers them */
+.gtp-versions-reader { display: grid; gap: 16px; align-content: start; min-width: 0; }
+/* every version in one cell: the unseen ones hold the box at the longest version's height, the shown one lies over them */
+.gtp-version-stack { display: grid; min-width: 0; }
+.gtp-version-stack > .gtp-version-lines { grid-area: 1 / 1; }
+.gtp-version-stack > .gtp-version-sizer { visibility: hidden; }
+.gtp-version-meta { margin: 0; font-size: 12px; line-height: 1.4; color: var(--gtp-ink-2); text-align: center; }
+.gtp-versions .gtp-stops[data-style='book'] { margin-left: -8px; } /* the first name's letters start where the definitions do */
+.gtp-versions .gtp-stops[data-style='book'] .gtp-stop { font-size: 15px; }
+.gtp-versions .gtp-stops[data-style='book'] .gtp-stop[data-on='true'] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+/* the numbering column is as wide as the version's widest number, so each version's text sits the same short step after it */
+.gtp-version-lines { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 0.6em; font-size: 13px; line-height: 1.45; }
+.gtp-version-line { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; align-items: baseline; color: var(--gtp-ink); }
+.gtp-version-n { color: var(--gtp-ink-3); font-variant-numeric: tabular-nums; }
+/* the Arabic carries no numbering: its lines take the full width and read from the right edge */
+.gtp-version-text:only-child { grid-column: 1 / -1; }
+/* the first time the figure is shown it comes in part by part, as the opening's slides do: the globe, then its name
+   and coordinates, then the switch, then the definitions (Live.tsx, VersionsDemo) */
+.gtp-versions[data-shown='false'] :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { opacity: 0; }
+.gtp-versions[data-shown='true'] :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { animation: gtp-version-in 0.9s ease-in-out both; }
+.gtp-versions[data-shown='true'] :is(.gtp-version-meta, .gtp-versions-coords) { animation-delay: 0.35s; }
+.gtp-versions[data-shown='true'] .gtp-stops { animation-delay: 0.7s; }
+.gtp-versions[data-shown='true'] .gtp-version-lines { animation-delay: 1.05s; }
+@keyframes gtp-version-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gtp-versions[data-shown='true'] :is(.gtp-versions-globe, .gtp-version-meta, .gtp-versions-coords, .gtp-stops, .gtp-version-lines) { animation: none; } }
+/* in the book's page and on its stage, the page's own sizes for paragraphs and lists give way to the figure's */
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions p { margin: 0; }
+:is(.gtp-print-page, .gtp-print-stage) :is(.gtp-versions-coords, .gtp-version-meta) { font-size: 12px; line-height: 1.4; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-version-lines { margin: 0; padding: 0; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-version-line { margin: 0; font-size: inherit; line-height: inherit; }
+/* on the stage the globe stands over its reader, so the definitions keep a full line in the narrower room */
+.gtp-print-stage .gtp-versions { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 28px 0; }
+.gtp-print-stage .gtp-versions-map { width: min(300px, 100%); }
+/* in the book, the globe's switch sits centred under it, as its label and coordinates do, and the definitions fill a
+   box exactly as wide as the switch's names: the box takes the switch's width alone (the definitions are contained
+   so they add none), and each definition is justified across it with its number before it */
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions-reader { justify-self: center; max-width: 100%; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-stops[data-style='book'] { justify-self: center; justify-content: center; margin-left: 0; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-versions .gtp-version-lines { display: grid; grid-template-columns: minmax(0, 1fr); max-width: none; padding-inline: 8px; contain: inline-size; text-align: justify; hyphens: auto; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-version-line { display: block; grid-column: auto; }
+:is(.gtp-print-page, .gtp-print-stage) .gtp-version-n { margin-inline-end: 0.5em; }
+
+/* the book's slider: the chosen word is the dark one; no rule under it */
+.gtp-stops[data-style='book'] { padding: 0; gap: 2px; background: none; border-radius: 0; flex-wrap: wrap; }
+.gtp-stops[data-style='book'] .gtp-stop { height: 32px; padding: 0 8px; font-family: var(--gtp-serif); font-size: 18px; color: var(--gtp-ink-3); }
+.gtp-stops[data-style='book'] .gtp-stop:hover, .gtp-stops[data-style='book'] .gtp-stop[data-on='true'] { color: var(--gtp-ink); }
+.gtp-stops[data-style='book'] .gtp-stops-thumb { display: none; }
+
+@media (max-width: 899px) {
+  .gtp-versions { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}

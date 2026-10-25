@@ -1,6 +1,6 @@
 /* Sets a story's article (riffle/article.ts) into magazine pages on a
    Swiss grid: two text columns a page (one on a phone's narrow page, as
-   riffle.css sets it), the opening's head across the top of the first. Each
+   magazine-view.css sets it), the opening's head across the top of the first. Each
    picture takes one of five places by its shape (place): a page of its own
    printed to the edges over a band for its caption (bleed), a page of its
    own held inside the grid with white around it, with the pictures after it
@@ -28,7 +28,7 @@ const MIN_REST = 8;
 const SLACK = 2;
 /** The lines of text a head keeps with it at a column's foot. */
 const KEEP_LINES = 3;
-/** The share of a bleed page the picture covers; the band under it holds the caption and the folio (riffle.css). */
+/** The share of a bleed page the picture covers; the band under it holds the caption and the folio (magazine-view.css). */
 const BLEED = 0.84;
 /** The most of a picture's height or width a bleed may crop, so a scanned page never loses its text. */
 const MAX_CROP = 0.12;
@@ -298,7 +298,7 @@ function bleed(piece: Fig): Laid {
   return { kind: 'plate', place: 'bleed', html: figure(piece, true) };
 }
 
-/** The pictures of a gallery page: one, or two side by side in its columns (riffle.css). */
+/** The pictures of a gallery page: one, or two side by side in its columns (magazine-view.css). */
 const pics = (figs: string[], row = false) =>
   `<div class="gtr-pics" data-n="${figs.length}"${row ? ' data-row' : ''}>${figs.join('')}</div>`;
 
@@ -365,7 +365,7 @@ export function paginate(
   stage.append(page);
   const pages: Laid[] = [];
   try {
-    // a phone's page shows one column (riffle.css), where a column picture cannot stand beside the text
+    // a phone's page shows one column (magazine-view.css), where a column picture cannot stand beside the text
     page.innerHTML =
       '<div class="gtr gtr-in gtr-flow"><div class="gtr-cols"><div class="gtr-col"></div><div class="gtr-col"></div></div></div>';
     const narrow =

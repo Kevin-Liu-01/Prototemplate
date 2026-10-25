@@ -1,7 +1,10 @@
 /* GT Atlas's magazine view (riffle/MagazineView.tsx): a story's magazine
    opened over the hall, its pages turned by riffle/flip.ts: the paper under
    the press's root, and the pages (riffle/pages.ts) set in the Katagami
-   faces. */
+   faces. Last, the map sheet printed inside each magazine, which the rack's
+   lifted corner shows (ui/MapSheet.tsx). */
+
+/* ---------- the view ---------- */
 
 .gtp-riffle {
   --mz-ph: min(72svh, calc((100vw - 96px) / 1.52));
@@ -49,7 +52,7 @@
 .gtp-riffle-close:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .gtp-riffle-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
 
-/* paper */
+/* ---------- paper ---------- */
 .gtp-riffle .mag-page {
   --gloss: .55;
   --falloff: linear-gradient(158deg, rgba(255,255,255,.16), rgba(255,255,255,0) 38%, rgba(0,0,0,0) 55%, rgba(0,0,0,.15));
@@ -84,6 +87,8 @@
 /* the back of a leaf shows the folds from behind */
 .gtp-riffle .fl-face.b > .mag-page .mottle { transform: scaleX(-1); }
 .gtp-riffle .mag-page.is-blank { background: var(--paper, #f6f5f1); }
+
+/* ---------- the turner ---------- */
 
 /* the leaves (riffle/flip.ts), stacked on the right page's place, each turning about the spine; a closed cover sits in
    the middle and the open magazine moves over by half a page so the spread is centred */
@@ -151,7 +156,7 @@
 .gtp-riffle .gtr-h[data-long] { font-size: 5cqw; }
 .gtp-riffle .gtr-stand { width: fit-content; max-width: 100%; margin-top: 2cqh; }
 .gtp-riffle .gtr-stand .gtr-dek { margin: 0; max-width: 36ch; font-size: 2.4cqw; line-height: 1.3; color: var(--mute); text-wrap: pretty; }
-/* the byline on one rule, as the story's web page sets it (magazine.css, .gtm-byline): the name in the ink, the date and
+/* the byline on one rule, as the story's web page sets it (decorations.css, .gtm-byline): the name in the ink, the date and
    the reading time quieter beside it, in Katagami Text in every look, as the running head and the folio are */
 .gtp-riffle .gtr-stand .gtr-byline { margin-top: 1.9cqh; padding-top: 1.5cqh; display: flex; flex-wrap: wrap; gap: 0.3em 1.5em; border-top: 1px solid color-mix(in srgb, currentColor 22%, transparent); font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: max(9.5px, 1.55cqh); line-height: 1.35; }
 .gtp-riffle .gtr-stand .gtr-byline b { font-weight: 600; }
@@ -162,7 +167,7 @@
 .gtp-riffle .gtr-col p + p { text-indent: 1.3em; }
 .gtp-riffle .gtr-col p.lead { text-indent: 0; }
 .gtp-riffle .gtr-col p.lead::first-letter { float: left; margin: 0.06em 0.08em 0 0; font-family: var(--gtm-display); font-size: 3.2em; line-height: 0.82; font-weight: 700; color: var(--accent); }
-/* Euclid's issue opens on the web page's seal (magazine.css), in the ink that prints on the page's white, sized and
+/* Euclid's issue opens on the web page's seal (decorations.css), in the ink that prints on the page's white, sized and
    placed by the same measures */
 .gtp-riffle[data-look='book'] .gtr-col p.lead::first-letter {
   margin: calc(0.25lh - 0.1963em - 1px) 0.2em 0 0; padding: 0 calc((1lh - 0.738em) / 2);
@@ -199,6 +204,8 @@
 .gtp-riffle .gtr-col code { font-family: var(--gtp-mono); font-size: 0.92em; }
 .gtp-riffle .gtr-col sup { font-size: 0.7em; line-height: 0; }
 
+/* ---------- the opening spread ---------- */
+
 /* the opening spread: the story's own picture across the gutter, each page showing its half (--pw wide, --ph tall,
    --pt from the top, centred on the spine), and the head under it, the headline on the left page and the rest on the
    right, on the grid's margins */
@@ -210,6 +217,8 @@
 .gtp-riffle .gtr-opener-in { position: absolute; top: calc(var(--pt) + var(--ph) + 4.5cqh); left: 11cqw; right: 8cqw; }
 .gtp-riffle .gtr-opener.l .gtr-opener-in { left: 8cqw; right: 11cqw; }
 .gtp-riffle .gtr-opener-in > :first-child { margin-top: 0; }
+
+/* ---------- the back cover's legend ---------- */
 
 /* the back cover's legend, as a map's: a hairline box in the cover's ink at its foot's right, an inset map of the story's
    place in the magazine's own colours beside the issue, the byline, the date and what the map shows */
@@ -224,6 +233,8 @@
 .gtp-riffle .gtr-inset-route { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 2.4 1.6; }
 .gtp-riffle .gtr-inset-city { fill: var(--board); stroke: var(--ink); stroke-width: 0.8; }
 .gtp-riffle .gtr-inset-home { fill: var(--accent); stroke: var(--ink); stroke-width: 0.8; }
+
+/* ---------- pictures and captions ---------- */
 
 /* a picture in a band across the top of a text page, its caption under it in the second column */
 .gtp-riffle .gtr-band { flex: none; margin-bottom: 4cqh; }
@@ -271,6 +282,8 @@
 .gtp-riffle .gtr-gallery :is(figure.col, .gtr-pics[data-row] figure) figcaption { display: block; }
 .gtp-riffle .gtr-gallery :is(figure.col, .gtr-pics[data-row] figure) figcaption .cr { margin-top: 0.4em; font-size: 0.88em; }
 
+/* ---------- the colophon and the back cover ---------- */
+
 /* the colophon, on the page that keeps the back cover's place: the imprint and three lines at the grid's foot */
 .gtp-riffle .gtr-colophon { justify-content: flex-end; }
 .gtp-riffle .gtr-colo { display: grid; gap: 0.6em; width: calc(50% - 2.5cqw); font-size: max(8px, 1.6cqw); line-height: 1.45; color: var(--mute); }
@@ -282,6 +295,8 @@
 .gtp-riffle .gtr-back .mk { position: absolute; left: 9cqw; bottom: 8cqh; display: flex; align-items: flex-end; gap: 2.4cqw; }
 .gtp-riffle .gtr-back .mk svg { width: 6cqw; height: auto; }
 .gtp-riffle .gtr-back .mk b { display: block; font-family: 'Katagami Serif', var(--gtp-cjk), Georgia, serif; font-size: 7cqw; line-height: 0.9; font-weight: 400; letter-spacing: -0.04em; }
+
+/* ---------- one page at a time ---------- */
 
 /* one page at a time, as on a phone, has no spine to widen a margin for: every page keeps the same margins, so the
    text never shifts between pages (the text block is as wide either way) */
@@ -299,3 +314,31 @@
   .gtp-riffle :is(.gtr-band, .gtr-col-pic, .gtr-plate) figcaption { font-size: 9.5px; }
   .gtp-riffle :is(.gtr-run, .gtr-folio) { font-size: 9px; }
 }
+
+/* ---------- the map sheet ---------- */
+
+/* the inside page is a survey sheet of the story's place (ui/MapSheet.tsx), the map in its magazine's own colours: the
+   cover's stock for the sea and its ink for the land, the graticule, the boxes and their words, the story's own place
+   and road in its accent; the border round it stays the page's white with the neat lines in black */
+.gtp-map { position: absolute; inset: 0; width: 100%; height: 100%; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; --map-grat: color-mix(in srgb, var(--map-ink) 34%, var(--map-sea)); }
+.gtp-map-sea { fill: var(--map-sea); }
+.gtp-map-land { fill: var(--map-ink); }
+.gtp-map-grat { stroke: var(--map-grat); stroke-width: 0.4; }
+.gtp-map-neat { fill: none; stroke: #141414; stroke-width: 1.1; }
+.gtp-map-frame { fill: none; stroke: #141414; stroke-width: 0.45; }
+.gtp-map-route { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 3 2; }
+.gtp-map-city { fill: var(--map-sea); stroke: var(--map-ink); stroke-width: 0.9; }
+.gtp-map-home { fill: var(--accent); stroke: var(--map-ink); stroke-width: 0.9; }
+.gtp-map-place { font-size: 6.2px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--map-ink); paint-order: stroke; stroke: var(--map-sea); stroke-width: 2px; stroke-linejoin: round; }
+.gtp-map-box { fill: var(--map-sea); stroke: var(--map-ink); stroke-width: 0.6; }
+.gtp-map-cap { font-size: 5.2px; letter-spacing: 0.14em; text-transform: uppercase; fill: var(--map-ink); }
+/* the border's words, under and beside the map, are the page's black */
+.gtp-map-deg, .gtp-map-cap.gtp-map-foot { fill: #3d3d3a; }
+.gtp-map-strong { font-weight: 700; }
+.gtp-map-title { font-family: 'Katagami Serif', var(--gtp-cjk), Georgia, serif; font-size: 10px; fill: var(--map-ink); }
+.gtp-map-key { font-size: 5.8px; fill: var(--map-ink); }
+.gtp-map-deg { font-size: 5px; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
+/* the scale's numbers sit in the legend, in its ink */
+.gtp-map-num { font-size: 5px; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; fill: var(--map-ink); }
+.gtp-map-bar { fill: var(--map-ink); stroke: var(--map-ink); stroke-width: 0.4; }
+.gtp-map-bar-w { fill: var(--map-sea); stroke: var(--map-ink); stroke-width: 0.4; }

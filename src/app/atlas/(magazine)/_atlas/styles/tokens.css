@@ -1,0 +1,152 @@
+/* GT Atlas's faces and tokens, which every surface reads: Katagami Text,
+   Katagami Serif and Katagami Mono, Newsreader for Translating Euclid, and
+   the colors on one root class, .gtp, dark by default and light under
+   html[data-theme='light']. The root's resets, the reduced-motion rule and
+   the corner radii follow. */
+
+/* ---------- the faces ---------- */
+
+/* each Katagami face in two files: its Latin subset, which nearly every page needs and the layout preloads, and the
+   whole face for every other character, which loads only when a page uses one */
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-arabic.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+600-8FF, U+FB50-FEFF; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-devanagari.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+900-97F, U+1CD0-1CF9, U+A8E0-A8FF; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-Italic-latin.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Text'; src: url('/fonts/katagami/KatagamiText-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif-Italic-latin.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif-Italic.woff2') format('woff2'); font-weight: 100 900; font-style: italic; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif-latin.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Serif'; src: url('/fonts/katagami/KatagamiSerif.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-27FA, U+2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+@font-face { font-family: 'Katagami Mono'; src: url('/fonts/katagami/KatagamiMono-latin.woff2') format('woff2'); font-weight: 100 700; font-display: swap; unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215; }
+@font-face { font-family: 'Katagami Mono'; src: url('/fonts/katagami/KatagamiMono.woff2') format('woff2'); font-weight: 100 700; font-display: swap; unicode-range: U+100-130, U+132-151, U+154-2BA, U+2BD-2C5, U+2C7-2D9, U+2DB, U+2DD-303, U+305-307, U+309-328, U+32A-52F, U+1D00-1FFF, U+2070-2073, U+2075-20AB, U+20AD-2121, U+2123-218F, U+219A-2211, U+2213-2214, U+2216-2913, U+2A38-2B24, U+2C7C-2C7F, U+2DFF-2E18, U+A69F, U+A7FF, U+A92E, U+E000-E2DC, U+EE01-EEE1, U+F6C3, U+1F12F-1F16B, U+1F850-1F852; }
+/* the CJK faces cover only CJK, kana, hangul and their punctuation, so a Latin line never loads them */
+@font-face { font-family: 'Katagami CJK SC'; src: url('/fonts/katagami/KatagamiCJKSC-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+2E80-2FDF, U+3000-33FF, U+3400-4DBF, U+4E00-9FFF, U+A960-A97F, U+AC00-D7FF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF, U+20000-2FA1F; }
+@font-face { font-family: 'Katagami CJK JP'; src: url('/fonts/katagami/KatagamiCJKJP-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+2E80-2FDF, U+3000-33FF, U+3400-4DBF, U+4E00-9FFF, U+A960-A97F, U+AC00-D7FF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF, U+20000-2FA1F; }
+@font-face { font-family: 'Katagami CJK KR'; src: url('/fonts/katagami/KatagamiCJKKR-press.woff2') format('woff2'); font-weight: 100 900; font-display: swap; unicode-range: U+2E80-2FDF, U+3000-33FF, U+3400-4DBF, U+4E00-9FFF, U+A960-A97F, U+AC00-D7FF, U+F900-FAFF, U+FE30-FE4F, U+FF00-FFEF, U+20000-2FA1F; }
+/* Euclid's own serif, Newsreader, for its text and its heads, with its Latin Extended for the marked letters of romanized
+   Chinese (ǐ, ě), and EB Garamond for the Greek it lacks */
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-latin-ext.woff2') format('woff2'); font-weight: 400 700; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Atlas Text'; src: url('/fonts/google/newsreader-opsz-wght-italic-latin-ext.woff2') format('woff2'); font-weight: 400 700; font-style: italic; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Atlas Text Greek'; src: url('/fonts/google/eb-garamond-400-greek.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
+
+/* ---------- the tokens ---------- */
+
+.gtp {
+  --gtp-cjk: 'Katagami CJK SC', 'Katagami CJK JP', 'Katagami CJK KR';
+  /* Euclid's serif stack: Newsreader, its Greek, then a Song face for the Chinese */
+  --gtp-euclid: 'Atlas Text', 'Atlas Text Greek', 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', 'Noto Serif CJK TC', 'Noto Serif TC', var(--gtp-cjk), Georgia, serif;
+  /* Katagami Text for everything but code and figures, which take Katagami Mono */
+  --gtp-sans: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif;
+  --gtp-serif: var(--gtp-sans);
+  --gtp-mono: 'Katagami Mono', ui-monospace, monospace;
+
+  /* the press's one accent: blue; the palette is black, white and blue, with no red */
+  --gtp-signal: #6f8cff;
+  --gtp-cobalt: #2a4bf0;
+  --gtp-sky: #bfe2f1;
+  --gtp-navy: #0b1636;
+  --gtp-navy-2: #13245a;
+  --gtp-pages: #ebe5d7;
+  --gtp-pages-line: rgb(80 64 40 / 0.2);
+
+  --gtp-paper: #09090b;
+  --gtp-ink: #fafafa;
+  --gtp-ink-2: #a1a1aa;
+  --gtp-ink-3: #71717a;
+  --gtp-rule: rgb(250 250 250 / 0.1);
+  --gtp-fill: rgb(250 250 250 / 0.045);
+  --gtp-fill-2: rgb(250 250 250 / 0.08);
+  --gtp-link: #93a8ff;
+
+  /* the figure stage: one step off the paper, in the shipped site's greys */
+  --gtp-stage: #131316;
+  --gtp-stage-ink: #fafafa;
+  --gtp-stage-ink-2: #a1a1aa;
+  --gtp-stage-fill: rgb(250 250 250 / 0.07);
+
+  --gtp-globe-land: #7e9bff;
+  --gtp-globe-sea: #2b48c4;
+  --gtp-globe-rim: #bfe2f1;
+
+  --gtp-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  position: relative;
+  min-height: 100dvh;
+  background: var(--gtp-paper);
+  color: var(--gtp-ink);
+  font-family: var(--gtp-sans);
+  font-feature-settings: 'kern';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+:root[data-theme='light'] .gtp {
+  --gtp-signal: #2a4bf0;
+  --gtp-paper: #ffffff;
+  --gtp-ink: #09090b;
+  --gtp-ink-2: #52525b;
+  --gtp-ink-3: #a1a1aa;
+  --gtp-rule: rgb(9 9 11 / 0.1);
+  --gtp-fill: rgb(9 9 11 / 0.04);
+  --gtp-fill-2: rgb(9 9 11 / 0.07);
+  --gtp-link: #2a4bf0;
+  --gtp-stage: #f4f4f5;
+  --gtp-stage-ink: #09090b;
+  --gtp-stage-ink-2: #71717a;
+  --gtp-stage-fill: rgb(9 9 11 / 0.05);
+  --gtp-globe-land: #2a4bf0;
+  --gtp-globe-sea: #c3cefa;
+  --gtp-globe-rim: #4a63e6;
+}
+
+.gtp {
+  /* the magazine's serif, Katagami Serif, for its display and its text alike, with Greek and the marked Latin letters
+     of its own, and a Song face for the Chinese */
+  --gtm-display: 'Katagami Serif', 'Songti TC', 'Songti SC', 'STSong', var(--gtp-cjk), Georgia, serif;
+  --gtm-text: var(--gtm-display);
+  --gtm-head: var(--gtm-text);
+}
+
+/* ---------- the root ---------- */
+
+.gtp :lang(ja) { font-family: 'Katagami Text', 'Katagami CJK JP', 'Katagami CJK SC', sans-serif; }
+.gtp :lang(ko) { font-family: 'Katagami Text', 'Katagami CJK KR', sans-serif; }
+.gtp :lang(zh) { font-family: 'Katagami Text', 'Katagami CJK SC', sans-serif; }
+
+.gtp *,
+.gtp *::before,
+.gtp *::after { box-sizing: border-box; }
+.gtp ::selection { background: var(--gtp-signal); color: #fff; }
+/* resets at zero specificity, so every component's own rule wins */
+:where(.gtp) a { color: inherit; }
+:where(.gtp) button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:where(.gtp) button:disabled { opacity: 0.35; cursor: default; }
+.gtp :focus-visible { outline: 1px solid var(--gtp-signal); outline-offset: 2px; }
+.gtp-icon { display: inline-block; flex: none; vertical-align: -0.15em; }
+
+.gtp-mono { font-family: var(--gtp-mono); font-size: 11px; letter-spacing: 0.02em; text-transform: uppercase; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gtp *,
+  .gtp *::before,
+  .gtp *::after { transition-duration: 0s !important; animation: none !important; }
+}
+
+/* the light theme draws no drop shadows: edges come from the paper and the rules */
+:root[data-theme='light'] .gtp :is(.gtp-lens, .gtp-langs, .gtp-float-home) { box-shadow: none; }
+
+/* ---------- corners ---------- */
+
+/* Rounded throughout: chips 4px, controls 6px with a 5px part inside,
+   pictures 6px, cards 10px, floating panels 14px. The stage, the covers
+   and the books keep their square edges, since they bleed or stand as objects. */
+.gtp-flag { border-radius: 2px; }
+.gtp-text code:not(:where(.gtp-inline-plate *)), .gtp-rail-tip, .gtp-globe-label, .gtp-wipe-tag, .gtp-tags a, .gtp-book-page a, .gtp-hits-mark { border-radius: 4px; }
+.gtp-stub, .gtp-loop-play, .gtp-ruler-input, .gtp-stops, .gtp-dismiss, .gtp-float-home, .gtp-lens,
+.gtp-picture img, .gtp-loop video, .gtp-text-button { border-radius: 6px; }
+.gtp-note, .gtp-wipe { border-radius: 8px; }
+.gtp-wipe { overflow: hidden; }
+.gtp-inline-plate, .gtp-toc, .gtp-hits, .gtp-corners-specimen { border-radius: 10px; }

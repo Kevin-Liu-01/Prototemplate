@@ -9,7 +9,7 @@ import type { CSSProperties } from 'react';
    magazines, each circle through the other's centre, and grid references
    letter the magazines' columns and number the rows, as an atlas's index
    does. Each guide is placed by the same measures the page is laid out by
-   (rack.css: --edge, --cell, --mag-w, --top, --nameplate, --globe,
+   (front-page.css: --edge, --cell, --mag-w, --top, --nameplate, --globe,
    --dial-pad), so the sheet is drawn with the page's first paint and never
    moves: nothing is measured, and a scrolling row does not carry it.
    Decoration only: it takes no pointer and no reader hears it. */

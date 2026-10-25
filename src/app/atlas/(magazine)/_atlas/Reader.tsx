@@ -71,7 +71,7 @@ function platesFor(
    book look (Translating Euclid) as a printed book with its pictures on a
    stage (BookBody), the others split between the text and the stage. In the
    magazine the body takes the magazine's text decorations (ui/Decor.tsx,
-   magazine.css); on the shelf it reads without them. */
+   decorations.css); on the shelf it reads without them. */
 export default function Reader({ story, next, edition = 'magazine' }: Props) {
   const router = useRouter();
   const home = homeOf(edition);

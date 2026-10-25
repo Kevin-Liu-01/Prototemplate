@@ -49,8 +49,8 @@ import { onRadioKeys, radioTab } from './ui/radios';
 import ViewSwitch, { type View } from './ui/ViewSwitch';
 
 // the rack and the magazine view are the front page's alone, so a story page never loads their styles
-import './rack.css';
-import './riffle/riffle.css';
+import './styles/front-page.css';
+import './styles/magazine-view.css';
 
 const WHEEL_STEP = 40;
 const WHEEL_REST = 420;

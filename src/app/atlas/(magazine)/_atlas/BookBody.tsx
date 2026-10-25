@@ -31,7 +31,7 @@ type Props = {
 const WIDE = '(min-width: 1250px)';
 
 /** The magazine's opening slides: the scroll that turns the title page to the epigraph, and the scroll the epigraph then
-    holds for, 90% of the window (press.css --hold), so an ordinary scroll lands on it rather than past it. */
+    holds for, 90% of the window (reader.css --hold), so an ordinary scroll lands on it rather than past it. */
 const OPENING_NUDGE = 120;
 const OPENING_HOLD = 0.9;
 
@@ -112,7 +112,7 @@ function showStage(
   const items = stage
     ? [...stage.querySelectorAll<HTMLElement>('.gtp-print-stage-item')]
     : [];
-  // timed (the magazine): the picture changes as one fade once its paragraph is reached (magazine.css), not with the scroll
+  // timed (the magazine): the picture changes as one fade once its paragraph is reached (decorations.css), not with the scroll
   if (timed || prefersReducedMotion() || !matchMedia(WIDE).matches) {
     for (const el of items) el.style.removeProperty('opacity');
     return at;
@@ -420,7 +420,7 @@ export default function BookBody({ story, decorated = false }: Props) {
         root.current?.querySelector<HTMLElement>('.gtp-head-pic')
           ?.offsetHeight ?? 0;
     };
-    // the magazine's opening: a scroll past each stop brings the next slide in (press.css, data-slide); it is laid
+    // the magazine's opening: a scroll past each stop brings the next slide in (reader.css, data-slide); it is laid
     // out from the first paint (data-armed is in the markup), so the page never shows the story and then hides it
     const turnOpening = () => {
       const el = opening.current;
@@ -591,7 +591,7 @@ export default function BookBody({ story, decorated = false }: Props) {
       <div className='gtp-print-body'>
         <div className='gtp-print-text'>
           {decorated ? (
-            // the opening as slides on a wide screen: the title page, then the epigraph where it stood, then the story (press.css, the opening)
+            // the opening as slides on a wide screen: the title page, then the epigraph where it stood, then the story (reader.css, the opening)
             <div
               ref={opening}
               className='gtp-print-opening'

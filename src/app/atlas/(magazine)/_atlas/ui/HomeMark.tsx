@@ -9,7 +9,7 @@ import PressMark from './PressMark';
 import { prefersReducedMotion } from '../motion';
 import { plainClick } from '../transition';
 
-/** How long the cover takes to swing open before the page leaves (rack.css, gtp-cover-open). */
+/** How long the cover takes to swing open before the page leaves (front-page.css, gtp-cover-open). */
 const OPEN_MS = 620;
 
 /* The nameplate's imprint, whose GT is a link to the General Translation

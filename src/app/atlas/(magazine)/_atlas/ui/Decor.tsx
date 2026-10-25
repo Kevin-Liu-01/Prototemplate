@@ -7,7 +7,7 @@ import Inline from './Inline';
 import { splitTitle } from '../stories';
 
 /* The magazine's text decorations, set over each story's own layout in the
-   magazine edition (Reader.tsx, magazine.css): each story's headline and
+   magazine edition (Reader.tsx, decorations.css): each story's headline and
    the mark over each section head. The drop cap is a class on the first
    paragraph (leadOf, gtm-lead). */
 
@@ -16,7 +16,7 @@ export function leadOf(blocks: Block[]): number {
   return blocks.findIndex((b) => b.kind === 'para');
 }
 
-/** A paragraph too short to run three lines beside a drop cap, which takes a two-line one (magazine.css, data-short). */
+/** A paragraph too short to run three lines beside a drop cap, which takes a two-line one (decorations.css, data-short). */
 export function isShort(block: Block | undefined): boolean {
   return block?.kind === 'para' && plain(block.inline).length < 120;
 }

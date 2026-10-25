@@ -62,7 +62,7 @@ export const MAGAZINE_ART: ArtBox = { x: 0.06, y: 0.3, w: 0.45, h: 0.42 };
    With the story's issue, the page under the front is printed too: the
    inside, the magazine's feature page. When the shelf lifts a corner (the slot's
    data-peel) the front is cut along the fold, the corner curls back over
-   it (PageCurl), and the inside shows through (rack.css). */
+   it (PageCurl), and the inside shows through (front-page.css). */
 function MagazinePage({
   story,
   title,
@@ -121,7 +121,7 @@ function MagazinePage({
    toward the tip. The inside page under the fold is shaded where the
    lifted paper keeps the light off it, and in the dark theme the curl
    lays a soft shade along the crease. Drawn in a 100 unit square that
-   rack.css sizes to the peel (--peel), so it grows with the lift. */
+   front-page.css sizes to the peel (--peel), so it grows with the lift. */
 function PageCurl() {
   const id = useId().replace(/:/g, '');
   const curl = 'M0 100 L100 0 Q42 15 11 8 Q7 7 8 11 Q15 42 0 100 Z';
@@ -133,7 +133,7 @@ function PageCurl() {
       aria-hidden='true'
     >
       <defs>
-        {/* the stops take their colors from rack.css (.gtp-mag-flap stop) */}
+        {/* the stops take their colors from front-page.css (.gtp-mag-flap stop) */}
         <linearGradient
           id={`${id}u`}
           className='gtp-mag-flap-under'

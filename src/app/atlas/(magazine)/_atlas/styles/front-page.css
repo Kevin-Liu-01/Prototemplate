@@ -1,9 +1,264 @@
-/* GT Atlas's front page as a rack of magazines (Landing.tsx with
-   edition='magazine', Book.tsx with format='magazine'): each story a thin
-   magazine printed on the story's own stock. */
+/* GT Atlas's front page (Landing.tsx, ui/Book.tsx): the hall and its
+   shelf of magazines, the band with the globe, the languages and the
+   locator; and over them the rack (edition='magazine', format='magazine'),
+   each story a thin magazine printed on the story's own stock, on a sheet
+   of guides with the nameplate, the controls, the dial with its language
+   ring, and the dateline. */
+
+/* ---------- the book: six faces around one box ---------- */
+
+.gtp-book {
+  --bw: 200px;
+  --bh: 300px;
+  --bd: 24px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--bw);
+  height: var(--bh);
+  margin: calc(var(--bh) / -2) 0 0 calc(var(--bw) / -2);
+  transform-style: preserve-3d;
+}
+.gtp-book-face { position: absolute; left: 50%; top: 50%; backface-visibility: hidden; overflow: hidden; }
+.gtp-book-back { width: var(--bw); height: var(--bh); margin: calc(var(--bh) / -2) 0 0 calc(var(--bw) / -2); background: var(--board); }
+.gtp-book-board { position: absolute; inset: 0; transform: translateZ(calc(var(--bd) / 2)); transform-origin: 0 50%; transform-style: preserve-3d; transition: transform 1.1s var(--gtp-ease) 0.2s; }
+.gtp-book[data-open='true'] .gtp-book-board { transform: translateZ(calc(var(--bd) / 2)) rotateY(-164deg); }
+.gtp-book-front { position: absolute; inset: 0; overflow: hidden; backface-visibility: hidden; background: var(--board); }
+.gtp-book-inside { position: absolute; inset: 0; overflow: hidden; display: grid; align-content: space-between; padding: 12% 11%; transform: rotateY(180deg); backface-visibility: hidden; color: var(--ink); background-color: color-mix(in srgb, var(--board) 84%, #fff 16%); background-image: radial-gradient(color-mix(in srgb, var(--band) 45%, transparent) 0.8px, transparent 1.1px); background-size: 7px 7px; }
+.gtp-book-inside dl { padding: 12px; background: color-mix(in srgb, var(--board) 92%, #fff 8%); }
+.gtp-book-inside dl { margin: 0; display: grid; gap: 3px; }
+.gtp-book-inside dt { margin-top: 9px; font-family: var(--gtp-mono); font-size: 8px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.6; }
+.gtp-book-inside dd { margin: 0; font-size: calc(var(--bw) * 0.037); line-height: 1.35; }
+.gtp-book-page { position: absolute; left: 2px; right: 3px; top: 3px; bottom: 3px; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: 12% 11% 10%; transform: translateZ(calc(var(--bd) / 2 - 1px)); backface-visibility: hidden; background: #f3eee3; color: #1c1912; box-shadow: inset 10px 0 18px -12px rgb(0 0 0 / 0.35); }
+.gtp-page-title { margin: 0 0 calc(var(--bw) * 0.05); font-size: calc(var(--bw) * 0.06); font-weight: 500; letter-spacing: -0.02em; }
+.gtp-book-page ol { margin: 0; padding: 0; list-style: none; display: grid; align-content: start; gap: 2px; min-height: 0; overflow: hidden; }
+.gtp-book-page a { display: grid; grid-template-columns: 2em minmax(0, 1fr); gap: 4px; padding: 0.4em 6px; margin: 0 -6px; font-family: var(--gtp-serif); font-size: calc(var(--bw) * 0.042); line-height: 1.3; text-decoration: none; color: inherit; transition: background 0.2s var(--gtp-ease); }
+.gtp-book-page a span { font-family: var(--gtp-mono); font-size: 0.72em; padding-top: 2px; color: var(--gtp-signal); }
+.gtp-book-page a:hover { background: rgb(28 25 18 / 0.07); }
+.gtp-page-foot { margin: 0; font-family: var(--gtp-mono); font-size: 8.5px; letter-spacing: 0.04em; text-transform: uppercase; color: rgb(28 25 18 / 0.55); }
+.gtp-book-back { transform: rotateY(180deg) translateZ(calc(var(--bd) / 2)); display: grid; grid-template-rows: auto 1fr auto auto; gap: 14px; padding: 9% 10%; color: var(--ink); }
+.gtp-book-back p { margin: 0; font-family: var(--gtp-serif); font-size: 11px; line-height: 1.5; opacity: 0.85; }
+.gtp-book-seal { color: var(--ink); opacity: 0.7; }
+.gtp-book-back-line { font-family: var(--gtp-mono); font-size: 7px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.7; }
+.gtp-book-spine,
+.gtp-book-fore { width: var(--bd); height: var(--bh); margin: calc(var(--bh) / -2) 0 0 calc(var(--bd) / -2); }
+.gtp-book-spine { transform: rotateY(-90deg) translateZ(calc(var(--bw) / 2)); display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 16px 0 14px; background: var(--board); color: var(--ink); box-shadow: inset 2px 0 0 rgb(255 255 255 / 0.06), inset -2px 0 0 rgb(0 0 0 / 0.25); }
+/* a thin stripe across the head of the spine */
+/* the title runs down the spine on up to two balanced lines; Latin turns sideways as one run (so its quotes and
+   apostrophes turn with it), while Chinese, Japanese and Korean stand upright */
+.gtp-book-spine-title { flex: 1; min-height: 0; overflow: hidden; writing-mode: vertical-rl; text-orientation: sideways; font-family: 'Katagami Serif', var(--gtp-cjk), Georgia, serif; font-size: clamp(8px, calc(var(--bd) * 0.4), 10.5px); line-height: 1.02; font-weight: 400; letter-spacing: 0; text-wrap: balance; }
+.gtp-book-spine-title:is(:lang(zh), :lang(ja), :lang(ko)) { text-orientation: mixed; }
+/* the authors under the title, as a spine carries them */
+.gtp-book-spine-by { flex: none; max-height: 40%; overflow: hidden; writing-mode: vertical-rl; text-orientation: sideways; font-size: clamp(8px, calc(var(--bd) * 0.34), 9.5px); letter-spacing: 0.02em; white-space: nowrap; text-overflow: ellipsis; opacity: 0.72; }
+.gtp-book[data-on='true'] .gtp-book-spine-by { opacity: 1; }
+.gtp-book-fore { transform: rotateY(90deg) translateZ(calc(var(--bw) / 2 - 2px)); background: repeating-linear-gradient(90deg, var(--gtp-pages-line) 0 1px, var(--gtp-pages) 1px 3px); box-shadow: inset 2px 0 0 var(--board), inset -2px 0 0 var(--board); }
+.gtp-book-head,
+.gtp-book-tail { width: var(--bw); height: var(--bd); margin: calc(var(--bd) / -2) 0 0 calc(var(--bw) / -2); background: repeating-linear-gradient(0deg, var(--gtp-pages-line) 0 1px, var(--gtp-pages) 1px 3px); box-shadow: inset 0 2px 0 var(--board), inset 0 -2px 0 var(--board), inset 4px 0 0 var(--board); }
+.gtp-book-head { transform: rotateX(90deg) translateZ(calc(var(--bh) / 2 - 2px)); }
+.gtp-book-tail { transform: rotateX(-90deg) translateZ(calc(var(--bh) / 2 - 2px)); }
+.gtp-book-hinge { position: absolute; top: 0; bottom: 0; left: 6%; width: 2px; background: linear-gradient(to right, rgb(0 0 0 / 0.3), rgb(255 255 255 / 0.1)); pointer-events: none; }
+
+/* ---------- landing: one hall ---------- */
+
+.gtp-landing { height: 100dvh; overflow: hidden; background: var(--gtp-paper); color: var(--gtp-ink); }
+.gtp-hall { position: relative; height: 100%; min-width: 0; overflow: hidden; }
+/* under an open magazine the hall stops drawing once the magazine has faded in over it, so only its pages render */
+.gtp-hall[inert] { visibility: hidden; transition: visibility 0s linear 0.3s; }
+
+/* the masthead: the nameplate */
+.gtp-hall-head { position: absolute; z-index: 5; left: 56px; top: 48px; pointer-events: none; transition: opacity 0.45s var(--gtp-ease); }
+.gtp-wordmark { margin: 0; display: flex; align-items: baseline; font-size: clamp(36px, 3.6vw, 56px); line-height: 0.9; font-weight: 500; letter-spacing: -0.05em; white-space: nowrap; }
+.gtp-wordmark-mark { width: auto; height: 0.86em; margin-right: 0.14em; color: var(--gtp-ink); align-self: center; }
+/* Atlas, in Katagami Serif, a little shorter than the imprint */
+.gtp-wordmark-word { font-family: 'Katagami Serif', var(--gtp-sans); font-weight: 400; font-size: 0.96em; letter-spacing: -0.035em; color: var(--gtp-ink); }
+
+/* the controls, opposite the masthead */
+.gtp-hall-coords { position: absolute; z-index: 5; right: 64px; top: 52px; display: grid; justify-items: end; gap: 4px; color: var(--gtp-stage-ink); }
+.gtp-tags { display: flex; gap: 4px; margin-top: 8px; }
+.gtp-tags a { padding: 4px 8px; font-family: var(--gtp-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.03em; text-decoration: none; background: var(--gtp-fill-2); color: var(--gtp-ink-2); transition: background 0.2s var(--gtp-ease), color 0.2s var(--gtp-ease); }
+.gtp-tags a:hover { color: var(--gtp-ink); background: color-mix(in srgb, var(--gtp-ink) 14%, transparent); }
+.gtp-tags a[aria-current='true'] { background: var(--gtp-ink); color: var(--gtp-paper); }
+
+/* the shelf filtered to one topic: the other books fade back */
+.gtp-shelf-item { transition: opacity 0.45s var(--gtp-ease), filter 0.45s var(--gtp-ease); }
+.gtp-shelf-item[data-dim='true'] { opacity: 0.18; filter: grayscale(1); }
+
+/* the shelf: a native sideways scroller holding every book */
+.gtp-shelf { position: absolute; inset: 0; z-index: 2; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.gtp-shelf::-webkit-scrollbar { display: none; }
+.gtp-landing[data-mode='stack'] .gtp-shelf { overflow-x: hidden; scroll-snap-type: none; }
+.gtp-shelf-track {
+  --shelf-bw: min(280px, 30vh);
+  --shelf-bh: calc(var(--shelf-bw) * 1.42);
+  --gap: 44px;
+  /* the row centres itself when it fits the hall, and keeps a margin when it scrolls */
+  --pad: max(56px, calc((100vw - var(--span) * var(--shelf-bw) - (var(--n) - 1) * var(--gap)) / 2));
+  /* the shelf's baseline: every book stands on it */
+  --baseline: calc(47% + var(--shelf-bh) / 2);
+  position: relative;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: calc(var(--pad) * 2 + var(--span) * var(--shelf-bw) + (var(--n) - 1) * var(--gap));
+}
+.gtp-shelf-item {
+  --slot-w: calc(var(--shelf-bw) * var(--k, 1));
+  --slot-h: calc(var(--slot-w) * 1.42);
+  --slot-x: calc(var(--pad) + var(--before, 0) * var(--shelf-bw) + var(--i) * var(--gap));
+  position: absolute;
+  left: var(--slot-x);
+  top: calc(var(--baseline) - var(--slot-h));
+  width: var(--slot-w);
+  height: var(--slot-h);
+  scroll-snap-align: start;
+  scroll-margin-left: var(--pad);
+  /* the slot stays where the row put it while its book moves, so only the book and its label take the pointer */
+  pointer-events: none;
+}
+/* the book moves; its slot's hit area and link stay put, so the pointer never loses the book it is over */
+.gtp-shelf-item > .gtp-book-shelf { pointer-events: none; }
+.gtp-shelf-hit { position: absolute; inset: 0; z-index: 1; pointer-events: auto; cursor: pointer; border-radius: 4px; }
+.gtp-shelf-hit:focus-visible { outline: 2px solid var(--gtp-ink); outline-offset: 10px; }
+/* in the stack the hit area is the spine's strip, where the stack lays it */
+.gtp-landing[data-mode='stack'] .gtp-shelf-hit { inset: auto; left: calc(var(--anchor, 50vw) - var(--slot-x) - var(--slot-h) * 0.65); top: calc(var(--slot-h) / 2 + var(--stack-y) * 1.3 - var(--sbd) * 0.65 - 6px); width: calc(var(--slot-h) * 1.3); height: calc(var(--sbd) * 1.3 + 12px); }
+.gtp-shelf-item { z-index: 0; }
+.gtp-shelf-item[data-chosen='true'] { z-index: 40; }
+
+/* every pose is one transform list, so a move between poses is one tween; the
+   perspective sits after the move, so each book is seen square from its own centre */
+.gtp-book-shelf {
+  --bw: var(--slot-w);
+  --bh: var(--slot-h);
+  --dx: 0px;
+  --dy: 0px;
+  --tx: 0deg;
+  --tz: 0deg;
+  --ty: 0deg;
+  --s: 1;
+  cursor: pointer;
+  transform: translate3d(var(--dx), var(--dy), 0) perspective(1800px) rotateX(var(--tx)) rotateZ(var(--tz)) rotateY(var(--ty)) scale3d(var(--s), var(--s), var(--s));
+  transition: transform 0.95s var(--gtp-ease);
+  /* each book keeps its own layer, so a change of pose only moves it and never paints it again first */
+  will-change: transform;
+}
+/* row: standing, each turned a little so its spine shows; the book under the pointer turns to face it, lifts and leans, and dips when pressed */
+.gtp-landing[data-mode='row'] .gtp-book-shelf { --ty: 22deg; }
+.gtp-landing[data-mode='row']:not([data-open='true']) .gtp-shelf-item[data-on='true'] .gtp-book-shelf { --dy: -18px; --tx: calc(var(--hy, 0) * -14deg); --ty: calc(var(--hx, 0) * 18deg); transition-duration: 0.35s; }
+.gtp-landing[data-mode='row']:not([data-open='true']) .gtp-shelf-item[data-pressed='true'] .gtp-book-shelf { --s: 0.96; --dy: -8px; transition-duration: 0.15s; }
+.gtp-landing[data-drag='true'] .gtp-shelf-item .gtp-book-shelf { --dy: 0px; --tx: 0deg; --ty: 22deg; }
+/* stack: gathered in the middle of the hall, lying on their backs, spines out, seen a little from above */
+.gtp-landing[data-mode='stack'] .gtp-shelf-item:not([data-chosen='true']) { z-index: calc(20 - var(--i)); }
+.gtp-landing[data-mode='stack'] .gtp-book-shelf { --dx: calc(var(--anchor, 50vw) - var(--slot-x) - var(--bw) / 2); --dy: calc(var(--stack-y) * 1.3); --tx: -5deg; --tz: -90deg; --ty: 90deg; --s: 1.3; }
+.gtp-landing[data-mode='stack']:not([data-open='true']) .gtp-shelf-item[data-on='true'] .gtp-book-shelf { --dx: calc(var(--anchor, 50vw) - var(--slot-x) - var(--bw) / 2 + 44px); }
+.gtp-landing[data-mode='stack']:not([data-open='true']) .gtp-shelf-item[data-pressed='true'] .gtp-book-shelf { --dx: calc(var(--anchor, 50vw) - var(--slot-x) - var(--bw) / 2 + 30px); transition-duration: 0.15s; }
+/* chosen: the book comes forward at a larger size, standing square, left of the panel; the shelf dims behind it */
+.gtp-hall-coords { transition: opacity 0.45s var(--gtp-ease); }
+
+/* the light on the cover follows the pointer */
+.gtp-book-sheen { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at calc(30% + var(--hx, 0) * 90%) calc(20% + var(--hy, 0) * 90%), rgb(255 255 255 / 0.16), transparent 55%); transition: opacity 0.3s var(--gtp-ease); opacity: 0.5; }
+.gtp-shelf-item[data-on='true'] .gtp-book-sheen { opacity: 1; }
+
+/* the shadow on the floor under each standing book */
+.gtp-shelf-shadow { position: absolute; left: 6%; right: 6%; top: calc(100% - 6px); height: 28px; background: radial-gradient(closest-side, rgb(0 0 0 / 0.5), transparent); transform: scale(0.92); transition: transform 0.4s var(--gtp-ease), opacity 0.4s var(--gtp-ease); pointer-events: none; }
+.gtp-landing[data-mode='row'] .gtp-shelf-item[data-on='true'] .gtp-shelf-shadow { transform: translateY(10px) scale(1.12); opacity: 0.7; }
+.gtp-landing[data-mode='stack'] .gtp-shelf-shadow { opacity: 0; }
+
+/* dragging the row */
+.gtp-landing[data-mode='row']:not([data-open='true']) .gtp-shelf { cursor: grab; }
+.gtp-landing[data-drag='true'] .gtp-shelf { cursor: grabbing; scroll-snap-type: none; }
+.gtp-landing[data-drag='true'] .gtp-shelf-item > * { pointer-events: none; }
+
+.gtp-dismiss { position: absolute; top: -6px; right: 0; width: 32px; height: 32px; display: grid; place-items: center; background: var(--gtp-stage-fill); color: var(--gtp-stage-ink); font-size: 18px; line-height: 1; }
+.gtp-dismiss svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
+.gtp-dismiss:hover { background: rgb(191 226 241 / 0.16); }
+
+.gtp-band { position: absolute; z-index: 5; left: 56px; right: 56px; bottom: 28px; display: flex; align-items: flex-end; gap: 8px; transition: opacity 0.4s var(--gtp-ease); }
+.gtp-instrument { display: flex; align-items: center; gap: 14px; }
+.gtp-instrument-globe { width: 76px; flex: none; }
+.gtp-globe-button { display: block; flex: none; line-height: 0; cursor: pointer; }
+
+.gtp-langs { position: absolute; z-index: 50; left: 40px; bottom: 24px; width: min(780px, calc(100% - 80px)); display: grid; grid-template-columns: 280px minmax(0, 1fr); align-items: center; gap: 56px; padding: 32px 36px; background: var(--gtp-stage); color: var(--gtp-stage-ink); box-shadow: 0 30px 80px rgb(0 0 0 / 0.4); transform-origin: 0 100%; opacity: 0; transform: translateY(16px) scale(0.5); pointer-events: none; transition: opacity 0.3s var(--gtp-ease), transform 0.55s var(--gtp-ease); }
+.gtp-langs[data-open='true'] { opacity: 1; transform: none; pointer-events: auto; }
+.gtp-landing[data-langs='true'] .gtp-shelf { opacity: 0.08; pointer-events: none; }
+.gtp-landing .gtp-shelf { transition: opacity 0.3s var(--gtp-ease); }
+.gtp-instrument-globe .gtp-globe-label { display: none; }
+.gtp-instrument-globe .gtp-globe-pin::before { left: -2.5px; top: -2.5px; width: 5px; height: 5px; border-radius: 50%; background: var(--gtp-ink); box-shadow: none; }
+.gtp-band-view { margin-left: auto; display: grid; justify-items: end; gap: 8px; color: var(--gtp-stage-ink-2); }
+.gtp-view .gtp-stop { padding: 0 12px; }
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 999px) {
+  .gtp-landing { grid-template-columns: minmax(0, 1fr); }
+  .gtp-landing .gtp-rail { display: none; }
+  .gtp-hall-head { left: 20px; right: 20px; top: 28px; }
+  .gtp-wordmark { font-size: 40px; }
+  .gtp-hall-coords { display: none; }
+  .gtp-shelf-track { --shelf-bw: 210px; --gap: 28px; --pad: max(20px, calc((100vw - var(--span) * var(--shelf-bw) - (var(--n) - 1) * var(--gap)) / 2)); }
+  .gtp-instrument-globe { width: 56px; }
+  .gtp-langs { left: 0; right: 0; bottom: 0; width: auto; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 48px 20px 24px; max-height: 88dvh; overflow-y: auto; }
+  .gtp-shelf-item { top: calc(46% - var(--shelf-bh) / 2); scroll-snap-align: center; scroll-margin-left: 0; }
+  .gtp-dismiss { top: 16px; right: 16px; }
+  .gtp-band { left: 20px; right: 20px; bottom: 16px; }
+  /* the flags wrap under one another beside the globe, so the view switch keeps its place at the right edge */
+  .gtp-band .gtp-instrument { flex: 1; min-width: 0; }
+  .gtp-band .gtp-flags { flex-wrap: wrap; gap: 4px 10px; }
+}
+
+/* ---------- the coordinates and the locator ---------- */
+
+/* the coordinates in plain type, latitude over longitude */
+.gtp-hall-coords { gap: 12px; }
+.gtp-hall-dms { margin: 0; display: grid; justify-items: end; gap: 2px; font-size: 13px; line-height: 1.35; color: var(--gtp-ink-2); font-variant-numeric: tabular-nums; cursor: default; user-select: none; transition: opacity 0.3s var(--gtp-ease); }
+/* the locator carries the place while it is open, so the corner does not repeat it */
+.gtp-landing[data-langs='true'] .gtp-hall-dms { opacity: 0; }
+.gtp-tags { margin-top: 0; }
+.gtp-tags a { padding: 5px 10px; font-family: var(--gtp-sans); font-size: 13px; text-transform: none; letter-spacing: 0; }
+/* the locator opened from the globe: the globe, its readout, the languages */
+/* centred over the hall, which a scrim takes back while it is open */
+.gtp-langs { left: 50%; top: 50%; bottom: auto; width: auto; max-width: calc(100% - 48px); grid-template-columns: auto 200px; align-items: center; gap: 44px; padding: 48px 52px; transform-origin: 50% 50%; transform: translate(-50%, -48%) scale(0.96); }
+.gtp-langs[data-open='true'] { transform: translate(-50%, -50%); }
+.gtp-landing .gtp-hall::after { content: ''; position: absolute; inset: 0; z-index: 40; background: color-mix(in srgb, var(--gtp-paper) 96%, transparent); opacity: 0; pointer-events: none; transition: opacity 0.35s var(--gtp-ease); }
+.gtp-landing[data-langs='true'] .gtp-hall::after { opacity: 1; }
+/* in the light theme the card is the paper and the scrim the stage grey */
+:root[data-theme='light'] .gtp-langs { background: var(--gtp-paper); }
+:root[data-theme='light'] .gtp-landing .gtp-hall::after { background: color-mix(in srgb, var(--gtp-stage) 96%, transparent); }
+/* the readout's room beside the globe */
+.gtp-langs-locator { padding-right: 250px; }
+.gtp-langs-locator { --globe: 300px; }
+.gtp-langs-flags { display: grid; gap: 2px; padding-left: 28px; border-left: 1px solid color-mix(in srgb, var(--gtp-stage-ink) 10%, transparent); }
+.gtp-langs-flags button { display: flex; align-items: center; gap: 12px; padding: 6px 0; font-size: 15px; color: var(--gtp-stage-ink); opacity: 0.34; filter: saturate(0.3); }
+.gtp-langs-flags button[aria-checked='true'] { opacity: 1; filter: none; }
+.gtp-langs .gtp-dismiss { top: 16px; right: 16px; }
+
+/* the locator: the globe with its coordinate lines, a leader from the pin, and the readout at its end */
+.gtp-locator { --globe: 260px; --reach: 40px; position: relative; display: grid; grid-template-columns: var(--globe) minmax(0, 1fr); color: var(--gtp-stage-ink); }
+.gtp-locator-globe { width: var(--globe); }
+.gtp-locator .gtp-globe-pin::before { left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--gtp-stage-ink); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gtp-stage) 70%, transparent); }
+.gtp-locator-leader { position: absolute; left: var(--px, 50%); top: var(--py, 50%); width: calc(100% - var(--px, 50%) + var(--reach)); height: 1px; background: color-mix(in srgb, var(--gtp-stage-ink) 42%, transparent); pointer-events: none; }
+.gtp-locator-leader::after { content: ''; position: absolute; right: 0; top: -3px; width: 1px; height: 7px; background: inherit; }
+.gtp-locator-readout { position: absolute; left: calc(100% + var(--reach) + 14px); top: var(--py, 40%); transform: translateY(-0.72em); display: grid; gap: 3px; white-space: nowrap; }
+.gtp-locator-locale { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; line-height: 1.4; color: var(--gtp-stage-ink-2); }
+.gtp-locator-city { font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; }
+.gtp-locator-coords { display: grid; gap: 1px; margin-top: 10px; font-size: 15px; line-height: 1.45; font-variant-numeric: tabular-nums; color: var(--gtp-stage-ink); }
+
+.gtp-hall-head { pointer-events: auto; }
+
+@media (max-width: 999px) {
+  .gtp-langs { left: 0; right: 0; top: auto; bottom: 0; max-width: none; transform: translateY(24px); padding: 48px 20px 24px; grid-template-columns: minmax(0, 1fr); }
+  .gtp-langs[data-open='true'] { transform: none; }
+  .gtp-langs-locator { padding-right: 0; }
+  .gtp-langs-flags { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 16px 0 0; border-left: 0; border-top: 1px solid color-mix(in srgb, var(--gtp-stage-ink) 10%, transparent); }
+  .gtp-langs-locator { --globe: 150px; --reach: 16px; }
+  .gtp-locator-city { font-size: 21px; }
+  .gtp-locator-coords { font-size: 12px; }
+}
+
+/* the light theme draws no drop shadows */
+:root[data-theme='light'] .gtp .gtp-shelf-shadow { display: none; }
 
 /* ---------- the rack: each story a thin magazine on its own stock ---------- */
-
 
 /* a magazine's page, Riffle's proportions */
 /* in whole pixels, its height and the line it stands on, so its foot and its top fall on the pixels the guides measure
@@ -76,7 +331,6 @@
 .gtp-mag-folio { position: absolute; z-index: 3; left: 3.4cqw; bottom: 3cqh; margin: 0; display: flex; gap: 1.4em; font-size: max(11px, 2.8cqh); line-height: 1; font-weight: 500; color: var(--ink); }
 .gtp-mag-folio b { font-weight: 700; }
 
-
 /* ---------- the corner that lifts ---------- */
 
 /* Under the pointer a magazine's bottom right corner peels back (Landing.tsx sets the slot's data-peel from its
@@ -114,31 +368,6 @@
 /* the inside: a page of white uncoated stock the cover's size, printed with the story's map sheet, whose legend sits
    in the lower right where the corner lifts */
 .gtp-mag-inside { position: absolute; inset: 0; z-index: 0; overflow: hidden; container-type: size; background: #fbfbf8; color: #141414; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; }
-/* the inside page is a survey sheet of the story's place (ui/MapSheet.tsx), the map in its magazine's own colours: the
-   cover's stock for the sea and its ink for the land, the graticule, the boxes and their words, the story's own place
-   and road in its accent; the border round it stays the page's white with the neat lines in black */
-.gtp-map { position: absolute; inset: 0; width: 100%; height: 100%; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; --map-grat: color-mix(in srgb, var(--map-ink) 34%, var(--map-sea)); }
-.gtp-map-sea { fill: var(--map-sea); }
-.gtp-map-land { fill: var(--map-ink); }
-.gtp-map-grat { stroke: var(--map-grat); stroke-width: 0.4; }
-.gtp-map-neat { fill: none; stroke: #141414; stroke-width: 1.1; }
-.gtp-map-frame { fill: none; stroke: #141414; stroke-width: 0.45; }
-.gtp-map-route { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 3 2; }
-.gtp-map-city { fill: var(--map-sea); stroke: var(--map-ink); stroke-width: 0.9; }
-.gtp-map-home { fill: var(--accent); stroke: var(--map-ink); stroke-width: 0.9; }
-.gtp-map-place { font-size: 6.2px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--map-ink); paint-order: stroke; stroke: var(--map-sea); stroke-width: 2px; stroke-linejoin: round; }
-.gtp-map-box { fill: var(--map-sea); stroke: var(--map-ink); stroke-width: 0.6; }
-.gtp-map-cap { font-size: 5.2px; letter-spacing: 0.14em; text-transform: uppercase; fill: var(--map-ink); }
-/* the border's words, under and beside the map, are the page's black */
-.gtp-map-deg, .gtp-map-cap.gtp-map-foot { fill: #3d3d3a; }
-.gtp-map-strong { font-weight: 700; }
-.gtp-map-title { font-family: 'Katagami Serif', var(--gtp-cjk), Georgia, serif; font-size: 10px; fill: var(--map-ink); }
-.gtp-map-key { font-size: 5.8px; fill: var(--map-ink); }
-.gtp-map-deg { font-size: 5px; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
-/* the scale's numbers sit in the legend, in its ink */
-.gtp-map-num { font-size: 5px; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; fill: var(--map-ink); }
-.gtp-map-bar { fill: var(--map-ink); stroke: var(--map-ink); stroke-width: 0.4; }
-.gtp-map-bar-w { fill: var(--map-sea); stroke: var(--map-ink); stroke-width: 0.4; }
 
 /* the corner's hit area: a triangle at the slot's bottom right, so the rest of the magazine still opens the story */
 .gtp-shelf-corner { position: absolute; z-index: 2; right: 0; bottom: 0; width: calc(var(--slot-w) * 0.36); height: calc(var(--slot-w) * 0.36); padding: 0; border: 0; background: none; cursor: pointer; pointer-events: auto; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
@@ -175,7 +404,7 @@
 }
 /* the guides print faintly in the hall's own ink, all one weight, each measured from an edge the page has and running
    the sheet's full width or height behind everything on it */
-/* the row's middle, where the magazines stand centred (press.css centres a narrow screen's at 46%) */
+/* the row's middle, where the magazines stand centred (a narrow screen's stand at 46%, as the narrow hall sets them) */
 .gtp-guides { position: absolute; inset: 0; z-index: 1; pointer-events: none; --mid: 52%; --cap: calc(var(--nameplate) * 0.6982); --mag-h: round(calc(var(--mag-w) * 1.316), 1px); --foot: round(calc(var(--mid) + var(--mag-h) / 2), 1px); --dial: calc(var(--globe) + 2 * var(--dial-pad)); }
 /* each guide a hairline placed by the page's own measures (ui/HallGuides.tsx), on the pixel just outside the edge it
    frames (before a leading edge, after a trailing one), so the sheet is drawn with the page and never moves */

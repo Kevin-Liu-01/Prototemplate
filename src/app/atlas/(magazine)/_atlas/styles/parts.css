@@ -1,0 +1,70 @@
+/* The parts every surface of GT Atlas sets: text for screen readers alone,
+   the stop slider (ui/StopSlider.tsx), the flags, the globe, the covers, the
+   theme switch, and the move between the front page and a story. */
+
+/* ---------- text for screen readers ---------- */
+
+/* text for screen readers only: out of sight, still read (the magazine's page count, the rules' Do and Do not) */
+.gtp-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* ---------- the stop slider ---------- */
+
+.gtp-stops { --x: 0px; --w: 0px; position: relative; display: inline-flex; align-self: start; justify-self: start; max-width: 100%; padding: 3px; background: var(--gtp-fill-2); touch-action: pan-y; user-select: none; }
+.gtp-stops[data-tone='stage'] { background: var(--gtp-stage-fill); }
+.gtp-stop { position: relative; z-index: 1; display: inline-flex; align-items: center; height: 28px; padding: 0 11px; font-size: 13px; white-space: nowrap; color: var(--gtp-ink-2); cursor: pointer; }
+.gtp-stops[data-tone='stage'] .gtp-stop { color: var(--gtp-stage-ink-2); }
+.gtp-stop input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.gtp-stop:hover { color: var(--gtp-ink); }
+.gtp-stops[data-tone='stage'] .gtp-stop:hover { color: var(--gtp-stage-ink); }
+.gtp-stop:has(input:focus-visible) { outline: 1px solid var(--gtp-signal); outline-offset: -1px; }
+.gtp-stops-thumb { position: absolute; top: 3px; bottom: 3px; left: 0; width: var(--w); transform: translateX(var(--x)); background: var(--gtp-ink); transition: transform 0.4s var(--gtp-ease), width 0.4s var(--gtp-ease); }
+.gtp-stops[data-tone='stage'] .gtp-stops-thumb { background: var(--gtp-stage-ink); }
+.gtp-stops-lens { position: absolute; inset: 3px; z-index: 2; display: inline-flex; pointer-events: none; clip-path: inset(0 calc(100% - var(--x) - var(--w) + 3px) 0 calc(var(--x) - 3px)); transition: clip-path 0.4s var(--gtp-ease); }
+.gtp-stops-lens .gtp-stop { color: var(--gtp-paper); }
+.gtp-stops[data-tone='stage'] .gtp-stops-lens .gtp-stop { color: var(--gtp-stage); }
+
+/* ---------- flags ---------- */
+
+.gtp-flag { display: inline-block; flex: none; line-height: 0; overflow: hidden; box-shadow: 0 0 0 1px rgb(127 127 127 / 0.28); }
+.gtp-flags { display: flex; align-items: center; gap: 12px; }
+/* the chosen flag is the bright one; the rest sit back, and nothing moves on hover */
+.gtp-flags button { padding: 4px 0; opacity: 0.32; filter: saturate(0.35); }
+.gtp-flags button[aria-checked='true'] { opacity: 1; filter: none; }
+.gtp-flag img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(0.82) contrast(0.96); }
+
+/* ---------- globe ---------- */
+
+.gtp-globe { position: relative; aspect-ratio: 1; }
+.gtp-globe-canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.gtp-globe-pin { position: absolute; width: 0; height: 0; transition: opacity 0.2s; }
+.gtp-globe-pin[data-hidden='true'] { opacity: 0; }
+.gtp-globe-pin::before { content: ''; position: absolute; left: -3px; top: -3px; width: 7px; height: 7px; background: var(--gtp-signal); box-shadow: 0 0 0 3px rgb(240 80 42 / 0.25); }
+.gtp-globe-label { position: absolute; top: 10px; left: 10px; display: grid; gap: 2px; padding: 6px 8px; background: var(--gtp-signal); color: #fff; white-space: nowrap; }
+.gtp-globe-pin[data-side='left'] .gtp-globe-label { left: auto; right: 10px; }
+.gtp-globe-city { font-size: 12px; font-weight: 500; }
+.gtp-globe-coords { font-family: var(--gtp-mono); font-size: 10px; letter-spacing: 0.02em; }
+
+/* ---------- covers ---------- */
+
+.gtp-cover { position: absolute; inset: 0; display: block; overflow: hidden; background: var(--board, var(--gtp-navy)); }
+.gtp-cover canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.gtp-cover-cpu { image-rendering: pixelated; }
+.gtp-cover[data-mode='cpu'] .gtp-cover-gpu { visibility: hidden; }
+/* a magazine's poster, the cover as WebGPU draws it at rest, is in the first paint; the canvas over it stays hidden
+   until it has printed its art, then covers it exactly, as it is opaque */
+.gtp-cover-poster { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; user-select: none; }
+.gtp-cover[data-drawn='false'] > .gtp-cover-poster ~ .gtp-cover-gpu { opacity: 0; }
+
+/* ---------- the theme switch ---------- */
+
+.gtp-theme { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; background: var(--gtp-fill-2); color: var(--gtp-ink-2); }
+.gtp-theme:hover { color: var(--gtp-ink); }
+
+/* ---------- the move between the shelf and a story ---------- */
+
+/* a short crossfade (transition.ts): the old page fades out, the new one fades in 6px low and settles; no part
+   of either page moves on its own */
+html[data-gtp-vt]::view-transition-old(root) { animation: gtp-vt-out 0.18s cubic-bezier(0.4, 0, 1, 1) both; }
+html[data-gtp-vt]::view-transition-new(root) { animation: gtp-vt-in 0.36s cubic-bezier(0, 0, 0.2, 1) 0.06s both; }
+@keyframes gtp-vt-out { to { opacity: 0; } }
+@keyframes gtp-vt-in { from { opacity: 0; transform: translateY(6px); } }

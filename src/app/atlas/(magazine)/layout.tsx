@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react';
 import { preload } from 'react-dom';
 
-import './_atlas/press.css';
-import './_atlas/magazine.css';
+import './_atlas/styles/tokens.css';
+import './_atlas/styles/parts.css';
+import './_atlas/styles/plates.css';
+import './_atlas/styles/reader.css';
+import './_atlas/styles/decorations.css';
 
 /** The faces every press page opens on: its sans and its serif, Katagami Text and Katagami Serif. */
 const FACES = ['/fonts/katagami/KatagamiText-latin.woff2', '/fonts/katagami/KatagamiSerif-latin.woff2'];

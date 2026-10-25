@@ -11,7 +11,7 @@ import type { MapSheet as Sheet } from '../stories';
    rows set from the right so the fold shows their symbols first, over a
    true scale bar; the sheet's number and who compiled it run in the border
    under it. The map prints in its magazine's own colours: the cover's
-   stock for the sea and its ink for the land (rack.css, --map-sea and
+   stock for the sea and its ink for the land (magazine-view.css, --map-sea and
    --map-ink). Places are drawn at equal scale about the sheet's centre
    latitude (geo/sheet.ts). */
 

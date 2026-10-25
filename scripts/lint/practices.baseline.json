@@ -73,10 +73,20 @@
   "src/app/d/production/sections/glyph-field.ts:77",
   "src/lib/dither.ts:334",
   "src/lib/dither.ts:335",
-  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:27",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:28",
   "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:29",
-  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:31",
-  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:33"
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:30",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:39",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:40",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:41",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:42",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:51",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:52",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:53",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:54",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:62",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:63",
+  "src/app/atlas/(magazine)/_atlas/gpu/covers.ts:64"
  ],
  "important-in-css": [
   "src/app/present/presenter.css:2555",
@@ -283,6 +293,6 @@
   "src/components/shared/FeatureBento.css:174",
   "src/components/shared/FeatureBento.css:175",
   "src/components/shared/FeatureBento.css:180",
-  "src/app/atlas/(magazine)/_atlas/press.css:658"
+  "src/app/atlas/(magazine)/_atlas/styles/tokens.css:135"
  ]
 }

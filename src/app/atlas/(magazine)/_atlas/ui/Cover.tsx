@@ -47,7 +47,7 @@ export default function Cover({
   const want = useRef(playing);
   want.current = playing;
   const [mode, setMode] = useState<'pending' | 'gpu' | 'cpu'>('pending');
-  // the canvas has printed its art; until then press.css hides it over a poster, so the poster shows
+  // the canvas has printed its art; until then parts.css hides it over a poster, so the poster shows
   const [drawn, setDrawn] = useState(false);
   const spec = COVERS[slug] ?? FALLBACK_COVER;
   const reduce = useRef(false);

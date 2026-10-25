@@ -6,7 +6,7 @@ type Props = { value: View; onChange: (view: View) => void };
 
 /* How the rack lays its magazines out, as a two-part switch: three covers
    standing side by side, or three sheets piled one on another, the chosen
-   part filled in. Every edge falls on a whole pixel at 20px (rack.css,
+   part filled in. Every edge falls on a whole pixel at 20px (front-page.css,
    .gtp-viewswitch). */
 export default function ViewSwitch({ value, onChange }: Props) {
   return (

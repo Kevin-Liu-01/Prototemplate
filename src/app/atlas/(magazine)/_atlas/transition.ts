@@ -1,5 +1,5 @@
 /* The move between the shelf and a story, as a view transition: a short
-   crossfade, the page arriving a few pixels low and settling (press.css,
+   crossfade, the page arriving a few pixels low and settling (parts.css,
    ::view-transition). The same move runs going home.
 
    The leaving page starts the transition; the arriving page calls landed()
@@ -30,7 +30,7 @@ export function move(navigate: Navigate, href: string): void {
     return;
   }
   const html = document.documentElement;
-  // press.css scopes the crossfade to this attribute, so no other view transition on the site takes it
+  // parts.css scopes the crossfade to this attribute, so no other view transition on the site takes it
   html.dataset.gtpVt = '';
   const ready = new Promise<void>((resolve) => {
     arrive = resolve;

@@ -31,7 +31,7 @@ function shortest(from: number, to: number): number {
 }
 
 /* The language the titles are set in, as codes round the globe's dial
-   (rack.css, .gtp-ring), so the dial's ring has a use: the chosen code
+   (front-page.css, .gtp-ring), so the dial's ring has a use: the chosen code
    stands at the dial's right; under the pointer, in focus, or on a tap of
    the chosen code, the others stand out round it; a pick turns the ring the
    short way until the chosen code is at the right, and the others fold back
