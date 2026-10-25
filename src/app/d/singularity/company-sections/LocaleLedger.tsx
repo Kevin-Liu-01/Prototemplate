@@ -66,7 +66,7 @@ export default function LocaleLedger() {
           type='text'
           value={q}
         />
-        <span className='cpl-filter-count'>
+        <span className='cpl-filter-count' aria-live='polite'>
           {rows.length} / {STATS.locales} shown
         </span>
       </div>
@@ -96,7 +96,6 @@ export default function LocaleLedger() {
               .join(' ');
             return (
               <a
-                aria-label={`Open locale ${r.code}`}
                 className={cls}
                 href={`https://wikipedia.org/wiki/List_of_ISO_639_language_codes#${r.code}`}
                 key={r.code}

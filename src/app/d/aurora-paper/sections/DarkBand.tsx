@@ -376,7 +376,7 @@ export default function DarkBand() {
               <div className='tcb-art-in'>
                 <div className='tcb-art-bar'>
                   <span className='is-on'>page.tsx</span>
-                  <span className='tcb-marks' aria-label='Next.js and React'>
+                  <span className='tcb-marks' role='img' aria-label='Next.js and React'>
                     <SiNextdotjs {...MARK} />
                     <SiReact {...MARK} />
                   </span>
@@ -433,7 +433,7 @@ export default function DarkBand() {
               <div className='tcb-art-bar'>
                 <span className='is-on'>notify.ts</span>
                 <span>runtime</span>
-                <span className='tcb-marks' aria-label='Node.js'>
+                <span className='tcb-marks' role='img' aria-label='Node.js'>
                   <SiNodedotjs {...MARK} />
                 </span>
               </div>
@@ -470,7 +470,7 @@ export default function DarkBand() {
                 <b>acme/web</b>
                 <span>production</span>
               </div>
-              <div className='tcb-chips' aria-label='enabled locales'>
+              <div className='tcb-chips' role='group' aria-label='enabled locales'>
                 {(['en', 'es', 'fr', 'ja', 'de', 'zh'] as const).map((loc) => (
                   <span key={loc}>
                     <LocaleTag code={loc} />
@@ -511,7 +511,7 @@ export default function DarkBand() {
               <div className='tcb-art-bar'>
                 <span className='is-on'>PR #218</span>
                 <span>locadex → main</span>
-                <span className='tcb-marks' aria-label='GitHub'>
+                <span className='tcb-marks' role='img' aria-label='GitHub'>
                   <SiGithub {...MARK} />
                 </span>
               </div>
@@ -569,7 +569,7 @@ export default function DarkBand() {
                 </div>
               </div>
 
-              <div className='tcb-ctx-joint' aria-label='inherited by'>
+              <div className='tcb-ctx-joint' role='img' aria-label='inherited by'>
                 <svg viewBox='0 0 30 24' width={30} height={24} aria-hidden='true'>
                   <path d='M0 10.5h20' />
                   <path d='M0 13.5h20' />
@@ -603,7 +603,7 @@ export default function DarkBand() {
                 </div>
               </div>
 
-              <div className='tcb-ctx-joint' aria-label='inherited by'>
+              <div className='tcb-ctx-joint' role='img' aria-label='inherited by'>
                 <svg viewBox='0 0 30 24' width={30} height={24} aria-hidden='true'>
                   <path d='M0 10.5h20' />
                   <path d='M0 13.5h20' />

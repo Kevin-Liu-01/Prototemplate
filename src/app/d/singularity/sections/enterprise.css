@@ -255,6 +255,8 @@
 .singularity-root .sge-fieldbox textarea:focus-visible {
   outline: 0;
   border-color: rgba(255, 255, 255, 0.7);
+  /* the border and this ring together draw a 2px focus ring */
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 
 /* dark autofill: keep the sheet's ink, not the UA's yellow-white */
