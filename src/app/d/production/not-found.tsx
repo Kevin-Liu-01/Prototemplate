@@ -1,11 +1,7 @@
-import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import { seoRoute } from '@/lib/seo/route';
 
-import ProdFooter from './sections/ProdFooter';
-import ProdNav from './sections/ProdNav';
-
-import NotFound from './sections/NotFound';
+import LazyNotFoundBody from './sections/LazyNotFoundBody';
 
 import '../toolchain/sections/logos-icons.css';
 import '../toolchain/styles.css';
@@ -41,19 +37,13 @@ export const metadata = route.metadata;
  * The band is NOT railed: the real page's main is a bare
  * `.toolchain-root .not-found-root` with the horizon full-bleed inside it,
  * and only the footer sits in the ruled column (SiteFooterMount's own
- * `.tc-rail`). That split is reproduced here.
+ * `.tc-rail`). That split is reproduced in sections/NotFoundBody.tsx,
+ * which LazyNotFoundBody loads as its own chunk.
  */
 export default function ProductionNotFound() {
   return (
     <SmoothScroll>
-      <div className='toolchain-root sgdh-root prod-root' id='top'>
-        <ProdNav />
-        <NotFound />
-        <div className='tc-rail'>
-          <ProdFooter />
-        </div>
-      </div>
-      <DirectionCorner slug='production' />
+      <LazyNotFoundBody />
     </SmoothScroll>
   );
 }
