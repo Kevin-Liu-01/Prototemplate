@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { RefObject } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
@@ -18,7 +20,7 @@ export function useQuietReveal(scope: RefObject<HTMLElement | null>, enabled = t
       /* hosts that must never shift layout on load (the v0 product mounts)
          opt out — the resting DOM is the still */
       if (!enabled) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       ScrollTrigger.batch(gsap.utils.toArray<HTMLElement>('[data-reveal]', scope.current), {
         start: 'top 92%',

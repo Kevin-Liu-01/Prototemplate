@@ -85,16 +85,6 @@
   fill: color-mix(in srgb, var(--iso-accent-ink) 27%, transparent);
 }
 
-.iso .iso-fill-accent {
-  fill: var(--iso-accent-ink);
-}
-
-/* A node sitting on the drawing rather than on a face — a junction, a point of
-   presence. Quieter than the accent, heavier than a content mark. */
-.iso .iso-fill-soft {
-  fill: var(--iso-ink-soft, color-mix(in srgb, currentColor 55%, transparent));
-}
-
 .iso .iso-face-none {
   fill: none;
 }
@@ -140,37 +130,3 @@
    use the page's own display face rather than SVG text.
    ============================================================ */
 
-.iso-stat {
-  display: flex;
-  align-items: center;
-  gap: var(--iso-stat-gap, 14px);
-  color: inherit;
-}
-
-.iso-stat-icon {
-  flex: none;
-  width: var(--iso-stat-icon-size, 38px);
-  height: var(--iso-stat-icon-size, 38px);
-}
-
-.iso-stat-body {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.iso-stat-value {
-  font-family: var(--iso-display, inherit);
-  font-size: var(--iso-stat-value-size, 30px);
-  font-weight: var(--iso-stat-value-weight, 600);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--iso-stat-value-color, currentColor);
-}
-
-.iso-stat-label {
-  font-size: var(--iso-stat-label-size, 12px);
-  line-height: 1.3;
-  color: var(--iso-stat-label-color, color-mix(in srgb, currentColor 58%, transparent));
-}

@@ -49,10 +49,6 @@
   color: var(--tc-ink-4);
 }
 
-.singularity-root .tcx-win-body {
-  padding: 11px 11px 13px;
-}
-
 .singularity-root .tcx-h {
   font-family: var(--tc-disp);
   font-weight: 500;

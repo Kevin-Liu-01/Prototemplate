@@ -7,6 +7,7 @@ import { useRef } from 'react';
 
 import FlowField from './FlowField';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -125,7 +126,7 @@ export default function LocadexBand() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const frame = root.current?.querySelector('[data-pr]');
       if (!frame) return;
 

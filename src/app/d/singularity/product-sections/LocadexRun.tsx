@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useRef } from 'react';
 
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -67,7 +68,7 @@ export default function LocadexRun() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const print = (rows: string, trigger: string) => {
         const targets = gsap.utils.toArray<HTMLElement>(rows, scope);

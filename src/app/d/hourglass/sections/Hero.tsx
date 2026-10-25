@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useRef } from 'react';
 
 import { useCopied } from '@/app/d/toolchain/components/use-copied';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -689,7 +690,7 @@ export default function Hero() {
 
       /* Reduced motion keeps the composed still: the mirror phase (d = 0),
          placed once, no ticking. */
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (prefersReducedMotion()) {
         place();
         return () => window.removeEventListener('resize', onResize);
       }

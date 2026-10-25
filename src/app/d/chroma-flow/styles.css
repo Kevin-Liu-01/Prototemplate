@@ -1008,15 +1008,6 @@
   border-top: 0;
 }
 
-/* the visual half of a split row: centred, breathing, never cropped */
-.chromaflow-root .tc-art {
-  flex: 1;
-  padding-top: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .chromaflow-root .tc-art-center {
   display: flex;
   flex: 1;
@@ -1024,21 +1015,6 @@
   justify-content: center;
   padding: 8px 0;
 }
-
-/* The SDK stack, which is the one drawing that labels every level of itself.
-   Its type is measured in viewBox units, so the size lives with the placement
-   that fixes the drawing's on-screen scale. */
-.chromaflow-root .tc-art-w {
-  width: 100%;
-  max-width: 400px;
-  --iso-label-size: 7px;
-}
-
-.chromaflow-root .tc-art-sm {
-  width: 100%;
-  max-width: 226px;
-}
-
 
 /* The four small surfaces. They are panels rather than objects, so they take
    the width of the card instead of being centred as a drawing inside it. */
@@ -1338,38 +1314,6 @@
 .chromaflow-root .tc-lang.is-lead .lang-sw-name,
 .chromaflow-root .tc-lang.is-lead .lang-sw-pct {
   font-size: 13px;
-}
-
-/* plain text cell */
-.chromaflow-root .tc-plain {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(24px, 4vw, 64px);
-}
-
-.chromaflow-root .tc-plain p {
-  margin-top: 11px;
-  font-size: 14px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-  max-width: 34ch;
-}
-
-.chromaflow-root .tc-plain ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(20px, 3vw, 40px);
-}
-
-.chromaflow-root .tc-plain li {
-  padding: 9px 0;
-  border-bottom: 1px solid var(--tc-hair-2);
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--tc-ink-2);
 }
 
 /* ============================================================
@@ -2078,76 +2022,6 @@
    in `sections/story/` against this page's own tokens.
    ============================================================ */
 
-.chromaflow-root .tc-review {
-  --gte-line: var(--tc-hair);
-  --gte-line-2: var(--tc-hair-2);
-  --gte-title: var(--tc-ink);
-  --gte-body: var(--tc-ink-2);
-  --gte-label: var(--tc-ink-3);
-  --gte-quiet: var(--tc-ink-4);
-  --gte-display: var(--tc-disp);
-  --gte-text: var(--tc-sans);
-  --gte-mono: var(--tc-mono);
-  --gte-ws-bg: var(--tc-card);
-  --gte-ws-shadow: none;
-  /* Inset-panel radius — the workspace is a UI mock, and the standard's ring
-     for a UI mock is a hairline, not a mat. */
-  --gte-radius: 4px;
-  --gte-revised: var(--tc-ink);
-  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
-  --gte-head-weight: 600;
-  --gte-head-color: var(--tc-ink);
-  --gte-sub-size: 15px;
-  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
-  --gte-wrap: 100%;
-}
-
-.chromaflow-root .tc-review .gte-wrap {
-  width: 100%;
-  padding-inline: var(--tc-gut);
-}
-
-/* Top-aligned like every other row on the page, rather than the component's own
-   vertical centring, which floated the copy halfway down the workspace. */
-.chromaflow-root .tc-review .gte-grid {
-  gap: clamp(28px, 4vw, 56px);
-  align-items: start;
-}
-
-/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
-   14px margin that measured about 7px of visible gap against the 24px every
-   `tc-head` on this page carries. Re-set to this page's values so the section
-   reads as part of the document instead of as an import. */
-.chromaflow-root .tc-review .gte h2 {
-  margin: 0;
-  line-height: 1.06;
-  letter-spacing: -0.028em;
-}
-
-.chromaflow-root .tc-review .gte-sub {
-  margin-top: 13px;
-  max-width: 46ch;
-  line-height: 1.62;
-}
-
-.chromaflow-root .tc-review .gte-notes {
-  margin-top: 22px;
-}
-
-/* ---------- the workspace, ringed ----------
-   The standard's inset panel for a UI mock is paper with a hairline ring —
-   the r2 build mounted it on the ink mat instead and the 1px edge + 2px
-   reveal read as a ~4px picture-frame, the only heavy-stroked object on the
-   page. One hairline, small radius, nothing else. */
-.chromaflow-root .tc-review .gte-ws {
-  border-color: var(--tc-hair);
-}
-
-.chromaflow-root .tc-review .gte-bar,
-.chromaflow-root .tc-review .gte-cols {
-  background: var(--tc-card);
-}
-
 /* ============================================================
    PIPELINE RAIL — six stations on the doubled thread (M05)
    ============================================================ */
@@ -2806,17 +2680,16 @@
 
 @media (max-width: 1000px) {
   .chromaflow-root .tc-fw,
-  .chromaflow-root .tc-row.is-split,
-  .chromaflow-root .tc-row.is-lead,
-  .chromaflow-root .tc-row.is-three,
-  .chromaflow-root .tc-row.is-wide-left,
-  .chromaflow-root .tc-row.is-wide-right,
-  .chromaflow-root .tc-row.is-even,
-  .chromaflow-root .tc-row.is-tilt,
-  .chromaflow-root .tc-row.is-grammar,
-  .chromaflow-root .tc-plans,
-  .chromaflow-root .tc-plain,
-  .chromaflow-root .cf-lb-top {
+.chromaflow-root .tc-row.is-split,
+.chromaflow-root .tc-row.is-lead,
+.chromaflow-root .tc-row.is-three,
+.chromaflow-root .tc-row.is-wide-left,
+.chromaflow-root .tc-row.is-wide-right,
+.chromaflow-root .tc-row.is-even,
+.chromaflow-root .tc-row.is-tilt,
+.chromaflow-root .tc-row.is-grammar,
+.chromaflow-root .tc-plans,
+.chromaflow-root .cf-lb-top {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -2854,7 +2727,6 @@
     height: 1px;
     align-self: auto;
   }
-
 
   .chromaflow-root .tc-row.is-reverse > :first-child {
     order: 2;
@@ -2948,10 +2820,6 @@
     border-inline: 0;
   }
 
-  .chromaflow-root .tc-plain ul {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .chromaflow-root .tc-caps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3014,7 +2882,6 @@
   }
 }
 
-
 /* ---- dark mode ----
    Token remap only: the measured oxc rules (rgba(138, 143, 152, 0.38)) over the ink-black
    one-surface family. Everything downstream re-skins from these. */
@@ -3048,11 +2915,6 @@
   color: #101010;
 }
 
-
-
-
-
-
 /* ---- the rail, zoom-proof ----
    One hairline each side, drawn once by the column's own border-inline (a
    true 1px border: browsers round border widths to whole device pixels at
@@ -3068,7 +2930,6 @@
   position: relative;
   border-inline: 1px solid var(--tc-hair);
 }
-
 
 /* ============================================================
    FOUNDER PROPAGATION LAYER (toolchain v10 parity)

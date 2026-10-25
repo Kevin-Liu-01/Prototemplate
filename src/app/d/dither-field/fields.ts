@@ -24,18 +24,9 @@ import {
   type DitherLoopOptions,
   type FieldFn,
 } from '@/lib/dither';
+import { clamp01, smoothstep } from '@/lib/math';
 
 const TAU = Math.PI * 2;
-
-function clamp01(x: number): number {
-  return x < 0 ? 0 : x > 1 ? 1 : x;
-}
-
-function smoothstep(edge0: number, edge1: number, x: number): number {
-  if (edge0 === edge1) return x < edge0 ? 0 : 1;
-  const t = clamp01((x - edge0) / (edge1 - edge0));
-  return t * t * (3 - 2 * t);
-}
 
 /**
  * Mutable aspect box. `ditherToCanvas` re-measures the canvas every frame, so

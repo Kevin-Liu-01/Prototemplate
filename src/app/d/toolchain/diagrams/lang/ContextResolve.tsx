@@ -4,9 +4,11 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import LocaleTag from '../../components/LocaleTag';
 
-import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from './lang';
+import { langA11y, langClass, target, type LangProps } from './lang';
 import { pauseWhileHidden } from '../../sections/visibility';
 import './lang.css';
 

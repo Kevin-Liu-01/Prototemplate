@@ -1,3 +1,5 @@
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 /**
  * Aurora wash — this direction's own shader material. A NEW GLSL field, not a
  * port: a polar light event on PAPER. The field has two registers layered in
@@ -566,7 +568,7 @@ export function createAuroraWash(canvas: HTMLCanvasElement, options: AuroraOptio
   if (!blit) return null;
 
   const reduced =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    typeof window !== 'undefined' && prefersReducedMotion();
 
   const sub: Subscriber = {
     target: canvas,

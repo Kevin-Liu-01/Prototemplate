@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 gsap.registerPlugin(useGSAP);
 
 /* The rain's alphabet: one glyph per writing system the platform ships. */
@@ -42,7 +44,7 @@ export default function GlyphRain({
     const host = canvas?.parentElement;
     if (!canvas || !host) return;
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = prefersReducedMotion();
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 

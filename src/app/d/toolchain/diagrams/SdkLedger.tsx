@@ -1,5 +1,4 @@
 import { SiNodedotjs, SiNpm } from '@icons-pack/react-simple-icons';
-import type { CSSProperties } from 'react';
 
 import '../components/icons.css';
 import '../sections/chip-consistency.css';
@@ -90,7 +89,7 @@ export default function SdkLedger({ className, title }: SdkLedgerProps) {
               {sdk.markSrc ? (
                 <i
                   className={sdk.markClass ? `sdkl-mark ${sdk.markClass}` : 'sdkl-mark'}
-                  style={{ '--mark': `url(${sdk.markSrc})` } as CSSProperties}
+                  style={{ '--mark': `url(${sdk.markSrc})` }}
                   aria-hidden='true'
                 />
               ) : (

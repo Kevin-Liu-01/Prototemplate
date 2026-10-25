@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRef } from 'react';
-import type { ComponentType, CSSProperties } from 'react';
+import type { ComponentType } from 'react';
 
 import {
   SiCreatereactapp,
@@ -31,7 +31,7 @@ function ReactNativeMark({ className }: MarkProps) {
   return (
     <i
       className={className ? `${className} is-rn` : 'is-rn'}
-      style={{ '--mark': 'url(/logos/react-native-no-bg.svg)' } as CSSProperties}
+      style={{ '--mark': 'url(/logos/react-native-no-bg.svg)' }}
       aria-hidden='true'
     />
   );

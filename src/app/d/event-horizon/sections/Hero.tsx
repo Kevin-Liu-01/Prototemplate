@@ -10,6 +10,8 @@ import { useRef } from 'react';
 import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 import { createHorizonField, type HorizonFieldHandle } from '@/lib/horizon-field';
+import { clamp01, smoothstep } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP);
 
@@ -282,12 +284,6 @@ const TAU = Math.PI * 2;
 
 const pairAt = (index: number): Pair => PAIRS[index % PAIRS.length] ?? PAIRS[0];
 
-const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
-const smooth01 = (t: number) => {
-  const c = clamp01(t);
-  return c * c * (3 - 2 * c);
-};
-
 const phiAt = (u: number): number =>
   PHI_EDGE + (PHI_DEEP - PHI_EDGE) * Math.pow(clamp01(u), PHI_SHAPE);
 
@@ -373,8 +369,8 @@ const PATTERNS: readonly (readonly Pair[])[] = [
 /* Both ramps are WIDE on purpose: they are sampled per strip chord, and a
    ramp narrower than a few chords steps visibly between neighbours — the
    banding that plagued the first cut of this wall. */
-const veilAt = (mid: number): number => 0.4 * smooth01((mid - 0.5) / 0.9);
-const rimFadeAt = (q: number): number => smooth01((q - 0.6) / 0.45);
+const veilAt = (mid: number): number => 0.4 * smoothstep(0, 1, (mid - 0.5) / 0.9);
+const rimFadeAt = (q: number): number => smoothstep(0, 1, (q - 0.6) / 0.45);
 
 function CardBody({ pair, side }: { pair: Pair; side: 'en' | 'tr' }) {
   const face = side === 'en' ? pair.en : pair.tr;
@@ -607,7 +603,7 @@ export default function Hero() {
       const rail = railRef.current;
       if (!hero || !stage || !fieldCanvas || !orbit || !rail) return;
 
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = prefersReducedMotion();
 
       const field: HorizonFieldHandle | null = createHorizonField(fieldCanvas, { speed: 0.5 });
 
@@ -728,7 +724,7 @@ export default function Hero() {
           let rot = Math.atan2(ORBIT_TILT * sin, cos);
           if (cos < 0) rot += Math.PI;
           const scale = 1 - 0.075 * cos;
-          const dim = 1 - 0.45 * smooth01((cos - 0.4) / 0.45);
+          const dim = 1 - 0.45 * smoothstep(0, 1, (cos - 0.4) / 0.45);
           chip.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(
             2
           )}px) translate(-50%, -50%) rotate(${rot.toFixed(4)}rad) scale(${scale.toFixed(3)})`;

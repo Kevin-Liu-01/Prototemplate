@@ -451,35 +451,6 @@
   height: 12px;
 }
 
-.prismlight-root .tc-term-key {
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.prismlight-root .tc-swap {
-  display: grid;
-  grid-template-columns: minmax(0, auto) 18px minmax(0, 1fr);
-  gap: 0 8px;
-  white-space: nowrap;
-}
-
-.prismlight-root .tc-swap-src {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.prismlight-root .tc-swap-arrow {
-  color: rgba(255, 255, 255, 0.32);
-}
-
-.prismlight-root .tc-swap-out {
-  display: grid;
-}
-
-.prismlight-root .tc-swap-out > i {
-  grid-area: 1 / 1;
-  font-style: normal;
-  color: #ffffff;
-}
-
 /* ---------- trusted-by ---------- */
 
 /* A ruled band, not a line of words. The caption sits on its own row, the six
@@ -1048,15 +1019,6 @@
   border-top: 0;
 }
 
-/* the visual half of a split row: centred, breathing, never cropped */
-.prismlight-root .tc-art {
-  flex: 1;
-  padding-top: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .prismlight-root .tc-art-center {
   display: flex;
   flex: 1;
@@ -1064,21 +1026,6 @@
   justify-content: center;
   padding: 8px 0;
 }
-
-/* The SDK stack, which is the one drawing that labels every level of itself.
-   Its type is measured in viewBox units, so the size lives with the placement
-   that fixes the drawing's on-screen scale. */
-.prismlight-root .tc-art-w {
-  width: 100%;
-  max-width: 400px;
-  --iso-label-size: 7px;
-}
-
-.prismlight-root .tc-art-sm {
-  width: 100%;
-  max-width: 226px;
-}
-
 
 /* The four small surfaces. They are panels rather than objects, so they take
    the width of the card instead of being centred as a drawing inside it. */
@@ -1096,8 +1043,6 @@
 .prismlight-root .tc-surface.is-plated {
   margin-top: 12px;
 }
-
-
 
 /* ---------- the ruled band ----------
    Four short items across the column used to be four separate mounted cells,
@@ -1362,8 +1307,6 @@
   --lang-ground: var(--tc-white);
 }
 
-
-
 .prismlight-root .tc-lang.is-lead {
   margin-top: 26px;
 }
@@ -1382,38 +1325,6 @@
 .prismlight-root .tc-lang.is-lead .lang-sw-name,
 .prismlight-root .tc-lang.is-lead .lang-sw-pct {
   font-size: 13px;
-}
-
-/* plain text cell */
-.prismlight-root .tc-plain {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(24px, 4vw, 64px);
-}
-
-.prismlight-root .tc-plain p {
-  margin-top: 11px;
-  font-size: 14px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-  max-width: 34ch;
-}
-
-.prismlight-root .tc-plain ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(20px, 3vw, 40px);
-}
-
-.prismlight-root .tc-plain li {
-  padding: 9px 0;
-  border-bottom: 1px solid var(--tc-hair-2);
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--tc-ink-2);
 }
 
 /* ============================================================
@@ -1470,45 +1381,6 @@
   grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
   gap: clamp(28px, 4vw, 56px);
   align-items: center;
-}
-
-.prismlight-root .tc-band-term {
-  border-radius: 6px;
-  background: #101010;
-  outline: 1px solid rgba(255, 255, 255, 0.22);
-  outline-offset: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  overflow: hidden;
-}
-
-.prismlight-root .tc-band-term-bar {
-  display: flex;
-  align-items: center;
-  height: 34px;
-  padding: 0 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.prismlight-root .tc-band-term-body {
-  padding: 16px 18px 18px;
-  font-family: var(--tc-mono);
-  font-size: 13px;
-  line-height: 1.9;
-  color: rgba(255, 255, 255, 0.88);
-  white-space: pre;
-  overflow-x: auto;
-}
-
-.prismlight-root .tc-band-term-body [data-tone='prompt'] {
-  color: #ffffff;
-}
-
-.prismlight-root .tc-band-term-key {
-  color: rgba(255, 255, 255, 0.42);
 }
 
 .prismlight-root .tc-band h2 {
@@ -1730,87 +1602,6 @@
    in `sections/story/` against this page's own tokens.
    ============================================================ */
 
-.prismlight-root .tc-review {
-  --gte-line: var(--tc-hair);
-  --gte-line-2: var(--tc-hair-2);
-  --gte-title: var(--tc-ink);
-  --gte-body: var(--tc-ink-2);
-  --gte-label: var(--tc-ink-3);
-  --gte-quiet: var(--tc-ink-4);
-  --gte-display: var(--tc-disp);
-  --gte-text: var(--tc-sans);
-  --gte-mono: var(--tc-mono);
-  --gte-ws-bg: var(--tc-mat);
-  --gte-ws-shadow: none;
-  /* The mat's radius, because the workspace IS a mat now — see below. */
-  --gte-radius: 5px;
-  --gte-revised: var(--tc-ink);
-  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
-  --gte-head-weight: 600;
-  --gte-head-color: var(--tc-ink);
-  --gte-sub-size: 15px;
-  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
-  --gte-wrap: 100%;
-}
-
-.prismlight-root .tc-review .gte-wrap {
-  width: 100%;
-  padding-inline: var(--tc-gut);
-}
-
-/* Top-aligned like every other row on the page, rather than the component's own
-   vertical centring, which floated the copy halfway down the workspace. */
-.prismlight-root .tc-review .gte-grid {
-  gap: clamp(28px, 4vw, 56px);
-  align-items: start;
-}
-
-/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
-   14px margin that measured about 7px of visible gap against the 24px every
-   `tc-head` on this page carries. Re-set to this page's values so the section
-   reads as part of the document instead of as an import. */
-.prismlight-root .tc-review .gte h2 {
-  margin: 0;
-  line-height: 1.06;
-  letter-spacing: -0.028em;
-}
-
-.prismlight-root .tc-review .gte-sub {
-  margin-top: 13px;
-  max-width: 46ch;
-  line-height: 1.62;
-}
-
-.prismlight-root .tc-review .gte-notes {
-  margin-top: 12px;
-}
-
-/* ---------- the workspace, mounted ----------
-   This is the biggest product mock on the page and it was the one surface
-   outside the frame system: a single border at the page hairline rather than the
-   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
-   the most prominent thing in the section read as an import.
-
-   The borrowed markup has no card element to wrap, so the mat is the workspace
-   shell itself and the two blocks inside it carry the card: the bar takes the
-   top corners, the columns take the bottom, and because they are adjacent with
-   no gap the pair reads as one white card with a 2px reveal around it. Same
-   material, same radii, same 2px as every other mount here. */
-.prismlight-root .tc-review .gte-ws {
-  padding: 2px;
-  border-color: var(--tc-mat-edge);
-}
-
-.prismlight-root .tc-review .gte-bar {
-  border-radius: 2px 2px 0 0;
-  background: var(--tc-card);
-}
-
-.prismlight-root .tc-review .gte-cols {
-  border-radius: 0 0 2px 2px;
-  background: var(--tc-card);
-}
-
 /* ============================================================
    MOTION — quiet reveals only
    ============================================================ */
@@ -1853,18 +1644,17 @@
 
 @media (max-width: 1000px) {
   .prismlight-root .tc-fw,
-  .prismlight-root .tc-row.is-split,
-  .prismlight-root .tc-row.is-lead,
-  .prismlight-root .tc-row.is-three,
-  .prismlight-root .tc-row.is-wide-left,
-  .prismlight-root .tc-row.is-wide-right,
-  .prismlight-root .tc-row.is-even,
-  .prismlight-root .tc-row.is-tilt,
-  .prismlight-root .tc-row.is-grammar,
-  .prismlight-root .tc-plans,
-  .prismlight-root .tc-plain,
-  .prismlight-root .tc-band-top,
-  .prismlight-root .tc-band-grid {
+.prismlight-root .tc-row.is-split,
+.prismlight-root .tc-row.is-lead,
+.prismlight-root .tc-row.is-three,
+.prismlight-root .tc-row.is-wide-left,
+.prismlight-root .tc-row.is-wide-right,
+.prismlight-root .tc-row.is-even,
+.prismlight-root .tc-row.is-tilt,
+.prismlight-root .tc-row.is-grammar,
+.prismlight-root .tc-plans,
+.prismlight-root .tc-band-top,
+.prismlight-root .tc-band-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1978,10 +1768,6 @@
     border-inline: 0;
   }
 
-  .prismlight-root .tc-plain ul {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .prismlight-root .tc-caps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2013,38 +1799,8 @@
 
 /* ---- full-stack band ---- */
 
-/* The centerpiece: seven planes on the family's 30° axis — the whole stack as
-   one assembly, the doubled thread climbing its flank from source to screen. */
-.prismlight-root .tc-band-stack {
-  margin-top: clamp(46px, 5vw, 70px);
-  display: grid;
-  justify-items: center;
-  overflow-x: auto;
-}
-
-.prismlight-root .tc-band-stack .tcstack {
-  width: 100%;
-  max-width: 680px;
-  min-width: 520px;
-}
-
 .prismlight-root .tcstack .iso-label {
   font-size: 9.5px;
-}
-
-.prismlight-root .tcstack .tcstack-name {
-  font-size: 10.5px;
-  letter-spacing: 0.01em;
-}
-
-/* The brand's pair: constant gauge everywhere, so the strokes never scale. */
-.prismlight-root .tcstack .tcstack-thread {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.85);
-  stroke-width: var(--thread-gauge, 1.5px);
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
 }
 
 /* ---- the four service minis: dark shells, flush content, no internal rules ---- */
@@ -2096,14 +1852,6 @@
   font-weight: 500;
 }
 
-.prismlight-root .tcm-add {
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.prismlight-root .tcm-del {
-  color: rgba(255, 255, 255, 0.38);
-}
-
 .prismlight-root .tcm-rows {
   margin-top: 9px;
   display: grid;
@@ -2141,24 +1889,6 @@
 
 /* ---- the context-layers model: org → project → component ---- */
 
-.prismlight-root .tc-band-ctx {
-  margin-top: clamp(50px, 5.4vw, 76px);
-}
-
-.prismlight-root .tc-band-ctx-head h3 {
-  font-size: clamp(1.25rem, 1.8vw, 1.55rem);
-  letter-spacing: -0.02em;
-  color: #ffffff;
-}
-
-.prismlight-root .tc-band-ctx-head p {
-  margin: 10px 0 0;
-  max-width: 66ch;
-  font-size: 14px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.55);
-}
-
 .prismlight-root .tcctx {
   margin-top: 28px;
   display: grid;
@@ -2187,12 +1917,6 @@
   font-size: 12.5px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.55);
-}
-
-.prismlight-root .tcctx-split {
-  margin-top: 18px;
-  display: grid;
-  gap: 16px;
 }
 
 .prismlight-root .tcctx-k {
@@ -2340,9 +2064,6 @@
     transform: rotate(90deg);
   }
 
-  .prismlight-root .tc-band-stack {
-    justify-items: start;
-  }
 }
 
 /* ---- full-stack band ---- */
@@ -2362,107 +2083,7 @@
   gap: clamp(32px, 4.4vw, 68px);
 }
 
-.prismlight-root .tc-band-lede {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: clamp(6px, 1vw, 14px) 0 clamp(4px, 0.8vw, 10px);
-}
-
-/* the lede's foot: what "buildtime, runtime, and review" concretely are */
-.prismlight-root .tc-band-index {
-  margin-top: auto;
-  padding-top: clamp(26px, 3vw, 40px);
-}
-
-.prismlight-root .tc-band-index-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 13px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.prismlight-root .tc-band-index-row:last-child {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.prismlight-root .tc-band-index-row span {
-  font-size: 13.5px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: #ffffff;
-}
-
-.prismlight-root .tc-band-index-row b {
-  font-family: var(--tc-mono);
-  font-weight: 400;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
-  white-space: nowrap;
-}
-
-/* The band's one light moment: a full-height texture panel bleeding past the
-   band's top edge and out to the right rail, the shader run bright enough to
-   read as directional light, the terminal floating in its dark centre. */
-.prismlight-root .tc-band-panel {
-  position: relative;
-  overflow: hidden;
-  margin-top: calc(-1 * clamp(66px, 8vw, 108px));
-  margin-right: calc(-1 * var(--tc-gut));
-  border-radius: 0 0 0 8px;
-  background: #070707;
-  min-height: clamp(430px, 42vw, 560px);
-  display: grid;
-  place-items: center;
-}
-
-.prismlight-root .tc-band-panel-field {
-  position: absolute;
-  left: -10%;
-  top: -12%;
-  width: 120%;
-  height: 124%;
-}
-
-.prismlight-root .tc-band-panel .tc-band-term {
-  position: relative;
-  z-index: 1;
-  width: min(430px, calc(100% - clamp(56px, 7vw, 112px)));
-  margin: clamp(40px, 4.6vw, 64px) 0;
-  background: #070707;
-  outline-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
-}
-
 /* -- stack zone: the trace beside the assembly -- */
-
-.prismlight-root .tc-band-flow {
-  margin-top: clamp(54px, 6vw, 88px);
-  display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.45fr);
-  gap: clamp(30px, 4vw, 64px);
-  align-items: center;
-}
-
-.prismlight-root .tc-band-flow-copy {
-  min-width: 0;
-}
-
-.prismlight-root .tc-band-flow-copy h3 {
-  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
-  letter-spacing: -0.018em;
-  color: #ffffff;
-}
-
-.prismlight-root .tc-band-flow-copy > p {
-  margin: 10px 0 0;
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.55);
-  max-width: 46ch;
-}
 
 /* the trace plate: the drawing's journey, on the clock */
 .prismlight-root .tc-trace {
@@ -2514,24 +2135,8 @@
   text-overflow: ellipsis;
 }
 
-/* the assembly now owns the zone's right two-thirds at full size */
-.prismlight-root .tc-band-stack {
-  margin-top: 0;
-  overflow: visible;
-  justify-items: stretch;
-}
-
-.prismlight-root .tc-band-stack .tcstack {
-  max-width: none;
-  min-width: 0;
-}
-
 .prismlight-root .tcstack .iso-label {
   font-size: 8.6px;
-}
-
-.prismlight-root .tcstack .tcstack-name {
-  font-size: 9.6px;
 }
 
 /* -- service grid: one sheet, four different objects, one bottom line -- */
@@ -2789,10 +2394,6 @@
   color: rgba(255, 255, 255, 0.62);
 }
 
-.prismlight-root .tcctx-split {
-  margin-top: 18px;
-}
-
 /* priority overlap: the org directive winning, the loser struck */
 .prismlight-root .tcctx-clash {
   margin-top: 10px;
@@ -2865,10 +2466,6 @@
   margin-top: 12px;
 }
 
-.prismlight-root .tc-band-ctx {
-  padding-bottom: 6px;
-}
-
 /* -- responsive: the band folds to one column below 1000px -- */
 
 @media (max-width: 1000px) {
@@ -2876,36 +2473,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .prismlight-root .tc-band-panel {
-    margin-top: 6px;
-    margin-left: calc(-1 * var(--tc-gut));
-    border-radius: 0;
-    min-height: 420px;
-  }
-
-  .prismlight-root .tc-band-index-row b {
-    white-space: normal;
-    text-align: right;
-  }
-
-  .prismlight-root .tc-band-flow {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .prismlight-root .tc-band-stack {
-    overflow-x: auto;
-  }
-
-  .prismlight-root .tc-band-stack .tcstack {
-    min-width: 560px;
-  }
-
   .prismlight-root .tcstack .iso-label {
     font-size: 9.5px;
-  }
-
-  .prismlight-root .tcstack .tcstack-name {
-    font-size: 10.5px;
   }
 
   .prismlight-root .tcm {
@@ -2941,14 +2510,6 @@
     max-width: 100%;
   }
 }
-
-/* the status transcript steps down before its longest line can clip */
-@media (max-width: 620px) {
-  .prismlight-root .tc-band-term-body {
-    font-size: 11.5px;
-  }
-}
-
 
 /* ---- delivery band ----
    Delivery inverts: a full-viewport-width black band inside the bento flow
@@ -3047,10 +2608,6 @@
   }
 }
 
-
-
-
-
 /* ---- seams and collapse ----
    Rows of framed cards separate with a literal 1px seam of ground; adjacent
    horizontal rules collapse into each other so a boundary is never 2px. */
@@ -3061,8 +2618,6 @@
 .prismlight-root .tc-row:has(> .tc-cell.is-framed) > * + * {
   border-left: 0;
 }
-
-
 
 /* ---- dark mode ----
    Token remap only: the measured oxc palette (bg #101010, rules rgba(138, 143, 152, 0.38),
@@ -3090,11 +2645,6 @@
   color: #101010;
 }
 
-
-
-
-
-
 /* ---- the rail, zoom-proof ----
    One hairline each side, drawn once by the column's own border-inline (a
    true 1px border: browsers round border widths to whole device pixels at
@@ -3110,7 +2660,6 @@
   position: relative;
   border-inline: 1px solid var(--tc-hair);
 }
-
 
 /* ============================================================
    ANCHOR: tc-curation-r1 — dark-grid diagram adaptations
@@ -3217,7 +2766,6 @@
   color: #101010;
 }
 
-
 /* ============================================================
    CINEMA — THE TWO-BOX CUT (context-beat r2)
    The pinned take reduced to two surfaces. LEFT: the demo
@@ -3256,24 +2804,6 @@
 
   background: var(--tc-dark);
   border-bottom: 1px solid var(--tc-hair);
-}
-
-.prismlight-root .tc-cinema-head {
-  padding: clamp(54px, 6.4vw, 82px) var(--tc-gut) clamp(28px, 3.2vw, 38px);
-}
-
-.prismlight-root .tc-cinema-head h2 {
-  font-size: clamp(1.62rem, 2.5vw, 2.2rem);
-  max-width: 24ch;
-  color: var(--cin-bright);
-}
-
-.prismlight-root .tc-cinema-head p {
-  margin-top: 13px;
-  max-width: 62ch;
-  font-size: 15px;
-  line-height: 1.62;
-  color: var(--cin-mid);
 }
 
 .prismlight-root .tc-cinema-take {
@@ -3966,11 +3496,9 @@
   }
 }
 
-
 .prismlight-root .tc-sec:has(> .tc-hero) > *:last-child {
   margin-bottom: 0;
 }
-
 
 /* the trust row completes the hero stack: third card, same seam */
 .prismlight-root .tc-sec:has(> .tc-hero) > .tc-trust {
@@ -3978,7 +3506,6 @@
   border-radius: 12px;
   margin-top: 1px;
 }
-
 
 /* ---- founder emergency overlay: no cream, ever ----
    An in-flight section stylesheet reintroduced #f5f5f3 as a ground token.
@@ -4009,7 +3536,6 @@
   border: 0 !important;
   outline: 0 !important;
 }
-
 
 /* ---- punch list: stats grid + guide headroom ----
    Numeral above label, two per row, tabular figures on a shared baseline,
@@ -4053,7 +3579,6 @@
   top: -0.02em;
 }
 
-
 /* founder picks: the dark band sits at the 1px seam (no gap above), and the
    trust card carries zero padding of its own */
 .prismlight-root .tc-sec:has(> .tc-hero) > .tc-hero-cell {
@@ -4066,19 +3591,16 @@
   padding: 0 !important;
 }
 
-
 /* the morphing word carries no box of its own — the guides are the only frame */
 .prismlight-root .tc-hero h1 em[data-every] {
   outline: 0 !important;
   border: 0 !important;
 }
 
-
 /* trust lead: no side or bottom padding */
 .prismlight-root .tc-trust .tc-trust-lead {
   padding: 24px 0 0 !important;
 }
-
 
 /* ---- founder picks: corner concentricity, trust full-bleed, head icons ---- */
 /* Trust card: lead padding restored; the card itself bleeds over the
@@ -4111,7 +3633,6 @@
   opacity: 0.05;
   pointer-events: none;
 }
-
 
 /* Hatch spacers: reveal tweens leave transforms on the framed cards above,
    whose stacking contexts otherwise paint over the hatch's top rule. */
@@ -4189,7 +3710,6 @@
 .prismlight-root .tc-band {
   position: relative;
 }
-
 
 /* ============================================================
    PRISM-LIGHT FORK — THE PRISM DELIVERY PANEL, SIDE BY SIDE
@@ -4391,11 +3911,6 @@
    permanently dark plate), per this fork's material law. The plate is the
    blend group's containing block, so it is never transform-animated. */
 
-.prismlight-root .plh-panel {
-  width: 100%;
-  margin: 0;
-}
-
 /* With the optics gone from the card, the copy holds the whole width:
    centered, the prism-filled headline as the one object. Specificity is
    deliberate — the two-column grammar above pinned everything left. */
@@ -4438,15 +3953,6 @@
   height: clamp(340px, 30vw, 460px);
 }
 
-/* Wide-plate geometry: the glass moves to the left third and the fan owns
-   the rest of the width. */
-.prismlight-root .is-band .plh-p-prism {
-  left: 22.5%;
-  top: 16%;
-  width: 8.5%;
-  height: 66%;
-}
-
 .prismlight-root .is-band .plh-p-light {
   clip-path: polygon(26.5% 47.6%, 26.5% 50.4%, 100% 100%, 100% 0%);
 }
@@ -4487,59 +3993,11 @@
   height: 100%;
 }
 
-/* The translations ARE the rays: each label rotated to its dispersion angle
-   about the prism's heart, flung along the ray by its own distance (the
-   padding resolves against the plate's width, so the fan scales with it). */
-.prismlight-root .plh-ray {
-  position: absolute;
-  left: 26.75%;
-  top: 49%;
-  height: 0;
-  padding-left: var(--d, 40%);
-  transform: rotate(calc(var(--ang, 0) * 1deg));
-  transform-origin: 0 50%;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.prismlight-root .plh-ray-text {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-  transform: translateY(-50%);
-  font-family: var(--tc-disp);
-  font-size: clamp(13px, 1.5vw, 21px);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: #fff;
-  /* The glow keeps them part of the light; the dark contour keeps them
-     legible where a ray crosses the fan's brightest lanes. */
-  text-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.75),
-    0 0 14px rgba(0, 0, 0, 0.45),
-    0 0 20px rgba(255, 255, 255, 0.3);
-}
-
-.prismlight-root .plh-ray-text i {
-  font-style: normal;
-  font-family: var(--tc-mono);
-  font-size: 9.5px;
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  text-shadow: none;
-}
-
 @media (max-width: 720px) {
   .prismlight-root .plh-panel-box.is-band {
     height: clamp(280px, 62vw, 360px);
   }
 
-  /* Eight rays cannot breathe on a phone: keep the four brightest lanes. */
-  .prismlight-root .plh-ray:nth-child(even) {
-    display: none;
-  }
 }
 
 .prismlight-root .plh-panel-box {
@@ -4549,46 +4007,6 @@
   border-radius: 8px;
   overflow: hidden;
   isolation: isolate;
-}
-
-/* The incidence ray: straight, as light is. Drawn in an SVG stretched to the
-   plate (percent geometry survives every viewport); non-scaling stroke keeps
-   the beam at a constant 2px gauge. It dives from the request labels into
-   the glass and its gradient dies inside it — it enters, the fan leaves. */
-.prismlight-root .plh-p-rays {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* The glass, salvaged from the specimen plate: an outer triangle of luminous
-   edge with an inner triangle of near-plate dark inset 2px, so the
-   silhouette reads as 1.5–2px glass lines with a glint at the apex. It
-   paints UNDER the lighten wrapper — the fan blooms over its exit face
-   rather than hiding behind it — and the inner fill is slightly translucent
-   so the gathered light shows through the glass. */
-.prismlight-root .plh-p-prism {
-  position: absolute;
-  left: 30%;
-  top: 17%;
-  width: 14%;
-  height: 60%;
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-  background: linear-gradient(
-    200deg,
-    rgba(255, 255, 255, 0.55),
-    rgba(255, 255, 255, 0.16) 55%,
-    rgba(255, 255, 255, 0.34)
-  );
-}
-
-.prismlight-root .plh-p-prism i {
-  position: absolute;
-  inset: 2px;
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-  background: rgba(14, 16, 20, 0.82);
 }
 
 /* The dispersion fan: it begins INSIDE the drawn prism, at the height the
@@ -4663,87 +4081,6 @@
   color: rgba(255, 255, 255, 0.95);
 }
 
-/* The response, standing in the fan's light just under the bright axis —
-   between fra's row and sin's, in the pocket the node stack leaves open. */
-.prismlight-root .plh-p-res {
-  position: absolute;
-  left: 51%;
-  top: 53.5%;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  line-height: 1.6;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.72);
-  text-shadow:
-    0 0 8px rgba(0, 0, 0, 0.95),
-    0 1px 2px rgba(0, 0, 0, 0.7);
-  white-space: nowrap;
-}
-
-.prismlight-root .plh-p-res b {
-  font-weight: 500;
-  color: #ffffff;
-}
-
-/* The edge nodes at the fan's mouth: code and measured value, tick flush to
-   the plate's right edge the way the specimen's locale ticks were. */
-.prismlight-root .plh-p-pops {
-  position: absolute;
-  inset: 0;
-}
-
-.prismlight-root .plh-pop {
-  position: absolute;
-  right: 0;
-  margin-top: -7px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  line-height: 1.25;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow:
-    0 0 8px rgba(0, 0, 0, 0.95),
-    0 1px 2px rgba(0, 0, 0, 0.7);
-}
-
-.prismlight-root .plh-pop-l {
-  white-space: nowrap;
-}
-
-/* Every node carries its measured value; the code leads, the value follows. */
-.prismlight-root .plh-pop-l b {
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.62);
-}
-
-.prismlight-root .plh-pop i {
-  display: block;
-  width: 15px;
-  height: 1.5px;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-/* The serving node: pure white at the fan's bright axis. */
-.prismlight-root .plh-pop[data-hit] {
-  color: #ffffff;
-  font-weight: 500;
-}
-
-.prismlight-root .plh-pop[data-hit] .plh-pop-l b {
-  font-weight: 500;
-  color: #ffffff;
-}
-
-.prismlight-root .plh-pop[data-hit] i {
-  height: 2px;
-  background: #ffffff;
-}
-
 /* The old band's caption grammar, kept as the plate's floor. */
 .prismlight-root .plh-p-foot {
   position: absolute;
@@ -4779,20 +4116,8 @@
     height: clamp(270px, 82vw, 340px);
   }
 
-  .prismlight-root .plh-pop:not([data-hit]) .plh-pop-l b {
-    display: none;
-  }
-
-  .prismlight-root .plh-p-req,
-  .prismlight-root .plh-p-res {
+  .prismlight-root .plh-p-req {
     font-size: 10.5px;
-  }
-
-  /* The shorter plate compresses the percent grid — the response steps up a
-     hair and tightens its leading so it clears sin's row. */
-  .prismlight-root .plh-p-res {
-    top: 51.5%;
-    line-height: 1.5;
   }
 
   .prismlight-root .plh-p-foot {

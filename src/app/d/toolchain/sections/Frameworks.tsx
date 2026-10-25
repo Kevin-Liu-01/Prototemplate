@@ -21,7 +21,9 @@ import {
   Type,
 } from 'lucide-react';
 import { useRef, useState } from 'react';
-import type { ComponentType, CSSProperties, KeyboardEvent, ReactNode } from 'react';
+import type { ComponentType, KeyboardEvent, ReactNode } from 'react';
+
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import {
   SiNextdotjs,
@@ -56,7 +58,7 @@ function ReactNativeTabMark({ className }: MarkProps) {
   return (
     <i
       className={className ? `${className} is-rn-badge` : 'is-rn-badge'}
-      style={{ '--mark': 'url(/logos/react-native-no-bg.svg)' } as CSSProperties}
+      style={{ '--mark': 'url(/logos/react-native-no-bg.svg)' }}
       aria-hidden='true'
     />
   );
@@ -116,7 +118,7 @@ function CapMarquee({ caps }: { caps: readonly string[] }) {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const el = wrap.current;
       const track = el?.querySelector<HTMLElement>('[data-caps-track]');
       if (!el || !track) return;

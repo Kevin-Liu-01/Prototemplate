@@ -49,10 +49,6 @@
   color: var(--tc-ink-4);
 }
 
-.aurorapaper-root .tcx-win-body {
-  padding: 11px 11px 13px;
-}
-
 .aurorapaper-root .tcx-h {
   font-family: var(--tc-disp);
   font-weight: 500;

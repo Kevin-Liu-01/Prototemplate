@@ -10,6 +10,7 @@ import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 import { startEveryMorph } from '@/app/d/toolchain/sections/every-morph';
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import type { LensFieldHandle } from '../lib/lens-field';
 import LensField from './LensField';
@@ -228,7 +229,7 @@ export default function Hero() {
       const hero = heroRef.current;
       if (!hero) return;
 
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = prefersReducedMotion();
       const rowEls = gsap.utils.toArray<HTMLElement>('.lg-row', hero);
       const conveyors: gsap.core.Timeline[] = [];
       /* Six flare slots (row i: entry = 2i, exit = 2i+1), packed [x, y, k].

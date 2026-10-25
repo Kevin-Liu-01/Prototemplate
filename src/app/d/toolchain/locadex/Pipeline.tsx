@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { useQuietReveal } from '../sections/reveal';
 
 import LocadexIso from './LocadexIso';
@@ -73,7 +75,7 @@ export default function Pipeline() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       /* each ledger prints once as it enters — rows, not blocks */
       const print = (rows: string, trigger: string) => {

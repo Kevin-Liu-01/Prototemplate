@@ -36,6 +36,7 @@ import PreviewSurface from '@/app/d/toolchain/diagrams/surface/PreviewSurface';
 import CodeBlock from '@/app/d/toolchain/sections/code';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import './bento-motion.css';
 /* The surface diagrams' toolchain sheet targets .toolchain-root and is inert
    here; this fork's rescoped copy styles the four surfaces. */
@@ -117,7 +118,7 @@ function useQuadMotion(scope: RefObject<HTMLElement | null>) {
     () => {
       const rootEl = scope.current;
       if (!rootEl) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const quad = rootEl.querySelector<HTMLElement>('.tc-quad');
       if (!quad) return;

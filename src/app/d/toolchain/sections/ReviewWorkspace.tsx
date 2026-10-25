@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Braces, Download, History, Search, Table2, TerminalSquare } from 'lucide-react';
 import { Fragment, useLayoutEffect, useRef, useState } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import LocaleTag from '../components/LocaleTag';
 
 import { useQuietReveal } from './reveal';
@@ -212,7 +214,7 @@ export default function ReviewWorkspace({
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const scope = root.current;
       if (!scope) return;
 

@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Fragment, useRef, type ReactNode } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { useQuietReveal } from '../sections/reveal';
 import { pauseWhileHidden } from '../sections/visibility';
 
@@ -76,7 +78,7 @@ export default function ReviewWorkspace({ title = 'Edit in context.' }: { title?
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const scope = root.current;
       if (!scope) return;
 

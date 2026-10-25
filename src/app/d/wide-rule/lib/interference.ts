@@ -1,3 +1,5 @@
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 /**
  * Analytic wave interference, rendered as LIGHT — two coherent sources whose
  * corridor is an exposure event on paper, not a line drawing.
@@ -715,7 +717,7 @@ export function createWaveField(
   if (!blit) return null;
 
   const reduced =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    typeof window !== 'undefined' && prefersReducedMotion();
 
   const sub: Subscriber = {
     target: canvas,

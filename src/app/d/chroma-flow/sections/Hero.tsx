@@ -8,6 +8,7 @@ import { useRef } from 'react';
 import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 import { startEveryMorph } from '@/app/d/toolchain/sections/every-morph';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import FlowField from './FlowField';
 
@@ -48,7 +49,7 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       gsap.from('[data-hero-in]', {
         y: 14,

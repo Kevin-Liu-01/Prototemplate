@@ -9,6 +9,7 @@ import { useRef, type ReactNode } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import TcStackIso, { STACK_LAYERS } from '@/app/d/toolchain/diagrams/tc-stack-iso';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import AuroraWash from './AuroraWash';
 
@@ -100,7 +101,7 @@ export default function DarkBand() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduce = prefersReducedMotion();
 
       /* ---- the stack instrument: two-way layer ↔ caption highlight ---- */
       const layers = gsap.utils.toArray<SVGGElement>('.tcs-layer', scope);

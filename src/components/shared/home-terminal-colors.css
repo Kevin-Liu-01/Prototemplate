@@ -1,36 +1,32 @@
 /* ============================================================
-   THE HOME TERMINALS' ROLE COLORS — shared by the five variant
-   homes, never by toolchain itself. The base terminal speaks
-   two hues (translation blue, completion green); the homes add
-   role separation on top: commands take the operator's amber,
-   wizard keys and path globs join the blue the chips already
-   speak, and the counted numbers lift to pure white. One rule
-   set, scoped to the five home roots.
+   THE HOME TERMINALS' ROLE COLORS — shared by the singularity
+   homes and the production home, never by toolchain itself.
+   The base terminal speaks two hues (translation blue,
+   completion green); the homes add role separation on top:
+   commands take the operator's amber, wizard keys and path
+   globs join the blue the chips already speak, and the counted
+   numbers lift to pure white. One rule set, scoped to the home
+   roots.
    ============================================================ */
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-type {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-type {
   color: #e9c78b;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-key {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-key {
   color: var(--tct-loc, #9db9ff);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-glob {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-glob {
   color: var(--tct-loc, #9db9ff);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-strong {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-strong {
   color: #ffffff;
 }
 
 /* the source strings step up half a stop so the table reads
    source-dim -> translation-lit instead of dim-vs-dim */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-src {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-src {
   color: rgba(255, 255, 255, 0.56);
-}
-
-/* orbit's one-line session speaks the same command amber */
-.toolchain-root.sgoh-root .sgoh-cli-cmd {
-  color: #e9c78b;
 }

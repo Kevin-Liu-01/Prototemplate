@@ -9,6 +9,7 @@ import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /**
  * M05 — the six-station rail. The whole pipeline stated once, in order, so
@@ -151,7 +152,7 @@ export default function PipelineRail() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const dot = root.current?.querySelector<HTMLElement>('[data-rail-dot]');
       if (!dot) return;

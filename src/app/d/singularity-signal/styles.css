@@ -8,99 +8,6 @@
 
 /* ---- intercepts ---- */
 
-.singularity-root .sgs-intercepts {
-  border-top: 1px solid var(--tc-hair);
-  padding: clamp(64px, 7.4vw, 108px) var(--tc-gut) clamp(64px, 7.4vw, 104px);
-}
-
-.singularity-root .sgs-kicker {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--tc-ink-3);
-}
-
-.singularity-root .sgs-head h2 {
-  margin-top: 10px;
-  font-family: var(--tc-disp);
-  font-size: clamp(28px, 3.4vw, 46px);
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.06;
-  color: var(--tc-ink);
-}
-
-.singularity-root .sgs-cards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: clamp(36px, 4.6vw, 60px);
-}
-
-.singularity-root .sgs-card {
-  margin: 0;
-  border: 1px solid var(--tc-hair);
-  padding: 0 24px 26px;
-}
-
-.singularity-root .sgs-card-rule {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 16px 0 14px;
-  border-bottom: 1px solid var(--tc-hair-2);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--tc-ink-3);
-}
-
-.singularity-root .sgs-card-stamp {
-  font-family: var(--tc-mono, ui-monospace, 'SF Mono', Menlo, monospace);
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  color: var(--tc-ink-4);
-}
-
-.singularity-root .sgs-card blockquote {
-  margin: 0;
-  padding-top: 22px;
-}
-
-.singularity-root .sgs-card blockquote p {
-  font-family: var(--tc-disp);
-  font-size: clamp(19px, 1.9vw, 25px);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1.28;
-  color: var(--tc-ink);
-}
-
-.singularity-root .sgs-card blockquote p::before {
-  content: '“';
-}
-
-.singularity-root .sgs-card blockquote p::after {
-  content: '”';
-}
-
-.singularity-root .sgs-card figcaption {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-top: 20px;
-  font-size: 13px;
-  color: var(--tc-ink-3);
-}
-
-.singularity-root .sgs-card figcaption b {
-  font-weight: 600;
-  color: var(--tc-ink-2);
-}
-
 /* ---- the transmission band ---- */
 
 .singularity-root .tc-band.sgs-band {
@@ -245,7 +152,6 @@
 }
 
 @media (max-width: 880px) {
-  .singularity-root .sgs-cards,
   .singularity-root .sgs-assurance {
     grid-template-columns: minmax(0, 1fr);
   }

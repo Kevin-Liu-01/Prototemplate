@@ -89,14 +89,6 @@
   gap: 8px;
 }
 
-.singularity-root .cpm-hero-note {
-  margin-top: 18px;
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.02em;
-  color: var(--tc-ink-3);
-}
-
 /* ---- the hero exhibit: repo → processor → pull request ---- */
 
 .singularity-root .cpm-diagram {
@@ -668,7 +660,6 @@
 .singularity-root .cpy-hero .cpc-hero-acts {
   margin-top: 30px;
 }
-
 
 /* ---- the deal terms, filed one plate per term ---- */
 

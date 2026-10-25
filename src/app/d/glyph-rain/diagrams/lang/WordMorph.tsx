@@ -6,8 +6,9 @@ import { useRef } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 
-import { langA11y, langClass, prefersReducedMotion, target, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
+import { langA11y, langClass, target, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP);

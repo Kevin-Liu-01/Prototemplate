@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useRef } from 'react';
 
 import { useCopied } from '@/app/d/toolchain/components/use-copied';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { blankLine, CYCLE, flipUp, retarget } from '../lib/flap';
 import BoardField from './BoardField';
@@ -64,7 +65,7 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const scope = root.current;
       if (!scope) return;
 

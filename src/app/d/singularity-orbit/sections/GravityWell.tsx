@@ -75,7 +75,7 @@ export default function GravityWell() {
               <span
                 className='sgo-sat'
                 key={s.name}
-                style={{ ['--a' as never]: `${(i * 360) / SATELLITES.length}deg` }}
+                style={{ '--a': `${(i * 360) / SATELLITES.length}deg` }}
               >
                 <i className={`sgo-sat-wm ${s.mark}`} title={s.name} />
               </span>

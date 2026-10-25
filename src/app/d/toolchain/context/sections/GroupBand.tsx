@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -80,7 +81,7 @@ export default function GroupBand() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const threads = gsap.utils.toArray<SVGPathElement>('.ctxb-thread', scope);
       for (const path of threads) {

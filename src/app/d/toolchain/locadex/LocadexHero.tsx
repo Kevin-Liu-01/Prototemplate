@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRef } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import LocaleTag from '../components/LocaleTag';
 import { useCopied } from '../components/use-copied';
@@ -33,7 +34,7 @@ export default function LocadexHero() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       /* the run prints once, top to bottom, like a real transcript */
       gsap.fromTo(

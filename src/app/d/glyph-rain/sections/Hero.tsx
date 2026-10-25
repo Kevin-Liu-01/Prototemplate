@@ -7,6 +7,7 @@ import { useRef, useState } from 'react';
 import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 import { SCRIPTS, createGlyphField, POOL } from '@/lib/glyph-field';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP);
 
@@ -52,7 +53,7 @@ export default function Hero() {
         onScript: setActive,
       });
 
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!prefersReducedMotion()) {
         gsap.from('[data-hero-in]', {
           y: 14,
           autoAlpha: 0,

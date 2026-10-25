@@ -1234,15 +1234,6 @@
   border-top: 0;
 }
 
-/* the visual half of a split row: centred, breathing, never cropped */
-.widerule-root .tc-art {
-  flex: 1;
-  padding-top: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .widerule-root .tc-art-center {
   display: flex;
   flex: 1;
@@ -1250,21 +1241,6 @@
   justify-content: center;
   padding: 8px 0;
 }
-
-/* The SDK stack, which is the one drawing that labels every level of itself.
-   Its type is measured in viewBox units, so the size lives with the placement
-   that fixes the drawing's on-screen scale. */
-.widerule-root .tc-art-w {
-  width: 100%;
-  max-width: 400px;
-  --iso-label-size: 7px;
-}
-
-.widerule-root .tc-art-sm {
-  width: 100%;
-  max-width: 226px;
-}
-
 
 /* The four small surfaces. They are panels rather than objects, so they take
    the width of the card instead of being centred as a drawing inside it. */
@@ -1282,8 +1258,6 @@
 .widerule-root .tc-surface.is-plated {
   margin-top: 12px;
 }
-
-
 
 /* ---------- the ruled band ----------
    Four short items across the column used to be four separate mounted cells,
@@ -1548,8 +1522,6 @@
   --lang-ground: var(--tc-white);
 }
 
-
-
 .widerule-root .tc-lang.is-lead {
   margin-top: 26px;
 }
@@ -1568,38 +1540,6 @@
 .widerule-root .tc-lang.is-lead .lang-sw-name,
 .widerule-root .tc-lang.is-lead .lang-sw-pct {
   font-size: 13px;
-}
-
-/* plain text cell */
-.widerule-root .tc-plain {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(24px, 4vw, 64px);
-}
-
-.widerule-root .tc-plain p {
-  margin-top: 11px;
-  font-size: 14px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-  max-width: 34ch;
-}
-
-.widerule-root .tc-plain ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(20px, 3vw, 40px);
-}
-
-.widerule-root .tc-plain li {
-  padding: 9px 0;
-  border-bottom: 1px solid var(--tc-hair-2);
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--tc-ink-2);
 }
 
 /* ============================================================
@@ -1656,45 +1596,6 @@
   grid-template-columns: minmax(0, 1.16fr) minmax(0, 1fr);
   gap: clamp(28px, 4vw, 56px);
   align-items: center;
-}
-
-.widerule-root .tc-band-term {
-  border-radius: 6px;
-  background: #101010;
-  outline: 1px solid rgba(255, 255, 255, 0.22);
-  outline-offset: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  overflow: hidden;
-}
-
-.widerule-root .tc-band-term-bar {
-  display: flex;
-  align-items: center;
-  height: 34px;
-  padding: 0 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.widerule-root .tc-band-term-body {
-  padding: 16px 18px 18px;
-  font-family: var(--tc-mono);
-  font-size: 13px;
-  line-height: 1.9;
-  color: rgba(255, 255, 255, 0.88);
-  white-space: pre;
-  overflow-x: auto;
-}
-
-.widerule-root .tc-band-term-body [data-tone='prompt'] {
-  color: #ffffff;
-}
-
-.widerule-root .tc-band-term-key {
-  color: rgba(255, 255, 255, 0.42);
 }
 
 .widerule-root .tc-band h2 {
@@ -1916,87 +1817,6 @@
    in `sections/story/` against this page's own tokens.
    ============================================================ */
 
-.widerule-root .tc-review {
-  --gte-line: var(--tc-hair);
-  --gte-line-2: var(--tc-hair-2);
-  --gte-title: var(--tc-ink);
-  --gte-body: var(--tc-ink-2);
-  --gte-label: var(--tc-ink-3);
-  --gte-quiet: var(--tc-ink-4);
-  --gte-display: var(--tc-disp);
-  --gte-text: var(--tc-sans);
-  --gte-mono: var(--tc-mono);
-  --gte-ws-bg: var(--tc-mat);
-  --gte-ws-shadow: none;
-  /* The mat's radius, because the workspace IS a mat now — see below. */
-  --gte-radius: 5px;
-  --gte-revised: var(--tc-ink);
-  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
-  --gte-head-weight: 600;
-  --gte-head-color: var(--tc-ink);
-  --gte-sub-size: 15px;
-  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
-  --gte-wrap: 100%;
-}
-
-.widerule-root .tc-review .gte-wrap {
-  width: 100%;
-  padding-inline: var(--tc-gut);
-}
-
-/* Top-aligned like every other row on the page, rather than the component's own
-   vertical centring, which floated the copy halfway down the workspace. */
-.widerule-root .tc-review .gte-grid {
-  gap: clamp(28px, 4vw, 56px);
-  align-items: start;
-}
-
-/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
-   14px margin that measured about 7px of visible gap against the 24px every
-   `tc-head` on this page carries. Re-set to this page's values so the section
-   reads as part of the document instead of as an import. */
-.widerule-root .tc-review .gte h2 {
-  margin: 0;
-  line-height: 1.06;
-  letter-spacing: -0.028em;
-}
-
-.widerule-root .tc-review .gte-sub {
-  margin-top: 13px;
-  max-width: 46ch;
-  line-height: 1.62;
-}
-
-.widerule-root .tc-review .gte-notes {
-  margin-top: 12px;
-}
-
-/* ---------- the workspace, mounted ----------
-   This is the biggest product mock on the page and it was the one surface
-   outside the frame system: a single border at the page hairline rather than the
-   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
-   the most prominent thing in the section read as an import.
-
-   The borrowed markup has no card element to wrap, so the mat is the workspace
-   shell itself and the two blocks inside it carry the card: the bar takes the
-   top corners, the columns take the bottom, and because they are adjacent with
-   no gap the pair reads as one white card with a 2px reveal around it. Same
-   material, same radii, same 2px as every other mount here. */
-.widerule-root .tc-review .gte-ws {
-  padding: 2px;
-  border-color: var(--tc-mat-edge);
-}
-
-.widerule-root .tc-review .gte-bar {
-  border-radius: 2px 2px 0 0;
-  background: var(--tc-card);
-}
-
-.widerule-root .tc-review .gte-cols {
-  border-radius: 0 0 2px 2px;
-  background: var(--tc-card);
-}
-
 /* ============================================================
    MOTION — quiet reveals only
    ============================================================ */
@@ -2039,18 +1859,17 @@
 
 @media (max-width: 1000px) {
   .widerule-root .tc-fw,
-  .widerule-root .tc-row.is-split,
-  .widerule-root .tc-row.is-lead,
-  .widerule-root .tc-row.is-three,
-  .widerule-root .tc-row.is-wide-left,
-  .widerule-root .tc-row.is-wide-right,
-  .widerule-root .tc-row.is-even,
-  .widerule-root .tc-row.is-tilt,
-  .widerule-root .tc-row.is-grammar,
-  .widerule-root .tc-plans,
-  .widerule-root .tc-plain,
-  .widerule-root .tc-band-top,
-  .widerule-root .tc-band-grid {
+.widerule-root .tc-row.is-split,
+.widerule-root .tc-row.is-lead,
+.widerule-root .tc-row.is-three,
+.widerule-root .tc-row.is-wide-left,
+.widerule-root .tc-row.is-wide-right,
+.widerule-root .tc-row.is-even,
+.widerule-root .tc-row.is-tilt,
+.widerule-root .tc-row.is-grammar,
+.widerule-root .tc-plans,
+.widerule-root .tc-band-top,
+.widerule-root .tc-band-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -2164,10 +1983,6 @@
     border-inline: 0;
   }
 
-  .widerule-root .tc-plain ul {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .widerule-root .tc-caps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2189,19 +2004,6 @@
   }
 }
 
-
-/* the status transcript steps down before its longest line can clip */
-@media (max-width: 620px) {
-  .widerule-root .tc-band-term-body {
-    font-size: 11.5px;
-  }
-}
-
-
-
-
-
-
 /* ---- seams and collapse ----
    Rows of framed cards separate with a literal 1px seam of ground; adjacent
    horizontal rules collapse into each other so a boundary is never 2px. */
@@ -2216,7 +2018,6 @@
 .widerule-root .tc-row + .tc-row {
   margin-top: -1px;
 }
-
 
 /* ---- dark mode ----
    The ink-black one-surface family (toolchain current): every card, plate
@@ -2257,11 +2058,6 @@
   background: rgba(138, 143, 152, 0.14);
 }
 
-
-
-
-
-
 /* ---- the rail, zoom-proof ----
    One hairline each side, drawn once by the column's own border-inline (a
    true 1px border: browsers round border widths to whole device pixels at
@@ -2277,7 +2073,6 @@
   position: relative;
   border-inline: 1px solid var(--tc-hair);
 }
-
 
 /* ============================================================
    TOOLCHAIN CURRENT — founder picks propagated (P1/P3/P8)

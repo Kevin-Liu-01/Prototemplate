@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { useRef } from 'react';
 
 import { createHorizonField, type HorizonFieldHandle } from '@/lib/horizon-field';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP);
 
@@ -55,7 +56,7 @@ export default function NotFoundHorizon() {
       const frame = host?.parentElement;
       if (!host || !canvas || !frame) return;
 
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reducedMotion = prefersReducedMotion();
       const doc = document.documentElement;
       const themedParams = () =>
         doc.dataset.theme === 'dark' ? HORIZON_DARK : HORIZON_LIGHT;

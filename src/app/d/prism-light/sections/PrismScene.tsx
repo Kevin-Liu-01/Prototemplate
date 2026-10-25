@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 /**
  * The optics, made real: a three.js layer over the shader fan.
  *
@@ -102,7 +104,7 @@ export default function PrismScene({
     const el = holder.current;
     if (!el) return;
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = prefersReducedMotion();
 
     let renderer: THREE.WebGLRenderer;
     try {

@@ -35,6 +35,7 @@ import LiveSurface from '@/app/d/toolchain/diagrams/surface/LiveSurface';
 import PreviewSurface from '@/app/d/toolchain/diagrams/surface/PreviewSurface';
 
 import { BentoCell } from '@/components/shell/Bento';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import CodeBlock from './code';
 import { useQuietReveal } from './reveal';
@@ -117,7 +118,7 @@ function useQuadMotion(scope: RefObject<HTMLElement | null>) {
     () => {
       const rootEl = scope.current;
       if (!rootEl) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const quad = rootEl.querySelector<HTMLElement>('.tc-quad');
       if (!quad) return;

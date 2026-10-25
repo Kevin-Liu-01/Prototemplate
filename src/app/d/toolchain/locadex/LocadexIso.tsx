@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import IsoFrame from '../diagrams/IsoFrame';
 import { IsoPlane, IsoSlab } from '../diagrams/IsoSolid';
 import {
@@ -257,7 +259,7 @@ export default function LocadexIso() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (prefersReducedMotion()) {
         entered.current = true;
         return;
       }
@@ -295,7 +297,7 @@ export default function LocadexIso() {
       const scope = root.current;
       if (!scope) return;
       if (!entered.current) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       gsap.utils.toArray<SVGGElement>('[data-ldxi-plane]', scope).forEach((plane) => {
         gsap.to(plane, {
           y: plane.dataset.ldxiPlane === active ? -7 : 0,

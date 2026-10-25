@@ -9,6 +9,7 @@ import { useRef } from 'react';
 import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 import { createGlyphField } from '@/lib/glyph-field';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import '@/app/d/toolchain/sections/chip-consistency.css';
 import '@/app/d/toolchain/sections/hero-terminal.css';
@@ -60,7 +61,7 @@ export default function HomeHero() {
         monoFamily: getComputedStyle(rootEl).getPropertyValue('--tc-mono').trim() || undefined,
       });
 
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!prefersReducedMotion()) {
         gsap.from('[data-hero-in]', {
           y: 14,
           autoAlpha: 0,

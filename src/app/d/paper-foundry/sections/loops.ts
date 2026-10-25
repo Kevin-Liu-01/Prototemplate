@@ -3,6 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { RefObject } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
@@ -140,7 +142,7 @@ export function useFoundryLoops(scope: RefObject<HTMLElement | null>): void {
       writeDim();
       void document.fonts?.ready.then(writeDim);
 
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       /* --- the translated button chip re-measures per locale --- */
       let buttonIdx = 0;

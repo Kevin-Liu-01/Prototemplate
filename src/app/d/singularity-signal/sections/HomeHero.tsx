@@ -10,6 +10,7 @@ import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import HeroFieldSwitcher from '@/components/shared/HeroFieldSwitcher';
 import { startEveryMorph } from '@/app/d/toolchain/sections/every-morph';
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import '@/app/d/toolchain/sections/chip-consistency.css';
 import '@/app/d/toolchain/sections/hero-every.css';
@@ -108,7 +109,7 @@ export default function HomeHero() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (prefersReducedMotion()) {
         /* the DOM is complete without any tween: the still carries the whole
            finished run, both panes */
         return;

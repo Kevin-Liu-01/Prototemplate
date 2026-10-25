@@ -453,35 +453,6 @@
   height: 12px;
 }
 
-.ditherfield-root .tc-term-key {
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.ditherfield-root .tc-swap {
-  display: grid;
-  grid-template-columns: minmax(0, auto) 18px minmax(0, 1fr);
-  gap: 0 8px;
-  white-space: nowrap;
-}
-
-.ditherfield-root .tc-swap-src {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.ditherfield-root .tc-swap-arrow {
-  color: rgba(255, 255, 255, 0.32);
-}
-
-.ditherfield-root .tc-swap-out {
-  display: grid;
-}
-
-.ditherfield-root .tc-swap-out > i {
-  grid-area: 1 / 1;
-  font-style: normal;
-  color: #ffffff;
-}
-
 /* ---------- trusted-by ---------- */
 
 /* A ruled band, not a line of words. The caption sits on its own row, the six
@@ -1005,15 +976,6 @@
   border-top: 0;
 }
 
-/* the visual half of a split row: centred, breathing, never cropped */
-.ditherfield-root .tc-art {
-  flex: 1;
-  padding-top: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .ditherfield-root .tc-art-center {
   display: flex;
   flex: 1;
@@ -1021,21 +983,6 @@
   justify-content: center;
   padding: 8px 0;
 }
-
-/* The SDK stack, which is the one drawing that labels every level of itself.
-   Its type is measured in viewBox units, so the size lives with the placement
-   that fixes the drawing's on-screen scale. */
-.ditherfield-root .tc-art-w {
-  width: 100%;
-  max-width: 400px;
-  --iso-label-size: 7px;
-}
-
-.ditherfield-root .tc-art-sm {
-  width: 100%;
-  max-width: 226px;
-}
-
 
 /* The four small surfaces. They are panels rather than objects, so they take
    the width of the card instead of being centred as a drawing inside it. */
@@ -1342,38 +1289,6 @@
   font-size: 13px;
 }
 
-/* plain text cell */
-.ditherfield-root .tc-plain {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(24px, 4vw, 64px);
-}
-
-.ditherfield-root .tc-plain p {
-  margin-top: 11px;
-  font-size: 14px;
-  line-height: 1.62;
-  color: var(--tc-ink-2);
-  max-width: 34ch;
-}
-
-.ditherfield-root .tc-plain ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(20px, 3vw, 40px);
-}
-
-.ditherfield-root .tc-plain li {
-  padding: 9px 0;
-  border-bottom: 1px solid var(--tc-hair-2);
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--tc-ink-2);
-}
-
 /* ============================================================
    THE ONE DARK BAND
    ============================================================ */
@@ -1406,125 +1321,6 @@
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
   gap: clamp(32px, 4.4vw, 68px);
   align-items: stretch;
-}
-
-.ditherfield-root .tc-band-lede {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: clamp(6px, 1vw, 14px) 0 clamp(4px, 0.8vw, 10px);
-}
-
-/* the lede's foot: what "buildtime, runtime, and review" concretely are */
-.ditherfield-root .tc-band-index {
-  margin-top: auto;
-  padding-top: clamp(26px, 3vw, 40px);
-}
-
-.ditherfield-root .tc-band-index-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 13px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.ditherfield-root .tc-band-index-row:last-child {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.ditherfield-root .tc-band-index-row span {
-  font-size: 13.5px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: #ffffff;
-}
-
-.ditherfield-root .tc-band-index-row b {
-  font-family: var(--tc-mono);
-  font-weight: 400;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
-  white-space: nowrap;
-}
-
-/* The band's one material moment: a full-height texture panel bleeding past
-   the band's top edge and out to the right rail — the halftone bloom, run
-   bright at the edges and held at ink in its core, with the status terminal
-   floating in that core. Same grammar as the references' light panel, drawn
-   by the Bayer engine. */
-.ditherfield-root .tc-band-panel {
-  position: relative;
-  overflow: hidden;
-  margin-top: calc(-1 * clamp(66px, 8vw, 108px));
-  margin-right: calc(-1 * var(--tc-gut));
-  border-radius: 0 0 0 8px;
-  background: #070707;
-  min-height: clamp(430px, 42vw, 560px);
-  display: grid;
-  place-items: center;
-}
-
-.ditherfield-root .df-panel-field {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  image-rendering: pixelated;
-  z-index: 0;
-  opacity: 0.92;
-  pointer-events: none;
-}
-
-.ditherfield-root .tc-band-panel .tc-band-term {
-  position: relative;
-  z-index: 1;
-  width: min(430px, calc(100% - clamp(56px, 7vw, 112px)));
-  margin: clamp(40px, 4.6vw, 64px) 0;
-  background: #070707;
-  outline-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
-}
-
-.ditherfield-root .tc-band-term {
-  border-radius: 6px;
-  background: #101010;
-  outline: 1px solid rgba(255, 255, 255, 0.22);
-  outline-offset: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  overflow: hidden;
-}
-
-.ditherfield-root .tc-band-term-bar {
-  display: flex;
-  align-items: center;
-  height: 34px;
-  padding: 0 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-family: var(--tc-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.42);
-}
-
-.ditherfield-root .tc-band-term-body {
-  padding: 16px 18px 18px;
-  font-family: var(--tc-mono);
-  font-size: 13px;
-  line-height: 1.9;
-  color: rgba(255, 255, 255, 0.88);
-  white-space: pre;
-  overflow-x: auto;
-}
-
-.ditherfield-root .tc-band-term-body [data-tone='prompt'] {
-  color: #ffffff;
-}
-
-.ditherfield-root .tc-band-term-key {
-  color: rgba(255, 255, 255, 0.42);
 }
 
 .ditherfield-root .tc-band h2 {
@@ -2003,87 +1799,6 @@
    in `sections/story/` against this page's own tokens.
    ============================================================ */
 
-.ditherfield-root .tc-review {
-  --gte-line: var(--tc-hair);
-  --gte-line-2: var(--tc-hair-2);
-  --gte-title: var(--tc-ink);
-  --gte-body: var(--tc-ink-2);
-  --gte-label: var(--tc-ink-3);
-  --gte-quiet: var(--tc-ink-4);
-  --gte-display: var(--tc-disp);
-  --gte-text: var(--tc-sans);
-  --gte-mono: var(--tc-mono);
-  --gte-ws-bg: var(--tc-mat-lite);
-  --gte-ws-shadow: none;
-  /* The mat's radius, because the workspace IS a mat now — see below. */
-  --gte-radius: 5px;
-  --gte-revised: var(--tc-ink);
-  --gte-head-size: clamp(1.62rem, 2.5vw, 2.2rem);
-  --gte-head-weight: 600;
-  --gte-head-color: var(--tc-ink);
-  --gte-sub-size: 15px;
-  --gte-pad: clamp(54px, 6.4vw, 82px) 0 clamp(56px, 6vw, 76px);
-  --gte-wrap: 100%;
-}
-
-.ditherfield-root .tc-review .gte-wrap {
-  width: 100%;
-  padding-inline: var(--tc-gut);
-}
-
-/* Top-aligned like every other row on the page, rather than the component's own
-   vertical centring, which floated the copy halfway down the workspace. */
-.ditherfield-root .tc-review .gte-grid {
-  gap: clamp(28px, 4vw, 56px);
-  align-items: start;
-}
-
-/* The borrowed head has its own rhythm: tighter tracking, a tighter line and a
-   14px margin that measured about 7px of visible gap against the 24px every
-   `tc-head` on this page carries. Re-set to this page's values so the section
-   reads as part of the document instead of as an import. */
-.ditherfield-root .tc-review .gte h2 {
-  margin: 0;
-  line-height: 1.06;
-  letter-spacing: -0.028em;
-}
-
-.ditherfield-root .tc-review .gte-sub {
-  margin-top: 13px;
-  max-width: 46ch;
-  line-height: 1.62;
-}
-
-.ditherfield-root .tc-review .gte-notes {
-  margin-top: 22px;
-}
-
-/* ---------- the workspace, mounted ----------
-   This is the biggest product mock on the page and it was the one surface
-   outside the frame system: a single border at the page hairline rather than the
-   mat's edge, an 8px radius against the 5px/2px nest, and no reveal at all — so
-   the most prominent thing in the section read as an import.
-
-   The borrowed markup has no card element to wrap, so the mat is the workspace
-   shell itself and the two blocks inside it carry the card: the bar takes the
-   top corners, the columns take the bottom, and because they are adjacent with
-   no gap the pair reads as one white card with a 2px reveal around it. Same
-   material, same radii, same 2px as every other mount here. */
-.ditherfield-root .tc-review .gte-ws {
-  padding: 2px;
-  border-color: var(--tc-mat-lite-edge);
-}
-
-.ditherfield-root .tc-review .gte-bar {
-  border-radius: 2px 2px 0 0;
-  background: var(--tc-card);
-}
-
-.ditherfield-root .tc-review .gte-cols {
-  border-radius: 0 0 2px 2px;
-  background: var(--tc-card);
-}
-
 /* ============================================================
    MOTION — quiet reveals only
    ============================================================ */
@@ -2126,18 +1841,17 @@
 
 @media (max-width: 1000px) {
   .ditherfield-root .tc-fw,
-  .ditherfield-root .tc-row.is-split,
-  .ditherfield-root .tc-row.is-lead,
-  .ditherfield-root .tc-row.is-three,
-  .ditherfield-root .tc-row.is-wide-left,
-  .ditherfield-root .tc-row.is-wide-right,
-  .ditherfield-root .tc-row.is-even,
-  .ditherfield-root .tc-row.is-tilt,
-  .ditherfield-root .tc-row.is-grammar,
-  .ditherfield-root .tc-plans,
-  .ditherfield-root .tc-plain,
-  .ditherfield-root .tc-band-top,
-  .ditherfield-root .tc-band-grid {
+.ditherfield-root .tc-row.is-split,
+.ditherfield-root .tc-row.is-lead,
+.ditherfield-root .tc-row.is-three,
+.ditherfield-root .tc-row.is-wide-left,
+.ditherfield-root .tc-row.is-wide-right,
+.ditherfield-root .tc-row.is-even,
+.ditherfield-root .tc-row.is-tilt,
+.ditherfield-root .tc-row.is-grammar,
+.ditherfield-root .tc-plans,
+.ditherfield-root .tc-band-top,
+.ditherfield-root .tc-band-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -2164,18 +1878,6 @@
 
   .ditherfield-root .tcm {
     min-height: 0;
-  }
-
-  .ditherfield-root .tc-band-panel {
-    margin-top: 6px;
-    margin-left: calc(-1 * var(--tc-gut));
-    border-radius: 0;
-    min-height: 420px;
-  }
-
-  .ditherfield-root .tc-band-index-row b {
-    white-space: normal;
-    text-align: right;
   }
 
   .ditherfield-root .tc-row.is-reverse > :first-child {
@@ -2270,10 +1972,6 @@
     border-inline: 0;
   }
 
-  .ditherfield-root .tc-plain ul {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .ditherfield-root .tc-caps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2312,12 +2010,6 @@
    wordmarks are 1-bit fields from the same engine as the band
    above them, in the ruled six-cell row.
    ============================================================ */
-
-.ditherfield-root .df-wm {
-  font-family: var(--tc-disp);
-  color: var(--tc-ink);
-  opacity: 0.86;
-}
 
 /* ============================================================
    DF — LOCALES (M13)
@@ -2557,7 +2249,6 @@
   }
 }
 
-
 /* ---- dark mode ----
    Token remap only. Everything downstream re-skins from these. */
 [data-theme='dark'] .ditherfield-root {
@@ -2592,11 +2283,6 @@
 
 /* (The language diagrams' measured pills invert their labels with the theme
    inside lang.css itself — color: var(--lang-ground) — no local override.) */
-
-
-
-
-
 
 /* ---- the rail, zoom-proof ----
    One hairline each side, drawn once by the column's own border-inline (a

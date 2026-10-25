@@ -36,13 +36,6 @@
   flex-wrap: wrap;
 }
 
-.toolchain-root .tcpv-head-meta {
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  white-space: nowrap;
-  padding-bottom: 4px;
-}
-
 /* the sheet: full section width, clips the frame's full-reach rules so
    each one terminates at the sheet's edges — the rail's inner borders
    left/right, the section's rules above/below. The top padding is the

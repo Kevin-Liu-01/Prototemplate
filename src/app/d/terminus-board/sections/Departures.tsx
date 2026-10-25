@@ -10,6 +10,7 @@ import { blankLine, flipUp } from '../lib/flap';
 import FlapPhrase from './FlapPhrase';
 import { FlapChars } from './FlapText';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -59,7 +60,7 @@ export default function Departures() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const scope = root.current;
       if (!scope) return;
 

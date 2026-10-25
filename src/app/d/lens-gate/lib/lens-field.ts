@@ -1,3 +1,5 @@
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 /**
  * Lens field — the page's own ruled hairlines refracting through one circular
  * glass lens, rendered as a physical object rather than a drawn outline.
@@ -629,7 +631,7 @@ export function createLensField(
   if (!blit) return null;
 
   const reduced =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    typeof window !== 'undefined' && prefersReducedMotion();
 
   const sub: Subscriber = {
     target: canvas,

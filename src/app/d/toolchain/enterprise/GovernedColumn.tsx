@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Fragment, useRef, type ReactNode } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import LocaleTag from '../components/LocaleTag';
 import IsoFrame from '../diagrams/IsoFrame';
 import { IsoArrow, IsoPlane, IsoSlab, IsoWire } from '../diagrams/IsoSolid';
@@ -446,7 +448,7 @@ export default function GovernedColumn() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduce = prefersReducedMotion();
 
       const layers = gsap.utils.toArray<SVGGElement>('[data-tcei-layer]', scope);
       const rises = gsap.utils.toArray<SVGGElement>('.tcei-rise', scope);

@@ -1,3 +1,5 @@
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 /**
  * Brushed-graphite sheen — an anisotropic machined sheet, achromatic.
  *
@@ -412,7 +414,7 @@ export function createGraphiteSheen(
   if (!blit) return null;
 
   const reduced =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    typeof window !== 'undefined' && prefersReducedMotion();
 
   const sub: Subscriber = {
     target: canvas,

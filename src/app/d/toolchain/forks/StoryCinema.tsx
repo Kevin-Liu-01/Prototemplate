@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import { useRef } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { tokenize } from '../sections/code';
 
@@ -326,10 +327,9 @@ export default function StoryCinema() {
   useGSAP(
     () => {
       if (!root.current) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const rootEl = root.current;
-      const q = gsap.utils.selector(rootEl);
       const one = <T extends Element>(sel: string) => rootEl.querySelector<T>(sel);
 
       const take = one<HTMLElement>('[data-stage]');
@@ -344,14 +344,14 @@ export default function StoryCinema() {
       const demoEl = demo;
       const beatEl = beat;
 
-      const slides = q('[data-slide]') as HTMLElement[];
-      const pns = q('[data-pn]') as HTMLElement[];
-      const dashes = q('[data-dash]') as HTMLElement[];
-      const swaps = q('[data-swap]') as HTMLElement[];
-      const flags = q('[data-flag]') as HTMLElement[];
-      const wraps = q('[data-wrap]') as HTMLElement[];
-      const wCtx = q("[data-wire='ctx']") as unknown as SVGPathElement[];
-      const wRev = q("[data-wire='rev']") as unknown as SVGPathElement[];
+      const slides = gsap.utils.toArray<HTMLElement>('[data-slide]', rootEl);
+      const pns = gsap.utils.toArray<HTMLElement>('[data-pn]', rootEl);
+      const dashes = gsap.utils.toArray<HTMLElement>('[data-dash]', rootEl);
+      const swaps = gsap.utils.toArray<HTMLElement>('[data-swap]', rootEl);
+      const flags = gsap.utils.toArray<HTMLElement>('[data-flag]', rootEl);
+      const wraps = gsap.utils.toArray<HTMLElement>('[data-wrap]', rootEl);
+      const wCtx = gsap.utils.toArray<SVGPathElement>("[data-wire='ctx']", rootEl);
+      const wRev = gsap.utils.toArray<SVGPathElement>("[data-wire='rev']", rootEl);
 
       const bySel = (sel: string) => one<HTMLElement>(sel);
       const swapOf = (hop: string) => bySel(`[data-swap][data-hop='${hop}']`);

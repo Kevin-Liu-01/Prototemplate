@@ -26,6 +26,7 @@ import RoutingLadder from '../diagrams/delivery/RoutingLadder';
 import CodeBlock from '@/app/d/toolchain/sections/code';
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /* surface.css is the one diagram sheet scoped by ROOT class, not by diagram
    class — the surface components now come from toolchain, so the fork's
@@ -112,7 +113,7 @@ function usePreviewMotion(scope: RefObject<HTMLElement | null>) {
     () => {
       const rootEl = scope.current;
       if (!rootEl) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const host = rootEl.querySelector<HTMLElement>('.tcx-preview');
       if (!host) return;

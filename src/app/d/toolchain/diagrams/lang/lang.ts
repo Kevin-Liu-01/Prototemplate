@@ -29,15 +29,11 @@ export function langA11y(title?: string): LangA11y {
   return title ? { role: 'img', 'aria-label': title } : { 'aria-hidden': true };
 }
 
-/**
- * When the reader has asked for less movement every diagram freezes at its
- * most legible frame instead of looping. The same frame is what a screenshot
- * should ideally catch, which is why the loops below hold far longer than
- * they travel.
- */
-export function prefersReducedMotion(): boolean {
-  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
+/* When the reader has asked for less movement every diagram freezes at its
+   most legible frame instead of looping; the diagrams read the setting from
+   @/lib/reduced-motion. The production and v0 sections still import the read
+   from this module, so it is re-exported here for them. */
+export { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /**
  * One element of a collected list, as a tween target. Indexing a list is

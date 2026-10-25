@@ -8,6 +8,8 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 import FieldEffectsMenu from '@/components/shared/FieldEffectsMenu';
+import { clamp01, smoothstep } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import {
   createHorizonField,
   type HorizonEffectMode,
@@ -97,12 +99,6 @@ const FLAG_PAD = 9;
 
 const TAU = Math.PI * 2;
 
-const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
-const smooth01 = (t: number) => {
-  const c = clamp01(t);
-  return c * c * (3 - 2 * c);
-};
-
 /** A CSS cubic-bezier(x1, y1, x2, y2) as a solvable easing function —
     Newton's method on the x polynomial, then evaluate y. */
 const cubicBezier = (p1x: number, p1y: number, p2x: number, p2y: number) => {
@@ -158,7 +154,7 @@ export default function Hero() {
       const orbit = orbitRef.current;
       if (!hero || !fieldCanvas || !orbit) return;
 
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = prefersReducedMotion();
 
       /* The declarative tag — the same opt-in the prismatic mounts use: the
          hero carries data-fx (modes) + data-fx-default, the hero itself is
@@ -408,8 +404,8 @@ export default function Hero() {
             }
           }
           const scale = 1 - 0.13 * cos;
-          const dim = 1 - 0.5 * smooth01((cos - 0.35) / 0.5);
-          const blur = 0.9 * smooth01((cos - 0.2) / 0.55);
+          const dim = 1 - 0.5 * smoothstep(0, 1, (cos - 0.35) / 0.5);
+          const blur = 0.9 * smoothstep(0, 1, (cos - 0.2) / 0.55);
           /* the flag first — its eased progress is the ripple's clock */
           if (word.flag) placeGlyph(word.flag, a, side, scale, dt);
           const flagProgress = word.flag

@@ -94,7 +94,6 @@ export default function EnterpriseContact({ deskPath }: Props) {
     setNoticed(true);
   }
 
-
   const script = SCRIPTS[scriptIndex] ?? SCRIPTS[0];
 
   return (
@@ -127,7 +126,7 @@ export default function EnterpriseContact({ deskPath }: Props) {
           <canvas
             className='sge-field'
             ref={fieldRef}
-            style={{ ['--tc-ink' as never]: '#ffffff' }}
+            style={{ '--tc-ink': '#ffffff' }}
             aria-hidden
           />
           <div className='sge-grid'>

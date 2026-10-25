@@ -8,6 +8,7 @@ import { CheckCircle, Code2, Globe, Layers, Play, Terminal } from 'lucide-react'
 import { useRef, type ReactNode } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import LocaleTag from '../components/LocaleTag';
 import TcStackIso, { STACK_LAYERS } from '../diagrams/tc-stack-iso';
@@ -113,7 +114,7 @@ export default function DarkBand({
     () => {
       const scope = root.current;
       if (!scope) return;
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduce = prefersReducedMotion();
 
       /* ---- the stack instrument: two-way layer ↔ caption highlight ---- */
       const layers = gsap.utils.toArray<SVGGElement>('.tcs-layer', scope);

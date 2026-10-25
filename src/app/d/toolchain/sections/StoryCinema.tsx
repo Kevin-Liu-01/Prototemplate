@@ -4,8 +4,10 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useRef } from 'react';
+
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import LocaleTag from '../components/LocaleTag';
 
@@ -277,7 +279,7 @@ function Showcase({ className, show, lines, node, btn, children }: ShowcaseProps
       data-node={node}
       data-btn={btn ? '' : undefined}
       ref={box}
-      style={{ '--seam-cut': '70%', '--open': '0' } as CSSProperties}
+      style={{ '--seam-cut': '70%', '--open': '0' }}
     >
       <div className='tc-cinema-show-ui'>{children}</div>
       <div className='tc-cinema-show-src' aria-hidden>
@@ -524,7 +526,7 @@ export default function StoryCinema() {
   useGSAP(
     () => {
       if (!root.current) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const rootEl = root.current;
       const q = gsap.utils.selector(rootEl);
@@ -541,14 +543,14 @@ export default function StoryCinema() {
       const demoEl = demo;
       const beatEl = beat;
 
-      const slides = q('[data-slide]') as HTMLElement[];
-      const pns = q('[data-pn]') as HTMLElement[];
-      const dashes = q('[data-dash]') as HTMLElement[];
-      const swaps = q('[data-swap]') as HTMLElement[];
-      const flags = q('[data-flag]') as HTMLElement[];
-      const ctxRows = q('[data-ctxrow]') as HTMLElement[];
-      const wCtx = q("[data-wire='ctx']") as unknown as SVGPathElement[];
-      const wRev = q("[data-wire='rev']") as unknown as SVGPathElement[];
+      const slides = gsap.utils.toArray<HTMLElement>('[data-slide]', rootEl);
+      const pns = gsap.utils.toArray<HTMLElement>('[data-pn]', rootEl);
+      const dashes = gsap.utils.toArray<HTMLElement>('[data-dash]', rootEl);
+      const swaps = gsap.utils.toArray<HTMLElement>('[data-swap]', rootEl);
+      const flags = gsap.utils.toArray<HTMLElement>('[data-flag]', rootEl);
+      const ctxRows = gsap.utils.toArray<HTMLElement>('[data-ctxrow]', rootEl);
+      const wCtx = gsap.utils.toArray<SVGPathElement>("[data-wire='ctx']", rootEl);
+      const wRev = gsap.utils.toArray<SVGPathElement>("[data-wire='rev']", rootEl);
 
       const agentDim = one<SVGRectElement>('[data-agent-dim]');
       const agentHole = one<SVGRectElement>('[data-agent-hole]');

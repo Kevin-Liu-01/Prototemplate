@@ -18,6 +18,8 @@
  */
 
 import { GLYPHS, ditherAtlasRows } from '@/lib/glyph-field';
+import { mulberry32, smoothstep } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 const POOL = 560;
 
@@ -36,22 +38,6 @@ const PAPER = '#f2f1ed';
 const COL_PITCH = 34;
 /** How far outside the content box the dithered clearing rim runs. */
 const RIM = 64;
-
-function mulberry32(seed: number): () => number {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function smoothstep(a: number, b: number, x: number): number {
-  const u = Math.min(1, Math.max(0, (x - a) / (b - a)));
-  return u * u * (3 - 2 * u);
-}
 
 export type InkFieldOptions = {
   canvas: HTMLCanvasElement;
@@ -114,7 +100,7 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
 
   const disp = options.displayFamily || "'Inter', ui-sans-serif, system-ui, sans-serif";
   const reduced =
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    typeof window !== 'undefined' && prefersReducedMotion();
 
   /* ---------- the pool ---------- */
 

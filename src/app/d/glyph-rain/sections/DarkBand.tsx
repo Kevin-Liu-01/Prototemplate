@@ -10,6 +10,7 @@ import { useRef, type ReactNode } from 'react';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import TcStackIso, { STACK_LAYERS } from '@/app/d/toolchain/diagrams/tc-stack-iso';
 import PrismaticField from '@/components/shared/PrismaticField';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { createInkField } from './band/inkField';
 
@@ -102,7 +103,7 @@ export default function DarkBand() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduce = prefersReducedMotion();
 
       /* ---- the fork's signature material: the inverted glyph field ---- */
       const canvas = stage.current;

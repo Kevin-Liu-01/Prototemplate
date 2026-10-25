@@ -3,11 +3,12 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { useRef, useState, type CSSProperties } from 'react';
+import { useRef, useState } from 'react';
 
 import { useCopied } from '@/app/d/toolchain/components/use-copied';
 
 import { startEveryMorph } from '@/app/d/toolchain/sections/every-morph';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import AuroraWash from './AuroraWash';
 
@@ -78,7 +79,7 @@ export default function Hero() {
       void document.fonts?.ready.then(measure);
       window.addEventListener('resize', measure);
 
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!prefersReducedMotion()) {
         gsap.from('[data-hero-in]', {
           y: 14,
           autoAlpha: 0,
@@ -99,7 +100,7 @@ export default function Hero() {
       }
 
       let everyCleanup: (() => void) | undefined;
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!prefersReducedMotion()) {
         /* The headline hinge (every-morph.ts): the word after "every" cycles
            through eight scripts while the hero is on screen. */
         const em = root.current?.querySelector<HTMLElement>('[data-every]');
@@ -251,7 +252,7 @@ export default function Hero() {
               data-casc-row
               data-src={i === 0 || undefined}
               key={line.loc}
-              style={{ '--casc-i': i } as CSSProperties}
+              style={{ '--casc-i': i }}
             >
               <span className='ap-casc-tag'>{line.loc}</span>
               <span className='ap-casc-text' data-casc-text lang={line.loc}>

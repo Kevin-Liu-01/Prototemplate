@@ -6,6 +6,7 @@ import { useRef } from 'react';
 
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 import PrismaticField from '@/components/shared/PrismaticField';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import GlyphRain from '../../singularity/sections/GlyphRain';
 
 gsap.registerPlugin(useGSAP);
@@ -34,7 +35,7 @@ export default function TransmissionLog() {
     () => {
       const lines = gsap.utils.toArray<HTMLElement>('[data-sgs-line]', root.current);
       if (lines.length === 0) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.6 });
       tl.set(lines, { autoAlpha: 0 })

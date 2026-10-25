@@ -179,13 +179,6 @@
   color: var(--tc-ink-2);
 }
 
-.widerule-root .tc-cap-flag {
-  font-style: normal;
-  font-size: 11px;
-  line-height: 1;
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
-}
-
 /* Reduced motion: no loop — the single full list stands, unmasked, and the
    container takes whatever height that needs. */
 @media (prefers-reduced-motion: reduce) {

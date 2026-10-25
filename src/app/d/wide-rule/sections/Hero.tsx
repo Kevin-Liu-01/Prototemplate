@@ -11,6 +11,7 @@ import { useCopied } from '@/app/d/toolchain/components/use-copied';
 import { useRef } from 'react';
 
 import { startEveryMorph } from '@/app/d/toolchain/sections/every-morph';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import InterferenceField from './InterferenceField';
 import { HERO_STATS, SLOTS, type WrCard } from './wr-content';
@@ -96,7 +97,7 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       /* A. the settle — the composition settles in rather than arriving. */
       gsap.from('[data-settle]', {

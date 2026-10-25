@@ -6,9 +6,9 @@ import Image from 'next/image';
 import { useRef } from 'react';
 
 import { useCopied } from '@/app/d/toolchain/components/use-copied';
-
-import PrismaticField from '@/components/shared/PrismaticField';
 import { startEveryMorph } from '@/app/d/toolchain/sections/every-morph';
+import PrismaticField from '@/components/shared/PrismaticField';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import PrismScene from './PrismScene';
 
@@ -93,7 +93,7 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       /* clearProps: a leftover inline transform on any ancestor of the light
          wrappers would create a stacking context and break their blend group,

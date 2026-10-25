@@ -9,6 +9,7 @@ import { useCopied } from '@/app/d/toolchain/components/use-copied';
 import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /* the .lct chip base and the terminal locale-pill convention, singularity-scoped */
 import '../components/icons.css';
@@ -33,7 +34,7 @@ export default function LocadexHero() {
     () => {
       const scope = root.current;
       if (!scope) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       gsap.fromTo(
         gsap.utils.toArray<HTMLElement>('[data-tline]', scope),

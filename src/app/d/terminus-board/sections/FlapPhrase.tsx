@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { blankLine, flipUp } from '../lib/flap';
 import { FlapChars } from './FlapText';
 
@@ -26,7 +28,7 @@ export default function FlapPhrase({ text }: FlapPhraseProps) {
     () => {
       const line = root.current;
       if (!line) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const trigger = ScrollTrigger.create({
         trigger: line,

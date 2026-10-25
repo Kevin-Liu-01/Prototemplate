@@ -3,6 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { RefObject } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
@@ -21,7 +23,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export function usePlateCascade(scope: RefObject<HTMLElement | null>) {
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const cells = gsap.utils.toArray<HTMLElement>('[data-plate]', scope.current);
       if (!cells.length) return;

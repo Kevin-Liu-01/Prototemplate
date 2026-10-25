@@ -5,7 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
-import { langA11y, langClass, prefersReducedMotion, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
+import { langA11y, langClass, type LangProps } from '@/app/d/toolchain/diagrams/lang/lang';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import './lang.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);

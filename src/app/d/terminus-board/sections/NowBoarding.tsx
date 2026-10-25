@@ -5,6 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { flipUp } from '../lib/flap';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -51,7 +53,7 @@ export default function NowBoarding() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const tiles = tilesRef.current;
       const stamp = stampRef.current;
       const sr = srRef.current;

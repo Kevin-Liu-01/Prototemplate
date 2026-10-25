@@ -7,6 +7,7 @@ import { BookMarked } from 'lucide-react';
 import { useRef } from 'react';
 
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -22,7 +23,7 @@ export default function ContextGroups() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       /* One-shot: the strikethroughs draw, then the corrections underline.
          Almost nothing moves in a module about correctness. */

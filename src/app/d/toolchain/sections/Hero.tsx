@@ -3,9 +3,10 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Image from 'next/image';
-import { useRef, useState, type CSSProperties } from 'react';
+import { useRef, useState } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import LocaleTag from '../components/LocaleTag';
 import { useCopied } from '../components/use-copied';
@@ -226,7 +227,7 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (prefersReducedMotion()) {
         /* the still must carry the whole argument: divider parked mid, both
            panes of the reveal legible */
         setCut(50);
@@ -327,7 +328,7 @@ export default function Hero() {
      dim, never a crossfade of two scripts. Skipped under reduced motion. */
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       gsap.fromTo(
         '[data-swap]',
         { autoAlpha: 0.25 },
@@ -343,7 +344,7 @@ export default function Hero() {
   useGSAP(
     () => {
       if (view !== 'preview' || dragged.current) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const dial = { v: 96 };
       gsap.to(dial, {
         v: 70,
@@ -543,7 +544,7 @@ export default function Hero() {
                   and the seam (the logo's doubled line, each thread in its
                   surface's own ink) only moves the clip boundary — dragging
                   reveals the artifact in place, edge to edge. */}
-              <div className='tct-app' ref={app} style={{ '--seam-cut': '70%' } as CSSProperties}>
+              <div className='tct-app' ref={app} style={{ '--seam-cut': '70%' }}>
                 <div className='tct-app-addr'>
                   example.com/<b data-swap>{ploc}</b>
                 </div>
