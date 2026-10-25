@@ -62,10 +62,11 @@ import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './type.mjs';
+import { hatches, liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './type.mjs';
 import { BASE_URL, chromePath, seedTheme } from '../lib/site-pages.mjs';
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { option } from '../lib/args.mjs';
 
 helpIfAsked(import.meta.url);
 
@@ -186,16 +187,6 @@ export function endsWithEntry(selector, entry) {
 
 const endsIn = (selector, list) => list.some((entry) => endsWithEntry(selector, entry));
 
-/** The hatches of a file: line number to reason ('' for an empty reason). */
-function hatches(text) {
-  const out = new Map();
-  text.split('\n').forEach((line, i) => {
-    const m = line.match(HATCH);
-    if (m) out.set(i + 1, m[1].replace(/\*\/.*$/, '').trim());
-  });
-  return out;
-}
-
 /** Splits a value on whitespace and `/` outside parentheses. */
 export function radiusParts(value) {
   const out = [];
@@ -229,7 +220,7 @@ function roleOf(part) {
 export function lintRadiusCss(rel, source, seen = new Map()) {
   const problems = [];
   const isTokens = rel === TOKENS;
-  const hatch = hatches(source);
+  const hatch = hatches(source, HATCH);
   const hatched = (line) => (hatch.has(line) ? hatch.get(line) : hatch.has(line - 1) ? hatch.get(line - 1) : null);
   const report = (line, rule, message) => {
     const reason = hatched(line);
@@ -328,7 +319,7 @@ function classStrings(text) {
 export function lintRadiusTsx(rel, source) {
   const problems = [];
   const text = source.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' ')).replace(/(^|[^:])\/\/.*$/gm, (c, p) => p + ' '.repeat(c.length - p.length));
-  const hatch = hatches(source);
+  const hatch = hatches(source, HATCH);
   const lineAt = (i) => text.slice(0, i).split('\n').length;
   const report = (line, message) => {
     const reason = hatch.has(line) ? hatch.get(line) : hatch.has(line - 1) ? hatch.get(line - 1) : null;
@@ -584,15 +575,11 @@ const LISTS = {
 };
 
 async function runLive(root, argv) {
-  const flag = (name) => {
-    const i = argv.indexOf(name);
-    return i >= 0 ? argv[i + 1] : undefined;
-  };
-  const base = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
+  const base = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
   const report = argv.includes('--report');
-  const only = flag('--only');
-  const widths = flag('--width') ? [Number(flag('--width'))] : [1440, 390];
-  const jobs = Number(flag('--jobs') ?? 2);
+  const only = option(argv, '--only');
+  const widths = option(argv, '--width') ? [Number(option(argv, '--width'))] : [1440, 390];
+  const jobs = Number(option(argv, '--jobs') ?? 2);
   let chromium;
   try {
     ({ chromium } = await import('playwright-core'));

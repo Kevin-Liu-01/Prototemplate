@@ -86,6 +86,7 @@ import { liveRoutes, parseCss, sourceFiles, stripComments, subjectOf } from './t
 import { BASE_URL, chromePath, seedTheme } from '../lib/site-pages.mjs';
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { option } from '../lib/args.mjs';
 
 helpIfAsked(import.meta.url);
 
@@ -826,14 +827,10 @@ export function updatedDay(root, path) {
 }
 
 async function runLive(root, argv) {
-  const flag = (name) => {
-    const i = argv.indexOf(name);
-    return i >= 0 ? argv[i + 1] : undefined;
-  };
-  const base = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
+  const base = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
   const report = argv.includes('--report');
-  const only = flag('--only');
-  const jobs = Number(flag('--jobs') ?? 2);
+  const only = option(argv, '--only');
+  const jobs = Number(option(argv, '--jobs') ?? 2);
   let chromium;
   try {
     ({ chromium } = await import('playwright-core'));

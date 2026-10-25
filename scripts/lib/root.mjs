@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 
 /** The checkout this file sits in. */
-export function repoRoot() {
+function repoRoot() {
   try {
     const top = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: HERE, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
     /* an export inside another checkout reads that checkout's top level */

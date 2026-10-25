@@ -113,7 +113,7 @@ function indexClassNames(file, lines, map) {
 }
 
 /** Builds the index once; later calls return it. */
-export function sourceIndex(root) {
+function sourceIndex(root) {
   if (index) return index;
   const files = [];
   for (const d of SOURCE_DIRS) walk(join(root, d), files);

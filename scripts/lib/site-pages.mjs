@@ -124,7 +124,7 @@ const DIRECTIONS_SOURCE = join(ROOT, 'src/lib/directions.ts');
  * The key the /d/production consent stub stores its choice under
  * (src/app/d/production/sections/ConsentBanner.tsx, CONSENT_KEY).
  */
-export const MIRROR_CONSENT_KEY = 'pt-mirror-consent';
+const MIRROR_CONSENT_KEY = 'pt-mirror-consent';
 
 /**
  * Seeds a Playwright context with the theme: the key is written before any
@@ -155,7 +155,7 @@ export async function seedTheme(context, theme) {
  * the catch-all are not pages of their own), the root first, then the
  * rest in path order.
  */
-export function productionPages() {
+function productionPages() {
   const found = [];
   const walk = (dir, segments) => {
     if (segments.some((s) => s.startsWith('['))) return;
@@ -170,12 +170,12 @@ export function productionPages() {
 }
 
 /** The surface id of a production page: `production` for the home, `production-<segments joined by ->` for the rest. */
-export function productionId(segments) {
+function productionId(segments) {
   return segments.length === 0 ? 'production' : `production-${segments.join('-')}`;
 }
 
 /** The route of a production page, without the query. */
-export function productionPath(segments) {
+function productionPath(segments) {
   return ['/d/production', ...segments].join('/');
 }
 
@@ -220,7 +220,7 @@ export function firstExplorationSlug() {
  * The newest post under content/blog, the one /blog lists first
  * (src/lib/blog.ts, getPosts sorts by the frontmatter date, newest first).
  */
-export function newestPostSlug() {
+function newestPostSlug() {
   const dir = join(ROOT, 'content/blog');
   const posts = readdirSync(dir)
     .filter((file) => file.endsWith('.mdx'))

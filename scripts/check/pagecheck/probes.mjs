@@ -263,7 +263,7 @@ export const readVitals = () => window.__pcVitals ?? null;
  * input, grouped into windows that close after 1s without a shift or 5s
  * in all, and the largest window's sum.
  */
-export function clsOf(shifts) {
+function clsOf(shifts) {
   let best = 0;
   let sum = 0;
   let start = -Infinity;

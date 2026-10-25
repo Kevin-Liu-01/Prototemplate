@@ -288,7 +288,7 @@ describe('the screen constants', () => {
   test('the Bayer matrix and threshold', () => {
     const root = fixture();
     editText(root, PATHS.plateDither, '[0, 32, 8, 40, 2, 34, 10, 42]', '[32, 0, 8, 40, 2, 34, 10, 42]');
-    editText(root, PATHS.sharedDither, '(BAYER_8[y]![x]! + 0.5) / 64', 'BAYER_8[y]![x]! / 64');
+    editText(root, PATHS.sharedDither, '(BAYER_8[y][x] + 0.5) / 64', 'BAYER_8[y][x] / 64');
     editText(root, PATHS.deckTail, 'var Q = [0, 2, 3, 1];', 'var Q = [0, 1, 2, 3];');
     const problems = lintPictures(root);
     reports(problems, PATHS.plateDither, 'not the 8x8 Bayer matrix');

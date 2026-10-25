@@ -62,6 +62,7 @@ import { interactionTasks, runInteraction } from './interactions.mjs';
 import { CLS_NOTE, judgeReads, readPage, readVitals, summarizeVitals } from './probes.mjs';
 import { SHEET_VIEWPORTS, deviceOrder, foldShards, writeReport, writeSheets } from './report.mjs';
 import { helpIfAsked } from '../../lib/help.mjs';
+import { option } from '../../lib/args.mjs';
 
 helpIfAsked(import.meta.url);
 
@@ -76,20 +77,16 @@ const FULL_SHOT_SCREENS = 10;
 const SHOT_TIMEOUT_MS = 60000;
 
 const argv = process.argv.slice(2);
-const flag = (name) => {
-  const at = argv.indexOf(name);
-  return at >= 0 ? argv[at + 1] : undefined;
-};
 const has = (name) => argv.includes(name);
-const list = (name) => flag(name)?.split(',').map((s) => s.trim()).filter(Boolean);
+const list = (name) => option(argv, name)?.split(',').map((s) => s.trim()).filter(Boolean);
 
-const BASE = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
-const OUT = resolve(ROOT, flag('--out') ?? '.pagecheck');
-const PRESET = flag('--preset') ?? 'full';
+const BASE = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
+const OUT = resolve(ROOT, option(argv, '--out') ?? '.pagecheck');
+const PRESET = option(argv, '--preset') ?? 'full';
 if (!PRESETS[PRESET]) throw new Error(`--preset is ${Object.keys(PRESETS).join(' or ')}, got ${PRESET}`);
 const VIEWPORTS = list('--viewports') ?? list('--devices');
 const THEMES = list('--themes') ?? ['dark', 'light'];
-const JOBS = Math.max(1, Number(flag('--jobs') ?? flag('--shards') ?? DEFAULT_JOBS));
+const JOBS = Math.max(1, Number(option(argv, '--jobs') ?? option(argv, '--shards') ?? DEFAULT_JOBS));
 const ONLY = list('--pages');
 const WITH_INTERACTIONS = !has('--no-interactions');
 const ONLY_INTERACTIONS = list('--interactions');
@@ -104,8 +101,8 @@ for (const theme of THEMES) if (theme !== 'dark' && theme !== 'light') throw new
 /** The devices each theme is read on: the --viewports list in every theme, else the preset's list for that theme. */
 const DEVICES_BY_THEME = Object.fromEntries(THEMES.map((theme) => [theme, (VIEWPORTS ?? PRESETS[PRESET][theme]).map(device)]));
 
-const pagesModule = await import(pathToFileURL(resolve(ROOT, flag('--pages-module') ?? 'scripts/check/pagecheck/pages.mjs')).href);
-const hooks = await import(pathToFileURL(resolve(ROOT, flag('--hooks-module') ?? 'scripts/check/pagecheck/hooks.mjs')).href);
+const pagesModule = await import(pathToFileURL(resolve(ROOT, option(argv, '--pages-module') ?? 'scripts/check/pagecheck/pages.mjs')).href);
+const hooks = await import(pathToFileURL(resolve(ROOT, option(argv, '--hooks-module') ?? 'scripts/check/pagecheck/hooks.mjs')).href);
 
 const allPages = pagesModule.pages();
 const PAGES = ONLY ? allPages.filter((p) => ONLY.includes(p.id)) : allPages;

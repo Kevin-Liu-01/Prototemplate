@@ -63,16 +63,13 @@ import { chromium } from 'playwright-core';
 
 import { BASE_URL, chromePath, routesFor, seedTheme } from '../lib/site-pages.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { option } from '../lib/args.mjs';
 
 helpIfAsked(import.meta.url);
 
 const argv = process.argv.slice(2);
 /* flags that take a value; the value is never a positional URL */
 const VALUED = new Set(['--theme', '--base', '--only', '--width', '--state', '--jobs']);
-const flag = (name) => {
-  const i = argv.indexOf(name);
-  return i >= 0 ? argv[i + 1] : undefined;
-};
 const positional = argv.filter((a, i, all) => !a.startsWith('--') && !VALUED.has(all[i - 1]));
 const SHELL = argv.includes('--shell');
 const reportOnly = argv.includes('--report');
@@ -80,7 +77,7 @@ const jsonOut = argv.includes('--json');
 
 /* EVERY positional URL is audited — for years of shame, an earlier version
    silently audited only the first and blessed the rest. */
-const BASE = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
+const BASE = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
 /* a URL that starts with / is a path on BASE */
 const urls = (positional.length ? positional : ['/d/toolchain?chrome=0']).map((u) => (u.startsWith('/') ? BASE + u : u));
 for (const u of urls) {
@@ -91,7 +88,7 @@ for (const u of urls) {
     process.exit(2);
   }
 }
-const theme = flag('--theme') ?? 'dark';
+const theme = option(argv, '--theme') ?? 'dark';
 
 /**
  * Class fragments whose lines are deliberate multi-stroke devices. Every
@@ -940,14 +937,14 @@ async function pool(tasks, n) {
 }
 
 async function runShellMode() {
-  const only = flag('--only');
-  const widthFlag = flag('--width');
-  const themeFlag = flag('--theme');
+  const only = option(argv, '--only');
+  const widthFlag = option(argv, '--width');
+  const themeFlag = option(argv, '--theme');
   const routes = shellRoutes().filter((r) => !only || r.path.includes(only));
   /* pages driven at once; --jobs 1 keeps a loaded machine to one browser page */
-  const jobs = Number(flag('--jobs') ?? 3);
+  const jobs = Number(option(argv, '--jobs') ?? 3);
   if (!Number.isInteger(jobs) || jobs < 1) {
-    console.error(`lint-lines: --jobs wants a positive integer, got ${flag('--jobs')}`);
+    console.error(`lint-lines: --jobs wants a positive integer, got ${option(argv, '--jobs')}`);
     process.exit(2);
   }
   const widths = widthFlag ? [Number(widthFlag)] : SHELL_WIDTHS;

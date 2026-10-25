@@ -59,6 +59,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { promisify } from 'node:util';
 import { ROOT as REPO_ROOT } from '../lib/root.mjs';
+import { option } from '../lib/args.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
 
 helpIfAsked(import.meta.url);
@@ -67,14 +68,10 @@ const run = promisify(execFile);
 
 const argv = process.argv.slice(2);
 const flag = (name) => argv.includes(name);
-const option = (name) => {
-  const i = argv.indexOf(name);
-  return i >= 0 ? argv[i + 1] : undefined;
-};
 
-const ROOT = option('--root') ?? REPO_ROOT;
+const ROOT = option(argv, '--root') ?? REPO_ROOT;
 const OUT_REL = 'src/lib/updated.ts';
-const OUT = option('--out') ?? join(ROOT, OUT_REL);
+const OUT = option(argv, '--out') ?? join(ROOT, OUT_REL);
 const CHECK = flag('--check');
 const JSON_OUT = flag('--json');
 /** --head: the dates as HEAD alone reads them, ignoring the working tree */
@@ -178,7 +175,7 @@ function directionSlugs() {
 
 /** @returns {{ id: string, paths: string[] }[]} */
 function pages() {
-  const given = option('--pages');
+  const given = option(argv, '--pages');
   if (given) return JSON.parse(readFileSync(given, 'utf8'));
   /* the docs site's code every docs page shares; the plates under src/components/docs/demos date only the pages that list them */
   const docsSite = [

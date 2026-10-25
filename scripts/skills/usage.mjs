@@ -26,16 +26,13 @@ import { join, resolve } from 'node:path';
 
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { option } from '../lib/args.mjs';
 
 helpIfAsked(import.meta.url);
 
 const argv = process.argv.slice(2);
-const flag = (name) => {
-  const at = argv.indexOf(name);
-  return at >= 0 ? argv[at + 1] : undefined;
-};
-const DAYS = Number(flag('--days') ?? 30);
-const DIR = resolve(flag('--dir') ?? process.env.CLAUDE_PROJECTS ?? join(homedir(), '.claude/projects'));
+const DAYS = Number(option(argv, '--days') ?? 30);
+const DIR = resolve(option(argv, '--dir') ?? process.env.CLAUDE_PROJECTS ?? join(homedir(), '.claude/projects'));
 const ALL = argv.includes('--all');
 const JSON_OUT = argv.includes('--json');
 const STALE = argv.includes('--stale');

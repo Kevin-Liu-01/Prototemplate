@@ -13,8 +13,8 @@
       "specifier": "./scripts/lint/oxlint-plugins/gt-ui.ts"
     }
   ],
-  // src/app/d holds the archived design directions (149 files import
-  // lucide-react freely); they are not maintained and are not linted.
+  // src/app/d holds the archived design directions, which import
+  // lucide-react freely; they are not linted.
   "ignorePatterns": [
     "**/.next/**",
     "**/node_modules/**",
@@ -77,13 +77,12 @@
       }
     },
     {
-      // The three files that load a face beside Inter. DESIGN.md section 4
+      // The two files that load a face beside Inter. DESIGN.md section 4
       // gives the nameplate a serif (Fraunces) and a grotesk (Space Grotesk)
       // voice, and the presenter's intro lockup sets two words in Sora and
       // Instrument Sans. The rule stays on everywhere else, so a font class
       // or an inline fontFamily outside Inter is still reported.
       "files": [
-        "src/app/page.tsx",
         "src/lib/brand-fonts.ts",
         "src/app/present/fonts.ts"
       ],

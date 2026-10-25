@@ -70,17 +70,14 @@ import { chromium } from 'playwright-core';
 
 import { BASE_URL, chromePath, HIDE_DEV_UI_CSS, ROOT, routesFor, seedTheme } from '../lib/site-pages.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { option } from '../lib/args.mjs';
 
 helpIfAsked(import.meta.url);
 
 const EXEC = chromePath();
 
 const argv = process.argv.slice(2);
-const flag = (name) => {
-  const at = argv.indexOf(name);
-  return at >= 0 ? argv[at + 1] : undefined;
-};
-const [WIDTH, HEIGHT] = (flag('--viewport') ?? '1440x900').split('x').map(Number);
+const [WIDTH, HEIGHT] = (option(argv, '--viewport') ?? '1440x900').split('x').map(Number);
 if (!(WIDTH > 0 && HEIGHT > 0)) {
   console.error('capture-pages: --viewport takes <width>x<height>, such as 390x844');
   process.exit(2);
@@ -90,10 +87,10 @@ const LIVE_SETTLE_MS = 3000;
 const QUALITY = 82;
 const THEMES = ['light', 'dark'];
 
-const BASE = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
-const ONLY = flag('--only')?.split(',').filter(Boolean);
+const BASE = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
+const ONLY = option(argv, '--only')?.split(',').filter(Boolean);
 const LIVE = argv.includes('--live');
-const DIRECTIONS = flag('--direction')?.split(',').filter(Boolean);
+const DIRECTIONS = option(argv, '--direction')?.split(',').filter(Boolean);
 
 const LIVE_ORIGIN = 'https://generaltranslation.com';
 
@@ -173,7 +170,7 @@ if (list.length === 0) {
 }
 
 /* the direction captures sit one folder per theme (public/shots/<theme>/<stem>.jpg); the rest are <id>-<theme>.jpg in one folder */
-const OUT = resolve(ROOT, flag('--out') ?? (DIRECTIONS ? 'public/shots' : 'public/shots/pages'));
+const OUT = resolve(ROOT, option(argv, '--out') ?? (DIRECTIONS ? 'public/shots' : 'public/shots/pages'));
 const targetOf = (id, theme) => (DIRECTIONS ? join(OUT, theme, `${id}.jpg`) : join(OUT, `${id}-${theme}.jpg`));
 for (const dir of DIRECTIONS ? THEMES.map((theme) => join(OUT, theme)) : [OUT]) mkdirSync(dir, { recursive: true });
 

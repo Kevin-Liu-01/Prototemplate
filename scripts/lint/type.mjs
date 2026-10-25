@@ -68,6 +68,7 @@ import { fileURLToPath } from 'node:url';
 import { BASE_URL, chromePath, routesFor, seedTheme } from '../lib/site-pages.mjs';
 import { ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { option } from '../lib/args.mjs';
 
 helpIfAsked(import.meta.url);
 
@@ -180,10 +181,11 @@ export function stripComments(text) {
 }
 
 /** The hatches of a file: line number to reason ('' for an empty reason). */
-function hatches(text) {
+/** The lines that carry an escape hatch, by line number, with the reason each gives; `re` is the lint's own hatch pattern. */
+export function hatches(text, re = HATCH) {
   const out = new Map();
   text.split('\n').forEach((line, i) => {
-    const m = line.match(HATCH);
+    const m = line.match(re);
     if (m) out.set(i + 1, m[1].replace(/\*\/.*$/, '').trim());
   });
   return out;
@@ -773,15 +775,11 @@ export function liveRoutes() {
 }
 
 async function runLive(root, argv) {
-  const flag = (name) => {
-    const i = argv.indexOf(name);
-    return i >= 0 ? argv[i + 1] : undefined;
-  };
-  const base = (flag('--base') ?? BASE_URL).replace(/\/$/, '');
+  const base = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
   const report = argv.includes('--report');
-  const only = flag('--only');
-  const widths = flag('--width') ? [Number(flag('--width'))] : [1440, 390];
-  const jobs = Number(flag('--jobs') ?? 2);
+  const only = option(argv, '--only');
+  const widths = option(argv, '--width') ? [Number(option(argv, '--width'))] : [1440, 390];
+  const jobs = Number(option(argv, '--jobs') ?? 2);
   let chromium;
   try {
     ({ chromium } = await import('playwright-core'));

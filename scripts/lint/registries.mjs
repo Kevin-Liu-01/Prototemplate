@@ -61,19 +61,16 @@ import { join, resolve } from 'node:path';
 
 import { ROOT as REPO_ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { option } from '../lib/args.mjs';
 
 /* no module imports this file, only the shim at the skill's old path */
 helpIfAsked(import.meta.url, false);
 
 const argv = process.argv.slice(2);
-const flag = (name) => {
-  const at = argv.indexOf(name);
-  return at >= 0 ? argv[at + 1] : undefined;
-};
 
 /** The checkout: --root, else the repository this file sits in, else the working directory. */
 function findRoot() {
-  const given = flag('--root');
+  const given = option(argv, '--root');
   const candidates = given
     ? [resolve(given)]
     : [REPO_ROOT, process.cwd()];
@@ -167,7 +164,7 @@ const handbookTable = headingRows('HANDBOOK_HEADINGS');
 
 const craft = block(read('src/app/craft/CraftArticle.tsx'), 'export const CRAFT_SECTIONS', '\n];');
 const craftIds = [...craft.matchAll(/^ {4}id: '([^']+)'/gm)].map((m) => m[1]);
-/* the handbook page that ends with the build log (content/docs/handbook/libraries.mdx) */
+/* the handbook page that ends with the build log (content/docs/(guide)/handbook/(canon)/libraries.mdx) */
 const BUILD_LOG_DOC = 'libraries';
 
 let headingDrift = 0;

@@ -72,6 +72,7 @@ import { basename, dirname, extname, join } from 'node:path';
 
 import { assemble, DECK, SLIDE_COUNT } from '../../deck/assemble.mjs';
 import { ROOT } from '../lib/root.mjs';
+import { option } from '../lib/args.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
 
 helpIfAsked(import.meta.url);
@@ -92,24 +93,20 @@ const { cardPath, OG_HEIGHT, OG_WIDTH } = await importTs(new URL('../../src/lib/
 const { SITE_URL } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
 
 const ARGS = process.argv.slice(2);
-const flag = (name) => {
-  const at = ARGS.indexOf(name);
-  return at >= 0 ? ARGS[at + 1] : undefined;
-};
 /* an alternate output path: one self-contained file, and public/ is left alone */
-const OUT_OVERRIDE = flag('--out');
+const OUT_OVERRIDE = option(ARGS, '--out');
 const OUT = OUT_OVERRIDE ?? join(ROOT, 'public/brand-deck.html');
 const ASSETS_OUT = join(ROOT, 'public/deck-assets');
 const THUMBS_OUT = join(ROOT, 'public/shots/deck');
 /* the public page carries markup, styles, the script and the font; its images are files */
 const MAX_PUBLIC_BYTES = 1024 * 1024;
-const QUALITY = Number(flag('--quality') ?? 78);
-const MAX_WIDTH = Number(flag('--max-width') ?? 1280);
+const QUALITY = Number(option(ARGS, '--quality') ?? 78);
+const MAX_WIDTH = Number(option(ARGS, '--max-width') ?? 1280);
 /* the thumbnails pass through untouched unless a copy asks for them re-encoded */
-const THUMB_QUALITY = flag('--thumb-quality') ? Number(flag('--thumb-quality')) : undefined;
+const THUMB_QUALITY = option(ARGS, '--thumb-quality') ? Number(option(ARGS, '--thumb-quality')) : undefined;
 /* full-bleed openers and 2x detail crops keep their pixels; the 1280 resample blurs them on the 1600 sheet */
 const NATIVE = /^(opener|detail)-/;
-const NATIVE_QUALITY = Number(flag('--native-quality') ?? 88);
+const NATIVE_QUALITY = Number(option(ARGS, '--native-quality') ?? 88);
 /* the share of pixels at the two extremes above which a native image counts as a two-tone dither */
 const TWO_TONE_SHARE = 0.98;
 

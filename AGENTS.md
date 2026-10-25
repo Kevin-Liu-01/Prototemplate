@@ -102,7 +102,7 @@ pnpm check:pages --preset quick --pages <id> # eight devices in dark and 1440x90
 
 - Reuse the dev server on 3005 when it is running, and never build in the shared `.next`. The build gate runs in a scratch worktree with `&&` (`gt-ship` section 8).
 - The browser lints launch the Chrome for Testing build `playwright-core` installs (`pnpm exec playwright-core install chromium`); `CHROME_PATH` overrides it.
-- Generated files change only through their scripts: `pnpm build:skills` (`src/lib/skills.ts`, `skills/README.md`), `pnpm build:updated` (`src/lib/updated.ts`), `pnpm build:deck`, `pnpm build:marks`, `pnpm build:tools` (`docs/TOOLS.md`); `pnpm gen:all` runs every one of them. `pnpm build:motion` runs only when the Videos session hands a film over (`gt-films` section 11).
+- Generated files change only through their scripts: `pnpm build:skills` (`src/lib/skills.ts`, `skills/README.md`), `pnpm build:updated` (`src/lib/updated.ts`), `pnpm build:deck`, `pnpm build:marks`, `pnpm build:inter`, `pnpm build:thumbs`, `pnpm build:tools` (`docs/TOOLS.md`) and `pnpm build:motion` (`src/lib/motion.ts`). `pnpm gen:all` runs all eight and skips `build:motion` where the motion folder has no `MOTION.md` or `out/` renders. Run `build:motion` by hand only when the Videos session hands a film over (`gt-films` section 11).
 - `README.md` maps the routes, `ARCHITECTURE.md` the code, `DESIGN.md` the visual laws and `BRAND.md` the identity.
 
 ## Using the hub in another project

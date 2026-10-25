@@ -16,7 +16,8 @@ src/
     d/toolchain/          THE SSOT: sections, diagrams, styles other forks import
     d/_v0/                shared v0 sections (TranslateWindow, StackTower,
                           Locadex, FullStack, Deploy) used by the
-                          singularity-* homes and the shipped site
+                          singularity-* homes; the shipped site keeps its
+                          own copies and imports translate-window.css
     d/production/         generaltranslation.com as it shipped, rebuilt
                           page for page, with the plate pages
     directions/           /directions/<slug>: each direction as a book
@@ -54,7 +55,8 @@ src/
     motion/               /motion and /motion/<slug>, from src/lib/motion.ts
     api/try/fetch/        the one runtime function, behind the shipped /try
     prototemplate.css     the pt grammar (index + craft chrome)
-    globals.css           the four color tokens
+    globals.css           the four color tokens, the reset, the scrollbar,
+                          the plate theme import and Tailwind's sources
   components/
     viewer/               the viewer shell every route except /deck,
                           /present, /blog, /docs and /d runs on: ViewerShell,
@@ -63,8 +65,8 @@ src/
     shared/               cross-page instruments: EverySentence, StudioField,
                           PrismaticField, HeroFieldSwitcher, TcMobileNav,
                           diagrams/ (DoubledLine and the older line-art
-                          set); FeatureBento, StorySection and
-                          LanguageWheel are unmounted references
+                          set); FeatureBento, StorySection and the
+                          line-art diagrams are unmounted references
     blog/                 the blog's MDX components (PostAuthors, PostCover,
                           Carousel, AuthorSpotlight and the figures)
     try/                  the report card the shipped /try page mounts
@@ -101,8 +103,10 @@ src/
                           (dependency layout effects with useGSAP's timing,
                           without GSAP)
 scripts/                  pnpm names are the interface; every entry point
-                          takes --help
+                          takes --help, and docs/TOOLS.md lists every
+                          command and script
   lib/root.mjs            the repository root every script resolves from
+  lib/args.mjs            option(): the value after a flag, for every script
   lib/site-pages.mjs      page discovery, the theme door, PT_BASE and the
                           Chrome the browser scripts share
   lib/help.mjs            --help: prints a script's opening comment
