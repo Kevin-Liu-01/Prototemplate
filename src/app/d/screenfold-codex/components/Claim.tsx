@@ -43,7 +43,7 @@ export default function Claim() {
       )
         .set(el, { y: 10 })
         .to(el, { y: 0, duration: 0.34, ease: 'power2.out' });
-      playWhileVisible(el, tl);
+      return playWhileVisible(el, tl);
     },
     { scope: ref }
   );

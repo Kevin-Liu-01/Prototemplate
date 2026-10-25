@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
@@ -13,7 +12,7 @@ import PatternSwatch from '../diagrams/PatternSwatch';
 import { LINKS, SOURCE_WORD, wordFor } from '../data';
 import LocaleChip from './LocaleChip';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 /**
  * brick-lattice · the T component proof.
@@ -175,15 +174,12 @@ export default function WallProof() {
       });
       tl.to({}, { duration: 4.6 }, FIRE_AT + farthest * FIRE_STEP + FIRE_DUR);
 
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 85%',
-        end: 'bottom 15%',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause();
-        },
+      /* the wave runs while the wall is between the top and bottom 15 percent of the viewport */
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause()), {
+        rootMargin: '-15% 0px',
       });
+      io.observe(el);
+      return () => io.disconnect();
     },
     { scope: root }
   );

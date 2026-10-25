@@ -1,14 +1,10 @@
-'use client';
-
-import { useRef } from 'react';
-
 import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
 
 import Chip from '../components/Chip';
 import Fig from '../components/Fig';
 import GlyphBlock from '../components/GlyphBlock';
-import { useQuietReveal } from '../components/motion';
 import { Panel, Register } from '../components/Panel';
+import QuietReveal from '../components/QuietReveal';
 import { CASCADE, CLI_LOCALES, LOCADEX_DIFF, leaf } from '../data';
 
 /**
@@ -23,11 +19,8 @@ import { CASCADE, CLI_LOCALES, LOCADEX_DIFF, leaf } from '../data';
 const LEAF = leaf('surfaces');
 
 export default function SurfacesPanel() {
-  const root = useRef<HTMLDivElement>(null);
-  useQuietReveal(root);
-
   return (
-    <div ref={root}>
+    <QuietReveal>
       <Panel index={LEAF.n} fold={LEAF.fold} sign={LEAF.sign} id={LEAF.id}>
         <Register className='is-head'>
           <h2 className='sfc-h2' data-reveal>
@@ -165,6 +158,6 @@ export default function SurfacesPanel() {
           </div>
         </Register>
       </Panel>
-    </div>
+    </QuietReveal>
   );
 }

@@ -1,15 +1,11 @@
-'use client';
-
-import { useRef } from 'react';
-
 import { PRICING_FEATURES, type Cell } from '@/app/d/production/sections/pricing-features';
 import { PLAN_CTAS } from '@/app/d/production/sections/pricing-links';
 
 import BarDot from '../components/BarDot';
 import Fig from '../components/Fig';
 import FoldHinge from '../components/FoldHinge';
-import { useQuietReveal } from '../components/motion';
 import { Panel, Register } from '../components/Panel';
+import QuietReveal from '../components/QuietReveal';
 import { RATES, USAGE_RATES_URL, leaf } from '../data';
 
 /**
@@ -54,11 +50,8 @@ function CellView({ cell }: { cell: Cell }) {
 }
 
 export default function PricingPanels() {
-  const root = useRef<HTMLDivElement>(null);
-  useQuietReveal(root);
-
   return (
-    <div ref={root}>
+    <QuietReveal>
       <Panel index={RATES_LEAF.n} fold={RATES_LEAF.fold} sign={RATES_LEAF.sign} id={RATES_LEAF.id}>
         <Register className='is-head'>
           <h2 className='sfc-h2' data-reveal>
@@ -229,6 +222,6 @@ export default function PricingPanels() {
           </div>
         </Register>
       </Panel>
-    </div>
+    </QuietReveal>
   );
 }

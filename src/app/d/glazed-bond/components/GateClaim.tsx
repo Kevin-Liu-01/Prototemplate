@@ -2,26 +2,25 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { CLAIMS } from '../data';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 /**
  * Deco home: the arch. The claim inscribed in the opening.
  *
  * One shaped text node carries the sentence with its `lang` and `dir`. A
- * paused timeline wipes the glaze off the text with a clip-path from left
- * to right, rewrites text, lang and dir together while nothing is showing,
- * then wipes the new sentence on from the left and rests. Opacity is never
- * touched: at rest the clip is the full box and the text is simply there,
- * so a no-JS render, a capture and a thumbnail all read the claim. A
- * ScrollTrigger plays the loop only while the arch is on screen. Under
- * reduced motion nothing is scheduled and the English source stands as
+ * paused timeline wipes the glaze off the text with a clip-path from left to
+ * right, rewrites text, lang and dir together while nothing is showing, then
+ * wipes the new sentence on from the left and rests. Opacity is never
+ * touched: at rest the clip is the full box and the text is simply there, so
+ * a no-JS render, a capture and a thumbnail all read the claim. An
+ * IntersectionObserver plays the loop only while the claim is on screen.
+ * Under reduced motion nothing is scheduled and the English source stands as
  * the still. The display face covers Latin; the other scripts fall back to
  * Inter through the sheet's font stack.
  */
@@ -55,18 +54,11 @@ export default function GateClaim() {
         .set(el, { clipPath: WIPE_ON_START })
         .to(el, { clipPath: REST, duration: 0.38, ease: 'power2.out' });
 
-      const trigger = ScrollTrigger.create({
-        trigger: el,
-        start: 'top bottom',
-        end: 'bottom top',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause();
-        },
-      });
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause()));
+      io.observe(el);
 
       return () => {
-        trigger.kill();
+        io.disconnect();
         tl.kill();
         gsap.set(el, { clearProps: 'clipPath' });
       };

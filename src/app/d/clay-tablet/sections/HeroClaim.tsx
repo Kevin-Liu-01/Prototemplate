@@ -2,14 +2,13 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { HERO_WORDS } from './content';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 const DWELL = 2.6;
 const OUT = 0.42;
@@ -18,9 +17,10 @@ const IN = 0.5;
 /**
  * The claim, impressed in the hero tablet's top register: one shaped text
  * node with lang and dir that is re-impressed locale by locale. The stylus
- * pass is a clip-path wipe, left to right, on one timeline created paused
- * and played only while the tablet is on screen. At rest the node shows the
- * English claim complete; under reduced motion that rest is the whole story.
+ * pass is a clip-path wipe, left to right, on one timeline created paused and
+ * played only while the claim is inside the viewport's middle 84 percent. At
+ * rest the node shows the English claim complete; under reduced motion that
+ * rest is the whole story.
  */
 export default function HeroClaim() {
   const heading = useRef<HTMLHeadingElement>(null);
@@ -51,16 +51,11 @@ export default function HeroClaim() {
         .set(el, { clipPath: 'inset(0% 100% 0% 0%)' })
         .to(el, { clipPath: 'inset(0% 0% 0% 0%)', duration: IN, ease: 'power2.out' });
 
-      const st = ScrollTrigger.create({
-        trigger,
-        start: 'top 92%',
-        end: 'bottom 8%',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause();
-        },
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause()), {
+        rootMargin: '-8% 0px',
       });
-      if (st.isActive) tl.play();
+      io.observe(trigger);
+      return () => io.disconnect();
     },
     { scope: heading }
   );

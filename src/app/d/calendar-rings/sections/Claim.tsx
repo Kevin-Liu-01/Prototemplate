@@ -14,14 +14,13 @@
  */
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { CLAIM_WORDS } from '../data';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 const FIRST = CLAIM_WORDS[0] ?? { text: 'Scale to every language', lang: 'en', dir: 'ltr' as const };
 
@@ -32,7 +31,8 @@ export function Claim() {
     () => {
       if (prefersReducedMotion()) return;
       const el = ref.current;
-      if (!el) return;
+      const heading = el?.parentElement;
+      if (!el || !heading) return;
       let idx = 0;
       const tl = gsap.timeline({ paused: true, repeat: -1 });
       tl.to(el, { yPercent: -115, duration: 0.3, ease: 'power1.in' }, 3.2)
@@ -45,17 +45,11 @@ export function Claim() {
         })
         .set(el, { yPercent: 115 })
         .to(el, { yPercent: 0, duration: 0.42, ease: 'power1.out' });
-      const trigger = ScrollTrigger.create({
-        trigger: el,
-        start: 'top bottom',
-        end: 'bottom top',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause();
-        },
-      });
+      /* the heading, not the word: the word slides out of the heading's clip mid-swap */
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause()));
+      io.observe(heading);
       return () => {
-        trigger.kill();
+        io.disconnect();
         tl.kill();
       };
     },

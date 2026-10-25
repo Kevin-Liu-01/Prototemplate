@@ -1,7 +1,3 @@
-'use client';
-
-import { useRef } from 'react';
-
 import { GtMark } from '@/components/viewer/GtMark';
 
 import BarDot from '../components/BarDot';
@@ -9,9 +5,9 @@ import Claim from '../components/Claim';
 import CopyCommand from '../components/CopyCommand';
 import FoldMap from '../components/FoldMap';
 import GlyphBand from '../components/GlyphBand';
-import { useQuietReveal } from '../components/motion';
 import NumeralKey from '../components/NumeralKey';
 import { Panel, Register } from '../components/Panel';
+import QuietReveal from '../components/QuietReveal';
 import { DOCS, SIGN_IN, leaf } from '../data';
 
 /**
@@ -26,11 +22,8 @@ import { DOCS, SIGN_IN, leaf } from '../data';
 const LEAF = leaf('hero');
 
 export default function HeroPanel() {
-  const root = useRef<HTMLDivElement>(null);
-  useQuietReveal(root);
-
   return (
-    <div ref={root}>
+    <QuietReveal>
       <Panel index={LEAF.n} fold={LEAF.fold} sign={LEAF.sign} id={LEAF.id} className='is-hero'>
         <Register className='is-head'>
           <h1 className='sfc-h1' data-reveal>
@@ -77,6 +70,6 @@ export default function HeroPanel() {
           </div>
         </Register>
       </Panel>
-    </div>
+    </QuietReveal>
   );
 }

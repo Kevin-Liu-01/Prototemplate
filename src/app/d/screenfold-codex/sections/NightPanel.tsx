@@ -1,13 +1,11 @@
-'use client';
-
-import { useRef, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import BarDot from '../components/BarDot';
 import Chip from '../components/Chip';
 import Fig from '../components/Fig';
 import GlyphBlock, { type Motif } from '../components/GlyphBlock';
-import { useQuietReveal } from '../components/motion';
 import { Panel, Register } from '../components/Panel';
+import QuietReveal from '../components/QuietReveal';
 import TempleField from '../components/TempleField';
 import { CLI_LOCALES, DEMO, SIGN_IN, leaf } from '../data';
 
@@ -74,11 +72,8 @@ const STEPS: readonly Step[] = [
 ];
 
 export default function NightPanel() {
-  const root = useRef<HTMLDivElement>(null);
-  useQuietReveal(root);
-
   return (
-    <div ref={root}>
+    <QuietReveal>
       <Panel index={LEAF.n} fold={LEAF.fold} sign={LEAF.sign} tone='night' id={LEAF.id}>
         <Register className='is-head'>
           <h2 className='sfc-h2' data-reveal>
@@ -149,6 +144,6 @@ export default function NightPanel() {
           </div>
         </Register>
       </Panel>
-    </div>
+    </QuietReveal>
   );
 }

@@ -1,11 +1,7 @@
-'use client';
-
-import { useRef } from 'react';
-
 import BarDot from '../components/BarDot';
 import Fig from '../components/Fig';
-import { useQuietReveal } from '../components/motion';
 import { Panel, Register } from '../components/Panel';
+import QuietReveal from '../components/QuietReveal';
 import { CUSTOMERS, REVIEW_ROWS, leaf } from '../data';
 
 /**
@@ -19,11 +15,8 @@ import { CUSTOMERS, REVIEW_ROWS, leaf } from '../data';
 const LEAF = leaf('review');
 
 export default function TrustPanel() {
-  const root = useRef<HTMLDivElement>(null);
-  useQuietReveal(root);
-
   return (
-    <div ref={root}>
+    <QuietReveal>
       <Panel index={LEAF.n} fold={LEAF.fold} sign={LEAF.sign} id={LEAF.id}>
         <Register className='is-head'>
           <h2 className='sfc-h2' data-reveal>
@@ -87,6 +80,6 @@ export default function TrustPanel() {
           </div>
         </Register>
       </Panel>
-    </div>
+    </QuietReveal>
   );
 }

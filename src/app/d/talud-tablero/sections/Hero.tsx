@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { GtMark } from '@/components/viewer/GtMark';
@@ -14,7 +13,7 @@ import { CopyButton } from './CopyButton';
 import { BarDot } from './deco/BarDot';
 import { Tablero, Talud, Terrace } from './deco/Terrace';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 const FIRST = EVERY[0] ?? { text: 'language', lang: 'en' };
 
@@ -38,7 +37,8 @@ export default function Hero() {
     () => {
       if (prefersReducedMotion()) return;
       const el = word.current;
-      if (!el) return;
+      const grid = root.current;
+      if (!el || !grid) return;
       let idx = 0;
       const tl = gsap.timeline({ repeat: -1, paused: true });
       tl.to(el, { y: 5, duration: 0.18, ease: 'steps(2)' })
@@ -51,17 +51,13 @@ export default function Hero() {
         })
         .to(el, { y: 0, duration: 0.18, ease: 'steps(2)' })
         .to({}, { duration: 2.3 });
-      const trigger = ScrollTrigger.create({
-        trigger: root.current,
-        start: 'top 90%',
-        end: 'bottom 10%',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause();
-        },
+      /* plays while the claim's grid is between the top and bottom tenths of the viewport */
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause()), {
+        rootMargin: '-10% 0px',
       });
+      io.observe(grid);
       return () => {
-        trigger.kill();
+        io.disconnect();
         tl.kill();
       };
     },

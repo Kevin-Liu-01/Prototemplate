@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { prefersReducedMotion } from '@/lib/reduced-motion';
@@ -11,7 +10,7 @@ import { REVIEW_ROWS } from '../data';
 import { useRise } from '../reveal';
 import Register from './deco/Register';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 /** Seconds per character: the translation trails the source by a beat. */
 const SRC_PACE = 0.038;
@@ -84,12 +83,17 @@ export default function Review() {
         tl.to({}, { duration: 0.35 });
       });
 
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 80%',
-        once: true,
-        onEnter: () => tl.play(),
-      });
+      /* the root reaches far above the viewport, so a stele the reader jumped past still counts as reached */
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          io.disconnect();
+          tl.play();
+        },
+        { root: document, rootMargin: '100000px 0px -20% 0px' }
+      );
+      io.observe(el);
+      return () => io.disconnect();
     },
     { scope: root }
   );

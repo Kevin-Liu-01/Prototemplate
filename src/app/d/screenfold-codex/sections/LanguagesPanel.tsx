@@ -1,14 +1,10 @@
-'use client';
-
-import { useRef } from 'react';
-
 import { SUPPORTED_LOCALES } from '@/app/d/production/sections/locales-data';
 
 import BarDot from '../components/BarDot';
 import Chip from '../components/Chip';
 import GlyphBlock from '../components/GlyphBlock';
-import { useQuietReveal } from '../components/motion';
 import { Panel, Register } from '../components/Panel';
+import QuietReveal from '../components/QuietReveal';
 import { LOCALES_URL, RTL_CODES, SCRIPT_CODES, SIGNS, VARIANT_ROWS, leaf } from '../data';
 
 /**
@@ -29,11 +25,8 @@ const MARK_TIERS: readonly number[] = [3, 4, 5, 6, 8];
 const TELL = new Set(['zh-Hans', 'zh-Hant']);
 
 export default function LanguagesPanel() {
-  const root = useRef<HTMLDivElement>(null);
-  useQuietReveal(root);
-
   return (
-    <div ref={root}>
+    <QuietReveal>
       <Panel index={LEAF.n} fold={LEAF.fold} sign={LEAF.sign} id={LEAF.id}>
         <Register className='is-head'>
           <h2 className='sfc-h2' data-reveal>
@@ -133,6 +126,6 @@ export default function LanguagesPanel() {
           </div>
         </Register>
       </Panel>
-    </div>
+    </QuietReveal>
   );
 }

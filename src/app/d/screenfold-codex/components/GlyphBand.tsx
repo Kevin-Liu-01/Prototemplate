@@ -69,7 +69,7 @@ export default function GlyphBand() {
         phases[i] = next;
         rect.setAttribute('fill', `url(#${patternId(block.tone, STEPS[next] ?? 4)})`);
       }).to({}, { duration: 0.46 });
-      playWhileVisible(el, tl);
+      return playWhileVisible(el, tl);
     },
     { scope: root }
   );

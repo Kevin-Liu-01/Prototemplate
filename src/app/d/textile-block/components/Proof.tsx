@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
 
 import { prefersReducedMotion } from '@/lib/reduced-motion';
@@ -12,7 +11,7 @@ import { FORMATS, HELLO_WORLD, SOURCE_FILE, SOURCE_INSTALL, SOURCE_PKG } from '.
 import Tile from './Tile';
 import { Block, Course, HEAD_RELIEF_SPAN, Plaque, Relief } from './Wall';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 /**
  * textile-block: the T proof, cast in relief across one course.
@@ -128,15 +127,12 @@ export default function Proof() {
       tl.to(casts, { y: -3, duration: 0.5, ease: 'power2.out', stagger: 0.16 });
       tl.to(casts, { y: 0, duration: 0.4, ease: 'power1.in', stagger: 0.05 }, '+=2.4');
 
-      ScrollTrigger.create({
-        trigger: scope,
-        start: 'top 80%',
-        end: 'bottom 20%',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause(0);
-        },
+      /* plays while the proof is between the top and bottom fifths of the viewport; leaving resets it to rest */
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause(0)), {
+        rootMargin: '-20% 0px',
       });
+      io.observe(scope);
+      return () => io.disconnect();
     },
     { scope: root }
   );

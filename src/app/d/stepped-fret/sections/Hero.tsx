@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Check, Copy } from 'lucide-react';
 import { useRef, useState } from 'react';
 
@@ -13,23 +12,23 @@ import { CLAIMS, DOCS_HREF, HERO_SUB, INSTALL_COMMAND, SIGN_IN_HREF } from '../d
 import FretUnit from './deco/FretUnit';
 import HeroFret from './HeroFret';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 /** Seconds a claim stands before the next one replaces it. */
 const HOLD = 3.4;
 
 /**
- * The hero is one monumental fret. The stair climbs from the bottom left,
- * the bar runs the width of the rail, and the spiral coils at the right;
- * the claim is set in the open step the fret leaves between the stair and
- * the coil. The claim is one shaped text node that cycles through sixteen
- * locales with its `lang` and `dir` retagged on every swap. The swap is
- * transform only, inside a clipped line box: the standing claim slides up
- * and out, the next slides in from below, on one paused timeline that a
- * ScrollTrigger plays while the hero is on screen. Nothing fades, so the
- * claim is fully visible at rest and in any still. Under reduced motion the
- * English claim stands. Above the claim, the crown: one small solid tile of
- * the stepped fret in the ornament color beside the locale count in the
+ * The hero is one monumental fret. The stair climbs from the bottom left, the
+ * bar runs the width of the rail, and the spiral coils at the right; the
+ * claim is set in the open step the fret leaves between the stair and the
+ * coil. The claim is one shaped text node that cycles through sixteen locales
+ * with its `lang` and `dir` retagged on every swap. The swap is transform
+ * only, inside a clipped line box: the standing claim slides up and out, the
+ * next slides in from below, on one paused timeline that an
+ * IntersectionObserver plays while the hero is on screen. Nothing fades, so
+ * the claim is fully visible at rest and in any still. Under reduced motion
+ * the English claim stands. Above the claim, the crown: one small solid tile
+ * of the stepped fret in the ornament color beside the locale count in the
  * display face, the hero's monumental figure restated at the size of a
  * numeral.
  */
@@ -64,15 +63,9 @@ export default function Hero() {
         .set(el, { yPercent: 120 })
         .to(el, { yPercent: 0, duration: 0.38, ease: 'power2.out' });
 
-      ScrollTrigger.create({
-        trigger: hero,
-        start: 'top bottom',
-        end: 'bottom top',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause();
-        },
-      });
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause()));
+      io.observe(hero);
+      return () => io.disconnect();
     },
     { scope: root }
   );

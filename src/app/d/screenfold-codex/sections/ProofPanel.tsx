@@ -1,14 +1,12 @@
-'use client';
-
-import { useRef, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
 
 import Chip from '../components/Chip';
 import CopyCommand from '../components/CopyCommand';
 import Fig from '../components/Fig';
-import { useQuietReveal } from '../components/motion';
 import { Panel, Register } from '../components/Panel';
+import QuietReveal from '../components/QuietReveal';
 import { COMPONENT_PROOF, HELLO_SOURCE, PROOF_ROWS, RTL_CODES, START_SOURCE, leaf } from '../data';
 
 /**
@@ -55,11 +53,8 @@ function highlight(code: string): ReactNode[] {
 }
 
 export default function ProofPanel() {
-  const root = useRef<HTMLDivElement>(null);
-  useQuietReveal(root);
-
   return (
-    <div ref={root}>
+    <QuietReveal>
       <Panel index={LEAF.n} fold={LEAF.fold} sign={LEAF.sign} id={LEAF.id}>
         <Register className='is-head'>
           <h2 className='sfc-h2' data-reveal>
@@ -158,6 +153,6 @@ export default function ProofPanel() {
           </p>
         </Register>
       </Panel>
-    </div>
+    </QuietReveal>
   );
 }

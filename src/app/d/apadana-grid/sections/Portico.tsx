@@ -9,14 +9,14 @@
  * mirroring the capitals in the front one. Under the plan: the sub with the
  * GT wordmark inline, the two acts, and the trust register of six marks.
  *
- * Motion: the one morphing word swaps its text, lang and dir on a paused
- * GSAP timeline that a ScrollTrigger plays while the portico is on screen.
- * The word slides, never fades; at rest it reads "language" in full. Under
- * reduced motion the timeline is never built.
+ * Motion: the one morphing word swaps its text, lang and dir on a paused GSAP
+ * timeline that an IntersectionObserver plays while the portico is on screen,
+ * between the top and bottom tenths of the viewport. The word slides, never
+ * fades; at rest it reads "language" in full. Under reduced motion the
+ * timeline is never built.
  */
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
 import { GtMark } from '@/components/viewer/GtMark';
@@ -28,7 +28,7 @@ import { CopyButton } from './CopyButton';
 import { Capitals } from './deco/Capitals';
 import { Bay, Hall, Row } from './deco/Hall';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 const HOLD = 2.4;
 
@@ -57,17 +57,12 @@ export function Portico() {
         })
         .set(em, { y: 12 })
         .to(em, { y: 0, duration: 0.34, ease: 'power2.out' });
-      const trigger = ScrollTrigger.create({
-        trigger: section,
-        start: 'top 90%',
-        end: 'bottom 10%',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause();
-        },
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause()), {
+        rootMargin: '-10% 0px',
       });
+      io.observe(section);
       return () => {
-        trigger.kill();
+        io.disconnect();
         tl.kill();
       };
     },

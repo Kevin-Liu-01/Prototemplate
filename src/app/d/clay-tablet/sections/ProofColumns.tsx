@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 
@@ -11,7 +10,7 @@ import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import { PROOF_LOCALES } from './content';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 const DWELL = 2.4;
 
@@ -49,16 +48,12 @@ export default function ProofColumns({ source }: ProofColumnsProps) {
       });
       tl.to({}, { duration: DWELL }, (columns.length - 1) * DWELL);
 
-      const st = ScrollTrigger.create({
-        trigger: scope,
-        start: 'top 88%',
-        end: 'bottom 12%',
-        onToggle: (self) => {
-          if (self.isActive) tl.play();
-          else tl.pause();
-        },
+      /* plays while the columns are between the top and bottom 12 percent of the viewport */
+      const io = new IntersectionObserver(([entry]) => (entry?.isIntersecting ? tl.play() : tl.pause()), {
+        rootMargin: '-12% 0px',
       });
-      if (st.isActive) tl.play();
+      io.observe(scope);
+      return () => io.disconnect();
     },
     { scope: root }
   );
