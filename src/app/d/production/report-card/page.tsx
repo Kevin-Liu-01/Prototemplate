@@ -1,4 +1,4 @@
-import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import TryPage from '@/components/try/TryPage';
 import { seoRoute } from '@/lib/seo/route';

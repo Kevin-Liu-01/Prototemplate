@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import Image from 'next/image';
 
-import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import PlateRoot from '@/components/plate/frame/PlateRoot';
 import GtMark from '@/components/plate/icons/GtMark';

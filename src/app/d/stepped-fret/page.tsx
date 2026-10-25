@@ -1,6 +1,6 @@
 import localFont from 'next/font/local';
 
-import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 import { directionDescription } from '@/app/directions/descriptions';
 import { seoRoute } from '@/lib/seo/route';
 

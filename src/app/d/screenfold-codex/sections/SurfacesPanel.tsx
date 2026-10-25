@@ -1,4 +1,4 @@
-import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
+import { FRAMEWORKS } from '@/app/d/toolchain/sections/stacks';
 
 import Chip from '../components/Chip';
 import Fig from '../components/Fig';

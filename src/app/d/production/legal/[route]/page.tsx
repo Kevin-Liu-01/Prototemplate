@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
-import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import { seoRoute } from '@/lib/seo/route';
 

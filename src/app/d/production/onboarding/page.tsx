@@ -1,6 +1,6 @@
 import PlateGallery from '@/components/plate/gallery/PlateGallery';
 import { initialDevStateId } from '@/components/plate/gallery/devStates';
-import DirectionCorner from '@/components/viewer/DirectionCorner';
+import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 import { seoRoute } from '@/lib/seo/route';
 
 import '@/components/plate/plate.css';

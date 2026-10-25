@@ -14,7 +14,7 @@
  * generated locale table so nothing is retyped.
  */
 
-import { CAP_DEMOS } from '@/app/d/dither-field/sections/stacks';
+import { CAP_DEMOS } from '@/app/d/toolchain/sections/stacks';
 import { SUPPORTED_LOCALES } from '@/app/d/production/sections/locales-data';
 
 export type Claim = { text: string; lang: string; dir?: 'rtl' };

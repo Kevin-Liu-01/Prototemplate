@@ -1,4 +1,4 @@
-import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
+import { FRAMEWORKS } from '@/app/d/toolchain/sections/stacks';
 import Image from 'next/image';
 
 import { Carved, Incised } from './deco/Carved';

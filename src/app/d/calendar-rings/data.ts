@@ -8,8 +8,8 @@
  * customers and the footer's destinations. Nothing is invented; the
  * sections only arrange these into rings, and the disk's rings read them.
  */
-import { CAP_DEMOS } from '@/app/d/dither-field/sections/stacks';
-import { BEATS, RAIL } from '@/app/d/dither-field/sections/story/beats';
+import { CAP_DEMOS } from '@/app/d/toolchain/sections/stacks';
+import { BEATS, RAIL } from '@/app/d/toolchain/forks/story/beats';
 import { SUPPORTED_LOCALES } from '@/app/d/production/sections/locales-data';
 import type { LocaleProperties } from '@/app/d/production/sections/locales-data';
 import { PLAN_CTAS } from '@/app/d/production/sections/pricing-links';

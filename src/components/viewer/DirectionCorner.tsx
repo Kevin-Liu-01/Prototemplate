@@ -348,5 +348,3 @@ export function DirectionCorner({ suspense = true, ...props }: DirectionCornerPr
     </Suspense>
   );
 }
-
-export default DirectionCorner;

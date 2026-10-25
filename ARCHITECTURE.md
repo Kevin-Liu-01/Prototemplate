@@ -215,24 +215,36 @@ description, craft intro).
 ## The SSOT rule
 
 `src/app/d/toolchain/` is the single source of truth for the `tc-*`
-vocabulary. The fork homes (chroma-flow, dither-field, aurora-paper,
-glyph-rain, prism-light, lens-gate, paper-foundry, terminus-board,
-wide-rule, event-horizon, hourglass, singularity and the rest) import
-toolchain's sections and diagrams directly and re-skin by **root-class
-rescoping**: each fork carries a root class (`.lensgate-root`,
-`.terminusboard-root`, and so on) and copies only the CSS it must
-re-scope.
+vocabulary. The twelve forks (aurora-paper, chroma-flow, dither-field,
+event-horizon, glyph-rain, hourglass, lens-gate, paper-foundry,
+prism-light, singularity, terminus-board, wide-rule) mount the toolchain's
+sections and diagrams and re-skin them by **root-class rescoping**: each
+fork carries a root class (`.lensgate-root`, `.terminusboard-root`, and so
+on) and its own rescoped copies of the stylesheets, which its `page.tsx`
+imports right after the section they style.
 
-- Never edit toolchain's files as part of fork work; change the SSOT only
-  when the change is meant for every consumer.
-- The frozen local copies of toolchain sections that aurora-paper and
-  chroma-flow carried were deleted on 2026-10-08, since nothing imported
-  them. Fork copies that remain are imported (`glyph-rain/diagrams/lang/*`
-  among them). Before adding a new copy, import the SSOT and rescope CSS
-  instead.
+- Frameworks, DarkBand and SiteFooter take the props the forks need
+  (`title`, `href`, `cursorEffects`, `backdrop`, `hrefs`); `code`,
+  `stacks`, `reveal`, `RevealSeam`, the surface diagrams and `lang.ts` are
+  imported as they are.
+- `src/app/d/toolchain/forks/` holds the one copy of each section the forks
+  share and the toolchain itself has moved past: ReviewWorkspace, Pricing,
+  Story with `story/`, TopNav, Bento and the event-horizon StoryCinema.
+- A fork keeps its own copy only where it really differs: aurora-paper's
+  Bento, DarkBand and ReviewWorkspace; dither-field's Bento, DarkBand and
+  Pricing; chroma-flow's Pricing; glyph-rain's DarkBand, `code.tsx` and
+  `diagrams/lang`; paper-foundry's Bento; lens-gate's StoryCinema; the
+  event-horizon, hourglass and singularity TopNavs; wide-rule's SiteFooter.
+- Shared behavior lives in toolchain modules: `sections/visibility.ts`
+  (loops pause off screen), `sections/every-morph.ts` (the headline
+  hinge), `components/use-copied.ts` (copy controls),
+  `components/NavMenu.tsx` (the nav disclosure) and
+  `components/LazyPrismaticField.tsx` (fields far below the fold).
+- Never edit the toolchain's files for one fork: add a prop, or change the
+  toolchain only when the change is meant for every consumer.
 - The singularity-* homes are toolchain-based (`toolchain-root sgXh-root`)
   and pull shared v0 sections from `src/app/d/_v0/`; their `/enterprise`
-  pages are singularity-based. Never edit toolchain's TopNav for one site.
+  pages are singularity-based.
 
 ## Componentized instruments
 

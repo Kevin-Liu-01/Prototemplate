@@ -15,7 +15,7 @@ import { useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
-import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
+import { FRAMEWORKS } from '@/app/d/toolchain/sections/stacks';
 
 import {
   CLI_LINES,

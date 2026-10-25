@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
-import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
+import { FRAMEWORKS } from '@/app/d/toolchain/sections/stacks';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import BrickField from '../diagrams/BrickField';

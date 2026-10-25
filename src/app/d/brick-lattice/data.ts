@@ -16,7 +16,7 @@
  * - FOOTER_COLUMNS: src/app/d/dither-field/sections/SiteFooter.tsx, with
  *   the destinations resolved to the shipped site's routes.
  * - Story figures (128 strings, 6 locales, 640 translations, PR #218):
- *   src/app/d/dither-field/sections/story/beats.ts.
+ *   src/app/d/toolchain/forks/story/beats.ts.
  */
 
 export type Rate = { workflow: string; rate: string; gtLibs?: string };

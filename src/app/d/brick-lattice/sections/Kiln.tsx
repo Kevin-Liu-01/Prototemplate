@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
+import { FRAMEWORKS } from '@/app/d/toolchain/sections/stacks';
 
 import BrickField from '../diagrams/BrickField';
 import PatternSwatch from '../diagrams/PatternSwatch';

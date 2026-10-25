@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
+import { FRAMEWORKS } from '@/app/d/toolchain/sections/stacks';
 
 import BondWall from '../components/Bond';
 import Chip, { CodeChip } from '../components/Chip';

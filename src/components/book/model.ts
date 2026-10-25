@@ -2,7 +2,7 @@
  * The handbook's addresses. The handbook is one section of the docs site,
  * served at /docs/handbook: its own documents under docs/handbook/ and the
  * canon (AGENTS.md, BRAND.md, DESIGN.md and the rest), each page showing
- * its file through fumadocs-mdx's include tag (content/docs/handbook).
+ * its file through fumadocs-mdx's include tag (content/docs/(guide)/handbook).
  * Pure URL helpers; they keep a book argument so a second book can join
  * without changing their callers.
  */

@@ -1,4 +1,4 @@
-import { FRAMEWORKS } from '@/app/d/dither-field/sections/stacks';
+import { FRAMEWORKS } from '@/app/d/toolchain/sections/stacks';
 
 import { Carved, Incised } from './deco/Carved';
 import { CopyButton } from './CopyCommand';
