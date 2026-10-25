@@ -261,6 +261,9 @@ export default function V0Footer({
             {" localization for the world\u2019s best companies"}
           </p>
 
+          {/* fetchPriority low keeps React from preloading the badges in
+              the head; they still load eagerly, so a full-page capture
+              shows them */}
           <div className="v0-foot-badges">
             {BADGES.map(({ alt, src }) => (
               <a
@@ -273,6 +276,7 @@ export default function V0Footer({
                 <img
                   alt={alt}
                   decoding="async"
+                  fetchPriority="low"
                   src={src}
                   width={40}
                   height={40}

@@ -879,6 +879,9 @@ export default function TranslateWindow({
   const holdBelt = () => {
     beltHold.current = Date.now() + BELT_IDLE;
   };
+  /* plays or pauses the Terminal face's long-tail cycle; the replay effect
+     sets it, and a face change runs it again */
+  const gateCycle = useRef<() => void>(() => {});
 
   /* the exported clock: ploc IS the active locale — the ticker's centre
      crossing and a chip's click both land in setPloc, so one
@@ -1096,7 +1099,10 @@ export default function TranslateWindow({
       /* ---- the long tail keeps arriving ----
          Both cycling cells advance IN STEP — one heartbeat for the whole
          column, de → fr → zh: the outgoing variants are fully gone before
-         the incoming pair lands. */
+         the incoming pair lands. The cycle is built paused and runs only
+         after the replay has settled, while the window is on screen and
+         the Terminal face is showing; behind the Preview face or off
+         screen no one can see it. */
       const cycCells = gsap.utils.toArray<HTMLElement>(
         '.tct-cyc',
         root.current
@@ -1105,28 +1111,50 @@ export default function TranslateWindow({
         gsap.utils.toArray<HTMLElement>('[data-cyc]', cell)
       );
       const steps = cycGroups[0]?.length ?? 0;
-      if (steps > 1) {
-        const cyc = gsap.timeline({ repeat: -1, delay: run.duration() + 2.2 });
-        for (let i = 0; i < steps; i += 1) {
-          const going = cycGroups
-            .map((g) => g[i])
-            .filter((el): el is HTMLElement => Boolean(el));
-          const coming = cycGroups
-            .map((g) => g[(i + 1) % steps])
-            .filter((el): el is HTMLElement => Boolean(el));
-          cyc
-            .to(
-              going,
-              { autoAlpha: 0, duration: 0.24, ease: 'power1.in' },
-              '+=2.7'
-            )
-            .to(
-              coming,
-              { autoAlpha: 1, duration: 0.28, ease: 'power1.out' },
-              '>'
-            );
-        }
+      if (steps < 2) return;
+      const cyc = gsap.timeline({ repeat: -1, paused: true });
+      for (let i = 0; i < steps; i += 1) {
+        const going = cycGroups
+          .map((g) => g[i])
+          .filter((el): el is HTMLElement => Boolean(el));
+        const coming = cycGroups
+          .map((g) => g[(i + 1) % steps])
+          .filter((el): el is HTMLElement => Boolean(el));
+        cyc
+          .to(
+            going,
+            { autoAlpha: 0, duration: 0.24, ease: 'power1.in' },
+            '+=2.7'
+          )
+          .to(
+            coming,
+            { autoAlpha: 1, duration: 0.28, ease: 'power1.out' },
+            '>'
+          );
       }
+      let settled = false;
+      let onscreen = false;
+      gateCycle.current = () => {
+        if (settled && onscreen && viewRef.current === 'term') cyc.play();
+        else cyc.pause();
+      };
+      run.call(
+        () => {
+          settled = true;
+          gateCycle.current();
+        },
+        undefined,
+        '+=2.2'
+      );
+      const io = new IntersectionObserver((entries) => {
+        onscreen = entries[entries.length - 1]?.isIntersecting ?? false;
+        gateCycle.current();
+      });
+      if (root.current) io.observe(root.current);
+      return () => {
+        io.disconnect();
+        gateCycle.current = () => {};
+      };
     },
     { scope: root }
   );
@@ -1159,7 +1187,11 @@ export default function TranslateWindow({
       let lefts: number[] = [];
       let widths: number[] = [];
       let runWidth = 0;
+      /* the zone's width, read with the chips' geometry so the per-frame
+         tick never reads layout right after writing the track's transform */
+      let zoneW = 0;
       const measure = () => {
+        zoneW = beltEl.clientWidth;
         lefts = chips.map((chip) => chip.offsetLeft);
         widths = chips.map((chip) => chip.offsetWidth);
         runWidth = (lefts[n] ?? 0) - (lefts[0] ?? 0);
@@ -1179,7 +1211,7 @@ export default function TranslateWindow({
          as a drag. Its look does not change. */
       const phone = window.matchMedia(PHONE_MQ);
       const fileEdges = () => {
-        const zone = beltEl.clientWidth;
+        const zone = zoneW;
         chips.forEach((chip, i) => {
           const left = (lefts[i] ?? 0) - pos;
           const seen =
@@ -1200,13 +1232,13 @@ export default function TranslateWindow({
       phone.addEventListener('change', onPhone);
       const chipCenter = (i: number) => (lefts[i] ?? 0) + (widths[i] ?? 0) / 2;
       const seat = (i: number) => {
-        pos = wrap(chipCenter(i) - beltEl.clientWidth / 2);
+        pos = wrap(chipCenter(i) - zoneW / 2);
         setX();
       };
       /* the chip nearest the zone's centre line, wrap-aware */
       const centerIdx = () => {
         const base = lefts[0] ?? 0;
-        const c = base + wrap(pos + beltEl.clientWidth / 2 - base);
+        const c = base + wrap(pos + zoneW / 2 - base);
         let best = 0;
         let bestD = Infinity;
         for (let i = 0; i < n; i += 1) {
@@ -1246,7 +1278,7 @@ export default function TranslateWindow({
           const i = chips.indexOf(el) % n;
           if (i >= 0) active = i;
           const target =
-            el.offsetLeft + el.offsetWidth / 2 - beltEl.clientWidth / 2;
+            el.offsetLeft + el.offsetWidth / 2 - zoneW / 2;
           if (reduced) {
             pos = wrap(target);
             setX();
@@ -1255,7 +1287,7 @@ export default function TranslateWindow({
           /* the short way round: jumping the position by exactly one run
              is frame-identical, so pick the pairing of (position, target)
              with the least travel that stays on the doubled track */
-          const limit = runWidth * 2 - beltEl.clientWidth;
+          const limit = runWidth * 2 - zoneW;
           let fromP = pos;
           let toP = wrap(target);
           let bestD = Infinity;
@@ -1526,6 +1558,7 @@ export default function TranslateWindow({
 
       const remeasure = () => {
         if (!trackEl.isConnected) return;
+        zoneW = beltEl.clientWidth;
         /* CONTINUITY, never a re-seat: fonts arriving (or a resize)
            change the chips' widths, but the belt has been drifting since
            first paint — snapping the active chip back to dead centre
@@ -1535,13 +1568,13 @@ export default function TranslateWindow({
            few pixels, not the accumulated drift. */
         const i = centerIdx();
         const base = lefts[0] ?? 0;
-        const c = base + wrap(pos + beltEl.clientWidth / 2 - base);
+        const c = base + wrap(pos + zoneW / 2 - base);
         let delta = c - chipCenter(i);
         if (Math.abs(delta) > runWidth / 2)
           delta -= Math.sign(delta) * runWidth;
         measure();
         if (runWidth <= 0 || sliding) return;
-        pos = wrap(chipCenter(i) + delta - beltEl.clientWidth / 2);
+        pos = wrap(chipCenter(i) + delta - zoneW / 2);
         setX();
       };
       /* the belt is horizontal: only WIDTH changes its geometry. Mobile
@@ -1709,6 +1742,7 @@ export default function TranslateWindow({
   useGSAP(
     () => {
       viewRef.current = view;
+      gateCycle.current();
       if (view !== 'preview' || dragged.current) return;
       /* narrow rests shut (restCut 100): there is no teaser to announce,
          so the intro stays desktop-only — the sheet's rest already holds */

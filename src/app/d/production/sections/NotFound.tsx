@@ -1,10 +1,16 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 
 import { ArrowRight } from 'lucide-react';
 
-import NotFoundHorizon from './NotFoundHorizon';
+/* The horizon shader loads as its own chunk. Next lists a segment's
+   not-found entry on every page of the segment, so a static import would
+   ship the horizon field and gsap with every /d/production page; behind
+   next/dynamic they load only when a 404 renders the band, and the server
+   still renders the band's HTML. */
+const NotFoundHorizon = dynamic(() => import('./NotFoundHorizon'));
 
 /** Docs live off-concept: the real /docs route is fumadocs, so the control
     keeps the published absolute URL the rest of this shell uses. */

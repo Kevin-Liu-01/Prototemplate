@@ -419,9 +419,10 @@ export default function V0Context() {
                 ))}
                 <div className='v0-ctx-glossary-head'>
                   <b className='v0-ctx-gterm'>
-                    {/* the mark, not the letter — the house never writes
-                        the wordmark plain */}
-                    <img alt='' className='v0-ctx-gmark' src='/brand/locadex-mark.svg' />
+                    {/* the mark, not the letter: the house never writes the
+                       wordmark plain; low fetch priority keeps React from
+                       preloading it in the head */}
+                    <img alt='' className='v0-ctx-gmark' fetchPriority='low' src='/brand/locadex-mark.svg' />
                     Locadex
                   </b>
                   <span className='v0-ctx-rule'>

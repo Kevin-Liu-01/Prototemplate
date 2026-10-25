@@ -418,7 +418,7 @@
 
 .prod-root .pba-ring-arc {
   stroke: currentColor;
-  transition: all 150ms ease;
+  transition: stroke-dashoffset 150ms ease;
 }
 
 /* ---- the small screens' contents: the docs' collapsed popover ---- */

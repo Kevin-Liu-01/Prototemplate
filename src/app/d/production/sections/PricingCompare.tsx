@@ -135,14 +135,16 @@ function useGroupLabelHandoff() {
     let raf = 0;
     const settle = () => {
       raf = 0;
-      for (const label of labels) {
-        const tbody = label.closest('tbody');
-        if (!tbody || unpinned.matches) {
+      /* every group's box is read before any label is written, so a pass
+         forces one layout */
+      const boxes = labels.map((label) => (unpinned.matches ? null : (label.closest('tbody')?.getBoundingClientRect() ?? null)));
+      labels.forEach((label, i) => {
+        const box = boxes[i];
+        if (!box) {
           label.style.transform = '';
           label.style.clipPath = '';
-          continue;
+          return;
         }
-        const box = tbody.getBoundingClientRect();
         /* where the sticky engine puts the label (flow until the pin
            line, pinned after), then the group's end carries it up */
         const base = box.top > PIN ? box.top : PIN;
@@ -151,15 +153,24 @@ function useGroupLabelHandoff() {
         label.style.transform = dy < 0 ? `translateY(${dy}px)` : '';
         const clipTop = Math.max(0, BAND_TOP - desired);
         label.style.clipPath = clipTop > 0 ? `inset(${clipTop}px 0 0 0)` : '';
-      }
+      });
     };
+    /* the handoff runs only while the table is on screen */
+    let onscreen = false;
     const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(settle);
+      if (onscreen && !raf) raf = requestAnimationFrame(settle);
     };
+    const io = new IntersectionObserver((entries) => {
+      onscreen = entries[entries.length - 1]?.isIntersecting ?? false;
+      onScroll();
+    });
+    const table = labels[0]?.closest('table');
+    if (table) io.observe(table);
     window.addEventListener('scroll', onScroll, { passive: true });
     unpinned.addEventListener('change', onScroll);
     settle();
     return () => {
+      io.disconnect();
       window.removeEventListener('scroll', onScroll);
       unpinned.removeEventListener('change', onScroll);
       if (raf) cancelAnimationFrame(raf);

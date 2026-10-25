@@ -369,7 +369,9 @@
   position: absolute;
   width: 1px;
   background: var(--lg-emph);
-  transition: all 150ms ease;
+  transition:
+    top 150ms ease,
+    height 150ms ease;
 }
 
 .legal-root .legal-toc-list {

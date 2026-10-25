@@ -320,8 +320,9 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
       const res = { t: 1 };
 
       /* One quiet loop: request out (dot), arrival ring at fra, payload
-         chip back. Long holds between cycles keep the band calm. */
-      const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.6 });
+         chip back. Long holds between cycles keep the band calm. It is
+         built paused and plays only while the globe is on screen. */
+      const tl = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 1.6 });
       tl.set(req, { t: 0 }, 0)
         .set(res, { t: 1 }, 0)
         .call(() => place(dotEl, 0), undefined, 0)
@@ -375,6 +376,15 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
           2.35,
         );
       }
+
+      const svg = root.current;
+      if (!svg) return;
+      const io = new IntersectionObserver((entries) => {
+        if (entries[entries.length - 1]?.isIntersecting) tl.play();
+        else tl.pause();
+      });
+      io.observe(svg);
+      return () => io.disconnect();
     },
     { scope: root },
   );

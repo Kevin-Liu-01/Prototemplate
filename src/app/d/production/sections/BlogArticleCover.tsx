@@ -191,7 +191,8 @@ export default function BlogArticleCover({
   }
   if (image && imageLight) {
     /* Both covers stay in the document and the sheet shows the one for the
-       theme, as the shipped BlogPostCover does. */
+       theme, as the shipped BlogPostCover does. The dark cover takes the
+       priority fetch and the light one loads lazily. */
     return (
       <>
         <Image
@@ -208,7 +209,6 @@ export default function BlogArticleCover({
           alt=''
           className={`${classes} pba-photo-light`}
           height={540}
-          priority={priority}
           quality={quality(imageLight)}
           sizes={sizes}
           src={imageLight}

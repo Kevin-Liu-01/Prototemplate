@@ -2,8 +2,8 @@
 
 import { useRef } from 'react';
 
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 /**
  * V0FooterMark — the GT glyph in LIVING metal. The span keeps the PNG mask
@@ -12,7 +12,8 @@ import gsap from 'gsap';
  * the metal itself — the sheet's 132° chrome banding flowing under noise,
  * a specular blade sweeping through every few seconds, brushed grain — in
  * the theme's own palette, read live off data-theme each frame so the
- * toggle re-tempers the metal without a re-mount.
+ * toggle re-tempers the metal without a re-mount. Frames are requested only
+ * while the mark is on screen, and the unmount releases the GL context.
  */
 
 const VERT = 'attribute vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }';
@@ -74,66 +75,77 @@ function compile(gl: WebGLRenderingContext, type: number, src: string): WebGLSha
 export default function V0FooterMark() {
   const root = useRef<HTMLSpanElement>(null);
 
-  useGSAP(
-    () => {
-      const host = root.current;
-      const canvas = host?.querySelector('canvas');
-      if (!host || !canvas) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  useMountEffect(() => {
+    const host = root.current;
+    const canvas = host?.querySelector('canvas');
+    if (!host || !canvas || prefersReducedMotion()) return;
 
-      const gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false });
-      if (!gl) return;
+    const gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false });
+    if (!gl) return;
+    const release = () => gl.getExtension('WEBGL_lose_context')?.loseContext();
 
-      const vs = compile(gl, gl.VERTEX_SHADER, VERT);
-      const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
-      const prog = gl.createProgram();
-      if (!vs || !fs || !prog) return;
-      gl.attachShader(prog, vs);
-      gl.attachShader(prog, fs);
-      gl.linkProgram(prog);
-      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
-      gl.useProgram(prog);
+    const vs = compile(gl, gl.VERTEX_SHADER, VERT);
+    const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
+    const prog = gl.createProgram();
+    if (!vs || !fs || !prog) {
+      release();
+      return;
+    }
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      release();
+      return;
+    }
+    gl.useProgram(prog);
 
-      const quad = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-      const loc = gl.getAttribLocation(prog, 'p');
-      gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const quad = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'p');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const box = host.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.round(box.width * dpr));
-      canvas.height = Math.max(1, Math.round(box.height * dpr));
-      gl.viewport(0, 0, canvas.width, canvas.height);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const box = host.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.round(box.width * dpr));
+    canvas.height = Math.max(1, Math.round(box.height * dpr));
+    gl.viewport(0, 0, canvas.width, canvas.height);
 
-      const uR = gl.getUniformLocation(prog, 'r');
-      const uT = gl.getUniformLocation(prog, 't');
-      const uDk = gl.getUniformLocation(prog, 'dk');
-      gl.uniform2f(uR, canvas.width, canvas.height);
+    const uR = gl.getUniformLocation(prog, 'r');
+    const uT = gl.getUniformLocation(prog, 't');
+    const uDk = gl.getUniformLocation(prog, 'dk');
+    gl.uniform2f(uR, canvas.width, canvas.height);
 
-      /* only spend frames while the footer is actually on screen */
-      let live = false;
-      const io = new IntersectionObserver(([entry]) => {
-        live = Boolean(entry?.isIntersecting);
-      });
-      io.observe(host);
+    /* one frame request at a time, and none while the footer is off screen */
+    let raf = 0;
+    const render = (now: number) => {
+      raf = requestAnimationFrame(render);
+      gl.uniform1f(uT, now / 1000);
+      gl.uniform1f(uDk, document.documentElement.dataset.theme === 'dark' ? 1 : 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+    const io = new IntersectionObserver((entries) => {
+      const visible = entries[entries.length - 1]?.isIntersecting ?? false;
+      if (visible && !raf) raf = requestAnimationFrame(render);
+      else if (!visible && raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    });
+    io.observe(host);
 
-      const render = (time: number) => {
-        if (!live) return;
-        gl.uniform1f(uT, time);
-        gl.uniform1f(uDk, document.documentElement.dataset.theme === 'dark' ? 1 : 0);
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-      };
-      gsap.ticker.add(render);
-
-      return () => {
-        gsap.ticker.remove(render);
-        io.disconnect();
-      };
-    },
-    { scope: root }
-  );
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+      gl.deleteBuffer(quad);
+      gl.deleteProgram(prog);
+      gl.deleteShader(vs);
+      gl.deleteShader(fs);
+      release();
+    };
+  });
 
   return (
     <span className='v0-foot-gt-seat'>

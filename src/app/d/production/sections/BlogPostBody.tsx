@@ -82,7 +82,11 @@ function PostLink({ href = '', children, ...props }: ComponentProps<'a'>) {
   );
 }
 
-/** fumadocs' Image for a markdown image with no size: a plain img at the column's sizes. */
+/**
+ * fumadocs' Image for a markdown image with no size: a plain img at the
+ * column's sizes. Every body image sits below the cover, so each loads
+ * lazily and decodes off the main thread.
+ */
 function PostImage({ alt = '', src, title }: ComponentProps<'img'>) {
   if (typeof src !== 'string' || !src) return null;
   return (
@@ -90,7 +94,9 @@ function PostImage({ alt = '', src, title }: ComponentProps<'img'>) {
     <img
       alt={alt}
       className='pba-img'
+      decoding='async'
       fetchPriority='auto'
+      loading='lazy'
       sizes='(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px'
       src={src}
       title={title}

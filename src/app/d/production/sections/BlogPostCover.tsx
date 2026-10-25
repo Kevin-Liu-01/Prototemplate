@@ -73,8 +73,9 @@ export default function BlogPostCover({
   }
 
   // A post with a light-theme cover keeps both in the document;
-  // blog-index.css shows the one for the current theme, so a switch swaps
-  // them without a request.
+  // blog-index.css shows the one for the current theme. The dark cover
+  // takes the priority fetch and the light one loads lazily, so the
+  // hidden twin of a dark page is never fetched.
   return (
     <>
       <Image
@@ -94,7 +95,6 @@ export default function BlogPostCover({
         height={540}
         sizes={sizes}
         quality={quality(imageLight)}
-        priority={priority}
         className={`${classes} blog-post-cover-light`}
       />
     </>

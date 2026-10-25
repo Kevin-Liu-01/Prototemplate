@@ -360,11 +360,27 @@ export default function ReviewWorkspace({
         stampIn(trEnd + 0.2);
       });
 
+      /* the loop starts when the mat first reaches the read line, and from
+         then on plays only while the section is on screen */
+      let started = false;
       ScrollTrigger.create({
         trigger: scope.querySelector('.tcr-mat') ?? scope,
         start: 'top 80%',
         once: true,
-        onEnter: () => tl.play(),
+        onEnter: () => {
+          started = true;
+          tl.play();
+        },
+      });
+      ScrollTrigger.create({
+        trigger: scope,
+        start: 'top bottom',
+        end: 'bottom top',
+        onToggle: (self) => {
+          if (!started) return;
+          if (self.isActive) tl.play();
+          else tl.pause();
+        },
       });
 
       /* GSAP reverts styles on cleanup but not text it wrote — restore the
