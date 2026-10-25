@@ -5,9 +5,6 @@
  * once into packed pixels that an index buffer is blitted through.
  */
 
-/** Columns, rows and the cell's CSS width after it is snapped to whole device pixels. */
-export type CellGrid = { cols: number; rows: number; cell: number };
-
 /** The device pixel ratio the grids snap to, capped at 3. */
 export function screenDpr(): number {
   if (typeof window === 'undefined') return 1;
