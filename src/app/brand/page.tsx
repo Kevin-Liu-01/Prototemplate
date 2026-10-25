@@ -664,9 +664,8 @@ const PAGES: readonly BrandPage[] = [
  * read inside the viewer shell. The written canon is BRAND.md (served at
  * /docs/handbook/brand), whose reading time is the head's Reading fact; the laws
  * behind the visuals are DESIGN.md; and the engines run live on
- * /docs/handbook/libraries.
- * The routes that used to close the article (Docs, Deck, Present) are one
- * click away in the index panel's Pages group.
+ * /docs/handbook/libraries. Docs, Deck and Present are one click away in
+ * the index panel's Pages group.
  */
 export default function BrandPage() {
   /* the literal file name keeps the build's file trace to BRAND.md */

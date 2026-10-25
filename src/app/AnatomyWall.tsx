@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import './anatomy-wall.css';
+import { pad2 } from '@/lib/shell-data';
 
 const GALLERY = join(process.cwd(), 'public', 'shots', 'gallery');
 
@@ -239,7 +240,7 @@ export default function AnatomyWall() {
                   )}
                   {t.chip ? (
                     <span aria-hidden='true' className='aw-chip'>
-                      {String(i + 1).padStart(2, '0')} · {cluster.name}
+                      {pad2(i + 1)} · {cluster.name}
                     </span>
                   ) : null}
                 </figure>

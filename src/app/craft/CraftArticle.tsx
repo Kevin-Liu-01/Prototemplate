@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import type { ReactNode } from 'react';
 
 import AuditorFigure from './AuditorFigure';
@@ -21,8 +20,8 @@ import './craft.css';
 /**
  * One section of the build log: a stable id (the anchor and the sidebar
  * row), the heading text, and the body, which starts with its own h2. The
- * docs book renders the sections as numbered rows after the readme; the
- * default export below renders them as the standalone article.
+ * build log on the handbook's libraries page (BuildLog) renders them in
+ * order, each under its own id.
  */
 export type CraftSection = {
   id: string;
@@ -282,24 +281,3 @@ export const CRAFT_SECTIONS: readonly CraftSection[] = [
     ),
   },
 ];
-
-/**
- * The build log as a standalone article fragment: every section under a
- * hatch spacer, in the pt grammar. The /docs book does not use this; it
- * renders CRAFT_SECTIONS as rows after the readme.
- */
-export default function CraftArticle() {
-  return (
-    <article className='pt-post'>
-      {CRAFT_SECTIONS.map((section) => (
-        <Fragment key={section.id}>
-          <div className='pt-hatch' aria-hidden='true' />
-          <section className='pt-sec pt-post-sec' id={section.id}>
-            {section.body}
-          </section>
-        </Fragment>
-      ))}
-      <div className='pt-hatch' aria-hidden='true' />
-    </article>
-  );
-}

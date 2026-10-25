@@ -9,6 +9,8 @@ import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, type ReactNode } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 import { useDeckSetup } from '../deck-setup';
 import Icon, { type IconName } from '../icons';
 
@@ -194,7 +196,7 @@ export default function PrinciplesSlide() {
   useGSAP(
     () => {
       if (!ready) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
 
       const tl = gsap.timeline({
         defaults: { ease: 'power3.out' },

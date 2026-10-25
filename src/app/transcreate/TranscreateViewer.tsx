@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { CSSProperties, MouseEvent, ReactNode, RefObject } from 'react';
+import type { ReactNode, RefObject } from 'react';
 import { useRef, useState } from 'react';
 
 import BrandFilm from '@/app/brand/BrandFilm';
@@ -10,13 +10,13 @@ import { BookHead } from '@/components/viewer/BookView';
 import { Seg } from '@/components/viewer/Seg';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
+import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode } from '@/lib/shell-data';
-import { useLayoutWork } from '@/lib/use-layout-work';
-import { useMountEffect } from '@/lib/use-mount-effect';
+import { pad2 } from '@/lib/shell-data';
 
 import type { TranscreateRoute } from './sections';
 import { CREDITS_ROW, GRID_ROW, ROUTE_PAGE, ROUTE_PATH, transcreateSections, videoRow } from './sections';
@@ -55,8 +55,7 @@ type Entry = {
   sound: boolean;
 };
 
-const pad = (i: number) => String(i + 1).padStart(2, '0');
-const RANGE = `Videos 01 to ${pad(VIDEOS.length - 1)}`;
+const RANGE = `Videos 01 to ${pad2(VIDEOS.length)}`;
 
 const GRID_ENTRY: Entry = {
   id: GRID_ROW,
@@ -74,7 +73,7 @@ const GRID_ENTRY: Entry = {
 
 const VIDEO_ENTRIES: readonly Entry[] = VIDEOS.map((video, i) => ({
   id: videoRow(video.slug),
-  n: pad(i),
+  n: pad2(i + 1),
   title: video.name,
   line: 'English to Japanese',
   name: `the ${video.name} video`,
@@ -113,15 +112,6 @@ const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [B
     ],
   },
 };
-
-/** The read line: the lowest row crossing the top tenth of the sheet is the one being read. */
-const SPY_MARGIN = '0px 0px -90% 0px';
-/** How long the spy waits for a jump to reach its row before it reads the page again. */
-const SETTLE_MS = 1200;
-
-function cssEscape(value: string): string {
-  return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
-}
 
 /**
  * The meta line under a frame: where each language sits, the pixel size,
@@ -179,7 +169,7 @@ function VideoFigure({ entry }: { entry: Entry }) {
       <figure
         ref={figureRef}
         className={cn('tc-film', view.narrow && 'is-narrow')}
-        style={{ '--tc-ratio': `${view.width} / ${view.height}` } as CSSProperties}
+        style={{ '--tc-ratio': `${view.width} / ${view.height}` }}
       >
         <div key={view.key} ref={entry.sound ? startMuted : undefined}>
           <BrandFilm autoStart={autoStart} name={entry.name} poster={`${MEDIA}/${view.file}.jpg`} src={`${MEDIA}/${view.file}.mp4`} />
@@ -278,117 +268,18 @@ type TranscreateBookProps = {
  * graphics book's row grammar: the head, then the page's sections under
  * their dividers. The overview holds the grid of all eight and a contents
  * list of the three pages, the videos page each video, and the credits
- * page the originals. The reading state works as /motion's does: an
- * IntersectionObserver selects the row under the read line through the
- * shell, and a selection from anywhere else jumps the sheet to its row and
- * mutes the spy until it lands.
+ * page the originals. The reading state is the shared read line
+ * (useReadLine), with /motion's instant jumps: the row under the line is
+ * selected through the shell, and a selection from anywhere else jumps the
+ * sheet to its row.
  */
 function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: TranscreateBookProps) {
   const { active, select } = usePtShell();
   activeOut.current = active;
 
-  const activeRef = useRef(active);
-  activeRef.current = active;
-  const selectRef = useRef(select);
-  selectRef.current = select;
-
-  const lastActive = useRef<string | null>(null);
-  const fromScroll = useRef<string | null>(null);
-  const settling = useRef<Element | null>(null);
-  const settleTimer = useRef(0);
-
-  const rowFor = (id: string): HTMLElement | null =>
-    sheetRef.current?.querySelector<HTMLElement>(`.gx-row[data-id="${cssEscape(id)}"]`) ?? null;
-
   /* a page's own row (Videos on the videos page) has no row of its own: it returns the sheet to the head */
-  const scrollTo = (id: string) => {
-    const row = rowFor(id);
-    if (!row) {
-      sheetRef.current?.scrollTo({ top: 0, behavior: 'auto' });
-      return;
-    }
-    settling.current = row;
-    window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(() => {
-      settling.current = null;
-    }, SETTLE_MS);
-    row.scrollIntoView({ block: 'start', behavior: 'auto' });
-  };
-
-  jumpRef.current = scrollTo;
-
-  useMountEffect(() => {
-    const root = sheetRef.current;
-    if (!root || typeof IntersectionObserver === 'undefined') return;
-    const rows = Array.from(root.querySelectorAll<HTMLElement>('.gx-row'));
-    const order = new Map<Element, number>(rows.map((el, i) => [el, i]));
-    const visible = new Set<Element>();
-    const lowest = (): HTMLElement | null => {
-      let best: HTMLElement | null = null;
-      let rank = -1;
-      for (const el of visible) {
-        const i = order.get(el) ?? -1;
-        if (i > rank) {
-          rank = i;
-          best = el as HTMLElement;
-        }
-      }
-      return best;
-    };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        }
-        const best = lowest();
-        if (!best) return;
-        if (settling.current) {
-          if (best !== settling.current) return;
-          settling.current = null;
-          window.clearTimeout(settleTimer.current);
-        }
-        const id = best.dataset.id;
-        if (!id || id === activeRef.current) return;
-        fromScroll.current = id;
-        selectRef.current(id);
-      },
-      { root, rootMargin: SPY_MARGIN, threshold: 0 }
-    );
-    rows.forEach((el) => observer.observe(el));
-    const onScrollEnd = () => {
-      if (!settling.current) return;
-      settling.current = null;
-      window.clearTimeout(settleTimer.current);
-    };
-    root.addEventListener('scrollend', onScrollEnd);
-    return () => {
-      observer.disconnect();
-      root.removeEventListener('scrollend', onScrollEnd);
-      window.clearTimeout(settleTimer.current);
-    };
-  });
-
-  /* a selection the spy did not make (the list, the keys, the hash on landing) jumps to its row */
-  useLayoutWork(
-    () => {
-      const previous = lastActive.current;
-      lastActive.current = active;
-      if (previous === null || previous === active) return;
-      if (fromScroll.current === active) {
-        fromScroll.current = null;
-        return;
-      }
-      scrollTo(active);
-    },
-    { dependencies: [active] }
-  );
-
-  const onGrid = (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    if (GRID_ROW === activeRef.current) scrollTo(GRID_ROW);
-    else select(GRID_ROW);
-  };
+  const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.gx-row', active, select, topWhenMissing: true });
+  jumpRef.current = jump;
 
   const head = HEAD[route];
   const book = ROUTE_PAGE[route];
@@ -404,7 +295,7 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
         contents={
           route === 'overview' ? (
             <nav className='gx-toc pt-book-toc' aria-label='Contents'>
-              <a href={`#${GRID_ROW}`} onClick={onGrid}>
+              <a href={`#${GRID_ROW}`} onClick={(e) => onContents(e, GRID_ROW)}>
                 <span>All eight videos</span>
                 <small>8 videos</small>
               </a>

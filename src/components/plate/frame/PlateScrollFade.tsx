@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 
 /**
  * The fade at the scroll area's end: a 56px band from transparent to the
@@ -20,7 +20,7 @@ import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
 export default function PlateScrollFade() {
   const ref = useRef<HTMLDivElement>(null);
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     const overlay = ref.current;
     const area = overlay?.previousElementSibling;
     if (!overlay || !(area instanceof HTMLElement)) return;

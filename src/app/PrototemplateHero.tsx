@@ -4,6 +4,8 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
+
 gsap.registerPlugin(useGSAP);
 
 /**
@@ -89,7 +91,7 @@ export default function PrototemplateHero() {
       )
         return;
 
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = prefersReducedMotion();
 
       let tl: gsap.core.Timeline | null = null;
       /* whether the hero is on screen; the timeline runs only while it is */

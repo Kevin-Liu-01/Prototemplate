@@ -33,7 +33,7 @@ export default function MoodCompareDemo() {
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const armed = useArmed(box);
-  const theme = useTheme() === 'light' ? 'light' : 'dark';
+  const theme = useTheme();
   const spec = MOOD_THEMES[theme];
   const { entry, controls } = useMoodPick({ set: 'deck', name: 'earth' });
   const [zoom, setZoom] = useState(1);
@@ -82,7 +82,7 @@ export default function MoodCompareDemo() {
     setSeam(Math.round(Math.min(100, Math.max(0, ((event.clientX - r.left) / r.width) * 100))));
   };
 
-  const zoomStyle = { '--art-zoom': zoom } as CSSProperties;
+  const zoomStyle: CSSProperties = { '--art-zoom': zoom };
   const gridStyle: CSSProperties | undefined = rect
     ? { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
     : undefined;
@@ -107,7 +107,7 @@ export default function MoodCompareDemo() {
       <div
         className='dmo-art-cmp'
         ref={box}
-        style={{ '--art-seam': `${seam}%`, ...zoomStyle } as CSSProperties}
+        style={{ '--art-seam': `${seam}%`, ...zoomStyle }}
         onPointerDown={(event) => {
           dragging.current = true;
           event.currentTarget.setPointerCapture(event.pointerId);

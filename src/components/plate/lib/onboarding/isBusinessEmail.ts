@@ -1,8 +1,8 @@
 /**
  * List of common free email providers, copied from the dashboard's
- * packages/settings/src/isBusinessEmail.ts. These are excluded when
- * identifying business emails. The list is broad because a business
- * behind one of these is caught in the survey.
+ * packages/settings/src/isBusinessEmail.ts. The survey's website check
+ * (isPlaceholderDomain) rejects these as a company domain. The list is
+ * broad because a business behind one of these is caught in the survey.
  */
 export const CONSUMER_EMAIL_DOMAINS = new Set([
   // Major global free providers
@@ -255,17 +255,3 @@ export const CONSUMER_EMAIL_DOMAINS = new Set([
   // Internal: suppresses pings during testing
   'generaltranslation.com',
 ]);
-
-export function isBusinessEmail(email: string): boolean {
-  if (!email || typeof email !== 'string') {
-    return false;
-  }
-
-  const emailParts = email.toLowerCase().trim().split('@');
-  if (emailParts.length !== 2) {
-    return false;
-  }
-
-  const domain = emailParts[1];
-  return !CONSUMER_EMAIL_DOMAINS.has(domain ?? 'unknown');
-}

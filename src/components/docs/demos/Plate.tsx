@@ -3,6 +3,8 @@
 import { useRef } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
+import { cn } from '@/lib/cn';
+
 import { useArmed, useReducedMotion } from './hooks';
 
 import './demos.css';
@@ -59,11 +61,11 @@ export default function Plate({
   const root = useRef<HTMLDivElement>(null);
   const armed = useArmed(root);
   const reduced = useReducedMotion();
-  const style = {
+  const style: CSSProperties = {
     '--dmo-h': `${height}px`,
     '--dmo-h-sm': `${phoneHeight ?? height}px`,
-  } as CSSProperties;
-  const stage = ['dmo-stage', night ? 'is-night' : '', fit ? 'is-fit' : '', stageClassName ?? ''].filter(Boolean).join(' ');
+  };
+  const stage = cn('dmo-stage', night && 'is-night', fit && 'is-fit', stageClassName);
   return (
     <figure aria-label={label} className='dmo-plate not-prose' ref={root} role='group' style={style}>
       <div className={stage}>

@@ -5,6 +5,7 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { BentoCell, BentoRow } from '@/components/shell/Bento';
 import { useLayoutWork } from '@/lib/use-layout-work';
+import { pad2 } from '@/lib/shell-data';
 
 import { Choice, Range } from '../controls';
 import Plate from '../Plate';
@@ -144,7 +145,7 @@ export default function GridSeamsDemo() {
         type='button'
         onClick={() => bump(i)}
       >
-        <span className='dmo-lay-gs-n'>{String(i + 1).padStart(2, '0')}</span>
+        <span className='dmo-lay-gs-n'>{pad2(i + 1)}</span>
         <span className='dmo-lay-gs-span'>{`${c} × ${span.r}`}</span>
       </button>
     );
@@ -152,7 +153,7 @@ export default function GridSeamsDemo() {
 
   const template = `repeat(${effective}, minmax(0, 1fr))`;
   const indices = Array.from({ length: count }, (_, i) => i);
-  const vars = { '--gs-gap': `${gap}px` } as CSSProperties;
+  const vars: CSSProperties = { '--gs-gap': `${gap}px` };
   const status = `${describe(audit, method, gap)}${method === 'ground' && stacked ? ' BentoRow stacks its cells below 1024px of viewport.' : ''}`;
 
   let grid: ReactNode;

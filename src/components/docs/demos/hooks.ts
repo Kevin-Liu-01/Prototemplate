@@ -3,6 +3,9 @@
 import { useRef, useState, useSyncExternalStore } from 'react';
 import type { RefObject } from 'react';
 
+import { onReducedMotionChange, prefersReducedMotion } from '@/lib/reduced-motion';
+import { DEFAULT_THEME, onThemeChange, readTheme } from '@/lib/theme';
+import type { Theme } from '@/lib/theme';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 /**
@@ -13,38 +16,14 @@ import { useMountEffect } from '@/lib/use-mount-effect';
  * html[data-theme] flips.
  */
 
-const REDUCED_QUERY = '(prefers-reduced-motion: reduce)';
-
-function subscribeReduced(onChange: () => void): () => void {
-  if (typeof window === 'undefined' || !window.matchMedia) return () => {};
-  const query = window.matchMedia(REDUCED_QUERY);
-  query.addEventListener('change', onChange);
-  return () => query.removeEventListener('change', onChange);
-}
-
-function readReduced(): boolean {
-  return typeof window !== 'undefined' && Boolean(window.matchMedia?.(REDUCED_QUERY).matches);
-}
-
 /** True when the reader's system asks for reduced motion; false on the server and in the hydrating render. */
 export function useReducedMotion(): boolean {
-  return useSyncExternalStore(subscribeReduced, readReduced, () => false);
+  return useSyncExternalStore(onReducedMotionChange, prefersReducedMotion, () => false);
 }
 
-function subscribeTheme(onChange: () => void): () => void {
-  if (typeof MutationObserver === 'undefined') return () => {};
-  const observer = new MutationObserver(onChange);
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  return () => observer.disconnect();
-}
-
-function readTheme(): string {
-  return document.documentElement.getAttribute('data-theme') ?? 'dark';
-}
-
-/** The page theme from html[data-theme] ('dark' when unset, as the root layout stamps it). */
-export function useTheme(): string {
-  return useSyncExternalStore(subscribeTheme, readTheme, () => 'dark');
+/** The page theme from html[data-theme] (the default theme when unset, as the root layout stamps it). */
+export function useTheme(): Theme {
+  return useSyncExternalStore(onThemeChange, readTheme, () => DEFAULT_THEME);
 }
 
 /**

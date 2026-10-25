@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import { cn } from '@/components/plate/lib/utils';
 import { useGT } from '@/components/plate/shims/gt-next';
 import {
@@ -32,7 +32,7 @@ export default function PlateThemeToggle({ className }: PlateThemeToggleProps) {
      theme to render. */
   const [theme, setTheme] = useState<Theme>('dark');
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     setTheme(readTheme());
     const observer = new MutationObserver(() => setTheme(readTheme()));
     observer.observe(document.documentElement, {

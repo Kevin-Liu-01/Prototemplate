@@ -130,6 +130,14 @@ export function pad2(n: number): string {
   return n < 10 ? `0${n}` : String(n);
 }
 
+/** A run of numbered rows as a book's contents and dividers name it: `04 to 09`, or `04` for one row; empty for none. */
+export function rangeText(rows: readonly { n: string }[]): string {
+  const first = rows[0];
+  const last = rows[rows.length - 1];
+  if (!first || !last) return '';
+  return rows.length > 1 ? `${first.n} to ${last.n}` : first.n;
+}
+
 /** The longest a lead runs before the rest becomes the note: about three lines of the lead measure. */
 export const LEAD_MAX = 200;
 

@@ -1,6 +1,6 @@
 'use client';
 
-import type { CSSProperties, MouseEvent, RefObject } from 'react';
+import type { CSSProperties, RefObject } from 'react';
 import { useRef } from 'react';
 
 import BrandFilm from '@/app/brand/BrandFilm';
@@ -8,6 +8,7 @@ import { BookHead } from '@/components/viewer/BookView';
 import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
+import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import {
@@ -26,8 +27,6 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
-import { useLayoutWork } from '@/lib/use-layout-work';
-import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './marks.css';
 
@@ -97,16 +96,6 @@ const WIDE = 1.5;
 /** The heights a wordmark can be shown at, smallest first; a wordmark takes the largest three that fit its plate. */
 const LADDER: readonly number[] = [16, 24, 32, ...WORDMARK_SIZES];
 
-/**
- * The read line. A section that crosses the top tenth of the sheet is the
- * one being read; among several, the lowest on the page wins, so the
- * section whose top has just passed under the line is the active one.
- */
-const SPY_MARGIN = '0px 0px -90% 0px';
-
-/** How long the spy waits for a programmatic scroll to reach its section before it reads the page again. */
-const SETTLE_MS = 1200;
-
 /** The route's list: the register, the nine marks by name, Presentation and the concepts, as the run under Knowledge > Marks. The marks alone are paged, so digits 1 to 9 pick a mark. */
 const SECTIONS: readonly ShellSection[] = [
   {
@@ -150,14 +139,6 @@ const SECTIONS: readonly ShellSection[] = [
   },
 ];
 
-function cssEscape(value: string): string {
-  return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
-}
-
-function scrollBehavior(): ScrollBehavior {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-}
-
 /** How a mark sits on a plate: at a height in CSS pixels, or across the plate's full width with the height following. */
 type PlateFit = number | 'full';
 
@@ -199,10 +180,10 @@ type ArtProps = {
  * plate's color reaches it as currentColor.
  */
 function Art({ svg, height, aspect, className }: ArtProps) {
-  const style = {
+  const style: CSSProperties = {
     '--mk-w': height === 'full' ? '100%' : `${Math.round(height * aspect)}px`,
     '--mk-aspect': String(aspect),
-  } as CSSProperties;
+  };
   return (
     <span className={cn('mk-svg', className)} style={style} aria-hidden='true' dangerouslySetInnerHTML={{ __html: svg }} />
   );
@@ -390,7 +371,7 @@ function MarkSheet({ mark, section, art, active }: MarkSheetProps) {
  * color reaches the mark as currentColor reaches an inlined one.
  */
 function ConceptArt({ file, height }: { file: string; height: number }) {
-  const style = { '--mk-w': `${height}px`, '--mk-aspect': '1', '--mk-mask': `url('${file}')` } as CSSProperties;
+  const style: CSSProperties = { '--mk-w': `${height}px`, '--mk-aspect': '1', '--mk-mask': `url('${file}')` };
   return <span className='mk-svg mk-mask' style={style} aria-hidden='true' />;
 }
 
@@ -449,126 +430,19 @@ type MarksBookProps = {
 
 /**
  * The book: a head, a contents list, the register, one section per mark,
- * the Presentation and the concepts, top to bottom inside the flow sheet. Owns the
- * reading state the way the skills book does: an IntersectionObserver on
- * the sheet marks the section under the read line and selects it through
- * the shell (the list and the hash follow); a selection from anywhere else
- * scrolls the sheet to the section and mutes the spy until it arrives. A
- * deep link lands without motion; the spy never selects at the head, so
- * the register stays marked there.
+ * the Presentation and the concepts, top to bottom inside the flow sheet.
+ * The reading state is the shared read line (useReadLine): the section
+ * under the line is selected through the shell (the list and the hash
+ * follow), and a selection from anywhere else scrolls the sheet to the
+ * section. A deep link lands without motion; the spy never selects at the
+ * head, so the register stays marked there.
  */
 function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
-  const activeRef = useRef(active);
-  activeRef.current = active;
-  const selectRef = useRef(select);
-  selectRef.current = select;
-
-  const lastActive = useRef<string | null>(null);
-  const landed = useRef(false);
-  const fromScroll = useRef<string | null>(null);
-  const settling = useRef<Element | null>(null);
-  const settleTimer = useRef(0);
-
-  const sectionFor = (id: string): HTMLElement | null =>
-    sheetRef.current?.querySelector<HTMLElement>(`.mk-sec[data-id="${cssEscape(id)}"]`) ?? null;
-
-  const scrollTo = (id: string, behavior: ScrollBehavior) => {
-    const el = sectionFor(id);
-    if (!el) return;
-    settling.current = el;
-    window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(() => {
-      settling.current = null;
-    }, SETTLE_MS);
-    el.scrollIntoView({ block: 'start', behavior });
-  };
-
-  jumpRef.current = (id: string) => scrollTo(id, scrollBehavior());
-
-  /* the spy: the lowest section crossing the read line names the active item */
-  useMountEffect(() => {
-    const root = sheetRef.current;
-    if (!root || typeof IntersectionObserver === 'undefined') return;
-    const sections = Array.from(root.querySelectorAll<HTMLElement>('.mk-sec'));
-    const order = new Map<Element, number>(sections.map((el, i) => [el, i]));
-    const visible = new Set<Element>();
-    const lowest = (): HTMLElement | null => {
-      let best: HTMLElement | null = null;
-      let rank = -1;
-      for (const el of visible) {
-        const i = order.get(el) ?? -1;
-        if (i > rank) {
-          rank = i;
-          best = el as HTMLElement;
-        }
-      }
-      return best;
-    };
-    const apply = (best: HTMLElement) => {
-      const id = best.dataset.id;
-      if (!id || id === activeRef.current) return;
-      fromScroll.current = id;
-      selectRef.current(id);
-    };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        }
-        const best = lowest();
-        if (!best) return;
-        if (settling.current) {
-          if (best !== settling.current) return;
-          settling.current = null;
-          window.clearTimeout(settleTimer.current);
-        }
-        apply(best);
-      },
-      { root, rootMargin: SPY_MARGIN, threshold: 0 }
-    );
-    sections.forEach((el) => observer.observe(el));
-    const onScrollEnd = () => {
-      if (!settling.current) return;
-      settling.current = null;
-      window.clearTimeout(settleTimer.current);
-    };
-    root.addEventListener('scrollend', onScrollEnd);
-    return () => {
-      observer.disconnect();
-      root.removeEventListener('scrollend', onScrollEnd);
-      window.clearTimeout(settleTimer.current);
-    };
-  });
-
-  /* the one dependency effect: the active item changed from outside the
-     book, so bring its section to the read line. The first run is the mount
-     at the head; the landing on a deep link is a cut, every later change
-     moves; a change the spy caused is left alone. */
-  useLayoutWork(
-    () => {
-      const wasLanded = landed.current;
-      if (ready) landed.current = true;
-      const previous = lastActive.current;
-      lastActive.current = active;
-      if (previous === null || previous === active) return;
-      if (fromScroll.current === active) {
-        fromScroll.current = null;
-        return;
-      }
-      scrollTo(active, wasLanded ? scrollBehavior() : 'instant');
-    },
-    { dependencies: [active, ready] }
-  );
-
-  const onContents = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    if (id === activeRef.current) scrollTo(id, scrollBehavior());
-    else select(id);
-  };
+  const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.mk-sec', active, select, ready, smooth: true });
+  jumpRef.current = jump;
 
   const familyCount = (id: string) => MARKS.filter((mark) => mark.family === id).length;
 

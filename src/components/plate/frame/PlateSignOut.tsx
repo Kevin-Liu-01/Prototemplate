@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 
 import { useFlow } from '@/components/plate/gallery/flow';
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import { STUB_LATENCY_MS } from '@/components/plate/lib/actions';
 import { T, useGT } from '@/components/plate/shims/gt-next';
 import { Button } from '@/components/plate/ui/button';
@@ -26,7 +26,7 @@ export default function PlateSignOut({ accountEmail }: PlateSignOutProps) {
   const [signingOut, setSigningOut] = useState(false);
   const timer = useRef<number | undefined>(undefined);
 
-  useMountEffect(() => () => window.clearTimeout(timer.current));
+  usePlateMountEffect(() => () => window.clearTimeout(timer.current));
 
   function handleSignOut() {
     if (signingOut) return;

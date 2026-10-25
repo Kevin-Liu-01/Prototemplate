@@ -69,18 +69,18 @@ export default function ScaledModel({
   const h = fitContent && measured ? measured : height;
   const scale = size.w && size.h ? Math.min(size.w / width, size.h / h) : 0;
   const fit: ModelFit = { scale, left: (size.w - width * scale) / 2 };
-  const boxStyle = {
+  const boxStyle: CSSProperties = {
     '--lay-w': `${width}px`,
     '--lay-ratio': `${width} / ${h}`,
     '--lay-max-h': maxHeight ? `${maxHeight}px` : 'none',
-  } as CSSProperties;
-  const modelStyle = {
+  };
+  const modelStyle: CSSProperties = {
     ...style,
     width,
     height: h,
     transform: `translateX(-50%) scale(${scale})`,
     visibility: scale ? undefined : 'hidden',
-  } as CSSProperties;
+  };
 
   return (
     <div className='dmo-lay-fit' ref={box} style={boxStyle}>

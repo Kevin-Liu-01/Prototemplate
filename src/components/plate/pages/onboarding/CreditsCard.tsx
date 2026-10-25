@@ -2,19 +2,16 @@
 
 import { useId, useRef } from 'react';
 
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import GtMark from '@/components/plate/icons/GtMark';
-import {
-  ditherToCanvas,
-  prefersReducedMotion,
-  type FieldFn,
-} from '@/components/plate/lib/dither';
+import { ditherToCanvas, type FieldFn } from '@/components/plate/lib/dither';
 import {
   SIGNUP_CREDIT_GRANT_DOLLARS,
   formatWholeDollars,
   type SignupGrantUiAvailability,
 } from '@/components/plate/lib/onboarding/settings';
 import { T } from '@/components/plate/shims/gt-next';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 type CreditsCardProps = {
   grantAvailability: SignupGrantUiAvailability;
@@ -82,7 +79,7 @@ export default function CreditsCard({ grantAvailability }: CreditsCardProps) {
   // is dropped so the url() reference stays a plain fragment.
   const chipGradientId = `credits-chip-${useId().replace(/[^A-Za-z0-9_-]/g, '')}`;
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     const stage = stageRef.current;
     const card = cardRef.current;
     const canvas = canvasRef.current;

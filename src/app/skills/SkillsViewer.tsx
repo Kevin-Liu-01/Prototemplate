@@ -1,24 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import type { MouseEvent, RefObject } from 'react';
+import type { RefObject } from 'react';
 import { useRef } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
 import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
+import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
+import { rangeText } from '@/lib/shell-data';
 import type { ShellMode } from '@/lib/shell-data';
 import { SKILLS, skillHref } from '@/lib/skills';
-import { useLayoutWork } from '@/lib/use-layout-work';
-import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { BLOCKS, SECTIONS, capitalized, countWord, describe, installLine } from './model';
-import type { Numbered } from './model';
 
 import './skills.css';
 
@@ -37,31 +36,6 @@ const BOOK_NOTE = (
   </p>
 );
 
-/**
- * The read line. A row that crosses the top tenth of the sheet is the one
- * being read; among several, the lowest on the page wins, so the row whose
- * top has just passed under the line is the active one.
- */
-const SPY_MARGIN = '0px 0px -90% 0px';
-
-/** How long the spy waits for a programmatic scroll to reach its row before it reads the page again. */
-const SETTLE_MS = 1200;
-
-function rangeText(rows: readonly Numbered[]): string {
-  const first = rows[0];
-  const last = rows[rows.length - 1];
-  if (!first || !last) return '';
-  return last.pos > first.pos ? `${first.n} to ${last.n}` : first.n;
-}
-
-function cssEscape(value: string): string {
-  return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
-}
-
-function scrollBehavior(): ScrollBehavior {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-}
-
 type SkillsBookProps = {
   /** the flow sheet's scroll region */
   sheetRef: RefObject<HTMLDivElement | null>;
@@ -77,136 +51,18 @@ type SkillsBookProps = {
  * The skills read top to bottom inside the flow sheet: a head with the
  * counts and the install command, a contents list of the areas, then every
  * area under a divider as ruled rows, one per skill: the number, the title,
- * the slug and what the skill is for. Owns the reading state: an IntersectionObserver on
- * the sheet marks the row under the read line and selects it through the
- * shell (the list and the hash follow); a selection from anywhere else
- * scrolls the sheet to the row and mutes the spy until the row arrives, so
- * the rows the scroll passes are never selected. A deep link lands without
- * motion; the spy never selects at the head, so the first skill stays
- * marked there.
+ * the slug and what the skill is for. The reading state is the shared
+ * read line (useReadLine): the row under the line is selected through the
+ * shell (the list and the hash follow), and a selection from anywhere else
+ * scrolls the sheet to the row. A deep link lands without motion; the spy
+ * never selects at the head, so the first skill stays marked there.
  */
 function SkillsBook({ sheetRef, jumpRef, activeOut, updated }: SkillsBookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
-  /* the observer reads the latest values through refs; the assignments run
-     every render so the mount-time listener never sees a stale closure */
-  const activeRef = useRef(active);
-  activeRef.current = active;
-  const selectRef = useRef(select);
-  selectRef.current = select;
-
-  /** the active id the effect last saw; null before the first run */
-  const lastActive = useRef<string | null>(null);
-  /** true once the shell has applied the hash: from here on a change scrolls with motion */
-  const landed = useRef(false);
-  /** the id the spy just selected, so the effect leaves the reader's scroll alone */
-  const fromScroll = useRef<string | null>(null);
-  /** the row a programmatic scroll is heading for; the spy waits for it */
-  const settling = useRef<Element | null>(null);
-  const settleTimer = useRef(0);
-
-  const rowFor = (id: string): HTMLElement | null =>
-    sheetRef.current?.querySelector<HTMLElement>(`.sk-row[data-id="${cssEscape(id)}"]`) ?? null;
-
-  /* a programmatic scroll: the spy is muted until the row reaches the read
-     line, the scroll ends, or the settle time passes */
-  const scrollTo = (id: string, behavior: ScrollBehavior) => {
-    const row = rowFor(id);
-    if (!row) return;
-    settling.current = row;
-    window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(() => {
-      settling.current = null;
-    }, SETTLE_MS);
-    row.scrollIntoView({ block: 'start', behavior });
-  };
-
-  jumpRef.current = (id: string) => scrollTo(id, scrollBehavior());
-
-  /* the spy: the lowest row crossing the read line names the active skill */
-  useMountEffect(() => {
-    const root = sheetRef.current;
-    if (!root || typeof IntersectionObserver === 'undefined') return;
-    const rows = Array.from(root.querySelectorAll<HTMLElement>('.sk-row'));
-    const order = new Map<Element, number>(rows.map((el, i) => [el, i]));
-    const visible = new Set<Element>();
-    const lowest = (): HTMLElement | null => {
-      let best: HTMLElement | null = null;
-      let rank = -1;
-      for (const el of visible) {
-        const i = order.get(el) ?? -1;
-        if (i > rank) {
-          rank = i;
-          best = el as HTMLElement;
-        }
-      }
-      return best;
-    };
-    const apply = (best: HTMLElement) => {
-      const id = best.dataset.id;
-      if (!id || id === activeRef.current) return;
-      fromScroll.current = id;
-      selectRef.current(id);
-    };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        }
-        const best = lowest();
-        if (!best) return;
-        if (settling.current) {
-          if (best !== settling.current) return;
-          settling.current = null;
-          window.clearTimeout(settleTimer.current);
-        }
-        apply(best);
-      },
-      { root, rootMargin: SPY_MARGIN, threshold: 0 }
-    );
-    rows.forEach((el) => observer.observe(el));
-    /* a scroll that ends short of its row (the last rows cannot reach the
-       line) keeps the selected row active; the spy reads again from here */
-    const onScrollEnd = () => {
-      if (!settling.current) return;
-      settling.current = null;
-      window.clearTimeout(settleTimer.current);
-    };
-    root.addEventListener('scrollend', onScrollEnd);
-    return () => {
-      observer.disconnect();
-      root.removeEventListener('scrollend', onScrollEnd);
-      window.clearTimeout(settleTimer.current);
-    };
-  });
-
-  /* the one dependency effect: the active skill changed from outside the
-     book, so bring its row to the read line. The first run is the mount at
-     the head; the landing on a deep link is a cut, every later change moves;
-     a change the spy caused is left alone. */
-  useLayoutWork(
-    () => {
-      const wasLanded = landed.current;
-      if (ready) landed.current = true;
-      const previous = lastActive.current;
-      lastActive.current = active;
-      if (previous === null || previous === active) return;
-      if (fromScroll.current === active) {
-        fromScroll.current = null;
-        return;
-      }
-      scrollTo(active, wasLanded ? scrollBehavior() : 'instant');
-    },
-    { dependencies: [active, ready] }
-  );
-
-  const onContents = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    if (id === activeRef.current) scrollTo(id, scrollBehavior());
-    else select(id);
-  };
+  const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.sk-row', active, select, ready, smooth: true });
+  jumpRef.current = jump;
 
   return (
     <div className='sk-book pt-book-col'>

@@ -2,12 +2,11 @@
 
 import { useCallback, useRef, useState, type RefObject } from 'react';
 
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import {
   createDitherLoop,
   globe,
   mixFields,
-  prefersReducedMotion,
   type DitherLoopOptions,
   type FieldFn,
 } from '@/components/plate/lib/dither';
@@ -22,6 +21,7 @@ import {
   MOOD_PICTURES,
   type PictureName,
 } from '@/components/plate/brand/moodPictures';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { smoothstep } from '@/lib/math';
 
 export type FieldStackProps = {
@@ -526,7 +526,7 @@ function FieldScene({ scene, pictureRef, register }: FieldSceneProps) {
   const stackRef = useRef<HTMLDivElement>(null);
   const loopRef = useRef<HTMLCanvasElement>(null);
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     const stack = stackRef.current;
     const loopCanvas = loopRef.current;
     if (!stack || !loopCanvas) return;
@@ -619,7 +619,7 @@ export default function FieldStack({
     []
   );
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     if (typeof window.matchMedia !== 'function') return;
     const query = window.matchMedia(MOBILE_QUERY);
     const sync = (state: { matches: boolean }): void =>
@@ -629,7 +629,7 @@ export default function FieldStack({
     return () => query.removeEventListener('change', sync);
   });
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     if (scene !== 1) return;
     register({
       setPicture: (name) => {

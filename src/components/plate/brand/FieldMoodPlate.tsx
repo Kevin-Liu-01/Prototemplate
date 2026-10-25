@@ -5,7 +5,7 @@ import { InformationCircleIcon } from '@heroicons/react/16/solid';
 import { useGT } from '@/components/plate/shims/gt-next';
 import { X } from 'lucide-react';
 
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import {
   MOOD_PICTURES,
   type PictureName,
@@ -112,7 +112,7 @@ export default function FieldMoodPlate({ picture }: { picture: PictureName }) {
     }, delay);
   }
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     if (typeof window.matchMedia === 'function') {
       setCoarse(window.matchMedia('(pointer: coarse)').matches);
     }

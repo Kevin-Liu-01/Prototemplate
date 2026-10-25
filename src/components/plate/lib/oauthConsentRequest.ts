@@ -1,20 +1,12 @@
 // Copied from the dashboard's src/lib/oauthConsentRequest.ts. The Prisma
-// types it read (the OauthClient row and Prisma.JsonValue) are the two local
-// types below; the functions are unchanged.
+// row it read (OauthClient) is the local type below; the consent details
+// function is unchanged, and the request parsers no page calls are left out.
 
 /** The two columns of the OAuth client row the consent details read. */
 type OAuthClientRecord = {
   clientId: string;
   clientDiscoveryId: string | null;
 };
-
-type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | { [key: string]: JsonValue };
 
 export function getOAuthConsentDetails(
   client: OAuthClientRecord,
@@ -42,43 +34,4 @@ export function getOAuthConsentDetails(
         : ('app' as const),
     redirectUri,
   };
-}
-
-export function toOAuthSearchParams(
-  parameters: Record<string, string | string[] | undefined>
-): URLSearchParams {
-  const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(parameters)) {
-    for (const item of Array.isArray(value)
-      ? value
-      : value !== undefined
-        ? [value]
-        : []) {
-      query.append(key, item);
-    }
-  }
-  return query;
-}
-
-export function getRequestedOAuthClaims(
-  value: string | undefined
-): string[] | null {
-  if (value === undefined) return [];
-  let claims: JsonValue;
-  try {
-    claims = JSON.parse(value);
-  } catch {
-    return null;
-  }
-  if (!claims || typeof claims !== 'object' || Array.isArray(claims))
-    return null;
-  const names = new Set<string>();
-  for (const section of ['userinfo', 'id_token'] as const) {
-    const requested = claims[section];
-    if (requested === undefined) continue;
-    if (!requested || typeof requested !== 'object' || Array.isArray(requested))
-      return null;
-    for (const name of Object.keys(requested)) names.add(name);
-  }
-  return [...names];
 }

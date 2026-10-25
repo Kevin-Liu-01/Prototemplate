@@ -1,5 +1,6 @@
 import type { PageId } from '@/lib/page-names';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
+import { pad2 } from '@/lib/shell-data';
 
 import { VIDEOS } from './videos';
 
@@ -54,7 +55,7 @@ export function transcreateSections(route: TranscreateRoute): readonly ShellSect
         { id: VIDEOS_ROW, title: 'Videos', href: ROUTE_PATH.videos, desc: 'Each video side by side or stacked' },
         ...VIDEOS.map((entry, i) => ({
           id: videoRow(entry.slug),
-          n: String(i + 1).padStart(2, '0'),
+          n: pad2(i + 1),
           title: entry.name,
           desc: 'English to Japanese',
           ...video(entry.slug),

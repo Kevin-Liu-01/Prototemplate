@@ -105,7 +105,7 @@ export default function HelpToastDemo() {
       tag='<HelpCard />'
     >
       <DemoViewport keys={{ help: true }} label='A small shell: ? opens the shortcuts while focus is inside' shell={shell}>
-        <div aria-label='Viewer controls' className='pt-toolbar' role='toolbar'>
+        <div aria-label='Viewer controls' className='pt-toolbar' role='group'>
           <div className='pt-bar-l'>
             <span className='pt-bar-brand'>
               <PtMark />

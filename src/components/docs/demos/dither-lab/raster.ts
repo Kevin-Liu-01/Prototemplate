@@ -20,16 +20,6 @@ export function snapCell(cssPx: number): number {
   return Math.max(1, Math.round(cssPx * dpr)) / dpr;
 }
 
-/** The grid of snapped cells that fits inside a box of `width` by `height` CSS pixels. */
-export function fitGrid(width: number, height: number, cssPx: number): CellGrid {
-  const cell = snapCell(cssPx);
-  return {
-    cols: Math.max(1, Math.floor(width / cell)),
-    rows: Math.max(1, Math.floor(height / cell)),
-    cell,
-  };
-}
-
 export type Surface = {
   ctx: CanvasRenderingContext2D;
   image: ImageData;

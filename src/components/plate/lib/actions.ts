@@ -24,14 +24,10 @@ export const STUB_ORG_ID = 'org_preview_acme';
 /* Minimal copies of the dashboard's types, so the stubs type without the
    @generaltranslation packages. */
 
-export type SignupGrantUiAvailability = 'available' | 'card-used' | 'unavailable';
-
 export type OnboardingOrgFailureReason =
   | 'org_limit_reached'
   | 'project_limit_reached'
   | 'project_failed';
-
-export type BillingEntityType = 'org' | 'enterprise';
 
 /* Onboarding (src/actions/onboarding.ts) */
 
@@ -77,58 +73,6 @@ export async function completeOnboardingAction(orgId?: string): Promise<{
 }> {
   void orgId;
   return settle({ success: true, creditsGranted: false });
-}
-
-export async function verifyOnboardingSetupIntentAction(
-  orgId: string,
-  setupIntentId: string
-): Promise<{
-  success: boolean;
-  cardSaved?: boolean;
-  grantAvailability?: SignupGrantUiAvailability;
-  error?: string;
-}> {
-  void orgId;
-  void setupIntentId;
-  return settle({
-    success: true,
-    cardSaved: true,
-    grantAvailability: 'available' as const,
-  });
-}
-
-/* Organizations (src/actions/createOrg.ts) */
-
-export async function createOrgAction(data: {
-  orgName: string;
-  enterpriseId?: string;
-}): Promise<{
-  success: boolean;
-  orgId?: string;
-  projectId?: string;
-  error?: string;
-}> {
-  void data;
-  return settle({
-    success: true,
-    orgId: STUB_ORG_ID,
-    projectId: 'prj_preview_web',
-  });
-}
-
-/* Billing (src/actions/billing/stripe.ts). The payment states render the
-   static stand-in form, so this is never reached; it is here so the step
-   compiles against the dashboard's import. */
-
-export async function createSetupIntentAction(
-  entityId: string,
-  entityType: BillingEntityType,
-  paymentMethodTypes: string[] = ['card', 'link']
-): Promise<{ clientSecret: string } | { error: string }> {
-  void entityId;
-  void entityType;
-  void paymentMethodTypes;
-  return settle({ clientSecret: 'seti_preview_secret_preview' });
 }
 
 /* The CLI wizard (src/actions/cliWizard.ts) */

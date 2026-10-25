@@ -2,11 +2,11 @@
 
 import { useRef, useState } from 'react';
 
-import { Choice, Range, Toggle } from '../controls';
+import { Choice, Range } from '../controls';
 import { useReducedMotion } from '../hooks';
 import Plate from '../Plate';
 import { MATRIX_OPTIONS, asMatrix, type MatrixSize } from './bayer';
-import CostNote from './CostNote';
+import MotionControls from './MotionControls';
 import type { DitherStageHandle, SceneEnv } from './dither-stage';
 import type { Turn } from './drag';
 import SceneStage from './SceneStage';
@@ -85,9 +85,7 @@ export default function StackSceneDemo({ matrix = 4, cell = 2, light = -70 }: St
           <Choice label='Matrix' options={MATRIX_OPTIONS} value={String(size)} onChange={pickMatrix} />
           <Choice label='Cell' options={CELLS} value={String(cellPx)} onChange={pickCell} />
           <Range format={(v) => `${v}°`} label='Light' max={0} min={-135} step={1} value={azimuth} onChange={swing} />
-          <Range format={(v) => `${v.toFixed(2)}x`} label='Speed' max={2} min={0.25} step={0.25} value={speed} onChange={pace} />
-          <Toggle disabled={reduced} label='Still' pressed={still || reduced} title='Show the frame a reader with reduced motion sees' onChange={hold} />
-          <CostNote ms={cost} still={still || reduced} />
+          <MotionControls cost={cost} max={2} min={0.25} reduced={reduced} speed={speed} still={still} onSpeed={pace} onStill={hold} />
         </>
       }
       height={440}

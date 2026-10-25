@@ -37,12 +37,11 @@ export default function PlateFoot({ accountEmail, className }: PlateFootProps) {
     <footer className='relative px-4 pb-6 sm:px-6 md:px-0 md:pb-(--plate-foot-pb)'>
       {/* One row from sm up: the language left, the theme flip right, the
           copyright or sign out between them against the flip. Under sm the
-          358px row cannot hold the copyright beside the language, so it
-          wrapped under the language at the right; now the language and the
-          flip share the first row and the copyright or sign out takes a
-          row of its own below, at the language's x. The order utilities
-          move the middle item last on phones and back between the two
-          from sm up. */}
+          358px row cannot hold the copyright beside the language, so the
+          language and the flip share the first row and the copyright or
+          sign out takes a row of its own below, at the language's x. The
+          order utilities move the middle item last on phones and back
+          between the two from sm up. */}
       <div
         className={cn(className, 'flex flex-wrap items-center gap-x-4 gap-y-2')}
       >

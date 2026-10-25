@@ -43,7 +43,7 @@ function FrameStage({ route, width }: FrameProps) {
     { dependencies: [w], revertOnUpdate: true }
   );
 
-  const style = { '--dmo-frame-w': `${w}px`, '--dmo-frame-h': `${h}px`, '--dmo-frame-s': scale } as CSSProperties;
+  const style: CSSProperties = { '--dmo-frame-w': `${w}px`, '--dmo-frame-h': `${h}px`, '--dmo-frame-s': scale };
 
   return (
     <div className='dmo-frame-box' ref={box} style={style}>

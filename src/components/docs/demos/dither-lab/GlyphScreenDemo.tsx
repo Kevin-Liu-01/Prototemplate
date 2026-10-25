@@ -6,6 +6,7 @@ import { GLYPHS } from '@/lib/glyph-field';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import { readDpr } from '../2d-3d/presence';
 import { Choice, Toggle } from '../controls';
 import { useTheme } from '../hooks';
 import Plate from '../Plate';
@@ -25,8 +26,6 @@ const SETS: Record<GlyphSet, readonly string[]> = {
   digits: ['1', '7', '2', '3', '4', '5', '9', '6', '0', '8'],
 };
 
-/** The device pixel ratio the glyph canvas is drawn at. */
-const MAX_DPR = 2;
 /** A cell is this many times taller than it is wide, close to a line of text. */
 const CELL_ASPECT = 1.5;
 
@@ -121,7 +120,7 @@ export default function GlyphScreenDemo() {
       const el = canvas.current;
       const loaded = source.loaded;
       if (!el || !loaded || size.w < 40 || size.h < 40) return;
-      const dpr = Math.min(MAX_DPR, Math.max(1, window.devicePixelRatio || 1));
+      const dpr = readDpr();
       const cw = Math.max(4, Math.round(cellPx * dpr));
       const ch = Math.round(cw * CELL_ASPECT);
       const cols = Math.floor((size.w * dpr) / cw);

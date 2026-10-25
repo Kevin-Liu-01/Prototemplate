@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { Sheet, SHEET_PAD, fitSheet } from '@/components/viewer/Sheet';
+import { pad2 } from '@/lib/shell-data';
 
 import { Action, Choice, Range, Toggle } from '../controls';
 import Plate from '../Plate';
@@ -103,7 +104,7 @@ export default function SheetDemo() {
         </div>
         <div>
           <dt>Item</dt>
-          <dd>{`${String(index + 1).padStart(2, '0')} / ${String(GRID_ITEMS.length).padStart(2, '0')}`}</dd>
+          <dd>{`${pad2(index + 1)} / ${pad2(GRID_ITEMS.length)}`}</dd>
         </div>
       </dl>
     </Plate>

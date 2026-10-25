@@ -118,7 +118,7 @@ export default function PageFrame({ src, width, theme, title, still, overlay }: 
   /* a theme change reaches the loaded page */
   useLayoutWork(() => post(theme), { dependencies: [theme] });
 
-  const style = { '--dmo-frame-w': `${w}px`, '--dmo-frame-h': `${h}px`, '--dmo-frame-s': scale } as CSSProperties;
+  const style: CSSProperties = { '--dmo-frame-w': `${w}px`, '--dmo-frame-h': `${h}px`, '--dmo-frame-s': scale };
   const showStill = Boolean(still) && width === '1440' && !live;
 
   return (

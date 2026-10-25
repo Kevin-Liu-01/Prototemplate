@@ -1944,7 +1944,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   width: 238px;
   max-height: 76vh;
   overflow: hidden auto;
-  /* Native scroll now: don't chain a finished roll-scroll into the deck. */
+  /* the roll scrolls natively; a finished roll scroll does not chain into the deck */
   overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
@@ -2047,10 +2047,6 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 .pr-dot-light {
   background: #ffffff;
-}
-
-.pr-dot-alt {
-  background: var(--pt-titanium);
 }
 
 .pr-roll-num {

@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import type { CSSProperties, ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement } from 'react';
 
 /** Marker for MDX authors. HitList reads its text; it never renders. */
@@ -23,7 +23,7 @@ export default function HitList({ label, children }: HitListProps) {
   if (items.length === 0) return null;
   const rows = Math.ceil(items.length / 2);
   return (
-    <ul aria-label={label} className='blog-hit-list' style={{ '--rows': rows } as CSSProperties} data-testid='hit-list'>
+    <ul aria-label={label} className='blog-hit-list' style={{ '--rows': rows }} data-testid='hit-list'>
       {items.map((item, i) => (
         <li key={i}>
           <span aria-hidden='true' className='blog-hit-mark'>

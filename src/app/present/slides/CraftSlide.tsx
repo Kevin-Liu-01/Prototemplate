@@ -9,6 +9,7 @@ import { useRef } from 'react';
 import { useDeckSetup } from '../deck-setup';
 import Icon from '../icons';
 import { gtText } from '@/components/viewer/GtWord';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin);
 
@@ -55,7 +56,7 @@ export default function CraftSlide() {
   useGSAP(
     () => {
       if (!ready) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const trackEl = track.current;
       if (!trackEl) return;
 

@@ -9,6 +9,7 @@ import { Icon } from '@/components/viewer/icons';
 import type { IconName } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
 import type { SubRows } from '@/components/viewer/Sidebar';
+import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { MOTION_FILMS, MOTION_STATUS_LABEL, getMotionFilm, motionHref } from '@/lib/motion';
@@ -28,11 +29,6 @@ import '../motion.css';
 
 const TITLE = 'Motion';
 const MODES: readonly ShellMode[] = ['book'];
-
-/** The read line: the lowest section crossing the top tenth of the sheet is the one being read. */
-const SPY_MARGIN = '0px 0px -90% 0px';
-/** How long the spy waits for a jump to reach its section before it reads the page again. */
-const SETTLE_MS = 1200;
 
 /** The film block's anchor: section 1, before the package's own sections. */
 const FILM_ID = 'the-film';
@@ -60,10 +56,6 @@ export type PackageSectionView = {
   body: ReactNode;
   wide: boolean;
 };
-
-function cssEscape(value: string): string {
-  return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
-}
 
 function readHash(): string {
   const raw = window.location.hash.slice(1);
@@ -200,8 +192,9 @@ export type PackageViewerProps = {
  * the reading column (the book head with the film's facts, the film's
  * player when its web copy is published, the status line, a contents list,
  * the published cut's contact sheet and script as built, then each package
- * section under its divider in the book's prose grammar). An IntersectionObserver marks the section under the read
- * line in the list; a contents link or a section row jumps the sheet there
+ * section under its divider in the book's prose grammar). The shared read
+ * line (useReadLine) marks the section under the line in the list; a
+ * contents link or a section row jumps the sheet there
  * and writes `#<section>` to the address, which a later visit lands on.
  * The shell ignores that hash, since it names no item. Selecting another
  * film navigates to it; the raw package is one click away in the toolbar.
@@ -211,11 +204,22 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
   const film = getMotionFilm(slug);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const settling = useRef<Element | null>(null);
-  const settleTimer = useRef(0);
+
+  /* the spy: the section under the read line names the row marked in the
+     list, and above the first section no row is marked; the route makes
+     its own jumps, so a change of the mark never scrolls */
+  const { scrollTo } = useReadLine({
+    rootRef: sheetRef,
+    selector: '.mo-sec',
+    active: activeSection ?? '',
+    select: (id) => setActiveSection(id || null),
+    idOf: (el) => el.dataset.section ?? '',
+    none: '',
+    follow: false,
+  });
 
   const sectionFor = (id: string): HTMLElement | null =>
-    sheetRef.current?.querySelector<HTMLElement>(`.mo-sec[data-section="${cssEscape(id)}"]`) ?? null;
+    sheetRef.current?.querySelector<HTMLElement>(`.mo-sec[data-section="${CSS.escape(id)}"]`) ?? null;
 
   /** An instant jump to a section's divider (or any element with that id in the sheet); the spy waits for it to land. */
   const jump = (id: string): boolean => {
@@ -224,12 +228,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
     const section = sectionFor(id);
     const target = section?.querySelector<HTMLElement>('.ptd-sec') ?? document.getElementById(id);
     if (!target || !root.contains(target)) return false;
-    settling.current = section ?? target.closest('.mo-sec');
-    window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(() => {
-      settling.current = null;
-    }, SETTLE_MS);
-    target.scrollIntoView({ block: 'start', behavior: 'auto' });
+    scrollTo(target, 'auto', section ?? target.closest('.mo-sec'));
     if (section) setActiveSection(id);
     return true;
   };
@@ -288,55 +287,6 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
     const frame = requestAnimationFrame(() => jump(hash));
     document.fonts?.ready.then(() => jump(hash)).catch(() => {});
     return () => cancelAnimationFrame(frame);
-  });
-
-  /* the spy: the section under the read line names the row marked in the list */
-  useMountEffect(() => {
-    const root = sheetRef.current;
-    if (!root || typeof IntersectionObserver === 'undefined') return;
-    const blocks = Array.from(root.querySelectorAll<HTMLElement>('.mo-sec'));
-    const order = new Map<Element, number>(blocks.map((el, i) => [el, i]));
-    const visible = new Set<Element>();
-    const lowest = (): HTMLElement | null => {
-      let best: HTMLElement | null = null;
-      let rank = -1;
-      for (const el of visible) {
-        const i = order.get(el) ?? -1;
-        if (i > rank) {
-          rank = i;
-          best = el as HTMLElement;
-        }
-      }
-      return best;
-    };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        }
-        const best = lowest();
-        if (settling.current) {
-          if (best !== settling.current) return;
-          settling.current = null;
-          window.clearTimeout(settleTimer.current);
-        }
-        setActiveSection(best?.dataset.section ?? null);
-      },
-      { root, rootMargin: SPY_MARGIN, threshold: 0 }
-    );
-    blocks.forEach((el) => observer.observe(el));
-    const onScrollEnd = () => {
-      if (!settling.current) return;
-      settling.current = null;
-      window.clearTimeout(settleTimer.current);
-    };
-    root.addEventListener('scrollend', onScrollEnd);
-    return () => {
-      observer.disconnect();
-      root.removeEventListener('scrollend', onScrollEnd);
-      window.clearTimeout(settleTimer.current);
-    };
   });
 
   if (!film?.pkg) return null;

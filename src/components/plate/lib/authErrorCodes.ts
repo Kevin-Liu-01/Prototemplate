@@ -15,6 +15,3 @@ export const AUTH_ERROR_CODE = {
   /** Magic link / login refused: domain enforces SSO. */
   ssoRequired: 'sso_required',
 } as const;
-
-export type AuthErrorCode =
-  (typeof AUTH_ERROR_CODE)[keyof typeof AUTH_ERROR_CODE];

@@ -172,7 +172,7 @@ type FrameProps = {
  * any preview width.
  */
 function Frame({ id, name, w, h, title, field, theme, armed }: FrameProps) {
-  const style = { aspectRatio: `${w} / ${h}`, '--cg-w': w } as CSSProperties;
+  const style: CSSProperties = { aspectRatio: `${w} / ${h}`, '--cg-w': w };
   const words = title.trim() || 'Untitled';
   return (
     <figure className='dmo-cg-figure'>

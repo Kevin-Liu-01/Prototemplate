@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import {
   cliCallbackPage,
   type CliCallbackState,
@@ -55,7 +55,7 @@ export default function CliCallbackSnapshot({
 }: CliCallbackSnapshotProps) {
   const [theme, setTheme] = useState<Theme | null>(null);
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     setTheme(readTheme());
     const observer = new MutationObserver(() => setTheme(readTheme()));
     observer.observe(document.documentElement, {

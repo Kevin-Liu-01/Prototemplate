@@ -6,7 +6,7 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import type { ShellItem } from '@/lib/shell-data';
 
 /* the deck's slide: inset 57px, padded 72px by 80px, an h2 at 44px and a paragraph at 22px (deck/parts/head.html) */
-const SLIDE_VARS = { '--sl-h2': '44px', '--sl-h2-lh': 1.1, '--sl-p': '22px', '--sl-p-lh': 1.5 } as CSSProperties;
+const SLIDE_VARS: CSSProperties = { '--sl-h2': '44px', '--sl-h2-lh': 1.1, '--sl-p': '22px', '--sl-p-lh': 1.5 };
 
 /** A slide's body in the 1600 by 900 stage: the section's title and its one-line description. */
 export function SlideBody({ item }: { item: ShellItem | undefined }) {
@@ -22,7 +22,7 @@ function Bars({ n, size, lh, widths }: { n: number; size: string; lh: number; wi
   return (
     <>
       {Array.from({ length: n }, (_, i) => (
-        <span className='dmo-lay-ln' key={i} style={{ '--ln-size': size, '--ln-lh': lh, '--ln-w': widths[i % widths.length] } as CSSProperties}>
+        <span className='dmo-lay-ln' key={i} style={{ '--ln-size': size, '--ln-lh': lh, '--ln-w': widths[i % widths.length] }}>
           <i />
         </span>
       ))}

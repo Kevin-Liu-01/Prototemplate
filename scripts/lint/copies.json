@@ -30,8 +30,8 @@
     {
       "path": "src/lib/studio-field.ts",
       "mode": "fork",
-      "from": "src/components/plate/lib/studio-field.ts; gt-cloud:apps/landing/src/lib/studio-field.ts",
-      "reason": "the hub's field carries the Bayer roster the explorations switch through; 193 lines differ from the plate's copy (2026-10-10)"
+      "from": "gt-cloud:apps/landing/src/lib/studio-field.ts",
+      "reason": "the hub's field carries the Bayer roster the explorations switch through, and it is not re-synced with gt-cloud's copy"
     },
     {
       "path": "src/lib/glyph-field.ts",

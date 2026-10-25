@@ -8,13 +8,13 @@ import PrismaticField from '@/components/shared/PrismaticField';
 import { Icon } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
+import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { ARCHIVE, ARCHIVE_DELETION, archiveDate, archiveDesc, archiveFull, archiveHost, archiveShot } from '@/lib/archive';
 import type { ArchiveEntry } from '@/lib/archive';
 import { cn } from '@/lib/cn';
 import { DIRECTIONS, directionPageHref } from '@/lib/directions';
 import type { ShellItem, ShellKeysProp, ShellMode, ShellSection } from '@/lib/shell-data';
-import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { DirectionFrame, FRAME_H, FRAME_W } from './directions/DirectionFrame';
@@ -42,20 +42,6 @@ const GALLERY_TITLE = 'Prototemplate';
 const GALLERY_MODES: readonly ShellMode[] = ['book', 'slide', 'grid'];
 /* the slide here is one live 1440 exhibit, so the seg says so */
 const GALLERY_MODE_LABELS: Partial<Record<ShellMode, string>> = { slide: 'Live' };
-
-/**
- * The read line. A section crossing the top tenth of the sheet is the one
- * in view; among several, the lowest on the page wins, so the section whose
- * top has just passed under the line is the active one, and a section
- * scrolled to the top of the sheet (a hash landing, a selection) is the one
- * the spy confirms. A band in the middle of the sheet cannot do this: a
- * 128px exploration row parked at the top never reaches it, and a row
- * further down wins instead, so the hash never round-trips.
- */
-const SPY_MARGIN = '0px 0px -90% 0px';
-
-/** How long the spy waits for a programmatic scroll to reach its section before it reads the page again. */
-const SETTLE_MS = 1200;
 
 /**
  * An archived version: one of the retired /d routes, kept viewable as its
@@ -324,157 +310,53 @@ type ArticleProps = {
 };
 
 /**
- * The book: the gallery article as it was, full-bleed in the stage's scroll
- * region on its own 1170px rail with one hairline at each edge (directive 8.2),
- * under .pt-root so it keeps its own token family (decision 6) and the
- * nameplate's two faces (decision 3). The old top nav is gone; the
- * shell's sidebar and index panel take its place. The sections that stand
- * for a direction carry data-gv-id, and the nameplate with the opener
- * carries data-gv-top: an IntersectionObserver on the sheet marks the one
- * crossing the read line at the top of the sheet active through the shell
- * (the lowest of several; the top clears the mark, so only the Gallery row
- * is current while the nameplate and the opener are on screen), which
- * updates the hash without scrolling, and a selection from anywhere else
- * (the hash, the keys, a grid click that landed in the book) scrolls its
- * section to the top of the sheet and mutes the spy until the section
- * arrives, so the sections the scroll passes are never selected and the
- * landed section stays marked. The archive rows are not spied, so reading
- * past them never opens a capture uninvited.
+ * The book: the gallery article, full-bleed in the stage's scroll region on
+ * its own 1170px rail with one hairline at each edge (directive 8.2), under
+ * .pt-root so it keeps its own token family (decision 6) and the
+ * nameplate's two faces (decision 3). The shell's sidebar and index panel
+ * are its navigation. The sections that stand for a direction carry
+ * data-gv-id, and the nameplate with the opener carries data-gv-top: the
+ * shared read line (useReadLine) marks the one crossing the line at the top
+ * of the sheet active through the shell (the lowest of several; the top
+ * clears the mark, so only the Gallery row is current while the nameplate
+ * and the opener are on screen), which updates the hash without scrolling,
+ * and a selection from anywhere else (the hash, the keys, a grid click that
+ * landed in the book) scrolls its section to the top of the sheet. The
+ * archive rows are not spied, so reading past them never opens a capture
+ * uninvited.
  */
 function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: ArticleProps) {
-  const { active, select } = usePtShell();
+  const { active, ready, select } = usePtShell();
   const root = useRef<HTMLDivElement>(null);
-
-  /* the observer and the scroll effect read the latest state through refs;
-     the assignments run every render so the mount-time listeners never see
-     a stale closure */
-  const activeRef = useRef(active);
-  activeRef.current = active;
-  const selectRef = useRef(select);
-  selectRef.current = select;
-  /** the id the observer just selected, so the scroll effect leaves the reader's scroll alone */
-  const fromScroll = useRef<string | null>(null);
-  /** the active id the scroll effect last saw; null before the first run */
-  const lastActive = useRef<string | null>(null);
-  /** true once the first frame after mount has passed; a change that lands before it is a landing, not a move */
-  const landed = useRef(false);
 
   const target = (id: string): HTMLElement | null =>
     root.current?.querySelector<HTMLElement>(`[data-gv-id="${CSS.escape(id)}"]`) ?? null;
 
-  /** the section a programmatic scroll is heading for; the spy waits for it */
-  const settling = useRef<Element | null>(null);
-  const settleTimer = useRef(0);
+  /* the spy: of the sections crossing the read line, the lowest on the page
+     names the direction in view; the nameplate and the opener mark nothing */
+  const { scrollTo } = useReadLine({
+    rootRef: scrollRef,
+    selector: '[data-gv-id], [data-gv-top]',
+    active,
+    select,
+    ready,
+    smooth: true,
+    idOf: (el) => (el.dataset.gvTop !== undefined ? '' : el.dataset.gvId),
+    find: target,
+  });
 
-  /* a programmatic scroll: the spy is muted until the section reaches the
-     read line, the scroll ends, or the settle time passes, so the sections
-     the scroll passes are never selected and the landed one is confirmed */
-  const scrollTo = (el: HTMLElement | null, behavior: ScrollBehavior) => {
-    if (!el) return;
-    settling.current = el;
-    window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(() => {
-      settling.current = null;
-    }, SETTLE_MS);
-    el.scrollIntoView({ block: 'start', behavior });
-  };
-
+  /* the landing: an intent from the Gallery row or the archive's Escape
+     wins; otherwise a hash that names the active item opens the book at its
+     section, and a plain visit opens at the nameplate */
   useMountEffect(() => {
-    const box = root.current;
-    const scroller = scrollRef.current;
-
-    /* the landing: an intent from the Gallery row or the archive's Escape
-       wins; otherwise a hash that names the active item opens the book at
-       its section, and a plain visit opens at the nameplate */
     const want = intent.current;
     intent.current = null;
     if (want === 'archive') {
-      scrollTo(box?.querySelector<HTMLElement>('[data-gv-anchor="archive"]') ?? null, 'instant');
-    } else if (want !== 'top' && activeRef.current && readHash() === activeRef.current) {
-      scrollTo(target(activeRef.current), 'instant');
+      scrollTo(root.current?.querySelector<HTMLElement>('[data-gv-anchor="archive"]') ?? null, 'instant');
+    } else if (want !== 'top' && active && readHash() === active) {
+      scrollTo(target(active), 'instant');
     }
-    const frame = requestAnimationFrame(() => {
-      landed.current = true;
-    });
-
-    /* the spy: of the sections crossing the read line, the lowest on the
-       page names the direction in view; a landing or a selection in flight
-       is waited for, so the sections the scroll passes are never selected */
-    let observer: IntersectionObserver | null = null;
-    const onScrollEnd = () => {
-      if (!settling.current) return;
-      settling.current = null;
-      window.clearTimeout(settleTimer.current);
-    };
-    if (box && scroller && typeof IntersectionObserver !== 'undefined') {
-      const watched = Array.from(box.querySelectorAll<HTMLElement>('[data-gv-id], [data-gv-top]'));
-      const order = new Map<Element, number>(watched.map((el, i) => [el, i]));
-      const visible = new Set<Element>();
-      const lowest = (): HTMLElement | null => {
-        let best: HTMLElement | null = null;
-        let rank = -1;
-        for (const el of visible) {
-          const i = order.get(el) ?? -1;
-          if (i > rank) {
-            rank = i;
-            best = el as HTMLElement;
-          }
-        }
-        return best;
-      };
-      observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) visible.add(entry.target);
-            else visible.delete(entry.target);
-          }
-          const best = lowest();
-          if (!best) return;
-          if (settling.current) {
-            if (best !== settling.current) return;
-            settling.current = null;
-            window.clearTimeout(settleTimer.current);
-          }
-          /* the nameplate and the opener: nothing is marked */
-          const id = best.dataset.gvTop !== undefined ? '' : best.dataset.gvId;
-          if (id === undefined || id === activeRef.current) return;
-          fromScroll.current = id;
-          selectRef.current(id);
-        },
-        { root: scroller, rootMargin: SPY_MARGIN, threshold: 0 }
-      );
-      watched.forEach((el) => observer?.observe(el));
-      /* a scroll that ends short of its section (the last rows cannot reach
-         the line) keeps the selected section active; the spy reads again from here */
-      scroller.addEventListener('scrollend', onScrollEnd);
-    }
-
-    return () => {
-      cancelAnimationFrame(frame);
-      observer?.disconnect();
-      scroller?.removeEventListener('scrollend', onScrollEnd);
-      window.clearTimeout(settleTimer.current);
-    };
   });
-
-  /* the one dependency effect: when the active item changes from outside
-     the article, bring its section to the top. A change the observer caused
-     is left alone; one that arrives before the first frame (the shell
-     reading the hash after this mount) jumps instead of scrolling. */
-  useLayoutWork(
-    () => {
-      const previous = lastActive.current;
-      lastActive.current = active;
-      if (previous === null || previous === active) return;
-      if (fromScroll.current === active) {
-        fromScroll.current = null;
-        return;
-      }
-      if (!active) return;
-      scrollTo(target(active), landed.current ? 'auto' : 'instant');
-    },
-    { dependencies: [active] }
-  );
 
   return (
     <div ref={root} className={cn('pt-root', 'gv-article', fontClass)}>
@@ -587,7 +469,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
                   <tspan className='pt-funnel-t' dx='12'>DIRECTIONS BUILT</tspan>
                 </text>
 
-                {/* stage two: the thirteen survivors, structured cards now */}
+                {/* stage two: the thirteen survivors, drawn as structured cards */}
                 {FUNNEL_SURVIVORS.map((c) => (
                   <g key={`srv-${c.x}-${c.y}`} transform={`translate(${c.x} ${c.y})`}>
                     <rect className='pt-funnel-cell' height='26' width='36' />
@@ -711,7 +593,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
                 and cut off by the section's own corner */}
             <span aria-hidden className='pt-sites-fan'>
               {SITES.map((site, i) => (
-                <span className='pt-sites-fan-shot' key={site.slug} style={{ ['--i' as never]: i }}>
+                <span className='pt-sites-fan-shot' key={site.slug} style={{ '--i': i }}>
                   <img alt='' className='is-light' draggable={false} loading='lazy' src={`/shots/light/${site.slug}.jpg`} />
                   <img alt='' className='is-dark' draggable={false} loading='lazy' src={`/shots/dark/${site.slug}.jpg`} />
                 </span>

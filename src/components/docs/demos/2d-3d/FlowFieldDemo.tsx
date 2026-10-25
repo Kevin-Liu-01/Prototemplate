@@ -2,12 +2,12 @@
 
 import { useRef, useState } from 'react';
 
-import { Choice, Range, Toggle } from '../controls';
+import { Choice } from '../controls';
 import { useReducedMotion } from '../hooks';
 import Plate from '../Plate';
 import { asMatrix, type MatrixSize } from './bayer';
 import CanvasStage, { type CanvasRig } from './CanvasStage';
-import CostNote from './CostNote';
+import MotionControls from './MotionControls';
 import { createFlowField, type FlowEngine } from './flow-field';
 
 import './d23.css';
@@ -92,29 +92,22 @@ export default function FlowFieldDemo({ cell = 2, count = 2400, spread = 2, matr
               change({ matrix: asMatrix(v) });
             }}
           />
-          <Range
-            format={(v) => `${v.toFixed(2)}x`}
-            label='Speed'
+          <MotionControls
+            cost={cost}
             max={2}
             min={0.25}
-            step={0.25}
-            value={speed}
-            onChange={(v) => {
+            reduced={reduced}
+            speed={speed}
+            still={still}
+            onSpeed={(v) => {
               setSpeed(v);
               rig.current?.loop.setSpeed(v);
             }}
-          />
-          <Toggle
-            disabled={reduced}
-            label='Still'
-            pressed={still || reduced}
-            title='Show the frame a reader with reduced motion sees'
-            onChange={(on) => {
+            onStill={(on) => {
               setStill(on);
               rig.current?.loop.setPlaying(!on);
             }}
           />
-          <CostNote ms={cost} still={still || reduced} />
         </>
       }
       height={360}

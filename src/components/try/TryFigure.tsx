@@ -204,7 +204,7 @@ function satVars(
   const satId = SAT_IDS[seq];
   const grade = satId ? grades?.[satId] : undefined;
   const locked = settleFrom !== null && seq < settleFrom;
-  const style = {
+  const style: CSSProperties = {
     '--try-sat-i': seq,
     ...(settleFrom !== null && !locked
       ? { '--try-settle-i': seq - settleFrom }
@@ -212,7 +212,7 @@ function satVars(
     ...(grade
       ? { '--try-chip-grade': `var(--try-grade-${grade.toLowerCase()})` }
       : {}),
-  } as CSSProperties;
+  };
   return { locked, style };
 }
 
@@ -405,7 +405,7 @@ export default function TryFigure({
       data-state={state}
       style={
         gradeVar
-          ? ({ '--try-fig-grade': gradeVar } as CSSProperties)
+          ? { '--try-fig-grade': gradeVar }
           : undefined
       }
     >

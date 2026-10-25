@@ -11,14 +11,6 @@ import type { ReactNode } from 'react';
    diagram voice, sized to read at the 56px report seat — the chips
    hide them in CSS (illegible at 24px). Every drawing is aria-hidden;
    meaning stays in the row text. */
-export const CATEGORY_MARK_IDS = [
-  'hreflang',
-  'lang',
-  'routing',
-  'metadata',
-  'content',
-  'charset',
-] as const;
 
 const ACCENT = 'var(--try-mark-accent, currentColor)';
 const VE = { vectorEffect: 'non-scaling-stroke' } as const;

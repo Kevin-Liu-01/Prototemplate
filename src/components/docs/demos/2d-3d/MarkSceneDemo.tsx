@@ -2,11 +2,11 @@
 
 import { useRef, useState } from 'react';
 
-import { Choice, Range, Toggle } from '../controls';
+import { Choice, Range } from '../controls';
 import { useReducedMotion } from '../hooks';
 import Plate from '../Plate';
 import { MATRIX_OPTIONS, asMatrix, type MatrixSize } from './bayer';
-import CostNote from './CostNote';
+import MotionControls from './MotionControls';
 import type { DitherStageHandle, PassMode } from './dither-stage';
 import type { Turn } from './drag';
 import { buildMarkScene, type MarkState } from './mark-scene';
@@ -94,9 +94,7 @@ export default function MarkSceneDemo({ matrix = 8, cell = 2, light = -50 }: Mar
           <Choice label='Matrix' options={MATRIX_OPTIONS} value={String(size)} onChange={pickMatrix} />
           <Choice label='Cell' options={CELLS} value={String(cellPx)} onChange={pickCell} />
           <Range format={(v) => `${v}°`} label='Light' max={180} min={-180} step={1} value={azimuth} onChange={swing} />
-          <Range format={(v) => `${v.toFixed(2)}x`} label='Speed' max={3} min={0} step={0.25} value={speed} onChange={pace} />
-          <Toggle disabled={reduced} label='Still' pressed={still || reduced} title='Show the frame a reader with reduced motion sees' onChange={hold} />
-          <CostNote ms={cost} still={still || reduced} />
+          <MotionControls cost={cost} max={3} min={0} reduced={reduced} speed={speed} still={still} onSpeed={pace} onStill={hold} />
         </>
       }
       height={380}

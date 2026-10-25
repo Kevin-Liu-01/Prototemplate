@@ -236,7 +236,7 @@ export default function PageTemplateDemo({ template }: { template: TemplateId })
   const [path, setPath] = useState(first.path);
   const [width, setWidth] = useState<FrameWidth>('1440');
   const [anatomy, setAnatomy] = useState(true);
-  const theme: FrameTheme = useTheme() === 'light' ? 'light' : 'dark';
+  const theme: FrameTheme = useTheme();
   const page = spec.pages.find((p) => p.path === path) ?? first;
   const still = page.still ? `/shots/thumb/${page.still}${theme === 'dark' ? '-dark' : ''}.webp` : null;
   const open = page.path.replace(/[?&]chrome=0$/, '');

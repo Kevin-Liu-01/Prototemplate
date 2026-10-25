@@ -3,6 +3,8 @@
 import { useRef, useState } from 'react';
 import type { DragEvent, ReactNode } from 'react';
 
+import { cn } from '@/lib/cn';
+
 import { Action, Choice } from '../controls';
 import type { PictureSource } from './hooks';
 import { PICTURE_ORDER, SOURCE_LABELS, type SourceId } from './sources';
@@ -66,7 +68,7 @@ export function DropZone({ onFile, className, children }: DropProps) {
   const hasFile = (event: DragEvent) => Array.from(event.dataTransfer.types).includes('Files');
   return (
     <div
-      className={[className ?? '', over ? 'is-drop' : ''].filter(Boolean).join(' ')}
+      className={cn(className, over && 'is-drop')}
       onDragLeave={(event) => {
         if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
         setOver(false);

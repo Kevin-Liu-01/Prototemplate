@@ -28,7 +28,7 @@ export default function SiteCompare({ slug, name }: { slug: string; name: string
   };
 
   return (
-    <div className='pt-compare' ref={box} style={{ ['--cut' as never]: '55%' }}>
+    <div className='pt-compare' ref={box} style={{ '--cut': '55%' }}>
       <div
         className='pt-compare-stage'
         onPointerDown={(e) => {

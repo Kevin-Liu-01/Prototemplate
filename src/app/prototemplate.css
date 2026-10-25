@@ -191,10 +191,6 @@
   color: var(--pt-ink-4);
 }
 
-.pt-line.is-h.is-faint {
-  background: var(--pt-hair-2);
-}
-
 .pt-line.is-v {
   top: 0;
   bottom: 0;
@@ -424,25 +420,6 @@
 
 /* ---------- the index ledger ---------- */
 
-.pt-index-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 22px var(--pt-gut) 14px;
-}
-
-.pt-index-head h2 {
-  font-size: var(--pt-d2);
-  line-height: var(--pt-d2-lh);
-  letter-spacing: var(--pt-d2-track);
-}
-
-.pt-index-head span {
-  font-size: var(--pt-t-meta);
-  color: var(--pt-ink-3);
-}
-
 .pt-row {
   position: relative;
   display: grid;
@@ -505,12 +482,6 @@
   max-width: 52ch;
 }
 
-.pt-row-sig {
-  font-size: var(--pt-t-meta);
-  line-height: var(--pt-t-meta-lh);
-  color: var(--pt-ink-3);
-}
-
 /* each direction's capture, pinned to the row's bottom-right and cut off
    by the row's own bounds — a contact print sliding out of the sleeve */
 .pt-row-shot {
@@ -543,26 +514,6 @@
 
 .pt-row-shot img.is-dark {
   display: none;
-}
-
-/* ---- the full-site rows: the whole row covers the home, and two page
-   links (home / enterprise) sit above the cover ---- */
-.pt-row-cover {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.pt-row.is-site:focus-within {
-  background: var(--pt-white);
-}
-
-[data-theme='dark'] .pt-root .pt-row.is-site:focus-within {
-  background: var(--pt-hair-2);
-}
-
-.pt-row.is-site:focus-within::before {
-  opacity: 1;
 }
 
 [data-theme='dark'] .pt-root .pt-row-shot img.is-light {
@@ -622,22 +573,9 @@
 }
 
 @media (max-width: 760px) {
-  .pt-word.is-proto {
-    top: 12%;
-  }
-
-  .pt-word.is-template {
-    bottom: 14%;
-  }
-
   .pt-row {
     grid-template-columns: 40px minmax(0, 1fr);
     row-gap: 8px;
-  }
-
-  .pt-row-tone,
-  .pt-row-sig {
-    grid-column: 2;
   }
 }
 

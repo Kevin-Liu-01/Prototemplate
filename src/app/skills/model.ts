@@ -1,4 +1,3 @@
-import { PAGE_NAMES } from '@/lib/page-names';
 import type { ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 import { SKILL_AREAS, SKILLS, skillFileHref, skillHref } from '@/lib/skills';
@@ -90,11 +89,6 @@ export function skillNumber(slug: string): string {
 /** The raw SKILL.md the page's toolbar opens. */
 export function skillRawHref(slug: string): string {
   return skillFileHref(slug, 'SKILL.md');
-}
-
-/** The window title for a skill page, written whole: `Voice and the humanizer, Skills, Prototemplate`. */
-export function skillWindowTitle(title: string): string {
-  return `${title}, ${PAGE_NAMES.skills.name}, Prototemplate`;
 }
 
 /** A neighbour in the whole set: the title and the address of its page. */

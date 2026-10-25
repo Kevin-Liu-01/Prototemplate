@@ -1,26 +1,23 @@
 'use client';
 
-import type { MouseEvent, RefObject } from 'react';
+import type { RefObject } from 'react';
 import { useRef } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
+import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
-import { useLayoutWork } from '@/lib/use-layout-work';
-import { useMountEffect } from '@/lib/use-mount-effect';
 
 import './atlas.css';
 
 const TITLE = PAGE_NAMES.atlas.name;
 const MODES: readonly ShellMode[] = ['book'];
-const SPY_MARGIN = '0px 0px -90% 0px';
-const SETTLE_MS = 1200;
 
 const LEAD =
   'Atlas is where General Translation publishes long writing. Each story is an issue of a magazine, with a cover, art and colors of its own, and it reads as a magazine feature.';
@@ -148,14 +145,6 @@ const SECTIONS: readonly ShellSection[] = [
   },
 ];
 
-function cssEscape(value: string): string {
-  return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
-}
-
-function scrollBehavior(): ScrollBehavior {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-}
-
 type BookProps = {
   sheetRef: RefObject<HTMLDivElement | null>;
   jumpRef: RefObject<(id: string) => void>;
@@ -164,104 +153,16 @@ type BookProps = {
 };
 
 /**
- * The book: a head, the contents, then one section per part. An
- * IntersectionObserver marks the part under the read line and selects it
- * through the shell, so the list and the hash follow the reader; a
- * selection from the list scrolls the sheet to its part and mutes the spy
- * until it arrives.
+ * The book: a head, the contents, then one section per part. The shared
+ * read line (useReadLine) selects the part under the line through the
+ * shell, so the list and the hash follow the reader, and a selection from
+ * the list scrolls the sheet to its part.
  */
 function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
-  const activeRef = useRef(active);
-  activeRef.current = active;
-  const selectRef = useRef(select);
-  selectRef.current = select;
-  const lastActive = useRef<string | null>(null);
-  const landed = useRef(false);
-  const fromScroll = useRef<string | null>(null);
-  const settling = useRef<Element | null>(null);
-  const settleTimer = useRef(0);
-
-  const sectionFor = (id: string): HTMLElement | null => sheetRef.current?.querySelector<HTMLElement>(`.an-sec[data-id="${cssEscape(id)}"]`) ?? null;
-
-  const scrollTo = (id: string, behavior: ScrollBehavior) => {
-    const el = sectionFor(id);
-    if (!el) return;
-    settling.current = el;
-    window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(() => {
-      settling.current = null;
-    }, SETTLE_MS);
-    el.scrollIntoView({ block: 'start', behavior });
-  };
-
-  jumpRef.current = (id: string) => scrollTo(id, scrollBehavior());
-
-  /* the spy: the lowest part crossing the read line names the active item */
-  useMountEffect(() => {
-    const root = sheetRef.current;
-    if (!root || typeof IntersectionObserver === 'undefined') return;
-    const sections = Array.from(root.querySelectorAll<HTMLElement>('.an-sec'));
-    const order = new Map<Element, number>(sections.map((el, i) => [el, i]));
-    const visible = new Set<Element>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        }
-        let best: HTMLElement | null = null;
-        let rank = -1;
-        for (const el of visible) {
-          const i = order.get(el) ?? -1;
-          if (i > rank) {
-            rank = i;
-            best = el as HTMLElement;
-          }
-        }
-        if (!best) return;
-        if (settling.current) {
-          if (best !== settling.current) return;
-          settling.current = null;
-          window.clearTimeout(settleTimer.current);
-        }
-        const id = best.dataset.id;
-        if (!id || id === activeRef.current) return;
-        fromScroll.current = id;
-        selectRef.current(id);
-      },
-      { root, rootMargin: SPY_MARGIN, threshold: 0 }
-    );
-    sections.forEach((el) => observer.observe(el));
-    return () => {
-      observer.disconnect();
-      window.clearTimeout(settleTimer.current);
-    };
-  });
-
-  /* the active part changed from outside the book: bring it to the read line; a deep link lands without motion */
-  useLayoutWork(
-    () => {
-      const wasLanded = landed.current;
-      if (ready) landed.current = true;
-      const previous = lastActive.current;
-      lastActive.current = active;
-      if (previous === null || previous === active) return;
-      if (fromScroll.current === active) {
-        fromScroll.current = null;
-        return;
-      }
-      scrollTo(active, wasLanded ? scrollBehavior() : 'instant');
-    },
-    { dependencies: [active, ready] }
-  );
-
-  const onContents = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    if (id === activeRef.current) scrollTo(id, scrollBehavior());
-    else select(id);
-  };
+  const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.an-sec', active, select, ready, smooth: true });
+  jumpRef.current = jump;
 
   return (
     <div className='an-book pt-book-col'>

@@ -1,21 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import type { MouseEvent, RefObject } from 'react';
+import type { RefObject } from 'react';
 import { useMemo, useRef } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
+import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
 import { backgroundLabel } from '@/lib/graphics-model';
 import type { Block, Entry } from '@/lib/graphics-model';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
+import { rangeText } from '@/lib/shell-data';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
-import { useLayoutWork } from '@/lib/use-layout-work';
-import { useMountEffect } from '@/lib/use-mount-effect';
 
 import { VariantFigure } from './VariantFigure';
 
@@ -39,25 +39,6 @@ const SIDEBAR_AREA: Readonly<Record<string, string>> = {
   'fuma-nama': 'Fuma Nama',
 };
 
-/** The read line: the lowest row crossing the top tenth of the sheet is the one being read. */
-const SPY_MARGIN = '0px 0px -90% 0px';
-/** How long the spy waits for a programmatic scroll to reach its row before it reads the page again. */
-const SETTLE_MS = 1200;
-
-function cssEscape(value: string): string {
-  return typeof CSS !== 'undefined' && 'escape' in CSS ? CSS.escape(value) : value;
-}
-
-function scrollBehavior(): ScrollBehavior {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-}
-
-function rangeText(entries: readonly Entry[]): string {
-  const first = entries[0];
-  const last = entries[entries.length - 1];
-  if (!first || !last) return '';
-  return entries.length > 1 ? `${first.n} to ${last.n}` : first.n;
-}
 
 /** The meta line under a row: the ground, the size of the first version, the number of versions. */
 function metaText(entry: Entry): string {
@@ -97,117 +78,18 @@ type GraphicsBookProps = {
 /**
  * The set read top to bottom inside the flow sheet: a head with the counts,
  * a contents list, then every section under a divider as ruled rows, one
- * per image with its figure. Owns the reading state the way the skills
- * book does: an IntersectionObserver marks the row under the read line and
- * selects it through the shell; a selection from anywhere else scrolls the
- * sheet to the row and mutes the spy until it arrives.
+ * per image with its figure. The reading state is the shared read line
+ * (useReadLine): the row under the line is selected through the shell, and
+ * a selection from anywhere else scrolls the sheet to the row.
  */
 function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: GraphicsBookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
-  const activeRef = useRef(active);
-  activeRef.current = active;
-  const selectRef = useRef(select);
-  selectRef.current = select;
-
-  const lastActive = useRef<string | null>(null);
-  const landed = useRef(false);
-  const fromScroll = useRef<string | null>(null);
-  const settling = useRef<Element | null>(null);
-  const settleTimer = useRef(0);
+  const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.gx-row', active, select, ready, smooth: true });
+  jumpRef.current = jump;
 
   const total = useMemo(() => blocks.reduce((n, block) => n + block.entries.length, 0), [blocks]);
-
-  const rowFor = (id: string): HTMLElement | null =>
-    sheetRef.current?.querySelector<HTMLElement>(`.gx-row[data-id="${cssEscape(id)}"]`) ?? null;
-
-  const scrollTo = (id: string, behavior: ScrollBehavior) => {
-    const row = rowFor(id);
-    if (!row) return;
-    settling.current = row;
-    window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(() => {
-      settling.current = null;
-    }, SETTLE_MS);
-    row.scrollIntoView({ block: 'start', behavior });
-  };
-
-  jumpRef.current = (id: string) => scrollTo(id, scrollBehavior());
-
-  useMountEffect(() => {
-    const root = sheetRef.current;
-    if (!root || typeof IntersectionObserver === 'undefined') return;
-    const rows = Array.from(root.querySelectorAll<HTMLElement>('.gx-row'));
-    const order = new Map<Element, number>(rows.map((el, i) => [el, i]));
-    const visible = new Set<Element>();
-    const lowest = (): HTMLElement | null => {
-      let best: HTMLElement | null = null;
-      let rank = -1;
-      for (const el of visible) {
-        const i = order.get(el) ?? -1;
-        if (i > rank) {
-          rank = i;
-          best = el as HTMLElement;
-        }
-      }
-      return best;
-    };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target);
-          else visible.delete(entry.target);
-        }
-        const best = lowest();
-        if (!best) return;
-        if (settling.current) {
-          if (best !== settling.current) return;
-          settling.current = null;
-          window.clearTimeout(settleTimer.current);
-        }
-        const id = best.dataset.id;
-        if (!id || id === activeRef.current) return;
-        fromScroll.current = id;
-        selectRef.current(id);
-      },
-      { root, rootMargin: SPY_MARGIN, threshold: 0 }
-    );
-    rows.forEach((el) => observer.observe(el));
-    const onScrollEnd = () => {
-      if (!settling.current) return;
-      settling.current = null;
-      window.clearTimeout(settleTimer.current);
-    };
-    root.addEventListener('scrollend', onScrollEnd);
-    return () => {
-      observer.disconnect();
-      root.removeEventListener('scrollend', onScrollEnd);
-      window.clearTimeout(settleTimer.current);
-    };
-  });
-
-  useLayoutWork(
-    () => {
-      const wasLanded = landed.current;
-      if (ready) landed.current = true;
-      const previous = lastActive.current;
-      lastActive.current = active;
-      if (previous === null || previous === active) return;
-      if (fromScroll.current === active) {
-        fromScroll.current = null;
-        return;
-      }
-      scrollTo(active, wasLanded ? scrollBehavior() : 'instant');
-    },
-    { dependencies: [active, ready] }
-  );
-
-  const onContents = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    if (id === activeRef.current) scrollTo(id, scrollBehavior());
-    else select(id);
-  };
 
   return (
     <div className='gx-book pt-book-col'>

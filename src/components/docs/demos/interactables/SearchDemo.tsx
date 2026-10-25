@@ -59,7 +59,7 @@ export default function SearchDemo() {
       tag='<Search />'
     >
       <DemoViewport keys={{ search: true }} label='The search in a small shell: / opens it while focus is inside' shell={shell}>
-        <div aria-label='Viewer controls' className='pt-toolbar' role='toolbar'>
+        <div aria-label='Viewer controls' className='pt-toolbar' role='group'>
           <div className='pt-bar-l'>
             <span className='pt-bar-brand'>
               <PtMark />

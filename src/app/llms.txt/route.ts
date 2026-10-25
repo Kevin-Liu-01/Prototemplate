@@ -14,8 +14,7 @@ import { SITE_SURFACES } from '@/lib/surfaces';
  * docs site (content/docs through src/lib/source.ts, split into the docs,
  * the components and the handbook by folder), the generated skills
  * registry, the surfaces' Pages and Knowledge rows and the directions.
- * Every link is on www, and every docs page names its Markdown twin. It
- * replaced the hand-kept public/llms.txt on 2026-10-15.
+ * Every link is on www, and every docs page names its Markdown twin.
  */
 export const dynamic = 'force-static';
 

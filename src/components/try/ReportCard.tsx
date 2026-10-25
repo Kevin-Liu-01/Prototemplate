@@ -6,7 +6,6 @@ import CategoryMark from './CategoryMarks';
 import TryEvidenceModal from './TryEvidenceModal';
 import TryHelpTip from './TryHelpTip';
 
-import type { CSSProperties } from 'react';
 import type { Report } from '@/lib/try/analyze';
 
 export type ReportCardState =
@@ -127,7 +126,7 @@ function ScoreMeter({ score }: { score: number | null }) {
           so its glide never registers as a layout shift */}
       <span
         className='try-meter-mark'
-        style={{ '--try-mark-at': at } as CSSProperties}
+        style={{ '--try-mark-at': at }}
       />
     </div>
   );
@@ -232,7 +231,7 @@ export default function ReportCard({
                  hit area stretches over the row in CSS, so the help
                  tooltip's button never nests inside another control */
               tabIndex={-1}
-              style={{ '--try-row-i': i } as CSSProperties}
+              style={{ '--try-row-i': i }}
             >
               <span className='try-cat-icon'>
                 <CategoryMark id={row.id} className='try-cat-mark' />

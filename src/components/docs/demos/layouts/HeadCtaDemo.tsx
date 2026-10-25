@@ -82,7 +82,7 @@ export default function HeadCtaDemo() {
     { dependencies: [part, width, copy, lead, mark, ring], revertOnUpdate: true }
   );
 
-  const vars = {
+  const vars: CSSProperties = {
     '--lay-col': `${m.column}px`,
     '--m-gut': `${m.gut}px`,
     '--m-head-top': `${m.headTop}px`,
@@ -96,7 +96,7 @@ export default function HeadCtaDemo() {
     '--m-btn': `${m.btn}px`,
     '--m-btn-type': `${btnType}px`,
     '--m-btn-track': '-0.005em',
-  } as CSSProperties;
+  };
 
   const lines = reading.h2;
   const status =

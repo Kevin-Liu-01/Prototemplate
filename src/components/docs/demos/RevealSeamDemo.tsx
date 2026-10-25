@@ -3,7 +3,6 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
 
 import RevealSeam from '@/app/d/toolchain/sections/RevealSeam';
 
@@ -97,7 +96,7 @@ export default function RevealSeamDemo() {
       stageClassName='dmo-seam'
       tag={`<RevealSeam defaultCut={${REST}} />`}
     >
-      <div className='dmo-seam-box' ref={box} style={{ '--seam-cut': `${REST}%` } as CSSProperties}>
+      <div className='dmo-seam-box' ref={box} style={{ '--seam-cut': `${REST}%` }}>
         <div className='dmo-seam-main'>
           <span className='dmo-seam-file'>rendered ui</span>
           <p dir={copy.rtl ? 'rtl' : undefined} lang={loc}>

@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 import { Icon } from '@/components/viewer/icons';
+import { pad2 } from '@/lib/shell-data';
 
 import { Action, Choice, Range, Toggle } from '../controls';
 import Plate from '../Plate';
@@ -22,7 +23,7 @@ const ADDS: readonly PartKind[] = ['section', 'hatch', 'band', 'hero'];
 
 /** One line of skeleton type: a box one line tall with a bar at the glyphs' height. */
 function Line({ size, lh, width, strong = false }: { size: number; lh: number; width: string; strong?: boolean }) {
-  const style = { '--ln-size': `${size}px`, '--ln-lh': lh, '--ln-w': width } as CSSProperties;
+  const style: CSSProperties = { '--ln-size': `${size}px`, '--ln-lh': lh, '--ln-w': width };
   return (
     <span className={strong ? 'dmo-lay-ln is-strong' : 'dmo-lay-ln'} style={style}>
       <i />
@@ -65,7 +66,7 @@ function PartView({ box, m, measures }: { box: PartBox; m: LandingMetrics; measu
   const cls = ['dmo-lay-part', `is-${box.kind}`, box.top ? 'has-top' : '', box.bottom ? 'has-bottom' : '', measures ? 'is-measured' : '']
     .filter(Boolean)
     .join(' ');
-  const style = { height: box.height } as CSSProperties;
+  const style: CSSProperties = { height: box.height };
   if (box.kind === 'hatch') return <div className={cls} style={style} />;
   if (box.kind === 'hero') {
     return (
@@ -181,10 +182,10 @@ export default function PageSkeletonDemo() {
       ));
   };
 
-  const vars = {
+  const vars: CSSProperties = {
     '--lay-col': `${m.column}px`,
     '--lay-gut': `${m.gut}px`,
-  } as CSSProperties;
+  };
 
   return (
     <Plate
@@ -213,7 +214,7 @@ export default function PageSkeletonDemo() {
           <ol className='dmo-lay-parts'>
             {boxes.map((box, i) => (
               <li className={box.above === 'doubled' || box.above === 'missing' ? 'is-fault' : undefined} key={box.id}>
-                <span className='dmo-lay-parts-n'>{String(i + 1).padStart(2, '0')}</span>
+                <span className='dmo-lay-parts-n'>{pad2(i + 1)}</span>
                 <span className='dmo-lay-parts-name'>{PART_NAMES[box.kind]}</span>
                 <span className='dmo-lay-parts-note'>{seamNote(box, boxes[i - 1])}</span>
                 <span className='dmo-lay-parts-acts'>

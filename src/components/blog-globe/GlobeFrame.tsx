@@ -23,9 +23,6 @@ const FIT_BELOW = 600;
 /** How far outside the viewport a frame starts to load its figure. */
 const ARM_MARGIN = '320px 0px';
 
-/** Custom properties are legal inline styles but absent from CSSProperties. */
-type StyleVars = CSSProperties & Record<`--${string}`, string>;
-
 export type GlobeFrameLayout = 'scale' | 'fit';
 
 export type GlobeFrameProps = {
@@ -120,7 +117,7 @@ export default function GlobeFrame({ round, variant, title, layout = 'fit' }: Gl
   /* the box's size is CSS alone (blog-globe.css), so the first paint
      already holds the figure's space; the frame's own size needs the
      measured width, and the frame only mounts after that */
-  const style: StyleVars = {
+  const style: CSSProperties = {
     '--bgf-ratio': `${STAGE_COLUMN} / ${column}`,
     '--bgf-phone': `${phone}px`,
     '--bgf-w': `${fit && width !== null ? width : STAGE_COLUMN}px`,

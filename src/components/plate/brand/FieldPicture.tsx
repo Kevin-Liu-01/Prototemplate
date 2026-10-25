@@ -2,7 +2,7 @@
 
 import { useContext } from 'react';
 
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import { FieldControllerContext } from '@/components/plate/brand/fieldController';
 import type { PictureName } from '@/components/plate/brand/moodPictures';
 
@@ -14,7 +14,7 @@ import type { PictureName } from '@/components/plate/brand/moodPictures';
 export default function FieldPicture({ name }: { name: PictureName }): null {
   const controller = useContext(FieldControllerContext);
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     controller.current?.setPicture(name);
   });
 

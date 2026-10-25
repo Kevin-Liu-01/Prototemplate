@@ -198,36 +198,11 @@
   font-feature-settings: 'cv11', 'ss01';
 }
 
-.typo-section-heading {
-  font-size: 1.125rem;
-  line-height: 1.3;
-  font-weight: 500;
-  letter-spacing: -0.016em;
-  text-wrap: balance;
-  font-feature-settings: 'cv11', 'ss01';
-}
-
-.typo-figure {
-  font-size: 1.5rem;
-  line-height: 1;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
 .typo-lede {
   font-size: 0.9375rem;
   line-height: 1.55;
   color: var(--ink-2);
   max-width: 58ch;
-}
-
-/* Interface labels: form labels, ledger keys, row titles. */
-.typo-label {
-  font-size: 0.875rem;
-  line-height: 1.3;
-  font-weight: 500;
-  letter-spacing: -0.006em;
 }
 
 /* The key column of a key/value ledger. */
@@ -252,14 +227,6 @@
   letter-spacing: 0.02em;
   color: var(--titanium);
   font-variant-numeric: tabular-nums;
-}
-
-/* Fine print: the facts under a form, the smallest running text. */
-.typo-fine {
-  font-size: 0.75rem;
-  line-height: 1.55;
-  letter-spacing: 0.01em;
-  color: var(--ink-2);
 }
 
 /*
@@ -468,49 +435,6 @@
   width: 100%;
   height: 100%;
   opacity: 0.55;
-}
-
-/*
- * The page ground: nothing to the left of the plate's edge (--plate-edge,
- * set by the frame), then a long ramp to the right so the field dissolves
- * into the paper the plate sits on, with no seam.
- */
-.brand-field-ground {
-  /* The fallback lives in var(): a declaration here would shadow the frame's. */
-  mask-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0) 0,
-    rgba(0, 0, 0, 0) var(--plate-edge, 44%),
-    rgba(0, 0, 0, 0.16) calc(var(--plate-edge, 44%) + 120px),
-    rgba(0, 0, 0, 0.55) calc(var(--plate-edge, 44%) + 320px),
-    #000 calc(var(--plate-edge, 44%) + 600px)
-  );
-}
-
-/*
- * Under md the plate is centered and has no fill, so the field is a faint
- * band at the top that is gone by mid-page: the content sits on solid
- * paper and nothing reads as a box.
- */
-@media (max-width: 767px) {
-  .brand-field-ground {
-    mask-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.45) 0,
-      rgba(0, 0, 0, 0.2) 22%,
-      rgba(0, 0, 0, 0) 46%
-    );
-  }
-}
-
-.brand-field-band {
-  mask-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.12) 0%,
-    rgba(0, 0, 0, 0.4) 40%,
-    rgba(0, 0, 0, 0.85) 72%,
-    #000 100%
-  );
 }
 
 :root:not([data-theme='dark']) .brand-field {
@@ -787,7 +711,7 @@
   pointer-events: none;
 }
 
-/* The large mark, bleeding past the lower right corner the way the old plate's did. */
+/* The large mark, bleeding past the lower right corner. */
 .credits-card-watermark {
   position: absolute;
   right: -20px;

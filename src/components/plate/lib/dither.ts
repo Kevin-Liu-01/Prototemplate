@@ -66,6 +66,7 @@
  */
 
 import { clamp01, smoothstep } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /**
  * The 8x8 Bayer (ordered-dither) threshold matrix, values 0..63.
@@ -431,12 +432,6 @@ export function ditherToCanvas(
 
   const cells = width * height;
   return { width, height, cells, litRatio: cells === 0 ? 0 : lit / cells };
-}
-
-/** True when the user has asked the OS to reduce motion. */
-export function prefersReducedMotion(): boolean {
-  if (typeof window === 'undefined' || !window.matchMedia) return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 export type DitherLoopOptions = DitherOptions & {
@@ -1437,33 +1432,4 @@ export function mapField(
   transform: (value: number) => number
 ): FieldFn {
   return (u, v, t) => transform(field(u, v, t));
-}
-
-/** A square box inside a canvas, in CSS px from the canvas's top left. */
-export type GlobeBox = { left: number; top: number; side: number };
-
-/**
- * Draws `fn` inside `box` of a `width` by `height` CSS px canvas, at the
- * same tone a `side` px square canvas of its own would show, and 0
- * everywhere else. A box with `side` 0 or less is 0 everywhere. `fn`
- * receives the box's own 0..1 coordinates; the canvas cell at u, v is
- * taken to sit at `u * width`, `v * height`, which is within half a cell
- * of the loop's cell grid.
- */
-export function insetField(
-  fn: FieldFn,
-  box: GlobeBox,
-  width: number,
-  height: number
-): FieldFn {
-  const { left, top, side } = box;
-  if (!(side > 0)) return () => 0;
-  const inv = 1 / side;
-  return (u, v, t) => {
-    const x = (u * width - left) * inv;
-    if (x < 0 || x > 1) return 0;
-    const y = (v * height - top) * inv;
-    if (y < 0 || y > 1) return 0;
-    return fn(x, y, t);
-  };
 }

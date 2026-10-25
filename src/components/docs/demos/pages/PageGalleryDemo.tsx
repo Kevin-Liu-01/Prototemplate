@@ -70,7 +70,7 @@ export default function PageGalleryDemo() {
   const stateId = useId();
   const [picked, setPicked] = useState('production');
   const [width, setWidth] = useState<FrameWidth>('1440');
-  const docsTheme: FrameTheme = useTheme() === 'light' ? 'light' : 'dark';
+  const docsTheme: FrameTheme = useTheme();
   /* the reader's theme for the frame, dropped when the docs theme changes (state adjusted during render, no effect) */
   const [pin, setPin] = useState<FrameTheme | null>(null);
   const [seenDocs, setSeenDocs] = useState(docsTheme);

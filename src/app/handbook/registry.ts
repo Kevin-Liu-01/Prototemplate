@@ -181,7 +181,3 @@ export const HANDBOOK: readonly DocEntry[] = [
       'Every pnpm command in the repository and the scripts the skills bundle, each with what it does. Written by pnpm build:tools.',
   },
 ] as const;
-
-export function getHandbookDoc(slug: string): DocEntry | undefined {
-  return HANDBOOK.find((d) => d.slug === slug);
-}

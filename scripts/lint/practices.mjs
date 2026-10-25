@@ -61,6 +61,8 @@ const DARK_CLASS_NAME = /classList\.(?:add|toggle)\(\s*["']dark["']|<html\b[^>]*
    its dependency work runs in useLayoutWork (src/lib/use-layout-work.ts),
    so GSAP's 71K reaches only the routes that animate with it. */
 const SHELL_DIR = 'src/components/viewer/';
+/** The two files that may call useEffect: the site's mount hook and the sign-in plate's, whose cleanup timing differs. */
+const EFFECT_DOORS = new Set(['src/lib/use-mount-effect.ts', 'src/components/plate/hooks/effects.ts']);
 const GSAP_IMPORT = /\bfrom\s+['"](?:gsap|@gsap\/react)(?:\/[^'"]*)?['"]/;
 
 /* DESIGN.md section 3: one rail each side, drawn once by the column's own
@@ -128,7 +130,7 @@ for (const file of files) {
       if (isComment(line)) return;
       if (
         /\buseEffect\(/.test(line) &&
-        !rel.includes('use-mount-effect')
+        !EFFECT_DOORS.has(rel)
       )
         found['bare-useEffect'].push(`${rel}:${i + 1}`);
       if (/:\s*any\b|\bas any\b/.test(line))

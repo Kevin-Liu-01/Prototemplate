@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import type { ReactNode, RefObject } from 'react';
 
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -57,7 +58,6 @@ export default function SceneStage({ build, pass, stillTime, speed, playing, han
       onFail: () => setFailed(true),
     });
     handle.current = stage;
-    const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     /* the host is a slider over the turn: its value is the hand turn in degrees, wrapped to ±180 */
     const announce = () => {
       if (!turn) return;
@@ -71,7 +71,7 @@ export default function SceneStage({ build, pass, stillTime, speed, playing, han
           turn,
           rest,
           pitchLimit,
-          reduced,
+          reduced: prefersReducedMotion,
           onChange: () => {
             stage.invalidate();
             announce();

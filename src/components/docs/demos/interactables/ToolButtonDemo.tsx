@@ -88,7 +88,7 @@ export default function ToolButtonDemo() {
       stageClassName='ixa-tools'
       tag='<ToolButton title onClick icon label pressed />'
     >
-      <div className='ixa-tools-row' role='toolbar' aria-label='Toolbar buttons' onFocus={read} onPointerOver={read}>
+      <div className='ixa-tools-row' role='group' aria-label='Toolbar buttons' onFocus={read} onPointerOver={read}>
         <ToolButton
           icon='sidebar'
           pressed={list}

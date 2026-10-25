@@ -9,6 +9,8 @@
  * change, as the shared glyph field does.
  */
 
+import { onReducedMotionChange, prefersReducedMotion } from '@/lib/reduced-motion';
+
 export type Presence = {
   near: boolean;
   visible: boolean;
@@ -30,17 +32,17 @@ export type PresenceOptions = {
 
 export const MAX_DPR = 2;
 
+/** The device pixel ratio the plates draw at, capped at MAX_DPR. */
 export function readDpr(): number {
   return Math.min(MAX_DPR, Math.max(1, window.devicePixelRatio || 1));
 }
 
 export function watchPresence({ el, nearMargin = '300px 0px', onChange, onResize }: PresenceOptions): { state: Presence; dispose: () => void } {
-  const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const state: Presence = {
     near: false,
     visible: false,
     hidden: document.hidden,
-    reduced: reducedQuery.matches,
+    reduced: prefersReducedMotion(),
     width: el.clientWidth,
     height: el.clientHeight,
     dpr: readDpr(),
@@ -72,11 +74,10 @@ export function watchPresence({ el, nearMargin = '300px 0px', onChange, onResize
   };
   document.addEventListener('visibilitychange', onVisibility);
 
-  const onReduced = () => {
-    state.reduced = reducedQuery.matches;
+  const stopReduced = onReducedMotionChange(() => {
+    state.reduced = prefersReducedMotion();
     changed();
-  };
-  reducedQuery.addEventListener('change', onReduced);
+  });
 
   let frame = 0;
   const measure = () => {
@@ -115,7 +116,7 @@ export function watchPresence({ el, nearMargin = '300px 0px', onChange, onResize
       seen.disconnect();
       sizes.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
-      reducedQuery.removeEventListener('change', onReduced);
+      stopReduced();
       zoom?.removeEventListener('change', onZoom);
       if (frame) cancelAnimationFrame(frame);
     },

@@ -26,10 +26,9 @@
 
 /* one ink and one hairline family per book: the article layer reads the
    shell's inks and hairs, so the head, the dividers and the chapters under
-   them are the same ink and draw one rule color (AUDIT-HEADS-NOW 2.3).
-   inherit on a custom property takes the shell's value from the parent;
-   :root lifts the rule over [data-theme='dark'] .pt-root. (docs.css holds
-   the same ink rule for the docs' row bodies.) */
+   them are the same ink and draw one rule color. inherit on a custom
+   property takes the shell's value from the parent; :root lifts the rule
+   over [data-theme='dark'] .pt-root. */
 :root .ptb-book.pt-root {
   --pt-ink: inherit;
   --pt-ink-2: inherit;
@@ -50,7 +49,7 @@
   margin-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
 }
 
-/* the body starts 14px under the h2's box, the old h2 + p step */
+/* the body starts 14px under the h2's box: the h2 + p step */
 .ptb-book .ptb-page-body > :first-child {
   margin-top: 14px;
 }

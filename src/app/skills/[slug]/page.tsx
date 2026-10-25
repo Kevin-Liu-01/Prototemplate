@@ -16,7 +16,7 @@ export function generateStaticParams() {
   return SKILLS.map((skill) => ({ slug: skill.id }));
 }
 
-/* a slug outside the curated set (the generated set it replaced held 267) is a 404 */
+/* a slug outside the curated set is a 404 */
 export const dynamicParams = false;
 
 type Params = { params: Promise<{ slug: string }> };

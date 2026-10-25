@@ -18,9 +18,8 @@
 /* ---- book mode: the article stands full-bleed in the stage (directive
    8.2). One scroll region on the shell's paper, no sheet mat and no column
    cap: the article's own 1170px rail with one hairline at each edge centers
-   itself the way it did on the old page, and the hero measures against the
-   same box it did there. The region paints the same paper as the
-   stage. ---- */
+   itself in the region, and the hero measures against that box. The region
+   paints the same paper as the stage. ---- */
 .gv-flow {
   position: absolute;
   inset: 0;

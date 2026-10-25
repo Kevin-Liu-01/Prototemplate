@@ -15,7 +15,7 @@ import {
   type DevState,
 } from '@/components/plate/gallery/devStates';
 import { useFlow } from '@/components/plate/gallery/flow';
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import { Button } from '@/components/plate/ui/button';
 import {
   Select,
@@ -307,7 +307,7 @@ function Console({ states, currentId }: DevStateConsoleProps) {
     show(states[(target + states.length) % states.length]!.id);
   }
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     const media = window.matchMedia(PHONE_QUERY);
     setPhone(media.matches);
 
@@ -432,7 +432,7 @@ function Console({ states, currentId }: DevStateConsoleProps) {
     if (typeaheadMatches(states, search)) event.preventDefault();
   }
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     function onKey(event: KeyboardEvent) {
       /* The open state list owns the keys: its arrows move the
          highlight, never the state. */

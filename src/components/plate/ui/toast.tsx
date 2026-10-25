@@ -6,7 +6,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import { cn } from '@/components/plate/lib/utils';
 
 const ToastProvider = ToastPrimitives.Provider;
@@ -286,7 +286,7 @@ function toast({ ...props }: ToastInput) {
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState);
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     listeners.push(setState);
     return () => {
       const index = listeners.indexOf(setState);
@@ -314,7 +314,7 @@ function Toaster({ viewportClassName }: { viewportClassName?: string } = {}) {
   // own stacking context (e.g. a `position: fixed` shell), the viewport's
   // z-index can't compete with portaled dialog overlays and gets obscured.
   const [mounted, setMounted] = React.useState(false);
-  useMountEffect(() => setMounted(true));
+  usePlateMountEffect(() => setMounted(true));
 
   return (
     <ToastProvider duration={10000}>

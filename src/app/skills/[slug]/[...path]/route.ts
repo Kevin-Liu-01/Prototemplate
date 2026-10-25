@@ -10,8 +10,8 @@ import { SKILLS, getSkill } from '@/lib/skills';
  * the registry lists (/skills/<slug>/references/<file>,
  * /skills/<slug>/scripts/<file>). Every address is prerendered at build
  * time from skills/<slug>/ and served as a static file; any other path
- * under a skill is a 404, since dynamicParams is off. The old raw links
- * (/skills/<slug>.md) redirect here from next.config.ts. SKILL.md is the
+ * under a skill is a 404, since dynamicParams is off. /skills/<slug>.md
+ * redirects here from next.config.ts. SKILL.md is the
  * skill page's Markdown twin (its text/markdown alternate), so it names
  * the page as its canonical in a Link header.
  */

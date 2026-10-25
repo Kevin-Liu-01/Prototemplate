@@ -4,14 +4,12 @@
  * two paper cells, and one label per line naming its single owner.
  *
  * Paint order is part of the lesson: the row's surfaces first, the page's
- * lines over them. An earlier revision drew the lines first and butted the
- * ground's reveal against the rail, so the reveal and the rail hairline
- * stacked into a doubled border, the antipattern this figure exists to
- * teach. Now the outer cells sit flush at the rails (the rail already draws
- * that line) and the two plus marks on the nav's close are the sanctioned
- * border crosses, declaring those crossings deliberate. The second pair
- * 10px outside the column that this figure once drew is retired
- * (DESIGN.md section 3): one rail each side, one owner.
+ * lines over them. The outer cells sit flush at the rails, since the rail
+ * already draws that line; a reveal butted against the rail would stack
+ * with the rail hairline into a doubled border, the antipattern this figure
+ * exists to teach. The two plus marks on the nav's close are the sanctioned
+ * border crosses, declaring those crossings deliberate. There is one rail
+ * each side and one owner per line (DESIGN.md section 3).
  */
 export default function RailFigure() {
   return (

@@ -8,9 +8,9 @@ import DevStateConsole from '@/components/plate/gallery/DevStateConsole';
 import DevStateView from '@/components/plate/gallery/DevStateView';
 import { devStates, findDevState } from '@/components/plate/gallery/devStates';
 import { FlowProvider, useFlow } from '@/components/plate/gallery/flow';
-import { useEffectOn } from '@/components/plate/hooks/use-mount-effect';
 import type { CliCallbackState } from '@/components/plate/lib/cliCallbackPages';
 import CliCallbackSnapshot from '@/components/plate/pages/cli/CliCallbackSnapshot';
+import { useLayoutWork } from '@/lib/use-layout-work';
 
 type PlateGalleryProps = {
   /**
@@ -55,16 +55,19 @@ function Gallery() {
   const { current } = useFlow();
   const state = findDevState(current);
 
-  useEffectOn(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('state') === current) return;
-    params.set('state', current);
-    window.history.replaceState(
-      window.history.state,
-      '',
-      `${window.location.pathname}?${params.toString()}`
-    );
-  }, [current]);
+  useLayoutWork(
+    () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('state') === current) return;
+      params.set('state', current);
+      window.history.replaceState(
+        window.history.state,
+        '',
+        `${window.location.pathname}?${params.toString()}`
+      );
+    },
+    { dependencies: [current] }
+  );
 
   let content: ReactNode;
   if (state.kind === 'html') {

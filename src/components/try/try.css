@@ -269,8 +269,8 @@
    ONE element, four faces: the idle hint, the live run note, the error
    line and the success line all occupy this same slot under the bar,
    inside the bar's own frame — an inner hairline rule separates the
-   two. Constant height (the old floating slot's reserve folded in), so
-   every state swap is a repaint, never a reflow. Led by a 6px square
+   two. Constant height, so every state swap is a repaint, never a
+   reflow. Led by a 6px square
    tick: invisible at idle (a placeholder, so the text never moves),
    pulsing accent while the run is live, the F-red on error, the overall
    grade's colour on done. */
@@ -601,7 +601,7 @@
 }
 
 /* the finish: the assembled border stands and re-inks in the overall
-   grade's colour (the old separate ring folded into it) */
+   grade's colour */
 .try-fig[data-state='done'] .try-fig-seatseg {
   stroke: var(--try-fig-grade, var(--tc-accent));
   stroke-dashoffset: 0;

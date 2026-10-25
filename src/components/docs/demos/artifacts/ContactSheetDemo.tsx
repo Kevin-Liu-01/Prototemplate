@@ -34,7 +34,7 @@ function tileStyle(sheet: FilmSheet, frame: number, armed: boolean): CSSProperti
     '--sheet-col': frame % sheet.columns,
     '--sheet-row': Math.floor(frame / sheet.columns),
     backgroundImage: armed ? `url("${sheet.src}")` : undefined,
-  } as CSSProperties;
+  };
 }
 
 /** A frame's half second: frame k is taken from the middle of k / 2 to (k + 1) / 2 s. */

@@ -5,7 +5,7 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid';
 
 import FieldPicture from '@/components/plate/brand/FieldPicture';
 import { useFlow } from '@/components/plate/gallery/flow';
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import {
   SIGNUP_CREDIT_GRANT_DOLLARS,
   formatWholeDollars,
@@ -106,7 +106,7 @@ export default function PaymentStep({
     setSkipDialogOpen(true);
   }
 
-  useMountEffect(() => {
+  usePlateMountEffect(() => {
     // Card already on file (refresh, back-button, abandoned 3DS): if it
     // can't earn the grant, raise the alert immediately.
     if (initialHasCard && initialGrantAvailability === 'card-used') {

@@ -10,7 +10,7 @@ import {
 
 import FieldPicture from '@/components/plate/brand/FieldPicture';
 import { useFlow } from '@/components/plate/gallery/flow';
-import { useMountEffect } from '@/components/plate/hooks/use-mount-effect';
+import { usePlateMountEffect } from '@/components/plate/hooks/effects';
 import { submitSurveyAction } from '@/components/plate/lib/actions';
 import {
   isPlaceholderOrInternalDomain,
@@ -125,7 +125,7 @@ export default function SurveyStep({
   const websiteTimer = useRef<number | null>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
 
-  useMountEffect(() => () => {
+  usePlateMountEffect(() => () => {
     if (websiteTimer.current !== null) {
       window.clearTimeout(websiteTimer.current);
     }

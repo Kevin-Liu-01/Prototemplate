@@ -23,7 +23,7 @@ const PAYLOAD = `{
 export default function SeamDemo() {
   const box = useRef<HTMLDivElement>(null);
   return (
-    <div className='ptc-seam-box' ref={box} style={{ '--seam-cut': '58%' } as CSSProperties}>
+    <div className='ptc-seam-box' ref={box} style={{ '--seam-cut': '58%' }}>
       <div className='ptc-seam-main'>
         <span className='ptc-seam-file'>rendered ui</span>
         <p lang='es'>
