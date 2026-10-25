@@ -70,8 +70,8 @@ export default function Page() {
           />
           <HomeHero />
 
-          {/* The roster: orbit carries the earlier system pieces the
-              final superseded. */}
+          {/* The roster: orbit carries the system pieces the final
+              direction does not use. */}
           <V0Customers heading='Trusted by companies around the globe.' />
           <div aria-hidden className='v0-hatch' />
           <V0DevWindow />

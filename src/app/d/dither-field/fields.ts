@@ -289,7 +289,7 @@ export function heroTransmission(
       sweep reads as travel across the plate, not concentric halos. */
   const VS = 1.18;
   /** Pocket half-extents in metric units — sized to hug the one source line
-      (the headline lives OUTSIDE the plate now, so the paper stays small). */
+      (the headline lives OUTSIDE the plate, so the paper stays small). */
   const WX = 0.21;
   const WY = 0.15;
 

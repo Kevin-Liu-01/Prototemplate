@@ -104,7 +104,7 @@ export default function Hero() {
         />
 
         <div className='cf-hero-in'>
-          {/* The measured obstacle is a real surface now: a white card in the
+          {/* The measured obstacle is a real surface: a white card in the
               hero-card grammar, and the field parts around its box. */}
           <div className='cf-hero-core' ref={core}>
             <Image

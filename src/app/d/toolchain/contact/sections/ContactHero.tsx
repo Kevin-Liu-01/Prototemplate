@@ -5,10 +5,10 @@ import { useRef } from 'react';
 import { useQuietReveal } from '../../sections/reveal';
 
 /**
- * The old page's opening, re-set on the ruled column: its title ("Get in
+ * The landing contact page's opening on the ruled column: its title ("Get in
  * touch"), and its two feature blurbs — technical support and general
- * inquiries — as a pair of ruled cells instead of icon bullets. Copy is
- * verbatim from ContactPage.tsx on the landing app.
+ * inquiries — as a pair of ruled cells. Copy is verbatim from ContactPage.tsx
+ * on the landing app.
  */
 export default function ContactHero() {
   const root = useRef<HTMLElement>(null);

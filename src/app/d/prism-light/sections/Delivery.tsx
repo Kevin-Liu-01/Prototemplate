@@ -29,7 +29,7 @@ import { pauseWhileHidden } from '@/app/d/toolchain/sections/visibility';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /* surface.css is the one diagram sheet scoped by ROOT class, not by diagram
-   class — the surface components now come from toolchain, so the fork's
+   class — the surface components come from toolchain, so the fork's
    rescoped copy has to stay in the CSS graph explicitly. */
 import '../diagrams/surface/surface.css';
 import './bento-motion.css';

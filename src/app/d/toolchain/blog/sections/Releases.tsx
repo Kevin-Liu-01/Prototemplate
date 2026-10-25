@@ -6,10 +6,10 @@ import { useQuietReveal } from '../../sections/reveal';
 import { postHref, RELEASES } from '../posts';
 
 /**
- * The Updates column of the old page, promoted from a sidebar to what it
- * always was: a release ledger. Eighteen real rows from content/devlog/en-US,
- * newest first — date in mono, the package@version title in the sans, a
- * one-line dek from the post's own opening, tags as mono chips.
+ * The Updates column of the landing page as a release ledger: eighteen real
+ * rows from content/devlog/en-US, newest first — date in mono, the
+ * package@version title in the sans, a one-line dek from the post's own
+ * opening, tags as mono chips.
  */
 export default function Releases() {
   const root = useRef<HTMLElement>(null);

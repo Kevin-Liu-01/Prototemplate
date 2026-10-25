@@ -3,10 +3,9 @@
 import { Languages } from 'lucide-react';
 import { useRef } from 'react';
 
-/* EdgeGlobe and LocaleRouting were stale snapshots of toolchain's — the
-   imports point at the source of truth now (v2 globe, LocaleTag chips ride
-   along). The lang family stays fork-local: its lang.css carries this
-   fork's larger diagram sizes. */
+/* EdgeGlobe and LocaleRouting import from toolchain, the source of truth
+   (v2 globe, with LocaleTag chips). The lang family stays fork-local: its
+   lang.css carries this fork's larger diagram sizes. */
 import EdgeGlobe from '@/app/d/toolchain/diagrams/EdgeGlobe';
 import LocaleRouting from '@/app/d/toolchain/diagrams/LocaleRouting';
 

@@ -215,7 +215,7 @@
   stroke-linecap: round;
 }
 
-/* content marks read against the frosted plate, not the old wireframe */
+/* content marks read against the frosted plate */
 .singularity-root .tcb .tcstack .iso-face-mark {
   fill: rgba(255, 255, 255, 0.42);
 }
@@ -498,7 +498,7 @@
   color: var(--tcb-dim);
 }
 
-/* The artifact zone is its OWN nested box now (founder directive): the
+/* The artifact zone is its OWN nested box: the
    light bento's frame grammar — hairline-edged mat, 2px reveal, card with
    a tighter radius so the mat fills the corner notches — in the band's
    dark surfaces. Heading and one-liner stay outside, on the cell. */

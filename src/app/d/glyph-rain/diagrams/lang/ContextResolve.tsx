@@ -130,8 +130,8 @@ export default function ContextResolve({ className, accent = true, title }: Lang
       if (paths.length !== BRANCHES.length || pulses.length !== BRANCHES.length || cards.length !== BRANCHES.length)
         return;
 
-      /* 0.7, not lower: the resting branch holds an ink-filled button now, and
-         a deeper fade turned it into a grey slab rather than a quieter card. */
+      /* 0.7, not lower: the resting branch holds an ink-filled button, and
+         a deeper fade turns it into a grey slab rather than a quieter card. */
       const settle = (i: number) => {
         gsap.set(paths, { autoAlpha: 0 });
         gsap.set(cards, { autoAlpha: 0.7, y: 0 });

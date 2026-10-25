@@ -45,8 +45,8 @@
   color: var(--tc-ink-2);
 }
 
-/* The old page's two feature blurbs, as ruled cells instead of icon bullets.
-   Text-only, so never framed. */
+/* The landing contact page's two feature blurbs, as ruled cells. Text-only,
+   so never framed. */
 .toolchain-root .tcc-kind {
   padding-top: clamp(22px, 2.4vw, 28px);
   padding-bottom: clamp(24px, 2.6vw, 30px);

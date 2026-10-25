@@ -36,8 +36,8 @@ export const metadata = route.metadata;
  * Singularity · Signal home — the input/output split hero over the
  * exploration roster. The dossier home is the final direction; signal
  * keeps its own hero (one terminal window, two panes: cause on the
- * left, effect on the right) and carries the previous-generation
- * sections the final retired, so the drop is reviewable side by side.
+ * left, effect on the right) and carries the sections the final
+ * direction does not use, so the two are reviewable side by side.
  */
 export default function Page() {
   return (
@@ -68,7 +68,7 @@ export default function Page() {
           />
           <HomeHero />
           {/* The exploration roster: the dossier is the final direction,
-              so this page carries the previous generation it retired.
+              so this page carries the sections the final does not use.
               The pinned scroll story and the review workspace come from
               toolchain; Assurance and TransmissionLog are signal's own
               sections, built for this home and mounted nowhere else. */}

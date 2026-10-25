@@ -378,8 +378,8 @@ export default function ReviewWorkspace({
     <>
       <div className='tcr-bar'>
               {chrome === 'product' ? (
-                /* the bar speaks the surface's real address (founder: the
-                   rail captions moved into the window chrome) */
+                /* the bar speaks the surface's real address; the window
+                   chrome carries the rail captions */
                 <span className='tcr-fact'>
                   <Table2 className='tcr-fico' aria-hidden />
                   dash.generaltranslation.com

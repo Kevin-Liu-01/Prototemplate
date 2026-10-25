@@ -1489,7 +1489,7 @@
 /* ---------- the dark inset panel ----------
    Code, config and diffs are the one artifact the references never leave on
    paper: they sit on their own toned surface. Every `tc-code` sample is that
-   surface now — `#101010`, small radius, white 13.5/24 mono — so the page
+   surface — `#101010`, small radius, white 13.5/24 mono — so the page
    carries a dark panel at every depth between the hero terminal and the band,
    instead of pale marks on paper. Inside a mount the panel keeps its box: the
    mat frames it, the panel carries the mass, and the two jobs stay distinct. */
@@ -1805,11 +1805,10 @@
 }
 
 /* ---------- the ruled band ----------
-   Four short items across the column used to be four separate mounted cells,
-   and four cells of identical shape in a rank is the one thing this direction
-   cannot survive: the row read as a card grid and the frame stopped meaning
-   anything. So the four are one mount now, divided by the same hairline the
-   page uses between sections. It is a spec table rather than a row of cards —
+   Four short items across the column share one mount, divided by the same
+   hairline the page uses between sections. Four cells of identical shape in a
+   rank read as a card grid, and the frame stops meaning anything; this
+   direction cannot survive that. It is a spec table rather than a row of cards —
    a shell that appears once, and one border level shallower, because each
    column is separated by a rule instead of by a box. */
 .eventhorizon-root .tc-quad {
@@ -1879,7 +1878,7 @@
 }
 
 /* framed and full-bleed at once: the art still runs to an edge, but the edge
-   is now the card's, so the card clips it to the inner 2px radius */
+   is the card's, so the card clips it to the inner 2px radius */
 .eventhorizon-root .tc-cell.is-bleed.is-framed > .tc-card {
   padding: 0;
   overflow: hidden;
@@ -1896,20 +1895,18 @@
   background: var(--tc-plate);
 }
 
-/* Trimmed from 460. This drawing sets the height of the row it is in, and the
-   code panel beside it now ends level with it rather than half a card short. */
+/* This drawing sets the height of the row it is in; at this width the code
+   panel beside it ends level with it rather than half a card short. */
 .eventhorizon-root .tc-bleed-art .iso {
   max-width: 412px;
   --iso-label-size: 6px;
 }
 
-/* The globe used to be the page's second full-bleed cell, which made it the one
-   object in the family sitting on a tinted field instead of on the page's own
-   surface — and with the mat missing, that tint was doing the edge work the
-   frame should have been doing. It is a mounted drawing now, like every other
-   object here, centred on the card. The cage is drawn at 1.2 viewBox units and
-   the cell scales it about 2.4x, so the stroke is stepped down to keep the wire
-   at a hairline on screen rather than a soft 3px grey. */
+/* The globe is a mounted drawing like every other object here, centred on the
+   card, so it sits on the page's own surface and the frame does the edge work.
+   The cage is drawn at 1.2 viewBox units and the cell scales it about 2.4x, so
+   the stroke is stepped down to keep the wire at a hairline on screen rather
+   than a soft 3px grey. */
 .eventhorizon-root .tc-art-globe {
   width: 100%;
   max-width: 560px;
@@ -1997,9 +1994,8 @@
   margin-top: 12px;
 }
 
-/* stat cell — a ruled ledger on the second surface. The isometric glyphs that
-   used to sit beside these numbers carried zero data — the founder's ban on
-   ornamental icons, verbatim — so the rows are a table now: value in ink,
+/* stat cell — a ruled ledger on the second surface. Ornamental icons beside
+   these numbers would carry no data, so the rows are a table: value in ink,
    label muted, one hairline per row, the whole thing on the plate. The rows
    spread over whatever height the script field beside them settles on. */
 .eventhorizon-root .tc-stats {
@@ -2041,7 +2037,7 @@
   color: var(--tc-ink-2);
 }
 
-/* inset panel cell — the frame now does what the sunk surface used to */
+/* inset panel cell: the frame carries the edge work, so the cell needs no sunk surface */
 .eventhorizon-root .tc-cell.is-panel .tc-code {
   margin-top: 12px;
 }
@@ -2050,7 +2046,7 @@
    They are the content of the cells they sit in, so they get the room the
    isometric objects get, centred and never cropped.
 
-   Every one of these zones is a plate now — the second surface, edge to edge,
+   Every one of these zones is a plate — the second surface, edge to edge,
    with the page's hairline ring. The diagram is a real artifact ON a material,
    never pale marks floating on the card's own paper; this is the single move
    that separates the references' light cells from a wireframe. The diagrams'
@@ -2358,7 +2354,7 @@
 
 /* ============================================================
    SHARED COMPONENT SKIN — light, quiet, hairline
-   Only the review workspace is borrowed now; the story is authored
+   Only the review workspace is borrowed; the story is authored
    in `sections/story/` against this page's own tokens.
    ============================================================ */
 
@@ -2819,8 +2815,8 @@
 }
 
 /* ---- full-stack band ---- */
-/* Round 2. Appended overrides only — the r1 band rules above stay untouched
-   so this block always wins by order. The recomposition: the prismatic light
+/* Appended overrides only: the band rules above stay untouched, so this
+   block always wins by order. The prismatic light
    becomes ONE committed texture panel in the header (viteplus d06 grammar)
    instead of a wash under the whole band; the stack zone splits into trace +
    assembly; the service grid loses its internal verticals and lands all four
@@ -3543,8 +3539,7 @@
 
 /* Dark theme: the window buttons fill with --tc-ink, which remaps to white,
    but their label was hard-coded light — white on white. The same inversion
-   the dark remap gives .tc-btn-solid. (Predates this round; the pane pair
-   made it twice as visible.) */
+   the dark remap gives .tc-btn-solid. */
 [data-theme='dark'] .eventhorizon-root .tcx-btn {
   color: #101010;
 }
@@ -4279,9 +4274,10 @@
   }
 }
 
-/* ---- punch list: stats grid ----
+/* ---- stats grid ----
    Numeral above label, two per row, tabular figures on a shared baseline,
-   doubled-hairline separators; the old value-left/label-right stretch dies. */
+   doubled-hairline separators; this overrides the base ledger's
+   value-left/label-right stretch. */
 .eventhorizon-root .tc-stats.is-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

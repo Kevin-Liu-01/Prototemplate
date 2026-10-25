@@ -3,10 +3,9 @@ import { IsoPlane, IsoSlab } from './IsoSolid';
 import { ISO_COS30 } from './iso';
 
 /**
- * SDKs — four translucent planes on one axis, each one named. The stack used to
- * be four anonymous plates, which is a metaphor rather than information; with a
- * leader out to the package on each level it is the list of first-party SDKs,
- * drawn.
+ * SDKs — four translucent planes on one axis, each one named. With a leader
+ * out to the package on each level the stack is the list of first-party SDKs,
+ * drawn; four anonymous plates would be a metaphor rather than information.
  *
  * Accent: the chip resting on the top plane — the SDK you are currently in.
  */

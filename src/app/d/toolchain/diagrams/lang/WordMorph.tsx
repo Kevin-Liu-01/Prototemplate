@@ -18,13 +18,11 @@ gsap.registerPlugin(useGSAP);
  * One UI term, printed in every locale it ships in, with the reading stepping
  * down the ledger.
  *
- * The previous version morphed a single word in place above a rule measured to
- * it, and it did not survive a still: a frame caught one language, one orphaned
- * locale tag, and a half-drawn rule that read as a progress bar. Two thirds of
- * the card was empty and the transformation — the whole point — was the part
- * only a viewer watching in real time ever saw.
- *
- * So every translation is printed here all of the time. Any frame of this
+ * Every translation is printed here all of the time, so the card survives a
+ * still. A single word morphing in place above a measured rule would show one
+ * language, one orphaned locale tag and a half-drawn rule that reads as a
+ * progress bar, and only a viewer watching in real time would see the
+ * transformation. Any frame of this
  * diagram is six real translations of the same term, which is the argument the
  * cell is making; the step only decides which one is being read, and it says so
  * with ink and size rather than with chrome. No rule, no bar, and no accent —

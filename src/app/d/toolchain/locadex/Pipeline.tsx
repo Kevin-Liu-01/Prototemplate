@@ -114,9 +114,8 @@ export default function Pipeline() {
       </div>
 
       {/* The run as one object before it is shown as artifacts: the exploded
-          isometric stack (founder directive) replaces the old five-label
-          strip — the same five stages, but each plane now carries its
-          artifact and its measured line instead of a bare word. */}
+          isometric stack of the five stages, each plane carrying its
+          artifact and its measured line. */}
       <LocadexIso />
 
       {/* ---- scan + map: what changed, and what it means ---- */}

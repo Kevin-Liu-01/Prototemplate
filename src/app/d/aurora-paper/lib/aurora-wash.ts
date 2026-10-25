@@ -68,7 +68,7 @@ export type AuroraParams = {
   rayFreq: number;
   /** Fold amplitude — how strongly the curtain pleats and leans. */
   fold: number;
-  /** Ambient breath strength (the old silk field, as underpainting). */
+  /** Ambient breath strength (the silk field, as underpainting). */
   ambient: number;
   /** Horizontal throw, signed: +1 gathers light to the right edge, -1 to the
       left, 0 leaves the curtain's own banding in charge. */
@@ -199,7 +199,7 @@ void main() {
 /*
  * Construction, bottom to top:
  *  1. the ambient breath — a domain-warped fbm field (two warp passes), the
- *     silky large-scale structure the old wash was made of, kept at a whisper;
+ *     silky large-scale structure, kept at a whisper;
  *  2. the curtain — an arc y = lift + slope*x' + bow*x'^2 with a luminous
  *     spine, ridged-noise striations hanging below it (two pitches sliding at
  *     different speeds), ragged per-ray reach, a banded macro-field gating

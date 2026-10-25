@@ -1,5 +1,5 @@
 /**
- * The old landing careers page's data path, carried over verbatim:
+ * The landing careers page's data path, carried over verbatim:
  * apps/landing/src/components/pages/careers/CareersPage.tsx fetches the
  * public Ashby posting API for the `generaltranslation` board, keeps only
  * listed roles, and falls back to an honest empty state when the board is
@@ -48,7 +48,7 @@ export async function getJobPostings(): Promise<Position[]> {
   try {
     const res = await fetch(
       `https://api.ashbyhq.com/posting-api/job-board/${ASHBY_JOB_BOARD}`,
-      { next: { revalidate: 3600 } } // Revalidate every hour — the old page's cadence
+      { next: { revalidate: 3600 } } // Revalidate every hour, the landing careers page's cadence
     );
 
     if (!res.ok) {
@@ -62,7 +62,7 @@ export async function getJobPostings(): Promise<Position[]> {
       .map((job) => ({
         id: job.jobUrl,
         title: job.title,
-        // The old page's exact department fallback chain.
+        // The landing careers page's exact department fallback chain.
         team: job.department || job.team || 'General',
         location: job.location || 'Remote',
         type: formatEmploymentType(job.employmentType),

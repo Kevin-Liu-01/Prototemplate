@@ -26,23 +26,23 @@ const PrismScene = dynamic(() => import('./PrismScene'), {
 });
 
 /**
- * THE PRISM DELIVERY PANEL — this fork's hero, recomposed side by side.
+ * THE PRISM DELIVERY PANEL — this fork's hero.
  *
  * The prismatic burst never touches the paper. Every canvas here runs behind
  * a `mix-blend-mode: lighten` group over pure ink geometry, so anything white
  * stays white and the dispersed light exists only *inside* the black shapes:
- * the two-line display headline on the left, and the delivery panel's ink
- * plate on the right. At arm's length the page is ink on paper; up close the
- * ink is full of light.
+ * the two-line display headline in the card, and the optics band's ink plate
+ * below it. At arm's length the page is ink on paper; up close the ink is
+ * full of light.
  *
- * The stack: one white card split in two columns — copy left ('Launch in /
- * every language.', sub, acts, npx chip), the delivery-as-optics panel right
- * — then the trust card closes the hero at a 1px seam. The headline keeps
+ * The stack: one white card with the copy ('Launch in / every language.',
+ * sub, acts, npx chip), the full-width optics band below it, then the trust
+ * card that closes the hero. The headline keeps
  * the morph hinge on the accent word: guides, multilingual dust, measured
  * bounds. The hinge lives INSIDE the prism material, so incoming scripts
  * fill with the same dispersed light as the letters they replace.
  *
- * R4 exposure law (kept verbatim): the ink comes from the FIELD, not the
+ * Exposure law: the ink comes from the FIELD, not the
  * veil. Each headline line gets its own mirrored pair of windows aimed at
  * the burst's wing band — where the streaks carry their own dark lanes —
  * and the drawn floor is a thin safeguard (0.14 mid-block, diving deep at
@@ -51,17 +51,11 @@ const PrismScene = dynamic(() => import('./PrismScene'), {
  * softens. Dark mode inverts the law, not the layout: white letterforms
  * under a `darken` group with the floors flipped to paper (styles.css).
  *
- * The panel fuses the old horizon diagram with the old specimen's optics —
- * one optical event that is also the delivery story: a French reader's
- * request enters as the one white beam on the plate (`GET
- * example.com/fr/a-propos`, `accept-language: fr-FR` riding it), dives into
- * a drawn glass prism, and the far face disperses it into a full-height
- * spectral fan. The fan's light carries the outputs: the response callout
- * (`200 · served from fra · 12 ms · no origin hit`) and the five edge nodes
- * with their measured p50s standing at the fan's mouth, `fra` lit as the
- * serving node on the fan's bright axis. The plate's floor keeps the band's
- * caption grammar — translation edge · anycast · versioned per locale.
- * One request in — every locale served from the edge, as optics.
+ * The optics band is the delivery story as one optical event: the English
+ * source string rides the white beam into a drawn glass prism, and the far
+ * face disperses it into a spectral fan whose rays carry the translations.
+ * The plate's floor carries the caption grammar: translation edge, one
+ * string in, every language out.
  */
 
 const CUSTOMERS: readonly { name: string; mark: string }[] = [

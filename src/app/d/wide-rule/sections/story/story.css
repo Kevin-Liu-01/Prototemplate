@@ -47,9 +47,9 @@
 
 /* ---------- the beats ---------- */
 
-/* Tightened. Nine beats at the old spacing ran a whole screen height longer than
-   the sticky stage beside them needed, which is the other half of why the right
-   column read as air. */
+/* The beat padding stays tight: at a looser spacing nine beats run a whole
+   screen height longer than the sticky stage beside them, and the right column
+   reads as air. */
 /* No index column: numbered rails are the founder's verbatim ban, and the
    active beat is already said twice — ink weight here, the rail under the
    stage. */

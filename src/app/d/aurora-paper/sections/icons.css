@@ -100,9 +100,9 @@
 }
 
 /* ---------- capability rows: glyph column + infinite scroll ----------
-   The old 3×3 grid becomes single rows on a doubled track; the container
-   keeps the pane's stretched height (flex: 1 from styles.css) so nothing
-   around it shifts while the loop runs. */
+   The marquee turns the base 3×3 grid into single rows on a doubled track;
+   the container keeps the pane's stretched height (flex: 1 from styles.css)
+   so nothing around it shifts while the loop runs. */
 
 .aurorapaper-root .tc-caps.is-marquee {
   position: relative;

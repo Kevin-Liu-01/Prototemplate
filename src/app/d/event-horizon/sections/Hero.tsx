@@ -564,13 +564,13 @@ function Wall({ side }: { side: 'en' | 'tr' }) {
 }
 
 /**
- * Kevin's sketch, built literally: two dense mirrored card WALLS fill the
+ * Two dense mirrored card WALLS fill the
  * screen from its edges and are pulled into a REAL event horizon at center.
  * The horizon is a purpose-built lensing shader (lib/horizon-field.ts): an
  * accretion streak field whose sampling coordinates bend around the rim into
  * a brilliant photon ring, the page's own ruled hairlines warping with it,
  * over a genuinely dark core. The walls carry the hourglass corridor's
- * strip-chord treatment with the curvature flipped his way: near-FLAT at the
+ * strip-chord treatment with the curvature flipped: near-FLAT at the
  * screen edges — a plain component grid facing the viewer — then
  * accelerating inward as they approach the portal (concave suction curves,
  * the grid lines pulled into the mass) and diving BEHIND it, where the disc

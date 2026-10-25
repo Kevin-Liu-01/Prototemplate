@@ -89,14 +89,14 @@
 
 /* ---------- 1 · the demo website: a clean flat surface ---------- */
 
-/* Capped and optically centered: the tall desktop column no longer
-   stretches the five rows sparse — the box hugs its content and sits
+/* Capped and optically centered, so the tall desktop column does not
+   stretch the five rows sparse — the box hugs its content and sits
    on the dark matting like a mounted print. (Mobile columns are shorter
    than the cap, so this is a desktop-only tightening.) The panel sits
    one step raised off the ink-black half, in the page's own token.
 
-   Founder round: no floating ring, no rounding. The frame is four 1px
-   rules at the ring ink that run the web half's FULL width and height —
+   No floating ring, no rounding. The frame is four 1px rules at the
+   ring ink that run the web half's FULL width and height —
    drawn by two full-bleed pseudo bands on the demo and clipped by
    .tc-cinema-web's overflow, so each line terminates at the half's
    edges. The element itself carries no border or outline, so nothing
@@ -629,8 +629,8 @@
 }
 
 /* ---------- 4 · the context-group ledger dock ----------
-   No longer a stray card in the corner: the accumulator is the
-   sheet's fourth zone, docked directly under the artifact plate —
+   The accumulator is the sheet's fourth zone, docked directly under
+   the artifact plate —
    the plate's bottom rule IS the dock's top rule (shared, never
    stacked), and the plate's full-height verticals bound it. Its
    header carries the one doubled-gauge rule on the sheet (two 1px

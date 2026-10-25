@@ -217,7 +217,7 @@ export default function Hero() {
             }}
             /* The dark exposure is the same event re-photographed on the
                ink-black surface family: white ink rides a lifted-slate
-               corridor (near-black paper has even more headroom than the old
+               corridor (near-black paper has even more headroom than a
                #101010 plate, so the glow comes down a step to stay calm), the
                bloom cools toward the plate's own blue-white, and the pressed
                frame keeps its deeper multiplicative bite to register against

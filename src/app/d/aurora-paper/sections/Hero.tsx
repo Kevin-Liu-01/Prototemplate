@@ -204,7 +204,7 @@ export default function Hero() {
         {/* The event at full exposure: the lit horizon runs just under the
             source row — the caption and 'Deploy now' sit in the quiet sky
             above it — and the rays pour down through the translations. The
-            quiet window now serves the panel's own type: a soft column over
+            quiet window serves the panel's own type: a soft column over
             the cascade's glyphs (x≈0.42) so the lines stay the cleanest thing
             in the scene while the flanks and the spine keep the full blaze. */}
         <AuroraWash

@@ -124,10 +124,10 @@ function CapMarquee({ caps }: { caps: readonly string[] }) {
       if (!el || !track) return;
 
       /* A stepped ticker, not a continuous crawl: the track rests on whole
-         rows for ~2.1s, then advances one row in 0.45s. A continuous loop
-         meant almost every still caught rows sliced mid-height at the masked
+         rows for ~2.1s, then advances one row in 0.45s. Under a continuous
+         loop almost every still catches rows sliced mid-height at the masked
          edges — read as a leaking scroll mask, not a marquee — so the ledger
-         now spends ~80% of its time at a clean rest where the top row meets
+         spends ~80% of its time at a clean rest where the top row meets
          the panel edge whole. After caps.length steps the doubled copy sits
          exactly where the first list started, so the repeat snap is
          invisible. Runs only while the panel is on screen. */

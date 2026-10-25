@@ -355,7 +355,7 @@ type Rail = {
   zs: Float64Array;
 };
 
-/* The old --hg-wall-w clamp, retuned for the curved sweep. */
+/* The visible sweep's arc length, clamped per breakpoint from the viewport width. */
 function railSpan(view: number): number {
   return view <= 1080
     ? Math.min(690, Math.max(520, view * 0.62))
@@ -407,9 +407,9 @@ function wrapArc(v: number): number {
   return ((((v - ARC_MIN) % WRAP_SPAN) + WRAP_SPAN) % WRAP_SPAN) + ARC_MIN;
 }
 
-/* Depth grading, by strip mid-arc as a fraction of the sweep. These replace
-   the flat wall's gradient mask (fade), inner dim gradient, and silhouette
-   hairlines — now stepped per 100px strip, which the eye reads as smooth. */
+/* Depth grading, by strip mid-arc as a fraction of the sweep: the fade, the
+   inner dim and the silhouette hairlines, stepped per 100px strip, which the
+   eye reads as smooth. */
 function fadeAt(u: number): number {
   if (u <= 0.58) return 1;
   if (u <= 0.78) return 1 - ((u - 0.58) / 0.2) * 0.55;

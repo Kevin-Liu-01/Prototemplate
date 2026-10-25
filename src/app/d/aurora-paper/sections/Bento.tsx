@@ -602,14 +602,13 @@ export default function Bento() {
       <div className='tc-hatch' aria-hidden='true' />
 
       {/* ---- shell 8: one ruled band, four columns ----
-          These four used to be four mounted cells of identical shape in a rank,
-          which is the one thing this direction cannot survive: the row read as a
-          card grid and the frame stopped meaning anything. One mount now, divided
-          by the page's own hairline — a spec table rather than four cards, and one
-          border level shallower for the panels inside it. Each panel still carries
-          a real artifact rather than a drawing: the dev window, one round trip,
-          the hook you write, and a glossary entry with the translation it
-          overrules. Founder pick: each artifact runs its feature as a slow loop
+          The four share one mount, divided by the page's own hairline: a spec
+          table rather than four cards, and one border level shallower for the
+          panels inside it. Four mounted cells of identical shape in a rank would
+          read as a card grid, and the frame would stop meaning anything. Each
+          panel carries a real artifact rather than a drawing: the dev window, one
+          round trip, the hook you write, and a glossary entry with the
+          translation it overrules. Each artifact runs its feature as a slow loop
           (useQuadMotion above) — the es preview typing in, the request round
           trip, the stepping detection cursor, the stamping glossary rows. */}
       <div className='tc-row is-one'>

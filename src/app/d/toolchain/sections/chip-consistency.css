@@ -3,12 +3,11 @@
    Every locale token on the page is the same chip: a bordered
    flag+code pill in the surface's own ink — LocaleTag content,
    1px hairline box, radius 4, mono code at 11px. This file
-   carries the hosts that were still speaking dialects of it:
+   carries the hosts that need their own rules to match it:
 
-   1. the Frameworks capability marquee — its LocaleTags were
-      borderless flag+code text, a chip in name only beside the
-      bordered pills every dark surface uses; the light rows now
-      draw the same box in the light ink ramp,
+   1. the Frameworks capability marquee — its light rows draw
+      the same box as the bordered pills every dark surface uses,
+      in the light ink ramp,
    2. the hero terminal's Source line — the source speaks the
       target chips' exact grammar, in a quieter neutral voice,
    3. the hero terminal at mobile — the wizard and translation
@@ -83,8 +82,8 @@
 /* ---------- hero terminal at mobile: the ledger holds ---------- */
 
 /* Under 760px the transcript wraps, and the wizard's Locales chips
-   used to pile flush-left beneath their key — a loose heap where the
-   desktop draws a two-column ledger. The wizard rows become the same
+   would pile flush-left beneath their key — a loose heap where the
+   desktop draws a two-column ledger. The wizard rows keep the same
    two columns (the padded key is column one; every key is padEnd'd to
    the same measure, so the seam aligns), and the chip run wraps
    inside its own column with a hanging indent. */

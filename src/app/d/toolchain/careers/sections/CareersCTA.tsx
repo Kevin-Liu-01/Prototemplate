@@ -5,10 +5,10 @@ import { useRef } from 'react';
 import { useQuietReveal } from '../../sections/reveal';
 
 /**
- * The old page's general-application card, as the direction's quiet close:
- * the same question, the same sentence, the same single door — a mailto to
- * careers@generaltranslation.com. The address itself is printed in mono
- * under the button; the channel is the content.
+ * The landing careers page's general-application card, as the direction's
+ * quiet close: the same question, the same sentence, the same single door — a
+ * mailto to careers@generaltranslation.com. The address itself is printed in
+ * mono under the button; the channel is the content.
  */
 export default function CareersCTA() {
   const root = useRef<HTMLElement>(null);

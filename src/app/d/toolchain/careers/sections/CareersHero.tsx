@@ -6,12 +6,12 @@ import { useQuietReveal } from '../../sections/reveal';
 import { ASHBY_JOB_BOARD, type Position } from '../lib';
 
 /**
- * The old careers hero, re-clothed: the same headline and mission line the
- * landing page runs, set on the ruled column, with the job board itself as
- * the hero's dark artifact — the live posting record, key by key, instead of
- * a badge. The "We're hiring!" pill becomes the record's own status line.
- * Below, the old page's social-proof band in the shell's lettered trust row —
- * the same six customers the old LogosGrid ships.
+ * The careers hero: the same headline and mission line the landing page
+ * runs, set on the ruled column, with the job board itself as the hero's dark
+ * artifact — the live posting record, key by key. The landing page's "We're
+ * hiring!" pill is the record's own status line. Below, the landing page's
+ * social-proof band in the shell's lettered trust row: the same six customers
+ * its LogosGrid ships.
  */
 
 const CUSTOMERS: readonly { name: string; mark: string }[] = [
@@ -59,7 +59,7 @@ export default function CareersHero({ positions }: Props) {
         </div>
 
         {/* The nested frame around the one dark surface: the posting record,
-            straight off the same board the old page reads. */}
+            straight off the same board the landing careers page reads. */}
         <div className='crs-frame' data-reveal>
           <div className='crs-board'>
             <div className='crs-board-bar'>

@@ -80,13 +80,12 @@
   gap: 10px;
 }
 
-/* Founder round (ruled frame): the mat ground retires in BOTH themes.
-   The row returns to the rail's paper so the sheet's hair rules have
-   ground to sit on — hair-on-hair is invisible, hair-on-paper is the
-   page's grammar. This also supersedes the old dark-theme remap to the
-   card family: paper already is that family in the dark. The doubled
-   root wins the tie against the shell's `:has(> .is-framed)` mat rule
-   whatever the bundle order. */
+/* Ruled frame: no mat ground in EITHER theme. The row sits on the rail's
+   paper so the sheet's hair rules have ground to sit on — hair-on-hair is
+   invisible, hair-on-paper is the page's grammar. The dark theme needs no
+   remap to the card family: paper already is that family in the dark. The
+   doubled root wins the tie against the shell's `:has(> .is-framed)` mat
+   rule whatever the bundle order. */
 .toolchain-root.toolchain-root .ldx-hero-sec .tc-row.is-lead {
   background: transparent;
 }
@@ -99,10 +98,10 @@
    posture — radius 8 8 0 0, panel on the rule, ring clipped at
    the seam). Fixed dark in both themes, like every terminal
    surface on the page.
-   FX ROUND: the headroom is now a real stage — --ldx2-head sizes
-   it, and the field strip below hangs its bright equator inside
-   it, so the singularity is VISIBLE above the terminal and the
-   cursor effects have somewhere to show. */
+   The headroom is a real stage: --ldx2-head sizes it, and the
+   field strip below hangs its bright equator inside it, so the
+   singularity is VISIBLE above the terminal and the cursor
+   effects have somewhere to show. */
 .toolchain-root .ldx-hero-sec .tc-cell.ldx2-cell > .tc-card.ldx2-art {
   --ldx2-head: clamp(84px, 9vw, 144px);
   position: relative;

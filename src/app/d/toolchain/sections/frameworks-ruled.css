@@ -1,17 +1,17 @@
 /* ============================================================
-   FRAMEWORKS — RULED FRAME (founder round)
+   FRAMEWORKS — RULED FRAME
    The app/page.tsx sample's mount (CodeBlock with line numbers and
-   the COPY chip) stops being a floating rounded box: the element's
-   own border and 5px radius retire, and the frame becomes four
-   single 1px rules drawn by two full-bleed pseudo bands, clipped
-   by the tab panel (.tc-fw) so each rule terminates at the panel's
-   edges — the ruled-sheet grammar the rest of the page now wears.
-   The companion side pane is already a fully ruled cell (tabs rule
-   above, section rule below, rail right, the stretched .tc-fw-rule
-   between the panes), so it needs no lines of its own — only
-   clearance, so the extended rules cross clean air rather than its
-   first and last text lines (which sat exactly on the mount's
-   edges). Nothing here touches the locale-chip work in icons.css.
+   the COPY chip) drops the element's own border and 5px radius; its
+   frame is four single 1px rules drawn by two full-bleed pseudo
+   bands, clipped by the tab panel (.tc-fw) so each rule terminates
+   at the panel's edges — the ruled-sheet grammar the rest of the
+   page wears. The companion side pane is already a fully ruled cell
+   (tabs rule above, section rule below, rail right, the stretched
+   .tc-fw-rule between the panes), so it needs no lines of its own —
+   only clearance, so the extended rules cross clean air rather than
+   its first and last text lines (which would sit exactly on the
+   mount's edges). Nothing here touches the locale-chip work in
+   icons.css.
    ============================================================ */
 
 .toolchain-root .tc-fw {

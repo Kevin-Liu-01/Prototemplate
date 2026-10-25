@@ -1,10 +1,8 @@
 /**
  * A stat as a ledger row: one large number, one quiet label, one hairline.
  *
- * The previous version paired each number with a small isometric glyph —
- * stacked plates, a cube on a sheet — which carried no data and sat squarely
- * inside the founder's ban on ornamental icons. The number IS the diagram;
- * everything else is a rule.
+ * No glyph sits beside the number: an ornamental icon carries no data. The
+ * number IS the diagram; everything else is a rule.
  */
 
 export type StatRowProps = {

@@ -1,5 +1,5 @@
 /**
- * The real blog index, carried over verbatim from the old landing app's
+ * The real blog index, carried over verbatim from the landing app's
  * content tree (apps/landing/content/{blog,devlog}/en-US at the last commit
  * before the tree moved to the generaltranslation/content submodule —
  * gt-cloud@82c9cac69^). Titles, dates, authors, summaries and tags are the

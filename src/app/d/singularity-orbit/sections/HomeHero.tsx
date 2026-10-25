@@ -17,13 +17,13 @@ import '@/app/d/toolchain/sections/hero-terminal.css';
 gsap.registerPlugin(useGSAP);
 
 /**
- * The hero, to the founder's "landing non-terminal v0": one composition on
+ * The hero in the "landing non-terminal v0" layout: one composition on
  * the tch ground. The copy block stands LEFT — static headline, sub, the
  * rainbow CTA beside the npx pill — and the house glyph field bleeds across
  * the whole stage behind it: glyphs from eight scripts drifting in depth,
- * condensing into the word "language" in one script after another. The old
- * compact terminal strip is retired; a windowed demo joins the page later
- * as its own section.
+ * condensing into the word "language" in one script after another. The hero
+ * carries no terminal strip; a windowed demo sits further down the page as
+ * its own section.
  */
 
 /** The trust card repeats the wall below, so v0 pages keep it hidden. */

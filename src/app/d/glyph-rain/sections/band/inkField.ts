@@ -31,7 +31,7 @@ const TIER_SIZE: readonly [number, number, number] = [17, 13, 10];
    flickered the same way). Depth speaks through size and the per-tier
    alpha below; the dither machinery stays for the atlas's other users. */
 const TIER_COVER: readonly [number, number, number] = [1, 1, 1];
-/** The old coverages, spoken as alpha, so the field's tone is unchanged. */
+/** The dither coverages, spoken as alpha, so the solid tiers keep the dithered field's tone. */
 const TIER_ALPHA: readonly [number, number, number] = [0.9, 0.55, 0.3];
 const CELL = 26;
 const PAPER = '#f2f1ed';
@@ -322,8 +322,8 @@ export function createInkField(options: InkFieldOptions): InkFieldHandle | null 
 
   /** Hysteresis for the clearing-rim cull: a drawn glyph only culls once
       its keep drops a band BELOW its threshold, and a culled one only
-      returns a band ABOVE it — the sway no longer strobes glyphs riding
-      the rim's iso-line (the tower wrap's own fix). */
+      returns a band ABOVE it, so the sway does not strobe glyphs riding
+      the rim's iso-line (the same hysteresis as the tower wrap). */
   const vis = new Uint8Array(POOL);
 
   function draw(): void {

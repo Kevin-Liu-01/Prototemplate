@@ -25,12 +25,12 @@ const route = seoRoute({
 export const metadata = route.metadata;
 
 /**
- * Supported Locales, mutated into the toolchain grammar: the old landing
- * page's card grid becomes a data monument — one ruled ledger of every
- * locale the API serves, a stat band derived from the same rows, and the
- * writing-system roll-up on the page's one dark artifact panel. All 120
- * rows come from the exact data path the old page read at runtime
- * (see ./data.ts); nothing on this page is invented.
+ * Supported Locales, mutated into the toolchain grammar: the landing page's
+ * card grid becomes a data monument — one ruled ledger of every locale the
+ * API serves, a stat band derived from the same rows, and the writing-system
+ * roll-up on the page's one dark artifact panel. All 120 rows come from the
+ * landing page's exact runtime data path (see ./data.ts); nothing on this
+ * page is invented.
  */
 export default function ToolchainLocalesPage() {
   return (

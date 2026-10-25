@@ -142,7 +142,7 @@ export function frontEdge(box: IsoBox): [Pt, Pt] {
 }
 
 /* ---------------------------------------------------------------------------
-   Flat art in a surface — the seat every consumer used to hand-copy.
+   Flat art in a surface — one shared seat, so no consumer hand-copies it.
 --------------------------------------------------------------------------- */
 
 /** A plan-space point: world ground coordinates, before projection —

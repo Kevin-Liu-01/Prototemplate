@@ -36,7 +36,7 @@ const route = seoRoute({
 export const metadata = route.metadata;
 
 /**
- * Event Horizon — the toolchain shell whose hero is Kevin's sketch: dense
+ * Event Horizon — the toolchain shell with a warped-wall hero: dense
  * component sheets fill the screen from both edges — row courses locked
  * across every column — and warp into a real event horizon, a purpose-built
  * lensing shader that wraps accretion light around a photon ring and bends

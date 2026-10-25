@@ -14,11 +14,11 @@ import {
 
 /**
  * The full stack, drawn once — seven planes on the family's 30° axis, one per
- * stage of the toolchain, evenly spaced. Each plane is a glassmorphic slab
- * (founder pick): a near-opaque frosted dark fill that OCCLUDES the planes
- * beneath it, a faint diagonal sheen falling from the family's upper-left
- * light, and a soft white edge stroke — depth now lives in the paint (lower
- * planes carry dimmer edges), never in group opacity, so the stack reads as
+ * stage of the toolchain, evenly spaced. Each plane is a glassmorphic slab:
+ * a near-opaque frosted dark fill that OCCLUDES the planes beneath it, a
+ * faint diagonal sheen falling from the family's upper-left light, and a
+ * soft white edge stroke — depth lives in the paint (lower planes carry
+ * dimmer edges), never in group opacity, so the stack reads as
  * seven real surfaces instead of seven wireframes. Each plane is a real
  * hover/focus target: DarkBand wires it to its caption row and GSAP raises
  * and brightens it.

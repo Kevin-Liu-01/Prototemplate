@@ -26,10 +26,10 @@ const route = seoRoute({
 export const metadata = route.metadata;
 
 /**
- * The blog index, mutated into the toolchain grammar: the old landing page's
- * two columns (Blogs / Updates) become two ruled ledgers in the same 1170px
- * rail, and the newest essay gets the page's one framed feature cell. Every
- * title, date, summary, tag and author is the old content tree's frontmatter;
+ * The blog index, mutated into the toolchain grammar: the landing page's two
+ * columns (Blogs / Updates) become two ruled ledgers in the same 1170px rail,
+ * and the newest essay gets the page's one framed feature cell. Every title,
+ * date, summary, tag and author is the landing content tree's frontmatter;
  * entries link to the real articles on generaltranslation.com.
  */
 export default function ToolchainBlogPage() {

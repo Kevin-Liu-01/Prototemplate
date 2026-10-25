@@ -83,8 +83,8 @@
   max-width: 44ch;
 }
 
-/* ---------- the grid: dark cards, 1px seams, ruled square (founder round) ----------
-   The sheet is square now: every seam is exactly 1px (the grid's gap with
+/* ---------- the grid: dark cards, 1px seams, ruled square ----------
+   The sheet is square: every seam is exactly 1px (the grid's gap with
    the seam tone behind it), every cell corner is a crossing of rules, and
    the sheet's top and bottom rules extend past the gut padding to the
    column's rails via the two nub pseudos below — lines terminate at the
@@ -246,7 +246,7 @@
   stroke-linecap: round;
 }
 
-/* content marks read against the frosted plate, not the old wireframe */
+/* content marks read against the frosted plate */
 .toolchain-root .tcb .tcstack .iso-face-mark {
   fill: rgba(255, 255, 255, 0.42);
 }
@@ -450,10 +450,11 @@
   z-index: 0;
 }
 
-/* Founder round: the window's stacked border+ring (which read heavier than
-   1px) is replaced by four single 1px rules at the old ring's ink, drawn by
-   two full-bleed pseudo bands and clipped by the cell — each rule runs to
-   the cell's edges, square corners, the window ruled onto the plate. */
+/* The window is ruled onto the plate: four single 1px rules in
+   --tc-hair-band, drawn by two full-bleed pseudo bands and clipped by the
+   cell — each rule runs to the cell's edges, square corners. The window
+   carries no border or ring, because a stacked border+ring reads heavier
+   than 1px. */
 .toolchain-root .tcb .tcb-term {
   position: relative;
   z-index: 1;
@@ -558,7 +559,7 @@
   color: var(--tcb-dim);
 }
 
-/* The artifact zone is its OWN nested box now (founder directive): the
+/* The artifact zone is its OWN nested box: the
    light bento's frame grammar — hairline-edged mat, 2px reveal, card with
    a tighter radius so the mat fills the corner notches — in the band's
    dark surfaces. Heading and one-liner stay outside, on the cell. */

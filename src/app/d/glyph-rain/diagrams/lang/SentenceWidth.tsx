@@ -132,8 +132,8 @@ export default function SentenceWidth({ className, accent = true, title }: LangP
         const track = firstRow.querySelector<HTMLElement>('[data-sw-track]');
         const room = track ? track.clientWidth : rootEl.clientWidth;
         /* The scale that lands the widest box and its delta on the track. On a
-           phone it may go below the stylesheet's size (it used to stop at 1,
-           and the German row ran past the card and the page); below
+           phone it may go below the stylesheet's size (a floor of 1 lets the
+           German row run past the card and the page); below
            MIN_INLINE_SIZE the deltas stack under their boxes and the type fits
            the box alone. */
         const phone = window.matchMedia(PHONE).matches;

@@ -6,7 +6,7 @@ import { useQuietReveal } from '../../sections/reveal';
 import { ESSAY_ROWS, postHref } from '../posts';
 
 /**
- * The Blogs column of the old page as a ruled index ledger: one hairline per
+ * The Blogs column of the landing page as a ruled index ledger: one hairline per
  * entry, date in mono, title in the display face, the frontmatter summary as
  * a one-line dek, tags as mono chips. The header rule is the brand's doubled
  * thread at constant gauge — the ledger's only ornament.

@@ -6,11 +6,11 @@ import { useQuietReveal } from '../../sections/reveal';
 import { ASHBY_JOB_BOARD, type Position } from '../lib';
 
 /**
- * The old page's position cards, mutated into the direction's own furniture:
- * a ruled openings ledger. One hairline per row, mono column heads, the role
- * in the display face — every row is the whole link, exactly like the old
- * cards, pointing at the same Ashby posting. The empty state is the old
- * page's sentence, word for word, set in the ledger instead of a dashed box.
+ * The landing careers page's position cards, mutated into the direction's
+ * own furniture: a ruled openings ledger. One hairline per row, mono column
+ * heads, the role in the display face — every row is the whole link,
+ * pointing at the role's Ashby posting. The empty state is the landing
+ * page's sentence, word for word, set in the ledger.
  */
 
 type Props = {

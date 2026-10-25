@@ -1,5 +1,5 @@
 // GENERATED DATA — do not hand-edit rows.
-// Source: the exact data path of the old landing page
+// Source: the exact data path of the landing page
 // (apps/landing/src/components/pages/supported-locales/SupportedLocalesPage.tsx):
 //   listSupportedLocales() from @generaltranslation/supported-locales@2.1.2-odysseus.5,
 //   filtered like packages/locales/src/supportedLocales.ts (custom qaa-qtz out),

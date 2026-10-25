@@ -99,8 +99,8 @@
   color: var(--iso-accent-ink, currentColor);
 }
 
-/* The one emphasized element: the great-circle route to the nearest PoP —
-   emphasis now lives in full accent ink, not extra gauge. */
+/* The one emphasized element: the great-circle route to the nearest PoP.
+   Its emphasis is full accent ink at the family's regular gauge. */
 .eg .eg-route {
   stroke: var(--iso-accent-ink, currentColor);
 }

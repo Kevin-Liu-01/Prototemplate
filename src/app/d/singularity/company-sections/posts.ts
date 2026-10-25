@@ -7,8 +7,7 @@
  * so each release's dek is compressed from that post's own opening lines —
  * no release is described with words its post doesn't contain.
  *
- * Post links used to point at the live articles on generaltranslation.com;
- * they now resolve against the CURRENT concept's own article route
+ * Post links resolve against the CURRENT concept's own article route
  * (<base>/blog/<slug>), which renders the shell from this frontmatter and,
  * for the handful of slugs in post-bodies.ts, the real post body.
  */

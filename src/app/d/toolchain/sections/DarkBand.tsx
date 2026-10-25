@@ -85,9 +85,9 @@ const STACK_CAPS: readonly { id: string; i: number; label: string; node: ReactNo
 const MARK = { size: 12, color: 'currentColor' } as const;
 
 /**
- * The page's one full-bleed dark band, recut for calm: every cell is
+ * The page's one full-bleed dark band, cut for calm: every cell is
  * heading + one line + one quiet artifact. The centerpiece is the seven-
- * plane stack, now a real instrument — each plane and each caption row is
+ * plane stack, a real instrument — each plane and each caption row is
  * a two-way hover/focus/tap target (GSAP raises and brightens the plane,
  * pulls its leader to full ink, and lights its caption), and the left
  * connector is a doubled rail the planes tap off with radiused corners.
@@ -125,7 +125,7 @@ export default function DarkBand({
       const setActive = (active: number | null) => {
         layers.forEach((layer, i) => {
           const hot = active === i;
-          /* Rest state is full opacity — the plates are occluding glass now,
+          /* Rest state is full opacity — the plates are occluding glass,
              so depth lives in their paint; opacity is spent only on the
              transient hover dim of the passed-over planes. */
           gsap.to(layer, {

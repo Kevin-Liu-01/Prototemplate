@@ -22,12 +22,12 @@ gsap.registerPlugin(useGSAP);
  * before a single frame runs — the loop only walks a quiet reading marker down
  * the rows. Nothing about the data depends on motion.
  *
- * Accent: German, permanently. It used to follow the marker, which meant a still
- * of this diagram accented whichever row the shutter happened to catch — one
- * screenshot lit Korean with a tint and an accent bar, implying Korean was the
- * significant case when the copy beside it argues German's +35%. The one colour
- * on the page does not get to mean something different in every frame, so it is
- * nailed to the worst case and the travelling marker is plain ink.
+ * Accent: German, permanently. An accent that follows the marker makes a still
+ * of this diagram accent whichever row the shutter happens to catch, implying
+ * that row is the significant case when the copy beside it argues German's
+ * +35%. The one colour on the page does not get to mean something different in
+ * every frame, so it is nailed to the worst case and the travelling marker is
+ * plain ink.
  */
 
 type Row = { name: string; tag: string; pct: number };

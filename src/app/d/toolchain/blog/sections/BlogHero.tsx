@@ -6,9 +6,9 @@ import { useQuietReveal } from '../../sections/reveal';
 import { ESSAYS, INDEX_FROM, INDEX_TO, RELEASES } from '../posts';
 
 /**
- * The old blog page's masthead, verbatim words in the ledger's voice:
- * "Latest" / "Updates and research" is the whole copy deck of the page being
- * replaced (apps/landing/src/components/pages/blog/BlogPage.tsx). The mono
+ * The landing blog page's masthead, verbatim words in the ledger's voice:
+ * "Latest" / "Updates and research" is the whole copy deck of
+ * apps/landing/src/components/pages/blog/BlogPage.tsx. The mono
  * line beneath is the index's own colophon — real counts, real date range,
  * both derived from the frontmatter and nothing else.
  */

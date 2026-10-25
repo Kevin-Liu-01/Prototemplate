@@ -65,8 +65,8 @@ const MAX_SCALE = 1.5;
     type fits the box alone, so no row runs past the card or the page. */
 const MIN_INLINE_SIZE = 14;
 /** The phone width of lang.css, the only width where the type may shrink
-    below the stylesheet's size: wider, a long row keeps the size it always
-    had and its delta hangs into the card's padding. lang.css repeats this
+    below the stylesheet's size: wider, a long row keeps the stylesheet's
+    size and its delta hangs into the card's padding. lang.css repeats this
     arithmetic for the first paint, so a change here goes there too. */
 const PHONE = '(max-width: 560px)';
 /** Where lang.css paints the fitted rows itself before this runs: a phone
@@ -153,8 +153,8 @@ export default function SentenceWidth({
         const track = firstRow.querySelector<HTMLElement>('[data-sw-track]');
         const room = track ? track.clientWidth : rootEl.clientWidth;
         /* The scale that lands the widest box and its delta on the track. On a
-           phone it may go below the stylesheet's size (it used to stop at 1,
-           and the German row ran past the card and the page); below
+           phone it may go below the stylesheet's size (a scale capped at 1
+           lets the German row run past the card and the page); below
            MIN_INLINE_SIZE the deltas stack under their boxes and the type fits
            the box alone. */
         const phone = window.matchMedia(PHONE).matches;

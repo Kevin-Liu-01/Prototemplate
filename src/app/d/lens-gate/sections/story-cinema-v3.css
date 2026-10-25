@@ -69,9 +69,9 @@
 
 /* ---------- 1 · the demo website: a clean flat surface ---------- */
 
-/* Capped and optically centered: the tall desktop column no longer
-   stretches the five rows sparse — the box hugs its content and sits
-   on the dark matting like a mounted print. (Mobile columns are shorter
+/* Capped and optically centered so the tall desktop column does not
+   stretch the five rows sparse: the box hugs its content and sits on
+   the dark matting like a mounted print. (Mobile columns are shorter
    than the cap, so this is a desktop-only tightening.) The panel sits
    one step raised off the ink-black half, in the page's own token. */
 .lensgate-root .tc-cinema-v3 .tc-cinema-demo {

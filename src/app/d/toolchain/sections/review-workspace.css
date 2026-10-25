@@ -25,7 +25,7 @@
 
 /* ---------- copy column: the page's own head rhythm ---------- */
 
-/* The workspace's top rule now runs the full sheet width, crossing this
+/* The workspace's top rule runs the full sheet width, crossing this
    column at the grid's top edge — the copy sits under it like a cell's
    content, so the heading clears the line instead of grazing it. */
 @media (min-width: 981px) {
@@ -412,9 +412,9 @@
   color: var(--tc-ink);
 }
 
-/* the chosen door speaks the SAME blue as its route (founder: the old
-   55% hair mix drifted lavender while the pipe ran pure) — one accent
-   var for the border and the line, lifted on dark, raw on light */
+/* the chosen door speaks the SAME blue as its route — one accent var for
+   the border and the line, lifted on dark, raw on light; a 55% hair mix
+   drifts lavender beside the pure pipe */
 .toolchain-root .tcr-door[data-on] {
   color: var(--tc-ink);
   border-color: var(--tcr-net-acc, var(--tc-accent));

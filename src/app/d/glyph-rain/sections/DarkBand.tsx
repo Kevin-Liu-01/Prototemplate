@@ -131,7 +131,7 @@ export default function DarkBand() {
       const setActive = (active: number | null) => {
         layers.forEach((layer, i) => {
           const hot = active === i;
-          /* Rest state is full opacity — the plates are occluding glass now,
+          /* Rest state is full opacity — the plates are occluding glass,
              so depth lives in their paint; opacity is spent only on the
              transient hover dim of the passed-over planes. */
           gsap.to(layer, {

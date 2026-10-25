@@ -91,12 +91,11 @@ export default function HomeHero() {
       <div className='tc-hero tch-card'>
         {/* Two authored lines rather than a wrap: "Launch in / every language."
             — the accented word opens line two, on the hinge of the sentence. */}
-        {/* the whole sentence is the morphing unit now — the measuring
+        {/* the whole sentence is the morphing unit: the measuring
             guides flank the full line and the belt rewrites all of it.
-            hops={1} (founder: "for the home page hero, let's just do 1
-            hop"): the dissolved cloud pours straight into the next
-            sentence's ink — the form corridor's one re-spread beat is
-            skipped on the hero; the dissolve itself never changes. */}
+            hops={1}: the dissolved cloud pours straight into the next
+            sentence's ink, so the hero skips the form corridor's one
+            re-spread beat; the dissolve itself never changes. */}
         <h1>
           <span>
             <EverySentence hops={1} initial='en' ref={every} words={WORDS} />

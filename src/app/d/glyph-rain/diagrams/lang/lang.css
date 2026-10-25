@@ -502,8 +502,8 @@
   position: relative;
 }
 
-/* The reading marker is plain ink. It used to carry the accent, which made the
-   chart claim a different significant locale in every frame. */
+/* The reading marker is plain ink: an accented marker would make the chart
+   claim a different significant locale in every frame. */
 .lang-eb-marker {
   position: absolute;
   left: -6px;

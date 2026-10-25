@@ -125,7 +125,7 @@
   color: var(--tc-panel-ink);
 }
 
-/* The old page's empty state, on the record surface. */
+/* The empty state, on the record surface. */
 .toolchain-root .crs-board-empty {
   padding: 18px 16px 20px;
   font-family: var(--tc-mono);
@@ -163,8 +163,7 @@
 /* ---------- the openings ledger ----------
    Ruled rows on the sheet itself — partial borders only, the grid reads as
    one surface. The role sits in the display face; team, location and type
-   are the mono columns the old cards carried as icon rows. The whole row is
-   the link, as it was on the old page. */
+   are mono columns. The whole row is the link. */
 
 .toolchain-root .crs-openings {
   scroll-margin-top: 76px;
@@ -242,7 +241,7 @@
   color: var(--tc-ink-3);
 }
 
-/* The old page's empty state, in the ledger's own row. */
+/* The empty state, in the ledger's own row. */
 .toolchain-root .crs-lempty {
   padding: 26px var(--tc-gut) 30px;
 }
