@@ -56,7 +56,7 @@
   align-content: space-between;
 }
 
-/* A third-width column, not the old merged double cell: the nominal type
+/* A third-width column, not a merged double cell: the nominal type
    size steps down (the diagram still measures and scales from it), and the
    locale key column narrows to the flag+code chips it actually holds. */
 .toolchain-root .v0-dev .tc-lang.is-lead .lang-sw {
@@ -425,11 +425,11 @@
   color: var(--tc-ink-3);
 }
 
-/* STACKED (founder, twice: "add more space under" the three demos):
+/* STACKED (founder: "add more space under" the three demos):
    single-column cells end with their artwork nearly kissing the card's
-   bottom edge — the demos get a real landing strip under them. 1023px,
-   not 720: the bento stacks all the way up there, and the first cut's
-   phone-only window left tablets at the old 17px. */
+   bottom edge, so the demos get a real landing strip under them. 1023px,
+   not 720: the bento stacks all the way up there, and a phone-only
+   window would leave tablets at 17px. */
 @media (max-width: 1023px) {
   .toolchain-root .v0-dev-grid .tc-cell.is-framed > .tc-card > .shell-cell-head {
     margin-bottom: 24px;

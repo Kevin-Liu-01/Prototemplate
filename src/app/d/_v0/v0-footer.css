@@ -383,8 +383,8 @@
   flex: none;
 }
 
-/* inside the seat the mark is no longer a flex item — blockify it so
-   its 88px box applies again */
+/* inside the seat the mark is not a flex item, so blockify it for its
+   88px box to apply */
 .toolchain-root .v0-foot-gt-seat .v0-foot-gt {
   display: block;
 }
@@ -397,8 +397,8 @@
   display: block;
   position: absolute;
   /* the silhouette box runs 2px PAST the mark on every side, and the
-     mask pins to the mark's own 88px — the four offset copies can
-     never clip at the box edge (founder: the border was cut off) */
+     mask pins to the mark's own 88px, so the four offset copies can
+     never clip at the box edge and cut the border off */
   inset: -2px;
   background: rgba(7, 7, 7, 0.72);
   /* eight offset copies — four orthogonal, four diagonal — union into a

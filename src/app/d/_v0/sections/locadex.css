@@ -165,8 +165,8 @@
   fill: rgba(255, 255, 255, 0.14);
 }
 
-/* the scan sheet: a translucent body, 1px edges, and the landing line —
-   in LIGHT BLUE now (founder: not the grayish white), the band's own
+/* the scan sheet: a translucent body, 1px edges, and the landing line,
+   in LIGHT BLUE (founder: not the grayish white), the band's own
    accent family at sheet strengths */
 .toolchain-root .v0-ldx .v0-ldx-beam {
   fill: rgba(134, 168, 255, 0.08);

@@ -955,9 +955,9 @@ export default function TranslateWindow({
      The seam's draggable target is far wider than its drawn line
      (founder: a real hitbox), so its fringe would swallow any mark that
      rests near the cut. The marks therefore ride ABOVE the slab (z4 in
-     translate-window.css) — but that also lifts them above the payload
-     sweep, which used to COVER swept marks by paint order alone. This
-     pass restores that contract by geometry: on every cut write, marks
+     translate-window.css), which also lifts them above the payload
+     sweep, so paint order alone cannot COVER swept marks. This
+     pass enforces that contract by geometry: on every cut write, marks
      whose centre sits right of the cut are filed data-swept (hidden and
      pointer-inert — indistinguishable from being covered), and marks on
      the visible render win their own clicks inside the slab's fringe.
@@ -1132,7 +1132,7 @@ export default function TranslateWindow({
      run's width — the house marquee, ticker-driven so the wrap and the
      centre logic share one clock. Constant slow drift: each chip owns
      the STRIP ZONE's centre for BELT_DWELL seconds (the belt element is
-     inset:0 of the zone, so beltEl.clientWidth IS the zone's width —
+     inset:0 of the zone, so the belt's clientWidth IS the zone's width —
      the centre line is the zone's, not the window's), and whichever
      chip crosses that centre becomes the active locale — the rewrite
      below is the belt's own output, not a timer's. Hovering the belt pauses it; any
@@ -1731,7 +1731,7 @@ export default function TranslateWindow({
       const el = app.current;
       if (!el || pinned === was) return;
       /* the reader is inspecting: the belt must not rewrite the row under
-         them — it holds now and resumes after the quiet spell */
+         them, so it holds and resumes after the quiet spell */
       holdBelt();
       dragged.current = true;
       /* unpinning returns to the width's own rest — shut on narrow */
@@ -2115,11 +2115,11 @@ export default function TranslateWindow({
                 <div className='sgdh-app-stack'>
                   {/* heading and sub: the same reserved-slot + fit grammar
                       as the nav. The one-line clip lives on .v0-tw-line
-                      INSIDE the fit — the fit itself must not clip, its
+                      INSIDE the fit, since the fit itself must not clip: its
                       corner mark straddles the box edge (overflow on the
-                      h3/p used to eat the marks whole). A div, not an h3:
+                      outer box would eat the marks whole). A div, not an h3:
                       the mock app's headline is scenery, and a real heading
-                      here skipped the document outline (h1 straight to h3 —
+                      here would skip the document outline (h1 straight to h3,
                       Lighthouse heading-order); .tct-app-h pins every
                       UA-differing property, so the swap is invisible. */}
                   <div

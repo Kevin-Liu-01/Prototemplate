@@ -10,6 +10,7 @@ import {
   createHorizonField,
   type HorizonFieldHandle,
 } from '@/lib/horizon-field';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP);
 
@@ -191,9 +192,7 @@ export default function CareersHorizon() {
       const frame = host?.parentElement;
       if (!host || !canvas || !orbit || !frame) return;
 
-      const reducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches;
+      const reducedMotion = prefersReducedMotion();
       const doc = document.documentElement;
       const themedParams = () =>
         doc.getAttribute('data-theme') === 'dark'

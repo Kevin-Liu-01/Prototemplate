@@ -122,9 +122,9 @@
 }
 
 .blog-root .blog-hero h1 {
-  /* the mast carries a phrase now, not the single word the 12ch cap was cut
-     for: 12ch broke "General Translation Blog" as General / Translation Blog
-     (the shipped blog.css) */
+  /* the mast carries a phrase, not a single word: a 12ch cap breaks
+     "General Translation Blog" as General / Translation Blog (the shipped
+     blog.css), so this cap is wider */
   max-width: min(100%, 20ch);
   font-size: clamp(2.3rem, 3.4vw, 3.4rem);
   font-weight: 500;

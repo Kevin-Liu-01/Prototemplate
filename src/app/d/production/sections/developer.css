@@ -72,7 +72,7 @@
   align-content: space-between;
 }
 
-/* A third-width column, not the old merged double cell: the nominal type
+/* A third-width column, not a merged double cell: the nominal type
    size steps down (the diagram still measures and scales from it), and the
    locale key column narrows to the flag+code chips it actually holds. The
    58px key is their measured width plus inset; the reclaimed space keeps
@@ -450,11 +450,11 @@
   color: var(--tc-ink-3);
 }
 
-/* STACKED (founder, twice: "add more space under" the three demos):
+/* STACKED (founder: "add more space under" the three demos):
    single-column cells end with their artwork nearly kissing the card's
-   bottom edge — the demos get a real landing strip under them. 1023px,
-   not 720: the bento stacks all the way up there, and the first cut's
-   phone-only window left tablets at the old 17px. Live sets it with the
+   bottom edge, so the demos get a real landing strip under them. 1023px,
+   not 720: the bento stacks all the way up there, and a phone-only
+   window would leave tablets at 17px. Live sets it with the
    head's max-lg:mb-6 utility, which the toolchain's unlayered 28px box
    gap (styles.css, max-width 720px) outranks on phones, so the 24px
    holds from 721px to 1023px only. */

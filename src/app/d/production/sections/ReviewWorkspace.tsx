@@ -11,6 +11,7 @@ import type { ComponentType, SVGProps } from 'react';
 import LocaleTag from './LocaleTag';
 
 import { useQuietReveal } from '@/app/d/toolchain/sections/reveal';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import '../../toolchain/sections/review-workspace.css';
 
@@ -227,7 +228,7 @@ export default function ReviewWorkspace({
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const scope = root.current;
       if (!scope) return;
 
@@ -392,8 +393,8 @@ export default function ReviewWorkspace({
     <>
       <div className='tcr-bar'>
               {chrome === 'product' ? (
-                /* the bar speaks the surface's real address (founder: the
-                   rail captions moved into the window chrome) */
+                /* the bar speaks the surface's real address (the rail
+                   captions live in the window chrome) */
                 <span className='tcr-fact'>
                   <TableCellsIcon className='tcr-fico' aria-hidden />
                   dash.generaltranslation.com

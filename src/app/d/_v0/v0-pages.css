@@ -1,7 +1,7 @@
 /* The v0 flow carries the Customers beat as its own full wall directly
    after the hero — the heroes' built-in trust card would say it twice,
    so on v0 pages it yields. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-trust {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-trust {
   display: none;
 }
 
@@ -10,7 +10,7 @@
    dark band (padding, under the prismatic wash) — an outside margin read
    as a grey cap of exposed section ground in dark. (Orbit's strip has no
    ring and keeps its rhythm.) */
-.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root) .tc-hero-cell.tch-band {
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root) .tc-hero-cell.tch-band {
   margin-bottom: 0;
   padding-bottom: 30px;
 }
@@ -20,17 +20,16 @@
    framed cell cards, and the dark bands' art mats. Controls (buttons,
    chips, tags, the seg) keep their small radii. Doubled class beats the
    SSOT's own doubled-specificity card rules. */
-.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   :is(.tc-hero.tch-card, .tct-win, .tc-cell.is-framed > .tc-card, .tcb .tcb-art, .tc-term, .tct-app) {
   border-radius: 0;
 }
 
 /* ============================================================
-   SINGLE RAIL + CORNER CROSSES. The second rail pair at +-10px is
-   retired (first on these five homes, now site-wide: DESIGN.md
-   section 3); in its place, registration crosses sit on every
-   section seam where it meets the rail verticals — subtle, but a
-   real mark. One pseudo per section paints both of its bottom
+   SINGLE RAIL + CORNER CROSSES. There is no second rail pair at
+   +-10px, site-wide (DESIGN.md section 3); registration crosses
+   sit on every section seam where it meets the rail verticals:
+   subtle, but a real mark. One pseudo per section paints both of its bottom
    corners (the next section's top corners are the same points).
    ============================================================ */
 
@@ -38,19 +37,19 @@
    the viewport (≤ ~1100px) those arms opened a 4px horizontal scroll.
    The page clips the poke — clip, never hidden: a crop with no scroll
    container, so the story figures downstream stay sticky. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) {
   overflow-x: clip;
 }
 
 /* Registration crosses on every seam again (founder round-trip): each
    section's bottom corners at the rails, the nav's bottom pair, and the
    dark feature bands at all four corners. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .tc-sec {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-rail > .tc-sec {
   position: relative;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .tc-sec::after,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-nav .v0-nav-in::after {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-rail > .tc-sec::after,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-nav .v0-nav-in::after {
   content: '';
   position: absolute;
   left: -5px;
@@ -67,8 +66,8 @@
     linear-gradient(var(--cross-ink), var(--cross-ink)) 100% 4px / 9px 1px no-repeat;
 }
 
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-rail > .tc-sec::after,
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-nav .v0-nav-in::after {
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-rail > .tc-sec::after,
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-nav .v0-nav-in::after {
   --cross-ink: rgba(255, 255, 255, 0.34);
 }
 
@@ -79,7 +78,7 @@
    above's ::after already draws the top seam, and the section that
    FOLLOWS a band paints its own top pair here. Bands draw no crosses of
    their own. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tc-rail
   > :is(.tcb, .v0-dep)
   + .tc-sec::before {
@@ -100,7 +99,7 @@
 }
 
 [data-theme='dark']
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tc-rail
   > :is(.tcb, .v0-dep)
   + .tc-sec::before {
@@ -112,20 +111,16 @@
    the hero spends less height everywhere it can spare it.
    ============================================================ */
 
-.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero.tch-card {
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero.tch-card {
   padding-top: clamp(26px, 2.8vw, 38px);
   padding-bottom: clamp(22px, 2.4vw, 32px);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-copy.tch-npx-top {
-  margin-bottom: clamp(12px, 1.3vw, 16px);
-}
-
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-sub {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero-sub {
   margin-top: 12px;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-acts {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero-acts {
   margin-top: 12px;
 }
 
@@ -135,19 +130,19 @@
    coloring; no rainbow in the bg on light hover). Dark keeps its own
    inverted hover untouched. */
 :root:not([data-theme='dark'])
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tch-cta
   .tc-btn-solid:hover {
   background: #2c2f34;
 }
 
-.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root) .tc-hero-cell.tch-band {
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root) .tc-hero-cell.tch-band {
   padding-top: 12px;
   padding-bottom: 16px;
 }
 
 /* the transcript tightens one step — same voice, less leading */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-body {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-body {
   font-size: 12px;
   line-height: 1.55;
   padding-top: 11px;
@@ -160,35 +155,34 @@
    the img box oversizes by 1198/756 and seats 0.21em below the
    baseline: the VISIBLE mark lands 0.72em tall with its bottom on the
    line — the text face's own cap height, exactly the GtLogoText token's
-   measure (founder round-trip: the old cap-plus 0.8em read a little
-   taller than the line). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark {
+   measure (a cap-plus 0.8em reads a little taller than the line). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-sub-mark {
   display: inline-block;
   height: 1.14em;
   width: auto;
   vertical-align: -0.21em;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark.is-dark {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-sub-mark.is-dark {
   display: none;
 }
 
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark.is-light {
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-sub-mark.is-light {
   display: none;
 }
 
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-sub-mark.is-dark {
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-sub-mark.is-dark {
   display: inline-block;
 }
 
 /* the sub runs one line at desktop — the 54ch measure forced two; a
    step up from the 15.5px base (founder: zoom in on the mark line) */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-sub {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero-sub {
   max-width: 72ch;
   font-size: clamp(16px, 1.2vw, 17.5px);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero h1 {
   font-size: clamp(1.8rem, 4vw, 3.1rem);
   /* the SSOT's -0.038em set "ry" in "every" touching at the arm
      (founder) — one step of air separates them without losing the
@@ -199,43 +193,43 @@
 /* the measuring guides read as BRACKETS, not I-beams (founder: "[ ]
    instead of the Is"): each crop tick extends INWARD only, off its own
    upright — the pair encloses the morphing word like [ word ] */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-eg.is-l::before,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-eg.is-l::after {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-eg.is-l::before,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-eg.is-l::after {
   left: 0;
   width: 4px;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-eg.is-r::before,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-eg.is-r::after {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-eg.is-r::before,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-eg.is-r::after {
   left: -3px;
   width: 4px;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-cust .tc-head {
   padding-top: 16px;
   padding-bottom: 14px;
 }
 
 /* the wall's lead is a caption over the marks, not a display line */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head h2 {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-cust .tc-head h2 {
   font-size: clamp(14px, 1.15vw, 16px);
   font-weight: 500;
   letter-spacing: -0.005em;
 }
 
-.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root) .tc-hero-cell.tch-band {
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root) .tc-hero-cell.tch-band {
   padding-top: 10px;
   padding-bottom: 12px;
 }
 
-.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero.tch-card {
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero.tch-card {
   padding-top: clamp(16px, 1.8vw, 22px);
   padding-bottom: clamp(13px, 1.4vw, 18px);
 }
 
 /* The Customers lead reads as one line — the head's 22ch measure cap
    would wrap it. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head h2 {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-cust .tc-head h2 {
   max-width: none;
 }
 
@@ -243,47 +237,47 @@
    run EXACTLY the plate's height — touching top and bottom, no
    overshoot — and the horizontals extend only to the rails, never past
    them (the stock device ran ±100vw/±100vh). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-mat::before {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-mat::before {
   left: calc(var(--tc-gut) * -1);
   right: calc(var(--tc-gut) * -1);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-mat::after {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-mat::after {
   top: 0;
   bottom: 0;
 }
 
 /* The proof plate (tcpq) rides in the Global row at two-thirds altitude:
    same grammar, less vertical spend. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-plate {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-plate {
   padding: clamp(22px, 2.6vw, 34px) clamp(26px, 4.4vw, 64px) clamp(20px, 2.4vw, 30px);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-quote {
   margin-top: clamp(14px, 1.8vw, 22px);
   padding-top: clamp(30px, 3vw, 42px);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote p {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-quote p {
   font-size: clamp(19px, 2vw, 28px);
 }
 
-/* The context band's display line speaks at the section-head scale —
+/* The context band's display line speaks at the section-head scale,
    the same size as the Developer head it replicates (the head is a
-   tc-head now, and without this pin the band's own larger .tc-band h2
+   tc-head, and without this pin the band's own larger .tc-band h2
    scale would take it). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-ctx .tc-head h2 {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-ctx .tc-head h2 {
   font-size: clamp(1.62rem, 2.5vw, 2.2rem);
 }
 
 /* Headers sit at the TOP of their bands: the section-head altitude goes,
    light heads and dark band columns alike (founder note on the full-stack
    band's dead air). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-head {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-head {
   padding-top: clamp(26px, 2.8vw, 36px);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-in {
   padding-top: clamp(28px, 3vw, 40px);
 }
 
@@ -291,22 +285,15 @@
    heads bring their own clamp(54–82) top spend — the sheet's padding
    on top of that read as doubled air. Bands with plain tcb-heads keep
    the clamp above, or their heads kiss the seam. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   :is(.v0-ctx, .v0-stack).tcb
   .tcb-in {
   padding-top: 0;
 }
 
-/* Procession's console now ENDS the hero: the section seam is its bottom
-   line — one stroke, not two. */
-.toolchain-root.sgph-root .sgph-console {
-  border-bottom: 0;
-  margin-bottom: 0;
-}
-
 /* The context band owns the Locadex/Context seam with its border-block —
    the section above yields the tc-sec bottom rule it would stack on it. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-ldx.tc-sec {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-ldx.tc-sec {
   border-bottom: 0;
 }
 
@@ -319,7 +306,7 @@
    bottom rule: Customers under the full-stack band's border-top, Global
    under the deploy band's. Developer's closing line is its last framed
    row's own ground strip, so its border-bottom goes too. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   :is(.v0-cust, .v0-dev, .v0-glob).tc-sec {
   border-bottom: 0;
 }
@@ -327,7 +314,7 @@
 /* Where a framed row ends a section that another rule follows (a band
    border or a hatch edge), that neighbour is the seam — the row's bottom
    ground strip would sit 1–2px above it as a second line. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   :is(.v0-ldx, .v0-glob, .v0-dev) .tc-row:has(> .tc-cell.is-framed):last-child {
   padding-bottom: 0;
 }
@@ -339,48 +326,48 @@
    at the same seam yields — sections drop their border-bottom
    before a hatch, and against a BAND the band's own border wins.
    ============================================================ */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-hatch {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-hatch {
   height: clamp(28px, 3.4vw, 40px);
   border-block: 1px solid var(--tc-hair);
   background: repeating-linear-gradient(45deg, var(--tc-hatch) 0 1px, transparent 1px 8px);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-sec:has(+ .v0-hatch) {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-sec:has(+ .v0-hatch) {
   border-bottom: 0;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .v0-hatch:has(+ .tc-band),
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .v0-hatch:has(+ .v0-dep) {
   border-bottom: 0;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb + .v0-hatch,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep + .v0-hatch {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb + .v0-hatch,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep + .v0-hatch {
   border-top: 0;
 }
 
-/* DevWindow's own border-top was written to close the Customers wall
-   directly; where a hatch now sits between them the hatch's bottom edge
-   IS that seam, so the section's top rule yields (the devwin.css rule
-   still serves pages without a hatch). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+/* DevWindow's own border-top closes the Customers wall directly; where
+   a hatch sits between them the hatch's bottom edge IS that seam, so
+   the section's top rule yields (the devwin.css rule serves pages
+   without a hatch). */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .v0-hatch + .v0-devwin.tc-sec {
   border-top: 0;
 }
 
 /* Theo, quieter still: smaller text, smaller mark (founder note —
    design unchanged). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote p {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-quote p {
   font-size: clamp(16px, 1.6vw, 21px);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote::before {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-quote::before {
   font-size: 42px;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-quote {
   padding-top: clamp(22px, 2.2vw, 30px);
 }
 
@@ -391,7 +378,7 @@
 
 /* The headline loses the doubled-thread underline; the em keeps its
    measuring apparatus (guides, dust, the tweened width). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 em {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero h1 em {
   padding-bottom: 0;
   background-image: none;
 }
@@ -401,7 +388,7 @@
 
 /* The card breathes more above and below its copy. Doubled class beats
    the SSOT card rule's own specificity. */
-.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero.tch-card {
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero.tch-card {
   padding-top: clamp(44px, 4.8vw, 68px);
   padding-bottom: clamp(38px, 4.2vw, 58px);
 }
@@ -409,7 +396,7 @@
 /* One authored line: "Launch in every ⟨language⟩." — the em still
    morphs, the sentence never wraps, so the measure cap comes off and
    the size steps down just enough to hold 1280. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero h1 {
   max-width: none;
   white-space: nowrap;
   font-size: clamp(1.9rem, 4.3vw, 3.4rem);
@@ -423,7 +410,7 @@
    desktop 1.03 display cut. The morphing em wraps with it (its own
    sheet lifts the nowrap), so the h1 never scrolls sideways. */
 @media (max-width: 720px) {
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero h1 {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-hero h1 {
     max-width: 100%;
     white-space: normal;
     /* sized against the LONGEST of the sixteen sentences (founder: test
@@ -441,77 +428,77 @@
     min-height: 2.2em;
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-head {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-head {
     padding-top: var(--tcm-head-pt, 72px);
     padding-bottom: var(--tcm-head-pb, 36px);
   }
 
   /* display lines: one full step up from the 1.62rem floor */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-head h2,
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-ctx .tc-head h2 {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-head h2,
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-ctx .tc-head h2 {
     font-size: var(--tcm-h2, 2.25rem);
     line-height: var(--tcm-h2-lh, 1.18);
   }
 
   /* the dark bands' own display lines take the same step */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band h2 {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-band h2 {
     font-size: var(--tcm-h2, 2.25rem);
     line-height: var(--tcm-h2-lh, 1.18);
   }
 
   /* head lead: the sub-line under the H2 takes the lead step, with a
      touch more separation from the line */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-head p {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-head p {
     margin-top: var(--tcm-gap-h2, 18px);
     font-size: var(--tcm-lead, 17px);
     line-height: var(--tcm-lead-lh, 1.55);
   }
 
   /* the hatched rests widen into real pauses between sections */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-hatch {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-hatch {
     height: 36px;
   }
 
   /* the customers wall keeps its caption-scale lead (by design) but
      takes the same air above */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-cust .tc-head {
     padding-top: 30px;
     padding-bottom: 26px;
   }
 
   /* the caption's base clamp bottoms out at 14px on phones; pin it to
      the 16px body step (the h2 reset's 1.06 leading is too tight here) */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust .tc-head h2 {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-cust .tc-head h2 {
     font-size: 16px;
     line-height: 1.4;
   }
 
   /* the logo cells take the same breath as the boxes around them —
      outranks their py-4 utility (unlayered wins) */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-cust-cell {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-cust-cell {
     padding-block: 20px;
   }
 
   /* the closing band: display line and sub step with the page */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep h2 {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep h2 {
     font-size: var(--tcm-h2, 2.25rem);
     line-height: var(--tcm-h2-lh, 1.18);
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep .v0-dep-sub {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep .v0-dep-sub {
     margin-top: var(--tcm-gap-h2, 18px);
     font-size: var(--tcm-lead, 17px);
     line-height: var(--tcm-lead-lh, 1.55);
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep .v0-dep-btn {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep .v0-dep-btn {
     /* 44px tap floor; overrides the h-9.5 utility (unlayered wins) */
     height: 44px;
     font-size: 15px;
   }
 
   /* the proof quote reads a step calmer than the heads but above body */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-quote p {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-quote p {
     font-size: var(--tcm-quote, 22px);
     /* the markup's leading-[1.22] utility sits under the mobile floor */
     line-height: var(--tcm-quote-lh, 1.4);
@@ -519,7 +506,7 @@
 
   /* the proof plate rides at two-thirds altitude by design, so it opens
      in proportion rather than to the box tokens */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-glob .tcpq-plate {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-glob .tcpq-plate {
     padding-top: 26px;
     padding-bottom: 24px;
   }
@@ -528,15 +515,15 @@
      copy the reader actually studies (Run Locadex, the dev bentos, the
      context cells), and 14px under a 31px display line read as fine
      print */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-cell h3 {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-cell h3 {
     font-size: var(--tcm-h3, 1.375rem);
     /* without this the engine's 1.06 heading reset leaks through */
     line-height: var(--tcm-h3-lh, 1.3);
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-cell > p,
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-card > p,
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .shell-cell-head > p {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-cell > p,
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-card > p,
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .shell-cell-head > p {
     margin-top: var(--tcm-gap-h3, 14px);
     font-size: var(--tcm-body, 16px);
     line-height: var(--tcm-body-lh, 1.6);
@@ -545,28 +532,22 @@
   /* the hero band's 10/12 crop is a desktop fold budget; the phone has
      no fold constraint, so the window sits centred. Identical selector
      to the base rule — wins on order. */
-  .toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root) .tc-hero-cell.tch-band {
+  .toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root) .tc-hero-cell.tch-band {
     padding-top: 16px;
     padding-bottom: 16px;
   }
-}
-
-/* the npx pill sits quiet above the headline — developer-first, per the
-   production landing's own note */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-copy.tch-npx-top {
-  margin-bottom: clamp(18px, 2vw, 26px);
 }
 
 /* THE RAINBOW CTA — the production landing's glow, ported: a blurred
    pink→blue→purple→green gradient ring behind the solid button, lifting
    on hover. The raw colors are the effect itself (same exemption the
    production component carries). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-cta {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-cta {
   position: relative;
   display: inline-flex;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-cta::before {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-cta::before {
   content: '';
   position: absolute;
   inset: -2px;
@@ -577,12 +558,12 @@
   transition: opacity 0.3s ease;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-cta:hover::before,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-cta:focus-within::before {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-cta:hover::before,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-cta:focus-within::before {
   opacity: 0.9;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-cta > .tc-btn {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-cta > .tc-btn {
   position: relative;
   gap: 7px;
 }
@@ -590,38 +571,38 @@
 /* The window seg's entries carry an icon beside their capitalized label,
    and the window furniture speaks the page's own face — mono stays inside
    the transcript, where the code lives. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-seg button {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-seg button {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   font-family: var(--tc-sans);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-title {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-title {
   font-family: var(--tc-sans);
   letter-spacing: 0;
 }
 
 /* LOCALE PILLS SPEAK QUIET GRAY in the page's own face (founder
    reversal of the blue-box round) — terminal chips, source included. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-chip {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-chip {
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.045);
   color: rgba(255, 255, 255, 0.72);
   font-family: var(--tc-sans);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lct-code {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .lct-code {
   font-family: var(--tc-sans);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-tw .tct-tabs button {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-tw .tct-tabs button {
   border-color: rgba(255, 255, 255, 0.16);
   background: rgba(255, 255, 255, 0.03);
 }
 
 /* the SELECTED chip is the strip's one blue (founder note) */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-tw .tct-tabs button[data-on='true'] {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-tw .tct-tabs button[data-on='true'] {
   border-color: var(--tct-loc, #9db9ff);
   background: var(--tct-loc, #9db9ff);
   color: #101010;
@@ -629,7 +610,7 @@
 
 /* …and the developer section's tags stop being the grey dialect: the
    same blue box in the light surface's own ramp, text never blue. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev .lct {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dev .lct {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -640,15 +621,9 @@
   line-height: 19px;
 }
 
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev .lct {
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dev .lct {
   border-color: rgba(255, 255, 255, 0.16);
   background: rgba(255, 255, 255, 0.045);
-}
-
-/* The Save-button key column sized itself before it wore a box —
-   widen to keep the ledger's left rule aligned. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dev-save .lct {
-  width: 56px;
 }
 
 /* Brighter light-mode band (the paper-foundry experiment): the
@@ -656,19 +631,19 @@
    the wash stays spectral, the ground lifts to near-paper, and the
    #101010 window sits on it as the one dark object. Dark theme keeps
    the original plate. */
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-field {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-field {
   filter: invert(1) hue-rotate(180deg) brightness(1.07) saturate(1.15);
 }
 
 /* The preview pane's rendered card breathes more (Figma: "more
    padding on this text block"). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-app-main {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-app-main {
   padding: 26px 26px 56px;
 }
 
 /* The seam advertises itself: a small mono chip riding just right of
    the vertical cut line until the reader has dragged once. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-drag-hint {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-drag-hint {
   position: absolute;
   /* rides the handle's own flush stops so hint and grip never detach
      at the extremes */
@@ -688,19 +663,19 @@
   transition: opacity 0.3s ease;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tch-drag-hint[data-hide] {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tch-drag-hint[data-hide] {
   opacity: 0;
 }
 
 /* Where the hyperspeed lived: no plate at all — the band region shares
    the hero's own ground, and nothing rules its top edge (founder). */
-.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-hero-cell.tch-band {
+.toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root) .tc-hero-cell.tch-band {
   background: transparent;
   border-top: 0;
 }
 
 .toolchain-root:is(.sgoh-root) .v0-devwin-band,
-.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-devwin-band {
+.toolchain-root:is(.sgdh-root, .sgsh-root) .v0-devwin-band {
   background: transparent;
   border-top: 0;
 }
@@ -708,19 +683,19 @@
 /* Section heads run ONE line at desktop — the subheads are gone, the
    header carries the beat alone (founder round). Wrap returns on
    narrow screens. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) :is(.tc-head h2, .tcb-head h2) {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) :is(.tc-head h2, .tcb-head h2) {
   max-width: none;
 }
 
 @media (min-width: 760px) {
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) :is(.tc-head h2, .tcb-head h2) {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) :is(.tc-head h2, .tcb-head h2) {
     white-space: nowrap;
   }
 }
 
 /* The Theo plate's avatar, one step smaller (founder: "a lil too tall")
    — the attribution row reads caption-height, not card-height. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcpq-face {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcpq-face {
   width: 38px;
   height: 38px;
 }
@@ -729,7 +704,7 @@
    under the sponsors") — the platform band's own top rule yields at
    this junction; the hatch's top hair, with the wall's crosses on it,
    IS the separator. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .v0-cust
   + .v0-hatch
   + .v0-stack {
@@ -742,19 +717,19 @@
    edge. Same geometry as the section pair: the arm centers on the seam
    whether the hatch draws it (border-bottom, before a light section) or
    the band below does (hatch bottom dropped, dep's top rule). */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tc-rail
   > :is(.v0-dev, .v0-glob).tc-sec::after {
   content: none;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   :is(.v0-dev, .v0-glob)
   + .v0-hatch {
   position: relative;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   :is(.v0-dev, .v0-glob)
   + .v0-hatch::after {
   content: '';
@@ -774,7 +749,7 @@
 }
 
 [data-theme='dark']
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   :is(.v0-dev, .v0-glob)
   + .v0-hatch::after {
   --cross-ink: rgba(255, 255, 255, 0.34);
@@ -786,7 +761,7 @@
    The copy takes the house gutter back inside the frame; the workspace
    mat stays flush, a framed box reads right at the frame. */
 @media (max-width: 980px) {
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcr-copy {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcr-copy {
     padding-inline: var(--tc-gut);
   }
 }
@@ -812,7 +787,7 @@
       read by their rules, not their mass.
    ============================================================ */
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) {
   --tc-panel: #ffffff;
   --tc-panel-ink: rgba(7, 7, 7, 0.88);
   /* the white-plate AA floor: 0.58 black composites to ~#6f6f6f (4.8:1) */
@@ -821,7 +796,7 @@
   --tc-panel-rule: rgba(7, 7, 7, 0.12);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band.tcb {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-band.tcb {
   background: var(--tc-paper);
   color: var(--tc-ink);
   --iso-accent: var(--tc-accent);
@@ -855,129 +830,129 @@
 
 /* The darkband sheets' hardcoded dark paints, re-inked selector for
    selector (same specificity ladder, one class deeper, light only). */
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-in {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-in {
   border-inline-color: var(--tc-hair);
 }
 
 /* styles.css hardcodes .tc-band h2 to white — on a light band the display
    head speaks ink (section owners found this gap; the fix is central). */
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band.tcb h2 {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-band.tcb h2 {
   color: var(--tc-ink);
 }
 
 /* globals.css paints the app body ink-first; the page root covers it, but
    overscroll rubber-banding would flash black above and below a light
    page. Scoped to the five homes via :has() so no other route moves. */
-:root:not([data-theme='dark']) body:has(.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)) {
+:root:not([data-theme='dark']) body:has(.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)) {
   background: #ffffff;
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cell h3 {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-cell h3 {
   color: #070707;
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   :is(.tcb-cell-cli, .tcb-term) {
   background: var(--tc-paper);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-term {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-term {
   border-color: rgba(7, 7, 7, 0.14);
   outline-color: rgba(7, 7, 7, 0.25);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   .tcb-term-body
   [data-tone='prompt'] {
   color: #070707;
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   :is(.tcb-chips span, .tcb-chips > span) {
   border-color: rgba(7, 7, 7, 0.16);
   color: rgba(7, 7, 7, 0.72);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-diff .is-del {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-diff .is-del {
   color: rgba(7, 7, 7, 0.52);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-ctx-joint path {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-ctx-joint path {
   stroke: rgba(7, 7, 7, 0.66);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   .tcb-ctx-joint
   .tcb-joint-head {
   fill: rgba(7, 7, 7, 0.66);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-trace-rail {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-trace-rail {
   border-inline-color: rgba(7, 7, 7, 0.6);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-trace-row::before {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-trace-row::before {
   background: rgba(7, 7, 7, 0.24);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-trace-row b {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-trace-row b {
   color: #070707;
 }
 
 /* v3's stack-instrument inks (harmless if a home never mounts them) */
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   :is(.tcs-dbl, .tcs-leader) {
   stroke: #070707;
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcs-glass-left {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcs-glass-left {
   fill: rgba(7, 7, 7, 0.05);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcs-glass-topfill {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcs-glass-topfill {
   fill: rgba(7, 7, 7, 0.06);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcs-glass-front {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcs-glass-front {
   stroke: rgba(7, 7, 7, 0.12);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcstack .iso-face-mark {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcstack .iso-face-mark {
   fill: rgba(7, 7, 7, 0.42);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cap-ic {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-cap-ic {
   color: rgba(7, 7, 7, 0.5);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   .tcb-stack-cap
   + .tcb-stack-cap::before {
   background: rgba(7, 7, 7, 0.08);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cap-tx > b {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-cap-tx > b {
   color: rgba(7, 7, 7, 0.9);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-stack-cap.is-hot {
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-stack-cap.is-hot {
   background: rgba(7, 7, 7, 0.05);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   .tcb-stack-cap.is-hot
   :is(.tcb-cap-tx > b, .tcb-cap-ic) {
   color: #070707;
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   .tcb-stack-cap.is-hot
   .tcb-cap-tx
@@ -985,7 +960,7 @@
   color: rgba(7, 7, 7, 0.78);
 }
 
-:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+:root:not([data-theme='dark']) .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .tcb
   :is(.tcs-layer, .tcb-stack-cap):focus-visible {
   outline-color: rgba(7, 7, 7, 0.6);
@@ -994,17 +969,16 @@
 /* The head watermark seats fully INSIDE the head (founder: the clipped
    glyph read as half an icon) and steps up from a whisper so it is
    actually visible against the sheet. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-head .tc-head-icon {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-head .tc-head-icon {
   right: 24px;
   opacity: 0.07;
 }
 
-/* Founder round-trip: the sponsor spacer rules BOTH its edges — the top
-   hair under the wall (with its crosses) and now its own bottom hair
-   before the platform band, whose top rule stays retired so the seam
-   still speaks once. The doubled class outranks the generic
-   before-a-band drop. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+/* The sponsor spacer rules BOTH its edges: the top hair under the
+   wall (with its crosses) and its own bottom hair before the platform
+   band, whose top rule stays off so the seam speaks once. The doubled
+   class outranks the generic before-a-band drop. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
   .v0-cust
   + .v0-hatch.v0-hatch {
   border-bottom: 1px solid var(--tc-hair);
@@ -1012,12 +986,12 @@
 
 /* The closer's Get started wears the SAME rainbow ring as the hero's
    (founder round) — one construction, two mounts. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep-cta {
   position: relative;
   display: inline-flex;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta::before {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep-cta::before {
   content: '';
   position: absolute;
   inset: -2px;
@@ -1028,12 +1002,12 @@
   transition: opacity 0.3s ease;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta:hover::before,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta:focus-within::before {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep-cta:hover::before,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep-cta:focus-within::before {
   opacity: 0.9;
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-cta > .v0-dep-btn {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep-cta > .v0-dep-btn {
   position: relative;
 }
 
@@ -1043,7 +1017,7 @@
 
 /* Dark mode speaks the SAME blue the production site speaks on light:
    rgb(59 130 246). One accent, both themes' dark surfaces. */
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) {
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) {
   --tc-accent: #3b82f6;
 }
 
@@ -1052,65 +1026,65 @@
    quiet ink-tint chip with a hairline, everywhere the fork and the
    measured rows render a word — the ink var re-inks per plate, so the
    same rule serves the paper sections and the dark bands. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lang-cr-word,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lang-cr-result {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .lang-cr-word,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .lang-cr-result {
   background: color-mix(in srgb, var(--tc-ink) 6%, transparent);
   border: 1px solid var(--tc-hair);
   color: var(--tc-ink);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lang-sw-box {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .lang-sw-box {
   background: color-mix(in srgb, var(--tc-ink) 6%, transparent);
   border: 1px solid var(--tc-hair);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .lang-sw-box .lang-sw-line {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .lang-sw-box .lang-sw-line {
   color: var(--tc-ink);
 }
 
 /* Buttons (founder round): line buttons GROW their border on hover —
    the ground never swaps — and solid hovers barely thin, never wash. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-btn-line:hover {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-btn-line:hover {
   background: transparent;
   border-color: rgba(7, 7, 7, 0.34);
   box-shadow: inset 0 0 0 1px rgba(7, 7, 7, 0.34);
 }
 
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-btn-line:hover {
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-btn-line:hover {
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band .tc-btn-line:hover,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-btn-line:hover {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-band .tc-btn-line:hover,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep-btn-line:hover {
   background: transparent;
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-btn-solid:hover {
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-btn-solid:hover {
   background: color-mix(in srgb, var(--tc-ink) 86%, transparent);
 }
 
-[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-btn-solid:hover,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tc-band .tc-btn-solid:hover,
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .v0-dep-btn-solid:hover {
+[data-theme='dark'] .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-btn-solid:hover,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tc-band .tc-btn-solid:hover,
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .v0-dep-btn-solid:hover {
   background: rgba(255, 255, 255, 0.93);
 }
 
-/* The hero window's Preview/Terminal switch stands down for now
-   (founder: "we can always add it back later") — preview is the one
-   face the window shows. */
-.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tct-seg {
+/* The hero window's Preview/Terminal switch is hidden (founder: "we
+   can always add it back later"): preview is the one face the window
+   shows. */
+.toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tct-seg {
   display: none;
 }
 
 @media (max-width: 640px) {
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cap {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-cap {
     padding: var(--tcm-box-pt, 36px) 20px 0;
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root) .tcb .tcb-cell h3 {
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root) .tcb .tcb-cell h3 {
     font-size: var(--tcm-h3, 22px);
     line-height: var(--tcm-h3-lh, 1.3);
   }
@@ -1128,17 +1102,17 @@
    micro labels are artwork and keep their gauges.
    ============================================================ */
 @media (max-width: 720px) {
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-head {
     padding-top: var(--tcm-head-pt, 72px);
     padding-bottom: var(--tcm-head-pb, 36px);
   }
 
   /* display lines: one full step up from the 1.62rem floor */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-head
     h2,
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-ctx
     .tc-head
     h2 {
@@ -1147,7 +1121,7 @@
   }
 
   /* the dark bands' own display lines take the same step */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-band
     h2 {
     font-size: var(--tcm-h2, 2.25rem);
@@ -1156,7 +1130,7 @@
 
   /* head lead: the sub-line under the H2 takes the lead step, with a
      touch more separation from the line */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-head
     p {
     margin-top: var(--tcm-gap-h2, 18px);
@@ -1165,30 +1139,30 @@
   }
 
   /* band sheets breathe — except the two whose tc-heads carry the spend */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tcb:not(.v0-ctx):not(.v0-stack)
     .tcb-in {
     padding-top: 36px;
   }
 
   /* the hatched rests widen into real pauses between sections */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-hatch {
     height: 36px;
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-band.v0-stack {
     border-bottom: 0;
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-band.v0-stack
     + .v0-hatch {
     border-top: 1px solid var(--tc-hair);
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-cust
     + .v0-hatch.v0-hatch {
     position: relative;
@@ -1198,7 +1172,7 @@
 
   /* the customers wall keeps its caption-scale lead (by design) but
      takes the same air above */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-cust
     .tc-head {
     padding-top: 30px;
@@ -1207,7 +1181,7 @@
 
   /* the caption's base clamp bottoms out at 14px on phones; pin it to
      the 16px body step (the h2 reset's 1.06 leading is too tight here) */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-cust
     .tc-head
     h2 {
@@ -1217,20 +1191,20 @@
 
   /* the logo cells take the same breath as the boxes around them —
      outranks their py-4 utility (unlayered wins) */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-cust-cell {
     padding-block: 20px;
   }
 
   /* the closing band: display line and sub step with the page */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-dep
     h2 {
     font-size: var(--tcm-h2, 2.25rem);
     line-height: var(--tcm-h2-lh, 1.18);
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-dep
     .v0-dep-sub {
     margin-top: var(--tcm-gap-h2, 18px);
@@ -1238,7 +1212,7 @@
     line-height: var(--tcm-lead-lh, 1.55);
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-dep
     .v0-dep-btn {
     /* 44px tap floor; overrides the h-9.5 utility (unlayered wins) */
@@ -1247,7 +1221,7 @@
   }
 
   /* the proof quote reads a step calmer than the heads but above body */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-glob
     .tcpq-quote
     p {
@@ -1258,7 +1232,7 @@
 
   /* the proof plate rides at two-thirds altitude by design, so it opens
      in proportion rather than to the box tokens */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-glob
     .tcpq-plate {
     padding-top: 26px;
@@ -1269,7 +1243,7 @@
      copy the reader actually studies (Connect Locadex, the dev bentos, the
      context cells), and 14px under a 31px display line read as fine
      print */
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-cell
     h3 {
     font-size: var(--tcm-h3, 1.375rem);
@@ -1277,13 +1251,13 @@
     line-height: var(--tcm-h3-lh, 1.3);
   }
 
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-cell
     > p,
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .tc-card
     > p,
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .shell-cell-head
     > p {
     margin-top: var(--tcm-gap-h3, 14px);
@@ -1294,7 +1268,7 @@
   /* the hero band's 10/12 crop is a desktop fold budget; the phone has
      no fold constraint, so the window sits centred. Identical selector
      to the base rule — wins on order. */
-  .toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root, .sgbh-root)
+  .toolchain-root.toolchain-root:is(.sgdh-root, .sgsh-root)
     .tc-hero-cell.tch-band {
     padding-top: 16px;
     padding-bottom: 16px;
@@ -1308,7 +1282,7 @@
    44px floor here too, at their own type size. The desktop is
    untouched. */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
-  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root, .sgbh-root, .sgph-root)
+  .toolchain-root:is(.sgdh-root, .sgoh-root, .sgsh-root)
     .v0-dep
     .v0-dep-btn {
     height: 44px;

@@ -1,6 +1,7 @@
-/* Vendored verbatim from the shipped landing app
-   (apps/landing/src/components/blog/board-field.ts). Zero imports, zero
-   app coupling — the blog masthead's split-flap canvas engine, unchanged. */
+/* Vendored from the shipped landing app
+   (apps/landing/src/components/blog/board-field.ts): the blog masthead's
+   split-flap canvas engine, with the seeded generator and the
+   reduced-motion read imported from the shared modules. */
 
 /**
  * The terminus board field — a coarse split-flap cell grid on a 2D canvas.
@@ -38,6 +39,9 @@
  * returns, and deterministic hashing so every run of the board is the
  * same board.
  */
+
+import { mulberry32 } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 export type BoardInk = {
   /** Cell ink, 0–255 rgb. */
@@ -249,16 +253,6 @@ function cellHash(c: number, r: number, k: number): number {
   return (h >>> 0) / 4294967296;
 }
 
-function mulberry32(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 type Wave = { start: number; col: number; index: number };
 
 /** kind: 0 word character, 1 blank spacer tile, 2 locale-stamp character. */
@@ -304,7 +298,7 @@ export function createBoardField(
   let ink = options.ink ?? BOARD_LIGHT;
   const fps = options.fps ?? 30;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = prefersReducedMotion();
   const rng = mulberry32(options.seed ?? 0x74657262);
 
   const MONO = "ui-monospace, 'SF Mono', Menlo, Consolas, monospace";

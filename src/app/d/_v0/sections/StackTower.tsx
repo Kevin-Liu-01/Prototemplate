@@ -25,14 +25,12 @@ import {
  * plates at the original's gauge — thickness ~4% of the footprint, air
  * between plates ~40% — one per beat of the copy rail, physical order
  * equal to beat order: code, context, translations, agents, bottom up.
- * The agents plate steps its footprint down ~13% (founder round 9: the
- * top layer reads as the CAPSTONE) — same plan center, same seat, the
- * one projection, just a smaller rhombus. The stack still BUILDS as the
- * story advances (round 10 reversed round 9's always-visible ghosts:
- * the layers stack one on top of the other as the beats advance, and
- * scroll-back tears them down in reverse), and each top face carries
- * its section's artifact: the <T> code block, the context chips, the
- * translated strings with the accent payload chip, and the Locadex
+ * The agents plate (the CAPSTONE) keeps the full footprint (CAP_SIZE):
+ * same plan center, same seat, the one projection. The stack BUILDS as
+ * the story advances (the layers stack one on top of the other as the
+ * beats advance, and scroll-back tears them down in reverse), and each
+ * top face carries its section's artifact: the <T> code block, the
+ * context chips, the translated strings with the accent payload chip, and the Locadex
  * mark mask-rendered in the plate's ink under a Bayer-dithered
  * specular sweep (the shimmer block below).
  *
@@ -58,13 +56,11 @@ import {
  * the rail's exact x, elbowing out to land on the plate's left VERTEX
  * — the mid-edge apex where the rounded hull actually peaks, its butt
  * end buried under the opaque hull so the meet is gapless. The taps
- * live IN their slabs' own SVGs now, not the overlay, so a tap rides
+ * live IN their slabs' own SVGs, not the overlay, so a tap rides
  * its plate through every lift, drop, and glide (founder: the lines
  * must stay on the layers); the stub below the elbow runs long enough
  * down the rail that even a lifted plate's leader still roots in the
- * fill. The capstone's own vertex sits nearer the center, so its
- * leader simply runs ~12 units further out from the same rail seat.
- * fullstack.css re-derives the rail x in cell space from
+ * fill. fullstack.css re-derives the rail x in cell space from
  * RAIL_X / RAIL_GAUGE / VIEW_W; change those numbers together.
  *
  * Each slab is its own absolutely-seated HTML element rather than a group
@@ -100,18 +96,17 @@ const THICK = 4.2;
 const GAP = 42;
 const STEP = THICK + GAP;
 
-/** The agents plate's footprint: FULL SIZE again (founder round-trip —
-    round 9 stepped it down ~13% as a "capstone"; the latest round undoes
-    that: "make the top layer the same size as the other"). Same plan
-    center, same z seat, same thickness; everything downstream is
-    CAP_SIZE-derived, so the face composition just gains plan room. */
+/** The agents plate's footprint: FULL SIZE (founder: "make the top layer
+    the same size as the other"). Same plan center, same z seat, same
+    thickness; everything downstream is CAP_SIZE-derived, so the face
+    composition follows this one number. */
 const CAP_SIZE = SIZE;
 const CAP_HALF = CAP_SIZE / 2;
 
 /** Slab viewBox: the silhouette plus stroke air, plus the rail margin on
     the left — the doubled rail and its leaders live there, in the overlay.
-    No caption column anymore (the labels are gone), so the margin is only
-    the rail's own air and the drawing spends the width on the plates. */
+    There is no caption column (the plates carry no labels), so the margin
+    is only the rail's own air and the drawing spends the width on the plates. */
 const PAD = 2;
 const LEAD = 30;
 const VIEW_X = -(SIZE * ISO_COS30 + PAD + LEAD);
@@ -258,9 +253,9 @@ const CHIP_TOP = THICK + CHIP_H;
    billboarded at the viewer): each group is seated with the same face-plane
    matrix that carries the Locadex mark, so the baseline runs the plate's
    +x edge and the stems foreshorten with the surface. Proportions are
-   plane-true — the frame is no longer anisotropic — and the forms run
-   larger than the old upright type so the flattened glyphs stay legible
-   (the mark proves the plane can carry a form). Strokes stay screen-gauge
+   plane-true (the frame is isotropic), and the forms run large so the
+   flattened glyphs stay legible (the mark proves the plane can carry a
+   form). Strokes stay screen-gauge
    via vectorEffect, the wires' voice a step heavier. */
 
 /** A '<' (dir −1) or '>' (dir 1) bracket, in face-plane units. */
@@ -270,8 +265,8 @@ function chevron(cx: number, cy: number, dir: 1 | -1, h = 15, d = 8): string {
   return `M${back} ${cy - h / 2}L${tip} ${cy}L${back} ${cy + h / 2}`;
 }
 
-/** The '/' of the closing bracket — at the mono face's own lean (~0.44
-    of the glyph height, a touch more slanted than the old upright cut). */
+/** The '/' of the closing bracket, at the mono face's own lean (~0.44
+    of the glyph height). */
 function slash(cx: number, cy: number, h = 15, lean = 6.6): string {
   return `M${cx + lean / 2} ${cy - h / 2}L${cx - lean / 2} ${cy + h / 2}`;
 }
@@ -407,10 +402,10 @@ const ORBIT_D = CAP_PLATE.top;
    ≤ 4), del hunk over add hunk, ragged. FullStack SCRUBS their reveal
    to scroll — beat 04's lock-in through the band's rest view — so the
    hunk grows as the reader travels the dwell and regenerates in reverse
-   on the way back. Every row is SIGNED in its margin (founder round: the
-   top layer's diffs take the pluses and minuses — the tower's whole diff
-   story lives on this plate now), the sign column riding the air between
-   the chip and the hunk. */
+   on the way back. Every row is SIGNED in its margin (the top layer's
+   diffs take the pluses and minuses, since the tower's whole diff story
+   lives on this plate), the sign column riding the air between the chip
+   and the hunk. */
 const CAP_DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
   { w: 16, tone: 'del' },
   { w: 21, tone: 'del' },
@@ -425,10 +420,10 @@ const CAP_DIFF_ROWS: readonly { w: number; tone: 'add' | 'del' }[] = [
 ];
 const CAP_DIFF_X = 14;
 const CAP_DIFF_Y0 = -28;
-/** The sign column's center, the code hunk's old rhythm kept: 4.5 plan
-    units left of the rows' start — a clear 11-unit channel now separates
-    the chip's edge (plan x = −4) from the signs, and the write wires
-    below live in that air. */
+/** The sign column's center, on the code hunk's rhythm: 4.5 plan units
+    left of the rows' start. A clear 11-unit channel separates the chip's
+    edge (plan x = −4) from the signs, and the write wires below live in
+    that air. */
 const CAP_SIGN_CX = CAP_DIFF_X - 4.5;
 
 /** The write wires' shared origin: just off the chip's right edge, on
@@ -458,16 +453,14 @@ function GlyphChip({ x, y, w, d, h, accent }: GlyphChipProps) {
 }
 
 /** The Locadex mark's seat: a RAISED SQUARE CHIP at the top-left of the
-    capstone's face (founder addendum: "make locadex on teh top left side
-    in a raised square" — superseding the earlier smaller-centered-mark
-    round), the iso repository's GitHub-chip grammar at capstone scale:
-    the tower's own GlyphChip extrusion, with the mask-mark lying in the
-    CHIP'S top face and taking the surface's ink. The asset's 500²
-    viewBox pads its glyph — the drawn form spans only 199×222 of it —
+    capstone's face (founder: "make locadex on teh top left side in a
+    raised square"), the iso repository's GitHub-chip grammar at capstone
+    scale: the tower's own GlyphChip extrusion, with the mask-mark lying
+    in the CHIP'S top face and taking the surface's ink. The asset's 500²
+    viewBox pads its glyph (the drawn form spans only 199×222 of it),
     so the seat is sized from the GLYPH: a 28-plan-unit visible mark
-    inside the 36-unit chip (4-unit margins; founder rounds: the mark
-    grows again — 26/18 → 32/24 → 36/28 — and the full-size plate seats
-    it at 12 plan units clear of the left edge, an 11-unit channel of
+    inside the 36-unit chip (4-unit margins; the full-size plate seats
+    it 12 plan units clear of the left edge, leaving an 11-unit channel of
     bare face between chip and signs for the write wires), which the
     padding inflates to a ~70-unit image box the mask crops back. The
     LDX cover below and everything the shimmer derives from it follow
@@ -481,7 +474,7 @@ const MARK_HALF = (MARK_GLYPH_W * (500 / 199)) / 2;
 const MARK_PLANE = plane(THICK + CHIP_H, CAP_CHIP_X + CAP_CHIP_SIZE / 2, CAP_CHIP_Y + CAP_CHIP_SIZE / 2);
 
 /* ---- the mark's dithered shimmer ------------------------------------------
-   Founder round 9: "a special animated shader, like the dithers, to make
+   Founder: "a special animated shader, like the dithers, to make
    it look even cooler or metallic." The mark keeps its alpha mask; what
    sweeps through it is a specular band QUANTIZED by the house 4×4 ordered
    Bayer matrix (glyph-field's 1-bit falloffs are the reference: density
@@ -491,7 +484,7 @@ const MARK_PLANE = plane(THICK + CHIP_H, CAP_CHIP_X + CAP_CHIP_SIZE / 2, CAP_CHI
    Ordered dithering nests by construction (every tier's lit cells are a
    subset of the next tier's), so the overlap composes exactly the ramp,
    and because the glint ink is opaque the doubled cells never brighten.
-   The mark's plane transform moved INSIDE the mask so all of this lives
+   The mark's plane transform sits INSIDE the mask so all of this lives
    in slab screen space: the dither cells stay square screen cells (~1.9px
    at the resting width — founder: "each dot smaller") instead of
    foreshortened rhombi, and crispEdges keeps them 1-bit under zoom.
@@ -521,12 +514,11 @@ const LDX_H = 37;
 const LDX_COVER = { x: LDX_X, y: LDX_Y, w: LDX_W, h: LDX_H } as const;
 
 /* The sweep's endpoints, DERIVED from the masked cover and the band's
-   own rotated geometry (founder round 10: "make it cross the whole
-   locadex all the way to the right and then we can restart it — rn it
-   gets cut off"). A window rotated 60° from vertical has unit normal
-   n = (cos60, sin60); translating its center by x moves it only
-   x·cos60 along that normal — HALF the horizontal distance — so a
-   fixed ±96 stopped while the widest fringe still lay across the mark.
+   own rotated geometry (founder: "make it cross the whole locadex all
+   the way to the right"). A window rotated 60° from vertical has unit
+   normal n = (cos60, sin60); translating its center by x moves it only
+   x·cos60 along that normal (HALF the horizontal distance), so a fixed
+   ±96 would stop while the widest fringe still lies across the mark.
    The band has fully cleared the cover only when its normal span
    [x·nx − w/2, x·nx + w/2] sits past the cover's own projection onto
    n, so the endpoints are that inequality solved for x, one tier
@@ -610,13 +602,13 @@ const BEAM_FRAME_TY = BEAM_ROW * STEP - VIEW_Y;
 function TopGlyph({ id }: { id: string }) {
   switch (id) {
     case 'code':
-      /* source: the raised bracket pair — '<' and '/>' each on its own
-         slab, drawn large enough to READ as brackets (founder round),
-         lying flush in the chip tops — wrapping three lines of code
-         between them: the <T> block grammar with real bracket forms.
-         The wrap is now EXPLICIT (founder: the layers speak like the
-         diffs do): a hairline boundary encloses the code block between
-         the brackets, the wrapped line inside tints to the accent, and
+      /* source: the raised bracket pair, '<' and '/>' each on its own
+         slab, drawn large enough to READ as brackets and lying flush in
+         the chip tops, wrapping three lines of code between them: the
+         <T> block grammar with real bracket forms. The wrap is EXPLICIT
+         (the layers speak like the diffs do): a hairline boundary
+         encloses the code block between the brackets, the wrapped line
+         inside tints to the accent, and
          an accent glint rides the boundary — wrap it and it ships. */
       return (
         <>
@@ -635,12 +627,10 @@ function TopGlyph({ id }: { id: string }) {
           <path className='v0s-g-mark' d={markPath(-16, -9, 30, 5)} />
           <path className='v0s-g-mark is-wrap' d={markPath(-16, -1.5, 22, 5)} />
           <path className='v0s-g-mark' d={markPath(-16, 6, 26, 5)} />
-          {/* founder: the chips carry the component PAIR — <T> opening,
-              </T> closing — tracked open (round two: air between the
-              letterforms) and stepped down again (round three: the forms
-              ran to the chip edges and the chips to the plate edge — the
-              chips now hold 7 units off the plate rim and the glyphs
-              keep >2 units inside their chips, tracking proportional) */}
+          {/* the chips carry the component PAIR (<T> opening, </T>
+              closing), tracked open with air between the letterforms;
+              the chips hold 7 units off the plate rim and the glyphs
+              keep >2 units inside their chips, tracking proportional */}
           <GlyphChip x={-45} y={-11} w={26} d={22} h={CHIP_H} />
           <GlyphChip x={19} y={-11} w={26} d={22} h={CHIP_H} />
           <g transform={plane(CHIP_TOP, -32, 0)}>
@@ -704,7 +694,7 @@ function TopGlyph({ id }: { id: string }) {
             ))}
           </g>
           {/* the three sources made CONCRETE (founder: "more icons and
-              examples for terminology, voice, and style"): each wire now
+              examples for terminology, voice, and style"): each wire
               emerges from under a raised mini-chip carrying its lucide
               form — the book (terminology), the waveform (voice), the
               palette (style) — the beats' own icon language, lying in
@@ -895,9 +885,6 @@ function TopGlyph({ id }: { id: string }) {
   }
 }
 
-/** Custom properties are legal inline styles but absent from CSSProperties. */
-type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
-
 /** Depth cue, spent on the strokes: 0 at the bottom plate, 1 at the top. */
 function depthAt(i: number): number {
   return i / (TOWER_LAYERS.length - 1);
@@ -961,7 +948,7 @@ export default function StackTower({ className, title, hot }: StackTowerProps) {
         const row = TOWER_LAYERS.length - 1 - i;
         const d = depthAt(i);
         const geo = layer.id === 'agents' ? CAP_PLATE : BASE_PLATE;
-        const voice: StyleVars = {
+        const voice: CSSProperties = {
           top: `${((row * STEP) / TOWER_H) * 100}%`,
           zIndex: i + 1,
           /* the original's stroke voice: rim and top edge brighten with

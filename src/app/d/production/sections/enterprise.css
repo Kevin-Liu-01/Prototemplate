@@ -17,7 +17,10 @@
    .tc-btn-lg), the handful of form tones the shipped markup got
    from design-system utilities this repo has no theme entry for,
    and the two Tailwind margin offsets this repo's unlayered
-   global reset flattens.
+   global reset flattens. The shipped sheet's rules for elements
+   this page does not render (the contact form's rain, the delivery
+   and security stages, the three access instruments and the PR
+   diff's file path) are left out.
    Do not "improve" anything above the tail — drift from the
    shipped sheet is the only thing this file can get wrong.
    ============================================================ */
@@ -1228,25 +1231,6 @@
   position: relative;
 }
 
-/* the form column's rain host: the wall's blue family — washed accent
-   by day, phosphor by night; the mount samples this color */
-.enterprise-root .tce-contact-rain {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  pointer-events: none;
-  color: color-mix(in srgb, var(--color-emphasis) 55%, var(--tc-paper));
-}
-
-[data-theme='dark'] .enterprise-root .tce-contact-rain {
-  color: #86a8ff;
-}
-
-.enterprise-root .tce-contact-rain canvas {
-  position: absolute;
-  top: 0;
-}
-
 /* the form panel sits in its own box, rules running off every edge —
    the full-reach frame grammar; the wrap's clip is the sheet's
    boundary. The panel (not the form) carries the frame so its box
@@ -1300,359 +1284,6 @@
 
 .enterprise-root .tce-hero-row > .tc-cell {
   position: relative;
-}
-
-/* Reduced motion: the composed final state, statically. The glyph field
-   prints its own single frame; no timeline runs. */
-
-/* Stacked, the hero cells are rows: the stage keeps a workable height. */
-
-/* ---- the close: rain behind the one ask ---- */
-
-/* ---- the board field behind the delivery instruments ---- */
-
-.enterprise-root .tce-delivery-stage,
-.enterprise-root .tce-security-stage {
-  position: relative;
-  /* the field needs open rows above and below the instruments to read */
-  padding-block: clamp(48px, 6vw, 84px);
-}
-
-.enterprise-root .tce-delivery-board {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-.enterprise-root .tce-delivery-stage .tc-cell,
-.enterprise-root .tce-security-stage .tc-cell {
-  position: relative;
-}
-
-/* the merged stage: matrix · sign-on · versions, three across, all
-   closing on the same line */
-.enterprise-root .tc-row.tce-triple {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: stretch;
-}
-
-/* ---------- the three access instruments (tce-bento) ----------
-   One card grammar, three accents: matrix in the house blue, the
-   sign-on path in violet, the version rail in green. Display face
-   only; every mark is a square. */
-
-/* every cell stretches its card so the three close on one line */
-.enterprise-root .tce-triple .tc-cell {
-  display: flex;
-  align-items: stretch;
-}
-
-.enterprise-root .tce-bento {
-  --bx: var(--color-emphasis);
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.enterprise-root .tce-bento.is-b2 {
-  --bx: #7c3aed;
-}
-
-.enterprise-root .tce-bento.is-b3 {
-  --bx: #16a34a;
-}
-
-[data-theme='dark'] .enterprise-root .tce-bento.is-b2 {
-  --bx: #a78bfa;
-}
-
-[data-theme='dark'] .enterprise-root .tce-bento.is-b3 {
-  --bx: #4ade80;
-}
-
-/* the annunciator square, seated before each bento head, in the
-   card's own accent */
-.enterprise-root .tce-triple .tc-card h3::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 11px;
-  vertical-align: 0.16em;
-  background: var(--bx, var(--color-emphasis));
-}
-
-.enterprise-root .tce-bento > .tce-mx,
-.enterprise-root .tce-bento > .tce-sig,
-.enterprise-root .tce-bento > .tce-vt {
-  flex: 1;
-  margin-top: 18px;
-  margin-bottom: 18px;
-}
-
-/* ---- b1: the permission matrix ---- */
-
-.enterprise-root .tce-mx-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) repeat(6, 26px);
-  align-items: center;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--tc-hair);
-}
-
-.enterprise-root .tce-mx-row.is-head {
-  padding: 0 0 8px;
-  font-size: 11.5px;
-  color: var(--tc-ink-4);
-}
-
-.enterprise-root .tce-mx-loc {
-  text-align: center;
-  font-size: 11.5px;
-  color: var(--tc-ink-4);
-}
-
-.enterprise-root .tce-mx-who {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  min-width: 0;
-}
-
-.enterprise-root .tce-mx-who b {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--tc-ink);
-}
-
-.enterprise-root .tce-mx-who i {
-  font-style: normal;
-  font-size: 11.5px;
-  color: var(--tc-ink-3);
-}
-
-.enterprise-root .tce-mx-cell {
-  display: flex;
-  justify-content: center;
-}
-
-/* write access is a filled square; no access a hollow one; the scoped
-   grant is the card's accent spend */
-.enterprise-root .tce-mx-dot {
-  width: 9px;
-  height: 9px;
-  border: 1px solid var(--tc-ink-4);
-}
-
-.enterprise-root .tce-mx-dot.is-on {
-  border-color: var(--tc-ink);
-  background: var(--tc-ink);
-}
-
-.enterprise-root .tce-mx-dot.is-only {
-  border-color: var(--bx);
-  background: var(--bx);
-}
-
-/* ---- b2: the sign-on path ---- */
-
-.enterprise-root .tce-sig {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) clamp(22px, 2vw, 34px) minmax(0, 1fr);
-  align-items: center;
-}
-
-.enterprise-root .tce-sig-srcs {
-  display: grid;
-  gap: 10px;
-}
-
-.enterprise-root .tce-sig-plate {
-  position: relative;
-  padding: 10px 12px 11px;
-  border: 1px solid var(--tc-hair);
-}
-
-.enterprise-root .tce-sig-plate b,
-.enterprise-root .tce-sig-hub b {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--tc-ink);
-}
-
-.enterprise-root .tce-sig-plate span,
-.enterprise-root .tce-sig-hub span {
-  display: block;
-  margin-top: 2px;
-  font-size: 11.5px;
-  color: var(--tc-ink-3);
-}
-
-/* each plate reaches the bus over a doubled pair */
-.enterprise-root .tce-sig-plate::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  width: calc(clamp(22px, 2vw, 34px) / 2);
-  height: 5px;
-  margin-top: -3px;
-  border-top: 1px solid color-mix(in srgb, var(--tc-ink) 45%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--tc-ink) 45%, transparent);
-}
-
-/* the bus: one doubled vertical collecting all three plates, running
-   the gap column between the first and last plate centers */
-.enterprise-root .tce-sig-srcs {
-  position: relative;
-}
-
-.enterprise-root .tce-sig-srcs::after {
-  content: '';
-  position: absolute;
-  top: 28px;
-  bottom: 28px;
-  left: calc(100% + clamp(22px, 2vw, 34px) / 2);
-  width: 5px;
-  margin-left: -2.5px;
-  border-inline: 1px solid color-mix(in srgb, var(--tc-ink) 45%, transparent);
-}
-
-/* and the bus reaches the hub over the same pair */
-.enterprise-root .tce-sig-hub::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 100%;
-  width: calc(clamp(22px, 2vw, 34px) / 2 + 2.5px);
-  height: 5px;
-  margin-top: -3px;
-  border-top: 1px solid color-mix(in srgb, var(--tc-ink) 45%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--tc-ink) 45%, transparent);
-}
-
-.enterprise-root .tce-sig-hub {
-  position: relative;
-  grid-column: 3;
-  padding: 16px 14px;
-  border: 1px solid var(--bx);
-  text-align: center;
-}
-
-.enterprise-root .tce-sig-hub span {
-  color: var(--bx);
-}
-
-/* ---- b3: the version rail ---- */
-
-.enterprise-root .tce-vt {
-  position: relative;
-  padding-left: 18px;
-}
-
-/* the rail itself: a doubled vertical pair */
-.enterprise-root .tce-vt::before {
-  content: '';
-  position: absolute;
-  top: 6px;
-  bottom: 6px;
-  left: 2px;
-  width: 5px;
-  border-inline: 1px solid color-mix(in srgb, var(--tc-ink) 30%, transparent);
-}
-
-.enterprise-root .tce-vt-row {
-  position: relative;
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--tc-hair);
-}
-
-.enterprise-root .tce-vt-row:last-child {
-  border-bottom: 0;
-}
-
-/* the station: a square on the rail; live filled in the accent,
-   the rest hollow */
-.enterprise-root .tce-vt-node {
-  position: absolute;
-  top: 50%;
-  /* centered on the rail: the row starts one 18px pad right of the
-     rail's own 2px inset, and the 10px square splits the 5px pair */
-  left: -18.5px;
-  width: 10px;
-  height: 10px;
-  transform: translateY(-50%);
-  border: 1px solid var(--tc-ink-4);
-  background: var(--tc-paper);
-}
-
-.enterprise-root .tce-vt-row.is-live .tce-vt-node {
-  border-color: var(--bx);
-  background: var(--bx);
-}
-
-.enterprise-root .tce-vt-main {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  min-width: 0;
-  flex: 1;
-}
-
-.enterprise-root .tce-vt-main b {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--tc-ink);
-}
-
-.enterprise-root .tce-vt-main span {
-  min-width: 0;
-  font-size: 12px;
-  line-height: 1.45;
-  color: var(--tc-ink-3);
-}
-
-.enterprise-root .tce-vt-state {
-  flex: none;
-  font-size: 11.5px;
-  color: var(--tc-ink-4);
-}
-
-.enterprise-root .tce-vt-state.is-live {
-  font-weight: 500;
-  color: var(--bx);
-}
-
-.enterprise-root .tce-vt-state.is-restore {
-  color: var(--tc-ink-2);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-@media (max-width: 1100px) {
-  .enterprise-root .tc-row.tce-triple {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* the full-stack board on this rail: each seam speaks once. Above,
-   the hatch's top edge IS the contact/stack seam (the contact wrap is
-   a div, so no section rule reaches here) — stated explicitly so it
-   does not depend on this page's stylesheet order. Below, the next
-   section's top rule is the seam, so the stack's bottom rule yields. */
-.enterprise-root .pricing-stack > .v0-hatch {
-  border-top: 1px solid var(--tc-hair);
-}
-
-.enterprise-root .tc-rail > .tc-sec.pricing-stack {
-  border-bottom: 0;
 }
 
 /* ---- the hero's proof box: five logos and their stories ---- */
@@ -1945,17 +1576,6 @@
   }
 }
 
-/* the board grid quantizes to whole cells; the canvas overdraws one
-   row past the seam and the stage clips it, so no paper remainder
-   shows above the section line */
-.enterprise-root .tce-security-stage {
-  overflow: hidden;
-}
-
-.enterprise-root .tce-security-stage > .tce-delivery-board {
-  height: calc(100% + 36px);
-}
-
 /* ---------- form contrast ---------- */
 .enterprise-root .enterprise-contact .contact-field label {
   color: var(--tc-ink);
@@ -1976,9 +1596,9 @@
 }
 
 /* ---------- PR diff mock at phone widths ---------- */
-/* The mock must read complete, never cropped: the type steps down,
-   the ± gutter narrows, and the hunk header drops its file path so
-   the widest line fits the card with no hidden overflow. */
+/* The mock must read complete, never cropped: the type steps down and
+   the ± gutter narrows, so the widest line fits the card with no hidden
+   overflow. */
 @media (max-width: 480px) {
   .toolchain-root .tce-pr-diff {
     font-size: 11.5px;
@@ -1987,10 +1607,6 @@
   .toolchain-root .tce-pr-diff > div {
     grid-template-columns: 26px minmax(0, 1fr);
     padding-right: 12px;
-  }
-
-  .toolchain-root .tce-pr-path {
-    display: none;
   }
 }
 

@@ -107,14 +107,6 @@
   color: var(--tc-ink-3);
 }
 
-.legal-root .legal-empty {
-  padding-block: 44px;
-  border-top: 1px solid var(--tc-ink);
-  border-bottom: 1px solid var(--tc-hair);
-  color: var(--tc-ink-2);
-  font-size: 14px;
-}
-
 .legal-root .legal-document-shell {
   display: grid;
   grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);

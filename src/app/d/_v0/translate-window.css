@@ -154,7 +154,7 @@
   background: #ffffff;
 }
 
-/* narrow: the bar is one fixed row now, so the tabs cannot wrap — they
+/* narrow: the bar is one fixed row, so the tabs cannot wrap: they
    tighten instead, and whatever still runs long clips at the zone's
    edge, short of the seg */
 @media (max-width: 760px) {
@@ -236,8 +236,8 @@
 
 /* THE SURFACE: the app's ground fills the window body — full width,
    full height of the stage. It draws no edge of its own (the window's
-   hairline frame is the one perimeter), and its interior re-breathes
-   on its own gutter now that the mat's inset is gone: one % gutter,
+   hairline frame is the one perimeter), and its interior breathes on
+   its own gutter, with no mat inset: one % gutter,
    resolved against the surface itself, rules chrome and main alike. */
 .toolchain-root .v0-tw .tct-app {
   --app-gut: clamp(18px, 3.5%, 32px);
@@ -248,8 +248,8 @@
   min-height: 0;
 }
 
-/* the old card's frame: four full-reach 1px rules that redrew a second
-   window inside the window — the screen-in-a-screen itself. Cut whole;
+/* the base card's frame: four full-reach 1px rules that would redraw a
+   second window inside the window, a screen-in-a-screen. Cut whole;
    nothing replaces them. */
 .toolchain-root .v0-tw .tct-app::before,
 .toolchain-root .v0-tw .tct-app::after {
@@ -299,8 +299,8 @@
    one intrinsic block, so the rows can never spread its rhythm apart. */
 .toolchain-root .v0-tw .sgdh-app-cols {
   display: grid;
-  /* the stack keeps its intrinsic measure — now a CONSTANT (every slot
-     reserves its max locale width) — and the chart spends every
+  /* the stack keeps its intrinsic measure, a CONSTANT (every slot
+     reserves its max locale width), and the chart spends every
      remaining pixel of the surface (founder: max width, zero rocking) */
   grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   column-gap: clamp(14px, 2.7%, 24px);
@@ -489,9 +489,9 @@
 }
 
 /* the head stacks: the localized label owns the full card width (the
-   card is leaner now that the left column reserves its max — sharing
-   the row ellipsized the longer locales' labels), the Intl delta reads
-   beneath it like a KPI figure */
+   card is lean because the left column reserves its max, and sharing
+   the row would ellipsize the longer locales' labels), the Intl delta
+   reads beneath it like a KPI figure */
 .toolchain-root .v0-tw .sgdh-app-chart-head {
   display: flex;
   flex-direction: column;
@@ -685,8 +685,8 @@
    reserved at their max locale measure, so the corner (and the mark)
    never moves. z4 lifts the mark above the payload sweep (z2) and the
    seam's widened hit slab (z3): a mark near the resting cut still takes
-   its own hover/click; the sweep contract that z-order used to give is
-   restored by reconcileMarks (data-swept, below). */
+   its own hover/click, and reconcileMarks enforces the sweep contract
+   by geometry (data-swept, below). */
 .toolchain-root .v0-tw .sgdh-ins-mark {
   appearance: none;
   position: absolute;
@@ -716,7 +716,7 @@
     color 0.15s ease;
 }
 
-/* the visible badge — the 11px circle the slab used to BE */
+/* the visible badge: the 11px circle in the middle of the 25px hit slab */
 .toolchain-root .v0-tw .sgdh-ins-mark::before {
   content: '';
   position: absolute;
@@ -900,8 +900,8 @@
 
 .toolchain-root .v0-tw .tct-app .tc-seam {
   width: 64px;
-  /* solid thread inks (the old translucent composites, resolved):
-     source-side ink on the white render, light ink on the plate */
+  /* thread inks: source-side ink on the white render, light ink on
+     the plate */
   --seam-ink-l: rgba(138, 143, 152, 0.45);
   --seam-ink-r: rgba(138, 143, 152, 0.38);
 }
@@ -1143,11 +1143,11 @@
   }
 
   /* the card STRETCHES to the column track. It must never be sized to
-     fit-content here (the old justify-self: start): container-type's
+     fit-content here (justify-self: start): container-type's
      inline-size containment zeroes the contents' intrinsic width, so
-     fit-content collapsed the card to its padding — a 34px sliver with
+     fit-content collapses the card to its padding, a 34px sliver with
      0-width bars and month labels overprinting each other. The track is
-     the box now: fixed through every locale swap by construction. */
+     the box: fixed through every locale swap by construction. */
   .toolchain-root .v0-tw .sgdh-app-chart {
     justify-self: stretch;
     margin-top: 18px;
@@ -1223,9 +1223,9 @@
 
 /* ============================================================
    LIGHT THEME: the WINDOW CHROME follows the page (founder: on
-   light, no black boxes or sections — the mock already renders
-   its light build above; now the bar, the window ground, the
-   Terminal transcript and the payload plate go light with it).
+   light, no black boxes or sections). The mock renders its light
+   build above, and the bar, the window ground, the Terminal
+   transcript and the payload plate go light with it.
    Everything here is scoped :root:not([data-theme='dark']), so
    the dark build keeps every rule above byte-for-byte. The
    window's own token dial re-inks once — every reader of
@@ -1314,7 +1314,7 @@
 }
 
 /* the belt: gray family flipped to light-surface values; the active
-   chip's lift adapts — the loc hue is dark on paper now, so the label
+   chip's lift adapts: the loc hue is dark on paper, so the label
    inverts to white instead of the dark-plate ink */
 :root:not([data-theme='dark']) .toolchain-root .v0-tw .v0-tw-belt-track button {
   border-color: rgba(7, 7, 7, 0.16);

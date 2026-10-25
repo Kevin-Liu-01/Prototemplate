@@ -6,7 +6,7 @@ import { CodeBracketIcon, ServerIcon, UserIcon } from '@heroicons/react/24/solid
 import { useRef, type CSSProperties } from 'react';
 
 import type { IsoProps } from '@/app/d/toolchain/diagrams/IsoFrame';
-import { prefersReducedMotion } from '@/app/d/toolchain/diagrams/lang/lang';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import '@/app/d/toolchain/diagrams/edge-globe-v2.css';
 
@@ -21,9 +21,9 @@ gsap.registerPlugin(useGSAP);
 /**
  * Edge delivery: the translation CDN as an orthographic globe.
  *
- * The old meridian cage read as a tangle: overlapping ellipses, crossing
- * leaders, a stray plumb line. This drawing is built the other way round,
- * from the story outward. The story is one sentence (a request goes to the
+ * A dense meridian cage reads as a tangle (overlapping ellipses, crossing
+ * leaders, a stray plumb line), so this drawing is built from the story
+ * outward. The story is one sentence (a request goes to the
  * closest edge, and the translation is already there), so the drawing is:
  * five points of presence standing on a sparse graticule, one user, and one
  * highlighted great-circle route between the user and the PoP that answers
@@ -34,8 +34,8 @@ gsap.registerPlugin(useGSAP);
  * strongest neutral line. No fills, no shading.
  *
  * The meridian set is symmetric about the camera (±18°, ±54°) so no
- * meridian ever projects as a dead-vertical line; the old drawing's
- * "plumb line" was the lon-0 meridian doing exactly that. The five PoPs
+ * meridian ever projects as a dead-vertical line (a lon-0 meridian would
+ * read as a plumb line). The five PoPs
  * sit on graticule intersections, because infrastructure snaps to the
  * grid; the user does not. Latencies are ordered the way geography would order them
  * from a user in fra's neighbourhood: fra 12 < iad 21 < nrt 34 < sin 41 <
@@ -45,7 +45,7 @@ gsap.registerPlugin(useGSAP);
  * origin, and code brackets on the payload that travels the route.
  *
  * At rest the serving pair, fra and the user, wear the drawing's normal
- * quiet ink, indistinguishable from the other callouts (founder revision:
+ * quiet ink, indistinguishable from the other callouts (founder:
  * no persistent blue on labels or leaders; the route arc alone holds the
  * accent). The blue belongs to the arrivals: each callout ships an
  * invisible accent copy of its lockup and leader (the same overlay device
@@ -149,10 +149,9 @@ function splitArcs(pts: readonly P3[], closed: boolean): Arc[] {
 
 /* ---------------- graticule ----------------
    A few well-chosen lines: three parallels, four meridians, two polar
-   caps the meridians terminate on (stopping short of the poles is what
-   avoids the old starburst; leaving lon 0 out is what avoids the old
-   plumb line). The spacing is chosen so every PoP below stands exactly
-   on an intersection. */
+   caps the meridians terminate on (stopping short of the poles avoids
+   a starburst; leaving lon 0 out avoids a plumb line). The spacing is
+   chosen so every PoP below stands exactly on an intersection. */
 
 const PARALLELS = [-40, 0, 40];
 const MERIDIANS = [-54, -18, 18, 54];
@@ -196,13 +195,11 @@ type Pop = {
 /* The left rail reads iad then fra: the home PoP labels on its own side
    of the sphere (founder note), well below iad at 47.5% of the frame's
    height, and with a real 18-unit horizontal arm like the right rail's
-   (founder: the old elbow at (82, 96) was pinned outside the limb, which
-   left it a 6-unit stub that read as one straight diagonal). The elbow
-   now sits just inside the limb (x 78.8 at that height), so the arm
-   crosses the sphere's edge once (the same single limb crossing the old
-   diagonal made), and the derived path clears iad's leader and every
-   node dot by 21+ units. The right rail keeps nrt/sin/syd top-to-bottom,
-   still in latency order. */
+   (an elbow pinned outside the limb leaves a short stub that reads as
+   one straight diagonal). The elbow sits just inside the limb (x 78.8
+   at that height), so the arm crosses the sphere's edge once, and the
+   derived path clears iad's leader and every node dot by 21+ units. The
+   right rail keeps nrt/sin/syd top-to-bottom, in latency order. */
 const POPS: readonly Pop[] = [
   { code: 'eu-central-1', short: 'fra', lat: 40, lon: -18, elbow: [94, 114], tickTo: 78, iconX: 1, textX: 12, home: true },
   { code: 'us-east-1', short: 'iad', lat: 40, lon: -54, elbow: [88, 52], tickTo: 78, iconX: 1, textX: 12 },
@@ -289,9 +286,6 @@ const ROUTE_D = toPath(ROUTE_PTS);
 const CHIP_REST: P3 = ROUTE_PTS[Math.round(ROUTE_PTS.length * 0.55)] ?? { x: CX, y: CY, z: 1 };
 
 const ORIGIN_PT = point(ORIGIN.lat, ORIGIN.lon);
-
-/** Custom properties are legal inline styles but absent from CSSProperties. */
-type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
 
 export default function EdgeGlobe({ className, strokeWidth, accent = true, title }: IsoProps) {
   const root = useRef<SVGSVGElement>(null);
@@ -385,7 +379,7 @@ export default function EdgeGlobe({ className, strokeWidth, accent = true, title
     { scope: root },
   );
 
-  const style: StyleVars = {};
+  const style: CSSProperties = {};
   if (strokeWidth !== undefined) style['--eg-sw'] = strokeWidth;
 
   const homePt = HOME ? point(HOME.lat, HOME.lon) : ORIGIN_PT;

@@ -1,7 +1,9 @@
 /* VENDORED — apps/landing/src/components/landing/glyph-rain/sections/band/
-   inkField.ts (gt-cloud), verbatim but for the import below: the shared
+   inkField.ts (gt-cloud), verbatim but for the imports below: the shared
    package's glyph-field is this repo's src/lib/glyph-field.ts, and the two
-   exports it needs (GLYPHS, ditherAtlasRows) are identical there. This
+   exports it needs (GLYPHS, ditherAtlasRows) are identical there; the
+   seeded generator, smoothstep and the reduced-motion read come from
+   src/lib/math.ts and src/lib/reduced-motion.ts. This
    concept already carries an OLDER copy of this engine at
    d/glyph-rain/sections/band/inkField.ts, which predates the options the
    enterprise page passes (clearing:'none', glyphColor/setGlyphColor, pool);
@@ -26,6 +28,8 @@
  */
 
 import { GLYPHS, ditherAtlasRows } from '@/lib/glyph-field';
+import { mulberry32, smoothstep } from '@/lib/math';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 const POOL = 560;
 
@@ -46,22 +50,6 @@ const PAPER = 'rgb(242 241 237)';
 const COL_PITCH = 34;
 /** How far outside the content box the dithered clearing rim runs. */
 const RIM = 64;
-
-function mulberry32(seed: number): () => number {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function smoothstep(a: number, b: number, x: number): number {
-  const u = Math.min(1, Math.max(0, (x - a) / (b - a)));
-  return u * u * (3 - 2 * u);
-}
 
 export type InkFieldOptions = {
   canvas: HTMLCanvasElement;
@@ -158,9 +146,7 @@ export function createInkField(
   /* the pool sizes per mount: sparse hosts pass fewer, dense hosts
      more (allocation follows, capped sanely) */
   const cap = Math.min(Math.max(options.pool ?? POOL, 1), 1120);
-  const reduced =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = prefersReducedMotion();
 
   /* ---------- the pool ---------- */
 

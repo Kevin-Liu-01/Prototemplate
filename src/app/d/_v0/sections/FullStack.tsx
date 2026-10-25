@@ -8,6 +8,7 @@ import { useRef } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 
 import GtLogoText from '@/app/d/_v0/GtLogoText';
+import { REDUCED_MOTION_QUERY } from '@/lib/reduced-motion';
 
 import StackTower, {
   beamAt,
@@ -103,8 +104,8 @@ const BEATS: readonly StackBeat[] = [
       <>Edit, version, and approve translations with unlimited users</>,
       <>Share context, custom prompts, and glossaries across every surface</>,
     ],
-    /* BookOpen, not Layers (founder: Layers is the FULL STACK's icon
-       now; context wears the knowledge glyph everywhere) */
+    /* BookOpen, not Layers: Layers is the FULL STACK's icon, and
+       context wears the knowledge glyph everywhere */
     icon: BookOpen,
     slabIds: ['context'],
   },
@@ -140,10 +141,10 @@ const HOT_SLABS: readonly (readonly number[])[] = BEATS.map((beat) =>
 );
 
 /**
- * How much of the tower EXISTS at each beat — the stack builds (founder:
+ * How much of the tower EXISTS at each beat: the stack builds (founder:
  * "when we're on a level the ones on top should not be visible and they'll
- * come in"; round 10 reversed round 9's always-visible ghosts and brought
- * this back). With one slab per beat this is simply beat index + 1, but it
+ * come in"), so the slabs above the current beat are absent, not ghosts.
+ * With one slab per beat this is simply beat index + 1, but it
  * stays a running maximum over the beats' slab peaks so any future
  * regrouping keeps working by physical height.
  */
@@ -467,12 +468,12 @@ export default function V0FullStack() {
         /* the shimmer's lap runs the full derived travel at a constant
            ~56 units/s, so the band always enters from clear of the mark,
            crosses ALL of it, and exits past its right edge before the
-           loop restarts (founder round 10: "make it cross the whole
-           locadex all the way to the right") — the speed holds and the
+           loop restarts (founder: "make it cross the whole
+           locadex all the way to the right"); the speed holds and the
            lap length breathes with the geometry. A PURE x translate:
            the windows' 60° set is baked into their path geometry
-           (StackTower.shineWindow), because rotating them here proved
-           origin-fragile — GSAP's SVG origin compensation shifted the
+           (StackTower.shineWindow), because rotating them here is
+           origin-fragile: GSAP's SVG origin compensation shifts the
            whole sweep ~180 units off the mark. */
         const shineLap = (SHINE_TO - SHINE_FROM) / 56;
         const shineBand = (targets: SVGPathElement[]) =>
@@ -572,10 +573,9 @@ export default function V0FullStack() {
             if (agentsOn) loop.play();
             else loop.pause();
           }
-          /* the beam's VISIBILITY is a story event now (founder: arriving
-             at the fourth beat plate by plate, the sheet appeared before
-             its plate existed — the instant hot flag ran ahead of the
-             story). The story fades the sheet in only after the
+          /* the beam's VISIBILITY is a story event, so the sheet never
+             appears before its plate exists (an instant hot flag would
+             run ahead of the story). The story fades the sheet in only after the
              capstone's drop lands and rewinds it out before the plate
              leaves; this ledger only starts and stops the SWEEP so an
              offscreen band never burns frames. */
@@ -588,11 +588,11 @@ export default function V0FullStack() {
 
         /* ===== THE RAIL'S REACH ON THE STAGE (founder: "make the blue
            line extend all the way towards the bottom and emerge from
-           the bottom" — the desktop fill's rise starts at the figure
+           the bottom"). The desktop fill's rise starts at the figure
            CELL's bottom rule, but the stage's fig cell ends at the 60%
-           zone seam, so the blue foot floated mid-screen). The text
-           cell already continues the grey track to the stage's bottom
-           edge (fullstack.css's ::before); the blue now continues too:
+           zone seam, which would float the blue foot mid-screen. The text
+           cell continues the grey track to the stage's bottom
+           edge (fullstack.css's ::before), and the blue continues too:
            a stage-only extension element (.v0sm-railext) in the text
            cell — same x, same gauge, same containing block as the track
            continuation, so the joint can never jog — anchored at the
@@ -747,12 +747,11 @@ export default function V0FullStack() {
             }
           }
           if (tap) {
-            /* the bend leaves the junction ONLY once the leg lands
-               (founder, round 2: "still broken and glitchy" — the old
-               0.12s head start against a power2.in leg lit the elbow and
-               its rail-overlap stub while the tip was still half a leg
-               below the junction, so the rail read lit-dark-lit with a
-               floating bend). A hair of overlap keeps the handoff seamed,
+            /* the bend leaves the junction ONLY once the leg lands: a
+               head start against a power2.in leg would light the elbow and
+               its rail-overlap stub while the tip is still half a leg
+               below the junction, so the rail would read lit-dark-lit with
+               a floating bend. A hair of overlap keeps the handoff seamed,
                and the ease matches the leg's ARRIVAL SPEED at the seam:
                later legs accelerate in (power2.in ends fast), so their
                bends leave fast and decelerate into the plate; the first
@@ -915,17 +914,15 @@ export default function V0FullStack() {
           const anchors: number[] = beats.map(() => 1);
           const dial = { p: 0 };
           /* A beat's LOCK-IN is its COPY BLOCK's center taking the 55%
-             read line — the line the figure's seat centers the tower on
-             (fullstack.css) — never the beat WINDOW's top crossing 58%:
-             the window is half a viewport of air with the copy centered
+             read line (the line the figure's seat centers the tower on,
+             fullstack.css), never the beat WINDOW's top crossing 58%.
+             The window is half a viewport of air with the copy centered
              inside, so its top runs nearly a half-window ahead of the
-             copy, and every anchor fired that much early — with the
-             build spending the gap's last stretch, a plate was mid-drop
-             exactly while the PREVIOUS copy sat on the read line
-             (founder, screenshot: "each layer arrives too early — by the
-             time the layer is finally centered with the text, the 2nd
-             layer is already appearing over it. Make the layers start
-             moving later."). Anchored on the copy itself, the gap's
+             copy, and anchors keyed to it would fire that much early:
+             with the build spending the gap's last stretch, a plate
+             would be mid-drop while the PREVIOUS copy sits on the read
+             line (founder: "Make the layers start moving later.").
+             Anchored on the copy itself, the gap's
              hold → build → lock shape lands where it was written to:
              the arrival begins only once the previous copy has left the
              line, runs while its own copy climbs the lower half, and
@@ -1136,14 +1133,14 @@ export default function V0FullStack() {
           /* ===== THE SCRUB'S DAMPER (founder: "the connectors coming
              from rail lines are a little laggy … i want it to look
              seamless like it does on desktop"). Desktop's capTl rides
-             scrub: 0.35 — ScrollTrigger's own damped clock between
-             scroll and paint. The stage fed apply() RAW progress: every
-             scroll EVENT scrubbed capTl (strokeDashoffset writes on each
-             cap wire — a non-compositable SVG repaint), retyped the pen
-             and stepped the rail, so a burst of touch-scroll events
-             meant a burst of same-frame repaints. Now the trigger only
+             scrub: 0.35, ScrollTrigger's own damped clock between
+             scroll and paint. Feeding apply() RAW progress would scrub
+             capTl on every scroll EVENT (strokeDashoffset writes on each
+             cap wire, a non-compositable SVG repaint), retype the pen
+             and step the rail, so a burst of touch-scroll events would
+             mean a burst of same-frame repaints. So the trigger only
              moves a TARGET; one gsap.ticker lerp chases it and calls
-             apply() once per FRAME — taps, capTl, typing and rail all
+             apply() once per FRAME: taps, capTl, typing and rail all
              ride one damped clock, the stage's equivalent of scrub:
              0.35. The ticker detaches when settled (epsilon parks it
              DEAD ON target so no residue leaks into the beat math) and
@@ -1275,7 +1272,7 @@ export default function V0FullStack() {
          — with the first beat lit and its slab lifted, the shimmer band
          resting at the markup's mid-glyph pose, and the scan beam parked
          hidden by the stylesheet (nothing here ever touches either) */
-      mm.add('(prefers-reduced-motion: reduce)', () => {
+      mm.add(REDUCED_MOTION_QUERY, () => {
         staticPose();
         scope.classList.add('is-live');
         return clear;

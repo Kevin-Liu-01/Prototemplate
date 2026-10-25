@@ -270,7 +270,8 @@ function Drop({ menu, open, onOpenChange }: DropProps) {
       onMouseEnter={() => onOpenChange(true)}
       onMouseLeave={() => onOpenChange(false)}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) onOpenChange(false);
+        const next = event.relatedTarget;
+        if (!(next instanceof Node && event.currentTarget.contains(next))) onOpenChange(false);
       }}
       onKeyDown={(event) => {
         if (event.key !== 'Escape' || !open) return;

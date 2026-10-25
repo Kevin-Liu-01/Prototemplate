@@ -22,12 +22,12 @@
 
 /* ---------- one black, not two ----------
    Founder: the globe cell's ground must sit in the house plate family, with
-   no two-blacks seam anywhere in the cell. Two paints disagreed with it:
-   the origin dot punches its route line out in --tc-dark (#070707, the
-   full-bleed band tone) on the #101010 panel, and in dark theme the panel
-   itself held #101010 while every other card in the row and the page lands
-   on the theme's one ink black (#070707) — the row read as two blacks
-   split by its own seam. Both now follow the card's actual ground: the
+   no two-blacks seam anywhere in the cell. Two paints would break it: the
+   origin dot punching its route line out in --tc-dark (#070707, the
+   full-bleed band tone) on the #101010 panel, and in dark theme a #101010
+   panel while every other card in the row and the page lands on the
+   theme's one ink black (#070707), so the row would read as two blacks
+   split by its own seam. Both follow the card's actual ground: the
    punch ink is the panel tone, and in dark the panel remaps to the card
    family, which recolors the card AND the payload chip's plate in one
    move (both read var(--tc-panel)). The same routing is the LIGHT story
@@ -89,12 +89,11 @@
 }
 
 /* The one ink the field spends, per plate: on the night plate the panel's
-   white at atmosphere opacity (founder round: stepped up from the first
-   0.05–0.09 window — the field should read, not whisper); on light the
-   plate is paper now, so the same annuli re-ink to a quiet ink-alpha in
-   that original window — a white haze on white would vanish, and a full
-   0.11 ink would shout on paper. Density does the fading — neither alpha
-   ever ramps. */
+   white at atmosphere opacity, above the 0.05–0.09 window so the field
+   reads rather than whispers; on light the plate is paper, so the same
+   annuli re-ink to a quiet ink-alpha inside that window: a white haze on
+   white would vanish, and a full 0.11 ink would shout on paper. Density
+   does the fading; neither alpha ever ramps. */
 .toolchain-root .v0-glob-atmo-field .v0-glob-atmo-dots {
   fill: rgba(255, 255, 255, 0.11);
 }

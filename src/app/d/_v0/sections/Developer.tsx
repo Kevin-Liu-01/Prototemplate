@@ -20,9 +20,9 @@ import { useRef } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
-import { prefersReducedMotion } from '@/app/d/toolchain/diagrams/lang/lang';
 import SentenceWidth, { SENTENCE_SAMPLES } from '@/app/d/toolchain/diagrams/lang/SentenceWidth';
 import { BentoCell } from '@/components/shell/Bento';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import GtLogoText from '../GtLogoText';
 

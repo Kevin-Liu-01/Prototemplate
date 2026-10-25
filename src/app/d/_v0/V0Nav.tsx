@@ -70,9 +70,9 @@ function product(base: string): readonly MenuColumn[] {
   ];
 }
 
-/* The old flat list (Customers / Blog / Careers) folded into the shared
-   two-column Resources sheet: Customers keeps its home anchor (every final
-   mounts the trusted-by section) and joins the Company column. */
+/* Customers, Blog and Careers sit in the shared two-column Resources
+   sheet: Customers keeps its home anchor (every final mounts the
+   trusted-by section) and joins the Company column. */
 function resources(base: string): readonly MenuColumn[] {
   return [
     {
@@ -180,7 +180,8 @@ function Menu({ label, columns, wide, open, onOpenChange }: MenuProps) {
         onOpenChange(true);
       }}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) onOpenChange(false);
+        const next = event.relatedTarget;
+        if (!(next instanceof Node && event.currentTarget.contains(next))) onOpenChange(false);
       }}
       onKeyDown={(event) => {
         if (event.key !== 'Escape' || !open) return;
@@ -215,7 +216,7 @@ function Menu({ label, columns, wide, open, onOpenChange }: MenuProps) {
           /* Following a link dismisses the sheet — hash anchors stay on the
              page, so without this the panel would sit over the scrolled-to
              section. */
-          if ((event.target as HTMLElement).closest('a')) onOpenChange(false);
+          if (event.target instanceof Element && event.target.closest('a')) onOpenChange(false);
         }}
         role='menu'
       >

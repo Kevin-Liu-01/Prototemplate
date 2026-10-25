@@ -112,7 +112,7 @@
    gt-cloud's translate-window.css (apps/landing/src/components/landing/
    home/sections/translate-window.css on main) draws the window's inner
    rules, chips and dark slabs from the remapped shell tokens. The shared
-   copy in src/app/d/_v0/translate-window.css keeps the earlier literals
+   copy in src/app/d/_v0/translate-window.css keeps hardcoded literals
    for singularity-dossier, singularity-signal and craft, so the live
    values are restated here for the production root only.
 
@@ -174,8 +174,8 @@
 
 /* ---------- the stack beats keep their display lead on phones ----------
    The shared _v0/v0-pages.css sets every dark band cell heading to the
-   ladder's 22px under 640px, a rule gt-cloud's v0-pages.css no longer
-   carries, so live's beat headings keep fullstack.css's clamp floor of
+   ladder's 22px under 640px, a rule gt-cloud's v0-pages.css does not
+   carry, so live's beat headings keep fullstack.css's clamp floor of
    24px. The stage cut (fullstack.css, .is-stage) sets its own 18px and is
    left to it. */
 @media (max-width: 640px) {

@@ -41,6 +41,7 @@ import {
   type Pt,
 } from '@/app/d/toolchain/diagrams/iso';
 import { BentoCell } from '@/components/shell/Bento';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 /* tcm-ruled (the split row's ruled copy cell) is defined by the toolchain
    bento sheet; the v0 routes don't mount that section, so the sheet rides
@@ -120,8 +121,8 @@ const CHIP_BARS: readonly number[] = [8, 6, 7, 5, 8, 6, 6, 7, 5];
 const GH_CHIP: readonly [number, number] = [-29, 15];
 const GH_HALF = 4.6;
 
-/** The merged plate's evidence, and now its whole story: the old gray
-    title bars retired so the diff carries the plate alone — a hunk of
+/** The merged plate's evidence and its whole story. The plate has no
+    title bars, so the diff carries it alone: a hunk of
     deletes over a hunk of adds, each group banded, ragged widths, raised
     off the face like the payload chip but tinted at the band's diff
     voices, kept well under the accent's presence. */
@@ -154,9 +155,9 @@ const SIGN_ARM = 1.9;
 const SIGN_T = 0.6;
 
 /**
- * The scan beam is a vertical sheet under the agent — from its underside at
- * z=A_Z down to the module chips' top faces (the grid is extruded now, so
- * landing any lower would slice the light through the chip bodies) — drawn
+ * The scan beam is a vertical sheet under the agent, from its underside at
+ * z=A_Z down to the module chips' top faces (the grid is extruded, so
+ * landing any lower would slice the light through the chip bodies), drawn
  * at y=0 and swept along world +y by GSAP. A world-y translation projects
  * to a constant screen vector (−cos30, +sin30) per unit, so the sweep is
  * one x/y tween.
@@ -209,10 +210,7 @@ const MARK_PLANE = plane(A_Z + A_H);
 const VIEW_W = 396;
 const VIEW_H = 164;
 
-/** Custom properties are legal inline styles but absent from CSSProperties. */
-type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
-
-/* plane() and markPath() now come from the kit — iso.ts owns the seat
+/* plane() and markPath() come from the kit: iso.ts owns the seat
    every flat mark rides. */
 
 type SolidProps = {
@@ -231,7 +229,7 @@ function Solid({ box, rim, edge, lift }: SolidProps) {
   const hull = roundedPolygon(silhouette(box));
   const top = roundedPolygon(topFace(box));
   const [frontA, frontB] = frontEdge(box);
-  const voice: StyleVars = {
+  const voice: CSSProperties = {
     '--ldx-rim-a': rim.toFixed(3),
     '--ldx-edge-a': edge.toFixed(3),
   };
@@ -767,7 +765,7 @@ function WorksLedger({
       <span className='v0-ldx-works-cap'>{caption}</span>
       <ul className='v0-ldx-works-grid'>
         {works.map(({ name, Icon, mask }) => {
-          const seat: StyleVars | undefined = mask
+          const seat: CSSProperties | undefined = mask
             ? { '--mark': `url(${mask})` }
             : undefined;
           return (
@@ -799,7 +797,7 @@ export default function V0Locadex() {
 
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       const el = root.current;
       if (!el) return;
 
@@ -843,8 +841,8 @@ export default function V0Locadex() {
             }
           ),
         ];
-        /* the mark holds its resting ink, full stop — the old warm-to-accent
-           pulse read as flashing (founder), so the agent's identity stays
+        /* the mark holds its resting ink, full stop: a warm-to-accent
+           pulse reads as flashing, so the agent's identity stays
            still while the beam does the moving */
         ScrollTrigger.create({
           trigger: el,

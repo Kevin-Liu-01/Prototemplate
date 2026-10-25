@@ -10,8 +10,9 @@ import type { LucideIcon } from 'lucide-react';
 
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
-import { prefersReducedMotion, target } from '@/app/d/toolchain/diagrams/lang/lang';
+import { target } from '@/app/d/toolchain/diagrams/lang/lang';
 import ReviewWorkspace from '@/app/d/toolchain/sections/ReviewWorkspace';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import GtLogoText from '../GtLogoText';
 
@@ -23,13 +24,13 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
  * V0 CONTEXT — "One source of context." The section is
  * the toolchain dark-band:
  * tc-band tcb → tcb-in → tcb-head cell → tcb-grid of framed tcb-cells, with
- * the glyph-rain closer's RISING ink field behind the sheet (founder note:
- * where glyph rain fell, the glyphs rise now) — paper glyphs off the ink
+ * the glyph-rain closer's RISING ink field behind the sheet (the glyphs
+ * rise where glyph rain falls): paper glyphs off the ink
  * band, 1-bit dithered depth, held out of the ruled content column by a
  * dithered clearing measured off the real DOM box, so the type and bento
- * cells stay exactly as readable as the old mask kept them.
+ * cells stay fully readable.
  * The four bentos run title-only
- * (founder cut: the subheadings retired); the application-logic cell mounts
+ * (no subheadings); the application-logic cell mounts
  * the ORIGINAL ContextResolve fork, and the dynamic cell re-cuts the gender
  * fork in that same lang-cr drawing so the two forks speak one grammar —
  * animation included: the accent transfer window runs the live branch's
@@ -335,8 +336,7 @@ type Directive = {
   label: string;
   icon: LucideIcon;
   text: ReactNode;
-  /** every directive shows its evidence — a real before→after pair
-      (founder round: the Sie row had one; now they all do) */
+  /** every directive shows its evidence: a real before→after pair */
   pair?: { before: string; after: string };
 };
 

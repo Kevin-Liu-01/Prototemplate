@@ -13,8 +13,8 @@
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
-/* Flat cells, inert for now (founder: no hover ability or effect) —
-   no borders of their own at any width; the shell rules. */
+/* Flat cells, inert (founder: no hover ability or effect), with no
+   borders of their own at any width; the shell rules. */
 .toolchain-root .v0-cust-cell {
   display: flex;
   align-items: center;
@@ -60,8 +60,8 @@
   background-image: url('/logos/profound.light.svg');
 }
 
-/* the official full lockup (clickhouse.design/brand) — true ink, not
-   the old grey; its canvas is 649.3×198.3 */
+/* the official full lockup (clickhouse.design/brand) in true ink, not
+   grey; its canvas is 649.3×198.3 */
 .toolchain-root .v0-cust-mark.is-clickhouse {
   height: 40px;
   aspect-ratio: 649.3 / 198.3;

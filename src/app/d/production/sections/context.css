@@ -546,21 +546,6 @@
   flex: none;
 }
 
-/* The mark asset pads its glyph to 222/500 of the
-   box, so the img is sized from the GLYPH — 25px box for an ~11px
-   mark — and the negative margins hand the padding back to the line. The
-   filter inks the dark asset to the band's white; opacity seats it at the
-   footer's dimmed level. */
-.toolchain-root .v0-ctx .v0-ctx-review .tcr-fmark {
-  width: 25px;
-  height: 25px;
-  margin: -7px;
-  flex: none;
-  display: inline-block;
-  filter: brightness(0) invert(1);
-  opacity: 0.72;
-}
-
 /* ---------- the Bayer aura off the frame ----------
    The dither comes FROM the workspace box: ordered tiers on 1px cells,
    every tile on one shared 8px grid so no cell is ever painted twice.
@@ -867,15 +852,6 @@
   .v0-ctx-review
   .tcr-stamp[data-kind='ok'] {
   color: #16a34a;
-}
-
-/* the agent credit's mark inks dark, same seat and dimming */
-:root:not([data-theme='dark'])
-  .toolchain-root
-  .v0-ctx
-  .v0-ctx-review
-  .tcr-fmark {
-  filter: brightness(0);
 }
 
 /* ---------- the Bayer aura, re-inked ----------

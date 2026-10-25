@@ -16,7 +16,8 @@ import type { ComponentType, SVGProps } from 'react';
 
 import LocaleTag from './LocaleTag';
 import ContextResolve from '@/app/d/toolchain/diagrams/lang/ContextResolve';
-import { prefersReducedMotion, target } from '@/app/d/toolchain/diagrams/lang/lang';
+import { target } from '@/app/d/toolchain/diagrams/lang/lang';
+import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import GtLogoText from './GtLogoText';
 

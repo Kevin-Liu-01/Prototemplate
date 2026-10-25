@@ -3,7 +3,7 @@
    The live site binds the toolchain shell to the house palette
    (gt-cloud apps/landing/src/components/landing/shell/engine.css,
    lines 9 to 100 and 3260 to 3290) and seats the ruled column at
-   1104px. src/app/d/toolchain/styles.css keeps the earlier values
+   1104px. src/app/d/toolchain/styles.css keeps its own values
    for the directions that fork it, so every rule here is scoped
    to .toolchain-root.prod-root and no other /d page changes.
 

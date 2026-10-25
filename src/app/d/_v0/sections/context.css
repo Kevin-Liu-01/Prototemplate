@@ -307,8 +307,8 @@
 
 /* ---------- the dynamic cell's fork ----------
    The gender fork replicates ContextResolve's transfer grammar in its own
-   DOM (the blue lives in the threads, never around the box — the old
-   border beam retired). Its static accent pair — the reduced-motion still —
+   DOM (the blue lives in the threads, never around the box, so there is
+   no border beam). Its static accent pair (the reduced-motion still)
    parks hidden exactly as lang.css parks the original's [data-cr-live]
    layer; the loop (or the reduced-motion settle) is what raises it. */
 
@@ -480,9 +480,8 @@
 
 .toolchain-root .v0-ctx .v0-ctx-review .tcr-bar {
   letter-spacing: 0.07em;
-  /* the bars speak real addresses now (founder: the rail captions
-     moved into the window chrome) — a URL and a command survive no
-     uppercasing */
+  /* the bars speak real addresses (the rail captions live in the
+     window chrome), and a URL and a command survive no uppercasing */
   text-transform: none;
 }
 
@@ -516,21 +515,6 @@
   width: 12px;
   height: 12px;
   flex: none;
-}
-
-/* The mark asset pads its glyph to 222/500 of the box (the StackTower
-   lesson), so the img is sized from the GLYPH — 25px box for an ~11px
-   mark — and the negative margins hand the padding back to the line. The
-   filter inks the dark asset to the band's white; opacity seats it at the
-   footer's dimmed level. */
-.toolchain-root .v0-ctx .v0-ctx-review .tcr-fmark {
-  width: 25px;
-  height: 25px;
-  margin: -7px;
-  flex: none;
-  display: inline-block;
-  filter: brightness(0) invert(1);
-  opacity: 0.72;
 }
 
 /* ---------- the Bayer aura off the frame ----------
@@ -835,11 +819,6 @@
 /* approved lands in the footer's LIGHT ok green */
 :root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-stamp[data-kind='ok'] {
   color: #16a34a;
-}
-
-/* the agent credit's mark inks dark, same seat and dimming */
-:root:not([data-theme='dark']) .toolchain-root .v0-ctx .v0-ctx-review .tcr-fmark {
-  filter: brightness(0);
 }
 
 /* ---------- the Bayer aura, re-inked ----------
