@@ -353,6 +353,9 @@
 .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: calc(var(--bw) * 0.05); transition: --peel 0.2s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .gtp-shelf-item[data-peel='true'] .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: calc(var(--bw) * 0.38); transition-duration: 0.265s; }
 .gtp-landing[data-mode='stack'] .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: 0px; transition: none; }
+/* and its curl is not drawn: Safari draws an SVG's content at its own size even in a box of none, which the stack's
+   turn shows edge on as a white sliver beside each magazine */
+.gtp-landing[data-mode='stack'] .gtp-mag-flap { display: none; }
 /* the cut runs on past the page by 12px across, so the stepped edge stays whole while the corner is down, and 1.5px
    inside the fold, so the cover's softened edge lies under the curl and never shows as a dark line along the crease */
 .gtp-mag-page { z-index: 1; clip-path: polygon(-12px -12px, calc(100% + 12px) -12px, calc(100% + 12px) calc(100% - var(--peel) * var(--fold-y, 1) - 1.5px - 12px * var(--fold-y, 1) / var(--fold-x, 1)), calc(100% - var(--peel) * var(--fold-x, 1) - 1.5px - 12px * var(--fold-x, 1) / var(--fold-y, 1)) calc(100% + 12px), -12px calc(100% + 12px)); }
