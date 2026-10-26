@@ -104,7 +104,7 @@ function MagazinePage({
         <p className='gtp-mag-folio'>
           <b>{pad(story.n)}</b>
           <span>Atlas</span>
-          <span>{issueMonth(story.date)}</span>
+          <span>{issueMonth(story.date, lang.code)}</span>
         </p>
         <i className='gtp-mag-mottle' aria-hidden='true' />
         <i className='gtp-mag-grain' aria-hidden='true' />
@@ -254,7 +254,7 @@ function InsidePage({
         sheet={issue.sheet}
         n={pad(story.n)}
         title={magazineName(story.slug, title, lang.code === 'en')}
-        month={issueMonth(story.date)}
+        month={issueMonth(story.date, lang.code)}
       />
       <i className='gtp-mag-mottle' aria-hidden='true' />
       <i className='gtp-mag-grain' aria-hidden='true' />
@@ -400,7 +400,7 @@ export default function Book({
               {magazineName(story.slug, title, lang.code === 'en')}
             </span>
             <span>Atlas</span>
-            <span>{issueMonth(story.date)}</span>
+            <span>{issueMonth(story.date, lang.code)}</span>
           </>
         ) : (
           <>

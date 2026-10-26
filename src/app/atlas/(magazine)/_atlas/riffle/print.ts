@@ -58,32 +58,45 @@ function utc(iso: string | undefined): Date | null {
   return date && !Number.isNaN(date.getTime()) ? date : null;
 }
 
-/** The two date formats, made once: a formatter is costly to build and the rack prints dates on every render. */
-const LONG = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
-const MONTH = new Intl.DateTimeFormat('en-GB', {
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
+/** Each locale's two date formats, made once: a formatter is costly to build and the rack prints dates on every render.
+    English dates read day, month, year (en-GB); every other locale's read as its own. */
+const FORMATS = new Map<string, [Intl.DateTimeFormat, Intl.DateTimeFormat]>();
+
+function formatsOf(locale: string): [Intl.DateTimeFormat, Intl.DateTimeFormat] {
+  let made = FORMATS.get(locale);
+  if (!made) {
+    const tag = locale === 'en' ? 'en-GB' : locale;
+    made = [
+      new Intl.DateTimeFormat(tag, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }),
+      new Intl.DateTimeFormat(tag, {
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }),
+    ];
+    FORMATS.set(locale, made);
+  }
+  return made;
+}
 
 /** '2026-10-19' as a credit line dates the story: 19 October 2026 (the input itself where it is not a date). */
-export function longDate(iso: string | undefined): string {
+export function longDate(iso: string | undefined, locale = 'en'): string {
   const date = utc(iso);
-  return date ? LONG.format(date) : (iso ?? '');
+  return date ? formatsOf(locale)[0].format(date) : (iso ?? '');
 }
 
 /** The same date held on one line, as a byline prints it. */
-export function bylineDate(iso: string): string {
-  return longDate(iso).replace(/ /g, '\u00a0');
+export function bylineDate(iso: string, locale = 'en'): string {
+  return longDate(iso, locale).replace(/ /g, '\u00a0');
 }
 
 /** '2026-10-19' as a cover dates its issue: October 2026. */
-export function issueMonth(iso: string | undefined): string {
+export function issueMonth(iso: string | undefined, locale = 'en'): string {
   const date = utc(iso);
-  return date ? MONTH.format(date) : '';
+  return date ? formatsOf(locale)[1].format(date) : '';
 }

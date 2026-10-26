@@ -12,7 +12,7 @@ import { MAGAZINE_ART } from '../ui/Book';
 import { CloseIcon } from '../ui/icons';
 import MapSheet from '../ui/MapSheet';
 import type { Piece } from './article';
-import { issuePages, openerOf, openingHead } from './pages';
+import { issuePages, openerOf, openingHead, type Words } from './pages';
 import { paginate } from './paginate';
 import { Flip } from './flip';
 import { BASE, issueMonth, pad } from './print';
@@ -202,8 +202,20 @@ export default function MagazineView({
   onClose,
 }: Props) {
   const host = useRef<HTMLDivElement>(null);
+  // the magazine's own words, which its pages print (pages.ts); gt-cloud's copy makes them in the page's locale with
+  // gt-next, and this one, which has none, prints them in English
+  const words: Words = {
+    locale: 'en',
+    by: (names) => `By ${names}`,
+    minutes: (n) => `${n} minutes`,
+    issue: (n) => `Atlas No. ${n}`,
+    setIn:
+      'Set in Katagami Text and Katagami Serif. Compiled and published on the web by General Translation.',
+    filedFrom: (coordinates) => `Filed from San Francisco, ${coordinates}`,
+    message: (message) => message,
+  };
   const close = useRef<HTMLButtonElement>(null);
-  /** The map sheet drawn by React (with its translations), whose markup the pages print. */
+  /** The map sheet drawn by React, whose markup the pages print. */
   const map = useRef<HTMLDivElement>(null);
   const turner = useRef<Flip | null>(null);
   // the window's keys and the stage's wheel turn pages only while the magazine shows
@@ -272,7 +284,7 @@ export default function MagazineView({
         el.closest<HTMLElement>('.gtp-riffle') ?? el,
         box.width,
         box.height,
-        opener ? '' : openingHead(story),
+        opener ? '' : openingHead(story, words),
         body
       );
       sheet?.destroy();
@@ -283,7 +295,8 @@ export default function MagazineView({
           laid,
           spread,
           opener,
-          map.current?.innerHTML ?? ''
+          map.current?.innerHTML ?? '',
+          words
         ),
         breakpoint: SPREAD,
         dur: 480,

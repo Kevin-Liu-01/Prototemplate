@@ -20,7 +20,7 @@ import {
   WHERE,
   type Edition,
 } from './edition';
-import { useMountEffect } from './hooks';
+import { useLayoutWork, useMountEffect } from './hooks';
 import {
   LANGS,
   TOPIC_NAMES,
@@ -137,6 +137,8 @@ export default function Landing({
   const [prepared, setPrepared] = useState<number | null>(null);
   // the pending dwell before a magazine is set ahead, and the idle callback that then mounts it
   const preparing = useRef({ dwell: 0, idle: 0 });
+  /** The closed magazine's corner, which takes the focus back once the close has rendered. */
+  const refocus = useRef<string | null>(null);
   const magazine = edition === 'magazine';
   /** Set by the press that closes the locator, so its click is swallowed. */
   const closing = useRef(false);
@@ -298,21 +300,29 @@ export default function Landing({
 
   /** Closes the open magazine and gives the focus back to the corner that opened it. */
   const closeMagazine = () => {
-    const slug =
+    refocus.current =
       state.current.reading === null
         ? null
-        : catalog[state.current.reading]?.slug;
+        : (catalog[state.current.reading]?.slug ?? null);
     setReading(null);
     // the closed magazine goes, so the next opening starts at its cover; the corner's focus sets it ahead again
     setPrepared(null);
     setPeel(null);
-    if (slug)
-      requestAnimationFrame(() =>
-        shelf.current
-          ?.querySelector<HTMLElement>(`.gtp-shelf-corner[data-slug="${slug}"]`)
-          ?.focus()
-      );
   };
+
+  // the focus goes back to the closed magazine's corner once the hall is no longer inert, after the close has rendered:
+  // a close from the window's Escape is not one of React's events, so it renders after the next frame
+  useLayoutWork(
+    () => {
+      const slug = refocus.current;
+      if (reading !== null || !slug) return;
+      refocus.current = null;
+      shelf.current
+        ?.querySelector<HTMLElement>(`.gtp-shelf-corner[data-slug="${slug}"]`)
+        ?.focus();
+    },
+    { dependencies: [reading] }
+  );
 
   // the rack shows once its posters, its paper and its type have loaded and decoded, or after RACK_WAIT on a slow
   // connection; a picture that fails still counts as in

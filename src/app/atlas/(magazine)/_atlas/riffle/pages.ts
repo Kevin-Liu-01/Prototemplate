@@ -56,13 +56,38 @@ function inks(story: StoryCard) {
   };
 }
 
+/**
+ * The magazine's own words in the page's locale. The pages are HTML strings,
+ * so riffle/MagazineView.tsx makes these with gt-next (useGT, useMessages)
+ * and hands them in; they are escaped here like the story's text.
+ */
+export type Words = {
+  locale: string;
+  /** 'By Kevin Liu and Taylor Fang' */
+  by: (names: string) => string;
+  /** '8 minutes' */
+  minutes: (n: number) => string;
+  /** 'Atlas No. 05' */
+  issue: (n: string) => string;
+  /** How the issue was set and who published it, the colophon's middle line. */
+  setIn: string;
+  /** 'Filed from San Francisco, 37°46′ N 122°25′ W' */
+  filedFrom: (coordinates: string) => string;
+  /** A message from stories.ts (a map's note) in the locale. */
+  message: (message: string) => string;
+};
+
+/** The story's authors as one name, joined as the locale joins a list ('Kevin Liu and Taylor Fang'). */
+const authorsOf = (story: StoryCard, locale: string) =>
+  new Intl.ListFormat(locale, { type: 'conjunction' }).format(story.authors);
+
 /** The opening's head in its two parts: the headline, and the deck, the issue and the byline. */
-function headParts(story: StoryCard): [string, string] {
-  const by = story.authors.map((a) => escapeHtml(a)).join(' and ');
+function headParts(story: StoryCard, words: Words): [string, string] {
+  const by = authorsOf(story, words.locale);
   // the byline on one rule, as the story's web page sets it: who, then when and how long
   const line = [
-    by ? `<b>By ${by}</b>` : '',
-    ...[longDate(story.date), `${story.minutes} minutes`]
+    by ? `<b>${escapeHtml(words.by(by))}</b>` : '',
+    ...[longDate(story.date, words.locale), words.minutes(story.minutes)]
       .filter(Boolean)
       .map((part) => `<span>${escapeHtml(part)}</span>`),
   ].join('');
@@ -79,7 +104,7 @@ function headParts(story: StoryCard): [string, string] {
  * with its places and road) beside the issue, the byline, the
  * date and reading time, and what the map shows.
  */
-function legend(story: StoryCard): string {
+function legend(story: StoryCard, words: Words): string {
   const sheet = SHEETS[story.slug] ?? HOME_SHEET;
   const [w, h] = [160, 104];
   const { at, land } = project(sheet, 0, 0, w, h, 5);
@@ -97,16 +122,16 @@ function legend(story: StoryCard): string {
     )
     .join('');
   const map = `<svg class="gtr-inset" viewBox="0 0 ${w} ${h}" aria-hidden="true"><rect class="gtr-inset-sea" width="${w}" height="${h}"/><path class="gtr-inset-land" d="${land}"/>${route}${dots}</svg>`;
-  const by = story.authors.map((a) => escapeHtml(a)).join(' and ');
-  const date = longDate(story.date);
+  const by = escapeHtml(authorsOf(story, words.locale));
+  const date = longDate(story.date, words.locale);
   // the story's own place and road in its accent, or in its cover's ink where it has none, so they stand clear of the sea
   const spec = COVERS[story.slug] ?? FALLBACK_COVER;
-  return `<div class="gtr-legend" style="--accent:${spec.accent ?? spec.paper}">${map}<div><p class="gtr-legend-h">Atlas No. ${pad(story.n)}</p><p class="gtr-legend-by">${by}</p><p>${escapeHtml([date, `${story.minutes} minutes`].filter(Boolean).join(', '))}</p><p>${escapeHtml(sheet.note)}</p></div></div>`;
+  return `<div class="gtr-legend" style="--accent:${spec.accent ?? spec.paper}">${map}<div><p class="gtr-legend-h">${escapeHtml(words.issue(pad(story.n)))}</p><p class="gtr-legend-by">${by}</p><p>${escapeHtml([date, words.minutes(story.minutes)].filter(Boolean).join(', '))}</p><p>${escapeHtml(words.message(sheet.note))}</p></div></div>`;
 }
 
 /** The opening's head, across the top of the article's first page where the story opens on no spread of its own. */
-export function openingHead(story: StoryCard): string {
-  return `<div class="gtr-head">${headParts(story).join('')}</div>`;
+export function openingHead(story: StoryCard, words: Words): string {
+  return `<div class="gtr-head">${headParts(story, words).join('')}</div>`;
 }
 
 /**
@@ -157,7 +182,8 @@ export function openerOf(
  * printed where the rack's live cover draws it; `spread` is whether two pages
  * show at once, which is when the back cover's place needs keeping; `cover`
  * is the opening spread's picture (openerOf), where two pages show; `map` is
- * the story's map sheet as the rack draws it (ui/MapSheet.tsx), as markup.
+ * the story's map sheet as the rack draws it (ui/MapSheet.tsx), as markup;
+ * `words` is the magazine's own words in the page's locale.
  */
 export function issuePages(
   story: StoryCard,
@@ -165,7 +191,8 @@ export function issuePages(
   article: Laid[],
   spread: boolean,
   cover: Opener | null,
-  map: string
+  map: string,
+  words: Words
 ): PageSpec[] {
   const { board, vars } = inks(story);
   const spec = COVERS[story.slug] ?? FALLBACK_COVER;
@@ -188,10 +215,10 @@ export function issuePages(
   };
   const front = spread ? [inside, sheet] : [sheet];
   const name = escapeHtml(magazineName(story.slug, story.title));
-  const month = escapeHtml(issueMonth(story.date));
+  const month = escapeHtml(issueMonth(story.date, words.locale));
   // the opening spread: the story's own picture across the gutter, the headline under it on the left page and the
   // deck, the issue and the byline on the right
-  const [headline, rest] = headParts(story);
+  const [headline, rest] = headParts(story, words);
   const open = (pic: Opener, side: string, inner: string) =>
     paper(
       () =>
@@ -229,7 +256,7 @@ export function issuePages(
   // that keeps its place is the issue's colophon: the imprint, the issue, how it was set and where it was filed from
   const colophon = paper(
     () => `<div class="gtr gtr-in gtr-colophon${(front.length + opening.length + body.length) % 2 ? '' : ' l'}" style="${vars}">
-      <div class="gtr-colo">${atlasMark('var(--paper)')}<p><b>Atlas</b> No. ${pad(story.n)}, ${month}</p><p>Set in Katagami Text and Katagami Serif. Compiled and published on the web by General Translation.</p><p>Filed from San Francisco, ${escapeHtml(dms(story.dateline.lat, 'lat'))} ${escapeHtml(dms(story.dateline.lon, 'lon'))}</p></div>
+      <div class="gtr-colo">${atlasMark('var(--paper)')}<p><b>${escapeHtml(words.issue(pad(story.n)))}</b>, ${month}</p><p>${escapeHtml(words.setIn)}</p><p>${escapeHtml(words.filedFrom(`${dms(story.dateline.lat, 'lat')} ${dms(story.dateline.lon, 'lon')}`))}</p></div>
     </div>`
   );
   const blank =
@@ -254,7 +281,7 @@ export function issuePages(
     stock(
       () => `<div class="gtr gtr-back" style="${vars}">
         <div class="mk">${atlasMark(board)}<p><b>Atlas</b></p></div>
-        ${legend(story)}
+        ${legend(story, words)}
       </div>`,
       board
     ),

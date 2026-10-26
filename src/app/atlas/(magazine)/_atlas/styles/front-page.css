@@ -165,9 +165,10 @@
 .gtp-landing[data-mode='stack'] .gtp-shelf-shadow { opacity: 0; }
 
 /* the magazines show together once their posters, paper and type are in, each whole, never a blank board that its
-   pictures land on later (Landing.tsx, data-ready); until then they take no click and no focus. Without scripts they
-   show at once */
-.gtp-shelf-track { transition: opacity 0.3s var(--gtp-ease), visibility 0.3s; }
+   pictures land on later (Landing.tsx, data-ready); until then they take no click and no focus. Only the opacity
+   fades: a visibility the track inherits from the hall (.gtp-hall[inert]) must come back at once, or a closed
+   magazine's corner could not take the focus. Without scripts they show at once */
+.gtp-shelf-track { transition: opacity 0.3s var(--gtp-ease); }
 .gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 0; visibility: hidden; }
 @media (scripting: none) { .gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 1; visibility: visible; } }
 @media (prefers-reduced-motion: reduce) { .gtp-shelf-track { transition: none; } }
