@@ -165,10 +165,11 @@
 .gtp-landing[data-mode='stack'] .gtp-shelf-shadow { opacity: 0; }
 
 /* the magazines show together once their posters, paper and type are in, each whole, never a blank board that its
-   pictures land on later (Landing.tsx, data-ready); without scripts they show at once */
-.gtp-shelf-track { transition: opacity 0.3s var(--gtp-ease); }
-.gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 0; }
-@media (scripting: none) { .gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 1; } }
+   pictures land on later (Landing.tsx, data-ready); until then they take no click and no focus. Without scripts they
+   show at once */
+.gtp-shelf-track { transition: opacity 0.3s var(--gtp-ease), visibility 0.3s; }
+.gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 0; visibility: hidden; }
+@media (scripting: none) { .gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 1; visibility: visible; } }
 @media (prefers-reduced-motion: reduce) { .gtp-shelf-track { transition: none; } }
 
 /* dragging the row: the hall keeps the plain arrow and a magazine the hand, and only a drag under way grabs */
