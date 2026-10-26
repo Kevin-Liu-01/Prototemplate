@@ -27,6 +27,11 @@ import shutil
 import sys
 from pathlib import Path
 
+# --help prints the docstring before fontTools is needed
+if {'--help', '-h'} & set(sys.argv[1:]):
+    print(__doc__)
+    sys.exit(0)
+
 from fontTools import subset
 
 ROOT = Path(__file__).resolve().parents[2]
