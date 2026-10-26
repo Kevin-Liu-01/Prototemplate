@@ -64,9 +64,10 @@
   gap: 8px;
 }
 
+/* Each capture at its own width (the img's width attribute) up to the column's: a 1440 capture fills the column, a phone stays 390px wide. */
 .an-fig img {
   display: block;
-  width: 100%;
+  max-width: 100%;
   height: auto;
   border: 1px solid var(--pt-hair);
   border-radius: var(--pt-radius-card);
