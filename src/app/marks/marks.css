@@ -1,21 +1,23 @@
-/* Marks: the speed set on the viewer shell.
+/* Marks: four groups of marks on the viewer shell.
 
    The shell (src/components/viewer) draws the frame; this sheet draws the
-   book inside the flow sheet (the head, the contents, the register's rows,
-   one presentation per mark, the fields, the globe concepts at the end) and lays the grid's
-   rows out as tiles that carry the marks themselves. Everything reads the
-   shell's --pt- tokens. The marks are one color by construction: every
-   plate sets a ground and a color, and the inlined SVG takes the color as
-   currentColor, so a positive plate is ink on paper and a reversed plate
-   is paper on ink, and the theme switch swaps both. Every mark is sized
-   by height and its file's own aspect (the viewer writes --mk-w and
-   --mk-aspect on each instance), never by a square box: a wide mark lays
-   its plates out full width, one above the other (.is-stack), and its
-   width is clamped to the plate so nothing clips. Rules are --pt-hair and
-   --pt-hair-soft and never ink (directive 8.9); one hairline per rule;
-   the plates, families and grid tiles take the card corner (DESIGN.md
-   section 2, Corners), the app icon tile keeps the platform's 22% and the
-   tab mock stays square, since both are specimens; no shadow. */
+   book inside the flow sheet: the marks in production, the hemispheres
+   round by family, the bar monogram collection with its register, and the
+   other explorations. Every mark without a sheet of notes takes one card
+   (.mk-card): the mark large on its plate, the run of heights, the 16px
+   cut, then the name, the tags and the files. The speed and picture marks
+   keep their sheets of plates and notes. Everything reads the shell's
+   --pt- tokens. The marks are one color by construction: every plate sets
+   a ground and a color, and the mark takes the color as currentColor or
+   through a mask, so a positive plate is ink on paper and a reversed plate
+   is paper on ink, and the theme switch swaps both. Every mark is sized by
+   height and its file's own aspect (the viewer writes --mk-w and
+   --mk-aspect on each instance), and its width is clamped to the plate so
+   nothing clips. Frames are --pt-hair, rows inside a frame --pt-hair-soft,
+   the production cards --pt-edge; the plates, cards and grid tiles take
+   the card corner, tags the chip corner (DESIGN.md section 2, Corners);
+   the app icon tile keeps the platform's 22% and the tab mock stays
+   square, since both are specimens; no shadow. */
 
 /* ---------- the book column ----------
    The column (.pt-book-col), the head, the contents, the band and the
@@ -23,13 +25,364 @@
    .pt-book-sec in BookView.css); a divider's lead is the shared
    .pt-book-sec p. */
 
-/* ---------- a section: the register, one mark, Presentation ---------- */
+/* ---------- a group, and a block inside it ---------- */
 
 .mk-sec {
   display: flex;
   flex-direction: column;
   gap: 24px;
   scroll-margin-top: 20px;
+}
+
+/* a group opens with the shared divider and holds its blocks further apart than a block holds its parts */
+.mk-group {
+  gap: 40px;
+}
+
+/* every block of a group after its opening starts on a row rule */
+.mk-group > .mk-block {
+  padding-top: 40px;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+/* a block's head: the name with its tags, then one or two lines under it */
+.mk-block-head {
+  display: grid;
+  gap: 6px;
+}
+
+.mk-block-head h3,
+.mk-fam-text h3 {
+  margin: 0;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+}
+
+.mk-block-head p,
+.mk-fam-text p,
+.mk-round-text p {
+  max-width: var(--pt-measure);
+  margin: 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+/* the name and its tags on one baseline, the tags wrapping under a long name */
+.mk-card-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  min-width: 0;
+}
+
+.mk-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mk-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  font-weight: var(--pt-w-label);
+  color: var(--pt-ink-2);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.mk-tag svg {
+  flex: 0 0 auto;
+}
+
+/* ---------- the card: every mark without a sheet ---------- */
+
+.mk-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.mk-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  overflow: hidden;
+  background: var(--pt-paper);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 360px;
+}
+
+.mk-card.is-pick {
+  border-color: var(--pt-ink);
+}
+
+.mk-card-plates {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.mk-card-plate {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  margin: 0;
+  padding: 24px 16px;
+}
+
+.mk-card-plate figcaption {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+/* the run of heights in the plate's ink; the 16px cut on its own row under it, at 1x and enlarged */
+.mk-card-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px 14px;
+  padding: 16px;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.mk-card-cut {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.mk-card-body {
+  display: grid;
+  gap: 6px;
+  margin-top: auto;
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.mk-card-name h3,
+.mk-card-name h4 {
+  margin: 0;
+  min-width: 0;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-ink);
+  overflow-wrap: anywhere;
+}
+
+/* a block's name keeps the title step beside its tags */
+.mk-block-head .mk-card-name h3 {
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+}
+
+.mk-card-note {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+.mk-card-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+}
+
+.mk-card-files a {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.mk-card-files a:hover {
+  color: var(--pt-ink);
+}
+
+.mk-card-files a:focus-visible,
+.mk-poster:focus-visible,
+.mk-round-list a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+/* ---------- in production: the two live marks, one full-width card each ---------- */
+
+.mk-feature {
+  display: grid;
+  gap: 16px;
+}
+
+.mk-card.is-feature {
+  border-color: var(--pt-edge);
+  content-visibility: visible;
+}
+
+.mk-card.is-feature .mk-card-plates {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mk-card.is-feature .mk-card-plate {
+  min-height: 300px;
+  padding: 48px 32px 56px;
+}
+
+.mk-card.is-feature .mk-card-sizes {
+  gap: 20px 28px;
+  padding: 24px 32px;
+}
+
+.mk-card.is-feature .mk-card-body {
+  gap: 8px;
+  padding: 20px 32px 24px;
+}
+
+.mk-card.is-feature .mk-card-name h3 {
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+}
+
+.mk-card.is-feature .mk-card-note {
+  max-width: var(--pt-measure);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+}
+
+/* ---------- hemispheres: the round's poster, then one block per family ---------- */
+
+.mk-round,
+.mk-fam-head {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.mk-fam-head {
+  grid-template-columns: 200px minmax(0, 1fr);
+}
+
+.mk-poster {
+  display: block;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  overflow: hidden;
+}
+
+.mk-poster img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mk-round-text,
+.mk-fam-text {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mk-round-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mk-round-list a {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  color: var(--pt-ink);
+  text-decoration: none;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-title-lh);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+}
+
+.mk-round-list a:hover .mk-round-name {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.mk-round-n,
+.mk-round-list small {
+  font-weight: var(--pt-w-text);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+.mk-round-list small {
+  font-size: var(--pt-t-meta);
+}
+
+.mk-fam-text .mk-count {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the family's groups as chips: the name and its count */
+.mk-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.mk-groups div {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+}
+
+.mk-groups dt {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-weight: var(--pt-w-label);
+  color: var(--pt-ink);
+}
+
+.mk-groups dd {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- the plates ---------- */
@@ -300,7 +653,7 @@
   min-width: 0;
 }
 
-.mk-body h3 {
+.mk-body h4 {
   margin: 0;
   font-size: var(--pt-t-title);
   line-height: var(--pt-t-title-lh);
@@ -379,13 +732,13 @@
   color: var(--pt-ink-2);
 }
 
-/* ---------- presentation: the nine on one field, then the reference ---------- */
+/* ---------- presentation: the speed set on one field ---------- */
 
 .mk-field {
   padding: 44px 32px 56px;
 }
 
-/* the nine at one height, wrapping from the left, each with its number and name under it */
+/* the set at one height, wrapping from the left, each with its number and name under it */
 .mk-field-row {
   display: flex;
   flex-wrap: wrap;
@@ -420,67 +773,7 @@
   outline-offset: 4px;
 }
 
-.mk-ref-svg {
-  display: block;
-  height: auto;
-}
-
-.mk-ref-note {
-  max-width: 72ch;
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--pt-ink-2);
-}
-
-/* ---------- concepts: the globe marks that were not chosen ----------
-   Each concept takes the plates and strips of a mark sheet under a name
-   row; its instances are the plate's color masked by the public file
-   (.mk-mask), so a positive plate is ink on paper and a reversed plate is
-   paper on ink, as with an inlined mark. */
-
-.mk-concept {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.mk-concept + .mk-concept {
-  margin-top: 24px;
-}
-
-/* the name, and the file at the right on its baseline */
-.mk-concept-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 4px 16px;
-}
-
-.mk-concept-head h3 {
-  margin: 0;
-  font-size: var(--pt-t-title);
-  line-height: var(--pt-t-title-lh);
-  letter-spacing: var(--pt-track-label);
-  color: var(--pt-ink);
-}
-
-.mk-concept-head a {
-  font-size: var(--pt-t-meta);
-  line-height: var(--pt-t-meta-lh);
-  color: var(--pt-titanium);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  overflow-wrap: anywhere;
-}
-
-.mk-concept-head a:focus-visible {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: 2px;
-}
-
+/* a mark drawn by mask: the plate's color through the public file, contained */
 .mk-mask {
   background: currentColor;
   -webkit-mask: var(--mk-mask) center / contain no-repeat;
@@ -559,7 +852,16 @@
   outline-offset: 2px;
 }
 
-/* the mark on its tile: a box the tile's width and 96px tall, ink masked by the file, contained */
+/* the mark on its tile: a box the tile's width and 96px tall, ink masked by the file, contained;
+   a group or a block takes its lead mark, the register the monogram it governs */
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='production']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemispheres']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-joined-bar']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-t-facing-g']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-t-wrapping-limb']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-graticule-globes']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-doubled-lines']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='register']::after,
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram']::after,
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-lockup']::after,
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='plate-inverted']::after,
@@ -567,8 +869,10 @@
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='livery-stack']::after,
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-dithered']::after,
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram-ascii']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='presentation']::after,
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='two-way']::after,
-.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='globe-g']::after {
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='globe-g']::after,
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='concepts']::after {
   content: '';
   order: -1;
   display: block;
@@ -578,6 +882,38 @@
   background: var(--pt-ink);
   -webkit-mask: var(--mk-mask) center / contain no-repeat;
   mask: var(--mk-mask) center / contain no-repeat;
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='production'] {
+  --mk-mask: url('/marks/production/gt-mark.svg');
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemispheres'] {
+  --mk-mask: url('/marks/hemispheres/t-west-limb.svg');
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-joined-bar'] {
+  --mk-mask: url('/marks/hemispheres/cut-3.svg');
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-t-facing-g'] {
+  --mk-mask: url('/marks/hemispheres/t-west-limb.svg');
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-t-wrapping-limb'] {
+  --mk-mask: url('/marks/hemispheres/solid-c1.svg');
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-graticule-globes'] {
+  --mk-mask: url('/marks/hemispheres/globe-ball-jaw.svg');
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='hemi-doubled-lines'] {
+  --mk-mask: url('/marks/hemispheres/double-a1.svg');
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='register'] {
+  --mk-mask: url('/marks/bar-monogram.svg');
 }
 
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='bar-monogram'] {
@@ -608,12 +944,20 @@
   --mk-mask: url('/marks/bar-monogram-ascii.svg');
 }
 
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='presentation'] {
+  --mk-mask: url('/marks/double-cut.svg');
+}
+
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='two-way'] {
   --mk-mask: url('/marks/two-way.svg');
 }
 
 .pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='globe-g'] {
   --mk-mask: url('/marks/globe-g.svg');
+}
+
+.pt-viewer[data-shell='marks'] .pt-grid .pt-row[data-id='concepts'] {
+  --mk-mask: url('/marks/globe/orrery-solid.svg');
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -639,8 +983,61 @@
   }
 
   .mk-pair,
-  .mk-families {
+  .mk-families,
+  .mk-card.is-feature .mk-card-plates {
     grid-template-columns: 1fr;
+  }
+
+  .mk-card.is-feature .mk-card-plate {
+    min-height: 220px;
+    padding: 32px 20px 44px;
+  }
+
+  .mk-card.is-feature .mk-card-sizes,
+  .mk-card.is-feature .mk-card-body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .mk-group {
+    gap: 32px;
+  }
+
+  .mk-group > .mk-block {
+    padding-top: 32px;
+  }
+
+  .mk-round,
+  .mk-fam-head {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .mk-poster {
+    width: min(100%, 180px);
+  }
+
+  .mk-cards {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .mk-card-plate {
+    min-height: 140px;
+    padding: 20px 12px;
+  }
+
+  .mk-card-sizes {
+    gap: 12px 10px;
+    padding: 12px;
+  }
+
+  .mk-card-cut {
+    padding: 10px 12px;
+  }
+
+  .mk-card-body {
+    padding: 10px 12px 12px;
   }
 
   .mk-plate,

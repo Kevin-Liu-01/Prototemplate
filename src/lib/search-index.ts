@@ -144,7 +144,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   atlas: 'atlas notes magazine long writing why stripe press looks docs reader fumadocs printed page covers languages locator',
   motion:
     'films videos hyperframes roster trailers translation series jihe yuanben euclid ricci journey to the west monkey waley hebrew ben-yehuda',
-  marks: 'logo mark monogram wordmark lockup GT speed race bars cut plate livery ascii dither',
+  marks: 'logo mark monogram wordmark lockup GT speed race bars cut plate livery ascii dither production locadex doubled-line hemispheres globe poster favicon',
   transcreate: 'video translation japanese english on-screen text side by side stacked columns notion linear ramp asana stripe miro credits',
   archive: 'retired versions captures history',
 };
