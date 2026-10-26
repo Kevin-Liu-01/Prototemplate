@@ -585,7 +585,8 @@
   /* Euclid's book: the text column a little narrower and set against the stage, so the two read as one spread */
   .gtp-reader[data-edition='magazine'] .gtp-print-body { grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); }
   .gtp-reader[data-edition='magazine'] .gtp-print-text .gtp-print-page { padding-inline: max(88px, 100% - var(--gtp-print-measure) - 48px) 48px; }
-  .gtp-reader[data-edition='magazine'] .gtp-print-opening[data-armed] .gtp-print-opening-next { padding-inline: max(88px, 100% - var(--gtp-print-measure) - 48px) 48px; }
+  /* the epigraph takes the title's place and its centre line, the column's middle, clear of the rail at its left */
+  .gtp-reader[data-edition='magazine'] .gtp-print-opening[data-armed] .gtp-print-opening-next { padding-inline: max(88px, 10%); }
   .gtp-reader[data-edition='magazine'] .gtp-print-stage-item:not(.gtp-print-stage-cover) { padding: 56px 44px 44px; }
   .gtp-reader[data-edition='magazine'] .gtp-print-stage .gtp-versions-map { width: min(420px, 100%); }
   .gtp-reader[data-edition='magazine'] .gtp-print-stage .gtp-versions-globe { width: 100%; }
