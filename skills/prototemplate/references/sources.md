@@ -56,3 +56,9 @@ Provenance for `prototemplate`. The first list is the skill's sources as written
 | A canon document's page lives in `content/docs/(guide)/handbook/`, the canon in its `(canon)` folder group and a handbook document in `(process)` or `(reference)` | SKILL.md section 6, `references/adding.md`, `references/hub.md`, `references/registries.md` | the handbook folder's `meta.json` and its `(canon)`, `(process)` and `(reference)` groups on branch docs/organize (2026-10-21) |
 | The five tabs (`(guide)`, `components`, `craft`, `engineering`, `(internals)`), each a folder whose `meta.json` sets `"root": true`; a root folder lists its `index` first and any other folder leaves `index` out; a new folder group's `meta.json`; `lint:registries` follows every `meta.json` from the root; the `DOCS_PAGES` slug is the URL after `/docs/` | `references/adding.md` (a docs page, steps 1 and 2), `references/registries.md` | `content/docs/**/meta.json` and the header of `src/components/docs/pages.ts` on branch docs/organize (2026-10-21); `metaOrder()` in `scripts/lint/registries.mjs` (2026-10-21) |
 | `/docs` in five tabs, with the blog globe figure at `/docs/components/blog-globe` | `references/hub.md` | `content/docs/meta.json` and `content/docs/components/(drawings)/meta.json` on branch docs/organize; the `/docs/blog-globe` redirect in `next.config.ts` (2026-10-21) |
+
+## Added or changed on 2026-10-26
+
+| Line | Where | Source |
+| --- | --- | --- |
+| `/blog` and `/blog/<slug>` run on the viewer shell, the posts and the changelog under Knowledge > Blog; a new post is its file, its authors, `pnpm build:blog` and `pnpm build:updated` | SKILL.md section 3, `references/chrome.md`, `references/hub.md`, `references/adding.md` | Kevin's request of 2026-10-26 to present the blog like the other Knowledge pages and port the newer blog work; `src/app/blog/`, `scripts/build/blog.mjs` on branch k/blog-knowledge (2026-10-26) |

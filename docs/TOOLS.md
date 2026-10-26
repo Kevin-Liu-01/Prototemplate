@@ -72,6 +72,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 
 | Command | What it does | Runs |
 | --- | --- | --- |
+| `pnpm build:blog` | Builds src/lib/blog-posts.ts, the post and release list behind /blog, its sidebar run and the search: the frontmatter of every post in content/blog (title, summary, date, authors, tags, covers) with each author's name and avatar from content/authors, and every release of the ... | `scripts/build/blog.mjs` |
 | `pnpm build:deck` | Builds public/brand-deck.html, the standalone brand deck viewer, from the deck source checked in at deck/. | `scripts/build/deck.mjs` |
 | `pnpm build:inter` | Split the rsms InterVariable roman and italic into unicode-range subsets, and cut the two static Latin TTF instances the social card route draws with (pnpm build:inter; needs fonttools and brotli). | `scripts/build/subset-inter.py` |
 | `pnpm build:marks` | Builds the speed marks under public/marks: the race-type set for General Translation (wide letters, a forward slant, one horizontal cut through the letters, speed bars into the first letter), every file one color in currentColor with a tight viewBox, so the marks page inlines ... | `scripts/build/speed-marks.mjs` |

@@ -16,8 +16,9 @@
 //   - the routes the Pages group lists: the gallery (`gallery`), /brand,
 //     /docs, /compare, /present and /deck, under their own ids
 //   - the Knowledge rows that have a page of their own: /skills (`skills`),
-//     /docs/handbook (`handbook`) and /marks (`marks`), so the sidebar's
-//     Skills, Handbook and Marks rows can preview their first fold
+//     /docs/handbook (`handbook`), /marks (`marks`) and /blog (`blog`), so
+//     the sidebar's Skills, Handbook, Marks and Blog rows can preview their
+//     first fold
 //   - every page of the docs site, /docs and /docs/<path> (`docs-<path>`
 //     with a folder's slash a hyphen, the Documents rows) from
 //     src/components/docs/pages.ts, and every page of the handbook, the

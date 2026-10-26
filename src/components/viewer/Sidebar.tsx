@@ -120,6 +120,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   skills: 'skill',
   handbook: 'book',
   marks: 'swatch',
+  blog: 'post',
   atlas: 'book',
   motion: 'film',
   transcreate: 'language',

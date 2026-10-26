@@ -71,8 +71,8 @@ cell also gets the full page (`-full.png`, cut at ten screens).
 
 The reads start once the page's ready selector (`pages.mjs`) has matched
 with a box, in the page or in one of its frames: the shell stamps
-`.pt-viewer[data-settled]` one frame after it boots, the blog mounts
-`.blog-root`, the presenter stamps `.pr-root[data-settled]` once its
+`.pt-viewer[data-settled]` one frame after it boots (the blog's pages
+included), the presenter stamps `.pr-root[data-settled]` once its
 slides are set up and the intro's entrance has played (so every cell
 reads the scoreboard's cards hidden for their scroll reveal, never the
 moment before), and the deck's `#sheet` gets its box (`/deck` serves the

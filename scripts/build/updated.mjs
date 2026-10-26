@@ -157,6 +157,14 @@ function skillSlugs() {
     .sort();
 }
 
+/** The posts: `content/blog/<slug>.mdx`. */
+function postSlugs() {
+  return readdirSync(join(ROOT, 'content/blog'))
+    .filter((f) => f.endsWith('.mdx'))
+    .map((f) => f.slice(0, -4))
+    .sort();
+}
+
 /** The research packages: `public/motion/<slug>.md` (MOTION_BODY_DIR). */
 function packageSlugs() {
   return readdirSync(join(ROOT, 'public/motion'))
@@ -217,7 +225,23 @@ function pages() {
       paths: [`skills/${s}`, 'src/app/skills/[slug]', 'src/app/skills/SkillViewer.tsx'],
     })),
     { id: '/marks', paths: ['src/app/marks', 'src/lib/marks.ts', 'public/marks', 'scripts/build/speed-marks.mjs'] },
-    { id: '/blog', paths: ['src/app/blog/page.tsx', 'src/app/blog/blog.css', 'content/blog', 'content/authors', 'src/lib/blog.ts'] },
+    {
+      id: '/blog',
+      paths: [
+        'src/app/blog/page.tsx',
+        'src/app/blog/BlogViewer.tsx',
+        'src/app/blog/model.ts',
+        'src/app/blog/blog.css',
+        'content/blog',
+        'content/authors',
+        'content/production/devlog/en-US',
+        'src/lib/blog-posts.ts',
+      ],
+    },
+    ...postSlugs().map((s) => ({
+      id: `/blog/${s}`,
+      paths: [`content/blog/${s}.mdx`, 'content/authors', 'src/app/blog/[slug]', 'src/app/blog/PostViewer.tsx', 'src/app/blog/mdx-components.tsx', 'src/components/blog'],
+    })),
     {
       id: '/graphics',
       paths: ['src/app/graphics', 'src/lib/graphics.ts', 'src/lib/graphics-model.ts', 'public/static/blogs', 'public/graphics'],

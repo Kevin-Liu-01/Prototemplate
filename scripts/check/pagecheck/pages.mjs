@@ -7,7 +7,7 @@
 //             the report's where column prefers
 //   ready     the selector that says the page is ready to read: the shell
 //             stamps .pt-viewer[data-settled] one frame after it boots, the
-//             blog mounts .blog-root, the presenter stamps
+//             presenter stamps
 //             .pr-root[data-settled] once its slides are set up and the
 //             intro's entrance has played (IntroSlide.tsx), and the deck
 //             (/deck, the built deck served as the page) is ready when its
@@ -37,17 +37,15 @@ const READY = {
      a read then counts 100 tap targets on a phone and a read after it 4 */
   present: '.pr-root[data-settled]',
   deck: '#sheet',
-  blog: '.blog-root',
 };
 
 /** The docs site's layout (fumadocs' notebook), outside the shell: every /docs page, the handbook's included. */
 const DOCS_READY = '#nd-notebook-layout';
 
-/** The ready selector of a route: its own, the docs layout for a docs page, the blog's root for a post, the body for a shipped page, the shell's stamp otherwise. */
+/** The ready selector of a route: its own, the docs layout for a docs page, the body for a shipped page, the shell's stamp otherwise. */
 function readyOf(route) {
   if (READY[route.id]) return READY[route.id];
   if (route.path === '/docs' || route.path.startsWith('/docs/')) return DOCS_READY;
-  if (route.id.startsWith('blog-')) return READY.blog;
   if (route.id.startsWith('production')) return 'body';
   return SHELL_READY;
 }

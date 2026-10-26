@@ -10,6 +10,7 @@ import Carousel, { CarouselItem } from '@/components/blog/Carousel';
 import FumadocsArchitecture from '@/components/blog/FumadocsArchitecture';
 import GitHubLink from '@/components/blog/GitHubLink';
 import HitList, { HitItem } from '@/components/blog/HitList';
+import Tweet from '@/components/blog/Tweet';
 import Video from '@/components/blog/Video';
 import { BLOG_COLUMN_SIZES, isGif } from '@/lib/blog-image-sizes';
 
@@ -59,7 +60,7 @@ function PostImage({ src = '', alt = '' }: ImgHTMLAttributes<HTMLImageElement>) 
 
 type Components = NonNullable<MDXRemoteProps['components']>;
 
-/** Everything the three posts reach for, under the names they use. */
+/** Everything the posts reach for, under the names they use. */
 export const mdxComponents: Components = {
   a: PostLink,
   img: PostImage,
@@ -72,6 +73,7 @@ export const mdxComponents: Components = {
   GitHub: GitHubLink,
   HitItem,
   HitList,
+  Tweet,
   Video,
   X,
 };

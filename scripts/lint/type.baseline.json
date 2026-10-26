@@ -2,7 +2,7 @@
  "R1": {
   "src/app/GalleryViewer.css": 7,
   "src/app/archive/[slug]/archive.css": 3,
-  "src/app/blog/blog.css": 10,
+  "src/app/blog/blog.css": 8,
   "src/app/brand/brand.css": 11,
   "src/app/directions/directions.css": 3,
   "src/app/marks/marks.css": 8,
@@ -41,7 +41,7 @@
  "R3": {
   "src/app/GalleryViewer.css": 7,
   "src/app/archive/[slug]/archive.css": 3,
-  "src/app/blog/blog.css": 4,
+  "src/app/blog/blog.css": 3,
   "src/app/brand/brand.css": 5,
   "src/app/directions/directions.css": 3,
   "src/app/marks/marks.css": 9,

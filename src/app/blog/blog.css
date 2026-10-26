@@ -1,76 +1,277 @@
 /*
- * The blog: the docs-redesign posts read in the site's tokens. One column
- * of prose at the article measure, figures at the column width, the
- * instruments (carousel, hit list, callout, spotlight) in the same grammar
- * as the landing site's, drawn with --pt- tokens so both themes hold.
+ * The blog on the viewer shell. The shell draws the frame and BookView.css
+ * the head, the contents, the band and the dividers; this sheet draws the
+ * index's rows (a post per row, the changelog's releases) and a post's
+ * reading column, then the posts' prose and their instruments (carousel,
+ * hit list, callout, spotlight, tweet) in the landing site's grammar, drawn
+ * with --pt- tokens so both themes hold. The rows follow the graphics book
+ * (graphics.css): the number in the gutter, one soft rule under each row.
  */
 
-.blog-root {
+.bl-book,
+.bl-post {
   --blog-measure: 720px;
   --blog-red: #f0524f;
   --blog-blue: #0078ff;
-  width: min(100% - 40px, var(--blog-measure));
-  margin: 0 auto;
-  padding: 72px 0 96px;
-  font-family: var(--pt-text);
+}
+
+/* ---- index: one section of post rows, one of releases ---- */
+
+.bl-cat {
+  display: flex;
+  flex-direction: column;
+  scroll-margin-top: 20px;
+}
+
+.bl-row {
+  display: grid;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  gap: var(--pt-gutter-gap);
+  align-items: baseline;
+  padding: 24px 0 32px;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-bottom);
+  scroll-margin-top: 20px;
+}
+
+.bl-cat .bl-row:last-child {
+  border-bottom: 0;
+  border-image-source: none;
+}
+
+/* the gutter number takes the size and the baseline of the title beside it */
+.bl-n b {
+  display: block;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+}
+
+.bl-row.is-active .bl-n b {
   color: var(--pt-ink);
 }
 
-/* the index is a book (DESIGN.md section 4, The book page): its title has
-   --pt-title-clear over it, as on every book; its rules and its band run
-   across the page, as they run across the stage on every shell route */
-.blog-root.is-book {
-  padding-top: var(--pt-title-clear);
+.bl-body {
+  min-width: 0;
+  max-width: var(--blog-measure);
 }
 
-/* a post's breadcrumb: the blog and the post's tag, at the meta step */
-.blog-crumb {
-  margin: 0 0 14px;
-  font-size: var(--pt-t-meta);
-  line-height: var(--pt-t-meta-lh);
-  color: var(--pt-titanium);
+.bl-body h3 {
+  margin: 0;
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+  overflow-wrap: anywhere;
 }
 
-.blog-crumb a {
-  color: inherit;
+.bl-body h3 a {
+  color: var(--pt-ink);
   text-decoration: none;
 }
 
-.blog-crumb a:hover {
-  color: var(--pt-ink);
-}
-
-/* the page title: d1 (DESIGN.md section 4) */
-.blog-root h1 {
-  margin: 0;
-  font-size: var(--pt-d1);
-  line-height: var(--pt-d1-lh);
-  letter-spacing: var(--pt-d1-track);
-}
-
-/* a post's lead, its summary under the title, keeps the book heads'
-   measure (about 66 characters a line) */
-.blog-lead {
-  max-width: var(--pt-measure-lead);
-  margin: 16px 0 0;
-  font-size: var(--pt-t-lead);
-  line-height: var(--pt-t-lead-lh);
-  color: var(--pt-ink-2);
-}
-
-.blog-lead a,
-.blog-body a,
-.blog-article-foot a {
-  color: var(--pt-ink);
+.bl-body h3 a:hover {
   text-decoration: underline;
   text-decoration-color: var(--pt-hair);
   text-underline-offset: 3px;
 }
 
-.blog-lead a:hover,
-.blog-body a:hover,
-.blog-article-foot a:hover {
-  text-decoration-color: var(--pt-ink);
+.bl-body > p:not(.blog-byline) {
+  max-width: var(--pt-measure);
+  margin: 4px 0 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+.bl-body .blog-byline {
+  margin-top: 10px;
+}
+
+/* the cover: a framed plate, ink on hover and on the row being read */
+.bl-cover {
+  display: block;
+  margin-top: 16px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-plate);
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.bl-cover .blog-cover {
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.bl-cover:hover,
+.bl-row.is-active .bl-cover {
+  border-color: var(--pt-ink);
+}
+
+/* the changelog: one ruled line per release */
+.bl-releases {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bl-releases li + li {
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.bl-release {
+  display: grid;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr) auto;
+  gap: var(--pt-gutter-gap);
+  align-items: baseline;
+  padding: 12px 0;
+  color: var(--pt-ink);
+  text-decoration: none;
+}
+
+.bl-release-n,
+.bl-release time {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bl-release-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+  min-width: 0;
+}
+
+.bl-release-body b {
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+}
+
+.bl-release-body code {
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  overflow-wrap: anywhere;
+}
+
+.bl-release:hover .bl-release-body b {
+  text-decoration: underline;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.bl-release:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+/* ---- a post: the cover and the text in the reading column beside the gutter ---- */
+
+/* a section: its divider, then its row, the book sections' step apart (.ptd-doc in book.css) */
+.bl-doc {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.bl-doc-row {
+  display: grid;
+  grid-template-columns: var(--pt-gutter) minmax(0, 1fr);
+  gap: var(--pt-gutter-gap);
+}
+
+.bl-doc-body,
+.bl-authors {
+  min-width: 0;
+  max-width: var(--blog-measure);
+}
+
+.bl-authors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bl-authors li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bl-authors img {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--pt-radius-round);
+  object-fit: cover;
+}
+
+.bl-authors span {
+  display: flex;
+  flex-direction: column;
+}
+
+.bl-authors b {
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+}
+
+.bl-authors small {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .bl-doc {
+    gap: 24px;
+  }
+
+  .bl-row,
+  .bl-doc-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* the post's gutter holds nothing, so it folds away */
+  .bl-doc-row > [aria-hidden='true'] {
+    display: none;
+  }
+
+  .bl-n b {
+    font-size: var(--pt-t-meta);
+    line-height: var(--pt-t-meta-lh);
+    letter-spacing: 0;
+  }
+
+  .bl-release {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+  }
+
+  .bl-release-n {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-cover {
+    transition: none;
+  }
 }
 
 /* ---- byline ---- */
@@ -106,65 +307,15 @@
   color: var(--pt-titanium);
 }
 
-/* ---- index ---- */
-
-/* the index's one section: its divider, then the cards, the docs
-   section's step apart (.ptd-doc in docs.css) */
-.blog-list {
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-}
-
-@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
-  .blog-list {
-    gap: 24px;
-  }
-}
-
-.blog-index {
-  display: grid;
-  gap: 40px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.blog-card-cover {
-  display: block;
-  overflow: hidden;
-  border-radius: var(--pt-radius-card);
-  background: var(--pt-plate);
-  aspect-ratio: 16 / 9;
-}
-
-.blog-card-copy {
-  margin-top: 18px;
-}
-
-.blog-card-copy h2 {
-  margin: 0;
-  font-size: var(--pt-d3);
-  line-height: var(--pt-d3-lh);
-  letter-spacing: var(--pt-d3-track);
-}
-
-.blog-card-copy h2 a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.blog-card-copy h2 a:hover {
+.blog-body a {
+  color: var(--pt-ink);
   text-decoration: underline;
   text-decoration-color: var(--pt-hair);
   text-underline-offset: 3px;
 }
 
-.blog-card-copy > p {
-  margin: 8px 0 0;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--pt-ink-2);
+.blog-body a:hover {
+  text-decoration-color: var(--pt-ink);
 }
 
 /* ---- covers ---- */
@@ -174,16 +325,6 @@
   width: 100%;
   height: auto;
   border-radius: var(--pt-radius-card);
-}
-
-.blog-article-head .blog-cover {
-  margin-top: 32px;
-}
-
-.blog-card-cover .blog-cover {
-  height: 100%;
-  border-radius: inherit;
-  object-fit: cover;
 }
 
 /* a post with two covers shows the one for the theme; the other stays in the document, ready */
@@ -231,6 +372,15 @@
   padding-left: 1.3em;
 }
 
+/* the shell resets list markers; a post's lists keep theirs (the hit list and the carousel dots carry classes) */
+.blog-body ul:not([class]) {
+  list-style: disc;
+}
+
+.blog-body ol:not([class]) {
+  list-style: decimal;
+}
+
 .blog-body li + li {
   margin-top: 0.45em;
 }
@@ -276,12 +426,12 @@
   vertical-align: -3px;
 }
 
-.blog-article-foot {
-  margin-top: 64px;
-  padding-top: 24px;
-  border-top: 1px solid var(--pt-hair-soft);
-  border-image: linear-gradient(var(--pt-hair-soft) 0 0) var(--pt-bleed-top);
-  font-size: 15px;
+/* ---- tweet: react-tweet's card, centred ---- */
+
+.blog-tweet {
+  display: flex;
+  justify-content: center;
+  margin: 2em 0;
 }
 
 /* ---- callout ---- */
@@ -746,17 +896,10 @@
 @media (pointer: coarse) and (max-width: 600px), (pointer: coarse) and (max-height: 500px) {
   /* an inline link's padding grows its hit area; the inline box keeps the
      line height and the negative margins keep the words where they are */
-  .blog-lead a,
   .blog-body :is(p, li):not([class]) a,
-  .blog-article-foot a,
-  .blog-card-copy h2 a {
+  .bl-body h3 a {
     padding: 12px 4px;
     margin-inline: -4px;
-  }
-
-  .blog-crumb a {
-    padding: 12px 8px;
-    margin-inline: -8px;
   }
 
   /* the spotlight's chips: a transparent ::after 5px past the padding edge */

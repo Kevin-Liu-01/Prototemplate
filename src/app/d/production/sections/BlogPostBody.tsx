@@ -204,7 +204,7 @@ export default function BlogPostBody({ source }: { source: string }) {
       options={{
         mdxOptions: {
           remarkPlugins: [remarkGfm],
-          rehypePlugins: [rehypeSlug, [rehypeShiki, { theme: 'github-dark', inline: 'tailing-curly-colon' }]],
+          rehypePlugins: [rehypeSlug, [rehypeShiki, { theme: 'github-dark', inline: 'tailing-curly-colon', tokenizeTimeLimit: 0 }]],
         },
       }}
       source={source}

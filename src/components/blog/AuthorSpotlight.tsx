@@ -1,13 +1,15 @@
 import { SiGithub } from '@icons-pack/react-simple-icons';
+import type { ReactNode } from 'react';
 
 import { getAuthor } from '@/lib/blog';
 
 /**
  * The contributor card the Fuma Nama post opens with: the GitHub portrait,
- * the name, the one-line bio from the author file, and the project and
- * GitHub links. The author is a slug into content/authors.
+ * the name, the post's own line about the author or else the one-line bio
+ * from the author file, and the project and GitHub links. The author is a
+ * slug into content/authors.
  */
-export default function AuthorSpotlight({ author }: { author: string }) {
+export default function AuthorSpotlight({ author, children }: { author: string; children?: ReactNode }) {
   const data = getAuthor(author);
   if (!data) return null;
   const profileUrl = data.github ? `https://github.com/${data.github}` : undefined;
@@ -22,7 +24,7 @@ export default function AuthorSpotlight({ author }: { author: string }) {
       ) : null}
       <div className='blog-spotlight-copy'>
         <h3>{data.name}</h3>
-        {data.bio ? <p>{data.bio}</p> : null}
+        {children ? <div className='blog-spotlight-line'>{children}</div> : data.bio ? <p>{data.bio}</p> : null}
         <p className='blog-spotlight-links'>
           {data.project && data.projectUrl ? (
             <a href={data.projectUrl} rel='noreferrer' target='_blank'>

@@ -161,7 +161,7 @@ failed build. The content repository's preview app needs a simple
 version of every component or its build fails. `gt-website`
 (`references/blog.md`, read against gt-cloud main on 2026-10-05) holds
 both rules. This repository keeps the
-authoritative copy of the three docs-redesign posts under `content/blog`
+authoritative copy of the docs-redesign posts, with the rest of the live blog, under `content/blog`
 and their graphics under `public/static/blogs`, read by `/blog` and
 `/graphics`.
 

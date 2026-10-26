@@ -601,7 +601,7 @@ async function runLive(root, argv) {
       const resp = await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded', timeout: 240000 });
       if (!resp || resp.status() >= 400) throw new Error(`HTTP ${resp ? resp.status() : 'none'}`);
       /* the shell, a direction, the blog, or the docs site's notebook layout (/docs, the handbook among it) */
-      await page.waitForSelector('.pt-viewer, .viewer, .blog-root, #nd-notebook-layout', { timeout: 240000 });
+      await page.waitForSelector('.pt-viewer, .viewer, #nd-notebook-layout', { timeout: 240000 });
       await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(1500);
       const out = [];

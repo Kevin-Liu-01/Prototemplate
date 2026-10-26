@@ -1,20 +1,18 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
-import PostAuthors from '@/components/blog/PostAuthors';
-import PostCover from '@/components/blog/PostCover';
 import { getAuthors, getPost, getPosts, type Post } from '@/lib/blog';
+import { readingMinutes } from '@/lib/reading';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
+import { requireUpdated } from '@/lib/updated';
 
 import { mdxComponents } from '../mdx-components';
 import { postCard } from '../post-card';
-
-import '../blog.css';
+import PostViewer from '../PostViewer';
 
 export function generateStaticParams() {
   return getPosts().map((post) => ({ slug: post.slug }));
@@ -50,41 +48,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 /**
- * /blog/[slug] renders one post from content/blog with the components the
- * posts use. The MDX is compiled the way the landing site compiles it
- * (next-mdx-remote with JavaScript expressions blocked), so a post reads
- * the same here as there.
+ * /blog/[slug] renders one post from content/blog on the viewer shell
+ * (PostViewer). The MDX is compiled here on the server the way the landing
+ * site compiles it (next-mdx-remote with JavaScript expressions blocked),
+ * so a post reads the same here as there, and the client receives elements.
  */
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) notFound();
-  const authors = getAuthors(post.authors);
   return (
-    <main className='blog-root'>
+    <>
       <JsonLd nodes={postRoute(post).jsonLd} />
-      <article className='blog-article'>
-        <header className='blog-article-head'>
-          <p className='blog-crumb'>
-            <Link href='/blog'>Blog</Link>
-            {post.tags[0] ? <span> / {post.tags[0]}</span> : null}
-          </p>
-          <h1>{post.title}</h1>
-          <p className='blog-lead'>{post.summary}</p>
-          <PostAuthors authors={authors} date={post.date} />
-          <PostCover post={post} priority />
-        </header>
-        <div className='blog-body'>
+      <PostViewer
+        key={slug}
+        slug={slug}
+        minutes={readingMinutes(post.body)}
+        updated={requireUpdated(`/blog/${slug}`)}
+        body={
           <MDXRemote
             source={post.body}
             components={mdxComponents}
             options={{ mdxOptions: { remarkPlugins: [remarkGfm], rehypePlugins: [rehypeSlug] } }}
           />
-        </div>
-        <footer className='blog-article-foot'>
-          <Link href='/graphics'>Every illustration in this series, with how it was made</Link>
-        </footer>
-      </article>
-    </main>
+        }
+      />
+    </>
   );
 }

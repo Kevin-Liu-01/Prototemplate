@@ -97,7 +97,7 @@ export const SKIP = [
 ];
 
 /** Where the phone tap targets are read: the page's main region and the shell's chrome. */
-export const TAP_SCOPE = 'main, .pt-viewer, .pt-corner, .pt-corner-layer, .pr-root, .blog-root';
+export const TAP_SCOPE = 'main, .pt-viewer, .pt-corner, .pt-corner-layer, .pr-root';
 
 /**
  * Console errors the check does not count: React's hydration attribute

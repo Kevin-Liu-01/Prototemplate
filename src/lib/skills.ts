@@ -79,7 +79,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Working in Prototemplate',
     description: 'How to work in Prototemplate, Kevin\'s hub and wiki for General Translation work: what each route holds, the repository map, the viewer shell and its props, the registries that move together (surfaces, search index, the handbook, the docs pages, src/lib/seo, captures), the chrome and sidebar rules, the book page standard, adding a page, a docs page, a handbook document or a skill, the build scripts, the shared checkout and its session lanes, the gates and landing, keeping the hub current with gt-cloud, and the curated skills with their contract and install. Use when changing anything in the Prototemplate repository, when adding a route, document or skill to it, or when building on it from another project.',
     areas: ['website', 'components'],
-    updated: '2026-10-21',
+    updated: '2026-10-26',
     files: ['references/adding.md', 'references/build-scripts.md', 'references/chrome.md', 'references/hub.md', 'references/porting.md', 'references/registries.md', 'references/shell.md', 'references/skills.md', 'references/sources.md'],
   },
   {

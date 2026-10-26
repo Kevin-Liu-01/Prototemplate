@@ -15,7 +15,7 @@ description: >-
 metadata:
   title: Working in Prototemplate
   areas: website, components
-  updated: 2026-10-21
+  updated: 2026-10-26
   origin: prototemplate
   owner: P
 ---
@@ -56,7 +56,7 @@ Prototemplate is the living reference of GT work only while every deliverable re
 
 ## 3. The viewer shell
 
-`ViewerShell` (`src/components/viewer/ViewerShell.tsx`) frames every route except `/deck`, `/present`, `/blog`, `/docs` and the `/d/` pages. Kevin made the deck's viewer the frame for the whole site on 2026-09-08 ("i really love our deck's navigation and basic interface"). The shell owns the state and draws the chrome: the sidebar, the 52px toolbar, the stage, the index panel, the search, the help card, the toast, the progress line and the one hover preview. The route renders the stage content as children. `references/shell.md` explains every prop and data shape, and `references/chrome.md` holds the detail of the rules below.
+`ViewerShell` (`src/components/viewer/ViewerShell.tsx`) frames every route except `/deck`, `/present`, `/docs` and the `/d/` pages. Kevin made the deck's viewer the frame for the whole site on 2026-09-08 ("i really love our deck's navigation and basic interface"). The shell owns the state and draws the chrome: the sidebar, the 52px toolbar, the stage, the index panel, the search, the help card, the toast, the progress line and the one hover preview. The route renders the stage content as children. `references/shell.md` explains every prop and data shape, and `references/chrome.md` holds the detail of the rules below.
 
 - A link to `/deck` loads it as a document (`src/lib/document-routes.ts`), since a router navigation would fetch the whole deck twice.
 - **The book page.** Every page with a book head renders one structure (DESIGN.md section 4): `BookHead` draws the title from `PAGE_NAMES`, a lead of one to three lines, the panel (Updated from the generated `src/lib/updated.ts`, then three facts), then the one hatch band, and sections open with a `.pt-book-sec` divider. The server page calls `requireUpdated('<route>')`, and a new route needs its paths in `scripts/build/updated.mjs`. `pnpm lint:heads` and `pnpm lint:heads:live` hold the structure (Kevin, 2026-10-06: "standardize our presentation more").

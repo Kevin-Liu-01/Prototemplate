@@ -137,6 +137,41 @@
       "reason": "the text of generaltranslation.com/legal/terms, vendored 2026-10-14 for /d/production/legal/terms; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
     },
     {
+      "path": "content/blog/designing-docs-for-humans.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/designing-docs-for-humans.mdx (content main, which the live deploy checks out)",
+      "sha256": "8ab33ae734eaf22176796d0dd791c3c36ce2e07c575d201977c6435eae36bedf",
+      "reason": "the text of generaltranslation.com/blog/designing-docs-for-humans, which /blog/designing-docs-for-humans renders, synced 2026-10-26; a re-sync copies the file at content main and records the new sha256"
+    },
+    {
+      "path": "content/blog/fuma-nama.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/fuma-nama.mdx (content main, which the live deploy checks out)",
+      "sha256": "b8ec526a9d176d76224a35c1fa1bd166f5aed69a52c8b12cbdbd0ccd0d85ef70",
+      "reason": "the text of generaltranslation.com/blog/fuma-nama, which /blog/fuma-nama renders, synced 2026-10-26; a re-sync copies the file at content main and records the new sha256"
+    },
+    {
+      "path": "content/blog/rewriting-our-docs.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/rewriting-our-docs.mdx (content main, which the live deploy checks out)",
+      "sha256": "2d2fc3c6feba25efe09dbe67f8735d37b08d2314844b6061a6040665ea40b456",
+      "reason": "the text of generaltranslation.com/blog/rewriting-our-docs, which /blog/rewriting-our-docs renders, synced 2026-10-26; a re-sync copies the file at content main and records the new sha256"
+    },
+    {
+      "path": "content/blog/supporting-open-source-software.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/supporting-open-source-software.mdx (content main, which the live deploy checks out)",
+      "sha256": "647de1e7d3a3c07e61ee8437b3f5f24a609b02bbb5499540d566923362824449",
+      "reason": "the text of generaltranslation.com/blog/supporting-open-source-software, which /blog/supporting-open-source-software renders, synced 2026-10-26; a re-sync copies the file at content main and records the new sha256"
+    },
+    {
+      "path": "content/blog/supporting-slash-companies.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/supporting-slash-companies.mdx (content main, which the live deploy checks out)",
+      "sha256": "d6c0906bb8809b24ccae1bc0c8e3a28fce56c56737f2951ce6be82149bb39779",
+      "reason": "the text of generaltranslation.com/blog/supporting-slash-companies, which /blog/supporting-slash-companies renders, synced 2026-10-26; a re-sync copies the file at content main and records the new sha256"
+    },
+    {
       "path": "content/production/blog/en-US/designing-docs-for-humans.mdx",
       "mode": "pin",
       "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:blog/en-US/designing-docs-for-humans.mdx (gt-cloud apps/landing/content, the submodule live renders)",
@@ -356,9 +391,9 @@
     {
       "path": "content/production/devlog/en-US/gt-node_v0_2_0.mdx",
       "mode": "pin",
-      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-node_v0_2_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
-      "sha256": "8e19a599a6dc2f051e9a9a94c433e37e0e62ae7ef2302d87f9c3dc38d1dd56c3",
-      "reason": "the text of generaltranslation.com/blog/gt-node_v0_2_0, vendored 2026-10-15 for /d/production/blog/gt-node_v0_2_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:devlog/en-US/gt-node_v0_2_0.mdx (content main, which the live deploy checks out)",
+      "sha256": "61a5725025eccd6c1045a300407d58f6b110218e95a66982b7c581e494a4c356",
+      "reason": "the text of generaltranslation.com/blog/gt-node_v0_2_0, vendored 2026-10-15 for /d/production/blog/gt-node_v0_2_0 and re-synced 2026-10-26 for content #598 (the Discord invite); a re-sync copies the file at content main and records the new sha256"
     },
     {
       "path": "content/production/devlog/en-US/gt-node_v0_3_0.mdx",
@@ -496,9 +531,9 @@
     {
       "path": "content/production/devlog/en-US/gt-tanstack-start_v0_1_0.mdx",
       "mode": "pin",
-      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:devlog/en-US/gt-tanstack-start_v0_1_0.mdx (gt-cloud apps/landing/content, the submodule live renders)",
-      "sha256": "38af01eee74149afef144148820254c3ffd8b9c334a1adee10acda8f6f078c33",
-      "reason": "the text of generaltranslation.com/blog/gt-tanstack-start_v0_1_0, vendored 2026-10-15 for /d/production/blog/gt-tanstack-start_v0_1_0; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:devlog/en-US/gt-tanstack-start_v0_1_0.mdx (content main, which the live deploy checks out)",
+      "sha256": "1e00670e32ef2a62218af9fb1579fc8ab42b860173238f3b52bef6f61dc9c0fa",
+      "reason": "the text of generaltranslation.com/blog/gt-tanstack-start_v0_1_0, vendored 2026-10-15 for /d/production/blog/gt-tanstack-start_v0_1_0 and re-synced 2026-10-26 for content #598 (the Discord invite); a re-sync copies the file at content main and records the new sha256"
     },
     {
       "path": "content/production/devlog/en-US/gt-tanstack-start_v11_1_0.mdx",

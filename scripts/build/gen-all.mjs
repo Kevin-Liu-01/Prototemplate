@@ -1,7 +1,7 @@
 // Runs every generator in write mode. The generated files then match the
 // tree: the lane gate runs it before lint:static, and the integrator runs it on a
 // merge and commits what it writes (src/lib/updated.ts, src/lib/skills.ts,
-// skills/README.md, docs/TOOLS.md, the thumbnails). build:updated runs last,
+// src/lib/blog-posts.ts, skills/README.md, docs/TOOLS.md, the thumbnails). build:updated runs last,
 // since it dates the changes the others leave uncommitted. build:motion runs
 // only where the full motion folder is (MOTION.md and its out/ renders), so a
 // fresh clone or a worktree with the tracked sources alone skips it, with a
@@ -20,7 +20,7 @@ import { helpIfAsked } from '../lib/help.mjs';
 helpIfAsked(import.meta.url);
 
 const MOTION = process.env.MOTION_DIR ?? join(ROOT, 'motion');
-const STEPS = ['build:skills', 'build:deck', 'build:marks', 'build:inter', 'build:thumbs', 'build:motion', 'build:tools', 'build:updated'];
+const STEPS = ['build:skills', 'build:blog', 'build:deck', 'build:marks', 'build:inter', 'build:thumbs', 'build:motion', 'build:tools', 'build:updated'];
 
 for (const step of STEPS) {
   if (step === 'build:motion' && !(existsSync(join(MOTION, 'MOTION.md')) && existsSync(join(MOTION, 'out')))) {

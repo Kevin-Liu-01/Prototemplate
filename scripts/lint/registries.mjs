@@ -54,7 +54,7 @@
  * contract), 2 when a file it needs is
  * missing. The other route columns are printed as notes that never fail
  * the run, because not every page belongs in every list (/present is not
- * on the shell, /blog has no thumbnail yet).
+ * on the shell, /graphics has no thumbnail yet).
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';

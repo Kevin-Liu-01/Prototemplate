@@ -1,6 +1,8 @@
 import { HANDBOOK, HANDBOOK_README } from '@/app/handbook/registry';
 import { docHref } from '@/components/book/model';
 import type { IconName } from '@/components/viewer/icons';
+import { BLOG_POSTS, BLOG_RELEASES } from '@/lib/blog-posts';
+import { formatDay } from '@/lib/dates';
 import { MOTION_FILMS, MOTION_SCRIPT_WORDS, MOTION_SECTIONS, MOTION_STATUS_LABEL, motionHref } from '@/lib/motion';
 import { SKILL_AREAS, SKILLS, skillHref } from '@/lib/skills';
 import { SITE_SURFACES } from '@/lib/surfaces';
@@ -13,7 +15,9 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  * carry the same ids as the index panel and the sidebar: pages, the skill
  * pages, the handbook's documents, the films on the motion roster with the
  * sections of each research package and the contact sheet and script of
- * each published cut, the docs site's pages, the handbook's headings, the sites and explorations (each
+ * each published cut, the blog's posts and the releases of its changelog (the
+ * generated src/lib/blog-posts.ts), the docs site's pages, the handbook's
+ * headings, the sites and explorations (each
  * opening its page under /directions), the archived versions, the brand
  * sections, the library anchors, and the 93 deck slides, each linking to
  * /deck#n. Pure data, no React, no DOM.
@@ -34,8 +38,8 @@ import type { Surface, SurfaceGroup } from '@/lib/surfaces';
  */
 export type SearchSite = 'dossier' | 'orbit' | 'signal' | 'shipped';
 
-/** The site map groups from surfaces.ts plus the five groups only the search has. */
-export type SearchGroup = SurfaceGroup | 'Skills' | 'Handbook' | 'Motion' | 'Headings' | 'Deck slides';
+/** The site map groups from surfaces.ts plus the six groups only the search has. */
+export type SearchGroup = SurfaceGroup | 'Skills' | 'Handbook' | 'Motion' | 'Blog' | 'Headings' | 'Deck slides';
 
 export type SearchEntry = {
   /** unique across the index */
@@ -67,6 +71,7 @@ const GROUP_ORDER: readonly string[] = [
   'Skills',
   'Handbook',
   'Motion',
+  'Blog',
   'Shipped',
   'Documents',
   'Headings',
@@ -109,7 +114,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   skills: 'skill',
   handbook: 'book',
   marks: 'swatch',
-  blog: 'document',
+  blog: 'post',
   atlas: 'book',
   graphics: 'gallery',
   motion: 'film',
@@ -131,7 +136,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
     'agent skills SKILL.md install voice humanizer website landing brand Inter aesthetic deck lints gates PR motion films video graphics dither diagrams isometric components Prototemplate',
   handbook:
     'wiki how kevin works operating principles quality bar done multi-session playbook lanes sessions forks product map glossary terms decisions rulings agents',
-  blog: 'posts articles docs redesign rewriting fuma nama designing docs for humans carousel',
+  blog: 'posts articles changelog releases devlog docs redesign rewriting fuma nama designing docs for humans open source grants slash credits carousel',
   graphics: 'illustrations visuals covers carousel slides glyphfield exports pipeline manifest',
   atlas: 'atlas notes magazine long writing why stripe press looks docs reader fumadocs printed page covers languages locator',
   motion:
@@ -240,6 +245,41 @@ const HANDBOOK_ROWS: readonly SearchEntry[] = [HANDBOOK_README, ...HANDBOOK].map
 function plainMarkdown(text: string): string {
   return text.replace(/`([^`]+)`/g, '$1').replace(/\*/g, '');
 }
+
+/**
+ * One row per post, newest first, then one per release of the changelog:
+ * the title (a release's headline), the date as the meta line, and the
+ * Blog row as the preview. A post opens its page; a release opens its page
+ * on the production mirror. The keywords hold the authors, the tags and
+ * the summary, or a release's packages, so a search for a package name
+ * finds its releases.
+ */
+const BLOG_ROWS: readonly SearchEntry[] = [
+  ...BLOG_POSTS.map(
+    (post): SearchEntry => ({
+      id: `blog-${post.slug}`,
+      title: post.title,
+      href: `/blog/${post.slug}`,
+      group: 'Blog',
+      meta: `Blog / ${formatDay(post.date)}`,
+      icon: 'post',
+      keywords: `post blog ${post.authors.map((author) => author.name).join(' ')} ${post.tags.join(' ')} ${post.summary}`,
+      surface: 'blog',
+    })
+  ),
+  ...BLOG_RELEASES.map(
+    (release): SearchEntry => ({
+      id: `release-${release.slug}`,
+      title: release.headline,
+      href: `/d/production/blog/${release.slug}`,
+      group: 'Blog',
+      meta: `Changelog / ${formatDay(release.date)}`,
+      icon: 'queue-list',
+      keywords: `changelog release devlog ${release.title}`,
+      surface: 'blog',
+    })
+  ),
+];
 
 /**
  * One row per film on the motion roster (the generated src/lib/motion.ts),
@@ -770,6 +810,7 @@ const SEARCH_INDEX: readonly SearchEntry[] = [
   ...SKILL_ROWS,
   ...HANDBOOK_ROWS,
   ...MOTION_ROWS,
+  ...BLOG_ROWS,
   ...HEADINGS,
   ...MOTION_HEADINGS,
   ...MOTION_RECORDS,

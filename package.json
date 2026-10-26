@@ -37,6 +37,7 @@
     "build:inter": "python3 scripts/build/subset-inter.py",
     "build:thumbs": "node scripts/build/thumbs.mjs",
     "build:skills": "node scripts/build/skills.mjs",
+    "build:blog": "node scripts/build/blog.mjs",
     "lint:skills": "node scripts/build/skills.mjs --check",
     "lint:registries": "node scripts/lint/registries.mjs",
     "skills:install": "node scripts/skills/install.mjs",

@@ -9,7 +9,7 @@ import { formatPostDay } from '@/lib/dates';
  * file near its 22px box, at quality 95 since the default 75 softens a face this small;
  * a remote avatar (a GitHub URL) is passed through as it is.
  */
-export default function PostAuthors({ authors, date }: { authors: readonly Author[]; date: string }) {
+export default function PostAuthors({ authors, date }: { authors: readonly Pick<Author, 'slug' | 'name' | 'avatar'>[]; date: string }) {
   const avatars = authors.flatMap((author) => (author.avatar ? [{ slug: author.slug, src: author.avatar }] : []));
   return (
     <p className='blog-byline'>

@@ -48,8 +48,9 @@ src/
                           redirects there
     skills/               /skills, /skills/<slug> and the raw skill files
     marks/                /marks: the mark explorations
-    blog/                 the docs-redesign posts (content/blog) rendered with
-                          the landing site's MDX components
+    blog/                 the blog on the viewer shell: the posts (content/blog)
+                          rendered with the landing site's MDX components, and
+                          the changelog (src/lib/blog-posts.ts, generated)
     graphics/             the illustration catalogue, read from
                           graphics/build/manifest.json
     motion/               /motion and /motion/<slug>, from src/lib/motion.ts

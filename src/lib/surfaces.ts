@@ -150,12 +150,12 @@ const PAGES: readonly Surface[] = [
 
 /**
  * The Knowledge rows: what Kevin's hub keeps on how General Translation
- * work is done beyond its pages. The skills and the marks preview their
+ * work is done beyond its pages. The skills, the marks and the blog preview their
  * first folds, shot by scripts/check/capture-pages.mjs under their ids (the plate
  * with the initial stands in until the cuts exist); the archive row opens
  * the first retired version, since the archive has no index page of its
  * own. The sidebar hangs the curated skills under the Skills row as one
- * numbered run, the graphics'
+ * numbered run, the posts and the changelog under Blog, the graphics'
  * areas under Graphics, the films under Motion and the Transcreate pages
  * under Transcreate.
  */
@@ -188,8 +188,9 @@ const KNOWLEDGE: readonly Surface[] = [
     'blog',
     pageLabel('blog'),
     '/blog',
-    'The docs-redesign series as General Translation published it: the content rewrite, the Fuma Nama interview, and designing docs for humans.',
-    'Knowledge'
+    'The General Translation blog as published: the posts with their sources, and the changelog of every library release.',
+    'Knowledge',
+    thumb('blog')
   ),
   internal('atlas', pageLabel('atlas'), '/atlas/notes', 'Why General Translation publishes long writing as Atlas, and the looks a story is set in so far.', 'Knowledge', thumb('atlas')),
   internal(

@@ -265,7 +265,7 @@ export function siteRoutes() {
   const archive = firstSlug('src/lib/archive.ts', /entry\('([^']+)'/);
   const exploration = firstExplorationSlug();
   const post = newestPostSlug();
-  const blog = ['src/app/blog', 'src/components/blog', 'content/blog'];
+  const blog = ['src/app/blog', 'src/components/blog', 'content/blog', 'src/lib/blog-posts.ts'];
   /* the docs site, outside the shell (fumadocs' notebook layout): no `lines`, which reads the shell's list */
   const docsSite = ['src/app/docs', 'src/components/docs', 'content/docs'];
   /* the handbook's pages show the repository's Markdown through their include tags */
@@ -300,8 +300,8 @@ export function siteRoutes() {
     { id: 'transcreate', path: '/transcreate', tools: 'check live lines capture', source: ['src/app/transcreate'] },
     { id: 'transcreate-videos', path: '/transcreate/videos', tools: 'check live lines', source: ['src/app/transcreate'] },
     { id: 'transcreate-credits', path: '/transcreate/credits', tools: 'check live lines', source: ['src/app/transcreate'] },
-    { id: 'blog', path: '/blog', tools: 'check live', source: blog },
-    { id: `blog-${post}`, path: `/blog/${post}`, tools: 'check live', source: blog },
+    { id: 'blog', path: '/blog', tools: 'check live lines capture', source: blog },
+    { id: `blog-${post}`, path: `/blog/${post}`, tools: 'check live lines', source: blog },
     { id: `archive-${archive}`, path: `/archive/${archive}`, tools: 'check live lines', source: ['src/app/archive', 'src/app/*'] },
     { id: 'directions', path: `/directions/${exploration}`, tools: 'check live lines capture', source: ['src/app/directions'] },
     /* the shipped home with its direction corner, which lint-lines audits as chrome */
