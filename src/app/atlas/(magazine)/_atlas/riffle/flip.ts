@@ -63,7 +63,12 @@ export class Flip {
     this.pages = o.pages.map((p, i) => makePage(p, i));
     this.state = o.start ?? 0;
     el.addEventListener('click', this.onClick);
+    // the first layout lands where it is, open or closed: the spread's move over (magazine-view.css, .fl translate)
+    // is for turns, not for a magazine appearing already open
+    el.style.transition = 'none';
     this.build();
+    void el.offsetWidth;
+    el.style.removeProperty('transition');
   }
 
   /** Lays the leaves out for the window: two pages a leaf on a spread, one page and a blank back on a phone. */

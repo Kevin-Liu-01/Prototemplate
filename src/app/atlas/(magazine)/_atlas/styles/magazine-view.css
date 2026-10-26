@@ -111,6 +111,10 @@
 .gtp-riffle .fl-leaf { position: absolute; inset: 0; transform-origin: 0 50%; transform-style: preserve-3d; will-change: transform; }
 .gtp-riffle .fl-face { position: absolute; inset: 0; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 .gtp-riffle .fl-face.b { transform: rotateY(180deg); }
+/* the front face is a 3D plane of its own too, so its shade stays inside it and goes with it when it turns away;
+   without a transform Safari set that shade in the leaf's 3D space, level with the back face, and the two flickered
+   in turn on the left page through every turn */
+.gtp-riffle .fl-face.f { transform: rotateY(0deg); }
 /* one page at a time, a leaf's back is blank paper that would lie over the margin left of the page as the leaf turns
    over, so it is never drawn: the page goes at the halfway point */
 .gtp-riffle .fl:not(.is-spread) .fl-face.b { visibility: hidden; }

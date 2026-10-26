@@ -4,8 +4,7 @@ import type { CSSProperties } from 'react';
    sheet's full width or height, behind everything on the page, along an
    edge the page really has: each magazine's sides, their tops and the
    horizon they stand on; the nameplate's cap height and baseline, and the
-   imprint's right side, which is the globe's centre line; the globe dial's top and foot; the sheet's margins and the
-   controls' cell. Euclid's first construction circles the middle two
+   imprint's right side, which is the globe's centre line; the globe dial's top and foot; the sheet's margins. Euclid's first construction circles the middle two
    magazines, each circle through the other's centre. Each guide is placed by the same measures the page is laid out by
    (front-page.css: --edge, --cell, --mag-w, --top, --nameplate, --globe,
    --dial-pad), so the sheet is drawn with the page's first paint and never
@@ -30,8 +29,6 @@ export default function HallGuides({ count }: Props) {
       ))}
       <i className='gtp-g-x gtp-g-margin-l' />
       <i className='gtp-g-x gtp-g-margin-r' />
-      <i className='gtp-g-x gtp-g-tools-l' />
-      <i className='gtp-g-x gtp-g-snap' />
       <i className='gtp-g-x gtp-g-globe' />
       <i className='gtp-g-y gtp-g-cap' />
       <i className='gtp-g-y gtp-g-base' />

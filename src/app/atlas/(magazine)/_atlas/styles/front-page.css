@@ -280,6 +280,9 @@
    draw hairlines beside the guides (the stack, spines out, shows them) */
 .gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-mag .gtp-book-board { transform: none; }
 .gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-mag :is(.gtp-book-fore, .gtp-book-spine) { visibility: hidden; }
+/* no pose turns a magazine over, so its back is never drawn: Safari's picture of the page for the crossfade ignores
+   backface-visibility, and the back, later in the markup, painted over the front, mirrored, as the reader came home */
+.gtp-landing[data-edition='magazine'] .gtp-mag .gtp-book-back { visibility: hidden; }
 .gtp-landing[data-edition='magazine'][data-mode='row']:not([data-open='true']) .gtp-shelf-item:is([data-on='true'], [data-pressed='true']) .gtp-book-shelf { --dy: 0px; --tx: 0deg; --ty: 0deg; --s: 1; }
 .gtp-landing[data-edition='magazine'][data-drag='true'] .gtp-shelf-item .gtp-book-shelf { --ty: 0deg; }
 /* the hall a little lit behind the rack, as Riffle's is; in the light theme a warm grey, so white paper has a ground */
@@ -431,7 +434,6 @@
 .gtp-g-margin-r { left: calc(100% - var(--edge)); }
 /* a wide screen's right margin is the row's right edge, the last magazine's, one line */
 @media (min-width: 1000px) { .gtp-g-margin-r { left: var(--row-r); } }
-.gtp-g-tools-l { left: calc(round(down, calc(100% - var(--edge) - var(--cap)), 1px) - 1px); }
 .gtp-g-globe { left: round(up, calc(var(--edge) + var(--dial) / 2), 1px); }
 .gtp-g-cap { top: calc(var(--top) - 1px); }
 .gtp-g-base { top: round(up, calc(var(--top) + var(--cap)), 1px); }
@@ -443,12 +445,9 @@
 .gtp-g-euclid { position: absolute; display: block; top: calc(var(--mid) - var(--cell)); width: calc(2 * var(--cell)); aspect-ratio: 1; border: 1px solid var(--guide); border-radius: 50%; }
 .gtp-g-euclid-a { left: calc(var(--edge) + var(--cell) + var(--mag-w) / 2 - var(--cell)); }
 .gtp-g-euclid-b { left: calc(var(--edge) + 2 * var(--cell) + var(--mag-w) / 2 - var(--cell)); }
-/* a narrow screen's row scrolls, so its magazines take no guides there, nor the construction; the
-   theme's square cell takes one at its left. A wide screen's controls fill the last column, whose guides they are */
+/* a narrow screen's row scrolls, so its magazines take no guides there, nor the construction: no line runs down
+   a magazine's sides */
 @media (max-width: 999px) { .gtp-guides { --mid: 46%; } .gtp-g-mag-l, .gtp-g-mag-r, .gtp-g-euclid { display: none; } }
-@media (min-width: 1000px) { .gtp-g-tools-l, .gtp-g-snap { display: none; } }
-/* a narrow row's magazine in view stands between the theme cell's guide and its mirror at the left */
-.gtp-g-snap { left: round(up, calc(var(--edge) + var(--cap)), 1px); }
 /* a fine grain over the whole sheet, as on printed stock */
 .gtp-guides::after { content: ''; position: absolute; inset: 0; opacity: 0.06; mix-blend-mode: overlay; background: url('/atlas/directions/paper-grain.webp') 0 0 / 160px 160px; }
 
