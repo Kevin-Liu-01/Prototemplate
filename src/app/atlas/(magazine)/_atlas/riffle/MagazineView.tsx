@@ -2,21 +2,25 @@
 
 import { useRef, useState } from 'react';
 
-import type { StoryCard } from '../content';
+import type { MagazineIssue, StoryCard } from '../content';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { drawLayers } from '../gpu/emblems';
 import { useLayoutWork, useMountEffect } from '../hooks';
 import { plainClick } from '../transition';
+import { magazineName } from '../stories';
 import { MAGAZINE_ART } from '../ui/Book';
 import { CloseIcon } from '../ui/icons';
+import MapSheet from '../ui/MapSheet';
 import type { Piece } from './article';
 import { issuePages, openerOf, openingHead } from './pages';
 import { paginate } from './paginate';
 import { Flip } from './flip';
-import { BASE } from './print';
+import { BASE, issueMonth, pad } from './print';
 
 type Props = {
   story: StoryCard;
+  /** The map sheet inside the magazine, which the rack's lifted corner shows and the magazine opens on. */
+  issue: MagazineIssue;
   /** The story's web page. */
   href: string;
   /** Shown over the hall. While false the magazine is set ahead, hidden and inert, as its corner lifts, so that opening
@@ -37,7 +41,8 @@ const WHEEL_REST = 300;
    turns it back, as do the arrows under the magazine, the arrow keys and a
    scroll. The
    pages hold the whole article (riffle/article.ts), fetched as the corner
-   lifts and set into pages the magazine's size (riffle/paginate.ts). Esc or
+   lifts and set into pages the magazine's size (riffle/paginate.ts). It
+   opens past its cover, on the map sheet the rack's lifted corner showed. Esc or
    the close control goes back to the rack; "Read the story" opens the web
    page. The cover prints the story's design flat in its inks (coverArt),
    drawn once per story and size. */
@@ -190,6 +195,7 @@ export function prepareMagazine(story: StoryCard, href: string) {
 
 export default function MagazineView({
   story,
+  issue,
   href,
   open,
   onRead,
@@ -197,6 +203,8 @@ export default function MagazineView({
 }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const close = useRef<HTMLButtonElement>(null);
+  /** The map sheet drawn by React (with its translations), whose markup the pages print. */
+  const map = useRef<HTMLDivElement>(null);
   const turner = useRef<Flip | null>(null);
   // the window's keys and the stage's wheel turn pages only while the magazine shows
   const shown = useRef(open);
@@ -269,9 +277,18 @@ export default function MagazineView({
       );
       sheet?.destroy();
       sheet = new Flip(el, {
-        pages: issuePages(story, art, laid, spread, opener),
+        pages: issuePages(
+          story,
+          art,
+          laid,
+          spread,
+          opener,
+          map.current?.innerHTML ?? ''
+        ),
         breakpoint: SPREAD,
         dur: 480,
+        // the cover turned, on the map sheet under it
+        start: 1,
         onChange: sync,
       });
       if (place) {
@@ -370,6 +387,14 @@ export default function MagazineView({
       >
         <CloseIcon />
       </button>
+      <div ref={map} hidden>
+        <MapSheet
+          sheet={issue.sheet}
+          n={pad(story.n)}
+          title={magazineName(story.slug, story.title)}
+          month={issueMonth(story.date)}
+        />
+      </div>
       <div className='gtp-riffle-stage'>
         <div ref={host} className='gtp-riffle-mag' />
         {failed ? (

@@ -17,6 +17,8 @@ type Options = {
   breakpoint: number;
   /** One turn, in milliseconds. */
   dur: number;
+  /** How many leaves lie turned as it opens. */
+  start?: number;
   onChange?: (state: number) => void;
 };
 
@@ -59,6 +61,7 @@ export class Flip {
       })
     );
     this.pages = o.pages.map((p, i) => makePage(p, i));
+    this.state = o.start ?? 0;
     el.addEventListener('click', this.onClick);
     this.build();
   }

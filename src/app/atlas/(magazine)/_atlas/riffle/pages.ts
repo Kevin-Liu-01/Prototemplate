@@ -1,6 +1,7 @@
 /* A story's magazine for the turner (riffle/flip.ts), set on a Swiss grid:
    the cover on the story's own stock with its name up the right
-   edge; an opening spread of the story's own picture across the gutter,
+   edge; under it the story's map sheet, the page the rack's lifted corner
+   shows, faced on a spread by the cover's pale inside; an opening spread of the story's own picture across the gutter,
    the headline under it on the left page and the deck, issue and byline on
    the right (one page at a time, the head over the first columns); the
    whole article (riffle/article.ts) set by riffle/paginate.ts in two
@@ -21,7 +22,7 @@ import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { project } from '../geo/sheet';
 import { HOME_SHEET, magazineName, SHEETS } from '../stories';
 import type { Laid } from './paginate';
-import { darkStock, issueMonth, longDate, pad } from './print';
+import { darkStock, issueMonth, longDate, pad, paleOf } from './print';
 import { escapeHtml } from './html';
 
 /** The grain over every page (Riffle's sheet.css prints it from --grain). */
@@ -75,7 +76,7 @@ function headParts(story: StoryCard): [string, string] {
 /**
  * The back cover's legend, as a map's: a box holding an inset map of the
  * story's place (its sheet, ui/MapSheet.tsx, in the magazine's own colours,
- * with its places and road) beside the issue and its sheet, the byline, the
+ * with its places and road) beside the issue, the byline, the
  * date and reading time, and what the map shows.
  */
 function legend(story: StoryCard): string {
@@ -100,7 +101,7 @@ function legend(story: StoryCard): string {
   const date = longDate(story.date);
   // the story's own place and road in its accent, or in its cover's ink where it has none, so they stand clear of the sea
   const spec = COVERS[story.slug] ?? FALLBACK_COVER;
-  return `<div class="gtr-legend" style="--accent:${spec.accent ?? spec.paper}">${map}<div><p class="gtr-legend-h">Atlas No. ${pad(story.n)}, sheet ${pad(story.n)}</p><p class="gtr-legend-by">${by}</p><p>${escapeHtml([date, `${story.minutes} minutes`].filter(Boolean).join(', '))}</p><p>${escapeHtml(sheet.note)}</p></div></div>`;
+  return `<div class="gtr-legend" style="--accent:${spec.accent ?? spec.paper}">${map}<div><p class="gtr-legend-h">Atlas No. ${pad(story.n)}</p><p class="gtr-legend-by">${by}</p><p>${escapeHtml([date, `${story.minutes} minutes`].filter(Boolean).join(', '))}</p><p>${escapeHtml(sheet.note)}</p></div></div>`;
 }
 
 /** The opening's head, across the top of the article's first page where the story opens on no spread of its own. */
@@ -155,16 +156,37 @@ export function openerOf(
  * paginate(); `art` is the cover's design drawn flat in its inks (a blob URL),
  * printed where the rack's live cover draws it; `spread` is whether two pages
  * show at once, which is when the back cover's place needs keeping; `cover`
- * is the opening spread's picture (openerOf), where two pages show.
+ * is the opening spread's picture (openerOf), where two pages show; `map` is
+ * the story's map sheet as the rack draws it (ui/MapSheet.tsx), as markup.
  */
 export function issuePages(
   story: StoryCard,
   art: string | null,
   article: Laid[],
   spread: boolean,
-  cover: Opener | null
+  cover: Opener | null,
+  map: string
 ): PageSpec[] {
   const { board, vars } = inks(story);
+  const spec = COVERS[story.slug] ?? FALLBACK_COVER;
+  // past the cover, the page under it that the rack's lifted corner shows: the map sheet in the rack's colors, its folds
+  // printed over it as on the rack; on a spread the cover's inside faces it, pale paper tinted with the cover's color, as
+  // the rack's lifted corner shows the back of the cover
+  const sheet: PageSpec = {
+    html: () =>
+      `<div class="gtr gtr-sheet" style="${vars};--accent:${spec.accent ?? spec.paper};--map-sea:${board};--map-ink:${spec.paper}">${map}</div>${GRAIN}`,
+    cls: 'gtr-paper gtr-sheet-page',
+    finish: 'matte',
+    mottle: true,
+  };
+  const inside: PageSpec = {
+    html: () => GRAIN,
+    cls: 'gtr-paper',
+    paper: paleOf(board),
+    finish: 'matte',
+    mottle: true,
+  };
+  const front = spread ? [inside, sheet] : [sheet];
   const name = escapeHtml(magazineName(story.slug, story.title));
   const month = escapeHtml(issueMonth(story.date));
   // the opening spread: the story's own picture across the gutter, the headline under it on the left page and the
@@ -182,7 +204,7 @@ export function issuePages(
   // the cover is page 1, a right page, so every page after it at an even number is a left one; the running head sits at
   // a page's top outer corner and the folio line at its foot's, and the margin at the spine is the wider
   const body = laid.map((page, i) => {
-    const n = i + 2 + opening.length;
+    const n = i + 2 + front.length + opening.length;
     const left = n % 2 === 0;
     const side = left ? ' l' : '';
     const run = `<p class="gtr-run">${name}</p>`;
@@ -206,11 +228,14 @@ export function issuePages(
   // on a spread the back cover must fall on the back of the last leaf, so an odd count of pages comes before it; the page
   // that keeps its place is the issue's colophon: the imprint, the issue, how it was set and where it was filed from
   const colophon = paper(
-    () => `<div class="gtr gtr-in gtr-colophon${(opening.length + body.length) % 2 ? '' : ' l'}" style="${vars}">
+    () => `<div class="gtr gtr-in gtr-colophon${(front.length + opening.length + body.length) % 2 ? '' : ' l'}" style="${vars}">
       <div class="gtr-colo">${atlasMark('var(--paper)')}<p><b>Atlas</b> No. ${pad(story.n)}, ${month}</p><p>Set in Katagami Text and Katagami Serif. Compiled and published on the web by General Translation.</p><p>Filed from San Francisco, ${escapeHtml(dms(story.dateline.lat, 'lat'))} ${escapeHtml(dms(story.dateline.lon, 'lon'))}</p></div>
     </div>`
   );
-  const blank = spread && (opening.length + body.length) % 2 ? [colophon] : [];
+  const blank =
+    spread && (front.length + opening.length + body.length) % 2
+      ? [colophon]
+      : [];
   return [
     // the cover: the story's design on its stock as the rack prints it, its name up the right edge, the issue at the foot
     stock(
@@ -221,6 +246,7 @@ export function issuePages(
       </div>`,
       board
     ),
+    ...front,
     ...opening,
     ...body,
     ...blank,

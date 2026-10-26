@@ -164,8 +164,14 @@
 .gtp-landing[data-mode='row'] .gtp-shelf-item[data-on='true'] .gtp-shelf-shadow { transform: translateY(10px) scale(1.12); opacity: 0.7; }
 .gtp-landing[data-mode='stack'] .gtp-shelf-shadow { opacity: 0; }
 
-/* dragging the row */
-.gtp-landing[data-mode='row']:not([data-open='true']) .gtp-shelf { cursor: grab; }
+/* the magazines show together once their posters, paper and type are in, each whole, never a blank board that its
+   pictures land on later (Landing.tsx, data-ready); without scripts they show at once */
+.gtp-shelf-track { transition: opacity 0.3s var(--gtp-ease); }
+.gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 0; }
+@media (scripting: none) { .gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .gtp-shelf-track { transition: none; } }
+
+/* dragging the row: the hall keeps the plain arrow and a magazine the hand, and only a drag under way grabs */
 .gtp-landing[data-drag='true'] .gtp-shelf { cursor: grabbing; scroll-snap-type: none; }
 .gtp-landing[data-drag='true'] .gtp-shelf-item > * { pointer-events: none; }
 
@@ -265,15 +271,14 @@
    by the same rounding (.gtp-g-top, .gtp-g-foot) */
 .gtp-landing[data-edition='magazine'] .gtp-shelf-track { --shelf-bw: var(--mag-w); --shelf-bh: round(calc(var(--shelf-bw) * 1.316), 1px); --gap: 40px; --baseline: round(calc(52% + var(--shelf-bh) / 2), 1px); }
 .gtp-landing[data-edition='magazine'] .gtp-shelf-item { --slot-h: round(calc(var(--slot-w) * 1.316), 1px); }
-/* standing, it faces the reader square; the one under the pointer rises a few pixels and leans a little toward it */
+/* standing, it faces the reader square and holds still under the pointer and the press */
 .gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-book-shelf { --ty: 0deg; }
 /* standing square, a magazine shows its front alone and exactly its slot's size: the front on the magazine's middle
    plane, so the perspective never widens it onto the guides beside it, and its edges hidden, which seen edge-on would
    draw hairlines beside the guides (the stack, spines out, shows them) */
 .gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-mag .gtp-book-board { transform: none; }
 .gtp-landing[data-edition='magazine'][data-mode='row'] .gtp-mag :is(.gtp-book-fore, .gtp-book-spine) { visibility: hidden; }
-.gtp-landing[data-edition='magazine'][data-mode='row']:not([data-open='true']) .gtp-shelf-item[data-on='true'] .gtp-book-shelf { --dy: -6px; --tx: calc(var(--hy, 0) * -4deg); --ty: calc(var(--hx, 0) * 5deg); }
-.gtp-landing[data-edition='magazine'][data-mode='row']:not([data-open='true']) .gtp-shelf-item[data-pressed='true'] .gtp-book-shelf { --dy: -2px; }
+.gtp-landing[data-edition='magazine'][data-mode='row']:not([data-open='true']) .gtp-shelf-item:is([data-on='true'], [data-pressed='true']) .gtp-book-shelf { --dy: 0px; --tx: 0deg; --ty: 0deg; --s: 1; }
 .gtp-landing[data-edition='magazine'][data-drag='true'] .gtp-shelf-item .gtp-book-shelf { --ty: 0deg; }
 /* the hall a little lit behind the rack, as Riffle's is; in the light theme a warm grey, so white paper has a ground */
 :root:not([data-theme='light']) .gtp-landing[data-edition='magazine'] { --hall: #090909; background: radial-gradient(70% 60% at 50% 48%, #141413, var(--hall) 72%); }
@@ -323,7 +328,9 @@
 .gtp-mag-mottle { position: absolute; inset: 0; z-index: 18; pointer-events: none; background: url('/atlas/directions/paper-specks.webp') 0 0 / 100% 100% no-repeat, url('/atlas/directions/paper-folds.webp') 0 0 / 100% 100% no-repeat; mix-blend-mode: multiply; }
 /* the inside page keeps the scan's folds but not its specks, which read as points among the map's words */
 .gtp-mag-inside .gtp-mag-mottle { background: url('/atlas/directions/paper-folds.webp') 0 0 / 100% 100% no-repeat; }
-.gtp-mag-grain { position: absolute; inset: 0; z-index: 19; pointer-events: none; opacity: 0.13; mix-blend-mode: multiply; background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+/* the grain is a tile drawn once (paper-grain.webp), where an SVG noise filter would be drawn again on every
+   paint, on the CPU in Safari */
+.gtp-mag-grain { position: absolute; inset: 0; z-index: 19; pointer-events: none; opacity: 0.13; mix-blend-mode: multiply; background: url('/atlas/directions/paper-grain.webp') 0 0 / 160px 160px; }
 
 /* the story's name as Riffle's credit line, up the right edge from the foot, large enough to read on the rack */
 .gtp-mag-cred { position: absolute; z-index: 3; right: 3.4cqw; bottom: 4.6cqh; max-height: 90cqh; margin: 0; writing-mode: vertical-rl; text-orientation: sideways; transform: rotate(180deg); font-size: max(15px, 4.1cqh); line-height: 1.14; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; }
@@ -334,35 +341,37 @@
 /* ---------- the corner that lifts ---------- */
 
 /* Under the pointer a magazine's bottom right corner peels back (Landing.tsx sets the slot's data-peel from its
-   corner button): the front is cut along a 45 degree fold --peel from the corner, the flap shows the back of the
-   cover, and the inside page (Book.tsx, InsidePage) shows through. Quick and short, and none under reduced motion. */
+   corner button): the front is cut along a fold about --peel from the corner, its slope a little off 45 degrees and
+   different on each issue (--fold-x and --fold-y, Book.tsx), the flap shows the back of the cover, and the inside page
+   (Book.tsx, InsidePage) shows through. Quick and short, and none under reduced motion. */
 @property --peel { syntax: '<length>'; inherits: false; initial-value: 0px; }
 /* at rest every corner is already turned up a little, clear of the credit line, so the reader sees there is a page to
    lift; the pointer on the corner lifts it; lying in a stack it lies flat */
 /* --peel is set on the two parts that read it, the page and the curl, and does not inherit, so a lift restyles those
    two alone and never the cover under them */
-.gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: calc(var(--bw) * 0.05); transition: --peel 0.18s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.gtp-shelf-item[data-peel='true'] .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: calc(var(--bw) * 0.38); transition-duration: 0.24s; }
+.gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: calc(var(--bw) * 0.05); transition: --peel 0.2s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.gtp-shelf-item[data-peel='true'] .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: calc(var(--bw) * 0.38); transition-duration: 0.265s; }
 .gtp-landing[data-mode='stack'] .gtp-mag :is(.gtp-mag-page, .gtp-mag-flap) { --peel: 0px; transition: none; }
-/* the cut runs past the page by 12px each way, so the stepped edge stays whole while the corner is down */
-.gtp-mag-page { z-index: 1; clip-path: polygon(-12px -12px, calc(100% + 12px) -12px, calc(100% + 12px) calc(100% - var(--peel) - 12px), calc(100% - var(--peel) - 12px) calc(100% + 12px), -12px calc(100% + 12px)); }
-/* the curl: the cut corner turned back over the page (Book.tsx, PageCurl), drawn in the square the fold cuts off; its
-   free edges carry a hairline so white paper holds its shape over white paper, and its shade along the crease is the
-   dark theme's alone, as the light theme draws no shadows */
-.gtp-mag-flap { position: absolute; z-index: 2; right: 0; bottom: 0; width: var(--peel); height: var(--peel); overflow: visible; pointer-events: none; }
-.gtp-mag-flap-back { stroke: rgb(0 0 0 / 0.14); stroke-width: 1; vector-effect: non-scaling-stroke; }
+/* the cut runs on past the page by 12px across, so the stepped edge stays whole while the corner is down, and 1.5px
+   inside the fold, so the cover's softened edge lies under the curl and never shows as a dark line along the crease */
+.gtp-mag-page { z-index: 1; clip-path: polygon(-12px -12px, calc(100% + 12px) -12px, calc(100% + 12px) calc(100% - var(--peel) * var(--fold-y, 1) - 1.5px - 12px * var(--fold-y, 1) / var(--fold-x, 1)), calc(100% - var(--peel) * var(--fold-x, 1) - 1.5px - 12px * var(--fold-x, 1) / var(--fold-y, 1)) calc(100% + 12px), -12px calc(100% + 12px)); }
+/* the curl: the cut corner turned back over the page (Book.tsx, PageCurl), drawn in the box the fold cuts off. The
+   crease draws no line; the free edges carry a faint hairline so pale paper holds its shape over a pale cover, and
+   the shade beside the crease is the dark theme's alone, as the light theme draws no shadows */
+.gtp-mag-flap { position: absolute; z-index: 2; right: 0; bottom: 0; width: calc(var(--peel) * var(--fold-x, 1)); height: calc(var(--peel) * var(--fold-y, 1)); overflow: visible; pointer-events: none; }
+.gtp-mag-flap-edge { fill: none; stroke: rgb(0 0 0 / 0.1); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .gtp-mag-flap-cast { fill: rgb(0 0 0 / 0.42); }
-/* the page under the fold, shaded darkest at the crease */
+/* the page under the fold, a little shaded nearest the crease */
 .gtp-mag-flap-under stop { stop-color: #000; }
-.gtp-mag-flap-under stop:nth-child(1) { stop-opacity: 0.26; }
-.gtp-mag-flap-under stop:nth-child(2) { stop-opacity: 0.1; }
+.gtp-mag-flap-under stop:nth-child(1) { stop-opacity: 0.1; }
+.gtp-mag-flap-under stop:nth-child(2) { stop-opacity: 0.04; }
 .gtp-mag-flap-under stop:nth-child(3) { stop-opacity: 0; }
-/* the back of the cover: dark in the crease, lit just past it, dimming toward the tip */
-.gtp-mag-flap-paper stop:nth-child(1) { stop-color: #c3beb2; }
-.gtp-mag-flap-paper stop:nth-child(2) { stop-color: #f4f2ec; }
-.gtp-mag-flap-paper stop:nth-child(3) { stop-color: #fdfcf9; }
-.gtp-mag-flap-paper stop:nth-child(4) { stop-color: #ebe8e0; }
-.gtp-mag-flap-paper stop:nth-child(5) { stop-color: #e2ded4; }
+/* the back of the cover, pale and tinted with the cover's color (--flap, Book.tsx): lit just past the crease, dimming
+   toward the tip */
+.gtp-mag-flap-paper stop:nth-child(1) { stop-color: var(--flap, #f4f2ec); }
+.gtp-mag-flap-paper stop:nth-child(2) { stop-color: color-mix(in srgb, var(--flap, #f4f2ec) 55%, #fff); }
+.gtp-mag-flap-paper stop:nth-child(3) { stop-color: var(--flap, #f4f2ec); }
+.gtp-mag-flap-paper stop:nth-child(4) { stop-color: color-mix(in srgb, var(--flap, #f4f2ec) 94%, #000); }
 :root[data-theme='light'] .gtp-mag-flap-cast { display: none; }
 
 /* the inside: a page of white uncoated stock the cover's size, printed with the story's map sheet, whose legend sits
@@ -425,28 +434,18 @@
 .gtp-g-foot { top: var(--foot); }
 .gtp-g-dial-t { top: calc(round(down, calc(100% - 30px - var(--dial)), 1px) - 1px); }
 .gtp-g-dial-b { top: calc(100% - 30px); }
-/* the grid references, as an atlas indexes its sheet: a letter over each magazine's column, a number beside each row */
-.gtp-g-ref { position: absolute; translate: -50% -50%; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: 9px; font-weight: 600; line-height: 1; letter-spacing: 0.08em; color: color-mix(in srgb, var(--gtp-ink) 34%, transparent); }
-.gtp-g-col { top: 15px; left: calc(var(--edge) + var(--i) * var(--cell) + var(--mag-w) / 2); }
-.gtp-g-row { left: 15px; }
-.gtp-g-row-1 { top: calc(var(--top) + var(--cap) / 2); }
-.gtp-g-row-2 { top: calc((var(--top) + var(--cap) + var(--mid) - var(--mag-h) / 2) / 2); }
-.gtp-g-row-3 { top: var(--mid); }
-.gtp-g-row-4 { top: calc((var(--mid) + var(--mag-h) / 2 + 100% - 30px - var(--dial)) / 2); }
-.gtp-g-row-5 { top: calc(100% - 30px - var(--dial) / 2); }
 /* Euclid's first construction round the middle two magazines, each circle through the other's centre */
 .gtp-g-euclid { position: absolute; display: block; top: calc(var(--mid) - var(--cell)); width: calc(2 * var(--cell)); aspect-ratio: 1; border: 1px solid var(--guide); border-radius: 50%; }
 .gtp-g-euclid-a { left: calc(var(--edge) + var(--cell) + var(--mag-w) / 2 - var(--cell)); }
 .gtp-g-euclid-b { left: calc(var(--edge) + 2 * var(--cell) + var(--mag-w) / 2 - var(--cell)); }
-/* a narrow screen's row scrolls, so its magazines take no guides there, nor their letters, nor the construction; the
+/* a narrow screen's row scrolls, so its magazines take no guides there, nor the construction; the
    theme's square cell takes one at its left. A wide screen's controls fill the last column, whose guides they are */
-@media (max-width: 999px) { .gtp-guides { --mid: 46%; } .gtp-g-mag-l, .gtp-g-mag-r, .gtp-g-col, .gtp-g-euclid { display: none; } }
+@media (max-width: 999px) { .gtp-guides { --mid: 46%; } .gtp-g-mag-l, .gtp-g-mag-r, .gtp-g-euclid { display: none; } }
 @media (min-width: 1000px) { .gtp-g-tools-l, .gtp-g-snap { display: none; } }
 /* a narrow row's magazine in view stands between the theme cell's guide and its mirror at the left */
 .gtp-g-snap { left: round(up, calc(var(--edge) + var(--cap)), 1px); }
-@media (max-width: 639px) { .gtp-g-ref { display: none; } }
 /* a fine grain over the whole sheet, as on printed stock */
-.gtp-guides::after { content: ''; position: absolute; inset: 0; opacity: 0.06; mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.gtp-guides::after { content: ''; position: absolute; inset: 0; opacity: 0.06; mix-blend-mode: overlay; background: url('/atlas/directions/paper-grain.webp') 0 0 / 160px 160px; }
 
 /* ---------- the nameplate and the controls ---------- */
 

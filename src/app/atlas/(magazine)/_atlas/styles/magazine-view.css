@@ -11,7 +11,7 @@
   --mz-pw: calc(var(--mz-ph) * 0.76);
   --paper-folds: url('/atlas/directions/paper-folds.webp');
   --paper-specks: url('/atlas/directions/paper-specks.webp');
-  --grain: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain: url('/atlas/directions/paper-grain.webp');
   position: fixed;
   inset: 0;
   z-index: 60;
@@ -78,14 +78,23 @@
     linear-gradient(116deg, rgba(255,255,255,0) calc(var(--gp, -40%) - 11%), rgba(255,255,255,calc(.5 * var(--gloss))) var(--gp, -40%), rgba(255,255,255,0) calc(var(--gp, -40%) + 11%)),
     linear-gradient(116deg, rgba(255,255,255,0) 56%, rgba(255,255,255,calc(.12 * var(--gloss))) 64%, rgba(255,255,255,0) 71%);
 }
-.gtp-riffle .mag-page .grain { position: absolute; inset: 0; z-index: 19; pointer-events: none; background-image: var(--grain); opacity: .13; mix-blend-mode: multiply; }
+.gtp-riffle .mag-page .grain { position: absolute; inset: 0; z-index: 19; pointer-events: none; background: var(--grain) 0 0 / 160px 160px; opacity: .13; mix-blend-mode: multiply; }
 /* a soft gutter on open spreads; the cover lies closed as a loose sheet, with no spine */
 .gtp-riffle .fl-face.f > .mag-page { --light: linear-gradient(90deg, rgba(0,0,0,.15), rgba(0,0,0,.05) 2%, rgba(0,0,0,0) 6%), var(--falloff); }
 .gtp-riffle .fl-face.b > .mag-page { --light: linear-gradient(270deg, rgba(0,0,0,.17), rgba(0,0,0,.05) 2.2%, rgba(0,0,0,0) 6.5%), var(--falloff); }
 .gtp-riffle .fl-face.f > .mag-page.is-cover { --light: var(--falloff); }
 .gtp-riffle .mag-page .mottle { position: absolute; inset: 0; z-index: 18; pointer-events: none; background: var(--paper-specks) 0 0 / 100% 100% no-repeat, var(--paper-folds) 0 0 / 100% 100% no-repeat; mix-blend-mode: multiply; }
-/* the back of a leaf shows the folds from behind */
-.gtp-riffle .fl-face.b > .mag-page .mottle { transform: scaleX(-1); }
+/* each page's sheet lies a different way, turned over, upside down or both and a little closer, so the folds never
+   repeat from page to page (riffle/sheet.ts, data-turn); the back of a leaf shows its folds from behind */
+.gtp-riffle .mag-page .mottle { --sx: 1; --sy: 1; --z: 1; --back: 1; transform: scale(calc(var(--sx) * var(--back) * var(--z)), calc(var(--sy) * var(--z))); transform-origin: var(--at, 50% 50%); }
+.gtp-riffle .fl-face.b > .mag-page .mottle { --back: -1; }
+.gtp-riffle .mag-page[data-turn='1'] .mottle { --sx: -1; --z: 1.12; --at: 0 0; }
+.gtp-riffle .mag-page[data-turn='2'] .mottle { --sy: -1; --z: 1.08; --at: 100% 0; }
+.gtp-riffle .mag-page[data-turn='3'] .mottle { --sx: -1; --sy: -1; }
+.gtp-riffle .mag-page[data-turn='4'] .mottle { --z: 1.18; --at: 100% 100%; }
+.gtp-riffle .mag-page[data-turn='5'] .mottle { --sx: -1; --z: 1.06; --at: 0 100%; }
+.gtp-riffle .mag-page[data-turn='6'] .mottle { --sy: -1; --z: 1.15; --at: 50% 0; }
+.gtp-riffle .mag-page[data-turn='7'] .mottle { --sx: -1; --sy: -1; --z: 1.1; --at: 0 50%; }
 .gtp-riffle .mag-page.is-blank { background: var(--paper, #f6f5f1); }
 
 /* ---------- the turner ---------- */
@@ -102,6 +111,9 @@
 .gtp-riffle .fl-leaf { position: absolute; inset: 0; transform-origin: 0 50%; transform-style: preserve-3d; will-change: transform; }
 .gtp-riffle .fl-face { position: absolute; inset: 0; overflow: hidden; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 .gtp-riffle .fl-face.b { transform: rotateY(180deg); }
+/* one page at a time, a leaf's back is blank paper that would lie over the margin left of the page as the leaf turns
+   over, so it is never drawn: the page goes at the halfway point */
+.gtp-riffle .fl:not(.is-spread) .fl-face.b { visibility: hidden; }
 /* the shade that crosses a face as it turns, deepest at the edge furthest from the light */
 .gtp-riffle .fl-shade { position: absolute; inset: 0; z-index: 40; pointer-events: none; opacity: 0; background: linear-gradient(90deg, rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.7)); }
 .gtp-riffle .fl-face.b .fl-shade { background: linear-gradient(270deg, rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.7)); }
@@ -117,6 +129,8 @@
    text pages the folds print under the type */
 .gtp-riffle .mag-page .mottle { background: var(--paper-folds) 0 0 / 100% 100% no-repeat; }
 .gtp-riffle .mag-page.gtr-paper .mottle { z-index: 2; opacity: 0.5; }
+/* the map sheet takes its folds over the drawing, as the rack prints it */
+.gtp-riffle .mag-page.gtr-sheet-page .mottle { z-index: 18; opacity: 1; }
 .gtp-riffle .gtr { --mute: #4a4945; position: absolute; inset: 0; z-index: 3; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; color: #121212; font-synthesis-style: none; }
 /* Euclid's issue is set wholly in the serif its web page is set in, Newsreader, the text as well as the heads */
 .gtp-riffle[data-look='book'] { --gtm-display: var(--gtp-euclid); }

@@ -10,7 +10,7 @@ import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { bookTitle } from '../titles';
 import { magazineName, type Lang } from '../stories';
 import type { ArtBox } from '../gpu/emblems';
-import { darkStock, issueMonth, pad } from '../riffle/print';
+import { darkStock, issueMonth, pad, paleOf } from '../riffle/print';
 import Cover from './Cover';
 import MapSheet from './MapSheet';
 import Seal from './Seal';
@@ -109,22 +109,57 @@ function MagazinePage({
         <i className='gtp-mag-mottle' aria-hidden='true' />
         <i className='gtp-mag-grain' aria-hidden='true' />
       </div>
-      {issue ? <PageCurl /> : null}
+      {issue ? <PageCurl n={story.n} /> : null}
     </>
   );
 }
 
-/* The lifted corner as a page curls back: the back of the cover, which is
-   uncoated white paper, folded over the front along the fold. Its two free
-   edges bow in a little and its tip rounds off, as a curled sheet's do; it
-   is darkest in the crease, catches the light just past it, and dims
-   toward the tip. The inside page under the fold is shaded where the
-   lifted paper keeps the light off it, and in the dark theme the curl
-   lays a soft shade along the crease. Drawn in a 100 unit square that
-   front-page.css sizes to the peel (--peel), so it grows with the lift. */
-function PageCurl() {
+/* Each issue folds its corner a little differently: the crease's slope (the
+   fold's width and height against the peel, front-page.css) and which way
+   its tip turns. `edge` is the curl's free edges, from one end of the crease
+   round the tip to the other; `outline` closes them along the crease. */
+const FOLDS = [
+  {
+    x: 1.08,
+    y: 0.93,
+    edge: 'M100 0 Q48 10 14 7 Q8 6 7 13 Q17 44 0 100',
+    outline: 'M0 100 L100 0 Q48 10 14 7 Q8 6 7 13 Q17 44 0 100 Z',
+  },
+  {
+    x: 0.94,
+    y: 1.07,
+    edge: 'M0 100 Q10 48 7 14 Q6 8 13 7 Q44 17 100 0',
+    outline: 'M100 0 L0 100 Q10 48 7 14 Q6 8 13 7 Q44 17 100 0 Z',
+  },
+  {
+    x: 1.03,
+    y: 0.97,
+    edge: 'M0 100 Q12 44 9 12 Q8 6 14 6 Q40 14 100 0',
+    outline: 'M100 0 L0 100 Q12 44 9 12 Q8 6 14 6 Q40 14 100 0 Z',
+  },
+  {
+    x: 0.96,
+    y: 1.03,
+    edge: 'M100 0 Q44 12 12 9 Q6 8 6 14 Q14 40 0 100',
+    outline: 'M0 100 L100 0 Q44 12 12 9 Q6 8 6 14 Q14 40 0 100 Z',
+  },
+] as const;
+
+/** The fold an issue's corner takes. */
+const foldOf = (n: number) => FOLDS[n % FOLDS.length] ?? FOLDS[0];
+
+/* The lifted corner as a page curls back: the back of the cover, pale paper
+   tinted with the cover's color (--flap, paleOf), folded over the front along the
+   fold. Its two free edges bow in unevenly and its tip rounds off, as a
+   curled sheet's do; it catches the light just past the crease and dims
+   toward the tip. The crease draws no line: the inside page under the fold
+   is only a little shaded where the lifted paper keeps the light off it,
+   and in the dark theme the curl lays a soft shade beside it. Drawn in a
+   100 unit square that front-page.css sizes to the peel (--peel), so it
+   grows with the lift. */
+function PageCurl({ n }: { n: number }) {
   const id = useId().replace(/:/g, '');
-  const curl = 'M0 100 L100 0 Q42 15 11 8 Q7 7 8 11 Q15 42 0 100 Z';
+  const { edge, outline } = foldOf(n);
   return (
     <svg
       className='gtp-mag-flap'
@@ -157,7 +192,6 @@ function PageCurl() {
           y2='6'
         >
           <stop offset='0' />
-          <stop offset='0.07' />
           <stop offset='0.2' />
           <stop offset='0.62' />
           <stop offset='1' />
@@ -165,15 +199,22 @@ function PageCurl() {
         <filter id={`${id}s`} x='-20%' y='-20%' width='140%' height='140%'>
           <feGaussianBlur stdDeviation='2.4' />
         </filter>
+        {/* the curl's own side of the crease, so its shade falls on the cover and never across the crease */}
+        <clipPath id={`${id}c`}>
+          <path d='M-20 -20 L120 -20 L100 0 L0 100 L-20 120 Z' />
+        </clipPath>
       </defs>
       <path d='M0 100 L100 0 L100 100 Z' fill={`url(#${id}u)`} />
-      <path
-        className='gtp-mag-flap-cast'
-        d={curl}
-        transform='translate(3 3)'
-        filter={`url(#${id}s)`}
-      />
-      <path className='gtp-mag-flap-back' d={curl} fill={`url(#${id}b)`} />
+      <g clipPath={`url(#${id}c)`}>
+        <path
+          className='gtp-mag-flap-cast'
+          d={outline}
+          transform='translate(3 3)'
+          filter={`url(#${id}s)`}
+        />
+      </g>
+      <path d={outline} fill={`url(#${id}b)`} />
+      <path className='gtp-mag-flap-edge' d={edge} />
     </svg>
   );
 }
@@ -244,6 +285,9 @@ export default function Book({
     '--band': spec.accent ?? spec.colors[1],
     '--ink': spec.paper,
     '--bd': `${bookDepth(format)}px`,
+    '--flap': paleOf(spec.colors[0] ?? spec.paper),
+    '--fold-x': foldOf(story.n).x,
+    '--fold-y': foldOf(story.n).y,
     ...style,
   } as CSSProperties;
   return (

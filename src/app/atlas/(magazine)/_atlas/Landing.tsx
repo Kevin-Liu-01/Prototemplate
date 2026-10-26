@@ -8,6 +8,7 @@ import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
+import { preload } from 'react-dom';
 
 import type { MagazineIssue, StoryCard } from './content';
 import { dms, isWhere, type Where } from './coords';
@@ -64,6 +65,17 @@ const DRAG_SLOP = 6;
 /** How long the pointer rests on a corner before its magazine is set ahead, so a pass over it costs nothing. */
 const PREPARE_DWELL = 250;
 
+/** The paper every magazine prints on: its folds, its specks and its grain (front-page.css). */
+const PAPER = [
+  '/atlas/directions/paper-folds.webp',
+  '/atlas/directions/paper-specks.webp',
+  '/atlas/directions/paper-grain.webp',
+];
+/** The longest the rack waits for its pictures before it shows anyway. */
+const RACK_WAIT = 2500;
+/** The rack has shown once this visit, so coming back to it from a story shows it at once. */
+let rackShown = false;
+
 /** Every language starts at its first place. */
 const FIRST_PLACES = Object.fromEntries(
   LANGS.map((l) => [l.code, 0])
@@ -97,6 +109,11 @@ export default function Landing({
   const router = useRouter();
   const format = edition === 'magazine' ? 'magazine' : 'book';
   const home = homeOf(edition);
+  // the magazines' paper loads with the posters, at their priority, rather than once the stylesheet asks for it
+  const paper = format === 'magazine' ? PAPER : [];
+  for (const href of paper) preload(href, { as: 'image', fetchPriority: 'high' });
+  /** Every magazine's poster, paper and type are in, so the rack shows each magazine whole (front-page.css). */
+  const [ready, setReady] = useState(rackShown);
   const [active, setActive] = useState(0);
   const [mode, setMode] = useState<View>('row');
   const [pressed, setPressed] = useState<number | null>(null);
@@ -297,6 +314,36 @@ export default function Landing({
       );
   };
 
+  // the rack shows once its posters, its paper and its type have loaded and decoded, or after RACK_WAIT on a slow
+  // connection; a picture that fails still counts as in
+  useMountEffect(() => {
+    if (rackShown) return;
+    let done = false;
+    const show = () => {
+      if (done) return;
+      done = true;
+      rackShown = true;
+      setReady(true);
+    };
+    const posters = [
+      ...(shelf.current?.querySelectorAll<HTMLImageElement>(
+        '.gtp-cover-poster'
+      ) ?? []),
+    ];
+    const sheets = paper.map((src) => Object.assign(new Image(), { src }));
+    void Promise.all([
+      ...[...posters, ...sheets].map((img) =>
+        img.decode().catch(() => undefined)
+      ),
+      document.fonts.ready,
+    ]).then(show);
+    const late = window.setTimeout(show, RACK_WAIT);
+    return () => {
+      done = true;
+      window.clearTimeout(late);
+    };
+  });
+
   // back from a story: the crossfade can capture the shelf now; then, once the browser is idle, every magazine's
   // article is fetched ahead, so a magazine opens at once (each story's page is prefetched by its link)
   useMountEffect(() => {
@@ -451,6 +498,7 @@ export default function Landing({
   // the story whose magazine is open, or set ahead and hidden
   const mounted = reading ?? prepared;
   const opened = mounted === null ? undefined : catalog[mounted];
+  const openedIssue = opened ? issues?.[opened.slug] : undefined;
 
   const flags = (size: number, named: boolean) =>
     LANGS.map((l) => (
@@ -503,6 +551,7 @@ export default function Landing({
         data-mode={mode}
         data-drag={dragging}
         data-langs={globeOpen}
+        data-ready={ready}
         onPointerDown={(e) => {
           // a press anywhere off the locator closes it, and the click it ends in does nothing else
           closing.current =
@@ -812,11 +861,12 @@ export default function Landing({
             </div>
           </div>
         </main>
-        {mounted !== null && opened && issues?.[opened.slug] ? (
+        {mounted !== null && opened && openedIssue ? (
           // keyed by its story, so a click on another corner than the one set ahead mounts that magazine afresh
           <MagazineView
             key={opened.slug}
             story={opened}
+            issue={openedIssue}
             href={storyHref(edition, opened.slug)}
             open={reading !== null}
             onRead={() => open(mounted)}

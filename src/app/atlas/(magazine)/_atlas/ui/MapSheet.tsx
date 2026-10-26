@@ -9,8 +9,7 @@ import type { MapSheet as Sheet } from '../stories';
    places and the road between them, and a title block at the top left. The
    legend sits in the map's bottom right corner, where the corner lifts, its
    rows set from the right so the fold shows their symbols first, over a
-   true scale bar; the sheet's number and who compiled it run in the border
-   under it. The map prints in its magazine's own colours: the cover's
+   true scale bar; who compiled it runs in the border under it. The map prints in its magazine's own colours: the cover's
    stock for the sea and its ink for the land (magazine-view.css, --map-sea and
    --map-ink). Places are drawn at equal scale about the sheet's centre
    latitude (geo/sheet.ts). */
@@ -112,11 +111,6 @@ export default function MapSheet({
       preserveAspectRatio='xMidYMid slice'
       aria-hidden='true'
     >
-      <defs>
-        <clipPath id={`map-${n}`}>
-          <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} />
-        </clipPath>
-      </defs>
       <rect
         className='gtp-map-sea'
         x={x0}
@@ -124,7 +118,16 @@ export default function MapSheet({
         width={x1 - x0}
         height={y1 - y0}
       />
-      <g clipPath={`url(#map-${n})`}>
+      {/* the map inside its frame, in a drawing the frame's size that clips to it; it names no ids, so the magazine view
+          can print a copy of the sheet (riffle/MagazineView.tsx) */}
+      <svg
+        x={x0}
+        y={y0}
+        width={x1 - x0}
+        height={y1 - y0}
+        viewBox={`${x0} ${y0} ${x1 - x0} ${y1 - y0}`}
+        overflow='hidden'
+      >
         <path className='gtp-map-land' d={land} />
         {lons.map((lon) => (
           <line
@@ -175,7 +178,7 @@ export default function MapSheet({
             </g>
           );
         })}
-      </g>
+      </svg>
 
       {/* the neat lines, and the graticule's degrees in the border between them */}
       <rect
@@ -311,17 +314,9 @@ export default function MapSheet({
         {`${distance.toLocaleString('en-US')} km`}
       </text>
 
-      {/* the foot: who compiled the sheet, and its number */}
+      {/* the foot: who compiled the sheet (its number is the cover's) */}
       <text className='gtp-map-cap gtp-map-foot' x={x0} y={H - OUT - 3.6}>
         Compiled by General Translation, {month}
-      </text>
-      <text
-        className='gtp-map-cap gtp-map-foot gtp-map-strong'
-        x={x1}
-        y={H - OUT - 3.6}
-        textAnchor='end'
-      >
-        Sheet {n}
       </text>
       {/* the map's frame last, so the boxes on its edges never paint over it */}
       <rect

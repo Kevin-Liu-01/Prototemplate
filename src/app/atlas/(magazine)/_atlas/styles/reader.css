@@ -115,11 +115,10 @@
   padding: 40px 56px 32px 48px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(8px);
-  transition: opacity 0.35s var(--gtp-ease), transform 0.5s var(--gtp-ease), visibility 0s linear 0.35s;
+  transition: opacity 0.35s var(--gtp-ease), visibility 0s linear 0.35s;
 }
-.gtp-plate[data-on='true'] { opacity: 1; visibility: visible; transform: none; transition: opacity 0.45s var(--gtp-ease) 0.05s, transform 0.5s var(--gtp-ease) 0.05s, visibility 0s; }
-.gtp-inline-plate .gtp-plate { opacity: 1; visibility: visible; transform: none; padding: 16px; }
+.gtp-plate[data-on='true'] { opacity: 1; visibility: visible; transition: opacity 0.45s var(--gtp-ease) 0.05s, visibility 0s; }
+.gtp-inline-plate .gtp-plate { opacity: 1; visibility: visible; padding: 16px; }
 .gtp-plate-stops { margin-left: auto; flex: none; }
 .gtp-plate-media { position: relative; min-height: 0; display: grid; place-items: center; padding: 32px 0; }
 .gtp-plate-view { position: absolute; inset: 32px 0; display: grid; place-items: center; container-type: size; }
@@ -377,7 +376,7 @@
    the epigraph where it stood, then the story at the top of the window. The frame is pinned while the reader scrolls;
    120px of scroll turns the title page to the epigraph, which then holds for 90% of the window (--hold, BookBody's
    OPENING_HOLD) so an ordinary scroll lands on it, and the story follows 36% of the window (--step) further down.
-   Each slide comes in as one timed fade and rise, so the reader never scrubs through it. What leaves goes first and
+   Each slide comes in as one timed fade, in place, so the reader never scrubs through it. What leaves goes first and
    quickly, and what arrives waits for it, so no two slides' text ever shows at once. Scrolling back turns back. It
    is laid out from the first paint; without scripts, below the wide width and under reduced motion, the epigraph
    simply heads the story. */
@@ -387,24 +386,23 @@
   .gtp-print-opening[data-armed]:has(.gtp-print-opening-next) { --hold: 90dvh; }
   .gtp-print-opening[data-armed] .gtp-print-opening-frame { position: sticky; top: 0; display: grid; height: 100dvh; }
   .gtp-print-opening[data-armed] .gtp-print-opening-frame > * { grid-area: 1 / 1; }
-  .gtp-print-opening[data-armed] .gtp-head-title { transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s, translate 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
-  .gtp-print-opening[data-armed]:not([data-slide='0']) .gtp-head-title { opacity: 0; translate: 0 -24px; transition: opacity 0.18s cubic-bezier(0.55, 0, 1, 0.45), translate 0.2s cubic-bezier(0.55, 0, 1, 0.45); }
+  .gtp-print-opening[data-armed] .gtp-head-title { transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
+  .gtp-print-opening[data-armed]:not([data-slide='0']) .gtp-head-title { opacity: 0; transition: opacity 0.18s cubic-bezier(0.55, 0, 1, 0.45); }
   .gtp-print-opening[data-armed] .gtp-print-opening-next {
     display: grid; align-content: center;
     padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2) max(40px, (100% - var(--gtp-print-measure)) / 2);
-    opacity: 0; translate: 0 24px; pointer-events: none;
-    transition: opacity 0.18s cubic-bezier(0.55, 0, 1, 0.45), translate 0.2s cubic-bezier(0.55, 0, 1, 0.45);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.18s cubic-bezier(0.55, 0, 1, 0.45);
   }
-  .gtp-print-opening[data-armed][data-slide='1'] .gtp-print-opening-next { opacity: 1; translate: 0 0; transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.18s, translate 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.18s; }
-  .gtp-print-opening[data-armed][data-slide='2'] .gtp-print-opening-next { opacity: 0; translate: 0 -24px; }
+  .gtp-print-opening[data-armed][data-slide='1'] .gtp-print-opening-next { opacity: 1; transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.18s; }
   .gtp-print-opening-next .gtp-print-epigraph { margin: 0; }
   /* the story starts a window up, over the pinned frame, and fades in at the top of the window on the last stop */
   .gtp-print-opening[data-armed] ~ .gtp-print-page {
     position: relative; z-index: 1; margin-top: -100dvh; padding-top: 24dvh;
-    opacity: 0; translate: 0 24px; pointer-events: none;
-    transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.28s cubic-bezier(0.55, 0, 1, 0.45);
   }
-  .gtp-print-opening[data-armed][data-slide='2'] ~ .gtp-print-page { opacity: 1; translate: 0 0; pointer-events: auto; transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.18s, translate 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.18s; }
+  .gtp-print-opening[data-armed][data-slide='2'] ~ .gtp-print-page { opacity: 1; pointer-events: auto; transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.18s; }
   .gtp-print-opening[data-armed] ~ .gtp-print-page .gtp-print-epigraph { display: none; }
 }
 /* without scripts nothing turns the slides, so the opening lies flat and the story shows */
@@ -412,7 +410,7 @@
   .gtp-print-opening[data-armed] { height: auto; }
   .gtp-print-opening[data-armed] .gtp-print-opening-frame { position: static; height: auto; }
   .gtp-print-opening[data-armed] .gtp-print-opening-next { display: none; }
-  .gtp-print-opening[data-armed] ~ .gtp-print-page { margin-top: 0; opacity: 1; translate: none; pointer-events: auto; }
+  .gtp-print-opening[data-armed] ~ .gtp-print-page { margin-top: 0; opacity: 1; pointer-events: auto; }
   .gtp-print-opening[data-armed] ~ .gtp-print-page .gtp-print-epigraph { display: block; }
 }
 
@@ -544,11 +542,11 @@
 /* Fuma's card opens out into the page */
 .gtp-reader[data-edition='magazine'][data-look='fuma'] .gtp-stage { top: 0; height: 100dvh; margin: 0; border: 0; border-radius: 0; }
 /* a figure changes on the stage once its paragraph is reached: the one leaving fades out first and quickly, then the
-   one arriving fades in and rises, so two captions never show at once (BookBody, timed; the plates the same) */
-.gtp-reader[data-edition='magazine'] .gtp-print-stage-item { translate: 0 14px; transition: opacity 0.25s cubic-bezier(0.55, 0, 1, 0.45), translate 0.3s cubic-bezier(0.55, 0, 1, 0.45); }
-.gtp-reader[data-edition='magazine'] .gtp-print-stage-item[data-shown='true'] { translate: 0 0; transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.28s, translate 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.28s; }
-.gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover) { transition: opacity 0.25s cubic-bezier(0.55, 0, 1, 0.45), transform 0.3s cubic-bezier(0.55, 0, 1, 0.45), visibility 0s linear 0.25s; }
-.gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover)[data-on='true'] { transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.28s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.28s, visibility 0s; }
+   one arriving fades in where it stands, so two captions never show at once (BookBody, timed; the plates the same) */
+.gtp-reader[data-edition='magazine'] .gtp-print-stage-item { transition: opacity 0.25s cubic-bezier(0.55, 0, 1, 0.45); }
+.gtp-reader[data-edition='magazine'] .gtp-print-stage-item[data-shown='true'] { transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.28s; }
+.gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover) { transition: opacity 0.25s cubic-bezier(0.55, 0, 1, 0.45), visibility 0s linear 0.25s; }
+.gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover)[data-on='true'] { transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.28s, visibility 0s; }
 /* the text carries no figure stubs and no figure numbers: the stage changes by itself as the reader reaches each one */
 @media (min-width: 1000px) {
   .gtp-reader[data-edition='magazine'] .gtp-text .gtp-stub { display: none; }
@@ -566,22 +564,19 @@
 }
 
 /* the opening's cover fills the stage edge to edge; when the reader moves on it rises out of the stage like a blind,
-   over everything under it, its art lagging a little as it goes, and uncovers the paper stage with the first figure
+   over everything under it, its art and title moving with it, and uncovers the paper stage with the first figure
    on it; scrolling back lowers it again. Its foot is a hairline, and in the dark theme a soft shadow. Euclid's cover
    on its stage does the same */
-.gtp-reader[data-edition='magazine'] .gtp-plate.gtp-plate-cover { z-index: 2; overflow: hidden; padding: 0; opacity: 1; transform: none; translate: 0 0; box-shadow: 0 1px 0 var(--gtp-rule); transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s linear 0.9s; }
+.gtp-reader[data-edition='magazine'] .gtp-plate.gtp-plate-cover { z-index: 2; overflow: hidden; padding: 0; opacity: 1; translate: 0 0; box-shadow: 0 1px 0 var(--gtp-rule); transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s linear 0.9s; }
 .gtp-reader[data-edition='magazine'] .gtp-plate.gtp-plate-cover[data-on='true'] { transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s; }
 .gtp-reader[data-edition='magazine'] .gtp-plate.gtp-plate-cover[data-on='false'] { translate: 0 -101%; }
-.gtp-reader[data-edition='magazine'] :is(.gtp-plate-cover > .gtp-cover, .gtp-print-stage-cover img) { transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1); }
-.gtp-reader[data-edition='magazine'] .gtp-plate-cover[data-on='false'] > .gtp-cover { translate: 0 16%; }
 :root:not([data-theme='light']) .gtp-reader[data-edition='magazine'] :is(.gtp-plate.gtp-plate-cover, .gtp-print-stage-item.gtp-print-stage-cover) { box-shadow: 0 1px 0 rgb(255 255 255 / 0.1), 0 18px 40px rgb(0 0 0 / 0.5); }
 @media (min-width: 1250px) {
   .gtp-reader[data-edition='magazine'] .gtp-print-stage-item.gtp-print-stage-cover { z-index: 2; overflow: hidden; padding: 0; opacity: 1; translate: 0 0; box-shadow: 0 1px 0 var(--gtp-rule); transition: translate 0.9s cubic-bezier(0.7, 0, 0.2, 1); }
   .gtp-reader[data-edition='magazine'] .gtp-print-stage-cover[data-shown='false'] { translate: 0 -101%; pointer-events: none; }
-  .gtp-reader[data-edition='magazine'] .gtp-print-stage-cover[data-shown='false'] img { translate: 0 16%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gtp-reader[data-edition='magazine'] :is(.gtp-plate.gtp-plate-cover, .gtp-print-stage-cover, .gtp-plate-cover > .gtp-cover, .gtp-print-stage-cover img) { transition: none; }
+  .gtp-reader[data-edition='magazine'] :is(.gtp-plate.gtp-plate-cover, .gtp-print-stage-cover) { transition: none; }
 }
 
 /* the stage's own pictures larger */

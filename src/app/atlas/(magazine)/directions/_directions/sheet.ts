@@ -10,6 +10,8 @@ export type PageSpec = {
   html: () => string;
   /** Classes on the page, which set its paper (--paper). */
   cls?: string;
+  /** A paper of the page's own, where no class names it. */
+  paper?: string;
   finish?: 'matte' | 'satin' | 'black';
   /** The folds and dust of the scanned sheet. */
   mottle?: boolean;
@@ -36,6 +38,9 @@ const smooth = (t: number) => t * t * (3 - 2 * t);
 export function makePage(p: PageSpec, i: number): HTMLElement {
   const d = mk('div', ['mag-page', i === 0 ? 'is-cover' : '', p.cls ?? ''].filter(Boolean).join(' '));
   d.dataset.page = String(i);
+  // which way the scanned sheet lies on this page (Atlas's magazine-view.css), so its folds change from page to page
+  d.dataset.turn = String(i % 8);
+  if (p.paper) d.style.setProperty('--paper', p.paper);
   if (p.finish) d.dataset.finish = p.finish;
   d.innerHTML = p.html();
   if (p.mottle && p.finish !== 'black') d.insertAdjacentHTML('beforeend', '<i class="mottle" aria-hidden="true"></i>');
