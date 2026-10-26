@@ -151,8 +151,8 @@ const PAGES: readonly Surface[] = [
 
 /**
  * The Knowledge rows: what Kevin's hub keeps on how General Translation
- * work is done beyond its pages. The skills, the marks and the blog preview their
- * first folds, shot by scripts/check/capture-pages.mjs under their ids (the plate
+ * work is done beyond its pages. Every row with a page of its own previews
+ * its first fold, shot by scripts/check/capture-pages.mjs under its id (the plate
  * with the initial stands in until the cuts exist); the archive row opens
  * the first retired version, since the archive has no index page of its
  * own. The sidebar hangs the curated skills under the Skills row as one
@@ -208,14 +208,16 @@ const KNOWLEDGE: readonly Surface[] = [
     pageLabel('graphics'),
     '/graphics',
     'Every illustration of the series by area, with what it shows and the glyphfield export it sits on.',
-    'Knowledge'
+    'Knowledge',
+    thumb('graphics')
   ),
   internal(
     'motion',
     pageLabel('motion'),
     '/motion',
     'Every film on the motion roster with its status, and the research packages of the translation series.',
-    'Knowledge'
+    'Knowledge',
+    thumb('motion')
   ),
   internal(
     'transcreate',

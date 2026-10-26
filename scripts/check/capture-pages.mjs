@@ -14,11 +14,12 @@
 //     for the home and `production-<segments joined by ->` for the rest,
 //     the rule surfaces.ts uses
 //   - the routes the Pages group lists: the gallery (`gallery`), /brand,
-//     /docs, /compare, /present and /deck, under their own ids
-//   - the Knowledge rows that have a page of their own: /skills (`skills`),
-//     /docs/handbook (`handbook`), /marks (`marks`) and /blog (`blog`), so
-//     the sidebar's Skills, Handbook, Marks and Blog rows can preview their
-//     first fold
+//     /docs, /atlas (`press`), /compare, /present and /deck, under their
+//     own ids
+//   - the Knowledge rows that have a page of their own: /skills, /components,
+//     /docs/handbook (`handbook`), /marks, /blog, /atlas/notes (`atlas`),
+//     /graphics, /motion and /transcreate, so each sidebar row can preview
+//     its first fold
 //   - every page of the docs site, /docs and /docs/<path> (`docs-<path>`
 //     with a folder's slash a hyphen, the Documents rows) from
 //     src/components/docs/pages.ts, and every page of the handbook, the
@@ -48,7 +49,9 @@
 // writes gt-theme to localStorage before navigation and the root layout's
 // script stamps html[data-theme] before first paint, and the context's
 // color scheme matches. The dev server's own indicator (the nextjs-portal
-// element) is hidden before the shot. A page that fails to load is
+// element) and the shell's toast (.pt-toast, which holds the first-visit
+// hint for 5 s on the first page of each route family) are hidden before
+// the shot. A page that fails to load is
 // reported and skipped, never fatal; the run exits 1 at the end when any
 // page failed.
 //
@@ -86,6 +89,8 @@ if (!(WIDTH > 0 && HEIGHT > 0)) {
 const SETTLE_MS = 2500;
 const LIVE_SETTLE_MS = 3000;
 const QUALITY = 82;
+/** The dev indicator and the shell's toast, which shows the first-visit hint over the stage's foot. */
+const HIDE_CSS = `${HIDE_DEV_UI_CSS} .pt-toast { display: none !important; }`;
 const THEMES = ['light', 'dark'];
 
 const BASE = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
@@ -211,7 +216,7 @@ for (const theme of THEMES) {
         });
       }
       await page.evaluate(() => document.fonts.ready);
-      await page.addStyleTag({ content: HIDE_DEV_UI_CSS });
+      await page.addStyleTag({ content: HIDE_CSS });
       await page.waitForTimeout(LIVE ? LIVE_SETTLE_MS : SETTLE_MS);
       await page.screenshot({ path: target, type: 'jpeg', quality: QUALITY });
       written += 1;
