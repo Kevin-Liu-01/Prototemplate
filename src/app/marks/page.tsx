@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { GLOBE_CONCEPTS, HEMISPHERE_MARKS, MARKS } from '@/lib/marks';
-import type { MarkArt } from '@/lib/marks';
 import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
@@ -39,28 +38,21 @@ function viewBoxAspect(svg: string): number {
 }
 
 /**
- * /marks opens the book at its head. The speed and picture marks' SVG
- * files are read here, on the server, and handed to the viewer as markup,
- * so each is inlined and takes currentColor from the plate it sits on; the
- * same files stay downloadable at their public paths. The construction
- * overlay is read only for the marks that have one (the two picture
- * marks); the aspect of each clean file's viewBox goes with it. The marks
- * in production, the hemispheres round and the globe concepts are not
- * read here: the viewer draws them by mask from their public paths.
+ * /marks opens the book at its head. The viewer draws every mark by mask
+ * from its public file, so no SVG is inlined into the page; the server
+ * reads each speed and picture mark's file only for the aspect of its
+ * viewBox, which the viewer sizes the mark by. A construction overlay
+ * shares its mark's viewBox. The marks in production, the hemispheres
+ * round and the globe concepts carry their aspects in src/lib/marks.ts.
  */
 export default function MarksPage() {
-  const art: Readonly<Record<string, MarkArt>> = Object.fromEntries(
-    MARKS.map((mark) => {
-      const clean = readSvg(mark.file);
-      const entry: MarkArt = { clean, aspect: viewBoxAspect(clean) };
-      if (mark.constructionFile) entry.construction = readSvg(mark.constructionFile);
-      return [mark.id, entry];
-    })
+  const aspects: Readonly<Record<string, number>> = Object.fromEntries(
+    MARKS.map((mark) => [mark.id, viewBoxAspect(readSvg(mark.file))])
   );
   return (
     <>
       <JsonLd nodes={route.jsonLd} />
-      <MarksViewer art={art} updated={requireUpdated('/marks')} />
+      <MarksViewer aspects={aspects} updated={requireUpdated('/marks')} />
     </>
   );
 }

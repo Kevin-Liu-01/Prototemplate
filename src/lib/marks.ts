@@ -48,9 +48,6 @@ export type Mark = {
 /** A film made from one mark, played in that mark's section of /marks. */
 export type MarkFilm = { name: string; summary: string; length: string; src: string; poster: string };
 
-/** A mark's files as read from disk by the server page, and the aspect of its viewBox (width over height). */
-export type MarkArt = { clean: string; construction?: string; aspect: number };
-
 /** One rule of the register; the first section lists them as ruled rows. */
 export type MarkRule = { id: string; name: string; text: string };
 

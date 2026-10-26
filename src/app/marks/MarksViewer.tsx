@@ -25,9 +25,8 @@ import {
   MARKS,
   markFamily,
   PRODUCTION_MARKS,
-  WORDMARK_SIZES,
 } from '@/lib/marks';
-import type { HemisphereFamily, HemisphereMark, Mark, MarkArt, ProductionMark } from '@/lib/marks';
+import type { HemisphereFamily, HemisphereMark, Mark, ProductionMark } from '@/lib/marks';
 import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
@@ -51,6 +50,8 @@ const CONCEPTS_ID = 'concepts';
 
 const SPEED_MARKS = MARKS.filter((mark) => mark.family === 'speed');
 const PICTURE_MARKS = MARKS.filter((mark) => mark.family === 'picture');
+/** The speed mark with a film: the sting plays under the speed cards. */
+const FILM_MARK = SPEED_MARKS.find((mark) => mark.film);
 const EXPLORATION_COUNT = PICTURE_MARKS.length + GLOBE_CONCEPTS.length;
 const TOTAL = PRODUCTION_MARKS.length + HEMISPHERE_MARKS.length + MARKS.length + GLOBE_CONCEPTS.length;
 
@@ -80,16 +81,8 @@ const PRESENTATION_LEAD = `The ${SPEED_MARKS.length} speed marks at one height, 
 const CONCEPTS_TITLE = 'Globe concepts that didn’t make it';
 const CONCEPTS_LEAD = `${GLOBE_CONCEPTS.length} globe concepts from 2026-10, in which the letters G and T form a globe. None was chosen.`;
 
-/** A family's name in its marks' sheet heads. */
+/** A family's name on its marks' cards. */
 const FAMILY_NAME: Readonly<Record<string, string>> = { speed: 'Speed set', picture: 'Earlier round' };
-
-/** The name shown beside the favicon in the tab mock; the product name, not a claim. */
-const TAB_TITLE = 'General Translation';
-
-/** The share of the app icon tile the mark fills; 0.64 leaves the platform's own safe area clear. */
-const APP_ICON_SHARE = 0.64;
-const APP_ICON_PX = 128;
-const APP_MARK_PX = Math.round(APP_ICON_PX * APP_ICON_SHARE);
 
 /**
  * The flow sheet's reading column at the 1440 viewport with the sidebar
@@ -100,24 +93,20 @@ const APP_MARK_PX = Math.round(APP_ICON_PX * APP_ICON_SHARE);
  */
 const COLUMN_W = 1440 - 208 - 2 * 28 - 2 - 2 * 56;
 
-/** A plate's border and side padding (marks.css: .mk-plate, .mk-strip, .mk-field). */
-const PLATE_SIDE = 1 + 32;
+/** A card plate's side padding and border (marks.css: .mk-card-plate, .mk-card). */
+const CARD_SIDE = 16 + 1;
 
-/** The inner width of a full-width plate, and of one plate of a side-by-side pair (a 16px gap between them). */
-const PLATE_INNER = COLUMN_W - 2 * PLATE_SIDE;
-const HALF_INNER = (COLUMN_W - 16) / 2 - 2 * PLATE_SIDE;
+/** The gap between two cards of a row (marks.css: .mk-cards). */
+const CARD_GAP = 12;
 
-/** The height a speed or picture mark is shown at on its plates; a mark too wide for it takes the plate's full width instead. */
-const HERO_PX = 224;
+/** The inner width of a card in the two-column run of the speed and picture marks. */
+const HALF_CARD_INNER = (COLUMN_W - CARD_GAP) / 2 - 2 * CARD_SIDE;
+
+/** The inner width of the presentation field (marks.css: .mk-field pads 32px inside a 1px border). */
+const FIELD_INNER = COLUMN_W - 2 * (32 + 1);
 
 /** The height every speed mark is shown at on the presentation field. */
 const FIELD_PX = 64;
-
-/** A mark whose viewBox is wider than this is laid out full width: its plates stack instead of pairing. */
-const WIDE = 1.5;
-
-/** The heights a wordmark can be shown at, smallest first; a wordmark takes the largest three that fit its plate. */
-const LADDER: readonly number[] = [16, 24, 32, ...WORDMARK_SIZES];
 
 /** A card's mark: large on its plate, then the run of heights under it. */
 const CARD_HERO_PX = 112;
@@ -126,11 +115,16 @@ const CARD_SIZES: readonly number[] = [48, 32, 16];
 /** A production card's mark, on each of its two plates. */
 const FEATURE_HERO_PX = 160;
 
+/** A production mark in the head's strip: the GT monogram at 64px, and every live mark at the same area, so the square Locadex mark reads as large as the wide GT. */
+const LIVE_PX = 64;
+const LIVE_AREA = LIVE_PX * LIVE_PX * (PRODUCTION_MARKS[0]?.aspect ?? 1);
+const liveHeight = (aspect: number) => Math.round(Math.sqrt(LIVE_AREA / aspect));
+
 /** The 16px cut, drawn at 1x and enlarged so its pixels read. */
 const CUT_PX = 16;
 const CUT_ZOOM = 3;
 
-/** The list: the four groups as the run under Knowledge > Marks. */
+/** The list: the four groups as the run under Knowledge > Marks; each group's first row is the group itself, so a jump to it lands. */
 const SECTIONS: readonly ShellSection[] = [
   {
     id: PRODUCTION_ID,
@@ -164,6 +158,7 @@ const SECTIONS: readonly ShellSection[] = [
     label: 'Bar monogram',
     under: 'marks',
     items: [
+      { id: BAR_ID, n: '', title: 'The collection', desc: BAR_LEAD },
       { id: REGISTER_ID, n: '', title: 'The register', desc: 'The rules the speed set follows.' },
       ...SPEED_MARKS.map((mark, i) => ({
         id: mark.id,
@@ -179,6 +174,7 @@ const SECTIONS: readonly ShellSection[] = [
     label: 'Other explorations',
     under: 'marks',
     items: [
+      { id: EXPLORATIONS_ID, n: '', title: 'The explorations', desc: EXPLORATIONS_LEAD },
       ...PICTURE_MARKS.map((mark, i) => ({
         id: mark.id,
         n: pad2(i + 1),
@@ -198,19 +194,9 @@ function fitPlate(aspect: number, inner: number, max: number): PlateFit {
   return max * aspect <= inner ? max : 'full';
 }
 
-/** The caption's size for a fit: the height, or the full width. */
-function fitLabel(fit: PlateFit): string {
-  return fit === 'full' ? 'full width' : `${fit}px`;
-}
-
-/**
- * The run of heights a speed or picture mark is shown at: a monogram takes
- * the 16 to 128px row; a wordmark takes the largest three of the ladder
- * whose width fits its plate.
- */
-function sizesFor(mark: Mark, aspect: number, inner: number): readonly number[] {
-  if (mark.kind === 'monogram') return MARK_SIZES;
-  return LADDER.filter((height) => height * aspect <= inner).slice(-WORDMARK_SIZES.length);
+/** The run of heights a speed or picture mark's card shows: the card run, less any height too wide for the card. */
+function sizesFor(aspect: number, inner: number): readonly number[] {
+  return CARD_SIZES.filter((height) => height * aspect <= inner);
 }
 
 /** The width style of an instance: its height times the file's aspect, or the plate's full width. */
@@ -221,38 +207,13 @@ function sizeStyle(height: PlateFit, aspect: number): CSSProperties {
   };
 }
 
-type ArtProps = {
-  /** the SVG file's markup, read on the server */
-  svg: string;
-  height: PlateFit;
-  /** the file's viewBox aspect, width over height */
-  aspect: number;
-  className?: string;
-};
-
-/**
- * One inlined SVG, for the speed and picture marks: the root keeps its own
- * attributes (the construction overlays set their stroke on it), and the
- * plate's color reaches it as currentColor.
- */
-function Art({ svg, height, aspect, className }: ArtProps) {
-  return (
-    <span
-      className={cn('mk-svg', className)}
-      style={sizeStyle(height, aspect)}
-      aria-hidden='true'
-      dangerouslySetInnerHTML={{ __html: svg }}
-    />
-  );
-}
-
 /**
  * One mark drawn by mask: the plate's color masked by the public file,
- * contained. The cards draw every mark this way, so a file loads once
- * however many times it is shown, and the mark takes the plate's ink as an
- * inlined one would.
+ * contained. Every mark on the page is drawn this way, so a file loads
+ * once however many times it is shown, nothing is inlined into the page,
+ * and the mark takes the plate's ink as an inlined one would.
  */
-function MaskArt({ file, height, aspect }: { file: string; height: number; aspect: number }) {
+function MaskArt({ file, height, aspect }: { file: string; height: PlateFit; aspect: number }) {
   const style: CSSProperties = { ...sizeStyle(height, aspect), '--mk-mask': `url('${file}')` };
   return <span className='mk-svg mk-mask' style={style} aria-hidden='true' />;
 }
@@ -263,8 +224,14 @@ type Ground = (typeof GROUNDS)[number];
 const groundClass = (ground: Ground) => (ground === 'paper' ? 'is-paper' : 'is-ink');
 const groundName = (ground: Ground) => (ground === 'paper' ? 'Positive' : 'Reversed');
 
+/** One plate of a card: the file it draws on a ground, with a caption when the card has more than one plate. */
+type CardPlate = { file: string; ground: Ground; caption?: string };
+
 /** A file link: the file's name as the label unless one is given, and a download. */
 type CardFile = { href: string; label?: string };
+
+/** A ruled note in a card's body: Construction, In use. */
+type CardNote = { key: string; value: ReactNode };
 
 const fileName = (href: string) => href.slice(href.lastIndexOf('/') + 1);
 
@@ -273,43 +240,77 @@ type MarkCardProps = {
   /** the file the card draws */
   file: string;
   aspect: number;
-  /** the heading level: h3 on a production card, h4 inside a family or the concepts */
+  /** the heading level: h3 on a production card, h4 inside a group's run */
   level: 'h3' | 'h4';
-  /** short tags after the name: the round, Pick, In production */
+  /** the plates; by default the mark on paper, or positive and reversed on a production card */
+  plates?: readonly CardPlate[];
+  /** the mark's height on its plates; by default the card's hero height */
+  hero?: PlateFit;
+  /** the run of heights; by default 48, 32 and 16, or the full run on a production card */
+  sizes?: readonly number[];
+  /** short tags after the name: Pick, Lead, In production, the family */
   tags?: readonly ReactNode[];
   /** the 16px cut, when the mark has one */
   file16?: string;
   /** one or two sentences under the name */
   note?: ReactNode;
+  /** ruled notes under the note, folded under one summary line */
+  notes?: readonly CardNote[];
   files: readonly CardFile[];
   /** a production card: both grounds, larger, and the full run of heights */
   feature?: boolean;
   /** one of Kevin's picks: the card takes the ink frame */
   pick?: boolean;
+  /** the card is a block the list names: its id, and whether it is the active one */
+  block?: { id: string; active: boolean };
 };
 
 /**
- * The one card every mark without a sheet of notes takes: the mark large on
- * its plate (both grounds on a production card), the run of heights in the
- * same ink, the 16px cut when the mark has one, then the name, the tags,
- * the note and the files.
+ * The one card every mark on the page takes: the mark large on its plates,
+ * the run of heights in the same ink, the 16px cut when the mark has one,
+ * then the name, the tags, the note, the ruled notes and the files. A
+ * production card shows both grounds; a picture mark's card shows the
+ * clean mark beside its construction.
  */
-function MarkCard({ name, file, aspect, level, tags, file16, note, files, feature, pick }: MarkCardProps) {
+function MarkCard({
+  name,
+  file,
+  aspect,
+  level,
+  plates,
+  hero,
+  sizes,
+  tags,
+  file16,
+  note,
+  notes,
+  files,
+  feature,
+  pick,
+  block,
+}: MarkCardProps) {
   const Heading = level;
-  const grounds: readonly Ground[] = feature ? GROUNDS : ['paper'];
-  const sizes = feature ? [...MARK_SIZES].reverse() : CARD_SIZES;
+  const headingId = block ? `mk-${block.id}` : undefined;
+  const shown: readonly CardPlate[] =
+    plates ?? (feature ? GROUNDS.map((ground) => ({ file, ground, caption: groundName(ground) })) : [{ file, ground: 'paper' }]);
+  const run = sizes ?? (feature ? [...MARK_SIZES].reverse() : CARD_SIZES);
+  const height = hero ?? (feature ? FEATURE_HERO_PX : CARD_HERO_PX);
   return (
-    <article className={cn('mk-card', feature && 'is-feature', pick && 'is-pick')}>
-      <div className='mk-card-plates'>
-        {grounds.map((ground) => (
-          <figure key={ground} className={cn('mk-card-plate', groundClass(ground))}>
-            <MaskArt file={file} height={feature ? FEATURE_HERO_PX : CARD_HERO_PX} aspect={aspect} />
-            {feature && <figcaption>{groundName(ground)}</figcaption>}
+    <article
+      className={cn('mk-card', file16 && 'has-cut', feature && 'is-feature', pick && 'is-pick', block && 'mk-sec', block?.active && 'is-active')}
+      data-id={block?.id}
+      aria-labelledby={headingId}
+    >
+      <div className={cn('mk-card-plates', shown.length > 1 && 'is-two')}>
+        {shown.map((plate) => (
+          <figure key={`${plate.file}-${plate.ground}`} className={cn('mk-card-plate', groundClass(plate.ground))}>
+            <MaskArt file={plate.file} height={height} aspect={aspect} />
+            {plate.caption && <figcaption>{plate.caption}</figcaption>}
           </figure>
         ))}
       </div>
       <div className='mk-card-sizes is-paper'>
-        {sizes.map((size) => (
+        {run.map((size) => (
           <span key={size} className='mk-size'>
             <MaskArt file={file} height={size} aspect={aspect} />
             <small>{size}</small>
@@ -330,7 +331,7 @@ function MarkCard({ name, file, aspect, level, tags, file16, note, files, featur
       )}
       <div className='mk-card-body'>
         <div className='mk-card-name'>
-          <Heading>{name}</Heading>
+          <Heading id={headingId}>{name}</Heading>
           {tags && tags.length > 0 && (
             <span className='mk-tags'>
               {tags.map((tag, i) => (
@@ -342,6 +343,19 @@ function MarkCard({ name, file, aspect, level, tags, file16, note, files, featur
           )}
         </div>
         {note && <p className='mk-card-note'>{note}</p>}
+        {notes && notes.length > 0 && (
+          <details className='mk-card-more'>
+            <summary>{notes.map((n) => n.key).join(' and ')}</summary>
+            <dl className='mk-card-notes'>
+              {notes.map((n) => (
+                <div key={n.key}>
+                  <dt>{n.key}</dt>
+                  <dd>{n.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </details>
+        )}
         <p className='mk-card-files'>
           {files.map((f) => (
             <a key={f.href} href={f.href} download aria-label={`Download ${fileName(f.href)}`}>
@@ -354,6 +368,13 @@ function MarkCard({ name, file, aspect, level, tags, file16, note, files, featur
   );
 }
 
+const IN_PRODUCTION = (
+  <>
+    <Icon name='check-badge' size={14} />
+    In production
+  </>
+);
+
 /** A production mark's card: both grounds, the full run of heights, where it ships and every file the sites serve. */
 function ProductionCard({ mark }: { mark: ProductionMark }) {
   return (
@@ -363,12 +384,7 @@ function ProductionCard({ mark }: { mark: ProductionMark }) {
       aspect={mark.aspect}
       level='h3'
       feature
-      tags={[
-        <>
-          <Icon name='check-badge' size={14} />
-          In production
-        </>,
-      ]}
+      tags={[IN_PRODUCTION]}
       note={gtText(mark.text)}
       files={mark.files.map((href) => ({ href }))}
     />
@@ -446,142 +462,67 @@ function FamilyBlock({ family, active }: { family: HemisphereFamily; active: boo
   );
 }
 
-type MarkSheetProps = {
-  mark: Mark;
-  art: MarkArt;
-  active: boolean;
-};
+/**
+ * A speed or picture mark's card, in the two-column run of its group: the
+ * mark on paper (a picture mark beside its construction), the run of
+ * heights its width allows, the thesis, the construction and the use
+ * folded under one line, and every file. A mark too wide for its plate's
+ * hero height takes the plate's full width.
+ */
+function SheetCard({ mark, aspect, active }: { mark: Mark; aspect: number; active: boolean }) {
+  const inner = HALF_CARD_INNER;
+  const plates: readonly CardPlate[] | undefined = mark.constructionFile
+    ? [
+        { file: mark.file, ground: 'paper', caption: 'Clean' },
+        { file: mark.constructionFile, ground: 'paper', caption: 'Construction' },
+      ]
+    : undefined;
+  const files: CardFile[] = [{ href: mark.file, label: 'SVG' }];
+  if (mark.constructionFile) files.push({ href: mark.constructionFile, label: 'Construction SVG' });
+  if (mark.textFile) files.push({ href: mark.textFile, label: 'Plain text' });
+  return (
+    <MarkCard
+      name={mark.name}
+      file={mark.file}
+      aspect={aspect}
+      level='h4'
+      plates={plates}
+      hero={fitPlate(aspect, plates ? (inner - CARD_GAP) / 2 : inner, CARD_HERO_PX)}
+      sizes={sizesFor(aspect, inner)}
+      tags={[FAMILY_NAME[mark.family] ?? markFamily(mark).label, mark.kind === 'monogram' ? 'Monogram' : 'Wordmark']}
+      note={gtText(mark.thesis)}
+      notes={[
+        { key: 'Construction', value: gtText(mark.construction) },
+        { key: 'In use', value: gtText(mark.use) },
+      ]}
+      files={files}
+      block={{ id: mark.id, active }}
+    />
+  );
+}
 
 /**
- * One speed or picture mark with its notes: the mark large, positive and
- * reversed; a run of heights on both grounds; for a monogram the app icon
- * and the favicon in a tab, and for the two picture marks the clean mark
- * beside its construction; a mark's film when it has one; then the thesis,
- * the construction, the use note and the files as ruled rows. Every
- * instance is sized by height and the file's own aspect, so a wide mark
- * lays its plates out full width.
+ * The marks in production at the very top of the page, inside the head:
+ * each mark on its plate with its name and the In production badge. A
+ * tile jumps to the group, where each mark has its card.
  */
-function MarkSheet({ mark, art, active }: MarkSheetProps) {
-  const family = markFamily(mark);
-  const headingId = `mk-${mark.id}`;
-  const wide = art.aspect > WIDE;
-  const inner = wide ? PLATE_INNER : HALF_INNER;
-  const hero = fitPlate(art.aspect, inner, HERO_PX);
-  const sizes = sizesFor(mark, art.aspect, inner);
-  const sizeRange = `${sizes[0]} to ${sizes[sizes.length - 1]}px`;
-  const monogram = mark.kind === 'monogram';
-  /* the app icon: the mark fitted to the tile's safe area, so a wide monogram is set by width */
-  const appHeight = art.aspect >= 1 ? APP_MARK_PX / art.aspect : APP_MARK_PX;
-  const files = [mark.file, mark.constructionFile, mark.textFile].filter((file): file is string => Boolean(file));
+function LiveStrip({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, id: string) => void }) {
   return (
-    <div className={cn('mk-sec mk-block', active && 'is-active')} data-id={mark.id} aria-labelledby={headingId}>
-      <header className='mk-block-head'>
-        <div className='mk-card-name'>
-          <h3 id={headingId}>{mark.name}</h3>
-          <span className='mk-tags'>
-            <span className='mk-tag'>{FAMILY_NAME[family.id] ?? family.label}</span>
-          </span>
-        </div>
-        <p>{gtText(family.principle)}</p>
-      </header>
-
-      <div className={cn('mk-pair', wide && 'is-stack')}>
-        {GROUNDS.map((ground) => (
-          <figure key={ground} className={cn('mk-plate', groundClass(ground))}>
-            <Art svg={art.clean} height={hero} aspect={art.aspect} />
-            <figcaption>
-              {groundName(ground)}, {fitLabel(hero)}
-            </figcaption>
-          </figure>
+    <div className='mk-live'>
+      <p>{BOOK_NOTE}</p>
+      <div className='mk-live-row'>
+        {PRODUCTION_MARKS.map((mark) => (
+          <a key={mark.id} className='mk-live-mark' href={`#${PRODUCTION_ID}`} onClick={(e) => onJump(e, PRODUCTION_ID)}>
+            <span className='mk-live-plate is-paper'>
+              <MaskArt file={mark.file} height={liveHeight(mark.aspect)} aspect={mark.aspect} />
+            </span>
+            <span className='mk-live-name'>
+              <b>{mark.name}</b>
+              <small>{IN_PRODUCTION}</small>
+            </span>
+          </a>
         ))}
       </div>
-
-      <div className={cn('mk-pair', wide && 'is-stack')}>
-        {GROUNDS.map((ground) => (
-          <figure key={ground} className={cn('mk-strip', groundClass(ground))}>
-            <div className='mk-strip-row'>
-              {sizes.map((size) => (
-                <span key={size} className='mk-size'>
-                  <Art svg={art.clean} height={size} aspect={art.aspect} />
-                  <small>{size}</small>
-                </span>
-              ))}
-            </div>
-            <figcaption>
-              {groundName(ground)}, {sizeRange}
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-
-      {(monogram || art.construction) && (
-        <div className={cn('mk-apps', art.construction && 'has-build')}>
-          {monogram && (
-            <>
-              <figure className='mk-app'>
-                <span className='mk-app-tile'>
-                  <Art svg={art.clean} height={appHeight} aspect={art.aspect} />
-                </span>
-                <figcaption>App icon, {APP_ICON_PX}px</figcaption>
-              </figure>
-              <figure className='mk-fav'>
-                <span className='mk-tab'>
-                  <Art svg={art.clean} height={16} aspect={art.aspect} />
-                  <span className='mk-tab-title'>{TAB_TITLE}</span>
-                </span>
-                <figcaption>Favicon, 16px</figcaption>
-              </figure>
-            </>
-          )}
-          {art.construction && (
-            <>
-              <figure className='mk-plate is-paper is-build'>
-                <Art svg={art.clean} height={192} aspect={art.aspect} />
-                <figcaption>Clean</figcaption>
-              </figure>
-              <figure className='mk-plate is-paper is-build'>
-                <Art svg={art.construction} height={192} aspect={art.aspect} />
-                <figcaption>Construction</figcaption>
-              </figure>
-            </>
-          )}
-        </div>
-      )}
-
-      {mark.film && (
-        <figure className='mk-film'>
-          <BrandFilm src={mark.film.src} poster={mark.film.poster} name={mark.film.name} />
-          <figcaption>
-            Motion, {mark.film.length}. {gtText(mark.film.summary)}
-          </figcaption>
-        </figure>
-      )}
-
-      <dl className='mk-notes'>
-        <div className='mk-note'>
-          <dt>Thesis</dt>
-          <dd>{gtText(mark.thesis)}</dd>
-        </div>
-        <div className='mk-note'>
-          <dt>Construction</dt>
-          <dd>{gtText(mark.construction)}</dd>
-        </div>
-        <div className='mk-note'>
-          <dt>In use</dt>
-          <dd>{gtText(mark.use)}</dd>
-        </div>
-        <div className='mk-note'>
-          <dt>Files</dt>
-          <dd>
-            {files.map((file, i) => (
-              <span key={file}>
-                {i > 0 && <span className='mk-sep'>and</span>}
-                <a href={file}>{file}</a>
-              </span>
-            ))}
-          </dd>
-        </div>
-      </dl>
     </div>
   );
 }
@@ -623,7 +564,8 @@ function Group({ id, section, count, title, lead, active, children }: GroupProps
 }
 
 type MarksBookProps = {
-  art: Readonly<Record<string, MarkArt>>;
+  /** every speed and picture mark's viewBox aspect, by id */
+  aspects: Readonly<Record<string, number>>;
   /** the flow sheet's scroll region */
   sheetRef: RefObject<HTMLDivElement | null>;
   /** receives the section jump, for a re-click on the active row in the list */
@@ -635,14 +577,15 @@ type MarksBookProps = {
 };
 
 /**
- * The book: the head and its contents, then the four groups in order: the
- * marks in production, the hemispheres round by family, the bar monogram
- * collection with its register, and the other explorations. The reading
- * state is the shared read line: the innermost block under the line (a
- * family, a sheet, else its group) is selected through the shell, and a
- * selection from anywhere else scrolls the sheet to it.
+ * The book: the head, whose note shows the two marks in production so
+ * they are on the first screen, and its contents, then the four groups in
+ * order: the marks in production, the hemispheres round by family, the
+ * bar monogram collection with its register, and the other explorations.
+ * The reading state is the shared read line: the innermost block under
+ * the line (a family, a mark's card, else its group) is selected through
+ * the shell, and a selection from anywhere else scrolls the sheet to it.
  */
-function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProps) {
+function MarksBook({ aspects, sheetRef, jumpRef, activeOut, updated }: MarksBookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -656,10 +599,10 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
     </a>
   );
 
-  const sheet = (mark: Mark) => {
-    const files = art[mark.id];
-    if (!files) return null;
-    return <MarkSheet key={mark.id} mark={mark} art={files} active={active === mark.id} />;
+  const card = (mark: Mark) => {
+    const aspect = aspects[mark.id];
+    if (!aspect) return null;
+    return <SheetCard key={mark.id} mark={mark} aspect={aspect} active={active === mark.id} />;
   };
 
   return (
@@ -667,7 +610,7 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
       <BookHead
         title={PAGE_NAMES.marks.name}
         lead={BOOK_LEAD}
-        note={BOOK_NOTE}
+        note={<LiveStrip onJump={onContents} />}
         updated={updated}
         facts={[
           { icon: 'swatch', key: 'Marks', value: TOTAL },
@@ -778,7 +721,16 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
           <p className='mk-faces'>{MARK_FACES}</p>
         </div>
 
-        {SPEED_MARKS.map(sheet)}
+        <div className='mk-cards is-sheets'>{SPEED_MARKS.map(card)}</div>
+
+        {FILM_MARK?.film && (
+          <figure className='mk-film'>
+            <BrandFilm src={FILM_MARK.film.src} poster={FILM_MARK.film.poster} name={FILM_MARK.film.name} />
+            <figcaption>
+              {FILM_MARK.name}, motion, {FILM_MARK.film.length}. {gtText(FILM_MARK.film.summary)}
+            </figcaption>
+          </figure>
+        )}
 
         <div
           className={cn('mk-sec mk-block', active === PRESENTATION_ID && 'is-active')}
@@ -793,9 +745,9 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
             <figure key={ground} className={cn('mk-field', groundClass(ground))}>
               <div className='mk-field-row'>
                 {SPEED_MARKS.map((mark, i) => {
-                  const files = art[mark.id];
-                  if (!files) return null;
-                  const fit = fitPlate(files.aspect, PLATE_INNER, FIELD_PX);
+                  const aspect = aspects[mark.id];
+                  if (!aspect) return null;
+                  const fit = fitPlate(aspect, FIELD_INNER, FIELD_PX);
                   return (
                     <a
                       key={mark.id}
@@ -803,7 +755,7 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
                       href={`#${mark.id}`}
                       onClick={(e) => onContents(e, mark.id)}
                     >
-                      <Art svg={files.clean} height={fit} aspect={files.aspect} />
+                      <MaskArt file={mark.file} height={fit} aspect={aspect} />
                       <small>
                         {pad2(i + 1)} {mark.name}
                       </small>
@@ -827,7 +779,7 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
         lead={EXPLORATIONS_LEAD}
         active={active === EXPLORATIONS_ID}
       >
-        {PICTURE_MARKS.map(sheet)}
+        <div className='mk-cards is-sheets'>{PICTURE_MARKS.map(card)}</div>
 
         <div className={cn('mk-sec mk-block', active === CONCEPTS_ID && 'is-active')} data-id={CONCEPTS_ID} aria-labelledby='mk-concepts'>
           <header className='mk-block-head'>
@@ -858,8 +810,8 @@ function MarksBook({ art, sheetRef, jumpRef, activeOut, updated }: MarksBookProp
 }
 
 export type MarksViewerProps = {
-  /** every speed and picture mark's files and viewBox aspect, by id, read on the server */
-  art: Readonly<Record<string, MarkArt>>;
+  /** every speed and picture mark's viewBox aspect, by id, read on the server */
+  aspects: Readonly<Record<string, number>>;
   /** the /marks entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
 };
@@ -871,7 +823,7 @@ export type MarksViewerProps = {
  * masks the shell's rows with the SVGs). Flow keys, so Space and the arrows
  * scroll. The hash names the active block.
  */
-export default function MarksViewer({ art, updated }: MarksViewerProps) {
+export default function MarksViewer({ aspects, updated }: MarksViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef(PRODUCTION_ID);
@@ -894,7 +846,7 @@ export default function MarksViewer({ art, updated }: MarksViewerProps) {
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <MarksBook art={art} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
+        <MarksBook aspects={aspects} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
       </Sheet>
     </ViewerShell>
   );
