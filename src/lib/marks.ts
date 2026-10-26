@@ -351,7 +351,7 @@ export type HemisphereMark = {
   group: string;
   /** the round the mark was drawn in */
   round: string;
-  /** one of the three marks Kevin picked */
+  /** one of the marks Kevin picked */
   pick?: true;
   /** the strongest mark of its family, the one its poster leads with */
   lead?: true;
@@ -359,6 +359,10 @@ export type HemisphereMark = {
   file: string;
   /** the mark redrawn on a 16 by 16 pixel grid for the favicon: /marks/hemispheres/<id>-16.svg */
   file16: string;
+  /** the construction drawing, a public path: /marks/hemispheres/<id>-construction.svg */
+  constructionFile?: string;
+  /** what the mark changes, in one sentence */
+  note?: string;
 };
 
 /**
@@ -369,7 +373,7 @@ export type HemisphereMark = {
  * what the east half does, and within a family the plainest mark first.
  */
 export const HEMISPHERE_FAMILIES: readonly HemisphereFamily[] = [
-  { id: 'joined-bar', name: 'Joined centre bar', lead: 'cut-3', groups: ['cut-3', 'fix-c'], text: 'The bar of the G and the crossbar of the T join into one bar across the centre of the disc. Kevin kept cut-3 from the single-cut round.' },
+  { id: 'joined-bar', name: 'Joined centre bar', lead: 'cut-3', groups: ['cut-3', 'fix-c', 'closed'], text: 'The bar of the G and the crossbar of the T join into one bar across the centre of the disc. Kevin picked cut-3 and upright-fix-c, and the closed-top round closes the ring across the top. Each card draws the mark beside its construction.' },
   { id: 't-facing-g', name: 'The t facing the G', lead: 't-west-limb', groups: ['t-west', 'split', 'halo', 'studs'], text: 'A lowercase t stands in the east half with its crossbar turned toward the G. Kevin picked t-west-limb and t-west-jaw from this family.' },
   { id: 't-wrapping-limb', name: 'The T wrapping the limb', lead: 'solid-c1', groups: ['c1', 'c3', 'c4'], text: 'The T stands in the east half, and its crossbar runs along the edge of the disc. The tilt versions lean the T, and the land versions cut a coastline into it.' },
   { id: 'graticule-globes', name: 'Graticule globes', lead: 'globe-ball-jaw', groups: ['globe-grat', 'globe-ball'], text: 'The letters are drawn as the lines of a globe. The ball versions paint the strokes on a sphere, so every line in them is curved.' },
@@ -383,15 +387,29 @@ export function hemispherePoster(family: string): string {
   return `/marks/hemispheres/posters/${family}.png`;
 }
 
-function h(mark: Omit<HemisphereMark, 'file' | 'file16'>): HemisphereMark {
-  return { ...mark, file: `/marks/hemispheres/${mark.id}.svg`, file16: `/marks/hemispheres/${mark.id}-16.svg` };
+type HemisphereInput = Omit<HemisphereMark, 'file' | 'file16' | 'constructionFile'> & {
+  /** the mark has a construction drawing at /marks/hemispheres/<id>-construction.svg */
+  construction?: true;
+};
+
+function h({ construction, ...mark }: HemisphereInput): HemisphereMark {
+  return {
+    ...mark,
+    file: `/marks/hemispheres/${mark.id}.svg`,
+    file16: `/marks/hemispheres/${mark.id}-16.svg`,
+    ...(construction ? { constructionFile: `/marks/hemispheres/${mark.id}-construction.svg` } : {}),
+  };
 }
 
 export const HEMISPHERE_MARKS: readonly HemisphereMark[] = [
-  h({ id: 'cut-3', family: 'joined-bar', group: 'cut-3', round: 'onecut', pick: true, lead: true }),
-  h({ id: 'upright-fix-c', family: 'joined-bar', group: 'fix-c', round: 'upright' }),
-  h({ id: 'upright-tail-c', family: 'joined-bar', group: 'fix-c', round: 'upright' }),
-  h({ id: 'fix-c', family: 'joined-bar', group: 'fix-c', round: 'halo3' }),
+  h({ id: 'cut-3', family: 'joined-bar', group: 'cut-3', round: 'onecut', pick: true, lead: true, construction: true, note: 'One cut opens the mouth of the G from the top edge of the bar up to the top line of the counter, where the tail ends level.' }),
+  h({ id: 'upright-fix-c', family: 'joined-bar', group: 'fix-c', round: 'upright', pick: true, construction: true, note: 'Two gaps 16 units wide on the meridian cut the ring at the top and the bottom, and the tail of the G runs level into the top gap.' }),
+  h({ id: 'closed-1', family: 'joined-bar', group: 'closed', round: 'closed', construction: true, note: 'The ring of upright-fix-c closes across the top and keeps its bottom gap, so with no mouth the bar and the stem can read as a P.' }),
+  h({ id: 'closed-2', family: 'joined-bar', group: 'closed', round: 'closed', construction: true, note: 'The bottom gap runs up to the bar between the G stem and a t stem, so both edges of the gap are stem edges and the inside reads as an m.' }),
+  h({ id: 'closed-3', family: 'joined-bar', group: 'closed', round: 'closed', construction: true, note: 'The stem moves east of the gap as a t stem, so the bar and the stem read as a T inside the ring.' }),
+  h({ id: 'closed-4', family: 'joined-bar', group: 'closed', round: 'closed', construction: true, note: 'The mark combines the mouth of cut-3 with the bottom gap of closed-1, which opens the counter under the bar.' }),
+  h({ id: 'closed-5', family: 'joined-bar', group: 'closed', round: 'closed', construction: true, note: 'The mark combines the mouth of cut-3 with the channel of closed-2 between two stems, and at 32 px the inside reads as an m.' }),
+  h({ id: 'closed-6', family: 'joined-bar', group: 'closed', round: 'closed', construction: true, note: 'The mark combines the mouth of cut-3 with the t stem of closed-3, so the ring and the T are two pieces that read as G and T.' }),
   h({ id: 't-west-limb', family: 't-facing-g', group: 't-west', round: 'lower-t r2', pick: true, lead: true }),
   h({ id: 't-west-jaw', family: 't-facing-g', group: 't-west', round: 'lower-t r2', pick: true }),
   h({ id: 'split-g3', family: 't-facing-g', group: 'split', round: 'sketch' }),

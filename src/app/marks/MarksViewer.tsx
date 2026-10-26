@@ -115,6 +115,9 @@ const CARD_SIZES: readonly number[] = [48, 32, 16];
 /** A production card's mark, on each of its two plates. */
 const FEATURE_HERO_PX = 160;
 
+/** A hemispheres mark beside its construction, two cards to a row: large enough for the drawing's labels, and inside the plate at 1440. */
+const CONSTRUCTION_HERO_PX = 224;
+
 /** A production mark in the head's strip: the GT monogram at 64px, and every live mark at the same area, so the square Locadex mark reads as large as the wide GT. */
 const LIVE_PX = 64;
 const LIVE_AREA = LIVE_PX * LIVE_PX * (PRODUCTION_MARKS[0]?.aspect ?? 1);
@@ -391,7 +394,7 @@ function ProductionCard({ mark }: { mark: ProductionMark }) {
   );
 }
 
-/** The tags of a hemispheres mark: Pick for Kevin's three, Lead for the mark its family's poster leads with. */
+/** The tags of a hemispheres mark: Pick for Kevin's picks, Lead for the mark its family's poster leads with. */
 function hemisphereTags(mark: HemisphereMark): readonly string[] {
   const tags: string[] = [];
   if (mark.pick) tags.push('Pick');
@@ -399,20 +402,32 @@ function hemisphereTags(mark: HemisphereMark): readonly string[] {
   return tags;
 }
 
+/** A hemispheres mark's card: the mark, beside its construction when it has one, the run of heights, the 16px cut and the files. */
 function HemisphereCard({ mark }: { mark: HemisphereMark }) {
+  const plates: readonly CardPlate[] | undefined = mark.constructionFile
+    ? [
+        { file: mark.file, ground: 'paper', caption: 'Clean' },
+        { file: mark.constructionFile, ground: 'paper', caption: 'Construction' },
+      ]
+    : undefined;
+  const files: CardFile[] = [
+    { href: mark.file, label: 'SVG' },
+    { href: mark.file16, label: '16px SVG' },
+  ];
+  if (mark.constructionFile) files.push({ href: mark.constructionFile, label: 'Construction SVG' });
   return (
     <MarkCard
       name={mark.id}
       file={mark.file}
       aspect={1}
       level='h4'
+      plates={plates}
+      hero={plates ? CONSTRUCTION_HERO_PX : undefined}
       tags={hemisphereTags(mark)}
       file16={mark.file16}
+      note={mark.note}
       pick={mark.pick}
-      files={[
-        { href: mark.file, label: 'SVG' },
-        { href: mark.file16, label: '16px SVG' },
-      ]}
+      files={files}
     />
   );
 }
@@ -426,6 +441,8 @@ function FamilyBlock({ family, active }: { family: HemisphereFamily; active: boo
   const marks = familyMarks(family);
   const id = familyId(family);
   const poster = hemispherePoster(family.id);
+  /* a family whose marks carry their construction runs two cards to a row, as the speed and picture marks do */
+  const drawn = marks.some((mark) => mark.constructionFile);
   return (
     <div className={cn('mk-sec mk-block', active && 'is-active')} data-id={id} aria-labelledby={`mk-${id}`}>
       <header className='mk-fam-head'>
@@ -453,7 +470,7 @@ function FamilyBlock({ family, active }: { family: HemisphereFamily; active: boo
           </p>
         </div>
       </header>
-      <div className='mk-cards'>
+      <div className={cn('mk-cards', drawn && 'is-sheets is-drawn')}>
         {marks.map((mark) => (
           <HemisphereCard key={mark.id} mark={mark} />
         ))}

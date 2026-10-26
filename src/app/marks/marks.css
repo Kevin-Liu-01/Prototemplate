@@ -214,9 +214,21 @@
   border-color: var(--pt-ink);
 }
 
-/* the speed and picture marks run two to a row */
+/* the speed and picture marks run two to a row, and so do the hemispheres
+   marks drawn beside their construction */
 .mk-cards.is-sheets {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* a hemispheres mark beside its construction: the card renders with the
+   page, since its height is not the lazy estimate above, and the plate
+   keeps room for its caption under the drawing's labels */
+.mk-cards.is-drawn > .mk-card {
+  content-visibility: visible;
+}
+
+.mk-cards.is-drawn .mk-card-plate {
+  padding-bottom: 40px;
 }
 
 .mk-card-plates {
