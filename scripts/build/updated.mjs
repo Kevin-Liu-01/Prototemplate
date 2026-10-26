@@ -224,6 +224,10 @@ function pages() {
       id: `/skills/${s}`,
       paths: [`skills/${s}`, 'src/app/skills/[slug]', 'src/app/skills/SkillViewer.tsx'],
     })),
+    {
+      id: '/components',
+      paths: ['src/app/components', 'src/lib/component-library.ts', 'src/lib/component-library-model.ts', 'content/docs/components', 'public/shots/components'],
+    },
     { id: '/marks', paths: ['src/app/marks', 'src/lib/marks.ts', 'public/marks', 'scripts/build/speed-marks.mjs'] },
     {
       id: '/blog',

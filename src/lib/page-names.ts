@@ -16,6 +16,7 @@ export type PageId =
   | 'present'
   | 'compare'
   | 'skills'
+  | 'components'
   | 'handbook'
   | 'marks'
   | 'blog'
@@ -38,6 +39,7 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   present: { name: 'Presenter' },
   compare: { name: 'Compare' },
   skills: { name: 'Skills' },
+  components: { name: 'Components' },
   handbook: { name: 'Handbook' },
   marks: { name: 'Marks' },
   blog: { name: 'Blog' },

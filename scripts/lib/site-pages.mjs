@@ -291,6 +291,7 @@ export function siteRoutes() {
     { id: 'marks', path: '/marks', tools: 'check live lines capture', source: ['src/app/marks'] },
     { id: 'skills', path: '/skills', tools: 'check live lines capture', source: ['src/app/skills'] },
     { id: `skills-${skill}`, path: `/skills/${skill}`, tools: 'check live lines', source: ['src/app/skills'] },
+    { id: 'components', path: '/components', tools: 'check live lines capture', source: ['src/app/components', 'src/lib/component-library.ts', 'content/docs/components'] },
     { id: 'handbook', path: '/docs/handbook', tools: 'check live capture', source: handbook },
     { id: 'handbook-decisions', path: '/docs/handbook/decisions', tools: 'check', source: handbook },
     { id: 'handbook-design', path: '/docs/handbook/design', tools: 'live', source: [...handbook, 'DESIGN.md'] },

@@ -117,6 +117,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/skills/gt-voice': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: 'f97ce05', src: '9a0192e3' },
   '/skills/gt-website': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: 'f97ce05', src: '99644e97' },
   '/skills/prototemplate': { day: '2026-10-26', at: '2026-10-26', commit: null, src: '9f87fa1b' },
+  '/components': { day: '2026-10-26', at: '2026-10-26', commit: null, src: '1be2a82c' },
   '/marks': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: 'f97ce05', src: '122d24f2' },
   '/blog': { day: '2026-10-26', at: '2026-10-26', commit: null, src: 'b46ecb9d' },
   '/blog/designing-docs-for-humans': { day: '2026-10-26', at: '2026-10-26', commit: null, src: '5c5a40b1' },

@@ -25,6 +25,7 @@ const SINGLETONS = [
   `${SITE_URL}/brand`,
   `${SITE_URL}/docs`,
   `${SITE_URL}/skills`,
+  `${SITE_URL}/components`,
   `${SITE_URL}/marks`,
   `${SITE_URL}/blog`,
   `${SITE_URL}/graphics`,

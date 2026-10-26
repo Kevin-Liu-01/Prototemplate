@@ -112,6 +112,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   brand: 'swatch',
   docs: 'document',
   skills: 'skill',
+  components: 'cube',
   handbook: 'book',
   marks: 'swatch',
   blog: 'post',
@@ -134,6 +135,8 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   compare: 'side by side synced frames',
   skills:
     'agent skills SKILL.md install voice humanizer website landing brand Inter aesthetic deck lints gates PR motion films video graphics dither diagrams isometric components Prototemplate',
+  components:
+    'component library plates instruments fields dither lab drawings globes iso 2D 3D controls navigation kinetic locale tags marks heads covers films layouts shells page templates source undocumented',
   handbook:
     'wiki how kevin works operating principles quality bar done multi-session playbook lanes sessions forks product map glossary terms decisions rulings agents',
   blog: 'posts articles changelog releases devlog docs redesign rewriting fuma nama designing docs for humans open source grants slash credits carousel',

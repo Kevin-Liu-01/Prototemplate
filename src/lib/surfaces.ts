@@ -40,7 +40,8 @@ import type { ShellShot } from '@/lib/shell-data';
  * working views of the lab: the gallery, the presenter and the compare rig.
  * Knowledge holds what the site keeps as the General Translation knowledge
  * base: the brand book (/deck), the brand directives (/brand), the docs
- * site (/docs), the curated skills (/skills), the handbook
+ * site (/docs), the curated skills (/skills), the component library
+ * (/components), the handbook
  * (/docs/handbook), the mark explorations (/marks), the blog, the graphics, the motion roster with
  * the translation series' research packages (/motion) and the archive of
  * retired versions. Shipped
@@ -155,7 +156,8 @@ const PAGES: readonly Surface[] = [
  * with the initial stands in until the cuts exist); the archive row opens
  * the first retired version, since the archive has no index page of its
  * own. The sidebar hangs the curated skills under the Skills row as one
- * numbered run, the posts and the changelog under Blog, the graphics'
+ * numbered run, the component library's groups under Components, the
+ * posts and the changelog under Blog, the graphics'
  * areas under Graphics, the films under Motion and the Transcreate pages
  * under Transcreate.
  */
@@ -167,6 +169,14 @@ const KNOWLEDGE: readonly Surface[] = [
     'The skills Kevin uses for General Translation work, filed by area, each installable in any project.',
     'Knowledge',
     thumb('skills')
+  ),
+  internal(
+    'components',
+    pageLabel('components'),
+    '/components',
+    'Every component Prototemplate keeps, by the groups of the docs Components section, with its plate, its source and its docs page.',
+    'Knowledge',
+    thumb('components')
   ),
   internal(
     'handbook',
