@@ -52,8 +52,8 @@
   display: none;
 }
 
-/* the middle rows' references centre in the rows the nameplate's rules make (AtlasSheet.tsx reads the rules), and show
-   once they are measured */
+/* the middle rows' references centre in the rows the nameplate's rules make (AtlasSheet.tsx reads the rules), and fade
+   in once they are measured */
 .ah-sheet[data-ruled] .gtp-g-row-2 {
   top: calc((var(--ah-row-top) + var(--ah-cap-y)) / 2);
 }
@@ -66,8 +66,12 @@
   top: calc((var(--ah-base-y) + 100% - var(--ah-row-bottom)) / 2);
 }
 
+.ah-sheet .gtp-g-row {
+  transition: opacity 0.4s ease;
+}
+
 .ah-sheet:not([data-ruled]) :is(.gtp-g-row-2, .gtp-g-row-3, .gtp-g-row-4) {
-  visibility: hidden;
+  opacity: 0;
 }
 
 /* ---------- the nameplate on the sheet ---------- */

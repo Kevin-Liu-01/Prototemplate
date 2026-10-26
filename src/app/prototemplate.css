@@ -281,6 +281,12 @@
   -webkit-text-stroke: 1px var(--pt-ink);
 }
 
+/* the first paint is the settled nameplate: the filled composite shows, and the sources, the outline and the rules wait
+   for the timeline (PrototemplateHero.tsx), which sets each of them, so nothing shows and vanishes on load */
+.pt-hero :is(.pt-src, .pt-line, .pt-composite.is-ghost) {
+  opacity: 0;
+}
+
 
 /* ---------- hatch spacer ---------- */
 
