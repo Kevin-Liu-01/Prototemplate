@@ -19,8 +19,8 @@ import type { ShellMode } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 
 import type { TranscreateRoute } from './sections';
-import { CREDITS_ROW, GRID_ROW, ROUTE_PAGE, ROUTE_PATH, transcreateSections, videoRow } from './sections';
-import { GRID, MEDIA, OWNERS, PANEL_WIDTH, VIDEOS } from './videos';
+import { CREDITS_ROW, DATABRICKS_ROW, GRID_ROW, ROUTE_PAGE, ROUTE_PATH, transcreateSections, videoRow } from './sections';
+import { DATABRICKS, DATABRICKS_GRID, DATABRICKS_OWNER, GRID, MEDIA, OWNERS, PANEL_WIDTH, VIDEO_COUNT, VIDEOS } from './videos';
 
 import '../graphics/graphics.css';
 import './transcreate.css';
@@ -56,6 +56,7 @@ type Entry = {
 };
 
 const RANGE = `Videos 01 to ${pad2(VIDEOS.length)}`;
+const DATABRICKS_RANGE = `Videos 01 to ${pad2(DATABRICKS.length)}`;
 
 const GRID_ENTRY: Entry = {
   id: GRID_ROW,
@@ -85,14 +86,48 @@ const VIDEO_ENTRIES: readonly Entry[] = VIDEOS.map((video, i) => ({
   sound: true,
 }));
 
+const DATABRICKS_GRID_ENTRY: Entry = {
+  id: DATABRICKS_ROW,
+  n: '',
+  title: 'Four Databricks videos in English and Japanese',
+  line: 'Each column holds one video, the English original over the Japanese version.',
+  name: 'the grid of the four Databricks videos',
+  views: [
+    {
+      key: 'columns',
+      label: 'Columns',
+      file: DATABRICKS_GRID.file,
+      width: DATABRICKS_GRID.width,
+      height: DATABRICKS_GRID.height,
+      layout: 'English on top, Japanese below in each column',
+    },
+  ],
+  seconds: DATABRICKS_GRID.seconds,
+  sound: false,
+};
+
+const DATABRICKS_ENTRIES: readonly Entry[] = DATABRICKS.map((video, i) => ({
+  id: videoRow(video.slug),
+  n: pad2(i + 1),
+  title: video.name,
+  line: 'Databricks, English to Japanese',
+  name: `the Databricks ${video.name} video`,
+  views: [
+    { key: 'stacked', label: 'Stacked', file: `${video.slug}-stacked`, width: PANEL_WIDTH, height: 1440, layout: 'English on top, Japanese below', narrow: true },
+    { key: 'ja', label: 'Japanese', file: `${video.slug}-ja`, width: PANEL_WIDTH, height: 720, layout: 'Japanese' },
+  ],
+  seconds: video.seconds,
+  sound: true,
+}));
+
 /** What each page's head says: its lead and its three facts. */
 const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [BookFact, BookFact, BookFact] }>> = {
   overview: {
     lead: 'Transcreate replaces the on-screen text of a product video with its translation. The new text follows every cut, animation and effect of the original.',
     facts: [
-      { icon: 'film', key: 'Videos', value: VIDEOS.length },
+      { icon: 'film', key: 'Videos', value: VIDEO_COUNT },
       { icon: 'language', key: 'Languages', value: 'English to Japanese' },
-      { icon: 'duration', key: 'Length', value: '29 to 30 s each' },
+      { icon: 'duration', key: 'Length', value: '29 to 125 s' },
     ],
   },
   videos: {
@@ -103,10 +138,18 @@ const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [B
       { icon: 'duration', key: 'Length', value: '29 to 30 s each' },
     ],
   },
-  credits: {
-    lead: 'Each original video belongs to its company. Each clip on these pages shows 29 to 30 seconds of its original.',
+  databricks: {
+    lead: 'Four Databricks videos from English to Japanese, each with its original sound. The switch above a video sets the English original above the Japanese version, or the Japanese version alone.',
     facts: [
-      { icon: 'film', key: 'Videos', value: VIDEOS.length },
+      { icon: 'film', key: 'Videos', value: DATABRICKS.length },
+      { icon: 'columns', key: 'Layouts', value: 'Stacked or Japanese' },
+      { icon: 'duration', key: 'Length', value: '80 to 125 s each' },
+    ],
+  },
+  credits: {
+    lead: 'Each original video belongs to its company. The eight clips show 29 to 30 seconds of their originals, and the four Databricks videos run 80 to 125 seconds.',
+    facts: [
+      { icon: 'film', key: 'Videos', value: VIDEO_COUNT },
       { icon: 'people', key: 'Companies', value: OWNERS.length },
       { icon: 'link', key: 'Linked originals', value: VIDEOS.filter((video) => video.source).length },
     ],
@@ -202,6 +245,12 @@ function Credits() {
           </dd>
         </div>
       ))}
+      {DATABRICKS.map((video) => (
+        <div key={video.slug}>
+          <dt>{video.name}</dt>
+          <dd>The original video belongs to {DATABRICKS_OWNER}.</dd>
+        </div>
+      ))}
     </dl>
   );
 }
@@ -267,8 +316,8 @@ type TranscreateBookProps = {
  * One Transcreate page read top to bottom inside the flow sheet, in the
  * graphics book's row grammar: the head, then the page's sections under
  * their dividers. The overview holds the grid of all eight and a contents
- * list of the three pages, the videos page each video, and the credits
- * page the originals. The reading state is the shared read line
+ * list of the four pages, the videos page each video, the Databricks page
+ * its grid and each of its videos, and the credits page the originals. The reading state is the shared read line
  * (useReadLine), with /motion's instant jumps: the row under the line is
  * selected through the shell, and a selection from anywhere else jumps the
  * sheet to its row.
@@ -303,9 +352,13 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
                 <span>Each video</span>
                 <small>{RANGE}</small>
               </Link>
+              <Link href={ROUTE_PATH.databricks}>
+                <span>Databricks</span>
+                <small>{`${DATABRICKS.length} videos`}</small>
+              </Link>
               <Link href={ROUTE_PATH.credits}>
                 <span>Credits</span>
-                <small>{`${VIDEOS.length} originals`}</small>
+                <small>{`${VIDEO_COUNT} originals`}</small>
               </Link>
             </nav>
           ) : undefined
@@ -326,12 +379,25 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
         </Part>
       ) : null}
 
+      {route === 'databricks' ? (
+        <>
+          <Part index={1} id='transcreate-databricks-all' label='All four videos' fact={`${DATABRICKS.length} videos`} lead='The four videos play at once in one frame.'>
+            <VideoRow entry={DATABRICKS_GRID_ENTRY} active={active} />
+          </Part>
+          <Part index={2} id='transcreate-databricks-each' label='Each video' fact={DATABRICKS_RANGE} lead='Each video starts muted, and its controls turn the sound on.'>
+            {DATABRICKS_ENTRIES.map((entry) => (
+              <VideoRow key={entry.id} entry={entry} active={active} />
+            ))}
+          </Part>
+        </>
+      ) : null}
+
       {route === 'credits' ? (
         <Part
           index={1}
           id='transcreate-originals'
           label='Original videos'
-          fact={`${VIDEOS.length} originals`}
+          fact={`${VIDEO_COUNT} originals`}
           lead='Four originals have a recorded title and address, and each title links to it.'
         >
           <Row id={CREDITS_ROW} n='' active={active}>
@@ -354,6 +420,7 @@ type TranscreateViewerProps = {
 const SECTIONS: Readonly<Record<TranscreateRoute, ReturnType<typeof transcreateSections>>> = {
   overview: transcreateSections('overview'),
   videos: transcreateSections('videos'),
+  databricks: transcreateSections('databricks'),
   credits: transcreateSections('credits'),
 };
 
@@ -361,6 +428,7 @@ const SECTIONS: Readonly<Record<TranscreateRoute, ReturnType<typeof transcreateS
 const FIRST_ROW: Readonly<Record<TranscreateRoute, string>> = {
   overview: GRID_ROW,
   videos: videoRow(VIDEOS[0]?.slug ?? ''),
+  databricks: DATABRICKS_ROW,
   credits: CREDITS_ROW,
 };
 
@@ -382,7 +450,7 @@ export default function TranscreateViewer({ route, updated }: TranscreateViewerP
       id='transcreate'
       title={PAGE_NAMES.transcreate.name}
       mark='pt'
-      count={`${VIDEOS.length} videos`}
+      count={`${VIDEO_COUNT} videos`}
       sections={SECTIONS[route]}
       active={FIRST_ROW[route]}
       modes={MODES}

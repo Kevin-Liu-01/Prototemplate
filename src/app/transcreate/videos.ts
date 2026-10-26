@@ -1,7 +1,8 @@
 /**
- * The eight videos the /transcreate pages show, in page order, and the web
- * copies under public/media/transcreate: the grid of all eight, side by
- * side and as columns, and each video side by side and stacked. Every copy
+ * The videos the /transcreate pages show, in page order, and the web copies
+ * under public/media/transcreate: the grid of all eight, side by side and as
+ * columns, and each video side by side and stacked; then the four Databricks
+ * videos, with their grid and each video in Japanese and stacked. Every copy
  * has a .jpg poster of the same name. Pure data, shared by the server pages,
  * the viewer and the sidebar's sections.
  */
@@ -71,5 +72,30 @@ export const VIDEOS: readonly TranscreateVideo[] = [
   },
 ];
 
+export type DatabricksVideo = {
+  /** the file stem: `<slug>-ja`, `<slug>-stacked` */
+  slug: string;
+  name: string;
+  /** the running time in whole seconds */
+  seconds: number;
+};
+
+/** The company the Databricks originals belong to. */
+export const DATABRICKS_OWNER = 'Databricks';
+
+/** The four Databricks videos in the grid's column order, each 1280 by 720 in Japanese and 1280 by 1440 stacked, with the original's sound. */
+export const DATABRICKS: readonly DatabricksVideo[] = [
+  { slug: 'databricks-how-do-you-genie', name: 'How Do You Genie', seconds: 80 },
+  { slug: 'databricks-agent-memory', name: 'Agent Memory', seconds: 80 },
+  { slug: 'databricks-teach-ai', name: 'Teach AI', seconds: 125 },
+  { slug: 'databricks-full', name: 'Databricks', seconds: 80 },
+];
+
+/** The grid of the four Databricks videos as columns, English on top: 2560 by 720, 125 seconds, no sound. A shorter video holds its last frame. */
+export const DATABRICKS_GRID = { file: 'databricks-grid', width: 2560, height: 720, seconds: 125 } as const;
+
 /** The companies the originals belong to, each once, in page order. */
-export const OWNERS: readonly string[] = [...new Set(VIDEOS.map((video) => video.owner))];
+export const OWNERS: readonly string[] = [...new Set([...VIDEOS.map((video) => video.owner), DATABRICKS_OWNER])];
+
+/** Every video on the pages: the eight and the four Databricks videos. */
+export const VIDEO_COUNT = VIDEOS.length + DATABRICKS.length;

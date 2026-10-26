@@ -265,8 +265,8 @@ function pages() {
         'src/app/motion/records.tsx',
       ],
     })),
-    // the three Transcreate pages share their viewer and the web copies they play
-    ...['/transcreate', '/transcreate/videos', '/transcreate/credits'].map((id) => ({
+    // the four Transcreate pages share their viewer and the web copies they play
+    ...['/transcreate', '/transcreate/videos', '/transcreate/databricks', '/transcreate/credits'].map((id) => ({
       id,
       paths: ['src/app/transcreate', 'public/media/transcreate'],
     })),

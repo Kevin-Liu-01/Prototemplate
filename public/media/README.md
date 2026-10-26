@@ -99,14 +99,19 @@ kept here as proof of what the identity does off the page.
 | `transcreate/all-columns.mp4` | the same eight videos as columns, each with the English original on top and the Japanese version below, 4096x576, 30.1 s at 30 fps, H.264 with no sound and the moov atom at the front (8.5 MB). |
 | `transcreate/<slug>-side.mp4` | one Transcreate video with the English original on the left and the Japanese version on the right, each panel labelled and 1280x720 (1280x640 for Linear Releases), 29.2 to 30.0 s at the original's frame rate, H.264 and AAC with the original's sound and the moov atom at the front. The slugs are `notion`, `linear-releases`, `linear-agents`, `ramp-budgets`, `asana`, `notion-mail`, `stripe-sessions` and `miro-canvas`. |
 | `transcreate/<slug>-stacked.mp4` | the same video with the English original on top and the Japanese version below, 1280x1440 (1280x1280 for Linear Releases). |
+| `transcreate/databricks-grid.mp4` | the four Databricks videos as columns, each with the English original on top and the Japanese version below, 2560x720, 125.5 s at 30 fps, H.264 with no sound and the moov atom at the front. A shorter video holds its last frame. |
+| `transcreate/databricks-<slug>-stacked.mp4` | one Databricks video with the English original on top and the Japanese version below, 1280x1440, 80 to 125 s at the original's frame rate, H.264 and AAC with the original's sound and the moov atom at the front. The slugs are `how-do-you-genie`, `agent-memory`, `teach-ai` and `full`. |
+| `transcreate/databricks-<slug>-ja.mp4` | the same video in Japanese alone, 1280x720. |
 | `transcreate/*.jpg` | each Transcreate video's poster frame, at the video's size. |
 
 The Transcreate videos play on `/transcreate`, which holds the grid of all
-eight, and on `/transcreate/videos`, which holds each video side by side or
-stacked. Each original video belongs to its company: Notion, Linear, Ramp,
-Asana, Stripe or Miro. `/transcreate/credits` names each original, with its
-title and address where they are recorded, and each clip shows 29 to 30
-seconds of its original.
+eight, on `/transcreate/videos`, which holds each video side by side or
+stacked, and on `/transcreate/databricks`, which holds the four Databricks
+videos at once and each one stacked or in Japanese. Each original video
+belongs to its company: Notion, Linear, Ramp, Asana, Stripe, Miro or
+Databricks. `/transcreate/credits` names each original, with its title and
+address where they are recorded. Each of the eight clips shows 29 to 30
+seconds of its original, and the Databricks videos run 80 to 125 seconds.
 
 The reel, the blog films and the globes are shown live in `/brand` under
 Made with the system. The blog films, the mark sting, the release board,
