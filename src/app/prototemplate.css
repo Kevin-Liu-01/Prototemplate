@@ -188,7 +188,12 @@
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--pt-ink-4);
+  color: var(--pt-ink-2);
+}
+
+/* the labels at the step that reads at 11px on each ground: the second on paper, the third on black */
+[data-theme='dark'] .pt-root .pt-line.is-h i {
+  color: var(--pt-ink-3);
 }
 
 .pt-line.is-v {
@@ -279,6 +284,33 @@
 .pt-composite.is-ghost > span {
   color: transparent;
   -webkit-text-stroke: 1px var(--pt-ink);
+}
+
+/* the first paint is the settled nameplate: the filled composite shows, and the sources, the outline and the rules wait
+   for the timeline (PrototemplateHero.tsx), which sets each of them, so nothing shows and vanishes on load */
+.pt-hero :is(.pt-src, .pt-line, .pt-composite.is-ghost) {
+  opacity: 0;
+}
+
+/* a phone's sheet: the frames stand clear of the rails, the source captions, wider there than their words, would be
+   cut by the frames' rules, so the words stand alone, and the joint is left out */
+@media (max-width: 639px) {
+  .pt-src.is-proto {
+    left: max(4%, 24px);
+  }
+
+  .pt-src.is-template {
+    right: max(4%, 24px);
+  }
+
+  .pt-src-spec {
+    display: none;
+  }
+
+  /* the faces meet a pixel apart at a phone's size, too close for a rule between them */
+  .pt-hero [data-vert-j] {
+    display: none;
+  }
 }
 
 

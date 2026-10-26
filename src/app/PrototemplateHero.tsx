@@ -23,11 +23,17 @@ gsap.registerPlugin(useGSAP);
  * inside the outline. The parked words are the nameplate (lowercase,
  * so nothing has to crossfade). The travel deltas are measured from
  * live rects, so this file never encodes where the sources sit. The
- * destination frame fades in around them: cap rule, the doubled
- * baseline pair, and three verticals (left bound, the serif and grotesk
- * junction, right bound). The intro draws the sheet once; the cycle then
- * runs forever as a round trip: the merge, a hold, and the unwind that
- * carries the words home and retypes `type` under the returning rule.
+ * destination frame fades in around them: the cap rule on the tallest
+ * letter, the doubled baseline pair on the baseline, and three verticals
+ * (left bound, the serif and grotesk junction, right bound).
+ *
+ * The page paints the settled nameplate (the filled composite), and
+ * prototemplate.css holds every moving part hidden until the timeline sets
+ * it, so nothing shows and vanishes on load. Once the fonts are in, the
+ * destination frame draws in round the nameplate, the parked words take
+ * over from the composite, and the cycle runs forever as a round trip from
+ * there: a hold, the unwind that carries the words home and retypes `type`
+ * under the returning rule, the sources' hold, and the merge.
  *
  * Fonts are awaited before measuring; resize rebuilds; reduced motion
  * holds the settled sheet. The timeline pauses while the hero is off
@@ -114,20 +120,35 @@ export default function PrototemplateHero() {
         const rel = (v: number, axis: 'x' | 'y') => v - (axis === 'x' ? heroRect.left : heroRect.top);
 
         /* The em box tops out well above the letters (font ascent), so a rule
-           hung from rect.top floats. Canvas metrics give the string's real
-           ink top: baseline from the font box ratio, minus actual ascent. */
+           hung from rect.top floats. The baseline is read from a zero-size
+           probe set on it, and canvas metrics give the string's real ink top
+           above it. */
         const ctx = document.createElement('canvas').getContext('2d');
-        const inkTop = (el: HTMLElement, text: string): number => {
-          const r = el.getBoundingClientRect();
-          if (!ctx) return r.top;
+        const baselineOf = (el: HTMLElement): number => {
+          const probe = document.createElement('span');
+          probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+          el.appendChild(probe);
+          const y = probe.getBoundingClientRect().top;
+          probe.remove();
+          return y;
+        };
+        const measure = (el: HTMLElement, text: string): TextMetrics | null => {
+          if (!ctx) return null;
           const cs = getComputedStyle(el);
           ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-          const m = ctx.measureText(text);
-          const boxAscent = m.fontBoundingBoxAscent ?? 0;
-          const boxDescent = m.fontBoundingBoxDescent ?? 0;
-          if (boxAscent + boxDescent === 0) return r.top;
-          const baseline = r.top + (boxAscent / (boxAscent + boxDescent)) * r.height;
-          return baseline - m.actualBoundingBoxAscent;
+          ctx.letterSpacing = cs.letterSpacing === 'normal' ? '0px' : cs.letterSpacing;
+          return ctx.measureText(text);
+        };
+        const inkTop = (el: HTMLElement, text: string): number => {
+          const m = measure(el, text);
+          return m ? baselineOf(el) - m.actualBoundingBoxAscent : el.getBoundingClientRect().top;
+        };
+        /* where a word's ink starts and ends, from its box's left edge */
+        const inkLeft = (el: HTMLElement, text: string): number =>
+          el.getBoundingClientRect().left - (measure(el, text)?.actualBoundingBoxLeft ?? 0);
+        const inkRight = (el: HTMLElement, text: string): number => {
+          const m = measure(el, text);
+          return m ? el.getBoundingClientRect().left + m.actualBoundingBoxRight : el.getBoundingClientRect().right;
         };
 
         /* words travel whole: align each source's box onto its segment */
@@ -140,24 +161,32 @@ export default function PrototemplateHero() {
           y: segTemplateRect.bottom - templateRect.bottom,
         };
 
-        /* each word's crop frame hugs its box, every rule full-bleed */
-        const place = () => {
-          gsap.set(fpTop, { top: rel(inkTop(protoWord, 'prototype'), 'y') - 8 });
-          gsap.set(fpBot, { top: rel(protoRect.bottom, 'y') + 8 });
-          gsap.set(fpL, { left: rel(protoRect.left, 'x') - 12 });
-          gsap.set(fpR, { left: rel(protoRect.right, 'x') + 12 });
-          gsap.set(ftTop, { top: rel(inkTop(templateWord, 'template'), 'y') - 8 });
-          gsap.set(ftBot, { top: rel(templateRect.bottom, 'y') + 8 });
-          gsap.set(ftL, { left: rel(templateRect.left, 'x') - 12 });
-          gsap.set(ftR, { left: rel(templateRect.right, 'x') + 12 });
-          gsap.set(lineCap, { top: rel(Math.min(inkTop(ghostProto, 'proto'), inkTop(ghostTemplate, 'template')), 'y') - 8 });
-          gsap.set(lineBase1, { top: rel(ghostRect.bottom, 'y') + 8 });
-          gsap.set(lineBase2, { top: rel(ghostRect.bottom, 'y') + 13 });
-          gsap.set(vertL, { left: rel(ghostRect.left, 'x') - 12 });
-          gsap.set(vertJ, { left: rel(segTemplateRect.left, 'x') });
-          gsap.set(vertR, { left: rel(ghostRect.right, 'x') + 12 });
-        };
-        place();
+        /* Every rule full-bleed and on a whole pixel, so none blurs across
+           two. Each word's crop frame stands 8px off its letters above and
+           below and 12px off its box at the sides. The destination's rules
+           are named, so they lie on the letters: `cap` on the pixel above the
+           tallest letter, `base` on the baseline with its pair 5px under,
+           and the joint between the faces midway in the gap between their
+           ink, so it touches neither word. */
+        const x = (v: number) => Math.round(rel(v, 'x'));
+        const y = (v: number) => Math.round(rel(v, 'y'));
+        const protoRight = x(protoRect.right) + 12;
+        const fallRight = x(typeRect.left) + 10;
+        const base = y(baselineOf(ghostProto));
+        gsap.set(fpTop, { top: y(inkTop(protoWord, 'prototype')) - 8 });
+        gsap.set(fpBot, { top: y(protoRect.bottom) + 8 });
+        gsap.set(fpL, { left: x(protoRect.left) - 12 });
+        gsap.set(fpR, { left: protoRight });
+        gsap.set(ftTop, { top: y(inkTop(templateWord, 'template')) - 8 });
+        gsap.set(ftBot, { top: y(templateRect.bottom) + 8 });
+        gsap.set(ftL, { left: x(templateRect.left) - 12 });
+        gsap.set(ftR, { left: x(templateRect.right) + 12 });
+        gsap.set(lineCap, { top: y(Math.min(inkTop(ghostProto, 'proto'), inkTop(ghostTemplate, 'template'))) - 1 });
+        gsap.set(lineBase1, { top: base });
+        gsap.set(lineBase2, { top: base + 5 });
+        gsap.set(vertL, { left: x(ghostRect.left) - 12 });
+        gsap.set(vertJ, { left: x((inkRight(ghostProto, 'proto') + inkLeft(ghostTemplate, 'template')) / 2) });
+        gsap.set(vertR, { left: x(ghostRect.right) + 12 });
 
         if (reduced) {
           gsap.set([proto, template, ghost, ...srcLines, ...specs], { opacity: 0 });
@@ -165,28 +194,65 @@ export default function PrototemplateHero() {
           return;
         }
 
-        gsap.set(filled, { opacity: 0 });
+        /* The opening state is the merge's end: the words parked in the
+           outline over the filled composite, still clear, `type` fallen out,
+           the travel frames riding with their words and hidden, and the
+           destination frame waiting to be drawn. */
+        gsap.set(filled, { opacity: 1 });
         gsap.set(ghost, { opacity: 0 });
-        gsap.set([proto, template], { opacity: 0 });
-        gsap.set([fpTop, fpBot, ftTop, ftBot], { scaleX: 0, opacity: 1 });
-        gsap.set([fpL, fpR, ftL, ftR], { scaleY: 0, opacity: 1 });
-        gsap.set(dstLines, { opacity: 0 });
-        gsap.set(specs, { opacity: 0 });
+        gsap.set(proto, { x: dProto.x, y: dProto.y, opacity: 0 });
+        gsap.set(template, { x: dTemplate.x, y: dTemplate.y, opacity: 0 });
+        gsap.set(typeLetters, { opacity: 0 });
+        gsap.set([fpTop, fpBot], { y: dProto.y });
+        gsap.set([fpL, fpR], { x: dProto.x });
+        gsap.set(fpR, { left: fallRight });
+        gsap.set([ftTop, ftBot], { y: dTemplate.y });
+        gsap.set([ftL, ftR], { x: dTemplate.x });
+        gsap.set([...srcLines, ...specs], { opacity: 0 });
+        gsap.set([lineCap, lineBase1, lineBase2], { scaleX: 0, opacity: 0.5 });
+        gsap.set([vertL, vertJ, vertR], { scaleY: 0, opacity: 0.5 });
 
-        /* The intro draws the sheet once; the cycle then runs forever as a
-           true round trip: no fades to black, no restarts. */
-        const intro = gsap.timeline();
-        intro
-          .to([fpTop, fpBot, ftTop, ftBot], { scaleX: 1, duration: 0.6, ease: 'power3.inOut', stagger: 0.05 })
-          .to([fpL, fpR, ftL, ftR], { scaleY: 1, duration: 0.6, ease: 'power3.inOut', stagger: 0.05 }, '-=0.45')
-          .to([proto, template], { opacity: 1, duration: 0.45, stagger: 0.1 }, '-=0.3')
-          .to(ghost, { opacity: 0.4, duration: 0.5 }, '-=0.2')
-          .to(specs, { opacity: 1, duration: 0.35 }, '-=0.25');
+        /* The opening draws the destination frame round the nameplate once,
+           and the parked words take over from the filled composite: they
+           fade in over it, then it goes. Text on a translated box can round
+           to a device pixel the composite did not, so a cut from one to the
+           other could tick by a pixel; the two are never both half clear,
+           so the word never pales. The cycle then runs forever as a true
+           round trip from the merged nameplate: no fades to black, no
+           restarts. */
+        const opening = gsap.timeline();
+        opening
+          .to([lineCap, lineBase1, lineBase2], { scaleX: 1, duration: 0.6, ease: 'power3.inOut', stagger: 0.05 })
+          .to([vertL, vertJ, vertR], { scaleY: 1, duration: 0.6, ease: 'power3.inOut', stagger: 0.05 }, '-=0.45')
+          .to([proto, template], { opacity: 1, duration: 0.4, ease: 'none' }, 0.2)
+          .set(filled, { opacity: 0 }, 0.6);
 
         const cycle = gsap.timeline({ repeat: -1 });
-        cycle.to({}, { duration: HOLD_SOURCES });
 
-        /* 1: type falls out; the serif frame re-hugs the shorter word */
+        /* 1: the nameplate holds */
+        cycle.to({}, { duration: HOLD_MERGED });
+
+        /* 2: the unwind. The travel rules come back, the words carry them
+           home, and `type` retypes itself under the returning rule; then the
+           sources hold */
+        cycle
+          .addLabel('unwind')
+          .to(dstLines, { opacity: 0, duration: 0.4 }, 'unwind')
+          .to(srcLines, { opacity: 1, duration: 0.3 }, 'unwind+=0.1')
+          .to(ghost, { opacity: 0.4, duration: 0.45 }, 'unwind+=0.15')
+          .to(template, { x: 0, y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
+          .to([ftTop, ftBot], { y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
+          .to([ftL, ftR], { x: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
+          .to(proto, { x: 0, y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
+          .to([fpTop, fpBot], { y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
+          .to([fpL, fpR], { x: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
+          .set(typeLetters, { y: 0, rotation: 0, opacity: 0 }, 'unwind+=1.35')
+          .to(fpR, { left: protoRight, duration: 0.45, ease: 'power3.inOut' }, 'unwind+=1.4')
+          .to(typeLetters, { opacity: 1, duration: 0.06, stagger: 0.11, ease: 'none' }, 'unwind+=1.45')
+          .to(specs, { opacity: 1, duration: 0.35 }, 'unwind+=1.6')
+          .to({}, { duration: 0.3 + HOLD_SOURCES });
+
+        /* 3: type falls out; the serif frame re-hugs the shorter word */
         cycle
           .addLabel('fall')
           .to(
@@ -201,10 +267,10 @@ export default function PrototemplateHero() {
             },
             'fall'
           )
-          .to(fpR, { left: rel(typeRect.left, 'x') + 10, duration: 0.7, ease: 'power3.inOut' }, 'fall+=0.2')
+          .to(fpR, { left: fallRight, duration: 0.7, ease: 'power3.inOut' }, 'fall+=0.2')
           .to(specs, { opacity: 0, duration: 0.3 }, 'fall');
 
-        /* 2: proto comes down, template comes up, frames riding along */
+        /* 4: proto comes down, template comes up, frames riding along */
         cycle
           .addLabel('merge', 'fall+=0.55')
           .to(proto, { x: dProto.x, y: dProto.y, duration: 0.9, ease: 'power3.inOut' }, 'merge')
@@ -215,36 +281,16 @@ export default function PrototemplateHero() {
           .to([ftL, ftR], { x: dTemplate.x, duration: 0.9, ease: 'power3.inOut' }, 'merge+=0.08')
           .to(ghost, { opacity: 0.8, duration: 0.45 }, 'merge+=0.3');
 
-        /* 3: arrival. The parked words are the nameplate; the travel frames
+        /* 5: arrival. The parked words are the nameplate; the travel frames
            hand over to the destination frame around them */
         cycle
           .addLabel('land', 'merge+=0.92')
           .to(ghost, { opacity: 0, duration: 0.25 }, 'land')
           .to(srcLines, { opacity: 0, duration: 0.35 }, 'land')
-          .to(dstLines, { opacity: 0.5, duration: 0.5 }, 'land+=0.1')
-          .to({}, { duration: HOLD_MERGED });
-
-        /* 4: the unwind. The travel rules come back, the words carry them
-           home, and `type` retypes itself under the returning rule */
-        cycle
-          .addLabel('unwind')
-          .to(dstLines, { opacity: 0, duration: 0.4 }, 'unwind')
-          .to(srcLines, { opacity: 1, duration: 0.3 }, 'unwind+=0.1')
-          .to(ghost, { opacity: 0.4, duration: 0.45 }, 'unwind+=0.15')
-          .to(template, { x: 0, y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
-          .to([ftTop, ftBot], { y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
-          .to([ftL, ftR], { x: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.35')
-          .to(proto, { x: 0, y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
-          .to([fpTop, fpBot], { y: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
-          .to([fpL, fpR], { x: 0, duration: 0.9, ease: 'power3.inOut' }, 'unwind+=0.43')
-          .set(typeLetters, { y: 0, rotation: 0, opacity: 0 }, 'unwind+=1.35')
-          .to(fpR, { left: rel(protoRect.right, 'x') + 12, duration: 0.45, ease: 'power3.inOut' }, 'unwind+=1.4')
-          .to(typeLetters, { opacity: 1, duration: 0.06, stagger: 0.11, ease: 'none' }, 'unwind+=1.45')
-          .to(specs, { opacity: 1, duration: 0.35 }, 'unwind+=1.6')
-          .to({}, { duration: 0.3 });
+          .to(dstLines, { opacity: 0.5, duration: 0.5 }, 'land+=0.1');
 
         tl = gsap.timeline();
-        tl.add(intro).add(cycle);
+        tl.add(opening).add(cycle);
         if (!visible) tl.pause();
       };
 
@@ -332,10 +378,10 @@ export default function PrototemplateHero() {
       <span className='pt-line is-h' data-line-cap aria-hidden>
         <i>cap</i>
       </span>
-      <span className='pt-line is-h' data-line-base1 aria-hidden />
-      <span className='pt-line is-h' data-line-base2 aria-hidden>
+      <span className='pt-line is-h' data-line-base1 aria-hidden>
         <i>base</i>
       </span>
+      <span className='pt-line is-h' data-line-base2 aria-hidden />
       <span className='pt-line is-v' data-vert-l aria-hidden />
       <span className='pt-line is-v' data-vert-j aria-hidden />
       <span className='pt-line is-v' data-vert-r aria-hidden />
