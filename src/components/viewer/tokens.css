@@ -233,19 +233,6 @@
   --pt-face-grot: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* The home's first screen in Atlas's faces (Kevin, 2026-10-25): Katagami
-   Serif and Katagami Text for the nameplate's two words and its labels,
-   Katagami Mono for its numbers and paths. Atlas's own stylesheet
-   (src/app/atlas/(magazine)/_atlas/styles/tokens.css) declares the faces,
-   and the home imports it. */
-.pt-faces-atlas {
-  --pt-face-serif: 'Katagami Serif', Georgia, 'Times New Roman', serif;
-  --pt-face-grot: 'Katagami Text', 'Helvetica Neue', Arial, sans-serif;
-  --pt-mono: 'Katagami Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  /* the CJK fallback Atlas's guide labels name after Katagami Text (front-page.css, .gtp-g-ref) */
-  --gtp-cjk: 'Katagami CJK SC', 'Katagami CJK JP', 'Katagami CJK KR';
-}
-
 /* Type base on the shell's roots, not on html, so the /d/ directions keep
    their own type. The display features reach h1 and h2 only (the deck's
    rule, head.html:62); every other element takes the text features. The
