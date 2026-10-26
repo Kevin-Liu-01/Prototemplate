@@ -79,7 +79,7 @@ export function mountGlobe(
   let ny = new Float32Array(0);
   let nz = new Float32Array(0);
 
-  const reduce = typeof matchMedia === 'function' && prefersReducedMotion();
+  const reduce = prefersReducedMotion();
 
   // the inks are read once and again only when the theme changes, so a turning globe reads no style per frame
   let read: Inks | null = null;
