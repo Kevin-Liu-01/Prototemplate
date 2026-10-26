@@ -12,7 +12,7 @@ import { ThemeButton } from '@/components/viewer/ThemeButton';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { toggleFullscreen } from '@/components/viewer/useShellKeys';
-import { MODE_ORDER, pad2, previewId } from '@/lib/shell-data';
+import { MODE_ORDER, padTo, previewId } from '@/lib/shell-data';
 import type { ShellMark, ShellMode } from '@/lib/shell-data';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -174,13 +174,13 @@ function Count() {
           inputMode='numeric'
           maxLength={3}
           value={value}
-          placeholder={pad2(Math.max(1, index + 1))}
+          placeholder={padTo(Math.max(1, index + 1), total)}
           aria-label={`Go to a ${noun} by number`}
           onChange={(event) => setValue(event.target.value.replace(/\D/g, ''))}
           onKeyDown={onKey}
           onBlur={close}
         />
-        <span> / {pad2(total)}</span>
+        <span> / {padTo(total, total)}</span>
       </span>
     );
   }
@@ -201,8 +201,8 @@ function Count() {
         </>
       ) : (
         <>
-          <b>{pad2(index + 1)}</b>
-          <span> / {pad2(total)}</span>
+          <b>{padTo(index + 1, total)}</b>
+          <span> / {padTo(total, total)}</span>
         </>
       )}
     </button>

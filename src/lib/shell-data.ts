@@ -130,6 +130,11 @@ export function pad2(n: number): string {
   return n < 10 ? `0${n}` : String(n);
 }
 
+/** `n` padded to the width of `total`, at least two digits: `01 / 52`, `001 / 172`. Used for the place in a set. */
+export function padTo(n: number, total: number): string {
+  return String(n).padStart(Math.max(2, String(total).length), '0');
+}
+
 /** A run of numbered rows as a book's contents and dividers name it: `04 to 09`, or `04` for one row; empty for none. */
 export function rangeText(rows: readonly { n: string }[]): string {
   const first = rows[0];

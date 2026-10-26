@@ -4,7 +4,7 @@ import type { MouseEvent, ReactNode, Ref, TouchEvent } from 'react';
 import { useRef, useState } from 'react';
 
 import { cn } from '@/lib/cn';
-import { pad2 } from '@/lib/shell-data';
+import { padTo } from '@/lib/shell-data';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -214,7 +214,7 @@ function FixedSheet({
         <span className='pt-sheet-caption-l'>
           {title ? `${title}, live at ${w} pixels wide` : `Live at ${w} pixels wide`}
         </span>
-        <span className='pt-sheet-caption-r'>{`${index < 0 ? '–' : pad2(index + 1)} / ${pad2(total)}`}</span>
+        <span className='pt-sheet-caption-r'>{`${index < 0 ? '–' : padTo(index + 1, total)} / ${padTo(total, total)}`}</span>
       </>
     ) : (
       caption

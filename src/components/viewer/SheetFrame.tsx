@@ -1,6 +1,6 @@
 'use client';
 
-import { pad2 } from '@/lib/shell-data';
+import { padTo } from '@/lib/shell-data';
 
 import { GtMark } from './GtMark';
 import { usePtShell } from './shell-context';
@@ -40,7 +40,7 @@ export function SheetFrame({ wordmark = true, counter = true }: SheetFrameProps)
         </div>
       ) : null}
       {counter ? (
-        <div className='pt-sheet-counter'>{`${pad2(Math.max(0, index) + 1)} / ${pad2(total)}`}</div>
+        <div className='pt-sheet-counter'>{`${padTo(Math.max(0, index) + 1, total)} / ${padTo(total, total)}`}</div>
       ) : null}
     </>
   );

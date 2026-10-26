@@ -157,7 +157,7 @@ function ComponentsBook({ blocks, sheetRef, jumpRef, activeOut, updated }: Compo
           <div className='cl-sec pt-book-sec'>
             <small>
               <span>Section {i + 1}</span>
-              <span>Components {rangeText(block.entries)}</span>
+              <span>{block.entries.length === 1 ? '1 component' : `${block.entries.length} components`}</span>
             </small>
             <h2 id={`cl-${block.id}`}>{block.label}</h2>
           </div>

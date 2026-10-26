@@ -2,7 +2,6 @@ import { closeSync, existsSync, openSync, readFileSync, readSync } from 'node:fs
 import { join } from 'node:path';
 
 import type { LibraryBlock, LibraryEntry, LibraryShot } from '@/lib/component-library-model';
-import { pad2 } from '@/lib/shell-data';
 
 /**
  * The set behind /components, read on the server at build time. The
@@ -123,6 +122,12 @@ const UNDOCUMENTED: readonly { code: string; path: string; desc: string }[] = [
   { code: 'Video', path: 'src/components/blog/Video.tsx', desc: 'A looping muted clip for a post’s interaction recordings.' },
   { code: 'FumadocsArchitecture', path: 'src/components/blog/FumadocsArchitecture.tsx', desc: 'The architecture diagram of Fumadocs drawn for the Fuma Nama post.' },
   { code: 'renderBlocks', path: 'src/components/book/markdown.tsx', desc: 'The Markdown renderer the handbook and the Markdown twins use, with heading ids.' },
+  { code: 'DocsNameplate', path: 'src/components/docs/DocsNameplate.tsx', desc: 'The docs nameplate in the sidebar head and the phone header: the hub’s mark links home, and Docs links to /docs.' },
+  { code: 'DocsThemeButton', path: 'src/components/docs/DocsThemeButton.tsx', desc: 'The docs site’s light and dark switch, which keeps the hub’s stored theme.' },
+  { code: 'DocsPageActions', path: 'src/components/docs/DocsPageActions.tsx', desc: 'Copy page and its menu: the page’s Markdown twin, its source on GitHub, or a prompt for an assistant.' },
+  { code: 'DocsSidebarFooter', path: 'src/components/docs/DocsSidebarFooter.tsx', desc: 'The docs sidebar’s foot: the skills, the repository and the theme button.' },
+  { code: 'SidebarMotion', path: 'src/components/docs/SidebarMotion.tsx', desc: 'The docs sidebar’s rails and pills, which slide to the row the pointer is on and to the current page.' },
+  { code: 'SidebarActiveScroll', path: 'src/components/docs/SidebarActiveScroll.tsx', desc: 'Scrolls the docs sidebar so the current page’s row is in view after each navigation.' },
   { code: 'PlateFrame', path: 'src/components/plate/frame/PlateFrame.tsx', desc: 'The frame every sign-in and onboarding surface shares: the field behind a plate column.' },
   { code: 'PlateRoot', path: 'src/components/plate/frame/PlateRoot.tsx', desc: 'The frame’s root element and the field behind it.' },
   { code: 'PlateFoot', path: 'src/components/plate/frame/PlateFoot.tsx', desc: 'The frame’s foot with the language selector and the copyright or the account.' },
@@ -145,6 +150,34 @@ const UNDOCUMENTED: readonly { code: string; path: string; desc: string }[] = [
   { code: 'Toast', path: 'src/components/plate/ui/toast.tsx', desc: 'The dashboard’s toast notifications.' },
   { code: 'LanguageSelector', path: 'src/components/plate/ui/LanguageSelector.tsx', desc: 'A static copy of the site’s language selector for the plate frame’s foot.' },
   { code: 'ClaudeLogo', path: 'src/components/plate/icons', desc: 'The model logos of the onboarding survey: Claude, DeepSeek, Gemini, Grok, Mistral and OpenAI.' },
+  { code: 'GtMark', path: 'src/components/plate/icons/GtMark.tsx', desc: 'The GT mark in one ink, cropped to the glyph so it sits beside text on the plate pages.' },
+  { code: 'AuthFrame', path: 'src/components/plate/pages/auth/AuthFrame.tsx', desc: 'The heading, lede, content and footnote every secondary auth screen stacks in the plate column.' },
+  { code: 'SignInForm', path: 'src/components/plate/pages/auth/SignInForm.tsx', desc: 'The dashboard’s sign-in form: the email link, SSO and the social buttons.' },
+  { code: 'CliTerminal', path: 'src/components/plate/pages/cli/CliTerminal.tsx', desc: 'What npx gt login prints before the browser opens, on a terminal panel.' },
+  { code: 'CliWizard', path: 'src/components/plate/pages/cli/CliWizard.tsx', desc: 'The CLI wizard’s project picker and its authorized state.' },
+  { code: 'CliCallbackSnapshot', path: 'src/components/plate/pages/cli/CliCallbackSnapshot.tsx', desc: 'One of the pages the gt CLI serves on its local callback, shown in a sandboxed frame in the site’s theme.' },
+  { code: 'CloseWindowButton', path: 'src/components/plate/pages/cli/CloseWindowButton.tsx', desc: 'Closes the tab after a CLI sign-in, and says so when the browser blocks it.' },
+  { code: 'CompletedSessionState', path: 'src/components/plate/pages/cli/CompletedSessionState.tsx', desc: 'The CLI wizard once its session already has credentials.' },
+  { code: 'InvalidSessionState', path: 'src/components/plate/pages/cli/InvalidSessionState.tsx', desc: 'The CLI wizard for an unknown or expired session.' },
+  { code: 'OAuthConsent', path: 'src/components/plate/pages/consent/OAuthConsent.tsx', desc: 'The consent screen where a person narrows the requested scopes and approves the client.' },
+  { code: 'AuthorizationShell', path: 'src/components/plate/pages/consent/AuthorizationShell.tsx', desc: 'The authorization screen’s column: the request details, then the decision buttons.' },
+  { code: 'OAuthClientDetails', path: 'src/components/plate/pages/consent/OAuthClientDetails.tsx', desc: 'The request details: the client, the account and where the browser goes next.' },
+  { code: 'OAuthDetailRow', path: 'src/components/plate/pages/consent/OAuthDetailRow.tsx', desc: 'One ruled row of the request details, with the key on the left and the value on the right.' },
+  { code: 'OAuthScopeList', path: 'src/components/plate/pages/consent/OAuthScopeList.tsx', desc: 'The read-only list of scopes for a grant that cannot be narrowed.' },
+  { code: 'OAuthScopeDescriptions', path: 'src/components/plate/pages/consent/OAuthScopeDescriptions.tsx', desc: 'The disclosure under the scopes that opens to one description per scope.' },
+  { code: 'DisclosureSummary', path: 'src/components/plate/pages/consent/DisclosureSummary.tsx', desc: 'The summary line of an inline disclosure, with a plus that turns into a minus.' },
+  { code: 'InvalidConsentState', path: 'src/components/plate/pages/consent/InvalidConsentState.tsx', desc: 'The consent page for a request that cannot be shown.' },
+  { code: 'DeviceApproval', path: 'src/components/plate/pages/device/DeviceApproval.tsx', desc: 'The approve and deny screen for a device code, with its result states.' },
+  { code: 'DeviceCodeForm', path: 'src/components/plate/pages/device/DeviceCodeForm.tsx', desc: 'The field where a person types the code a device shows.' },
+  { code: 'BlockedState', path: 'src/components/plate/pages/device/BlockedState.tsx', desc: 'The device page when the session’s network is not allowed.' },
+  { code: 'StepCounter', path: 'src/components/plate/pages/onboarding/StepCounter.tsx', desc: 'The onboarding counter and the progress rule under the mark row.' },
+  { code: 'StepBack', path: 'src/components/plate/pages/onboarding/StepBack.tsx', desc: 'The text control that returns to the previous onboarding step.' },
+  { code: 'SurveyStep', path: 'src/components/plate/pages/onboarding/SurveyStep.tsx', desc: 'Onboarding step 1: the website, the company size, the source and the frameworks, each row opening as the last is answered.' },
+  { code: 'CreateOrgStep', path: 'src/components/plate/pages/onboarding/CreateOrgStep.tsx', desc: 'Onboarding step 2: the organization and its first project.' },
+  { code: 'PaymentStep', path: 'src/components/plate/pages/onboarding/PaymentStep.tsx', desc: 'Onboarding step 3: the card form and the signup credits.' },
+  { code: 'BillingFormPreview', path: 'src/components/plate/pages/onboarding/BillingFormPreview.tsx', desc: 'A static copy of the dashboard’s card form, built from the plate’s own fields.' },
+  { code: 'CreditsCard', path: 'src/components/plate/pages/onboarding/CreditsCard.tsx', desc: 'The signup credits as a dark card with dithered rings and a tilt that follows the pointer.' },
+  { code: 'ConnectGithubStep', path: 'src/components/plate/pages/onboarding/ConnectGithubStep.tsx', desc: 'Onboarding step 4: connect GitHub or skip to the dashboard.' },
   { code: 'DiagramFrame', path: 'src/components/shared/diagrams/DiagramFrame.tsx', desc: 'The drafting frame every product diagram is drawn inside.' },
   { code: 'CodeWrapDiagram', path: 'src/components/shared/diagrams/CodeWrapDiagram.tsx', desc: 'The hero source wrapped by the libraries.' },
   { code: 'ConfigSlidersDiagram', path: 'src/components/shared/diagrams/ConfigSlidersDiagram.tsx', desc: 'The gt.config.json file that stays the same across every runtime.' },
@@ -156,6 +189,9 @@ const UNDOCUMENTED: readonly { code: string; path: string; desc: string }[] = [
   { code: 'SignalPathDiagram', path: 'src/components/shared/diagrams/SignalPathDiagram.tsx', desc: 'The Locadex path from a push to an opened pull request.' },
   { code: 'TranslationFlowDiagram', path: 'src/components/shared/diagrams/TranslationFlowDiagram.tsx', desc: 'The flow of a string from source to translated output.' },
   { code: 'StorySection', path: 'src/components/shared/StorySection.tsx', desc: 'The pinned scroll story where a page is translated in place and Locadex opens the pull request.' },
+  { code: 'StoryDemoSite', path: 'src/components/shared/story/StoryDemoSite.tsx', desc: 'The small marketing page the scroll story translates in place.' },
+  { code: 'StoryCodePanel', path: 'src/components/shared/story/StoryCodePanel.tsx', desc: 'The code behind a zoomed component, as a wipe across it or a panel beside it.' },
+  { code: 'StoryCodeScene', path: 'src/components/shared/story/StoryCodeScene.tsx', desc: 'The editor the story’s window turns into when Locadex takes over.' },
   { code: 'FieldEffectsMenu', path: 'src/components/shared/FieldEffectsMenu.tsx', desc: 'The chips that switch a field’s cursor effects.' },
   { code: 'HeroFieldSwitcher', path: 'src/components/shared/HeroFieldSwitcher.tsx', desc: 'Switches a hero between its fields.' },
   { code: 'TcMobileNav', path: 'src/components/shared/TcMobileNav.tsx', desc: 'The phone menu of the toolchain directions.' },
@@ -165,6 +201,7 @@ const UNDOCUMENTED: readonly { code: string; path: string; desc: string }[] = [
   { code: 'TryEvidenceModal', path: 'src/components/try/TryEvidenceModal.tsx', desc: 'The dialog with the evidence behind one report card finding.' },
   { code: 'TryHelpTip', path: 'src/components/try/TryHelpTip.tsx', desc: 'The help tip beside a report card score.' },
   { code: 'CategoryMark', path: 'src/components/try/CategoryMarks.tsx', desc: 'The glyph of each report card category.' },
+  { code: 'TryPage', path: 'src/components/try/TryPage.tsx', desc: 'The report card page: the address field, the figure while the check runs, then the card.' },
 ];
 
 /** The group folders in the order the section's meta.json lists them. */
@@ -245,6 +282,11 @@ function webpSize(file: string): { w: number; h: number } | null {
   }
 }
 
+/** `7` becomes `007`, so every number in a set of more than 99 has the same width. */
+function pad3(n: number): string {
+  return String(n).padStart(3, '0');
+}
+
 /** The light and dark previews of an entry, when the capture exists. */
 function shotOf(id: string): LibraryShot | undefined {
   const light = join(SHOTS, `${id}.webp`);
@@ -292,7 +334,7 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
         n += 1;
         entries.push({
           id,
-          n: pad2(n),
+          n: pad3(n),
           name: known?.name ?? nameOf(section.heading),
           code: known?.code ?? section.plate,
           path: known?.path ?? plateFile(section.plate),
@@ -308,7 +350,7 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
   const undocumented = UNDOCUMENTED.filter((item) => !covered.includes(item.path.replace(/\.tsx?$/, ''))).map(
     (item): LibraryEntry => {
       n += 1;
-      return { id: `src-${item.code.toLowerCase()}`, n: pad2(n), name: item.code, code: item.code, path: item.path, desc: item.desc };
+      return { id: `src-${item.code.toLowerCase()}`, n: pad3(n), name: item.code, code: item.code, path: item.path, desc: item.desc };
     }
   );
   if (undocumented.length > 0) blocks.push({ id: 'undocumented', label: 'Not in the docs', entries: undocumented });
