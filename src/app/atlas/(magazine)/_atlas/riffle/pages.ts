@@ -214,7 +214,10 @@ export function issuePages(
     mottle: true,
   };
   const front = spread ? [inside, sheet] : [sheet];
-  const name = escapeHtml(magazineName(story.slug, story.title));
+  // the short English name only on an English page; another locale's name is its translated title's, as on the rack
+  const name = escapeHtml(
+    magazineName(story.slug, story.title, words.locale === 'en')
+  );
   const month = escapeHtml(issueMonth(story.date, words.locale));
   // the opening spread: the story's own picture across the gutter, the headline under it on the left page and the
   // deck, the issue and the byline on the right
