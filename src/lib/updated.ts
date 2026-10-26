@@ -10,12 +10,12 @@
 import type { PageUpdated } from './page-updated';
 
 export const UPDATED: Readonly<Record<string, PageUpdated>> = {
-  '/': { day: '2026-10-26', at: '2026-10-26T09:08:06-07:00', commit: '4cfada4', src: '3d532131' },
+  '/': { day: '2026-10-26', at: '2026-10-26T09:08:16-07:00', commit: '744d0b7', src: '3d532131' },
   '/brand': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: '6bfd798', src: 'd989157d' },
   '/deck': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: 'def6b4c', src: '6b517bc6' },
   '/present': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: '6bfd798', src: '1849c182' },
   '/compare': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: '690f0b3', src: '1489450f' },
-  '/atlas': { day: '2026-10-25', at: '2026-10-25T11:57:35-07:00', commit: '9f6738a', src: '7d295619' },
+  '/atlas': { day: '2026-10-26', at: '2026-10-26T09:20:18-07:00', commit: '25378f8', src: '7d295619' },
   '/atlas/notes': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: 'f97ce05', src: '5479c97a' },
   '/docs/get-started': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: '690f0b3', src: '1a2d9fc4' },
   '/docs/handbook/architecture': { day: '2026-10-25', at: '2026-10-25T14:50:46-07:00', commit: 'f74dc16', src: '0103d128' },
@@ -73,7 +73,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/docs/components/heads': { day: '2026-10-26', at: '2026-10-26T08:48:55-07:00', commit: 'c52e5ab', src: 'b1c04b41' },
   '/docs/components/marks': { day: '2026-10-25', at: '2026-10-25T14:50:46-07:00', commit: 'ea66f8f', src: '43d769cf' },
   '/docs/components/grids-and-bentos': { day: '2026-10-25', at: '2026-10-25T14:50:46-07:00', commit: 'aa380eb', src: 'e2296b00' },
-  '/docs/components/rails-and-bands': { day: '2026-10-26', at: '2026-10-26T09:08:06-07:00', commit: '4cfada4', src: 'c72e3d80' },
+  '/docs/components/rails-and-bands': { day: '2026-10-26', at: '2026-10-26T09:08:16-07:00', commit: '744d0b7', src: 'c72e3d80' },
   '/docs/components/shells': { day: '2026-10-26', at: '2026-10-26T08:48:55-07:00', commit: 'c52e5ab', src: 'ce99a1bc' },
   '/docs/components/page-gallery': { day: '2026-10-25', at: '2026-10-25T14:51:10-07:00', commit: '83e2329', src: '0cea942a' },
   '/docs/components/page-templates': { day: '2026-10-26', at: '2026-10-26T08:48:55-07:00', commit: 'c52e5ab', src: '4dfc6e50' },

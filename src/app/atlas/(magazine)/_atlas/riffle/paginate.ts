@@ -58,7 +58,7 @@ type Fig = Extract<Part, { kind: 'fig' }>;
 function figure(piece: Fig, big: boolean, cls = ''): string {
   const src = escapeHtml(big ? piece.wide : piece.src);
   const credit = piece.credit ? `<span class="cr">${piece.credit}</span>` : '';
-  return `<figure${cls ? ` class="${cls}"` : ''}><img src="${src}" alt="${piece.alt}" style="aspect-ratio:${piece.ratio ?? '4 / 3'}" loading="lazy" decoding="async"><figcaption><span>${piece.caption}</span>${credit}</figcaption></figure>`;
+  return `<figure${cls ? ` class="${cls}"` : ''}><img src="${src}" alt="${piece.alt}" style="aspect-ratio:${piece.ratio ?? '4 / 3'}" decoding="async"><figcaption><span>${piece.caption}</span>${credit}</figcaption></figure>`;
 }
 
 function markup(piece: Part): string {

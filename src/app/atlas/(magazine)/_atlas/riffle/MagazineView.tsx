@@ -279,6 +279,10 @@ export default function MagazineView({
         sheet.build();
       }
       turner.current = sheet;
+      // every picture the pages hold is fetched and decoded now, while the magazine is set ahead or its cover shows,
+      // so no page is drawn with a picture still arriving (pages out of reach sit in hidden leaves, where a lazy
+      // picture would not load until the reader turned to it)
+      for (const img of el.querySelectorAll('img')) void img.decode().catch(() => undefined);
       sync();
     };
     void make();
