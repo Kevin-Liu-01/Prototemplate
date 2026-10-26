@@ -65,6 +65,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 
 | Command | What it does | Runs |
 | --- | --- | --- |
+| `pnpm capture:atlas` | Captures the pictures /atlas/notes shows (src/app/atlas/notes/AtlasViewer.tsx) from the running site into public/shots/atlas/\<file>.webp, one entry of SHOTS per picture: its route, theme, viewport and the reader's actions before the shot. | `scripts/check/capture-atlas.mjs` |
 | `pnpm capture:components` | Captures the stage of every plate in the docs Components section: on each page (content/docs/components, its groups and pages in their meta.json order), the first plate stage under each h2 (.dmo-stage, or the blog globe figure's .bgf or .bgg), in both themes, into ... | `scripts/check/capture-components.mjs` |
 | `pnpm capture:pages` | Captures the first fold of every page the index panel and the sidebar preview (directive 8.6) against the running dev server, in both themes, into public/shots/pages/\<id>-light.jpg and \<id>-dark.jpg, where \<id> is the surface id in src/lib/surfaces.ts. | `scripts/check/capture-pages.mjs` |
 | `pnpm capture:plate-heights` | Measures the height of every live plate on /components across the viewport widths, into src/lib/plate-heights.json. | `scripts/check/capture-plate-heights.mjs` |

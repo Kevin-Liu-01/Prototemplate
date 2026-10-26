@@ -43,7 +43,7 @@ const PARTS: readonly Part[] = [
       'Atlas is one module, src/app/atlas/(magazine)/_atlas in Prototemplate, with its own type and colors, so gt-cloud’s Atlas app serves the same module at generaltranslation.com/atlas without the hub around it.',
     ],
     figures: [
-      { src: '/shots/atlas/rack.webp', alt: 'The Atlas front page in the dark theme: four magazines in a row over the layout guides, the nameplate at the top left, the globe and the city at the foot', caption: 'The front page in the dark theme. Each story is a magazine printed on its story’s stock; a click opens the story.' },
+      { src: '/shots/atlas/rack.webp', alt: 'The Atlas front page in the dark theme: four magazines in a row over the layout guides, the nameplate at the top left with the view and theme controls opposite, the globe at the bottom left and the city with its coordinates at the bottom right', caption: 'The front page in the dark theme. Each story is a magazine printed on its story’s stock; a click opens the story.' },
       { src: '/shots/atlas/rack-light.webp', alt: 'The Atlas front page in the light theme: four magazines in a row over the layout guides', caption: 'The same front page in the light theme.' },
       { src: '/shots/atlas/phone.webp', alt: 'The Atlas front page on a phone, 390px wide: Translating Euclid, with the edge of the next magazine at the right', caption: 'The front page at 390px wide: the first magazine, with the edge of the next at the right.', width: 390, height: 844 },
     ],
@@ -62,8 +62,12 @@ const PARTS: readonly Part[] = [
     figures: [
       { src: '/shots/atlas/corner.webp', alt: 'The Atlas front page with the bottom right corner of Designing docs for humans lifted to show the legend of the map sheet inside', caption: 'Designing docs for humans with its bottom right corner lifted under the pointer, showing the legend of the map sheet printed inside.' },
       { src: '/shots/atlas/magazine.webp', alt: 'Designing docs for humans opened on its first spread: the cover’s pale inside on the left, the map sheet of San Francisco on the right', caption: 'A click on the corner opens the magazine on that map sheet, faced by the cover’s pale inside.' },
-      { src: '/shots/atlas/feature.webp', alt: 'Translating Euclid in the magazine: the opening paragraph with its drop cap beside the globe', caption: 'Translating Euclid in the magazine: Taylor Fang’s book with its Katagami Serif drop cap, and the globe on the stage beside it.' },
-      { src: '/shots/atlas/shelf.webp', alt: 'The Atlas shelf: four books in a row, turned to show their spines', caption: 'The shelf, kept at /atlas/shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' },
+      { src: '/shots/atlas/spread.webp', alt: 'Designing docs for humans turned one leaf on: its picture across the gutter, the headline under it on the left page, and the deck, byline and date on the right page', caption: 'One leaf on, the opening spread: the story’s picture across the gutter over the headline and the deck.' },
+      { src: '/shots/atlas/pages.webp', alt: 'Pages 6 and 7 of Designing docs for humans: two columns of text under a running head, the drop cap D in blue, a picture and its caption in a band across the top of the right page, and a folio line at the foot of each page', caption: 'The article in two columns under a running head and over a folio line, opening on its drop cap; this picture runs in a band across the top of the page.' },
+      { src: '/shots/atlas/back.webp', alt: 'The back cover of Translating Euclid: the Atlas imprint at the foot, beside a ruled box with an inset map, the issue number, Taylor Fang, the date and Macau to Peking, 1582 to 1601', caption: 'The back cover of Translating Euclid: its legend holds an inset map of Ricci’s road beside the issue, the byline and the date.' },
+      { src: '/shots/atlas/feature.webp', alt: 'Translating Euclid in the magazine in the light theme: the opening paragraph under a drop cap N cut out of a vermilion seal, and on the stage the globe over the first eight definitions in English', caption: 'Translating Euclid in the magazine: the opening paragraph under its drop cap, the N cut out of a vermilion seal, and the first definitions with the globe on the stage beside it.' },
+      { src: '/shots/atlas/headline.webp', alt: 'Rewriting docs for humans and agents in the magazine: a red caret after humans and “and agents” in red italics in the headline, the proof mark over the first section head, a drop cap D in a red ring, and the cover’s proof lines on the stage', caption: 'Rewriting docs for humans and agents in the magazine: “and agents” set into its headline over a red caret, and the story’s proof mark over the first section head.' },
+      { src: '/shots/atlas/shelf.webp', alt: 'The Atlas shelf in the dark theme: four hardcovers in a row with Designing docs for humans turned to face the reader, the topic tags at the top right, and the globe and flags at the foot', caption: 'The shelf, kept at /atlas/shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' },
     ],
   },
   {
@@ -74,7 +78,13 @@ const PARTS: readonly Part[] = [
     body: [
       'A figure with several views has a slider in its foot, a pill whose labels show through the thumb as it passes. The stage opens on the story’s live cover.',
     ],
-    figures: [{ src: '/shots/atlas/docs.webp', alt: 'Designing docs for humans in the split reader', caption: 'Designing docs for humans: the text on the left, a figure on the stage.' }],
+    figures: [
+      {
+        src: '/shots/atlas/docs.webp',
+        alt: 'Designing docs for humans in the split reader: the rail of ticks at the left edge, the text with its figure lines, and on the stage the old and new Introduction pages side by side with a slider for two views under them',
+        caption: 'Designing docs for humans on the shelf: the text and its rail on the left, and Figure 5 on the stage with the slider for its two views in its foot.',
+      },
+    ],
   },
   {
     id: 'fumadocs',
@@ -84,7 +94,13 @@ const PARTS: readonly Part[] = [
     body: [
       'His table of contents replaces the rail. It is the one Fumadocs ships: a line down the headings, drawn as an SVG path and used as a mask, so the orange thumb shows only where the line runs and follows it into the nested headings. Every slider in the story is drawn the same way, as a stepped line under its labels.',
     ],
-    figures: [{ src: '/shots/atlas/fuma.webp', alt: 'Fuma Nama in the Fumadocs look', caption: 'Fuma Nama: the masked table of contents on the left, and a live Fumadocs table of contents on the stage.' }],
+    figures: [
+      {
+        src: '/shots/atlas/fuma.webp',
+        alt: 'Fuma Nama on the shelf in the Fumadocs look: the masked table of contents on the left with its orange thumb, the text in the middle, and a live Fumadocs table of contents on the stage with its Live and Picture slider',
+        caption: 'Fuma Nama: the masked table of contents on the left, and a live Fumadocs table of contents on the stage.',
+      },
+    ],
   },
   {
     id: 'printed-page',
@@ -96,8 +112,8 @@ const PARTS: readonly Part[] = [
       'It is still the shared reader, with the same theme switch, monogram home and crossfade from the shelf as the other stories. The first figure shows the first eight definitions of Book I in five versions, English, Greek, Arabic, Latin and Chinese: the globe turns to each city in turn every six seconds until the reader picks one.',
     ],
     figures: [
-      { src: '/shots/atlas/book.webp', alt: 'Translating Euclid set as a printed book', caption: 'Translating Euclid: the text on paper on the left, a picture and its caption on the stage.' },
-      { src: '/shots/atlas/figure.webp', alt: 'The first eight definitions of Book I in five versions in Translating Euclid', caption: 'The first eight definitions on the stage, the globe turned to the version shown.' },
+      { src: '/shots/atlas/book.webp', alt: 'Translating Euclid on the shelf in the light theme: its title page on brown paper on the left, and the 1607 page of the Jihe Yuanben on the stage', caption: 'Translating Euclid opens on its title page, with the 1607 page on the stage beside it.' },
+      { src: '/shots/atlas/figure.webp', alt: 'The first eight definitions of Book I in Translating Euclid: the globe turned to Cambridge with its coordinates, a switch of the five versions, and the definitions in English', caption: 'The first eight definitions on the stage in English, the globe turned to Cambridge, where Heath’s version was printed in 1908.' },
     ],
   },
   {
@@ -111,7 +127,15 @@ const PARTS: readonly Part[] = [
       'Rewriting docs for humans and agents is a graphite proof sheet, its edits marked in red.',
       'Fuma Nama is orange, with Luna, the Fumadocs moon, drawn as a crescent, an orbit and his table of contents line.',
     ],
-    figures: [],
+    figures: [
+      {
+        src: '/shots/atlas/covers.webp',
+        alt: 'The four covers on the shelf: Translating Euclid in vellum with the 1607 page, Designing docs for humans in cobalt with the exploded docs page, Rewriting docs for humans and agents in graphite with red edits, and Fuma Nama in orange with the crescent and its orbit',
+        caption: 'The four covers on the shelf, each title at the foot and its authors on the spine.',
+        width: 1440,
+        height: 480,
+      },
+    ],
   },
   {
     id: 'directions',
@@ -128,7 +152,7 @@ const PARTS: readonly Part[] = [
       { label: 'Route', href: '/atlas/directions/route', text: 'Wayfinding signage for Matteo Ricci’s road from Macau to Peking, with a sign that changes at each stop.' },
       { label: 'Measure', href: '/atlas/directions/measure', text: 'A drafting sheet: Book I, Proposition 47 in heavy black, dimensioned 30, 40 and 50, with a title block.' },
     ],
-    figures: [{ src: '/shots/atlas/directions.webp', alt: 'The seven cover directions, then Riffle opened on its spread', caption: 'The seven directions in order, then Riffle opened on its spread.', width: 1436, height: 1812 }],
+    figures: [{ src: '/shots/atlas/directions.webp', alt: 'The seven cover directions, then Riffle opened on its spread', caption: 'The seven directions in order, then Riffle opened on its spread.', width: 1436, height: 1810 }],
   },
   {
     id: 'languages',
@@ -138,7 +162,18 @@ const PARTS: readonly Part[] = [
     body: [
       'The coordinates in the corner change with the city, digit by digit like a split-flap board. The globe beside the flags opens into the locator: the globe with its coordinate lines, a leader from the city to its locale, its name, and its latitude and longitude on a line each.',
     ],
-    figures: [{ src: '/shots/atlas/locator.webp', alt: 'The locator open on San Francisco', caption: 'The locator, open on San Francisco, with the nine languages beside it.' }],
+    figures: [
+      {
+        src: '/shots/atlas/locator.webp',
+        alt: 'The locator open over the Atlas front page in the light theme: the globe with its coordinate lines, a leader from San Francisco to en-US, the city’s name and coordinates, and the nine languages in a list',
+        caption: 'The locator over the front page, open on San Francisco, with the nine languages beside it.',
+      },
+      {
+        src: '/shots/atlas/ring.webp',
+        alt: 'The Atlas front page with the languages open round the globe’s dial, JA at its right, the globe turned to Japan, the three essay titles and the dates in Japanese, and Fuma Nama under his own name',
+        caption: 'The languages round the globe’s dial on the front page, with Japanese picked: the ring turns JA to the right, and each title takes its Japanese form.',
+      },
+    ],
   },
 ];
 
