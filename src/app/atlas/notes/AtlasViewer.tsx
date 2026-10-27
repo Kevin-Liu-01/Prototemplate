@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import type { RefObject } from 'react';
 import { useRef } from 'react';
 
@@ -17,6 +18,8 @@ import { pad2 } from '@/lib/shell-data';
 import './atlas.css';
 
 const TITLE = PAGE_NAMES.atlas.name;
+/** A figure's width on a phone, the column less its insets; the image optimizer picks the file nearest that width times the screen's pixel ratio. */
+const COLUMN_SIZES = '(max-width: 900px) calc(100vw - 32px)';
 const MODES: readonly ShellMode[] = ['book'];
 
 const LEAD =
@@ -24,7 +27,7 @@ const LEAD =
 const NOTE =
   'These notes give the reasons for a magazine and show the magazine as it stands. Then come the shelf it grew from, kept to explore, and the shelf’s three ways of setting a story: the docs reader, Fumadocs’ own interface and a printed book. The covers, Taylor Fang’s seven directions for the cover and the languages follow.';
 
-/** A capture; 1440 by 900 unless it says otherwise. */
+/** A capture, shown at most width by height CSS pixels (960 by 600 unless it says otherwise) from a file twice as large (pnpm capture:atlas). */
 type Figure = { src: string; alt: string; caption: string; width?: number; height?: number };
 type Link = { label: string; href: string; text: string };
 type Part = { id: string; title: string; note: string; lead: string; body: readonly string[]; links?: readonly Link[]; figures: readonly Figure[] };
@@ -64,7 +67,13 @@ const PARTS: readonly Part[] = [
       { src: '/shots/atlas/magazine.webp', alt: 'Designing docs for humans opened on its first spread: the cover’s pale inside on the left, the map sheet of San Francisco on the right', caption: 'A click on the corner opens the magazine on that map sheet, faced by the cover’s pale inside.' },
       { src: '/shots/atlas/spread.webp', alt: 'Designing docs for humans turned one leaf on: its picture across the gutter, the headline under it on the left page, and the deck, byline and date on the right page', caption: 'One leaf on, the opening spread: the story’s picture across the gutter over the headline and the deck.' },
       { src: '/shots/atlas/pages.webp', alt: 'Pages 6 and 7 of Designing docs for humans: two columns of text under a running head, the drop cap D in blue, a picture and its caption in a band across the top of the right page, and a folio line at the foot of each page', caption: 'The article in two columns under a running head and over a folio line, opening on its drop cap; this picture runs in a band across the top of the page.' },
-      { src: '/shots/atlas/back.webp', alt: 'The back cover of Translating Euclid: the Atlas imprint at the foot, beside a ruled box with an inset map, the issue number, Taylor Fang, the date and Macau to Peking, 1582 to 1601', caption: 'The back cover of Translating Euclid: its legend holds an inset map of Ricci’s road beside the issue, the byline and the date.' },
+      {
+        src: '/shots/atlas/back.webp',
+        alt: 'The legend on the back cover of Translating Euclid: a ruled box on the cover’s paper holding a dotted inset map with Ricci’s road in red, beside Atlas No. 01, Taylor Fang, 26 October 2026, 10 minutes, and Macau to Peking, 1582 to 1601',
+        caption: 'The legend on Translating Euclid’s back cover: an inset map of Ricci’s road beside the issue, the byline and the date.',
+        width: 588,
+        height: 254,
+      },
       { src: '/shots/atlas/feature.webp', alt: 'Translating Euclid in the magazine in the light theme: the opening paragraph under a drop cap N cut out of a vermilion seal, and on the stage the globe over the first eight definitions in English', caption: 'Translating Euclid in the magazine: the opening paragraph under its drop cap, the N cut out of a vermilion seal, and the first definitions with the globe on the stage beside it.' },
       { src: '/shots/atlas/headline.webp', alt: 'Rewriting docs for humans and agents in the magazine: a red caret after humans and “and agents” in red italics in the headline, the proof mark over the first section head, a drop cap D in a red ring, and the cover’s proof lines on the stage', caption: 'Rewriting docs for humans and agents in the magazine: “and agents” set into its headline over a red caret, and the story’s proof mark over the first section head.' },
       { src: '/shots/atlas/shelf.webp', alt: 'The Atlas shelf in the dark theme: four hardcovers in a row with Designing docs for humans turned to face the reader, the topic tags at the top right, and the globe and flags at the foot', caption: 'The shelf, kept at /atlas/shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' },
@@ -132,8 +141,8 @@ const PARTS: readonly Part[] = [
         src: '/shots/atlas/covers.webp',
         alt: 'The four covers on the shelf: Translating Euclid in vellum with the 1607 page, Designing docs for humans in cobalt with the exploded docs page, Rewriting docs for humans and agents in graphite with red edits, and Fuma Nama in orange with the crescent and its orbit',
         caption: 'The four covers on the shelf, each title at the foot and its authors on the spine.',
-        width: 1440,
-        height: 480,
+        width: 960,
+        height: 320,
       },
     ],
   },
@@ -152,7 +161,7 @@ const PARTS: readonly Part[] = [
       { label: 'Route', href: '/atlas/directions/route', text: 'Wayfinding signage for Matteo Ricci’s road from Macau to Peking, with a sign that changes at each stop.' },
       { label: 'Measure', href: '/atlas/directions/measure', text: 'A drafting sheet: Book I, Proposition 47 in heavy black, dimensioned 30, 40 and 50, with a title block.' },
     ],
-    figures: [{ src: '/shots/atlas/directions.webp', alt: 'The seven cover directions, then Riffle opened on its spread', caption: 'The seven directions in order, then Riffle opened on its spread.', width: 1436, height: 1810 }],
+    figures: [{ src: '/shots/atlas/directions.webp', alt: 'The seven cover directions, then Riffle opened on its spread', caption: 'The seven directions in order, then Riffle opened on its spread.', width: 960, height: 1210 }],
   },
   {
     id: 'languages',
@@ -165,13 +174,13 @@ const PARTS: readonly Part[] = [
     figures: [
       {
         src: '/shots/atlas/locator.webp',
-        alt: 'The locator open over the Atlas front page in the light theme: the globe with its coordinate lines, a leader from San Francisco to en-US, the city’s name and coordinates, and the nine languages in a list',
-        caption: 'The locator over the front page, open on San Francisco, with the nine languages beside it.',
+        alt: 'The locator open over the Atlas shelf in the light theme: the globe with its coordinate lines, a leader from San Francisco to en-US, the city’s name and coordinates, and the nine languages in a list',
+        caption: 'The locator over the shelf, open on San Francisco, with the nine languages beside it.',
       },
       {
         src: '/shots/atlas/ring.webp',
-        alt: 'The Atlas front page with the languages open round the globe’s dial, JA at its right, the globe turned to Japan, the three essay titles and the dates in Japanese, and Fuma Nama under his own name',
-        caption: 'The languages round the globe’s dial on the front page, with Japanese picked: the ring turns JA to the right, and each title takes its Japanese form.',
+        alt: 'The Atlas front page with the languages open round the globe’s dial, JA at its right, the globe turned to Japan, the first three titles and the dates in Japanese, and Fuma Nama under his own name',
+        caption: 'The languages round the globe’s dial on the front page, with Japanese picked: the ring turns JA to the right, the first three titles and the dates take their Japanese forms, and Fuma Nama keeps his name.',
       },
     ],
   },
@@ -261,11 +270,10 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
                 ))}
               </ul>
             ) : null}
-            {part.figures.map((figure) => (
-              <figure key={figure.src} className='an-fig'>
-                {/* eslint-disable-next-line @next/next/no-img-element -- a capture of the press page, at its own size */}
-                <img src={figure.src} alt={figure.alt} width={figure.width ?? 1440} height={figure.height ?? 900} loading='lazy' decoding='async' />
-                <figcaption>{figure.caption}</figcaption>
+            {part.figures.map(({ src, alt, caption, width = 960, height = 600 }) => (
+              <figure key={src} className='an-fig'>
+                <Image src={src} alt={alt} width={width} height={height} sizes={`${COLUMN_SIZES}, ${width}px`} />
+                <figcaption>{caption}</figcaption>
               </figure>
             ))}
           </div>

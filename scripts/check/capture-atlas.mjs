@@ -3,16 +3,20 @@
 // SHOTS per picture: its route, theme, viewport and the reader's actions
 // before the shot.
 //
-// Each shot is taken at a device scale of 2 in the theme it names, seeded
-// through the site's pre-boot door (seedTheme). Before and after the
-// actions, the shot waits for the document's fonts, every picture in view
-// to load and decode, the front page's own readiness
-// (.gtp-landing[data-ready]), every cover in view to finish drawing on
-// WebGPU, every figure in view to load (img[data-loaded]) and an open
-// magazine to lay out its pages; after a settle it waits once more, for a
-// figure the actions brought in. The dev server's indicator is hidden.
-// Headless Chrome draws no pointer, so a hover leaves no cursor in the
-// picture.
+// The notes show a figure at most 960 CSS pixels wide, so a file is at most
+// 1920 pixels wide, twice that. Each shot is taken at a device scale of 2 (a
+// shot's `scale` overrides it) in the theme it names, seeded through the
+// site's pre-boot door (seedTheme), and cwebp brings a wider capture down to
+// 1920; a narrower one keeps its width (the phone at 780, shown at 390). Before and after the actions, the shot waits for the
+// document's fonts, every picture in view to load and decode (a picture
+// still loading has no size, so a picture counts as in view by its place,
+// not its box), the front page's own readiness (.gtp-landing[data-ready]),
+// every cover in view to finish drawing on WebGPU, every figure in view to
+// load (img[data-loaded]) and an open magazine to lay out its pages; after a
+// settle it waits once more, for a figure the actions brought in. A picture
+// in view that failed to load fails the shot. The dev server's indicator is
+// hidden. Headless Chrome draws no pointer, so a hover leaves no cursor in
+// the picture.
 //
 // Actions, run in order:
 //   ['hover', selector, x?, y?]  moves the pointer to the element (x and y as fractions of its box, 0.5 by default)
@@ -22,12 +26,13 @@
 //   ['away']                     moves the pointer to the left edge, off every control
 //   ['settle', ms]               waits
 //
-// A shot with `clip` keeps that box of the viewport ([x, y, width, height]
-// in CSS pixels). A shot with `sheet` captures each of those routes at
-// 1440x900 and sets them in two columns on the dark ground, as a contact
-// sheet. Each PNG is encoded as WebP through cwebp (brew install webp).
-// A shot that fails is reported and skipped; the run exits 1 at the end
-// when any failed.
+// A shot with `clip` keeps part of the viewport: [x, y, width, height] in
+// CSS pixels, or [selector, x, y, width, height] as fractions of the first
+// visible match's box, grown by 24 CSS pixels on every side. A shot with
+// `sheet` captures each of those routes at 1440x900 and sets them in two
+// columns on the dark ground, as a contact sheet. Each PNG is encoded as
+// WebP through cwebp (brew install webp). A shot that fails is reported and
+// skipped; the run exits 1 at the end when any failed.
 //
 // Usage: pnpm capture:atlas [--base <url>, default PT_BASE] [--only <file>[,<file>]]
 // Needs the site running (pnpm dev, or pnpm build and pnpm start) and the
@@ -49,10 +54,14 @@ const BASE = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
 const ONLY = option(argv, '--only')?.split(',').filter(Boolean);
 const OUT = join(ROOT, 'public/shots/atlas');
 const SCALE = 2;
+/** The notes column's widest figure, in CSS pixels; a file is twice as wide. */
+const SHOWN = 960;
 const QUALITY = 74;
+const PAD = 24;
 const SETTLE_MS = 2500;
 const TURN_MS = 1200;
 const WAIT_MS = 30_000;
+const SHOT_MS = 120_000;
 
 const corner = (slug) => `[data-testid="atlas-magazine-${slug}"]`;
 const NEXT = '[data-testid="atlas-magazine-next"]';
@@ -69,7 +78,8 @@ const SHOTS = [
   { file: 'magazine', route: '/atlas', theme: 'dark', actions: openMagazine(DOCS) },
   { file: 'spread', route: '/atlas', theme: 'dark', actions: [...openMagazine(DOCS), ['click', NEXT], ['settle', TURN_MS], ['away']] },
   { file: 'pages', route: '/atlas', theme: 'dark', actions: [...openMagazine(DOCS), ['click', NEXT], ['settle', TURN_MS], ['click', NEXT], ['settle', TURN_MS], ['away']] },
-  { file: 'back', route: '/atlas', theme: 'dark', actions: [...openMagazine('translating-euclid'), ['last', NEXT], ['away']] },
+  // the back cover's legend alone, at twice the scale it is shown at, so its type reads in the notes
+  { file: 'back', route: '/atlas', theme: 'dark', actions: [...openMagazine('translating-euclid'), ['last', NEXT], ['away']], clip: ['.gtr-legend', 0, 0, 1, 1], scale: 4 },
   { file: 'feature', route: '/atlas/translating-euclid', theme: 'light', actions: [['scroll', '.gtm-lead', 0, 0.2]] },
   { file: 'headline', route: '/atlas/rewriting-our-docs', theme: 'dark' },
   { file: 'shelf', route: '/atlas/shelf', theme: 'dark', actions: [['hover', `[data-testid="atlas-story-${DOCS}"]`]] },
@@ -85,7 +95,7 @@ const SHOTS = [
       { route: '/atlas/directions/riffle', actions: [['click', 'button[aria-label="Open"] >> visible=true'], ['away']] },
     ]),
   },
-  { file: 'locator', route: '/atlas', theme: 'light', actions: [['click', GLOBE]] },
+  { file: 'locator', route: '/atlas/shelf', theme: 'light', actions: [['click', GLOBE]] },
   {
     file: 'ring',
     route: '/atlas',
@@ -128,11 +138,12 @@ async function act(page, [name, selector, a, b]) {
   } else throw new Error(`unknown action ${name}`);
 }
 
-/** Runs in the page: resolves once the fonts, every picture in view, the front page, its covers and an open magazine are ready. */
+/** Runs in the page: resolves once the fonts, every picture in view, the front page, its covers and an open magazine are ready, with the pictures in view that failed. */
 function ready() {
+  // by place, not box: a picture still loading with no width or height attribute has no size yet
   const inView = (el) => {
     const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0 && r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth && getComputedStyle(el).visibility !== 'hidden';
+    return el.checkVisibility({ visibilityProperty: true }) && r.bottom >= 0 && r.right >= 0 && r.top <= innerHeight && r.left <= innerWidth;
   };
   const until = (test) =>
     new Promise((done) => {
@@ -156,7 +167,23 @@ function ready() {
     until(() => [...document.querySelectorAll('.gtp-cover')].filter(inView).every((el) => el.dataset.mode === 'cpu' || el.dataset.drawn === 'true')),
     until(() => [...document.querySelectorAll('.gtp-riffle[data-shown="true"] .gtp-riffle-mag')].every((el) => el.childElementCount > 0)),
     until(() => [...document.querySelectorAll('img[data-loaded]')].filter(inView).every((img) => img.dataset.loaded === 'true')),
-  ]).then(pictures);
+  ])
+    .then(pictures)
+    .then(() => [...document.images].filter((img) => inView(img) && img.complete && img.naturalWidth === 0).map((img) => img.currentSrc || img.src));
+}
+
+/** A clip as a box in CSS pixels: as given, or that part of the selector's first visible match, padded. */
+async function region(page, clip) {
+  if (typeof clip[0] !== 'string') {
+    const [x, y, width, height] = clip;
+    return { x, y, width, height };
+  }
+  const [selector, fx, fy, fw, fh] = clip;
+  const box = await page.locator(`${selector} >> visible=true`).first().boundingBox();
+  if (!box) throw new Error(`${selector} has no box`);
+  const x = Math.max(0, Math.round(box.x + box.width * fx - PAD));
+  const y = Math.max(0, Math.round(box.y + box.height * fy - PAD));
+  return { x, y, width: Math.round(box.width * fw + PAD * 2), height: Math.round(box.height * fh + PAD * 2) };
 }
 
 /** One route with its actions, as a PNG of the viewport (or its clip). */
@@ -174,7 +201,8 @@ async function capture(context, { route, actions = [], clip }) {
         timer = setTimeout(() => fail(new Error(`${route}: not ready in ${WAIT_MS}ms`)), WAIT_MS);
       });
       try {
-        await Promise.race([page.evaluate(ready), late]);
+        const broken = await Promise.race([page.evaluate(ready), late]);
+        if (broken.length > 0) throw new Error(`${route}: ${broken[0]} did not load`);
       } finally {
         clearTimeout(timer);
       }
@@ -187,8 +215,8 @@ async function capture(context, { route, actions = [], clip }) {
     await page.waitForTimeout(SETTLE_MS);
     await settled();
     if (errors.length > 0) throw new Error(`${route}: ${errors[0]}`);
-    const [x, y, width, height] = clip ?? [];
-    return await page.screenshot({ type: 'png', ...(clip ? { clip: { x, y, width, height } } : {}) });
+    // a page drawing covers on WebGPU can take half a minute to hand over a frame while other browsers share the GPU
+    return await page.screenshot({ type: 'png', timeout: SHOT_MS, ...(clip ? { clip: await region(page, clip) } : {}) });
   } finally {
     await page.close();
   }
@@ -208,7 +236,7 @@ async function contactSheet(browser, pngs) {
   await page.evaluate(() => Promise.all([...document.images].map((img) => img.decode())));
   const sheet = await page.screenshot({ type: 'png' });
   await page.close();
-  return { sheet, size: `${width}x${height}` };
+  return sheet;
 }
 
 const list = ONLY ? SHOTS.filter((s) => ONLY.includes(s.file)) : SHOTS;
@@ -223,23 +251,27 @@ const failed = [];
 
 for (const shot of list) {
   const [width, height] = shot.viewport ?? [1440, 900];
-  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: SCALE, colorScheme: shot.theme });
+  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: shot.scale ?? SCALE, colorScheme: shot.theme });
   await seedTheme(context, shot.theme);
   const target = join(OUT, `${shot.file}.webp`);
   try {
     let png;
-    let size = shot.clip ? `${shot.clip[2]}x${shot.clip[3]}` : `${width}x${height}`;
     if (shot.sheet) {
       const tiles = [];
       for (const cell of shot.sheet) tiles.push(await capture(context, cell));
-      ({ sheet: png, size } = await contactSheet(browser, tiles));
+      png = await contactSheet(browser, tiles);
     } else png = await capture(context, shot);
     const tmp = `${target}.png`;
     writeFileSync(tmp, png);
-    execFileSync('cwebp', ['-quiet', '-q', String(QUALITY), '-m', '6', '-sharp_yuv', tmp, '-o', target]);
+    // the PNG's width and height sit at bytes 16 and 20 of its header
+    const [w, h] = [png.readUInt32BE(16), png.readUInt32BE(20)];
+    const fileWidth = Math.min(w, SHOWN * 2);
+    const resize = w === fileWidth ? [] : ['-resize', String(fileWidth), '0'];
+    execFileSync('cwebp', ['-quiet', '-q', String(QUALITY), '-m', '6', '-sharp_yuv', ...resize, tmp, '-o', target]);
     rmSync(tmp);
     bytes += statSync(target).size;
-    console.log(`  ${shot.file.padEnd(12)} ${shot.theme.padEnd(5)} ${size} at ${SCALE}x  ${Math.round(statSync(target).size / 1024)}KB`);
+    const size = `${fileWidth}x${Math.round((h * fileWidth) / w)}`;
+    console.log(`  ${shot.file.padEnd(12)} ${shot.theme.padEnd(5)} ${size}  ${statSync(target).size} bytes`);
   } catch (error) {
     const reason = error instanceof Error ? error.message.split('\n')[0] : String(error);
     failed.push(`${shot.file}: ${reason}`);
@@ -250,7 +282,7 @@ for (const shot of list) {
 }
 
 await browser.close();
-console.log(`capture-atlas: ${list.length - failed.length} pictures, ${Math.round(bytes / 1024)}KB, in ${OUT.slice(ROOT.length + 1)}`);
+console.log(`capture-atlas: ${list.length - failed.length} pictures, ${bytes} bytes, in ${OUT.slice(ROOT.length + 1)}`);
 if (failed.length > 0) {
   console.error(`capture-atlas: ${failed.length} failed\n${failed.map((f) => `  ${f}`).join('\n')}`);
   process.exit(1);

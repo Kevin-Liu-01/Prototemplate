@@ -64,7 +64,7 @@
   gap: 8px;
 }
 
-/* Each capture at its own width (the img's width attribute) up to the column's: a 1440 capture fills the column, a phone stays 390px wide. */
+/* Each capture at its own width (the img's width attribute) up to the column's: a 960 capture fills the column, the phone stays 390px wide and the back cover's legend 588px. */
 .an-fig img {
   display: block;
   max-width: 100%;
