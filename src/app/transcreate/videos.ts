@@ -2,9 +2,11 @@
  * The videos the /transcreate pages show, in page order, and the web copies
  * under public/media/transcreate: the grid of all eight, side by side and as
  * columns, and each video side by side and stacked; then the four Databricks
- * videos, with their grid and each video in Japanese and stacked. Every copy
- * has a .jpg poster of the same name. Pure data, shared by the server pages,
- * the viewer and the sidebar's sections.
+ * videos, with their grid and each video in Japanese and stacked; then Ramp
+ * Procurement in English, Spanish and Japanese, with its grid and each
+ * translation alone and stacked. Every copy has a .jpg poster of the same
+ * name. Pure data, shared by the server pages, the viewer and the sidebar's
+ * sections.
  */
 
 export const MEDIA = '/media/transcreate';
@@ -78,24 +80,53 @@ export type DatabricksVideo = {
   name: string;
   /** the running time in whole seconds */
   seconds: number;
+  /** true while the video's transcreate run still fixes it: its copies show the newest checkpoint, not a final */
+  inProgress?: true;
 };
 
 /** The company the Databricks originals belong to. */
 export const DATABRICKS_OWNER = 'Databricks';
 
-/** The four Databricks videos in the grid's column order, each 1280 by 720 in Japanese and 1280 by 1440 stacked, with the original's sound. */
+/**
+ * The four Databricks videos in the grid's column order, each 1280 by 720 in Japanese and 1280 by 1440 stacked, with
+ * the original's sound. The Japanese comes from the transcreate runs' whole-video checkpoints of 2026-10-27: How Do
+ * You Genie g22, Agent Memory g16 (its final), Teach AI g13 (its final) and Databricks g25, the newest of a run still
+ * in progress.
+ */
 export const DATABRICKS: readonly DatabricksVideo[] = [
   { slug: 'databricks-how-do-you-genie', name: 'How Do You Genie', seconds: 80 },
   { slug: 'databricks-agent-memory', name: 'Agent Memory', seconds: 80 },
   { slug: 'databricks-teach-ai', name: 'Teach AI', seconds: 125 },
-  { slug: 'databricks-full', name: 'Databricks', seconds: 80 },
+  { slug: 'databricks-full', name: 'Databricks', seconds: 80, inProgress: true },
 ];
 
 /** The grid of the four Databricks videos as columns, English on top: 2560 by 720, 125 seconds, no sound. A shorter video holds its last frame. */
 export const DATABRICKS_GRID = { file: 'databricks-grid', width: 2560, height: 720, seconds: 125 } as const;
 
-/** The companies the originals belong to, each once, in page order. */
-export const OWNERS: readonly string[] = [...new Set([...VIDEOS.map((video) => video.owner), DATABRICKS_OWNER])];
+/** Ramp Procurement: one Ramp video with no sound, each version 1280 by 1280, 15 seconds at 60 fps. */
+export const RAMP = { slug: 'ramp-procurement', name: 'Ramp Procurement', owner: 'Ramp', seconds: 15, panel: 1280 } as const;
 
-/** Every video on the pages: the eight and the four Databricks videos. */
-export const VIDEO_COUNT = VIDEOS.length + DATABRICKS.length;
+/** The English original, the Spanish version and the Japanese version of Ramp Procurement as columns: 2556 by 852. */
+export const RAMP_GRID = { file: 'ramp-procurement-grid', width: 2556, height: 852 } as const;
+
+export type RampVersion = {
+  /** the file's suffix: `ramp-procurement-<key>`, and `-<key>-stacked` for a translation */
+  key: 'en' | 'es' | 'ja';
+  /** the language's name, the version's title and its view's label */
+  language: string;
+  /** true for a translation, which also plays under the English original */
+  translation: boolean;
+};
+
+/** Ramp Procurement's three versions in page order. Spanish is Spain's Spanish. */
+export const RAMP_VERSIONS: readonly RampVersion[] = [
+  { key: 'en', language: 'English', translation: false },
+  { key: 'es', language: 'Spanish', translation: true },
+  { key: 'ja', language: 'Japanese', translation: true },
+];
+
+/** The companies the originals belong to, each once, in page order. */
+export const OWNERS: readonly string[] = [...new Set([...VIDEOS.map((video) => video.owner), DATABRICKS_OWNER, RAMP.owner])];
+
+/** Every video on the pages: the eight, the four Databricks videos and Ramp Procurement. */
+export const VIDEO_COUNT = VIDEOS.length + DATABRICKS.length + 1;

@@ -99,19 +99,31 @@ kept here as proof of what the identity does off the page.
 | `transcreate/all-columns.mp4` | the same eight videos as columns, each with the English original on top and the Japanese version below, 4096x576, 30.1 s at 30 fps, H.264 with no sound and the moov atom at the front (8.5 MB). |
 | `transcreate/<slug>-side.mp4` | one Transcreate video with the English original on the left and the Japanese version on the right, each panel labelled and 1280x720 (1280x640 for Linear Releases), 29.2 to 30.0 s at the original's frame rate, H.264 and AAC with the original's sound and the moov atom at the front. The slugs are `notion`, `linear-releases`, `linear-agents`, `ramp-budgets`, `asana`, `notion-mail`, `stripe-sessions` and `miro-canvas`. |
 | `transcreate/<slug>-stacked.mp4` | the same video with the English original on top and the Japanese version below, 1280x1440 (1280x1280 for Linear Releases). |
-| `transcreate/databricks-grid.mp4` | the four Databricks videos as columns, each with the English original on top and the Japanese version below, 2560x720, 125.5 s at 30 fps, H.264 with no sound and the moov atom at the front. A shorter video holds its last frame. |
+| `transcreate/databricks-grid.mp4` | the four Databricks videos as columns, each with the English original on top and the Japanese version below, 2560x720, 125.4 s at 30 fps, H.264 with no sound and the moov atom at the front. A shorter video holds its last frame. |
 | `transcreate/databricks-<slug>-stacked.mp4` | one Databricks video with the English original on top and the Japanese version below, 1280x1440, 80 to 125 s at the original's frame rate, H.264 and AAC with the original's sound and the moov atom at the front. The slugs are `how-do-you-genie`, `agent-memory`, `teach-ai` and `full`. |
 | `transcreate/databricks-<slug>-ja.mp4` | the same video in Japanese alone, 1280x720. |
+| `transcreate/ramp-procurement-grid.mp4` | Ramp Procurement as three columns, the English original, the Spanish version and the Japanese version from left to right, 2556x852, 15.4 s at 60 fps (923 frames), H.264 with no sound and the moov atom at the front (2.3 MB). |
+| `transcreate/ramp-procurement-<lang>.mp4` | one version of Ramp Procurement alone, 1280x1280, 15.4 s at 60 fps, H.264 with no sound and the moov atom at the front. The versions are `en` (the original), `es` (Spanish, Spain) and `ja` (Japanese). |
+| `transcreate/ramp-procurement-<lang>-stacked.mp4` | the English original on top and the Spanish (`es`) or Japanese (`ja`) version below, 1280x2560. |
 | `transcreate/*.jpg` | each Transcreate video's poster frame, at the video's size. |
 
 The Transcreate videos play on `/transcreate`, which holds the grid of all
 eight, on `/transcreate/videos`, which holds each video side by side or
-stacked, and on `/transcreate/databricks`, which holds the four Databricks
-videos at once and each one stacked or in Japanese. Each original video
-belongs to its company: Notion, Linear, Ramp, Asana, Stripe, Miro or
+stacked, on `/transcreate/databricks`, which holds the four Databricks
+videos at once and each one stacked or in Japanese, and on
+`/transcreate/ramp`, which holds Ramp Procurement's three versions at once,
+the original alone and each translation stacked or alone. Each original
+video belongs to its company: Notion, Linear, Ramp, Asana, Stripe, Miro or
 Databricks. `/transcreate/credits` names each original, with its title and
 address where they are recorded. Each of the eight clips shows 29 to 30
-seconds of its original, and the Databricks videos run 80 to 125 seconds.
+seconds of its original, the Databricks videos run 80 to 125 seconds, and
+Ramp Procurement runs 15 seconds. Ramp Procurement's frames are the frames
+of the transcreate runs `kevin-asset-1` (Japanese) and `kevin-es-asset-1`
+(Spanish), paired with the original by frame index. Since 2026-10-27 the
+Databricks copies show the transcreate runs' whole-video checkpoints How Do
+You Genie g22, Agent Memory g16 (its final), Teach AI g13 (its final) and
+Databricks g25, the newest of a run still in progress, each paired with its
+original by frame index.
 
 The reel, the blog films and the globes are shown live in `/brand` under
 Made with the system. The blog films, the mark sting, the release board,

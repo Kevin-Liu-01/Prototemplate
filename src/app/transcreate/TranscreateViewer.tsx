@@ -19,8 +19,21 @@ import type { ShellMode } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 
 import type { TranscreateRoute } from './sections';
-import { CREDITS_ROW, DATABRICKS_ROW, GRID_ROW, ROUTE_PAGE, ROUTE_PATH, transcreateSections, videoRow } from './sections';
-import { DATABRICKS, DATABRICKS_GRID, DATABRICKS_OWNER, GRID, MEDIA, OWNERS, PANEL_WIDTH, VIDEO_COUNT, VIDEOS } from './videos';
+import { CREDITS_ROW, DATABRICKS_ROW, GRID_ROW, RAMP_ROW, ROUTE_PAGE, ROUTE_PATH, transcreateSections, videoRow } from './sections';
+import {
+  DATABRICKS,
+  DATABRICKS_GRID,
+  DATABRICKS_OWNER,
+  GRID,
+  MEDIA,
+  OWNERS,
+  PANEL_WIDTH,
+  RAMP,
+  RAMP_GRID,
+  RAMP_VERSIONS,
+  VIDEO_COUNT,
+  VIDEOS,
+} from './videos';
 
 import '../graphics/graphics.css';
 import './transcreate.css';
@@ -57,6 +70,7 @@ type Entry = {
 
 const RANGE = `Videos 01 to ${pad2(VIDEOS.length)}`;
 const DATABRICKS_RANGE = `Videos 01 to ${pad2(DATABRICKS.length)}`;
+const RAMP_RANGE = `Versions 01 to ${pad2(RAMP_VERSIONS.length)}`;
 
 const GRID_ENTRY: Entry = {
   id: GRID_ROW,
@@ -110,7 +124,7 @@ const DATABRICKS_ENTRIES: readonly Entry[] = DATABRICKS.map((video, i) => ({
   id: videoRow(video.slug),
   n: pad2(i + 1),
   title: video.name,
-  line: 'Databricks, English to Japanese',
+  line: video.inProgress ? 'Databricks, English to Japanese, in progress' : 'Databricks, English to Japanese',
   name: `the Databricks ${video.name} video`,
   views: [
     { key: 'stacked', label: 'Stacked', file: `${video.slug}-stacked`, width: PANEL_WIDTH, height: 1440, layout: 'English on top, Japanese below', narrow: true },
@@ -120,14 +134,63 @@ const DATABRICKS_ENTRIES: readonly Entry[] = DATABRICKS.map((video, i) => ({
   sound: true,
 }));
 
+const RAMP_GRID_ENTRY: Entry = {
+  id: RAMP_ROW,
+  n: '',
+  title: 'Ramp Procurement in English, Spanish and Japanese',
+  line: 'The columns hold the English original, the Spanish version and the Japanese version.',
+  name: 'the Ramp Procurement video in three languages',
+  views: [
+    {
+      key: 'columns',
+      label: 'Columns',
+      file: RAMP_GRID.file,
+      width: RAMP_GRID.width,
+      height: RAMP_GRID.height,
+      layout: 'English, Spanish and Japanese from left to right',
+    },
+  ],
+  seconds: RAMP.seconds,
+  sound: false,
+};
+
+/** The original alone, then each translation under the original or alone. */
+const RAMP_ENTRIES: readonly Entry[] = RAMP_VERSIONS.map((version, i) => {
+  const file = `${RAMP.slug}-${version.key}`;
+  const alone: View = { key: version.key, label: version.language, file, width: RAMP.panel, height: RAMP.panel, layout: version.language };
+  return {
+    id: videoRow(file),
+    n: pad2(i + 1),
+    title: version.language,
+    line: version.translation ? `Ramp Procurement, English to ${version.language}` : 'Ramp Procurement, the original',
+    name: `the Ramp Procurement video in ${version.language}`,
+    views: version.translation
+      ? [
+          {
+            key: 'stacked',
+            label: 'Stacked',
+            file: `${file}-stacked`,
+            width: RAMP.panel,
+            height: 2 * RAMP.panel,
+            layout: `English on top, ${version.language} below`,
+            narrow: true,
+          },
+          alone,
+        ]
+      : [alone],
+    seconds: RAMP.seconds,
+    sound: false,
+  };
+});
+
 /** What each page's head says: its lead and its three facts. */
 const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [BookFact, BookFact, BookFact] }>> = {
   overview: {
     lead: 'Transcreate replaces the on-screen text of a product video with its translation. The new text follows every cut, animation and effect of the original.',
     facts: [
       { icon: 'film', key: 'Videos', value: VIDEO_COUNT },
-      { icon: 'language', key: 'Languages', value: 'English to Japanese' },
-      { icon: 'duration', key: 'Length', value: '29 to 125 s' },
+      { icon: 'language', key: 'Languages', value: 'English to Japanese and Spanish' },
+      { icon: 'duration', key: 'Length', value: '15 to 125 s' },
     ],
   },
   videos: {
@@ -146,8 +209,16 @@ const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [B
       { icon: 'duration', key: 'Length', value: '80 to 125 s each' },
     ],
   },
+  ramp: {
+    lead: 'One Ramp video from English to Spanish and Japanese, with no sound. The first frame plays the three versions at once. The switch above a translation sets it under the English original, or alone.',
+    facts: [
+      { icon: 'film', key: 'Versions', value: RAMP_VERSIONS.length },
+      { icon: 'language', key: 'Languages', value: 'English to Spanish and Japanese' },
+      { icon: 'duration', key: 'Length', value: `${RAMP.seconds} s` },
+    ],
+  },
   credits: {
-    lead: 'Each original video belongs to its company. The eight clips show 29 to 30 seconds of their originals, and the four Databricks videos run 80 to 125 seconds.',
+    lead: 'Each original video belongs to its company. The eight clips show 29 to 30 seconds of their originals, the four Databricks videos run 80 to 125 seconds, and Ramp Procurement runs 15 seconds.',
     facts: [
       { icon: 'film', key: 'Videos', value: VIDEO_COUNT },
       { icon: 'people', key: 'Companies', value: OWNERS.length },
@@ -251,6 +322,10 @@ function Credits() {
           <dd>The original video belongs to {DATABRICKS_OWNER}.</dd>
         </div>
       ))}
+      <div key={RAMP.slug}>
+        <dt>{RAMP.name}</dt>
+        <dd>The original video belongs to {RAMP.owner}.</dd>
+      </div>
     </dl>
   );
 }
@@ -316,8 +391,9 @@ type TranscreateBookProps = {
  * One Transcreate page read top to bottom inside the flow sheet, in the
  * graphics book's row grammar: the head, then the page's sections under
  * their dividers. The overview holds the grid of all eight and a contents
- * list of the four pages, the videos page each video, the Databricks page
- * its grid and each of its videos, and the credits page the originals. The reading state is the shared read line
+ * list of the five pages, the videos page each video, the Databricks page
+ * its grid and each of its videos, the Ramp page its grid and each of its
+ * versions, and the credits page the originals. The reading state is the shared read line
  * (useReadLine), with /motion's instant jumps: the row under the line is
  * selected through the shell, and a selection from anywhere else jumps the
  * sheet to its row.
@@ -356,6 +432,10 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
                 <span>Databricks</span>
                 <small>{`${DATABRICKS.length} videos`}</small>
               </Link>
+              <Link href={ROUTE_PATH.ramp}>
+                <span>Ramp</span>
+                <small>{`${RAMP_VERSIONS.length} versions`}</small>
+              </Link>
               <Link href={ROUTE_PATH.credits}>
                 <span>Credits</span>
                 <small>{`${VIDEO_COUNT} originals`}</small>
@@ -392,6 +472,31 @@ function TranscreateBook({ route, sheetRef, jumpRef, activeOut, updated }: Trans
         </>
       ) : null}
 
+      {route === 'ramp' ? (
+        <>
+          <Part
+            index={1}
+            id='transcreate-ramp-all'
+            label='All three versions'
+            fact={`${RAMP_VERSIONS.length} versions`}
+            lead='The English original and its two translations play at once in one frame.'
+          >
+            <VideoRow entry={RAMP_GRID_ENTRY} active={active} />
+          </Part>
+          <Part
+            index={2}
+            id='transcreate-ramp-each'
+            label='Each version'
+            fact={RAMP_RANGE}
+            lead='The original plays alone, and each translation plays under the original or alone.'
+          >
+            {RAMP_ENTRIES.map((entry) => (
+              <VideoRow key={entry.id} entry={entry} active={active} />
+            ))}
+          </Part>
+        </>
+      ) : null}
+
       {route === 'credits' ? (
         <Part
           index={1}
@@ -421,6 +526,7 @@ const SECTIONS: Readonly<Record<TranscreateRoute, ReturnType<typeof transcreateS
   overview: transcreateSections('overview'),
   videos: transcreateSections('videos'),
   databricks: transcreateSections('databricks'),
+  ramp: transcreateSections('ramp'),
   credits: transcreateSections('credits'),
 };
 
@@ -429,6 +535,7 @@ const FIRST_ROW: Readonly<Record<TranscreateRoute, string>> = {
   overview: GRID_ROW,
   videos: videoRow(VIDEOS[0]?.slug ?? ''),
   databricks: DATABRICKS_ROW,
+  ramp: RAMP_ROW,
   credits: CREDITS_ROW,
 };
 

@@ -301,6 +301,7 @@ export function siteRoutes() {
     { id: 'transcreate', path: '/transcreate', tools: 'check live lines capture', source: ['src/app/transcreate'] },
     { id: 'transcreate-videos', path: '/transcreate/videos', tools: 'check live lines', source: ['src/app/transcreate'] },
     { id: 'transcreate-databricks', path: '/transcreate/databricks', tools: 'check live lines', source: ['src/app/transcreate'] },
+    { id: 'transcreate-ramp', path: '/transcreate/ramp', tools: 'check live lines', source: ['src/app/transcreate'] },
     { id: 'transcreate-credits', path: '/transcreate/credits', tools: 'check live lines', source: ['src/app/transcreate'] },
     { id: 'blog', path: '/blog', tools: 'check live lines capture', source: blog },
     { id: `blog-${post}`, path: `/blog/${post}`, tools: 'check live lines', source: blog },

@@ -26,6 +26,7 @@ export type PageId =
   | 'transcreate'
   | 'transcreateVideos'
   | 'transcreateDatabricks'
+  | 'transcreateRamp'
   | 'transcreateCredits';
 
 export type PageName = { name: string; short?: string };
@@ -50,6 +51,7 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   transcreate: { name: 'Transcreate' },
   transcreateVideos: { name: 'Transcreate videos', short: 'Videos' },
   transcreateDatabricks: { name: 'Transcreate Databricks', short: 'Databricks' },
+  transcreateRamp: { name: 'Transcreate Ramp', short: 'Ramp' },
   transcreateCredits: { name: 'Transcreate credits', short: 'Credits' },
 };
 

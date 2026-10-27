@@ -145,7 +145,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   motion:
     'films videos hyperframes roster trailers translation series jihe yuanben euclid ricci journey to the west monkey waley hebrew ben-yehuda',
   marks: 'logo mark monogram wordmark lockup GT speed race bars cut plate livery ascii dither production locadex doubled-line hemispheres globe poster favicon construction closed-top',
-  transcreate: 'video translation japanese english on-screen text side by side stacked columns notion linear ramp asana stripe miro credits',
+  transcreate: 'video translation japanese spanish english on-screen text side by side stacked columns notion linear ramp asana stripe miro credits',
   archive: 'retired versions captures history',
 };
 
@@ -804,6 +804,16 @@ const TRANSCREATE_ROWS: readonly SearchEntry[] = [
     meta: 'In Transcreate',
     icon: 'film',
     keywords: 'databricks four videos english japanese stacked genie agent memory teach ai',
+    surface: 'transcreate',
+  },
+  {
+    id: 'heading-transcreate-ramp',
+    title: 'Transcreate Ramp',
+    href: '/transcreate/ramp',
+    group: 'Headings',
+    meta: 'In Transcreate',
+    icon: 'film',
+    keywords: 'ramp procurement english spanish japanese original stacked columns three versions',
     surface: 'transcreate',
   },
   {

@@ -109,7 +109,7 @@ test('every other /d/ page: noindex, follow, self canonical, not listed', () => 
 
 test('private pages and their subpages: noindex, nofollow, self canonical, not listed', () => {
   assert.ok(PRIVATE_PATHS.includes('/transcreate'));
-  for (const path of [...PRIVATE_PATHS, '/transcreate/videos', '/transcreate/databricks', '/transcreate/credits']) {
+  for (const path of [...PRIVATE_PATHS, '/transcreate/videos', '/transcreate/databricks', '/transcreate/ramp', '/transcreate/credits']) {
     assert.deepEqual(policyFor(path), { index: false, follow: false, canonical: `${SITE_URL}${path}`, inSitemap: false }, path);
     assert.equal(isPrivatePath(path), true, path);
   }
