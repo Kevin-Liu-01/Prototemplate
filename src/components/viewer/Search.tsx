@@ -2,9 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 
 import { Icon } from '@/components/viewer/icons';
+import { SearchKeysContext } from '@/components/viewer/search-keys';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import { openSiteHref } from '@/lib/document-routes';
 import type { SearchEntry, SearchGroupRows } from '@/lib/search-index';
@@ -166,7 +167,9 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
     else focused.blur();
   };
 
+  const keyed = useContext(SearchKeysContext);
   useMountEffect(() => {
+    if (!keyed) return;
     const onOpen = () => show();
     document.addEventListener(SEARCH_OPEN_EVENT, onOpen);
     return () => document.removeEventListener(SEARCH_OPEN_EVENT, onOpen);

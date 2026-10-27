@@ -3,6 +3,7 @@
 import { useRef, useState, useSyncExternalStore } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
+import { SearchKeysContext } from '@/components/viewer/search-keys';
 import { ShellContext } from '@/components/viewer/shell-context';
 import type { ShellDir, ShellState } from '@/components/viewer/shell-context';
 import { toggleTheme } from '@/lib/theme';
@@ -260,7 +261,7 @@ export function DemoViewport({ shell, label, keys, list, className, children }: 
         role='region'
         onKeyDown={keys ? demoKeyHandler(shell.state, keys) : undefined}
       >
-        {children}
+        <SearchKeysContext.Provider value={false}>{children}</SearchKeysContext.Provider>
         <Toast message={shell.toast.message} on={shell.toast.on} />
       </div>
     </ShellContext.Provider>

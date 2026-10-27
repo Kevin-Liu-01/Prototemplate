@@ -41,7 +41,7 @@ at each of them.
 - `/deck`: the General Translation brand deck, 93 slides in its own viewer
 - `/skills`: the curated skills, one page per skill with its SKILL.md, its files and its install line, and the raw files at `/skills/<slug>/SKILL.md`
 - `/docs/handbook`: how Kevin runs General Translation work, one section of the docs site: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log, then the canon (the agent guide, `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md`, the ship loop, the tools, the libraries with the build log, the graphics pipeline and the artifact pictures), one page per document (`/docs/handbook/<slug>`) showing the repository file, and a Markdown twin at each address plus `.md`; `/handbook` and `/handbook/<slug>` answer 308 with these pages
-- `/components`: every component the hub keeps, grouped as the docs Components section groups them, each with its captured plate, its source file and a link to its docs section, then the reusable components no docs page covers yet
+- `/components`: every component the hub keeps, grouped as the docs Components section groups them, each running live with its controls beside its source file and a link to its docs section, then the reusable components no docs page covers yet
 - `/marks`: the mark explorations, every candidate drawn in one color
 - `/blog`: the docs-redesign series as General Translation published it, three posts with their sources under `content/`
 - `/graphics`: every illustration of the series, by area, with what it shows and the glyphfield export it sits on; made with the toolchain in `graphics/`

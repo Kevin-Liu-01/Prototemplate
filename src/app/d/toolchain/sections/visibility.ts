@@ -3,18 +3,23 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import { scrollRoot } from '@/lib/scroll-root';
+
 gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Calls `onChange(true)` while any part of `trigger` is on screen and
  * `onChange(false)` while all of it is off screen: once when the watch is
- * created, after every ScrollTrigger refresh, and on every crossing.
+ * created, after every ScrollTrigger refresh, and on every crossing. The
+ * watch follows the trigger's own scroller: the page, or the scrolling
+ * ancestor it sits in (scrollRoot).
  * Created inside a `useGSAP` callback, the watch belongs to that context and
  * dies with it; created anywhere else, the caller kills the returned trigger.
  */
 export function watchVisibility(trigger: Element, onChange: (visible: boolean) => void): ScrollTrigger {
   return ScrollTrigger.create({
     trigger,
+    scroller: scrollRoot(trigger) ?? undefined,
     start: 'top bottom',
     end: 'bottom top',
     onToggle: (self) => onChange(self.isActive),

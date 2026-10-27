@@ -67,6 +67,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | --- | --- | --- |
 | `pnpm capture:components` | Captures the preview of every component /components lists: on each page of the docs Components section (content/docs/components, its groups and pages in their meta.json order), the first plate stage under each h2 (.dmo-stage, or the blog globe figure's .bgf or .bgg), in both ... | `scripts/check/capture-components.mjs` |
 | `pnpm capture:pages` | Captures the first fold of every page the index panel and the sidebar preview (directive 8.6) against the running dev server, in both themes, into public/shots/pages/\<id>-light.jpg and \<id>-dark.jpg, where \<id> is the surface id in src/lib/surfaces.ts. | `scripts/check/capture-pages.mjs` |
+| `pnpm capture:plate-heights` | Measures the height of every live plate on /components once it has drawn, at 1440x900 and at 390x844, into src/lib/plate-heights.json. | `scripts/check/capture-plate-heights.mjs` |
 | `pnpm check:pages` | The page check: one line of automatic reads and a capture of the first screen per (page, device, theme) cell on the running site, the declared interactions with before and after captures, and REPORT.md with the defects, the notes, a page by device grid, the presenter's and the ... | `scripts/check/pagecheck/pagecheck.mjs` |
 
 ## Generators

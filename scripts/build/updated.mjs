@@ -226,7 +226,7 @@ function pages() {
     })),
     {
       id: '/components',
-      paths: ['src/app/components', 'src/lib/component-library.ts', 'src/lib/component-library-model.ts', 'content/docs/components', 'public/shots/components'],
+      paths: ['src/app/components', 'src/lib/component-library.ts', 'src/lib/component-library-model.ts', 'src/lib/plate-heights.json', 'content/docs/components', 'src/components/docs/demos', 'public/shots/components'],
     },
     { id: '/marks', paths: ['src/app/marks', 'src/lib/marks.ts', 'public/marks', 'scripts/build/speed-marks.mjs'] },
     {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, type CSSProperties } from 'react';
+import { useContext, useRef, useState, type CSSProperties } from 'react';
 
 import {
   EMBED_ASK,
@@ -12,6 +12,8 @@ import {
   type GlobeVariantKey,
 } from '@/app/d/blog-globe/_stage/rounds';
 import { FIGURE_HEIGHTS, embedHref } from '@/components/blog-globe/figures';
+import { PlateNearContext } from '@/components/docs/demos/hooks';
+import { scrollRoot } from '@/lib/scroll-root';
 import { postTheme, readTheme } from '@/lib/theme';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -20,7 +22,7 @@ import './blog-globe.css';
 /** Below this width a 'fit' frame lays the figure out at its own width, where the figure's container queries give it the phone layout. */
 const FIT_BELOW = 600;
 
-/** How far outside the viewport a frame starts to load its figure. */
+/** How far outside the viewport (or the scrolling sheet it sits in) a frame starts to load its figure. */
 const ARM_MARGIN = '320px 0px';
 
 export type GlobeFrameLayout = 'scale' | 'fit';
@@ -43,7 +45,8 @@ export type GlobeFrameProps = {
  * One live globe figure in a same-origin frame of its round's route
  * (src/app/d/blog-globe), so each round keeps its own stylesheets and the
  * docs bundle carries none of the figures' code. The frame loads when it
- * comes within ARM_MARGIN of the viewport. The figure posts its height
+ * comes within ARM_MARGIN of the viewport, or of the scrolling sheet it
+ * sits in, or at once inside PlateNearContext. The figure posts its height
  * (EMBED_HEIGHT) and the frame takes it, so the frame never scrolls; until
  * then the box keeps the measured height from figures.ts and the frame
  * stays transparent, so the stage's own first render never shows. The
@@ -53,7 +56,8 @@ export type GlobeFrameProps = {
 export default function GlobeFrame({ round, variant, title, layout = 'fit' }: GlobeFrameProps) {
   const boxRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const [armed, setArmed] = useState(false);
+  const host = useContext(PlateNearContext);
+  const [armed, setArmed] = useState(host);
   const [width, setWidth] = useState<number | null>(null);
   const [reported, setReported] = useState<number | null>(null);
 
@@ -64,16 +68,17 @@ export default function GlobeFrame({ round, variant, title, layout = 'fit' }: Gl
     const sizes = new ResizeObserver(() => setWidth(box.clientWidth));
     sizes.observe(box);
 
+    /* inside PlateNearContext the frame is armed from the start */
     let near: IntersectionObserver | null = null;
-    if (typeof IntersectionObserver === 'undefined') setArmed(true);
-    else {
+    if (!host && typeof IntersectionObserver === 'undefined') setArmed(true);
+    else if (!host) {
       near = new IntersectionObserver(
         (entries) => {
           if (!entries.some((entry) => entry.isIntersecting)) return;
           setArmed(true);
           near?.disconnect();
         },
-        { rootMargin: ARM_MARGIN }
+        { root: scrollRoot(box), rootMargin: ARM_MARGIN }
       );
       near.observe(box);
     }

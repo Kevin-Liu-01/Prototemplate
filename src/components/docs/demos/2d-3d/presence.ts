@@ -1,7 +1,8 @@
 /**
  * What every engine on the 2D and 3D pages needs to know about its host,
- * from one place: whether the host is near the viewport (the WebGL plates
- * create their context there and release it past it), whether any of it is
+ * from one place: whether the host is near the viewport, or near the view
+ * of the scrolling sheet it sits in (the WebGL plates create their context
+ * there and release it past it), whether any of it is
  * on screen (loops run only then), whether the tab is hidden, whether the
  * reader asks for reduced motion, and the host's size and pixel ratio.
  * Browser zoom changes devicePixelRatio without resizing the box, so a
@@ -10,6 +11,7 @@
  */
 
 import { onReducedMotionChange, prefersReducedMotion } from '@/lib/reduced-motion';
+import { scrollRoot } from '@/lib/scroll-root';
 
 export type Presence = {
   near: boolean;
@@ -57,7 +59,7 @@ export function watchPresence({ el, nearMargin = '300px 0px', onChange, onResize
       state.near = last.isIntersecting;
       changed();
     },
-    { rootMargin: nearMargin }
+    { root: scrollRoot(el), rootMargin: nearMargin }
   );
   const seen = new IntersectionObserver((entries) => {
     const last = entries[entries.length - 1];

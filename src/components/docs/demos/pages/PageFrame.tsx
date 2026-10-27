@@ -1,10 +1,12 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
+
+import { PlateNearContext } from '../hooks';
 
 export type FrameWidth = '1440' | '390';
 export type FrameTheme = 'light' | 'dark';
@@ -52,11 +54,15 @@ type PageFrameProps = {
  * True while the element is within 180px of the viewport. Unlike the
  * plates' useArmed, it turns false again when the element leaves, so the
  * frame is removed and a page the reader has scrolled past costs nothing.
+ * Inside PlateNearContext the host already mounts the plate only near the
+ * reader, so it is true for as long as the plate is mounted.
  */
 function useNear(ref: { current: HTMLElement | null }, onLeave: () => void): boolean {
-  const [near, setNear] = useState(false);
+  const host = useContext(PlateNearContext);
+  const [near, setNear] = useState(host);
   useMountEffect(() => {
     const el = ref.current;
+    if (host) return;
     if (!el || typeof IntersectionObserver === 'undefined') {
       setNear(true);
       return;

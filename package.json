@@ -49,6 +49,7 @@
     "gen:all": "node scripts/build/gen-all.mjs",
     "capture:pages": "node scripts/check/capture-pages.mjs",
     "capture:components": "node scripts/check/capture-components.mjs",
+    "capture:plate-heights": "node scripts/check/capture-plate-heights.mjs",
     "check:pages": "node scripts/check/pagecheck/pagecheck.mjs",
     "lint:copies": "node scripts/lint/copies.mjs",
     "test:copies": "node --test scripts/lint/copies.test.mjs",

@@ -121,13 +121,18 @@
   touch-action: none;
 }
 
+/* the cost reads "Measuring the frame" until the first frames draw, then
+   up to 24ch; the width is held from the start, so the row never rewraps */
 .d23-cost {
+  min-width: 24ch;
   margin-left: auto;
+  text-align: end;
 }
 
 @media (max-width: 640px) {
   .d23-cost {
     margin-left: 0;
     flex-basis: 100%;
+    text-align: start;
   }
 }

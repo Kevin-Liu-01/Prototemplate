@@ -1,7 +1,9 @@
 import { closeSync, existsSync, openSync, readFileSync, readSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type { LibraryBlock, LibraryEntry, LibraryShot } from '@/lib/component-library-model';
+import * as films from '@/components/docs/demos/artifacts/films';
+import { LAZY_PLATE_MODULES, SERVER_PLATE_MODULES } from '@/lib/component-library-model';
+import type { LazyPlateModule, LibraryBlock, LibraryEntry, LibraryPlate, ServerPlateModule } from '@/lib/component-library-model';
 
 /**
  * The set behind /components, read on the server at build time. The
@@ -10,9 +12,22 @@ import type { LibraryBlock, LibraryEntry, LibraryShot } from '@/lib/component-li
  * group's pages in the order of theirs, and in each page every h2 section
  * that mounts a plate. One section is one entry, linked to its heading on
  * the docs page. SOURCES names the export and the file each entry shows; a
- * section missing from it falls back to the plate's own file. The preview
- * is the plate's stage as scripts/check/capture-components.mjs shot it in
- * both themes, under public/shots/components/<page>-<heading id>.webp.
+ * section missing from it falls back to the plate's own file.
+ *
+ * Each entry carries the plate its section mounts as the MDX writes it:
+ * the element's name, the module the page imports it from and its props,
+ * literal values as written and an imported value (films={PUBLISHED_FILMS})
+ * resolved here through VALUE_MODULES. The viewer mounts it from the
+ * registry in src/app/components/plates.ts. A section whose plate the
+ * registry cannot mount (no import, a module outside LAZY_PLATE_MODULES and
+ * SERVER_PLATE_MODULES, a name its lazy module does not export, a prop that
+ * is not a literal) throws, so the build fails.
+ *
+ * The height a row reserves for its plate is the plate's measured height
+ * at 1440 and at 390 wide, from src/lib/plate-heights.json
+ * (scripts/check/capture-plate-heights.mjs). A plate not measured yet
+ * reserves its stage, read from its capture
+ * (public/shots/components/<page>-<heading id>.webp), and one controls row.
  *
  * UNDOCUMENTED lists the reusable components under src/components that no
  * docs page covers yet. An entry drops out on its own once a Components
@@ -22,7 +37,18 @@ import type { LibraryBlock, LibraryEntry, LibraryShot } from '@/lib/component-li
 const ROOT = process.cwd();
 const DOCS = join(ROOT, 'content/docs/components');
 const SHOTS = join(ROOT, 'public/shots/components');
-const SHOT_URL = '/shots/components';
+const HEIGHTS = join(ROOT, 'src/lib/plate-heights.json');
+
+/** One controls row and the plate's two borders, measured on the ordered screen's plate at 1440. */
+const BAR = 86;
+
+/** The sections /components leaves out, by `<page>#<heading id>`: the language wheel (2026-10-26). */
+const LEFT_OUT: ReadonlySet<string> = new Set(['kinetic#the-language-wheel']);
+
+/** The modules a plate's prop reads a value from, by the specifier the MDX imports; the value reaches the client as data, as on the docs page. */
+const VALUE_MODULES: Readonly<Record<string, Readonly<Record<string, unknown>>>> = {
+  '@/components/docs/demos/artifacts/films': films,
+};
 
 /** The export and the file a section shows, by `<page>#<heading id>`, with a name where the heading reads as a sentence. */
 const SOURCES: Readonly<Record<string, { code: string; path: string; name?: string }>> = {
@@ -70,7 +96,6 @@ const SOURCES: Readonly<Record<string, { code: string; path: string; name?: stri
   'navigation#the-help-card-and-the-toast': { code: 'HelpCard', path: 'src/components/viewer/HelpCard.tsx' },
   'navigation#the-index-panel': { code: 'IndexPanel', path: 'src/components/viewer/IndexPanel.tsx' },
   'kinetic#split-flap-text': { code: 'FlapPhrase', path: 'src/app/d/production/sections/FlapPhrase.tsx' },
-  'kinetic#the-language-wheel': { code: 'LanguageWheel', path: 'src/components/shared/LanguageWheel.tsx' },
   'kinetic#the-carousel': { code: 'CarouselGallery', path: 'src/components/blog/CarouselGallery.tsx' },
   'language#locale-tags-and-flags': { code: 'LocaleTag', path: 'src/app/d/toolchain/components/LocaleTag.tsx' },
   'language#language-diagrams': { code: 'PluralForms', path: 'src/app/d/toolchain/diagrams/lang' },
@@ -232,33 +257,227 @@ function slugger(): (text: string) => string {
   };
 }
 
-/** One h2 section of a page that mounts a plate: its heading, its id and the plate's component. */
-type Section = { heading: string; anchor: string; plate: string };
-
-/** The h2 sections of an MDX body that mount a plate, skipping fenced code. */
-function plateSections(source: string): Section[] {
+/** The lines of an MDX body outside its frontmatter and its fenced code. */
+function proseLines(source: string): string[] {
   const body = source.replace(/^---\n[\s\S]*?\n---/, '');
-  const slug = slugger();
-  const sections: Section[] = [];
-  let current: Section | null = null;
+  const lines: string[] = [];
   let fenced = false;
   for (const line of body.split('\n')) {
     if (line.startsWith('```')) {
       fenced = !fenced;
       continue;
     }
-    if (fenced) continue;
-    const heading = /^(#{1,6})\s+(.+?)\s*$/.exec(line);
-    if (heading) {
-      const anchor = slug(heading[2] ?? '');
-      if (heading[1] === '##') current = { heading: heading[2] ?? '', anchor, plate: '' };
+    if (!fenced) lines.push(line);
+  }
+  return lines;
+}
+
+/** A name an MDX page imports: the module specifier and the export it names (`default` for a default import). */
+type Imported = { module: string; name: string };
+
+/** The page's imports by local name: `import X from`, `import { A, B as C } from`, or both. */
+function importsOf(lines: readonly string[]): Map<string, Imported> {
+  const out = new Map<string, Imported>();
+  for (const line of lines) {
+    const match = /^import\s+(.+?)\s+from\s+['"]([^'"]+)['"];?\s*$/.exec(line);
+    if (!match) continue;
+    const clause = match[1] ?? '';
+    const module = match[2] ?? '';
+    const named = /\{([^}]*)\}/.exec(clause)?.[1];
+    const def = clause.replace(/\{[^}]*\}/, '').replace(/,/g, '').trim();
+    if (def && !def.startsWith('*') && def !== 'type') out.set(def, { module, name: 'default' });
+    for (const part of named?.split(',') ?? []) {
+      const [name = '', local = name] = part.trim().replace(/^type\s+/, '').split(/\s+as\s+/);
+      if (name) out.set(local.trim(), { module, name: name.trim() });
+    }
+  }
+  return out;
+}
+
+/** The source of the JSX element that opens at `start`, through its `/>`; quoted strings and braces are skipped whole. */
+function elementAt(text: string, start: number, where: string): string {
+  let depth = 0;
+  let quote = '';
+  for (let i = start + 1; i < text.length; i += 1) {
+    const c = text[i];
+    if (quote) {
+      if (c === '\\') i += 1;
+      else if (c === quote) quote = '';
+    } else if (c === "'" || c === '"' || c === '`') quote = c;
+    else if (c === '{') depth += 1;
+    else if (c === '}') depth -= 1;
+    else if (c === '>' && depth === 0) {
+      if (text[i - 1] === '/') return text.slice(start, i + 1);
+      throw new Error(`/components: the plate in ${where} has children, which the plate registry does not pass`);
+    }
+  }
+  throw new Error(`/components: the plate in ${where} never closes`);
+}
+
+/**
+ * An element's props from its attributes: a quoted string, a bare name
+ * (true), or a braced literal (a string, a number, true, false, null, an
+ * array or an object of literals). A bare identifier inside braces is an
+ * imported value, which `resolve` reads. Anything else (a spread, a call,
+ * a template, JSX) throws.
+ */
+function readProps(source: string, resolve: (identifier: string) => unknown, where: string): Record<string, unknown> {
+  let i = 0;
+  const fail = (what: string): never => {
+    throw new Error(`/components: the plate in ${where} needs ${what} at "${source.slice(i, i + 24)}"`);
+  };
+  const space = () => {
+    while (i < source.length && /\s/.test(source[i] ?? '')) i += 1;
+  };
+  const word = (): string => {
+    const match = /^[A-Za-z_$][\w$-]*/.exec(source.slice(i));
+    if (!match) return fail('a name');
+    i += match[0].length;
+    return match[0];
+  };
+  const quoted = (): string => {
+    const q = source[i];
+    let out = '';
+    for (i += 1; i < source.length && source[i] !== q; i += 1) {
+      if (source[i] === '\\') i += 1;
+      out += source[i] ?? '';
+    }
+    if (source[i] !== q) fail('a closing quote');
+    i += 1;
+    return out;
+  };
+  const list = <T,>(close: string, item: () => T): T[] => {
+    const out: T[] = [];
+    i += 1;
+    for (space(); source[i] !== close; space()) {
+      if (i >= source.length) fail(`a closing ${close}`);
+      out.push(item());
+      space();
+      if (source[i] === ',') i += 1;
+    }
+    i += 1;
+    return out;
+  };
+  const value = (): unknown => {
+    space();
+    const c = source[i];
+    if (c === "'" || c === '"') return quoted();
+    if (c === '[') return list(']', value);
+    if (c === '{') {
+      const pairs = list('}', (): [string, unknown] => {
+        const key = source[i] === "'" || source[i] === '"' ? quoted() : word();
+        space();
+        if (source[i] !== ':') fail('a colon');
+        i += 1;
+        return [key, value()];
+      });
+      return Object.fromEntries(pairs);
+    }
+    const number = /^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/i.exec(source.slice(i));
+    if (number) {
+      i += number[0].length;
+      return Number(number[0]);
+    }
+    const name = word();
+    if (name === 'true' || name === 'false') return name === 'true';
+    if (name === 'null') return null;
+    return resolve(name);
+  };
+  const props: Record<string, unknown> = {};
+  for (space(); i < source.length; space()) {
+    if (source[i] === '{') fail('a named prop, not a spread,');
+    const key = word();
+    space();
+    if (source[i] !== '=') {
+      props[key] = true;
       continue;
     }
-    const plate = /^<([A-Z]\w*)/.exec(line);
-    if (current && !current.plate && plate) {
-      current.plate = plate[1] ?? '';
-      sections.push(current);
+    i += 1;
+    space();
+    if (source[i] !== '{') {
+      props[key] = quoted();
+      continue;
     }
+    i += 1;
+    props[key] = value();
+    space();
+    if (source[i] !== '}') fail('one literal value');
+    i += 1;
+  }
+  return props;
+}
+
+const LAZY: ReadonlySet<string> = new Set(LAZY_PLATE_MODULES);
+const SERVER: ReadonlySet<string> = new Set(SERVER_PLATE_MODULES);
+
+function isLazy(module: string): module is LazyPlateModule {
+  return LAZY.has(module);
+}
+
+function isServer(module: string): module is ServerPlateModule {
+  return SERVER.has(module);
+}
+
+/** Each lazy module's exports, read once from its source: `export const Name = dynamic(...)`. */
+const lazyExports = new Map<string, ReadonlySet<string>>();
+
+function exportsOf(module: LazyPlateModule): ReadonlySet<string> {
+  const known = lazyExports.get(module);
+  if (known) return known;
+  const source = readFileSync(join(ROOT, `${module.replace(/^@\//, 'src/')}.tsx`), 'utf8');
+  const names = new Set(Array.from(source.matchAll(/^export const (\w+)\s*=\s*dynamic\(/gm), (match) => match[1] ?? ''));
+  lazyExports.set(module, names);
+  return names;
+}
+
+/** The plate an element mounts, checked against the registry's modules; a plate the registry cannot mount throws. */
+function plateOf(element: string, name: string, imports: ReadonlyMap<string, Imported>, where: string): LibraryPlate {
+  const imported = imports.get(name);
+  if (!imported) throw new Error(`/components: ${where} mounts <${name} /> but its page does not import it`);
+  const props = readProps(
+    element.slice(name.length + 1, -2),
+    (identifier) => {
+      const from = imports.get(identifier);
+      const values = from ? VALUE_MODULES[from.module] : undefined;
+      if (!from || !values || !(from.name in values)) {
+        throw new Error(`/components: ${where} passes ${identifier}, which VALUE_MODULES does not hold`);
+      }
+      return values[from.name];
+    },
+    where
+  );
+  if (isLazy(imported.module)) {
+    if (!exportsOf(imported.module).has(imported.name)) {
+      throw new Error(`/components: ${where} mounts ${imported.name}, which ${imported.module} does not export`);
+    }
+    return { kind: 'lazy', module: imported.module, name: imported.name, props };
+  }
+  if (isServer(imported.module) && imported.name === 'default') return { kind: 'server', module: imported.module, name, props };
+  throw new Error(`/components: ${where} mounts <${name} /> from ${imported.module}, which is in neither LAZY_PLATE_MODULES nor SERVER_PLATE_MODULES`);
+}
+
+/** One h2 section of a page that mounts a plate: its heading, its id, and the plate's name and element. */
+type Section = { heading: string; anchor: string; name: string; element: string };
+
+/** The h2 sections of an MDX page that mount a plate, each with the first plate under its heading. */
+function plateSections(lines: readonly string[], where: string): Section[] {
+  const text = lines.join('\n');
+  const slug = slugger();
+  const sections: Section[] = [];
+  let current: { heading: string; anchor: string; done: boolean } | null = null;
+  let offset = 0;
+  for (const line of lines) {
+    const heading = /^(#{1,6})\s+(.+?)\s*$/.exec(line);
+    const plate = /^<([A-Z]\w*)/.exec(line);
+    if (heading) {
+      const anchor = slug(heading[2] ?? '');
+      if (heading[1] === '##') current = { heading: heading[2] ?? '', anchor, done: false };
+    } else if (current && !current.done && plate) {
+      current.done = true;
+      const name = plate[1] ?? '';
+      sections.push({ heading: current.heading, anchor: current.anchor, name, element: elementAt(text, offset, `${where}#${current.anchor}`) });
+    }
+    offset += line.length + 1;
   }
   return sections;
 }
@@ -287,14 +506,18 @@ function pad3(n: number): string {
   return String(n).padStart(3, '0');
 }
 
-/** The light and dark previews of an entry, when the capture exists. */
-function shotOf(id: string): LibraryShot | undefined {
+/** The measured plate heights by entry id, at 1440 and at 390 wide. */
+function readHeights(): Readonly<Record<string, readonly [number, number]>> {
+  return existsSync(HEIGHTS) ? (JSON.parse(readFileSync(HEIGHTS, 'utf8')) as Record<string, [number, number]>) : {};
+}
+
+/** The height a row reserves for its plate: measured, or the stage from the light capture (shot at a device scale of 1) and one controls row. */
+function reserveOf(id: string, heights: Readonly<Record<string, readonly [number, number]>>): readonly [number, number] {
+  const measured = heights[id];
+  if (measured) return measured;
   const light = join(SHOTS, `${id}.webp`);
-  if (!existsSync(light)) return undefined;
-  const size = webpSize(light);
-  if (!size) return undefined;
-  const dark = existsSync(join(SHOTS, `${id}-dark.webp`));
-  return { light: `${SHOT_URL}/${id}.webp`, dark: dark ? `${SHOT_URL}/${id}-dark.webp` : undefined, ...size };
+  const stage = (existsSync(light) ? webpSize(light)?.h : undefined) ?? 300;
+  return [stage + BAR, stage + BAR];
 }
 
 /** The heading as a component's name: a leading `The` is dropped. */
@@ -317,6 +540,7 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
   const top = readMeta(DOCS);
   const groups = (top.pages ?? []).filter((page) => page.startsWith('('));
   const mdx: string[] = [];
+  const heights = readHeights();
   let n = 0;
 
   const blocks: LibraryBlock[] = groups.map((folder) => {
@@ -328,18 +552,23 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
       mdx.push(source);
       const title = field(source, 'title');
       const href = `/docs/components/${page}`;
-      for (const section of plateSections(source)) {
-        const known = SOURCES[`${page}#${section.anchor}`];
+      const lines = proseLines(source);
+      const imports = importsOf(lines);
+      for (const section of plateSections(lines, page)) {
+        const key = `${page}#${section.anchor}`;
+        if (LEFT_OUT.has(key)) continue;
+        const known = SOURCES[key];
         const id = `${page}-${section.anchor}`;
         n += 1;
         entries.push({
           id,
           n: pad3(n),
           name: known?.name ?? nameOf(section.heading),
-          code: known?.code ?? section.plate,
-          path: known?.path ?? plateFile(section.plate),
+          code: known?.code ?? section.name,
+          path: known?.path ?? plateFile(section.name),
           docs: { href: `${href}#${section.anchor}`, title },
-          shot: shotOf(id),
+          plate: plateOf(section.element, section.name, imports, key),
+          reserve: reserveOf(id, heights),
         });
       }
     }

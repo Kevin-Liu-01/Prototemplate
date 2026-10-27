@@ -3,10 +3,15 @@
    The shell draws the frame and BookView.css the head, the contents and the
    section dividers; this sheet draws the rows in the grammar the graphics
    and skills books set: the shell's --pt- tokens only, soft row rules, the
-   number in the gutter on the name's baseline. A preview takes the frame
-   grammar of every captured frame in the shell (a 1px --pt-edge border,
-   ink on hover and on the row being read) at its capture's own aspect and
-   never wider than the capture. */
+   number in the gutter on the name's baseline. Each documented row holds
+   its live plate, which draws its own frame (demos.css); until the plate
+   has drawn, the slot is that frame, empty, at the height it reserves. */
+
+/* usePlateWindow holds the reader's place as plates resize, so the
+   browser's own scroll anchoring stays off inside the book */
+.cl-book {
+  overflow-anchor: none;
+}
 
 .cl-cat {
   display: flex;
@@ -81,27 +86,24 @@
   color: var(--pt-ink-2);
 }
 
-/* the preview: the captured stage in its own aspect; ThumbShot fills it */
-.cl-frame {
-  position: relative;
-  display: block;
-  width: 100%;
+/* the plate's place: until the plate draws, its measured height at 1440
+   (--cl-h) or at 390 (--cl-h-sm, where the stages take their phone
+   heights), or the height it measured when it last ran */
+.cl-live {
   margin-top: 14px;
-  border: 1px solid var(--pt-edge);
+}
+
+.cl-live:not(.is-drawn) {
+  height: var(--cl-h);
+  border: 1px solid var(--pt-hair);
   border-radius: var(--pt-radius-card);
-  background: var(--pt-plate);
+  background: var(--pt-paper);
   overflow: hidden;
-  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
 }
 
-.cl-frame:hover,
-.cl-row.is-active .cl-frame {
-  border-color: var(--pt-ink);
-}
-
-.cl-frame:focus-visible {
-  outline: 1px solid var(--pt-ink);
-  outline-offset: 2px;
+/* the docs page spaces a plate from its prose; in a row the slot does */
+.cl-live.is-drawn > * {
+  margin-block: 0;
 }
 
 /* the meta line: the source file, then the docs page */
@@ -125,9 +127,9 @@
   text-underline-offset: 3px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .cl-frame {
-    transition: none;
+@media (max-width: 640px) {
+  .cl-live:not(.is-drawn) {
+    height: var(--cl-h-sm);
   }
 }
 
