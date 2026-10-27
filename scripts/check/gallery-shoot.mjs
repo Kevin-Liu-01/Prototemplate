@@ -12,7 +12,7 @@ import { chromium } from 'playwright-core';
 import { mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
 
-import { BASE_URL, chromePath } from '../lib/site-pages.mjs';
+import { BASE_URL, chromePath, HIDE_DEV_UI_CSS } from '../lib/site-pages.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
 
 helpIfAsked(import.meta.url);
@@ -89,8 +89,13 @@ for (const cut of CUTS) {
     const page = await context.newPage();
     await page.goto(`${BASE}/d/${FLAGSHIP}?chrome=0`, { waitUntil: 'load', timeout: 120000 });
     // production-mount framing: the landing hides the field switcher dock
-    // and its chips (home.css), so the tiles hide the same instruments
-    await page.addStyleTag({ content: '.hfs,.fxm-chip,.fxm-k{display:none!important}' });
+    // and its chips (home.css), so the tiles hide the same instruments. The
+    // sticky nav (.v0-nav) keeps its space but is not drawn: an element shot
+    // taller than the viewport would stitch it into the section. The dev
+    // server's indicator badge is hidden too.
+    await page.addStyleTag({
+      content: `.hfs,.fxm-chip,.fxm-k{display:none!important} .v0-nav{visibility:hidden!important} ${HIDE_DEV_UI_CSS}`,
+    });
     await settle(page);
     for (const sec of SECTIONS) {
       const loc = page.locator(sec.sel).first();
