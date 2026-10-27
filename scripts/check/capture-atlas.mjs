@@ -25,6 +25,7 @@
 //   ['scroll', selector, n, at]  scrolls the nth match to `at` of the viewport's height from the top
 //   ['away']                     moves the pointer to the left edge, off every control
 //   ['settle', ms]               waits
+//   ['until', expression]        waits until the expression is true in the page (a drawing that runs on a clock)
 //
 // A shot with `clip` keeps part of the viewport: [x, y, width, height] in
 // CSS pixels, or [selector, x, y, width, height] as fractions of the first
@@ -56,12 +57,22 @@ const OUT = join(ROOT, 'public/shots/atlas');
 const SCALE = 2;
 /** The notes column's widest figure, in CSS pixels; a file is twice as wide. */
 const SHOWN = 960;
-const QUALITY = 74;
+/** cwebp's quality: the notes serve each file through the image optimizer at 95 (next.config.ts), and 90 keeps the small type in the pictures legible through that second encode. */
+const QUALITY = 90;
 const PAD = 24;
 const SETTLE_MS = 2500;
 const TURN_MS = 1200;
 const WAIT_MS = 30_000;
 const SHOT_MS = 120_000;
+
+/** In the page: no animation that ends is still running, so whatever types, fades or wipes itself in is whole. */
+const SETTLED = "!document.getAnimations().some((a) => a.playState === 'running' && a.effect?.getComputedTiming().endTime !== Infinity)";
+/** The Light poster: the compass drawing, its long lines and the lettering are whole, and the two definitions have typed out. */
+const LIGHT_DRAWN = `${SETTLED} && document.querySelectorAll('.lt-svg .long').length > 0 && [...document.querySelectorAll('.lt-svg .tri, .lt-svg .long')].every((el) => el.style.strokeDashoffset === '0') && [...document.querySelectorAll('.lt-svg .lab')].every((el) => el.style.opacity === '1') && [...document.querySelectorAll('.lt-type')].every((el) => el.getAnimations().length > 0 && el.getAnimations().every((a) => a.playState === 'finished'))`;
+/** Measure: every dimension has faded in and counted up to its length. */
+const MEASURE_DRAWN = `${SETTLED} && document.querySelectorAll('.dimg').length > 0 && [...document.querySelectorAll('.dimg')].every((g) => g.style.opacity === '1' && g.querySelector('text').textContent === g.querySelector('text').dataset.to)`;
+/** The definitions figure steps through its five versions every six seconds until a reader picks one; a click on Cambridge's dot picks English and holds it there. */
+const ENGLISH = [['click', '.gtp-versions >> visible=true >> .gtp-globe-mark[aria-label^="English"]'], ['until', "[...document.querySelectorAll('.gtp-versions')].some((el) => el.dataset.held === 'true' && el.dataset.chosen === '0')"], ['settle', 4000], ['until', SETTLED]];
 
 const corner = (slug) => `[data-testid="atlas-magazine-${slug}"]`;
 const NEXT = '[data-testid="atlas-magazine-next"]';
@@ -80,18 +91,22 @@ const SHOTS = [
   { file: 'pages', route: '/atlas', theme: 'dark', actions: [...openMagazine(DOCS), ['click', NEXT], ['settle', TURN_MS], ['click', NEXT], ['settle', TURN_MS], ['away']] },
   // the back cover's legend alone, at twice the scale it is shown at, so its type reads in the notes
   { file: 'back', route: '/atlas', theme: 'dark', actions: [...openMagazine('translating-euclid'), ['last', NEXT], ['away']], clip: ['.gtr-legend', 0, 0, 1, 1], scale: 4 },
-  { file: 'feature', route: '/atlas/translating-euclid', theme: 'light', actions: [['scroll', '.gtm-lead', 0, 0.2]] },
+  { file: 'feature', route: '/atlas/translating-euclid', theme: 'light', actions: [['scroll', '.gtm-lead', 0, 0.2], ['settle', 800], ...ENGLISH] },
   { file: 'headline', route: '/atlas/rewriting-our-docs', theme: 'dark' },
   { file: 'shelf', route: '/atlas/shelf', theme: 'dark', actions: [['hover', `[data-testid="atlas-story-${DOCS}"]`]] },
   { file: 'covers', route: '/atlas/shelf', theme: 'dark', clip: [0, 180, 1440, 480] },
   { file: 'docs', route: `/atlas/shelf/${DOCS}`, theme: 'dark', actions: [['scroll', '.gtp-stub', 4, 0.36]] },
   { file: 'fuma', route: '/atlas/shelf/fuma-nama', theme: 'dark', actions: [['scroll', '.gtp-stub', 2, 0.36]] },
   { file: 'book', route: '/atlas/shelf/translating-euclid', theme: 'light' },
-  { file: 'figure', route: '/atlas/shelf/translating-euclid', theme: 'light', actions: [['scroll', '.gtp-print-at', 0, 0.45]] },
+  { file: 'figure', route: '/atlas/shelf/translating-euclid', theme: 'light', actions: [['scroll', '.gtp-print-at', 0, 0.45], ['settle', 1500], ...ENGLISH] },
   {
     file: 'directions',
     theme: 'dark',
-    sheet: ['riffle', 'atlas', 'signal', 'proof', 'light', 'route', 'measure'].map((slug) => ({ route: `/atlas/directions/${slug}` })).concat([
+    // each poster draws itself on a clock after it opens, so each cell waits until its drawing is whole
+    sheet: ['riffle', 'atlas', 'signal', 'proof', 'light', 'route', 'measure'].map((slug) => ({
+      route: `/atlas/directions/${slug}`,
+      actions: [['until', { light: LIGHT_DRAWN, measure: MEASURE_DRAWN }[slug] ?? SETTLED]],
+    })).concat([
       { route: '/atlas/directions/riffle', actions: [['click', 'button[aria-label="Open"] >> visible=true'], ['away']] },
     ]),
   },
@@ -119,6 +134,7 @@ async function act(page, [name, selector, a, b]) {
   else if (name === 'click') await page.mouse.click(...(await pointOn(page, selector, a, b)));
   else if (name === 'away') await page.mouse.move(2, 450);
   else if (name === 'settle') await page.waitForTimeout(selector);
+  else if (name === 'until') await page.waitForFunction(selector, undefined, { timeout: WAIT_MS, polling: 100 });
   else if (name === 'scroll') {
     const found = await page.evaluate(
       ([sel, n, at]) => {

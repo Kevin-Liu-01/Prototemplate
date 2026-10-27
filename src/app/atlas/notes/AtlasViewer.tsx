@@ -20,6 +20,8 @@ import './atlas.css';
 const TITLE = PAGE_NAMES.atlas.name;
 /** A figure's width on a phone, the column less its insets; the image optimizer picks the file nearest that width times the screen's pixel ratio. */
 const COLUMN_SIZES = '(max-width: 900px) calc(100vw - 32px)';
+/** The optimizer's quality for the figures: 95 keeps their small type and dither through its re-encode (next.config.ts). */
+const FIGURE_QUALITY = 95;
 const MODES: readonly ShellMode[] = ['book'];
 
 const LEAD =
@@ -66,7 +68,7 @@ const PARTS: readonly Part[] = [
       { src: '/shots/atlas/corner.webp', alt: 'The Atlas front page with the bottom right corner of Designing docs for humans lifted to show the legend of the map sheet inside', caption: 'Designing docs for humans with its bottom right corner lifted under the pointer, showing the legend of the map sheet printed inside.' },
       { src: '/shots/atlas/magazine.webp', alt: 'Designing docs for humans opened on its first spread: the cover’s pale inside on the left, the map sheet of San Francisco on the right', caption: 'A click on the corner opens the magazine on that map sheet, faced by the cover’s pale inside.' },
       { src: '/shots/atlas/spread.webp', alt: 'Designing docs for humans turned one leaf on: its picture across the gutter, the headline under it on the left page, and the deck, byline and date on the right page', caption: 'One leaf on, the opening spread: the story’s picture across the gutter over the headline and the deck.' },
-      { src: '/shots/atlas/pages.webp', alt: 'Pages 6 and 7 of Designing docs for humans: two columns of text under a running head, the drop cap D in blue, a picture and its caption in a band across the top of the right page, and a folio line at the foot of each page', caption: 'The article in two columns under a running head and over a folio line, opening on its drop cap; this picture runs in a band across the top of the page.' },
+      { src: '/shots/atlas/pages.webp', alt: 'Pages 6 and 7 of Designing docs for humans: two columns of text under a running head, the drop cap D in blue, a picture and its caption in a band across the top of the right page, and a folio line at the foot of each page', caption: 'Pages 6 and 7: the article in two columns under a running head and over a folio line, opening on its drop cap, with the article’s picture and its caption in a band across the top of the right page.' },
       {
         src: '/shots/atlas/back.webp',
         alt: 'The legend on the back cover of Translating Euclid: a ruled box on the cover’s paper holding a dotted inset map with Ricci’s road in red, beside Atlas No. 01, Taylor Fang, 26 October 2026, 10 minutes, and Macau to Peking, 1582 to 1601',
@@ -74,8 +76,8 @@ const PARTS: readonly Part[] = [
         width: 588,
         height: 254,
       },
-      { src: '/shots/atlas/feature.webp', alt: 'Translating Euclid in the magazine in the light theme: the opening paragraph under a drop cap N cut out of a vermilion seal, and on the stage the globe over the first eight definitions in English', caption: 'Translating Euclid in the magazine: the opening paragraph under its drop cap, the N cut out of a vermilion seal, and the first definitions with the globe on the stage beside it.' },
-      { src: '/shots/atlas/headline.webp', alt: 'Rewriting docs for humans and agents in the magazine: a red caret after humans and “and agents” in red italics in the headline, the proof mark over the first section head, a drop cap D in a red ring, and the cover’s proof lines on the stage', caption: 'Rewriting docs for humans and agents in the magazine: “and agents” set into its headline over a red caret, and the story’s proof mark over the first section head.' },
+      { src: '/shots/atlas/feature.webp', alt: 'Translating Euclid in the magazine in the light theme: a drop cap N cut out of a vermilion seal set into the first three lines of the opening paragraph, and on the stage the globe turned to Cambridge over the first eight definitions in English', caption: 'Translating Euclid in the magazine: the drop cap, an N cut out of a vermilion seal, set into the first three lines of the opening paragraph, and the first eight definitions under the globe on the stage beside it.' },
+      { src: '/shots/atlas/headline.webp', alt: 'Rewriting docs for humans and agents in the magazine: a red caret after humans and “and agents” in red italics in the headline, the proof mark over the first section head, a drop cap D in a red ring, and the cover’s proof lines on the stage', caption: 'Rewriting docs for humans and agents in the magazine: a red caret on the baseline after “humans” and “and agents” beside it in red italics, and the story’s proof mark over the first section head.' },
       { src: '/shots/atlas/shelf.webp', alt: 'The Atlas shelf in the dark theme: four hardcovers in a row with Designing docs for humans turned to face the reader, the topic tags at the top right, and the globe and flags at the foot', caption: 'The shelf, kept at /atlas/shelf. The book under the pointer turns to face the reader and lifts; a click opens the story.' },
     ],
   },
@@ -272,7 +274,7 @@ function AtlasBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
             ) : null}
             {part.figures.map(({ src, alt, caption, width = 960, height = 600 }) => (
               <figure key={src} className='an-fig'>
-                <Image src={src} alt={alt} width={width} height={height} sizes={`${COLUMN_SIZES}, ${width}px`} />
+                <Image src={src} alt={alt} width={width} height={height} sizes={`${COLUMN_SIZES}, ${width}px`} quality={FIGURE_QUALITY} />
                 <figcaption>{caption}</figcaption>
               </figure>
             ))}
