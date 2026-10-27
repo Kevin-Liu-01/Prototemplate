@@ -44,16 +44,18 @@ function viewBoxAspect(svg: string): number {
  * /marks opens the book at its head. The viewer draws every mark by mask
  * from its public file, so no SVG is inlined into the page; the server
  * reads each speed and picture mark's file only for the aspect of its
- * viewBox, which the viewer sizes the mark by, and each construction
- * drawing for its viewBox, whose size and aspect are its own. The marks in
- * production, the hemispheres round and the globe concepts carry their
- * aspects in src/lib/marks.ts.
+ * viewBox, which the viewer sizes the mark by, and the construction
+ * drawing of each mark that has one for its viewBox, whose size and aspect
+ * are its own. The marks in production, the hemispheres round and the
+ * globe concepts carry their aspects in src/lib/marks.ts.
  */
 export default function MarksPage() {
   const aspects: Readonly<Record<string, number>> = Object.fromEntries(
     MARKS.map((mark) => [mark.id, viewBoxAspect(readSvg(mark.file))])
   );
-  const drawingFiles = [...HEMISPHERE_MARKS, ...MARKS, ...GLOBE_CONCEPTS].map((mark) => mark.constructionFile);
+  const drawingFiles = [...HEMISPHERE_MARKS, ...MARKS, ...GLOBE_CONCEPTS].flatMap((mark) =>
+    mark.constructionFile ? [mark.constructionFile] : []
+  );
   const drawings: Readonly<Record<string, DrawingSize>> = Object.fromEntries(
     drawingFiles.map((file) => [file, viewBoxSize(readSvg(file))])
   );

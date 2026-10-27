@@ -35,8 +35,8 @@ export function markEntries(): MarkEntry[] {
         kind: mark.kind,
         svg,
         aspect: aspectOf(svg),
-        /* the picture marks' drawings are near square and small enough to inline; the speed marks' drawings are wide sheets that /marks shows across a card */
-        construction: mark.family === 'picture' ? readPublic(mark.constructionFile) : undefined,
+        /* the plate inlines each picture mark's construction drawing from public/marks, though /marks draws these two marks alone; the speed marks have none */
+        construction: mark.family === 'picture' ? readPublic(`/marks/${mark.id}-construction.svg`) : undefined,
       };
     }),
     ...GLOBE_CONCEPTS.map((concept) => {

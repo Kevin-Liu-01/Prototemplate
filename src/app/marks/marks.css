@@ -6,12 +6,11 @@
    other explorations. The head's note holds the two marks in production
    (.mk-live), so they are on the first screen. Every mark takes one card
    (.mk-card): the mark large on its plates, the run of heights, the 16px
-   cut, then the name, the tags, the notes and the files; an exploration's
-   card draws the mark beside its construction drawing (.mk-card-drawn), a
-   drawing's lines and labels taking the plate's ink like the mark's.
-   Everything reads
-   the shell's --pt- tokens. The marks are one color by construction: every
-   plate sets a ground and a color, and the mark takes the color through a
+   cut, then the name, the tags, the notes and the files; the card of a
+   mark with a construction drawing draws the mark beside it
+   (.mk-card-drawn), the drawing's lines and labels taking the plate's ink
+   like the mark's. Everything reads the shell's --pt- tokens. The marks
+   are one color by construction: every plate sets a ground and a color, and the mark takes the color through a
    mask of its public file, so a positive plate is ink on paper and a
    reversed plate is paper on ink, the theme switch swaps both, and no SVG
    is inlined into the page. Every mark is sized by
@@ -207,27 +206,27 @@
   border-color: var(--pt-ink);
 }
 
-/* the explorations beside their constructions run two to a row where a
-   card keeps the 480px that puts its drawing beside the mark (the 1440
-   view), else one; the speed marks run one to a row, each drawing across
-   its card */
+/* the speed and picture marks run two to a row */
 .mk-cards.is-sheets {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* the marks beside their constructions run two to a row where a card
+   keeps the 480px that puts its drawing beside the mark (the 1440 view),
+   else one */
+.mk-cards.is-drawn {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
 }
 
-.mk-cards.is-wide {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-/* ---------- an exploration's card: the mark beside its construction ----------
+/* ---------- a mark beside its construction ----------
    The card is a size container, so the layout follows the card's own
-   width. On a narrow card, and for a mark wider than it is tall, the parts
-   stack: the clean mark, the drawing, the run of heights, the 16px cut.
-   From 480px a square mark's card holds the clean mark, its heights and
-   its cut in a 192px column at the left (the 160px mark inside the
-   plate's 16px pads) and the drawing beside them; the clean plate grows
-   with a tall drawing, so the heights and the cut sit at the drawing's
-   foot. Both plates keep room under the marks for their captions. */
+   width. On a narrow card the parts stack: the clean mark, the drawing,
+   the run of heights, the 16px cut. From 480px the card holds the clean
+   mark, its heights and its cut in a 192px column at the left (the 160px
+   mark inside the plate's 16px pads) and the drawing beside them; the
+   clean plate grows with a tall drawing, so the heights and the cut sit
+   at the drawing's foot. Both plates keep room under the marks for their
+   captions. */
 
 .mk-card.is-drawn {
   container-type: inline-size;
@@ -263,20 +262,8 @@
   grid-area: cut;
 }
 
-/* a wide mark's drawing keeps the width its labels read at, and its plate
-   pans sideways on a card narrower than that; the auto margins centre it
-   on a wider card without cutting off its left end on a narrow one */
-.mk-card-drawn.is-wide > .mk-card-drawing {
-  justify-content: flex-start;
-}
-
-.mk-card-drawn.is-wide > .mk-card-drawing > .mk-svg {
-  max-width: none;
-  margin-inline: auto;
-}
-
 @container (min-width: 480px) {
-  .mk-card-drawn:not(.is-wide) {
+  .mk-card-drawn {
     grid-template-columns: 192px minmax(0, 1fr);
     grid-template-rows: 1fr auto auto;
     grid-template-areas:
@@ -285,7 +272,7 @@
       'cut drawing';
   }
 
-  .mk-card-drawn:not(.is-wide) > .mk-card-drawing {
+  .mk-card-drawn > .mk-card-drawing {
     border-top: 0;
     border-left: 1px solid var(--pt-hair-soft);
   }
@@ -296,7 +283,7 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* two plates side by side: positive and reversed, or the clean mark and its construction */
+/* two plates side by side on a production card: positive and reversed */
 .mk-card-plates.is-two {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -1037,6 +1024,7 @@
 
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .mk-families,
+  .mk-cards.is-sheets,
   .mk-card.is-feature .mk-card-plates.is-two {
     grid-template-columns: 1fr;
   }
