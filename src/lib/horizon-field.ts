@@ -35,11 +35,12 @@
  * premultiplied alpha: the canvas is transparent wherever there is nothing to
  * draw, so the conveyor grids stay visible right up to their own extinction.
  *
- * ARCHITECTURE — the house rule: exactly ONE WebGL context for this module per
- * session, shared by every subscriber (per-component contexts exhausted the
+ * ARCHITECTURE. The house rule: at most ONE WebGL context for this module,
+ * shared by every subscriber (per-component contexts exhausted the
  * browser's ~16-context budget and went silently black). Subscribers register
  * here; the engine draws into one offscreen GL canvas and blits into each
- * subscriber's own 2D canvas.
+ * subscriber's own 2D canvas. The context is built for the first subscriber
+ * and lost on purpose a second after the last one leaves (gl-release.ts).
  *
  * CURSOR EFFECTS — the same system the prismatic fields ship: a field may opt
  * into per-mount cursor-reactive modes driven by five extra uniforms set at
@@ -63,6 +64,7 @@
  * what it always did, and prefers-reduced-motion never attaches the system.
  */
 
+import { glRelease, loseGl } from '@/lib/gl-release';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 export type HorizonParams = {
@@ -484,6 +486,16 @@ let engineFailed = false;
 const subscribers = new Set<Subscriber>();
 let frameId = 0;
 
+/* the context goes once the last field has: it is lost on purpose and the next field builds a new one */
+const release = glRelease(
+  () => {
+    const gone = engine;
+    engine = null;
+    if (gone) loseGl(gone.gl);
+  },
+  () => subscribers.size > 0
+);
+
 /**
  * Debug probe for perf checks (rAF-idle and engagement assertions in the
  * screenshot harness). One mutated object, no per-frame allocation.
@@ -592,7 +604,7 @@ function getEngine(): Engine | null {
 
   canvas.addEventListener('webglcontextlost', (event) => {
     event.preventDefault();
-    engine = null;
+    if (engine?.canvas === canvas) engine = null;
   });
 
   engine = {
@@ -997,8 +1009,10 @@ export function createHorizonField(
       sub.observer?.disconnect();
       sub.resize?.disconnect();
       subscribers.delete(sub);
-      // The engine context is deliberately kept for the session — tearing it
-      // down per unmount is what exhausted the browser's context budget.
+      // The one context outlives each field and goes with the last one
+      // (release): lost on purpose, it frees its place in the browser's
+      // context budget at once rather than at garbage collection.
+      if (subscribers.size === 0) release.idle();
     },
   };
 }

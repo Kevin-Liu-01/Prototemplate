@@ -297,6 +297,23 @@
   color: var(--pt-ink-2);
 }
 
+/* a line whose text changes as the plate plays: every text it can show sits
+   hidden in the same grid cell (.dmo-held-ghost), and tabular figures keep
+   a number no wider than its widest, so the line keeps one height at any
+   width and nothing under it moves */
+.dmo-held {
+  display: grid;
+  font-variant-numeric: tabular-nums;
+}
+
+.dmo-held > * {
+  grid-area: 1 / 1;
+}
+
+.dmo-held-ghost {
+  visibility: hidden;
+}
+
 .dmo-num {
   font-variant-numeric: tabular-nums;
   color: var(--pt-ink);

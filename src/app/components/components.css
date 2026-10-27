@@ -86,9 +86,11 @@
   color: var(--pt-ink-2);
 }
 
-/* the plate's place: until the plate draws, its measured height at 1440
-   (--cl-h) or at 390 (--cl-h-sm, where the stages take their phone
-   heights), or the height it measured when it last ran */
+/* the plate's place: until the plate draws, the height the slot sets
+   inline (the plate's measured height at the reader's width, or the one it
+   measured when it last ran); before the page hydrates, the measured
+   height at 1440 (--cl-h) or at 390 (--cl-h-sm, where the stages take
+   their phone heights) */
 .cl-live {
   margin-top: 14px;
 }

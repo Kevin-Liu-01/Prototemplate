@@ -20,7 +20,7 @@ export const LAZY_PLATE_MODULES = [
   '@/components/docs/demos/pages/lazy',
 ] as const;
 
-/** The plates with a server half, which the server page renders: MarksDemo reads public/marks at build time. */
+/** The plates with a server half: MarksDemo reads public/marks at build time. src/app/components/plates.ts maps each one to its client plate, fed from a prerendered route. */
 export const SERVER_PLATE_MODULES = ['@/components/docs/demos/MarksDemo'] as const;
 
 export type LazyPlateModule = (typeof LAZY_PLATE_MODULES)[number];
@@ -48,8 +48,28 @@ export type LibraryEntry = {
   desc?: string;
   /** the live plate, for a documented component */
   plate?: LibraryPlate;
-  /** the height the row reserves for the plate before it mounts, at 1440 and at 390 wide */
-  reserve?: readonly [wide: number, narrow: number];
+  /** the height the row reserves for the plate before it mounts: [viewport width, height] points in ascending width */
+  reserve?: readonly (readonly [width: number, height: number])[];
+  /** the same under reduced motion, for a plate whose height differs there (a plate that moves adds its still note) */
+  reserveStill?: readonly (readonly [width: number, height: number])[];
 };
 
 export type LibraryBlock = { id: string; label: string; entries: readonly LibraryEntry[] };
+
+/**
+ * The height a row reserves at viewport width `width`: the straight line
+ * between the measured points on either side of it, or the end point's
+ * height outside them.
+ */
+export function reserveAt(points: readonly (readonly [number, number])[], width: number): number {
+  const first = points[0];
+  if (!first) return 0;
+  if (width <= first[0]) return first[1];
+  for (let i = 1; i < points.length; i += 1) {
+    const [hiW, hiH] = points[i] ?? first;
+    if (width > hiW) continue;
+    const [loW, loH] = points[i - 1] ?? first;
+    return Math.round(loH + ((hiH - loH) * (width - loW)) / (hiW - loW));
+  }
+  return points[points.length - 1]?.[1] ?? 0;
+}

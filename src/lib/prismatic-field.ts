@@ -37,10 +37,13 @@
  * browser's ~16-context budget after a handful of client-side navigations
  * between directions, after which getContext returned null and every field
  * silently rendered black. One context also means the shader program, quad
- * buffer and uniform lookups are created once per session instead of per field,
- * and a single rAF loop can skip any field that is offscreen or paused.
+ * buffer and uniform lookups are created once per context instead of per field,
+ * and a single rAF loop can skip any field that is offscreen or paused. The
+ * context is built for the first field and lost on purpose a second after
+ * the last one leaves (gl-release.ts), so a page without a field holds none.
  */
 
+import { glRelease, loseGl } from '@/lib/gl-release';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 export type PrismaticParams = {
@@ -511,6 +514,16 @@ let engineFailed = false;
 const subscribers = new Set<Subscriber>();
 let frameId = 0;
 
+/* the context goes once the last field has: it is lost on purpose and the next field builds a new one */
+const release = glRelease(
+  () => {
+    const gone = engine;
+    engine = null;
+    if (gone) loseGl(gone.gl);
+  },
+  () => subscribers.size > 0
+);
+
 /**
  * Debug probe for perf checks (rAF-idle and engagement assertions in the
  * screenshot harness). One mutated object, no per-frame allocation.
@@ -601,7 +614,7 @@ function getEngine(): Engine | null {
   // rather than leaving every field black.
   canvas.addEventListener('webglcontextlost', (event) => {
     event.preventDefault();
-    engine = null;
+    if (engine?.canvas === canvas) engine = null;
   });
 
   engine = {
@@ -980,9 +993,10 @@ export function createPrismaticField(
       sub.observer?.disconnect();
       sub.resize?.disconnect();
       subscribers.delete(sub);
-      // The engine context is deliberately kept for the session: it is a single
-      // context, and tearing it down per unmount is what made repeated
-      // navigation exhaust the browser's context budget.
+      // The one context outlives each field and goes with the last one
+      // (release): lost on purpose, it frees its place in the browser's
+      // context budget at once rather than at garbage collection.
+      if (subscribers.size === 0) release.idle();
     },
   };
 }

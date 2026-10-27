@@ -106,7 +106,7 @@ export const TEMPLATES: Record<TemplateId, PageTemplate> = {
   },
   error: {
     name: 'NotFound',
-    pages: [{ label: 'Not found', path: '/d/production/this-page-does-not-exist?chrome=0' }],
+    pages: [{ label: 'Not found', path: '/d/production/this-page-does-not-exist?state=not-found&chrome=0' }],
     parts: [
       { name: 'Nav', selector: 'header.pn', token: 'height', read: 'height' },
       { name: 'Band', selector: '.pnf-hero', token: 'min-height', read: 'min-height' },

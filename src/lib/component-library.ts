@@ -24,10 +24,14 @@ import type { LazyPlateModule, LibraryBlock, LibraryEntry, LibraryPlate, ServerP
  * is not a literal) throws, so the build fails.
  *
  * The height a row reserves for its plate is the plate's measured height
- * at 1440 and at 390 wide, from src/lib/plate-heights.json
- * (scripts/check/capture-plate-heights.mjs). A plate not measured yet
+ * across the viewport widths, from src/lib/plate-heights.json
+ * (scripts/check/capture-plate-heights.mjs): [width, height] points the
+ * viewer joins with straight lines (reserveAt). A plate that moves adds a
+ * line under reduced motion, so its heights then come from
+ * src/lib/plate-heights-still.json (reserveStill). A plate not measured yet
  * reserves its stage, read from its capture
- * (public/shots/components/<page>-<heading id>.webp), and one controls row.
+ * (public/shots/components/<page>-<heading id>.webp), and one controls row,
+ * at every width.
  *
  * UNDOCUMENTED lists the reusable components under src/components that no
  * docs page covers yet. An entry drops out on its own once a Components
@@ -38,6 +42,7 @@ const ROOT = process.cwd();
 const DOCS = join(ROOT, 'content/docs/components');
 const SHOTS = join(ROOT, 'public/shots/components');
 const HEIGHTS = join(ROOT, 'src/lib/plate-heights.json');
+const STILL_HEIGHTS = join(ROOT, 'src/lib/plate-heights-still.json');
 
 /** One controls row and the plate's two borders, measured on the ordered screen's plate at 1440. */
 const BAR = 86;
@@ -263,7 +268,7 @@ function proseLines(source: string): string[] {
   const lines: string[] = [];
   let fenced = false;
   for (const line of body.split('\n')) {
-    if (line.startsWith('```')) {
+    if (/^\s*(```|~~~)/.test(line)) {
       fenced = !fenced;
       continue;
     }
@@ -459,23 +464,44 @@ function plateOf(element: string, name: string, imports: ReadonlyMap<string, Imp
 /** One h2 section of a page that mounts a plate: its heading, its id, and the plate's name and element. */
 type Section = { heading: string; anchor: string; name: string; element: string };
 
-/** The h2 sections of an MDX page that mount a plate, each with the first plate under its heading. */
-function plateSections(lines: readonly string[], where: string): Section[] {
+/** A line with its inline code blanked to spaces, so a component named in prose (`<StudioField>`) is not read as a mount and every column stays put. */
+function withoutInlineCode(line: string): string {
+  return line.replace(/`[^`\n]*`/g, (span) => ' '.repeat(span.length));
+}
+
+/**
+ * The h2 sections of an MDX page that mount a plate. A plate is an element
+ * whose name the page imports (fumadocs' own Cards and Callout are not
+ * imported), written flush at the start of its line inside an h2 section,
+ * one to a section. Any other use of an imported element (indented, after
+ * other markup on its line, wrapped in another element, above the first
+ * h2, or a second plate in one section) throws, so /components never drops
+ * a plate without failing the build.
+ */
+function plateSections(lines: readonly string[], imports: ReadonlyMap<string, Imported>, where: string): Section[] {
   const text = lines.join('\n');
   const slug = slugger();
   const sections: Section[] = [];
-  let current: { heading: string; anchor: string; done: boolean } | null = null;
+  let current: { heading: string; anchor: string; plate: string | null } | null = null;
   let offset = 0;
   for (const line of lines) {
     const heading = /^(#{1,6})\s+(.+?)\s*$/.exec(line);
-    const plate = /^<([A-Z]\w*)/.exec(line);
     if (heading) {
       const anchor = slug(heading[2] ?? '');
-      if (heading[1] === '##') current = { heading: heading[2] ?? '', anchor, done: false };
-    } else if (current && !current.done && plate) {
-      current.done = true;
-      const name = plate[1] ?? '';
-      sections.push({ heading: current.heading, anchor: current.anchor, name, element: elementAt(text, offset, `${where}#${current.anchor}`) });
+      if (heading[1] === '##') current = { heading: heading[2] ?? '', anchor, plate: null };
+    } else {
+      for (const match of withoutInlineCode(line).matchAll(/<([A-Z]\w*)/g)) {
+        const name = match[1] ?? '';
+        if (!imports.has(name)) continue;
+        const at = `${where}${current ? `#${current.anchor}` : ''}`;
+        if (!current) throw new Error(`/components: ${at} mounts <${name} /> above its first h2; a plate sits in an h2 section`);
+        if (match.index !== 0) {
+          throw new Error(`/components: ${at} mounts <${name} /> indented or inside other markup; write the plate flush at the start of its own line`);
+        }
+        if (current.plate) throw new Error(`/components: ${at} mounts <${name} /> after <${current.plate} />; one plate to an h2 section`);
+        current.plate = name;
+        sections.push({ heading: current.heading, anchor: current.anchor, name, element: elementAt(text, offset, at) });
+      }
     }
     offset += line.length + 1;
   }
@@ -506,18 +532,21 @@ function pad3(n: number): string {
   return String(n).padStart(3, '0');
 }
 
-/** The measured plate heights by entry id, at 1440 and at 390 wide. */
-function readHeights(): Readonly<Record<string, readonly [number, number]>> {
-  return existsSync(HEIGHTS) ? (JSON.parse(readFileSync(HEIGHTS, 'utf8')) as Record<string, [number, number]>) : {};
+/** A plate's measured height at viewport widths, as [width, height] points in ascending width. */
+type Points = readonly (readonly [number, number])[];
+
+/** Measured plate heights by entry id, from one of the two tables. */
+function readHeights(file: string): Readonly<Record<string, Points>> {
+  return existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as Record<string, Points>) : {};
 }
 
-/** The height a row reserves for its plate: measured, or the stage from the light capture (shot at a device scale of 1) and one controls row. */
-function reserveOf(id: string, heights: Readonly<Record<string, readonly [number, number]>>): readonly [number, number] {
-  const measured = heights[id];
-  if (measured) return measured;
+/** The heights a row reserves for its plate: measured, or the stage from the light capture (shot at a device scale of 1) and one controls row at every width. */
+function reserveOf(id: string, measured: Readonly<Record<string, Points>>): Points {
+  const points = measured[id];
+  if (points && points.length > 0) return points;
   const light = join(SHOTS, `${id}.webp`);
   const stage = (existsSync(light) ? webpSize(light)?.h : undefined) ?? 300;
-  return [stage + BAR, stage + BAR];
+  return [[1440, stage + BAR]];
 }
 
 /** The heading as a component's name: a leading `The` is dropped. */
@@ -540,7 +569,8 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
   const top = readMeta(DOCS);
   const groups = (top.pages ?? []).filter((page) => page.startsWith('('));
   const mdx: string[] = [];
-  const heights = readHeights();
+  const heights = readHeights(HEIGHTS);
+  const still = readHeights(STILL_HEIGHTS);
   let n = 0;
 
   const blocks: LibraryBlock[] = groups.map((folder) => {
@@ -554,7 +584,7 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
       const href = `/docs/components/${page}`;
       const lines = proseLines(source);
       const imports = importsOf(lines);
-      for (const section of plateSections(lines, page)) {
+      for (const section of plateSections(lines, imports, page)) {
         const key = `${page}#${section.anchor}`;
         if (LEFT_OUT.has(key)) continue;
         const known = SOURCES[key];
@@ -569,6 +599,7 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
           docs: { href: `${href}#${section.anchor}`, title },
           plate: plateOf(section.element, section.name, imports, key),
           reserve: reserveOf(id, heights),
+          ...(still[id] ? { reserveStill: still[id] } : {}),
         });
       }
     }

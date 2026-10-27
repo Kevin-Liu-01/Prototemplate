@@ -77,7 +77,6 @@ export default function GlyphFieldDemo() {
   const [scale, setScale] = useState('1');
   const [script, setScript] = useState(0);
   const [run, replay] = useReplay();
-  const sample = SCRIPTS[script];
 
   return (
     <Plate
@@ -113,8 +112,12 @@ export default function GlyphFieldDemo() {
             onChange={setScale}
           />
           <Action onClick={replay}>Replay</Action>
-          <p className='dmo-bar-status' aria-live='polite'>
-            Printing <span lang={sample?.lang}>{sample?.word}</span> in {sample?.script}
+          <p className='dmo-bar-status dmo-held' aria-live='polite'>
+            {SCRIPTS.map((sample, i) => (
+              <span aria-hidden={i === script ? undefined : true} className={i === script ? undefined : 'dmo-held-ghost'} key={sample.tag}>
+                Printing <span lang={sample.lang}>{sample.word}</span> in {sample.script}
+              </span>
+            ))}
           </p>
         </>
       }

@@ -9,7 +9,9 @@ import * as interactables from '@/components/docs/demos/interactables/lazy';
 import * as layouts from '@/components/docs/demos/layouts/lazy';
 import * as demos from '@/components/docs/demos/lazy';
 import * as pages from '@/components/docs/demos/pages/lazy';
-import type { LazyPlateModule } from '@/lib/component-library-model';
+import type { LazyPlateModule, ServerPlateModule } from '@/lib/component-library-model';
+
+import MarksLive from './MarksLive';
 
 /**
  * The plate registry of /components: every lazy module the docs Components
@@ -30,7 +32,22 @@ const LAZY_PLATES: Readonly<Record<LazyPlateModule, Readonly<Record<string, unkn
   '@/components/docs/demos/pages/lazy': pages,
 };
 
+/**
+ * The plates with a server half, by the specifier the MDX imports them
+ * from: on /components each one is its client plate fed from a prerendered
+ * route when its row mounts it, so the page carries none of its data.
+ * Keyed by ServerPlateModule, so tsc holds the two lists together.
+ */
+const SERVER_PLATES: Readonly<Record<ServerPlateModule, ComponentType<Record<string, unknown>>>> = {
+  '@/components/docs/demos/MarksDemo': MarksLive,
+};
+
 /** The component a docs section mounts, taking the props its MDX writes. */
 export function lazyPlate(module: LazyPlateModule, name: string): ComponentType<Record<string, unknown>> {
   return LAZY_PLATES[module][name] as ComponentType<Record<string, unknown>>;
+}
+
+/** The /components stand-in for a plate with a server half: the same client plate with the same data. */
+export function serverPlate(module: ServerPlateModule): ComponentType<Record<string, unknown>> {
+  return SERVER_PLATES[module];
 }

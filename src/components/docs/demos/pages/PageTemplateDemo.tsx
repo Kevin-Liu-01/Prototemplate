@@ -239,7 +239,8 @@ export default function PageTemplateDemo({ template }: { template: TemplateId })
   const theme: FrameTheme = useTheme();
   const page = spec.pages.find((p) => p.path === path) ?? first;
   const still = page.still ? `/shots/thumb/${page.still}${theme === 'dark' ? '-dark' : ''}.webp` : null;
-  const open = page.path.replace(/[?&]chrome=0$/, '');
+  /* the page at its own address: the error page's opens the real 404 */
+  const open = page.path.replace(/\?.*$/, '');
 
   return (
     <Plate

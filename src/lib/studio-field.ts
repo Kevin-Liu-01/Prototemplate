@@ -41,15 +41,18 @@
  * homes invert the canvas (v0-pages.css), so the family reads as ink
  * print on paper — tuned to survive both.
  *
- * ARCHITECTURE — the house rule: exactly ONE WebGL context for this module
- * per session, shared by every subscriber (per-component contexts exhausted
- * the browser's ~16-context budget and went silently black). One program
- * per study, compiled lazily in the shared context; the engine draws into
- * one offscreen GL canvas and blits into each subscriber's own 2D canvas.
+ * ARCHITECTURE. The house rule: at most ONE WebGL context for this module,
+ * shared by every subscriber (per-component contexts exhausted the
+ * browser's ~16-context budget and went silently black). It is built for
+ * the first subscriber and lost on purpose a second after the last one
+ * leaves (gl-release.ts). One program per study, compiled lazily in the
+ * shared context; the engine draws into one offscreen GL canvas and blits
+ * into each subscriber's own 2D canvas.
  * Reduced motion renders ONE static frame and stops; document.hidden pauses
  * the loop; a per-subscriber ResizeObserver keeps stills crisp on reflow.
  */
 
+import { glRelease, loseGl } from '@/lib/gl-release';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 export type StudioVec3 = [number, number, number];
@@ -696,6 +699,16 @@ let engineFailed = false;
 const subscribers = new Set<Subscriber>();
 let frameId = 0;
 
+/* the context goes once the last field has: it is lost on purpose and the next field builds a new one */
+const release = glRelease(
+  () => {
+    const gone = engine;
+    engine = null;
+    if (gone) loseGl(gone.gl);
+  },
+  () => subscribers.size > 0
+);
+
 function compile(gl: WebGLRenderingContext, type: number, src: string): WebGLShader {
   const shader = gl.createShader(type);
   if (!shader) throw new Error('studio-field: could not create shader');
@@ -794,7 +807,7 @@ function getEngine(): Engine | null {
   // rather than leaving every field black.
   canvas.addEventListener('webglcontextlost', (event) => {
     event.preventDefault();
-    engine = null;
+    if (engine?.canvas === canvas) engine = null;
   });
 
   engine = {
@@ -949,8 +962,10 @@ export function createStudioField(
       sub.observer?.disconnect();
       sub.resize?.disconnect();
       subscribers.delete(sub);
-      // The engine context is deliberately kept for the session — tearing it
-      // down per unmount is what exhausted the browser's context budget.
+      // The one context outlives each field and goes with the last one
+      // (release): lost on purpose, it frees its place in the browser's
+      // context budget at once rather than at garbage collection.
+      if (subscribers.size === 0) release.idle();
     },
   };
 }

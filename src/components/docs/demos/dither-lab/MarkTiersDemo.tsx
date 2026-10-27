@@ -101,7 +101,8 @@ export default function MarkTiersDemo() {
   const [art, setArt] = useState<{ id: MarkId; art: MarkArt } | null>(null);
 
   const canvas = useRef<HTMLCanvasElement>(null);
-  const readout = useRef<HTMLParagraphElement>(null);
+  const readout = useRef<HTMLSpanElement>(null);
+  const widest = useRef<HTMLSpanElement>(null);
   const size = useBox();
   const cache = useRef<{ key: string; shape: CellShape } | null>(null);
   const clock = useRef({ t: RESOLVE_S, last: 0 });
@@ -145,9 +146,12 @@ export default function MarkTiersDemo() {
       const paper = packColor(readVar(el, '--pt-paper', 'rgb(255, 255, 255)'));
       const ink = packColor(readVar(el, '--pt-ink', 'rgb(7, 7, 7)'));
       blit(surface, index, new Uint32Array([paper, ink]));
+      const all = inside.toLocaleString('en-US');
       if (readout.current) {
-        readout.current.textContent = `Level ${tier} of ${tiers}: ${lit.toLocaleString('en-US')} of the mark's ${inside.toLocaleString('en-US')} cells print ink.`;
+        readout.current.textContent = `Level ${tier} of ${tiers}: ${lit.toLocaleString('en-US')} of the mark's ${all} cells print ink.`;
       }
+      /* the sentence at its widest, every cell lit, holds the readout's height while the level plays */
+      if (widest.current) widest.current.textContent = `Level ${tiers} of ${tiers}: ${all} of the mark's ${all} cells print ink.`;
     },
     { dependencies: [size.w, size.h, art, mark, order, screen, cellPx, level, tiers, theme] }
   );
@@ -214,7 +218,10 @@ export default function MarkTiersDemo() {
               }}
             />
           </div>
-          <p className='dmo-bar-status dl-status' ref={readout} />
+          <p className='dmo-bar-status dl-status dmo-held'>
+            <span ref={readout} />
+            <span aria-hidden='true' className='dmo-held-ghost' ref={widest} />
+          </p>
         </>
       }
       height={340}

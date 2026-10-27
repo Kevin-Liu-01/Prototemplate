@@ -121,13 +121,21 @@ function paint(walk: Walk, geo: Geometry, index: Uint8Array): void {
   }
 }
 
+/** The line before the walk decides its first cell. */
+const UNDECIDED = 'No cell is decided yet. Each pending cell shows its tone plus the error it has received, through the 8 by 8 screen.';
+
 function describe(walk: Walk, kernel: KernelId): string {
   const last = walk.last;
-  if (!last) return 'No cell is decided yet. Each pending cell shows its tone plus the error it has received, through the 8 by 8 screen.';
+  if (!last) return UNDECIDED;
   const x = (last.i % walk.cols) + 1;
   const y = Math.floor(last.i / walk.cols) + 1;
   const sign = last.err < 0 ? '−' : '+';
   return `Cell ${x}, ${y} holds ${last.v.toFixed(2)} and prints ${last.on ? 'ink' : 'paper'}. Its error of ${sign}${Math.abs(last.err).toFixed(2)} goes ${ERROR_ROUTES[kernel]}.`;
+}
+
+/** The line at its widest on this grid: the last cell's numbers, paper, and a signed error. */
+function widestLine(walk: Walk, kernel: KernelId): string {
+  return `Cell ${walk.cols}, ${walk.rows} holds 0.00 and prints paper. Its error of −0.00 goes ${ERROR_ROUTES[kernel]}.`;
 }
 
 /**
@@ -146,7 +154,8 @@ export default function DiffusionStepDemo() {
   const [restarts, setRestarts] = useState(0);
 
   const canvas = useRef<HTMLCanvasElement>(null);
-  const line = useRef<HTMLParagraphElement>(null);
+  const line = useRef<HTMLSpanElement>(null);
+  const widest = useRef<HTMLSpanElement>(null);
   const size = useBox();
   const walk = useRef<Walk | null>(null);
   const geo = useRef<Geometry | null>(null);
@@ -164,6 +173,7 @@ export default function DiffusionStepDemo() {
     paint(w, g, index);
     blit(surface, index, colors.current);
     if (line.current) line.current.textContent = describe(w, kernel);
+    if (widest.current) widest.current.textContent = widestLine(w, kernel);
   };
 
   /* colors: the theme's paper and ink, a frame between them, the docs accent */
@@ -269,7 +279,13 @@ export default function DiffusionStepDemo() {
               <Action onClick={() => setRestarts((n) => n + 1)}>Restart</Action>
             </div>
           </div>
-          <p className='dmo-bar-status dl-status dl-walk-line' ref={line} />
+          <p className='dmo-bar-status dl-status dl-walk-line dmo-held'>
+            <span ref={line} />
+            <span aria-hidden='true' className='dmo-held-ghost'>
+              {UNDECIDED}
+            </span>
+            <span aria-hidden='true' className='dmo-held-ghost' ref={widest} />
+          </p>
           <SourceStatus text={creditFor(source.id)} />
         </>
       }
