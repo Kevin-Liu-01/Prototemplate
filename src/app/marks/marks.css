@@ -6,7 +6,10 @@
    other explorations. The head's note holds the two marks in production
    (.mk-live), so they are on the first screen. Every mark takes one card
    (.mk-card): the mark large on its plates, the run of heights, the 16px
-   cut, then the name, the tags, the notes and the files. Everything reads
+   cut, then the name, the tags, the notes and the files; an exploration's
+   card draws the mark beside its construction drawing (.mk-card-drawn), a
+   drawing's lines and labels taking the plate's ink like the mark's.
+   Everything reads
    the shell's --pt- tokens. The marks are one color by construction: every
    plate sets a ground and a color, and the mark takes the color through a
    mask of its public file, so a positive plate is ink on paper and a
@@ -189,15 +192,6 @@
   border-radius: var(--pt-radius-card);
   overflow: hidden;
   background: var(--pt-paper);
-  content-visibility: auto;
-  contain-intrinsic-size: auto 341px;
-}
-
-/* the estimate a card skips rendering at is its measured height at the
-   1440 capture (441 to 443px with the 16px cut, 341px without), so a jump
-   past unrendered cards lands where the rendered page puts its target */
-.mk-card.has-cut {
-  contain-intrinsic-size: auto 442px;
 }
 
 .mk-card.is-pick {
@@ -207,28 +201,94 @@
 /* a speed or picture mark's card is a block the list names: it keeps the card's own rhythm */
 .mk-card.mk-sec {
   gap: 0;
-  content-visibility: visible;
 }
 
 .mk-card.mk-sec.is-active {
   border-color: var(--pt-ink);
 }
 
-/* the speed and picture marks run two to a row, and so do the hemispheres
-   marks drawn beside their construction */
+/* the explorations beside their constructions run two to a row where a
+   card keeps the 480px that puts its drawing beside the mark (the 1440
+   view), else one; the speed marks run one to a row, each drawing across
+   its card */
 .mk-cards.is-sheets {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
 }
 
-/* a hemispheres mark beside its construction: the card renders with the
-   page, since its height is not the lazy estimate above, and the plate
-   keeps room for its caption under the drawing's labels */
-.mk-cards.is-drawn > .mk-card {
-  content-visibility: visible;
+.mk-cards.is-wide {
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.mk-cards.is-drawn .mk-card-plate {
+/* ---------- an exploration's card: the mark beside its construction ----------
+   The card is a size container, so the layout follows the card's own
+   width. On a narrow card, and for a mark wider than it is tall, the parts
+   stack: the clean mark, the drawing, the run of heights, the 16px cut.
+   From 480px a square mark's card holds the clean mark, its heights and
+   its cut in a 192px column at the left (the 160px mark inside the
+   plate's 16px pads) and the drawing beside them; the clean plate grows
+   with a tall drawing, so the heights and the cut sit at the drawing's
+   foot. Both plates keep room under the marks for their captions. */
+
+.mk-card.is-drawn {
+  container-type: inline-size;
+}
+
+/* the drawn part fills a card its row stretches, the drawing's row taking the extra height */
+.mk-card-drawn {
+  flex: 1 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-areas: 'clean' 'drawing' 'sizes' 'cut';
+}
+
+.mk-card-drawn .mk-card-plate {
   padding-bottom: 40px;
+}
+
+.mk-card-clean {
+  grid-area: clean;
+}
+
+.mk-card-drawing {
+  grid-area: drawing;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.mk-card-drawn > .mk-card-sizes {
+  grid-area: sizes;
+}
+
+.mk-card-drawn > .mk-card-cut {
+  grid-area: cut;
+}
+
+/* a wide mark's drawing keeps the width its labels read at, and its plate
+   pans sideways on a card narrower than that; the auto margins centre it
+   on a wider card without cutting off its left end on a narrow one */
+.mk-card-drawn.is-wide > .mk-card-drawing {
+  justify-content: flex-start;
+}
+
+.mk-card-drawn.is-wide > .mk-card-drawing > .mk-svg {
+  max-width: none;
+  margin-inline: auto;
+}
+
+@container (min-width: 480px) {
+  .mk-card-drawn:not(.is-wide) {
+    grid-template-columns: 192px minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto;
+    grid-template-areas:
+      'clean drawing'
+      'sizes drawing'
+      'cut drawing';
+  }
+
+  .mk-card-drawn:not(.is-wide) > .mk-card-drawing {
+    border-top: 0;
+    border-left: 1px solid var(--pt-hair-soft);
+  }
 }
 
 .mk-card-plates {
@@ -398,7 +458,6 @@
 
 .mk-card.is-feature {
   border-color: var(--pt-edge);
-  content-visibility: visible;
 }
 
 .mk-card.is-feature .mk-card-plate {
@@ -754,8 +813,20 @@
   outline-offset: 4px;
 }
 
-/* a mark drawn by mask: the plate's color through the public file, contained */
+/* a mark drawn by mask: the plate's color through the public file,
+   contained. The mask paints from the span's ::before, and the span skips
+   its contents while it is off screen, so a file is fetched only when its
+   mark comes near the viewport. The span takes its size from its width and
+   aspect either way, so every card has its full height from the first
+   layout and a jump lands where the rendered page puts its target. */
 .mk-mask {
+  content-visibility: auto;
+}
+
+.mk-mask::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background: currentColor;
   -webkit-mask: var(--mk-mask) center / contain no-repeat;
   mask: var(--mk-mask) center / contain no-repeat;
@@ -966,7 +1037,6 @@
 
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .mk-families,
-  .mk-cards.is-sheets,
   .mk-card.is-feature .mk-card-plates.is-two {
     grid-template-columns: 1fr;
   }
@@ -1017,15 +1087,6 @@
   .mk-card-plate {
     min-height: 140px;
     padding: 20px 12px;
-  }
-
-  /* the narrow estimates: 417 to 419px with the cut at 390, 321px without */
-  .mk-card {
-    contain-intrinsic-size: auto 321px;
-  }
-
-  .mk-card.has-cut {
-    contain-intrinsic-size: auto 418px;
   }
 
   .mk-card-sizes {

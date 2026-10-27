@@ -36,7 +36,8 @@ export default function MarksDemo() {
         kind: mark.kind,
         svg,
         aspect: aspectOf(svg),
-        construction: mark.constructionFile ? readPublic(mark.constructionFile) : undefined,
+        /* the picture marks' drawings are near square and small enough to inline; the speed marks' drawings are wide sheets that /marks shows across a card */
+        construction: mark.family === 'picture' ? readPublic(mark.constructionFile) : undefined,
       };
     }),
     ...GLOBE_CONCEPTS.map((concept) => {

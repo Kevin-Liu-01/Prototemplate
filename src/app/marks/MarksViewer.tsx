@@ -58,7 +58,7 @@ const TOTAL = PRODUCTION_MARKS.length + HEMISPHERE_MARKS.length + MARKS.length +
 const familyId = (family: HemisphereFamily) => `hemi-${family.id}`;
 const familyMarks = (family: HemisphereFamily) => HEMISPHERE_MARKS.filter((mark) => mark.family === family.id);
 
-const BOOK_LEAD = `The two marks General Translation ships today come first, then the ${HEMISPHERE_MARKS.length} hemispheres marks, the bar monogram collection and every other exploration.`;
+const BOOK_LEAD = `The two marks General Translation ships today, then the ${HEMISPHERE_MARKS.length} hemispheres marks, the bar monogram collection and every other exploration, each beside its construction.`;
 
 const BOOK_NOTE =
   'Only the doubled-line GT monogram and the Locadex mark are in production. Every mark is one color and takes the ink of whatever it sits on.';
@@ -96,11 +96,8 @@ const COLUMN_W = 1440 - 208 - 2 * 28 - 2 - 2 * 56;
 /** A card plate's side padding and border (marks.css: .mk-card-plate, .mk-card). */
 const CARD_SIDE = 16 + 1;
 
-/** The gap between two cards of a row (marks.css: .mk-cards). */
-const CARD_GAP = 12;
-
-/** The inner width of a card in the two-column run of the speed and picture marks. */
-const HALF_CARD_INNER = (COLUMN_W - CARD_GAP) / 2 - 2 * CARD_SIDE;
+/** The inner width of a speed mark's card, one to a row with its construction under the mark. */
+const WIDE_CARD_INNER = COLUMN_W - 2 * CARD_SIDE;
 
 /** The inner width of the presentation field (marks.css: .mk-field pads 32px inside a 1px border). */
 const FIELD_INNER = COLUMN_W - 2 * (32 + 1);
@@ -115,8 +112,16 @@ const CARD_SIZES: readonly number[] = [48, 32, 16];
 /** A production card's mark, on each of its two plates. */
 const FEATURE_HERO_PX = 160;
 
-/** A hemispheres mark beside its construction, two cards to a row: large enough for the drawing's labels, and inside the plate at 1440. */
-const CONSTRUCTION_HERO_PX = 224;
+/** A square mark beside its construction: the clean mark in the card's left column (marks.css: .mk-card-drawn). */
+const DRAWN_HERO_PX = 160;
+
+/**
+ * A wide mark's construction runs under the mark at most this tall and
+ * this wide: the width of the plate at the 1440 view, where its labels
+ * read at 7 to 9px. A narrower card pans the drawing sideways.
+ */
+const WIDE_DRAWING_PX = 480;
+const WIDE_DRAWING_W = 1080;
 
 /** A production mark in the head's strip: the GT monogram at 64px, and every live mark at the same area, so the square Locadex mark reads as large as the wide GT. */
 const LIVE_PX = 64;
@@ -227,8 +232,29 @@ type Ground = (typeof GROUNDS)[number];
 const groundClass = (ground: Ground) => (ground === 'paper' ? 'is-paper' : 'is-ink');
 const groundName = (ground: Ground) => (ground === 'paper' ? 'Positive' : 'Reversed');
 
-/** One plate of a card: the file it draws on a ground, with a caption when the card has more than one plate. */
+/** One plate of a card without a drawing: the file it draws on a ground, with a caption when the card has two plates. */
 type CardPlate = { file: string; ground: Ground; caption?: string };
+
+/** A construction drawing's viewBox width and height, read by the server page from its file. */
+export type DrawingSize = readonly [number, number];
+
+/** A construction drawing on its card: the file, its aspect, and its height before the plate clamps its width. */
+type CardDrawing = { file: string; aspect: number; height: number };
+
+/**
+ * A construction drawing at its size on the card. A square mark's drawing
+ * shares the units of the mark's 256 unit square and is drawn at one CSS
+ * pixel per unit, so its 9 unit labels read at 9px, and the plate clamps
+ * it to its width. A wide mark's drawing runs under the mark at most
+ * WIDE_DRAWING_PX tall and WIDE_DRAWING_W wide, and keeps that size on a
+ * narrower card, where its plate pans.
+ */
+function drawingFor(file: string, size: DrawingSize | undefined, wide: boolean): CardDrawing | undefined {
+  if (!size) return undefined;
+  const [width, height] = size;
+  const aspect = width / height;
+  return { file, aspect, height: wide ? Math.min(WIDE_DRAWING_PX, WIDE_DRAWING_W / aspect) : height };
+}
 
 /** A file link: the file's name as the label unless one is given, and a download. */
 type CardFile = { href: string; label?: string };
@@ -245,12 +271,14 @@ type MarkCardProps = {
   aspect: number;
   /** the heading level: h3 on a production card, h4 inside a group's run */
   level: 'h3' | 'h4';
-  /** the plates; by default the mark on paper, or positive and reversed on a production card */
-  plates?: readonly CardPlate[];
-  /** the mark's height on its plates; by default the card's hero height */
+  /** the mark's height on its plate; by default the card's hero height */
   hero?: PlateFit;
   /** the run of heights; by default 48, 32 and 16, or the full run on a production card */
   sizes?: readonly number[];
+  /** the mark's construction drawing, beside the clean mark */
+  drawing?: CardDrawing;
+  /** a mark wider than it is tall: the drawing sits under the clean mark at the card's width */
+  wide?: boolean;
   /** short tags after the name: Pick, Lead, In production, the family */
   tags?: readonly ReactNode[];
   /** the 16px cut, when the mark has one */
@@ -269,20 +297,23 @@ type MarkCardProps = {
 };
 
 /**
- * The one card every mark on the page takes: the mark large on its plates,
+ * The one card every mark on the page takes: the mark large on its plate,
  * the run of heights in the same ink, the 16px cut when the mark has one,
  * then the name, the tags, the note, the ruled notes and the files. A
- * production card shows both grounds; a picture mark's card shows the
- * clean mark beside its construction.
+ * production card shows both grounds. An exploration's card draws the
+ * clean mark beside its construction drawing: the clean mark, its heights
+ * and its cut in a column at the left and the drawing at the right, or the
+ * drawing under the clean mark on a narrow card and for a wide mark.
  */
 function MarkCard({
   name,
   file,
   aspect,
   level,
-  plates,
   hero,
   sizes,
+  drawing,
+  wide,
   tags,
   file16,
   note,
@@ -294,43 +325,72 @@ function MarkCard({
 }: MarkCardProps) {
   const Heading = level;
   const headingId = block ? `mk-${block.id}` : undefined;
-  const shown: readonly CardPlate[] =
-    plates ?? (feature ? GROUNDS.map((ground) => ({ file, ground, caption: groundName(ground) })) : [{ file, ground: 'paper' }]);
   const run = sizes ?? (feature ? [...MARK_SIZES].reverse() : CARD_SIZES);
   const height = hero ?? (feature ? FEATURE_HERO_PX : CARD_HERO_PX);
+  const sizeRow = (
+    <div className='mk-card-sizes is-paper'>
+      {run.map((size) => (
+        <span key={size} className='mk-size'>
+          <MaskArt file={file} height={size} aspect={aspect} />
+          <small>{size}</small>
+        </span>
+      ))}
+    </div>
+  );
+  const cutRow = file16 && (
+    <div className='mk-card-cut is-paper'>
+      <span className='mk-size'>
+        <MaskArt file={file16} height={CUT_PX} aspect={1} />
+        <small>16 cut</small>
+      </span>
+      <span className='mk-size'>
+        <MaskArt file={file16} height={CUT_PX * CUT_ZOOM} aspect={1} />
+        <small>{CUT_ZOOM}x</small>
+      </span>
+    </div>
+  );
+  const plates: readonly CardPlate[] = feature
+    ? GROUNDS.map((ground) => ({ file, ground, caption: groundName(ground) }))
+    : [{ file, ground: 'paper' }];
   return (
     <article
-      className={cn('mk-card', file16 && 'has-cut', feature && 'is-feature', pick && 'is-pick', block && 'mk-sec', block?.active && 'is-active')}
+      className={cn(
+        'mk-card',
+        feature && 'is-feature',
+        drawing && 'is-drawn',
+        pick && 'is-pick',
+        block && 'mk-sec',
+        block?.active && 'is-active'
+      )}
       data-id={block?.id}
       aria-labelledby={headingId}
     >
-      <div className={cn('mk-card-plates', shown.length > 1 && 'is-two')}>
-        {shown.map((plate) => (
-          <figure key={`${plate.file}-${plate.ground}`} className={cn('mk-card-plate', groundClass(plate.ground))}>
-            <MaskArt file={plate.file} height={height} aspect={aspect} />
-            {plate.caption && <figcaption>{plate.caption}</figcaption>}
+      {drawing ? (
+        <div className={cn('mk-card-drawn', wide && 'is-wide')}>
+          <figure className='mk-card-plate mk-card-clean is-paper'>
+            <MaskArt file={file} height={height} aspect={aspect} />
+            <figcaption>Clean</figcaption>
           </figure>
-        ))}
-      </div>
-      <div className='mk-card-sizes is-paper'>
-        {run.map((size) => (
-          <span key={size} className='mk-size'>
-            <MaskArt file={file} height={size} aspect={aspect} />
-            <small>{size}</small>
-          </span>
-        ))}
-      </div>
-      {file16 && (
-        <div className='mk-card-cut is-paper'>
-          <span className='mk-size'>
-            <MaskArt file={file16} height={CUT_PX} aspect={1} />
-            <small>16 cut</small>
-          </span>
-          <span className='mk-size'>
-            <MaskArt file={file16} height={CUT_PX * CUT_ZOOM} aspect={1} />
-            <small>{CUT_ZOOM}x</small>
-          </span>
+          <figure className={cn('mk-card-plate mk-card-drawing is-paper', wide && 'pt-scroll-x')}>
+            <MaskArt file={drawing.file} height={drawing.height} aspect={drawing.aspect} />
+            <figcaption>Construction</figcaption>
+          </figure>
+          {sizeRow}
+          {cutRow}
         </div>
+      ) : (
+        <>
+          <div className={cn('mk-card-plates', plates.length > 1 && 'is-two')}>
+            {plates.map((plate) => (
+              <figure key={plate.ground} className={cn('mk-card-plate', groundClass(plate.ground))}>
+                <MaskArt file={plate.file} height={height} aspect={aspect} />
+                {plate.caption && <figcaption>{plate.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+          {sizeRow}
+          {cutRow}
+        </>
       )}
       <div className='mk-card-body'>
         <div className='mk-card-name'>
@@ -402,47 +462,45 @@ function hemisphereTags(mark: HemisphereMark): readonly string[] {
   return tags;
 }
 
-/** A hemispheres mark's card: the mark, beside its construction when it has one, the run of heights, the 16px cut and the files. */
-function HemisphereCard({ mark }: { mark: HemisphereMark }) {
-  const plates: readonly CardPlate[] | undefined = mark.constructionFile
-    ? [
-        { file: mark.file, ground: 'paper', caption: 'Clean' },
-        { file: mark.constructionFile, ground: 'paper', caption: 'Construction' },
-      ]
-    : undefined;
-  const files: CardFile[] = [
-    { href: mark.file, label: 'SVG' },
-    { href: mark.file16, label: '16px SVG' },
-  ];
-  if (mark.constructionFile) files.push({ href: mark.constructionFile, label: 'Construction SVG' });
+/** A hemispheres mark's card: the mark beside its construction, the run of heights, the 16px cut and the files. */
+function HemisphereCard({ mark, drawing }: { mark: HemisphereMark; drawing?: CardDrawing }) {
   return (
     <MarkCard
       name={mark.id}
       file={mark.file}
       aspect={1}
       level='h4'
-      plates={plates}
-      hero={plates ? CONSTRUCTION_HERO_PX : undefined}
+      hero={DRAWN_HERO_PX}
+      drawing={drawing}
       tags={hemisphereTags(mark)}
       file16={mark.file16}
       note={mark.note}
       pick={mark.pick}
-      files={files}
+      files={[
+        { href: mark.file, label: 'SVG' },
+        { href: mark.file16, label: '16px SVG' },
+        { href: mark.constructionFile, label: 'Construction SVG' },
+      ]}
     />
   );
 }
 
+type FamilyBlockProps = {
+  family: HemisphereFamily;
+  active: boolean;
+  /** a construction drawing at its size on the card, by its public path */
+  drawingOf: (file: string) => CardDrawing | undefined;
+};
+
 /**
  * One family of the hemispheres round: its poster and its words at the
- * head, then its cards in the manifest's order, the variants of one mark
- * side by side.
+ * head, then its cards in the manifest's order, each mark beside its
+ * construction.
  */
-function FamilyBlock({ family, active }: { family: HemisphereFamily; active: boolean }) {
+function FamilyBlock({ family, active, drawingOf }: FamilyBlockProps) {
   const marks = familyMarks(family);
   const id = familyId(family);
   const poster = hemispherePoster(family.id);
-  /* a family whose marks carry their construction runs two cards to a row, as the speed and picture marks do */
-  const drawn = marks.some((mark) => mark.constructionFile);
   return (
     <div className={cn('mk-sec mk-block', active && 'is-active')} data-id={id} aria-labelledby={`mk-${id}`}>
       <header className='mk-fam-head'>
@@ -470,9 +528,9 @@ function FamilyBlock({ family, active }: { family: HemisphereFamily; active: boo
           </p>
         </div>
       </header>
-      <div className={cn('mk-cards', drawn && 'is-sheets is-drawn')}>
+      <div className='mk-cards is-sheets'>
         {marks.map((mark) => (
-          <HemisphereCard key={mark.id} mark={mark} />
+          <HemisphereCard key={mark.id} mark={mark} drawing={drawingOf(mark.constructionFile)} />
         ))}
       </div>
     </div>
@@ -480,22 +538,20 @@ function FamilyBlock({ family, active }: { family: HemisphereFamily; active: boo
 }
 
 /**
- * A speed or picture mark's card, in the two-column run of its group: the
- * mark on paper (a picture mark beside its construction), the run of
- * heights its width allows, the thesis, the construction and the use
- * folded under one line, and every file. A mark too wide for its plate's
- * hero height takes the plate's full width.
+ * A speed or picture mark's card: the mark on paper beside its
+ * construction, the run of heights its width allows, the thesis, the
+ * construction and the use folded under one line, and every file. A
+ * speed mark is wider than it is tall, so its card takes the column, one
+ * to a row, with the drawing under the mark across the card; a mark too
+ * wide for its plate's hero height takes the plate's full width. A
+ * picture mark's card runs two to a row like a hemispheres mark's.
  */
-function SheetCard({ mark, aspect, active }: { mark: Mark; aspect: number; active: boolean }) {
-  const inner = HALF_CARD_INNER;
-  const plates: readonly CardPlate[] | undefined = mark.constructionFile
-    ? [
-        { file: mark.file, ground: 'paper', caption: 'Clean' },
-        { file: mark.constructionFile, ground: 'paper', caption: 'Construction' },
-      ]
-    : undefined;
-  const files: CardFile[] = [{ href: mark.file, label: 'SVG' }];
-  if (mark.constructionFile) files.push({ href: mark.constructionFile, label: 'Construction SVG' });
+function SheetCard({ mark, aspect, drawing, active }: { mark: Mark; aspect: number; drawing?: CardDrawing; active: boolean }) {
+  const wide = aspect > 1;
+  const files: CardFile[] = [
+    { href: mark.file, label: 'SVG' },
+    { href: mark.constructionFile, label: 'Construction SVG' },
+  ];
   if (mark.textFile) files.push({ href: mark.textFile, label: 'Plain text' });
   return (
     <MarkCard
@@ -503,9 +559,10 @@ function SheetCard({ mark, aspect, active }: { mark: Mark; aspect: number; activ
       file={mark.file}
       aspect={aspect}
       level='h4'
-      plates={plates}
-      hero={fitPlate(aspect, plates ? (inner - CARD_GAP) / 2 : inner, CARD_HERO_PX)}
-      sizes={sizesFor(aspect, inner)}
+      hero={wide ? fitPlate(aspect, WIDE_CARD_INNER, CARD_HERO_PX) : DRAWN_HERO_PX}
+      sizes={wide ? sizesFor(aspect, WIDE_CARD_INNER) : CARD_SIZES}
+      drawing={drawing}
+      wide={wide}
       tags={[FAMILY_NAME[mark.family] ?? markFamily(mark).label, mark.kind === 'monogram' ? 'Monogram' : 'Wordmark']}
       note={gtText(mark.thesis)}
       notes={[
@@ -583,6 +640,8 @@ function Group({ id, section, count, title, lead, active, children }: GroupProps
 type MarksBookProps = {
   /** every speed and picture mark's viewBox aspect, by id */
   aspects: Readonly<Record<string, number>>;
+  /** every construction drawing's viewBox size, by its public path */
+  drawings: Readonly<Record<string, DrawingSize>>;
   /** the flow sheet's scroll region */
   sheetRef: RefObject<HTMLDivElement | null>;
   /** receives the section jump, for a re-click on the active row in the list */
@@ -602,7 +661,7 @@ type MarksBookProps = {
  * the line (a family, a mark's card, else its group) is selected through
  * the shell, and a selection from anywhere else scrolls the sheet to it.
  */
-function MarksBook({ aspects, sheetRef, jumpRef, activeOut, updated }: MarksBookProps) {
+function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }: MarksBookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -616,10 +675,13 @@ function MarksBook({ aspects, sheetRef, jumpRef, activeOut, updated }: MarksBook
     </a>
   );
 
+  const drawingOf = (file: string, wide = false) => drawingFor(file, drawings[file], wide);
+
   const card = (mark: Mark) => {
     const aspect = aspects[mark.id];
     if (!aspect) return null;
-    return <SheetCard key={mark.id} mark={mark} aspect={aspect} active={active === mark.id} />;
+    const drawing = drawingOf(mark.constructionFile, aspect > 1);
+    return <SheetCard key={mark.id} mark={mark} aspect={aspect} drawing={drawing} active={active === mark.id} />;
   };
 
   return (
@@ -690,7 +752,7 @@ function MarksBook({ aspects, sheetRef, jumpRef, activeOut, updated }: MarksBook
           </div>
         </div>
         {HEMISPHERE_FAMILIES.map((family) => (
-          <FamilyBlock key={family.id} family={family} active={active === familyId(family)} />
+          <FamilyBlock key={family.id} family={family} active={active === familyId(family)} drawingOf={drawingOf} />
         ))}
       </Group>
 
@@ -738,7 +800,7 @@ function MarksBook({ aspects, sheetRef, jumpRef, activeOut, updated }: MarksBook
           <p className='mk-faces'>{MARK_FACES}</p>
         </div>
 
-        <div className='mk-cards is-sheets'>{SPEED_MARKS.map(card)}</div>
+        <div className='mk-cards is-wide'>{SPEED_MARKS.map(card)}</div>
 
         {FILM_MARK?.film && (
           <figure className='mk-film'>
@@ -808,7 +870,7 @@ function MarksBook({ aspects, sheetRef, jumpRef, activeOut, updated }: MarksBook
             </div>
             <p>{CONCEPTS_LEAD}</p>
           </header>
-          <div className='mk-cards'>
+          <div className='mk-cards is-sheets'>
             {GLOBE_CONCEPTS.map((concept) => (
               <MarkCard
                 key={concept.id}
@@ -816,7 +878,12 @@ function MarksBook({ aspects, sheetRef, jumpRef, activeOut, updated }: MarksBook
                 file={concept.file}
                 aspect={1}
                 level='h4'
-                files={[{ href: concept.file, label: 'SVG' }]}
+                hero={DRAWN_HERO_PX}
+                drawing={drawingOf(concept.constructionFile)}
+                files={[
+                  { href: concept.file, label: 'SVG' },
+                  { href: concept.constructionFile, label: 'Construction SVG' },
+                ]}
               />
             ))}
           </div>
@@ -829,6 +896,8 @@ function MarksBook({ aspects, sheetRef, jumpRef, activeOut, updated }: MarksBook
 export type MarksViewerProps = {
   /** every speed and picture mark's viewBox aspect, by id, read on the server */
   aspects: Readonly<Record<string, number>>;
+  /** every construction drawing's viewBox size, by its public path, read on the server */
+  drawings: Readonly<Record<string, DrawingSize>>;
   /** the /marks entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
 };
@@ -840,7 +909,7 @@ export type MarksViewerProps = {
  * masks the shell's rows with the SVGs). Flow keys, so Space and the arrows
  * scroll. The hash names the active block.
  */
-export default function MarksViewer({ aspects, updated }: MarksViewerProps) {
+export default function MarksViewer({ aspects, drawings, updated }: MarksViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef(PRODUCTION_ID);
@@ -863,7 +932,14 @@ export default function MarksViewer({ aspects, updated }: MarksViewerProps) {
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <MarksBook aspects={aspects} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
+        <MarksBook
+          aspects={aspects}
+          drawings={drawings}
+          sheetRef={sheetRef}
+          jumpRef={jumpRef}
+          activeOut={activeOut}
+          updated={updated}
+        />
       </Sheet>
     </ViewerShell>
   );

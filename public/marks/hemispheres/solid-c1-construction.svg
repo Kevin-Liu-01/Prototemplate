@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="currentColor" role="img" aria-label="solid-c1 construction">
+<defs><mask id="ko-solid-c1" maskUnits="userSpaceOnUse" x="0" y="0" width="256" height="256"><rect x="0" y="0" width="256" height="256" fill="#fff"/><rect x="98.22" y="244.14" width="13.56" height="9.6" rx="1" fill="#000"/><rect x="121.85" y="244.14" width="12.3" height="9.6" rx="1" fill="#000"/><rect x="83.22" y="4.14" width="13.56" height="9.6" rx="1" fill="#000"/><rect x="101.82" y="4.14" width="17.88" height="9.6" rx="1" fill="#000"/><rect x="127.06" y="4.14" width="17.88" height="9.6" rx="1" fill="#000"/><rect x="152.3" y="4.14" width="17.88" height="9.6" rx="1" fill="#000"/><rect x="173.06" y="4.14" width="17.88" height="9.6" rx="1" fill="#000"/><rect x="30.65" y="42.06" width="21.48" height="9.6" rx="1" fill="#000"/><rect x="79.47" y="71.14" width="17.16" height="9.6" rx="1" fill="#000"/></mask></defs>
+<g mask="url(#ko-solid-c1)">
+<path opacity="0.3" fill-rule="evenodd" d="M120 24.31A104 104 0 0 0 120 231.69L120 128L90 128L90 191.5A74 74 0 0 1 120 54.43ZM136 24.31A104 104 0 0 1 232 128A104 104 0 0 1 136 231.69L136 201.57A74 74 0 0 0 202 128A74 74 0 0 0 182 77.4L182 128L152 128L152 58A74 74 0 0 0 136 54.43Z"/>
+<g fill="none" stroke="currentColor" stroke-width="1">
+<circle cx="128" cy="128" r="104" opacity="0.6" vector-effect="non-scaling-stroke"/>
+<circle cx="128" cy="128" r="74" opacity="0.6" vector-effect="non-scaling-stroke"/>
+<path opacity="0.45" vector-effect="non-scaling-stroke" d="M128 16L128 236M20 128L236 128M128 128L54.46 54.46"/>
+<path opacity="0.6" vector-effect="non-scaling-stroke" d="M20 128L236 128M90 16L90 236M136 16L136 236M152 16L152 236M182 16L182 236"/>
+<path opacity="1" stroke-dasharray="4 3" vector-effect="non-scaling-stroke" d="M120 16L120 236"/>
+<path opacity="0.8" vector-effect="non-scaling-stroke" d="M90 240H120M90 236V243M120 236V243M120 240H136M120 236V243M136 236V243"/>
+</g>
+<g><circle cx="128" cy="128" r="1.8"/><circle cx="120" cy="231.69" r="1.8"/><circle cx="120" cy="201.57" r="1.8"/><circle cx="120" cy="54.43" r="1.8"/><circle cx="120" cy="24.31" r="1.8"/><circle cx="136" cy="231.69" r="1.8"/><circle cx="136" cy="201.57" r="1.8"/><circle cx="136" cy="54.43" r="1.8"/><circle cx="136" cy="24.31" r="1.8"/><circle cx="54.46" cy="54.46" r="1.8"/><circle cx="75.67" cy="75.67" r="1.8"/></g>
+</g>
+<g font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="9" font-weight="500" opacity="0.85"><text textLength="11.45" x="105" y="252" text-anchor="middle">30</text><text textLength="9.41" x="128" y="252" text-anchor="middle">16</text><text textLength="11.48" x="90" y="12" text-anchor="middle">90</text><text textLength="15.09" x="118.5" y="12" text-anchor="end">120</text><text textLength="15.05" x="136" y="12" text-anchor="middle">136</text><text textLength="14.72" x="153.5" y="12">152</text><text textLength="14.95" x="182" y="12" text-anchor="middle">182</text><text textLength="18.94" x="50.93" y="49.92" text-anchor="end">r104</text><text textLength="14.02" x="80.67" y="79">r74</text></g>
+</svg>
