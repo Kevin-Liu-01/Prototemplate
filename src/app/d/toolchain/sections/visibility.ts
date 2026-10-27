@@ -15,18 +15,52 @@ gsap.registerPlugin(ScrollTrigger);
  * never built a watch, runs no frames. A trigger built while it is
  * disabled would be inert, so every trigger, from this module or any other,
  * enables it first: each one is built through the prototype's init, which
- * wakes it. Each enable adds GSAP's own matchMedia listeners again, which
- * only repeat idempotent work when the orientation changes.
+ * wakes it.
  */
 const IDLE_MS = 1000;
 let asleep = false;
 let sleepTimer: ReturnType<typeof setTimeout> | undefined;
 
+/*
+ * Every ScrollTrigger.enable() (gsap 3.15) registers GSAP's matchMedia work
+ * again, and disable() removes none of it: three gsap event callbacks
+ * (matchMediaInit, matchMediaRevert, and matchMedia, which refreshes every
+ * trigger) and a gsap.matchMedia context on '(orientation: portrait)' with
+ * its own MediaQueryList listener. The set the plugin registered with stays
+ * for the page's life and calls ScrollTrigger's own functions, which work
+ * enabled or not. A wake therefore enables it with those two gsap entry
+ * points stubbed, so it adds nothing to that set. What a wake still repeats
+ * is one more 'transform' on ScrollTrigger's private list of the styles a
+ * pin saves, which no exported call reaches and only a pinned trigger reads.
+ */
+const MEDIA_EVENTS: ReadonlySet<string> = new Set(['matchMediaInit', 'matchMediaRevert', 'matchMedia']);
+
+type MediaHooks = {
+  addEventListener: (type: string, callback: () => void) => void;
+  matchMedia: (...args: unknown[]) => unknown;
+};
+
+function reenable(): void {
+  const core = gsap as unknown as MediaHooks;
+  const { addEventListener, matchMedia } = core;
+  const inert = { add: () => inert };
+  core.addEventListener = (type, callback) => {
+    if (!MEDIA_EVENTS.has(type)) addEventListener.call(gsap, type, callback);
+  };
+  core.matchMedia = () => inert;
+  try {
+    ScrollTrigger.enable();
+  } finally {
+    core.addEventListener = addEventListener;
+    core.matchMedia = matchMedia;
+  }
+}
+
 function wake(): void {
   clearTimeout(sleepTimer);
   if (!asleep) return;
   asleep = false;
-  ScrollTrigger.enable();
+  reenable();
 }
 
 function sleepWhenIdle(): void {

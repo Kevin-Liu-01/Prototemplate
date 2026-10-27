@@ -133,9 +133,14 @@ function describe(walk: Walk, kernel: KernelId): string {
   return `Cell ${x}, ${y} holds ${last.v.toFixed(2)} and prints ${last.on ? 'ink' : 'paper'}. Its error of ${sign}${Math.abs(last.err).toFixed(2)} goes ${ERROR_ROUTES[kernel]}.`;
 }
 
-/** The line at its widest on this grid: the last cell's numbers, paper, and a signed error. */
+/**
+ * The line at its widest on this grid, word for word: the last cell's
+ * numbers, a negative value as toFixed writes it (the error a cell
+ * receives can take it to -0.50), paper, and a signed error. Figures are
+ * tabular, so no word of a real line is wider and it never wraps more.
+ */
 function widestLine(walk: Walk, kernel: KernelId): string {
-  return `Cell ${walk.cols}, ${walk.rows} holds 0.00 and prints paper. Its error of −0.00 goes ${ERROR_ROUTES[kernel]}.`;
+  return `Cell ${walk.cols}, ${walk.rows} holds -0.00 and prints paper. Its error of −0.00 goes ${ERROR_ROUTES[kernel]}.`;
 }
 
 /**

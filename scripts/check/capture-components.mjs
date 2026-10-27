@@ -1,10 +1,12 @@
-// Captures the preview of every component /components lists: on each page
-// of the docs Components section (content/docs/components, its groups and
-// pages in their meta.json order), the first plate stage under each h2
-// (.dmo-stage, or the blog globe figure's .bgf or .bgg), in both themes,
-// into public/shots/components/<page>-<heading id>.webp and
-// <page>-<heading id>-dark.webp. src/lib/component-library.ts reads these
-// files by the same name and their size from the WebP header.
+// Captures the stage of every plate in the docs Components section: on each
+// page (content/docs/components, its groups and pages in their meta.json
+// order), the first plate stage under each h2 (.dmo-stage, or the blog
+// globe figure's .bgf or .bgg), in both themes, into
+// public/shots/components/<page>-<heading id>.webp and
+// <page>-<heading id>-dark.webp. /components shows no capture: it mounts
+// the live plates, and src/lib/component-library.ts reads only the light
+// capture's height from its WebP header, as the stage a row reserves for a
+// plate that src/lib/plate-heights.json does not measure yet.
 //
 // Each page is loaded at 1440x900 with reduced motion requested, so a
 // moving plate shows its still. A plate mounts when it nears the viewport,

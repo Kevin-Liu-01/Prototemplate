@@ -47,7 +47,7 @@ const STILL_HEIGHTS = join(ROOT, 'src/lib/plate-heights-still.json');
 /** One controls row and the plate's two borders, measured on the ordered screen's plate at 1440. */
 const BAR = 86;
 
-/** The sections /components leaves out, by `<page>#<heading id>`: the language wheel (2026-10-26). */
+/** The sections /components leaves out, by `<page>#<heading id>`: the language wheel (2026-10-26). A key that matches no plate section throws. */
 const LEFT_OUT: ReadonlySet<string> = new Set(['kinetic#the-language-wheel']);
 
 /** The modules a plate's prop reads a value from, by the specifier the MDX imports; the value reaches the client as data, as on the docs page. */
@@ -299,8 +299,8 @@ function importsOf(lines: readonly string[]): Map<string, Imported> {
   return out;
 }
 
-/** The source of the JSX element that opens at `start`, through its `/>`; quoted strings and braces are skipped whole. */
-function elementAt(text: string, start: number, where: string): string {
+/** The index of the `>` that ends the tag opening at `start`, or -1; quoted strings and braces are skipped whole. */
+function tagEnd(text: string, start: number): number {
   let depth = 0;
   let quote = '';
   for (let i = start + 1; i < text.length; i += 1) {
@@ -311,12 +311,48 @@ function elementAt(text: string, start: number, where: string): string {
     } else if (c === "'" || c === '"' || c === '`') quote = c;
     else if (c === '{') depth += 1;
     else if (c === '}') depth -= 1;
-    else if (c === '>' && depth === 0) {
-      if (text[i - 1] === '/') return text.slice(start, i + 1);
-      throw new Error(`/components: the plate in ${where} has children, which the plate registry does not pass`);
-    }
+    else if (c === '>' && depth === 0) return i;
   }
-  throw new Error(`/components: the plate in ${where} never closes`);
+  return -1;
+}
+
+/** The source of the JSX element that opens at `start`, through its `/>`. */
+function elementAt(text: string, start: number, where: string): string {
+  const end = tagEnd(text, start);
+  if (end < 0) throw new Error(`/components: the plate in ${where} never closes`);
+  if (text[end - 1] !== '/') throw new Error(`/components: the plate in ${where} has children, which the plate registry does not pass`);
+  return text.slice(start, end + 1);
+}
+
+/**
+ * The elements open at a point of an MDX body, read forward through it: an
+ * opening tag that does not close itself stays open until its closing tag.
+ * Each call reads on from where the last stopped, so the points are asked
+ * in order. Pass the body with inline code blanked, so a tag named in prose
+ * (`<Tabs>`) opens nothing.
+ */
+function openElements(text: string): (at: number) => readonly string[] {
+  const open: string[] = [];
+  const tag = /<(\/?)([A-Za-z][\w.-]*)(?=[\s/>])/g;
+  let from = 0;
+  return (at) => {
+    tag.lastIndex = from;
+    for (let match = tag.exec(text); match && match.index < at; match = tag.exec(text)) {
+      const name = match[2] ?? '';
+      if (match[1]) {
+        const i = open.lastIndexOf(name);
+        if (i >= 0) open.length = i;
+        from = match.index + match[0].length;
+        continue;
+      }
+      const end = tagEnd(text, match.index);
+      if (end < 0) break;
+      if (text[end - 1] !== '/') open.push(name);
+      from = end + 1;
+      tag.lastIndex = from;
+    }
+    return open;
+  };
 }
 
 /**
@@ -473,13 +509,15 @@ function withoutInlineCode(line: string): string {
  * The h2 sections of an MDX page that mount a plate. A plate is an element
  * whose name the page imports (fumadocs' own Cards and Callout are not
  * imported), written flush at the start of its line inside an h2 section,
- * one to a section. Any other use of an imported element (indented, after
- * other markup on its line, wrapped in another element, above the first
- * h2, or a second plate in one section) throws, so /components never drops
- * a plate without failing the build.
+ * outside every other element, one to a section. Any other use of an
+ * imported element (indented, after other markup on its line, inside an
+ * element opened on an earlier line, above the first h2, or a second plate
+ * in one section) throws, so /components never mounts a plate differently
+ * from its docs page and never drops one without failing the build.
  */
 function plateSections(lines: readonly string[], imports: ReadonlyMap<string, Imported>, where: string): Section[] {
   const text = lines.join('\n');
+  const openAt = openElements(lines.map(withoutInlineCode).join('\n'));
   const slug = slugger();
   const sections: Section[] = [];
   let current: { heading: string; anchor: string; plate: string | null } | null = null;
@@ -497,6 +535,10 @@ function plateSections(lines: readonly string[], imports: ReadonlyMap<string, Im
         if (!current) throw new Error(`/components: ${at} mounts <${name} /> above its first h2; a plate sits in an h2 section`);
         if (match.index !== 0) {
           throw new Error(`/components: ${at} mounts <${name} /> indented or inside other markup; write the plate flush at the start of its own line`);
+        }
+        const wrapper = openAt(offset).at(-1);
+        if (wrapper) {
+          throw new Error(`/components: ${at} mounts <${name} /> inside <${wrapper}>, which the plate registry does not mount; write the plate outside it`);
         }
         if (current.plate) throw new Error(`/components: ${at} mounts <${name} /> after <${current.plate} />; one plate to an h2 section`);
         current.plate = name;
@@ -571,6 +613,7 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
   const mdx: string[] = [];
   const heights = readHeights(HEIGHTS);
   const still = readHeights(STILL_HEIGHTS);
+  const leftOut = new Set<string>();
   let n = 0;
 
   const blocks: LibraryBlock[] = groups.map((folder) => {
@@ -586,7 +629,10 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
       const imports = importsOf(lines);
       for (const section of plateSections(lines, imports, page)) {
         const key = `${page}#${section.anchor}`;
-        if (LEFT_OUT.has(key)) continue;
+        if (LEFT_OUT.has(key)) {
+          leftOut.add(key);
+          continue;
+        }
         const known = SOURCES[key];
         const id = `${page}-${section.anchor}`;
         n += 1;
@@ -605,6 +651,9 @@ export function getComponentLibrary(): readonly LibraryBlock[] {
     }
     return { id: folder.replace(/[()]/g, ''), label: meta.title ?? folder, entries };
   });
+  for (const key of LEFT_OUT) {
+    if (!leftOut.has(key)) throw new Error(`/components: LEFT_OUT names ${key}, which is no section that mounts a plate; rename the key with its heading`);
+  }
 
   const covered = mdx.join('\n');
   const undocumented = UNDOCUMENTED.filter((item) => !covered.includes(item.path.replace(/\.tsx?$/, ''))).map(
