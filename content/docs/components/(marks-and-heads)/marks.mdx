@@ -20,7 +20,7 @@ Every mark in Prototemplate is one color in `currentColor`, so the same file dra
 
 ## The marks
 
-The plate draws any mark at the heights `/marks` shows it: a monogram from the 16 pixel favicon to the 128 pixel app icon, a wordmark at 48, 96 and 144. Family switches between the seven speed marks, the two picture marks of the earlier round and the eight globe concepts. Ground switches paper and ink, and Construction shows the build overlay of a picture mark.
+The plate draws any mark at the heights `/marks` shows it: a monogram from the 16 pixel favicon to the 128 pixel app icon, a wordmark at 48, 96 and 144. Family switches between the seven speed marks, the two picture marks of the earlier round and the five globe concepts. Ground switches paper and ink, and Construction shows the build overlay of a picture mark.
 
 <MarksDemo />
 
@@ -37,7 +37,7 @@ const speed = MARKS.filter((mark) => mark.family === 'speed'); // seven marks, e
 | Export | What it holds |
 | --- | --- |
 | `MARKS` | Nine marks: `id`, `name`, `family` (`'speed'` or `'picture'`), `kind` (`'monogram'` or `'wordmark'`), `thesis`, `construction`, `use` and the public `file` |
-| `GLOBE_CONCEPTS` | The eight globe marks that were not chosen, each a file under `/marks/globe/` |
+| `GLOBE_CONCEPTS` | The five globe marks that were not chosen, each a file under `/marks/globe/` |
 | `MARK_SIZES`, `WORDMARK_SIZES` | The heights in CSS pixels: 16, 24, 32, 64 and 128, then 48, 96 and 144 |
 | `REFERENCE_MARK` | The current doubled-line monogram as one even-odd path and its view box |
 
