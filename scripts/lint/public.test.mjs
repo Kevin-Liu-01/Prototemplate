@@ -103,6 +103,23 @@ describe('lint:public', () => {
     assert.ok(!result.stdout.toLowerCase().includes(TERM));
   });
 
+  it('exempts only the denylist_lines that an allowed path names', () => {
+    const other = ['zeta', 'beam'].join('-');
+    const root = checkout({
+      'src/page.ts': `${TERM}\n${other}\n`,
+      'src/else.ts': `${TERM}\n`,
+      'scripts/lint/public.allow.json': JSON.stringify({ allow: [{ path: 'src/page.ts', rules: ['denylist'], denylist_lines: [1] }] }),
+    });
+    const list = join(root, '..', `${root.split('/').pop()}-denylist.txt`);
+    ROOTS.push(list);
+    writeFileSync(list, `${TERM}\n${other}\n`);
+    const result = scan(root, [], { PT_DENYLIST: list });
+    assert.equal(result.status, 1);
+    assert.ok(!/src\/page\.ts:1 /.test(result.stdout), result.stdout);
+    assert.match(result.stdout, /src\/page\.ts:2  denylist term \(line 2 of the list\)/);
+    assert.match(result.stdout, /src\/else\.ts:1  denylist term \(line 1 of the list\)/);
+  });
+
   it('skips the denylist under CI and VERCEL with a printed line', () => {
     const root = checkout({ 'docs/a.md': `${TERM}\n` });
     const list = join(root, 'list.txt');

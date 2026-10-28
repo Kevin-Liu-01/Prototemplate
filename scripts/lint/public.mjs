@@ -23,7 +23,8 @@
  * untracked renders and drafts, so only its tracked files are read: the
  * ones git lists, or the whole folder in a checkout without .git (a clean
  * export holds tracked files only). scripts/lint/public.allow.json exempts a path from named rules
- * (this lint's own source and test, which spell the patterns).
+ * (this lint's own source and test, which spell the patterns). A denylist entry with denylist_lines
+ * exempts only the terms on those lines of the list, so the path still fails on every other term.
  *
  * Every finding fails. The baseline that held the old machine paths and
  * terms while they were cleared (scripts/lint/public.baseline.json) was
@@ -141,7 +142,14 @@ function denylist() {
 }
 
 const allow = readJson(ALLOW_REL, { allow: [] }).allow ?? [];
-const allowed = (rel, rule) => allow.some((a) => (rel === a.path || rel.startsWith(`${a.path}/`)) && a.rules.includes(rule));
+/* a denylist entry with denylist_lines exempts only the terms on those lines of the list; without it, every term */
+const allowed = (rel, rule, listLine) =>
+  allow.some(
+    (a) =>
+      (rel === a.path || rel.startsWith(`${a.path}/`)) &&
+      a.rules.includes(rule) &&
+      (listLine === undefined || !a.denylist_lines || a.denylist_lines.includes(listLine)),
+  );
 const deny = denylist();
 if (deny.skip) console.log(`lint:public: denylist skipped: ${deny.skip}`);
 
@@ -150,8 +158,9 @@ const findings = [];
 for (const rel of [...walk(), ...motionFiles()]) {
   const whole = readFileSync(join(ROOT, rel), 'utf8');
   const lines = whole.split('\n');
-  if (!KEYS_ONLY && deny.wrapped && !allowed(rel, 'denylist')) {
+  if (!KEYS_ONLY && deny.wrapped) {
     for (const [n, term] of deny.wrapped) {
+      if (allowed(rel, 'denylist', n)) continue;
       for (const m of whole.matchAll(term)) {
         if (!m[0].includes('\n')) continue;
         const line = whole.slice(0, m.index).split('\n').length;
@@ -167,8 +176,10 @@ for (const rel of [...walk(), ...motionFiles()]) {
     if (!allowed(rel, 'machine-path')) {
       for (const m of text.matchAll(MACHINE_PATH)) findings.push({ rule: 'machine-path', file: rel, line: i + 1, text: m[0] });
     }
-    if (deny.terms && !allowed(rel, 'denylist')) {
-      for (const [n, term] of deny.terms) if (term.test(text)) findings.push({ rule: 'denylist', file: rel, line: i + 1, text: `denylist term (line ${n} of the list)` });
+    if (deny.terms) {
+      for (const [n, term] of deny.terms) {
+        if (term.test(text) && !allowed(rel, 'denylist', n)) findings.push({ rule: 'denylist', file: rel, line: i + 1, text: `denylist term (line ${n} of the list)` });
+      }
     }
   });
 }
