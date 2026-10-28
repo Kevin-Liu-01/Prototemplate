@@ -9,8 +9,8 @@
  */
 import { currentSession, isAdmin } from '@/lib/vote/api';
 import { missingEnv } from '@/lib/vote/config';
-import { adminList, adminView, EMPTY_HUB, hubView, resultsAccess, resultsView, voterState } from '@/lib/vote/views';
-import type { AdminData, AdminList, HubState, Results, VoteState } from '@/lib/vote/types';
+import { adminList, adminView, EMPTY_HUB, hubView, myVotes, resultsAccess, resultsView, voterState } from '@/lib/vote/views';
+import type { AdminData, AdminList, HubState, MyVotes, Results, VoteState } from '@/lib/vote/types';
 
 import type { Boot } from './types';
 
@@ -50,15 +50,38 @@ export async function decisionBoot(id: string): Promise<Boot<{ state: VoteState 
   }
 }
 
-/** One decision's ranking for /vote/[decision]/results; 'denied' sends a voter who has not finished back to the ballot. */
-export async function resultsBoot(id: string): Promise<Boot<{ results: Results; admin: boolean }> | Missing | { kind: 'denied' }> {
+/**
+ * One decision's ranking for /vote/[decision]/results; 'denied' sends a
+ * voter who has not finished back to the ballot. `change` lets a voter on
+ * an open decision go on to change their votes.
+ */
+export async function resultsBoot(
+  id: string
+): Promise<Boot<{ results: Results; admin: boolean; change: boolean }> | Missing | { kind: 'denied' }> {
   if (missingEnv().length) return { kind: 'off' };
   try {
     const [admin, session] = await Promise.all([isAdmin(), currentSession()]);
-    const access = await resultsAccess(session?.voterId ?? null, id, admin);
+    const { access, change } = await resultsAccess(session?.voterId ?? null, id, admin);
     if (access !== 'ok') return { kind: access };
     const results = await resultsView(id, null, admin);
-    return results ? { kind: 'ready', data: { results, admin }, at: Date.now() } : { kind: 'missing' };
+    return results ? { kind: 'ready', data: { results, admin, change }, at: Date.now() } : { kind: 'missing' };
+  } catch {
+    return { kind: 'error' };
+  }
+}
+
+/**
+ * The voter's own votes in one decision for /vote/[decision]/votes, as GET
+ * /api/vote/d/[id]/mine answers it; null without a session (the email
+ * form, as on /vote/[decision]).
+ */
+export async function votesBoot(id: string): Promise<Boot<MyVotes | null> | Missing> {
+  if (missingEnv().length) return { kind: 'off' };
+  try {
+    const session = await currentSession();
+    if (!session) return { kind: 'ready', data: null, at: Date.now() };
+    const mine = await myVotes(session.voterId, id, await isAdmin());
+    return mine ? { kind: 'ready', data: mine, at: Date.now() } : { kind: 'missing' };
   } catch {
     return { kind: 'error' };
   }

@@ -9,7 +9,7 @@ import { test } from 'node:test';
 
 import { importTs } from '../lint/seo.mjs';
 
-const { appearanceTarget, hash32, needsLikes, schedule, standing, voterOrder } = await importTs(new URL('../../src/lib/vote/schedule.ts', import.meta.url));
+const { appearanceTarget, hash32, needsLikes, schedule, sidesOf, standing, voterOrder } = await importTs(new URL('../../src/lib/vote/schedule.ts', import.meta.url));
 
 const keysOf = (n) => Array.from({ length: n }, (_, i) => `m${i + 1}`);
 const pairKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
@@ -127,6 +127,12 @@ test('voters differ in order, and each voter sees one stable side per pair', () 
   assert.deepEqual(one, two);
   assert.notDeepEqual(voterOrder('a', keys), voterOrder('b', keys));
   assert.deepEqual([...voterOrder('a', keys)].sort(), [...keys].sort());
+  /* the voter's own votes show each pair on the sides the ballot showed it */
+  for (let i = 0; i < 20; i += 1) {
+    const { pair } = schedule({ voterId: `v${i}`, keys, votes: [] });
+    assert.deepEqual(sidesOf(`v${i}`, pair.right, pair.left), pair);
+    assert.deepEqual(sidesOf(`v${i}`, pair.left, pair.right), pair);
+  }
 });
 
 test("the likes step is owed until the latest record has seen every active option", () => {

@@ -18,7 +18,7 @@ export const GET = route(async (req: NextRequest, { params }: DecisionParams) =>
   const domain = (req.nextUrl.searchParams.get('domain') ?? '').trim().toLowerCase();
   if (domain && !/^[a-z0-9.-]{1,253}$/.test(domain)) return fail(400, 'That is not a domain.');
   const [session, admin] = await Promise.all([currentSession(), isAdmin()]);
-  const access = await resultsAccess(session?.voterId ?? null, id, admin);
+  const { access } = await resultsAccess(session?.voterId ?? null, id, admin);
   if (access === 'missing') return fail(404, 'No such vote.');
   if (access === 'denied') return fail(403, 'Finish voting to see the results.');
   const results = await resultsView(id, domain || null, admin);

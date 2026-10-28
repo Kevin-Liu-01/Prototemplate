@@ -71,6 +71,31 @@ export type VoteState = {
   results: boolean;
 };
 
+/** A matchup the voter voted on, as the ballot showed it, with the vote that counts. */
+export type MyVote = {
+  left: VoteOption;
+  right: VoteOption;
+  /** the key of the side the counted vote picked */
+  winner: string;
+  /** when the counted vote was cast, in ms */
+  at: number;
+};
+
+/** The voter's own votes in one decision, which they may change while it is open. */
+export type MyVotes = {
+  decision: DecisionHead;
+  /** changes are taken */
+  open: boolean;
+  /** every matchup voted on among the active options, newest matchup first; a change keeps its place */
+  rows: MyVote[];
+  /** every active option, in this voter's own order */
+  options: VoteOption[];
+  /** the keys of the options the voter last liked; null without a likes step or a likes record, or while a matchup is owed */
+  likes: string[] | null;
+  /** the voter may open the results */
+  results: boolean;
+};
+
 export type ResultRow = {
   key: string;
   name: string;
@@ -134,7 +159,10 @@ export type AdminVoter = {
   createdAt: string;
   /** the voter's email is on this decision's access list */
   access: boolean;
+  /** the votes that count: the latest per pair */
   votes: number;
+  /** the votes cast that a later vote on the same pair replaced */
+  changes: number;
   complete: boolean;
   /** the keys of the options the voter last liked */
   likes: string[];

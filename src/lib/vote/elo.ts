@@ -1,5 +1,6 @@
-/* Elo over the vote log: every vote replayed in time order, the first vote
-   per voter per unordered pair only, excluded voters and options outside the
+/* Elo over the vote log: the latest vote per voter per unordered pair only
+   (a changed vote replaces the one before it), replayed in time order at
+   the time of that latest vote, excluded voters and options outside the
    active set skipped. Self-contained, so node --test loads it directly. */
 
 export type EloVote = { voterId: string; ts: number; winner: string; loser: string };
@@ -39,18 +40,39 @@ function byTime(a: EloVote, b: EloVote): number {
   );
 }
 
-/** The first vote per voter per unordered pair, in time order. */
+/**
+ * The latest vote per voter per unordered pair, in time order: the votes
+ * that count. Two votes in one millisecond take the order of byTime, so the
+ * same log always counts the same votes.
+ */
 export function dedupeVotes<T extends EloVote>(votes: readonly T[]): T[] {
-  const seen = new Set<string>();
-  const out: T[] = [];
+  const latest = new Map<string, T>();
   for (const vote of [...votes].sort(byTime)) {
-    if (vote.winner === vote.loser) continue;
-    const id = `${vote.voterId}:${pairId(vote.winner, vote.loser)}`;
-    if (seen.has(id)) continue;
-    seen.add(id);
-    out.push(vote);
+    if (vote.winner !== vote.loser) latest.set(matchupId(vote), vote);
   }
-  return out;
+  return [...latest.values()].sort(byTime);
+}
+
+/* one voter's matchup: the voter and the unordered pair */
+function matchupId(vote: EloVote): string {
+  return `${vote.voterId}:${pairId(vote.winner, vote.loser)}`;
+}
+
+/** When each voter first voted on each pair, by voter and pair: a change is a new vote, not a new matchup. */
+export function firstVoteAt(votes: readonly EloVote[]): Map<string, number> {
+  const first = new Map<string, number>();
+  for (const vote of votes) {
+    const id = matchupId(vote);
+    first.set(id, Math.min(first.get(id) ?? vote.ts, vote.ts));
+  }
+  return first;
+}
+
+/** The votes that count (dedupeVotes), newest matchup first: by the first vote on the pair, so a changed vote keeps its place. */
+export function byNewestMatchup<T extends EloVote>(votes: readonly T[]): T[] {
+  const first = firstVoteAt(votes);
+  const at = (vote: T) => first.get(matchupId(vote)) ?? vote.ts;
+  return dedupeVotes(votes).sort((a, b) => at(b) - at(a) || (matchupId(a) < matchupId(b) ? -1 : 1));
 }
 
 export function expectedScore(rating: number, opponent: number): number {

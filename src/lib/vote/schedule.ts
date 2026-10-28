@@ -55,6 +55,12 @@ export function appearanceTarget(count: number, appearances = 3): number {
   return Math.max(0, Math.min(appearances, count - 1));
 }
 
+/** A pair's sides as this voter sees them, by a stable per-voter hash, so a pair shows the same way on every screen. */
+export function sidesOf(voterId: string, a: string, b: string): Pair {
+  const [low, high] = a < b ? [a, b] : [b, a];
+  return (hash32(`${voterId}:${low}|${high}`) & 1) === 1 ? { left: high, right: low } : { left: low, right: high };
+}
+
 /** The keys in this voter's own stable order. */
 export function voterOrder(voterId: string, keys: readonly string[]): string[] {
   const tie = (key: string) => hash32(`${voterId}:${key}`);
@@ -134,11 +140,8 @@ export function schedule(input: ScheduleInput): Schedule {
       .slice(0, CLOSEST);
     b = closest.find((key) => key === plan.right || ahead({ left: first.a, right: key }) === remaining - 1) ?? plan.right;
   }
-  const a = first.a;
-  const [low, high] = a < b ? [a, b] : [b, a];
-  const flip = (hash32(`${voterId}:${low}|${high}`) & 1) === 1;
   return {
-    pair: flip ? { left: high, right: low } : { left: low, right: high },
+    pair: sidesOf(voterId, first.a, b),
     progress: { done: voted.size, total: voted.size + remaining },
     target,
     appearances,

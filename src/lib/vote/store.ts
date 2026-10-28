@@ -10,7 +10,9 @@
 
    Layout under the namespace N: voters/, devices/ and excluded/ are global;
    decisions/<id>/ holds meta.json, options/<key>.json and its file,
-   hidden/<key>, votes/<voterId>/<ts>_<winner>_<loser>.json and
+   hidden/<key>, votes/<voterId>/<ts>_<winner>_<loser>.json (a changed
+   vote is a new one: the latest per pair counts), the claim a change puts
+   on the vote it replaces at changes/<voterId>/<ts>_<winner>_<loser>, and
    likes/<voterId>/<ts>.json. */
 import { BlobNotFoundError, del, get, list, put } from '@vercel/blob';
 
@@ -66,6 +68,8 @@ export type VoteBody = {
   deviceId: string;
 };
 export type LikesRecord = { liked: string[]; seen: string[]; ts: number };
+/** A voter's latest likes record, with how many records they have written in the decision. */
+export type LatestLikes = LikesRecord & { records: number };
 
 type Listed = { pathname: string; uploadedAt: Date };
 
@@ -530,9 +534,13 @@ export function allVotes(id: string): Promise<VoteRecord[]> {
   return listVotes(id, pathnames.votes(namespace(), id));
 }
 
-/** Writes one vote under a new pathname; a vote never overwrites another. */
-export async function writeVote(vote: Omit<VoteBody, 'ts'>): Promise<void> {
-  const ts = Date.now();
+/**
+ * Writes one vote under a new pathname and answers its time; a vote never
+ * overwrites another. A change passes the time of the vote it replaces and
+ * is written after it, so it is the latest even within one millisecond.
+ */
+export async function writeVote(vote: Omit<VoteBody, 'ts'>, after = 0): Promise<number> {
+  const ts = Math.max(Date.now(), after + 1);
   const body: VoteBody = { ...vote, ts };
   /* the same pathname within one millisecond is the same vote sent twice */
   await putOnce(
@@ -540,6 +548,27 @@ export async function writeVote(vote: Omit<VoteBody, 'ts'>): Promise<void> {
     JSON.stringify(body),
     'application/json'
   );
+  return ts;
+}
+
+type Claimed = Pick<VoteRecord, 'ts' | 'winner' | 'loser'>;
+
+function changePath(id: string, voterId: string, vote: Claimed): string {
+  return pathnames.change(namespace(), id, voterId, vote.ts, vote.winner, vote.loser);
+}
+
+/**
+ * Claims a counted vote for the change that replaces it; false when another
+ * change claimed it first. Changes sent at once read the same counted vote,
+ * so only one of them writes, and a pair never passes MAX_CASTS.
+ */
+export function claimChange(id: string, voterId: string, vote: Claimed): Promise<boolean> {
+  return putOnce(changePath(id, voterId, vote), Buffer.alloc(0), 'application/octet-stream');
+}
+
+/** Gives a claim back when its change was not written, so the vote can still be changed. */
+export function releaseChange(id: string, voterId: string, vote: Claimed): Promise<void> {
+  return remove([changePath(id, voterId, vote)]);
 }
 
 function parseVoteBody(raw: unknown): VoteBody | null {
@@ -569,27 +598,31 @@ function parseLikes(raw: unknown): LikesRecord | null {
   return { liked: liked.filter(isOptionKey), seen: seen.filter(isOptionKey), ts: v.ts };
 }
 
-/** The newest likes record per voter, read from the pathnames' times. */
-async function latestFrom(id: string, prefix: string): Promise<Map<string, LikesRecord>> {
+/** The newest likes record per voter, read from the pathnames' times, and how many each wrote. */
+async function latestFrom(id: string, prefix: string): Promise<Map<string, LatestLikes>> {
   const ns = namespace();
-  const newest = new Map<string, { ts: number; pathname: string }>();
+  const newest = new Map<string, { ts: number; pathname: string; records: number }>();
   for (const blob of await listAll(prefix)) {
     const parsed = parseLikesPath(ns, id, blob.pathname);
     if (!parsed) continue;
     const prev = newest.get(parsed.voterId);
-    if (!prev || parsed.ts > prev.ts) newest.set(parsed.voterId, { ts: parsed.ts, pathname: blob.pathname });
+    const records = (prev?.records ?? 0) + 1;
+    newest.set(parsed.voterId, !prev || parsed.ts > prev.ts ? { ts: parsed.ts, pathname: blob.pathname, records } : { ...prev, records });
   }
-  const entries = await mapLimit([...newest], 16, async ([voterId, { pathname }]) => [voterId, await readOnce(pathname, parseLikes)] as const);
-  const out = new Map<string, LikesRecord>();
+  const entries = await mapLimit([...newest], 16, async ([voterId, { pathname, records }]) => {
+    const likes = await readOnce(pathname, parseLikes);
+    return [voterId, likes ? { ...likes, records } : null] as const;
+  });
+  const out = new Map<string, LatestLikes>();
   for (const [voterId, likes] of entries) if (likes) out.set(voterId, likes);
   return out;
 }
 
-export async function latestLikes(id: string, voterId: string): Promise<LikesRecord | null> {
+export async function latestLikes(id: string, voterId: string): Promise<LatestLikes | null> {
   return (await latestFrom(id, pathnames.likes(namespace(), id, voterId))).get(voterId) ?? null;
 }
 
-export function allLatestLikes(id: string): Promise<Map<string, LikesRecord>> {
+export function allLatestLikes(id: string): Promise<Map<string, LatestLikes>> {
   return latestFrom(id, pathnames.likes(namespace(), id));
 }
 

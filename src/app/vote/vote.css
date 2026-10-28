@@ -1,12 +1,12 @@
-/* The vote pages (/vote, /vote/[decision] and its results, /vote/admin
-   and a decision's panel). A standalone page off the viewer shell, drawn
-   from the shell's tokens (tokens.css): Inter through the type tokens, ink
-   and paper in both themes, the three line roles, the radius roles. Every
-   option is a plate: a 1px frame at the card corner. A mark is drawn by
-   mask in the ink color, an image is shown as it is on the plate ground,
-   both inside a padding that is a fixed share of the plate's width, so
-   every option gets the same room; a text option is its words, set as
-   type. */
+/* The vote pages (/vote, /vote/[decision], its results and the voter's
+   own votes, /vote/admin and a decision's panel). A standalone page off
+   the viewer shell, drawn from the shell's tokens (tokens.css): Inter
+   through the type tokens, ink and paper in both themes, the three line
+   roles, the radius roles. Every option is a plate: a 1px frame at the
+   card corner. A mark is drawn by mask in the ink color, an image is shown
+   as it is on the plate ground, both inside a padding that is a fixed
+   share of the plate's width, so every option gets the same room; a text
+   option is its words, set as type. */
 
 .vt {
   position: relative;
@@ -146,7 +146,7 @@
     opacity var(--pt-dur-fast) var(--pt-ease-out);
 }
 
-.vt-btn:not(:disabled):hover {
+.vt-btn:not(:disabled, [aria-disabled='true']):hover {
   background: transparent;
   color: var(--pt-ink);
 }
@@ -156,10 +156,23 @@
   outline-offset: 2px;
 }
 
-/* a form's button waits for hydration looking ready, so the first paint does not change */
-.vt-btn:disabled:not([data-ready='false']) {
+/* a form's button waits for hydration looking ready, so the first paint does not change;
+   an aria-disabled one keeps focus */
+.vt-btn:disabled:not([data-ready='false']),
+.vt-btn[aria-disabled='true'] {
   opacity: 0.35;
   cursor: default;
+}
+
+/* the second button beside the filled one: the frame and the ink, no fill */
+.vt-btn.is-quiet {
+  border-color: var(--pt-hair);
+  background: transparent;
+  color: var(--pt-ink);
+}
+
+.vt-btn.is-quiet:not(:disabled, [aria-disabled='true']):hover {
+  border-color: var(--pt-ink);
 }
 
 /* the admin's button beside 32px fields */
@@ -595,6 +608,41 @@
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 
+/* ---------- the voter's own votes: each matchup a pair of plates ---------- */
+
+/* the pairs sit wider apart than the two plates of a pair, so each reads as one */
+.vt-matches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: 24px 48px;
+}
+
+.vt-matches.is-text {
+  grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
+}
+
+.vt-match {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+/* a change saving: the new pick stays, the other side dims; nothing moves */
+.vt-match[aria-busy='true'] .vt-plate[aria-pressed='false'] {
+  opacity: 0.4;
+}
+
+/* the top padding clears the check, so a long name never runs under it */
+.vt-match .vt-plate.is-text {
+  min-height: 120px;
+  padding: 36px 16px;
+}
+
+.vt-match .vt-words-name {
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+}
+
 /* ---------- tables: results and admin ---------- */
 
 .vt-scroll {
@@ -709,8 +757,8 @@
   margin-top: 40px;
 }
 
-/* the admin's error floats over the foot of the screen, so the panel
-   holds no empty line for it */
+/* the admin's error and the voter's own votes' float over the foot of the
+   screen, so the page holds no empty line for it */
 .vt-error.is-float {
   position: fixed;
   z-index: 2;

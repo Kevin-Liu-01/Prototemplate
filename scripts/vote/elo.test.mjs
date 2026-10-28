@@ -1,12 +1,13 @@
 // Tests for src/lib/vote/elo.ts: Elo replayed over the vote log, with the
-// first vote per voter per pair counted, excluded voters and hidden options
-// skipped, and the domain filter. Loaded through Node's type stripping.
+// latest vote per voter per pair counted at its own time, excluded voters
+// and hidden options skipped, and the domain filter. Loaded through Node's
+// type stripping.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { importTs } from '../lint/seo.mjs';
 
-const { computeElo, dedupeVotes, expectedScore, pairId } = await importTs(new URL('../../src/lib/vote/elo.ts', import.meta.url));
+const { byNewestMatchup, computeElo, dedupeVotes, expectedScore, firstVoteAt, pairId } = await importTs(new URL('../../src/lib/vote/elo.ts', import.meta.url));
 
 const KEYS = ['a', 'b', 'c', 'd'];
 const vote = (voterId, ts, winner, loser) => ({ voterId, ts, winner, loser });
@@ -21,15 +22,57 @@ test('one vote moves both ratings by K/2 from the start', () => {
   assert.equal(rows.get('c').elo, 1000);
 });
 
-test('a repeated pair from one voter counts once, the first in time, either order', () => {
+test('a repeated pair from one voter counts once, the latest in time, either order', () => {
   const votes = [vote('v1', 30, 'b', 'a'), vote('v1', 10, 'a', 'b'), vote('v1', 20, 'a', 'b')];
   const { rows, counted } = computeElo(votes, { keys: KEYS });
   assert.equal(counted.length, 1);
-  assert.equal(counted[0].ts, 10);
-  assert.equal(rows.get('a').wins, 1);
-  assert.equal(rows.get('b').wins, 0);
+  assert.equal(counted[0].ts, 30);
+  assert.equal(rows.get('b').wins, 1);
+  assert.equal(rows.get('a').wins, 0);
+  assert.equal(rows.get('a').losses, 1);
   assert.equal(dedupeVotes(votes).length, 1);
   assert.equal(pairId('b', 'a'), pairId('a', 'b'));
+});
+
+test('a changed vote replays at the time of its latest cast, after the votes cast before it', () => {
+  /* v1 voted a over b first, then v2 voted c over a, then v1 changed to b over a */
+  const changed = [vote('v1', 1, 'a', 'b'), vote('v2', 2, 'c', 'a'), vote('v1', 3, 'b', 'a')];
+  const replay = [vote('v2', 2, 'c', 'a'), vote('v1', 3, 'b', 'a')];
+  const one = computeElo(changed, { keys: KEYS });
+  const two = computeElo(replay, { keys: KEYS });
+  assert.deepEqual(one.counted.map((v) => [v.voterId, v.ts]), [['v2', 2], ['v1', 3]]);
+  for (const key of KEYS) assert.equal(one.rows.get(key).elo, two.rows.get(key).elo);
+  /* the order matters: replayed at its first time, the same two votes rate a differently */
+  const early = computeElo([vote('v1', 1, 'b', 'a'), vote('v2', 2, 'c', 'a')], { keys: KEYS });
+  assert.notEqual(early.rows.get('b').elo, one.rows.get('b').elo);
+});
+
+test('a changed vote moves the record and the matrix, never counting the pair twice', () => {
+  const votes = [vote('v1', 1, 'a', 'b'), vote('v1', 5, 'b', 'a'), vote('v1', 9, 'a', 'b'), vote('v2', 2, 'a', 'b')];
+  const { rows, counted, matrix } = computeElo(votes, { keys: KEYS });
+  assert.equal(counted.length, 2);
+  assert.deepEqual([rows.get('a').wins, rows.get('a').losses, rows.get('a').games], [2, 0, 2]);
+  assert.deepEqual([rows.get('b').wins, rows.get('b').losses, rows.get('b').games], [0, 2, 2]);
+  assert.equal(matrix.wins[0][1], 2);
+  assert.equal(matrix.wins[1][0], 0);
+});
+
+test('two casts on one pair in one millisecond resolve the same way whatever order they arrive in', () => {
+  const one = dedupeVotes([vote('v1', 7, 'a', 'b'), vote('v1', 7, 'b', 'a')]);
+  const two = dedupeVotes([vote('v1', 7, 'b', 'a'), vote('v1', 7, 'a', 'b')]);
+  assert.equal(one.length, 1);
+  assert.deepEqual(one, two);
+});
+
+test('the counted votes list newest matchup first, and a changed vote keeps the place of its first vote', () => {
+  /* v1 voted a over b, then c over d, then changed a over b to b over a */
+  const votes = [vote('v1', 1, 'a', 'b'), vote('v1', 2, 'c', 'd'), vote('v1', 3, 'b', 'a')];
+  assert.deepEqual(byNewestMatchup(votes).map((v) => [v.winner, v.ts]), [['c', 2], ['b', 3]]);
+  assert.deepEqual(byNewestMatchup([...votes].reverse()), byNewestMatchup(votes));
+  assert.deepEqual([...firstVoteAt(votes).values()].sort(), [1, 2]);
+  /* one millisecond, two matchups: the order is still fixed */
+  const tied = [vote('v1', 5, 'c', 'd'), vote('v1', 5, 'a', 'b')];
+  assert.deepEqual(byNewestMatchup(tied), byNewestMatchup([...tied].reverse()));
 });
 
 test('the same pair from two voters counts twice', () => {

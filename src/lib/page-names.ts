@@ -30,6 +30,7 @@ export type PageId =
   | 'transcreateCredits'
   | 'vote'
   | 'voteResults'
+  | 'voteMine'
   | 'voteAdmin';
 
 export type PageName = { name: string; short?: string };
@@ -58,6 +59,7 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   transcreateCredits: { name: 'Transcreate credits', short: 'Credits' },
   vote: { name: 'Vote' },
   voteResults: { name: 'Vote results' },
+  voteMine: { name: 'Your votes' },
   voteAdmin: { name: 'Vote admin' },
 };
 

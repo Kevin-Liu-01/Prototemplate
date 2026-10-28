@@ -1,18 +1,21 @@
 /* The answers the vote API builds from the store: the hub, a voter's state
-   in one decision, the results, the admin's list and panel, and the CSV
-   export. Every per-decision read re-checks the voter's access. Voters see
-   a mark or image option by an opaque id (its alias, per decision), never
-   by its key, because a key can name the option and the matchups are
-   blind; a text option is its words, so it shows its name. */
+   in one decision and their own votes in it, the results, the admin's list
+   and panel, and the CSV export. Every count reads the votes that count,
+   the latest per voter per pair (elo.dedupeVotes), so a changed vote is
+   never counted twice. Every per-decision read re-checks the voter's
+   access. Voters see a mark or image option by an opaque id (its alias,
+   per decision), never by its key, because a key can name the option and
+   the matchups are blind; a text option is its words, so it shows its
+   name. */
 import { CACHE_MS, defaultAccess, ELO_K, ELO_START, MIN_GROUP_VOTERS, namespace, optionSrc } from './config';
 import { canOpen, headOf, newOptions, resultsOpen, visibleDecisions, visibleGroups, votingOpen } from './decisions';
-import { computeElo } from './elo';
+import { byNewestMatchup, computeElo, dedupeVotes, firstVoteAt, pairId } from './elo';
 import { isAllowedEmail, optionAlias } from './identity';
-import { schedule, standing, voterOrder } from './schedule';
+import { schedule, sidesOf, standing, voterOrder } from './schedule';
 import * as store from './store';
 
 import type { Schedule } from './schedule';
-import type { LikesRecord, OptionRecord, VoteRecord, VoterRecord } from './store';
+import type { LatestLikes, OptionRecord, VoteRecord, VoterRecord } from './store';
 import type {
   AdminData,
   AdminDecisionRow,
@@ -21,6 +24,8 @@ import type {
   DecisionMeta,
   HubRow,
   HubState,
+  MyVote,
+  MyVotes,
   Results,
   VoteOption,
   VoteState,
@@ -79,7 +84,7 @@ export type VoterParts = {
   meta: DecisionMeta;
   options: OptionRecord[];
   votes: VoteRecord[];
-  latest: LikesRecord | null;
+  latest: LatestLikes | null;
   ratings: Map<string, number>;
   admin: boolean;
 };
@@ -140,7 +145,8 @@ export function contextOf(parts: VoterParts): VoterContext {
   const fresh = newOptions({
     keys,
     addedAt: new Map(active.map((option) => [option.key, option.addedAt])),
-    lastVoteAt: parts.votes.reduce((max, vote) => Math.max(max, vote.ts), 0),
+    /* the voter's newest matchup; a changed vote is not a new one */
+    lastVoteAt: Math.max(0, ...firstVoteAt(parts.votes).values()),
     latestSeen: parts.latest?.seen ?? null,
     likes: meta.likes,
     finishedAmong: (old) =>
@@ -149,10 +155,22 @@ export function contextOf(parts: VoterParts): VoterContext {
   return { parts, active, keys, keyOf, sched, needsLikes: stand.needsLikes, complete: stand.complete, fresh };
 }
 
+/* the active options as the voter sees them, by key */
+function shownOf(ctx: VoterContext): (key: string) => VoteOption {
+  const { meta } = ctx.parts;
+  const shown = new Map(ctx.active.map((option): [string, VoteOption] => [option.key, voteOption(meta, option)]));
+  return (key) => shown.get(key) ?? { key: aliasOf(meta.id, key), src: '' };
+}
+
+/* the keys of the active options the voter last liked */
+function likedOf(ctx: VoterContext): string[] {
+  const active = new Set(ctx.keys);
+  return (ctx.parts.latest?.liked ?? []).filter((key) => active.has(key));
+}
+
 export function stateOf(ctx: VoterContext): VoteState {
   const { meta, voter } = ctx.parts;
-  const shown = new Map(ctx.active.map((option): [string, VoteOption] => [option.key, voteOption(meta, option)]));
-  const option = (key: string): VoteOption => shown.get(key) ?? { key: aliasOf(meta.id, key), src: '' };
+  const option = shownOf(ctx);
   const open = votingOpen(meta.status);
   const pair = open ? ctx.sched.pair : null;
   return {
@@ -162,7 +180,7 @@ export function stateOf(ctx: VoterContext): VoteState {
     progress: ctx.sched.progress,
     needsLikes: open && ctx.needsLikes,
     options: voterOrder(voter.voterId, ctx.keys).map(option),
-    likes: (ctx.parts.latest?.liked ?? []).filter((key) => shown.has(key)).map((key) => option(key).key),
+    likes: likedOf(ctx).map((key) => option(key).key),
     complete: ctx.complete,
     results: resultsOpen(meta.status, ctx.complete, ctx.parts.admin),
   };
@@ -171,6 +189,45 @@ export function stateOf(ctx: VoterContext): VoteState {
 export async function voterState(voterId: string, decisionId: string, admin = false): Promise<VoteState | null> {
   const parts = await loadVoter(voterId, decisionId, admin);
   return parts ? stateOf(contextOf(parts)) : null;
+}
+
+/* ------------------------------------------------------------------ */
+/* the voter's own votes                                               */
+
+/** The voter's votes on one pair: the one that counts (the latest), null when none, and how many they cast. */
+export function castsOn(votes: readonly VoteRecord[], a: string, b: string): { counted: VoteRecord | null; casts: number } {
+  const id = pairId(a, b);
+  const on = votes.filter((vote) => pairId(vote.winner, vote.loser) === id);
+  return { counted: dedupeVotes(on).at(-1) ?? null, casts: on.length };
+}
+
+/** A counted vote as the voter's row: the pair on the sides the ballot showed, and the side it picked. */
+export function myVoteOf(ctx: VoterContext, vote: Pick<VoteRecord, 'ts' | 'winner' | 'loser'>): MyVote {
+  const option = shownOf(ctx);
+  const sides = sidesOf(ctx.parts.voter.voterId, vote.winner, vote.loser);
+  return { left: option(sides.left), right: option(sides.right), winner: option(vote.winner).key, at: vote.ts };
+}
+
+export function myVotesOf(ctx: VoterContext): MyVotes {
+  const { meta } = ctx.parts;
+  const active = new Set(ctx.keys);
+  const option = shownOf(ctx);
+  const counted = byNewestMatchup(ctx.parts.votes).filter((vote) => active.has(vote.winner) && active.has(vote.loser));
+  return {
+    decision: headOf(meta),
+    open: votingOpen(meta.status),
+    rows: counted.map((vote) => myVoteOf(ctx, vote)),
+    options: voterOrder(ctx.parts.voter.voterId, ctx.keys).map(option),
+    /* a voter who owes a matchup sends likes on the ballot, after it */
+    likes: meta.likes && ctx.parts.latest && !ctx.sched.pair ? likedOf(ctx).map((key) => option(key).key) : null,
+    results: resultsOpen(meta.status, ctx.complete, ctx.parts.admin),
+  };
+}
+
+/** The voter's own votes in one decision; null when it does not open for them, or is archived. */
+export async function myVotes(voterId: string, decisionId: string, admin = false): Promise<MyVotes | null> {
+  const parts = await loadVoter(voterId, decisionId, admin);
+  return parts && parts.meta.status !== 'archived' ? myVotesOf(contextOf(parts)) : null;
 }
 
 /* ------------------------------------------------------------------ */
@@ -211,17 +268,25 @@ export async function hubView(voterId: string, fresh = false): Promise<HubState 
 /* ------------------------------------------------------------------ */
 /* results                                                             */
 
+export type ResultsAccess = {
+  access: 'ok' | 'denied' | 'missing';
+  /** a voter reading an open decision's results may change their votes; never the admin */
+  change: boolean;
+};
+
 /**
  * Whether a reader may open a decision's results: 'missing' when it does
  * not exist or does not open for them, 'denied' until a voter finishes an
- * open decision, 'ok' otherwise.
+ * open decision, 'ok' otherwise; and whether they may go on to change
+ * their votes.
  */
-export async function resultsAccess(voterId: string | null, decisionId: string, admin: boolean): Promise<'ok' | 'denied' | 'missing'> {
-  if (admin) return (await store.decision(decisionId)) ? 'ok' : 'missing';
-  if (!voterId) return 'denied';
+export async function resultsAccess(voterId: string | null, decisionId: string, admin: boolean): Promise<ResultsAccess> {
+  if (admin) return { access: (await store.decision(decisionId)) ? 'ok' : 'missing', change: false };
+  if (!voterId) return { access: 'denied', change: false };
   const parts = await loadVoter(voterId, decisionId);
-  if (!parts) return 'missing';
-  return resultsOpen(parts.meta.status, contextOf(parts).complete, false) ? 'ok' : 'denied';
+  if (!parts) return { access: 'missing', change: false };
+  const ok = resultsOpen(parts.meta.status, contextOf(parts).complete, false);
+  return { access: ok ? 'ok' : 'denied', change: ok && votingOpen(parts.meta.status) };
 }
 
 /**
@@ -239,7 +304,7 @@ export async function resultsView(decisionId: string, domain: string | null, adm
     store.allVotes(decisionId),
     store.excludedVoters(),
     store.allVoters(),
-    meta.likes ? store.allLatestLikes(decisionId) : Promise.resolve(new Map<string, LikesRecord>()),
+    meta.likes ? store.allLatestLikes(decisionId) : Promise.resolve(new Map<string, LatestLikes>()),
   ]);
   const active = activeOf(meta, registry.options);
   const keys = active.map((option) => option.key);
@@ -313,7 +378,7 @@ export async function adminList(): Promise<AdminList> {
       options: registry.options.length,
       active: activeOf(meta, registry.options).length,
       voters: voters.size,
-      votes: votes.length,
+      votes: dedupeVotes(votes).length,
     };
   });
   return { decisions: rows, defaultAccess: defaultAccess() };
@@ -380,13 +445,15 @@ export async function adminView(decisionId: string): Promise<AdminData | null> {
       }
     }
     const last = own.reduce((max, vote) => Math.max(max, vote.ts), 0);
+    const counted = dedupeVotes(own).length;
     return {
       voterId: voter.voterId,
       email: voter.email,
       domain: voter.domain,
       createdAt: voter.createdAt,
       access: isAllowedEmail(voter.email, meta.access),
-      votes: own.length,
+      votes: counted,
+      changes: own.length - counted,
       complete: standing({ sched, keys, latest, likes: meta.likes }).complete,
       likes: latest?.liked ?? [],
       devices,
@@ -420,7 +487,7 @@ export async function adminView(decisionId: string): Promise<AdminData | null> {
       voters: rows.length,
       complete: rows.filter((row) => row.complete).length,
       excluded: rows.filter((row) => row.excluded).length,
-      votes: votes.length,
+      votes: dedupeVotes(votes).length,
       counted: ranked.counted.length,
       options: registry.options.length,
       active: keys.length,
@@ -434,12 +501,12 @@ function csvCell(value: string): string {
   return /[",\r\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
 }
 
-/** Every vote ever written in one decision, oldest first; null when it does not exist. */
+/** Every vote that counts in one decision (the latest per voter per pair), oldest first; null when it does not exist. */
 export async function exportCsv(decisionId: string): Promise<string | null> {
   if (!(await store.decision(decisionId, true))) return null;
   const [votes, voters, excluded] = await Promise.all([store.allVotes(decisionId), store.allVoters(), store.excludedVoters()]);
   const byId = new Map(voters.map((voter) => [voter.voterId, voter]));
-  const ordered = [...votes].sort((a, b) => a.ts - b.ts || a.voterId.localeCompare(b.voterId));
+  const ordered = dedupeVotes(votes);
   const bodies = await store.mapLimit(ordered, 16, (vote) => store.voteBody(vote.pathname));
   const lines = ['ts,email,domain,winner,loser,left,right,excluded'];
   ordered.forEach((vote, i) => {

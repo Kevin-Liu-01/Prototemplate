@@ -18,6 +18,8 @@ type RankingProps = {
   id: string;
   /** the admin reads the results too, and gets a way back to the decision's panel */
   admin: boolean;
+  /** a voter on an open decision gets a way to change their votes */
+  change?: boolean;
 };
 
 /**
@@ -27,7 +29,7 @@ type RankingProps = {
  * PROVISIONAL_GAMES games is dimmed. Shown on /vote/[decision]/results and,
  * once the decision is closed, on /vote/[decision] itself.
  */
-export default function Ranking({ initial, at, id, admin }: RankingProps) {
+export default function Ranking({ initial, at, id, admin, change = false }: RankingProps) {
   const router = useRouter();
   const [results, setResults] = useState(initial);
   /* the newest unfiltered read: the groups and the All count come from it, so the chips stay put while one is picked */
@@ -135,6 +137,11 @@ export default function Ranking({ initial, at, id, admin }: RankingProps) {
         {error}
       </p>
       <p className='vt-who'>
+        {change ? (
+          <Link href={`/vote/${id}/votes`} className='pt-ib vt-chip' data-testid='results-change'>
+            Change Votes
+          </Link>
+        ) : null}
         <Link href='/vote' className='pt-ib vt-chip' data-testid='results-all'>
           All Votes
         </Link>

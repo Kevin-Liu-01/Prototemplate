@@ -31,8 +31,9 @@ function Yes({ on }: { on: boolean }) {
 
 /**
  * The decision's voters: everyone on its access list and everyone who
- * voted in it, with their devices and who shares one. Exclude is global:
- * an excluded voter counts in no decision.
+ * voted in it, with the votes that count, how many votes they changed,
+ * their devices and who shares one. Exclude is global: an excluded voter
+ * counts in no decision.
  */
 export default function Voters({ voters, busy, change }: { voters: AdminVoter[]; busy: boolean; change: Change }) {
   const rows = [...voters].sort((a, b) => lastActive(b) - lastActive(a) || a.email.localeCompare(b.email));
@@ -50,6 +51,9 @@ export default function Voters({ voters, busy, change }: { voters: AdminVoter[];
               <th scope='col'>Access</th>
               <th scope='col' className='is-num'>
                 Votes
+              </th>
+              <th scope='col' className='is-num'>
+                Changes
               </th>
               <th scope='col'>Complete</th>
               <th scope='col' className='is-num'>
@@ -74,6 +78,7 @@ export default function Voters({ voters, busy, change }: { voters: AdminVoter[];
                   <Yes on={voter.access} />
                 </td>
                 <td className='is-num'>{voter.votes}</td>
+                <td className='is-num'>{voter.changes}</td>
                 <td>
                   <Yes on={voter.complete} />
                 </td>

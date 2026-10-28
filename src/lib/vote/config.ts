@@ -109,6 +109,9 @@ export const pathnames = {
     `${d(ns, id)}/votes/${voterId}/${ts}_${winner}_${loser}.json`,
   likes: (ns: string, id: string, voterId = '') => `${d(ns, id)}/likes/${voterId ? `${voterId}/` : ''}`,
   like: (ns: string, id: string, voterId: string, ts: number) => `${d(ns, id)}/likes/${voterId}/${ts}.json`,
+  /** the claim a change puts on the counted vote it replaces, named by that vote; never listed */
+  change: (ns: string, id: string, voterId: string, ts: number, winner: string, loser: string) =>
+    `${d(ns, id)}/changes/${voterId}/${ts}_${winner}_${loser}`,
 };
 
 function rest(pathname: string, prefix: string): string[] | null {

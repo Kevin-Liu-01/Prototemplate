@@ -44,7 +44,7 @@ export default async function VoteResultsPage({ params }: Params) {
     <>
       <JsonLd nodes={resultsRoute(decision).jsonLd} />
       {boot.kind === 'ready' ? (
-        <Ranking initial={boot.data.results} at={boot.at} id={decision} admin={boot.data.admin} />
+        <Ranking initial={boot.data.results} at={boot.at} id={decision} admin={boot.data.admin} change={boot.data.change} />
       ) : (
         <Unavailable title={PAGE_NAMES.voteResults.name} kind={boot.kind} />
       )}

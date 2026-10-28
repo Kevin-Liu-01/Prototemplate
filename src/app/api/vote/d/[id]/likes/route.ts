@@ -1,8 +1,11 @@
 /* POST {liked}: every option the voter likes in one decision, by the
-   aliases their state carries, once their matchups are done. 409 while a
-   pair is open, once the likes are in for every option (a stale page
-   cannot put back older picks), when the decision is not open, or when it
-   has no likes step. */
+   aliases their state carries, once their matchups are done. A voter whose
+   likes are in may send them again to change them; the latest record
+   counts. 409 while a pair is open, for a set the latest record already
+   holds (a stale page sending the same picks), once the voter has written
+   MAX_LIKES records, when the decision is not open, or when it has no
+   likes step. */
+import { checkLikes } from '@/lib/vote/change';
 import { isOptionKey } from '@/lib/vote/config';
 import { isDecisionId, votingOpen } from '@/lib/vote/decisions';
 import { currentSession, fail, isAdmin, json, readBody, route } from '@/lib/vote/api';
@@ -32,17 +35,14 @@ export const POST = route(async (req: NextRequest, { params }: DecisionParams) =
   if (!parts.meta.likes) return fail(409, 'This vote has no likes step.');
   const ctx = contextOf(parts);
   if (ctx.sched.pair) return fail(409, 'Finish the matchups first.');
-  if (!ctx.needsLikes) return fail(409, 'Your likes are in.');
-  const liked = [
-    ...new Set(
-      (body.liked as unknown[])
-        .filter(isOptionKey)
-        .map((alias) => ctx.keyOf.get(alias))
-        .filter((key): key is string => key !== undefined)
-    ),
-  ];
-  if (!liked.length) return fail(400, 'Pick at least one you like.');
-  await writeLikes(id, session.voterId, liked, ctx.keys);
-  parts.latest = { liked, seen: ctx.keys, ts: Date.now() };
+  const liked = (body.liked as unknown[])
+    .filter(isOptionKey)
+    .map((alias) => ctx.keyOf.get(alias))
+    .filter((key): key is string => key !== undefined);
+  const records = parts.latest?.records ?? 0;
+  const record = checkLikes({ liked, keys: ctx.keys, latest: parts.latest, owes: ctx.needsLikes, records });
+  if (!record.ok) return fail(record.status, record.error);
+  await writeLikes(id, session.voterId, record.liked, record.seen);
+  parts.latest = { liked: record.liked, seen: record.seen, ts: Date.now(), records: records + 1 };
   return json(stateOf(contextOf(parts)));
 });

@@ -177,7 +177,7 @@ function Ballot({ initial, at, id, title }: { initial: VoteState | null; at: num
     <>
       {step === 'matchup' ? <MatchupStep {...props} /> : null}
       {step === 'likes' ? <LikesStep {...props} /> : null}
-      {step === 'done' ? <EndStep {...props} line='Your votes are in.' /> : null}
+      {step === 'done' ? <EndStep {...props} line='Your votes are in.' change /> : null}
       {step === 'closed' ? <EndStep {...props} line='Voting is closed.' /> : null}
     </>
   );
@@ -345,15 +345,23 @@ function LikesStep({ id, state, headRef, onState, onRefresh, onError }: StepProp
   );
 }
 
-function EndStep({ id, state, headRef, line }: StepProps & { line: string }) {
+/** Done or closed: the results once they open, and while the decision is open a way to change the votes. */
+function EndStep({ id, state, headRef, line, change = false }: StepProps & { line: string; change?: boolean }) {
   return (
     <>
       <Head decision={state.decision} headRef={headRef} line={line} />
-      {state.results ? (
+      {state.results || change ? (
         <div className='vt-actions'>
-          <Link href={`/vote/${id}/results`} className='vt-btn' data-testid='vote-results-link'>
-            See Results
-          </Link>
+          {state.results ? (
+            <Link href={`/vote/${id}/results`} className='vt-btn' data-testid='vote-results-link'>
+              See Results
+            </Link>
+          ) : null}
+          {change ? (
+            <Link href={`/vote/${id}/votes`} className='vt-btn is-quiet' data-testid='vote-change-link'>
+              Change Votes
+            </Link>
+          ) : null}
         </div>
       ) : null}
     </>

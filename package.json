@@ -28,7 +28,7 @@
     "lint:seo": "node scripts/lint/seo.mjs",
     "lint:seo:live": "node scripts/lint/seo.mjs --live",
     "test:seo": "node --test scripts/lint/seo.test.mjs scripts/lint/seo-*.test.mjs",
-    "test:vote": "node --test scripts/vote/elo.test.mjs scripts/vote/schedule.test.mjs scripts/vote/identity.test.mjs scripts/vote/decisions.test.mjs scripts/vote/mark-file.test.mjs",
+    "test:vote": "node --test scripts/vote/elo.test.mjs scripts/vote/schedule.test.mjs scripts/vote/identity.test.mjs scripts/vote/decisions.test.mjs scripts/vote/mark-file.test.mjs scripts/vote/change.test.mjs",
     "lint:heads": "node scripts/lint/heads.mjs",
     "lint:heads:live": "node scripts/lint/heads.mjs --live",
     "test:heads": "node --test scripts/lint/heads.test.mjs",
