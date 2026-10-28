@@ -65,13 +65,17 @@ export function schedule(input: ScheduleInput): Schedule {
   const { voterId, keys } = input;
   const active = new Set(keys);
   const voted = new Set<string>();
+  /* a matchup against a hidden option still counts for the other option, so hiding never reopens a finished ballot */
+  const played = new Set<string>();
   for (const vote of input.votes) {
-    if (vote.winner === vote.loser || !active.has(vote.winner) || !active.has(vote.loser)) continue;
-    voted.add(pairKey(vote.winner, vote.loser));
+    if (vote.winner === vote.loser || (!active.has(vote.winner) && !active.has(vote.loser))) continue;
+    const id = pairKey(vote.winner, vote.loser);
+    played.add(id);
+    if (active.has(vote.winner) && active.has(vote.loser)) voted.add(id);
   }
   const appearances = new Map(keys.map((key) => [key, 0]));
-  for (const id of voted) {
-    for (const key of id.split('|')) appearances.set(key, (appearances.get(key) ?? 0) + 1);
+  for (const id of played) {
+    for (const key of id.split('|')) if (active.has(key)) appearances.set(key, (appearances.get(key) ?? 0) + 1);
   }
   const target = appearanceTarget(keys.length, input.appearances);
   const hashes = new Map(keys.map((key) => [key, hash32(`${voterId}:${key}`)]));

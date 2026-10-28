@@ -70,18 +70,31 @@ test("a newly added option is scheduled first for a voter who had finished", () 
   assert.equal(final.appearances.get('fresh'), 3);
 });
 
-test("duplicate votes, votes on hidden options and self votes do not count", () => {
+test("duplicate votes and self votes do not count, and a hidden option's matchups count only for the other side", () => {
   const keys = keysOf(4);
   const votes = [
     { winner: 'm1', loser: 'm2' },
     { winner: 'm2', loser: 'm1' },
     { winner: 'm1', loser: 'gone' },
+    { winner: 'gone', loser: 'm1' },
     { winner: 'm3', loser: 'm3' },
   ];
   const s = schedule({ voterId: 'v', keys, votes });
   assert.equal(s.progress.done, 1);
-  assert.equal(s.appearances.get('m1'), 1);
+  assert.equal(s.appearances.get('m1'), 2);
+  assert.equal(s.appearances.get('m2'), 1);
   assert.equal(s.appearances.has('gone'), false);
+});
+
+test('hiding an option never reopens a finished ballot', () => {
+  const keys = keysOf(8);
+  const { votes, final } = runVoter('done', keys);
+  assert.equal(final.pair, null);
+  for (const hidden of keys) {
+    const s = schedule({ voterId: 'done', keys: keys.filter((key) => key !== hidden), votes });
+    assert.equal(s.pair, null, `hiding ${hidden}`);
+    assert.equal(s.progress.done, s.progress.total);
+  }
 });
 
 test("fewer than two options means no matchups", () => {

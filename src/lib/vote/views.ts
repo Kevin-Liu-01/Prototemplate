@@ -269,7 +269,7 @@ export async function resultsView(decisionId: string, domain: string | null, adm
       if (record.seen.includes(option.key)) seenBy += 1;
     }
     return {
-      key: option.key,
+      key: admin ? option.key : aliasOf(meta.id, option.key),
       name: option.name,
       text: meta.kind === 'text' ? option.text : '',
       src: srcOf(meta.id, option),
