@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Exploration rounds and convergence
   areas: aesthetic, website, landing, graphics
-  updated: 2026-10-10
+  updated: 2026-10-28
   origin: prototemplate
   owner: P
 ---
@@ -60,7 +60,7 @@ Kevin asked for this on 2026-09-12 and 2026-10-01 on a project of his own, and t
 
 ### The charter
 
-Every round starts from a written charter that every builder and reviewer reads (`references/charter.md`): the GT elements every direction keeps, the ordered section contract, the homes where the round's new idea may live, the copy rules, the builders' technical limits, and a completeness checklist run by reading code. The deco rounds of 2026-09-14 and 2026-09-15 ran from one after Kevin rejected the round before it as incomplete. Keep the charter in the round's notes or the repository, since the deco charter was lost with a scratchpad.
+Every round starts from a written charter that every builder and reviewer reads (`references/charter.md`): the GT elements every direction keeps, the ordered section contract, the homes where the round's new idea may live, the copy rules, the builders' technical limits, and a completeness checklist run by reading code. From the second round on it quotes the last round's decision and feedback, and each direction names a tension and a focus (part G). The deco rounds of 2026-09-14 and 2026-09-15 ran from one after Kevin rejected the round before it as incomplete. Keep the charter in the round's notes or the repository, since the deco charter was lost with a scratchpad.
 
 ### One exemplar first
 
@@ -206,7 +206,7 @@ The exemplar Kevin picks becomes the documented default, with its parameters in 
 - [ ] Every direction is in `DIRECTIONS` once, its `label` is the number Kevin uses, and every count written in prose matches the registry.
 - [ ] Kevin can switch between all options in one place, and effect variants have an in-page menu.
 - [ ] No version was overwritten: each fork has its own number, slug and root class, and the source of truth was not edited during fork work.
-- [ ] Every element Kevin praised or screenshotted is still present.
+- [ ] Every element Kevin praised or screenshotted is still present, and every note of the last round's feedback is answered or listed as open.
 - [ ] Critic scores came from side-by-side composites against a written rubric.
 - [ ] After the pick, production code holds only the winner, byte-identical, and the removal commit names the commits that held the alternatives. A direction retired from Prototemplate's lineup is archived with its last commit.
 - [ ] Nothing reached Prototemplate main or a gt-cloud PR before Kevin said to land it.

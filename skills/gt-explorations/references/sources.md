@@ -19,3 +19,11 @@ Provenance for `gt-explorations`. The first list is the skill's sources as writt
 | Section 3 detail moved to `references/registry.md`, section 4 detail to `references/comparing.md`, unchanged | references | the 2026-10-05 text of SKILL.md sections 3 and 4 |
 | `metadata.owner: P` | frontmatter | system v2 plan section 2.2 (2026-10-10) |
 | `scripts/distinct-set.mjs` header: `Requires:` and `Last real run:` | the script | inventory skills item 8 (seven runs, all 2026-10-06); plan section 2.2 bundled-script table |
+
+## Added on 2026-10-28
+
+| Line | Where | Source |
+| --- | --- | --- |
+| The last round's decision and feedback quoted at the start of the next round, each option naming the note it answers | SKILL.md section 1 ("The charter") and the review checklist, `references/charter.md` part G.1 | Kevin's request of 2026-10-28 to write these rules into the skills; the notes behind them are private and stay out of the repository |
+| The feedback on a round as one numbered document, each note marked essential or preference with its reason | `references/charter.md` part G.2 | the same request; the ask ledger in `gt-reporting` section 3 |
+| Each direction names a tension (a pair of values from `gt-brand` section 2) and a one-word focus | SKILL.md section 1 ("The charter"), `references/charter.md` part G.3 | the same request; the values and registers in `gt-brand` section 2 |

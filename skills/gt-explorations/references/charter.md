@@ -58,3 +58,13 @@ The register (plain declarative sentences, technical terms explained), then what
 ## F. The completeness checklist
 
 A checklist a reviewer runs by reading code, every line true or the direction is returned: structure (files, section order, root classes, no stray renames, nothing outside the folder changed), tokens and color (the comment block, the token set, the dark remap, a grep for gradients, shadows and filters), rails and lines (one owner per line), elements (one line per element of part A with the data it must import unchanged), type (no second Inter, one display face in its slots, weights at 500 or less, the mobile floor tokens), motion (reduced-motion guards, paused loops, no smooth scroll or pinning, engines destroyed on cleanup) and copy (a dash grep, an exclamation grep, a flag-emoji grep). Each line carries the command that checks it, with every `--include` glob quoted for zsh.
+
+## G. The last round and each direction's reason
+
+Kevin asked for these three rules on 2026-10-28. They hold for every round after the first, mark rounds included.
+
+1. **The last round's decision, quoted.** The charter opens with the previous round's decision and the feedback that led to it, quoted word for word with the date and the numbers Kevin used. The round's first page or sheet shows the same quotes to the reviewer before any option. Every direction or option names the note it answers, and a note that no option answers is listed as open in the round's report.
+2. **The feedback as one document.** The notes on a round are one numbered document, written once, after the whole round has been seen. Each note says what must change and why, and is marked essential or preference. Kevin's notes on our own rounds arrive as messages, so the agent compiles them into that list in the ask ledger (`gt-reporting` section 3) before the next round starts. When GT reviews a round made by an outside designer, the agent drafts the same document from Kevin's notes and the team's comments, folds every comment left on the work into it, and gives it to Kevin to send once.
+3. **A tension and a focus for each direction.** Each direction names the tension in the brand it answers and its focus in one word. A tension is a pair of GT's values or registers that pull apart (`gt-brand` section 2): engineering-first against cosmopolitan, infrastructure-grade against hand-crafted, the community register against the enterprise register. A direction with no tension or no focus is not shown.
+
+Part F's reviewer also checks part G by reading the round's notes: the quotes are present and dated, each direction carries its tension and focus, and each option names the note it answers.

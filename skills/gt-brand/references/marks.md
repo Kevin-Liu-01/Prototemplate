@@ -28,7 +28,7 @@ The GT monogram in use is the doubled-line mark: every stroke of the G and the T
 
 ## Reviewing a new GT mark
 
-These rules hold for any new GT mark, from an exploration round to a final pick. They come from Kevin's reviews of a round of GT marks drawn as a globe (2026-10-08 and 2026-10-09).
+These rules hold for any new GT mark, from an exploration round to a final pick. They come from Kevin's reviews of a round of GT marks drawn as a globe (2026-10-08 and 2026-10-09), and the rules on rough rows and on context from his request of 2026-10-28.
 
 - **The G's top tail ends horizontal.** The G's top arc runs out into a straight horizontal segment, as in the current monogram, where it flattens into a stroke that runs into the T's bar. A diagonal, radial or hooked terminal is refused. Kevin, 2026-10-09, rejecting the third round: "make the top g tail end at a horizontal line".
 - **The failure list.** Kevin rated the second round 5 out of 10 (2026-10-08). Its causes are refused in every new mark:
@@ -38,6 +38,8 @@ These rules hold for any new GT mark, from an exploration round to a final pick.
   - stubs and tangencies where strokes meet;
   - a mark that collapses at 16px;
   - grey tints in place of one ink.
+- **Rough rows first.** A mark round starts as rough sketches on one board: one idea per row, and each variant in a row moves one property (the stroke weight, the gap of a doubled line, where the G's arc stops, where a cut falls, the angle). Only the marks Kevin picks are rebuilt as clean SVG from geometry, each with a construction drawing. Kevin, 2026-10-27, on construction drawings: "dont need to do drawings for everything, just the good ones".
+- **Reviewed in context before a pick.** Every candidate is shown on paper and on ink, at navigation size in one row with the logos of the localization products it is compared with (each from thesvg.org, as for every third-party logo), and beside the current mark at the same height. It is judged at those sizes before it is judged large, and the small sizes above still apply.
 - **Where the work lives.** Exploration marks stay as review pages until Kevin picks (`gt-explorations`). A pick goes into `src/lib/marks.ts` and `public/marks` the way the speed set did, generated from geometry and never drawn by hand.
 
 ## The GT word in text

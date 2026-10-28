@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Brand and the correct Inter
   areas: aesthetic
-  updated: 2026-10-10
+  updated: 2026-10-28
   origin: prototemplate
   owner: P
 ---
@@ -87,6 +87,7 @@ Four absolute colors and one accent. The four are declared once in `src/app/glob
 - **The accent marks small elements:** an active state, a diagram highlight, one pulse on a thread. It never fills a large area and never colors a heading (emphasis is a doubled underline in the text color). An isometric drawing spends it on exactly one element (DESIGN.md section 6), and a film on one thing at a time.
 - **The accent per ground.** On ink the accent is always the lift `#86a8ff`: `#2f5ce0` sits at 3.58:1 on `#070707`. New work takes these two values. Deck slide 26 records two other blues in use (`#3b82f6` in the docs, `#2563eb` on the blog) as drift to resolve.
 - **Depth comes from lines and material.** No shadows anywhere.
+- **A new palette states shares.** A proposed palette gives each color's share of the surface as well as its value, and is shown as blocks drawn in those shares.
 - **Semantic hues appear on icons only**, in the deck: `#12a37a` done or passing, `#f0a020` open or in review, `#e5484d` excluded or rejected, `#2f5ce0` GT itself. The four are the same in both of the deck's themes, so these icon hues are separate from the accent's lift. Text and lines stay monochrome. The shell's site icons use the same amber on ink and darken it to `#c47d00` on paper, where `#f0a020` sits at 2.15:1 (`--pt-site-signal`).
 - **Contrast.** Titanium on paper is 3.25:1, under the 4.5:1 that small text needs; on ink it is 6.2:1. gt-cloud's plate pages darken light-theme titanium to `#6e737c` (4.77:1) in `$GT_CLOUD/apps/dashboard/src/app/brand-tokens.css`. Check titanium text at 13px in the light theme before shipping it.
 
@@ -140,7 +141,7 @@ Detail, files and procedures are in `references/marks.md`.
 - **One ink.** Ink on paper or paper on ink. No third color, no gradient, no shadow, no glow. On a dark surface the drawn mark inverts, as an alpha mask that takes the surface's ink or as a clean invert. A mark ships only as vector geometry.
 - **Compression.** The mark must hold at 16px (favicon), 32px (CLI banner), 64px (README header), 128px (npm page) and 256px (website), because developers meet the brand in a terminal as often as on the site (deck slide 25).
 - **Inline.** At text size the GT mark sits in the line at the cap height of the text around it, with the letters GT kept as hidden text.
-- **A new mark.** The G's top arc runs out into a straight horizontal segment, as in the current monogram; a diagonal, radial or hooked terminal is refused (Kevin, 2026-10-09). The review standard and the failure list for new marks are in `references/marks.md` ("Reviewing a new GT mark").
+- **A new mark.** The G's top arc runs out into a straight horizontal segment, as in the current monogram; a diagonal, radial or hooked terminal is refused (Kevin, 2026-10-09). A candidate is reviewed on paper and ink, at navigation size among competing products' logos and beside the current mark, and only picks are rebuilt as clean SVG with a construction drawing. The review standard and the failure list for new marks are in `references/marks.md` ("Reviewing a new GT mark").
 - **Locadex** has its own one-color mark (`public/brand/locadex-mark.svg`; `LocadexMark` in gt-cloud's `packages/ui`) and appears only where it has a function.
 - **The speed set.** Kevin chose seven race-type marks on 2026-09-29 (bar monogram, lockup, plate, double cut, livery stack, dithered, ASCII). They are presented beside the current mark on `/marks` and on deck slides 17 to 23. `scripts/build/speed-marks.mjs` generates every file from geometry and font outlines (`pnpm build:marks`). Regenerate them; never redraw one by hand or edit an SVG under `public/marks`.
 - **The one flourish** is the dithered specular shimmer (`DitheredMark`, the 4 by 4 Bayer band swept through the mark's alpha mask). A mark is never a gif and never carries a filter glow; gt-ui `no-gif-mark` refuses gifs.
@@ -193,7 +194,8 @@ Run it on any surface that carries the brand, in both themes, at 1440 and at 390
 - [ ] Mono appears only on code, tokens, paths, hex values and locale codes.
 - [ ] Lines run 60 to 70 characters, and a lead reads in two or three lines.
 - [ ] Four colors and one accent, with the lift `#86a8ff` on ink. Small titanium text in the light theme clears 4.5:1, darkened the way gt-cloud's plate pages darken it.
-- [ ] Marks are one ink, from the files or the generator, at a size their minimum allows, with no glow, gradient, shadow or gif.
+- [ ] Marks are one ink, from the files or the generator, at a size their minimum allows, with no glow, gradient, shadow or gif. A new mark was reviewed in a row of competing logos and beside the current mark.
+- [ ] A new palette gives each color's share as well as its value.
 - [ ] Flags are SVG chips next to locale codes.
 - [ ] The copy has no em dashes, exclamation marks, eyebrows or heading periods, and follows `gt-voice`.
 - [ ] Non-Latin samples (CJK, Arabic, Devanagari) render in a face for their script and keep the layout.

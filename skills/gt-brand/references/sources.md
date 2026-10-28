@@ -27,3 +27,8 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 - `references/marks.md`, "Reviewing a new GT mark", and the "A new mark" line in section 5: Kevin's memory note `gt-globe-marks` (updated 2026-10-09 after he rejected round 3; round 2 rated 5 out of 10). Inventory `memories.json` row "gt-globe-marks", plan row N-9. The round log, the sources and the artifact stay in the memory note.
 - `references/color.md` holds section 3's four color exceptions, `references/type.md` ("The rules of SKILL.md section 4 in full") holds the binding, tracking table, ladders, scripts, exceptions and enforcement blocks, and section 8's third-party bullets fold into one paragraph over `references/third-party.md`. All moved unchanged to keep the body under the 24,000-byte budget (plan section 2.2). Section 6's devices moved to `references/language.md` the same way.
 - Related skills: `gt-verify` replaces `agent-browser` (inventory `skills.json` row 38, plan row N-28); the isometric skill merged into `gt-diagrams` on 2026-10-10.
+
+## Lines added on 2026-10-28
+
+- Section 3, "A new palette states shares", and its checklist line: Kevin's request of 2026-10-28 to write these rules into the skills. The notes behind them are private and stay out of the repository.
+- Section 5, the review of a candidate mark in context and the rebuild of picks only, its checklist line, and `references/marks.md` ("Rough rows first", "Reviewed in context before a pick"): the same request, and Kevin's 2026-10-27 note on construction drawings (memory note `gt-globe-marks`).

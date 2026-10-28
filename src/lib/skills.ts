@@ -115,7 +115,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Brand and the correct Inter',
     description: 'The General Translation identity as rules: the name and the naming system, the four absolute colors and the one accent, the type system on the self-hosted rsms InterVariable 4.1 (weights, optical size, features, tracking, per-script fallbacks), the doubled-line GT monogram and the generated speed marks, language as material, the final avoid list, and what never appears on a public surface. Use before making anything that carries the GT brand (a page, a slide, a graphic, a film, an email or a social image), when choosing a face, weight, tracking or color, when placing a GT mark or a third-party logo, and when reviewing a surface against the brand.',
     areas: ['aesthetic'],
-    updated: '2026-10-10',
+    updated: '2026-10-28',
     files: ['references/color.md', 'references/language.md', 'references/marks.md', 'references/sources.md', 'references/third-party.md', 'references/type.md'],
   },
   {
@@ -133,7 +133,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Exploration rounds and convergence',
     description: 'How a General Translation design exploration runs from research to one landed design: reading Kevin\'s sources and measuring the reference sites, writing the page as text first, directions that differ in silhouette, material and action, one registry and one place to compare them live, in-page switches for effect variants, picks by Kevin\'s numbers, forks that never overwrite a version, critic composites against the reference, removing the losers and archiving retired versions, and keeping rounds local until he lands them. Use when Kevin asks for options, versions, variations, directions or "try N approaches", when he links a post or product to learn from, and when converging a design toward his pick.',
     areas: ['aesthetic', 'website', 'landing', 'graphics'],
-    updated: '2026-10-10',
+    updated: '2026-10-28',
     files: ['references/charter.md', 'references/comparing.md', 'references/registry.md', 'references/rounds.md', 'references/sources.md', 'scripts/distinct-set.mjs'],
   },
   {
