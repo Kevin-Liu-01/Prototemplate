@@ -1,11 +1,10 @@
 /* POST {email}: starts or resumes the voter that email names on this
-   device, when the email is on the vote (VOTE_ALLOWED, else the team's
-   domain). */
+   device, when the email is on at least one open or closed decision's
+   access list; nothing is written for an email on none. Answers the hub. */
 import { currentDevice, fail, json, readBody, route, setDevice, setSession, voteSecret } from '@/lib/vote/api';
-import { voteAllowList } from '@/lib/vote/config';
-import { emailDomain, isAllowedEmail, normalizeEmail, voterIdFor } from '@/lib/vote/identity';
-import { ensureVoter, linkDevice } from '@/lib/vote/store';
-import { voterState } from '@/lib/vote/views';
+import { emailDomain, normalizeEmail, voterIdFor } from '@/lib/vote/identity';
+import { decisions, ensureVoter, linkDevice } from '@/lib/vote/store';
+import { hubView, visibleTo } from '@/lib/vote/views';
 import { getClientIp, isRateLimited } from '@/lib/rate-limit';
 
 import type { NextRequest } from 'next/server';
@@ -20,14 +19,15 @@ export const POST = route(async (req: NextRequest) => {
   const body = await readBody(req);
   const email = normalizeEmail(body?.email);
   if (!email) return fail(400, 'Enter a valid email address.');
-  if (!isAllowedEmail(email, voteAllowList())) return fail(403, 'This email is not on the vote.');
+  /* read past this instance's copy, so a decision opened a moment ago lets its voters in */
+  if (!visibleTo(email, await decisions(true)).length) return fail(403, 'This email is not on any vote.');
   const voterId = voterIdFor(voteSecret(), email);
   const device = await currentDevice();
   await ensureVoter({ voterId, email, domain: emailDomain(email), createdAt: new Date().toISOString() });
   await linkDevice(device.deviceId, voterId);
-  const state = await voterState(voterId);
-  if (!state) return fail(500, 'Something went wrong. Try again.');
-  const res = json(state);
+  const hub = await hubView(voterId);
+  if (!hub) return fail(500, 'Something went wrong. Try again.');
+  const res = json(hub);
   setSession(res, voterId, device.deviceId);
   if (device.fresh) setDevice(res, device.deviceId);
   return res;

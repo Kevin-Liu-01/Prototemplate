@@ -1,7 +1,8 @@
-/* Who is voting: the normalized email, whether it is on the vote, the
-   voter id derived from it, the device id, the signed cookie values and
-   the opaque id a voter sees for each logo. Imports node:crypto only, so
-   node --test loads it directly; the secret is passed in by the caller. */
+/* Who is voting: the normalized email, whether it is on a decision's
+   access list, the voter id derived from it, the device id, the signed
+   cookie values and the opaque id a voter sees for each option. Imports
+   node:crypto only, so node --test loads it directly; the secret is passed
+   in by the caller. */
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 
 const LOCAL = /^[a-z0-9!#$%&'*/=?^_`{|}~-]+(\.[a-z0-9!#$%&'*/=?^_`{|}~-]+)*$/;
@@ -29,15 +30,55 @@ export function emailDomain(email: string): string {
 }
 
 /**
- * True when a normalized email is on the list: entries separated by commas
- * or spaces, each an exact address or '@domain' for every address there.
+ * True when a normalized email is on an access list: an array of entries,
+ * or one string of entries separated by commas or spaces. An entry is an
+ * exact address (compared normalized, so a +tag on either side drops), an
+ * '@domain' entry for every address there, or '*' for any address.
  */
-export function isAllowedEmail(email: string, list: string): boolean {
+export function isAllowedEmail(email: string, list: string | readonly string[]): boolean {
   const domain = emailDomain(email);
-  return list
-    .split(/[\s,]+/)
+  const entries = typeof list === 'string' ? list.split(/[\s,]+/) : list;
+  return entries
     .map((entry) => entry.trim().toLowerCase())
-    .some((entry) => (entry.startsWith('@') ? entry.slice(1) === domain : entry !== '' && normalizeEmail(entry) === email));
+    .some((entry) => {
+      if (entry === '*') return true;
+      if (entry.startsWith('@')) return entry.slice(1) === domain;
+      return entry !== '' && normalizeEmail(entry) === email;
+    });
+}
+
+/** The most entries one access list holds. */
+export const MAX_ACCESS_ENTRIES = 500;
+
+/**
+ * An access list as the admin wrote it (an array, or text with entries
+ * separated by commas, spaces or new lines), each entry normalized: '*',
+ * '@domain' or an exact address. '*' anywhere makes the list ['*']. An
+ * error names the first entry that is neither an address nor a domain.
+ */
+export function parseAccess(input: unknown): { access: string[] } | { error: string } {
+  const raw = typeof input === 'string' ? input.split(/[\s,]+/) : Array.isArray(input) ? input : null;
+  if (!raw || !raw.every((entry) => typeof entry === 'string')) return { error: 'Send the access list as text or a list.' };
+  const out: string[] = [];
+  for (const value of raw as string[]) {
+    const entry = value.trim().toLowerCase();
+    if (!entry) continue;
+    if (entry === '*') return { access: ['*'] };
+    if (entry.startsWith('@')) {
+      const labels = entry.slice(1).split('.');
+      if (labels.length < 2 || !labels.every((label) => LABEL.test(label)) || !/^[a-z]{2,}$/.test(labels[labels.length - 1] ?? '')) {
+        return { error: `${value.trim()} is not a domain.` };
+      }
+      out.push(entry);
+      continue;
+    }
+    const email = normalizeEmail(entry);
+    if (!email) return { error: `${value.trim()} is not an email address or an @domain.` };
+    out.push(email);
+  }
+  const access = [...new Set(out)];
+  if (access.length > MAX_ACCESS_ENTRIES) return { error: `An access list holds at most ${MAX_ACCESS_ENTRIES} entries.` };
+  return { access };
 }
 
 function hmac(secret: string, message: string): string {
@@ -93,7 +134,11 @@ export function readAdminToken(secret: string, adminKey: string, token: string |
   return age > -60_000 && age < maxAgeMs && safeEqual(sig, adminSignature(secret, adminKey, at));
 }
 
-/** The id a voter sees for a logo: the logo's key would name it, and voting is blind. */
-export function logoAlias(secret: string, key: string): string {
-  return hmac(secret, `logo:${key}`).slice(0, 12);
+/**
+ * The id a voter sees for an option: its key could name it, and voting is
+ * blind. The decision id is in the message, so one key in two decisions
+ * has two unrelated aliases.
+ */
+export function optionAlias(secret: string, decisionId: string, key: string): string {
+  return hmac(secret, `opt:${decisionId}:${key}`).slice(0, 12);
 }

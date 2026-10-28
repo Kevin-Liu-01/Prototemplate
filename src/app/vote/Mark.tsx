@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 type MarkProps = { src: string };
 
 /**
- * A logo drawn by mask: the plate's ink through the logo file, contained in
+ * A mark drawn by mask: the plate's ink through the mark file, contained in
  * the plate's padding, so every mark takes the same ink in both themes and
  * the same room on every plate.
  */

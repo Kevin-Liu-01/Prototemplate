@@ -1,99 +1,46 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, useState } from 'react';
-import type { ChangeEvent, FormEvent, KeyboardEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 
-import { Icon } from '@/components/viewer/icons';
-import { domainLabel, MAX_LOGO_BYTES } from '@/lib/vote/config';
-import type { AdminData, AdminLogo, AdminVoter } from '@/lib/vote/types';
+import { isDecisionId, keyFromName, KINDS, RESERVED_IDS } from '@/lib/vote/decisions';
+import type { AdminDecisionRow, AdminList, DecisionKind } from '@/lib/vote/types';
 
-import { voteApi } from '../api';
-import Mark from '../Mark';
 import type { Boot } from '../types';
 import Unavailable from '../Unavailable';
 import { useHydrated } from '../useHydrated';
+import KeyForm from './KeyForm';
+import { KIND_LABEL, STATUS_LABEL } from './labels';
+import { useAdminPanel } from './useAdminPanel';
+import type { Change } from './useAdminPanel';
 
-type AdminBoot = Boot<AdminData> | { kind: 'signed-out' };
+type AdminBoot = Boot<AdminList> | { kind: 'signed-out' };
 type VoteAdminProps = { boot: AdminBoot; title: string };
 
-/** One admin change, posted to its endpoint; the panel reads itself again after it. */
-type Change = (path: string, body: FormData | object) => Promise<boolean>;
-
-const UPLOAD_REFUSED = 'Attach an SVG or PNG file of 1 MB or less.';
-
 /**
- * /vote/admin: the key form, then the logos (rename, order, hide, add and
- * re-upload), the voters (devices, shared devices, exclusion), the
- * head-to-head matrix and the CSV export. Every change posts to its API
- * route and then reads the whole panel again.
+ * /vote/admin: the key form, then every decision with its status, kind and
+ * counts, and the form that starts a new one. A decision's own panel is
+ * /vote/admin/[decision].
  */
 export default function VoteAdmin({ boot, title }: VoteAdminProps) {
   if (boot.kind === 'off' || boot.kind === 'error') return <Unavailable title={title} kind={boot.kind} />;
-  return <Admin initial={boot.kind === 'ready' ? boot.data : null} title={title} />;
+  return <Admin initial={boot.kind === 'ready' ? boot.data : null} at={boot.kind === 'ready' ? boot.at : 0} title={title} />;
 }
 
-function Admin({ initial, title }: { initial: AdminData | null; title: string }) {
-  const [data, setData] = useState<AdminData | null>(initial);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+function Admin({ initial, at, title }: { initial: AdminList | null; at: number; title: string }) {
+  const panel = useAdminPanel<AdminList>('/api/vote/admin/decisions', initial, at);
+  const { data, busy, error } = panel;
 
-  async function reload(): Promise<void> {
-    const result = await voteApi<AdminData>('/api/vote/admin/data');
-    if (result.ok) setData(result.data);
-    else if (result.status === 401 || result.status === 403) setData(null);
-    else setError(result.error);
-  }
-
-  const change: Change = async (path, body) => {
-    setBusy(true);
-    setError(null);
-    const result = await voteApi<object>(path, body);
-    if (result.ok) await reload();
-    else if (result.status === 401 || result.status === 403) setData(null);
-    else setError(result.error);
-    setBusy(false);
-    return result.ok;
-  };
-
-  async function signIn(key: string) {
-    setBusy(true);
-    setError(null);
-    const result = await voteApi<object>('/api/vote/admin/login', { key });
-    if (result.ok) await reload();
-    else setError(result.error);
-    setBusy(false);
-  }
-
-  async function signOut() {
-    setBusy(true);
-    await voteApi<object>('/api/vote/admin/logout', {});
-    setBusy(false);
-    setError(null);
-    setData(null);
-  }
-
-  if (!data) {
-    return <KeyForm title={title} busy={busy} error={error} onSignIn={signIn} />;
-  }
+  if (!data) return <KeyForm title={title} busy={busy} error={error} onSignIn={panel.signIn} />;
 
   return (
     <main className='vt-col is-wide' data-testid='vote-admin'>
       <header className='vt-head vt-head-row'>
-        <div className='vt-head'>
-          <h1 className='vt-title'>{title}</h1>
-          <p className='vt-lead'>
-            {data.totals.logos} logos, {data.totals.voters} voters, {data.totals.votes} votes
-          </p>
-        </div>
+        <h1 className='vt-title'>{title}</h1>
         <div className='vt-tools'>
-          <Link href='/vote/results' className='pt-ib vt-chip' data-testid='admin-results'>
-            Results
-          </Link>
-          <a href='/api/vote/admin/export.csv' className='pt-ib vt-chip' download data-testid='admin-export'>
-            Export CSV
-          </a>
-          <button type='button' className='pt-ib vt-chip' onClick={() => void signOut()} disabled={busy} data-testid='admin-signout'>
+          <button type='button' className='pt-ib vt-chip' onClick={() => void panel.signOut()} disabled={busy} data-testid='admin-signout'>
             Sign Out
           </button>
         </div>
@@ -101,335 +48,63 @@ function Admin({ initial, title }: { initial: AdminData | null; title: string })
       <p className='vt-error is-float' role='status' aria-live='polite' data-testid='admin-error'>
         {error}
       </p>
-      <Logos logos={data.logos} busy={busy} change={change} onError={setError} />
-      <Voters voters={data.voters} busy={busy} change={change} />
-      <Matrix data={data} />
+      <Decisions rows={data.decisions} />
+      <NewDecision taken={new Set(data.decisions.map((row) => row.id))} busy={busy} change={panel.change} onError={panel.setError} />
     </main>
   );
 }
 
-function KeyForm({ title, busy, error, onSignIn }: { title: string; busy: boolean; error: string | null; onSignIn: (key: string) => Promise<void> }) {
-  const ready = useHydrated();
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const key = String(new FormData(event.currentTarget).get('key') ?? '');
-    if (key) void onSignIn(key);
-  }
-
+function Decisions({ rows }: { rows: AdminDecisionRow[] }) {
+  if (rows.length === 0) return null;
   return (
-    <main className='vt-col is-narrow' data-testid='admin-signin'>
-      <header className='vt-head'>
-        <h1 className='vt-title'>{title}</h1>
-      </header>
-      <form className='vt-form' method='post' onSubmit={submit}>
-        <label className='vt-sr' htmlFor='vt-key'>
-          Key
-        </label>
-        <input
-          id='vt-key'
-          className='vt-input'
-          name='key'
-          type='password'
-          autoComplete='current-password'
-          placeholder='Key'
-          required
-          data-testid='admin-key'
-        />
-        <button type='submit' className='vt-btn' disabled={!ready || busy} data-ready={ready} data-testid='admin-signin-submit'>
-          Sign In
-        </button>
-      </form>
-      <p className='vt-error' role='status' aria-live='polite' data-testid='admin-error'>
-        {error}
-      </p>
-    </main>
-  );
-}
-
-/* ---------- logos ---------- */
-
-function byOrder(a: AdminLogo, b: AdminLogo): number {
-  return a.order - b.order || a.key.localeCompare(b.key);
-}
-
-function Logos({ logos, busy, change, onError }: { logos: AdminLogo[]; busy: boolean; change: Change; onError: (message: string) => void }) {
-  const fileRef = useRef<HTMLInputElement>(null);
-  const target = useRef<AdminLogo | null>(null);
-
-  function replace(logo: AdminLogo) {
-    target.current = logo;
-    fileRef.current?.click();
-  }
-
-  function onFile(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
-    const logo = target.current;
-    event.currentTarget.value = '';
-    target.current = null;
-    if (!file || !logo) return;
-    if (file.size > MAX_LOGO_BYTES) {
-      onError(UPLOAD_REFUSED);
-      return;
-    }
-    const form = new FormData();
-    form.set('key', logo.key);
-    form.set('name', logo.name);
-    form.set('order', String(logo.order));
-    form.set('replace', '1');
-    form.set('file', file);
-    void change('/api/vote/admin/logo', form);
-  }
-
-  return (
-    <section className='vt-sec' aria-labelledby='vt-logos-h'>
-      <h2 id='vt-logos-h' className='vt-h2'>
-        Logos
-      </h2>
+    <section className='vt-sec' aria-label='Decisions'>
       <div className='vt-scroll pt-scroll-x'>
-        <table className='vt-table' data-testid='admin-logos'>
+        <table className='vt-table' data-testid='admin-decisions'>
           <thead>
             <tr>
-              <th scope='col'>Logo</th>
-              <th scope='col'>Key</th>
-              <th scope='col'>Name</th>
-              <th scope='col'>Order</th>
+              <th scope='col'>Title</th>
+              <th scope='col'>ID</th>
+              <th scope='col'>Status</th>
+              <th scope='col'>Kind</th>
               <th scope='col' className='is-num'>
-                Elo
+                Options
               </th>
               <th scope='col' className='is-num'>
-                Games
+                Voters
               </th>
-              <th scope='col'>
-                <span className='vt-sr'>Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {[...logos].sort(byOrder).map((logo) => (
-              <LogoRow
-                key={`${logo.key}:${logo.name}:${logo.order}`}
-                logo={logo}
-                busy={busy}
-                change={change}
-                onReplace={replace}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <input
-        ref={fileRef}
-        className='vt-sr'
-        type='file'
-        accept='.svg,.png,image/svg+xml,image/png'
-        tabIndex={-1}
-        aria-hidden='true'
-        onChange={onFile}
-      />
-      <UploadForm busy={busy} change={change} onError={onError} />
-    </section>
-  );
-}
-
-function LogoRow({ logo, busy, change, onReplace }: { logo: AdminLogo; busy: boolean; change: Change; onReplace: (logo: AdminLogo) => void }) {
-  const [name, setName] = useState(logo.name);
-  const [order, setOrder] = useState(String(logo.order));
-
-  function saveName() {
-    const next = name.trim();
-    if (next && next !== logo.name) void change('/api/vote/admin/logo/meta', { key: logo.key, name: next });
-    else setName(logo.name);
-  }
-
-  function saveOrder() {
-    const next = Number(order);
-    if (order.trim() !== '' && Number.isFinite(next) && next !== logo.order) void change('/api/vote/admin/logo/meta', { key: logo.key, order: next });
-    else setOrder(String(logo.order));
-  }
-
-  return (
-    <tr className={logo.hidden ? 'is-hidden' : undefined} data-testid={`admin-logo-${logo.key}`}>
-      <td className='vt-td-plate'>
-        <span className='vt-plate is-static is-sm'>
-          <Mark src={logo.src} />
-        </span>
-      </td>
-      <td>
-        <code>{logo.key}</code>
-      </td>
-      <td>
-        <input
-          className='vt-input is-dense'
-          aria-label={`Name of ${logo.key}`}
-          value={name}
-          onChange={(event) => setName(event.currentTarget.value)}
-          onBlur={saveName}
-          onKeyDown={blurOnEnter}
-          autoComplete='off'
-          data-testid={`admin-logo-name-${logo.key}`}
-        />
-      </td>
-      <td>
-        <input
-          className='vt-input is-dense is-order'
-          aria-label={`Order of ${logo.key}`}
-          type='number'
-          inputMode='numeric'
-          value={order}
-          onChange={(event) => setOrder(event.currentTarget.value)}
-          onBlur={saveOrder}
-          onKeyDown={blurOnEnter}
-          data-testid={`admin-logo-order-${logo.key}`}
-        />
-      </td>
-      <td className='is-num'>{Math.round(logo.elo)}</td>
-      <td className='is-num'>{logo.games}</td>
-      <td className='vt-td-tools'>
-        <button
-          type='button'
-          className='pt-ib vt-chip'
-          onClick={() => void change('/api/vote/admin/logo/meta', { key: logo.key, hidden: !logo.hidden })}
-          disabled={busy}
-          data-testid={`admin-logo-hide-${logo.key}`}
-        >
-          {logo.hidden ? 'Show' : 'Hide'}
-        </button>
-        <button
-          type='button'
-          className='pt-ib vt-chip'
-          onClick={() => onReplace(logo)}
-          disabled={busy}
-          data-testid={`admin-logo-replace-${logo.key}`}
-        >
-          Replace
-        </button>
-      </td>
-    </tr>
-  );
-}
-
-/** Enter in a row's field saves it, through the blur. */
-function blurOnEnter(event: KeyboardEvent<HTMLInputElement>) {
-  if (event.key === 'Enter') event.currentTarget.blur();
-}
-
-function UploadForm({ busy, change, onError }: { busy: boolean; change: Change; onError: (message: string) => void }) {
-  const ready = useHydrated();
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const fields = new FormData(form);
-    const file = fields.get('file');
-    if (!(file instanceof File) || file.size === 0 || file.size > MAX_LOGO_BYTES) {
-      onError(UPLOAD_REFUSED);
-      return;
-    }
-    for (const optional of ['key', 'order']) {
-      if (String(fields.get(optional) ?? '').trim() === '') fields.delete(optional);
-    }
-    if (await change('/api/vote/admin/logo', fields)) form.reset();
-  }
-
-  return (
-    <form className='vt-upload' method='post' encType='multipart/form-data' onSubmit={(event) => void submit(event)} data-testid='admin-upload'>
-      <input className='vt-input is-dense' name='name' aria-label='Name' placeholder='Name' required autoComplete='off' />
-      <input
-        className='vt-input is-dense'
-        name='key'
-        aria-label='Key'
-        placeholder='Key'
-        pattern='[a-z0-9\-]{1,40}'
-        autoComplete='off'
-        autoCapitalize='none'
-        spellCheck={false}
-      />
-      <input className='vt-input is-dense is-order' name='order' aria-label='Order' placeholder='Order' type='number' inputMode='numeric' />
-      <input className='vt-file' name='file' aria-label='File' type='file' accept='.svg,.png,image/svg+xml,image/png' required />
-      <button type='submit' className='vt-btn' disabled={!ready || busy} data-ready={ready} data-testid='admin-upload-submit'>
-        Upload
-      </button>
-    </form>
-  );
-}
-
-/* ---------- voters ---------- */
-
-/** A time as 2026-10-27 14:03 in UTC, the same on the server and in every browser. */
-function utcStamp(time: string | null): string {
-  if (!time) return '';
-  const date = new Date(time);
-  return Number.isNaN(date.getTime()) ? '' : date.toISOString().slice(0, 16).replace('T', ' ');
-}
-
-function lastActive(voter: AdminVoter): number {
-  const value = new Date(voter.lastVoteAt ?? voter.createdAt).getTime();
-  return Number.isNaN(value) ? 0 : value;
-}
-
-function Voters({ voters, busy, change }: { voters: AdminVoter[]; busy: boolean; change: Change }) {
-  const rows = [...voters].sort((a, b) => lastActive(b) - lastActive(a) || a.email.localeCompare(b.email));
-  return (
-    <section className='vt-sec' aria-labelledby='vt-voters-h'>
-      <h2 id='vt-voters-h' className='vt-h2'>
-        Voters
-      </h2>
-      <div className='vt-scroll pt-scroll-x'>
-        <table className='vt-table' data-testid='admin-voters'>
-          <thead>
-            <tr>
-              <th scope='col'>Email</th>
-              <th scope='col'>Group</th>
               <th scope='col' className='is-num'>
                 Votes
               </th>
-              <th scope='col'>Complete</th>
-              <th scope='col' className='is-num'>
-                Likes
-              </th>
-              <th scope='col' className='is-num'>
-                Devices
-              </th>
-              <th scope='col'>Shares a device with</th>
-              <th scope='col'>Last vote, UTC</th>
               <th scope='col'>
-                <span className='vt-sr'>Actions</span>
+                <span className='vt-sr'>Links</span>
               </th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((voter) => (
-              <tr key={voter.voterId} className={voter.excluded ? 'is-excluded' : undefined} data-testid={`admin-voter-${voter.voterId}`}>
-                <td className='vt-td-email'>{voter.email}</td>
-                <td>{domainLabel(voter.domain)}</td>
-                <td className='is-num'>{voter.votes}</td>
+            {rows.map((row) => (
+              <tr key={row.id} className={row.status === 'archived' ? 'is-hidden' : undefined} data-testid={`admin-decision-${row.id}`}>
                 <td>
-                  {voter.complete ? (
-                    <span className='vt-yes'>
-                      <Icon name='check' size={14} />
-                      <span className='vt-sr'>Yes</span>
-                    </span>
-                  ) : (
-                    <span className='vt-sr'>No</span>
-                  )}
+                  <Link href={`/vote/admin/${row.id}`} className='vt-link' data-testid={`admin-decision-open-${row.id}`}>
+                    {row.title}
+                  </Link>
                 </td>
-                <td className='is-num'>{voter.likes.length}</td>
-                <td className='is-num' title={voter.devices.join('\n')}>
-                  {voter.devices.length}
+                <td>
+                  <code>{row.id}</code>
                 </td>
-                <td className={voter.sharesDeviceWith.length > 0 ? 'vt-shared' : undefined}>{voter.sharesDeviceWith.join(', ')}</td>
-                <td className='vt-td-time'>{utcStamp(voter.lastVoteAt)}</td>
+                <td>
+                  <span className={row.status === 'open' ? 'vt-status is-open' : 'vt-status'}>{STATUS_LABEL[row.status]}</span>
+                </td>
+                <td>{KIND_LABEL[row.kind]}</td>
+                <td className='is-num'>{row.active === row.options ? row.options : `${row.active} of ${row.options}`}</td>
+                <td className='is-num'>{row.voters}</td>
+                <td className='is-num'>{row.votes}</td>
                 <td className='vt-td-tools'>
-                  <button
-                    type='button'
-                    className='pt-ib vt-chip'
-                    onClick={() => void change('/api/vote/admin/voter', { voterId: voter.voterId, excluded: !voter.excluded })}
-                    disabled={busy}
-                    data-testid={`admin-voter-exclude-${voter.voterId}`}
-                  >
-                    {voter.excluded ? 'Include' : 'Exclude'}
-                  </button>
+                  <Link href={`/vote/${row.id}/results`} className='pt-ib vt-chip' data-testid={`admin-decision-results-${row.id}`}>
+                    Results
+                  </Link>
+                  <Link href={`/vote/${row.id}`} className='pt-ib vt-chip' data-testid={`admin-decision-ballot-${row.id}`}>
+                    Ballot
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -440,60 +115,116 @@ function Voters({ voters, busy, change }: { voters: AdminVoter[]; busy: boolean;
   );
 }
 
-/* ---------- head to head ---------- */
+type NewDecisionProps = { taken: ReadonlySet<string>; busy: boolean; change: Change; onError: (message: string | null) => void };
 
-function Matrix({ data }: { data: AdminData }) {
-  const byKey = new Map(data.logos.map((logo) => [logo.key, logo]));
-  const { keys, wins } = data.matrix;
-  const nameOf = (key: string) => byKey.get(key)?.name ?? key;
-  const srcOf = (key: string) => byKey.get(key)?.src ?? '';
+/** A new decision: its title, an id taken from the title until it is edited, its kind and its question. It starts as a draft. */
+function NewDecision({ taken, busy, change, onError }: NewDecisionProps) {
+  const router = useRouter();
+  const ready = useHydrated();
+  const [title, setTitle] = useState('');
+  const [id, setId] = useState('');
+  const [edited, setEdited] = useState(false);
+  const [kind, setKind] = useState<DecisionKind>('mark');
+  const [question, setQuestion] = useState('');
+  const shownId = edited ? id : keyFromName(title);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const name = title.trim();
+    if (!name) {
+      onError('A decision needs a title.');
+      return;
+    }
+    if (!isDecisionId(shownId)) {
+      onError(`An id uses a to z, 0 to 9 and hyphens, at most 40, and is not ${RESERVED_IDS.join(', ')}.`);
+      return;
+    }
+    if (taken.has(shownId)) {
+      onError('A decision with that id exists.');
+      return;
+    }
+    const result = await change<{ id?: unknown; decision?: { id?: unknown } }>('/api/vote/admin/decisions', {
+      title: name,
+      id: shownId,
+      kind,
+      question: question.trim(),
+    });
+    if (!result.ok) return;
+    const made = typeof result.data.id === 'string' ? result.data.id : typeof result.data.decision?.id === 'string' ? result.data.decision.id : shownId;
+    router.push(`/vote/admin/${made}`);
+  }
 
   return (
-    <section className='vt-sec' aria-labelledby='vt-matrix-h'>
-      <h2 id='vt-matrix-h' className='vt-h2'>
-        Head to head
+    <section className='vt-sec' aria-labelledby='vt-new-h'>
+      <h2 id='vt-new-h' className='vt-h2'>
+        New decision
       </h2>
-      <div className='vt-scroll pt-scroll-x'>
-        <table className='vt-matrix' data-testid='admin-matrix'>
-          <caption className='vt-sr'>Wins of each row&apos;s logo over each column&apos;s logo</caption>
-          <thead>
-            <tr>
-              <td />
-              {keys.map((key) => (
-                <th key={key} scope='col' title={nameOf(key)}>
-                  <span className='vt-plate is-static is-xs'>
-                    <Mark src={srcOf(key)} />
-                  </span>
-                  <span className='vt-sr'>{nameOf(key)}</span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {keys.map((row, i) => (
-              <tr key={row}>
-                <th scope='row'>
-                  <span className='vt-named'>
-                    <span className='vt-plate is-static is-xs'>
-                      <Mark src={srcOf(row)} />
-                    </span>
-                    <span className='vt-name'>{nameOf(row)}</span>
-                  </span>
-                </th>
-                {keys.map((col, j) => {
-                  const n = wins[i]?.[j] ?? 0;
-                  if (i === j) return <td key={col} className='is-self' />;
-                  return (
-                    <td key={col} className={n === 0 ? 'is-zero' : undefined} title={`${nameOf(row)} over ${nameOf(col)}: ${n}`}>
-                      {n}
-                    </td>
-                  );
-                })}
-              </tr>
+      <form className='vt-fields' method='post' onSubmit={(event) => void submit(event)} noValidate data-testid='admin-new'>
+        <label className='vt-field'>
+          <span className='vt-label'>Title</span>
+          <input
+            className='vt-input is-dense'
+            name='title'
+            value={title}
+            onChange={(event) => setTitle(event.currentTarget.value)}
+            autoComplete='off'
+            required
+            data-testid='admin-new-title'
+          />
+        </label>
+        <label className='vt-field'>
+          <span className='vt-label'>ID</span>
+          <input
+            className='vt-input is-dense'
+            name='id'
+            value={shownId}
+            onChange={(event) => {
+              setEdited(true);
+              setId(event.currentTarget.value.toLowerCase());
+            }}
+            pattern='[a-z0-9\-]{1,40}'
+            autoComplete='off'
+            autoCapitalize='none'
+            spellCheck={false}
+            data-testid='admin-new-id'
+          />
+        </label>
+        <div className='vt-field'>
+          <span className='vt-label' id='vt-new-kind'>
+            Kind
+          </span>
+          <div className='vt-seg' role='group' aria-labelledby='vt-new-kind'>
+            {KINDS.map((value) => (
+              <button
+                type='button'
+                key={value}
+                className={value === kind ? 'pt-ib vt-chip is-on' : 'pt-ib vt-chip'}
+                aria-pressed={value === kind}
+                onClick={() => setKind(value)}
+                data-testid={`admin-new-kind-${value}`}
+              >
+                {KIND_LABEL[value]}
+              </button>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </div>
+        <label className='vt-field is-wide'>
+          <span className='vt-label'>Question</span>
+          <input
+            className='vt-input is-dense'
+            name='question'
+            value={question}
+            onChange={(event) => setQuestion(event.currentTarget.value)}
+            autoComplete='off'
+            data-testid='admin-new-question'
+          />
+        </label>
+        <div className='vt-field is-wide'>
+          <button type='submit' className='vt-btn is-dense' disabled={!ready || busy} data-ready={ready} data-testid='admin-new-submit'>
+            Create
+          </button>
+        </div>
+      </form>
     </section>
   );
 }

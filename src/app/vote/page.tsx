@@ -2,14 +2,14 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 
-import { voterBoot } from './server';
-import VoteApp from './VoteApp';
+import Hub from './Hub';
+import { hubBoot } from './server';
 
 const route = seoRoute({
   path: '/vote',
   title: PAGE_NAMES.vote.name,
   kind: 'page',
-  description: 'A private vote in which the team compares logos two at a time and then picks every logo it likes.',
+  description: 'The team votes, each one a set of options compared two at a time, with the progress of the voter signed in.',
 });
 
 export const metadata = route.metadata;
@@ -17,17 +17,17 @@ export const metadata = route.metadata;
 export const dynamic = 'force-dynamic';
 
 /**
- * /vote: the voter's current step, read on the server from the session
- * cookie so the first paint is the right step. The vote pages are private
- * (src/lib/seo/policy.ts, PRIVATE_PATHS): noindex, nofollow, and out of the
- * sitemap, /llms.txt and the search index.
+ * /vote: the email form, then the decisions this voter can see, read on
+ * the server from the session cookie so the first paint is the right one.
+ * The vote pages are private (src/lib/seo/policy.ts, PRIVATE_PATHS):
+ * noindex, nofollow, and out of the sitemap, /llms.txt and the search index.
  */
 export default async function VotePage() {
-  const boot = await voterBoot();
+  const boot = await hubBoot();
   return (
     <>
       <JsonLd nodes={route.jsonLd} />
-      <VoteApp boot={boot} title={PAGE_NAMES.vote.name} />
+      <Hub boot={boot} title={PAGE_NAMES.vote.name} />
     </>
   );
 }

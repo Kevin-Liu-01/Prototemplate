@@ -1,5 +1,5 @@
 /* Elo over the vote log: every vote replayed in time order, the first vote
-   per voter per unordered pair only, excluded voters and logos outside the
+   per voter per unordered pair only, excluded voters and options outside the
    active set skipped. Self-contained, so node --test loads it directly. */
 
 export type EloVote = { voterId: string; ts: number; winner: string; loser: string };
@@ -15,7 +15,7 @@ export type EloResult = {
 };
 
 export type EloOptions = {
-  /** the logos that count, in display order */
+  /** the options that count, in display order */
   keys: readonly string[];
   /** voters whose votes never count */
   excluded?: ReadonlySet<string>;

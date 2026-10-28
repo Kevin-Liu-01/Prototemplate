@@ -1,10 +1,11 @@
-/* Which pair a voter sees next. Each active logo needs a target number of
-   matchups per voter (APPEARANCES, capped at the other logos); the logo
-   furthest below it goes first, against an unvoted partner with the fewest
-   matchups, then the closest global Elo. A fresh upload starts at zero for
-   everyone, so returning voters get its matchups first. Ties break on a
-   stable per-voter hash, so voters see different orders. Self-contained, so
-   node --test loads it directly: the caller passes the ratings in. */
+/* Which pair a voter sees next in one decision. Each active option needs a
+   target number of matchups per voter (the decision's appearances, capped
+   at the other options); the option furthest below it goes first, against
+   an unvoted partner with the fewest matchups, then the closest global Elo.
+   A new option starts at zero for everyone, so returning voters get its
+   matchups first. Ties break on a stable per-voter hash, so voters see
+   different orders. Self-contained, so node --test loads it directly: the
+   caller passes the ratings in. */
 
 export type ScheduleVote = { winner: string; loser: string };
 export type Pair = { left: string; right: string };
@@ -18,7 +19,7 @@ export type Schedule = {
 
 export type ScheduleInput = {
   voterId: string;
-  /** the active logos */
+  /** the active options */
   keys: readonly string[];
   /** this voter's votes, any order, duplicates allowed */
   votes: readonly ScheduleVote[];
@@ -98,11 +99,11 @@ export function schedule(input: ScheduleInput): Schedule {
       appearances,
     };
   }
-  /* a logo with no unvoted partner counts as done, so a finished voter's bar is full */
+  /* an option with no unvoted partner counts as done, so a finished voter's bar is full */
   return { pair: null, progress: { done: voted.size, total: voted.size }, target, appearances };
 }
 
-/** A voter owes the likes step when their latest record has not seen every active logo. */
+/** A voter owes the likes step when their latest record has not seen every active option. */
 export function needsLikes(
   latest: { seen: readonly string[] } | null,
   keys: readonly string[]
@@ -111,4 +112,20 @@ export function needsLikes(
   if (!latest) return true;
   const seen = new Set(latest.seen);
   return keys.some((key) => !seen.has(key));
+}
+
+/**
+ * Where a voter stands once the schedule is read: they owe the likes step
+ * when the decision has one, their matchups are done and their latest
+ * likes record has not seen every active option; they are complete when
+ * neither a pair nor the likes step is left.
+ */
+export function standing(input: {
+  sched: Pick<Schedule, 'pair'>;
+  keys: readonly string[];
+  latest: { seen: readonly string[] } | null;
+  likes: boolean;
+}): { needsLikes: boolean; complete: boolean } {
+  const owes = input.likes && !input.sched.pair && needsLikes(input.latest, input.keys);
+  return { needsLikes: owes, complete: !input.sched.pair && !owes };
 }

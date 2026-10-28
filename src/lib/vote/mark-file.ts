@@ -7,8 +7,13 @@
    A mark that draws near-white shapes over dark ones keeps them as holes
    through an internal luminance mask, so the file still renders as one
    ink. A PNG must have at least one fully transparent pixel, read from its
-   decoded pixels. Imports node:zlib only, so node --test loads it
-   directly. */
+   decoded pixels. An image option is shown as drawn: its type is read from
+   its first bytes (PNG, JPEG, WebP or SVG), and an SVG goes through the
+   same allowlist with gradients added and its colors kept. Every id goes,
+   since an editor names layers in them and a voter can read the file: the
+   ones a reference uses become i0, i1 and so on. A PNG, JPEG or WebP keeps
+   only what draws it, so text, EXIF, XMP and comments never reach a voter.
+   Imports node:zlib only, so node --test loads it directly. */
 import { inflateSync } from 'node:zlib';
 
 type El = { name: string; attrs: Map<string, string>; children: El[]; text: string };
@@ -30,6 +35,7 @@ type Seg = { kind: 'line' | 'cubic' | 'arc'; v: number[] };
 type Run = { segs: Seg[]; closed: boolean };
 
 export type MarkKind = 'svg' | 'png';
+export type ImageKind = 'svg' | 'png' | 'jpg' | 'webp';
 export type NormalizedSvg = { svg: string; mode: 'flat' | 'mask'; tight: boolean };
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -42,6 +48,13 @@ const OFFSTAGE = new Set(['defs', 'clipPath', 'mask', 'symbol']);
 const PROPS = ['fill', 'fill-rule', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity', 'opacity', 'clip-rule', 'clip-path', 'mask', 'display', 'visibility', 'vector-effect'];
 const PAINT_PROPS = ['fill', 'stroke', 'opacity', 'fill-opacity', 'stroke-opacity'];
 const ATTRIBUTES = new Set([...PROPS, 'id', 'd', 'x', 'y', 'width', 'height', 'cx', 'cy', 'r', 'rx', 'ry', 'x1', 'y1', 'x2', 'y2', 'points', 'transform', 'viewBox', 'href', 'clipPathUnits', 'maskUnits', 'maskContentUnits', 'pathLength']);
+/* an image keeps its colors, so it may also draw gradients */
+const IMAGE_PROPS = [...PROPS, 'stop-color', 'stop-opacity', 'color'];
+const IMAGE_ELEMENTS = new Set([...ELEMENTS, 'linearGradient', 'radialGradient', 'stop']);
+const IMAGE_ATTRIBUTES = new Set([...ATTRIBUTES, ...IMAGE_PROPS, 'offset', 'gradientUnits', 'gradientTransform', 'spreadMethod', 'fx', 'fy', 'fr', 'preserveAspectRatio']);
+type Allow = { elements: Set<string>; attributes: Set<string>; props: readonly string[] };
+const MARK_ALLOW: Allow = { elements: ELEMENTS, attributes: ATTRIBUTES, props: PROPS };
+const IMAGE_ALLOW: Allow = { elements: IMAGE_ELEMENTS, attributes: IMAGE_ATTRIBUTES, props: IMAGE_PROPS };
 const ROOT_KEEP = ['fill-rule', 'clip-rule', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit'];
 const ID = /^[A-Za-z_][\w.:-]*$/;
 const URL_REF = /^url\(\s*['"]?#([A-Za-z_][\w.:-]*)['"]?\s*\)$/;
@@ -65,6 +78,14 @@ export function detectKind(bytes: Uint8Array): MarkKind | null {
   if (PNG_SIGNATURE.every((byte, i) => bytes[i] === byte)) return 'png';
   const head = stripBom(new TextDecoder().decode(bytes.subarray(0, 4096)));
   return /^\s*</.test(head) && /<(?:svg:)?svg[\s>]/i.test(head) ? 'svg' : null;
+}
+
+/** An image option's file type, from its first bytes: PNG, JPEG (FF D8 FF), WebP (RIFF....WEBP) or SVG. */
+export function detectImage(bytes: Uint8Array): ImageKind | null {
+  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'jpg';
+  const ascii = (from: number, to: number) => String.fromCharCode(...bytes.subarray(from, to));
+  if (bytes.length >= 12 && ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'WEBP') return 'webp';
+  return detectKind(bytes);
 }
 
 const NEEDS_ALPHA = 'The PNG needs a transparent background.';
@@ -259,23 +280,23 @@ function walk(el: El, visit: (el: El) => void): void {
 
 type Rule = { tag: string | null; id: string | null; classes: string[]; decls: [string, string][] };
 
-function declarations(text: string): [string, string][] {
+function declarations(text: string, props: readonly string[] = PROPS): [string, string][] {
   const out: [string, string][] = [];
   for (const part of text.split(';')) {
     const colon = part.indexOf(':');
     if (colon < 0) continue;
     const prop = part.slice(0, colon).trim().toLowerCase();
     const value = part.slice(colon + 1).replace(/\s*!\s*important\s*$/i, '').trim();
-    if (PROPS.includes(prop) && value) out.push([prop, value]);
+    if (props.includes(prop) && value) out.push([prop, value]);
   }
   return out;
 }
 
 /* simple selectors only (tag, #id, .class and their compounds); any other selector is skipped */
-function cssRules(css: string): Rule[] {
+function cssRules(css: string, props: readonly string[] = PROPS): Rule[] {
   const rules: Rule[] = [];
   for (const match of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-    const decls = declarations(match[2] ?? '');
+    const decls = declarations(match[2] ?? '', props);
     if (!decls.length) continue;
     for (const raw of (match[1] ?? '').split(',')) {
       const selector = raw.trim();
@@ -302,13 +323,13 @@ function safeValue(name: string, value: string): string | null {
   return v;
 }
 
-function sanitize(el: El, rules: Rule[]): El | null {
+function sanitize(el: El, rules: Rule[], allow: Allow = MARK_ALLOW): El | null {
   const name = UNWRAP.has(el.name) ? 'g' : el.name;
-  if (!ELEMENTS.has(name)) return null;
+  if (!allow.elements.has(name)) return null;
   const attrs = new Map<string, string>();
   for (const [raw, value] of el.attrs) {
     const attr = raw === 'xlink:href' ? 'href' : raw;
-    if (ATTRIBUTES.has(attr)) attrs.set(attr, value);
+    if (allow.attributes.has(attr)) attrs.set(attr, value);
   }
   const classes = (el.attrs.get('class') ?? '').split(/\s+/).filter(Boolean);
   for (const rule of rules) {
@@ -317,15 +338,47 @@ function sanitize(el: El, rules: Rule[]): El | null {
     if (!rule.classes.every((c) => classes.includes(c))) continue;
     for (const [prop, value] of rule.decls) attrs.set(prop, value);
   }
-  for (const [prop, value] of declarations(el.attrs.get('style') ?? '')) attrs.set(prop, value);
+  for (const [prop, value] of declarations(el.attrs.get('style') ?? '', allow.props)) attrs.set(prop, value);
   for (const [attr, value] of attrs) {
     const safe = safeValue(attr, value);
     if (safe === null) attrs.delete(attr);
     else attrs.set(attr, safe);
   }
   if (attrs.get('display') === 'none' || /^(hidden|collapse)$/.test(attrs.get('visibility') ?? '')) return null;
-  const children = el.children.map((child) => sanitize(child, rules)).filter((child): child is El => child !== null);
+  const children = el.children.map((child) => sanitize(child, rules, allow)).filter((child): child is El => child !== null);
   return { name, attrs, children, text: '' };
+}
+
+/* the id an href="#x" or a url(#x) value names */
+function refOf(attr: string, value: string): string | null {
+  if (attr === 'href') return /^#([A-Za-z_][\w.:-]*)$/.exec(value)?.[1] ?? null;
+  return URL_REF.exec(value)?.[1] ?? null;
+}
+
+/**
+ * Drops every id and renames the ones a reference uses to i0, i1 and so on,
+ * rewriting each reference to match, so no layer or file name an editor
+ * wrote into an id reaches a voter. A reference to a missing id is renamed
+ * too, so it still finds nothing.
+ */
+function scrubIds(root: El): void {
+  const renamed = new Map<string, string>();
+  walk(root, (el) => {
+    for (const [attr, value] of el.attrs) {
+      const ref = attr === 'id' ? null : refOf(attr, value);
+      if (ref === null) continue;
+      const next = renamed.get(ref) ?? `i${renamed.size}`;
+      renamed.set(ref, next);
+      el.attrs.set(attr, attr === 'href' ? `#${next}` : `url(#${next})`);
+    }
+  });
+  walk(root, (el) => {
+    const id = el.attrs.get('id');
+    if (id === undefined) return;
+    const next = renamed.get(id);
+    if (next === undefined) el.attrs.delete('id');
+    else el.attrs.set('id', next);
+  });
 }
 
 /* ------------------------------------------------------------------ */
@@ -921,6 +974,7 @@ export function normalizeSvg(source: string): NormalizedSvg | { error: string } 
   });
   const svg = sanitize(parsed, cssRules(css));
   if (!svg) return { error: 'The file is not a readable SVG.' };
+  scrubIds(svg);
   const vb = readViewBox(svg);
   if (!vb) return { error: 'The SVG needs a viewBox or a width and height.' };
 
@@ -1010,4 +1064,191 @@ export function normalizeSvg(source: string): NormalizedSvg | { error: string } 
     ];
   }
   return { svg: serialize({ name: 'svg', attrs, children, text: '' }), mode, tight };
+}
+
+/**
+ * The safe version of an SVG image option: the same allowlist as a mark
+ * (no script, style element, handler, foreignObject, text, image or outside
+ * reference) plus gradients, with its colors kept and its class and style
+ * rules inlined. The canvas stays as drawn.
+ */
+export function sanitizeSvg(source: string): { svg: string } | { error: string } {
+  const parsed = parse(source);
+  if (!parsed) return { error: 'The file is not a readable SVG.' };
+  let css = '';
+  walk(parsed, (el) => {
+    if (el.name === 'style') css += `${el.text}\n`;
+  });
+  const svg = sanitize(parsed, cssRules(css, IMAGE_PROPS), IMAGE_ALLOW);
+  if (!svg) return { error: 'The file is not a readable SVG.' };
+  scrubIds(svg);
+  const vb = readViewBox(svg);
+  if (!vb) return { error: 'The SVG needs a viewBox or a width and height.' };
+  if (!svg.children.length) return { error: 'The SVG draws nothing.' };
+  const attrs = new Map<string, string>([
+    ['xmlns', SVG_NS],
+    ['viewBox', [vb.x, vb.y, vb.w, vb.h].map(format).join(' ')],
+    ['width', format(vb.w)],
+    ['height', format(vb.h)],
+  ]);
+  for (const [name, value] of svg.attrs) {
+    if (!['x', 'y', 'width', 'height', 'viewBox', 'href', 'id'].includes(name)) attrs.set(name, value);
+  }
+  return { svg: serialize({ name: 'svg', attrs, children: svg.children, text: '' }) };
+}
+
+/* ------------------------------------------------------------------ */
+/* raster metadata                                                     */
+
+/* the PNG chunks that draw the picture; text, EXIF, time and every other chunk go */
+const PNG_KEEP = new Set(['IHDR', 'PLTE', 'tRNS', 'IDAT', 'IEND', 'gAMA', 'sRGB', 'cHRM', 'iCCP']);
+/* the WebP chunks that draw the picture; EXIF, XMP and unknown chunks go */
+const WEBP_KEEP = new Set(['VP8 ', 'VP8L', 'VP8X', 'ALPH', 'ANIM', 'ANMF', 'ICCP']);
+const WEBP_IMAGE = new Set(['VP8 ', 'VP8L', 'VP8X']);
+/* the VP8X flag bits that announce EXIF (0x08) and XMP (0x04) */
+const WEBP_META_FLAGS = 0x08 | 0x04;
+
+function concat(parts: readonly Uint8Array[]): Uint8Array {
+  const out = new Uint8Array(parts.reduce((sum, part) => sum + part.length, 0));
+  let at = 0;
+  for (const part of parts) {
+    out.set(part, at);
+    at += part.length;
+  }
+  return out;
+}
+
+function ascii(bytes: Uint8Array, from: number, to: number): string {
+  return String.fromCharCode(...bytes.subarray(from, to));
+}
+
+/** A PNG with only the chunks in PNG_KEEP, each copied whole with its CRC; null when a chunk is cut short. */
+export function stripPng(bytes: Uint8Array): Uint8Array | null {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const parts: Uint8Array[] = [bytes.subarray(0, 8)];
+  for (let at = 8; at < bytes.length; ) {
+    if (at + 12 > bytes.length) return null;
+    const end = at + 12 + view.getUint32(at);
+    if (end > bytes.length) return null;
+    const type = ascii(bytes, at + 4, at + 8);
+    if (PNG_KEEP.has(type)) parts.push(bytes.subarray(at, end));
+    if (type === 'IEND') break;
+    at = end;
+  }
+  return concat(parts);
+}
+
+/* a JPEG segment that draws or colors the picture: APP0 (JFIF), APP2 only for an ICC profile, APP14 only
+   for Adobe's color transform, and every non-APP marker but the comment */
+function keepJpegSegment(marker: number, data: Uint8Array): boolean {
+  if (marker === 0xfe) return false;
+  if (marker < 0xe0 || marker > 0xef || marker === 0xe0) return true;
+  if (marker === 0xe2) return ascii(data, 0, 12) === 'ICC_PROFILE\0';
+  if (marker === 0xee) return ascii(data, 0, 5) === 'Adobe';
+  return false;
+}
+
+/**
+ * A JPEG without its EXIF, XMP and other APP segments, its comments and
+ * anything after its end marker (a second picture, a trailer); null when
+ * its markers cannot be read or it has no end.
+ */
+export function stripJpeg(bytes: Uint8Array): Uint8Array | null {
+  const parts: Uint8Array[] = [bytes.subarray(0, 2)];
+  let at = 2;
+  while (at < bytes.length) {
+    if (bytes[at] !== 0xff) return null;
+    let m = at + 1;
+    while (bytes[m] === 0xff) m += 1;
+    const marker = bytes[m];
+    if (marker === undefined) return null;
+    if (marker === 0xd9) {
+      parts.push(Uint8Array.of(0xff, 0xd9));
+      return concat(parts);
+    }
+    if ((marker >= 0xd0 && marker <= 0xd7) || marker === 0x01) {
+      parts.push(Uint8Array.of(0xff, marker));
+      at = m + 1;
+      continue;
+    }
+    if (m + 3 > bytes.length) return null;
+    const length = ((bytes[m + 1] ?? 0) << 8) | (bytes[m + 2] ?? 0);
+    const end = m + 1 + length;
+    if (length < 2 || end > bytes.length) return null;
+    if (keepJpegSegment(marker, bytes.subarray(m + 3, end))) parts.push(Uint8Array.of(0xff, marker), bytes.subarray(m + 1, end));
+    at = end;
+    if (marker !== 0xda) continue;
+    /* the scan's coded data runs to the next marker that is not a stuffed 00 or a restart */
+    let scan = at;
+    for (;;) {
+      if (scan + 1 >= bytes.length) return null;
+      const next = bytes[scan + 1] ?? 0;
+      if (bytes[scan] === 0xff && next !== 0x00 && !(next >= 0xd0 && next <= 0xd7)) break;
+      scan += 1;
+    }
+    parts.push(bytes.subarray(at, scan));
+    at = scan;
+  }
+  return null;
+}
+
+/** A WebP with only the chunks in WEBP_KEEP and its EXIF and XMP flags cleared; null when it holds no picture or a chunk is cut short. */
+export function stripWebp(bytes: Uint8Array): Uint8Array | null {
+  if (bytes.length < 12) return null;
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const riffEnd = Math.min(bytes.length, 8 + view.getUint32(4, true));
+  const parts: Uint8Array[] = [];
+  let drawn = false;
+  for (let at = 12; at + 8 <= riffEnd; ) {
+    const type = ascii(bytes, at, at + 4);
+    const size = view.getUint32(at + 4, true);
+    if (at + 8 + size > riffEnd) return null;
+    if (WEBP_KEEP.has(type)) {
+      /* a fresh copy with its pad byte, so the flags change touches only the stored file */
+      const chunk = new Uint8Array(8 + size + (size & 1));
+      chunk.set(bytes.subarray(at, at + 8 + size));
+      if (type === 'VP8X' && size > 0) chunk[8] = (chunk[8] ?? 0) & ~WEBP_META_FLAGS;
+      parts.push(chunk);
+      drawn ||= WEBP_IMAGE.has(type);
+    }
+    at += 8 + size + (size & 1);
+  }
+  if (!drawn) return null;
+  const body = concat(parts);
+  const head = new Uint8Array(12);
+  head.set(bytes.subarray(0, 4));
+  new DataView(head.buffer).setUint32(4, 4 + body.length, true);
+  head.set(bytes.subarray(8, 12), 8);
+  return concat([head, body]);
+}
+
+const RASTER_NAMES: Record<Exclude<ImageKind, 'svg'>, string> = { png: 'PNG', jpg: 'JPEG', webp: 'WebP' };
+
+function stripRaster(type: Exclude<ImageKind, 'svg'>, bytes: Uint8Array): { ext: ImageKind; bytes: Uint8Array } | { error: string } {
+  const clean = type === 'png' ? stripPng(bytes) : type === 'jpg' ? stripJpeg(bytes) : stripWebp(bytes);
+  return clean ? { ext: type, bytes: clean } : { error: `The ${RASTER_NAMES[type]} could not be read.` };
+}
+
+/**
+ * An uploaded option file made ready to store, or an error sentence. A
+ * mark is an SVG normalized to one ink or a PNG with a transparent
+ * background; an image is a PNG, JPEG or WebP, or a sanitized SVG. A PNG,
+ * JPEG or WebP keeps only what draws it. The caller checks the size first.
+ */
+export function prepareFile(kind: 'mark' | 'image', bytes: Uint8Array): { ext: ImageKind; bytes: Uint8Array } | { error: string } {
+  if (kind === 'mark') {
+    const type = detectKind(bytes);
+    if (!type) return { error: 'A mark is an SVG or PNG file.' };
+    if (type === 'png') {
+      const error = checkPng(bytes);
+      return error ? { error } : stripRaster('png', bytes);
+    }
+    const result = normalizeSvg(new TextDecoder().decode(bytes));
+    return 'error' in result ? result : { ext: 'svg', bytes: new TextEncoder().encode(result.svg) };
+  }
+  const type = detectImage(bytes);
+  if (!type) return { error: 'An image is a PNG, JPG, WebP or SVG file.' };
+  if (type !== 'svg') return stripRaster(type, bytes);
+  const result = sanitizeSvg(new TextDecoder().decode(bytes));
+  return 'error' in result ? result : { ext: 'svg', bytes: new TextEncoder().encode(result.svg) };
 }

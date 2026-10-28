@@ -1,7 +1,8 @@
 // Tests for src/lib/vote/identity.ts and the pure parts of
-// src/lib/vote/config.ts: email normalization, the allowlist, the voter id,
-// the signed session and admin cookie values, the logo alias, key
-// validation (bad characters are refused everywhere) and the store
+// src/lib/vote/config.ts: email normalization, access lists (exact
+// addresses, @domain entries, '*', +tags on either side), the voter id, the
+// signed session and admin cookie values, the option alias per decision,
+// key validation (bad characters are refused everywhere) and the store
 // pathnames a vote is read back from.
 // Loaded through Node's type stripping.
 import assert from 'node:assert/strict';
@@ -11,20 +12,34 @@ import { importTs } from '../lint/seo.mjs';
 
 const identity = await importTs(new URL('../../src/lib/vote/identity.ts', import.meta.url));
 const config = await importTs(new URL('../../src/lib/vote/config.ts', import.meta.url));
-const { adminToken, emailDomain, isAllowedEmail, logoAlias, normalizeEmail, readAdminToken, readSessionToken, safeEqual, sessionToken, voterIdFor, newDeviceId } = identity;
 const {
+  adminToken,
+  emailDomain,
+  isAllowedEmail,
+  newDeviceId,
+  normalizeEmail,
+  optionAlias,
+  parseAccess,
+  readAdminToken,
+  readSessionToken,
+  safeEqual,
+  sessionToken,
+  voterIdFor,
+} = identity;
+const {
+  defaultAccess,
   domainLabel,
   isDeviceId,
-  isLogoKey,
+  isOptionKey,
   isVoterId,
-  keyFromName,
-  voteAllowList,
-  logoSrc,
   namespace,
+  optionSrc,
+  parseDecisionFolder,
   parseDevicePath,
+  parseHiddenPath,
   parseLikesPath,
-  parseLogoPath,
   parseMarkerPath,
+  parseOptionPath,
   parseVotePath,
   pathnames,
 } = config;
@@ -64,21 +79,52 @@ test('a session value round-trips and refuses tampering or another secret', () =
   assert.equal(readSessionToken(SECRET, ''), null);
 });
 
-test('the allowlist takes exact addresses and @domain entries', () => {
-  const list = '@team.example, Ada+x@Example.com  bob@other.co';
-  assert.ok(isAllowedEmail('anyone@team.example', list));
-  assert.ok(isAllowedEmail('ada@example.com', list));
-  assert.ok(isAllowedEmail('bob@other.co', list));
-  assert.ok(!isAllowedEmail('eve@example.com', list));
-  assert.ok(!isAllowedEmail('x@sub.team.example', list));
-  assert.ok(!isAllowedEmail('x@team.example.evil.co', list));
+test('an access list takes exact addresses and @domain entries, as text or a list', () => {
+  const text = '@team.example, Ada+x@Example.com  bob@other.co';
+  const list = ['@team.example', 'Ada+x@Example.com', 'bob@other.co'];
+  for (const access of [text, list]) {
+    assert.ok(isAllowedEmail('anyone@team.example', access));
+    assert.ok(isAllowedEmail('ada@example.com', access), 'a +tag in the entry drops');
+    assert.ok(isAllowedEmail('bob@other.co', access));
+    assert.ok(!isAllowedEmail('eve@example.com', access));
+    assert.ok(!isAllowedEmail('x@sub.team.example', access), 'a subdomain is another domain');
+    assert.ok(!isAllowedEmail('x@team.example.evil.co', access));
+  }
+  /* the voter's own +tag drops before the check, since the session stores the normalized email */
+  assert.ok(isAllowedEmail(normalizeEmail('Bob+vote@Other.co'), list));
   assert.ok(!isAllowedEmail('ada@example.com', ''));
-  assert.ok(!isAllowedEmail('ada@example.com', '@'));
+  assert.ok(!isAllowedEmail('ada@example.com', []));
+  assert.ok(!isAllowedEmail('ada@example.com', ['@']));
+  assert.ok(!isAllowedEmail('ada@example.com', ['**', '*@example.com']), 'only a bare * means any email');
+});
+
+test("'*' lets any email in", () => {
+  assert.ok(isAllowedEmail('anyone@anywhere.io', ['*']));
+  assert.ok(isAllowedEmail('anyone@anywhere.io', '*'));
+  assert.ok(isAllowedEmail('anyone@anywhere.io', ['@team.example', ' * ']));
+});
+
+test('an access list is parsed, normalized and checked entry by entry', () => {
+  assert.deepEqual(parseAccess(' @Team.Example,\nAda+x@Example.com ada@example.com  '), { access: ['@team.example', 'ada@example.com'] });
+  assert.deepEqual(parseAccess(['bob@other.co', '', '@x.io']), { access: ['bob@other.co', '@x.io'] });
+  assert.deepEqual(parseAccess(['@team.example', '*']), { access: ['*'] });
+  assert.deepEqual(parseAccess(''), { access: [] });
+  for (const bad of ['@', '@localhost', '@-x.com', 'not-an-email', 'a@b', '*.example.com']) {
+    assert.ok('error' in parseAccess(bad), bad);
+  }
+  assert.ok('error' in parseAccess([1, 2]));
+  assert.ok('error' in parseAccess(7));
+  assert.ok('error' in parseAccess(Array.from({ length: 501 }, (_, i) => `u${i}@example.com`)));
+});
+
+test('the default access list is VOTE_ALLOWED, else the team domain', () => {
   const before = process.env.VOTE_ALLOWED;
   delete process.env.VOTE_ALLOWED;
-  assert.equal(voteAllowList(), '@generaltranslation.com');
-  process.env.VOTE_ALLOWED = ' @example.com ';
-  assert.equal(voteAllowList(), '@example.com');
+  assert.deepEqual(defaultAccess(), ['@generaltranslation.com']);
+  process.env.VOTE_ALLOWED = ' @Example.com, ada@x.io @example.com ';
+  assert.deepEqual(defaultAccess(), ['@example.com', 'ada@x.io']);
+  process.env.VOTE_ALLOWED = '   ';
+  assert.deepEqual(defaultAccess(), ['@generaltranslation.com']);
   if (before === undefined) delete process.env.VOTE_ALLOWED;
   else process.env.VOTE_ALLOWED = before;
 });
@@ -99,13 +145,23 @@ test('the admin value binds the admin key and its issue time', () => {
   }
 });
 
-test('a logo alias is opaque, stable per secret and a valid key', () => {
-  const alias = logoAlias(SECRET, 'mark-two');
+test('an option alias is opaque, stable per secret and decision, and a valid key', () => {
+  const alias = optionAlias(SECRET, 'first', 'mark-two');
   assert.match(alias, /^[a-f0-9]{12}$/);
-  assert.ok(isLogoKey(alias));
-  assert.equal(alias, logoAlias(SECRET, 'mark-two'));
-  assert.notEqual(alias, logoAlias(SECRET, 'mark-three'));
-  assert.notEqual(alias, logoAlias('other-secret', 'mark-two'));
+  assert.ok(isOptionKey(alias));
+  assert.equal(alias, optionAlias(SECRET, 'first', 'mark-two'));
+  assert.notEqual(alias, optionAlias(SECRET, 'first', 'mark-three'));
+  assert.notEqual(alias, optionAlias('other-secret', 'first', 'mark-two'));
+});
+
+test('one key in two decisions has two unrelated aliases', () => {
+  const a = optionAlias(SECRET, 'first', 'shared');
+  const b = optionAlias(SECRET, 'second', 'shared');
+  assert.notEqual(a, b);
+  /* the ':' between the decision and the key is unambiguous, since neither may hold one */
+  assert.ok(!isOptionKey('b:c'));
+  const many = new Set(Array.from({ length: 50 }, (_, i) => optionAlias(SECRET, `d${i}`, 'shared')));
+  assert.equal(many.size, 50);
 });
 
 test('strings are compared in equal time', () => {
@@ -115,57 +171,63 @@ test('strings are compared in equal time', () => {
 });
 
 test('keys are a to z, 0 to 9 and hyphens, 1 to 40 long', () => {
-  for (const good of ['m1', 'mark-two', 'x', 'a'.repeat(40)]) assert.ok(isLogoKey(good), good);
-  for (const bad of ['', 'A', 'a_b', 'a b', 'a.b', '../a', 'a/b', 'é', 'a'.repeat(41), 7, null]) assert.ok(!isLogoKey(bad), String(bad));
+  for (const good of ['m1', 'mark-two', 'x', 'a'.repeat(40)]) assert.ok(isOptionKey(good), good);
+  for (const bad of ['', 'A', 'a_b', 'a b', 'a.b', '../a', 'a/b', 'é', 'a'.repeat(41), 7, null]) assert.ok(!isOptionKey(bad), String(bad));
   assert.ok(!isVoterId('A'.repeat(20)));
   assert.ok(!isDeviceId('a'.repeat(20)));
 });
 
-test('a key from a name', () => {
-  assert.equal(keyFromName('Doubled Line 2'), 'doubled-line-2');
-  assert.equal(keyFromName('  Café  Noir!! '), 'cafe-noir');
-  assert.equal(keyFromName('***'), '');
-  assert.equal(keyFromName('x'.repeat(39) + ' yz').length <= 40, true);
-  assert.ok(isLogoKey(keyFromName('x'.repeat(39) + ' yz')));
-});
-
-test('a vote pathname carries the vote, and a bad key or id is refused', () => {
-  const path = pathnames.vote('vote', VOTER, 1700000000000, 'm1', 'm2');
-  assert.equal(path, `vote/votes/${VOTER}/1700000000000_m1_m2.json`);
-  assert.deepEqual(parseVotePath('vote', path), { voterId: VOTER, ts: 1700000000000, winner: 'm1', loser: 'm2' });
+test('a vote pathname carries its decision and the vote, and a bad key or id is refused', () => {
+  const path = pathnames.vote('vote', 'first', VOTER, 1700000000000, 'm1', 'm2');
+  assert.equal(path, `vote/decisions/first/votes/${VOTER}/1700000000000_m1_m2.json`);
+  assert.deepEqual(parseVotePath('vote', 'first', path), { voterId: VOTER, ts: 1700000000000, winner: 'm1', loser: 'm2' });
+  assert.equal(parseVotePath('vote', 'second', path), null, 'a vote parses only under its own decision');
   for (const bad of [
-    `vote/votes/${VOTER}/1_m_1_m2.json`,
-    `vote/votes/${VOTER}/1_M1_m2.json`,
-    `vote/votes/${VOTER}/1_m1_m1.json`,
-    `vote/votes/${VOTER}/x_m1_m2.json`,
-    `vote/votes/${VOTER}/1_m1_m2.txt`,
-    `vote/votes/short/1_m1_m2.json`,
-    `vote/votes/${VOTER}/sub/1_m1_m2.json`,
-    `other/votes/${VOTER}/1_m1_m2.json`,
+    `vote/decisions/first/votes/${VOTER}/1_m_1_m2.json`,
+    `vote/decisions/first/votes/${VOTER}/1_M1_m2.json`,
+    `vote/decisions/first/votes/${VOTER}/1_m1_m1.json`,
+    `vote/decisions/first/votes/${VOTER}/x_m1_m2.json`,
+    `vote/decisions/first/votes/${VOTER}/1_m1_m2.txt`,
+    `vote/decisions/first/votes/short/1_m1_m2.json`,
+    `vote/decisions/first/votes/${VOTER}/sub/1_m1_m2.json`,
+    `vote/votes/${VOTER}/1_m1_m2.json`,
+    `other/decisions/first/votes/${VOTER}/1_m1_m2.json`,
   ]) {
-    assert.equal(parseVotePath('vote', bad), null, bad);
+    assert.equal(parseVotePath('vote', 'first', bad), null, bad);
   }
 });
 
 test('the other pathnames parse back and refuse bad shapes', () => {
   const device = 'c'.repeat(24);
-  assert.deepEqual(parseLikesPath('vote', pathnames.like('vote', VOTER, 5)), { voterId: VOTER, ts: 5 });
-  assert.equal(parseLikesPath('vote', `vote/likes/${VOTER}/x.json`), null);
+  assert.equal(pathnames.meta('vote', 'first'), 'vote/decisions/first/meta.json');
+  assert.equal(pathnames.option('vote', 'first', 'm1', 'webp'), 'vote/decisions/first/options/m1.webp');
+  assert.equal(pathnames.hidden('vote', 'first', 'm1'), 'vote/decisions/first/hidden/m1');
+  assert.equal(pathnames.like('vote', 'first', VOTER, 5), `vote/decisions/first/likes/${VOTER}/5.json`);
+  assert.deepEqual(parseLikesPath('vote', 'first', pathnames.like('vote', 'first', VOTER, 5)), { voterId: VOTER, ts: 5 });
+  assert.equal(parseLikesPath('vote', 'first', `vote/decisions/first/likes/${VOTER}/x.json`), null);
+  assert.equal(parseLikesPath('vote', 'second', pathnames.like('vote', 'first', VOTER, 5)), null);
   assert.deepEqual(parseDevicePath('vote', pathnames.device('vote', device, VOTER)), { deviceId: device, voterId: VOTER });
   assert.equal(parseDevicePath('vote', `vote/devices/${device}/nope`), null);
-  assert.deepEqual(parseLogoPath('vote', 'vote/logos/m1.svg'), { key: 'm1', ext: 'svg' });
-  assert.deepEqual(parseLogoPath('vote', 'vote/logos/m1.json'), { key: 'm1', ext: 'json' });
-  assert.equal(parseLogoPath('vote', 'vote/logos/m1.gif'), null);
-  assert.equal(parseLogoPath('vote', 'vote/logos/a_b.svg'), null);
-  assert.equal(parseLogoPath('vote', 'vote/logos/x/m1.svg'), null);
-  assert.equal(parseMarkerPath('vote', 'vote/hidden/m1', 'hidden'), 'm1');
-  assert.equal(parseMarkerPath('vote', 'vote/hidden/M1', 'hidden'), null);
+  for (const ext of ['svg', 'png', 'jpg', 'webp', 'json']) {
+    assert.deepEqual(parseOptionPath('vote', 'first', `vote/decisions/first/options/m1.${ext}`), { key: 'm1', ext });
+  }
+  assert.equal(parseOptionPath('vote', 'first', 'vote/decisions/first/options/m1.gif'), null);
+  assert.equal(parseOptionPath('vote', 'first', 'vote/decisions/first/options/a_b.svg'), null);
+  assert.equal(parseOptionPath('vote', 'first', 'vote/decisions/first/options/x/m1.svg'), null);
+  assert.equal(parseOptionPath('vote', 'first', 'vote/old/m1.svg'), null, 'the old layout is never read');
+  assert.equal(parseHiddenPath('vote', 'first', 'vote/decisions/first/hidden/m1'), 'm1');
+  assert.equal(parseHiddenPath('vote', 'first', 'vote/decisions/first/hidden/M1'), null);
+  assert.equal(parseHiddenPath('vote', 'first', 'vote/hidden/m1'), null);
   assert.equal(parseMarkerPath('vote', `vote/excluded/${VOTER}`, 'excluded'), VOTER);
   assert.equal(parseMarkerPath('vote', `vote/voters/${VOTER}.json`, 'voters'), VOTER);
   assert.equal(parseMarkerPath('vote', `vote/voters/${VOTER}`, 'voters'), null);
+  assert.equal(parseDecisionFolder('vote', 'vote/decisions/first/'), 'first');
+  assert.equal(parseDecisionFolder('vote', 'vote/decisions/first'), null);
+  assert.equal(parseDecisionFolder('vote', 'vote/decisions/a/b/'), null);
+  assert.equal(parseDecisionFolder('vote', 'vote/decisions/Bad/'), null);
 });
 
-test('the namespace, the logo address and the team label', () => {
+test('the namespace, the option address and the team label', () => {
   const before = process.env.VOTE_NAMESPACE;
   delete process.env.VOTE_NAMESPACE;
   assert.equal(namespace(), 'vote');
@@ -175,7 +237,7 @@ test('the namespace, the logo address and the team label', () => {
   assert.equal(namespace(), 'vote');
   if (before === undefined) delete process.env.VOTE_NAMESPACE;
   else process.env.VOTE_NAMESPACE = before;
-  assert.equal(logoSrc('m1', 36), '/api/vote/logo/m1?v=10');
+  assert.equal(optionSrc('first', 'm1', 36), '/api/vote/d/first/option/m1?v=10');
   assert.equal(domainLabel('generaltranslation.com'), 'GT team');
   assert.equal(domainLabel('example.com'), 'example.com');
 });

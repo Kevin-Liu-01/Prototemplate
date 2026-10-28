@@ -1,141 +1,248 @@
-/* The answers the vote API builds from the store: a voter's state, the
-   results and the admin data, and the CSV export. Voters see each logo by
-   an opaque id (its alias), never by its key, because a key can name the
-   logo and the matchups are blind. */
-import { APPEARANCES, CACHE_MS, ELO_K, ELO_START, logoSrc, MIN_GROUP_VOTERS, namespace, voteAllowList } from './config';
+/* The answers the vote API builds from the store: the hub, a voter's state
+   in one decision, the results, the admin's list and panel, and the CSV
+   export. Every per-decision read re-checks the voter's access. Voters see
+   a mark or image option by an opaque id (its alias, per decision), never
+   by its key, because a key can name the option and the matchups are
+   blind; a text option is its words, so it shows its name. */
+import { CACHE_MS, defaultAccess, ELO_K, ELO_START, MIN_GROUP_VOTERS, namespace, optionSrc } from './config';
+import { canOpen, headOf, newOptions, resultsOpen, visibleDecisions, visibleGroups, votingOpen } from './decisions';
 import { computeElo } from './elo';
-import { isAllowedEmail, logoAlias } from './identity';
-import { needsLikes, schedule, voterOrder } from './schedule';
+import { isAllowedEmail, optionAlias } from './identity';
+import { schedule, standing, voterOrder } from './schedule';
 import * as store from './store';
 
 import type { Schedule } from './schedule';
-import type { LikesRecord, LogoRecord, VoteRecord, VoterRecord } from './store';
-import type { AdminData, AdminVoter, Results, VoteLogo, VoteState } from './types';
+import type { LikesRecord, OptionRecord, VoteRecord, VoterRecord } from './store';
+import type {
+  AdminData,
+  AdminDecisionRow,
+  AdminList,
+  AdminVoter,
+  DecisionMeta,
+  HubRow,
+  HubState,
+  Results,
+  VoteOption,
+  VoteState,
+} from './types';
 
-export const EMPTY_STATE: VoteState = {
-  voter: null,
-  pair: null,
-  progress: { done: 0, total: 0 },
-  needsLikes: false,
-  logos: [],
-  likes: [],
-  complete: false,
-};
+export const EMPTY_HUB: HubState = { voter: null, decisions: [] };
 
-function activeOf(logos: LogoRecord[]): LogoRecord[] {
-  return logos.filter((logo) => !logo.hidden);
+/** An option voters can see: not hidden, and a mark or image needs its file. */
+export function isActive(meta: DecisionMeta, option: OptionRecord): boolean {
+  return !option.hidden && (meta.kind === 'text' || option.file !== null);
 }
 
-/** The opaque id a logo's image address and a voter's state carry; route() has checked the secret is set. */
-export function aliasOf(key: string): string {
-  return logoAlias(process.env.VOTE_SECRET ?? '', key);
+function activeOf(meta: DecisionMeta, options: OptionRecord[]): OptionRecord[] {
+  return options.filter((option) => isActive(meta, option));
 }
 
-/** The logos by their alias. */
-export function byAlias(logos: readonly LogoRecord[]): Map<string, LogoRecord> {
-  return new Map(logos.map((logo) => [aliasOf(logo.key), logo]));
+/** The opaque id an option's file address and a voter's state carry; route() has checked the secret is set. */
+export function aliasOf(decisionId: string, key: string): string {
+  return optionAlias(process.env.VOTE_SECRET ?? '', decisionId, key);
 }
 
-function srcOf(logo: LogoRecord): string {
-  return logoSrc(aliasOf(logo.key), logo.version);
+/** A decision's options by their alias. */
+export function byAlias(decisionId: string, options: readonly OptionRecord[]): Map<string, OptionRecord> {
+  return new Map(options.map((option) => [aliasOf(decisionId, option.key), option]));
 }
 
-/* the global ratings only break ties in the schedule, so a short-lived copy per instance is enough */
-let ratingsCache: { at: number; id: string; value: Map<string, number> } | null = null;
+function srcOf(decisionId: string, option: OptionRecord): string {
+  return option.file ? optionSrc(decisionId, aliasOf(decisionId, option.key), option.version) : '';
+}
 
-async function scheduleRatings(keys: string[]): Promise<Map<string, number>> {
-  const id = `${namespace()}:${keys.join(',')}`;
-  if (ratingsCache && ratingsCache.id === id && Date.now() - ratingsCache.at < CACHE_MS) return ratingsCache.value;
-  const [votes, excluded] = await Promise.all([store.allVotes(), store.excludedVoters()]);
+function voteOption(meta: DecisionMeta, option: OptionRecord): VoteOption {
+  const key = aliasOf(meta.id, option.key);
+  return meta.kind === 'text' ? { key, src: '', name: option.name, text: option.text } : { key, src: srcOf(meta.id, option) };
+}
+
+/* the global ratings only break ties in the schedule, so a short-lived copy per decision per instance is enough */
+const ratingsCache = new Map<string, { at: number; keys: string; value: Map<string, number> }>();
+
+async function scheduleRatings(decisionId: string, keys: string[]): Promise<Map<string, number>> {
+  const slot = `${namespace()}:${decisionId}`;
+  const joined = keys.join(',');
+  const cached = ratingsCache.get(slot);
+  if (cached && cached.keys === joined && Date.now() - cached.at < CACHE_MS) return cached.value;
+  const [votes, excluded] = await Promise.all([store.allVotes(decisionId), store.excludedVoters()]);
   const elo = computeElo(votes, { keys, excluded, start: ELO_START, k: ELO_K });
   const value = new Map([...elo.rows].map(([key, row]) => [key, row.elo]));
-  ratingsCache = { at: Date.now(), id, value };
+  ratingsCache.set(slot, { at: Date.now(), keys: joined, value });
   return value;
 }
 
 /* ------------------------------------------------------------------ */
-/* one voter                                                           */
+/* one voter in one decision                                           */
 
 export type VoterParts = {
   voter: VoterRecord;
-  logos: LogoRecord[];
+  meta: DecisionMeta;
+  options: OptionRecord[];
   votes: VoteRecord[];
   latest: LikesRecord | null;
   ratings: Map<string, number>;
+  admin: boolean;
 };
 
 export type VoterContext = {
   parts: VoterParts;
-  active: LogoRecord[];
+  active: OptionRecord[];
   keys: string[];
-  /** an active logo's key by the alias the voter sent */
+  /** an active option's key by the alias the voter sent */
   keyOf: Map<string, string>;
   sched: Schedule;
   needsLikes: boolean;
   complete: boolean;
+  /** the options added since the voter finished */
+  fresh: string[];
 };
 
-/** Everything a voter's state needs; null when the voter has no record or their email is no longer on the vote. */
-export async function loadVoter(voterId: string): Promise<VoterParts | null> {
-  const voter = await store.getVoter(voterId);
-  if (!voter || !isAllowedEmail(voter.email, voteAllowList())) return null;
-  const registry = await store.registry();
-  const keys = activeOf(registry.logos).map((logo) => logo.key);
+/** Whether this voter may open this decision: the admin always, else its status and access list. */
+export function mayOpen(meta: DecisionMeta, voter: VoterRecord, admin: boolean): boolean {
+  return canOpen(meta.status, isAllowedEmail(voter.email, meta.access), admin);
+}
+
+/**
+ * Everything a voter's state in one decision needs; null when the voter
+ * has no record, the decision does not exist, or it does not open for
+ * them (a draft, archived, or their email is not on its list). The status
+ * decides whether a vote is taken, so a decision this instance lists has
+ * its meta read again past the instance's copy: a decision the admin just
+ * closed takes no vote on any instance.
+ */
+export async function loadVoter(voterId: string, decisionId: string, admin = false): Promise<VoterParts | null> {
+  const [voter, listed] = await Promise.all([store.getVoter(voterId), store.decision(decisionId)]);
+  const meta = listed ? await store.decision(decisionId, true) : null;
+  if (!voter || !meta || !mayOpen(meta, voter, admin)) return null;
+  const registry = await store.registry(decisionId);
+  const keys = activeOf(meta, registry.options).map((option) => option.key);
   const [votes, latest, ratings] = await Promise.all([
-    store.voterVotes(voterId),
-    store.latestLikes(voterId),
-    scheduleRatings(keys),
+    store.voterVotes(decisionId, voterId),
+    meta.likes ? store.latestLikes(decisionId, voterId) : Promise.resolve(null),
+    scheduleRatings(decisionId, keys),
   ]);
-  return { voter, logos: registry.logos, votes, latest, ratings };
+  return { voter, meta, options: registry.options, votes, latest, ratings, admin };
 }
 
 export function contextOf(parts: VoterParts): VoterContext {
-  const active = activeOf(parts.logos);
-  const keys = active.map((logo) => logo.key);
-  const sched = schedule({ voterId: parts.voter.voterId, keys, votes: parts.votes, ratings: parts.ratings, appearances: APPEARANCES });
-  const owesLikes = !sched.pair && needsLikes(parts.latest, keys);
-  const keyOf = new Map(active.map((logo) => [aliasOf(logo.key), logo.key]));
-  return { parts, active, keys, keyOf, sched, needsLikes: owesLikes, complete: !sched.pair && !owesLikes };
+  const { meta } = parts;
+  const active = activeOf(meta, parts.options);
+  const keys = active.map((option) => option.key);
+  const sched = schedule({
+    voterId: parts.voter.voterId,
+    keys,
+    votes: parts.votes,
+    ratings: parts.ratings,
+    appearances: meta.appearances,
+  });
+  const stand = standing({ sched, keys, latest: parts.latest, likes: meta.likes });
+  const keyOf = new Map(active.map((option) => [aliasOf(meta.id, option.key), option.key]));
+  const fresh = newOptions({
+    keys,
+    addedAt: new Map(active.map((option) => [option.key, option.addedAt])),
+    lastVoteAt: parts.votes.reduce((max, vote) => Math.max(max, vote.ts), 0),
+    latestSeen: parts.latest?.seen ?? null,
+    likes: meta.likes,
+    finishedAmong: (old) =>
+      schedule({ voterId: parts.voter.voterId, keys: old, votes: parts.votes, appearances: meta.appearances }).pair === null,
+  });
+  return { parts, active, keys, keyOf, sched, needsLikes: stand.needsLikes, complete: stand.complete, fresh };
 }
 
 export function stateOf(ctx: VoterContext): VoteState {
-  const shown = new Map(ctx.active.map((logo): [string, VoteLogo] => [logo.key, { key: aliasOf(logo.key), src: srcOf(logo) }]));
-  const logo = (key: string): VoteLogo => shown.get(key) ?? { key: aliasOf(key), src: '' };
-  const pair = ctx.sched.pair;
+  const { meta, voter } = ctx.parts;
+  const shown = new Map(ctx.active.map((option): [string, VoteOption] => [option.key, voteOption(meta, option)]));
+  const option = (key: string): VoteOption => shown.get(key) ?? { key: aliasOf(meta.id, key), src: '' };
+  const open = votingOpen(meta.status);
+  const pair = open ? ctx.sched.pair : null;
   return {
-    voter: { email: ctx.parts.voter.email, domain: ctx.parts.voter.domain },
-    pair: pair ? { left: logo(pair.left), right: logo(pair.right) } : null,
+    voter: { email: voter.email, domain: voter.domain },
+    decision: headOf(meta),
+    pair: pair ? { left: option(pair.left), right: option(pair.right) } : null,
     progress: ctx.sched.progress,
-    needsLikes: ctx.needsLikes,
-    logos: voterOrder(ctx.parts.voter.voterId, ctx.keys).map(logo),
-    likes: (ctx.parts.latest?.liked ?? []).filter((key) => shown.has(key)).map((key) => logo(key).key),
+    needsLikes: open && ctx.needsLikes,
+    options: voterOrder(voter.voterId, ctx.keys).map(option),
+    likes: (ctx.parts.latest?.liked ?? []).filter((key) => shown.has(key)).map((key) => option(key).key),
     complete: ctx.complete,
+    results: resultsOpen(meta.status, ctx.complete, ctx.parts.admin),
   };
 }
 
-export async function voterState(voterId: string): Promise<VoteState | null> {
-  const parts = await loadVoter(voterId);
+export async function voterState(voterId: string, decisionId: string, admin = false): Promise<VoteState | null> {
+  const parts = await loadVoter(voterId, decisionId, admin);
   return parts ? stateOf(contextOf(parts)) : null;
+}
+
+/* ------------------------------------------------------------------ */
+/* the hub                                                             */
+
+/** The decisions an email may see: open or closed, with the email on the list. */
+export function visibleTo(email: string, metas: readonly DecisionMeta[]): DecisionMeta[] {
+  return visibleDecisions(metas, (access) => isAllowedEmail(email, access));
+}
+
+function hubRow(ctx: VoterContext): HubRow {
+  const { meta } = ctx.parts;
+  return {
+    ...headOf(meta),
+    progress: ctx.sched.progress,
+    complete: ctx.complete,
+    fresh: votingOpen(meta.status) ? ctx.fresh.length : 0,
+    results: resultsOpen(meta.status, ctx.complete, false),
+  };
+}
+
+/** The voter and every decision they may see, with their progress in each; null when the voter has no record. */
+export async function hubView(voterId: string, fresh = false): Promise<HubState | null> {
+  const [voter, metas] = await Promise.all([store.getVoter(voterId), store.decisions(fresh)]);
+  if (!voter) return null;
+  const rows = await store.mapLimit(visibleTo(voter.email, metas), 4, async (meta) => {
+    const registry = await store.registry(meta.id);
+    const [votes, latest] = await Promise.all([
+      store.voterVotes(meta.id, voterId),
+      meta.likes ? store.latestLikes(meta.id, voterId) : Promise.resolve(null),
+    ]);
+    /* the hub shows progress only, so the pair's ratings are not read */
+    return hubRow(contextOf({ voter, meta, options: registry.options, votes, latest, ratings: new Map(), admin: false }));
+  });
+  return { voter: { email: voter.email, domain: voter.domain }, decisions: rows };
 }
 
 /* ------------------------------------------------------------------ */
 /* results                                                             */
 
 /**
- * The ranking over every counted voter, or only one domain's voters. For
- * anyone but the admin, a domain is listed and filterable only with
- * MIN_GROUP_VOTERS voters or more; null when the asked domain is not.
+ * Whether a reader may open a decision's results: 'missing' when it does
+ * not exist or does not open for them, 'denied' until a voter finishes an
+ * open decision, 'ok' otherwise.
  */
-export async function resultsView(domain: string | null, admin: boolean): Promise<Results | null> {
+export async function resultsAccess(voterId: string | null, decisionId: string, admin: boolean): Promise<'ok' | 'denied' | 'missing'> {
+  if (admin) return (await store.decision(decisionId)) ? 'ok' : 'missing';
+  if (!voterId) return 'denied';
+  const parts = await loadVoter(voterId, decisionId);
+  if (!parts) return 'missing';
+  return resultsOpen(parts.meta.status, contextOf(parts).complete, false) ? 'ok' : 'denied';
+}
+
+/**
+ * One decision's ranking over every counted voter, or only one domain's
+ * voters. For anyone but the admin, a domain is listed and filterable only
+ * as visibleGroups allows (MIN_GROUP_VOTERS or more, and no smaller rest
+ * that All minus the groups would show); null when the decision is gone or
+ * the asked domain is not listed.
+ */
+export async function resultsView(decisionId: string, domain: string | null, admin: boolean): Promise<Results | null> {
+  const meta = await store.decision(decisionId, admin);
+  if (!meta) return null;
   const [registry, votes, excluded, voters, likes] = await Promise.all([
-    store.registry(),
-    store.allVotes(),
+    store.registry(decisionId, admin),
+    store.allVotes(decisionId),
     store.excludedVoters(),
     store.allVoters(),
-    store.allLatestLikes(),
+    meta.likes ? store.allLatestLikes(decisionId) : Promise.resolve(new Map<string, LikesRecord>()),
   ]);
-  const active = activeOf(registry.logos);
-  const keys = active.map((logo) => logo.key);
+  const active = activeOf(meta, registry.options);
+  const keys = active.map((option) => option.key);
   const activeSet = new Set(keys);
   /* a voter counts when they have a record and are not excluded */
   const counting = voters.filter((voter) => !excluded.has(voter.voterId));
@@ -149,22 +256,23 @@ export async function resultsView(domain: string | null, admin: boolean): Promis
   for (const voter of counting) {
     if (took.has(voter.voterId)) byDomain.set(voter.domain, (byDomain.get(voter.domain) ?? 0) + 1);
   }
-  const groups = [...byDomain].filter(([, count]) => admin || count >= MIN_GROUP_VOTERS);
+  const groups = visibleGroups(byDomain, admin, MIN_GROUP_VOTERS);
   if (domain && !admin && !groups.some(([name]) => name === domain)) return null;
 
-  const rows = active.map((logo) => {
-    const row = elo.rows.get(logo.key) ?? { elo: ELO_START, wins: 0, losses: 0, games: 0 };
+  const rows = active.map((option) => {
+    const row = elo.rows.get(option.key) ?? { elo: ELO_START, wins: 0, losses: 0, games: 0 };
     let likedBy = 0;
     let seenBy = 0;
     for (const [voterId, record] of likes) {
       if (!allowed.has(voterId)) continue;
-      if (record.liked.includes(logo.key)) likedBy += 1;
-      if (record.seen.includes(logo.key)) seenBy += 1;
+      if (record.liked.includes(option.key)) likedBy += 1;
+      if (record.seen.includes(option.key)) seenBy += 1;
     }
     return {
-      key: logo.key,
-      name: logo.name,
-      src: srcOf(logo),
+      key: option.key,
+      name: option.name,
+      text: meta.kind === 'text' ? option.text : '',
+      src: srcOf(meta.id, option),
       elo: Math.round(row.elo),
       rating: row.elo,
       wins: row.wins,
@@ -177,6 +285,7 @@ export async function resultsView(domain: string | null, admin: boolean): Promis
   });
   rows.sort((a, b) => b.rating - a.rating || b.games - a.games || a.key.localeCompare(b.key));
   return {
+    decision: headOf(meta),
     voters: [...allowed].filter((voterId) => took.has(voterId)).length,
     votes: elo.counted.length,
     domains: groups
@@ -189,23 +298,57 @@ export async function resultsView(domain: string | null, admin: boolean): Promis
 /* ------------------------------------------------------------------ */
 /* admin                                                               */
 
-export async function adminView(): Promise<AdminData> {
+/** Every decision, any status, with its counts; read past this instance's copy. */
+export async function adminList(): Promise<AdminList> {
+  const metas = await store.decisions(true);
+  const rows = await store.mapLimit(metas, 4, async (meta): Promise<AdminDecisionRow> => {
+    const [registry, votes, likes] = await Promise.all([
+      store.registry(meta.id, true),
+      store.allVotes(meta.id),
+      store.allLatestLikes(meta.id),
+    ]);
+    const voters = new Set([...votes.map((vote) => vote.voterId), ...likes.keys()]);
+    return {
+      ...meta,
+      options: registry.options.length,
+      active: activeOf(meta, registry.options).length,
+      voters: voters.size,
+      votes: votes.length,
+    };
+  });
+  return { decisions: rows, defaultAccess: defaultAccess() };
+}
+
+/**
+ * One decision's options, voters and head-to-head counts for the admin;
+ * null when it does not exist. The voters are everyone on its access list
+ * and everyone who voted or liked in it.
+ */
+export async function adminView(decisionId: string): Promise<AdminData | null> {
   /* read past this instance's copy, so the panel shows a change another instance just made */
-  const [registry, votes, excluded, voters, likes, links] = await Promise.all([
-    store.registry(true),
-    store.allVotes(),
+  const meta = await store.decision(decisionId, true);
+  if (!meta) return null;
+  const [registry, votes, excluded, everyVoter, likes, links] = await Promise.all([
+    store.registry(decisionId, true),
+    store.allVotes(decisionId),
     store.excludedVoters(),
     store.allVoters(),
-    store.allLatestLikes(),
+    store.allLatestLikes(decisionId),
     store.deviceLinks(),
   ]);
-  const active = activeOf(registry.logos);
-  const keys = active.map((logo) => logo.key);
+  const active = activeOf(meta, registry.options);
+  const keys = active.map((option) => option.key);
   /* the same voters the results count: a record of their own, not excluded */
-  const known = new Set(voters.map((voter) => voter.voterId));
+  const known = new Set(everyVoter.map((voter) => voter.voterId));
   const ranked = computeElo(votes, { keys, excluded, voters: known, start: ELO_START, k: ELO_K });
-  /* a hidden logo shows what it scored before it was hidden */
-  const everyone = computeElo(votes, { keys: registry.logos.map((logo) => logo.key), excluded, voters: known, start: ELO_START, k: ELO_K });
+  /* a hidden option shows what it scored before it was hidden */
+  const everyone = computeElo(votes, {
+    keys: registry.options.map((option) => option.key),
+    excluded,
+    voters: known,
+    start: ELO_START,
+    k: ELO_K,
+  });
 
   const devicesOf = new Map<string, Set<string>>();
   const votersOn = new Map<string, Set<string>>();
@@ -215,17 +358,20 @@ export async function adminView(): Promise<AdminData> {
     if (!votersOn.has(deviceId)) votersOn.set(deviceId, new Set());
     votersOn.get(deviceId)?.add(voterId);
   }
-  const emailOf = new Map(voters.map((voter) => [voter.voterId, voter.email]));
+  const emailOf = new Map(everyVoter.map((voter) => [voter.voterId, voter.email]));
   const votesBy = new Map<string, VoteRecord[]>();
   for (const vote of votes) {
     if (!votesBy.has(vote.voterId)) votesBy.set(vote.voterId, []);
     votesBy.get(vote.voterId)?.push(vote);
   }
+  const voters = everyVoter.filter(
+    (voter) => isAllowedEmail(voter.email, meta.access) || votesBy.has(voter.voterId) || likes.has(voter.voterId)
+  );
 
   const rows: AdminVoter[] = voters.map((voter) => {
     const own = votesBy.get(voter.voterId) ?? [];
     const latest = likes.get(voter.voterId) ?? null;
-    const finished = !schedule({ voterId: voter.voterId, keys, votes: own, appearances: APPEARANCES }).pair;
+    const sched = schedule({ voterId: voter.voterId, keys, votes: own, appearances: meta.appearances });
     const devices = [...(devicesOf.get(voter.voterId) ?? [])].sort();
     const shared = new Set<string>();
     for (const deviceId of devices) {
@@ -239,8 +385,9 @@ export async function adminView(): Promise<AdminData> {
       email: voter.email,
       domain: voter.domain,
       createdAt: voter.createdAt,
+      access: isAllowedEmail(voter.email, meta.access),
       votes: own.length,
-      complete: finished && !needsLikes(latest, keys),
+      complete: standing({ sched, keys, latest, likes: meta.likes }).complete,
       likes: latest?.liked ?? [],
       devices,
       sharesDeviceWith: [...shared].sort(),
@@ -251,15 +398,18 @@ export async function adminView(): Promise<AdminData> {
   rows.sort((a, b) => (b.lastVoteAt ?? '').localeCompare(a.lastVoteAt ?? '') || a.email.localeCompare(b.email));
 
   return {
-    logos: registry.logos.map((logo) => {
-      const row = (logo.hidden ? everyone : ranked).rows.get(logo.key);
+    decision: meta,
+    options: registry.options.map((option) => {
+      const row = (option.hidden ? everyone : ranked).rows.get(option.key);
       return {
-        key: logo.key,
-        name: logo.name,
-        src: srcOf(logo),
-        hidden: logo.hidden,
-        addedAt: logo.addedAt,
-        order: logo.order,
+        key: option.key,
+        name: option.name,
+        text: option.text,
+        src: srcOf(meta.id, option),
+        hidden: option.hidden,
+        missing: meta.kind !== 'text' && option.file === null,
+        addedAt: option.addedAt,
+        order: option.order,
         elo: Math.round(row?.elo ?? ELO_START),
         games: row?.games ?? 0,
       };
@@ -272,7 +422,7 @@ export async function adminView(): Promise<AdminData> {
       excluded: rows.filter((row) => row.excluded).length,
       votes: votes.length,
       counted: ranked.counted.length,
-      logos: registry.logos.length,
+      options: registry.options.length,
       active: keys.length,
     },
   };
@@ -284,9 +434,10 @@ function csvCell(value: string): string {
   return /[",\r\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
 }
 
-/** Every vote ever written, oldest first. */
-export async function exportCsv(): Promise<string> {
-  const [votes, voters, excluded] = await Promise.all([store.allVotes(), store.allVoters(), store.excludedVoters()]);
+/** Every vote ever written in one decision, oldest first; null when it does not exist. */
+export async function exportCsv(decisionId: string): Promise<string | null> {
+  if (!(await store.decision(decisionId, true))) return null;
+  const [votes, voters, excluded] = await Promise.all([store.allVotes(decisionId), store.allVoters(), store.excludedVoters()]);
   const byId = new Map(voters.map((voter) => [voter.voterId, voter]));
   const ordered = [...votes].sort((a, b) => a.ts - b.ts || a.voterId.localeCompare(b.voterId));
   const bodies = await store.mapLimit(ordered, 16, (vote) => store.voteBody(vote.pathname));

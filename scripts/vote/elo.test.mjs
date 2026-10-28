@@ -1,5 +1,5 @@
 // Tests for src/lib/vote/elo.ts: Elo replayed over the vote log, with the
-// first vote per voter per pair counted, excluded voters and hidden logos
+// first vote per voter per pair counted, excluded voters and hidden options
 // skipped, and the domain filter. Loaded through Node's type stripping.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
@@ -55,7 +55,7 @@ test('excluded voters are skipped', () => {
   assert.equal(rows.get('c').games, 0);
 });
 
-test('a logo outside the active keys (hidden) takes no part, nor do its votes', () => {
+test('an option outside the active keys (hidden) takes no part, nor do its votes', () => {
   const votes = [vote('v1', 1, 'a', 'hidden'), vote('v1', 2, 'hidden', 'b'), vote('v1', 3, 'a', 'b')];
   const { rows, counted, matrix } = computeElo(votes, { keys: ['a', 'b'] });
   assert.equal(counted.length, 1);
@@ -98,7 +98,7 @@ test('ratings are conserved and the expected score is symmetric', () => {
   assert.ok(Math.abs(expectedScore(1100, 1000) + expectedScore(1000, 1100) - 1) < 1e-12);
 });
 
-test('a vote of a logo against itself is ignored', () => {
+test('a vote of an option against itself is ignored', () => {
   const { counted } = computeElo([vote('v1', 1, 'a', 'a')], { keys: KEYS });
   assert.equal(counted.length, 0);
 });

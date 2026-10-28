@@ -2,7 +2,8 @@
    the closed answer when the deployment lacks the store or the secrets, the
    refusal of a post from another site, the size-limited JSON body read, and
    the three cookies (the voter session, the device, the admin). Cookies are
-   read with next/headers and written on the response. */
+   global across decisions; each per-decision route checks access itself.
+   Cookies are read with next/headers and written on the response. */
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -23,6 +24,9 @@ import { adminToken, newDeviceId, readAdminToken, readSessionToken, sessionToken
 import type { NextRequest } from 'next/server';
 
 const NO_STORE = { 'Cache-Control': 'no-store, max-age=0' };
+
+/** The second argument of a per-decision route handler: the [id] segment. */
+export type DecisionParams = { params: Promise<{ id: string }> };
 
 export function json<T>(data: T, status = 200): NextResponse {
   return NextResponse.json(data, { status, headers: NO_STORE });

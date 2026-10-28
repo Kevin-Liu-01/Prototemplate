@@ -1,16 +1,21 @@
-// Tests for src/lib/vote/mark-file.ts: an uploaded SVG loses scripts,
+// Tests for src/lib/vote/mark-file.ts: an uploaded SVG mark loses scripts,
 // handlers, foreignObject and outside references, its background rect and
 // its colors, keeps near-white knockouts as holes, and gets a viewBox cut to
-// its ink; a PNG must decode and have a fully transparent pixel, through
-// every filter, bit depth and interlacing. Loaded through Node's type
-// stripping.
+// its ink; a PNG mark must decode and have a fully transparent pixel,
+// through every filter, bit depth and interlacing. An image option's type
+// is read from its first bytes (PNG, JPEG, WebP, SVG), and an SVG image
+// keeps its colors and gradients but loses the same unsafe parts. No id
+// keeps a name an editor wrote, and a PNG, JPEG or WebP loses its text,
+// EXIF, XMP and comments. Loaded through Node's type stripping.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { deflateSync } from 'node:zlib';
 
 import { importTs } from '../lint/seo.mjs';
 
-const { checkPng, detectKind, normalizeSvg, parsePath, toneOf } = await importTs(new URL('../../src/lib/vote/mark-file.ts', import.meta.url));
+const { checkPng, detectImage, detectKind, normalizeSvg, parsePath, prepareFile, sanitizeSvg, stripJpeg, stripPng, stripWebp, toneOf } = await importTs(
+  new URL('../../src/lib/vote/mark-file.ts', import.meta.url)
+);
 
 const svg = (body, attrs = 'viewBox="0 0 100 100"') => `<svg xmlns="http://www.w3.org/2000/svg" ${attrs}>${body}</svg>`;
 const viewBoxOf = (out) => /viewBox="([^"]+)"/.exec(out.svg)?.[1];
@@ -120,7 +125,7 @@ test('a use element keeps the canvas and still draws one ink', () => {
   const out = normalizeSvg(svg('<defs><path id="p" d="M0 0h10v10z" fill="red"/></defs><use href="#p" x="5"/><use xlink:href="#p" y="5"/>'));
   assert.equal(out.tight, false);
   assert.equal(viewBoxOf(out), '0 0 100 100');
-  assert.match(out.svg, /<use href="#p"/);
+  assert.match(out.svg, /<path id="i0"[^>]*\/><\/defs><use href="#i0" x="5"\/><use href="#i0" y="5"\/>/, 'both references follow the renamed id');
   assert.ok(!out.svg.includes('red'));
 });
 
@@ -254,4 +259,150 @@ test('a broken or empty PNG is refused', () => {
   assert.match(checkPng(png({ width: 9000, height: 9000, colorType: 6, rows: [[0]], bpp: 4 })), /too many pixels/);
   assert.equal(detectKind(new TextEncoder().encode('\uFEFF<?xml version="1.0"?>\n<svg viewBox="0 0 1 1"></svg>')), 'svg');
   assert.equal(detectKind(new TextEncoder().encode('GIF89a')), null);
+});
+
+const enc = (text) => [...new TextEncoder().encode(text)];
+/* a JPEG's segment: FF, the marker, a two-byte length that counts itself, the data */
+const segment = (marker, data) => [0xff, marker, (data.length + 2) >> 8, (data.length + 2) & 255, ...data];
+const JFIF = segment(0xe0, [...enc('JFIF'), 0, 1, 1, 0, 0, 1, 0, 1, 0, 0]);
+/* the frame and scan headers, then coded data with a stuffed FF 00 and a restart marker */
+const PICTURE = [...segment(0xc0, [8, 0, 1, 0, 1, 1, 1, 0x11, 0]), ...segment(0xda, [1, 1, 0, 0, 63, 0]), 0x12, 0xff, 0x00, 0x34, 0xff, 0xd0, 0x56];
+const JPEG = Uint8Array.from([0xff, 0xd8, ...JFIF, ...PICTURE, 0xff, 0xd9]);
+/* a WebP's chunk: the type, a little-endian size, the data and a pad byte when the size is odd */
+const riffChunk = (type, data) => [...enc(type), data.length & 255, (data.length >> 8) & 255, 0, 0, ...data, ...(data.length & 1 ? [0] : [])];
+const riff = (chunks) => Uint8Array.from([...enc('RIFF'), (chunks.length + 4) & 255, ((chunks.length + 4) >> 8) & 255, 0, 0, ...enc('WEBP'), ...chunks]);
+const WEBP = riff(riffChunk('VP8 ', [1, 2, 3, 4]));
+
+test('an image file type is read from its first bytes', () => {
+  const opaque = png({ width: 4, height: 3, colorType: 6, rows: rgba(), bpp: 4 });
+  assert.equal(detectImage(opaque), 'png');
+  assert.equal(detectImage(JPEG), 'jpg');
+  assert.equal(detectImage(WEBP), 'webp');
+  assert.equal(detectImage(new TextEncoder().encode(svg('<rect width="1" height="1"/>'))), 'svg');
+  assert.equal(detectImage(new TextEncoder().encode('GIF89a')), null);
+  assert.equal(detectImage(new TextEncoder().encode('RIFF\x04\x00\x00\x00WAVEfmt ')), null);
+  assert.equal(detectImage(Uint8Array.from([0xff, 0xd8])), null);
+  assert.equal(detectKind(JPEG), null, 'a mark is never a JPEG');
+});
+
+test('an SVG image keeps its colors and gradients and loses scripts and outside references', () => {
+  const out = sanitizeSvg(
+    svg(
+      '<style>.a{fill:#e5352b}</style><script>alert(1)</script>' +
+        '<defs><linearGradient id="g"><stop offset="0" stop-color="#0af"/><stop offset="1" style="stop-color:#f0a"/></linearGradient></defs>' +
+        '<rect width="100" height="100" fill="url(#g)" onload="alert(1)"/><circle class="a" cx="50" cy="50" r="10"/>' +
+        '<image href="https://example.com/x.png"/><use href="https://example.com/a.svg#x"/><text>Name</text>',
+      'viewBox="0 0 100 100" width="400" onclick="x()"'
+    )
+  );
+  assert.ok(!('error' in out));
+  for (const banned of ['script', 'alert', 'onload', 'onclick', 'example.com', '<image', '<text', 'Name', 'style>']) {
+    assert.ok(!out.svg.includes(banned), banned);
+  }
+  for (const kept of ['linearGradient', 'stop-color="#0af"', 'stop-color="#f0a"', '<linearGradient id="i0">', 'fill="url(#i0)"', 'fill="#e5352b"']) {
+    assert.ok(out.svg.includes(kept), kept);
+  }
+  assert.match(out.svg, /viewBox="0 0 100 100" width="100" height="100"/);
+  assert.ok('error' in sanitizeSvg('<svg xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1"/></svg>'));
+  assert.ok('error' in sanitizeSvg(svg('<script>alert(1)</script>')));
+  assert.ok('error' in sanitizeSvg('not svg'));
+});
+
+test('an option file is prepared by its decision kind', () => {
+  const clear = png({ width: 4, height: 3, colorType: 6, rows: rgba([[0, 0]]), bpp: 4 });
+  const opaque = png({ width: 4, height: 3, colorType: 6, rows: rgba(), bpp: 4 });
+  const colored = new TextEncoder().encode(svg('<circle cx="50" cy="50" r="20" fill="#e5352b"/>'));
+  assert.equal(prepareFile('mark', clear).ext, 'png');
+  assert.match(prepareFile('mark', opaque).error, /transparent/);
+  assert.match(prepareFile('mark', JPEG).error, /SVG or PNG/);
+  const mark = prepareFile('mark', colored);
+  assert.equal(mark.ext, 'svg');
+  assert.ok(!new TextDecoder().decode(mark.bytes).includes('#e5352b'), 'a mark is one ink');
+  assert.equal(prepareFile('image', opaque).ext, 'png', 'an image may be opaque');
+  assert.equal(prepareFile('image', JPEG).ext, 'jpg');
+  assert.equal(prepareFile('image', WEBP).ext, 'webp');
+  const image = prepareFile('image', colored);
+  assert.equal(image.ext, 'svg');
+  assert.ok(new TextDecoder().decode(image.bytes).includes('#e5352b'), 'an image keeps its colors');
+  assert.match(prepareFile('image', new TextEncoder().encode('GIF89a')).error, /PNG, JPG, WebP or SVG/);
+});
+
+test('an id never carries a layer or file name: referenced ones become opaque, the rest go', () => {
+  const source = svg(
+    '<defs><clipPath id="Clip_Layer_Name"><rect width="60" height="60"/></clipPath>' +
+      '<linearGradient id="Gradient_Name"><stop offset="0" stop-color="#0af"/></linearGradient></defs>' +
+      '<g id="Secret_Layer_Name" clip-path="url(#Clip_Layer_Name)"><path id="secret-path" d="M10 10h40v40h-40z" fill="url(#Gradient_Name)"/></g>' +
+      '<rect id="Another_Name" x="20" y="20" width="5" height="5" fill="#fff" mask="url(#Missing_Mask_Name)"/>',
+    'viewBox="0 0 100 100" id="File_Name"'
+  );
+  for (const kind of ['mark', 'image']) {
+    const out = prepareFile(kind, new TextEncoder().encode(source));
+    assert.ok(!('error' in out), kind);
+    const text = new TextDecoder().decode(out.bytes);
+    for (const name of ['Clip_Layer_Name', 'Gradient_Name', 'Secret_Layer_Name', 'secret-path', 'Another_Name', 'Missing_Mask_Name', 'File_Name']) {
+      assert.ok(!text.includes(name), `${kind}: ${name}`);
+    }
+    const ids = [...text.matchAll(/ id="([^"]+)"/g)].map((m) => m[1]);
+    const refs = [...text.matchAll(/url\(#([^)]+)\)/g)].map((m) => m[1]);
+    assert.ok(ids.every((id) => /^(i\d+|pt-ink(-\d+)?)$/.test(id)), `${kind}: ${ids}`);
+    assert.ok(refs.every((ref) => /^(i\d+|pt-ink(-\d+)?)$/.test(ref)), `${kind}: ${refs}`);
+    /* the clip path keeps working: its reference names its new id */
+    const clip = /<clipPath id="(i\d+)"/.exec(text)?.[1];
+    assert.ok(clip && text.includes(`clip-path="url(#${clip})"`), `${kind}: the clip path is still referenced`);
+  }
+  const image = new TextDecoder().decode(prepareFile('image', new TextEncoder().encode(source)).bytes);
+  const gradient = /<linearGradient id="(i\d+)"/.exec(image)?.[1];
+  assert.ok(gradient && image.includes(`fill="url(#${gradient})"`), 'the gradient is still referenced');
+});
+
+test('a PNG keeps the chunks that draw it and loses text, EXIF and time', () => {
+  const meta = [
+    ['tEXt', enc('Title\0Secret option name')],
+    ['iTXt', enc('XML:com.adobe.xmp\0\0\0\0\0<x:xmpmeta>DerivedFrom Secret_Source.ai</x:xmpmeta>')],
+    ['zTXt', enc('Author\0\0xx')],
+    ['eXIf', enc('MM\0*GPS')],
+    ['tIME', [7, 232, 10, 28, 12, 0, 0]],
+    ['gAMA', [0, 0, 0xb1, 0x8f]],
+  ];
+  const tagged = png({ width: 4, height: 3, colorType: 6, rows: rgba([[0, 0]]), bpp: 4, chunks: meta });
+  for (const kind of ['mark', 'image']) {
+    const out = prepareFile(kind, tagged);
+    assert.equal(out.ext, 'png', kind);
+    const text = new TextDecoder('latin1').decode(out.bytes);
+    for (const gone of ['tEXt', 'iTXt', 'zTXt', 'eXIf', 'tIME', 'Secret', 'DerivedFrom', 'Author', 'GPS']) assert.ok(!text.includes(gone), `${kind}: ${gone}`);
+    for (const kept of ['IHDR', 'IDAT', 'IEND', 'gAMA']) assert.ok(text.includes(kept), `${kind}: ${kept}`);
+    assert.equal(checkPng(out.bytes), null, 'the stripped PNG still decodes with its transparent pixel');
+  }
+  assert.equal(stripPng(tagged.subarray(0, tagged.length - 20)), null, 'a chunk cut short is refused');
+});
+
+test('a JPEG loses its EXIF, XMP, comments and trailer and keeps its ICC profile and coded data', () => {
+  const exif = segment(0xe1, [...enc('Exif\0\0'), ...enc('GPS 37.77 Secret Camera Owner')]);
+  const xmp = segment(0xe1, enc('http://ns.adobe.com/xap/1.0/\0<dc:title>Secret option name</dc:title>'));
+  const icc = segment(0xe2, [...enc('ICC_PROFILE'), 0, 1, 1, ...enc('sRGB')]);
+  const mpf = segment(0xe2, [...enc('MPF'), 0, ...enc('Second')]);
+  const comment = segment(0xfe, enc('Secret comment'));
+  const tagged = Uint8Array.from([0xff, 0xd8, ...JFIF, ...exif, ...xmp, ...icc, ...mpf, ...comment, ...PICTURE, 0xff, 0xd9, ...enc('TRAILER Secret')]);
+  const out = prepareFile('image', tagged);
+  assert.equal(out.ext, 'jpg');
+  assert.deepEqual([...out.bytes], [0xff, 0xd8, ...JFIF, ...icc, ...PICTURE, 0xff, 0xd9]);
+  assert.deepEqual([...stripJpeg(JPEG)], [...JPEG], 'a clean JPEG is unchanged');
+  assert.equal(stripJpeg(JPEG.subarray(0, JPEG.length - 2)), null, 'a JPEG without its end is refused');
+  assert.match(prepareFile('image', Uint8Array.from([0xff, 0xd8, 0xff, 0xe1, 0, 0x40, 1])).error, /JPEG could not be read/);
+});
+
+test('a WebP loses its EXIF and XMP chunks and their flags', () => {
+  const vp8x = [0x08 | 0x04 | 0x10, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  const tagged = riff([
+    ...riffChunk('VP8X', vp8x),
+    ...riffChunk('VP8 ', [1, 2, 3, 4, 5]),
+    ...riffChunk('EXIF', enc('MM\0*Secret Camera')),
+    ...riffChunk('XMP ', enc('<dc:title>Secret option name</dc:title>')),
+  ]);
+  const out = prepareFile('image', tagged);
+  assert.equal(out.ext, 'webp');
+  const expected = riff([...riffChunk('VP8X', [0x10, ...vp8x.slice(1)]), ...riffChunk('VP8 ', [1, 2, 3, 4, 5])]);
+  assert.deepEqual([...out.bytes], [...expected]);
+  assert.equal(tagged[20], 0x1c, 'the upload itself is left as sent');
+  assert.equal(stripWebp(riff(riffChunk('EXIF', [1, 2]))), null, 'a WebP with no picture is refused');
 });
