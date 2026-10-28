@@ -121,7 +121,7 @@ Ramp Procurement runs 15 seconds. Ramp Procurement's frames are the frames
 of the transcreate runs `kevin-asset-1` (Japanese) and `kevin-es-asset-1`
 (Spanish), paired with the original by frame index. Since 2026-10-27 the
 Databricks copies show the transcreate runs' whole-video checkpoints How Do
-You Genie g22, Agent Memory g16 (its final), Teach AI g13 (its final) and
+You Genie g27, Agent Memory g16 (its final), Teach AI g13 (its final) and
 Databricks g25, the newest of a run still in progress, each paired with its
 original by frame index.
 

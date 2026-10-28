@@ -90,7 +90,7 @@ export const DATABRICKS_OWNER = 'Databricks';
 /**
  * The four Databricks videos in the grid's column order, each 1280 by 720 in Japanese and 1280 by 1440 stacked, with
  * the original's sound. The Japanese comes from the transcreate runs' whole-video checkpoints of 2026-10-27: How Do
- * You Genie g22, Agent Memory g16 (its final), Teach AI g13 (its final) and Databricks g25, the newest of a run still
+ * You Genie g27, Agent Memory g16 (its final), Teach AI g13 (its final) and Databricks g25, the newest of a run still
  * in progress.
  */
 export const DATABRICKS: readonly DatabricksVideo[] = [
