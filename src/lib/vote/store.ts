@@ -3,8 +3,10 @@
    overwrite caching can never show a stale vote. Only a decision's meta,
    an option's meta and an option's file are replaced, and those are read
    with useCache: false. Every list() page is read. Write-once bodies are
-   kept in memory for good; the decision list and each decision's options
-   for CACHE_MS per instance, cleared by this instance's writes.
+   kept in memory for good; the decision list, each decision's options and
+   each signed-in voter's record for CACHE_MS per instance, cleared by this
+   instance's writes. Each of those is one read in flight, so a burst of
+   requests on a cold instance shares one list.
 
    Layout under the namespace N: voters/, devices/ and excluded/ are global;
    decisions/<id>/ holds meta.json, options/<key>.json and its file,
@@ -198,14 +200,39 @@ function stringList(raw: unknown): string[] | null {
 /* ------------------------------------------------------------------ */
 /* caches                                                              */
 
-let decisionsCache: { at: number; ns: string; value: DecisionMeta[] } | null = null;
-const registryCache = new Map<string, { at: number; value: Registry }>();
+/* a read kept from the moment it starts, so callers that arrive while it runs share it */
+type Kept<T> = { at: number; value: Promise<T> };
+
+/* starts a read and keeps it under `slot`; a read that fails, or whose value `keepIf` refuses, is dropped, so the next caller reads again */
+function keep<T>(cache: Map<string, Kept<T>>, slot: string, read: () => Promise<T>, keepIf: (value: T) => boolean = () => true): Promise<T> {
+  const entry: Kept<T> = { at: Date.now(), value: read() };
+  cache.set(slot, entry);
+  const drop = () => {
+    if (cache.get(slot) === entry) cache.delete(slot);
+  };
+  entry.value.then((value) => {
+    if (!keepIf(value)) drop();
+  }, drop);
+  return entry.value;
+}
+
+function kept<T>(cache: Map<string, Kept<T>>, slot: string, ms: number): Promise<T> | null {
+  const entry = cache.get(slot);
+  return entry && Date.now() - entry.at < ms ? entry.value : null;
+}
+
+/* by namespace */
+const decisionsCache = new Map<string, Kept<DecisionMeta[]>>();
+/* by namespace and decision id */
+const registryCache = new Map<string, Kept<Registry>>();
+/* by voter pathname */
+const voterCache = new Map<string, Kept<VoterRecord | null>>();
 /* the list is read again for an id it lacks at most this often, so a stream of unknown ids costs one list */
 const RELIST_MS = 5_000;
 
 /** Drops this instance's copy of the decision list and of one decision's options (every decision's without an id). */
 export function invalidate(decisionId?: string): void {
-  decisionsCache = null;
+  decisionsCache.clear();
   if (decisionId === undefined) registryCache.clear();
   else registryCache.delete(`${namespace()}:${decisionId}`);
 }
@@ -218,18 +245,18 @@ async function readDecision(id: string): Promise<DecisionMeta | null> {
 }
 
 /** Every decision with a readable meta.json, any status, by order, then age, then id. */
-export async function decisions(fresh = false): Promise<DecisionMeta[]> {
+export function decisions(fresh = false): Promise<DecisionMeta[]> {
   const ns = namespace();
-  if (!fresh && decisionsCache && decisionsCache.ns === ns && Date.now() - decisionsCache.at < CACHE_MS) {
-    return decisionsCache.value;
-  }
-  const ids = (await listFolders(pathnames.decisions(ns)))
-    .map((folder) => parseDecisionFolder(ns, folder))
-    .filter((id): id is string => id !== null && isDecisionId(id));
-  const metas = await mapLimit(ids, 8, readDecision);
-  const value = sortDecisions(metas.filter((meta): meta is DecisionMeta => meta !== null));
-  decisionsCache = { at: Date.now(), ns, value };
-  return value;
+  return (
+    (!fresh && kept(decisionsCache, ns, CACHE_MS)) ||
+    keep(decisionsCache, ns, async () => {
+      const ids = (await listFolders(pathnames.decisions(ns)))
+        .map((folder) => parseDecisionFolder(ns, folder))
+        .filter((id): id is string => id !== null && isDecisionId(id));
+      const metas = await mapLimit(ids, 8, readDecision);
+      return sortDecisions(metas.filter((meta): meta is DecisionMeta => meta !== null));
+    })
+  );
 }
 
 /**
@@ -243,7 +270,7 @@ export async function decision(id: string, fresh = false): Promise<DecisionMeta 
   if (fresh) return readDecision(id);
   const listed = (await decisions()).find((meta) => meta.id === id);
   if (listed) return listed;
-  if (decisionsCache && Date.now() - decisionsCache.at < RELIST_MS) return null;
+  if (kept(decisionsCache, namespace(), RELIST_MS)) return null;
   return (await decisions(true)).find((meta) => meta.id === id) ?? null;
 }
 
@@ -285,11 +312,13 @@ function writeOptionMeta(id: string, key: string, meta: OptionMeta): Promise<voi
  * included, by order, then age, then key. A key with files of two types
  * takes the newest.
  */
-export async function registry(id: string, fresh = false): Promise<Registry> {
+export function registry(id: string, fresh = false): Promise<Registry> {
+  const slot = `${namespace()}:${id}`;
+  return (!fresh && kept(registryCache, slot, CACHE_MS)) || keep(registryCache, slot, () => readRegistry(id));
+}
+
+async function readRegistry(id: string): Promise<Registry> {
   const ns = namespace();
-  const slot = `${ns}:${id}`;
-  const cached = registryCache.get(slot);
-  if (!fresh && cached && Date.now() - cached.at < CACHE_MS) return cached.value;
   const [listed, hidden] = await Promise.all([listAll(pathnames.options(ns, id)), listAll(pathnames.hidden(ns, id))]);
   const metas = new Set<string>();
   const files = new Map<string, { file: Listed; ext: FileExt }>();
@@ -322,15 +351,12 @@ export async function registry(id: string, fresh = false): Promise<Registry> {
     };
   });
   options.sort((a, b) => a.order - b.order || a.addedAt.localeCompare(b.addedAt) || a.key.localeCompare(b.key));
-  const value = { options, byKey: new Map(options.map((option) => [option.key, option])) };
-  registryCache.set(slot, { at: Date.now(), value });
-  return value;
+  return { options, byKey: new Map(options.map((option) => [option.key, option])) };
 }
 
 /** A decision's options, listed again past the cache only when this instance has not listed them within `ms`. */
 export function registryWithin(id: string, ms: number): Promise<Registry> {
-  const cached = registryCache.get(`${namespace()}:${id}`);
-  return registry(id, !(cached && Date.now() - cached.at < ms));
+  return registry(id, !kept(registryCache, `${namespace()}:${id}`, ms));
 }
 
 /* every file of one key, whatever its type */
@@ -425,15 +451,26 @@ function parseVoter(raw: unknown): VoterRecord | null {
   return { voterId: v.voterId, email: v.email, domain: v.domain, createdAt: typeof v.createdAt === 'string' ? v.createdAt : '' };
 }
 
-export async function getVoter(voterId: string): Promise<VoterRecord | null> {
-  return readOnce(pathnames.voter(namespace(), voterId), parseVoter);
+/**
+ * A signed-in voter's record, read past the cache at most every CACHE_MS
+ * per instance, so a record deleted from the store ends that voter's
+ * session within CACHE_MS. A missing record is not kept: the next request
+ * reads again, so a voter who signs in again is found at once.
+ */
+export function getVoter(voterId: string): Promise<VoterRecord | null> {
+  const pathname = pathnames.voter(namespace(), voterId);
+  return (
+    kept(voterCache, pathname, CACHE_MS) ||
+    keep(voterCache, pathname, async () => parseVoter(await readJson(pathname)), (voter) => voter !== null)
+  );
 }
 
-/** Writes the voter once; an existing record stands. */
+/** Writes the voter's record unless the store holds one; an existing record stands. Every sign-in asks the store, never this instance's copy. */
 export async function ensureVoter(record: VoterRecord): Promise<void> {
   const pathname = pathnames.voter(namespace(), record.voterId);
-  if (bodies.has(pathname)) return;
-  if (await putOnce(pathname, JSON.stringify(record), 'application/json')) bodies.set(pathname, record);
+  const written = await putOnce(pathname, JSON.stringify(record), 'application/json');
+  voterCache.delete(pathname);
+  if (written) keep(voterCache, pathname, async () => record);
 }
 
 export async function allVoters(): Promise<VoterRecord[]> {
@@ -441,7 +478,8 @@ export async function allVoters(): Promise<VoterRecord[]> {
   const ids = (await listAll(pathnames.voters(ns)))
     .map((blob) => parseMarkerPath(ns, blob.pathname, 'voters'))
     .filter((id): id is string => id !== null);
-  const voters = await mapLimit(ids, 16, (id) => getVoter(id));
+  /* the list names the voters that exist, so each record is read once for the life of the instance */
+  const voters = await mapLimit(ids, 16, (id) => readOnce(pathnames.voter(ns, id), parseVoter));
   return voters.filter((voter): voter is VoterRecord => voter !== null);
 }
 

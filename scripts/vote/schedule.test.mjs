@@ -1,9 +1,9 @@
 // Tests for src/lib/vote/schedule.ts: every option reaches its target
 // number of matchups per voter for 2 to 16 options, a new option is
-// scheduled first for a voter who had finished, progress never runs below
-// what is done, a decision's own appearances setting, and the likes step,
-// which a decision with likes off skips. Loaded through Node's type
-// stripping.
+// scheduled first for a voter who had finished, the progress total holds
+// from the first matchup to the last whatever the ratings do, a decision's
+// own appearances setting, and the likes step, which a decision with likes
+// off skips. Loaded through Node's type stripping.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
@@ -166,4 +166,63 @@ test('a new option after the likes step asks for the matchups, then the likes ag
   assert.deepEqual(standing({ sched: s, keys: grown, latest, likes: true }), { needsLikes: false, complete: false });
   const { final: after } = runVoter('again', grown, votes);
   assert.deepEqual(standing({ sched: after, keys: grown, latest, likes: true }), { needsLikes: true, complete: false });
+});
+
+/* a voter answers every pair, the ratings drifting between answers as other votes come in; returns every total shown */
+function totalsOf(voterId, keys, votes, ratingsAt) {
+  const totals = [];
+  for (let step = 0; step < 1000; step += 1) {
+    const s = schedule({ voterId, keys, votes, ratings: ratingsAt(step) });
+    totals.push(s.progress.total);
+    if (!s.pair) return { totals, votes };
+    votes = [...votes, { winner: s.pair.left, loser: s.pair.right }];
+  }
+  throw new Error('the schedule did not finish');
+}
+
+const drifting = (keys, seed) => (step) =>
+  new Map(keys.map((key, i) => [key, 1000 + (((i + 1) * 7919 + seed * 104729 + step * 31 * (i + 3)) % 241) - 120]));
+
+test('the progress total holds from the first matchup to the last while the ratings drift', () => {
+  for (let n = 2; n <= 20; n += 1) {
+    const keys = keysOf(n);
+    for (let seed = 0; seed < 12; seed += 1) {
+      const { totals, votes } = totalsOf(`drift-${seed}`, keys, [], drifting(keys, seed));
+      assert.equal(new Set(totals).size, 1, `${n} options, seed ${seed}: totals ${totals.join(' ')}`);
+      assert.equal(totals[0], votes.length);
+    }
+  }
+});
+
+test('the total does not depend on the ratings, so the hub and the ballot agree', () => {
+  for (let n = 3; n <= 20; n += 1) {
+    const keys = keysOf(n);
+    for (let seed = 0; seed < 8; seed += 1) {
+      const rated = schedule({ voterId: `agree-${seed}`, keys, votes: [], ratings: drifting(keys, seed)(0) });
+      const bare = schedule({ voterId: `agree-${seed}`, keys, votes: [] });
+      assert.deepEqual(rated.progress, bare.progress);
+    }
+  }
+});
+
+test('a lone option added to a finished decision keeps one total through its matchups', () => {
+  const keys = keysOf(4);
+  const { votes } = runVoter('lone', keys);
+  assert.equal(votes.length, 6);
+  const grown = [...keys, 'fresh'];
+  const { totals, votes: after } = totalsOf('lone', grown, votes, drifting(grown, 1));
+  /* the new option meets three options that are already at the target: three matchups, not two */
+  assert.deepEqual(totals, [9, 9, 9, 9]);
+  assert.equal(after.length, 9);
+});
+
+test('two options added to a finished decision keep one total through their matchups', () => {
+  for (const n of [4, 6, 9]) {
+    const keys = keysOf(n);
+    const { votes } = runVoter(`two-${n}`, keys);
+    const grown = [...keys, 'fresh-a', 'fresh-b'];
+    const { totals, votes: after } = totalsOf(`two-${n}`, grown, votes, drifting(grown, n));
+    assert.equal(new Set(totals).size, 1, `${n} options: totals ${totals.join(' ')}`);
+    assert.equal(totals[0], after.length);
+  }
 });

@@ -18,6 +18,7 @@ function decisionRoute(id: string) {
     title: PAGE_NAMES.vote.name,
     kind: 'page',
     description: 'One team vote: its options compared two at a time, then every option the voter likes, ranked by Elo once done.',
+    card: false,
   });
 }
 

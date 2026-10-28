@@ -16,6 +16,7 @@ function adminRoute(id: string) {
     title: PAGE_NAMES.voteAdmin.name,
     kind: 'page',
     description: 'The admin panel of one team vote: its settings, its options, its voters and their devices, the head-to-head matrix and the export.',
+    card: false,
   });
 }
 

@@ -3,9 +3,11 @@
    at the other options); the option furthest below it goes first, against
    an unvoted partner with the fewest matchups, then the closest global Elo.
    A new option starts at zero for everyone, so returning voters get its
-   matchups first. Ties break on a stable per-voter hash, so voters see
-   different orders. Self-contained, so node --test loads it directly: the
-   caller passes the ratings in. */
+   matchups first. The progress total is the matchups done plus the ones
+   the schedule would still ask, which the ratings never change. Ties break
+   on a stable per-voter hash, so voters see different orders.
+   Self-contained, so node --test loads it directly: the caller passes the
+   ratings in. */
 
 export type ScheduleVote = { winner: string; loser: string };
 export type Pair = { left: string; right: string };
@@ -46,6 +48,9 @@ function compare(a: string, b: string): number {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
+/** How many of the partners nearest in Elo are tried before the plan's own; each try runs the plan ahead once. */
+const CLOSEST = 3;
+
 export function appearanceTarget(count: number, appearances = 3): number {
   return Math.max(0, Math.min(appearances, count - 1));
 }
@@ -69,38 +74,71 @@ export function schedule(input: ScheduleInput): Schedule {
     for (const key of id.split('|')) appearances.set(key, (appearances.get(key) ?? 0) + 1);
   }
   const target = appearanceTarget(keys.length, input.appearances);
-  const seen = (key: string) => appearances.get(key) ?? 0;
-  const deficit = keys.reduce((sum, key) => sum + Math.max(0, target - seen(key)), 0);
-  const progress = { done: voted.size, total: voted.size + Math.ceil(deficit / 2) };
-  const rating = (key: string) => input.ratings?.get(key) ?? 1000;
-  const tie = (key: string) => hash32(`${voterId}:${key}`);
+  const hashes = new Map(keys.map((key) => [key, hash32(`${voterId}:${key}`)]));
+  const tie = (key: string) => hashes.get(key) ?? 0;
 
-  const open = keys
-    .filter((key) => seen(key) < target)
-    .sort((a, b) => seen(a) - seen(b) || tie(a) - tie(b) || compare(a, b));
-  for (const a of open) {
-    const partners = keys.filter((b) => b !== a && !voted.has(pairKey(a, b)));
-    if (!partners.length) continue;
-    const base = rating(a);
-    partners.sort(
-      (x, y) =>
-        seen(x) - seen(y) ||
-        Math.abs(rating(x) - base) - Math.abs(rating(y) - base) ||
-        tie(x) - tie(y) ||
-        compare(x, y)
-    );
-    const b = partners[0] as string;
-    const [low, high] = a < b ? [a, b] : [b, a];
-    const flip = (hash32(`${voterId}:${low}|${high}`) & 1) === 1;
-    return {
-      pair: flip ? { left: high, right: low } : { left: low, right: high },
-      progress,
-      target,
-      appearances,
-    };
+  /* the option to place next, fewest matchups first, then by hash, with its unvoted partners */
+  const options = (taken: ReadonlySet<string>, count: ReadonlyMap<string, number>) => {
+    const seen = (key: string) => count.get(key) ?? 0;
+    const order = (x: string, y: string) => seen(x) - seen(y) || tie(x) - tie(y) || compare(x, y);
+    for (const a of keys.filter((key) => seen(key) < target).sort(order)) {
+      const partners = keys.filter((b) => b !== a && !taken.has(pairKey(a, b)));
+      if (partners.length) return { a, partners, seen, order };
+    }
+    return null;
+  };
+  type Options = NonNullable<ReturnType<typeof options>>;
+  /* the partner the plan takes: fewest matchups, then by hash */
+  const planned = ({ a, partners, order }: Options): Pair => ({
+    left: a,
+    right: partners.reduce((best, key) => (order(key, best) < 0 ? key : best)),
+  });
+
+  /* how many matchups the plan still asks after `step` */
+  const ahead = (step: Pair): number => {
+    const taken = new Set(voted);
+    const count = new Map(appearances);
+    let steps = 0;
+    for (let next: Pair | null = step; next; steps += 1) {
+      taken.add(pairKey(next.left, next.right));
+      for (const key of [next.left, next.right]) count.set(key, (count.get(key) ?? 0) + 1);
+      const more = options(taken, count);
+      next = more ? planned(more) : null;
+    }
+    return steps - 1;
+  };
+
+  const first = options(voted, appearances);
+  if (!first) {
+    /* an option with no unvoted partner counts as done, so a finished voter's bar is full */
+    return { pair: null, progress: { done: voted.size, total: voted.size }, target, appearances };
   }
-  /* an option with no unvoted partner counts as done, so a finished voter's bar is full */
-  return { pair: null, progress: { done: voted.size, total: voted.size }, target, appearances };
+  /* The total counts the matchups the plan still asks, so it holds while
+     the voter answers, whatever the ratings do. Among the partners with the
+     fewest matchups, the nearest in global Elo replaces the plan's partner
+     when it adds no matchup to the plan; the CLOSEST nearest are tried. */
+  const plan = planned(first);
+  const remaining = 1 + ahead(plan);
+  let b = plan.right;
+  if (input.ratings) {
+    const rating = (key: string) => input.ratings?.get(key) ?? 1000;
+    const base = rating(first.a);
+    const fewest = first.seen(plan.right);
+    const closest = first.partners
+      .filter((key) => first.seen(key) === fewest)
+      .sort((x, y) => Math.abs(rating(x) - base) - Math.abs(rating(y) - base) || tie(x) - tie(y) || compare(x, y))
+      .slice(0, CLOSEST);
+    b = closest.find((key) => key === plan.right || ahead({ left: first.a, right: key }) === remaining - 1) ?? plan.right;
+  }
+  const a = first.a;
+  const [low, high] = a < b ? [a, b] : [b, a];
+  const flip = (hash32(`${voterId}:${low}|${high}`) & 1) === 1;
+  return {
+    pair: flip ? { left: high, right: low } : { left: low, right: high },
+    progress: { done: voted.size, total: voted.size + remaining },
+    target,
+    appearances,
+  };
 }
 
 /** A voter owes the likes step when their latest record has not seen every active option. */

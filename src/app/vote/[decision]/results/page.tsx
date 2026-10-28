@@ -17,6 +17,7 @@ function resultsRoute(id: string) {
     title: PAGE_NAMES.voteResults.name,
     kind: 'page',
     description: 'The ranking of one team vote: Elo ratings from the head-to-head votes, each record, and how many voters liked each option.',
+    card: false,
   });
 }
 

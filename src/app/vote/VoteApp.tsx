@@ -8,7 +8,7 @@ import type { ReactNode, RefObject } from 'react';
 import { Icon } from '@/components/viewer/icons';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
-import type { DecisionHead, VoteOption, VoteState } from '@/lib/vote/types';
+import type { DecisionHead, VoteState } from '@/lib/vote/types';
 
 import { decisionPath, voteApi } from './api';
 import EmailForm from './EmailForm';
@@ -35,17 +35,31 @@ function stepOf(state: VoteState | null): Step {
 }
 
 /* Every option file is fetched once, when a state first names it, so the
-   next pair is in the cache before it is shown. A text option has none. */
-const preloaded = new Set<string>();
+   next pair is in the cache before it is shown. The pair on screen goes
+   first and alone, and the rest follow once it has arrived, so the first
+   pair never waits behind every other file. A text option has none. */
+const preloaded = new Map<string, Promise<void>>();
 
-function preload(options: readonly VoteOption[]) {
-  for (const { src } of options) {
-    if (!src || preloaded.has(src)) continue;
-    preloaded.add(src);
-    const image = new Image();
-    image.decoding = 'async';
-    image.src = src;
-  }
+function fetchFile(src: string, priority: 'high' | 'low'): Promise<void> {
+  const known = preloaded.get(src);
+  if (known) return known;
+  const image = new Image();
+  image.decoding = 'async';
+  image.fetchPriority = priority;
+  const done = new Promise<void>((resolve) => {
+    image.onload = () => resolve();
+    image.onerror = () => resolve();
+  });
+  image.src = src;
+  preloaded.set(src, done);
+  return done;
+}
+
+function preload(state: VoteState) {
+  const shown = state.pair ? [state.pair.left.src, state.pair.right.src].filter(Boolean) : [];
+  void Promise.all(shown.map((src) => fetchFile(src, 'high'))).then(() => {
+    for (const { src } of state.options) if (src) void fetchFile(src, 'low');
+  });
 }
 
 /** The pieces every step reads from the ballot. */
@@ -92,7 +106,7 @@ function Ballot({ initial, at, id, title }: { initial: VoteState | null; at: num
   const shownStep = useRef<Step>(step);
 
   useMountEffect(() => {
-    if (initial) preload(initial.options);
+    if (initial) preload(initial);
   });
   useReread(at, () => void refresh());
 
@@ -107,7 +121,7 @@ function Ballot({ initial, at, id, title }: { initial: VoteState | null; at: num
   );
 
   function apply(next: VoteState) {
-    preload(next.options);
+    preload(next);
     setState(next);
   }
 

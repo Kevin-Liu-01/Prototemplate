@@ -202,7 +202,7 @@ export async function hubView(voterId: string, fresh = false): Promise<HubState 
       store.voterVotes(meta.id, voterId),
       meta.likes ? store.latestLikes(meta.id, voterId) : Promise.resolve(null),
     ]);
-    /* the hub shows progress only, so the pair's ratings are not read */
+    /* the hub shows progress only, and the ratings never change the total, so they are not read */
     return hubRow(contextOf({ voter, meta, options: registry.options, votes, latest, ratings: new Map(), admin: false }));
   });
   return { voter: { email: voter.email, domain: voter.domain }, decisions: rows };

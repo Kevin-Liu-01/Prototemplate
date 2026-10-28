@@ -57,6 +57,8 @@ export type SeoRouteInput = {
   authors?: readonly string[];
   /** an override for the generated card */
   image?: SeoImage;
+  /** false names no social card (no og:image and no X image), for a private page that unfurls as text alone */
+  card?: false;
   /** the page's Markdown twin path, advertised as its text/markdown alternate */
   markdown?: string;
   /** an RSS feed the page advertises (absolute URL) */
@@ -115,6 +117,8 @@ export function seoRoute(input: SeoRouteInput): SeoRoute {
   const canonical = input.canonical ?? policy.canonical;
   const fullTitle = seoTitle(input.title, input.section);
   const ogTitle = input.title;
+  /* a page that opts out has no card at all, and the root's card is not inherited: Next replaces openGraph whole */
+  const card = input.card !== false;
 
   const image: SeoImage = input.image
     ? { ...input.image, url: absolute(input.image.url) }
@@ -150,15 +154,17 @@ export function seoRoute(input: SeoRouteInput): SeoRoute {
       siteName: SITE_NAME,
       locale: 'en_US',
       type: input.kind === 'article' || input.kind === 'skill' || input.kind === 'post' ? 'article' : 'website',
-      images: [{ url: image.url, width: image.width, height: image.height, alt: image.alt, ...(image.type ? { type: image.type } : {}) }],
+      ...(card
+        ? { images: [{ url: image.url, width: image.width, height: image.height, alt: image.alt, ...(image.type ? { type: image.type } : {}) }] }
+        : {}),
     },
     twitter: {
-      card: 'summary_large_image',
+      card: card ? 'summary_large_image' : 'summary',
       site: TWITTER_SITE,
       creator: TWITTER_CREATOR,
       title: ogTitle,
       description: input.description,
-      images: [{ url: image.url, alt: image.alt }],
+      ...(card ? { images: [{ url: image.url, alt: image.alt }] } : {}),
     },
     icons: gtIcon(path) ? { icon: [GT_ICON] } : HUB_ICONS,
   };

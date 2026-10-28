@@ -10,6 +10,7 @@ const route = seoRoute({
   title: PAGE_NAMES.voteAdmin.name,
   kind: 'page',
   description: 'The admin panel of the team votes: every decision with its status, kind and counts, and the form that starts a new one.',
+  card: false,
 });
 
 export const metadata = route.metadata;
