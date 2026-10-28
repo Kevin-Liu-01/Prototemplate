@@ -1,0 +1,722 @@
+/* The vote pages (/vote, /vote/results, /vote/admin). A standalone page
+   off the viewer shell, drawn from the shell's tokens (tokens.css): Inter
+   through the type tokens, ink and paper in both themes, the three line
+   roles, the radius roles. Every logo is a plate: a 1px frame at the card
+   corner with the mark drawn by mask in the ink color, inside a padding
+   that is a fixed share of the plate's width, so every mark gets the same
+   room. */
+
+.vt {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+  font-feature-settings: var(--pt-ff-text);
+  font-optical-sizing: auto;
+  font-weight: var(--pt-w-text);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+}
+
+.vt :is(b, strong) {
+  font-weight: var(--pt-w-strong);
+}
+
+.vt code {
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-meta);
+}
+
+.vt-theme {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+/* the column: one width per page, a phone gutter of 16px */
+.vt-col {
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+  padding: 72px 24px 72px;
+}
+
+.vt-col.is-narrow {
+  max-width: 560px;
+}
+
+.vt-col.is-wide {
+  max-width: var(--pt-rail);
+}
+
+/* ---------- heads ---------- */
+
+.vt-head {
+  display: grid;
+  gap: var(--pt-head-gap);
+}
+
+.vt-col > .vt-head {
+  margin-bottom: 28px;
+}
+
+.vt-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+/* the page's h1: the display features, the section-title step */
+.vt-title {
+  font-size: var(--pt-d2);
+  line-height: var(--pt-d2-lh);
+  letter-spacing: var(--pt-d2-track);
+  font-weight: var(--pt-w-display);
+  font-feature-settings: var(--pt-ff-display);
+  text-wrap: balance;
+}
+
+.vt-title:focus,
+.vt-title:focus-visible {
+  outline: none;
+}
+
+.vt-h2 {
+  font-size: var(--pt-d3);
+  line-height: var(--pt-d3-lh);
+  letter-spacing: var(--pt-d3-track);
+  font-weight: var(--pt-w-display);
+  font-feature-settings: var(--pt-ff-display);
+  margin-bottom: 16px;
+}
+
+.vt-lead {
+  color: var(--pt-ink-2);
+  font-size: var(--pt-t-lead);
+  line-height: var(--pt-t-lead-lh);
+  max-width: var(--pt-measure-lead);
+  font-variant-numeric: tabular-nums;
+}
+
+.vt-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- controls ---------- */
+
+.vt-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--pt-ink);
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-ink);
+  color: var(--pt-paper);
+  font-family: var(--pt-text);
+  font-feature-settings: var(--pt-ff-text);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--pt-dur-fast) var(--pt-ease-out),
+    background-color var(--pt-dur-fast) var(--pt-ease-out),
+    opacity var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.vt-btn:not(:disabled):hover {
+  background: transparent;
+  color: var(--pt-ink);
+}
+
+.vt-btn:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+/* a form's button waits for hydration looking ready, so the first paint does not change */
+.vt-btn:disabled:not([data-ready='false']) {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* the shell's button (.pt-ib) as an outlined chip, a link or a row action */
+.vt-chip {
+  padding: 0 12px;
+  border-color: var(--pt-hair);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.vt-chip:not(:disabled):hover {
+  border-color: var(--pt-ink-2);
+}
+
+.vt-chip.is-on {
+  border-color: var(--pt-ink);
+}
+
+.vt-chip:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.vt-chip-n {
+  color: var(--pt-titanium);
+}
+
+.vt-chip.is-on .vt-chip-n {
+  color: var(--pt-ink-2);
+}
+
+.vt-input {
+  appearance: none;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+  font-feature-settings: var(--pt-ff-text);
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.vt-input::placeholder {
+  color: var(--pt-titanium);
+}
+
+.vt-input:hover {
+  border-color: var(--pt-ink-2);
+}
+
+.vt-input:focus {
+  outline: none;
+  border-color: var(--pt-ink);
+}
+
+.vt-form {
+  display: flex;
+  gap: 8px;
+}
+
+.vt-form .vt-input {
+  flex: 1 1 auto;
+}
+
+/* one line held for a sentence, so an error never moves the page */
+.vt-error {
+  min-height: calc(var(--pt-t-small) * var(--pt-t-small-lh));
+  margin-top: 12px;
+  color: var(--pt-ink);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+}
+
+.vt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.vt-head + .vt-actions {
+  margin-top: 0;
+}
+
+.vt-who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-top: 28px;
+  color: var(--pt-ink-2);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+
+/* ---------- plates ---------- */
+
+.vt-plate {
+  appearance: none;
+  position: relative;
+  display: grid;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 12%;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background: transparent;
+  color: var(--pt-ink);
+  cursor: pointer;
+  transition:
+    border-color var(--pt-dur-fast) var(--pt-ease-out),
+    background-color var(--pt-dur-fast) var(--pt-ease-out),
+    opacity var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+@media (hover: hover) {
+  button.vt-plate:not([aria-disabled='true']):hover {
+    border-color: var(--pt-ink);
+  }
+}
+
+.vt-plate:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 3px;
+}
+
+.vt-plate.is-chosen,
+.vt-plate[aria-pressed='true'] {
+  border-color: var(--pt-ink);
+  background: var(--pt-plate);
+}
+
+.vt-plate[aria-disabled='true'] {
+  cursor: default;
+}
+
+/* the mark: ink through the logo file, contained in the padding box. The
+   plate is a grid and the mark stretches to its content box: a percentage
+   height there resolves against the whole box in WebKit and makes the plate
+   square. */
+.vt-mark {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  background-color: currentColor;
+  -webkit-mask: var(--vt-src) center / contain no-repeat;
+  mask: var(--vt-src) center / contain no-repeat;
+}
+
+/* a plate that is a picture, not a control: in the tables and the matrix.
+   A fixed size takes a fixed padding, because a percentage padding reads
+   the parent's width, not the plate's. */
+.vt-plate.is-static {
+  cursor: default;
+  border-color: var(--pt-hair-soft);
+}
+
+.vt-plate.is-sm {
+  width: 72px;
+  padding: 8px;
+  flex: 0 0 auto;
+}
+
+.vt-plate.is-xs {
+  width: 40px;
+  padding: 4px;
+  flex: 0 0 auto;
+}
+
+/* the key that picks a plate; touch screens have no keys */
+.vt-key {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  color: var(--pt-titanium);
+  font-family: var(--pt-text);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-weight: var(--pt-w-label);
+}
+
+@media (hover: none) {
+  .vt-key {
+    display: none;
+  }
+}
+
+/* the like mark: an empty ring, filled with a check once picked */
+.vt-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-round);
+  color: transparent;
+  transition:
+    background-color var(--pt-dur-fast) var(--pt-ease-out),
+    border-color var(--pt-dur-fast) var(--pt-ease-out),
+    color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.vt-plate[aria-pressed='true'] .vt-check {
+  border-color: var(--pt-ink);
+  background: var(--pt-ink);
+  color: var(--pt-paper);
+}
+
+/* ---------- the matchup ---------- */
+
+.vt-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.vt-progress-track {
+  flex: 1 1 auto;
+  height: 2px;
+  overflow: hidden;
+  background: var(--pt-hair-soft);
+}
+
+.vt-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--pt-ink);
+  transform: scaleX(var(--vt-p, 0));
+  transform-origin: left center;
+  transition: transform var(--pt-dur-slide) var(--pt-ease);
+}
+
+.vt-progress-count {
+  flex: 0 0 auto;
+  color: var(--pt-ink-2);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-variant-numeric: tabular-nums;
+}
+
+.vt-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.vt-pair.is-busy .vt-plate:not(.is-chosen) {
+  opacity: 0.4;
+}
+
+/* ---------- the likes ---------- */
+
+.vt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* ---------- tables: results and admin ---------- */
+
+.vt-scroll {
+  position: relative;
+  max-width: 100%;
+}
+
+.vt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  font-variant-numeric: tabular-nums;
+}
+
+.vt-table th {
+  padding: 0 16px 10px 0;
+  border-bottom: 1px solid var(--pt-hair);
+  color: var(--pt-ink-2);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.vt-table td {
+  padding: 10px 16px 10px 0;
+  border-bottom: 1px solid var(--pt-hair-soft);
+  vertical-align: middle;
+}
+
+.vt-table :is(th, td):last-child {
+  padding-right: 0;
+}
+
+.vt-table .is-num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vt-named {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.vt-name {
+  font-weight: var(--pt-w-label);
+  letter-spacing: var(--pt-track-label);
+}
+
+.vt-rank-n {
+  width: 2.5em;
+  color: var(--pt-ink-2);
+}
+
+.vt-rank tbody tr.is-provisional {
+  opacity: 0.5;
+}
+
+.vt-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+/* ---------- admin ---------- */
+
+.vt-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.vt-sec {
+  margin-top: 40px;
+}
+
+/* the admin's error floats over the foot of the screen, so the panel
+   holds no empty line for it */
+.vt-error.is-float {
+  position: fixed;
+  z-index: 2;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  max-width: 560px;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 10px 14px;
+  border: 1px solid var(--pt-ink);
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-paper);
+}
+
+.vt-error.is-float:empty {
+  display: none;
+}
+
+.vt-error.is-float + .vt-sec {
+  margin-top: 12px;
+}
+
+.vt-td-plate {
+  width: 88px;
+}
+
+.vt-td-tools {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.vt-td-tools .vt-chip + .vt-chip {
+  margin-left: 4px;
+}
+
+.vt-td-email,
+.vt-td-time {
+  white-space: nowrap;
+}
+
+.vt-input.is-dense {
+  height: 32px;
+  padding: 0 10px;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+}
+
+.vt-table .vt-input.is-dense {
+  width: 100%;
+  min-width: 160px;
+}
+
+.vt-input.is-order,
+.vt-table .vt-input.is-order {
+  width: 84px;
+  min-width: 0;
+}
+
+.vt-table tr.is-hidden :is(.vt-plate, code, .vt-input, .is-num),
+.vt-table tr.is-excluded td:not(.vt-td-tools) {
+  opacity: 0.45;
+}
+
+.vt-yes {
+  display: inline-flex;
+  color: var(--pt-ink);
+}
+
+.vt-shared {
+  color: var(--pt-ink);
+  font-weight: var(--pt-w-label);
+}
+
+.vt-upload {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.vt-upload .vt-btn {
+  height: 32px;
+}
+
+.vt-file {
+  max-width: 260px;
+  color: var(--pt-ink-2);
+  font-family: var(--pt-text);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+}
+
+.vt-file::file-selector-button {
+  height: 32px;
+  margin-right: 10px;
+  padding: 0 12px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: transparent;
+  color: var(--pt-ink);
+  font-family: var(--pt-text);
+  font-size: var(--pt-t-small);
+  cursor: pointer;
+}
+
+.vt-file::file-selector-button:hover {
+  border-color: var(--pt-ink-2);
+}
+
+.vt-matrix {
+  border-collapse: collapse;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  font-variant-numeric: tabular-nums;
+}
+
+.vt-matrix :is(th, td) {
+  min-width: 52px;
+  height: 52px;
+  padding: 6px;
+  border: 1px solid var(--pt-hair-soft);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.vt-matrix thead th .vt-plate {
+  margin-inline: auto;
+}
+
+.vt-matrix tbody th {
+  padding-right: 16px;
+  text-align: left;
+  white-space: nowrap;
+  font-weight: var(--pt-w-text);
+}
+
+.vt-matrix thead td:first-child {
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+
+.vt-matrix .is-self {
+  background: var(--pt-plate);
+}
+
+.vt-matrix .is-zero {
+  color: var(--pt-titanium);
+}
+
+/* ---------- phones ---------- */
+
+@media (max-width: 640px) {
+  .vt-col {
+    padding: 64px 16px 56px;
+  }
+
+  .vt-theme {
+    right: 8px;
+  }
+
+  .vt-pair {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .vt-pair .vt-plate {
+    aspect-ratio: 3 / 2;
+  }
+
+  .vt-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .vt-plate.is-sm {
+    width: 52px;
+    padding: 6px;
+  }
+
+  .vt-named {
+    gap: 10px;
+  }
+
+  .vt-table th,
+  .vt-table td {
+    padding-right: 12px;
+  }
+
+  .vt-td-plate {
+    width: 64px;
+  }
+
+  /* 16px or more, so a phone never zooms into a field */
+  .vt-input.is-dense {
+    height: 40px;
+    font-size: var(--pt-t-body);
+    line-height: var(--pt-t-body-lh);
+  }
+
+  .vt-upload .vt-btn {
+    height: 40px;
+  }
+}

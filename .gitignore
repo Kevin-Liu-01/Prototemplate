@@ -142,3 +142,4 @@ deck/tmp
 !/motion/stills/partnership-globe/dither-lib.js
 !/motion/stills/partnership-globe/sheet.mjs
 !/motion/stills/partnership-globe/sweep.mjs
+.vercel

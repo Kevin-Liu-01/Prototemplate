@@ -109,12 +109,14 @@ test('every other /d/ page: noindex, follow, self canonical, not listed', () => 
 
 test('private pages and their subpages: noindex, nofollow, self canonical, not listed', () => {
   assert.ok(PRIVATE_PATHS.includes('/transcreate'));
-  for (const path of [...PRIVATE_PATHS, '/transcreate/videos', '/transcreate/databricks', '/transcreate/ramp', '/transcreate/credits']) {
+  assert.ok(PRIVATE_PATHS.includes('/vote'));
+  for (const path of [...PRIVATE_PATHS, '/transcreate/videos', '/transcreate/databricks', '/transcreate/ramp', '/transcreate/credits', '/vote/results', '/vote/admin']) {
     assert.deepEqual(policyFor(path), { index: false, follow: false, canonical: `${SITE_URL}${path}`, inSitemap: false }, path);
     assert.equal(isPrivatePath(path), true, path);
   }
   /* a page whose name only starts like a private page is a hub page; an off-site address is never private */
   assert.deepEqual(policyFor('/transcreated'), indexed('/transcreated'));
+  assert.deepEqual(policyFor('/voters'), indexed('/voters'));
   assert.equal(isPrivatePath('https://www.turboslide.com/home'), false);
 });
 

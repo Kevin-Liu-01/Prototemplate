@@ -43,8 +43,8 @@ export const MIRROR_PREFIX = '/d/production';
 /** The dashboard states under the mirror: they render states of the dashboard, which has no public page to point at. */
 export const MIRROR_WITHOUT_LIVE: readonly string[] = ['signin', 'onboarding', 'consent', 'device', 'cli'];
 
-/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos. */
-export const PRIVATE_PATHS: readonly string[] = ['/transcreate'];
+/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos, and /vote is the team's private vote. */
+export const PRIVATE_PATHS: readonly string[] = ['/transcreate', '/vote'];
 
 /** True for a private page or a page under one; false for anything that is not a pathname (an off-site address). */
 export function isPrivatePath(path: string): boolean {
