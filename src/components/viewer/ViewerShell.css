@@ -331,6 +331,15 @@ html[data-shell-sb='0'] .pt-viewer:not([data-settled]) > .pt-sb {
   .pt-viewer > .pt-sb:not(.is-overlay) {
     visibility: hidden;
   }
+
+  /* the skip link's hit box grows to 44px on a touch screen, centred above
+     the toolbar's hairline so its border never meets that line; its type stays */
+  .pt-skip {
+    top: calc((var(--pt-toolbar-h) - 1px - 44px) / 2);
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
