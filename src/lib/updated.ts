@@ -74,7 +74,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/docs/components/marks': { day: '2026-10-28', at: '2026-10-28T13:41:03-07:00', commit: '39b83a3', src: '43d769cf' },
   '/docs/components/grids-and-bentos': { day: '2026-10-25', at: '2026-10-25T14:50:46-07:00', commit: 'aa380eb', src: 'e2296b00' },
   '/docs/components/rails-and-bands': { day: '2026-10-26', at: '2026-10-26T09:08:16-07:00', commit: '744d0b7', src: 'c72e3d80' },
-  '/docs/components/shells': { day: '2026-10-29', at: '2026-10-29', commit: null, src: 'ce99a1bc' },
+  '/docs/components/shells': { day: '2026-10-29', at: '2026-10-29T11:34:22-07:00', commit: 'adcfba6', src: 'ce99a1bc' },
   '/docs/components/page-gallery': { day: '2026-10-28', at: '2026-10-28T13:41:03-07:00', commit: '39b83a3', src: '0cea942a' },
   '/docs/components/page-templates': { day: '2026-10-27', at: '2026-10-27T09:37:55-07:00', commit: '9252bdb', src: '4dfc6e50' },
   '/docs/components': { day: '2026-10-27', at: '2026-10-27T17:32:48-07:00', commit: '549e08f', src: 'c76c9873' },
