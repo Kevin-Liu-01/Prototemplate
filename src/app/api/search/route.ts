@@ -1,5 +1,6 @@
 import { createFromSource } from 'fumadocs-core/search/server';
 
+import { isLocked } from '@/lib/seo/policy';
 import { source } from '@/lib/source';
 
 /**
@@ -9,7 +10,11 @@ import { source } from '@/lib/source';
  * searches in the browser, so it needs no server at request time. For ten
  * pages that is the whole job; gt-cloud runs Pagefind after next build
  * because it indexes hundreds of pages in many locales (/docs/template).
+ * A locked page (src/lib/seo/policy.ts, LOCKED) is left out, since the
+ * file is public and holds each page's text.
  */
 export const revalidate = false;
 
-export const { staticGET: GET } = createFromSource(source);
+const unlocked = { ...source, getPages: (language?: string) => source.getPages(language).filter((page) => !isLocked(page.url)) };
+
+export const { staticGET: GET } = createFromSource(unlocked);

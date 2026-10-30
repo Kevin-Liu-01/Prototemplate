@@ -20,7 +20,7 @@ import type { PageUpdated } from '@/lib/page-updated';
 
 import { cardPath, OG_HEIGHT, OG_WIDTH } from './card-url';
 import { blogPosting, breadcrumbs, softwareSourceCode, techArticle } from './json-ld';
-import { normalizePath, policyFor, selfUrl } from './policy';
+import { isLocked, normalizePath, policyFor, selfUrl } from './policy';
 import { GT_ICON, HUB_ICONS, SITE_NAME, SITE_URL, TWITTER_CREATOR, TWITTER_SITE } from './site';
 
 import type { SeoKind, SeoSection } from './card-url';
@@ -117,8 +117,8 @@ export function seoRoute(input: SeoRouteInput): SeoRoute {
   const canonical = input.canonical ?? policy.canonical;
   const fullTitle = seoTitle(input.title, input.section);
   const ogTitle = input.title;
-  /* a page that opts out has no card at all, and the root's card is not inherited: Next replaces openGraph whole */
-  const card = input.card !== false;
+  /* a page that opts out has no card at all, and the root's card is not inherited: Next replaces openGraph whole; a locked page never has one */
+  const card = input.card !== false && !isLocked(path);
 
   const image: SeoImage = input.image
     ? { ...input.image, url: absolute(input.image.url) }

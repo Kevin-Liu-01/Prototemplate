@@ -1,5 +1,5 @@
 import { siteHref } from '@/components/book/links';
-import { SITE_URL, selfUrl } from '@/lib/seo/policy';
+import { isLocked, SITE_URL, selfUrl } from '@/lib/seo/policy';
 import { source } from '@/lib/source';
 import type { DocsPage } from '@/lib/source';
 
@@ -58,7 +58,7 @@ export async function docsMarkdown(page: DocsPage): Promise<string> {
   return twin(page.data.title, page.url, absoluteLinks(body), page.data.description);
 }
 
-/** Every docs page in the sidebar's order (content/docs/meta.json). */
+/** Every docs page in the sidebar's order (content/docs/meta.json), less any locked page (src/lib/seo/policy.ts, LOCKED), so no twin, /llms.txt line or /llms-full.txt text carries one. */
 export function docsPages(): DocsPage[] {
   const order: string[] = [];
   const walk = (nodes: ReturnType<typeof source.getPageTree>['children']) => {
@@ -72,5 +72,8 @@ export function docsPages(): DocsPage[] {
   };
   walk(source.getPageTree().children);
   const rank = (url: string) => (order.includes(url) ? order.indexOf(url) : order.length);
-  return [...source.getPages()].sort((a, b) => rank(a.url) - rank(b.url));
+  return source
+    .getPages()
+    .filter((page) => !isLocked(page.url))
+    .sort((a, b) => rank(a.url) - rank(b.url));
 }

@@ -4,6 +4,7 @@ import type { IconName } from '@/components/viewer/icons';
 import { BLOG_POSTS, BLOG_RELEASES } from '@/lib/blog-posts';
 import { formatDay } from '@/lib/dates';
 import { MOTION_FILMS, MOTION_SCRIPT_WORDS, MOTION_SECTIONS, MOTION_STATUS_LABEL, motionHref } from '@/lib/motion';
+import { isLocked } from '@/lib/seo/policy';
 import { SKILL_AREAS, SKILLS, skillHref } from '@/lib/skills';
 import { SITE_SURFACES } from '@/lib/surfaces';
 import type { Surface, SurfaceGroup } from '@/lib/surfaces';
@@ -841,7 +842,10 @@ const SEARCH_INDEX: readonly SearchEntry[] = [
   ...MOTION_RECORDS,
   ...TRANSCREATE_ROWS,
   ...SLIDES,
-].map((entry) => ({ ...entry, hay: hayOf(entry) }));
+]
+  /* a locked row (LOCKED in src/lib/seo/policy.ts) keeps its name and drops its words, so the public bundle says nothing of what it holds */
+  .map((entry) => (isLocked(entry.href) ? { ...entry, keywords: undefined } : entry))
+  .map((entry) => ({ ...entry, hay: hayOf(entry) }));
 
 /** Every term of the query, in order, has to appear somewhere in the row's words. */
 function searchMatches(entry: SearchEntry, query: string): boolean {

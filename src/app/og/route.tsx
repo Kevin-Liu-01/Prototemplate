@@ -4,6 +4,7 @@ import { ImageResponse } from 'next/og';
 
 import { CARD_FONTS, Card } from '@/lib/seo/card';
 import { OG_HEIGHT, OG_WIDTH, parseCard } from '@/lib/seo/card-url';
+import { isLocked } from '@/lib/seo/policy';
 
 /**
  * GET /og?v=&t=&s=&d=&k=&p=: the social card every head names, drawn by
@@ -45,6 +46,8 @@ async function captureFor(path: string, origin: string): Promise<string | undefi
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const card = parseCard(url.searchParams);
+  /* a locked page has no card (src/lib/seo/policy.ts, LOCKED) */
+  if (isLocked(card.path)) return new Response(null, { status: 404 });
   const [[display, text], capture] = await Promise.all([
     fonts,
     card.kind === 'direction' ? captureFor(card.path, url.origin) : Promise.resolve(undefined),
