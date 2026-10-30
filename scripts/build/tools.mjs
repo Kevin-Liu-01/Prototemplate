@@ -28,7 +28,7 @@ const MAX_SENTENCE = 280;
 
 /** The groups, in reading order, each with the script-name test that files a command under it. */
 const GROUPS = [
-  ['Site', (name) => ['dev', 'build', 'start'].includes(name)],
+  ['Site', (name) => ['dev', 'build', 'start'].includes(name) || name.startsWith('sync:')],
   ['Setup', (name) => name === 'doctor' || name === 'postinstall'],
   ['Lints', (name) => name.startsWith('lint:')],
   ['Tests', (name) => name.startsWith('test:')],
@@ -61,6 +61,7 @@ const ENVIRONMENT = [
   ['GT_CLOUD', 'A gt-cloud checkout, for the tools that compare with it (lint:copies notes).', 'none'],
   ['MOTION_DIR', 'The motion folder build:motion reads.', '`<repo>/motion`'],
   ['PT_DENYLIST', 'The private term list lint:public reads; skipped under VERCEL or CI.', 'none'],
+  ['LOCKED_BLOB_READ_WRITE_TOKEN', "The read-write token of the locked areas' own private Blob store, which sync:locked writes and the locked routes read.", 'none'],
 ];
 
 /** The first sentence of a file's opening comment (//, /* *\/, # or a Python docstring), or undefined. */

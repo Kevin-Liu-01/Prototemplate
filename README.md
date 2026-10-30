@@ -52,6 +52,7 @@ at each of them.
 - `/present`: the presenter, a full-screen walkthrough of the redesign with the first 16 prototypes live
 - `/archive`: the retired directions, each kept as a full-page capture with the commit that last held its code
 - `/llms.txt`, `/llms-full.txt` and `/AGENTS.md`: the site for agents, generated from the registries at build time
+- `/sign-in`: one access key field that opens the locked areas (`LOCKED` in `src/lib/seo/policy.ts`) for 30 days. A signed-out request for a locked page comes here, a signed-out request for a locked file answers 401, and a locked area stays out of the sitemap, the agent files and the search
 
 ## Run it
 

@@ -54,7 +54,15 @@ src/
     graphics/             the illustration catalogue, read from
                           graphics/build/manifest.json
     motion/               /motion and /motion/<slug>, from src/lib/motion.ts
-    api/try/fetch/        the one runtime function, behind the shipped /try
+    api/try/fetch/        a runtime function, behind the shipped /try
+    sign-in/, api/auth/   /sign-in and its route: an access key from
+                          PROTOTEMPLATE_ACCESS_KEYS opens the locked areas
+                          (LOCKED in src/lib/seo/policy.ts) for 30 days;
+                          src/lib/access.ts holds the checks, and src/proxy.ts
+                          and each locked route run them
+    raise/[[...path]]/    a locked area: its files, streamed from the
+                          locked areas' private Blob store, which
+                          scripts/locked/sync.mjs fills
     prototemplate.css     the pt grammar (index + craft chrome)
     globals.css           the four color tokens, the reset, the scrollbar,
                           the plate theme import and Tailwind's sources

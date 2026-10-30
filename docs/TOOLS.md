@@ -11,6 +11,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm build` | Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, builds the site with next build, then checks every prerendered head with lint:seo --built. | `node scripts/lint/public.mjs --keys && node scripts/lint/...` |
 | `pnpm dev` | Starts the dev server on port 3005. | `next dev --turbopack --port 3005` |
 | `pnpm start` | Serves the production build. | `next start` |
+| `pnpm sync:locked` | Uploads a locked area's files to the private Blob store under locked/\<area>/, where the area's route serves them to a signed-in session (src/app/raise/[[...path]]/route.ts for raise). | `scripts/locked/sync.mjs` |
 
 ## Setup
 
@@ -50,6 +51,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 
 | Command | What it does | Runs |
 | --- | --- | --- |
+| `pnpm test:access` | Tests for src/lib/access.ts and LOCKED in src/lib/seo/policy.ts, loaded through Node's type stripping: the environment failing closed, the key check, the session cookie (signed, tampered, expired, revoked), isLocked, the next-path guard, the gate's answers and the proxy's ... | `scripts/lint/access.test.mjs scripts/locked/sync.test.mjs` |
 | `pnpm test:copies` | Tests for scripts/lint/copies.mjs: node --test scripts/lint/copies.test.mjs (pnpm test:copies). | `scripts/lint/copies.test.mjs` |
 | `pnpm test:heads` | Tests for scripts/lint/heads.mjs: a passing and a failing fixture per static rule, and each live judge fed recorded geometry (the judges are pure functions over what collectHead measures, so no browser runs here). | `scripts/lint/heads.test.mjs` |
 | `pnpm test:marks` | Tests for the marks catalog (src/lib/marks.ts) against public/marks: every file a row names exists, every file under public/marks/dynamic has a row, every dynamic file is one path in currentColor on the canonical 256 unit header and at most 8 KB, the drawn box a row records is ... | `scripts/lint/marks.test.mjs scripts/lint/mark-file.test.mjs` |
@@ -148,3 +150,4 @@ Each tool reads its setting from a flag first, then the variable, then the defau
 | `GT_CLOUD` | A gt-cloud checkout, for the tools that compare with it (lint:copies notes). | none |
 | `MOTION_DIR` | The motion folder build:motion reads. | `<repo>/motion` |
 | `PT_DENYLIST` | The private term list lint:public reads; skipped under VERCEL or CI. | none |
+| `LOCKED_BLOB_READ_WRITE_TOKEN` | The read-write token of the locked areas' own private Blob store, which sync:locked writes and the locked routes read. | none |
