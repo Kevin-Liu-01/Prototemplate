@@ -145,6 +145,10 @@ const PAGES: readonly Surface[] = [
     ...internal('turboslide', 'Turboslide', 'https://www.turboslide.com/home', 'Turboslide, the slides editor built from the brand deck: agents edit the slides, and a deck exports to PPTX.', 'Pages', thumb('turboslide')),
     host: 'turboslide.com',
   },
+  {
+    ...internal('elo', 'Elo', 'https://elo.kevinliu.studio', 'Elo, the team vote: a voter picks one of two options at a time, and the options are ranked by their Elo ratings.', 'Pages', thumb('elo')),
+    host: 'elo.kevinliu.studio',
+  },
   internal('present', pageLabel('present'), '/present', 'The separate presentation of the redesign.', 'Pages', thumb('present')),
   internal('compare', pageLabel('compare'), '/compare', 'Two directions side by side in synced frames.', 'Pages', thumb('compare')),
 ];

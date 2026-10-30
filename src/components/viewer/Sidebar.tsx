@@ -115,6 +115,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   deck: 'deck',
   press: 'book',
   turboslide: 'deck',
+  elo: 'compare',
   present: 'present',
   compare: 'compare',
   skills: 'skill',

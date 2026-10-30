@@ -109,6 +109,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   deck: 'deck',
   press: 'book',
   turboslide: 'deck',
+  elo: 'compare',
   brand: 'swatch',
   docs: 'document',
   skills: 'skill',
@@ -132,6 +133,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   present: 'presenter slides scoreboard',
   press: 'atlas magazine press stories essays books covers euclid fuma nama designing rewriting docs',
   turboslide: 'turboslide slides editor deck agents pptx export presentation',
+  elo: 'vote voting ballot 1v1 pairs ranking decisions',
   compare: 'side by side synced frames',
   skills:
     'agent skills SKILL.md install voice humanizer website landing brand Inter aesthetic deck lints gates PR motion films video graphics dither diagrams isometric components Prototemplate',
