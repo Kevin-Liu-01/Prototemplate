@@ -1,0 +1,25 @@
+/* Lock.tsx: the lock after a locked item's name, in titanium at the
+   name's cap height, and beside a page title at half the title's size. */
+.pt-lock {
+  display: inline-block;
+  margin-left: 0.4em;
+  vertical-align: -0.05em;
+  color: var(--pt-titanium);
+}
+
+.pt-lock svg {
+  display: block;
+  width: 0.8em;
+  height: 0.8em;
+  fill: currentColor;
+}
+
+.pt-lock.is-title {
+  margin-left: 0.3em;
+  vertical-align: 0.05em;
+}
+
+.pt-lock.is-title svg {
+  width: 0.5em;
+  height: 0.5em;
+}

@@ -261,8 +261,8 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   const hasRouteControls = Boolean(slot) || showSeg;
   /* the paging trio: on a route with a slide mode it belongs to that mode; a
      route that always flows (docs, brand) keeps it, since its Next moves to
-     the next document */
-  const paging = keys === 'paged' || !slideOffered;
+     the next document; a route with nothing to page (/sign-in) has none */
+  const paging = shell.total > 0 && (keys === 'paged' || !slideOffered);
   /* the count is wider while it names the total (`17 directions`) than while it reads a place */
   const countNamesTotal = index < 0;
 

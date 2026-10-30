@@ -35,6 +35,8 @@
  * compare) and sync (arrows-up-down). The book head's panel draws updated,
  * duration, done, in-progress, planned, skill, area, attachment, language,
  * post, people, speed and explore; the install field draws copy and check.
+ * A locked item (LOCKED in src/lib/seo/policy.ts) carries lock (lock-closed)
+ * after its name, and /sign-in draws unlock (lock-open) once signed in.
  */
 export type IconName =
   | 'sidebar'
@@ -89,7 +91,9 @@ export type IconName =
   | 'post'
   | 'people'
   | 'speed'
-  | 'explore';
+  | 'explore'
+  | 'lock'
+  | 'unlock';
 
 type IconPath = { d: string; evenodd?: boolean };
 
@@ -312,6 +316,14 @@ const PATHS: Record<IconName, readonly IconPath[]> = {
   /* beaker */
   'explore': [
     { d: 'M8.5 3.528v4.644c0 .729-.29 1.428-.805 1.944l-1.217 1.216a8.75 8.75 0 0 1 3.55.621l.502.201a7.25 7.25 0 0 0 4.178.365l-2.403-2.403a2.75 2.75 0 0 1-.805-1.944V3.528a40.205 40.205 0 0 0-3 0Zm4.5.084.19.015a.75.75 0 1 0 .12-1.495 41.364 41.364 0 0 0-6.62 0 .75.75 0 0 0 .12 1.495L7 3.612v4.56c0 .331-.132.649-.366.883L2.6 13.09c-1.496 1.496-.817 4.15 1.403 4.475C5.961 17.852 7.963 18 10 18s4.039-.148 5.997-.436c2.22-.325 2.9-2.979 1.403-4.475l-4.034-4.034A1.25 1.25 0 0 1 13 8.172v-4.56Z', evenodd: true },
+  ],
+  /* lock-closed */
+  'lock': [
+    { d: 'M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z', evenodd: true },
+  ],
+  /* lock-open */
+  'unlock': [
+    { d: 'M14.5 1A4.5 4.5 0 0 0 10 5.5V9H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1.5V5.5a3 3 0 1 1 6 0v2.75a.75.75 0 0 0 1.5 0V5.5A4.5 4.5 0 0 0 14.5 1Z', evenodd: true },
   ],
 };
 

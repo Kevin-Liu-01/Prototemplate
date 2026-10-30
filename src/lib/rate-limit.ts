@@ -51,12 +51,15 @@ function bucketKey(ip: string): string {
 }
 
 /* Fixed-window per-IP limiter, per server instance. Enough to stop one
-   client burning the fetch and translate budgets from a loop; a fleet-wide
-   limiter would need shared storage. */
+   client burning the fetch and translate budgets from a loop, or guessing
+   access keys (src/app/api/auth/key/route.ts counts its failures here with
+   a ten-minute window); a fleet-wide limiter would need shared storage.
+   Each call counts one hit. */
 export function isRateLimited(
   bucket: string,
   ip: string,
-  max: number
+  max: number,
+  windowMs: number = WINDOW_MS
 ): boolean {
   let entries = buckets.get(bucket);
   if (!entries) {
@@ -72,11 +75,18 @@ export function isRateLimited(
   const id = bucketKey(ip);
   const entry = entries.get(id);
   if (!entry || now > entry.resetAt) {
-    entries.set(id, { count: 1, resetAt: now + WINDOW_MS });
+    entries.set(id, { count: 1, resetAt: now + windowMs });
     return false;
   }
   entry.count += 1;
   return entry.count > max;
+}
+
+/* True while the ip has `max` hits or more in the bucket's current window;
+   counts nothing. */
+export function isAtLimit(bucket: string, ip: string, max: number): boolean {
+  const entry = buckets.get(bucket)?.get(bucketKey(ip));
+  return Boolean(entry && Date.now() <= entry.resetAt && entry.count >= max);
 }
 
 /* Only x-vercel-forwarded-for is trusted: Vercel writes it on every

@@ -10,7 +10,7 @@
  *   /atlas/<slug> of a GT post           index, canonical on generaltranslation.com/en-US/blog, not listed
  *   /atlas/directions and its pages      noindex, self canonical, not listed (design studies of the magazine page)
  *   /atlas/shelf and its pages           noindex, self canonical, not listed (the shelf direction, kept explorable)
- *   each private page and its subpages   noindex, nofollow, self canonical, not listed (PRIVATE_PATHS)
+ *   each private page and its subpages   noindex, nofollow, self canonical, not listed (PRIVATE_PATHS, LOCKED among them)
  *   every other path                     index, self canonical on www, listed
  *
  * www.prototemplate.com is canonical (decision log, 2026-10-10); the two
@@ -43,8 +43,30 @@ export const MIRROR_PREFIX = '/d/production';
 /** The dashboard states under the mirror: they render states of the dashboard, which has no public page to point at. */
 export const MIRROR_WITHOUT_LIVE: readonly string[] = ['signin', 'onboarding', 'consent', 'device', 'cli'];
 
-/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos. */
-export const PRIVATE_PATHS: readonly string[] = ['/transcreate'];
+/**
+ * The locked areas, each with every page, file and route under it: only a
+ * signed-in access key opens them (src/lib/access.ts). One line here locks
+ * a page or a whole folder. The proxy's matcher (src/proxy.ts) repeats
+ * each entry, because Next reads a matcher only as a literal, and
+ * scripts/lint/access.test.mjs fails until the two agree.
+ */
+export const LOCKED: readonly string[] = ['/raise'];
+
+/** True for a locked area or anything under it, compared decoded and in lower case so no spelling of the path slips past; false for anything that is not a pathname. */
+export function isLocked(path: string): boolean {
+  if (!path.startsWith('/')) return false;
+  let bare = path.replace(/[?#].*$/, '');
+  try {
+    bare = decodeURIComponent(bare);
+  } catch {
+    /* a malformed escape is compared as written */
+  }
+  const p = bare.toLowerCase().replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
+  return LOCKED.some((base) => p === base || p.startsWith(`${base}/`));
+}
+
+/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos, /sign-in opens the locked areas, and every locked area is private too. */
+export const PRIVATE_PATHS: readonly string[] = ['/transcreate', '/sign-in', ...LOCKED];
 
 /** True for a private page or a page under one; false for anything that is not a pathname (an off-site address). */
 export function isPrivatePath(path: string): boolean {

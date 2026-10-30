@@ -1,0 +1,66 @@
+/* /sign-in: the key field and its button on one row where a head's lead
+   sits, and the one line a refusal prints under them. The field draws the
+   shell's filter field (SidebarFilter.css): a --pt-hair border that turns
+   ink on focus, the control corner, paper ground, a titanium placeholder.
+   The row is 40px tall, a tap target on a phone. */
+.pt-signin {
+  grid-area: lead;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: var(--pt-measure-lead);
+  margin: 0;
+}
+
+.pt-signin-row {
+  display: flex;
+  gap: 8px;
+}
+
+.pt-signin-key {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font: inherit;
+  font-size: var(--pt-t-body);
+  outline: none;
+  transition: border-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-signin-key::placeholder {
+  color: var(--pt-titanium);
+}
+
+.pt-signin-key:focus-visible {
+  border-color: var(--pt-ink);
+}
+
+.pt-ib.pt-signin-go {
+  height: 40px;
+  padding: 0 16px;
+  border-color: var(--pt-hair);
+  color: var(--pt-ink);
+  font-size: var(--pt-t-small);
+}
+
+.pt-ib.pt-signin-go:hover {
+  border-color: var(--pt-ink);
+}
+
+.pt-ib.pt-signin-go:disabled {
+  cursor: progress;
+  color: var(--pt-titanium);
+}
+
+.pt-signin-error {
+  margin: 0;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  color: var(--pt-ink-2);
+}
