@@ -128,7 +128,7 @@ export const GALLERY: readonly GalleryKind[] = [
       { id: 'handbook', name: 'Handbook', path: '/docs/handbook', still: true },
       { id: 'marks', name: 'Marks', path: '/marks', still: true },
       { id: 'blog', name: 'Blog', path: '/blog', still: true },
-      { id: 'atlas', name: 'Atlas notes', path: '/atlas/notes', still: true },
+      { id: 'atlas', name: 'Magazine', path: '/atlas/notes', still: true },
       { id: 'graphics', name: 'Graphics', path: '/graphics', still: true },
       { id: 'motion', name: 'Motion', path: '/motion', still: true },
       { id: 'transcreate', name: 'Transcreate', path: '/transcreate', still: true },

@@ -14,7 +14,7 @@ const route = seoRoute({
 
 export const metadata = route.metadata;
 
-/** /atlas/notes: the notes on Atlas, read as one book on the viewer shell. */
+/** /atlas/notes: Magazine, the notes on Atlas, read as one book on the viewer shell. */
 export default function AtlasPage() {
   return (
     <>

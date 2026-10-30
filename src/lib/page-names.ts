@@ -41,7 +41,7 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   docs: { name: 'Documentation', short: 'Docs' },
   deck: { name: 'Deck' },
   press: { name: 'Atlas' },
-  atlas: { name: 'Atlas notes' },
+  atlas: { name: 'Magazine' },
   present: { name: 'Presenter' },
   compare: { name: 'Compare' },
   skills: { name: 'Skills' },
