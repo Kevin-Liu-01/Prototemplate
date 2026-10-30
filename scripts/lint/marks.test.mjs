@@ -3,11 +3,11 @@
 // a row, every dynamic file is one path in currentColor on the canonical
 // 256 unit header and at most 8 KB, the drawn box a row records is the
 // file's own within half a unit, SHORTLIST names known ids once each and
-// at most 16, every family has its record, and neither the catalog nor the
-// dynamic files carry the working words of the marks rounds (agency,
-// vendor, an option label or a symbol number). The private denylist of
-// pnpm lint:public holds the names; these generic words run everywhere,
-// CI included. Loaded through Node's type stripping.
+// at most 16, every family has its record, and the catalog and the dynamic
+// files name each mark by its idea alone. ORIGIN_WORDS holds generic words
+// that name a mark's origin and runs everywhere, CI included; the private
+// denylist of pnpm lint:public holds the specific ones. Loaded through
+// Node's type stripping.
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -21,7 +21,7 @@ const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, pageFamilies } = await impo
 const MARKS_TS = 'src/lib/marks.ts';
 const publicFile = (path) => join(ROOT, 'public', path);
 const dynamicFiles = readdirSync(join(ROOT, DYNAMIC_DIR)).filter((name) => name.endsWith('.svg'));
-const WORKING_WORDS = /\bagency\b|\bvendor\b|\boption [a-d]\b|\bsym(?:bol)?[\s_-]*\d/i;
+const ORIGIN_WORDS = /\bagency\b|\bvendor\b|\boption [a-d]\b|\bsym(?:bol)?[\s_-]*\d/i;
 
 test('every file a catalog row names exists', () => {
   for (const mark of CATALOG) {
@@ -77,9 +77,9 @@ test('every family has its record, and the page closes on In production', () => 
   assert.equal(order.at(-1), 'production');
 });
 
-test('the catalog and the dynamic files carry no working words of the marks rounds', () => {
-  assert.doesNotMatch(readFileSync(join(ROOT, MARKS_TS), 'utf8'), WORKING_WORDS, `${MARKS_TS} holds a working word`);
+test('the catalog and the dynamic files name each mark by its idea alone', () => {
+  assert.doesNotMatch(readFileSync(join(ROOT, MARKS_TS), 'utf8'), ORIGIN_WORDS, `${MARKS_TS} names a mark's origin`);
   for (const name of dynamicFiles) {
-    assert.doesNotMatch(readFileSync(join(ROOT, DYNAMIC_DIR, name), 'utf8'), WORKING_WORDS, `${name} holds a working word`);
+    assert.doesNotMatch(readFileSync(join(ROOT, DYNAMIC_DIR, name), 'utf8'), ORIGIN_WORDS, `${name} names its mark's origin`);
   }
 });
