@@ -44,7 +44,7 @@ at each of them.
 - `/components`: every component the hub keeps: the ones the docs Components section documents, grouped as it groups them, each running live with its controls beside its source file and a link to its docs section, then the reusable components no docs page covers yet, listed by export and file
 - `/marks`: the mark explorations, every candidate drawn in one color
 - `/blog`: the docs-redesign series as General Translation published it, three posts with their sources under `content/`
-- `/graphics`: every illustration of the series, by area, with what it shows and the glyphfield export it sits on; made with the toolchain in `graphics/`
+- `/graphics`: every illustration of the series, by area, with what it shows and the glyphfield export it sits on, made with the toolchain in `graphics/`; then the covers and figures of the other posts on the blog
 - `/motion`: every film on the motion roster with its length and status, the research package of each film in the translation series (`/motion/<slug>`), and the contact sheet and script of each published cut; generated from `motion/` by `pnpm build:motion`, which publishes a film's credits, sheet and script only for the cut `public/motion/published.json` pins and lists a newer cut as in review
 - `/compare`: two directions side by side in scroll-synced frames
 - `/atlas`: Atlas, the magazine; each story is an issue with its own cover, and `/atlas/<slug>` sets it as a magazine feature with its own art and colors. `/atlas/shelf` keeps the direction before it, each story a book read in its own look

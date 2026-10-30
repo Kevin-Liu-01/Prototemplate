@@ -12,7 +12,7 @@ const route = seoRoute({
   title: PAGE_NAMES.graphics.name,
   kind: 'page',
   description:
-    'Every illustration of the docs series with every version it ships in: the covers, the social cards, the contact sheets and the glyphfield grounds.',
+    'Every illustration of the General Translation blog in every version it ships in: the docs series by area, then the covers and figures of the other posts.',
 });
 
 export const metadata = route.metadata;

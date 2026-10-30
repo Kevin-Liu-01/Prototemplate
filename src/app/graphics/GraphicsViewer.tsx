@@ -24,18 +24,19 @@ import './graphics.css';
 const TITLE = PAGE_NAMES.graphics.name;
 const MODES: readonly ShellMode[] = ['book', 'grid'];
 const LEAD =
-  'Every illustration of the docs series, ordered by the area of the post it sits in, then the covers, the contact sheets, the glyphfield grounds and the two earlier posts.';
+  'Every illustration of the docs series, ordered by the area of the post it sits in, then the covers, the contact sheets and the glyphfield grounds, then the graphics of every other post on the blog.';
 const NOTE =
   'Each image is one row. The row switches in place between the versions the image ships in: dark and light, the social card cut from a cover, and a clip’s GIF, video and still. The frame opens the file at full size.';
 
 /**
  * The sidebar names of the areas whose labels are post titles, keyed by
- * block id (src/lib/graphics.ts EARLIER): a sentence would run past two
+ * block id (src/lib/graphics.ts POSTS): a sentence would run past two
  * lines in the 208px list. The label stays the grid caption and the
  * divider's title.
  */
 const SIDEBAR_AREA: Readonly<Record<string, string>> = {
   'rewriting-our-docs': 'Rewriting our docs',
+  'daniel-white': 'Daniel White',
   'fuma-nama': 'Fuma Nama',
 };
 
@@ -166,7 +167,7 @@ type GraphicsViewerProps = {
 
 /**
  * The graphics on the viewer shell: one section per area of the post, the
- * covers, the sheets, the grounds and the two earlier posts, nested under
+ * covers, the sheets, the grounds and the other posts, nested under
  * Knowledge > Graphics in the list with one row per image; the whole set
  * as ruled rows with figures inside the 1280px flow sheet, and every image
  * as a captured thumbnail in the grid. Flow keys, so Space and the arrows

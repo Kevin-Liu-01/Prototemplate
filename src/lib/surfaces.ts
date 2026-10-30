@@ -207,7 +207,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'graphics',
     pageLabel('graphics'),
     '/graphics',
-    'Every illustration of the series by area, with what it shows and the glyphfield export it sits on.',
+    'Every illustration of the blog: the docs series by area on its glyphfield grounds, then the covers and figures of the other posts.',
     'Knowledge',
     thumb('graphics')
   ),

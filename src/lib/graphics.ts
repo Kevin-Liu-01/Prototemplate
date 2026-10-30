@@ -255,29 +255,50 @@ function groundEntries(visuals: readonly Visual[]): Entry[] {
   return entries;
 }
 
-/** An earlier post: its cover in every version it has, then its figures. */
-function postEntries(slug: string): Entry[] {
-  const post = getPost(slug);
-  if (!post) return [];
+/** A post's graphics: its cover in the versions it has, then its figures in order. */
+type PostGraphics = {
+  slug: string;
+  image?: string;
+  imageLight?: string;
+  ogImage?: string;
+  /** each figure's file and the post's alt text; `title` names it where the file name would not */
+  figures: readonly { src: string; alt: string; title?: string }[];
+};
+
+/** `/static/blogs/x.jpg?v=1` and `/static/blogs/x.jpg` are one file. */
+function samePath(a: string, b: string): boolean {
+  return a.split('?')[0] === b.split('?')[0];
+}
+
+/**
+ * A post's entries: its cover with every version (a social card that is the
+ * cover's own file is not a second version), then its figures.
+ */
+function postEntries(post: PostGraphics): Entry[] {
+  const { slug } = post;
   const entries: Entry[] = [];
   if (post.image) {
+    const card = post.ogImage && !samePath(post.ogImage, post.image) ? post.ogImage : undefined;
     const variants: Variant[] = [variantOf('dark', post.imageLight ? 'Dark' : 'Cover', post.image)];
     if (post.imageLight) variants.push(variantOf('light', 'Light', post.imageLight));
-    if (post.ogImage) variants.push(variantOf('card', 'Card', post.ogImage));
+    if (card) variants.push(variantOf('card', 'Card', card));
+    const cover = post.imageLight ? 'The header cover in both themes' : 'The header cover';
     entries.push({
       id: `${slug}-cover`,
       n: '',
       title: 'The cover',
-      why: post.imageLight ? 'The header cover in both themes, and the social card the post’s Open Graph and Twitter tags point at.' : 'The header cover, and the social card the post’s Open Graph and Twitter tags point at.',
+      why: card
+        ? `${cover}, and the social card the post’s Open Graph and Twitter tags point at.`
+        : `${cover}, which is also the social card the post’s Open Graph and Twitter tags point at.`,
       variants,
       shot: post.imageLight ? { light: post.imageLight, dark: post.image } : { light: post.image },
     });
   }
-  postFigures(post.body).forEach((figure, i) => {
+  post.figures.forEach((figure, i) => {
     entries.push({
       id: `${slug}-figure-${i + 1}`,
       n: '',
-      title: figureTitle(figure.src, `Figure ${i + 1}`),
+      title: figure.title ?? figureTitle(figure.src, `Figure ${i + 1}`),
       why: figure.alt,
       variants: [variantOf('image', 'Image', figure.src)],
       shot: { light: figure.src },
@@ -286,9 +307,83 @@ function postEntries(slug: string): Entry[] {
   return entries;
 }
 
-const EARLIER = [
+/** A post content/blog keeps: its frontmatter covers and its markdown figures. */
+function keptPost(slug: string): (PostGraphics & { title: string }) | undefined {
+  const post = getPost(slug);
+  if (!post) return undefined;
+  return { slug, title: post.title, image: post.image, imageLight: post.imageLight, ogImage: post.ogImage, figures: postFigures(post.body) };
+}
+
+const DANIEL_WHITE = '/static/blogs/daniel-white';
+const DANIEL_WHITE_STAMP = '?v=20261028-2300';
+
+/**
+ * The posts live on generaltranslation.com that content/blog does not keep
+ * yet, because /blog has not ported the components they use (Spotlight and
+ * OpenSourceGrants). Their files are copied from gt-cloud main under
+ * public/static/blogs at the paths the post uses, and each figure takes its
+ * carousel's label as its title and the post's alt text as its line (content
+ * main fd28ea4f, 2026-10-28). The post's portrait is a photograph, not a
+ * graphic, and stays out.
+ */
+const LIVE_ONLY: readonly (PostGraphics & { title: string })[] = [
+  {
+    slug: 'daniel-white',
+    title: 'Daniel White: Interfaces that follow the physics of sound',
+    image: `${DANIEL_WHITE}/cover.webp${DANIEL_WHITE_STAMP}`,
+    ogImage: `${DANIEL_WHITE}/og.png${DANIEL_WHITE_STAMP}`,
+    figures: [
+      {
+        src: `${DANIEL_WHITE}/cues.webp${DANIEL_WHITE_STAMP}`,
+        title: 'The fourteen cues',
+        alt: 'Cuelume’s fourteen cues in two groups, interactions (tap, type, select, toggle, open, close, navigate) and states (success, error, warning, loading, ready, attention, count), each beside the outline of its loudness over its own length, with tap in green',
+      },
+      {
+        src: `${DANIEL_WHITE}/hearing.webp${DANIEL_WHITE_STAMP}`,
+        title: 'Hearing and sight',
+        alt: 'Two bars: sight at 1×, and hearing solid to 20× and dithered on to 100×, credited to Seth Horowitz, NPR, 2015',
+      },
+      {
+        src: `${DANIEL_WHITE}/strike.webp${DANIEL_WHITE_STAMP}`,
+        title: 'The strike',
+        alt: 'The first 12 ms of the success cue on one scale: the green noise burst is over within about 3 ms while the white pitch trace is still swelling in',
+      },
+      {
+        src: `${DANIEL_WHITE}/sine.webp${DANIEL_WHITE_STAMP}`,
+        title: 'Sine waves',
+        alt: 'A sine, a square and a sawtooth wave at tap’s 1,175 Hz, each beside its frequencies from 0 to 10 kHz: the sine is one line, while the square and the sawtooth add overtones that run past the 5 kHz line',
+      },
+      {
+        src: `${DANIEL_WHITE}/overtones.webp${DANIEL_WHITE_STAMP}`,
+        title: 'Overtones',
+        alt: 'The ready cue’s glass note and its two overtones as bands over half a second: 392 Hz rings for 0.50 s, and its quieter overtones at 1,082 Hz and 2,117 Hz end at 0.23 s and 0.14 s',
+      },
+      {
+        src: `${DANIEL_WHITE}/repeats.webp${DANIEL_WHITE_STAMP}`,
+        title: 'Repeated plays',
+        alt: 'Eight plays of tap whose peaks rise and fall within dashed lines at 12 percent above and below, over eight plays of success whose peaks sit on one line',
+      },
+      {
+        src: `${DANIEL_WHITE}/themes.webp${DANIEL_WHITE_STAMP}`,
+        title: 'Four themes',
+        alt: 'The tap cue in the default, mech, bubble and press themes over the same 0.2 seconds, its clicks above each line and its pitch below: a glass ring of about 80 ms in default, a dry click gone within 20 ms in mech, tones and no click in bubble, and in press a click over a deep note that swells in, with a lighter click 90 ms later as it lets go',
+      },
+    ],
+  },
+];
+
+/**
+ * The other posts after the series: part one of the series first, then the
+ * rest of the blog newest first. A slug in LIVE_ONLY reads from there (its
+ * figures are carousels, which postFigures does not parse); the others read
+ * their file in content/blog.
+ */
+const POSTS = [
   { slug: 'rewriting-our-docs', lead: 'Part one of the series: the content rewrite, illustrated with captures of the shipped docs.' },
+  { slug: 'daniel-white', lead: 'The open-source grant to Cuelume, Daniel White’s library of interaction sounds: the cover in Cuelume’s green, then seven figures on how its cues are made and heard.' },
+  { slug: 'supporting-slash-companies', lead: 'The translation credits for companies that bank with Slash, published with one cover.' },
   { slug: 'fuma-nama', lead: 'The interview with the creator of Fumadocs: the landing page, the slider, and the architecture diagram drawn in the post.' },
+  { slug: 'supporting-open-source-software', lead: 'The announcement of the open-source grants, published with one cover.' },
 ] as const;
 
 /** Every section of /graphics with its entries numbered through the whole set. */
@@ -303,9 +398,9 @@ export function getGraphicsBlocks(): readonly Block[] {
   }
   blocks.push({ id: 'sheets', label: 'Contact sheets', lead: 'The finished set tiled at thumbnail size, the way a reader meets it.', entries: sheetEntries() });
   blocks.push({ id: 'grounds', label: 'Backgrounds', lead: 'The glyphfield exports the visuals sit on, at their native 1920 by 1080 and their own aspect; each names the visuals that use it.', entries: groundEntries(visuals) });
-  for (const { slug, lead } of EARLIER) {
-    const post = getPost(slug);
-    const entries = postEntries(slug);
+  for (const { slug, lead } of POSTS) {
+    const post = LIVE_ONLY.find((p) => p.slug === slug) ?? keptPost(slug);
+    const entries = post ? postEntries(post) : [];
     if (post && entries.length) blocks.push({ id: slug, label: post.title, lead, entries });
   }
   let n = 0;
