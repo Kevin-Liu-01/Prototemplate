@@ -190,7 +190,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'marks',
     pageLabel('marks'),
     '/marks',
-    'The two General Translation marks in production, the 63 hemispheres marks by family with their posters, the bar monogram collection and every other exploration.',
+    'The two General Translation marks in production, the shortlist of the strongest explorations, then every family of marks by the idea it draws.',
     'Knowledge',
     thumb('marks')
   ),

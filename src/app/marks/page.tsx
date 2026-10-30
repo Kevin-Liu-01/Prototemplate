@@ -14,7 +14,8 @@ const route = seoRoute({
   path: '/marks',
   title: PAGE_NAMES.marks.name,
   kind: 'page',
-  description: `The two General Translation marks in production, then ${HEMISPHERE_MARKS.length} hemispheres marks in five families, the bar monogram collection and ${MARKS.filter((mark) => mark.family === 'picture').length + GLOBE_CONCEPTS.length} other explorations.`,
+  description:
+    'The two General Translation marks in production, a shortlist of the strongest explorations, and every family of marks by the idea it draws.',
 });
 
 export const metadata = route.metadata;
@@ -46,8 +47,9 @@ function viewBoxAspect(svg: string): number {
  * reads each speed and picture mark's file only for the aspect of its
  * viewBox, which the viewer sizes the mark by, and the construction
  * drawing of each mark that has one for its viewBox, whose size and aspect
- * are its own. The marks in production, the hemispheres round and the
- * globe concepts carry their aspects in src/lib/marks.ts.
+ * are its own. The marks in production carry their aspects in
+ * src/lib/marks.ts, the hemispheres and globe concepts are 256 unit
+ * squares, and every dynamic mark records its drawn box in the catalog.
  */
 export default function MarksPage() {
   const aspects: Readonly<Record<string, number>> = Object.fromEntries(

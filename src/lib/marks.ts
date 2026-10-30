@@ -707,3 +707,24 @@ export function pageFamilies(): readonly MarkFamilyRow[] {
     .map(({ family }) => family);
   return [...ranked, ...others, familyRow('production')];
 }
+
+/** The square every dynamic mark is drawn on. */
+export const MARK_UNITS = 256;
+
+const percent = (v: number) => `${Math.round(v * 10000) / 100}%`;
+
+/**
+ * The CSS mask size and position that show only a mark's drawn box of its
+ * 256 unit file: the file scaled so the box fills the element, and shifted
+ * so the box's corner sits on the element's. Percentages, so the crop
+ * holds at any size, as long as the element takes the box's aspect.
+ */
+export function boxMask(box: readonly [number, number, number, number]): { size: string; position: string; aspect: number } {
+  const [x, y, w, h] = box;
+  const along = (offset: number, span: number) => (Math.abs(MARK_UNITS - span) < 1e-6 ? 0 : offset / (MARK_UNITS - span));
+  return {
+    size: `${percent(MARK_UNITS / w)} ${percent(MARK_UNITS / h)}`,
+    position: `${percent(along(x, w))} ${percent(along(y, h))}`,
+    aspect: w / h,
+  };
+}
