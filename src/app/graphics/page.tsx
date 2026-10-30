@@ -1,5 +1,4 @@
-import { getPosts } from '@/lib/blog';
-import { getGraphicsBlocks } from '@/lib/graphics';
+import { getGraphicsBlocks, graphicsPostCount } from '@/lib/graphics';
 import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
@@ -20,14 +19,15 @@ export const metadata = route.metadata;
 /**
  * /graphics: the authoritative set. The blocks are read on the server
  * (the manifest the generator writes, the exports, the grounds, the
- * sheets, the earlier posts) and handed to the viewer, which opens the
+ * sheets, the other posts) and handed to the viewer, which opens the
  * book at its head with every image in the list on the left.
  */
 export default function GraphicsPage() {
+  const blocks = getGraphicsBlocks();
   return (
     <>
       <JsonLd nodes={route.jsonLd} />
-      <GraphicsViewer blocks={getGraphicsBlocks()} posts={getPosts().length} updated={requireUpdated('/graphics')} />
+      <GraphicsViewer blocks={blocks} posts={graphicsPostCount(blocks)} updated={requireUpdated('/graphics')} />
     </>
   );
 }

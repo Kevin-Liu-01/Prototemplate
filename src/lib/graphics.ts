@@ -70,8 +70,8 @@ const PUBLIC = join(process.cwd(), 'public');
 
 /**
  * The pixel size of a file under public/, read from its first 4 KB: a PNG's
- * IHDR, a GIF's screen, a WebP's first chunk, or an MP4's first track
- * header with a picture (the moov box must lead, as a faststart export
+ * IHDR, a GIF's screen, a WebP's first chunk, a JPEG's frame header, or an
+ * MP4's first track header with a picture (the moov box must lead, as a faststart export
  * does). Undefined for a remote, missing or other file; the viewer then
  * frames it at 16 by 9.
  */
@@ -101,6 +101,13 @@ function fileSize(src: string): { w: number; h: number } | undefined {
       return { w: (bits & 0x3fff) + 1, h: ((bits >> 14) & 0x3fff) + 1 };
     }
     if (chunk === 'VP8X') return { w: b.readUIntLE(24, 3) + 1, h: b.readUIntLE(27, 3) + 1 };
+  }
+  if (b[0] === 0xff && b[1] === 0xd8) {
+    /* a JPEG: step over the segments to the first frame header (SOF0 to SOF15 less DHT, JPG and DAC), which holds the height, then the width */
+    for (let at = 2; at + 9 <= b.length && b[at] === 0xff; at += 2 + b.readUInt16BE(at + 2)) {
+      const marker = b[at + 1] ?? 0;
+      if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) return { w: b.readUInt16BE(at + 7), h: b.readUInt16BE(at + 5) };
+    }
   }
   if (b.toString('ascii', 4, 8) === 'ftyp') {
     for (let at = b.indexOf('tkhd'); at >= 0; at = b.indexOf('tkhd', at + 4)) {
@@ -385,6 +392,11 @@ const POSTS = [
   { slug: 'fuma-nama', lead: 'The interview with the creator of Fumadocs: the landing page, the slider, and the architecture diagram drawn in the post.' },
   { slug: 'supporting-open-source-software', lead: 'The announcement of the open-source grants, published with one cover.' },
 ] as const;
+
+/** The posts /graphics illustrates: the docs series, then each post in POSTS that has a section. */
+export function graphicsPostCount(blocks: readonly Block[]): number {
+  return 1 + blocks.filter((block) => POSTS.some((post) => post.slug === block.id)).length;
+}
 
 /** Every section of /graphics with its entries numbered through the whole set. */
 export function getGraphicsBlocks(): readonly Block[] {

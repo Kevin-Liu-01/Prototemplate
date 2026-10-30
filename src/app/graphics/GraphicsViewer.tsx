@@ -70,7 +70,7 @@ type GraphicsBookProps = {
   jumpRef: RefObject<(id: string) => void>;
   /** the active image, read by the shell's onSelect outside this component */
   activeOut: RefObject<string>;
-  /** the number of posts on /blog, for the head's Posts fact */
+  /** the number of posts the set illustrates, for the head's Posts fact */
   posts: number;
   /** the head's Updated row: the /graphics entry in src/lib/updated.ts */
   updated: PageUpdated;
@@ -159,7 +159,7 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
 
 type GraphicsViewerProps = {
   blocks: readonly Block[];
-  /** the number of posts on /blog, from the server page */
+  /** the number of posts the set illustrates, from the server page */
   posts: number;
   /** the /graphics entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
