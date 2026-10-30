@@ -10,8 +10,10 @@ import Plate from './Plate';
 export type MarkEntry = {
   id: string;
   name: string;
-  group: 'speed' | 'picture' | 'globe';
+  group: 'shortlist' | 'speed' | 'picture' | 'globe';
   kind: 'monogram' | 'wordmark';
+  /** the public path of the file, which the plate's tag prints */
+  file: string;
   /** the clean file, inline, in currentColor */
   svg: string;
   /** the viewBox's width over its height */
@@ -24,20 +26,23 @@ type Group = MarkEntry['group'];
 type Ground = 'paper' | 'ink';
 
 const GROUPS: readonly { value: Group; label: string }[] = [
+  { value: 'shortlist', label: 'Shortlist' },
   { value: 'speed', label: 'Speed' },
   { value: 'picture', label: 'Picture' },
   { value: 'globe', label: 'Globe concepts' },
 ];
 
 /**
- * Every mark under public/marks, drawn inline at the sizes /marks shows it:
- * a monogram from the 16px favicon to the 128px app icon, a wordmark at 48,
- * 96 and 144. Each file is one color in currentColor, so the same file
- * draws positive on paper and reversed on ink with no redraw. The two
- * picture marks of the earlier round carry a construction overlay.
+ * The shortlist and the earlier marks under public/marks, drawn inline at
+ * the sizes /marks shows them: a monogram from the 16px favicon to the
+ * 128px app icon, a wordmark at 48, 96 and 144. The plate opens on the
+ * shortlist, each mark cut to its drawn box. Each file is one color in
+ * currentColor, so the same file draws positive on paper and reversed on
+ * ink with no redraw. The two picture marks of the earlier round carry a
+ * construction overlay.
  */
 export default function MarksPlate({ entries }: { entries: readonly MarkEntry[] }) {
-  const [group, setGroup] = useState<Group>('speed');
+  const [group, setGroup] = useState<Group>('shortlist');
   const inGroup = entries.filter((e) => e.group === group);
   const [id, setId] = useState(entries[0]?.id ?? '');
   const mark = inGroup.find((e) => e.id === id) ?? inGroup[0];
@@ -94,7 +99,7 @@ export default function MarksPlate({ entries }: { entries: readonly MarkEntry[] 
       label={`${mark.name} at ${height}px on ${ground}`}
       phoneHeight={260}
       stageClassName={`dmo-marks is-${ground}`}
-      tag={`/marks/${mark.id}.svg`}
+      tag={mark.file}
     >
       <div className='dmo-marks-row'>
         <span

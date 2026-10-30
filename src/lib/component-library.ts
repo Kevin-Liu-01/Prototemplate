@@ -106,7 +106,7 @@ const SOURCES: Readonly<Record<string, { code: string; path: string; name?: stri
   'language#language-diagrams': { code: 'PluralForms', path: 'src/app/d/toolchain/diagrams/lang' },
   'motion#the-reveal-seam': { code: 'RevealSeam', path: 'src/app/d/toolchain/sections/RevealSeam.tsx' },
   'motion#the-sentence-reassembler': { code: 'EverySentence', path: 'src/components/shared/EverySentence.tsx' },
-  'marks#the-marks': { code: 'MARKS', path: 'src/lib/marks.ts', name: 'Speed marks' },
+  'marks#the-marks': { code: 'SHORTLIST', path: 'src/lib/marks.ts', name: 'Marks' },
   'marks#the-mark-as-a-word': { code: 'GtWord', path: 'src/components/viewer/GtWord.tsx' },
   'marks#the-dithered-shine': { code: 'DitheredMark', path: 'src/app/d/toolchain/diagrams/DitheredMark.tsx' },
   'heads#the-head-badge': { code: 'BadgeCycle', path: 'src/components/viewer/BadgeCycle.tsx' },

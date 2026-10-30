@@ -24,10 +24,7 @@ const ORDERS: readonly { value: Order; label: string }[] = [
   { value: 'sweep', label: 'Sweep' },
 ];
 
-const MARKS: readonly { value: MarkId; label: string }[] = (Object.keys(MARK_LABELS) as MarkId[]).map((id) => ({
-  value: id,
-  label: MARK_LABELS[id],
-}));
+const MARKS: readonly { value: MarkId; label: string }[] = Object.entries(MARK_LABELS).map(([id, label]) => ({ value: id, label }));
 
 /** The tone band, as a share of the ramp, that the core, edge and sweep orders spread across. */
 const BAND = 0.35;
@@ -225,7 +222,7 @@ export default function MarkTiersDemo() {
         </>
       }
       height={340}
-      label={`The ${MARK_LABELS[mark]} printed through the Bayer tiers`}
+      label={`The ${MARK_LABELS[mark] ?? mark} printed through the Bayer tiers`}
       lazy
       moves
       phoneHeight={240}

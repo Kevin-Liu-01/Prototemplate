@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { ReactNode, RefObject } from 'react';
+import type { CSSProperties, ReactNode, RefObject } from 'react';
 import { useCallback, useRef } from 'react';
 
 import PrismaticField from '@/components/shared/PrismaticField';
@@ -14,6 +14,7 @@ import { ARCHIVE, ARCHIVE_DELETION, archiveDate, archiveDesc, archiveFull, archi
 import type { ArchiveEntry } from '@/lib/archive';
 import { cn } from '@/lib/cn';
 import { DIRECTIONS, directionPageHref } from '@/lib/directions';
+import { boxMask, shortlist } from '@/lib/marks';
 import type { ShellItem, ShellKeysProp, ShellMode, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -145,6 +146,30 @@ const DECK = [
  * setMode persists the choice before the shell reads it, select writes the
  * hash, and the query string is dropped.
  */
+/**
+ * The shortlist in one row: each mark cut to its drawn box, in the page's
+ * ink, a link to its card on /marks.
+ */
+function MarksRow() {
+  return (
+    <nav className='pt-marks-row' aria-label='The shortlist of marks'>
+      {shortlist().map((mark) => {
+        const crop = mark.box ? boxMask(mark.box) : undefined;
+        const style: CSSProperties = {
+          '--mk-mask': `url('${mark.file}')`,
+          '--mk-ar': String(crop?.aspect ?? 1),
+          ...(crop ? { '--mk-size': crop.size, '--mk-pos': crop.position } : {}),
+        };
+        return (
+          <Link key={mark.id} className='pt-marks-tile' href={`/marks#${mark.id}`} prefetch={false} aria-label={mark.name} title={mark.name}>
+            <span aria-hidden='true' style={style} />
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 function DeepLink() {
   const { setMode, select } = usePtShell();
 
@@ -576,6 +601,14 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
               <div className='pt-hatch' aria-hidden='true' />
             </>
           ) : null}
+
+          <section className='pt-sec pt-post-sec'>
+            <h2>The marks</h2>
+            <p>The shortlist holds the strongest General Translation marks of every round.</p>
+            <MarksRow />
+          </section>
+
+          <div className='pt-hatch' aria-hidden='true' />
 
           <section className='pt-sec pt-post-sec pt-sites-intro'>
             <h2>The three sites</h2>

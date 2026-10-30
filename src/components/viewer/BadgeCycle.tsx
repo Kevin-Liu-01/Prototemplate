@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 /** One frame of a head badge, keyed for React. */
 export type BadgeFrame = { key: string; content: ReactNode };
@@ -33,7 +33,15 @@ export function BadgeCycle({ frames }: { frames: readonly BadgeFrame[] }) {
   );
 }
 
-/** A frame that draws a mark file (under public/) as an alpha mask in the title's ink. */
-export function badgeMark(src: string): BadgeFrame {
-  return { key: src, content: <span className='pt-cycle-mark' style={{ maskImage: `url(${src})` }} /> };
+/**
+ * A frame that draws a mark file (under public/) as an alpha mask in the
+ * title's ink. A mark that records its drawn box (src/lib/marks.ts) is cut
+ * to it: the frame takes the box's aspect at the badge's height, so a wide
+ * drawing in a square file reads as large as a wide file.
+ */
+export function badgeMark(src: string, crop?: { size: string; position: string; aspect: number }): BadgeFrame {
+  const style: CSSProperties = crop
+    ? { maskImage: `url(${src})`, maskSize: crop.size, maskPosition: crop.position, width: `round(calc(0.727em * ${Math.round(crop.aspect * 1000) / 1000}), 1px)` }
+    : { maskImage: `url(${src})` };
+  return { key: src, content: <span className='pt-cycle-mark' style={style} /> };
 }

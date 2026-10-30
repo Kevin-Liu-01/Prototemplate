@@ -794,6 +794,58 @@
   text-decoration-color: var(--pt-ink-2);
 }
 
+/* ---- the marks: the shortlist in one row, each mark a link to its card
+   on /marks. A tile is square, so the row holds its height before the
+   files arrive; the mark is a mask of its file cut to its drawn box and
+   takes the box's aspect inside the square. ---- */
+
+.pt-marks-row {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: clamp(16px, 2.4vw, 36px);
+  align-items: center;
+  margin-top: 28px;
+}
+
+.pt-marks-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  color: var(--pt-ink);
+  transition: opacity var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.pt-marks-tile:hover {
+  opacity: 0.64;
+}
+
+.pt-marks-tile:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 4px;
+}
+
+.pt-marks-tile span {
+  display: block;
+  width: min(100%, calc(var(--mk-ar) * 100%));
+  aspect-ratio: var(--mk-ar);
+  background: currentColor;
+  -webkit-mask: var(--mk-mask) var(--mk-pos, center) / var(--mk-size, contain) no-repeat;
+  mask: var(--mk-mask) var(--mk-pos, center) / var(--mk-size, contain) no-repeat;
+}
+
+@media (max-width: 760px) {
+  .pt-marks-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-marks-tile {
+    transition: none;
+  }
+}
+
 /* ---- the compare seam: two pages of one site, overlaid ---- */
 
 .pt-compare {

@@ -1,4 +1,4 @@
-import { REFERENCE_MARK } from '@/lib/marks';
+import { catalogMark, REFERENCE_MARK, SHORTLIST } from '@/lib/marks';
 import { smoothstep } from '@/lib/math';
 
 /**
@@ -156,15 +156,16 @@ export function textShape(text: string, family: string, cols: number, rows: numb
 /** A mark's artwork, drawable into any box at its own aspect. */
 export type MarkArt = { aspect: number; draw: (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) => void };
 
-export type MarkId = 'gt' | 'bar-monogram' | 'globe-g' | 'two-way' | 'plate-inverted';
+/** A catalog id (src/lib/marks.ts), or `gt` for the reference GT mark. */
+export type MarkId = string;
 
-export const MARK_LABELS: Record<MarkId, string> = {
-  gt: 'GT mark',
-  'bar-monogram': 'Bar monogram',
-  'globe-g': 'Globe G',
-  'two-way': 'Two-way',
-  'plate-inverted': 'Plate',
-};
+/** The marks the tiers plate offers: the GT mark, the first two of the shortlist, then four marks of the earlier rounds. */
+const TIER_MARKS: readonly MarkId[] = ['gt', ...SHORTLIST.slice(0, 2), 'bar-monogram', 'globe-g', 'two-way', 'plate-inverted'];
+
+/** Each offered mark's label: its name in the catalog. */
+export const MARK_LABELS: Readonly<Record<MarkId, string>> = Object.fromEntries(
+  TIER_MARKS.map((id) => [id, id === 'gt' ? 'GT mark' : (catalogMark(id)?.name ?? id)])
+);
 
 const artCache = new Map<MarkId, Promise<MarkArt>>();
 
@@ -173,19 +174,26 @@ function viewBoxOf(text: string): [number, number, number, number] {
   return [x, y, w || 1, h || 1];
 }
 
-/** The reference GT mark as a Path2D, or a speed mark's SVG from public/marks drawn as an image at the box's size. */
+/**
+ * The reference GT mark as a Path2D, or a catalog mark's SVG drawn as an
+ * image at the box's size, fetched from the path the catalog gives it and
+ * cut to its drawn box when it records one.
+ */
 export function loadMark(id: MarkId): Promise<MarkArt> {
   const hit = artCache.get(id);
   if (hit) return hit;
+  const mark = id === 'gt' ? undefined : catalogMark(id);
   const loading =
     id === 'gt'
       ? Promise.resolve<MarkArt>(gtArt())
-      : fetch(`/marks/${id}.svg`)
-          .then((response) => {
-            if (!response.ok) throw new Error(`no mark at /marks/${id}.svg`);
-            return response.text();
-          })
-          .then(svgArt);
+      : !mark
+        ? Promise.reject(new Error(`no mark ${id} in the catalog`))
+        : fetch(mark.file)
+            .then((response) => {
+              if (!response.ok) throw new Error(`no mark at ${mark.file}`);
+              return response.text();
+            })
+            .then((text) => svgArt(text, mark.box));
   const guarded = loading.catch((error: unknown) => {
     artCache.delete(id);
     throw error;
@@ -211,8 +219,9 @@ function gtArt(): MarkArt {
   };
 }
 
-/** Decodes the SVG at 2048 pixels wide, so the mark is rasterized once at a size above any mask it is drawn into. */
-function svgArt(text: string): Promise<MarkArt> {
+/** Decodes the SVG at 2048 pixels wide, so the mark is rasterized once at a size above any mask it is drawn into; a drawn box replaces the viewBox. */
+function svgArt(source: string, box?: readonly [number, number, number, number]): Promise<MarkArt> {
+  const text = box ? source.replace(/viewBox="[^"]*" width="[^"]*" height="[^"]*"/, `viewBox="${box.join(' ')}"`) : source;
   const match = /viewBox="([^"]+)"/.exec(text);
   const [, , vw, vh] = viewBoxOf(match?.[1] ?? '0 0 1 1');
   const aspect = vw / vh;

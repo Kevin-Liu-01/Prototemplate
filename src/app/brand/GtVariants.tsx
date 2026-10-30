@@ -1,18 +1,20 @@
 import { BadgeCycle, badgeMark } from '@/components/viewer/BadgeCycle';
 import { GtMark } from '@/components/viewer/GtMark';
+import { boxMask, shortlist } from '@/lib/marks';
+
+/** How many shortlisted marks the badge cuts through after the GT monogram. */
+const SHORTLIST_FRAMES = 4;
 
 /**
- * The brand head's badge: the GT monogram, then the register's monograms
- * from /marks (public/marks), each a hard cut 1.4s after the last. The
- * dithered and ASCII monograms stay on /marks: at the badge's size their
- * cells fall under a pixel and read as a gray texture.
+ * The brand head's badge: the GT monogram, then the first marks of the
+ * shortlist (SHORTLIST in src/lib/marks.ts), each cut to its drawn box,
+ * each a hard cut 1.4s after the last.
  */
 const FRAMES = [
   { key: 'gt', content: <GtMark /> },
-  badgeMark('/marks/bar-monogram.svg'),
-  badgeMark('/marks/plate-inverted.svg'),
-  badgeMark('/marks/two-way.svg'),
-  badgeMark('/marks/globe-g.svg'),
+  ...shortlist()
+    .slice(0, SHORTLIST_FRAMES)
+    .map((mark) => badgeMark(mark.file, mark.box ? boxMask(mark.box) : undefined)),
 ];
 
 export default function GtVariants() {
