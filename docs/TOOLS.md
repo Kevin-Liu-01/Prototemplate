@@ -61,7 +61,6 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm test:skills` | Tests for scripts/skills/install.mjs: node --test scripts/skills/install.test.mjs (pnpm test:skills). | `scripts/skills/install.test.mjs scripts/skills/script-tes...` |
 | `pnpm test:type` | Tests for scripts/lint/type.mjs: the repository passes, and each rule reports its defect in a fixture string and passes the fixed string. | `scripts/lint/type.test.mjs` |
 | `pnpm test:updated` | Tests for scripts/build/updated.mjs, each in a throwaway git repository with two pages, so nothing here reads or writes the checkout. | `scripts/build/updated.test.mjs` |
-| `pnpm test:vote` | Tests for src/lib/vote/elo.ts: Elo replayed over the vote log, with the latest vote per voter per pair counted at its own time, excluded voters and hidden options skipped, and the domain filter. | `scripts/vote/elo.test.mjs scripts/vote/schedule.test.mjs ...` |
 
 ## Checks and captures
 
