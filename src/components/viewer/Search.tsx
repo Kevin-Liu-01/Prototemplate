@@ -5,6 +5,7 @@ import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent
 import { useContext, useRef, useState } from 'react';
 
 import { Icon } from '@/components/viewer/icons';
+import { LockMark } from '@/components/viewer/Lock';
 import { SearchKeysContext } from '@/components/viewer/search-keys';
 import { ToolButton } from '@/components/viewer/ToolButton';
 import { openSiteHref } from '@/lib/document-routes';
@@ -349,7 +350,10 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
                         <span className='pt-search-ic'>
                           <Icon name={row.icon} />
                         </span>
-                        <span className='pt-search-t'>{row.title}</span>
+                        <span className='pt-search-t'>
+                          {row.title}
+                          <LockMark href={row.href} />
+                        </span>
                         <span className='pt-search-m'>{row.meta}</span>
                         {external ? <Icon name='external' /> : null}
                       </a>

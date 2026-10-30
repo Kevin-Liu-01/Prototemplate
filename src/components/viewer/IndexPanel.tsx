@@ -6,6 +6,7 @@ import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent
 import { useRouter } from 'next/navigation';
 
 import { Icon } from '@/components/viewer/icons';
+import { LockMark } from '@/components/viewer/Lock';
 import { Seg } from '@/components/viewer/Seg';
 import type { SegOption } from '@/components/viewer/Seg';
 import { usePtShell } from '@/components/viewer/shell-context';
@@ -259,7 +260,10 @@ export function IndexPanel({ set: initialSet, ref }: IndexPanelProps) {
                     >
                       <Shot row={row} broken={broken.has(row.id)} onBroken={() => markBroken(row.id)} />
                       <span className='pt-surf-t'>
-                        <span className='pt-surf-name'>{row.name}</span>
+                        <span className='pt-surf-name'>
+                          {row.name}
+                          <LockMark href={row.href} />
+                        </span>
                         <span className='pt-surf-url'>{row.host}</span>
                         <span className='pt-surf-desc'>{row.desc}</span>
                       </span>

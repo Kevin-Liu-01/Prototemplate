@@ -3,9 +3,12 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { useMemo, useRef, useSyncExternalStore } from 'react';
 
+import { usePathname } from 'next/navigation';
+
 import { formatDay, localDay, relativeDay } from '@/lib/dates';
 import { COMMIT_URL } from '@/lib/page-updated';
 import type { PageUpdated } from '@/lib/page-updated';
+import { isLocked } from '@/lib/seo/policy';
 import type { ShellItem, ShellSection } from '@/lib/shell-data';
 import { pad2, previewId } from '@/lib/shell-data';
 import { useLayoutWork } from '@/lib/use-layout-work';
@@ -14,6 +17,7 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 import { Icon } from './icons';
 import type { IconName } from './icons';
 import { InstallField } from './InstallField';
+import { Lock } from './Lock';
 import { usePtShell } from './shell-context';
 
 import './BookView.css';
@@ -121,16 +125,24 @@ function UpdatedValue({ updated }: { updated: PageUpdated }) {
  * the stage), the note under the rule, the route's contents,
  * and the hatch band that ends the front matter. The panel holds four
  * slots after Updated: three facts, or one fact and the install field. A
- * page differs from another only in its words and its facts. Rendered
- * inside the route's .pt-book-col, before its first section.pt-book-part.
+ * page differs from another only in its words and its facts. A locked
+ * page (LOCKED in src/lib/seo/policy.ts) carries the lock after its title.
+ * Rendered inside the route's .pt-book-col, before its first
+ * section.pt-book-part.
  */
 export function BookHead({ title, badge, lead, updated, note, contents, facts, install }: BookHeadProps) {
+  const locked = isLocked(usePathname() ?? '');
   return (
     <>
       <header className='pt-book-head'>
         <div className='pt-book-mast'>
           <h1>
-            {badge ? (
+            {locked ? (
+              <>
+                {title}
+                <Lock title />
+              </>
+            ) : badge ? (
               <>
                 {title.slice(0, title.lastIndexOf(' ') + 1)}
                 <span className='pt-book-title-end'>

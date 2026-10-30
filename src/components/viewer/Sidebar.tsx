@@ -20,6 +20,7 @@ import { GtMark } from './GtMark';
 import { Icon } from './icons';
 import type { IconName } from './icons';
 import { activateOnKey, ListRow, pressWithoutFocus } from './ListRow';
+import { LockMark } from './Lock';
 import { PREVIEW_DELAY_MS } from './PreviewLayer';
 import { PtMark } from './PtMark';
 import { Seg } from './Seg';
@@ -848,7 +849,10 @@ const TreeRow = memo(function TreeRow({
       <>
         {shots ? <Mini row={row} /> : null}
         <Icon name={row.icon} />
-        <span className='pt-orow-name'>{row.short ?? row.name}</span>
+        <span className='pt-orow-name'>
+          {row.short ?? row.name}
+          <LockMark href={row.href} />
+        </span>
         {row.item?.mark ? <span className='pt-orow-mark'>{row.item.mark}</span> : null}
         {shots ? <span className='pt-orow-addr'>{row.address}</span> : null}
       </>
