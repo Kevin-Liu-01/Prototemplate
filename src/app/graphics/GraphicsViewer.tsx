@@ -24,7 +24,7 @@ import './graphics.css';
 const TITLE = PAGE_NAMES.graphics.name;
 const MODES: readonly ShellMode[] = ['book', 'grid'];
 const LEAD =
-  'Every illustration of the docs series, ordered by the area of the post it sits in, then the covers, the contact sheets and the glyphfield grounds, then the graphics of every other post on the blog.';
+  'Every illustration of the blog: the docs series by the area of the post it sits in, its covers, contact sheets and glyphfield grounds, then the other posts.';
 const NOTE =
   'Each image is one row. The row switches in place between the versions the image ships in: dark and light, the social card cut from a cover, and a clip’s GIF, video and still. The frame opens the file at full size.';
 
