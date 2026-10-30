@@ -187,6 +187,11 @@
   gap: 12px;
 }
 
+/* one column the tile's width, so a wide mark's own width never widens the tile */
+.mk-short-tile {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 /* the plate is square, so every tile has its height before its mark's file arrives */
 .mk-short-plate {
   display: flex;
@@ -196,9 +201,14 @@
   padding: 20px;
 }
 
-/* the shortlist's field holds no caption, so it pads its foot like its head */
+/* the shortlist's field holds no caption, so it pads its foot like its head,
+   and sets its marks closer so the GT mark and the shortlist hold one row at 1440 */
 .mk-field.is-short {
   padding-bottom: 44px;
+}
+
+.mk-field.is-short .mk-field-row {
+  gap: 24px;
 }
 
 /* ---------- the card: every mark ---------- */
