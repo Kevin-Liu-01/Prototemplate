@@ -1,12 +1,17 @@
 /**
- * The marks behind /marks, in the page's four groups: the two marks in
- * production (PRODUCTION_MARKS), the hemispheres round (HEMISPHERE_FAMILIES
- * and HEMISPHERE_MARKS), the bar monogram collection (the speed marks of
- * MARKS, with MARK_RULES), and the other explorations (the picture marks
- * of MARKS and GLOBE_CONCEPTS). Every mark is a public SVG in currentColor
+ * The marks behind /marks and every other surface that draws one. The
+ * catalog at the end of this file (CATALOG, SHORTLIST, FAMILIES) is what
+ * the surfaces read: one row shape for every mark, the shortlist in page
+ * order, and the families by the idea each draws. The earlier lists feed
+ * it unchanged: the two marks in production (PRODUCTION_MARKS), the
+ * hemispheres round (HEMISPHERE_FAMILIES and HEMISPHERE_MARKS), the speed
+ * marks of MARKS with MARK_RULES, and the picture marks of MARKS and
+ * GLOBE_CONCEPTS from the earlier rounds. The marks from 2026-10-28 on are
+ * DYNAMIC_MARKS, finished SVGs under public/marks/dynamic that pnpm
+ * import:marks copies in. Every mark is a public SVG in currentColor
  * under public/marks, with its notes as data. Pure data and types, no
- * React, no DOM, so the server page can read the files and the client
- * viewer can lay them out from the same lists.
+ * React, no DOM and no imports, so the server page, the client viewer and
+ * the Node tests read the same lists.
  *
  * The speed register comes from a race-type reference Kevin brought: wide
  * letters, a forward slant, one horizontal cut through the letters, and
@@ -468,3 +473,237 @@ export const HEMISPHERE_MARKS: readonly HemisphereMark[] = [
   h({ id: 'double-a1-antarctica', family: 'doubled-lines', group: 'double-a1', round: 'land' }),
   h({ id: 'double-b-e2', family: 'doubled-lines', group: 'double-b', round: 'set2' }),
 ];
+
+/* ------------------------------------------------------------------ */
+/* the catalog                                                         */
+
+/** A family of marks: one idea, drawn by every mark in it. /marks gives each family one section. */
+export type MarkFamilyId =
+  | 'stencil'
+  | 'crescent-globe'
+  | 'bolt'
+  | 'speed'
+  | 'wedge-shadow'
+  | 'doubled-line'
+  | 'globe'
+  | 'hemispheres'
+  | 'earlier'
+  | 'production';
+
+export type MarkFamilyRow = {
+  id: MarkFamilyId;
+  name: string;
+  /** one sentence: the idea the family draws */
+  lead: string;
+  /** the section's id on /marks and its hash; the families the page had before keep their old ids */
+  anchor: string;
+  /** the last day Kevin worked on the family; a family with no shortlisted mark takes its place by it, newest first */
+  engaged: string;
+};
+
+/**
+ * Every family, each with its one sentence. pageFamilies() puts them in
+ * page order; this list's order breaks a tie between two families engaged
+ * on the same day.
+ */
+export const FAMILIES: readonly MarkFamilyRow[] = [
+  { id: 'stencil', name: 'Stencil', anchor: 'stencil', engaged: '2026-10-30', lead: 'A G and a lowercase t stand between a cap line and a baseline, with narrow white cuts between the strokes.' },
+  { id: 'crescent-globe', name: 'Crescent globe', anchor: 'crescent-globe', engaged: '2026-10-29', lead: 'A globe is drawn as a crescent limb around the ring of the G, turned on a tilted axis, with the bar of the G on the equator.' },
+  { id: 'bolt', name: 'Bolt', anchor: 'bolt', engaged: '2026-10-30', lead: 'The G is drawn as a lightning bolt whose blade runs down to a point.' },
+  { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-10-30', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
+  { id: 'wedge-shadow', name: 'Wedge and shadow', anchor: 'wedge-shadow', engaged: '2026-10-30', lead: 'Neither letter is drawn, and every black shape is a wedge pressed into the page or the depth of a raised letter.' },
+  { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
+  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-29', lead: 'The G is drawn into a globe of meridians and an equator that turns on a tilted axis.' },
+  { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },
+  { id: 'earlier', name: 'Earlier rounds', anchor: 'other-explorations', engaged: '2026-10-20', lead: 'These marks come from the rounds before the hemispheres, and none was chosen.' },
+  { id: 'production', name: 'In production', anchor: 'production', engaged: '2026-10-20', lead: 'These two marks are live on generaltranslation.com and in the dashboard, and each card lists every file the sites serve.' },
+];
+
+/** One mark of the catalog, whatever round drew it. */
+export type CatalogMark = {
+  /** the file stem, unique across the catalog; the hash names it */
+  id: string;
+  name: string;
+  family: MarkFamilyId;
+  /** the clean mark, a public path */
+  file: string;
+  /** the mark redrawn for 16px, where one is drawn */
+  file16?: string;
+  /** the construction drawing, where one is drawn */
+  constructionFile?: string;
+  /** the drawn bounds inside the file's 256 unit square, x y w h, as pnpm import:marks measures them; the marks of public/marks/dynamic carry one */
+  box?: readonly [number, number, number, number];
+  /** Kevin kept it by name */
+  pick?: true;
+  /** a drawing the family grew from: it opens its family */
+  opens?: true;
+  /** one sentence on what the drawing does */
+  note?: string;
+};
+
+type DynamicInput = Omit<CatalogMark, 'file' | 'file16' | 'box'> & {
+  box: readonly [number, number, number, number];
+  /** the mark has a 16px drawing at /marks/dynamic/<id>-16.svg */
+  cut?: true;
+};
+
+function dyn({ cut, ...mark }: DynamicInput): CatalogMark {
+  return {
+    ...mark,
+    file: `/marks/dynamic/${mark.id}.svg`,
+    ...(cut ? { file16: `/marks/dynamic/${mark.id}-16.svg` } : {}),
+  };
+}
+
+/**
+ * The marks from 2026-10-28 on, each a finished SVG under
+ * public/marks/dynamic that pnpm import:marks copied in and measured. In
+ * each family the drawings it grew from come first, newest first, then
+ * the rest in the order the family shows them; the shortlisted marks are
+ * placed by SHORTLIST.
+ */
+export const DYNAMIC_MARKS: readonly CatalogMark[] = [
+  dyn({ id: 'stencil-hook', name: 'Stencil hook', family: 'stencil', opens: true, box: [22, 60.7, 212, 134.6], note: 'The G and the t share one flat top, and the t turns down into a hook.' }),
+  dyn({ id: 'stencil-block', name: 'Stencil block', family: 'stencil', opens: true, box: [0, 70.2, 256, 115.6], note: 'A heavy G and a lowercase t stand side by side, cut apart by narrow white gaps.' }),
+  dyn({ id: 'stencil-gt', name: 'Stencil', family: 'stencil', pick: true, cut: true, box: [17, 75.3, 230.1, 103.1] }),
+  dyn({ id: 'stencil-a8', name: 'Stencil a8', family: 'stencil', pick: true, box: [20.3, 77, 223.5, 100] }),
+  dyn({ id: 'stencil-b1', name: 'Stencil b1', family: 'stencil', pick: true, box: [6.1, 77, 244.4, 100] }),
+  dyn({ id: 'stencil-a4', name: 'Stencil a4', family: 'stencil', pick: true, box: [20.1, 77, 223.5, 100] }),
+  dyn({ id: 'stencil-b4', name: 'Stencil b4', family: 'stencil', pick: true, box: [19.9, 77, 223.5, 100] }),
+  dyn({ id: 'stencil-a2', name: 'Stencil a2', family: 'stencil', pick: true, box: [20.1, 77, 223.5, 100], note: 'The a8 drawing at the stroke weights of Stencil.' }),
+  dyn({ id: 'kanji-stencil-4', name: 'Kanji stencil, needle', family: 'stencil', box: [15, 58.2, 232, 169.6], note: 'The spur of the G drops as a plumb stroke that closes to a point below the baseline.' }),
+
+  dyn({ id: 'crescent-g-upright', name: 'Upright crescent', family: 'crescent-globe', opens: true, box: [17.5, 0, 221, 256], note: 'A crescent limb stands around the ring of an upright G.' }),
+  dyn({ id: 'crescent-g-turned', name: 'Turned crescent', family: 'crescent-globe', opens: true, box: [6.4, 0, 243.2, 256], note: 'The ring of the G turns inside a crescent limb.' }),
+  dyn({ id: 'crescent-g-tilt-a', name: 'Crescent globe, tilted', family: 'crescent-globe', pick: true, box: [13.4, 16.6, 232.1, 224.1] }),
+  dyn({ id: 'crescent-g-tilt-b', name: 'Crescent globe, blade', family: 'crescent-globe', pick: true, box: [12, 31.7, 236, 194.6] }),
+  dyn({ id: 'lune-1', name: 'Lune', family: 'crescent-globe', pick: true, cut: true, box: [15, 17.6, 232.1, 220.8] }),
+  dyn({ id: 'crescent-g-a', name: 'Crescent globe', family: 'crescent-globe', pick: true, box: [14.4, 15.3, 232.1, 225.2] }),
+  dyn({ id: 'crescent-globe-4', name: 'Crescent globe, poles', family: 'crescent-globe', box: [26.4, 7.9, 207.9, 232.1], note: 'The limb, the G and a meridian are three meridians of one sphere that close into its two poles.' }),
+
+  dyn({ id: 'bolt-straight', name: 'Straight bolt', family: 'bolt', opens: true, box: [26.5, 18.9, 205.2, 222.6], note: 'The G is cut as one solid lightning bolt with straight edges.' }),
+  dyn({ id: 'bolt-swept', name: 'Swept bolt', family: 'bolt', opens: true, box: [13, 0, 230, 256], note: 'The G is drawn as a lightning bolt with swept curves.' }),
+  dyn({ id: 'bolt-5', name: 'Bolt T', family: 'bolt', box: [23.5, 21.3, 214.3, 224.3], note: 'A level T bar carries the blade of the bolt as its stem, and the G thins toward the T.' }),
+  dyn({ id: 'bolt-2', name: 'Bolt, swell', family: 'bolt', box: [37.6, 19.3, 183.7, 226.4], note: 'The stem of the G swells low on the left, and its bar thickens from a hairline into the shoulder.' }),
+
+  dyn({ id: 'speed-needle', name: 'Speed needle', family: 'speed', opens: true, box: [10, 99.7, 236, 56.6], note: 'A wide flat GT trails a long needle to the left.' }),
+  dyn({ id: 'speed-gt', name: 'Speed slab', family: 'speed', opens: true, box: [0, 95, 256, 66], note: 'A wide GT drawn as one slab, with a channel cut through the G.' }),
+  dyn({ id: 'speed-stacked-2', name: 'Speed slab, pitched', family: 'speed', box: [12, 92.9, 232, 71.1], note: 'The channel and the jaw of the G pitch up ten degrees while the two arms taper against each other.' }),
+
+  dyn({ id: 'cuneiform-sign-1', name: 'Cuneiform sign', family: 'wedge-shadow', box: [20, 77.6, 216, 109.1], note: 'Pressed wedges draw the G, and its top wedge runs on to stop one gap short of the bar of the T.' }),
+  dyn({ id: 'cuneiform-sign-3', name: 'Cuneiform sign, counter', family: 'wedge-shadow', box: [25.5, 36.5, 216.1, 190.4], note: 'A wedge pressed across the top of the wedge G hangs through its counter as the stem of a T.' }),
+  dyn({ id: 'cuneiform-wheel-5', name: 'Cuneiform wheel', family: 'wedge-shadow', box: [22.4, 63.8, 216.1, 131], note: 'The wedge G stays whole, and the T is pressed from its three ends with one needle gap between them.' }),
+  dyn({ id: 'umbra-depth-2', name: 'Umbra depth', family: 'wedge-shadow', box: [21.1, 13.8, 213.7, 228.1], note: 'A white T stands in the counter of a G drawn only by its depth.' }),
+  dyn({ id: 'umbra-light-4', name: 'Umbra light', family: 'wedge-shadow', box: [34.4, 58.5, 200.8, 152.6], note: 'Under one light the G is an open ring shown by its shadow, and the T is the shadow of a wire T.' }),
+  dyn({ id: 'impression-6', name: 'Impression', family: 'wedge-shadow', box: [16, 52.5, 228.1, 154.4], note: 'The only ink is the depth that one white GT face casts along one direction.' }),
+
+  dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
+  dyn({ id: 'kanji-lines-1', name: 'Kanji lines, frame', family: 'doubled-line', box: [14.5, 22.8, 228.1, 212.3], note: 'Both lines of the G run on over the whole character as a roof that opens on the right.' }),
+  dyn({ id: 'kanji-lines-3', name: 'Kanji lines, climb', family: 'doubled-line', box: [11.6, 74, 232.1, 108.8], note: 'The inner line of the G turns up and climbs on one diagonal into the top line of the T.' }),
+
+  dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
+  dyn({ id: 'globe-6', name: 'Globe, axis', family: 'globe', box: [24, 29.9, 224, 196.9], note: 'The globe turns on a tilted axis drawn as one straight blade, and the stem of the T hangs square from it.' }),
+];
+
+/**
+ * The shortlist in page order, by id: the strongest marks of every round,
+ * Kevin's picks first, at most 16. Only Kevin removes a pick, and a round
+ * adds at most two marks unless he asks for more.
+ */
+export const SHORTLIST: readonly string[] = [
+  'stencil-gt',
+  'crescent-g-tilt-a',
+  'crescent-g-tilt-b',
+  'stencil-a8',
+  'stencil-b1',
+  'stencil-a4',
+  'stencil-b4',
+  'lune-1',
+];
+
+/** The earlier lists as catalog rows, at the paths they already have. */
+function earlierRows(): CatalogMark[] {
+  return [
+    ...PRODUCTION_MARKS.map((mark): CatalogMark => ({ id: mark.id, name: mark.name, family: 'production', file: mark.file })),
+    ...HEMISPHERE_MARKS.map(
+      (mark): CatalogMark => ({
+        id: mark.id,
+        name: mark.id,
+        family: 'hemispheres',
+        file: mark.file,
+        file16: mark.file16,
+        ...(mark.constructionFile ? { constructionFile: mark.constructionFile } : {}),
+        ...(mark.pick ? { pick: true } : {}),
+        ...(mark.note ? { note: mark.note } : {}),
+      })
+    ),
+    ...MARKS.map(
+      (mark): CatalogMark => ({
+        id: mark.id,
+        name: mark.name,
+        family: mark.family === 'speed' ? 'speed' : 'earlier',
+        file: mark.file,
+        ...(mark.constructionFile ? { constructionFile: mark.constructionFile } : {}),
+      })
+    ),
+    ...GLOBE_CONCEPTS.map((concept): CatalogMark => ({ id: concept.id, name: concept.name, family: 'earlier', file: concept.file })),
+  ];
+}
+
+/** Every mark /marks shows, the earlier lists first and then the dynamic marks; ids are unique across it. */
+export const CATALOG: readonly CatalogMark[] = [...earlierRows(), ...DYNAMIC_MARKS];
+
+const BY_ID = new Map(CATALOG.map((mark) => [mark.id, mark]));
+
+/** A mark of the catalog by its id. */
+export function catalogMark(id: string): CatalogMark | undefined {
+  return BY_ID.get(id);
+}
+
+/** The shortlist's marks in SHORTLIST's order. */
+export function shortlist(): readonly CatalogMark[] {
+  return SHORTLIST.flatMap((id) => BY_ID.get(id) ?? []);
+}
+
+/** A family's record. */
+export function familyRow(id: MarkFamilyId): MarkFamilyRow {
+  return FAMILIES.find((family) => family.id === id) ?? (FAMILIES[0] as MarkFamilyRow);
+}
+
+/**
+ * A family's dynamic marks in page order: the drawings it grew from, then
+ * its shortlisted marks in SHORTLIST's order, then the rest as
+ * DYNAMIC_MARKS lists them. The family's lead mark is the first after the
+ * drawings it grew from.
+ */
+export function dynamicFamily(id: MarkFamilyId): readonly CatalogMark[] {
+  const marks = DYNAMIC_MARKS.filter((mark) => mark.family === id);
+  const rank = (mark: CatalogMark) => {
+    const at = SHORTLIST.indexOf(mark.id);
+    return mark.opens ? -1 : at >= 0 ? at : SHORTLIST.length;
+  };
+  return marks
+    .map((mark, i) => ({ mark, i }))
+    .sort((a, b) => rank(a.mark) - rank(b.mark) || a.i - b.i)
+    .map(({ mark }) => mark);
+}
+
+/**
+ * The families in page order: a family with a shortlisted mark takes the
+ * place of its best one; the rest follow, the most recently engaged
+ * first; In production closes the page.
+ */
+export function pageFamilies(): readonly MarkFamilyRow[] {
+  const best = (family: MarkFamilyRow) => {
+    const places = SHORTLIST.map((id, i) => (BY_ID.get(id)?.family === family.id ? i : -1)).filter((i) => i >= 0);
+    return places.length ? Math.min(...places) : Number.POSITIVE_INFINITY;
+  };
+  const rest = FAMILIES.filter((family) => family.id !== 'production');
+  const ranked = rest.filter((family) => Number.isFinite(best(family))).sort((a, b) => best(a) - best(b));
+  const others = rest
+    .filter((family) => !Number.isFinite(best(family)))
+    .map((family, i) => ({ family, i }))
+    .sort((a, b) => b.family.engaged.localeCompare(a.family.engaged) || a.i - b.i)
+    .map(({ family }) => family);
+  return [...ranked, ...others, familyRow('production')];
+}
