@@ -170,6 +170,11 @@ const nextConfig: NextConfig = {
       { source: '/d/production/terms', destination: '/d/production/legal/terms', permanent: true },
       { source: '/d/production/legal/terms-of-service', destination: '/d/production/legal/terms', permanent: true },
       { source: '/d/production/data-processing', destination: '/d/production/legal/data-processing', permanent: true },
+      // /vote moved to Elo on 2026-10-30 with the same paths, so each ballot,
+      // results and admin address lands on its twin there. The old API goes
+      // too, so no vote reaches the old store.
+      { source: '/vote/:path*', destination: 'https://elo.kevinliu.studio/:path*', permanent: false },
+      { source: '/api/vote/:path*', destination: 'https://elo.kevinliu.studio', permanent: false },
     ];
   },
 };
