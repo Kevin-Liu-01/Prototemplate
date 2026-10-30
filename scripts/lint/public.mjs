@@ -16,7 +16,9 @@
  *     number in the list, never the term. Under VERCEL or CI the denylist
  *     is skipped with a printed line, since no private file is there.
  *
- * It is a filesystem walk, so it reads untracked files too. It skips
+ * It is a filesystem walk, so it reads untracked files too, except the
+ * paths git reports as ignored (.gitignore, .git/info/exclude and the
+ * global excludes), which never reach the repository. It skips
  * node_modules, package stores (.pnpm-store, .npm, .cache, .yarn), .next,
  * .git, out, .pagecheck, public/media, deck/preview, deck/tmp, .env files,
  * binaries and symlinks. motion/ at the root holds the Videos session's
@@ -88,12 +90,31 @@ function isBinary(abs) {
   return buf.subarray(0, n).includes(0);
 }
 
-/** Every text file under the root, repo-relative, skipping the excluded folders, symlinks and binaries. */
+/**
+ * The paths git reports as ignored, repo-relative, a folder with its
+ * trailing slash (git collapses an ignored folder to one entry); none in a
+ * checkout without .git. They never reach GitHub, so the walk skips them.
+ */
+function ignoredPaths() {
+  if (!existsSync(join(ROOT, '.git'))) return new Set();
+  const listed = spawnSync('git', ['ls-files', '-z', '--others', '--ignored', '--exclude-standard', '--directory'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+  });
+  if (listed.status !== 0) return new Set();
+  return new Set(listed.stdout.split('\0').filter(Boolean));
+}
+
+const IGNORED = ignoredPaths();
+
+/** Every text file under the root, repo-relative, skipping the excluded and ignored paths, symlinks and binaries. */
 function walk(dir = ROOT, out = []) {
   for (const entry of readdirSync(dir)) {
     const abs = join(dir, entry);
     const rel = relative(ROOT, abs);
     if (SKIP_NAMES.has(entry) || SKIP_PATHS.has(rel) || entry.startsWith('.env')) continue;
+    if (IGNORED.has(rel) || IGNORED.has(`${rel}/`)) continue;
     const stat = lstatSync(abs);
     if (stat.isSymbolicLink()) continue;
     if (stat.isDirectory()) walk(abs, out);

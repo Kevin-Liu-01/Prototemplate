@@ -159,6 +159,25 @@ describe('lint:public', () => {
     assert.doesNotMatch(result.stdout, /motion\/local\.md|motion\/out/);
   });
 
+  it('skips the paths git ignores, through .gitignore and .git/info/exclude', () => {
+    const root = checkout({
+      '.gitignore': 'local/\n',
+      'local/notes.md': `${MACHINE}\n`,
+      'kept/notes.md': `${MACHINE}\n`,
+      'docs/a.md': 'x\n',
+    });
+    const git = (...args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+    git('init', '-q');
+    writeFileSync(join(root, '.git', 'info', 'exclude'), 'kept/\n');
+    const result = scan(root);
+    assert.equal(result.status, 0, result.stdout);
+    writeFileSync(join(root, 'docs', 'a.md'), `${MACHINE}\n`);
+    const found = scan(root);
+    assert.equal(found.status, 1, found.stdout);
+    assert.match(found.stdout, /docs\/a\.md/);
+    assert.doesNotMatch(found.stdout, /local\/notes\.md|kept\/notes\.md/);
+  });
+
   it('reads the whole motion folder in a checkout without .git', () => {
     const result = scan(checkout({ 'motion/notes.md': `${MACHINE}\n` }));
     assert.equal(result.status, 1, result.stdout);
