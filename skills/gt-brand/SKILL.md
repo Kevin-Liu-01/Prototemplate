@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Brand and the correct Inter
   areas: aesthetic
-  updated: 2026-10-28
+  updated: 2026-10-30
   origin: prototemplate
   owner: P
 ---
@@ -141,7 +141,7 @@ Detail, files and procedures are in `references/marks.md`.
 - **One ink.** Ink on paper or paper on ink. No third color, no gradient, no shadow, no glow. On a dark surface the drawn mark inverts, as an alpha mask that takes the surface's ink or as a clean invert. A mark ships only as vector geometry.
 - **Compression.** The mark must hold at 16px (favicon), 32px (CLI banner), 64px (README header), 128px (npm page) and 256px (website), because developers meet the brand in a terminal as often as on the site (deck slide 25).
 - **Inline.** At text size the GT mark sits in the line at the cap height of the text around it, with the letters GT kept as hidden text.
-- **A new mark.** The G's top arc runs out into a straight horizontal segment, as in the current monogram; a diagonal, radial or hooked terminal is refused (Kevin, 2026-10-09). A candidate is reviewed on paper and ink, at navigation size among competing products' logos and beside the current mark, and only picks are rebuilt as clean SVG with a construction drawing. The review standard and the failure list for new marks are in `references/marks.md` ("Reviewing a new GT mark").
+- **A new mark.** The G's top arc runs out into a straight horizontal segment, as in the current monogram; a diagonal, radial or hooked terminal is refused (Kevin, 2026-10-09). A candidate is reviewed on paper and ink, at navigation size among competing products' logos and beside the current mark, and only picks are rebuilt as clean SVG with a construction drawing. The review standard, the failure list and the catalog a pick enters (`SHORTLIST`, `pnpm import:marks`) are in `references/marks.md`.
 - **Locadex** has its own one-color mark (`public/brand/locadex-mark.svg`; `LocadexMark` in gt-cloud's `packages/ui`) and appears only where it has a function.
 - **The speed set.** Kevin chose seven race-type marks on 2026-09-29 (bar monogram, lockup, plate, double cut, livery stack, dithered, ASCII). They are presented beside the current mark on `/marks` and on deck slides 17 to 23. `scripts/build/speed-marks.mjs` generates every file from geometry and font outlines (`pnpm build:marks`). Regenerate them; never redraw one by hand or edit an SVG under `public/marks`.
 - **The one flourish** is the dithered specular shimmer (`DitheredMark`, the 4 by 4 Bayer band swept through the mark's alpha mask). A mark is never a gif and never carries a filter glow; gt-ui `no-gif-mark` refuses gifs.

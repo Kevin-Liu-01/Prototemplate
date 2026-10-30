@@ -32,3 +32,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 
 - Section 3, "A new palette states shares", and its checklist line: Kevin's request of 2026-10-28 to write these rules into the skills. The notes behind them are private and stay out of the repository.
 - Section 5, the review of a candidate mark in context and the rebuild of picks only, its checklist line, and `references/marks.md` ("Rough rows first", "Reviewed in context before a pick"): the same request, and Kevin's 2026-10-27 note on construction drawings (memory note `gt-globe-marks`).
+
+## Lines added on 2026-10-30
+
+- `references/marks.md`, "The catalog and the shortlist", the `/marks` row of the current-mark table, and the clause on the catalog in section 5: Kevin's request of 2026-10-30 to consolidate the marks and present the best of them across Prototemplate, the marks upgrade plan written that day (kept outside the repository, section 3 for the shortlist rule and section 9 for the decisions), and his ruling of the same day that the marks he picks and our iterations of them may be public as General Translation marks with no outside studio's name.

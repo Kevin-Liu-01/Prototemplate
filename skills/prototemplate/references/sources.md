@@ -62,3 +62,9 @@ Provenance for `prototemplate`. The first list is the skill's sources as written
 | Line | Where | Source |
 | --- | --- | --- |
 | `/blog` and `/blog/<slug>` run on the viewer shell, the posts and the changelog under Knowledge > Blog; a new post is its file, its authors, `pnpm build:blog` and `pnpm build:updated` | SKILL.md section 3, `references/chrome.md`, `references/hub.md`, `references/adding.md` | Kevin's request of 2026-10-26 to present the blog like the other Knowledge pages and port the newer blog work; `src/app/blog/`, `scripts/build/blog.mjs` on branch k/blog-knowledge (2026-10-26) |
+
+## Added or changed on 2026-10-30
+
+| Line | Where | Source |
+| --- | --- | --- |
+| `/marks` holds the two production marks in the head, the shortlist, then every family by the idea it draws, read from the catalog and `SHORTLIST` in `src/lib/marks.ts`, with `pnpm import:marks` | `references/hub.md` | Kevin's request of 2026-10-30 to consolidate the marks and order the page better; the marks upgrade plan of the same day, kept outside the repository |

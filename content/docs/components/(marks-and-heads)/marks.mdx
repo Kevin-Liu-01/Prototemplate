@@ -1,6 +1,6 @@
 ---
-title: Speed marks and the GT mark
-description: "The speed marks and the globe concepts at every size on paper and ink, the GT mark set inline as a word, and a mark with a dithered shine."
+title: Marks and the GT mark
+description: "The shortlist, the speed marks and the globe concepts at every size on paper and ink, the GT mark set inline as a word, and a dithered shine."
 icon: Bolt
 sources:
   - src/components/docs/demos
@@ -16,32 +16,38 @@ sources:
 import { DitheredMarkDemo, GtWordDemo } from '@/components/docs/demos/lazy';
 import MarksDemo from '@/components/docs/demos/MarksDemo';
 
-Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. The speed marks and the globe concepts are SVG files under `public/marks`, listed with their notes in `src/lib/marks.ts` and shown in full at [/marks](/marks). The current GT mark, the doubled-line monogram, is a path that `GtMark` and `GtWord` draw inline.
+Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The current GT mark, the doubled-line monogram, is a path that `GtMark` and `GtWord` draw inline.
 
 ## The marks
 
-The plate draws any mark at the heights `/marks` shows it: a monogram from the 16 pixel favicon to the 128 pixel app icon, a wordmark at 48, 96 and 144. Family switches between the seven speed marks, the two picture marks of the earlier round and the five globe concepts. Ground switches paper and ink, and Construction shows the build overlay of a picture mark.
+The plate draws any mark at the heights `/marks` shows it: a monogram from the 16 pixel favicon to the 128 pixel app icon, a wordmark at 48, 96 and 144. It opens on the shortlist, each mark cut to its drawn box, and Family switches to the seven speed marks, the two picture marks of the earlier round and the five globe concepts. Ground switches paper and ink, and Construction shows the build overlay of a picture mark.
 
 <MarksDemo />
 
-Under a monogram the plate repeats it at 16, 24 and 32 pixels at their true size, where a mark either holds up as a favicon or does not. The server half of the demo reads the files at build time and passes them to the client inline, as the `/marks` page does, so the page fetches no mark files.
+Under a monogram the plate repeats it at 16, 24 and 32 pixels at their true size, where a mark either holds up as a favicon or does not. The server half of the demo reads the files at build time and passes them to the client inline, so the page fetches no mark files. The hemispheres stay on `/marks`, which draws every mark as a mask of its file.
 
 ### Import and data
 
 ```ts
-import { GLOBE_CONCEPTS, MARKS, MARK_SIZES, REFERENCE_MARK, WORDMARK_SIZES } from '@/lib/marks';
+import { boxMask, CATALOG, catalogMark, shortlist, SHORTLIST } from '@/lib/marks';
 
-const speed = MARKS.filter((mark) => mark.family === 'speed'); // seven marks, each at /marks/<id>.svg
+const best = shortlist(); // the shortlist's rows in page order
+const stencil = catalogMark('stencil-gt'); // { id, name, family, file, box, pick }
+const crop = stencil?.box ? boxMask(stencil.box) : undefined; // CSS mask size and position for the drawn box
 ```
 
 | Export | What it holds |
 | --- | --- |
-| `MARKS` | Nine marks: `id`, `name`, `family` (`'speed'` or `'picture'`), `kind` (`'monogram'` or `'wordmark'`), `thesis`, `construction`, `use` and the public `file` |
-| `GLOBE_CONCEPTS` | The five globe marks that were not chosen, each a file under `/marks/globe/` |
+| `CATALOG` | Every mark as one row: `id`, `name`, `family`, the public `file`, `file16` and `constructionFile` where drawn, `box` (the drawn box in the 256 unit square, for the marks from 2026-10-28 on), `pick` and `note` |
+| `SHORTLIST`, `shortlist()` | The ids of the strongest marks in page order, at most 16, and their rows |
+| `FAMILIES`, `pageFamilies()`, `dynamicFamily(id)` | Each family's name, one sentence and anchor on `/marks`; the families in page order; a family's marks in order |
+| `DYNAMIC_MARKS` | The marks from 2026-10-28 on, each a file under `/marks/dynamic/` |
+| `boxMask(box)` | The mask size, position and aspect that show only a mark's drawn box of its square file |
+| `MARKS`, `GLOBE_CONCEPTS` | The nine speed and picture marks with their notes, and the five globe concepts under `/marks/globe/` |
 | `MARK_SIZES`, `WORDMARK_SIZES` | The heights in CSS pixels: 16, 24, 32, 64 and 128, then 48, 96 and 144 |
 | `REFERENCE_MARK` | The current doubled-line monogram as one even-odd path and its view box |
 
-`pnpm build:marks` generates the seven speed files from `scripts/build/speed-marks.mjs` with tight view boxes, so a viewer sizes each mark by height and its own aspect.
+`pnpm import:marks` copies finished marks into `public/marks/dynamic` from a manifest kept outside the repository, checks each with the vote app's checker and prints its drawn box for its row; `pnpm test:marks` holds every row to its file. `pnpm build:marks` generates the seven speed files from `scripts/build/speed-marks.mjs` with tight view boxes, so a viewer sizes each mark by height and its own aspect.
 
 ### When to use it
 

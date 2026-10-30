@@ -282,6 +282,7 @@ export function siteRoutes() {
     { id: 'docs-components', path: '/docs/components', tools: 'check live capture', source: components },
     { id: 'docs-components-globes', path: '/docs/components/globes', tools: 'check', source: [...components, 'src/components/blog-globe'] },
     { id: 'docs-components-blog-globe', path: '/docs/components/blog-globe', tools: 'check capture', source: [...docsSite, 'src/components/blog-globe', 'src/app/d/blog-globe'] },
+    { id: 'docs-components-marks', path: '/docs/components/marks', tools: 'check live', source: [...components, 'src/lib/marks.ts', 'public/marks'] },
     { id: 'compare', path: '/compare', tools: 'check live lines capture', source: ['src/app/compare'] },
     { id: 'press', path: '/atlas', tools: 'check capture', source: ['src/app/atlas/(magazine)'] },
     { id: 'atlas', path: '/atlas/notes', tools: 'check live lines capture', source: ['src/app/atlas/notes'] },

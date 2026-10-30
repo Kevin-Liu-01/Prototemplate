@@ -8,7 +8,7 @@ The GT monogram in use is the doubled-line mark: every stroke of the G and the T
 
 | source | what it is | use it for |
 | --- | --- | --- |
-| `REFERENCE_MARK` in `src/lib/marks.ts` (viewBox `-8 214 1213 771`) | the mark as four contour loops in one evenodd path in currentColor, traced from `public/brand/no-bg-gt-logo-light.png` by marching squares over the alpha channel and simplified at 1.6px of the 1198px master | any vector use in the site, and `/marks`, where it closes the page as the reference |
+| `REFERENCE_MARK` in `src/lib/marks.ts` (viewBox `-8 214 1213 771`) | the mark as four contour loops in one evenodd path in currentColor, traced from `public/brand/no-bg-gt-logo-light.png` by marching squares over the alpha channel and simplified at 1.6px of the 1198px master | any vector use in the site; `/marks` draws its production card and the head's strip from `public/marks/production/gt-mark.svg`, the same outline |
 | the `#gt-mark` symbol in `deck/parts/head.html` | the same outline as a symbol | the deck's sidebar head, the wordmark slot and the GT word |
 | `public/brand/no-bg-gt-logo-dark.png`, `no-bg-gt-logo-light.png` and their `-96` versions | transparent PNG masters; the dark file is the white mark cut for the ink ground | favicons (`/present` uses the light PNG as its icon) and raster contexts |
 | `public/brand/gt-logo-light.svg`, `gt-logo-dark.svg` | the `REFERENCE_MARK` path in `#000` and `#fff` (1.5 KB each), placed where the embedded PNGs they replaced on 2026-10-09 held the mark: the master's 1198px grid 182px into a 1563px square, scaled 0.239923 into viewBox `0 0 375 374.999991` | the `/brand` tiles and any page that needs the mark as a file |
@@ -40,7 +40,16 @@ These rules hold for any new GT mark, from an exploration round to a final pick.
   - grey tints in place of one ink.
 - **Rough rows first.** A mark round starts as rough sketches on one board: one idea per row, and each variant in a row moves one property (the stroke weight, the gap of a doubled line, where the G's arc stops, where a cut falls, the angle). Only the marks Kevin picks are rebuilt as clean SVG from geometry, each with a construction drawing. Kevin, 2026-10-27, on construction drawings: "dont need to do drawings for everything, just the good ones".
 - **Reviewed in context before a pick.** Every candidate is shown on paper and on ink, at navigation size in one row with the logos of the localization products it is compared with (each from thesvg.org, as for every third-party logo), and beside the current mark at the same height. It is judged at those sizes before it is judged large, and the small sizes above still apply.
-- **Where the work lives.** Exploration marks stay as review pages until Kevin picks (`gt-explorations`). A pick goes into `src/lib/marks.ts` and `public/marks` the way the speed set did, generated from geometry and never drawn by hand.
+- **Where the work lives.** Exploration marks stay as review pages until Kevin picks (`gt-explorations`). A pick enters the catalog in `src/lib/marks.ts` as a finished file under `public/marks` (next section), and is never redrawn by hand in the repository.
+
+## The catalog and the shortlist
+
+`src/lib/marks.ts` ends in one catalog that every surface reads: `CATALOG` (every mark as one row shape: id, name, family, file, the 16px drawing and the construction drawing where they exist, and the drawn box), `FAMILIES` (each family's name and one sentence, its anchor on `/marks`, and the day Kevin last worked on it), `SHORTLIST` (the strongest marks in page order) and `DYNAMIC_MARKS` (the marks from 2026-10-28 on). `/marks`, the marks plate on `/components` and `/docs/components/marks`, the `/brand` badge, the badge demo, the dither tiers plate and the home row read it, and none of them names a mark path of its own.
+
+- **The shortlist.** Kevin's picks enter by name and only he removes one. A new mark joins when it would sit beside the marks he kept, is no weight, placement or cut variant of a shortlisted mark, keeps one ink with every cut on a stroke edge or an axis, and Kevin says yes on one sheet beside the shortlist at 256, 64 and 32 px on paper and ink. At most 16 marks, at most two new ones a round, and the first row holds four distinct ideas.
+- **The families.** A family takes the place of its best shortlisted mark on `/marks`; a family with none follows by the day Kevin last worked on it, newest first, and In production closes the page. A family opens with the drawings it grew from (`opens`), then its lead on both grounds, then the rest.
+- **Entering a mark.** `pnpm import:marks` copies finished SVGs into `public/marks/dynamic` from a manifest kept outside the repository, checks each with the vote app's checker (`src/lib/vote/mark-file.ts`), writes the one canonical header (one path in `currentColor`, viewBox `0 0 256 256`, at most 8 KB) and prints the drawn box for the mark's row. `pnpm test:marks` (in `lint:static`) holds every row to its file.
+- **Public names.** Every mark is a General Translation mark. Ids, names, notes, file headers and commit messages carry no outside studio's name, option label or symbol number, and no provenance line; `pnpm test:marks` refuses the generic words, and the private denylist of `pnpm lint:public` holds the names.
 
 ## The GT word in text
 

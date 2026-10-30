@@ -115,7 +115,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Brand and the correct Inter',
     description: 'The General Translation identity as rules: the name and the naming system, the four absolute colors and the one accent, the type system on the self-hosted rsms InterVariable 4.1 (weights, optical size, features, tracking, per-script fallbacks), the doubled-line GT monogram and the generated speed marks, language as material, the final avoid list, and what never appears on a public surface. Use before making anything that carries the GT brand (a page, a slide, a graphic, a film, an email or a social image), when choosing a face, weight, tracking or color, when placing a GT mark or a third-party logo, and when reviewing a surface against the brand.',
     areas: ['aesthetic'],
-    updated: '2026-10-28',
+    updated: '2026-10-30',
     files: ['references/color.md', 'references/language.md', 'references/marks.md', 'references/sources.md', 'references/third-party.md', 'references/type.md'],
   },
   {
