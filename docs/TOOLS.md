@@ -52,7 +52,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | --- | --- | --- |
 | `pnpm test:copies` | Tests for scripts/lint/copies.mjs: node --test scripts/lint/copies.test.mjs (pnpm test:copies). | `scripts/lint/copies.test.mjs` |
 | `pnpm test:heads` | Tests for scripts/lint/heads.mjs: a passing and a failing fixture per static rule, and each live judge fed recorded geometry (the judges are pure functions over what collectHead measures, so no browser runs here). | `scripts/lint/heads.test.mjs` |
-| `pnpm test:marks` | Tests for the marks catalog (src/lib/marks.ts) against public/marks: every file a row names exists, every file under public/marks/dynamic has a row, every dynamic file is one path in currentColor on the canonical 256 unit header and at most 8 KB, the drawn box a row records is ... | `scripts/lint/marks.test.mjs` |
+| `pnpm test:marks` | Tests for the marks catalog (src/lib/marks.ts) against public/marks: every file a row names exists, every file under public/marks/dynamic has a row, every dynamic file is one path in currentColor on the canonical 256 unit header and at most 8 KB, the drawn box a row records is ... | `scripts/lint/marks.test.mjs scripts/lint/mark-file.test.mjs` |
 | `pnpm test:pictures` | Tests for scripts/lint/pictures.mjs: the repository passes, and each kind of defect in a fixture copy of the picture files is reported. | `scripts/lint/pictures.test.mjs` |
 | `pnpm test:public` | Tests for scripts/lint/public.mjs: node --test scripts/lint/public.test.mjs (pnpm test:public). | `scripts/lint/public.test.mjs` |
 | `pnpm test:radius` | Tests for scripts/lint/radius.mjs: a passing and a failing string per static rule, the live judges over recorded corners, and the repository. | `scripts/lint/radius.test.mjs` |
@@ -61,7 +61,6 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm test:skills` | Tests for scripts/skills/install.mjs: node --test scripts/skills/install.test.mjs (pnpm test:skills). | `scripts/skills/install.test.mjs scripts/skills/script-tes...` |
 | `pnpm test:type` | Tests for scripts/lint/type.mjs: the repository passes, and each rule reports its defect in a fixture string and passes the fixed string. | `scripts/lint/type.test.mjs` |
 | `pnpm test:updated` | Tests for scripts/build/updated.mjs, each in a throwaway git repository with two pages, so nothing here reads or writes the checkout. | `scripts/build/updated.test.mjs` |
-| `pnpm test:vote` | Tests for src/lib/vote/elo.ts: Elo replayed over the vote log, with the latest vote per voter per pair counted at its own time, excluded voters and hidden options skipped, and the domain filter. | `scripts/vote/elo.test.mjs scripts/vote/schedule.test.mjs ...` |
 
 ## Checks and captures
 

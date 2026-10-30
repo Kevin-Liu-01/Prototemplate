@@ -27,11 +27,7 @@ export type PageId =
   | 'transcreateVideos'
   | 'transcreateDatabricks'
   | 'transcreateRamp'
-  | 'transcreateCredits'
-  | 'vote'
-  | 'voteResults'
-  | 'voteMine'
-  | 'voteAdmin';
+  | 'transcreateCredits';
 
 export type PageName = { name: string; short?: string };
 
@@ -57,10 +53,6 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   transcreateDatabricks: { name: 'Transcreate Databricks', short: 'Databricks' },
   transcreateRamp: { name: 'Transcreate Ramp', short: 'Ramp' },
   transcreateCredits: { name: 'Transcreate credits', short: 'Credits' },
-  vote: { name: 'Vote' },
-  voteResults: { name: 'Vote results' },
-  voteMine: { name: 'Your votes' },
-  voteAdmin: { name: 'Vote admin' },
 };
 
 /** The sidebar's label for a page: its short form where it has one. */

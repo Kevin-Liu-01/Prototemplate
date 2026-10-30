@@ -47,7 +47,7 @@ const crop = stencil?.box ? boxMask(stencil.box) : undefined; // CSS mask size a
 | `MARK_SIZES`, `WORDMARK_SIZES` | The heights in CSS pixels: 16, 24, 32, 64 and 128, then 48, 96 and 144 |
 | `REFERENCE_MARK` | The current doubled-line monogram as one even-odd path and its view box |
 
-`pnpm import:marks` copies finished marks into `public/marks/dynamic` from a manifest kept outside the repository, checks each with the vote app's checker and prints its drawn box for its row; `pnpm test:marks` holds every row to its file. `pnpm build:marks` generates the seven speed files from `scripts/build/speed-marks.mjs` with tight view boxes, so a viewer sizes each mark by height and its own aspect.
+`pnpm import:marks` copies finished marks into `public/marks/dynamic` from a manifest kept outside the repository, checks each with the mark checker and prints its drawn box for its row; `pnpm test:marks` holds every row to its file. `pnpm build:marks` generates the seven speed files from `scripts/build/speed-marks.mjs` with tight view boxes, so a viewer sizes each mark by height and its own aspect.
 
 ### When to use it
 

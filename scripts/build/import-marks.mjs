@@ -10,7 +10,7 @@
  *
  * Every file must already be a finished mark: one path in currentColor,
  * fill-rule nonzero or evenodd, viewBox 0 0 256 256, and nothing else.
- * The vote app's checker (src/lib/vote/mark-file.ts) reads it as well:
+ * The mark checker (src/lib/mark-file.ts) reads it as well:
  * sanitizeSvg must accept it, parsePath must read its path data, and
  * normalizeSvg must find one ink with no holes painted in a second tone.
  * The script rewrites the header to the canonical one (so no label or
@@ -43,7 +43,7 @@ export const DYNAMIC_DIR = 'public/marks/dynamic';
 export const MAX_BYTES = 8 * 1024;
 const SIZE = 256;
 
-const { normalizeSvg, parsePath, sanitizeSvg } = await import(new URL('../../src/lib/vote/mark-file.ts', import.meta.url).href);
+const { normalizeSvg, parsePath, sanitizeSvg } = await import(new URL('../../src/lib/mark-file.ts', import.meta.url).href);
 
 /** The one header every mark file carries; `cut` adds nothing, since the 16px cuts are drawn as paths too. */
 export function canonicalSvg(rule, d) {

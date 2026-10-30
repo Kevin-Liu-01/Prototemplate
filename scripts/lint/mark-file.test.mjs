@@ -1,4 +1,4 @@
-// Tests for src/lib/vote/mark-file.ts: an uploaded SVG mark loses scripts,
+// Tests for src/lib/mark-file.ts: an uploaded SVG mark loses scripts,
 // handlers, foreignObject and outside references, its background rect and
 // its colors, keeps near-white knockouts as holes, and gets a viewBox cut to
 // its ink; a PNG mark must decode and have a fully transparent pixel,
@@ -11,10 +11,10 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { deflateSync } from 'node:zlib';
 
-import { importTs } from '../lint/seo.mjs';
+import { importTs } from './seo.mjs';
 
 const { checkPng, detectImage, detectKind, normalizeSvg, parsePath, prepareFile, sanitizeSvg, stripJpeg, stripPng, stripWebp, toneOf } = await importTs(
-  new URL('../../src/lib/vote/mark-file.ts', import.meta.url)
+  new URL('../../src/lib/mark-file.ts', import.meta.url)
 );
 
 const svg = (body, attrs = 'viewBox="0 0 100 100"') => `<svg xmlns="http://www.w3.org/2000/svg" ${attrs}>${body}</svg>`;
