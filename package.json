@@ -35,7 +35,7 @@
     "build:deck": "node scripts/build/deck.mjs",
     "build:marks": "node scripts/build/speed-marks.mjs",
     "import:marks": "node scripts/build/import-marks.mjs",
-    "test:marks": "node --test scripts/lint/marks.test.mjs",
+    "test:marks": "node --test scripts/lint/marks.test.mjs scripts/lint/mark-file.test.mjs",
     "build:inter": "python3 scripts/build/subset-inter.py",
     "build:thumbs": "node scripts/build/thumbs.mjs",
     "build:skills": "node scripts/build/skills.mjs",
