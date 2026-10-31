@@ -794,14 +794,15 @@
   text-decoration-color: var(--pt-ink-2);
 }
 
-/* ---- the marks: the shortlist in one row, each mark a link to its card
-   on /marks. A tile is square, so the row holds its height before the
+/* ---- the marks: the shortlist in one row (--n columns, its length), each
+   mark a link to its card on /marks; on a phone in even rows of at most
+   four (--n-sm). A tile is square, so the row holds its height before the
    files arrive; the mark is a mask of its file cut to its drawn box and
    takes the box's aspect inside the square. ---- */
 
 .pt-marks-row {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--n, 8), minmax(0, 1fr));
   gap: clamp(16px, 2.4vw, 36px);
   align-items: center;
   margin-top: 28px;
@@ -836,7 +837,7 @@
 
 @media (max-width: 760px) {
   .pt-marks-row {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--n-sm, 4), minmax(0, 1fr));
   }
 }
 

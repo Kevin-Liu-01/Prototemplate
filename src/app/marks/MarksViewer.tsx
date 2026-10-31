@@ -65,6 +65,8 @@ const FILM_MARK = SPEED_MARKS.find((mark) => mark.film);
 const TOTAL = CATALOG.length;
 
 const familyCount = (family: MarkFamilyRow) => CATALOG.filter((mark) => mark.family === family.id).length;
+/** A count of marks in words: 1 mark, 9 marks. */
+const marksIn = (n: number) => `${n} ${n === 1 ? 'mark' : 'marks'}`;
 const hemiId = (family: HemisphereFamily) => `hemi-${family.id}`;
 const hemiMarks = (family: HemisphereFamily) => HEMISPHERE_MARKS.filter((mark) => mark.family === family.id);
 /** A hemispheres mark the family shows open: its lead, and every mark drawn beside its construction. */
@@ -156,7 +158,7 @@ function familySection(family: MarkFamilyRow): ShellSection {
     id: family.anchor,
     label: family.name,
     under: 'marks',
-    items: [{ id: family.anchor, n: '', title: family.name, desc: `${familyCount(family)} marks. ${family.lead}` }],
+    items: [{ id: family.anchor, n: '', title: family.name, desc: `${marksIn(familyCount(family))}. ${family.lead}` }],
   };
 }
 
@@ -988,7 +990,7 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
         }
       />
 
-      <Group id={SHORTLIST_ID} section={1} count={`${SHORTLIST.length} marks`} title='Shortlist' lead={SHORTLIST_LEAD} active={active === SHORTLIST_ID}>
+      <Group id={SHORTLIST_ID} section={1} count={marksIn(SHORTLIST.length)} title='Shortlist' lead={SHORTLIST_LEAD} active={active === SHORTLIST_ID}>
         <ShortlistBody onJump={onContents} />
       </Group>
 
@@ -997,7 +999,7 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
           key={family.id}
           id={family.anchor}
           section={i + 2}
-          count={`${familyCount(family)} marks`}
+          count={marksIn(familyCount(family))}
           title={family.name}
           lead={family.lead}
           active={active === family.anchor}

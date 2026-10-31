@@ -148,12 +148,15 @@ const DECK = [
  */
 /**
  * The shortlist in one row: each mark cut to its drawn box, in the page's
- * ink, a link to its card on /marks.
+ * ink, a link to its card on /marks. The row takes one column a mark, and
+ * on a phone the fewest even rows of at most four.
  */
 function MarksRow() {
+  const marks = shortlist();
+  const columns: CSSProperties = { '--n': marks.length, '--n-sm': Math.ceil(marks.length / Math.ceil(marks.length / 4)) };
   return (
-    <nav className='pt-marks-row' aria-label='The shortlist of marks'>
-      {shortlist().map((mark) => {
+    <nav className='pt-marks-row' aria-label='The shortlist of marks' style={columns}>
+      {marks.map((mark) => {
         const crop = mark.box ? boxMask(mark.box) : undefined;
         const style: CSSProperties = {
           '--mk-mask': `url('${mark.file}')`,

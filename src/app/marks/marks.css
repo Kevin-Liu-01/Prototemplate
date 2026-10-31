@@ -155,6 +155,7 @@
 .mk-live-name,
 .mk-short-name {
   display: grid;
+  align-content: start;
   gap: 2px;
   padding: 10px 14px 12px;
   border-top: 1px solid var(--pt-hair-soft);
@@ -184,12 +185,16 @@
 .mk-short {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   gap: 12px;
 }
 
-/* one column the tile's width, so a wide mark's own width never widens the tile */
+/* one column the tile's width, so a wide mark's own width never widens the tile;
+   every row is as tall as the tallest (.mk-short), and the name takes the
+   height the plate leaves, so every tile is one size and the plate stays square */
 .mk-short-tile {
   grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
 }
 
 /* the plate is square, so every tile has its height before its mark's file arrives */

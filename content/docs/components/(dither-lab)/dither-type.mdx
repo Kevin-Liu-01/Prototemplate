@@ -65,7 +65,7 @@ The plate holds a mark as a signed distance field and prints it at one level of 
 
 With the Tiers order every cell inside the mark gets the level's tone, so level k on the 8 by 8 lights exactly k of the 64 cells in every whole tile inside the mark. The tiers nest: every cell lit at one level stays lit at every higher level. A step up therefore only adds cells and a step down only removes them, and no cell moves. The other orders spread the level across a band of 35 percent of the ramp. Core out fills each stroke from its spine to its outline, Edge in fills from the outline to the spine, and Sweep fills from left to right.
 
-Play runs one cycle on smoothsteps: the mark resolves in 1.4 s, holds for 1.2 s, erodes in 1.4 s and holds empty for 1.2 s. Dragging Level stops the cycle. Under reduced motion the plate draws the mark resolved, and Level still works. The marks are the GT mark from `REFERENCE_MARK` in `src/lib/marks.ts` and four marks from `public/marks`.
+Play runs one cycle on smoothsteps: the mark resolves in 1.4 s, holds for 1.2 s, erodes in 1.4 s and holds empty for 1.2 s. Dragging Level stops the cycle. Under reduced motion the plate draws the mark resolved, and Level still works. The marks are the GT mark from `REFERENCE_MARK` in `src/lib/marks.ts`, the first two marks of the shortlist and four marks of the earlier rounds.
 
 ### Import and props
 
@@ -78,7 +78,7 @@ const shape = markShape(art, cols, rows);
 
 | Function | Returns | Notes |
 | --- | --- | --- |
-| `loadMark(id)` | `Promise<MarkArt>` | `'gt'` draws the reference path with the even-odd rule; the others decode `/marks/<id>.svg` once at 2048px wide. |
+| `loadMark(id)` | `Promise<MarkArt>` | `'gt'` draws the reference path with the even-odd rule; the others decode the file the catalog gives them once at 2048px wide, cut to the drawn box where the catalog records one. |
 | `markShape(art, cols, rows, ss?, fill?)` | `CellShape` | Fits the mark to 80 percent of the width and 76 percent of the height, centred. |
 
 The marks in `public/marks` draw their cuts with SVG masks and white shapes over black. The plate rasterizes each file as an image and counts a pixel as ink only when it is opaque and dark, so a white knockout stays paper.
