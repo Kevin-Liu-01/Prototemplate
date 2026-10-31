@@ -1498,6 +1498,155 @@
   fill: currentColor;
 }
 
+/* the spotlight (live's class names, blog.css verbatim; gt-cloud #5567 renamed author-spotlight) */
+.prod-root .pba-prose .spotlight {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  min-height: 300px;
+  overflow: hidden;
+  margin-block: 32px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  background: var(--tc-paper);
+}
+
+.prod-root .pba-prose .spotlight-portrait {
+  position: relative;
+  min-height: 300px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--tc-ink) 7%, var(--tc-paper));
+}
+
+.prod-root .pba-prose .spotlight-portrait::after {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: -1px;
+  bottom: 0;
+  width: 3px;
+  background: var(--tc-paper);
+  content: '';
+  pointer-events: none;
+}
+
+.prod-root .pba-prose .spotlight-image {
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.04);
+  transition: transform 300ms ease;
+}
+
+.prod-root .pba-prose .spotlight-portrait:hover .spotlight-image {
+  transform: scale(1.025);
+}
+
+.prod-root .pba-prose .spotlight-dither {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.prod-root .pba-prose .spotlight-dither path,
+.prod-root .pba-prose .spotlight-dither-seal {
+  fill: var(--tc-paper);
+}
+
+.prod-root .pba-prose .spotlight-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+}
+
+.prod-root .pba-prose .spotlight h3 {
+  margin: 0;
+  font-family: var(--tc-sans);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--tc-ink);
+}
+
+.prod-root .pba-prose .spotlight-description {
+  max-width: 44ch;
+  margin-top: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--tc-ink-2);
+}
+
+.prod-root .pba-prose .spotlight-description > :first-child {
+  margin-top: 0;
+}
+
+.prod-root .pba-prose .spotlight-description > :last-child {
+  margin-bottom: 0;
+}
+
+.prod-root .pba-prose .spotlight-description :is(p, li) {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.prod-root .pba-prose .spotlight-description a {
+  color: var(--tc-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prod-root .pba-prose .spotlight-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 0;
+}
+
+.prod-root .pba-prose .spotlight-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 9px 5px 5px;
+  border: 1px solid var(--tc-hair);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tc-ink);
+  text-decoration: none;
+  transition: border-color 160ms ease;
+}
+
+.prod-root .pba-prose .spotlight-links a:hover {
+  border-color: var(--tc-ink-3);
+}
+
+.prod-root .pba-prose .spotlight-links img {
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.prod-root .pba-prose .spotlight-github-icon {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: var(--tc-ink);
+  color: var(--tc-paper);
+}
+
+.prod-root .pba-prose .spotlight-github-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
 /* the Fumadocs architecture diagram (live's class names, blog.css values) */
 .prod-root .pba-prose .fumadocs-architecture {
   --fda-fg: hsl(0, 0%, 3.9%);
@@ -1917,6 +2066,18 @@
   }
 
   .prod-root .pba-prose .author-spotlight-copy {
+    min-height: 0;
+  }
+
+  .prod-root .pba-prose .spotlight {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prod-root .pba-prose .spotlight-portrait {
+    min-height: 240px;
+  }
+
+  .prod-root .pba-prose .spotlight-copy {
     min-height: 0;
   }
 }

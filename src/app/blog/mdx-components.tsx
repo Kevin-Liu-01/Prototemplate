@@ -10,6 +10,8 @@ import Carousel, { CarouselItem } from '@/components/blog/Carousel';
 import FumadocsArchitecture from '@/components/blog/FumadocsArchitecture';
 import GitHubLink from '@/components/blog/GitHubLink';
 import HitList, { HitItem } from '@/components/blog/HitList';
+import OpenSourceGrants from '@/components/blog/OpenSourceGrants';
+import Spotlight from '@/components/blog/Spotlight';
 import Tweet from '@/components/blog/Tweet';
 import Video from '@/components/blog/Video';
 import { BLOG_COLUMN_SIZES, isGif } from '@/lib/blog-image-sizes';
@@ -73,6 +75,8 @@ export const mdxComponents: Components = {
   GitHub: GitHubLink,
   HitItem,
   HitList,
+  OpenSourceGrants,
+  Spotlight,
   Tweet,
   Video,
   X,

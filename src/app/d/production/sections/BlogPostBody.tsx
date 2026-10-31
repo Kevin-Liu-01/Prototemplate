@@ -8,6 +8,7 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
 import Carousel, { CarouselItem } from '@/components/blog/Carousel';
+import Spotlight from '@/components/blog/Spotlight';
 
 import PostAuthorSpotlight from './PostAuthorSpotlight';
 import PostFumadocsArchitecture from './PostFumadocsArchitecture';
@@ -156,6 +157,35 @@ function PostCallout({ type = 'info', title, icon, className = '', children }: C
   );
 }
 
+/**
+ * live's OpenSourceGrants (gt-cloud #5598): the grants note that opens every
+ * open-source grantee post, fumadocs' Callout with the class list the posts
+ * used to pass it, the repository button and live's three paragraphs.
+ */
+function PostOpenSourceGrants() {
+  return (
+    <PostCallout
+      className='bg-fd-muted w-full max-w-none rounded-md border-0 p-5 shadow-none [&_.not-prose]:my-3'
+      icon=' '
+      type='info'
+    >
+      <p>
+        <em>About General Translation Open-Source Grants</em>
+      </p>
+      <p>
+        The open-source ethos is core to what we do at General Translation. Our flagship internationalization (i18n)
+        libraries are open source under the MIT license.
+      </p>
+      <PostGitHub />
+      <p>
+        We’re now supporting other open-source developers who build and maintain software for the public good, starting
+        with $15,000 in no-strings-attached funds as well as $75,000 in GT platform credits across fifteen developers.
+        Nominations are rolling and still open! Read more <PostLink href='/blog/supporting-open-source-software'>here</PostLink>.
+      </p>
+    </PostCallout>
+  );
+}
+
 /** live's MdxCheck and MdxCross: Heroicons 16 solid at the inline icon scale, green and red as the posts color them. */
 function PostCheck({ className = '' }: { className?: string }) {
   return <CheckIcon aria-hidden='true' className={`pba-mdx-icon${className.includes('text-green') ? ' is-yes' : ''}`} />;
@@ -191,6 +221,8 @@ const components: NonNullable<MDXRemoteProps['components']> = {
   Check: PostCheck,
   FumadocsArchitecture: PostFumadocsArchitecture,
   GitHub: PostGitHub,
+  OpenSourceGrants: PostOpenSourceGrants,
+  Spotlight,
   Tweet: PostTweet,
   Video: PostVideo,
   X: PostCross,

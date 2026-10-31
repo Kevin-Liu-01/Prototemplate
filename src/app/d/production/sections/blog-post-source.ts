@@ -15,7 +15,8 @@ import type { PostType } from './blog-article-data';
  * licensed CC BY 4.0. This reader follows live's
  * apps/landing/src/components/blog/utils.ts: getPostBySlug reads the file
  * and drops the frontmatter, splitHeaderIntro lifts a leading <Callout>
- * into the header when the frontmatter sets headerIntro, and
+ * or <OpenSourceGrants /> into the header when the frontmatter sets
+ * headerIntro, and
  * extractHeadings lists the h2 and h3 headings with the ids rehype-slug
  * gives them.
  */
@@ -55,21 +56,31 @@ export function readPostSource(slug: string, postType: PostType): PostSource | n
 
 /**
  * Live parses the body as MDX and lifts its first node when that node is a
- * <Callout> element. The vendored posts open a header intro with a Callout
- * that holds no nested Callout, so the element runs from the opening tag
- * at the start of the body to the first closing tag.
+ * <Callout> element or an <OpenSourceGrants /> note, which renders one
+ * (HEADER_INTRO_ELEMENTS, gt-cloud #5598). The vendored posts open a header
+ * intro with the self-closing note or with a Callout that holds no nested
+ * Callout, so the element runs from the opening tag at the start of the
+ * body to the end of the note or to the first closing tag.
  */
 function splitHeaderIntro(content: string, enabled: boolean): { body: string; header: string | null } {
   if (!enabled) return { body: content, header: null };
   const start = content.search(/\S/);
-  if (start < 0 || !/^<Callout[\s>]/.test(content.slice(start))) return { body: content, header: null };
-  const close = content.indexOf('</Callout>', start);
-  if (close < 0) return { body: content, header: null };
-  const end = close + '</Callout>'.length;
+  if (start < 0) return { body: content, header: null };
+  const end = start + introLength(content.slice(start));
+  if (end === start) return { body: content, header: null };
   return {
     body: content.slice(end).replace(/^(?:[ \t]*\r?\n)+/, ''),
     header: content.slice(start, end),
   };
+}
+
+/** The length of the intro element the text opens with, or 0 when it opens with something else. */
+function introLength(text: string): number {
+  const note = /^<OpenSourceGrants\s*\/>/.exec(text);
+  if (note) return note[0].length;
+  if (!/^<Callout[\s>]/.test(text)) return 0;
+  const close = text.indexOf('</Callout>');
+  return close < 0 ? 0 : close + '</Callout>'.length;
 }
 
 /**
