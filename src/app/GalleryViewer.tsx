@@ -607,7 +607,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
 
           <section className='pt-sec pt-post-sec'>
             <h2>The marks</h2>
-            <p>The shortlist holds the strongest General Translation marks of every round.</p>
+            <p>The shortlist holds the General Translation marks chosen so far.</p>
             <MarksRow />
           </section>
 

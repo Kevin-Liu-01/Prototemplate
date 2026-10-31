@@ -15,7 +15,7 @@ const route = seoRoute({
   title: PAGE_NAMES.marks.name,
   kind: 'page',
   description:
-    'The two General Translation marks in production, a shortlist of the strongest explorations, and every family of marks by the idea it draws.',
+    'The two General Translation marks in production, a shortlist of the marks chosen so far, and every family of marks by the idea it draws.',
 });
 
 export const metadata = route.metadata;
