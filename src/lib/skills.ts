@@ -61,7 +61,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Voice and the humanizer',
     description: 'How Kevin writes for General Translation: plain technical English for site copy, docs, decks, captions, films, UI strings, PR text and Slack; sentence shape; the heading and casing rules; writing for a stranger; the humanizer pass that strips AI patterns; code comments, commit messages and PR descriptions; and the first-person register for Kevin\'s own posts and reviews. Use when writing or editing any text Kevin will ship, publish or read, including code comments and PR descriptions, and before showing him a draft.',
     areas: ['voice'],
-    updated: '2026-10-20',
+    updated: '2026-10-30',
     files: ['references/ai-patterns.md', 'references/before-after.md', 'references/launch-posts.md', 'references/messages.md', 'references/sources.md'],
   },
   {
@@ -79,7 +79,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Working in Prototemplate',
     description: 'How to work in Prototemplate, Kevin\'s hub and wiki for General Translation work: what each route holds, the repository map, the viewer shell and its props, the registries that move together (surfaces, search index, the handbook, the docs pages, src/lib/seo, captures), the chrome and sidebar rules, the book page standard, adding a page, a docs page, a handbook document or a skill, the build scripts, the shared checkout and its session lanes, the gates and landing, keeping the hub current with gt-cloud, and the curated skills with their contract and install. Use when changing anything in the Prototemplate repository, when adding a route, document or skill to it, or when building on it from another project.',
     areas: ['website', 'components'],
-    updated: '2026-10-26',
+    updated: '2026-10-30',
     files: ['references/adding.md', 'references/build-scripts.md', 'references/chrome.md', 'references/hub.md', 'references/porting.md', 'references/registries.md', 'references/shell.md', 'references/skills.md', 'references/sources.md'],
   },
   {
@@ -106,7 +106,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Taste and the review standard',
     description: 'Kevin\'s taste for General Translation work and the review he applies to it. The brand deck (deck/parts/head.html and DECK-GRAMMAR.md) is the reference for product surfaces and the shipped generaltranslation.com is the reference for the site. Covers contrast and hierarchy, the rhythm numbers, single lines whose weight carries meaning, one material per surface, type polish for heads and leads, the dated record of what Kevin rejected and why, and the review loop of one exemplar, a local review, then landing, with a script that measures a page\'s heads and leads. Use when designing or polishing any GT surface, when Kevin says something looks bad, busy or ugly, and before showing him design work.',
     areas: ['aesthetic', 'website', 'landing', 'components'],
-    updated: '2026-10-10',
+    updated: '2026-10-30',
     files: ['references/measures.md', 'references/process.md', 'references/sources.md', 'references/verdicts.md', 'scripts/measure-type.mjs'],
   },
   {
@@ -133,7 +133,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Exploration rounds and convergence',
     description: 'How a General Translation design exploration runs from research to one landed design: reading Kevin\'s sources and measuring the reference sites, writing the page as text first, directions that differ in silhouette, material and action, one registry and one place to compare them live, in-page switches for effect variants, picks by Kevin\'s numbers, forks that never overwrite a version, critic composites against the reference, removing the losers and archiving retired versions, and keeping rounds local until he lands them. Use when Kevin asks for options, versions, variations, directions or "try N approaches", when he links a post or product to learn from, and when converging a design toward his pick.',
     areas: ['aesthetic', 'website', 'landing', 'graphics'],
-    updated: '2026-10-28',
+    updated: '2026-10-30',
     files: ['references/charter.md', 'references/comparing.md', 'references/registry.md', 'references/rounds.md', 'references/sources.md', 'scripts/distinct-set.mjs'],
   },
   {
@@ -232,7 +232,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Branches, PRs and landing',
     description: 'How General Translation work moves from a worktree to main: one session per lane and one worktree per branch, the commit identity gt-cloud\'s deploys require, staging by explicit path, PR size discipline, the PR body with before and after crops, the review bots and required checks, Linear and reviewer requests, stacked PRs, the parity gate for onboarding and auth, and Prototemplate\'s rules for a shared checkout, local review and its Vercel deploys. Use when committing, opening, describing or updating a PR, answering Greptile or Bugbot, restacking after a merge, or landing work in gt-cloud or Prototemplate.',
     areas: ['workflow', 'lints'],
-    updated: '2026-10-10',
+    updated: '2026-10-30',
     files: ['references/beyond-the-pr.md', 'references/pr-body.md', 'references/prototemplate.md', 'references/review-loop.md', 'references/sources.md', 'references/stacks.md', 'scripts/contact-sheet.py', 'scripts/contact-sheet.test.py', 'scripts/patch-body.py', 'scripts/patch-body.test.py', 'scripts/pr-assets.sh', 'scripts/pr-assets.test.sh', 'scripts/pr-bots.mjs', 'scripts/pr-size.mjs'],
   },
   {

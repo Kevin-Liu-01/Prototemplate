@@ -15,7 +15,7 @@ description: >-
 metadata:
   title: Working in Prototemplate
   areas: website, components
-  updated: 2026-10-26
+  updated: 2026-10-30
   origin: prototemplate
   owner: P
 ---
@@ -43,7 +43,7 @@ Prototemplate is the living reference of GT work only while every deliverable re
 4. **Both copies.** When an app exists in two copies (the one Kevin views and the one that ships), fix both and say which copies changed (2026-08-14).
 5. **The shared remote.** Fetch and rebase onto origin before pushing; an overlay that discards commits already on HEAD is a defect (2026-08-27). Confirm the Vercel build after every push and fix a failed one at once (`gt-ship` section 8).
 6. **The narrative.** The gallery tells the redesign in order: the directions explored, the survivors, the three full site concepts, then the shipped production site as the outcome, with the earlier pages still viewable (2026-08-26).
-7. **Brand directives** update `/brand` and BRAND.md and leave the business facts alone. The brand agency questionnaire's confidential answers stay off the site.
+7. **Brand directives** update `/brand` and BRAND.md and leave the business facts alone. Confidential questionnaire answers stay off the site.
 
 ## 2. The repository map
 

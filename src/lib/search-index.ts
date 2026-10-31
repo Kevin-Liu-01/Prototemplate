@@ -128,7 +128,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
 /* words the old palette matched that the row text does not carry */
 const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   gallery: 'home index working file directions',
-  brand: 'identity book basement mark color type voice directives',
+  brand: 'identity book mark color type voice directives',
   docs: 'documentation how it works get started template fumadocs seo gates scripts',
   deck: 'brand deck slideshow slides identity summary book GT',
   present: 'presenter slides scoreboard',

@@ -155,8 +155,7 @@ const LEAD =
 /** The rest of the introduction, under the head's rule. */
 const NOTE = (
   <p>
-    It is written for anyone who builds with the identity, including our partners at
-    basement studio. The visual laws are codified in{' '}
+    It is written for anyone who builds with the identity. The visual laws are codified in{' '}
     <Link href='/docs/handbook/design'>the design system</Link>, and every engine runs live
     in <Link href='/docs/handbook/libraries'>the libraries document</Link>.
   </p>
@@ -255,8 +254,7 @@ const PAGES: readonly BrandPage[] = [
         <h3 id={headingId('the-character', 'aesthetic')}>Aesthetic</h3>
         <AttributeScales rows={AESTHETIC} />
         <p className='ptb-scale-caption'>
-          Positions are read from the completed system. They are working answers, for
-          basement to confirm or push.
+          Positions are read from the completed system. They are working answers.
         </p>
         <h3 id={headingId('the-character', 'voice')}>Voice</h3>
         <p>
@@ -660,7 +658,7 @@ const PAGES: readonly BrandPage[] = [
 
 /**
  * The brand book: General Translation's identity laid out in one ruled
- * column, for anyone who has to build with it (including basement studio),
+ * column, for anyone who has to build with it,
  * read inside the viewer shell. The written canon is BRAND.md (served at
  * /docs/handbook/brand), whose reading time is the head's Reading fact; the laws
  * behind the visuals are DESIGN.md; and the engines run live on

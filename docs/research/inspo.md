@@ -41,31 +41,27 @@
 - *Steal:* Buttery smooth-scroll with parallax layers moving at different speeds; sticky sections that pin and release with precision; oversized display type cropped by the viewport edge (type as architecture). B/W-heavy palette with photography as texture.
 - *Lesson:* Scroll *feel* is a brand asset. Lerp-smoothed scroll (or CSS `scroll-timeline`) + differential parallax makes a flat page feel dimensional — no 3D needed.
 
-**8. basement.studio** — "We make cool shit that performs."
-- *Steal:* Brutalist B/W + chrome/metal 3D objects; monospace labels, ALL-CAPS eyebrows, barcode/registration-mark motifs (crop marks, ®, coordinates) that give an industrial print feel on screen. Occasional acid accent against black.
-- *Lesson:* The "print shop artifacts" trick — crop marks, mono metadata labels (`[001]`, `EST. 2024`, lat/long) — instantly reads as *designed* and costs nothing. Perfect for dev-tool credibility.
-
-**9. Active Theory (activetheory.net)** — WebGL heavyweight (Grid layout + portal transitions).
+**8. Active Theory (activetheory.net)** — WebGL heavyweight (Grid layout + portal transitions).
 - *Steal:* Particle/point-cloud renditions of imagery in grayscale; instant-feeling page transitions through a shared WebGL canvas that persists across routes; HUD-like UI chrome (thin lines, corner brackets, tiny mono type).
 - *Lesson:* Persistent background canvas across route changes = the "app-like" seamlessness that made their sites famous. Doable with a fixed `<canvas>` + View Transitions API now.
 
-**10. Unseen Studio (unseen.co)** — Award-winning WebGL studio.
+**9. Unseen Studio (unseen.co)** — Award-winning WebGL studio.
 - *Steal:* Signature "reveal on hover" fluid simulations inside otherwise strict typographic layouts; dark monochrome with metallic sheen materials; scroll-driven shader distortion of type itself.
 - *Lesson:* Type-as-material: letters that ripple, smear, or reflect light turn the wordmark into the product demo. Approximate with animated `background-clip: text` chrome + SVG displacement filters.
 
-**11. Aristide Benoist (aristidebenoist.com)** — SOTM June 2021; dev portfolio royalty.
+**10. Aristide Benoist (aristidebenoist.com)** — SOTM June 2021; dev portfolio royalty.
 - *Steal:* The gold standard for *page transitions*: clicked list item morphs into the project hero (shared-element continuity); everything else is stark B/W type on white/black. Cursor-following micro-distortion on links.
 - *Lesson:* One perfect shared-element transition beats fifty hover effects. Now achievable natively with the View Transitions API — a dev-tools company using cutting-edge platform APIs *is itself marketing*.
 
-**12. Resn (resn.co.nz)** — NZ studio, playful interactive gloss.
+**11. Resn (resn.co.nz)** — NZ studio, playful interactive gloss.
 - *Steal:* Liquid, glossy interactive objects; the discipline of a single "toy" per view that begs to be touched. Wit in microcopy paired with high-gloss visuals.
 - *Lesson:* Interaction with *payoff* — the object reacts in a surprising, physical way (squish, ripple, shatter). "Alive through interaction" (the founder's bookmarked philosophy) means feedback in <100ms with physics-feeling easing.
 
-**13. Chungi Yoo (chungiyoo.com)** — SOTD; art-director folio.
+**12. Chungi Yoo (chungiyoo.com)** — SOTD; art-director folio.
 - *Steal:* Playful kinetic type on neutral background; images that swing/tilt with spring physics on scroll; generous air around every element.
 - *Lesson:* Spring physics (overshoot, settle) makes monochrome feel warm and human instead of cold.
 
-**14. Grainient / backgrounds.supply Gradient Lab / BentoGrids (bookmarked resources)**
+**13. Grainient / backgrounds.supply Gradient Lab / BentoGrids (bookmarked resources)**
 - *Grainient sells:* 1,000+ grainy/mesh/animated gradients, "studio-grade 4K–12K, flawless blends" — the exact aesthetic: soft blurred color fields with fine photographic grain that kills banding and adds physicality. In B/W: silver-to-charcoal mesh gradients + grain = "brushed atmosphere."
 - *Gradient Lab sells:* 20+ live shader modes (Mesh, Plasma, Aurora, Prism, Glass, Vortex, Marble, Halftone, Iridescent) with tunable warp/flow-speed/noise-scale/softness/brightness/contrast/grain, exportable as PNG/MP4/WebM. *Lesson:* animated shader gradients are now a commodity — differentiate by rendering ours live (canvas) in grayscale-chrome, not by shipping a looping video.
 - *BentoGrids curates:* bento feature layouts — mixed-size cells, each cell one idea, one visual, 1px borders, consistent radius, hover states per cell. *Rule:* the bento is a hierarchy device, not a mosaic — one 2×2 hero cell, a few 1×1 satellites, never more than ~7 cells per grid.
@@ -335,7 +331,7 @@ Render at half resolution and upscale with `canvas { filter: blur(40px) contrast
 4. **Interaction latency and inertia.** "Alive" = responds within a frame but settles with lag/physics (lerped cursor followers, magnetic buttons, springs). Average sites use `transition: all .3s ease` on hover and call it done. The *feel* of weight is the entire trick.
 5. **Typographic conviction.** AAA sites commit: 9rem headline, cropped by the fold, tracking −4%. Average sites hedge at 48px centered with default tracking. In monochrome there is nowhere to hide — scale contrast IS the color.
 6. **Space as confidence.** 160px+ section gaps say "we don't need to shout." Cramped sections scream template. Whitespace is the cheapest luxury upgrade in existence.
-7. **Details in the margins:** mono index numbers, crop marks, slashed zeros, live local time in the footer, custom selection color (`::selection { background:#fff; color:#000; }`), styled focus rings, a designed 404. Visitors may not name them but they *feel* the sum. This is basement.studio's whole schtick.
+7. **Details in the margins:** mono index numbers, crop marks, slashed zeros, live local time in the footer, custom selection color (`::selection { background:#fff; color:#000; }`), styled focus rings, a designed 404. Visitors may not name them but they *feel* the sum.
 8. **Loading and empty states are designed** (bookmarked spinner-inspiration signal): a chrome shimmer skeleton or counting-up preloader instead of a spinner default. First 500ms sets the quality prior for everything after.
 9. **Performance is aesthetic.** Awwwards-level judges *dock* jank. Canvas at half-res, `content-visibility`, transform/opacity-only animation, paused offscreen loops. A 60fps plain site outranks a 24fps spectacular one. For a dev-tools audience this is doubly true — jank is a product-quality signal.
 10. **The site demonstrates the product's values.** Linear's site feels fast because the product is fast. For a dev-tools company: use bleeding-edge platform features (View Transitions, scroll-timeline, `@property`) and let the site itself be the engineering flex. Copy claims nothing the pixels don't prove.

@@ -33,7 +33,7 @@ out of `SKILL.md` on 2026-10-10 to keep the skill under its size budget;
   ship-loop-hard-gates.md, scratch-worktree-disk.md,
   session-lanes-prototemplate.md, lost-work-audit-2026-09.md,
   signin-field-transition.md, prototemplate-plate-port.md,
-  landing-deploy-failures.md, zsh-shell-traps.md, basement-engagement.md.
+  landing-deploy-failures.md, zsh-shell-traps.md.
 - Kevin's directives: commit on approval (2026-08-02); grouping and the
   feature-flag rule (2026-09-03); the work identity (2026-08-26);
   explorations stay local (2026-09-14); one approval without the trailer (#4795, 2026-09-11);

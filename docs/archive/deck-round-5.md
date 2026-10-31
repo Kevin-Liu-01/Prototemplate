@@ -1,6 +1,6 @@
 # Brand deck, round five
 
-Kevin, September 9, 2026: "we need more thematic images that convey the vibes of the company interspersed across slides, very artistic and cool. Then make our actual website screenshots much much better and much more intentional and responsive to light and dark modes, and be more specific: show certain areas of visual aesthetic-ness, and have a dedicated page to diagrams. Finally we need a slide to show how much creative control the studio has: we do not want to say we need to keep this and that, and we do not want to say completely redesign everything. We want a first-principles approach based on a few things that cannot change (the legal name of the company, General Translation, and the names of the libraries our customers use, gt-*). No sunk cost: anything is liable to change as long as it is first principles, and that could even mean changing the name of the product."
+Kevin, September 9, 2026: "we need more thematic images that convey the vibes of the company interspersed across slides, very artistic and cool. Then make our actual website screenshots much much better and much more intentional and responsive to light and dark modes, and be more specific: show certain areas of visual aesthetic-ness, and have a dedicated page to diagrams. Finally we need a slide to show how much creative control [the identity project] has: we do not want to say we need to keep this and that, and we do not want to say completely redesign everything. We want a first-principles approach based on a few things that cannot change (the legal name of the company, General Translation, and the names of the libraries our customers use, gt-*). No sunk cost: anything is liable to change as long as it is first principles, and that could even mean changing the name of the product."
 
 The deck source is this folder (`parts/`, `slides/`, `shots/`, `fonts/`). `DECK-GRAMMAR.md` still governs every slide. `node shoot-slide.mjs 8 15` or `all` renders slides into `preview/` and reports overflow; it needs `tmp/shots -> ../shots` (create the symlink if missing). `pnpm build:deck` at the repo root writes `public/brand-deck.html`.
 
@@ -33,7 +33,7 @@ One new slide in the Status and plan section, before Success criteria, titled "F
 - Open: everything else. The mark, the colors, the type, the layout system, the voice, the site structure, the deck itself, and the product names, including Locadex.
 - The rule: no decision is protected by the effort already spent on it. The current system is evidence of what has been tried, not a constraint. A proposal is judged on the same success criteria as the current system, and on nothing else.
 
-Layout: two columns, Fixed (short, two rows) and Open (a longer ruled list), with the rule as the lead paragraph under the heading. Do not name the studio. Do not write "keep" or "redesign everything"; state what is fixed and state that the rest is open.
+Layout: two columns, Fixed (short, two rows) and Open (a longer ruled list), with the rule as the lead paragraph under the heading. Do not write "keep" or "redesign everything"; state what is fixed and state that the rest is open.
 
 ## 5. Renumbering and sections
 

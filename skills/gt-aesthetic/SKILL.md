@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Taste and the review standard
   areas: aesthetic, website, landing, components
-  updated: 2026-10-10
+  updated: 2026-10-30
   origin: prototemplate
   owner: P
 ---

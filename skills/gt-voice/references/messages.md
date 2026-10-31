@@ -29,7 +29,7 @@ concrete examples (2026-09-02, 2026-09-03).
 
 ## A reply to an outside partner
 
-For the brand agency, the video vendor or another partner (2026-09-24):
+For the video vendor or another partner (2026-09-24):
 
 - Thank them at the start and at the end.
 - Credit their reasoning before giving GT's.

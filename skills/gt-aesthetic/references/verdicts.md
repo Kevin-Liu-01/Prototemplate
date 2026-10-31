@@ -71,7 +71,7 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 - Kevin: "we literally give example copy and formatting and writing and diagrams in toolchain enterprise and pricing pages. so build those".
 - The rule since: the prototype pages `/d/toolchain/enterprise` and `/d/toolchain/pricing` are the spec, copy included, word for word.
 
-## 2026-08-11: the final avoid list for basement
+## 2026-08-11: the final avoid list
 
 - The list: monospace as the brand voice, smooth scrolling and scroll hijacking, robot and sparkle AI icons, flag soup, the AI gradient and glass look, eyebrows unless they are useful, and em dashes in rendered prose. On eyebrows Kevin's reason was "3 lines of text stacked to say the same thing".
 - The rule since: most items are gt-ui lint rules, on in gt-cloud and in Prototemplate's `pnpm lint:code` (`no-em-dash`, `no-eyebrow`, `mono-is-not-voice`, `no-smooth-scroll`, `no-raw-locale-flags`, `icon-tiers`). Robot and sparkle icons and the gradient and glass look have no rule and are checked by eye (`gt-lints`). Prototemplate's presenter still scrolls on Lenis and is exempt from `no-smooth-scroll` in `.oxlintrc.json`.

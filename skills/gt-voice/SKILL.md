@@ -12,7 +12,7 @@ description: >-
 metadata:
   title: Voice and the humanizer
   areas: voice
-  updated: 2026-10-20
+  updated: 2026-10-30
   origin: prototemplate
   owner: P
 ---

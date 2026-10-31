@@ -1,9 +1,9 @@
 # Brand
 
 General Translation's identity, laid out for anyone who has to build with
-it, including our partners at basement studio. This document is the written
-canon. The living version is the [`/brand`](./BRAND.md) page, and the visual
-laws live in [`DESIGN.md`](./DESIGN.md).
+it. This document is the written canon. The living version is the
+[`/brand`](./BRAND.md) page, and the visual laws live in
+[`DESIGN.md`](./DESIGN.md).
 
 ---
 
@@ -97,7 +97,7 @@ for making things people love.
 | Warm | → | **Cool** |
 | **Elegant** | ← | Fun |
 
-These are read from the shipped system for basement to confirm or push.
+These are read from the shipped system.
 
 ### Voice
 

@@ -313,7 +313,7 @@ the contract between the two ends:
 
 - `AGENTS.md`: the entry point for an agent, here or in a project that
   imported the hub (served at /docs/handbook/agents; `CLAUDE.md` imports it).
-- `BRAND.md`: the identity canon (the brand book the agency reads; served at /docs/handbook/brand and /brand).
+- `BRAND.md`: the identity canon (served at /docs/handbook/brand and /brand).
 - `DESIGN.md`: the visual canon (this repo's law book).
 - `docs/SHIP-LOOP.md`: the verify/ship procedure every round runs.
 - `docs/LIBRARIES.md`: the library index (defers to the build log after it on `/docs/handbook/libraries` for depth).

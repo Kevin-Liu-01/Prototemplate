@@ -250,7 +250,7 @@ Rules of engagement: each sample commits TOTALLY to one direction — its layout
 
 **Motion signature — THE STAMP.** Elements do not fade — they STAMP: `scale: 1.6 → 1` + `autoAlpha` in 2 frames with `steps(2)` easing, offset by hard 80ms staggers, each landing with a 1px page "thud" (y-jolt on a wrapper). Scroll reveals are hard cuts (`once: true`, no scrub). Supporting: ScrambleText on mono labels with charset `'01<>_/\\'`, marquee-free, hover states invert cells (black↔white) instantly.
 
-**Mood.** basement.studio industrial print artifacts; Locomotive's type-as-architecture cropped at edges; Linear's "contrast does the work" pushed to violence.
+**Mood.** Industrial print artifacts; Locomotive's type-as-architecture cropped at edges; Linear's "contrast does the work" pushed to violence.
 
 ---
 
@@ -298,7 +298,7 @@ Rules of engagement: each sample commits TOTALLY to one direction — its layout
 
 **Motion signature — THE BOOT SEQUENCE.** Page loads as a boot: prompt types `npx gt@latest`, ScrambleText resolves package lines, a `[####----] translating…` progress bar draws (DrawSVG on a stroked rect), then `✓ 118 locales ready` counts up — all in ~1.6s, skippable, never blocking scroll. Each section "executes" on enter: its command types, output ScrambleText-resolves (`chars: '01<>_/\\'`, once). Supporting: blinking block cursor (steps(1) CSS), counters with `snap`, marquee of locale codes as a `tail -f` log line.
 
-**Mood.** Vercel's Geist-mono engineer credibility; basement.studio HUD chrome; the founder's "loading micro-animations as delight" bookmark, executed as narrative.
+**Mood.** Vercel's Geist-mono engineer credibility; HUD chrome; the founder's "loading micro-animations as delight" bookmark, executed as narrative.
 
 ---
 
@@ -362,7 +362,7 @@ Rules of engagement: each sample commits TOTALLY to one direction — its layout
 
 **Motion signature — THE SCHEMATIC DRAWS ITSELF.** The Locadex section is a pinned, scrubbed DrawSVG set-piece: the 5-step pipeline (repo → scan → edit → translate → PR) drawn as a stroked SVG schematic that inks itself in as you scroll (`drawSVG: '0%' → '100%'`, staggered strokes, `ease: none`), followed by a brighter 12%-window pulse (`drawSVG: '0% 12%'` tweened along the path) that loops as a signal traveling the finished circuit. Supporting: dimension lines draw on enter (once), counters snap, hairline crosshair follows the pointer over the schematic (quickTo).
 
-**Mood.** Vercel blueprint grid made literal; Active Theory HUD linework; basement.studio registration-mark metadata.
+**Mood.** Vercel blueprint grid made literal; Active Theory HUD linework; registration-mark metadata.
 
 ---
 
@@ -410,7 +410,7 @@ Rules of engagement: each sample commits TOTALLY to one direction — its layout
 
 **Motion signature — THE PLAYHEAD.** A vertical chrome line (the playhead) is fixed mid-viewport and the score scrolls beneath it: a page-long scrubbed timeline drives tick marks, timecode counters, and per-section "notes" (small silver nodes) that light as they cross the playhead — the page literally *plays* as you scroll, and section content reveals exactly on its beat. Supporting: counters with mono tabular snap, DrawSVG on staff flourishes (once), ScrambleText on index labels, hover shows an element's "metadata" tooltip (mono, instant).
 
-**Mood.** thesephist's notation bookmark; basement.studio print artifacts on paper; Swiss discipline warped into an instrument.
+**Mood.** thesephist's notation bookmark; print artifacts on paper; Swiss discipline warped into an instrument.
 
 ---
 
@@ -442,7 +442,7 @@ Rules of engagement: each sample commits TOTALLY to one direction — its layout
 
 **Motion signature — THE SHEET FEED.** Sections arrive like sheets through a press: each section reveals with a `clip-path` inset wipe top→bottom (expo.inOut, 1.1s, once) while a thin platen-roller shadow line sweeps just ahead of the reveal edge; display headlines then "press" in — a 1-step scale 1.02→1 + deboss shadow snap, like type biting paper. Supporting: crop marks draw (DrawSVG) on section enter, the seal slowly rotates (CSS, 40s), ink-spread hover on links (underline thickens from center).
 
-**Mood.** Obys print-editorial digital narratives; basement.studio crop-mark schtick inverted to daylight; "grainient" texture as paper rather than atmosphere.
+**Mood.** Obys print-editorial digital narratives; crop marks inverted to daylight; "grainient" texture as paper rather than atmosphere.
 
 ---
 
@@ -490,7 +490,7 @@ Rules of engagement: each sample commits TOTALLY to one direction — its layout
 
 **Motion signature — THE SIGNAL ON THE RAIL.** A bright pulse (short white gradient window) travels down the rail tracking exact scroll progress (scrubbed `--pulse-y` custom property page-long); when it reaches a station node, the node's rivet flares (scale+glow once), its plate stamps in, and its section content batch-reveals — arrival at each station *is* the reveal trigger. Supporting: DrawSVG connector spurs from rail to content, ScrambleText part numbers, velocity-tilted plate hover (±3°), footer as the end-of-line buffer with a final stamp: "SHIPPED IN EVERY LANGUAGE."
 
-**Mood.** basement.studio's industrial print voice at full volume; Locomotive's pin-release precision; Vercel grid rigor under the grease.
+**Mood.** An industrial print voice at full volume; Locomotive's pin-release precision; Vercel grid rigor under the grease.
 
 ---
 
@@ -522,7 +522,7 @@ Rules of engagement: each sample commits TOTALLY to one direction — its layout
 
 **Motion signature — THE FLIP CASCADE.** Characters change by split-flap physics: stepped cycling through 4–8 intermediate glyphs (`steps(1)` timed swaps + a two-frame half-flip scaleY fold on each change), cascading left→right at 30ms/char. The hero board flips in on load (≤1.6s), then re-flips the rotating language word every few seconds; the departures table flips rows in on scroll-enter (once per row); stats flip like gate changes. Rendered with real text nodes (accessibility) under `aria-live` discipline; reduced-motion shows final strings. Supporting: soft hall reverb implied by slow ambient light gradient drift, mono clock in the nav (live `HH:MM`), marquee "NOW BOARDING: 118 LOCALES" ticker.
 
-**Mood.** The "novel notation" bookmark as physical signage; basement.studio industrial chassis; the loading-animation-as-delight signal — every flip is a micro-delight.
+**Mood.** The "novel notation" bookmark as physical signage; an industrial chassis; the loading-animation-as-delight signal: every flip is a micro-delight.
 
 ---
 

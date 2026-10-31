@@ -10,9 +10,8 @@ its two Vercel projects are read after a push. Moved out of `SKILL.md` on
   with hot reload; reuse it and never stop it.
 - **Explorations stay local until Kevin says to land them.** "wait what
   they're on main? they shouldn't be pushed, I should be reviewing them
-  locally" (Kevin, 2026-09-14). Main deploys www.prototemplate.com, the
-  reference that basement.studio, the agency building GT's visual
-  identity, sees. Landing is his call per round.
+  locally" (Kevin, 2026-09-14). Main deploys www.prototemplate.com.
+  Landing is his call per round.
   When he says to land, push the committed HEAD he reviewed; the working
   tree holds other sessions' edits, so never commit it blind. Never rewrite
   shared main history to undo a mistake without Kevin.

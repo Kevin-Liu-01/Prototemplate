@@ -47,7 +47,7 @@ The name General Translation was chosen for three reasons, in this order. The fi
 | glyphfield.com | the companion tooling site: the shader library and the animation studio | a separate site from prototemplate.com |
 
 - A product token keeps its exact form and is never the first word of a heading. A heading names the thing: "Prototemplate" in the heading, "prototemplate.com" in the body.
-- The identity project with basement studio has two fixed points: the legal name General Translation and the names customers install and import (`gt` and the packages). The mark, the colors, the type, the layout system, the voice, the site structure and the product names, Locadex included, are open in that project (deck slide 93). The rules in this skill are the working system until the project hands off its replacement.
+- The identity project has two fixed points: the legal name General Translation and the names customers install and import (`gt` and the packages). The mark, the colors, the type, the layout system, the voice, the site structure and the product names, Locadex included, are open in that project (deck slide 93). The rules in this skill are the working system until the project hands off its replacement.
 
 ## 2. The idea and the values
 
@@ -153,7 +153,7 @@ The brand's recurring subject is writing systems. Its five devices are glyphs (t
 
 ## 7. The avoid list
 
-The basement brand questionnaire was finalised on 2026-08-11. Its avoid list, BRAND.md section 9 and deck slide 39 together:
+The brand questionnaire was finalised on 2026-08-11. Its avoid list, BRAND.md section 9 and deck slide 39 together:
 
 | avoided | the rule that holds it |
 | --- | --- |

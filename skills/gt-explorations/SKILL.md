@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Exploration rounds and convergence
   areas: aesthetic, website, landing, graphics
-  updated: 2026-10-28
+  updated: 2026-10-30
   origin: prototemplate
   owner: P
 ---

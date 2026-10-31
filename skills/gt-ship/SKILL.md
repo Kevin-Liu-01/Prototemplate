@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Branches, PRs and landing
   areas: workflow, lints
-  updated: 2026-10-10
+  updated: 2026-10-30
   origin: prototemplate
   owner: P
 ---

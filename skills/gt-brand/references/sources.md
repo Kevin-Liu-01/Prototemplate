@@ -18,7 +18,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 - Kevin, 2026-09-29: the speed set chosen; regenerate from the script.
 - Kevin, 2026-09-25: the dashboard verdict ("kerning needs to be adjusted"), the deck as the standard, and the tracking ladder measured from the deck and the landing.
 - Kevin, 2026-09-18: "change switzer to inter everywhere" (gt-cloud PR 4887).
-- Kevin, 2026-08-11: the final basement questionnaire and its avoid list; zero em dashes in rendered prose.
+- Kevin, 2026-08-11: the final brand questionnaire and its avoid list; zero em dashes in rendered prose.
 - Kevin, 2026-08-06: the Dossier (`/d/singularity-dossier`) is the completed reference; sensitive questionnaire facts stay off the public site. Kevin, 2026-10-06: the brand has evolved past the Dossier, and BRAND.md section 8 waited for his decision. Kevin, 2026-10-07: "fix the dossier references"; the shipped site is the site's reference, and the Dossier is the direction it grew from.
 - Third-party material: Kevin, 2026-08-05 (the gray customer logo), 2026-09-25 (the licence), 2026-10-02 (never privatize the repository); `LICENSE`, `public/media/README.md`, `public/fonts/google/README.md`.
 
