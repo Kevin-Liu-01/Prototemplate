@@ -8,7 +8,8 @@
 // outside the area's prefix, so the route never serves it) records each
 // uploaded file's SHA-256, so an unchanged file is skipped, and a blob
 // whose file is gone from the folder is deleted. The report prints counts
-// only, never a file's name or contents.
+// only, never a file's name or contents. It refuses a folder inside a git
+// checkout that git does not ignore, where one `git add` would publish it.
 //
 // Usage:
 //   node scripts/locked/sync.mjs <area> [--dir <folder>] [--dry-run]
@@ -22,9 +23,10 @@
 // locked areas' own private store, in the environment; BLOB_READ_WRITE_TOKEN
 // is never read. A dry run without it compares against an empty store.
 // Last real run: none (kept for: syncing /raise before it is shared).
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { del, get, list, put } from '@vercel/blob';
@@ -68,6 +70,24 @@ export function typeOf(path) {
   if (!path.split('/').every((segment) => SEGMENT.test(segment))) return null;
   const ext = path.slice(path.lastIndexOf('.') + 1).toLowerCase();
   return Object.hasOwn(TYPES, ext) ? TYPES[ext] : null;
+}
+
+/** True when a folder sits in a git checkout that does not ignore it, so one `git add` would commit it. */
+export function exposedInGit(dir) {
+  let top;
+  try {
+    top = execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch {
+    return false;
+  }
+  const rel = relative(realpathSync(top), realpathSync(dir));
+  if (!rel) return true;
+  try {
+    execFileSync('git', ['check-ignore', '-q', `${rel}/`], { cwd: top, stdio: 'ignore' });
+    return false;
+  } catch {
+    return true;
+  }
 }
 
 /** Every relative path under a folder, depth first, in a stable order. */
@@ -130,6 +150,10 @@ async function main() {
   const dry = args.includes('--dry-run');
   if (!existsSync(dir)) {
     console.error(`sync: the ${name} folder is not there`);
+    process.exit(2);
+  }
+  if (exposedInGit(dir)) {
+    console.error(`sync: git does not ignore the ${name} folder; add it to .gitignore first`);
     process.exit(2);
   }
   const token = process.env.LOCKED_BLOB_READ_WRITE_TOKEN;

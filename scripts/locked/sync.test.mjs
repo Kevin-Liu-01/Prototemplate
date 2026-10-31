@@ -1,13 +1,15 @@
 // Tests for scripts/locked/sync.mjs, offline: which files go up, and the
 // plan from the store to the folder (unchanged files skipped, changed and
-// missing ones uploaded, blobs with no local file deleted).
+// missing ones uploaded, blobs with no local file deleted), and the guard
+// that refuses a folder git would commit.
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 
-import { AREAS, localFiles, plan, typeOf } from './sync.mjs';
+import { AREAS, exposedInGit, localFiles, plan, typeOf } from './sync.mjs';
 
 test('only web types with plain names go up', () => {
   assert.equal(typeOf('index.html'), 'text/html; charset=utf-8');
@@ -46,4 +48,27 @@ test('the plan uploads changed and missing files, skips unchanged ones and delet
   assert.equal(unchanged, 1);
   assert.deepEqual(remove, ['gone.png']);
   assert.deepEqual(plan(local, Object.fromEntries(local.map((f) => [f.path, f.sha256])), new Set(local.map((f) => f.path))), { upload: [], unchanged: 3, remove: [] });
+});
+
+test('a folder git would commit is refused; the tracked .gitignore keeps every area folder out', () => {
+  process.env.GIT_CONFIG_GLOBAL = '/dev/null';
+  process.env.GIT_CONFIG_NOSYSTEM = '1';
+  const dir = mkdtempSync(join(tmpdir(), 'pt-sync-'));
+  try {
+    const repo = join(dir, 'repo');
+    mkdirSync(join(repo, 'notes'), { recursive: true });
+    execFileSync('git', ['init', '-q', repo]);
+    copyFileSync(new URL('../../.gitignore', import.meta.url), join(repo, '.gitignore'));
+    for (const name of Object.keys(AREAS)) {
+      mkdirSync(join(repo, name, 'viewer'), { recursive: true });
+      assert.equal(exposedInGit(join(repo, name)), false, `${name}/ is ignored by the tracked .gitignore`);
+      assert.equal(exposedInGit(join(repo, name, 'viewer')), false, `${name}/viewer`);
+    }
+    assert.equal(exposedInGit(join(repo, 'notes')), true, 'a folder git does not ignore');
+    assert.equal(exposedInGit(repo), true, 'the checkout itself');
+    mkdirSync(join(dir, 'outside'));
+    assert.equal(exposedInGit(join(dir, 'outside')), false, 'a folder outside any checkout');
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

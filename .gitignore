@@ -15,6 +15,9 @@ deck/tmp
 # the page check's captures and report (pnpm check:pages)
 .pagecheck/
 
+# a locked area's local folder, which scripts/locked/sync.mjs uploads to the private Blob store
+/raise/
+
 # motion/ (owned by the Videos session) is tracked through an allowlist: everything under it
 # is ignored except MOTION.md, the kit's code and the text sources of the films the site
 # publishes (public/motion/published.json, offSite excluded). Renders, audio, pictures, fonts,
