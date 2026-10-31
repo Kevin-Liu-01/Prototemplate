@@ -574,6 +574,7 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'crescent-g-turned', name: 'Turned crescent', family: 'crescent-globe', opens: true, box: [6.4, 0, 243.2, 256], note: 'The ring of the G turns inside a crescent limb.' }),
   dyn({ id: 'crescent-g-tilt-a', name: 'Crescent globe, tilted', family: 'crescent-globe', pick: true, box: [13.4, 16.6, 232.1, 224.1] }),
   dyn({ id: 'crescent-g-tilt-b', name: 'Crescent globe, blade', family: 'crescent-globe', pick: true, box: [12, 31.7, 236, 194.6] }),
+  dyn({ id: 'lune-1', name: 'Lune', family: 'crescent-globe', pick: true, cut: true, box: [15, 17.6, 232.1, 220.8] }),
   dyn({ id: 'crescent-g-a', name: 'Crescent globe', family: 'crescent-globe', pick: true, box: [14.4, 15.3, 232.1, 225.2] }),
 
   dyn({ id: 'bolt-straight', name: 'Straight bolt', family: 'bolt', opens: true, pick: true, box: [26.5, 18.9, 205.2, 222.6], note: 'The G is cut as one solid lightning bolt with straight edges.' }),
