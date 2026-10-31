@@ -20,3 +20,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 - "Store listings": Kevin's memory note `locadex-listing-images` (2026-10-09, written in the Videos session: the Marketplace specs verified that day, Kevin's credit and type rules). Inventory `memories.json` row "locadex-listing-images", plan row N-10. The harness, the add-on's markup and the open naming question stay out (plan section 3.3).
 - "Maps": Kevin's memory note `world-language-map` (Kevin, 2026-10-02 and 2026-10-03, the language-first design of the world map). Inventory `memories.json` row "world-language-map", plan row N-12. The policy table, the decision list and the round log stay in the memory note.
 - "Traps and fixes" moved to `references/traps.md` and the still artwork detail to `references/still-artwork.md`, unchanged, with summaries left in `SKILL.md`, to keep the body under the 24,000-byte budget (plan section 2.2).
+
+## Added 2026-10-31
+
+- "The hand-off to a post": Prototemplate's `content/blog/` held six posts on 2026-10-31 (`daniel-white`, `designing-docs-for-humans`, `fuma-nama`, `rewriting-our-docs`, `supporting-open-source-software`, `supporting-slash-companies`), so the line names no count. The same stale count was fixed on the SEO docs page in 077cf34e and in gt-website's `references/blog.md` in 20eb1e8b (2026-10-31).

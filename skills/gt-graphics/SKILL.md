@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Blog and brand graphics
   areas: graphics
-  updated: 2026-10-10
+  updated: 2026-10-31
   origin: prototemplate
   owner: P
 ---
@@ -151,7 +151,7 @@ A world map on a GT surface takes no position on borders and does not look force
 
 ## The hand-off to a post
 
-Posts live in the `generaltranslation/content` repository, checked out in gt-cloud at `apps/landing/content` (`blog/en-US/<slug>.mdx`), and the images live in gt-cloud at `apps/landing/public/static/blogs/`. Prototemplate keeps its own copies of three posts under `content/blog/` with their graphics under `public/static/blogs/`, read by `/blog` and `/graphics`; `content/blog/designing-docs-for-humans.mdx` is the reference for a post with carousels.
+Posts live in the `generaltranslation/content` repository, checked out in gt-cloud at `apps/landing/content` (`blog/en-US/<slug>.mdx`), and the images live in gt-cloud at `apps/landing/public/static/blogs/`. Prototemplate keeps a copy of every post under `content/blog/` with its graphics under `public/static/blogs/`, read by `/blog` and `/graphics`; `content/blog/designing-docs-for-humans.mdx` is the reference for a post with carousels.
 
 - A set goes into the post as `<Carousel label='…' width='3840' height='2160'>` with one `<CarouselItem src='…' alt='…' />` per visual. The blog's MDX renderer drops every expression prop, so blog components take string attributes and child elements.
 - The frontmatter lists the dark cover under `images`, its light twin under `imagesLight` and the 2400 by 1260 card under `ogImages`, each with the `?v=` stamp.

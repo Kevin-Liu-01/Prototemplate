@@ -160,7 +160,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Blog and brand graphics',
     description: 'How General Translation\'s blog and brand graphics are made with Prototemplate\'s graphics/ toolchain: product captures at 3 to 5x, labelled crops over glyphfield exports, the 26px text floor for the blog column, the audit and the render, contact sheets, stop-motion clips, webp and GIF export, the hand-off to a post, the GT docs measured for drawing, still artwork such as the partnership globes, marketplace listing screenshots, world maps, and the review standard for each. Use when illustrating a blog post, a launch or a feature with real product crops, when drawing the GT docs, or when making any still GT artwork or store listing.',
     areas: ['graphics'],
-    updated: '2026-10-10',
+    updated: '2026-10-31',
     files: ['references/capture.md', 'references/docs-tokens.md', 'references/glyphfield-export.md', 'references/sources.md', 'references/still-artwork.md', 'references/stop-motion.md', 'references/traps.md'],
   },
   {
