@@ -67,6 +67,14 @@ export type SeoRouteInput = {
   source?: string;
   /** an explicit canonical, for a mirror page whose live path differs from its own */
   canonical?: string;
+  /**
+   * true in a not-found.tsx, whose head names no robots. Next writes
+   * `<meta name="robots" content="noindex">` on every 404 it renders and
+   * merges the not-found file's metadata last, so a robots field there
+   * prints a second robots meta, and an inherited one prints the root's
+   * `index, follow`. A page that answers 200 with kind 'error' keeps its noindex.
+   */
+  notFound?: true;
 };
 
 export type SeoRoute = { metadata: Metadata; jsonLd: JsonLdNode[] };
@@ -146,7 +154,7 @@ export function seoRoute(input: SeoRouteInput): SeoRoute {
     alternates: isError
       ? undefined
       : { canonical, ...(Object.keys(types).length ? { types } : {}) },
-    robots: isError ? { index: false } : policy.index ? INDEX_ROBOTS : policy.follow === false ? PRIVATE_ROBOTS : NOINDEX_ROBOTS,
+    robots: input.notFound ? null : isError ? { index: false } : policy.index ? INDEX_ROBOTS : policy.follow === false ? PRIVATE_ROBOTS : NOINDEX_ROBOTS,
     openGraph: {
       title: ogTitle,
       description: input.description,

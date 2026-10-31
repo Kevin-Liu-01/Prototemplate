@@ -70,9 +70,13 @@
  *   B6 robots   robots.txt names the sitemap
  *   B7 unique   indexable pages have unique titles and descriptions,
  *               counting pages that share a canonical as one page
+ *   B8 404      the prerendered 404 (_not-found.html) has one <title>,
+ *               one robots meta, noindex, and no googlebot meta. Next
+ *               writes that robots meta on every 404, so a not-found.tsx
+ *               passes seoRoute notFound: true and names none of its own
  *
  * A page whose route file is in the baseline skips B1, B2 and B7 (it has
- * no canonical or card of its own yet). Not-found pages are skipped.
+ * no canonical or card of its own yet). Not-found pages skip B1 to B7.
  *
  * Live mode fetches a running server (PT_BASE or --base; a production
  * build under next start, or www after a deploy, never a dev server,
@@ -89,6 +93,7 @@
  *               llms.txt links every docs and handbook page
  *   L5 links    no internal link on a sitemap page answers a redirect or a
  *               404
+ *   L6 404      each address in NOT_FOUND_SAMPLE answers 404 and passes B8
  *
  * Exit 0 on a pass, 1 on findings, 2 when the lint could not judge (no
  * build, no server). --report prints without failing.
@@ -140,6 +145,9 @@ export const REWRITES = { '/deck': 'public/brand-deck.html' };
 
 /** The noindex sample live mode reads beside the sitemap: an exploration, a site concept subpage, a mirror page, a dashboard state. */
 export const NOINDEX_SAMPLE = ['/d/toolchain', '/d/singularity-dossier/careers', '/d/production/pricing', '/d/production/signin'];
+
+/** The missing addresses live mode reads: a top-level path, a nested path, and one under /d/production, which has its own not-found.tsx. */
+export const NOT_FOUND_SAMPLE = ['/does-not-exist', '/docs/does-not-exist', '/d/production/does-not-exist'];
 
 const EM_DASH = '\u2014';
 const DESCRIPTION_MIN = 50;
@@ -644,6 +652,19 @@ export function judgeHead(path, html, { adopted = true } = {}) {
   return { findings: out, head, canonical };
 }
 
+/** B8 over a 404's HTML: one <title>, one robots meta that says noindex, and no googlebot meta. */
+export function judgeNotFound(html) {
+  const out = [];
+  const head = parseHead(html);
+  if (head.titles.length !== 1) out.push(['B8', `${head.titles.length} <title> elements; a 404 has one`]);
+  const robots = head.meta('robots');
+  if (robots.length !== 1 || !/\bnoindex\b/i.test(robots[0])) {
+    out.push(['B8', `robots ${robots.map((r) => `"${r}"`).join(', ') || 'none'}; a 404 has one robots meta, noindex, which Next writes`]);
+  }
+  if (head.meta('googlebot').length > 0) out.push(['B8', `a googlebot meta "${head.meta('googlebot')[0]}"; a 404 has none`]);
+  return out;
+}
+
 /** The <url> entries of a sitemap: { loc, lastmod }. */
 export function parseSitemap(xml) {
   return [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => ({
@@ -815,6 +836,10 @@ function runBuilt({ report }) {
     for (const [rule, message] of sitemapFindings) findings.push(finding('.next/server/app/sitemap.xml.body', 1, rule, message));
     notes.push(...sitemapNotes);
   }
+  const notFoundFile = join(app, '_not-found.html');
+  if (!existsSync(notFoundFile)) findings.push(finding('.next/server/app/_not-found.html', 1, 'B8', 'no prerendered 404'));
+  else for (const [rule, message] of judgeNotFound(readFileSync(notFoundFile, 'utf8'))) findings.push(finding('.next/server/app/_not-found.html', 1, rule, message));
+
   const robotsFile = join(app, 'robots.txt.body');
   const robots = existsSync(robotsFile) ? readFileSync(robotsFile, 'utf8') : '';
   if (!new RegExp(`^Sitemap: ${SITE_URL.replace(/[.]/g, '\\.')}/sitemap\\.xml$`, 'm').test(robots)) {
@@ -980,6 +1005,13 @@ async function runLive({ report, base }) {
   await pool([...links.keys()], 6, async (url) => {
     const response = await get(url).catch((error) => ({ status: 0, error }));
     if (response.status !== 200) add(links.get(url), 'L5', `links ${url.slice(origin.length)}, which answers ${response.status}${response.headers?.get('location') ? ` to ${response.headers.get('location')}` : ''}`);
+  });
+
+  /* L6: the 404s */
+  await pool(NOT_FOUND_SAMPLE, 3, async (path) => {
+    const response = await get(`${origin}${path}`).catch((error) => ({ status: 0, error }));
+    if (response.status !== 404) return add(path, 'L6', `answered ${response.status}; a missing address answers 404`);
+    for (const [rule, message] of judgeNotFound(await response.text())) add(path, `L6/${rule}`, message);
   });
 
   print(findings.sort((a, b) => a.file.localeCompare(b.file)));

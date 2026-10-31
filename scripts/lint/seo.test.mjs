@@ -15,6 +15,7 @@ import {
   imageSize,
   importTs,
   judgeHead,
+  judgeNotFound,
   judgeSitemap,
   judgeUnique,
   lintAliasHosts,
@@ -238,6 +239,19 @@ test('B1 to B4: the head judge on fixture HTML', () => {
   /* a private page: noindex, nofollow */
   assert.deepEqual(judged('/transcreate', head({ canonical: `${SITE_URL}/transcreate`, robots: 'noindex, nofollow' })), []);
   assert.deepEqual(judged('/transcreate', head({ canonical: `${SITE_URL}/transcreate`, robots: 'noindex, follow' })), ['B3']);
+});
+
+test('B8: a 404 has one title and one robots meta, noindex', () => {
+  const page = (head) => `<!DOCTYPE html><html><head>${head}</head><body><svg><title>an icon</title></svg></body></html>`;
+  const rules404 = (head) => judgeNotFound(page(head)).map(([rule]) => rule);
+  const next = '<meta name="robots" content="noindex"/>';
+  assert.deepEqual(rules404(`<title>Page not found, Prototemplate</title>${next}`), []);
+  /* the built-in page's title beside the root default, and the root's robots beside Next's */
+  assert.deepEqual(rules404(`<title>404: This page could not be found.</title>${next}<title>Prototemplate</title><meta name="robots" content="index, follow"/>`), ['B8', 'B8']);
+  /* a not-found.tsx that writes its own noindex beside Next's */
+  assert.deepEqual(rules404(`<title>Page not found</title>${next}<meta name="robots" content="noindex"/>`), ['B8']);
+  assert.deepEqual(rules404('<title>Page not found</title>'), ['B8']);
+  assert.deepEqual(rules404(`<title>Page not found</title>${next}<meta name="googlebot" content="index, follow"/>`), ['B8']);
 });
 
 test('B5: the sitemap judge', () => {

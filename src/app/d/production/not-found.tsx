@@ -13,6 +13,7 @@ const route = seoRoute({
   title: 'Page not found',
   section: 'Shipped',
   kind: 'error',
+  notFound: true,
   description: 'The page you asked for is not on the shipped General Translation site.',
 });
 
