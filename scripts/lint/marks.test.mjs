@@ -5,7 +5,8 @@
 // file's own within half a unit, SHORTLIST names known ids once each and
 // at most 16, every shortlisted mark is one Kevin picked and every dynamic
 // mark is a pick or a drawing its family grew from (our own iterations
-// stay local until he picks one), every family has its record and holds a mark, and the
+// stay local until he picks one), every family has its record and holds a mark, every
+// mark /brand's badge cuts through is no wider than the GT monogram, and the
 // catalog and the dynamic files name each mark by its idea alone:
 // ORIGIN_WORDS rejects option letters and catalog numbers in the catalog
 // and the dynamic files, and runs everywhere, CI included. Loaded through
@@ -18,7 +19,7 @@ import { test } from 'node:test';
 import { CANONICAL, DYNAMIC_DIR, MAX_BYTES, drawnBox } from '../build/import-marks.mjs';
 import { ROOT } from '../lib/root.mjs';
 
-const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, pageFamilies } = await import(new URL('../../src/lib/marks.ts', import.meta.url).href);
+const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, badgeMarks, pageFamilies } = await import(new URL('../../src/lib/marks.ts', import.meta.url).href);
 
 const MARKS_TS = 'src/lib/marks.ts';
 const publicFile = (path) => join(ROOT, 'public', path);
@@ -84,6 +85,13 @@ test('every family has its record and holds a mark, and the page closes on In pr
   assert.equal(new Set(order).size, FAMILIES.length, 'a family is missing from the page order or repeats');
   assert.equal(order.at(-1), 'production');
   for (const family of FAMILIES) assert.ok(CATALOG.some((mark) => mark.family === family.id), `${family.id} holds no mark`);
+});
+
+test('every mark /brand\'s badge cuts through is no wider than the GT monogram', () => {
+  const viewBox = readFileSync(join(ROOT, 'src/components/viewer/GtMark.tsx'), 'utf8').match(/GT_MARK_VIEWBOX = '([^']+)'/)?.[1];
+  assert.ok(viewBox, 'GtMark.tsx sets no GT_MARK_VIEWBOX');
+  const [, , width, height] = viewBox.split(' ').map(Number);
+  for (const mark of badgeMarks(width / height)) assert.ok(mark.box[2] / mark.box[3] <= width / height, `${mark.id} is wider than the GT monogram`);
 });
 
 test('the catalog and the dynamic files name each mark by its idea alone', () => {

@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-import { BadgeCycle, badgeMark } from '@/components/viewer/BadgeCycle';
-import { boxMask, shortlist } from '@/lib/marks';
+import { BADGE_MARKS } from '@/app/brand/GtVariants';
+import { BadgeCycle } from '@/components/viewer/BadgeCycle';
 
 import { Choice, Toggle } from './controls';
 import { useReducedMotion } from './hooks';
@@ -13,9 +13,6 @@ import Plate from './Plate';
 import '@/components/viewer/BookView.css';
 
 type Size = 'title' | 'section';
-
-/* the shortlist's marks, the frames /brand's badge cuts through after the GT monogram */
-const FRAMES = shortlist().map((mark) => badgeMark(mark.file, mark.box ? boxMask(mark.box) : undefined));
 
 /**
  * BadgeCycle, live: the badge /brand's head sets after its title's last
@@ -66,13 +63,13 @@ export default function BadgeCycleDemo() {
       moves
       phoneHeight={180}
       stageClassName={still ? 'dmo-badge is-still' : 'dmo-badge'}
-      tag='<BadgeCycle frames={shortlist().map((mark) => badgeMark(mark.file, boxMask(mark.box)))} />'
+      tag='<BadgeCycle frames={badgeMarks(gtAspect).map((mark) => badgeMark(mark.file, boxMask(mark.box)))} />'
     >
       <p className={`dmo-badge-title is-${size}`}>
         <span className='pt-book-title-end'>
           Brand
           <span aria-hidden='true' className='pt-book-badge' key={n}>
-            <BadgeCycle frames={FRAMES.slice(0, n)} />
+            <BadgeCycle frames={BADGE_MARKS.slice(0, n)} />
           </span>
         </span>
       </p>

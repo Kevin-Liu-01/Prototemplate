@@ -653,6 +653,18 @@ export function shortlist(): readonly CatalogMark[] {
   return SHORTLIST.flatMap((id) => BY_ID.get(id) ?? []);
 }
 
+/**
+ * The marks /brand's badge cuts through after the GT monogram: the first
+ * four shortlisted marks whose drawn box is no wider than `aspect`, the
+ * monogram's width over its height, so the monogram sets the badge's
+ * width and the box holds still.
+ */
+export function badgeMarks(aspect: number): readonly CatalogMark[] {
+  return shortlist()
+    .filter((mark) => mark.box && mark.box[2] / mark.box[3] <= aspect)
+    .slice(0, 4);
+}
+
 /** A family's record. */
 export function familyRow(id: MarkFamilyId): MarkFamilyRow {
   return FAMILIES.find((family) => family.id === id) ?? (FAMILIES[0] as MarkFamilyRow);

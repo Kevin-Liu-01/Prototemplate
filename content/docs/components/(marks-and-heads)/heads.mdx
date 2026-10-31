@@ -16,7 +16,7 @@ Every page of the hub that reads as a book opens with the same head: the title, 
 
 ## The head badge
 
-The plate sets the Brand title with its badge as `BookHead` sets it: the badge follows the title's last word and never breaks away from it. Count sets how many monograms the strip holds, and Size sets the title at the page and section steps. Still applies the rule reduced motion applies.
+The plate sets the Brand title with its badge as `BookHead` sets it: the badge follows the title's last word and never breaks away from it. Count sets how many of the badge's marks the strip holds, and Size sets the title at the page and section steps. Still applies the rule reduced motion applies.
 
 <BadgeCycleDemo />
 
@@ -39,7 +39,7 @@ The rules live in `src/components/viewer/BookView.css`, so a host outside a book
 
 ### When to use it
 
-Only /brand's head carries a badge (Kevin, 2026-10-21): the GT monogram, then the register's monograms. Every other book head sets its title alone, and `pnpm lint:heads` fails a badge outside `src/app/brand`.
+Only /brand's head carries a badge (Kevin, 2026-10-21): the GT monogram, then the first four shortlisted marks no wider than it (`badgeMarks` in `src/lib/marks.ts`), so the monogram sets the box's width and the box holds still. Every other book head sets its title alone, and `pnpm lint:heads` fails a badge outside `src/app/brand`.
 
 ### Reduced motion and themes
 
