@@ -513,7 +513,7 @@ export const FAMILIES: readonly MarkFamilyRow[] = [
   { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-10-30', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
   { id: 'wedge-shadow', name: 'Wedge and shadow', anchor: 'wedge-shadow', engaged: '2026-10-30', lead: 'Neither letter is drawn, and every black shape is a wedge pressed into the page or the depth of a raised letter.' },
   { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
-  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-29', lead: 'The G is drawn into a globe of meridians and an equator that turns on a tilted axis.' },
+  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-30', lead: 'The G is drawn into a globe of meridians and an equator that turns on a tilted axis.' },
   { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },
   { id: 'earlier', name: 'Earlier rounds', anchor: 'other-explorations', engaged: '2026-10-20', lead: 'These marks come from the rounds before the hemispheres, and none was chosen.' },
   { id: 'production', name: 'In production', anchor: 'production', engaged: '2026-10-20', lead: 'These two marks are live on generaltranslation.com and in the dashboard, and each card lists every file the sites serve.' },
@@ -601,9 +601,9 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'kanji-lines-1', name: 'Kanji lines, frame', family: 'doubled-line', box: [14.5, 22.8, 228.1, 212.3], note: 'Both lines of the G run on over the whole character as a roof that opens on the right.' }),
   dyn({ id: 'kanji-lines-3', name: 'Kanji lines, climb', family: 'doubled-line', box: [11.6, 74, 232.1, 108.8], note: 'The inner line of the G turns up and climbs on one diagonal into the top line of the T.' }),
 
-  dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
-  dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G and two parallels are its arm and bar, and every line thins toward the upper right as on a lit sphere.' }),
+  dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G, two parallels are its arm and its needle bar, and the limb and the meridian thin toward the upper right as on a lit sphere.' }),
   dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, box: [33, 33.8, 190.3, 190.2], note: 'A flat ring opened at its upper right is the G, and the equator over the central meridian is the T, so one line is the bar of both.' }),
+  dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
   dyn({ id: 'globe-6', name: 'Globe, axis', family: 'globe', box: [24, 29.9, 224, 196.9], note: 'The globe turns on a tilted axis drawn as one straight blade, and the stem of the T hangs square from it.' }),
 ];
 
