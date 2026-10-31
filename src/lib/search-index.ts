@@ -568,7 +568,7 @@ export const HANDBOOK_HEADINGS: Readonly<Record<string, readonly (readonly [stri
     ['6-type', '6. Type'],
     ['7-language-as-material', '7. Language as material'],
     ['8-where-it-ships', '8. Where it ships'],
-    ['9-context-for-partners', '9. Context for partners'],
+    ['9-context', '9. Context'],
   ],
   design: [
     ['1-the-four-color-system', '1. The four-color system'],

@@ -4,7 +4,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 
 ## Sources of the skill as written through 2026-10-07
 
-- Prototemplate: BRAND.md sections 1 to 9 (the name, the idea, the character and voice, the mark, color, type, language as material, where it ships, the context for partners and the final avoid list).
+- Prototemplate: BRAND.md sections 1 to 9 (the name, the idea, the character and voice, the mark, color, type, language as material, where it ships, the context and the final avoid list).
 - Prototemplate: DESIGN.md sections 1 (the four-color system), 4 (voices), 5 (the doubled line), 7 (the Bayer language), 8 (the moving type law), 12 (the mobile type ladder) and 15 (chrome exceptions).
 - Prototemplate: `deck/parts/head.html` (tokens, the type rules at lines 55 to 69, the GT word at 74 to 78, the book head at 279 to 293, semantic icon hues at 113 to 125) and `deck/DECK-GRAMMAR.md` (type, color, speed marks, defects).
 - Prototemplate: deck slides 12 (voice), 15 (naming), 16 (the mark), 25 (small sizes), 26 (color), 27 (type), 28 (scripts), 29 (the ladder), 36 (language as material), 39 (anti-patterns), 93 (fixed points).

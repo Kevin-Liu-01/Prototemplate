@@ -219,7 +219,7 @@ The site grew from the direction of the **Dossier**
 directions as the working record of how we got there. From 2026-08-06 to
 2026-10-07 this section named it the completed reference for the brand.
 
-## 9. Context for partners
+## 9. Context
 
 - **Industry:** AI developer tools; the full stack for localization,
   meaning i18n libraries, context-aware translation APIs, and the

@@ -588,7 +588,7 @@ const PAGES: readonly BrandPage[] = [
     ),
   },
   {
-    id: 'context-for-partners',
+    id: 'context',
     body: (
       <>
         <p>
@@ -602,14 +602,14 @@ const PAGES: readonly BrandPage[] = [
           point solutions, <GtWord />{' '}is usage-based and owns the whole stack, so it can own the
           whole experience.
         </p>
-        <h3 id={headingId('context-for-partners', 'direction')}>Direction</h3>
+        <h3 id={headingId('context', 'direction')}>Direction</h3>
         <p>
           International Style discipline with Art Deco&rsquo;s future-embracing stance.
           Swiss grids, blueprints, boxes, no rounded corners. Water and ocean as the
           recurring theme, connecting the globe. Bespoke material textures, in the
           spirit of materialarchiv.ch.
         </p>
-        <h3 id={headingId('context-for-partners', 'references')}>References</h3>
+        <h3 id={headingId('context', 'references')}>References</h3>
         <p>
           Josef Müller-Brockmann and the Swiss poster tradition. Otl Aicher&rsquo;s
           Munich 1972 pictograms. Vignelli&rsquo;s subway map. Split-flap departure
@@ -620,13 +620,13 @@ const PAGES: readonly BrandPage[] = [
         </p>
         <div className='ptb-brief'>
           <div className='ptb-brief-col'>
-            <h3 id={headingId('context-for-partners', 'admired')}>Admired</h3>
+            <h3 id={headingId('context', 'admired')}>Admired</h3>
             <ul className='pt-post-rules'>
               <li>Vercel, Resend, Stripe: reliable, developer-first infrastructure with engineering excellence.</li>
             </ul>
           </div>
           <div className='ptb-brief-col'>
-            <h3 id={headingId('context-for-partners', 'avoid')}>Avoid</h3>
+            <h3 id={headingId('context', 'avoid')}>Avoid</h3>
             <ul className='pt-post-rules'>
               <li>
                 Monospace as the brand voice in headlines, body, or marketing. Small mono

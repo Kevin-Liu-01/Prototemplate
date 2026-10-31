@@ -447,9 +447,9 @@ const BRAND_SECTIONS: readonly Surface[] = [
     'Finished artwork made with the system: the Open Source reel, the X banner, two blog films and three partnership globes.',
   ],
   [
-    'context-for-partners',
-    'Context for partners',
-    'The industry, the audience, and the visual references for partners.',
+    'context',
+    'Context',
+    'The industry, the audience, and the visual references.',
   ],
 ].map(([anchor, name, desc]) =>
   internal(`brand-${anchor}`, name, `/brand#${anchor}`, desc, 'Brand sections', thumb(`brand-${anchor}`))

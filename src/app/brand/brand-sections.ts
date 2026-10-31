@@ -108,15 +108,15 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
     ],
   },
   {
-    id: 'context-for-partners',
-    title: 'Context for partners',
-    desc: 'The industry, the audience, and the visual references for partners.',
+    id: 'context',
+    title: 'Context',
+    desc: 'The industry, the audience, and the visual references.',
     source: 'BRAND.md part 9',
     headings: [
-      heading('context-for-partners', 'direction', 'Direction'),
-      heading('context-for-partners', 'references', 'References'),
-      heading('context-for-partners', 'admired', 'Admired'),
-      heading('context-for-partners', 'avoid', 'Avoid'),
+      heading('context', 'direction', 'Direction'),
+      heading('context', 'references', 'References'),
+      heading('context', 'admired', 'Admired'),
+      heading('context', 'avoid', 'Avoid'),
     ],
   },
 ];
