@@ -204,6 +204,28 @@
   justify-content: center;
   aspect-ratio: 1;
   padding: 20px;
+  container-type: inline-size;
+}
+
+/* the mark fits the plate's height as well as its width: a plate is
+   square (the lead's is taller) with equal padding, so its content height
+   is at least 100cqi, and a tall mark sized for a wider tile never grows
+   the plate past the square */
+.mk-short-plate > .mk-svg {
+  max-width: min(100%, calc(100cqi * var(--mk-aspect)));
+}
+
+/* the first tile, the mark Kevin loves, is two tiles wide and two rows
+   tall: its plate takes the height its name leaves, so its name divider
+   sits on the line of the second row's */
+.mk-short-tile.is-lead {
+  grid-column: span 2;
+  grid-row: span 2;
+  grid-template-rows: 1fr auto;
+}
+
+.mk-short-tile.is-lead .mk-short-plate {
+  aspect-ratio: auto;
 }
 
 /* the shortlist's field holds no caption, so it pads its foot like its head,
@@ -213,7 +235,7 @@
 }
 
 .mk-field.is-short .mk-field-row {
-  gap: 24px;
+  gap: 16px;
 }
 
 /* ---------- the card: every mark ---------- */

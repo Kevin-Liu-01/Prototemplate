@@ -511,7 +511,7 @@ export const FAMILIES: readonly MarkFamilyRow[] = [
   { id: 'bolt', name: 'Bolt', anchor: 'bolt', engaged: '2026-10-30', lead: 'The G is drawn as a lightning bolt whose blade runs down to a point.' },
   { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-10-30', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
   { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
-  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-30', lead: 'The G and the T are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator.' },
+  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-30', lead: 'The letters are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator.' },
   { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },
   { id: 'earlier', name: 'Earlier rounds', anchor: 'other-explorations', engaged: '2026-10-20', lead: 'These marks come from the rounds before the hemispheres, and none was chosen.' },
   { id: 'production', name: 'In production', anchor: 'production', engaged: '2026-10-20', lead: 'These two marks are live on generaltranslation.com and in the dashboard, and each card lists every file the sites serve.' },
@@ -533,7 +533,7 @@ export type CatalogMark = {
   box?: readonly [number, number, number, number];
   /** Kevin kept it by name */
   pick?: true;
-  /** a drawing the family grew from: it opens its family */
+  /** a drawing the family grew from: it follows the family's shortlisted marks and precedes the rest */
   opens?: true;
   /** one sentence on what the drawing does */
   note?: string;
@@ -558,7 +558,7 @@ function dyn({ cut, ...mark }: DynamicInput): CatalogMark {
  * public/marks/dynamic that pnpm import:marks copied in and measured. In
  * each family the drawings it grew from come first, newest first, then
  * the rest in the order the family shows them; the shortlisted marks are
- * placed by SHORTLIST.
+ * placed by SHORTLIST, ahead of both (dynamicFamily).
  */
 export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'stencil-hook', name: 'Stencil hook', family: 'stencil', opens: true, pick: true, box: [22, 60.7, 212, 134.6], note: 'The G and the t share one flat top, and the t turns down into a hook.' }),
@@ -659,15 +659,16 @@ export function familyRow(id: MarkFamilyId): MarkFamilyRow {
 }
 
 /**
- * A family's dynamic marks in page order: the drawings it grew from, then
- * its shortlisted marks in SHORTLIST's order, then the rest as
+ * A family's dynamic marks in page order: its shortlisted marks in
+ * SHORTLIST's order, so the family opens with the best of it by Kevin's
+ * verdicts, then the drawings it grew from, then the rest as
  * DYNAMIC_MARKS lists them.
  */
 export function dynamicFamily(id: MarkFamilyId): readonly CatalogMark[] {
   const marks = DYNAMIC_MARKS.filter((mark) => mark.family === id);
   const rank = (mark: CatalogMark) => {
     const at = SHORTLIST.indexOf(mark.id);
-    return mark.opens ? -1 : at >= 0 ? at : SHORTLIST.length;
+    return at >= 0 ? at : SHORTLIST.length + (mark.opens ? 0 : 1);
   };
   return marks
     .map((mark, i) => ({ mark, i }))
@@ -675,14 +676,9 @@ export function dynamicFamily(id: MarkFamilyId): readonly CatalogMark[] {
     .map(({ mark }) => mark);
 }
 
-/**
- * The mark a family leads with, drawn large on both grounds: its first
- * mark after the drawings it grew from, or, when every mark it holds is
- * one of those drawings, its best shortlisted one.
- */
+/** The mark a family leads with, drawn large on both grounds before the rest: its first mark in page order. */
 export function familyLead(id: MarkFamilyId): CatalogMark | undefined {
-  const marks = dynamicFamily(id);
-  return marks.find((mark) => !mark.opens) ?? shortlist().find((mark) => mark.family === id) ?? marks[0];
+  return dynamicFamily(id)[0];
 }
 
 /**

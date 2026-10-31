@@ -130,13 +130,16 @@ const DRAWN_HERO_PX = 160;
 /**
  * A dynamic mark is sized by its drawn box: on a plain card it fits a box
  * 168 wide (a card at the 1440 view) and 128 tall, on its family's lead
- * card 360 by 168, on a shortlist tile 200 by 168. Its run of sizes fits
- * the drawing into squares of 64 and 32, the boxes an app icon and a
- * favicon give it; the 16px drawing, where one is drawn, has its own row.
+ * card 360 by 168, on a shortlist tile 200 by 168, and on the shortlist's
+ * lead tile, two tiles wide and two rows tall, 440 by 400. Its run of
+ * sizes fits the drawing into squares of 64 and 32, the boxes an app icon
+ * and a favicon give it; the 16px drawing, where one is drawn, has its
+ * own row.
  */
 const DYN_CARD: readonly [number, number] = [168, 128];
 const DYN_FEATURE: readonly [number, number] = [360, 168];
 const DYN_TILE: readonly [number, number] = [200, 168];
+const DYN_LEAD: readonly [number, number] = [440, 400];
 const DYN_SIZES: readonly number[] = [64, 32];
 const DYN_FEATURE_SIZES: readonly number[] = [128, 64, 32];
 
@@ -700,7 +703,8 @@ function Group({ id, section, count, title, lead, active, children }: GroupProps
 }
 
 /**
- * The shortlist: one square tile per mark, its drawing large on paper with
+ * The shortlist: one square tile per mark, the first (the mark Kevin
+ * loves) two tiles wide and two rows tall, its drawing large on paper with
  * its name under it, and its family where the name does not already say
  * it, each a jump to the mark's card in its family; then the shortlist at one height on both grounds, after the GT
  * mark in production, so each reads beside the mark that ships.
@@ -709,10 +713,10 @@ function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, 
   return (
     <>
       <div className='mk-short'>
-        {SHORTLIST.map((mark) => (
-          <a key={mark.id} className='mk-short-tile' href={`#${mark.id}`} onClick={(e) => onJump(e, mark.id)}>
+        {SHORTLIST.map((mark, i) => (
+          <a key={mark.id} className={cn('mk-short-tile', i === 0 && 'is-lead')} href={`#${mark.id}`} onClick={(e) => onJump(e, mark.id)}>
             <span className='mk-short-plate is-paper'>
-              <BoxArt mark={mark} fit={DYN_TILE} />
+              <BoxArt mark={mark} fit={i === 0 ? DYN_LEAD : DYN_TILE} />
             </span>
             <span className='mk-short-name'>
               <b>{mark.name}</b>
@@ -745,28 +749,18 @@ function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, 
 }
 
 /**
- * A family drawn from its dynamic marks: the drawings it grew from, then
- * its lead (familyLead) on both grounds, then the rest. The speed family
- * shows its dynamic marks in one run before the speed set.
+ * A family drawn from its dynamic marks in page order (dynamicFamily): its
+ * lead (familyLead, the best of it by Kevin's verdicts) on both grounds,
+ * then the rest. The speed family draws them before the speed set.
  */
 function DynamicFamily({ family, active }: { family: MarkFamilyRow; active: string }) {
-  const marks = dynamicFamily(family.id);
-  const lead = familyLead(family.id);
-  const opens = marks.filter((mark) => mark.opens && mark !== lead);
-  const others = marks.filter((mark) => !mark.opens && mark !== lead);
+  const [lead, ...rest] = dynamicFamily(family.id);
   return (
     <>
-      {opens.length > 0 && (
-        <div className='mk-cards'>
-          {opens.map((mark) => (
-            <DynamicCard key={mark.id} mark={mark} active={active === mark.id} />
-          ))}
-        </div>
-      )}
       {lead && <DynamicCard mark={lead} feature active={active === lead.id} />}
-      {others.length > 0 && (
+      {rest.length > 0 && (
         <div className='mk-cards'>
-          {others.map((mark) => (
+          {rest.map((mark) => (
             <DynamicCard key={mark.id} mark={mark} active={active === mark.id} />
           ))}
         </div>
@@ -864,11 +858,7 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
       case 'speed':
         return (
           <>
-            <div className='mk-cards'>
-              {dynamicFamily('speed').map((mark) => (
-                <DynamicCard key={mark.id} mark={mark} active={active === mark.id} />
-              ))}
-            </div>
+            <DynamicFamily family={family} active={active} />
             <div className={cn('mk-sec mk-block', active === REGISTER_ID && 'is-active')} data-id={REGISTER_ID} aria-labelledby='mk-register'>
               <header className='mk-block-head'>
                 <div className='mk-card-name'>

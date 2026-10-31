@@ -3,7 +3,9 @@
 // a row, every dynamic file is one path in currentColor on the canonical
 // 256 unit header and at most 8 KB, the drawn box a row records is the
 // file's own within half a unit, SHORTLIST names known ids once each and
-// at most 16, every family has its record and holds a mark, and the
+// at most 16, every shortlisted mark is one Kevin picked and every dynamic
+// mark is a pick or a drawing its family grew from (our own iterations
+// stay local until he picks one), every family has its record and holds a mark, and the
 // catalog and the dynamic files name each mark by its idea alone:
 // ORIGIN_WORDS rejects option letters and catalog numbers in the catalog
 // and the dynamic files, and runs everywhere, CI included. Loaded through
@@ -67,6 +69,12 @@ test('SHORTLIST names known ids once each, at most 16', () => {
   assert.ok(SHORTLIST.length <= 16, 'the shortlist holds more than 16');
   assert.equal(new Set(SHORTLIST).size, SHORTLIST.length, 'the shortlist repeats an id');
   for (const id of SHORTLIST) assert.ok(ids.has(id), `${id} is on the shortlist and not in the catalog`);
+});
+
+test('the shortlist holds only Kevin\'s picks, and every dynamic mark is a pick or a drawing its family grew from', () => {
+  const byId = new Map(CATALOG.map((mark) => [mark.id, mark]));
+  for (const id of SHORTLIST) assert.ok(byId.get(id)?.pick, `${id} is on the shortlist and Kevin did not pick it`);
+  for (const mark of DYNAMIC_MARKS) assert.ok(mark.pick || mark.opens, `${mark.id} is our own iteration, and it stays local until Kevin picks it`);
 });
 
 test('every family has its record and holds a mark, and the page closes on In production', () => {
