@@ -189,12 +189,12 @@ const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [B
     lead: 'Transcreate replaces the on-screen text of a product video with its translation. The new text follows every cut, animation and effect of the original.',
     facts: [
       { icon: 'film', key: 'Videos', value: VIDEO_COUNT },
-      { icon: 'language', key: 'Languages', value: 'English to Japanese and Spanish' },
+      { icon: 'language', key: 'Languages', value: 'English, Japanese, Spanish' },
       { icon: 'duration', key: 'Length', value: '15 to 125 s' },
     ],
   },
   videos: {
-    lead: 'Each of the eight product videos plays from English to Japanese with its original sound. The switch above a video sets the two languages side by side or one above the other.',
+    lead: 'Each of the eight product videos plays from English to Japanese with its original sound.',
     facts: [
       { icon: 'film', key: 'Videos', value: VIDEOS.length },
       { icon: 'columns', key: 'Layouts', value: 'Side by side or stacked' },
@@ -202,7 +202,7 @@ const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [B
     ],
   },
   databricks: {
-    lead: 'Four Databricks videos from English to Japanese, each with its original sound. The switch above a video sets the English original above the Japanese version, or the Japanese version alone.',
+    lead: 'Four Databricks videos play from English to Japanese with their original sound.',
     facts: [
       { icon: 'film', key: 'Videos', value: DATABRICKS.length },
       { icon: 'columns', key: 'Layouts', value: 'Stacked or Japanese' },
@@ -210,15 +210,15 @@ const HEAD: Readonly<Record<TranscreateRoute, { lead: string; facts: readonly [B
     ],
   },
   ramp: {
-    lead: 'One Ramp video from English to Spanish and Japanese, with no sound. The first frame plays the three versions at once. The switch above a translation sets it under the English original, or alone.',
+    lead: 'One Ramp video plays from English to Spanish and Japanese with no sound.',
     facts: [
       { icon: 'film', key: 'Versions', value: RAMP_VERSIONS.length },
-      { icon: 'language', key: 'Languages', value: 'English to Spanish and Japanese' },
+      { icon: 'columns', key: 'Layouts', value: 'Stacked or alone' },
       { icon: 'duration', key: 'Length', value: `${RAMP.seconds} s` },
     ],
   },
   credits: {
-    lead: 'Each original video belongs to its company. The eight clips show 29 to 30 seconds of their originals, the four Databricks videos run 80 to 125 seconds, and Ramp Procurement runs 15 seconds.',
+    lead: 'Each original video belongs to its company. The first eight videos show 29 to 30 seconds of their originals.',
     facts: [
       { icon: 'film', key: 'Videos', value: VIDEO_COUNT },
       { icon: 'people', key: 'Companies', value: OWNERS.length },
