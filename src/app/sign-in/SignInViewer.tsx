@@ -31,6 +31,8 @@ const REFUSAL: Readonly<Record<number, string>> = {
  * the access key field and its button where a lead would sit. A right key
  * opens `next` as a document, since a locked area can be a route handler
  * the router cannot render; a wrong one prints one line under the field.
+ * The form posts, so Enter before hydration sends the key in a body to
+ * this page, which renders again, and never puts it in a URL.
  */
 export default function SignInViewer({ state, next }: SignInViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -90,7 +92,7 @@ export default function SignInViewer({ state, next }: SignInViewerProps) {
                 <Lock open={state === 'in'} title />
               </h1>
               {state === 'out' ? (
-                <form className='pt-signin' onSubmit={signIn}>
+                <form className='pt-signin' method='post' onSubmit={signIn}>
                   <div className='pt-signin-row'>
                     <input
                       className='pt-signin-key'

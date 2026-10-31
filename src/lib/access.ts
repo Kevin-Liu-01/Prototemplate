@@ -116,9 +116,9 @@ export function readSession(env: AccessEnv | null, token: string | undefined, no
 
 /**
  * The page to open after signing in: a path on this site, kept with its
- * query and fragment, or `/`. Anything that could leave the site (`//host`,
- * a backslash, a scheme, a control character) and the sign-in page itself
- * fall back to `/`.
+ * query and fragment, or `/`. Anything that could leave the site (`//host`
+ * before or after dot segments collapse, a backslash, a scheme, a control
+ * character) and the sign-in page itself fall back to `/`.
  */
 export function safeNext(raw: unknown): string {
   if (typeof raw !== 'string' || raw.length > 2048) return '/';
@@ -131,7 +131,9 @@ export function safeNext(raw: unknown): string {
   }
   if (url.origin !== 'https://next.invalid') return '/';
   if (url.pathname === SIGN_IN_PATH || url.pathname.startsWith(`${SIGN_IN_PATH}/`)) return '/';
-  return `${url.pathname}${url.search}${url.hash}`;
+  /* parsing collapses dot segments, so `/..//host` comes out as `//host`: check the result too */
+  const out = `${url.pathname}${url.search}${url.hash}`;
+  return out.startsWith('/') && !out.startsWith('//') ? out : '/';
 }
 
 /** A file (a name with an extension other than .html) or an API request answers 401 when signed out; a page request goes to the sign-in page. */

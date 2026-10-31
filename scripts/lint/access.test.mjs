@@ -131,6 +131,10 @@ test('the next path stays on this site', () => {
   for (const raw of [
     '//example.com',
     '//example.com/raise',
+    '/..//evil.com',
+    '/.%2e//evil.com',
+    '/%2e%2e//evil.com',
+    '/raise/..//evil.com',
     '/\\example.com',
     '/raise\\..\\x',
     'https://example.com',
@@ -188,4 +192,11 @@ test('the proxy matcher repeats LOCKED: each area and its subpaths, nothing else
   const matcher = [...literal[1].matchAll(/'([^']+)'/g)].map((m) => m[1]).sort();
   const want = LOCKED.flatMap((base) => [base, `${base}/:path*`]).sort();
   assert.deepEqual(matcher, want, 'add each LOCKED entry to the matcher in src/proxy.ts as /<area> and /<area>/:path*');
+});
+
+test('the key form posts, so Enter before hydration sends the key in a body, never in the URL', () => {
+  const source = readFileSync(new URL('../../src/app/sign-in/SignInViewer.tsx', import.meta.url), 'utf8');
+  const forms = [...source.matchAll(/<form\b[^>]*>/g)].map((m) => m[0]);
+  assert.ok(forms.length > 0, 'SignInViewer renders a form');
+  for (const form of forms) assert.match(form, /\bmethod='post'/, form);
 });
