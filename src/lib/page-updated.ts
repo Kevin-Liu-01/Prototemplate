@@ -17,5 +17,5 @@ export type PageUpdated = {
   src: string;
 };
 
-/** The repository's commit page; the panel's date links to `${COMMIT_URL}${commit}`. */
-export const COMMIT_URL = 'https://github.com/Kevin-Liu-01/Prototemplate/commit/';
+/** The repository at the page's commit; the panel's date links to `${COMMIT_URL}${commit}`. */
+export const COMMIT_URL = 'https://github.com/Kevin-Liu-01/Prototemplate/tree/';
