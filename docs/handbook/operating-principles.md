@@ -114,7 +114,7 @@ Kevin, 2026-09-10: "be vendor agnostic, dont just ennforce claude code".
 
 Prototemplate is public at www.prototemplate.com and github.com/Kevin-Liu-01/Prototemplate. Nothing in it carries keys, account ids, email addresses, personal details, customer names that generaltranslation.com does not show, unannounced plans, or business numbers such as funding, revenue and headcount (`gt-brand` section 8, `gt-voice` "Facts and public surfaces"). Colleagues appear by role. `pnpm lint:public` scans every file for key shapes, machine paths and the terms on a private denylist, and the pre-push hook in `.githooks/` runs it.
 
-The rule dates from the brand questionnaire round (2026-08-06 and 2026-08-11) and from 2026-10-05, when Kevin made Prototemplate his public hub for GT work.
+The rule dates from 2026-08-06 and 2026-08-11, and from 2026-10-05, when Kevin made Prototemplate his public hub for GT work.
 
 ## Where the procedures live
 

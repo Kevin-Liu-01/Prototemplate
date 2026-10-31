@@ -1,6 +1,6 @@
 # Brand deck, round five
 
-Kevin, September 9, 2026: "we need more thematic images that convey the vibes of the company interspersed across slides, very artistic and cool. Then make our actual website screenshots much much better and much more intentional and responsive to light and dark modes, and be more specific: show certain areas of visual aesthetic-ness, and have a dedicated page to diagrams. Finally we need a slide to show how much creative control [the identity project] has: we do not want to say we need to keep this and that, and we do not want to say completely redesign everything. We want a first-principles approach based on a few things that cannot change (the legal name of the company, General Translation, and the names of the libraries our customers use, gt-*). No sunk cost: anything is liable to change as long as it is first principles, and that could even mean changing the name of the product."
+Kevin, September 9, 2026: "we need more thematic images that convey the vibes of the company interspersed across slides, very artistic and cool. Then make our actual website screenshots much much better and much more intentional and responsive to light and dark modes, and be more specific: show certain areas of visual aesthetic-ness, and have a dedicated page to diagrams." He also asked for a slide on the fixed points: the legal name General Translation and the gt-* library names do not change, and anything else may change on first principles, the product name included.
 
 The deck source is this folder (`parts/`, `slides/`, `shots/`, `fonts/`). `DECK-GRAMMAR.md` still governs every slide. `node shoot-slide.mjs 8 15` or `all` renders slides into `preview/` and reports overflow; it needs `tmp/shots -> ../shots` (create the symlink if missing). `pnpm build:deck` at the repo root writes `public/brand-deck.html`.
 
@@ -25,7 +25,7 @@ Compose two new slides in the Website section, "Details in light" and "Details i
 
 One new slide in the Design system section, after the doubled line, titled "Diagrams". It states the diagram grammar in a ruled rows table (strokes: 1px or 1.5px in ink, ink-2 or hairline; labels: 20px ink-2 or 26px ink; markers: 11px squares; no arrowheads; the isometric projection for objects; the doubled connector for links) and shows four small example diagrams in a row beneath it, each 300px wide, drawn inline in the grammar: a three-step flow, a scale with a marker, a stacked layer model, and an isometric plate. The examples are the deck's own vocabulary, so a reader can see the family at once.
 
-## 4. Fixed points, the creative latitude slide
+## 4. Fixed points
 
 One new slide in the Status and plan section, before Success criteria, titled "Fixed points". It has to convey, in plain declarative English, that the identity project is a first-principles project with two fixed points and nothing else protected:
 

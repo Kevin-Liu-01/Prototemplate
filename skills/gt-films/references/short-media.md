@@ -69,8 +69,8 @@ voice (2026-09-30). It holds:
 - dummy data and visuals in place of any customer's brand until permission
   is confirmed.
 
-Replies to the vendor follow `gt-voice` `references/messages.md` (a reply to
-an outside partner).
+Replies to the vendor follow `gt-voice` `references/messages.md` (a reply to a
+partner).
 
 ## 6. Who directs
 

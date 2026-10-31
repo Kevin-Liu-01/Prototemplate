@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Making a film
   areas: videos, motion
-  updated: 2026-10-21
+  updated: 2026-10-30
   origin: prototemplate
   owner: V
 ---

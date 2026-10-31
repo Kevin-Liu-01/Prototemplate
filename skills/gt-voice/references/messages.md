@@ -2,7 +2,7 @@
 
 Detail for the Two registers section of `gt-voice`. These are the shapes
 Kevin set for work messages he sends or has an agent draft: Slack updates,
-replies to the team, specs for a teammate and replies to an outside partner.
+replies to the team, specs for a teammate and replies to a partner.
 The hard rules of the skill hold in all of them.
 
 ## Slack about work
@@ -27,9 +27,9 @@ The order Kevin used on 2026-07-21:
 A paragraph in Kevin's voice, followed by numbered action items with
 concrete examples (2026-09-02, 2026-09-03).
 
-## A reply to an outside partner
+## A reply to a partner
 
-For the video vendor or another partner (2026-09-24):
+The shape Kevin set on 2026-09-24, for the video vendor and any other partner:
 
 - Thank them at the start and at the end.
 - Credit their reasoning before giving GT's.

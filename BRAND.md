@@ -97,7 +97,7 @@ for making things people love.
 | Warm | → | **Cool** |
 | **Elegant** | ← | Fun |
 
-These are read from the shipped system.
+These are read from the shipped system. They are working answers.
 
 ### Voice
 

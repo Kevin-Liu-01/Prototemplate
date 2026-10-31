@@ -43,11 +43,11 @@ The name General Translation was chosen for three reasons, in this order. The fi
 | `gt-next`, `gt-react`, `gt-vue`, `gt-node`, `gt-python` | the framework packages | in their exact form |
 | Locadex | the AI agent product | its own mark |
 | generaltranslation.com | the domain | in body copy |
-| prototemplate.com | the design lab and the brand handoff site | in body copy |
+| prototemplate.com | the design lab and the brand reference site | in body copy |
 | glyphfield.com | the companion tooling site: the shader library and the animation studio | a separate site from prototemplate.com |
 
 - A product token keeps its exact form and is never the first word of a heading. A heading names the thing: "Prototemplate" in the heading, "prototemplate.com" in the body.
-- The identity project has two fixed points: the legal name General Translation and the names customers install and import (`gt` and the packages). The mark, the colors, the type, the layout system, the voice, the site structure and the product names, Locadex included, are open in that project (deck slide 93). The rules in this skill are the working system until the project hands off its replacement.
+- The identity project has two fixed points: the legal name General Translation and the names customers install and import (`gt` and the packages). The mark, the colors, the type, the layout system, the voice, the site structure and the product names, Locadex included, are open in that project (deck slide 93). The rules in this skill are the working system until the project replaces them.
 
 ## 2. The idea and the values
 
@@ -176,7 +176,7 @@ The direction behind the list is International Style discipline with Art Deco's 
 
 prototemplate.com, the deck, the public Prototemplate repository, generaltranslation.com, the docs, the blog, the films and every social post are public.
 
-- None of them states anything about funding (investors, rounds or amounts), revenue or its mix, headcount, or the timing of an unannounced launch. The brand book on `/brand` leaves the questionnaire's sensitive facts out by design (Kevin, 2026-08-06), and every new surface keeps them out.
+- None of them states anything about funding (investors, rounds or amounts), revenue or its mix, headcount, or the timing of an unannounced launch. The brand book on `/brand` leaves sensitive business facts out by design (Kevin, 2026-08-06), and every new surface keeps them out.
 - The Prototemplate repository is public, so no key, token, email address or personal detail goes into a page, a picture, a capture, a skill or a commit.
 
 ### Third-party material
