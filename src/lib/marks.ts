@@ -563,8 +563,8 @@ function dyn({ cut, ...mark }: DynamicInput): CatalogMark {
  * placed by SHORTLIST.
  */
 export const DYNAMIC_MARKS: readonly CatalogMark[] = [
-  dyn({ id: 'stencil-hook', name: 'Stencil hook', family: 'stencil', opens: true, box: [22, 60.7, 212, 134.6], note: 'The G and the t share one flat top, and the t turns down into a hook.' }),
-  dyn({ id: 'stencil-block', name: 'Stencil block', family: 'stencil', opens: true, box: [0, 70.2, 256, 115.6], note: 'A heavy G and a lowercase t stand side by side, cut apart by narrow white gaps.' }),
+  dyn({ id: 'stencil-hook', name: 'Stencil hook', family: 'stencil', opens: true, pick: true, box: [22, 60.7, 212, 134.6], note: 'The G and the t share one flat top, and the t turns down into a hook.' }),
+  dyn({ id: 'stencil-block', name: 'Stencil block', family: 'stencil', opens: true, pick: true, box: [0, 70.2, 256, 115.6], note: 'A heavy G and a lowercase t stand side by side, cut apart by narrow white gaps.' }),
   dyn({ id: 'stencil-gt', name: 'Stencil', family: 'stencil', pick: true, cut: true, box: [17, 75.3, 230.1, 103.1] }),
   dyn({ id: 'stencil-a8', name: 'Stencil a8', family: 'stencil', pick: true, box: [20.3, 77, 223.5, 100] }),
   dyn({ id: 'stencil-b1', name: 'Stencil b1', family: 'stencil', pick: true, box: [6.1, 77, 244.4, 100] }),
@@ -581,12 +581,12 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'crescent-g-a', name: 'Crescent globe', family: 'crescent-globe', pick: true, box: [14.4, 15.3, 232.1, 225.2] }),
   dyn({ id: 'crescent-globe-4', name: 'Crescent globe, poles', family: 'crescent-globe', box: [26.4, 7.9, 207.9, 232.1], note: 'The limb, the G and a meridian are three meridians of one sphere that close into its two poles.' }),
 
-  dyn({ id: 'bolt-straight', name: 'Straight bolt', family: 'bolt', opens: true, box: [26.5, 18.9, 205.2, 222.6], note: 'The G is cut as one solid lightning bolt with straight edges.' }),
+  dyn({ id: 'bolt-straight', name: 'Straight bolt', family: 'bolt', opens: true, pick: true, box: [26.5, 18.9, 205.2, 222.6], note: 'The G is cut as one solid lightning bolt with straight edges.' }),
   dyn({ id: 'bolt-swept', name: 'Swept bolt', family: 'bolt', opens: true, box: [13, 0, 230, 256], note: 'The G is drawn as a lightning bolt with swept curves.' }),
   dyn({ id: 'bolt-5', name: 'Bolt T', family: 'bolt', box: [23.5, 21.3, 214.3, 224.3], note: 'A level T bar carries the blade of the bolt as its stem, and the G thins toward the T.' }),
   dyn({ id: 'bolt-2', name: 'Bolt, swell', family: 'bolt', box: [37.6, 19.3, 183.7, 226.4], note: 'The stem of the G swells low on the left, and its bar thickens from a hairline into the shoulder.' }),
 
-  dyn({ id: 'speed-needle', name: 'Speed needle', family: 'speed', opens: true, box: [10, 99.7, 236, 56.6], note: 'A wide flat GT trails a long needle to the left.' }),
+  dyn({ id: 'speed-needle', name: 'Speed needle', family: 'speed', opens: true, pick: true, box: [10, 99.7, 236, 56.6], note: 'A wide flat GT trails a long needle to the left.' }),
   dyn({ id: 'speed-gt', name: 'Speed slab', family: 'speed', opens: true, box: [0, 95, 256, 66], note: 'A wide GT drawn as one slab, with a channel cut through the G.' }),
   dyn({ id: 'speed-stacked-2', name: 'Speed slab, pitched', family: 'speed', box: [12, 92.9, 232, 71.1], note: 'The channel and the jaw of the G pitch up ten degrees while the two arms taper against each other.' }),
 
@@ -597,30 +597,33 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'umbra-light-4', name: 'Umbra light', family: 'wedge-shadow', box: [34.4, 58.5, 200.8, 152.6], note: 'Under one light the G is an open ring shown by its shadow, and the T is the shadow of a wire T.' }),
   dyn({ id: 'impression-6', name: 'Impression', family: 'wedge-shadow', box: [16, 52.5, 228.1, 154.4], note: 'The only ink is the depth that one white GT face casts along one direction.' }),
 
-  dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
+  dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, pick: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
   dyn({ id: 'kanji-lines-1', name: 'Kanji lines, frame', family: 'doubled-line', box: [14.5, 22.8, 228.1, 212.3], note: 'Both lines of the G run on over the whole character as a roof that opens on the right.' }),
   dyn({ id: 'kanji-lines-3', name: 'Kanji lines, climb', family: 'doubled-line', box: [11.6, 74, 232.1, 108.8], note: 'The inner line of the G turns up and climbs on one diagonal into the top line of the T.' }),
 
   dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G, two parallels are its arm and its needle bar, and the limb and the meridian thin toward the upper right as on a lit sphere.' }),
-  dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, box: [33, 33.8, 190.3, 190.2], note: 'A flat ring opened at its upper right is the G, and the equator over the central meridian is the T, so one line is the bar of both.' }),
+  dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, and the equator is both its bar and the crossbar of the T on the central meridian.' }),
   dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
   dyn({ id: 'globe-6', name: 'Globe, axis', family: 'globe', box: [24, 29.9, 224, 196.9], note: 'The globe turns on a tilted axis drawn as one straight blade, and the stem of the T hangs square from it.' }),
 ];
 
 /**
- * The shortlist in page order, by id: the strongest marks of every round,
- * Kevin's picks first, at most 16. Only Kevin removes a pick, and a round
- * adds at most two marks unless he asks for more.
+ * The shortlist in page order, by id: only marks Kevin chose, in the order
+ * of his verdicts, newest first: the mark he loves, the marks he liked on
+ * 2026-10-30, the marks he kept on 2026-10-28, then those he liked on
+ * 2026-10-27. At most 16. Only Kevin adds a mark or removes one, and the
+ * other picks stay in their families.
  */
 export const SHORTLIST: readonly string[] = [
+  'graticule-gt',
+  'speed-needle',
+  'bolt-straight',
+  'stencil-hook',
   'stencil-gt',
   'crescent-g-tilt-a',
   'crescent-g-tilt-b',
-  'stencil-a8',
-  'stencil-b1',
-  'stencil-a4',
-  'stencil-b4',
-  'lune-1',
+  'stencil-block',
+  'doubled-gt',
 ];
 
 /** The earlier lists as catalog rows, at the paths they already have. */

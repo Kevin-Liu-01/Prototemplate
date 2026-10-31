@@ -36,3 +36,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 ## Lines added on 2026-10-30
 
 - `references/marks.md`, "The catalog and the shortlist", the `/marks` row of the current-mark table, and the clause on the catalog in section 5: Kevin's request of 2026-10-30 to consolidate the marks and present the best of them across Prototemplate, the marks upgrade plan written that day (kept outside the repository, section 3 for the shortlist rule and section 9 for the decisions), and his ruling of the same day that the marks he picks and our iterations of them may be public as General Translation marks named only by the idea each one draws.
+
+## Lines added on 2026-10-31
+
+- `references/marks.md`, "The shortlist": Kevin's verdict of 2026-10-30 that he loves the wireframe globe GT and that our variations of it fall short, his likes of the same day, and his request of 2026-10-31 to update the marks page again ("make sure to properly update the marks page again"). The order by his verdicts and the rule that our own iterations stay local until he picks one come from the plan he was given that day (memory notes `gt-globe-marks` and `marks-judge-calibration`).

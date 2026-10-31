@@ -75,7 +75,7 @@ const BOOK_LEAD =
 const BOOK_NOTE =
   'Only the doubled-line GT monogram and the Locadex mark are in production. Every mark is one color and takes the ink of whatever it sits on.';
 
-const SHORTLIST_LEAD = 'Each mark here is one of the strongest of its round, drawn in one color on a 256 unit square.';
+const SHORTLIST_LEAD = 'The strongest marks, best first, each drawn in one color on a 256 unit square.';
 
 const REGISTER_LEAD =
   'The speed set follows one register, taken from a race-type reference. The rules below name it, and a mark that keeps them belongs to the set.';
