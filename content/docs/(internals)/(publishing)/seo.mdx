@@ -56,7 +56,7 @@ A dynamic route calls it in `generateMetadata` and again in the page body with t
 - **One canonical host.** www.prototemplate.com is canonical. The two aliases serve the same deployment, and the absolute canonical in every head consolidates them without a redirect.
 - **Mirrors point at the original.** A mirror page carries the same copy as its live page, and GT's domain is the one that should rank for it. The mirror stays crawlable, because a crawler must read a page to honor its canonical.
 - **Explorations stay out of results.** A direction reassembles GT's copy, prices and legal text into a design study. Indexed, it would put stale claims under GT's name on another domain. `src/app/d/layout.tsx` gives the whole folder `noindex, follow`.
-- **Posts point at GT.** The three posts are the files generaltranslation.com publishes.
+- **Posts point at GT.** Every post under `content/blog` is a file generaltranslation.com publishes.
 - **robots.txt never carries the policy.** A disallowed URL can still be indexed from links, and the crawler never reads its `noindex`. robots.txt allows every agent and names the sitemap.
 
 ## The social card
