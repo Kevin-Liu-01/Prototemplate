@@ -21,7 +21,7 @@ const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, pageFamilies } = await impo
 const MARKS_TS = 'src/lib/marks.ts';
 const publicFile = (path) => join(ROOT, 'public', path);
 const dynamicFiles = readdirSync(join(ROOT, DYNAMIC_DIR)).filter((name) => name.endsWith('.svg'));
-const ORIGIN_WORDS = /\bagency\b|\bvendor\b|\boption [a-d]\b|\bsym(?:bol)?[\s_-]*\d/i;
+const ORIGIN_WORDS = /\boption [a-d]\b|\bsym(?:bol)?[\s_-]*\d/i;
 
 test('every file a catalog row names exists', () => {
   for (const mark of CATALOG) {

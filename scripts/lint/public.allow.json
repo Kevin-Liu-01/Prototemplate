@@ -4,15 +4,6 @@
     { "path": "scripts/lint/public.mjs", "rules": ["machine-path"], "why": "its usage text names the two machine-path prefixes" },
     { "path": "scripts/lint/public.test.mjs", "rules": ["key-shape", "machine-path", "denylist"], "why": "its fixtures build each finding at runtime" },
     { "path": "src/app/transcreate/videos.ts", "rules": ["denylist"], "denylist_lines": [22], "why": "the Transcreate demo of a company's public video names that company; kept on 2026-10-28" },
-    { "path": "src/lib/search-index.ts", "rules": ["denylist"], "denylist_lines": [22,  69], "why": "the search keywords of the same Transcreate pages; and a denylisted name in the /brand keywords, public before 2026-10-30" },
-    { "path": "BRAND.md", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" },
-    { "path": "docs/research/DESIGN_BRIEF.md", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" },
-    { "path": "docs/research/inspo.md", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" },
-    { "path": "skills/gt-aesthetic/references/verdicts.md", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" },
-    { "path": "skills/gt-brand/SKILL.md", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" },
-    { "path": "skills/gt-brand/references/sources.md", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" },
-    { "path": "skills/gt-ship/references/prototemplate.md", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" },
-    { "path": "skills/gt-ship/references/sources.md", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" },
-    { "path": "src/app/brand/page.tsx", "rules": ["denylist"], "denylist_lines": [69], "why": "a denylisted name, public in BRAND.md and on /brand before 2026-10-30" }
+    { "path": "src/lib/search-index.ts", "rules": ["denylist"], "denylist_lines": [22], "why": "the search keywords of the same Transcreate pages" }
   ]
 }
