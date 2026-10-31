@@ -165,6 +165,77 @@ function postSlugs() {
     .sort();
 }
 
+/** The posts' MDX component map, which names the component each tag mounts. */
+const POST_MAP = 'src/app/blog/mdx-components.tsx';
+
+/** A module path as its file: `@/components/blog/Callout` is `src/components/blog/Callout.tsx`. */
+function moduleFile(base) {
+  return [`${base}.tsx`, `${base}.ts`, base].find((p) => existsSync(join(ROOT, p)));
+}
+
+/** The files under src/components/blog a module imports, followed through their own imports, stylesheets included. */
+function blogImports(file, out = new Set()) {
+  const text = readFileSync(join(ROOT, file), 'utf8');
+  for (const [, spec] of text.matchAll(/^import\s+(?:[^'";]+?\s+from\s+)?'([^']+)'/gm)) {
+    const base = spec.startsWith('@/components/blog/')
+      ? `src/${spec.slice(2)}`
+      : spec.startsWith('./') && file.startsWith('src/components/blog/')
+        ? `src/components/blog/${spec.slice(2)}`
+        : null;
+    const dep = base && moduleFile(base);
+    if (dep && !out.has(dep)) {
+      out.add(dep);
+      blogImports(dep, out);
+    }
+  }
+  return out;
+}
+
+/** Each tag of the post map, `GitHub` or `Callout`, mapped to the file under src/components/blog its component comes from. */
+function postTags() {
+  const text = readFileSync(join(ROOT, POST_MAP), 'utf8');
+  const fileOf = new Map();
+  for (const [, names, spec] of text.matchAll(/^import\s+(?!type\b)([^'";]+?)\s+from\s+'@\/components\/blog\/([^']+)'/gm)) {
+    const file = moduleFile(`src/components/blog/${spec}`);
+    for (const name of names.match(/\w+/g) ?? []) if (file) fileOf.set(name, file);
+  }
+  const body = /mdxComponents[^=]*=\s*\{([\s\S]*?)\n\};/.exec(text)?.[1] ?? '';
+  const tags = new Map();
+  for (const [, tag, name] of body.matchAll(/^\s+(\w+)(?::\s*(\w+))?,?$/gm)) {
+    const file = fileOf.get(name ?? tag);
+    if (file) tags.set(tag, file);
+  }
+  if (tags.size === 0) throw new Error(`build-updated: no blog components read from ${POST_MAP}`);
+  return tags;
+}
+
+/**
+ * What one post shows: its MDX, the author files its `authors:` frontmatter
+ * names, and the blog components its tags mount with what they import.
+ */
+function postSources(slug, tags) {
+  const mdx = `content/blog/${slug}.mdx`;
+  const text = readFileSync(join(ROOT, mdx), 'utf8');
+  const front = /^---\n([\s\S]*?)\n---/.exec(text)?.[1] ?? '';
+  const inline = /^authors:\s*\[([^\]]*)\]/m.exec(front)?.[1];
+  const block = /^authors:\s*\n((?:\s+-\s+.+\n?)+)/m.exec(front)?.[1] ?? '';
+  const names = inline !== undefined ? inline.split(',') : [...block.matchAll(/^\s+-\s+(.+?)\s*$/gm)].map((m) => m[1]);
+  const authors = names
+    .map((name) => name.trim().replace(/^(['"])(.*)\1$/, '$2'))
+    .filter(Boolean)
+    .map((name) => `content/authors/${name}.mdx`)
+    .filter((p) => existsSync(join(ROOT, p)));
+  const components = new Set();
+  for (const [, tag] of text.matchAll(/<([A-Z]\w*)/g)) {
+    const file = tags.get(tag);
+    if (file && !components.has(file)) {
+      components.add(file);
+      blogImports(file, components);
+    }
+  }
+  return [mdx, ...authors, ...[...components].sort()];
+}
+
 /** The research packages: `public/motion/<slug>.md` (MOTION_BODY_DIR). */
 function packageSlugs() {
   return readdirSync(join(ROOT, 'public/motion'))
@@ -194,6 +265,9 @@ function pages() {
     'source.config.ts',
     'src/lib/source.ts',
   ];
+  const tags = postTags();
+  /* the blog components the post viewer itself mounts (the cover) */
+  const postRoute = [...blogImports('src/app/blog/PostViewer.tsx')].sort();
   return [
     {
       id: '/',
@@ -242,9 +316,12 @@ function pages() {
         'src/lib/blog-posts.ts',
       ],
     },
+    // a post is dated by what it shows and by the post route; the component
+    // map and blog.css serve every post and date none, as the shell's code
+    // dates no page
     ...postSlugs().map((s) => ({
       id: `/blog/${s}`,
-      paths: [`content/blog/${s}.mdx`, 'content/authors', 'src/app/blog/[slug]', 'src/app/blog/PostViewer.tsx', 'src/app/blog/mdx-components.tsx', 'src/components/blog'],
+      paths: [...postSources(s, tags), 'src/app/blog/[slug]', 'src/app/blog/PostViewer.tsx', ...postRoute],
     })),
     {
       id: '/graphics',
