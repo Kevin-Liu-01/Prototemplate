@@ -40,6 +40,7 @@
   ],
   "exclude": [
     "node_modules",
-    "scripts/lint/oxlint-plugins"
+    "scripts/lint/oxlint-plugins",
+    "motion"
   ]
 }
