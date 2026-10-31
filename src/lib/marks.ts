@@ -602,6 +602,8 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'kanji-lines-3', name: 'Kanji lines, climb', family: 'doubled-line', box: [11.6, 74, 232.1, 108.8], note: 'The inner line of the G turns up and climbs on one diagonal into the top line of the T.' }),
 
   dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
+  dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G and two parallels are its arm and bar, and every line thins toward the upper right as on a lit sphere.' }),
+  dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, box: [33, 33.8, 190.3, 190.2], note: 'A flat ring opened at its upper right is the G, and the equator over the central meridian is the T, so one line is the bar of both.' }),
   dyn({ id: 'globe-6', name: 'Globe, axis', family: 'globe', box: [24, 29.9, 224, 196.9], note: 'The globe turns on a tilted axis drawn as one straight blade, and the stem of the T hangs square from it.' }),
 ];
 
