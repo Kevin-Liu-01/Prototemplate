@@ -4,10 +4,9 @@
 // 256 unit header and at most 8 KB, the drawn box a row records is the
 // file's own within half a unit, SHORTLIST names known ids once each and
 // at most 16, every family has its record, and the catalog and the dynamic
-// files name each mark by its idea alone. ORIGIN_WORDS holds generic words
-// that name a mark's origin and runs everywhere, CI included; the private
-// denylist of pnpm lint:public holds the specific ones. Loaded through
-// Node's type stripping.
+// files name each mark by its idea alone: ORIGIN_WORDS rejects option
+// letters and catalog numbers in the catalog and the dynamic files, and runs
+// everywhere, CI included. Loaded through Node's type stripping.
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';

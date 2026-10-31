@@ -42,7 +42,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/docs/handbook/operating-principles': { day: '2026-10-30', at: '2026-10-30T22:06:33-07:00', commit: '6bd1f3f', src: 'fb4b9a71' },
   '/docs': { day: '2026-10-30', at: '2026-10-30T19:48:08-07:00', commit: '84e65e7', src: '2a97d311' },
   '/docs/seo': { day: '2026-10-30', at: '2026-10-30T16:54:36-07:00', commit: 'a836d8a', src: 'b665c318' },
-  '/docs/template': { day: '2026-10-30', at: '2026-10-30', commit: null, src: '96948e7d' },
+  '/docs/template': { day: '2026-10-30', at: '2026-10-30T22:09:01-07:00', commit: 'fbf38c5', src: '96948e7d' },
   '/docs/deck': { day: '2026-10-30', at: '2026-10-30T14:36:20-07:00', commit: '51e7b77', src: '9ca673a8' },
   '/docs/directions': { day: '2026-10-30', at: '2026-10-30T20:47:08-07:00', commit: 'a28ca7b', src: 'a209dd7e' },
   '/docs/pages': { day: '2026-10-30', at: '2026-10-30T20:47:08-07:00', commit: 'a28ca7b', src: '1ee258d4' },
