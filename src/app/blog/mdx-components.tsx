@@ -4,7 +4,6 @@ import Link from 'next/link';
 import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
 import type { AnchorHTMLAttributes, ImgHTMLAttributes } from 'react';
 
-import AuthorSpotlight from '@/components/blog/AuthorSpotlight';
 import Callout from '@/components/blog/Callout';
 import Carousel, { CarouselItem } from '@/components/blog/Carousel';
 import FumadocsArchitecture from '@/components/blog/FumadocsArchitecture';
@@ -66,7 +65,6 @@ type Components = NonNullable<MDXRemoteProps['components']>;
 export const mdxComponents: Components = {
   a: PostLink,
   img: PostImage,
-  AuthorSpotlight,
   Callout,
   Carousel,
   CarouselItem,

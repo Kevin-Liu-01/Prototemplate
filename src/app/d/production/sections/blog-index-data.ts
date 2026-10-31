@@ -6,9 +6,10 @@
  * content/devlog/en-US, the public generaltranslation/content repository
  * this repo does not carry), so the frontmatter is transcribed here.
  * Nothing is paraphrased. Source: generaltranslation/content at 361ec4a8
- * and the live generaltranslation.com/en-US/blog, read on 2026-10-13.
+ * and the live generaltranslation.com/en-US/blog, read on 2026-10-13; the
+ * posts at content main 333efa3b, read on 2026-10-30.
  *
- *   POSTS:    content/blog/en-US/*.mdx, all five, in the order of
+ *   POSTS:    content/blog/en-US/*.mdx, all six, in the order of
  *              content/blog/order.json, which the shipped index applies
  *              before rendering (gt-cloud #5211, orderPosts).
  *   AUTHORS:  content/authors/<slug>.mdx (name and avatar) for the
@@ -62,6 +63,16 @@ const AUTHORS = {
 /** content/blog/en-US: the whole tree, in content/blog/order.json order. */
 export const POSTS: readonly IndexPost[] = [
   {
+    slug: 'daniel-white',
+    title: 'Daniel White: Interfaces that follow the physics of sound',
+    date: '2026-10-28',
+    summary:
+      'Why Daniel cares about the touches that make a page seem alive, and how he’s bringing a new sense to interface design',
+    tags: ['open-source', 'grants', 'daniel-white', 'cuelume', 'developers', 'community'],
+    images: ['/static/blogs/daniel-white/cover.webp?v=20261028-2300'],
+    authors: [AUTHORS.taylor],
+  },
+  {
     slug: 'designing-docs-for-humans',
     title: 'Designing docs for humans',
     date: '2026-09-17',
@@ -105,7 +116,7 @@ export const POSTS: readonly IndexPost[] = [
   },
   {
     slug: 'supporting-open-source-software',
-    title: 'Supporting open-source software',
+    title: 'Grants for open-source software',
     date: '2026-08-17',
     summary:
       'General Translation is giving away $15,000 to developers who build and maintain open-source projects.',

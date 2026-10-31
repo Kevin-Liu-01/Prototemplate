@@ -11,8 +11,8 @@ import type { PostType } from './blog-article-data';
  * The text is vendored in content/production/{blog,devlog}/en-US from the
  * public repository github.com/generaltranslation/content at befd13c1
  * (2026-10-09), the commit gt-cloud pins as the apps/landing/content
- * submodule that generaltranslation.com/blog renders; the content is
- * licensed CC BY 4.0. This reader follows live's
+ * submodule, with the blog posts at content main 333efa3b (2026-10-30),
+ * which the live deploy checks out; the content is licensed CC BY 4.0. This reader follows live's
  * apps/landing/src/components/blog/utils.ts: getPostBySlug reads the file
  * and drops the frontmatter, splitHeaderIntro lifts a leading <Callout>
  * or <OpenSourceGrants /> into the header when the frontmatter sets

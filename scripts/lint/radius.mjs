@@ -139,7 +139,7 @@ export const INNER = ['.pt-filter input', '.pt-panel-filter input', '.pt-search-
 /** Controls and fields: never square. */
 export const CONTROLS = [
   '.pt-ib', '.pt-seg', '.pt-search-btn', '.pt-count', '.pt-filter', '.pt-panel-filter', '.pt-search-field',
-  '.pt-sheet-edge', '.pt-feature-cta', '.blog-github a', '.blog-spotlight-links a', '.ptb-film-badge', '.pt-cmd',
+  '.pt-sheet-edge', '.pt-feature-cta', '.blog-github a', '.spotlight-links a', '.ptb-film-badge', '.pt-cmd',
   'a.pt-sb-mark', '.blog-carousel-arrow',
   // the sidebar's pointer and current grounds: the control corner
   '.pt-sb-pill',
@@ -154,7 +154,7 @@ export const GROUPS = ['.pt-seg .pt-ib', '.pt-corner .pt-ib', '.pt-cmd .pt-cmd-c
 /** Chips, key caps, tags and inline code: the chip corner. */
 export const CHIPS = [
   '.pt-search-kbd', '.pt-site-flag', '.ptb-pill', '.pt-compare-tag', '.aw-chip', '.blog-body code',
-  '.ptd-book .ptd-body code', '.blog-spotlight-links img',
+  '.ptd-book .ptd-body code', '.spotlight-links img',
 ];
 
 /** Shapes that belong to their subject. */

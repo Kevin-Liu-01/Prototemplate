@@ -77,7 +77,8 @@ src/
                           set); FeatureBento, StorySection and the
                           line-art diagrams are unmounted references
     blog/                 the blog's MDX components (PostAuthors, PostCover,
-                          Carousel, AuthorSpotlight and the figures)
+                          Carousel, Spotlight, OpenSourceGrants and the
+                          figures)
     try/                  the report card the shipped /try page mounts
     book/                 book.tsx (reads a repository file on the
                           server), model.ts (the handbook's addresses),

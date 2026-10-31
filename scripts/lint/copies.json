@@ -137,6 +137,13 @@
       "reason": "the text of generaltranslation.com/legal/terms, vendored 2026-10-14 for /d/production/legal/terms; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
     },
     {
+      "path": "content/blog/daniel-white.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@333efa3b9aa2ebb68a2ff2aacf69b8d5f99221f3:blog/en-US/daniel-white.mdx (content main, which the live deploy checks out)",
+      "sha256": "03a9383cff4052f04a275b8cfdf22c8182401ac889f3d9c29c7a9ce3e5d5bfb6",
+      "reason": "the text of generaltranslation.com/blog/daniel-white, which /blog/daniel-white renders, synced 2026-10-30 (content #702); a re-sync copies the file at content main and records the new sha256"
+    },
+    {
       "path": "content/blog/designing-docs-for-humans.mdx",
       "mode": "pin",
       "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/designing-docs-for-humans.mdx (content main, which the live deploy checks out)",
@@ -146,9 +153,9 @@
     {
       "path": "content/blog/fuma-nama.mdx",
       "mode": "pin",
-      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/fuma-nama.mdx (content main, which the live deploy checks out)",
-      "sha256": "b8ec526a9d176d76224a35c1fa1bd166f5aed69a52c8b12cbdbd0ccd0d85ef70",
-      "reason": "the text of generaltranslation.com/blog/fuma-nama, which /blog/fuma-nama renders, synced 2026-10-26; a re-sync copies the file at content main and records the new sha256"
+      "from": "github.com/generaltranslation/content@333efa3b9aa2ebb68a2ff2aacf69b8d5f99221f3:blog/en-US/fuma-nama.mdx (content main, which the live deploy checks out)",
+      "sha256": "5948e311eb1bb2af9b55ed12008fa327bd4fa4b79598f7ca696141b67d3263b3",
+      "reason": "the text of generaltranslation.com/blog/fuma-nama, which /blog/fuma-nama renders, synced 2026-10-26 and re-synced 2026-10-30 for content #700 (the Spotlight card and the grants note); a re-sync copies the file at content main and records the new sha256"
     },
     {
       "path": "content/blog/rewriting-our-docs.mdx",
@@ -160,9 +167,9 @@
     {
       "path": "content/blog/supporting-open-source-software.mdx",
       "mode": "pin",
-      "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/supporting-open-source-software.mdx (content main, which the live deploy checks out)",
-      "sha256": "647de1e7d3a3c07e61ee8437b3f5f24a609b02bbb5499540d566923362824449",
-      "reason": "the text of generaltranslation.com/blog/supporting-open-source-software, which /blog/supporting-open-source-software renders, synced 2026-10-26; a re-sync copies the file at content main and records the new sha256"
+      "from": "github.com/generaltranslation/content@333efa3b9aa2ebb68a2ff2aacf69b8d5f99221f3:blog/en-US/supporting-open-source-software.mdx (content main, which the live deploy checks out)",
+      "sha256": "735fd8cb4933b3c9d3a7a132acf2878be3b1ee482cdd8741e764f6d874ee54ed",
+      "reason": "the text of generaltranslation.com/blog/supporting-open-source-software, which /blog/supporting-open-source-software renders, synced 2026-10-26 and re-synced 2026-10-30 for content #700 (the new title); a re-sync copies the file at content main and records the new sha256"
     },
     {
       "path": "content/blog/supporting-slash-companies.mdx",
@@ -170,6 +177,13 @@
       "from": "github.com/generaltranslation/content@3ad3a5316dce7a257b48cbb9ac55bc98a488395a:blog/en-US/supporting-slash-companies.mdx (content main, which the live deploy checks out)",
       "sha256": "d6c0906bb8809b24ccae1bc0c8e3a28fce56c56737f2951ce6be82149bb39779",
       "reason": "the text of generaltranslation.com/blog/supporting-slash-companies, which /blog/supporting-slash-companies renders, synced 2026-10-26; a re-sync copies the file at content main and records the new sha256"
+    },
+    {
+      "path": "content/production/blog/en-US/daniel-white.mdx",
+      "mode": "pin",
+      "from": "github.com/generaltranslation/content@333efa3b9aa2ebb68a2ff2aacf69b8d5f99221f3:blog/en-US/daniel-white.mdx (content main, which the live deploy checks out)",
+      "sha256": "03a9383cff4052f04a275b8cfdf22c8182401ac889f3d9c29c7a9ce3e5d5bfb6",
+      "reason": "the text of generaltranslation.com/blog/daniel-white, vendored 2026-10-30 for /d/production/blog/daniel-white (content #702); a re-sync copies the file at content main and records the new sha256"
     },
     {
       "path": "content/production/blog/en-US/designing-docs-for-humans.mdx",
@@ -181,9 +195,9 @@
     {
       "path": "content/production/blog/en-US/fuma-nama.mdx",
       "mode": "pin",
-      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:blog/en-US/fuma-nama.mdx (gt-cloud apps/landing/content, the submodule live renders)",
-      "sha256": "b8ec526a9d176d76224a35c1fa1bd166f5aed69a52c8b12cbdbd0ccd0d85ef70",
-      "reason": "the text of generaltranslation.com/blog/fuma-nama, vendored 2026-10-15 for /d/production/blog/fuma-nama; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+      "from": "github.com/generaltranslation/content@333efa3b9aa2ebb68a2ff2aacf69b8d5f99221f3:blog/en-US/fuma-nama.mdx (content main, which the live deploy checks out)",
+      "sha256": "5948e311eb1bb2af9b55ed12008fa327bd4fa4b79598f7ca696141b67d3263b3",
+      "reason": "the text of generaltranslation.com/blog/fuma-nama, vendored 2026-10-15 for /d/production/blog/fuma-nama and re-synced 2026-10-30 for content #700 (the Spotlight card and the grants note); a re-sync copies the file at content main and records the new sha256"
     },
     {
       "path": "content/production/blog/en-US/rewriting-our-docs.mdx",
@@ -195,9 +209,9 @@
     {
       "path": "content/production/blog/en-US/supporting-open-source-software.mdx",
       "mode": "pin",
-      "from": "github.com/generaltranslation/content@befd13c1fbd2158e382a21f298e5c9a1bb59ac37:blog/en-US/supporting-open-source-software.mdx (gt-cloud apps/landing/content, the submodule live renders)",
-      "sha256": "647de1e7d3a3c07e61ee8437b3f5f24a609b02bbb5499540d566923362824449",
-      "reason": "the text of generaltranslation.com/blog/supporting-open-source-software, vendored 2026-10-15 for /d/production/blog/supporting-open-source-software; a re-sync copies the file at the commit gt-cloud pins and records the new sha256"
+      "from": "github.com/generaltranslation/content@333efa3b9aa2ebb68a2ff2aacf69b8d5f99221f3:blog/en-US/supporting-open-source-software.mdx (content main, which the live deploy checks out)",
+      "sha256": "735fd8cb4933b3c9d3a7a132acf2878be3b1ee482cdd8741e764f6d874ee54ed",
+      "reason": "the text of generaltranslation.com/blog/supporting-open-source-software, vendored 2026-10-15 for /d/production/blog/supporting-open-source-software and re-synced 2026-10-30 for content #700 (the new title); a re-sync copies the file at content main and records the new sha256"
     },
     {
       "path": "content/production/blog/en-US/supporting-slash-companies.mdx",

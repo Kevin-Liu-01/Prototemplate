@@ -590,7 +590,7 @@ export const PUBLIC_SURFACES: readonly Surface[] = [
   ),
   external(
     'blog-open-source',
-    'Supporting open-source software',
+    'Grants for open-source software',
     'https://generaltranslation.com/blog/supporting-open-source-software',
     'generaltranslation.com/blog/supporting-open-source-software',
     'The grants announcement.',

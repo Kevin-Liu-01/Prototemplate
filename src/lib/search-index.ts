@@ -142,7 +142,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
     'component library plates instruments fields dither lab drawings globes iso 2D 3D controls navigation kinetic locale tags marks heads covers films layouts shells page templates source undocumented',
   handbook:
     'wiki how kevin works operating principles quality bar done multi-session playbook lanes sessions forks product map glossary terms decisions rulings agents',
-  blog: 'posts articles changelog releases devlog docs redesign rewriting fuma nama designing docs for humans open source grants slash credits carousel',
+  blog: 'posts articles changelog releases devlog docs redesign rewriting fuma nama daniel white cuelume sound designing docs for humans open source grants slash credits carousel spotlight',
   graphics: 'illustrations visuals covers carousel slides glyphfield exports pipeline manifest blog posts figures cuelume slash grants fumadocs',
   atlas: 'magazine atlas long writing why notes stripe press looks docs reader fumadocs printed page covers languages locator',
   motion:

@@ -10,7 +10,6 @@ import remarkGfm from 'remark-gfm';
 import Carousel, { CarouselItem } from '@/components/blog/Carousel';
 import Spotlight from '@/components/blog/Spotlight';
 
-import PostAuthorSpotlight from './PostAuthorSpotlight';
 import PostFumadocsArchitecture from './PostFumadocsArchitecture';
 import PostGitHub from './PostGitHub';
 import { PostAccordion, PostAccordions, PostCodeBlock, PostHeading, PostVideo } from './PostMdxControls';
@@ -214,7 +213,6 @@ const components: NonNullable<MDXRemoteProps['components']> = {
   h6: heading('h6'),
   Accordion: PostAccordion,
   Accordions: PostAccordions,
-  AuthorSpotlight: PostAuthorSpotlight,
   Callout: PostCallout,
   Carousel,
   CarouselItem,

@@ -2,12 +2,12 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
- * The blog posts and authors this repository keeps as the authoritative
- * copy of the docs-redesign series: `content/blog/<slug>.mdx` and
- * `content/authors/<slug>.mdx`, the same files the landing site renders
- * from the generaltranslation/content repository. Read from disk on the
- * server at build time, like the documents; the frontmatter parser covers
- * the fields these files use (scalars and one-line arrays), nothing more.
+ * The blog posts and authors of generaltranslation.com that /blog renders:
+ * `content/blog/<slug>.mdx` and `content/authors/<slug>.mdx`, copied from
+ * the generaltranslation/content repository (scripts/lint/copies.json pins
+ * each post). Read from disk on the server at build time, like the
+ * documents; the frontmatter parser covers the fields these files use
+ * (scalars and one-line arrays), nothing more.
  */
 
 export type Author = {
@@ -15,16 +15,8 @@ export type Author = {
   name: string;
   company?: string;
   occupation?: string;
-  email?: string;
-  /** a public path, or a full address for a contributor's GitHub portrait */
+  /** a public path */
   avatar?: string;
-  github?: string;
-  githubUrl?: string;
-  project?: string;
-  projectUrl?: string;
-  projectIcon?: string;
-  /** the file body: one line about the author */
-  bio?: string;
 };
 
 export type Post = {
@@ -124,23 +116,16 @@ export function getPost(slug: string): Post | undefined {
 }
 
 /** An author file, or undefined. */
-export function getAuthor(slug: string): Author | undefined {
+function getAuthor(slug: string): Author | undefined {
   if (!/^[a-z0-9-]+$/.test(slug)) return undefined;
   try {
-    const { data, body } = parseFrontmatter(readFileSync(join(CONTENT, 'authors', `${slug}.mdx`), 'utf8'));
+    const { data } = parseFrontmatter(readFileSync(join(CONTENT, 'authors', `${slug}.mdx`), 'utf8'));
     return {
       slug,
       name: scalar(data, 'name') ?? slug,
       company: scalar(data, 'company'),
       occupation: scalar(data, 'occupation'),
-      email: scalar(data, 'email'),
       avatar: scalar(data, 'avatar'),
-      github: scalar(data, 'github'),
-      githubUrl: scalar(data, 'githubUrl'),
-      project: scalar(data, 'project'),
-      projectUrl: scalar(data, 'projectUrl'),
-      projectIcon: scalar(data, 'projectIcon'),
-      bio: body || undefined,
     };
   } catch {
     return undefined;
@@ -152,7 +137,28 @@ export function getAuthors(slugs: readonly string[]): readonly Author[] {
   return slugs.map(getAuthor).filter((author): author is Author => author !== undefined);
 }
 
-/** The `![alt](src)` figures of a post body, in order. */
-export function postFigures(body: string): readonly { alt: string; src: string }[] {
-  return [...body.matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)/g)].map((m) => ({ alt: m[1] ?? '', src: m[2] ?? '' }));
+/** A string attribute of a JSX tag, `name='value'` or `name="value"`. */
+function attribute(tag: string, name: string): string | undefined {
+  const match = new RegExp(`\\b${name}=(?:'([^']*)'|"([^"]*)")`).exec(tag);
+  return match ? (match[1] ?? match[2]) : undefined;
+}
+
+/**
+ * The figures of a post body in order: each `![alt](src)` image, and each
+ * `<CarouselItem>` of a `<Carousel>` with the carousel's label as its title.
+ */
+export function postFigures(body: string): readonly { alt: string; src: string; title?: string }[] {
+  const figures: { alt: string; src: string; title?: string }[] = [];
+  for (const m of body.matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)|<Carousel\b([^>]*)>([\s\S]*?)<\/Carousel>/g)) {
+    if (m[2]) {
+      figures.push({ alt: m[1] ?? '', src: m[2] });
+      continue;
+    }
+    const title = attribute(m[3] ?? '', 'label');
+    for (const item of (m[4] ?? '').matchAll(/<CarouselItem\b[^>]*>/g)) {
+      const src = attribute(item[0], 'src');
+      if (src) figures.push({ alt: attribute(item[0], 'alt') ?? '', src, ...(title ? { title } : {}) });
+    }
+  }
+  return figures;
 }

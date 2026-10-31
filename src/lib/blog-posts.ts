@@ -41,6 +41,23 @@ export type BlogRelease = {
 /** Every post, newest first. */
 export const BLOG_POSTS: readonly BlogPostMeta[] = [
   {
+    slug: 'daniel-white',
+    title: 'Daniel White: Interfaces that follow the physics of sound',
+    summary: 'Why Daniel cares about the touches that make a page seem alive, and how he’s bringing a new sense to interface design',
+    date: '2026-10-28',
+    authors: [
+      {
+        slug: 'taylor',
+        name: 'Taylor Fang',
+        occupation: 'Writer',
+        company: 'General Translation',
+        avatar: '/static/avatars/taylor.png',
+      },
+    ],
+    tags: ['open-source', 'grants', 'daniel-white', 'cuelume', 'developers', 'community'],
+    image: '/static/blogs/daniel-white/cover.webp?v=20261028-2300',
+  },
+  {
     slug: 'supporting-slash-companies',
     title: 'Supporting Slash companies',
     summary: 'General Translation is giving $2,000 in translation credits to help companies that bank with Slash localize their products and scale to global markets.',
@@ -126,7 +143,7 @@ export const BLOG_POSTS: readonly BlogPostMeta[] = [
   },
   {
     slug: 'supporting-open-source-software',
-    title: 'Supporting open-source software',
+    title: 'Grants for open-source software',
     summary: 'General Translation is giving away $15,000 to developers who build and maintain open-source projects.',
     date: '2026-08-17',
     authors: [

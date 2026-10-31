@@ -81,6 +81,19 @@ const DRAWN: Record<string, { src: string; alt: string; caption: string }> = {
   },
 };
 
+/** Components a story uses that hold their own words, each set in the text as a note of those paragraphs: the grants
+    note that opens a grantee post (gt-cloud #5598), with its link to the grants post. */
+const WRITTEN: Record<string, readonly string[]> = {
+  OpenSourceGrants: [
+    '*About General Translation Open-Source Grants*',
+    'The open-source ethos is core to what we do at General Translation. Our flagship internationalization (i18n) libraries are open source under the MIT license.',
+    'We’re now supporting other open-source developers who build and maintain software for the public good, starting with $15,000 in no-strings-attached funds as well as $75,000 in GT platform credits across fifteen developers. Nominations are rolling and still open! Read more [here](https://generaltranslation.com/blog/supporting-open-source-software).',
+  ],
+};
+
+/** Components a story uses that only a web page shows, left out of the text: the person card of a grantee post. */
+const WEB_ONLY = new Set(['Spotlight']);
+
 /** A story's body is MDX; a title or a caption written in this file is Markdown. */
 const mdx = remark().use(remarkMdx).use(remarkGfm);
 const md = remark().use(remarkGfm);
@@ -305,6 +318,9 @@ function component(
   reader: Reader
 ): Block[] {
   const name = node.name ?? '';
+  if (WEB_ONLY.has(name)) return [];
+  const written = WRITTEN[name];
+  if (written) return [{ kind: 'note', paras: written.map(parseInline), name }];
   const { frame } = reader;
   const own = frame(attr(node, 'src') ?? '', attr(node, 'alt') ?? '', node);
   if (name === 'Side' || name === 'Picture') {

@@ -8,11 +8,13 @@
  * neighbour links read; nothing is paraphrased and nothing is added:
  *
  *   AUTHORS      content/authors/<slug>.mdx: `name` and `avatar`.
- *   BLOG_POSTS   content/blog/en-US: all five posts.
+ *   BLOG_POSTS   content/blog/en-US: all six posts.
  *   DEVLOG_POSTS content/devlog/en-US: all 55 releases.
  *
  * Source: the public generaltranslation/content repository at befd13c1
- * (2026-10-09), the commit gt-cloud pins, read on 2026-10-15.
+ * (2026-10-09), the commit gt-cloud pins, read on 2026-10-15; the blog
+ * posts at content main 333efa3b, which the live deploy checks out, read on
+ * 2026-10-30.
  *
  * Both lists are stored in the order getAllPosts resolves: date descending,
  * with a descending numeric-aware title tiebreak. That order is what the
@@ -72,6 +74,15 @@ export type ArticlePost = {
 /** content/blog/en-US, newest first. */
 export const BLOG_POSTS: readonly ArticlePost[] = [
   {
+    slug: 'daniel-white',
+    title: 'Daniel White: Interfaces that follow the physics of sound',
+    date: '2026-10-28',
+    authors: ['taylor'],
+    summary: 'Why Daniel cares about the touches that make a page seem alive, and how he’s bringing a new sense to interface design',
+    tags: ['open-source', 'grants', 'daniel-white', 'cuelume', 'developers', 'community'],
+    images: ['/static/blogs/daniel-white/cover.webp?v=20261028-2300'],
+  },
+  {
     slug: 'supporting-slash-companies',
     title: 'Supporting Slash companies',
     date: '2026-10-07',
@@ -111,7 +122,7 @@ export const BLOG_POSTS: readonly ArticlePost[] = [
   },
   {
     slug: 'supporting-open-source-software',
-    title: 'Supporting open-source software',
+    title: 'Grants for open-source software',
     date: '2026-08-17',
     authors: ['archie'],
     summary: 'General Translation is giving away $15,000 to developers who build and maintain open-source projects.',

@@ -2,7 +2,7 @@
  "R1": {
   "src/app/GalleryViewer.css": 7,
   "src/app/archive/[slug]/archive.css": 3,
-  "src/app/blog/blog.css": 8,
+  "src/app/blog/blog.css": 5,
   "src/app/brand/brand.css": 11,
   "src/app/directions/directions.css": 3,
   "src/app/marks/marks.css": 5,
@@ -25,7 +25,6 @@
   "src/components/viewer/Toolbar.css": 4
  },
  "R2": {
-  "src/app/blog/blog.css": 1,
   "src/app/directions/directions.css": 1,
   "src/app/prototemplate.css": 1,
   "src/app/skills/skills.css": 1,
@@ -40,7 +39,7 @@
  "R3": {
   "src/app/GalleryViewer.css": 7,
   "src/app/archive/[slug]/archive.css": 3,
-  "src/app/blog/blog.css": 3,
+  "src/app/blog/blog.css": 2,
   "src/app/brand/brand.css": 5,
   "src/app/directions/directions.css": 3,
   "src/app/marks/marks.css": 5,

@@ -52,6 +52,7 @@ export function authorNames(post: BlogPostMeta): string {
 
 /** The sidebar names of the titles that run past two lines in the 208px run; the title stays the grid caption and the hover title. */
 const SHORT: Readonly<Record<string, string>> = {
+  'daniel-white': 'Daniel White',
   'fuma-nama': 'Fuma Nama',
 };
 

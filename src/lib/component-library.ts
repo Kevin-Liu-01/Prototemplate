@@ -146,7 +146,6 @@ const UNDOCUMENTED: readonly { code: string; path: string; desc: string }[] = [
   { code: 'ProdSystemTheme', path: 'src/components/viewer/ProdSystemTheme.tsx', desc: 'Follows the system color scheme on the shipped mirror until the visitor picks a theme.' },
   { code: 'Callout', path: 'src/components/blog/Callout.tsx', desc: 'The box the posts use for asides and the quoted style guide.' },
   { code: 'HitList', path: 'src/components/blog/HitList.tsx', desc: 'The numbered anti-pattern list of the docs posts, written in MDX with HitItem.' },
-  { code: 'AuthorSpotlight', path: 'src/components/blog/AuthorSpotlight.tsx', desc: 'The contributor card with the portrait, the name, the bio and the project.' },
   { code: 'Spotlight', path: 'src/components/blog/Spotlight.tsx', desc: 'The person card of a grantee post: the dithered portrait, the name, one line and the project and GitHub links.' },
   { code: 'OpenSourceGrants', path: 'src/components/blog/OpenSourceGrants.tsx', desc: 'The grants note that opens every open-source grantee post.' },
   { code: 'PostAuthors', path: 'src/components/blog/PostAuthors.tsx', desc: 'The byline: stacked avatars, the names and the date.' },
