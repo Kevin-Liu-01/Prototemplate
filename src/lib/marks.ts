@@ -483,7 +483,6 @@ export type MarkFamilyId =
   | 'crescent-globe'
   | 'bolt'
   | 'speed'
-  | 'wedge-shadow'
   | 'doubled-line'
   | 'globe'
   | 'hemispheres'
@@ -511,9 +510,8 @@ export const FAMILIES: readonly MarkFamilyRow[] = [
   { id: 'crescent-globe', name: 'Crescent globe', anchor: 'crescent-globe', engaged: '2026-10-29', lead: 'A globe is drawn as a crescent limb around the ring of the G, turned on a tilted axis, with the bar of the G on the equator.' },
   { id: 'bolt', name: 'Bolt', anchor: 'bolt', engaged: '2026-10-30', lead: 'The G is drawn as a lightning bolt whose blade runs down to a point.' },
   { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-10-30', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
-  { id: 'wedge-shadow', name: 'Wedge and shadow', anchor: 'wedge-shadow', engaged: '2026-10-30', lead: 'Neither letter is drawn, and every black shape is a wedge pressed into the page or the depth of a raised letter.' },
   { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
-  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-30', lead: 'The G is drawn into a globe of meridians and an equator that turns on a tilted axis.' },
+  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-30', lead: 'The G and the T are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator.' },
   { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },
   { id: 'earlier', name: 'Earlier rounds', anchor: 'other-explorations', engaged: '2026-10-20', lead: 'These marks come from the rounds before the hemispheres, and none was chosen.' },
   { id: 'production', name: 'In production', anchor: 'production', engaged: '2026-10-20', lead: 'These two marks are live on generaltranslation.com and in the dashboard, and each card lists every file the sites serve.' },
@@ -571,40 +569,24 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'stencil-a4', name: 'Stencil a4', family: 'stencil', pick: true, box: [20.1, 77, 223.5, 100] }),
   dyn({ id: 'stencil-b4', name: 'Stencil b4', family: 'stencil', pick: true, box: [19.9, 77, 223.5, 100] }),
   dyn({ id: 'stencil-a2', name: 'Stencil a2', family: 'stencil', pick: true, box: [20.1, 77, 223.5, 100], note: 'The a8 drawing at the stroke weights of Stencil.' }),
-  dyn({ id: 'kanji-stencil-4', name: 'Kanji stencil, needle', family: 'stencil', box: [15, 58.2, 232, 169.6], note: 'The spur of the G drops as a plumb stroke that closes to a point below the baseline.' }),
 
   dyn({ id: 'crescent-g-upright', name: 'Upright crescent', family: 'crescent-globe', opens: true, box: [17.5, 0, 221, 256], note: 'A crescent limb stands around the ring of an upright G.' }),
   dyn({ id: 'crescent-g-turned', name: 'Turned crescent', family: 'crescent-globe', opens: true, box: [6.4, 0, 243.2, 256], note: 'The ring of the G turns inside a crescent limb.' }),
   dyn({ id: 'crescent-g-tilt-a', name: 'Crescent globe, tilted', family: 'crescent-globe', pick: true, box: [13.4, 16.6, 232.1, 224.1] }),
   dyn({ id: 'crescent-g-tilt-b', name: 'Crescent globe, blade', family: 'crescent-globe', pick: true, box: [12, 31.7, 236, 194.6] }),
-  dyn({ id: 'lune-1', name: 'Lune', family: 'crescent-globe', pick: true, cut: true, box: [15, 17.6, 232.1, 220.8] }),
   dyn({ id: 'crescent-g-a', name: 'Crescent globe', family: 'crescent-globe', pick: true, box: [14.4, 15.3, 232.1, 225.2] }),
-  dyn({ id: 'crescent-globe-4', name: 'Crescent globe, poles', family: 'crescent-globe', box: [26.4, 7.9, 207.9, 232.1], note: 'The limb, the G and a meridian are three meridians of one sphere that close into its two poles.' }),
 
   dyn({ id: 'bolt-straight', name: 'Straight bolt', family: 'bolt', opens: true, pick: true, box: [26.5, 18.9, 205.2, 222.6], note: 'The G is cut as one solid lightning bolt with straight edges.' }),
   dyn({ id: 'bolt-swept', name: 'Swept bolt', family: 'bolt', opens: true, box: [13, 0, 230, 256], note: 'The G is drawn as a lightning bolt with swept curves.' }),
-  dyn({ id: 'bolt-5', name: 'Bolt T', family: 'bolt', box: [23.5, 21.3, 214.3, 224.3], note: 'A level T bar carries the blade of the bolt as its stem, and the G thins toward the T.' }),
-  dyn({ id: 'bolt-2', name: 'Bolt, swell', family: 'bolt', box: [37.6, 19.3, 183.7, 226.4], note: 'The stem of the G swells low on the left, and its bar thickens from a hairline into the shoulder.' }),
 
   dyn({ id: 'speed-needle', name: 'Speed needle', family: 'speed', opens: true, pick: true, box: [10, 99.7, 236, 56.6], note: 'A wide flat GT trails a long needle to the left.' }),
   dyn({ id: 'speed-gt', name: 'Speed slab', family: 'speed', opens: true, box: [0, 95, 256, 66], note: 'A wide GT drawn as one slab, with a channel cut through the G.' }),
-  dyn({ id: 'speed-stacked-2', name: 'Speed slab, pitched', family: 'speed', box: [12, 92.9, 232, 71.1], note: 'The channel and the jaw of the G pitch up ten degrees while the two arms taper against each other.' }),
-
-  dyn({ id: 'cuneiform-sign-1', name: 'Cuneiform sign', family: 'wedge-shadow', box: [20, 77.6, 216, 109.1], note: 'Pressed wedges draw the G, and its top wedge runs on to stop one gap short of the bar of the T.' }),
-  dyn({ id: 'cuneiform-sign-3', name: 'Cuneiform sign, counter', family: 'wedge-shadow', box: [25.5, 36.5, 216.1, 190.4], note: 'A wedge pressed across the top of the wedge G hangs through its counter as the stem of a T.' }),
-  dyn({ id: 'cuneiform-wheel-5', name: 'Cuneiform wheel', family: 'wedge-shadow', box: [22.4, 63.8, 216.1, 131], note: 'The wedge G stays whole, and the T is pressed from its three ends with one needle gap between them.' }),
-  dyn({ id: 'umbra-depth-2', name: 'Umbra depth', family: 'wedge-shadow', box: [21.1, 13.8, 213.7, 228.1], note: 'A white T stands in the counter of a G drawn only by its depth.' }),
-  dyn({ id: 'umbra-light-4', name: 'Umbra light', family: 'wedge-shadow', box: [34.4, 58.5, 200.8, 152.6], note: 'Under one light the G is an open ring shown by its shadow, and the T is the shadow of a wire T.' }),
-  dyn({ id: 'impression-6', name: 'Impression', family: 'wedge-shadow', box: [16, 52.5, 228.1, 154.4], note: 'The only ink is the depth that one white GT face casts along one direction.' }),
 
   dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, pick: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
-  dyn({ id: 'kanji-lines-1', name: 'Kanji lines, frame', family: 'doubled-line', box: [14.5, 22.8, 228.1, 212.3], note: 'Both lines of the G run on over the whole character as a roof that opens on the right.' }),
-  dyn({ id: 'kanji-lines-3', name: 'Kanji lines, climb', family: 'doubled-line', box: [11.6, 74, 232.1, 108.8], note: 'The inner line of the G turns up and climbs on one diagonal into the top line of the T.' }),
 
   dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G, two parallels are its arm and its needle bar, and the limb and the meridian thin toward the upper right as on a lit sphere.' }),
   dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, and the equator is both its bar and the crossbar of the T on the central meridian.' }),
   dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
-  dyn({ id: 'globe-6', name: 'Globe, axis', family: 'globe', box: [24, 29.9, 224, 196.9], note: 'The globe turns on a tilted axis drawn as one straight blade, and the stem of the T hangs square from it.' }),
 ];
 
 /**
@@ -678,8 +660,7 @@ export function familyRow(id: MarkFamilyId): MarkFamilyRow {
 /**
  * A family's dynamic marks in page order: the drawings it grew from, then
  * its shortlisted marks in SHORTLIST's order, then the rest as
- * DYNAMIC_MARKS lists them. The family's lead mark is the first after the
- * drawings it grew from.
+ * DYNAMIC_MARKS lists them.
  */
 export function dynamicFamily(id: MarkFamilyId): readonly CatalogMark[] {
   const marks = DYNAMIC_MARKS.filter((mark) => mark.family === id);
@@ -691,6 +672,16 @@ export function dynamicFamily(id: MarkFamilyId): readonly CatalogMark[] {
     .map((mark, i) => ({ mark, i }))
     .sort((a, b) => rank(a.mark) - rank(b.mark) || a.i - b.i)
     .map(({ mark }) => mark);
+}
+
+/**
+ * The mark a family leads with, drawn large on both grounds: its first
+ * mark after the drawings it grew from, or, when every mark it holds is
+ * one of those drawings, its best shortlisted one.
+ */
+export function familyLead(id: MarkFamilyId): CatalogMark | undefined {
+  const marks = dynamicFamily(id);
+  return marks.find((mark) => !mark.opens) ?? shortlist().find((mark) => mark.family === id) ?? marks[0];
 }
 
 /**

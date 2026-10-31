@@ -40,7 +40,7 @@ const crop = stencil?.box ? boxMask(stencil.box) : undefined; // CSS mask size a
 | --- | --- |
 | `CATALOG` | Every mark as one row: `id`, `name`, `family`, the public `file`, `file16` and `constructionFile` where drawn, `box` (the drawn box in the 256 unit square, for the marks from 2026-10-28 on), `pick` and `note` |
 | `SHORTLIST`, `shortlist()` | The ids of the strongest marks in page order, at most 16, and their rows |
-| `FAMILIES`, `pageFamilies()`, `dynamicFamily(id)` | Each family's name, one sentence and anchor on `/marks`; the families in page order; a family's marks in order |
+| `FAMILIES`, `pageFamilies()`, `dynamicFamily(id)`, `familyLead(id)` | Each family's name, one sentence and anchor on `/marks`; the families in page order; a family's marks in order; the mark a family leads with |
 | `DYNAMIC_MARKS` | The marks from 2026-10-28 on, each a file under `/marks/dynamic/` |
 | `boxMask(box)` | The mask size, position and aspect that show only a mark's drawn box of its square file |
 | `MARKS`, `GLOBE_CONCEPTS` | The nine speed and picture marks with their notes, and the five globe concepts under `/marks/globe/` |

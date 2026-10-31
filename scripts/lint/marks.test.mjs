@@ -3,10 +3,11 @@
 // a row, every dynamic file is one path in currentColor on the canonical
 // 256 unit header and at most 8 KB, the drawn box a row records is the
 // file's own within half a unit, SHORTLIST names known ids once each and
-// at most 16, every family has its record, and the catalog and the dynamic
-// files name each mark by its idea alone: ORIGIN_WORDS rejects option
-// letters and catalog numbers in the catalog and the dynamic files, and runs
-// everywhere, CI included. Loaded through Node's type stripping.
+// at most 16, every family has its record and holds a mark, and the
+// catalog and the dynamic files name each mark by its idea alone:
+// ORIGIN_WORDS rejects option letters and catalog numbers in the catalog
+// and the dynamic files, and runs everywhere, CI included. Loaded through
+// Node's type stripping.
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -68,12 +69,13 @@ test('SHORTLIST names known ids once each, at most 16', () => {
   for (const id of SHORTLIST) assert.ok(ids.has(id), `${id} is on the shortlist and not in the catalog`);
 });
 
-test('every family has its record, and the page closes on In production', () => {
+test('every family has its record and holds a mark, and the page closes on In production', () => {
   const families = new Set(FAMILIES.map((family) => family.id));
   for (const mark of CATALOG) assert.ok(families.has(mark.family), `${mark.id}: family ${mark.family} has no record`);
   const order = pageFamilies().map((family) => family.id);
   assert.equal(new Set(order).size, FAMILIES.length, 'a family is missing from the page order or repeats');
   assert.equal(order.at(-1), 'production');
+  for (const family of FAMILIES) assert.ok(CATALOG.some((mark) => mark.family === family.id), `${family.id} holds no mark`);
 });
 
 test('the catalog and the dynamic files name each mark by its idea alone', () => {

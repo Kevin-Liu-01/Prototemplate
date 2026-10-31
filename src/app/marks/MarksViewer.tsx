@@ -17,6 +17,7 @@ import {
   CATALOG,
   catalogMark,
   dynamicFamily,
+  familyLead,
   GLOBE_CONCEPTS,
   HEMISPHERE_FAMILIES,
   HEMISPHERE_MARKS,
@@ -148,12 +149,6 @@ const CUT_ZOOM = 3;
 
 /** The mark in production that leads the shortlist's field, at the same height as the shortlist. */
 const GT_PRODUCTION = PRODUCTION_MARKS[0];
-
-/** The mark a family's section is drawn with in the grid: its lead, the first mark after the drawings it grew from. */
-function familyLead(family: MarkFamilyRow): CatalogMark | undefined {
-  const marks = dynamicFamily(family.id);
-  return marks.find((mark) => !mark.opens) ?? marks[0];
-}
 
 /** The section row of a family drawn from its dynamic marks. */
 function familySection(family: MarkFamilyRow): ShellSection {
@@ -749,14 +744,14 @@ function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, 
 
 /**
  * A family drawn from its dynamic marks: the drawings it grew from, then
- * its lead on both grounds, then the rest. The speed family shows its
- * dynamic marks in one run before the speed set.
+ * its lead (familyLead) on both grounds, then the rest. The speed family
+ * shows its dynamic marks in one run before the speed set.
  */
 function DynamicFamily({ family, active }: { family: MarkFamilyRow; active: string }) {
   const marks = dynamicFamily(family.id);
-  const opens = marks.filter((mark) => mark.opens);
-  const rest = marks.filter((mark) => !mark.opens);
-  const [lead, ...others] = rest;
+  const lead = familyLead(family.id);
+  const opens = marks.filter((mark) => mark.opens && mark !== lead);
+  const others = marks.filter((mark) => !mark.opens && mark !== lead);
   return (
     <>
       {opens.length > 0 && (
@@ -1027,7 +1022,7 @@ function gridMasks(): readonly GridMask[] {
     of(SHORTLIST_ID, SHORTLIST[0]?.id ?? ''),
     ...SHORTLIST.map((mark) => of(mark.id, mark.id)),
     ...FAMILY_ORDER.flatMap((family) => {
-      const lead = familyLead(family);
+      const lead = familyLead(family.id);
       return lead && family.id !== 'speed' ? [of(family.anchor, lead.id)] : [];
     }),
     { id: PRODUCTION_ID, files: PRODUCTION_MARKS.map((mark) => mark.file) },
