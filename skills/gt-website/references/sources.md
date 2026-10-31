@@ -57,3 +57,10 @@ The owner's review of the system-v2 diff, checked against gt-cloud origin/main d
 - `references/docs.md`, the fumadocs 16.16 parity section: gt-cloud #5258 (open on 2026-10-10).
 - `references/routing-cases.txt`, the known-open `node/initialize` case: `content:docs/en-US/node/reference/functions/initialize-gt.mdx` exists; `/en-US/docs/node/initialize-gt` answered 307 to it and `/en-US/docs/node/initialize` answered 307 to the section quickstart on production on 2026-10-10.
 - The SEO, AI features and gt-next integration bullets of `SKILL.md` were shortened to keep it under its size budget; the detail stays in the references.
+
+## Added 2026-10-31
+
+Read from gt-cloud origin/main 448c9ebf5 (2026-10-30) after Prototemplate ported both components (6d44e4ff and a28ca7b3, 2026-10-30):
+
+- Section 5 and `references/blog.md`, "The MDX contract": `Spotlight` replaced `AuthorSpotlight` (gt-cloud #5567, `apps/landing/src/components/blog/Spotlight.tsx`, its props read from `SpotlightProps`), and `OpenSourceGrants` is the shared grants note (gt-cloud #5598, `OpenSourceGrants.tsx`, `markdown.ts`, `utils.ts` `HEADER_INTRO_ELEMENTS`), both registered in `apps/landing/src/mdx-components.tsx`.
+- `references/blog.md`, "Where a post lives": the post route moved to `src/app/[locale]/(publications)/blog/[slug]/page.tsx` and compiles through `PostMdx.tsx`; the author fields are the `Author` type in `utils.ts`, which `src/components/authors/AuthorPage.tsx` links; Prototemplate's `content/blog` holds all six posts (a28ca7b3).

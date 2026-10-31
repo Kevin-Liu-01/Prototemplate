@@ -12,7 +12,7 @@ description: >-
 metadata:
   title: GT website
   areas: website
-  updated: 2026-10-10
+  updated: 2026-10-31
   origin: prototemplate
   owner: O
 ---
@@ -99,7 +99,7 @@ A bracketed utility in a code comment can break the CSS build, and a plain `@the
 [references/blog.md](references/blog.md) holds the full detail for this section.
 
 - Posts are `content:blog/en-US/<slug>.mdx` with authors in `content:authors/`. The frontmatter names the dark cover under `images`, its light twin under `imagesLight` and the social card under `ogImages`.
-- The blog compiles MDX through `next-mdx-remote` with JavaScript expressions blocked, which deletes every `prop={expression}` silently. Blog components (`Carousel` and `CarouselItem`, `HitList` and `HitItem`, `AuthorSpotlight`) take string attributes and child elements.
+- The blog compiles MDX through `next-mdx-remote` with JavaScript expressions blocked, which deletes every `prop={expression}` silently. Blog components (`Carousel` and `CarouselItem`, `HitList` and `HitItem`, `Spotlight`, `OpenSourceGrants`) take string attributes and child elements.
 - A new component is registered in `src/mdx-components.tsx` and gets a simple stand-in in `content:apps/content/src/mdx-components.tsx`, or the content preview build fails.
 - Images live in gt-cloud under `public/static/blogs/`: 3840 px webp illustrations and covers, a 2400 by 1260 PNG social card, GIF clips, and a `?v=YYYYMMDD-HHMM` stamp on every reference. `BlogPostCover` requests quality 95 for webp covers.
 - Every deploy checks out the tip of content main (`git submodule update --init --remote` in `$GT_CLOUD/scripts/deploy-landing.sh`), and the content repository's deploy hook rebuilds the site on each merge, so merging the content pull request publishes the post. Merge the gt-cloud side first whenever the post needs a new component, new images or new redirects, and the content side second.

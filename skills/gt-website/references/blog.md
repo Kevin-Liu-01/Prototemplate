@@ -4,18 +4,18 @@ The blog at generaltranslation.com/blog renders MDX posts from the content repos
 
 ## Where a post lives
 
-- Posts are `content:blog/en-US/<slug>.mdx`, release notes are `content:devlog/en-US/<slug>.mdx`, and authors are `content:authors/<slug>.mdx`. An author file holds `name`, `avatar`, `occupation`, `company`, `email`, the social handles (`twitter`, `linkedin`) and, for a spotlighted author, `github`, `githubUrl`, `project`, `projectUrl` and `projectIcon`; its body is the bio.
+- Posts are `content:blog/en-US/<slug>.mdx`, release notes are `content:devlog/en-US/<slug>.mdx`, and authors are `content:authors/<slug>.mdx`. An author file holds `name`, `avatar`, `occupation`, `company`, `email`, the social handles (`twitter`, `linkedin`, `github`, `githubUrl`) and the optional `project`, `projectUrl` and `projectIcon`; its body is the bio. The author's profile page (`src/components/authors/AuthorPage.tsx`) links the handles and the project.
 - `src/components/blog/utils.ts` loads them (`getAllPosts`, `getPostBySlug`, `getAuthors`). A slug matches `^[A-Za-z0-9_-]+$`. There is no date gate: a post on content main goes live with the next deploy.
 - The frontmatter fields are `title`, `summary`, `date`, `authors` (slugs; the avatars stack in this order with the first on top), `tags`, `aliases` (former slugs, which redirect), `images` (the dark cover), `imagesLight` (its light twin), `ogImages` (the social card), `headerIntro`, `layout`, and `headline` for devlog entries.
 - The social image is `ogImages` when set, then `images`, then the generated `/api/og?title=…&description=…&section=BLOG` (`getPostOpenGraphImages`).
-- `src/app/[locale]/blog/[slug]/page.tsx` compiles the body with `MDXRemote` from `next-mdx-remote/rsc`, using the components registered in `src/mdx-components.tsx`.
-- Prototemplate keeps copies of the docs-redesign series in `$PROTOTEMPLATE/content/blog/` with their graphics in `$PROTOTEMPLATE/public/static/blogs/`, which its `/blog` and `/graphics` pages read. `designing-docs-for-humans.mdx` there is the reference for a post with carousels.
+- `src/app/[locale]/(publications)/blog/[slug]/page.tsx` renders the body through `PostMdx` (`src/components/blog/PostMdx.tsx`), which compiles it with `MDXRemote` from `next-mdx-remote/rsc` and the components registered in `src/mdx-components.tsx`. With `headerIntro: true`, `splitHeaderIntro` in `utils.ts` moves a first `<Callout>` or `<OpenSourceGrants />` from the body into the post's header.
+- Prototemplate keeps copies of every post in `$PROTOTEMPLATE/content/blog/` with their graphics in `$PROTOTEMPLATE/public/static/blogs/`, which its `/blog` and `/graphics` pages read. `designing-docs-for-humans.mdx` there is the reference for a post with carousels.
 
 ## The MDX contract
 
 The blog compiles MDX with JavaScript expressions blocked. Every `prop={expression}` and every `{expression}` is removed before compiling, without an error, and the component renders with the prop missing. Blog components therefore take string attributes and child elements. Docs pages compile through Fumadocs and keep expressions.
 
-`getMDXComponents` in `src/mdx-components.tsx` registers these components for posts: `Carousel` and `CarouselItem`, `HitList` and `HitItem`, `AuthorSpotlight`, `FumadocsArchitecture`, `GitHub`, `Tweet`, `Video`, `SupportedLocales`, `Steps` and `Step`, `Accordions` and `Accordion`, `TOC` (Fumadocs' inline table of contents), the status marks `Check` and `X` (Heroicons solid), the Fumadocs tabs and files components, and the Fumadocs defaults.
+`getMDXComponents` in `src/mdx-components.tsx` registers these components for posts: `Carousel` and `CarouselItem`, `HitList` and `HitItem`, `Spotlight`, `OpenSourceGrants`, `FumadocsArchitecture`, `GitHub`, `Tweet`, `Video`, `SupportedLocales`, `Steps` and `Step`, `Accordions` and `Accordion`, `TOC` (Fumadocs' inline table of contents), the status marks `Check` and `X` (Heroicons solid), the Fumadocs tabs and files components, and the Fumadocs defaults.
 
 ```mdx
 <Carousel label='What we deleted' width='3840' height='2160'>
@@ -34,7 +34,23 @@ The blog compiles MDX with JavaScript expressions blocked. Every `prop={expressi
 </HitList>
 ```
 
-- `<AuthorSpotlight author='<slug>' />` renders any `content:authors/<slug>.mdx` with its GitHub avatar, project chip and GitHub chip. Children replace the bio.
+- `Spotlight` is a person card that reads no author file and takes every field as a string attribute: `name`, `href` (the person's own page), `image` (the portrait, a site path or a GitHub avatar address), `project`, `projectUrl`, `githubUrl` and the optional `projectIcon`. Its children are the line under the name. The portrait sits under four Bayer bands, and the card links the portrait, the name, the project and GitHub. It replaced `AuthorSpotlight` in gt-cloud #5567.
+
+```mdx
+<Spotlight
+  name='Fuma Nama'
+  href='https://github.com/fuma-nama'
+  image='https://avatars.githubusercontent.com/fuma-nama?s=1200'
+  project='Fumadocs'
+  projectUrl='https://fumadocs.dev'
+  projectIcon='/logos/fumadocs.png'
+  githubUrl='https://github.com/fuma-nama/fumadocs'
+>
+  Open-source developer and creator of Fumadocs.
+</Spotlight>
+```
+
+- `<OpenSourceGrants />` takes no props. It renders the note that opens every open-source grantee post: a callout with the `generaltranslation/gt` repository link (`GitHub`) and a link to `/blog/supporting-open-source-software` (gt-cloud #5598). A grantee post puts it first and sets `headerIntro: true`, so the note sits in the header. The Markdown twin (`src/components/blog/markdown.ts`) replaces the tag with the same words.
 - A new component is registered in `src/mdx-components.tsx`, gets a simple stand-in in `content:apps/content/src/mdx-components.tsx`, and gets a test in `src/components/blog/__tests__/`. The content repository's preview app prerenders every post and fails its build on a component it does not know.
 - Blog components follow the landing lints: no bare `useEffect` (`gt-ui/no-use-effect`; use `useMountEffect` from `@generaltranslation/ui/hooks/use-mount-effect`) and no `text-white`, `text-black`, `bg-white` or `bg-black` (`gt-ui/no-hardcoded-black-white`; alpha variants such as `bg-black/50` pass). Two conventions have no lint: `type='button'` on every button, and `import React` at the top of a test file that renders JSX, as the existing blog tests do.
 
@@ -75,6 +91,7 @@ A post embeds `<LottieTranslation />` (server, `src/components/blog/LottieTransl
 
 ## Sources
 
+- gt-cloud origin/main 448c9ebf5 (2026-10-30): `apps/landing/src/components/blog/Spotlight.tsx` (#5567), `OpenSourceGrants.tsx`, `GitHub.tsx`, `markdown.ts` and `__tests__/OpenSourceGrants.test.tsx` (#5598), `PostMdx.tsx`, `utils.ts` (`splitHeaderIntro`, `Author`), `apps/landing/src/components/authors/AuthorPage.tsx`, `apps/landing/src/app/[locale]/(publications)/blog/[slug]/page.tsx` and `apps/landing/src/mdx-components.tsx`; the `Spotlight` example is Prototemplate's `content/blog/fuma-nama.mdx`, a copy of content main at 333efa3b.
 - gt-cloud: `apps/landing/src/components/blog/utils.ts`, `BlogPostCover.tsx`, `Carousel.tsx`, `CarouselGallery.tsx`, `HitList.tsx`, `imageSizes.ts`, `__tests__/`, `apps/landing/src/mdx-components.tsx`, `apps/landing/next.config.ts`, `scripts/deploy-landing.sh`, `.gitmodules`, `.github/workflows/pr-policy.yml`, `.oxlintrc.json`, `tooling/oxlint-plugins/gt-ui.ts` (origin/main, 2026-10-05); the branch `k/blog-lottie-translation` at 06e62bf2c.
 - content: repository settings (squash only, delete branch on merge), `apps/content/src/mdx-components.tsx`.
 - Prototemplate: `content/blog/designing-docs-for-humans.mdx`, `docs/GRAPHICS.md` (Handing off to a post), and the retired skill `.agents/skills/gt-blog-mdx-components/SKILL.md` (2026-09-18), which this file replaces.

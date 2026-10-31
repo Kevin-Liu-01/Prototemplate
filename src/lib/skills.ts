@@ -70,7 +70,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'GT website',
     description: 'How generaltranslation.com is built and changed in gt-cloud\'s apps/landing: the app map, the engine CSS and the shared packages, translation in the site code, the Fumadocs docs and their agent-readable twins, the blog and its content submodule, the pages with rules of their own, crawlers, deploys and performance traps, the routing matrix, gt-next in other sites, and the checks before a pull request. Use when working on any page, doc, blog post, route or build of the GT website, together with gt-cloud\'s own gt-landing skill, which owns the file map.',
     areas: ['website'],
-    updated: '2026-10-10',
+    updated: '2026-10-31',
     files: ['references/blog.md', 'references/deploys.md', 'references/docs.md', 'references/footer-and-theme.md', 'references/gt-next-integration.md', 'references/pages.md', 'references/routing-cases.txt', 'references/sources.md', 'scripts/routing-matrix.sh'],
   },
   {
