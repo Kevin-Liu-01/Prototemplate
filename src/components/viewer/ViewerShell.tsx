@@ -25,7 +25,7 @@ import { HelpCard } from './HelpCard';
 import { IndexPanel } from './IndexPanel';
 import { PreviewLayer } from './PreviewLayer';
 import { Progress } from './Progress';
-import { createStageStore, ShellContext, StageContext } from './shell-context';
+import { createStageStore, hasPages, ShellContext, StageContext } from './shell-context';
 import type { ShellDir, ShellState, ShellTransition } from './shell-context';
 import { Sidebar, ThumbList } from './Sidebar';
 import type { SidebarFilter, SubRows } from './Sidebar';
@@ -522,10 +522,11 @@ export function ViewerShell({
 
     /* the first visit to a route family: the toast names the arrows and the help key.
        A phone has no arrow keys, and its toast hangs under the toolbar over the
-       page's title, so the hint waits for a wider window with a fine pointer. */
+       page's title, so the hint waits for a wider window with a fine pointer.
+       A route with nothing to page (/sign-in) gets no hint, as it gets no paging trio. */
     const seen = (load(HINT_KEY) ?? '').split(',').filter(Boolean);
     const keyboardLikely = window.innerWidth > PHONE_PX && window.matchMedia('(any-pointer: fine)').matches;
-    if (keyboardLikely && !seen.includes(id)) {
+    if (keyboardLikely && hasPages(pagedRef.current.length) && !seen.includes(id)) {
       store(HINT_KEY, [...seen, id].join(','));
       sayRef.current(HINT_TEXT, HINT_HOLD_MS);
     }

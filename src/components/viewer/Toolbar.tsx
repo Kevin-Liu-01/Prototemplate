@@ -10,7 +10,7 @@ import { Seg } from '@/components/viewer/Seg';
 import type { SegOption } from '@/components/viewer/Seg';
 import { ThemeButton } from '@/components/viewer/ThemeButton';
 import { ToolButton } from '@/components/viewer/ToolButton';
-import { usePtShell } from '@/components/viewer/shell-context';
+import { hasPages, usePtShell } from '@/components/viewer/shell-context';
 import { toggleFullscreen } from '@/components/viewer/useShellKeys';
 import { MODE_ORDER, padTo, previewId } from '@/lib/shell-data';
 import type { ShellMark, ShellMode } from '@/lib/shell-data';
@@ -262,7 +262,7 @@ export function Toolbar({ title, mark, slot, modeLabels }: ToolbarProps) {
   /* the paging trio: on a route with a slide mode it belongs to that mode; a
      route that always flows (docs, brand) keeps it, since its Next moves to
      the next document; a route with nothing to page (/sign-in) has none */
-  const paging = shell.total > 0 && (keys === 'paged' || !slideOffered);
+  const paging = hasPages(shell.total) && (keys === 'paged' || !slideOffered);
   /* the count is wider while it names the total (`17 directions`) than while it reads a place */
   const countNamesTotal = index < 0;
 

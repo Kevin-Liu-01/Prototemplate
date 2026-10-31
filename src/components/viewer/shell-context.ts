@@ -126,6 +126,15 @@ export type ShellState = {
   say: (msg: string, hold?: number) => void;
 };
 
+/**
+ * Whether the route has anything to page through, from ShellState.total.
+ * The toolbar shows Previous, the count and Next, and the shell shows its
+ * first-visit arrow hint, only when it does, so /sign-in shows neither.
+ */
+export function hasPages(total: number): boolean {
+  return total > 0;
+}
+
 /** What ViewerShell passes to the provider. Null outside a shell. */
 export type ShellProviderValue = ShellState | null;
 
