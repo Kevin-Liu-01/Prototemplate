@@ -11,13 +11,11 @@ import {
 import { preload } from 'react-dom';
 
 import type { MagazineIssue, StoryCard } from './content';
-import { dms, isWhere, type Where } from './coords';
+import { dms } from './coords';
 import {
   EditionContext,
-  HOME_CITY,
   homeOf,
   storyHref,
-  WHERE,
   type Edition,
 } from './edition';
 import { useLayoutWork, useMountEffect } from './hooks';
@@ -381,21 +379,6 @@ export default function Landing({
     sync();
     narrow.addEventListener('change', sync);
     return () => narrow.removeEventListener('change', sync);
-  });
-
-  // the dateline names the city the reader is in, as the host's edge reads it, and San Francisco until then or otherwise
-  const [here, setHere] = useState(HOME_CITY);
-  useMountEffect(() => {
-    if (edition !== 'magazine') return;
-    const ask = new AbortController();
-    fetch(WHERE, { signal: ask.signal })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((found: Partial<Where> | null) => {
-        if (isWhere(found)) setHere(found);
-      })
-      // offline, aborted or not answered: the dateline keeps San Francisco
-      .catch(() => undefined);
-    return () => ask.abort();
   });
 
   useMountEffect(() => {
@@ -835,8 +818,8 @@ export default function Landing({
             </div>
             <div className='gtp-band-view'>
               {edition === 'magazine' ? (
-                // the dateline as an engineering journal's box: three ruled rows, each a short field name and its value, the city
-                // the reader is in (after a fine crosshair), then its latitude, then its longitude
+                // the dateline as an engineering journal's box: three ruled rows, each a short field name and its value, the
+                // picked language's city, the globe's (after a fine crosshair), then its latitude, then its longitude
                 <dl className='gtp-dateline'>
                   <dt>Loc</dt>
                   <dd className='gtp-dateline-city'>
@@ -848,12 +831,12 @@ export default function Landing({
                       <circle r='6' />
                       <path d='M-12 0 H-3 M3 0 H12 M0 -12 V-3 M0 3 V12' />
                     </svg>
-                    <span>{here.city}</span>
+                    <span>{place.city}</span>
                   </dd>
                   <dt>Lat</dt>
-                  <dd className='gtp-hall-dms'>{dms(here.lat, 'lat')}</dd>
+                  <dd className='gtp-hall-dms'>{dms(place.lat, 'lat')}</dd>
                   <dt>Lon</dt>
-                  <dd className='gtp-hall-dms'>{dms(here.lon, 'lon')}</dd>
+                  <dd className='gtp-hall-dms'>{dms(place.lon, 'lon')}</dd>
                 </dl>
               ) : (
                 <StopSlider

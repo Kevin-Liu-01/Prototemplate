@@ -46,43 +46,67 @@
 /* ---------- each magazine's own drop cap ---------- */
 
 /* Each story's cap takes its own world's: Euclid a vermilion seal, Designing docs a cobalt tile, Rewriting docs a
-   proofreader's circled letter, Fuma Nama a heavy orange sans. */
+   proofreader's circled letter, Fuma Nama a heavy orange sans. All four keep one measure: three lines deep, from the
+   first line's capitals to the third line's baseline, flush with the column's left edge and half a line from the
+   text; a box is square, its letter centred in it. Each is floated rather than an initial letter (Chrome sets an
+   initial letter's text tight against it), and none takes the initial letter's letter spacing, which would push its
+   letter off centre. The story's text bodies are never translated, so each cap's letter is known, and its width and
+   where its ink sits are the face's own (measured at 1000px).
 
-/* Translating Euclid: the cap is a vermilion seal stamped with the N cut out of it, as a Chinese seal prints a
-   character in paper on red (--gtm-seal, drawn with the N centred); the letter itself stays in the text, unseen, for
-   copying and for screen readers. The seal is a square from the first line's cap height to the third line's baseline.
-   In the letter's own em (3.07em of the text, whose face is Newsreader: its cap height of 0.67 is 0.2182em): the side
-   is two of the text's lines (2lh, which in line-height is the paragraph's) and a cap height; the unseen letter is
-   set in Katagami Serif, whose N is 0.738em wide, and the padding either side of it makes the box square (1lh is now
-   the side); the square drops to the first line's capitals, a quarter of the side less 0.1963em (from Newsreader's
-   ascent and descent, 0.735 and 0.265) and a pixel more, since browsers round the ascent and the half-leading to whole
-   pixels and set the line that much higher */
+   The measure is the paragraph's, worked out on the paragraph so that lh and em are the text's rather than the
+   letter's: the side, two lines and a cap height; the gap; and how far under the paragraph's top the first line's
+   capitals stand, which is half the line height, then half the face's ascent less its descent (--gtm-face-mid),
+   less the cap height (--gtm-face-cap). Both are in em, measured from the capitals' ink: the cap unit reads a face's
+   own figure, which for Atlas Text is short of its capitals. */
+@property --gtm-side { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --gtm-gap { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --gtm-cap-top { syntax: '<length>'; inherits: true; initial-value: 0px; }
+/* Katagami Text: ascent 0.969, descent 0.241, capitals 0.698; the book's Atlas Text: 0.735, 0.265 and 0.715 */
+.gtp-reader { --gtm-face-mid: 0.364; --gtm-face-cap: 0.698; }
+.gtp-reader[data-look='book'] { --gtm-face-mid: 0.235; --gtm-face-cap: 0.715; }
+.gtp-reader[data-edition='magazine']:is([data-story='translating-euclid'], [data-story='designing-docs-for-humans'], [data-story='rewriting-our-docs'], [data-story='fuma-nama']) .gtm-lead {
+  --gtm-side: calc(2lh + var(--gtm-face-cap) * 1em);
+  --gtm-gap: calc(0.5lh);
+  --gtm-cap-top: calc(0.5lh + (var(--gtm-face-mid) - var(--gtm-face-cap)) * 1em);
+  /* the paragraph holds its cap, so where it runs short of three lines the next one starts under the cap */
+  display: flow-root;
+}
+
+/* Translating Euclid: a vermilion seal stamped with the N cut out of it, as a Chinese seal prints a character in paper
+   on red (--gtm-seal, drawn with the N centred); the letter itself stays in the text, unseen, for copying and for
+   screen readers. Katagami Serif's N is 0.738em wide, so the padding either side of it makes the box square. */
 .gtp-reader[data-edition='magazine'][data-story='translating-euclid'] .gtm-lead::first-letter {
-  float: left; margin: calc(0.25lh - 0.1963em - 1px) 0.2em 0 0; padding: 0 calc((1lh - 0.738em) / 2); -webkit-initial-letter: normal; initial-letter: normal;
-  font-family: 'Katagami Serif', Georgia, serif; font-size: 3.07em; line-height: calc(2lh + 0.2182em); font-weight: 500; font-style: normal; letter-spacing: 0;
+  float: left; margin: var(--gtm-cap-top) var(--gtm-gap) 0 0; padding: 0 calc((var(--gtm-side) - 0.738em) / 2); -webkit-initial-letter: normal; initial-letter: normal;
+  font-family: 'Katagami Serif', Georgia, serif; font-size: 3.07em; line-height: var(--gtm-side); font-weight: 500; font-style: normal; letter-spacing: 0;
   color: transparent; background: var(--gtm-seal) center / 100% 100% no-repeat;
 }
-/* the paragraph holds the seal, so where it runs two lines the next one starts under the seal, not beside it */
-.gtp-reader[data-edition='magazine'][data-story='translating-euclid'] .gtm-lead { display: flow-root; }
 
-/* Designing docs: the cap a cobalt tile, two lines deep, its letter cut out in the docs' own sans */
+/* Designing docs: a cobalt tile, its letter cut out in the docs' own sans. Katagami Text Bold's D is 0.675em wide with
+   its ink 0.01em right of the middle, and its capitals sit 0.015em under the middle of the line, so the padding
+   moves it that much left and up. */
 .gtp-reader[data-edition='magazine'][data-story='designing-docs-for-humans'] .gtm-lead::first-letter {
-  /* three lines deep: two line heights and a cap height of the 19px text at 1.62 (3.96em), as tile and padding */
-  float: left; margin: 0.1em 0.26em 0 0; padding: 0.08em 0.2em; -webkit-initial-letter: normal; initial-letter: normal;
-  font-family: var(--gtp-sans); font-size: 3.41em; line-height: 1; font-weight: 700; font-style: normal; font-variation-settings: normal;
+  float: left; margin: var(--gtm-cap-top) var(--gtm-gap) 0 0;
+  padding: 0 calc((var(--gtm-side) - 0.675em) / 2 + 0.01em) 0.03em calc((var(--gtm-side) - 0.675em) / 2 - 0.01em);
+  -webkit-initial-letter: normal; initial-letter: normal;
+  font-family: var(--gtp-sans); font-size: 3.41em; line-height: calc(var(--gtm-side) - 0.03em); font-weight: 700; font-style: normal; font-variation-settings: normal; letter-spacing: 0;
   background: var(--gtm-accent); color: var(--gtp-paper); border-radius: 6px;
 }
 
-/* Rewriting docs: the cap a proofreader's circled letter in red, in the proof's mono */
+/* Rewriting docs: a proofreader's circled letter in red, in the proof's mono. Every Katagami Mono letter is 0.625em
+   wide with its capitals on the middle of the line; the 2px ring is part of the side. */
 .gtp-reader[data-edition='magazine'][data-story='rewriting-our-docs'] .gtm-lead::first-letter {
-  float: left; margin: 0.1em 0.28em 0 0; padding: 0.14em 0.3em; -webkit-initial-letter: normal; initial-letter: normal;
-  font-family: var(--gtp-mono); font-size: 2.93em; line-height: 1; font-weight: 600; font-style: normal; font-variation-settings: normal;
+  float: left; margin: var(--gtm-cap-top) var(--gtm-gap) 0 0; padding: 0 calc((var(--gtm-side) - 4px - 0.625em) / 2); -webkit-initial-letter: normal; initial-letter: normal;
+  font-family: var(--gtp-mono); font-size: 2.93em; line-height: calc(var(--gtm-side) - 4px); font-weight: 600; font-style: normal; font-variation-settings: normal; letter-spacing: 0;
   color: var(--gtm-accent); border: 2px solid var(--gtm-accent); border-radius: 50%;
 }
 
-/* Fuma Nama: the cap a heavy orange sans, three lines deep, as his Fumadocs marks set a heading */
-/* floated rather than an initial letter, since Chrome lays an initial letter's text tight against a sans W */
-.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-lead::first-letter { float: left; margin: 0.1em 0.14em 0 0; -webkit-initial-letter: normal; initial-letter: normal; font-family: var(--gtp-sans); font-size: 3.6em; line-height: 0.78; font-weight: 800; font-style: normal; font-variation-settings: normal; letter-spacing: 0; }
+/* Fuma Nama: a heavy orange sans letter on its own, as his Fumadocs marks set a heading. Its capitals (0.698em in
+   Katagami Text ExtraBold) are the side, and a line height of 0.668em (the descent less the ascent, and two cap
+   heights) puts them at the top of its box. */
+.gtp-reader[data-edition='magazine'][data-story='fuma-nama'] .gtm-lead::first-letter {
+  float: left; margin: var(--gtm-cap-top) var(--gtm-gap) 0 0; -webkit-initial-letter: normal; initial-letter: normal;
+  font-family: var(--gtp-sans); font-size: calc(var(--gtm-side) / 0.698); line-height: 0.668em; font-weight: 800; font-style: normal; font-variation-settings: normal; letter-spacing: 0;
+}
 
 /* ---------- the headline's own touches ---------- */
 

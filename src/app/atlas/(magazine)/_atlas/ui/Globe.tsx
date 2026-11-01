@@ -4,7 +4,7 @@ import { useRef, type ReactNode } from 'react';
 
 import { dmsPair, type LatLon } from '../coords';
 import { mountGlobe, type GlobeHandle } from '../globe';
-import { useLayoutWork, useMountEffect } from '../hooks';
+import { useLayoutWork } from '../hooks';
 
 type Props = {
   /** The place the globe turns to and pins. */
@@ -40,7 +40,8 @@ export default function Globe({
   const pin = useRef<HTMLSpanElement>(null);
   const handle = useRef<GlobeHandle | null>(null);
 
-  useMountEffect(() => {
+  // mounted before paint, so a globe never shows as an empty canvas for a frame, on a first load or after a move
+  useLayoutWork(() => {
     if (!canvas.current) return;
     handle.current = mountGlobe(
       canvas.current,

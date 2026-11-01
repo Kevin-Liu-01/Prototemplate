@@ -40,6 +40,8 @@
 .gtp-text { position: relative; padding: 120px clamp(32px, 5vw, 96px) 200px; min-width: 0; }
 /* a short run of Chinese in an English line stays whole; a long one still wraps */
 .gtp-text :is(p, li):not(:where(.gtp-inline-plate *)) { word-break: keep-all; overflow-wrap: anywhere; }
+/* one column, centred: every block in it (the title, the heads, the paragraphs, the lists) takes the same measure and
+   the same two edges, so their rules below set only the space above and below them */
 .gtp-text > * { max-width: 600px; margin-left: auto; margin-right: auto; }
 
 .gtp-title { margin-bottom: 112px; }
@@ -57,13 +59,13 @@
 /* the article's type stops at a figure set in the text on a narrow screen: the plate keeps its own type, as on the
    stage, so each of these leaves out what is inside .gtp-inline-plate (:where adds nothing to the specificity) */
 .gtp-text :is(p, li):not(:where(.gtp-inline-plate *)) { font-family: var(--gtp-serif); font-size: 19px; line-height: 1.62; font-weight: 400; text-wrap: pretty; hanging-punctuation: first; }
-.gtp-text p:not(:where(.gtp-inline-plate *)) { margin: 0 0 22px; }
+.gtp-text p:not(:where(.gtp-inline-plate *)) { margin-block: 0 22px; }
 .gtp-text strong:not(:where(.gtp-inline-plate *)) { font-weight: 600; }
 .gtp-text em { font-style: italic; }
 .gtp-text code:not(:where(.gtp-inline-plate *)) { font-family: var(--gtp-mono); font-size: 0.82em; padding: 1px 4px; background: var(--gtp-fill-2); }
 .gtp-text a:not(:where(.gtp-inline-plate *)) { color: var(--gtp-link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--gtp-link) 45%, transparent); }
 .gtp-text a:not(:where(.gtp-inline-plate *)):hover { text-decoration-color: currentColor; }
-.gtp-text :is(ul, ol):not(:where(.gtp-inline-plate *)) { margin: 0 0 26px; padding: 0; list-style: none; display: grid; gap: 6px; }
+.gtp-text :is(ul, ol):not(:where(.gtp-inline-plate *)) { margin-block: 0 26px; padding: 0; list-style: none; display: grid; gap: 6px; }
 .gtp-text :is(ul, ol) > li:not(:where(.gtp-inline-plate *)) { position: relative; padding-left: 26px; font-size: 18px; line-height: 1.5; }
 .gtp-text ul > li:not(:where(.gtp-inline-plate *))::before { content: ''; position: absolute; left: 3px; top: 0.72em; width: 9px; height: 1.5px; background: var(--gtp-signal); }
 .gtp-rules li::before { display: none; }
@@ -71,7 +73,7 @@
 .gtp-rules li[data-ok='true'] .gtp-rule-mark { background: var(--gtp-cobalt); }
 .gtp-rules li[data-ok='false'] .gtp-rule-mark { background: var(--gtp-signal); }
 
-.gtp-note { margin: 4px 0 26px; padding: 22px 24px 4px; background: var(--gtp-fill); }
+.gtp-note { margin-block: 4px 26px; padding: 22px 24px 4px; background: var(--gtp-fill); }
 .gtp-note p { font-size: 17px; }
 
 /* a figure's place in the text: one quiet line naming it, lit while its plate shows */
@@ -80,8 +82,10 @@
   grid-template-columns: 16px auto minmax(0, 1fr) 16px;
   align-items: center;
   gap: 12px;
+  /* the column's measure and 12px more each side, centred on it like the column, so its words keep the column's edge */
   width: calc(100% + 24px);
-  margin: 0 -12px 30px;
+  max-width: 624px;
+  margin: 0 max(-12px, (100% - 624px) / 2) 30px;
   padding: 10px 12px;
   text-align: left;
   color: var(--gtp-ink-3);
@@ -152,9 +156,10 @@
   .gtp-reader-body > .gtp-rail,
   .gtp-stage-col { display: none; }
   .gtp-text { padding: 76px 20px 120px; }
-  .gtp-phone-cover { position: relative; margin: 0 -20px 40px; aspect-ratio: 4 / 5; }
+  /* the cover and the figures run edge to edge, wider than the column */
+  .gtp-phone-cover { position: relative; max-width: none; margin: 0 -20px 40px; aspect-ratio: 4 / 5; }
   .gtp-h-n { position: static; display: block; margin-bottom: 8px; }
-  .gtp-inline-plate { margin-left: -20px; margin-right: -20px; }
+  .gtp-inline-plate { max-width: none; margin-left: -20px; margin-right: -20px; }
   .gtp-float-home { position: fixed; z-index: 20; top: 16px; left: 16px; display: grid; place-items: center; width: 44px; height: 44px; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 0 0 1px var(--gtp-rule); }
   .gtp-top-progress { display: block; position: fixed; z-index: 21; top: 0; left: 0; right: 0; height: 2px; transform-origin: left; transform: scaleX(var(--p, 0)); background: var(--gtp-signal); }
 }
@@ -375,7 +380,8 @@
 /* the frontispiece's opening as three slides (BookBody): the title page, then
    the epigraph where it stood, then the story at the top of the window. The frame is pinned while the reader scrolls;
    120px of scroll turns the title page to the epigraph, which then holds for 90% of the window (--hold, BookBody's
-   OPENING_HOLD) so an ordinary scroll lands on it, and the story follows 36% of the window (--step) further down.
+   OPENING_HOLD), and the story follows 36% of the window (--step) further down. BookBody stops each wheel flick, key
+   and swipe at the next of the three, so one gesture turns one slide.
    Each slide comes in as one timed fade, in place, so the reader never scrubs through it. What leaves goes first and
    quickly, and what arrives waits for it, so no two slides' text ever shows at once. Scrolling back turns back. It
    is laid out from the first paint; without scripts, below the wide width and under reduced motion, the epigraph
@@ -390,7 +396,7 @@
   .gtp-print-opening[data-armed]:not([data-slide='0']) .gtp-head-title { opacity: 0; transition: opacity 0.18s cubic-bezier(0.55, 0, 1, 0.45); }
   .gtp-print-opening[data-armed] .gtp-print-opening-next {
     display: grid; align-content: center;
-    padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2) max(40px, (100% - var(--gtp-print-measure)) / 2);
+    padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2);
     opacity: 0; pointer-events: none;
     transition: opacity 0.18s cubic-bezier(0.55, 0, 1, 0.45);
   }
@@ -476,8 +482,9 @@
      the pictures show on the stage, not in the text */
   .gtp-print-body { display: grid; grid-template-columns: minmax(0, 61.8fr) minmax(0, 38.2fr); }
   .gtp-print-text { min-width: 0; }
-  /* the story spans the whole column and its words keep the measure, clear of the rail on the left */
-  .gtp-print-text .gtp-print-page { box-sizing: border-box; width: 100%; padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2) max(40px, (100% - var(--gtp-print-measure)) / 2); }
+  /* the story spans the whole column and its words keep the measure, centred in it and clear of the rail on the left;
+     the title page and the epigraph share the centre line */
+  .gtp-print-text .gtp-print-page { box-sizing: border-box; width: 100%; padding-inline: max(88px, (100% - var(--gtp-print-measure)) / 2); }
   .gtp-print-text .gtp-print-fig { display: none; }
   /* the line that leads into a live figure reads only where the figure follows it in the text */
   .gtp-print-text .gtp-print-page p:has(+ .gtp-print-at[data-live]) { display: none; }
@@ -582,11 +589,8 @@
 /* the stage's own pictures larger */
 .gtp-reader[data-edition='magazine'] .gtp-plate:not(.gtp-plate-cover) { padding: 28px 40px 28px 32px; }
 @media (min-width: 1250px) {
-  /* Euclid's book: the text column a little narrower and set against the stage, so the two read as one spread */
+  /* Euclid's book: the text column a little narrower than the plain book's, the text centred in it */
   .gtp-reader[data-edition='magazine'] .gtp-print-body { grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); }
-  .gtp-reader[data-edition='magazine'] .gtp-print-text .gtp-print-page { padding-inline: max(88px, 100% - var(--gtp-print-measure) - 48px) 48px; }
-  /* the epigraph takes the title's place and its centre line, the column's middle, clear of the rail at its left */
-  .gtp-reader[data-edition='magazine'] .gtp-print-opening[data-armed] .gtp-print-opening-next { padding-inline: max(88px, 10%); }
   .gtp-reader[data-edition='magazine'] .gtp-print-stage-item:not(.gtp-print-stage-cover) { padding: 56px 44px 44px; }
   .gtp-reader[data-edition='magazine'] .gtp-print-stage .gtp-versions-map { width: min(420px, 100%); }
   .gtp-reader[data-edition='magazine'] .gtp-print-stage .gtp-versions-globe { width: 100%; }
@@ -602,9 +606,8 @@
 /* ---------- the magazine edition: room in the text, and the text close to its stage ---------- */
 
 @media (min-width: 1000px) {
-  /* the column sits against the stage's edge */
-  .gtp-reader[data-edition='magazine'] .gtp-text { padding: 140px 44px 240px clamp(40px, 5vw, 96px); }
-  .gtp-reader[data-edition='magazine'] .gtp-text > * { margin-right: 0; }
+  /* the column centred between the rail and the stage */
+  .gtp-reader[data-edition='magazine'] .gtp-text { padding: 140px clamp(40px, 4vw, 72px) 240px; }
   .gtp-reader[data-edition='magazine'] .gtp-title { margin-bottom: 140px; }
   .gtp-reader[data-edition='magazine'] .gtp-text > h2 { margin-top: 136px; margin-bottom: 30px; }
 }

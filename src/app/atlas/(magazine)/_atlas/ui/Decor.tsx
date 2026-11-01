@@ -58,7 +58,9 @@ const EUCLID_MARKS: readonly ReactNode[] = [
 /* The mark over each section head, drawn for its story: Euclid's a drawing
    of its own for each section (EUCLID_MARKS), a docs page with its sidebar
    and lines of text, two lines of proof with a caret set into the second,
-   and Fuma's crescent moon. `n` counts the story's sections from 0. */
+   and Fuma's crescent moon. Each is moved so its ink starts where Euclid's
+   do, 1.95 units in, which sits on the heading's own first letter. `n`
+   counts the story's sections from 0. */
 export function Mark({ slug, n = 0 }: { slug: string; n?: number }) {
   let drawing: ReactNode;
   switch (slug) {
@@ -67,24 +69,29 @@ export function Mark({ slug, n = 0 }: { slug: string; n?: number }) {
       break;
     case 'designing-docs-for-humans':
       drawing = (
-        <>
+        <g transform='translate(-2 0)'>
           <rect x='5' y='6' width='32' height='30' rx='2' />
           <path d='M13 6 V36' />
           <path d='M18 14 H31 M18 20 H31 M18 26 H26' />
-        </>
+        </g>
       );
       break;
     case 'rewriting-our-docs':
       drawing = (
-        <>
+        <g transform='translate(-2 0)'>
           <path d='M5 13 H37' />
           <path d='M5 27 H17 M27 27 H37' />
           <path className='gtm-mark-thumb' d='M17 35 L22 24 L27 35' />
-        </>
+        </g>
       );
       break;
     default:
-      drawing = <path d='M26 6 A15 15 0 1 0 36 31 A12 12 0 1 1 26 6 Z' />;
+      drawing = (
+        <path
+          transform='translate(-6.8 0)'
+          d='M26 6 A15 15 0 1 0 36 31 A12 12 0 1 1 26 6 Z'
+        />
+      );
   }
   return (
     <svg className='gtm-mark' viewBox='0 0 42 42' aria-hidden='true'>

@@ -2,8 +2,6 @@
 
 import { createContext, useContext } from 'react';
 
-import { HOME, type Where } from './coords';
-
 /* Which edition of Atlas a page belongs to. The magazine is /atlas: each
    story a magazine on the rack and a magazine feature to read. The shelf is
    the direction before it, kept explorable at /atlas/shelf: each story a
@@ -17,12 +15,6 @@ export const EditionContext = createContext<Edition>('magazine');
 
 /** The General Translation home, where the nameplate's GT leads (ui/HomeMark.tsx). */
 export const GT_HOME = '/';
-
-/** Where the front page asks where its reader is (atlas/where): their city and its coordinates, or null. */
-export const WHERE = '/atlas/where';
-
-/** The dateline's city until the reader's own is known, and where it stays when it is not: General Translation's home. */
-export const HOME_CITY: Where = { city: 'San Francisco', ...HOME };
 
 /** The edition's front page. */
 export function homeOf(edition: Edition): string {

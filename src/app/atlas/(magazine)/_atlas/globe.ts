@@ -26,7 +26,13 @@ export type GlobeHandle = {
   destroy(): void;
 };
 
-type Inks = { land: number[]; sea: number[]; rim: number[] };
+/** Each ink as RGB, and as the one 32-bit pixel the canvas stores for it, opaque. */
+type Inks = {
+  land: number[];
+  sea: number[];
+  rim: number[];
+  pixel: { land: number; sea: number; rim: number };
+};
 
 function hex(value: string, fallback: number[]): number[] {
   const m = /^#?([0-9a-f]{6})$/i.exec(value.trim());
@@ -34,6 +40,18 @@ function hex(value: string, fallback: number[]): number[] {
   const n = parseInt(m[1]!, 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
+
+/** An opaque RGB color as the 32-bit pixel an ImageData holds for it, in the machine's own byte order. */
+function pixelOf([r, g, b]: number[]): number {
+  return new Uint32Array(new Uint8ClampedArray([r!, g!, b!, 255]).buffer)[0]!;
+}
+
+/* What a cell on the disc prints, fixed by where it sits: the light falling there against its screen threshold says
+   whether land prints, whether that land is in the highlight, and whether sea prints. A cell that prints neither
+   stays clear whatever turns under it, so a frame never looks at it. */
+const PRINTS_LAND = 1;
+const PRINTS_RIM = 2;
+const PRINTS_SEA = 4;
 
 /** Where the camera sits to show `p` above and right of the disc's centre; `tilt` is how far above, in degrees. */
 export function cameraFor(p: LatLon, tilt = 14): GlobeCamera {
@@ -51,6 +69,22 @@ export const easeInOut = (t: number) =>
 
 /** Degrees between the coordinate lines. */
 const GRID = 30;
+
+/** The coordinate lines as points every 2 degrees, the parallels and then the meridians, laid out once. */
+const GRATICULE: LatLon[][] = [
+  ...Array.from({ length: 180 / GRID - 1 }, (_, k) =>
+    Array.from({ length: 181 }, (_, j) => ({
+      lat: -90 + GRID * (k + 1),
+      lon: -180 + 2 * j,
+    }))
+  ),
+  ...Array.from({ length: 360 / GRID }, (_, k) =>
+    Array.from({ length: 77 }, (_, j) => ({
+      lat: -76 + 2 * j,
+      lon: -180 + GRID * k,
+    }))
+  ),
+];
 
 /**
  * Mounts on a canvas inside a square box. `pin` is moved to the target's
@@ -73,11 +107,15 @@ export function mountGlobe(
   let target = start;
   let size = 0;
   let image: ImageData | null = null;
+  // the image's pixels, one 32-bit word each
+  let pixels = new Uint32Array(0);
   let frame = 0;
-  // per cell: view-space normal of the disc, or NaN off the disc
+  // per cell that can print (PRINTS_*): its pixel, its view-space normal on the disc, and what it prints
+  let at = new Int32Array(0);
   let nx = new Float32Array(0);
   let ny = new Float32Array(0);
   let nz = new Float32Array(0);
+  let prints = new Uint8Array(0);
 
   const reduce = prefersReducedMotion();
 
@@ -86,10 +124,17 @@ export function mountGlobe(
   function inks(): Inks {
     if (read) return read;
     const style = getComputedStyle(canvas);
+    const land = hex(
+      style.getPropertyValue('--gtp-globe-land'),
+      [96, 132, 255]
+    );
+    const sea = hex(style.getPropertyValue('--gtp-globe-sea'), [36, 62, 160]);
+    const rim = hex(style.getPropertyValue('--gtp-globe-rim'), [191, 226, 241]);
     read = {
-      land: hex(style.getPropertyValue('--gtp-globe-land'), [96, 132, 255]),
-      sea: hex(style.getPropertyValue('--gtp-globe-sea'), [36, 62, 160]),
-      rim: hex(style.getPropertyValue('--gtp-globe-rim'), [191, 226, 241]),
+      land,
+      sea,
+      rim,
+      pixel: { land: pixelOf(land), sea: pixelOf(sea), rim: pixelOf(rim) },
     };
     return read;
   }
@@ -105,68 +150,63 @@ export function mountGlobe(
     canvas.width = size;
     canvas.height = size;
     image = ctx ? ctx.createImageData(size, size) : null;
-    nx = new Float32Array(size * size);
-    ny = new Float32Array(size * size);
-    nz = new Float32Array(size * size);
+    pixels = image ? new Uint32Array(image.data.buffer) : new Uint32Array(0);
+    // the light and the screen never turn with the globe, so what each cell can print is worked out once per size
+    const found: number[] = [];
+    const normals: number[] = [];
+    const kinds: number[] = [];
     const r = size / 2 - 0.5;
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
-        const i = y * size + x;
         const px = (x + 0.5 - size / 2) / r;
         const py = (y + 0.5 - size / 2) / r;
         const d2 = px * px + py * py;
-        if (d2 >= 1) {
-          nx[i] = NaN;
-          continue;
-        }
-        nx[i] = px;
-        ny[i] = py;
-        nz[i] = Math.sqrt(1 - d2);
+        if (d2 >= 1) continue;
+        const pz = Math.sqrt(1 - d2);
+        const lit = Math.max(0, px * LIGHT[0] - py * LIGHT[1] + pz * LIGHT[2]);
+        const threshold = (BAYER_4[(y & 3) * 4 + (x & 3)]! + 0.5) / 16;
+        const kind =
+          (0.1 + 0.62 * lit * lit > threshold ? PRINTS_LAND : 0) |
+          (lit > 0.82 ? PRINTS_RIM : 0) |
+          (0.02 + 0.08 * lit > threshold ? PRINTS_SEA : 0);
+        if (!(kind & (PRINTS_LAND | PRINTS_SEA))) continue;
+        found.push(y * size + x);
+        normals.push(px, py, pz);
+        kinds.push(kind);
       }
     }
+    at = Int32Array.from(found);
+    nx = Float32Array.from(found, (_, k) => normals[k * 3]!);
+    ny = Float32Array.from(found, (_, k) => normals[k * 3 + 1]!);
+    nz = Float32Array.from(found, (_, k) => normals[k * 3 + 2]!);
+    prints = Uint8Array.from(kinds);
   }
 
   function draw() {
     if (!ctx || !image) return;
-    const { land, sea, rim } = inks();
-    const data = image.data;
+    const { rim, pixel } = inks();
     const sin0 = Math.sin(camera.lat0 * RAD);
     const cos0 = Math.cos(camera.lat0 * RAD);
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const i = y * size + x;
-        const o = i * 4;
-        const px = nx[i]!;
-        if (Number.isNaN(px)) {
-          data[o + 3] = 0;
-          continue;
-        }
-        const py = ny[i]!;
-        const pz = nz[i]!;
-        const sinLat = -py * cos0 + pz * sin0;
-        const lat = Math.asin(Math.max(-1, Math.min(1, sinLat))) / RAD;
-        const lon = camera.lon0 + Math.atan2(px, pz * cos0 + py * sin0) / RAD;
-        const lit = Math.max(0, px * LIGHT[0] - py * LIGHT[1] + pz * LIGHT[2]);
-        const ground = landAt(lat, wrap180(lon));
-        let value: number;
-        let ink: number[];
-        if (ground > 0.5) {
-          value = 0.1 + 0.62 * lit * lit;
-          ink = lit > 0.82 ? rim : land;
-        } else {
-          value = 0.02 + 0.08 * lit;
-          ink = sea;
-        }
-        const threshold = (BAYER_4[(y & 3) * 4 + (x & 3)]! + 0.5) / 16;
-        if (value > threshold) {
-          data[o] = ink[0]!;
-          data[o + 1] = ink[1]!;
-          data[o + 2] = ink[2]!;
-          data[o + 3] = 255;
-        } else {
-          data[o + 3] = 0;
-        }
-      }
+    const lon0 = camera.lon0;
+    // only the cells that can print are written; the rest stay clear from when the image was made
+    for (let k = 0; k < at.length; k++) {
+      const px = nx[k]!;
+      const py = ny[k]!;
+      const pz = nz[k]!;
+      const sinLat = -py * cos0 + pz * sin0;
+      const lat = Math.asin(Math.max(-1, Math.min(1, sinLat))) / RAD;
+      const lon = lon0 + Math.atan2(px, pz * cos0 + py * sin0) / RAD;
+      const kind = prints[k]!;
+      pixels[at[k]!] =
+        landAt(lat, lon) > 0.5
+          ? kind & PRINTS_LAND
+            ? kind & PRINTS_RIM
+              ? pixel.rim
+              : pixel.land
+            : 0
+          : kind & PRINTS_SEA
+            ? pixel.sea
+            : 0;
     }
     ctx.putImageData(image, 0, 0);
     strokeLines(rim);
@@ -200,16 +240,7 @@ export function mountGlobe(
           pen = true;
         }
       };
-      for (let lat = -90 + GRID; lat < 90; lat += GRID) {
-        const ring: LatLon[] = [];
-        for (let lon = -180; lon <= 180; lon += 2) ring.push({ lat, lon });
-        trace(ring);
-      }
-      for (let lon = -180; lon < 180; lon += GRID) {
-        const meridian: LatLon[] = [];
-        for (let lat = -76; lat <= 76; lat += 2) meridian.push({ lat, lon });
-        trace(meridian);
-      }
+      for (const line of GRATICULE) trace(line);
       ctx.stroke();
     }
     // the limb, one clean ring
@@ -249,6 +280,11 @@ export function mountGlobe(
     target = next;
     const from = camera;
     const to = cameraFor(next, tilt);
+    // already facing it: nothing turns, so only the pin moves
+    if (from.lat0 === to.lat0 && from.lon0 === to.lon0) {
+      placePin();
+      return;
+    }
     if (reduce || ms <= 0) {
       camera = to;
       draw();

@@ -30,10 +30,25 @@ type Props = {
 /** From this width the text keeps to the left half and the pictures show on a stage across the right half; below it each picture follows its paragraph. */
 const WIDE = '(min-width: 1250px)';
 
-/** The magazine's opening slides: the scroll that turns the title page to the epigraph, and the scroll the epigraph then
-    holds for, 90% of the window (reader.css --hold), so an ordinary scroll lands on it rather than past it. */
+/** The magazine's opening slides: the scroll that turns the title page to the epigraph, the scroll the epigraph then
+    holds for, 90% of the window (reader.css --hold), and the scroll after it to the story at the top of the window,
+    36% (--step). */
 const OPENING_NUDGE = 120;
 const OPENING_HOLD = 0.9;
+const OPENING_STEP = 0.36;
+/** Where the opening runs as slides (reader.css, the opening). */
+const OPENING =
+  '(min-width: 1250px) and (prefers-reduced-motion: no-preference)';
+/** How long the wheel must be still before it can turn another slide, so a flick's momentum turns one slide only. */
+const OPENING_QUIET = 200;
+/** The keys that scroll the page, each with its direction. */
+const OPENING_KEYS: Record<string, number> = {
+  ArrowDown: 1,
+  PageDown: 1,
+  ' ': 1,
+  ArrowUp: -1,
+  PageUp: -1,
+};
 
 /** How tall a picture may stand on the stage, leaving room for its caption, and 15% short of that so it does not fill the stage. */
 const STAGE_TALLEST = 'calc((100dvh - 300px) * 0.85)';
@@ -430,6 +445,105 @@ export default function BookBody({ story, decorated = false }: Props) {
       const slide = y < OPENING_NUDGE ? 0 : y < OPENING_NUDGE + hold ? 1 : 2;
       el.dataset.slide = String(slide);
     };
+    // the opening's stops: the title page, the epigraph in the middle of its hold, and the story at the top of the
+    // window. A wheel's flick, a key or a swipe moves one stop and no further, so the epigraph is never skipped and the
+    // story never starts part-read; from the story's top the page scrolls as usual, and scrolling back up stops at it
+    const openingOn = () =>
+      opening.current?.dataset.armed !== undefined &&
+      matchMedia(OPENING).matches;
+    const stops = () => {
+      const hold = epigraph ? innerHeight * OPENING_HOLD : 0;
+      const story = openingTop + hold + innerHeight * OPENING_STEP;
+      return epigraph
+        ? [0, openingTop + OPENING_NUDGE + hold / 2, story]
+        : [0, story];
+    };
+    /** Where a scroll by `dy` from here goes, or null where the page scrolls as usual. */
+    const stopFor = (dy: number): number | null => {
+      if (!dy || !openingOn()) return null;
+      const all = stops();
+      const story = all.at(-1) ?? 0;
+      if (scrollY > story + 1)
+        return dy < 0 && scrollY + dy < story ? story : null;
+      let k = 0;
+      all.forEach((top, i) => {
+        if (Math.abs(top - scrollY) < Math.abs((all[k] ?? 0) - scrollY)) k = i;
+      });
+      if (dy > 0 && k === all.length - 1) return null;
+      return (
+        all[Math.max(0, Math.min(all.length - 1, k + Math.sign(dy)))] ?? null
+      );
+    };
+    const turnTo = (top: number) => {
+      gliding?.();
+      scrollTo({ top, behavior: 'instant' });
+    };
+    // the rest of a flick that turned a slide is swallowed until the wheel is still; a wheel with Ctrl held (a trackpad
+    // pinch arrives as one) or Cmd held (Firefox on macOS) zooms the page and is left to the browser
+    let quietUntil = 0;
+    const onWheel = (e: WheelEvent) => {
+      if (!e.cancelable || e.ctrlKey || e.metaKey) return;
+      const now = performance.now();
+      if (now < quietUntil) {
+        e.preventDefault();
+        quietUntil = now + OPENING_QUIET;
+        return;
+      }
+      const dy =
+        e.deltaY *
+        (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1);
+      const to = stopFor(dy);
+      if (to === null) return;
+      e.preventDefault();
+      quietUntil = now + OPENING_QUIET;
+      turnTo(to);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const dir = OPENING_KEYS[e.key];
+      if (!dir || e.altKey || e.ctrlKey || e.metaKey) return;
+      // keys that a field or a slider takes, and a space that presses a button or a link, are theirs
+      const own =
+        e.key === ' '
+          ? 'input, textarea, select, [contenteditable], [role="slider"], button, a'
+          : 'input, textarea, select, [contenteditable], [role="slider"]';
+      if (e.target instanceof Element && e.target.closest(own)) return;
+      const distance = e.key.startsWith('Arrow') ? 40 : innerHeight * 0.875;
+      const to = stopFor((e.key === ' ' && e.shiftKey ? -1 : dir) * distance);
+      if (to === null) return;
+      e.preventDefault();
+      // a held key turns one slide, like a flick of the wheel; held while scrolling up through the story, it stops on the
+      // story's top, then holds there
+      if (!e.repeat || scrollY > (stops().at(-1) ?? 0) + 1) turnTo(to);
+    };
+    let touchY: number | null = null;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches.length === 1 ? (e.touches[0]?.clientY ?? null) : null;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY;
+      if (touchY === null || y === undefined || !e.cancelable) return;
+      if (stopFor(touchY - y) !== null) e.preventDefault();
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      const y = e.changedTouches[0]?.clientY;
+      if (touchY !== null && y !== undefined && Math.abs(touchY - y) > 24) {
+        const to = stopFor(touchY - y);
+        if (to !== null) turnTo(to);
+      }
+      touchY = null;
+    };
+    // a scroll that ends between two stops (momentum that could not be stopped, the scroll bar, a glide) settles on the nearer
+    let settleTimer = 0;
+    const settle = () => {
+      if (!openingOn() || performance.now() < quietUntil || gliding) return;
+      const all = stops();
+      const story = all.at(-1) ?? 0;
+      if (scrollY >= story - 1) return;
+      const nearest = all.reduce((a, b) =>
+        Math.abs(b - scrollY) < Math.abs(a - scrollY) ? b : a
+      );
+      if (Math.abs(nearest - scrollY) > 1) turnTo(nearest);
+    };
     // the stage's picture for this place; the cover holds through the opening's slides, until the story stands at the top
     const stageNow = () => {
       if (!layout) return 0;
@@ -446,6 +560,8 @@ export default function BookBody({ story, decorated = false }: Props) {
     const onScroll = () => {
       turnOpening();
       setStage(stageNow());
+      clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(settle, 150);
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const max = (layout?.height ?? 0) - innerHeight;
@@ -505,6 +621,11 @@ export default function BookBody({ story, decorated = false }: Props) {
     const over = lit(true);
     const out = lit(false);
     addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('wheel', onWheel, { passive: false });
+    addEventListener('keydown', onKey);
+    addEventListener('touchstart', onTouchStart, { passive: true });
+    addEventListener('touchmove', onTouchMove, { passive: false });
+    addEventListener('touchend', onTouchEnd, { passive: true });
     measureStage();
     onScroll();
     const resize = new ResizeObserver(reflow);
@@ -526,6 +647,12 @@ export default function BookBody({ story, decorated = false }: Props) {
       margin.removeEventListener('change', reflow);
       removeEventListener('load', reflow);
       removeEventListener('scroll', onScroll);
+      removeEventListener('wheel', onWheel);
+      removeEventListener('keydown', onKey);
+      removeEventListener('touchstart', onTouchStart);
+      removeEventListener('touchmove', onTouchMove);
+      removeEventListener('touchend', onTouchEnd);
+      clearTimeout(settleTimer);
       cancelAnimationFrame(frame);
       // a glide under way stops with the page, so it never scrolls the next one
       gliding?.();
