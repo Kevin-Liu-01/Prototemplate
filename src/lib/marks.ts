@@ -509,7 +509,7 @@ export const FAMILIES: readonly MarkFamilyRow[] = [
   { id: 'stencil', name: 'Stencil', anchor: 'stencil', engaged: '2026-10-30', lead: 'A G and a lowercase t stand between a cap line and a baseline, with narrow white cuts between the strokes.' },
   { id: 'crescent-globe', name: 'Crescent globe', anchor: 'crescent-globe', engaged: '2026-10-29', lead: 'A globe is drawn as a crescent limb around the ring of the G, turned on a tilted axis, with the bar of the G on the equator.' },
   { id: 'bolt', name: 'Bolt', anchor: 'bolt', engaged: '2026-10-30', lead: 'The G is drawn as a lightning bolt whose blade runs down to a point.' },
-  { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-10-30', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
+  { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-11-01', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
   { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
   { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-30', lead: 'The letters are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator.' },
   { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },
@@ -582,6 +582,7 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
 
   dyn({ id: 'speed-needle', name: 'Speed needle', family: 'speed', opens: true, pick: true, box: [10, 99.7, 236, 56.6], note: 'A wide flat GT trails a long needle to the left.' }),
   dyn({ id: 'speed-gt', name: 'Speed slab', family: 'speed', opens: true, box: [0, 95, 256, 66], note: 'A wide GT drawn as one slab, with a channel cut through the G.' }),
+  dyn({ id: 'speed-slab-leaning', name: 'Speed slab, leaning', family: 'speed', pick: true, box: [9.9, 97.6, 236.1, 60.8], note: 'A wide slab GT whose T stem leans as a long blade beside the rising side of the G.' }),
 
   dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, pick: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
 
