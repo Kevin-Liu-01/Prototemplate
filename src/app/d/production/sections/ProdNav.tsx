@@ -32,6 +32,7 @@ import { ChevronDown, Search } from 'lucide-react';
 
 import { useMountEffect } from '@/lib/use-mount-effect';
 
+import AtlasMark from './AtlasMark';
 import ConsentBanner from './ConsentBanner';
 import { holdTab } from './focus-trap';
 import LanguageSelector from './LanguageSelector';
@@ -92,6 +93,7 @@ const RESOURCES: NavMenu = {
       title: 'Company',
       links: [
         { label: 'Blog', desc: 'Changelog and writing', href: `${BASE}/blog`, icon: <NewspaperIcon /> },
+        { label: 'Atlas', desc: 'Our magazine', href: '/atlas', icon: <AtlasMark /> },
         { label: 'Careers', desc: 'Join our team', href: `${BASE}/careers`, icon: <BriefcaseIcon /> },
         { label: 'Locales', desc: '120 locales supported', href: `${BASE}/supported-locales`, icon: <MapPinIcon /> },
         {

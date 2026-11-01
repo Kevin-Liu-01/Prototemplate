@@ -129,6 +129,7 @@ const columns = (
         external: true,
       },
       { label: "Blog", href: `${base}/blog` },
+      ...(isProduction ? [{ label: "Atlas", href: "/atlas" }] : []),
       { label: "Pricing", href: `${base}/pricing` },
       {
         label: "Supported Locales",
