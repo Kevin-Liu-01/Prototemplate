@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Taste and the review standard
   areas: aesthetic, website, landing, components
-  updated: 2026-10-30
+  updated: 2026-11-02
   origin: prototemplate
   owner: P
 ---
@@ -23,7 +23,7 @@ metadata:
 
 General Translation (GT) builds open-source i18n libraries and a translation platform. Kevin Liu reviews its design work, and he judges every GT surface against two finished references: the brand deck for product surfaces and the shipped generaltranslation.com for the site. This skill records what those references measure, the verdicts he has given with their dates, and the loop in which he reviews work. Read it before designing a GT surface and again before showing him the result.
 
-Paths are relative to a checkout: `$PROTOTEMPLATE` is Prototemplate (Kevin's design lab, served at prototemplate.com) and `$GT_CLOUD` is gt-cloud (the monorepo of the GT site, docs and dashboard). Read gt-cloud facts from `origin/main` or a fresh worktree, because a long-lived checkout can sit on an old branch. `references/verdicts.md` holds every dated verdict in Kevin's words, `references/measures.md` holds the numbers of each reference, and `scripts/measure-type.mjs` reads the heads and leads of any page.
+Paths are relative to a checkout: `$PROTOTEMPLATE` is Prototemplate (Kevin's design lab, served at prototemplate.com) and `$GT_CLOUD` is gt-cloud (the monorepo of the GT site, docs and dashboard). Kevin's wiki is github.com/Kevin-Liu-01/Kevin-Wiki, and its paths below are relative to its checkout. Read gt-cloud facts from `origin/main` or a fresh worktree, because a long-lived checkout can sit on an old branch. `references/verdicts.md` holds every dated verdict in Kevin's words, `references/measures.md` holds the numbers of each reference, and `scripts/measure-type.mjs` reads the heads and leads of any page.
 
 ## 1. The reference
 
@@ -88,6 +88,7 @@ A page reads as General Translation through its structure, its contrast and its 
 - The hero's composite is the measure of strength: the canvas at opacity 0.55 under a horizontal mask, and an inverted filter in the light theme (`references/measures.md`). A new field stays at that strength or under it. Artifact pictures print at 0.62 opacity in dark and 0.7 in light.
 - Texture is ordered dither. Alpha veils, gradients and glows are out.
 - A picture shows writing, language or the earth, and its subject fits the page it sits on. It carries no readable English prose. Its plate holds a title, one factual sentence about the artifact in two lines at most, and a credit, and says nothing about GT.
+- A GT poster or graphic draws its pictures from GT's own artifacts, varied across a set. It carries about three text elements, with the news words large on a quiet ground (2026-10-28, `references/verdicts.md`).
 - `gt-dither` owns the engines, the presets and the picture standard.
 
 ### Rhythm
@@ -105,6 +106,7 @@ The spacing numbers of the deck sheet, the deck book head, the dashboard plate a
 ### Marks, icons and copy
 
 - A GT or Locadex mark renders from the brand components, or is seated into a drawing as an alpha mask in the face's plane. A flat logo laid over a drawing and a mark as a gif are both out (gt-ui `no-gif-mark`). `gt-brand` and `gt-diagrams` (`references/isometric.md`) hold the recipes.
+- A new GT mark carries one idea. `gt-brand` `references/marks.md` holds its letters, the cut rule and the review, and `references/verdicts.md` (2026-10-28 to 2026-10-30) holds how Kevin judges a round of marks.
 - Icons in gt-cloud follow the two tiers of gt-ui `icon-tiers`: Heroicons solid for meaning and Lucide for controls. The deck and the Prototemplate shell use Heroicons 20 solid, and in the deck an icon sits only in a key cell or at the start of a row.
 - Flags appear only as functional locale chips through the locale components.
 - The theme control draws ◐ and ◑.
@@ -133,7 +135,7 @@ The spacing numbers of the deck sheet, the deck book head, the dashboard plate a
 2. Build one exemplar: one section, one page or one state.
 3. Review it yourself against the checklist below, measure it against the reference, run the lints, and shoot it.
 4. Show Kevin on localhost, with crops of what changed.
-5. After his sign-off on the grammar, replicate it across the set. After a rejection, restart from the reference.
+5. After his sign-off on the grammar, replicate it across the set. After a rejection of the whole surface, restart from the reference. After notes on named parts, keep the look and change only those parts (2026-10-28).
 6. Land the work only when he says to.
 
 ### Rules of the loop
@@ -145,6 +147,7 @@ The spacing numbers of the deck sheet, the deck book head, the dashboard plate a
 - After he picks, the alternatives leave the code and stay in git history (2026-08-12).
 - Prototemplate's checkout is shared by several sessions. Stage explicit paths and never `git add -A`.
 - A step's artifact, a flow's steps and a page's sections keep their places unless Kevin moves them (2026-09-30).
+- Kevin's wiki holds the general rules for a design round in `wiki/user/design-taste.md`, section "Design Rounds".
 
 ### Simplify, and keep the page
 
@@ -178,6 +181,7 @@ Built from the deck's defect list (DECK-GRAMMAR.md, "What a defect is") and Kevi
 - [ ] There are no eyebrows, no mono outside code, no em dashes and no exclamation marks.
 - [ ] The surface carries one material at the hero's strength or under it, and its pictures follow the standard and hold no English prose.
 - [ ] Marks come from the brand components or are seated as alpha masks, and none is a flat overlay or a gif.
+- [ ] A poster holds about three text elements, and a new mark carries one idea and passes `gt-brand`'s review of a new mark.
 - [ ] Content comes from production or the prototype spec, and nothing is invented.
 - [ ] Numbers agree with every other place they appear, and chart marks match their values.
 - [ ] Nothing shifts after first paint, and client-mounted rows reserve their height.

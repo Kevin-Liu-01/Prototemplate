@@ -106,7 +106,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Taste and the review standard',
     description: 'Kevin\'s taste for General Translation work and the review he applies to it. The brand deck (deck/parts/head.html and DECK-GRAMMAR.md) is the reference for product surfaces and the shipped generaltranslation.com is the reference for the site. Covers contrast and hierarchy, the rhythm numbers, single lines whose weight carries meaning, one material per surface, type polish for heads and leads, the dated record of what Kevin rejected and why, and the review loop of one exemplar, a local review, then landing, with a script that measures a page\'s heads and leads. Use when designing or polishing any GT surface, when Kevin says something looks bad, busy or ugly, and before showing him design work.',
     areas: ['aesthetic', 'website', 'landing', 'components'],
-    updated: '2026-10-30',
+    updated: '2026-11-02',
     files: ['references/measures.md', 'references/process.md', 'references/sources.md', 'references/verdicts.md', 'scripts/measure-type.mjs'],
   },
   {
@@ -115,7 +115,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Brand and the correct Inter',
     description: 'The General Translation identity as rules: the name and the naming system, the four absolute colors and the one accent, the type system on the self-hosted rsms InterVariable 4.1 (weights, optical size, features, tracking, per-script fallbacks), the doubled-line GT monogram and the generated speed marks, language as material, the final avoid list, and what never appears on a public surface. Use before making anything that carries the GT brand (a page, a slide, a graphic, a film, an email or a social image), when choosing a face, weight, tracking or color, when placing a GT mark or a third-party logo, and when reviewing a surface against the brand.',
     areas: ['aesthetic'],
-    updated: '2026-10-31',
+    updated: '2026-11-02',
     files: ['references/color.md', 'references/language.md', 'references/marks.md', 'references/sources.md', 'references/third-party.md', 'references/type.md'],
   },
   {
@@ -196,7 +196,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Components to reuse',
     description: 'The components General Translation work reuses before writing new ones: gt-cloud\'s packages/ui (header, footer, theme toggle, language selector, LocaleFlag, ScrollArea, Button), the landing\'s Cta and Bento primitives, the gt-ui design rules and the oxlint rules that hold them, the icon tiers, the React and translation rules, Prototemplate\'s instruments library (dither, studio field, glyph field, DoubledLine, EdgeGlobe, LocaleTag, RevealSeam, EverySentence) and its viewer shell, and when an outside library is the right call. Use when building or reviewing UI in gt-cloud or Prototemplate, or before adding a component.',
     areas: ['components', 'landing', 'website'],
-    updated: '2026-10-10',
+    updated: '2026-11-02',
     files: ['references/behavior.md', 'references/icons.md', 'references/instruments.md', 'references/react.md', 'references/shared-ui.md', 'references/sources.md', 'references/viewer-shell.md'],
   },
   {
@@ -232,7 +232,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Branches, PRs and landing',
     description: 'How General Translation work moves from a worktree to main: one session per lane and one worktree per branch, the commit identity gt-cloud\'s deploys require, staging by explicit path, PR size discipline, the PR body with before and after crops, the review bots and required checks, Linear and reviewer requests, stacked PRs, the parity gate for onboarding and auth, and Prototemplate\'s rules for a shared checkout, local review and its Vercel deploys. Use when committing, opening, describing or updating a PR, answering Greptile or Bugbot, restacking after a merge, or landing work in gt-cloud or Prototemplate.',
     areas: ['workflow', 'lints'],
-    updated: '2026-10-30',
+    updated: '2026-11-02',
     files: ['references/beyond-the-pr.md', 'references/pr-body.md', 'references/prototemplate.md', 'references/review-loop.md', 'references/sources.md', 'references/stacks.md', 'scripts/contact-sheet.py', 'scripts/contact-sheet.test.py', 'scripts/patch-body.py', 'scripts/patch-body.test.py', 'scripts/pr-assets.sh', 'scripts/pr-assets.test.sh', 'scripts/pr-bots.mjs', 'scripts/pr-size.mjs'],
   },
   {
@@ -250,8 +250,8 @@ export const SKILLS: readonly Skill[] = [
     title: 'Running agent fleets and long autonomous runs',
     description: 'How General Translation work runs across many agents and over long autonomous runs: when to fan out and when to stay linear, the spec before a build fan-out, lanes that own files, lane prompts that open with Kevin\'s words, the self-contained brief for a subagent, a task chip or another session, critic-scored convergence against a named reference, adversarial verification of findings, keeping going and resuming dead agents, heartbeats and spend caps for paid model campaigns, corrective handoffs, and closing a round. Use when planning or running a workflow, spawning subagents or task chips, writing a brief or handoff for another agent, or resuming work after an interruption.',
     areas: ['workflow'],
-    updated: '2026-10-10',
-    files: ['references/briefs.md', 'references/campaigns.md', 'references/convergence.md', 'references/examples/critic-loop.js', 'references/examples/probe.js', 'references/examples/research.js', 'references/examples/write.js', 'references/handoffs.md', 'references/harness-traps.md', 'references/sources.md', 'references/workflow-shapes.md', 'scripts/replay-edits.py', 'scripts/replay-edits.test.py'],
+    updated: '2026-11-02',
+    files: ['references/briefs.md', 'references/campaigns.md', 'references/convergence.md', 'references/examples/critic-loop.js', 'references/examples/probe.js', 'references/examples/research.js', 'references/examples/write.js', 'references/handoffs.md', 'references/harness-traps.md', 'references/session-lanes.md', 'references/sources.md', 'references/workflow-shapes.md', 'scripts/replay-edits.py', 'scripts/replay-edits.test.py'],
   },
 ];
 

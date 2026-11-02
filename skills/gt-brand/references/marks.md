@@ -28,18 +28,20 @@ The GT monogram in use is the doubled-line mark: every stroke of the G and the T
 
 ## Reviewing a new GT mark
 
-These rules hold for any new GT mark, from an exploration round to a final pick. They come from Kevin's reviews of a round of GT marks drawn as a globe (2026-10-08 and 2026-10-09), and the rules on rough rows and on context from his request of 2026-10-28.
+These rules hold for any new GT mark, from an exploration round to a final pick. They come from Kevin's reviews of a round of GT marks drawn as a globe (2026-10-08 and 2026-10-09), the rules on rough rows and on context from his request of 2026-10-28, the rules on cuts and letters from his rulings of 2026-10-26 and 2026-10-30, and the small-size cut from the marks he kept in the 2026-10-28 round.
 
 - **The G's top tail ends horizontal.** The G's top arc runs out into a straight horizontal segment, as in the current monogram, where it flattens into a stroke that runs into the T's bar. A diagonal, radial or hooked terminal is refused. Kevin, 2026-10-09, rejecting the third round: "make the top g tail end at a horizontal line".
-- **The failure list.** Kevin rated the second round 5 out of 10 (2026-10-08). Its causes are refused in every new mark:
+- **Cuts and letters.** Every cut through the ring continues a stroke edge inside the mark or sits on the axis, and a mark whose cuts fall anywhere else is excluded everywhere (Kevin, 2026-10-26: "i hate the ones where the cuts are off placement"). Every mark carries both a G and a T (2026-10-30). The G's mouth stays small so the ring stays long.
+- **The failure list.** Kevin rated the second round 5 out of 10 (2026-10-08). Every new mark refuses its first five causes, and the small-size cut below checks the last:
   - badge syndrome: a heavy outline circle with thin letters inside it;
   - one ellipse as the only depth cue;
   - a malformed G or a stick T;
   - stubs and tangencies where strokes meet;
-  - a mark that collapses at 16px;
-  - grey tints in place of one ink.
+  - grey tints in place of one ink;
+  - a mark that collapses at 16px.
 - **Rough rows first.** A mark round starts as rough sketches on one board: one idea per row, and each variant in a row moves one property (the stroke weight, the gap of a doubled line, where the G's arc stops, where a cut falls, the angle). Only the marks Kevin picks are rebuilt as clean SVG from geometry, each with a construction drawing. Kevin, 2026-10-27, on construction drawings: "dont need to do drawings for everything, just the good ones".
-- **Reviewed in context before a pick.** Every candidate is shown on paper and on ink, at navigation size in one row with the logos of the localization products it is compared with (each from thesvg.org, as for every third-party logo), and beside the current mark at the same height. It is judged at those sizes before it is judged large, and the small sizes above still apply.
+- **Reviewed in context before a pick.** Every candidate is shown on paper and on ink, at navigation size in one row with the logos of the localization products it is compared with (each from thesvg.org, as for every third-party logo), and beside the current mark at the same height. Its idea and its energy are judged at full size.
+- **16 and 32 px are a separate cut.** A mark is checked at 16 and 32 px once Kevin picks it, and the small sizes above still apply to the pick. Softness at those sizes never ends a direction. In the 2026-10-28 round the marks Kevin kept had lost a judge's points to softness at 32 px.
 - **Where the work lives.** Exploration marks stay as review pages until Kevin picks (`gt-explorations`). A pick enters the catalog in `src/lib/marks.ts` as a finished file under `public/marks` (next section), and is never redrawn by hand in the repository.
 
 ## The catalog and the shortlist

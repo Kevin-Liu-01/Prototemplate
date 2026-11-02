@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Running agent fleets and long autonomous runs
   areas: workflow
-  updated: 2026-10-10
+  updated: 2026-11-02
   origin: prototemplate
   owner: P
 ---
@@ -23,7 +23,7 @@ metadata:
 
 Kevin Liu runs much of his General Translation (GT) work through many agents at once: Workflow lanes inside one session, task chips spun off for later, and long runs that go for hours while he is away. This skill gives the procedure for that work: how to split it, how to brief each agent, how to judge what comes back, and how to keep it going through usage limits, restarts and changes of owner. Peer sessions that Kevin opens himself follow `docs/handbook/multi-session-playbook.md`, git lanes and worktrees follow `gt-ship` section 1, and proof of done follows `gt-verify`.
 
-Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name gt-cloud (`$GT_CLOUD`). `docs/handbook/glossary.md` defines lane, chip and handoff. The references hold the detail: `briefs.md` (brief template, worked chip, lane prompt, round files), `workflow-shapes.md` (phase shapes, schemas, a review skeleton, resume) with `examples/` (four reduced scripts), `convergence.md` (the critic loop), `handoffs.md` (handoff, resume file, hard stop, resume report), `campaigns.md` (proposal, uncapped project, stop question, heartbeat), `harness-traps.md` (reboots, pattern kills, hanging commands, the guard line) and `sources.md` (the date of every rule). `scripts/replay-edits.py` rebuilds lost files from transcripts.
+Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name gt-cloud (`$GT_CLOUD`). `docs/handbook/glossary.md` defines lane, chip and handoff. The references hold the detail: `briefs.md` (brief template, worked chip, lane prompt, round files), `workflow-shapes.md` (phase shapes, schemas, a review skeleton, resume) with `examples/` (four reduced scripts), `convergence.md` (the critic loop), `handoffs.md` (handoff, resume file, hard stop, resume report), `campaigns.md` (proposal, uncapped project, stop question, heartbeat), `session-lanes.md` (Kevin's session lanes by date), `harness-traps.md` (reboots, pattern kills, hanging commands, the guard line) and `sources.md` (the date of every rule). `scripts/replay-edits.py` rebuilds lost files from transcripts.
 
 ## 1. Fan out or stay linear
 
@@ -40,6 +40,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they na
 - **Lanes leave git and servers to the lead.** In gt-cloud workflows a lane never runs a git command that changes state (commit, push, stash, checkout, reset, `add -A`), never starts, stops or restarts a server or the dev environment, and writes scratch files only under the session scratchpad. The lead reads each diff and commits by explicit path (`gt-ship` section 2). When two lanes must edit the same paths in parallel, each runs with `isolation: 'worktree'`, which costs a fresh worktree per agent.
 - **Kevin's notes during a run.** Record each new note verbatim as a task. Route it to the agent that owns the file, or queue it until that agent releases the file. Fix a note on a file no lane owns inline at once. The ask ledger in `gt-reporting` carries every note to the final report.
 - **Every lane prompt opens with Kevin's words.** When Kevin sends an unrelated message in the turn that launches a workflow, its lanes can take that message as their only task. On 2026-09-30 a lane built nothing and verified an unrelated title instead (memory workflow-lane-relay-trap), and on 2026-10-02 the `managed-org-atomic` workflow for a task chip built nothing for the same reason. Start each prompt with "Kevin's request for this lane, in his own words:" and the quote, then state that any other relayed message was handled elsewhere. Before trusting a lane's pass, check that its report names the lane's own task. When a workflow fails this way, build the task directly in the session.
+- **Session lanes.** `references/session-lanes.md` dates every lane change after the 2026-10-05 map.
 - **Ports.** Each worktree and dev server gets its own port range away from the defaults, written into the round's CONTEXT file. Prototemplate's review server holds 3005 and the gt-cloud landing review server 3001 (`gt-local-dev`). One round gave its lanes 4461 to 4465, the integrator 4468 and the verifier 4469.
 - **Machine load.** Lanes on one machine share its CPU. When a timing check reads red while other lanes run, rerun it once the load drops and record `uptime` beside the reading (memory turboslide-ship-two-lessons).
 - **Lane reports.** A build lane returns in about 700 words or fewer: each file added or changed with one line, deviations from the spec with reasons, anything left for another lane, and the commands it ran with their results. A sweep or review lane returns a schema with a `checked` list (what it inspected and found clean) and an `uncertain` list. The 2026-08-06 color sweep told its lanes to leave any value they could not classify and report it, because a missed replacement costs one more pass while a wrong one flattens a drawing.

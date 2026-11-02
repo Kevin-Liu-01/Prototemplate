@@ -30,6 +30,9 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 | 2026-10-05 | Pictures of plain English prose ("never distract with text on the artifacts") | The dictionary pictures are retired and the picture lint rejects them |
 | 2026-10-05 | Book heads with a seven-line lead and a floating subtitle | A lead of two or three lines at 60 to 70 characters, the rest in the body |
 | 2026-10-07 | The Dossier named as the reference for the brand and the site, after the brand had moved past it | The shipped site is the reference for landing and marketing pages, and the Dossier stays in the gallery as the direction the site grew from |
+| 2026-10-28 | Posters that each redrew one reference and filled the frame with metadata rows and credits, then a restart from abstract concepts | Pictures from GT's own artifacts, varied across a set; about three text elements on a poster; notes on named parts change only those parts |
+| 2026-10-28 | A round of marks with no energy, and the three marks its judge ranked first | A mark carries an idea, and 16 and 32 px are a separate cut that never ends a direction |
+| 2026-10-30 | Eight variations of the graticule mark's source, which he loves | Write a loved source's invariants first, change only a named defect, and show a tune only when it beats the source at a glance |
 
 ## 2026-08-04: the first Figma v0 build of the redesign
 
@@ -209,6 +212,30 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 - What was wrong: after the 2026-10-06 verdict, `gt-aesthetic` section 1 still named the Dossier as the reference for the site, and BRAND.md section 8, the other GT skills and the handbook still presented it as the completed reference.
 - The rule since: the shipped site is the reference for landing and marketing pages. It is generaltranslation.com, built from `apps/landing` on gt-cloud origin/main. gt-cloud #4213 built the production landing from the Dossier's direction, and that landing became canonical for the redesign stack on 2026-08-11. The identity now covers more than the Dossier shows: product surfaces follow the brand deck (2026-09-25), and the identity includes the speed marks (2026-09-29), the films on `/motion` and the cycling title badges. BRAND.md section 8 names where the identity ships. The Dossier (`/d/singularity-dossier`) stays in the gallery as the direction the site grew from, which settles the decision the 2026-10-06 entry left open.
 
+## 2026-10-28: a set of posters
+
+- Kevin: "this copied the homework a little too much ... make the posters a lot more readable, less filled with unnecessary text". He called the abstract-concept round that followed silly and said round 1 was better.
+- What was wrong: each poster redrew one reference in GT colors, so it read as someone else's design. Metadata rows and credits made each poster unreadable at feed size. The restart from abstract concepts answered a note that had asked for a tune.
+- The rule since: a GT poster or graphic builds its pictures from GT's own artifacts: glyph rain, calligraphy, the GT mark and its construction, the speed and globe marks, Glyphfield fields and locale data. A set varies them, and one Blue Marble re-screened across a set is out. A poster carries about three text elements, with the news words large on a quiet ground. After notes on named parts, the next round keeps its look and changes only those parts. Kevin's wiki (github.com/Kevin-Liu-01/Kevin-Wiki) holds the general rules on references and rounds (`wiki/user/design-taste.md`, "Design Rounds").
+
+## 2026-10-28: a round of dynamic marks
+
+- Kevin found that every new mark lacked energy. He kept four marks (a stencil GT and three crescent globes), which the round's judge had scored 7, 5, 4 and 4, and he rejected the three marks the judge ranked first.
+- What was wrong: the judge rewarded compliance with written rules and legibility at small sizes. The tilted crescents lost points to guards the round had invented and to softness at 32 px. Rounds that only varied weights, cuts and layers stalled.
+- The rule since: a mark Kevin keeps carries an idea. A Latin G and T that also read as a CJK character show translation itself. Name the idea before drawing, and cut novelty that only changes style. Keep only his own rules for marks (`gt-brand` `references/marks.md`), and treat 16 and 32 px as a separate cut that never ends a direction. Kevin's wiki holds the rules for judges (`wiki/user/design-taste.md`, "Design Rounds").
+
+## 2026-10-30: the graticule mark
+
+- Kevin loved the source of the graticule mark (`graticule-gt` on `/marks`) and judged eight variations of it: "your variations all kind of suck lol".
+- What was wrong: the variations added weight contrast, crescents and lit-sphere shading, which every standing brief asked for, and those moves erased what he loved. Rounds 6, 9 and 10 showed the same pattern, and each time his favorite was the source itself.
+- The rule since: when Kevin loves a source, write its invariants first. For the graticule mark they are a monoline, a wireframe grid, letters found by breaks and crossings, and one line that is both the G's bar and the T's crossbar. Change only what fixes a named defect, and show a tune only when it beats the source at a glance. A judge of the round takes the faithful redraw of the source as its anchor at 8 of 10.
+
+## 2026-11-01: round 13 of the marks
+
+- Kevin: "make some new ones based on the top ones. exercise abstract thinking". He has given no verdict on the round, so this entry records the round's own reading and sets no rule.
+- What the round found: each top mark is one body a stranger names (a globe, a bolt, a fast slab, a CJK character) in which the G and the T are found. One element of it is part of the G, the T and the body at once. Eight lanes made one-element moves on each top mark's body. The best of the 24 marks was judged 6.3 against his marks at 8, and no refiner claimed a pick beat its source.
+- The round's reading, not a verdict of Kevin's: a new mark starts as one body a stranger names, with the G and the T found in it and one element shared by all three. The top marks are tight, so an edit to one trades one reading for another.
+
 ## What he approved
 
 These are the pieces Kevin praised, and they set the bar for new work of the same kind.
@@ -219,3 +246,4 @@ These are the pieces Kevin praised, and they set the bar for new work of the sam
 - The brand deck's viewer and interface (2026-09-08), now the Prototemplate shell.
 - The landing hero's dither field (2026-09-25).
 - The Blue Marble on the onboarding field as the picture standard (2026-10-05).
+- The marks he kept from the 2026-10-28 round, and the source of the graticule mark, which he loves (2026-10-30).

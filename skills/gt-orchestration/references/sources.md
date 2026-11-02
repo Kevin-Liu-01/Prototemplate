@@ -42,3 +42,9 @@ Quotes moved out of SKILL.md on 2026-10-10, with their dates:
 | Library PR gauntlet, customer-free | `references/workflow-shapes.md` | workflow script `gauntlet-gt-middleware-stack` (transcript 85703a0f, 2026-09-09); inventory docs item 15 |
 | Critic loop example | `examples/critic-loop.js` | workflow script `founder-batch-final` (transcript 0472faa4, 2026-07-30) |
 | `metadata.owner: P` | frontmatter | system v2 plan section 2.2 (2026-10-10) |
+
+## Added on 2026-11-02
+
+| Line | Where | Source |
+| --- | --- | --- |
+| The session lanes by date after the 2026-10-05 map: Glyphfield (2026-10-13), the component cleanup session for Prototemplate docs work (2026-10-21), the Website session (2026-10-21), films on `/motion` and still artwork on `/graphics`. The 2026-10-03 ruling stays quoted in `gt-ship` section 1 and `prototemplate` section 8 only | SKILL.md section 2 and the list of references, `references/session-lanes.md` | memory session-lanes-prototemplate (gt-cloud project; its rulings of 2026-10-13 and 2026-10-21, the note as of 2026-10-30) and memory website-main-thread (2026-10-21) |

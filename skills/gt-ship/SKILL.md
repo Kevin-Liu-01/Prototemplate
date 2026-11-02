@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Branches, PRs and landing
   areas: workflow, lints
-  updated: 2026-10-30
+  updated: 2026-11-02
   origin: prototemplate
   owner: P
 ---
@@ -29,8 +29,9 @@ github.com/Kevin-Liu-01/Prototemplate is public and Kevin's own; it takes
 commits on main after he has reviewed the work on localhost.
 
 `$GT_CLOUD` is a gt-cloud checkout (`~/gt/gt-cloud` on Kevin's machine) and
-`$PROTOTEMPLATE` a Prototemplate checkout (`~/repos/Prototemplate`). The PR
-body and its screenshots are detailed in
+`$PROTOTEMPLATE` a Prototemplate checkout (`~/repos/Prototemplate`). Kevin's
+wiki is github.com/Kevin-Liu-01/Kevin-Wiki, and its paths below are relative
+to its checkout. The PR body and its screenshots are detailed in
 [references/pr-body.md](references/pr-body.md); the bots, the checks and
 Linear in [references/review-loop.md](references/review-loop.md); the work
 around a PR (approval, grouping, release hygiene, closing, teammates,
@@ -62,7 +63,8 @@ carries the same files in its own `scripts/` folder.
   or delete it. The onboarding and dashboard session works in `deck/`,
   `src/components/plate`, `src/app/craft` and `public/brand/mood`, and pushes
   main from its own worktree. The `prototemplate` skill (section 8) keeps
-  the full lane map.
+  the lane map of 2026-10-05, and `gt-orchestration`
+  `references/session-lanes.md` dates the changes since.
 - **One worktree per branch.** Start gt-cloud work with
   `git -C $GT_CLOUD fetch origin`, then
   `git -C $GT_CLOUD worktree add -b k/<topic> <path> origin/main` and
@@ -81,6 +83,9 @@ carries the same files in its own `scripts/` folder.
 - **Never push from another session's worktree.** `gt-cloud-wt-docs` and
   `gt-cloud-wt-docs-main` hold stale local copies of `k/docs-locale-switch-rewrite`
   and `k/docs-perf`.
+- **No stash.** Never run `git stash`, because every worktree of a
+  repository shares one stash list. Kevin's wiki holds the rule and the way
+  to set work aside in `wiki/meta/mac-agent-operations.md`.
 - **Scratch worktrees cost about 6 GB each** with `node_modules`. On
   2026-10-05 a session's scratchpad held 259 GB, most of it 48 leftover
   gt-cloud worktrees, the Mac was down to 27 GB free, and Kevin had to ask
@@ -99,11 +104,18 @@ carries the same files in its own `scripts/` folder.
 
 ## 2. Commits
 
-- **Identity.** gt-cloud's repository config sets Kevin's General
-  Translation work identity, and it covers every worktree. gt-cloud's
-  Vercel deployments refuse Kevin's commits made under his personal email;
-  on 2026-08-26 seven PR commits had to be rewritten. Never set that identity with `--global`: Prototemplate
-  and other repositories keep the global one. Check with
+- **Identity.** Kevin's git default is his GitHub noreply address, and
+  Prototemplate and every other repository outside GT commit with it.
+  gt-cloud and GT's content repository set his General Translation work
+  address in their own config, which covers every worktree. Never set the
+  work address with `--global`. The content submodule inside gt-cloud
+  (`apps/landing/content`) has its own config with neither his name nor
+  that address, so commit there with
+  `git -c user.name="Kevin Liu" -c user.email=<work address> commit`.
+  gt-cloud's Vercel deployments refuse Kevin's commits made under his
+  personal address; on 2026-08-26 seven PR commits had to be rewritten. His
+  private personal address is never used, and old commits that carry it
+  stay as they are (Kevin, 2026-10-30). Check with
   `git log -1 --format='%an <%ae>'` against `git config user.email`, and fix
   a wrong author with `git commit --amend --reset-author` before pushing.
 - **The Claude trailer.** Both rulesets on gt-cloud main set

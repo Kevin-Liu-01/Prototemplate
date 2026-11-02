@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Components to reuse
   areas: components, landing, website
-  updated: 2026-10-10
+  updated: 2026-11-02
   origin: prototemplate
   owner: P
 ---
@@ -27,7 +27,7 @@ Paths are written relative to a gt-cloud checkout at origin/main (`$GT_CLOUD` he
 
 - `references/icons.md` holds the icon tiers, the glyph vocabulary, the dashboard mapping and Prototemplate's chrome icons.
 - `references/instruments.md` lists every instrument with its Prototemplate and gt-cloud paths, its interface and the lifecycle contract.
-- `references/react.md` holds the effect table, the code shape rules, the translation rules and the Prototemplate differences.
+- `references/react.md` holds the effect table, the code shape rules, the translation rules, the locale rules and the Prototemplate differences.
 - `references/shared-ui.md` holds the packages/ui inventory and the gt-ui rules in full; `references/viewer-shell.md` holds Prototemplate's chrome.
 - `references/behavior.md` holds how product UI behaves once built: honesty and recovery, hover and click, chrome, selectors, copy to clipboard, forms, lists and tables, layout shift, agent-facing surfaces, recreations, embedded previews and accessibility.
 
@@ -111,6 +111,7 @@ Detail and examples in `references/react.md`.
 - No `import()` (`gt-ui/no-dynamic-import`), no barrel files, no `any`, no explicit `unknown`, `type` aliases for props, one default-exported component per file, `data-testid` on components a test drives.
 - One `<T>` around the largest static JSX block; never nested; dynamic values through `Var`, `Num`, `DateTime`, `Plural` and `Branch`; user-facing props through `gt()`. `const gt = useGT();` in a client component, `const gt = await getGT();` from `gt-next/server` in an async one.
 - An internal error string never reaches the UI. Show one translated sentence the user can act on.
+- Locale code uses GT's own helpers: lists, the default and direction from `gt-next`, names and flags from `@generaltranslation/locales`, and formats from `generaltranslation`. A hand-written locale helper is refused, and apps/landing is the model (`references/react.md`, Locales).
 - Prototemplate's `useMountEffect` (`src/lib/use-mount-effect.ts`) defers cleanup one task to survive StrictMode's double run; gt-cloud's is a plain `useEffect(effect, [])`. Keep each repository's own.
 
 ## The instruments library
@@ -181,6 +182,7 @@ The components above say what to build with. Kevin's behavior rules, set across 
 - [ ] Scrollers use `ScrollArea` or `.gt-scrollbar` (`.pt-scroll` in Prototemplate chrome); scrolling is native.
 - [ ] No direct `useEffect`; no theme read in markup; dark mode works by tokens and was checked in both themes.
 - [ ] Static copy sits in one `<T>`; props go through `gt()`; no internal error string reaches the UI.
+- [ ] Locale lists, names, flags, direction and formats come from GT's helpers, and no app code imports `gt.config.json`.
 - [ ] Behavior follows `references/behavior.md`: nothing is offered before the backend delivers it, hover and click are one interaction, copy shows its state on the icon, inputs are 16px or larger under `md`, nothing shifts, and icon-only controls have accessible names.
 - [ ] An instrument is mounted from its component, honors the lifecycle contract, and an engine change updated its `/craft` entry.
 - [ ] Rails and seams are drawn once: the row owns the seam, the wrapper owns the rails, cells draw no borders.

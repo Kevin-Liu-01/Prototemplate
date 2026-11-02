@@ -62,6 +62,20 @@ gt-cloud's UI is translated with gt-next. The `gt-react/static-jsx` and `gt-reac
 - On the landing, finished UI strings live in `ui.<locale>.json` at the app root.
 - An action's internal error string never reaches the UI ("No Stripe customer associated with this org"). Show one translated sentence the user can act on and `console.error` the internal one (Kevin, dashboard onboarding round, September 2026).
 
+## Locales
+
+GT's apps use GT's own locale tools, and a hand-written locale helper is a defect. A review of gt-cloud #5542 on 2026-10-27 left 17 comments, nearly all on hand-written locale code, and Kevin asked: "can we get better at using all gt next stuff in here?".
+
+- Locale lists and the default locale come from `getLocales()` and `getDefaultLocale()` in `gt-next`. App code never imports `gt.config.json`. A client component reads `useLocale()`, `useLocaleDirection()` and `useLocales()`.
+- Tests mock `getLocales` and `getDefaultLocale` from `gt-next`.
+- Display names and flags come from `@generaltranslation/locales`: `getLocaleDisplayName`, `capitalizeLanguageName` and `getLocaleFlagCountryCode`. The package ships built, so a Vercel build that runs plain `next build` first runs `pnpm exec turbo run build --filter=@generaltranslation/locales`.
+- Locale properties come from `getLocaleProperties` in `gt-next`, and from `getLocaleDirection`, `isSameLanguage`, `formatDateTime`, `formatList` and `formatNum` in `generaltranslation`.
+- `code.split('-')`, `toLocaleString('en-US')`, hand-typed native names and a hard-coded `dir: 'rtl'` are refused.
+- Every internal page link is `Link` from `gt-next/link`. A file at the app root stays a plain `<a>` (`gt-website` section 3).
+- A plural inside a `gt()` string is an ICU plural.
+- A type cannot follow `gt.config.json`, because a JSON import widens to `string`. A test pins the two in sync.
+- apps/landing already follows these rules. Mirror it before writing locale code in any other gt-cloud app.
+
 ## Prototemplate differences
 
 - `$PROTOTEMPLATE/src/lib/use-mount-effect.ts` defers its cleanup by one task. React StrictMode (on in `next.config.ts`) calls cleanup and then the effect again right after mount; the deferred cleanup is cancelled by that re-run, so listeners stay live in development, and a real unmount still cleans up once. gt-cloud's version is a plain `useEffect(effect, [])`. Do not copy one over the other.
@@ -71,5 +85,6 @@ gt-cloud's UI is translated with gt-next. The `gt-react/static-jsx` and `gt-reac
 
 ## Sources
 
+- Locales: Kevin's memory note `gt-next-reviewer-patterns` (2026-10-27); the exports checked on 2026-11-02 in gt-cloud origin/main `packages/locales/src/utils/` and in the installed `gt-next` 11.
 - gt-cloud: .agents/skills/react-useeffect/SKILL.md; .agents/skills/gt-ui/SKILL.md ("Translation Wrapping"); .agents/skills/gt-landing/SKILL.md; CLAUDE.md ("Code Style"); .oxlintrc.json; tooling/oxlint-plugins/gt-ui.ts (`no-use-effect`, `no-dynamic-import`, `no-unknown-type`); packages/ui/src/hooks/use-mount-effect.ts, use-mounted.ts; packages/ui/design-guide/why-we-banned-useeffect.md.
 - Prototemplate: src/lib/use-mount-effect.ts; scripts/lint/practices.mjs; src/components/plate/shims/gt-next.tsx; src/components/viewer/ThemeButton.tsx.

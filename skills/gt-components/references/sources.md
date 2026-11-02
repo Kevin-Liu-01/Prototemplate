@@ -16,3 +16,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 - "Icons", the JSX-tag-only rename line: `references/icons.md` (the #5029 sweep, 2026-09-28) and the memory note `dashboard-icon-sweep`. Inventory `onboarding.json` row 21, plan row N-24; the rule was already in `references/icons.md`, and `SKILL.md` now points to it.
 - The packages/ui inventory and the gt-ui rules moved to `references/shared-ui.md`, and the viewer shell to `references/viewer-shell.md`, unchanged, with summaries left in `SKILL.md`, to keep the body under the 24,000-byte budget (plan section 2.2).
 - Related skills: `gt-verify` replaces `agent-browser` (inventory `skills.json` row 38, plan row N-28); the isometric skill merged into `gt-diagrams` on 2026-10-10; `gt-product-surfaces` created on 2026-10-10 (plan row N-20).
+
+## Lines added on 2026-11-02
+
+- "React and translation rules", the locale line, its checklist line, and `references/react.md`, "Locales": Kevin's memory note `gt-next-reviewer-patterns` (the review of gt-cloud #5542 on 2026-10-27, and Kevin's request the same day: "can we get better at using all gt next stuff in here?"). The rule covers every gt-cloud app, so it sits here and `gt-website` section 3 keeps the landing's link exception. The helper names were checked on 2026-11-02 against gt-cloud origin/main (`packages/locales/src/utils/display.ts` and `flag.ts`) and the installed `gt-next` 11 build.

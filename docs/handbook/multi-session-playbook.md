@@ -6,7 +6,7 @@ The single rules live in skills, and this page points to them. [`gt-ship`](../..
 
 ## 1. Lanes
 
-One session owns one lane. ListAgents prints the live list of sessions, and the table lists the GT lanes as of 2026-10-05.
+One session owns one lane. ListAgents prints the live list of sessions, and the table lists the GT lanes as of 2026-10-05. The lane changes after that day are dated in `gt-orchestration`'s `references/session-lanes.md`.
 
 | Session | Owns | Where it works |
 | --- | --- | --- |
@@ -149,4 +149,5 @@ Plans, lane specs, ask ledgers and outputs live in files, so a session that rest
 - Kevin's private gt-cloud memory notes on lanes, ship gates, worktree disk use, the lost-work audit and four lanes' handoffs.
 - Kevin's Claude Code and Codex session transcripts for the gt-cloud project, which stay private: the fork lineage read from each transcript's inherited `sessionId` and title records; the 2026-08-06 instruction and the four sessions' responses; the 2026-10-03 handover to Videos; the 2026-09-29 and 2026-09-30 messages between the sign-in sessions; the 2026-10-05 messages from New Onboarding and Dashboard and Videos; and the desktop app's notice that another chat's dev server is out of the Browser pane's reach (2026-09-29). The Codex sessions of September 2026 hold the shared-main audit of 2026-09-22 and the relay of 2026-09-26.
 - Kevin's messages to Claude Code and Codex from 2026-07-30 to 2026-10-05, for the rulings quoted above. Quotes keep his spelling.
+- Section 1, the sentence on later lane changes: `skills/gt-orchestration/references/session-lanes.md`, added on 2026-11-02 from Kevin's memory note on session lanes.
 - Dates are in UTC, as the transcripts record them.

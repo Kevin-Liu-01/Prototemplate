@@ -75,3 +75,22 @@ out of `SKILL.md` on 2026-10-10 to keep the skill under its size budget;
   project is described instead of named.
 - `metadata.owner: P` and the `Last real run` lines of `pr-bots.mjs` and
   `pr-size.mjs`: the plan's skill and script tables (2026-10-10).
+
+## Added 2026-11-02
+
+- Section 2, "Identity": Claude memory `gt-commit-identity` (the noreply
+  default and the private address never used, Kevin, 2026-10-30: "commits
+  are commits. it is what it is, just dont do it in future"; the content
+  submodule's own config, and its commit command with both `-c` flags).
+  Kevin's wiki `wiki/meta/agent-operations-hub.md`, Foundational Rule 5
+  (2026-10-30). The local configs of gt-cloud, the content repository and
+  the submodule were read on 2026-11-02; the submodule sets no name and no
+  address, and the global name is not "Kevin Liu".
+- Section 1, "No stash": Claude memory `no-stash-in-worktrees`, which moved
+  to Kevin's wiki `wiki/meta/mac-agent-operations.md` on 2026-10-30; the
+  line links the wiki page and copies only the rule.
+- Section 1, "Prototemplate ownership", the pointer to `gt-orchestration`
+  `references/session-lanes.md`: that file holds the lane changes after
+  2026-10-05 (Claude memory `session-lanes-prototemplate`, 2026-11-02).
+- The paths paragraph, the sentence on Kevin's wiki: the form
+  `gt-explorations` uses (2026-11-02).

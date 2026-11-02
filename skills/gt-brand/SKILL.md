@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Brand and the correct Inter
   areas: aesthetic
-  updated: 2026-10-31
+  updated: 2026-11-02
   origin: prototemplate
   owner: P
 ---
