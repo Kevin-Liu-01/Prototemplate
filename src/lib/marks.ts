@@ -574,6 +574,7 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'stencil-interlock', name: 'Stencil interlock', family: 'stencil', pick: true, box: [22, 27, 212, 202], note: 'The G is a square C with a square hook locked inside it, and a T with a full-width crossbar stands under it.' }),
 
   dyn({ id: 'crescent-g-upright', name: 'Upright crescent', family: 'crescent-globe', opens: true, box: [17.5, 0, 221, 256], note: 'A crescent limb stands around the ring of an upright G.' }),
+  dyn({ id: 'crescent-g-fine', name: 'Fine crescent', family: 'crescent-globe', pick: true, box: [27, 12, 202, 232], note: 'A crescent limb stands around a ring crossed by one meridian, with a flat slab from the meridian to the ring as the G\'s top arm and a bar from the center line through the meridian to the ring.' }),
   dyn({ id: 'crescent-g-turned', name: 'Turned crescent', family: 'crescent-globe', opens: true, box: [6.4, 0, 243.2, 256], note: 'The ring of the G turns inside a crescent limb.' }),
   dyn({ id: 'crescent-g-tilt-a', name: 'Crescent globe, tilted', family: 'crescent-globe', pick: true, box: [13.4, 16.6, 232.1, 224.1] }),
   dyn({ id: 'crescent-g-tilt-b', name: 'Crescent globe, blade', family: 'crescent-globe', pick: true, box: [12, 31.7, 236, 194.6] }),
