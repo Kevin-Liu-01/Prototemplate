@@ -235,7 +235,7 @@
 }
 
 .mk-field.is-short .mk-field-row {
-  gap: 16px;
+  gap: 16px 12px;
 }
 
 /* ---------- the card: every mark ---------- */
