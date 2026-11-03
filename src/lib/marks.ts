@@ -506,12 +506,12 @@ export type MarkFamilyRow = {
  * on the same day.
  */
 export const FAMILIES: readonly MarkFamilyRow[] = [
-  { id: 'stencil', name: 'Stencil', anchor: 'stencil', engaged: '2026-10-30', lead: 'A G and a lowercase t stand between a cap line and a baseline, with narrow white cuts between the strokes.' },
+  { id: 'stencil', name: 'Stencil', anchor: 'stencil', engaged: '2026-11-02', lead: 'A G and a lowercase t stand between a cap line and a baseline, with narrow white cuts between the strokes.' },
   { id: 'crescent-globe', name: 'Crescent globe', anchor: 'crescent-globe', engaged: '2026-10-29', lead: 'A globe is drawn as a crescent limb around the ring of the G, turned on a tilted axis, with the bar of the G on the equator.' },
   { id: 'bolt', name: 'Bolt', anchor: 'bolt', engaged: '2026-10-30', lead: 'The G is drawn as a lightning bolt whose blade runs down to a point.' },
-  { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-11-01', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
+  { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-11-02', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
   { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
-  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-10-30', lead: 'The letters are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator.' },
+  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-11-02', lead: 'The letters are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator.' },
   { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },
   { id: 'earlier', name: 'Earlier rounds', anchor: 'other-explorations', engaged: '2026-10-20', lead: 'These marks come from the rounds before the hemispheres, and none was chosen.' },
   { id: 'production', name: 'In production', anchor: 'production', engaged: '2026-10-20', lead: 'These two marks are live on generaltranslation.com and in the dashboard, and each card lists every file the sites serve.' },
@@ -569,6 +569,9 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'stencil-a4', name: 'Stencil a4', family: 'stencil', pick: true, box: [20.1, 77, 223.5, 100] }),
   dyn({ id: 'stencil-b4', name: 'Stencil b4', family: 'stencil', pick: true, box: [19.9, 77, 223.5, 100] }),
   dyn({ id: 'stencil-a2', name: 'Stencil a2', family: 'stencil', pick: true, box: [20.1, 77, 223.5, 100], note: 'The a8 drawing at the stroke weights of Stencil.' }),
+  dyn({ id: 'stencil-bracket', name: 'Stencil bracket', family: 'stencil', pick: true, box: [16.2, 62.4, 223.6, 131.2], note: 'The top of a half-round G on the left runs on as one bar that is the crossbar of the T on the right, a short free i stands between them, and the T\'s stem turns into a foot along the baseline.' }),
+  dyn({ id: 'stencil-side-stem', name: 'Stencil side stem', family: 'stencil', pick: true, box: [54.7, 22, 146.6, 212], note: 'The top bar is both the G\'s top and the T\'s crossbar, and the T\'s stem drops down the right edge, past the G and through a second bar that underlines it.' }),
+  dyn({ id: 'stencil-interlock', name: 'Stencil interlock', family: 'stencil', pick: true, box: [22, 27, 212, 202], note: 'The G is a square C with a square hook locked inside it, and a T with a full-width crossbar stands under it.' }),
 
   dyn({ id: 'crescent-g-upright', name: 'Upright crescent', family: 'crescent-globe', opens: true, box: [17.5, 0, 221, 256], note: 'A crescent limb stands around the ring of an upright G.' }),
   dyn({ id: 'crescent-g-turned', name: 'Turned crescent', family: 'crescent-globe', opens: true, box: [6.4, 0, 243.2, 256], note: 'The ring of the G turns inside a crescent limb.' }),
@@ -583,12 +586,17 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'speed-needle', name: 'Speed needle', family: 'speed', opens: true, pick: true, box: [10, 99.7, 236, 56.6], note: 'A wide flat GT trails a long needle to the left.' }),
   dyn({ id: 'speed-gt', name: 'Speed slab', family: 'speed', opens: true, box: [0, 95, 256, 66], note: 'A wide GT drawn as one slab, with a channel cut through the G.' }),
   dyn({ id: 'speed-slab-leaning', name: 'Speed slab, leaning', family: 'speed', pick: true, box: [9.9, 97.6, 236.1, 60.8], note: 'A wide slab GT whose T stem leans as a long blade beside the rising side of the G.' }),
+  dyn({ id: 'speed-needle-swept', name: 'Speed needle, swept', family: 'speed', pick: true, box: [10, 99.3, 236, 57.4], note: 'One slab is the top of the G and the crossbar of the T and trails a long needle to the left, the bowl of the G sits under a level cut, and the T stem sweeps down to the right from the slab.' }),
+  dyn({ id: 'speed-twin-needle', name: 'Speed twin needle', family: 'speed', pick: true, box: [10, 101.4, 236, 53.2], note: 'A flat slab, the T\'s crossbar and the G\'s top arm, trails a needle to the left; under the cut the G\'s lower half trails a second needle and the leaning T stem flares into a pointed flange.' }),
 
   dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, pick: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
 
   dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G, two parallels are its arm and its needle bar, and the limb and the meridian thin toward the upper right as on a lit sphere.' }),
   dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, and the equator is both its bar and the crossbar of the T on the central meridian.' }),
   dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
+  dyn({ id: 'graticule-gt-heavy', name: 'Graticule GT, heavy', family: 'globe', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a heavy wireframe globe the flat latitude opens at its upper right as the G around the left meridian, and the equator is both the G\'s bar and the crossbar of a T whose stem drops to the ring.' }),
+  dyn({ id: 'orbit-gt', name: 'Orbit GT', family: 'globe', pick: true, box: [21.9, 56.9, 212.1, 142.2], note: 'A wide orbit rings a globe whose tall meridian opens on its right as the G, and the orbit\'s lower edge is both the bar of the G and the crossbar of the T, whose stem drops to the meridian\'s foot.' }),
+  dyn({ id: 'graticule-jaw', name: 'Graticule jaw', family: 'globe', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, the equator is its bar and the crossbar of the T, and a piece of the right meridian hangs from the bar as the G\'s jaw.' }),
 ];
 
 /**
