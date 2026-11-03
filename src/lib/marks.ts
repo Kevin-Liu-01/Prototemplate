@@ -507,7 +507,7 @@ export type MarkFamilyRow = {
  */
 export const FAMILIES: readonly MarkFamilyRow[] = [
   { id: 'stencil', name: 'Stencil', anchor: 'stencil', engaged: '2026-11-02', lead: 'A G and a lowercase t stand between a cap line and a baseline, with narrow white cuts between the strokes.' },
-  { id: 'crescent-globe', name: 'Crescent globe', anchor: 'crescent-globe', engaged: '2026-10-29', lead: 'A globe is drawn as a crescent limb around the ring of the G, turned on a tilted axis, with the bar of the G on the equator.' },
+  { id: 'crescent-globe', name: 'Crescent globe', anchor: 'crescent-globe', engaged: '2026-11-02', lead: 'A globe is drawn as a crescent limb around the ring of the G, turned on a tilted axis, with the bar of the G on the equator.' },
   { id: 'bolt', name: 'Bolt', anchor: 'bolt', engaged: '2026-10-30', lead: 'The G is drawn as a lightning bolt whose blade runs down to a point.' },
   { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-11-02', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
   { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
@@ -579,6 +579,8 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'crescent-g-tilt-b', name: 'Crescent globe, blade', family: 'crescent-globe', pick: true, box: [12, 31.7, 236, 194.6] }),
   dyn({ id: 'lune-1', name: 'Lune', family: 'crescent-globe', pick: true, cut: true, box: [15, 17.6, 232.1, 220.8] }),
   dyn({ id: 'crescent-g-a', name: 'Crescent globe', family: 'crescent-globe', pick: true, box: [14.4, 15.3, 232.1, 225.2] }),
+  dyn({ id: 'crescent-g-split-top', name: 'Crescent globe, split top', family: 'crescent-globe', pick: true, box: [26.8, 11.9, 202.4, 232.2], note: 'A slot splits the top of the ring and the upper arc of the equator, a short stub on its left joins the ring to the equator, and on its right the stem of the T drops to the globe\'s center.' }),
+  dyn({ id: 'crescent-g-hanging-stem', name: 'Crescent globe, hanging stem', family: 'crescent-globe', pick: true, box: [26.8, 12, 202.4, 232], note: 'A stem hangs from the top of the ring to its center, just right of a narrow break in the ring and through a gap in the equator.' }),
 
   dyn({ id: 'bolt-straight', name: 'Straight bolt', family: 'bolt', opens: true, pick: true, box: [26.5, 18.9, 205.2, 222.6], note: 'The G is cut as one solid lightning bolt with straight edges.' }),
   dyn({ id: 'bolt-swept', name: 'Swept bolt', family: 'bolt', opens: true, box: [13, 0, 230, 256], note: 'The G is drawn as a lightning bolt with swept curves.' }),
@@ -595,19 +597,21 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, and the equator is both its bar and the crossbar of the T on the central meridian.' }),
   dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
   dyn({ id: 'graticule-gt-heavy', name: 'Graticule GT, heavy', family: 'globe', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a heavy wireframe globe the flat latitude opens at its upper right as the G around the left meridian, and the equator is both the G\'s bar and the crossbar of a T whose stem drops to the ring.' }),
+  dyn({ id: 'equator', name: 'Equator', family: 'globe', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A heavy ring opens at its upper right as the G, its top end cut toward the center, and the equator crosses the whole ring as both the G\'s bar and the crossbar of a T whose stem drops to the ring.' }),
   dyn({ id: 'orbit-gt', name: 'Orbit GT', family: 'globe', pick: true, box: [21.9, 56.9, 212.1, 142.2], note: 'A wide orbit rings a globe whose tall meridian opens on its right as the G, and the orbit\'s lower edge is both the bar of the G and the crossbar of the T, whose stem drops to the meridian\'s foot.' }),
   dyn({ id: 'graticule-jaw', name: 'Graticule jaw', family: 'globe', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, the equator is its bar and the crossbar of the T, and a piece of the right meridian hangs from the bar as the G\'s jaw.' }),
 ];
 
 /**
  * The shortlist in page order, by id: only marks Kevin chose, in the order
- * of his verdicts, newest first: the mark he loves, the marks he liked on
- * 2026-10-30, the marks he kept on 2026-10-28, then those he liked on
- * 2026-10-27. At most 16. Only Kevin adds a mark or removes one, and the
- * other picks stay in their families.
+ * of his verdicts, newest first: the mark he loves, the mark he featured
+ * on 2026-11-02, the marks he liked on 2026-10-30, the marks he kept on
+ * 2026-10-28, then those he liked on 2026-10-27. At most 16. Only Kevin
+ * adds a mark or removes one, and the other picks stay in their families.
  */
 export const SHORTLIST: readonly string[] = [
   'graticule-gt',
+  'equator',
   'speed-needle',
   'bolt-straight',
   'stencil-hook',
