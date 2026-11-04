@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /* oxlint-disable no-console -- a report printed to stdout. */
-// Uploads a locked area's files to the private Blob store under
-// locked/<area>/, where the area's route serves them to a signed-in
-// session (src/app/raise/[[...path]]/route.ts for raise). Each area names
+// Uploads an area's files to the private Blob store under locked/<area>/,
+// where the area's route serves them (src/app/raise/[[...path]]/route.ts
+// for raise, open to anyone with the link). Each area names
 // the files and folders its viewer needs, and only files of the web types
 // below go up. Re-runnable: a manifest blob (locked/<area>.manifest.json,
 // outside the area's prefix, so the route never serves it) records each
@@ -22,7 +22,7 @@
 // Requires: LOCKED_BLOB_READ_WRITE_TOKEN, the read-write token of the
 // locked areas' own private store, in the environment; BLOB_READ_WRITE_TOKEN
 // is never read. A dry run without it compares against an empty store.
-// Last real run: none (kept for: syncing /raise before it is shared).
+// Last real run: 2026-11-04, opening /raise with its inspiration folder.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
@@ -40,7 +40,7 @@ helpIfAsked(import.meta.url);
 export const AREAS = {
   raise: {
     files: ['index.html', 'rounds.json', 'status.json', 'decisions.json'],
-    folders: ['viewer', 'rounds', 'posters'],
+    folders: ['viewer', 'rounds', 'posters', 'inspiration'],
   },
 };
 

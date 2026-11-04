@@ -1,12 +1,12 @@
 import { get } from '@vercel/blob';
 import type { NextRequest } from 'next/server';
 
-import { accessEnv, gate, gateResponse, LOCKED_HEADERS, SESSION_COOKIE } from '@/lib/access';
+import { LOCKED_HEADERS } from '@/lib/access';
 
 /**
- * /raise, a locked area: the viewer's files, served from the locked areas'
- * own private Blob store under locked/raise/ (scripts/locked/sync.mjs
- * uploads them) to a signed-in session only. The store's token is read from
+ * /raise: the viewer's files, served from the locked areas' own private
+ * Blob store under locked/raise/ (scripts/locked/sync.mjs uploads them) to
+ * anyone with the link, never indexed. The store's token is read from
  * LOCKED_BLOB_READ_WRITE_TOKEN alone and passed to every call, so no other
  * store's token can open it. /raise opens /raise/index.html, so the viewer's
  * relative addresses resolve under /raise/ and nothing in it is rewritten.
@@ -27,10 +27,7 @@ function status(code: number): Response {
 }
 
 export async function GET(request: NextRequest, { params }: Context): Promise<Response> {
-  const { pathname, search, origin } = request.nextUrl;
-  const refused = gateResponse(gate(accessEnv(), request.cookies.get(SESSION_COOKIE)?.value, pathname, search), origin);
-  if (refused) return refused;
-
+  const { origin } = request.nextUrl;
   const { path = [] } = await params;
   if (path.length === 0) {
     return new Response(null, { status: 307, headers: { ...LOCKED_HEADERS, Location: new URL('/raise/index.html', origin).toString() } });

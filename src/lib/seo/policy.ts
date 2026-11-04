@@ -50,10 +50,10 @@ export const MIRROR_WITHOUT_LIVE: readonly string[] = ['signin', 'onboarding', '
  * each entry, because Next reads a matcher only as a literal, and
  * scripts/lint/access.test.mjs fails until the two agree.
  */
-export const LOCKED: readonly string[] = ['/raise'];
+export const LOCKED: readonly string[] = [];
 
-/** True for a locked area or anything under it, compared decoded and in lower case so no spelling of the path slips past; false for anything that is not a pathname. */
-export function isLocked(path: string): boolean {
+/** True for an area of `areas` (LOCKED unless a test passes its own) or anything under it, compared decoded and in lower case so no spelling of the path slips past; false for anything that is not a pathname. */
+export function isLocked(path: string, areas: readonly string[] = LOCKED): boolean {
   if (!path.startsWith('/')) return false;
   let bare = path.replace(/[?#].*$/, '');
   try {
@@ -62,11 +62,11 @@ export function isLocked(path: string): boolean {
     /* a malformed escape is compared as written */
   }
   const p = bare.toLowerCase().replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
-  return LOCKED.some((base) => p === base || p.startsWith(`${base}/`));
+  return areas.some((base) => p === base || p.startsWith(`${base}/`));
 }
 
-/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos, /sign-in opens the locked areas, and every locked area is private too. */
-export const PRIVATE_PATHS: readonly string[] = ['/transcreate', '/sign-in', ...LOCKED];
+/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos, /sign-in opens the locked areas, /raise opens to anyone with its link, and every locked area is private too. */
+export const PRIVATE_PATHS: readonly string[] = ['/transcreate', '/sign-in', '/raise', ...LOCKED];
 
 /** True for a private page or a page under one; false for anything that is not a pathname (an off-site address). */
 export function isPrivatePath(path: string): boolean {

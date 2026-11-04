@@ -13,7 +13,9 @@ import { isLocked } from '@/lib/seo/policy';
  * Next reads the matcher only as a literal, so it repeats LOCKED: one
  * entry and its subpaths per locked area. scripts/lint/access.test.mjs
  * fails until the two agree. The matcher keeps the proxy off every other
- * page, which the CDN serves without running it.
+ * page, which the CDN serves without running it. With no locked area the
+ * matcher is empty, so neither Next 16 nor Vercel runs the proxy at all; a
+ * missing matcher would run it on every request.
  */
 export function proxy(request: NextRequest): Response | undefined {
   const { pathname, search } = request.nextUrl;
@@ -23,5 +25,5 @@ export function proxy(request: NextRequest): Response | undefined {
 }
 
 export const config = {
-  matcher: ['/raise', '/raise/:path*'],
+  matcher: [],
 };

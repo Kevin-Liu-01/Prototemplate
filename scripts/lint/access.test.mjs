@@ -2,7 +2,7 @@
 // through Node's type stripping: the environment failing closed, the key
 // check, the session cookie (signed, tampered, expired, revoked), isLocked,
 // the next-path guard, the gate's answers and the proxy's matcher, which
-// must repeat LOCKED.
+// must repeat LOCKED. /vault stands in for a locked area.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -100,17 +100,19 @@ test('removing a key signs out every session made with it, and only those', () =
 });
 
 test('isLocked: a locked area and everything under it, in any spelling', () => {
-  assert.ok(LOCKED.includes('/raise'));
-  for (const path of ['/raise', '/raise/', '/raise/index.html', '/raise/viewer/app.js', '/RAISE', '/%72aise/x', '//raise', '/raise//x', '/raise?next=1', '/raise#top']) {
-    assert.equal(isLocked(path), true, path);
+  const areas = ['/vault'];
+  for (const path of ['/vault', '/vault/', '/vault/index.html', '/vault/viewer/app.js', '/VAULT', '/%76ault/x', '//vault', '/vault//x', '/vault?next=1', '/vault#top']) {
+    assert.equal(isLocked(path, areas), true, path);
   }
-  for (const path of ['/', '/raiser', '/raised/x', '/brand', '/sign-in', 'raise', 'https://www.prototemplate.com/raise', '', '/%E0%A4%A']) {
-    assert.equal(isLocked(path), false, path);
+  for (const path of ['/', '/vaults', '/vaulted/x', '/brand', '/sign-in', 'vault', 'https://www.prototemplate.com/vault', '', '/%E0%A4%A']) {
+    assert.equal(isLocked(path, areas), false, path);
   }
+  for (const base of LOCKED) assert.equal(isLocked(`${base}/x`), true, base);
+  assert.equal(isLocked('/raise/index.html'), false, '/raise opens to anyone with its link');
 });
 
-test('a locked area is private: noindex, nofollow, out of the sitemap; /sign-in too', () => {
-  for (const path of [...LOCKED, '/sign-in']) assert.ok(PRIVATE_PATHS.includes(path), path);
+test('a locked area is private: noindex, nofollow, out of the sitemap; /raise and /sign-in too', () => {
+  for (const path of [...LOCKED, '/raise', '/sign-in']) assert.ok(PRIVATE_PATHS.includes(path), path);
   for (const path of ['/raise', '/raise/index.html', '/sign-in']) {
     const policy = policyFor(path);
     assert.equal(policy.index, false, path);
@@ -161,23 +163,23 @@ test('a file or an API request is told apart from a page', () => {
 
 test('the gate: signed out a page goes to sign-in and a file answers 401; signed in it passes', () => {
   const token = signSession(SECRET, keyId(K1), NOW);
-  assert.deepEqual(gate(ENV, undefined, '/raise', '', NOW), { kind: 'redirect', location: '/sign-in?next=%2Fraise' });
-  assert.deepEqual(gate(ENV, undefined, '/raise/index.html', '?view=now', NOW), { kind: 'redirect', location: '/sign-in?next=%2Fraise%2Findex.html%3Fview%3Dnow' });
-  assert.deepEqual(gate(ENV, undefined, '/raise/rounds.json', '', NOW), { kind: 'deny' });
-  assert.deepEqual(gate(ENV, 'forged', '/raise/rounds.json', '', NOW), { kind: 'deny' });
-  assert.deepEqual(gate(null, token, '/raise', '', NOW), { kind: 'redirect', location: '/sign-in?next=%2Fraise' }, 'no keys configured');
-  assert.equal(gate(ENV, token, '/raise/rounds.json', '', NOW + 1000).kind, 'pass');
-  assert.equal(gate({ secret: SECRET, keys: [K2] }, token, '/raise/rounds.json', '', NOW + 1000).kind, 'deny', 'a revoked key');
+  assert.deepEqual(gate(ENV, undefined, '/vault', '', NOW), { kind: 'redirect', location: '/sign-in?next=%2Fvault' });
+  assert.deepEqual(gate(ENV, undefined, '/vault/index.html', '?view=now', NOW), { kind: 'redirect', location: '/sign-in?next=%2Fvault%2Findex.html%3Fview%3Dnow' });
+  assert.deepEqual(gate(ENV, undefined, '/vault/rounds.json', '', NOW), { kind: 'deny' });
+  assert.deepEqual(gate(ENV, 'forged', '/vault/rounds.json', '', NOW), { kind: 'deny' });
+  assert.deepEqual(gate(null, token, '/vault', '', NOW), { kind: 'redirect', location: '/sign-in?next=%2Fvault' }, 'no keys configured');
+  assert.equal(gate(ENV, token, '/vault/rounds.json', '', NOW + 1000).kind, 'pass');
+  assert.equal(gate({ secret: SECRET, keys: [K2] }, token, '/vault/rounds.json', '', NOW + 1000).kind, 'deny', 'a revoked key');
 });
 
 test('the gate responses: 307 to sign-in, 401 for a file, never cached or indexed', async () => {
   const origin = 'https://www.prototemplate.com';
-  const redirect = gateResponse({ kind: 'redirect', location: '/sign-in?next=%2Fraise' }, origin);
+  const redirect = gateResponse({ kind: 'redirect', location: '/sign-in?next=%2Fvault' }, origin);
   assert.equal(redirect.status, 307);
-  assert.equal(redirect.headers.get('location'), `${origin}/sign-in?next=%2Fraise`);
+  assert.equal(redirect.headers.get('location'), `${origin}/sign-in?next=%2Fvault`);
   const deny = gateResponse({ kind: 'deny' }, origin);
   assert.equal(deny.status, 401);
-  assert.doesNotMatch(await deny.text(), /raise/i);
+  assert.doesNotMatch(await deny.text(), /vault/i);
   for (const response of [redirect, deny]) {
     assert.equal(response.headers.get('cache-control'), 'private, no-store');
     assert.match(response.headers.get('x-robots-tag'), /noindex/);
