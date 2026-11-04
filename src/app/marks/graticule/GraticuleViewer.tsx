@@ -21,24 +21,27 @@ import {
   GRATICULE_MARKS,
   LEAD,
   MARKS_ID,
-  MARKS_LEAD,
   MARKS_TITLE,
   marksIn,
+  PROGRESSION_STEPS,
   PROGRESSIONS,
   PROGRESSIONS_ID,
   PROGRESSIONS_LEAD,
   PROGRESSIONS_TITLE,
+  progressionsIn,
 } from './content';
 
 import './graticule.css';
 
 const MODES: readonly ShellMode[] = ['book'];
 
-/** The page's two sections in order, each with its gutter fact. */
-const PARTS = [
-  { id: MARKS_ID, title: MARKS_TITLE, lead: MARKS_LEAD, fact: marksIn(GRATICULE_MARKS.length) },
-  { id: PROGRESSIONS_ID, title: PROGRESSIONS_TITLE, lead: PROGRESSIONS_LEAD, fact: marksIn(PROGRESSIONS.length) },
-] as const;
+type Part = { id: string; title: string; lead?: string; fact: string };
+
+/** The page's two sections in order, each with its gutter fact; a section without a lead opens on its h2 alone. */
+const PARTS: readonly Part[] = [
+  { id: MARKS_ID, title: MARKS_TITLE, fact: marksIn(GRATICULE_MARKS.length) },
+  { id: PROGRESSIONS_ID, title: PROGRESSIONS_TITLE, lead: PROGRESSIONS_LEAD, fact: progressionsIn(PROGRESSIONS.length) },
+];
 
 /** The list under Knowledge > Marks > Graticule. */
 const SECTIONS: readonly ShellSection[] = [
@@ -83,13 +86,24 @@ function MarkFigure({ mark }: { mark: CatalogMark }) {
   );
 }
 
-/** A progression drawn by mask from its public file, so it takes the page's ink in both themes. */
+/**
+ * A progression drawn by mask from its public file, so it takes the page's
+ * ink in both themes. Each globe is its own square cell, masked by the whole
+ * file at the file's aspect and shifted to that globe, so the steps lie in
+ * one row as the file draws them and wrap two by two on a phone.
+ */
 function Progression({ file, aspect, label }: { file: string; aspect: number; label: string }) {
-  const style: CSSProperties = { '--gr-mask': `url('${file}')`, aspectRatio: String(aspect) };
-  return <span className='gr-art' style={style} role='img' aria-label={label} />;
+  const style: CSSProperties = { '--gr-mask': `url('${file}')`, '--gr-aspect': aspect, '--gr-steps': PROGRESSION_STEPS };
+  return (
+    <span className='gr-steps' style={style} role='img' aria-label={label}>
+      {Array.from({ length: PROGRESSION_STEPS }, (_, i) => (
+        <span key={i} className='gr-step' style={{ '--gr-at': `${(i / (PROGRESSION_STEPS - 1)) * 100}%` }} />
+      ))}
+    </span>
+  );
 }
 
-type SectionProps = { id: string; n: number; fact: string; title: string; lead: string; active: boolean; children: ReactNode };
+type SectionProps = { id: string; n: number; fact: string; title: string; lead?: string; active: boolean; children: ReactNode };
 
 /** One section of the book: a part that opens with the shared divider, its fact in the gutter note. */
 function Section({ id, n, fact, title, lead, active, children }: SectionProps) {
@@ -102,7 +116,7 @@ function Section({ id, n, fact, title, lead, active, children }: SectionProps) {
         </small>
         <div>
           <h2 id={`gr-${id}`}>{title}</h2>
-          <p>{lead}</p>
+          {lead && <p>{lead}</p>}
         </div>
       </div>
       {children}
@@ -114,12 +128,19 @@ type BookProps = {
   /** the progressions' viewBox aspect, width over height, read from their files on the server */
   progressionAspect: number;
   sheetRef: RefObject<HTMLDivElement | null>;
+  /** receives the section jump, for a re-click on the active row in the list */
+  jumpRef: RefObject<(id: string) => void>;
+  /** the active id, read by the shell's onSelect outside this component */
+  activeOut: RefObject<string>;
   updated: PageUpdated;
 };
 
-function GraticuleBook({ progressionAspect, sheetRef, updated }: BookProps) {
+function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, updated }: BookProps) {
   const { active, ready, select } = usePtShell();
-  const { onContents } = useReadLine({ rootRef: sheetRef, selector: '.gr-sec', active, select, ready, smooth: true });
+  activeOut.current = active;
+
+  const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.gr-sec', active, select, ready, smooth: true });
+  jumpRef.current = jump;
 
   const body = (id: string): ReactNode =>
     id === MARKS_ID ? (
@@ -129,7 +150,7 @@ function GraticuleBook({ progressionAspect, sheetRef, updated }: BookProps) {
         ))}
       </div>
     ) : (
-      <div className='gr-row is-wide'>
+      <div className='gr-row is-steps'>
         {PROGRESSIONS.map(({ mark, file }) => {
           const name = catalogMark(mark)?.name ?? mark;
           return (
@@ -189,6 +210,9 @@ export type GraticuleViewerProps = {
  */
 export default function GraticuleViewer({ progressionAspect, updated }: GraticuleViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
+  const jumpRef = useRef<(id: string) => void>(() => {});
+  const activeOut = useRef<string>(MARKS_ID);
+
   return (
     <ViewerShell
       id='graticule'
@@ -201,9 +225,13 @@ export default function GraticuleViewer({ progressionAspect, updated }: Graticul
       surfaces='site'
       keys='flow'
       noun='section'
+      onSelect={(id) => {
+        /* re-clicking the active row brings its section back to the read line */
+        if (id === activeOut.current) jumpRef.current(id);
+      }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <GraticuleBook progressionAspect={progressionAspect} sheetRef={sheetRef} updated={updated} />
+        <GraticuleBook progressionAspect={progressionAspect} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
       </Sheet>
     </ViewerShell>
   );

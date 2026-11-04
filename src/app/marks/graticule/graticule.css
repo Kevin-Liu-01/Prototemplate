@@ -13,18 +13,24 @@
   scroll-margin-top: 20px;
 }
 
-/* every figure row is one width, 2 x 320 + 64 px, and starts on the text's line, right of the dividers' gutter. A mark
-   is cropped to its drawn box and a progression's viewBox is its rings' box, so the first ring of every row starts on
-   that line and the last one ends on the row's right edge */
+/* every figure row runs from the text's line, right of the dividers' gutter, to the column's right edge: 960 px at
+   1440, three marks across. A mark is cropped to its drawn box and a progression's viewBox is its rings' box, so the
+   first ring of every row starts on that line and the last one ends on the column's edge */
 .gr-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 320px));
-  gap: 56px 64px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 56px 32px;
   padding-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
 }
 
-.gr-row.is-wide {
-  grid-template-columns: minmax(0, 704px);
+@container gr-sec (min-width: 960px) {
+  .gr-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.gr-row.is-steps {
+  grid-template-columns: minmax(0, 1fr);
   gap: 40px;
 }
 
@@ -51,6 +57,23 @@
   background: currentColor;
   -webkit-mask: var(--gr-mask) var(--gr-mask-pos, center) / var(--gr-mask-size, contain) no-repeat;
   mask: var(--gr-mask) var(--gr-mask-pos, center) / var(--gr-mask-size, contain) no-repeat;
+}
+
+/* a progression: one square cell per globe, each masked by the whole file at the file's aspect and shifted to its
+   globe. The globes are evenly spaced, so globe i of n, counted from 0, sits at i / (n - 1) of the way across. The gaps
+   keep the file's own spacing: what the globes leave of the row, shared between them */
+.gr-steps {
+  display: grid;
+  grid-template-columns: repeat(var(--gr-steps), minmax(0, 1fr));
+  column-gap: calc((100% - var(--gr-steps) * 100% / var(--gr-aspect)) / (var(--gr-steps) - 1));
+}
+
+.gr-step {
+  display: block;
+  aspect-ratio: 1;
+  background: currentColor;
+  -webkit-mask: var(--gr-mask) var(--gr-at) 0 / calc(var(--gr-aspect) * 100%) 100% no-repeat;
+  mask: var(--gr-mask) var(--gr-at) 0 / calc(var(--gr-aspect) * 100%) 100% no-repeat;
 }
 
 .gr-art-link {
@@ -96,28 +119,28 @@
   text-wrap: pretty;
 }
 
-/* the dividers' own breakpoint (BookView.css), where the gutter folds above the heading. The row keeps 704 px,
-   2 x 336 + 32 px, from the column's left edge */
+/* the dividers' own breakpoint (BookView.css), where the gutter folds above the heading: the rows take the whole
+   column, two marks across */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
   .gr-sec {
     gap: 28px;
   }
 
   .gr-row {
-    grid-template-columns: repeat(2, minmax(0, 336px));
-    column-gap: 32px;
     padding-left: 0;
-  }
-
-  .gr-row.is-wide {
-    grid-template-columns: minmax(0, 704px);
   }
 }
 
-/* a phone's column: one mark across the row, so a note keeps a reading width; the progressions take the same width */
+/* a phone's column: one mark across the row, so a note keeps a reading width; a progression's four globes wrap two by
+   two, each about half the column */
 @container gr-sec (max-width: 539px) {
   .gr-row {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 40px;
+  }
+
+  .gr-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
   }
 }
