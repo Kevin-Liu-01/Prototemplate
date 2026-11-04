@@ -222,6 +222,25 @@ function readHash(): string {
   }
 }
 
+/**
+ * The item a landing hash names: the item itself, or else the item whose
+ * element on the stage holds the element of that id, the nearest ancestor
+ * whose data-id is an item (a mark card's anchor inside its family's
+ * section). Null when the hash names neither.
+ */
+function hashOwner(hash: string, items: readonly { id: string }[], stage: HTMLElement | null): string | null {
+  if (!hash) return null;
+  const known = new Set(items.map((item) => item.id));
+  if (known.has(hash)) return hash;
+  const target = document.getElementById(hash);
+  if (!stage || !target || !stage.contains(target)) return null;
+  for (let node = target.parentElement; node && node !== stage; node = node.parentElement) {
+    const owner = node.dataset.id;
+    if (owner && known.has(owner)) return owner;
+  }
+  return null;
+}
+
 function writeHash(id: string): void {
   try {
     const base = `${window.location.pathname}${window.location.search}`;
@@ -502,8 +521,8 @@ export function ViewerShell({
     }
     const savedDensity = load(DENSITY_KEY);
     if (isDensity(savedDensity)) setDensityState(savedDensity);
-    const fromHash = readHash();
-    const hashItem = fromHash && itemsRef.current.some((item) => item.id === fromHash) ? fromHash : null;
+    /* a hash that names an anchor inside an item marks that item and stays in the address */
+    const hashItem = hashOwner(readHash(), itemsRef.current, stageRef.current);
     if (hashItem) setActive(hashItem);
     /* a restored slide follows commitMode's entry rule: with nothing paged
        marked (the gallery's Live mode saved, no hash), it opens the first
