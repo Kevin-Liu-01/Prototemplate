@@ -350,6 +350,8 @@ type MarkCardProps = {
   pick?: boolean;
   /** the card is a block the list names: its id, and whether it is the active one */
   block?: { id: string; active: boolean };
+  /** the card's anchor where it is no block, so another page links to it: /marks/graticule's figures */
+  anchor?: string;
 };
 
 /**
@@ -361,7 +363,7 @@ type MarkCardProps = {
  * the left and the drawing at the right, or the drawing under the clean
  * mark on a narrow card. Every other mark is drawn alone on paper.
  */
-function MarkCard({ name, draw, level, hero, sizes, drawing, tags, file16, note, notes, files, feature, pick, block }: MarkCardProps) {
+function MarkCard({ name, draw, level, hero, sizes, drawing, tags, file16, note, notes, files, feature, pick, block, anchor }: MarkCardProps) {
   const Heading = level;
   const headingId = block ? `mk-${block.id}` : undefined;
   const run = sizes ?? (feature ? [...MARK_SIZES].reverse() : CARD_SIZES);
@@ -393,6 +395,7 @@ function MarkCard({ name, draw, level, hero, sizes, drawing, tags, file16, note,
   return (
     <article
       className={cn('mk-card', feature && 'is-feature', drawing && 'is-drawn', pick && 'is-pick', block && 'mk-sec', block?.active && 'is-active')}
+      id={block ? undefined : anchor}
       data-id={block?.id}
       aria-labelledby={headingId}
     >
@@ -495,7 +498,7 @@ function ProductionCard({ mark }: { mark: ProductionMark }) {
  * the name, the note and the files. Its family's lead takes the lead card:
  * both grounds, larger, and the run from 128. A shortlisted mark's card is
  * a block the list names, so the shortlist's tiles jump to it and the read
- * line marks its row.
+ * line marks its row; every other card carries the mark's id as its anchor.
  */
 function DynamicCard({ mark, feature, active }: { mark: CatalogMark; feature?: boolean; active: boolean }) {
   const draw: Draw = (size) => <BoxArt mark={mark} fit={[size, size]} />;
@@ -515,6 +518,7 @@ function DynamicCard({ mark, feature, active }: { mark: CatalogMark; feature?: b
       feature={feature}
       pick={mark.pick}
       block={SHORTLISTED.has(mark.id) ? { id: mark.id, active } : undefined}
+      anchor={mark.id}
     />
   );
 }
