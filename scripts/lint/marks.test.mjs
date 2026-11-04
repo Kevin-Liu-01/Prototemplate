@@ -19,7 +19,7 @@ import { test } from 'node:test';
 import { CANONICAL, DYNAMIC_DIR, MAX_BYTES, drawnBox } from '../build/import-marks.mjs';
 import { ROOT } from '../lib/root.mjs';
 
-const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, badgeMarks, pageFamilies } = await import(new URL('../../src/lib/marks.ts', import.meta.url).href);
+const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, badgeMarks, graticuleMarks, pageFamilies } = await import(new URL('../../src/lib/marks.ts', import.meta.url).href);
 
 const MARKS_TS = 'src/lib/marks.ts';
 const publicFile = (path) => join(ROOT, 'public', path);
@@ -85,6 +85,15 @@ test('every family has its record and holds a mark, and the page closes on In pr
   assert.equal(new Set(order).size, FAMILIES.length, 'a family is missing from the page order or repeats');
   assert.equal(order.at(-1), 'production');
   for (const family of FAMILIES) assert.ok(CATALOG.some((mark) => mark.family === family.id), `${family.id} holds no mark`);
+});
+
+test('/marks/graticule draws every graticule mark once: the shortlisted first, then the picks, Graticule jaw, thicker after Graticule jaw', () => {
+  const ids = graticuleMarks().map((mark) => mark.id);
+  const expected = CATALOG.filter((mark) => mark.id.startsWith('graticule-')).map((mark) => mark.id);
+  assert.deepEqual([...ids].sort(), [...expected].sort());
+  const tier = (id) => (SHORTLIST.includes(id) ? 0 : CATALOG.find((mark) => mark.id === id)?.pick ? 1 : 2);
+  ids.forEach((id, i) => assert.ok(i === 0 || tier(ids[i - 1]) <= tier(id), `${id} comes before a mark ranked above it`));
+  assert.equal(ids.indexOf('graticule-jaw-thicker'), ids.indexOf('graticule-jaw') + 1);
 });
 
 test('every mark /brand\'s badge cuts through is no wider than the GT monogram', () => {

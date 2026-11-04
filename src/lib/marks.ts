@@ -735,6 +735,23 @@ export function dynamicFamily(id: MarkFamilyId): readonly CatalogMark[] {
     .map(({ mark }) => mark);
 }
 
+/**
+ * Every graticule mark, the catalog rows whose id starts with graticule-,
+ * in the order /marks/graticule draws them: the shortlisted ones in
+ * SHORTLIST's order, then the other picks, then the rest, each group as
+ * DYNAMIC_MARKS lists it.
+ */
+export function graticuleMarks(): readonly CatalogMark[] {
+  const rank = (mark: CatalogMark) => {
+    const at = SHORTLIST.indexOf(mark.id);
+    return at >= 0 ? at : SHORTLIST.length + (mark.pick ? 0 : 1);
+  };
+  return DYNAMIC_MARKS.filter((mark) => mark.id.startsWith('graticule-'))
+    .map((mark, i) => ({ mark, i }))
+    .sort((a, b) => rank(a.mark) - rank(b.mark) || a.i - b.i)
+    .map(({ mark }) => mark);
+}
+
 /** The mark a family leads with, drawn large on both grounds before the rest: its first mark in page order. */
 export function familyLead(id: MarkFamilyId): CatalogMark | undefined {
   return dynamicFamily(id)[0];
