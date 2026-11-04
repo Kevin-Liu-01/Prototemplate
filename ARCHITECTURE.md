@@ -47,7 +47,9 @@ src/
                           live library plates (libraries.ts); /craft
                           redirects there
     skills/               /skills, /skills/<slug> and the raw skill files
-    marks/                /marks: the mark explorations
+    marks/                /marks: the mark explorations; graticule/ is
+                          /marks/graticule, every graticule mark and the
+                          four globes that become two of them
     blog/                 the blog on the viewer shell: the posts (content/blog)
                           rendered with the landing site's MDX components, and
                           the changelog (src/lib/blog-posts.ts, generated)

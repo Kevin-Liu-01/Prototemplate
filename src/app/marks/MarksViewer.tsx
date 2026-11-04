@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import type { CSSProperties, MouseEvent, ReactNode, RefObject } from 'react';
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 
 import BrandFilm from '@/app/brand/BrandFilm';
 import { BookHead } from '@/components/viewer/BookView';
@@ -37,6 +38,8 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
+
+import { GRATICULE_MARKS } from './graticule/content';
 
 import './marks.css';
 
@@ -979,7 +982,17 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
         contents={
           <nav className='mk-toc pt-book-toc' aria-label='Contents'>
             {link(SHORTLIST_ID, 'Shortlist', SHORTLIST.length)}
-            {FAMILY_ORDER.map((family) => link(family.anchor, family.name, familyCount(family)))}
+            {FAMILY_ORDER.map((family) => (
+              <Fragment key={family.id}>
+                {link(family.anchor, family.name, familyCount(family))}
+                {family.id === 'globe' && (
+                  <Link href='/marks/graticule' data-preview='graticule'>
+                    <span>{PAGE_NAMES.graticule.name}</span>
+                    <small>{GRATICULE_MARKS.length}</small>
+                  </Link>
+                )}
+              </Fragment>
+            ))}
           </nav>
         }
       />

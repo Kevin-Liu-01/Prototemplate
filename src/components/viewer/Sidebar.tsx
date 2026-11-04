@@ -123,6 +123,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   components: 'cube',
   handbook: 'book',
   marks: 'swatch',
+  graticule: 'globe',
   blog: 'post',
   atlas: 'book',
   motion: 'film',
@@ -222,7 +223,7 @@ type Row = {
   shot?: ShellShot;
   href: string;
   external: boolean;
-  /** indented one level under the row before it: a site's enterprise page */
+  /** indented one level under the row before it: a site's enterprise page, a page under another page's path */
   child?: boolean;
   item?: ShellItem;
   /** the page's run: its route sections, opened under this page row on the page's own routes (ShellSection.under) */
@@ -328,15 +329,20 @@ function shippedGroup(label: string, rows: readonly Row[]): Group {
   };
 }
 
+/** The Knowledge group as a tree: a page whose path sits under another page's (Graticule under Marks) is a child row under it. */
+function nestKnowledge(rows: readonly Row[]): readonly Row[] {
+  return rows.map((row) => (rows.some((page) => page !== row && covers(pathOf(page.href), pathOf(row.href))) ? { ...row, child: true } : row));
+}
+
 /**
  * A site map group as the list shows it: Shipped with its child group, Sites
- * as a tree, the rest as rows. Knowledge drops its archive row, since the
- * Archive group below lists every retired version itself.
+ * and Knowledge as trees, the rest as rows. Knowledge drops its archive
+ * row, since the Archive group below lists every retired version itself.
  */
 function navGroup(group: SurfaceGroup, rows: readonly Row[]): Group {
   if (group === 'Shipped') return shippedGroup(group, rows);
   if (group === 'Sites') return { key: group, label: group, rows: nestSites(rows) };
-  if (group === 'Knowledge') return { key: group, label: group, rows: rows.filter((row) => row.preview !== 'archive') };
+  if (group === 'Knowledge') return { key: group, label: group, rows: nestKnowledge(rows.filter((row) => row.preview !== 'archive')) };
   return { key: group, label: group, rows };
 }
 

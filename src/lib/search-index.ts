@@ -117,6 +117,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   components: 'cube',
   handbook: 'book',
   marks: 'swatch',
+  graticule: 'globe',
   blog: 'post',
   atlas: 'book',
   graphics: 'gallery',
@@ -148,6 +149,7 @@ const PAGE_KEYWORDS: Readonly<Record<string, string>> = {
   motion:
     'films videos hyperframes roster trailers translation series jihe yuanben euclid ricci journey to the west monkey waley hebrew ben-yehuda',
   marks: 'logo mark monogram wordmark lockup GT shortlist graticule wireframe globe stencil crescent lune bolt needle speed race bars cut plate livery ascii dither production locadex doubled-line hemispheres poster favicon construction closed-top',
+  graticule: 'graticule globe wireframe meridian latitude equator ring progression jaw thicker no meridian heavy GT G',
   transcreate: 'video translation japanese spanish english on-screen text side by side stacked columns notion linear ramp asana stripe miro credits',
   archive: 'retired versions captures history',
 };

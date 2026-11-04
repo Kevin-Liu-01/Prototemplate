@@ -290,6 +290,7 @@ export function siteRoutes() {
     /* the built deck itself (next.config.ts rewrites /deck to public/brand-deck.html) */
     { id: 'deck', path: '/deck', tools: 'check live lines capture', source: ['deck/parts'] },
     { id: 'marks', path: '/marks', tools: 'check live lines capture', source: ['src/app/marks'] },
+    { id: 'graticule', path: '/marks/graticule', tools: 'check live lines capture', source: ['src/app/marks/graticule'] },
     { id: 'skills', path: '/skills', tools: 'check live lines capture', source: ['src/app/skills'] },
     { id: `skills-${skill}`, path: `/skills/${skill}`, tools: 'check live lines', source: ['src/app/skills'] },
     { id: 'components', path: '/components', tools: 'check live lines capture', source: ['src/app/components', 'src/lib/component-library.ts', 'content/docs/components', 'src/components/docs/demos'] },

@@ -199,6 +199,14 @@ const KNOWLEDGE: readonly Surface[] = [
     thumb('marks')
   ),
   internal(
+    'graticule',
+    pageLabel('graticule'),
+    '/marks/graticule',
+    'Every graticule mark, cut from the lines of a wireframe globe, and the four steps from a full globe to two of them.',
+    'Knowledge',
+    thumb('graticule')
+  ),
+  internal(
     'blog',
     pageLabel('blog'),
     '/blog',
