@@ -21,6 +21,9 @@ const READ_LINE = '0px 0px -90% 0px';
 /** How long the spy waits for a jump to reach its element before it reads the page again. */
 const SETTLE_MS = 1200;
 
+/** How far above its bottom, in px, the sheet still counts as at its end: scrollTop is fractional on a scaled display. */
+const END_SLACK = 1;
+
 type ReadLineOptions = {
   /** the sheet's scroll region; the read line sits at its top */
   rootRef: RefObject<HTMLElement | null>;
@@ -59,6 +62,18 @@ function dataId(el: HTMLElement): string | undefined {
   return el.dataset.id || undefined;
 }
 
+/** True when the sheet is scrolled to its bottom, or cannot scroll. */
+function atEnd(root: HTMLElement): boolean {
+  return root.scrollTop + root.clientHeight >= root.scrollHeight - END_SLACK;
+}
+
+/** True when any part of an element is inside the sheet's visible box. */
+function onScreen(el: HTMLElement, root: HTMLElement): boolean {
+  const box = el.getBoundingClientRect();
+  const view = root.getBoundingClientRect();
+  return box.top < view.bottom && box.bottom > view.top;
+}
+
 /**
  * The scroll spy of a book in a flow sheet. An IntersectionObserver on the
  * scroll region marks the lowest watched element crossing the read line
@@ -69,6 +84,13 @@ function dataId(el: HTMLElement): string | undefined {
  * keeps the chosen mark. A change of `active` from anywhere else (the
  * list, the keys, the hash on landing) jumps to its element; a change the
  * spy made is left alone.
+ *
+ * The end of the sheet: the last element can be too short for its top to
+ * reach the line before the sheet runs out. When the reader's own scroll
+ * brings the sheet to its end with the last element on screen, the spy
+ * marks the last element, and when the reader scrolls back up the line
+ * marks again. A jump that lands at the end keeps its own mark, because the
+ * sheet reached the end while the jump was settling.
  */
 export function useReadLine({
   rootRef,
@@ -101,9 +123,12 @@ export function useReadLine({
   /** the element a jump is heading for; the spy waits for it */
   const settling = useRef<Element | null>(null);
   const settleTimer = useRef(0);
+  /** true while the reader's own scroll holds the sheet at its end, where the last element is the one being read */
+  const endHeld = useRef(false);
 
   const scrollTo = (el: HTMLElement | null, behavior: ScrollBehavior, settle: Element | null = el) => {
     if (!el) return;
+    endHeld.current = false;
     settling.current = settle;
     window.clearTimeout(settleTimer.current);
     settleTimer.current = window.setTimeout(() => {
@@ -130,6 +155,7 @@ export function useReadLine({
     const root = rootRef.current;
     if (!root || typeof IntersectionObserver === 'undefined') return;
     const watched = Array.from(root.querySelectorAll<HTMLElement>(selector));
+    const last = watched[watched.length - 1] ?? null;
     const order = new Map<Element, number>(watched.map((el, i) => [el, i]));
     const visible = new Set<Element>();
     const lowest = (): HTMLElement | null => {
@@ -144,34 +170,54 @@ export function useReadLine({
       }
       return best;
     };
+    /** the element being read: the last one while the end holds, else the lowest crossing the line */
+    const reading = (): HTMLElement | null => (endHeld.current ? last : lowest());
+    const mark = (el: HTMLElement | null) => {
+      const id = el ? idOfRef.current(el) : none;
+      if (id === undefined || id === activeRef.current) return;
+      fromScroll.current = id;
+      selectRef.current(id);
+    };
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) visible.add(entry.target);
           else visible.delete(entry.target);
         }
-        const best = lowest();
+        const best = reading();
         if (settling.current) {
           if (best !== settling.current) return;
           settling.current = null;
           window.clearTimeout(settleTimer.current);
         }
-        const id = best ? idOfRef.current(best) : none;
-        if (id === undefined || id === activeRef.current) return;
-        fromScroll.current = id;
-        selectRef.current(id);
+        mark(best);
       },
       { root, rootMargin: READ_LINE, threshold: 0 }
     );
     watched.forEach((el) => observer.observe(el));
+    /* the end: arriving at it or leaving it reads the sheet again, since the
+       line itself may not move past any element there. Arriving while a jump
+       settles leaves the jump's mark */
+    endHeld.current = false;
+    let wasAtEnd = atEnd(root);
+    const onScroll = () => {
+      const end = atEnd(root);
+      if (end === wasAtEnd) return;
+      wasAtEnd = end;
+      endHeld.current = end && !settling.current && last !== null && onScreen(last, root);
+      if (settling.current || (end && !endHeld.current)) return;
+      mark(reading());
+    };
     const onScrollEnd = () => {
       if (!settling.current) return;
       settling.current = null;
       window.clearTimeout(settleTimer.current);
     };
+    root.addEventListener('scroll', onScroll, { passive: true });
     root.addEventListener('scrollend', onScrollEnd);
     return () => {
       observer.disconnect();
+      root.removeEventListener('scroll', onScroll);
       root.removeEventListener('scrollend', onScrollEnd);
       window.clearTimeout(settleTimer.current);
     };
