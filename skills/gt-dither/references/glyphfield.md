@@ -23,7 +23,12 @@
 - A page never depends on an editor iframe, a local checkout or a
   generation request per page view.
 - Tune the shader for texture and motion. Masks, fades, text protection and
-  theme blending stay in the page's CSS.
+  theme blending stay in the page's CSS, except a clearing on a dithered
+  field, which is a tone dissolve in the shader (`bayerSmoke`'s `clear`,
+  `references/engines.md`), because a CSS mask prints partial-alpha cells.
+- Gem Smoke (Paper Shaders, Apache-2.0) is the material of the grantee
+  post covers and the films (`gt-graphics`, `gt-films`). The landing ports
+  its smoke alone as `bayerSmoke` for live card art.
 - Keep the source URL and revision, the material settings and the license
   notices with copied code or assets.
 - Agents drive the studio through `window.glyphfield.studio` and discover

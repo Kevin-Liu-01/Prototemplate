@@ -169,7 +169,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Dither and artifact pictures',
     description: 'General Translation\'s 1-bit material and its artifact pictures: the 4x4 and 8x8 Bayer screens, coverage tiers that nest, the CPU engine (dither.ts) and the GPU studio field with its BAYER_PRESETS, the landing hero\'s bayer-8x8 field as the one material on product surfaces, Glyphfield as the authoring source for new shaders, and the Blue Marble standard for dithered photographs and scans with its cutter (pnpm mood-tone), its lint and its retired pictures. Use when adding a dithered field, picture, cover or texture to any GT surface, when choosing or tuning a studio preset, or when cutting, replacing, crediting or reviewing a mood picture in Prototemplate or gt-cloud.',
     areas: ['graphics', 'aesthetic'],
-    updated: '2026-10-10',
+    updated: '2026-11-03',
     files: ['references/cutter.md', 'references/engines.md', 'references/glyphfield.md', 'references/pictures.md', 'references/sources.md'],
   },
   {

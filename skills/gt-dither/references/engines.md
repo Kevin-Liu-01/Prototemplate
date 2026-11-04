@@ -167,7 +167,9 @@ evaluation only:
 | dashboard | `$GT_CLOUD/packages/ui/src/lib/studio-field.ts` | on `k/dashboard-shell-ia`, PR #4977 |
 
 On 2026-10-05 the shader strings and preset values were identical in every
-copy. The landing's and `packages/ui`'s files are byte-identical, and
+copy. On 2026-11-03 the landing's copy on `k/customer-stories` (PR #5724,
+open) gained `bayerSmoke`, the `clear` param and the still-frame redraw
+("Brand smoke on black" below); the other three copies have none of them. The landing's and `packages/ui`'s files are byte-identical, and
 Prototemplate's `src/lib` copy also exports the `BAYER_PRESETS` roster and is
 formatted wider.
 
@@ -235,6 +237,58 @@ Moved from `SKILL.md` section 2 on 2026-10-10, unchanged.
 
   `bayerSphere` sits outside the roster: a lit sphere through the 8x8, the
   landing's report card globe and Prototemplate's /try figure.
+
+## Brand smoke on black (`bayerSmoke`)
+
+The landing's card art draws smoke in one brand's color on black, the look
+of the Fuma Nama post's covers, which are frames of Glyphfield's Gem Smoke
+under a Bayer screen in the grantee's color (`gt-graphics`). Kevin asked
+for it on 2026-11-03 ("try to make colored graphics like the ones we
+acheived with fuma nama") and approved the result ("nice i like theese").
+
+- **Source.** The outer smoke of Gem Smoke from Paper Shaders 0.0.78
+  (github.com/paper-design/shaders, Apache-2.0, credited in a comment above
+  the shader body): a Gaussian blob pushed through four cosine swirls,
+  without the shape mask and the glow compositing. The tone runs through
+  the 8x8 Bayer at the house threshold, `bayer8(p) + 0.5 / 64`.
+- **Params.** `strength` is the swirl (0.7), `detail` the smoke's size from
+  0 to 1 (0.85), `amplitude` the tone gain (2.2) and `grain` 85. `clear`
+  (0 to 1) dissolves the tone away from the lower left corner, where the
+  logo sits: `tone *= mix(1, smoothstep(0.45, 1.0, length(uv * (0.4 *
+  aspect, 1))), clear)`, with `uv` the frame from 0 to 1. The ellipse runs
+  along the bottom because a logo drawn at twice its size reaches 80% of a
+  card's width.
+- **Inks.** The ground is `oklch(0.13 0 none)` in both themes, the shade is
+  `color-mix(in oklch, brand 55%, ground)` and the crest is the brand. A
+  brand darker than L 0.4 prints its lightness mirrored (1 - L), so a black
+  brand shows as cream or white. Logos are white: the light theme's black
+  logo files take `filter: invert(1)`.
+- **One form per card.** A string hash of the card's id turns the rotation
+  by up to 35 degrees each way and sets the still at `STATIC_TIME` plus 0
+  to 30 seconds. The card holds that still until hovered.
+- **The still-frame redraw.** `renderStatic(time)` records the time, and
+  the ResizeObserver, `setParams` and the reduced-motion draw redraw it.
+  Before 2026-11-03 the first ResizeObserver callback after mount redrew
+  every stilled field at `STATIC_TIME`, which erased any per-field phase.
+  A field that never calls `renderStatic` still redraws `STATIC_TIME`.
+- **The text clearing lives in the shader.** `references/glyphfield.md`
+  keeps text protection in the page's CSS, but a CSS mask over a dither
+  prints its cells at partial alpha (`SKILL.md` section 1), so a clearing
+  on a dithered field is a tone dissolve.
+
+### Traps
+
+- An achromatic CSS color written `oklch(L 0 0)` keeps hue 0, and
+  `color-mix(in oklch, ...)` with it turns the brand's hue toward 0: a
+  yellow's shade printed orange. Write the hue as `none`.
+- A threshold of `m / 64` lights the zero cell at tone 0, one cell in 64,
+  so a faint grid of shade dots covers the ground.
+- gt-cloud's `gt-ui/no-raw-locale-flags` reads a GLSL loop variable named
+  `fi` as a hand-written flag class. Name it `n`.
+- Tune in a standalone page that runs the same GLSL in one WebGL context
+  with every brand's inks and logo-sized labels, rendered headless: each
+  variant took seconds, against minutes for a capture of the dev server.
+  Check the labels at the real logo size; small labels hid the overlap.
 
 ## One grid per transition
 

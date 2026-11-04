@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Dither and artifact pictures
   areas: graphics, aesthetic
-  updated: 2026-10-10
+  updated: 2026-11-03
   origin: prototemplate
   owner: P
 ---
@@ -136,9 +136,11 @@ per-surface constants and the full lint list are in
   (`#2f5ce0`, `#5f86f2`, `#9db9ff`, `#cfe0ff`), white only in 10: 01
   bayer-flow (the Glyphfield original), 02 bayer-8x8 (the default and the
   hero's material), then contour, radial, sweep, waves, chunk (the 2x2),
-  pulse, ink and hot, with `bayerSphere` outside the roster (the report
-  card globe). What each moves is in
-  [references/engines.md](references/engines.md) ("The studio family").
+  pulse, ink and hot, with `bayerSphere` (the report card globe) and the
+  landing's `bayerSmoke` (brand smoke on black for card art) outside the
+  roster. What each moves is in
+  [references/engines.md](references/engines.md) ("The studio family" and
+  "Brand smoke on black").
 - Every engine follows the lifecycle in DESIGN.md section 11: mount lazily
   behind an IntersectionObserver, pause offscreen and on a hidden tab,
   draw exactly one still under `prefers-reduced-motion`, release
