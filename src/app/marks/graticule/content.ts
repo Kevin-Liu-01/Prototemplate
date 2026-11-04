@@ -4,7 +4,7 @@ import { graticuleMarks } from '@/lib/marks';
 export const GRATICULE_MARKS = graticuleMarks();
 
 /** The head's lead. */
-export const LEAD = 'Each graticule mark is cut from the lines of a wireframe globe, and its ring, latitudes, meridians and equator draw the G and the T.';
+export const LEAD = 'Every graticule mark is cut from one wireframe globe, and its ring, latitudes, meridians and equator draw the G and the T.';
 
 /** The section of the marks. */
 export const MARKS_ID = 'marks';
