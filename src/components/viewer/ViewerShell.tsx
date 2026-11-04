@@ -223,7 +223,7 @@ function readHash(): string {
 }
 
 /**
- * The item a landing hash names: the item itself, or else the item whose
+ * The item a hash names: the item itself, or else the item whose
  * element on the stage holds the element of that id, the nearest ancestor
  * whose data-id is an item (a mark card's anchor inside its family's
  * section). Null when the hash names neither.
@@ -550,9 +550,13 @@ export function ViewerShell({
       sayRef.current(HINT_TEXT, HINT_HOLD_MS);
     }
 
+    /* a link on the page: an item's hash selects it; an anchor's marks the item that holds it and stays in the address */
     const onHash = () => {
-      const next = readHash();
-      if (next && next !== activeRef.current) select(next);
+      const hash = readHash();
+      const next = hashOwner(hash, itemsRef.current, stageRef.current);
+      if (!next || next === activeRef.current) return;
+      if (next === hash) select(next);
+      else setActive(next);
     };
     const onFullscreen = () => setPresent(Boolean(document.fullscreenElement));
     const onResize = () => {

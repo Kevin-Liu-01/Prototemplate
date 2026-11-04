@@ -77,7 +77,7 @@ function hashId(): string {
   }
 }
 
-/** The reader's own input, any of which ends a landing's hold on an anchor. */
+/** The reader's own input, any of which ends the hold of the anchor the address names. */
 const READER_INPUT = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const;
 
 /** True when any part of an element is inside the sheet's visible box. */
@@ -105,12 +105,12 @@ function onScreen(el: HTMLElement, root: HTMLElement): boolean {
  * on screen, or the jump's own element. Leaving the end hands the mark back
  * to the line.
  *
- * An anchor: a landing hash can name an element inside a watched one that
- * is no item of its own (a mark card inside its family's section). The
- * shell marks the watched element that holds it, the anchor stays where the
- * landing put it, and the spy keeps that mark, so the address keeps the
- * anchor, until the reader's own input or a jump; the next scroll after it
- * reads the line again.
+ * An anchor: the hash can name an element inside a watched one that is no
+ * item of its own (a mark card inside its family's section), on landing or
+ * through a link on the page. The shell marks the watched element that
+ * holds it, the anchor stays where the browser put it, and the spy keeps
+ * that mark, so the address keeps the anchor, until the reader's own input
+ * or a jump; the next scroll after that reads the line again.
  */
 export function useReadLine({
   rootRef,
@@ -145,12 +145,15 @@ export function useReadLine({
   const settleTimer = useRef(0);
   /** the element the sheet's end holds while the sheet stays there; null hands the end to the line */
   const endHold = useRef<Element | null>(null);
-  /** the anchor a landing hash names inside a watched element; while set, the spy keeps the landing's mark */
+  /** the anchor the hash names inside a watched element; while it holds, the spy keeps the mark the shell gave it */
   const anchor = useRef<HTMLElement | null>(null);
+  /** the hash whose anchor the reader's input or a jump released; it holds no more */
+  const released = useRef<string | null>(null);
 
   const scrollTo = (el: HTMLElement | null, behavior: ScrollBehavior, settle: Element | null = el) => {
     if (!el) return;
     anchor.current = null;
+    released.current = hashId();
     endHold.current = settle;
     settling.current = settle;
     window.clearTimeout(settleTimer.current);
@@ -174,13 +177,20 @@ export function useReadLine({
 
   const jump = (id: string) => go(id, smooth ? scrollBehavior() : 'auto');
 
-  /** the element the landing hash names when it is no item but sits inside a watched element: an anchor */
-  const anchorOf = (root: HTMLElement): HTMLElement | null => {
-    const id = hashId();
-    const target = id ? document.getElementById(id) : null;
+  /** the element an id names when it is no item but sits inside a watched element: an anchor */
+  const anchorOf = (root: HTMLElement, id: string): HTMLElement | null => {
+    const target = document.getElementById(id);
     if (!target || !root.contains(target) || target.matches(selector) || elementFor(id)) return null;
     const owner = target.parentElement?.closest(selector);
     return owner && root.contains(owner) ? target : null;
+  };
+
+  /** true while the hash names an anchor the reader has not moved away from; read lazily, so it holds from the first frame of a landing or a link */
+  const holding = (): boolean => {
+    const id = hashId();
+    if (anchor.current && anchor.current.id !== id) anchor.current = null;
+    if (!anchor.current && follow && id && id !== released.current && rootRef.current) anchor.current = anchorOf(rootRef.current, id);
+    return anchor.current !== null;
   };
 
   useMountEffect(() => {
@@ -220,7 +230,7 @@ export function useReadLine({
           if (entry.isIntersecting) visible.add(entry.target);
           else visible.delete(entry.target);
         }
-        if (anchor.current) return;
+        if (holding()) return;
         const best = reading();
         if (settling.current) {
           if (best !== settling.current) return;
@@ -237,23 +247,22 @@ export function useReadLine({
        arriving there leaves the end holding the jump's element */
     endHold.current = null;
     let wasAtEnd = atEnd(root);
-    /* a landing on an anchor holds until the reader's own input; the scroll after it reads the line */
-    anchor.current = follow ? anchorOf(root) : null;
+    /* the reader's own input releases a held anchor, and the scroll after it reads the line */
     let reread = false;
     const release = () => {
-      READER_INPUT.forEach((type) => window.removeEventListener(type, release, true));
       if (!anchor.current) return;
       anchor.current = null;
+      released.current = hashId();
       reread = true;
     };
-    if (anchor.current) READER_INPUT.forEach((type) => window.addEventListener(type, release, { capture: true, passive: true }));
+    READER_INPUT.forEach((type) => window.addEventListener(type, release, { capture: true, passive: true }));
     const onScroll = () => {
       const end = atEnd(root);
       const changed = end !== wasAtEnd;
       wasAtEnd = end;
-      if (anchor.current || settling.current) return;
+      if (!changed && !reread) return;
+      if (holding() || settling.current) return;
       if (changed) endHold.current = end && last && onScreen(last, root) ? last : null;
-      else if (!reread) return;
       reread = false;
       mark(reading());
     };
@@ -282,9 +291,9 @@ export function useReadLine({
       const previous = lastActive.current;
       lastActive.current = active;
       if (!follow || previous === null || previous === active) return;
-      /* the shell marked the anchor's element on landing: the anchor, not its element, is what the reader asked for */
-      if (anchor.current) {
-        anchor.current.scrollIntoView({ block: 'start', behavior: 'instant' });
+      /* the shell marked the anchor's element: the anchor, not its element, is what the reader asked for */
+      if (holding()) {
+        anchor.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
         return;
       }
       if (fromScroll.current === active) {
