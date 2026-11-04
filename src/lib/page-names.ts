@@ -19,6 +19,7 @@ export type PageId =
   | 'components'
   | 'handbook'
   | 'marks'
+  | 'graticule'
   | 'blog'
   | 'graphics'
   | 'motion'
@@ -45,6 +46,7 @@ export const PAGE_NAMES: Readonly<Record<PageId, PageName>> = {
   components: { name: 'Components' },
   handbook: { name: 'Handbook' },
   marks: { name: 'Marks' },
+  graticule: { name: 'Graticule' },
   blog: { name: 'Blog' },
   graphics: { name: 'Graphics' },
   motion: { name: 'Motion' },

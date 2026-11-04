@@ -1,0 +1,123 @@
+/* Graticule: every graticule mark, then the two progressions, on the viewer shell.
+
+   The column, the head, the contents, the band and the section dividers are
+   the shared book classes (BookView.css). Every figure is drawn by mask from
+   its public file in the ink token, on the page's own ground, so it reads
+   ink on paper in either theme. Nothing here is boxed or filled. */
+
+.gr-sec {
+  container: gr-sec / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  scroll-margin-top: 20px;
+}
+
+/* every figure row is one width, 2 x 320 + 64 px, and starts on the text's line, right of the dividers' gutter. A mark
+   is cropped to its drawn box and a progression's viewBox is its rings' box, so the first ring of every row starts on
+   that line and the last one ends on the row's right edge */
+.gr-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 320px));
+  gap: 56px 64px;
+  padding-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
+}
+
+.gr-row.is-wide {
+  grid-template-columns: minmax(0, 704px);
+  gap: 40px;
+}
+
+.gr-fig {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  margin: 0;
+  color: var(--pt-ink);
+}
+
+.gr-art {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.gr-art::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  -webkit-mask: var(--gr-mask) var(--gr-mask-pos, center) / var(--gr-mask-size, contain) no-repeat;
+  mask: var(--gr-mask) var(--gr-mask-pos, center) / var(--gr-mask-size, contain) no-repeat;
+}
+
+.gr-art-link {
+  display: block;
+  color: inherit;
+}
+
+.gr-fig figcaption {
+  display: grid;
+  gap: 6px;
+}
+
+.gr-fig h3 {
+  margin: 0;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+}
+
+.gr-fig h3 a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--pt-hair);
+  text-underline-offset: 3px;
+}
+
+.gr-fig h3 a:hover {
+  text-decoration-color: currentColor;
+}
+
+.gr-fig h3 a:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 2px;
+}
+
+.gr-fig figcaption p {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+/* the dividers' own breakpoint (BookView.css), where the gutter folds above the heading. The row keeps 704 px,
+   2 x 336 + 32 px, from the column's left edge */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .gr-sec {
+    gap: 28px;
+  }
+
+  .gr-row {
+    grid-template-columns: repeat(2, minmax(0, 336px));
+    column-gap: 32px;
+    padding-left: 0;
+  }
+
+  .gr-row.is-wide {
+    grid-template-columns: minmax(0, 704px);
+  }
+}
+
+/* a phone's column: one mark across the row, so a note keeps a reading width; the progressions take the same width */
+@container gr-sec (max-width: 539px) {
+  .gr-row {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 40px;
+  }
+}
