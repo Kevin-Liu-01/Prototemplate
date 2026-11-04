@@ -251,6 +251,7 @@
   flex-direction: column;
   min-width: 0;
   margin: 0;
+  scroll-margin-top: 20px;
   border: 1px solid var(--pt-hair);
   border-radius: var(--pt-radius-card);
   overflow: hidden;
