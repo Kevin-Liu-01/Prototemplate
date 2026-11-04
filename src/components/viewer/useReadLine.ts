@@ -86,11 +86,11 @@ function onScreen(el: HTMLElement, root: HTMLElement): boolean {
  * spy made is left alone.
  *
  * The end of the sheet: the last element can be too short for its top to
- * reach the line before the sheet runs out. When the reader's own scroll
- * brings the sheet to its end with the last element on screen, the spy
- * marks the last element, and when the reader scrolls back up the line
- * marks again. A jump that lands at the end keeps its own mark, because the
- * sheet reached the end while the jump was settling.
+ * reach the line before the sheet runs out, and a jump there ends short of
+ * its element. While the sheet stays at its end, the end holds one element:
+ * the last one when the reader's own scroll brought the sheet there with it
+ * on screen, or the jump's own element. Leaving the end hands the mark back
+ * to the line.
  */
 export function useReadLine({
   rootRef,
@@ -123,12 +123,12 @@ export function useReadLine({
   /** the element a jump is heading for; the spy waits for it */
   const settling = useRef<Element | null>(null);
   const settleTimer = useRef(0);
-  /** true while the reader's own scroll holds the sheet at its end, where the last element is the one being read */
-  const endHeld = useRef(false);
+  /** the element the sheet's end holds while the sheet stays there; null hands the end to the line */
+  const endHold = useRef<Element | null>(null);
 
   const scrollTo = (el: HTMLElement | null, behavior: ScrollBehavior, settle: Element | null = el) => {
     if (!el) return;
-    endHeld.current = false;
+    endHold.current = settle;
     settling.current = settle;
     window.clearTimeout(settleTimer.current);
     settleTimer.current = window.setTimeout(() => {
@@ -170,8 +170,12 @@ export function useReadLine({
       }
       return best;
     };
-    /** the element being read: the last one while the end holds, else the lowest crossing the line */
-    const reading = (): HTMLElement | null => (endHeld.current ? last : lowest());
+    /** the element being read: at the end, once no jump is settling, the one the end holds; else the lowest crossing the line */
+    const reading = (): HTMLElement | null => {
+      const held = endHold.current ? order.get(endHold.current) : undefined;
+      if (held !== undefined && !settling.current && atEnd(root)) return watched[held] ?? null;
+      return lowest();
+    };
     const mark = (el: HTMLElement | null) => {
       const id = el ? idOfRef.current(el) : none;
       if (id === undefined || id === activeRef.current) return;
@@ -195,17 +199,17 @@ export function useReadLine({
       { root, rootMargin: READ_LINE, threshold: 0 }
     );
     watched.forEach((el) => observer.observe(el));
-    /* the end: arriving at it or leaving it reads the sheet again, since the
-       line itself may not move past any element there. Arriving while a jump
-       settles leaves the jump's mark */
-    endHeld.current = false;
+    /* the end: the reader's own scroll arriving at it or leaving it reads the
+       sheet again, since the line may not cross any element there. A jump
+       arriving there leaves the end holding the jump's element */
+    endHold.current = null;
     let wasAtEnd = atEnd(root);
     const onScroll = () => {
       const end = atEnd(root);
       if (end === wasAtEnd) return;
       wasAtEnd = end;
-      endHeld.current = end && !settling.current && last !== null && onScreen(last, root);
-      if (settling.current || (end && !endHeld.current)) return;
+      if (settling.current) return;
+      endHold.current = end && last && onScreen(last, root) ? last : null;
       mark(reading());
     };
     const onScrollEnd = () => {
