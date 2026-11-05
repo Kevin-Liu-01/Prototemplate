@@ -36,7 +36,7 @@
  * lands at 9.5 s and opens into the mark by 10 s, where the loop wraps.
  */
 import type { Field, Line, LinePaths, MarkId, Model, Pt, Spec } from './geometry';
-import { arcPath, bisect, clamp01, DEG, ellipseG, ellipseSdist, lineAt, lineDir, model, OVERLAP, parts, polyPath, power2InOut, power2Out, ringPath, SINK } from './geometry';
+import { arcPath, bisect, clamp01, DEG, ellipseG, ellipseSdist, lineAt, lineDir, model, OVERLAP, parts, pointOn, polyPath, power2InOut, power2Out, ringPath, segAt, SINK, tangentOn } from './geometry';
 import { REST_WEIGHT } from './line-loop';
 
 /** Degrees two closing ends overshoot their meeting point, so they overlap and merge without a seam. */
@@ -117,8 +117,13 @@ function edge(line: Line, t: number, e: number, h: number): number[] {
   return [p[0] - e * h * d[1], p[1] + e * h * d[0]];
 }
 
-/** An end: the pair of thetas where its cut meets the stroke's two edges, tp on edge +1 and tm on edge -1. A square end has tp = tm. */
-type Tip = { tp: number; tm: number };
+/**
+ * An end: the pair of thetas where its cut meets the stroke's two edges, tp
+ * on edge +1 and tm on edge -1. A square end has tp = tm. A cut that follows
+ * a curve carries its face: the points between the tp corner and the tm
+ * corner.
+ */
+type Tip = { tp: number; tm: number; face?: readonly Pt[] };
 const sq = (t: number): Tip => ({ tp: t, tm: t });
 const mid = (end: Tip) => (end.tp + end.tm) / 2;
 
@@ -475,7 +480,12 @@ function clipToExtent(G: Setup, st: SlotState, d: number) {
 
 type Out = { stroke: string; fill: string };
 
-/** A piece on a line from end a to end b: the stroke square between the inner corners, and a wedge that carries the far edge on to each far corner. */
+/**
+ * A piece on a line from end a to end b: the stroke square between the inner
+ * corners, and a wedge that carries the far edge on to each far corner. The
+ * cut runs straight between the corners, or through the end's face points
+ * where it follows a curve.
+ */
 function drawPiece(line: Line, a: Tip, b: Tip, h: number, out: Out) {
   const aIn = Math.max(a.tp, a.tm);
   const aFar = Math.min(a.tp, a.tm);
@@ -489,16 +499,18 @@ function drawPiece(line: Line, a: Tip, b: Tip, h: number, out: Out) {
       first = false;
     }
   }
-  const ends: [number, number, number, number][] = [
-    [aIn, aFar, -1, a.tp > a.tm ? 1 : -1],
-    [bIn, bFar, 1, b.tp < b.tm ? 1 : -1],
+  const ends: [number, number, number, number, readonly Pt[] | undefined][] = [
+    [aIn, aFar, -1, a.tp > a.tm ? 1 : -1, a.face],
+    [bIn, bFar, 1, b.tp < b.tm ? 1 : -1, b.face],
   ];
-  for (const [near, far, sgn, nearE] of ends) {
+  for (const [near, far, sgn, nearE, face] of ends) {
     if (Math.abs(far - near) < 1e-6) continue;
     const back = near - sgn * OVERLAP;
     const farE = -nearE;
     const n = Math.max(2, Math.ceil(Math.abs(far - near) / 2));
     const pts: Pt[] = [edge(line, back, nearE, h), edge(line, near, nearE, h)];
+    // the face runs from the tp corner to the tm corner; here it runs from the near corner to the far one
+    if (face) pts.push(...(nearE === 1 ? face : face.slice().reverse()));
     for (let j = n; j >= 0; j--) pts.push(edge(line, near + ((far - near) * j) / n, farE, h));
     pts.push(edge(line, back, farE, h));
     out.fill += polyPath(pts);
@@ -521,9 +533,11 @@ function latitudeHoles(G: Setup, states: readonly SlotState[]): CutHole[] {
         const tc = w === 'upper' ? bisect((t) => gL(P2(L, t)), 0, 90) : bisect((t) => gL(P2(L, t)), 90, 180);
         const c = P2(L, tc);
         const d = dir2(L, tc);
-        let n = [-d[1], d[0]];
         // offsets measured toward +x
-        if (n[0] < 0) n = [-n[0], -n[1]];
+        const flip = d[1] > 0 ? -1 : 1;
+        // the offset of p: its signed distance from the member's centreline as drawn, so a face at one offset lies
+        // along the member's curved edge, as the mark's cut does
+        const off = (p: Pt) => flip * foot(L, p, tc).o;
         // the gap on each side, opened by k; a side with no gap sits SINK inside the meridian's stroke
         const side = (g: number) => h - SINK + (g + SINK) * hole.k;
         let lo: number;
@@ -537,19 +551,15 @@ function latitudeHoles(G: Setup, states: readonly SlotState[]): CutHole[] {
           hi = side(S.latGapRight);
         }
         // the crossing on the latitude loop: under the bottom is theta 180 to 360, over the top 360 to 540
-        const o = (t: number) => n[0] * (P2(lat, t)[0] - c[0]) + n[1] * (P2(lat, t)[1] - c[1]);
+        const o = (t: number) => off(P2(lat, t));
         const [b0, b1] = w === 'upper' ? [360, 540] : [180, 360];
         const thc = nearestOn(lat, c, b0, b1);
         const slope = Math.sign(o(thc + 0.01) - o(thc - 0.01)) || 1;
         const corners = (oc: number): Tip => {
-          const root = (e: number) => {
-            const f = (t: number) => {
-              const p = edge(lat, t, e, h);
-              return n[0] * (p[0] - c[0]) + n[1] * (p[1] - c[1]) - oc;
-            };
-            return rootNear(f, thc, slope * Math.sign(oc || 1));
-          };
-          return { tp: root(1), tm: root(-1) };
+          const root = (e: number) => rootNear((t) => off(edge(lat, t, e, h)) - oc, thc, slope * Math.sign(oc || 1));
+          const tp = root(1);
+          const tm = root(-1);
+          return { tp, tm, face: faceAlong(L, edge(lat, tp, 1, h), edge(lat, tm, -1, h), tc, flip * oc) };
         };
         // going toward increasing theta the line meets the larger offset first if offsets fall along it
         const [first, second] = slope < 0 ? [hi, lo] : [lo, hi];
@@ -558,6 +568,51 @@ function latitudeHoles(G: Setup, states: readonly SlotState[]): CutHole[] {
     }
   }
   return holes.sort((x, y) => x.thc - y.thc);
+}
+
+/** Newton steps from the crossing: the offset is then within 1e-6 units of the converged one, 20 units out. */
+const FOOT_STEPS = 3;
+
+/**
+ * The foot of p on a member's centreline as drawn, by Newton steps on
+ * (P - p) . P' = 0 from theta t near it: its theta, and the signed distance
+ * of p from the curve, positive on the side of rot90 of the forward tangent
+ * (edge +1's side).
+ */
+function foot(line: Line, p: Pt, t: number): { t: number; o: number } {
+  const [cir, at] = segAt(line, t);
+  const { C, r } = cir;
+  let q = pointOn(cir, t - at);
+  let T = tangentOn(cir, t - at);
+  for (let i = 0; i < FOOT_STEPS; i++) {
+    const dx = q[0] - p[0];
+    const dy = q[1] - p[1];
+    t -= (dx * T[0] + dy * T[1]) / (r * (T[0] * T[0] + T[1] * T[1]) - (dx * (q[0] - C[0]) + dy * (q[1] - C[1])) / r) / DEG;
+    q = pointOn(cir, t - at);
+    T = tangentOn(cir, t - at);
+  }
+  return { t, o: ((p[1] - q[1]) * T[0] - (p[0] - q[0]) * T[1]) / Math.hypot(T[0], T[1]) };
+}
+
+/** Units: each straight step of a curved face stays this close to its curve. */
+const FACE_TOL = 0.005;
+
+/**
+ * A hole's face from corner a to corner b runs along the member's offset
+ * curve at o: the points between the corners, as many as keep each straight
+ * step within FACE_TOL of the curve (none where the member is straight).
+ */
+function faceAlong(line: Line, a: Pt, b: Pt, t: number, o: number): Pt[] {
+  const ta = foot(line, a, t).t;
+  const tb = foot(line, b, t).t;
+  const m = edge(line, (ta + tb) / 2, 1, o);
+  const lx = b[0] - a[0];
+  const ly = b[1] - a[1];
+  const sag = Math.abs((m[0] - a[0]) * ly - (m[1] - a[1]) * lx) / (Math.hypot(lx, ly) || 1);
+  const n = Math.ceil(Math.sqrt(sag / FACE_TOL));
+  const pts: Pt[] = [];
+  for (let j = 1; j < n; j++) pts.push(edge(line, mix(ta, tb, j / n), 1, o));
+  return pts;
 }
 
 /** The theta in [a, b] where a line passes nearest the point c (a member's crossing with the latitude). */

@@ -140,7 +140,7 @@ function makeLines(S: Spec): Record<LineName, Line> {
 }
 
 /** The circle that holds theta on a line, and the offset of its parameter. */
-function segAt(line: Line, theta: number): [Circle, number] {
+export function segAt(line: Line, theta: number): [Circle, number] {
   if (line.loop.length === 1) return [line.loop[0], 0];
   const k = Math.floor(theta / 180);
   return [line.loop[((k % 2) + 2) % 2], 360 * Math.floor(theta / 360)];
@@ -159,7 +159,8 @@ export function parts(line: Line, a: number, b: number): [Circle, number, number
   return out;
 }
 
-function pointOn(cir: Circle, t: number): number[] {
+/** The point at t degrees on a circle, in 3D. */
+export function pointOn(cir: Circle, t: number): number[] {
   const ct = Math.cos(t * DEG);
   const st = Math.sin(t * DEG);
   const { C, r, u, v } = cir;
@@ -167,7 +168,7 @@ function pointOn(cir: Circle, t: number): number[] {
 }
 
 /** The unit tangent in 3D, toward increasing t. */
-function tangentOn(cir: Circle, t: number): number[] {
+export function tangentOn(cir: Circle, t: number): number[] {
   const ct = Math.cos(t * DEG);
   const st = Math.sin(t * DEG);
   const { u, v } = cir;

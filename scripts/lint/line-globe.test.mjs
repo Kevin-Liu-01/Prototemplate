@@ -13,8 +13,8 @@
 // 2048 px drawing, averaged 4 by 4) cover half of it, on Chrome's software
 // canvas. One sample a pixel left the score with the rasterizer: the rest
 // frames read 0.9951 to 0.9958 on the accelerated canvas and 0.9938 to
-// 0.9943 on the software one, because a stroke and an outline of the same
-// line antialias their edges differently. With 16 samples they read 0.9974
+// 0.9945 on the software one, because a stroke and an outline of the same
+// line antialias their edges differently. With 16 samples they read 0.9978
 // to 0.9982, and the wrong mark reads 0.87.
 //
 // Usage: pnpm test:line-globe (node --test scripts/lint/line-globe.test.mjs)
@@ -56,7 +56,7 @@ const SAMPLES = 30;
  * followed by a newline, as the approved scenes drew them.
  */
 const FINGERPRINTS = {
-  'language-turn': { heavy: '2df5d571c233c27f', jaw: '26726e7c5717e4f7' },
+  'language-turn': { heavy: '636767f358cf4b0a', jaw: 'af5d50c09aad1d6e' },
   'globe-lean': { heavy: '297dcbd4aec017a1', jaw: '34bdf2cf7644f45b' },
   'mark-to-globe': { heavy: 'e9a2874c65ea4c30', jaw: 'd3599d49727863a5' },
 };
