@@ -204,6 +204,24 @@ export function edgeAt(line: Line, th: number, sgn: number, e: number, h: number
 
 /* ------------------------------------------------------------ fields in 2D (centred, y down) */
 
+/**
+ * The length of (x, y), equal to V8's Math.hypot(x, y) to the bit: the
+ * squares scaled by the larger, summed, and the root scaled back, as V8
+ * computes it, without the array of its arguments that the builtin allocates
+ * on every call. The signed distances below take it nineteen times a call.
+ */
+export function hypot(x: number, y: number): number {
+  const a = Math.abs(x);
+  const b = Math.abs(y);
+  if (a === Infinity || b === Infinity) return Infinity;
+  if (a !== a || b !== b) return NaN;
+  const m = a > b ? a : b;
+  if (m === 0) return 0;
+  const p = a / m;
+  const q = b / m;
+  return Math.sqrt(p * p + q * q) * m;
+}
+
 /** The implicit form of the centred, axis-aligned ellipse with semi-axes a (x) and b (y): negative inside. */
 export const ellipseG =
   (a: number, b: number): Field =>
@@ -232,15 +250,15 @@ export function ellipseSdist(a: number, b: number): Field {
       const ry = b * ty - ey;
       const qx = px - ex;
       const qy = py - ey;
-      const r = Math.hypot(rx, ry);
-      const q = Math.hypot(qx, qy) || 1e-12;
+      const r = hypot(rx, ry);
+      const q = hypot(qx, qy) || 1e-12;
       tx = Math.min(1, Math.max(0, ((qx * r) / q + ex) / a));
       ty = Math.min(1, Math.max(0, ((qy * r) / q + ey) / b));
-      const t = Math.hypot(tx, ty);
+      const t = hypot(tx, ty);
       tx /= t;
       ty /= t;
     }
-    const d = Math.hypot(px - a * tx, py - b * ty);
+    const d = hypot(px - a * tx, py - b * ty);
     return g(p) < 0 ? -d : d;
   };
 }

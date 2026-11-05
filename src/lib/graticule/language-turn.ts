@@ -36,7 +36,7 @@
  * lands at 9.5 s and opens into the mark by 10 s, where the loop wraps.
  */
 import type { Field, Line, LinePaths, MarkId, Model, Pt, Spec } from './geometry';
-import { arcPath, bisect, circleAt, circleOffset, clamp01, DEG, ellipseG, ellipseSdist, lineAt, lineDir, model, OVERLAP, parts, polyPath, power2InOut, power2Out, ringPath, SINK } from './geometry';
+import { arcPath, bisect, circleAt, circleOffset, clamp01, DEG, ellipseG, ellipseSdist, hypot, lineAt, lineDir, model, OVERLAP, parts, polyPath, power2InOut, power2Out, ringPath, SINK } from './geometry';
 import { REST_WEIGHT } from './line-loop';
 
 /** Degrees two closing ends overshoot their meeting point, so they overlap and merge without a seam. */
@@ -125,7 +125,7 @@ function edgeTo(line: Line, t: number, e: number, h: number): Pt {
   const st = Math.sin((t - at) * DEG);
   const dx = -u[0] * st + v[0] * ct;
   const dy = -u[1] * st + v[1] * ct;
-  const l = Math.hypot(dx, dy);
+  const l = hypot(dx, dy);
   if (l > 1e-7) {
     EDGE[0] = C[0] + r * (u[0] * ct + v[0] * st) - e * h * (dy / l);
     EDGE[1] = C[1] + r * (u[1] * ct + v[1] * st) + e * h * (dx / l);
@@ -162,7 +162,7 @@ function cutTip(line: Line, F: Field, anchor: number, sgn: number, h: number, ne
     for (let n = 0; n < 200; n++) {
       const b = a + 2 * sgn;
       const fb = f(b);
-      if (fb > 0) return bisect(f, a, b, 32, fa);
+      if (fb > 0) return fastBisect(f, a, b, 32, fa, fb);
       a = b;
       fa = fb;
     }
@@ -171,6 +171,60 @@ function cutTip(line: Line, F: Field, anchor: number, sgn: number, h: number, ne
   const tp = meet(1);
   const tm = meet(-1);
   return tp == null || tm == null ? null : { tp, tm };
+}
+
+/** fastBisect's reach, in cells of bisect's last halving: its bracket closes to this width, and a midpoint this near the bracket is tested. */
+const NEAR = 16;
+/** Most false position steps fastBisect takes. */
+const FALSE_STEPS = 16;
+
+/**
+ * bisect(f, lo, hi, n, fLo)'s number in about two fifths of the calls to f,
+ * for the root searches a frame runs hundreds of times. False position steps
+ * (the Illinois rule) close a bracket [L, H] round the root, testing each
+ * point's side as bisect does. Then bisect's n halvings are replayed: a
+ * midpoint more than NEAR cells outside [L, H] lies on that side of the root,
+ * and f runs only at the others, where rounding can flip its sign. Where f
+ * changes sign once between lo and hi, the answer is bisect's to the bit.
+ * fLo has f(lo)'s sign (its size only steers the false position steps), fHi
+ * is f(hi), off fLo's side, and lo may lie above hi.
+ */
+function fastBisect(f: (x: number) => number, lo: number, hi: number, n: number, fLo: number, fHi: number): number {
+  // bisect's test: true on lo's side
+  const low = (fx: number) => fx * fLo > 0;
+  if (fLo === 0 || low(fHi)) return bisect(f, lo, hi, n, fLo);
+  const dir = hi > lo ? 1 : -1;
+  const near = (NEAR * Math.abs(hi - lo)) / 2 ** n;
+  let L = lo;
+  let H = hi;
+  let fL = fLo;
+  let fH = fHi;
+  let kept = 0;
+  for (let i = 0; i < FALSE_STEPS && Math.abs(H - L) > near; i++) {
+    let m = L - (fL * (H - L)) / (fH - fL);
+    if (!((m - L) * dir > 0 && (H - m) * dir > 0)) m = (L + H) / 2;
+    if (m === L || m === H) break;
+    const fm = f(m);
+    if (low(fm)) {
+      L = m;
+      fL = fm;
+      // H kept twice running: halve its weight so the next step moves it
+      if (kept === 1) fH /= 2;
+      kept = 1;
+    } else {
+      H = m;
+      fH = fm;
+      if (kept === -1) fL /= 2;
+      kept = -1;
+    }
+  }
+  for (let k = 0; k < n; k++) {
+    const m = (lo + hi) / 2;
+    const side = (m - L) * dir < -near ? true : (m - H) * dir > near ? false : low(f(m));
+    if (side) lo = m;
+    else hi = m;
+  }
+  return (lo + hi) / 2;
 }
 
 /* ------------------------------------------------------------ the meridian family */
@@ -199,7 +253,7 @@ function member(G: Setup, s: number): Member {
 /** Units: the free field's weight is that of a band this far away. */
 const FREE_REACH = 12;
 
-type EndField = { w: number; square: true } | { w: number; square: false; phi: Field; target: number };
+type EndField = { w: number; square: true } | { w: number; square: false; phi: Field; target: number; lip: boolean };
 
 /**
  * An end on a member at centreline theta tc. Its face is the level line
@@ -220,14 +274,14 @@ function fieldEnd(G: Setup, M: Member, tc: number): Tip {
   const sdP = sdL(P);
   const dL = Math.max(0, Math.abs(sdP) - h);
   const dB = Math.max(0, Math.abs(P[1]) - h);
-  fields.push({ w: 1 / (dL * dL + 0.01), square: false, phi: sdL, target: sdP });
-  fields.push({ w: 1 / (dB * dB + 0.01), square: false, phi: (p) => p[1], target: P[1] });
+  fields.push({ w: 1 / (dL * dL + 0.01), square: false, phi: sdL, target: sdP, lip: true });
+  fields.push({ w: 1 / (dB * dB + 0.01), square: false, phi: (p) => p[1], target: P[1], lip: true });
   const kr = Math.min(1, Math.max(0, (al - 30) / 10));
   const wf = 1 / (FREE_REACH * FREE_REACH);
   if (kr < 1) fields.push({ w: wf * (1 - kr), square: true });
   if (kr > 0) {
     const polar: Field = (p) => Math.atan2(Math.abs(p[0]), -p[1]);
-    fields.push({ w: wf * kr, square: false, phi: polar, target: polar(P) });
+    fields.push({ w: wf * kr, square: false, phi: polar, target: polar(P), lip: false });
   }
   let W = 0;
   let dp = 0;
@@ -239,9 +293,8 @@ function fieldEnd(G: Setup, M: Member, tc: number): Tip {
       dm += f.w * 0;
       continue;
     }
-    const { phi, target } = f;
-    const a = rootAlong((t) => phi(edgeTo(L, t, 1, h)) - target, tc);
-    const b = rootAlong((t) => phi(edgeTo(L, t, -1, h)) - target, tc);
+    const a = rootAlong(f.phi, f.target, f.lip, L, 1, h, tc);
+    const b = rootAlong(f.phi, f.target, f.lip, L, -1, h, tc);
     if (a == null || b == null) continue;
     W += f.w;
     dp += f.w * (a - tc);
@@ -250,23 +303,57 @@ function fieldEnd(G: Setup, M: Member, tc: number): Tip {
   return W > 0 ? { tp: tc + dp / W, tm: tc + dm / W } : sq(tc);
 }
 
-/** The root of f nearest t0 within 30 degrees, or null: half-degree steps out on both sides in turn, then a bisection. */
-function rootAlong(f: (t: number) => number, t0: number): number | null {
-  const f0 = f(t0);
+/** Units of slack in rootAlong's bound: the signed distance as computed stays within about 1e-13 of the true one, which is 1-Lipschitz. */
+const LIP_SLACK = 1e-6;
+
+/**
+ * The theta nearest t0 within 30 degrees where edge e of a line meets the
+ * level phi = target, or null: half-degree steps out on both sides in turn,
+ * then a bisection. When phi is 1-Lipschitz (lip: a signed distance or a
+ * coordinate), a step whose edge point lies nearer the last point measured
+ * on its side than that point lies from the level keeps that point's sign,
+ * so phi does not run there. The walk takes the same steps and finds the
+ * same bracket as when it measures every step.
+ */
+function rootAlong(phi: Field, target: number, lip: boolean, line: Line, e: number, h: number, t0: number): number | null {
+  const f = (t: number) => phi(edgeTo(line, t, e, h)) - target;
+  let p = edgeTo(line, t0, e, h);
+  const f0 = phi(p) - target;
   if (Math.abs(f0) < 1e-9) return t0;
-  // f at the last step taken on each side
+  // on each side, f at the last step (measured, or that side's last measure when only its sign is known), and the
+  // last point measured and its f
   let up = f0;
+  let upX = p[0];
+  let upY = p[1];
+  let upF = f0;
   let down = f0;
+  let downX = upX;
+  let downY = upY;
+  let downF = f0;
   for (let n = 1; n <= 60; n++) {
     const a = t0 + 0.5 * (n - 1);
     const b = t0 + 0.5 * n;
-    const fb = f(b);
-    if (up * fb <= 0) return bisect(f, a, b, 40, up);
+    p = edgeTo(line, b, e, h);
+    let fb = upF;
+    if (!lip || Math.abs(upF) <= hypot(p[0] - upX, p[1] - upY) + LIP_SLACK) {
+      fb = phi(p) - target;
+      upX = p[0];
+      upY = p[1];
+      upF = fb;
+    }
+    if (up * fb <= 0) return fastBisect(f, a, b, 40, up, fb);
     up = fb;
     const c = t0 + -1 * 0.5 * (n - 1);
     const d = t0 + -1 * 0.5 * n;
-    const fd = f(d);
-    if (down * fd <= 0) return bisect(f, c, d, 40, down);
+    p = edgeTo(line, d, e, h);
+    let fd = downF;
+    if (!lip || Math.abs(downF) <= hypot(p[0] - downX, p[1] - downY) + LIP_SLACK) {
+      fd = phi(p) - target;
+      downX = p[0];
+      downY = p[1];
+      downF = fd;
+    }
+    if (down * fd <= 0) return fastBisect(f, c, d, 40, down, fd);
     down = fd;
   }
   return null;
@@ -303,6 +390,8 @@ function alongT(M: Member, t0: number, t1: number, k: number): number {
  */
 function movedEnd(G: Setup, M: Member, rest: Tip, tTo: number, k: number): Tip {
   if (k <= 0) return rest;
+  // arrived: the rest cut's share has faded out
+  if (k >= 1) return fieldEnd(G, M, tTo);
   const tr = mid(rest);
   const f = fieldEnd(G, M, alongT(M, tr, tTo, k));
   const fr = fieldEnd(G, M, tr);
@@ -634,7 +723,7 @@ function foot(line: Line, x: number, y: number, t: number): Readonly<typeof FOOT
     t -= (dx * tx + dy * ty) / (r * (tx * tx + ty * ty) - (dx * (qx - C[0]) + dy * (qy - C[1])) / r) / DEG;
   }
   FOOT.t = t;
-  FOOT.o = ((y - qy) * tx - (x - qx) * ty) / Math.hypot(tx, ty);
+  FOOT.o = ((y - qy) * tx - (x - qx) * ty) / hypot(tx, ty);
   return FOOT;
 }
 
@@ -693,7 +782,7 @@ function rootNear(f: (t: number) => number, t0: number, dirHint: number): number
     for (let n = 1; n <= 120; n++) {
       const b = t0 + sgn * 0.5 * n;
       const fb = f(b);
-      if (fa * fb <= 0) return bisect(f, a, b, 50);
+      if (fa * fb <= 0) return fastBisect(f, a, b, 50, fa, fb);
       a = b;
       fa = fb;
     }
