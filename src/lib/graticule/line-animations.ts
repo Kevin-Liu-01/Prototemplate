@@ -12,11 +12,10 @@
  * reads the ids and names from line-loop.ts.
  */
 import type { LinePaths, MarkId } from './geometry';
-import { MARK_IDS } from './geometry';
 import * as globeLean from './globe-lean';
 import * as languageTurn from './language-turn';
 import type { LineAnimationId, LineLoop, LineLoops } from './line-loop';
-import { LINE_ANIMATION_IDS, LINE_ANIMATION_TITLES } from './line-loop';
+import { LINE_ANIMATION_TITLES } from './line-loop';
 import * as markToGlobe from './mark-to-globe';
 
 export type LineAnimation = {
@@ -36,11 +35,10 @@ export const LINE_ANIMATIONS: Readonly<Record<LineAnimationId, LineAnimation>> =
   'mark-to-globe': { id: 'mark-to-globe', title: LINE_ANIMATION_TITLES['mark-to-globe'], duration: markToGlobe.DURATION, frame: markToGlobe.frameAt, still: markToGlobe.still },
 };
 
-/** Every animation's loop for each mark, with its still drawn, for a server page to hand its LineGlobes. */
+const loopOf = (animation: LineAnimationId, mark: MarkId): LineLoop => ({ animation, mark, duration: LINE_ANIMATIONS[animation].duration, rest: LINE_ANIMATIONS[animation].still(mark) });
+const loopsOf = (animation: LineAnimationId): Readonly<Record<MarkId, LineLoop>> => ({ heavy: loopOf(animation, 'heavy'), jaw: loopOf(animation, 'jaw') });
+
+/** Every animation's loop for each mark, with its still drawn, for a server page to hand its LineGlobes. Written out key by key, so the compiler checks that each animation and each mark is there. */
 export function lineLoops(): LineLoops {
-  const loopsOf = (animation: LineAnimationId) =>
-    Object.fromEntries(
-      MARK_IDS.map((mark): [MarkId, LineLoop] => [mark, { animation, mark, duration: LINE_ANIMATIONS[animation].duration, rest: LINE_ANIMATIONS[animation].still(mark) }])
-    );
-  return Object.fromEntries(LINE_ANIMATION_IDS.map((animation) => [animation, loopsOf(animation)])) as LineLoops;
+  return { 'language-turn': loopsOf('language-turn'), 'globe-lean': loopsOf('globe-lean'), 'mark-to-globe': loopsOf('mark-to-globe') };
 }
