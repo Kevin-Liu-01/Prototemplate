@@ -119,7 +119,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/skills/prototemplate': { day: '2026-10-30', at: '2026-10-30T22:06:33-07:00', commit: '6bd1f3f', src: '9f87fa1b' },
   '/components': { day: '2026-11-05', at: '2026-11-05T01:11:35-08:00', commit: 'bfb8442', src: '5bf565d9' },
   '/marks': { day: '2026-11-05', at: '2026-11-05T03:20:10-08:00', commit: 'e465e48', src: '122d24f2' },
-  '/marks/graticule': { day: '2026-11-05', at: '2026-11-05T03:20:10-08:00', commit: 'e465e48', src: '1ba59406' },
+  '/marks/graticule': { day: '2026-11-05', at: '2026-11-05T03:56:00-08:00', commit: 'b43ba74', src: '1ba59406' },
   '/blog': { day: '2026-10-30', at: '2026-10-30T20:47:08-07:00', commit: 'a28ca7b', src: 'b46ecb9d' },
   '/blog/daniel-white': { day: '2026-10-30', at: '2026-10-30T20:47:08-07:00', commit: 'a28ca7b', src: 'feacdf4a' },
   '/blog/designing-docs-for-humans': { day: '2026-10-26', at: '2026-10-26T13:15:09-07:00', commit: '6ba883f', src: '66d885bc' },
