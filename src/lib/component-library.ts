@@ -225,6 +225,7 @@ const UNDOCUMENTED: readonly { code: string; path: string; desc: string }[] = [
   { code: 'StoryCodeScene', path: 'src/components/shared/story/StoryCodeScene.tsx', desc: 'The editor the story’s window turns into when Locadex takes over.' },
   { code: 'FieldEffectsMenu', path: 'src/components/shared/FieldEffectsMenu.tsx', desc: 'The chips that switch a field’s cursor effects.' },
   { code: 'HeroFieldSwitcher', path: 'src/components/shared/HeroFieldSwitcher.tsx', desc: 'Switches a hero between its fields.' },
+  { code: 'LineGlobe', path: 'src/components/shared/LineGlobe.tsx', desc: 'One line globe animation of a graticule mark, played by the shared loop clock.' },
   { code: 'TcMobileNav', path: 'src/components/shared/TcMobileNav.tsx', desc: 'The phone menu of the toolchain directions.' },
   { code: 'SmoothScroll', path: 'src/components/shared/SmoothScroll.tsx', desc: 'Keeps native scrolling on the pages that once used a smoothing engine.' },
   { code: 'TryField', path: 'src/components/try/TryField.tsx', desc: 'The address field of the report card page.' },
