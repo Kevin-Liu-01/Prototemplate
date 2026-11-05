@@ -36,7 +36,8 @@
  * lands at 9.5 s and opens into the mark by 10 s, where the loop wraps.
  */
 import type { Field, Line, LinePaths, MarkId, Model, Pt, Spec } from './geometry';
-import { arcPath, bisect, clamp01, DEG, ellipseG, ellipseSdist, lineAt, lineDir, model, OVERLAP, parts, polyPath, power2InOut, power2Out, REST_WEIGHT, ringPath, SINK } from './geometry';
+import { arcPath, bisect, clamp01, DEG, ellipseG, ellipseSdist, lineAt, lineDir, model, OVERLAP, parts, polyPath, power2InOut, power2Out, ringPath, SINK } from './geometry';
+import { REST_WEIGHT } from './line-loop';
 
 /** Degrees two closing ends overshoot their meeting point, so they overlap and merge without a seam. */
 const MEET = 0.5;

@@ -14,13 +14,12 @@
  * orthographic view down z. Every function here is pure, and the model is
  * cached per mark.
  */
+import { REST_WEIGHT } from './line-loop';
 
 export const DEG = Math.PI / 180;
 const CENTRE = 128;
 /** The ring's outer radius: 207.4 / 2. */
 const OUTER = 103.7;
-/** The weight of every line of both marks. */
-export const REST_WEIGHT = 11.912;
 /** Degrees a cut wedge reaches back into its stroke, so the stroke's square end and the wedge overlap instead of sharing an edge. */
 export const OVERLAP = 0.4;
 /** Units a fillet's shared sides sit inside the strokes, so no antialiasing seam shows along them. */

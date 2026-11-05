@@ -1,5 +1,5 @@
 import type { MarkId } from '@/lib/graticule/geometry';
-import type { LineAnimationId } from '@/lib/graticule/line-animations';
+import type { LineAnimationId } from '@/lib/graticule/line-loop';
 import { graticuleMarks } from '@/lib/marks';
 
 /** Every graticule mark in the page's order (src/lib/marks.ts). */
@@ -23,7 +23,7 @@ export const ANIMATED_MARKS: readonly { mark: MarkId; id: string }[] = [
   { mark: 'jaw', id: 'graticule-jaw-thicker' },
 ];
 
-/** One animation: its id in src/lib/graticule/line-animations.ts, which holds its name, and what moves in it. */
+/** One animation: its id in src/lib/graticule/line-loop.ts, which holds its name, and what moves in it. */
 export type Animation = { id: LineAnimationId; caption: string };
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */

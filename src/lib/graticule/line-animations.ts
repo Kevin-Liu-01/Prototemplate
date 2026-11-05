@@ -6,14 +6,18 @@
  * path data for Graticule GT, heavy and Graticule jaw, thicker, with its
  * still for reduced motion and its loop length. Frame 0 and the frame at
  * the loop length are the still, which is the rest mark.
+ *
+ * This module carries the geometry, so it runs on the server and in the
+ * frame worker (frame-worker.ts), never in a page's own bundle; a page
+ * reads the ids and names from line-loop.ts.
  */
 import type { LinePaths, MarkId } from './geometry';
+import { MARK_IDS } from './geometry';
 import * as globeLean from './globe-lean';
 import * as languageTurn from './language-turn';
+import type { LineAnimationId, LineLoop, LineLoops } from './line-loop';
+import { LINE_ANIMATION_IDS, LINE_ANIMATION_TITLES } from './line-loop';
 import * as markToGlobe from './mark-to-globe';
-
-export const LINE_ANIMATION_IDS = ['language-turn', 'globe-lean', 'mark-to-globe'] as const;
-export type LineAnimationId = (typeof LINE_ANIMATION_IDS)[number];
 
 export type LineAnimation = {
   readonly id: LineAnimationId;
@@ -27,7 +31,16 @@ export type LineAnimation = {
 };
 
 export const LINE_ANIMATIONS: Readonly<Record<LineAnimationId, LineAnimation>> = {
-  'language-turn': { id: 'language-turn', title: 'Language globe turn', duration: languageTurn.DURATION, frame: languageTurn.frameAt, still: languageTurn.still },
-  'globe-lean': { id: 'globe-lean', title: 'Globe lean', duration: globeLean.DURATION, frame: globeLean.frameAt, still: globeLean.still },
-  'mark-to-globe': { id: 'mark-to-globe', title: 'Mark to globe', duration: markToGlobe.DURATION, frame: markToGlobe.frameAt, still: markToGlobe.still },
+  'language-turn': { id: 'language-turn', title: LINE_ANIMATION_TITLES['language-turn'], duration: languageTurn.DURATION, frame: languageTurn.frameAt, still: languageTurn.still },
+  'globe-lean': { id: 'globe-lean', title: LINE_ANIMATION_TITLES['globe-lean'], duration: globeLean.DURATION, frame: globeLean.frameAt, still: globeLean.still },
+  'mark-to-globe': { id: 'mark-to-globe', title: LINE_ANIMATION_TITLES['mark-to-globe'], duration: markToGlobe.DURATION, frame: markToGlobe.frameAt, still: markToGlobe.still },
 };
+
+/** Every animation's loop for each mark, with its still drawn, for a server page to hand its LineGlobes. */
+export function lineLoops(): LineLoops {
+  const loopsOf = (animation: LineAnimationId) =>
+    Object.fromEntries(
+      MARK_IDS.map((mark): [MarkId, LineLoop] => [mark, { animation, mark, duration: LINE_ANIMATIONS[animation].duration, rest: LINE_ANIMATIONS[animation].still(mark) }])
+    );
+  return Object.fromEntries(LINE_ANIMATION_IDS.map((animation) => [animation, loopsOf(animation)])) as LineLoops;
+}

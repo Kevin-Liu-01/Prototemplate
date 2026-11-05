@@ -111,8 +111,9 @@ src/
                           studio-field.ts, glyph-field.ts, horizon-field.ts,
                           prismatic-field.ts; graticule/ (the line globe
                           the graticule marks are drawn on, its three
-                          animations and their loop clock); try/ (the
-                          report card's checks); and the generated
+                          animations, the worker that computes their
+                          frames and the loop clock that plays them);
+                          try/ (the report card's checks); and the generated
                           skills.ts, motion.ts
                           and updated.ts (build/updated.mjs; server modules
                           only) with page-updated.ts (its type); the hooks:

@@ -11,7 +11,8 @@ import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
-import { LINE_ANIMATIONS } from '@/lib/graticule/line-animations';
+import type { LineLoops } from '@/lib/graticule/line-loop';
+import { LINE_ANIMATION_TITLES } from '@/lib/graticule/line-loop';
 import type { CatalogMark } from '@/lib/marks';
 import { boxMask, catalogMark } from '@/lib/marks';
 import { PAGE_NAMES } from '@/lib/page-names';
@@ -114,17 +115,17 @@ function MarkFigure({ mark }: { mark: CatalogMark }) {
  * what moves. Both drawings watch the figure, so they start, pause and resume
  * together and stay in step.
  */
-function AnimationFigure({ animation }: { animation: Animation }) {
+function AnimationFigure({ animation, loops }: { animation: Animation; loops: LineLoops[Animation['id']] }) {
   const figureRef = useRef<HTMLElement>(null);
   return (
     <figure ref={figureRef} className='gr-fig'>
       <div className='gr-pair'>
         {ANIMATED.map(({ mark, name, box }) => (
-          <LineGlobe key={`${animation.id}-${mark}`} animation={animation.id} mark={mark} label={name} box={box} watch={figureRef} className='gr-line' />
+          <LineGlobe key={`${animation.id}-${mark}`} loop={loops[mark]} label={name} box={box} watch={figureRef} className='gr-line' />
         ))}
       </div>
       <figcaption>
-        <h3>{LINE_ANIMATIONS[animation.id].title}</h3>
+        <h3>{LINE_ANIMATION_TITLES[animation.id]}</h3>
         <p>{animation.caption}</p>
       </figcaption>
     </figure>
@@ -172,9 +173,10 @@ type BookProps = {
   /** the active id, read by the shell's onSelect outside this component */
   activeOut: RefObject<string>;
   updated: PageUpdated;
+  loops: LineLoops;
 };
 
-function GraticuleBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
+function GraticuleBook({ sheetRef, jumpRef, activeOut, updated, loops }: BookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -194,7 +196,7 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
       return (
         <div className='gr-row is-anim'>
           {ANIMATIONS.map((animation) => (
-            <AnimationFigure key={animation.id} animation={animation} />
+            <AnimationFigure key={animation.id} animation={animation} loops={loops[animation.id]} />
           ))}
         </div>
       );
@@ -242,6 +244,8 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
 export type GraticuleViewerProps = {
   /** the /marks/graticule entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
+  /** every line globe loop with its still, drawn by the server page, so hydration runs no geometry */
+  loops: LineLoops;
 };
 
 /**
@@ -249,7 +253,7 @@ export type GraticuleViewerProps = {
  * then the variations of Graticule jaw, thicker. The list hangs under
  * Marks > Graticule; flow keys, so Space and the arrows scroll.
  */
-export default function GraticuleViewer({ updated }: GraticuleViewerProps) {
+export default function GraticuleViewer({ updated, loops }: GraticuleViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef<string>(MARKS_ID);
@@ -272,7 +276,7 @@ export default function GraticuleViewer({ updated }: GraticuleViewerProps) {
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <GraticuleBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
+        <GraticuleBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} loops={loops} />
       </Sheet>
     </ViewerShell>
   );

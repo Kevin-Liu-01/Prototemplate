@@ -5,16 +5,18 @@
  * that start in the same frame advance by the same steps, so the two marks
  * of one animation side by side stay in step. Under prefers-reduced-motion
  * a loop keeps its still and arms nothing, and a change to that setting is
- * followed live: turning it on draws the still and stops the loop.
+ * followed live: turning it on draws the still again and stops the loop.
  *
- * Every frame is a pure function of time, so a loop draws on a grid of 60
- * frames a second and computes each grid frame once. A display faster than
- * 60 Hz draws nothing new between grid steps. The frames of one animation
- * and mark are kept while a drawing of it is mounted, and in idle time the
- * clock computes the next second of each playing loop, so the frames where
- * many lines move are ready before they show. A frame writes the d of the
- * stroke path and the fill path only when it changed, and the frames of a
- * hold share one string, so a hold costs one reference comparison.
+ * The frames are computed off the main thread by the frame worker
+ * (frame-worker.ts), on a grid of GRID_FPS frames a second. The worker
+ * starts when a loop comes within one screen of the viewport, so its frames
+ * are ready before it shows, and ends with the last loop on the page. The
+ * clock keeps every frame it receives while a drawing of its loop is
+ * mounted and draws only frames it holds: when the worker falls behind, a
+ * drawing keeps the newest frame it has and the worker jumps ahead of the
+ * playhead. A frame writes the d of the stroke path and the fill path only
+ * when it changed, and the frames of a hold share one string, so a hold
+ * costs one reference comparison.
  *
  * The clock follows measured frame cost with glyph-field's governor
  * (src/lib/glyph-field.ts): after a 2.5 s warmup, when 35% of a window of
@@ -22,24 +24,26 @@
  * second. It never steps back up.
  */
 import { REDUCED_MOTION_QUERY } from '@/lib/reduced-motion';
+import { scrollRoot } from '@/lib/scroll-root';
 
-import type { LinePaths } from './geometry';
+import type { FromWorker, ToWorker } from './frame-worker';
+import type { LinePaths, MarkId } from './geometry';
+import type { LineAnimationId } from './line-loop';
+import { GRID_FPS } from './line-loop';
 
-/** One loop on a page: the key its frames are kept under (its animation and mark), its length in seconds, its frame at t and its still. */
-export type Loop = { readonly key: string; readonly duration: number; readonly frame: (t: number) => LinePaths; readonly still: () => LinePaths };
+/** One loop on a page: its animation and mark, which key its frames, and its length in seconds. */
+export type Loop = { readonly animation: LineAnimationId; readonly mark: MarkId; readonly duration: number };
 /** The two paths a loop writes: the stroke at the lines' weight and the fill. */
 export type LoopPaths = { readonly stroke: SVGPathElement; readonly fill: SVGPathElement };
 
-type Runner = { advance: (dt: number) => void; fill: (deadline: IdleDeadline) => boolean };
+type Runner = { advance: (dt: number) => void };
 
-/** Frames a second on the grid every loop draws on. */
-const FPS = 60;
 /** Seconds: the largest step one frame takes, so a stalled tab resumes where it paused instead of jumping. */
 const MAX_STEP = 0.1;
-/** Grid frames computed ahead of each playing loop in idle time: one second. */
-const AHEAD = FPS;
-/** Milliseconds of an idle period left unused, so computing ahead never delays the next frame. */
-const IDLE_SPARE = 2;
+/** A loop this close to the viewport has its frames computed: one screen above it and one below. */
+const NEAR = '100% 0px';
+/** Grid frames past the playhead where a worker that fell behind starts again, so the frames it computes next arrive ahead of it. */
+const LEAD = 6;
 
 /* The frame-time governor, glyph-field's pattern: it judges raw rAF cadence,
    so a tick that draws nothing new still counts, and skips a gap longer than
@@ -50,19 +54,59 @@ const GOV_TRIP = 0.35;
 const GOV_WARMUP_MS = 2500;
 const GOV_GAP_MS = 900;
 
-/** One loop's grid frames, kept while a drawing of the loop is mounted. */
-type Frames = { mounted: number; computed: number; list: (LinePaths | undefined)[] };
+/** One loop's grid frames, kept while a drawing of the loop is mounted. Frame 0 is the still, read from the markup. */
+type Frames = { readonly id: number; readonly loop: Loop; readonly count: number; mounted: number; wanted: number; readonly list: (LinePaths | undefined)[] };
 const kept = new Map<string, Frames>();
+const byId = new Map<number, Frames>();
+let nextId = 1;
+
+let worker: Worker | null = null;
+/** Set when the worker could not start or failed: every loop then holds the frames it has. */
+let workerFailed = false;
 
 const playing = new Set<Runner>();
 let raf = 0;
 let last = 0;
-let idle = 0;
 /** Grid frames one drawn frame spans: 1 at 60 frames a second, 2 once the governor steps down to 30. */
 let step = 1;
 let govBornAt = 0;
 let govCount = 0;
 let govOver = 0;
+
+function post(message: ToWorker) {
+  worker?.postMessage(message);
+}
+
+function receive({ data }: MessageEvent<FromWorker>) {
+  const frames = byId.get(data.id);
+  if (!frames) return;
+  for (const sent of data.frames) frames.list[sent[0]] = sent.length === 2 ? frames.list[sent[1]] : { stroke: sent[1], fill: sent[2] };
+}
+
+function startWorker(): Worker | null {
+  if (worker || workerFailed) return worker;
+  try {
+    worker = new Worker(new URL('./frame-worker.ts', import.meta.url), { type: 'module' });
+  } catch {
+    workerFailed = true;
+    return null;
+  }
+  worker.addEventListener('message', receive);
+  worker.addEventListener('error', () => {
+    workerFailed = true;
+    worker?.terminate();
+    worker = null;
+  });
+  if (step > 1) post({ type: 'step', step });
+  return worker;
+}
+
+/** Asks the worker for a loop's frames from grid frame `from` on. */
+function want(frames: Frames, from: number) {
+  if (!startWorker()) return;
+  const { animation, mark } = frames.loop;
+  post({ type: 'want', id: frames.id, animation, mark, count: frames.count, from: from % frames.count });
+}
 
 function govern(now: number, dtMs: number) {
   if (step > 1 || dtMs > GOV_GAP_MS) return;
@@ -74,14 +118,12 @@ function govern(now: number, dtMs: number) {
   govCount += 1;
   if (dtMs > GOV_BUDGET_MS) govOver += 1;
   if (govCount < GOV_WINDOW) return;
-  if (govOver / govCount >= GOV_TRIP) step = 2;
+  if (govOver / govCount >= GOV_TRIP) {
+    step = 2;
+    post({ type: 'step', step });
+  }
   govCount = 0;
   govOver = 0;
-}
-
-function fillAhead(deadline: IdleDeadline) {
-  idle = 0;
-  for (const runner of playing) if (!runner.fill(deadline)) return;
 }
 
 function tick(now: number) {
@@ -93,16 +135,25 @@ function tick(now: number) {
   if (!raf) {
     last = 0;
     govBornAt = 0;
-  } else if (!idle && typeof requestIdleCallback === 'function') idle = requestIdleCallback(fillAhead);
+  }
 }
 
 function wake() {
   if (!raf && playing.size) raf = requestAnimationFrame(tick);
 }
 
+function keep(key: string, loop: Loop, rest: LinePaths): Frames {
+  const frames: Frames = { id: nextId++, loop, count: Math.round(loop.duration * GRID_FPS), mounted: 0, wanted: 0, list: [rest] };
+  kept.set(key, frames);
+  byId.set(frames.id, frames);
+  return frames;
+}
+
 /** Plays a loop into its paths while `watch` is in view. Returns the stop, which leaves the frame on screen. */
 export function playLoop(watch: Element, loop: Loop, paths: LoopPaths): () => void {
-  const written = { stroke: paths.stroke.getAttribute('d') ?? '', fill: paths.fill.getAttribute('d') ?? '' };
+  /* the markup draws the still, so the path data at mount is the still and frame 0 */
+  const rest: LinePaths = { stroke: paths.stroke.getAttribute('d') ?? '', fill: paths.fill.getAttribute('d') ?? '' };
+  const written = { ...rest };
   const draw = (frame: LinePaths) => {
     if (frame.stroke !== written.stroke) {
       paths.stroke.setAttribute('d', frame.stroke);
@@ -113,67 +164,75 @@ export function playLoop(watch: Element, loop: Loop, paths: LoopPaths): () => vo
       written.fill = frame.fill;
     }
   };
-  const count = Math.round(loop.duration * FPS);
-  const frames = kept.get(loop.key) ?? { mounted: 0, computed: 0, list: [] };
+  const key = `${loop.animation}-${loop.mark}`;
+  const frames = kept.get(key) ?? keep(key, loop, rest);
   frames.mounted += 1;
-  kept.set(loop.key, frames);
-  /* the grid frame i, computed once; a frame equal to the one before it keeps that one's strings */
-  const frameAt = (i: number): LinePaths => {
-    const known = frames.list[i];
-    if (known) return known;
-    const frame = loop.frame(i / FPS);
-    const before = frames.list[i - 1];
-    const held = before && before.stroke === frame.stroke && before.fill === frame.fill ? before : frame;
-    frames.list[i] = held;
-    frames.computed += 1;
-    return held;
-  };
+  const { count, list } = frames;
   let t = 0;
   let shown = 0;
   let inView = false;
+  let near = false;
+  let wanting = false;
   const runner: Runner = {
     advance(dt) {
       t = (t + dt) % loop.duration;
-      const i = (Math.floor((t * FPS) / step) * step) % count;
+      const i = (Math.floor((t * GRID_FPS) / step) * step) % count;
       if (i === shown) return;
-      shown = i;
-      draw(frameAt(i));
-    },
-    fill(deadline) {
-      if (frames.computed >= count) return true;
-      for (let k = step; k <= AHEAD; k += step) {
-        const i = (shown + k) % count;
-        if (frames.list[i]) continue;
-        if (deadline.timeRemaining() < IDLE_SPARE) return false;
-        frameAt(i);
+      if (!list[i]) want(frames, i + LEAD * step);
+      /* the newest frame held between the one shown and the playhead */
+      const behind = (i - shown + count) % count;
+      for (let k = 0; k < behind; k += step) {
+        const j = (i - k + count) % count;
+        const frame = list[j];
+        if (!frame) continue;
+        shown = j;
+        draw(frame);
+        return;
       }
-      return true;
     },
   };
   const reduce = window.matchMedia(REDUCED_MOTION_QUERY);
   const sync = () => {
-    if (inView && !reduce.matches && document.visibilityState === 'visible') {
+    const live = !reduce.matches && document.visibilityState === 'visible';
+    const wants = live && (near || inView);
+    if (wants !== wanting) {
+      wanting = wants;
+      frames.wanted += wants ? 1 : -1;
+      if (wants && frames.wanted === 1) want(frames, shown + step);
+      else if (!wants && !frames.wanted) post({ type: 'pause', id: frames.id });
+    }
+    if (live && inView) {
       playing.add(runner);
       wake();
     } else playing.delete(runner);
   };
-  let io: IntersectionObserver | null = null;
+  let watchers: IntersectionObserver[] = [];
   const arm = () => {
-    if (io) return;
-    io = new IntersectionObserver((entries) => {
-      for (const e of entries) inView = e.isIntersecting;
-      sync();
-    });
-    io.observe(watch);
+    if (watchers.length) return;
+    watchers = [
+      new IntersectionObserver((entries) => {
+        for (const e of entries) inView = e.isIntersecting;
+        sync();
+      }),
+      new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) near = e.isIntersecting;
+          sync();
+        },
+        { root: scrollRoot(watch), rootMargin: NEAR }
+      ),
+    ];
+    for (const w of watchers) w.observe(watch);
     document.addEventListener('visibilitychange', sync);
   };
   const disarm = () => {
-    playing.delete(runner);
-    if (!io) return;
-    io.disconnect();
-    io = null;
+    if (!watchers.length) return;
+    for (const w of watchers) w.disconnect();
+    watchers = [];
     inView = false;
+    near = false;
     document.removeEventListener('visibilitychange', sync);
+    sync();
   };
   const onReduce = () => {
     if (!reduce.matches) {
@@ -183,7 +242,7 @@ export function playLoop(watch: Element, loop: Loop, paths: LoopPaths): () => vo
     disarm();
     t = 0;
     shown = 0;
-    draw(loop.still());
+    draw(rest);
   };
   if (!reduce.matches) arm();
   reduce.addEventListener('change', onReduce);
@@ -191,6 +250,12 @@ export function playLoop(watch: Element, loop: Loop, paths: LoopPaths): () => vo
     disarm();
     reduce.removeEventListener('change', onReduce);
     frames.mounted -= 1;
-    if (!frames.mounted) kept.delete(loop.key);
+    if (frames.mounted) return;
+    kept.delete(key);
+    byId.delete(frames.id);
+    post({ type: 'end', id: frames.id });
+    if (kept.size) return;
+    worker?.terminate();
+    worker = null;
   };
 }

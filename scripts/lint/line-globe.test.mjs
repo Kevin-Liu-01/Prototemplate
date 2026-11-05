@@ -38,8 +38,9 @@ registerHooks({
   },
 });
 
-const { LINE_ANIMATIONS, LINE_ANIMATION_IDS } = await import(new URL('../../src/lib/graticule/line-animations.ts', import.meta.url).href);
-const { MARK_IDS, REST_WEIGHT } = await import(new URL('../../src/lib/graticule/geometry.ts', import.meta.url).href);
+const { LINE_ANIMATIONS } = await import(new URL('../../src/lib/graticule/line-animations.ts', import.meta.url).href);
+const { LINE_ANIMATION_IDS, REST_WEIGHT } = await import(new URL('../../src/lib/graticule/line-loop.ts', import.meta.url).href);
+const { MARK_IDS } = await import(new URL('../../src/lib/graticule/geometry.ts', import.meta.url).href);
 
 /** Each mark's file: the rest mark as one filled path, nonzero. */
 const MARK_FILES = { heavy: 'public/marks/dynamic/graticule-gt-heavy.svg', jaw: 'public/marks/dynamic/graticule-jaw-thicker.svg' };

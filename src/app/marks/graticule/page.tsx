@@ -1,3 +1,4 @@
+import { lineLoops } from '@/lib/graticule/line-animations';
 import { PAGE_NAMES } from '@/lib/page-names';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
@@ -16,12 +17,17 @@ const route = seoRoute({
 
 export const metadata = route.metadata;
 
-/** /marks/graticule: every graticule mark of the catalog, then its line globe animations, then the variations of Graticule jaw, thicker. */
+/**
+ * /marks/graticule: every graticule mark of the catalog, then its line globe
+ * animations, then the variations of Graticule jaw, thicker. The animations'
+ * stills are drawn here on the server; the browser computes only their
+ * motion, in a worker.
+ */
 export default function GraticulePage() {
   return (
     <>
       <JsonLd nodes={route.jsonLd} />
-      <GraticuleViewer updated={requireUpdated('/marks/graticule')} />
+      <GraticuleViewer updated={requireUpdated('/marks/graticule')} loops={lineLoops()} />
     </>
   );
 }
