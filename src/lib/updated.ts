@@ -78,7 +78,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/docs/components/page-gallery': { day: '2026-11-05', at: '2026-11-05T01:51:15-08:00', commit: '57e6d93', src: '0cea942a' },
   '/docs/components/page-templates': { day: '2026-10-30', at: '2026-10-30T20:47:08-07:00', commit: 'a28ca7b', src: '4dfc6e50' },
   '/docs/components': { day: '2026-10-31', at: '2026-10-31T12:33:35-07:00', commit: '84c0aa4', src: 'c76c9873' },
-  '/docs/craft/dither': { day: '2026-11-05', at: '2026-11-05', commit: null, src: '18d638cc' },
+  '/docs/craft/dither': { day: '2026-11-05', at: '2026-11-05T15:39:35-08:00', commit: 'e6b9448', src: '18d638cc' },
   '/docs/craft/films': { day: '2026-10-30', at: '2026-10-30T22:06:33-07:00', commit: '6bd1f3f', src: 'a9983f1f' },
   '/docs/craft': { day: '2026-11-03', at: '2026-11-03T20:22:13-08:00', commit: 'b31ade0', src: 'f0db93bd' },
   '/docs/craft/interface-details': { day: '2026-11-02', at: '2026-11-02T12:41:24-08:00', commit: 'f10b725', src: 'f22b0c9c' },
