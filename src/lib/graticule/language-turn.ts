@@ -36,7 +36,7 @@
  * lands at 9.5 s and opens into the mark by 10 s, where the loop wraps.
  */
 import type { Field, Line, LinePaths, MarkId, Model, Pt, Spec } from './geometry';
-import { arcPath, bisect, clamp01, DEG, ellipseG, ellipseSdist, lineAt, lineDir, model, OVERLAP, parts, pointOn, polyPath, power2InOut, power2Out, ringPath, segAt, SINK, tangentOn } from './geometry';
+import { arcPath, bisect, circleAt, circleOffset, clamp01, DEG, ellipseG, ellipseSdist, lineAt, lineDir, model, OVERLAP, parts, polyPath, power2InOut, power2Out, ringPath, SINK } from './geometry';
 import { REST_WEIGHT } from './line-loop';
 
 /** Degrees two closing ends overshoot their meeting point, so they overlap and merge without a seam. */
@@ -116,6 +116,27 @@ function edge(line: Line, t: number, e: number, h: number): number[] {
   const d = dir2(line, t);
   return [p[0] - e * h * d[1], p[1] + e * h * d[0]];
 }
+/** edge()'s point for a root search, which runs it hundreds of times a frame: written into EDGE, so read it before the next call. */
+const EDGE = [0, 0];
+function edgeTo(line: Line, t: number, e: number, h: number): Pt {
+  const { C, r, u, v } = circleAt(line, t);
+  const at = circleOffset(line, t);
+  const ct = Math.cos((t - at) * DEG);
+  const st = Math.sin((t - at) * DEG);
+  const dx = -u[0] * st + v[0] * ct;
+  const dy = -u[1] * st + v[1] * ct;
+  const l = Math.hypot(dx, dy);
+  if (l > 1e-7) {
+    EDGE[0] = C[0] + r * (u[0] * ct + v[0] * st) - e * h * (dy / l);
+    EDGE[1] = C[1] + r * (u[1] * ct + v[1] * st) + e * h * (dx / l);
+  } else {
+    // the line runs along the view here: dir2's chord
+    const p = edge(line, t, e, h);
+    EDGE[0] = p[0];
+    EDGE[1] = p[1];
+  }
+  return EDGE;
+}
 
 /**
  * An end: the pair of thetas where its cut meets the stroke's two edges, tp
@@ -130,7 +151,7 @@ const mid = (end: Tip) => (end.tp + end.tm) / 2;
 /** Where each edge of the line meets F = 0, going from anchor (F <= 0 there) in direction sgn; near, when given, is a closer start tried first. */
 function cutTip(line: Line, F: Field, anchor: number, sgn: number, h: number, near: number | null = null): Tip | null {
   const meet = (e: number) => {
-    const f = (t: number) => F(edge(line, t, e, h));
+    const f = (t: number) => F(edgeTo(line, t, e, h));
     let a = anchor;
     let fa = near != null ? f(near) : NaN;
     if (near != null && fa <= 0) a = near;
@@ -219,8 +240,8 @@ function fieldEnd(G: Setup, M: Member, tc: number): Tip {
       continue;
     }
     const { phi, target } = f;
-    const a = rootAlong((t) => phi(edge(L, t, 1, h)) - target, tc);
-    const b = rootAlong((t) => phi(edge(L, t, -1, h)) - target, tc);
+    const a = rootAlong((t) => phi(edgeTo(L, t, 1, h)) - target, tc);
+    const b = rootAlong((t) => phi(edgeTo(L, t, -1, h)) - target, tc);
     if (a == null || b == null) continue;
     W += f.w;
     dp += f.w * (a - tc);
@@ -535,9 +556,9 @@ function latitudeHoles(G: Setup, states: readonly SlotState[]): CutHole[] {
         const d = dir2(L, tc);
         // offsets measured toward +x
         const flip = d[1] > 0 ? -1 : 1;
-        // the offset of p: its signed distance from the member's centreline as drawn, so a face at one offset lies
-        // along the member's curved edge, as the mark's cut does
-        const off = (p: Pt) => flip * foot(L, p, tc).o;
+        // the offset of (x, y): its signed distance from the member's centreline as drawn, so a face at one offset
+        // lies along the member's curved edge, as the mark's cut does
+        const off = (x: number, y: number) => flip * foot(L, x, y, tc).o;
         // the gap on each side, opened by k; a side with no gap sits SINK inside the meridian's stroke
         const side = (g: number) => h - SINK + (g + SINK) * hole.k;
         let lo: number;
@@ -551,12 +572,21 @@ function latitudeHoles(G: Setup, states: readonly SlotState[]): CutHole[] {
           hi = side(S.latGapRight);
         }
         // the crossing on the latitude loop: under the bottom is theta 180 to 360, over the top 360 to 540
-        const o = (t: number) => off(P2(lat, t));
+        const o = (t: number) => {
+          const p = P2(lat, t);
+          return off(p[0], p[1]);
+        };
         const [b0, b1] = w === 'upper' ? [360, 540] : [180, 360];
         const thc = nearestOn(lat, c, b0, b1);
         const slope = Math.sign(o(thc + 0.01) - o(thc - 0.01)) || 1;
         const corners = (oc: number): Tip => {
-          const root = (e: number) => rootNear((t) => off(edge(lat, t, e, h)) - oc, thc, slope * Math.sign(oc || 1));
+          const root = (e: number) => {
+            const f = (t: number) => {
+              const p = edgeTo(lat, t, e, h);
+              return off(p[0], p[1]) - oc;
+            };
+            return rootNear(f, thc, slope * Math.sign(oc || 1));
+          };
           const tp = root(1);
           const tm = root(-1);
           return { tp, tm, face: faceAlong(L, edge(lat, tp, 1, h), edge(lat, tm, -1, h), tc, flip * oc) };
@@ -573,25 +603,39 @@ function latitudeHoles(G: Setup, states: readonly SlotState[]): CutHole[] {
 /** Newton steps from the crossing: the offset is then within 1e-6 units of the converged one, 20 units out. */
 const FOOT_STEPS = 3;
 
+/** foot()'s answer. The corners' root search calls foot hundreds of times a frame, so each call overwrites this one. */
+const FOOT = { t: 0, o: 0 };
+
 /**
- * The foot of p on a member's centreline as drawn, by Newton steps on
- * (P - p) . P' = 0 from theta t near it: its theta, and the signed distance
- * of p from the curve, positive on the side of rot90 of the forward tangent
- * (edge +1's side).
+ * The foot of p = (x, y) on a member's centreline as drawn, by Newton steps
+ * on (P - p) . P' = 0 from theta t near it: its theta, and the signed
+ * distance of p from the curve, positive on the side of rot90 of the forward
+ * tangent (edge +1's side). Written into FOOT, so read it before the next
+ * call.
  */
-function foot(line: Line, p: Pt, t: number): { t: number; o: number } {
-  const [cir, at] = segAt(line, t);
-  const { C, r } = cir;
-  let q = pointOn(cir, t - at);
-  let T = tangentOn(cir, t - at);
-  for (let i = 0; i < FOOT_STEPS; i++) {
-    const dx = q[0] - p[0];
-    const dy = q[1] - p[1];
-    t -= (dx * T[0] + dy * T[1]) / (r * (T[0] * T[0] + T[1] * T[1]) - (dx * (q[0] - C[0]) + dy * (q[1] - C[1])) / r) / DEG;
-    q = pointOn(cir, t - at);
-    T = tangentOn(cir, t - at);
+function foot(line: Line, x: number, y: number, t: number): Readonly<typeof FOOT> {
+  const { C, r, u, v } = circleAt(line, t);
+  const at = circleOffset(line, t);
+  // the circle's point and tangent at t, in the picture plane
+  let qx = 0;
+  let qy = 0;
+  let tx = 0;
+  let ty = 0;
+  for (let i = 0; ; i++) {
+    const ct = Math.cos((t - at) * DEG);
+    const st = Math.sin((t - at) * DEG);
+    qx = C[0] + r * (u[0] * ct + v[0] * st);
+    qy = C[1] + r * (u[1] * ct + v[1] * st);
+    tx = -u[0] * st + v[0] * ct;
+    ty = -u[1] * st + v[1] * ct;
+    if (i === FOOT_STEPS) break;
+    const dx = qx - x;
+    const dy = qy - y;
+    t -= (dx * tx + dy * ty) / (r * (tx * tx + ty * ty) - (dx * (qx - C[0]) + dy * (qy - C[1])) / r) / DEG;
   }
-  return { t, o: ((p[1] - q[1]) * T[0] - (p[0] - q[0]) * T[1]) / Math.hypot(T[0], T[1]) };
+  FOOT.t = t;
+  FOOT.o = ((y - qy) * tx - (x - qx) * ty) / Math.hypot(tx, ty);
+  return FOOT;
 }
 
 /** Units: each straight step of a curved face stays this close to its curve. */
@@ -603,8 +647,8 @@ const FACE_TOL = 0.005;
  * step within FACE_TOL of the curve (none where the member is straight).
  */
 function faceAlong(line: Line, a: Pt, b: Pt, t: number, o: number): Pt[] {
-  const ta = foot(line, a, t).t;
-  const tb = foot(line, b, t).t;
+  const ta = foot(line, a[0], a[1], t).t;
+  const tb = foot(line, b[0], b[1], t).t;
   const m = edge(line, (ta + tb) / 2, 1, o);
   const lx = b[0] - a[0];
   const ly = b[1] - a[1];
