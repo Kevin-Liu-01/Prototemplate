@@ -12,11 +12,12 @@
  * starts when a loop comes within one screen of the viewport, so its frames
  * are ready before it shows, and ends with the last loop on the page. The
  * clock keeps every frame it receives while a drawing of its loop is
- * mounted and draws only frames it holds: when the worker falls behind, a
- * drawing keeps the newest frame it has and the worker jumps ahead of the
- * playhead. A frame writes the d of the stroke path and the fill path only
- * when it changed, and the frames of a hold share one string, so a hold
- * costs one reference comparison.
+ * mounted and draws only frames it holds: while a playing loop's next frame
+ * has not arrived, every loop keeps its frame and its time, so no loop
+ * skips a frame of the design and loops that started together stay in
+ * step. A frame writes the d of the stroke path and the fill path only when
+ * it changed, and the frames of a hold share one string, so a hold costs
+ * one reference comparison.
  *
  * The clock follows measured frame cost with glyph-field's governor
  * (src/lib/glyph-field.ts): after a 2.5 s warmup, when 35% of a window of
@@ -36,14 +37,13 @@ export type Loop = { readonly animation: LineAnimationId; readonly mark: MarkId;
 /** The two paths a loop writes: the stroke at the lines' weight and the fill. */
 export type LoopPaths = { readonly stroke: SVGPathElement; readonly fill: SVGPathElement };
 
-type Runner = { advance: (dt: number) => void };
+/** One playing drawing: whether its frame dt seconds on has arrived, and the step there. */
+type Runner = { ready: (dt: number) => boolean; advance: (dt: number) => void };
 
 /** Seconds: the largest step one frame takes, so a stalled tab resumes where it paused instead of jumping. */
 const MAX_STEP = 0.1;
 /** A loop this close to the viewport has its frames computed: one screen above it and one below. */
 const NEAR = '100% 0px';
-/** Grid frames past the playhead where a worker that fell behind starts again, so the frames it computes next arrive ahead of it. */
-const LEAD = 6;
 
 /* The frame-time governor, glyph-field's pattern: it judges raw rAF cadence,
    so a tick that draws nothing new still counts, and skips a gap longer than
@@ -130,7 +130,9 @@ function tick(now: number) {
   const dtMs = last ? now - last : 0;
   if (last) govern(now, dtMs);
   last = now;
-  for (const runner of [...playing]) runner.advance(Math.min(MAX_STEP, dtMs / 1000));
+  const dt = Math.min(MAX_STEP, dtMs / 1000);
+  const runners = [...playing];
+  if (runners.every((runner) => runner.ready(dt))) for (const runner of runners) runner.advance(dt);
   raf = playing.size ? requestAnimationFrame(tick) : 0;
   if (!raf) {
     last = 0;
@@ -173,22 +175,17 @@ export function playLoop(watch: Element, loop: Loop, paths: LoopPaths): () => vo
   let inView = false;
   let near = false;
   let wanting = false;
+  /* the grid frame dt seconds on */
+  const at = (dt: number) => (Math.floor((((t + dt) % loop.duration) * GRID_FPS) / step) * step) % count;
   const runner: Runner = {
+    ready: (dt) => Boolean(list[at(dt)]),
     advance(dt) {
+      const i = at(dt);
       t = (t + dt) % loop.duration;
-      const i = (Math.floor((t * GRID_FPS) / step) * step) % count;
-      if (i === shown) return;
-      if (!list[i]) want(frames, i + LEAD * step);
-      /* the newest frame held between the one shown and the playhead */
-      const behind = (i - shown + count) % count;
-      for (let k = 0; k < behind; k += step) {
-        const j = (i - k + count) % count;
-        const frame = list[j];
-        if (!frame) continue;
-        shown = j;
-        draw(frame);
-        return;
-      }
+      const frame = list[i];
+      if (i === shown || !frame) return;
+      shown = i;
+      draw(frame);
     },
   };
   const reduce = window.matchMedia(REDUCED_MOTION_QUERY);
