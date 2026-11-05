@@ -45,8 +45,7 @@ export const ANIMATIONS: readonly Animation[] = [
 /** The section of the variations of Graticule jaw, thicker; its divider is the h2 and the lead. */
 export const VARIATIONS_ID = 'variations';
 export const VARIATIONS_TITLE = 'Variations';
-export const VARIATIONS_LEAD =
-  "Each variation redraws an earlier build of Graticule jaw, thicker. In that build the stub in the G's opening is a sliver, and each caption names what the variation changes.";
+export const VARIATIONS_LEAD = "Each variation redraws an earlier build of Graticule jaw, thicker, in which the stub in the G's opening is a sliver.";
 
 /** The catalog mark whose earlier build the variations redraw; each variation's file keeps its 256 unit square and its ring, so they share its drawn box. */
 export const VARIATIONS_OF = 'graticule-jaw-thicker';
