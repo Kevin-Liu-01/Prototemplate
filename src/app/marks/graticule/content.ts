@@ -4,16 +4,15 @@ import { graticuleMarks } from '@/lib/marks';
 export const GRATICULE_MARKS = graticuleMarks();
 
 /** The head's lead. */
-export const LEAD = 'Every graticule mark is cut from one wireframe globe, and its ring, latitudes, meridians and equator draw the G and the T.';
+export const LEAD = 'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters.';
 
 /** The section of the marks; its divider is the h2 alone. */
 export const MARKS_ID = 'marks';
 export const MARKS_TITLE = 'Marks';
 
-/** The section of the two four-globe progressions. */
+/** The section of the two four-globe progressions; its divider is the h2 alone. */
 export const PROGRESSIONS_ID = 'progressions';
-export const PROGRESSIONS_TITLE = 'From a globe to the mark';
-export const PROGRESSIONS_LEAD = 'A full wireframe globe loses its lines in four steps until only the mark remains.';
+export const PROGRESSIONS_TITLE = 'Progressions';
 
 /**
  * The globes in each progression's file, evenly spaced from its viewBox's

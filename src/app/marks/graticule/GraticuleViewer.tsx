@@ -26,7 +26,6 @@ import {
   PROGRESSION_STEPS,
   PROGRESSIONS,
   PROGRESSIONS_ID,
-  PROGRESSIONS_LEAD,
   PROGRESSIONS_TITLE,
   progressionsIn,
 } from './content';
@@ -35,12 +34,12 @@ import './graticule.css';
 
 const MODES: readonly ShellMode[] = ['book'];
 
-type Part = { id: string; title: string; lead?: string; fact: string };
+type Part = { id: string; title: string; count: number; fact: string };
 
-/** The page's two sections in order, each with its gutter fact; a section without a lead opens on its h2 alone. */
+/** The page's two sections in order, each with its count for the contents and its fact for the gutter; each opens on its h2 alone. */
 const PARTS: readonly Part[] = [
-  { id: MARKS_ID, title: MARKS_TITLE, fact: marksIn(GRATICULE_MARKS.length) },
-  { id: PROGRESSIONS_ID, title: PROGRESSIONS_TITLE, lead: PROGRESSIONS_LEAD, fact: progressionsIn(PROGRESSIONS.length) },
+  { id: MARKS_ID, title: MARKS_TITLE, count: GRATICULE_MARKS.length, fact: marksIn(GRATICULE_MARKS.length) },
+  { id: PROGRESSIONS_ID, title: PROGRESSIONS_TITLE, count: PROGRESSIONS.length, fact: progressionsIn(PROGRESSIONS.length) },
 ];
 
 /** The list under Knowledge > Marks > Graticule. */
@@ -49,14 +48,21 @@ const SECTIONS: readonly ShellSection[] = [
     id: 'graticule-book',
     label: PAGE_NAMES.graticule.name,
     under: 'graticule',
-    items: PARTS.map((part, i) => ({ id: part.id, n: pad2(i + 1), title: part.title, desc: part.lead })),
+    items: PARTS.map((part, i) => ({ id: part.id, n: pad2(i + 1), title: part.title })),
   },
 ];
 
-const PICKS = GRATICULE_MARKS.filter((mark) => mark.pick).length;
+/** A mark's card on /marks, by its id: a shortlisted mark's card is a section the shell lands on, every other dynamic card carries its id as an anchor. */
+const cardHref = (id: string) => `/marks#${id}`;
 
-/** A mark's card on /marks: a shortlisted mark's card is a section the shell lands on, every other dynamic card carries its id as an anchor. */
-const cardHref = (mark: CatalogMark) => `/marks#${mark.id}`;
+/** A mark's name as a heading that links to its card on /marks; both sections name their marks this way. */
+function MarkName({ id, name }: { id: string; name: string }) {
+  return (
+    <h3>
+      <Link href={cardHref(id)}>{name}</Link>
+    </h3>
+  );
+}
 
 /** A catalog mark drawn by mask from its public file, cropped to its drawn box, so it takes the page's ink in both themes and every ring fills its figure. */
 function MarkArt({ mark }: { mark: CatalogMark }) {
@@ -70,16 +76,13 @@ function MarkArt({ mark }: { mark: CatalogMark }) {
 
 /** One mark: the drawing and its name link to its card on /marks, and its catalog note follows. */
 function MarkFigure({ mark }: { mark: CatalogMark }) {
-  const href = cardHref(mark);
   return (
     <figure className='gr-fig'>
-      <Link href={href} className='gr-art-link' tabIndex={-1} aria-hidden='true'>
+      <Link href={cardHref(mark.id)} className='gr-art-link' tabIndex={-1} aria-hidden='true'>
         <MarkArt mark={mark} />
       </Link>
       <figcaption>
-        <h3>
-          <Link href={href}>{mark.name}</Link>
-        </h3>
+        <MarkName id={mark.id} name={mark.name} />
         {mark.note && <p>{mark.note}</p>}
       </figcaption>
     </figure>
@@ -103,10 +106,10 @@ function Progression({ file, aspect, label }: { file: string; aspect: number; la
   );
 }
 
-type SectionProps = { id: string; n: number; fact: string; title: string; lead?: string; active: boolean; children: ReactNode };
+type SectionProps = { id: string; n: number; fact: string; title: string; active: boolean; children: ReactNode };
 
-/** One section of the book: a part that opens with the shared divider, its fact in the gutter note. */
-function Section({ id, n, fact, title, lead, active, children }: SectionProps) {
+/** One section of the book: a part that opens with the shared divider, its h2 alone, and its fact in the gutter note. */
+function Section({ id, n, fact, title, active, children }: SectionProps) {
   return (
     <section className={cn('pt-book-part gr-sec', active && 'is-active')} data-id={id} aria-labelledby={`gr-${id}`}>
       <div className='pt-book-sec'>
@@ -116,7 +119,6 @@ function Section({ id, n, fact, title, lead, active, children }: SectionProps) {
         </small>
         <div>
           <h2 id={`gr-${id}`}>{title}</h2>
-          {lead && <p>{lead}</p>}
         </div>
       </div>
       {children}
@@ -157,7 +159,7 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
             <figure key={mark} className='gr-fig'>
               <Progression file={file} aspect={progressionAspect} label={`A wireframe globe becoming ${name} in four steps`} />
               <figcaption>
-                <p>{name}</p>
+                <MarkName id={mark} name={name} />
               </figcaption>
             </figure>
           );
@@ -173,15 +175,15 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
         updated={updated}
         facts={[
           { icon: 'swatch', key: 'Marks', value: GRATICULE_MARKS.length },
-          { icon: 'check', key: 'Picks', value: PICKS },
           { icon: 'globe', key: 'Progressions', value: PROGRESSIONS.length },
+          { icon: 'arrow-right-circle', key: 'Steps', value: PROGRESSION_STEPS },
         ]}
         contents={
           <nav className='pt-book-toc' aria-label='Contents'>
             {PARTS.map((part) => (
               <a key={part.id} href={`#${part.id}`} onClick={(e: MouseEvent<HTMLAnchorElement>) => onContents(e, part.id)}>
                 <span>{part.title}</span>
-                <small>{part.fact}</small>
+                <small>{part.count}</small>
               </a>
             ))}
           </nav>
@@ -189,7 +191,7 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
       />
 
       {PARTS.map((part, i) => (
-        <Section key={part.id} id={part.id} n={i + 1} fact={part.fact} title={part.title} lead={part.lead} active={active === part.id}>
+        <Section key={part.id} id={part.id} n={i + 1} fact={part.fact} title={part.title} active={active === part.id}>
           {body(part.id)}
         </Section>
       ))}
