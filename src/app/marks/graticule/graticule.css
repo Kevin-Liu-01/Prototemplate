@@ -35,8 +35,8 @@
   gap: 40px;
 }
 
-/* the variations: one mark more across than the marks above at every width, so each is smaller and the set reads as
-   one sheet: four across at 1440, three on a tablet, two on a phone */
+/* the variations: one mark more across than the marks above, so each is smaller and the set reads as one sheet: four
+   across at 1440 and three on a tablet (a phone's rule is below) */
 .gr-row.is-small {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 40px 32px;
@@ -145,17 +145,18 @@
   }
 }
 
-/* a phone's column: one mark across the row, so a note keeps a reading width; a progression's four globes wrap two by
-   two, each about half the column */
+/* a phone's column: one mark across the row, so a note keeps a reading width. A variation's drawing stops at 240px,
+   about two thirds of the column, so it stays smaller than a mark above it and its cuts still read. A progression's
+   four globes wrap two by two, each about half the column */
 @container gr-sec (max-width: 539px) {
-  .gr-row {
+  .gr-row,
+  .gr-row.is-small {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 40px;
   }
 
-  .gr-row.is-small {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 32px 24px;
+  .gr-row.is-small .gr-art {
+    max-width: 240px;
   }
 
   .gr-steps {
