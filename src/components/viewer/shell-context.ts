@@ -112,6 +112,8 @@ export type ShellState = {
    * (DirectionCorner) can leave it out: read an absent value as true.
    */
   ready?: boolean;
+  /** the shell's anchors prop: a hash can name an anchor inside an item, and the read line holds it. Read an absent value as false */
+  anchors?: boolean;
   setMode: (mode: ShellMode) => void;
   setDensity: (density: ShellDensity) => void;
   setSidebar: (open: boolean) => void;

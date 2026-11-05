@@ -47,6 +47,8 @@ type ReadLineOptions = {
   topWhenMissing?: boolean;
   /** a change of `active` that the spy did not make jumps to its element; false when the route jumps itself */
   follow?: boolean;
+  /** the shell's anchors flag (usePtShell): a hash can name an anchor inside a watched element, and the spy holds it */
+  anchors?: boolean;
 };
 
 type ReadLine = {
@@ -105,12 +107,14 @@ function onScreen(el: HTMLElement, root: HTMLElement): boolean {
  * on screen, or the jump's own element. Leaving the end hands the mark back
  * to the line.
  *
- * An anchor: the hash can name an element inside a watched one that is no
- * item of its own (a mark card inside its family's section), on landing or
- * through a link on the page. The shell marks the watched element that
- * holds it, the anchor stays where the browser put it, and the spy keeps
- * that mark, so the address keeps the anchor, until the reader's own input
- * or a jump; the next scroll after that reads the line again.
+ * An anchor, on a route whose shell sets `anchors`: the hash can name an
+ * element inside a watched one that is no item of its own (a mark card
+ * inside its family's section), on landing or through a link on the page.
+ * The shell marks the watched element that holds it, the anchor stays where
+ * the browser put it, and the spy keeps that mark, so the address keeps the
+ * anchor, until the reader's own input or a jump; the next scroll after
+ * that reads the line again. Once the address names anything else, a link
+ * back to the same anchor holds it again.
  */
 export function useReadLine({
   rootRef,
@@ -124,6 +128,7 @@ export function useReadLine({
   none,
   topWhenMissing = false,
   follow = true,
+  anchors = false,
 }: ReadLineOptions): ReadLine {
   /* the observer reads the latest values through refs; the assignments run
      every render so the mount-time listener never sees a stale closure */
@@ -147,7 +152,7 @@ export function useReadLine({
   const endHold = useRef<Element | null>(null);
   /** the anchor the hash names inside a watched element; while it holds, the spy keeps the mark the shell gave it */
   const anchor = useRef<HTMLElement | null>(null);
-  /** the hash whose anchor the reader's input or a jump released; it holds no more */
+  /** the hash whose anchor the reader's input or a jump released; it holds no more while the address still names it */
   const released = useRef<string | null>(null);
 
   const scrollTo = (el: HTMLElement | null, behavior: ScrollBehavior, settle: Element | null = el) => {
@@ -187,8 +192,12 @@ export function useReadLine({
 
   /** true while the hash names an anchor the reader has not moved away from; read lazily, so it holds from the first frame of a landing or a link */
   const holding = (): boolean => {
+    if (!anchors) return false;
     const id = hashId();
     if (anchor.current && anchor.current.id !== id) anchor.current = null;
+    /* every mark the spy or a jump makes writes its id to the address and runs the follow, which reads this, so a
+       released anchor is forgotten once the address has moved on, and a later link back to it holds again */
+    if (released.current !== null && released.current !== id) released.current = null;
     if (!anchor.current && follow && id && id !== released.current && rootRef.current) anchor.current = anchorOf(rootRef.current, id);
     return anchor.current !== null;
   };
@@ -255,7 +264,7 @@ export function useReadLine({
       released.current = hashId();
       reread = true;
     };
-    READER_INPUT.forEach((type) => window.addEventListener(type, release, { capture: true, passive: true }));
+    if (anchors) READER_INPUT.forEach((type) => window.addEventListener(type, release, { capture: true, passive: true }));
     const onScroll = () => {
       const end = atEnd(root);
       const changed = end !== wasAtEnd;

@@ -801,10 +801,10 @@ type MarksBookProps = {
  * anywhere else scrolls the sheet to it.
  */
 function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }: MarksBookProps) {
-  const { active, ready, select } = usePtShell();
+  const { active, ready, select, anchors } = usePtShell();
   activeOut.current = active;
 
-  const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.mk-sec', active, select, ready, smooth: true });
+  const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.mk-sec', active, select, ready, smooth: true, anchors });
   jumpRef.current = jump;
 
   const link = (id: string, label: string, count: ReactNode) => (
@@ -1104,6 +1104,7 @@ export default function MarksViewer({ aspects, drawings, updated }: MarksViewerP
       surfaces='site'
       keys='flow'
       noun='mark'
+      anchors
       onSelect={(id) => {
         /* re-clicking the active row brings its block back to the read line */
         if (id === activeOut.current) jumpRef.current(id);

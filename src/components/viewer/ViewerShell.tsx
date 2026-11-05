@@ -163,6 +163,15 @@ export type ViewerShellProps = {
   countLabel?: string;
   /** what the current route's own Pages row does when clicked; the gallery returns its book to the top */
   onCurrentPage?: () => void;
+  /**
+   * True on a route whose hash can name an anchor inside an item (a mark
+   * card inside its family's section on /marks): the shell marks the item
+   * that holds the anchor and leaves the anchor in the address, and the
+   * route's read line, which reads this flag from usePtShell, holds it. Off
+   * by default, so a route that follows its inner anchors itself (/brand's
+   * headings) keeps its own landing.
+   */
+  anchors?: boolean;
   /** the stage content */
   children?: ReactNode;
 };
@@ -223,15 +232,16 @@ function readHash(): string {
 }
 
 /**
- * The item a hash names: the item itself, or else the item whose
- * element on the stage holds the element of that id, the nearest ancestor
- * whose data-id is an item (a mark card's anchor inside its family's
- * section). Null when the hash names neither.
+ * The item a hash names: the item itself, or else, on a route with anchors,
+ * the item whose element on the stage holds the element of that id, the
+ * nearest ancestor whose data-id is an item (a mark card's anchor inside
+ * its family's section). Null when the hash names neither.
  */
-function hashOwner(hash: string, items: readonly { id: string }[], stage: HTMLElement | null): string | null {
+function hashOwner(hash: string, items: readonly { id: string }[], stage: HTMLElement | null, anchors: boolean): string | null {
   if (!hash) return null;
   const known = new Set(items.map((item) => item.id));
   if (known.has(hash)) return hash;
+  if (!anchors) return null;
   const target = document.getElementById(hash);
   if (!stage || !target || !stage.contains(target)) return null;
   for (let node = target.parentElement; node && node !== stage; node = node.parentElement) {
@@ -277,6 +287,7 @@ export function ViewerShell({
   siteMap = surfaces === 'site',
   countLabel,
   onCurrentPage,
+  anchors = false,
   children,
 }: ViewerShellProps) {
   const sections = useStableSections(sectionsProp);
@@ -521,8 +532,8 @@ export function ViewerShell({
     }
     const savedDensity = load(DENSITY_KEY);
     if (isDensity(savedDensity)) setDensityState(savedDensity);
-    /* a hash that names an anchor inside an item marks that item and stays in the address */
-    const hashItem = hashOwner(readHash(), itemsRef.current, stageRef.current);
+    /* a hash that names an item marks it; on a route with anchors, one that names an anchor inside an item marks that item and stays in the address */
+    const hashItem = hashOwner(readHash(), itemsRef.current, stageRef.current, anchors);
     if (hashItem) setActive(hashItem);
     /* a restored slide follows commitMode's entry rule: with nothing paged
        marked (the gallery's Live mode saved, no hash), it opens the first
@@ -550,10 +561,10 @@ export function ViewerShell({
       sayRef.current(HINT_TEXT, HINT_HOLD_MS);
     }
 
-    /* a link on the page: an item's hash selects it; an anchor's marks the item that holds it and stays in the address */
+    /* a link on the page: an item's hash selects it; on a route with anchors, an anchor's marks the item that holds it and stays in the address */
     const onHash = () => {
       const hash = readHash();
-      const next = hashOwner(hash, itemsRef.current, stageRef.current);
+      const next = hashOwner(hash, itemsRef.current, stageRef.current, anchors);
       if (!next || next === activeRef.current) return;
       if (next === hash) select(next);
       else setActive(next);
@@ -640,6 +651,7 @@ export function ViewerShell({
       total,
       countLabel,
       ready: booted,
+      anchors,
       setMode,
       setDensity,
       setSidebar,
@@ -674,6 +686,7 @@ export function ViewerShell({
       total,
       countLabel,
       booted,
+      anchors,
       toast.say,
     ]
   );
