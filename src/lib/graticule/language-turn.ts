@@ -303,17 +303,24 @@ function fieldEnd(G: Setup, M: Member, tc: number): Tip {
   return W > 0 ? { tp: tc + dp / W, tm: tc + dm / W } : sq(tc);
 }
 
-/** Units of slack in rootAlong's bound: the signed distance as computed stays within about 1e-13 of the true one, which is 1-Lipschitz. */
-const LIP_SLACK = 1e-6;
+/**
+ * Units of slack in rootAlong's bound, which holds while the slack is more
+ * than twice phi's largest error. The true signed distance is 1-Lipschitz,
+ * and ellipseSdist is off it by up to 2.1e-4 on the major axis just past
+ * the evolute's cusp (x about 70.7 for heavy's latitude and 71.6 for
+ * jaw's), where its six steps settle slowest.
+ */
+const LIP_SLACK = 1e-3;
 
 /**
  * The theta nearest t0 within 30 degrees where edge e of a line meets the
  * level phi = target, or null: half-degree steps out on both sides in turn,
- * then a bisection. When phi is 1-Lipschitz (lip: a signed distance or a
- * coordinate), a step whose edge point lies nearer the last point measured
- * on its side than that point lies from the level keeps that point's sign,
- * so phi does not run there. The walk takes the same steps and finds the
- * same bracket as when it measures every step.
+ * then a bisection. When phi is off a 1-Lipschitz field by less than
+ * LIP_SLACK / 2 (lip: a signed distance or a coordinate), a step whose edge
+ * point lies nearer the last point measured on its side than that point
+ * lies from the level, less LIP_SLACK, keeps that point's sign, so phi does
+ * not run there. The walk takes the same steps and finds the same bracket
+ * as when it measures every step.
  */
 function rootAlong(phi: Field, target: number, lip: boolean, line: Line, e: number, h: number, t0: number): number | null {
   const f = (t: number) => phi(edgeTo(line, t, e, h)) - target;

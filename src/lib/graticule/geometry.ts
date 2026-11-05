@@ -231,9 +231,13 @@ export const ellipseG =
 /**
  * The signed distance to the centred, axis-aligned ellipse with semi-axes a
  * (x) and b (y), negative inside: the nearest point by six fixed-point
- * steps on the evolute. Over the disc it agrees with a search of 240
- * samples refined by 48 ternary steps to 1e-13 units, at a tenth of the
- * cost.
+ * steps on the evolute, at a tenth of the cost of a search of 240 samples
+ * refined by 48 ternary steps. The steps settle slowest beside the
+ * evolute's cusps on the major axis, (a^2 - b^2) / a from the centre when
+ * a > b. For the ellipses the line animations build (minor over major
+ * semi-axis 0.34 to 0.69), it is off the exact distance by up to 2.2e-4
+ * units on the axis just past a cusp, by less than 1e-9 from 0.15 units off
+ * the axis, and by about 1e-13 at most farther than 12 units from a cusp.
  */
 export function ellipseSdist(a: number, b: number): Field {
   const k = a * a - b * b;
