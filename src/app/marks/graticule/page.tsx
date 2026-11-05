@@ -9,14 +9,14 @@ const route = seoRoute({
   path: '/marks/graticule',
   title: PAGE_NAMES.graticule.name,
   kind: 'page',
-  description: 'Every graticule mark, cut from the lines of a wireframe globe, and the variations of the thicker Graticule jaw.',
+  description: 'Every graticule mark, cut from the lines of a wireframe globe, the animations that move only its lines, and the variations of the thicker Graticule jaw.',
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/graticule'),
 });
 
 export const metadata = route.metadata;
 
-/** /marks/graticule: every graticule mark of the catalog, then the variations of Graticule jaw, thicker. */
+/** /marks/graticule: every graticule mark of the catalog, then its line globe animations, then the variations of Graticule jaw, thicker. */
 export default function GraticulePage() {
   return (
     <>

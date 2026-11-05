@@ -305,7 +305,7 @@ function pages() {
     { id: '/marks', paths: ['src/app/marks', 'src/lib/marks.ts', 'public/marks', 'scripts/build/speed-marks.mjs'] },
     {
       id: '/marks/graticule',
-      paths: ['src/app/marks/graticule', 'src/lib/marks.ts', 'public/marks/graticule', 'public/marks/dynamic/graticule-gt.svg', 'public/marks/dynamic/graticule-gt-heavy.svg', 'public/marks/dynamic/graticule-jaw.svg', 'public/marks/dynamic/graticule-jaw-thicker.svg', 'public/marks/dynamic/graticule-jaw-no-meridian.svg', 'public/marks/dynamic/graticule-g.svg'],
+      paths: ['src/app/marks/graticule', 'src/lib/marks.ts', 'src/lib/graticule', 'src/components/shared/LineGlobe.tsx', 'public/marks/graticule', 'public/marks/dynamic/graticule-gt.svg', 'public/marks/dynamic/graticule-gt-heavy.svg', 'public/marks/dynamic/graticule-jaw.svg', 'public/marks/dynamic/graticule-jaw-thicker.svg', 'public/marks/dynamic/graticule-jaw-no-meridian.svg', 'public/marks/dynamic/graticule-g.svg'],
     },
     {
       id: '/blog',

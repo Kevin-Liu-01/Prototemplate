@@ -1,10 +1,11 @@
-/* Graticule: every graticule mark, then the variations of Graticule jaw,
-   thicker, on the viewer shell.
+/* Graticule: every graticule mark, then its line globe animations, then the
+   variations of Graticule jaw, thicker, on the viewer shell.
 
    The column, the head, the contents, the band and the section dividers are
-   the shared book classes (BookView.css). Every figure is drawn by mask from
-   its public file in the ink token, on the page's own ground, so it reads
-   ink on paper in either theme. Nothing here is boxed or filled. */
+   the shared book classes (BookView.css). Every still figure is drawn by mask
+   from its public file in the ink token, and every animation is an svg in
+   currentColor, on the page's own ground, so each reads ink on paper in
+   either theme. Nothing here is boxed or filled. */
 
 .gr-sec {
   container: gr-sec / inline-size;
@@ -41,6 +42,28 @@
   .gr-row.is-small {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+
+/* the animations: three across at every width above a phone, one figure each, with its two marks stacked on the
+   marks' columns, so the six drawings make a heavy row over a jaw row and each name sits under its column (a phone's
+   rule is below) */
+.gr-row.is-anim {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gr-pair {
+  display: grid;
+  gap: 32px;
+}
+
+/* an animation's svg is cropped to its mark's drawn box like the masks; a line's antialiased edge may fall on the
+   box, so nothing clips it */
+.gr-line {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;
 }
 
 .gr-fig {
@@ -123,13 +146,20 @@
   }
 }
 
-/* a phone's column: one mark across the row, so a note keeps a reading width. A variation's drawing stops at 240px,
-   about two thirds of the column, so it stays smaller than a mark above it and its cuts still read */
+/* a phone's column: one figure across the row, so a note keeps a reading width. An animation sets its two marks side
+   by side, heavy first. A variation's drawing stops at 240px, about two thirds of the column, so it stays smaller
+   than a mark above it and its cuts still read */
 @container gr-sec (max-width: 539px) {
   .gr-row,
+  .gr-row.is-anim,
   .gr-row.is-small {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 40px;
+  }
+
+  .gr-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
 
   .gr-row.is-small .gr-art {

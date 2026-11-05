@@ -48,8 +48,9 @@ src/
                           redirects there
     skills/               /skills, /skills/<slug> and the raw skill files
     marks/                /marks: the mark explorations; graticule/ is
-                          /marks/graticule, every graticule mark and the
-                          variations of Graticule jaw, thicker
+                          /marks/graticule, every graticule mark, its line
+                          globe animations and the variations of Graticule
+                          jaw, thicker
     blog/                 the blog on the viewer shell: the posts (content/blog)
                           rendered with the landing site's MDX components, and
                           the changelog (src/lib/blog-posts.ts, generated)
@@ -75,6 +76,7 @@ src/
                           IndexPanel, Search, PreviewLayer, tokens.css
     shared/               cross-page instruments: EverySentence, StudioField,
                           PrismaticField, HeroFieldSwitcher, TcMobileNav,
+                          LineGlobe (one line globe animation of a mark),
                           diagrams/ (DoubledLine and the older line-art
                           set); FeatureBento, StorySection and the
                           line-art diagrams are unmounted references
@@ -107,8 +109,11 @@ src/
                           registry), archive.ts, marks.ts, page-names.ts
                           (each page's plain name); the engines: dither.ts,
                           studio-field.ts, glyph-field.ts, horizon-field.ts,
-                          prismatic-field.ts; try/ (the report card's
-                          checks); and the generated skills.ts, motion.ts
+                          prismatic-field.ts; graticule/ (the line globe
+                          the graticule marks are drawn on, its three
+                          animations and their loop clock); try/ (the
+                          report card's checks); and the generated
+                          skills.ts, motion.ts
                           and updated.ts (build/updated.mjs; server modules
                           only) with page-updated.ts (its type); the hooks:
                           use-mount-effect.ts and use-layout-work.ts

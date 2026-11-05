@@ -5,11 +5,13 @@ import type { CSSProperties, MouseEvent, ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
+import LineGlobe from '@/components/shared/LineGlobe';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
 import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { cn } from '@/lib/cn';
+import { LINE_ANIMATIONS } from '@/lib/graticule/line-animations';
 import type { CatalogMark } from '@/lib/marks';
 import { boxMask, catalogMark } from '@/lib/marks';
 import { PAGE_NAMES } from '@/lib/page-names';
@@ -18,6 +20,12 @@ import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 
 import {
+  ANIMATED_MARKS,
+  ANIMATIONS,
+  ANIMATIONS_ID,
+  ANIMATIONS_LEAD,
+  ANIMATIONS_TITLE,
+  animationsIn,
   GRATICULE_MARKS,
   LEAD,
   MARKS_ID,
@@ -30,7 +38,7 @@ import {
   VARIATIONS_TITLE,
   variationsIn,
 } from './content';
-import type { Variation } from './content';
+import type { Animation, Variation } from './content';
 
 import './graticule.css';
 
@@ -41,8 +49,15 @@ type Part = { id: string; title: string; lead?: string; count: number; fact: str
 /** The page's sections in order, each with its count for the contents and its fact for the gutter; a section opens on its h2 and its lead, where it has one. */
 const PARTS: readonly Part[] = [
   { id: MARKS_ID, title: MARKS_TITLE, count: GRATICULE_MARKS.length, fact: marksIn(GRATICULE_MARKS.length) },
+  { id: ANIMATIONS_ID, title: ANIMATIONS_TITLE, lead: ANIMATIONS_LEAD, count: ANIMATIONS.length, fact: animationsIn(ANIMATIONS.length) },
   { id: VARIATIONS_ID, title: VARIATIONS_TITLE, lead: VARIATIONS_LEAD, count: VARIATIONS.length, fact: variationsIn(VARIATIONS.length) },
 ];
+
+/** The marks every animation plays on, heavy first, with the name and the drawn box of each one's catalog row. */
+const ANIMATED = ANIMATED_MARKS.map(({ mark, id }) => {
+  const row = catalogMark(id);
+  return { mark, name: row?.name ?? id, box: row?.box };
+});
 
 /** The drawn box the variations share with the mark they redraw. */
 const VARIATION_BOX = catalogMark(VARIATIONS_OF)?.box;
@@ -89,6 +104,28 @@ function MarkFigure({ mark }: { mark: CatalogMark }) {
       <figcaption>
         <MarkName id={mark.id} name={mark.name} />
         {mark.note && <p>{mark.note}</p>}
+      </figcaption>
+    </figure>
+  );
+}
+
+/**
+ * One animation: both marks playing it live, heavy first, then its name and
+ * what moves. Both drawings watch the figure, so they start, pause and resume
+ * together and stay in step.
+ */
+function AnimationFigure({ animation }: { animation: Animation }) {
+  const figureRef = useRef<HTMLElement>(null);
+  return (
+    <figure ref={figureRef} className='gr-fig'>
+      <div className='gr-pair'>
+        {ANIMATED.map(({ mark, name, box }) => (
+          <LineGlobe key={`${animation.id}-${mark}`} animation={animation.id} mark={mark} label={name} box={box} watch={figureRef} className='gr-line' />
+        ))}
+      </div>
+      <figcaption>
+        <h3>{LINE_ANIMATIONS[animation.id].title}</h3>
+        <p>{animation.caption}</p>
       </figcaption>
     </figure>
   );
@@ -153,6 +190,14 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
           ))}
         </div>
       );
+    if (id === ANIMATIONS_ID)
+      return (
+        <div className='gr-row is-anim'>
+          {ANIMATIONS.map((animation) => (
+            <AnimationFigure key={animation.id} animation={animation} />
+          ))}
+        </div>
+      );
     return (
       <div className='gr-row is-small'>
         {VARIATIONS.map((variation) => (
@@ -170,8 +215,8 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
         updated={updated}
         facts={[
           { icon: 'swatch', key: 'Marks', value: GRATICULE_MARKS.length },
+          { icon: 'film', key: 'Animations', value: ANIMATIONS.length },
           { icon: 'grid', key: 'Variations', value: VARIATIONS.length },
-          { icon: 'index', key: 'Sections', value: PARTS.length },
         ]}
         contents={
           <nav className='pt-book-toc' aria-label='Contents'>
@@ -200,8 +245,8 @@ export type GraticuleViewerProps = {
 };
 
 /**
- * Every graticule mark on the viewer shell, then the variations of Graticule
- * jaw, thicker. The list hangs under Marks > Graticule; flow keys, so Space
+ * Every graticule mark on the viewer shell, then its line globe animations,
+ * then the variations of Graticule jaw, thicker. The list hangs under Marks > Graticule; flow keys, so Space
  * and the arrows scroll.
  */
 export default function GraticuleViewer({ updated }: GraticuleViewerProps) {

@@ -1,14 +1,47 @@
+import type { MarkId } from '@/lib/graticule/geometry';
+import type { LineAnimationId } from '@/lib/graticule/line-animations';
 import { graticuleMarks } from '@/lib/marks';
 
 /** Every graticule mark in the page's order (src/lib/marks.ts). */
 export const GRATICULE_MARKS = graticuleMarks();
 
 /** The head's lead. */
-export const LEAD = 'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters.';
+export const LEAD =
+  'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters. In the animations only the lines move, never the letters.';
 
 /** The section of the marks; its divider is the h2 alone. */
 export const MARKS_ID = 'marks';
 export const MARKS_TITLE = 'Marks';
+
+/** The section of the line globe animations; its divider is the h2 and the lead. */
+export const ANIMATIONS_ID = 'animations';
+export const ANIMATIONS_TITLE = 'Animations';
+export const ANIMATIONS_LEAD = 'Each plays on Graticule GT, heavy, then on Graticule jaw, thicker.';
+
+/** The marks every animation plays on, heavy first, each with the catalog id that gives its name and its drawn box. */
+export const ANIMATED_MARKS: readonly { mark: MarkId; id: string }[] = [
+  { mark: 'heavy', id: 'graticule-gt-heavy' },
+  { mark: 'jaw', id: 'graticule-jaw-thicker' },
+];
+
+/** One animation: its id in src/lib/graticule/line-animations.ts, which holds its name, and what moves in it. */
+export type Animation = { id: LineAnimationId; caption: string };
+
+/** The animations in the order they were chosen. Each starts and ends on the exact mark. */
+export const ANIMATIONS: readonly Animation[] = [
+  {
+    id: 'language-turn',
+    caption: 'The ring, the bar and the latitude hold still while the meridians turn across the face, and the G and the T open each time the globe stops.',
+  },
+  {
+    id: 'globe-lean',
+    caption: 'Each line keeps both ends on the still ring and only its bow changes, so the globe leans and looks round while the G and the T stay whole.',
+  },
+  {
+    id: 'mark-to-globe',
+    caption: 'The cuts close, the oval straightens into two parallels and the meridians turn, then the lines fold back into the G and the T.',
+  },
+];
 
 /** The section of the variations of Graticule jaw, thicker; its divider is the h2 and the lead. */
 export const VARIATIONS_ID = 'variations';
@@ -153,4 +186,5 @@ export const VARIATIONS: readonly Variation[] = [
 
 /** A count with its noun. */
 export const marksIn = (n: number) => `${n} ${n === 1 ? 'mark' : 'marks'}`;
+export const animationsIn = (n: number) => `${n} ${n === 1 ? 'animation' : 'animations'}`;
 export const variationsIn = (n: number) => `${n} ${n === 1 ? 'variation' : 'variations'}`;
