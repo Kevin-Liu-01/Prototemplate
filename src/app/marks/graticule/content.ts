@@ -6,8 +6,7 @@ import { graticuleMarks } from '@/lib/marks';
 export const GRATICULE_MARKS = graticuleMarks();
 
 /** The head's lead. */
-export const LEAD =
-  'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters. In the animations only the lines move, never the letters.';
+export const LEAD = 'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters.';
 
 /** The section of the marks; its divider is the h2 alone. */
 export const MARKS_ID = 'marks';

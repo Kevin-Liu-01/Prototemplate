@@ -246,8 +246,8 @@ export type GraticuleViewerProps = {
 
 /**
  * Every graticule mark on the viewer shell, then its line globe animations,
- * then the variations of Graticule jaw, thicker. The list hangs under Marks > Graticule; flow keys, so Space
- * and the arrows scroll.
+ * then the variations of Graticule jaw, thicker. The list hangs under
+ * Marks > Graticule; flow keys, so Space and the arrows scroll.
  */
 export default function GraticuleViewer({ updated }: GraticuleViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
