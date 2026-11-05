@@ -30,9 +30,9 @@ type LineGlobeProps = {
  * mark's 256 unit square. The markup is the rest mark, so the first paint,
  * a screenshot and reduced motion all show the still, and nothing shifts
  * when the loop starts. The shared loop clock (src/lib/graticule/
- * loop-clock.ts) writes each frame's path data through the refs, with no
- * React state per frame. The animation and the mark are read once at
- * mount: key the element by both to change either.
+ * loop-clock.ts) computes each frame once and writes its path data through
+ * the refs, with no React state per frame. The animation and the mark are
+ * read once at mount: key the element by both to change either.
  */
 export default function LineGlobe({ animation, mark, label, box = SQUARE, watch, className }: LineGlobeProps) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -45,7 +45,11 @@ export default function LineGlobe({ animation, mark, label, box = SQUARE, watch,
     const stroke = strokeRef.current;
     const fill = fillRef.current;
     if (!svg || !stroke || !fill) return;
-    return playLoop(watch?.current ?? svg, { duration: loop.duration, frame: (t) => loop.frame(t, mark), still: () => loop.still(mark) }, { stroke, fill });
+    return playLoop(
+      watch?.current ?? svg,
+      { key: `${animation}-${mark}`, duration: loop.duration, frame: (t) => loop.frame(t, mark), still: () => loop.still(mark) },
+      { stroke, fill }
+    );
   });
   return (
     <svg ref={svgRef} viewBox={box.join(' ')} className={className} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true}>
