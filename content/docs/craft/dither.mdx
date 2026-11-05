@@ -17,7 +17,7 @@ sources:
   - src/app/craft/libraries.ts
 ---
 
-General Translation draws its signature texture as 1-bit cells: every cell is ink or ground, and an ordered Bayer screen decides which. The texture appears as animated fields behind product pages, as a dithered globe and dithered photographs on the sign-in and onboarding plates, and in the brand deck and the films. This page gives the reasons behind the screen, the numbers that keep cells crisp, the rules for changing one picture into another, and the standard every dithered photograph is cut to. The engines and their props are on [Dither and the studio field](/docs/components/dither), which also has what a field costs per frame and why a dither pattern on a moving sprite flickers. The [gt-dither](/skills/gt-dither) skill holds the rules.
+General Translation draws its signature texture as 1-bit cells: every cell is ink or ground, and an ordered Bayer screen decides which. The texture appears as animated fields behind product pages, as a dithered globe and dithered photographs on the sign-in and onboarding plates, and in the brand deck and the films. This page gives the reasons behind the screen, the numbers that keep cells crisp, the rules for changing one picture into another, the card art drawn in one brand's color, and the standard every dithered photograph is cut to. The engines and their props are on [Dither and the studio field](/docs/components/dither), which also has what a field costs per frame and why a dither pattern on a moving sprite flickers. The [gt-dither](/skills/gt-dither) skill holds the rules.
 
 ## Ordered dither
 
@@ -84,6 +84,29 @@ A product surface carries one dithered material at the strength of the GT landin
 | Pictures in light | `#070707` cells at opacity 0.7 over white |
 
 The light theme uses a filter because a screen blend is inert in an isolated host with a transparent backdrop. A horizon ring drawn at page scale was judged too heavy and deleted. The material never becomes a pattern, a border, a boxed plate or a heavier form. Glyph rain stays solid type with no dither, because a dither pattern on moving glyphs flickers with every step.
+
+## Card art in a brand's color
+
+A card that stands for one company draws smoke in that company's color on black, the look of the covers on the GT Atlas post about Fuma Nama. Kevin asked for it on 2026-11-03: "try to make colored graphics like the ones we acheived with fuma nama". The smoke is the outer smoke of Gem Smoke from Paper Shaders 0.0.78 (Apache-2.0), a Gaussian blob pushed through four cosine swirls, screened through the 8 by 8 Bayer at `(m + 0.5) / 64`. The landing's copy of the studio field draws it as the `bayerSmoke` preset, which the other three copies of the studio field do not have yet.
+
+| Part | Value |
+| --- | --- |
+| Ground | `oklch(0.13 0 none)` in both themes |
+| Shade | `color-mix(in oklch, brand 55%, ground)` |
+| Crest | The brand; a brand darker than L 0.4 prints at 1 minus its lightness, so a black brand shows as white |
+| Shape | `strength` 0.7 for the swirl, `detail` 0.85 for the size, `amplitude` 2.2 for the tone, `grain` 85 |
+| Logo | White, in the lower left, where `clear` 1 dissolves the tone in an ellipse that runs along the bottom |
+| Form | A hash of the card's id turns the field by up to 35 degrees each way and sets its still frame |
+| Motion | The still frame until the card is hovered |
+
+The clearing is a tone dissolve inside the shader, because a CSS mask over the cells would print them at partial alpha. The ellipse is long because a logo drawn at twice its size reaches 80% of a card's width.
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| A yellow brand's shade printed orange | `oklch(L 0 0)` keeps hue 0, and `color-mix(in oklch)` turns the brand's hue toward it | Write the ground's hue as `none` |
+| A faint grid of shade dots covered the black | A threshold of `m / 64` lights the zero cell at tone 0, one cell in 64 | Light a cell when its tone exceeds `(m + 0.5) / 64` |
+| Every card showed the same form after mount | The first resize callback redrew each still field at the shared still time | `renderStatic(time)` records its time, and every later redraw uses it |
+| Smoke crossed the logos on the page and missed them in the test page | The test page drew its labels smaller than the real logos | Tune with labels at the real logo size |
 
 ## The picture standard
 
