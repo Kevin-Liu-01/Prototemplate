@@ -75,7 +75,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/docs/components/grids-and-bentos': { day: '2026-10-30', at: '2026-10-30T14:36:20-07:00', commit: '51e7b77', src: 'e2296b00' },
   '/docs/components/rails-and-bands': { day: '2026-10-31', at: '2026-10-31T03:04:33-07:00', commit: 'a7310ca', src: 'c72e3d80' },
   '/docs/components/shells': { day: '2026-11-04', at: '2026-11-04T19:00:28-08:00', commit: '1d9837f', src: 'ce99a1bc' },
-  '/docs/components/page-gallery': { day: '2026-11-05', at: '2026-11-05T00:00:46-08:00', commit: '00d4776', src: '0cea942a' },
+  '/docs/components/page-gallery': { day: '2026-11-05', at: '2026-11-05T01:51:15-08:00', commit: '57e6d93', src: '0cea942a' },
   '/docs/components/page-templates': { day: '2026-10-30', at: '2026-10-30T20:47:08-07:00', commit: 'a28ca7b', src: '4dfc6e50' },
   '/docs/components': { day: '2026-10-31', at: '2026-10-31T12:33:35-07:00', commit: '84c0aa4', src: 'c76c9873' },
   '/docs/craft/dither': { day: '2026-11-03', at: '2026-11-03T20:22:13-08:00', commit: 'b31ade0', src: '18d638cc' },
