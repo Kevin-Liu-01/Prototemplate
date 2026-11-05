@@ -28,19 +28,30 @@ import {
   PROGRESSIONS_ID,
   PROGRESSIONS_TITLE,
   progressionsIn,
+  VARIATIONS,
+  VARIATIONS_ID,
+  VARIATIONS_LEAD,
+  VARIATIONS_OF,
+  VARIATIONS_TITLE,
+  variationsIn,
 } from './content';
+import type { Variation } from './content';
 
 import './graticule.css';
 
 const MODES: readonly ShellMode[] = ['book'];
 
-type Part = { id: string; title: string; count: number; fact: string };
+type Part = { id: string; title: string; lead?: string; count: number; fact: string };
 
-/** The page's two sections in order, each with its count for the contents and its fact for the gutter; each opens on its h2 alone. */
+/** The page's three sections in order, each with its count for the contents and its fact for the gutter; a section opens on its h2 and its lead, where it has one. */
 const PARTS: readonly Part[] = [
   { id: MARKS_ID, title: MARKS_TITLE, count: GRATICULE_MARKS.length, fact: marksIn(GRATICULE_MARKS.length) },
+  { id: VARIATIONS_ID, title: VARIATIONS_TITLE, lead: VARIATIONS_LEAD, count: VARIATIONS.length, fact: variationsIn(VARIATIONS.length) },
   { id: PROGRESSIONS_ID, title: PROGRESSIONS_TITLE, count: PROGRESSIONS.length, fact: progressionsIn(PROGRESSIONS.length) },
 ];
+
+/** The drawn box the variations share with the mark they redraw. */
+const VARIATION_BOX = catalogMark(VARIATIONS_OF)?.box;
 
 /** The list under Knowledge > Marks > Graticule. */
 const SECTIONS: readonly ShellSection[] = [
@@ -64,11 +75,11 @@ function MarkName({ id, name }: { id: string; name: string }) {
   );
 }
 
-/** A catalog mark drawn by mask from its public file, cropped to its drawn box, so it takes the page's ink in both themes and every ring fills its figure. */
-function MarkArt({ mark }: { mark: CatalogMark }) {
-  const crop = mark.box ? boxMask(mark.box) : undefined;
+/** A mark drawn by mask from its public file, cropped to its drawn box, so it takes the page's ink in both themes and every ring fills its figure. */
+function MarkArt({ file, box }: { file: string; box: CatalogMark['box'] }) {
+  const crop = box ? boxMask(box) : undefined;
   const style: CSSProperties = {
-    '--gr-mask': `url('${mark.file}')`,
+    '--gr-mask': `url('${file}')`,
     ...(crop ? { '--gr-mask-size': crop.size, '--gr-mask-pos': crop.position, aspectRatio: String(crop.aspect) } : {}),
   };
   return <span className='gr-art' style={style} aria-hidden='true' />;
@@ -79,11 +90,24 @@ function MarkFigure({ mark }: { mark: CatalogMark }) {
   return (
     <figure className='gr-fig'>
       <Link href={cardHref(mark.id)} className='gr-art-link' tabIndex={-1} aria-hidden='true'>
-        <MarkArt mark={mark} />
+        <MarkArt file={mark.file} box={mark.box} />
       </Link>
       <figcaption>
         <MarkName id={mark.id} name={mark.name} />
         {mark.note && <p>{mark.note}</p>}
+      </figcaption>
+    </figure>
+  );
+}
+
+/** One variation: the drawing, then its name and what it changes. It has no card on /marks, so nothing links. */
+function VariationFigure({ variation }: { variation: Variation }) {
+  return (
+    <figure className='gr-fig'>
+      <MarkArt file={variation.file} box={VARIATION_BOX} />
+      <figcaption>
+        <h3>{variation.name}</h3>
+        <p>{variation.caption}</p>
       </figcaption>
     </figure>
   );
@@ -106,10 +130,10 @@ function Progression({ file, aspect, label }: { file: string; aspect: number; la
   );
 }
 
-type SectionProps = { id: string; n: number; fact: string; title: string; active: boolean; children: ReactNode };
+type SectionProps = { id: string; n: number; fact: string; title: string; lead?: string; active: boolean; children: ReactNode };
 
-/** One section of the book: a part that opens with the shared divider, its h2 alone, and its fact in the gutter note. */
-function Section({ id, n, fact, title, active, children }: SectionProps) {
+/** One section of the book: a part that opens with the shared divider, its h2 and its lead, and its fact in the gutter note. */
+function Section({ id, n, fact, title, lead, active, children }: SectionProps) {
   return (
     <section className={cn('pt-book-part gr-sec', active && 'is-active')} data-id={id} aria-labelledby={`gr-${id}`}>
       <div className='pt-book-sec'>
@@ -119,6 +143,7 @@ function Section({ id, n, fact, title, active, children }: SectionProps) {
         </small>
         <div>
           <h2 id={`gr-${id}`}>{title}</h2>
+          {lead && <p>{lead}</p>}
         </div>
       </div>
       {children}
@@ -144,14 +169,24 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
   const { jump, onContents } = useReadLine({ rootRef: sheetRef, selector: '.gr-sec', active, select, ready, smooth: true });
   jumpRef.current = jump;
 
-  const body = (id: string): ReactNode =>
-    id === MARKS_ID ? (
-      <div className='gr-row'>
-        {GRATICULE_MARKS.map((mark) => (
-          <MarkFigure key={mark.id} mark={mark} />
-        ))}
-      </div>
-    ) : (
+  const body = (id: string): ReactNode => {
+    if (id === MARKS_ID)
+      return (
+        <div className='gr-row'>
+          {GRATICULE_MARKS.map((mark) => (
+            <MarkFigure key={mark.id} mark={mark} />
+          ))}
+        </div>
+      );
+    if (id === VARIATIONS_ID)
+      return (
+        <div className='gr-row is-small'>
+          {VARIATIONS.map((variation) => (
+            <VariationFigure key={variation.id} variation={variation} />
+          ))}
+        </div>
+      );
+    return (
       <div className='gr-row is-steps'>
         {PROGRESSIONS.map(({ mark, file }) => {
           const name = catalogMark(mark)?.name ?? mark;
@@ -166,6 +201,7 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
         })}
       </div>
     );
+  };
 
   return (
     <div className='pt-book-col'>
@@ -191,7 +227,7 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
       />
 
       {PARTS.map((part, i) => (
-        <Section key={part.id} id={part.id} n={i + 1} fact={part.fact} title={part.title} active={active === part.id}>
+        <Section key={part.id} id={part.id} n={i + 1} fact={part.fact} title={part.title} lead={part.lead} active={active === part.id}>
           {body(part.id)}
         </Section>
       ))}
@@ -206,9 +242,10 @@ export type GraticuleViewerProps = {
 };
 
 /**
- * Every graticule mark on the viewer shell, then the two progressions from
- * a full globe to a mark. The list hangs under Marks > Graticule; flow
- * keys, so Space and the arrows scroll.
+ * Every graticule mark on the viewer shell, then the variations of Graticule
+ * jaw, thicker, then the two progressions from a full globe to a mark. The
+ * list hangs under Marks > Graticule; flow keys, so Space and the arrows
+ * scroll.
  */
 export default function GraticuleViewer({ progressionAspect, updated }: GraticuleViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);

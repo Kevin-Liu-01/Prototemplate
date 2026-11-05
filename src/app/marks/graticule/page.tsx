@@ -13,7 +13,7 @@ const route = seoRoute({
   path: '/marks/graticule',
   title: PAGE_NAMES.graticule.name,
   kind: 'page',
-  description: 'Every graticule mark, cut from the lines of a wireframe globe, and the four steps from a full globe to two of them.',
+  description: 'Every graticule mark, cut from the lines of a wireframe globe, variations of the thicker Graticule jaw, and the four steps from a full globe to two of them.',
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/graticule'),
 });
@@ -28,7 +28,7 @@ function aspectOf(publicPath: string): number {
   return width > 0 && height > 0 ? width / height : 1;
 }
 
-/** /marks/graticule: every graticule mark of the catalog, then the two progressions, whose aspect the server reads from their files. */
+/** /marks/graticule: every graticule mark of the catalog, the variations of Graticule jaw, thicker, then the two progressions, whose aspect the server reads from their files. */
 export default function GraticulePage() {
   return (
     <>

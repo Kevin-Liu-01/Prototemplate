@@ -1,4 +1,5 @@
-/* Graticule: every graticule mark, then the two progressions, on the viewer shell.
+/* Graticule: every graticule mark, the variations of Graticule jaw,
+   thicker, then the two progressions, on the viewer shell.
 
    The column, the head, the contents, the band and the section dividers are
    the shared book classes (BookView.css). Every figure is drawn by mask from
@@ -32,6 +33,19 @@
 .gr-row.is-steps {
   grid-template-columns: minmax(0, 1fr);
   gap: 40px;
+}
+
+/* the variations: one mark more across than the marks above at every width, so each is smaller and the set reads as
+   one sheet: four across at 1440, three on a tablet, two on a phone */
+.gr-row.is-small {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px 32px;
+}
+
+@container gr-sec (min-width: 960px) {
+  .gr-row.is-small {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .gr-fig {
@@ -137,6 +151,11 @@
   .gr-row {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 40px;
+  }
+
+  .gr-row.is-small {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
   }
 
   .gr-steps {
