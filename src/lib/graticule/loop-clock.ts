@@ -17,7 +17,9 @@
  * skips a frame of the design and loops that started together stay in
  * step. A frame writes the d of the stroke path and the fill path only when
  * it changed, and the frames of a hold share one string, so a hold costs
- * one reference comparison.
+ * one reference comparison. If the worker cannot start or fails, every
+ * drawing returns to its still and the clock stops, as under reduced
+ * motion.
  *
  * The clock follows measured frame cost with glyph-field's governor
  * (src/lib/glyph-field.ts): after a 2.5 s warmup, when 35% of a window of
@@ -61,10 +63,12 @@ const byId = new Map<number, Frames>();
 let nextId = 1;
 
 let worker: Worker | null = null;
-/** Set when the worker could not start or failed: every loop then holds the frames it has. */
+/** Set when the worker could not start or failed: every drawing then shows its still and no loop plays again. */
 let workerFailed = false;
 
 const playing = new Set<Runner>();
+/** Each mounted drawing's return to its still. */
+const stills = new Set<() => void>();
 let raf = 0;
 let last = 0;
 /** Grid frames one drawn frame spans: 1 at 60 frames a second, 2 once the governor steps down to 30. */
@@ -83,20 +87,29 @@ function receive({ data }: MessageEvent<FromWorker>) {
   for (const sent of data.frames) frames.list[sent[0]] = sent.length === 2 ? frames.list[sent[1]] : { stroke: sent[1], fill: sent[2] };
 }
 
+/** The worker could not start or failed: the clock stops and every drawing shows its still, not the frame it was on. */
+function fail() {
+  workerFailed = true;
+  worker?.terminate();
+  worker = null;
+  playing.clear();
+  cancelAnimationFrame(raf);
+  raf = 0;
+  last = 0;
+  govBornAt = 0;
+  for (const toStill of stills) toStill();
+}
+
 function startWorker(): Worker | null {
   if (worker || workerFailed) return worker;
   try {
     worker = new Worker(new URL('./frame-worker.ts', import.meta.url), { type: 'module' });
   } catch {
-    workerFailed = true;
+    fail();
     return null;
   }
   worker.addEventListener('message', receive);
-  worker.addEventListener('error', () => {
-    workerFailed = true;
-    worker?.terminate();
-    worker = null;
-  });
+  worker.addEventListener('error', fail);
   if (step > 1) post({ type: 'step', step });
   return worker;
 }
@@ -177,6 +190,12 @@ export function playLoop(watch: Element, loop: Loop, paths: LoopPaths): () => vo
   let wanting = false;
   /* the grid frame dt seconds on */
   const at = (dt: number) => (Math.floor((((t + dt) % loop.duration) * GRID_FPS) / step) * step) % count;
+  const toStill = () => {
+    t = 0;
+    shown = 0;
+    draw(rest);
+  };
+  stills.add(toStill);
   const runner: Runner = {
     ready: (dt) => Boolean(list[at(dt)]),
     advance(dt) {
@@ -198,7 +217,7 @@ export function playLoop(watch: Element, loop: Loop, paths: LoopPaths): () => vo
       if (wants && frames.wanted === 1) want(frames, shown + step);
       else if (!wants && !frames.wanted) post({ type: 'pause', id: frames.id });
     }
-    if (live && inView) {
+    if (live && inView && !workerFailed) {
       playing.add(runner);
       wake();
     } else playing.delete(runner);
@@ -237,15 +256,14 @@ export function playLoop(watch: Element, loop: Loop, paths: LoopPaths): () => vo
       return;
     }
     disarm();
-    t = 0;
-    shown = 0;
-    draw(rest);
+    toStill();
   };
   if (!reduce.matches) arm();
   reduce.addEventListener('change', onReduce);
   return () => {
     disarm();
     reduce.removeEventListener('change', onReduce);
+    stills.delete(toStill);
     frames.mounted -= 1;
     if (frames.mounted) return;
     kept.delete(key);
