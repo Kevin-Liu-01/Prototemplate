@@ -23,11 +23,6 @@ import {
   MARKS_ID,
   MARKS_TITLE,
   marksIn,
-  PROGRESSION_STEPS,
-  PROGRESSIONS,
-  PROGRESSIONS_ID,
-  PROGRESSIONS_TITLE,
-  progressionsIn,
   VARIATIONS,
   VARIATIONS_ID,
   VARIATIONS_LEAD,
@@ -43,11 +38,10 @@ const MODES: readonly ShellMode[] = ['book'];
 
 type Part = { id: string; title: string; lead?: string; count: number; fact: string };
 
-/** The page's three sections in order, each with its count for the contents and its fact for the gutter; a section opens on its h2 and its lead, where it has one. */
+/** The page's sections in order, each with its count for the contents and its fact for the gutter; a section opens on its h2 and its lead, where it has one. */
 const PARTS: readonly Part[] = [
   { id: MARKS_ID, title: MARKS_TITLE, count: GRATICULE_MARKS.length, fact: marksIn(GRATICULE_MARKS.length) },
   { id: VARIATIONS_ID, title: VARIATIONS_TITLE, lead: VARIATIONS_LEAD, count: VARIATIONS.length, fact: variationsIn(VARIATIONS.length) },
-  { id: PROGRESSIONS_ID, title: PROGRESSIONS_TITLE, count: PROGRESSIONS.length, fact: progressionsIn(PROGRESSIONS.length) },
 ];
 
 /** The drawn box the variations share with the mark they redraw. */
@@ -66,7 +60,7 @@ const SECTIONS: readonly ShellSection[] = [
 /** A mark's card on /marks, by its id: a shortlisted mark's card is a section the shell lands on, every other dynamic card carries its id as an anchor. */
 const cardHref = (id: string) => `/marks#${id}`;
 
-/** A mark's name as a heading that links to its card on /marks; both sections name their marks this way. */
+/** A mark's name as a heading that links to its card on /marks. */
 function MarkName({ id, name }: { id: string; name: string }) {
   return (
     <h3>
@@ -113,23 +107,6 @@ function VariationFigure({ variation }: { variation: Variation }) {
   );
 }
 
-/**
- * A progression drawn by mask from its public file, so it takes the page's
- * ink in both themes. Each globe is its own square cell, masked by the whole
- * file at the file's aspect and shifted to that globe, so the steps lie in
- * one row as the file draws them and wrap two by two on a phone.
- */
-function Progression({ file, aspect, label }: { file: string; aspect: number; label: string }) {
-  const style: CSSProperties = { '--gr-mask': `url('${file}')`, '--gr-aspect': aspect, '--gr-steps': PROGRESSION_STEPS };
-  return (
-    <span className='gr-steps' style={style} role='img' aria-label={label}>
-      {Array.from({ length: PROGRESSION_STEPS }, (_, i) => (
-        <span key={i} className='gr-step' style={{ '--gr-at': `${(i / (PROGRESSION_STEPS - 1)) * 100}%` }} />
-      ))}
-    </span>
-  );
-}
-
 type SectionProps = { id: string; n: number; fact: string; title: string; lead?: string; active: boolean; children: ReactNode };
 
 /** One section of the book: a part that opens with the shared divider, its h2 and its lead, and its fact in the gutter note. */
@@ -152,8 +129,6 @@ function Section({ id, n, fact, title, lead, active, children }: SectionProps) {
 }
 
 type BookProps = {
-  /** the progressions' viewBox aspect, width over height, read from their files on the server */
-  progressionAspect: number;
   sheetRef: RefObject<HTMLDivElement | null>;
   /** receives the section jump, for a re-click on the active row in the list */
   jumpRef: RefObject<(id: string) => void>;
@@ -162,7 +137,7 @@ type BookProps = {
   updated: PageUpdated;
 };
 
-function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, updated }: BookProps) {
+function GraticuleBook({ sheetRef, jumpRef, activeOut, updated }: BookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -178,27 +153,11 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
           ))}
         </div>
       );
-    if (id === VARIATIONS_ID)
-      return (
-        <div className='gr-row is-small'>
-          {VARIATIONS.map((variation) => (
-            <VariationFigure key={variation.id} variation={variation} />
-          ))}
-        </div>
-      );
     return (
-      <div className='gr-row is-steps'>
-        {PROGRESSIONS.map(({ mark, file }) => {
-          const name = catalogMark(mark)?.name ?? mark;
-          return (
-            <figure key={mark} className='gr-fig'>
-              <Progression file={file} aspect={progressionAspect} label={`A wireframe globe becoming ${name} in four steps`} />
-              <figcaption>
-                <MarkName id={mark} name={name} />
-              </figcaption>
-            </figure>
-          );
-        })}
+      <div className='gr-row is-small'>
+        {VARIATIONS.map((variation) => (
+          <VariationFigure key={variation.id} variation={variation} />
+        ))}
       </div>
     );
   };
@@ -211,8 +170,8 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
         updated={updated}
         facts={[
           { icon: 'swatch', key: 'Marks', value: GRATICULE_MARKS.length },
-          { icon: 'globe', key: 'Progressions', value: PROGRESSIONS.length },
-          { icon: 'arrow-right-circle', key: 'Steps', value: PROGRESSION_STEPS },
+          { icon: 'grid', key: 'Variations', value: VARIATIONS.length },
+          { icon: 'index', key: 'Sections', value: PARTS.length },
         ]}
         contents={
           <nav className='pt-book-toc' aria-label='Contents'>
@@ -236,18 +195,16 @@ function GraticuleBook({ progressionAspect, sheetRef, jumpRef, activeOut, update
 }
 
 export type GraticuleViewerProps = {
-  progressionAspect: number;
   /** the /marks/graticule entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
 };
 
 /**
  * Every graticule mark on the viewer shell, then the variations of Graticule
- * jaw, thicker, then the two progressions from a full globe to a mark. The
- * list hangs under Marks > Graticule; flow keys, so Space and the arrows
- * scroll.
+ * jaw, thicker. The list hangs under Marks > Graticule; flow keys, so Space
+ * and the arrows scroll.
  */
-export default function GraticuleViewer({ progressionAspect, updated }: GraticuleViewerProps) {
+export default function GraticuleViewer({ updated }: GraticuleViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef<string>(MARKS_ID);
@@ -270,7 +227,7 @@ export default function GraticuleViewer({ progressionAspect, updated }: Graticul
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <GraticuleBook progressionAspect={progressionAspect} sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
+        <GraticuleBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
       </Sheet>
     </ViewerShell>
   );

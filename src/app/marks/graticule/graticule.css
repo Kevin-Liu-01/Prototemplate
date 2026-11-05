@@ -1,5 +1,5 @@
-/* Graticule: every graticule mark, the variations of Graticule jaw,
-   thicker, then the two progressions, on the viewer shell.
+/* Graticule: every graticule mark, then the variations of Graticule jaw,
+   thicker, on the viewer shell.
 
    The column, the head, the contents, the band and the section dividers are
    the shared book classes (BookView.css). Every figure is drawn by mask from
@@ -15,8 +15,8 @@
 }
 
 /* every figure row runs from the text's line, right of the dividers' gutter, to the column's right edge: 960 px at
-   1440, three marks across. A mark is cropped to its drawn box and a progression's viewBox is its rings' box, so the
-   first ring of every row starts on that line and the last one ends on the column's edge */
+   1440, three marks across. Every figure is cropped to its drawn box, so the first ring of every row starts on that
+   line and the last one ends on the column's edge */
 .gr-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -28,11 +28,6 @@
   .gr-row {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-}
-
-.gr-row.is-steps {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 40px;
 }
 
 /* the variations: one mark more across than the marks above, so each is smaller and the set reads as one sheet: four
@@ -71,23 +66,6 @@
   background: currentColor;
   -webkit-mask: var(--gr-mask) var(--gr-mask-pos, center) / var(--gr-mask-size, contain) no-repeat;
   mask: var(--gr-mask) var(--gr-mask-pos, center) / var(--gr-mask-size, contain) no-repeat;
-}
-
-/* a progression: one square cell per globe, each masked by the whole file at the file's aspect and shifted to its
-   globe. The globes are evenly spaced, so globe i of n, counted from 0, sits at i / (n - 1) of the way across. The gaps
-   keep the file's own spacing: what the globes leave of the row, shared between them */
-.gr-steps {
-  display: grid;
-  grid-template-columns: repeat(var(--gr-steps), minmax(0, 1fr));
-  column-gap: calc((100% - var(--gr-steps) * 100% / var(--gr-aspect)) / (var(--gr-steps) - 1));
-}
-
-.gr-step {
-  display: block;
-  aspect-ratio: 1;
-  background: currentColor;
-  -webkit-mask: var(--gr-mask) var(--gr-at) 0 / calc(var(--gr-aspect) * 100%) 100% no-repeat;
-  mask: var(--gr-mask) var(--gr-at) 0 / calc(var(--gr-aspect) * 100%) 100% no-repeat;
 }
 
 .gr-art-link {
@@ -146,8 +124,7 @@
 }
 
 /* a phone's column: one mark across the row, so a note keeps a reading width. A variation's drawing stops at 240px,
-   about two thirds of the column, so it stays smaller than a mark above it and its cuts still read. A progression's
-   four globes wrap two by two, each about half the column */
+   about two thirds of the column, so it stays smaller than a mark above it and its cuts still read */
 @container gr-sec (max-width: 539px) {
   .gr-row,
   .gr-row.is-small {
@@ -157,10 +134,5 @@
 
   .gr-row.is-small .gr-art {
     max-width: 240px;
-  }
-
-  .gr-steps {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
   }
 }
