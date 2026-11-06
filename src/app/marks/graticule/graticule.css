@@ -1,6 +1,6 @@
-/* Graticule: every graticule mark, then its line globe animations, then its
-   variations (new drawings of the globe, then redraws of Graticule jaw,
-   thicker), on the viewer shell.
+/* Graticule: the best graticule marks, then every graticule mark, then its
+   line globe animations, then every variation by study, newest first, on the
+   viewer shell.
 
    The column, the head, the contents, the band and the section dividers are
    the shared book classes (BookView.css). Every still figure is drawn by mask
@@ -45,9 +45,9 @@
   }
 }
 
-/* the animations: three across at every width above a phone, one figure each, with its two marks stacked on the
-   marks' columns, so the six drawings make a heavy row over a jaw row and each name sits under its column (a phone's
-   rule is below) */
+/* the animations: on the marks' three columns at every width above a phone, one figure each, with its two marks
+   stacked, so the drawings make a heavy row over a jaw row and each name sits under its column (a phone's rule is
+   below) */
 .gr-row.is-anim {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -102,7 +102,7 @@
   gap: 6px;
 }
 
-.gr-fig h3 {
+.gr-fig :is(h3, h4) {
   margin: 0;
   font-weight: var(--pt-w-label);
   font-size: var(--pt-t-small);
@@ -135,6 +135,49 @@
   text-wrap: pretty;
 }
 
+/* a study of the variations: its sub-head and lead on the text's line, then its drawings. Space alone sets one study
+   apart from the next */
+.gr-study {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scroll-margin-top: 20px;
+}
+
+.gr-study + .gr-study {
+  margin-top: 32px;
+}
+
+.gr-study-head {
+  display: grid;
+  gap: 6px;
+  padding-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
+}
+
+.gr-study-head h3 {
+  margin: 0;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-title);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+}
+
+.gr-study-head p {
+  max-width: var(--pt-measure);
+  margin: 0;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+/* the studies hold a few hundred drawings: one off screen skips its style, layout and paint, mask fetch included, and
+   holds about a figure's height at 1440 until it is first drawn, then its own */
+.gr-study .gr-fig {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 216px auto 330px;
+}
+
 /* the dividers' own breakpoint (BookView.css), where the gutter folds above the heading: the rows take the whole
    column, two marks across */
 @media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
@@ -142,7 +185,8 @@
     gap: 28px;
   }
 
-  .gr-row {
+  .gr-row,
+  .gr-study-head {
     padding-left: 0;
   }
 }

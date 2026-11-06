@@ -1,5 +1,5 @@
 // Tests for the line globe animations (src/lib/graticule/): Language globe
-// turn, Globe lean and Mark to globe, each for Graticule GT, heavy and
+// turn and Mark to globe, each for Graticule GT, heavy and
 // Graticule jaw, thicker. For each animation and mark, frame 0 and the
 // frame at the loop length are the still, and both draw the rest mark: IoU
 // 0.995 or more at 512 px against the mark's file in public/marks/dynamic,
@@ -57,7 +57,6 @@ const SAMPLES = 30;
  */
 const FINGERPRINTS = {
   'language-turn': { heavy: '636767f358cf4b0a', jaw: 'af5d50c09aad1d6e' },
-  'globe-lean': { heavy: '297dcbd4aec017a1', jaw: '34bdf2cf7644f45b' },
   'mark-to-globe': { heavy: 'e9a2874c65ea4c30', jaw: 'd3599d49727863a5' },
 };
 
@@ -127,7 +126,7 @@ function ious(pairs) {
   );
 }
 
-test('the registry holds the three animations, each with a loop length', () => {
+test('the registry holds the two animations, each with a loop length', () => {
   assert.deepEqual(Object.keys(LINE_ANIMATIONS), [...LINE_ANIMATION_IDS]);
   for (const id of LINE_ANIMATION_IDS) {
     const { duration } = LINE_ANIMATIONS[id];

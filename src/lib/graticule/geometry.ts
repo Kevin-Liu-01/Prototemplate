@@ -3,7 +3,7 @@
  * Graticule jaw, thicker are read as lines on one sphere: the ring is its
  * outline, and the meridians, the latitude, the equator and the stem are
  * circles on it. Every cut is a gap along a circle, solved against the line
- * it clears. The three line animations (language-turn.ts, globe-lean.ts,
+ * it clears. The two line animations (language-turn.ts and
  * mark-to-globe.ts) build their frames from this model, and each returns SVG
  * path data: a stroke drawn at REST_WEIGHT with butt caps and round joins,
  * and a fill, both in currentColor.

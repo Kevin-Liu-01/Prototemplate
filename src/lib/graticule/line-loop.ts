@@ -9,13 +9,12 @@
  */
 import type { LinePaths, MarkId } from './geometry';
 
-export const LINE_ANIMATION_IDS = ['language-turn', 'globe-lean', 'mark-to-globe'] as const;
+export const LINE_ANIMATION_IDS = ['language-turn', 'mark-to-globe'] as const;
 export type LineAnimationId = (typeof LINE_ANIMATION_IDS)[number];
 
 /** Each animation's public name. */
 export const LINE_ANIMATION_TITLES: Readonly<Record<LineAnimationId, string>> = {
   'language-turn': 'Language globe turn',
-  'globe-lean': 'Globe lean',
   'mark-to-globe': 'Mark to globe',
 };
 

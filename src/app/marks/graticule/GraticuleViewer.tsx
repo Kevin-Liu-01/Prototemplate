@@ -27,11 +27,16 @@ import {
   ANIMATIONS_LEAD,
   ANIMATIONS_TITLE,
   animationsIn,
+  BEST,
+  BEST_ID,
+  BEST_LEAD,
+  BEST_TITLE,
   GRATICULE_MARKS,
   LEAD,
   MARKS_ID,
   MARKS_TITLE,
   marksIn,
+  STUDIES,
   VARIATIONS,
   VARIATIONS_ID,
   VARIATIONS_LEAD,
@@ -39,7 +44,7 @@ import {
   VARIATIONS_TITLE,
   variationsIn,
 } from './content';
-import type { Animation, Variation } from './content';
+import type { Animation, Best, Study, Variation } from './content';
 
 import './graticule.css';
 
@@ -49,6 +54,7 @@ type Part = { id: string; title: string; lead?: string; count: number; fact: str
 
 /** The page's sections in order, each with its count for the contents and its fact for the gutter; a section opens on its h2 and its lead, where it has one. */
 const PARTS: readonly Part[] = [
+  { id: BEST_ID, title: BEST_TITLE, lead: BEST_LEAD, count: BEST.length, fact: marksIn(BEST.length) },
   { id: MARKS_ID, title: MARKS_TITLE, count: GRATICULE_MARKS.length, fact: marksIn(GRATICULE_MARKS.length) },
   { id: ANIMATIONS_ID, title: ANIMATIONS_TITLE, lead: ANIMATIONS_LEAD, count: ANIMATIONS.length, fact: animationsIn(ANIMATIONS.length) },
   { id: VARIATIONS_ID, title: VARIATIONS_TITLE, lead: VARIATIONS_LEAD, count: VARIATIONS.length, fact: variationsIn(VARIATIONS.length) },
@@ -60,8 +66,11 @@ const ANIMATED = ANIMATED_MARKS.map(({ mark, id }) => {
   return { mark, name: row?.name ?? id, box: row?.box };
 });
 
-/** The drawn box every variation shares with Graticule jaw, thicker. */
-const VARIATION_BOX = catalogMark(VARIATIONS_BOX_OF)?.box;
+/** The drawn box a variation shares with Graticule jaw, thicker, or with the catalog mark its entry names. */
+const variationBox = (variation: Variation) => catalogMark(variation.boxOf ?? VARIATIONS_BOX_OF)?.box;
+
+/** A figure's heading level: h3 directly under a section's h2, h4 under a study's h3. */
+type Level = 'h3' | 'h4';
 
 /** The list under Knowledge > Marks > Graticule. */
 const SECTIONS: readonly ShellSection[] = [
@@ -133,15 +142,37 @@ function AnimationFigure({ animation, loops }: { animation: Animation; loops: Li
 }
 
 /** One variation: the drawing, then its name and what it draws or changes. It has no card on /marks, so nothing links. */
-function VariationFigure({ variation }: { variation: Variation }) {
+function VariationFigure({ variation, level: H = 'h3' }: { variation: Variation; level?: Level }) {
   return (
     <figure className='gr-fig'>
-      <MarkArt file={variation.file} box={VARIATION_BOX} />
+      <MarkArt file={variation.file} box={variationBox(variation)} />
       <figcaption>
-        <h3>{variation.name}</h3>
+        <H>{variation.name}</H>
         <p>{variation.caption}</p>
       </figcaption>
     </figure>
+  );
+}
+
+/** One best mark: a catalog mark's figure, which links to its card, or a variation's. */
+function BestFigure({ best }: { best: Best }) {
+  return best.kind === 'mark' ? <MarkFigure mark={best.mark} /> : <VariationFigure variation={best.variation} />;
+}
+
+/** One study of the variations: its sub-head and lead on the text's line, then its drawings. */
+function StudyBlock({ study }: { study: Study }) {
+  return (
+    <section className='gr-study' id={study.id} aria-labelledby={`gr-${study.id}`}>
+      <header className='gr-study-head'>
+        <h3 id={`gr-${study.id}`}>{study.title}</h3>
+        <p>{study.lead}</p>
+      </header>
+      <div className='gr-row is-small'>
+        {study.variations.map((variation) => (
+          <VariationFigure key={variation.id} variation={variation} level='h4' />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -184,6 +215,14 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated, loops }: BookPro
   jumpRef.current = jump;
 
   const body = (id: string): ReactNode => {
+    if (id === BEST_ID)
+      return (
+        <div className='gr-row'>
+          {BEST.map((best) => (
+            <BestFigure key={best.kind === 'mark' ? best.mark.id : best.variation.id} best={best} />
+          ))}
+        </div>
+      );
     if (id === MARKS_ID)
       return (
         <div className='gr-row'>
@@ -200,13 +239,7 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated, loops }: BookPro
           ))}
         </div>
       );
-    return (
-      <div className='gr-row is-small'>
-        {VARIATIONS.map((variation) => (
-          <VariationFigure key={variation.id} variation={variation} />
-        ))}
-      </div>
-    );
+    return STUDIES.map((study) => <StudyBlock key={study.id} study={study} />);
   };
 
   return (
@@ -249,15 +282,15 @@ export type GraticuleViewerProps = {
 };
 
 /**
- * Every graticule mark on the viewer shell, then its line globe animations,
- * then its variations: new drawings of the globe, then redraws of Graticule
- * jaw, thicker. The list hangs under
- * Marks > Graticule; flow keys, so Space and the arrows scroll.
+ * The best graticule marks on the viewer shell, then every graticule mark,
+ * then its line globe animations, then every variation by study, newest
+ * first. The list hangs under Marks > Graticule; flow keys, so Space and the
+ * arrows scroll.
  */
 export default function GraticuleViewer({ updated, loops }: GraticuleViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
-  const activeOut = useRef<string>(MARKS_ID);
+  const activeOut = useRef<string>(PARTS[0].id);
 
   return (
     <ViewerShell
