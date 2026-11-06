@@ -58,6 +58,42 @@ type VariationEntry = Omit<Variation, 'file'>;
 /** The new drawings of the globe, in the order chosen. Each caption says what the whole drawing does. */
 const DRAWINGS: readonly VariationEntry[] = [
   {
+    id: 'graticule-short-arc-slant',
+    name: 'Short arc slant',
+    caption:
+      "The G's top arc ends early to leave a wide opening, its end and the bar's free end are cut 20 degrees off plumb as mirror images, and the stem drops from two round fillets through the lower latitude to the ring.",
+  },
+  {
+    id: 'graticule-short-arc-chamfer',
+    name: 'Short arc chamfer',
+    caption:
+      "The G's top arc ends early to leave a wide opening, its end and the bar's free end are chamfered at 45 degrees as mirror images, and the stem drops from two round fillets through the lower latitude to the ring.",
+  },
+  {
+    id: 'graticule-short-arc-point',
+    name: 'Short arc point',
+    caption:
+      "The G's top arc ends early to leave a wide opening, its end and the bar's free end are cut at 30 degrees to the level as mirror images so each ends in a long point, and the stem drops from two round fillets through the lower latitude to the ring.",
+  },
+  {
+    id: 'graticule-plumb-ends',
+    name: 'Plumb ends',
+    caption:
+      "One oval draws the G from the bar round the left, the G's end and the bar's free end are both cut plumb, and the T's stem meets the bar through two round fillets and runs through the oval to the ring.",
+  },
+  {
+    id: 'graticule-slanted-ends',
+    name: 'Slanted ends',
+    caption:
+      "One oval draws the G from the bar round the left, the G's end and the bar's free end are cut 20 degrees off plumb as mirror images, and the T's stem meets the bar through two round fillets and runs through the oval to the ring.",
+  },
+  {
+    id: 'graticule-chamfered-ends',
+    name: 'Chamfered ends',
+    caption:
+      "One oval draws the G from the bar round the left, the G's end and the bar's free end are cut at 45 degrees as mirror images, and the T's stem meets the bar through two round fillets and runs through the oval to the ring.",
+  },
+  {
     id: 'graticule-thin-curved-bar',
     name: 'Thin curved bar',
     caption:
