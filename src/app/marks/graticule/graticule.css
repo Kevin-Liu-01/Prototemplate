@@ -45,15 +45,16 @@
   }
 }
 
-/* the animations: on the marks' three columns at every width above a phone, one figure each, with its two marks
-   stacked, so the drawings make a heavy row over a jaw row and each name sits under its column (a phone's rule is
+/* the animations: two columns at every width above a phone, one figure each, with its two marks side by side, heavy
+   first, so the row draws four marks across like the variations and each name sits under its pair (a phone's rule is
    below) */
 .gr-row.is-anim {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .gr-pair {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
 }
 
@@ -191,8 +192,8 @@
   }
 }
 
-/* a phone's column: one figure across the row, so a note keeps a reading width. An animation sets its two marks side
-   by side, heavy first. A variation's drawing stops at 240px, about two thirds of the column, so it stays smaller
+/* a phone's column: one figure across the row, so a note keeps a reading width. An animation's two marks close up
+   to a narrower gap. A variation's drawing stops at 240px, about two thirds of the column, so it stays smaller
    than a mark above it and its cuts still read */
 @container gr-sec (max-width: 539px) {
   .gr-row,
@@ -203,7 +204,6 @@
   }
 
   .gr-pair {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
 
