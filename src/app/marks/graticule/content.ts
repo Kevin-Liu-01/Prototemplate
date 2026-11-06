@@ -48,6 +48,8 @@ export const BEST_TITLE = 'Best';
 
 /** The best marks in order, each by its catalog id or its variation id: the static mark first, then its hover state. */
 const BEST_IDS: readonly string[] = [
+  'meridian-wide-axis-gap',
+  'oval-wide-axis-gap',
   'meridian-globe',
   'oval-axis-behind',
   'meridian-axis-behind',
