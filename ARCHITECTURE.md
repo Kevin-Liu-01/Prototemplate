@@ -49,8 +49,9 @@ src/
     skills/               /skills, /skills/<slug> and the raw skill files
     marks/                /marks: the mark explorations; graticule/ is
                           /marks/graticule, every graticule mark, its line
-                          globe animations and the variations of Graticule
-                          jaw, thicker
+                          globe animations and its variations (new drawings
+                          of the globe, then redraws of Graticule jaw,
+                          thicker)
     blog/                 the blog on the viewer shell: the posts (content/blog)
                           rendered with the landing site's MDX components, and
                           the changelog (src/lib/blog-posts.ts, generated)

@@ -42,24 +42,89 @@ export const ANIMATIONS: readonly Animation[] = [
   },
 ];
 
-/** The section of the variations of Graticule jaw, thicker; its divider is the h2 and the lead. */
+/** The section of the variations; its divider is the h2 and the lead. */
 export const VARIATIONS_ID = 'variations';
 export const VARIATIONS_TITLE = 'Variations';
-export const VARIATIONS_LEAD = "Each variation redraws an earlier build of Graticule jaw, thicker, in which the stub in the G's opening is a sliver.";
 
-/** The catalog mark whose earlier build the variations redraw; each variation's file keeps its 256 unit square and its ring, so they share its drawn box. */
-export const VARIATIONS_OF = 'graticule-jaw-thicker';
+/** The catalog mark whose drawn box every variation shares: each variation's file keeps its 256 unit square and draws its ring at the same centre and outer diameter. */
+export const VARIATIONS_BOX_OF = 'graticule-jaw-thicker';
 
-/** One variation: its name, what it changes, and its public file in currentColor. */
+/** One variation: its name, what it draws or changes, and its public file in currentColor. */
 export type Variation = { id: string; name: string; caption: string; file: string };
 
+/** A variation before its file is added. */
+type VariationEntry = Omit<Variation, 'file'>;
+
+/** The new drawings of the globe, in the order chosen. Each caption says what the whole drawing does. */
+const DRAWINGS: readonly VariationEntry[] = [
+  {
+    id: 'graticule-thin-curved-bar',
+    name: 'Thin curved bar',
+    caption:
+      "Thin lines draw the whole globe, the G's top arc meets the right meridian in a point and the two halves of the bar curve down side by side into the T's stem.",
+  },
+  {
+    id: 'graticule-heavy-curved-bar',
+    name: 'Heavy curved bar',
+    caption:
+      'Heavy lines draw the globe with no meridians, and the bar runs from ring to ring and curves into a stem that stops a gap above the lower latitude, with a second stem below it.',
+  },
+  {
+    id: 'graticule-heavy-open-bar',
+    name: 'Heavy open bar',
+    caption:
+      'Heavy lines draw the globe with no meridians, the bar runs from a free end inside the G to the ring, and the stem hangs from it through two fillets and stops a gap above the lower latitude, with a second stem below it.',
+  },
+  {
+    id: 'graticule-rounded-t',
+    name: 'Rounded T',
+    caption:
+      "One oval draws the G from the bar round the left to an open end, and the T's stem meets the bar through two round fillets, every line at the ring's weight.",
+  },
+  {
+    id: 'graticule-thin-crossing-bar',
+    name: 'Thin crossing bar',
+    caption:
+      "Thin lines draw the whole globe, the G's top arc meets the right meridian in a point and a straight bar crosses the left meridian and drops a stem to the ring.",
+  },
+  {
+    id: 'graticule-heavy-joined-stem',
+    name: 'Heavy joined stem',
+    caption:
+      'Heavy lines draw the globe with no meridians, the bar runs from a free end inside the G to the ring, and the stem hangs from it through two fillets and runs into the lower latitude, with a second stem a gap below it.',
+  },
+  {
+    id: 'graticule-star-crossing',
+    name: 'Star crossing',
+    caption:
+      "The stem and the equator meet in a four-point star, the latitudes stop short of the left meridian on its outer side, and the G's top arc runs past the right meridian to an open end.",
+  },
+  {
+    id: 'graticule-star-hook',
+    name: 'Star hook',
+    caption:
+      "The stem and the equator meet in a four-point star, the G's top arc bends down at its end into a point on the right meridian, and a short piece of the equator runs from the ring to just outside the left meridian.",
+  },
+  {
+    id: 'graticule-medium-short-stem',
+    name: 'Medium short stem',
+    caption:
+      "Every break is half a line's width wide, the G's top arc ends square past the right meridian and the bar curves into a stem that ends on the lower latitude.",
+  },
+  {
+    id: 'graticule-medium-long-stem',
+    name: 'Medium long stem',
+    caption:
+      "Every break is half a line's width wide, the G's top arc ends square past the right meridian and the bar curves into a stem that runs through the lower latitude to the ring.",
+  },
+];
+
 /**
- * The variations, best first. They are drawn on this page alone and are not
- * catalog rows (src/lib/marks.ts). The lead says once that the stub of the
- * build they redraw is a sliver, so a caption names the stub only where its
- * variation changes it.
+ * The redraws of an earlier build of Graticule jaw, thicker, best first. That
+ * build's stub in the G's opening is a sliver. The lead says so once, so a
+ * caption names the stub only where its redraw changes it.
  */
-export const VARIATIONS: readonly Variation[] = [
+const REDRAWS: readonly VariationEntry[] = [
   {
     id: 'graticule-jaw-no-stub',
     name: 'No stub',
@@ -180,7 +245,13 @@ export const VARIATIONS: readonly Variation[] = [
     caption:
       "At every crossing the latitude breaks and the meridian runs whole, so the G's top arc hooks into the right meridian and its end is left as a loose piece in the opening.",
   },
-].map((variation) => ({ ...variation, file: `/marks/graticule/variations/${variation.id}.svg` }));
+];
+
+/** The variations: the new drawings, then the redraws. They are drawn on this page alone and are not catalog rows (src/lib/marks.ts). */
+export const VARIATIONS: readonly Variation[] = [...DRAWINGS, ...REDRAWS].map((variation) => ({ ...variation, file: `/marks/graticule/variations/${variation.id}.svg` }));
+
+/** The section's lead, true of every variation: it counts the new drawings, which come first. */
+export const VARIATIONS_LEAD = `The first ${DRAWINGS.length} are new drawings of the globe, and the rest redraw an earlier build of Graticule jaw, thicker, whose stub in the G's opening is a sliver.`;
 
 /** A count with its noun. */
 export const marksIn = (n: number) => `${n} ${n === 1 ? 'mark' : 'marks'}`;

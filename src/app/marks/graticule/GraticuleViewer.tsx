@@ -35,7 +35,7 @@ import {
   VARIATIONS,
   VARIATIONS_ID,
   VARIATIONS_LEAD,
-  VARIATIONS_OF,
+  VARIATIONS_BOX_OF,
   VARIATIONS_TITLE,
   variationsIn,
 } from './content';
@@ -60,8 +60,8 @@ const ANIMATED = ANIMATED_MARKS.map(({ mark, id }) => {
   return { mark, name: row?.name ?? id, box: row?.box };
 });
 
-/** The drawn box the variations share with the mark they redraw. */
-const VARIATION_BOX = catalogMark(VARIATIONS_OF)?.box;
+/** The drawn box every variation shares with Graticule jaw, thicker. */
+const VARIATION_BOX = catalogMark(VARIATIONS_BOX_OF)?.box;
 
 /** The list under Knowledge > Marks > Graticule. */
 const SECTIONS: readonly ShellSection[] = [
@@ -132,7 +132,7 @@ function AnimationFigure({ animation, loops }: { animation: Animation; loops: Li
   );
 }
 
-/** One variation: the drawing, then its name and what it changes. It has no card on /marks, so nothing links. */
+/** One variation: the drawing, then its name and what it draws or changes. It has no card on /marks, so nothing links. */
 function VariationFigure({ variation }: { variation: Variation }) {
   return (
     <figure className='gr-fig'>
@@ -250,7 +250,8 @@ export type GraticuleViewerProps = {
 
 /**
  * Every graticule mark on the viewer shell, then its line globe animations,
- * then the variations of Graticule jaw, thicker. The list hangs under
+ * then its variations: new drawings of the globe, then redraws of Graticule
+ * jaw, thicker. The list hangs under
  * Marks > Graticule; flow keys, so Space and the arrows scroll.
  */
 export default function GraticuleViewer({ updated, loops }: GraticuleViewerProps) {

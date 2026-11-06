@@ -1,5 +1,6 @@
-/* Graticule: every graticule mark, then its line globe animations, then the
-   variations of Graticule jaw, thicker, on the viewer shell.
+/* Graticule: every graticule mark, then its line globe animations, then its
+   variations (new drawings of the globe, then redraws of Graticule jaw,
+   thicker), on the viewer shell.
 
    The column, the head, the contents, the band and the section dividers are
    the shared book classes (BookView.css). Every still figure is drawn by mask
