@@ -121,8 +121,9 @@ const DRAWINGS: readonly VariationEntry[] = [
 
 /**
  * The redraws of an earlier build of Graticule jaw, thicker, best first. That
- * build's stub in the G's opening is a sliver. The lead says so once, so a
- * caption names the stub only where its redraw changes it.
+ * build's stub in the G's opening is a sliver, and every redraw cuts it away
+ * or changes it. The lead says so once, so a caption names the stub only
+ * where changing it is the point of its redraw.
  */
 const REDRAWS: readonly VariationEntry[] = [
   {
@@ -251,7 +252,7 @@ const REDRAWS: readonly VariationEntry[] = [
 export const VARIATIONS: readonly Variation[] = [...DRAWINGS, ...REDRAWS].map((variation) => ({ ...variation, file: `/marks/graticule/variations/${variation.id}.svg` }));
 
 /** The section's lead, true of every variation: it counts the new drawings, which come first. */
-export const VARIATIONS_LEAD = `The first ${DRAWINGS.length} are new drawings of the globe, and the rest redraw an earlier build of Graticule jaw, thicker, whose stub in the G's opening is a sliver.`;
+export const VARIATIONS_LEAD = `The first ${DRAWINGS.length} are new drawings of the globe, and the rest redraw an earlier build of Graticule jaw, thicker, whose stub in the G's opening is a sliver that each redraw cuts away or changes.`;
 
 /** A count with its noun. */
 export const marksIn = (n: number) => `${n} ${n === 1 ? 'mark' : 'marks'}`;
