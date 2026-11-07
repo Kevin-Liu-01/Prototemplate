@@ -68,3 +68,9 @@ Provenance for `prototemplate`. The first list is the skill's sources as written
 | Line | Where | Source |
 | --- | --- | --- |
 | `/marks` holds the two production marks in the head, the shortlist, then every family by the idea it draws, read from the catalog and `SHORTLIST` in `src/lib/marks.ts`, with `pnpm import:marks` | `references/hub.md` | Kevin's request of 2026-10-30 to consolidate the marks and order the page better; the marks upgrade plan of the same day, kept outside the repository |
+
+## Added or changed on 2026-11-07
+
+| Line | Where | Source |
+| --- | --- | --- |
+| `/marks` leads its shortlist with the logo and its state, and `/marks/graticule` holds the best marks, the logo's progression, every graticule mark, the hovers, the loader and the line globe animations, the globe rows and the variations | `references/hub.md` | Kevin's choice of the logo on 2026-11-06 and his request of 2026-11-07 to update Prototemplate with the progression and the logos |

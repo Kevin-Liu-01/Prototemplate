@@ -1,6 +1,6 @@
 ---
 title: Marks and the GT mark
-description: "The shortlist, the speed marks and the globe concepts at every size on paper and ink, the GT mark set inline as a word, and a dithered shine."
+description: "The logo and the shortlist, the speed marks and the globe concepts at every size on paper and ink, the GT mark as a word, and a dithered shine."
 icon: Bolt
 sources:
   - src/components/docs/demos
@@ -16,11 +16,11 @@ sources:
 import { DitheredMarkDemo, GtWordDemo } from '@/components/docs/demos/lazy';
 import MarksDemo from '@/components/docs/demos/MarksDemo';
 
-Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The current GT mark, the doubled-line monogram, is a path that `GtMark` and `GtWord` draw inline.
+Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The chosen logo, Axis and meridian behind, leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The GT mark in production, the doubled-line monogram, is a path that `GtMark` and `GtWord` draw inline.
 
 ## The marks
 
-The plate draws any mark at the heights `/marks` shows it: a monogram from the 16 pixel favicon to the 128 pixel app icon, a wordmark at 48, 96 and 144. It opens on the shortlist, each mark cut to its drawn box, and Family switches to the seven speed marks, the two picture marks of the earlier round and the five globe concepts. Ground switches paper and ink, and Construction shows the build overlay of a picture mark.
+The plate draws any mark at the heights `/marks` shows it: a monogram from the 16 pixel favicon to the 128 pixel app icon, a wordmark at 48, 96 and 144. It opens on the shortlist, led by the logo, each mark cut to its drawn box, and Family switches to the seven speed marks, the two picture marks of the earlier round and the five globe concepts. Ground switches paper and ink, and Construction shows the build overlay of a picture mark.
 
 <MarksDemo />
 
@@ -38,10 +38,10 @@ const crop = stencil?.box ? boxMask(stencil.box) : undefined; // CSS mask size a
 
 | Export | What it holds |
 | --- | --- |
-| `CATALOG` | Every mark as one row: `id`, `name`, `family`, the public `file`, `file16` and `constructionFile` where drawn, `box` (the drawn box in the 256 unit square, for the marks from 2026-10-28 on), `pick` and `note` |
-| `SHORTLIST`, `shortlist()` | The ids of the chosen marks in page order, at most 16, and their rows |
+| `CATALOG` | Every mark as one row: `id`, `name`, `family`, the public `file`, `file16` and `constructionFile` where drawn, `box` (the drawn box in the 256 unit square, for the marks from 2026-10-28 on), `pick`, `use` (`logo` or `state`, on the two marks Kevin chose for a job) and `note` |
+| `SHORTLIST`, `shortlist()` | The ids of the chosen marks in page order, at most 16, and their rows: the logo first, then its state |
 | `FAMILIES`, `pageFamilies()`, `dynamicFamily(id)`, `familyLead(id)` | Each family's name, one sentence and anchor on `/marks`; the families in page order; a family's marks in order; the mark a family leads with |
-| `DYNAMIC_MARKS` | The marks from 2026-10-28 on, each a file under `/marks/dynamic/` |
+| `DYNAMIC_MARKS` | The marks from 2026-10-28 on, each a file under `/marks/dynamic/`, except the logo and its state, whose files are their drawings under `/marks/graticule/variations/` |
 | `boxMask(box)` | The mask size, position and aspect that show only a mark's drawn box of its square file |
 | `MARKS`, `GLOBE_CONCEPTS` | The nine speed and picture marks with their notes, and the five globe concepts under `/marks/globe/` |
 | `MARK_SIZES`, `WORDMARK_SIZES` | The heights in CSS pixels: 16, 24, 32, 64 and 128, then 48, 96 and 144 |
@@ -51,7 +51,7 @@ const crop = stencil?.box ? boxMask(stencil.box) : undefined; // CSS mask size a
 
 ### When to use it
 
-Draw a mark inline, or as an alpha mask in `currentColor`, so it takes the ink of its ground. The register's one-color rule holds for every use: no second tone, no gradient, no stroke and no shadow. The plate mark is the one mark that brings its own ground: its letters and stripes are holes, so it is an ink plate on paper and a paper plate on ink.
+Draw a mark inline, or as an alpha mask in `currentColor`, so it takes the ink of its ground. Beside the stacked name, "General" over "Translation", the globe is 1.1 times the span from the first line's cap top to the second line's baseline, which is 2.3655 cap heights, and is centred on that span, so it overshoots the cap top and the baseline by 0.1075 cap height each, as a round letter such as O overshoots flat ones. The gap from the globe's ink to the G is 0.5637 cap height. The register's one-color rule holds for every use: no second tone, no gradient, no stroke and no shadow. The plate mark is the one mark that brings its own ground: its letters and stripes are holes, so it is an ink plate on paper and a paper plate on ink.
 
 ### Reduced motion and themes
 

@@ -215,7 +215,7 @@
   max-width: min(100%, calc(100cqi * var(--mk-aspect)));
 }
 
-/* the first tile, the mark Kevin loves, is two tiles wide and two rows
+/* the first tile, the logo, is two tiles wide and two rows
    tall: its plate takes the height its name leaves, so its name divider
    sits on the line of the second row's */
 .mk-short-tile.is-lead {

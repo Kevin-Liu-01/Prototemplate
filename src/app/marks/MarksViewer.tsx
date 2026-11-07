@@ -27,6 +27,7 @@ import {
   MARK_FACES,
   MARK_RULES,
   MARK_SIZES,
+  MARK_USE_LABELS,
   MARKS,
   markFamily,
   pageFamilies,
@@ -76,12 +77,16 @@ const hemiMarks = (family: HemisphereFamily) => HEMISPHERE_MARKS.filter((mark) =
 const hemiShown = (mark: HemisphereMark) => Boolean(mark.lead || mark.constructionFile);
 
 const BOOK_LEAD =
-  'General Translation ships the two marks below. The shortlist holds the marks chosen so far, and each family after it collects the marks that draw one idea.';
+  'General Translation ships the two marks below. The shortlist opens on the logo, Axis and meridian behind, and each family after it collects the marks that draw one idea.';
 
 const BOOK_NOTE =
   'Only the doubled-line GT monogram and the Locadex mark are in production. Every mark is one color and takes the ink of whatever it sits on.';
 
-const SHORTLIST_LEAD = 'The chosen marks, best first, each drawn in one color on a 256 unit square.';
+const SHORTLIST_LEAD =
+  'The chosen marks, newest first, each drawn in one color on a 256 unit square: the logo, then its state on hover, on sign-in and while loading, then the marks chosen before them.';
+
+/** Where the shortlist's lead points: the progression of the logo on the Graticule page. */
+const PROGRESSION_HREF = '/marks/graticule#progression';
 
 const REGISTER_LEAD =
   'The speed set follows one register, taken from a race-type reference. The rules below name it, and a mark that keeps them belongs to the set.';
@@ -182,7 +187,12 @@ const SECTIONS: readonly ShellSection[] = [
     under: 'marks',
     items: [
       { id: SHORTLIST_ID, n: '', title: 'The shortlist', desc: SHORTLIST_LEAD },
-      ...SHORTLIST.map((mark, i) => ({ id: mark.id, n: pad2(i + 1), title: mark.name, desc: `${familyName(mark)}.${mark.note ? ` ${mark.note}` : ''}` })),
+      ...SHORTLIST.map((mark, i) => ({
+        id: mark.id,
+        n: pad2(i + 1),
+        title: mark.name,
+        desc: `${mark.use ? MARK_USE_LABELS[mark.use] : familyName(mark)}.${mark.note ? ` ${mark.note}` : ''}`,
+      })),
     ],
   },
   ...FAMILY_ORDER.map((family): ShellSection => {
@@ -514,7 +524,7 @@ function DynamicCard({ mark, feature, active }: { mark: CatalogMark; feature?: b
       level={feature ? 'h3' : 'h4'}
       hero={<BoxArt mark={mark} fit={feature ? DYN_FEATURE : DYN_CARD} />}
       sizes={feature ? DYN_FEATURE_SIZES : DYN_SIZES}
-      tags={mark.pick ? ['Pick'] : undefined}
+      tags={dynamicTags(mark)}
       file16={mark.file16}
       note={mark.note}
       files={files}
@@ -524,6 +534,12 @@ function DynamicCard({ mark, feature, active }: { mark: CatalogMark; feature?: b
       anchor={mark.id}
     />
   );
+}
+
+/** The tags of a dynamic mark: its use where Kevin chose one (the logo, or its state), then Pick for his picks. */
+function dynamicTags(mark: CatalogMark): readonly string[] | undefined {
+  const tags = [...(mark.use ? [MARK_USE_LABELS[mark.use]] : []), ...(mark.pick ? ['Pick'] : [])];
+  return tags.length ? tags : undefined;
 }
 
 /** The tags of a hemispheres mark: Pick for Kevin's picks, Lead for the mark its family's poster leads with. */
@@ -680,7 +696,7 @@ type GroupProps = {
   /** the gutter note's second line: the group's count */
   count: string;
   title: string;
-  lead: string;
+  lead: ReactNode;
   active: boolean;
   children: ReactNode;
 };
@@ -710,10 +726,10 @@ function Group({ id, section, count, title, lead, active, children }: GroupProps
 }
 
 /**
- * The shortlist: one square tile per mark, the first (the mark Kevin
- * loves) two tiles wide and two rows tall, its drawing large on paper with
- * its name under it, and its family where the name does not already say
- * it, each a jump to the mark's card in its family; then the shortlist at one height on both grounds, after the GT
+ * The shortlist: one square tile per mark, the first (the logo) two
+ * tiles wide and two rows tall, its drawing large on paper with its name
+ * under it, and its use where Kevin chose one, else its family where the
+ * name does not already say it, each a jump to the mark's card in its family; then the shortlist at one height on both grounds, after the GT
  * mark in production, so each reads beside the mark that ships.
  */
 function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, id: string) => void }) {
@@ -727,7 +743,7 @@ function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, 
             </span>
             <span className='mk-short-name'>
               <b>{mark.name}</b>
-              {!mark.name.startsWith(familyName(mark)) && <small>{familyName(mark)}</small>}
+              {mark.use ? <small>{MARK_USE_LABELS[mark.use]}</small> : !mark.name.startsWith(familyName(mark)) && <small>{familyName(mark)}</small>}
             </span>
           </a>
         ))}
@@ -997,7 +1013,18 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
         }
       />
 
-      <Group id={SHORTLIST_ID} section={1} count={marksIn(SHORTLIST.length)} title='Shortlist' lead={SHORTLIST_LEAD} active={active === SHORTLIST_ID}>
+      <Group
+        id={SHORTLIST_ID}
+        section={1}
+        count={marksIn(SHORTLIST.length)}
+        title='Shortlist'
+        lead={
+          <>
+            {SHORTLIST_LEAD} The picks that led to the logo are on <Link href={PROGRESSION_HREF}>{PAGE_NAMES.graticule.name}</Link>.
+          </>
+        }
+        active={active === SHORTLIST_ID}
+      >
         <ShortlistBody onJump={onContents} />
       </Group>
 

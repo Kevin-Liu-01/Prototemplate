@@ -1,6 +1,6 @@
 # Decisions log
 
-In his Claude Code and Codex sessions, Kevin Liu rules on how General Translation (GT) work is done, across process, product, design and the repositories. This log lists the rulings that set or replaced a standing practice from 2026-07-31 to 2026-10-20. Each row gives the date, the ruling, the practice it replaced, his words where the ruling needs a source, and the lint, gate or skill that holds it. Read it before you change a GT standard, and whenever an older note, transcript or skill gives conflicting guidance.
+In his Claude Code and Codex sessions, Kevin Liu rules on how General Translation (GT) work is done, across process, product, design and the repositories. This log lists the rulings that set or replaced a standing practice from 2026-07-31 to 2026-11-06. Each row gives the date, the ruling, the practice it replaced, his words where the ruling needs a source, and the lint, gate or skill that holds it. Read it before you change a GT standard, and whenever an older note, transcript or skill gives conflicting guidance.
 
 ## Using the log
 
@@ -99,6 +99,12 @@ In his Claude Code and Codex sessions, Kevin Liu rules on how General Translatio
 | 2026-10-30 | The marks Kevin picks and our iterations of them may be public on Prototemplate as General Translation marks. Public mark files, ids, names, notes and commits describe only the idea each mark draws, and none states a business figure or an unannounced plan. `/marks` opens on the two marks in production, then the shortlist, then every family by the idea it draws, with In production last; the plate on `/components`, the `/brand` badge and the home row read the same catalog. | `/marks` ordered by round, with none of the marks kept on 2026-10-28 and 2026-10-29 in the repository | "consolidate everything together and upgrade the marks page to be ordered better and present a lot better marks, our best ones, which you'll choose for me" | `pnpm test:marks`; `pnpm lint:public` with the private denylist; [gt-brand](../../skills/gt-brand/SKILL.md) `references/marks.md` |
 | 2026-10-31 | The `/marks` shortlist holds only marks Kevin chose, in the order of his verdicts, newest first, with the wireframe globe GT first. His other picks stay in their families, and each family opens with its best shortlisted mark. Our own iterations stay local until he picks one. | The 2026-10-30 rule that our iterations of his picks may be public, and a shortlist of the strongest marks of each round | Kevin's verdict of 2026-10-30 that he loves the wireframe globe GT over its variations, then "make sure to properly update the marks page again" | `pnpm test:marks`; [gt-brand](../../skills/gt-brand/SKILL.md) `references/marks.md` |
 
+## November 2026
+
+| Date | Ruling | Replaced | Kevin's words | Held by |
+| --- | --- | --- | --- | --- |
+| 2026-11-06 | The logo is Axis and meridian behind, and its state on hover, on sign-in and while loading is Oval globe, axis behind. Both lead the `/marks` shortlist, and `/marks/graticule` shows the marks that led to them. Beside the stacked name the globe is 1.1 times the span from the first line's cap top to the second line's baseline, centred on it, with 0.5637 cap height from its ink to the G. The doubled-line monogram stays the mark in production, in the site chrome, on `/brand` and in the deck until Kevin moves them. | The wireframe globe GT first on the shortlist (the 2026-10-31 row), and a globe sized to the name's span alone, which looked smaller than the two lines | "were going to be using the one in the image"; on 2026-11-07, "update our prototemplate fully with progression fo things and logos" | `pnpm test:marks` (the shortlist opens on the logo, then its state); [gt-brand](../../skills/gt-brand/SKILL.md) `references/marks.md` |
+
 ## Superseded July practices
 
 Notes, commits and transcripts from July 2026 still describe these practices, and no row above names them. The Replaced column of the tables above covers the other July practices: Lenis, headings with periods, Switzer and the July bar.
@@ -127,3 +133,4 @@ Notes, commits and transcripts from July 2026 still describe these practices, an
 - The review of the system v2 plan on 2026-10-10: Kevin's answers and the recommended defaults he accepted, for the 2026-10-10 rows.
 - Kevin's request of 2026-10-14 for the SEO system and the docs site, and his answers to the plan's open questions that day, for the 2026-10-14 row.
 - Kevin's request of 2026-10-20 to move the handbook into the docs site with live components, for the 2026-10-20 row.
+- Kevin's choice of the logo and its state on 2026-11-06, the lockup rule of the same day, and his request of 2026-11-07 to bring the progression and the logos into Prototemplate, for the 2026-11-06 row.

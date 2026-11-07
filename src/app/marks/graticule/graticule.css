@@ -1,4 +1,4 @@
-/* Graticule: the best graticule marks, then every graticule mark, then its
+/* Graticule: the best graticule marks, then the logo's progression, then every graticule mark, then its
    animations (the hovers and the loader of the static mark, then the line
    globe animations), then the globe rows, then every variation by study,
    newest first, on the viewer shell.
@@ -167,7 +167,7 @@ html[data-theme='light'] .gr-vid.is-dark {
   letter-spacing: var(--pt-track-label);
 }
 
-.gr-fig h3 a {
+.gr-fig :is(h3, h4) a {
   color: inherit;
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -175,11 +175,11 @@ html[data-theme='light'] .gr-vid.is-dark {
   text-underline-offset: 3px;
 }
 
-.gr-fig h3 a:hover {
+.gr-fig :is(h3, h4) a:hover {
   text-decoration-color: currentColor;
 }
 
-.gr-fig h3 a:focus-visible {
+.gr-fig :is(h3, h4) a:focus-visible {
   outline: 1px solid var(--pt-ink);
   outline-offset: 2px;
 }

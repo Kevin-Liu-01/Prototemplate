@@ -8,7 +8,8 @@
  * marks of MARKS with MARK_RULES, and the picture marks of MARKS and
  * GLOBE_CONCEPTS from the earlier rounds. The marks from 2026-10-28 on are
  * DYNAMIC_MARKS, finished SVGs under public/marks/dynamic that pnpm
- * import:marks copies in. Every mark is a public SVG in currentColor
+ * import:marks copies in, and the logo and its state, which are drawn
+ * from their files on /marks/graticule. Every mark is a public SVG in currentColor
  * under public/marks, with its notes as data. Pure data and types, no
  * React, no DOM and no imports, so the server page, the client viewer and
  * the Node tests read the same lists.
@@ -511,7 +512,7 @@ export const FAMILIES: readonly MarkFamilyRow[] = [
   { id: 'bolt', name: 'Bolt', anchor: 'bolt', engaged: '2026-11-03', lead: 'The G is drawn as a lightning bolt whose blade runs down to a point.' },
   { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-11-02', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
   { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
-  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-11-04', lead: 'The letters are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator.' },
+  { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-11-06', lead: 'The letters are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator. The logo comes from this family.' },
   { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },
   { id: 'earlier', name: 'Earlier rounds', anchor: 'other-explorations', engaged: '2026-10-20', lead: 'These marks come from the rounds before the hemispheres, and none was chosen.' },
   { id: 'production', name: 'In production', anchor: 'production', engaged: '2026-10-20', lead: 'These two marks are live on generaltranslation.com and in the dashboard, and each card lists every file the sites serve.' },
@@ -533,29 +534,44 @@ export type CatalogMark = {
   box?: readonly [number, number, number, number];
   /** Kevin kept it by name */
   pick?: true;
+  /** the job Kevin chose the mark for: the logo, or the state the logo takes on hover, on sign-in and while loading */
+  use?: MarkUse;
   /** a drawing the family grew from: it follows the family's shortlisted marks and precedes the rest */
   opens?: true;
   /** one sentence on what the drawing does */
   note?: string;
 };
 
+/** The job a chosen mark does: the logo, or the logo's state on hover, on sign-in and while loading. */
+export type MarkUse = 'logo' | 'state';
+
+/** Each use's label on a tile and a card. */
+export const MARK_USE_LABELS: Readonly<Record<MarkUse, string>> = {
+  logo: 'The logo',
+  state: 'Logo state',
+};
+
 type DynamicInput = Omit<CatalogMark, 'file' | 'file16' | 'box'> & {
   box: readonly [number, number, number, number];
   /** the mark has a 16px drawing at /marks/dynamic/<id>-16.svg */
   cut?: true;
+  /** the mark's file is its drawing on /marks/graticule, /marks/graticule/variations/<id>.svg, in the same canonical format but over the 8 KB pnpm import:marks allows */
+  variation?: true;
 };
 
-function dyn({ cut, ...mark }: DynamicInput): CatalogMark {
+function dyn({ cut, variation, ...mark }: DynamicInput): CatalogMark {
   return {
     ...mark,
-    file: `/marks/dynamic/${mark.id}.svg`,
+    file: variation ? `/marks/graticule/variations/${mark.id}.svg` : `/marks/dynamic/${mark.id}.svg`,
     ...(cut ? { file16: `/marks/dynamic/${mark.id}-16.svg` } : {}),
   };
 }
 
 /**
  * The marks from 2026-10-28 on, each a finished SVG under
- * public/marks/dynamic that pnpm import:marks copied in and measured. In
+ * public/marks/dynamic that pnpm import:marks copied in and measured,
+ * except the logo and its state, whose files are their drawings on
+ * /marks/graticule (variation). In
  * each family the drawings it grew from come first, newest first, then
  * the rest in the order the family shows them; the shortlisted marks are
  * placed by SHORTLIST, ahead of both (dynamicFamily).
@@ -620,6 +636,8 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
 
   dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, pick: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
 
+  dyn({ id: 'axis-and-meridian-behind', name: 'Axis and meridian behind', family: 'globe', pick: true, use: 'logo', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A ring, a meridian oval and a latitude oval draw the globe and the G, and the T\'s stem, the polar axis, breaks where it passes behind the front of the equator, as does the back meridian, while the front meridian still meets it.' }),
+  dyn({ id: 'oval-axis-behind', name: 'Oval globe, axis behind', family: 'globe', pick: true, use: 'state', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The logo without its meridian: a ring and a latitude oval draw the globe and the G, and the T\'s stem breaks where it passes behind the front of the equator.' }),
   dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G, two parallels are its arm and its needle bar, and the limb and the meridian thin toward the upper right as on a lit sphere.' }),
   dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, and the equator is both its bar and the crossbar of the T on the central meridian.' }),
   dyn({ id: 'graticule-g', name: 'Graticule G', family: 'globe', opens: true, box: [-0.1, 0, 256.1, 256.1], note: 'The G is drawn into a globe of meridians and parallels.' }),
@@ -638,12 +656,16 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
 
 /**
  * The shortlist in page order, by id: only marks Kevin chose, in the order
- * of his verdicts, newest first: the mark he loves, the mark he featured
- * on 2026-11-02, the marks he liked on 2026-10-30, the marks he kept on
- * 2026-10-28, then those he liked on 2026-10-27. At most 16. Only Kevin
- * adds a mark or removes one, and the other picks stay in their families.
+ * of his verdicts, newest first: the logo he chose on 2026-11-06 and its
+ * state on hover, on sign-in and while loading, then the mark he loves,
+ * the mark he featured on 2026-11-02, the marks he liked on 2026-10-30,
+ * the marks he kept on 2026-10-28, then those he liked on 2026-10-27. At
+ * most 16. Only Kevin adds a mark or removes one, and the other picks stay
+ * in their families.
  */
 export const SHORTLIST: readonly string[] = [
+  'axis-and-meridian-behind',
+  'oval-axis-behind',
   'graticule-gt',
   'equator',
   'speed-needle',

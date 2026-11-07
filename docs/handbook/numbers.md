@@ -162,6 +162,14 @@ Bounce, elastic and back overshoot are not used, and every number here has a red
 | 15px for text, 18px for SVG labels | Text under 15px on the sheet is a defect, and an SVG label is never under 18px. | `.cap` and `.sm` in `deck/DECK-GRAMMAR.md` | Review | [Writing: slides and cards](https://www.prototemplate.com/docs/craft/writing#slides-and-cards) |
 | 256px or 208px | The deck viewer's slide list takes these widths with thumbnails and in outline density. | `--sb-w` in `deck/parts/head.html` | Review | [The brand deck: the viewer](https://www.prototemplate.com/docs/deck#the-viewer) |
 
+## Marks
+
+| Value | Reason | Token or constant | Held by | Explained in |
+| --- | --- | --- | --- | --- |
+| 1.1 times the name's span | Beside the stacked name the globe is 1.1 times the span from the first line's cap top to the second line's baseline (2.3655 cap heights), centred on it, so it overshoots both by 0.1075 cap height, as round letters overshoot flat ones. At 1.0155 times the span it looked smaller than the two lines. | `NAME_WIDTH` in `src/app/marks/graticule/content.ts` (the name's width in globes in the globe rows) | Review | [Marks: when to use it](https://www.prototemplate.com/docs/components/marks#when-to-use-it); gt-brand `references/marks.md` |
+| 0.5637 cap height | The gap from the globe's ink to the G of the stacked name. | The globe rows on `/marks/graticule` | Review | gt-brand `references/marks.md`, The mark beside the name |
+| 256 units, 8 KB | Every imported mark is one path in `currentColor` on a 256 unit square and at most 8 KB; the logo and its state are drawn from their larger files on `/marks/graticule`. | `MAX_BYTES` in `scripts/build/import-marks.mjs` | `pnpm test:marks` | gt-brand `references/marks.md`, The catalog and the shortlist |
+
 ## Graphics
 
 | Value | Reason | Token or constant | Held by | Explained in |
@@ -259,3 +267,4 @@ Bounce, elastic and back overshoot are not used, and every number here has a red
 - Prototemplate, read on 2026-10-21: `src/components/viewer/tokens.css`; `DESIGN.md` sections 2, 4 and 15; `deck/DECK-GRAMMAR.md`; `docs/GRAPHICS.md`; `scripts/lint/type.mjs`, `radius.mjs`, `lines.mjs`, `heads.mjs` and `seo.mjs`; `scripts/check/pagecheck/probes.mjs` and `cls.mjs`; `scripts/build/skills.mjs` and `scripts/skills/usage.mjs`; `src/lib/glyph-field.ts`, `studio-field.ts`, `prismatic-field.ts`, `dither.ts`, `fonts.ts` and `seo/route.ts`; `src/components/docs/demos/hooks.ts`; `src/app/craft/TransitionDemo.tsx`; `src/app/d/toolchain/diagrams/iso.ts` and `IsoFrame.tsx`; `graphics/build/gen-lib.js`; `scripts/media/mood-tone/standard.json`; `package.json`; the files in `public/fonts/`.
 - The curated skills, read on 2026-10-21: `gt-brand` (`references/type.md`), `gt-motion` (section 2 and `references/traps.md`), `gt-diagrams` (`references/isometric.md`), `gt-dither` (`references/engines.md`, `references/pictures.md`), `gt-films` (`references/sound.md`, `references/kit.md`), `gt-performance` (`references/webgl-lifecycles.md`), `gt-website`, `gt-ship`, `gt-orchestration`, `gt-voice`, `gt-aesthetic` and `prototemplate`.
 - The docs pages each row links to, which hold the measurements with their dates.
+- The Marks rows, read on 2026-11-07: `src/app/marks/graticule/content.ts`, `scripts/build/import-marks.mjs` and the lockup rule Kevin set on 2026-11-06.

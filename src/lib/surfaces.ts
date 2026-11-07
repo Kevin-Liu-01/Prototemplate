@@ -194,7 +194,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'marks',
     pageLabel('marks'),
     '/marks',
-    'The two General Translation marks in production, the shortlist of the marks chosen so far, then every family of marks by the idea it draws.',
+    'The two General Translation marks in production, the shortlist led by the logo, Axis and meridian behind, then every family of marks by the idea it draws.',
     'Knowledge',
     thumb('marks')
   ),
@@ -202,7 +202,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'graticule',
     pageLabel('graticule'),
     '/marks/graticule',
-    "The best graticule marks, every mark cut from a wireframe globe's lines, the animations that move only those lines, and every variation of the globe.",
+    "The best graticule marks, the picks that led to the logo and to its state, every mark cut from a wireframe globe's lines, the animations and every variation.",
     'Knowledge',
     thumb('graticule')
   ),

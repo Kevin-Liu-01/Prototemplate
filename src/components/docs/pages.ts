@@ -168,7 +168,7 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     href: '/docs/components/marks',
     title: 'Marks and the GT mark',
     description:
-      'The shortlist, the speed marks and the globe concepts at every size on paper and ink, the GT mark set inline as a word, and a dithered shine.',
+      'The logo and the shortlist, the speed marks and the globe concepts at every size on paper and ink, the GT mark as a word, and a dithered shine.',
   },
   {
     slug: 'components/heads',

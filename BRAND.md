@@ -121,6 +121,15 @@ transparent PNG variants): every stroke of the mark is two parallel lines,
 the doubled-line grammar at brand scale. Locadex carries its own mark
 (`/brand/locadex-mark.svg`).
 
+The chosen logo is Axis and meridian behind, a globe whose ring, meridian
+oval and latitude oval draw the G, with the T's stem, the polar axis, and
+the back meridian broken where they pass behind the oval's lower arc, the
+front of the equator. On hover, on sign-in and while
+loading it takes its state, Oval globe, axis behind, the same globe
+without its meridian. Both lead the shortlist on `/marks`, and
+`/marks/graticule` shows the marks that led to them. The doubled-line
+monogram is the mark in production and in this site's chrome.
+
 Rules:
 
 - **One ink.** The mark renders in ink on paper or paper on ink. Never a
@@ -132,6 +141,13 @@ Rules:
   so the shape takes the surface's ink; the sanctioned flourish is the
   Bayer-dithered specular shimmer (`DitheredMark`), never a GIF, never a
   filter glow.
+- **Beside the stacked name**, "General" over "Translation", the globe is
+  1.1 times the span from the first line's cap top to the second line's
+  baseline (2.3655 cap heights), centred on that span, so it overshoots
+  the cap top and the baseline by 0.1075 cap height each. The gap from
+  the globe's ink to the G is 0.5637 cap height. A round mark only as tall
+  as flat-topped text looks shorter than the text, for the same reason
+  round letters such as O overshoot the cap height and the baseline.
 - At text size, the wordmark sits inline with prose at the cap height of
   the line it lives in, as in the generaltranslation.com hero's "GT builds
   full-stack localization for apps, docs, and websites".
@@ -208,7 +224,8 @@ The identity is applied on four kinds of surface today.
   trailers, the product films and the translation-history series.
 - **The marks.** The speed marks chosen on 2026-09-29 (`/marks`) sit
   beside the doubled-line monogram, which stays the current mark
-  (section 4). The title badges in the `/brand` and `/marks` heads cycle
+  (section 4). The shortlist on `/marks` opens on the chosen logo, Axis
+  and meridian behind, and its state, Oval globe, axis behind. The title badges in the `/brand` and `/marks` heads cycle
   through a selection of the marks on `/marks`.
 
 When in doubt about how the brand behaves, read the shipped surface the

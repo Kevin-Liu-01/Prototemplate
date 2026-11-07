@@ -46,10 +46,16 @@ import {
   NAME_ASPECT,
   NAME_FILE,
   NAME_WIDTH,
+  PROGRESSION,
+  PROGRESSION_ID,
+  PROGRESSION_LEAD,
+  PROGRESSION_TITLE,
   ROWS_ID,
   ROWS_LEAD,
   ROWS_TITLE,
   rowsIn,
+  STEPS,
+  stepsIn,
   STUDIES,
   VARIATIONS,
   VARIATIONS_ID,
@@ -58,7 +64,7 @@ import {
   VARIATIONS_TITLE,
   variationsIn,
 } from './content';
-import type { Animation, Best, GlobeRow, MotionLoop, Study, Variation } from './content';
+import type { Animation, Best, GlobeRow, MotionLoop, ProgressionLine, Step, Study, Variation } from './content';
 
 import './graticule.css';
 
@@ -72,6 +78,7 @@ type Part = { id: string; title: string; lead?: string; count: number; fact: str
 /** The page's sections in order, each with its count for the contents and its fact for the gutter; a section opens on its h2 and its lead, where it has one. */
 const PARTS: readonly Part[] = [
   { id: BEST_ID, title: BEST_TITLE, lead: BEST_LEAD, count: BEST.length, fact: marksIn(BEST.length) },
+  { id: PROGRESSION_ID, title: PROGRESSION_TITLE, lead: PROGRESSION_LEAD, count: STEPS.length, fact: stepsIn(STEPS.length) },
   { id: MARKS_ID, title: MARKS_TITLE, count: GRATICULE_MARKS.length, fact: marksIn(GRATICULE_MARKS.length) },
   { id: ANIMATIONS_ID, title: ANIMATIONS_TITLE, lead: ANIMATIONS_LEAD, count: ANIMATION_COUNT, fact: animationsIn(ANIMATION_COUNT) },
   { id: ROWS_ID, title: ROWS_TITLE, lead: ROWS_LEAD, count: GLOBE_ROWS.length, fact: rowsIn(GLOBE_ROWS.length) },
@@ -259,6 +266,57 @@ function BestFigure({ best }: { best: Best }) {
   return best.kind === 'mark' ? <MarkFigure mark={best.mark} /> : <VariationFigure variation={best.variation} />;
 }
 
+/**
+ * One step of the progression: the mark, then its name and what changed
+ * from the step before it. A catalog mark's drawing and name link to its
+ * card on /marks; a variation has no card, so nothing links.
+ */
+function StepFigure({ step }: { step: Step }) {
+  const { best } = step;
+  if (best.kind === 'variation') {
+    return (
+      <figure className='gr-fig'>
+        <MarkArt file={best.variation.file} box={variationBox(best.variation)} />
+        <figcaption>
+          <h4>{best.variation.name}</h4>
+          <p>{step.caption}</p>
+        </figcaption>
+      </figure>
+    );
+  }
+  const { mark } = best;
+  return (
+    <figure className='gr-fig'>
+      <Link href={cardHref(mark.id)} className='gr-art-link' tabIndex={-1} aria-hidden='true'>
+        <MarkArt file={mark.file} box={mark.box} />
+      </Link>
+      <figcaption>
+        <h4>
+          <Link href={cardHref(mark.id)}>{mark.name}</Link>
+        </h4>
+        <p>{step.caption}</p>
+      </figcaption>
+    </figure>
+  );
+}
+
+/** One line of the progression: its sub-head and lead on the text's line, then its steps in order. */
+function ProgressionBlock({ line }: { line: ProgressionLine }) {
+  return (
+    <section className='gr-study' id={line.id} aria-labelledby={`gr-${line.id}`}>
+      <header className='gr-study-head'>
+        <h3 id={`gr-${line.id}`}>{line.title}</h3>
+        <p>{line.lead}</p>
+      </header>
+      <div className='gr-row'>
+        {line.steps.map((step) => (
+          <StepFigure key={step.best.kind === 'mark' ? step.best.mark.id : step.best.variation.id} step={step} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /** One study of the variations: its sub-head and lead on the text's line, then its drawings. */
 function StudyBlock({ study }: { study: Study }) {
   return (
@@ -323,6 +381,7 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated, loops }: BookPro
           ))}
         </div>
       );
+    if (id === PROGRESSION_ID) return PROGRESSION.map((line) => <ProgressionBlock key={line.id} line={line} />);
     if (id === MARKS_ID)
       return (
         <div className='gr-row'>
@@ -409,8 +468,8 @@ export type GraticuleViewerProps = {
 };
 
 /**
- * The best graticule marks on the viewer shell, then every graticule mark,
- * then its animations, then the globe rows, then every variation by study,
+ * The best graticule marks on the viewer shell, then the logo's
+ * progression, then every graticule mark, then its animations, then the globe rows, then every variation by study,
  * newest first. The list hangs under Marks > Graticule; flow keys, so Space and the
  * arrows scroll.
  */

@@ -1,7 +1,9 @@
 // Tests for the marks catalog (src/lib/marks.ts) against public/marks:
 // every file a row names exists, every file under public/marks/dynamic has
 // a row, every dynamic file is one path in currentColor on the canonical
-// 256 unit header and at most 8 KB, the drawn box a row records is the
+// 256 unit header and at most 8 KB (the logo and its state are drawn from
+// their files on /marks/graticule, in the same header and over 8 KB), the
+// shortlist opens on the logo and then its state, the drawn box a row records is the
 // file's own within half a unit, SHORTLIST names known ids once each and
 // at most 16, every shortlisted mark is one Kevin picked and every dynamic
 // mark is a pick or a drawing its family grew from (our own iterations
@@ -54,6 +56,20 @@ test('every dynamic file is one currentColor path on the canonical header, at mo
     assert.match(text, CANONICAL, `${name} breaks the header format`);
     assert.ok(Buffer.byteLength(text) <= MAX_BYTES, `${name} is over ${MAX_BYTES} bytes`);
   }
+});
+
+test('every dynamic row drawn from its file on /marks/graticule is one currentColor path on the canonical header', () => {
+  for (const mark of DYNAMIC_MARKS.filter((row) => !row.file.startsWith('/marks/dynamic/'))) {
+    assert.match(mark.file, /^\/marks\/graticule\/variations\/[a-z0-9-]+\.svg$/, `${mark.id}: ${mark.file} is outside the two mark folders`);
+    assert.match(readFileSync(publicFile(mark.file), 'utf8'), CANONICAL, `${mark.id}: ${mark.file} breaks the header format`);
+  }
+});
+
+test('the shortlist opens on the logo, then its state', () => {
+  const byId = new Map(CATALOG.map((mark) => [mark.id, mark]));
+  assert.equal(byId.get(SHORTLIST[0])?.use, 'logo', 'the first shortlisted mark is not the logo');
+  assert.equal(byId.get(SHORTLIST[1])?.use, 'state', 'the second shortlisted mark is not the logo\'s state');
+  assert.equal(CATALOG.filter((mark) => mark.use === 'logo').length, 1, 'more than one mark is the logo');
 });
 
 test('every recorded box is the file\'s drawn box within half a unit', () => {
