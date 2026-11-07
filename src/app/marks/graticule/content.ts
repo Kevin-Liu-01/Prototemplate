@@ -19,7 +19,7 @@ export const MARKS_TITLE = 'Marks';
 /** The section of the line globe animations; its divider is the h2 and the lead. */
 export const ANIMATIONS_ID = 'animations';
 export const ANIMATIONS_TITLE = 'Animations';
-export const ANIMATIONS_LEAD = 'Each plays on Graticule GT, heavy, then on Graticule jaw, thicker.';
+export const ANIMATIONS_LEAD = 'Each animation starts and ends on the exact mark, and the newest come first.';
 
 /** The marks every animation plays on, heavy first, each with the catalog id that gives its name and its drawn box. */
 export const ANIMATED_MARKS: readonly { mark: MarkId; id: string }[] = [
@@ -29,6 +29,48 @@ export const ANIMATED_MARKS: readonly { mark: MarkId; id: string }[] = [
 
 /** One animation: its id in src/lib/graticule/line-loop.ts, which holds its name, and what moves in it. */
 export type Animation = { id: LineAnimationId; caption: string };
+
+/** One hover or loading loop of the static mark, played from its light and dark videos in /marks/graticule/motion. */
+export type MotionLoop = { id: string; name: string; caption: string };
+
+/** The static mark and the state its hovers settle into, by variation id. */
+export const STATIC_MARK = 'meridian-axis-behind';
+export const STATE_MARK = 'oval-axis-behind';
+
+/** The hovers and the loader on the static mark, in the order they were chosen. Each video starts and ends on the static mark. */
+export const MOTION_LOOPS: readonly MotionLoop[] = [
+  {
+    id: 'draw-back',
+    name: 'Meridian draws back',
+    caption: 'On hover the meridian draws back along its own oval over both poles and the mark settles into the oval globe, then the meridian draws out again when the cursor leaves.',
+  },
+  {
+    id: 'into-the-poles',
+    name: 'Meridians draw into the poles',
+    caption: 'On hover the meridian opens at the bar and its four ends draw back into the two poles together, then they draw out again when the cursor leaves.',
+  },
+  {
+    id: 'fold-into-the-bar',
+    name: 'Meridians fold into the bar',
+    caption: 'On hover the meridian opens at both poles and its left half folds down into the bar, and the move runs back when the cursor leaves.',
+  },
+  {
+    id: 'run-round',
+    name: 'Meridian runs round the oval',
+    caption: 'While a page loads, the meridian draws back, then a stretch of it runs round the oval drawn whole over the unchanged mark, and it draws in again at the end.',
+  },
+];
+
+/** A loop's video in one theme, and the rest mark every loop starts and ends on, as its poster and its still under reduced motion. */
+export const motionVideo = (id: string, theme: 'light' | 'dark') => `/marks/graticule/motion/${id}-${theme}.mp4`;
+export const motionRest = (theme: 'light' | 'dark') => `/marks/graticule/motion/rest-${theme}.png`;
+
+/** The two groups of animations, each with its sub-head and lead. */
+export const MOTION_GROUP = {
+  id: 'animations-hover',
+  title: 'Hover and loading',
+  lead: `These ${MOTION_LOOPS.length} play on Meridian globe, axis behind: each hover settles it into Oval globe, axis behind, and the loader runs a meridian round that state.`,
+};
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */
 export const ANIMATIONS: readonly Animation[] = [
@@ -42,17 +84,23 @@ export const ANIMATIONS: readonly Animation[] = [
   },
 ];
 
+export const LINE_GROUP = {
+  id: 'animations-line',
+  title: 'Line globe',
+  lead: `These ${ANIMATIONS.length} play on Graticule GT, heavy, then on Graticule jaw, thicker.`,
+};
+
 /** The section of the best marks; its divider is the h2 and the lead. */
 export const BEST_ID = 'best';
 export const BEST_TITLE = 'Best';
 
 /** The best marks in order, each by its catalog id or its variation id: the static mark first, then its hover state. */
 const BEST_IDS: readonly string[] = [
+  'meridian-axis-behind',
+  'oval-axis-behind',
   'meridian-wide-axis-gap',
   'oval-wide-axis-gap',
   'meridian-globe',
-  'oval-axis-behind',
-  'meridian-axis-behind',
   'oval-globe',
   'graticule-heavy-open-bar',
   'graticule-gt',
@@ -141,9 +189,41 @@ export const BEST: readonly Best[] = BEST_IDS.map((id): Best => {
 });
 
 /** The best section's lead, which counts its marks. */
-export const BEST_LEAD = `These ${BEST.length} marks are the best of every drawing on this page, and the first two are the static mark and its hover state.`;
+export const BEST_LEAD = `These ${BEST.length} marks are the best of every drawing on this page. The first is the static mark, Meridian globe, axis behind, and the second is its state on hover, on sign-in and while loading, Oval globe, axis behind.`;
+
+/** The section of the globe rows; its divider is the h2 and the lead. */
+export const ROWS_ID = 'rows';
+export const ROWS_TITLE = 'Globe rows';
+export const ROWS_LEAD = 'Each row draws two earlier globes with a whole top arc, then the oval logo, the meridian logo and the name.';
+
+/** One globe row: its name, what changes along it, and its four globes left to right, each a public file in currentColor on the 256 unit square. */
+export type GlobeRow = { id: string; name: string; caption: string; globes: readonly string[] };
+
+/** The oval logo and the meridian logo that end every row. */
+const LOGOS = [`/marks/graticule/variations/${STATE_MARK}.svg`, `/marks/graticule/variations/${STATIC_MARK}.svg`] as const;
+
+export const GLOBE_ROWS: readonly GlobeRow[] = [
+  {
+    id: 'rows-bar',
+    name: 'The bar shortens',
+    caption: 'The whole oval and the whole equator with the stem joined to it, then the bar shortened into the T, then the oval logo and the meridian logo.',
+    globes: ['/marks/graticule/rows/stem-joined.svg', '/marks/graticule/rows/short-bar.svg', ...LOGOS],
+  },
+  {
+    id: 'rows-axis',
+    name: 'The axis joins',
+    caption: 'The whole oval, the whole equator and the whole axis, then the T, then the oval logo and the meridian logo.',
+    globes: ['/marks/graticule/rows/whole-axis.svg', '/marks/graticule/rows/short-bar.svg', ...LOGOS],
+  },
+];
+
+/** The name that ends every row, in currentColor. Its box starts at the top of a globe's drawn box and is NAME_WIDTH globes wide, so it keeps its lockup size beside the rings. */
+export const NAME_FILE = '/marks/graticule/rows/name.svg';
+export const NAME_WIDTH = 2.8249;
+export const NAME_ASPECT = 508.49 / 182.01;
 
 /** A count with its noun. */
 export const marksIn = (n: number) => `${n} ${n === 1 ? 'mark' : 'marks'}`;
 export const animationsIn = (n: number) => `${n} ${n === 1 ? 'animation' : 'animations'}`;
+export const rowsIn = (n: number) => `${n} ${n === 1 ? 'row' : 'rows'}`;
 export const variationsIn = (n: number) => `${n} ${n === 1 ? 'variation' : 'variations'}`;

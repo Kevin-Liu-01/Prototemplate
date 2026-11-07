@@ -10,7 +10,7 @@ const route = seoRoute({
   path: '/marks/graticule',
   title: PAGE_NAMES.graticule.name,
   kind: 'page',
-  description: "The best graticule marks, every mark cut from a wireframe globe's lines, the animations that move only those lines, and every variation of the globe.",
+  description: "The best graticule marks, every mark cut from a wireframe globe's lines, the hovers and the loader, the line animations, the globe rows and every variation.",
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/graticule'),
 });
@@ -19,9 +19,11 @@ export const metadata = route.metadata;
 
 /**
  * /marks/graticule: the best graticule marks, then every graticule mark of
- * the catalog, then its line globe animations, then every variation by
- * study, newest first. The animations' stills are drawn here on the server;
- * the browser computes only their motion, in a worker.
+ * the catalog, then its animations (the static mark's hovers and loader as
+ * videos, then the line globe animations), then the globe rows, then every
+ * variation by study, newest first. The line globe animations' stills are
+ * drawn here on the server; the browser computes only their motion, in a
+ * worker.
  */
 export default function GraticulePage() {
   return (

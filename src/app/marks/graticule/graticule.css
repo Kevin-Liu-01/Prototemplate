@@ -1,11 +1,13 @@
 /* Graticule: the best graticule marks, then every graticule mark, then its
-   line globe animations, then every variation by study, newest first, on the
-   viewer shell.
+   animations (the hovers and the loader of the static mark, then the line
+   globe animations), then the globe rows, then every variation by study,
+   newest first, on the viewer shell.
 
    The column, the head, the contents, the band and the section dividers are
    the shared book classes (BookView.css). Every still figure is drawn by mask
-   from its public file in the ink token, and every animation is an svg in
-   currentColor, on the page's own ground, so each reads ink on paper in
+   from its public file in the ink token, every line globe animation is an svg
+   in currentColor and every hover or loading loop a video in the page's own
+   ink and paper, on the page's own ground, so each reads ink on paper in
    either theme. Nothing here is boxed or filled. */
 
 .gr-sec {
@@ -66,6 +68,60 @@
   height: auto;
   aspect-ratio: 1;
   overflow: visible;
+}
+
+/* a hover or loading loop: its light and dark videos sit in one square cropped to the ring, as the masks crop each
+   mark to its drawn box. The ring's outer edge is 0.6 of the video's frame, so the video stands 1 / 0.6 of the square
+   across, centred. The videos are drawn in the page's own ink on its own paper (#070707 on #ffffff, #f2f2f0 on
+   #070707), so the square needs no fill, and only the theme's video shows */
+.gr-clip {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.gr-vid {
+  position: absolute;
+  top: -33.3333%;
+  left: -33.3333%;
+  display: block;
+  width: 166.6667%;
+  height: 166.6667%;
+  max-width: none;
+}
+
+.gr-vid.is-light {
+  display: none;
+}
+
+html[data-theme='light'] .gr-vid.is-light {
+  display: block;
+}
+
+html[data-theme='light'] .gr-vid.is-dark {
+  display: none;
+}
+
+/* a globe row: four globes cropped to their rings, then the name, whose column is NAME_WIDTH (content.ts) globes wide,
+   so the name keeps its lockup size beside them and its top meets the rings' tops */
+.gr-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  padding-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
+}
+
+.gr-prog {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 2.8249fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.gr-name {
+  width: 100%;
 }
 
 .gr-fig {
@@ -187,6 +243,7 @@
   }
 
   .gr-row,
+  .gr-rows,
   .gr-study-head {
     padding-left: 0;
   }
@@ -207,7 +264,19 @@
     gap: 16px;
   }
 
-  .gr-row.is-small .gr-art {
+  .gr-row.is-small .gr-art,
+  .gr-row.is-motion .gr-clip {
     max-width: 240px;
+  }
+
+  /* a globe row on a phone: the four globes across the column, the name under them at the same scale */
+  .gr-prog {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px 16px;
+  }
+
+  .gr-name {
+    grid-column: 1 / -1;
+    width: calc((100% - 48px) / 4 * var(--gr-name-w));
   }
 }

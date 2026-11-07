@@ -19,6 +19,7 @@ import { PAGE_NAMES } from '@/lib/page-names';
 import type { PageUpdated } from '@/lib/page-updated';
 import type { ShellMode, ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
+import { useMountEffect } from '@/lib/use-mount-effect';
 
 import {
   ANIMATED_MARKS,
@@ -31,11 +32,24 @@ import {
   BEST_ID,
   BEST_LEAD,
   BEST_TITLE,
+  GLOBE_ROWS,
   GRATICULE_MARKS,
   LEAD,
+  LINE_GROUP,
   MARKS_ID,
   MARKS_TITLE,
   marksIn,
+  MOTION_GROUP,
+  MOTION_LOOPS,
+  motionRest,
+  motionVideo,
+  NAME_ASPECT,
+  NAME_FILE,
+  NAME_WIDTH,
+  ROWS_ID,
+  ROWS_LEAD,
+  ROWS_TITLE,
+  rowsIn,
   STUDIES,
   VARIATIONS,
   VARIATIONS_ID,
@@ -44,11 +58,14 @@ import {
   VARIATIONS_TITLE,
   variationsIn,
 } from './content';
-import type { Animation, Best, Study, Variation } from './content';
+import type { Animation, Best, GlobeRow, MotionLoop, Study, Variation } from './content';
 
 import './graticule.css';
 
 const MODES: readonly ShellMode[] = ['book'];
+
+/** Every animation on the page: the hovers and the loader on the static mark, then the line globe animations. */
+const ANIMATION_COUNT = MOTION_LOOPS.length + ANIMATIONS.length;
 
 type Part = { id: string; title: string; lead?: string; count: number; fact: string };
 
@@ -56,7 +73,8 @@ type Part = { id: string; title: string; lead?: string; count: number; fact: str
 const PARTS: readonly Part[] = [
   { id: BEST_ID, title: BEST_TITLE, lead: BEST_LEAD, count: BEST.length, fact: marksIn(BEST.length) },
   { id: MARKS_ID, title: MARKS_TITLE, count: GRATICULE_MARKS.length, fact: marksIn(GRATICULE_MARKS.length) },
-  { id: ANIMATIONS_ID, title: ANIMATIONS_TITLE, lead: ANIMATIONS_LEAD, count: ANIMATIONS.length, fact: animationsIn(ANIMATIONS.length) },
+  { id: ANIMATIONS_ID, title: ANIMATIONS_TITLE, lead: ANIMATIONS_LEAD, count: ANIMATION_COUNT, fact: animationsIn(ANIMATION_COUNT) },
+  { id: ROWS_ID, title: ROWS_TITLE, lead: ROWS_LEAD, count: GLOBE_ROWS.length, fact: rowsIn(GLOBE_ROWS.length) },
   { id: VARIATIONS_ID, title: VARIATIONS_TITLE, lead: VARIATIONS_LEAD, count: VARIATIONS.length, fact: variationsIn(VARIATIONS.length) },
 ];
 
@@ -124,7 +142,7 @@ function MarkFigure({ mark }: { mark: CatalogMark }) {
  * what moves. Both drawings watch the figure, so they start, pause and resume
  * together and stay in step.
  */
-function AnimationFigure({ animation, loops }: { animation: Animation; loops: LineLoops[Animation['id']] }) {
+function AnimationFigure({ animation, loops, level: H = 'h3' }: { animation: Animation; loops: LineLoops[Animation['id']]; level?: Level }) {
   const figureRef = useRef<HTMLElement>(null);
   return (
     <figure ref={figureRef} className='gr-fig'>
@@ -134,8 +152,90 @@ function AnimationFigure({ animation, loops }: { animation: Animation; loops: Li
         ))}
       </div>
       <figcaption>
-        <h3>{LINE_ANIMATION_TITLES[animation.id]}</h3>
+        <H>{LINE_ANIMATION_TITLES[animation.id]}</H>
         <p>{animation.caption}</p>
+      </figcaption>
+    </figure>
+  );
+}
+
+/** The page's theme, read from html[data-theme]: dark when it is unset. */
+const pageTheme = (): 'light' | 'dark' => (document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+
+/**
+ * One hover or loading loop of the static mark: its light and dark videos,
+ * of which the stylesheet shows the one for the page's theme, cropped to the
+ * ring like the masks, then its name and what moves. Each video starts and
+ * ends on the static mark, which is also its poster, so the first paint and
+ * reduced motion show the still mark. The shown video plays only while the
+ * figure is in view and motion is allowed, and nothing loads before that.
+ */
+function MotionFigure({ loop }: { loop: MotionLoop }) {
+  const figureRef = useRef<HTMLElement>(null);
+  const lightRef = useRef<HTMLVideoElement>(null);
+  const darkRef = useRef<HTMLVideoElement>(null);
+  useMountEffect(() => {
+    const figure = figureRef.current;
+    const light = lightRef.current;
+    const dark = darkRef.current;
+    if (!figure || !light || !dark) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let inView = false;
+    const sync = () => {
+      const shown = pageTheme() === 'light' ? light : dark;
+      const hidden = shown === light ? dark : light;
+      hidden.pause();
+      if (inView && !reduce.matches) {
+        shown.play().catch(() => {});
+      } else {
+        shown.pause();
+      }
+    };
+    const io = new IntersectionObserver((entries) => {
+      inView = entries.some((entry) => entry.isIntersecting);
+      sync();
+    });
+    io.observe(figure);
+    const themeWatch = new MutationObserver(sync);
+    themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    reduce.addEventListener('change', sync);
+    return () => {
+      io.disconnect();
+      themeWatch.disconnect();
+      reduce.removeEventListener('change', sync);
+      light.pause();
+      dark.pause();
+    };
+  });
+  return (
+    <figure ref={figureRef} className='gr-fig'>
+      <div className='gr-clip'>
+        <video ref={lightRef} className='gr-vid is-light' src={motionVideo(loop.id, 'light')} poster={motionRest('light')} muted loop playsInline preload='none' aria-hidden='true' />
+        <video ref={darkRef} className='gr-vid is-dark' src={motionVideo(loop.id, 'dark')} poster={motionRest('dark')} muted loop playsInline preload='none' aria-hidden='true' />
+      </div>
+      <figcaption>
+        <h4>{loop.name}</h4>
+        <p>{loop.caption}</p>
+      </figcaption>
+    </figure>
+  );
+}
+
+/** One globe row: its four globes, cropped to their rings like every mark here, then the name at its lockup size, then the row's name and what changes along it. */
+function RowFigure({ row }: { row: GlobeRow }) {
+  const box = catalogMark(VARIATIONS_BOX_OF)?.box;
+  const nameStyle: CSSProperties = { '--gr-mask': `url('${NAME_FILE}')`, aspectRatio: String(NAME_ASPECT) };
+  return (
+    <figure className='gr-fig gr-prog-fig'>
+      <div className='gr-prog' style={{ '--gr-name-w': String(NAME_WIDTH) } as CSSProperties}>
+        {row.globes.map((file, i) => (
+          <MarkArt key={`${row.id}-${i}`} file={file} box={box} />
+        ))}
+        <span className='gr-art gr-name' style={nameStyle} aria-hidden='true' />
+      </div>
+      <figcaption>
+        <h3>{row.name}</h3>
+        <p>{row.caption}</p>
       </figcaption>
     </figure>
   );
@@ -233,9 +333,36 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated, loops }: BookPro
       );
     if (id === ANIMATIONS_ID)
       return (
-        <div className='gr-row is-anim'>
-          {ANIMATIONS.map((animation) => (
-            <AnimationFigure key={animation.id} animation={animation} loops={loops[animation.id]} />
+        <>
+          <section className='gr-study' id={MOTION_GROUP.id} aria-labelledby={`gr-${MOTION_GROUP.id}`}>
+            <header className='gr-study-head'>
+              <h3 id={`gr-${MOTION_GROUP.id}`}>{MOTION_GROUP.title}</h3>
+              <p>{MOTION_GROUP.lead}</p>
+            </header>
+            <div className='gr-row is-small is-motion'>
+              {MOTION_LOOPS.map((loop) => (
+                <MotionFigure key={loop.id} loop={loop} />
+              ))}
+            </div>
+          </section>
+          <section className='gr-study' id={LINE_GROUP.id} aria-labelledby={`gr-${LINE_GROUP.id}`}>
+            <header className='gr-study-head'>
+              <h3 id={`gr-${LINE_GROUP.id}`}>{LINE_GROUP.title}</h3>
+              <p>{LINE_GROUP.lead}</p>
+            </header>
+            <div className='gr-row is-anim'>
+              {ANIMATIONS.map((animation) => (
+                <AnimationFigure key={animation.id} animation={animation} loops={loops[animation.id]} level='h4' />
+              ))}
+            </div>
+          </section>
+        </>
+      );
+    if (id === ROWS_ID)
+      return (
+        <div className='gr-rows'>
+          {GLOBE_ROWS.map((row) => (
+            <RowFigure key={row.id} row={row} />
           ))}
         </div>
       );
@@ -250,7 +377,7 @@ function GraticuleBook({ sheetRef, jumpRef, activeOut, updated, loops }: BookPro
         updated={updated}
         facts={[
           { icon: 'swatch', key: 'Marks', value: GRATICULE_MARKS.length },
-          { icon: 'film', key: 'Animations', value: ANIMATIONS.length },
+          { icon: 'film', key: 'Animations', value: ANIMATION_COUNT },
           { icon: 'grid', key: 'Variations', value: VARIATIONS.length },
         ]}
         contents={
@@ -283,8 +410,8 @@ export type GraticuleViewerProps = {
 
 /**
  * The best graticule marks on the viewer shell, then every graticule mark,
- * then its line globe animations, then every variation by study, newest
- * first. The list hangs under Marks > Graticule; flow keys, so Space and the
+ * then its animations, then the globe rows, then every variation by study,
+ * newest first. The list hangs under Marks > Graticule; flow keys, so Space and the
  * arrows scroll.
  */
 export default function GraticuleViewer({ updated, loops }: GraticuleViewerProps) {
