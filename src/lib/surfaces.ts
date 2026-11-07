@@ -202,7 +202,7 @@ const KNOWLEDGE: readonly Surface[] = [
     'graticule',
     pageLabel('graticule'),
     '/marks/graticule',
-    "The best graticule marks, the picks that led to the logo and to its state, every mark cut from a wireframe globe's lines, the animations and every variation.",
+    "The best graticule marks, the marks that led to the logo and to its state, every mark cut from a wireframe globe's lines, the animations and every variation.",
     'Knowledge',
     thumb('graticule')
   ),

@@ -10,7 +10,7 @@ const route = seoRoute({
   path: '/marks/graticule',
   title: PAGE_NAMES.graticule.name,
   kind: 'page',
-  description: "The logo and the picks that led to it, the best graticule marks cut from a wireframe globe's lines, the hovers, the loader, the globe rows and every variation.",
+  description: "The logo and the marks that led to it, the best graticule marks cut from a wireframe globe's lines, the hovers, the loader, the globe rows and every variation.",
   crumbs: [{ name: PAGE_NAMES.marks.name, path: '/marks' }],
   updated: requireUpdated('/marks/graticule'),
 });

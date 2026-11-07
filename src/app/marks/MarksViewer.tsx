@@ -1020,7 +1020,7 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
         title='Shortlist'
         lead={
           <>
-            {SHORTLIST_LEAD} The picks that led to the logo are on <Link href={PROGRESSION_HREF}>{PAGE_NAMES.graticule.name}</Link>.
+            {SHORTLIST_LEAD} The marks that led to the logo are on <Link href={PROGRESSION_HREF}>{PAGE_NAMES.graticule.name}</Link>.
           </>
         }
         active={active === SHORTLIST_ID}

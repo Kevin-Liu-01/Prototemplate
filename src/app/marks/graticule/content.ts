@@ -214,20 +214,16 @@ const LOGO_STEPS: readonly StepEntry[] = [
     caption: 'In a monoline wireframe globe the flat latitude opens at its upper right as the G, and the equator is both the G\'s bar and the T\'s crossbar.',
   },
   {
-    id: 'equator',
-    caption: 'The meridians and the latitude go, and a heavy ring alone draws the G round the equator, which stays the bar of the G and the crossbar of the T.',
-  },
-  {
-    id: 'graticule-jaw-thicker',
-    caption: 'The wireframe comes back in heavy lines, and a piece of the right meridian hangs from the bar as the G\'s jaw.',
-  },
-  {
     id: 'graticule-gt-heavy',
-    caption: 'The jaw comes off and the heavy lines stay, with the T\'s stem dropping from the equator to the ring.',
+    caption: 'The lines turn heavy, the second, small T at the G\'s opening goes, and the T\'s stem meets the bar through two round fillets.',
+  },
+  {
+    id: 'meridian-globe',
+    caption: 'The lines thicken again to the weight of the name\'s stems, the weight it takes beside the stacked name.',
   },
   {
     id: 'meridian-axis-behind',
-    caption: 'The globe is redrawn at the weight of the name\'s stems with one meridian oval, and the T\'s stem, the polar axis, breaks where it passes behind the front of the equator.',
+    caption: 'The T\'s stem, the polar axis, breaks where it passes behind the latitude\'s lower arc, the front of the equator.',
   },
   {
     id: 'axis-and-meridian-behind',
@@ -238,7 +234,7 @@ const LOGO_STEPS: readonly StepEntry[] = [
 const STATE_STEPS: readonly StepEntry[] = [
   {
     id: 'oval-globe',
-    caption: 'The globe without its meridian: a ring and a latitude oval draw the G, and the T\'s stem runs unbroken through the equator.',
+    caption: 'The globe without its meridian: a ring and a latitude oval draw the G, and the T\'s stem runs unbroken through the oval\'s lower arc.',
   },
   {
     id: 'oval-axis-behind',

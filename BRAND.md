@@ -124,9 +124,9 @@ the doubled-line grammar at brand scale. Locadex carries its own mark
 The chosen logo is Axis and meridian behind, a globe whose ring, meridian
 oval and latitude oval draw the G, with the T's stem, the polar axis, and
 the back meridian broken where they pass behind the oval's lower arc, the
-front of the equator. On hover, on sign-in and while
-loading it takes its state, Oval globe, axis behind, the same globe
-without its meridian. Both lead the shortlist on `/marks`, and
+front of the equator. On hover, on sign-in and while loading it takes
+its state, Oval globe, axis behind, the same globe without its
+meridian. Both lead the shortlist on `/marks`, and
 `/marks/graticule` shows the marks that led to them. The doubled-line
 monogram is the mark in production and in this site's chrome.
 
@@ -225,8 +225,9 @@ The identity is applied on four kinds of surface today.
 - **The marks.** The speed marks chosen on 2026-09-29 (`/marks`) sit
   beside the doubled-line monogram, which stays the current mark
   (section 4). The shortlist on `/marks` opens on the chosen logo, Axis
-  and meridian behind, and its state, Oval globe, axis behind. The title badges in the `/brand` and `/marks` heads cycle
-  through a selection of the marks on `/marks`.
+  and meridian behind, and its state, Oval globe, axis behind. The title
+  badges in the `/brand` and `/marks` heads cycle through a selection of
+  the marks on `/marks`.
 
 When in doubt about how the brand behaves, read the shipped surface the
 work belongs to.
