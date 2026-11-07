@@ -67,7 +67,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/docs/components/glyph-field': { day: '2026-10-31', at: '2026-10-31T12:33:35-07:00', commit: '84c0aa4', src: 'db316a7a' },
   '/docs/components/controls': { day: '2026-10-30', at: '2026-10-30T21:21:44-07:00', commit: '6e4f5fd', src: '68014272' },
   '/docs/components/kinetic': { day: '2026-10-30', at: '2026-10-30T14:36:20-07:00', commit: '51e7b77', src: '69507b44' },
-  '/docs/components/navigation': { day: '2026-11-07', at: '2026-11-07', commit: null, src: '4e7553ec' },
+  '/docs/components/navigation': { day: '2026-11-07', at: '2026-11-07T01:19:53-08:00', commit: 'aaa619a', src: '4e7553ec' },
   '/docs/components/language': { day: '2026-10-31', at: '2026-10-31T12:33:35-07:00', commit: '84c0aa4', src: '11f7e7c1' },
   '/docs/components/motion': { day: '2026-10-31', at: '2026-10-31T12:33:35-07:00', commit: '84c0aa4', src: '5d1da9c9' },
   '/docs/components/heads': { day: '2026-10-31', at: '2026-10-31T12:33:35-07:00', commit: '84c0aa4', src: 'b1c04b41' },
