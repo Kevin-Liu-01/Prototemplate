@@ -55,9 +55,9 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
     caption: 'On hover the meridian opens at both poles and its left half folds down into the bar, and the move runs back when the cursor leaves.',
   },
   {
-    id: 'take-turns',
-    name: 'Meridian and equator take turns',
-    caption: "While a page loads, the meridian draws back, then one line runs round the globe without stopping: down the meridian and out along the equator's bar, then up over the top and round the oval through the G's opening. It is drawn whole over the unchanged mark, and the meridian draws in again at the end.",
+    id: 'meridian-then-g',
+    name: 'Meridian, then G',
+    caption: 'While a page loads, a line runs once round the meridian, drawn whole over the oval globe, then the G runs once round the equator: its stroke draws off from one end and back on until it rests as the G again. The T holds still in front the whole time.',
   },
 ];
 
@@ -69,7 +69,7 @@ export const motionRest = (theme: 'light' | 'dark') => `/marks/graticule/motion/
 export const MOTION_GROUP = {
   id: 'animations-hover',
   title: 'Hover and loading',
-  lead: `These ${MOTION_LOOPS.length} play on Axis and meridian behind: each hover settles it into Oval globe, axis behind, and the loader runs one line round that state, turning from the meridian to the equator and back.`,
+  lead: `These ${MOTION_LOOPS.length} play on Axis and meridian behind: each hover settles it into Oval globe, axis behind, and in the loader a line runs once round the meridian of that state, then the G runs once round the equator.`,
 };
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */
