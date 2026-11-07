@@ -34,7 +34,7 @@ export type Animation = { id: LineAnimationId; caption: string };
 export type MotionLoop = { id: string; name: string; caption: string };
 
 /** The static mark and the state its hovers settle into, by variation id. */
-export const STATIC_MARK = 'meridian-axis-behind';
+export const STATIC_MARK = 'axis-and-meridian-behind';
 export const STATE_MARK = 'oval-axis-behind';
 
 /** The hovers and the loader on the static mark, in the order they were chosen. Each video starts and ends on the static mark. */
@@ -55,9 +55,9 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
     caption: 'On hover the meridian opens at both poles and its left half folds down into the bar, and the move runs back when the cursor leaves.',
   },
   {
-    id: 'run-round',
-    name: 'Meridian runs round the oval',
-    caption: 'While a page loads, the meridian draws back, then a stretch of it runs round the oval drawn whole over the unchanged mark, and it draws in again at the end.',
+    id: 'take-turns',
+    name: 'Meridian and equator take turns',
+    caption: "While a page loads, the meridian draws back, then one line runs round the globe without stopping: down the meridian and out along the equator's bar, then up over the top and round the oval through the G's opening. It is drawn whole over the unchanged mark, and the meridian draws in again at the end.",
   },
 ];
 
@@ -69,7 +69,7 @@ export const motionRest = (theme: 'light' | 'dark') => `/marks/graticule/motion/
 export const MOTION_GROUP = {
   id: 'animations-hover',
   title: 'Hover and loading',
-  lead: `These ${MOTION_LOOPS.length} play on Meridian globe, axis behind: each hover settles it into Oval globe, axis behind, and the loader runs a meridian round that state.`,
+  lead: `These ${MOTION_LOOPS.length} play on Axis and meridian behind: each hover settles it into Oval globe, axis behind, and the loader runs one line round that state, turning from the meridian to the equator and back.`,
 };
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */
@@ -96,15 +96,15 @@ export const BEST_TITLE = 'Best';
 
 /** The best marks in order, each by its catalog id or its variation id: the static mark first, then its hover state. */
 const BEST_IDS: readonly string[] = [
-  'meridian-axis-behind',
+  'axis-and-meridian-behind',
   'oval-axis-behind',
+  'meridian-axis-behind',
   'meridian-wide-axis-gap',
   'oval-wide-axis-gap',
   'meridian-globe',
   'oval-globe',
   'graticule-heavy-open-bar',
   'graticule-gt',
-  'axis-and-meridian-behind',
   'graticule-short-arc-slant-stem-behind',
   'graticule-heavy-curved-bar',
   'graticule-rounded-t-heavy-plumb-end',
@@ -189,30 +189,30 @@ export const BEST: readonly Best[] = BEST_IDS.map((id): Best => {
 });
 
 /** The best section's lead, which counts its marks. */
-export const BEST_LEAD = `These ${BEST.length} marks are the best of every drawing on this page. The first is the static mark, Meridian globe, axis behind, and the second is its state on hover, on sign-in and while loading, Oval globe, axis behind.`;
+export const BEST_LEAD = `These ${BEST.length} marks are the best of every drawing on this page. The first is the logo, Axis and meridian behind, and the second is its state on hover, on sign-in and while loading, Oval globe, axis behind.`;
 
 /** The section of the globe rows; its divider is the h2 and the lead. */
 export const ROWS_ID = 'rows';
 export const ROWS_TITLE = 'Globe rows';
-export const ROWS_LEAD = 'Each row draws two earlier globes with a whole top arc, then the oval logo, the meridian logo and the name.';
+export const ROWS_LEAD = 'Each row draws two earlier globes with a whole top arc, then the oval state, the logo and the name.';
 
 /** One globe row: its name, what changes along it, and its four globes left to right, each a public file in currentColor on the 256 unit square. */
 export type GlobeRow = { id: string; name: string; caption: string; globes: readonly string[] };
 
-/** The oval logo and the meridian logo that end every row. */
+/** The oval state and the logo that end every row. */
 const LOGOS = [`/marks/graticule/variations/${STATE_MARK}.svg`, `/marks/graticule/variations/${STATIC_MARK}.svg`] as const;
 
 export const GLOBE_ROWS: readonly GlobeRow[] = [
   {
     id: 'rows-bar',
     name: 'The bar shortens',
-    caption: 'The whole oval and the whole equator with the stem joined to it, then the bar shortened into the T, then the oval logo and the meridian logo.',
+    caption: 'The whole oval and the whole equator with the stem joined to it, then the bar shortened into the T, then Oval globe, axis behind and Axis and meridian behind.',
     globes: ['/marks/graticule/rows/stem-joined.svg', '/marks/graticule/rows/short-bar.svg', ...LOGOS],
   },
   {
     id: 'rows-axis',
     name: 'The axis joins',
-    caption: 'The whole oval, the whole equator and the whole axis, then the T, then the oval logo and the meridian logo.',
+    caption: 'The whole oval, the whole equator and the whole axis, then the T, then Oval globe, axis behind and Axis and meridian behind.',
     globes: ['/marks/graticule/rows/whole-axis.svg', '/marks/graticule/rows/short-bar.svg', ...LOGOS],
   },
 ];
