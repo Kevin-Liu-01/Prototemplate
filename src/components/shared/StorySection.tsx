@@ -139,7 +139,7 @@ export default function StorySection({
   scrollLength = { desktop: 8200, mobile: 5400 },
   field = true,
   siteName = 'example.com',
-  logoSrc = '/brand/no-bg-gt-logo-dark.png',
+  logoSrc = '/brand/no-bg-gt-globe-logo-dark.png',
 }: StorySectionProps) {
   const root = useRef<HTMLElement>(null);
   const popup = sliderMode === 'popup';

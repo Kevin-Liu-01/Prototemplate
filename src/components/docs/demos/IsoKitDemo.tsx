@@ -19,7 +19,7 @@ import {
   type IsoPrism,
   type Pt2,
 } from '@/app/d/toolchain/diagrams/iso';
-import { REFERENCE_MARK } from '@/lib/marks';
+import { LOGO } from '@/lib/logo';
 
 import { Choice, Range, Toggle } from './controls';
 import Plate from './Plate';
@@ -73,8 +73,8 @@ function Prism({ prism }: { prism: IsoPrism }) {
   );
 }
 
-/* the GT mark's outline, fit to a plan square and seated on a top face */
-const [MX, MY, MW, MH] = REFERENCE_MARK.viewBox.split(' ').map(Number) as [number, number, number, number];
+/* the logo's outline, fit to a plan square and seated on a top face */
+const [MX, MY, MW, MH] = LOGO.viewBox.split(' ').map(Number) as [number, number, number, number];
 
 function SeatedMark({ z, size }: { z: number; size: number }) {
   const s = size / MW;
@@ -82,8 +82,8 @@ function SeatedMark({ z, size }: { z: number; size: number }) {
     <g transform={plane(z)}>
       <path
         className='dmo-iso-mark'
-        d={REFERENCE_MARK.d}
-        fillRule='evenodd'
+        d={LOGO.d}
+        fillRule={LOGO.fillRule}
         transform={`translate(${-size / 2} ${(-MH * s) / 2}) scale(${s}) translate(${-MX} ${-MY})`}
       />
     </g>

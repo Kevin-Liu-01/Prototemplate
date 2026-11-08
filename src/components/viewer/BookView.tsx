@@ -36,7 +36,7 @@ export type BookSlots =
 export type BookHeadProps = BookSlots & {
   /** the page's plain name from PAGE_NAMES, or a record's own title */
   title: string;
-  /** a figure on the title's line after the name (the brand's traced monogram); decorative, so hidden from the accessible name */
+  /** a figure on the title's line after the name (the brand's badge); decorative, so hidden from the accessible name */
   badge?: ReactNode;
   /** one to three lines at the lead measure, 200 characters at most */
   lead: ReactNode;

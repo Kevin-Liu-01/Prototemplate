@@ -15,7 +15,7 @@ Detail for section 3 of `gt-explorations`: the registry fields, how Kevin's numb
 | `site` | a full site with its own `/enterprise` page |
 | `reference` | the shipped outcome |
 
-The shipped outcome carries no `label`. It is what the rounds produced, and a number would enter it in the comparison (commit 127960d, 2026-08-25). `src/lib/marks.ts` keeps the current mark the same way, as `REFERENCE_MARK`, and never offers it as a candidate.
+The shipped outcome carries no `label`. It is what the rounds produced, and a number would enter it in the comparison (commit 127960d, 2026-08-25). The current mark lives apart from the catalog the same way, as `LOGO` in `src/lib/logo.ts`.
 
 ## Kevin's numbers
 

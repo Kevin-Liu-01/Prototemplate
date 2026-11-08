@@ -286,7 +286,7 @@ export default function PresenterApp() {
             className={`pr-hud-brand${railHidden ? ' is-hidden' : ''}`}
             aria-label='Back to the index'
           >
-            <img src='/brand/no-bg-gt-logo-dark-256.png' alt='General Translation' />
+            <img src='/brand/no-bg-gt-globe-logo-dark-256.png' alt='General Translation' />
             <span>Redesign</span>
           </Link>
           <div className={`pr-hud-author${railHidden ? ' is-hidden' : ''}`}>Kevin Liu</div>

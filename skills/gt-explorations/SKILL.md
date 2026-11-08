@@ -107,7 +107,7 @@ A palette, a title or a new arrangement of the same parts does not make a new di
 `references/registry.md` holds the fields, the views and the record.
 
 - `src/lib/directions.ts` (`DIRECTIONS`) is the one list. The gallery, `/directions/<slug>`, `/compare`, `/present`, the sitemap and the page check all read it, so a direction is registered once. `label` is the number Kevin uses, `slug` is fixed for the life of the direction, and `signature` holds its action.
-- The shipped outcome carries no `label`, so it never enters the comparison (127960d, 2026-08-25). `REFERENCE_MARK` in `src/lib/marks.ts` works the same way.
+- The shipped outcome carries no `label`, so it never enters the comparison (127960d, 2026-08-25). `LOGO` in `src/lib/logo.ts`, the current mark, sits apart the same way.
 - Refer to every version by the number Kevin uses, in reports, notes and commits (2026-07-29). The number he uses is the one he saw: the gallery's book view shows `label`, and the shell's sidebar and toolbar count positions. When a number could name two directions, find which view he was on, and ask once if it is still unclear.
 - A version that was overwritten comes back under a number of its own, and keeps the trait it was kept for (versions 0 and 11, 2026-07-29).
 - Renumber only when Kevin asks, in one registry pass: remove the losers, number the keepers from the one he names, and keep every slug and URL (2026-07-31). Otherwise survivors keep their numbers, new directions take the next free ones, and gaps are expected (2026-09-14).

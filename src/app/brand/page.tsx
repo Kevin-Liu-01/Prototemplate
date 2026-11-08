@@ -55,7 +55,7 @@ const SHIPS = [
   ['Motion', 'the films on /motion: the blog trailers, the product films and the translation-history series'],
   [
     'The marks',
-    'the speed marks chosen on 2026-09-29, shown beside the doubled-line monogram, which stays the current mark; the title badges in the /brand and /marks heads cycle through a selection of the marks on /marks',
+    'the logo chosen on 2026-11-06, which replaced the doubled-line monogram on 2026-11-08, its state, and the marks it was reached from; the title badges in the /brand and /marks heads cycle through a selection of the marks on /marks',
   ],
 ] as const;
 
@@ -285,9 +285,10 @@ const PAGES: readonly BrandPage[] = [
     body: (
       <>
         <p>
-          Every stroke of the <GtWord />{' '}monogram is two parallel lines: the doubled-line grammar
-          at brand scale, the same device that runs through every diagram in the system.
-          The mark renders in one ink, either ink on paper or paper on ink. Never a third
+          The <GtWord />{' '}logo is a globe whose ring, meridian and latitude ovals draw the G,
+          with the T&rsquo;s stem as the polar axis, broken where it passes behind the front of
+          the equator. It replaced the doubled-line monogram, the previous mark, on 8 November
+          2026. The mark renders in one ink, either ink on paper or paper on ink. Never a third
           color, never a gradient, never a shadow. The dark surface inverts the drawn
           mark&rsquo;s ink. In illustration systems the mark renders as an alpha mask, so
           the shape takes the surface&rsquo;s ink. The one sanctioned flourish is the
@@ -296,11 +297,11 @@ const PAGES: readonly BrandPage[] = [
         <BrandMarkFigure />
         <div className='ptb-marks'>
           <figure className='ptb-mark is-paper'>
-            <img alt='The GT monogram in ink on paper' decoding='async' loading='lazy' src='/brand/gt-logo-light.svg' />
+            <img alt='The GT logo in ink on paper' decoding='async' loading='lazy' src='/brand/gt-globe-logo-light.svg' />
             <figcaption>ink on paper</figcaption>
           </figure>
           <figure className='ptb-mark is-ink'>
-            <img alt='The GT monogram in paper on ink' decoding='async' loading='lazy' src='/brand/gt-logo-dark.svg' />
+            <img alt='The GT logo in paper on ink' decoding='async' loading='lazy' src='/brand/gt-globe-logo-dark.svg' />
             <figcaption>paper on ink</figcaption>
           </figure>
           <figure className='ptb-mark is-paper'>

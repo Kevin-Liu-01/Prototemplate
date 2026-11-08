@@ -49,3 +49,7 @@ Where each rule of `gt-films` comes from, with dates. Paths are relative to `$PR
 - From `gt-motion` (absorbed; `gt-motion` keeps them for the web): the 0.5 s beat grid for films, the reading hold of (words / 3) + 1 s, the 40 to 90 ms staggers, the camera drift limit, the eases, the four scene transitions and the calm-assembly rule from jihe-yuanben. They are the skill's section 3 beside Kevin's later pacing notes.
 - Out of `SKILL.md` into references, to keep it under the 24,000-byte budget: the blog films' look (`look.md`), the project, kit engines and render details (`kit.md`), the workflows and lane rules (`workflows.md`), publishing (`pipeline.md`), and this provenance.
 - Retired: the round 7 rules that two thirds of a blog film's words are verbatim from the post and that a heading shares no content word with its line (replaced by Kevin's 2026-10-06 notes); Clara as the narrator (Frederick Surrey since 2026-10-06); `scripts/frames.mjs` (the critic selects frames with an ffmpeg command in `critic.md`).
+
+## Lines changed on 2026-11-08
+
+- `references/look.md`, the GT logo in a film: Kevin's answer of 2026-11-08 that the logo replaces the doubled-line monogram everywhere ("Swap everything"), and his motion rule that the globe's lines move and the mark never moves as a rigid object. The film kit's own copy of the mark sits in the films session's local `motion/` folder and is that session's to swap.

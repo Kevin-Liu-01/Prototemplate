@@ -235,7 +235,7 @@
 .dmo-cg-mark {
   display: block;
   flex: none;
-  aspect-ratio: 1213 / 771;
+  aspect-ratio: 1;
 }
 
 .dmo-cg-mark svg {

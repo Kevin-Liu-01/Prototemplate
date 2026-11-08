@@ -116,19 +116,23 @@ product.
 
 ## 4. The mark
 
-The GT monogram (`/brand/gt-logo-light.svg`, `gt-logo-dark.svg` +
-transparent PNG variants): every stroke of the mark is two parallel lines,
-the doubled-line grammar at brand scale. Locadex carries its own mark
-(`/brand/locadex-mark.svg`).
+The mark is the logo, Axis and meridian behind
+(`/brand/gt-globe-logo-light.svg`, `gt-globe-logo-dark.svg` + transparent
+PNG variants, all written from `LOGO` in `src/lib/logo.ts` by
+`pnpm build:logo`): a globe whose ring, meridian oval and latitude oval
+draw the G, with the T's stem, the polar axis, and the back meridian
+broken where they pass behind the oval's lower arc, the front of the
+equator. On hover, on sign-in and while loading it takes its state, Oval
+globe, axis behind, the same globe without its meridian. Both lead the
+shortlist on `/marks`, and `/marks/graticule` shows the marks that led to
+them. Locadex carries its own mark (`/brand/locadex-mark.svg`).
 
-The chosen logo is Axis and meridian behind, a globe whose ring, meridian
-oval and latitude oval draw the G, with the T's stem, the polar axis, and
-the back meridian broken where they pass behind the oval's lower arc, the
-front of the equator. On hover, on sign-in and while loading it takes
-its state, Oval globe, axis behind, the same globe without its
-meridian. Both lead the shortlist on `/marks`, and
-`/marks/graticule` shows the marks that led to them. The doubled-line
-monogram is the mark in production and in this site's chrome.
+The logo replaced the doubled-line GT monogram on 2026-11-08 in this
+site's chrome, the GT tab icon, `/brand` and the deck. The monogram, in
+which every stroke of the mark is two parallel lines, is the previous
+mark: its files (`/brand/gt-logo-light.svg`, `gt-logo-dark.svg` and the
+`no-bg-gt-logo-*` PNGs) stay at their URLs, `/marks` keeps it as a past
+pick, and generaltranslation.com and the dashboard still draw it.
 
 Rules:
 
@@ -148,9 +152,11 @@ Rules:
   the globe's ink to the G is 0.5637 cap height. A round mark only as tall
   as flat-topped text looks shorter than the text, for the same reason
   round letters such as O overshoot the cap height and the baseline.
-- At text size, the wordmark sits inline with prose at the cap height of
-  the line it lives in, as in the generaltranslation.com hero's "GT builds
-  full-stack localization for apps, docs, and websites".
+- At text size, the mark sits inline with prose at the cap height of the
+  line it lives in, overshooting it as a round letter does (0.793em
+  square, its foot 0.033em under the baseline), as in the
+  generaltranslation.com hero's "GT builds full-stack localization for
+  apps, docs, and websites".
 - **The identity must survive compression:** a favicon, a CLI banner, a
   README, a syntax-highlighted code block. Developers meet the brand in a
   terminal as often as on a website.
@@ -222,12 +228,13 @@ The identity is applied on four kinds of surface today.
   2026-09-25.
 - **Motion.** The films on `/motion` apply the identity to film: the blog
   trailers, the product films and the translation-history series.
-- **The marks.** The speed marks chosen on 2026-09-29 (`/marks`) sit
-  beside the doubled-line monogram, which stays the current mark
-  (section 4). The shortlist on `/marks` opens on the chosen logo, Axis
-  and meridian behind, and its state, Oval globe, axis behind. The title
-  badges in the `/brand` and `/marks` heads cycle through a selection of
-  the marks on `/marks`.
+- **The marks.** The logo, Axis and meridian behind, is the mark in this
+  site's chrome, on `/brand` and in the deck since 2026-11-08 (section
+  4). The shortlist on `/marks` opens on it and its state, Oval globe,
+  axis behind. The speed marks chosen on 2026-09-29 sit beside the
+  doubled-line monogram, the previous mark. The title badges in the
+  `/brand` and `/marks` heads cycle through a selection of the marks on
+  `/marks`.
 
 When in doubt about how the brand behaves, read the shipped surface the
 work belongs to.

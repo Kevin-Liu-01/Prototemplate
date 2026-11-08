@@ -51,7 +51,7 @@ type Orb = { el: HTMLElement; ang: number; rad: number; spin: number; scale: num
 export default function LanguageWheel({
   className,
   size,
-  logoSrc = '/brand/no-bg-gt-logo-dark.png',
+  logoSrc = '/brand/no-bg-gt-globe-logo-dark.png',
   logoAlt = '',
   logoSize,
   glyphs = DEFAULT_GLYPHS,

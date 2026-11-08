@@ -2,24 +2,24 @@ import { EdgesGeometry, ExtrudeGeometry, Group, LineSegments, Mesh, PerspectiveC
 import type { BufferGeometry } from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 
-import { REFERENCE_MARK } from '@/lib/marks';
+import { LOGO } from '@/lib/logo';
 
 import type { SceneEnv, SceneInstance } from './dither-stage';
 import type { Turn } from './drag';
 import { inkMaterial, lightFrom, lightUniform, lineMaterial } from './materials';
 
 /**
- * The GT mark as a solid: REFERENCE_MARK, the doubled-line monogram's one
- * evenodd path (src/lib/marks.ts, the deck's #gt-mark), parsed by
- * SVGLoader into shapes with their holes and extruded 150 units deep with
- * no bevel, so every face is a flat plane and every wall between the
- * doubled lines catches the light on its own. EdgesGeometry at 28 degrees
- * keeps the front and back contours and the corners as hairlines and
- * drops the seams between the arc's short facets.
+ * The GT mark as a solid: LOGO, the logo's one path (src/lib/logo.ts, the
+ * deck's #gt-mark), parsed by SVGLoader into shapes with their holes and
+ * extruded 24 units deep with no bevel, so every face is a flat plane and
+ * every wall of the globe's lines catches the light on its own.
+ * EdgesGeometry at 28 degrees keeps the front and back contours and the
+ * corners as hairlines and drops the seams between the curves' short
+ * facets.
  */
 
 const MARK_WIDTH = 2.4;
-const DEPTH_UNITS = 150;
+const DEPTH_UNITS = 24;
 const FOV = 22;
 
 let cached: { body: BufferGeometry; edges: BufferGeometry } | null = null;
@@ -27,15 +27,15 @@ let cached: { body: BufferGeometry; edges: BufferGeometry } | null = null;
 /** Parsed and extruded once per page; each context uploads the same buffers again. */
 function markGeometry(): { body: BufferGeometry; edges: BufferGeometry } {
   if (cached) return cached;
-  const [, , vbWidth] = REFERENCE_MARK.viewBox.split(' ').map(Number);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${REFERENCE_MARK.viewBox}"><path fill-rule="evenodd" d="${REFERENCE_MARK.d}"/></svg>`;
+  const [, , vbWidth] = LOGO.viewBox.split(' ').map(Number);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${LOGO.viewBox}"><path fill-rule="${LOGO.fillRule}" d="${LOGO.d}"/></svg>`;
   const shapes = new SVGLoader().parse(svg).paths.flatMap((path) => path.toShapes(false));
-  const body = new ExtrudeGeometry(shapes, { depth: DEPTH_UNITS, bevelEnabled: false, curveSegments: 1 });
+  const body = new ExtrudeGeometry(shapes, { depth: DEPTH_UNITS, bevelEnabled: false, curveSegments: 4 });
   /* SVG's y runs down: a half turn about x flips y and z together, which
      keeps the triangles' winding */
   body.rotateX(Math.PI);
   body.center();
-  const scale = MARK_WIDTH / (vbWidth ?? 1213);
+  const scale = MARK_WIDTH / (vbWidth ?? 207.4);
   body.scale(scale, scale, scale);
   const edges = new EdgesGeometry(body, 28);
   cached = { body, edges };
@@ -66,8 +66,8 @@ export function buildMarkScene(env: SceneEnv, read: () => MarkState): SceneInsta
     const aspect = width / height;
     camera.aspect = aspect;
     const half = Math.tan(((FOV / 2) * Math.PI) / 180);
-    /* the mark is 2.4 by 1.53 units; leave room for the turn's depth and the corner tag */
-    const byHeight = (1.53 * 1.5) / 2 / half;
+    /* the mark is 2.4 units square; leave room for the turn's depth and the corner tag */
+    const byHeight = (MARK_WIDTH * 1.5) / 2 / half;
     const byWidth = (MARK_WIDTH * 1.22) / 2 / (half * aspect);
     camera.position.set(0, 0, Math.max(byHeight, byWidth) + 0.2);
     camera.lookAt(0, 0, 0);

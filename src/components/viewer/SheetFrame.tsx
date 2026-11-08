@@ -8,7 +8,7 @@ import { usePtShell } from './shell-context';
 import './SheetFrame.css';
 
 export type SheetFrameProps = {
-  /** the 28x18 mark at the bottom left */
+  /** the 18px logo at the bottom left */
   wordmark?: boolean;
   /** the `01 / 52` counter at the bottom right */
   counter?: boolean;
@@ -36,7 +36,7 @@ export function SheetFrame({ wordmark = true, counter = true }: SheetFrameProps)
       </div>
       {wordmark ? (
         <div className='pt-sheet-wordmark' aria-hidden='true'>
-          <GtMark width={28} height={18} />
+          <GtMark />
         </div>
       ) : null}
       {counter ? (

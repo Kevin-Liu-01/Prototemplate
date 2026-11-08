@@ -40,7 +40,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`). The two scrip
 - The viewer draws two vertical rails 56 px in from the left and right edges, two horizontal rules 56 px in from the top and bottom, and an 11 px registration cross where they meet, in `--hair` with the crosses in `--cross`. A slide never draws them.
 - `.slide` is inset 57 px on every side and padded 72 px top and bottom and 80 px left and right. The usable area inside `.in` is 1326 by 642 px, from x 137 to 1463 and y 129 to 771 on the stage.
 - Nothing may leave the sheet, and text must not touch a rail or a rule.
-- The wordmark (the GT mark at 28 by 18, bottom left) and the counter (13 px titanium, bottom right) sit in the bottom margin. Leave them alone. Full-picture slides put solid paper chips under them.
+- The wordmark (the GT logo at 18 by 18, bottom left) and the counter (13 px titanium, bottom right) sit in the bottom margin. Leave them alone. Full-picture slides put solid paper chips under them.
 
 ## 3. Type
 

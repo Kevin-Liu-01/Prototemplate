@@ -468,12 +468,13 @@
   display: block;
 }
 
-/* the inline GT mark in a lead (GtLogoText): a 1.14em mask seated 0.21em under the baseline */
+/* the inline GT mark in a lead: the logo as a mask, sized as GtWord sizes it
+   (0.793em square, its foot 0.033em under the baseline) */
 .dmo-lay-gtword {
   display: inline-block;
-  width: 1.14em;
-  height: 1.14em;
-  vertical-align: -0.21em;
+  width: 0.793em;
+  height: 0.793em;
+  vertical-align: -0.033em;
   background-color: currentColor;
-  mask: url('/brand/no-bg-gt-logo-light.png') center / contain no-repeat;
+  mask: url('/brand/gt-globe-logo.svg') center / contain no-repeat;
 }

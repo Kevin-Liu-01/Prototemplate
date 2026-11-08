@@ -69,16 +69,16 @@
   scroll-margin-top: 28px;
 }
 
-/* the mark section's specimen: the traced monogram in dotted outline,
-   measured by dashed guides seated on its own glyph box */
+/* the mark section's specimen: the logo in dotted outline, measured by
+   dashed guides seated on its own drawn box */
 .ptb-mark-fig {
-  max-width: 860px;
+  max-width: 480px;
   margin: 22px 0 0;
 }
 
 .ptb-mark-fig-art {
   position: relative;
-  aspect-ratio: 1213 / 771;
+  aspect-ratio: 1;
   color: var(--pt-ink);
 }
 
@@ -89,7 +89,7 @@
   overflow: visible;
 }
 
-/* the traced mark, in dots: the stroke holds screen gauge at any scale so
+/* the outline, in dots: the stroke holds screen gauge at any scale so
    the dotting stays crisp */
 .ptb-fig-gt {
   fill: none;

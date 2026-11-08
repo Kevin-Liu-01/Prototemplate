@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from 'react';
 export type BadgeFrame = { key: string; content: ReactNode };
 
 /**
- * The brand head's badge content (BookHead's `badge`): the GT monograms,
+ * The brand head's badge content (BookHead's `badge`): the GT logo and marks,
  * cut one to the next every 1.4s. /brand is the one page with a badge
  * (Kevin, 2026-10-21). A hidden sizer stacks every
  * frame in one cell, so the box takes the widest frame's width; the strip

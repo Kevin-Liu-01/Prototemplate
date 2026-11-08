@@ -21,7 +21,7 @@ import type { PageUpdated } from '@/lib/page-updated';
 import { cardPath, OG_HEIGHT, OG_WIDTH } from './card-url';
 import { blogPosting, breadcrumbs, softwareSourceCode, techArticle } from './json-ld';
 import { isLocked, normalizePath, policyFor, selfUrl } from './policy';
-import { GT_ICON, HUB_ICONS, SITE_NAME, SITE_URL, TWITTER_CREATOR, TWITTER_SITE } from './site';
+import { GT_ICONS, HUB_ICONS, SITE_NAME, SITE_URL, TWITTER_CREATOR, TWITTER_SITE } from './site';
 
 import type { SeoKind, SeoSection } from './card-url';
 import type { Crumb, JsonLdNode } from './json-ld';
@@ -174,7 +174,7 @@ export function seoRoute(input: SeoRouteInput): SeoRoute {
       description: input.description,
       ...(card ? { images: [{ url: image.url, alt: image.alt }] } : {}),
     },
-    icons: gtIcon(path) ? { icon: [GT_ICON] } : HUB_ICONS,
+    icons: gtIcon(path) ? { icon: [...GT_ICONS] } : HUB_ICONS,
   };
 
   return { metadata, jsonLd: jsonLdFor(input, path, canonical, image.url) };

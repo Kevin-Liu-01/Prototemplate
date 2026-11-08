@@ -64,7 +64,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'the-mark',
     title: 'The mark',
-    desc: 'The monogram: doubled-line construction, one ink, and the rules for its use.',
+    desc: 'The logo: a globe that draws the G and the T, one ink, and the rules for its use.',
     source: 'BRAND.md part 4',
     headings: [],
   },

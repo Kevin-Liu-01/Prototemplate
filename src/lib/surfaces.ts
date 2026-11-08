@@ -432,7 +432,7 @@ const BRAND_SECTIONS: readonly Surface[] = [
   ['the-name', 'The name', 'The company name, its short form, and Locadex.'],
   ['the-idea', 'The idea', 'Every product in every language: the mission and the positioning.'],
   ['the-character', 'The character', 'The personality, the voice, and the attribute scales.'],
-  ['the-mark', 'The mark', 'The monogram: doubled-line construction, one ink, and the rules for its use.'],
+  ['the-mark', 'The mark', 'The logo: a globe that draws the G and the T, one ink, and the rules for its use.'],
   ['color', 'Color', 'Four absolute colors, alpha steps for structure, one spectral accent per page.'],
   [
     'type',

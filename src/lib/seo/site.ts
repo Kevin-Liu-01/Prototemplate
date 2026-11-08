@@ -38,9 +38,12 @@ export const KEVIN = {
 export const TWITTER_SITE = '@generaltxn';
 export const TWITTER_CREATOR = '@kevskgs';
 
-/** The tab icons: the Prototemplate mark on the hub, the GT mark on the GT design studies and the presenter. */
+/** The tab icons: the Prototemplate mark on the hub, the GT logo on the GT design studies and the presenter. The logo's icon is its drawn box in ink, white under a dark color scheme (pnpm build:logo), with the 96 px ink PNG for browsers that take no SVG icon. */
 const HUB_ICON = { url: '/pt-mark.svg', type: 'image/svg+xml' } as const;
-export const GT_ICON = { url: '/brand/no-bg-gt-logo-light.png', type: 'image/png' } as const;
+export const GT_ICONS = [
+  { url: '/brand/no-bg-gt-globe-logo-light-96.png', sizes: '96x96', type: 'image/png' },
+  { url: '/brand/gt-globe-logo-icon.svg', type: 'image/svg+xml' },
+] as const;
 
 /** The hub mark's raster copies, in its dark-scheme ink on the dark ground: favicon.ico holds 16, 32 and 48 px for Google and older browsers, and apple-touch-icon.png is the 180 px home screen icon. */
 const HUB_FAVICON = { url: '/favicon.ico', sizes: '48x48' } as const;

@@ -56,10 +56,10 @@
   --pr-mint: #0f6b45;
 }
 
-/* the brand mark file is the white mark (no-bg-gt-logo-dark-256.png, cut
+/* the brand mark file is the white logo (no-bg-gt-globe-logo-dark-256.png, cut
    for the ink ground); on paper it is inverted to the black mark, the same
    monochrome shape, so the title and the HUD carry the mark in both themes */
-:root:not([data-theme='dark']) .pr-root img[src$='no-bg-gt-logo-dark-256.png'] {
+:root:not([data-theme='dark']) .pr-root img[src$='no-bg-gt-globe-logo-dark-256.png'] {
   filter: invert(1);
 }
 

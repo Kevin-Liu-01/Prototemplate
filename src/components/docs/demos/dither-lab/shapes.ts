@@ -1,4 +1,5 @@
-import { catalogMark, REFERENCE_MARK, SHORTLIST } from '@/lib/marks';
+import { LOGO } from '@/lib/logo';
+import { catalogMark, SHORTLIST } from '@/lib/marks';
 import { smoothstep } from '@/lib/math';
 
 /**
@@ -160,7 +161,7 @@ export type MarkArt = { aspect: number; draw: (ctx: CanvasRenderingContext2D, x:
 export type MarkId = string;
 
 /** The marks the tiers plate offers: the GT mark, the first two of the shortlist, then four marks of the earlier rounds. */
-const TIER_MARKS: readonly MarkId[] = ['gt', ...SHORTLIST.slice(0, 2), 'bar-monogram', 'globe-g', 'two-way', 'plate-inverted'];
+const TIER_MARKS: readonly MarkId[] = ['gt', ...SHORTLIST.slice(1, 3), 'bar-monogram', 'globe-g', 'two-way', 'plate-inverted'];
 
 /** Each offered mark's label: its name in the catalog. */
 export const MARK_LABELS: Readonly<Record<MarkId, string>> = Object.fromEntries(
@@ -175,7 +176,7 @@ function viewBoxOf(text: string): [number, number, number, number] {
 }
 
 /**
- * The reference GT mark as a Path2D, or a catalog mark's SVG drawn as an
+ * The logo (LOGO in src/lib/logo.ts) as a Path2D, or a catalog mark's SVG drawn as an
  * image at the box's size, fetched from the path the catalog gives it and
  * cut to its drawn box when it records one.
  */
@@ -203,8 +204,8 @@ export function loadMark(id: MarkId): Promise<MarkArt> {
 }
 
 function gtArt(): MarkArt {
-  const [vx, vy, vw, vh] = viewBoxOf(REFERENCE_MARK.viewBox);
-  const path = new Path2D(REFERENCE_MARK.d);
+  const [vx, vy, vw, vh] = viewBoxOf(LOGO.viewBox);
+  const path = new Path2D(LOGO.d);
   return {
     aspect: vw / vh,
     draw: (ctx, x, y, w, h) => {
@@ -213,7 +214,7 @@ function gtArt(): MarkArt {
       ctx.scale(w / vw, h / vh);
       ctx.translate(-vx, -vy);
       ctx.fillStyle = 'rgb(0, 0, 0)';
-      ctx.fill(path, 'evenodd');
+      ctx.fill(path, LOGO.fillRule);
       ctx.restore();
     },
   };

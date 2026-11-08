@@ -141,7 +141,7 @@ Assets in `public/brand/` (Prototemplate and the gt-cloud landing carry the same
 
 - `locadex-mark.svg` for large seats. Its viewBox is 500 square and the drawn glyph spans 199 by 222 of it, so size the image box from the glyph: `markHalf = glyphWidth * (500 / 199) / 2`. The tower seats a 28-unit glyph in a 70-unit image box. The Locadex slab's image box is 32 units, so its glyph is about 13 units wide.
 - `no-bg-locadex-logo-light.png` for small seats (a 16-unit image box on the pricing platform). The SVG's ring geometry breaks at small sizes.
-- `no-bg-gt-logo-light.png` for the GT mark. The mask reads alpha only, so the light or dark variant makes no difference. `gt-logo-light.svg` may carry a ground; keep it out of masks.
+- `no-bg-gt-globe-logo-light.png` or `gt-globe-logo.svg` for the GT logo. The mask reads alpha only, so the light or dark variant makes no difference.
 - Third-party marks: render the icon component white inside the mask (the GitHub mark on the repository's front-left module is `SiGithub` at a half size of 4.6).
 
 Placement:

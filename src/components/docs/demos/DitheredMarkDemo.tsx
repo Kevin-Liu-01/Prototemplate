@@ -6,7 +6,7 @@ import { useId, useRef, useState } from 'react';
 
 import DitheredMark, { shineTravel, type ShineCover } from '@/app/d/toolchain/diagrams/DitheredMark';
 import { ISO_COS30, ISO_SIN30, plane } from '@/app/d/toolchain/diagrams/iso';
-import { REFERENCE_MARK } from '@/lib/marks';
+import { LOGO } from '@/lib/logo';
 
 import { Choice, Range, Toggle } from './controls';
 import { useReducedMotion } from './hooks';
@@ -17,8 +17,8 @@ gsap.registerPlugin(useGSAP);
 type Seat = 'flat' | 'iso';
 type Glint = 'ink' | 'accent';
 
-/* the GT mark's outline (REFERENCE_MARK, the path GtMark.tsx draws), filled white inside the alpha mask */
-const [VX, VY, VW, VH] = REFERENCE_MARK.viewBox.split(' ').map(Number) as [number, number, number, number];
+/* the logo's outline (LOGO, the path GtMark.tsx draws), filled white inside the alpha mask */
+const [VX, VY, VW, VH] = LOGO.viewBox.split(' ').map(Number) as [number, number, number, number];
 const MARK_W = 150;
 const S = MARK_W / VW;
 const MARK_H = VH * S;
@@ -27,9 +27,9 @@ const MARK_H = VH * S;
 function MarkShape() {
   return (
     <path
-      d={REFERENCE_MARK.d}
+      d={LOGO.d}
       fill='white'
-      fillRule='evenodd'
+      fillRule={LOGO.fillRule}
       transform={`translate(${-MARK_W / 2} ${-MARK_H / 2}) scale(${S}) translate(${-VX} ${-VY})`}
     />
   );

@@ -231,7 +231,7 @@ export default function IntroSlide() {
                 offThread
                 params={{ exposureScale: 4600 }}
               />
-              <img src='/brand/no-bg-gt-logo-dark-256.png' alt='General Translation' />
+              <img src='/brand/no-bg-gt-globe-logo-dark-256.png' alt='General Translation' />
             </span>
           </span>
           <span className='pr-title-mask'>

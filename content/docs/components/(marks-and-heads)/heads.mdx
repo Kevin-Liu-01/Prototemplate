@@ -1,6 +1,6 @@
 ---
 title: Badges and heads
-description: "The badge that cuts through the GT monograms after the Brand title, and the book head every hub page opens with, live at two widths."
+description: "The badge that cuts through the GT logo and marks after the Brand title, and the book head every hub page opens with, live at two widths."
 icon: Book
 sources:
   - src/components/docs/demos
@@ -39,7 +39,7 @@ The rules live in `src/components/viewer/BookView.css`, so a host outside a book
 
 ### When to use it
 
-Only /brand's head carries a badge (Kevin, 2026-10-21): the GT monogram, then the first four shortlisted marks no wider than it (`badgeMarks` in `src/lib/marks.ts`), so the monogram sets the box's width and the box holds still. Every other book head sets its title alone, and `pnpm lint:heads` fails a badge outside `src/app/brand`.
+Only /brand's head carries a badge (Kevin, 2026-10-21): the logo, then the first four shortlisted marks after it no wider than it (`badgeMarks` in `src/lib/marks.ts`), so the logo sets the box's width and the box holds still. Every other book head sets its title alone, and `pnpm lint:heads` fails a badge outside `src/app/brand`.
 
 ### Reduced motion and themes
 

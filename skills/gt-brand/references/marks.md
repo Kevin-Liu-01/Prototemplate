@@ -4,22 +4,30 @@ This file backs section 5 of `gt-brand`: where each GT mark lives, which file to
 
 ## The current mark
 
-The GT monogram in use is the doubled-line mark: every stroke of the G and the T is drawn as two parallel lines, the same grammar as the doubled-line connector (DESIGN.md section 5).
+The logo, Axis and meridian behind, is GT's mark. Kevin moved every Prototemplate use of the doubled-line monogram to it on 2026-11-08 ("Swap everything"): the chrome mark, the GT word, the GT tab icon, the `/brand` figure, tiles and badge, the presenter, and the deck. Every use reads one drawing.
 
 | source | what it is | use it for |
 | --- | --- | --- |
-| `REFERENCE_MARK` in `src/lib/marks.ts` (viewBox `-8 214 1213 771`) | the mark as four contour loops in one evenodd path in currentColor, traced from `public/brand/no-bg-gt-logo-light.png` by marching squares over the alpha channel and simplified at 1.6px of the 1198px master | any vector use in the site; `/marks` draws its production card and the head's strip from `public/marks/production/gt-mark.svg`, the same outline |
-| the `#gt-mark` symbol in `deck/parts/head.html` | the same outline as a symbol | the deck's sidebar head, the wordmark slot and the GT word |
-| `public/brand/no-bg-gt-logo-dark.png`, `no-bg-gt-logo-light.png` and their `-96` versions | transparent PNG masters; the dark file is the white mark cut for the ink ground | favicons (`/present` uses the light PNG as its icon) and raster contexts |
-| `public/brand/gt-logo-light.svg`, `gt-logo-dark.svg` | the `REFERENCE_MARK` path in `#000` and `#fff` (1.5 KB each), placed where the embedded PNGs they replaced on 2026-10-09 held the mark: the master's 1198px grid 182px into a 1563px square, scaled 0.239923 into viewBox `0 0 375 374.999991` | the `/brand` tiles and any page that needs the mark as a file |
+| `LOGO` in `src/lib/logo.ts` | the logo as one path in currentColor with the nonzero fill rule, on the catalog's square `0 0 256 256`, with its drawn box `24.3 24.3 207.4 207.4` as `viewBox` | any vector use in the site: `GtMark` (the chrome mark), the `/brand` figure and badge, the docs demos; never redraw it |
+| `pnpm build:logo` (`scripts/build/logo.mjs`) | writes every file below from `LOGO`; run `pnpm build:deck` after it | after any change to `LOGO` |
+| the `#gt-mark` symbol in `deck/parts/head.html` | the logo on its drawn box | the deck's sidebar head, the wordmark slot, the GT word and every slide that draws the mark |
+| `public/brand/gt-globe-logo.svg` | currentColor on the drawn box | masks: `GtWord` and the docs lead demo draw it as a CSS mask filled with currentColor |
+| `public/brand/gt-globe-logo-light.svg`, `gt-globe-logo-dark.svg` | `#070707` and `#ffffff` on the 256 square | the `/brand` tiles and any page that needs the mark as a file |
+| `public/brand/no-bg-gt-globe-logo-light.png`, `-dark.png` (1198 px), `-light-96`, `-dark-96` and `-dark-256` | transparent PNG masters at the sizes of the monogram masters | raster contexts: the presenter (the white 256 px file, inverted on paper), the deck's tab icon (light 96) |
+| `public/brand/gt-globe-logo-icon.svg` | the tab icon on the drawn box, ink, and white under a dark color scheme | `GT_ICONS` in `src/lib/seo/site.ts`, with the light 96 px PNG, on `/d` and `/present` |
 
-- The mark ships as vector geometry (deck slide 16). For a new surface take the outline from `REFERENCE_MARK` and draw it in `currentColor`. `src/app/brand/gt-outline.ts` held the same loops as four paths until the 2026-10-06 head round removed it with the brand head's figure; `git show 2a8453c:src/app/brand/gt-outline.ts` prints it.
-- The outline is about 1.57 times as wide as it is tall, so a mark set by height takes its width from that aspect.
-- If the PNG master ever changes, trace it again the same way (marching squares over the alpha channel, Douglas-Peucker at 1.6px) and replace `REFERENCE_MARK`, the deck symbol and the path in the two `gt-logo-*.svg` files from the same output.
+- `pnpm test:marks` holds the catalog file `public/marks/graticule/variations/axis-and-meridian-behind.svg`, the masters and the deck symbol to `LOGO`.
+- The logo is round, so a box set by height is square. Beside the stacked name it follows the lockup rule below; inline in text it follows the GT word rule.
+- At 32 px the globe, the G and the T's stem all read. At 16 px the ring and the axis read and the inner ovals close up, so the favicon reads as a ringed globe (checked by eye on 2026-11-08).
+- Prototemplate's own tab icons (`public/favicon.ico`, `apple-touch-icon.png`, `pt-mark.svg`) are the hub's mark, not GT's, and stay.
+
+### The previous mark
+
+The doubled-line GT monogram was the mark until 2026-11-08: every stroke of the G and the T was two parallel lines, the grammar of the doubled-line connector (DESIGN.md section 5). Its files stay at their URLs because other sites link to them: `public/brand/gt-logo-light.svg`, `gt-logo-dark.svg`, `gt-logo-light.png`, the `no-bg-gt-logo-*` PNGs and `public/marks/production/gt-mark.svg`. `/marks` keeps it as a past pick (`doubled-gt`) and in In production, since generaltranslation.com and the dashboard still draw it. Deck slides 16 to 23 keep it as history through the `#gt-monogram` symbol. Its outline was `REFERENCE_MARK` in `src/lib/marks.ts`; `git show a2966dec:src/lib/marks.ts` prints it.
 
 ## The logo and its state
 
-Kevin chose the logo on 2026-11-06: Axis and meridian behind, a globe whose ring, meridian oval and latitude oval draw the G, with the T's stem, the polar axis, and the back meridian broken where they pass behind the oval's lower arc, the front of the equator, while the front meridian still meets it. Its state on hover, on sign-in and while loading is Oval globe, axis behind, the same globe without its meridian. The doubled-line monogram above stays the mark in production, in the Prototemplate chrome and favicon, on `/brand` and in the deck; moving any of them to the logo is Kevin's call.
+Kevin chose the logo on 2026-11-06: Axis and meridian behind, a globe whose ring, meridian oval and latitude oval draw the G, with the T's stem, the polar axis, and the back meridian broken where they pass behind the oval's lower arc, the front of the equator, while the front meridian still meets it. Its state on hover, on sign-in and while loading is Oval globe, axis behind, the same globe without its meridian. Since 2026-11-08 it is the current mark above. The chrome mark has no hover state yet.
 
 | what | where |
 | --- | --- |
@@ -49,7 +57,7 @@ Beside the stacked name, "General" over "Translation", the globe is 1.1 times th
 
 These rules hold for any new GT mark, from an exploration round to a final pick. They come from Kevin's reviews of a round of GT marks drawn as a globe (2026-10-08 and 2026-10-09), the rules on rough rows and on context from his request of 2026-10-28, the rules on cuts and letters from his rulings of 2026-10-26 and 2026-10-30, and the small-size cut from the marks he kept in the 2026-10-28 round.
 
-- **The G's top tail ends horizontal.** The G's top arc runs out into a straight horizontal segment, as in the current monogram, where it flattens into a stroke that runs into the T's bar. A diagonal, radial or hooked terminal is refused. Kevin, 2026-10-09, rejecting the third round: "make the top g tail end at a horizontal line".
+- **The G's top tail ends horizontal.** The G's top arc runs out into a straight horizontal segment, as in the doubled-line monogram, where it flattens into a stroke that runs into the T's bar. A diagonal, radial or hooked terminal is refused. Kevin, 2026-10-09, rejecting the third round: "make the top g tail end at a horizontal line".
 - **Cuts and letters.** Every cut through the ring continues a stroke edge inside the mark or sits on the axis, and a mark whose cuts fall anywhere else is excluded everywhere (Kevin, 2026-10-26: "i hate the ones where the cuts are off placement"). Every mark carries both a G and a T (2026-10-30). The G's mouth stays small so the ring stays long.
 - **The failure list.** Kevin rated the second round 5 out of 10 (2026-10-08). Every new mark refuses its first five causes, and the small-size cut below checks the last:
   - badge syndrome: a heavy outline circle with thin letters inside it;
@@ -67,7 +75,7 @@ These rules hold for any new GT mark, from an exploration round to a final pick.
 
 `src/lib/marks.ts` ends in one catalog that every surface reads: `CATALOG` (every mark as one row shape: id, name, family, file, the 16px drawing and the construction drawing where they exist, and the drawn box), `FAMILIES` (each family's name and one sentence, its anchor on `/marks`, and the day Kevin last worked on it), `SHORTLIST` (the chosen marks in page order) and `DYNAMIC_MARKS` (the marks from 2026-10-28 on). `/marks`, the marks plate on `/components` and `/docs/components/marks`, the `/brand` badge, the badge demo, the dither tiers plate and the home row read it, and none of them names a mark path of its own.
 
-- **The shortlist.** Only marks Kevin chose, in the order of his verdicts, newest first: the logo leads, its state follows, and his other picks stay in their families. A mark joins only when Kevin says yes on one sheet beside the shortlist at 256, 64 and 32 px on paper and ink, is no weight, placement or cut variant of a shortlisted mark (the logo's state is the one exception), and keeps one ink with every cut on a stroke edge or an axis. Only Kevin removes one. Our own iterations stay local until he picks one. At most 16 marks, the first row holds four distinct ideas, and on `/marks` the first mark takes a tile two wide and two rows tall.
+- **The shortlist.** Only marks Kevin chose, in the order of his verdicts, newest first: the logo leads, its state follows, and his other picks stay in their families. A mark joins only when Kevin says yes on one sheet beside the shortlist at 256, 64 and 32 px on paper and ink, is no weight, placement or cut variant of a shortlisted mark (the logo's state is the one exception), and keeps one ink with every cut on a stroke edge or an axis. Only Kevin removes one. Our own iterations stay local until he picks one. At most 16 marks. The logo and its state lead; after them, the next four marks are four distinct ideas (Kevin, 2026-11-08). On `/marks` the first mark takes a tile two wide and two rows tall.
 - **The families.** A family takes the place of its best shortlisted mark on `/marks`; a family with none follows by the day Kevin last worked on it, newest first, and In production closes the page. A family opens with its lead on both grounds (`familyLead`: its best shortlisted mark), then its other shortlisted marks in the shortlist's order, the drawings it grew from (`opens`) and the rest (`dynamicFamily`), and a family left with no mark leaves the page.
 - **Entering a mark.** `pnpm import:marks` copies finished SVGs into `public/marks/dynamic` from a manifest kept outside the repository, checks each with the mark checker (`src/lib/mark-file.ts`), writes the one canonical header (one path in `currentColor`, viewBox `0 0 256 256`, at most 8 KB) and prints the drawn box for the mark's row. The logo and its state are the one exception, named in the section on the logo above. `pnpm test:marks` (in `lint:static`) holds every row to its file.
 - **Public names.** Every mark is a General Translation mark. Ids, names, notes, file headers and commit messages describe only the idea the mark draws; `pnpm test:marks` refuses generic words that name a mark's origin, and the private denylist of `pnpm lint:public` holds the specific ones.
@@ -81,12 +89,13 @@ In the deck, a standalone GT in rendered copy is the mark at the size of a capit
 ```
 
 ```css
-.gt-word { position: relative; display: inline-block; vertical-align: -0.008em; }
-.gt-word svg { display: block; height: 0.74em; width: 1.164em; fill: currentColor; }
+.gt-word { position: relative; display: inline-block; vertical-align: -0.033em; }
+.gt-word svg { display: block; height: 0.793em; width: 0.793em; fill: currentColor; }
 ```
 
-- The symbol's viewBox leaves 8 of 771 units under the glyph, and the -0.008em lift puts the glyph's foot on the baseline. The glyph is 0.724em tall, Inter's cap height.
+- The symbol's viewBox is the logo's drawn box. A round mark at Inter's cap height (0.727em) reads smaller than the capitals beside it, so it overshoots the cap height and the baseline by the lockup rule's share, 0.1075 of 2.3655 cap heights a side: 0.793em square with its foot 0.033em under the baseline.
 - The `svg` carries no viewBox; the symbol supplies its own.
+- On the site `GtWord` (`src/components/viewer/GtWord.tsx`) sets the same size and draws `public/brand/gt-globe-logo.svg` as a mask filled with currentColor, so a page with many GT words carries the path once.
 - BRAND.md section 4 states the general rule: at text size the wordmark sits inline with prose at the cap height of its line.
 
 ## Locadex
@@ -97,7 +106,7 @@ In the deck, a standalone GT in rendered copy is the mark at the size of a capit
 
 ## The speed set
 
-On 2026-09-29 Kevin brought a race-type wordmark reference and chose seven marks in that register to show alongside the current mark: bar monogram, bar monogram lockup, plate, double cut, livery stack, bar monogram dithered and bar monogram in ASCII. Two marks from the earlier round, Two-way and Globe G, stay for comparison. The set appears on `/marks` (`src/app/marks/`, data in `src/lib/marks.ts`) and on deck slides 17 to 23. Deck slide 16 presents it as the September 2026 exploration beside the current mark. The logo chosen on 2026-11-06 is in the section on the logo above.
+On 2026-09-29 Kevin brought a race-type wordmark reference and chose seven marks in that register to show alongside the doubled-line monogram, the mark at the time: bar monogram, bar monogram lockup, plate, double cut, livery stack, bar monogram dithered and bar monogram in ASCII. Two marks from the earlier round, Two-way and Globe G, stay for comparison. The set appears on `/marks` (`src/app/marks/`, data in `src/lib/marks.ts`) and on deck slides 17 to 23. Deck slide 16 presents it as the September 2026 exploration beside the monogram. The logo chosen on 2026-11-06 is in the section on the logo above.
 
 ### The register
 

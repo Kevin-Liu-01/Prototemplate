@@ -4,7 +4,7 @@ description: 'three.js scenes in the house material: an extruded GT mark, a lit 
 icon: CubeOpen
 sources:
   - src/components/docs/demos/2d-3d
-  - src/lib/marks.ts
+  - src/lib/logo.ts
   - src/app/d/blog-globe/_rounds/r3/land.ts
   - skills/gt-performance/references/webgl-lifecycles.md
   - skills/gt-diagrams/references/isometric.md
@@ -20,7 +20,7 @@ The GT mark is parsed from its SVG outline, extruded and turned under one light.
 
 <MarkSceneDemo />
 
-The outline is `REFERENCE_MARK` from `src/lib/marks.ts`, the evenodd path the deck draws as `#gt-mark`, so the gaps between the doubled lines come from the fill rule. The extrusion is 150 path units deep with no bevel. Every face is flat, and each inner wall of a doubled line takes the light on its own. Edges that turn 28 degrees or more are drawn as hairlines, which keeps the contours and the corners and drops the seams between the short facets of the G's arc. The mark swings 54 degrees each way on a 12.6 second sine. The light stays 38 degrees above the horizon while Light moves it around the mark.
+The outline is `LOGO` from `src/lib/logo.ts`, the logo's one path that the deck draws as `#gt-mark`, so the globe's openings come from its fill rule. The extrusion is 24 path units deep with no bevel. Every face is flat, and each wall of the globe's lines takes the light on its own. Edges that turn 28 degrees or more are drawn as hairlines, which keeps the contours and the corners and drops the seams between the short facets of its curves. The mark swings 54 degrees each way on a 12.6 second sine. The light stays 38 degrees above the horizon while Light moves it around the mark.
 
 ### Import and props
 

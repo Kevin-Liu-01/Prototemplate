@@ -8,7 +8,9 @@
 // at most 16, every shortlisted mark is one Kevin picked and every dynamic
 // mark is a pick or a drawing its family grew from (our own iterations
 // stay local until he picks one), every family has its record and holds a mark, every
-// mark /brand's badge cuts through is no wider than the GT monogram, and the
+// mark /brand's badge cuts through after the logo is no wider than it,
+// LOGO (src/lib/logo.ts) is the logo's catalog file and the masters and
+// the deck's #gt-mark symbol pnpm build:logo writes draw it, and the
 // catalog and the dynamic files name each mark by its idea alone:
 // ORIGIN_WORDS rejects option letters and catalog numbers in the catalog
 // and the dynamic files, and runs everywhere, CI included. Loaded through
@@ -22,6 +24,7 @@ import { CANONICAL, DYNAMIC_DIR, MAX_BYTES, drawnBox } from '../build/import-mar
 import { ROOT } from '../lib/root.mjs';
 
 const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, badgeMarks, graticuleMarks, pageFamilies } = await import(new URL('../../src/lib/marks.ts', import.meta.url).href);
+const { LOGO } = await import(new URL('../../src/lib/logo.ts', import.meta.url).href);
 
 const MARKS_TS = 'src/lib/marks.ts';
 const publicFile = (path) => join(ROOT, 'public', path);
@@ -112,11 +115,28 @@ test('/marks/graticule draws every graticule mark once: the shortlisted first, t
   assert.equal(ids.indexOf('graticule-jaw-thicker'), ids.indexOf('graticule-jaw') + 1);
 });
 
-test('every mark /brand\'s badge cuts through is no wider than the GT monogram', () => {
-  const viewBox = readFileSync(join(ROOT, 'src/components/viewer/GtMark.tsx'), 'utf8').match(/GT_MARK_VIEWBOX = '([^']+)'/)?.[1];
-  assert.ok(viewBox, 'GtMark.tsx sets no GT_MARK_VIEWBOX');
-  const [, , width, height] = viewBox.split(' ').map(Number);
-  for (const mark of badgeMarks(width / height)) assert.ok(mark.box[2] / mark.box[3] <= width / height, `${mark.id} is wider than the GT monogram`);
+test('every mark /brand\'s badge cuts through after the logo is no wider than the logo', () => {
+  const [, , width, height] = LOGO.viewBox.split(' ').map(Number);
+  for (const mark of badgeMarks(width / height)) {
+    assert.notEqual(mark.use, 'logo', 'the badge repeats the logo after its first frame');
+    assert.ok(mark.box[2] / mark.box[3] <= width / height, `${mark.id} is wider than the logo`);
+  }
+});
+
+test('LOGO is the logo\'s catalog file, and the masters and the deck symbol draw it', () => {
+  const byId = new Map(CATALOG.map((mark) => [mark.id, mark]));
+  const logo = byId.get(LOGO.id);
+  assert.equal(logo?.use, 'logo', `${LOGO.id} is not the catalog's logo`);
+  const pathOf = (text) => text.match(/ d="([^"]+)"/)?.[1];
+  assert.equal(pathOf(readFileSync(publicFile(logo.file), 'utf8')), LOGO.d, `${logo.file} draws another path than LOGO`);
+  assert.deepEqual(LOGO.viewBox.split(' ').map(Number), logo.box, 'LOGO.viewBox is not the logo\'s drawn box');
+  for (const name of ['gt-globe-logo.svg', 'gt-globe-logo-light.svg', 'gt-globe-logo-dark.svg', 'gt-globe-logo-icon.svg']) {
+    assert.equal(pathOf(readFileSync(publicFile(`brand/${name}`), 'utf8')), LOGO.d, `public/brand/${name} is stale: run pnpm build:logo`);
+  }
+  const symbol = readFileSync(join(ROOT, 'deck/parts/head.html'), 'utf8').match(/<symbol id="gt-mark" viewBox="([^"]+)"><path[^>]* d="([^"]+)"/);
+  assert.ok(symbol, 'deck/parts/head.html has no #gt-mark symbol');
+  assert.equal(symbol[1], LOGO.viewBox, 'the deck symbol\'s viewBox is not LOGO.viewBox: run pnpm build:logo');
+  assert.equal(symbol[2], LOGO.d, 'the deck symbol is stale: run pnpm build:logo');
 });
 
 test('the catalog and the dynamic files name each mark by its idea alone', () => {

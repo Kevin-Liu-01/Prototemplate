@@ -21,8 +21,8 @@ const START = 'GT ships every locale. The gt CLI, GT-format files and GTM stay t
 
 /**
  * The GT mark as a word. gtText() renders every standalone GT in a string
- * as GtWord, the doubled-line monogram sized to the text around it (0.74em
- * tall, its foot on the baseline) in currentColor. The letters stay in the
+ * as GtWord, the logo sized to the text around it (0.793em square, the
+ * cap height with the round mark's overshoot) in currentColor. The letters stay in the
  * DOM as hidden text, so copy, find in page and screen readers still read
  * GT. Lowercase package names, hyphen-joined forms and letters inside other
  * words stay text.
@@ -57,9 +57,9 @@ export default function GtWordDemo() {
     >
       <p className={`dmo-gtword-line is-${step}`}>{gtText(text, 'demo')}</p>
       <div className='dmo-gtword-marks' aria-hidden='true'>
-        <GtMark height={16} width={25} />
-        <GtMark height={18} width={28} />
-        <GtMark height={32} width={50} />
+        <GtMark size={16} />
+        <GtMark size={18} />
+        <GtMark size={32} />
       </div>
     </Plate>
   );

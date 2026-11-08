@@ -45,7 +45,7 @@ const crop = stencil?.box ? boxMask(stencil.box) : undefined; // CSS mask size a
 | `boxMask(box)` | The mask size, position and aspect that show only a mark's drawn box of its square file |
 | `MARKS`, `GLOBE_CONCEPTS` | The nine speed and picture marks with their notes, and the five globe concepts under `/marks/globe/` |
 | `MARK_SIZES`, `WORDMARK_SIZES` | The heights in CSS pixels: 16, 24, 32, 64 and 128, then 48, 96 and 144 |
-| `REFERENCE_MARK` | The current doubled-line monogram as one even-odd path and its view box |
+| `LOGO` (in `src/lib/logo.ts`) | The logo as one path with its fill rule, its 256 unit square and its drawn box, the drawing the chrome, the deck and the masters read |
 
 `pnpm import:marks` copies finished marks into `public/marks/dynamic` from a manifest kept outside the repository, checks each with the mark checker and prints its drawn box for its row; `pnpm test:marks` holds every row to its file. `pnpm build:marks` generates the seven speed files from `scripts/build/speed-marks.mjs` with tight view boxes, so a viewer sizes each mark by height and its own aspect.
 
@@ -59,7 +59,7 @@ The marks do not move. On the ink ground the same file draws in paper ink.
 
 ## The mark as a word
 
-The plate runs `gtText()` over the copy in the field. Every standalone "GT" becomes `GtWord`, the monogram sized to the text around it. Type a sentence to test the rule, and switch the size from a caption to a page title.
+The plate runs `gtText()` over the copy in the field. Every standalone "GT" becomes `GtWord`, the logo sized to the text around it. Type a sentence to test the rule, and switch the size from a caption to a page title.
 
 <GtWordDemo />
 

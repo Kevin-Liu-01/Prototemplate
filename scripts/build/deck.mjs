@@ -152,8 +152,8 @@ function twoTonePng(abs, out) {
 const TITLE = 'General Translation brand deck';
 /* the head's description: 50 to 160 characters, the length a search snippet shows whole (lint:seo B1) */
 const DESCRIPTION = `The General Translation brand in ${SLIDE_COUNT} slides: values, writing, the mark, color, type, lines, diagrams, dither, motion and every public surface.`;
-/* the same picture as public/brand/no-bg-gt-logo-light.png at 96px, 3.6 KB in place of 45 KB */
-const ICON = '/brand/no-bg-gt-logo-light-96.png';
+/* the logo's 96px ink master (pnpm build:logo), 1.8 KB */
+const ICON = '/brand/no-bg-gt-globe-logo-light-96.png';
 /* /deck serves this file itself, so no route's metadata reaches it: the head names its canonical, its url and its card in full */
 const CANONICAL = `${SITE_URL}/deck`;
 const OG_IMAGE = `${SITE_URL}${cardPath({ title: 'Brand deck', section: 'Deck', description: DESCRIPTION, kind: 'page', path: '/deck' })}`;
