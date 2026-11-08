@@ -10,9 +10,10 @@ const KEY = 'gt-theme';
 
 type Theme = 'light' | 'dark';
 
-/* The light and dark switch: it stamps data-theme on <html> and keeps the
-   choice, as the hub's own theme button does. */
-export default function ThemeSwitch({ className }: { className?: string }) {
+/* The light and dark switch at the bottom left of every page: it stamps
+   data-theme on <html> and keeps the choice, as the hub's own theme button
+   does. */
+export default function ThemeSwitch() {
   const [theme, setTheme] = useState<Theme>('dark');
 
   useMountEffect(() => {
@@ -43,7 +44,7 @@ export default function ThemeSwitch({ className }: { className?: string }) {
   return (
     <button
       type='button'
-      className={['gtp-theme', className].filter(Boolean).join(' ')}
+      className='gtp-theme'
       data-testid='atlas-theme'
       onClick={flip}
       aria-label={theme === 'light' ? 'Dark theme' : 'Light theme'}

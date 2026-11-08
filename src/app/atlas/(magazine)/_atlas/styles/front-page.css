@@ -84,8 +84,7 @@
 .gtp-shelf-item[data-dim='true'] { opacity: 0.18; filter: grayscale(1); }
 
 /* the shelf: a native sideways scroller holding every book */
-.gtp-shelf { position: absolute; inset: 0; z-index: 2; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
-.gtp-shelf::-webkit-scrollbar { display: none; }
+.gtp-shelf { position: absolute; inset: 0; z-index: 2; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
 .gtp-landing[data-mode='stack'] .gtp-shelf { overflow-x: hidden; scroll-snap-type: none; }
 .gtp-shelf-track {
   --shelf-bw: min(280px, 30vh);
@@ -177,10 +176,6 @@
 .gtp-landing[data-drag='true'] .gtp-shelf { cursor: grabbing; scroll-snap-type: none; }
 .gtp-landing[data-drag='true'] .gtp-shelf-item > * { pointer-events: none; }
 
-.gtp-dismiss { position: absolute; top: -6px; right: 0; width: 32px; height: 32px; display: grid; place-items: center; background: var(--gtp-stage-fill); color: var(--gtp-stage-ink); font-size: 18px; line-height: 1; }
-.gtp-dismiss svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
-.gtp-dismiss:hover { background: rgb(191 226 241 / 0.16); }
-
 .gtp-band { position: absolute; z-index: 5; left: 56px; right: 56px; bottom: 28px; display: flex; align-items: flex-end; gap: 8px; transition: opacity 0.4s var(--gtp-ease); }
 .gtp-instrument { display: flex; align-items: center; gap: 14px; }
 .gtp-instrument-globe { width: 76px; flex: none; }
@@ -207,12 +202,15 @@
   .gtp-instrument-globe { width: 56px; }
   .gtp-langs { left: 0; right: 0; bottom: 0; width: auto; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 48px 20px 24px; max-height: 88dvh; overflow-y: auto; }
   .gtp-shelf-item { top: calc(46% - var(--shelf-bh) / 2); scroll-snap-align: center; scroll-margin-left: 0; }
-  .gtp-dismiss { top: 16px; right: 16px; }
   .gtp-band { left: 20px; right: 20px; bottom: 16px; }
   /* the flags wrap under one another beside the globe, so the view switch keeps its place at the right edge */
   .gtp-band .gtp-instrument { flex: 1; min-width: 0; }
   .gtp-band .gtp-flags { flex-wrap: wrap; gap: 4px 10px; }
 }
+/* the shelf's band keeps clear of the theme switch in the corner (parts.css): beside it on a wide screen, above it on
+   a phone */
+.gtp-landing[data-edition='shelf'] .gtp-band { left: 76px; }
+@media (max-width: 999px) { .gtp-landing[data-edition='shelf'] .gtp-band { left: 20px; bottom: 72px; } }
 
 /* ---------- the coordinates and the locator ---------- */
 
@@ -238,7 +236,6 @@
 .gtp-langs-flags { display: grid; gap: 2px; padding-left: 28px; border-left: 1px solid color-mix(in srgb, var(--gtp-stage-ink) 10%, transparent); }
 .gtp-langs-flags button { display: flex; align-items: center; gap: 12px; padding: 6px 0; font-size: 15px; color: var(--gtp-stage-ink); opacity: 0.34; filter: saturate(0.3); }
 .gtp-langs-flags button[aria-checked='true'] { opacity: 1; filter: none; }
-.gtp-langs .gtp-dismiss { top: 16px; right: 16px; }
 
 /* the locator: the globe with its coordinate lines, a leader from the pin, and the readout at its end */
 .gtp-locator { --globe: 260px; --reach: 40px; position: relative; display: grid; grid-template-columns: var(--globe) minmax(0, 1fr); color: var(--gtp-stage-ink); }
@@ -414,6 +411,8 @@
   --edge: round(calc(var(--margin) + (var(--cell) - var(--rack-bw)) / 2), 1px);
   --globe: 80px;
   --dial-pad: 11px;
+  /* the dial's foot above the page's */
+  --dial-foot: 30px;
   --nameplate: calc((var(--globe) / 2 + var(--dial-pad)) * 1.25 / 0.6982);
   --top: 54px;
   /* a magazine's width, which the row and the guides both read (a narrow screen's row scrolls) */
@@ -439,8 +438,8 @@
 .gtp-g-base { top: round(up, calc(var(--top) + var(--cap)), 1px); }
 .gtp-g-top { top: calc(var(--foot) - var(--mag-h) - 1px); }
 .gtp-g-foot { top: var(--foot); }
-.gtp-g-dial-t { top: calc(round(down, calc(100% - 30px - var(--dial)), 1px) - 1px); }
-.gtp-g-dial-b { top: calc(100% - 30px); }
+.gtp-g-dial-t { top: calc(round(down, calc(100% - var(--dial-foot) - var(--dial)), 1px) - 1px); }
+.gtp-g-dial-b { top: calc(100% - var(--dial-foot)); }
 /* Euclid's first construction round the middle two magazines, each circle through the other's centre */
 .gtp-g-euclid { position: absolute; display: block; top: calc(var(--mid) - var(--cell)); width: calc(2 * var(--cell)); aspect-ratio: 1; border: 1px solid var(--guide); border-radius: 50%; }
 .gtp-g-euclid-a { left: calc(var(--edge) + var(--cell) + var(--mag-w) / 2 - var(--cell)); }
@@ -479,23 +478,30 @@
 .gtp-nameplate-word { display: block; text-box: trim-both cap alphabetic; }
 
 /* the controls in one hairline box on the page's ground at the top right, filling the nameplate's band from its cap
-   height to its baseline with its right side on the last magazine's: the row and the stack as a two-part switch, a
-   rule, then the theme; the chosen part and the part under the pointer filled in */
+   height to its baseline with its right side on the last magazine's: the row and the stack as a two-part switch, the
+   chosen part and the part under the pointer filled in */
 .gtp-landing[data-edition='magazine'] .gtp-hall-coords { top: var(--top); right: var(--edge); height: 1cap; display: flex; align-items: center; }
 .gtp-hall-tools { box-sizing: border-box; height: 100%; display: flex; align-items: center; padding: 0 6px; border: 1px solid var(--guide-3); border-radius: 8px; background: var(--hall); font: 400 14px/1 var(--gtp-sans); }
-.gtp-hall-tools-rule { width: 1px; height: 16px; margin: 0 2px; background: var(--guide-3); }
 .gtp-viewswitch { display: flex; }
-.gtp-hall-tools :is(.gtp-viewswitch button, .gtp-theme) { display: grid; place-items: center; width: 36px; height: 28px; padding: 0; border-radius: 6px; background: none; color: color-mix(in srgb, var(--gtp-ink) 45%, transparent); transition: color 0.2s var(--gtp-ease), background-color 0.2s var(--gtp-ease); }
-.gtp-hall-tools :is(.gtp-viewswitch button, .gtp-theme):hover { color: var(--gtp-ink); background: color-mix(in srgb, var(--gtp-ink) 6%, transparent); }
+.gtp-hall-tools .gtp-viewswitch button { display: grid; place-items: center; width: 36px; height: 28px; padding: 0; border-radius: 6px; background: none; color: color-mix(in srgb, var(--gtp-ink) 45%, transparent); transition: color 0.2s var(--gtp-ease), background-color 0.2s var(--gtp-ease); }
+.gtp-hall-tools .gtp-viewswitch button:hover { color: var(--gtp-ink); background: color-mix(in srgb, var(--gtp-ink) 6%, transparent); }
 .gtp-hall-tools .gtp-viewswitch button[aria-checked='true'] { color: var(--gtp-ink); background: color-mix(in srgb, var(--gtp-ink) 10%, transparent); }
-.gtp-hall-tools :is(.gtp-viewswitch button, .gtp-theme):focus-visible { outline: 1.5px solid var(--gtp-signal); outline-offset: -1.5px; }
+.gtp-hall-tools .gtp-viewswitch button:focus-visible { outline: 1.5px solid var(--gtp-signal); outline-offset: -1.5px; }
 .gtp-viewswitch svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* the theme switch at the hall's bottom left (parts.css): its circle on the hall's own ground, so no guide runs through
+   it; on a wide screen it steps back while the dial's codes stand out round the dial beside it */
+.gtp-hall .gtp-theme:is(:hover, :focus-visible) { background-color: color-mix(in srgb, var(--gtp-ink) 12%, var(--hall, var(--gtp-paper))); }
+@media (min-width: 1000px) {
+  .gtp-hall .gtp-theme { transition: background-color 0.2s var(--gtp-ease), color 0.2s var(--gtp-ease), opacity 0.25s var(--gtp-ease), visibility 0.25s; }
+  .gtp-hall:has(.gtp-dial:is(:hover, :has(:focus-visible), [data-open]):not([data-shut])) .gtp-theme { opacity: 0; visibility: hidden; }
+}
 .gtp-viewswitch-edge { fill: none; stroke: currentColor; stroke-width: 1; }
 
 /* ---------- the globe, the languages and the dateline ---------- */
 
 /* the band between the same edges as the rack, every part centred on the globe's centre line */
-.gtp-landing[data-edition='magazine'] .gtp-band { left: var(--edge); right: var(--edge); bottom: 30px; align-items: center; }
+.gtp-landing[data-edition='magazine'] .gtp-band { left: var(--edge); right: var(--edge); bottom: var(--dial-foot); align-items: center; }
 .gtp-landing[data-edition='magazine'] .gtp-band-view { align-self: center; }
 .gtp-landing[data-edition='magazine'] .gtp-instrument { gap: 22px; }
 /* the globe set in a dial: a ring with a tick every 15 degrees and a longer one at each quarter, turned so a long tick points
@@ -547,21 +553,16 @@
 .gtp-hall-crosshair * { vector-effect: non-scaling-stroke; }
 
 @media (max-width: 999px) {
-  .gtp-landing[data-edition='magazine'] { --margin: 20px; --edge: 20px; --globe: 56px; --dial-pad: 8px; --top: 30px; }
+  /* the dial stands clear above the theme switch in the corner (parts.css) */
+  .gtp-landing[data-edition='magazine'] { --margin: 20px; --edge: 20px; --globe: 56px; --dial-pad: 8px; --top: 30px; --dial-foot: 72px; }
   /* the row stands at 46%, its foot on a whole pixel as the guides round it */
   .gtp-landing[data-edition='magazine'] .gtp-shelf-item { top: calc(round(calc(46% + var(--shelf-bh) / 2), 1px) - var(--shelf-bh)); }
-  /* on a phone the row scrolls on its own: the controls' box keeps the theme alone, and the dateline steps out so the
-     codes take the foot */
-  .gtp-landing[data-edition='magazine'] .gtp-hall-coords { display: flex; }
-  .gtp-hall-tools :is(.gtp-viewswitch, .gtp-hall-tools-rule),
-  .gtp-landing[data-edition='magazine'] .gtp-band-view { display: none; }
+  /* on a phone the row scrolls on its own, so the controls' box steps out, and so does the dateline, so the codes take
+     the foot */
+  .gtp-landing[data-edition='magazine'] :is(.gtp-hall-coords, .gtp-band-view) { display: none; }
   .gtp-landing[data-edition='magazine'] .gtp-instrument { gap: 12px; }
-  /* the theme alone in a square cell a cap high, its right side on the sheet's margin and its top and foot on the
-     nameplate's lines (a guide runs along its left side) */
-  .gtp-hall-tools { aspect-ratio: 1; width: auto; padding: 0; justify-content: center; border: 0; border-radius: 0; background: none; }
-  .gtp-landing .gtp-hall-tools .gtp-theme { width: 100%; height: 100%; border-radius: 0; }
-  /* the row's magazines stand centred one at a time, each as wide as the sheet between the theme's cell and its mirror
-     at the left, so the one in view stands on the guides at both sides */
+  /* the row's magazines stand centred one at a time, each as wide as the sheet less a cap's square at either side, so
+     the one in view stands on the guides at both sides */
   .gtp-landing[data-edition='magazine'] { --mag-w: round(down, min(300px, 40vh, calc(100vw - 2 * (var(--edge) + var(--nameplate) * 0.6982) - 2px)), 1px); }
   .gtp-landing[data-edition='magazine'] .gtp-shelf-track { --pad: round(down, calc((100vw - var(--mag-w)) / 2), 1px); }
   /* no room round the dial: open, the codes stand in a line out to its right along its centre, each a finger wide */
@@ -601,11 +602,10 @@
   .gtp-landing[data-edition='magazine'] .gtp-dateline > dd { border-left: 1px solid var(--guide); }
   .gtp-landing[data-edition='magazine'] .gtp-dateline > dt { justify-content: center; padding: 0; font-family: var(--gtp-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: color-mix(in srgb, var(--gtp-ink) 45%, transparent); }
   /* the controls in the cell the guides draw at the top right, the last magazine's column across the nameplate's band:
-     the row, the stack and the theme in three equal parts, hairlines between them */
+     the row and the stack in two equal parts, a hairline between them */
   .gtp-landing[data-edition='magazine'] .gtp-hall-coords { width: var(--rack-bw); }
-  .gtp-hall-tools { width: 100%; display: grid; grid-template-columns: 2fr 1px 1fr; padding: 0; border: 0; border-radius: 0; background: none; }
-  .gtp-hall-tools .gtp-viewswitch { height: 100%; }
-  .gtp-hall-tools :is(.gtp-viewswitch button, .gtp-theme) { flex: 1; width: 100%; height: 100%; border-radius: 0; }
+  .gtp-hall-tools { width: 100%; padding: 0; border: 0; border-radius: 0; background: none; }
+  .gtp-hall-tools .gtp-viewswitch { width: 100%; height: 100%; }
+  .gtp-hall-tools .gtp-viewswitch button { flex: 1; width: 100%; height: 100%; border-radius: 0; }
   .gtp-hall-tools .gtp-viewswitch button + button { border-left: 1px solid var(--guide); }
-  .gtp-hall-tools-rule { height: 100%; margin: 0; background: var(--guide); }
 }

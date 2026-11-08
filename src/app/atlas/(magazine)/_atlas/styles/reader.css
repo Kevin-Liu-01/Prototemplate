@@ -32,7 +32,8 @@
 .gtp-rail-tip { position: absolute; left: 56px; top: 50%; transform: translateY(-50%); padding: 6px 10px; background: var(--gtp-ink); color: var(--gtp-paper); font-family: var(--gtp-sans); font-size: 12px; letter-spacing: 0; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s var(--gtp-ease); }
 .gtp-rail-major button:hover .gtp-rail-tip,
 .gtp-rail-major button:focus-visible .gtp-rail-tip { opacity: 1; }
-.gtp-rail-caption { align-self: end; margin-bottom: 28px; max-height: 172px; overflow: hidden; writing-mode: vertical-rl; transform: rotate(180deg); white-space: pre; text-overflow: ellipsis; text-orientation: sideways; font-family: var(--gtp-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gtp-ink-2); }
+/* the caption ends clear of the theme switch under it (parts.css) */
+.gtp-rail-caption { align-self: end; margin-bottom: 72px; max-height: 128px; overflow: hidden; writing-mode: vertical-rl; transform: rotate(180deg); white-space: pre; text-overflow: ellipsis; text-orientation: sideways; font-family: var(--gtp-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gtp-ink-2); }
 
 /* ---------- the text ---------- */
 
@@ -160,7 +161,8 @@
   .gtp-phone-cover { position: relative; max-width: none; margin: 0 -20px 40px; aspect-ratio: 4 / 5; }
   .gtp-h-n { position: static; display: block; margin-bottom: 8px; }
   .gtp-inline-plate { max-width: none; margin-left: -20px; margin-right: -20px; }
-  .gtp-float-home { position: fixed; z-index: 20; top: 16px; left: 16px; display: grid; place-items: center; width: 44px; height: 44px; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 0 0 1px var(--gtp-rule); }
+  /* the monogram home a paper disc with a hairline edge at the top left, as the theme switch is at the bottom left */
+  .gtp-float-home { position: fixed; z-index: 20; top: 16px; left: 16px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 0 0 1px var(--gtp-rule); }
   .gtp-top-progress { display: block; position: fixed; z-index: 21; top: 0; left: 0; right: 0; height: 2px; transform-origin: left; transform: scaleX(var(--p, 0)); background: var(--gtp-signal); }
 }
 
@@ -181,8 +183,7 @@
   /* the line under the globe gives the city and its coordinates, so the pin drops its label, which ran off the edge */
   .gtp-inline-plate .gtp-globe-demo .gtp-globe-label { display: none; }
   /* the language row scrolls inside the plate; the thumb's lens runs the row's whole length */
-  .gtp-inline-plate .gtp-globe-demo .gtp-stops { overflow-x: auto; scrollbar-width: none; touch-action: pan-x pan-y; }
-  .gtp-inline-plate .gtp-globe-demo .gtp-stops::-webkit-scrollbar { display: none; }
+  .gtp-inline-plate .gtp-globe-demo .gtp-stops { overflow-x: auto; touch-action: pan-x pan-y; }
   .gtp-inline-plate .gtp-globe-demo .gtp-stops-lens { right: auto; }
 }
 
@@ -240,7 +241,7 @@
 :root:not([data-theme='light']) .gtp-reader[data-look='fuma'] .gtp-toc-thumb { stroke: var(--gtp-signal); }
 
 /* the masked table of contents */
-.gtp-mtoc { position: relative; align-self: start; max-height: 100%; overflow-y: auto; scrollbar-width: none; }
+.gtp-mtoc { position: relative; align-self: start; max-height: 100%; overflow-y: auto; }
 .gtp-mtoc ol { margin: 0; padding: 0; list-style: none; }
 .gtp-mtoc-item { display: block; padding: 6px 0 6px 14px; font-size: 13.5px; line-height: 1.4; color: var(--gtp-ink-3); text-decoration: none; transition: color 0.2s var(--gtp-ease); }
 .gtp-mtoc-item:hover { color: var(--gtp-ink); }
@@ -333,9 +334,8 @@
 /* the live figure is as wide as its poem, and so is its caption */
 .gtp-print-fig[data-live] .gtp-print-caption { width: min(940px, 100%); }
 
-/* the reader's monogram home and theme switch, as paper discs floating at the top corners */
+/* the reader's monogram home, a paper disc floating at the top left */
 .gtp-reader[data-look='book'] .gtp-float-home { position: fixed; z-index: 6; left: 24px; top: 20px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 1px 6px rgb(0 0 0 / 0.12); }
-.gtp-reader[data-look='book'] .gtp-theme.gtp-reader-theme { z-index: 6; right: 24px; top: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 1px 6px rgb(0 0 0 / 0.12); }
 
 /* the opening (BookReader, Opener): an open book, its title page and the cover */
 .gtp-print-opener { position: relative; display: grid; justify-items: center; }
@@ -502,12 +502,8 @@
   .gtp-head-spread .gtp-head-pic { display: none; }
 }
 
-/* the reader's place shows on the rail, so the page has no scroll bar of its own */
-:root:has(.gtp-print) { scrollbar-width: none; }
-:root:has(.gtp-print)::-webkit-scrollbar { display: none; width: 0; }
-
-/* light paper is printed flat: no shadow under the corner buttons */
-:root[data-theme='light'] .gtp-reader[data-look='book'] :is(.gtp-float-home, .gtp-theme.gtp-reader-theme) { box-shadow: 0 0 0 1px var(--gtp-rule); }
+/* light paper is printed flat: no shadow under the home button */
+:root[data-theme='light'] .gtp-reader[data-look='book'] .gtp-float-home { box-shadow: 0 0 0 1px var(--gtp-rule); }
 @media (max-width: 1249.98px) {
   .gtp-print-note { margin: -18px 0 24px; }
   .gtp-print-note + .gtp-print-note { margin-top: -18px; }
@@ -532,8 +528,13 @@
 
 /* ---------- the theme switch on a reading page ---------- */
 
-.gtp-reader-theme { position: fixed; z-index: 8; right: 20px; top: 20px; }
-.gtp-reader[data-look='fuma'] .gtp-reader-theme { right: 28px; top: 28px; }
+/* the switch at the bottom left (parts.css) on the page's own paper, so the text never runs through it as it scrolls by;
+   where the text runs under it, a hairline edge, as the monogram home has */
+.gtp-reader .gtp-theme { background-color: var(--gtp-paper); }
+.gtp-reader .gtp-theme:is(:hover, :focus-visible) { background-color: color-mix(in srgb, var(--gtp-ink) 12%, var(--gtp-paper)); }
+@media (max-width: 999px) { .gtp-reader .gtp-theme { box-shadow: 0 0 0 1px var(--gtp-rule); } }
+/* Euclid's sits under its monogram home, which stands further in */
+.gtp-reader[data-look='book'] .gtp-theme { left: 24px; }
 
 /* ---------- the magazine edition: the stage on the text's own paper ---------- */
 
@@ -560,15 +561,6 @@
 }
 .gtp-reader[data-edition='magazine'] .gtp-plate-n { display: none; }
 .gtp-reader[data-edition='magazine'] .gtp-plate-foot { grid-template-columns: minmax(0, 1fr) auto; }
-/* the theme switch as a chip of the page's paper, so it shows over any stage; on a wide screen Fuma's sits at the foot
-   of its contents, off his stage */
-.gtp-reader[data-edition='magazine'] .gtp-theme.gtp-reader-theme { width: 40px; height: 40px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 0 0 1px color-mix(in srgb, var(--gtp-ink) 22%, transparent); }
-@media (min-width: 1000px) {
-  .gtp-reader[data-edition='magazine'][data-look='fuma'] .gtp-reader-theme { top: auto; right: auto; left: 28px; bottom: 28px; }
-}
-@media (max-width: 999px) {
-  .gtp-reader[data-edition='magazine'] .gtp-reader-theme { top: 16px; right: 16px; }
-}
 
 /* the opening's cover fills the stage edge to edge; when the reader moves on it rises out of the stage like a blind,
    over everything under it, its art and title moving with it, and uncovers the paper stage with the first figure

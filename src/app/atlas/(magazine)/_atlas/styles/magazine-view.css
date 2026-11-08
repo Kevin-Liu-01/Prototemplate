@@ -36,6 +36,8 @@
 .gtp-riffle-mag { width: var(--mz-pw); height: var(--mz-ph); }
 .gtp-riffle-foot { display: flex; justify-content: center; align-items: center; gap: 28px; padding: 0 20px 24px; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: 14px; line-height: 1.4; }
 .gtp-riffle-foot a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+/* on a phone the page turns stand above the theme switch in the corner (parts.css), which keeps the foot to itself */
+@media (max-width: 759px) { .gtp-riffle-foot { padding-bottom: 72px; } }
 /* the arrows either side of the way to read the story: back a page, on a page */
 .gtp-riffle-turn { width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: rgb(255 255 255 / 0.08); color: inherit; cursor: pointer; }
 .gtp-riffle-turn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
@@ -44,13 +46,6 @@
 :root[data-theme='light'] .gtp-riffle-turn { background: rgb(0 0 0 / 0.06); }
 :root[data-theme='light'] .gtp-riffle-turn:hover:not(:disabled) { background: rgb(0 0 0 / 0.12); }
 .gtp-riffle-turn:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-/* above the stage, which comes after it in the document */
-.gtp-riffle-close { position: absolute; z-index: 3; top: 20px; right: 20px; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: rgb(255 255 255 / 0.08); color: inherit; font-size: 22px; line-height: 1; cursor: pointer; }
-.gtp-riffle-close:hover { background: rgb(255 255 255 / 0.16); }
-:root[data-theme='light'] .gtp-riffle-close { background: rgb(0 0 0 / 0.06); }
-:root[data-theme='light'] .gtp-riffle-close:hover { background: rgb(0 0 0 / 0.12); }
-.gtp-riffle-close:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-.gtp-riffle-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
 
 /* ---------- paper ---------- */
 .gtp-riffle .mag-page {

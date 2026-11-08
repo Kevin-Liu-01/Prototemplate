@@ -112,7 +112,7 @@ export default function Reader({ story, next, edition = 'magazine' }: Props) {
             move((href) => router.push(href), home);
           }}
         >
-          <ThemeSwitch className='gtp-reader-theme' />
+          <ThemeSwitch />
           <Link
             href={home}
             className='gtp-float-home'

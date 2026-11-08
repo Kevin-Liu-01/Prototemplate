@@ -1,8 +1,8 @@
 /* Atlas's faces and tokens, which every surface reads: Katagami Text,
    Katagami Serif and Katagami Mono, Newsreader for Translating Euclid, and
    the colors on one root class, .gtp, dark by default and light under
-   html[data-theme='light']. The root's resets, the reduced-motion rule and
-   the corner radii follow. */
+   html[data-theme='light']. The root's resets, the hidden scroll bars, the
+   reduced-motion rule and the corner radii follow. */
 
 /* ---------- the faces ---------- */
 
@@ -120,6 +120,12 @@
 .gtp *::before,
 .gtp *::after { box-sizing: border-box; }
 .gtp ::selection { background: var(--gtp-signal); color: #fff; }
+/* no page or panel shows a scroll bar; the wheel, the keys and touch still scroll them */
+:root:has(.gtp),
+.gtp,
+.gtp * { scrollbar-width: none; }
+:root:has(.gtp)::-webkit-scrollbar,
+.gtp ::-webkit-scrollbar { display: none; width: 0; height: 0; }
 /* resets at zero specificity, so every component's own rule wins */
 :where(.gtp) a { color: inherit; }
 :where(.gtp) button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
@@ -136,7 +142,7 @@
 }
 
 /* the light theme draws no drop shadows: edges come from the paper and the rules */
-:root[data-theme='light'] .gtp :is(.gtp-lens, .gtp-langs, .gtp-float-home) { box-shadow: none; }
+:root[data-theme='light'] .gtp :is(.gtp-lens, .gtp-langs) { box-shadow: none; }
 
 /* ---------- corners ---------- */
 
@@ -145,7 +151,7 @@
    and the books keep their square edges, since they bleed or stand as objects. */
 .gtp-flag { border-radius: 2px; }
 .gtp-text code:not(:where(.gtp-inline-plate *)), .gtp-rail-tip, .gtp-globe-label, .gtp-wipe-tag, .gtp-tags a, .gtp-book-page a, .gtp-hits-mark { border-radius: 4px; }
-.gtp-stub, .gtp-loop-play, .gtp-ruler-input, .gtp-stops, .gtp-dismiss, .gtp-float-home, .gtp-lens,
+.gtp-stub, .gtp-loop-play, .gtp-ruler-input, .gtp-stops, .gtp-lens,
 .gtp-picture img, .gtp-loop video, .gtp-text-button { border-radius: 6px; }
 .gtp-note, .gtp-wipe { border-radius: 8px; }
 .gtp-wipe { overflow: hidden; }

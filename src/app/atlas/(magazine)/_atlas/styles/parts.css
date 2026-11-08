@@ -1,6 +1,7 @@
 /* The parts every surface of Atlas sets: text for screen readers alone,
    the stop slider (ui/StopSlider.tsx), the flags, the globe, the covers, the
-   theme switch, and the move between the front page and a story. */
+   theme switch and the close crosses, and the move between the front page
+   and a story. */
 
 /* ---------- text for screen readers ---------- */
 
@@ -55,10 +56,19 @@
 .gtp-cover-poster { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; user-select: none; }
 .gtp-cover[data-drawn='false'] > .gtp-cover-poster ~ .gtp-cover-gpu { opacity: 0; }
 
-/* ---------- the theme switch ---------- */
+/* ---------- the corner controls ---------- */
 
-.gtp-theme { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; background: var(--gtp-fill-2); color: var(--gtp-ink-2); }
-.gtp-theme:hover { color: var(--gtp-ink); }
+/* the theme switch at every page's bottom left, centred on the reader's rail and the front page's margin, and the
+   crosses that close the languages and the magazine 20px in from their top right: each a bare mark that takes a circle
+   only under the pointer or the keyboard's focus */
+.gtp-theme,
+.gtp-close { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; background-color: transparent; transition: background-color 0.2s var(--gtp-ease), color 0.2s var(--gtp-ease); }
+.gtp-theme:is(:hover, :focus-visible),
+.gtp-close:is(:hover, :focus-visible) { background-color: color-mix(in srgb, currentColor 12%, transparent); }
+.gtp-theme { position: fixed; z-index: 20; left: 14px; bottom: 20px; color: var(--gtp-ink-2); }
+.gtp-theme:is(:hover, :focus-visible) { color: var(--gtp-ink); }
+.gtp-close { position: absolute; z-index: 3; top: 20px; right: 20px; color: inherit; }
+.gtp-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; }
 
 /* ---------- the move between the shelf and a story ---------- */
 

@@ -10,6 +10,7 @@ import { plainClick } from '../transition';
 import { magazineName } from '../stories';
 import { MAGAZINE_ART } from '../ui/Book';
 import { CloseIcon } from '../ui/icons';
+import ThemeSwitch from '../ui/ThemeSwitch';
 import MapSheet from '../ui/MapSheet';
 import type { Piece } from './article';
 import { issuePages, openerOf, openingHead, type Words } from './pages';
@@ -393,7 +394,7 @@ export default function MagazineView({
       <button
         ref={close}
         type='button'
-        className='gtp-riffle-close'
+        className='gtp-close'
         onClick={onClose}
         aria-label='Close the magazine'
         data-testid='atlas-magazine-close'
@@ -456,6 +457,7 @@ export default function MagazineView({
           </svg>
         </button>
       </div>
+      <ThemeSwitch />
     </div>
   );
 }

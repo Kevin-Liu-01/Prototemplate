@@ -583,11 +583,9 @@ export default function Landing({
 
           <div className='gtp-hall-coords'>
             {edition === 'magazine' ? (
-              // the magazine's controls in one box, centred on the nameplate: the row or the stack, then the theme
+              // the magazine's controls in one box, centred on the nameplate: the row or the stack
               <div className='gtp-hall-tools'>
                 <ViewSwitch value={mode} onChange={switchMode} />
-                <i className='gtp-hall-tools-rule' aria-hidden='true' />
-                <ThemeSwitch />
               </div>
             ) : (
               <p className='gtp-hall-dms' aria-label={place.city}>
@@ -595,7 +593,7 @@ export default function Landing({
                 <span>{dms(place.lon, 'lon')}</span>
               </p>
             )}
-            {/* the shelf keeps its topic tags and its theme switch here */}
+            {/* the shelf keeps its topic tags here */}
             {edition === 'shelf' ? (
               <nav className='gtp-tags' aria-label='Topics'>
                 {TOPICS.map((x) => (
@@ -613,7 +611,6 @@ export default function Landing({
                 ))}
               </nav>
             ) : null}
-            {edition === 'shelf' ? <ThemeSwitch /> : null}
           </div>
 
           <div
@@ -786,7 +783,7 @@ export default function Landing({
             ) : null}
             <button
               type='button'
-              className='gtp-dismiss'
+              className='gtp-close'
               onClick={closeLangs}
               aria-label='Close the languages'
               data-testid='atlas-langs-close'
@@ -853,6 +850,7 @@ export default function Landing({
               )}
             </div>
           </div>
+          <ThemeSwitch />
         </main>
         {mounted !== null && opened && openedIssue ? (
           // keyed by its story, so a click on another corner than the one set ahead mounts that magazine afresh
