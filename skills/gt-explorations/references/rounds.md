@@ -89,7 +89,7 @@ Each entry names the surface, the ask, what was built, what Kevin picked or reje
 
 ## 2026-09-09 to 09-29: the marks
 
-- Bilingual, counterform and reflection marks were added as explorations on 2026-09-09, and Kevin chose the speed set on 2026-09-29. `/marks` shows the seven speed marks, two survivors of the earlier round for comparison, and the current mark as `REFERENCE_MARK`, which is never a candidate (`src/lib/marks.ts`).
+- Bilingual, counterform and reflection marks were added as explorations on 2026-09-09, and Kevin chose the speed set on 2026-09-29. `/marks` shows the seven speed marks, two survivors of the earlier round for comparison, and the mark of the time, the doubled-line monogram, which was never a candidate. The logo replaced it on 2026-11-08 and lives apart from the catalog as `LOGO` in `src/lib/logo.ts`.
 - Rule: survivors of an earlier round stay beside the new set, and the current design is the reference.
 
 ## 2026-09-14: the deco rounds

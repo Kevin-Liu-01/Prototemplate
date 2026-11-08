@@ -6,6 +6,10 @@
 //   public/brand/gt-globe-logo-dark.svg         #ffffff on the 256 square
 //   public/brand/gt-globe-logo-icon.svg         the tab icon on the drawn box: ink,
 //                                               and white under a dark color scheme
+//   public/brand/gt-globe-logo.ico              the raster tab icon at 16, 32 and 48
+//                                               px: the white logo on the ink ground,
+//                                               so it reads on a light or a dark tab
+//                                               strip, as the hub's favicon.ico does
 //   public/brand/no-bg-gt-globe-logo-light.png  and -dark.png at 1198 px, -light-96,
 //                                               -dark-96 and -dark-256: the sizes of
 //                                               the monogram masters they sit beside
@@ -67,6 +71,31 @@ try {
     await page.screenshot({ path: join(BRAND, name), omitBackground: true, clip: { x: 0, y: 0, width: px, height: px } });
     console.log(`logo: public/brand/${name}`);
   }
+  /* the .ico: one PNG entry per size, each the white logo on the 256 square over the ink ground */
+  const ICO_SIZES = [16, 32, 48];
+  const entries = [];
+  for (const px of ICO_SIZES) {
+    await page.setViewportSize({ width: px, height: px });
+    await page.setContent(`<style>html,body{margin:0;background:#070707}svg{display:block}</style>${svg(LOGO.square, path('#ffffff'), px)}`);
+    entries.push(await page.screenshot({ clip: { x: 0, y: 0, width: px, height: px } }));
+  }
+  const header = Buffer.alloc(6 + 16 * entries.length);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(entries.length, 4);
+  let offset = header.length;
+  entries.forEach((png, i) => {
+    const at = 6 + 16 * i;
+    header.writeUInt8(ICO_SIZES[i], at);
+    header.writeUInt8(ICO_SIZES[i], at + 1);
+    header.writeUInt16LE(1, at + 4);
+    header.writeUInt16LE(32, at + 6);
+    header.writeUInt32LE(png.length, at + 8);
+    header.writeUInt32LE(offset, at + 12);
+    offset += png.length;
+  });
+  writeFileSync(join(BRAND, 'gt-globe-logo.ico'), Buffer.concat([header, ...entries]));
+  console.log('logo: public/brand/gt-globe-logo.ico');
 } finally {
   await browser.close();
 }

@@ -152,8 +152,8 @@ function twoTonePng(abs, out) {
 const TITLE = 'General Translation brand deck';
 /* the head's description: 50 to 160 characters, the length a search snippet shows whole (lint:seo B1) */
 const DESCRIPTION = `The General Translation brand in ${SLIDE_COUNT} slides: values, writing, the mark, color, type, lines, diagrams, dither, motion and every public surface.`;
-/* the logo's 96px ink master (pnpm build:logo), 1.8 KB */
-const ICON = '/brand/no-bg-gt-globe-logo-light-96.png';
+/* the logo's tab icons (pnpm build:logo), as GT_ICONS in src/lib/seo/site.ts names them: the 16, 32 and 48 px .ico on the ink ground, and the SVG in ink that turns white under a dark color scheme */
+const ICON_LINKS = '<link rel="icon" href="/brand/gt-globe-logo.ico" sizes="48x48"><link rel="icon" type="image/svg+xml" href="/brand/gt-globe-logo-icon.svg">';
 /* /deck serves this file itself, so no route's metadata reaches it: the head names its canonical, its url and its card in full */
 const CANONICAL = `${SITE_URL}/deck`;
 const OG_IMAGE = `${SITE_URL}${cardPath({ title: 'Brand deck', section: 'Deck', description: DESCRIPTION, kind: 'page', path: '/deck' })}`;
@@ -266,7 +266,7 @@ const open =
   `<title>${TITLE}</title><meta name="description" content="${DESCRIPTION}">` +
   (OUT_OVERRIDE
     ? '<meta name="robots" content="noindex">'
-    : `<link rel="icon" type="image/png" href="${ICON}"><link rel="canonical" href="${CANONICAL}">` +
+    : `${ICON_LINKS}<link rel="canonical" href="${CANONICAL}">` +
       `<meta property="og:title" content="${TITLE}"><meta property="og:description" content="${DESCRIPTION}">` +
       `<meta property="og:url" content="${CANONICAL}"><meta property="og:site_name" content="Prototemplate"><meta property="og:type" content="website">` +
       `<meta property="og:image" content="${attr(OG_IMAGE)}"><meta property="og:image:type" content="image/png">` +

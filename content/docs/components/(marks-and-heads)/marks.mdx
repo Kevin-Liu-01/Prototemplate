@@ -148,7 +148,7 @@ Under reduced motion the host never starts the tweens, and the markup's own pose
 
 [SVG lines in motion](/docs/craft/svg-motion) explains each of these with its fix.
 
-- The brand deck's `#gt-mark` symbol (`deck/parts/head.html`) carries its own viewBox, `-8 214 1213 771`. Copied onto the outer svg, that viewBox draws the mark 214 units too high and cuts off its top. Reference the symbol from an svg with a width and height in the mark's aspect, about 1.573 (132 by 84, for example), and no viewBox ([symbols and masks](/docs/craft/svg-motion#symbols-and-masks)).
+- The brand deck's `#gt-mark` symbol (`deck/parts/head.html`) is the logo and carries its own viewBox, its drawn box `24.3 24.3 207.4 207.4`. Copied onto the outer svg, a symbol's viewBox shifts the mark and cuts it off. Reference the symbol from an svg with an equal width and height (88 by 88, for example) and no viewBox ([symbols and masks](/docs/craft/svg-motion#symbols-and-masks)).
 - A mask with `maskUnits="userSpaceOnUse"` resolves in the user space of the element that uses it, so the mask's coordinates are written in the same plan coordinates as the masked rectangle ([symbols and masks](/docs/craft/svg-motion#symbols-and-masks)).
 - SVG ids are global to the document. Two marks on one page with the same `id` share one mask, so each `DitheredMark` gets its own prefix ([symbols and masks](/docs/craft/svg-motion#symbols-and-masks)).
 - A `rotate()` clip window moves with GSAP's SVG transform origin, and it shifted the shine's sweep about 180 units off the mark. `DitheredMark` sweeps windows drawn pre-rotated at 60 degrees by a pure horizontal translate for that reason ([GSAP from outside the page](/docs/craft/svg-motion#gsap-from-outside-the-page)).

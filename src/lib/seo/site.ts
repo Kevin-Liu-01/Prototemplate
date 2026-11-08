@@ -38,10 +38,10 @@ export const KEVIN = {
 export const TWITTER_SITE = '@generaltxn';
 export const TWITTER_CREATOR = '@kevskgs';
 
-/** The tab icons: the Prototemplate mark on the hub, the GT logo on the GT design studies and the presenter. The logo's icon is its drawn box in ink, white under a dark color scheme (pnpm build:logo), with the 96 px ink PNG for browsers that take no SVG icon. */
+/** The tab icons: the Prototemplate mark on the hub, the GT logo on the GT design studies and the presenter. The logo's SVG icon is its drawn box in ink, white under a dark color scheme, and gt-globe-logo.ico holds 16, 32 and 48 px of the white logo on the ink ground for browsers that take no SVG icon, so no tab strip draws a black mark on black (pnpm build:logo writes both). */
 const HUB_ICON = { url: '/pt-mark.svg', type: 'image/svg+xml' } as const;
 export const GT_ICONS = [
-  { url: '/brand/no-bg-gt-globe-logo-light-96.png', sizes: '96x96', type: 'image/png' },
+  { url: '/brand/gt-globe-logo.ico', sizes: '48x48' },
   { url: '/brand/gt-globe-logo-icon.svg', type: 'image/svg+xml' },
 ] as const;
 

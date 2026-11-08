@@ -234,7 +234,7 @@ export function SlabMark() {
 :root:not([data-theme='dark']) .xp-mark { fill: rgba(7, 7, 7, 0.8); }
 ```
 
-On a chip, anchor the plane at the chip's center: `plane(chipTop, chipX + chipW / 2, chipY + chipD / 2)`. At small sizes use `/brand/no-bg-locadex-logo-light.png` (the pricing platform seats it in a 16-unit image box), because the SVG's ring geometry breaks there; for the GT mark use `/brand/no-bg-gt-logo-light.png`. For a third-party icon component, render it inside the mask with `color='#fff'`.
+On a chip, anchor the plane at the chip's center: `plane(chipTop, chipX + chipW / 2, chipY + chipD / 2)`. At small sizes use `/brand/no-bg-locadex-logo-light.png` (the pricing platform seats it in a 16-unit image box), because the SVG's ring geometry breaks there; for the GT mark use the logo, `/brand/no-bg-gt-globe-logo-light.png`. For a third-party icon component, render it inside the mask with `color='#fff'`.
 
 Size the image box for `locadex-mark.svg` from its glyph, which spans 199 of the 500 viewBox units in width:
 

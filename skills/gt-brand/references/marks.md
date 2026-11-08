@@ -13,8 +13,8 @@ The logo, Axis and meridian behind, is GT's mark. Kevin moved every Prototemplat
 | the `#gt-mark` symbol in `deck/parts/head.html` | the logo on its drawn box | the deck's sidebar head, the wordmark slot, the GT word and every slide that draws the mark |
 | `public/brand/gt-globe-logo.svg` | currentColor on the drawn box | masks: `GtWord` and the docs lead demo draw it as a CSS mask filled with currentColor |
 | `public/brand/gt-globe-logo-light.svg`, `gt-globe-logo-dark.svg` | `#070707` and `#ffffff` on the 256 square | the `/brand` tiles and any page that needs the mark as a file |
-| `public/brand/no-bg-gt-globe-logo-light.png`, `-dark.png` (1198 px), `-light-96`, `-dark-96` and `-dark-256` | transparent PNG masters at the sizes of the monogram masters | raster contexts: the presenter (the white 256 px file, inverted on paper), the deck's tab icon (light 96) |
-| `public/brand/gt-globe-logo-icon.svg` | the tab icon on the drawn box, ink, and white under a dark color scheme | `GT_ICONS` in `src/lib/seo/site.ts`, with the light 96 px PNG, on `/d` and `/present` |
+| `public/brand/no-bg-gt-globe-logo-light.png`, `-dark.png` (1198 px), `-light-96`, `-dark-96` and `-dark-256` | transparent PNG masters at the sizes of the monogram masters | raster contexts: the presenter (the white 256 px file, inverted on paper) |
+| `public/brand/gt-globe-logo-icon.svg`, `gt-globe-logo.ico` | the tab icon on the drawn box, ink, and white under a dark color scheme; the .ico holds 16, 32 and 48 px of the white logo on the ink ground, so a tab strip of either color shows it | `GT_ICONS` in `src/lib/seo/site.ts` on `/d` and `/present`, and the deck's head |
 
 - `pnpm test:marks` holds the catalog file `public/marks/graticule/variations/axis-and-meridian-behind.svg`, the masters and the deck symbol to `LOGO`.
 - The logo is round, so a box set by height is square. Beside the stacked name it follows the lockup rule below; inline in text it follows the GT word rule.
