@@ -147,11 +147,20 @@ Rules:
   filter glow.
 - **Beside the stacked name**, "General" over "Translation", the globe is
   1.1 times the span from the first line's cap top to the second line's
-  baseline (2.3655 cap heights), centred on that span, so it overshoots
-  the cap top and the baseline by 0.1075 cap height each. The gap from
+  baseline (2.4627 cap heights), centred on that span, so it overshoots
+  the cap top and the baseline by 0.1231 cap height each. The gap from
   the globe's ink to the G is 0.5637 cap height. A round mark only as tall
   as flat-topped text looks shorter than the text, for the same reason
   round letters such as O overshoot the cap height and the baseline.
+- **The name in the lockup is Katagami Text** at weight 500, letter-spacing
+  0, with the font's own kerning, drawn as outlines (Kevin, 2026-11-08:
+  "remember the word mark of general translation text uses katagami
+  text!"). The two lines are flush left by ink, with 0.4627 cap height of
+  white between the first baseline and the second cap line: the name's own
+  word gap. `pnpm build:lockup` writes every lockup file from the font and
+  `LOGO` (`public/brand/gt-globe-lockup*.svg`, the deck's `#gt-lockup`,
+  the globe rows' name). Running copy stays in Inter, and so does the GT
+  word in a sentence, whose only logo part is its mark.
 - At text size, the mark sits inline with prose at the cap height of the
   line it lives in, overshooting it as a round letter does (0.793em
   square, its foot 0.033em under the baseline), as in the
@@ -174,7 +183,8 @@ never a wash; one bright white; depth from lines and material, not shadows.
 
 - **Inter** is the one typeface: display, interface and text. Headlines,
   interface chrome, captions, long-form reading and documentation prose are
-  all set in it. The build is the real rsms.me Inter (v4.1 variable, roman +
+  all set in it. The one exception is the name in the logo lockup, which is
+  Katagami Text 500 as outlines (section 4). The build is the real rsms.me Inter (v4.1 variable, roman +
   italic, opsz axis), self-hosted rather than loaded from Google Fonts.
 - **Headings use weight 500 at most.** Display text never goes bolder than
   500; long-form text is set at weight 400.

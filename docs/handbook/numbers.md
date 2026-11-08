@@ -6,7 +6,7 @@ This page collects the numbers that General Translation (GT) design and engineer
 
 ## Type
 
-The site sets one face, the self-hosted rsms InterVariable 4.1, with an optical-size axis from 14 to 32 and a weight axis from 100 to 900.
+The site sets one face, the self-hosted rsms InterVariable 4.1, with an optical-size axis from 14 to 32 and a weight axis from 100 to 900. The one exception is the name in the logo lockup, Katagami Text 500 as outlines (the Marks table below).
 
 | Value | Reason | Token or constant | Held by | Explained in |
 | --- | --- | --- | --- | --- |
@@ -166,8 +166,9 @@ Bounce, elastic and back overshoot are not used, and every number here has a red
 
 | Value | Reason | Token or constant | Held by | Explained in |
 | --- | --- | --- | --- | --- |
-| 1.1 times the name's span | Beside the stacked name the globe is 1.1 times the span from the first line's cap top to the second line's baseline (2.3655 cap heights), centred on it, so it overshoots both by 0.1075 cap height, as round letters overshoot flat ones. At 1.0155 times the span it looked smaller than the two lines. | `NAME_WIDTH` in `src/app/marks/graticule/content.ts` (the name's width in globes in the globe rows) | Review | [Marks: when to use it](https://www.prototemplate.com/docs/components/marks#when-to-use-it); gt-brand `references/marks.md` |
-| 0.5637 cap height | The gap from the globe's ink to the G of the stacked name. | The globe rows on `/marks/graticule` | Review | gt-brand `references/marks.md`, The mark beside the name |
+| 1.1 times the name's span | Beside the stacked name the globe is 1.1 times the span from the first line's cap top to the second line's baseline (2.4627 cap heights in Katagami Text 500), centred on it, so it overshoots both by 0.1231 cap height, as round letters overshoot flat ones. At 1.0155 times the span it looked smaller than the two lines. | `LOCKUP` in `src/lib/logo.ts`; `NAME_WIDTH` (2.5418, the name's width in globes) in `src/app/marks/graticule/content.ts` | `pnpm test:marks` (against `public/brand/gt-globe-lockup.json`) | [Marks: when to use it](https://www.prototemplate.com/docs/components/marks#when-to-use-it); gt-brand `references/marks.md` |
+| 0.5637 cap height | The gap from the globe's ink to the G of the stacked name. | `LOCKUP.gap` in `src/lib/logo.ts` | `pnpm test:marks` |
+| Katagami Text 500, 0.4627 cap height | The name in the lockup is Katagami Text at weight 500, letter-spacing 0, kerned, as outlines; the white between the first baseline and the second cap line is 0.4627 cap height, the name's own word gap. | `LOCKUP` in `src/lib/logo.ts`; `scripts/build/lockup.py` | `pnpm test:marks` | gt-brand `references/marks.md`, The mark beside the name | gt-brand `references/marks.md`, The mark beside the name |
 | 256 units, 8 KB | Every imported mark is one path in `currentColor` on a 256 unit square and at most 8 KB; the logo and its state are drawn from their larger files on `/marks/graticule`. | `MAX_BYTES` in `scripts/build/import-marks.mjs` | `pnpm test:marks` | gt-brand `references/marks.md`, The catalog and the shortlist |
 
 ## Graphics

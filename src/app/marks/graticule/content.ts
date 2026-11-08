@@ -291,10 +291,10 @@ export const GLOBE_ROWS: readonly GlobeRow[] = [
   },
 ];
 
-/** The name that ends every row, in currentColor. Its box starts at the top of a globe's drawn box and is NAME_WIDTH globes wide, so the globe beside it is 1.1 times the span from the first line's cap top to the second line's baseline, centred on that span. */
+/** The name that ends every row, in Katagami Text 500 outlines and currentColor (pnpm build:lockup). Its box starts at the top of a globe's drawn box and is NAME_WIDTH globes wide, so the globe beside it is 1.1 times the span from the first line's cap top to the second line's baseline, centred on that span; both numbers are rows in public/brand/gt-globe-lockup.json, and pnpm test:marks holds them to it. */
 export const NAME_FILE = '/marks/graticule/rows/name.svg';
-export const NAME_WIDTH = 2.6096;
-export const NAME_ASPECT = 508.49 / 187.73;
+export const NAME_WIDTH = 2.5418;
+export const NAME_ASPECT = 2.6459;
 
 /** A count with its noun. */
 export const marksIn = (n: number) => `${n} ${n === 1 ? 'mark' : 'marks'}`;

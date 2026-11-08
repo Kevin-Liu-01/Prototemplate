@@ -4,9 +4,9 @@
    filled with currentColor, so it takes the ink of its line in both themes
    and this sheet names no color. A round mark set to Inter's cap height
    (0.727em) reads smaller than the capitals around it, so it overshoots
-   the cap height and the baseline by the same share the lockup rule gives
-   the globe beside the stacked name (0.1075 of 2.3655 cap heights a side):
-   0.793em square, its foot 0.033em under the baseline. The letters stay in
+   the cap height and the baseline by 0.033em a side: 0.793em square, its
+   foot 0.033em under the baseline. Only the mark is the logo here; the
+   word's own text is the body face, Inter. The letters stay in
    the DOM as visually hidden text (the clip pattern the toolchain's
    .tc-sr-only uses), so selection, copy, find in page and screen readers
    still get "GT". */

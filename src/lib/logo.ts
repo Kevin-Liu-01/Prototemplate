@@ -26,18 +26,29 @@ export const LOGO = {
 } as const;
 
 /**
- * The logo beside the stacked name, "General" over "Translation" (Kevin,
- * 2026-11-06): the globe is 1.1 times the span from the first line's cap
- * top to the second line's baseline, which is 2.3655 cap heights, centred
- * on that span, so it overshoots both by 0.1075 cap height; the gap from
- * its ink to the G is 0.5637 cap height. Multiply by the name's cap height
- * in px.
+ * The logo lockup: the logo beside the stacked name, "General" over
+ * "Translation" (Kevin, 2026-11-06). The name is Katagami Text at weight
+ * 500, letter-spacing 0, with the font's kerning, drawn as outlines (Kevin,
+ * 2026-11-08: "remember the word mark of general translation text uses
+ * katagami text!"); running copy, and the GT word in it, stay in Inter.
+ * The two lines are flush left by ink with `rhythm` cap heights of white
+ * between the first baseline and the second cap line, the name's own word
+ * gap. The globe is 1.1 times the span from the first line's cap top to
+ * the second line's baseline, 2.4627 cap heights, centred on that span, so
+ * it overshoots both by 0.1231 cap height; the gap from its ink to the G
+ * is 0.5637 cap height. Multiply by the name's cap height in px.
+ * pnpm build:lockup draws the files (public/brand/gt-globe-lockup*.svg, the
+ * deck's #gt-lockup, the globe rows' name) and writes these numbers to
+ * public/brand/gt-globe-lockup.json, which pnpm test:marks holds them to.
  */
 export const LOCKUP = {
-  span: 2.3655,
+  face: 'Katagami Text',
+  weight: 500,
+  rhythm: 0.4627,
+  span: 2.4627,
   scale: 1.1,
   /** the globe's height in cap heights: scale times span */
-  mark: 2.602,
-  overshoot: 0.1075,
+  mark: 2.709,
+  overshoot: 0.1231,
   gap: 0.5637,
 } as const;

@@ -10,7 +10,10 @@
 // stay local until he picks one), every family has its record and holds a mark, every
 // mark /brand's badge cuts through after the logo is no wider than it,
 // LOGO (src/lib/logo.ts) is the logo's catalog file and the masters and
-// the deck's #gt-mark symbol pnpm build:logo writes draw it, and the
+// the deck's #gt-mark symbol pnpm build:logo writes draw it, the lockup
+// files pnpm build:lockup writes draw LOGO beside the Katagami Text name and
+// LOCKUP, the globe rows' NAME_WIDTH and NAME_ASPECT and the deck's
+// #gt-lockup keep the numbers it measured, and the
 // catalog and the dynamic files name each mark by its idea alone:
 // ORIGIN_WORDS rejects option letters and catalog numbers in the catalog
 // and the dynamic files, and runs everywhere, CI included. Loaded through
@@ -24,7 +27,11 @@ import { CANONICAL, DYNAMIC_DIR, MAX_BYTES, drawnBox } from '../build/import-mar
 import { ROOT } from '../lib/root.mjs';
 
 const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, badgeMarks, graticuleMarks, pageFamilies } = await import(new URL('../../src/lib/marks.ts', import.meta.url).href);
-const { LOGO } = await import(new URL('../../src/lib/logo.ts', import.meta.url).href);
+const { LOCKUP, LOGO } = await import(new URL('../../src/lib/logo.ts', import.meta.url).href);
+/* the globe rows' two numbers, read as text: content.ts imports without extensions, which Node's type stripping cannot load */
+const ROWS_TS = readFileSync(join(ROOT, 'src/app/marks/graticule/content.ts'), 'utf8');
+const NAME_WIDTH = Number(ROWS_TS.match(/export const NAME_WIDTH = ([\d.]+);/)?.[1]);
+const NAME_ASPECT = Number(ROWS_TS.match(/export const NAME_ASPECT = ([\d.]+);/)?.[1]);
 
 const MARKS_TS = 'src/lib/marks.ts';
 const publicFile = (path) => join(ROOT, 'public', path);
@@ -137,6 +144,33 @@ test('LOGO is the logo\'s catalog file, and the masters and the deck symbol draw
   assert.ok(symbol, 'deck/parts/head.html has no #gt-mark symbol');
   assert.equal(symbol[1], LOGO.viewBox, 'the deck symbol\'s viewBox is not LOGO.viewBox: run pnpm build:logo');
   assert.equal(symbol[2], LOGO.d, 'the deck symbol is stale: run pnpm build:logo');
+});
+
+test('the lockup files draw LOGO, and LOCKUP, the globe rows and the deck symbol keep the numbers pnpm build:lockup wrote', () => {
+  const metrics = JSON.parse(readFileSync(publicFile('brand/gt-globe-lockup.json'), 'utf8'));
+  assert.match(metrics.font, /^Katagami Text .*wght 500/, 'the lockup name is not Katagami Text 500');
+  const near = (a, b, what) => assert.ok(Math.abs(a - b) < 5e-4, `${what}: ${a} is not ${b}: run pnpm build:lockup`);
+  near(LOCKUP.rhythm, metrics.rhythmInCaps, 'LOCKUP.rhythm');
+  near(LOCKUP.span, metrics.spanInCaps, 'LOCKUP.span');
+  near(LOCKUP.mark, metrics.markInCaps, 'LOCKUP.mark');
+  near(LOCKUP.overshoot, metrics.overshootInCaps, 'LOCKUP.overshoot');
+  near(LOCKUP.gap, metrics.gapInCaps, 'LOCKUP.gap');
+  near(LOCKUP.mark, LOCKUP.scale * LOCKUP.span, 'LOCKUP.mark against scale times span');
+  near(NAME_WIDTH, metrics.rows.nameWidthInGlobes, 'NAME_WIDTH');
+  near(NAME_ASPECT, metrics.rows.nameAspect, 'NAME_ASPECT');
+  assert.match(readFileSync(join(ROOT, 'src/app/marks/graticule/graticule.css'), 'utf8'), new RegExp(`minmax\\(0, ${NAME_WIDTH}fr\\)`), 'the globe rows\' name column is not NAME_WIDTH');
+  const viewBoxOf = (text) => text.match(/viewBox="([^"]+)"/)?.[1].split(' ').map(Number);
+  const rows = readFileSync(publicFile('marks/graticule/rows/name.svg'), 'utf8');
+  assert.deepEqual(viewBoxOf(rows), metrics.rows.viewBox.map((v) => Number(v.toFixed(2))), 'the globe rows\' name is stale: run pnpm build:lockup');
+  for (const name of ['gt-globe-lockup.svg', 'gt-globe-lockup-light.svg', 'gt-globe-lockup-dark.svg']) {
+    const text = readFileSync(publicFile(`brand/${name}`), 'utf8');
+    assert.ok(text.includes(` d="${LOGO.d}"`), `public/brand/${name} draws another globe than LOGO: run pnpm build:lockup`);
+    assert.deepEqual(viewBoxOf(text), metrics.viewBox.map((v) => Number(v.toFixed(2))), `public/brand/${name} is stale: run pnpm build:lockup`);
+  }
+  const symbol = readFileSync(join(ROOT, 'deck/parts/head.html'), 'utf8').match(/<symbol id="gt-lockup" viewBox="([^"]+)">(.*?)<\/symbol>/s);
+  assert.ok(symbol, 'deck/parts/head.html has no #gt-lockup symbol: run pnpm build:lockup');
+  assert.ok(symbol[2].includes(` d="${LOGO.d}"`), 'the deck\'s #gt-lockup draws another globe than LOGO: run pnpm build:lockup');
+  assert.ok(readFileSync(publicFile('brand/gt-globe-lockup.svg'), 'utf8').includes(symbol[2]), 'the deck\'s #gt-lockup differs from public/brand/gt-globe-lockup.svg: run pnpm build:lockup');
 });
 
 test('the catalog and the dynamic files name each mark by its idea alone', () => {

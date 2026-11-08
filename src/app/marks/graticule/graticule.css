@@ -115,7 +115,7 @@ html[data-theme='light'] .gr-vid.is-dark {
 
 .gr-prog {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 2.6096fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 2.5418fr);
   align-items: start;
   gap: 24px;
 }

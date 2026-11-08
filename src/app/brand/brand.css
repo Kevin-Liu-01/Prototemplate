@@ -323,6 +323,15 @@
   background-clip: padding-box;
 }
 
+/* the lockup: the logo beside the stacked name, two to a row, as wide as the three marks above */
+.ptb-lockups {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ptb-lockups .ptb-mark img {
+  height: 132px;
+}
+
 .ptb-mark figcaption {
   margin-top: 10px;
   font-size: var(--pt-t-meta);
@@ -681,6 +690,7 @@
 
 @media (max-width: 760px) {
   .ptb-marks,
+  .ptb-lockups,
   .ptb-type,
   .ptb-globes,
   .ptb-brief {

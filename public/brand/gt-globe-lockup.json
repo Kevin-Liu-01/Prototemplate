@@ -1,0 +1,148 @@
+{
+ "font": "Katagami Text Version 1.200, wght 500, letter-spacing 0, GPOS kerning, as outlines",
+ "units": "Katagami Text font units (2048 per em) at the name's size",
+ "cap": 1430.0,
+ "rhythm": 661.6446,
+ "rhythmInCaps": 0.4627,
+ "spanInCaps": 2.4627,
+ "markInCaps": 2.709,
+ "overshootInCaps": 0.1231,
+ "gapInCaps": 0.5637,
+ "viewBox": [
+  0.0,
+  0.0,
+  14526.4944,
+  3873.8091
+ ],
+ "capLine": 176.0822,
+ "baselines": [
+  1606.0822,
+  3697.7268
+ ],
+ "mark": {
+  "x": 0.0,
+  "y": 0.0,
+  "w": 3873.8091,
+  "h": 3873.8091
+ },
+ "name": {
+  "x": 4679.9001,
+  "y": 156.0822,
+  "w": 9846.5944,
+  "h": 3565.3648
+ },
+ "letters": {
+  "General": [
+   [
+    "G",
+    4583.8987
+   ],
+   [
+    "e",
+    6056.8987
+   ],
+   [
+    "n",
+    7179.8987
+   ],
+   [
+    "e",
+    8312.8987
+   ],
+   [
+    "r",
+    9435.8987
+   ],
+   [
+    "a",
+    10147.8987
+   ],
+   [
+    "l",
+    11234.8987
+   ]
+  ],
+  "Translation": [
+   [
+    "T",
+    4605.459
+   ],
+   [
+    "r",
+    5748.459
+   ],
+   [
+    "a",
+    6460.459
+   ],
+   [
+    "n",
+    7547.459
+   ],
+   [
+    "s",
+    8680.459
+   ],
+   [
+    "l",
+    9706.459
+   ],
+   [
+    "a",
+    10172.459
+   ],
+   [
+    "t",
+    11256.459
+   ],
+   [
+    "i",
+    11898.459
+   ],
+   [
+    "o",
+    12364.459
+   ],
+   [
+    "n",
+    13523.459
+   ]
+  ]
+ },
+ "kerns": {
+  "General": [
+   {
+    "left": "r",
+    "right": "a",
+    "units": -8
+   }
+  ],
+  "Translation": [
+   {
+    "left": "T",
+    "right": "r",
+    "units": -111
+   },
+   {
+    "left": "r",
+    "right": "a",
+    "units": -8
+   },
+   {
+    "left": "a",
+    "right": "t",
+    "units": -3
+   }
+  ]
+ },
+ "rows": {
+  "viewBox": [
+   0.0,
+   0.0,
+   9846.5944,
+   3721.447
+  ],
+  "nameWidthInGlobes": 2.5418,
+  "nameAspect": 2.6459
+ }
+}

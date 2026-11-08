@@ -95,7 +95,9 @@ The color rules have four documented exceptions, each named in `references/color
 
 ## 4. Type
 
-Inter is the one typeface for display, interface and text. The build is the rsms.me Inter 4.1 variable family, roman and italic, self-hosted. Detail and measurements are in `references/type.md`.
+Inter is the one typeface for display, interface and text. The build is the rsms.me Inter 4.1 variable family, roman and italic, self-hosted. Detail: `references/type.md`.
+
+One exception: the lockup's name is Katagami Text 500 outlines (Kevin, 2026-11-08); copy and the GT word stay Inter.
 
 **The face.**
 
@@ -140,7 +142,7 @@ Detail, files and procedures are in `references/marks.md`.
 - **The current mark** is the logo, Axis and meridian behind (Kevin, 2026-11-08: "Swap everything"): a globe whose ring and ovals draw the G and whose polar axis is the T's stem. Its one drawing is `LOGO` in `src/lib/logo.ts`, and `pnpm build:logo` writes the masters in `public/brand`, the GT tab icon and the deck's `#gt-mark` symbol from it. The doubled-line monogram is the previous mark; its files stay at their URLs.
 - **One ink.** Ink on paper or paper on ink. No third color, no gradient, no shadow, no glow. On a dark surface the drawn mark inverts, as an alpha mask that takes the surface's ink or as a clean invert. A mark ships only as vector geometry.
 - **Compression.** The mark must hold at 16px (favicon), 32px (CLI banner), 64px (README header), 128px (npm page) and 256px (website), because developers meet the brand in a terminal as often as on the site (deck slide 25).
-- **The logo's state** on hover, sign-in and loading is Oval globe, axis behind; both lead `SHORTLIST`. The lockup rule (1.1 times the name's span) is in `references/marks.md`.
+- **The logo's state** on hover, sign-in and loading is Oval globe, axis behind; both lead `SHORTLIST`. The lockup rule is in `references/marks.md`.
 - **Inline.** At text size the GT mark sits in the line at the cap height of the text around it, with the letters GT kept as hidden text.
 - **A new mark.** The G's top arc runs out into a straight horizontal segment, as in the doubled-line monogram; a diagonal, radial or hooked terminal is refused (Kevin, 2026-10-09). A candidate is reviewed on paper and ink, at navigation size among competing products' logos and beside the current mark, and only picks are rebuilt as clean SVG with a construction drawing. The review standard, the failure list and the catalog a pick enters (`SHORTLIST`, `pnpm import:marks`) are in `references/marks.md`.
 - **Locadex** has its own one-color mark (`public/brand/locadex-mark.svg`; `LocadexMark` in gt-cloud's `packages/ui`) and appears only where it has a function.

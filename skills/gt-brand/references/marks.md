@@ -38,10 +38,22 @@ Kevin chose the logo on 2026-11-06: Axis and meridian behind, a globe whose ring
 
 ### The mark beside the name
 
-Beside the stacked name, "General" over "Translation", the globe is 1.1 times the span from the first line's cap top to the second line's baseline, which is 2.3655 cap heights, and it is centred on that span, so it overshoots the cap top and the baseline by the same 0.1075 cap height each. The gap from the globe's ink to the G is 0.5637 cap height.
+Beside the stacked name, "General" over "Translation", the globe is 1.1 times the span from the first line's cap top to the second line's baseline, which is 2.4627 cap heights, and it is centred on that span, so it overshoots the cap top and the baseline by the same 0.1231 cap height each. The gap from the globe's ink to the G is 0.5637 cap height.
+
+The name is Katagami Text at weight 500, letter-spacing 0, with the font's GPOS kerning, drawn as outlines (Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!"). Katagami is Kevin's open-source family (SIL Open Font License, katagami.kevinliu.studio). The two lines are flush left by ink, with 0.4627 cap height of white between the first baseline and the second cap line: the name's own word gap, the T's right side bearing, a word space and the G's left side bearing. At these numbers the lockup is 10.16 cap heights wide and 2.709 tall.
+
+| source | what it is | use it for |
+| --- | --- | --- |
+| `pnpm build:lockup` (`scripts/build/lockup.py`) | instances Katagami Text at 500 from a Katagami checkout (`KATAGAMI_REPO`), kerns the two words and writes every file below from the font and `LOGO` | after any change to `LOGO` or the font; run `pnpm build:deck` after it |
+| `public/brand/gt-globe-lockup.svg` | the lockup in currentColor, cropped to its ink | masks and inline use |
+| `public/brand/gt-globe-lockup-light.svg`, `-dark.svg` | `#070707` and `#ffffff` | the `/brand` lockup tiles and any page that needs the lockup as a file |
+| `public/brand/gt-globe-lockup.json` | the numbers: cap, word gap, span, the boxes, every letter's position and the kerning applied | `LOCKUP` in `src/lib/logo.ts` and the globe rows read the same numbers, and `pnpm test:marks` holds them together |
+| the `#gt-lockup` symbol in `deck/parts/head.html` | the lockup on its ink box, 3.75 to 1 | the deck's title slide |
+| `public/marks/graticule/rows/name.svg` | the name alone, its box from the globe's top to the name's foot | the globe rows on `/marks/graticule` |
 
 - A round mark that only matches the height of flat-topped text looks shorter than the text, for the same reason round letters such as O overshoot the cap height and the baseline. At 1.0155 times the span the globe looked smaller than the two lines (Kevin, 2026-11-06), and at 1.1 it reads as the same height as the name without outweighing it, from a large lockup down to a 56px header, where the globe is 34.7px.
-- The globe rows on `/marks/graticule` set the name at this size: `NAME_WIDTH` in `src/app/marks/graticule/content.ts` is the name's width in globes.
+- The globe rows on `/marks/graticule` set the name at this size: `NAME_WIDTH` in `src/app/marks/graticule/content.ts` is the name's width in globes (2.5418), and the column in `graticule.css` carries the same number.
+- Running copy never sets the name in Katagami. The GT word in a sentence (`GtWord`, the deck's `.gt-word`) is body copy: its text stays Inter and only its inline mark is the logo.
 - Measure the span on the name as set, in the face and weight it ships in, and size the globe from it; never size the globe to the name's line box.
 
 ## Rules for every GT mark
@@ -93,7 +105,7 @@ In the deck, a standalone GT in rendered copy is the mark at the size of a capit
 .gt-word svg { display: block; height: 0.793em; width: 0.793em; fill: currentColor; }
 ```
 
-- The symbol's viewBox is the logo's drawn box. A round mark at Inter's cap height (0.727em) reads smaller than the capitals beside it, so it overshoots the cap height and the baseline by the lockup rule's share, 0.1075 of 2.3655 cap heights a side: 0.793em square with its foot 0.033em under the baseline.
+- The symbol's viewBox is the logo's drawn box. A round mark at Inter's cap height (0.727em) reads smaller than the capitals beside it, so it overshoots the cap height and the baseline by 0.033em a side: 0.793em square with its foot 0.033em under the baseline.
 - The `svg` carries no viewBox; the symbol supplies its own.
 - On the site `GtWord` (`src/components/viewer/GtWord.tsx`) sets the same size and draws `public/brand/gt-globe-logo.svg` as a mask filled with currentColor, so a page with many GT words carries the path once.
 - BRAND.md section 4 states the general rule: at text size the wordmark sits inline with prose at the cap height of its line.

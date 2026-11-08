@@ -310,6 +310,22 @@ const PAGES: readonly BrandPage[] = [
           </figure>
         </div>
         <p>
+          In the lockup the logo stands beside the stacked name, &ldquo;General&rdquo; over
+          &ldquo;Translation&rdquo;, at 1.1 times the span from the first line&rsquo;s cap line to the
+          second line&rsquo;s baseline, centred on that span. The name is Katagami Text at weight 500,
+          drawn as outlines; running copy, headings and interface text stay in Inter.
+        </p>
+        <div className='ptb-marks ptb-lockups'>
+          <figure className='ptb-mark is-paper'>
+            <img alt='The GT lockup in ink on paper: the logo beside General over Translation' decoding='async' loading='lazy' src='/brand/gt-globe-lockup-light.svg' />
+            <figcaption>the lockup, ink on paper</figcaption>
+          </figure>
+          <figure className='ptb-mark is-ink'>
+            <img alt='The GT lockup in paper on ink: the logo beside General over Translation' decoding='async' loading='lazy' src='/brand/gt-globe-lockup-dark.svg' />
+            <figcaption>the lockup, paper on ink</figcaption>
+          </figure>
+        </div>
+        <p>
           At text size the wordmark sits inline with prose, at the cap height of the line
           it lives in, the way the hero on generaltranslation.com sets &ldquo;<GtWord />{' '}builds
           full-stack localization for apps, docs, and websites&rdquo;.
