@@ -1,25 +1,25 @@
 # Marks in detail
 
-This file backs section 5 of `gt-brand`: where each GT mark lives, which file to use, the logo and how it sits beside the name, how the speed set is generated, how a mark sits in text and in an illustration, and where third-party logos come from. Paths are relative to `$PROTOTEMPLATE` unless they name `$GT_CLOUD`.
+This file backs section 5 of `gt-brand`: where each General Translation mark lives, which file to use, the logo and how it sits beside the name, how the speed set is generated, how the name is written in text, how a mark sits in an illustration, and where third-party logos come from. Paths are relative to `$PROTOTEMPLATE` unless they name `$GT_CLOUD`.
 
 ## The current mark
 
-The logo, Axis and meridian behind, is GT's mark. Kevin moved every Prototemplate use of the doubled-line monogram to it on 2026-11-08 ("Swap everything"): the chrome mark, the GT word, the GT tab icon, the `/brand` figure, tiles and badge, the presenter, and the deck. Every use reads one drawing.
+The logo, Axis and meridian behind, is General Translation's mark. Kevin moved every Prototemplate use of the doubled-line monogram to it on 2026-11-08 ("Swap everything"): the chrome mark, the inline word mark (retired the same day), the tab icon, the `/brand` figure, tiles and badge, the presenter, and the deck. Every use reads one drawing.
 
 | source | what it is | use it for |
 | --- | --- | --- |
 | `LOGO` in `src/lib/logo.ts` | the logo as one path in currentColor with the nonzero fill rule, on the catalog's square `0 0 256 256`, with its drawn box `24.3 24.3 207.4 207.4` as `viewBox` | any vector use in the site: `GtMark` (the chrome mark), the `/brand` figure and badge, the docs demos; never redraw it |
 | `pnpm build:logo` (`scripts/build/logo.mjs`) | writes every file below from `LOGO`; run `pnpm build:deck` after it | after any change to `LOGO` |
-| the `#gt-mark` symbol in `deck/parts/head.html` | the logo on its drawn box | the deck's sidebar head, the wordmark slot, the GT word and every slide that draws the mark |
-| `public/brand/gt-globe-logo.svg` | currentColor on the drawn box | masks: `GtWord` and the docs lead demo draw it as a CSS mask filled with currentColor |
+| the `#gt-mark` symbol in `deck/parts/head.html` | the logo on its drawn box | the wordmark slot and every slide that draws the mark |
+| `public/brand/gt-globe-logo.svg` | currentColor on the drawn box | masks: the docs lead demo draws it as a CSS mask filled with currentColor |
 | `public/brand/gt-globe-logo-light.svg`, `gt-globe-logo-dark.svg` | `#070707` and `#ffffff` on the 256 square | the `/brand` tiles and any page that needs the mark as a file |
 | `public/brand/no-bg-gt-globe-logo-light.png`, `-dark.png` (1198 px), `-light-96`, `-dark-96` and `-dark-256` | transparent PNG masters at the sizes of the monogram masters | raster contexts: the presenter (the white 256 px file, inverted on paper) |
 | `public/brand/gt-globe-logo-icon.svg`, `gt-globe-logo.ico` | the tab icon on the drawn box, ink, and white under a dark color scheme; the .ico holds 16, 32 and 48 px of the white logo on the ink ground, so a tab strip of either color shows it | `GT_ICONS` in `src/lib/seo/site.ts` on `/d` and `/present`, and the deck's head |
 
 - `pnpm test:marks` holds the catalog file `public/marks/graticule/variations/axis-and-meridian-behind.svg`, the masters and the deck symbol to `LOGO`.
-- The logo is round, so a box set by height is square. Beside the stacked name it follows the lockup rule below; inline in text it follows the GT word rule.
+- The logo is round, so a box set by height is square. Beside the stacked name it follows the lockup rule below. It never sits inline in a sentence ("The name in running text" below).
 - At 32 px the globe, the G and the T's stem all read. At 16 px the ring and the axis read and the inner ovals close up, so the favicon reads as a ringed globe (checked by eye on 2026-11-08).
-- Prototemplate's own tab icons (`public/favicon.ico`, `apple-touch-icon.png`, `pt-mark.svg`) are the hub's mark, not GT's, and stay.
+- Prototemplate's own tab icons (`public/favicon.ico`, `apple-touch-icon.png`, `pt-mark.svg`) are the hub's mark, not General Translation's, and stay.
 
 ### The previous mark
 
@@ -53,10 +53,10 @@ The name is Katagami Text at weight 500, letter-spacing 0, with the font's GPOS 
 
 - A round mark that only matches the height of flat-topped text looks shorter than the text, for the same reason round letters such as O overshoot the cap height and the baseline. At 1.0155 times the span the globe looked smaller than the two lines (Kevin, 2026-11-06), and at 1.1 it reads as the same height as the name without outweighing it, from a large lockup down to a 56px header, where the globe is 34.7px.
 - The globe rows on `/marks/graticule` set the name at this size: `NAME_WIDTH` in `src/app/marks/graticule/content.ts` is the name's width in globes (2.5418), and the column in `graticule.css` carries the same number.
-- Running copy never sets the name in Katagami. The GT word in a sentence (`GtWord`, the deck's `.gt-word`) is body copy: its text stays Inter and only its inline mark is the logo.
+- Running copy never sets the name in Katagami. General Translation in a sentence is body copy in Inter.
 - Measure the span on the name as set, in the face and weight it ships in, and size the globe from it; never size the globe to the name's line box.
 
-## Rules for every GT mark
+## Rules for every General Translation mark
 
 - **One ink.** Ink on paper, or paper on ink. No third color, no gradient, no shadow, no filter glow.
 - **The dark surface inverts the drawn mark.** Use an alpha mask that takes the surface's ink, or a clean invert. `src/app/present/presenter.css` inverts the white PNG on paper with `filter: invert(1)`, which is the clean invert for a raster.
@@ -65,9 +65,9 @@ The name is Katagami Text at weight 500, letter-spacing 0, with the font's GPOS 
 - **No gif.** A mark is drawn as an SVG, a canvas field or a component (`LocadexMark`). gt-ui `no-gif-mark` refuses a gif as a mark or a demo frame.
 - **Films.** The gem smoke material may wrap a mark as a glass shape (`motion/kit/gem-shapes/gt-mark.png` and `gt-bar-monogram.png`, made by `node kit/gem-shapes/make.mjs` from the motion folder, which is local and untracked). That is the films' material exception in `motion/MOTION.md` and applies to films only (`gt-films`).
 
-## Reviewing a new GT mark
+## Reviewing a new General Translation mark
 
-These rules hold for any new GT mark, from an exploration round to a final pick. They come from Kevin's reviews of a round of GT marks drawn as a globe (2026-10-08 and 2026-10-09), the rules on rough rows and on context from his request of 2026-10-28, the rules on cuts and letters from his rulings of 2026-10-26 and 2026-10-30, and the small-size cut from the marks he kept in the 2026-10-28 round.
+These rules hold for any new General Translation mark, from an exploration round to a final pick. They come from Kevin's reviews of a round of General Translation marks drawn as a globe (2026-10-08 and 2026-10-09), the rules on rough rows and on context from his request of 2026-10-28, the rules on cuts and letters from his rulings of 2026-10-26 and 2026-10-30, and the small-size cut from the marks he kept in the 2026-10-28 round.
 
 - **The G's top tail ends horizontal.** The G's top arc runs out into a straight horizontal segment, as in the doubled-line monogram, where it flattens into a stroke that runs into the T's bar. A diagonal, radial or hooked terminal is refused. Kevin, 2026-10-09, rejecting the third round: "make the top g tail end at a horizontal line".
 - **Cuts and letters.** Every cut through the ring continues a stroke edge inside the mark or sits on the axis, and a mark whose cuts fall anywhere else is excluded everywhere (Kevin, 2026-10-26: "i hate the ones where the cuts are off placement"). Every mark carries both a G and a T (2026-10-30). The G's mouth stays small so the ring stays long.
@@ -92,23 +92,13 @@ These rules hold for any new GT mark, from an exploration round to a final pick.
 - **Entering a mark.** `pnpm import:marks` copies finished SVGs into `public/marks/dynamic` from a manifest kept outside the repository, checks each with the mark checker (`src/lib/mark-file.ts`), writes the one canonical header (one path in `currentColor`, viewBox `0 0 256 256`, at most 8 KB) and prints the drawn box for the mark's row. The logo and its state are the one exception, named in the section on the logo above. `pnpm test:marks` (in `lint:static`) holds every row to its file.
 - **Public names.** Every mark is a General Translation mark. Ids, names, notes, file headers and commit messages describe only the idea the mark draws; `pnpm test:marks` refuses generic words that name a mark's origin, and the private denylist of `pnpm lint:public` holds the specific ones.
 
-## The GT word in text
+## The name in running text
 
-In the deck, a standalone GT in rendered copy is the mark at the size of a capital, with the letters kept as hidden text for assistive technology and search:
+In running text the name is written out as General Translation (Kevin, 2026-11-08). A sentence never names the company with the letters GT and never sets the logo inline in place of the name. The inline mark that stood for the word from 2026-09-09 (`GtWord` on the site, `.gt-word` in the deck) was retired on 2026-11-08 and its code deleted.
 
-```html
-<span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span>
-```
-
-```css
-.gt-word { position: relative; display: inline-block; vertical-align: -0.033em; }
-.gt-word svg { display: block; height: 0.793em; width: 0.793em; fill: currentColor; }
-```
-
-- The symbol's viewBox is the logo's drawn box. A round mark at Inter's cap height (0.727em) reads smaller than the capitals beside it, so it overshoots the cap height and the baseline by 0.033em a side: 0.793em square with its foot 0.033em under the baseline.
-- The `svg` carries no viewBox; the symbol supplies its own.
-- On the site `GtWord` (`src/components/viewer/GtWord.tsx`) sets the same size and draws `public/brand/gt-globe-logo.svg` as a mask filled with currentColor, so a page with many GT words carries the path once.
-- BRAND.md section 4 states the general rule: at text size the wordmark sits inline with prose at the cap height of its line.
+- The logo stands alone: in the lockup, the header, the sidebar, the tab icon and a figure.
+- "General Translation's" is the possessive. A heading that would run past two lines with the full name is reworded, never shortened to GT.
+- The letters stay where they are not the name in a sentence: lowercase package and CLI names (`gt`, `gt-next`), code, URLs, file names, identifiers, hyphen-joined forms such as GT-format, letters inside a word such as GTM, a mark's own name (Graticule GT, the GT monogram) and the letters a mark draws.
 
 ## Locadex
 

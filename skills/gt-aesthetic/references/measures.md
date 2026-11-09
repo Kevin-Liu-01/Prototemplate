@@ -46,8 +46,8 @@ Computed with the WCAG formula on 2026-10-05.
 | titanium `#8a8f98` | `#ffffff` | 3.25 |
 | titanium `#8a8f98` | `#070707` | 6.20 |
 | dashboard light titanium `#6e737c` | `#ffffff` | 4.77 |
-| GT blue `#2f5ce0` | `#ffffff` | 5.63 |
-| GT blue dark lift `#86a8ff` | `#070707` | 8.69 |
+| General Translation blue `#2f5ce0` | `#ffffff` | 5.63 |
+| General Translation blue dark lift `#86a8ff` | `#070707` | 8.69 |
 
 Titanium at `#8a8f98` fails the 4.5:1 floor for text under 24px in the light theme. The dashboard plate sets light titanium to `#6e737c` for its 13px captions and keys. On any other light surface, text a reader needs is set in ink-2.
 

@@ -1,6 +1,6 @@
 # Agent workflows
 
-Kevin Liu runs large pieces of General Translation (GT) work as workflows. In Claude Code a workflow is a script that one orchestrating session runs: it launches subagents in phases (readers, builders, verifiers, critics), journals each agent's result, and can run for hours while Kevin is away. Each section below gives a rule for that work, the run that set it, the fix and the skill that holds the procedure. Peer sessions that Kevin opens himself follow the [multi-session playbook](multi-session-playbook.md), and the machine they share follows [agents on one machine](shared-machine.md).
+Kevin Liu runs large pieces of General Translation work as workflows. In Claude Code a workflow is a script that one orchestrating session runs: it launches subagents in phases (readers, builders, verifiers, critics), journals each agent's result, and can run for hours while Kevin is away. Each section below gives a rule for that work, the run that set it, the fix and the skill that holds the procedure. Peer sessions that Kevin opens himself follow the [multi-session playbook](multi-session-playbook.md), and the machine they share follows [agents on one machine](shared-machine.md).
 
 ## Lane prompts
 

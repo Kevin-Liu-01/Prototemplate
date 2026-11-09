@@ -54,7 +54,7 @@ gt-cloud's UI is translated with gt-next. The `gt-react/static-jsx` and `gt-reac
 
 - Wrap the largest static JSX block in one `<T>` from `gt-next`. `<T>` can wrap elements and components, which gives the translator the markup context.
 - Never nest `<T>`.
-- No raw variables, ternaries or mapped expressions inside `<T>`. Use the GT components for dynamic content: `Var`, `Num`, `Currency`, `DateTime`, `Plural`, `Branch`.
+- No raw variables, ternaries or mapped expressions inside `<T>`. Use the General Translation components for dynamic content: `Var`, `Num`, `Currency`, `DateTime`, `Plural`, `Branch`.
 - `<T>` does not translate props passed to children. Translate a user-facing prop (a placeholder, an `aria-label`, a title) with `gt()`.
 - In a client component: `const gt = useGT();`. `useGT()` returns the function itself; `const { gt } = useGT()` is wrong.
 - In an async server component: `const gt = await getGT();` from `gt-next/server`.
@@ -64,7 +64,7 @@ gt-cloud's UI is translated with gt-next. The `gt-react/static-jsx` and `gt-reac
 
 ## Locales
 
-GT's apps use GT's own locale tools, and a hand-written locale helper is a defect. A review of gt-cloud #5542 on 2026-10-27 left 17 comments, nearly all on hand-written locale code, and Kevin asked: "can we get better at using all gt next stuff in here?".
+General Translation's apps use General Translation's own locale tools, and a hand-written locale helper is a defect. A review of gt-cloud #5542 on 2026-10-27 left 17 comments, nearly all on hand-written locale code, and Kevin asked: "can we get better at using all gt next stuff in here?".
 
 - Locale lists and the default locale come from `getLocales()` and `getDefaultLocale()` in `gt-next`. App code never imports `gt.config.json`. A client component reads `useLocale()`, `useLocaleDirection()` and `useLocales()`.
 - Tests mock `getLocales` and `getDefaultLocale` from `gt-next`.

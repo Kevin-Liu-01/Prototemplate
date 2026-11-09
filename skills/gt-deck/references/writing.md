@@ -4,7 +4,7 @@
 
 ## The rules
 
-These rules hold for any GT presentation, the brand deck included. Kevin set them as how presentations are written for people (2026-07-29 and 2026-10-05).
+These rules hold for any General Translation presentation, the brand deck included. Kevin set them as how presentations are written for people (2026-07-29 and 2026-10-05).
 
 1. **Plan in text first.** Write the narrative as text, and each slide's text with a description of its diagram, before building slides.
 2. **Each slide stands alone.** A reader understands it in isolation and from first principles. It has a reason to exist and connects to the slide before it. Kevin, 2026-10-05: "slides have to propelry tie into each other and have a reason for existing".

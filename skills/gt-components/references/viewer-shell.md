@@ -16,7 +16,7 @@ The chrome around every Prototemplate page, in `$PROTOTEMPLATE/src/components/vi
 | `Sheet.tsx`, `SheetFrame.tsx`, `BookView.tsx` (`BookHead`), `GridView.tsx`, `ThumbShot.tsx` | The stage, the book and grid modes, the book head, captures with light and dark twins swapped by CSS. |
 | `Search.tsx`, `IndexPanel.tsx`, `PreviewLayer.tsx` | The ⌘K palette over `src/lib/search-index.ts`, the index panel over `src/lib/surfaces.ts`, and the one hover preview: any element with `data-preview="<surface id>"` gets a capture. |
 | `Toast.tsx`, `HelpCard.tsx`, `Progress.tsx`, `DirectionCorner.tsx` | Notices (`useToast`), the key card, the 2px progress line, the floating chrome on `/d` pages (hidden under `?chrome=0`). |
-| `GtMark.tsx`, `GtWord.tsx`, `PtMark.tsx`, `ThemeButton.tsx`, `icons.tsx` | The GT mark; `GtWord` sets every standalone "GT" in rendered prose as the mark (`gtText()` for strings that arrive as data); the Prototemplate mark; the theme button; the icon set. |
+| `GtMark.tsx`, `PtMark.tsx`, `ThemeButton.tsx`, `icons.tsx` | The General Translation mark; the Prototemplate mark; the theme button; the icon set. Running text writes the name out as General Translation, so no component sets the mark inside a sentence. |
 
 A component added to chrome reuses these parts and follows these rules.
 

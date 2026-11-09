@@ -8,7 +8,7 @@ description: >-
   as the authoring source for new shaders, and the Blue Marble standard for
   dithered photographs and scans with its cutter (pnpm mood-tone), its lint
   and its retired pictures. Use when adding a dithered field, picture, cover
-  or texture to any GT surface, when choosing or tuning a studio preset, or
+  or texture to any General Translation surface, when choosing or tuning a studio preset, or
   when cutting, replacing, crediting or reviewing a mood picture in
   Prototemplate or gt-cloud.
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 # Dither and artifact pictures
 
-General Translation (GT) builds the full stack for localization: i18n
+General Translation builds the full stack for localization: i18n
 libraries, context-aware translation APIs, a CDN that serves translations
 and Locadex, its AI agent (BRAND.md sections 1 and 9). Its product monorepo
 is gt-cloud
@@ -29,11 +29,11 @@ is gt-cloud
 generaltranslation.com and `apps/dashboard` holds the sign-in and
 onboarding pages, a form plate on the left over a dithered field on the
 right. Prototemplate (github.com/Kevin-Liu-01/Prototemplate) is Kevin Liu's
-hub for GT design work: the brand deck, the docs, and the plate port, a copy
+hub for General Translation design work: the brand deck, the docs, and the plate port, a copy
 of the dashboard's sign-in and onboarding gallery under
 `src/components/plate`, served at `/d/production/{signin,onboarding,consent,device,cli}`.
 
-GT draws texture with one device: an ordered Bayer dither that prints whole
+General Translation draws texture with one device: an ordered Bayer dither that prints whole
 square cells in one ink. The same screen runs the procedural fields on the
 landing, the dashboard and Prototemplate, and the artifact pictures, which
 are photographs and scans of objects screened at 1 CSS px cells to the Blue
@@ -256,7 +256,7 @@ Choosing a picture:
   never mentions the company (2026-09-30: "dont write the corny stuff about
   gt relating").
 - On the deck, a mood slide's plate has the title at 44px, one or two
-  sentences on why the picture is in the deck (these may name GT), and the
+  sentences on why the picture is in the deck (these may name General Translation), and the
   credit in titanium at 15px (`deck/shots/OPENERS.md`). The gt-deck skill
   owns that format.
 
@@ -361,7 +361,7 @@ cannot see, are in [references/pictures.md](references/pictures.md).
 
 ## Related skills
 
-GT: gt-graphics (covers, blog graphics, the Glyphfield headless export),
+General Translation: gt-graphics (covers, blog graphics, the Glyphfield headless export),
 gt-aesthetic, gt-diagrams (`DitheredMark`, `references/isometric.md`),
 gt-deck (mood slides and openers), gt-landing-pages, gt-lints, gt-verify
 (the browser checks). Wiki: create-graphics, design-engineering-polish. gt-cloud's own skills under

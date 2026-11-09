@@ -7,7 +7,7 @@ description: >-
   their rules, and the state gallery method for reviewing a flow: every
   state reachable from one console, screenshots taken from it, and each new
   state added with the flow. It holds no rules of its own. Use when starting
-  work on a GT product surface, to find which skill holds its rules, and
+  work on a General Translation product surface, to find which skill holds its rules, and
   before showing Kevin the states of a sign-in, onboarding or CLI login
   flow.
 metadata:
@@ -20,7 +20,7 @@ metadata:
 
 # Product surfaces
 
-General Translation (GT) ships its product from `apps/dashboard` in gt-cloud, its private monorepo: the sign-in and auth pages, onboarding and the dashboard itself. This skill maps each of those surfaces to the skills that hold its rules, and gives the method for reviewing a flow's states. It holds no rules of its own. Where a pointer here and the owning skill disagree, the owning skill wins, and the fix goes into this map.
+General Translation ships its product from `apps/dashboard` in gt-cloud, its private monorepo: the sign-in and auth pages, onboarding and the dashboard itself. This skill maps each of those surfaces to the skills that hold its rules, and gives the method for reviewing a flow's states. It holds no rules of its own. Where a pointer here and the owning skill disagree, the owning skill wins, and the fix goes into this map.
 
 Skills named without a repository are in this set. `gt-dashboard` is gt-cloud's skill for `apps/dashboard` (`.agents/skills/gt-dashboard`), and it is the source of truth for that app's rules. Sources for every sentence are in `references/sources.md`.
 

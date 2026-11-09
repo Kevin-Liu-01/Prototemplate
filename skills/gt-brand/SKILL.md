@@ -7,8 +7,8 @@ description: >-
   tracking, per-script fallbacks), the globe logo and the generated speed
   marks, language as material, the final avoid list, and what
   never appears on a public surface. Use before making anything that carries
-  the GT brand (a page, a slide, a graphic, a film, an email or a social
-  image), when choosing a face, weight, tracking or color, when placing a GT
+  the brand (a page, a slide, a graphic, a film, an email or a social
+  image), when choosing a face, weight, tracking or color, when placing a
   mark or a third-party logo, and when reviewing a surface against the brand.
 metadata:
   title: Brand and the correct Inter
@@ -20,15 +20,15 @@ metadata:
 
 # Brand and the correct Inter
 
-General Translation (GT) builds open-source i18n libraries (`gt` and the framework packages such as `gt-next`) and a closed translation platform with an AI agent, Locadex. Its identity is written in Prototemplate's BRAND.md and DESIGN.md and drawn in the brand deck (`deck/parts/head.html` and `deck/slides/`). This skill states those documents as rules for anything that carries the GT brand. Type gets the most room, because the one face is the real rsms InterVariable and nearly every type defect Kevin has flagged came from settings layered on that face.
+General Translation builds open-source i18n libraries (`gt` and framework packages such as `gt-next`) and a closed translation platform with an AI agent, Locadex. Its identity is written in Prototemplate's BRAND.md and DESIGN.md and drawn in the brand deck (`deck/parts/head.html` and `deck/slides/`). This skill states those documents as rules for anything that carries the brand. Type gets the most room, because the one face is the real rsms InterVariable and nearly every type defect Kevin has flagged came from settings layered on that face.
 
 Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name `$GT_CLOUD`, a gt-cloud checkout at origin/main. A long-lived gt-cloud checkout can sit on an old branch without the files named here, so read gt-cloud facts from origin/main or a fresh worktree. `motion/` in Prototemplate is the films session's local folder and stays untracked, so its files exist only in Kevin's checkout (`gt-films`).
 
 These files hold the detail:
 
 - `references/type.md`: the font file and how to verify it, the bindings on every surface, the tokens, optical size, features, the full tracking table, the ladders, per-script stacks, the type lint and the gotchas.
-- `references/marks.md`: the current mark and its files, the review standard for a new mark, the GT word inline in text, the speed set and how to regenerate it, the Locadex mark, the dithered shimmer and third-party logos.
-- `references/color.md`, `references/language.md` and `references/third-party.md`: the color exceptions, the language devices and the rules for material GT did not make.
+- `references/marks.md`: the current mark and its files, the review standard for a new mark, the name in running text, the speed set and how to regenerate it, the Locadex mark, the dithered shimmer and third-party logos.
+- `references/color.md`, `references/language.md` and `references/third-party.md`: the color exceptions, the language devices and the rules for material the company did not make.
 - `references/sources.md`: where every rule comes from, with dates.
 
 ## 1. The name and the naming system
@@ -37,8 +37,7 @@ The name General Translation was chosen for three reasons, in this order. The fi
 
 | name | what it is | how it is written |
 | --- | --- | --- |
-| General Translation | the company; General Translation, Inc. in legal text | in full on first mention and in headings |
-| GT | the short form and the mark | in the deck, a standalone GT in rendered copy is the mark at cap height (`references/marks.md`) |
+| General Translation | the company; General Translation, Inc. in legal text | in full in every sentence and heading (`references/marks.md`) |
 | `gt` | the open-source library and CLI; users run `npx gt translate` | lowercase, in code form |
 | `gt-next`, `gt-react`, `gt-vue`, `gt-node`, `gt-python` | the framework packages | in their exact form |
 | Locadex | the AI agent product | its own mark |
@@ -51,7 +50,7 @@ The name General Translation was chosen for three reasons, in this order. The fi
 
 ## 2. The idea and the values
 
-The thesis is "every product in every language": native-level speed and quality from the first day. The positioning is the Vercel model applied to localization. GT builds the open-source libraries (`gt` and the framework packages) and the closed platform (context-aware translation APIs, versioning, editing, integrations and Locadex) as one stack. Because GT owns the whole stack, it can deliver consistent translation quality across a company's apps, docs and websites, integrated in an afternoon. The open source carries a community register and the platform an enterprise register, in one family.
+The thesis is "every product in every language": native-level speed and quality from the first day. The positioning is the Vercel model applied to localization. General Translation builds the open-source libraries (`gt` and the framework packages) and the closed platform (context-aware translation APIs, versioning, editing, integrations and Locadex) as one stack. Because it owns the whole stack, it can deliver consistent translation quality across a company's apps, docs and websites, integrated in an afternoon. The open source carries a community register and the platform an enterprise register, in one family.
 
 The identity has to carry five values:
 
@@ -88,7 +87,7 @@ Four absolute colors and one accent. The four are declared once in `src/app/glob
 - **The accent per ground.** On ink the accent is always the lift `#86a8ff`: `#2f5ce0` sits at 3.58:1 on `#070707`. New work takes these two values. Deck slide 26 records two other blues in use (`#3b82f6` in the docs, `#2563eb` on the blog) as drift to resolve.
 - **Depth comes from lines and material.** No shadows anywhere.
 - **A new palette states shares.** A proposed palette gives each color's share of the surface as well as its value, and is shown as blocks drawn in those shares.
-- **Semantic hues appear on icons only**, in the deck: `#12a37a` done or passing, `#f0a020` open or in review, `#e5484d` excluded or rejected, `#2f5ce0` GT itself. The four are the same in both of the deck's themes, so these icon hues are separate from the accent's lift. Text and lines stay monochrome. The shell's site icons use the same amber on ink and darken it to `#c47d00` on paper, where `#f0a020` sits at 2.15:1 (`--pt-site-signal`).
+- **Semantic hues appear on icons only**, in the deck: `#12a37a` done or passing, `#f0a020` open or in review, `#e5484d` excluded or rejected, `#2f5ce0` the company itself. The four are the same in both of the deck's themes, so these icon hues are separate from the accent's lift. Text and lines stay monochrome. The shell's site icons use the same amber on ink and darken it to `#c47d00` on paper, where `#f0a020` sits at 2.15:1 (`--pt-site-signal`).
 - **Contrast.** Titanium on paper is 3.25:1, under the 4.5:1 that small text needs; on ink it is 6.2:1. gt-cloud's plate pages darken light-theme titanium to `#6e737c` (4.77:1) in `$GT_CLOUD/apps/dashboard/src/app/brand-tokens.css`. Check titanium text at 13px in the light theme before shipping it.
 
 The color rules have four documented exceptions, each named in `references/color.md` so no sweep removes it: the films (a film's palette is its material), the dashboard's credits card, the horizon ring (deck slide 39) and the Prototemplate mark's rainbow core.
@@ -97,7 +96,7 @@ The color rules have four documented exceptions, each named in `references/color
 
 Inter is the one typeface for display, interface and text. The build is the rsms.me Inter 4.1 variable family, roman and italic, self-hosted. Detail: `references/type.md`.
 
-One exception: the lockup's name is Katagami Text 500 outlines (Kevin, 2026-11-08); copy and the GT word stay Inter.
+One exception: the lockup's name is Katagami Text 500 outlines (Kevin, 2026-11-08); running copy stays Inter.
 
 **The face.**
 
@@ -139,11 +138,11 @@ One exception: the lockup's name is Katagami Text 500 outlines (Kevin, 2026-11-0
 
 Detail, files and procedures are in `references/marks.md`.
 
-- **The current mark** is the logo, Axis and meridian behind (Kevin, 2026-11-08: "Swap everything"): a globe whose ring and ovals draw the G and whose polar axis is the T's stem. Its one drawing is `LOGO` in `src/lib/logo.ts`, and `pnpm build:logo` writes the masters in `public/brand`, the GT tab icon and the deck's `#gt-mark` symbol from it. The doubled-line monogram is the previous mark; its files stay at their URLs.
+- **The current mark** is the logo, Axis and meridian behind (Kevin, 2026-11-08: "Swap everything"): a globe whose ring and ovals draw the G and whose polar axis is the T's stem. Its one drawing is `LOGO` in `src/lib/logo.ts`, and `pnpm build:logo` writes the masters in `public/brand`, the tab icon and the deck's `#gt-mark` symbol from it. The doubled-line monogram is the previous mark; its files stay at their URLs.
 - **One ink.** Ink on paper or paper on ink. No third color, no gradient, no shadow, no glow. On a dark surface the drawn mark inverts, as an alpha mask that takes the surface's ink or as a clean invert. A mark ships only as vector geometry.
 - **Compression.** The mark must hold at 16px (favicon), 32px (CLI banner), 64px (README header), 128px (npm page) and 256px (website), because developers meet the brand in a terminal as often as on the site (deck slide 25).
 - **The logo's state** on hover, sign-in and loading is Oval globe, axis behind; both lead `SHORTLIST`. The lockup rule is in `references/marks.md`.
-- **Inline.** At text size the GT mark sits in the line at the cap height of the text around it, with the letters GT kept as hidden text.
+- **In running text, write General Translation** (Kevin, 2026-11-08): never the letters GT as the name and never the logo inline. The logo stands alone (`references/marks.md`).
 - **A new mark.** The G's top arc runs out into a straight horizontal segment, as in the doubled-line monogram; a diagonal, radial or hooked terminal is refused (Kevin, 2026-10-09). A candidate is reviewed on paper and ink, at navigation size among competing products' logos and beside the current mark, and only picks are rebuilt as clean SVG with a construction drawing. The review standard, the failure list and the catalog a pick enters (`SHORTLIST`, `pnpm import:marks`) are in `references/marks.md`.
 - **Locadex** has its own one-color mark (`public/brand/locadex-mark.svg`; `LocadexMark` in gt-cloud's `packages/ui`) and appears only where it has a function.
 - **The speed set.** Kevin chose seven race-type marks on 2026-09-29 (bar monogram, lockup, plate, double cut, livery stack, dithered, ASCII). They are presented beside the doubled-line monogram on `/marks` and on deck slides 17 to 23, generated by `pnpm build:marks` and never redrawn by hand (`references/marks.md`, Regenerating).
@@ -184,7 +183,7 @@ prototemplate.com, the deck, the public Prototemplate repository, generaltransla
 
 ### Third-party material
 
-Any logo, picture, font, model or shader GT did not make follows [references/third-party.md](references/third-party.md): the source order (house components, then the owner's brand page, then thesvg.org, CC0 or licensed scans, and real recordings; keep searching and never redraw an approximation by hand), provenance and credit recorded as each asset lands, licences kept or the material removed (a public repository stays public and loses the material, Kevin, 2026-10-02), and customer marks limited to those BRAND.md section 9 and production already show. Prototemplate reserves all rights to General Translation (`LICENSE`).
+Any logo, picture, font, model or shader the company did not make follows [references/third-party.md](references/third-party.md): the source order (house components, then the owner's brand page, then thesvg.org, CC0 or licensed scans, and real recordings; keep searching and never redraw an approximation by hand), provenance and credit recorded as each asset lands, licences kept or the material removed (a public repository stays public and loses the material, Kevin, 2026-10-02), and customer marks limited to those BRAND.md section 9 and production already show. Prototemplate reserves all rights to General Translation (`LICENSE`).
 
 ## Review checklist
 
@@ -201,13 +200,14 @@ Run it on any surface that carries the brand, in both themes, at 1440 and at 390
 - [ ] A new palette gives each color's share as well as its value.
 - [ ] Flags are SVG chips next to locale codes.
 - [ ] The copy has no em dashes, exclamation marks, eyebrows or heading periods, and follows `gt-voice`.
+- [ ] Running text names General Translation in full, never GT or the logo.
 - [ ] Non-Latin samples (CJK, Arabic, Devanagari) render in a face for their script and keep the layout.
 - [ ] Nothing about funding, revenue, headcount or launch timing appears.
 - [ ] Every third-party asset came from its owner or the named source, its source and terms are recorded, borrowed work is credited on the page, no approximation was drawn by hand, and every licence is kept or the material removed (`references/third-party.md`).
 
 ## Related skills
 
-General skills in Kevin's wiki that this one depends on: `design-engineering-polish`, `create-graphics`. GT skills in this set: `gt-voice` (copy), `gt-aesthetic` (taste and polish), `gt-deck` (the brand deck), `gt-lints` (the line law, the picture standard, the type lint, gt-ui), `gt-dither`, `gt-diagrams` (with the isometric family), `gt-explorations` (mark rounds), `gt-verify` (the browser checks), `gt-motion`, `gt-films`, `gt-graphics`, `gt-components`, `gt-website` and `gt-landing-pages`.
+General skills in Kevin's wiki that this one depends on: `design-engineering-polish`, `create-graphics`. Skills in this set: `gt-voice` (copy), `gt-aesthetic` (taste and polish), `gt-deck` (the brand deck), `gt-lints` (the line law, the picture standard, the type lint, gt-ui), `gt-dither`, `gt-diagrams` (with the isometric family), `gt-explorations` (mark rounds), `gt-verify` (the browser checks), `gt-motion`, `gt-films`, `gt-graphics`, `gt-components`, `gt-website` and `gt-landing-pages`.
 
 ## Sources
 

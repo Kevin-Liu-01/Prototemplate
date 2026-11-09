@@ -1,4 +1,4 @@
-<title>GT Brand deck</title>
+<title>General Translation brand deck</title>
 <script>
   /* the theme before first paint: the same read as the boot script in src/app/layout.tsx (gt-theme, then the deck's older
      gt-deck-theme, dark when neither is set), so the document never paints the light :root defaults below and then flips.
@@ -69,12 +69,6 @@
   .muted { color: var(--ink-2); }
   .max { max-width: 32ch; }
   .max-p { max-width: 56ch; }
-
-  /* the GT word: every standalone GT in rendered copy is the mark, sized to the text like a capital letter, with the letters kept as hidden text for assistive technology and search.
-     Written as <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span>. The svg carries no viewBox; the symbol supplies its own. */
-  .gt-word { position: relative; display: inline-block; vertical-align: -0.033em; } /* the symbol's viewBox is the logo's drawn box; a round mark at Inter's cap height (0.727em) reads small, so it overshoots the cap height and the baseline by 0.033em a side: 0.793em square, its foot 0.033em under the baseline */
-  .gt-word svg { display: block; height: 0.793em; width: 0.793em; fill: currentColor; }
-  .gt-word .sr { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 
   /* layouts */
   .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }

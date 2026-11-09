@@ -1,9 +1,9 @@
 # Behavior
 
 Detail for the Behavior section of `gt-components`. The rest of the skill
-says which component to use; these rules say how GT product UI behaves once
+says which component to use; these rules say how General Translation product UI behaves once
 it is built. Kevin set them across the dashboard, onboarding, the landing and
-GT's tools between 2026-07-30 and 2026-10-03. Dashboard data, form and table
+General Translation's tools between 2026-07-30 and 2026-10-03. Dashboard data, form and table
 conventions stay in gt-cloud's `.agents/skills/gt-dashboard`.
 
 ## 1. Product honesty and recovery

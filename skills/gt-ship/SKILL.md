@@ -20,7 +20,7 @@ metadata:
 
 # Branches, PRs and landing
 
-Kevin Liu (GitHub `Kevin-Liu-01`) lands General Translation (GT) work
+Kevin Liu (GitHub `Kevin-Liu-01`) lands General Translation work
 through two repositories with different rules.
 github.com/generaltranslation/gt-cloud is the private monorepo of the
 product and the website; it squash-merges, requires three checks, is
@@ -105,8 +105,8 @@ carries the same files in its own `scripts/` folder.
 ## 2. Commits
 
 - **Identity.** Kevin's git default is his GitHub noreply address, and
-  Prototemplate and every other repository outside GT commit with it.
-  gt-cloud and GT's content repository set his General Translation work
+  Prototemplate and every other repository outside General Translation commit with it.
+  gt-cloud and General Translation's content repository set his General Translation work
   address in their own config, which covers every worktree. Never set the
   work address with `--global`. The content submodule inside gt-cloud
   (`apps/landing/content`) has its own config with neither his name nor
@@ -365,14 +365,14 @@ Commands, incidents and the deploy checks are in
   in a scratch worktree, chained with `&&` and unpiped, never in the shared
   tree whose `.next` the dev server owns.
 - **Commit** with explicit paths and a pathspec. `motion/` is never staged.
-- **Two Vercel projects build every push** (the GT team project behind
+- **Two Vercel projects build every push** (the General Translation team project behind
   www.prototemplate.com and Kevin's personal project). After pushing main,
   the longest `dpl_` id on www equals the team deployment of your commit.
 - **A failed build** is read with `readyStateReason` and retried with
   `vercel redeploy`, never with an empty commit.
 - **Never run `vercel --prod` on the team scope** unless Kevin says so.
 - **Which Vercel account.** "My Vercel bill" means Kevin's personal team.
-  The GT team is a shared company account: read it for an FYI and change
+  The General Translation team is a shared company account: read it for an FYI and change
   nothing there unless Kevin names it (2026-09-14).
 
 ## Review checklist

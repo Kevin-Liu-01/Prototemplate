@@ -1,8 +1,8 @@
 # Isometric drawings
 
-This file was a skill of its own (Isometric drawings) until 2026-10-10, when it merged into `gt-diagrams`; its sections keep their numbers, so "section 5" of the isometric family is section 5 here. It is the whole isometric family: read it before drawing, animating or reviewing any isometric figure for a GT page, slide, graphic or film.
+This file was a skill of its own (Isometric drawings) until 2026-10-10, when it merged into `gt-diagrams`; its sections keep their numbers, so "section 5" of the isometric family is section 5 here. It is the whole isometric family: read it before drawing, animating or reviewing any isometric figure for a General Translation page, slide, graphic or film.
 
-General Translation (GT) builds the full stack for localization: i18n libraries, context-aware translation APIs, a CDN that serves translations, and Locadex, an AI agent that internationalizes a code repository and opens a pull request with the changes (BRAND.md section 9). Kevin is Kevin Liu at GT; his verdicts on the drawings are quoted below with their dates. GT draws every three-dimensional figure in one isometric family: one 30 degree projection, one light direction, one corner radius and one plate material, so drawings on the landing, in the deck and in the films read as one set. The geometry lives in one kit, `iso.ts`, which every React figure imports; the films repeat the same map in their own HTML. The Locadex isometric is the reference standard: it was the one element of the first v0 build that Kevin approved (2026-08-04).
+General Translation builds the full stack for localization: i18n libraries, context-aware translation APIs, a CDN that serves translations, and Locadex, an AI agent that internationalizes a code repository and opens a pull request with the changes (BRAND.md section 9). Kevin is Kevin Liu at General Translation; his verdicts on the drawings are quoted below with their dates. General Translation draws every three-dimensional figure in one isometric family: one 30 degree projection, one light direction, one corner radius and one plate material, so drawings on the landing, in the deck and in the films read as one set. The geometry lives in one kit, `iso.ts`, which every React figure imports; the films repeat the same map in their own HTML. The Locadex isometric is the reference standard: it was the one element of the first v0 build that Kevin approved (2026-08-04).
 
 Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`, github.com/Kevin-Liu-01/Prototemplate, Kevin's design hub with the canon in DESIGN.md and BRAND.md) unless they name `$GT_CLOUD` (a checkout of github.com/generaltranslation/gt-cloud at origin/main, the monorepo whose `apps/landing` serves generaltranslation.com). Copyable code for every recipe below is in `isometric-recipes.md` beside this file.
 
@@ -49,7 +49,7 @@ A prism side face is visible when the outward normal of plan edge a to b, (by - 
 
 The components in `IsoSolid.tsx` build on the kit: `IsoSlab` (a box with three faces, silhouette, top contour and front edge; `tone` is ink, soft, hair, accent or none; `faces={false}` leaves a wireframe), `IsoPlane` (a flat card), `IsoWire` (a polyline through world points) and `IsoArrow` (a flat arrowhead pointing along +x). `IsoFrame.tsx` wraps them in the shared 240 by 180 viewBox (`ISO_VIEW_W`, `ISO_VIEW_H`), which fixes the relative scale of the family. Its `strokeWidth` (default 1.2) sets `--iso-sw`, `accent` switches the accent on or off, and `title` gives the drawing `role='img'`; without a title the drawing is `aria-hidden`.
 
-The same map can be reached from a flat drawing: rotate it 45 degrees, scale y by tan 30 (0.577) and scale the whole by the square root of 1.5. At full strength that matrix equals `project()` at z = 0, and the designing-docs film interpolates all three with one tilt dial (section 7). A hand-written `scale(1 0.5) rotate(45)` is the 2:1 dimetric squash. Its y to x ratio is 0.5 where the 30 degree face needs 0.577, so a mark placed that way lies flatter than the face under it. The deck's iso slide (`deck/slides/35-iso.html`) places its GT mark that way. Use `plane()`.
+The same map can be reached from a flat drawing: rotate it 45 degrees, scale y by tan 30 (0.577) and scale the whole by the square root of 1.5. At full strength that matrix equals `project()` at z = 0, and the designing-docs film interpolates all three with one tilt dial (section 7). A hand-written `scale(1 0.5) rotate(45)` is the 2:1 dimetric squash. Its y to x ratio is 0.5 where the 30 degree face needs 0.577, so a mark placed that way lies flatter than the face under it. The deck's iso slide (`deck/slides/35-iso.html`) places its General Translation mark that way. Use `plane()`.
 
 ## 2. Light and tone
 
@@ -141,7 +141,7 @@ Assets in `public/brand/` (Prototemplate and the gt-cloud landing carry the same
 
 - `locadex-mark.svg` for large seats. Its viewBox is 500 square and the drawn glyph spans 199 by 222 of it, so size the image box from the glyph: `markHalf = glyphWidth * (500 / 199) / 2`. The tower seats a 28-unit glyph in a 70-unit image box. The Locadex slab's image box is 32 units, so its glyph is about 13 units wide.
 - `no-bg-locadex-logo-light.png` for small seats (a 16-unit image box on the pricing platform). The SVG's ring geometry breaks at small sizes.
-- `no-bg-gt-globe-logo-light.png` or `gt-globe-logo.svg` for the GT logo. The mask reads alpha only, so the light or dark variant makes no difference.
+- `no-bg-gt-globe-logo-light.png` or `gt-globe-logo.svg` for the General Translation logo. The mask reads alpha only, so the light or dark variant makes no difference.
 - Third-party marks: render the icon component white inside the mask (the GitHub mark on the repository's front-left module is `SiGithub` at a half size of 4.6).
 
 Placement:
@@ -238,7 +238,7 @@ The toolchain stack (`src/app/d/toolchain/diagrams/tc-stack-iso.tsx`, route `/d/
 
 ## Related skills
 
-GT skills in this set: `gt-diagrams` (this file's skill: the doubled-line connector and flat diagrams), `gt-dither` (the Bayer language and its engines), `gt-motion` (GSAP and scroll rules), `gt-films` (the HyperFrames films), `gt-brand` (marks, color, the accent) and `gt-lints` (the line auditor). General skills in Kevin's wiki that this one depends on: `create-graphics`, `design-engineering-polish`, `hyperframes-animation`, `hyperframes-keyframes` and `gt-verify` (the browser checks).
+General Translation skills in this set: `gt-diagrams` (this file's skill: the doubled-line connector and flat diagrams), `gt-dither` (the Bayer language and its engines), `gt-motion` (GSAP and scroll rules), `gt-films` (the HyperFrames films), `gt-brand` (marks, color, the accent) and `gt-lints` (the line auditor). General skills in Kevin's wiki that this one depends on: `create-graphics`, `design-engineering-polish`, `hyperframes-animation`, `hyperframes-keyframes` and `gt-verify` (the browser checks).
 
 ## Sources
 

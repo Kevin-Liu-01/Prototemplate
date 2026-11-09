@@ -210,12 +210,12 @@ The Prototemplate shell tracks nothing positive, and its type lint fails any pos
 **Exceptions.** Each is named here so no sweep removes it:
 
 - The Prototemplate nameplate: Fraunces 600 for `proto` and Space Grotesk 500 for `template`, loaded by `src/lib/brand-fonts.ts` (DESIGN.md section 15).
-- The gallery's grotesk labels and mono numerals on `/` (DESIGN.md section 4). They belong to the Prototemplate chrome and appear on no GT surface.
+- The gallery's grotesk labels and mono numerals on `/` (DESIGN.md section 4). They belong to the Prototemplate chrome and appear on no General Translation surface.
 - The `/d/` direction routes, which are self-contained explorations with their own type.
 - The presenter (`/present`), whose intro lockup sets Sora and Instrument Sans (`src/app/present/fonts.ts`) and whose type beats show other faces beside Inter on purpose.
 - Specimens that show the weights 300 to 800: deck slide 27 and `.ptb-display` on `/brand`.
 - The speed marks' faces (Michroma, Orbitron, Anybody), which exist only as outlines inside the mark files.
-- The name in the logo lockup: Katagami Text at weight 500, letter-spacing 0, with its kerning, as outlines (Kevin, 2026-11-08). It is the GT lockup's one face; the GT word in running copy stays Inter.
+- The name in the logo lockup: Katagami Text at weight 500, letter-spacing 0, with its kerning, as outlines (Kevin, 2026-11-08). It is the lockup's one face; running copy, General Translation included, stays Inter.
 
 **Enforcement.**
 

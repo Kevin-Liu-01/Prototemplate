@@ -1,6 +1,6 @@
 # Handbook
 
-This handbook records how Kevin Liu runs his work at General Translation (GT), a localization platform for developers. It is written for the agents and people who work with him: Claude Code and Codex sessions, teammates, and anyone who copies this repository into another project to work the same way. The [skills](../../skills/README.md) hold the procedures for each area of the work. The handbook holds what spans them: the standing principles, the bar for done, the rules for running many sessions and agents at once, pull requests and review, the product facts, the vocabulary and the dated rulings.
+This handbook records how Kevin Liu runs his work at General Translation, a localization platform for developers. It is written for the agents and people who work with him: Claude Code and Codex sessions, teammates, and anyone who copies this repository into another project to work the same way. The [skills](../../skills/README.md) hold the procedures for each area of the work. The handbook holds what spans them: the standing principles, the bar for done, the rules for running many sessions and agents at once, pull requests and review, the product facts, the vocabulary and the dated rulings.
 
 The handbook is a section of the docs site, served at /docs/handbook on each of the site's three addresses (www.prototemplate.com, the canonical one, and the aliases prototemplate.vercel.app and prototemplate.kevinliu.studio). The files live in `docs/handbook/` of the public repository, and each page of the section includes its file, so the site always shows the file as it stands. The section opens with the [agent guide](../../AGENTS.md) and the operating principles. Its Process folder holds seven of the twelve documents below, its Reference folder holds the product map, the glossary, the numbers and the traps and fixes, and its Canon folder holds eight files from the repository's root and `docs/`: [BRAND.md](../../BRAND.md), [DESIGN.md](../../DESIGN.md), the [libraries](../LIBRARIES.md) with the build log, the [graphics pipeline](../GRAPHICS.md), the [artifact pictures](../ARTIFACT-PICTURES.md), [ARCHITECTURE.md](../../ARCHITECTURE.md), the [ship loop](../SHIP-LOOP.md) and the [tools](../TOOLS.md). Each page also answers as Markdown at its address plus `.md`. The rest of the docs site explains how the hub works.
 
@@ -8,7 +8,7 @@ The handbook is a section of the docs site, served at /docs/handbook on each of 
 
 | Document | What it holds | Read it |
 | --- | --- | --- |
-| [Operating principles](operating-principles.md) | The eighteen standing rules behind Kevin's corrections, each with how to apply it, the skill that holds its procedure and the dated directive it comes from | Before the first task of any GT work |
+| [Operating principles](operating-principles.md) | The eighteen standing rules behind Kevin's corrections, each with how to apply it, the skill that holds its procedure and the dated directive it comes from | Before the first task of any General Translation work |
 | [Quality bar](quality-bar.md) | The measurable bar for each kind of artifact and for done, each row with the skill that owns it | Before showing Kevin work or shipping it |
 | [Multi-session playbook](multi-session-playbook.md) | Lanes, forked sessions, one instruction sent to several sessions, shared checkouts, collisions, Claude and Codex on one main, relay notes and shared resources | When another session works on the same machine or repository |
 | [Decisions log](decisions.md) | Kevin's dated rulings, what each replaced, his words and the lint, gate or skill that holds it | Before changing a standard, and when two sources disagree |
@@ -16,10 +16,10 @@ The handbook is a section of the docs site, served at /docs/handbook on each of 
 | [Agent workflows](workflows.md) | Lane prompts that survive relayed messages, resuming a run, workflow shapes, refuters, kinds of check and paid model runs | Before launching subagents or a long autonomous run |
 | [Pull requests and CI](pull-requests.md) | CI signals that mislead, the review bots, pull request size and crops, parity for a redesigned flow, lints and ratchets, and git on shared trees | Before opening, updating or reporting a pull request |
 | [Reviewing with Kevin](review.md) | How his review words map to measures, one exemplar before a set, how a result reaches him, the ship states and the ask ledger | Before showing Kevin work and when reading his feedback |
-| [GT product and architecture map](gt-product-map.md) | What GT sells and to whom, how the products fit together, the copy that must be exact, the CLI and agent entry points, and the repositories | Before writing about, designing for or changing a GT product |
+| [General Translation product and architecture map](gt-product-map.md) | What General Translation sells and to whom, how the products fit together, the copy that must be exact, the CLI and agent entry points, and the repositories | Before writing about, designing for or changing a General Translation product |
 | [Glossary](glossary.md) | The terms in Kevin's messages, the skills and the code, each with where it lives | When a word in a request or a skill is unfamiliar |
 | [Numbers](numbers.md) | Every load-bearing number by area, each with its reason, its token or constant, the lint that holds it and the page that explains it | Before changing a size, a duration or a limit, and when a review names one |
-| [Traps and fixes](traps.md) | One line per trap met in GT work: the symptom, the fix in a few words and the section that explains the cause | When something breaks, and before a round of work in an area |
+| [Traps and fixes](traps.md) | One line per trap met in General Translation work: the symptom, the fix in a few words and the section that explains the cause | When something breaks, and before a round of work in an area |
 
 ## How the handbook relates to the skills
 

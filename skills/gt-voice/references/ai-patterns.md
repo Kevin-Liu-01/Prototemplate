@@ -2,9 +2,9 @@
 
 This catalog is the pattern list of the wiki humanizer
 (skills/personal/humanizer/SKILL.md, after blader/humanizer, Wikipedia's
-"Signs of AI writing" guide and hardikpandya/stop-slop), with the GT rules
+"Signs of AI writing" guide and hardikpandya/stop-slop), with the General Translation rules
 from Kevin's directives added. Each entry names the pattern, gives the
-tells, and shows the rewrite. Where an example uses a GT fact, the fact
+tells, and shows the rewrite. Where an example uses a General Translation fact, the fact
 comes from BRAND.md or the deck.
 
 ## Content
@@ -19,7 +19,7 @@ comes from BRAND.md or the deck.
    sentence adds no information. Delete it, or turn it into its own
    sentence with evidence.
 3. Promotional language. The tells are "groundbreaking", "vibrant",
-   "stunning", "breathtaking", "nestled" and "in the heart of", plus the GT
+   "stunning", "breathtaking", "nestled" and "in the heart of", plus the General Translation
    list: supercharge, cutting-edge, unlock, game-changing. State the
    mechanism and let the reader judge it.
 4. Vague attribution. "Experts argue" and "Industry reports suggest" name
@@ -40,8 +40,8 @@ comes from BRAND.md or the deck.
    that something is complex. Say what it is.
 9. Copula avoidance. "Serves as", "stands as", "boasts" and "features"
    replace a plain "is" or "has".
-   - Before: "Locadex serves as GT's AI agent."
-   - After: "Locadex is GT's AI agent product."
+   - Before: "Locadex serves as General Translation's AI agent."
+   - After: "Locadex is General Translation's AI agent product."
 10. Negative parallelism. "Not only X but also Y", "It's not X, it's Y" and
     "X isn't the goal. Y is." are hard cuts in both registers. Make the
     positive claim.
@@ -60,7 +60,7 @@ comes from BRAND.md or the deck.
 15. Filler. "In order to" becomes "to", "due to the fact that" becomes
     "because", and "it is important to note that" is cut.
 16. Hedging stacks. "It could potentially be argued that" becomes a claim
-    or nothing. GT copy hedges nothing (deck slide 12). In Kevin's own
+    or nothing. General Translation copy hedges nothing (deck slide 12). In Kevin's own
     writing "I think" marks an opinion and is never a hedge.
 
 ## Style
@@ -76,10 +76,10 @@ comes from BRAND.md or the deck.
     buttons.
 21. Emojis. None, unless Kevin asks for one.
 22. Hyphenation. The wiki humanizer drops hyphens from common compound
-    modifiers. GT copy keeps a hyphen in a compound modifier before a noun
+    modifiers. General Translation copy keeps a hyphen in a compound modifier before a noun
     ("open-source libraries", "sentence-case headings").
 23. Fragment rhythm. One-word sentences, strings of fragments and a noun
-    phrase with a comma tail are cut in GT copy and in Kevin's reflective
+    phrase with a comma tail are cut in General Translation copy and in Kevin's reflective
     writing (Kevin, 2026-09-08 and 2026-10-01). The wiki humanizer's
     stacked lines and fragments predate the 2026-09-08 directive, which
     covers everything Kevin will read or ship.
@@ -103,7 +103,7 @@ comes from BRAND.md or the deck.
 30. Interruptions. A comma-bounded aside between subject and verb, or before
     a colon, reads as AI to Kevin even when every word is plain (Kevin,
     2026-09-20). Write two sentences.
-31. Rhetorical questions. GT copy and film narration ask none (MOTION.md,
+31. Rhetorical questions. General Translation copy and film narration ask none (MOTION.md,
     Copy and Sound). The wiki humanizer's questions in series predate the
     2026-09-08 directive.
 
@@ -116,7 +116,7 @@ Score the rewrite before it goes to Kevin, from 1 to 10 on each axis.
 | Directness | Each sentence states its claim without setup, label or hedge. |
 | Rhythm | Sentence length follows the content, with no fragment cadence and no chopped prose. |
 | Trust | Every claim carries a number, a mechanism or an artifact, and every fact is checked. |
-| Authenticity | Only GT, or only Kevin, could have written it. |
+| Authenticity | Only General Translation, or only Kevin, could have written it. |
 | Density | No sentence can be cut without losing information. |
 
 Revise again when the total is under 35 of 50.

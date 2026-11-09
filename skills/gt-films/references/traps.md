@@ -37,7 +37,7 @@ The traps the films met while building, each with its fix. Sound traps are in `s
 ## Dither fields
 
 - **Thin lines vanish on a bright dithered ground at phone size.** The Slash globe's 1 px routes disappeared on the lit land at 640 x 360 (Kevin, 2026-10-09: "its a bit hard to see the lines"); v8 draws them 2.5 px with 2 px crosses over a 1 px keyline of the film's olive at 60 percent on each side. Check every thin line at 640 x 360.
-- **A coarse screen measured from a reference image is wrong.** The Slash film's first cut measured a 6 px screen from Kevin's guidance image; he asked for the 3 px screen every GT film uses (2026-10-08).
+- **A coarse screen measured from a reference image is wrong.** The Slash film's first cut measured a 6 px screen from Kevin's guidance image; he asked for the 3 px screen every General Translation film uses (2026-10-08).
 
 - **Distances on a cell grid run centre to centre.** A cell's nearest pixel can sit 3 px nearer than its centre, so a 40 px clearance on screen needs 44 px between centres.
 - **Lower the tone in a clearance ramp; never scale it.** Scaling and subtracting together compressed the taper to about 20 px and drew a hard edge on the zone; lowering alone keeps the taper as long as the ramp, so the cleared edge follows the smoke's own contour.

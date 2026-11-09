@@ -1,6 +1,6 @@
 # Traps and fixes
 
-Each row below is a failure met in General Translation (GT) work on Prototemplate, generaltranslation.com and the films between July and October 2026. A row gives the symptom a reader sees first, then the fix in a few words, and links the section that explains the cause, the proof and the date. When something breaks, find its symptom here; before a round of work in an area, read that area's rows. [Numbers](numbers.md) indexes the values the fixes depend on in the same way.
+Each row below is a failure met in General Translation work on Prototemplate, generaltranslation.com and the films between July and October 2026. A row gives the symptom a reader sees first, then the fix in a few words, and links the section that explains the cause, the proof and the date. When something breaks, find its symptom here; before a round of work in an area, read that area's rows. [Numbers](numbers.md) indexes the values the fixes depend on in the same way.
 
 The cause and the measurement live on the linked page, so a row changes when its section does. Paths are relative to the root of the Prototemplate repository.
 

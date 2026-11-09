@@ -16,7 +16,7 @@ sources:
   - DESIGN.md
 ---
 
-Prototemplate sets one face, the rsms InterVariable 4.1, self-hosted from `public/fonts/`. The one GT exception is the name in the logo lockup, Katagami Text 500 drawn as outlines, which no page loads as a font ([Marks](/docs/components/marks#when-to-use-it)). The roman file is 352,240 bytes with sha1 `f55b18fd`, and it has two axes: optical size (`opsz`, 14 to 32) and weight (`wght`, 100 to 900). Most of the work is keeping the browser from replacing that file or degrading it, and the browser reports none of these failures. The measurements below come from a type audit on 2026-10-05 (Chrome for Testing, dark theme, 1440 and 390 wide, read after `document.fonts.ready`) and from a probe of these docs on 2026-10-21. The [gt-brand](/skills/gt-brand) skill holds the rules, and `scripts/lint/type.mjs` enforces them.
+Prototemplate sets one face, the rsms InterVariable 4.1, self-hosted from `public/fonts/`. The one General Translation exception is the name in the logo lockup, Katagami Text 500 drawn as outlines, which no page loads as a font ([Marks](/docs/components/marks#when-to-use-it)). The roman file is 352,240 bytes with sha1 `f55b18fd`, and it has two axes: optical size (`opsz`, 14 to 32) and weight (`wght`, 100 to 900). Most of the work is keeping the browser from replacing that file or degrading it, and the browser reports none of these failures. The measurements below come from a type audit on 2026-10-05 (Chrome for Testing, dark theme, 1440 and 390 wide, read after `document.fonts.ready`) and from a probe of these docs on 2026-10-21. The [gt-brand](/skills/gt-brand) skill holds the rules, and `scripts/lint/type.mjs` enforces them.
 
 ## The binding
 
@@ -142,7 +142,7 @@ Seat each line of a heading by its first glyph's ink. A heading box is not where
 
 Seating only the first line of a two-line heading leaves the second wherever its first glyph's side bearing puts it. Set the heading at the leftmost line's position and step the other lines in.
 
-Chrome rounds the ascent and descent to whole pixels and floors the half-leading, so a heading's lift above its label steps with its size. On a GT blog page the descent of an h2 over 26.95px rounds from 6 to 7px, which happens from 1348px wide. There the heading sat 1.85px above its label instead of 1px. A 0.15px trim inside that media query measured 1.0px at 1360 and up. Fix a rounding step with a trim in the range where it occurs, and leave the cap ratio alone, because no single ratio fits a step function.
+Chrome rounds the ascent and descent to whole pixels and floors the half-leading, so a heading's lift above its label steps with its size. On a General Translation blog page the descent of an h2 over 26.95px rounds from 6 to 7px, which happens from 1348px wide. There the heading sat 1.85px above its label instead of 1px. A 0.15px trim inside that media query measured 1.0px at 1360 and up. Fix a rounding step with a trim in the range where it occurs, and leave the cap ratio alone, because no single ratio fits a step function.
 
 ## Canvas text
 

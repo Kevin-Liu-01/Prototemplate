@@ -17,7 +17,7 @@ metadata:
 ---
 
 # Landing page grammar
-General Translation's marketing pages (the home at generaltranslation.com, pricing, enterprise, careers, contact and the pages beside them) share one grammar: a ruled column with one rail, bands separated by hatch spacers, section heads with a heading and one lead, and one shared button. The code ships from `apps/landing` in gt-cloud, GT's monorepo. The prototypes and the design canon live in Prototemplate, Kevin's design lab and GT brand hub at prototemplate.com, which is the repository this skill is stored in. The rules come from Kevin's review rounds and from the engine CSS that implements them, and the rules a machine can check are held by a lint that the review checklist names.
+General Translation's marketing pages (the home at generaltranslation.com, pricing, enterprise, careers, contact and the pages beside them) share one grammar: a ruled column with one rail, bands separated by hatch spacers, section heads with a heading and one lead, and one shared button. The code ships from `apps/landing` in gt-cloud, General Translation's monorepo. The prototypes and the design canon live in Prototemplate, Kevin's design lab and General Translation brand hub at prototemplate.com, which is the repository this skill is stored in. The rules come from Kevin's review rounds and from the engine CSS that implements them, and the rules a machine can check are held by a lint that the review checklist names.
 
 Paths are relative to a gt-cloud checkout at origin/main (`$GT_CLOUD`) or a Prototemplate checkout (`$PROTOTEMPLATE`). Token values, CSS recipes and breakpoints are in [references/engine.md](references/engine.md). The component APIs (`Cta` props, `BentoRow` and `BentoCell` props, the full glyph vocabulary) are in gt-components; this skill holds how a page uses them.
 
@@ -164,7 +164,7 @@ The hero's field is the studio field (`createStudioField`, preset `bayer8`, one 
 - [ ] Reduced motion renders a complete still, and loops pause off screen.
 - [ ] Contrast passes AA in both themes.
 - [ ] Checked at 390, 768, 1024, 1440 and 1920 in light and dark.
-- [ ] gt-cloud: `pnpm lint` from the repository root passes (`scripts/check-email-identities.mjs`, which refuses GT email addresses written outside `packages/settings/src/email.ts`, then oxlint with the gt-ui plugin, then `oxfmt --check .`). Prototemplate: `pnpm lint:all` passes.
+- [ ] gt-cloud: `pnpm lint` from the repository root passes (`scripts/check-email-identities.mjs`, which refuses General Translation email addresses written outside `packages/settings/src/email.ts`, then oxlint with the gt-ui plugin, then `oxfmt --check .`). Prototemplate: `pnpm lint:all` passes.
 
 Related skills: in this set, gt-website (the app around the pages: routes, translation, deploys, the Tailwind traps), gt-voice (the copy), gt-aesthetic (the taste bar and polish), gt-lints (the gt-ui plugin and Prototemplate's lints), gt-components (the `Cta` and Bento APIs, the glyph vocabulary, shared UI), gt-motion (GSAP discipline and the moving type), gt-dither (studio and glyph fields), gt-diagrams (the doubled line, and the iso kit and seated marks in `references/isometric.md`), gt-ship (pull requests and screenshots). In this set, gt-verify (screenshots and the audit in a real browser). In the wiki: design-engineering-polish (the final pass), animated-component-libraries (sourcing a component before hand-building one). In gt-cloud: `.agents/skills/gt-landing`, `gt-ui`, `glyphfield`, `react-useeffect`.
 

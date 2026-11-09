@@ -22,11 +22,11 @@ metadata:
 
 # Lints and gates
 
-Kevin's design and copy rules at General Translation (GT) are enforced by
-lints in two repositories. gt-cloud (`generaltranslation/gt-cloud`) is GT's
+Kevin's design and copy rules at General Translation are enforced by
+lints in two repositories. gt-cloud (`generaltranslation/gt-cloud`) is General Translation's
 product monorepo: the dashboard, the landing site, the API and the shared
 UI in `packages/ui`. Prototemplate (`Kevin-Liu-01/Prototemplate`) is
-Kevin's Next.js hub for GT design work: the brand, the deck, the docs and
+Kevin's Next.js hub for General Translation design work: the brand, the deck, the docs and
 these skills.
 
 In Prototemplate the gates are Node scripts under `scripts/` and oxlint
@@ -110,7 +110,7 @@ and `.github/workflows/ci.yml` runs it as "Run lint and format check".
 - `--quiet` reports errors only, so a rule set to `warn` never fails CI
   (`gt-next/no-dynamic-jsx` on the dashboard, `no-explicit-any` outside the
   UI scope).
-- The email identity check `git grep`s TypeScript and JavaScript for a GT
+- The email identity check `git grep`s TypeScript and JavaScript for a General Translation
   sender address written into a `from`, `replyTo` or email-named
   assignment outside `packages/settings/src/email.ts`. Import the identity
   from that file.
@@ -279,7 +279,7 @@ finding there.
 
 ## Related skills
 
-GT skills beside it: `gt-ship` (the ship loop these gates serve, and the
+General Translation skills beside it: `gt-ship` (the ship loop these gates serve, and the
 scratch worktree build), `prototemplate` (the repository, its registries and
 the routes each gate walks), `gt-brand` (the type system the type lint
 holds), `gt-dither` (the picture standard the picture lint holds),

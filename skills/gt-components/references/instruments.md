@@ -1,6 +1,6 @@
 # The instruments library
 
-The signature visuals of the GT identity live as components and engines. Prototemplate is the registry: `$PROTOTEMPLATE/src/app/craft/libraries.ts` holds each entry's body, live plate and API snippet (rendered on `/craft`), and `$PROTOTEMPLATE/docs/LIBRARIES.md` is the index. The landing in gt-cloud carries the production copies. When a page needs one of these behaviors, mount the component; page code never re-implements one (ARCHITECTURE.md, "Componentized instruments").
+The signature visuals of the General Translation identity live as components and engines. Prototemplate is the registry: `$PROTOTEMPLATE/src/app/craft/libraries.ts` holds each entry's body, live plate and API snippet (rendered on `/craft`), and `$PROTOTEMPLATE/docs/LIBRARIES.md` is the index. The landing in gt-cloud carries the production copies. When a page needs one of these behaviors, mount the component; page code never re-implements one (ARCHITECTURE.md, "Componentized instruments").
 
 ## Where each one lives
 

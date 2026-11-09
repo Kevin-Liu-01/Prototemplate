@@ -22,7 +22,7 @@ metadata:
 
 # Working in Prototemplate
 
-General Translation (GT) is a localization platform for developers. Prototemplate is Kevin Liu's hub for his GT work and the wiki of how he does it: a Next.js 16 site kept at github.com/Kevin-Liu-01/Prototemplate and served at www.prototemplate.com. It serves the brand book, the design canon, the brand deck, the design lab, the marks, the films, the graphics and the curated GT skills as live pages. On 2026-10-05 Kevin said he should be able to "use it anywhere and build on top of it", so that it "acts as a wiki / repository of how i do work at GT".
+General Translation is a localization platform for developers. Prototemplate is Kevin Liu's hub for his General Translation work and the wiki of how he does it: a Next.js 16 site kept at github.com/Kevin-Liu-01/Prototemplate and served at www.prototemplate.com. It serves the brand book, the design canon, the brand deck, the design lab, the marks, the films, the graphics and the curated skills as live pages. On 2026-10-05 Kevin said he should be able to "use it anywhere and build on top of it", so that it "acts as a wiki / repository of how i do work at GT".
 
 Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`; `git clone https://github.com/Kevin-Liu-01/Prototemplate`, then `pnpm install`, `pnpm run doctor` and `pnpm dev`). `AGENTS.md` at the root is the agent entry point and `docs/handbook/` holds the working handbook. The references hold the detail: `references/hub.md` (every route and document, the repository map), `references/shell.md` (the shell's props and data shapes), `references/chrome.md` (the book page and the chrome rules), `references/registries.md`, `references/adding.md` (the checklists file by file), `references/porting.md`, `references/build-scripts.md`, `references/skills.md` (the skills contract) and `references/sources.md`. `pnpm lint:registries` reports the registries a change has missed.
 
@@ -35,9 +35,9 @@ The routes are `/` (the design lab), `/brand`, `/docs` and `/docs/<slug>` (the d
 
 ### Keeping the hub current
 
-Prototemplate is the living reference of GT work only while every deliverable reaches it.
+Prototemplate is the living reference of General Translation work only while every deliverable reaches it.
 
-1. **Same round.** Every GT design deliverable lands here in the round it is made: rules (as documents, deck slides or lints), graphics, covers, OpenGraph cards, contact sheets, posts, films (through the Videos session), logos, banners, promos, the page-check system, and the sign-in and onboarding system in the Shipped group. Kevin still reviews it on localhost first (section 9).
+1. **Same round.** Every design deliverable lands here in the round it is made: rules (as documents, deck slides or lints), graphics, covers, OpenGraph cards, contact sheets, posts, films (through the Videos session), logos, banners, promos, the page-check system, and the sign-in and onboarding system in the Shipped group. Kevin still reviews it on localhost first (section 9).
 2. **Grouped by item.** A collection page shows every version of one image (dark, light, cover, social card, sheet) in one place, in the same viewer layout as the other collections (2026-09-18).
 3. **The production mirror.** `/d/production` rebuilds each gt-cloud page one to one, renders it natively and never links out to generaltranslation.com. After gt-cloud PRs merge, diff main and port their fixes here (`references/porting.md`). Remove mirror pages Kevin calls wrong, and bring in the pages he built.
 4. **Both copies.** When an app exists in two copies (the one Kevin views and the one that ships), fix both and say which copies changed (2026-08-14).
@@ -137,7 +137,7 @@ Kevin reviews on http://localhost:3005 first. New explorations and redesign roun
 
 ## 10. The skills
 
-The curated GT skills live in `skills/<slug>/`, one canonical copy each, chosen by use (Kevin, 2026-10-05: "we only need to show and store the ones weve actually been using and updating ... dont just smash a bunch of thigns in there"). `skills/README.md`, written by `pnpm build:skills`, lists them by area. `references/skills.md` holds the full contract, the install and the other skill homes; `pnpm build:skills` checks it.
+The curated skills live in `skills/<slug>/`, one canonical copy each, chosen by use (Kevin, 2026-10-05: "we only need to show and store the ones weve actually been using and updating ... dont just smash a bunch of thigns in there"). `skills/README.md`, written by `pnpm build:skills`, lists them by area. `references/skills.md` holds the full contract, the install and the other skill homes; `pnpm build:skills` checks it.
 
 - **Frontmatter.** Agent Skills fields only: `name` (the folder's slug), `description` (what it covers, then "Use when", at most 1024 characters), and string `metadata`: `title` (the h1, no leading "The"), `areas` (from the fixed set; the first files it on /skills), `updated`, `origin: prototemplate` and `owner` (`P`, `V` or `O`, the session lane that keeps it and reviews every diff to it).
 - **Body.** An h1 equal to the title and two or three sentences, the sections, a Review checklist where the skill governs reviewable output, a Related skills line, and `## Sources` last as a short pointer to `references/sources.md`, where every added line cites its memory note, transcript or inventory row and its date. The body stays under 24,000 bytes: detail moves to `references/`, and trimming moves a rule and never deletes it. Every skill is written to gt-voice, holds no keys, email addresses, personal details, company numbers or machine paths, and names paths relative to a named checkout.
@@ -161,7 +161,7 @@ The curated GT skills live in `skills/<slug>/`, one canonical copy each, chosen 
 
 ## Related skills
 
-GT skills: `gt-components` (each shell component), `gt-aesthetic` (the taste behind the chrome), `gt-lints` (every gate), `gt-ship` (landing and deploys), `gt-deck` (the deck the shell came from), `gt-graphics`, `gt-dither`, `gt-motion` and `gt-films` (what /graphics and /motion show), and `gt-voice` (every word on the site and in the skills). Wiki skills: `agent-browser` (the visual check in both themes and at phone width).
+Skills in this set: `gt-components` (each shell component), `gt-aesthetic` (the taste behind the chrome), `gt-lints` (every gate), `gt-ship` (landing and deploys), `gt-deck` (the deck the shell came from), `gt-graphics`, `gt-dither`, `gt-motion` and `gt-films` (what /graphics and /motion show), and `gt-voice` (every word on the site and in the skills). Wiki skills: `agent-browser` (the visual check in both themes and at phone width).
 
 ## Sources
 

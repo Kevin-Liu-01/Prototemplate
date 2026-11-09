@@ -7,7 +7,7 @@ description: >-
   grid, the moving type law, loops created paused and played by scroll,
   reduced motion as a designed still, the engine lifecycle, scroll stories,
   and the traps in SVG dashes, GSAP and lottie-web. Use when animating
-  anything for GT (a landing band, a diagram line, a dashboard or sign-in
+  anything for General Translation (a landing band, a diagram line, a dashboard or sign-in
   transition, a Lottie figure, a scroll story or a film scene) and when
   reviewing motion someone else built.
 metadata:
@@ -19,9 +19,9 @@ metadata:
 ---
 
 # Motion rules
-General Translation (GT) makes localization tools for developers. Its
+General Translation makes localization tools for developers. Its
 product site, dashboard and blog live in the gt-cloud monorepo, and its
-design canon, brand deck, design lab and films live in Prototemplate. GT
+design canon, brand deck, design lab and films live in Prototemplate. General Translation
 motion explains structure. Things assemble, reveal, connect or translate,
 and nothing moves to fill time. These rules hold for the web
 (Prototemplate, the gt-cloud landing, dashboard and blog) and for the
@@ -411,7 +411,7 @@ read lines and the svh and dvh law). Wiki: `hyperframes`,
 `design-engineering-polish`,
 `animated-component-libraries`, plus `gsap-scrolltrigger` and
 `lottie-animations` for library API detail. Where a wiki skill suggests
-smooth scrolling, overshoot eases or loops that autoplay, the GT rules
+smooth scrolling, overshoot eases or loops that autoplay, the General Translation rules
 above win.
 
 ## Sources

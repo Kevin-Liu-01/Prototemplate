@@ -1,8 +1,8 @@
 # Operating principles
 
-General Translation (GT) is a localization platform for developers. Kevin Liu does design, website and product work at GT, and he runs it through several Claude Code and Codex sessions at once. The eighteen rules below come from his corrections to that work between 2026-07-20 and 2026-10-08. Read them before the first task of any GT work with him.
+General Translation is a localization platform for developers. Kevin Liu does design, website and product work at General Translation, and he runs it through several Claude Code and Codex sessions at once. The eighteen rules below come from his corrections to that work between 2026-07-20 and 2026-10-08. Read them before the first task of any General Translation work with him.
 
-Each rule names the skill or document that holds its procedure. Where the two disagree, the skill is right and this page needs a fix. The [glossary](glossary.md) defines working terms such as lane and feature flag. The [quality bar](quality-bar.md) sets the bar for each kind of artifact, and the [product map](gt-product-map.md) describes what GT sells and how its products fit together.
+Each rule names the skill or document that holds its procedure. Where the two disagree, the skill is right and this page needs a fix. The [glossary](glossary.md) defines working terms such as lane and feature flag. The [quality bar](quality-bar.md) sets the bar for each kind of artifact, and the [product map](gt-product-map.md) describes what General Translation sells and how its products fit together.
 
 ## 1. Keep going until everything is done
 
@@ -12,7 +12,7 @@ Kevin, 2026-09-09: "can we just do all of our updates? why are you holding back"
 
 ## 2. Do the work yourself and ask once for what only Kevin can do
 
-Do every step an agent can do, including console setup through a CLI (`vercel`, `gh`, `gcloud`) or the browser page Kevin already has open. Collect what only he can do (a login, a payment, a credential consent, an approval, a Linear issue id) into one numbered list with the exact file, line or URL for each item. A blanket approval covers the plan it answers. The safety lines still hold. Before a step that cannot be undone, such as a merge over recent work, check that nothing is lost. Wait for his word on a force push, a production deploy to GT's Vercel team, new spend, or landing an exploration round on Prototemplate main (`gt-ship` section 8).
+Do every step an agent can do, including console setup through a CLI (`vercel`, `gh`, `gcloud`) or the browser page Kevin already has open. Collect what only he can do (a login, a payment, a credential consent, an approval, a Linear issue id) into one numbered list with the exact file, line or URL for each item. A blanket approval covers the plan it answers. The safety lines still hold. Before a step that cannot be undone, such as a merge over recent work, check that nothing is lost. Wait for his word on a force push, a production deploy to General Translation's Vercel team, new spend, or landing an exploration round on Prototemplate main (`gt-ship` section 8).
 
 Kevin, 2026-10-05: "anything approved is approved from me." Also 2026-07-20 and 2026-10-02.
 
@@ -54,7 +54,7 @@ Kevin, 2026-10-05: "i cant listen to the voices, make it in html so i can go thr
 
 ## 9. Real content and real assets
 
-Copy and numbers come from production, the benchmark and data files, or GT's published pages. Never invent testimonials, quotes, metrics, prices or feature promises, and mark placeholder content as placeholder. Marks, logos, flags and scans are the real files, sourced and credited: third-party logos from thesvg.org (`gt-brand` section 5), pictures with their source, license and credit (`gt-dither` section 5), and the search for an asset continues until the real one is found (`gt-brand` section 8, Third-party material).
+Copy and numbers come from production, the benchmark and data files, or General Translation's published pages. Never invent testimonials, quotes, metrics, prices or feature promises, and mark placeholder content as placeholder. Marks, logos, flags and scans are the real files, sourced and credited: third-party logos from thesvg.org (`gt-brand` section 5), pictures with their source, license and credit (`gt-dither` section 5), and the search for an asset continues until the real one is found (`gt-brand` section 8, Third-party material).
 
 Kevin, 2026-08-05: "like these arent real quotes", about a testimonial block an agent had written.
 
@@ -114,7 +114,7 @@ Kevin, 2026-09-10: "be vendor agnostic, dont just ennforce claude code".
 
 Prototemplate is public at www.prototemplate.com and github.com/Kevin-Liu-01/Prototemplate. Nothing in it carries keys, account ids, email addresses, personal details, customer names that generaltranslation.com does not show, unannounced plans, or business numbers such as funding, revenue and headcount (`gt-brand` section 8, `gt-voice` "Facts and public surfaces"). Colleagues appear by role. `pnpm lint:public` scans every file for key shapes, machine paths and the terms on a private denylist, and the pre-push hook in `.githooks/` runs it.
 
-The rule dates from 2026-08-06 and 2026-08-11, and from 2026-10-05, when Kevin made Prototemplate his public hub for GT work.
+The rule dates from 2026-08-06 and 2026-08-11, and from 2026-10-05, when Kevin made Prototemplate his public hub for General Translation work.
 
 ## Where the procedures live
 

@@ -5,11 +5,11 @@ description: >-
   Prototemplate's graphics/ toolchain: product captures at 3 to 5x, labelled
   crops over glyphfield exports, the 26px text floor for the blog column,
   the audit and the render, contact sheets, stop-motion clips, webp
-  and GIF export, the hand-off to a post, the GT docs measured for drawing,
+  and GIF export, the hand-off to a post, the General Translation docs measured for drawing,
   still artwork such as the partnership globes, marketplace listing
   screenshots, world maps, and the review standard for each. Use when
   illustrating a blog post, a launch or a feature with real product crops,
-  when drawing the GT docs, or when making any still GT artwork or store
+  when drawing the General Translation docs, or when making any still General Translation artwork or store
   listing.
 metadata:
   title: Blog and brand graphics
@@ -20,7 +20,7 @@ metadata:
 ---
 
 # Blog and brand graphics
-General Translation's blog illustrations are HTML pages built in Prototemplate's `graphics/` toolchain: real crops of the product, labels and leader lines drawn once, and a glyphfield export as the ground, rendered headlessly and exported for the blog's article column. The toolchain made the set for "Designing docs for humans" in September 2026 (thirty-three article visuals plus eight covers and social cards), and every later post runs the same procedure. Prototemplate (github.com/Kevin-Liu-01/Prototemplate) is Kevin's design and documentation repository for General Translation (GT), and gt-cloud is GT's monorepo, whose `apps/landing` serves generaltranslation.com and its blog. Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name `$GT_CLOUD`.
+General Translation's blog illustrations are HTML pages built in Prototemplate's `graphics/` toolchain: real crops of the product, labels and leader lines drawn once, and a glyphfield export as the ground, rendered headlessly and exported for the blog's article column. The toolchain made the set for "Designing docs for humans" in September 2026 (thirty-three article visuals plus eight covers and social cards), and every later post runs the same procedure. Prototemplate (github.com/Kevin-Liu-01/Prototemplate) is Kevin's design and documentation repository for General Translation, and gt-cloud is General Translation's monorepo, whose `apps/landing` serves generaltranslation.com and its blog. Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name `$GT_CLOUD`.
 
 ## What a visual is
 
@@ -122,7 +122,7 @@ The primitives live in `gen-lib.js`, except the rows marked `gen-visuals.js`.
 
 The recorder keeps one or two frames per second at a device pixel ratio of 4, and `agent-browser record start` reloads the page. Interactions are therefore captured as stop-motion: pause the Web Animations, step `currentTime` between screenshots, and assemble the frames with ffmpeg at variable durations. Screenshots re-fire trusted pointer events on the last clicked element, so the capture blocks real pointer events in the region and drives hovers with synthetic events. `composite-videos.sh` reads the crop rectangle from the rendered visual, overlays the clip on the still, and writes a 30fps MP4 and a GIF at 1400 wide with a 256-colour diff palette, sierra dither and rectangle diffing. `graphics/build/capture-sidebar.sh` is the worked example. Read `references/stop-motion.md` before recording.
 
-## Drawing the GT docs
+## Drawing the General Translation docs
 
 A visual that shows the docs uses the docs' own measured system: `#09090b` ground, `#fafafa` text, `#a1a1aa` muted, `#0078FF` and `#60a5fa` blues, Inter and Geist Mono, radii from 4px on controls to 12px on panels, a 290px sidebar with 31px rows and a 746px content column from x 310. Icons follow the two tiers: Heroicons solid for anything that carries meaning and Lucide outline for controls. Flags are custom matte SVGs and never emoji. Read `references/docs-tokens.md` for the full table and the page rectangles, and re-measure when the docs change.
 
@@ -130,9 +130,9 @@ Blog visuals take the docs' colours because they depict the docs. Brand artwork 
 
 ## Still artwork
 
-`public/media/` keeps the finished GT artwork made with the system, the stills and the films, and `public/media/README.md` describes every file in a table; a new file gets its row there. `references/still-artwork.md` lists the partnership globes and the X banner, the settings of each globe, and the render path: sources in `motion/stills/` (untracked, owned by the Videos session, read-only from other lanes), sha256 pins on approved stills (`REPIN=1` to repin), copies into `public/media/` at their existing names, a lossless WebP beside each PNG (`cwebp -lossless -z 9 -exact -metadata none`), and a raw-pixel comparison of the PNG and the WebP before committing.
+`public/media/` keeps the finished General Translation artwork made with the system, the stills and the films, and `public/media/README.md` describes every file in a table; a new file gets its row there. `references/still-artwork.md` lists the partnership globes and the X banner, the settings of each globe, and the render path: sources in `motion/stills/` (untracked, owned by the Videos session, read-only from other lanes), sha256 pins on approved stills (`REPIN=1` to repin), copies into `public/media/` at their existing names, a lossless WebP beside each PNG (`cwebp -lossless -z 9 -exact -metadata none`), and a raw-pixel comparison of the PNG and the WebP before committing.
 
-- Kevin named the glyph globe his favourite and then asked that only the versions without the GT logo be shown (2026-10-02).
+- Kevin named the glyph globe his favourite and then asked that only the versions without the General Translation logo be shown (2026-10-02).
 - `/graphics` is the page for still artwork and `/motion` the page for films (Kevin, 2026-10-03).
 - Dithered photographs and scans of objects are artifact pictures, governed by gt-dither, and they carry no readable English text (Kevin, 2026-10-05).
 
@@ -147,7 +147,7 @@ A marketplace listing is a set of screenshots made with the same care as a blog 
 
 ### Maps
 
-A world map on a GT surface takes no position on borders and does not look forced about it. It is organized by language: it never names a country or territory, never draws a country outline and never shows per-country figures. A disputed area draws a neutral mix of the languages around it, and the sources line says the map shows where languages are written, not borders. Kevin, 2026-10-03: "avoid political sensitivity without making it look forced".
+A world map on a General Translation surface takes no position on borders and does not look forced about it. It is organized by language: it never names a country or territory, never draws a country outline and never shows per-country figures. A disputed area draws a neutral mix of the languages around it, and the sources line says the map shows where languages are written, not borders. Kevin, 2026-10-03: "avoid political sensitivity without making it look forced".
 
 ## The hand-off to a post
 

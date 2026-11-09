@@ -1,12 +1,12 @@
 # Multi-session playbook
 
-Kevin Liu runs many agent sessions on one machine at the same time for his General Translation (GT) work: named Claude Code sessions, Codex sessions, and forks of both. Codex is OpenAI's coding agent, and Kevin runs it beside Claude Code. Inside Claude Code, the ListAgents tool lists the other Claude sessions on the machine by name, and the SendMessage tool delivers a message to one of them. This page holds the practices that let every session add to the others' work and undo none of it.
+Kevin Liu runs many agent sessions on one machine at the same time for his General Translation work: named Claude Code sessions, Codex sessions, and forks of both. Codex is OpenAI's coding agent, and Kevin runs it beside Claude Code. Inside Claude Code, the ListAgents tool lists the other Claude sessions on the machine by name, and the SendMessage tool delivers a message to one of them. This page holds the practices that let every session add to the others' work and undo none of it.
 
 The single rules live in skills, and this page points to them. [`gt-ship`](../../skills/gt-ship/SKILL.md) sections 1, 2 and 8 hold lanes, worktrees, staging and the shared Prototemplate checkout. [`gt-orchestration`](../../skills/gt-orchestration/SKILL.md) holds a session's own subagents, resumption (section 6) and handoffs at a hard stop (section 8). The [`prototemplate`](../../skills/prototemplate/SKILL.md) skill section 8 holds the lane map of the shared Prototemplate tree. The [glossary](glossary.md) defines lane, session, forked session, handoff and relay note. When a skill and this page disagree, the skill wins.
 
 ## 1. Lanes
 
-One session owns one lane. ListAgents prints the live list of sessions, and the table lists the GT lanes as of 2026-10-05. The lane changes after that day are dated in `gt-orchestration`'s `references/session-lanes.md`.
+One session owns one lane. ListAgents prints the live list of sessions, and the table lists the General Translation lanes as of 2026-10-05. The lane changes after that day are dated in `gt-orchestration`'s `references/session-lanes.md`.
 
 | Session | Owns | Where it works |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ One session owns one lane. ListAgents prints the live list of sessions, and the 
 | Lottie | The blog's Lottie translation figure | Its own gt-cloud worktree and dev port |
 | docs redesign | The docs site on generaltranslation.com | Its own gt-cloud worktrees |
 
-Kevin's personal projects run in sessions and repositories of their own. They share the machine with the GT lanes (section 10) and nothing else.
+Kevin's personal projects run in sessions and repositories of their own. They share the machine with the General Translation lanes (section 10) and nothing else.
 
 - Work that belongs to another lane goes to that session. Find it with ListAgents and send the request with SendMessage, with Kevin's words for the request and the paths involved. Address the session by its name, because the bracketed id after the name changes when the session restarts.
 - Codex sessions do not appear in ListAgents. Reach them through a relay note that Kevin pastes (section 7).
@@ -84,7 +84,7 @@ Kevin, 2026-07-30: "let codex do its own thing, but branch off again".
   4. Run the gates on the integrated commit. A green run on the branch before the merge says nothing about the merge.
   5. Push without force. If the push is rejected, fetch, integrate and run the gates again.
 
-  In GT's repositories, gt-cloud main takes only squash merges through PRs with three required checks (`gt-ship` section 5), and Prototemplate's gates and deploy checks are in `gt-ship` section 8.
+  In General Translation's repositories, gt-cloud main takes only squash merges through PRs with three required checks (`gt-ship` section 5), and Prototemplate's gates and deploy checks are in `gt-ship` section 8.
 - Before a deploy that follows a stretch of both agents pushing, audit the last week of main for work one agent undid. Kevin, 2026-09-22: "MAKE SURE ALL CHANGES WITHIN LAST WEEK ARE PROPERLY SYNCED".
   - In a fresh worktree from `origin/main`, list the week: `git log origin/main --since='7 days ago' --format='%h %ad %s'`, `git worktree list` and `git branch -r`.
   - Check every branch that looks unmerged for patch equivalence with `git cherry -v origin/main <branch>` and `git range-diff`. A squash or a rebase changes commit ids and keeps the work.

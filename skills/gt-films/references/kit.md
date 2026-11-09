@@ -36,7 +36,7 @@ This file is the detail behind sections 6 and 9 of `../SKILL.md`. Paths that sta
 
 - **Gem smoke.** Draw a frame with `gem.at(seconds)` inside `onUpdate`. Change uniforms per frame with `mount.setUniformValues` (cached and synchronous); `gem.set()` loads its image asynchronously, so never call it per frame. Keep at most two full-frame mounts live at once. Use `pixelRatio: 0.5` for a mount that is only read or dithered. Keep the outer glow at 0 under a dither field, and clip glass 1 px outside its limb when hard cells sit beside it.
 - **Dither.** One cell size per film, anchored at (0, 0), never resized inside a transition: 3 px since 2026-10-08. A dithered field changes state only by mixing tone on one grid with one smoothstep, so cells switch in Bayer order. Alpha fades, wipes and moving masks are refused on dithered fields. A field enters by raising its tone from 0 and leaves by lowering it to 0.
-- **End card.** 4.0 s from a hard cut on the beat: the GT logo in the film's gem smoke (`references/look.md`), the post's title in two lines at 120 px (no less than 100 px for a long line) and the link at 40 px, every margin 160 px. Set the root's `data-duration` to `start + 4`, end the film's clips at `start`, add the card after the film's own tweens and register the timeline after it. The card is silent; the bed resolves under it. `hyperframes check` reports two expected `text_occluded` infos at `start + 0.33`. The card's last frame is the blog films' poster.
+- **End card.** 4.0 s from a hard cut on the beat: the General Translation logo in the film's gem smoke (`references/look.md`), the post's title in two lines at 120 px (no less than 100 px for a long line) and the link at 40 px, every margin 160 px. Set the root's `data-duration` to `start + 4`, end the film's clips at `start`, add the card after the film's own tweens and register the timeline after it. The card is silent; the bed resolves under it. `hyperframes check` reports two expected `text_occluded` infos at `start + 0.33`. The card's last frame is the blog films' poster.
 
 ## The media the kit loads
 
@@ -44,7 +44,7 @@ These stay in the local `motion/` folder; `vendor.mjs` writes the twins and `pic
 
 | path | what it is |
 | --- | --- |
-| `kit/marks/`, `kit/brand/` | the speed marks (bar monogram, lockup, dithered, ASCII, plate inverted, double cut, livery stack, two-way, globe G), explorations shown on /marks and never the logo, and `kit/brand/gt-mark.svg`, the GT mark every film's end card draws (tracked). It still holds the doubled-line monogram, the previous mark, until the kit takes the logo from `public/brand/gt-globe-logo.svg` (`references/look.md`) |
+| `kit/marks/`, `kit/brand/` | the speed marks (bar monogram, lockup, dithered, ASCII, plate inverted, double cut, livery stack, two-way, globe G), explorations shown on /marks and never the logo, and `kit/brand/gt-mark.svg`, the General Translation mark every film's end card draws (tracked). It still holds the doubled-line monogram, the previous mark, until the kit takes the logo from `public/brand/gt-globe-logo.svg` (`references/look.md`) |
 | `kit/logos/`, `kit/logos/adopters/` | Fumadocs, MDX, Next.js, React, TanStack and Mintlify marks; the marks and GitHub avatars of Fumadocs' adopters |
 | `kit/fonts/` | InterVariable and its italic |
 | `kit/gem-shapes/*.png` | processed shapes for gem smoke glass (`gt-bar-monogram`, `gt-mark`, `fumadocs-moon`), written by `make.mjs` |

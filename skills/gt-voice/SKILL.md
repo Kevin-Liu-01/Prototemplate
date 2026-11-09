@@ -19,9 +19,9 @@ metadata:
 
 # Voice and the humanizer
 
-General Translation (GT) builds localization tools for developers: the
+General Translation builds localization tools for developers: the
 open-source `gt` libraries and a translation platform. Kevin Liu works at
-GT, and the rules below come from his reviews of GT writing. GT copy has the
+General Translation, and the rules below come from his reviews of General Translation writing. General Translation copy has the
 register of a technical specification: complete declarative sentences,
 concrete nouns, and a number or a mechanism where marketing would put an
 adjective. Kevin's own posts and reviews use the same plain words in the
@@ -37,10 +37,10 @@ viewer's counter counts position, so it can show a lower number.
 
 | Register | Where it applies | Shape |
 | --- | --- | --- |
-| GT copy | The site, the docs, the blog, decks, captions, film titles and narration, README and CLI text, UI strings, GT's posts on X, LinkedIn, GitHub and Discord, Slack summaries | Sentence case, complete declarative sentences with one claim each, no hedging, no first-person reactions |
+| General Translation copy | The site, the docs, the blog, decks, captions, film titles and narration, README and CLI text, UI strings, General Translation's posts on X, LinkedIn, GitHub and Discord, Slack summaries | Sentence case, complete declarative sentences with one claim each, no hedging, no first-person reactions |
 | Kevin's own writing | His personal posts, peer reviews, notes, and the PR titles and bodies he opens | First person, his own phrasings kept, real reactions welcome, lowercase on posts and PRs |
 
-- GT copy follows the five rules of the deck's Writing style slide (slide
+- General Translation copy follows the five rules of the deck's Writing style slide (slide
   12). Sentences are short and declarative, and each carries one claim. A
   number or a mechanism stands where a marketing adjective would. Nothing
   is hedged, so a claim is made or it is left out. Exclamation marks and em
@@ -57,7 +57,7 @@ viewer's counter counts position, so it can show a lower number.
   their case.
 - Both registers make no claim without a number, a mechanism or an
   artifact, and both avoid founder cliches such as "thrilled to announce".
-  A post passes three checks before it goes out: only GT could have written
+  A post passes three checks before it goes out: only General Translation could have written
   it, it cites concrete evidence, and it supports the reputation for quality
   (deck slide 63).
 - Third-person bios, intros and spoken answers about Kevin belong to the
@@ -96,7 +96,7 @@ These hold in both registers unless a rule names one.
    libraries and a closed platform, built together.") all read as AI to
    Kevin (2026-09-08).
 5. No exclamation marks.
-6. No rhetorical questions in GT copy, film narration included (MOTION.md,
+6. No rhetorical questions in General Translation copy, film narration included (MOTION.md,
    Copy and Sound).
 7. No signposts or content labels. "Three facts matter.", "The facts that
    matter are that", "The simplest answer comes from", "Here's what you need
@@ -166,8 +166,11 @@ These hold in both registers unless a rule names one.
   starts a sentence or a heading, so another word goes first ("The `gt`
   library", "Run `npx gt translate`").
 - The naming system is fixed (BRAND.md section 1). General Translation is
-  the company. GT is the short form and the mark. `gt` is the open-source
-  library, and Locadex is the AI agent product.
+  the company, and running text writes it out in full in every sentence,
+  "General Translation's" included. A sentence never uses the letters GT
+  as the name and never sets the logo inline in its place (Kevin,
+  2026-11-08). `gt` is the open-source library, and Locadex is the AI
+  agent product.
 - A heading is a name. A domain belongs in the body, so the heading reads
   Prototemplate and the body gives prototemplate.com (deck/DECK-GRAMMAR.md,
   Type).
@@ -178,7 +181,7 @@ These hold in both registers unless a rule names one.
 ## Writing for strangers
 
 Public writing (blog posts, docs, launch copy) is for a developer who has
-never heard of Kevin or GT. Kevin wants it "so much more straightforward and
+never heard of Kevin or General Translation. Kevin wants it "so much more straightforward and
 clear to a user who has no idea who I am" (2026-09-10).
 
 - Define the product and the site once, in plain words.
@@ -211,8 +214,8 @@ clear to a user who has no idea who I am" (2026-09-10).
   BRAND.md states it (MOTION.md, The facts the films may state).
 - The tagline "Every product in every language" is the company's own line
   (BRAND.md section 2) and is quoted as written.
-- Enterprise copy never implies GT is better than the customer's team. It
-  says GT adapts to their stack, workflows and review process, used by
+- Enterprise copy never implies General Translation is better than the customer's team. It
+  says General Translation adapts to their stack, workflows and review process, used by
   their own team or alongside forward-deployed engineers (the CEO, relayed
   by Kevin, 2026-08-15).
 - A docs get-started caption opens with the action the reader takes ("Use",
@@ -253,7 +256,7 @@ above apply to everything Kevin will read or ship.
   site copy, PR text and Slack summaries.
 - The humanizer favors short sentences. In Kevin's reflective writing his
   longer sentences stay (2026-10-01).
-- The humanizer drops hyphens from common compound modifiers. GT copy keeps
+- The humanizer drops hyphens from common compound modifiers. General Translation copy keeps
   the hyphen in a compound modifier before a noun, as in "open-source
   libraries" (deck slide 07) and "sentence-case headings" (deck slide 63).
 
@@ -327,12 +330,14 @@ and the PR size audit. The prose rules are these.
 - [ ] No subject runs past about six words before its verb, and no aside
       sits between subject and verb or before a colon.
 - [ ] No signpost, content label, eyebrow or exclamation mark appears, and
-      GT copy has no rhetorical question.
+      General Translation copy has no rhetorical question.
 - [ ] Headings are in sentence case, titles are plain nouns, no heading ends
       in a period, and no display heading runs past two lines. Title Case
       appears only on buttons.
 - [ ] Product tokens are exact and never open a sentence, and a domain sits
       in the body.
+- [ ] The company is General Translation in every sentence: no letters GT
+      as the name and no logo inline.
 - [ ] Each claim carries a number, a mechanism or an artifact, and the copy
       test passes.
 - [ ] Every fact, title, name and date matches its source, and nothing

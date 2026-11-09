@@ -8,7 +8,7 @@ description: >-
   environment (set up through gt-cloud's README and gt-dashboard skill),
   real providers only with his approval, a CLI login he can try without
   touching his credentials, and keeping servers current and few. Use when starting, restarting or debugging a local server for
-  GT work, when Kevin asks to see or try something locally, or when
+  General Translation work, when Kevin asks to see or try something locally, or when
   setting up a new machine or worktree.
 metadata:
   title: Review servers and local environments
@@ -20,9 +20,9 @@ metadata:
 
 # Review servers and local environments
 
-Kevin reviews General Translation (GT) work in a running app. This skill records how those apps run on his machine: which server serves what, how to find out why a change does not show, how to run the dashboard with a signed-in session and no live integrations, and how to let him try a build himself without touching his accounts.
+Kevin reviews General Translation work in a running app. This skill records how those apps run on his machine: which server serves what, how to find out why a change does not show, how to run the dashboard with a signed-in session and no live integrations, and how to let him try a build himself without touching his accounts.
 
-Most of these apps live in gt-cloud, GT's private product monorepo on turbo and pnpm. It holds the dashboard (dash.generaltranslation.com), the landing site with the docs and blog (generaltranslation.com), the API, Locadex, the admin app and the shared packages. Prototemplate is Kevin's public hub for GT's design canon, and `generaltranslation/gt` holds the open-source libraries and the `gt` CLI.
+Most of these apps live in gt-cloud, General Translation's private product monorepo on turbo and pnpm. It holds the dashboard (dash.generaltranslation.com), the landing site with the docs and blog (generaltranslation.com), the API, Locadex, the admin app and the shared packages. Prototemplate is Kevin's public hub for General Translation's design canon, and `generaltranslation/gt` holds the open-source libraries and the `gt` CLI.
 
 `$GT_CLOUD` is a gt-cloud checkout (`~/gt/gt-cloud` on Kevin's machine), `$PROTOTEMPLATE` a Prototemplate checkout (`~/repos/Prototemplate`), `$GT` a checkout of the public `generaltranslation/gt` repository (`~/gt/gt`) and `<scratch>` the session's scratchpad. The landing's worktree steps, build traps and caches belong to gt-website section 2, worktree creation and removal to gt-ship section 1, and page captures to gt-aesthetic. gt-cloud's `README.md`, `dev-infra/README.md` and setup scripts own their tools, and this skill points to them.
 

@@ -2,13 +2,13 @@
 
 Detail for sections 1 and 2 of `gt-explorations`. Trigger: every exploration round, written before the first direction is built and given to every builder and reviewer of the round.
 
-A charter is the binding contract of one round. It states what every direction keeps, what every direction must contain, where the round's new idea may live, the copy rules, the technical limits for builders, and the checklist a reviewer runs by reading code. On 2026-09-14 Kevin rejected a deco round as not keeping GT's design elements, not thought through, and incomplete (a hero and a few strips). The next three rounds ran from a charter, and seven of their directions landed on Prototemplate main (b6a7eba, 2026-09-15). The charter file itself lived in a scratchpad and was lost at a reboot; it was rebuilt from its transcript on 2026-10-10 with `gt-orchestration/scripts/replay-edits.py`. Write the next one into the round's notes folder or the repository.
+A charter is the binding contract of one round. It states what every direction keeps, what every direction must contain, where the round's new idea may live, the copy rules, the technical limits for builders, and the checklist a reviewer runs by reading code. On 2026-09-14 Kevin rejected a deco round as not keeping General Translation's design elements, not thought through, and incomplete (a hero and a few strips). The next three rounds ran from a charter, and seven of their directions landed on Prototemplate main (b6a7eba, 2026-09-15). The charter file itself lived in a scratchpad and was lost at a reboot; it was rebuilt from its transcript on 2026-10-10 with `gt-orchestration/scripts/replay-edits.py`. Write the next one into the round's notes folder or the repository.
 
 Every rule in a charter names the file that governs it. Sources of authority come first, in order: `BRAND.md`, `DESIGN.md`, `ARCHITECTURE.md` (the SSOT rule), `docs/SHIP-LOOP.md`, the direction the round copies as its base, `src/app/d/production/` (the shipped element set and copy) and `src/app/d/toolchain/` (the shared vocabulary and diagrams).
 
 ## A. The elements that persist
 
-One entry per GT element that every direction keeps. A direction that drops one is incomplete. Each entry has three parts:
+One entry per General Translation element that every direction keeps. A direction that drops one is incomplete. Each entry has three parts:
 
 - **What it is**, in one or two sentences.
 - **Files**: the file to reuse or copy, with line ranges, and the canonical source when the copy differs.
@@ -31,9 +31,9 @@ The deco charter listed seventeen: the ruled column and its seams; the Bayer dit
 
 ## C. Where the round's idea lives
 
-The round's idea is a documented layer on top of the GT system.
+The round's idea is a documented layer on top of the General Translation system.
 
-1. **Homes.** The places the new idea may appear, and nowhere else. The deco round allowed five: section heads, dividers (the hatch band and section rules), frames (mounts, framed cells, code bars), the hero crown above the h1, and the dark band. Grids, cells, chips, demos, diagrams, code, tables, plan cards, footer columns and all copy stay GT.
+1. **Homes.** The places the new idea may appear, and nowhere else. The deco round allowed five: section heads, dividers (the hatch band and section rules), frames (mounts, framed cells, code bars), the hero crown above the h1, and the dark band. Grids, cells, chips, demos, diagrams, code, tables, plan cards, footer columns and all copy stay General Translation.
 2. **Color.** What may move and the limits: ink on ground holds WCAG AA at 14px, hairlines stay visible on every surface in both themes, one accent spent as a controlled edge, one ornament color used only in the homes, dark mode as a remap of the same tokens, and no tonal gradients outside dither tiers (no iridescence, glass, drop shadows or glow). The sanctioned CSS devices that draw lines or clip are listed by file and line.
 3. **The token block.** The first rule of the direction's stylesheet: a comment that states the thesis, the reference, the homes used, the accent's one job and the display face, then a fixed set of round tokens (the deco round used six `--deco-*` names, so a reviewer can grep them across the round) mapped onto the shared `--tc-*` tokens, and the dark remap of the same names.
 4. **Display type.** At most one display face, in named slots only (h1, h2 and one crown element); everything else stays Inter; CJK, RTL and Indic samples fall back to a face that has the script; no eyebrows.
@@ -65,6 +65,6 @@ Kevin asked for these three rules on 2026-10-28. They hold for every round after
 
 1. **The last round's decision, quoted.** The charter opens with the previous round's decision and the feedback that led to it, quoted word for word with the date and the numbers Kevin used. The round's first page or sheet shows the same quotes to the reviewer before any option. Every direction or option names the note it answers, and a note that no option answers is listed as open in the round's report.
 2. **The feedback as one document.** The notes on a round are one numbered document, written once, after the whole round has been seen. Each note says what must change and why, and is marked essential or preference. Kevin's notes arrive as messages and the team's comments arrive on the work, so the agent compiles both into that list in the ask ledger (`gt-reporting` section 3) before the next round starts.
-3. **A tension and a focus for each direction.** Each direction names the tension in the brand it answers and its focus in one word. A tension is a pair of GT's values or registers that pull apart (`gt-brand` section 2): engineering-first against cosmopolitan, infrastructure-grade against hand-crafted, the community register against the enterprise register. A direction with no tension or no focus is not shown.
+3. **A tension and a focus for each direction.** Each direction names the tension in the brand it answers and its focus in one word. A tension is a pair of General Translation's values or registers that pull apart (`gt-brand` section 2): engineering-first against cosmopolitan, infrastructure-grade against hand-crafted, the community register against the enterprise register. A direction with no tension or no focus is not shown.
 
 Part F's reviewer also checks part G by reading the round's notes: the quotes are present and dated, each direction carries its tension and focus, and each option names the note it answers.

@@ -7,7 +7,7 @@ description: >-
   narration and music, the mix targets, renders and their records, the
   critic, which motion/ sources the public repository tracks, and how a film
   reaches /motion; and the short media around a launch. Use when planning,
-  scripting, building, critiquing or rendering a GT film, trailer, sting,
+  scripting, building, critiquing or rendering a film, trailer, sting,
   showreel, promo or demo GIF, when tracking or publishing a film's sources,
   or when reviewing one against Kevin's standard.
 metadata:
@@ -19,7 +19,7 @@ metadata:
 ---
 
 # Making a film
-General Translation (GT) makes its blog films, announcement films and translation-history films as HyperFrames compositions: HTML pages with one paused GSAP timeline that the HyperFrames CLI seeks and renders frame by frame to MP4. They are built in `$PROTOTEMPLATE/motion/`, one project per film, from one shared kit and one brief, `motion/MOTION.md`. This skill states Kevin's rules, each step of a film, and the checks a film passes before it reaches /motion.
+General Translation makes its blog, announcement and translation-history films as HyperFrames compositions: HTML pages with one paused GSAP timeline that the HyperFrames CLI seeks and renders frame by frame to MP4. They are built in `$PROTOTEMPLATE/motion/`, one project per film, from one shared kit and one brief, `motion/MOTION.md`. This skill states Kevin's rules, each step of a film, and the checks a film passes before it reaches /motion.
 
 Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`), and paths that start with `films/`, `kit/` or `out/` sit inside `motion/`. `references/` is this skill's folder of detail files; `scripts/` holds two critic tools that need only Node and ffmpeg (`node <this skill's folder>/scripts/<name>.mjs`).
 
@@ -37,7 +37,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`), and paths tha
 These hold for every film (Kevin's notes, 2026-10-01 to 2026-10-10). A film's own SCRIPT, CONCEPT and NOTES files may add to them, never loosen them.
 
 - **Plain technical English** in narration and on screen: complete declarative sentences, concrete nouns and numbers. No metaphors, no "X, not Y" or other negative parallelism, no strings of fragments, no one-word sentences, no hype words, no exclamation marks, no rhetorical questions, no em dashes.
-- **Humble and not cheesy** (Kevin's words, 2026-10-07): state what happened and what is true and let the facts carry the weight. GT helps, offers, built, uses. No superlatives, no "imagine", "meet" or "introducing", no slogans, puns or cliffhangers, no reveals announced as reveals. Other people and companies get the credit; GT is not the hero. The film ends quietly on something true and specific.
+- **Humble and not cheesy** (Kevin's words, 2026-10-07): state what happened and what is true and let the facts carry the weight. General Translation helps, offers, built, uses. No superlatives, no "imagine", "meet" or "introducing", no slogans, puns or cliffhangers, no reveals announced as reveals. Other people and companies get the credit; General Translation is not the hero. The film ends quietly on something true and specific.
 - **The narration tells its own story** (2026-10-06). A quote is at most a garnish: one short quote in a film, or none. A how-to or answer film tells a story too: a product moment, its stakes, the change and the payoff. Reciting an article's points as headings over code panels is rejected, even when every fact is right (2026-10-10).
 - **The stakes land in the first 6 to 8 s**: what this is and why it matters. Kevin rejected opening on a personal fact (2026-10-06).
 - **Headings**: 4 to 6 in a film, none where the picture already says it. Each is a header, not an excerpt (2026-10-16): a 2 to 6 word title that arrives whole (`references/look.md`).
@@ -187,7 +187,7 @@ Promos, product demo videos, README and launch GIFs, launch captures and vendor 
 
 ## Related skills
 
-Kevin's wiki: `hyperframes` (the entry point), `hyperframes-core`, `hyperframes-animation`, `hyperframes-keyframes`, `hyperframes-cli`, `hyperframes-audio`, `elevenlabs-sfx` (its config path). GT skills: `gt-motion`, `gt-voice`, `gt-dither`, `gt-brand`, `gt-diagrams`, `gt-graphics` (the partnership globes), `prototemplate` (the /motion page).
+Kevin's wiki: `hyperframes` (the entry point), `hyperframes-core`, `hyperframes-animation`, `hyperframes-keyframes`, `hyperframes-cli`, `hyperframes-audio`, `elevenlabs-sfx` (its config path). Skills in this set: `gt-motion`, `gt-voice`, `gt-dither`, `gt-brand`, `gt-diagrams`, `gt-graphics` (the partnership globes), `prototemplate` (the /motion page).
 
 ## Sources
 

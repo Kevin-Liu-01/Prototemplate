@@ -21,9 +21,9 @@ metadata:
 
 # Exploration rounds and convergence
 
-General Translation (GT) builds localization tools for developers, and Kevin Liu does its design, website and product work. He designs in rounds. He asks for several directions, compares them live, picks by number, and asks for variants of the pick until one design lands. A direction is one complete design of a page or a site, built as its own running route. This skill holds the mechanics of a round, from the research before it to the cleanup after it, and `gt-aesthetic` holds the taste each round is judged by.
+General Translation builds localization tools for developers, and Kevin Liu does its design, site and product work. He designs in rounds. He asks for several directions, compares them live, picks by number, and asks for variants of the pick until one design lands. A direction is one complete design of a page or a site, built as its own running route. This skill holds the mechanics of a round, from the research before it to the cleanup after it, and `gt-aesthetic` holds the taste each round is judged by.
 
-Paths are relative to a checkout. `$PROTOTEMPLATE` is Prototemplate, Kevin's design lab and the public hub at prototemplate.com, where the site directions live. `$GT_CLOUD` is gt-cloud, the monorepo of GT's site, docs and dashboard. Kevin's wiki is github.com/Kevin-Liu-01/Kevin-Wiki, and its paths below are relative to its checkout. `references/rounds.md` records every round from July to October 2026 with what was asked, what Kevin picked and the rule it set. `references/charter.md` holds the round charter, `references/registry.md` the registry and numbers, `references/comparing.md` the variant switches, option sheets and module review, and `references/sources.md` the provenance. `scripts/distinct-set.mjs` checks that a set of options differ before Kevin sees it.
+Paths are relative to a checkout. `$PROTOTEMPLATE` is Prototemplate, Kevin's design lab and public hub at prototemplate.com, where the site directions live. `$GT_CLOUD` is gt-cloud, the monorepo of the site, docs and dashboard. Kevin's wiki is github.com/Kevin-Liu-01/Kevin-Wiki, and its paths below are relative to its checkout. `references/rounds.md` records every round from July to October 2026 with what was asked, what Kevin picked and the rule it set. `references/charter.md` holds the round charter, `references/registry.md` the registry and numbers, `references/comparing.md` the variant switches, option sheets and module review, and `references/sources.md` the provenance. `scripts/distinct-set.mjs` checks that a set of options differ before Kevin sees it.
 
 ## 1. Before the round
 
@@ -50,7 +50,7 @@ Before cloning a product or building a feature that answers one, research the pr
 - how it solves the hard part, such as sync, collaboration or layout;
 - prior art beyond that one product.
 
-Kevin asked for this on 2026-09-12 and 2026-10-01 on a project of his own, and the method applies to GT work unchanged. `docs/archive/feature-inventory.md` is the GT example: each capability with the proof a visual must show and the misunderstanding it must prevent.
+Kevin asked for this on 2026-09-12 and 2026-10-01 on a project of his own, and the method applies here unchanged. `docs/archive/feature-inventory.md` is the worked example: each capability with the proof a visual must show and the misunderstanding it must prevent.
 
 ### Text first
 
@@ -60,7 +60,7 @@ Kevin asked for this on 2026-09-12 and 2026-10-01 on a project of his own, and t
 
 ### The charter
 
-Every round starts from a written charter that every builder and reviewer reads (`references/charter.md`): the GT elements every direction keeps, the ordered section contract, the homes where the round's new idea may live, the copy rules, the builders' technical limits, and a completeness checklist run by reading code. From the second round on it quotes the last round's decision and feedback, and each direction names a tension and a focus (part G). The deco rounds of 2026-09-14 and 2026-09-15 ran from one after Kevin rejected the round before it as incomplete. Keep the charter in the round's notes or the repository, since the deco charter was lost with a scratchpad.
+Every round starts from a written charter that every builder and reviewer reads (`references/charter.md`): the brand elements every direction keeps, the ordered section contract, the homes where the round's new idea may live, the copy rules, the builders' technical limits, and a completeness checklist run by reading code. From the second round on it quotes the last round's decision and feedback, and each direction names a tension and a focus (part G). The deco rounds of 2026-09-14 and 2026-09-15 ran from one after Kevin rejected the round before it as incomplete. Keep the charter in the round's notes or the repository, since the deco charter was lost with a scratchpad.
 
 ### One exemplar first
 
@@ -82,9 +82,9 @@ A palette, a title or a new arrangement of the same parts does not make a new di
 
 ### Rules for a set
 
-- "Completely new" means starting from scratch while saying the same things about GT and keeping GT's design elements: the hairline grammar, the dither, the marks and real product content. Directions that follow the previous round closely are redone. Kevin, 2026-09-14: "for those new 10 i see they followed our old onees vvery closely. they need to be COMPLETELY NEW".
+- "Completely new" means starting from scratch while saying the same things about the company and keeping its design elements: the hairline grammar, the dither, the marks and real product content. Directions that follow the previous round closely are redone. Kevin, 2026-09-14: "for those new 10 i see they followed our old onees vvery closely. they need to be COMPLETELY NEW".
 - When Kevin names a style or lineage, research it before drawing. The deco rounds of 2026-09-14 drew machine-age Metropolis forms, and Kevin meant the revival of Egyptian, Mayan and Assyrian forms, in geometry only.
-- Each direction is complete at rest: every section built, the content contract met, and the page readable before any motion runs. Kevin rejected the first deco round as incomplete and short of GT's design elements (2026-09-14).
+- Each direction is complete at rest: every section built, the content contract met, and the page readable before any motion runs. Kevin rejected the first deco round as incomplete and short of the brand's design elements (2026-09-14).
 - A redesign Kevin asks for is visibly new. A change that keeps the old shape is returned as not done (2026-09-30).
 - Build the number he asked for. "literally 20 samples" (2026-07-28) meant twenty.
 - Start the sibling variants he implies. On 2026-08-04 Kevin sent the plan for the terminal-hero version of the landing and added "you are still responsible for self starting other non-terminal-hero version !"
@@ -191,7 +191,7 @@ The exemplar Kevin picks becomes the documented default, with its parameters in 
 
 ### Landing
 
-- A round stays uncommitted or on its own branch until Kevin reviews it on localhost and says to land it. Kevin, 2026-09-14: "wait what theyre on main? they shouldnt be pushed i should be revieiwing them loclaly". Prototemplate main deploys www.prototemplate.com, which readers outside GT see. He reviews on the running Prototemplate server (`gt-local-dev` section 1).
+- A round stays uncommitted or on its own branch until Kevin reviews it on localhost and says to land it. Kevin, 2026-09-14: "wait what theyre on main? they shouldnt be pushed i should be revieiwing them loclaly". Prototemplate main deploys www.prototemplate.com, which the public sees. He reviews on the running Prototemplate server (`gt-local-dev` section 1).
 - Landing is his call for each round. On 2026-09-15 he shortlisted seven deco directions on localhost and said "commit and push oriignn main, we can put this on live prototemplate now". The commit he had reviewed (b6a7eba) went to main, and the next round continued on the branch. `gt-ship` section 8 holds the landing steps for the shared checkout.
 - In gt-cloud a round lives on a `k/<topic>` branch in its own worktree and becomes a PR when Kevin asks for one (`gt-ship` section 1).
 
@@ -202,7 +202,7 @@ The exemplar Kevin picks becomes the documented default, with its parameters in 
 - [ ] A product being cloned or answered was researched (features, controls, import paths, the hard part) and the notes exist before the first direction.
 - [ ] A page with many visuals was written as text first, with every diagram described.
 - [ ] The directions differ in silhouette, material and action, the table shows how, and `distinct-set.mjs` flags no pair.
-- [ ] Each direction is complete at rest, says the same things about GT, and keeps GT's design elements.
+- [ ] Each direction is complete at rest, says the same things about the company, and keeps its design elements.
 - [ ] Every direction is in `DIRECTIONS` once, its `label` is the number Kevin uses, and every count written in prose matches the registry.
 - [ ] Kevin can switch between all options in one place, and effect variants have an in-page menu.
 - [ ] No version was overwritten: each fork has its own number, slug and root class, and the source of truth was not edited during fork work.
@@ -213,7 +213,7 @@ The exemplar Kevin picks becomes the documented default, with its parameters in 
 
 ## Related skills
 
-GT skills: `gt-aesthetic` (the references, the verdicts and the review loop), `gt-orchestration` (the critic loop and the agents that run it), `gt-verify` (what each kind of check proves), `gt-reporting` (showing a round to Kevin), `gt-local-dev` (review servers), `gt-ship` (landing), `prototemplate` (the registries and adding a direction), `gt-dither` (the Bayer engines and presets) and `gt-films` (film rounds and their archive). Wiki skills: `absorb-sources` and `x-bookmark-absorb` (ingesting posts and bookmarks), `design-engineering-polish` (its `references/signature-first-exploration.md` applies the same duplicate test to signature visuals), `animated-component-libraries` (component sources) and `agent-browser`.
+Skills in this set: `gt-aesthetic` (the references, the verdicts and the review loop), `gt-orchestration` (the critic loop and the agents that run it), `gt-verify` (what each kind of check proves), `gt-reporting` (showing a round to Kevin), `gt-local-dev` (review servers), `gt-ship` (landing), `prototemplate` (the registries and adding a direction), `gt-dither` (the Bayer engines and presets) and `gt-films` (film rounds and their archive). Wiki skills: `absorb-sources` and `x-bookmark-absorb` (ingesting posts and bookmarks), `design-engineering-polish` (its `references/signature-first-exploration.md` applies the same duplicate test to signature visuals), `animated-component-libraries` (component sources) and `agent-browser`.
 
 ## Sources
 

@@ -20,7 +20,7 @@ metadata:
 
 # Performance without visual loss
 
-General Translation (GT) runs live canvas and WebGL material (the dither
+General Translation runs live canvas and WebGL material (the dither
 globe, the glyph field, the studio field, the horizon shader) on
 generaltranslation.com, on the dashboard and in Prototemplate, and those
 pages must also load fast. This skill is the procedure for making any such
@@ -34,7 +34,7 @@ and their copies, and gt-cloud's `react-best-practices` covers React
 rendering.
 
 Paths are relative to a Prototemplate checkout ($PROTOTEMPLATE) unless
-marked gt-cloud ($GT_CLOUD, GT's product monorepo, origin/main on
+marked gt-cloud ($GT_CLOUD, General Translation's product monorepo, origin/main on
 2026-10-05). A direction is one of the design-exploration pages under
 Prototemplate's `/d/<slug>`. The two scripts in this folder's `scripts/`
 run from a checkout that has playwright-core (Prototemplate does) and find

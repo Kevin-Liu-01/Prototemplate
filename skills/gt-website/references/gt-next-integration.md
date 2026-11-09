@@ -3,7 +3,7 @@
 Detail for section 3 of `gt-website`. Read it before every integration of
 `gt-next` into a Next.js site other than generaltranslation.com: a
 showcase, a customer's app under review, a demo. The traps below were met
-on 2026-10-06 and 2026-10-07, when a GT showcase translated an open-source
+on 2026-10-06 and 2026-10-07, when a General Translation showcase translated an open-source
 project's documentation site into 34 locales with `gt-next` and the `gt`
 CLI and had to look exactly like the original site.
 
@@ -45,13 +45,13 @@ CLI and had to look exactly like the original site.
   locale when `customMapping` is set (settings validation skips the
   mapping). The run completes and the files are right; the error is noise
   (reported to the `gt` repository on 2026-10-06).
-- A full run of 102 pages in 34 locales took about 30 minutes on GT's
+- A full run of 102 pages in 34 locales took about 30 minutes on General Translation's
   side. Validate the structure after it (the showcase's `i18n:check`
   script) before reviewing the text.
 
 ## Translated MDX
 
-- **Frontmatter.** GT's MDX translation left the frontmatter untranslated
+- **Frontmatter.** General Translation's MDX translation left the frontmatter untranslated
   on about 40 pages per locale. Check titles and descriptions per locale,
   and overlay translated frontmatter where it is missing.
 - **Emphasis next to CJK text.** `**` and `_` next to CJK characters came
@@ -68,7 +68,7 @@ CLI and had to look exactly like the original site.
 
 - Claude memory `ghostty-docs-i18n` (2026-10-06 and 2026-10-07), the
   integration traps only; system-v2 inventory `memories.json` row
-  "ghostty-docs-i18n" (plan item N-13). The project key, the GT project
+  "ghostty-docs-i18n" (plan item N-13). The project key, the General Translation project
   ids and the evaluation protocol stay out.
 - The `next.config.mjs` failure is also recorded in Claude memory
   `ramp-routing-review` (2026-09-09).

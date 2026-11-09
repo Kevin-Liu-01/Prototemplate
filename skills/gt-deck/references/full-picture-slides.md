@@ -75,7 +75,7 @@ Markup, from `06-mood-earth.html`:
 
 ## The closing slide
 
-`95-closing.html` reuses the opener styles with an extra `.s-closing` class. Its plate sits at the top left over the Singularity ring's interior, with the GT mark above the title, and the image is a two-tone shader render like the openers. It is not a section start, so SECTIONS does not list it.
+`95-closing.html` reuses the opener styles with an extra `.s-closing` class. Its plate sits at the top left over the Singularity ring's interior, with the General Translation mark above the title, and the image is a two-tone shader render like the openers. It is not a section start, so SECTIONS does not list it.
 
 ## Sources
 

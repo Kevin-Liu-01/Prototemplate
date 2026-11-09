@@ -1,6 +1,6 @@
 # Agents on one machine
 
-Kevin Liu runs many coding agent sessions on one Mac for his General Translation (GT) work: Claude Code sessions, Codex sessions, the subagents they launch, and his own apps beside them. The sessions share the machine's processes, its shell, its memory and its disk. Each trap below stopped other sessions' work at least once between August and October 2026, and each section gives the rule, the incident that set it, the fix and the skill that holds the procedure. The [multi-session playbook](multi-session-playbook.md) holds the rules for lanes, branches and messages between sessions.
+Kevin Liu runs many coding agent sessions on one Mac for his General Translation work: Claude Code sessions, Codex sessions, the subagents they launch, and his own apps beside them. The sessions share the machine's processes, its shell, its memory and its disk. Each trap below stopped other sessions' work at least once between August and October 2026, and each section gives the rule, the incident that set it, the fix and the skill that holds the procedure. The [multi-session playbook](multi-session-playbook.md) holds the rules for lanes, branches and messages between sessions.
 
 ## Stopping a process
 

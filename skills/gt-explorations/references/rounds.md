@@ -4,7 +4,7 @@ Each entry names the surface, the ask, what was built, what Kevin picked or reje
 
 ## 2026-07-28: twenty samples
 
-- Surface: the GT site, in a standalone redesign app in gt-cloud (`apps/redesign` on the branch `redesign/diagram-standard`), later exported to Prototemplate.
+- Surface: the General Translation site, in a standalone redesign app in gt-cloud (`apps/redesign` on the branch `redesign/diagram-standard`), later exported to Prototemplate.
 - Ask: "literally 20 samples" after reading the wiki and the X bookmarks, built by agents under a harsh critic, ready to review when Kevin came back.
 - Built: numbered samples from 00, and the research now in `docs/research/` (`DESIGN_BRIEF.md`, `inspo.md`, `STORYBOARD.md`).
 - The same night Kevin asked for "one place to switch between all of these", and a switcher dock went over every sample.
@@ -96,13 +96,13 @@ Each entry names the surface, the ask, what was built, what Kevin picked or reje
 
 Kevin asked for two directions, real Art Deco and a dither-led Art Deco, with five approaches each. Five rounds followed on Prototemplate that day.
 
-1. Ten directions, five of each kind (commit fee151f), pushed straight to main. Kevin asked for GT's design elements and complete, considered pages, and stopped the push: the round belonged on localhost. Main was reset, and the work continued on the branch `deco-round`.
+1. Ten directions, five of each kind (commit fee151f), pushed straight to main. Kevin asked for General Translation's design elements and complete, considered pages, and stopped the push: the round belonged on localhost. Main was reset, and the work continued on the branch `deco-round`.
 2. The ten rebuilt as complete forks of one earlier direction, dither-field (1d3bd12). Kevin: they followed the old ones closely and had to be completely new.
-3. A from-scratch round in machine-age Metropolis deco, stopped mid-build. Kevin meant the revival of Egyptian, Mayan and Assyrian forms, in geometry only, started from scratch while saying the same things about GT. The Metropolis rounds were retired (db06905).
+3. A from-scratch round in machine-age Metropolis deco, stopped mid-build. Kevin meant the revival of Egyptian, Mayan and Assyrian forms, in geometry only, started from scratch while saying the same things about General Translation. The Metropolis rounds were retired (db06905).
 4. Ten new directions in the revival lineage, each a distinct form, written against a charter (156ca85) and complete at rest (e80aea8). Kevin reviewed them on localhost and shortlisted seven, and three were cut (b6a7eba). He then said to put the round on the live site ("commit and push oriignn main", 2026-09-15), and b6a7eba went to main.
 5. The seven deepened within their own forms, with three new forms beside them (2d6f32b), on the branch. The seven kept labels 18, 19, 21, 23, 24, 25 and 26, and the new ones took 27, 28 and 29.
 
-Rules: directions differ in silhouette, material and action; "completely new" means from scratch with GT's elements kept; a named lineage is researched before drawing; each direction is complete at rest; rounds stay local until Kevin lands them; survivors keep their numbers.
+Rules: directions differ in silhouette, material and action; "completely new" means from scratch with General Translation's elements kept; a named lineage is researched before drawing; each direction is complete at rest; rounds stay local until Kevin lands them; survivors keep their numbers.
 
 ## 2026-09-12, 09-30 and 10-01: methods from Kevin's own projects
 

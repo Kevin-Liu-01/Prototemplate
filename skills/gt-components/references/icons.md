@@ -8,7 +8,7 @@ One mark per idea across the header, the docs, the blog, the marketing pages and
 | --- | --- | --- | --- |
 | meaning | a card, a feature, a link destination, a section or package mark, a status or label mark, a sidebar or menu row | `@heroicons/react/24/solid`; `@heroicons/react/16/solid` only for a mark set inline with running text | sized with a class (`size-4`, `size-5`) |
 | control | search, copy, chevrons, arrows, close, plus, menu toggle, loaders, theme and language switches, record and stop | `lucide-react`, named imports on `CONTROL_LUCIDE_GLYPHS` | Lucide outline |
-| brand | framework and service logos, the GT mark, Locadex | `@icons-pack/react-simple-icons`, `packages/ui/src/components/icons/*`, masked logo files | the mark's own geometry; colors per `BrandMark`'s `variant` |
+| brand | framework and service logos, the General Translation mark, Locadex | `@icons-pack/react-simple-icons`, `packages/ui/src/components/icons/*`, masked logo files | the mark's own geometry; colors per `BrandMark`'s `variant` |
 
 `gt-ui/icon-tiers` (`$GT_CLOUD/tooling/oxlint-plugins/gt-ui.ts`) enforces four things:
 
@@ -136,7 +136,7 @@ A scripted rename is unsafe for `File`, `User`, `Tag`, `Lock`, `Info`, `Code`, `
 The viewer shell draws one icon family: Heroicons 20 solid, inlined as paths in `$PROTOTEMPLATE/src/components/viewer/icons.tsx` at viewBox 0 0 20 20, rendered at 16px with `fill: currentColor`. Each entry names its Heroicons source in a comment; the file is regenerated from the extracted set, and a path is never edited by hand. Only names with an importer are kept.
 
 - No lucide, no icon font, no hand-drawn path and no Unicode glyph icon in chrome. The theme button's half discs are the one text glyph.
-- The other exceptions are the GT mark (`GtMark.tsx`), the Prototemplate mark (`PtMark.tsx`) and the colored site icons, which are these Heroicons on a `--pt-site-*` color.
+- The other exceptions are the General Translation mark (`GtMark.tsx`), the Prototemplate mark (`PtMark.tsx`) and the colored site icons, which are these Heroicons on a `--pt-site-*` color.
 - The site map vocabulary: gallery `squares-plus`, Brand and its sections `swatch`, Docs and documents `document-text`, deck `presentation-chart-bar`, present `play`, compare `arrows-right-left`, archive `archive-box`, explorations `sparkles`, Motion and films `film`, slides `rectangle-stack`, libraries `cube`, fallback `rectangle-group`.
 - The archived directions under `src/app/d/` import lucide freely and are outside the lint (`.oxlintrc.json` ignores `src/app/d/**`).
 

@@ -4,7 +4,7 @@ Where every sentence of `SKILL.md` comes from, in the order the sentences appear
 
 ## The opening
 
-- GT ships its product from `apps/dashboard`, the sign-in, auth, onboarding and dashboard pages: gt-cloud `.agents/skills/gt-dashboard/SKILL.md` on main, read 2026-10-10; inventory `skills.json` row "missing skill: dashboard and product surfaces".
+- General Translation ships its product from `apps/dashboard`, the sign-in, auth, onboarding and dashboard pages: gt-cloud `.agents/skills/gt-dashboard/SKILL.md` on main, read 2026-10-10; inventory `skills.json` row "missing skill: dashboard and product surfaces".
 - The map holds no rules of its own and the owning skill wins: the O session's K6 reply, 2026-10-10 (`system-v2/replies.md`); inventory `critique-completeness.json` item F1 ("Surface map plus pointers only").
 - `gt-dashboard` is the source of truth for `apps/dashboard`: its own description, read on gt-cloud main 2026-10-10.
 

@@ -22,7 +22,7 @@ metadata:
 
 # Reporting to Kevin
 
-Kevin Liu reviews General Translation (GT) work through what an agent puts in front of him: pictures, a running page, a link, and numbered lists he can answer by number. This skill sets the formats for the turn close, the ask ledger, the PR slate, decision lists, recaps and the stop-and-handover report. Read it before ending any turn that changed something.
+Kevin Liu reviews General Translation work through what an agent puts in front of him: pictures, a running page, a link, and numbered lists he can answer by number. This skill sets the formats for the turn close, the ask ledger, the PR slate, decision lists, recaps and the stop-and-handover report. Read it before ending any turn that changed something.
 
 `$PROTOTEMPLATE` is a Prototemplate checkout and `$GT_CLOUD` a gt-cloud checkout. `scripts/pr-slate.mjs` drafts the PR slate from GitHub, and [references/examples.md](references/examples.md) holds a worked example of each format. Crop sizes and viewports belong to `gt-aesthetic`, review servers to `gt-local-dev`, deploy checks to `gt-website` and `gt-ship`, handoff files to `gt-orchestration`, the PR body to `gt-ship`, and the register to `gt-voice`.
 
@@ -89,7 +89,7 @@ A turn that changed something ends in this order.
 1. **The answer to what Kevin asked**, in the first line, about the exact PR, page or file he named. When several of his messages queued during a run, answer each in its own words before any progress report. On 2026-10-02 "make 5091 a lot easier to understannd. wha twas the problem?" got a first line on #5091 itself, then the problem and the fix in two sentences each, before the list of changes.
 2. **What shipped**, one line each, in product terms (what a user sees or what changed for the team), each with its state from section 2.
 3. **Something to see** (section 1).
-4. **What I need from you**, numbered, holding only what Kevin alone can do: an approval or a merge that needs his rights, an issue id from Linear (GT's issue tracker), a login, a payment, a credential, a choice. Each item carries the exact link, file or command. For a credential, name the gitignored env or config file and the variable he fills in himself, and never ask him to paste a secret into chat.
+4. **What I need from you**, numbered, holding only what Kevin alone can do: an approval or a merge that needs his rights, an issue id from Linear (General Translation's issue tracker), a login, a payment, a credential, a choice. Each item carries the exact link, file or command. For a credential, name the gitignored env or config file and the variable he fills in himself, and never ask him to paste a secret into chat.
 5. **How it was tested and what testing did not cover**, for systems work, with numbers: scenarios run, tests passed, browsers covered, and the case nobody could check.
 6. **Risks and side effects**, numbered, each with its consequence and the action offered, so Kevin answers by number (2026-09-28: "yeah lets do 1., fix 2, anything else?").
 7. **The ledger** (section 3), when the turn carried more than one ask.
@@ -101,7 +101,7 @@ A turn that changed something ends in this order.
 
 ## 5. The PR slate
 
-"Give me my PR list", "PR slate" and "PR order" each mean every open PR Kevin authored in GT's three repositories, in merge order, grouped by what each needs. The repositories are `generaltranslation/gt-cloud` (the private product monorepo), `generaltranslation/gt` (the open-source libraries and the `gt` CLI) and `generaltranslation/content` (the docs and blog). The reply opens with the list.
+"Give me my PR list", "PR slate" and "PR order" each mean every open PR Kevin authored in General Translation's three repositories, in merge order, grouped by what each needs. The repositories are `generaltranslation/gt-cloud` (the private product monorepo), `generaltranslation/gt` (the open-source libraries and the `gt` CLI) and `generaltranslation/content` (the docs and blog). The reply opens with the list.
 
 ```sh
 node $PROTOTEMPLATE/skills/gt-reporting/scripts/pr-slate.mjs           # grouped Markdown
@@ -194,7 +194,7 @@ git show origin/main:.github/CODEOWNERS
 
 Then report in this order: the exact rule and where it lives; why Kevin cannot lift it himself (his role on the team and his permission on the repository); the fast path that works today, such as who can approve now; and a drafted Slack message to the admin who can change the rule, lowercase, with numbered asks and the PR link. On 2026-09-21 a content PR stayed at "review required" because CODEOWNERS named a team handle that did not exist, so a teammate's approval never counted; references/examples.md holds that report.
 
-**A pasted form or questionnaire** is filled in directly, in Kevin's voice, from the repositories and GT's published pages. Mark only the fields that need facts only he has. Kevin, 2026-08-10: "no i just want you to fill this out".
+**A pasted form or questionnaire** is filled in directly, in Kevin's voice, from the repositories and General Translation's published pages. Mark only the fields that need facts only he has. Kevin, 2026-08-10: "no i just want you to fill this out".
 
 **A shared Google Doc** is written only in the tab Kevin names. Read the tab id from the URL (`?tab=t.<id>`), confirm the tab's title before writing, place the text below anything he already wrote in that tab, and leave every other tab untouched (Kevin stated this in capitals on 2026-09-10). Writes go through the wiki's `gws` skill or the page he has open, with his confirmation before each write.
 

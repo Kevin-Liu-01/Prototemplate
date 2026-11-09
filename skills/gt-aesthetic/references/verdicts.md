@@ -25,12 +25,12 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 | 2026-09-25 | A heavy horizon ring as the app's material | The landing hero's field sets the strength of any material, and a surface carries one |
 | 2026-09-28 | Sun and moon theme icons; 13px card facts; fade-and-rise entrances; a top header over onboarding; fills on layout containers | The ◐ and ◑ glyphs; the 12px rung; no entrance animation; the mark in the plate's head; no container fills |
 | 2026-09-29 | Pictures that do not fit the page ("the great wave for example does not really make sense here"); texture cut away around type; layout shift between states | A picture shows writing, language or the earth; faint texture across the whole face; reserved heights and a fixed foot |
-| 2026-09-30 | Picture plates over two lines and copy tying a picture to GT ("the corny stuff") | A title, one factual sentence about the artifact, a credit |
+| 2026-09-30 | Picture plates over two lines and copy tying a picture to General Translation ("the corny stuff") | A title, one factual sentence about the artifact, a credit |
 | 2026-09-30 | Two gaps evened at the smaller 10px | Matching measures both take the larger one |
 | 2026-10-05 | Pictures of plain English prose ("never distract with text on the artifacts") | The dictionary pictures are retired and the picture lint rejects them |
 | 2026-10-05 | Book heads with a seven-line lead and a floating subtitle | A lead of two or three lines at 60 to 70 characters, the rest in the body |
 | 2026-10-07 | The Dossier named as the reference for the brand and the site, after the brand had moved past it | The shipped site is the reference for landing and marketing pages, and the Dossier stays in the gallery as the direction the site grew from |
-| 2026-10-28 | Posters that each redrew one reference and filled the frame with metadata rows and credits, then a restart from abstract concepts | Pictures from GT's own artifacts, varied across a set; about three text elements on a poster; notes on named parts change only those parts |
+| 2026-10-28 | Posters that each redrew one reference and filled the frame with metadata rows and credits, then a restart from abstract concepts | Pictures from General Translation's own artifacts, varied across a set; about three text elements on a poster; notes on named parts change only those parts |
 | 2026-10-28 | A round of marks with no energy, and the three marks its judge ranked first | A mark carries an idea, and 16 and 32 px are a separate cut that never ends a direction |
 | 2026-10-30 | Eight variations of the graticule mark's source, which he loves | Write a loved source's invariants first, change only a named defect, and show a tune only when it beats the source at a glance |
 
@@ -115,7 +115,7 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 ## 2026-09-09: the deck's sparse slides and pictures
 
 - Kevin: "use more colorful stuff like green check marks or other icons across tables and other kind of sparse, just text slides".
-- The rule since: semantic color appears only on icons (green done, amber open, red rejected, GT blue for GT). Text and lines stay monochrome.
+- The rule since: semantic color appears only on icons (green done, amber open, red rejected, General Translation blue for General Translation). Text and lines stay monochrome.
 - Kevin: "I meant stuff like artistic visuals or photography of objects or people that conveys our ideas. you know vibes are so important to brand perception."
 - The rule since: full-bleed mood pictures carry the mood, each with a plate that says why it is in the deck.
 
@@ -127,7 +127,7 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 ## 2026-09-18: the second face
 
 - Kevin, on the landing site: "change switzer to inter everywhere. dont need switzer and remove those files."
-- The rule since: Inter is the only typeface on GT surfaces, as it already was in the deck (2026-09-08). gt-cloud PR #4887 removed Switzer from the landing. `gt-brand` holds the face and its named exceptions.
+- The rule since: Inter is the only typeface on General Translation surfaces, as it already was in the deck (2026-09-08). gt-cloud PR #4887 removed Switzer from the landing. `gt-brand` holds the face and its named exceptions.
 
 ## 2026-09-25: the first dashboard, onboarding and auth pass
 
@@ -209,14 +209,14 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 ## 2026-10-07: the Dossier references
 
 - Kevin: "fix the dossier references."
-- What was wrong: after the 2026-10-06 verdict, `gt-aesthetic` section 1 still named the Dossier as the reference for the site, and BRAND.md section 8, the other GT skills and the handbook still presented it as the completed reference.
+- What was wrong: after the 2026-10-06 verdict, `gt-aesthetic` section 1 still named the Dossier as the reference for the site, and BRAND.md section 8, the other General Translation skills and the handbook still presented it as the completed reference.
 - The rule since: the shipped site is the reference for landing and marketing pages. It is generaltranslation.com, built from `apps/landing` on gt-cloud origin/main. gt-cloud #4213 built the production landing from the Dossier's direction, and that landing became canonical for the redesign stack on 2026-08-11. The identity now covers more than the Dossier shows: product surfaces follow the brand deck (2026-09-25), and the identity includes the speed marks (2026-09-29), the films on `/motion` and the cycling title badges. BRAND.md section 8 names where the identity ships. The Dossier (`/d/singularity-dossier`) stays in the gallery as the direction the site grew from, which settles the decision the 2026-10-06 entry left open.
 
 ## 2026-10-28: a set of posters
 
 - Kevin: "this copied the homework a little too much ... make the posters a lot more readable, less filled with unnecessary text". He called the abstract-concept round that followed silly and said round 1 was better.
-- What was wrong: each poster redrew one reference in GT colors, so it read as someone else's design. Metadata rows and credits made each poster unreadable at feed size. The restart from abstract concepts answered a note that had asked for a tune.
-- The rule since: a GT poster or graphic builds its pictures from GT's own artifacts: glyph rain, calligraphy, the GT mark and its construction, the speed and globe marks, Glyphfield fields and locale data. A set varies them, and one Blue Marble re-screened across a set is out. A poster carries about three text elements, with the news words large on a quiet ground. After notes on named parts, the next round keeps its look and changes only those parts. Kevin's wiki (github.com/Kevin-Liu-01/Kevin-Wiki) holds the general rules on references and rounds (`wiki/user/design-taste.md`, "Design Rounds").
+- What was wrong: each poster redrew one reference in General Translation colors, so it read as someone else's design. Metadata rows and credits made each poster unreadable at feed size. The restart from abstract concepts answered a note that had asked for a tune.
+- The rule since: a General Translation poster or graphic builds its pictures from General Translation's own artifacts: glyph rain, calligraphy, the General Translation mark and its construction, the speed and globe marks, Glyphfield fields and locale data. A set varies them, and one Blue Marble re-screened across a set is out. A poster carries about three text elements, with the news words large on a quiet ground. After notes on named parts, the next round keeps its look and changes only those parts. Kevin's wiki (github.com/Kevin-Liu-01/Kevin-Wiki) holds the general rules on references and rounds (`wiki/user/design-taste.md`, "Design Rounds").
 
 ## 2026-10-28: a round of dynamic marks
 

@@ -321,7 +321,7 @@
   var pages = [], bookIO = null;
   function buildBook() {
     var head = document.createElement('div'); head.className = 'book-head';
-    head.innerHTML = '<div><h1><span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> Brand deck</h1><p></p></div><div class="meta"></div>';
+    head.innerHTML = '<div><h1>Brand deck</h1><p></p></div><div class="meta"></div>';
     head.querySelector('p').textContent = 'The General Translation brand in ' + slides.length + ' slides: the thesis, the design system, the shipped site, the documentation, the blog, developer experience, Prototemplate and Glyphfield, and the current plan. Read it top to bottom, or click a page to open it as a slide.';
     head.querySelector('.meta').innerHTML = SECTIONS.length + ' sections<br>' + slides.length + ' slides<br>September 2026';
     bookIn.appendChild(head);
@@ -436,7 +436,7 @@
     if (barTitle) barTitle.textContent = titleOf(slides[n], n);
     if (barSec) barSec.textContent = sectionOf(n);
     progress.style.width = ((n + 1) / slides.length * 100) + '%';
-    document.title = 'GT Brand deck, ' + (n + 1) + ' of ' + slides.length;
+    document.title = 'General Translation brand deck, ' + (n + 1) + ' of ' + slides.length;
     if (opts.hash !== false) {
       try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {}
     }

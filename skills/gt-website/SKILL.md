@@ -7,19 +7,19 @@ description: >-
   content submodule, the pages with rules of their own, crawlers, deploys and
   performance traps, the routing matrix, gt-next in other sites, and the
   checks before a pull request. Use when working on any page, doc, blog
-  post, route or build of the GT website, together with gt-cloud's own
+  post, route or build of the General Translation website, together with gt-cloud's own
   gt-landing skill, which owns the file map.
 metadata:
-  title: GT website
+  title: General Translation website
   areas: website
   updated: 2026-10-31
   origin: prototemplate
   owner: O
 ---
 
-# GT website
+# General Translation website
 
-General Translation (GT) is an internationalization platform for developers: open-source SDKs (`gt-next`, `gt-react` and others), the `gt` CLI, AI translation, the Locadex coding agent and CDN delivery of translations (as `/llms.txt` on the site describes it). Its website, generaltranslation.com, is the Next.js app in `apps/landing` of the private gt-cloud monorepo (`generaltranslation/gt-cloud`). It serves the marketing pages, the documentation on Fumadocs and the blog, and Vercel deploys it from gt-cloud's main branch. This skill records how Kevin builds and changes it: where each part lives, the rules each part follows, the traps met in 2026, and the checks a change passes before its pull request.
+General Translation is an internationalization platform for developers: open-source SDKs (`gt-next`, `gt-react` and others), the `gt` CLI, AI translation, the Locadex coding agent and CDN delivery of translations (as `/llms.txt` on the site describes it). Its website, generaltranslation.com, is the Next.js app in `apps/landing` of the private gt-cloud monorepo (`generaltranslation/gt-cloud`). It serves the marketing pages, the documentation on Fumadocs and the blog, and Vercel deploys it from gt-cloud's main branch. This skill records how Kevin builds and changes it: where each part lives, the rules each part follows, the traps met in 2026, and the checks a change passes before its pull request.
 
 Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `$GT_CLOUD/apps/landing`. Other paths are relative to a gt-cloud checkout (`$GT_CLOUD`, which is `~/gt/gt-cloud` on Kevin's machine), and files at the gt-cloud root carry the prefix, as in `$GT_CLOUD/scripts/deploy-landing.sh`. `content:` marks the public `generaltranslation/content` repository and `$PROTOTEMPLATE` a Prototemplate checkout. Detail sits in references: [docs.md](references/docs.md) for the documentation site and its routing, [blog.md](references/blog.md) for posts and their components, [pages.md](references/pages.md) for the pages with rules of their own, [footer-and-theme.md](references/footer-and-theme.md), [deploys.md](references/deploys.md), and [gt-next-integration.md](references/gt-next-integration.md) for `gt-next` in other sites. `scripts/routing-matrix.sh` checks the routing cases in `references/routing-cases.txt`. This skill is owned by the New Onboarding and Dashboard session, which reviews each change to it.
 
@@ -114,7 +114,7 @@ A bracketed utility in a code comment can break the CSS build, and a plain `@the
 - The partner credit pages under `/enterprise/contact/<partner>` share one plate layout; adding a partner touches about ten files, listed in the reference with the layout rules.
 - AI features (the FAQ assistant, pull request #4885, open on 2026-10-10) call the Vercel AI Gateway with plain `provider/model` ids, rate-limit through the shared `src/lib/rate-limit.ts`, set Gemini's thinking budget to 0, and always answer, with a local fallback when the gateway refuses. The assistant stays off until `FAQ_ASSISTANT_ENABLED` is set.
 - Programmatic SEO pages (round 1 on the unpushed stack `k/seo-0-kit`, `k/seo-1-nextjs`, `k/seo-2-matrix`) translate their page copy like every other page. Each language page also shows a sample table of real, unedited `gt translate` output, which reads like native product UI with correct CLDR plurals (Kevin, 2026-10-10); its rules and the plural trap are in the reference.
-- `/world` (branch `k/language-map`, no pull request on 2026-10-10) is organized by language and names no country or territory. Its facts come from CLDR, Natural Earth and GT's locale data, and its artifact pictures carry no readable English (Kevin, 2026-10-03 and 2026-10-05).
+- `/world` (branch `k/language-map`, no pull request on 2026-10-10) is organized by language and names no country or territory. Its facts come from CLDR, Natural Earth and General Translation's locale data, and its artifact pictures carry no readable English (Kevin, 2026-10-03 and 2026-10-05).
 
 ## 7. Crawlers, the footer and the theme
 

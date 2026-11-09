@@ -20,7 +20,7 @@ The deck carries its own viewer in `deck/parts/head.html` (CSS and markup up to 
 
 ## What Kevin expects of a viewer
 
-Kevin's asks for the deck's viewer (2026-09-08 and 2026-09-09) hold for any GT presentation:
+Kevin's asks for the deck's viewer (2026-09-08 and 2026-09-09) hold for any General Translation presentation:
 
 - a real presentation viewer with a sidebar of every slide ("make this much better like a real presentation viewer with a sidebar of all slides");
 - present mode on its own screen ("the present screenn should be separate");
@@ -48,7 +48,7 @@ Kevin's asks for the deck's viewer (2026-09-08 and 2026-09-09) hold for any GT p
    - `shots/thumb/*` files and the mood tone grids `shots/tone/*` pass through untouched (the grids are screened in the browser, so a re-encode would change the picture).
 
    Each result is written to `public/deck-assets/<name>.<sha8>.<ext>`, named by the first 8 hex digits of its sha256, and the page names it by that relative path. Identical bytes share one file, so a light and a dark twin cut from the same picture are one fetch. A file's name changes whenever its bytes do, so `next.config.ts` serves `/deck-assets/*` as `public, max-age=31536000, immutable`.
-5. It wraps the result in a document (doctype, charset, viewport, the title "General Translation brand deck", the description with `SLIDE_COUNT` in it, and the GT logo's tab icons, `public/brand/gt-globe-logo.ico` and `gt-globe-logo-icon.svg`; the `--out` copy takes `noindex` in place of the icons), checks that the output holds `SLIDE_COUNT` slide sections, refuses a page over 1 MB (an inlined image), writes `public/brand-deck.html`, and last removes the files under `public/deck-assets` the new page no longer names, so a failed build leaves the old page and its files whole.
+5. It wraps the result in a document (doctype, charset, viewport, the title "General Translation brand deck", the description with `SLIDE_COUNT` in it, and the General Translation logo's tab icons, `public/brand/gt-globe-logo.ico` and `gt-globe-logo-icon.svg`; the `--out` copy takes `noindex` in place of the icons), checks that the output holds `SLIDE_COUNT` slide sections, refuses a page over 1 MB (an inlined image), writes `public/brand-deck.html`, and last removes the files under `public/deck-assets` the new page no longer names, so a failed build leaves the old page and its files whole.
 
 Requirements and traps:
 
@@ -115,7 +115,7 @@ Moved from `SKILL.md` section 1 on 2026-10-10, unchanged.
 
 | Path | Holds | Who edits it |
 | --- | --- | --- |
-| `deck/parts/head.html` | the tokens, the slide and viewer CSS, the icon sprite, the GT mark symbol, the viewer markup up to the stage | locked unless the brief says otherwise |
+| `deck/parts/head.html` | the tokens, the slide and viewer CSS, the icon sprite, the General Translation mark symbol, the viewer markup up to the stage | locked unless the brief says otherwise |
 | `deck/parts/tail.html` | `SECTIONS`, the surfaces panel, the help card, the viewer script, the mood picture engine | locked unless the brief says otherwise |
 | `deck/slides/NN-slug.html` | one slide per file | the lane assigned that slide |
 | `deck/shots/` | captures, crops and opener images; `thumb/` for the surfaces panel; `tone/` for the mood grids and `manifest.json`; `OPENERS.md` and `DETAILS.md` | a round assigned pictures |

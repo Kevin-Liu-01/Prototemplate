@@ -21,7 +21,7 @@ metadata:
 
 # Running agent fleets and long autonomous runs
 
-Kevin Liu runs much of his General Translation (GT) work through many agents at once: Workflow lanes inside one session, task chips spun off for later, and long runs that go for hours while he is away. This skill gives the procedure for that work: how to split it, how to brief each agent, how to judge what comes back, and how to keep it going through usage limits, restarts and changes of owner. Peer sessions that Kevin opens himself follow `docs/handbook/multi-session-playbook.md`, git lanes and worktrees follow `gt-ship` section 1, and proof of done follows `gt-verify`.
+Kevin Liu runs much of his General Translation work through many agents at once: Workflow lanes inside one session, task chips spun off for later, and long runs that go for hours while he is away. This skill gives the procedure for that work: how to split it, how to brief each agent, how to judge what comes back, and how to keep it going through usage limits, restarts and changes of owner. Peer sessions that Kevin opens himself follow `docs/handbook/multi-session-playbook.md`, git lanes and worktrees follow `gt-ship` section 1, and proof of done follows `gt-verify`.
 
 Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name gt-cloud (`$GT_CLOUD`). `docs/handbook/glossary.md` defines lane, chip and handoff. The references hold the detail: `briefs.md` (brief template, worked chip, lane prompt, round files), `workflow-shapes.md` (phase shapes, schemas, a review skeleton, resume) with `examples/` (four reduced scripts), `convergence.md` (the critic loop), `handoffs.md` (handoff, resume file, hard stop, resume report), `campaigns.md` (proposal, uncapped project, stop question, heartbeat), `session-lanes.md` (Kevin's session lanes by date), `harness-traps.md` (reboots, pattern kills, hanging commands, the guard line) and `sources.md` (the date of every rule). `scripts/replay-edits.py` rebuilds lost files from transcripts.
 
@@ -79,7 +79,7 @@ Quality work converges through a separate harsh critic that scores the work agai
 
 ## 5. Long autonomous runs
 
-- **Write the orchestration prompt first**, as Kevin asked for the first GT site redesign round (2026-07-28), and save it as a file the run reads back.
+- **Write the orchestration prompt first**, as Kevin asked for the first General Translation site redesign round (2026-07-28), and save it as a file the run reads back.
 - **Research first.** Read Kevin's wiki and X bookmarks for lessons and examples (2026-07-28), then online best practice and tools. Picture the end state, draw the system diagram, build it fully, and loop until every objective is verified (2026-08-01).
 - **Cheapest, most wanted phase first.** On 2026-07-29 a run of about 45 agents put its blind judge first, because the previous run had died on usage credits before its judge ran. If the budget runs out mid-run, the result Kevin is waiting for already exists.
 - **Judge after the builders land.** While builders still rewrite the work, a verdict goes stale within the hour. Stage the judge to start when the build lanes commit.

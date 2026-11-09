@@ -1,6 +1,6 @@
 # Exporting glyphfield grounds headlessly
 
-The grounds under GT graphics are artboards from Kevin's glyphfield project, rendered by the Glyphfield studio (glyphfield.com/studio, source at github.com/Kevin-Liu-01/Glyphfield) in headless Chromium through agent-browser. WebGL2 works there. Paths are relative to `$PROTOTEMPLATE`.
+The grounds under General Translation graphics are artboards from Kevin's glyphfield project, rendered by the Glyphfield studio (glyphfield.com/studio, source at github.com/Kevin-Liu-01/Glyphfield) in headless Chromium through agent-browser. WebGL2 works there. Paths are relative to `$PROTOTEMPLATE`.
 
 ## The scripts
 
@@ -42,10 +42,10 @@ Studio state is local to the browser. Explore in a separate project so an existi
 
 ## Live dither on a page
 
-A ground for a still image comes from the studio export. A live, responsive dither or shader on a GT page is a different job: gt-cloud's landing renders its own Bayer-family field in `apps/landing/src/lib/studio-field.ts`, adapted from Glyphfield's `glyphfield-dither-gradient` material (a moving wave distorted by layered noise, a repeating 4x4 Bayer threshold and three palette colours, where `grain` sets the screen-space cell size). That work follows gt-cloud's `.agents/skills/glyphfield` and gt-dither.
+A ground for a still image comes from the studio export. A live, responsive dither or shader on a General Translation page is a different job: gt-cloud's landing renders its own Bayer-family field in `apps/landing/src/lib/studio-field.ts`, adapted from Glyphfield's `glyphfield-dither-gradient` material (a moving wave distorted by layered noise, a repeating 4x4 Bayer threshold and three palette colours, where `grain` sets the screen-space cell size). That work follows gt-cloud's `.agents/skills/glyphfield` and gt-dither.
 
 ## Sources
 
 - Prototemplate: `.agents/skills/glyphfield-headless-export/SKILL.md` (2026-09-18), absorbed here; `graphics/glyph/gfboot.sh`, `gfexport.sh`, `gfsurvey.sh`; `graphics/build/gen-lib.js` (`BG`, `CSS`); `graphics/build/gen-visuals.js` (`ASSIGN`, `BG_WASH`); `docs/GRAPHICS.md`, Backgrounds.
-- gt-cloud: `.agents/skills/glyphfield/SKILL.md` and `references/source-map.md` (Studio and exports, Existing GT dither example).
+- gt-cloud: `.agents/skills/glyphfield/SKILL.md` and `references/source-map.md` (Studio and exports, Existing General Translation dither example).
 - The older skill text said grounds were scaled smoothly. The code draws them pixelated (`gen-lib.js`, `.stage`), and this reference follows the code.

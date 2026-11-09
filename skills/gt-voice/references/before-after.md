@@ -1,10 +1,10 @@
 # Before and after
 
-Rewrites from Kevin's reviews of GT writing, each with the rule it applies. Detail for `gt-voice`; the rules themselves are in SKILL.md.
+Rewrites from Kevin's reviews of General Translation writing, each with the rule it applies. Detail for `gt-voice`; the rules themselves are in SKILL.md.
 
 | Before | After | Rule |
 | --- | --- | --- |
-| Heading: "Open-source libraries and a closed platform, built together." | Heading: "Open source and platform". Body: "GT builds both the open-source libraries and the closed platform." | Kevin rejected the comma-tail heading (2026-09-08); deck slide 07 now has a plain-noun title with the claim in the body |
+| Heading: "Open-source libraries and a closed platform, built together." | Heading: "Open source and platform". Body: "General Translation builds both the open-source libraries and the closed platform." | Kevin rejected the comma-tail heading (2026-09-08); deck slide 07 now has a plain-noun title with the claim in the body |
 | "The identity has to work at small sizes" | "Small sizes" | A sentence-shaped title becomes a plain noun (2026-09-08) |
 | "Three details enlarged" | "Three close-ups" | Kevin: "'three details emerged' is not good wording" (2026-09-09) |
 | "Supercharge your global growth with cutting-edge AI." | "Translations are generated at build time and deploy with the app." | A mechanism replaces marketing (deck slide 12) |

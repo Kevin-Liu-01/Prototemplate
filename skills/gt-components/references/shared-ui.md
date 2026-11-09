@@ -12,7 +12,7 @@
 | `components/frame/NewFooter.tsx` | `Footer` | `showThemeToggle`, `showLanguageSelector`. Its theme control on main is the fumadocs Sun and Moon toggle; do not copy it. |
 | `components/frame/ThemeToggle.tsx` | `ThemeToggle` | The ◐ / ◑ switch. Props `className`, `labeled`, `label`. Writes the shared `gt_theme` cookie, then calls `setTheme`. |
 | `components/frame/LanguageSelector.tsx` | default, and `LanguageToggle` | `dropdownPosition` (`above` default, `below`), `variant` (`full` default: the Lucide `Languages` glyph, the language name, a chevron; `compact`: flag and code). Rows are `LocaleFlag` plus the display name in a `ScrollArea`. The landing footer, the docs sidebar footer, the mobile menu and the dashboard's plate pages all use the `full` form; Kevin rejected the compact form on the plate pages (2026-09-25). |
-| `components/frame/Search.tsx`, `Logo.tsx`, `DashboardButton.tsx`, `Status.tsx` | | Docs search on pagefind, the GT logo, the dashboard link, the status line. |
+| `components/frame/Search.tsx`, `Logo.tsx`, `DashboardButton.tsx`, `Status.tsx` | | Docs search on pagefind, the General Translation logo, the dashboard link, the status line. |
 | `components/ui/button.tsx` | `Button`, `buttonVariants` | Variants `default`, `rainbow`, `outline`, `secondary`, `ghost`, `destructive`, `link`, `bare`; sizes `xs`, `sm`, `default`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`, `none`; `loading`; `asChild`. |
 | `components/ui/LocaleFlag.tsx` | default | The only flag renderer: the flag-icons sprite span for `getLocaleFlagCountryCode(locale)`, `aria-hidden`, nothing for a locale without a flag. |
 | `components/ui/LocaleLabel.tsx` | default | Flag plus the language name with its region code. |

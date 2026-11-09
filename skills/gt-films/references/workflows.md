@@ -33,7 +33,7 @@ The guidance every writer and editor received:
 - No drama for its own sake: no setups such as "But there was a problem", no cliffhangers, no reveals announced as reveals.
 - Other people and companies get the credit, accurately: the people a post is about, the partner, the post's authors, the translators and scholars in a series film. General Translation is not the hero.
 - The film ends quietly on something true and specific.
-- Every fact comes from the film's sources (the post, the research brief, the GT site).
+- Every fact comes from the film's sources (the post, the research brief, the General Translation site).
 
 ## The hard rules every lane prompt carries
 

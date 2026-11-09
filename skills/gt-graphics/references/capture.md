@@ -1,6 +1,6 @@
 # Capturing sources for graphics
 
-Every crop in a GT visual is cut from a capture made this way. A visual can only be as sharp as its source, so captures are taken at three to five times the CSS resolution and kept lossless. Paths are relative to `$PROTOTEMPLATE`.
+Every crop in a General Translation visual is cut from a capture made this way. A visual can only be as sharp as its source, so captures are taken at three to five times the CSS resolution and kept lossless. Paths are relative to `$PROTOTEMPLATE`.
 
 ## Local pages at high density
 

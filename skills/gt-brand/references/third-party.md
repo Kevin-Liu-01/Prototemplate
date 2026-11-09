@@ -1,7 +1,7 @@
 # Third-party material
 
 Detail for section 8 of `gt-brand`. Any logo, picture, font, model or shader
-that GT did not make follows this procedure: where it comes from, how its
+that General Translation did not make follows this procedure: where it comes from, how its
 provenance is recorded, how it is credited, and what happens when its terms
 do not fit. The logo recipe is in `references/marks.md` (thesvg.org) and the
 picture recipe in `gt-dither` sections 5 and 7. This file holds the order and
@@ -9,7 +9,7 @@ the rules that apply to every kind of asset.
 
 ## 1. Source order
 
-1. The house components first: the GT mark, the Locadex mark and the
+1. The house components first: the General Translation mark, the Locadex mark and the
    `LocaleFlag` SVGs (`LocaleTag` in Prototemplate).
 2. A customer's or partner's logo comes from the company's own brand page,
    in true ink and in the variant for the theme. A customer logo once

@@ -1,6 +1,6 @@
 # Reviewing with Kevin
 
-Kevin Liu does design, website and product work at General Translation (GT), and he reviews the work his agent sessions do: on localhost, in pull requests and in the desktop app where the sessions run. His review words have fixed readings, his rounds start from one exemplar, and every result reaches him as something to see with its state named. Each section below gives the rule, the review that set it and the skill that holds the procedure. The [quality bar](quality-bar.md) holds the bar the work is measured against, and the [operating principles](operating-principles.md) hold the standing rules behind his corrections.
+Kevin Liu does design, website and product work at General Translation, and he reviews the work his agent sessions do: on localhost, in pull requests and in the desktop app where the sessions run. His review words have fixed readings, his rounds start from one exemplar, and every result reaches him as something to see with its state named. Each section below gives the rule, the review that set it and the skill that holds the procedure. The [quality bar](quality-bar.md) holds the bar the work is measured against, and the [operating principles](operating-principles.md) hold the standing rules behind his corrections.
 
 ## Words read as measures
 

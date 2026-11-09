@@ -9,7 +9,7 @@ description: >-
   polish for heads and leads, the dated record of what Kevin rejected and
   why, and the review loop of one exemplar, a local review, then landing,
   with a script that measures a page's heads and leads. Use when designing
-  or polishing any GT surface, when Kevin says something looks bad, busy or
+  or polishing any General Translation surface, when Kevin says something looks bad, busy or
   ugly, and before showing him design work.
 metadata:
   title: Taste and the review standard
@@ -21,9 +21,9 @@ metadata:
 
 # Taste and the review standard
 
-General Translation (GT) builds open-source i18n libraries and a translation platform. Kevin Liu reviews its design work, and he judges every GT surface against two finished references: the brand deck for product surfaces and the shipped generaltranslation.com for the site. This skill records what those references measure, the verdicts he has given with their dates, and the loop in which he reviews work. Read it before designing a GT surface and again before showing him the result.
+General Translation builds open-source i18n libraries and a translation platform. Kevin Liu reviews its design work, and he judges every surface against two finished references: the brand deck for product surfaces and the shipped generaltranslation.com for the site. This skill records what those references measure, the verdicts he has given with their dates, and the loop in which he reviews work. Read it before designing a General Translation surface and again before showing him the result.
 
-Paths are relative to a checkout: `$PROTOTEMPLATE` is Prototemplate (Kevin's design lab, served at prototemplate.com) and `$GT_CLOUD` is gt-cloud (the monorepo of the GT site, docs and dashboard). Kevin's wiki is github.com/Kevin-Liu-01/Kevin-Wiki, and its paths below are relative to its checkout. Read gt-cloud facts from `origin/main` or a fresh worktree, because a long-lived checkout can sit on an old branch. `references/verdicts.md` holds every dated verdict in Kevin's words, `references/measures.md` holds the numbers of each reference, and `scripts/measure-type.mjs` reads the heads and leads of any page.
+Paths are relative to a checkout: `$PROTOTEMPLATE` is Prototemplate (Kevin's design lab, served at prototemplate.com) and `$GT_CLOUD` is gt-cloud (the monorepo of the General Translation site, docs and dashboard). Kevin's wiki is github.com/Kevin-Liu-01/Kevin-Wiki, and its paths below are relative to its checkout. Read gt-cloud facts from `origin/main` or a fresh worktree, because a long-lived checkout can sit on an old branch. `references/verdicts.md` holds every dated verdict in Kevin's words, `references/measures.md` holds the numbers of each reference, and `scripts/measure-type.mjs` reads the heads and leads of any page.
 
 ## 1. The reference
 
@@ -58,7 +58,7 @@ Kevin named the deck as a reference: "i really love our deck's navigation and ba
 
 Each verdict on real work set a rule, and work he rejected restarts from the reference: the rejected version is never the base of the next attempt. The table of verdicts (date, what he rejected, the rule since) opens `references/verdicts.md`, and the full wording and context of each follows it. Read the rows for the kind of surface before building one; sections 3 and 4 and the review checklist carry the rules they set.
 
-## 3. What reads as GT
+## 3. What reads as General Translation
 
 A page reads as General Translation through its structure, its contrast and its single material. Kevin's brief for the deck asked for minimal black and white with only the edge grid lines, images and simple diagrams, and no eyebrow text (2026-09-08).
 
@@ -79,7 +79,7 @@ A page reads as General Translation through its structure, its contrast and its 
 - Text has three steps: ink for content, ink-2 for secondary text and leads, titanium for captions, counters and keys. There is no fourth step.
 - Size and weight set rank, with every weight capped at 500, `b` and `strong` included. State shows in ink: the active row, the pressed button and the focused field draw in ink.
 - Ink on paper is 20.1:1 and ink-2 is 10.9:1 in light, and both stay above 10:1 in dark. Titanium (`#8a8f98`) is 3.25:1 on white, under the 4.5:1 floor for text below 24px, so the dashboard plate darkens light titanium to `#6e737c` (4.77:1) for its 13px captions and keys. The deck's 15px captions and the Prototemplate shell's meta text still use `#8a8f98` in light. On a new light surface, text a reader needs is set in ink-2 or in the darker titanium.
-- A page uses one accent, GT blue `#2f5ce0` (dark lift `#86a8ff`), and a drawing gives it to one element. The deck uses no accent on text, lines or fills; semantic color appears only on icons (green `#12a37a` done, amber `#f0a020` open, red `#e5484d` rejected, blue for GT).
+- A page uses one accent, General Translation blue `#2f5ce0` (dark lift `#86a8ff`), and a drawing gives it to one element. The deck uses no accent on text, lines or fills; semantic color appears only on icons (green `#12a37a` done, amber `#f0a020` open, red `#e5484d` rejected, blue for General Translation).
 - Dark mode is a token remap. Light is one white surface and dark is one ink surface.
 
 ### Material
@@ -87,8 +87,8 @@ A page reads as General Translation through its structure, its contrast and its 
 - A surface carries one dithered material, drawn by the house engines: the landing hero's studio field, the sign-in globe alone, or one artifact picture per step. Two materials on one surface split the reader's attention.
 - The hero's composite is the measure of strength: the canvas at opacity 0.55 under a horizontal mask, and an inverted filter in the light theme (`references/measures.md`). A new field stays at that strength or under it. Artifact pictures print at 0.62 opacity in dark and 0.7 in light.
 - Texture is ordered dither. Alpha veils, gradients and glows are out.
-- A picture shows writing, language or the earth, and its subject fits the page it sits on. It carries no readable English prose. Its plate holds a title, one factual sentence about the artifact in two lines at most, and a credit, and says nothing about GT.
-- A GT poster or graphic draws its pictures from GT's own artifacts, varied across a set. It carries about three text elements, with the news words large on a quiet ground (2026-10-28, `references/verdicts.md`).
+- A picture shows writing, language or the earth, and its subject fits the page it sits on. It carries no readable English prose. Its plate holds a title, one factual sentence about the artifact in two lines at most, and a credit, and says nothing about General Translation.
+- A General Translation poster or graphic draws its pictures from General Translation's own artifacts, varied across a set. It carries about three text elements, with the news words large on a quiet ground (2026-10-28, `references/verdicts.md`).
 - `gt-dither` owns the engines, the presets and the picture standard.
 
 ### Rhythm
@@ -105,8 +105,8 @@ The spacing numbers of the deck sheet, the deck book head, the dashboard plate a
 
 ### Marks, icons and copy
 
-- A GT or Locadex mark renders from the brand components, or is seated into a drawing as an alpha mask in the face's plane. A flat logo laid over a drawing and a mark as a gif are both out (gt-ui `no-gif-mark`). `gt-brand` and `gt-diagrams` (`references/isometric.md`) hold the recipes.
-- A new GT mark carries one idea. `gt-brand` `references/marks.md` holds its letters, the cut rule and the review, and `references/verdicts.md` (2026-10-28 to 2026-10-30) holds how Kevin judges a round of marks.
+- A General Translation or Locadex mark renders from the brand components, or is seated into a drawing as an alpha mask in the face's plane. A flat logo laid over a drawing and a mark as a gif are both out (gt-ui `no-gif-mark`). `gt-brand` and `gt-diagrams` (`references/isometric.md`) hold the recipes.
+- A new General Translation mark carries one idea. `gt-brand` `references/marks.md` holds its letters, the cut rule and the review, and `references/verdicts.md` (2026-10-28 to 2026-10-30) holds how Kevin judges a round of marks.
 - Icons in gt-cloud follow the two tiers of gt-ui `icon-tiers`: Heroicons solid for meaning and Lucide for controls. The deck and the Prototemplate shell use Heroicons 20 solid, and in the deck an icon sits only in a key cell or at the start of a row.
 - Flags appear only as functional locale chips through the locale components.
 - The theme control draws ◐ and ◑.
@@ -160,7 +160,7 @@ The spacing numbers of the deck sheet, the deck book head, the dashboard plate a
 
 ## 6. The general skills
 
-The wiki's general design skills stay useful, and where they disagree with a verdict in this skill, the verdict wins. Which of their rules apply to GT work, and the five that do not, are in `references/process.md` ("The general skills").
+The wiki's general design skills stay useful, and where they disagree with a verdict in this skill, the verdict wins. Which of their rules apply here, and the five that do not, are in `references/process.md` ("The general skills").
 
 ## Review checklist
 
@@ -191,7 +191,7 @@ Built from the deck's defect list (DECK-GRAMMAR.md, "What a defect is") and Kevi
 
 ## Related skills
 
-`gt-brand` (the tokens, the type system and the marks), `gt-voice` (copy), `gt-deck` (the reference deck), `gt-lints` (the line law, the type lint and gt-ui), `gt-dither` (the field and the pictures), `gt-landing-pages` and `gt-website` (the site), `gt-components` (the shell and shared UI), `gt-diagrams` (drawings, with the isometric family in `references/isometric.md`), `gt-motion`, `gt-ship` (PR screenshots), `gt-verify` (the browser probes GT sessions check a page with) and `prototemplate`. General skills in Kevin's wiki: `design-engineering-polish`, `make-interfaces-feel-better`, `animated-component-libraries`.
+`gt-brand` (the tokens, the type system and the marks), `gt-voice` (copy), `gt-deck` (the reference deck), `gt-lints` (the line law, the type lint and gt-ui), `gt-dither` (the field and the pictures), `gt-landing-pages` and `gt-website` (the site), `gt-components` (the shell and shared UI), `gt-diagrams` (drawings, with the isometric family in `references/isometric.md`), `gt-motion`, `gt-ship` (PR screenshots), `gt-verify` (the browser probes a session checks a page with) and `prototemplate`. General skills in Kevin's wiki: `design-engineering-polish`, `make-interfaces-feel-better`, `animated-component-libraries`.
 
 ## Sources
 

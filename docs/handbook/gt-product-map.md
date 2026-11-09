@@ -1,6 +1,6 @@
-# GT product and architecture map
+# General Translation product and architecture map
 
-This page is for agents and people who write about General Translation (GT), design for it or change its products. It states what GT sells and to whom, how the products fit together, the facts copy must get right, and where each part lives in the repositories. Each fact carries the date it was read or ruled. Everything on the page is safe to publish: it names no customer, states no business figures and leaves internal data-model details to gt-cloud's own documents.
+This page is for agents and people who write about General Translation, design for it or change its products. It states what General Translation sells and to whom, how the products fit together, the facts copy must get right, and where each part lives in the repositories. Each fact carries the date it was read or ruled. Everything on the page is safe to publish: it names no customer, states no business figures and leaves internal data-model details to gt-cloud's own documents.
 
 Detail stays with the documents that own it:
 
@@ -14,7 +14,7 @@ Detail stays with the documents that own it:
 
 ## 1. Positioning
 
-The home page hero says GT "builds full-stack localization for apps, docs, and websites" (read 2026-10-05). GT builds every layer of that stack itself:
+The home page hero says General Translation "builds full-stack localization for apps, docs, and websites" (read 2026-10-05). General Translation builds every layer of that stack itself:
 
 1. open-source i18n libraries and SDKs for every major framework;
 2. context-aware translation APIs;
@@ -23,9 +23,9 @@ The home page hero says GT "builds full-stack localization for apps, docs, and w
 
 Kevin, 2026-07-30: "the whole point is that were a full stack localization, end to end".
 
-- The positioning is the Vercel model applied to localization. GT pairs open-source developer tools with the hosted infrastructure that runs them best (BRAND.md section 2). This is the one comparison GT copy makes (gt-voice, hard rule 2).
+- The positioning is the Vercel model applied to localization. General Translation pairs open-source developer tools with the hosted infrastructure that runs them best (BRAND.md section 2). This is the one comparison General Translation copy makes (gt-voice, hard rule 2).
 - The thesis is "Every product in every language" (BRAND.md section 2). Copy quotes it as written.
-- Pricing is usage-based. Legacy translation management systems (TMS) charge per seat and cover part of the stack. Because GT owns the whole stack, it can own the whole customer experience (BRAND.md section 9).
+- Pricing is usage-based. Legacy translation management systems (TMS) charge per seat and cover part of the stack. Because General Translation owns the whole stack, it can own the whole customer experience (BRAND.md section 9).
 - Copy states the mission only as the live careers page states it.
 
 ## 2. Audience and the sale
@@ -95,11 +95,11 @@ Kevin set the four enterprise pillars on 2026-08-15, and the enterprise page car
 
 | Topic | What copy says | Source |
 | --- | --- | --- |
-| Layout per language | "Dynamic layout for each language". GT rearranges components for a language, such as right-to-left order for Arabic. The components themselves stay unchanged. | Kevin, 2026-08-06: "technically we dont alter components, but can rearrange them dynamically like for arabic" |
+| Layout per language | "Dynamic layout for each language". General Translation rearranges components for a language, such as right-to-left order for Arabic. The components themselves stay unchanged. | Kevin, 2026-08-06: "technically we dont alter components, but can rearrange them dynamically like for arabic" |
 | Review surfaces | "Review and approve with your team, over web, API, or CLI." Copy names all three surfaces, because enterprises judge vendors on agent readiness. | Kevin, 2026-08-06: "from one surface implies that we're forcing you to use our dashboard" |
 | Formatting | "Numbers, currencies, dates, plurals, and more", with no "edge cases handled" lead. | Kevin, 2026-08-06 |
 | Delivery | "Served using a global, low-latency translation CDN." and "Push over-the-air updates without redeploying your app." Translations can also ship with the code, so the home page's delivery band reads "Served from local files or the edge" (read 2026-10-05). Copy that describes delivery in general names both paths. | Kevin, 2026-08-15, for the enterprise page's delivery panel |
-| Enterprise voice | "Every company's localization needs are different. General Translation adapts to your existing stack, workflows, and review process." The customer uses the platform with its own team or alongside GT's forward-deployed engineers. A line that implies GT's team is better than the customer's is cut, and gt-voice holds the register. | Kevin, 2026-08-15 |
+| Enterprise voice | "Every company's localization needs are different. General Translation adapts to your existing stack, workflows, and review process." The customer uses the platform with its own team or alongside General Translation's forward-deployed engineers. A line that implies General Translation's team is better than the customer's is cut, and gt-voice holds the register. | Kevin, 2026-08-15 |
 | Localized heroes | Each locale's hero line is idiomatic and carries the exact meaning in that language and culture. A locale route such as `/ja` opens with its hero sentence and diagram in that locale. | Kevin, 2026-08-08 |
 | Geography | Content about places is organized by language. It names no country or territory, draws no borders, takes its facts from CLDR, and treats disputed areas through one policy. | Kevin, 2026-10-03: "avoid political sensitivity without making it look forced" |
 | Infrastructure diagrams | Edge nodes carry real cloud region names such as `us-east-1`, shortened where a label would clip. | Kevin, 2026-08-06 |
@@ -110,7 +110,7 @@ Kevin set the four enterprise pillars on 2026-08-15, and the enterprise page car
 
 The CLI facts below come from the start prompt served at `/agent-prompt.md` (read 2026-10-05) and from the CLI source on `generaltranslation/gt` origin/main. A coding agent ran the prompt end to end on a fresh Next.js app on 2026-09-25 with gt 2.22.3 and again on 2026-09-30 with gt 2.23.1. The published CLI was 2.25.1 on 2026-10-05.
 
-- `gt login` signs the CLI in with the person's GT account. It opens GT's sign-in page in the browser and shows a confirmation page when sign-in completes. `gt login --no-browser` prints a sign-in URL and a code to use on any device, and an SSH session takes that path by default. `gt whoami` reports the signed-in account.
+- `gt login` signs the CLI in with the person's General Translation account. It opens General Translation's sign-in page in the browser and shows a confirmation page when sign-in completes. `gt login --no-browser` prints a sign-in URL and a code to use on any device, and an SSH session takes that path by default. `gt whoami` reports the signed-in account.
 - Public writing explains how to sign in and use the product. It leaves out how the CLI obtains, stores or refreshes its tokens, which is the public authentication boundary in the `AGENTS.md` of `generaltranslation/content`.
 - `gt translate --dry-run` shows the scope, and `gt translate` translates it. With translations stored in the repository, the run writes `public/_gt/<locale>.json`, `gt-lock.json` and a `_versionId` in `gt.config.json`.
 - `gt init` and `gt configure` ask any unanswered question through an interactive prompt and wait with no timeout. An agent passes `--no-interactive` (or `--json`, which implies it) and a flag for every question. A missing answer then exits 1, lists the flags still needed and changes no file. Kevin asked on 2026-10-01 that agents always run the CLI this way.
@@ -126,7 +126,7 @@ The docs serve agents directly (gt-cloud #4499, merged 2026-09-10). gt-website's
 
 The start prompt sets these onboarding rules for an agent (read 2026-10-05):
 
-1. Inspect the repository before asking anything: framework, router, app directory, existing i18n library, GT configuration, source language and build scripts.
+1. Inspect the repository before asking anything: framework, router, app directory, existing i18n library, General Translation configuration, source language and build scripts.
 2. In a monorepo, choose the app or content directory and run setup there. Setup never runs at the workspace root.
 3. Ask for missing decisions one at a time: the source language, the target languages, then the first page or workflow. When the project itself is unclear, ask one question ("What would you like to translate?") with concrete choices.
 4. Preserve existing locale choices and reuse an existing i18n setup. The source language is never assumed to be English.

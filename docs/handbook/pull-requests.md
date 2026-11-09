@@ -1,6 +1,6 @@
 # Pull requests and CI
 
-General Translation (GT) keeps its product and its website in gt-cloud, a private monorepo on GitHub. gt-cloud squash-merges pull requests, requires three checks on main (`Validate PR title and Linear issue`, `check-planning-files` and `run-tests`), and is reviewed by bots and by people. Kevin Liu's product and site work lands there as small pull requests, each from its own worktree. Each section below gives a rule for that work, the case that set it, the fix and the skill that holds the procedure. The facts are gt-cloud's as of October 2026, and the methods apply to any GitHub repository with CI and review bots.
+General Translation keeps its product and its website in gt-cloud, a private monorepo on GitHub. gt-cloud squash-merges pull requests, requires three checks on main (`Validate PR title and Linear issue`, `check-planning-files` and `run-tests`), and is reviewed by bots and by people. Kevin Liu's product and site work lands there as small pull requests, each from its own worktree. Each section below gives a rule for that work, the case that set it, the fix and the skill that holds the procedure. The facts are gt-cloud's as of October 2026, and the methods apply to any GitHub repository with CI and review bots.
 
 ## CI signals that mislead
 

@@ -6,10 +6,10 @@ description: >-
   tokens, the layout classes, icons from the Heroicons 20 solid sprite,
   diagrams, openers and mood slides as artifact pictures, the speed mark
   slides, slide-scoped CSS, both themes, the build and shoot scripts, the
-  registries a new slide touches, what counts as a defect, and how any GT
+  registries a new slide touches, what counts as a defect, and how any General Translation
   presentation's story is written. Use when adding or editing a slide,
   rebuilding or checking the deck, reviewing a slide lane's work, writing
-  another GT presentation, or borrowing the deck's grammar for another
+  another General Translation presentation, or borrowing the deck's grammar for another
   surface.
 metadata:
   title: Brand deck
@@ -27,7 +27,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`). The two scrip
 
 ## 1. Files and ownership
 
-`deck/parts/head.html` (tokens, slide and viewer CSS, the icon sprite, the GT mark symbol) and `deck/parts/tail.html` (`SECTIONS`, the viewer script, the mood picture engine) are locked unless the brief says otherwise; each `deck/slides/NN-slug.html` belongs to the lane assigned that slide; `deck/fonts/deck-fonts.css` changes only with a type decision; the grammar, the shooter, the assembler and `scripts/build/deck.mjs` belong to the deck owner. The full table is in `references/viewer-and-build.md` ("Files and ownership").
+`deck/parts/head.html` (tokens, slide and viewer CSS, the icon sprite, the General Translation mark symbol) and `deck/parts/tail.html` (`SECTIONS`, the viewer script, the mood picture engine) are locked unless the brief says otherwise; each `deck/slides/NN-slug.html` belongs to the lane assigned that slide; `deck/fonts/deck-fonts.css` changes only with a type decision; the grammar, the shooter, the assembler and `scripts/build/deck.mjs` belong to the deck owner. The full table is in `references/viewer-and-build.md` ("Files and ownership").
 
 - A slide file is exactly one `<section class="slide ..."><div class="in"> ... </div></section>` preceded by an HTML comment that names the slide. It carries no `<script>`; the build refuses one.
 - The checkout is often shared, and another session may own `deck/` and push to main from its own worktree. Read `git status` and `git log -- deck/` first, edit only the slides you were assigned, stage files by name, and leave `head.html`, `tail.html` and the registries in section 12 to the integrator unless the brief hands them to you.
@@ -40,14 +40,14 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`). The two scrip
 - The viewer draws two vertical rails 56 px in from the left and right edges, two horizontal rules 56 px in from the top and bottom, and an 11 px registration cross where they meet, in `--hair` with the crosses in `--cross`. A slide never draws them.
 - `.slide` is inset 57 px on every side and padded 72 px top and bottom and 80 px left and right. The usable area inside `.in` is 1326 by 642 px, from x 137 to 1463 and y 129 to 771 on the stage.
 - Nothing may leave the sheet, and text must not touch a rail or a rule.
-- The wordmark (the GT logo at 18 by 18, bottom left) and the counter (13 px titanium, bottom right) sit in the bottom margin. Leave them alone. Full-picture slides put solid paper chips under them.
+- The wordmark (the General Translation logo at 18 by 18, bottom left) and the counter (13 px titanium, bottom right) sit in the bottom margin. Leave them alone. Full-picture slides put solid paper chips under them.
 
 ## 3. Type
 
 - Inter is the only typeface (Kevin, 2026-09-09): `--display` and `--text` resolve to `'Inter'`, the rsms InterVariable roman registered by `deck/fonts/deck-fonts.css`, with `font-optical-sizing: auto`. No italic face is inlined, so the sheet sets no italic or `<em>`.
 - `h1`, `h2` and `.big` share one rule in `head.html` (weight 500, -0.025em, balanced, `cv11` and `ss01`), and slide CSS never restates the features or the tracking. Weight 500 is the ceiling and running text is 400, except the specimen on the Typography slide.
 - Sizes: `h1` 88, `.big` 72, `h2` 44, `.lead` 26, `p` 22, `.rows` 20, `.cap` 15; SVG text never under 18. Text under 15px on the sheet is a defect.
-- Copy follows the deck's register and gt-voice: plain sentence-case headings with no trailing period, full sentences in the body, and every standalone GT in rendered copy set as the mark (Kevin, 2026-09-09), referenced from an `<svg>` sized in the mark's aspect with no viewBox of its own.
+- Copy follows the deck's register and gt-voice: plain sentence-case headings with no trailing period, full sentences in the body, and the company written out as General Translation in every sentence, never as the letters GT or the logo inline (Kevin, 2026-11-08). A slide that draws the mark references it from an `<svg>` sized in the mark's aspect with no viewBox of its own.
 
 The size table, the measures, the copy rules in full and the `#gt-mark` markup are in `references/type.md`.
 
@@ -67,7 +67,7 @@ The size table, the measures, the copy rules in full and the `#gt-mark` markup a
 
 - Slides use only these variables. On the sheet, hard-coded colors exist only in the `.swatch`, `.panel` and `.ic` hue rules in `head.html`, and in the reference-logo plates on The name (`15-naming.html`), which `check-deck.mjs` reports as warnings.
 - No accent color on text, lines or fills anywhere in the deck. The brand accent appears only as an outlined, labeled swatch on the Color slide.
-- Semantic color lives only on icons: `.ic.ok` green `#12a37a` for done or passing, `.ic.warn` amber `#f0a020` for open or in review, `.ic.no` red `#e5484d` for excluded or rejected, `.ic.info` GT blue `#2f5ce0` for GT itself. The four hues are the same in both themes, and text and lines stay monochrome. Kevin asked for them on 2026-09-09: "use more colorful stuff like green check marks or other icons across tables and other kind of sparse, just text slides".
+- Semantic color lives only on icons: `.ic.ok` green `#12a37a` for done or passing, `.ic.warn` amber `#f0a020` for open or in review, `.ic.no` red `#e5484d` for excluded or rejected, `.ic.info` General Translation blue `#2f5ce0` for General Translation itself. The four hues are the same in both themes, and text and lines stay monochrome. Kevin asked for them on 2026-09-09: "use more colorful stuff like green check marks or other icons across tables and other kind of sparse, just text slides".
 - Code sits on `.panel`: `#101010` in both themes, white monospace, with a `--hair` border in dark. Nothing else on the sheet uses monospace. The ASCII monogram on slide 23 draws its @ characters in a monospace stack because it is a pasted mark.
 - `--mood-ink` and `--mood-opacity` belong to the artifact picture standard. `scripts/lint/pictures.mjs` holds their values, so a slide never sets them.
 
@@ -198,7 +198,7 @@ When a slide is added, removed, retitled or moved, nine places restate it: `SLID
 
 ## Writing a presentation
 
-These rules hold for any GT presentation, the brand deck included (Kevin, 2026-07-29 and 2026-10-05): plan the narrative and each slide's text in text first; each slide stands alone, has a reason to exist and connects to the one before it; introduce an idea before a slide relies on it; open with how the brief was approached; return to an earlier style when it read better; and run the presentation in a real viewer. The detail and Kevin's words are in `references/writing.md`.
+These rules hold for any General Translation presentation, the brand deck included (Kevin, 2026-07-29 and 2026-10-05): plan the narrative and each slide's text in text first; each slide stands alone, has a reason to exist and connects to the one before it; introduce an idea before a slide relies on it; open with how the brief was approached; return to an earlier style when it read better; and run the presentation in a real viewer. The detail and Kevin's words are in `references/writing.md`.
 
 ## Borrowing the grammar for another surface
 
@@ -213,7 +213,7 @@ Kevin judged the first dashboard, onboarding and auth pass against the deck on 2
 - [ ] Lists are ruled rows; icons sit only in key cells or at the start of `.plain` rows.
 - [ ] A diagram shows a relationship, follows section 7, and keeps labels horizontal and 12 px clear.
 - [ ] No new image files outside an assigned picture round; screenshots carry `data-dark` twins or their border.
-- [ ] Copy reads as plain technical English: sentence-case headings without periods, full sentences, the GT word as the mark.
+- [ ] Copy reads as plain technical English: sentence-case headings without periods, full sentences, the company written out as General Translation with no logo inline.
 - [ ] `node deck/shoot-slide.mjs N` shows no overflow and no page error, and both JPEGs were looked at.
 - [ ] `node skills/gt-deck/scripts/check-deck.mjs` exits 0, with every registry in section 12 updated for an added, moved or retitled slide.
 - [ ] `pnpm build:deck` ran, `public/brand-deck.html` and `public/deck-assets/` are staged with the slides, and `pnpm lint:pictures` passes.

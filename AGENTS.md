@@ -1,6 +1,6 @@
 # Prototemplate: the agent guide
 
-General Translation (GT) builds localization tools for developers: open-source i18n libraries, a translation platform and the Locadex agent. Prototemplate is Kevin Liu's hub for his GT work and the wiki of how he does it. It holds the brand and design canon, the brand deck, the design lab, the curated skills and the handbook, and serves all of it at www.prototemplate.com, the canonical address, and at the aliases prototemplate.vercel.app and prototemplate.kevinliu.studio. The General Translation team's Vercel project serves the first and Kevin's personal Vercel project serves the other two, and both projects deploy this repository's main branch. This file is the entry point for an agent working in this repository, or in another project that imported the hub. It is short on purpose: the skills hold the procedures and the handbook holds the depth.
+General Translation builds localization tools for developers: open-source i18n libraries, a translation platform and the Locadex agent. Prototemplate is Kevin Liu's hub for his General Translation work and the wiki of how he does it. It holds the brand and design canon, the brand deck, the design lab, the curated skills and the handbook, and serves all of it at www.prototemplate.com, the canonical address, and at the aliases prototemplate.vercel.app and prototemplate.kevinliu.studio. The General Translation team's Vercel project serves the first and Kevin's personal Vercel project serves the other two, and both projects deploy this repository's main branch. This file is the entry point for an agent working in this repository, or in another project that imported the hub. It is short on purpose: the skills hold the procedures and the handbook holds the depth.
 
 Kevin's own words, 2026-10-05: "this prototemplate is supposed to be my hub for general translation work, but also i should be able to use it anywhere and build on top of it so it also acts as a wiki / repository of how i do work at GT".
 
@@ -42,7 +42,7 @@ The skills live in `skills/<slug>/SKILL.md`. In this repository they are already
 | Lag, frame cost, Lighthouse, a heavy shader or canvas | `gt-performance` | `pnpm check:pages` (layout shift per cell) |
 | Design taste, polish, a surface Kevin calls bad or busy | `gt-aesthetic` | `pnpm lint:lines:shell`, `pnpm lint:radius`, `pnpm lint:heads` |
 | The brand, the one Inter, marks and third-party logos | `gt-brand` | `pnpm lint:type`, `pnpm build:marks` |
-| A slide, the brand deck or any GT presentation | `gt-deck` | `pnpm build:deck` |
+| A slide, the brand deck or any General Translation presentation | `gt-deck` | `pnpm build:deck` |
 | Options, directions, variants, converging on a pick | `gt-explorations` | `pnpm capture:pages --direction <slug>` |
 | A lint, a gate, a new rule to enforce | `gt-lints` | `pnpm lint:static`, `pnpm lint:all`, `pnpm lint:public` |
 | Proving a fix or feature is done | `gt-verify` | `pnpm check:pages`, `pnpm lint:lines <url>` |
@@ -68,7 +68,7 @@ The skills live in `skills/<slug>/SKILL.md`. In this repository they are already
 - [Agent workflows](docs/handbook/workflows.md): lane prompts, resuming a run, workflow shapes, refuters, kinds of check, paid model runs.
 - [Pull requests and CI](docs/handbook/pull-requests.md): misleading CI signals, review bots, size and crops, parity, git on shared trees.
 - [Reviewing with Kevin](docs/handbook/review.md): his review words as measures, one exemplar first, showing results, ship states, the ask ledger.
-- [GT product and architecture map](docs/handbook/gt-product-map.md): what GT sells, the copy that must be exact, the repositories.
+- [General Translation product and architecture map](docs/handbook/gt-product-map.md): what General Translation sells, the copy that must be exact, the repositories.
 - [Glossary](docs/handbook/glossary.md): the working vocabulary and where each term lives.
 - [Numbers](docs/handbook/numbers.md): every load-bearing number by area, with its token, its lint and the page that explains it.
 - [Traps and fixes](docs/handbook/traps.md): one line per trap, the symptom first, then the fix and the section that explains it.
@@ -77,7 +77,7 @@ On the site the handbook is one section of the docs site. It opens with this gui
 
 ## House rules
 
-- **Writing.** Plain technical English: complete declarative sentences, no em dashes, no metaphors, no "X, not Y" pairs, no signposts and no eyebrows. Headings are plain nouns in sentence case with no trailing period (`gt-voice`).
+- **Writing.** Plain technical English: complete declarative sentences, no em dashes, no metaphors, no "X, not Y" pairs, no signposts and no eyebrows. Headings are plain nouns in sentence case with no trailing period. In running text the company is General Translation, written out in every sentence: never the letters GT as the name and never the logo inline (`gt-voice`).
 - **Type.** Inter is the only typeface, the self-hosted rsms InterVariable, at weight 500 or less, read through the type tokens. `pnpm lint:type` holds it (`gt-brand`). The one exception is the name in the logo lockup, Katagami Text 500 drawn as outlines by `pnpm build:lockup`.
 - **Lines.** Every line is drawn once by one owner, in one of three roles (DESIGN.md section 2). `pnpm lint:lines:shell` holds it.
 - **Corners.** Rounded controls, square shells: controls and cards at 6px, chips at 4px, and only the shells square (DESIGN.md section 2, Corners). `pnpm lint:radius` holds it.

@@ -25,7 +25,7 @@ it. This document is the written canon. The living version is the
 | name | what it is |
 | --- | --- |
 | General Translation, Inc. | the company |
-| GT | the short form, and the mark |
+| General Translation | the name in running text, written out in full in every sentence |
 | `gt` | the open-source code library; you run `gt translate` |
 | `gt-next`, `gt-react`, `gt-vue`, `gt-node`, `gt-python` | the framework-specific packages |
 | Locadex | the AI agent product |
@@ -128,7 +128,7 @@ shortlist on `/marks`, and `/marks/graticule` shows the marks that led to
 them. Locadex carries its own mark (`/brand/locadex-mark.svg`).
 
 The logo replaced the doubled-line GT monogram on 2026-11-08 in this
-site's chrome, the GT tab icon, `/brand` and the deck. The monogram, in
+site's chrome, the tab icon, `/brand` and the deck. The monogram, in
 which every stroke of the mark is two parallel lines, is the previous
 mark: its files (`/brand/gt-logo-light.svg`, `gt-logo-dark.svg` and the
 `no-bg-gt-logo-*` PNGs) stay at their URLs, `/marks` keeps it as a past
@@ -159,13 +159,11 @@ Rules:
   white between the first baseline and the second cap line: the name's own
   word gap. `pnpm build:lockup` writes every lockup file from the font and
   `LOGO` (`public/brand/gt-globe-lockup*.svg`, the deck's `#gt-lockup`,
-  the globe rows' name). Running copy stays in Inter, and so does the GT
-  word in a sentence, whose only logo part is its mark.
-- At text size, the mark sits inline with prose at the cap height of the
-  line it lives in, overshooting it as a round letter does (0.793em
-  square, its foot 0.033em under the baseline), as in the
-  generaltranslation.com hero's "GT builds full-stack localization for
-  apps, docs, and websites".
+  the globe rows' name). Running copy stays in Inter.
+- **In running text, write General Translation.** A sentence never names
+  the company with the letters GT and never sets the logo inline in place
+  of the name (Kevin, 2026-11-08). The logo stands alone: in the lockup,
+  the header, the tab icon and a figure.
 - **The identity must survive compression:** a favicon, a CLI banner, a
   README, a syntax-highlighted code block. Developers meet the brand in a
   terminal as often as on a website.
@@ -273,7 +271,7 @@ directions as the working record of how we got there. From 2026-08-06 to
   speedrun, a16z and The Residency. Every other name stays off public
   surfaces, this repository included. Read the live site again before a
   new surface names anyone.
-- **Against:** legacy TMS (seat-based, partial-stack). GT is usage-based
+- **Against:** legacy TMS (seat-based, partial-stack). General Translation is usage-based
   and owns the whole stack, so it can own the whole experience.
 - **Admired:** Vercel, Resend, Stripe, for reliable, developer-first
   infrastructure with engineering excellence and customer experience.

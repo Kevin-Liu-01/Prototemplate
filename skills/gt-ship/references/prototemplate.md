@@ -83,8 +83,8 @@ its two Vercel projects are read after a push. Moved out of `SKILL.md` on
   froze the site from 2026-09-01 to mid-September is back; tell Kevin.
 - **Never run `vercel --prod` on the team scope** unless Kevin says so.
 - **Which Vercel account.** "My Vercel bill" or "my Vercel account" means
-  Kevin's personal team. The GT team (`general-translation`) is a shared
+  Kevin's personal team. The General Translation team (`general-translation`) is a shared
   company account: read it for an FYI and change nothing there, settings
-  included, unless Kevin names it. On 2026-09-14 he stopped a change to GT
-  project settings the moment it started. Large findings on the GT team,
+  included, unless Kevin names it. On 2026-09-14 he stopped a change to General Translation
+  project settings the moment it started. Large findings on the General Translation team,
   such as build-minute burn, go to him as an FYI.

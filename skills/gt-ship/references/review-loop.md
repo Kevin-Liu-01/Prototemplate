@@ -102,7 +102,7 @@ What the jobs run, and what trips them:
   then the root script tests (`pnpm exec vitest run scripts/__tests__`).
   An app's own lint script skips `oxfmt`, so format new and changed files
   with `pnpm exec oxfmt <files>` before pushing. The identities check fails
-  on a hardcoded GT address in `from`, `replyTo` or an `*EMAIL*` variable;
+  on a hardcoded General Translation address in `from`, `replyTo` or an `*EMAIL*` variable;
   import them from `@generaltranslation/settings/email.js`. The agent
   skills check (#5145, 2026-10-05) validates the SKILL.md files under
   `.agents/skills` and `.claude/skills`, so a PR that edits a gt-cloud skill

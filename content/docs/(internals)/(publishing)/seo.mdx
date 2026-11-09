@@ -38,7 +38,7 @@ A dynamic route calls it in `generateMetadata` and again in the page body with t
 - **The canonical**: an absolute URL from the policy below.
 - **Robots**: `index, follow` with large image previews, or `noindex, follow`.
 - **Open Graph and the X card**: the title, the description, the canonical as `og:url`, the card with its size and alt text, `twitter:site` @generaltxn and `twitter:creator` @kevskgs.
-- **The icon**: the Prototemplate mark on the hub, the GT mark on the `/d/` pages and the presenter.
+- **The icon**: the Prototemplate mark on the hub, the General Translation mark on the `/d/` pages and the presenter.
 - **The Markdown alternate**, when the page has a twin, and an RSS alternate where a page names a feed.
 
 ## The policy
@@ -54,9 +54,9 @@ A dynamic route calls it in `generateMetadata` and again in the page body with t
 | Every other `/d/` page | noindex, follow | itself | no |
 
 - **One canonical host.** www.prototemplate.com is canonical. The two aliases serve the same deployment, and the absolute canonical in every head consolidates them without a redirect.
-- **Mirrors point at the original.** A mirror page carries the same copy as its live page, and GT's domain is the one that should rank for it. The mirror stays crawlable, because a crawler must read a page to honor its canonical.
-- **Explorations stay out of results.** A direction reassembles GT's copy, prices and legal text into a design study. Indexed, it would put stale claims under GT's name on another domain. `src/app/d/layout.tsx` gives the whole folder `noindex, follow`.
-- **Posts point at GT.** Every post under `content/blog` is a file generaltranslation.com publishes.
+- **Mirrors point at the original.** A mirror page carries the same copy as its live page, and General Translation's domain is the one that should rank for it. The mirror stays crawlable, because a crawler must read a page to honor its canonical.
+- **Explorations stay out of results.** A direction reassembles General Translation's copy, prices and legal text into a design study. Indexed, it would put stale claims under General Translation's name on another domain. `src/app/d/layout.tsx` gives the whole folder `noindex, follow`.
+- **Posts point at General Translation.** Every post under `content/blog` is a file generaltranslation.com publishes.
 - **robots.txt never carries the policy.** A disallowed URL can still be indexed from links, and the crawler never reads its `noindex`. robots.txt allows every agent and names the sitemap.
 
 ## The social card
@@ -65,7 +65,7 @@ A dynamic route calls it in `generateMetadata` and again in the page body with t
 
 ## Structured data
 
-Every page carries the `WebSite` node from the root layout. A page adds a `BreadcrumbList`; an article (a docs page or a handbook document) adds a `TechArticle`; a skill adds a `TechArticle` and a `SoftwareSourceCode` for its folder; a post adds a `BlogPosting` with GT's URL. `serializeJsonLd` escapes every block so no text can close the script tag early.
+Every page carries the `WebSite` node from the root layout. A page adds a `BreadcrumbList`; an article (a docs page or a handbook document) adds a `TechArticle`; a skill adds a `TechArticle` and a `SoftwareSourceCode` for its folder; a post adds a `BlogPosting` with General Translation's URL. `serializeJsonLd` escapes every block so no text can close the script tag early.
 
 ## The sitemap
 

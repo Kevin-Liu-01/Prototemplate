@@ -19,7 +19,7 @@ metadata:
 ---
 
 # Components to reuse
-General Translation (GT) builds its interfaces from components that already exist in two repositories. gt-cloud is GT's product monorepo. It holds the marketing site generaltranslation.com and the docs in `apps/landing`, the product dashboard in `apps/dashboard`, and the UI they share in `packages/ui` (the workspace package `@generaltranslation/ui`). Prototemplate is the design hub of Kevin, GT's founder. It holds the brand deck, the prototypes of the site, the signature visuals as components, and the viewer shell around its own pages. This skill names the components with their files and props, states the rules that hold them, and sets the order to search before anything new is written. A component that two apps need lives in gt-cloud's packages/ui.
+General Translation builds its interfaces from components that already exist in two repositories. gt-cloud is General Translation's product monorepo. It holds the marketing site generaltranslation.com and the docs in `apps/landing`, the product dashboard in `apps/dashboard`, and the UI they share in `packages/ui` (the workspace package `@generaltranslation/ui`). Prototemplate is the design hub of Kevin, General Translation's founder. It holds the brand deck, the prototypes of the site, the signature visuals as components, and the viewer shell around its own pages. This skill names the components with their files and props, states the rules that hold them, and sets the order to search before anything new is written. A component that two apps need lives in gt-cloud's packages/ui.
 
 Paths are written relative to a gt-cloud checkout at origin/main (`$GT_CLOUD` here) or a Prototemplate checkout (`$PROTOTEMPLATE`). gt-cloud's own skills in `$GT_CLOUD/.agents/skills` (gt-ui, gt-landing, gt-dashboard, react-useeffect, react-best-practices) stay authoritative for gt-cloud's file maps; read the app's skill before editing that app.
 
@@ -84,7 +84,7 @@ From `$GT_CLOUD/.agents/skills/gt-ui`, for packages/ui, the dashboard and the la
 
 **LocaleTag** (`shared/LocaleTag.tsx`) renders a bare locale code: `LocaleFlag` and the code in a `.lct` span. The host supplies the chip.
 
-**Fields and marks.** `HeroField.tsx` (the studio field, preset `bayer8`), `GlyphRain.tsx` (`createGlyphField` with `drift: 'rise'`, `copy: 'none'`), `InkField.tsx`, `DitheredMark.tsx`, `DitheredLedgerMark.tsx`, `OrbitHorizon.tsx`. `GtLogoText.tsx` sets the GT mark inline in a sentence with hidden text for readers and copy.
+**Fields and marks.** `HeroField.tsx` (the studio field, preset `bayer8`), `GlyphRain.tsx` (`createGlyphField` with `drift: 'rise'`, `copy: 'none'`), `InkField.tsx`, `DitheredMark.tsx`, `DitheredLedgerMark.tsx`, `OrbitHorizon.tsx`. `GtLogoText.tsx` sets the General Translation mark inline in a sentence with hidden text for readers and copy.
 
 **SmoothScroll** (`shared/SmoothScroll.tsx`) is a pass-through that returns its children. It stays as a mount point; scrolling is native.
 
@@ -111,7 +111,7 @@ Detail and examples in `references/react.md`.
 - No `import()` (`gt-ui/no-dynamic-import`), no barrel files, no `any`, no explicit `unknown`, `type` aliases for props, one default-exported component per file, `data-testid` on components a test drives.
 - One `<T>` around the largest static JSX block; never nested; dynamic values through `Var`, `Num`, `DateTime`, `Plural` and `Branch`; user-facing props through `gt()`. `const gt = useGT();` in a client component, `const gt = await getGT();` from `gt-next/server` in an async one.
 - An internal error string never reaches the UI. Show one translated sentence the user can act on.
-- Locale code uses GT's own helpers: lists, the default and direction from `gt-next`, names and flags from `@generaltranslation/locales`, and formats from `generaltranslation`. A hand-written locale helper is refused, and apps/landing is the model (`references/react.md`, Locales).
+- Locale code uses General Translation's own helpers: lists, the default and direction from `gt-next`, names and flags from `@generaltranslation/locales`, and formats from `generaltranslation`. A hand-written locale helper is refused, and apps/landing is the model (`references/react.md`, Locales).
 - Prototemplate's `useMountEffect` (`src/lib/use-mount-effect.ts`) defers cleanup one task to survive StrictMode's double run; gt-cloud's is a plain `useEffect(effect, [])`. Keep each repository's own.
 
 ## The instruments library
@@ -159,7 +159,7 @@ Kevin's rule (September 2026): a cross-cutting UI change ships to every user-fac
 
 ## Behavior
 
-The components above say what to build with. Kevin's behavior rules, set across the dashboard, onboarding, the landing and GT's tools, say how the result acts. `references/behavior.md` holds all twelve with their dates, and seven of them are summarized here.
+The components above say what to build with. Kevin's behavior rules, set across the dashboard, onboarding, the landing and General Translation's tools, say how the result acts. `references/behavior.md` holds all twelve with their dates, and seven of them are summarized here.
 
 - **Honesty.** No offer or capability shows before the backend delivers it ("we only show it if we actually do it", 2026-09-29), and a failed or expired resource offers a way back.
 - **One interaction.** Hover reveals, click pins, leaving hides, Escape closes. A highlight turns blue and never scales or shifts layout.
@@ -182,7 +182,7 @@ The components above say what to build with. Kevin's behavior rules, set across 
 - [ ] Scrollers use `ScrollArea` or `.gt-scrollbar` (`.pt-scroll` in Prototemplate chrome); scrolling is native.
 - [ ] No direct `useEffect`; no theme read in markup; dark mode works by tokens and was checked in both themes.
 - [ ] Static copy sits in one `<T>`; props go through `gt()`; no internal error string reaches the UI.
-- [ ] Locale lists, names, flags, direction and formats come from GT's helpers, and no app code imports `gt.config.json`.
+- [ ] Locale lists, names, flags, direction and formats come from General Translation's helpers, and no app code imports `gt.config.json`.
 - [ ] Behavior follows `references/behavior.md`: nothing is offered before the backend delivers it, hover and click are one interaction, copy shows its state on the icon, inputs are 16px or larger under `md`, nothing shifts, and icon-only controls have accessible names.
 - [ ] An instrument is mounted from its component, honors the lifecycle contract, and an engine change updated its `/craft` entry.
 - [ ] Rails and seams are drawn once: the row owns the seam, the wrapper owns the rails, cells draw no borders.
@@ -190,7 +190,7 @@ The components above say what to build with. Kevin's behavior rules, set across 
 
 ## Related skills
 
-General skills from Kevin's wiki: animated-component-libraries (outside sources and their order), design-engineering-polish. GT skills in this set: gt-lints (every rule and how to run it), gt-aesthetic, gt-brand (the type system), gt-landing-pages, gt-dither, gt-diagrams (with the isometric family), gt-verify (proving behavior in the running app, both themes and phone width), gt-product-surfaces (the map of the product surfaces), prototemplate. gt-cloud: gt-dashboard `references/conventions.md` (dashboard data, forms and tables).
+General skills from Kevin's wiki: animated-component-libraries (outside sources and their order), design-engineering-polish. General Translation skills in this set: gt-lints (every rule and how to run it), gt-aesthetic, gt-brand (the type system), gt-landing-pages, gt-dither, gt-diagrams (with the isometric family), gt-verify (proving behavior in the running app, both themes and phone width), gt-product-surfaces (the map of the product surfaces), prototemplate. gt-cloud: gt-dashboard `references/conventions.md` (dashboard data, forms and tables).
 
 ## Sources
 

@@ -32,7 +32,7 @@ concrete examples (2026-09-02, 2026-09-03).
 The shape Kevin set on 2026-09-24, for the video vendor and any other partner:
 
 - Thank them at the start and at the end.
-- Credit their reasoning before giving GT's.
+- Credit their reasoning before giving General Translation's.
 - State the decision plainly.
 - Name the constraints that decided it, and the ideas kept from their other
   options.

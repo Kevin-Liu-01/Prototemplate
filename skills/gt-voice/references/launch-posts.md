@@ -1,10 +1,10 @@
 # Launch posts
 
 Detail for the Two registers section of `gt-voice`. A launch post is Kevin's
-own writing when he posts it and GT copy when GT's accounts post it; the
+own writing when he posts it and General Translation copy when General Translation's accounts post it; the
 register table in the skill decides which. Platform formats (length, a link
 in a reply, hashtags at the bottom) belong to the wiki's `social-draft`
-skill, and these rules are the GT structures Kevin set on top of it.
+skill, and these rules are the General Translation structures Kevin set on top of it.
 
 ## The package
 

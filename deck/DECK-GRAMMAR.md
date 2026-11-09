@@ -1,4 +1,4 @@
-# GT brand deck: grammar and working rules
+# General Translation brand deck: grammar and working rules
 
 The deck builds to one HTML page, `public/brand-deck.html`, with its pictures as files beside it under `public/deck-assets`; `scripts/build/deck.mjs --out` writes the same deck as one self-contained file for the artifact copy. Source lives in this directory:
 
@@ -28,7 +28,7 @@ The deck builds to one HTML page, `public/brand-deck.html`, with its pictures as
 
 - Light: paper `#ffffff`, ink `#070707`, ink-2 `#3a3d44`, titanium `#8a8f98`, hairlines at 18% and 9% ink, plate at 3.5% ink. Dark is a token remap (paper `#070707`, ink `#f2f2f0`). Use only the CSS variables `--paper`, `--ink`, `--ink-2`, `--titanium`, `--hair`, `--hair-soft`, `--plate`, `--cross`, `--edge`. Never hard-code a color except inside the swatch and code-panel rules that already exist.
 - No accent color on text, lines, or fills anywhere in the deck. The brand accent is only ever shown as an outlined, labeled swatch.
-- Semantic color appears only on icons: green for done or passing, amber for open or in review, red for excluded or rejected, GT blue for GT itself; text and lines stay monochrome. The four hues (`#12a37a`, `#f0a020`, `#e5484d`, `#2f5ce0`) are the same in both themes.
+- Semantic color appears only on icons: green for done or passing, amber for open or in review, red for excluded or rejected, General Translation blue for General Translation itself; text and lines stay monochrome. The four hues (`#12a37a`, `#f0a020`, `#e5484d`, `#2f5ce0`) are the same in both themes.
 - Code sits on the `#101010` panel (`.panel`) in white monospace. Nothing else uses monospace.
 
 ## Layout classes (already defined in head.html)

@@ -1,7 +1,7 @@
 # Prototemplate, Kevin's hub for General Translation work
 
 Prototemplate is Kevin Liu's hub and working wiki for how General
-Translation work is done. General Translation (GT) is the localization
+Translation work is done. General Translation is the localization
 platform for developers. The repository holds the brand book, the brand
 directives, the design lab with its directions and sites, the docs site,
 the curated skills, the handbook with the canon, the mark explorations, the
@@ -90,7 +90,7 @@ pnpm dev                              # http://localhost:3005
 | --- | --- |
 | [`/docs`](https://www.prototemplate.com/docs) | the docs site in five tabs: the Guide with the handbook, the live component library with the blog globe figure, Craft, Engineering, and Internals from how the hub is built to using the docs as a template; the source is `content/docs/`, one folder per tab |
 | [`AGENTS.md`](./AGENTS.md) | the entry point for an agent: the read order, the principles in brief, which skill to load for a task, the house rules, and how to use the hub in another project (`CLAUDE.md` imports it); the live version is `/docs/handbook/agents` |
-| [`docs/handbook/`](./docs/handbook/README.md) | how Kevin runs GT work: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log; the live version is `/docs/handbook`, which also serves every document below |
+| [`docs/handbook/`](./docs/handbook/README.md) | how Kevin runs General Translation work: the operating principles, the quality bar, the multi-session playbook, the product map, the glossary and the decisions log; the live version is `/docs/handbook`, which also serves every document below |
 | [`BRAND.md`](./BRAND.md) | the identity canon: the name, the idea, the character and voice, the mark, color, type, language as material, and the context |
 | [`DESIGN.md`](./DESIGN.md) | the visual canon: the four-color system, the line law, rails/grounds/seams, the doubled line, iso, the 1-bit language, moving type, motion discipline, the mobile type ladder, the svh/dvh law, the two read lines |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | the code map: directions registry, the toolchain SSOT + fork rescoping, the component inventory |
@@ -119,7 +119,7 @@ reader on GitHub or in an imported copy; `pnpm build:skills` writes it.
 | area | skill | folder | also in |
 | --- | --- | --- | --- |
 | Voice | Voice and the humanizer | [`gt-voice`](./skills/gt-voice/SKILL.md) |  |
-| Website | GT website | [`gt-website`](./skills/gt-website/SKILL.md) |  |
+| Website | General Translation website | [`gt-website`](./skills/gt-website/SKILL.md) |  |
 | Website | Working in Prototemplate | [`prototemplate`](./skills/prototemplate/SKILL.md) | Components |
 | Website | Performance without visual loss | [`gt-performance`](./skills/gt-performance/SKILL.md) | Landing pages, Motion |
 | Landing pages | Landing page grammar | [`gt-landing-pages`](./skills/gt-landing-pages/SKILL.md) | Aesthetic |
@@ -194,7 +194,7 @@ contract. The contract and the steps for a new skill are in
 ## Import this into another project
 
 The hub is built to be copied into another repository so that project's
-agents work the GT way. What travels: the skills with their installer,
+agents work the General Translation way. What travels: the skills with their installer,
 `AGENTS.md`, the handbook, and the two canon files the skills cite
 (`BRAND.md`, `DESIGN.md`). Copied into the same places, every relative
 link between them keeps working. From a checkout of this repository:
@@ -228,7 +228,7 @@ printf '# CLAUDE.md\n\n@AGENTS.md\n' > CLAUDE.md
 - Then edit the copied `AGENTS.md` for the new project: its name and what it
   is, its own commands, ports and gates in "Working in this repository", its
   session lanes, and any house rule that does not apply there (the line law
-  and the radius law hold for GT surfaces). Keep the read order, the
+  and the radius law hold for General Translation surfaces). Keep the read order, the
   principles and the routing table.
 - A few handbook links name files that stay here (`ARCHITECTURE.md`,
   `LICENSE`, `docs/ARTIFACT-PICTURES.md`). Read them on the site or on

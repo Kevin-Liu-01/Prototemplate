@@ -1,6 +1,6 @@
-# The GT docs, measured for drawing
+# The General Translation docs, measured for drawing
 
-These values were measured on the redesigned GT docs (built on Fumadocs) in September 2026 at 1440 by 900. They are the fixture set for any graphic that must read as the GT docs. Re-measure when the docs change, and keep the rectangles as named objects in `graphics/build/gen-visuals.js` (`$PROTOTEMPLATE`).
+These values were measured on the redesigned General Translation docs (built on Fumadocs) in September 2026 at 1440 by 900. They are the fixture set for any graphic that must read as the General Translation docs. Re-measure when the docs change, and keep the rectangles as named objects in `graphics/build/gen-visuals.js` (`$PROTOTEMPLATE`).
 
 ## Colours
 

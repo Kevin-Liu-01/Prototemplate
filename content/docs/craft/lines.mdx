@@ -29,7 +29,7 @@ A seam's grey says how many strokes drew it. A stroke of alpha `a` and colour `L
 
 A reading near the two-stroke value means a double line or one stroke over a brighter backing such as a shader glow. Check the neighbouring pixels to tell them apart: a glow raises them too, and a double leaves them at the ground. On 2026-10-05 a scan across the toolbar's bottom rule read 59 in Chromium and 58 in WebKit, which is one stroke.
 
-An opaque hairline keeps its grey when it is doubled. The GT landing's main hairline `--tc-hair` is opaque, so there a double shows as a run twice as wide: 4 device pixels at 2x for two 1px rules. Read every seam at a device scale factor of 2.
+An opaque hairline keeps its grey when it is doubled. The General Translation landing's main hairline `--tc-hair` is opaque, so there a double shows as a run twice as wide: 4 device pixels at 2x for two 1px rules. Read every seam at a device scale factor of 2.
 
 The probe in the [gt-verify](/skills/gt-verify) skill reads seams this way. `node skills/gt-verify/scripts/probe.mjs <url> --scan x,y,down,24 --dsf 2` groups the device pixels along a 24px segment into runs of one grey, prints each run's width in device pixels and marks the runs that are lines. The coordinates are CSS pixels in the viewport.
 
@@ -43,13 +43,13 @@ A background paints to the border box by default, so a translucent border over t
 | A cell with a ground inside a row with a ground | Cells stay transparent, and the row paints the one ground |
 | A framed cell in a ruled row | A 1px padding gap shows the row's ground as the frame, so the cell draws no border |
 
-Every button face on the GT landing carries `background-clip: padding-box`, because a hair border over a hair fill composited darker than the page's other hairlines. The line auditor gates a self-stack only when the fill alpha is 0.12 to 0.95 and the edge is 120px or longer, so chips and small controls are reported without failing.
+Every button face on the General Translation landing carries `background-clip: padding-box`, because a hair border over a hair fill composited darker than the page's other hairlines. The line auditor gates a self-stack only when the fill alpha is 0.12 to 0.95 and the edge is 120px or longer, so chips and small controls are reported without failing.
 
 ## Rails drawn as borders
 
 Draw a page's column lines as a border. A border rounds to whole device pixels at any zoom, and a background-filled box does not. The column wrapper draws its two lines once with `border-inline`, and a band inside the wrapper draws no side lines of its own. A full-bleed band outside the wrapper draws its own pair once, at the column edges, from its inner column.
 
-The GT landing's rail token is 1104px because its original pages ran `max-w-[1120px] px-2`, which put their side lines 1104px apart. A first rail of 1100px doubled every hairline against the old sections by 2px a side. The retired second pair of lines at plus or minus 10px came from a `::before` inset -10px from the padding box, and the padding box sits 1px inside the border, so its real offset was 9px. Any band pseudo-element that did not use the shared token jogged 1px at the junctions.
+The General Translation landing's rail token is 1104px because its original pages ran `max-w-[1120px] px-2`, which put their side lines 1104px apart. A first rail of 1100px doubled every hairline against the old sections by 2px a side. The retired second pair of lines at plus or minus 10px came from a `::before` inset -10px from the padding box, and the padding box sits 1px inside the border, so its real offset was 9px. Any band pseudo-element that did not use the shared token jogged 1px at the junctions.
 
 The practices lint (`scripts/lint/practices.mjs`) fails a pseudo-element that pushes an inline border pair outside its box, the retired token and prose that still recommends the retired pair.
 
@@ -69,7 +69,7 @@ The practices lint's `border-image-none` check fails the shorthand in any styles
 
 ## Stacking contexts over seams
 
-A stacking context paints over neighbouring 1px seams. A standing `will-change` or a leftover transform of 0px creates one. On the GT landing, reveal tweens left transforms on framed cards, and the cards then painted over the top rule of the hatch band below them.
+A stacking context paints over neighbouring 1px seams. A standing `will-change` or a leftover transform of 0px creates one. On the General Translation landing, reveal tweens left transforms on framed cards, and the cards then painted over the top rule of the hatch band below them.
 
 | Fix | Where |
 | --- | --- |
@@ -81,7 +81,7 @@ The [gt-motion](/skills/gt-motion) skill lists this trap with the GSAP ones, and
 
 ## Registration crosses and horizontal clipping
 
-A registration cross marks the point where a section seam meets the rail. The GT landing draws it with 9px arms, 1px thick, hanging 5px past the rail, in ink at 0.38 in light and white at 0.34 in dark. One pseudo-element per seam is enough, because the next section's top corners are the same points. A full-bleed band clips its own pseudo-elements, so the section after it paints its own top pair.
+A registration cross marks the point where a section seam meets the rail. The General Translation landing draws it with 9px arms, 1px thick, hanging 5px past the rail, in ink at 0.38 in light and white at 0.34 in dark. One pseudo-element per seam is enough, because the next section's top corners are the same points. A full-bleed band clips its own pseudo-elements, so the section after it paints its own top pair.
 
 The arms reach 5px past the rail, so the page root needs horizontal clipping. `overflow: hidden` makes the root a scroll container, and every `position: sticky` figure further down the page stops sticking. The root takes `overflow-x: clip`, which clips without creating a scroll container.
 

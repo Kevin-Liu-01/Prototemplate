@@ -1,6 +1,6 @@
 # Paid campaigns and heartbeats
 
-Detail for section 7 of `gt-orchestration`. The forms come from model comparison campaigns Kevin approved in October 2026 (a personal project; the method transfers to any GT work that pays per model call, such as choosing a model for an assist feature) and from the cost rules in the gt-cloud memory notes. Spend caps are estimates of model spend, and the account a cost lands on is checked before the run.
+Detail for section 7 of `gt-orchestration`. The forms come from model comparison campaigns Kevin approved in October 2026 (a personal project; the method transfers to any General Translation work that pays per model call, such as choosing a model for an assist feature) and from the cost rules in the gt-cloud memory notes. Spend caps are estimates of model spend, and the account a cost lands on is checked before the run.
 
 ## The proposal
 

@@ -16,6 +16,6 @@ Provenance for `gt-reporting`. The first list is the skill's sources as written 
 | --- | --- | --- |
 | A review page is published from a builder and data kept in a tracked folder; six scratch builders were lost | SKILL.md section 1, "Where a review page lives" | the artifacts sweep of 2026-10-10 (inventory artifacts item 19, which lists the lost builders), with items 7, 8 and 9 (the film script review page and the listening page from the Videos session, 2026-10-05 and 2026-10-06; the "show me everything" ledger page, 2026-10-01) |
 | The film script page and the listening page belong to the Videos session's film kit | SKILL.md section 1 | inventory artifacts items 7 and 8; the Videos session's reply of 2026-10-10 accepting the film kit (plan message M1) |
-| The hub links only design-system Artifacts, from the owning skill, and never a confidential page | SKILL.md section 1 | inventory artifacts item 19 (every GT Artifact is organization-only; the site renders skills publicly); plan row N-23 |
+| The hub links only design-system Artifacts, from the owning skill, and never a confidential page | SKILL.md section 1 | inventory artifacts item 19 (every General Translation Artifact is organization-only; the site renders skills publicly); plan row N-23 |
 | `metadata.owner: P` | frontmatter | system v2 plan section 2.2 (2026-10-10) |
 | `scripts/pr-slate.mjs` header: `Requires:` and `Last real run:` | the script | inventory skills item 20 (seven runs, all 2026-10-06); plan section 2.2 bundled-script table |
