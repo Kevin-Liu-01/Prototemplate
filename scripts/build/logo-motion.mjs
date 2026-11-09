@@ -372,20 +372,31 @@ const start = (channel, { len, off }) => `  --gt-logo-${channel}: ${f2(len)}px;\
    hovered, or while it is active */
 const HOST = ':is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible)';
 const HOVERED = `:is(${HOST} .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active]))`;
-/** the hover's transitions: forward on enter, backward in time on leave */
-const hoverTransition = (back) =>
+/* The hover moves each dash's own stroke-dasharray and stroke-dashoffset by
+   transitions on the paths that draw it, not the custom properties on the
+   svg: WebKit (Safari 26) runs a transition of a registered custom property
+   but paints the var() that reads it at its end value, so there the hover
+   jumped. The svg's custom properties change at once on enter and on
+   leave, and each path's dash follows on its channel's easing. */
+const HOVER_DASHES = [
+  ['.gt-logo-motion-meridian, .gt-logo-motion-breaks', meridianBack],
+  ['.gt-logo-motion-latitude', latitudeBack],
+  ['.gt-logo-motion-stem-cut', stemBack],
+];
+/** one dash's transitions: forward on enter, backward in time on leave */
+const hoverTransition = (fn, back) =>
   [
-    ['meridian', (s) => meridianBack(s / HOVER_S).len],
-    ['meridian-at', (s) => meridianBack(s / HOVER_S).off],
-    ['latitude', (s) => latitudeBack(s / HOVER_S).len],
-    ['latitude-at', (s) => latitudeBack(s / HOVER_S).off],
-    ['stem', (s) => stemBack(s / HOVER_S).len],
-    ['stem-at', (s) => stemBack(s / HOVER_S).off],
+    ['stroke-dasharray', (s) => fn(s / HOVER_S).len],
+    ['stroke-dashoffset', (s) => fn(s / HOVER_S).off],
   ]
-    .map(([name, fn]) => [name, easing(fn, HOVER_S, back)])
+    .map(([name, course]) => [name, easing(course, HOVER_S, back)])
     .filter(([, ease]) => ease)
-    .map(([name, ease]) => `\n    --gt-logo-${name} ${ms(HOVER_S)} ${ease}`)
+    .map(([name, ease]) => `\n    ${name} ${ms(HOVER_S)} ${ease}`)
     .join(',');
+const hoverDashes = HOVER_DASHES.map(([paths, fn]) => {
+  const sel = paths.includes(',') ? `:is(${paths})` : paths;
+  return `.gt-logo-motion[data-mode='hover'] ${sel} {\n  transition:${hoverTransition(fn, true)};\n}\n\n${HOVERED} ${sel} {\n  transition:${hoverTransition(fn, false)};\n}`;
+}).join('\n\n');
 const indent = (text) => text.replace(/^(?=.)/gm, '  ');
 
 const css = `${HEAD}
@@ -402,9 +413,12 @@ const css = `${HEAD}
    (${ms(HOVER_S)}), then the two-beat lap for as long as it is mounted
    (${ms(LOOP_S)} a lap: the meridian ${ms(beats.D1)}, a rest of ${ms(beats.R1)}, the G ${ms(beats.D2)},
    a rest of ${ms(beats.R2)}). A hover mark moves the same draw-back by
-   transitions while its host is hovered or keyboard focused, each property
-   on the source's course as a linear() easing, and runs it backward in time
-   when it is left. The rest layer, the logo's own path, hides at once on
+   transitions while its host is hovered or keyboard focused: the svg's
+   properties change at once, and each path's stroke-dasharray and
+   stroke-dashoffset follow on the source's course as a linear() easing
+   (Safari paints a transitioned custom property's var() at its end value,
+   so the transitions sit on the dashes themselves); a leave runs the
+   course backward in time. The rest layer, the logo's own path, hides at once on
    enter and shows again only when the leave has run, so the still is the
    logo. Every rule that moves or swaps a layer sits inside
    prefers-reduced-motion: no-preference, so under reduced motion every mode
@@ -505,16 +519,13 @@ ${indent(`/* the loader */
 
 /* the hover: the dashes run to the hovered values on enter and back on
    leave; the layers swap at once on enter and only after the leave */
-.gt-logo-motion[data-mode='hover'] > svg {
-  transition:${hoverTransition(true)};
-}
-
 ${HOVERED} > svg {
-  transition:${hoverTransition(false)};
 ${start('meridian', meridianBack(1))}
 ${start('latitude', latitudeBack(1))}
 ${start('stem', stemBack(1))}
 }
+
+${hoverDashes}
 
 .gt-logo-motion[data-mode='hover'] .gt-logo-motion-rest {
   transition: visibility 0s linear ${ms(HOVER_S)};

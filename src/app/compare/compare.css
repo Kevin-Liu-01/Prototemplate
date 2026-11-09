@@ -8,7 +8,8 @@
    sheet's height from the stage so the panes fill it) or to the stage
    height, panning sideways to the named pane (Left, Right), so the panes
    keep their exhibit width and the proportional scroll sync in
-   CompareRig.tsx reads two same-origin windows of one size. The caption
+   CompareRig.tsx reads two same-origin windows of one size. A pane still
+   loading shows the logo loader on the paper over its frame. The caption
    names both panes and marks the target in ink. Colors are tokens only. */
 
 .pt-cmp-panes {
@@ -28,11 +29,26 @@
 
 /* a pane whose page has not painted yet shows the paper, never a hole */
 .pt-cmp-pane {
+  grid-area: 1 / 1;
   display: block;
   width: 1440px;
   height: 100%;
   border: 0;
   background: var(--pt-paper);
+}
+
+/* the loader over a pane still loading; it leaves with the load. The
+   z-index keeps it over the frame in Safari, which paints a frame's layer
+   over a later sibling that is not positioned */
+.pt-cmp-wait {
+  position: relative;
+  z-index: 1;
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  pointer-events: none;
 }
 
 .pt-cmp-seam {

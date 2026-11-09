@@ -29,9 +29,11 @@ import './GtLogoMotion.css';
  * and the loader is the still logo with its label. The ink is
  * currentColor, so the parent sets it in both themes.
  *
- * The motion animates registered custom properties, which run on the main
- * thread: the loader stalls while the page's main thread is busy, so it is
- * no cover for heavy script work. It needs @property and CSS linear()
+ * The loader animates registered custom properties and the hover each
+ * dash's own stroke-dasharray and stroke-dashoffset (Safari paints a
+ * transitioned custom property's var() at its end value). Both run on the
+ * main thread: the loader stalls while the page's main thread is busy, so
+ * it is no cover for heavy script work. It needs @property and CSS linear()
  * easing (Chrome 113, Safari 17.2 and Firefox 128 or later).
  *
  * To use it in another React app, copy this file, GtLogoMotion.css and

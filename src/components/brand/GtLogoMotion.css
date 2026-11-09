@@ -12,9 +12,12 @@
    (600ms), then the two-beat lap for as long as it is mounted
    (3200ms a lap: the meridian 1250ms, a rest of 220ms, the G 1400ms,
    a rest of 330ms). A hover mark moves the same draw-back by
-   transitions while its host is hovered or keyboard focused, each property
-   on the source's course as a linear() easing, and runs it backward in time
-   when it is left. The rest layer, the logo's own path, hides at once on
+   transitions while its host is hovered or keyboard focused: the svg's
+   properties change at once, and each path's stroke-dasharray and
+   stroke-dashoffset follow on the source's course as a linear() easing
+   (Safari paints a transitioned custom property's var() at its end value,
+   so the transitions sit on the dashes themselves); a leave runs the
+   course backward in time. The rest layer, the logo's own path, hides at once on
    enter and shows again only when the leave has run, so the still is the
    logo. Every rule that moves or swaps a layer sits inside
    prefers-reduced-motion: no-preference, so under reduced motion every mode
@@ -165,26 +168,45 @@
 
   /* the hover: the dashes run to the hovered values on enter and back on
      leave; the layers swap at once on enter and only after the leave */
-  .gt-logo-motion[data-mode='hover'] > svg {
-    transition:
-      --gt-logo-meridian 600ms linear(0 0%, 0 6.944%, 0.0022 7.639%, 0.0103 9.722%, 0.0275 13.889%, 0.0305 14.583%, 0.0356 15.278%, 0.0703 17.361%, 0.0921 18.75%, 0.1129 20.139%, 0.1535 22.917%, 0.1752 24.306%, 0.1869 25%, 0.1993 25.694%, 0.2125 26.389%, 0.2266 27.083%, 0.2417 27.778%, 0.2524 28.472%, 0.2652 30.556%, 0.2743 31.944%, 0.2938 34.722%, 0.3098 36.806%, 0.321 38.194%, 0.345 40.972%, 0.371 43.75%, 0.3847 45.139%, 0.4061 47.222%, 0.4362 50%, 0.4917 54.861%, 0.5225 57.639%, 0.5516 60.417%, 0.579 63.194%, 0.6044 65.972%, 0.6278 68.75%, 0.6442 70.833%, 0.6598 72.917%, 0.6749 75%, 0.6943 77.778%, 0.7012 78.472%, 0.7173 79.167%, 0.7324 79.861%, 0.7467 80.556%, 0.7601 81.25%, 0.7729 81.944%, 0.7852 82.639%, 0.8084 84.028%, 0.8761 88.194%, 0.8996 89.583%, 0.924 90.972%, 0.9354 91.667%, 0.9526 95.139%, 0.9572 95.833%, 0.9636 96.528%, 0.9721 97.222%, 0.982 97.917%, 0.9902 98.611%, 0.9962 99.306%, 1 100%),
-      --gt-logo-meridian-at 600ms linear(0 0%, 0 70.139%, 0.0106 72.222%, 0.0882 76.389%, 0.2109 79.861%, 0.348 82.639%, 0.6839 88.194%, 0.867 92.361%, 0.9724 96.528%, 1 100%),
-      --gt-logo-latitude 600ms linear(0 0%, 0.043 14.583%, 0.1718 29.167%, 0.7 61.111%, 0.8763 75%, 0.9691 87.5%, 1 100%),
-      --gt-logo-stem 600ms linear(0 0%, 0.043 14.583%, 0.1718 29.167%, 0.7 61.111%, 0.8763 75%, 0.9691 87.5%, 1 100%);
-  }
-
   :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) > svg {
-    transition:
-      --gt-logo-meridian 600ms linear(0 0%, 0.0038 0.694%, 0.0098 1.389%, 0.018 2.083%, 0.0279 2.778%, 0.0364 3.472%, 0.0428 4.167%, 0.0474 4.861%, 0.0646 8.333%, 0.076 9.028%, 0.1004 10.417%, 0.1239 11.806%, 0.1916 15.972%, 0.2148 17.361%, 0.2271 18.056%, 0.2399 18.75%, 0.2533 19.444%, 0.2676 20.139%, 0.2827 20.833%, 0.2988 21.528%, 0.3057 22.222%, 0.3251 25%, 0.3402 27.083%, 0.3558 29.167%, 0.3722 31.25%, 0.3956 34.028%, 0.421 36.806%, 0.4484 39.583%, 0.4775 42.361%, 0.5083 45.139%, 0.5638 50%, 0.5939 52.778%, 0.6153 54.861%, 0.629 56.25%, 0.655 59.028%, 0.679 61.806%, 0.6902 63.194%, 0.7062 65.278%, 0.7257 68.056%, 0.7348 69.444%, 0.7476 71.528%, 0.7583 72.222%, 0.7734 72.917%, 0.7875 73.611%, 0.8007 74.306%, 0.8131 75%, 0.8248 75.694%, 0.8465 77.083%, 0.8871 79.861%, 0.9079 81.25%, 0.9297 82.639%, 0.9644 84.722%, 0.9695 85.417%, 0.9725 86.111%, 0.9897 90.278%, 0.9978 92.361%, 1 93.056%, 1 100%),
-      --gt-logo-meridian-at 600ms linear(0 0%, 0.0276 3.472%, 0.133 7.639%, 0.3161 11.806%, 0.652 17.361%, 0.7891 20.139%, 0.9118 23.611%, 0.9894 27.778%, 1 29.861%, 1 100%),
-      --gt-logo-latitude 600ms linear(0 0%, 0.0309 12.5%, 0.1237 25%, 0.3 38.889%, 0.8282 70.833%, 0.957 85.417%, 1 100%),
-      --gt-logo-stem 600ms linear(0 0%, 0.0309 12.5%, 0.1237 25%, 0.3 38.889%, 0.8282 70.833%, 0.957 85.417%, 1 100%);
     --gt-logo-meridian: 0px;
     --gt-logo-meridian-at: 9.89px;
     --gt-logo-latitude: 426.2px;
     --gt-logo-latitude-at: 0px;
     --gt-logo-stem: 439.8px;
     --gt-logo-stem-at: -6.8px;
+  }
+
+  .gt-logo-motion[data-mode='hover'] :is(.gt-logo-motion-meridian, .gt-logo-motion-breaks) {
+    transition:
+      stroke-dasharray 600ms linear(0 0%, 0 6.944%, 0.0022 7.639%, 0.0103 9.722%, 0.0275 13.889%, 0.0305 14.583%, 0.0356 15.278%, 0.0703 17.361%, 0.0921 18.75%, 0.1129 20.139%, 0.1535 22.917%, 0.1752 24.306%, 0.1869 25%, 0.1993 25.694%, 0.2125 26.389%, 0.2266 27.083%, 0.2417 27.778%, 0.2524 28.472%, 0.2652 30.556%, 0.2743 31.944%, 0.2938 34.722%, 0.3098 36.806%, 0.321 38.194%, 0.345 40.972%, 0.371 43.75%, 0.3847 45.139%, 0.4061 47.222%, 0.4362 50%, 0.4917 54.861%, 0.5225 57.639%, 0.5516 60.417%, 0.579 63.194%, 0.6044 65.972%, 0.6278 68.75%, 0.6442 70.833%, 0.6598 72.917%, 0.6749 75%, 0.6943 77.778%, 0.7012 78.472%, 0.7173 79.167%, 0.7324 79.861%, 0.7467 80.556%, 0.7601 81.25%, 0.7729 81.944%, 0.7852 82.639%, 0.8084 84.028%, 0.8761 88.194%, 0.8996 89.583%, 0.924 90.972%, 0.9354 91.667%, 0.9526 95.139%, 0.9572 95.833%, 0.9636 96.528%, 0.9721 97.222%, 0.982 97.917%, 0.9902 98.611%, 0.9962 99.306%, 1 100%),
+      stroke-dashoffset 600ms linear(0 0%, 0 70.139%, 0.0106 72.222%, 0.0882 76.389%, 0.2109 79.861%, 0.348 82.639%, 0.6839 88.194%, 0.867 92.361%, 0.9724 96.528%, 1 100%);
+  }
+
+  :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) :is(.gt-logo-motion-meridian, .gt-logo-motion-breaks) {
+    transition:
+      stroke-dasharray 600ms linear(0 0%, 0.0038 0.694%, 0.0098 1.389%, 0.018 2.083%, 0.0279 2.778%, 0.0364 3.472%, 0.0428 4.167%, 0.0474 4.861%, 0.0646 8.333%, 0.076 9.028%, 0.1004 10.417%, 0.1239 11.806%, 0.1916 15.972%, 0.2148 17.361%, 0.2271 18.056%, 0.2399 18.75%, 0.2533 19.444%, 0.2676 20.139%, 0.2827 20.833%, 0.2988 21.528%, 0.3057 22.222%, 0.3251 25%, 0.3402 27.083%, 0.3558 29.167%, 0.3722 31.25%, 0.3956 34.028%, 0.421 36.806%, 0.4484 39.583%, 0.4775 42.361%, 0.5083 45.139%, 0.5638 50%, 0.5939 52.778%, 0.6153 54.861%, 0.629 56.25%, 0.655 59.028%, 0.679 61.806%, 0.6902 63.194%, 0.7062 65.278%, 0.7257 68.056%, 0.7348 69.444%, 0.7476 71.528%, 0.7583 72.222%, 0.7734 72.917%, 0.7875 73.611%, 0.8007 74.306%, 0.8131 75%, 0.8248 75.694%, 0.8465 77.083%, 0.8871 79.861%, 0.9079 81.25%, 0.9297 82.639%, 0.9644 84.722%, 0.9695 85.417%, 0.9725 86.111%, 0.9897 90.278%, 0.9978 92.361%, 1 93.056%, 1 100%),
+      stroke-dashoffset 600ms linear(0 0%, 0.0276 3.472%, 0.133 7.639%, 0.3161 11.806%, 0.652 17.361%, 0.7891 20.139%, 0.9118 23.611%, 0.9894 27.778%, 1 29.861%, 1 100%);
+  }
+
+  .gt-logo-motion[data-mode='hover'] .gt-logo-motion-latitude {
+    transition:
+      stroke-dasharray 600ms linear(0 0%, 0.043 14.583%, 0.1718 29.167%, 0.7 61.111%, 0.8763 75%, 0.9691 87.5%, 1 100%);
+  }
+
+  :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) .gt-logo-motion-latitude {
+    transition:
+      stroke-dasharray 600ms linear(0 0%, 0.0309 12.5%, 0.1237 25%, 0.3 38.889%, 0.8282 70.833%, 0.957 85.417%, 1 100%);
+  }
+
+  .gt-logo-motion[data-mode='hover'] .gt-logo-motion-stem-cut {
+    transition:
+      stroke-dasharray 600ms linear(0 0%, 0.043 14.583%, 0.1718 29.167%, 0.7 61.111%, 0.8763 75%, 0.9691 87.5%, 1 100%);
+  }
+
+  :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) .gt-logo-motion-stem-cut {
+    transition:
+      stroke-dasharray 600ms linear(0 0%, 0.0309 12.5%, 0.1237 25%, 0.3 38.889%, 0.8282 70.833%, 0.957 85.417%, 1 100%);
   }
 
   .gt-logo-motion[data-mode='hover'] .gt-logo-motion-rest {

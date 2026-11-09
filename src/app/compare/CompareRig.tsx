@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { Seg } from '@/components/viewer/Seg';
 import type { SegOption } from '@/components/viewer/Seg';
 import { Sheet, SHEET_PAD } from '@/components/viewer/Sheet';
@@ -54,6 +55,12 @@ import './compare.css';
  * pane; the count reads `Left 01 / 17`, and the list marks the loaded
  * directions L and R. The shell writes #<slug> on every selection; onSelect
  * rewrites the pair form over it.
+ *
+ * A pane whose page has not loaded shows the GtLogoMotion loader on the
+ * paper. The rig learns a pane has loaded from its load event, or at mount
+ * from the document's readyState for a pane that loaded before hydration,
+ * so the loader is drawn only from mount on and only over a pane still
+ * loading: it never stands over a page that is already there.
  */
 
 const TITLE = 'Compare';
@@ -61,6 +68,9 @@ const MODES: readonly ShellMode[] = ['slide'];
 
 /** How long an echoed programmatic scroll stays inaudible. */
 const MUTE_MS = 160;
+
+/** The loader's box in sheet pixels: about 32px on screen in Both, 80px in a pane view. */
+const LOADER = 80;
 
 /** Each pane is a site exhibit; the seam between them is one hairline. */
 const PANE_W = 1440;
@@ -256,6 +266,8 @@ type ComparePanesProps = {
   pair: Pair;
   target: PaneKey;
   frames: Frames;
+  /** the panes whose page is still loading, which show the loader */
+  waiting: Record<PaneKey, boolean>;
   onLoad: (key: PaneKey) => void;
 };
 
@@ -265,10 +277,11 @@ type ComparePanesProps = {
  * session-history entries, so the browser's Back returns to the page the
  * visitor came from, not through every pick.
  */
-function ComparePanes({ pair, target, frames, onLoad }: ComparePanesProps) {
+function ComparePanes({ pair, target, frames, waiting, onLoad }: ComparePanesProps) {
   const pane = (key: PaneKey) => {
     const slug = pair[key];
     const name = getDirection(slug)?.name ?? slug;
+    const title = `${name}, ${PANE_NAME[key].toLowerCase()} pane`;
     return (
       <div className={key === target ? 'pt-cmp-col is-target' : 'pt-cmp-col'}>
         <iframe
@@ -276,9 +289,15 @@ function ComparePanes({ pair, target, frames, onLoad }: ComparePanesProps) {
           ref={frames[key]}
           className='pt-cmp-pane'
           src={`/d/${slug}?chrome=0`}
-          title={`${name}, ${PANE_NAME[key].toLowerCase()} pane`}
+          title={title}
+          data-slug={slug}
           onLoad={() => onLoad(key)}
         />
+        {waiting[key] ? (
+          <div className='pt-cmp-wait'>
+            <GtLogoMotion mode='loader' size={LOADER} label={`Loading ${title}`} />
+          </div>
+        ) : null}
       </div>
     );
   };
@@ -322,7 +341,7 @@ type CompareStageProps = ComparePanesProps & { view: PaneView };
  * and the fit follows the height, panning sideways. Reads the stage box the
  * shell publishes, so it re-renders with the sidebar and the window.
  */
-function CompareStage({ view, pair, target, frames, onLoad }: CompareStageProps) {
+function CompareStage({ view, pair, target, frames, waiting, onLoad }: CompareStageProps) {
   const { stageSize } = usePtStage();
   const { present, narrow } = usePtShell();
   const pad = present ? SHEET_PAD.present : narrow ? SHEET_PAD.narrow : SHEET_PAD.wide;
@@ -341,7 +360,7 @@ function CompareStage({ view, pair, target, frames, onLoad }: CompareStageProps)
       fit={view === 'both' ? 'contain' : 'height'}
       caption={<CompareCaption pair={pair} target={target} />}
     >
-      <ComparePanes pair={pair} target={target} frames={frames} onLoad={onLoad} />
+      <ComparePanes pair={pair} target={target} frames={frames} waiting={waiting} onLoad={onLoad} />
     </Sheet>
   );
 }
@@ -358,6 +377,14 @@ export default function CompareRig() {
   const [target, setTargetState] = useState<PaneKey>('a');
   const [view, setView] = useState<PaneView>('both');
   const [syncOn, setSyncOn] = useState(true);
+  /* the slug each pane last finished loading, and whether the mount pass
+     has run: before it the rig cannot know, so it draws no loader */
+  const [loaded, setLoaded] = useState<Record<PaneKey, string | null>>({ a: null, b: null });
+  const [mounted, setMounted] = useState(false);
+  const waiting: Record<PaneKey, boolean> = {
+    a: mounted && loaded.a !== pair.a,
+    b: mounted && loaded.b !== pair.b,
+  };
 
   /* the refs are written in the same call as the state so a select that
      follows in the same tick reads the new pair, not the render's */
@@ -456,8 +483,17 @@ export default function CompareRig() {
      its listeners die with it), while the flag stops the mount pass and
      onLoad from stacking a second listener on one document. */
   const wire = (key: PaneKey) => {
-    const win = frames[key].current?.contentWindow;
-    if (!win) return;
+    const el = frames[key].current;
+    const win = el?.contentWindow;
+    if (!el || !win) return;
+    try {
+      /* the frame's first document, before its page arrives, is an empty about:blank */
+      if (win.location.href === 'about:blank') return;
+    } catch {
+      /* a pane that left the origin has loaded something; it counts */
+    }
+    const slug = el.dataset.slug ?? null;
+    setLoaded((prev) => (prev[key] === slug ? prev : { ...prev, [key]: slug }));
     freeze(key);
     try {
       const doc = win.document as Document & { ptCmpWired?: boolean };
@@ -470,11 +506,13 @@ export default function CompareRig() {
   };
 
   /* a pane that finished loading before hydration already fired its load
-     event into the void; onLoad covers every later one */
+     event into the void; onLoad covers every later one. From here on a pane
+     not marked loaded shows the loader, in the same render as the marks */
   const wireLoaded = () => {
     PANE_KEYS.forEach((key) => {
       if (frames[key].current?.contentDocument?.readyState === 'complete') wire(key);
     });
+    setMounted(true);
   };
 
   /* the toolbar's controls, stable while the values they show hold, so the
@@ -514,7 +552,7 @@ export default function CompareRig() {
       onSelect={onSelect}
       toolbarSlot={tools}
     >
-      <CompareStage view={view} pair={pair} target={target} frames={frames} onLoad={wire} />
+      <CompareStage view={view} pair={pair} target={target} frames={frames} waiting={waiting} onLoad={wire} />
       <CompareBoot readPair={readPair} readTarget={readTarget} apply={apply} wireLoaded={wireLoaded} />
     </ViewerShell>
   );
