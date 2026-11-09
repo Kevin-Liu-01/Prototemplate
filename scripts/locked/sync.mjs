@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /* oxlint-disable no-console -- a report printed to stdout. */
 // Uploads an area's files to the private Blob store under locked/<area>/,
-// where the area's route serves them (src/lib/blob-area.ts, for raise and
-// music, each open to anyone with the link). Each area names
+// where the area's route serves them (src/lib/blob-area.ts, for raise,
+// open to anyone with the link). Each area names
 // the files and folders its viewer needs, and only files of the web types
 // below go up. Re-runnable: a manifest blob (locked/<area>.manifest.json,
 // outside the area's prefix, so the route never serves it) records each
@@ -15,14 +15,14 @@
 //   node scripts/locked/sync.mjs <area> [--dir <folder>] [--dry-run]
 //   pnpm sync:locked raise --dir ~/repos/Prototemplate/raise --dry-run
 //
-//   <area>     an area of AREAS below (raise, music)
+//   <area>     an area of AREAS below (raise)
 //   --dir      the local folder (default: <checkout>/<area>)
 //   --dry-run  read the store and print what would change, writing nothing
 //
 // Requires: LOCKED_BLOB_READ_WRITE_TOKEN, the read-write token of the
 // locked areas' own private store, in the environment; BLOB_READ_WRITE_TOKEN
 // is never read. A dry run without it compares against an empty store.
-// Last real run: 2026-11-09, opening /music with its tracks.
+// Last real run: 2026-11-09, the music area (since removed).
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
@@ -41,11 +41,6 @@ export const AREAS = {
   raise: {
     files: ['index.html', 'rounds.json', 'status.json', 'decisions.json'],
     folders: ['viewer', 'rounds', 'posters', 'inspiration'],
-  },
-  // the film score candidates: a page and its tracks
-  music: {
-    files: ['index.html'],
-    folders: ['tracks'],
   },
 };
 

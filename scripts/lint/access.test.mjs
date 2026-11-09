@@ -109,12 +109,11 @@ test('isLocked: a locked area and everything under it, in any spelling', () => {
   }
   for (const base of LOCKED) assert.equal(isLocked(`${base}/x`), true, base);
   assert.equal(isLocked('/raise/index.html'), false, '/raise opens to anyone with its link');
-  assert.equal(isLocked('/music/index.html'), false, '/music opens to anyone with its link');
 });
 
-test('a locked area is private: noindex, nofollow, out of the sitemap; /raise, /music and /sign-in too', () => {
-  for (const path of [...LOCKED, '/raise', '/music', '/sign-in']) assert.ok(PRIVATE_PATHS.includes(path), path);
-  for (const path of ['/raise', '/raise/index.html', '/music', '/music/index.html', '/sign-in']) {
+test('a locked area is private: noindex, nofollow, out of the sitemap; /raise and /sign-in too', () => {
+  for (const path of [...LOCKED, '/raise', '/sign-in']) assert.ok(PRIVATE_PATHS.includes(path), path);
+  for (const path of ['/raise', '/raise/index.html', '/sign-in']) {
     const policy = policyFor(path);
     assert.equal(policy.index, false, path);
     assert.equal(policy.follow, false, path);

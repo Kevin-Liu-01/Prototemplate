@@ -17,7 +17,6 @@ deck/tmp
 
 # a locked area's local folder, which scripts/locked/sync.mjs uploads to the private Blob store
 /raise/
-/music/
 
 # motion/ (owned by the Videos session) is tracked through an allowlist: everything under it
 # is ignored except MOTION.md, the kit's code and the text sources of the films the site

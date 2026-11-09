@@ -15,6 +15,7 @@ test('only web types with plain names go up', () => {
   assert.equal(typeOf('index.html'), 'text/html; charset=utf-8');
   assert.equal(typeOf('rounds/r1/a.webp'), 'image/webp');
   assert.equal(typeOf('rounds/r1/a.MP4'), 'video/mp4');
+  assert.equal(typeOf('music/01-a.m4a'), 'audio/mp4');
   for (const path of ['notes.md', 'viewer/build.py', 'viewer/__pycache__/x.pyc', '.DS_Store', 'viewer/.hidden.js', 'a/../b.png', 'README']) {
     assert.equal(typeOf(path), null, path);
   }
@@ -30,20 +31,6 @@ test('the raise files: the viewer, its data and its media when present, never no
     const files = localFiles(dir, AREAS.raise);
     assert.deepEqual(files.map((file) => file.path), ['index.html', 'rounds.json', 'viewer/app.js', 'rounds/r1/a.webp', 'posters/p.png', 'inspiration/i.webp']);
     assert.ok(files.every((file) => /^[0-9a-f]{64}$/.test(file.sha256)));
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
-});
-
-test('the music files: the page and its tracks, never the notes or the working files', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'pt-sync-'));
-  try {
-    for (const path of ['index.html', 'notes.md', 'tracks/01-a.m4a', 'tracks/01-a.wav', 'work/x.m4a']) {
-      mkdirSync(join(dir, path, '..'), { recursive: true });
-      writeFileSync(join(dir, path), path);
-    }
-    assert.equal(typeOf('tracks/01-a.m4a'), 'audio/mp4');
-    assert.deepEqual(localFiles(dir, AREAS.music).map((file) => file.path), ['index.html', 'tracks/01-a.m4a']);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
