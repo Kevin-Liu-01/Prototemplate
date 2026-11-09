@@ -389,7 +389,7 @@ const PAGES: readonly BrandPage[] = [
     body: (
       <>
         <p>
-          One face carries the brand. <strong>Katagami Text</strong> is the display,
+          One face carries the brand. <strong>Katagami Text</strong>{' '}is the display,
           interface and text typeface: the name in the logo, headlines, interface chrome,
           captions and long-form reading are all set in it, self-hosted rather than loaded
           from a font CDN. It replaced Inter. This site still renders Inter (the rsms.me
@@ -409,7 +409,7 @@ const PAGES: readonly BrandPage[] = [
         </p>
         <div className='ptb-type'>
           <div className='ptb-face'>
-            <span className='ptb-face-tag'>Inter, this site&rsquo;s build until its switch · 300–800, headings at 500 or lighter</span>
+            <span className='ptb-face-tag'>Inter, this site&rsquo;s build · 300–800, headings at 500 or lighter</span>
             {INTER_WEIGHTS.map((weight) => (
               <p className='ptb-display' key={weight} style={{ fontWeight: weight }}>
                 Every product in every language
@@ -417,7 +417,7 @@ const PAGES: readonly BrandPage[] = [
             ))}
           </div>
           <div className='ptb-face'>
-            <span className='ptb-face-tag'>Inter, this site&rsquo;s build until its switch · text, roman + italic</span>
+            <span className='ptb-face-tag'>Inter, this site&rsquo;s build · text, roman + italic</span>
             <p className='ptb-inter'>
               General Translation builds full-stack infrastructure for localizing apps,
               docs, and websites: i18n libraries, context-aware translation, and the
