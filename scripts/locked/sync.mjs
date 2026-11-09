@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /* oxlint-disable no-console -- a report printed to stdout. */
 // Uploads an area's files to the private Blob store under locked/<area>/,
-// where the area's route serves them (src/app/raise/[[...path]]/route.ts
-// for raise, open to anyone with the link). Each area names
+// where the area's route serves them (src/lib/blob-area.ts, for raise and
+// music, each open to anyone with the link). Each area names
 // the files and folders its viewer needs, and only files of the web types
 // below go up. Re-runnable: a manifest blob (locked/<area>.manifest.json,
 // outside the area's prefix, so the route never serves it) records each
@@ -15,7 +15,7 @@
 //   node scripts/locked/sync.mjs <area> [--dir <folder>] [--dry-run]
 //   pnpm sync:locked raise --dir ~/repos/Prototemplate/raise --dry-run
 //
-//   <area>     an area of AREAS below (raise)
+//   <area>     an area of AREAS below (raise, music)
 //   --dir      the local folder (default: <checkout>/<area>)
 //   --dry-run  read the store and print what would change, writing nothing
 //
@@ -42,6 +42,11 @@ export const AREAS = {
     files: ['index.html', 'rounds.json', 'status.json', 'decisions.json'],
     folders: ['viewer', 'rounds', 'posters', 'inspiration'],
   },
+  // the film score candidates: a page and its tracks
+  music: {
+    files: ['index.html'],
+    folders: ['tracks'],
+  },
 };
 
 /** The web types that go up, by extension; any other file is left out. */
@@ -60,6 +65,7 @@ export const TYPES = {
   svg: 'image/svg+xml',
   mp4: 'video/mp4',
   webm: 'video/webm',
+  m4a: 'audio/mp4',
 };
 
 /** A path segment the route serves: no dot first, so no hidden file. Matches SEGMENT in the route. */

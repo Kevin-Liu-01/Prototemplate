@@ -68,6 +68,8 @@ src/
     raise/[[...path]]/    /raise, open by link and unlisted: its files,
                           streamed from the locked areas' private Blob
                           store, which scripts/locked/sync.mjs fills
+    music/[[...path]]/    /music, the same for the film score candidates;
+                          both routes are src/lib/blob-area.ts
     prototemplate.css     the pt grammar (index + craft chrome)
     globals.css           the four color tokens, the reset, the scrollbar,
                           the plate theme import and Tailwind's sources
