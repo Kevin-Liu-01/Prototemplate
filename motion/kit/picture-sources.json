@@ -3,20 +3,20 @@
  "generated": "2026-10-10",
  "files": [
   {
-   "path": "films/blog-designing-docs/lib/fonts/InterCanvas.woff2",
-   "bytes": 351132,
-   "sha256": "741683b984df29f0a8854617f06b08a111bd01eb38c3d42f3856989ce4e1c0b1",
+   "path": "films/blog-designing-docs/lib/fonts/KatagamiCanvas.woff2",
+   "bytes": 246236,
+   "sha256": "12722aeaae18e61b3587ce5dc8fb56fb732a036ac96537298f0b49db15248759",
    "kind": "font",
    "twin": null,
    "used_by": [
     "films/blog-designing-docs"
    ],
-   "derived_from": "kit/fonts/InterVariable.woff2 with its cv11 substitutions baked into the cmap with fontTools (blog-designing-docs NOTES.md; slash-announcement CREDITS.txt)",
-   "source": "Inter (rsms/inter), the kit's Inter modified (slash-announcement CREDITS.txt, TYPE)",
+   "derived_from": "kit/fonts/KatagamiText.woff2 with its cv11 substitutions baked into the cmap with fontTools (a byte copy of kit/fonts/KatagamiCanvas.woff2)",
+   "source": "Katagami Text (Kevin-Liu-01/Katagami), the kit's KatagamiCanvas.woff2",
    "licence": "SIL Open Font License 1.1",
-   "credit": "Inter (rsms/inter, SIL Open Font License 1.1)",
+   "credit": "Katagami Text (Kevin-Liu-01/Katagami, SIL Open Font License 1.1)",
    "redistribute": "yes",
-   "why": "OFL 1.1 per slash-announcement CREDITS.txt; byte-identical to films/slash-announcement/lib/fonts/InterCanvas.woff2; no OFL text sits beside it"
+   "why": "OFL 1.1; loaded only under private family names for canvas text (it replaced InterCanvas.woff2 on 2026-11-09)"
   },
   {
    "path": "films/blog-fuma-nama/assets/logos/better-auth.svg",
@@ -4385,21 +4385,16 @@
   },
   {
    "path": "kit/gem-shapes/gt-mark.png",
-   "bytes": 107074,
-   "sha256": "893d67d3f441d0b97f0dbe700f5ff8dc38dc78024f5c124e8c3a6d4cc2ce1792",
+   "bytes": 190611,
+   "sha256": "fc81386ecf57fb6a43de6cc714a63082a051b5351f9100c497cb1ebd656359b9",
    "kind": "mark",
    "twin": null,
    "used_by": [
-    "films/blog-designing-docs (via kit/endcard/endcard.js)",
-    "films/blog-fuma-nama",
-    "kit/endcard/endcard.js",
-    "kit/endcard/README.md",
-    "films/_gem (kit demo)",
-    "films/_endcard-blue (kit demo, via kit/endcard/endcard.js)",
-    "films/_endcard-fire (kit demo, via kit/endcard/endcard.js)"
+    "films/blog-fuma-nama (shot 7, the logo in fire smoke)",
+    "films/_gem (kit demo)"
    ],
-   "derived_from": "kit/brand/gt-mark.svg, padded 0.16 in a 1024 px square and run through Paper Shaders toProcessedGemSmoke by kit/gem-shapes/make.mjs",
-   "source": "made by the kit from General Translation's doubled-line mark; not published elsewhere",
+   "derived_from": "kit/brand/gt-mark.svg (the globe since 2026-11-09), padded 0.16 in a 1024 px square and run through Paper Shaders toProcessedGemSmoke by kit/gem-shapes/make.mjs",
+   "source": "made by the kit from General Translation's globe logo; not published elsewhere",
    "licence": "General Translation's own material",
    "credit": null,
    "redistribute": "own",

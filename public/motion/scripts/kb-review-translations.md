@@ -1,6 +1,6 @@
 # How do I review and edit translations?
 
-44.8 s · Narrator: Frederick Surrey
+47.0 s · Narrator: Frederick Surrey
 
 Open the Translations page in the General Translation Dashboard, choose Files or Components and the locales to compare, and click a translation to edit it. Edits are drafts until you click Save. Annotations track the review, and Locadex can open a pull request that brings the edits into your repository.
 

@@ -1,6 +1,6 @@
 # The release board
 
-15.0 s · v2 · Narrator: Frederick Surrey
+16.2 s · v3 · Narrator: Frederick Surrey
 
 A split-flap board fills with the newest releases of General Translation's packages, and the newest, gt 2.23, lets you sign in and set up projects from the CLI.
 

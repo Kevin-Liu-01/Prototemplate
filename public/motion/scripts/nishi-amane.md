@@ -1,6 +1,6 @@
 # Nishi Amane and the Japanese vocabulary of philosophy
 
-95.6 s · Narrator: Frederick Surrey; Japanese reader: Hijiri
+98.2 s · Narrator: Frederick Surrey; Japanese reader: Hijiri
 
 Japanese and Chinese both write “philosophy” 哲學. Nishi Amane took 希 from Zhou Dunyi’s line that the scholar aspires to be worthy and named the study kitetsugaku in 1861, dropped the 希 by 1870, chose tetsugaku over rigaku to keep it apart from Confucian learning, and printed it in 1874 in a sentence that runs over a page turn. His lectures also gave Japanese its words for induction, deduction, definition and proposition; Chinese books took up the word from 1889, Wang Guowei argued in 1905 for keeping the Japanese terms, and two of those words replaced the ones Ricci and Xu had made for Euclid.
 

@@ -1,0 +1,25 @@
+{
+  "$schema": "../../kit/film.schema.json",
+  "$comment": "Fuma Nama: The philosophy of an open-sourcerer (v4 cut, re-cut 2026-11-09 for the globe logo, Katagami Text and the 5.2 s looping end card). Gem smoke, so the hardware GPU path. Its earlier finals were rendered by hand (NOTES.md); this file lets kit/film.mjs deliver it. Poster: the settled end card, the master's last frame (frame 3641 of the 60.7 s cut). The script page reads this folder's script.json.",
+  "slug": "blog-fuma-nama",
+  "kind": "blog",
+  "path": "gpu",
+  "fps": 60,
+  "workers": 3,
+  "timeout": 40,
+  "poster": {
+    "frame": 3641
+  },
+  "records": [
+    "poster",
+    "sheets",
+    "checking",
+    "script"
+  ],
+  "checking": "../journey-to-the-west/tools/sheet.py",
+  "script": {
+    "source": "films/blog-fuma-nama/script.json",
+    "voices": "Narrator: Frederick Surrey",
+    "version": "v5"
+  }
+}

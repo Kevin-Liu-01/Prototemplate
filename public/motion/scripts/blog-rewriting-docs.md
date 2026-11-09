@@ -1,6 +1,6 @@
 # Rewriting docs for humans and agents
 
-23.5 s · v2 · Narrator: Frederick Surrey
+24.7 s · v3 · Narrator: Frederick Surrey
 
 Docs now have two readers, so General Translation rebuilt its docs for both: for people each page starts with what it covers, and for agents every page is also served as raw Markdown.
 

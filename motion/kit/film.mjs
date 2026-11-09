@@ -14,6 +14,10 @@
 //   --no-check   draft, final: skip hyperframes check (when it has just passed)
 //   --no-hear    final: make no ElevenLabs call; the previous final's transcript is reused,
 //                which needs the new master's decoded audio to equal the previous master's
+//   --reuse-transcript  final: reuse the previous final's transcript although the audio changed,
+//                for a film whose narration takes and their times are unchanged and only its end
+//                grew (2026-11-09: the logo's loop lengthened every end card); the transcript's
+//                length and its closing audio event are stretched to the new master's
 //   --out <dir>  status, final, prune: the folder that holds the finals, in place of motion/out,
 //                for a test run that must leave the delivered records alone
 //
@@ -720,6 +724,17 @@ export function probe(file) {
 function rate(fraction) {
   const [n, d] = String(fraction).split('/').map(Number);
   return d ? n / d : n;
+}
+
+/** A transcript stretched to a master that only grew at its end: its length, and its last event when that is an audio event (the closing music). */
+export function stretchTranscript(text, duration) {
+  const t = JSON.parse(text);
+  const grow = duration - (t.audio_duration_secs ?? duration);
+  if (grow < 0) throw new Error(`--reuse-transcript: the master (${duration} s) is shorter than the transcript's audio (${t.audio_duration_secs} s)`);
+  t.audio_duration_secs = Math.round(duration * 1000) / 1000;
+  const last = t.words?.[t.words.length - 1];
+  if (last && last.type === 'audio_event') last.end = Math.round((last.end + grow) * 1000) / 1000;
+  return JSON.stringify(t, null, 1);
 }
 
 /** Each frame's md5 from a framemd5 file's text, in order. */
@@ -1723,7 +1738,12 @@ async function cmdFinal(ctx, slug, opts) {
   const sttRel = `scripts/source/${slug}.stt.json`;
   const pickAudio = pick === 'a' ? audioA : audioB;
   let reuseTranscript = null;
+  let reuseWhy = `the master's decoded audio is the previous master's`;
   if (wantsTranscript && hasPrevious && prevAudio && prevAudio === pickAudio && existsSync(join(out, sttRel))) reuseTranscript = readFileSync(join(out, sttRel));
+  else if (wantsTranscript && opts.reuseTranscript && existsSync(join(out, sttRel))) {
+    reuseTranscript = Buffer.from(stretchTranscript(readFileSync(join(out, sttRel), 'utf8'), Number(probe(staged).format.duration)));
+    reuseWhy = '--reuse-transcript: the narration is unchanged and only the end grew; the transcript\'s length and closing audio event were stretched to the new master';
+  }
   if (wantsTranscript && !reuseTranscript && opts.noHear) fail(`--no-hear: the master's decoded audio (${pickAudio}) is not the previous master's (${prevAudio ?? 'none'}), or there is no previous transcript, so the script page needs one el.mjs hear call; run final without --no-hear; nothing was replaced`);
 
   /* 4. the previous final, its records and its pair's render records to the archive; the master moves last */
@@ -1743,7 +1763,7 @@ async function cmdFinal(ctx, slug, opts) {
   say(`master: ${show(ctx, master)} (render ${pick.toUpperCase()}, ${measured.seconds.toFixed(3)} s)`);
 
   /* 6 and 7. the records */
-  const done = await writeRecords(ctx, film, { master, reuseTranscript, sttRel, opts });
+  const done = await writeRecords(ctx, film, { master, reuseTranscript, reuseWhy, sttRel, opts });
   /* 8. the A and B MP4s to the archive; their logs, monitors and framemd5 files stay */
   const pairUnits = ['a', 'b', 'c']
     .map((x) => ({ x, file: join(renders, `final-${x}.mp4`) }))
@@ -1789,7 +1809,7 @@ async function cmdFinal(ctx, slug, opts) {
 }
 
 /** The final's records, each step on its own so that one failure does not stop the others. */
-export async function writeRecords(ctx, film, { master, reuseTranscript, sttRel, opts }) {
+export async function writeRecords(ctx, film, { master, reuseTranscript, reuseWhy = `the master's decoded audio is the previous master's`, sttRel, opts }) {
   const slug = film.slug;
   const dir = join(ctx.films, slug);
   const out = ctx.out;
@@ -1852,7 +1872,7 @@ export async function writeRecords(ctx, film, { master, reuseTranscript, sttRel,
       if (reuseTranscript) {
         writeFileSync(stt, reuseTranscript);
         sttReady = true;
-        return `the previous final's transcript, reused: the master's decoded audio is the previous master's, so no ElevenLabs call was made`;
+        return `the previous final's transcript, reused: ${reuseWhy}, so no ElevenLabs call was made`;
       }
       if (opts.noHear) throw new Error('--no-hear and no reusable transcript');
       must(run('node', [join(ctx.kit, 'audio', 'el.mjs'), 'hear', master, '--out', stt], { cwd: dir }), 'el.mjs hear');
@@ -1965,13 +1985,14 @@ function cmdPrune(ctx, slug, opts) {
 /* ---------------------------------------------------------------- the command line */
 
 export function parseArgs(argv) {
-  const opts = { dryRun: false, noCheck: false, noHear: false, out: undefined, help: false };
+  const opts = { dryRun: false, noCheck: false, noHear: false, reuseTranscript: false, out: undefined, help: false };
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--dry-run') opts.dryRun = true;
     else if (a === '--no-check') opts.noCheck = true;
     else if (a === '--no-hear') opts.noHear = true;
+    else if (a === '--reuse-transcript') opts.reuseTranscript = true;
     else if (a === '--out') {
       opts.out = argv[++i];
       if (!opts.out) fail('--out needs a folder', 2);

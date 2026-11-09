@@ -18,7 +18,7 @@
 
   const C = { ink: '#070707', raised: '#101010', white: '#ffffff', ti: '#8a8f98', hair: '#5c6068', acc: '#86a8ff' };
   const XML = 'http://www.w3.org/XML/1998/namespace';
-  const DUR = 17.3;
+  const DUR = 20.6;
   /*
    * The render opens 2.70 s into the story, on B1's still (wrapped code, both
    * connectors, both marked boxes, heading 1), so a first-frame preview shows
@@ -26,6 +26,8 @@
    * last frame (story 2.65) and the first (2.70) are the same picture.
    */
   const OFF = 2.7;
+  /* The film (index.html) opens instead where the card ends, so it ends on the logo (2026-11-09). */
+  const OFF_FILM = 20.0;
 
   const f2 = (v) => (Math.abs(v) < 0.005 ? '0' : v.toFixed(2));
   const pt = (p) => f2(p[0]) + ',' + f2(p[1]);
@@ -67,14 +69,14 @@
 
   /* ---------------- the clock (DESIGN.md section 7) ---------------- */
   /* The cuts: B1 to B2, B2 to B3, B3 to B4, B4 to the card, the card back to B1's frame-0 code. */
-  const CUT = [3.5, 7.5, 11.0, 14.8, 16.7];
+  const CUT = [3.5, 7.5, 11.0, 14.8, 20.0];
   /* Heading 1 rises after the card and holds across the story's 0. */
   const HEADS = [
-    { text: 'You wrap your text in <T>', rise: 16.7, drop: 3.3 },
+    { text: 'You wrap your text in <T>', rise: 20.0, drop: 3.3 },
     { text: 'One command translates your app', rise: 3.5, drop: 7.3 },
     { text: 'Your team reviews translations', rise: 7.5, drop: 10.8 },
     { text: 'Your app is now multilingual', rise: 11.0, drop: 14.6 },
-    { text: 'General Translation', rise: 14.8, drop: 16.5, lock: true },
+    { text: 'General Translation', rise: 14.8, drop: 19.8, lock: true },
   ];
   const beat = (t) => (t < CUT[0] ? 1 : t < CUT[1] ? 2 : t < CUT[2] ? 3 : t < CUT[3] ? 4 : t < CUT[4] ? 5 : 1);
   /* Time since a story time a, counted forward around the loop. */
@@ -379,7 +381,8 @@
   }
 
   /* ---------------- the scene ---------------- */
-  function mount(stage) {
+  function mount(stage, mountOpts) {
+    const off = mountOpts && mountOpts.film ? OFF_FILM : OFF;
     const svg = el(stage, 'svg', { id: 'art', width: 1280, height: 720, viewBox: '0 0 1280 720' });
     svg.setAttribute('data-layout-allow-overflow', '');
     /* The ground, drawn in the art itself: a PNG-sequence render drops the page background. */
@@ -441,7 +444,7 @@
      * Translation cell; the edit is on its second line.
      */
     const gB3 = el(gMain, 'g', {});
-    markAt(gB3, 112, 201, (22 * 1213) / 771, C.white);
+    markAt(gB3, 112, 200, 24, C.white);
     text(gB3, 160, BL(212, 24), 'Translations', { weight: 500 });
     el(gB3, 'rect', { x: 524.5, y: 196.5, width: 43, height: 31, fill: 'none', stroke: C.hair, 'stroke-width': 1 });
     text(gB3, 546, BL(212, 24), 'es', { weight: 500, anchor: 'middle', lang: 'es' });
@@ -512,7 +515,11 @@
      * the name is the fifth heading, whose baseline sits at y 640.
      */
     const gLock = el(svg, 'g', {});
-    markAt(gLock, 1200 - 176, 80, 176, C.white);
+    // since 2026-11-09 the General Translation logo, 128 px, playing "Meridian, then G" from 0.5 s into the card
+    // (kit/brand/gt-logo-motion.js); the card is 5.2 s, long enough for the loop to land on the logo again
+    const logo = window.GTLogoMotion.create({ ink: C.white });
+    Object.entries({ x: 1200 - 128, y: 80, width: 128, height: 128 }).forEach(([k, v]) => logo.svg.setAttribute(k, v));
+    gLock.appendChild(logo.svg);
 
     /* The headings. */
     const heads = HEADS.map((h, i) => {
@@ -709,13 +716,14 @@
 
     /* Story time for a film time: OFF ahead, around the loop, rounded to the microsecond so a wrap never lands a hair short. */
     const storyAt = (time) => {
-      const v = Math.round(since(Math.max(0, Math.min(DUR, time)) + OFF, 0) * 1e6) / 1e6;
+      const v = Math.round(since(Math.max(0, Math.min(DUR, time)) + off, 0) * 1e6) / 1e6;
       return v >= DUR ? v - DUR : v;
     };
     function render(time) {
       const t = storyAt(time);
       const b = beat(t);
       show(gMain, b !== 5), show(gLock, b === 5);
+      logo.set(b === 5 ? t - CUT[3] - 0.5 : -1);
       show(caret, 0);
       drawHeads(t);
       drawPage(t);
@@ -760,5 +768,5 @@
     return { render, ready, W, C_ISO, matrixAt, storyAt, langAt, slotW };
   }
 
-  window.GTScene = { mount, DUR, OFF };
+  window.GTScene = { mount, DUR, OFF, OFF_FILM };
 })();

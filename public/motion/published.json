@@ -2,23 +2,23 @@
   "about": "The cut of each film the site publishes. film and poster are the web copies under public/media; cut and length are the cut's label and length as its script states them (null when the cut was made before the scripts); streams are the SHA-256 of its video and audio streams, from ffmpeg's streamhash with the streams copied. scripts/build-motion.mjs publishes a film's credits, contact sheet and script only from the folder in motion/out whose render has these streams, and lists any other cut in motion/out as in review. Replace a web copy, then run node scripts/build-motion.mjs --pin <slug>. offSite lists roster films the site leaves out entirely.",
   "films": {
     "blog-designing-docs": {
-      "cut": "v8",
-      "length": "55.5 s",
+      "cut": "v9",
+      "length": "56.7 s",
       "film": "/media/designing-docs-film.mp4",
       "poster": "/media/designing-docs-poster.jpg",
       "streams": {
-        "video": "5c130ade5d083db86f23d4c149e58566d0a58e91a3068f2b2830c4e1289e4b4a",
-        "audio": "0717e2febf8e33058a3af04c1c5b4f3fcd55f301fd15ae3bb9900b44878fded5"
+        "video": "18fdd2b38dd9aeb13509bbd9d09291b6b58f19eb81da40ff80d3fd379f834362",
+        "audio": "bf3561fb1e3af0e3daa04ccd9f754d6a0ee4bfdd292e0e6b610ca6a364d08d5b"
       }
     },
     "blog-fuma-nama": {
-      "cut": "v4",
-      "length": "59.5 s",
+      "cut": "v5",
+      "length": "60.7 s",
       "film": "/media/fuma-nama-film.mp4",
       "poster": "/media/fuma-nama-poster.jpg",
       "streams": {
-        "video": "9eef99a3291e828336b1018bd3a684bcfbb8b344532dc91ce7394860d00c882f",
-        "audio": "9fce063a122cd14927af55cf9f4984837eb218415a7c6599fdf375cabf7f1086"
+        "video": "e3064f22cdfda299fc584f2b28d45763216956bad386bdfd9d64f798cfbb2e9c",
+        "audio": "0ec0d3a242ae70cc9c618b4949841bba3dc4608b6785d8af4c7ab09a6c662455"
       }
     },
     "jihe-yuanben": {
@@ -53,11 +53,11 @@
     },
     "gif-how-gt-works": {
       "cut": null,
-      "length": "17.3 s",
+      "length": "20.6 s",
       "film": "/media/how-gt-works-film.mp4",
       "poster": "/media/how-gt-works-poster.jpg",
       "streams": {
-        "video": "26f79245fe3599f9e5ff42cc7a3e04ce4bd8af0ab0c4f95f1ba1ef6df636949f"
+        "video": "0aff70aef1b6ad7e067a25378ca5145111fb8c1339be1bcca5a1adf58de1686a"
       }
     },
     "slash-announcement": {
@@ -72,292 +72,292 @@
     },
     "kb-best-localization-software": {
       "cut": null,
-      "length": "43.8 s",
+      "length": "46.0 s",
       "film": "/media/best-localization-software-film.mp4",
       "poster": "/media/best-localization-software-poster.jpg",
       "streams": {
-        "video": "b43cbf3b63fc544397da251b2f819961f34e5ae103ccbda73668163d0c8be1b1",
-        "audio": "334b46a3a21b32867f22e03a5cea822c1a02a950b39f02eccdbb972ee9ed3f00"
+        "video": "82402768c871a5a5b244c8ee4de34926fa98f329e4f292a9257f4056481afefa",
+        "audio": "afef7cbd3d4ff1563688e6f6efbfd0ecb88015fdab7be73cdb53193da3d1e359"
       }
     },
     "kb-what-is-locadex": {
       "cut": null,
-      "length": "48.5 s",
+      "length": "50.7 s",
       "film": "/media/what-is-locadex-film.mp4",
       "poster": "/media/what-is-locadex-poster.jpg",
       "streams": {
-        "video": "1e662f834042541867dbde3b06ce0e53e6d05ba6a93590c0b56ff8a2a0a9fca7",
-        "audio": "4c60db7ed4c5fc4858743d85eb66fd90c3acc724ca4dcfb46466e7ef13352775"
+        "video": "c27491ba9c5863920fe6da1d12d2efd4ad6be490a2e8f2f00cde274084102132",
+        "audio": "647cc8e1e0bcc54b8346cb0a2a63f914da6283bc38a9023761f80d55bad9cc40"
       }
     },
     "kb-i18n-without-translation-files": {
       "cut": null,
-      "length": "46.5 s",
+      "length": "48.7 s",
       "film": "/media/i18n-without-translation-files-film.mp4",
       "poster": "/media/i18n-without-translation-files-poster.jpg",
       "streams": {
-        "video": "2749ad0625d72f7953588c42159f469c054d5693acc423fefbea72a1311b4e98",
-        "audio": "e5a8fe73ceaa8b747186c01c4c338451bff77fde704d85ea71940d1ec4ca2571"
+        "video": "634a0d05b3f3440dd1b98dd412057a8fb9c22b85b42ef4b4be9be4aed3be5a37",
+        "audio": "dc73f4c8261a99f68a56ed34e39991eeb448526d78ce64fcd0a5a2df178f2a72"
       }
     },
     "kb-add-i18n-to-nextjs": {
       "cut": null,
-      "length": "50.6 s",
+      "length": "52.8 s",
       "film": "/media/add-i18n-to-nextjs-film.mp4",
       "poster": "/media/add-i18n-to-nextjs-poster.jpg",
       "streams": {
-        "video": "4c9ee449c46c10524fa257c29d0be10c75efb68e910ac89229dc092ec9df9056",
-        "audio": "bf93504e8d79efa44c8852d502ad4cf7597323ac9ed271428dbf92dfaa7d3d1b"
+        "video": "b6bb19dec8612eb4eb36d27fa000f447c1a822281f9320ed52292bcc1a31e488",
+        "audio": "821ca015006828f49bbc1a1ffd94977c218b82d0fc6156e5c0cd310ed2d78121"
       }
     },
     "kb-translate-react-app": {
       "cut": null,
-      "length": "48.5 s",
+      "length": "50.7 s",
       "film": "/media/translate-react-app-film.mp4",
       "poster": "/media/translate-react-app-poster.jpg",
       "streams": {
-        "video": "f97c985d6015863c3b9523e034b1984bc9ee3ef1646ea4fe4077b1a1d9b958f0",
-        "audio": "458f662a0f7146174c7ede78d0262f7cf237d1cceb3930261c8ab99cba7654a3"
+        "video": "985d42e7424e68311328444325d80f684bfb1b881091751ab2e9fc4f784577fd",
+        "audio": "ed0de814b38a71de3203493d099f084410f2dc1fabe2012aa8d348836c37e1de"
       }
     },
     "kb-translate-vue-app": {
       "cut": null,
-      "length": "47.8 s",
+      "length": "50.0 s",
       "film": "/media/translate-vue-app-film.mp4",
       "poster": "/media/translate-vue-app-poster.jpg",
       "streams": {
-        "video": "01852a0d88087caea815e1b3762429b1c61186b136049bdca93bffcec99be522",
-        "audio": "bbca9d74c613b4b39f7258db2454e1ab595a68cbb0c284a0974acbffaee5da2a"
+        "video": "062ed4dafea68f599ac23169a589461a6179f700fb91a20333f04586d39d07df",
+        "audio": "301e0bfb8c239f33fe0ed7c2de797712c06b1b1e4d3545cffb14a0e1c764f36b"
       }
     },
     "kb-translate-react-native-app": {
       "cut": null,
-      "length": "47.3 s",
+      "length": "49.5 s",
       "film": "/media/translate-react-native-app-film.mp4",
       "poster": "/media/translate-react-native-app-poster.jpg",
       "streams": {
-        "video": "e656f5c2567291de0a8f230110711dd0b97d2caac7fb7368c8597d90c0b2c4b2",
-        "audio": "5fb5cba8a81d57c242680fd3f7db5271a89a8553d55115e8cac81350b5a5d959"
+        "video": "79a0a9d02ea3c86766d589f3a63baca2c7ecb27d02689027cfe1e60136665a90",
+        "audio": "b2fd4a2034cb6d7c3b865f9ee69d59e0ea5cdd7dc07007e5d22b76fea712ce39"
       }
     },
     "kb-translate-tanstack-start-app": {
       "cut": null,
-      "length": "48.9 s",
+      "length": "51.1 s",
       "film": "/media/translate-tanstack-start-app-film.mp4",
       "poster": "/media/translate-tanstack-start-app-poster.jpg",
       "streams": {
-        "video": "6576542a4be5df939443c21a27e42f2dad44c0d36082d4a92157edb1f48f9b23",
-        "audio": "0de2358b082ecf7211c34c749b6dea6758ce8bf713631a688c23383bc795b37a"
+        "video": "f907b4b90bf94cafab7af87ee1ae3dcec226954856796cdbe448a6384ceb5248",
+        "audio": "38c90dc97ddb7cac5f3bea33dc861e62ac10c921c7159b779e12d41b62b8895d"
       }
     },
     "kb-translate-node-app": {
       "cut": null,
-      "length": "48.4 s",
+      "length": "50.6 s",
       "film": "/media/translate-node-app-film.mp4",
       "poster": "/media/translate-node-app-poster.jpg",
       "streams": {
-        "video": "5b3a080723e8c89c9dcf041be782d8c455ef882550d09fe98a8ce6039a9b7778",
-        "audio": "9db337e8b7dd965378d9f118b6c0f98e5015b1c311db572a578d3bea5da1fefb"
+        "video": "64384a22e7cb71932d1bd8cf572a6b5cefc95bc4af21bee14e8bb27c33bf93e6",
+        "audio": "80ddf4b37708225928884461442ef19466df5d136ad029baa59df1baa18e3c38"
       }
     },
     "kb-translate-conditional-jsx": {
       "cut": null,
-      "length": "46.1 s",
+      "length": "48.3 s",
       "film": "/media/translate-conditional-jsx-film.mp4",
       "poster": "/media/translate-conditional-jsx-poster.jpg",
       "streams": {
-        "video": "2196b1fbe16bd813d54a8777b77d8ef5cba5a3d1b3610afd85acbfd2ad34672a",
-        "audio": "736cb938817e4bc78f1f6cf0bfefb9fe47b074375d245150c2a36119b807e7a2"
+        "video": "901cf663b322e051e57dcff96811da67e29db74a8f3f660a462cb1e37aaca50f",
+        "audio": "56d0635573161cdbe943a3cb1220d3f5f972a4832bdd47454496d2aeadac2d12"
       }
     },
     "kb-translate-strings-outside-jsx": {
       "cut": null,
-      "length": "49.1 s",
+      "length": "51.4 s",
       "film": "/media/translate-strings-outside-jsx-film.mp4",
       "poster": "/media/translate-strings-outside-jsx-poster.jpg",
       "streams": {
-        "video": "1600812fdb433f9db3d17fb1158ac524551a16754320ef2f6021ea996cf6bb18",
-        "audio": "45ed2bedef176bac5d820dbc77d368fe7bcd016683f94aea869e3e416fb91c7e"
+        "video": "94f462599956ffa4950a7713cf89fa92dad50c7b66519a8376fb28dd26a35032",
+        "audio": "4d7869a15cfb80de5a860011fdd20b5ba67662c231e5e427410cf5d8116a77ff"
       }
     },
     "kb-how-to-handle-plurals-in-react": {
       "cut": null,
-      "length": "48.4 s",
+      "length": "50.6 s",
       "film": "/media/how-to-handle-plurals-in-react-film.mp4",
       "poster": "/media/how-to-handle-plurals-in-react-poster.jpg",
       "streams": {
-        "video": "e8f3251d7c703a1b9c58324de6cc8ef6d0c4bbd7a41ec42e57a8cc4fc1c1cb70",
-        "audio": "438562149f4fba70f511c2f0e0e8fb576828c6370f99b964349020f905e55cab"
+        "video": "ba1c8d2fd4f32e6922c76130e9eabd905c2a185b54757ae1c97fff016ca98707",
+        "audio": "582d92ff9628fd979073ee8c68972af51639ba6b3d3a2fd280fb439576b1b34d"
       }
     },
     "kb-format-numbers-dates-currencies": {
       "cut": null,
-      "length": "44.9 s",
+      "length": "47.1 s",
       "film": "/media/format-numbers-dates-currencies-film.mp4",
       "poster": "/media/format-numbers-dates-currencies-poster.jpg",
       "streams": {
-        "video": "911f6a1b7c46373138e7451feff33583ee3d933df07b48d54aa42a27853599b5",
-        "audio": "1d2995063f9cd26425c355b132e6a8c735d4ee6a50e7edb0ec882facc205ad81"
+        "video": "59873728caeff6470708cdb2f98c8edab4a2432defad82e3f6dfbaea8658863e",
+        "audio": "b4b9c7cda09732dceeaccafd80557866be0ca0435cf2c87d93333bb672458769"
       }
     },
     "kb-multilingual-nextjs-seo": {
       "cut": null,
-      "length": "50.0 s",
+      "length": "52.2 s",
       "film": "/media/multilingual-nextjs-seo-film.mp4",
       "poster": "/media/multilingual-nextjs-seo-poster.jpg",
       "streams": {
-        "video": "dce1d88fbd30cb11ef81943eb8ea1ab356f4e2814394247da519762b2ac580b9",
-        "audio": "89c88308c9fd83c12177f53432b36401abf79940416edcedc47b377285e133cc"
+        "video": "90b52b9aed105a443609210ad7e3aa564b74ca8a4f4bc09e40e1b118c283c146",
+        "audio": "564c8089397ed100164038b9752f05aaedeae36742b43b11c4e881a90c09d3be"
       }
     },
     "kb-ai-agent-i18n-setup": {
       "cut": null,
-      "length": "46.2 s",
+      "length": "48.4 s",
       "film": "/media/ai-agent-i18n-setup-film.mp4",
       "poster": "/media/ai-agent-i18n-setup-poster.jpg",
       "streams": {
-        "video": "62e2da986d66b99c57caa8e8c7c6b02c4046319e03956b66d08f31e989c201b0",
-        "audio": "21e26558157ad20417ed7cfd5bad874feaf715181677f36b54f49d3a403fdd98"
+        "video": "4a5865e0f5e5d68877a6db9a4466768a2b94942d97a921477d2dfa5d0eb82655",
+        "audio": "479c197ef507ba9ed9fbf71b5219d972e9194c81714ef443c27ea535619a9ae1"
       }
     },
     "kb-review-translations": {
       "cut": null,
-      "length": "44.8 s",
+      "length": "47.0 s",
       "film": "/media/review-translations-film.mp4",
       "poster": "/media/review-translations-poster.jpg",
       "streams": {
-        "video": "badb2fde9725cb9226921485dba94e6c5b4b678729ef2c2aceb52a7eaad65589",
-        "audio": "8697c68e47e58cd5179c1437e0a8b12fb0618f8d829c5176e3f05ec2a0070ce9"
+        "video": "2202ee474abc661455fd8e426856ff291cb5c82de64e4e5fc229c59c85af08b2",
+        "audio": "a4761f8722e36495a530c712ff6cc022c80d72b7711c9439bac0ddb15b756796"
       }
     },
     "kb-translations-in-ci": {
       "cut": null,
-      "length": "47.9 s",
+      "length": "50.1 s",
       "film": "/media/translations-in-ci-film.mp4",
       "poster": "/media/translations-in-ci-poster.jpg",
       "streams": {
-        "video": "130c5faf8615217c983feae426a75fe16025de786825b58049ca19b778fb5136",
-        "audio": "fcb31866ea42189040697437b2e27367ef8ad77adc4e34aab5b0160f1e1891ba"
+        "video": "83e687edfe2b87535b37390b6b40f4de02d310a166e0743d546db60898f3b097",
+        "audio": "04507242f97bf602fcdd6d23f3b104bfda1752064b5d3889006d66a2adf27f8a"
       }
     },
     "kb-translate-mintlify-docs": {
       "cut": null,
-      "length": "47.0 s",
+      "length": "49.2 s",
       "film": "/media/translate-mintlify-docs-film.mp4",
       "poster": "/media/translate-mintlify-docs-poster.jpg",
       "streams": {
-        "video": "6cfa1a7e12683bdfe9cc43610e68d17b58f618de10b6df72bc46773680b5dbf9",
-        "audio": "299124c4932077900c03806c06472a4ddfd5fea3125c2dbe2c7d1254d8e62f7c"
+        "video": "65165d33ebd3eb24b73e2db215ddef05f07bde962fea97cf2674ab9f90b1482f",
+        "audio": "2b9cdb261b41c34420c365d0065d9ce68bd142ffeef33e537cbbc74b4814e814"
       }
     },
     "kb-translate-sanity-content": {
       "cut": null,
-      "length": "46.5 s",
+      "length": "48.8 s",
       "film": "/media/translate-sanity-content-film.mp4",
       "poster": "/media/translate-sanity-content-poster.jpg",
       "streams": {
-        "video": "f3c44cabe7ff8d8919408e9faecc9dccf9f930173311c3537b02be23d570d8fb",
-        "audio": "d7b6ef687ec6d653b4cc0859bb89ae98fe5758a8752b620775ebbce0cfe3c0a8"
+        "video": "ce656b9e3511abbb402cf2f2a1a8e531f33590bd53759f77f9a892a42e53d26a",
+        "audio": "8799bfcffde505ab3fd30e9ba1e9993a6f8d522f61926b81f2ade37b55c5be25"
       }
     },
     "kb-translate-storyblok-content": {
       "cut": null,
-      "length": "49.9 s",
+      "length": "52.1 s",
       "film": "/media/translate-storyblok-content-film.mp4",
       "poster": "/media/translate-storyblok-content-poster.jpg",
       "streams": {
-        "video": "11879570c92dbf5c7fb54fba6b46b6c2607fda0335278d07c9b6bfed62471fdd",
-        "audio": "b3a6a64c58e37779d43b617f135187f982344f8655981a11bb1b33562f10360f"
+        "video": "316692578e17edd42e743860bf0c5385cedb036b6486f9fed5c91ed539ec8374",
+        "audio": "8fda488d931269e91e66219cda02923a78748ddd8126fb1f7d30c809f44b2615"
       }
     },
     "kb-translate-google-slides": {
       "cut": null,
-      "length": "50.3 s",
+      "length": "52.5 s",
       "film": "/media/translate-google-slides-film.mp4",
       "poster": "/media/translate-google-slides-poster.jpg",
       "streams": {
-        "video": "e0598f3b843b49657ea8f1728da7c27acd52c1f1f72900d1f5bc7c85138a8d1e",
-        "audio": "a7596f4072bb16032c8fe31940b54ea814e7afefe9f51866672358d339941896"
+        "video": "c3fb870b9152ad26b7ecd88ead204584b8fab5001f41d64656ab4d772b5f2aec",
+        "audio": "d389b41fc772c79fb870fdd48b6ade2170a90ca57042db8f32a3e563e57c5236"
       }
     },
     "kb-translate-srt-subtitles": {
       "cut": null,
-      "length": "51.3 s",
+      "length": "53.5 s",
       "film": "/media/translate-srt-subtitles-film.mp4",
       "poster": "/media/translate-srt-subtitles-poster.jpg",
       "streams": {
-        "video": "bfb479dfb9f58be86dc821ba953b00aefed0ef687253d80e77475953ce33594c",
-        "audio": "9f494670d5b90df1a893a3f9c0bb2f5b480db18f1125d3b0f5d92a0bd8078e84"
+        "video": "bb15934a2ea5f30d3721ebe31f9ab4e9146d7c14e6f7d099542b6b6e528c0044",
+        "audio": "d8f8f005da806280e56c49620d745e75b9494f73cd7524a4e65bbb333c9df938"
       }
     },
     "kb-translate-product-walkthroughs": {
       "cut": null,
-      "length": "47.8 s",
+      "length": "50.0 s",
       "film": "/media/translate-product-walkthroughs-film.mp4",
       "poster": "/media/translate-product-walkthroughs-poster.jpg",
       "streams": {
-        "video": "3318c7d2b8883f19c879b2c5292cbdc7b48b9a35dc9391d2bcbc14f766d3955c",
-        "audio": "997a8a81d1b9a1af4c0f5bac53cdc75793d99b0ac8466d015995094c1d2595a6"
+        "video": "5129dac905be79fc64a34f8183888e409e98c16840ad2e849a2bdcddaae600fa",
+        "audio": "944e809845d0ac7092ef9dba85bb1e6f22b534474dc1652dcef1adaf10d14700"
       }
     },
     "kb-translate-lottie-animations": {
       "cut": null,
-      "length": "48.5 s",
+      "length": "50.7 s",
       "film": "/media/translate-lottie-animations-film.mp4",
       "poster": "/media/translate-lottie-animations-poster.jpg",
       "streams": {
-        "video": "e0725225fe5e4ab0b99732dfce96eda5eaefe06d0ca1f7f6c6f940174c0f18a2",
-        "audio": "18e059c0054faff60b3134335ec814f1206f223a0681a63796ed17fef5d7e27d"
+        "video": "fc559321922eabe2fd40f902dec5001e2c41d0dd9a6d7a01957aa130012366c4",
+        "audio": "c65de2dd02f7ed1bec07506f3271b12cefa94e96cc6db813cf9df31e7b5ff2ba"
       }
     },
     "tyndale": {
       "cut": null,
-      "length": "97.3 s",
+      "length": "100.0 s",
       "film": "/media/tyndale-film.mp4",
       "poster": "/media/tyndale-poster.jpg",
       "streams": {
-        "video": "a887c2ec1e837c63da89a8d518e058b154ada4f22d2091c316778b50c51884bc",
-        "audio": "2c5c337e0bcf645845c05ea15b520bc3f12a43e04ca156adce18dc1e2762257a"
+        "video": "930994064aada5dabdbcaaf5d46ac6e00cc04ffc653b5b592fd99e14511e4212",
+        "audio": "f44fdb7226cc93d89304fe3230d8dd75ff564077aa40d66e7f4ba390905270be"
       }
     },
     "hunayn": {
       "cut": null,
-      "length": "99.8 s",
+      "length": "102.4 s",
       "film": "/media/hunayn-film.mp4",
       "poster": "/media/hunayn-poster.jpg",
       "streams": {
-        "video": "4d579c926c36d85cc0992fe2d1bc0757d965f8bf19c6bc6c8880f3abf631d30f",
-        "audio": "052d1356fa8139346710193c18446c4ef036fb8850f3502dabbbe2cb8a0c28fc"
+        "video": "dfa57e4321e2784a036f409bc4eac5ae0327e525545823aec07fc48d536bfd63",
+        "audio": "22bec4d212a83d674c59386aecdfe40f7d26cafa1ff02a7f42270c862adeb222"
       }
     },
     "nishi-amane": {
       "cut": null,
-      "length": "95.6 s",
+      "length": "98.2 s",
       "film": "/media/nishi-amane-film.mp4",
       "poster": "/media/nishi-amane-poster.jpg",
       "streams": {
-        "video": "6955829481a083ea5507ec6207724b32dee0c4f8d6655a7063ba6670f83eb32e",
-        "audio": "42729acc1bbf486ab13b6286bd245016d22913706df730a54c0dfd4c179264f5"
+        "video": "3ede8e46ab16d1626d52a95bac6fd72dddaf856e479d4f34540cce8cb555d89e",
+        "audio": "cc0528b523c9f418799cbc4229940bb909dc3183ffbbfb434cc7070aa84a7cc7"
       }
     },
     "blog-rewriting-docs": {
-      "cut": "v2",
-      "length": "23.5 s",
+      "cut": "v3",
+      "length": "24.7 s",
       "film": "/media/rewriting-docs-film.mp4",
       "poster": "/media/rewriting-docs-poster.jpg",
       "streams": {
-        "video": "dafc71379c606803520ad19fe33a61c483c1896ee7ad95b968be07f7c42e3ffb",
-        "audio": "8917adb6e12303fafd95f6628944df002fd4c7c94ded170b1d7816c3a58e2183"
+        "video": "716f56a01a2fb9c0761b9363b1c89dd4d901730536d2d45066e242cf09f56840",
+        "audio": "0b7f9b7ca9aed5476c3813131039b4f23e0c23fb3d93b59780bed2b65ae78e1d"
       }
     },
     "release-board": {
-      "cut": "v2",
-      "length": "15.0 s",
+      "cut": "v3",
+      "length": "16.2 s",
       "film": "/media/release-board-film.mp4",
       "poster": "/media/release-board-poster.jpg",
       "streams": {
-        "video": "e22ac1c65a740fcca1e603fd5aa2b512819e4df8ca28a597767c6a6b503ce0d6",
-        "audio": "c4845deeaf115207d8abae4c71ce801dd1fc530538f77b8d3d55d4e6962179df"
+        "video": "c07044298a07337bf5f8dea4e9a8e7c4d3e35170a3ac6e0d5925207afc8c1e3c",
+        "audio": "da80283b568c6f712d3d1a7a2d49215b81d4d187aef9d3d6ceeef39aeec0157c"
       }
     },
     "slash-announcement-de": {

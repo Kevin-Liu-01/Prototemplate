@@ -1,6 +1,6 @@
 # How do I translate a Vue app?
 
-47.8 s · Narrator: Frederick Surrey
+50.0 s · Narrator: Frederick Surrey
 
 Install gt-vue, register its plugin with createGT before you mount the app, wrap your template in the T component, and run npx gt translate to write a catalog for each language.
 

@@ -1,6 +1,6 @@
 # How do I translate a React app?
 
-48.5 s · Narrator: Frederick Surrey
+50.7 s · Narrator: Frederick Surrey
 
 Install gt-react and the gt CLI, list your languages in gt.config.json with the output inside src, add a loadTranslations file, initialize gt-react with initializeGTSPA in a small entry file before your app renders, wrap your text in the T component, and run npx gt translate to write a translation file for each language.
 

@@ -1,6 +1,6 @@
 # Designing docs for humans
 
-55.5 s · v8 · Narrator: Frederick Surrey
+56.7 s · v9 · Narrator: Frederick Surrey
 
 Most docs readers are now AI agents, which makes an intuitive, intentional docs interface even more important, so General Translation redesigned its docs from scratch around its writing: it deleted the clutter, made the sidebar one accordion, gave the writing open space, kept translated pages aligned and pointed each page at what its reader wants, and it still treats docs design as an open problem.
 

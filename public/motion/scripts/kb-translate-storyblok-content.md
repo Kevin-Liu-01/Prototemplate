@@ -1,6 +1,6 @@
 # How do I translate content in Storyblok?
 
-49.9 s · Narrator: Frederick Surrey
+52.1 s · Narrator: Frederick Surrey
 
 Add your languages in Storyblok, connect the space in the General Translation Dashboard with a personal access token, select stories and locales, and click Sync and apply. Translations are written back into each story as draft field-level values that you review and publish in Storyblok.
 

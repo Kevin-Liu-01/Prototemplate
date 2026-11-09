@@ -1,6 +1,6 @@
 # Can I do i18n without translation files?
 
-46.5 s · Narrator: Frederick Surrey
+48.7 s · Narrator: Frederick Surrey
 
 Yes. With gt-react or gt-next, content stays inline in your components inside a `<T>` component, and translations are generated at build time as output, so there are no keys or per-locale JSON files to write and keep in sync.
 

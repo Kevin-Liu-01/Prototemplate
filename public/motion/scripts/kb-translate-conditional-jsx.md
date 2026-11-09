@@ -1,6 +1,6 @@
 # How do I translate conditional text in JSX?
 
-46.1 s · Narrator: Frederick Surrey
+48.3 s · Narrator: Frederick Surrey
 
 Instead of translating each side of a ternary separately, wrap the whole sentence in a `<T>` component and express the condition with `<Branch>`, so the translator sees the full context and can reorder the sentence for each language.
 

@@ -1,6 +1,6 @@
 # How do I translate a TanStack Start app?
 
-48.9 s · Narrator: Frederick Surrey
+51.1 s · Narrator: Frederick Surrey
 
 Install the experimental gt-tanstack-start package with gt-react and the gt CLI, list your languages in gt.config.json, call initializeGT in the router with them and a loadTranslations file, register gtMiddleware in src/start.ts so each request resolves its locale, pass the locale and its translations from the root route's loader to GTProvider, wrap your content in the T component, and run npx gt translate.
 

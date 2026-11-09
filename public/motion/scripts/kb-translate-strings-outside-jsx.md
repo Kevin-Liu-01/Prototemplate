@@ -1,6 +1,6 @@
 # How do I translate strings outside JSX?
 
-49.1 s · Narrator: Frederick Surrey
+51.4 s · Narrator: Frederick Surrey
 
 Use the useGT hook for strings such as placeholders and aria labels, getGT in async App Router components, and msg with useMessages for strings defined at module scope, outside a component.
 

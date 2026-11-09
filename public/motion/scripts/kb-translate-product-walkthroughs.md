@@ -1,6 +1,6 @@
 # How do I show a product walkthrough in every language?
 
-47.8 s · Narrator: Frederick Surrey
+50.0 s · Narrator: Frederick Surrey
 
 Install gt-rrweb, record a product walkthrough once, and replay it in every locale from your published translations.
 

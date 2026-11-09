@@ -1,6 +1,6 @@
 # Ḥunayn, Ḥubaysh, and the Arabic vocabulary of Galen
 
-99.8 s · Narrator: Frederick Surrey · Reader: Ghizlane
+102.4 s · Narrator: Frederick Surrey · Reader: Ghizlane
 
 The word retina is already in a Latin version of Ḥunayn ibn Isḥāq’s Arabic book on the eye; his letter on the Galen translations lists 129 works and records how he collated several Greek copies into one correct text before he corrected his translation; his nephew Ḥubaysh put many of his Syriac versions into Arabic, and a later historian says some readers scraped Ḥubaysh’s name off them and wrote Ḥunayn’s; his book gives each coat of the eye a Greek name and an Arabic name that translates it, and Constantine the African’s Latin called three of them retina, uvea and cornea; and the House of Wisdom that popular histories put him in charge of is not in his letter.
 

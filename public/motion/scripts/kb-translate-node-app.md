@@ -1,6 +1,6 @@
 # How do I translate a Node.js app?
 
-48.4 s · Narrator: Frederick Surrey
+50.6 s · Narrator: Frederick Surrey
 
 Install gt-node, call initializeGT once at startup with your locales and a translation loader, wrap each request in withGT, and translate strings in your handlers with getGT. Then list your server files in gt.config.json and run npx gt translate to write a translation file for each language.
 

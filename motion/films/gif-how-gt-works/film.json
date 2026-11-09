@@ -1,0 +1,18 @@
+{
+  "$schema": "../../kit/film.schema.json",
+  "$comment": "How GT works, the MP4 (re-cut 2026-11-09: the globe logo playing its loop on a 5.2 s card, the film opening after the card so it ends on the logo, Katagami Text). Silent. The GIF is gif/index.html, rendered apart (NOTES.md). Poster: B1's still, story 2.70 s, film 3.30 s.",
+  "slug": "gif-how-gt-works",
+  "kind": "short",
+  "path": "gpu",
+  "fps": 60,
+  "workers": 1,
+  "timeout": 30,
+  "poster": {
+    "at": 3.3
+  },
+  "records": [
+    "poster",
+    "sheets"
+  ],
+  "sound": false
+}

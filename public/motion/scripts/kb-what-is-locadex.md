@@ -1,6 +1,6 @@
 # What does the Locadex agent do?
 
-48.5 s · Narrator: Frederick Surrey
+50.7 s · Narrator: Frederick Surrey
 
 Locadex is General Translation's AI agent. Connected to a GitHub repository, it opens pull requests that set up internationalization, wrap untranslated text in the right i18n calls, translate new content into every target language, and keep locale files in sync.
 

@@ -1,6 +1,6 @@
 # How do I keep translations up to date on every deploy?
 
-47.9 s · Narrator: Frederick Surrey
+50.1 s · Narrator: Frederick Surrey
 
 Run npx gt translate in CI before your production build, with a scoped GT_API_KEY and GT_PROJECT_ID from your CI provider's secrets. Each build translates new and changed text and ships current translation files.
 

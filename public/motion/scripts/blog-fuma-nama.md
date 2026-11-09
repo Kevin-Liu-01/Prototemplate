@@ -1,6 +1,6 @@
 # Fuma Nama: The philosophy of an open-sourcerer
 
-59.5 s · v4 · Narrator: Frederick Surrey
+60.7 s · v5 · Narrator: Frederick Surrey
 
 One developer, Fuma Nama, created Fumadocs, a docs framework with over 13,000 GitHub stars that Vercel Turborepo, shadcn/ui, Better Auth, Unkey and many others use, and he has built it for three years on top of his schoolwork. He learned to code by modding games and reading code, and he did not read documentation. He designed Fumadocs in four layers that developers can take apart, down to copying only the table of contents into their own code. He thinks he would build it the same shape again, and General Translation has made it its first open-source grantee.
 

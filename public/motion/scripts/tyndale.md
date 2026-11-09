@@ -1,6 +1,6 @@
 # Tyndale, More, and the English vocabulary of the Bible
 
-97.3 s · Narrator: Frederick Surrey; reader: Jane
+100.0 s · Narrator: Frederick Surrey; reader: Jane
 
 William Tyndale translated scripture into English while church law forbade it. His New Testament, translated from the Greek, was printed at Worms in 1526 and burned in London; his Pentateuch of 1530, printed under a false imprint, is where the Oxford English Dictionary first records passover, scapegoat and mercy seat. Thomas More attacked his choice of congregation for church, the King James translators kept church, and a 1998 sampling study estimated how much of his wording the King James Version kept. He was arrested in 1535 and executed at Vilvoorde in 1536.
 

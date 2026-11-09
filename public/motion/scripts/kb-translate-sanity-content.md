@@ -1,6 +1,6 @@
 # How do I translate content in Sanity?
 
-46.5 s · Narrator: Frederick Surrey
+48.8 s · Narrator: Frederick Surrey
 
 Install the gt-sanity plugin, add gtPlugin to sanity.config.ts with your locales and document types, and click Translate on a document. Each translation is imported as a draft document with a language field that you can publish and query.
 

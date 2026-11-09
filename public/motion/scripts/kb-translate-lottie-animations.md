@@ -1,6 +1,6 @@
 # How do I translate a Lottie animation?
 
-48.5 s · Narrator: Frederick Surrey
+50.7 s · Narrator: Frederick Surrey
 
 Translate dotLottie animation files with the General Translation CLI.
 

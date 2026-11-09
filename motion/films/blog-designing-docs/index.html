@@ -41,7 +41,7 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="55.5" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="56.7" data-width="1920" data-height="1080">
       <div id="gemA" class="gemhost"></div>
 
       <!-- The background for the whole film: the blue gem smoke printed through the 8 by 8 Bayer screen, behind every shot. -->
@@ -102,7 +102,7 @@
       <audio id="vo-8" src="audio/vo-8.master.wav" data-audio-group="voiceover" data-start="38.22" data-duration="3.23" data-track-index="17"></audio>
       <audio id="vo-9" src="audio/vo-9.master.wav" data-audio-group="voiceover" data-start="42.575" data-duration="3.115" data-track-index="18"></audio>
       <audio id="vo-10" src="audio/vo-10.master.wav" data-audio-group="voiceover" data-start="46.65" data-duration="4.037" data-track-index="19"></audio>
-      <audio id="music" src="audio/music.master.wav" data-start="0" data-duration="55.5" data-track-index="20"></audio>
+      <audio id="music" src="audio/music.master.wav" data-start="0" data-duration="56.7" data-track-index="20"></audio>
     </div>
 
     <script>
@@ -187,7 +187,7 @@
         // over the planet, which lights from here; step: the script step on "same"; guides: the guides on "and
         // alignment"; tobox: into the page box; path: the reader's path; back: the shrink back on "Docs"; card: the end
         // card (the first 0.5 s beat after the last word plus 0.6 s). mix.py and make-bed.py read these numbers.
-        const B = { rise: 10.76, iso: 11.76, recent: 14.88, flat0: 15.58, land: 17.18, pile: 18.2, red: 20.8, push: 25.68, diag: 26.68, back6: 29.88, wall: 31.68, fly: 32.73, write: 34.73, out: 37.19, planet: 38.19, step: 39.67, guides: 40.49, tobox: 41.89, path: 42.69, back: 46.7, card: 51.5, end: 55.5 };
+        const B = { rise: 10.76, iso: 11.76, recent: 14.88, flat0: 15.58, land: 17.18, pile: 18.2, red: 20.8, push: 25.68, diag: 26.68, back6: 29.88, wall: 31.68, fly: 32.73, write: 34.73, out: 37.19, planet: 38.19, step: 39.67, guides: 40.49, tobox: 41.89, path: 42.69, back: 46.7, card: 51.5, end: 56.7 };
         // The headings (section 3): each word enters on its own word start (0.30 s, 12 px rise, power2.out); each
         // heading holds (words / 3) + 1 s after its last word has arrived, and leaves whole (0.45 s, 8 px up,
         // power2.inOut) in a pause or its own sentence's tail. Heading 5 leaves on the card's cut.
@@ -448,7 +448,7 @@
         // A heading's ink boxes, one per line, measured on the canvas face (the same Inter, the same tracking).
         const mctx = document.createElement('canvas').getContext('2d');
         function inkBoxes(id) {
-          mctx.font = '500 144px InterCanvas';
+          mctx.font = '500 144px KatagamiCanvas';
           mctx.letterSpacing = (-0.035 * 144).toFixed(3) + 'px';
           mctx.fontKerning = 'normal';
           return Array.from($(id).querySelectorAll('.ln')).map((ln, i) => {
@@ -624,7 +624,7 @@
             else if (e.kind === 'rule') r.node = F.el(g, 'line', { 'stroke-width': 1 });
             else if (e.kind === 'mark') {
               const cp = F.el(defs, 'clipPath', { id: `vpm${n}`, clipPathUnits: 'userSpaceOnUse' });
-              r.clip = F.el(cp, 'path', { d: F.GT_MARK_D, 'fill-rule': 'evenodd' });
+              r.clip = F.el(cp, 'path', { d: F.GT_MARK_D });
               r.node = F.el(g, 'rect', { 'clip-path': `url(#vpm${n})` });
             } else {
               r.node = F.el(g, 'rect', {});
@@ -692,10 +692,10 @@
                   r.node.setAttribute('x1', x1.toFixed(2)), r.node.setAttribute('y1', y1.toFixed(2)), r.node.setAttribute('x2', x2.toFixed(2)), r.node.setAttribute('y2', y2.toFixed(2));
                   r.node.setAttribute('stroke', tonePat(svg, s.mix && s.mix[1] >= 0.5 ? s.mix[0] : ink, s.tone));
                 } else if (e.kind === 'mark') {
-                  const kk = (k * RW) / 1213;
-                  r.clip.setAttribute('transform', `translate(${sx(RX).toFixed(3)} ${sy(RY).toFixed(3)}) scale(${kk.toFixed(5)}) translate(8 -214)`);
+                  const kk = (k * RW) / 207.4;
+                  r.clip.setAttribute('transform', `translate(${sx(RX).toFixed(3)} ${sy(RY).toFixed(3)}) scale(${kk.toFixed(5)}) translate(-24.3 -24.3)`);
                   const x0 = Math.floor(sx(RX)) - 2, y0 = Math.floor(sy(RY)) - 2;
-                  r.node.setAttribute('x', x0), r.node.setAttribute('y', y0), r.node.setAttribute('width', Math.ceil(k * RW) + 4), r.node.setAttribute('height', Math.ceil((k * RW * 771) / 1213) + 4);
+                  r.node.setAttribute('x', x0), r.node.setAttribute('y', y0), r.node.setAttribute('width', Math.ceil(k * RW) + 4), r.node.setAttribute('height', Math.ceil(k * RW) + 4);
                   r.node.setAttribute('fill', tonePat(svg, ink, s.tone));
                 } else {
                   const x0 = rd(sx(RX)), y0 = rd(sy(RY)), x1 = rd(sx(RX + RW)), y1 = rd(sy(RY + RH));
@@ -865,7 +865,7 @@
         const PAT = { icon: bayerPattern('b50', 0.5, 'currentColor'), fill: bayerPattern('b28', 0.28, 'currentColor'), left: bayerPattern('bL', 0.3, C.blue), right: bayerPattern('bR', 0.56, C.blue), exIcon: bayerPattern('bX', 0.5, C.lift) };
         const contentPats = [defsBr.querySelector('#b50'), defsBr.querySelector('#b28')];
         const gBridge = F.el(vbr, 'g', {});
-        const markClip = F.el(F.el(defsBr, 'clipPath', { id: 'brMark', clipPathUnits: 'userSpaceOnUse' }), 'path', { d: F.GT_MARK_D, 'fill-rule': 'evenodd' });
+        const markClip = F.el(F.el(defsBr, 'clipPath', { id: 'brMark', clipPathUnits: 'userSpaceOnUse' }), 'path', { d: F.GT_MARK_D });
         // v4: 2 px rims at full tilt and 2 px dashed drop lines (were 1 px).
         const DROP = { 'stroke-width': 2, 'stroke-dasharray': '4 6' };
         const plateEls = PLATES.map((pl) => {
@@ -1028,8 +1028,8 @@
             }
             if (P.markW) {
               const e = P.mark;
-              const kk = e.Wd / 1213;
-              markClip.setAttribute('transform', `matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f}) translate(${e.X} ${e.Y}) scale(${kk}) translate(8 -214)`);
+              const kk = e.Wd / 207.4;
+              markClip.setAttribute('transform', `matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f}) translate(${e.X} ${e.Y}) scale(${kk}) translate(-24.3 -24.3)`);
               P.markW.setAttribute('fill', tonePat(vbr, C.white, mw));
             }
             if (P.thumb) {
@@ -1977,7 +1977,7 @@
         else window.addEventListener('gtendcard-ready', addCard, { once: true });
 
         /* ---------------- readiness: fonts, the gem mount, the envelopes, the type caches ---------------- */
-        const canvasFace = new FontFace('InterCanvas', 'url(lib/fonts/InterCanvas.woff2)', { weight: '100 900' });
+        const canvasFace = new FontFace('KatagamiCanvas', 'url(lib/fonts/KatagamiCanvas.woff2)', { weight: '100 900' });
         document.fonts.add(canvasFace);
         const gemReady = new Promise((res) => (window.GTGem ? res() : window.addEventListener('gtgem-ready', res, { once: true })));
         const ready = Promise.all([canvasFace.load(), document.fonts.load('500 144px Inter'), gemReady])

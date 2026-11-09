@@ -1,6 +1,6 @@
 # Can an AI coding agent set up i18n for me?
 
-46.2 s · Narrator: Frederick Surrey
+48.4 s · Narrator: Frederick Surrey
 
 Yes. Copy the start prompt with the Setup for Agents button on generaltranslation.com and paste it into your coding agent. The prompt has the agent read the docs, sign in with gt login, set up the project with flags, translate a first page, and verify the result.
 

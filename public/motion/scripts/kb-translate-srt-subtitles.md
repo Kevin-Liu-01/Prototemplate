@@ -1,6 +1,6 @@
 # How do I translate SRT subtitles?
 
-51.3 s · Narrator: Frederick Surrey
+53.5 s · Narrator: Frederick Surrey
 
 The CLI translates cue text in SubRip (.srt) subtitle files while preserving cue numbers, timestamps, separators, and markup.
 

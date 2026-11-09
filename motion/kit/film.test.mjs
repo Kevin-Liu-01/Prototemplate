@@ -38,6 +38,7 @@ import {
   parseTicket,
   pickMaster,
   pidAlive,
+  stretchTranscript,
   planArchive,
   processStart,
   queuePaths,
@@ -519,5 +520,14 @@ describe('the records a final writes', () => {
     assert.match(page, /^# A records test\n\n2\.0 s · Narrator: Frederick Surrey\n/);
     assert.match(page, /\| 0:00\.20 \| Narrator \| Hello world\. \| A test card\. \|/);
     assert.ok(done.find((d) => d.name === 'transcript').detail.includes('no ElevenLabs call'));
+  });
+
+  it('stretches a reused transcript to a master that only grew at its end', () => {
+    const before = JSON.stringify({ audio_duration_secs: 48.5, words: [{ text: 'Nagoya.', start: 44.16, end: 44.64, type: 'word' }, { text: '[outro music]', start: 44.84, end: 48.44, type: 'audio_event' }] });
+    const after = JSON.parse(stretchTranscript(before, 50.7));
+    assert.equal(after.audio_duration_secs, 50.7);
+    assert.deepEqual(after.words[0], { text: 'Nagoya.', start: 44.16, end: 44.64, type: 'word' });
+    assert.equal(after.words[1].end, 50.64);
+    assert.throws(() => stretchTranscript(before, 40));
   });
 });

@@ -57,3 +57,4 @@ Where each rule of `gt-films` comes from, with dates. Paths are relative to `$PR
 ## Lines changed on 2026-11-09
 
 - Section 7, Music: Kevin's ruling of 2026-11-09 that U1 Dawn is the film score, which replaces the round 5 bed for the blog films and the Music API compositions for the rest.
+- `SKILL.md` (Type, the kit table) and `references/look.md` and `references/kit.md` (type, the end card): Kevin's request of 2026-11-09 to re-cut every published film to the current brand ("Yes, re-cut them", relayed by the Graphics session), with Katagami Text as on generaltranslation.com (gt-cloud#5765), and his approval of the 5.2 s looping end card on the kb-what-is-locadex pilot ("Yes, roll it out").

@@ -1,6 +1,6 @@
 # What is the best localization software for developers?
 
-43.8 s · Narrator: Frederick Surrey
+46.0 s · Narrator: Frederick Surrey
 
 Look for one system that covers the whole pipeline, from the i18n library in your code to translation and delivery.
 

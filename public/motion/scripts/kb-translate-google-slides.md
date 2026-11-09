@@ -1,6 +1,6 @@
 # How do I translate Google Slides?
 
-50.3 s · Narrator: Frederick Surrey
+52.5 s · Narrator: Frederick Surrey
 
 Open General Translation's Locadex add-on, choose your languages, and click Sync and apply. Locadex translates the text, formats each slide so the new text fits, and makes a copy for each language next to the original in Drive.
 

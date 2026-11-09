@@ -1,6 +1,6 @@
 # How do I translate a React Native app?
 
-47.3 s · Narrator: Frederick Surrey
+49.5 s · Narrator: Frederick Surrey
 
 Install gt-react-native, add its Babel plugin for the Intl polyfills, call initializeGT and wrap your app in GTProvider, mark text with the T component, and run npx gt translate to write a translation file for each language. The package is experimental, and Expo Go is not supported, so Expo apps need a development build.
 

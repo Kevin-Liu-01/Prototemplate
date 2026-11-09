@@ -1,6 +1,6 @@
 # How do I format numbers, dates and currencies for each locale?
 
-44.9 s · Narrator: Frederick Surrey
+47.1 s · Narrator: Frederick Surrey
 
 Wrap each value in the component for its type: Num for numbers, Currency for money, DateTime for dates and RelativeTime for relative time. Each formats the value for the active locale with JavaScript's Intl API, locally, without sending it to a translation service.
 

@@ -1,6 +1,6 @@
 # How do I set up SEO for a multilingual Next.js app?
 
-50.0 s · Narrator: Frederick Surrey
+52.2 s · Narrator: Frederick Surrey
 
 Give every language its own URL, set the html lang attribute, point each page's canonical URL at itself, add hreflang alternates for every language, translate titles and descriptions, and list every language version in your sitemap.
 

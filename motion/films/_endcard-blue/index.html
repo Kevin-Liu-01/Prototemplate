@@ -36,12 +36,13 @@
     <!--
       Demo of the series end card (kit/endcard/): 2 s of the blue material's plain
       ground (its gem smoke with no shape and no type), then a hard
-      cut on the 2.0 s beat to the card, which runs 4.0 s to the last frame.
+      cut on the 2.0 s beat to the card, which runs 5.2 s to the last frame.
     -->
-    <div id="root" data-composition-id="main" data-start="0" data-duration="6" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="7.2" data-width="1920" data-height="1080">
       <div id="ground-gem" class="clip" data-start="0" data-duration="2" data-track-index="1" data-layout-allow-overflow></div>
     </div>
     <script type="module">
+      import './kit/gemsmoke.js';
       import { addEndCard } from './kit/endcard/endcard.js';
 
       const PALETTE = 'blue';

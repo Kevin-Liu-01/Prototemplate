@@ -1,13 +1,13 @@
 {
   "$schema": "../../kit/film.schema.json",
-  "$comment": "The Designing docs for humans trailer (v8, 2026-10-16: v7 with heading 5 as a title, An open problem, NOTES.md). Gem smoke, so the hardware GPU path, three workers as every v4 and v5 render used. Poster: the settled end card, the master's last frame (frame 3329 of the 55.5 s cut). The script page reads this folder's script.json, which out/scripts/source/blog-designing-docs.json copies. No CREDITS.txt, so no credits record.",
+  "$comment": "The Designing docs for humans trailer (v8, 2026-10-16: v7 with heading 5 as a title, An open problem, NOTES.md). Gem smoke, so the hardware GPU path, three workers as every v4 and v5 render used. Poster: the settled end card, the master's last frame (frame 3401 of the 56.7 s cut since the 2026-11-09 re-cut; 3329 of the 55.5 s cut before). The script page reads this folder's script.json, which out/scripts/source/blog-designing-docs.json copies. No CREDITS.txt, so no credits record.",
   "slug": "blog-designing-docs",
   "kind": "blog",
   "path": "gpu",
   "fps": 60,
   "workers": 3,
-  "timeout": 40,
-  "poster": { "frame": 3329 },
+  "timeout": 120,
+  "poster": { "frame": 3401 },
   "records": ["poster", "sheets", "checking", "script"],
   "checking": "../journey-to-the-west/tools/sheet.py",
   "script": {

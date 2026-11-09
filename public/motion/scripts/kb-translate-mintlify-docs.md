@@ -1,6 +1,6 @@
 # How do I translate a Mintlify docs site?
 
-47.0 s · Narrator: Frederick Surrey
+49.2 s · Narrator: Frederick Surrey
 
 Connect the GitHub repository that holds your Mintlify docs to General Translation, choose your languages, and Locadex opens a pull request that restructures docs.json for multiple languages and adds the translated pages.
 

@@ -24,7 +24,9 @@ const browser = await chromium.launch({ executablePath: exe, args: ['--use-gl=an
 const page = await browser.newPage();
 await page.goto('http://127.0.0.1:8794/gem-shapes/make.html');
 await page.waitForFunction(() => window.__ready === true);
-for (const [name, src, pad] of SHAPES) {
+// node make.mjs [name ...] remakes only the named shapes (all by default)
+const only = process.argv.slice(2);
+for (const [name, src, pad] of SHAPES.filter(([n]) => !only.length || only.includes(n))) {
   const b64 = await page.evaluate(([s, p]) => window.processShape('../' + s, p), [src, pad]);
   writeFileSync(join(KIT, 'gem-shapes', name + '.png'), Buffer.from(b64, 'base64'));
   console.log('wrote', name + '.png');

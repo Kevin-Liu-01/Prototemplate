@@ -1,6 +1,6 @@
 # How do I add i18n to a Next.js app?
 
-50.6 s · Narrator: Frederick Surrey
+52.8 s · Narrator: Frederick Surrey
 
 Install gt-next and the gt CLI, wrap your Next.js config with withGTConfig, list your languages in gt.config.json, add a loadTranslations file and the GTProvider, wrap your content in the T component, and run npx gt translate before next build.
 

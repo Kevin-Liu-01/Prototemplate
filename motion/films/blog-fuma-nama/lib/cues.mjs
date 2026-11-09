@@ -32,7 +32,7 @@ export const FIRST_SOUND = [1.0, 7.95, 16.33, 21.03, 26.34, 31.04, 37.66, 44.63,
 // ("The" at 37.55 and "If" at 44.55); every other change of picture is a transform
 export const CUTS = [37.5, 44.5];
 export const CARD = 55.5;
-export const END = CARD + 4;
+export const END = CARD + 5.2; // kit/endcard DURATION: the logo's loop (2026-11-09)
 export const LINES = FIRST_SOUND.length;
 
 export function onsetOf(file) {

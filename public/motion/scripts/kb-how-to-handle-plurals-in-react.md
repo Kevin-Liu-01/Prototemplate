@@ -1,6 +1,6 @@
 # How do I handle plurals in React?
 
-48.4 s · Narrator: Frederick Surrey
+50.6 s · Narrator: Frederick Surrey
 
 Don't hard-code plural logic with checks like n === 1. A small helper is enough for English-only apps, but multilingual apps need locale-aware plural rules, which an i18n component such as `<Plural>` from gt-react or gt-next handles for every language.
 
