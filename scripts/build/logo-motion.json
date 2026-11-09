@@ -1,25 +1,22 @@
 {
-  "about": "The numbers the live logo motion is drawn from, copied once from the motion source the published hover and loading videos were rendered from. Measures are in the logo's 256 unit square, centred on the ring; angles are degrees on each line (meridian: 0 the north pole, 90 the right; latitude: 0 the left node, 90 the top, 180 the right node). Each table samples one beat at timing.rate per second: hoverEnd is the meridian's moving end on hover, meridianLap and gLap are [tail, head] of the line in each loader beat.",
+  "about": "The numbers the live logo motion is drawn from. Measures are in the logo's 256 unit square, centred on the ring; angles are degrees on each line (meridian: 0 the north pole, 90 the right; latitude: 0 the left node, 90 the top, 180 the right node). meridianStart and meridianEnd are the thetas of the logo's meridian's two cut faces, the inner corner first; gEnd is the G's free end; barLeft is where the bar ends once the meridian has gone. The tables are copied once from the motion source the first published videos were rendered from, each one beat sampled at timing.rate per second: hoverEnd is where the meridian's moving end stands on hover, meridianLap and gLap are [tail, head] of the line in each loader beat. The source drew the G's lap from its own rest stroke, source.gTail0 to source.gHead0; the generator moves each end of that lap so it leaves and lands on the logo's G.",
   "logo": {
     "R": 96.9,
     "A": 51.46,
     "w": 13.6,
     "h": 6.8,
-    "fillet": 13.77114,
     "gapLeft": 8.2999,
-    "gapMer": 7.2999,
-    "backBelow": 7.45,
     "axisAbove": 6.8,
     "axisBelow": 6.8,
     "meridianStart": [133.0534, 126.1013],
     "meridianEnd": [407.0906, 414.0189],
     "latitudeStart": 180,
-    "gEnd": 495.6589
+    "gEnd": 495.6589,
+    "barLeft": -54.245
   },
-  "state": {
-    "barLeft": -54.245,
-    "tail0": 169.7,
-    "head0": 493.222
+  "source": {
+    "gTail0": 169.7,
+    "gHead0": 493.222
   },
   "timing": {
     "hover": 0.6,

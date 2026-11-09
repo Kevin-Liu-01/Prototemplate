@@ -40,7 +40,7 @@
     "build:logo-motion": "node scripts/build/logo-motion.mjs",
     "build:lockup": "python3 scripts/build/lockup.py",
     "import:marks": "node scripts/build/import-marks.mjs",
-    "test:marks": "node --test scripts/lint/marks.test.mjs scripts/lint/mark-file.test.mjs",
+    "test:marks": "node --test scripts/lint/marks.test.mjs scripts/lint/mark-file.test.mjs scripts/lint/logo-motion.test.mjs",
     "test:line-globe": "node --test scripts/lint/line-globe.test.mjs",
     "build:inter": "python3 scripts/build/subset-inter.py",
     "build:thumbs": "node scripts/build/thumbs.mjs",
