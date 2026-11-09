@@ -152,12 +152,14 @@ function caption(x, y, t, cls = '') { return `<div class="cap ${cls}" style="lef
 function badge(x, y, t, cls = '') { return `<div class="badge ${cls}" style="left:${px(x)};top:${px(y)}">${t}</div>`; }
 
 const CSS = `
+@font-face{font-family:'Katagami Text';src:url(/fonts/KatagamiText.woff2) format('woff2');font-weight:100 900;font-style:normal}
+@font-face{font-family:'Katagami Text';src:url(/fonts/KatagamiText-Italic.woff2) format('woff2');font-weight:100 900;font-style:italic}
 @font-face{font-family:'Inter';src:url(/fonts/Inter-Variable.ttf) format('truetype');font-weight:100 900;font-style:normal}
 @font-face{font-family:'Geist Mono';src:url(/fonts/GeistMono-Variable.ttf) format('truetype');font-weight:100 900}
 :root{--bg:#09090b;--surface:rgba(9,9,11,.86);--surface2:#111216;--border:#27272a;--border2:#3f3f46;--text:#fafafa;--muted:#a1a1aa;--dim:#71717a;--blue:#0078FF;--blue2:#60a5fa;--red:#f0524f;--green:#34d399;--amber:#fbbf24}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#111216}
-body{width:var(--W);height:var(--H);overflow:hidden;font-family:'Inter',system-ui,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+body{width:var(--W);height:var(--H);overflow:hidden;font-family:'Katagami Text',system-ui,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
 .stage{position:relative;width:var(--W);height:var(--H);overflow:hidden;background:#111216 center/auto calc(var(--H) * 2) no-repeat;image-rendering:pixelated}
 .stage>*,.stage>.center>*{position:absolute}
 /* the ground keeps its pixels square at 2x (the export is 1920 wide, drawn 3200 wide, so every dot is a crisp 2px square with its aspect kept); everything on it resamples smoothly */
@@ -175,33 +177,33 @@ body{width:var(--W);height:var(--H);overflow:hidden;font-family:'Inter',system-u
 .hl.white{border-color:rgba(250,250,250,.85);box-shadow:none}
 .hl.dashed{border-style:dashed}
 .hl.thin{border-width:2.5px;box-shadow:none}
-.tag{position:absolute;display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 18px;border-radius:8px;background:var(--blue);color:#fff;font:600 30px/1 'Inter';letter-spacing:-.005em;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+.tag{position:absolute;display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 18px;border-radius:8px;background:var(--blue);color:#fff;font:500 30px/1 'Katagami Text';letter-spacing:-.005em;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.45)}
 .tag.red{background:var(--red)}
 .tag.dark{background:#18181b;border:1px solid var(--border2);color:var(--text)}
 .tag.white{background:#fafafa;color:#09090b}
 .tag.anchor-right{transform:translateX(-100%)}
 .tag .ico{width:24px;height:24px;fill:currentColor;flex:none}
-.tag .num{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);font-size:28px;font-weight:700;margin-left:-6px}
-.dot{position:absolute;display:grid;place-items:center;border-radius:50%;background:var(--blue);color:#fff;font:700 13px/1 'Inter';box-shadow:0 0 0 4px rgba(9,9,11,.9),0 6px 16px rgba(0,0,0,.5)}
+.tag .num{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);font-size:28px;font-weight:500;margin-left:-6px}
+.dot{position:absolute;display:grid;place-items:center;border-radius:50%;background:var(--blue);color:#fff;font:500 13px/1 'Katagami Text';box-shadow:0 0 0 4px rgba(9,9,11,.9),0 6px 16px rgba(0,0,0,.5)}
 .dot.red{background:var(--red)}
 .dot.white{background:#fafafa;color:#09090b}
 .dot.small{box-shadow:0 0 0 2px rgba(9,9,11,.85)}
 .txt{position:absolute}
 .title{position:absolute}
-.title h1{font:600 34px/1.12 'Inter';letter-spacing:-0.028em;color:var(--text)}
-.title p{margin-top:10px;font:400 28px/1.4 'Inter';color:var(--muted);max-width:760px}
-.title .figtag{font:500 26px/1 'Geist Mono';letter-spacing:.06em;color:var(--blue2);margin-bottom:12px}
-.cap{position:absolute;font:400 28px/1.4 'Inter';color:var(--muted);max-width:560px}
-.cap strong{color:var(--text);font-weight:600}
+.title h1{font:500 34px/1.12 'Katagami Text';letter-spacing:-0.028em;color:var(--text)}
+.title p{margin-top:10px;font:400 28px/1.4 'Katagami Text';color:var(--muted);max-width:760px}
+.title .figtag{font:500 26px/1 'Katagami Text';letter-spacing:0;color:var(--blue2);margin-bottom:12px}
+.cap{position:absolute;font:400 28px/1.4 'Katagami Text';color:var(--muted);max-width:560px}
+.cap strong{color:var(--text);font-weight:500}
 .cap.center{text-align:center}
-.badge{position:absolute;display:inline-flex;align-items:center;gap:10px;padding:0 16px;height:50px;border-radius:8px;background:#18181b;border:1px solid var(--border2);color:var(--text);font:500 30px/1 'Inter';white-space:nowrap}
-.badge.mono{font:500 26px/1 'Geist Mono';letter-spacing:.04em}
+.badge{position:absolute;display:inline-flex;align-items:center;gap:10px;padding:0 16px;height:50px;border-radius:8px;background:#18181b;border:1px solid var(--border2);color:var(--text);font:500 30px/1 'Katagami Text';white-space:nowrap}
+.badge.mono{font:500 26px/1 'Katagami Text';font-variant-numeric:tabular-nums;letter-spacing:0}
 .badge .ico{fill:currentColor;width:24px;height:24px}
 .panel{position:absolute;background:transparent;border:none;border-radius:12px}
 .panel.solid,.panel.soft{background:transparent}
-.panel h3{font:600 15px/1.2 'Inter';letter-spacing:-0.01em;color:var(--text)}
-.panel p{font:400 13.5px/1.5 'Inter';color:var(--muted)}
-.plabel{position:absolute;left:18px;top:6px;display:flex;align-items:center;gap:12px;font:600 32px/1 'Inter';letter-spacing:-.01em;color:var(--text)}
+.panel h3{font:500 15px/1.2 'Katagami Text';letter-spacing:-0.01em;color:var(--text)}
+.panel p{font:400 13.5px/1.5 'Katagami Text';color:var(--muted)}
+.plabel{position:absolute;left:18px;top:6px;display:flex;align-items:center;gap:12px;font:500 32px/1 'Katagami Text';letter-spacing:-.01em;color:var(--text)}
 .plabel .ico{width:34px;height:34px;fill:var(--blue2)}
 .plabel.muted{color:var(--muted)}
 .plabel.muted .ico{fill:var(--dim)}
@@ -210,9 +212,9 @@ body{width:var(--W);height:var(--H);overflow:hidden;font-family:'Inter',system-u
 .list{position:absolute;display:flex;flex-direction:column;gap:18px}
 .list .row{display:flex;align-items:center;gap:14px}
 .list .row .ico{width:26px;height:26px;flex:none}
-.list .row .k{font:600 27px/1.2 'Inter';color:var(--text)}
-.list .row .v{font:400 22px/1.35 'Inter';color:var(--muted)}
-.mono{font-family:'Geist Mono';font-weight:500;letter-spacing:.04em}
+.list .row .k{font:500 27px/1.2 'Katagami Text';color:var(--text)}
+.list .row .v{font:400 22px/1.35 'Katagami Text';color:var(--muted)}
+.mono{font-family:'Katagami Text';font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:0}
 .wire{position:absolute;border:1px solid rgba(250,250,250,.16);background:rgba(250,250,250,.04);border-radius:4px}
 .wire.blue{border-color:rgba(0,120,255,.9);background:rgba(0,120,255,.16)}
 .wire.bar{border:none;background:rgba(250,250,250,.14);border-radius:3px}
@@ -225,8 +227,8 @@ body{width:var(--W);height:var(--H);overflow:hidden;font-family:'Inter',system-u
 .rulerh{position:absolute;border-top:3px solid var(--blue2)}
 .rulerh::before,.rulerh::after{content:'';position:absolute;top:-9px;height:18px;width:3px;background:var(--blue2)}
 .rulerh::before{left:0}.rulerh::after{right:0}
-.measure{position:absolute;font:500 28px/1 'Geist Mono';color:var(--blue2);letter-spacing:.03em;white-space:nowrap;padding:6px 9px;border-radius:6px;background:rgba(9,9,11,.85);transform:translateY(calc(-50% + 6px))}
-.pill{display:inline-flex;align-items:center;gap:10px;padding:0 20px;height:52px;border-radius:999px;font:500 28px/1 'Inter'}
+.measure{position:absolute;font:500 28px/1 'Katagami Text';font-variant-numeric:tabular-nums;color:var(--blue2);letter-spacing:0;white-space:nowrap;padding:6px 9px;border-radius:6px;background:rgba(9,9,11,.85);transform:translateY(calc(-50% + 6px))}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:0 20px;height:52px;border-radius:999px;font:500 28px/1 'Katagami Text'}
 `;
 
 const CENTER_SCRIPT = `<script>(function(){const st=document.querySelector('.stage');const W=st.clientWidth,H=st.clientHeight;const kids=[...st.children].filter(el=>!(el.classList.contains('vignette')||el.classList.contains('wash')));const wrap=document.createElement('div');wrap.className='center';wrap.style.cssText='position:absolute;left:0;top:0;width:'+W+'px;height:'+H+'px';kids.forEach(k=>wrap.appendChild(k));st.appendChild(wrap);function isContent(el){const tag=el.tagName.toLowerCase();if(tag==='svg')return !el.classList.contains('ln');const insvg=el.closest('svg');if(insvg){return insvg.classList.contains('ln')&&el.parentElement===insvg;}const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||parseFloat(cs.opacity)===0)return false;return el.children.length===0||cs.backgroundImage!=='none'||cs.backgroundColor!=='rgba(0, 0, 0, 0)'||parseFloat(cs.borderTopWidth)>0||parseFloat(cs.borderLeftWidth)>0||cs.boxShadow!=='none'||cs.outlineStyle!=='none';}function run(){let l=1e9,t=1e9,r=-1e9,b=-1e9;wrap.querySelectorAll('*').forEach(el=>{if(!isContent(el))return;const rc=el.getBoundingClientRect();if(rc.width<=0||rc.height<=0)return;l=Math.min(l,rc.left);t=Math.min(t,rc.top);r=Math.max(r,rc.right);b=Math.max(b,rc.bottom);});if(r<l){window.__centered=true;return;}const sr=st.getBoundingClientRect();const bw=r-l,bh=b-t;const fit=parseFloat(st.dataset.fit||'0');let z=1;if(fit>0){z=Math.min(fit*W/bw,fit*H/bh);z=Math.max(0.8,Math.min(1,z));z=Math.round(z*1000)/1000;}const cx=(l+r)/2-sr.left,cy=(t+b)/2-sr.top;const dx=Math.round(W/2-z*cx),dy=Math.round(H/2-z*cy);wrap.style.transformOrigin='0 0';wrap.style.transform='translate('+dx+'px,'+dy+'px) scale('+z+')';window.__centerDelta={dx:dx,dy:dy,z:z,w:Math.round(bw),h:Math.round(bh)};window.__centered=true;}document.fonts.ready.then(run);})();</script>`;

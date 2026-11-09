@@ -408,5 +408,75 @@
     "w": 1200,
     "h": 630,
     "animated": false
+  },
+  {
+    "id": "P1-open-source",
+    "area": "P",
+    "name": "Open source cover",
+    "bg": null,
+    "why": "The open-source grants cover: the title on the blue gem smoke screened in four blues, lockup J under it.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "P2-fumadocs",
+    "area": "P",
+    "name": "Fumadocs cover",
+    "bg": null,
+    "why": "The Fumadocs grantee cover: the Fumadocs mark and name on the fire gem smoke, lockup J under them.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "P3-fuma-nama-og",
+    "area": "P",
+    "name": "Fuma Nama social card",
+    "bg": null,
+    "why": "The social card of the Fuma Nama post: its title in two lines on the fire gem smoke, lockup J under it.",
+    "w": 1600,
+    "h": 840,
+    "animated": false
+  },
+  {
+    "id": "P4-cuelume",
+    "area": "P",
+    "name": "Cuelume cover",
+    "bg": null,
+    "why": "The Cuelume grantee cover: the Cuelume mark and name on a green screen of a glyphfield export, lockup J under them.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
+  },
+  {
+    "id": "P4-cuelume-og",
+    "area": "P",
+    "name": "Cuelume social card",
+    "bg": null,
+    "why": "The Cuelume grantee social card at 1.9:1, the cover recomposed for the shorter frame.",
+    "w": 1600,
+    "h": 840,
+    "animated": false
+  },
+  {
+    "id": "P5-slash",
+    "area": "P",
+    "name": "Slash partnership cover",
+    "bg": null,
+    "why": "The Slash partnership cover: the Slash logo, a times sign and lockup J on a gold screen of a glyphfield export.",
+    "w": 1600,
+    "h": 840,
+    "animated": false
+  },
+  {
+    "id": "P6-rewriting-docs-spine",
+    "area": "P",
+    "name": "Docs spine",
+    "bg": null,
+    "why": "The three docs page types, each answering one question from the user: Quickstart, Guides and Reference.",
+    "w": 1600,
+    "h": 900,
+    "animated": false
   }
 ]
