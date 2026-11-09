@@ -8,8 +8,9 @@
  * marks of MARKS with MARK_RULES, and the picture marks of MARKS and
  * GLOBE_CONCEPTS from the earlier rounds. The marks from 2026-10-28 on are
  * DYNAMIC_MARKS, finished SVGs under public/marks/dynamic that pnpm
- * import:marks copies in, and the logo and its state, which are drawn
- * from their files on /marks/graticule. Every mark is a public SVG in currentColor
+ * import:marks copies in, the Locadex marks under public/marks/locadex
+ * that it copies in the same way, and the logo and its state, which are
+ * drawn from their files on /marks/graticule. Every mark is a public SVG in currentColor
  * under public/marks, with its notes as data. Pure data and types, no
  * React, no DOM and no imports, so the server page, the client viewer and
  * the Node tests read the same lists.
@@ -475,6 +476,7 @@ export type MarkFamilyId =
   | 'speed'
   | 'doubled-line'
   | 'globe'
+  | 'locadex'
   | 'hemispheres'
   | 'earlier'
   | 'production';
@@ -502,6 +504,7 @@ export const FAMILIES: readonly MarkFamilyRow[] = [
   { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-11-02', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
   { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
   { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-11-06', lead: 'The letters are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator. The logo comes from this family.' },
+  { id: 'locadex', name: 'Locadex', anchor: 'locadex', engaged: '2026-11-08', lead: 'Marks for Locadex, the AI agent of General Translation: the lines of the logo\'s globe draw an L or a lambda.' },
   { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },
   { id: 'earlier', name: 'Earlier rounds', anchor: 'other-explorations', engaged: '2026-10-20', lead: 'These marks come from the rounds before the hemispheres, and none was chosen.' },
   { id: 'production', name: 'In production', anchor: 'production', engaged: '2026-10-20', lead: 'These two marks are live on generaltranslation.com and in the dashboard, and each card lists every file the sites serve.' },
@@ -548,10 +551,16 @@ type DynamicInput = Omit<CatalogMark, 'file' | 'file16' | 'box'> & {
   variation?: true;
 };
 
+/** Where a dynamic mark's file lives: a Locadex mark under /marks/locadex, the logo and its state on /marks/graticule, the rest under /marks/dynamic. */
+function dynamicFile({ id, family, variation }: Pick<DynamicInput, 'id' | 'family' | 'variation'>): string {
+  if (family === 'locadex') return `/marks/locadex/${id}.svg`;
+  return variation ? `/marks/graticule/variations/${id}.svg` : `/marks/dynamic/${id}.svg`;
+}
+
 function dyn({ cut, variation, ...mark }: DynamicInput): CatalogMark {
   return {
     ...mark,
-    file: variation ? `/marks/graticule/variations/${mark.id}.svg` : `/marks/dynamic/${mark.id}.svg`,
+    file: dynamicFile({ id: mark.id, family: mark.family, variation }),
     ...(cut ? { file16: `/marks/dynamic/${mark.id}-16.svg` } : {}),
   };
 }
@@ -559,7 +568,8 @@ function dyn({ cut, variation, ...mark }: DynamicInput): CatalogMark {
 /**
  * The marks from 2026-10-28 on, each a finished SVG under
  * public/marks/dynamic that pnpm import:marks copied in and measured,
- * except the logo and its state, whose files are their drawings on
+ * except the Locadex marks, which it copied into public/marks/locadex,
+ * and the logo and its state, whose files are their drawings on
  * /marks/graticule (variation). In
  * each family the drawings it grew from come first, newest first, then
  * the rest in the order the family shows them; the shortlisted marks are
@@ -641,6 +651,16 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'graticule-jaw-no-meridian', name: 'Graticule jaw, no meridian', family: 'globe', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'Graticule jaw without its meridian oval, so the flat latitude opens at its upper right as the G inside the ring, and the equator, which now ends square on the left, is its bar and the crossbar of the T.' }),
   dyn({ id: 'meridian-gt', name: 'Meridian GT', family: 'globe', pick: true, box: [12, 12, 232, 232], note: 'A thin ring and a meridian that merges into it at the top and the bottom open together at the upper right as the G, both cut level, and a bar from inside the meridian out to the ring is both the G\'s bar and the crossbar of a T whose stem drops to the ring.' }),
   dyn({ id: 'meridian-gt-curved', name: 'Meridian GT, curved T', family: 'globe', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A heavy closed ring holds one meridian whose right arc ends in a short hook at the upper right as the G, and a level bar from the meridian\'s left side out to the ring is both the G\'s bar and the crossbar of a T that curves down into a stem standing on the ring.' }),
+
+  dyn({ id: 'lambda-oval', name: 'Lambda oval', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A lambda whose legs both run to the ring stands in front of a level oval, and the oval\'s near arc stops short of each leg, so the space between the legs stays open.' }),
+  dyn({ id: 'dense-globe-l', name: 'Dense globe L', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'An L on the globe at the logo\'s density: the far latitude arc and the western half of the equator break behind the nearer lines, and the L\'s counter stays open.' }),
+  dyn({ id: 'lambda-meridian', name: 'Lambda meridian', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A lambda stands in front of the equator oval and one meridian, the meridian breaks behind the short leg, and the right half stays open so the long leg runs clear.' }),
+  dyn({ id: 'curved-foot-l', name: 'Curved foot L', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'Three lines: the ring, the front meridian and an L, whose upright is the polar axis and whose curved foot is the lower front arc of the logo\'s latitude band.' }),
+  dyn({ id: 'parallel-foot-l', name: 'Parallel foot L', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The polar axis is the L\'s upright and a southern parallel is its foot, running out to the ring, and the left meridian is the only other line.' }),
+  dyn({ id: 'low-foot-l', name: 'Low foot L', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'Three lines: the ring, the front meridian and a low L whose straight foot is a parallel seen edge on.' }),
+  dyn({ id: 'latitude-l', name: 'Latitude L', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'An oval globe whose latitude is still being drawn: the full-height polar axis is the L\'s upright, the latitude\'s lower front arc is its foot, and the upper arc passes behind the axis.' }),
+  dyn({ id: 'meridian-oval-l', name: 'Meridian oval L', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The logo\'s oval state turned upright: a ring and a meridian oval, the polar axis as the L\'s upright and a southern parallel as its foot, and the right meridian ends level just above the foot.' }),
+  dyn({ id: 'wireframe-l', name: 'Wireframe L', family: 'locadex', pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The logo\'s wireframe with its T turned into an L, the polar axis from the north pole to the center and the right radius of the equator, and the far arc ends behind the axis, so the upper right quarter is the L\'s open counter.' }),
 ];
 
 /**

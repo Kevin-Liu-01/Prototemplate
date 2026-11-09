@@ -2,7 +2,9 @@
 // every file a row names exists, every file under public/marks/dynamic has
 // a row, every dynamic file is one path in currentColor on the canonical
 // 256 unit header and at most 8 KB (the logo and its state are drawn from
-// their files on /marks/graticule, in the same header and over 8 KB), the
+// their files on /marks/graticule, in the same header and over 8 KB),
+// every file under public/marks/locadex has a Locadex row and is one path
+// on the same header labelled Locadex, at most 32 KB, the
 // shortlist opens on the logo and then its state, the drawn box a row records is the
 // file's own within half a unit, SHORTLIST names known ids once each and
 // at most 16, every shortlisted mark is one Kevin picked and every dynamic
@@ -25,7 +27,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 
-import { CANONICAL, DYNAMIC_DIR, MAX_BYTES, drawnBox } from '../build/import-marks.mjs';
+import { CANONICAL, DYNAMIC_DIR, LOCADEX_CANONICAL, LOCADEX_DIR, LOCADEX_MAX_BYTES, MAX_BYTES, drawnBox } from '../build/import-marks.mjs';
 import { ROOT } from '../lib/root.mjs';
 
 const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, badgeMarks, graticuleMarks, pageFamilies } = await import(new URL('../../src/lib/marks.ts', import.meta.url).href);
@@ -38,6 +40,7 @@ const NAME_ASPECT = Number(ROWS_TS.match(/export const NAME_ASPECT = ([\d.]+);/)
 const MARKS_TS = 'src/lib/marks.ts';
 const publicFile = (path) => join(ROOT, 'public', path);
 const dynamicFiles = readdirSync(join(ROOT, DYNAMIC_DIR)).filter((name) => name.endsWith('.svg'));
+const locadexFiles = readdirSync(join(ROOT, LOCADEX_DIR)).filter((name) => name.endsWith('.svg'));
 const ORIGIN_WORDS = /\boption [a-d]\b|\bsym(?:bol)?[\s_-]*\d/i;
 
 test('every file a catalog row names exists', () => {
@@ -70,8 +73,21 @@ test('every dynamic file is one currentColor path on the canonical header, at mo
   }
 });
 
+test('every file under public/marks/locadex has a Locadex row and is one currentColor path on the Locadex header, at most 32 KB', () => {
+  const rows = new Map(DYNAMIC_MARKS.map((mark) => [mark.file, mark]));
+  for (const name of locadexFiles) {
+    assert.equal(rows.get(`/marks/locadex/${name}`)?.family, 'locadex', `${name} has no Locadex catalog row`);
+    const text = readFileSync(join(ROOT, LOCADEX_DIR, name), 'utf8');
+    assert.match(text, LOCADEX_CANONICAL, `${name} breaks the header format`);
+    assert.ok(Buffer.byteLength(text) <= LOCADEX_MAX_BYTES, `${name} is over ${LOCADEX_MAX_BYTES} bytes`);
+  }
+  for (const mark of DYNAMIC_MARKS.filter((row) => row.family === 'locadex')) {
+    assert.equal(mark.file, `/marks/locadex/${mark.id}.svg`, `${mark.id}: a Locadex mark lives under /marks/locadex`);
+  }
+});
+
 test('every dynamic row drawn from its file on /marks/graticule is one currentColor path on the canonical header', () => {
-  for (const mark of DYNAMIC_MARKS.filter((row) => !row.file.startsWith('/marks/dynamic/'))) {
+  for (const mark of DYNAMIC_MARKS.filter((row) => !row.file.startsWith('/marks/dynamic/') && row.family !== 'locadex')) {
     assert.match(mark.file, /^\/marks\/graticule\/variations\/[a-z0-9-]+\.svg$/, `${mark.id}: ${mark.file} is outside the two mark folders`);
     assert.match(readFileSync(publicFile(mark.file), 'utf8'), CANONICAL, `${mark.id}: ${mark.file} breaks the header format`);
   }
@@ -179,6 +195,9 @@ test('the catalog and the dynamic files name each mark by its idea alone', () =>
   assert.doesNotMatch(readFileSync(join(ROOT, MARKS_TS), 'utf8'), ORIGIN_WORDS, `${MARKS_TS} names a mark's origin`);
   for (const name of dynamicFiles) {
     assert.doesNotMatch(readFileSync(join(ROOT, DYNAMIC_DIR, name), 'utf8'), ORIGIN_WORDS, `${name} names its mark's origin`);
+  }
+  for (const name of locadexFiles) {
+    assert.doesNotMatch(readFileSync(join(ROOT, LOCADEX_DIR, name), 'utf8'), ORIGIN_WORDS, `${name} names its mark's origin`);
   }
 });
 

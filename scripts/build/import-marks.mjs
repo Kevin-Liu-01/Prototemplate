@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /* oxlint-disable no-console -- a build step reporting to stdout. */
 /**
- * Copies finished marks into public/marks/dynamic from a manifest kept
- * outside this repository. The manifest maps each local source folder of
- * the marks rounds to a public id, and it stays private because the local
- * folder names are working names. For each entry the script reads one SVG
+ * Copies finished marks into public/marks/dynamic, or the Locadex marks
+ * into public/marks/locadex, from a manifest kept outside this
+ * repository. The manifest maps each local source folder of the marks
+ * rounds to a public id, and it stays private because the local folder
+ * names are working names. For each entry the script reads one SVG
  * (mark.svg, or the file the entry names) and its 16px cut (mark-16.svg)
  * when one sits beside it, and never any other file of the folder.
  *
@@ -15,15 +16,17 @@
  * normalizeSvg must find one ink with no holes painted in a second tone.
  * The script rewrites the header to the canonical one (so no label or
  * attribute of the source survives), rounds every coordinate to two
- * decimals, refuses a file over 8 KB, and prints each file's bytes and
- * drawn box, the `box` its catalog row in src/lib/marks.ts records.
+ * decimals, refuses a file over its folder's limit (8 KB for dynamic, 32
+ * KB for locadex, whose rings and ovals are long runs of short curves),
+ * and prints each file's bytes and drawn box, the `box` its catalog row
+ * in src/lib/marks.ts records. A Locadex file is labelled Locadex.
  *
  * Usage:
  *   node scripts/build/import-marks.mjs [--manifest <file>] [--check]
  *   (pnpm import:marks)
  *
  *   --manifest  the private manifest (default ~/gt/prototemplate-work/marks-upgrade/import.json):
- *               { "base": "<folder>", "marks": [{ "id": "<public id>", "from": "<folder under base>", "file"?: "<svg name>" }] }
+ *               { "base": "<folder>", "folder"?: "dynamic" | "locadex", "marks": [{ "id": "<public id>", "from": "<folder under base>", "file"?: "<svg name>" }] }
  *   --check     validates and prints, and writes nothing
  *
  * Exit 0 when every entry passes, 1 when one fails, 2 when the manifest is missing.
@@ -41,19 +44,33 @@ helpIfAsked(import.meta.url);
 /** Where the imported marks live, as a public folder and on disk. */
 export const DYNAMIC_DIR = 'public/marks/dynamic';
 export const MAX_BYTES = 8 * 1024;
+/** The Locadex marks: the same canonical file, labelled Locadex, with room for their long curve runs. */
+export const LOCADEX_DIR = 'public/marks/locadex';
+export const LOCADEX_MAX_BYTES = 32 * 1024;
 const SIZE = 256;
+
+/** The folders a manifest can write to: where, the file's label, and the size it may reach. */
+export const MARK_FOLDERS = {
+  dynamic: { dir: DYNAMIC_DIR, label: 'General Translation', maxBytes: MAX_BYTES },
+  locadex: { dir: LOCADEX_DIR, label: 'Locadex', maxBytes: LOCADEX_MAX_BYTES },
+};
 
 const { normalizeSvg, parsePath, sanitizeSvg } = await import(new URL('../../src/lib/mark-file.ts', import.meta.url).href);
 
-/** The one header every mark file carries; `cut` adds nothing, since the 16px cuts are drawn as paths too. */
-export function canonicalSvg(rule, d) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}" role="img" aria-label="General Translation"><path fill="currentColor" fill-rule="${rule}" d="${d}"/></svg>\n`;
+/** The one header every mark file carries, with its folder's label; `cut` adds nothing, since the 16px cuts are drawn as paths too. */
+export function canonicalSvg(rule, d, label = MARK_FOLDERS.dynamic.label) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}" role="img" aria-label="${label}"><path fill="currentColor" fill-rule="${rule}" d="${d}"/></svg>\n`;
 }
 
-/** The canonical file's shape: the header above, one path, and nothing else. */
-export const CANONICAL = new RegExp(
-  `^<svg xmlns="http://www\\.w3\\.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}" role="img" aria-label="General Translation"><path fill="currentColor" fill-rule="(nonzero|evenodd)" d="([^"<>]+)"/></svg>\\n?$`
-);
+/** The canonical file's shape for a label: the header above, one path, and nothing else. */
+export function canonicalPattern(label) {
+  return new RegExp(
+    `^<svg xmlns="http://www\\.w3\\.org/2000/svg" viewBox="0 0 ${SIZE} ${SIZE}" width="${SIZE}" height="${SIZE}" role="img" aria-label="${label}"><path fill="currentColor" fill-rule="(nonzero|evenodd)" d="([^"<>]+)"/></svg>\\n?$`
+  );
+}
+
+export const CANONICAL = canonicalPattern(MARK_FOLDERS.dynamic.label);
+export const LOCADEX_CANONICAL = canonicalPattern(MARK_FOLDERS.locadex.label);
 
 const NUMBER = /[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g;
 
@@ -104,13 +121,13 @@ export function readMark(source) {
   return { rule, d: roundPath(attrs.d) };
 }
 
-/** One file through the checks and into the canonical form: { svg, bytes, box } or { error }. */
-export function importFile(source) {
+/** One file through the checks and into its folder's canonical form: { svg, bytes, box } or { error }. */
+export function importFile(source, folder = MARK_FOLDERS.dynamic) {
   const mark = readMark(source);
   if ('error' in mark) return mark;
-  const svg = canonicalSvg(mark.rule, mark.d);
+  const svg = canonicalSvg(mark.rule, mark.d, folder.label);
   const bytes = Buffer.byteLength(svg);
-  if (bytes > MAX_BYTES) return { error: `it is ${bytes} bytes, over ${MAX_BYTES}` };
+  if (bytes > folder.maxBytes) return { error: `it is ${bytes} bytes, over ${folder.maxBytes}` };
   const box = drawnBox(svg);
   if (!box) return { error: 'its drawn box cannot be measured' };
   return { svg, bytes, box };
@@ -129,7 +146,12 @@ function main() {
   }
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
   const base = expand(manifest.base);
-  const outDir = join(ROOT, DYNAMIC_DIR);
+  const target = MARK_FOLDERS[manifest.folder ?? 'dynamic'];
+  if (!target) {
+    console.error(`import:marks: the folder ${manifest.folder} is not one of ${Object.keys(MARK_FOLDERS).join(', ')}`);
+    process.exit(2);
+  }
+  const outDir = join(ROOT, target.dir);
   if (!check) mkdirSync(outDir, { recursive: true });
   let failed = 0;
   const seen = new Set();
@@ -151,7 +173,7 @@ function main() {
         failed += 1;
         continue;
       }
-      const result = importFile(readFileSync(from, 'utf8'));
+      const result = importFile(readFileSync(from, 'utf8'), target);
       if ('error' in result) {
         console.log(`  FAIL ${out}: ${result.error}`);
         failed += 1;
