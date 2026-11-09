@@ -206,8 +206,9 @@ never a wash; one bright white; depth from lines and material, not shadows.
   WOFF2 and never loaded from a font CDN. generaltranslation.com is
   switching all its text to it (gt-cloud #5765).
 - **Known gap: some builds still render Inter** until their own switch:
-  prototemplate.com (the shell, the deck and `/brand`), its films kit and
-  blog graphics, and gt-cloud's dashboard. The Inter rules in `gt-brand`
+  prototemplate.com (the shell, the deck and `/brand`), its films kit,
+  and gt-cloud's dashboard. The blog graphics toolchain sets its labels in
+  Katagami Text. The Inter rules in `gt-brand`
   describe them until then; new work anywhere else takes Katagami Text.
 - **Headings use weight 500 at most.** Display text never goes bolder than
   500; long-form text is set at weight 400.
