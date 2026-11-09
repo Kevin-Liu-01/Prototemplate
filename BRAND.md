@@ -152,6 +152,23 @@ Rules:
   the globe's ink to the G is 0.5637 cap height. A round mark only as tall
   as flat-topped text looks shorter than the text, for the same reason
   round letters such as O overshoot the cap height and the baseline.
+- **On one line**, "General Translation" beside the globe, where height
+  is short (a header bar, a footer, a banner): the globe is 2.2 cap
+  heights tall, the size at which its ring is as thick as the name's
+  stems (the ring is 6.57 percent of the globe's height and the stem at
+  weight 500 is 0.1448 cap height, so they match at 2.203, rounded to
+  2.2). It is centred on the cap band, so it stands 0.6 cap height above
+  the cap line and below the baseline, and its ink is 0.5637 cap height
+  from the G's, as in the stacked lockup (Kevin approved the brand kit's
+  one-line lockup, clear space and minimum sizes on 2026-11-08).
+- **Clear space** is X, a quarter of the globe's height, on every side
+  of either lockup: 0.68 cap height in the stacked lockup and 0.55 in the
+  one-line lockup. The name alone keeps 0.68 cap height, the space it has
+  in the stacked lockup. No text, edge or other logo enters it.
+- **Minimum sizes.** The globe alone 24px tall (16px only as a tab
+  icon); either lockup and the name alone at a cap height of 9px, where
+  the stacked globe is 24.4px and the one-line globe 19.8px. In print
+  24px is 6.4 mm and a 9px cap height 2.4 mm.
 - **The name in the lockup is Katagami Text** at weight 500, letter-spacing
   0, with the font's own kerning, drawn as outlines (Kevin, 2026-11-08:
   "remember the word mark of general translation text uses katagami
@@ -194,9 +211,15 @@ never a wash; one bright white; depth from lines and material, not shadows.
   describe them until then; new work anywhere else takes Katagami Text.
 - **Headings use weight 500 at most.** Display text never goes bolder than
   500; long-form text is set at weight 400.
-- **Katagami's default forms are the brand's.** No feature list on top:
-  `ss01` turns on open figures, `ss07` square punctuation and `cv11` a
-  single-storey a.
+- **Katagami Text's default forms are the brand's.** Its profile makes
+  the long-flag 1, the G with a spur and the compact f the defaults;
+  every other form is Inter's default: the double-storey a, a round-topped
+  3, a closed 4, a 6 and 9 with curved stems and punctuation with round
+  dots. No feature list on top: every tag turns on a form the brand does
+  not use. `ss01` ("Open digits") gives the flat-top 3, open 4 and
+  straight-stem 6 and 9, `ss07` square punctuation, `cv11` a
+  single-storey a, and `cv01`, `cv10` and `cv12` switch the 1, the G and
+  the f back to Inter's.
 - **Multilingual-first.** Headlines, UI, and marks must hold up in CJK,
   RTL, and Indic scripts as well as Latin. A wordmark or layout that only
   works in English contradicts the company. Katagami Text covers Latin,

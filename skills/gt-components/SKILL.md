@@ -63,7 +63,7 @@ From `$GT_CLOUD/.agents/skills/gt-ui`, for packages/ui, the dashboard and the la
 - **Buttons** `Button` in the dashboard and packages/ui, one `rainbow` per page paired with `outline`, `loading` only on async actions and never with `asChild`; the landing uses `Cta`.
 - **Spacing** the parent owns the space between its children (`prefer-parent-owned-spacing`); **surfaces** no Card in a Card (`no-nested-surfaces`); **weight** nothing under 400 (`no-thin-font`).
 - **Dark mode** tokens switch under `.dark`; no `useTheme()` or `resolvedTheme` to choose markup.
-- **Type in copy** no em dash, no heading period, no mono heading or paragraph (`no-em-dash`, `no-heading-period`, `mono-is-not-voice`, `typed-text-var`). The landing and the dashboard load rsms Inter v4.1 as `--font-sans` and Geist Mono (`inter-only`), whatever gt-ui's `typography.md` says.
+- **Type in copy** no em dash, no heading period, no mono heading or paragraph (`no-em-dash`, `no-heading-period`, `mono-is-not-voice`, `typed-text-var`). On main the landing and the dashboard load rsms Inter v4.1 as `--font-sans` and Geist Mono (`inter-only`), whatever gt-ui's `typography.md` says, until Katagami Text replaces Inter (the landing in gt-cloud #5765, the dashboard at its own switch; `gt-brand` section 4).
 - **Product surfaces** are judged against the brand deck: ruled rows, one rule per seam, one dithered material on the plate pages (`gt-aesthetic`).
 
 ## The landing's primitives

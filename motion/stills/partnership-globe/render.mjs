@@ -4,7 +4,7 @@
 // still comes with a transparent twin (-transparent, the same art on an alpha
 // ground): a dark twin for a partner's dark ground, a light twin for a light one.
 //   gt-globe-dithered            the dithered globe
-//   gt-globe-dithered-mark       the dithered globe with the GT mark in the middle
+//   gt-globe-dithered-mark       the dithered globe with the logo (public/brand/gt-globe-logo.svg) in the middle
 //   gt-globe-glyphs              the glyph globe (the approved dark globe)
 //   gt-globe-glyphs-dark         the same, by its mode name (mode=dark)
 //   gt-globe-glyphs-light        the glyph globe on paper (mode=light)
@@ -25,6 +25,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
 const MOTION = new URL('../..', import.meta.url).pathname;
+const PUBLIC = new URL('../../../public', import.meta.url).pathname; // served under /public/, for the logo master
 const args = process.argv.slice(2);
 const OPTIONS = args.includes('--options');
 const OUT = join(MOTION, OPTIONS ? 'out/stills/options' : 'out/stills');
@@ -32,8 +33,8 @@ mkdirSync(OUT, { recursive: true });
 const PINNED = {
   'gt-globe-dithered': '76e3728ff4f1f4f01c60b3480fb91ab483057ecf25c4524c6b4f42d3be32629c',
   'gt-globe-dithered-transparent': '3010604efb32b8058088a4d109cec0846fdb3c5b1f00556c887fce1c024a210b',
-  'gt-globe-dithered-mark': '711e683663985e5fcf4afb70d8a78317a26cac929d88376827c7b8ce0f8d5f9e',
-  'gt-globe-dithered-mark-transparent': '6b7e77b2cab56ed3e1ef21b3c4bb0b6b8015a9bf3f353735f4bf1faab23b2e1a',
+  'gt-globe-dithered-mark': '3cdf07b813342e4763f6ddb1c842ad45abfeedf3f561fc7069e8f31c032ca86c',
+  'gt-globe-dithered-mark-transparent': 'b8d2a7eed6966fef6d4f95a83cf0b080ba214e7704b69aeb35b5ebea85650c6c',
   'gt-globe-glyphs': 'c25f5d9ce84dd085a2b25ecf2bc8a00c101c9896b9260e5361958265bed99385',
   'gt-globe-glyphs-transparent': 'b5eeeb535734bda4b7550ef9283e471ec1d6b5ba43056415813dd2380acf8933',
   'gt-globe-glyphs-dark': 'c25f5d9ce84dd085a2b25ecf2bc8a00c101c9896b9260e5361958265bed99385',
@@ -42,7 +43,8 @@ const PINNED = {
 const REPIN = process.env.REPIN === '1';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.png': 'image/png' };
 const server = createServer((req, res) => {
-  const p = join(MOTION, decodeURIComponent(req.url.split('?')[0]));
+  const u = decodeURIComponent(req.url.split('?')[0]);
+  const p = u.startsWith('/public/') ? join(PUBLIC, u.slice('/public/'.length)) : join(MOTION, u);
   if (!existsSync(p)) { res.statusCode = 404; return res.end(); }
   res.setHeader('content-type', TYPES[extname(p)] || 'application/octet-stream');
   res.end(readFileSync(p));

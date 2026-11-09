@@ -54,8 +54,16 @@ The name is Katagami Text at weight 500, letter-spacing 0, with the font's GPOS 
 
 - A round mark that only matches the height of flat-topped text looks shorter than the text, for the same reason round letters such as O overshoot the cap height and the baseline. At 1.0155 times the span the globe looked smaller than the two lines (Kevin, 2026-11-06), and at 1.1 it reads as the same height as the name without outweighing it, from a large lockup down to a 56px header, where the globe is 34.7px.
 - The globe rows on `/marks/graticule` set the name at this size: `NAME_WIDTH` in `src/app/marks/graticule/content.ts` is the name's width in globes (2.5418), and the column in `graticule.css` carries the same number.
-- Running copy never retypes the logo's name in place of a logo file. General Translation in a sentence is body copy, set in Katagami Text 400 like the rest of the sentence (Inter on prototemplate.com until its switch).
+- Running copy never retypes the logo's name in place of a logo file. General Translation in a sentence is body copy, set in Katagami Text 400 like the rest of the sentence, never in Inter. prototemplate.com still renders it in Inter until its own switch (the known gap in `gt-brand` section 4).
 - Measure the span on the name as set, in the face and weight it ships in, and size the globe from it; never size the globe to the name's line box.
+
+### The one-line lockup, clear space and minimum sizes
+
+Kevin approved the brand kit's one-line lockup, clear space and minimum sizes on 2026-11-08. The brand kit builds every lockup file from `LOGO` and the name's Katagami Text outlines (its `logo/lockup-horizontal/` holds the one-line lockup); Prototemplate draws only the stacked lockup so far. The unit is the name's cap height.
+
+- **The one-line lockup**, "General Translation" on one line beside the globe, is for short heights: a header bar, a footer, a banner. The globe is 2.2 cap heights tall, centred on the cap band, so it stands 0.6 cap height above the cap line and 0.6 below the baseline. At that size its ring is as thick as the name's stems: the ring is 6.57 percent of the globe's height and Katagami Text's stem at weight 500 is 0.1448 cap height, so they match at 2.203, rounded to 2.2. The gap from the globe's ink to the G's ink is 0.5637 cap height (1.22 times the word gap), as in the stacked lockup. The lockup is 14.96 cap heights wide and 2.2 tall.
+- **Clear space** is X, a quarter of the globe's height, on every side: 0.68 cap height in the stacked lockup (a quarter of 2.709) and 0.55 in the one-line lockup. The name alone, on one line or stacked, keeps 0.68 cap height, the space it has in the stacked lockup. No text, edge or other logo enters it. A file on a ground carries X as its margin; a transparent file is tight to the ink, so give it X when placing it.
+- **Minimum sizes.** The globe alone is at least 24px tall, and 16px only as a tab icon. Either lockup and the name alone keep a cap height of at least 9px, where the stacked globe is 24.4px and the one-line globe 19.8px. In print 24px is 6.4 mm and a 9px cap height is 2.4 mm.
 
 ## Rules for every General Translation mark
 

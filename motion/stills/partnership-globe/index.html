@@ -18,7 +18,8 @@
        * radius 0.44 of its field, ambient 0.14, rim 0.16, landmass 0.42,
        * gamma 1.15, its still frame at t = 8, ink #86a8ff on #070707).
        *   ?v=globe   the dithered globe
-       *   ?v=gt      the dithered globe with the doubled-line GT mark in the middle
+       *   ?v=gt      the dithered globe with the logo, Axis and meridian behind
+       *              (public/brand/gt-globe-logo.svg), in the middle
        *   ?v=glyphs  the globe printed in glyphs from twenty writing systems
        * The glyph globe also takes:
        *   &mode=dark   (the default) the approved globe on ink #070707
@@ -69,13 +70,19 @@
         ctx.fillRect(0, 0, W, W);
       }
 
-      /* The doubled-line GT mark as an offscreen mask, centred, `w` px wide. */
+      /*
+       * The logo as an offscreen mask, centred, `w` px wide, its height from
+       * its viewBox (the drawn box, square). render.mjs serves the site's
+       * public/ folder under /public/, so this reads the one master that
+       * `pnpm build:logo` writes from LOGO.
+       */
       async function markMask(w) {
-        const svg = await (await fetch('../../kit/brand/gt-mark.svg')).text();
+        const svg = await (await fetch('/public/brand/gt-globe-logo.svg')).text();
+        const [, , vw, vh] = svg.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number);
         const img = new Image();
         img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace('fill="currentColor"', 'fill="#ffffff"'));
         await img.decode();
-        const h = (w * 771) / 1213; // the mark's viewBox aspect
+        const h = (w * vh) / vw;
         const m = document.createElement('canvas');
         m.width = W;
         m.height = W;
@@ -114,6 +121,11 @@
               const k = ((y * cell + cell / 2) * W + (x * cell + cell / 2)) * 4 + 3;
               alpha[y * cols + x] = mark.data[k] > 8 ? 1 : 0;
             }
+          // The logo is a ring, so its whole disc is knocked out, not only its
+          // strokes: the dither never shows between the ring and the ovals.
+          const r = mark.w / 2 / cell, c0 = cols / 2;
+          for (let y = 0; y < cols; y++)
+            for (let x = 0; x < cols; x++) if ((x + 0.5 - c0) ** 2 + (y + 0.5 - c0) ** 2 <= r * r) alpha[y * cols + x] = 1;
           clear = dilate(alpha, cols, cols, Number(params.get('halo') || 3));
         }
         const img = ctx.createImageData(cols, cols);

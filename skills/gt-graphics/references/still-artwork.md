@@ -15,7 +15,7 @@
 The globes came from Kevin's request for "a small graphic" for a partnership (Kevin, 2026-10-01).
 
 - The dithered globe is the dashboard sign-in globe (`globe()` in `src/lib/dither.ts`) printed through the 8x8 Bayer screen in `#86a8ff` on ink `#070707` with 6px cells. Its settings are ambient 0.14, rim 0.16, landmass 0.42, gamma 1.15, radius 0.40 of the frame, tilt 0.15 and t 40; larger tilts bring the pole and its noise into view.
-- The mark version puts the doubled-line General Translation mark at 0.42 of the diameter in `#f2f2f0` over a three-cell knockout.
+- The mark version puts the logo (`public/brand/gt-globe-logo.svg`, which `render.mjs` serves to the page) at 0.42 of the diameter in `#f2f2f0`, its whole disc knocked out with a three-cell halo. It carried the doubled-line monogram until 2026-11-09.
 - The glyph globe prints the same sphere in characters from twenty writing systems, picked by a seeded draw. Glyph size follows the lighting alone. Land is large in `#f2f2f0` and `#86a8ff` and ocean is half size in `#2f5ce0`, on 32px cells. Matching glyphs to ink density was rejected because dense CJK glyphs took over every bright area.
 - The light glyph globe sits on paper `#ffffff` with land in `#070707` and ocean in `#2f5ce0` thinning to `#86a8ff` in the highlight. Its halftone runs the other way so ink carries the shadow.
 - Kevin named the glyph globe his favourite and then asked that only the versions without the General Translation logo be shown (Kevin, 2026-10-02). The carved versions stay in the renders and out of `public/media`.

@@ -125,9 +125,9 @@ const GLOBES = [
     stem: 'gt-globe-dithered-mark',
     ground: 'ink',
     name: 'the globe with the mark',
-    alt: 'The dithered globe with the GT monogram, drawn in doubled white lines, at its center',
+    alt: 'The dithered globe with the General Translation logo, a white globe whose lines draw a G and a T, at its center',
     caption:
-      'the globe with the mark\u00a0· the same print with the doubled-line monogram at the center in #f2f2f0, over a knocked-out halo',
+      'the globe with the mark\u00a0· the same print with the logo at the center in #f2f2f0, over a knocked-out halo',
   },
   {
     stem: 'gt-globe-glyphs',
@@ -311,7 +311,8 @@ const PAGES: readonly BrandPage[] = [
           In the lockup the logo stands beside the stacked name, &ldquo;General&rdquo; over
           &ldquo;Translation&rdquo;, at 1.1 times the span from the first line&rsquo;s cap line to the
           second line&rsquo;s baseline, centred on that span. The name is Katagami Text at weight 500,
-          drawn as outlines; running copy, headings and interface text stay in Inter.
+          drawn as outlines. Katagami Text is also the face of running copy, headings and interface
+          text; this site still renders Inter until its own switch.
         </p>
         <div className='ptb-marks ptb-lockups'>
           <figure className='ptb-mark is-paper'>
@@ -323,6 +324,14 @@ const PAGES: readonly BrandPage[] = [
             <figcaption>the lockup, paper on ink</figcaption>
           </figure>
         </div>
+        <p>
+          On one line, where height is short, the logo is 2.2 cap heights tall and centred on the
+          cap band, the size at which its ring is as thick as the name&rsquo;s stems. In both lockups
+          the logo&rsquo;s ink stands 0.5637 cap height from the G. Clear space is a quarter of the
+          logo&rsquo;s height on every side: 0.68 cap height around the stacked lockup and 0.55
+          around the one-line lockup. The logo alone is at least 24px tall, and 16px only as a tab
+          icon; a lockup keeps a cap height of at least 9px.
+        </p>
         <p>
           In running text the name is written out as General Translation. The logo stands for
           the name only outside a sentence: in the lockup, the header and the tab icon.

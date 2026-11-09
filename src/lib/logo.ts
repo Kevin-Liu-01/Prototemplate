@@ -29,7 +29,7 @@ export const LOGO = {
  * "Translation" (Kevin, 2026-11-06). The name is Katagami Text at weight
  * 500, letter-spacing 0, with the font's kerning, drawn as outlines (Kevin,
  * 2026-11-08: "remember the word mark of general translation text uses
- * katagami text!"); running copy stays in Inter.
+ * katagami text!"); running copy is Katagami Text too (BRAND.md section 6).
  * The two lines are flush left by ink with `rhythm` cap heights of white
  * between the first baseline and the second cap line, the name's own word
  * gap. The globe is 1.1 times the span from the first line's cap top to
