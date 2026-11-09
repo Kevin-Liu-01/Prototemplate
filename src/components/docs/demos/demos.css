@@ -879,49 +879,6 @@
   height: 100%;
 }
 
-.dmo-gtword {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.dmo-gtword-line {
-  margin: 0;
-  color: var(--pt-ink);
-  overflow-wrap: anywhere;
-}
-
-.dmo-gtword-line.is-meta {
-  font-size: var(--pt-t-meta);
-  line-height: var(--pt-t-meta-lh);
-}
-
-.dmo-gtword-line.is-body {
-  font-size: var(--pt-t-body);
-  line-height: var(--pt-t-body-lh);
-}
-
-.dmo-gtword-line.is-lead {
-  font-size: var(--pt-d3);
-  line-height: var(--pt-d3-lh);
-  letter-spacing: var(--pt-d3-track);
-  font-weight: var(--pt-w-display);
-}
-
-.dmo-gtword-line.is-title {
-  font-size: var(--pt-d1);
-  line-height: var(--pt-d1-lh);
-  letter-spacing: var(--pt-d1-track);
-  font-weight: var(--pt-w-display);
-}
-
-.dmo-gtword-marks {
-  display: flex;
-  align-items: flex-end;
-  gap: 20px;
-  color: var(--pt-ink);
-}
-
 /* ---------- the dithered shine ---------- */
 
 .dmo-shine {

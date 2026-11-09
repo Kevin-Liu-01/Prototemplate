@@ -50,8 +50,8 @@ export type StorySectionProps = {
 
 const DEFAULT_CAPTIONS = [
   'gt helps you…',
-  'GT knows your context.',
-  'GT does your translating.',
+  'General Translation knows your context.',
+  'General Translation does your translating.',
   'Around any component.',
   'With your own context.',
   'With your review.',
@@ -64,11 +64,11 @@ const DEFAULT_CAPTIONS = [
 
 const DEFAULT_BEATS: StoryBeat[] = [
   {
-    title: 'GT knows your context.',
-    body: 'Every translatable text node carries a <T> marker. Context pellets stream from each one into the GT core.',
+    title: 'General Translation knows your context.',
+    body: 'Every translatable text node carries a <T> marker. Context pellets stream from each one into the General Translation core.',
   },
   {
-    title: 'GT does your translating.',
+    title: 'General Translation does your translating.',
     body: 'The Locadex cursor hops node to node, translating in place. Every container re-measures as the text changes length.',
   },
   {
@@ -77,7 +77,7 @@ const DEFAULT_BEATS: StoryBeat[] = [
   },
   {
     title: 'With your own context.',
-    body: '<T context="Playful, upbeat marketing tone">: GT reads your context and the translation lands with the right tone.',
+    body: '<T context="Playful, upbeat marketing tone">: General Translation reads your context and the translation lands with the right tone.',
   },
   {
     title: 'With your review.',
@@ -817,7 +817,7 @@ export default function StorySection({
             id='btn'
             mode={sliderMode}
             file='app/page.tsx'
-            note='Wrap any component. GT reads the JSX, extracts the string, and renders the locale build in place. The button re-measures to fit its new label.'
+            note='Wrap any component. General Translation reads the JSX, extracts the string, and renders the locale build in place. The button re-measures to fit its new label.'
             artifact={
               <>
                 <div className='gts-gen-cap'>generated · public/_gt/</div>

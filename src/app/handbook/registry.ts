@@ -100,7 +100,7 @@ export const HANDBOOK: readonly DocEntry[] = [
   {
     slug: 'gt-product-map',
     file: 'docs/handbook/gt-product-map.md',
-    title: 'GT product and architecture map',
+    title: 'General Translation product and architecture map',
     blurb:
       'What General Translation sells and to whom, how the products fit together, the copy that must be exact, and where each part lives.',
   },
@@ -122,7 +122,7 @@ export const HANDBOOK: readonly DocEntry[] = [
     file: 'docs/handbook/traps.md',
     title: 'Traps and fixes',
     blurb:
-      'One line per trap met in GT work, grouped by area: the symptom a reader sees, the fix in a few words and the section that explains the cause.',
+      'One line per trap met in General Translation work, grouped by area: the symptom a reader sees, the fix in a few words and the section that explains the cause.',
   },
   {
     slug: 'brand',

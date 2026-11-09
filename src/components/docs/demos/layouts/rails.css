@@ -468,8 +468,8 @@
   display: block;
 }
 
-/* the inline GT mark in a lead: the logo as a mask, sized as GtWord sizes it
-   (0.793em square, its foot 0.033em under the baseline) */
+/* the inline mark in a production lead (GtLogoText): the logo as a mask,
+   0.793em square, its foot 0.033em under the baseline */
 .dmo-lay-gtword {
   display: inline-block;
   width: 0.793em;

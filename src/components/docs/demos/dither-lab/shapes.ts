@@ -165,7 +165,7 @@ const TIER_MARKS: readonly MarkId[] = ['gt', ...SHORTLIST.slice(1, 3), 'bar-mono
 
 /** Each offered mark's label: its name in the catalog. */
 export const MARK_LABELS: Readonly<Record<MarkId, string>> = Object.fromEntries(
-  TIER_MARKS.map((id) => [id, id === 'gt' ? 'GT mark' : (catalogMark(id)?.name ?? id)])
+  TIER_MARKS.map((id) => [id, id === 'gt' ? 'General Translation mark' : (catalogMark(id)?.name ?? id)])
 );
 
 const artCache = new Map<MarkId, Promise<MarkArt>>();

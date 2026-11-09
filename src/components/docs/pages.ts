@@ -119,7 +119,7 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     href: '/docs/components/three-scenes',
     title: '3D scenes',
     description:
-      'three.js scenes in the house material: an extruded GT mark, a lit globe and an isometric stack, each through a Bayer post pass with live controls.',
+      'three.js scenes in the house material: an extruded logo, a lit globe and an isometric stack, each through a Bayer post pass with live controls.',
   },
   {
     slug: 'components/canvas-2d',
@@ -166,16 +166,16 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
   {
     slug: 'components/marks',
     href: '/docs/components/marks',
-    title: 'Marks and the GT mark',
+    title: 'Marks and the logo',
     description:
-      'The logo and the shortlist, the speed marks and the globe concepts at every size on paper and ink, the GT mark as a word, and a dithered shine.',
+      'The logo and the shortlist, the speed marks and the globe concepts at every size on paper and ink, the chrome mark, and a dithered shine.',
   },
   {
     slug: 'components/heads',
     href: '/docs/components/heads',
     title: 'Badges and heads',
     description:
-      'The badge that cuts through the GT logo and marks after the Brand title, and the book head every hub page opens with, live at two widths.',
+      'The badge that cuts through the General Translation logo and marks after the Brand title, and the book head every hub page opens with, live at two widths.',
   },
   {
     slug: 'components/artifact-pictures',

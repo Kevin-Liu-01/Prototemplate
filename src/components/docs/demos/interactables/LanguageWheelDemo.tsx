@@ -51,7 +51,7 @@ export default function LanguageWheelDemo() {
         </>
       }
       height={420}
-      label='The language wheel with its arc, its orbiting glyphs and the GT mark'
+      label='The language wheel with its arc, its orbiting glyphs and the General Translation mark'
       lazy
       moves
       night

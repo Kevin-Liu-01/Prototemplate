@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
 
-import { gtText } from '@/components/viewer/GtWord';
-
 /**
  * The inline text hook the /motion pages pass to the docs renderer
  * (RenderOptions.text in src/components/book/markdown.tsx). The research packages
@@ -25,7 +23,7 @@ import { gtText } from '@/components/viewer/GtWord';
  *    simplified set below, or ja for the one Japanese title. Arabic is
  *    ar and right to left; Greek is grc.
  *
- * Everything else passes through gtText, as the docs' plain text does.
+ * Everything else stays plain text, as the docs' plain text does.
  * Server-safe: no hooks, no client code.
  */
 
@@ -69,7 +67,7 @@ function count(text: string, ch: string): number {
   return text.split(ch).length - 1;
 }
 
-/** The script runs of a stretch of text, each in its span; the text between them through gtText. */
+/** The script runs of a stretch of text, each in its span; the text between them as plain text. */
 function scriptRuns(text: string, key: string): ReactNode[] {
   const out: ReactNode[] = [];
   let last = 0;
@@ -85,7 +83,7 @@ function scriptRuns(text: string, key: string): ReactNode[] {
       else if (next === '"' && count(run, '"') % 2 === 1) run += next;
       RUNS.lastIndex = at + run.length;
     }
-    if (at > last) out.push(gtText(text.slice(last, at), `${key}-${i++}`));
+    if (at > last) out.push(text.slice(last, at));
     const k = `${key}-${i++}`;
     if (m[1] !== undefined) {
       out.push(
@@ -114,8 +112,8 @@ function scriptRuns(text: string, key: string): ReactNode[] {
     }
     last = at + run.length;
   }
-  if (last === 0) return [gtText(text, key)];
-  if (last < text.length) out.push(gtText(text.slice(last), `${key}-${i}`));
+  if (last === 0) return [text];
+  if (last < text.length) out.push(text.slice(last));
   return out;
 }
 

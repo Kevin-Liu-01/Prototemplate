@@ -98,7 +98,7 @@ export default function MarkSceneDemo({ matrix = 8, cell = 2, light = -50 }: Mar
         </>
       }
       height={380}
-      label='The GT mark extruded in three.js and printed through a Bayer screen'
+      label='The General Translation mark extruded in three.js and printed through a Bayer screen'
       lazy
       moves
       phoneHeight={280}
@@ -107,7 +107,7 @@ export default function MarkSceneDemo({ matrix = 8, cell = 2, light = -50 }: Mar
       <SceneStage
         build={build.current}
         handle={handle}
-        hint='The extruded GT mark. Drag or use the arrow keys to turn it.'
+        hint='The extruded General Translation mark. Drag or use the arrow keys to turn it.'
         pass={{ matrix: size, cell: cellPx, mode, split: 0.5 }}
         playing={!still}
         speed={speed}

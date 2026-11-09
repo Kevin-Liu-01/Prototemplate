@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Draw the GT logo lockup, the logo beside "General" over "Translation", from Katagami Text 500 as outlines.
+"""Draw the General Translation logo lockup, the logo beside "General" over "Translation", from Katagami Text 500 as outlines.
 
 Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!" The name in the
 lockup is Katagami Text at wght 500, letter-spacing 0, with the font's GPOS kerning, every glyph as a path, so no
-page loads the face. Running copy stays in Inter, and so does the GT word (GtWord), whose only logo part is its
-mark. The construction, in the font's units (2048 per em) at the name's size, with CAP the T's flat top:
+page loads the face. Running copy stays in Inter. The construction, in the font's units (2048 per em) at the
+name's size, with CAP the T's flat top:
 
   the name     "General" over "Translation", flush left by ink, with R of white between the first baseline and the
                second cap line, where R is the name's own word gap (the T's right side bearing, a word space and

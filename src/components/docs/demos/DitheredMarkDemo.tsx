@@ -131,7 +131,7 @@ export default function DitheredMarkDemo() {
         </>
       }
       height={280}
-      label='The GT mark as masked ink with a dithered shine sweeping through it'
+      label='The General Translation mark as masked ink with a dithered shine sweeping through it'
       moves
       phoneHeight={220}
       stageClassName={`dmo-shine is-${glint}`}

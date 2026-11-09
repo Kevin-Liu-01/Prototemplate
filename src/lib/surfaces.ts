@@ -93,7 +93,7 @@ export type Surface = {
   href: string;
   /** the address shown under the name: host and path for external surfaces, the path for internal routes */
   host: string;
-  /** one sentence the panel prints as text: the brand is spelled out as General Translation, never the letters GT (GtWord.tsx) */
+  /** one sentence the panel prints as text: the brand is spelled out as General Translation, never the letters GT */
   desc: string;
   shot?: string;
   shotDark?: string;

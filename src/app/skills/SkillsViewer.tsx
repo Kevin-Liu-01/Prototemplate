@@ -5,7 +5,6 @@ import type { RefObject } from 'react';
 import { useRef } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
-import { gtText } from '@/components/viewer/GtWord';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
 import { useReadLine } from '@/components/viewer/useReadLine';
@@ -120,8 +119,8 @@ function SkillsBook({ sheetRef, jumpRef, activeOut, updated }: SkillsBookProps) 
                     <h3>{skill.title}</h3>
                     <code>{skill.id}</code>
                   </div>
-                  {/* what the skill is and when to use it, from the SKILL.md description; the standalone word GT renders as the mark */}
-                  <p>{gtText(use ? `${summary} ${use}` : summary)}</p>
+                  {/* what the skill is and when to use it, from the SKILL.md description */}
+                  <p>{use ? `${summary} ${use}` : summary}</p>
                 </div>
               </Link>
             );

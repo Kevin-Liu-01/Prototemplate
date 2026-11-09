@@ -8,7 +8,6 @@ import { useRef } from 'react';
 
 import { useDeckSetup } from '../deck-setup';
 import Icon from '../icons';
-import { gtText } from '@/components/viewer/GtWord';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin);
@@ -18,7 +17,7 @@ const GUIDELINES = [
   'Titanium accents; neon reserved for the one CTA.',
   'Square corners and hairline rules. No glass, no shadows.',
   'One shader family per visual, grain after gradient.',
-  'The product is the picture: input → GT → output.',
+  'The product is the picture: input → General Translation → output.',
 ];
 
 const SWATCHES = [
@@ -151,7 +150,7 @@ export default function CraftSlide() {
             <ul className='pr-craft-rules'>
               {GUIDELINES.map((rule) => (
                 <li key={rule} className='pr-craft-rule'>
-                  {gtText(rule)}
+                  {rule}
                 </li>
               ))}
             </ul>

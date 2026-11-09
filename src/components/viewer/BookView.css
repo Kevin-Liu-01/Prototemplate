@@ -70,7 +70,7 @@
 }
 
 /* a badge after the title: a card-cornered box on the title's line that
-   cuts through the GT logo and marks (BadgeCycle.tsx), on /brand alone. Its content is the
+   cuts through the General Translation logo and marks (BadgeCycle.tsx), on /brand alone. Its content is the
    cap height tall and sits on the baseline; the padding stays inside the
    title's line box, so the line keeps its height. The title's last word
    and the badge never break apart (.pt-book-title-end), so a narrow title

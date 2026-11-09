@@ -11,7 +11,6 @@ import type { BrandPage } from './BrandViewer';
 import BrandViewer from './BrandViewer';
 import { headingId } from './brand-sections';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
-import { GtWord, gtText } from '@/components/viewer/GtWord';
 import { PAGE_NAMES } from '@/lib/page-names';
 import { readingMinutes } from '@/lib/reading';
 import JsonLd from '@/lib/seo/JsonLd';
@@ -31,10 +30,10 @@ const route = seoRoute({
 
 export const metadata = route.metadata;
 
-/** The naming system: every name, what it is, one row each. The short form renders as the mark (gtText); the lowercase package names stay text. */
+/** The naming system: every name, what it is, one row each. */
 const NAMES = [
   ['General Translation, Inc.', 'the company'],
-  ['GT', 'the short form, and the mark'],
+  ['General Translation', 'the name in running text, written out in full in every sentence'],
   ['gt', 'the open-source library; you run gt translate'],
   ['gt-next · gt-react · gt-vue · gt-node · gt-python', 'the framework packages'],
   ['Locadex', 'the AI agent product'],
@@ -167,9 +166,8 @@ const NOTE = (
  * the grid, the hash and each section's divider (its title is the divider's
  * h2, so a body starts under it); the h3 ids are the rows under the active
  * section.
- * The word GT in the prose is <GtWord />; the space after it is written as
- * {' '} because the JSX transform drops the leading space of a text run
- * that also carries an HTML entity (&rsquo;, &hellip;).
+ * A space before a text run that carries an HTML entity (&rsquo;,
+ * &hellip;) is written as {' '}, because the JSX transform drops it.
  */
 const PAGES: readonly BrandPage[] = [
   {
@@ -188,7 +186,7 @@ const PAGES: readonly BrandPage[] = [
         <div className='ptb-names'>
           {NAMES.map(([name, what]) => (
             <div className='ptb-name-row' key={name}>
-              <b>{gtText(name)}</b>
+              <b>{name}</b>
               <span>{what}</span>
             </div>
           ))}
@@ -285,7 +283,7 @@ const PAGES: readonly BrandPage[] = [
     body: (
       <>
         <p>
-          The <GtWord />{' '}logo is a globe whose ring, meridian and latitude ovals draw the G,
+          The General Translation logo is a globe whose ring, meridian and latitude ovals draw the G,
           with the T&rsquo;s stem as the polar axis, broken where it passes behind the front of
           the equator. It replaced the doubled-line monogram, the previous mark, on 8 November
           2026. The mark renders in one ink, either ink on paper or paper on ink. Never a third
@@ -297,11 +295,11 @@ const PAGES: readonly BrandPage[] = [
         <BrandMarkFigure />
         <div className='ptb-marks'>
           <figure className='ptb-mark is-paper'>
-            <img alt='The GT logo in ink on paper' decoding='async' loading='lazy' src='/brand/gt-globe-logo-light.svg' />
+            <img alt='The General Translation logo in ink on paper' decoding='async' loading='lazy' src='/brand/gt-globe-logo-light.svg' />
             <figcaption>ink on paper</figcaption>
           </figure>
           <figure className='ptb-mark is-ink'>
-            <img alt='The GT logo in paper on ink' decoding='async' loading='lazy' src='/brand/gt-globe-logo-dark.svg' />
+            <img alt='The General Translation logo in paper on ink' decoding='async' loading='lazy' src='/brand/gt-globe-logo-dark.svg' />
             <figcaption>paper on ink</figcaption>
           </figure>
           <figure className='ptb-mark is-paper'>
@@ -317,18 +315,17 @@ const PAGES: readonly BrandPage[] = [
         </p>
         <div className='ptb-marks ptb-lockups'>
           <figure className='ptb-mark is-paper'>
-            <img alt='The GT lockup in ink on paper: the logo beside General over Translation' decoding='async' loading='lazy' src='/brand/gt-globe-lockup-light.svg' />
+            <img alt='The General Translation lockup in ink on paper: the logo beside General over Translation' decoding='async' loading='lazy' src='/brand/gt-globe-lockup-light.svg' />
             <figcaption>the lockup, ink on paper</figcaption>
           </figure>
           <figure className='ptb-mark is-ink'>
-            <img alt='The GT lockup in paper on ink: the logo beside General over Translation' decoding='async' loading='lazy' src='/brand/gt-globe-lockup-dark.svg' />
+            <img alt='The General Translation lockup in paper on ink: the logo beside General over Translation' decoding='async' loading='lazy' src='/brand/gt-globe-lockup-dark.svg' />
             <figcaption>the lockup, paper on ink</figcaption>
           </figure>
         </div>
         <p>
-          At text size the wordmark sits inline with prose, at the cap height of the line
-          it lives in, the way the hero on generaltranslation.com sets &ldquo;<GtWord />{' '}builds
-          full-stack localization for apps, docs, and websites&rdquo;.
+          In running text the name is written out as General Translation. The logo stands for
+          the name only outside a sentence: in the lockup, the header and the tab icon.
         </p>
         <p>
           The identity must survive compression: a favicon, a CLI banner, a README, a
@@ -613,10 +610,10 @@ const PAGES: readonly BrandPage[] = [
           i18n libraries, context-aware translation APIs, and the infrastructure for
           versioning, editing, and integrations. The audience is technical and product
           leadership at growth-stage companies; their engineering and growth teams are
-          the users. Ramp runs <GtWord />{' '}across its dashboard, landing page and iOS,
+          the users. Ramp runs General Translation across its dashboard, landing page and iOS,
           Cursor across web and docs, and Sierra across web and GTM. Against legacy,
           seat-based TMS
-          point solutions, <GtWord />{' '}is usage-based and owns the whole stack, so it can own the
+          point solutions, General Translation is usage-based and owns the whole stack, so it can own the
           whole experience.
         </p>
         <h3 id={headingId('context', 'direction')}>Direction</h3>

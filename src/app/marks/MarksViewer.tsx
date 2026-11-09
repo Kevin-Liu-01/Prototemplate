@@ -6,7 +6,6 @@ import { Fragment, useRef, useState } from 'react';
 
 import BrandFilm from '@/app/brand/BrandFilm';
 import { BookHead } from '@/components/viewer/BookView';
-import { gtText } from '@/components/viewer/GtWord';
 import { Icon } from '@/components/viewer/icons';
 import { Sheet } from '@/components/viewer/Sheet';
 import { usePtShell } from '@/components/viewer/shell-context';
@@ -499,7 +498,7 @@ function ProductionCard({ mark }: { mark: ProductionMark }) {
       level='h3'
       feature
       tags={[IN_PRODUCTION]}
-      note={gtText(mark.text)}
+      note={mark.text}
       files={mark.files.map((href) => ({ href }))}
     />
   );
@@ -652,10 +651,10 @@ function SheetCard({ mark, aspect, drawing, active }: { mark: Mark; aspect: numb
       sizes={sizesFor(aspect, HALF_CARD_INNER)}
       drawing={drawing}
       tags={[FAMILY_NAME[mark.family] ?? markFamily(mark).label, mark.kind === 'monogram' ? 'Monogram' : 'Wordmark']}
-      note={gtText(mark.thesis)}
+      note={mark.thesis}
       notes={[
-        { key: 'Construction', value: gtText(mark.construction) },
-        { key: 'In use', value: gtText(mark.use) },
+        { key: 'Construction', value: mark.construction },
+        { key: 'In use', value: mark.use },
       ]}
       files={files}
       block={{ id: mark.id, active }}
@@ -749,7 +748,7 @@ function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, 
         ))}
       </div>
       {GROUNDS.map((ground) => (
-        <figure key={ground} className={cn('mk-field is-short', groundClass(ground))} aria-label={`The shortlist ${groundName(ground).toLowerCase()}, after the GT mark in production`}>
+        <figure key={ground} className={cn('mk-field is-short', groundClass(ground))} aria-label={`The shortlist ${groundName(ground).toLowerCase()}, after the General Translation mark in production`}>
           <div className='mk-field-row'>
             {GT_PRODUCTION && (
               <span className='mk-field-item'>
@@ -900,7 +899,7 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
                     </div>
                     <div className='mk-body'>
                       <h4>{rule.name}</h4>
-                      <p>{gtText(rule.text)}</p>
+                      <p>{rule.text}</p>
                     </div>
                   </article>
                 ))}
@@ -914,7 +913,7 @@ function MarksBook({ aspects, drawings, sheetRef, jumpRef, activeOut, updated }:
               <figure className='mk-film'>
                 <BrandFilm src={FILM_MARK.film.src} poster={FILM_MARK.film.poster} name={FILM_MARK.film.name} />
                 <figcaption>
-                  {FILM_MARK.name}, motion, {FILM_MARK.film.length}. {gtText(FILM_MARK.film.summary)}
+                  {FILM_MARK.name}, motion, {FILM_MARK.film.length}. {FILM_MARK.film.summary}
                 </figcaption>
               </figure>
             )}

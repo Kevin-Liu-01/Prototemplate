@@ -1,7 +1,7 @@
 // Writes the logo's files from its one drawing, LOGO in src/lib/logo.ts:
 //
 //   public/brand/gt-globe-logo.svg              currentColor on the drawn box, for
-//                                               masks (the GT word) and inline use
+//                                               masks (the docs lead demo) and inline use
 //   public/brand/gt-globe-logo-light.svg        #070707 ink on the 256 square
 //   public/brand/gt-globe-logo-dark.svg         #ffffff on the 256 square
 //   public/brand/gt-globe-logo-icon.svg         the tab icon on the drawn box: ink,

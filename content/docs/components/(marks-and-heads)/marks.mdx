@@ -1,22 +1,21 @@
 ---
-title: Marks and the GT mark
-description: "The logo and the shortlist, the speed marks and the globe concepts at every size on paper and ink, the GT mark as a word, and a dithered shine."
+title: Marks and the logo
+description: "The logo and the shortlist, the speed marks and the globe concepts at every size on paper and ink, the chrome mark, and a dithered shine."
 icon: Bolt
 sources:
   - src/components/docs/demos
   - src/lib/marks.ts
   - public/marks
-  - src/components/viewer/GtWord.tsx
   - src/components/viewer/GtMark.tsx
   - src/app/d/toolchain/diagrams/DitheredMark.tsx
   - skills/gt-diagrams/references/isometric.md
   - skills/gt-deck/references/type.md
 ---
 
-import { DitheredMarkDemo, GtWordDemo } from '@/components/docs/demos/lazy';
+import { DitheredMarkDemo } from '@/components/docs/demos/lazy';
 import MarksDemo from '@/components/docs/demos/MarksDemo';
 
-Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The chosen logo, Axis and meridian behind, leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The GT mark in production, the doubled-line monogram, is a path that `GtMark` and `GtWord` draw inline.
+Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The chosen logo, Axis and meridian behind, leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The mark in production on generaltranslation.com, the doubled-line monogram, is a path that `GtMark` draws inline.
 
 ## The marks
 
@@ -51,50 +50,39 @@ const crop = stencil?.box ? boxMask(stencil.box) : undefined; // CSS mask size a
 
 ### When to use it
 
-Draw a mark inline, or as an alpha mask in `currentColor`, so it takes the ink of its ground. Beside the stacked name, "General" over "Translation", the globe is 1.1 times the span from the first line's cap top to the second line's baseline, which is 2.4627 cap heights, and is centred on that span, so it overshoots the cap top and the baseline by 0.1231 cap height each, as a round letter such as O overshoots flat ones. The gap from the globe's ink to the G is 0.5637 cap height. The name in the lockup is Katagami Text at weight 500, letter-spacing 0, with the font's kerning, drawn as outlines, the two lines flush left by ink with 0.4627 cap height of white between the first baseline and the second cap line. `pnpm build:lockup` draws `public/brand/gt-globe-lockup.svg` and its light and dark files, the deck's `#gt-lockup` and the globe rows' name from the font and `LOGO`. `GtWord` is body copy: its text stays Inter, and only its mark is the logo. The register's one-color rule holds for every use: no second tone, no gradient, no stroke and no shadow. The plate mark is the one mark that brings its own ground: its letters and stripes are holes, so it is an ink plate on paper and a paper plate on ink.
+Draw a mark inline, or as an alpha mask in `currentColor`, so it takes the ink of its ground. Beside the stacked name, "General" over "Translation", the globe is 1.1 times the span from the first line's cap top to the second line's baseline, which is 2.4627 cap heights, and is centred on that span, so it overshoots the cap top and the baseline by 0.1231 cap height each, as a round letter such as O overshoots flat ones. The gap from the globe's ink to the G is 0.5637 cap height. The name in the lockup is Katagami Text at weight 500, letter-spacing 0, with the font's kerning, drawn as outlines, the two lines flush left by ink with 0.4627 cap height of white between the first baseline and the second cap line. `pnpm build:lockup` draws `public/brand/gt-globe-lockup.svg` and its light and dark files, the deck's `#gt-lockup` and the globe rows' name from the font and `LOGO`. Running text writes the name out as General Translation in Inter and never sets the logo inside a sentence. The register's one-color rule holds for every use: no second tone, no gradient, no stroke and no shadow. The plate mark is the one mark that brings its own ground: its letters and stripes are holes, so it is an ink plate on paper and a paper plate on ink.
 
 ### Reduced motion and themes
 
 The marks do not move. On the ink ground the same file draws in paper ink.
 
-## The mark as a word
+## The chrome mark
 
-The plate runs `gtText()` over the copy in the field. Every standalone "GT" becomes `GtWord`, the logo sized to the text around it. Type a sentence to test the rule, and switch the size from a caption to a page title.
-
-<GtWordDemo />
-
-The mark is 0.74em tall with its foot on the baseline, so it sits in the line at any size. The letters stay in the DOM as hidden text, so copy, find in page and screen readers still read "GT". Lowercase package names such as `gt`, hyphen-joined forms such as GT-format and letters inside other words such as GTM stay text. The three marks under the sentence are `GtMark` at the sizes the chrome uses: 25 by 16 in the sidebar and the toolbar, 28 by 18 in the sheet frame, and 50 by 32.
+`GtMark` draws the logo alone as a block SVG in `currentColor`, at the sizes the chrome uses: 25 by 16 in the sidebar and the toolbar, 28 by 18 in the sheet frame, and 50 by 32.
 
 ### Import and props
 
 ```tsx
 import { GtMark } from '@/components/viewer/GtMark';
-import { GtWord, gtText } from '@/components/viewer/GtWord';
 
-<p>
-  <GtWord /> ships every locale.
-</p>;
-<p>{gtText(skill.description)}</p>;
 <GtMark width={28} height={18} />;
 ```
 
 | Export | Props | What it does |
 | --- | --- | --- |
-| `GtWord` | none | The mark as a word in the running text, with "GT" kept as hidden text |
-| `gtText(text, keyBase)` | a string, and a key prefix (default `'gt'`) | The string with every standalone GT replaced by `GtWord`. A string with none comes back unchanged. |
 | `GtMark` | `width` (25), `height` (16) | The mark alone as a block SVG in `currentColor` |
 
 ### When to use it
 
-Every standalone "GT" in rendered prose on the site is the mark. Place `GtWord` in JSX copy and pass any string that arrives as data, such as a skill's description, through `gtText()`. Code, URLs, attribute values such as `alt` and `title`, document titles and metadata keep the letters.
+Use `GtMark` where the mark stands alone: the sidebar, the toolbar and the sheet frame. In running text the name is written out as General Translation, and no mark sits inside a sentence.
 
 ### Reduced motion and themes
 
-`GtWord` does not move. It fills `currentColor`, so it takes the ink of its line in both themes.
+`GtMark` does not move. It fills `currentColor`, so it takes the ink of its ground in both themes.
 
 ## The dithered shine
 
-The plate seats the GT mark as an alpha mask and sweeps a specular band through it, quantized by the 4 by 4 screen into five nested coverage tiers. The cells never move; two clip windows carry the light across them, and the counter-sheen runs half a lap behind. Seat lays the mark flat or on the isometric top plane, Glint picks the light's ink, and the speed is in drawing units a second.
+The plate seats the logo as an alpha mask and sweeps a specular band through it, quantized by the 4 by 4 screen into five nested coverage tiers. The cells never move; two clip windows carry the light across them, and the counter-sheen runs half a lap behind. Seat lays the mark flat or on the isometric top plane, Glint picks the light's ink, and the speed is in drawing units a second.
 
 <DitheredMarkDemo />
 

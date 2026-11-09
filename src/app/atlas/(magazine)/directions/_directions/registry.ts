@@ -37,9 +37,9 @@ export const PRESS_DIRECTIONS: readonly PressDirection[] = [
     slug: 'signal',
     label: '03',
     name: 'Signal',
-    source: 'GT poster',
+    source: 'General Translation poster',
     hint: '← → or the dots to translate',
-    description: 'The Euclid issue as a GT poster: a Morse field, the first definition in five languages and the coordinates of each city.',
+    description: 'The Euclid issue as a General Translation poster: a Morse field, the first definition in five languages and the coordinates of each city.',
   },
   {
     slug: 'proof',

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { gtText } from '@/components/viewer/GtWord';
 import { pad2 } from '@/lib/shell-data';
 
 import { siteHref } from './links';
@@ -14,11 +13,9 @@ import { siteHref } from './links';
  * punctuation stripped, unique within a document); lists render as ruled
  * rows; fenced code sits on the panel; tables keep border-collapse. The
  * book builder splits a parsed document at its h2 headings into numbered
- * rows, so every consumer shares one parse and one id scheme. Plain text
- * passes through gtText, so the standalone word GT renders as the mark
- * (GtWord.tsx); code spans and fenced code stay text, link hrefs are
- * untouched, and heading ids derive from plainText, so they keep the
- * letters.
+ * rows, so every consumer shares one parse and one id scheme. Code spans
+ * and fenced code stay text, link hrefs are untouched, and heading ids
+ * derive from plainText.
  */
 
 /* ---- inline: `code`, **bold**, [text](href) ---- */
@@ -53,7 +50,7 @@ export function headingId(text: string): string {
 
 /**
  * How a caller renders a document. `text` renders the plain text between
- * the inline tokens: the default is gtText; the /motion packages pass a
+ * the inline tokens: the default is the string itself; the /motion packages pass a
  * hook that also sets single-star emphasis and gives each run of another
  * script its lang and dir (src/app/motion/lang-text.tsx). Code spans and
  * hrefs never reach it. `dir` is the repository folder the document sits
@@ -106,9 +103,8 @@ export function renderInline(text: string, keyBase: string, opts?: RenderOptions
       );
       return;
     }
-    /* plain text: the standalone word GT becomes the mark; a run with none
-       comes back as the string it was. A caller's hook replaces this. */
-    out.push(opts?.text ? opts.text(part, key) : gtText(part, key));
+    /* plain text, or a caller's hook */
+    out.push(opts?.text ? opts.text(part, key) : part);
   });
   return out;
 }

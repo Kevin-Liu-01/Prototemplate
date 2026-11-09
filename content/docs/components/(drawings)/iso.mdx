@@ -11,11 +11,11 @@ sources:
 
 import { IsoKitDemo } from '@/components/docs/demos/lazy';
 
-The isometric family draws GT's infrastructure: stacks, chips, plates and the Locadex iso. Every drawing goes through one module, `src/app/d/toolchain/diagrams/iso.ts`, with one 30 degree projection, one corner radius and one light from the upper left, so separate drawings read as one set. The `gt-diagrams` skill holds the rules, and its reference drawings include the Locadex iso.
+The isometric family draws General Translation's infrastructure: stacks, chips, plates and the Locadex iso. Every drawing goes through one module, `src/app/d/toolchain/diagrams/iso.ts`, with one 30 degree projection, one corner radius and one light from the upper left, so separate drawings read as one set. The `gt-diagrams` skill holds the rules, and its reference drawings include the Locadex iso.
 
 ## The kit
 
-The plate builds a solid on a slab with the kit's own functions. Width, depth and height size a box, and Solid swaps the box for a hexagonal or octagonal prism extruded from its plan polygon the same way. Mark seats the GT mark on the solid's top face with `plane(z)`.
+The plate builds a solid on a slab with the kit's own functions. Width, depth and height size a box, and Solid swaps the box for a hexagonal or octagonal prism extruded from its plan polygon the same way. Mark seats the General Translation mark on the solid's top face with `plane(z)`.
 
 <IsoKitDemo />
 

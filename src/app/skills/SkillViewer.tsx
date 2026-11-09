@@ -6,7 +6,6 @@ import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 
 import { BookHead } from '@/components/viewer/BookView';
-import { gtText } from '@/components/viewer/GtWord';
 import { Icon } from '@/components/viewer/icons';
 import { InstallField } from '@/components/viewer/InstallField';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -72,13 +71,13 @@ function About({ skill }: { skill: Skill }) {
       {covers ? (
         <div>
           <dt>Covers</dt>
-          <dd>{gtText(covers)}</dd>
+          <dd>{covers}</dd>
         </div>
       ) : null}
       {use ? (
         <div>
           <dt>When to use</dt>
-          <dd>{gtText(whenToUse(use))}</dd>
+          <dd>{whenToUse(use)}</dd>
         </div>
       ) : null}
       {also.length > 0 ? (
@@ -131,7 +130,7 @@ function SkillPage({ skill, body, updated }: SkillPageProps) {
     <div className='ptd-book sk-page pt-book-col'>
       <BookHead
         title={skill.title}
-        lead={gtText(summary)}
+        lead={summary}
         note={<About skill={skill} />}
         updated={updated}
         facts={[
