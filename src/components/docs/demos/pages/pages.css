@@ -54,6 +54,17 @@
   pointer-events: none;
 }
 
+/* while the page loads, the logo loader leads the line */
+.pgx-status.is-wait {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pgx-status.is-wait .gt-logo-motion {
+  color: var(--pt-ink);
+}
+
 /* ---------- the anatomy overlay ---------- */
 
 /* the frame's own box, so a part outside the page's viewport is clipped */

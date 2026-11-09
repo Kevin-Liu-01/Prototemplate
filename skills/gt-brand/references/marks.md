@@ -27,7 +27,7 @@ The doubled-line GT monogram was the mark until 2026-11-08: every stroke of the 
 
 ## The logo and its state
 
-Kevin chose the logo on 2026-11-06: Axis and meridian behind, a globe whose ring, meridian oval and latitude oval draw the G, with the T's stem, the polar axis, and the back meridian broken where they pass behind the oval's lower arc, the front of the equator, while the front meridian still meets it. Its state on hover, on sign-in and while loading is Oval globe, axis behind, the same globe without its meridian. Since 2026-11-08 it is the current mark above. The chrome mark has no hover state yet.
+Kevin chose the logo on 2026-11-06: Axis and meridian behind, a globe whose ring, meridian oval and latitude oval draw the G, with the T's stem, the polar axis, and the back meridian broken where they pass behind the oval's lower arc, the front of the equator, while the front meridian still meets it. Its state on hover, on sign-in and while loading is Oval globe, axis behind, the same globe without its meridian. Since 2026-11-08 it is the current mark above. The chrome mark has no hover state yet. The site's loading states run the loader, Meridian, then G, and a logo that is a link can draw its meridian back while the link is hovered or focused: both are `GtLogoMotion` (`src/components/brand/GtLogoMotion.tsx`), drawn with SVG and CSS alone on the logo's own path at rest, at the logo's weight throughout.
 
 | what | where |
 | --- | --- |
@@ -35,6 +35,7 @@ Kevin chose the logo on 2026-11-06: Axis and meridian behind, a globe whose ring
 | the catalog | `SHORTLIST` opens on the two, and each row carries `use: 'logo'` or `use: 'state'`; `pnpm test:marks` holds that order |
 | how it was reached | the Progression section of `/marks/graticule`: Graticule GT, Graticule GT, heavy, Meridian globe, Meridian globe, axis behind, then the logo; and Oval globe, then Oval globe, axis behind |
 | its hovers and its loader | the Hover and loading group of `/marks/graticule`: Meridian draws back, Meridians draw into the poles and Meridians fold into the bar each settle the logo into its state, and the loader, Meridian, then G, runs a line once round the meridian over the state, then the G's stroke once round the equator |
+| the live hover and loader | `GtLogoMotion` in `src/components/brand/`, with `GtLogoMotion.css` and `GtLogoMotion.geometry.ts`, which `pnpm build:logo-motion` writes from `scripts/build/logo-motion.json` (never by hand); `/docs/components/marks` shows it and says how to copy it into gt-cloud |
 
 ### The mark beside the name
 

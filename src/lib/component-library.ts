@@ -107,6 +107,7 @@ const SOURCES: Readonly<Record<string, { code: string; path: string; name?: stri
   'motion#the-reveal-seam': { code: 'RevealSeam', path: 'src/app/d/toolchain/sections/RevealSeam.tsx' },
   'motion#the-sentence-reassembler': { code: 'EverySentence', path: 'src/components/shared/EverySentence.tsx' },
   'marks#the-marks': { code: 'SHORTLIST', path: 'src/lib/marks.ts', name: 'Marks' },
+  'marks#the-logo-in-motion': { code: 'GtLogoMotion', path: 'src/components/brand/GtLogoMotion.tsx' },
   'marks#the-dithered-shine': { code: 'DitheredMark', path: 'src/app/d/toolchain/diagrams/DitheredMark.tsx' },
   'heads#the-head-badge': { code: 'BadgeCycle', path: 'src/components/viewer/BadgeCycle.tsx' },
   'heads#the-book-head': { code: 'BookHead', path: 'src/components/viewer/BookView.tsx' },

@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { prefersReducedMotion, scrollBehavior } from '@/lib/reduced-motion';
 import { pad2 } from '@/lib/shell-data';
 import { useLayoutWork } from '@/lib/use-layout-work';
@@ -407,7 +408,8 @@ export default function PrototypeViewer() {
           )}
           {!isLoaded && (
             <div className='pr-stage-veil'>
-              <span>
+              <GtLogoMotion mode='loader' size={56} label={`Loading ${current.label}, ${current.name}`} />
+              <span aria-hidden='true'>
                 LOADING {current.label} · {current.name.toUpperCase()}
               </span>
             </div>

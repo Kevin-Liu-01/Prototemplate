@@ -3,6 +3,7 @@
 import { useContext, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
@@ -147,9 +148,14 @@ export default function PageFrame({ src, width, theme, title, still, overlay }: 
             }}
           />
         ) : null}
-        {live ? null : (
+        {live ? null : near ? (
+          <span className='pgx-status is-wait'>
+            <GtLogoMotion mode='loader' size={12} label='Loading the live page' />
+            <span aria-hidden='true'>Loading the live page</span>
+          </span>
+        ) : (
           <span className='pgx-status' role='status'>
-            {near ? 'Loading the live page' : 'The live page loads on screen'}
+            The live page loads on screen
           </span>
         )}
       </div>

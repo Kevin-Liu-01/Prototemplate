@@ -37,6 +37,7 @@
     "build:deck": "node scripts/build/deck.mjs",
     "build:marks": "node scripts/build/speed-marks.mjs",
     "build:logo": "node scripts/build/logo.mjs",
+    "build:logo-motion": "node scripts/build/logo-motion.mjs",
     "build:lockup": "python3 scripts/build/lockup.py",
     "import:marks": "node scripts/build/import-marks.mjs",
     "test:marks": "node --test scripts/lint/marks.test.mjs scripts/lint/mark-file.test.mjs",

@@ -879,6 +879,40 @@
   height: 100%;
 }
 
+/* ---------- the logo in motion ---------- */
+
+.dmo-logo-motion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 40px 64px;
+  color: var(--pt-ink);
+}
+
+.dmo-logo-motion-row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.dmo-logo-motion-host {
+  display: block;
+  padding: 6px;
+  color: inherit;
+  border-radius: var(--pt-radius-control);
+  outline: 1px solid transparent;
+  transition: outline-color var(--pt-dur-fast) var(--pt-ease-out);
+}
+
+.dmo-logo-motion-host:hover {
+  outline-color: var(--pt-hair);
+}
+
+.dmo-logo-motion-host:focus-visible {
+  outline-color: var(--pt-ink);
+}
+
 /* ---------- the dithered shine ---------- */
 
 .dmo-shine {

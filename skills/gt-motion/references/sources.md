@@ -55,3 +55,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 
 - Sections 8 and 9 moved to `references/tools.md` (with #5068 tagged open on 2026-10-10, plan row N-27), with a summary left in `SKILL.md`, to keep the body under the 24,000-byte budget (plan section 2.2). The film pacing lines stay in this skill until the Videos session moves them into `gt-films` in its own lane (plan message M1, lane L6).
 - Related skills and section 4: the isometric skill merged into `gt-diagrams` on 2026-10-10; `gt-verify` replaces `agent-browser` in the Related line (inventory `skills.json` row 38, plan row N-28). The verification section still names `agent-browser` beside Playwright as a way to take pixels from outside the app.
+
+## Lines added on 2026-11-08
+
+- Section 7, "The logo in motion": Kevin's approval of 2026-11-08 to build the live loader, "Meridian, then G" (his words of 2026-11-07: "the meridian load makes a full way around the meridian then the equator g does a full way around the g"), with the hover that draws the meridian back; the component, its generator `scripts/build/logo-motion.mjs` and the numbers in `scripts/build/logo-motion.json`, copied from the motion source the published videos on `/marks/graticule` were rendered from.

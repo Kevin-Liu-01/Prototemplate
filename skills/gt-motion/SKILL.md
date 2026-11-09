@@ -13,7 +13,7 @@ description: >-
 metadata:
   title: Motion rules
   areas: motion, landing, videos, diagrams
-  updated: 2026-10-10
+  updated: 2026-11-08
   origin: prototemplate
   owner: P
 ---
@@ -331,6 +331,12 @@ renders).
   A leaning shape is re-projected per phase: one dial drives every path of
   the scan beam through `beamAt(t)`, so its aperture pivots under the
   capstone while its land line runs the plate.
+- **The logo in motion** is `src/components/brand/GtLogoMotion.tsx`: the
+  logo as a link on hover (the meridian draws back) and the loader (a line
+  once round the meridian, then the G once round the equator), SVG and
+  CSS alone. Each part is a dashed ellipse arc, each gap a mask, and
+  `pnpm build:logo-motion` writes both from the videos' timing and eases
+  at the logo's weight.
 
 Five dash traps were each found in a rejected round, and
 [references/traps.md](references/traps.md) ("SVG dashes and lines", "GSAP")

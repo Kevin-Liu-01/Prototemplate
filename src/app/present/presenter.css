@@ -1886,23 +1886,24 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   pointer-events: auto;
 }
 
+/* the wait for a prototype's frame: the logo loader over the prototype's
+   name (the loader's own label is what assistive technology reads) */
 .pr-stage-veil {
   position: absolute;
   inset: 0;
   display: grid;
-  place-items: center;
+  place-content: center;
+  justify-items: center;
+  gap: 20px;
   background: var(--pt-paper);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.24em;
   color: color-mix(in srgb, var(--pt-ink) 45%, transparent);
-  animation: pr-veil-pulse 1.2s ease-in-out infinite;
 }
 
-@keyframes pr-veil-pulse {
-  50% {
-    opacity: 0.55;
-  }
+.pr-stage-veil .gt-logo-motion {
+  color: var(--pt-ink);
 }
 
 /* Carousel roll: one quiet panel, rows split by hairlines, and the current
@@ -2871,11 +2872,10 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
     height: auto !important;
   }
 
-  /* the endless loops hold still: the Principles marquee, the Inter glitch
-     and the loading veil's pulse */
+  /* the endless loops hold still: the Principles marquee and the Inter
+     glitch (the veil's loader holds its own still) */
   .pr-vmarquee-track,
-  .pr-glitch-inter,
-  .pr-stage-veil {
+  .pr-glitch-inter {
     animation: none;
   }
 

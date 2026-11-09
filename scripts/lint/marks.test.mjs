@@ -10,8 +10,9 @@
 // stay local until he picks one), every family has its record and holds a mark, every
 // mark /brand's badge cuts through after the logo is no wider than it,
 // LOGO (src/lib/logo.ts) is the logo's catalog file and the masters and
-// the deck's #gt-mark symbol pnpm build:logo writes draw it, the lockup
-// files pnpm build:lockup writes draw LOGO beside the Katagami Text name and
+// the deck's #gt-mark symbol pnpm build:logo writes draw it, the live logo
+// motion (GtLogoMotion) rests on it, is what pnpm build:logo-motion writes
+// and is the still logo under reduced motion, the lockup files pnpm build:lockup writes draw LOGO beside the Katagami Text name and
 // LOCKUP, the globe rows' NAME_WIDTH and NAME_ASPECT and the deck's
 // #gt-lockup keep the numbers it measured, and the
 // catalog and the dynamic files name each mark by its idea alone:
@@ -19,6 +20,7 @@
 // and the dynamic files, and runs everywhere, CI included. Loaded through
 // Node's type stripping.
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -178,4 +180,33 @@ test('the catalog and the dynamic files name each mark by its idea alone', () =>
   for (const name of dynamicFiles) {
     assert.doesNotMatch(readFileSync(join(ROOT, DYNAMIC_DIR, name), 'utf8'), ORIGIN_WORDS, `${name} names its mark's origin`);
   }
+});
+
+test('the live logo motion rests on LOGO and is what pnpm build:logo-motion writes', async () => {
+  const { GT_LOGO_MOTION } = await import(new URL('../../src/components/brand/GtLogoMotion.geometry.ts', import.meta.url).href);
+  assert.equal(GT_LOGO_MOTION.rest.d, LOGO.d, 'GtLogoMotion rests on another path than LOGO: run pnpm build:logo-motion');
+  assert.equal(GT_LOGO_MOTION.viewBox, LOGO.viewBox, 'GtLogoMotion draws another box than LOGO: run pnpm build:logo-motion');
+  const run = spawnSync(process.execPath, [join(ROOT, 'scripts/build/logo-motion.mjs'), '--check'], { encoding: 'utf8' });
+  assert.equal(run.status, 0, run.stderr || 'pnpm build:logo-motion --check failed');
+});
+
+test('under reduced motion the live logo is the still logo, hovered, focused or loading', () => {
+  /* every rule that moves the motion layer or hides the rest layer sits in
+     the no-preference block, so a reduced motion hover cannot hide the rest
+     path while the motion layer is not drawn */
+  const css = readFileSync(join(ROOT, 'src/components/brand/GtLogoMotion.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const open = css.indexOf('@media (prefers-reduced-motion: no-preference)');
+  assert.ok(open >= 0, 'GtLogoMotion.css has no prefers-reduced-motion: no-preference block');
+  let depth = 0;
+  let end = css.indexOf('{', open);
+  for (; end < css.length; end++) {
+    if (css[end] === '{') depth++;
+    else if (css[end] === '}' && --depth === 0) break;
+  }
+  const outside = css.slice(0, open) + css.slice(end + 1).replace(/@keyframes[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, '');
+  for (const [, selector, body] of outside.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    assert.doesNotMatch(body, /\b(animation|transition)\s*:/, `${selector.trim()} moves outside the no-preference block`);
+    if (selector.includes('gt-logo-motion-rest')) assert.doesNotMatch(body, /visibility:\s*hidden/, `${selector.trim()} hides the rest layer outside the no-preference block`);
+  }
+  assert.match(outside, /prefers-reduced-motion: reduce\)\s*\{\s*\.gt-logo-motion-move\s*\{\s*display:\s*none/, 'the motion layer is drawn under reduced motion');
 });

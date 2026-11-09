@@ -151,7 +151,7 @@ export const SKILLS: readonly Skill[] = [
     title: 'Motion rules',
     description: 'The motion rules General Translation work follows on the web and in films: the eases and the 0.5 s beat grid, reading holds, the four allowed transitions, dithered fields that change only by a tone mix on one cell grid, the moving type law, loops created paused and played by scroll, reduced motion as a designed still, the engine lifecycle, scroll stories, and the traps in SVG dashes, GSAP and lottie-web. Use when animating anything for General Translation (a landing band, a diagram line, a dashboard or sign-in transition, a Lottie figure, a scroll story or a film scene) and when reviewing motion someone else built.',
     areas: ['motion', 'landing', 'videos', 'diagrams'],
-    updated: '2026-10-10',
+    updated: '2026-11-08',
     files: ['references/recipes.md', 'references/sources.md', 'references/tools.md', 'references/traps.md', 'references/web.md'],
   },
   {
