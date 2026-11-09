@@ -159,7 +159,7 @@ Rules:
   white between the first baseline and the second cap line: the name's own
   word gap. `pnpm build:lockup` writes every lockup file from the font and
   `LOGO` (`public/brand/gt-globe-lockup*.svg`, the deck's `#gt-lockup`,
-  the globe rows' name). Running copy stays in Inter.
+  the globe rows' name). Running copy is Katagami Text too (section 6).
 - **In running text, write General Translation.** A sentence never names
   the company with the letters GT and never sets the logo inline in place
   of the name (Kevin, 2026-11-08). The logo stands alone: in the lockup,
@@ -181,23 +181,31 @@ never a wash; one bright white; depth from lines and material, not shadows.
 
 ## 6. Type
 
-- **Inter** is the one typeface: display, interface and text. Headlines,
-  interface chrome, captions, long-form reading and documentation prose are
-  all set in it. The one exception is the name in the logo lockup, which is
-  Katagami Text 500 as outlines (section 4). The build is the real rsms.me Inter (v4.1 variable, roman +
-  italic, opsz axis), self-hosted rather than loaded from Google Fonts.
+- **Katagami Text** is the one typeface (Kevin, 2026-11-09: "YES.
+  katagami text"). It sets the name in the logo, display, interface and
+  text: headlines, interface chrome, captions, long-form reading and
+  documentation prose. It replaced Inter. The build is Katagami Text 1.200,
+  roman and italic, variable on one axis (wght 100 to 900), self-hosted as
+  WOFF2 and never loaded from a font CDN. generaltranslation.com is
+  switching all its text to it (gt-cloud #5765).
+- **Known gap: prototemplate.com itself still renders Inter** (the shell,
+  the deck and `/brand`) until its own switch. Its Inter rules in
+  `gt-brand` describe that build until then; new work outside this site
+  takes Katagami Text.
 - **Headings use weight 500 at most.** Display text never goes bolder than
   500; long-form text is set at weight 400.
+- **Katagami's default forms are the brand's.** No feature list on top:
+  its `ss01` switches the figures back to Inter's and `cv11` draws a
+  single-storey a.
 - **Multilingual-first.** Headlines, UI, and marks must hold up in CJK,
   RTL, and Indic scripts as well as Latin. A wordmark or layout that only
-  works in English contradicts the company. Inter covers Latin, Greek and
-  Cyrillic; other scripts fall back to the system face for that script, and
-  every layout is checked in them. Licensed type needs credible CJK and RTL
-  coverage, or well-matched companion faces.
-- **Inter is the working typeface for the identity project.** It is not a
-  final decision. Alternatives remain open if they satisfy the
-  script-coverage constraint.
-- **Monospace is an instrument voice, not a brand voice.** It appears where
+  works in English contradicts the company. Katagami Text covers Latin,
+  Greek, Cyrillic and 28 more scripts; the site's subset keeps Latin, Greek
+  and Cyrillic, and other scripts fall back to a face for that script.
+  Every layout is checked in them.
+- **Monospace is an instrument voice, not a brand voice.** Code is set in
+  Geist Mono (the Prototemplate shell uses the system mono stack until its
+  switch). It appears where
   code artifacts appear (tokens, terminals, file paths, small labels in
   technical diagrams and product UI) and nowhere else, and even those
   labels are avoided where possible. The direction explicitly avoids

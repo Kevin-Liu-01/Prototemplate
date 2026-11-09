@@ -2,7 +2,7 @@
 name: gt-deck
 description: >-
   How the General Translation brand deck in Prototemplate's deck/ folder is
-  built and edited: the 1600 by 900 sheet, the Inter type sizes and color
+  built and edited: the 1600 by 900 sheet, the type sizes and color
   tokens, the layout classes, icons from the Heroicons 20 solid sprite,
   diagrams, openers and mood slides as artifact pictures, the speed mark
   slides, slide-scoped CSS, both themes, the build and shoot scripts, the
@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Brand deck
   areas: aesthetic, graphics
-  updated: 2026-10-10
+  updated: 2026-11-09
   origin: prototemplate
   owner: P
 ---
@@ -44,7 +44,7 @@ Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`). The two scrip
 
 ## 3. Type
 
-- Inter is the only typeface (Kevin, 2026-09-09): `--display` and `--text` resolve to `'Inter'`, the rsms InterVariable roman registered by `deck/fonts/deck-fonts.css`, with `font-optical-sizing: auto`. No italic face is inlined, so the sheet sets no italic or `<em>`.
+- Katagami Text is the brand's one typeface (Kevin, 2026-11-09, `gt-brand`). The deck still renders Inter until prototemplate.com's switch: `--display` and `--text` resolve to `'Inter'`, the rsms InterVariable roman registered by `deck/fonts/deck-fonts.css`, with `font-optical-sizing: auto`. No italic face is inlined, so the sheet sets no italic or `<em>`.
 - `h1`, `h2` and `.big` share one rule in `head.html` (weight 500, -0.025em, balanced, `cv11` and `ss01`), and slide CSS never restates the features or the tracking. Weight 500 is the ceiling and running text is 400, except the specimen on the Typography slide.
 - Sizes: `h1` 88, `.big` 72, `h2` 44, `.lead` 26, `p` 22, `.rows` 20, `.cap` 15; SVG text never under 18. Text under 15px on the sheet is a defect.
 - Copy follows the deck's register and gt-voice: plain sentence-case headings with no trailing period, full sentences in the body, and the company written out as General Translation in every sentence, never as the letters GT or the logo inline (Kevin, 2026-11-08). A slide that draws the mark references it from an `<svg>` sized in the mark's aspect with no viewBox of its own.
@@ -221,7 +221,7 @@ Kevin judged the first dashboard, onboarding and auth pass against the deck on 2
 
 ## Related skills
 
-gt-voice (the writing rules the copy follows), gt-diagrams (diagram construction, the isometric family included), gt-dither and gt-graphics (the Bayer screen and the artifact picture standard behind the mood slides), gt-brand (the identity the deck presents, and the Inter rules for every other surface), gt-aesthetic (Kevin's verdicts across surfaces), gt-lints (the line audit and the picture lint), prototemplate (the repository and its shell). From the wiki: agent-browser for driving the viewer in a browser, create-graphics, design-engineering-polish.
+gt-voice (the writing rules the copy follows), gt-diagrams (diagram construction, the isometric family included), gt-dither and gt-graphics (the Bayer screen and the artifact picture standard behind the mood slides), gt-brand (the identity the deck presents, and the type rules for every other surface), gt-aesthetic (Kevin's verdicts across surfaces), gt-lints (the line audit and the picture lint), prototemplate (the repository and its shell). From the wiki: agent-browser for driving the viewer in a browser, create-graphics, design-engineering-polish.
 
 ## Sources
 

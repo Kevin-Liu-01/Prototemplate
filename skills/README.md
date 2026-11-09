@@ -31,7 +31,7 @@ The curated skills of Prototemplate, Kevin Liu's hub for General Translation wor
 | Skill | Title | What it is | Also in |
 | --- | --- | --- | --- |
 | [`gt-aesthetic`](gt-aesthetic/SKILL.md) | Taste and the review standard | Kevin's taste for General Translation work and the review he applies to it. | Website, Landing pages, Components |
-| [`gt-brand`](gt-brand/SKILL.md) | Brand and the correct Inter | The General Translation identity as rules. |  |
+| [`gt-brand`](gt-brand/SKILL.md) | Brand and Katagami Text | The General Translation identity as rules. |  |
 | [`gt-deck`](gt-deck/SKILL.md) | Brand deck | How the General Translation brand deck in Prototemplate's deck/ folder is built and edited. | Graphics |
 | [`gt-explorations`](gt-explorations/SKILL.md) | Exploration rounds and convergence | How a General Translation design exploration runs from research to one landed design. | Website, Landing pages, Graphics |
 

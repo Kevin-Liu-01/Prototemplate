@@ -124,7 +124,7 @@ reader on GitHub or in an imported copy; `pnpm build:skills` writes it.
 | Website | Performance without visual loss | [`gt-performance`](./skills/gt-performance/SKILL.md) | Landing pages, Motion |
 | Landing pages | Landing page grammar | [`gt-landing-pages`](./skills/gt-landing-pages/SKILL.md) | Aesthetic |
 | Aesthetic | Taste and the review standard | [`gt-aesthetic`](./skills/gt-aesthetic/SKILL.md) | Website, Landing pages, Components |
-| Aesthetic | Brand and the correct Inter | [`gt-brand`](./skills/gt-brand/SKILL.md) |  |
+| Aesthetic | Brand and Katagami Text | [`gt-brand`](./skills/gt-brand/SKILL.md) |  |
 | Aesthetic | Brand deck | [`gt-deck`](./skills/gt-deck/SKILL.md) | Graphics |
 | Aesthetic | Exploration rounds and convergence | [`gt-explorations`](./skills/gt-explorations/SKILL.md) | Website, Landing pages, Graphics |
 | Lints | Lints and gates | [`gt-lints`](./skills/gt-lints/SKILL.md) |  |

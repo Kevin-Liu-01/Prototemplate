@@ -14,7 +14,7 @@ description: >-
 metadata:
   title: Taste and the review standard
   areas: aesthetic, website, landing, components
-  updated: 2026-11-02
+  updated: 2026-11-09
   origin: prototemplate
   owner: P
 ---
@@ -116,7 +116,7 @@ The spacing numbers of the deck sheet, the deck book head, the dashboard plate a
 
 `gt-brand` owns the face, the tokens, the feature lists, the full tracking table, the measure tokens, the named exceptions (the Prototemplate nameplate, the `/d/` directions, the presenter) and the type lint. Read its section 4 first. This section covers what to check once those are right.
 
-- The face is the self-hosted rsms InterVariable 4.1 with `font-optical-sizing: auto`, display text at weight 500 with `cv11` and `ss01`, and running text at 400.
+- The face is Katagami Text (2026-11-09), no feature list, display at 500 and running text at 400. prototemplate.com renders Inter until its switch.
 - Tracking tightens with size and weight, from `gt-brand`'s table. One tracking value at every size was the 2026-09-25 defect ("kerning needs to be adjusted"). Weight 400 text is never tracked, and nothing is tracked positive except the deck's 13px counter (+0.02em), the deck slides' picture credits and gt-cloud's 13px captions (+0.01em).
 - Heads balance (`text-wrap: balance`). A display head holds two lines at most at every width (2026-08-04). Kevin's words on the hero were "TASTEFULLY two lines again" (2026-08-04).
 - A lead reads in two or three lines at 60 to 70 characters, and the rest of the paragraph moves into the body. Set the measure in em (`--pt-measure-lead`), because `62ch` comes to 83 to 86 Inter characters. The deck's own book-head lead (`max-width: 62ch`) measured 84 characters a line and four lines at 1440 on 2026-10-05, so copy the deck's sizes and gaps and take the measure from this rule.

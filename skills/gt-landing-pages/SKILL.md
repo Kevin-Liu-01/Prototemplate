@@ -3,7 +3,7 @@ name: gt-landing-pages
 description: >-
   The page grammar for General Translation landing and marketing pages: one
   rail, bands and hatch spacers, heads with a heading and one lead, the
-  shared Cta with Title Case labels, the two icon tiers, Inter only, the
+  shared Cta with Title Case labels, the two icon tiers, Katagami Text only, the
   mobile type ladder, the svh and dvh law, the read lines for scroll stories,
   and the rule that mock layouts and the toolchain prototypes are literal
   specs. Use when designing, building or reviewing a landing page, a home
@@ -11,7 +11,7 @@ description: >-
 metadata:
   title: Landing page grammar
   areas: landing, aesthetic
-  updated: 2026-10-10
+  updated: 2026-11-09
   origin: prototemplate
   owner: P
 ---
@@ -113,7 +113,7 @@ Icons come in two tiers, plus brand marks (gt-cloud #4909, 2026-09-24; swept sit
 
 Detail is in [references/type-on-the-page.md](references/type-on-the-page.md).
 
-- Inter is the only typeface (Kevin, 2026-09-18, gt-cloud #4887): rsms InterVariable v4.1 as `--font-sans`, with the italic only on prose routes. Mono is the engine's system stack `--tc-mono` or Geist Mono (`font-mono`), and only for strings that carry numerals: measurements, values, code (Kevin, 2026-08-01).
+- Katagami Text is the only typeface (Kevin, 2026-11-09; it replaced Inter, which replaced Switzer in gt-cloud #4887): self-hosted WOFF2 as `--font-sans` (gt-cloud #5765), with the italic only on prose routes, no feature list, and other scripts on `system-ui` or the per-script stacks. Mono is the engine's system stack `--tc-mono` or Geist Mono (`font-mono`), and only for strings that carry numerals: measurements, values, code (Kevin, 2026-08-01).
 - Headings h1 to h4 are weight 500 at every size. gt-ui's packages/ui defaults (Geist, `font-semibold`, uppercase tracked labels) do not hold on a landing page.
 - Heading and paragraph metrics live in the engine CSS, whose unlayered resets beat Tailwind utilities on h1 to h4 and p without a warning; put them in the band's stylesheet or space siblings with a gap (2026-08-07).
 - Under 720px type and spacing come from the `--tcm-*` ladder in the engine's late 720px block, read as `var(--tcm-X, <fallback>)`; the `sgdh-root` mobile cut outranks the engine, so a raise changes both in one commit. Mobile is designed for the phone, copy keeps 20px from any hairline, tap targets are 44px, and an authored `<br />` needs `{' '}` before it.
@@ -156,7 +156,7 @@ The hero's field is the studio field (`createStudioField`, preset `bayer8`, one 
 - [ ] Every head is a heading and at most one lead in a ruled box, at most two lines of display type, with no eyebrow, mono or uppercase tracking (`gt-ui/no-eyebrow`, `gt-ui/mono-is-not-voice`) and no heading period (`gt-ui/no-heading-period`).
 - [ ] Every button is `Cta` (`gt-ui/shared-cta`), labels are Title Case (`gt-ui/cta-title-case`), the ring marks the primary action only, and no new `tracked` slug was added.
 - [ ] Meaning marks are Heroicons solid, controls are Lucide outline, brand marks are untouched (`gt-ui/icon-tiers`), and the theme switch draws ◐ and ◑.
-- [ ] Inter is the only face (`gt-ui/inter-only`), weights stay at 500 or below, heading or paragraph metrics live in engine or band CSS, and none of gt-ui's Geist, semibold or uppercase-label defaults reached the page.
+- [ ] Katagami Text is the only face (`gt-ui/katagami-text-only`), weights stay at 500 or below, heading or paragraph metrics live in engine or band CSS, and none of gt-ui's Geist, semibold or uppercase-label defaults reached the page.
 - [ ] Mobile rules consume `var(--tcm-*, <px>)`, sit in the late 720px block, and the v0-pages mobile cut moved with them.
 - [ ] In light, no band, panel or close sits on a black background.
 - [ ] At 390px: copy is 20px or more from every hairline, tap targets are 44px, no mock crops, no words fuse at a hidden break, and nothing scrolls sideways.

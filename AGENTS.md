@@ -41,7 +41,7 @@ The skills live in `skills/<slug>/SKILL.md`. In this repository they are already
 | Running or debugging a local server, letting Kevin try a build | `gt-local-dev` | `pnpm dev`, `pnpm run doctor` |
 | Lag, frame cost, Lighthouse, a heavy shader or canvas | `gt-performance` | `pnpm check:pages` (layout shift per cell) |
 | Design taste, polish, a surface Kevin calls bad or busy | `gt-aesthetic` | `pnpm lint:lines:shell`, `pnpm lint:radius`, `pnpm lint:heads` |
-| The brand, the one Inter, marks and third-party logos | `gt-brand` | `pnpm lint:type`, `pnpm build:marks` |
+| The brand, Katagami Text as the one typeface, marks and third-party logos | `gt-brand` | `pnpm lint:type`, `pnpm build:marks` |
 | A slide, the brand deck or any General Translation presentation | `gt-deck` | `pnpm build:deck` |
 | Options, directions, variants, converging on a pick | `gt-explorations` | `pnpm capture:pages --direction <slug>` |
 | A lint, a gate, a new rule to enforce | `gt-lints` | `pnpm lint:static`, `pnpm lint:all`, `pnpm lint:public` |
@@ -78,7 +78,7 @@ On the site the handbook is one section of the docs site. It opens with this gui
 ## House rules
 
 - **Writing.** Plain technical English: complete declarative sentences, no em dashes, no metaphors, no "X, not Y" pairs, no signposts and no eyebrows. Headings are plain nouns in sentence case with no trailing period. In running text the company is General Translation, written out in every sentence: never the letters GT as the name and never the logo inline (`gt-voice`).
-- **Type.** Inter is the only typeface, the self-hosted rsms InterVariable, at weight 500 or less, read through the type tokens. `pnpm lint:type` holds it (`gt-brand`). The one exception is the name in the logo lockup, Katagami Text 500 drawn as outlines by `pnpm build:lockup`.
+- **Type.** Katagami Text is the one typeface (Kevin, 2026-11-09): the name in the logo, display, interface and body, at weight 500 or less, with Geist Mono for code (`gt-brand`). prototemplate.com itself still renders Inter, the self-hosted rsms InterVariable read through the type tokens and held by `pnpm lint:type`, until its own switch; the name in its logo lockup is already Katagami Text 500, drawn as outlines by `pnpm build:lockup`.
 - **Lines.** Every line is drawn once by one owner, in one of three roles (DESIGN.md section 2). `pnpm lint:lines:shell` holds it.
 - **Corners.** Rounded controls, square shells: controls and cards at 6px, chips at 4px, and only the shells square (DESIGN.md section 2, Corners). `pnpm lint:radius` holds it.
 - **Pages.** Every page with a book head follows one structure (DESIGN.md section 4, The book page). `pnpm lint:heads` holds it.

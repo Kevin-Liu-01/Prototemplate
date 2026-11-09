@@ -127,7 +127,7 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 ## 2026-09-18: the second face
 
 - Kevin, on the landing site: "change switzer to inter everywhere. dont need switzer and remove those files."
-- The rule since: Inter is the only typeface on General Translation surfaces, as it already was in the deck (2026-09-08). gt-cloud PR #4887 removed Switzer from the landing. `gt-brand` holds the face and its named exceptions.
+- The rule since: Inter is the only typeface on General Translation surfaces, as it already was in the deck (2026-09-08). gt-cloud PR #4887 removed Switzer from the landing. `gt-brand` holds the face and its named exceptions. On 2026-11-09 Kevin made Katagami Text the one typeface in its place ("YES. katagami text"); one face is still the rule, and `gt-brand` section 4 holds it.
 
 ## 2026-09-25: the first dashboard, onboarding and auth pass
 

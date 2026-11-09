@@ -1,6 +1,36 @@
-# Type: the correct Inter in detail
+# Type: Katagami Text, and the Inter build in detail
 
-This file backs section 4 of `gt-brand`. It records the font file and how to verify it, the bindings on each surface, the tokens, the measurements behind the rules, the type lint and the gotchas. The measurements come from the type audit of 2026-10-05 on the Prototemplate dev server (Chrome for Testing through playwright-core, dark theme, 1440 and 390 wide, after `document.fonts.ready`). Paths are relative to `$PROTOTEMPLATE` unless they name `$GT_CLOUD`.
+This file backs section 4 of `gt-brand`. Katagami Text is the one typeface (Kevin, 2026-11-09: "YES. katagami text"), and the first section below holds its detail. prototemplate.com itself still renders Inter until its own switch, so every section after it describes that Inter build: they stay accurate for it until then, and they are the checklist for the switch. For the Inter build it records the font file and how to verify it, the bindings on each surface, the tokens, the measurements behind the rules, the type lint and the gotchas. The measurements come from the type audit of 2026-10-05 on the Prototemplate dev server (Chrome for Testing through playwright-core, dark theme, 1440 and 390 wide, after `document.fonts.ready`). Paths are relative to `$PROTOTEMPLATE` unless they name `$GT_CLOUD`.
+
+## Katagami Text, the one typeface
+
+| file | sha1 | contents |
+| --- | --- | --- |
+| Katagami `fonts/text/KatagamiText[wght].ttf` | `2426f0bb8d77` | roman, 7,153,204 bytes, the source |
+| Katagami `fonts/text/KatagamiText-Italic[wght].ttf` | `318922de45d9` | italic, 7,329,320 bytes, the source |
+| `$GT_CLOUD/apps/landing/public/fonts/KatagamiText.woff2` (gt-cloud #5765) | `b5fd4f1df98d` | roman, 281,868 bytes, cut to InterVariable's 2,852 code points |
+| `$GT_CLOUD/apps/landing/public/fonts/KatagamiText-Italic.woff2` (gt-cloud #5765) | `2f0b0d46cad9` | italic, 304,092 bytes, the same cut |
+
+- Version 1.200, family "Katagami Text", one axis: `wght` 100 to 900. No `opsz` axis, so one design serves every size. 15,212 glyphs: Latin, Greek, Cyrillic and 28 more scripts. Licence: SIL Open Font License 1.1. The family's site is katagami.kevinliu.studio.
+- Metrics: cap height 1430 of 2048 units (0.698em), x-height 1020 (0.498em), zero 0.58em wide, space 0.24em. Katagami Text is Inter scaled to 0.96 with a lower x-height and tighter sidebearings, so it sets about 4 percent tighter than Inter at the same size.
+- The brand kit ships both TTFs and full WOFF2 files made from them with fontTools (every glyph, feature and the axis). A web page that needs only Latin, Greek and Cyrillic serves the landing's subsets.
+- **Bindings.** gt-cloud #5765 binds the roman as `katagamiText` on `--font-sans` (`apps/landing/src/lib/fonts.ts`) and both styles as `katagamiTextProse` on prose routes (`fonts-prose.ts`); the engine's `--tc-sans` is `var(--font-sans), system-ui, sans-serif`. A plain `@font-face` declares the family as `'Katagami Text'`, never a `GT` family name.
+- **Features.** Katagami carries Inter's feature set and labels, with its own forms as the defaults: the long-flag 1, open 4, straight-stemmed 6 and 9, flat-topped 3, the compact f, the double-storey a and square punctuation. `ss01` ("Inter digits") and `cv01` to `cv04` and `cv09` switch figures back to Inter's, `cv11` draws the single-storey a, and `ss07` brings back Inter's round punctuation. So no feature list is written on Katagami Text; Inter's display list (`cv11`, `ss01`) would undo the brand's forms. `tnum` through `font-variant-numeric: tabular-nums`, `zero` for identifiers, and `smcp` small capitals are available.
+- **Weights.** 400 and 500, as for Inter. The heavy weights are lighter than Inter's (700 is Inter's 640).
+- **Tracking.**
+
+| role | tracking |
+| --- | --- |
+| titles 32px and up, weight 500 | -0.02em |
+| figures and 24px heads, weight 500 | -0.015em |
+| display quotes, weight 400 | -0.01em |
+| labels, weight 500 | -0.005em |
+| group labels, weight 500 | 0 |
+| running text, weight 400 | 0 |
+| the name in the logo, weight 500 | 0, with the font's kerning |
+
+- **Code.** Geist Mono (OFL 1.1, from Google Fonts or vercel/geist-font), bound in gt-cloud as `mono` on `--font-mono` through `next/font/google`, the one Google face gt-ui allows. The brand kit does not bundle it.
+- **The lint.** gt-cloud #5765 renames gt-ui's `inter-only` to `katagami-text-only`: next/font/google faces other than Geist Mono, `localFont` files other than the Katagami Text builds, and font classes and inline families outside the site type fail.
 
 ## The file
 
@@ -150,7 +180,7 @@ In gt-cloud the gt-ui oxlint plugin holds the type rules (`$GT_CLOUD/tooling/oxl
 | specimens | deck slide 27 and `.ptb-display` on `/brand` | they show the weights 300 to 800 on purpose |
 | the presenter | `src/app/present/**`, with `src/app/present/fonts.ts` loading Sora and Instrument Sans for the intro lockup | its type beats set other faces beside the right Inter on purpose; the lint skips the folder |
 | speed mark faces | `public/fonts/google/` (Michroma, Orbitron, Anybody) | converted to outlines at build time; no page loads them |
-| the name in the logo lockup | Katagami Text 500 from a Katagami checkout, drawn as outlines by `pnpm build:lockup` into `public/brand/gt-globe-lockup*.svg`, the deck's `#gt-lockup` and the globe rows' name | Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!"; no page loads the face, and running copy stays in Inter |
+| the name in the logo lockup | Katagami Text 500 from a Katagami checkout, drawn as outlines by `pnpm build:lockup` into `public/brand/gt-globe-lockup*.svg`, the deck's `#gt-lockup` and the globe rows' name | Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!"; on this site no page loads the face yet, so running copy renders in Inter until the switch |
 
 A new exception goes into DESIGN.md section 15 or the lint allowlist with its reason, in the same change.
 
@@ -166,9 +196,9 @@ A new exception goes into DESIGN.md section 15 or the lint allowlist with its re
 - The deck's italic is synthesised, because only the roman is inlined. Use no italic in the deck.
 - A subset without glyph names (pyftsubset's default, a format 3 `post` table) rasterises a shade differently in Chrome on macOS, at every weight. `scripts/build/subset-inter.py` keeps the names (`glyph_names`), and its subsets match the full file pixel for pixel.
 
-## The rules of SKILL.md section 4 in full
+## The rules of SKILL.md section 4 in full (the Inter build)
 
-These blocks stood in `SKILL.md` section 4 until 2026-10-10 and moved here unchanged to keep the body under its budget; `SKILL.md` keeps a one-line summary of each.
+These blocks stood in `SKILL.md` section 4 until 2026-10-10 and moved here unchanged to keep the body under its budget. Since 2026-11-09 they hold for the Inter build prototemplate.com renders until its switch; Katagami Text's rules are in the first section of this file.
 
 **The binding.**
 
@@ -215,7 +245,7 @@ The Prototemplate shell tracks nothing positive, and its type lint fails any pos
 - The presenter (`/present`), whose intro lockup sets Sora and Instrument Sans (`src/app/present/fonts.ts`) and whose type beats show other faces beside Inter on purpose.
 - Specimens that show the weights 300 to 800: deck slide 27 and `.ptb-display` on `/brand`.
 - The speed marks' faces (Michroma, Orbitron, Anybody), which exist only as outlines inside the mark files.
-- The name in the logo lockup: Katagami Text at weight 500, letter-spacing 0, with its kerning, as outlines (Kevin, 2026-11-08). It is the lockup's one face; running copy, General Translation included, stays Inter.
+- The name in the logo lockup: Katagami Text at weight 500, letter-spacing 0, with its kerning, as outlines (Kevin, 2026-11-08). Since 2026-11-09 Katagami Text is the one typeface everywhere; on this site running copy renders in Inter until the switch.
 
 **Enforcement.**
 

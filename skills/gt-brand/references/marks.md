@@ -54,7 +54,7 @@ The name is Katagami Text at weight 500, letter-spacing 0, with the font's GPOS 
 
 - A round mark that only matches the height of flat-topped text looks shorter than the text, for the same reason round letters such as O overshoot the cap height and the baseline. At 1.0155 times the span the globe looked smaller than the two lines (Kevin, 2026-11-06), and at 1.1 it reads as the same height as the name without outweighing it, from a large lockup down to a 56px header, where the globe is 34.7px.
 - The globe rows on `/marks/graticule` set the name at this size: `NAME_WIDTH` in `src/app/marks/graticule/content.ts` is the name's width in globes (2.5418), and the column in `graticule.css` carries the same number.
-- Running copy never sets the name in Katagami. General Translation in a sentence is body copy in Inter.
+- Running copy never retypes the logo's name in place of a logo file. General Translation in a sentence is body copy, set in Katagami Text 400 like the rest of the sentence (Inter on prototemplate.com until its switch).
 - Measure the span on the name as set, in the face and weight it ships in, and size the globe from it; never size the globe to the name's line box.
 
 ## Rules for every General Translation mark

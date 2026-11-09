@@ -4,7 +4,7 @@
 
 ## Type
 
-- Inter is the only typeface (Kevin, 2026-09-09: "replace all switzer with inter, dont really need switzer anymore"). `--display` and `--text` both resolve to `'Inter'`, which `deck/fonts/deck-fonts.css` registers as the rsms InterVariable roman, the same file as `public/fonts/InterVariable.woff2`, at weights 100 to 900. `body` sets `font-optical-sizing: auto`, so large headings take the display optical size from the font's opsz axis.
+- Katagami Text is the brand's one typeface since 2026-11-09 (`gt-brand`); the deck still renders Inter until prototemplate.com's switch, as it has since Kevin's 2026-09-09 ruling ("replace all switzer with inter, dont really need switzer anymore"). `--display` and `--text` both resolve to `'Inter'`, which `deck/fonts/deck-fonts.css` registers as the rsms InterVariable roman, the same file as `public/fonts/InterVariable.woff2`, at weights 100 to 900. `body` sets `font-optical-sizing: auto`, so large headings take the display optical size from the font's opsz axis.
 - No italic face is inlined. Do not set italic or `<em>` on the sheet; the browser would slant the roman.
 - `h1`, `h2` and `.big` share one rule in `head.html`: weight 500, `letter-spacing: -0.025em`, `text-wrap: balance`, `font-feature-settings: 'cv11', 'ss01'`. Slide CSS does not restate the features or the tracking. No other rule sets `font-feature-settings`; the counter, the swatch values and the viewer's numbers take tabular figures through `font-variant-numeric: tabular-nums`.
 - Weight 500 is the ceiling for display text and for `<b>`, and running text is 400 (BRAND.md section 6). The one exception is the specimen on the Typography slide (`27-type.html`), which shows Inter from 300 to 800 as samples.

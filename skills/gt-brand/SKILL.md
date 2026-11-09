@@ -2,31 +2,32 @@
 name: gt-brand
 description: >-
   The General Translation identity as rules: the name and the naming system,
-  the four absolute colors and the one accent, the type system on the
-  self-hosted rsms InterVariable 4.1 (weights, optical size, features,
-  tracking, per-script fallbacks), the globe logo and the generated speed
+  the four absolute colors and the one accent, the type system on Katagami
+  Text, the one typeface (weights, features, tracking, per-script
+  fallbacks, Geist Mono for code, and the Inter build prototemplate.com
+  still renders), the globe logo and the generated speed
   marks, language as material, the final avoid list, and what
   never appears on a public surface. Use before making anything that carries
   the brand (a page, a slide, a graphic, a film, an email or a social
   image), when choosing a face, weight, tracking or color, when placing a
   mark or a third-party logo, and when reviewing a surface against the brand.
 metadata:
-  title: Brand and the correct Inter
+  title: Brand and Katagami Text
   areas: aesthetic
-  updated: 2026-11-08
+  updated: 2026-11-09
   origin: prototemplate
   owner: P
 ---
 
-# Brand and the correct Inter
+# Brand and Katagami Text
 
-General Translation builds open-source i18n libraries (`gt` and framework packages such as `gt-next`) and a closed translation platform with an AI agent, Locadex. Its identity is written in Prototemplate's BRAND.md and DESIGN.md and drawn in the brand deck (`deck/parts/head.html` and `deck/slides/`). This skill states those documents as rules for anything that carries the brand. Type gets the most room, because the one face is the real rsms InterVariable and nearly every type defect Kevin has flagged came from settings layered on that face.
+General Translation builds open-source i18n libraries (`gt` and framework packages such as `gt-next`) and a closed translation platform with an AI agent, Locadex. Its identity is written in Prototemplate's BRAND.md and DESIGN.md and drawn in the brand deck (`deck/parts/head.html` and `deck/slides/`). This skill states those documents as rules for anything that carries the brand. Type gets the most room, because nearly every type defect Kevin has flagged came from settings layered on the one face.
 
 Paths are relative to a Prototemplate checkout (`$PROTOTEMPLATE`) unless they name `$GT_CLOUD`, a gt-cloud checkout at origin/main. A long-lived gt-cloud checkout can sit on an old branch without the files named here, so read gt-cloud facts from origin/main or a fresh worktree. `motion/` in Prototemplate is the films session's local folder and stays untracked, so its files exist only in Kevin's checkout (`gt-films`).
 
 These files hold the detail:
 
-- `references/type.md`: the font file and how to verify it, the bindings on every surface, the tokens, optical size, features, the full tracking table, the ladders, per-script stacks, the type lint and the gotchas.
+- `references/type.md`: Katagami Text's files, bindings, features and tracking; then the Inter build prototemplate.com still renders, with its file, bindings, tokens, optical size, ladders, per-script stacks, the type lint and the gotchas.
 - `references/marks.md`: the current mark and its files, the review standard for a new mark, the name in running text, the speed set and how to regenerate it, the Locadex mark, the dithered shimmer and third-party logos.
 - `references/color.md`, `references/language.md` and `references/third-party.md`: the color exceptions, the language devices and the rules for material the company did not make.
 - `references/sources.md`: where every rule comes from, with dates.
@@ -94,45 +95,33 @@ The color rules have four documented exceptions, each named in `references/color
 
 ## 4. Type
 
-Inter is the one typeface for display, interface and text. The build is the rsms.me Inter 4.1 variable family, roman and italic, self-hosted. Detail: `references/type.md`.
+**Katagami Text is the one typeface** (Kevin, 2026-11-09: "YES. katagami text"). It sets everything: the name in the logo, display, interface and body. It replaced Inter. Geist Mono sets code. Detail: `references/type.md`.
 
-One exception: the lockup's name is Katagami Text 500 outlines (Kevin, 2026-11-08); running copy stays Inter.
+**Known gap.** prototemplate.com itself (the shell, the deck, `/brand`) still renders Inter until its own switch, and `pnpm lint:type` still holds that build. The Inter block below describes it until then. Everything made outside this site takes Katagami Text.
 
-**The face.**
+**The face.** Katagami Text 1.200 from the Katagami family (katagami.kevinliu.studio, SIL Open Font License 1.1): roman and italic, variable on one axis, wght 100 to 900, no optical size axis. 15,212 glyphs: Latin, Greek, Cyrillic and 28 more scripts. Cap height 1430 of 2048 units (0.698em).
 
-- The files are `public/fonts/InterVariable.woff2` (sha1 `f55b18fd`) and `public/fonts/InterVariable-Italic.woff2` (sha1 `a5f0513e`). Their family name is "Inter Variable", version string 4.001, with axes `opsz` 14 to 32 and `wght` 100 to 900.
-- The deck (which inlines the roman) and gt-cloud's landing serve the same bytes. Prototemplate serves unicode-range subsets cut from them in `public/fonts/inter`, which keep every feature and both axes.
-- No other Inter is ever loaded: no Google Fonts build through `next/font/google`, no fontsource package, no CDN copy, no `local()` source.
-- No stack names `'Inter'`, `'InterVariable'` or `'Inter Display'` as a family. A bare name matches whatever Inter the reader has installed. The deck is the one place a family is named `'Inter'`: its `@font-face` carries the roman as a data URI, which cannot fail to load, so it always hides an installed Inter (`references/type.md`).
-
-**The binding.** Prototemplate binds the roman's latin subset as `ptInter` (`src/lib/fonts.ts`, `--font-inter`) with the other subsets and the italic as `@font-face` rules in the same family (`src/app/inter-subsets.css`). A next/font binding named `inter` shares its name with an installed Inter, which then renders if the woff2 fails; gt-cloud's landing still carries that exposure. Detail: `references/type.md`.
-
-**The stack** is `var(--font-inter), system-ui, sans-serif` (the shell's `--pt-text`); `'Helvetica Neue', Arial` after the variable add nothing.
+- The sources are `fonts/text/KatagamiText[wght].ttf` and `KatagamiText-Italic[wght].ttf` in the Katagami repository. The brand kit ships them with full WOFF2 files made from them.
+- generaltranslation.com is switching to it in gt-cloud #5765: WOFF2 subsets cut to InterVariable's 2,852 code points (`$GT_CLOUD/apps/landing/public/fonts/KatagamiText.woff2` and `-Italic.woff2`), bound as `katagamiText` on `--font-sans`, with gt-ui's `inter-only` renamed `katagami-text-only`.
+- Self-host it; never load it from a font CDN. Declare it under its own name, `'Katagami Text'`, never a `GT` family name.
 
 **Weights.** 400 for running text and long-form reading. 500 for labels, headings, display text, `b` and `strong`. Nothing above 500 and nothing below 400. The browser's `bolder` turns `b` and `strong` into 700, so a base rule sets them to 500.
 
-**Optical size.** `font-optical-sizing: auto` and never `font-variation-settings`. The browser sets opsz to the font size in px, clamped to 14 to 32. Text at 14px and under gets the Text design, text from 32px gets the Display design, and sizes between them get the intermediate instances. Pinning opsz or wght through `font-variation-settings` breaks that mapping.
+**Features.** Katagami's defaults are the brand's forms: its figures, the double-storey a, square punctuation. Write no `font-feature-settings`. Its `ss01` ("Inter digits") switches the figures back to Inter's and `cv11` draws a single-storey a, so Inter's display list is wrong on it. Tabular figures come from `font-variant-numeric: tabular-nums`. Set `font-weight`, never `font-variation-settings`.
 
-**Features.** Two lists, applied only through tokens:
+**Tracking.** Tracking tightens with size and weight, and weight 400 text is never tracked. Katagami Text is already set 4 percent tighter than Inter, so its ladder is a step lighter: -0.02em for titles 32px and up at 500, -0.015em for figures and 24px heads, -0.01em for display quotes, -0.005em for labels, 0 for group labels and running text. Nothing goes tighter than -0.02em.
 
-- display: `'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1` for h1, h2 and display sentences (the deck's `.big`). `cv11` is the single-storey a and `ss01` the open digits.
-- text: `'liga' 1, 'calt' 1` for everything else, labels and numerals included.
-- Chrome switches `calt` off under any letter-spacing, which loses Inter's arrows and its colon and hyphen fitting. Naming `'liga' 1, 'calt' 1` restores them. rsms.me's own CSS carries the same fix.
-- `font-feature-settings` replaces the inherited list, so one stray rule changes the letterforms of a whole subtree. Tabular figures come from `font-variant-numeric: tabular-nums` and never from `'tnum'` in the feature list.
+**Measure and wrapping.** Body text runs 60 to 70 characters a line: `--pt-measure: 32em` for body and `--pt-measure-lead: 30em` for leads. Set measures in em, never in `ch`: Katagami Text's zero is 0.58em wide, so 62ch runs well past 70 characters. Headings h1 to h3 take `text-wrap: balance`.
 
-**Tracking.** Tracking tightens with size and weight, and weight 400 text is never tracked: -0.025em for titles 32px and up at weight 500, -0.02em for figures and 24px heads, -0.015em for display quotes, -0.01em for labels, -0.005em for group labels, and 0 for running text. Positive tracking appears only on gt-cloud's 13px captions (+0.01em) and the deck's 13px counters (+0.02em); the Prototemplate shell tracks nothing positive, and nothing goes tighter than -0.025em. The table with where each value is set: `references/type.md`.
+**Monospace** is an instrument voice. Geist Mono sets code, tokens, terminals, file paths, hex values and locale codes, and nothing else: no headline, body or marketing line is ever set in mono. gt-cloud binds it as `--font-mono`; the Prototemplate shell uses the system stack `--pt-mono` until its switch.
 
-**Measure and wrapping.** Body text runs 60 to 70 characters a line: `--pt-measure: 32em` for body and `--pt-measure-lead: 30em` for leads. Set new measures in em and never in `ch`: Inter's zero is about 0.63em wide, so 62ch comes to 83 to 86 characters. The deck's `ch` measures (`.max`, `.max-p`, the book head) belong to the deck's owner. Headings h1 to h3 take `text-wrap: balance`.
+**Scripts.** generaltranslation.com's subset keeps Latin, Greek and Cyrillic; CJK, Arabic, Hebrew and Indic text falls back to a script face, and every layout is checked in CJK, RTL and Indic text as well as Latin. A real Arabic or Hebrew face takes its own rule with nothing in front (`references/type.md`).
 
-**The ladders.** The shell ladder (d1 44 to meta 13), the deck sheet ladder (h1 88 to caption 15, nothing under 15px on the sheet) and the landing's phone ladder (DESIGN.md section 12) are in `references/type.md`.
-
-**Monospace** is an instrument voice. It sets code, tokens, terminals, file paths, hex values and locale codes, and nothing else: no headline, body or marketing line is ever set in mono. Prototemplate uses `--pt-mono` and gt-cloud uses Geist Mono (`--font-mono`).
-
-**Scripts.** Inter covers Latin, Greek and Cyrillic; CJK, Arabic, Hebrew and Indic text falls back to a script face, and every layout is checked in CJK, RTL and Indic text as well as Latin. A real Arabic or Hebrew face takes its own rule with no Inter variable in front (`references/type.md`).
+**Prototemplate's Inter build, until its switch.** The self-hosted rsms InterVariable 4.1 (`public/fonts/InterVariable.woff2`, sha1 `f55b18fd`, and the italic, `a5f0513e`), bound as `ptInter` on `--font-inter` with unicode-range subsets, stack `var(--font-inter), system-ui, sans-serif`, `font-optical-sizing: auto`, the display list `'liga' 1, 'calt' 1, 'cv11' 1, 'ss01' 1` and the text list `'liga' 1, 'calt' 1` through tokens, and the -0.025em ladder. The deck inlines the roman as `'Inter'`. No other Inter is ever loaded and no stack names a bare `'Inter'`. The bindings, tokens, ladders and gotchas are in `references/type.md`.
 
 **Exceptions.** The nameplate's Fraunces and Space Grotesk, the gallery's grotesk labels on `/`, the `/d/` directions, the presenter's faces, the weight specimens (deck slide 27, `.ptb-display`) and the speed marks' outline faces. Each is named in `references/type.md` so no sweep removes it.
 
-**Enforcement.** Prototemplate's `scripts/lint/type.mjs` (static in `pnpm build`, `pnpm lint:type:live`, `pnpm test:type`; exceptions as `/* lint-type: allow <reason> */`) and gt-cloud's gt-ui rules `inter-only`, `mono-is-not-voice`, `no-thin-font` and `typed-text-var`, of which `pnpm lint:code` runs a copy. What each fails: `references/type.md`; the wiring: `gt-lints`.
+**Enforcement.** gt-cloud's gt-ui rules `katagami-text-only` (`inter-only` until #5765 lands), `mono-is-not-voice`, `no-thin-font` and `typed-text-var`. Prototemplate's `scripts/lint/type.mjs` (static in `pnpm build`, `pnpm lint:type:live`, `pnpm test:type`) and its copy of gt-ui still hold the Inter build until the switch. What each fails: `references/type.md`; the wiring: `gt-lints`.
 
 ## 5. Marks
 
@@ -168,7 +157,7 @@ The brand questionnaire was finalised on 2026-08-11. Its avoid list, BRAND.md se
 | em dashes in rendered text (Kevin, 2026-08-11: zero on the site) | gt-ui `no-em-dash` |
 | exclamation marks | review |
 | a trailing period on a heading | gt-ui `no-heading-period` |
-| a second typeface, a weight above 500 or under 400 | gt-ui `inter-only`, `no-thin-font`; `lint-type` |
+| a second typeface, a weight above 500 or under 400 | gt-ui `katagami-text-only`, `no-thin-font`; `lint-type` |
 | a gif as a mark or a demo frame | gt-ui `no-gif-mark` |
 | shadows on any surface | review; the dashboard's plate pages remove them in `brand-tokens.css`, which keeps one for the credits card (section 3) |
 
@@ -189,11 +178,10 @@ Any logo, picture, font, model or shader the company did not make follows [refer
 
 Run it on any surface that carries the brand, in both themes, at 1440 and at 390 wide.
 
-- [ ] Every Latin run renders from the self-hosted InterVariable file: Chrome DevTools lists it under Rendered Fonts as a network resource, never as a local file (`references/type.md` has the CDP check). In Prototemplate, `pnpm lint:type` and `pnpm lint:type:live` pass.
-- [ ] No stack names a bare Inter, and the Inter variable comes first in every stack.
-- [ ] Headings are weight 500, with the display features, balanced wrap and the tracking for their size. Running text is 400 and untracked. `b` and `strong` compute 500.
-- [ ] No `font-variation-settings`, and no feature list written outside the two tokens.
-- [ ] Mono appears only on code, tokens, paths, hex values and locale codes.
+- [ ] Every Latin run renders from the self-hosted Katagami Text file: Chrome DevTools lists it under Rendered Fonts as a network resource, never as a local file (`references/type.md` has the CDP check). On prototemplate.com, until its switch, the InterVariable file, and `pnpm lint:type` and `pnpm lint:type:live` pass.
+- [ ] Headings are weight 500, with balanced wrap and the tracking for their size. Running text is 400 and untracked. `b` and `strong` compute 500.
+- [ ] No `font-variation-settings`. On Katagami Text, no feature list at all; on the Inter build, none outside the two tokens.
+- [ ] Mono is Geist Mono and appears only on code, tokens, paths, hex values and locale codes.
 - [ ] Lines run 60 to 70 characters, and a lead reads in two or three lines.
 - [ ] Four colors and one accent, with the lift `#86a8ff` on ink. Small titanium text in the light theme clears 4.5:1, darkened the way gt-cloud's plate pages darken it.
 - [ ] Marks are one ink, from the files or the generator, at a size their minimum allows, with no glow, gradient, shadow or gif. A new mark was reviewed in a row of competing logos and beside the current mark.
