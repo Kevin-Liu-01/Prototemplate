@@ -58,9 +58,12 @@ import './compare.css';
  *
  * A pane whose page has not loaded shows the GtLogoMotion loader on the
  * paper. The rig learns a pane has loaded from its load event, or at mount
- * from the document's readyState for a pane that loaded before hydration,
- * so the loader is drawn only from mount on and only over a pane still
- * loading: it never stands over a page that is already there.
+ * from the frame's document for a pane that loaded before hydration, so the
+ * loader is drawn only from mount on and only over a pane still loading: it
+ * never stands over a page that is already there. A failed load can fire no
+ * load event at all (Safari and Firefox fired none for a dropped connection),
+ * so each loader also leaves after WAIT_MAX_MS and the pane shows whatever
+ * the browser drew.
  */
 
 const TITLE = 'Compare';
@@ -82,6 +85,9 @@ const SHEET_W = PANE_W * 2 + SEAM;
 const CAPTION_ROW = 28;
 
 type Frames = Record<PaneKey, RefObject<HTMLIFrameElement | null>>;
+
+/** The longest a loader stays: a pane whose load failed may never report it. */
+const WAIT_MAX_MS = 15000;
 
 /** What the stage shows: both panes fitted side by side, or one pane at the stage height. */
 type PaneView = 'both' | PaneKey;
@@ -269,7 +275,27 @@ type ComparePanesProps = {
   /** the panes whose page is still loading, which show the loader */
   waiting: Record<PaneKey, boolean>;
   onLoad: (key: PaneKey) => void;
+  /** a loader reached WAIT_MAX_MS: count the pane loaded */
+  onGiveUp: (key: PaneKey, slug: string) => void;
 };
+
+type PaneWaitProps = { label: string; onGiveUp: () => void };
+
+/**
+ * The loader over one pane, keyed by the pane's slug, so each new frame's
+ * loader starts its own WAIT_MAX_MS deadline and a load clears it on unmount.
+ */
+function PaneWait({ label, onGiveUp }: PaneWaitProps) {
+  useMountEffect(() => {
+    const timer = window.setTimeout(onGiveUp, WAIT_MAX_MS);
+    return () => window.clearTimeout(timer);
+  });
+  return (
+    <div className='pt-cmp-wait'>
+      <GtLogoMotion mode='loader' size={LOADER} label={label} />
+    </div>
+  );
+}
 
 /**
  * The two panes and the seam, filling the 2881-wide stage. Each iframe is
@@ -277,7 +303,7 @@ type ComparePanesProps = {
  * session-history entries, so the browser's Back returns to the page the
  * visitor came from, not through every pick.
  */
-function ComparePanes({ pair, target, frames, waiting, onLoad }: ComparePanesProps) {
+function ComparePanes({ pair, target, frames, waiting, onLoad, onGiveUp }: ComparePanesProps) {
   const pane = (key: PaneKey) => {
     const slug = pair[key];
     const name = getDirection(slug)?.name ?? slug;
@@ -294,9 +320,7 @@ function ComparePanes({ pair, target, frames, waiting, onLoad }: ComparePanesPro
           onLoad={() => onLoad(key)}
         />
         {waiting[key] ? (
-          <div className='pt-cmp-wait'>
-            <GtLogoMotion mode='loader' size={LOADER} label={`Loading ${title}`} />
-          </div>
+          <PaneWait key={slug} label={`Loading ${title}`} onGiveUp={() => onGiveUp(key, slug)} />
         ) : null}
       </div>
     );
@@ -341,7 +365,7 @@ type CompareStageProps = ComparePanesProps & { view: PaneView };
  * and the fit follows the height, panning sideways. Reads the stage box the
  * shell publishes, so it re-renders with the sidebar and the window.
  */
-function CompareStage({ view, pair, target, frames, waiting, onLoad }: CompareStageProps) {
+function CompareStage({ view, pair, target, frames, waiting, onLoad, onGiveUp }: CompareStageProps) {
   const { stageSize } = usePtStage();
   const { present, narrow } = usePtShell();
   const pad = present ? SHEET_PAD.present : narrow ? SHEET_PAD.narrow : SHEET_PAD.wide;
@@ -360,7 +384,14 @@ function CompareStage({ view, pair, target, frames, waiting, onLoad }: CompareSt
       fit={view === 'both' ? 'contain' : 'height'}
       caption={<CompareCaption pair={pair} target={target} />}
     >
-      <ComparePanes pair={pair} target={target} frames={frames} waiting={waiting} onLoad={onLoad} />
+      <ComparePanes
+        pair={pair}
+        target={target}
+        frames={frames}
+        waiting={waiting}
+        onLoad={onLoad}
+        onGiveUp={onGiveUp}
+      />
     </Sheet>
   );
 }
@@ -377,8 +408,9 @@ export default function CompareRig() {
   const [target, setTargetState] = useState<PaneKey>('a');
   const [view, setView] = useState<PaneView>('both');
   const [syncOn, setSyncOn] = useState(true);
-  /* the slug each pane last finished loading, and whether the mount pass
-     has run: before it the rig cannot know, so it draws no loader */
+  /* the slug each pane's current frame finished loading (null while it
+     loads), and whether the mount pass has run: before it the rig cannot
+     know, so it draws no loader */
   const [loaded, setLoaded] = useState<Record<PaneKey, string | null>>({ a: null, b: null });
   const [mounted, setMounted] = useState(false);
   const waiting: Record<PaneKey, boolean> = {
@@ -397,9 +429,20 @@ export default function CompareRig() {
   const readPair = () => pairRef.current;
   const readTarget = () => targetRef.current;
 
+  /* a pane whose slug changes gets a new frame (ComparePanes keys it by
+     slug), so its load mark is cleared: a pick back to the slug it last
+     loaded is a fresh frame still loading */
   const apply = (next: Pair) => {
+    const prev = pairRef.current;
     pairRef.current = next;
     setPairState(next);
+    setLoaded((was) => {
+      const changed = PANE_KEYS.filter((key) => prev[key] !== next[key] && was[key] !== null);
+      if (changed.length === 0) return was;
+      const out = { ...was };
+      changed.forEach((key) => (out[key] = null));
+      return out;
+    });
     writeHash(next);
   };
 
@@ -479,21 +522,21 @@ export default function CompareRig() {
     { dependencies: [pair] }
   );
 
-  /* Wired per inner document: navigation replaces the inner window (and
-     its listeners die with it), while the flag stops the mount pass and
-     onLoad from stacking a second listener on one document. */
+  const markLoaded = (key: PaneKey, slug: string | null) =>
+    setLoaded((prev) => (prev[key] === slug ? prev : { ...prev, [key]: slug }));
+
+  /* Runs after a pane's load event, which no frame fires for its first
+     about:blank (measured in Chrome, Firefox and Safari), so it marks the
+     pane loaded first; a failed load that does fire one (Chrome's error
+     page) counts too. Wired per inner document: navigation replaces the
+     inner window (and its listeners die with it), while the flag stops the
+     mount pass and onLoad from stacking a second listener on one document. */
   const wire = (key: PaneKey) => {
     const el = frames[key].current;
-    const win = el?.contentWindow;
-    if (!el || !win) return;
-    try {
-      /* the frame's first document, before its page arrives, is an empty about:blank */
-      if (win.location.href === 'about:blank') return;
-    } catch {
-      /* a pane that left the origin has loaded something; it counts */
-    }
-    const slug = el.dataset.slug ?? null;
-    setLoaded((prev) => (prev[key] === slug ? prev : { ...prev, [key]: slug }));
+    if (!el) return;
+    markLoaded(key, el.dataset.slug ?? null);
+    const win = el.contentWindow;
+    if (!win) return;
     freeze(key);
     try {
       const doc = win.document as Document & { ptCmpWired?: boolean };
@@ -505,12 +548,32 @@ export default function CompareRig() {
     }
   };
 
+  /* the pane's own frame still loading gave no word in WAIT_MAX_MS */
+  const giveUp = (key: PaneKey, slug: string) => {
+    if (pairRef.current[key] === slug) markLoaded(key, slug);
+  };
+
   /* a pane that finished loading before hydration already fired its load
-     event into the void; onLoad covers every later one. From here on a pane
-     not marked loaded shows the loader, in the same render as the marks */
+     event into the void; onLoad covers every later one. Its load is over
+     when its page is complete, or when the frame left the origin (an error
+     page). The frame's first document, before its page arrives, is a
+     complete about:blank, so it does not count. From here on a pane not
+     marked loaded shows the loader, in the same render as the marks */
+  const loadedBeforeMount = (key: PaneKey): boolean => {
+    const el = frames[key].current;
+    if (!el) return false;
+    try {
+      const doc = el.contentDocument;
+      if (!doc) return true;
+      return doc.readyState === 'complete' && el.contentWindow?.location.href !== 'about:blank';
+    } catch {
+      return true;
+    }
+  };
+
   const wireLoaded = () => {
     PANE_KEYS.forEach((key) => {
-      if (frames[key].current?.contentDocument?.readyState === 'complete') wire(key);
+      if (loadedBeforeMount(key)) wire(key);
     });
     setMounted(true);
   };
@@ -552,7 +615,15 @@ export default function CompareRig() {
       onSelect={onSelect}
       toolbarSlot={tools}
     >
-      <CompareStage view={view} pair={pair} target={target} frames={frames} waiting={waiting} onLoad={wire} />
+      <CompareStage
+        view={view}
+        pair={pair}
+        target={target}
+        frames={frames}
+        waiting={waiting}
+        onLoad={wire}
+        onGiveUp={giveUp}
+      />
       <CompareBoot readPair={readPair} readTarget={readTarget} apply={apply} wireLoaded={wireLoaded} />
     </ViewerShell>
   );
