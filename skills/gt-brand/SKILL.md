@@ -97,7 +97,7 @@ The color rules have four documented exceptions, each named in `references/color
 
 **Katagami Text is the one typeface** (Kevin, 2026-11-09: "YES. katagami text"). It sets everything: the name in the logo, display, interface and body. It replaced Inter. Geist Mono sets code. Detail: `references/type.md`.
 
-**Known gap.** prototemplate.com itself (the shell, the deck, `/brand`) still renders Inter until its own switch, and `pnpm lint:type` still holds that build. The Inter block below describes it until then. Everything made outside this site takes Katagami Text.
+**Known gap.** Some builds still render Inter until their own switch: prototemplate.com (the shell, the deck, `/brand`; `pnpm lint:type` holds that build), its films kit (`motion/kit`) and blog graphics (`graphics/`), and gt-cloud's dashboard (`--font-sans`; #5765 switches only the landing). The Inter block below describes them until then. New work anywhere else takes Katagami Text.
 
 **The face.** Katagami Text 1.200 from the Katagami family (katagami.kevinliu.studio, SIL Open Font License 1.1): roman and italic, variable on one axis, wght 100 to 900, no optical size axis. 15,212 glyphs: Latin, Greek, Cyrillic and 28 more scripts. Cap height 1430 of 2048 units (0.698em).
 
@@ -107,9 +107,9 @@ The color rules have four documented exceptions, each named in `references/color
 
 **Weights.** 400 for running text and long-form reading. 500 for labels, headings, display text, `b` and `strong`. Nothing above 500 and nothing below 400. The browser's `bolder` turns `b` and `strong` into 700, so a base rule sets them to 500.
 
-**Features.** Katagami's defaults are the brand's forms: its figures, the double-storey a, square punctuation. Write no `font-feature-settings`. Its `ss01` ("Inter digits") switches the figures back to Inter's and `cv11` draws a single-storey a, so Inter's display list is wrong on it. Tabular figures come from `font-variant-numeric: tabular-nums`. Set `font-weight`, never `font-variation-settings`.
+**Features.** Katagami Text's defaults are the brand's forms: the long-flag 1, a G with a spur, the compact f, the double-storey a and round punctuation. Write no `font-feature-settings`. `ss01` turns on open figures (3, 4, 6, 9), `ss07` square punctuation and `cv11` a single-storey a, so Inter's display list is wrong on it. Tabular figures come from `font-variant-numeric: tabular-nums`. Set `font-weight`, never `font-variation-settings`.
 
-**Tracking.** Tracking tightens with size and weight, and weight 400 text is never tracked. Katagami Text is already set 4 percent tighter than Inter, so its ladder is a step lighter: -0.02em for titles 32px and up at 500, -0.015em for figures and 24px heads, -0.01em for display quotes, -0.005em for labels, 0 for group labels and running text. Nothing goes tighter than -0.02em.
+**Tracking.** The Inter build's ladder carries over unchanged; it has not been re-tuned for Katagami Text. Tracking tightens with size and weight, and weight 400 text is never tracked: -0.025em for titles 32px and up at 500, -0.02em for figures and 24px heads, -0.015em for display quotes, -0.01em for labels, -0.005em for group labels, 0 for running text. Positive tracking appears only on gt-cloud's 13px captions (+0.01em) and the deck's 13px counters (+0.02em). Nothing goes tighter than -0.025em; generaltranslation.com's engine heads (-0.028em, `engine.css`) are a known gap that #5765 keeps.
 
 **Measure and wrapping.** Body text runs 60 to 70 characters a line: `--pt-measure: 32em` for body and `--pt-measure-lead: 30em` for leads. Set measures in em, never in `ch`: Katagami Text's zero is 0.58em wide, so 62ch runs well past 70 characters. Headings h1 to h3 take `text-wrap: balance`.
 
@@ -157,7 +157,7 @@ The brand questionnaire was finalised on 2026-08-11. Its avoid list, BRAND.md se
 | em dashes in rendered text (Kevin, 2026-08-11: zero on the site) | gt-ui `no-em-dash` |
 | exclamation marks | review |
 | a trailing period on a heading | gt-ui `no-heading-period` |
-| a second typeface, a weight above 500 or under 400 | gt-ui `katagami-text-only`, `no-thin-font`; `lint-type` |
+| a second typeface, a weight above 500 or under 400 | gt-ui `katagami-text-only` (`inter-only` until #5765), `no-thin-font`; `lint-type` |
 | a gif as a mark or a demo frame | gt-ui `no-gif-mark` |
 | shadows on any surface | review; the dashboard's plate pages remove them in `brand-tokens.css`, which keeps one for the credits card (section 3) |
 

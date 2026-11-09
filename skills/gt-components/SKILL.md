@@ -38,7 +38,7 @@ Search in this order and stop at the first fit.
 1. **The app's own components.** Run `rg -n "export (default )?(function|const) <Name>\b" apps/<app>/src` in gt-cloud, or the same over `src/components` and `src/app` in Prototemplate. Search by role words too (`rg -il "tooltip|popover"`), since a component may carry another name.
 2. **packages/ui.** The frame, the primitives, the house marks, the hooks and the shared engines. Run the same search over `packages/ui/src`. Import by file path: `@generaltranslation/ui/components/ui/button`. The package root re-exports a few primitives from `src/index.ts`, and gt-cloud's CLAUDE.md bans barrel files, so new code uses the file path.
 3. **The instruments library.** Fields, marks, diagrams and morphs, registered in `$PROTOTEMPLATE/src/app/craft/libraries.ts` and carried in production by the landing. Mount the component. Page code never re-implements an instrument's behavior.
-4. **An outside source.** Route through animated-component-libraries, a general skill in Kevin's wiki. In gt-cloud the behavior layer is Radix through the shadcn `radix-vega` set, so focus, overlay, menu, select, popover and dialog logic comes from there first. Read the exact payload, its dependencies and its license before installing, and never bulk-add a registry. Retokenize anything brought in before it merges: Inter, the semantic tokens, `rounded-md`, the icon tiers, native scrolling, a still under reduced motion, and a cleanup on unmount.
+4. **An outside source.** Route through animated-component-libraries, a general skill in Kevin's wiki. In gt-cloud the behavior layer is Radix through the shadcn `radix-vega` set, so focus, overlay, menu, select, popover and dialog logic comes from there first. Read the exact payload, its dependencies and its license before installing, and never bulk-add a registry. Retokenize anything brought in before it merges: the site's face, the semantic tokens, `rounded-md`, the icon tiers, native scrolling, a still under reduced motion, and a cleanup on unmount.
 
 A new primitive goes in one of two places, and both `components.json` files keep the same settings.
 
@@ -176,7 +176,7 @@ The components above say what to build with. Kevin's behavior rules, set across 
 - [ ] Every surface is `rounded-md` (or one of the listed exceptions); no Card sits in a Card; parents own sibling spacing.
 - [ ] Colors are semantic tokens; no raw Tailwind color, hex, `text-white` or `bg-black`; blue means emphasis and the status colors mean status.
 - [ ] Buttons are `Button` (dashboard, packages/ui) or `Cta` (landing); one rainbow at most per page; async buttons use `loading`; Cta labels are Title Case and `tracked` slugs are existing ones.
-- [ ] The face is Inter with Geist Mono for code; no thin weights; heading weight follows the app (500 on the landing's engine pages, the dashboard's plate pages and in Prototemplate).
+- [ ] The face is Katagami Text (Inter on the dashboard until its switch) with Geist Mono for code; no thin weights; heading weight follows the app (500 on the landing's engine pages, the dashboard's plate pages and in Prototemplate).
 - [ ] Meaning marks are Heroicons solid, controls are Lucide on the allowlist, brand marks are their own; the theme control is ◐ ◑.
 - [ ] Flags render through `LocaleFlag` (gt-cloud) or `LocaleTag`; no emoji flag, flag image or hand-written `fi` class.
 - [ ] Scrollers use `ScrollArea` or `.gt-scrollbar` (`.pt-scroll` in Prototemplate chrome); scrolling is native.

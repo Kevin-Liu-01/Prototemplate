@@ -188,14 +188,14 @@ never a wash; one bright white; depth from lines and material, not shadows.
   roman and italic, variable on one axis (wght 100 to 900), self-hosted as
   WOFF2 and never loaded from a font CDN. generaltranslation.com is
   switching all its text to it (gt-cloud #5765).
-- **Known gap: prototemplate.com itself still renders Inter** (the shell,
-  the deck and `/brand`) until its own switch. Its Inter rules in
-  `gt-brand` describe that build until then; new work outside this site
-  takes Katagami Text.
+- **Known gap: some builds still render Inter** until their own switch:
+  prototemplate.com (the shell, the deck and `/brand`), its films kit and
+  blog graphics, and gt-cloud's dashboard. The Inter rules in `gt-brand`
+  describe them until then; new work anywhere else takes Katagami Text.
 - **Headings use weight 500 at most.** Display text never goes bolder than
   500; long-form text is set at weight 400.
 - **Katagami's default forms are the brand's.** No feature list on top:
-  its `ss01` switches the figures back to Inter's and `cv11` draws a
+  `ss01` turns on open figures, `ss07` square punctuation and `cv11` a
   single-storey a.
 - **Multilingual-first.** Headlines, UI, and marks must hold up in CJK,
   RTL, and Indic scripts as well as Latin. A wordmark or layout that only

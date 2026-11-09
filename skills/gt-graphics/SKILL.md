@@ -142,7 +142,7 @@ A marketplace listing is a set of screenshots made with the same care as a blog 
 
 - Up to 10 screenshots at 1280 by 800 (2560 by 1600 accepted), full bleed with square corners; a card banner at 220 by 140; icons at 32 and 128.
 - Every image credits General Translation with the lockup "Locadex by General Translation" carrying both marks.
-- Type is the real rsms Inter, `public/fonts/InterVariable.woff2` with its opsz and wght axes, never the 518-glyph subset in `graphics/fonts/Inter-Variable.ttf`.
+- Type is Katagami Text (gt-brand section 4). Until `graphics/` switches, it is the real rsms Inter, `public/fonts/InterVariable.woff2` with its opsz and wght axes, never the 518-glyph subset in `graphics/fonts/Inter-Variable.ttf`.
 - A product panel in a shot is the product's real markup rendered with its host API stubbed, never a redrawn approximation.
 
 ### Maps

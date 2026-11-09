@@ -12,20 +12,20 @@ This file backs section 4 of `gt-brand`. Katagami Text is the one typeface (Kevi
 | `$GT_CLOUD/apps/landing/public/fonts/KatagamiText-Italic.woff2` (gt-cloud #5765) | `2f0b0d46cad9` | italic, 304,092 bytes, the same cut |
 
 - Version 1.200, family "Katagami Text", one axis: `wght` 100 to 900. No `opsz` axis, so one design serves every size. 15,212 glyphs: Latin, Greek, Cyrillic and 28 more scripts. Licence: SIL Open Font License 1.1. The family's site is katagami.kevinliu.studio.
-- Metrics: cap height 1430 of 2048 units (0.698em), x-height 1020 (0.498em), zero 0.58em wide, space 0.24em. Katagami Text is Inter scaled to 0.96 with a lower x-height and tighter sidebearings, so it sets about 4 percent tighter than Inter at the same size.
+- Metrics: cap height 1430 of 2048 units (0.698em), x-height 1020 (0.498em), zero 0.58em wide, space 0.24em. Katagami Text is Inter with a lower x-height, letters condensed so a line sets about 2 percent narrower, and sidebearings 14 units tighter, all scaled to 0.96 (Katagami SPEC.md, Katagami Text).
 - The brand kit ships both TTFs and full WOFF2 files made from them with fontTools (every glyph, feature and the axis). A web page that needs only Latin, Greek and Cyrillic serves the landing's subsets.
 - **Bindings.** gt-cloud #5765 binds the roman as `katagamiText` on `--font-sans` (`apps/landing/src/lib/fonts.ts`) and both styles as `katagamiTextProse` on prose routes (`fonts-prose.ts`); the engine's `--tc-sans` is `var(--font-sans), system-ui, sans-serif`. A plain `@font-face` declares the family as `'Katagami Text'`, never a `GT` family name.
-- **Features.** Katagami carries Inter's feature set and labels, with its own forms as the defaults: the long-flag 1, open 4, straight-stemmed 6 and 9, flat-topped 3, the compact f, the double-storey a and square punctuation. `ss01` ("Inter digits") and `cv01` to `cv04` and `cv09` switch figures back to Inter's, `cv11` draws the single-storey a, and `ss07` brings back Inter's round punctuation. So no feature list is written on Katagami Text; Inter's display list (`cv11`, `ss01`) would undo the brand's forms. `tnum` through `font-variant-numeric: tabular-nums`, `zero` for identifiers, and `smcp` small capitals are available.
+- **Features.** Katagami Text carries Inter's feature set. Its profile (`tools/kerf_build/profiles.py`, `TEXT`) promotes three alternates to defaults: Katagami's long-flag 1 (`cv01`), the G with a spur (`cv10`) and the compact f (`cv12`). Everything else is Inter's default form: the double-storey a, the closed 3, 4, 6 and 9, and round punctuation. In the shipped 1.200 file `ss01` (name table: "Open digits") turns on the open 3, 4, 6 and 9, `ss07` ("Square punctuation") turns on square period, comma, colon, i, j, ! and ?, and `cv11` draws the single-storey a. So no feature list is written on Katagami Text; Inter's display list (`cv11`, `ss01`) would change the brand's forms. Katagami's SPEC calls `ss01` "Inter digits" and square punctuation the default, which holds for Katagami Sans, not Text. `tnum` through `font-variant-numeric: tabular-nums`, `zero` for identifiers, and `smcp` small capitals are available.
 - **Weights.** 400 and 500, as for Inter. The heavy weights are lighter than Inter's (700 is Inter's 640).
 - **Tracking.**
 
 | role | tracking |
 | --- | --- |
-| titles 32px and up, weight 500 | -0.02em |
-| figures and 24px heads, weight 500 | -0.015em |
-| display quotes, weight 400 | -0.01em |
-| labels, weight 500 | -0.005em |
-| group labels, weight 500 | 0 |
+| titles 32px and up, weight 500 | -0.025em |
+| figures and 24px heads, weight 500 | -0.02em |
+| display quotes, weight 400 | -0.015em |
+| labels, weight 500 | -0.01em |
+| group labels, weight 500 | -0.005em |
 | running text, weight 400 | 0 |
 | the name in the logo, weight 500 | 0, with the font's kerning |
 

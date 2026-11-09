@@ -33,7 +33,7 @@ Paths that start with `src/`, `public/`, `scripts/` or `__tests__/` are inside `
 - Docs pages, blog posts and authors come from the `apps/landing/content` submodule, the public `generaltranslation/content` repository. Legal pages come from the pinned, shallow `apps/landing/legal` submodule.
 - gt-cloud's `.agents/skills/gt-landing/SKILL.md` and its `references/design.md` own the file map: the home page's bands, the editing map, the section recipe and the landing rules. Read both before editing `apps/landing`, with `CLAUDE.md` at the gt-cloud root for the repository's code style. For UI work also load gt-cloud's `gt-ui`, `react-best-practices` and `react-useeffect`; for new shader art `glyphfield`; for comments `code-comments`; for tests `gt-testing`.
 - Versions on main (2026-10-05): `next` 16.2.12, pinned in the landing's own `package.json` while the workspace catalog carries 16.3.8; React 19.2; Tailwind 4; `fumadocs-ui` 16.2.0 in the landing and 16.0.10 in `packages/ui`, whose `DocsLayout` the docs render; `next-mdx-remote` 6 for the blog; `pagefind` 1.5.2.
-- The design rules for pages (one `Cta` for every button, Title Case labels, section heads as a heading and one lead paragraph, Heroicons solid for meaning and Lucide for controls, Inter as the only face) are in the gt-landing-pages skill and gt-cloud's gt-landing skill.
+- The design rules for pages (one `Cta` for every button, Title Case labels, section heads as a heading and one lead paragraph, Heroicons solid for meaning and Lucide for controls, Katagami Text as the only face) are in the gt-landing-pages skill and gt-cloud's gt-landing skill.
 
 ## 2. Working in gt-cloud
 
@@ -144,7 +144,7 @@ A bracketed utility in a code comment can break the CSS build, and a plain `@the
 
 ## Review checklist
 
-- [ ] The page passes gt-landing-pages' checklist (tokens, one rail, `Cta`, icon tiers, Inter) and gt-components' translation rules, and docs labels translate on the server.
+- [ ] The page passes gt-landing-pages' checklist (tokens, one rail, `Cta`, icon tiers, Katagami Text) and gt-components' translation rules, and docs labels translate on the server.
 - [ ] Links the site renders point at leaf pages, and links to root files bypass `gt-next`'s `Link`.
 - [ ] A new docs rewrite in `src/proxy.ts` sits below the unsupported-locale guard, and rules for dotted paths live in `next.config.ts` or the route.
 - [ ] Markdown twins, `llms*.txt` routes and the machine-only anchors still render for the changed pages.

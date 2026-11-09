@@ -155,13 +155,13 @@ General Translation draws every three-dimensional figure in one isometric family
 - [ ] Each line has one owner; crossings carry a border cross; leaders bury their ends under the hull.
 - [ ] A stretched SVG holds straight taps and no text.
 - [ ] No dash relies on `pathLength` under `non-scaling-stroke`.
-- [ ] Labels are horizontal, 12px clear of lines, Inter, at or above the surface's floor after scale.
+- [ ] Labels are horizontal, 12px clear of lines, Katagami Text (Inter in `graphics/` until its switch), at or above the surface's floor after scale.
 - [ ] The accent follows the surface's rule and sits on one element.
 - [ ] Marks are seated as alpha masks; no flat logo, no gif.
 - [ ] Geometry is identical in both themes; `figure-check.mjs` passes and its 2x junction crops were read in light and dark.
 - [ ] The surface's own gate passed (shoot-slide, graphics audit, page check).
 
-Related skills: create-graphics (choosing a route for a figure outside these surfaces), design-engineering-polish (the final visual pass), hyperframes-animation and hyperframes-keyframes (diagrams that move in a film), animated-component-libraries (before hand-building a chart or interaction). In this set: gt-verify (captures and live checks), gt-dither (Bayer grounds behind a figure), gt-deck (slide layout), gt-graphics (blog graphics), gt-motion (lines in motion and the full dash traps) and gt-films (diagrams in a film), gt-lints (the line law and its auditor), gt-voice (label and caption copy). The wiki's diagram-to-html is not used for General Translation work: its Nacelle type, 700 weights and uppercase labels conflict with the brand's type rules (Inter at 400 and 500, sentence case).
+Related skills: create-graphics (choosing a route for a figure outside these surfaces), design-engineering-polish (the final visual pass), hyperframes-animation and hyperframes-keyframes (diagrams that move in a film), animated-component-libraries (before hand-building a chart or interaction). In this set: gt-verify (captures and live checks), gt-dither (Bayer grounds behind a figure), gt-deck (slide layout), gt-graphics (blog graphics), gt-motion (lines in motion and the full dash traps) and gt-films (diagrams in a film), gt-lints (the line law and its auditor), gt-voice (label and caption copy). The wiki's diagram-to-html is not used for General Translation work: its Nacelle type, 700 weights and uppercase labels conflict with the brand's type rules (one face at 400 and 500, sentence case).
 
 ## Sources
 

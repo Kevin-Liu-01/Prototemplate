@@ -46,7 +46,7 @@ These hold for every film (Kevin's notes, 2026-10-01 to 2026-10-10). A film's ow
 - **Readability at phone size.** Thin lines over a textured ground must read at 640 x 360; check them there. Logos keep their own drawing; on a colored ground such as Slash's gold, a logo is white (2026-10-09).
 - **Dither** is the 8 x 8 Bayer screen at 3 px cells wherever a film uses it (2026-10-08: "we use 3 px dither"). Never re-measure a coarser screen from a reference image. Real photos and logos are never printed through the screen.
 - **Narrator**: Frederick Surrey, for every film since 2026-10-06 ("remember, we're using Frederick Surrey"). Send respellings in the request text only: Vercel (VER-sel) as "Vursell", shadcn as "shad C N".
-- **Type** is the real rsms Inter (InterVariable, opsz and wght axes) through `var(--font)`, and every film credits General Translation clearly.
+- **Type** is Katagami Text (gt-brand); until the kit switches, `var(--font)` is rsms InterVariable. Credit General Translation clearly.
 - **Kevin's own script** is read verbatim. To meet a length cap he sets ("cap it at 40 seconds"), cut whole lines in his order; reword only where he asks.
 
 ## 3. Pacing

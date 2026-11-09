@@ -156,7 +156,7 @@ The hero's field is the studio field (`createStudioField`, preset `bayer8`, one 
 - [ ] Every head is a heading and at most one lead in a ruled box, at most two lines of display type, with no eyebrow, mono or uppercase tracking (`gt-ui/no-eyebrow`, `gt-ui/mono-is-not-voice`) and no heading period (`gt-ui/no-heading-period`).
 - [ ] Every button is `Cta` (`gt-ui/shared-cta`), labels are Title Case (`gt-ui/cta-title-case`), the ring marks the primary action only, and no new `tracked` slug was added.
 - [ ] Meaning marks are Heroicons solid, controls are Lucide outline, brand marks are untouched (`gt-ui/icon-tiers`), and the theme switch draws ◐ and ◑.
-- [ ] Katagami Text is the only face (`gt-ui/katagami-text-only`), weights stay at 500 or below, heading or paragraph metrics live in engine or band CSS, and none of gt-ui's Geist, semibold or uppercase-label defaults reached the page.
+- [ ] Katagami Text is the only face (`gt-ui/katagami-text-only`, `inter-only` until #5765 lands), weights stay at 500 or below, heading or paragraph metrics live in engine or band CSS, and none of gt-ui's Geist, semibold or uppercase-label defaults reached the page.
 - [ ] Mobile rules consume `var(--tcm-*, <px>)`, sit in the late 720px block, and the v0-pages mobile cut moved with them.
 - [ ] In light, no band, panel or close sits on a black background.
 - [ ] At 390px: copy is 20px or more from every hairline, tap targets are 44px, no mock crops, no words fuse at a hidden break, and nothing scrolls sideways.
