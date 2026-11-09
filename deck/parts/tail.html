@@ -321,7 +321,7 @@
   var pages = [], bookIO = null;
   function buildBook() {
     var head = document.createElement('div'); head.className = 'book-head';
-    head.innerHTML = '<div><h1>Brand deck</h1><p></p></div><div class="meta"></div>';
+    head.innerHTML = '<div><h1>General Translation brand deck</h1><p></p></div><div class="meta"></div>';
     head.querySelector('p').textContent = 'The General Translation brand in ' + slides.length + ' slides: the thesis, the design system, the shipped site, the documentation, the blog, developer experience, Prototemplate and Glyphfield, and the current plan. Read it top to bottom, or click a page to open it as a slide.';
     head.querySelector('.meta').innerHTML = SECTIONS.length + ' sections<br>' + slides.length + ' slides<br>September 2026';
     bookIn.appendChild(head);

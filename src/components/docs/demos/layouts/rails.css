@@ -467,14 +467,3 @@
 .dmo-lay-jx-real svg {
   display: block;
 }
-
-/* the inline mark in a production lead (GtLogoText): the logo as a mask,
-   0.793em square, its foot 0.033em under the baseline */
-.dmo-lay-gtword {
-  display: inline-block;
-  width: 0.793em;
-  height: 0.793em;
-  vertical-align: -0.033em;
-  background-color: currentColor;
-  mask: url('/brand/gt-globe-logo.svg') center / contain no-repeat;
-}

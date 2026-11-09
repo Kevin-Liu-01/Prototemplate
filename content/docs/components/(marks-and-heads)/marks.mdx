@@ -15,7 +15,7 @@ sources:
 import { DitheredMarkDemo } from '@/components/docs/demos/lazy';
 import MarksDemo from '@/components/docs/demos/MarksDemo';
 
-Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The chosen logo, Axis and meridian behind, leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The mark in production on generaltranslation.com, the doubled-line monogram, is a path that `GtMark` draws inline.
+Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The chosen logo, Axis and meridian behind, leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The mark in production on generaltranslation.com is the doubled-line monogram, which the plate's `GtMark` (`src/components/plate/icons/GtMark.tsx`) draws inline. The viewer's `GtMark` draws the logo.
 
 ## The marks
 
@@ -58,19 +58,19 @@ The marks do not move. On the ink ground the same file draws in paper ink.
 
 ## The chrome mark
 
-`GtMark` draws the logo alone as a block SVG in `currentColor`, at the sizes the chrome uses: 25 by 16 in the sidebar and the toolbar, 28 by 18 in the sheet frame, and 50 by 32.
+The viewer's `GtMark` (`src/components/viewer/GtMark.tsx`) draws the logo alone as a block SVG in `currentColor`, 18 pixels square in the sidebar, the toolbar and the sheet frame. `width` and `height` are only for the design directions under `/d`, which pass the wide box they set for the monogram; the logo is centred in it at its height.
 
 ### Import and props
 
 ```tsx
 import { GtMark } from '@/components/viewer/GtMark';
 
-<GtMark width={28} height={18} />;
+<GtMark />;
 ```
 
 | Export | Props | What it does |
 | --- | --- | --- |
-| `GtMark` | `width` (25), `height` (16) | The mark alone as a block SVG in `currentColor` |
+| `GtMark` | `size` (18), `width` and `height` (both default to `size`) | The logo alone as a block SVG in `currentColor` |
 
 ### When to use it
 

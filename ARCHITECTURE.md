@@ -182,7 +182,7 @@ scripts/                  pnpm names are the interface; every entry point
                           skills:install; its tests: install.test.mjs,
                           pnpm test:skills)
 docs/
-  handbook/               how Kevin runs GT work, served at /docs/handbook:
+  handbook/               how Kevin runs General Translation work, served at /docs/handbook:
                           the operating principles, the quality bar, the
                           multi-session playbook, the product map, the
                           glossary and the decisions log, with README.md

@@ -84,7 +84,7 @@ From `$GT_CLOUD/.agents/skills/gt-ui`, for packages/ui, the dashboard and the la
 
 **LocaleTag** (`shared/LocaleTag.tsx`) renders a bare locale code: `LocaleFlag` and the code in a `.lct` span. The host supplies the chip.
 
-**Fields and marks.** `HeroField.tsx` (the studio field, preset `bayer8`), `GlyphRain.tsx` (`createGlyphField` with `drift: 'rise'`, `copy: 'none'`), `InkField.tsx`, `DitheredMark.tsx`, `DitheredLedgerMark.tsx`, `OrbitHorizon.tsx`. `GtLogoText.tsx` sets the General Translation mark inline in a sentence with hidden text for readers and copy.
+**Fields and marks.** `HeroField.tsx` (the studio field, preset `bayer8`), `GlyphRain.tsx` (`createGlyphField` with `drift: 'rise'`, `copy: 'none'`), `InkField.tsx`, `DitheredMark.tsx`, `DitheredLedgerMark.tsx`, `OrbitHorizon.tsx`. `GtLogoText.tsx` set the logo inline in a sentence; the 2026-11-08 rule retires that use, and running text writes General Translation.
 
 **SmoothScroll** (`shared/SmoothScroll.tsx`) is a pass-through that returns its children. It stays as a mount point; scrolling is native.
 

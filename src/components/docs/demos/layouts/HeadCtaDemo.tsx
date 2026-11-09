@@ -2,7 +2,7 @@
 
 import { BookOpenIcon, GlobeAltIcon } from '@heroicons/react/24/solid';
 import { ArrowRight, Copy as CopyGlyph } from 'lucide-react';
-import { Fragment, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 import { useLayoutWork } from '@/lib/use-layout-work';
@@ -17,7 +17,7 @@ import './rails.css';
 type Part = 'head' | 'cta';
 type HeadCopy = 'global' | 'context' | 'locadex';
 
-/* the production heads, word for word, with their authored breaks; @ is the inline GT mark (GtLogoText) */
+/* the production heads with their authored breaks; the leads write the name out as General Translation, where production still sets GtLogoText */
 const HEADS: Record<HeadCopy, { first: string; second?: string; lead: string; mark: 'globe' | 'book' | 'locadex' }> = {
   global: {
     first: 'Reach users in every market',
@@ -27,13 +27,13 @@ const HEADS: Record<HeadCopy, { first: string; second?: string; lead: string; ma
   context: {
     first: 'One source of context,',
     second: 'shared everywhere',
-    lead: '@ understands your codebase and your product, so every translation carries context',
+    lead: 'General Translation understands your codebase and your product, so every translation carries context',
     mark: 'book',
   },
   locadex: {
     first: 'The easiest way to localize',
     second: 'your full product suite',
-    lead: 'Connect agents and integrate any content source or tool with @',
+    lead: 'Connect agents and integrate any content source or tool with General Translation',
     mark: 'locadex',
   },
 };
@@ -174,14 +174,7 @@ export default function HeadCtaDemo() {
                 ) : null}
               </p>
               {lead ? (
-                <p className='dmo-lay-lead'>
-                  {head.lead.split('@').map((run, i) => (
-                    <Fragment key={i}>
-                      {i > 0 ? <i className='dmo-lay-gtword' /> : null}
-                      {run}
-                    </Fragment>
-                  ))}
-                </p>
+                <p className='dmo-lay-lead'>{head.lead}</p>
               ) : null}
             </div>
           ) : (

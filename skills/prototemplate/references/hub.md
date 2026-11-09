@@ -76,7 +76,7 @@ deck/                    the deck source: parts/head.html, slides/NN-*.html, par
 graphics/                the blog illustration toolchain
 content/                 the docs site's MDX pages (docs/), the blog posts and their authors
 motion/                  the films, untracked, owned by the Videos session
-skills/<slug>/           the curated GT skills, the canonical copy
+skills/<slug>/           the curated General Translation skills, the canonical copy
 public/                  fonts/, shots/, marks/, media/, brand-deck.html, deck-assets/,
                          skills/, motion/
 docs/                    the documents, with handbook/, harness/, research/ and reference/

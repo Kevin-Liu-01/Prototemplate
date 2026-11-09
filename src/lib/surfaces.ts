@@ -429,7 +429,7 @@ const LIBRARY_ROWS: readonly Surface[] = LIBRARY_INDEX.map((lib) =>
 );
 
 const BRAND_SECTIONS: readonly Surface[] = [
-  ['the-name', 'The name', 'The company name, its short form, and Locadex.'],
+  ['the-name', 'The name', 'The company name, how it is written in text, and Locadex.'],
   ['the-idea', 'The idea', 'Every product in every language: the mission and the positioning.'],
   ['the-character', 'The character', 'The personality, the voice, and the attribute scales.'],
   ['the-mark', 'The mark', 'The logo: a globe that draws the G and the T, one ink, and the rules for its use.'],

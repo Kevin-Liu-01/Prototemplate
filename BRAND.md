@@ -163,7 +163,9 @@ Rules:
 - **In running text, write General Translation.** A sentence never names
   the company with the letters GT and never sets the logo inline in place
   of the name (Kevin, 2026-11-08). The logo stands alone: in the lockup,
-  the header, the tab icon and a figure.
+  the header, the tab icon and a figure. Quotes, and copy that mirrors
+  the shipped site word for word (the `/d` mirrors, the blog and Atlas
+  grants callout), keep their words.
 - **The identity must survive compression:** a favicon, a CLI banner, a
   README, a syntax-highlighted code block. Developers meet the brand in a
   terminal as often as on a website.

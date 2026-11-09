@@ -10,8 +10,8 @@ The logo, Axis and meridian behind, is General Translation's mark. Kevin moved e
 | --- | --- | --- |
 | `LOGO` in `src/lib/logo.ts` | the logo as one path in currentColor with the nonzero fill rule, on the catalog's square `0 0 256 256`, with its drawn box `24.3 24.3 207.4 207.4` as `viewBox` | any vector use in the site: `GtMark` (the chrome mark), the `/brand` figure and badge, the docs demos; never redraw it |
 | `pnpm build:logo` (`scripts/build/logo.mjs`) | writes every file below from `LOGO`; run `pnpm build:deck` after it | after any change to `LOGO` |
-| the `#gt-mark` symbol in `deck/parts/head.html` | the logo on its drawn box | the wordmark slot and every slide that draws the mark |
-| `public/brand/gt-globe-logo.svg` | currentColor on the drawn box | masks: the docs lead demo draws it as a CSS mask filled with currentColor |
+| the `#gt-mark` symbol in `deck/parts/head.html` | the logo on its drawn box | the deck's sidebar head and toolbar brand, the wordmark slot and every slide that draws the mark |
+| `public/brand/gt-globe-logo.svg` | currentColor on the drawn box | masks: a CSS mask filled with currentColor, and the alpha masks of the diagrams |
 | `public/brand/gt-globe-logo-light.svg`, `gt-globe-logo-dark.svg` | `#070707` and `#ffffff` on the 256 square | the `/brand` tiles and any page that needs the mark as a file |
 | `public/brand/no-bg-gt-globe-logo-light.png`, `-dark.png` (1198 px), `-light-96`, `-dark-96` and `-dark-256` | transparent PNG masters at the sizes of the monogram masters | raster contexts: the presenter (the white 256 px file, inverted on paper) |
 | `public/brand/gt-globe-logo-icon.svg`, `gt-globe-logo.ico` | the tab icon on the drawn box, ink, and white under a dark color scheme; the .ico holds 16, 32 and 48 px of the white logo on the ink ground, so a tab strip of either color shows it | `GT_ICONS` in `src/lib/seo/site.ts` on `/d` and `/present`, and the deck's head |
@@ -99,6 +99,7 @@ In running text the name is written out as General Translation (Kevin, 2026-11-0
 - The logo stands alone: in the lockup, the header, the sidebar, the tab icon and a figure.
 - "General Translation's" is the possessive. A heading that would run past two lines with the full name is reworded, never shortened to GT.
 - The letters stay where they are not the name in a sentence: lowercase package and CLI names (`gt`, `gt-next`), code, URLs, file names, identifiers, hyphen-joined forms such as GT-format, letters inside a word such as GTM, a mark's own name (Graticule GT, the GT monogram) and the letters a mark draws.
+- Quotes and mirrors keep their words: a quote (Kevin's words, the decisions log, the films' sources), and copy that mirrors generaltranslation.com word for word (the `/d` mirrors of the shipped site with their `GtLogoText` and the agent prompt's "General Translation (GT)", and the open-source grants callout's "GT platform credits" in the blog and Atlas, from gt-cloud #5598). A mirror changes when the shipped site changes.
 
 ## Locadex
 

@@ -39,7 +39,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'the-name',
     title: 'The name',
-    desc: 'The company name, its short form, and Locadex.',
+    desc: 'The company name, how it is written in text, and Locadex.',
     source: 'BRAND.md part 1',
     headings: [],
   },

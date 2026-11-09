@@ -65,12 +65,14 @@ A section head is a heading and at most one lead paragraph inside a ruled `.tc-h
     </T>
     <T>
       <p data-reveal>
-        Connect agents and integrate any content source or tool with{' '}
-        <GtLogoText />
+        Connect agents and integrate any content source or tool with
+        General Translation
       </p>
     </T>
   </div>
 ```
+
+Production's lead still sets `<GtLogoText />` in place of the name; it predates the 2026-11-08 rule, and new copy writes General Translation.
 
 - A head runs at most two lines of display type. A three-line header is the named anti-pattern from the 2026-08-04 review. On `sgdh-root` pages a head runs one line at desktop (`white-space: nowrap` from 760px) unless an authored break splits it.
 - A head has no eyebrow: no uppercase tracked line above the heading, no mono label, no kicker that restates the heading. Kevin's word for the stacked version is "3 lines of text stacked to say the same thing" (brand questionnaire, 2026-08-11). Functional layer tags inside a diagram are exempt.
