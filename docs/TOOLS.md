@@ -11,7 +11,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm build` | Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, builds the site with next build, then checks every prerendered head with lint:seo --built. | `node scripts/lint/public.mjs --keys && node scripts/lint/...` |
 | `pnpm dev` | Starts the dev server on port 3005. | `next dev --turbopack --port 3005` |
 | `pnpm start` | Serves the production build. | `next start` |
-| `pnpm sync:locked` | Uploads an area's files to the private Blob store under locked/\<area>/, where the area's route serves them (src/app/raise/[[...path]]/route.ts for raise, open to anyone with the link). | `scripts/locked/sync.mjs` |
+| `pnpm sync:locked` | Uploads an area's files to the private Blob store under locked/\<area>/, where the area's route serves them (src/lib/blob-area.ts, for raise and music, each open to anyone with the link). | `scripts/locked/sync.mjs` |
 
 ## Setup
 

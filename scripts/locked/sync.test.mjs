@@ -35,6 +35,20 @@ test('the raise files: the viewer, its data and its media when present, never no
   }
 });
 
+test('the music files: the page and its tracks, never the notes or the working files', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'pt-sync-'));
+  try {
+    for (const path of ['index.html', 'notes.md', 'tracks/01-a.m4a', 'tracks/01-a.wav', 'work/x.m4a']) {
+      mkdirSync(join(dir, path, '..'), { recursive: true });
+      writeFileSync(join(dir, path), path);
+    }
+    assert.equal(typeOf('tracks/01-a.m4a'), 'audio/mp4');
+    assert.deepEqual(localFiles(dir, AREAS.music).map((file) => file.path), ['index.html', 'tracks/01-a.m4a']);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('the plan uploads changed and missing files, skips unchanged ones and deletes the rest', () => {
   const local = [
     { path: 'index.html', sha256: 'a' },
