@@ -260,7 +260,13 @@ window.GTFilmBoot = function () {
   // percent, sine.inOut, which moved each edge about 0.1 px a frame and stood
   // nearly still for its first and last half second).
   const PUSH = 0.09;
-  const PUSH_C = [956.5, 539.5]; // the lockup's ink centre (Slash x 498 to GT x 1415, y 466 to 613)
+  // the lockup (2026-11-09): the General Translation logo, square and as tall as the doubled-line mark's ink was (147 px,
+  // y 466 to 613), the gaps between Slash, the x and the logo kept, and the whole lockup moved LOCK_DX right so its ink
+  // centre stays put: Slash x 541 to 950, the x from 1059, the logo x 1225 to 1372 (LOCK_R)
+  const LOCK_DX = 43;
+  const GT_H = 147;
+  const LOCK_R = 1182 + LOCK_DX + GT_H;
+  const PUSH_C = [956.5, 539.5]; // the lockup's ink centre (Slash x 541 to the logo's x 1372, y 466 to 613)
   // line 6's "So" ends the shot: the offer's ground comes in under the lockup by tone
   // (SO_LIGHT), and the lockup glides and scales into its corner seat (SEAT,
   // Kevin's lockup at 0.50) in one move across "So if you bank with Slash"
@@ -763,7 +769,7 @@ window.GTFilmBoot = function () {
   /* ================= MARKS PRINTED THROUGH THE SCREEN ================= */
   const IMG = {};
   const INK = {}; // each image's ink box, normalized to its drawn size
-  const ASPECT = { slash: 64 / 22, gt: 1213 / 771 };
+  const ASPECT = { slash: 64 / 22, gt: 1 };
   function measureInk(name) {
     const img = IMG[name];
     const h = 600;
@@ -877,9 +883,9 @@ window.GTFilmBoot = function () {
   function makeLock(id, k) {
     const X = (x) => PUSH_C[0] + (x - PUSH_C[0]) * k;
     const Y = (y) => PUSH_C[1] + (y - PUSH_C[1]) * k;
-    makeMark('slash' + id, 'slash', X(498), Y(472), X(907));
-    makeMark('gt' + id, 'gt', X(1182), Y(466), X(1415));
-    makeText('x' + id, 'x', 104 * k, 500, X(1016) - measure('x', 104 * k, 500, 0).left, Y(571));
+    makeMark('slash' + id, 'slash', X(498 + LOCK_DX), Y(472), X(907 + LOCK_DX));
+    makeMark('gt' + id, 'gt', X(1182 + LOCK_DX), Y(466), X(LOCK_R));
+    makeText('x' + id, 'x', 104 * k, 500, X(1016 + LOCK_DX) - measure('x', 104 * k, 500, 0).left, Y(571));
   }
   // A whole mark on its way from its seat in `from` to its seat in `to` (u from
   // 0 to 1): its anchor (ink left and top, or a glyph's ink left and baseline)
@@ -1288,19 +1294,19 @@ window.GTFilmBoot = function () {
   // and stand 80 px above "in translation credits" (ink top y 314); on a
   // rendered frame its ink (x 1303 to 1759, y 160 to 232) gives 347 and 82.
   const SEAT_S = 0.5;
-  const seatX = (X) => Math.round(1760 - (1415 - X) * SEAT_S);
+  const seatX = (X) => Math.round(1760 - (LOCK_R - X - LOCK_DX) * SEAT_S);
   const seatY = (Y) => Math.round(160 + (Y - 466) * SEAT_S);
   const SEAT = {
-    slash: { x0: seatX(498), y0: seatY(472), x1: seatX(907) }, // x 1302 to 1506, top 163
-    gt: { x0: seatX(1182), y0: 160, x1: 1760 }, // x 1644 to 1760
-    x: { left: seatX(1016), base: seatY(571), size: 104 * SEAT_S }, // ink x 1561, baseline 213
+    slash: { x0: seatX(498), y0: seatY(472), x1: seatX(907) }, // x 1345 to 1549, top 163
+    gt: { x0: seatX(1182), y0: 160, x1: 1760 }, // x 1687 to 1760
+    x: { left: seatX(1016), base: seatY(571), size: 104 * SEAT_S }, // ink x 1604, baseline 213
   };
   // The end card. Its lockup is back in its pre-v3 seat, Kevin's lockup at
   // 0.80 in the mark corner (Slash x 1024 to 1352, GT x 1573 to 1760).
   const EC = {
-    slash: { x0: 1024, y0: 165, x1: 1352 },
-    gt: { x0: 1573, y0: 160, x1: 1760 },
-    x: { left: 1440, base: 244, size: 104 * 0.8 },
+    slash: { x0: 1095, y0: 165, x1: 1422 },
+    gt: { x0: 1642, y0: 160, x1: 1760 },
+    x: { left: 1510, base: 244, size: 104 * 0.8 },
     t1: 676,
     t2: 798,
     link: 920,
@@ -1342,9 +1348,9 @@ window.GTFilmBoot = function () {
     OPEN_T1 = Math.max(CARD_GONE, MOVE_T0 + GROW_D, T.c1 + GROUND_D);
     for (let t = CARD_GONE; t <= OPEN_T1 + 0.5; t += 1 / 600) if (!cardHidden(t)) throw new Error(`the card shows at ${t.toFixed(4)} after it went behind the globe`);
     // Kevin's lockup (1080 coordinates)
-    makeMark('slashOpen', 'slash', 498, 472, 907);
-    makeMark('gtOpen', 'gt', 1182, 466, 1415);
-    makeText('xOpen', 'x', 104, 500, 1016 - measure('x', 104, 500, 0).left, 571);
+    makeMark('slashOpen', 'slash', 498 + LOCK_DX, 472, 907 + LOCK_DX);
+    makeMark('gtOpen', 'gt', 1182 + LOCK_DX, 466, LOCK_R);
+    makeText('xOpen', 'x', 104, 500, 1016 + LOCK_DX - measure('x', 104, 500, 0).left, 571);
     // the lockup at the push's end, where the glide on "So" starts
     makeLock('Push', 1 + PUSH);
     // the lockup's seat at 0.50 from line 6's "So" through the offer
@@ -2143,7 +2149,7 @@ window.GTFilmBoot = function () {
 
   window.__hf = window.__hf || {};
   window.__hf.buildReady = window.__hf.buildReady || {};
-  const face = new FontFace(FACE, 'url(lib/fonts/InterCanvas.woff2)', { weight: '100 900' });
+  const face = new FontFace(FACE, 'url(lib/fonts/KatagamiCanvas.woff2)', { weight: '100 900' });
   document.fonts.add(face);
   const imgs = Array.from(document.querySelectorAll('#assets img, #opener img')).map((im) => (im.complete && im.naturalWidth ? Promise.resolve() : new Promise((res) => { im.onload = res; im.onerror = res; })));
   // the page's face is var(--font) (kit/tokens.css); load it by its computed family, never by a literal name

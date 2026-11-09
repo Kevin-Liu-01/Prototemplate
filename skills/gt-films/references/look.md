@@ -18,7 +18,7 @@ MOTION.md applies `BRAND.md` (the name, the idea, the voice, the mark, color, ty
 
 ## Type and headings
 
-- Katagami Text (gt-brand); until the kit switches, `var(--font)` is Inter. Weights 400 and 500 only, through `var(--font)`; display text never above 500. Nothing on screen under 18 px. Numbers tabular. Monospace only inside code artifacts.
+- Katagami Text only, weights 400 and 500, through `var(--font)` (Inter until 2026-11-09); display text never above 500. Nothing on screen under 18 px. Numbers tabular. Monospace only inside code artifacts.
 - **Headings** are at most two lines, set at 100 to 150 px (the line length decides), sentence case, proper nouns capitalised, no trailing period. Seat each line's first glyph ink on x 160 from the loaded face's side bearing (Fuma Nama's cap tops sit at y 172; the docs film sets its heading box at top 146). A sentence that cannot fit two lines at 100 px is shortened to the source's own shorter wording.
 - A film has 4 to 6 headings, each made of the words spoken at that moment (the skill's section 2). This replaced round 7's rules that a heading shares no content word with its line and that two thirds of a blog film's words are verbatim from the post.
 - **No captions and no subheaders** (Kevin, 2026-10-01: "no need for captions/subheaders"): no bylines, dates, quote attributions, labels, tags, counters or URLs. No eyebrows: never a small label stacked above a heading that says the same thing. One heading or one quote per beat, plus the picture. The one URL a film shows is the link on its end card.

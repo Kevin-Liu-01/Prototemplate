@@ -3252,20 +3252,20 @@
    "why": "no file states who made it or its licence, and it shows Slash's wordmark in the lockup"
   },
   {
-   "path": "films/slash-announcement/lib/fonts/InterCanvas.woff2",
-   "bytes": 351132,
-   "sha256": "741683b984df29f0a8854617f06b08a111bd01eb38c3d42f3856989ce4e1c0b1",
+   "path": "films/slash-announcement/lib/fonts/KatagamiCanvas.woff2",
+   "bytes": 246236,
+   "sha256": "12722aeaae18e61b3587ce5dc8fb56fb732a036ac96537298f0b49db15248759",
    "kind": "font",
    "twin": null,
    "used_by": [
     "films/slash-announcement"
    ],
-   "derived_from": "kit/fonts/InterVariable.woff2 with its cv11 substitutions baked into the cmap with fontTools (blog-designing-docs NOTES.md; slash-announcement CREDITS.txt)",
-   "source": "Inter (rsms/inter), the kit's Inter modified (slash-announcement CREDITS.txt, TYPE)",
+   "derived_from": "kit/fonts/KatagamiText.woff2 with its cv11 substitutions baked into the cmap with fontTools (a byte copy of kit/fonts/KatagamiCanvas.woff2)",
+   "source": "Katagami Text (Kevin-Liu-01/Katagami), the kit's KatagamiCanvas.woff2",
    "licence": "SIL Open Font License 1.1",
-   "credit": "Inter (rsms/inter, SIL Open Font License 1.1)",
+   "credit": "Katagami Text (Kevin-Liu-01/Katagami, SIL Open Font License 1.1)",
    "redistribute": "yes",
-   "why": "OFL 1.1 per slash-announcement CREDITS.txt; byte-identical to films/blog-designing-docs/lib/fonts/InterCanvas.woff2; no OFL text sits beside it"
+   "why": "OFL 1.1; loaded only under private family names for canvas text (it replaced InterCanvas.woff2 on 2026-11-09)"
   },
   {
    "path": "kit/blog/designing-docs-A1-zones-overlay.webp",
@@ -4231,23 +4231,24 @@
   },
   {
    "path": "kit/brand/gt-mark.svg",
-   "bytes": 1434,
-   "sha256": "00e2b824bd00f28b6dc844c5510c3d8ef82ccaddb9f319451f29b220e1fe3349",
+   "bytes": 15026,
+   "sha256": "fc695bef0e9bbe9879cba2be9020edd382bcd4fec60a0a03759d2026c19b0ed9",
    "kind": "mark",
-   "twin": null,
+   "twin": "public/brand/gt-globe-logo.svg",
    "used_by": [
-    "films/slash-announcement",
-    "stills/partnership-globe",
+    "films/slash-announcement and its de, es and ja versions (the lockup)",
+    "kit/kb/build.mjs (END_MARK, the end card logo's placement)",
     "kit/gem-shapes/make.mjs (tool input: makes kit/gem-shapes/gt-mark.png)",
-    "films/blog-designing-docs (not loaded: lib/film.js carries a copy of its outline)",
-    "films/gif-how-gt-works (not loaded: lib/film.js carries a copy of its outline)"
+    "films/blog-fuma-nama (a byte copy in assets/logos/)",
+    "films/kb-translate-google-slides (a byte copy in assets/marks/)",
+    "stills/partnership-globe"
    ],
    "derived_from": null,
-   "source": "General Translation's doubled-line GT monogram (MOTION.md lines 98 and 161); no byte-identical copy is in gt-cloud main or among the worktree's tracked files",
+   "source": "General Translation's logo, the globe \"Axis and meridian behind\": byte-identical to Prototemplate's public/brand/gt-globe-logo.svg (the doubled-line GT monogram until 2026-11-09)",
    "licence": "General Translation's own material",
-   "credit": "General Translation doubled-line GT mark: kit/brand/gt-mark.svg (currentColor, filled white)",
+   "credit": "General Translation logo: kit/brand/gt-mark.svg (currentColor)",
    "redistribute": "own",
-   "why": "General Translation's own mark (MOTION.md lines 98 and 161); tracked under motion/ (the only kit picture the allowlist tracks), since no twin exists outside motion/",
+   "why": "General Translation's own logo; tracked under motion/ as before, with its twin in public/brand",
    "tracked": true
   },
   {
@@ -5767,6 +5768,59 @@
    "credit": null,
    "redistribute": "own",
    "why": "procedural opener art from General Translation's own brand deck (MOTION.md line 100); it holds no third-party picture"
+  },
+  {
+   "path": "kit/fonts/KatagamiText.woff2",
+   "bytes": 246732,
+   "sha256": "d24398c104b7ec7c28b0fdd91a3e82ec4ed4d6645b26b14a92a5d6e051fbade3",
+   "kind": "font",
+   "twin": "public/fonts/katagami/KatagamiText.woff2",
+   "used_by": [
+    "kit/tokens.css",
+    "every film that sets type through var(--font) (kit/tokens.css)",
+    "films/blog-fuma-nama (its canvas faces GTInkHead and GTInkCount)",
+    "films/tyndale, films/hunayn, films/nishi-amane, films/slash-announcement-ja (byte copies in their fonts/)"
+   ],
+   "derived_from": null,
+   "source": "Katagami Text (github.com/Kevin-Liu-01/Katagami), the face generaltranslation.com sets since gt-cloud#5765; byte-identical to Prototemplate's public/fonts/katagami/KatagamiText.woff2",
+   "licence": "SIL Open Font License 1.1",
+   "credit": "Katagami Text (Kevin-Liu-01/Katagami, SIL Open Font License 1.1)",
+   "redistribute": "yes",
+   "why": "OFL 1.1 (the Katagami repository's OFL.txt; the films that copy it keep OFL-KatagamiText.txt beside it)"
+  },
+  {
+   "path": "kit/fonts/KatagamiText-Italic.woff2",
+   "bytes": 269480,
+   "sha256": "a51ea7c8bd8246079b5a7190ffd185905952011201673ee753c7cf06c43ad500",
+   "kind": "font",
+   "twin": "public/fonts/katagami/KatagamiText-Italic.woff2",
+   "used_by": [
+    "kit/tokens.css"
+   ],
+   "derived_from": null,
+   "source": "Katagami Text Italic (github.com/Kevin-Liu-01/Katagami); byte-identical to Prototemplate's public/fonts/katagami/KatagamiText-Italic.woff2",
+   "licence": "SIL Open Font License 1.1",
+   "credit": "Katagami Text (Kevin-Liu-01/Katagami, SIL Open Font License 1.1)",
+   "redistribute": "yes",
+   "why": "OFL 1.1, as its roman"
+  },
+  {
+   "path": "kit/fonts/KatagamiCanvas.woff2",
+   "bytes": 246236,
+   "sha256": "12722aeaae18e61b3587ce5dc8fb56fb732a036ac96537298f0b49db15248759",
+   "kind": "font",
+   "twin": null,
+   "used_by": [
+    "films/blog-designing-docs (byte copy in lib/fonts/)",
+    "films/blog-rewriting-docs (byte copy in lib/fonts/)",
+    "films/slash-announcement and its de, es and ja versions (byte copies in lib/fonts/)"
+   ],
+   "derived_from": "kit/fonts/KatagamiText.woff2 with its cv11 substitutions baked into the cmap with fontTools, the way InterCanvas.woff2 was made from Inter (the same script reproduces InterCanvas.woff2's cmap exactly)",
+   "source": "Katagami Text, modified for canvas text, which cannot turn on OpenType features",
+   "licence": "SIL Open Font License 1.1",
+   "credit": "Katagami Text (Kevin-Liu-01/Katagami, SIL Open Font License 1.1)",
+   "redistribute": "yes",
+   "why": "OFL 1.1 allows modified versions under a name other than a Reserved Font Name; the file is only loaded under private family names"
   }
  ]
 }

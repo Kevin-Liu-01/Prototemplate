@@ -2,20 +2,21 @@
  * GT motion kit: the brand's tokens for video compositions.
  *
  * Four absolute colors plus one spectral accent per film (BRAND.md section 5,
- * DESIGN.md section 1). Inter is the one typeface, self-hosted from this kit;
- * display text never goes bolder than 500. Mono is an instrument voice for
- * code artifacts only (terminals, file paths, version numbers on a board).
+ * DESIGN.md section 1). Katagami Text is the one typeface (it replaced Inter on
+ * generaltranslation.com, gt-cloud#5765), self-hosted from this kit; display
+ * text never goes bolder than 500. Mono is an instrument voice for code
+ * artifacts only (terminals, file paths, version numbers on a board).
  */
 @font-face {
-  font-family: 'Inter';
-  src: url('./fonts/InterVariable.woff2') format('woff2');
+  font-family: 'Katagami Text';
+  src: url('./fonts/KatagamiText.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: block;
 }
 @font-face {
-  font-family: 'Inter';
-  src: url('./fonts/InterVariable-Italic.woff2') format('woff2');
+  font-family: 'Katagami Text';
+  src: url('./fonts/KatagamiText-Italic.woff2') format('woff2');
   font-weight: 100 900;
   font-style: italic;
   font-display: block;
@@ -39,7 +40,7 @@
   --on-paper-label: rgba(7, 7, 7, 0.45);
   --on-paper-hair: rgba(7, 7, 7, 0.11);
   --ink-text: #f2f2f0;
-  --font: 'Inter', system-ui, sans-serif;
+  --font: 'Katagami Text', system-ui, sans-serif;
   --mono: ui-monospace, 'SF Mono', Menlo, monospace;
 }
 

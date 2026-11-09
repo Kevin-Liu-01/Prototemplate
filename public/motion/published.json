@@ -61,12 +61,12 @@
       }
     },
     "slash-announcement": {
-      "cut": "v8",
+      "cut": "v9",
       "length": "36.3 s",
       "film": "/media/slash-announcement-film.mp4",
       "poster": "/media/slash-announcement-poster.jpg",
       "streams": {
-        "video": "66b3e12970b82383721ad0cc515f498f378584618a559677a52f263cd71aefcf",
+        "video": "4a902b0e620f5e1bfa7691db7587c765704a67ae843f65ee2437637a68e9c34a",
         "audio": "38058636f810e6e62247e871bb7811bb266a804f22121664f44911efe31ed717"
       }
     },
@@ -361,32 +361,32 @@
       }
     },
     "slash-announcement-de": {
-      "cut": "v2, from the English v8 (fix round 1)",
+      "cut": "v3, from the English v9",
       "length": "37.0 s",
       "film": "/media/slash-announcement-de-film.mp4",
       "poster": "/media/slash-announcement-de-poster.jpg",
       "streams": {
-        "video": "9d80384ef230469239b3bf57464b6d969401acea5bd071bc4f2e9668e6266d43",
+        "video": "84894c1706e6bc59764247977d6600f757a704de087e87b0ea65f0c19a878df9",
         "audio": "4d9ec0cbf1215374d2dadf39f5287c03178107471cbb202319099cee4f5a394b"
       }
     },
     "slash-announcement-es": {
-      "cut": "v2, from the English v8 (fix round 1)",
+      "cut": "v3, from the English v9",
       "length": "38.8 s",
       "film": "/media/slash-announcement-es-film.mp4",
       "poster": "/media/slash-announcement-es-poster.jpg",
       "streams": {
-        "video": "6e62ae4c1e5e4dcb94b654f4330d964474a193230d77ce33be73185115d09d5e",
+        "video": "3fbc88f31808690763283c1bab20250c6dc3c3f4aad963085d47758529032767",
         "audio": "b7865dca4373e7e19c15dece0897cdeec2ed6acefe9f8308a47ed03e4ec0415b"
       }
     },
     "slash-announcement-ja": {
-      "cut": "v2, from the English v8 (fix round 1)",
+      "cut": "v3, from the English v9",
       "length": "38.4 s",
       "film": "/media/slash-announcement-ja-film.mp4",
       "poster": "/media/slash-announcement-ja-poster.jpg",
       "streams": {
-        "video": "13ad04cfce988c0e082169782d5e6a6ccd10dddfd024749f3b0d52182aeeb1a1",
+        "video": "4867d5589d1b87366a8e428088b35befd672d2a3799a9bbc75300d05339fd8dc",
         "audio": "f8df12dcc88ef9d95bee7327a6caf961fd997cf6c9bda2f1eba82f05bcc884af"
       }
     }

@@ -1,5 +1,15 @@
 # slash-announcement: notes
 
+## v9 (2026-11-09, the brand re-cut), as built
+
+Kevin asked to re-cut every published film to the current General Translation brand ("Yes, re-cut them", 2026-11-09), and approved this cut and its three language versions the same day ("the slash films werre good").
+
+- The lockup: the General Translation logo (`kit/brand/gt-mark.svg`, now a byte copy of `public/brand/gt-globe-logo.svg`) replaces the doubled-line mark. It is square and as tall as the old mark's ink (147 px, y 466 to 613); the gaps between Slash, the x and the logo are kept, and the whole lockup moves 43 px right (`LOCK_DX`) so its ink centre stays at (956.5, 539.5). The end card's seat and the corner lockup move with it (`lib/film.js`). The lockup stays static: the logo loop is for General Translation's own end cards.
+- Type: Katagami Text through `var(--font)` (`kit/tokens.css`); the canvas face is `lib/fonts/KatagamiCanvas.woff2`, Katagami Text with cv11 in its cmap, made as InterCanvas was.
+- Length, narration, bed and mix are v8's; no ElevenLabs call. The final reused v8's transcript (`kit/film.mjs final --reuse-transcript --no-hear`).
+- The script page names the lockup "Slash and General Translation" where v8's said "Slash x GT"; the version label is v9.
+- Final: renders A and B identical (2,177 frames, audio identical); -16 LUFS integrated, true peak -2 dBTP; the lockup's logo checked against `gt-globe-logo.svg` on the master at 35.2 s. The previous final and its records are in the motion archive under 2026-11-09.
+
 ## v8 (2026-10-09, Kevin's notes on v7), as built
 
 Kevin, 2026-10-09, on v7: "for the slash video, its a bit hard to see the lines, and also make the transition less "weird" (this is the feedback rn). so maybe dont make the credit card merge into world, but make it slide right behind the globe or smthg"
