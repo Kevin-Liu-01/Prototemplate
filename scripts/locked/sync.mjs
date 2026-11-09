@@ -22,7 +22,7 @@
 // Requires: LOCKED_BLOB_READ_WRITE_TOKEN, the read-write token of the
 // locked areas' own private store, in the environment; BLOB_READ_WRITE_TOKEN
 // is never read. A dry run without it compares against an empty store.
-// Last real run: 2026-11-04, opening /raise with its inspiration folder.
+// Last real run: 2026-11-09, opening /music with its tracks.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
