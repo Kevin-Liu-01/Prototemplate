@@ -11,7 +11,7 @@ import type { PageUpdated } from './page-updated';
 
 export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/': { day: '2026-11-07', at: '2026-11-07T05:46:24-08:00', commit: '414cf1d', src: '3d532131' },
-  '/brand': { day: '2026-11-09', at: '2026-11-09T13:20:21-08:00', commit: '743b3fd', src: 'd989157d' },
+  '/brand': { day: '2026-11-09', at: '2026-11-09T13:42:32-08:00', commit: 'e5a5f7a', src: 'd989157d' },
   '/deck': { day: '2026-11-09', at: '2026-11-09T13:20:21-08:00', commit: '743b3fd', src: '6b517bc6' },
   '/present': { day: '2026-11-09', at: '2026-11-09T00:47:16-08:00', commit: 'd529680', src: '1849c182' },
   '/compare': { day: '2026-10-25', at: '2026-10-25T14:50:45-07:00', commit: '690f0b3', src: '1489450f' },
