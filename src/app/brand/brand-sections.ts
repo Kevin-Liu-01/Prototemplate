@@ -78,7 +78,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'type',
     title: 'Type',
-    desc: 'Inter as the one typeface, the weight cap, and the multilingual requirements for headlines and UI.',
+    desc: 'Katagami Text as the one typeface, the weight cap, and the multilingual requirements for headlines and UI.',
     source: 'BRAND.md part 6',
     headings: [],
   },

@@ -77,11 +77,11 @@ A page, a document or a skill appears in several hand-kept lists, and a change u
 
 ## 5. Chrome rules
 
-Chrome is everything the shell draws around content. The rules are `DESIGN.md` sections 2, 15 and 16 and the values in `tokens.css`; `references/chrome.md` holds each rule in full, `gt-aesthetic` the taste behind them and `gt-lints` the lints that enforce them.
+Chrome is everything the shell draws around content. The rules are `DESIGN.md` sections 2, 15 and 16 and the values in `tokens.css`; `references/chrome.md` holds each rule in full, `gt-aesthetic` the taste behind them and `gt-lints` their lints.
 
-- **Type.** One face, the rsms InterVariable v4.1, self-hosted and subset, read through the type tokens (`--pt-text`, `--pt-ff-text`, `--pt-ff-display`, `--pt-d1` to `--pt-d3`). Weights stop at 500. A stylesheet declares no family, feature list or display size of its own, and `pnpm lint:type` holds it (Kevin, 2026-10-05: "the CORRECT RASMUS INTER").
+- **Type.** Until its switch to Katagami Text (`gt-brand`), the shell's one face is the rsms InterVariable v4.1, self-hosted and subset, read through type tokens (`--pt-text`, `--pt-ff-text`, `--pt-ff-display`, `--pt-d1` to `--pt-d3`). Weights stop at 500. A stylesheet declares no family, feature list or display size of its own, and `pnpm lint:type` holds it (Kevin, 2026-10-05: "the CORRECT RASMUS INTER").
 - **Corners.** Rounded controls, square shells (Kevin, 2026-10-05: "boxes only for ui shells"): shells take `--pt-radius-shell`; controls 6px, a flush inner part 5px, chips 4px and cards 6px. `pnpm lint:radius` holds it, and Present's 8px is the one named exception.
-- **Color.** Chrome draws colors from `tokens.css` only; `pnpm lint:shell` refuses literals in `src/components/viewer` and `src/components/shell`.
+- **Color.** Chrome draws colors from `tokens.css` only; `pnpm lint:shell` refuses literals in the shell.
 - **Icons.** Heroicons 20 solid, inlined in `src/components/viewer/icons.tsx` at 16px in `currentColor`. The theme button's ◐ and ◑ are the one exception. No Lucide, no other glyph icons, no icon font.
 - **Scrollbars.** `.pt-scroll` is the only scrollbar.
 - **Lines.** Every rule is 1px, drawn once, in one of three roles: structural (`--pt-hair`), row (`--pt-hair-soft`) and frame (`--pt-edge`). `--pt-ink` colors a border only in a state. Where two bordered parts touch, the junction table in DESIGN.md section 2 names the one owner (Kevin, 2026-09-08: "verify no double borders ... this is key to our identity").

@@ -65,7 +65,8 @@ voice (2026-09-30). It holds:
 - the deliverables, and which one is the priority while Kevin is away;
 - the demo URL;
 - the brand rules from prototemplate.com/deck: ink on paper in both themes,
-  Inter only;
+  Katagami Text only (the deck and the films kit render Inter until their
+  switch);
 - dummy data and visuals in place of any customer's brand until permission
   is confirmed.
 

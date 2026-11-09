@@ -127,7 +127,7 @@ const GLOBES = [
     name: 'the globe with the mark',
     alt: 'The dithered globe with the General Translation logo, a white globe whose lines draw a G and a T, at its center',
     caption:
-      'the globe with the mark\u00a0· the same print with the logo at the center in #f2f2f0, over a knocked-out halo',
+      'the globe with the mark\u00a0· the same print with the logo at the center in #f2f2f0, over its knocked-out disc and halo',
   },
   {
     stem: 'gt-globe-glyphs',
@@ -389,28 +389,27 @@ const PAGES: readonly BrandPage[] = [
     body: (
       <>
         <p>
-          One face carries the brand. <strong>Inter</strong> is the display, interface
-          and text typeface: headlines, interface chrome, captions and long-form reading
-          are all set in it. The build is the rsms.me variable Inter (version 4.1, roman
-          and italic, with the optical size axis), self-hosted rather than loaded from
-          Google Fonts. Headings use weight 500 at most. Long-form text is set at weight
-          400. Monospace is an <em>instrument</em> voice for code artifacts (tokens,
-          terminals, file paths, small labels in technical diagrams and product UI) and
-          appears nowhere else; even those labels are avoided where possible.
+          One face carries the brand. <strong>Katagami Text</strong> is the display,
+          interface and text typeface: the name in the logo, headlines, interface chrome,
+          captions and long-form reading are all set in it, self-hosted rather than loaded
+          from a font CDN. It replaced Inter. This site still renders Inter (the rsms.me
+          variable build, version 4.1) until its own switch, so the specimens below are
+          this site&rsquo;s build, not the brand face. Headings use weight 500 at most.
+          Long-form text is set at weight 400. Monospace is an <em>instrument</em> voice
+          for code artifacts (tokens, terminals, file paths, small labels in technical
+          diagrams and product UI) and appears nowhere else; even those labels are
+          avoided where possible.
         </p>
         <p>
           The identity is multilingual-first. Headlines, UI and marks must hold up in
           CJK, RTL and Indic scripts as well as in Latin; a wordmark or layout that only
-          works in English contradicts the company. Inter covers Latin, Greek and
-          Cyrillic, so text in other scripts falls back to the system face for that
-          script, and every layout is checked in those scripts. Inter is the working
-          typeface for the identity project. It is not a final decision; alternatives
-          remain open if they bring credible CJK and RTL coverage or well-matched
-          companion faces.
+          works in English contradicts the company. Katagami Text covers Latin, Greek,
+          Cyrillic and many more scripts; text in a script a build does not carry falls
+          back to a face for that script, and every layout is checked in those scripts.
         </p>
         <div className='ptb-type'>
           <div className='ptb-face'>
-            <span className='ptb-face-tag'>Inter · 300–800, headings at 500 or lighter</span>
+            <span className='ptb-face-tag'>Inter, this site&rsquo;s build until its switch · 300–800, headings at 500 or lighter</span>
             {INTER_WEIGHTS.map((weight) => (
               <p className='ptb-display' key={weight} style={{ fontWeight: weight }}>
                 Every product in every language
@@ -418,7 +417,7 @@ const PAGES: readonly BrandPage[] = [
             ))}
           </div>
           <div className='ptb-face'>
-            <span className='ptb-face-tag'>Inter · text, roman + italic</span>
+            <span className='ptb-face-tag'>Inter, this site&rsquo;s build until its switch · text, roman + italic</span>
             <p className='ptb-inter'>
               General Translation builds full-stack infrastructure for localizing apps,
               docs, and websites: i18n libraries, context-aware translation, and the

@@ -437,7 +437,7 @@ const BRAND_SECTIONS: readonly Surface[] = [
   [
     'type',
     'Type',
-    'Inter as the one typeface, the weight cap, and the multilingual requirements for headlines and UI.',
+    'Katagami Text as the one typeface, the weight cap, and the multilingual requirements for headlines and UI.',
   ],
   [
     'language-as-material',

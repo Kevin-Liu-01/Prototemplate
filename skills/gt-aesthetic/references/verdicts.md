@@ -186,7 +186,7 @@ Each row is a verdict on real work and the rule it set; the dated entries below 
 
 - Kevin, on the book heads of `/motion` and `/brand`: "make our pages look a lot better and more aesthetic, and esepcially encorce the CORRECT RASMUS INTER".
 - What was wrong: a seven-line lead beside the meta table, a subtitle floating between the title and the lead, and the face set differently from element to element.
-- The rule since: a lead reads in two or three lines at 60 to 70 characters and the rest moves into the body, the meta table aligns to the head, and every element resolves to the one Inter through the tokens (`gt-brand`).
+- The rule since: a lead reads in two or three lines at 60 to 70 characters and the rest moves into the body, the meta table aligns to the head, and every element resolves to the one face through the tokens (`gt-brand`): Inter then, Katagami Text since 2026-11-09, with this site on Inter until its switch.
 
 ## 2026-10-05: head titles, the head's panel and corners
 
