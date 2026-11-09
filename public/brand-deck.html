@@ -69,12 +69,6 @@
   .max { max-width: 32ch; }
   .max-p { max-width: 56ch; }
 
-  /* the GT word: every standalone GT in rendered copy is the mark, sized to the text like a capital letter, with the letters kept as hidden text for assistive technology and search.
-     Written as <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span>. The svg carries no viewBox; the symbol supplies its own. */
-  .gt-word { position: relative; display: inline-block; vertical-align: -0.033em; } /* the symbol's viewBox is the logo's drawn box; a round mark at Inter's cap height (0.727em) reads small, so it overshoots the cap height and the baseline by 0.033em a side: 0.793em square, its foot 0.033em under the baseline */
-  .gt-word svg { display: block; height: 0.793em; width: 0.793em; fill: currentColor; }
-  .gt-word .sr { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
-
   /* layouts */
   .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
   .left-mid { position: absolute; left: 0; top: 50%; transform: translateY(-50%); }
@@ -581,9 +575,9 @@
       <div class="cols even">
         <div class="stack">
           <h2>Reputation</h2>
-          <p class="lead">Machine translation has a reputation for low quality. <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> needs to be seen as high quality. The product delivers native-level translation quality at high speed, and the brand has to communicate that on every surface, at every size, and in every script.</p>
+          <p class="lead">Machine translation has a reputation for low quality. General Translation needs to be seen as high quality. The product delivers native-level translation quality at high speed, and the brand has to communicate that on every surface, at every size, and in every script.</p>
         </div>
-        <svg class="dia" viewBox="0 0 620 400" aria-label="Machine translation as perceived and GT placed on a quality and speed field">
+        <svg class="dia" viewBox="0 0 620 400" aria-label="Machine translation as perceived and General Translation placed on a quality and speed field">
           <rect x="150" y="40" width="460" height="300" fill="none" class="hair" stroke-width="1"/>
           <text x="130" y="52" text-anchor="end">Native level</text>
           <text x="130" y="340" text-anchor="end">Low quality</text>
@@ -641,9 +635,9 @@
       <div class="cols">
         <div class="stack">
           <h2>Open source and platform</h2>
-          <p class="max-p"><span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> builds both the open-source libraries and the closed platform. The positioning is the Vercel model applied to localization. Because <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> owns the whole stack, it can deliver consistent translation quality across a company's apps, docs, and websites, with integration time measured in hours.</p>
+          <p class="max-p">General Translation builds both the open-source libraries and the closed platform. The positioning is the Vercel model applied to localization. Because General Translation owns the whole stack, it can deliver consistent translation quality across a company's apps, docs, and websites, with integration time measured in hours.</p>
         </div>
-        <svg class="dia" viewBox="0 0 730 300" aria-label="Customer apps, docs, and websites above the two GT layers, the open-source libraries and the platform">
+        <svg class="dia" viewBox="0 0 730 300" aria-label="Customer apps, docs, and websites above the two General Translation layers, the open-source libraries and the platform">
           <rect x="120" y="80" width="610" height="210" fill="var(--plate)"/>
           <rect x="120" y="0" width="610" height="290" fill="none" class="hair" stroke-width="1"/>
           <path d="M120 80 H730" class="hair" stroke-width="1" fill="none"/>
@@ -665,7 +659,7 @@
       <div class="cols wide-right">
         <div class="stack">
           <h2>Audience</h2>
-          <p>Engineers use <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> and executives buy it. Most users see <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> in code before they see the website.</p>
+          <p>Engineers use General Translation and executives buy it. Most users see General Translation in code before they see the website.</p>
           <svg class="dia" viewBox="0 0 418 150" aria-label="Three code surfaces lead to the website">
             <rect x="0" y="20" width="11" height="11" fill="var(--ink)"/>
             <rect x="0" y="70" width="11" height="11" fill="var(--ink)"/>
@@ -682,7 +676,7 @@
         <div class="rows narrow">
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-user-group"/></svg>Users</b><span>Users are engineering and growth teams at scaling startups.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-briefcase"/></svg>Buyers</b><span>Buyers are technical and product executives who need consistency, security, and a review process they can defend.</span></div>
-          <div><b><svg class="ic" aria-hidden="true"><use href="#i-building-office-2"/></svg>Customers</b><span>Ramp runs <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> across its dashboard, landing page and iOS. Cursor runs it across web and docs, and Sierra across web and GTM.</span></div>
+          <div><b><svg class="ic" aria-hidden="true"><use href="#i-building-office-2"/></svg>Customers</b><span>Ramp runs General Translation across its dashboard, landing page and iOS. Cursor runs it across web and docs, and Sierra across web and GTM.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>Competition</b><span>Legacy translation management systems bill per seat and cover only part of the stack.</span></div>
         </div>
       </div>
@@ -845,7 +839,6 @@
       .s11 .lineage img { display: block; height: 56px; width: auto; }
       .s11 .lineage svg { display: block; height: 52px; width: 52px; color: #070707; }
       .s11 .lineage figcaption { margin-top: 8px; font-size: 15px; line-height: 1.4; color: var(--ink-2); }
-      .s11 .rows > div > b.name-mark { padding-left: 30px; } /* the short form is the mark itself, so the row carries it once, in the label position, with the icon slot left empty */
     </style><div class="in">
       <div class="cols">
         <div class="stack">
@@ -863,8 +856,7 @@
           </div>
         </div>
         <div class="rows tight" style="--key:300px">
-          <div><b><svg class="ic info" aria-hidden="true"><use href="#i-building-office-2"/></svg>General Translation</b><span>The company.</span></div>
-          <div><b class="name-mark"><span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span></b><span>The short form and the mark.</span></div>
+          <div><b><svg class="ic info" aria-hidden="true"><use href="#i-building-office-2"/></svg>General Translation</b><span>The company. Every sentence writes the name out in full.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-command-line"/></svg>gt</b><span>The open-source library and CLI.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-cube"/></svg><span style="white-space:nowrap">gt-next</span>, <span style="white-space:nowrap">gt-react</span>, <span style="white-space:nowrap">gt-vue</span>, <span style="white-space:nowrap">gt-node</span>, <span style="white-space:nowrap">gt-python</span></b><span>The framework packages.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-bolt"/></svg>Locadex</b><span>The AI agent product.</span></div>
@@ -878,7 +870,7 @@
     <!-- mark -->
     <section class="slide"><div class="in">
       <div class="cols even">
-        <div class="shot-wrap"><svg width="520" height="331" fill="currentColor" aria-label="The GT monogram"><use href="#gt-monogram"/></svg></div>
+        <div class="shot-wrap"><svg width="520" height="331" fill="currentColor" aria-label="The General Translation monogram"><use href="#gt-monogram"/></svg></div>
         <div class="stack">
           <h2>The mark</h2>
           <p class="max-p">The monogram uses the same doubled-line construction as the rest of the system. It renders in a single color: black on white or white on black. It uses no additional colors, gradients, or shadows. On dark surfaces the mark inverts. The mark ships only as vector geometry. The seven slides that follow present the speed set, the September 2026 exploration in the race-type register, beside the monogram, which was the mark until the logo replaced it on 8 November 2026.</p>
@@ -1360,7 +1352,7 @@
               <text x="300" y="114" text-anchor="end">Playful</text>
               <text x="0" y="204">A scale with a marker</text>
             </svg>
-            <svg class="dia" viewBox="0 0 300 210" aria-label="A stacked layer model: customer apps above the open-source libraries above the platform, the two GT layers on a plate">
+            <svg class="dia" viewBox="0 0 300 210" aria-label="A stacked layer model: customer apps above the open-source libraries above the platform, the two General Translation layers on a plate">
               <rect x="0.5" y="62.5" width="299" height="108" fill="var(--plate)"/>
               <rect x="0.5" y="8.5" width="299" height="162" fill="none" class="hair" stroke-width="1"/>
               <path d="M0.5 62.5 H299.5 M0.5 116.5 H299.5" class="hair" stroke-width="1" fill="none"/>
@@ -1524,7 +1516,7 @@
       <div class="cols">
         <div class="stack">
           <h2>Anti-patterns</h2>
-          <p class="max-p">None of these appears on any <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> surface.</p>
+          <p class="max-p">None of these appears on any General Translation surface.</p>
         </div>
         <div class="plain">
           <span><svg class="ic no" aria-hidden="true"><use href="#i-x-circle"/></svg>Monospace is not the brand typeface.</span>
@@ -2013,7 +2005,7 @@
           <p>Designed covers and the reel use one GPU material from Glyphfield, gem smoke, driven by two color uniforms: a dark base and a brand color. Partner covers change only the brand color and the lockup, so the partner color is each page's single accent.</p></div>
         <div class="body">
           <div class="pair">
-            <figure><img loading="lazy" src="deck-assets/cover-gt-open-source.3fd6c062.jpg" alt="The GT open-source cover in blue"><figcaption>The <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> open-source announcement cover sets the brand color to <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> blue.</figcaption></figure>
+            <figure><img loading="lazy" src="deck-assets/cover-gt-open-source.3fd6c062.jpg" alt="The General Translation open-source cover in blue"><figcaption>The General Translation open-source announcement cover sets the brand color to the brand blue.</figcaption></figure>
             <figure><img loading="lazy" src="deck-assets/cover-fumadocs.cf1a76cd.jpg" alt="The Fumadocs grantee cover in orange"><figcaption>The Fumadocs grantee profile cover sets the brand color to Fumadocs orange.</figcaption></figure>
           </div>
         </div>
@@ -2050,7 +2042,7 @@
         </div>
         <div class="plain">
           <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>Legacy i18n: 12 weeks.</span>
-          <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>With <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span>: one pull request.</span>
+          <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>With General Translation: one pull request.</span>
           <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>Eight locales from one build.</span>
           <span><svg class="ic ok" aria-hidden="true"><use href="#i-check-circle"/></svg>Numbers, currency, and dates localize too.</span>
           <span class="no"><svg class="ic no" aria-hidden="true"><use href="#i-x-circle"/></svg>That market is yours to gain.</span>
@@ -2070,7 +2062,7 @@
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-document-text"/></svg>Site copy</b><span>Site copy uses declarative sentences, sentence-case headings, Title Case button labels, and short captions.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-chat-bubble-left-right"/></svg>Founder posts</b><span>Founder posts are lowercase, terse, and first person. A post that any founder account could have written is not ready to publish.</span></div>
           <div><b><svg class="ic" aria-hidden="true"><use href="#i-arrows-right-left"/></svg>Both</b><span>Both avoid founder clichés such as thrilled to announce and make no claim without a number, a mechanism, or an artifact.</span></div>
-          <div><b><svg class="ic" aria-hidden="true"><use href="#i-clipboard-document-check"/></svg>Checks</b><span>Three checks run before posting: only <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> could have written it, it cites concrete evidence, and it supports the reputation for quality.</span></div>
+          <div><b><svg class="ic" aria-hidden="true"><use href="#i-clipboard-document-check"/></svg>Checks</b><span>Three checks run before posting: only General Translation could have written it, it cites concrete evidence, and it supports the reputation for quality.</span></div>
         </div>
       </div>
     </div></section>
@@ -2657,7 +2649,7 @@
         <div class="shot-wrap">
           <figure>
             <img loading="lazy" class="shot" src="deck-assets/glyph-home-hero-light.ddbbdcfd.jpg" data-dark="deck-assets/glyph-home-hero-dark.0f1e60c7.jpg" alt="The glyphfield.com landing page: the navigation, the headline and a capture of the animation tool">
-            <figcaption>The landing page states the studio's scope over a capture of the animation tool, where the <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> mark sits on a grain gradient. The crop is cut at two times device scale; the page keeps its own light and dark themes and follows the deck here.</figcaption>
+            <figcaption>The landing page states the studio's scope over a capture of the animation tool, where the General Translation mark sits on a grain gradient. The crop is cut at two times device scale; the page keeps its own light and dark themes and follows the deck here.</figcaption>
           </figure>
         </div>
       </div>
@@ -2892,7 +2884,7 @@
         <div class="body">
           <div class="rows tight" style="margin-bottom:36px;--key:200px">
             <div><b><svg class="ic" aria-hidden="true"><use href="#i-archive-box"/></svg>Inputs</b><span>The inputs are prototemplate.com, the brand book, the avoid list set on August 11, and the test list.</span></div>
-            <div><b><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>Decisions</b><span>The four reviews cover the territory, the identity direction, the system, and the release. <span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> picks one direction at each review within 48 hours.</span></div>
+            <div><b><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>Decisions</b><span>The four reviews cover the territory, the identity direction, the system, and the release. General Translation picks one direction at each review within 48 hours.</span></div>
           </div>
           <!-- 1326 units for 87 days, 15.24 units a day: September 14 at 201, September 28 at 414, October 19 at 734, November 16 at 1161, November 27 at 1326; September 9 is day 8, at 122. The first four dates sit flush with the left edge of the stage they start; the two November dates sit flush with the right edge of the stage they end, because the 164-unit Delivery stage cannot hold two spelled dates at 20px (121 and 124 units wide). The today marker hangs from the bottom edge of the track (a tick ending in an 11px square, label to its right) so it neither crosses the Research label inside the stage nor touches the September 1 date above it. -->
           <svg class="dia" viewBox="0 0 1326 212" aria-label="Five stages across thirteen weeks with an icon each, four review points, and a marker on September 9">
@@ -3380,7 +3372,7 @@
   var pages = [], bookIO = null;
   function buildBook() {
     var head = document.createElement('div'); head.className = 'book-head';
-    head.innerHTML = '<div><h1><span class="gt-word"><svg aria-hidden="true"><use href="#gt-mark"/></svg><span class="sr">GT</span></span> Brand deck</h1><p></p></div><div class="meta"></div>';
+    head.innerHTML = '<div><h1>Brand deck</h1><p></p></div><div class="meta"></div>';
     head.querySelector('p').textContent = 'The General Translation brand in ' + slides.length + ' slides: the thesis, the design system, the shipped site, the documentation, the blog, developer experience, Prototemplate and Glyphfield, and the current plan. Read it top to bottom, or click a page to open it as a slide.';
     head.querySelector('.meta').innerHTML = SECTIONS.length + ' sections<br>' + slides.length + ' slides<br>September 2026';
     bookIn.appendChild(head);
@@ -3495,7 +3487,7 @@
     if (barTitle) barTitle.textContent = titleOf(slides[n], n);
     if (barSec) barSec.textContent = sectionOf(n);
     progress.style.width = ((n + 1) / slides.length * 100) + '%';
-    document.title = 'GT Brand deck, ' + (n + 1) + ' of ' + slides.length;
+    document.title = 'General Translation brand deck, ' + (n + 1) + ' of ' + slides.length;
     if (opts.hash !== false) {
       try { history.replaceState(null, '', '#' + (n + 1)); } catch (e) {}
     }

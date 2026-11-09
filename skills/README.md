@@ -16,7 +16,7 @@ The curated skills of Prototemplate, Kevin Liu's hub for General Translation (GT
 
 | Skill | Title | What it is | Also in |
 | --- | --- | --- | --- |
-| [`gt-website`](gt-website/SKILL.md) | GT website | How generaltranslation.com is built and changed in gt-cloud's apps/landing. |  |
+| [`gt-website`](gt-website/SKILL.md) | General Translation website | How generaltranslation.com is built and changed in gt-cloud's apps/landing. |  |
 | [`prototemplate`](prototemplate/SKILL.md) | Working in Prototemplate | How to work in Prototemplate, Kevin's hub and wiki for General Translation work. | Components |
 | [`gt-performance`](gt-performance/SKILL.md) | Performance without visual loss | How General Translation keeps visual surfaces fast with no change to how they look. | Landing pages, Motion |
 
