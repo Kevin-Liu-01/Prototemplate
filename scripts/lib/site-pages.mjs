@@ -300,6 +300,7 @@ export function siteRoutes() {
     { id: 'handbook-design', path: '/docs/handbook/design', tools: 'live', source: [...handbook, 'DESIGN.md'] },
     { id: 'graphics', path: '/graphics', tools: 'check live lines capture', source: ['src/app/graphics'] },
     { id: 'motion', path: '/motion', tools: 'check live lines capture', source: ['src/app/motion'] },
+    { id: 'raise', path: '/raise', tools: 'check capture', source: ['src/app/raise', 'src/lib/raise.ts'] },
     { id: `motion-${pkg}`, path: `/motion/${pkg}`, tools: 'check live lines', source: ['src/app/motion'] },
     { id: 'transcreate', path: '/transcreate', tools: 'check live lines capture', source: ['src/app/transcreate'] },
     { id: 'transcreate-videos', path: '/transcreate/videos', tools: 'check live lines', source: ['src/app/transcreate'] },

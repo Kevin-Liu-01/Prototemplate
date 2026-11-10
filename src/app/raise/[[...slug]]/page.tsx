@@ -13,7 +13,7 @@ type Params = { params: Promise<{ slug?: string[] }> };
 type TocItem = { title: ReactNode; url: string; depth: number };
 
 /** The one description every raise page carries: the page is private, so its head says what it is and nothing of the launch. */
-const DESCRIPTION = 'A private record of one launch’s media, round by round, with an account of how each round was directed.';
+const DESCRIPTION = 'The media of the funding announcement, round by round, with an account of how each round was directed.';
 
 /** The page's tab title: the round's tag alone, so a link that unfurls shows no launch copy. */
 function titleOf(raise: Raise | null, slug: string | undefined): string {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
   const rest = slug?.length ? `/${slug.join('/')}` : '';
   const raise = await loadRaise();
-  return seoRoute({ path: `/raise${rest}`, title: titleOf(raise, slug?.[0]), kind: 'page', description: DESCRIPTION, card: false })
+  return seoRoute({ path: `/raise${rest}`, title: titleOf(raise, slug?.[0]), kind: 'page', description: DESCRIPTION })
     .metadata;
 }
 

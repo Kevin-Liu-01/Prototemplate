@@ -240,6 +240,14 @@ const KNOWLEDGE: readonly Surface[] = [
     thumb('motion')
   ),
   internal(
+    'raise',
+    pageLabel('raise'),
+    '/raise',
+    'The media of the funding announcement, round by round, with an account of how each round was directed, then every deliverable in posting order.',
+    'Knowledge',
+    thumb('raise')
+  ),
+  internal(
     'transcreate',
     pageLabel('transcreate'),
     '/transcreate',

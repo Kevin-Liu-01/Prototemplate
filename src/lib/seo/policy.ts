@@ -65,8 +65,8 @@ export function isLocked(path: string, areas: readonly string[] = LOCKED): boole
   return areas.some((base) => p === base || p.startsWith(`${base}/`));
 }
 
-/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos, /sign-in opens the locked areas, /raise opens to anyone with its link, and every locked area is private too. */
-export const PRIVATE_PATHS: readonly string[] = ['/transcreate', '/sign-in', '/raise', ...LOCKED];
+/** The private pages, each with the pages under it: they answer noindex, nofollow and stay out of the sitemap and /llms.txt. /transcreate shows third-party videos, /sign-in opens the locked areas, and every locked area is private too. */
+export const PRIVATE_PATHS: readonly string[] = ['/transcreate', '/sign-in', ...LOCKED];
 
 /** True for a private page or a page under one; false for anything that is not a pathname (an off-site address). */
 export function isPrivatePath(path: string): boolean {
