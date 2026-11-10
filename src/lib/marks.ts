@@ -545,7 +545,7 @@ export const MARK_USE_LABELS: Readonly<Record<MarkUse, string>> = {
 
 type DynamicInput = Omit<CatalogMark, 'file' | 'file16' | 'box'> & {
   box: readonly [number, number, number, number];
-  /** the mark has a 16px drawing at /marks/dynamic/<id>-16.svg */
+  /** the mark has a 16px drawing beside its file, <id>-16.svg */
   cut?: true;
   /** the mark's file is its drawing on /marks/graticule, /marks/graticule/variations/<id>.svg, in the same canonical format but over the 8 KB pnpm import:marks allows */
   variation?: true;
@@ -558,10 +558,11 @@ function dynamicFile({ id, family, variation }: Pick<DynamicInput, 'id' | 'famil
 }
 
 function dyn({ cut, variation, ...mark }: DynamicInput): CatalogMark {
+  const file = dynamicFile({ id: mark.id, family: mark.family, variation });
   return {
     ...mark,
-    file: dynamicFile({ id: mark.id, family: mark.family, variation }),
-    ...(cut ? { file16: `/marks/dynamic/${mark.id}-16.svg` } : {}),
+    file,
+    ...(cut ? { file16: file.replace(/\.svg$/, '-16.svg') } : {}),
   };
 }
 
