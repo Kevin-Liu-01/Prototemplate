@@ -1,0 +1,67 @@
+{
+ "font": "Katagami Text Version 1.200, wght 500, letter-spacing 0, GPOS kerning, as outlines",
+ "units": "Katagami Text font units (2048 per em) at the name's size",
+ "cap": 1430.0,
+ "markInCaps": 2.709,
+ "gapInCaps": 0.8,
+ "betweenInGlobes": 0.22,
+ "betweenInCaps": 0.596,
+ "viewBox": [
+  0.0,
+  0.0,
+  29042.5445,
+  3873.8091
+ ],
+ "marks": [
+  {
+   "x": 0.0,
+   "y": 0.0,
+   "w": 3873.8091,
+   "h": 3873.8091
+  },
+  {
+   "x": 4726.047,
+   "y": 0.0,
+   "w": 3873.8091,
+   "h": 3873.8091
+  },
+  {
+   "x": 9452.0941,
+   "y": 0.0,
+   "w": 3873.8091,
+   "h": 3873.8091
+  },
+  {
+   "x": 14178.1411,
+   "y": 0.0,
+   "w": 3873.8091,
+   "h": 3873.8091
+  }
+ ],
+ "name": {
+  "x": 19195.9502,
+  "y": 156.0822,
+  "w": 9846.5944,
+  "h": 3565.3648
+ },
+ "stages": [
+  "/marks/graticule/strip/stage-1.svg",
+  "/marks/graticule/strip/stage-2.svg",
+  "/marks/graticule/strip/stage-3.svg"
+ ],
+ "geometry": {
+  "weight": 13.6,
+  "ring": 96.9,
+  "ovalShort": 51.46,
+  "polarArcCentres": [
+   -13.56,
+   269.56
+  ],
+  "polarArcRadius": 90.1,
+  "meridianOpensAt": 27.9711
+ },
+ "lines": [
+  "General",
+  "Translation"
+ ]
+}

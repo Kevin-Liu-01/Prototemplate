@@ -16,7 +16,8 @@
 // motion (GtLogoMotion) rests on it, is what pnpm build:logo-motion writes
 // and is the still logo under reduced motion, the lockup files pnpm build:lockup writes draw LOGO beside the Katagami Text name and
 // LOCKUP, the globe rows' NAME_WIDTH and NAME_ASPECT and the deck's
-// #gt-lockup keep the numbers it measured, and the
+// #gt-lockup keep the numbers it measured, the four-globe lockup pnpm build:strip writes draws
+// LOGO and its three stage marks beside the same name and keeps STRIP's numbers, and the
 // catalog and the dynamic files name each mark by its idea alone:
 // ORIGIN_WORDS rejects option letters and catalog numbers in the catalog
 // and the dynamic files, and runs everywhere, CI included. Loaded through
@@ -31,7 +32,7 @@ import { CANONICAL, DYNAMIC_DIR, LOCADEX_CANONICAL, LOCADEX_DIR, LOCADEX_MAX_BYT
 import { ROOT } from '../lib/root.mjs';
 
 const { CATALOG, DYNAMIC_MARKS, FAMILIES, SHORTLIST, badgeMarks, graticuleMarks, pageFamilies } = await import(new URL('../../src/lib/marks.ts', import.meta.url).href);
-const { LOCKUP, LOGO } = await import(new URL('../../src/lib/logo.ts', import.meta.url).href);
+const { LOCKUP, LOGO, STRIP } = await import(new URL('../../src/lib/logo.ts', import.meta.url).href);
 /* the globe rows' two numbers, read as text: content.ts imports without extensions, which Node's type stripping cannot load */
 const ROWS_TS = readFileSync(join(ROOT, 'src/app/marks/graticule/content.ts'), 'utf8');
 const NAME_WIDTH = Number(ROWS_TS.match(/export const NAME_WIDTH = ([\d.]+);/)?.[1]);
@@ -189,6 +190,36 @@ test('the lockup files draw LOGO, and LOCKUP, the globe rows and the deck symbol
   assert.ok(symbol, 'deck/parts/head.html has no #gt-lockup symbol: run pnpm build:lockup');
   assert.ok(symbol[2].includes(` d="${LOGO.d}"`), 'the deck\'s #gt-lockup draws another globe than LOGO: run pnpm build:lockup');
   assert.ok(readFileSync(publicFile('brand/gt-globe-lockup.svg'), 'utf8').includes(symbol[2]), 'the deck\'s #gt-lockup differs from public/brand/gt-globe-lockup.svg: run pnpm build:lockup');
+});
+
+test('the four-globe lockup draws its three stage marks, then LOGO, beside the lockup\'s name, and keeps STRIP\'s numbers', () => {
+  const metrics = JSON.parse(readFileSync(publicFile('brand/gt-globe-strip.json'), 'utf8'));
+  const lockup = JSON.parse(readFileSync(publicFile('brand/gt-globe-lockup.json'), 'utf8'));
+  const near = (a, b, what) => assert.ok(Math.abs(a - b) < 5e-4, `${what}: ${a} is not ${b}: run pnpm build:strip`);
+  assert.equal(metrics.font, lockup.font, 'the strip\'s name is not the lockup\'s: run pnpm build:strip');
+  near(STRIP.between, metrics.betweenInGlobes, 'STRIP.between');
+  near(STRIP.betweenInCaps, metrics.betweenInCaps, 'STRIP.betweenInCaps');
+  near(STRIP.betweenInCaps, STRIP.between * LOCKUP.mark, 'STRIP.betweenInCaps against between times LOCKUP.mark');
+  near(STRIP.gap, metrics.gapInCaps, 'STRIP.gap');
+  near(LOCKUP.mark, metrics.markInCaps, 'the strip\'s globe against LOCKUP.mark');
+  assert.equal(metrics.marks.length, STRIP.globes, 'the strip does not draw STRIP.globes globes');
+  /* the logo and the name stand as they do in the stacked lockup, measured from the logo's left edge */
+  const logo = metrics.marks[STRIP.globes - 1];
+  near((metrics.name.x - logo.x) / metrics.cap, (lockup.name.x - lockup.mark.x) / lockup.cap, 'the name\'s offset from the logo');
+  near((metrics.name.y - logo.y) / metrics.cap, (lockup.name.y - lockup.mark.y) / lockup.cap, 'the name\'s height against the logo');
+  const pathOf = (text) => text.match(/ d="([^"]+)"/)?.[1];
+  const stages = metrics.stages.map((file) => {
+    const text = readFileSync(publicFile(file.slice(1)), 'utf8');
+    assert.match(text, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 256 256" width="256" height="256"><path fill="currentColor" fill-rule="nonzero" d="[^"]+"\/><\/svg>\n$/, `${file} is not one currentColor path on the 256 square`);
+    return pathOf(text);
+  });
+  const viewBoxOf = (text) => text.match(/viewBox="([^"]+)"/)?.[1].split(' ').map(Number);
+  for (const name of ['gt-globe-strip.svg', 'gt-globe-strip-light.svg', 'gt-globe-strip-dark.svg', 'gt-globe-strip-accent.svg', 'gt-globe-strip-accent-lift.svg']) {
+    const text = readFileSync(publicFile(`brand/${name}`), 'utf8');
+    const drawn = [...text.matchAll(/ d="([^"]+)"/g)].map((m) => m[1]);
+    assert.deepEqual(drawn.slice(0, STRIP.globes), [...stages, LOGO.d], `public/brand/${name} draws other globes than the stage marks and LOGO: run pnpm build:strip`);
+    assert.deepEqual(viewBoxOf(text), metrics.viewBox.map((v) => Number(v.toFixed(2))), `public/brand/${name} is stale: run pnpm build:strip`);
+  }
 });
 
 test('the catalog and the dynamic files name each mark by its idea alone', () => {

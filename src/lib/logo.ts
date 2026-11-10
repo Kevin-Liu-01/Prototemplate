@@ -52,3 +52,25 @@ export const LOCKUP = {
   overshoot: 0.1231,
   gap: 0.8,
 } as const;
+
+/**
+ * The four-globe lockup: three graticule globes, the logo, then the stacked
+ * name (2026-11-10). It reads left to right as the logo's construction: a
+ * whole graticule with its polar arcs, the same with the meridian opened on
+ * the right where the G opens, the same without the polar arcs, then the
+ * logo. The logo and the name are the stacked lockup exactly (LOCKUP); the
+ * three graticule globes stand to the logo's left at its size with
+ * `between` globe diameters of white between neighbours. pnpm build:strip
+ * draws public/brand/gt-globe-strip*.svg and the three stage marks
+ * (public/marks/graticule/strip/stage-*.svg) from the logo's own geometry,
+ * and writes these numbers to public/brand/gt-globe-strip.json, which
+ * pnpm test:marks holds them to.
+ */
+export const STRIP = {
+  globes: 4,
+  /** white between neighbouring globes, in globe diameters */
+  between: 0.22,
+  /** the same white in the name's cap heights: between times LOCKUP.mark */
+  betweenInCaps: 0.596,
+  gap: LOCKUP.gap,
+} as const;
