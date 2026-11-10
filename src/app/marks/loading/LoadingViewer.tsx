@@ -47,7 +47,7 @@ import {
   LOADER_SIZES,
   LOADER_TITLE,
   MOTION_LOOPS,
-  motionRest,
+  motionPoster,
   motionVideo,
   REDUCED_ID,
   REDUCED_LEAD,
@@ -150,8 +150,8 @@ function MotionFigure({ loop }: { loop: MotionLoop }) {
   return (
     <figure ref={figureRef} className='ld-fig'>
       <div className='ld-clip'>
-        <video ref={lightRef} className='ld-vid is-light' src={motionVideo(loop.id, 'light')} poster={motionRest('light')} muted loop playsInline preload='none' aria-hidden='true' />
-        <video ref={darkRef} className='ld-vid is-dark' src={motionVideo(loop.id, 'dark')} poster={motionRest('dark')} muted loop playsInline preload='none' aria-hidden='true' />
+        <video ref={lightRef} className='ld-vid is-light' src={motionVideo(loop.id, 'light')} poster={motionPoster(loop, 'light')} muted loop playsInline preload='none' aria-hidden='true' />
+        <video ref={darkRef} className='ld-vid is-dark' src={motionVideo(loop.id, 'dark')} poster={motionPoster(loop, 'dark')} muted loop playsInline preload='none' aria-hidden='true' />
       </div>
       <figcaption>
         <h4>
