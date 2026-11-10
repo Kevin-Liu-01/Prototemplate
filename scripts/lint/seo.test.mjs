@@ -12,6 +12,9 @@ import { test } from 'node:test';
 import {
   BASELINE,
   applyBaseline,
+  builtDirs,
+  builtFile,
+  builtPages,
   imageSize,
   importTs,
   judgeHead,
@@ -310,6 +313,54 @@ test('route files for built pages: static first, then the fewest dynamic segment
   assert.equal(match('/d/production/pricing'), 'src/app/d/production/pricing/page.tsx');
   assert.equal(match('/d/production/a/b'), 'src/app/d/production/[...missing]/page.tsx');
   assert.equal(match('/nothing'), null);
+});
+
+test('built pages: the plain layout under .next/server/app', () => {
+  const root = mkdtempSync(join(tmpdir(), 'seo-lint-'));
+  try {
+    const put = (file, text) => {
+      mkdirSync(dirname(join(root, file)), { recursive: true });
+      writeFileSync(join(root, file), text);
+    };
+    put('.next/server/app/index.html', '<html></html>');
+    put('.next/server/app/brand.html', '<html></html>');
+    put('.next/server/app/docs/handbook.html', '<html></html>');
+    put('.next/server/app/_not-found.html', '<html></html>');
+    put('.next/server/app/brand.rsc', 'rsc');
+    put('.next/server/app/sitemap.xml.body', '<urlset></urlset>');
+    assert.deepEqual([...builtPages(root).keys()].sort(), ['/', '/brand', '/docs/handbook']);
+    assert.ok(builtFile(root, 'sitemap.xml.body').endsWith('.next/server/app/sitemap.xml.body'));
+    assert.notEqual(builtFile(root, '_not-found.html'), null);
+    assert.equal(builtFile(root, 'robots.txt.body'), null);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('built pages: the adapter layout under .next/server/route-cache', () => {
+  const root = mkdtempSync(join(tmpdir(), 'seo-lint-'));
+  try {
+    const put = (file, text) => {
+      mkdirSync(dirname(join(root, file)), { recursive: true });
+      writeFileSync(join(root, file), text);
+    };
+    const [a, b, c] = ['a', 'b', 'c'].map((ch) => ch.repeat(64));
+    const cache = '.next/server/route-cache';
+    put('.next/server/app/page.js', 'module.exports = {};');
+    put(`${cache}/APP_PAGE/${a}/$/brand.html`, '<html></html>');
+    put(`${cache}/APP_PAGE/${a}/$/brand.segments/_tree.segment.rsc`, 'rsc');
+    put(`${cache}/APP_PAGE/${b}/$/docs/handbook.html`, '<html></html>');
+    put(`${cache}/APP_PAGE/${b}/$/_not-found.html`, '<html></html>');
+    put(`${cache}/APP_ROUTE/${c}/$/sitemap.xml.body`, '<urlset></urlset>');
+    put(`${cache}/APP_ROUTE/${c}/$/robots.txt.body`, 'User-agent: *');
+    assert.deepEqual([...builtPages(root).keys()].sort(), ['/brand', '/docs/handbook']);
+    assert.equal(builtDirs(root).length, 4);
+    for (const rel of ['sitemap.xml.body', 'robots.txt.body', '_not-found.html']) {
+      assert.ok(builtFile(root, rel).includes('/route-cache/'), rel);
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test('image headers: PNG and JPEG sizes', () => {

@@ -408,5 +408,152 @@
     "w": 1200,
     "h": 630,
     "animated": false
+  },
+  {
+    "id": "P1-open-source",
+    "area": "P",
+    "name": "Open source cover",
+    "bg": null,
+    "why": "The open-source grants cover.",
+    "w": 1600,
+    "h": 900,
+    "animated": false,
+    "src": {
+      "ground": "open-source",
+      "w": 960,
+      "h": 540,
+      "group": [
+        198,
+        226,
+        774,
+        322
+      ]
+    }
+  },
+  {
+    "id": "P2-fumadocs",
+    "area": "P",
+    "name": "Fumadocs cover",
+    "bg": null,
+    "why": "The Fumadocs grantee cover.",
+    "w": 1600,
+    "h": 900,
+    "animated": false,
+    "src": {
+      "ground": "fumadocs",
+      "w": 960,
+      "h": 540,
+      "group": [
+        341,
+        428,
+        631,
+        480
+      ]
+    }
+  },
+  {
+    "id": "P3-fuma-nama-og",
+    "area": "P",
+    "name": "Fuma Nama social card",
+    "bg": null,
+    "why": "The social card of the Fuma Nama post.",
+    "w": 1600,
+    "h": 840,
+    "animated": false,
+    "src": {
+      "ground": "fuma-nama-og",
+      "w": 960,
+      "h": 504,
+      "group": [
+        347,
+        398,
+        639,
+        452
+      ]
+    }
+  },
+  {
+    "id": "P4-cuelume",
+    "area": "P",
+    "name": "Cuelume cover",
+    "bg": null,
+    "why": "The Cuelume grantee cover.",
+    "w": 1600,
+    "h": 900,
+    "animated": false,
+    "src": {
+      "ground": "cuelume",
+      "w": 1920,
+      "h": 1080,
+      "group": [
+        674,
+        797,
+        1306,
+        899
+      ]
+    }
+  },
+  {
+    "id": "P4-cuelume-og",
+    "area": "P",
+    "name": "Cuelume social card",
+    "bg": null,
+    "why": "The Cuelume grantee social card.",
+    "w": 1600,
+    "h": 840,
+    "animated": false,
+    "src": {
+      "ground": "cuelume-og",
+      "w": 1920,
+      "h": 1008,
+      "group": [
+        685,
+        764,
+        1278,
+        860
+      ]
+    }
+  },
+  {
+    "id": "P5-slash",
+    "area": "P",
+    "name": "Slash partnership cover",
+    "bg": null,
+    "why": "The Slash partnership cover.",
+    "w": 1600,
+    "h": 839,
+    "animated": false,
+    "src": {
+      "ground": "slash",
+      "w": 1024,
+      "h": 537,
+      "group": [
+        258,
+        222,
+        762,
+        314
+      ]
+    }
+  },
+  {
+    "id": "P6-rewriting-docs-spine",
+    "area": "P",
+    "name": "Docs spine",
+    "bg": null,
+    "why": "The three docs page types, each answering one question from the user.",
+    "w": 1600,
+    "h": 900,
+    "animated": false,
+    "src": {
+      "ground": "spine",
+      "w": 1920,
+      "h": 1080,
+      "group": [
+        884,
+        154,
+        1040,
+        194
+      ]
+    }
   }
 ]

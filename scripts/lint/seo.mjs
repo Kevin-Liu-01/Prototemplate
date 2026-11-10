@@ -47,7 +47,8 @@
  *               list and refuses to add a file to an existing one: the
  *               list only shrinks.
  *
- * Built mode reads the prerendered pages under .next/server/app (and the
+ * Built mode reads the prerendered pages under .next/server/app, or under
+ * .next/server/route-cache when a deployment adapter built the site (and the
  * deck's own document, public/brand-deck.html, which /deck rewrites to):
  *
  *   B1 head     one <title>, one description, one absolute https
@@ -758,15 +759,43 @@ export function routeMatcher(pageFiles) {
   return (path) => routes.find((r) => r.re.test(path))?.file ?? null;
 }
 
-/** Prerendered HTML files under .next/server/app, by pathname; not-found and error pages left out. */
+/**
+ * The folders a build leaves prerendered files in: .next/server/app, and
+ * with a deployment adapter each .next/server/route-cache/<kind>/<hash>/$
+ * folder, which holds the same paths.
+ */
+export function builtDirs(root) {
+  const dirs = [join(root, '.next/server/app')];
+  const cache = join(root, '.next/server/route-cache');
+  if (!existsSync(cache)) return dirs;
+  for (const kind of readdirSync(cache, { withFileTypes: true })) {
+    if (!kind.isDirectory()) continue;
+    for (const hash of readdirSync(join(cache, kind.name), { withFileTypes: true })) {
+      const dir = join(cache, kind.name, hash.name, '$');
+      if (hash.isDirectory() && existsSync(dir)) dirs.push(dir);
+    }
+  }
+  return dirs;
+}
+
+/** The first built file of that relative path in any of the folders, or null. */
+export function builtFile(root, rel) {
+  for (const dir of builtDirs(root)) {
+    if (existsSync(join(dir, rel))) return join(dir, rel);
+  }
+  return null;
+}
+
+/** Prerendered HTML files in the build's folders (builtDirs), by pathname; not-found and error pages left out. */
 export function builtPages(root) {
-  const app = join(root, '.next/server/app');
   const pages = new Map();
-  for (const file of walk(app, app)) {
-    if (!file.endsWith('.html')) continue;
-    const stem = file.slice(0, -5);
-    if (stem.split('/').some((s) => s.startsWith('_')) || /(^|\/)(404|500)$/.test(stem)) continue;
-    pages.set(stem === 'index' ? '/' : `/${stem}`, join(app, file));
+  for (const dir of builtDirs(root)) {
+    for (const file of walk(dir, dir)) {
+      if (!file.endsWith('.html')) continue;
+      const stem = file.slice(0, -5);
+      if (stem.split('/').some((s) => s.startsWith('_')) || /(^|\/)(404|500)$/.test(stem)) continue;
+      pages.set(stem === 'index' ? '/' : `/${stem}`, join(dir, file));
+    }
   }
   return pages;
 }
@@ -828,20 +857,20 @@ function runBuilt({ report }) {
   }
   for (const [path, rule, message] of judgeUnique(pages)) findings.push(finding(relative(ROOT, files.get(path)), 1, rule, message));
 
-  const sitemapFile = join(app, 'sitemap.xml.body');
+  const sitemapFile = builtFile(ROOT, 'sitemap.xml.body');
   const notes = [];
-  if (!existsSync(sitemapFile)) findings.push(finding('.next/server/app/sitemap.xml.body', 1, 'B5', 'no prerendered sitemap'));
+  if (!sitemapFile) findings.push(finding('.next/server/app/sitemap.xml.body', 1, 'B5', 'no prerendered sitemap'));
   else {
     const [sitemapFindings, sitemapNotes] = judgeSitemap(parseSitemap(readFileSync(sitemapFile, 'utf8')), pages);
-    for (const [rule, message] of sitemapFindings) findings.push(finding('.next/server/app/sitemap.xml.body', 1, rule, message));
+    for (const [rule, message] of sitemapFindings) findings.push(finding(relative(ROOT, sitemapFile), 1, rule, message));
     notes.push(...sitemapNotes);
   }
-  const notFoundFile = join(app, '_not-found.html');
-  if (!existsSync(notFoundFile)) findings.push(finding('.next/server/app/_not-found.html', 1, 'B8', 'no prerendered 404'));
-  else for (const [rule, message] of judgeNotFound(readFileSync(notFoundFile, 'utf8'))) findings.push(finding('.next/server/app/_not-found.html', 1, rule, message));
+  const notFoundFile = builtFile(ROOT, '_not-found.html');
+  if (!notFoundFile) findings.push(finding('.next/server/app/_not-found.html', 1, 'B8', 'no prerendered 404'));
+  else for (const [rule, message] of judgeNotFound(readFileSync(notFoundFile, 'utf8'))) findings.push(finding(relative(ROOT, notFoundFile), 1, rule, message));
 
-  const robotsFile = join(app, 'robots.txt.body');
-  const robots = existsSync(robotsFile) ? readFileSync(robotsFile, 'utf8') : '';
+  const robotsFile = builtFile(ROOT, 'robots.txt.body');
+  const robots = robotsFile ? readFileSync(robotsFile, 'utf8') : '';
   if (!new RegExp(`^Sitemap: ${SITE_URL.replace(/[.]/g, '\\.')}/sitemap\\.xml$`, 'm').test(robots)) {
     findings.push(finding('.next/server/app/robots.txt.body', 1, 'B6', `robots.txt does not name ${SITE_URL}/sitemap.xml`));
   }
