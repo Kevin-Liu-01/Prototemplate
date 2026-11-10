@@ -356,8 +356,8 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
         <SheetFigure
           file='fix-sheet.webp'
           width={2098}
-          height={2196}
-          alt='Frames of the hover and the loader before and after the fix, each beside its difference from the logo'
+          height={2644}
+          alt='Frames of the hover and the loader from the first loader and the final one, each beside its difference from the logo, and the meridian’s bottom cut face at 8x'
           caption={FIX_SHEET_CAPTION}
           wide
         />

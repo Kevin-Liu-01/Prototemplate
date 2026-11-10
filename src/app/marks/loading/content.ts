@@ -173,7 +173,7 @@ export const FIX_LEAD =
   'Three fixes brought the loader to this state. The first keeps the logo the logo outside the moving line, the second makes the hover run in Safari, and the third keeps the ring off every mask, holds the meridian to its own ellipse and measures each dash on its path’s own length.';
 
 export const FIX_SHEET_CAPTION =
-  'Frames of the hover and the loader before and after the first fix. In the columns against the logo, grey is ink in both the frame and the logo, blue is ink only in the logo and red is ink only in the frame. Before, red edged every still part, because the motion layer drew them a little heavier than the logo. After, red is left only on the line that is moving and where the C closes behind the undrawn meridian. The last two columns show the G’s end at 4x: before, it stopped short of the logo’s tip, and after, it lands on it.';
+  'Frames of the hover and the loader from the first loader and from the final one. In the columns against the logo, grey is ink in both the frame and the logo, blue is ink only in the logo and red is ink only in the frame. Before, red edged every still part, because the motion layer drew them a little heavier than the logo, so the G’s top arc moved and the meridian’s C shrank. After, red is left only on the line that is moving and where the C closes behind the undrawn meridian. The G end at 4x: before, it stopped short of the logo’s tip, and after, it lands on it. The last row is the meridian’s bottom cut face at 8x: in the first hover it had moved 4.86 units by 1.083 seconds, and in the final one it has not moved.';
 
 export const SAFARI_CAPTION = {
   before:
