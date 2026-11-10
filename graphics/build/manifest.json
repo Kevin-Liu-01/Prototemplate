@@ -414,69 +414,146 @@
     "area": "P",
     "name": "Open source cover",
     "bg": null,
-    "why": "The open-source grants cover: the title on the blue gem smoke screened in four blues, lockup J under it.",
+    "why": "The open-source grants cover.",
     "w": 1600,
     "h": 900,
-    "animated": false
+    "animated": false,
+    "src": {
+      "ground": "open-source",
+      "w": 960,
+      "h": 540,
+      "mark": [
+        205,
+        233,
+        323,
+        307
+      ]
+    }
   },
   {
     "id": "P2-fumadocs",
     "area": "P",
     "name": "Fumadocs cover",
     "bg": null,
-    "why": "The Fumadocs grantee cover: the Fumadocs mark and name on the fire gem smoke, lockup J under them.",
+    "why": "The Fumadocs grantee cover.",
     "w": 1600,
     "h": 900,
-    "animated": false
+    "animated": false,
+    "src": {
+      "ground": "fumadocs",
+      "w": 960,
+      "h": 540,
+      "mark": [
+        349,
+        434,
+        408,
+        471
+      ]
+    }
   },
   {
     "id": "P3-fuma-nama-og",
     "area": "P",
     "name": "Fuma Nama social card",
     "bg": null,
-    "why": "The social card of the Fuma Nama post: its title in two lines on the fire gem smoke, lockup J under it.",
+    "why": "The social card of the Fuma Nama post.",
     "w": 1600,
     "h": 840,
-    "animated": false
+    "animated": false,
+    "src": {
+      "ground": "fuma-nama-og",
+      "w": 960,
+      "h": 504,
+      "mark": [
+        355,
+        404,
+        409,
+        437
+      ]
+    }
   },
   {
     "id": "P4-cuelume",
     "area": "P",
     "name": "Cuelume cover",
     "bg": null,
-    "why": "The Cuelume grantee cover: the Cuelume mark and name on a green screen of a glyphfield export, lockup J under them.",
+    "why": "The Cuelume grantee cover.",
     "w": 1600,
     "h": 900,
-    "animated": false
+    "animated": false,
+    "src": {
+      "ground": "cuelume",
+      "w": 1920,
+      "h": 1080,
+      "mark": [
+        682,
+        805,
+        808,
+        884
+      ]
+    }
   },
   {
     "id": "P4-cuelume-og",
     "area": "P",
     "name": "Cuelume social card",
     "bg": null,
-    "why": "The Cuelume grantee social card at 1.9:1, the cover recomposed for the shorter frame.",
+    "why": "The Cuelume grantee social card.",
     "w": 1600,
     "h": 840,
-    "animated": false
+    "animated": false,
+    "src": {
+      "ground": "cuelume-og",
+      "w": 1920,
+      "h": 1008,
+      "mark": [
+        693,
+        772,
+        811,
+        846
+      ]
+    }
   },
   {
     "id": "P5-slash",
     "area": "P",
     "name": "Slash partnership cover",
     "bg": null,
-    "why": "The Slash partnership cover: the Slash logo, a times sign and lockup J on a gold screen of a glyphfield export.",
+    "why": "The Slash partnership cover.",
     "w": 1600,
-    "h": 840,
-    "animated": false
+    "h": 839,
+    "animated": false,
+    "src": {
+      "ground": "slash",
+      "w": 1024,
+      "h": 537,
+      "mark": [
+        630,
+        229,
+        754,
+        307
+      ]
+    }
   },
   {
     "id": "P6-rewriting-docs-spine",
     "area": "P",
     "name": "Docs spine",
     "bg": null,
-    "why": "The three docs page types, each answering one question from the user: Quickstart, Guides and Reference.",
+    "why": "The three docs page types, each answering one question from the user.",
     "w": 1600,
     "h": 900,
-    "animated": false
+    "animated": false,
+    "src": {
+      "ground": "spine",
+      "w": 1920,
+      "h": 1080,
+      "mark": [
+        890,
+        160,
+        933,
+        186
+      ]
+    }
   }
 ]
