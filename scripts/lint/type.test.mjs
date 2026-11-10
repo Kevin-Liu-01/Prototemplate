@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, test } from 'node:test';
 
-import { lintBindings, lintCss, lintTsx, lintType, parseCss, PATHS, ratchet, shorthandFamily } from './type.mjs';
+import { heavyWeight, lintBindings, lintCss, lintTsx, lintType, parseCss, PATHS, ratchet, shorthandFamily } from './type.mjs';
 import { ROOT } from '../lib/root.mjs';
 
 const SHEET = 'src/app/example/example.css';
@@ -125,6 +125,20 @@ describe('T6 weight', () => {
   test('600 fails', () => fails('.a { font-weight: 600; }', 'T6'));
   test('bold in a shorthand fails', () => fails('.a { font: bold 14px var(--pt-text); }', 'T6'));
   test('500 passes', () => passes('.a { font-weight: 500; }'));
+  test('550 fails', () => fails('.a { font-weight: 550; }', 'T6'));
+  test('650 fails', () => fails('.a { font-weight: 650; }', 'T6'));
+  test('501 fails', () => fails('.a { font-weight: 501; }', 'T6'));
+  test('a heavy var() fallback fails', () => fails('.a { font-weight: var(--a-weight, 700); }', 'T6'));
+  test('a numeric weight in a shorthand fails', () => fails('.a { font: 650 14px var(--pt-text); }', 'T6'));
+  test('the strong token passes', () => passes('.a { font-weight: var(--pt-w-strong); }'));
+  test('a 500 fallback passes', () => passes('.a { font-weight: var(--a-weight, 500); }'));
+  test('400 passes', () => passes('.a { font-weight: 400; }'));
+  test('an inline 650 fails', () => assert.ok(lintTsx('src/x.tsx', '<p style={{ fontWeight: 650 }} />').some((p) => p.rule === 'T6')));
+  test('an inline 500 passes', () => assert.deepEqual(lintTsx('src/x.tsx', '<p style={{ fontWeight: 500 }} />'), []));
+  test('heavyWeight reads numbers, keywords and fallbacks', () => {
+    for (const v of ['501', '550', '600', '900', '1000', 'bold', 'bolder', 'var(--a, 700)', 'var(--a, var(--b, bold))']) assert.equal(heavyWeight(v), true, v);
+    for (const v of ['100', '400', '500', 'normal', 'lighter', 'inherit', 'var(--pt-w-strong)', 'var(--a, 500)', 'calc(400 + 100)']) assert.equal(heavyWeight(v), false, v);
+  });
   test('the specimen rows pass', () => passes('.ptb-display { font-weight: 800; }'));
   test('tokens.css without the strong rule fails', () => fails(":root { --pt-w-strong: 500; }", 'T6', PATHS.tokens));
 });

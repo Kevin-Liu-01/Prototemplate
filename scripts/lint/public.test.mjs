@@ -31,6 +31,8 @@ const KEYS = {
   github: ['gh', 'p_', a(36)].join(''),
   'github-pat': ['github', 'pat', a(20)].join('_'),
   slack: ['xo', 'xb-', '1234567890'].join(''),
+  'vercel-blob': ['vercel', 'blob', 'rw', a(16), a(24)].join('_'),
+  elevenlabs: ['sk', a(48)].join('_'),
   pem: ['-----BEGIN', 'RSA PRIVATE', 'KEY-----'].join(' '),
 };
 const MACHINE = ['', 'Users', 'someone', 'notes'].join('/');

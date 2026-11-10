@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 
 import { getClientIp, isRateLimited } from '@/lib/rate-limit';
+import { sameOrigin } from '@/lib/same-origin';
 import { createSafeFetcher } from '@/lib/try/safeFetch';
 
 import type { NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
 
-// One SSRF-gated upstream fetch per call; the report pipeline runs in the
-// browser and orchestrates these. Longest allowed upstream fetch is 10s.
+// One SSRF-gated upstream fetch per call, for this site's own pages only
+// (a request from another origin answers 403). The report pipeline runs in
+// the browser and orchestrates these. Longest allowed upstream fetch is 10s.
 export const maxDuration = 15;
 
 /* A full report run makes at most 11 calls (1 base page, 2 sitemap, 8
@@ -18,6 +20,7 @@ const RATE_MAX_PER_MINUTE = 90;
 const MAX_TIMEOUT_MS = 10000;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  if (!sameOrigin(req)) return NextResponse.json({ error: 'origin' }, { status: 403 });
   if (isRateLimited('try-fetch', getClientIp(req), RATE_MAX_PER_MINUTE)) {
     return NextResponse.json(
       {

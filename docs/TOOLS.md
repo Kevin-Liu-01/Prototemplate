@@ -11,7 +11,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm build` | Runs the key-shape scan and the static lints that guard a deploy, checks src/lib/updated.ts, builds the site with next build, then checks every prerendered head with lint:seo --built. | `node scripts/lint/public.mjs --keys && node scripts/lint/...` |
 | `pnpm dev` | Starts the dev server on port 3005. | `next dev --turbopack --port 3005` |
 | `pnpm start` | Serves the production build. | `next start` |
-| `pnpm sync:locked` | Uploads an area's files to the private Blob store under locked/\<area>/, where the area's route serves them (src/lib/blob-area.ts for raise, open to anyone with the link). | `scripts/locked/sync.mjs` |
+| `pnpm sync:locked` | Uploads an area's files to the private Blob store under locked/\<area>/, where the area's route serves them (src/lib/blob-area.ts, for raise, open to anyone with the link). | `scripts/locked/sync.mjs` |
 
 ## Setup
 
@@ -25,6 +25,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | Command | What it does | Runs |
 | --- | --- | --- |
 | `pnpm lint:all` | Runs lint:static, then the live lints against PT_BASE (default `http://localhost:3005`). | `pnpm lint:static && pnpm lint:lines:shell && pnpm lint:ty...` |
+| `pnpm lint:blog` | Builds src/lib/blog-posts.ts, the post and release list behind /blog, its sidebar run and the search: the frontmatter of every post in content/blog (title, summary, date, authors, tags, covers) with each author's name and avatar from content/authors, and every release of the ... | `scripts/build/blog.mjs --check` |
 | `pnpm lint:code` | Runs oxlint with the gt-ui plugin (scripts/lint/oxlint-plugins/gt-ui.ts) over the live surfaces under src/. | `oxlint` |
 | `pnpm lint:copies` | Holds every copy in this repository to its record in scripts/lint/copies.json. | `scripts/lint/copies.mjs` |
 | `pnpm lint:heads` | Holds every book page to one structure (DESIGN.md section 4, The book page): BookHead renders the front matter (the mast with the title, the lead and the panel, one rule, the note, the contents and the hatch band), every section opens with the shared divider, and every space ... | `scripts/lint/heads.mjs` |
@@ -56,6 +57,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm test:heads` | Tests for scripts/lint/heads.mjs: a passing and a failing fixture per static rule, and each live judge fed recorded geometry (the judges are pure functions over what collectHead measures, so no browser runs here). | `scripts/lint/heads.test.mjs` |
 | `pnpm test:line-globe` | Tests for the line globe animations (src/lib/graticule/): Language globe turn and Mark to globe, each for Graticule GT, heavy and Graticule jaw, thicker. | `scripts/lint/line-globe.test.mjs` |
 | `pnpm test:marks` | Tests for the marks catalog (src/lib/marks.ts) against public/marks: every file a row names exists, every file under public/marks/dynamic has a row, every dynamic file is one path in currentColor on the canonical 256 unit header and at most 8 KB (the logo and its state are drawn ... | `scripts/lint/marks.test.mjs scripts/lint/mark-file.test.mjs` |
+| `pnpm test:pagecheck` | Tests for the page check's console allow list (scripts/check/pagecheck/hooks.mjs): a hydration error is counted and the dev server's notices are not. | `scripts/check/pagecheck/hooks.test.mjs` |
 | `pnpm test:pictures` | Tests for scripts/lint/pictures.mjs: the repository passes, and each kind of defect in a fixture copy of the picture files is reported. | `scripts/lint/pictures.test.mjs` |
 | `pnpm test:public` | Tests for scripts/lint/public.mjs: node --test scripts/lint/public.test.mjs (pnpm test:public). | `scripts/lint/public.test.mjs` |
 | `pnpm test:radius` | Tests for scripts/lint/radius.mjs: a passing and a failing string per static rule, the live judges over recorded corners, and the repository. | `scripts/lint/radius.test.mjs` |
@@ -154,4 +156,5 @@ Each tool reads its setting from a flag first, then the variable, then the defau
 | `GT_CLOUD` | A gt-cloud checkout, for the tools that compare with it (lint:copies notes). | none |
 | `MOTION_DIR` | The motion folder build:motion reads. | `<repo>/motion` |
 | `PT_DENYLIST` | The private term list lint:public reads; skipped under VERCEL or CI. | none |
+| `PT_PUBLIC_NO_DENYLIST` | Set to 1 to let the pre-push hook run without the private term list, in a clone that has none. | unset |
 | `LOCKED_BLOB_READ_WRITE_TOKEN` | The read-write token of the locked areas' own private Blob store, which sync:locked writes and the locked routes read. | none |

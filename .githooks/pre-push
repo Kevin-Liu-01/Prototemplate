@@ -1,10 +1,17 @@
 #!/bin/sh
 # Runs the public scan (pnpm lint:public) before a push and stops the push on
-# any finding: a key shape, a machine path or, with PT_DENYLIST set to the
-# private term list, a denylist term. It blocks since the switch (system v2,
-# lane L7, 2026-10-10); before that it only reported.
-# Enable it once per clone: git config core.hooksPath .githooks
+# any finding: a key shape, a machine path or a term on the private list that
+# PT_DENYLIST names. It blocks since the switch (system v2, lane L7,
+# 2026-10-10); before that it only reported.
+# With PT_DENYLIST unset the scan would skip the private terms and still
+# pass, so the hook stops the push instead. A clone that has no private list
+# sets PT_PUBLIC_NO_DENYLIST=1 to push without it.
+# Enable the hook once per clone: git config core.hooksPath .githooks
 root="$(git rev-parse --show-toplevel)" || exit 1
+if [ -z "$PT_DENYLIST" ] && [ -z "$CI" ] && [ "$PT_PUBLIC_NO_DENYLIST" != "1" ]; then
+  echo "pre-push: PT_DENYLIST is not set, so the private term list would not be checked; the push is stopped. Set PT_DENYLIST to the list's path and push again, or set PT_PUBLIC_NO_DENYLIST=1 in a clone that has no list."
+  exit 1
+fi
 if ! node "$root/scripts/lint/public.mjs"; then
   echo "pre-push: lint:public failed; the push is stopped. Fix each finding above (or add a file that must spell a pattern to scripts/lint/public.allow.json) and push again."
   exit 1

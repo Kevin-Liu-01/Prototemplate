@@ -60,6 +60,9 @@ const TWIN_REWRITES = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // AGENTS.md is this repository's own guide and a registered handbook
+  // document, so next dev must not write its managed block into it.
+  agentRules: false,
   // Prototype code: a handful of exploration pages carry known non-blocking
   // type errors, and deploys should not gate on them.
   typescript: { ignoreBuildErrors: true },

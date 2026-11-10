@@ -61,6 +61,7 @@ const ENVIRONMENT = [
   ['GT_CLOUD', 'A gt-cloud checkout, for the tools that compare with it (lint:copies notes).', 'none'],
   ['MOTION_DIR', 'The motion folder build:motion reads.', '`<repo>/motion`'],
   ['PT_DENYLIST', 'The private term list lint:public reads; skipped under VERCEL or CI.', 'none'],
+  ['PT_PUBLIC_NO_DENYLIST', 'Set to 1 to let the pre-push hook run without the private term list, in a clone that has none.', 'unset'],
   ['LOCKED_BLOB_READ_WRITE_TOKEN', "The read-write token of the locked areas' own private Blob store, which sync:locked writes and the locked routes read.", 'none'],
 ];
 
