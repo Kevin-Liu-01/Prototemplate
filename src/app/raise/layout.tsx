@@ -14,8 +14,8 @@ import RaiseNameplate from './RaiseNameplate';
 import '../docs/docs.css';
 import './raise.css';
 
-/* every page reads the private store on its request; nothing is prerendered or cached */
-export const dynamic = 'force-dynamic';
+/* the pages are built from the store and built again from it at most every five minutes, so a sync shows within that time */
+export const revalidate = 300;
 
 /** The sidebar: the overview, then the rounds under one separator per day, then the finals. */
 function raiseTree(raise: Raise | null): Root {

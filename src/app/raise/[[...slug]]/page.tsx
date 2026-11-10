@@ -12,15 +12,22 @@ type Params = { params: Promise<{ slug?: string[] }> };
 
 type TocItem = { title: ReactNode; url: string; depth: number };
 
-/** The one description every raise page carries: the page is private, so its head says what it is and nothing of the launch. */
+/** The one description every raise page carries. */
 const DESCRIPTION = 'The media of the funding announcement, round by round, with an account of how each round was directed.';
 
-/** The page's tab title: the round's tag alone, so a link that unfurls shows no launch copy. */
+/** The page's tab title: the round's tag after the section's name. */
 function titleOf(raise: Raise | null, slug: string | undefined): string {
   if (!slug) return 'Raise';
   if (slug === FINALS) return 'Raise finals';
   const round = raise?.data.rounds.find((r) => r.id === slug);
   return round ? `Raise ${round.tag}` : 'Raise';
+}
+
+/** The overview, every round and the finals, from the store at build time; the overview alone when the store cannot be read, and any other round renders on its first request. */
+export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
+  const raise = await loadRaise();
+  if (!raise) return [{ slug: [] }];
+  return [{ slug: [] }, ...raise.data.rounds.map((round) => ({ slug: [round.id] })), { slug: [FINALS] }];
 }
 
 export async function generateMetadata({ params }: Params) {

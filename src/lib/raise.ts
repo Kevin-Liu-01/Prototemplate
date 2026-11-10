@@ -8,8 +8,8 @@ import { formatLongDay } from '@/lib/dates';
  * /raise: the media history of an embargoed launch, round by round, as a
  * docs site. Nothing of it is in this repository: every word and every file
  * is read at request time from the locked areas' private Blob store under
- * locked/raise/ (scripts/locked/sync.mjs uploads it), so the code is public
- * and the content is not.
+ * locked/raise/ (scripts/locked/sync.mjs uploads it), so the raise folder
+ * stays the one source and a sync updates the pages without a deploy.
  *
  * Two text files drive every page:
  * - viewer/data.js, the raise folder's generated data (window.RAISE = {...},
