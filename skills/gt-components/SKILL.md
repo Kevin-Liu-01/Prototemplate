@@ -159,7 +159,7 @@ Kevin's rule (September 2026): a cross-cutting UI change ships to every user-fac
 
 ## Behavior
 
-The components above say what to build with. Kevin's behavior rules, set across the dashboard, onboarding, the landing and General Translation's tools, say how the result acts. `references/behavior.md` holds all twelve with their dates, and seven of them are summarized here.
+The components above say what to build with. Kevin's behavior rules, set across the dashboard, onboarding, the landing and General Translation's tools, say how the result acts. `references/behavior.md` holds all thirteen with their dates, and eight of them are summarized here.
 
 - **Honesty.** No offer or capability shows before the backend delivers it ("we only show it if we actually do it", 2026-09-29), and a failed or expired resource offers a way back.
 - **One interaction.** Hover reveals, click pins, leaving hides, Escape closes. A highlight turns blue and never scales or shifts layout.
@@ -168,6 +168,7 @@ The components above say what to build with. Kevin's behavior rules, set across 
 - **Forms.** Inputs are 16px or larger under `md` so iOS does not zoom, a third-party form takes the house field look through its appearance API, and a third-party widget (Turnstile) takes the site's resolved theme, keyed so it remounts on a flip.
 - **No shift.** Reserve the largest state, fix row heights and line counts, and fade heavy visuals in.
 - **Accessibility.** Icon-only controls have names that match their action, labels are selectable, and state changes are announced (2026-09-02).
+- **Loading.** A pane, frame, card or dialog that waits for its content shows `GtLogoMotion` in `loader` mode with a label, and the logo inside a link takes its `hover` mode (2026-11-09).
 
 ## Review checklist
 

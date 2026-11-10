@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { memo, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { CSSProperties, RefObject } from 'react';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { PlateNearContext, useReducedMotion } from '@/components/docs/demos/hooks';
 import { BookHead } from '@/components/viewer/BookView';
 import { Sheet } from '@/components/viewer/Sheet';
@@ -79,9 +80,9 @@ type SlotProps = {
   width: number | null;
 };
 
-/** The elements a plate rendered into its slot, without the lazy module's blank fallback. */
+/** The elements a plate rendered into its slot, without the lazy module's blank fallback or the slot's loader. */
 function plateNodes(slot: HTMLElement): HTMLElement[] {
-  return Array.from(slot.querySelectorAll<HTMLElement>(':scope > :not([aria-hidden="true"])'));
+  return Array.from(slot.querySelectorAll<HTMLElement>(':scope > :not([aria-hidden="true"], .cl-loading)'));
 }
 
 /** The height of what the plate rendered, whatever height the slot holds. */
@@ -117,7 +118,8 @@ type Phase = 'hold' | 'floor' | 'free';
  * motion from the still table where the plate has one, which the server's
  * render approximates with the heights at 1440 and 390 until the page
  * hydrates. It has drawn once something other than the lazy module's
- * blank fallback is in it. While the plate settles (its frames load, a
+ * blank fallback is in it; until then a mounted plate's slot shows the
+ * logo's loader in its middle. While the plate settles (its frames load, a
  * figure posts its height, a readout fills in) the slot keeps exactly that
  * height and clips what passes it, until the plate's own height has held
  * still for SETTLE_MS, or for HOLD_MAX_MS at most. A plate that settles
@@ -225,6 +227,11 @@ function PlateSlot({ entry, plate, live, kept, width }: SlotProps) {
         : { '--cl-h': `${reserveAt(points, 1440)}px`, '--cl-h-sm': `${reserveAt(points, 390)}px` };
   return (
     <div className={cn('cl-live', drawn && 'is-drawn')} data-plate={entry.id} ref={ref} style={style}>
+      {live && !ready ? (
+        <div className='cl-loading'>
+          <GtLogoMotion mode='loader' size={24} label={`Loading ${entry.name}`} />
+        </div>
+      ) : null}
       {live ? (
         <PlateNearContext.Provider value>
           <LivePlate plate={plate} />

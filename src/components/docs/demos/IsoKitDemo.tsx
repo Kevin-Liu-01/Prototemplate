@@ -96,7 +96,7 @@ function SeatedMark({ z, size }: { z: number; size: number }) {
  * one set. The plate builds a solid on a slab with the kit's own geometry
  * functions. Width, depth and height size a box; the solid can also be a
  * hexagonal or octagonal prism, extruded from any convex plan polygon the
- * same way. Mark seats the GT mark on the top face with plane(z).
+ * same way. Mark seats the General Translation logo on the top face with plane(z).
  */
 export default function IsoKitDemo() {
   const [solid, setSolid] = useState<Solid>('box');

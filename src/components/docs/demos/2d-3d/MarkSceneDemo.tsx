@@ -37,7 +37,7 @@ const PASSES = [
 ] as const;
 
 /**
- * The extruded GT mark turning under one light, printed through the Bayer
+ * The extruded General Translation logo turning under one light, printed through the Bayer
  * pass. Pass shows the screen, the continuous light the screen reads, or
  * both either side of a seam; Matrix and Cell set the screen; Light swings
  * the light's azimuth; Speed sets the turn; drag or the arrow keys turn the

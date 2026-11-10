@@ -96,11 +96,21 @@
 }
 
 .cl-live:not(.is-drawn) {
+  position: relative;
   height: var(--cl-h);
   border: 1px solid var(--pt-hair);
   border-radius: var(--pt-radius-card);
   background: var(--pt-paper);
   overflow: hidden;
+}
+
+/* while a mounted plate loads, the logo's loader sits in the middle of the reserved card */
+.cl-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--pt-titanium);
 }
 
 /* the docs page spaces a plate from its prose; in a row the slot does */

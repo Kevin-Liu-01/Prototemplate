@@ -2,7 +2,7 @@ import type { SVGProps } from 'react';
 
 type GtMarkProps = SVGProps<SVGSVGElement>;
 
-// The GT mark in one ink. The path data is the brand asset
+// The doubled-line monogram, General Translation's previous mark, in one ink. The path data is the brand asset
 // (public/logos/gt/base/no-bg), with the viewBox cropped to the glyph's
 // bounding box so it sits at 25x16 next to text instead of inside the
 // asset's square padding. Fills with currentColor so it follows the theme.

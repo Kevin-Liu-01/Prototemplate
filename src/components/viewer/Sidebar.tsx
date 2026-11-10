@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import type { KeyboardEvent, MouseEvent, PointerEvent, ReactElement, ReactNode, RefObject } from 'react';
 import { Fragment, memo, useCallback, useMemo, useRef, useState } from 'react';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { brandFontVariables } from '@/lib/brand-fonts';
 import { cn } from '@/lib/cn';
 import { isDocumentHref, openSiteHref } from '@/lib/document-routes';
@@ -16,7 +17,6 @@ import type { Surface, SurfaceGroup, SurfaceSite } from '@/lib/surfaces';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
 
-import { GtMark } from './GtMark';
 import { Icon } from './icons';
 import type { IconName } from './icons';
 import { activateOnKey, ListRow, pressWithoutFocus } from './ListRow';
@@ -103,7 +103,8 @@ function glyph(name: IconName): ReactElement {
   }
   return el;
 }
-const MARK_NODES: Readonly<Record<ShellMark, ReactElement>> = { gt: <GtMark />, pt: <PtMark /> };
+/* the General Translation logo draws its meridian back while its link is hovered or focused (GtLogoMotion's hover) */
+const MARK_NODES: Readonly<Record<ShellMark, ReactElement>> = { gt: <GtLogoMotion mode='hover' size={18} />, pt: <PtMark /> };
 
 /** The filter row, memoized: its props are the query, stable handlers and the route's words. */
 const FilterRowMemo = memo(FilterRow);
@@ -1615,7 +1616,7 @@ export function Sidebar({
      chrome exception, DESIGN.md section 15), `proto` in Fraunces
      and `template` in Space Grotesk, with the two font variables on the
      span itself so they resolve on /docs and /brand as on /; the deck keeps
-     its Inter title beside the GT mark. The aside is still named by the
+     its Inter title beside the General Translation logo. The aside is still named by the
      route's title. */
   const nameNode =
     mark === 'pt' ? (

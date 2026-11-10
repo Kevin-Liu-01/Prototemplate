@@ -21,10 +21,10 @@ export function generateStaticParams() {
 export const dynamicParams = false;
 
 /**
- * The head of one post. The post is GT's: generaltranslation.com publishes
- * the same file, so the policy gives it GT's URL as its canonical (each
+ * The head of one post. The post is General Translation's: generaltranslation.com publishes
+ * the same file, so the policy gives it General Translation's URL as its canonical (each
  * one answered 200 on 2026-10-15) and the BlogPosting names that URL. It
- * keeps the card GT made for it.
+ * keeps the card General Translation made for it.
  */
 function postRoute(post: Post) {
   return seoRoute({

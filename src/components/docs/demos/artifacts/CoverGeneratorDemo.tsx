@@ -212,7 +212,7 @@ function Frame({ id, name, w, h, title, field, theme, armed }: FrameProps) {
 /**
  * Covers, social cards and the X banner from one title: the reader types
  * the title and picks the field and the theme, and each export shows at
- * its own aspect ratio with the GT mark, the name and the title set by
+ * its own aspect ratio with the General Translation logo, the name and the title set by
  * the rules (Inter at 500, display tracking, two lines at most, nothing
  * under 22 export px). The field takes one side of each frame and the
  * type sits on solid ground.

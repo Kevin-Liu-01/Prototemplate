@@ -6,7 +6,7 @@ import { requireUpdated } from '@/lib/updated';
 
 import BlogViewer from './BlogViewer';
 
-/** GT publishes the posts and serves their feed; the index points at it rather than syndicating them from a second domain. */
+/** General Translation publishes the posts and serves their feed; the index points at it rather than syndicating them from a second domain. */
 const GT_FEED = 'https://generaltranslation.com/rss.xml';
 
 const route = seoRoute({

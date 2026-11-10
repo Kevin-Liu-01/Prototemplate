@@ -36,7 +36,7 @@
 // flag turns the run into a gate: the script exits 1 when the median run
 // breaches it, so a budget fails the change like a lint.
 //
-// The theme is seeded the way GT pages read it: localStorage gt-theme
+// The theme is seeded the way General Translation pages read it: localStorage gt-theme
 // (Prototemplate) and theme (next-themes in gt-cloud), plus the
 // prefers-color-scheme emulation. Reduced motion is emulated off, so the
 // page's motion runs. CHROME_PATH overrides the browser; otherwise the newest

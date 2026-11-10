@@ -97,7 +97,7 @@
 }
 
 :root:has(#nd-notebook-layout) {
-  /* GT's one accent: the Dossier blue on paper, lifted on ink */
+  /* General Translation's one accent: the Dossier blue on paper, lifted on ink */
   --docs-accent: #2f5ce0;
   --color-fd-background: var(--pt-paper);
   --color-fd-foreground: var(--pt-ink);

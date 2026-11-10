@@ -28,7 +28,7 @@ import type { Crumb, JsonLdNode } from './json-ld';
 
 export type { SeoKind, SeoSection } from './card-url';
 
-/** A social card other than the generated one: a post's own card, made for GT. */
+/** A social card other than the generated one: a post's own card, made for General Translation. */
 export type SeoImage = {
   /** a site path or an absolute URL */
   url: string;
@@ -92,7 +92,7 @@ function seoTitle(title: string, section?: SeoSection): string {
   return title;
 }
 
-/** Whether the path is one of the GT design studies (or the presenter), which take the GT mark as their icon. */
+/** Whether the path is one of the General Translation design studies (or the presenter), which take the logo as their icon. */
 function gtIcon(path: string): boolean {
   return path === '/d' || path.startsWith('/d/') || path === '/present';
 }

@@ -19,7 +19,7 @@ export const REPO_URL = 'https://github.com/Kevin-Liu-01/Prototemplate';
 /** The site's WebSite node. */
 export const WEBSITE_ID = `${SITE_URL}/#website`;
 
-/** GT's site owns the Organization entity; this site refers to it by id with its name and url and publishes no Organization of its own. */
+/** General Translation's site owns the Organization entity; this site refers to it by id with its name and url and publishes no Organization of its own. */
 export const GT_ORGANIZATION = {
   '@type': 'Organization',
   '@id': `${GT_URL}/#organization`,
@@ -34,11 +34,11 @@ export const KEVIN = {
   url: 'https://github.com/Kevin-Liu-01',
 } as const;
 
-/** X accounts on every card (Kevin, 2026-10-14): GT's account as the site, Kevin's as the creator. */
+/** X accounts on every card (Kevin, 2026-10-14): General Translation's account as the site, Kevin's as the creator. */
 export const TWITTER_SITE = '@generaltxn';
 export const TWITTER_CREATOR = '@kevskgs';
 
-/** The tab icons: the Prototemplate mark on the hub, the GT logo on the GT design studies and the presenter. The logo's SVG icon is its drawn box in ink, white under a dark color scheme, and gt-globe-logo.ico holds 16, 32 and 48 px of the white logo on the ink ground for browsers that take no SVG icon, so no tab strip draws a black mark on black (pnpm build:logo writes both). */
+/** The tab icons: the Prototemplate mark on the hub, the logo on the General Translation design studies and the presenter. The logo's SVG icon is its drawn box in ink, white under a dark color scheme, and gt-globe-logo.ico holds 16, 32 and 48 px of the white logo on the ink ground for browsers that take no SVG icon, so no tab strip draws a black mark on black (pnpm build:logo writes both). */
 const HUB_ICON = { url: '/pt-mark.svg', type: 'image/svg+xml' } as const;
 export const GT_ICONS = [
   { url: '/brand/gt-globe-logo.ico', sizes: '48x48' },

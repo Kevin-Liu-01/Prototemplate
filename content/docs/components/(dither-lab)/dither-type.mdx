@@ -72,13 +72,13 @@ Play runs one cycle on smoothsteps: the mark resolves in 1.4 s, holds for 1.2 s,
 ```ts
 import { loadMark, markShape } from '@/components/docs/demos/dither-lab/shapes';
 
-const art = await loadMark('bar-monogram');
+const art = await loadMark('gt');
 const shape = markShape(art, cols, rows);
 ```
 
 | Function | Returns | Notes |
 | --- | --- | --- |
-| `loadMark(id)` | `Promise<MarkArt>` | `'gt'` draws the reference path with the even-odd rule; the others decode the file the catalog gives them once at 2048px wide, cut to the drawn box where the catalog records one. |
+| `loadMark(id)` | `Promise<MarkArt>` | `'gt'` draws the logo's path, `LOGO` in `src/lib/logo.ts`, with its own fill rule; the others decode the file the catalog gives them once at 2048px wide, cut to the drawn box where the catalog records one. |
 | `markShape(art, cols, rows, ss?, fill?)` | `CellShape` | Fits the mark to 80 percent of the width and 76 percent of the height, centred. |
 
 The marks in `public/marks` draw their cuts with SVG masks and white shapes over black. The plate rasterizes each file as an image and counts a pixel as ink only when it is opaque and dark, so a white knockout stays paper.

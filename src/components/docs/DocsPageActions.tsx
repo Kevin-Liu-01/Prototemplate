@@ -1,7 +1,7 @@
 import { MarkdownCopyButton, ViewOptionsPopover } from 'fumadocs-ui/layouts/notebook/page';
 
 /**
- * The page's actions, the pair GT's docs carry: Copy page copies the page's
+ * The page's actions, the pair General Translation's docs carry: Copy page copies the page's
  * Markdown twin, and the menu beside it opens the twin, the source file on
  * GitHub, or a prompt that hands the page to an assistant. The twin is the
  * page's address plus .md (next.config.ts rewrites it to

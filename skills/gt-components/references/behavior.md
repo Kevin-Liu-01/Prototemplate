@@ -3,7 +3,7 @@
 Detail for the Behavior section of `gt-components`. The rest of the skill
 says which component to use; these rules say how General Translation product UI behaves once
 it is built. Kevin set them across the dashboard, onboarding, the landing and
-General Translation's tools between 2026-07-30 and 2026-10-03. Dashboard data, form and table
+General Translation's tools between 2026-07-30 and 2026-11-09. Dashboard data, form and table
 conventions stay in gt-cloud's `.agents/skills/gt-dashboard`.
 
 ## 1. Product honesty and recovery
@@ -126,6 +126,17 @@ docked. Hover and pointer events inside it keep working.
 - Icon-only controls carry accessible names that match their action.
 - Labels are selectable.
 - State changes (copied, loading, expanded) are announced (2026-09-02).
+
+## 13. Loading states
+
+- A surface that waits for its content (a pane, a frame, a card or a
+  dialog) shows the logo's loader: `GtLogoMotion` in `loader` mode, with a
+  label that says what loads (2026-11-09).
+- The logo inside a link or a button takes `GtLogoMotion`'s `hover` mode,
+  so its meridian draws back while the link is hovered or focused.
+- A placeholder that only holds a height for a moment stays blank, and the
+  doubled-line monogram, the speed marks and a generic spinner never stand
+  in for the loader.
 
 ## Sources
 

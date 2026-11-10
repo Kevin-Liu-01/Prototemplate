@@ -5,7 +5,7 @@ description: >-
   built and edited: the 1600 by 900 sheet, the type sizes and color
   tokens, the layout classes, icons from the Heroicons 20 solid sprite,
   diagrams, openers and mood slides as artifact pictures, the speed mark
-  slides, slide-scoped CSS, both themes, the build and shoot scripts, the
+  slides kept as history, slide-scoped CSS, both themes, the build and shoot scripts, the
   registries a new slide touches, what counts as a defect, and how any General Translation
   presentation's story is written. Use when adding or editing a slide,
   rebuilding or checking the deck, reviewing a slide lane's work, writing
@@ -129,7 +129,7 @@ All are defined in `head.html`; check there before writing slide CSS.
 
 ## 9. Speed marks
 
-Slides 17 to 23 present the seven race-type marks Kevin chose on 2026-09-29. Each slide pastes its file from `public/marks`, and The lockup also pastes `bar-monogram.svg` at 375, 187 and 94 px on a paper and an ink ground:
+Slides 17 to 23 present the seven race-type marks Kevin chose on 2026-09-29, kept as history: previous marks that never stand in for the logo. Each slide pastes its file from `public/marks`, and The lockup also pastes `bar-monogram.svg` at 375, 187 and 94 px on a paper and an ink ground:
 
 | Slide | File |
 | --- | --- |
