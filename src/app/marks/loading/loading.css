@@ -1,0 +1,321 @@
+/* Loading: the logo while a page loads. The finished loader first, then the
+   hovers, how the motion is built, the checks, reduced motion, the loader
+   on /compare and the before and after of the fix, on the viewer shell.
+
+   The column, the head, the contents, the band and the section dividers are
+   the shared book classes (BookView.css). The live marks are GtLogoMotion in
+   the ink token, the videos are drawn in the page's own ink on its own
+   paper, and the sheets are captures shown at the column's width. Rules are
+   rows (--pt-hair-soft) between the parts of a table or a list, and nothing
+   here is boxed or filled. */
+
+.ld-sec {
+  container: ld-sec / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  scroll-margin-top: 20px;
+}
+
+/* every body runs from the text's line, right of the dividers' gutter, to the column's right edge */
+.ld-body {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  min-width: 0;
+  padding-left: calc(var(--pt-gutter) + var(--pt-gutter-gap));
+  color: var(--pt-ink);
+}
+
+.ld-fig {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  margin: 0;
+  color: var(--pt-ink);
+}
+
+.ld-fig figcaption {
+  display: grid;
+  gap: 6px;
+  max-width: var(--pt-measure);
+}
+
+.ld-fig :is(h3, h4) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-title-lh);
+  letter-spacing: var(--pt-track-label);
+}
+
+.ld-fig figcaption p {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+/* the shipped loops carry a chip after their name */
+.ld-tag {
+  padding: 1px 6px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  font-weight: var(--pt-w-text);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+/* the loader: the live mark at 200 beside its timing, then the sizes the site uses */
+.ld-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+}
+
+@container ld-sec (min-width: 860px) {
+  .ld-hero {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+  }
+}
+
+.ld-stage > .gt-logo-motion,
+.ld-stage > .ld-host {
+  align-self: flex-start;
+}
+
+.ld-host {
+  display: inline-flex;
+  color: inherit;
+  border-radius: var(--pt-radius-control);
+}
+
+.ld-host:focus-visible {
+  outline: 1px solid var(--pt-ink);
+  outline-offset: 6px;
+}
+
+.ld-timing {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+}
+
+.ld-timing caption {
+  padding-bottom: 12px;
+  text-align: left;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  color: var(--pt-ink);
+  caption-side: top;
+}
+
+.ld-timing :is(th, td) {
+  padding: 10px 16px 10px 0;
+  border-top: 1px solid var(--pt-hair-soft);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ld-timing thead th {
+  border-top: 0;
+  font-weight: var(--pt-w-label);
+  color: var(--pt-ink-2);
+}
+
+.ld-timing tbody th {
+  font-weight: var(--pt-w-label);
+  white-space: nowrap;
+}
+
+.ld-timing td:nth-child(2) {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ld-timing td:last-child {
+  padding-right: 0;
+  color: var(--pt-ink-2);
+}
+
+.ld-sizes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+
+/* every size sits on one baseline box, 56 px tall, so the three captions start on one line */
+.ld-size-box {
+  display: flex;
+  align-items: flex-end;
+  height: 56px;
+}
+
+/* the hovers and the loader as videos: four across at 1440, two on a tablet, one on a phone */
+.ld-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px 32px;
+}
+
+@container ld-sec (min-width: 960px) {
+  .ld-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ld-row.is-two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* a loop's light and dark videos sit in one square cropped to the ring: the ring's outer edge is 0.6 of the video's
+   frame, so the video stands 1 / 0.6 of the square across, centred, and only the theme's video shows */
+.ld-clip {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.ld-vid {
+  position: absolute;
+  top: -33.3333%;
+  left: -33.3333%;
+  display: block;
+  width: 166.6667%;
+  height: 166.6667%;
+  max-width: none;
+}
+
+.ld-vid.is-light,
+.ld-themed.is-light {
+  display: none;
+}
+
+html[data-theme='light'] :is(.ld-vid, .ld-themed).is-light {
+  display: block;
+}
+
+html[data-theme='light'] :is(.ld-vid, .ld-themed).is-dark {
+  display: none;
+}
+
+/* terms and what each does: two columns at 1440, one on a phone, a row rule over each */
+.ld-terms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 32px;
+  margin: 0;
+}
+
+.ld-terms > div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 14px 0 18px;
+  border-top: 1px solid var(--pt-hair-soft);
+}
+
+.ld-terms dt {
+  font-weight: var(--pt-w-label);
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+}
+
+.ld-terms dd {
+  margin: 0;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+  text-wrap: pretty;
+}
+
+.ld-notes {
+  display: grid;
+  gap: 10px;
+  max-width: var(--pt-measure);
+  margin: 0;
+  padding-left: 18px;
+  font-size: var(--pt-t-body);
+  line-height: var(--pt-t-body-lh);
+  color: var(--pt-ink-2);
+}
+
+.ld-notes li {
+  text-wrap: pretty;
+}
+
+/* reduced motion: the still logo beside its notes */
+.ld-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+
+@container ld-sec (min-width: 860px) {
+  .ld-pair {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+  }
+}
+
+.ld-code {
+  margin: 0;
+  padding: 16px 0;
+  overflow-x: auto;
+  border-top: 1px solid var(--pt-hair-soft);
+  border-bottom: 1px solid var(--pt-hair-soft);
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
+}
+
+/* a sheet keeps its own proportions at the column's width */
+.ld-sheet img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ld-sheet.is-wide figcaption {
+  max-width: var(--pt-measure);
+}
+
+/* the dividers' own breakpoint (BookView.css), where the gutter folds above the heading: the bodies take the whole
+   column */
+@media (max-width: 900px), (pointer: coarse) and (max-height: 500px) {
+  .ld-sec {
+    gap: 28px;
+  }
+
+  .ld-body {
+    padding-left: 0;
+  }
+}
+
+/* a phone's column: one figure across, and the terms in one column */
+@container ld-sec (max-width: 539px) {
+  .ld-row,
+  .ld-row.is-two,
+  .ld-terms {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ld-row .ld-clip {
+    max-width: 240px;
+  }
+
+  .ld-sizes {
+    gap: 16px;
+  }
+}

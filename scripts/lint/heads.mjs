@@ -36,7 +36,7 @@
  *   S6 tokens   the book page's spaces in BookView.css and Sheet.css read
  *               their tokens, never the literal px they stand for
  *
- * Live mode reads /brand, /motion, the first package, /graphics, /skills, the first skill, /components, /marks, /marks/graticule, the first
+ * Live mode reads /brand, /motion, the first package, /graphics, /skills, the first skill, /components, /marks, /marks/graticule, /marks/loading, the first
  * direction, /blog, the newest post and the three Transcreate pages at 1440x900 and 390x844 in both themes:
  *
  *   H1 structure  one header.pt-book-head; the mast is h1, the lead, the
@@ -371,7 +371,7 @@ export function lintHeads(root) {
 /* ------------------------------------------------------------------ */
 
 /** The routes live mode reads, by kind: the single pages and the first of each record (from lint-type's list). */
-const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|components|marks(\/graticule)?|directions\/[\w-]+|blog(\/[\w-]+)?|transcreate(\/[\w-]+)?)$/;
+const LIVE_PATHS = /^\/(brand|motion(\/[\w-]+)?|graphics|skills(\/[\w-]+)?|components|marks(\/(graticule|loading))?|directions\/[\w-]+|blog(\/[\w-]+)?|transcreate(\/[\w-]+)?)$/;
 
 /**
  * Runs in the page: the head's geometry and the lines around it. Every

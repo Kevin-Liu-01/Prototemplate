@@ -308,6 +308,10 @@ function pages() {
       paths: ['src/app/marks/graticule', 'src/lib/marks.ts', 'src/lib/graticule', 'src/components/shared/LineGlobe.tsx', 'public/marks/graticule', 'public/marks/dynamic/graticule-gt.svg', 'public/marks/dynamic/graticule-gt-heavy.svg', 'public/marks/dynamic/graticule-jaw.svg', 'public/marks/dynamic/graticule-jaw-thicker.svg', 'public/marks/dynamic/graticule-jaw-no-meridian.svg', 'public/marks/dynamic/graticule-g.svg'],
     },
     {
+      id: '/marks/loading',
+      paths: ['src/app/marks/loading', 'src/components/brand/GtLogoMotion.tsx', 'src/components/brand/GtLogoMotion.css', 'scripts/build/logo-motion.json', 'public/marks/loading', 'public/marks/graticule/motion'],
+    },
+    {
       id: '/blog',
       paths: [
         'src/app/blog/page.tsx',

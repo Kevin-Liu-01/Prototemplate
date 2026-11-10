@@ -125,6 +125,7 @@ const PAGE_ICON: Readonly<Record<string, IconName>> = {
   handbook: 'book',
   marks: 'swatch',
   graticule: 'globe',
+  loading: 'sync',
   blog: 'post',
   atlas: 'book',
   motion: 'film',

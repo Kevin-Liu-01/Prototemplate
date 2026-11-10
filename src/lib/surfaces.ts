@@ -207,6 +207,14 @@ const KNOWLEDGE: readonly Surface[] = [
     thumb('graticule')
   ),
   internal(
+    'loading',
+    pageLabel('loading'),
+    '/marks/loading',
+    'The logo while a page loads, running live, then the hovers, how the motion is built, the checks that hold it, reduced motion, the loader on /compare and the before and after of the fix.',
+    'Knowledge',
+    thumb('loading')
+  ),
+  internal(
     'blog',
     pageLabel('blog'),
     '/blog',
