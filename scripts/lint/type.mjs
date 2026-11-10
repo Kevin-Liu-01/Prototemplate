@@ -148,7 +148,14 @@ const FAMILY_TOKENS = /^var\(--pt-(text|display|mono|text-hant|text-hans|text-ja
 const FACE_TOKENS = /^var\(--pt-face-(serif|grot)\)$/;
 const FEATURE_TOKENS = /^var\(--pt-ff-(text|display)\)$/;
 const BANNED_FAMILY = /(^|[\s,'"])(InterVariable|Inter Display|Inter var|Inter|TWK Lausanne|Lausanne)(?=$|[\s,'"])/i;
-const HEAVY = /^(600|700|800|900|bold|bolder)$/;
+/** True for a weight above 500: a number over 500, or bold or bolder. A var() is judged by its fallback, when it has one. */
+export function heavyWeight(value) {
+  const v = String(value).trim();
+  const fallback = /^var\(\s*--[\w-]+\s*,\s*(.+)\)$/.exec(v);
+  if (fallback) return heavyWeight(fallback[1]);
+  if (/^(bold|bolder)$/i.test(v)) return true;
+  return /^\d+(\.\d+)?$/.test(v) && Number(v) > 500;
+}
 const CODE_SUBJECT = /(^|[\s:(,>+~])(code|pre|samp|tt|kbd)(?=$|[.:#[\s,)])/;
 const CODE_CLASS = /\.[\w-]+-(code|token|path|file|tag|hex)(?=$|[.:#[\s,)])/;
 const HATCH = /lint-type:\s*allow\b(.*?)(\*\/|$)/;
@@ -333,9 +340,9 @@ export function shorthandFamily(value) {
   return m ? m[1].trim() : value.trim();
 }
 
-/** The weight part of a `font:` shorthand, or null. */
+/** The weight part of a `font:` shorthand, or null: a bare number (a size carries a unit), or bold or bolder. */
 function shorthandWeight(value) {
-  const m = value.match(/(?:^|\s)(100|200|300|400|500|600|700|800|900|bold|bolder)(?=\s)/);
+  const m = value.match(/(?:^|\s)(\d{1,4}(?:\.\d+)?|bold|bolder)(?=\s)/);
   return m ? m[1] : null;
 }
 
@@ -412,7 +419,7 @@ export function lintCss(rel, source) {
       /* T6: weight */
       if (prop === 'font-weight' || prop === 'font') {
         const w = prop === 'font' ? shorthandWeight(v) : v;
-        if (w && HEAVY.test(w) && !nameplate && !specimen) report(line, 'T6', `${prop}: ${v}; nothing above 500 (BRAND.md section 6): var(--pt-w-strong) or 500`);
+        if (w && heavyWeight(w) && !nameplate && !specimen) report(line, 'T6', `${prop}: ${v}; nothing above 500 (BRAND.md section 6): var(--pt-w-strong) or 500`);
       }
       /* T7: heading sizes from the display ladder */
       if (headings.length && !isTokens && (prop === 'font-size' || prop === 'line-height' || prop === 'letter-spacing' || prop === 'font')) {
@@ -475,7 +482,7 @@ export function lintTsx(rel, source) {
       if (key === 'fontFamily' && !FAMILY_TOKENS.test(v)) problems.push({ line, rule: BANNED_FAMILY.test(v) ? 'T2' : 'T1', message: `fontFamily: ${raw.trim()}; read var(--pt-text) or var(--pt-display)` });
       if (key === 'fontFeatureSettings' && !FEATURE_TOKENS.test(v)) problems.push({ line, rule: 'T4', message: `fontFeatureSettings: ${raw.trim()}; read var(--pt-ff-text) or var(--pt-ff-display)` });
       if (key === 'fontVariationSettings') problems.push({ line, rule: 'T5', message: 'fontVariationSettings: opsz and wght come from the size and the weight' });
-      if (key === 'fontWeight' && HEAVY.test(v)) problems.push({ line, rule: 'T6', message: `fontWeight: ${v}; nothing above 500` });
+      if (key === 'fontWeight' && heavyWeight(v)) problems.push({ line, rule: 'T6', message: `fontWeight: ${v}; nothing above 500` });
       if (key === 'letterSpacing' && Number.parseFloat(v) > 0) problems.push({ line, rule: 'T8', message: `letterSpacing: ${v}; nothing on Inter is tracked positive` });
     }
   }
