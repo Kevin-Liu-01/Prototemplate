@@ -100,11 +100,13 @@ export const SKIP = [
 export const TAP_SCOPE = 'main, .pt-viewer, .pt-corner, .pt-corner-layer, .pr-root';
 
 /**
- * Console errors the check does not count: React's hydration attribute
- * warning (extensions stamp body attributes; layout.tsx documents the
- * suppress flag) and the dev server's own notices.
+ * Console errors the check does not count: the dev server's own notices.
+ * A hydration error or warning is the page's defect and is counted. The
+ * check runs Chrome for Testing with a fresh profile, so no extension
+ * stamps attributes, and layout.tsx sets suppressHydrationWarning on html
+ * and body for the attributes the boot scripts write.
  */
-export const CONSOLE_ALLOW = /hydrat|did not match|extra attributes from the server|Download the React DevTools|Fast Refresh/i;
+export const CONSOLE_ALLOW = /Download the React DevTools|Fast Refresh/i;
 
 /**
  * The presenter's walk (interactions.mjs present-walk). Each stop is a
