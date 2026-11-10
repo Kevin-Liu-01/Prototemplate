@@ -1,9 +1,9 @@
 # A fresh clone on Linux builds and passes every static gate (P3 of the
 # system plan): install, Chrome for Testing, the Python packages, pnpm
 # run doctor, pnpm build, pnpm lint:static (every lint and test that needs no
-# running server, lint:public and test:skill-scripts among them) and --help
-# for every script. It uses no secrets; lint:public skips its private
-# denylist under CI.
+# running server, lint:public and test:skill-scripts among them), the type
+# check (tsc --noEmit, which the build skips) and --help for every script.
+# It uses no secrets; lint:public skips its private denylist under CI.
 name: Fresh clone
 
 on:
@@ -45,6 +45,12 @@ jobs:
         run: pnpm build
       - name: Static lints and tests
         run: pnpm lint:static
+      - name: Type check
+        # next build never type-checks here (next.config.ts sets
+        # typescript.ignoreBuildErrors), so tsc is a gate of its own
+        run: pnpm exec tsc --noEmit
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
       - name: --help for every script
         run: |
           for file in $(grep -rl --include='*.mjs' 'helpIfAsked(import.meta.url' scripts | grep -v '^scripts/lib/'); do
