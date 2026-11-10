@@ -244,7 +244,8 @@ html[data-theme='light'] :is(.ld-vid, .ld-themed).is-dark {
   gap: 10px;
   max-width: var(--pt-measure);
   margin: 0;
-  padding-left: 18px;
+  padding: 0;
+  list-style: none;
   font-size: var(--pt-t-body);
   line-height: var(--pt-t-body-lh);
   color: var(--pt-ink-2);
