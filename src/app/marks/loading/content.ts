@@ -135,8 +135,8 @@ export const CHECKS_LEAD =
 export const CHECKS: readonly { term: string; body: string }[] = [
   { term: 'Hand-off', body: 'At the start of the hover and of the loader, at the end of the leave and at every seam of the lap, the motion layer is the still logo with no pixel different.' },
   { term: 'Still', body: 'In every frame, every pixel is the logo where the meridian is drawn and the logo without its meridian where it has been undrawn, except within two pixels of the end that moves.' },
-  { term: 'Ring', body: 'In every frame the ring’s core and outer edge, and its inner edge away from where a line merges into it, are the logo’s own pixels.' },
-  { term: 'End pose', body: 'The draw-back ends on the logo without its meridian.' },
+  { term: 'Ring', body: 'In every frame the ring’s core and outer edge are the logo’s own pixels, and its inner edge, all the way round, is the logo’s where the meridian is drawn and the ring drawn alone where it has been undrawn.' },
+  { term: 'End pose', body: 'The draw-back ends on the logo without its meridian, and on the ring it is exactly the ring drawn alone.' },
   { term: 'Tip', body: 'Through the whole loop the G’s tip is the logo’s, except while the G’s own lap runs over it.' },
   { term: 'Meridian', body: 'Wherever the meridian shows, every pixel it adds lies on the logo’s meridian ellipse at the logo’s width, and each cut face stands where the logo’s does within 0.05 units until the undrawn stretch reaches it.' },
   { term: 'Steps', body: 'No move starts or lands with a pop, and no step inside a move holds a frame.' },
