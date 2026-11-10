@@ -364,7 +364,7 @@ function placeMargin(page: HTMLElement) {
 }
 
 /* The book look's body, inside the shared reader (Reader.tsx), which keeps
-   the theme switch, the monogram home and the crossfade: on a wide screen
+   the theme switch, the logo home and the crossfade: on a wide screen
    the title page and then the text keep to the left 61.8%, and a stage
    across the rest shows the cover and then each picture with its caption as
    the reader reaches it. On a narrow screen the cover heads the page and

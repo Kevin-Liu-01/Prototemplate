@@ -3,7 +3,7 @@
    for Fuma Nama, the printed book for Translating Euclid), and the magazine
    edition's layout over them. */
 
-/* ---------- the rail: the monogram home, the progress lines, where the reader is ---------- */
+/* ---------- the rail: the logo home, the progress lines, where the reader is ---------- */
 
 .gtp-rail {
   position: sticky;
@@ -161,7 +161,7 @@
   .gtp-phone-cover { position: relative; max-width: none; margin: 0 -20px 40px; aspect-ratio: 4 / 5; }
   .gtp-h-n { position: static; display: block; margin-bottom: 8px; }
   .gtp-inline-plate { max-width: none; margin-left: -20px; margin-right: -20px; }
-  /* the monogram home a paper disc with a hairline edge at the top left, as the theme switch is at the bottom left */
+  /* the logo home a paper disc with a hairline edge at the top left, as the theme switch is at the bottom left */
   .gtp-float-home { position: fixed; z-index: 20; top: 16px; left: 16px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 0 0 1px var(--gtp-rule); }
   .gtp-top-progress { display: block; position: fixed; z-index: 21; top: 0; left: 0; right: 0; height: 2px; transform-origin: left; transform: scaleX(var(--p, 0)); background: var(--gtp-signal); }
 }
@@ -271,7 +271,7 @@
    paper, one face (Katagami Serif) in sentence case throughout, a title page,
    then the text on the left 61.8% with a blank line between paragraphs and
    the pictures on a stage across the rest, their captions under them. The
-   tokens sit on the reader's root, so its theme switch and monogram home
+   tokens sit on the reader's root, so its theme switch and logo home
    take the paper too. */
 /* the reader's place, a number from 0 to 1, typed so the book page can ease it between scroll steps: the rail's line
    and its ticks glide rather than jump. BookBody writes it on the rail alone, so a scroll restyles the rail and its
@@ -334,7 +334,7 @@
 /* the live figure is as wide as its poem, and so is its caption */
 .gtp-print-fig[data-live] .gtp-print-caption { width: min(940px, 100%); }
 
-/* the reader's monogram home, a paper disc floating at the top left */
+/* the reader's logo home, a paper disc floating at the top left */
 .gtp-reader[data-look='book'] .gtp-float-home { position: fixed; z-index: 6; left: 24px; top: 20px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--gtp-paper); color: var(--gtp-ink); box-shadow: 0 1px 6px rgb(0 0 0 / 0.12); }
 
 /* the opening (BookReader, Opener): an open book, its title page and the cover */
@@ -529,11 +529,11 @@
 /* ---------- the theme switch on a reading page ---------- */
 
 /* the switch at the bottom left (parts.css) on the page's own paper, so the text never runs through it as it scrolls by;
-   where the text runs under it, a hairline edge, as the monogram home has */
+   where the text runs under it, a hairline edge, as the logo home has */
 .gtp-reader .gtp-theme { background-color: var(--gtp-paper); }
 .gtp-reader .gtp-theme:is(:hover, :focus-visible) { background-color: color-mix(in srgb, var(--gtp-ink) 12%, var(--gtp-paper)); }
 @media (max-width: 999px) { .gtp-reader .gtp-theme { box-shadow: 0 0 0 1px var(--gtp-rule); } }
-/* Euclid's sits under its monogram home, which stands further in */
+/* Euclid's sits under its logo home, which stands further in */
 .gtp-reader[data-look='book'] .gtp-theme { left: 24px; }
 
 /* ---------- the magazine edition: the stage on the text's own paper ---------- */

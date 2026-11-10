@@ -12,7 +12,7 @@ import { plainClick } from '../transition';
 /** How long the cover takes to swing open before the page leaves (front-page.css, gtp-cover-open). */
 const OPEN_MS = 620;
 
-/* The nameplate's imprint, whose GT is a link to the General Translation
+/* The nameplate's imprint, whose logo is a link to the General Translation
    home: a click swings the imprint's cover open on its spine, over to the
    left as a book's front board opens, showing the first page's lines under
    it, and then the page goes home. A click that opens a new tab, and a
@@ -22,7 +22,7 @@ export default function HomeMark({ className }: { className?: string }) {
   const [going, setGoing] = useState(false);
   const leave = () =>
     GT_HOME.startsWith('/') ? router.push(GT_HOME) : location.assign(GT_HOME);
-  // the home page is fetched as the pointer reaches the GT, so it is ready when the cover has opened
+  // the home page is fetched as the pointer reaches the logo, so it is ready when the cover has opened
   const warm = () => {
     if (GT_HOME.startsWith('/')) router.prefetch(GT_HOME);
   };

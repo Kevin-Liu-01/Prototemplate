@@ -24,7 +24,7 @@ type Props = {
   caption?: string;
 };
 
-/* The press's one navigation surface, down the left edge: the monogram
+/* The press's one navigation surface, down the left edge: the logo
    home at the top, then a column of short progress lines, lit above the
    reader's place and faint below it, with a longer numbered line at each
    section or story and the orange line at the place itself. Press anywhere

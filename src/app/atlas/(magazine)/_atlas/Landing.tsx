@@ -10,6 +10,8 @@ import {
 } from 'react';
 import { preload } from 'react-dom';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
+
 import type { MagazineIssue, StoryCard } from './content';
 import { dms } from './coords';
 import {
@@ -566,7 +568,7 @@ export default function Landing({
           ) : null}
           <header className='gtp-hall-head'>
             {edition === 'magazine' ? (
-              // the magazine's nameplate: the book imprint as tall as the capitals, its GT a link home, then Atlas in Katagami Serif
+              // the magazine's nameplate: the book imprint as tall as the capitals, its logo a link home, then Atlas in Katagami Serif
               <h1 className='gtp-nameplate' aria-label='Atlas'>
                 <HomeMark className='gtp-nameplate-mark' />
                 <span className='gtp-nameplate-word' aria-hidden='true'>
@@ -634,6 +636,12 @@ export default function Landing({
               }
             }}
           >
+            {/* until the posters, paper and type are in, the logo's loader holds the hall (front-page.css) */}
+            {ready ? null : (
+              <div className='gtp-shelf-loading'>
+                <GtLogoMotion mode='loader' size={32} label='Loading the magazines' />
+              </div>
+            )}
             <ol
               className='gtp-shelf-track'
               style={{ '--n': n, '--span': span } as CSSProperties}

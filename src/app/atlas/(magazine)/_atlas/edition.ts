@@ -13,7 +13,7 @@ export type Edition = 'magazine' | 'shelf';
 
 export const EditionContext = createContext<Edition>('magazine');
 
-/** The General Translation home, where the nameplate's GT leads (ui/HomeMark.tsx). */
+/** The General Translation home, where the nameplate's logo leads (ui/HomeMark.tsx). */
 export const GT_HOME = '/';
 
 /** The edition's front page. */

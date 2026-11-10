@@ -66,7 +66,7 @@ function platesFor(
 }
 
 /* Every story's page: the press's one reader. It owns what every look
-   shares (the root with the story's look, the theme switch, the monogram
+   shares (the root with the story's look, the theme switch, the logo
    home, the crossfade in and out) and sets the story's body in its look: the
    book look (Translating Euclid) as a printed book with its pictures on a
    stage (BookBody), the others split between the text and the stage. In the

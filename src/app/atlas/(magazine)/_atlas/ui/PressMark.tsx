@@ -1,13 +1,15 @@
 import { useId } from 'react';
 
-import { GT_MARK_PATH } from './GtMark';
+import { LOGO } from '@/lib/logo';
+
+import { LOGO_BOX } from './GtMark';
 
 /* The Atlas imprint: a book stood upright, its board, spine and page
    block drawn in lines of one weight, the spine running from the cap height
    to the baseline as the board's top and the page block's foot do. Inside
-   the board is its cover, a solid panel with a small GT monogram cut
-   through its top left corner, so whatever lies behind the mark shows
-   through the letters. Under the cover lie its plain inside, folded flat,
+   the board is its cover, a solid panel with the General Translation logo
+   cut through its top left corner, so whatever lies behind the cover shows
+   through the logo's lines. Under the cover lie its plain inside, folded flat,
    and a first page of three lines, unseen until the cover opens
    (HomeMark.tsx). */
 export default function PressMark({
@@ -18,8 +20,9 @@ export default function PressMark({
   className?: string;
 }) {
   const id = useId().replace(/:/g, '');
-  // the monogram a third of the board's width, as far in from the cover's corner as the cover is from the board
-  const scale = 34 / 1213;
+  // the logo 28 units square, as far in from the cover's corner as the cover is from the board
+  const [bx, by, bw] = LOGO_BOX;
+  const scale = 28 / bw;
   return (
     <svg
       className={['gtp-mark', className].filter(Boolean).join(' ')}
@@ -41,9 +44,9 @@ export default function PressMark({
           <rect x='0' y='0' width='112' height='140' fill='#fff' />
           <g transform={`translate(31 20) scale(${scale.toFixed(5)})`}>
             <path
-              transform='translate(8 -214)'
-              d={GT_MARK_PATH}
-              fillRule='evenodd'
+              transform={`translate(${-bx} ${-by})`}
+              d={LOGO.d}
+              fillRule={LOGO.fillRule}
               fill='#000'
             />
           </g>

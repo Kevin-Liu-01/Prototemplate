@@ -34,6 +34,8 @@
 /* an article that did not load: the line in place of the pages, the way to the web page under it as ever */
 .gtp-riffle-failed { margin: 0; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: 15px; color: inherit; opacity: 0.8; }
 .gtp-riffle-mag { width: var(--mz-pw); height: var(--mz-ph); }
+/* while the article, its faces and its cover load, the logo's loader sits in the middle of the stage */
+.gtp-riffle-loading { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
 .gtp-riffle-foot { display: flex; justify-content: center; align-items: center; gap: 28px; padding: 0 20px 24px; font-family: 'Katagami Text', var(--gtp-cjk), system-ui, sans-serif; font-size: 14px; line-height: 1.4; }
 .gtp-riffle-foot a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 /* on a phone the page turns stand above the theme switch in the corner (parts.css), which keeps the foot to itself */

@@ -53,3 +53,7 @@ Where each rule of `gt-films` comes from, with dates. Paths are relative to `$PR
 ## Lines changed on 2026-11-08
 
 - `references/look.md`, the General Translation logo in a film: Kevin's answer of 2026-11-08 that the logo replaces the doubled-line monogram everywhere ("Swap everything"), and his motion rule that the globe's lines move and the mark never moves as a rigid object. The film kit's own copy of the mark sits in the films session's local `motion/` folder and is that session's to swap.
+
+## Lines changed on 2026-11-09
+
+- Section 7, Music: Kevin's ruling of 2026-11-09 that U1 Dawn is the film score, which replaces the round 5 bed for the blog films and the Music API compositions for the rest.
