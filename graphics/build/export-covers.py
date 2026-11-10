@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Export the cover pages (gen-covers.js, area P) to the names the posts use.
 
-Each file is the published cover at its own size with only the area around the old mark taken from the render,
-so every other pixel stays as published.
+Each file is the published cover at its own size with only the old mark's group (the mark and its words) taken from
+the render, so every other pixel stays as published.
 usage: export-covers.py [--dest DIR ...] [id ...]
 Writes each file into public/static/blogs and every --dest (a landing checkout's public/static/blogs).
 """
@@ -21,15 +21,15 @@ COVERS = {
     'P5-slash': ('supporting-slash-companies.jpg', 'slash.jpg'),
     'P6-rewriting-docs-spine': ('rewriting-docs-spine.png', 'spine.png'),
 }
-PAD = 8  # source px around the mark's box, enough for the removed mark's anti-aliased edge
+PAD = 4  # source px around the group's box, enough for the lifted pixels' anti-aliased edge
 manifest = {m['id']: m for m in json.loads((SP / 'build' / 'manifest.json').read_text())}
 ap = argparse.ArgumentParser(); ap.add_argument('--dest', type=pathlib.Path, action='append', default=[]); ap.add_argument('ids', nargs='*'); a = ap.parse_args()
 dests = [SP.parent / 'public' / 'static' / 'blogs', *a.dest]
 for i in (a.ids or COVERS):
     name, src = COVERS[i]
     im = Image.open(SP / 'shots' / 'covers' / src).convert('RGB')
-    x0, y0, x1, y1 = manifest[i]['src']['mark']
-    box = (x0 - PAD, y0 - PAD, x1 + 1 + PAD, y1 + 1 + PAD)
+    x0, y0, x1, y1 = manifest[i]['src']['group']
+    box = (x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD)
     im.paste(Image.open(OUT / f'{i}.png').convert('RGB').resize(im.size, Image.BOX).crop(box), box[:2])
     for d in dests:
         p = d / name; p.parent.mkdir(parents=True, exist_ok=True)

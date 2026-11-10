@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
-"""Remove the retired GT monogram from each published blog cover.
+"""Take the old GT mark and the words beside it out of each published blog cover.
 
-The covers were flat exports with no source files, so each ground is the
-published cover (graphics/shots/covers) with only its old mark taken out;
-every other pixel stays as published. A light mark's pixels are filled block
-by block from the hole's edge inward, each block copied from the same picture
-at a shift where the dither repeats (a peak of the picture's autocorrelation):
-the shift whose known neighbours and low-pass tone match best. A dark mark on
-a plain chip is painted over in the chip's colour. gen-covers.js seats the
-globe logo where the mark was.
+The covers were flat exports with no source files. Each one keeps its art; the
+group of the old mark and its words (graphics/shots/covers) is lifted off so
+gen-covers.js can set the globe logo with the same words, centred where the
+group was. A light group's pixels are filled block by block from the hole's
+edge inward, each block copied from the same picture at a shift where the
+dither repeats (a peak of the picture's autocorrelation, or a step along a
+straight edge the hole crosses): the shift whose known neighbours and low-pass
+tone match best. The words come back as an alpha matte of the published pixels
+over that fill. A dark group on a plain chip is painted over in the chip's colour.
 
 usage: cover-grounds.py [name ...]
-Writes graphics/bg/covers/<name>.png (graphics/bg links to public/graphics/bg).
+Writes graphics/bg/covers/<name>.png (the ground), <name>-words.png (the words) and <name>.json (their boxes),
+where graphics/bg links to public/graphics/bg.
 """
-import pathlib, sys
+import json, pathlib, sys
 from PIL import Image
 import numpy as np
 
@@ -22,18 +24,18 @@ ROOT = SP.parent
 SRC = SP / 'shots' / 'covers'
 OUT = SP / 'bg' / 'covers'
 
-# The old mark in source px: ('light', box) takes the light pixels inside the box, ('dark', box) paints the dark ones
-# with the box's own light colour; block is the copy unit in px, reach the largest shift tried.
+# The group in source px: kind, box around the old mark and its words, and the mark's side of the group
+# ('left' before the words, 'right' after them); block is the copy unit in px, reach the largest shift tried.
 GROUNDS = {
-    'open-source': ('open-source.png', 4, 160, ('light', (200, 228, 330, 312))),
-    'fumadocs': ('fumadocs.png', 4, 160, ('light', (342, 429, 416, 476))),
-    'fuma-nama-og': ('fuma-nama-og.png', 4, 160, ('light', (348, 399, 417, 442))),
-    'cuelume': ('cuelume.webp', 8, 320, ('light', (676, 799, 820, 890))),
-    'cuelume-og': ('cuelume-og.png', 8, 320, ('light', (687, 766, 824, 852))),
-    'slash': ('slash.jpg', 4, 160, ('light', (622, 221, 764, 315))),
-    'spine': ('spine.png', 8, 160, ('dark', (884, 154, 940, 192))),
+    'open-source': ('open-source.png', 4, 160, 'light', (198, 226, 774, 322), 'left'),
+    'fumadocs': ('fumadocs.png', 4, 160, 'light', (341, 428, 631, 480), 'left'),
+    'fuma-nama-og': ('fuma-nama-og.png', 4, 160, 'light', (347, 398, 639, 452), 'left'),
+    'cuelume': ('cuelume.webp', 8, 320, 'light', (674, 797, 1306, 899), 'left'),
+    'cuelume-og': ('cuelume-og.png', 8, 320, 'light', (685, 764, 1278, 860), 'left'),
+    'slash': ('slash.jpg', 4, 160, 'light', (258, 222, 762, 314), 'right', (140, 60)),
+    'spine': ('spine.png', 8, 160, 'dark', (884, 154, 1040, 194), 'left'),
 }
-WHITE_MIN, WHITE_SAT, HALO = 150, 34, 2
+WHITE_MIN, WHITE_SAT, HALO = 150, 34, 2  # a recipe's last item can override the light test (a JPEG tints thin strokes)
 
 
 def blur(a, r):
@@ -55,11 +57,14 @@ def grow(m, r):
     return o
 
 
-def mark_mask(img, box):
-    x0, y0, x1, y1 = box
-    m = np.zeros(img.shape[:2], bool); part = img[y0:y1, x0:x1]
-    m[y0:y1, x0:x1] = (part.min(2) >= WHITE_MIN) & (part.max(2) - part.min(2) < WHITE_SAT)
-    return grow(m, HALO)
+def runs(cols, gap):
+    """Runs of True in a 1-d array, split where at least gap False values separate them."""
+    gap = max(gap, 1)
+    idx = np.where(cols)[0]; out = [[idx[0], idx[0]]]
+    for c in idx[1:]:
+        if c - out[-1][1] > gap: out.append([c, c])
+        else: out[-1][1] = c
+    return out
 
 
 def tone(img, valid, r):
@@ -81,20 +86,42 @@ def shifts(img, valid, reach, keep=160):
     vals = ac[ys % hp.shape[0], xs % hp.shape[1]]
     ok = (xs ** 2 + ys ** 2 <= reach ** 2) & (xs ** 2 + ys ** 2 >= 9)
     order = np.argsort(-vals[ok])[:keep]
-    return list(zip(ys[ok][order], xs[ok][order]))
+    return [(int(y), int(x)) for y, x in zip(ys[ok][order], xs[ok][order])]
 
 
-def recover(name):
-    file, block, reach, (kind, box) = GROUNDS[name]
-    img = np.asarray(Image.open(SRC / file).convert('RGB'), dtype=np.float64)
+def edge(low, hole):
+    """The direction along the tone's edges around a hole (radians) and how strongly one direction dominates (0 to 1)."""
+    g = low.mean(2); gy, gx = np.gradient(g)
+    ring = grow(hole, 12) & ~hole
+    jxx, jyy, jxy = (gx * gx)[ring].sum(), (gy * gy)[ring].sum(), (gx * gy)[ring].sum()
+    return 0.5 * np.arctan2(2 * jxy, jxx - jyy) + np.pi / 2, np.hypot(jxx - jyy, 2 * jxy) / max(jxx + jyy, 1e-9)
+
+
+def along(low, hole, theta, reach):
+    """Tone inside the hole carried along the edge direction from the nearest known pixel on each side."""
+    h, w = hole.shape; ys, xs = np.where(hole)
+    acc = np.zeros((len(ys), 3)); wsum = np.zeros(len(ys))
+    for sign in (1, -1):
+        found = np.zeros(len(ys), bool)
+        for t in range(1, reach + 1):
+            y = np.clip(np.round(ys + sign * t * np.sin(theta)).astype(int), 0, h - 1)
+            x = np.clip(np.round(xs + sign * t * np.cos(theta)).astype(int), 0, w - 1)
+            hit = ~found & ~hole[y, x]
+            acc[hit] += low[y[hit], x[hit]] / t; wsum[hit] += 1 / t; found |= hit
+            if found.all(): break
+    out = low.copy(); ok = wsum > 0
+    out[ys[ok], xs[ok]] = acc[ok] / wsum[ok, None]
+    return out
+
+
+def fill(img, hole, block, reach):
     h, w, _ = img.shape
-    if kind == 'dark':
-        x0, y0, x1, y1 = box; part = img[y0:y1, x0:x1]
-        part[...] = np.median(part[part.min(2) >= 200], 0)
-        return save(name, img, 0.0, 0.0, 0)
-    hole = mark_mask(img, box)
     low = tone(img, ~hole, block)
     cand = shifts(img, ~hole, reach)
+    theta, coherence = edge(low, hole)
+    if coherence >= 0.9:  # one straight edge crosses the hole: carry the tone along it and also try steps along it
+        low = along(low, hole, theta, reach)
+        cand += [c for c in sorted({(int(round(t * np.sin(theta))), int(round(t * np.cos(theta)))) for t in range(-reach, reach + 1) if abs(t) >= 3}) if c not in cand]
     hy, hx = np.where(hole); m = reach + 2 * block
     y0, x0 = max(hy.min() - m, 0), max(hx.min() - m, 0)
     y1, x1 = min(hy.max() + m + 1, h), min(hx.max() + m + 1, w)
@@ -135,14 +162,44 @@ def recover(name):
             todo[ys, xs] = False; V[ys, xs] = True
     I[todo] = L[todo]
     out = img.copy(); out[y0:y1, x0:x1] = I[:y1 - y0, :x1 - x0]
-    save(name, out, hole.mean(), todo.mean(), step + 1)
+    return out
 
 
-def save(name, img, removed, toned, passes):
+def recover(name):
+    file, block, reach, kind, (x0, y0, x1, y1), side, *test = GROUNDS[name]
+    lo, sat = test[0] if test else (WHITE_MIN, WHITE_SAT)
+    img = np.asarray(Image.open(SRC / file).convert('RGB'), dtype=np.float64)
+    part = img[y0:y1, x0:x1]
+    ink = (part.min(2) >= lo) & (part.max(2) - part.min(2) < sat) if kind == 'light' else part.max(2) < 250
+    det = np.zeros(img.shape[:2], bool); det[y0:y1, x0:x1] = ink
+    parts = runs(det.any(0), 6 * block // 4)
+    mx0, mx1 = parts[0] if side == 'left' else parts[-1]
+    mark_rows = np.where(det[:, mx0:mx1 + 1].any(1))[0]
+    words = det.copy(); words[:, mx0:mx1 + 1] = False
+    if kind == 'light':
+        ground = fill(img, grow(det, HALO), block, reach)
+        a = ((img - ground) / np.maximum(255 - ground, 1)).mean(2)
+        color = np.array([255.0, 255.0, 255.0])
+    else:
+        ground = img.copy(); g = ground[y0:y1, x0:x1]
+        paper = np.median(g[g.min(2) >= 250], 0); g[...] = paper
+        color = np.median(img[det & (img.max(2) < 60)], 0)
+        a = ((ground - img) / np.maximum(ground - color, 1)).mean(2)
+    a = np.clip(a, 0, 1) * grow(words, HALO)
+    ys, xs = np.where(a > 0.004); wy0, wy1, wx0, wx1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+    sprite = np.dstack([np.broadcast_to(color, (wy1 - wy0, wx1 - wx0, 3)), a[wy0:wy1, wx0:wx1] * 255])
+    first = runs((a[wy0:wy1, wx0:wx1] > 0.5).any(0), 1)[0]
+    glyph = np.where((a[wy0:wy1, wx0 + first[0]:wx0 + first[1] + 1] > 0.5).any(1))[0]
     OUT.mkdir(parents=True, exist_ok=True)
-    path = OUT / f'{name}.png'
-    Image.fromarray(np.clip(img, 0, 255).round().astype(np.uint8), 'RGB').save(path, optimize=True)
-    print(f'{path.relative_to(ROOT)} {img.shape[1]}x{img.shape[0]} removed {removed:.2%} left to tone {toned:.2%} in {passes} passes')
+    Image.fromarray(np.clip(ground, 0, 255).round().astype(np.uint8), 'RGB').save(OUT / f'{name}.png', optimize=True)
+    Image.fromarray(np.clip(sprite, 0, 255).round().astype(np.uint8), 'RGBA').save(OUT / f'{name}-words.png', optimize=True)
+    info = {'w': img.shape[1], 'h': img.shape[0], 'group': [x0, y0, x1, y1], 'side': side,
+            'mark': [int(mx0), int(mark_rows.min()), int(mx1), int(mark_rows.max())],
+            'words': [int(wx0), int(wy0), int(wx1 - wx0), int(wy1 - wy0)],
+            'cap': [int(wy0 + glyph.min()), int(wy0 + glyph.max())],
+            'color': '#%02x%02x%02x' % tuple(int(round(c)) for c in color)}
+    (OUT / f'{name}.json').write_text(json.dumps(info) + '\n')
+    print(name, info)
 
 
 for name in (sys.argv[1:] or GROUNDS):
