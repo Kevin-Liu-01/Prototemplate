@@ -5,8 +5,9 @@
  * clone. It reads Node at the .nvmrc major, pnpm at package.json's packageManager,
  * installed dependencies, the Chrome for Testing build playwright-core
  * launches (or CHROME_PATH), Python 3 with requirements.txt's packages, and,
- * as optional, ffmpeg and ffprobe (build:motion, films) and the HyperFrames
- * CLI (films). Each missing item prints the command that fixes it.
+ * as optional, ffmpeg and ffprobe (build:motion, films), the HyperFrames
+ * CLI (films) and whether the pre-push hook is enabled. Each missing item
+ * prints the command that fixes it.
  *
  * Usage:
  *   node scripts/doctor.mjs   (pnpm run doctor; a bare `pnpm doctor` runs pnpm's own
@@ -74,6 +75,7 @@ if (python) {
 report(false, 'ffmpeg', run('ffmpeg', ['-version']), 'install ffmpeg for pnpm build:motion and the film scripts (brew install ffmpeg, apt install ffmpeg)');
 report(false, 'ffprobe', run('ffprobe', ['-version']), 'comes with ffmpeg');
 report(false, 'HyperFrames CLI', run('hyperframes', ['--version']), 'install it for the films in motion/ (see the gt-films skill)');
+report(false, 'pre-push hook', run('git', ['config', '--get', 'core.hooksPath']) === '.githooks' ? 'core.hooksPath is .githooks' : undefined, 'run git config core.hooksPath .githooks so the public scan runs before every push');
 
 console.log(`\ndoctor: ${missing === 0 ? 'ready' : `${missing} required item${missing === 1 ? '' : 's'} missing`}`);
 process.exit(missing === 0 ? 0 : 1);

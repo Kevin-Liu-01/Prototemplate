@@ -5,7 +5,8 @@
  * paths and the terms on a private denylist. GitHub publishes every file of
  * this repository, whether or not the site renders it. The findings:
  *   - key shapes: API keys and private keys by their published formats
- *     (Stripe, Anthropic, OpenAI, AWS, Google, GitHub, Slack, PEM headers).
+ *     (Stripe, Anthropic, OpenAI, AWS, Google, GitHub, Slack, Vercel Blob,
+ *     ElevenLabs, PEM headers).
  *     The matched text is never printed.
  *   - machine paths: /Users/<name>/ and /private/tmp/. Write ~, $PROTOTEMPLATE
  *     or a repo-relative path instead (~/gt/ is fine).
@@ -67,6 +68,8 @@ export const KEY_SHAPES = [
   ['github', /gh[pousr]_[A-Za-z0-9]{36}/],
   ['github-pat', /github_pat_[A-Za-z0-9_]{20,}/],
   ['slack', /xox[bp]-[0-9A-Za-z-]{10,}/],
+  ['vercel-blob', /vercel_blob_rw_[A-Za-z0-9_]{20,}/],
+  ['elevenlabs', /\bsk_[a-f0-9]{40,}\b/],
   ['pem', /-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED |PGP )?PRIVATE KEY(?: BLOCK)?-----/],
 ];
 const MACHINE_PATH = /\/Users\/[A-Za-z0-9._-]+\/|\/private\/tmp\//g;

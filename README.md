@@ -62,7 +62,7 @@ git clone --filter=blob:none https://github.com/Kevin-Liu-01/Prototemplate.git
 cd Prototemplate
 pnpm install
 pnpm run doctor                       # lists what this machine is missing, with the command that fixes each
-git config core.hooksPath .githooks   # the pre-push hook runs pnpm lint:public
+git config core.hooksPath .githooks   # the pre-push hook runs pnpm lint:public; it needs PT_DENYLIST, or PT_PUBLIC_NO_DENYLIST=1 without a private list
 pnpm dev                              # http://localhost:3005
 ```
 
