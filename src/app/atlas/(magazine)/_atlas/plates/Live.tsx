@@ -34,7 +34,7 @@ const TOC_ROWS: TocRow[] = [
   { text: 'Icons', level: 1 },
   { text: 'Separators', level: 1 },
   { text: 'Type', level: 1 },
-  { text: 'A unique GT flair', level: 0 },
+  { text: 'A unique General Translation flair', level: 0 },
   { text: 'The table of contents', level: 1 },
   { text: 'The sidebar', level: 1 },
   { text: 'The hit list', level: 0 },

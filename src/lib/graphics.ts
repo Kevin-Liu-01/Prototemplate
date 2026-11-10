@@ -36,7 +36,7 @@ const AREA_NAMES: Readonly<Record<string, { name: string; slot: string }>> = {
   B: { name: 'Cleaning up mental clutter', slot: 'The redline of what was deleted, then the before-and-after set.' },
   C: { name: 'One singular accordion', slot: 'The navigation census and the anatomy of the sidebar, then its persistence, the comparison and the tree.' },
   D: { name: 'Drawing the eye', slot: 'Icons, separators and type, one image each, then the quickstart before and after.' },
-  E: { name: 'A unique GT flair', slot: 'The two clips, the UI primitives carousel, and the localized page.' },
+  E: { name: 'A unique General Translation flair', slot: 'The two clips, the UI primitives carousel, and the localized page.' },
   F: { name: 'The hit list', slot: 'The anti-patterns as a poster and as a mock; the list itself renders as text.' },
 };
 

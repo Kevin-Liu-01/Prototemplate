@@ -19,9 +19,17 @@ files content #598 changed (`gt-node_v0_2_0.mdx` and
 commit. On 2026-10-30 the blog posts were brought to content main at
 333efa3b9aa2ebb68a2ff2aacf69b8d5f99221f3: content #700 changed
 `fuma-nama.mdx` and `supporting-open-source-software.mdx`, and content #702
-added `daniel-white.mdx`. `scripts/lint/copies.json` holds each file's
+added `daniel-white.mdx`. On 2026-11-10 the posts were brought to content
+main at bc2f97167c5b30aa5e2a85b208eab782ab39d62e: content #740 spells out
+the company name in `designing-docs-for-humans.mdx`,
+`supporting-open-source-software.mdx` and `supporting-slash-companies.mdx`,
+and content #741 updates the Slash partnership copy; every release file
+matched that commit. `scripts/lint/copies.json` holds each file's
 sha256. The content is
 licensed CC BY 4.0 by General Translation, Inc.
 
 A re-sync copies the folders at content main and records the new hashes.
-`content/blog`, which `/blog` renders, holds the same six posts.
+`content/blog`, which `/blog` renders, holds the same six posts with the
+same text; its image stamps are newer, for the globe logo covers, so
+copies.json lists those files as forks until content main carries the same
+stamps.
