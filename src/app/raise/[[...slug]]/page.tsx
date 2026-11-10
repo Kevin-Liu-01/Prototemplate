@@ -119,6 +119,14 @@ function Cut({ cut }: { cut: RaiseCut }) {
           <span className='raise-chip' data-status='shipped'>
             Final
           </span>
+        ) : cut.candidate ? (
+          <span className='raise-chip' data-status='pick'>
+            Final candidate
+          </span>
+        ) : cut.approved ? (
+          <span className='raise-chip' data-status='kept'>
+            Approved
+          </span>
         ) : null}
         <span className='raise-note'>
           {cut.about}

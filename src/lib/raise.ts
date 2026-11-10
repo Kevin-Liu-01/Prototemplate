@@ -73,7 +73,12 @@ export type RaiseCut = {
   label: string;
   name: string;
   about: string;
+  /** the shipped cut */
   final: boolean;
+  /** a final candidate */
+  candidate?: boolean;
+  /** an approved preview */
+  approved?: boolean;
   note?: string;
   full?: string;
   film?: string;
