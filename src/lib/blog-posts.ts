@@ -55,7 +55,7 @@ export const BLOG_POSTS: readonly BlogPostMeta[] = [
       },
     ],
     tags: ['open-source', 'grants', 'daniel-white', 'cuelume', 'developers', 'community'],
-    image: '/static/blogs/daniel-white/cover.webp?v=20261028-2300',
+    image: '/static/blogs/daniel-white/cover.webp?v=20261109-2300',
   },
   {
     slug: 'supporting-slash-companies',
@@ -79,7 +79,7 @@ export const BLOG_POSTS: readonly BlogPostMeta[] = [
       },
     ],
     tags: ['slash', 'partners', 'credits', 'startups', 'community'],
-    image: '/static/blogs/supporting-slash-companies.jpg?v=20261007-1215',
+    image: '/static/blogs/supporting-slash-companies.jpg?v=20261109-2300',
   },
   {
     slug: 'designing-docs-for-humans',
@@ -103,8 +103,8 @@ export const BLOG_POSTS: readonly BlogPostMeta[] = [
       },
     ],
     tags: ['craft', 'docs', 'documentation', 'design', 'developer-experience'],
-    image: '/static/blogs/designing-docs.webp?v=20260920-0930',
-    imageLight: '/static/blogs/designing-docs-light.webp?v=20260920-0930',
+    image: '/static/blogs/designing-docs.webp?v=20261109-1600',
+    imageLight: '/static/blogs/designing-docs-light.webp?v=20261109-1600',
   },
   {
     slug: 'rewriting-our-docs',
@@ -139,7 +139,7 @@ export const BLOG_POSTS: readonly BlogPostMeta[] = [
       },
     ],
     tags: ['open-source', 'grants', 'fuma-nama', 'fumadocs', 'developers', 'community'],
-    image: '/static/blogs/fumadocs.png',
+    image: '/static/blogs/fumadocs.png?v=20261109-2300',
   },
   {
     slug: 'supporting-open-source-software',
@@ -156,7 +156,7 @@ export const BLOG_POSTS: readonly BlogPostMeta[] = [
       },
     ],
     tags: ['open-source', 'grants', 'developers', 'community'],
-    image: '/static/blogs/supporting-open-source-software.png?v=8704532b',
+    image: '/static/blogs/supporting-open-source-software.png?v=20261109-2300',
   },
 ];
 
