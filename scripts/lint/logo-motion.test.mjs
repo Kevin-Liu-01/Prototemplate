@@ -43,6 +43,12 @@
 //              it at that time (within 0.05 units), and no dash end steps
 //              more than half again its neighbours' mean, or stalls, where
 //              the course does not
+//   small      the ring rule again at 96 and 32 CSS px at 2x, in Chromium
+//              and in WebKit (where Playwright has it), for every frame, with
+//              SMALL_SLACK levels for two draws of one edge: there a pixel is
+//              one to four units, wider than any reach a mask keeps in units,
+//              and WebKit draws a mask at CSS pixels, so a line's ink left on
+//              the ring next to the free ring's edge shows there first
 //
 // The pixel tests run in the light theme, where Chrome composites the masked
 // layers exactly; in the dark theme Chrome rounds a masked layer's
@@ -50,12 +56,13 @@
 // dark run allows. LOGO_MOTION_BROWSERS=chromium,firefox,webkit and
 // LOGO_MOTION_THEMES=light,dark widen the run to report the other engines
 // (Firefox and WebKit round masks and blends by a level or more, so only
-// Chromium is held to it); LOGO_MOTION_SRC=<dir> runs the checks on another
+// Chromium is held to it); LOGO_MOTION_SMALL_BROWSERS=chromium sets the
+// engines of the small sizes; LOGO_MOTION_SRC=<dir> runs the checks on another
 // copy of the component's three files (an older one, say, to see what the
 // checks catch); LOGO_MOTION_SHOTS=<dir> writes the checked frames there as
 // PNG. Usage: node --test scripts/lint/logo-motion.test.mjs
 import assert from 'node:assert/strict';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { registerHooks } from 'node:module';
 import { join, resolve } from 'node:path';
 import { after, before, describe, test } from 'node:test';
@@ -137,6 +144,21 @@ const ENGINES = { chromium, firefox, webkit };
 const BROWSERS = (process.env.LOGO_MOTION_BROWSERS ?? 'chromium').split(',');
 const THEME_IDS = (process.env.LOGO_MOTION_THEMES ?? 'light,dark').split(',');
 const SHOTS = process.env.LOGO_MOTION_SHOTS;
+/**
+ * the small sizes the ring is checked at as well, CSS px by device pixel
+ * ratio: there a pixel is one to four units, wider than any band a mask
+ * keeps in units, and WebKit draws a mask at CSS pixels, so a mask's edge
+ * that stands a fraction of a unit from a line's ink at 4x shares a pixel
+ * with it here
+ */
+const SMALL = [
+  [96, 2],
+  [32, 2],
+];
+/** the engines the small sizes run in, each held to the rule: Chromium, and WebKit where Playwright has it */
+const SMALL_BROWSERS = (process.env.LOGO_MOTION_SMALL_BROWSERS ?? 'chromium,webkit').split(',').filter((e) => e === 'chromium' || existsSync(ENGINES[e].executablePath()));
+/** levels a ring pixel may differ by at a small size: an edge drawn in two paths (the logo's and the ring's alone) at a pixel of one to four units, and WebKit's rounding of masks */
+const SMALL_SLACK = 24;
 
 /* ------------------------------------------------------------ pixels */
 /** a playwright PNG (8 bit RGB or RGBA, not interlaced) as one channel, the red */
@@ -199,15 +221,16 @@ function differing(a, b, slack = 0, region = null) {
 /* ------------------------------------------------------------ the page */
 const pageOf = (body, theme) =>
   `<!doctype html><html><head><style>${CSS}</style></head><body style="margin:0;background:${THEMES[theme].paper};color:${THEMES[theme].ink}">${body}</body></html>`;
-const markOf = (props) => renderToStaticMarkup(createElement(GtLogoMotion, { size: SIZE, ...props }));
+const markOf = (props, size = SIZE) => renderToStaticMarkup(createElement(GtLogoMotion, { size, ...props }));
 /** an svg in the logo's box, for the regions and the plain references */
-const svgOf = (body) => `<svg viewBox="${G.viewBox}" width="${SIZE}" height="${SIZE}" style="display:block" fill="currentColor">${body}</svg>`;
+const svgOf = (body, size = SIZE) => `<svg viewBox="${G.viewBox}" width="${size}" height="${size}" style="display:block" fill="currentColor">${body}</svg>`;
 const stroke = (d, width, extra = '') => `<path d="${d}" fill="none" stroke="currentColor" stroke-width="${width}" ${extra}/>`;
 /* where the logo without its meridian replaces the logo once the meridian has gone: the meridian's dash inside its zone (an older component without a zone: the meridian's band). It takes in the ring where the meridian merges into it, and nothing of the component's own idea of where its masks stop, so the ring rule judges that too */
 const ZONE = G.zone
   ? `<defs><mask id="zone" maskUnits="userSpaceOnUse" x="0" y="0" width="256" height="256">` +
     `<path d="${G.zone.band.d}" fill="none" stroke="#fff" stroke-width="${G.zone.band.width}"/>` +
     `<path d="${G.zone.breaks.d}" fill="none" stroke="#fff" stroke-width="${G.zone.breaks.width}"/>` +
+    (G.zone.near ? `<path d="${G.zone.near.d}" fill="none" stroke="#fff" stroke-width="${G.zone.near.px}" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/>` : '') +
     `<path d="${G.zone.ends.d}" fill="none" stroke="#000" stroke-width="${G.zone.ends.width}"/>` +
     `</mask></defs>${stroke(G.meridian.d, G.meridian.width, 'mask="url(#zone)"')}`
   : stroke(G.meridian.d, W + 2);
@@ -232,9 +255,8 @@ let PATHS = null;
 let MAPS = null;
 /** the engine whose measure PATHS holds: each engine dashes along its own measure of a path */
 let MEASURED_BY = null;
-async function measurePaths(page, engine) {
-  if (PATHS && MEASURED_BY === engine) return;
-  MEASURED_BY = engine;
+/** each path's place along it by theta, as the page's engine measures it */
+async function pathTables(page) {
   const points = await page.evaluate((ds) => {
     const out = {};
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -255,23 +277,30 @@ async function measurePaths(page, engine) {
     svg.remove();
     return out;
   }, Object.fromEntries(Object.entries(PATH_OF).map(([k, v]) => [k, v[3].d])));
-  PATHS = Object.fromEntries(Object.entries(PATH_OF).map(([k, [line, t0, t1]]) => [k, browserTable(line, t0, t1, points[k].points, points[k].total)]));
+  return Object.fromEntries(Object.entries(PATH_OF).map(([k, [line, t0, t1]]) => [k, browserTable(line, t0, t1, points[k].points, points[k].total)]));
+}
+async function measurePaths(page, engine) {
+  if (PATHS && MEASURED_BY === engine) return;
+  MEASURED_BY = engine;
+  PATHS = await pathTables(page);
   MAPS = Object.fromEntries(Object.entries(PATHS).map(([k, p]) => [k, lineMap(BOX, p)]));
 }
 const HALF = { meridian: G.meridian.width / 2, under: (G.under?.width ?? W + 1) / 2, head: (G.under?.width ?? W + 1) / 2, fill: (G.fill?.width ?? 2 * W + 2) / 2, lap: W / 2 };
 const near = NEAR * BOX.unit;
+/** units: the furthest a mask reaches into the ring at size CSS px, past its inner edge: the free ring keeps a reach in units and one in CSS pixels from a line's ink in the hole (none for an older component without them) */
+const reachAt = (size) => (G.free?.near ? Math.max(G.free.near.width / 2, (G.free.near.px / 2) * (Number(G.viewBox.split(' ')[2]) / size)) : 0);
 /** the ring's core, and its inner edge all the way round */
-const RING = ringZones(BOX);
+const RING = ringZones(BOX, reachAt(SIZE));
 /** the meridian's thetas where its ink can be measured alone: nothing else of the logo without its meridian lies within 12 units across it */
 let CLEAN = null;
 
-async function session(engine, theme) {
+async function session(engine, theme, size = SIZE, dpr = DPR) {
   /* Chrome's software rasterizer: with the GPU, two draws of the same path now and then differ by a pixel or two */
   const browser = await ENGINES[engine].launch(engine === 'chromium' ? { executablePath: chromePath(), headless: true, args: ['--disable-gpu'] } : { headless: true });
-  const context = await browser.newContext({ viewport: { width: SIZE, height: SIZE }, deviceScaleFactor: DPR, reducedMotion: 'no-preference' });
+  const context = await browser.newContext({ viewport: { width: size, height: size }, deviceScaleFactor: dpr, reducedMotion: 'no-preference' });
   const page = await context.newPage();
   const shot = async (name) => {
-    const png = await page.screenshot({ clip: { x: 0, y: 0, width: SIZE, height: SIZE } });
+    const png = await page.screenshot({ clip: { x: 0, y: 0, width: size, height: size } });
     if (SHOTS && name) {
       mkdirSync(SHOTS, { recursive: true });
       writeFileSync(join(SHOTS, `${engine}-${theme}-${name}.png`), png);
@@ -299,11 +328,11 @@ async function session(engine, theme) {
       return Object.fromEntries(['meridian', 'under', 'fill', 'head', 'lap'].map((c) => [c, one(c)]));
     });
   const ink = async (body) => {
-    await load(svgOf(body));
+    await load(svgOf(body, size));
     const g = await shot();
     return g.map((v) => (v !== parseInt(THEMES[theme].paper.slice(1, 3), 16) ? 1 : 0));
   };
-  return { engine, browser, page, shot, load, seek, dashes, ink };
+  return { engine, size, browser, page, shot, load, seek, dashes, ink };
 }
 
 /* ------------------------------------------------------------ the frames */
@@ -355,6 +384,39 @@ async function framesOf(s, theme) {
   for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
     await s.seek(Math.min(t, HOVER - 0.001));
     out.leave.push({ t, g: await s.shot(SHOTS ? `leave-${Math.round(t)}` : null), dash: await s.dashes() });
+  }
+  return out;
+}
+
+/* the ring at a small size: the still logo, the zone and the logo without its meridian as references, and every frame of the loader's draw-back and lap and of the hover's enter and leave, each with its dashes */
+async function smallFramesOf(s, box) {
+  const out = {};
+  await s.load(markOf({ mode: 'static' }, s.size));
+  const paths = await pathTables(s.page);
+  out.maps = Object.fromEntries(Object.entries(paths).map(([k, p]) => [k, lineMap(box, p)]));
+  out.rest = await s.shot();
+  out.zone = await s.ink(ZONE);
+  await s.load(svgOf(BARE, s.size));
+  out.bare = await s.shot();
+  await s.load(markOf({ mode: 'loader' }, s.size));
+  out.loader = [];
+  for (let t = 0; t <= HOVER + LOOP + 0.01; t += FRAME) {
+    await s.seek(t);
+    out.loader.push({ t, g: await s.shot(), dash: await s.dashes() });
+  }
+  await s.load(markOf({ mode: 'hover' }, s.size));
+  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').setAttribute('data-active', ''));
+  out.enter = [];
+  for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
+    await s.seek(t);
+    out.enter.push({ t, g: await s.shot(), dash: await s.dashes() });
+  }
+  await s.seek(HOVER);
+  await s.page.evaluate(() => document.querySelector('.gt-logo-motion').removeAttribute('data-active'));
+  out.leave = [];
+  for (let t = 0; t <= HOVER + 0.01; t += FRAME) {
+    await s.seek(Math.min(t, HOVER - 0.001));
+    out.leave.push({ t, g: await s.shot(), dash: await s.dashes() });
   }
   return out;
 }
@@ -587,5 +649,58 @@ for (const engine of BROWSERS) {
         if (notes.length) console.log(`${engine} ${theme} where the course itself is uneven (the source's own timing): ${notes.join('; ')}`);
       });
     });
+  }
+}
+
+/* the ring at small sizes: in every frame of the loader and the hover, the
+   ring (its core and its inner edge, all the way round) is the logo's where
+   the lines are drawn and the ring drawn alone where the meridian has been
+   undrawn, but round what moves; the same rule as at 4x, with the slack of
+   two draws of one edge at a pixel this wide */
+for (const engine of SMALL_BROWSERS) {
+  for (const theme of THEME_IDS) {
+    for (const [size, dpr] of SMALL) {
+      describe(`GtLogoMotion's ring at ${size} px ${dpr}x in ${engine}, ${theme}`, () => {
+        let s;
+        let F;
+        let box;
+        before(async () => {
+          s = await session(engine, theme, size, dpr);
+          box = frameBox(size * dpr, 0, 0, size * dpr, G.viewBox);
+          F = await smallFramesOf(s, box);
+        });
+        after(async () => {
+          await s?.browser.close();
+        });
+        test("the ring is the logo's own in every frame, or the ring alone where the meridian is undrawn", () => {
+          const zones = ringZones(box, reachAt(size));
+          const region = or(zones.core, zones.edge);
+          const rule = frameRule({ maps: F.maps, zone: F.zone, rest: F.rest, pose: F.loader.at(-1).g, bare: F.bare, half: HALF, near: NEAR * box.unit, slack: SMALL_SLACK });
+          const px = size * dpr;
+          for (const [name, frames, from] of [
+            ['loader', F.loader, HOVER],
+            ['enter', F.enter, Infinity],
+            ['leave', F.leave, Infinity],
+          ]) {
+            let worst = { n: 0, worst: 0, t: 0, at: -1 };
+            for (const { t, g, dash } of frames) {
+              const d = rule.ring(g, dash, t >= from - 0.01, region, SMALL_SLACK);
+              if (d.n > worst.n || (worst.n === 0 && d.worst > worst.worst)) worst = { ...d, t };
+            }
+            const where = worst.at >= 0 ? ` at ${worst.at % px},${Math.floor(worst.at / px)}` : '';
+            assert.ok(worst.n === 0, `the ${name}'s ring at ${size} px ${dpr}x: ${worst.n} px differ by more than ${SMALL_SLACK} levels at ${Math.round(worst.t)} ms (worst ${worst.worst}${where})`);
+            console.log(`${engine} ${theme} ${size}x${dpr} the ${name}'s ring: no pixel off by more than ${SMALL_SLACK} levels`);
+          }
+          /* the draw-back's end, where the meridian's ink once stood on the ring */
+          for (const [name, g] of [
+            ['the loader', F.loader.find(({ t }) => t >= HOVER - 0.01).g],
+            ['the hover', F.enter.at(-1).g],
+          ]) {
+            const d = rule.ring(g, null, true, region, SMALL_SLACK);
+            assert.ok(d.n === 0, `${name}'s end pose on the ring at ${size} px ${dpr}x: ${d.n} px differ by more than ${SMALL_SLACK} levels from the ring drawn alone in the meridian's zone and the logo outside it (worst ${d.worst})`);
+          }
+        });
+      });
+    }
   }
 }

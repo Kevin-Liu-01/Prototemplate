@@ -15,7 +15,7 @@
 //   lineMap(box, path)             each box pixel's nearest point on a path: its
 //                                  length along the path and its distance
 //   band(map, from, to, half)      the pixels within half of the path between two lengths
-//   ringZones(box)                 the ring's core, and its inner edge all round
+//   ringZones(box, reach)          the ring's core, and its inner edge all round
 //   frameRule(...)                 what a frame should be, given its dashes: the
 //                                  logo, or the end pose where the meridian is
 //                                  undrawn, but round what moves; and its ring:
@@ -220,20 +220,20 @@ export const or = (...regions) => regions.reduce((a, b) => a.map((v, i) => v | b
 export const not = (region) => region.map((v) => (v ? 0 : 1));
 
 /* ------------------------------------------------------------ the ring */
-/** units: where the masks stop past the ring's inner edge (the ring's core starts here) */
+/** units: where the ring's core starts, past its inner edge (the lap line never draws past it) */
 export const RING_GAP = 0.4;
 /** levels: how far Chrome draws one edge apart in two paths (the logo's and the ring's alone measure up to 5 apart) */
 export const RASTER = 8;
 /**
- * the ring's pixels: its core (from RING_GAP past its inner edge outward,
- * through its outer edge, half a pixel in, since the masks stop there with
- * crisp edges), which no frame may change, and its inner edge (one unit
+ * the ring's pixels: its core (from RING_GAP past its inner edge outward, or
+ * from `reach` past it, the furthest a mask reaches into the ring at this
+ * size, through its outer edge, half a pixel in), which no frame may change, and its inner edge (one unit
  * inside it to the core) all the way round, poles, nodes and the ends of
  * every merge included, which every frame keeps as the logo's own where its
  * lines are drawn and as the ring drawn alone where they have been undrawn
  * (frameRule's ring)
  */
-export function ringZones(box) {
+export function ringZones(box, reach = 0) {
   const rIn = R - w / 2;
   const core = new Uint8Array(box.px * box.px);
   const edge = new Uint8Array(box.px * box.px);
@@ -242,7 +242,7 @@ export function ringZones(box) {
       const [ux, uy] = box.u(x, y);
       const r = Math.hypot(ux - C, uy - C);
       const i = y * box.px + x;
-      if (r >= rIn + RING_GAP + 0.5 * box.unit) core[i] = 1;
+      if (r >= rIn + Math.max(RING_GAP, reach) + 0.5 * box.unit) core[i] = 1;
       else if (r > rIn - 1) edge[i] = 1;
     }
   }

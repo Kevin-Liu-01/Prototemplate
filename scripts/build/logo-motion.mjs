@@ -21,7 +21,11 @@
 // path, pixel for pixel, and a hand-off between the rest layer and the
 // motion layer changes nothing.
 //
-//   keep    the logo, where nothing is undrawn, and always on the ring
+//   free    the logo on the ring, where no mask reaches (THE RING below);
+//           the layers below add together and show only where it does not,
+//           through the same shapes drawn the other way round, so the two
+//           add to one at every point
+//   keep    the logo, where nothing is undrawn
 //   bare    the logo without its meridian (the bar from its free end, the
 //           stem and the C closed across its breaks), where the meridian
 //           has been undrawn: inside the meridian's zone, the band its ink
@@ -505,53 +509,42 @@ function closedC() {
   return piece(CROSSINGS[0] - 20, BREAKS[0][1] + 3) + piece(BREAKS[1][0] - 3, CROSSINGS[1] + 20);
 }
 
-/* THE RING. The ring is never redrawn: every mask stops short of it, so the
-   ring is the logo's own path in every frame. Only where a line merges into
-   the ring (the meridian at the two poles, the latitude at the two nodes)
-   does a mask reach past the ring's inner edge, into the ring's ink, so the
-   inner edge the undrawn line leaves behind is drawn; everywhere else a mask
-   stops RING_GAP inside that edge. Where a mask may reach is drawn from the
-   lines themselves, not from an angle: the merge is every point within
-   SECTOR_AT of a line's ink (its ellipse, w / 2 + SECTOR_AT either side),
-   so wherever the masks stop at the inner edge no line's ink lies within
-   SECTOR_AT, and the logo there is the ring alone, the same pixels as the
-   ring drawn alone. A band of BAND past the line's ink covers the merge
-   with BAND - SECTOR_AT to spare, so no mask's soft edge lies on a soft
-   edge of the ring or of an undrawn line. Inside the merge the inner edge
-   comes from \`ring.d\`: the logo's own outer contour and its own
-   inner-edge pieces, with arcs of the same circle where the logo has none.
-   (An angle measured on the line's centre misses where its ink edge
-   leaves the ring by most of a degree, and the logo's meridian then showed
-   through the free band there as a tick of ink on the undrawn ring.) */
+/* THE RING. The ring is never redrawn: no mask reaches it, so the ring is
+   the logo's own path in every frame. A mask reaches it only next to a
+   line's ink inside the ring's hole. Where a line merges into the ring (the
+   meridian at the two poles, the latitude at the two nodes) the logo's
+   inner edge is that line's ink as much as the ring's, so where the line
+   has been undrawn the inner edge there comes from `ring.d`: the logo's own
+   outer contour and its own inner-edge pieces, with arcs of the same circle
+   where the logo has none.
+
+   One rule draws where no mask reaches, all the way round, with no angle
+   and no sector: `free`, the ring from RING_GAP inside its inner edge
+   outward, less every point within NEAR_AT units or NEAR_PX CSS pixels,
+   whichever is more, of a line's ink inside the hole. A pixel of the free
+   ring may hold none of a line's ink, or the logo's line shows through on
+   the undrawn ring: a tick of ink where a free band in units stood beside
+   the ink's edge, and at small sizes a grey fringe along the whole merge,
+   where one pixel holds the ring, the line and the free ring's edge alike
+   (at 96 CSS px a pixel is two units, and WebKit draws a mask at CSS
+   pixels, not device pixels). The pixel reach is a second stroke of the
+   same outline with vector-effect: non-scaling-stroke, so its width is CSS
+   pixels at any size, and the two strokes together reach whichever is
+   more. The ring's outer half stays free at every size down to 20 px, so
+   no mask reaches the ring's outer edge. The meridian's zone reaches as far
+   past its ink by the ring (`zone.near`), so every pixel the free ring
+   leaves next to the meridian's ink lies wholly under the meridian's mask,
+   and there the layers add to the logo or to the logo without the
+   meridian, never to a pixel between them. */
 const R_IN = R - w / 2;
-/** units: where the masks stop, inside the ring's inner edge, and past it in a merge */
+/** units: where the free ring starts, inside the ring's inner edge */
 const RING_GAP = 0.4;
-/** units: a merge holds every point within this of a line's ink */
-const SECTOR_AT = 0.8;
-/* where the merge's edge crosses a circle about the centre: the meridian's
-   ink grown by SECTOR_AT, its side towards the ring, at radius r, as polar
-   [r, angle] on screen (degrees clockwise from the north pole). The
-   latitude is the same ellipse turned a quarter, so its merge's edge is
-   this one mirrored across the diagonal. */
-const mergeAt = (r) => {
-  const o = w / 2 + SECTOR_AT;
-  const at = (t) => {
-    const [x, y] = LINES.meridian.at(t);
-    const [dx, dy] = [A * Math.cos(t * DEG), R * Math.sin(t * DEG)];
-    const l = Math.hypot(dx, dy);
-    return [x + (dy / l) * o, y - (dx / l) * o];
-  };
-  const rOf = (t) => Math.hypot(at(t)[0] - C, at(t)[1] - C);
-  let lo = 0;
-  let hi = 90;
-  for (let k = 0; k < 60; k++) {
-    const m = (lo + hi) / 2;
-    if (rOf(m) > r) lo = m;
-    else hi = m;
-  }
-  const [x, y] = at((lo + hi) / 2);
-  return [r, Math.atan2(x - C, C - y) / DEG];
-};
+/** units: the free ring keeps at least this far from a line's ink inside the hole */
+const NEAR_AT = 0.8;
+/** CSS px: and at least this far, at any size */
+const NEAR_PX = 1.5;
+/** units: the furthest inside the hole a line's ink can stand and still matter: NEAR_PX at a 14 px mark, with room */
+const NEAR_REACH = 24;
 /* the logo's ring as one path: its outer contour verbatim, and an inner
    circle made of the logo's own inner-edge pieces with arcs between them */
 /** the logo's path as segments: each subpath's index, its ends a and b, its points and its text */
@@ -623,14 +616,15 @@ function ringPath() {
   return `${outer}${d}Z`;
 }
 /* where no mask reaches (in the masks, drawn in the colour that keeps the
-   logo): the ring from RING_GAP past its inner edge, and the band RING_GAP
-   either side of the inner edge outside the merges. The band is a filled
-   outline per quarter: an arc RING_GAP past the edge from one merge to the
-   next, down the next merge's edge, an arc RING_GAP inside the edge back,
-   and up the first merge's edge, each merge's edge sampled on the line's
-   own ink grown by SECTOR_AT. */
+   logo): the ring from RING_GAP inside its inner edge out past the box
+   (`free.ring`), less the points near a line's ink in the hole (`free.near`,
+   drawn over it in the other colour). That ink's outline is, for each line,
+   its two edges (the line offset by half the width either side) where they
+   lie inside the hole and within NEAR_REACH of the inner edge, and the arc
+   of the inner edge between the outer edge's two crossings round each of
+   its merges, where the line's ink covers the inner edge. Each edge is a
+   point every two degrees, which stands within 0.02 of the curve. */
 const OUTER = 140;
-const EDGE_SIDE = Array.from({ length: 5 }, (_, i) => mergeAt(R_IN + RING_GAP - (2 * RING_GAP * i) / 4));
 const polar = ([r, a]) => [C + r * Math.sin(a * DEG), C - r * Math.cos(a * DEG)].map(f3).join(' ');
 /** an arc of radius r from angle a0 to a1, in pieces of at most ARC degrees (no M) */
 const ringArc = (r, a0, a1) => {
@@ -639,26 +633,93 @@ const ringArc = (r, a0, a1) => {
   for (let i = 1; i <= n; i++) d += `A${f3(r)} ${f3(r)} 0 0 ${a1 > a0 ? 1 : 0} ${polar([r, a0 + ((a1 - a0) * i) / n])}`;
   return d;
 };
+/** a point on line id at theta t, offset o units outward (away from the centre) */
+function edgeOf(id, t, o) {
+  const L = LINES[id];
+  const [x, y] = L.at(t);
+  const [x1, y1] = L.at(t + 1e-4);
+  const [x0, y0] = L.at(t - 1e-4);
+  const l = Math.hypot(x1 - x0, y1 - y0);
+  let [nx, ny] = [(y1 - y0) / l, -(x1 - x0) / l];
+  if (nx * (x - C) + ny * (y - C) < 0) [nx, ny] = [-nx, -ny];
+  return [x + nx * o, y + ny * o];
+}
+const rOf = ([x, y]) => Math.hypot(x - C, y - C);
+/** a line's ink outline inside the hole, within reach of the ring's inner edge */
+function nearInk(id, reach = NEAR_REACH) {
+  const inside = (p) => rOf(p) <= R_IN + 1e-6 && rOf(p) >= R_IN - reach;
+  /* the theta between t0 (inside) and t1 (outside) where an edge crosses into or out of the band */
+  const cross = (o, t0, t1) => {
+    let [a, b] = [t0, t1];
+    for (let k = 0; k < 50; k++) {
+      const m = (a + b) / 2;
+      if (inside(edgeOf(id, m, o))) a = m;
+      else b = m;
+    }
+    return a;
+  };
+  const runs = [];
+  for (const o of [-w / 2, w / 2]) {
+    let run = null;
+    for (let t = 0; t <= 360; t += 2) {
+      const p = edgeOf(id, t, o);
+      if (inside(p)) {
+        if (!run) {
+          run = [];
+          if (t > 0) run.push(edgeOf(id, cross(o, t, t - 2), o));
+        }
+        run.push(p);
+      } else if (run) {
+        run.push(edgeOf(id, cross(o, t - 2, t), o));
+        runs.push(run);
+        run = null;
+      }
+    }
+    if (run) runs.push(run);
+  }
+  let d = runs.map((run) => `M${run.map((p) => p.map(f3).join(' ')).join('L')}`).join('');
+  /* the inner edge under the line's ink: round each merge, between the outer edge's crossings of it */
+  const at = (t) => edgeOf(id, t, w / 2);
+  let lo = 0;
+  let hi = 90;
+  for (let k = 0; k < 60; k++) {
+    const m = (lo + hi) / 2;
+    if (rOf(at(m)) > R_IN) lo = m;
+    else hi = m;
+  }
+  const t = (lo + hi) / 2;
+  const angle = (p) => Math.atan2(p[0] - C, C - p[1]) / DEG;
+  for (const k of [0, 180]) {
+    const a0 = angle(at(k - t));
+    let a1 = angle(at(k + t));
+    while (a1 < a0) a1 += 360;
+    d += `M${polar([R_IN, a0])}${ringArc(R_IN, a0, a1)}`;
+  }
+  return d;
+}
 const FREE = {
-  ring: { r: +f3((R_IN + RING_GAP + OUTER) / 2), width: +f3(OUTER - R_IN - RING_GAP) },
-  edge: {
-    d: [0, 90, 180, 270]
-      .map((q) => {
-        const pole = EDGE_SIDE.map(([r, a]) => [r, q + a]);
-        const node = EDGE_SIDE.map(([r, a]) => [r, q + 90 - a]);
-        const [o0, o1] = [pole[0], node[0]];
-        const [i0, i1] = [pole.at(-1), node.at(-1)];
-        return (
-          `M${polar(o0)}${ringArc(o0[0], o0[1], o1[1])}` +
-          node.slice(1).map((p) => `L${polar(p)}`).join('') +
-          ringArc(i1[0], i1[1], i0[1]) +
-          [...pole].reverse().slice(1, -1).map((p) => `L${polar(p)}`).join('') +
-          'Z'
-        );
-      })
-      .join(''),
-  },
+  ring: { r: +f3((R_IN - RING_GAP + OUTER) / 2), width: +f3(OUTER - R_IN + RING_GAP) },
+  near: { d: nearInk('meridian') + nearInk('latitude'), width: 2 * NEAR_AT, px: 2 * NEAR_PX },
+  /* the ring's outer half, free again over the near points: no line's ink
+     in the hole is within reach of it at any size down to 20 px, so the
+     masks never reach the ring's outer edge, where a layer drawn from
+     parts (the ring and a line's stroke) antialiases the edge apart from
+     the logo's one path */
+  outer: { r: +f3((R + OUTER) / 2), width: +f3(OUTER - R) },
+  /* where the lap line never draws: the ring from RING_GAP past its inner
+     edge, as before any line's ink is undrawn there, so the line drawn over
+     the logo never inks the ring twice */
+  core: { r: +f3((R_IN + RING_GAP + OUTER) / 2), width: +f3(OUTER - R_IN - RING_GAP) },
 };
+/* the meridian's zone reaches NEAR_PX CSS pixels past its ink where that
+   ink nears the ring (its outline within ZONE_NEAR of the inner edge), as
+   the free ring keeps that far from it: every pixel that holds the
+   meridian's ink by the ring lies wholly in the zone, so where the meridian
+   is undrawn none of its ink is left in a pixel the zone only partly
+   covers. Only there: elsewhere a pixel's reach would take in the G's arcs
+   by the meridian's cut faces, which the logo without its meridian lacks. */
+const ZONE_NEAR = 3;
+ZONE.near = { d: nearInk('meridian', ZONE_NEAR), px: 2 * NEAR_PX };
 
 /* ------------------------------------------------------------ the files */
 const HEAD = `/* Written by pnpm build:logo-motion (scripts/build/logo-motion.mjs) from scripts/build/logo-motion.json. Do not edit by hand. */`;
@@ -687,12 +748,16 @@ const ts = `${HEAD}
  * the logo itself: the still, and the layer every moving frame keeps
  * wherever nothing is undrawn, and always on the ring. \`bar\`, \`stem\` and
  * \`c\` draw the logo without its meridian where the meridian has been
- * undrawn, inside \`zone\` (a mask of strokes: \`band\` and \`breaks\` in,
- * \`ends\` out); \`ring.d\` is the ring drawn from the logo's own outline,
- * which shows only at its inner edge where a line merged into it. \`free\`
- * is where no mask reaches: the ring (\`free.ring\`, a stroke), and the band
- * either side of its inner edge outside the merges (\`free.edge\`, filled),
- * the merges being every point within a little of a line's ink.
+ * undrawn, inside \`zone\` (a mask of strokes: \`band\`, \`breaks\` and
+ * \`near\`, the last \`px\` CSS pixels wide, in, \`ends\` out); \`ring.d\`
+ * is the ring drawn from the logo's own outline, which shows only at its
+ * inner edge where a line merged into it. \`free\` is where no mask
+ * reaches: the ring from just inside its inner edge (\`free.ring\`, a
+ * stroke), less every point near a line's ink in the ring's hole
+ * (\`free.near\`, the ink's outline stroked \`width\` units wide and again
+ * \`px\` CSS pixels wide, whichever reaches further), but always the
+ * ring's outer half (\`free.outer\`); the lap line never draws on
+ * \`free.core\`, the ring from just past its inner edge.
  * \`meridian\`, \`latitude\` and \`meridianLap\` are the paths the dashes
  * run on, by theta \`from\` and \`to\` (each \`length\` is its path's own):
  * the undrawn meridian, the undrawn G (\`under\`), the stem whole across its
