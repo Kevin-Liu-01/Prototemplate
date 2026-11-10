@@ -13,9 +13,9 @@ pnpm graphics:render [id ...]      # out/<id>.png at 3840 wide (agent-browser, P
 python3 build/sheet.py [id ...]    # out/_sheet*.png contact sheets
 build/composite-videos.sh          # the two clips onto their stills
 pnpm graphics:export -- --covers   # public/static/blogs (or --dest DIR)
-python3 build/cover-grounds.py     # bg/covers/*.png: each published cover (shots/covers) with its old GT mark taken out
-node build/gen-covers.js           # after graphics:gen: those covers with the globe logo where the mark was (area P)
-python3 build/export-covers.py     # the published covers with only the mark area replaced (or --dest DIR)
+python3 build/cover-grounds.py     # bg/covers/: each published cover (shots/covers) with the old GT mark and its words lifted off
+node build/gen-covers.js           # after graphics:gen: the globe logo and those words set back, centred (area P)
+python3 build/export-covers.py     # the published covers with only that group replaced (or --dest DIR)
 ```
 
 | folder | holds |
@@ -27,7 +27,7 @@ python3 build/export-covers.py     # the published covers with only the mark are
 | `glyph/` | glyphfield studio scripts and the project source (`load.js`) |
 | `bg/` | a link to `public/graphics/bg/`, the glyphfield exports (lossless webp, pixel-identical to the PNG originals): `user/` the palette, `blue/` the cover variants; served, so `/graphics` shows them at native size |
 | `shots/hi/` | product captures at 3 to 5x (lossless webp) |
-| `shots/covers/` | the covers as first published; `cover-grounds.py` takes their old mark out |
+| `shots/covers/` | the covers as first published; `cover-grounds.py` lifts their old mark and its words off |
 | `fonts/` | Katagami Text 1.200 (roman and italic, the bytes generaltranslation.com serves) for every label; Inter for the docs type D1 shows and the F2 mock; Geist Mono for code |
 | `rec/` | the recordings the clips composite from |
 
