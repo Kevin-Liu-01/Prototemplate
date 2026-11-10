@@ -123,7 +123,7 @@
 
 /* ---- the head: the mark, the name (never truncated), the density toggle.
    At the 208px outline width the arithmetic is tight: 10px pad, the mark
-   (25px for GT, 22px for Prototemplate, its hit area folded into negative
+   (18px for the General Translation logo, 22px for Prototemplate, its hit area folded into negative
    margins), two 6px gaps, the 58px toggle, 6px pad, which leaves the name
    100px. The deck's Inter title `Brand deck` fits at 13.5px; the
    Prototemplate routes carry the nameplate instead (a chrome exception,

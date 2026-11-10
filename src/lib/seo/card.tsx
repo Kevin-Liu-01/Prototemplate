@@ -180,7 +180,7 @@ export function Card({ title, section, description, kind, path, capture }: CardP
         ) : null}
       </div>
 
-      {/* footer band: the address on www, and GT */}
+      {/* footer band: the address on www, and General Translation */}
       <div
         style={{
           position: 'absolute',

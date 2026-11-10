@@ -33,7 +33,7 @@
 //   node skills/gt-verify/scripts/probe.mjs http://localhost:3001/en-US --browser webkit --sel ".blog-card" --scroll-through
 //
 // Coordinates for --point and --scan are CSS pixels in the viewport after the
-// scroll options ran. The theme is seeded the way GT pages read it:
+// scroll options ran. The theme is seeded the way General Translation pages read it:
 // localStorage gt-theme (the Prototemplate shell and the deck) and theme
 // (next-themes in gt-cloud), plus the prefers-color-scheme emulation. Widths
 // under 768 load as a phone (isMobile and hasTouch). Crops and the viewport

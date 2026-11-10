@@ -2,7 +2,7 @@
 
    The shell (src/components/viewer) draws the frame; this sheet draws the
    book inside the flow sheet: the shortlist as square tiles (.mk-short)
-   and on one field beside the GT mark, then one section per family, In
+   and on one field beside the General Translation mark, then one section per family, In
    production last. The head's note holds the two marks in production
    (.mk-live), so they are on the first screen. Every mark takes one card
    (.mk-card): the mark large on its plates, the run of heights, the 16px
@@ -229,7 +229,7 @@
 }
 
 /* the shortlist's field holds no caption, so it pads its foot like its head,
-   and sets its marks closer so the GT mark and the shortlist hold one row at 1440 */
+   and sets its marks closer so the General Translation mark and the shortlist hold one row at 1440 */
 .mk-field.is-short {
   padding-bottom: 44px;
 }

@@ -29,7 +29,7 @@ function describe(story: Story): string {
 }
 
 /**
- * The head of one story. A story that is a GT blog post takes the post as
+ * The head of one story. A story that is a General Translation blog post takes the post as
  * its canonical (src/lib/seo/policy.ts, PRESS_POSTS), as /blog/<slug> does.
  */
 function storyRoute(story: Story) {

@@ -27,7 +27,7 @@
 //     --storage gt-deck-mode=book --sel ".book-head h1, .book-head p"
 //   node skills/gt-aesthetic/scripts/measure-type.mjs http://localhost:3005/brand
 //
-// The theme is seeded the way GT pages read it: localStorage gt-theme (the
+// The theme is seeded the way General Translation pages read it: localStorage gt-theme (the
 // Prototemplate shell and the deck) and theme (next-themes in gt-cloud), plus
 // the prefers-color-scheme emulation. --storage seeds further localStorage
 // keys before load, such as gt-deck-mode=book, which opens the deck's book
@@ -147,7 +147,7 @@ function readType({ selector, max }) {
     for (let n = el; n; n = n.parentElement) chain.push(n);
     chain.reverse();
     const dark = getComputedStyle(document.documentElement).colorScheme.includes('dark') && document.documentElement.dataset.theme !== 'light';
-    // With no painted ancestor the ground is GT's paper: #070707 dark, white light.
+    // With no painted ancestor the ground is General Translation's paper: #070707 dark, white light.
     let ground = dark ? { r: 7, g: 7, b: 7, a: 1 } : { r: 255, g: 255, b: 255, a: 1 };
     let solid = true;
     for (const n of chain) {

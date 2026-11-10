@@ -4,7 +4,7 @@
  * currentColor (directives 7.2 and 8.7). This is the only icon family in
  * chrome: the toolbar, the search bar, the sidebar, the index panel, the
  * direction corner, the help card, the archive pages and the compare slot
- * all draw from here. The exceptions are the GT mark (GtMark.tsx), the
+ * all draw from here. The exceptions are the General Translation logo (GtMark.tsx), the
  * Prototemplate mark (PtMark.tsx), the text glyphs on the theme button
  * (ThemeButton.tsx) and the colored site icons, which are these Heroicons
  * on a --pt-site-* color. No lucide, no Unicode glyph icons, no icon fonts,

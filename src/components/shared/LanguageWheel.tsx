@@ -44,7 +44,7 @@ type Orb = { el: HTMLElement; ang: number; rad: number; spin: number; scale: num
 
 /**
  * The machined chrome dial: a heavy metallic bezel with true specular edges, a
- * bright progress arc, orbiting script glyphs, and the real GT mark at centre.
+ * bright progress arc, orbiting script glyphs, and the General Translation logo at centre.
  *
  * Bezel, arc and glyph colours all resolve through `--gtw-*` custom properties.
  */

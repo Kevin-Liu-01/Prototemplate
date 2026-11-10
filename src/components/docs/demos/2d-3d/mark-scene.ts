@@ -9,7 +9,7 @@ import type { Turn } from './drag';
 import { inkMaterial, lightFrom, lightUniform, lineMaterial } from './materials';
 
 /**
- * The GT mark as a solid: LOGO, the logo's one path (src/lib/logo.ts, the
+ * The General Translation logo as a solid: LOGO, the logo's one path (src/lib/logo.ts, the
  * deck's #gt-mark), parsed by SVGLoader into shapes with their holes and
  * extruded 24 units deep with no bevel, so every face is a flat plane and
  * every wall of the globe's lines catches the light on its own.

@@ -1,4 +1,4 @@
-/* 03 Signal. The GT poster: a field of Morse that spells Euclid's first
+/* 03 Signal. The General Translation poster: a field of Morse that spells Euclid's first
    definition, the definition in the five languages that carried it, and the
    coordinates of each version's city in large type, rolling digit by digit
    when the language changes. */

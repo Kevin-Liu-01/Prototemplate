@@ -17,7 +17,7 @@ const BAND = ['Español', '日本語', 'العربية', 'हिन्दी', '
 /**
  * LanguageWheel, live on an ink stage: the machined bezel, the bright arc
  * that laps the dial, the script glyphs that orbit and sink toward it, and
- * the GT mark at the center. Lap sets the seconds per revolution and Arc
+ * the General Translation logo at the center. Lap sets the seconds per revolution and Arc
  * the share of the ring the arc covers. The lens stacks three
  * backdrop-filter shells, so a band of language names runs behind the
  * wheel for it to bend. Size remounts the wheel, since the orbit radii are

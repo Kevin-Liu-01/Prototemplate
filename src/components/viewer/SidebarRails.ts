@@ -1,5 +1,5 @@
 /**
- * The sidebar's rail (DESIGN.md section 16): the GT docs sidebar's mask
+ * The sidebar's rail (DESIGN.md section 16): the General Translation docs sidebar's mask
  * method (gt-cloud apps/landing/src/components/docs/SidebarMotion.tsx) in
  * Prototemplate's grammar. Framework-free. Sidebar.tsx creates it on the
  * list in outline density (RailsLayer) and destroys it on unmount or when

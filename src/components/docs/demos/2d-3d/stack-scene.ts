@@ -19,7 +19,7 @@ import type { Turn } from './drag';
 import { glyphMaterial, inkMaterial, lightFrom, lightUniform, lineMaterial } from './materials';
 
 /**
- * GT's pipeline as an isometric stack: content on top, translation in the
+ * General Translation's pipeline as an isometric stack: content on top, translation in the
  * middle, the CDN at the bottom. The camera is orthographic and looks down
  * (1, 1, 1), the true isometric view, so its projection is the iso kit's
  * 30 degree map: +x runs down to the right, +z down to the left and +y up.

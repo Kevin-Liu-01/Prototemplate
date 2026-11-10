@@ -53,7 +53,7 @@ const GLOBE_GAMMA = 1.15;
 const EARTH_SRC = '/craft/mood-earth.jpg';
 const ROSETTA_SRC = '/craft/mood-rosetta.jpg';
 /**
- * Ink fallbacks for a plate whose tokens are unresolved: GT blue, and the
+ * Ink fallbacks for a plate whose tokens are unresolved: General Translation blue, and the
  * standard's dark screen, paper white at 0.62 over the plate's ground.
  */
 const GLOBE_INK = 'rgb(47, 92, 224)';

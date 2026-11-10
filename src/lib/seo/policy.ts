@@ -5,9 +5,9 @@
  *
  *   /d/production and each mirror page   index, canonical on generaltranslation.com/en-US, not listed
  *   /d/production/<dashboard state>      noindex, self canonical, not listed (no public page exists)
- *   every other /d/ page                 noindex, self canonical, not listed (a design study of GT copy)
+ *   every other /d/ page                 noindex, self canonical, not listed (a design study of General Translation copy)
  *   /blog/<slug>                         index, canonical on generaltranslation.com/en-US/blog, not listed
- *   /atlas/<slug> of a GT post           index, canonical on generaltranslation.com/en-US/blog, not listed
+ *   /atlas/<slug> of a blog post         index, canonical on generaltranslation.com/en-US/blog, not listed
  *   /atlas/directions and its pages      noindex, self canonical, not listed (design studies of the magazine page)
  *   /atlas/shelf and its pages           noindex, self canonical, not listed (the shelf direction, kept explorable)
  *   each private page and its subpages   noindex, nofollow, self canonical, not listed (PRIVATE_PATHS, LOCKED among them)
@@ -31,7 +31,7 @@ export const SITE_URL = 'https://www.prototemplate.com';
 /** General Translation's site, the original of every mirror page and post. */
 export const GT_URL = 'https://generaltranslation.com';
 
-/** The locale segment of GT's canonical URLs. */
+/** The locale segment of General Translation's canonical URLs. */
 export const GT_LOCALE = 'en-US';
 
 /** The other two hosts of this deployment. Only this file and the archive's capture record may spell them; lint:seo S5 holds that. */
@@ -75,7 +75,7 @@ export function isPrivatePath(path: string): boolean {
   return PRIVATE_PATHS.some((base) => p === base || p.startsWith(`${base}/`));
 }
 
-/** The Atlas stories that are GT blog posts: like /blog/<slug>, each takes the post as its canonical. */
+/** The Atlas stories that are General Translation blog posts: like /blog/<slug>, each takes the post as its canonical. */
 export const PRESS_POSTS: readonly string[] = ['designing-docs-for-humans', 'rewriting-our-docs', 'fuma-nama'];
 
 export type SeoPolicy = {

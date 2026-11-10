@@ -2,7 +2,7 @@
 // pixel-diff.mjs: proves that a performance change left the picture alone.
 //
 // `capture` renders a page under reduced motion (one deterministic frame for
-// every GT engine that follows the lifecycle contract) at a fixed size, pixel
+// every General Translation engine that follows the lifecycle contract) at a fixed size, pixel
 // ratio and theme, and writes a PNG. `compare` reads two PNGs and prints how
 // many pixels and channels differ, the largest channel difference and the box
 // that holds the differences, and can write a diff image (differences in red
