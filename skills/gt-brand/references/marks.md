@@ -57,6 +57,26 @@ The name is Katagami Text at weight 500, letter-spacing 0, with the font's GPOS 
 - Running copy never retypes the logo's name in place of a logo file. General Translation in a sentence is body copy, set in Katagami Text 400 like the rest of the sentence, never in Inter. prototemplate.com still renders it in Inter until its own switch (the known gap in `gt-brand` section 4).
 - Measure the span on the name as set, in the face and weight it ships in, and size the globe from it; never size the globe to the name's line box.
 
+### The four-globe lockup
+
+The four-globe lockup reads left to right as the logo's construction: three graticule globes, then the logo, then the stacked name. The logo and the name are the stacked lockup exactly (`LOCKUP`); the three graticule globes stand to the logo's left at its size, 0.22 globe diameters apart (`STRIP.between`, 0.596 cap height). Every globe is drawn from the logo's own geometry on the 256 unit square: the ring of radius 96.9, the 13.6 line weight, the meridian oval (51.46 by 96.9), the latitude oval (96.9 by 51.46), the axis and the equator, whose left segment inside the latitude's left end is gone in every globe.
+
+| globe | what it draws |
+| --- | --- |
+| 1 | ring, meridian, latitude, axis, equator and two polar arcs of radius 90.1 (the ring's inner edge), each touching the latitude oval's middle line at its pole side: the north arc runs ring to ring, the south arc from the axis to the ring on the right |
+| 2 | globe 1 with the meridian's right arc gone between its two crossings with the latitude oval, where the G opens |
+| 3 | globe 2 without the polar arcs |
+| 4 | `LOGO`, unchanged |
+
+| source | what it is | use it for |
+| --- | --- | --- |
+| `pnpm build:strip` (`scripts/build/strip.py`) | draws the three graticule globes as outlines and lays the strip out with `lockup.py`'s own layout, from Katagami Text and `LOGO` | after any change to `LOGO`, the font or the lockup's numbers |
+| `public/brand/gt-globe-strip.svg` | the four-globe lockup in currentColor, cropped to its ink | masks and inline use |
+| `public/brand/gt-globe-strip-light.svg`, `-dark.svg` | `#070707` and `#ffffff` | the `/brand` tiles and any page that needs the strip as a file |
+| `public/brand/gt-globe-strip-accent.svg`, `-accent-lift.svg` | `#2f5ce0` for paper and `#86a8ff` for ink | a page whose one accent is the working blue |
+| `public/brand/gt-globe-strip.json` | the numbers: cap, the globes' boxes, the gap between them, the name's box and the stage geometry | `STRIP` in `src/lib/logo.ts` reads the same numbers, and `pnpm test:marks` holds them together |
+| `public/marks/graticule/strip/stage-1.svg` to `stage-3.svg` | globes 1 to 3 alone, one currentColor path each on the 256 square | any figure that needs a graticule globe at the logo's weight |
+
 ### The one-line lockup, clear space and minimum sizes
 
 Kevin approved the brand kit's one-line lockup, clear space and minimum sizes on 2026-11-08. The brand kit builds every lockup file from `LOGO` and the name's Katagami Text outlines (its `logo/lockup-horizontal/` holds the one-line lockup); Prototemplate draws only the stacked lockup so far. The unit is the name's cap height.

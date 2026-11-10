@@ -332,6 +332,17 @@
   height: 132px;
 }
 
+/* the four-globe lockup: one to a row at the width of the marks above, its padding a share of the width so a narrow column keeps the strip legible */
+.ptb-strips {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ptb-strips .ptb-mark img {
+  height: auto;
+  aspect-ratio: 6 / 1;
+  padding: 3.5%;
+}
+
 .ptb-mark figcaption {
   margin-top: 10px;
   font-size: var(--pt-t-meta);

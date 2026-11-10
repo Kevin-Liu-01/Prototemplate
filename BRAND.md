@@ -170,6 +170,16 @@ Rules:
   the cap line and below the baseline, and its ink is 0.8 cap height
   from the G's, as in the stacked lockup (Kevin approved the brand kit's
   one-line lockup, clear space and minimum sizes on 2026-11-08).
+- **The four-globe lockup** sets three graticule globes before the logo
+  and the stacked name: a whole graticule with its polar arcs, the
+  graticule with its meridian opened on the right where the G opens, the
+  graticule without its polar arcs, then the logo. Every globe shares the
+  logo's ring, 13.6 unit line weight, meridian oval and latitude oval; the
+  globes stand 0.22 globe diameters apart (0.596 cap height), and the logo
+  and the name keep the stacked lockup's size and 0.8 cap height gap.
+  `pnpm build:strip` writes `public/brand/gt-globe-strip*.svg` (currentColor,
+  ink, paper, the accent and its lift) and the three graticule globes alone
+  (`public/marks/graticule/strip/stage-*.svg`).
 - **Clear space** is X, a quarter of the globe's height, on every side
   of either lockup: 0.68 cap height in the stacked lockup and 0.55 in the
   one-line lockup. The name alone keeps 0.68 cap height, the space it has

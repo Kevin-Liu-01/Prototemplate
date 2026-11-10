@@ -331,6 +331,23 @@ const PAGES: readonly BrandPage[] = [
           </figure>
         </div>
         <p>
+          The four-globe lockup sets three graticule globes before the logo and the same stacked
+          name: a whole graticule with its polar arcs, the graticule with its meridian opened where
+          the G opens, the graticule without its polar arcs, then the logo. The globes share the
+          logo&rsquo;s ring, line weight and ovals, stand 0.22 globe diameters apart, and the logo
+          and the name keep the lockup&rsquo;s size and 0.8 cap height gap.
+        </p>
+        <div className='ptb-marks ptb-strips'>
+          <figure className='ptb-mark is-paper'>
+            <img alt='The General Translation four-globe lockup in ink on paper: three graticule globes, the logo, then General over Translation' decoding='async' loading='lazy' src='/brand/gt-globe-strip-light.svg' />
+            <figcaption>the four-globe lockup, ink on paper</figcaption>
+          </figure>
+          <figure className='ptb-mark is-ink'>
+            <img alt='The General Translation four-globe lockup in paper on ink: three graticule globes, the logo, then General over Translation' decoding='async' loading='lazy' src='/brand/gt-globe-strip-dark.svg' />
+            <figcaption>the four-globe lockup, paper on ink</figcaption>
+          </figure>
+        </div>
+        <p>
           On one line, where height is short, the logo is 2.2 cap heights tall and centred on the
           cap band, the size at which its ring is as thick as the name&rsquo;s stems. In both lockups
           the logo&rsquo;s ink stands 0.8 cap height from the G. Clear space is a quarter of the
