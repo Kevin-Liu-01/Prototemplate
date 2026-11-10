@@ -3,6 +3,7 @@
 // check, the session cookie (signed, tampered, expired, revoked), isLocked,
 // the next-path guard, the gate's answers and the proxy's matcher, which
 // must repeat LOCKED. /vault stands in for a locked area.
+// The last two tests cover the same-origin check of the POST routes.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -23,6 +24,7 @@ const {
   signSession,
 } = await importTs(new URL('../../src/lib/access.ts', import.meta.url));
 const { LOCKED, PRIVATE_PATHS, isLocked, policyFor } = await importTs(new URL('../../src/lib/seo/policy.ts', import.meta.url));
+const { sameOrigin } = await importTs(new URL('../../src/lib/same-origin.ts', import.meta.url));
 
 const SECRET = 's'.repeat(40);
 const K1 = 'first-key-0123456789abcdef';
@@ -201,4 +203,22 @@ test('the key form posts, so Enter before hydration sends the key in a body, nev
   const forms = [...source.matchAll(/<form\b[^>]*>/g)].map((m) => m[0]);
   assert.ok(forms.length > 0, 'SignInViewer renders a form');
   for (const form of forms) assert.match(form, /\bmethod='post'/, form);
+});
+
+test('sameOrigin: only a request whose Origin header is this site passes', () => {
+  const request = (origin, site = 'https://www.example.test') => ({ headers: new Headers(origin === undefined ? {} : { origin }), nextUrl: { origin: site } });
+  assert.equal(sameOrigin(request('https://www.example.test')), true);
+  assert.equal(sameOrigin(request('https://other.example.test')), false);
+  assert.equal(sameOrigin(request('http://www.example.test')), false, 'the scheme is part of the origin');
+  assert.equal(sameOrigin(request('null')), false);
+  assert.equal(sameOrigin(request(undefined)), false, 'no Origin header');
+});
+
+test('the POST routes refuse another origin before doing any work', () => {
+  for (const rel of ['../../src/app/api/try/fetch/route.ts', '../../src/app/api/auth/key/route.ts']) {
+    const source = readFileSync(new URL(rel, import.meta.url), 'utf8');
+    assert.match(source, /import \{ sameOrigin \} from '@\/lib\/same-origin';/, rel);
+    const post = source.slice(source.indexOf('export async function POST'));
+    assert.match(post, /^[^\n]*\n\s*if \(!sameOrigin\(/, `${rel}: the origin check is the first statement of POST`);
+  }
 });

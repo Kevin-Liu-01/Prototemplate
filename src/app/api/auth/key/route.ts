@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 import { accessEnv, LOCKED_HEADERS, matchKey, SESSION_COOKIE, SESSION_SECONDS, signSession } from '@/lib/access';
 import { getClientIp, isAtLimit, isRateLimited } from '@/lib/rate-limit';
+import { sameOrigin } from '@/lib/same-origin';
 
 /**
  * POST signs in with an access key ({ key }) and sets the session cookie;
@@ -21,11 +22,6 @@ const FAILURE_DELAY_MS = 1500;
 
 function answer(status: number, body: Record<string, unknown> | null = null): NextResponse {
   return body ? NextResponse.json(body, { status, headers: LOCKED_HEADERS }) : new NextResponse(null, { status, headers: LOCKED_HEADERS });
-}
-
-/** True when the request comes from a page of this site. */
-function sameOrigin(request: NextRequest): boolean {
-  return request.headers.get('origin') === request.nextUrl.origin;
 }
 
 /** The cookie's attributes; Secure everywhere but plain-HTTP development. */

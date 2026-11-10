@@ -87,7 +87,7 @@ export const UPDATED: Readonly<Record<string, PageUpdated>> = {
   '/docs/craft/type': { day: '2026-11-09', at: '2026-11-09T13:20:21-08:00', commit: '743b3fd', src: '7ed37b19' },
   '/docs/craft/writing': { day: '2026-11-09', at: '2026-11-09T12:32:25-08:00', commit: '730b9c2', src: '600e676b' },
   '/docs/engineering/dev-servers': { day: '2026-11-09', at: '2026-11-09T13:20:21-08:00', commit: '743b3fd', src: '819f6f44' },
-  '/docs/engineering/docs-traps': { day: '2026-11-09', at: '2026-11-09', commit: null, src: '66eb781e' },
+  '/docs/engineering/docs-traps': { day: '2026-11-09', at: '2026-11-09T18:37:44-08:00', commit: '5c074d1', src: '66eb781e' },
   '/docs/engineering/engines': { day: '2026-11-09', at: '2026-11-09T00:47:16-08:00', commit: 'd529680', src: '0ce912ef' },
   '/docs/engineering/i18n-routing': { day: '2026-11-09', at: '2026-11-09T12:32:28-08:00', commit: '12d40b9', src: 'bf9cf4e9' },
   '/docs/engineering': { day: '2026-11-09', at: '2026-11-09T00:47:16-08:00', commit: 'd529680', src: 'b34c333c' },
