@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import SmoothScroll from '@/components/shared/SmoothScroll';
 import { scrollBehavior } from '@/lib/reduced-motion';
 import { pad2 } from '@/lib/shell-data';
@@ -286,8 +287,8 @@ export default function PresenterApp() {
             className={`pr-hud-brand${railHidden ? ' is-hidden' : ''}`}
             aria-label='Back to the index'
           >
-            <img src='/brand/no-bg-gt-globe-logo-dark-256.png' alt='General Translation' />
-            <span>Redesign</span>
+            <GtLogoMotion mode='hover' size={20} className='pr-hud-mark' />
+            <span className='pr-hud-word'>Redesign</span>
           </Link>
           <div className={`pr-hud-author${railHidden ? ' is-hidden' : ''}`}>Kevin Liu</div>
           <nav

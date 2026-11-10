@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
 import { useContext, useRef, useState } from 'react';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { Icon } from '@/components/viewer/icons';
 import { LockMark } from '@/components/viewer/Lock';
 import { SearchKeysContext } from '@/components/viewer/search-keys';
@@ -46,7 +47,8 @@ import './Search.css';
  * headings and slide names) is a separate chunk, loaded on the first open
  * or earlier when the pointer or focus reaches the trigger (preloadSearch,
  * which the direction corner also calls); until it lands the card shows
- * its field and no rows, and a failed load says so and retries on Enter.
+ * its field, no rows and the logo's loader in the count's place, and a
+ * failed load says so and retries on Enter.
  * Closing the card returns focus to what held it before the card opened.
  * An empty query shows a short map of the site (search-index.ts,
  * searchGroups) that fits the card without a scroll region, so opening it
@@ -314,9 +316,15 @@ export function Search({ trigger = 'field', className, onOpen }: SearchProps) {
                   enterKeyHint='go'
                 />
               </label>
-              <span className='pt-search-count' aria-live='polite'>
-                {loaded ? loaded.searchCount(rows.length) : ''}
-              </span>
+              {loaded || failed ? (
+                <span className='pt-search-count' aria-live='polite'>
+                  {loaded ? loaded.searchCount(rows.length) : ''}
+                </span>
+              ) : (
+                <span className='pt-search-count'>
+                  <GtLogoMotion mode='loader' size={14} label='Loading search' />
+                </span>
+              )}
             </div>
             <div id='pt-search-list' className='pt-search-list pt-scroll' role='listbox' aria-label='Results'>
               {groups.map((entry, g) => (

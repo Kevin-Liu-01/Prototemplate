@@ -56,9 +56,9 @@
   --pr-mint: #0f6b45;
 }
 
-/* the brand mark file is the white logo (no-bg-gt-globe-logo-dark-256.png, cut
+/* the title's mark file is the white logo (no-bg-gt-globe-logo-dark-256.png, cut
    for the ink ground); on paper it is inverted to the black mark, the same
-   monochrome shape, so the title and the HUD carry the mark in both themes */
+   monochrome shape, so the title carries the mark in both themes */
 :root:not([data-theme='dark']) .pr-root img[src$='no-bg-gt-globe-logo-dark-256.png'] {
   filter: invert(1);
 }
@@ -132,13 +132,13 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   text-decoration: none;
 }
 
-.pr-hud-brand img {
-  height: 20px;
-  width: auto;
-  display: block;
+/* the HUD's mark is the logo with its hover (GtLogoMotion), white under the
+   difference blend on ink and plain ink on paper */
+.pr-hud-mark {
+  color: #fff;
 }
 
-.pr-hud-brand span {
+.pr-hud-word {
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.18em;
@@ -148,13 +148,17 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
 
 /* on paper the difference blend would land mid-grey on the washed intro
    field and vanish on the white slides, so the two labels drop the blend
-   and read in plain ink; the mark is the inverted black file */
+   and read in plain ink, and the mark is drawn in ink */
 :root:not([data-theme='dark']) .pr-hud-brand,
 :root:not([data-theme='dark']) .pr-hud-author {
   mix-blend-mode: normal;
 }
 
-:root:not([data-theme='dark']) .pr-hud-brand span,
+:root:not([data-theme='dark']) .pr-hud-mark {
+  color: var(--pt-ink);
+}
+
+:root:not([data-theme='dark']) .pr-hud-word,
 :root:not([data-theme='dark']) .pr-hud-author {
   color: color-mix(in srgb, var(--pt-ink) 80%, transparent);
 }
@@ -457,7 +461,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   padding: 0 6vw;
 }
 
-/* Mixed lockup: The [GT logo] website Redesign, one face per piece. */
+/* Mixed lockup: The [logo] website Redesign, one face per piece. */
 .pr-intro-title {
   display: flex;
   align-items: center;
@@ -946,7 +950,7 @@ html:has(.pr-root)::-webkit-scrollbar-thumb {
   clip-path: inset(0 0% 0 0);
 }
 
-/* Actual code renders as code: mono chip, with the GT wrapper highlighted.
+/* Actual code renders as code: mono chip, with the General Translation wrapper highlighted.
    Scoped under .pr-root to out-rank the presenter's code reset. */
 .pr-root .pr-code {
   display: inline-block;

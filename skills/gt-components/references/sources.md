@@ -20,3 +20,7 @@ Where every line of `SKILL.md` and the files beside it comes from. Each line add
 ## Lines added on 2026-11-02
 
 - "React and translation rules", the locale line, its checklist line, and `references/react.md`, "Locales": Kevin's memory note `gt-next-reviewer-patterns` (the review of gt-cloud #5542 on 2026-10-27, and Kevin's request the same day: "can we get better at using all gt next stuff in here?"). The rule covers every gt-cloud app, so it sits here and `gt-website` section 3 keeps the landing's link exception. The helper names were checked on 2026-11-02 against gt-cloud origin/main (`packages/locales/src/utils/display.ts` and `flag.ts`) and the installed `gt-next` 11 build.
+
+## Lines added on 2026-11-09
+
+- `references/behavior.md` section 13, "Loading states", and its summary in `SKILL.md` ("Behavior", Loading): Kevin's ruling of 2026-11-09 that the logo's motion is `GtLogoMotion` (the Meridian, then G loader and the draw-back hover) and that every surface showing a loading state, or a still logo where a loader belongs, uses it.
