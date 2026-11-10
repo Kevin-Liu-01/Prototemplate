@@ -16,12 +16,16 @@
 //              undrawn, except within two pixels of the end that moves; in
 //              the loader's lap, every pixel is the draw-back's end pose
 //              except under the dashes of the lines that move in that frame
-//   ring       in every frame the ring's core and outer edge, and its inner
-//              edge outside the sectors where a line merges into it, are the
-//              logo's own pixels
+//   ring       in every frame the ring's core and outer edge are the logo's
+//              own pixels, and its inner edge, all the way round (the poles,
+//              the nodes and the ends of every merge), is the logo's where
+//              the lines are drawn and the ring drawn alone where the
+//              meridian has been undrawn, except within two pixels of what
+//              moves
 //   end pose   the draw-back ends on the logo without its meridian: the
-//              logo's pixels outside the meridian's zone, and inside it the
-//              logo's other parts drawn plainly
+//              logo's pixels outside the meridian's zone, inside it the
+//              logo's other parts drawn plainly, and on the ring, with no
+//              band spared at the zone's edge, exactly the ring drawn alone
 //   tip        through the whole loop the G's tip is the logo's, except
 //              while the G's own lap runs over it
 //   meridian   wherever the meridian shows (drawn or on its lap), every
@@ -61,7 +65,7 @@ import { inflateSync } from 'node:zlib';
 import { chromium, firefox, webkit } from 'playwright-core';
 import ts from 'typescript';
 
-import { browserTable, cleanThetas, FACE_LINES, FACES, frameBox, frameRule, grow, inkOf, lineMap, meridianIn, not, ringZones, stepRule, THEMES } from '../lib/logo-motion-frames.mjs';
+import { browserTable, cleanThetas, FACE_LINES, FACES, frameBox, frameRule, grow, inkOf, lineMap, meridianIn, not, or, ringZones, stepRule, THEMES } from '../lib/logo-motion-frames.mjs';
 import { ROOT } from '../lib/root.mjs';
 import { chromePath } from '../lib/site-pages.mjs';
 
@@ -199,15 +203,13 @@ const markOf = (props) => renderToStaticMarkup(createElement(GtLogoMotion, { siz
 /** an svg in the logo's box, for the regions and the plain references */
 const svgOf = (body) => `<svg viewBox="${G.viewBox}" width="${SIZE}" height="${SIZE}" style="display:block" fill="currentColor">${body}</svg>`;
 const stroke = (d, width, extra = '') => `<path d="${d}" fill="none" stroke="currentColor" stroke-width="${width}" ${extra}/>`;
-/* where the logo without its meridian replaces the logo once the meridian has gone: the meridian's dash inside its zone, less the ring (an older component without a zone: the meridian's band) */
-const free = (ink) =>
-  `<g shape-rendering="crispEdges"><circle cx="${G.ring.cx}" cy="${G.ring.cy}" r="${G.free.ring.r}" fill="none" stroke="${ink}" stroke-width="${G.free.ring.width}"/><path d="${G.free.edge.d}" fill="none" stroke="${ink}" stroke-width="${G.free.edge.width}"/></g>`;
+/* where the logo without its meridian replaces the logo once the meridian has gone: the meridian's dash inside its zone (an older component without a zone: the meridian's band). It takes in the ring where the meridian merges into it, and nothing of the component's own idea of where its masks stop, so the ring rule judges that too */
 const ZONE = G.zone
   ? `<defs><mask id="zone" maskUnits="userSpaceOnUse" x="0" y="0" width="256" height="256">` +
     `<path d="${G.zone.band.d}" fill="none" stroke="#fff" stroke-width="${G.zone.band.width}"/>` +
     `<path d="${G.zone.breaks.d}" fill="none" stroke="#fff" stroke-width="${G.zone.breaks.width}"/>` +
     `<path d="${G.zone.ends.d}" fill="none" stroke="#000" stroke-width="${G.zone.ends.width}"/>` +
-    `${G.free ? free('#000') : ''}</mask></defs>${stroke(G.meridian.d, G.meridian.width, 'mask="url(#zone)"')}`
+    `</mask></defs>${stroke(G.meridian.d, G.meridian.width, 'mask="url(#zone)"')}`
   : stroke(G.meridian.d, W + 2);
 /* the logo without its meridian, drawn plainly from its parts, as far as the meridian's zone reaches: the ring, the bar from its free end, the stem and the C */
 const BARE =
@@ -258,9 +260,8 @@ async function measurePaths(page, engine) {
 }
 const HALF = { meridian: G.meridian.width / 2, under: (G.under?.width ?? W + 1) / 2, head: (G.under?.width ?? W + 1) / 2, fill: (G.fill?.width ?? 2 * W + 2) / 2, lap: W / 2 };
 const near = NEAR * BOX.unit;
-/** the sectors round the poles and the nodes where a line merges into the ring (degrees either side), as the generator draws them */
-const SECTOR = G.free?.sector ?? 30;
-const RING = ringZones(BOX, SECTOR, G.free ? G.free.edge.width / 2 : 0.4);
+/** the ring's core, and its inner edge all the way round */
+const RING = ringZones(BOX);
 /** the meridian's thetas where its ink can be measured alone: nothing else of the logo without its meridian lies within 12 units across it */
 let CLEAN = null;
 
@@ -377,7 +378,7 @@ for (const engine of BROWSERS) {
         F.slack = SLACK[theme];
         F.poseInk = inkOf(F.pose, BOX, theme);
         CLEAN ??= cleanThetas(F.poseInk, BOX);
-        F.rule = frameRule({ maps: MAPS, zone: F.zone, rest: F.rest, pose: F.pose, half: HALF, near, slack: Math.max(STILL_SLACK, F.slack) });
+        F.rule = frameRule({ maps: MAPS, zone: F.zone, rest: F.rest, pose: F.pose, bare: F.bare, half: HALF, near, slack: Math.max(STILL_SLACK, F.slack) });
       });
       after(async () => {
         await s?.browser.close();
@@ -415,21 +416,22 @@ for (const engine of BROWSERS) {
       });
 
       test("the ring is the logo's own in every frame", () => {
-        for (const [name, frames] of [
-          ['loader', F.loader],
-          ['enter', F.enter],
-          ['leave', F.leave],
+        for (const [name, frames, from] of [
+          ['loader', F.loader, HOVER],
+          ['enter', F.enter, Infinity],
+          ['leave', F.leave, Infinity],
         ]) {
           let core = { n: 0, worst: 0, t: 0 };
-          let edge = { n: 0, worst: 0, t: 0 };
-          for (const { t, g } of frames) {
+          let edge = { n: 0, worst: 0, t: 0, at: -1 };
+          for (const { t, g, dash } of frames) {
             const c = differing(F.rest, g, F.slack, RING.core);
-            const e = differing(F.rest, g, F.slack, RING.edge);
+            const e = F.rule.ring(g, dash, t >= from - 0.01, RING.edge, F.slack);
             if (c.n > core.n) core = { ...c, t };
             if (e.n > edge.n) edge = { ...e, t };
           }
+          const where = edge.at >= 0 ? ` at ${edge.at % PX},${Math.floor(edge.at / PX)}` : '';
           check(core.n === 0, `the ${name}'s ring core and outer edge: ${core.n} px differ at ${Math.round(core.t)} ms (worst ${core.worst})`);
-          check(edge.n === 0, `the ${name}'s ring inner edge outside the merge sectors: ${edge.n} px differ at ${Math.round(edge.t)} ms (worst ${edge.worst})`);
+          check(edge.n === 0, `the ${name}'s ring inner edge: ${edge.n} px differ from the logo's, or from the ring drawn alone where the meridian is undrawn, at ${Math.round(edge.t)} ms (worst ${edge.worst}${where})`);
         }
       });
 
@@ -442,6 +444,10 @@ for (const engine of BROWSERS) {
           report(`${name}'s end pose outside the meridian's zone`, differing(F.rest, g, slack, F.zoneOut), slack);
           const inside = differing(F.bare, g, BARE_SLACK, F.zoneIn);
           check(inside.n === 0, `${name}'s end pose is not the logo without its meridian: ${inside.n} px differ from its plain parts by more than ${BARE_SLACK} levels (worst ${inside.worst})`);
+          /* the ring, the zone's edge included: the ring drawn alone inside the zone, the logo's outside it */
+          const ring = F.rule.ring(g, null, true, or(RING.core, RING.edge), slack);
+          const where = ring.at >= 0 ? ` at ${ring.at % PX},${Math.floor(ring.at / PX)}` : '';
+          check(ring.n === 0, `${name}'s end pose on the ring: ${ring.n} px differ by more than ${slack} levels from the ring drawn alone in the meridian's zone and the logo outside it (worst ${ring.worst}${where})`);
         }
       });
 

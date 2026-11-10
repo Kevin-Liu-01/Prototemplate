@@ -510,25 +510,48 @@ function closedC() {
    the ring (the meridian at the two poles, the latitude at the two nodes)
    does a mask reach past the ring's inner edge, into the ring's ink, so the
    inner edge the undrawn line leaves behind is drawn; everywhere else a mask
-   stops RING_GAP inside that edge. A sector is where the line's ink comes
-   within SECTOR_AT of the inner edge; a band of BAND past the line's ink
-   then reaches past the edge by at least BAND - SECTOR_AT, and outside the
-   sectors the line's ink stands at least SECTOR_AT - RING_GAP clear of
-   where the masks stop, so no mask's soft edge lies on a soft edge of the
-   ring or of an undrawn line. Inside the sectors the inner edge comes from
-   \`ring.d\`: the logo's own outer contour and its own inner-edge pieces,
-   with arcs of the same circle where the logo has none. */
+   stops RING_GAP inside that edge. Where a mask may reach is drawn from the
+   lines themselves, not from an angle: the merge is every point within
+   SECTOR_AT of a line's ink (its ellipse, w / 2 + SECTOR_AT either side),
+   so wherever the masks stop at the inner edge no line's ink lies within
+   SECTOR_AT, and the logo there is the ring alone, the same pixels as the
+   ring drawn alone. A band of BAND past the line's ink covers the merge
+   with BAND - SECTOR_AT to spare, so no mask's soft edge lies on a soft
+   edge of the ring or of an undrawn line. Inside the merge the inner edge
+   comes from \`ring.d\`: the logo's own outer contour and its own
+   inner-edge pieces, with arcs of the same circle where the logo has none.
+   (An angle measured on the line's centre misses where its ink edge
+   leaves the ring by most of a degree, and the logo's meridian then showed
+   through the free band there as a tick of ink on the undrawn ring.) */
 const R_IN = R - w / 2;
-/** units: where the masks stop, inside the ring's inner edge, and past it in a sector */
+/** units: where the masks stop, inside the ring's inner edge, and past it in a merge */
 const RING_GAP = 0.4;
-/** units: a sector holds every point where a line's ink comes within this of the ring's inner edge */
+/** units: a merge holds every point within this of a line's ink */
 const SECTOR_AT = 0.8;
-/* the sector's half angle on screen: the latitude's (and, turned a quarter, the meridian's) ink within SECTOR_AT of the inner edge */
-const SECTOR = (() => {
-  const r = R_IN - SECTOR_AT - w / 2;
-  const t = Math.acos(Math.sqrt((r * r - A * A) / (R * R - A * A)));
-  return Math.atan2(A * Math.sin(t), R * Math.cos(t)) / DEG;
-})();
+/* where the merge's edge crosses a circle about the centre: the meridian's
+   ink grown by SECTOR_AT, its side towards the ring, at radius r, as polar
+   [r, angle] on screen (degrees clockwise from the north pole). The
+   latitude is the same ellipse turned a quarter, so its merge's edge is
+   this one mirrored across the diagonal. */
+const mergeAt = (r) => {
+  const o = w / 2 + SECTOR_AT;
+  const at = (t) => {
+    const [x, y] = LINES.meridian.at(t);
+    const [dx, dy] = [A * Math.cos(t * DEG), R * Math.sin(t * DEG)];
+    const l = Math.hypot(dx, dy);
+    return [x + (dy / l) * o, y - (dx / l) * o];
+  };
+  const rOf = (t) => Math.hypot(at(t)[0] - C, at(t)[1] - C);
+  let lo = 0;
+  let hi = 90;
+  for (let k = 0; k < 60; k++) {
+    const m = (lo + hi) / 2;
+    if (rOf(m) > r) lo = m;
+    else hi = m;
+  }
+  const [x, y] = at((lo + hi) / 2);
+  return [r, Math.atan2(x - C, C - y) / DEG];
+};
 /* the logo's ring as one path: its outer contour verbatim, and an inner
    circle made of the logo's own inner-edge pieces with arcs between them */
 /** the logo's path as segments: each subpath's index, its ends a and b, its points and its text */
@@ -599,20 +622,41 @@ function ringPath() {
   }
   return `${outer}${d}Z`;
 }
-/* where no mask reaches (in the masks, drawn in the colour that keeps the logo): the ring from RING_GAP past its inner edge, and outside the sectors from RING_GAP inside it */
+/* where no mask reaches (in the masks, drawn in the colour that keeps the
+   logo): the ring from RING_GAP past its inner edge, and the band RING_GAP
+   either side of the inner edge outside the merges. The band is a filled
+   outline per quarter: an arc RING_GAP past the edge from one merge to the
+   next, down the next merge's edge, an arc RING_GAP inside the edge back,
+   and up the first merge's edge, each merge's edge sampled on the line's
+   own ink grown by SECTOR_AT. */
 const OUTER = 140;
-const NODES = [0, 90, 180, 270];
+const EDGE_SIDE = Array.from({ length: 5 }, (_, i) => mergeAt(R_IN + RING_GAP - (2 * RING_GAP * i) / 4));
+const polar = ([r, a]) => [C + r * Math.sin(a * DEG), C - r * Math.cos(a * DEG)].map(f3).join(' ');
+/** an arc of radius r from angle a0 to a1, in pieces of at most ARC degrees (no M) */
+const ringArc = (r, a0, a1) => {
+  const n = Math.ceil(Math.abs(a1 - a0) / ARC - 1e-9);
+  let d = '';
+  for (let i = 1; i <= n; i++) d += `A${f3(r)} ${f3(r)} 0 0 ${a1 > a0 ? 1 : 0} ${polar([r, a0 + ((a1 - a0) * i) / n])}`;
+  return d;
+};
 const FREE = {
-  sector: +f3(SECTOR),
   ring: { r: +f3((R_IN + RING_GAP + OUTER) / 2), width: +f3(OUTER - R_IN - RING_GAP) },
   edge: {
-    d: NODES.map((n) => {
-      const a0 = (n + SECTOR) * DEG;
-      const a1 = (n + 90 - SECTOR) * DEG;
-      const P = (a) => [C + R_IN * Math.cos(a), C + R_IN * Math.sin(a)].map(f3).join(' ');
-      return `M${P(a0)}A${f3(R_IN)} ${f3(R_IN)} 0 0 1 ${P(a1)}`;
-    }).join(''),
-    width: +f3(2 * RING_GAP),
+    d: [0, 90, 180, 270]
+      .map((q) => {
+        const pole = EDGE_SIDE.map(([r, a]) => [r, q + a]);
+        const node = EDGE_SIDE.map(([r, a]) => [r, q + 90 - a]);
+        const [o0, o1] = [pole[0], node[0]];
+        const [i0, i1] = [pole.at(-1), node.at(-1)];
+        return (
+          `M${polar(o0)}${ringArc(o0[0], o0[1], o1[1])}` +
+          node.slice(1).map((p) => `L${polar(p)}`).join('') +
+          ringArc(i1[0], i1[1], i0[1]) +
+          [...pole].reverse().slice(1, -1).map((p) => `L${polar(p)}`).join('') +
+          'Z'
+        );
+      })
+      .join(''),
   },
 };
 
@@ -646,8 +690,9 @@ const ts = `${HEAD}
  * undrawn, inside \`zone\` (a mask of strokes: \`band\` and \`breaks\` in,
  * \`ends\` out); \`ring.d\` is the ring drawn from the logo's own outline,
  * which shows only at its inner edge where a line merged into it. \`free\`
- * is where no mask reaches: the ring, from \`free.edge\` inside its inner
- * edge outside the \`free.sector\` degrees round each pole and node.
+ * is where no mask reaches: the ring (\`free.ring\`, a stroke), and the band
+ * either side of its inner edge outside the merges (\`free.edge\`, filled),
+ * the merges being every point within a little of a line's ink.
  * \`meridian\`, \`latitude\` and \`meridianLap\` are the paths the dashes
  * run on, by theta \`from\` and \`to\` (each \`length\` is its path's own):
  * the undrawn meridian, the undrawn G (\`under\`), the stem whole across its

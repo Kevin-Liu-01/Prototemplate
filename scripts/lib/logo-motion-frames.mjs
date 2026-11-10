@@ -15,11 +15,12 @@
 //   lineMap(box, path)             each box pixel's nearest point on a path: its
 //                                  length along the path and its distance
 //   band(map, from, to, half)      the pixels within half of the path between two lengths
-//   ringZones(box, sector)         the ring's core and its inner edge outside the
-//                                  sectors where a line merges into it
+//   ringZones(box)                 the ring's core, and its inner edge all round
 //   frameRule(...)                 what a frame should be, given its dashes: the
 //                                  logo, or the end pose where the meridian is
-//                                  undrawn, but round what moves
+//                                  undrawn, but round what moves; and its ring:
+//                                  the logo's, or the logo without its meridian
+//                                  drawn plainly where it is undrawn
 //   meridianIn(...)                the meridian's pixels off its ellipse, its
 //                                  width (meridianWidth) and its cut faces (faceAt)
 //   stepRule(steps)                a move starts and lands without a pop or a hold
@@ -219,28 +220,30 @@ export const or = (...regions) => regions.reduce((a, b) => a.map((v, i) => v | b
 export const not = (region) => region.map((v) => (v ? 0 : 1));
 
 /* ------------------------------------------------------------ the ring */
+/** units: where the masks stop past the ring's inner edge (the ring's core starts here) */
+export const RING_GAP = 0.4;
+/** levels: how far Chrome draws one edge apart in two paths (the logo's and the ring's alone measure up to 5 apart) */
+export const RASTER = 8;
 /**
- * the ring's pixels that no frame may change: its core (from gap units past
- * its inner edge outward, through its outer edge) everywhere, and its inner
- * edge (gap units either side) outside the sectors round the poles and the
- * nodes, sector degrees either side of each, where a line merges into it.
- * gap is where the masks stop (the geometry's free.edge, half its width);
- * the free zone is drawn with crisp edges, so it may stop half a pixel
- * short, and the zones leave that half pixel out.
+ * the ring's pixels: its core (from RING_GAP past its inner edge outward,
+ * through its outer edge, half a pixel in, since the masks stop there with
+ * crisp edges), which no frame may change, and its inner edge (one unit
+ * inside it to the core) all the way round, poles, nodes and the ends of
+ * every merge included, which every frame keeps as the logo's own where its
+ * lines are drawn and as the ring drawn alone where they have been undrawn
+ * (frameRule's ring)
  */
-export function ringZones(box, sector, gap) {
+export function ringZones(box) {
   const rIn = R - w / 2;
-  const m = gap - 0.5 * box.unit;
   const core = new Uint8Array(box.px * box.px);
   const edge = new Uint8Array(box.px * box.px);
   for (let y = 0; y < box.px; y++) {
     for (let x = 0; x < box.px; x++) {
       const [ux, uy] = box.u(x, y);
       const r = Math.hypot(ux - C, uy - C);
-      const a = ((Math.atan2(uy - C, ux - C) / DEG) % 90 + 90) % 90;
       const i = y * box.px + x;
-      if (r >= rIn + gap + 0.5 * box.unit) core[i] = 1;
-      else if (r > rIn - m && a > sector + 1 && a < 90 - sector - 1) edge[i] = 1;
+      if (r >= rIn + RING_GAP + 0.5 * box.unit) core[i] = 1;
+      else if (r > rIn - 1) edge[i] = 1;
     }
   }
   return { core, edge };
@@ -309,10 +312,11 @@ export function faceAt(ink, under, box, inside, outside, offset) {
  * the pixels the meridian's undrawn dash may take (its dash inside its
  * zone), `rest` and `pose` the still logo and the draw-back's end pose,
  * `half` each channel's dash half width, `near` how many units round a
- * moving end may change. A frame's dashes are { meridian, under, fill,
+ * moving end may change, `bare` the logo without its meridian drawn
+ * plainly (for the ring). A frame's dashes are { meridian, under, fill,
  * head, lap }, each { len, off } along its path.
  */
-export function frameRule({ maps, zone, rest, pose, half, near, slack }) {
+export function frameRule({ maps, zone, rest, pose, bare, half, near, slack }) {
   /** the meridian's undrawn stretch in a frame: its dash inside its zone */
   const undrawn = (dash) => {
     const m = dash?.meridian;
@@ -367,7 +371,40 @@ export function frameRule({ maps, zone, rest, pose, half, near, slack }) {
     }
     return { n, worst, at };
   };
-  return { undrawn, moving, against };
+  /**
+   * a frame's ring pixels (region) against the ring as it should stand:
+   * the still logo's pixels, and where the meridian has been undrawn (all
+   * of its zone once the draw-back has run) the logo without its meridian
+   * drawn plainly (bare), so a line's ink left on the ring, or a nick in
+   * it, shows. Its own reference, not the frame's end pose, and no band
+   * spared at the zone's edge: only round what moves may a pixel differ.
+   * Where the meridian is undrawn but the logo there is the ring alone
+   * (the logo and bare within RASTER), the logo's own pixel stands too:
+   * Chrome draws one edge a few levels apart in the logo's path and in the
+   * ring's, and outside a merge the ring stays the logo's.
+   */
+  const ring = (frame, dash, afterDrawBack, region, ringSlack) => {
+    const u = afterDrawBack ? zone : undrawn(dash);
+    const free = moving(dash);
+    let n = 0;
+    let worst = 0;
+    let at = -1;
+    for (let i = 0; i < frame.length; i++) {
+      if (!region[i] || (free && free[i])) continue;
+      const off = u && u[i];
+      let d = Math.abs(frame[i] - (off ? bare[i] : rest[i]));
+      if (off && Math.abs(rest[i] - bare[i]) <= RASTER) d = Math.min(d, Math.abs(frame[i] - rest[i]));
+      if (d > ringSlack) {
+        n++;
+        if (d > worst) {
+          worst = d;
+          at = i;
+        }
+      }
+    }
+    return { n, worst, at };
+  };
+  return { undrawn, moving, against, ring };
 }
 
 /** whether pixel i of a region has a neighbour (of eight) outside it */

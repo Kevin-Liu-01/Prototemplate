@@ -84,11 +84,12 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
   /* the ring as the logo draws it; it shows only past the inner edge where
      a line merged into the ring, since every mask stops short of the ring */
   const ring = <path d={G.ring.d} />;
-  /* where no mask reaches: the ring, so the ring is always the logo's own */
+  /* where no mask reaches: the ring, and its inner edge outside where a
+     line merges into it, so the ring is always the logo's own */
   const free = (ink: string) => (
     <g shapeRendering='crispEdges'>
       <circle cx={G.ring.cx} cy={G.ring.cy} r={G.free.ring.r} stroke={ink} {...line(G.free.ring.width)} />
-      <path d={G.free.edge.d} stroke={ink} {...line(G.free.edge.width)} />
+      <path d={G.free.edge.d} fill={ink} />
     </g>
   );
   const svg =
