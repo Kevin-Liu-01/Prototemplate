@@ -228,8 +228,11 @@ const PATH_OF = {
 };
 let PATHS = null;
 let MAPS = null;
-async function measurePaths(page) {
-  if (PATHS) return;
+/** the engine whose measure PATHS holds: each engine dashes along its own measure of a path */
+let MEASURED_BY = null;
+async function measurePaths(page, engine) {
+  if (PATHS && MEASURED_BY === engine) return;
+  MEASURED_BY = engine;
   const points = await page.evaluate((ds) => {
     const out = {};
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -299,7 +302,7 @@ async function session(engine, theme) {
     const g = await shot();
     return g.map((v) => (v !== parseInt(THEMES[theme].paper.slice(1, 3), 16) ? 1 : 0));
   };
-  return { browser, page, shot, load, seek, dashes, ink };
+  return { engine, browser, page, shot, load, seek, dashes, ink };
 }
 
 /* ------------------------------------------------------------ the frames */
@@ -307,7 +310,7 @@ async function framesOf(s, theme) {
   const out = {};
   /* the still logo, and the regions */
   await s.load(markOf({ mode: 'static' }));
-  await measurePaths(s.page);
+  await measurePaths(s.page, s.engine);
   out.rest = await s.shot('rest');
   out.zone = await s.ink(ZONE);
   const zone = out.zone;
