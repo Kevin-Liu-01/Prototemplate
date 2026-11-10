@@ -25,8 +25,11 @@ import './GtLogoMotion.css';
  * layer paints the logo's own path and masks it away only where a line has
  * been undrawn, where it paints what the logo has without that line, so the
  * still parts never move, the weight never changes and the swap between
- * the still and the motion changes no pixel. The draw-back ends on the logo
- * without its meridian. Under reduced motion the hover does nothing and the
+ * the still and the motion changes no pixel. No mask reaches the ring, so
+ * the ring is always the logo's own; only where a line merged into it does
+ * the inner edge it leaves come from the ring drawn alone. The meridian is
+ * only drawn and undrawn along its own ellipse, and the draw-back ends on
+ * the logo without its meridian. Under reduced motion the hover does nothing and the
  * loader is the still logo with its label. The ink is currentColor, so the
  * parent sets it in both themes.
  *
@@ -72,13 +75,22 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
      mask is its own dash less the masks before it in the order fill, head,
      under, so the layers partition the frame */
   const meridian = (ink: string) => (
-    <path className='gt-logo-motion-meridian' d={G.meridian.d} pathLength={G.meridian.length} stroke={ink} mask={url('zone')} {...line(G.meridian.width)} />
+    <path className='gt-logo-motion-meridian' d={G.meridian.d} stroke={ink} mask={url('zone')} {...line(G.meridian.width)} />
   );
   const lap = (channel: 'under' | 'fill' | 'head', ink: string) => (
-    <path key={channel} className={`gt-logo-motion-${channel}`} d={G.latitude.d} pathLength={G.latitude.length} stroke={ink} {...line(channel === 'fill' ? G.fill.width : G.under.width)} />
+    <path key={channel} className={`gt-logo-motion-${channel}`} d={G.latitude.d} stroke={ink} {...line(channel === 'fill' ? G.fill.width : G.under.width)} />
   );
   const less = (...channels: ('under' | 'fill' | 'head')[]) => (loader ? channels.map((c) => lap(c, '#000')) : null);
-  const ring = <circle cx={G.ring.cx} cy={G.ring.cy} r={G.ring.r} stroke='currentColor' {...line(G.width)} />;
+  /* the ring as the logo draws it; it shows only past the inner edge where
+     a line merged into the ring, since every mask stops short of the ring */
+  const ring = <path d={G.ring.d} />;
+  /* where no mask reaches: the ring, so the ring is always the logo's own */
+  const free = (ink: string) => (
+    <g shapeRendering='crispEdges'>
+      <circle cx={G.ring.cx} cy={G.ring.cy} r={G.free.ring.r} stroke={ink} {...line(G.free.ring.width)} />
+      <path d={G.free.edge.d} stroke={ink} {...line(G.free.edge.width)} />
+    </g>
+  );
   const svg =
     mode === 'static' ? (
       <svg viewBox={G.viewBox} width={size} height={size} fill='currentColor' aria-hidden='true' focusable='false'>
@@ -90,7 +102,6 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
           <path id={id('logo')} fillRule={G.rest.fillRule} d={G.rest.d} />
           <mask id={id('zone')} {...SQUARE}>
             <path d={G.zone.band.d} stroke='#fff' {...line(G.zone.band.width)} />
-            <circle cx={G.ring.cx} cy={G.ring.cy} r={G.zone.ring.r} stroke='#000' {...line(G.zone.ring.width)} />
             <path d={G.zone.breaks.d} stroke='#fff' {...line(G.zone.breaks.width)} />
             <path d={G.zone.ends.d} stroke='#000' {...line(G.zone.ends.width)} />
           </mask>
@@ -98,23 +109,32 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
             <rect width='256' height='256' fill='#fff' />
             {meridian('#000')}
             {less('under', 'head', 'fill')}
+            {free('#fff')}
           </mask>
           <mask id={id('bare')} {...SQUARE}>
             {meridian('#fff')}
             {less('under', 'head', 'fill')}
+            {free('#000')}
           </mask>
           {loader ? (
             <>
               <mask id={id('under')} {...SQUARE}>
                 {lap('under', '#fff')}
                 {less('head', 'fill')}
+                {free('#000')}
               </mask>
               <mask id={id('head')} {...SQUARE}>
                 {lap('head', '#fff')}
                 {less('fill')}
+                {free('#000')}
               </mask>
               <mask id={id('fill')} {...SQUARE}>
                 {lap('fill', '#fff')}
+                {free('#000')}
+              </mask>
+              <mask id={id('inside')} {...SQUARE}>
+                <rect width='256' height='256' fill='#fff' />
+                {free('#000')}
               </mask>
             </>
           ) : null}
@@ -127,7 +147,7 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
               {ring}
               <path d={G.bar} />
               <path d={G.stem} />
-              <path d={G.c} stroke='currentColor' {...line(G.width)} />
+              <path d={G.c} />
             </g>
             {loader ? (
               <>
@@ -145,7 +165,7 @@ export default function GtLogoMotion({ mode = 'static', size = 18, label = 'Load
                   <path d={G.bar} />
                   <path d={G.stem} />
                 </g>
-                <path className='gt-logo-motion-lap' d={G.meridianLap.d} pathLength={G.meridianLap.length} stroke='currentColor' {...line(G.width)} />
+                <path className='gt-logo-motion-lap' d={G.meridianLap.d} stroke='currentColor' mask={url('inside')} {...line(G.width)} />
               </>
             ) : null}
           </g>

@@ -41,7 +41,7 @@ import {
   marksIn,
   MOTION_GROUP,
   MOTION_LOOPS,
-  motionRest,
+  motionPoster,
   motionVideo,
   NAME_ASPECT,
   NAME_FILE,
@@ -217,8 +217,8 @@ function MotionFigure({ loop }: { loop: MotionLoop }) {
   return (
     <figure ref={figureRef} className='gr-fig'>
       <div className='gr-clip'>
-        <video ref={lightRef} className='gr-vid is-light' src={motionVideo(loop.id, 'light')} poster={motionRest('light')} muted loop playsInline preload='none' aria-hidden='true' />
-        <video ref={darkRef} className='gr-vid is-dark' src={motionVideo(loop.id, 'dark')} poster={motionRest('dark')} muted loop playsInline preload='none' aria-hidden='true' />
+        <video ref={lightRef} className='gr-vid is-light' src={motionVideo(loop.id, 'light')} poster={motionPoster(loop, 'light')} muted loop playsInline preload='none' aria-hidden='true' />
+        <video ref={darkRef} className='gr-vid is-dark' src={motionVideo(loop.id, 'dark')} poster={motionPoster(loop, 'dark')} muted loop playsInline preload='none' aria-hidden='true' />
       </div>
       <figcaption>
         <h4>{loop.name}</h4>

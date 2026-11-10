@@ -30,8 +30,8 @@ export const ANIMATED_MARKS: readonly { mark: MarkId; id: string }[] = [
 /** One animation: its id in src/lib/graticule/line-loop.ts, which holds its name, and what moves in it. */
 export type Animation = { id: LineAnimationId; caption: string };
 
-/** One hover or loading loop of the static mark, played from its light and dark videos in /marks/graticule/motion. */
-export type MotionLoop = { id: string; name: string; caption: string };
+/** One hover or loading loop of the static mark, played from its light and dark videos in /marks/graticule/motion; `poster` when the loop has its own poster, its video's first frame. */
+export type MotionLoop = { id: string; name: string; caption: string; poster?: true };
 
 /** The static mark and the state its hovers settle into, by variation id. */
 export const STATIC_MARK = 'axis-and-meridian-behind';
@@ -42,7 +42,8 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
   {
     id: 'draw-back',
     name: 'Meridian draws back',
-    caption: 'On hover the meridian draws back along its own oval over both poles and the mark settles into the oval globe, then the meridian draws out again when the cursor leaves.',
+    caption: 'On hover the meridian draws back along its own oval over both poles until the mark is the logo without its meridian, then the meridian draws out again when the cursor leaves. Nothing else moves.',
+    poster: true,
   },
   {
     id: 'into-the-poles',
@@ -57,19 +58,20 @@ export const MOTION_LOOPS: readonly MotionLoop[] = [
   {
     id: 'meridian-then-g',
     name: 'Meridian, then G',
-    caption: 'While a page loads, a line runs once round the meridian, drawn whole over the oval globe, then the G runs once round the equator: its stroke draws off from one end and back on until it rests as the G again. The T holds still in front the whole time.',
+    caption: 'While a page loads, the meridian draws back once, then a line runs once round its oval and the G runs once round the equator: its stroke draws off from one end and back on until it rests as the G again. The ring and the T hold still the whole time.',
+    poster: true,
   },
 ];
 
-/** A loop's video in one theme, and the rest mark every loop starts and ends on, as its poster and its still under reduced motion. */
+/** A loop's video in one theme, and its poster: the rest mark every loop starts and ends on, from the loop's own first frame where it has one. */
 export const motionVideo = (id: string, theme: 'light' | 'dark') => `/marks/graticule/motion/${id}-${theme}.mp4`;
-export const motionRest = (theme: 'light' | 'dark') => `/marks/graticule/motion/rest-${theme}.png`;
+export const motionPoster = (loop: MotionLoop, theme: 'light' | 'dark') => `/marks/graticule/motion/${loop.poster ? loop.id : 'rest'}-${theme}.png`;
 
 /** The two groups of animations, each with its sub-head and lead. */
 export const MOTION_GROUP = {
   id: 'animations-hover',
   title: 'Hover and loading',
-  lead: `These ${MOTION_LOOPS.length} play on Axis and meridian behind: each hover settles it into Oval globe, axis behind, and in the loader a line runs once round the meridian of that state, then the G runs once round the equator.`,
+  lead: `These ${MOTION_LOOPS.length} play on Axis and meridian behind. The first hover and the loader are the live logo's own, where only the line being drawn moves; the other two hovers settle it into Oval globe, axis behind.`,
 };
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */

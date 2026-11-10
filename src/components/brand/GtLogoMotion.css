@@ -191,14 +191,14 @@
 
   .gt-logo-motion[data-mode='hover'] .gt-logo-motion-meridian {
     transition:
-      stroke-dasharray 600ms linear(0 0%, 0 5.556%, 0.001 6.25%, 0.0157 9.722%, 0.0347 13.889%, 0.0381 14.583%, 0.0438 15.278%, 0.0699 16.667%, 0.0825 17.361%, 0.1067 18.75%, 0.1295 20.139%, 0.1838 23.611%, 0.207 25%, 0.2195 25.694%, 0.2329 26.389%, 0.2472 27.083%, 0.2626 27.778%, 0.2735 28.472%, 0.2866 30.556%, 0.2959 31.944%, 0.3108 34.028%, 0.3214 35.417%, 0.3383 37.5%, 0.3502 38.889%, 0.3627 40.278%, 0.3824 42.361%, 0.4105 45.139%, 0.4253 46.528%, 0.4483 48.611%, 0.4806 51.389%, 0.5306 55.556%, 0.5546 57.639%, 0.57 59.028%, 0.5922 61.111%, 0.6064 62.5%, 0.6332 65.278%, 0.6579 68.056%, 0.6805 70.833%, 0.691 72.222%, 0.7057 74.306%, 0.715 75.694%, 0.7279 77.778%, 0.7342 78.472%, 0.7496 79.167%, 0.764 79.861%, 0.7775 80.556%, 0.7901 81.25%, 0.802 81.944%, 0.8133 82.639%, 0.867 86.111%, 0.8895 87.5%, 0.9132 88.889%, 0.9255 89.583%, 0.9512 90.972%, 0.9631 91.667%, 0.9823 95.833%, 1 100%),
-      stroke-dashoffset 600ms linear(0 0%, 0 5.556%, 0.001 6.25%, 0.0157 9.722%, 0.0347 13.889%, 0.0381 14.583%, 0.0438 15.278%, 0.0699 16.667%, 0.0825 17.361%, 0.1067 18.75%, 0.1295 20.139%, 0.1838 23.611%, 0.207 25%, 0.2195 25.694%, 0.2329 26.389%, 0.2472 27.083%, 0.2626 27.778%, 0.2735 28.472%, 0.2866 30.556%, 0.2959 31.944%, 0.3108 34.028%, 0.3214 35.417%, 0.3383 37.5%, 0.3502 38.889%, 0.3627 40.278%, 0.3824 42.361%, 0.4105 45.139%, 0.4253 46.528%, 0.4483 48.611%, 0.4806 51.389%, 0.5306 55.556%, 0.5546 57.639%, 0.57 59.028%, 0.5922 61.111%, 0.6064 62.5%, 0.6332 65.278%, 0.6579 68.056%, 0.6805 70.833%, 0.691 72.222%, 0.7057 74.306%, 0.715 75.694%, 0.7279 77.778%, 0.7342 78.472%, 0.7496 79.167%, 0.764 79.861%, 0.7775 80.556%, 0.7901 81.25%, 0.802 81.944%, 0.8133 82.639%, 0.867 86.111%, 0.8895 87.5%, 0.9132 88.889%, 0.9255 89.583%, 0.9512 90.972%, 0.9631 91.667%, 0.9823 95.833%, 1 100%);
+      stroke-dasharray 600ms linear(0 0%, 0 5.556%, 0.001 6.25%, 0.0067 7.639%, 0.0157 9.722%, 0.025 11.806%, 0.0347 13.889%, 0.0381 14.583%, 0.0438 15.278%, 0.057 15.972%, 0.0699 16.667%, 0.0825 17.361%, 0.0948 18.056%, 0.1067 18.75%, 0.1183 19.444%, 0.1295 20.139%, 0.1405 20.833%, 0.1728 22.917%, 0.1838 23.611%, 0.1951 24.306%, 0.207 25%, 0.2195 25.694%, 0.2329 26.389%, 0.2472 27.083%, 0.2626 27.778%, 0.2735 28.472%, 0.2821 29.861%, 0.2866 30.556%, 0.2959 31.944%, 0.3057 33.333%, 0.3108 34.028%, 0.3214 35.417%, 0.3325 36.806%, 0.3383 37.5%, 0.3502 38.889%, 0.3627 40.278%, 0.3691 40.972%, 0.3824 42.361%, 0.3961 43.75%, 0.4105 45.139%, 0.4253 46.528%, 0.4328 47.222%, 0.4483 48.611%, 0.4643 50%, 0.4806 51.389%, 0.5141 54.167%, 0.5306 55.556%, 0.5467 56.944%, 0.5546 57.639%, 0.57 59.028%, 0.5849 60.417%, 0.5922 61.111%, 0.6064 62.5%, 0.6201 63.889%, 0.6332 65.278%, 0.6459 66.667%, 0.6579 68.056%, 0.6695 69.444%, 0.6805 70.833%, 0.691 72.222%, 0.696 72.917%, 0.7057 74.306%, 0.715 75.694%, 0.7194 76.389%, 0.7279 77.778%, 0.7342 78.472%, 0.7496 79.167%, 0.764 79.861%, 0.7775 80.556%, 0.7901 81.25%, 0.802 81.944%, 0.8133 82.639%, 0.8242 83.333%, 0.8562 85.417%, 0.867 86.111%, 0.8781 86.806%, 0.8895 87.5%, 0.9012 88.194%, 0.9132 88.889%, 0.9255 89.583%, 0.9382 90.278%, 0.9512 90.972%, 0.9631 91.667%, 0.9729 93.75%, 0.9823 95.833%, 0.9914 97.917%, 1 100%),
+      stroke-dashoffset 600ms linear(0 0%, 0 5.556%, 0.001 6.25%, 0.0067 7.639%, 0.0157 9.722%, 0.025 11.806%, 0.0347 13.889%, 0.0381 14.583%, 0.0438 15.278%, 0.057 15.972%, 0.0699 16.667%, 0.0825 17.361%, 0.0948 18.056%, 0.1067 18.75%, 0.1183 19.444%, 0.1295 20.139%, 0.1405 20.833%, 0.1728 22.917%, 0.1838 23.611%, 0.1951 24.306%, 0.207 25%, 0.2195 25.694%, 0.2329 26.389%, 0.2472 27.083%, 0.2626 27.778%, 0.2735 28.472%, 0.2821 29.861%, 0.2866 30.556%, 0.2959 31.944%, 0.3057 33.333%, 0.3108 34.028%, 0.3214 35.417%, 0.3325 36.806%, 0.3383 37.5%, 0.3502 38.889%, 0.3627 40.278%, 0.3691 40.972%, 0.3824 42.361%, 0.3961 43.75%, 0.4105 45.139%, 0.4253 46.528%, 0.4328 47.222%, 0.4483 48.611%, 0.4643 50%, 0.4806 51.389%, 0.5141 54.167%, 0.5306 55.556%, 0.5467 56.944%, 0.5546 57.639%, 0.57 59.028%, 0.5849 60.417%, 0.5922 61.111%, 0.6064 62.5%, 0.6201 63.889%, 0.6332 65.278%, 0.6459 66.667%, 0.6579 68.056%, 0.6695 69.444%, 0.6805 70.833%, 0.691 72.222%, 0.696 72.917%, 0.7057 74.306%, 0.715 75.694%, 0.7194 76.389%, 0.7279 77.778%, 0.7342 78.472%, 0.7496 79.167%, 0.764 79.861%, 0.7775 80.556%, 0.7901 81.25%, 0.802 81.944%, 0.8133 82.639%, 0.8242 83.333%, 0.8562 85.417%, 0.867 86.111%, 0.8781 86.806%, 0.8895 87.5%, 0.9012 88.194%, 0.9132 88.889%, 0.9255 89.583%, 0.9382 90.278%, 0.9512 90.972%, 0.9631 91.667%, 0.9729 93.75%, 0.9823 95.833%, 0.9914 97.917%, 1 100%);
   }
 
   :is(:is(a, button, [data-gt-logo-host]):is(:hover, :focus-visible) .gt-logo-motion[data-mode='hover'], .gt-logo-motion[data-mode='hover']:is(:hover, [data-active])) .gt-logo-motion-meridian {
     transition:
-      stroke-dasharray 600ms linear(0 0%, 0.0177 4.167%, 0.0369 8.333%, 0.0488 9.028%, 0.0745 10.417%, 0.0868 11.111%, 0.1105 12.5%, 0.133 13.889%, 0.1867 17.361%, 0.198 18.056%, 0.2099 18.75%, 0.2225 19.444%, 0.236 20.139%, 0.2504 20.833%, 0.2658 21.528%, 0.2721 22.222%, 0.285 24.306%, 0.2943 25.694%, 0.309 27.778%, 0.3195 29.167%, 0.3421 31.944%, 0.3668 34.722%, 0.3936 37.5%, 0.4078 38.889%, 0.43 40.972%, 0.4454 42.361%, 0.4694 44.444%, 0.5194 48.611%, 0.5517 51.389%, 0.5747 53.472%, 0.5895 54.861%, 0.6176 57.639%, 0.6373 59.722%, 0.6498 61.111%, 0.6617 62.5%, 0.6786 64.583%, 0.6892 65.972%, 0.7041 68.056%, 0.7134 69.444%, 0.7265 71.528%, 0.7374 72.222%, 0.7528 72.917%, 0.7671 73.611%, 0.7805 74.306%, 0.793 75%, 0.8162 76.389%, 0.8705 79.861%, 0.8933 81.25%, 0.9175 82.639%, 0.9301 83.333%, 0.9562 84.722%, 0.9619 85.417%, 0.9653 86.111%, 0.9843 90.278%, 0.999 93.75%, 1 94.444%, 1 100%),
-      stroke-dashoffset 600ms linear(0 0%, 0.0177 4.167%, 0.0369 8.333%, 0.0488 9.028%, 0.0745 10.417%, 0.0868 11.111%, 0.1105 12.5%, 0.133 13.889%, 0.1867 17.361%, 0.198 18.056%, 0.2099 18.75%, 0.2225 19.444%, 0.236 20.139%, 0.2504 20.833%, 0.2658 21.528%, 0.2721 22.222%, 0.285 24.306%, 0.2943 25.694%, 0.309 27.778%, 0.3195 29.167%, 0.3421 31.944%, 0.3668 34.722%, 0.3936 37.5%, 0.4078 38.889%, 0.43 40.972%, 0.4454 42.361%, 0.4694 44.444%, 0.5194 48.611%, 0.5517 51.389%, 0.5747 53.472%, 0.5895 54.861%, 0.6176 57.639%, 0.6373 59.722%, 0.6498 61.111%, 0.6617 62.5%, 0.6786 64.583%, 0.6892 65.972%, 0.7041 68.056%, 0.7134 69.444%, 0.7265 71.528%, 0.7374 72.222%, 0.7528 72.917%, 0.7671 73.611%, 0.7805 74.306%, 0.793 75%, 0.8162 76.389%, 0.8705 79.861%, 0.8933 81.25%, 0.9175 82.639%, 0.9301 83.333%, 0.9562 84.722%, 0.9619 85.417%, 0.9653 86.111%, 0.9843 90.278%, 0.999 93.75%, 1 94.444%, 1 100%);
+      stroke-dasharray 600ms linear(0 0%, 0.0086 2.083%, 0.0177 4.167%, 0.0271 6.25%, 0.0369 8.333%, 0.0488 9.028%, 0.0618 9.722%, 0.0745 10.417%, 0.0868 11.111%, 0.0988 11.806%, 0.1105 12.5%, 0.1219 13.194%, 0.133 13.889%, 0.1438 14.583%, 0.1758 16.667%, 0.1867 17.361%, 0.198 18.056%, 0.2099 18.75%, 0.2225 19.444%, 0.236 20.139%, 0.2504 20.833%, 0.2658 21.528%, 0.2721 22.222%, 0.2806 23.611%, 0.285 24.306%, 0.2943 25.694%, 0.304 27.083%, 0.309 27.778%, 0.3195 29.167%, 0.3305 30.556%, 0.3421 31.944%, 0.3541 33.333%, 0.3668 34.722%, 0.3799 36.111%, 0.3936 37.5%, 0.4078 38.889%, 0.4151 39.583%, 0.43 40.972%, 0.4454 42.361%, 0.4533 43.056%, 0.4694 44.444%, 0.4859 45.833%, 0.5194 48.611%, 0.5357 50%, 0.5517 51.389%, 0.5672 52.778%, 0.5747 53.472%, 0.5895 54.861%, 0.6039 56.25%, 0.6176 57.639%, 0.6309 59.028%, 0.6373 59.722%, 0.6498 61.111%, 0.6617 62.5%, 0.6675 63.194%, 0.6786 64.583%, 0.6892 65.972%, 0.6943 66.667%, 0.7041 68.056%, 0.7134 69.444%, 0.7179 70.139%, 0.7265 71.528%, 0.7374 72.222%, 0.7528 72.917%, 0.7671 73.611%, 0.7805 74.306%, 0.793 75%, 0.8049 75.694%, 0.8162 76.389%, 0.8272 77.083%, 0.8595 79.167%, 0.8705 79.861%, 0.8817 80.556%, 0.8933 81.25%, 0.9052 81.944%, 0.9175 82.639%, 0.9301 83.333%, 0.943 84.028%, 0.9562 84.722%, 0.9619 85.417%, 0.9653 86.111%, 0.975 88.194%, 0.9843 90.278%, 0.9933 92.361%, 0.999 93.75%, 1 94.444%, 1 100%),
+      stroke-dashoffset 600ms linear(0 0%, 0.0086 2.083%, 0.0177 4.167%, 0.0271 6.25%, 0.0369 8.333%, 0.0488 9.028%, 0.0618 9.722%, 0.0745 10.417%, 0.0868 11.111%, 0.0988 11.806%, 0.1105 12.5%, 0.1219 13.194%, 0.133 13.889%, 0.1438 14.583%, 0.1758 16.667%, 0.1867 17.361%, 0.198 18.056%, 0.2099 18.75%, 0.2225 19.444%, 0.236 20.139%, 0.2504 20.833%, 0.2658 21.528%, 0.2721 22.222%, 0.2806 23.611%, 0.285 24.306%, 0.2943 25.694%, 0.304 27.083%, 0.309 27.778%, 0.3195 29.167%, 0.3305 30.556%, 0.3421 31.944%, 0.3541 33.333%, 0.3668 34.722%, 0.3799 36.111%, 0.3936 37.5%, 0.4078 38.889%, 0.4151 39.583%, 0.43 40.972%, 0.4454 42.361%, 0.4533 43.056%, 0.4694 44.444%, 0.4859 45.833%, 0.5194 48.611%, 0.5357 50%, 0.5517 51.389%, 0.5672 52.778%, 0.5747 53.472%, 0.5895 54.861%, 0.6039 56.25%, 0.6176 57.639%, 0.6309 59.028%, 0.6373 59.722%, 0.6498 61.111%, 0.6617 62.5%, 0.6675 63.194%, 0.6786 64.583%, 0.6892 65.972%, 0.6943 66.667%, 0.7041 68.056%, 0.7134 69.444%, 0.7179 70.139%, 0.7265 71.528%, 0.7374 72.222%, 0.7528 72.917%, 0.7671 73.611%, 0.7805 74.306%, 0.793 75%, 0.8049 75.694%, 0.8162 76.389%, 0.8272 77.083%, 0.8595 79.167%, 0.8705 79.861%, 0.8817 80.556%, 0.8933 81.25%, 0.9052 81.944%, 0.9175 82.639%, 0.9301 83.333%, 0.943 84.028%, 0.9562 84.722%, 0.9619 85.417%, 0.9653 86.111%, 0.975 88.194%, 0.9843 90.278%, 0.9933 92.361%, 0.999 93.75%, 1 94.444%, 1 100%);
   }
 
   .gt-logo-motion[data-mode='hover'] .gt-logo-motion-rest {
@@ -224,13 +224,20 @@
    face back round its oval to past its join */
 @keyframes gt-logo-meridian-back {
   0% { --gt-logo-meridian: 0px; --gt-logo-meridian-at: 362.2px; }
+  2.083% { --gt-logo-meridian: 3.12px; --gt-logo-meridian-at: 359.08px; }
   4.167% { --gt-logo-meridian: 6.4px; --gt-logo-meridian-at: 355.8px; }
+  6.25% { --gt-logo-meridian: 9.82px; --gt-logo-meridian-at: 352.38px; }
   8.333% { --gt-logo-meridian: 13.37px; --gt-logo-meridian-at: 348.84px; }
   9.028% { --gt-logo-meridian: 17.69px; --gt-logo-meridian-at: 344.52px; }
+  9.722% { --gt-logo-meridian: 22.38px; --gt-logo-meridian-at: 339.82px; }
   10.417% { --gt-logo-meridian: 26.97px; --gt-logo-meridian-at: 335.23px; }
   11.111% { --gt-logo-meridian: 31.44px; --gt-logo-meridian-at: 330.76px; }
+  11.806% { --gt-logo-meridian: 35.8px; --gt-logo-meridian-at: 326.4px; }
   12.5% { --gt-logo-meridian: 40.03px; --gt-logo-meridian-at: 322.17px; }
+  13.194% { --gt-logo-meridian: 44.15px; --gt-logo-meridian-at: 318.05px; }
   13.889% { --gt-logo-meridian: 48.16px; --gt-logo-meridian-at: 314.04px; }
+  14.583% { --gt-logo-meridian: 52.08px; --gt-logo-meridian-at: 310.12px; }
+  16.667% { --gt-logo-meridian: 63.66px; --gt-logo-meridian-at: 298.54px; }
   17.361% { --gt-logo-meridian: 67.62px; --gt-logo-meridian-at: 294.58px; }
   18.056% { --gt-logo-meridian: 71.73px; --gt-logo-meridian-at: 290.48px; }
   18.75% { --gt-logo-meridian: 76.03px; --gt-logo-meridian-at: 286.17px; }
@@ -239,44 +246,67 @@
   20.833% { --gt-logo-meridian: 90.68px; --gt-logo-meridian-at: 271.52px; }
   21.528% { --gt-logo-meridian: 96.28px; --gt-logo-meridian-at: 265.93px; }
   22.222% { --gt-logo-meridian: 98.56px; --gt-logo-meridian-at: 263.64px; }
+  23.611% { --gt-logo-meridian: 101.64px; --gt-logo-meridian-at: 260.56px; }
   24.306% { --gt-logo-meridian: 103.25px; --gt-logo-meridian-at: 258.96px; }
   25.694% { --gt-logo-meridian: 106.58px; --gt-logo-meridian-at: 255.62px; }
+  27.083% { --gt-logo-meridian: 110.1px; --gt-logo-meridian-at: 252.1px; }
   27.778% { --gt-logo-meridian: 111.93px; --gt-logo-meridian-at: 250.27px; }
   29.167% { --gt-logo-meridian: 115.73px; --gt-logo-meridian-at: 246.47px; }
+  30.556% { --gt-logo-meridian: 119.71px; --gt-logo-meridian-at: 242.49px; }
   31.944% { --gt-logo-meridian: 123.89px; --gt-logo-meridian-at: 238.31px; }
+  33.333% { --gt-logo-meridian: 128.27px; --gt-logo-meridian-at: 233.93px; }
   34.722% { --gt-logo-meridian: 132.84px; --gt-logo-meridian-at: 229.36px; }
+  36.111% { --gt-logo-meridian: 137.6px; --gt-logo-meridian-at: 224.6px; }
   37.5% { --gt-logo-meridian: 142.56px; --gt-logo-meridian-at: 219.64px; }
   38.889% { --gt-logo-meridian: 147.7px; --gt-logo-meridian-at: 214.5px; }
+  39.583% { --gt-logo-meridian: 150.34px; --gt-logo-meridian-at: 211.86px; }
   40.972% { --gt-logo-meridian: 155.76px; --gt-logo-meridian-at: 206.44px; }
   42.361% { --gt-logo-meridian: 161.34px; --gt-logo-meridian-at: 200.86px; }
+  43.056% { --gt-logo-meridian: 164.2px; --gt-logo-meridian-at: 198.01px; }
   44.444% { --gt-logo-meridian: 170.02px; --gt-logo-meridian-at: 192.18px; }
+  45.833% { --gt-logo-meridian: 175.98px; --gt-logo-meridian-at: 186.22px; }
   48.611% { --gt-logo-meridian: 188.12px; --gt-logo-meridian-at: 174.08px; }
+  50% { --gt-logo-meridian: 194.04px; --gt-logo-meridian-at: 168.16px; }
   51.389% { --gt-logo-meridian: 199.81px; --gt-logo-meridian-at: 162.39px; }
+  52.778% { --gt-logo-meridian: 205.43px; --gt-logo-meridian-at: 156.77px; }
   53.472% { --gt-logo-meridian: 208.18px; --gt-logo-meridian-at: 154.03px; }
   54.861% { --gt-logo-meridian: 213.54px; --gt-logo-meridian-at: 148.67px; }
+  56.25% { --gt-logo-meridian: 218.72px; --gt-logo-meridian-at: 143.49px; }
   57.639% { --gt-logo-meridian: 223.71px; --gt-logo-meridian-at: 138.49px; }
+  59.028% { --gt-logo-meridian: 228.51px; --gt-logo-meridian-at: 133.69px; }
   59.722% { --gt-logo-meridian: 230.84px; --gt-logo-meridian-at: 131.36px; }
   61.111% { --gt-logo-meridian: 235.35px; --gt-logo-meridian-at: 126.85px; }
   62.5% { --gt-logo-meridian: 239.67px; --gt-logo-meridian-at: 122.53px; }
+  63.194% { --gt-logo-meridian: 241.75px; --gt-logo-meridian-at: 120.45px; }
   64.583% { --gt-logo-meridian: 245.78px; --gt-logo-meridian-at: 116.42px; }
   65.972% { --gt-logo-meridian: 249.61px; --gt-logo-meridian-at: 112.59px; }
+  66.667% { --gt-logo-meridian: 251.46px; --gt-logo-meridian-at: 110.74px; }
   68.056% { --gt-logo-meridian: 255.02px; --gt-logo-meridian-at: 107.19px; }
   69.444% { --gt-logo-meridian: 258.39px; --gt-logo-meridian-at: 103.81px; }
+  70.139% { --gt-logo-meridian: 260.01px; --gt-logo-meridian-at: 102.19px; }
   71.528% { --gt-logo-meridian: 263.13px; --gt-logo-meridian-at: 99.07px; }
   72.222% { --gt-logo-meridian: 267.09px; --gt-logo-meridian-at: 95.11px; }
   72.917% { --gt-logo-meridian: 272.65px; --gt-logo-meridian-at: 89.55px; }
   73.611% { --gt-logo-meridian: 277.84px; --gt-logo-meridian-at: 84.36px; }
   74.306% { --gt-logo-meridian: 282.69px; --gt-logo-meridian-at: 79.51px; }
   75% { --gt-logo-meridian: 287.24px; --gt-logo-meridian-at: 74.97px; }
+  75.694% { --gt-logo-meridian: 291.53px; --gt-logo-meridian-at: 70.67px; }
   76.389% { --gt-logo-meridian: 295.64px; --gt-logo-meridian-at: 66.56px; }
+  77.083% { --gt-logo-meridian: 299.61px; --gt-logo-meridian-at: 62.59px; }
+  79.167% { --gt-logo-meridian: 311.3px; --gt-logo-meridian-at: 50.9px; }
   79.861% { --gt-logo-meridian: 315.28px; --gt-logo-meridian-at: 46.92px; }
+  80.556% { --gt-logo-meridian: 319.36px; --gt-logo-meridian-at: 42.84px; }
   81.25% { --gt-logo-meridian: 323.55px; --gt-logo-meridian-at: 38.65px; }
+  81.944% { --gt-logo-meridian: 327.87px; --gt-logo-meridian-at: 34.33px; }
   82.639% { --gt-logo-meridian: 332.31px; --gt-logo-meridian-at: 29.89px; }
   83.333% { --gt-logo-meridian: 336.88px; --gt-logo-meridian-at: 25.32px; }
+  84.028% { --gt-logo-meridian: 341.56px; --gt-logo-meridian-at: 20.64px; }
   84.722% { --gt-logo-meridian: 346.35px; --gt-logo-meridian-at: 15.85px; }
   85.417% { --gt-logo-meridian: 348.42px; --gt-logo-meridian-at: 13.78px; }
   86.111% { --gt-logo-meridian: 349.62px; --gt-logo-meridian-at: 12.59px; }
+  88.194% { --gt-logo-meridian: 353.13px; --gt-logo-meridian-at: 9.07px; }
   90.278% { --gt-logo-meridian: 356.52px; --gt-logo-meridian-at: 5.68px; }
+  92.361% { --gt-logo-meridian: 359.76px; --gt-logo-meridian-at: 2.44px; }
   93.75% { --gt-logo-meridian: 361.84px; --gt-logo-meridian-at: 0.37px; }
   94.444% { --gt-logo-meridian: 362.2px; --gt-logo-meridian-at: 0px; }
   100% { --gt-logo-meridian: 362.2px; --gt-logo-meridian-at: 0px; }
@@ -292,26 +322,45 @@
   0.521% { --gt-logo-lap: 2.15px; --gt-logo-lap-at: 0px; }
   0.651% { --gt-logo-lap: 3.39px; --gt-logo-lap-at: 0px; }
   0.781% { --gt-logo-lap: 4.93px; --gt-logo-lap-at: 0px; }
+  0.911% { --gt-logo-lap: 6.76px; --gt-logo-lap-at: 0px; }
+  1.042% { --gt-logo-lap: 8.89px; --gt-logo-lap-at: 0px; }
   1.172% { --gt-logo-lap: 10.72px; --gt-logo-lap-at: 0px; }
   1.302% { --gt-logo-lap: 12.25px; --gt-logo-lap-at: 0px; }
+  1.432% { --gt-logo-lap: 13.62px; --gt-logo-lap-at: 0px; }
   1.563% { --gt-logo-lap: 14.89px; --gt-logo-lap-at: 0px; }
+  1.693% { --gt-logo-lap: 16.09px; --gt-logo-lap-at: 0px; }
   1.953% { --gt-logo-lap: 18.35px; --gt-logo-lap-at: 0px; }
   2.344% { --gt-logo-lap: 21.53px; --gt-logo-lap-at: 0px; }
+  2.865% { --gt-logo-lap: 25.57px; --gt-logo-lap-at: 0px; }
+  3.776% { --gt-logo-lap: 32.53px; --gt-logo-lap-at: 0px; }
   4.036% { --gt-logo-lap: 34.59px; --gt-logo-lap-at: 0px; }
+  4.297% { --gt-logo-lap: 36.85px; --gt-logo-lap-at: 0px; }
   4.427% { --gt-logo-lap: 38.08px; --gt-logo-lap-at: 0px; }
+  4.557% { --gt-logo-lap: 39.36px; --gt-logo-lap-at: 0px; }
   4.688% { --gt-logo-lap: 40.72px; --gt-logo-lap-at: 0px; }
+  4.818% { --gt-logo-lap: 42.13px; --gt-logo-lap-at: 0px; }
   4.948% { --gt-logo-lap: 43.62px; --gt-logo-lap-at: 0px; }
+  5.078% { --gt-logo-lap: 45.18px; --gt-logo-lap-at: 0px; }
   5.208% { --gt-logo-lap: 46.82px; --gt-logo-lap-at: 0px; }
+  5.339% { --gt-logo-lap: 48.54px; --gt-logo-lap-at: 0px; }
   5.469% { --gt-logo-lap: 50.35px; --gt-logo-lap-at: 0px; }
+  5.599% { --gt-logo-lap: 52.24px; --gt-logo-lap-at: 0px; }
   5.729% { --gt-logo-lap: 54.22px; --gt-logo-lap-at: 0px; }
+  5.859% { --gt-logo-lap: 56.3px; --gt-logo-lap-at: 0px; }
   5.99% { --gt-logo-lap: 58.47px; --gt-logo-lap-at: 0px; }
+  6.12% { --gt-logo-lap: 60.76px; --gt-logo-lap-at: 0px; }
   6.25% { --gt-logo-lap: 63.15px; --gt-logo-lap-at: 0px; }
+  6.38% { --gt-logo-lap: 65.66px; --gt-logo-lap-at: 0px; }
   6.51% { --gt-logo-lap: 68.3px; --gt-logo-lap-at: 0px; }
   6.641% { --gt-logo-lap: 71.06px; --gt-logo-lap-at: 0px; }
+  6.771% { --gt-logo-lap: 73.95px; --gt-logo-lap-at: 0px; }
   6.901% { --gt-logo-lap: 76.99px; --gt-logo-lap-at: 0px; }
+  7.031% { --gt-logo-lap: 80.18px; --gt-logo-lap-at: 0px; }
   7.161% { --gt-logo-lap: 83.52px; --gt-logo-lap-at: 0px; }
+  7.292% { --gt-logo-lap: 87.03px; --gt-logo-lap-at: 0px; }
   7.422% { --gt-logo-lap: 90.71px; --gt-logo-lap-at: 0px; }
   7.552% { --gt-logo-lap: 94.57px; --gt-logo-lap-at: 0px; }
+  7.682% { --gt-logo-lap: 98.62px; --gt-logo-lap-at: 0px; }
   7.813% { --gt-logo-lap: 102.87px; --gt-logo-lap-at: 0px; }
   7.943% { --gt-logo-lap: 107.33px; --gt-logo-lap-at: 0px; }
   8.073% { --gt-logo-lap: 112px; --gt-logo-lap-at: 0px; }
@@ -325,13 +374,21 @@
   9.115% { --gt-logo-lap: 157.65px; --gt-logo-lap-at: 0px; }
   9.245% { --gt-logo-lap: 164.35px; --gt-logo-lap-at: 0px; }
   9.375% { --gt-logo-lap: 171.24px; --gt-logo-lap-at: 0px; }
+  9.505% { --gt-logo-lap: 178.27px; --gt-logo-lap-at: 0px; }
   9.635% { --gt-logo-lap: 185.43px; --gt-logo-lap-at: 0px; }
+  9.766% { --gt-logo-lap: 192.68px; --gt-logo-lap-at: 0px; }
+  10.156% { --gt-logo-lap: 214.58px; --gt-logo-lap-at: 0px; }
   10.286% { --gt-logo-lap: 221.8px; --gt-logo-lap-at: 0px; }
+  10.417% { --gt-logo-lap: 228.93px; --gt-logo-lap-at: 0px; }
   10.547% { --gt-logo-lap: 235.95px; --gt-logo-lap-at: 0px; }
+  10.677% { --gt-logo-lap: 242.82px; --gt-logo-lap-at: 0px; }
   10.807% { --gt-logo-lap: 249.54px; --gt-logo-lap-at: 0px; }
+  10.938% { --gt-logo-lap: 256.09px; --gt-logo-lap-at: 0px; }
   11.068% { --gt-logo-lap: 262.47px; --gt-logo-lap-at: 0px; }
+  11.198% { --gt-logo-lap: 268.66px; --gt-logo-lap-at: 0px; }
   11.328% { --gt-logo-lap: 274.66px; --gt-logo-lap-at: 0px; }
   11.458% { --gt-logo-lap: 280.47px; --gt-logo-lap-at: 0px; }
+  11.589% { --gt-logo-lap: 286.09px; --gt-logo-lap-at: 0px; }
   11.719% { --gt-logo-lap: 291.53px; --gt-logo-lap-at: 0px; }
   11.849% { --gt-logo-lap: 296.64px; --gt-logo-lap-at: 0.13px; }
   11.979% { --gt-logo-lap: 301.31px; --gt-logo-lap-at: 0.53px; }
@@ -342,30 +399,52 @@
   12.63% { --gt-logo-lap: 317.91px; --gt-logo-lap-at: 6.76px; }
   12.76% { --gt-logo-lap: 319.89px; --gt-logo-lap-at: 8.89px; }
   12.891% { --gt-logo-lap: 322.03px; --gt-logo-lap-at: 10.72px; }
+  13.021% { --gt-logo-lap: 324.33px; --gt-logo-lap-at: 12.25px; }
   13.151% { --gt-logo-lap: 326.67px; --gt-logo-lap-at: 13.62px; }
+  13.281% { --gt-logo-lap: 328.98px; --gt-logo-lap-at: 14.89px; }
+  13.411% { --gt-logo-lap: 331.25px; --gt-logo-lap-at: 16.09px; }
   13.542% { --gt-logo-lap: 333.46px; --gt-logo-lap-at: 17.24px; }
+  13.672% { --gt-logo-lap: 335.6px; --gt-logo-lap-at: 18.35px; }
   13.802% { --gt-logo-lap: 337.67px; --gt-logo-lap-at: 19.43px; }
+  13.932% { --gt-logo-lap: 339.66px; --gt-logo-lap-at: 20.49px; }
   14.063% { --gt-logo-lap: 341.58px; --gt-logo-lap-at: 21.53px; }
+  14.193% { --gt-logo-lap: 343.41px; --gt-logo-lap-at: 22.55px; }
   14.323% { --gt-logo-lap: 345.17px; --gt-logo-lap-at: 23.57px; }
+  14.453% { --gt-logo-lap: 346.86px; --gt-logo-lap-at: 24.57px; }
   14.583% { --gt-logo-lap: 348.47px; --gt-logo-lap-at: 25.57px; }
+  14.714% { --gt-logo-lap: 350.01px; --gt-logo-lap-at: 26.57px; }
   14.844% { --gt-logo-lap: 351.48px; --gt-logo-lap-at: 27.56px; }
+  14.974% { --gt-logo-lap: 352.88px; --gt-logo-lap-at: 28.55px; }
+  15.104% { --gt-logo-lap: 354.21px; --gt-logo-lap-at: 29.55px; }
   15.234% { --gt-logo-lap: 355.47px; --gt-logo-lap-at: 30.54px; }
+  15.365% { --gt-logo-lap: 356.66px; --gt-logo-lap-at: 31.53px; }
   15.495% { --gt-logo-lap: 357.79px; --gt-logo-lap-at: 32.53px; }
+  15.625% { --gt-logo-lap: 358.86px; --gt-logo-lap-at: 33.53px; }
   15.755% { --gt-logo-lap: 359.82px; --gt-logo-lap-at: 34.59px; }
+  15.885% { --gt-logo-lap: 360.67px; --gt-logo-lap-at: 35.69px; }
   16.016% { --gt-logo-lap: 361.4px; --gt-logo-lap-at: 36.85px; }
+  16.146% { --gt-logo-lap: 362.03px; --gt-logo-lap-at: 38.08px; }
   16.276% { --gt-logo-lap: 362.54px; --gt-logo-lap-at: 39.36px; }
+  16.406% { --gt-logo-lap: 362.94px; --gt-logo-lap-at: 40.72px; }
   16.536% { --gt-logo-lap: 363.23px; --gt-logo-lap-at: 42.13px; }
+  16.667% { --gt-logo-lap: 363.39px; --gt-logo-lap-at: 43.62px; }
   16.797% { --gt-logo-lap: 363.44px; --gt-logo-lap-at: 45.18px; }
+  16.927% { --gt-logo-lap: 363.37px; --gt-logo-lap-at: 46.82px; }
   17.057% { --gt-logo-lap: 363.18px; --gt-logo-lap-at: 48.54px; }
   17.188% { --gt-logo-lap: 362.86px; --gt-logo-lap-at: 50.35px; }
+  17.318% { --gt-logo-lap: 362.42px; --gt-logo-lap-at: 52.24px; }
   17.448% { --gt-logo-lap: 361.85px; --gt-logo-lap-at: 54.22px; }
   17.578% { --gt-logo-lap: 361.14px; --gt-logo-lap-at: 56.3px; }
+  17.708% { --gt-logo-lap: 360.3px; --gt-logo-lap-at: 58.47px; }
   17.839% { --gt-logo-lap: 359.31px; --gt-logo-lap-at: 60.76px; }
   17.969% { --gt-logo-lap: 358.18px; --gt-logo-lap-at: 63.15px; }
+  18.099% { --gt-logo-lap: 356.9px; --gt-logo-lap-at: 65.66px; }
   18.229% { --gt-logo-lap: 355.47px; --gt-logo-lap-at: 68.3px; }
   18.359% { --gt-logo-lap: 353.87px; --gt-logo-lap-at: 71.06px; }
+  18.49% { --gt-logo-lap: 352.11px; --gt-logo-lap-at: 73.95px; }
   18.62% { --gt-logo-lap: 350.18px; --gt-logo-lap-at: 76.99px; }
   18.75% { --gt-logo-lap: 348.07px; --gt-logo-lap-at: 80.18px; }
+  18.88% { --gt-logo-lap: 345.77px; --gt-logo-lap-at: 83.52px; }
   19.01% { --gt-logo-lap: 343.28px; --gt-logo-lap-at: 87.03px; }
   19.141% { --gt-logo-lap: 340.59px; --gt-logo-lap-at: 90.71px; }
   19.271% { --gt-logo-lap: 337.7px; --gt-logo-lap-at: 94.57px; }
@@ -381,386 +460,618 @@
   20.573% { --gt-logo-lap: 295.71px; --gt-logo-lap-at: 144.85px; }
   20.703% { --gt-logo-lap: 290.13px; --gt-logo-lap-at: 151.14px; }
   20.833% { --gt-logo-lap: 284.31px; --gt-logo-lap-at: 157.65px; }
+  20.964% { --gt-logo-lap: 278.27px; --gt-logo-lap-at: 164.35px; }
   21.094% { --gt-logo-lap: 272.03px; --gt-logo-lap-at: 171.24px; }
+  21.224% { --gt-logo-lap: 265.62px; --gt-logo-lap-at: 178.27px; }
   21.354% { --gt-logo-lap: 259.08px; --gt-logo-lap-at: 185.43px; }
+  21.484% { --gt-logo-lap: 252.44px; --gt-logo-lap-at: 192.68px; }
   21.875% { --gt-logo-lap: 232.39px; --gt-logo-lap-at: 214.58px; }
+  22.005% { --gt-logo-lap: 225.77px; --gt-logo-lap-at: 221.8px; }
   22.135% { --gt-logo-lap: 219.25px; --gt-logo-lap-at: 228.93px; }
+  22.266% { --gt-logo-lap: 212.86px; --gt-logo-lap-at: 235.95px; }
   22.396% { --gt-logo-lap: 206.6px; --gt-logo-lap-at: 242.82px; }
   22.526% { --gt-logo-lap: 200.5px; --gt-logo-lap-at: 249.54px; }
+  22.656% { --gt-logo-lap: 194.56px; --gt-logo-lap-at: 256.09px; }
   22.786% { --gt-logo-lap: 188.8px; --gt-logo-lap-at: 262.47px; }
+  22.917% { --gt-logo-lap: 183.23px; --gt-logo-lap-at: 268.66px; }
   23.047% { --gt-logo-lap: 177.86px; --gt-logo-lap-at: 274.66px; }
+  23.177% { --gt-logo-lap: 172.67px; --gt-logo-lap-at: 280.47px; }
   23.307% { --gt-logo-lap: 167.68px; --gt-logo-lap-at: 286.09px; }
+  23.438% { --gt-logo-lap: 162.89px; --gt-logo-lap-at: 291.53px; }
   23.568% { --gt-logo-lap: 158.28px; --gt-logo-lap-at: 296.77px; }
+  23.698% { --gt-logo-lap: 153.86px; --gt-logo-lap-at: 301.84px; }
   23.828% { --gt-logo-lap: 149.62px; --gt-logo-lap-at: 306.73px; }
   23.958% { --gt-logo-lap: 145.56px; --gt-logo-lap-at: 311.46px; }
+  24.089% { --gt-logo-lap: 141.67px; --gt-logo-lap-at: 316.02px; }
   24.219% { --gt-logo-lap: 137.94px; --gt-logo-lap-at: 320.42px; }
+  24.349% { --gt-logo-lap: 134.38px; --gt-logo-lap-at: 324.67px; }
   24.479% { --gt-logo-lap: 130.98px; --gt-logo-lap-at: 328.78px; }
   24.609% { --gt-logo-lap: 127.73px; --gt-logo-lap-at: 332.75px; }
+  24.74% { --gt-logo-lap: 124.63px; --gt-logo-lap-at: 336.58px; }
   24.87% { --gt-logo-lap: 121.68px; --gt-logo-lap-at: 340.29px; }
+  25% { --gt-logo-lap: 118.89px; --gt-logo-lap-at: 343.87px; }
   25.13% { --gt-logo-lap: 116.24px; --gt-logo-lap-at: 347.34px; }
   25.26% { --gt-logo-lap: 113.74px; --gt-logo-lap-at: 350.7px; }
+  25.391% { --gt-logo-lap: 111.42px; --gt-logo-lap-at: 353.95px; }
   25.521% { --gt-logo-lap: 109.27px; --gt-logo-lap-at: 357.1px; }
   25.651% { --gt-logo-lap: 107.34px; --gt-logo-lap-at: 360.15px; }
+  25.781% { --gt-logo-lap: 105.71px; --gt-logo-lap-at: 363.1px; }
   25.911% { --gt-logo-lap: 104.2px; --gt-logo-lap-at: 365.96px; }
+  26.042% { --gt-logo-lap: 102.65px; --gt-logo-lap-at: 368.74px; }
+  26.172% { --gt-logo-lap: 101.06px; --gt-logo-lap-at: 371.43px; }
   26.302% { --gt-logo-lap: 99.42px; --gt-logo-lap-at: 374.05px; }
+  26.432% { --gt-logo-lap: 97.75px; --gt-logo-lap-at: 376.58px; }
+  26.563% { --gt-logo-lap: 96.03px; --gt-logo-lap-at: 379.04px; }
   26.693% { --gt-logo-lap: 94.26px; --gt-logo-lap-at: 381.43px; }
+  26.823% { --gt-logo-lap: 92.44px; --gt-logo-lap-at: 383.75px; }
   26.953% { --gt-logo-lap: 90.58px; --gt-logo-lap-at: 386.01px; }
+  27.083% { --gt-logo-lap: 88.67px; --gt-logo-lap-at: 388.2px; }
   27.214% { --gt-logo-lap: 86.7px; --gt-logo-lap-at: 390.32px; }
+  27.344% { --gt-logo-lap: 84.69px; --gt-logo-lap-at: 392.39px; }
   27.604% { --gt-logo-lap: 80.72px; --gt-logo-lap-at: 396.36px; }
   27.865% { --gt-logo-lap: 76.97px; --gt-logo-lap-at: 400.11px; }
   28.125% { --gt-logo-lap: 73.43px; --gt-logo-lap-at: 403.66px; }
+  28.385% { --gt-logo-lap: 70.07px; --gt-logo-lap-at: 407.02px; }
   28.646% { --gt-logo-lap: 66.89px; --gt-logo-lap-at: 410.2px; }
+  28.906% { --gt-logo-lap: 63.87px; --gt-logo-lap-at: 413.21px; }
   29.167% { --gt-logo-lap: 61.02px; --gt-logo-lap-at: 416.06px; }
+  29.427% { --gt-logo-lap: 58.31px; --gt-logo-lap-at: 418.77px; }
   29.688% { --gt-logo-lap: 55.75px; --gt-logo-lap-at: 421.33px; }
+  29.948% { --gt-logo-lap: 53.32px; --gt-logo-lap-at: 423.76px; }
+  30.078% { --gt-logo-lap: 52.15px; --gt-logo-lap-at: 424.93px; }
   30.339% { --gt-logo-lap: 49.91px; --gt-logo-lap-at: 427.17px; }
   30.729% { --gt-logo-lap: 46.77px; --gt-logo-lap-at: 430.31px; }
+  30.99% { --gt-logo-lap: 44.81px; --gt-logo-lap-at: 432.27px; }
   31.25% { --gt-logo-lap: 42.96px; --gt-logo-lap-at: 434.12px; }
+  31.51% { --gt-logo-lap: 41.21px; --gt-logo-lap-at: 435.87px; }
   31.771% { --gt-logo-lap: 39.56px; --gt-logo-lap-at: 437.53px; }
+  32.031% { --gt-logo-lap: 37.99px; --gt-logo-lap-at: 439.09px; }
   32.292% { --gt-logo-lap: 36.52px; --gt-logo-lap-at: 440.57px; }
+  32.552% { --gt-logo-lap: 35.12px; --gt-logo-lap-at: 441.96px; }
   32.813% { --gt-logo-lap: 33.81px; --gt-logo-lap-at: 443.27px; }
+  34.505% { --gt-logo-lap: 25.81px; --gt-logo-lap-at: 451.27px; }
   35.417% { --gt-logo-lap: 21.38px; --gt-logo-lap-at: 455.7px; }
   36.068% { --gt-logo-lap: 18.03px; --gt-logo-lap-at: 459.05px; }
+  36.328% { --gt-logo-lap: 16.61px; --gt-logo-lap-at: 460.48px; }
   36.589% { --gt-logo-lap: 15.11px; --gt-logo-lap-at: 461.97px; }
+  36.849% { --gt-logo-lap: 13.5px; --gt-logo-lap-at: 463.58px; }
   36.979% { --gt-logo-lap: 12.64px; --gt-logo-lap-at: 464.45px; }
+  37.109% { --gt-logo-lap: 11.72px; --gt-logo-lap-at: 465.37px; }
   37.24% { --gt-logo-lap: 10.71px; --gt-logo-lap-at: 466.37px; }
   37.37% { --gt-logo-lap: 9.59px; --gt-logo-lap-at: 467.49px; }
+  37.63% { --gt-logo-lap: 6.92px; --gt-logo-lap-at: 470.16px; }
   37.76% { --gt-logo-lap: 5.7px; --gt-logo-lap-at: 471.39px; }
   37.891% { --gt-logo-lap: 4.59px; --gt-logo-lap-at: 472.49px; }
   38.021% { --gt-logo-lap: 3.61px; --gt-logo-lap-at: 473.47px; }
+  38.151% { --gt-logo-lap: 2.75px; --gt-logo-lap-at: 474.33px; }
   38.281% { --gt-logo-lap: 2.01px; --gt-logo-lap-at: 475.07px; }
   38.411% { --gt-logo-lap: 1.39px; --gt-logo-lap-at: 475.69px; }
+  38.542% { --gt-logo-lap: 0.89px; --gt-logo-lap-at: 476.2px; }
   38.672% { --gt-logo-lap: 0.5px; --gt-logo-lap-at: 476.59px; }
   38.802% { --gt-logo-lap: 0.22px; --gt-logo-lap-at: 476.86px; }
+  38.932% { --gt-logo-lap: 0.05px; --gt-logo-lap-at: 477.03px; }
   39.063% { --gt-logo-lap: 0px; --gt-logo-lap-at: 477.08px; }
   100% { --gt-logo-lap: 0px; --gt-logo-lap-at: 477.08px; }
 }
 
 @keyframes gt-logo-under-lap {
   0% { --gt-logo-under: 0px; --gt-logo-under-at: 0px; }
-  45.833% { --gt-logo-under: 0px; --gt-logo-under-at: 0px; }
-  46.094% { --gt-logo-under: 0.15px; --gt-logo-under-at: 0px; }
-  46.224% { --gt-logo-under: 0.5px; --gt-logo-under-at: 0px; }
-  46.354% { --gt-logo-under: 1.1px; --gt-logo-under-at: 0px; }
-  46.484% { --gt-logo-under: 1.98px; --gt-logo-under-at: 0px; }
-  46.615% { --gt-logo-under: 3.12px; --gt-logo-under-at: 0px; }
-  46.745% { --gt-logo-under: 4.53px; --gt-logo-under-at: 0px; }
-  46.875% { --gt-logo-under: 6.24px; --gt-logo-under-at: 0px; }
-  47.005% { --gt-logo-under: 8.26px; --gt-logo-under-at: 0px; }
-  47.135% { --gt-logo-under: 10.6px; --gt-logo-under-at: 0px; }
-  47.266% { --gt-logo-under: 13.3px; --gt-logo-under-at: 0px; }
-  47.526% { --gt-logo-under: 19.56px; --gt-logo-under-at: 0px; }
-  47.656% { --gt-logo-under: 22.04px; --gt-logo-under-at: 0px; }
-  47.786% { --gt-logo-under: 24px; --gt-logo-under-at: 0px; }
-  48.047% { --gt-logo-under: 27.23px; --gt-logo-under-at: 0px; }
-  48.438% { --gt-logo-under: 31.31px; --gt-logo-under-at: 0px; }
-  48.828% { --gt-logo-under: 34.98px; --gt-logo-under-at: 0px; }
-  50.26% { --gt-logo-under: 47.39px; --gt-logo-under-at: 0px; }
-  50.521% { --gt-logo-under: 49.84px; --gt-logo-under-at: 0px; }
-  50.781% { --gt-logo-under: 52.52px; --gt-logo-under-at: 0px; }
-  51.042% { --gt-logo-under: 55.45px; --gt-logo-under-at: 0px; }
-  51.432% { --gt-logo-under: 60.35px; --gt-logo-under-at: 0px; }
-  51.693% { --gt-logo-under: 63.99px; --gt-logo-under-at: 0px; }
-  51.953% { --gt-logo-under: 67.95px; --gt-logo-under-at: 0px; }
-  52.344% { --gt-logo-under: 74.54px; --gt-logo-under-at: 0px; }
-  52.604% { --gt-logo-under: 79.41px; --gt-logo-under-at: 0px; }
-  52.865% { --gt-logo-under: 84.71px; --gt-logo-under-at: 0px; }
-  53.125% { --gt-logo-under: 90.46px; --gt-logo-under-at: 0px; }
-  53.255% { --gt-logo-under: 93.51px; --gt-logo-under-at: 0px; }
-  53.516% { --gt-logo-under: 100.01px; --gt-logo-under-at: 0px; }
-  53.776% { --gt-logo-under: 107.07px; --gt-logo-under-at: 0px; }
-  54.036% { --gt-logo-under: 114.72px; --gt-logo-under-at: 0px; }
-  54.167% { --gt-logo-under: 118.78px; --gt-logo-under-at: 0px; }
-  54.427% { --gt-logo-under: 127.4px; --gt-logo-under-at: 0px; }
-  54.688% { --gt-logo-under: 136.7px; --gt-logo-under-at: 0px; }
-  54.818% { --gt-logo-under: 141.61px; --gt-logo-under-at: 0px; }
-  55.078% { --gt-logo-under: 151.95px; --gt-logo-under-at: 0px; }
-  55.339% { --gt-logo-under: 162.95px; --gt-logo-under-at: 0px; }
-  55.469% { --gt-logo-under: 168.67px; --gt-logo-under-at: 0px; }
-  55.729% { --gt-logo-under: 180.48px; --gt-logo-under-at: 0px; }
-  55.99% { --gt-logo-under: 192.64px; --gt-logo-under-at: 0px; }
-  56.771% { --gt-logo-under: 229.55px; --gt-logo-under-at: 0px; }
-  57.031% { --gt-logo-under: 242.23px; --gt-logo-under-at: 0px; }
-  57.161% { --gt-logo-under: 248.89px; --gt-logo-under-at: 0px; }
-  57.552% { --gt-logo-under: 269.57px; --gt-logo-under-at: 0px; }
-  57.682% { --gt-logo-under: 276.3px; --gt-logo-under-at: 0px; }
-  57.813% { --gt-logo-under: 282.82px; --gt-logo-under-at: 0px; }
-  57.943% { --gt-logo-under: 289.1px; --gt-logo-under-at: 0px; }
-  58.073% { --gt-logo-under: 295.15px; --gt-logo-under-at: 0px; }
-  58.203% { --gt-logo-under: 300.96px; --gt-logo-under-at: 0px; }
-  58.333% { --gt-logo-under: 306.54px; --gt-logo-under-at: 0px; }
-  58.464% { --gt-logo-under: 311.9px; --gt-logo-under-at: 0px; }
-  58.594% { --gt-logo-under: 317.04px; --gt-logo-under-at: 0px; }
-  58.854% { --gt-logo-under: 326.72px; --gt-logo-under-at: 0px; }
-  59.115% { --gt-logo-under: 335.66px; --gt-logo-under-at: 0px; }
-  59.245% { --gt-logo-under: 339.88px; --gt-logo-under-at: 0px; }
-  59.505% { --gt-logo-under: 347.83px; --gt-logo-under-at: 0px; }
-  59.766% { --gt-logo-under: 355.22px; --gt-logo-under-at: 0px; }
-  60.026% { --gt-logo-under: 362.08px; --gt-logo-under-at: 0px; }
-  60.286% { --gt-logo-under: 368.47px; --gt-logo-under-at: 0px; }
-  60.547% { --gt-logo-under: 374.43px; --gt-logo-under-at: 0px; }
-  60.807% { --gt-logo-under: 380px; --gt-logo-under-at: 0px; }
-  61.068% { --gt-logo-under: 385.21px; --gt-logo-under-at: 0px; }
-  61.328% { --gt-logo-under: 390.09px; --gt-logo-under-at: 0px; }
-  61.719% { --gt-logo-under: 396.87px; --gt-logo-under-at: 0px; }
-  61.979% { --gt-logo-under: 401.04px; --gt-logo-under-at: 0px; }
-  62.37% { --gt-logo-under: 406.85px; --gt-logo-under-at: 0px; }
-  62.76% { --gt-logo-under: 412.17px; --gt-logo-under-at: 0px; }
-  63.151% { --gt-logo-under: 417.04px; --gt-logo-under-at: 0px; }
-  63.542% { --gt-logo-under: 421.51px; --gt-logo-under-at: 0px; }
-  63.932% { --gt-logo-under: 425.63px; --gt-logo-under-at: 0px; }
-  64.453% { --gt-logo-under: 430.61px; --gt-logo-under-at: 0px; }
-  64.583% { --gt-logo-under: 431.52px; --gt-logo-under-at: 0px; }
+  47.005% { --gt-logo-under: 0px; --gt-logo-under-at: 0px; }
+  47.135% { --gt-logo-under: 1.21px; --gt-logo-under-at: 0px; }
+  47.266% { --gt-logo-under: 3.83px; --gt-logo-under-at: 0px; }
+  47.396% { --gt-logo-under: 6.76px; --gt-logo-under-at: 0px; }
+  47.526% { --gt-logo-under: 9.76px; --gt-logo-under-at: 0px; }
+  47.656% { --gt-logo-under: 12.07px; --gt-logo-under-at: 0px; }
+  47.786% { --gt-logo-under: 13.89px; --gt-logo-under-at: 0px; }
+  47.917% { --gt-logo-under: 15.45px; --gt-logo-under-at: 0px; }
+  48.047% { --gt-logo-under: 16.87px; --gt-logo-under-at: 0px; }
+  48.177% { --gt-logo-under: 18.19px; --gt-logo-under-at: 0px; }
+  48.307% { --gt-logo-under: 19.43px; --gt-logo-under-at: 0px; }
+  48.438% { --gt-logo-under: 20.63px; --gt-logo-under-at: 0px; }
+  48.698% { --gt-logo-under: 22.9px; --gt-logo-under-at: 0px; }
+  48.958% { --gt-logo-under: 25.08px; --gt-logo-under-at: 0px; }
+  49.219% { --gt-logo-under: 27.2px; --gt-logo-under-at: 0px; }
+  50.26% { --gt-logo-under: 35.48px; --gt-logo-under-at: 0px; }
+  50.521% { --gt-logo-under: 37.77px; --gt-logo-under-at: 0px; }
+  50.781% { --gt-logo-under: 40.28px; --gt-logo-under-at: 0px; }
+  50.911% { --gt-logo-under: 41.62px; --gt-logo-under-at: 0px; }
+  51.042% { --gt-logo-under: 43.03px; --gt-logo-under-at: 0px; }
+  51.172% { --gt-logo-under: 44.51px; --gt-logo-under-at: 0px; }
+  51.302% { --gt-logo-under: 46.05px; --gt-logo-under-at: 0px; }
+  51.432% { --gt-logo-under: 47.67px; --gt-logo-under-at: 0px; }
+  51.563% { --gt-logo-under: 49.36px; --gt-logo-under-at: 0px; }
+  51.693% { --gt-logo-under: 51.13px; --gt-logo-under-at: 0px; }
+  51.823% { --gt-logo-under: 52.98px; --gt-logo-under-at: 0px; }
+  51.953% { --gt-logo-under: 54.92px; --gt-logo-under-at: 0px; }
+  52.083% { --gt-logo-under: 56.95px; --gt-logo-under-at: 0px; }
+  52.214% { --gt-logo-under: 59.06px; --gt-logo-under-at: 0px; }
+  52.344% { --gt-logo-under: 61.28px; --gt-logo-under-at: 0px; }
+  52.474% { --gt-logo-under: 63.59px; --gt-logo-under-at: 0px; }
+  52.604% { --gt-logo-under: 66.02px; --gt-logo-under-at: 0px; }
+  52.734% { --gt-logo-under: 68.55px; --gt-logo-under-at: 0px; }
+  52.865% { --gt-logo-under: 71.2px; --gt-logo-under-at: 0px; }
+  52.995% { --gt-logo-under: 73.96px; --gt-logo-under-at: 0px; }
+  53.125% { --gt-logo-under: 76.86px; --gt-logo-under-at: 0px; }
+  53.255% { --gt-logo-under: 79.89px; --gt-logo-under-at: 0px; }
+  53.385% { --gt-logo-under: 83.06px; --gt-logo-under-at: 0px; }
+  53.516% { --gt-logo-under: 86.37px; --gt-logo-under-at: 0px; }
+  53.646% { --gt-logo-under: 89.83px; --gt-logo-under-at: 0px; }
+  53.776% { --gt-logo-under: 93.46px; --gt-logo-under-at: 0px; }
+  53.906% { --gt-logo-under: 97.25px; --gt-logo-under-at: 0px; }
+  54.036% { --gt-logo-under: 101.21px; --gt-logo-under-at: 0px; }
+  54.167% { --gt-logo-under: 105.35px; --gt-logo-under-at: 0px; }
+  54.297% { --gt-logo-under: 109.68px; --gt-logo-under-at: 0px; }
+  54.427% { --gt-logo-under: 114.2px; --gt-logo-under-at: 0px; }
+  54.557% { --gt-logo-under: 118.92px; --gt-logo-under-at: 0px; }
+  54.688% { --gt-logo-under: 123.83px; --gt-logo-under-at: 0px; }
+  54.818% { --gt-logo-under: 128.96px; --gt-logo-under-at: 0px; }
+  54.948% { --gt-logo-under: 134.29px; --gt-logo-under-at: 0px; }
+  55.078% { --gt-logo-under: 139.83px; --gt-logo-under-at: 0px; }
+  55.208% { --gt-logo-under: 145.57px; --gt-logo-under-at: 0px; }
+  55.339% { --gt-logo-under: 151.5px; --gt-logo-under-at: 0px; }
+  55.469% { --gt-logo-under: 157.62px; --gt-logo-under-at: 0px; }
+  55.599% { --gt-logo-under: 163.92px; --gt-logo-under-at: 0px; }
+  55.729% { --gt-logo-under: 170.36px; --gt-logo-under-at: 0px; }
+  55.859% { --gt-logo-under: 176.94px; --gt-logo-under-at: 0px; }
+  55.99% { --gt-logo-under: 183.62px; --gt-logo-under-at: 0px; }
+  56.12% { --gt-logo-under: 190.38px; --gt-logo-under-at: 0px; }
+  56.51% { --gt-logo-under: 210.77px; --gt-logo-under-at: 0px; }
+  56.641% { --gt-logo-under: 217.52px; --gt-logo-under-at: 0px; }
+  57.031% { --gt-logo-under: 237.57px; --gt-logo-under-at: 0px; }
+  57.161% { --gt-logo-under: 244.3px; --gt-logo-under-at: 0px; }
+  57.422% { --gt-logo-under: 257.88px; --gt-logo-under-at: 0px; }
+  57.552% { --gt-logo-under: 264.6px; --gt-logo-under-at: 0px; }
+  57.682% { --gt-logo-under: 271.18px; --gt-logo-under-at: 0px; }
+  57.813% { --gt-logo-under: 277.59px; --gt-logo-under-at: 0px; }
+  57.943% { --gt-logo-under: 283.8px; --gt-logo-under-at: 0px; }
+  58.073% { --gt-logo-under: 289.81px; --gt-logo-under-at: 0px; }
+  58.203% { --gt-logo-under: 295.6px; --gt-logo-under-at: 0px; }
+  58.333% { --gt-logo-under: 301.18px; --gt-logo-under-at: 0px; }
+  58.464% { --gt-logo-under: 306.57px; --gt-logo-under-at: 0px; }
+  58.594% { --gt-logo-under: 311.75px; --gt-logo-under-at: 0px; }
+  58.724% { --gt-logo-under: 316.74px; --gt-logo-under-at: 0px; }
+  58.854% { --gt-logo-under: 321.55px; --gt-logo-under-at: 0px; }
+  58.984% { --gt-logo-under: 326.18px; --gt-logo-under-at: 0px; }
+  59.115% { --gt-logo-under: 330.64px; --gt-logo-under-at: 0px; }
+  59.245% { --gt-logo-under: 334.94px; --gt-logo-under-at: 0px; }
+  59.375% { --gt-logo-under: 339.09px; --gt-logo-under-at: 0px; }
+  59.505% { --gt-logo-under: 343.08px; --gt-logo-under-at: 0px; }
+  59.635% { --gt-logo-under: 346.94px; --gt-logo-under-at: 0px; }
+  59.766% { --gt-logo-under: 350.66px; --gt-logo-under-at: 0px; }
+  59.896% { --gt-logo-under: 354.25px; --gt-logo-under-at: 0px; }
+  60.026% { --gt-logo-under: 357.72px; --gt-logo-under-at: 0px; }
+  60.156% { --gt-logo-under: 361.07px; --gt-logo-under-at: 0px; }
+  60.286% { --gt-logo-under: 364.31px; --gt-logo-under-at: 0px; }
+  60.417% { --gt-logo-under: 367.44px; --gt-logo-under-at: 0px; }
+  60.547% { --gt-logo-under: 370.47px; --gt-logo-under-at: 0px; }
+  60.677% { --gt-logo-under: 373.4px; --gt-logo-under-at: 0px; }
+  60.807% { --gt-logo-under: 376.23px; --gt-logo-under-at: 0px; }
+  60.938% { --gt-logo-under: 378.98px; --gt-logo-under-at: 0px; }
+  61.068% { --gt-logo-under: 381.63px; --gt-logo-under-at: 0px; }
+  61.198% { --gt-logo-under: 384.21px; --gt-logo-under-at: 0px; }
+  61.328% { --gt-logo-under: 386.7px; --gt-logo-under-at: 0px; }
+  61.458% { --gt-logo-under: 389.12px; --gt-logo-under-at: 0px; }
+  61.589% { --gt-logo-under: 391.46px; --gt-logo-under-at: 0px; }
+  61.719% { --gt-logo-under: 393.74px; --gt-logo-under-at: 0px; }
+  61.849% { --gt-logo-under: 395.94px; --gt-logo-under-at: 0px; }
+  61.979% { --gt-logo-under: 398.08px; --gt-logo-under-at: 0px; }
+  62.109% { --gt-logo-under: 400.16px; --gt-logo-under-at: 0px; }
+  62.24% { --gt-logo-under: 402.17px; --gt-logo-under-at: 0px; }
+  62.37% { --gt-logo-under: 404.13px; --gt-logo-under-at: 0px; }
+  62.63% { --gt-logo-under: 407.87px; --gt-logo-under-at: 0px; }
+  62.76% { --gt-logo-under: 409.66px; --gt-logo-under-at: 0px; }
+  63.021% { --gt-logo-under: 413.1px; --gt-logo-under-at: 0px; }
+  63.151% { --gt-logo-under: 414.74px; --gt-logo-under-at: 0px; }
+  63.411% { --gt-logo-under: 417.89px; --gt-logo-under-at: 0px; }
+  63.672% { --gt-logo-under: 420.87px; --gt-logo-under-at: 0px; }
+  63.932% { --gt-logo-under: 423.69px; --gt-logo-under-at: 0px; }
+  64.193% { --gt-logo-under: 426.36px; --gt-logo-under-at: 0px; }
+  64.453% { --gt-logo-under: 428.88px; --gt-logo-under-at: 0px; }
+  64.714% { --gt-logo-under: 431.27px; --gt-logo-under-at: 0px; }
+  64.844% { --gt-logo-under: 431.52px; --gt-logo-under-at: 0px; }
   67.448% { --gt-logo-under: 431.52px; --gt-logo-under-at: 0px; }
-  67.578% { --gt-logo-under: 430.24px; --gt-logo-under-at: 1.28px; }
-  67.839% { --gt-logo-under: 424.58px; --gt-logo-under-at: 6.94px; }
-  68.099% { --gt-logo-under: 418.32px; --gt-logo-under-at: 13.2px; }
-  68.229% { --gt-logo-under: 414.95px; --gt-logo-under-at: 16.57px; }
-  68.49% { --gt-logo-under: 407.7px; --gt-logo-under-at: 23.82px; }
-  68.75% { --gt-logo-under: 399.73px; --gt-logo-under-at: 31.79px; }
-  68.88% { --gt-logo-under: 395.46px; --gt-logo-under-at: 36.06px; }
-  69.01% { --gt-logo-under: 391px; --gt-logo-under-at: 40.52px; }
-  69.141% { --gt-logo-under: 386.33px; --gt-logo-under-at: 45.19px; }
-  69.271% { --gt-logo-under: 381.46px; --gt-logo-under-at: 50.06px; }
-  69.401% { --gt-logo-under: 376.38px; --gt-logo-under-at: 55.14px; }
-  69.531% { --gt-logo-under: 371.07px; --gt-logo-under-at: 60.45px; }
-  69.661% { --gt-logo-under: 365.55px; --gt-logo-under-at: 65.98px; }
-  69.792% { --gt-logo-under: 359.79px; --gt-logo-under-at: 71.73px; }
-  69.922% { --gt-logo-under: 353.81px; --gt-logo-under-at: 77.71px; }
-  70.052% { --gt-logo-under: 347.61px; --gt-logo-under-at: 83.91px; }
-  70.182% { --gt-logo-under: 341.19px; --gt-logo-under-at: 90.33px; }
-  70.313% { --gt-logo-under: 334.56px; --gt-logo-under-at: 96.96px; }
-  70.573% { --gt-logo-under: 320.71px; --gt-logo-under-at: 110.81px; }
-  70.703% { --gt-logo-under: 313.53px; --gt-logo-under-at: 117.99px; }
-  70.964% { --gt-logo-under: 298.78px; --gt-logo-under-at: 132.74px; }
-  71.484% { --gt-logo-under: 268.65px; --gt-logo-under-at: 162.87px; }
-  71.745% { --gt-logo-under: 253.81px; --gt-logo-under-at: 177.71px; }
-  72.005% { --gt-logo-under: 239.44px; --gt-logo-under-at: 192.08px; }
-  72.266% { --gt-logo-under: 225.7px; --gt-logo-under-at: 205.82px; }
-  72.526% { --gt-logo-under: 212.69px; --gt-logo-under-at: 218.83px; }
-  72.656% { --gt-logo-under: 206.46px; --gt-logo-under-at: 225.06px; }
-  72.917% { --gt-logo-under: 194.46px; --gt-logo-under-at: 237.06px; }
-  73.177% { --gt-logo-under: 182.97px; --gt-logo-under-at: 248.55px; }
-  73.307% { --gt-logo-under: 177.41px; --gt-logo-under-at: 254.11px; }
-  73.568% { --gt-logo-under: 166.74px; --gt-logo-under-at: 264.78px; }
-  73.698% { --gt-logo-under: 161.64px; --gt-logo-under-at: 269.88px; }
-  73.828% { --gt-logo-under: 156.71px; --gt-logo-under-at: 274.81px; }
-  74.089% { --gt-logo-under: 147.34px; --gt-logo-under-at: 284.18px; }
-  74.219% { --gt-logo-under: 142.89px; --gt-logo-under-at: 288.63px; }
-  74.479% { --gt-logo-under: 134.43px; --gt-logo-under-at: 297.09px; }
-  74.609% { --gt-logo-under: 130.4px; --gt-logo-under-at: 301.12px; }
-  74.87% { --gt-logo-under: 122.74px; --gt-logo-under-at: 308.78px; }
-  75% { --gt-logo-under: 119.1px; --gt-logo-under-at: 312.42px; }
-  75.26% { --gt-logo-under: 112.15px; --gt-logo-under-at: 319.37px; }
-  75.391% { --gt-logo-under: 108.83px; --gt-logo-under-at: 322.69px; }
-  75.651% { --gt-logo-under: 102.51px; --gt-logo-under-at: 329.01px; }
-  75.911% { --gt-logo-under: 96.56px; --gt-logo-under-at: 334.96px; }
-  76.172% { --gt-logo-under: 90.95px; --gt-logo-under-at: 340.57px; }
-  76.563% { --gt-logo-under: 83.13px; --gt-logo-under-at: 348.39px; }
-  76.823% { --gt-logo-under: 78.28px; --gt-logo-under-at: 353.24px; }
-  77.083% { --gt-logo-under: 73.7px; --gt-logo-under-at: 357.82px; }
-  77.344% { --gt-logo-under: 69.36px; --gt-logo-under-at: 362.16px; }
-  77.604% { --gt-logo-under: 65.25px; --gt-logo-under-at: 366.27px; }
-  77.865% { --gt-logo-under: 61.36px; --gt-logo-under-at: 370.16px; }
-  78.255% { --gt-logo-under: 55.91px; --gt-logo-under-at: 375.61px; }
-  78.776% { --gt-logo-under: 49.27px; --gt-logo-under-at: 382.25px; }
-  79.036% { --gt-logo-under: 46.2px; --gt-logo-under-at: 385.32px; }
-  79.427% { --gt-logo-under: 41.89px; --gt-logo-under-at: 389.63px; }
-  79.688% { --gt-logo-under: 39.2px; --gt-logo-under-at: 392.32px; }
-  80.078% { --gt-logo-under: 35.41px; --gt-logo-under-at: 396.11px; }
-  80.469% { --gt-logo-under: 31.9px; --gt-logo-under-at: 399.62px; }
-  80.859% { --gt-logo-under: 28.66px; --gt-logo-under-at: 402.86px; }
-  81.51% { --gt-logo-under: 23.79px; --gt-logo-under-at: 407.73px; }
-  81.901% { --gt-logo-under: 21.16px; --gt-logo-under-at: 410.36px; }
-  82.292% { --gt-logo-under: 18.74px; --gt-logo-under-at: 412.78px; }
-  83.073% { --gt-logo-under: 14.47px; --gt-logo-under-at: 417.05px; }
-  83.854% { --gt-logo-under: 10.88px; --gt-logo-under-at: 420.64px; }
-  84.766% { --gt-logo-under: 7.46px; --gt-logo-under-at: 424.06px; }
-  85.677% { --gt-logo-under: 4.78px; --gt-logo-under-at: 426.74px; }
-  86.589% { --gt-logo-under: 2.76px; --gt-logo-under-at: 428.76px; }
-  87.5% { --gt-logo-under: 1.33px; --gt-logo-under-at: 430.19px; }
-  88.542% { --gt-logo-under: 0.35px; --gt-logo-under-at: 431.17px; }
-  89.583% { --gt-logo-under: 0px; --gt-logo-under-at: 431.52px; }
-  89.714% { --gt-logo-under: 0px; --gt-logo-under-at: 0px; }
-  100% { --gt-logo-under: 0px; --gt-logo-under-at: 0px; }
+  67.578% { --gt-logo-under: 430.25px; --gt-logo-under-at: 1.27px; }
+  67.708% { --gt-logo-under: 427.5px; --gt-logo-under-at: 4.02px; }
+  67.839% { --gt-logo-under: 424.62px; --gt-logo-under-at: 6.9px; }
+  67.969% { --gt-logo-under: 421.58px; --gt-logo-under-at: 9.94px; }
+  68.099% { --gt-logo-under: 418.39px; --gt-logo-under-at: 13.13px; }
+  68.229% { --gt-logo-under: 415.03px; --gt-logo-under-at: 16.49px; }
+  68.359% { --gt-logo-under: 411.51px; --gt-logo-under-at: 20.01px; }
+  68.49% { --gt-logo-under: 407.81px; --gt-logo-under-at: 23.71px; }
+  68.62% { --gt-logo-under: 403.93px; --gt-logo-under-at: 27.59px; }
+  68.75% { --gt-logo-under: 399.88px; --gt-logo-under-at: 31.64px; }
+  68.88% { --gt-logo-under: 395.63px; --gt-logo-under-at: 35.89px; }
+  69.01% { --gt-logo-under: 391.19px; --gt-logo-under-at: 40.33px; }
+  69.141% { --gt-logo-under: 386.54px; --gt-logo-under-at: 44.98px; }
+  69.271% { --gt-logo-under: 381.69px; --gt-logo-under-at: 49.83px; }
+  69.401% { --gt-logo-under: 376.63px; --gt-logo-under-at: 54.89px; }
+  69.531% { --gt-logo-under: 371.35px; --gt-logo-under-at: 60.17px; }
+  69.661% { --gt-logo-under: 365.85px; --gt-logo-under-at: 65.67px; }
+  69.792% { --gt-logo-under: 360.13px; --gt-logo-under-at: 71.39px; }
+  69.922% { --gt-logo-under: 354.17px; --gt-logo-under-at: 77.35px; }
+  70.052% { --gt-logo-under: 348px; --gt-logo-under-at: 83.52px; }
+  70.182% { --gt-logo-under: 341.61px; --gt-logo-under-at: 89.91px; }
+  70.313% { --gt-logo-under: 335.01px; --gt-logo-under-at: 96.51px; }
+  70.443% { --gt-logo-under: 328.2px; --gt-logo-under-at: 103.32px; }
+  70.573% { --gt-logo-under: 321.22px; --gt-logo-under-at: 110.3px; }
+  70.703% { --gt-logo-under: 314.07px; --gt-logo-under-at: 117.45px; }
+  70.833% { --gt-logo-under: 306.79px; --gt-logo-under-at: 124.73px; }
+  70.964% { --gt-logo-under: 299.4px; --gt-logo-under-at: 132.12px; }
+  71.484% { --gt-logo-under: 269.41px; --gt-logo-under-at: 162.11px; }
+  71.615% { --gt-logo-under: 261.98px; --gt-logo-under-at: 169.54px; }
+  71.745% { --gt-logo-under: 254.63px; --gt-logo-under-at: 176.89px; }
+  71.875% { --gt-logo-under: 247.41px; --gt-logo-under-at: 184.11px; }
+  72.005% { --gt-logo-under: 240.33px; --gt-logo-under-at: 191.19px; }
+  72.135% { --gt-logo-under: 233.41px; --gt-logo-under-at: 198.11px; }
+  72.266% { --gt-logo-under: 226.66px; --gt-logo-under-at: 204.86px; }
+  72.396% { --gt-logo-under: 220.09px; --gt-logo-under-at: 211.43px; }
+  72.526% { --gt-logo-under: 213.71px; --gt-logo-under-at: 217.81px; }
+  72.656% { --gt-logo-under: 207.5px; --gt-logo-under-at: 224.02px; }
+  72.786% { --gt-logo-under: 201.46px; --gt-logo-under-at: 230.06px; }
+  72.917% { --gt-logo-under: 195.56px; --gt-logo-under-at: 235.96px; }
+  73.047% { --gt-logo-under: 189.78px; --gt-logo-under-at: 241.74px; }
+  73.177% { --gt-logo-under: 184.13px; --gt-logo-under-at: 247.4px; }
+  73.307% { --gt-logo-under: 178.59px; --gt-logo-under-at: 252.93px; }
+  73.438% { --gt-logo-under: 173.2px; --gt-logo-under-at: 258.32px; }
+  73.568% { --gt-logo-under: 167.97px; --gt-logo-under-at: 263.55px; }
+  73.698% { --gt-logo-under: 162.89px; --gt-logo-under-at: 268.63px; }
+  73.828% { --gt-logo-under: 157.99px; --gt-logo-under-at: 273.53px; }
+  73.958% { --gt-logo-under: 153.24px; --gt-logo-under-at: 278.28px; }
+  74.089% { --gt-logo-under: 148.66px; --gt-logo-under-at: 282.86px; }
+  74.219% { --gt-logo-under: 144.23px; --gt-logo-under-at: 287.29px; }
+  74.349% { --gt-logo-under: 139.94px; --gt-logo-under-at: 291.58px; }
+  74.479% { --gt-logo-under: 135.8px; --gt-logo-under-at: 295.72px; }
+  74.609% { --gt-logo-under: 131.8px; --gt-logo-under-at: 299.72px; }
+  74.74% { --gt-logo-under: 127.92px; --gt-logo-under-at: 303.6px; }
+  74.87% { --gt-logo-under: 124.17px; --gt-logo-under-at: 307.35px; }
+  75% { --gt-logo-under: 120.55px; --gt-logo-under-at: 310.97px; }
+  75.13% { --gt-logo-under: 117.03px; --gt-logo-under-at: 314.49px; }
+  75.26% { --gt-logo-under: 113.63px; --gt-logo-under-at: 317.89px; }
+  75.391% { --gt-logo-under: 110.33px; --gt-logo-under-at: 321.19px; }
+  75.521% { --gt-logo-under: 107.13px; --gt-logo-under-at: 324.39px; }
+  75.651% { --gt-logo-under: 104.03px; --gt-logo-under-at: 327.49px; }
+  75.781% { --gt-logo-under: 101.03px; --gt-logo-under-at: 330.49px; }
+  75.911% { --gt-logo-under: 98.11px; --gt-logo-under-at: 333.41px; }
+  76.042% { --gt-logo-under: 95.28px; --gt-logo-under-at: 336.24px; }
+  76.172% { --gt-logo-under: 92.53px; --gt-logo-under-at: 338.99px; }
+  76.302% { --gt-logo-under: 89.86px; --gt-logo-under-at: 341.66px; }
+  76.432% { --gt-logo-under: 87.27px; --gt-logo-under-at: 344.25px; }
+  76.563% { --gt-logo-under: 84.75px; --gt-logo-under-at: 346.77px; }
+  76.693% { --gt-logo-under: 82.3px; --gt-logo-under-at: 349.22px; }
+  76.823% { --gt-logo-under: 79.92px; --gt-logo-under-at: 351.6px; }
+  76.953% { --gt-logo-under: 77.61px; --gt-logo-under-at: 353.91px; }
+  77.083% { --gt-logo-under: 75.36px; --gt-logo-under-at: 356.16px; }
+  77.344% { --gt-logo-under: 71.04px; --gt-logo-under-at: 360.48px; }
+  77.604% { --gt-logo-under: 66.95px; --gt-logo-under-at: 364.57px; }
+  77.734% { --gt-logo-under: 64.99px; --gt-logo-under-at: 366.53px; }
+  77.995% { --gt-logo-under: 61.22px; --gt-logo-under-at: 370.3px; }
+  78.255% { --gt-logo-under: 57.65px; --gt-logo-under-at: 373.87px; }
+  78.385% { --gt-logo-under: 55.93px; --gt-logo-under-at: 375.59px; }
+  78.646% { --gt-logo-under: 52.63px; --gt-logo-under-at: 378.89px; }
+  78.776% { --gt-logo-under: 51.04px; --gt-logo-under-at: 380.48px; }
+  79.036% { --gt-logo-under: 47.99px; --gt-logo-under-at: 383.53px; }
+  79.167% { --gt-logo-under: 46.52px; --gt-logo-under-at: 385px; }
+  79.427% { --gt-logo-under: 43.7px; --gt-logo-under-at: 387.82px; }
+  79.557% { --gt-logo-under: 42.34px; --gt-logo-under-at: 389.18px; }
+  79.818% { --gt-logo-under: 39.72px; --gt-logo-under-at: 391.8px; }
+  79.948% { --gt-logo-under: 38.47px; --gt-logo-under-at: 393.05px; }
+  80.208% { --gt-logo-under: 36.05px; --gt-logo-under-at: 395.47px; }
+  80.599% { --gt-logo-under: 32.65px; --gt-logo-under-at: 398.87px; }
+  80.99% { --gt-logo-under: 29.5px; --gt-logo-under-at: 402.02px; }
+  81.38% { --gt-logo-under: 26.6px; --gt-logo-under-at: 404.92px; }
+  81.641% { --gt-logo-under: 24.78px; --gt-logo-under-at: 406.74px; }
+  81.901% { --gt-logo-under: 23.06px; --gt-logo-under-at: 408.46px; }
+  82.292% { --gt-logo-under: 20.65px; --gt-logo-under-at: 410.87px; }
+  82.552% { --gt-logo-under: 19.16px; --gt-logo-under-at: 412.36px; }
+  82.813% { --gt-logo-under: 17.74px; --gt-logo-under-at: 413.78px; }
+  83.073% { --gt-logo-under: 16.4px; --gt-logo-under-at: 415.12px; }
+  83.333% { --gt-logo-under: 15.14px; --gt-logo-under-at: 416.38px; }
+  83.594% { --gt-logo-under: 13.95px; --gt-logo-under-at: 417.57px; }
+  83.854% { --gt-logo-under: 12.83px; --gt-logo-under-at: 418.69px; }
+  84.115% { --gt-logo-under: 11.78px; --gt-logo-under-at: 419.74px; }
+  84.375% { --gt-logo-under: 10.79px; --gt-logo-under-at: 420.73px; }
+  84.635% { --gt-logo-under: 9.86px; --gt-logo-under-at: 421.66px; }
+  84.896% { --gt-logo-under: 9px; --gt-logo-under-at: 422.52px; }
+  85.417% { --gt-logo-under: 7.45px; --gt-logo-under-at: 424.07px; }
+  85.938% { --gt-logo-under: 6.12px; --gt-logo-under-at: 425.4px; }
+  86.328% { --gt-logo-under: 5.26px; --gt-logo-under-at: 426.26px; }
+  86.849% { --gt-logo-under: 4.28px; --gt-logo-under-at: 427.24px; }
+  87.24% { --gt-logo-under: 3.68px; --gt-logo-under-at: 427.84px; }
+  87.76% { --gt-logo-under: 3.02px; --gt-logo-under-at: 428.5px; }
+  88.151% { --gt-logo-under: 2.64px; --gt-logo-under-at: 428.88px; }
+  88.672% { --gt-logo-under: 2.28px; --gt-logo-under-at: 429.24px; }
+  89.063% { --gt-logo-under: 2.1px; --gt-logo-under-at: 429.42px; }
+  89.583% { --gt-logo-under: 2px; --gt-logo-under-at: 429.52px; }
+  89.714% { --gt-logo-under: 0px; --gt-logo-under-at: 429.52px; }
+  100% { --gt-logo-under: 0px; --gt-logo-under-at: 429.52px; }
 }
 
 @keyframes gt-logo-fill-lap {
   0% { --gt-logo-fill: 0px; --gt-logo-fill-at: 6.8px; }
-  47.266% { --gt-logo-fill: 0px; --gt-logo-fill-at: 6.8px; }
-  47.396% { --gt-logo-fill: 2.76px; --gt-logo-fill-at: 6.8px; }
-  47.526% { --gt-logo-fill: 5.96px; --gt-logo-fill-at: 6.8px; }
-  47.656% { --gt-logo-fill: 8.44px; --gt-logo-fill-at: 6.8px; }
-  47.786% { --gt-logo-fill: 10.4px; --gt-logo-fill-at: 6.8px; }
-  48.047% { --gt-logo-fill: 13.63px; --gt-logo-fill-at: 6.8px; }
-  48.438% { --gt-logo-fill: 17.71px; --gt-logo-fill-at: 6.8px; }
-  48.828% { --gt-logo-fill: 21.38px; --gt-logo-fill-at: 6.8px; }
-  50.26% { --gt-logo-fill: 33.79px; --gt-logo-fill-at: 6.8px; }
-  50.521% { --gt-logo-fill: 36.24px; --gt-logo-fill-at: 6.8px; }
-  50.781% { --gt-logo-fill: 38.92px; --gt-logo-fill-at: 6.8px; }
-  51.042% { --gt-logo-fill: 41.85px; --gt-logo-fill-at: 6.8px; }
-  51.432% { --gt-logo-fill: 46.75px; --gt-logo-fill-at: 6.8px; }
-  51.693% { --gt-logo-fill: 50.39px; --gt-logo-fill-at: 6.8px; }
-  51.953% { --gt-logo-fill: 54.35px; --gt-logo-fill-at: 6.8px; }
-  52.344% { --gt-logo-fill: 60.94px; --gt-logo-fill-at: 6.8px; }
-  52.604% { --gt-logo-fill: 65.81px; --gt-logo-fill-at: 6.8px; }
-  52.865% { --gt-logo-fill: 71.11px; --gt-logo-fill-at: 6.8px; }
-  53.125% { --gt-logo-fill: 76.86px; --gt-logo-fill-at: 6.8px; }
-  53.255% { --gt-logo-fill: 79.91px; --gt-logo-fill-at: 6.8px; }
-  53.516% { --gt-logo-fill: 86.41px; --gt-logo-fill-at: 6.8px; }
-  53.776% { --gt-logo-fill: 93.47px; --gt-logo-fill-at: 6.8px; }
-  54.036% { --gt-logo-fill: 101.12px; --gt-logo-fill-at: 6.8px; }
-  54.181% { --gt-logo-fill: 105.64px; --gt-logo-fill-at: 6.8px; }
-  54.307% { --gt-logo-fill: 105.62px; --gt-logo-fill-at: 6.8px; }
-  54.308% { --gt-logo-fill: 109.78px; --gt-logo-fill-at: 6.8px; }
-  54.467% { --gt-logo-fill: 115.19px; --gt-logo-fill-at: 6.8px; }
-  54.468% { --gt-logo-fill: 119.32px; --gt-logo-fill-at: 6.8px; }
-  54.583% { --gt-logo-fill: 119.29px; --gt-logo-fill-at: 6.8px; }
-  54.688% { --gt-logo-fill: 123.1px; --gt-logo-fill-at: 6.8px; }
-  54.818% { --gt-logo-fill: 128.01px; --gt-logo-fill-at: 6.8px; }
-  55.078% { --gt-logo-fill: 138.35px; --gt-logo-fill-at: 6.8px; }
-  55.339% { --gt-logo-fill: 149.35px; --gt-logo-fill-at: 6.8px; }
-  55.599% { --gt-logo-fill: 160.92px; --gt-logo-fill-at: 6.8px; }
-  55.99% { --gt-logo-fill: 179.04px; --gt-logo-fill-at: 6.8px; }
-  56.901% { --gt-logo-fill: 222.2px; --gt-logo-fill-at: 6.8px; }
-  57.031% { --gt-logo-fill: 228.63px; --gt-logo-fill-at: 6.8px; }
-  57.161% { --gt-logo-fill: 235.29px; --gt-logo-fill-at: 6.8px; }
-  57.552% { --gt-logo-fill: 255.97px; --gt-logo-fill-at: 6.8px; }
-  57.682% { --gt-logo-fill: 262.7px; --gt-logo-fill-at: 6.8px; }
-  57.813% { --gt-logo-fill: 269.22px; --gt-logo-fill-at: 6.8px; }
-  57.943% { --gt-logo-fill: 275.5px; --gt-logo-fill-at: 6.8px; }
-  58.073% { --gt-logo-fill: 281.55px; --gt-logo-fill-at: 6.8px; }
-  58.203% { --gt-logo-fill: 287.36px; --gt-logo-fill-at: 6.8px; }
-  58.333% { --gt-logo-fill: 292.94px; --gt-logo-fill-at: 6.8px; }
-  58.464% { --gt-logo-fill: 298.3px; --gt-logo-fill-at: 6.8px; }
-  58.594% { --gt-logo-fill: 303.44px; --gt-logo-fill-at: 6.8px; }
-  58.724% { --gt-logo-fill: 308.38px; --gt-logo-fill-at: 6.8px; }
-  58.984% { --gt-logo-fill: 317.68px; --gt-logo-fill-at: 6.8px; }
-  59.115% { --gt-logo-fill: 322.06px; --gt-logo-fill-at: 6.8px; }
-  59.375% { --gt-logo-fill: 330.33px; --gt-logo-fill-at: 6.8px; }
-  59.635% { --gt-logo-fill: 337.99px; --gt-logo-fill-at: 6.8px; }
-  59.896% { --gt-logo-fill: 345.11px; --gt-logo-fill-at: 6.8px; }
-  60.156% { --gt-logo-fill: 351.73px; --gt-logo-fill-at: 6.8px; }
-  60.417% { --gt-logo-fill: 357.9px; --gt-logo-fill-at: 6.8px; }
-  60.677% { --gt-logo-fill: 363.66px; --gt-logo-fill-at: 6.8px; }
-  60.938% { --gt-logo-fill: 369.05px; --gt-logo-fill-at: 6.8px; }
-  61.198% { --gt-logo-fill: 374.09px; --gt-logo-fill-at: 6.8px; }
-  61.589% { --gt-logo-fill: 381.08px; --gt-logo-fill-at: 6.8px; }
-  61.849% { --gt-logo-fill: 385.39px; --gt-logo-fill-at: 6.8px; }
-  62.24% { --gt-logo-fill: 391.37px; --gt-logo-fill-at: 6.8px; }
-  62.63% { --gt-logo-fill: 396.85px; --gt-logo-fill-at: 6.8px; }
-  63.021% { --gt-logo-fill: 401.86px; --gt-logo-fill-at: 6.8px; }
-  63.542% { --gt-logo-fill: 407.91px; --gt-logo-fill-at: 6.8px; }
-  64.063% { --gt-logo-fill: 413.32px; --gt-logo-fill-at: 6.8px; }
-  64.323% { --gt-logo-fill: 415.81px; --gt-logo-fill-at: 6.8px; }
-  64.453% { --gt-logo-fill: 415.92px; --gt-logo-fill-at: 6.8px; }
+  47.656% { --gt-logo-fill: 0px; --gt-logo-fill-at: 6.8px; }
+  47.786% { --gt-logo-fill: 0.29px; --gt-logo-fill-at: 6.8px; }
+  47.917% { --gt-logo-fill: 1.85px; --gt-logo-fill-at: 6.8px; }
+  48.047% { --gt-logo-fill: 3.27px; --gt-logo-fill-at: 6.8px; }
+  48.177% { --gt-logo-fill: 4.59px; --gt-logo-fill-at: 6.8px; }
+  48.307% { --gt-logo-fill: 5.83px; --gt-logo-fill-at: 6.8px; }
+  48.568% { --gt-logo-fill: 8.18px; --gt-logo-fill-at: 6.8px; }
+  48.828% { --gt-logo-fill: 10.4px; --gt-logo-fill-at: 6.8px; }
+  49.089% { --gt-logo-fill: 12.54px; --gt-logo-fill-at: 6.8px; }
+  50.26% { --gt-logo-fill: 21.88px; --gt-logo-fill-at: 6.8px; }
+  50.521% { --gt-logo-fill: 24.17px; --gt-logo-fill-at: 6.8px; }
+  50.781% { --gt-logo-fill: 26.68px; --gt-logo-fill-at: 6.8px; }
+  50.911% { --gt-logo-fill: 28.02px; --gt-logo-fill-at: 6.8px; }
+  51.042% { --gt-logo-fill: 29.43px; --gt-logo-fill-at: 6.8px; }
+  51.172% { --gt-logo-fill: 30.91px; --gt-logo-fill-at: 6.8px; }
+  51.302% { --gt-logo-fill: 32.45px; --gt-logo-fill-at: 6.8px; }
+  51.432% { --gt-logo-fill: 34.07px; --gt-logo-fill-at: 6.8px; }
+  51.563% { --gt-logo-fill: 35.76px; --gt-logo-fill-at: 6.8px; }
+  51.693% { --gt-logo-fill: 37.53px; --gt-logo-fill-at: 6.8px; }
+  51.823% { --gt-logo-fill: 39.38px; --gt-logo-fill-at: 6.8px; }
+  51.953% { --gt-logo-fill: 41.32px; --gt-logo-fill-at: 6.8px; }
+  52.083% { --gt-logo-fill: 43.35px; --gt-logo-fill-at: 6.8px; }
+  52.214% { --gt-logo-fill: 45.46px; --gt-logo-fill-at: 6.8px; }
+  52.344% { --gt-logo-fill: 47.68px; --gt-logo-fill-at: 6.8px; }
+  52.474% { --gt-logo-fill: 49.99px; --gt-logo-fill-at: 6.8px; }
+  52.604% { --gt-logo-fill: 52.42px; --gt-logo-fill-at: 6.8px; }
+  52.734% { --gt-logo-fill: 54.95px; --gt-logo-fill-at: 6.8px; }
+  52.865% { --gt-logo-fill: 57.6px; --gt-logo-fill-at: 6.8px; }
+  52.995% { --gt-logo-fill: 60.36px; --gt-logo-fill-at: 6.8px; }
+  53.125% { --gt-logo-fill: 63.26px; --gt-logo-fill-at: 6.8px; }
+  53.255% { --gt-logo-fill: 66.29px; --gt-logo-fill-at: 6.8px; }
+  53.385% { --gt-logo-fill: 69.46px; --gt-logo-fill-at: 6.8px; }
+  53.516% { --gt-logo-fill: 72.77px; --gt-logo-fill-at: 6.8px; }
+  53.646% { --gt-logo-fill: 76.23px; --gt-logo-fill-at: 6.8px; }
+  53.776% { --gt-logo-fill: 79.86px; --gt-logo-fill-at: 6.8px; }
+  53.906% { --gt-logo-fill: 83.65px; --gt-logo-fill-at: 6.8px; }
+  54.036% { --gt-logo-fill: 87.61px; --gt-logo-fill-at: 6.8px; }
+  54.167% { --gt-logo-fill: 91.75px; --gt-logo-fill-at: 6.8px; }
+  54.297% { --gt-logo-fill: 96.08px; --gt-logo-fill-at: 6.8px; }
+  54.427% { --gt-logo-fill: 100.6px; --gt-logo-fill-at: 6.8px; }
+  54.557% { --gt-logo-fill: 105.32px; --gt-logo-fill-at: 6.8px; }
+  54.688% { --gt-logo-fill: 110.23px; --gt-logo-fill-at: 6.8px; }
+  54.813% { --gt-logo-fill: 115.17px; --gt-logo-fill-at: 6.8px; }
+  54.814% { --gt-logo-fill: 119.32px; --gt-logo-fill-at: 6.8px; }
+  54.915% { --gt-logo-fill: 119.31px; --gt-logo-fill-at: 6.8px; }
+  55.078% { --gt-logo-fill: 126.23px; --gt-logo-fill-at: 6.8px; }
+  55.208% { --gt-logo-fill: 131.97px; --gt-logo-fill-at: 6.8px; }
+  55.339% { --gt-logo-fill: 137.9px; --gt-logo-fill-at: 6.8px; }
+  55.469% { --gt-logo-fill: 144.02px; --gt-logo-fill-at: 6.8px; }
+  55.599% { --gt-logo-fill: 150.32px; --gt-logo-fill-at: 6.8px; }
+  55.729% { --gt-logo-fill: 156.76px; --gt-logo-fill-at: 6.8px; }
+  55.859% { --gt-logo-fill: 163.34px; --gt-logo-fill-at: 6.8px; }
+  55.99% { --gt-logo-fill: 170.02px; --gt-logo-fill-at: 6.8px; }
+  56.12% { --gt-logo-fill: 176.78px; --gt-logo-fill-at: 6.8px; }
+  56.51% { --gt-logo-fill: 197.17px; --gt-logo-fill-at: 6.8px; }
+  56.641% { --gt-logo-fill: 203.92px; --gt-logo-fill-at: 6.8px; }
+  57.031% { --gt-logo-fill: 223.97px; --gt-logo-fill-at: 6.8px; }
+  57.161% { --gt-logo-fill: 230.7px; --gt-logo-fill-at: 6.8px; }
+  57.422% { --gt-logo-fill: 244.28px; --gt-logo-fill-at: 6.8px; }
+  57.552% { --gt-logo-fill: 251px; --gt-logo-fill-at: 6.8px; }
+  57.682% { --gt-logo-fill: 257.58px; --gt-logo-fill-at: 6.8px; }
+  57.813% { --gt-logo-fill: 263.99px; --gt-logo-fill-at: 6.8px; }
+  57.943% { --gt-logo-fill: 270.2px; --gt-logo-fill-at: 6.8px; }
+  58.073% { --gt-logo-fill: 276.21px; --gt-logo-fill-at: 6.8px; }
+  58.203% { --gt-logo-fill: 282px; --gt-logo-fill-at: 6.8px; }
+  58.333% { --gt-logo-fill: 287.58px; --gt-logo-fill-at: 6.8px; }
+  58.464% { --gt-logo-fill: 292.97px; --gt-logo-fill-at: 6.8px; }
+  58.594% { --gt-logo-fill: 298.15px; --gt-logo-fill-at: 6.8px; }
+  58.724% { --gt-logo-fill: 303.14px; --gt-logo-fill-at: 6.8px; }
+  58.854% { --gt-logo-fill: 307.95px; --gt-logo-fill-at: 6.8px; }
+  58.984% { --gt-logo-fill: 312.58px; --gt-logo-fill-at: 6.8px; }
+  59.115% { --gt-logo-fill: 317.04px; --gt-logo-fill-at: 6.8px; }
+  59.245% { --gt-logo-fill: 321.34px; --gt-logo-fill-at: 6.8px; }
+  59.375% { --gt-logo-fill: 325.49px; --gt-logo-fill-at: 6.8px; }
+  59.505% { --gt-logo-fill: 329.48px; --gt-logo-fill-at: 6.8px; }
+  59.635% { --gt-logo-fill: 333.34px; --gt-logo-fill-at: 6.8px; }
+  59.766% { --gt-logo-fill: 337.06px; --gt-logo-fill-at: 6.8px; }
+  59.896% { --gt-logo-fill: 340.65px; --gt-logo-fill-at: 6.8px; }
+  60.026% { --gt-logo-fill: 344.12px; --gt-logo-fill-at: 6.8px; }
+  60.156% { --gt-logo-fill: 347.47px; --gt-logo-fill-at: 6.8px; }
+  60.286% { --gt-logo-fill: 350.71px; --gt-logo-fill-at: 6.8px; }
+  60.417% { --gt-logo-fill: 353.84px; --gt-logo-fill-at: 6.8px; }
+  60.547% { --gt-logo-fill: 356.87px; --gt-logo-fill-at: 6.8px; }
+  60.677% { --gt-logo-fill: 359.8px; --gt-logo-fill-at: 6.8px; }
+  60.807% { --gt-logo-fill: 362.63px; --gt-logo-fill-at: 6.8px; }
+  60.938% { --gt-logo-fill: 365.38px; --gt-logo-fill-at: 6.8px; }
+  61.068% { --gt-logo-fill: 368.03px; --gt-logo-fill-at: 6.8px; }
+  61.198% { --gt-logo-fill: 370.61px; --gt-logo-fill-at: 6.8px; }
+  61.328% { --gt-logo-fill: 373.1px; --gt-logo-fill-at: 6.8px; }
+  61.458% { --gt-logo-fill: 375.52px; --gt-logo-fill-at: 6.8px; }
+  61.589% { --gt-logo-fill: 377.86px; --gt-logo-fill-at: 6.8px; }
+  61.719% { --gt-logo-fill: 380.14px; --gt-logo-fill-at: 6.8px; }
+  61.849% { --gt-logo-fill: 382.34px; --gt-logo-fill-at: 6.8px; }
+  61.979% { --gt-logo-fill: 384.48px; --gt-logo-fill-at: 6.8px; }
+  62.109% { --gt-logo-fill: 386.56px; --gt-logo-fill-at: 6.8px; }
+  62.37% { --gt-logo-fill: 390.53px; --gt-logo-fill-at: 6.8px; }
+  62.5% { --gt-logo-fill: 392.43px; --gt-logo-fill-at: 6.8px; }
+  62.76% { --gt-logo-fill: 396.06px; --gt-logo-fill-at: 6.8px; }
+  62.891% { --gt-logo-fill: 397.8px; --gt-logo-fill-at: 6.8px; }
+  63.151% { --gt-logo-fill: 401.14px; --gt-logo-fill-at: 6.8px; }
+  63.281% { --gt-logo-fill: 402.74px; --gt-logo-fill-at: 6.8px; }
+  63.542% { --gt-logo-fill: 405.8px; --gt-logo-fill-at: 6.8px; }
+  63.802% { --gt-logo-fill: 408.7px; --gt-logo-fill-at: 6.8px; }
+  64.063% { --gt-logo-fill: 411.44px; --gt-logo-fill-at: 6.8px; }
+  64.193% { --gt-logo-fill: 412.76px; --gt-logo-fill-at: 6.8px; }
+  64.453% { --gt-logo-fill: 415.28px; --gt-logo-fill-at: 6.8px; }
+  64.583% { --gt-logo-fill: 415.92px; --gt-logo-fill-at: 6.8px; }
   67.448% { --gt-logo-fill: 415.92px; --gt-logo-fill-at: 6.8px; }
-  67.578% { --gt-logo-fill: 414.64px; --gt-logo-fill-at: 8.08px; }
-  67.708% { --gt-logo-fill: 411.89px; --gt-logo-fill-at: 10.83px; }
-  67.969% { --gt-logo-fill: 405.93px; --gt-logo-fill-at: 16.79px; }
-  68.099% { --gt-logo-fill: 402.72px; --gt-logo-fill-at: 20px; }
-  68.359% { --gt-logo-fill: 395.81px; --gt-logo-fill-at: 26.91px; }
-  68.62% { --gt-logo-fill: 388.21px; --gt-logo-fill-at: 34.52px; }
-  68.75% { --gt-logo-fill: 384.13px; --gt-logo-fill-at: 38.59px; }
-  69.01% { --gt-logo-fill: 375.4px; --gt-logo-fill-at: 47.32px; }
-  69.141% { --gt-logo-fill: 370.73px; --gt-logo-fill-at: 51.99px; }
-  69.271% { --gt-logo-fill: 365.86px; --gt-logo-fill-at: 56.86px; }
-  69.401% { --gt-logo-fill: 360.78px; --gt-logo-fill-at: 61.94px; }
-  69.531% { --gt-logo-fill: 355.47px; --gt-logo-fill-at: 67.25px; }
-  69.661% { --gt-logo-fill: 349.95px; --gt-logo-fill-at: 72.78px; }
-  69.792% { --gt-logo-fill: 344.19px; --gt-logo-fill-at: 78.53px; }
-  69.922% { --gt-logo-fill: 338.21px; --gt-logo-fill-at: 84.51px; }
-  70.052% { --gt-logo-fill: 332.01px; --gt-logo-fill-at: 90.71px; }
-  70.182% { --gt-logo-fill: 325.59px; --gt-logo-fill-at: 97.13px; }
-  70.313% { --gt-logo-fill: 318.96px; --gt-logo-fill-at: 103.76px; }
-  70.573% { --gt-logo-fill: 305.11px; --gt-logo-fill-at: 117.61px; }
-  70.652% { --gt-logo-fill: 300.76px; --gt-logo-fill-at: 121.96px; }
-  70.653% { --gt-logo-fill: 296.6px; --gt-logo-fill-at: 126.12px; }
-  70.726% { --gt-logo-fill: 296.65px; --gt-logo-fill-at: 126.07px; }
-  70.964% { --gt-logo-fill: 283.18px; --gt-logo-fill-at: 139.54px; }
-  71.484% { --gt-logo-fill: 253.05px; --gt-logo-fill-at: 169.67px; }
-  71.745% { --gt-logo-fill: 238.21px; --gt-logo-fill-at: 184.51px; }
-  72.005% { --gt-logo-fill: 223.84px; --gt-logo-fill-at: 198.88px; }
-  72.266% { --gt-logo-fill: 210.1px; --gt-logo-fill-at: 212.62px; }
-  72.526% { --gt-logo-fill: 197.09px; --gt-logo-fill-at: 225.63px; }
-  72.656% { --gt-logo-fill: 190.86px; --gt-logo-fill-at: 231.86px; }
-  72.917% { --gt-logo-fill: 178.86px; --gt-logo-fill-at: 243.86px; }
-  73.177% { --gt-logo-fill: 167.37px; --gt-logo-fill-at: 255.35px; }
-  73.307% { --gt-logo-fill: 161.81px; --gt-logo-fill-at: 260.91px; }
-  73.568% { --gt-logo-fill: 151.14px; --gt-logo-fill-at: 271.58px; }
-  73.698% { --gt-logo-fill: 146.04px; --gt-logo-fill-at: 276.68px; }
-  73.828% { --gt-logo-fill: 141.11px; --gt-logo-fill-at: 281.61px; }
-  74.089% { --gt-logo-fill: 131.74px; --gt-logo-fill-at: 290.98px; }
-  74.219% { --gt-logo-fill: 127.29px; --gt-logo-fill-at: 295.43px; }
-  74.479% { --gt-logo-fill: 118.83px; --gt-logo-fill-at: 303.89px; }
-  74.609% { --gt-logo-fill: 114.8px; --gt-logo-fill-at: 307.92px; }
-  74.87% { --gt-logo-fill: 107.14px; --gt-logo-fill-at: 315.58px; }
-  75% { --gt-logo-fill: 103.5px; --gt-logo-fill-at: 319.22px; }
-  75.26% { --gt-logo-fill: 96.55px; --gt-logo-fill-at: 326.17px; }
-  75.391% { --gt-logo-fill: 93.23px; --gt-logo-fill-at: 329.49px; }
-  75.651% { --gt-logo-fill: 86.91px; --gt-logo-fill-at: 335.81px; }
-  75.911% { --gt-logo-fill: 80.96px; --gt-logo-fill-at: 341.76px; }
-  76.172% { --gt-logo-fill: 75.35px; --gt-logo-fill-at: 347.37px; }
-  76.432% { --gt-logo-fill: 70.06px; --gt-logo-fill-at: 352.66px; }
-  76.693% { --gt-logo-fill: 65.07px; --gt-logo-fill-at: 357.65px; }
-  76.953% { --gt-logo-fill: 60.36px; --gt-logo-fill-at: 362.36px; }
-  77.214% { --gt-logo-fill: 55.9px; --gt-logo-fill-at: 366.82px; }
-  77.474% { --gt-logo-fill: 51.68px; --gt-logo-fill-at: 371.04px; }
-  77.865% { --gt-logo-fill: 45.76px; --gt-logo-fill-at: 376.96px; }
-  78.125% { --gt-logo-fill: 42.08px; --gt-logo-fill-at: 380.64px; }
-  78.516% { --gt-logo-fill: 36.9px; --gt-logo-fill-at: 385.82px; }
-  78.776% { --gt-logo-fill: 33.67px; --gt-logo-fill-at: 389.05px; }
-  79.167% { --gt-logo-fill: 29.13px; --gt-logo-fill-at: 393.59px; }
-  79.427% { --gt-logo-fill: 26.29px; --gt-logo-fill-at: 396.43px; }
-  79.818% { --gt-logo-fill: 22.3px; --gt-logo-fill-at: 400.42px; }
-  80.469% { --gt-logo-fill: 16.3px; --gt-logo-fill-at: 406.42px; }
-  80.859% { --gt-logo-fill: 13.06px; --gt-logo-fill-at: 409.66px; }
-  81.25% { --gt-logo-fill: 10.06px; --gt-logo-fill-at: 412.66px; }
-  81.641% { --gt-logo-fill: 7.29px; --gt-logo-fill-at: 415.43px; }
-  82.031% { --gt-logo-fill: 4.73px; --gt-logo-fill-at: 417.99px; }
-  82.813% { --gt-logo-fill: 0.21px; --gt-logo-fill-at: 422.51px; }
-  82.943% { --gt-logo-fill: 0px; --gt-logo-fill-at: 423.19px; }
-  83.594% { --gt-logo-fill: 0px; --gt-logo-fill-at: 426.32px; }
-  84.375% { --gt-logo-fill: 0px; --gt-logo-fill-at: 429.49px; }
-  85.156% { --gt-logo-fill: 0px; --gt-logo-fill-at: 432.09px; }
-  85.938% { --gt-logo-fill: 0px; --gt-logo-fill-at: 434.18px; }
-  86.849% { --gt-logo-fill: 0px; --gt-logo-fill-at: 436.03px; }
-  87.76% { --gt-logo-fill: 0px; --gt-logo-fill-at: 437.29px; }
-  88.672% { --gt-logo-fill: 0px; --gt-logo-fill-at: 438.04px; }
-  89.583% { --gt-logo-fill: 0px; --gt-logo-fill-at: 438.32px; }
-  89.714% { --gt-logo-fill: 0px; --gt-logo-fill-at: 6.8px; }
-  100% { --gt-logo-fill: 0px; --gt-logo-fill-at: 6.8px; }
+  67.578% { --gt-logo-fill: 414.65px; --gt-logo-fill-at: 8.07px; }
+  67.708% { --gt-logo-fill: 411.9px; --gt-logo-fill-at: 10.82px; }
+  67.839% { --gt-logo-fill: 409.02px; --gt-logo-fill-at: 13.7px; }
+  67.969% { --gt-logo-fill: 405.98px; --gt-logo-fill-at: 16.74px; }
+  68.099% { --gt-logo-fill: 402.79px; --gt-logo-fill-at: 19.93px; }
+  68.229% { --gt-logo-fill: 399.43px; --gt-logo-fill-at: 23.29px; }
+  68.359% { --gt-logo-fill: 395.91px; --gt-logo-fill-at: 26.81px; }
+  68.49% { --gt-logo-fill: 392.21px; --gt-logo-fill-at: 30.51px; }
+  68.62% { --gt-logo-fill: 388.33px; --gt-logo-fill-at: 34.39px; }
+  68.75% { --gt-logo-fill: 384.28px; --gt-logo-fill-at: 38.44px; }
+  68.88% { --gt-logo-fill: 380.03px; --gt-logo-fill-at: 42.69px; }
+  69.01% { --gt-logo-fill: 375.59px; --gt-logo-fill-at: 47.13px; }
+  69.141% { --gt-logo-fill: 370.94px; --gt-logo-fill-at: 51.78px; }
+  69.271% { --gt-logo-fill: 366.09px; --gt-logo-fill-at: 56.63px; }
+  69.401% { --gt-logo-fill: 361.03px; --gt-logo-fill-at: 61.69px; }
+  69.531% { --gt-logo-fill: 355.75px; --gt-logo-fill-at: 66.97px; }
+  69.661% { --gt-logo-fill: 350.25px; --gt-logo-fill-at: 72.47px; }
+  69.792% { --gt-logo-fill: 344.53px; --gt-logo-fill-at: 78.19px; }
+  69.922% { --gt-logo-fill: 338.57px; --gt-logo-fill-at: 84.15px; }
+  70.052% { --gt-logo-fill: 332.4px; --gt-logo-fill-at: 90.32px; }
+  70.182% { --gt-logo-fill: 326.01px; --gt-logo-fill-at: 96.71px; }
+  70.313% { --gt-logo-fill: 319.41px; --gt-logo-fill-at: 103.31px; }
+  70.443% { --gt-logo-fill: 312.6px; --gt-logo-fill-at: 110.12px; }
+  70.573% { --gt-logo-fill: 305.62px; --gt-logo-fill-at: 117.1px; }
+  70.662% { --gt-logo-fill: 300.75px; --gt-logo-fill-at: 121.97px; }
+  70.663% { --gt-logo-fill: 296.6px; --gt-logo-fill-at: 126.12px; }
+  70.735% { --gt-logo-fill: 296.6px; --gt-logo-fill-at: 126.12px; }
+  70.736% { --gt-logo-fill: 296.64px; --gt-logo-fill-at: 126.08px; }
+  70.833% { --gt-logo-fill: 291.19px; --gt-logo-fill-at: 131.53px; }
+  70.964% { --gt-logo-fill: 283.8px; --gt-logo-fill-at: 138.92px; }
+  71.484% { --gt-logo-fill: 253.81px; --gt-logo-fill-at: 168.91px; }
+  71.615% { --gt-logo-fill: 246.38px; --gt-logo-fill-at: 176.34px; }
+  71.745% { --gt-logo-fill: 239.03px; --gt-logo-fill-at: 183.69px; }
+  71.875% { --gt-logo-fill: 231.81px; --gt-logo-fill-at: 190.91px; }
+  72.005% { --gt-logo-fill: 224.73px; --gt-logo-fill-at: 197.99px; }
+  72.135% { --gt-logo-fill: 217.81px; --gt-logo-fill-at: 204.91px; }
+  72.266% { --gt-logo-fill: 211.06px; --gt-logo-fill-at: 211.66px; }
+  72.396% { --gt-logo-fill: 204.49px; --gt-logo-fill-at: 218.23px; }
+  72.526% { --gt-logo-fill: 198.11px; --gt-logo-fill-at: 224.61px; }
+  72.656% { --gt-logo-fill: 191.9px; --gt-logo-fill-at: 230.82px; }
+  72.786% { --gt-logo-fill: 185.86px; --gt-logo-fill-at: 236.86px; }
+  72.917% { --gt-logo-fill: 179.96px; --gt-logo-fill-at: 242.76px; }
+  73.047% { --gt-logo-fill: 174.18px; --gt-logo-fill-at: 248.54px; }
+  73.177% { --gt-logo-fill: 168.53px; --gt-logo-fill-at: 254.2px; }
+  73.307% { --gt-logo-fill: 162.99px; --gt-logo-fill-at: 259.73px; }
+  73.438% { --gt-logo-fill: 157.6px; --gt-logo-fill-at: 265.12px; }
+  73.568% { --gt-logo-fill: 152.37px; --gt-logo-fill-at: 270.35px; }
+  73.698% { --gt-logo-fill: 147.29px; --gt-logo-fill-at: 275.43px; }
+  73.828% { --gt-logo-fill: 142.39px; --gt-logo-fill-at: 280.33px; }
+  73.958% { --gt-logo-fill: 137.64px; --gt-logo-fill-at: 285.08px; }
+  74.089% { --gt-logo-fill: 133.06px; --gt-logo-fill-at: 289.66px; }
+  74.219% { --gt-logo-fill: 128.63px; --gt-logo-fill-at: 294.09px; }
+  74.349% { --gt-logo-fill: 124.34px; --gt-logo-fill-at: 298.38px; }
+  74.479% { --gt-logo-fill: 120.2px; --gt-logo-fill-at: 302.52px; }
+  74.609% { --gt-logo-fill: 116.2px; --gt-logo-fill-at: 306.52px; }
+  74.74% { --gt-logo-fill: 112.32px; --gt-logo-fill-at: 310.4px; }
+  74.87% { --gt-logo-fill: 108.57px; --gt-logo-fill-at: 314.15px; }
+  75% { --gt-logo-fill: 104.95px; --gt-logo-fill-at: 317.77px; }
+  75.13% { --gt-logo-fill: 101.43px; --gt-logo-fill-at: 321.29px; }
+  75.26% { --gt-logo-fill: 98.03px; --gt-logo-fill-at: 324.69px; }
+  75.391% { --gt-logo-fill: 94.73px; --gt-logo-fill-at: 327.99px; }
+  75.521% { --gt-logo-fill: 91.53px; --gt-logo-fill-at: 331.19px; }
+  75.651% { --gt-logo-fill: 88.43px; --gt-logo-fill-at: 334.29px; }
+  75.781% { --gt-logo-fill: 85.43px; --gt-logo-fill-at: 337.29px; }
+  75.911% { --gt-logo-fill: 82.51px; --gt-logo-fill-at: 340.21px; }
+  76.042% { --gt-logo-fill: 79.68px; --gt-logo-fill-at: 343.04px; }
+  76.172% { --gt-logo-fill: 76.93px; --gt-logo-fill-at: 345.79px; }
+  76.302% { --gt-logo-fill: 74.26px; --gt-logo-fill-at: 348.46px; }
+  76.432% { --gt-logo-fill: 71.67px; --gt-logo-fill-at: 351.05px; }
+  76.563% { --gt-logo-fill: 69.15px; --gt-logo-fill-at: 353.57px; }
+  76.693% { --gt-logo-fill: 66.7px; --gt-logo-fill-at: 356.02px; }
+  76.823% { --gt-logo-fill: 64.32px; --gt-logo-fill-at: 358.4px; }
+  76.953% { --gt-logo-fill: 62.01px; --gt-logo-fill-at: 360.71px; }
+  77.083% { --gt-logo-fill: 59.76px; --gt-logo-fill-at: 362.96px; }
+  77.214% { --gt-logo-fill: 57.57px; --gt-logo-fill-at: 365.15px; }
+  77.474% { --gt-logo-fill: 53.37px; --gt-logo-fill-at: 369.35px; }
+  77.734% { --gt-logo-fill: 49.39px; --gt-logo-fill-at: 373.33px; }
+  77.865% { --gt-logo-fill: 47.48px; --gt-logo-fill-at: 375.24px; }
+  78.125% { --gt-logo-fill: 43.81px; --gt-logo-fill-at: 378.91px; }
+  78.255% { --gt-logo-fill: 42.05px; --gt-logo-fill-at: 380.67px; }
+  78.516% { --gt-logo-fill: 38.66px; --gt-logo-fill-at: 384.06px; }
+  78.646% { --gt-logo-fill: 37.03px; --gt-logo-fill-at: 385.69px; }
+  78.906% { --gt-logo-fill: 33.89px; --gt-logo-fill-at: 388.83px; }
+  79.036% { --gt-logo-fill: 32.39px; --gt-logo-fill-at: 390.33px; }
+  79.297% { --gt-logo-fill: 29.49px; --gt-logo-fill-at: 393.23px; }
+  79.557% { --gt-logo-fill: 26.74px; --gt-logo-fill-at: 395.98px; }
+  79.818% { --gt-logo-fill: 24.12px; --gt-logo-fill-at: 398.6px; }
+  80.078% { --gt-logo-fill: 21.64px; --gt-logo-fill-at: 401.08px; }
+  80.339% { --gt-logo-fill: 19.29px; --gt-logo-fill-at: 403.43px; }
+  80.599% { --gt-logo-fill: 17.05px; --gt-logo-fill-at: 405.67px; }
+  80.859% { --gt-logo-fill: 14.92px; --gt-logo-fill-at: 407.8px; }
+  81.12% { --gt-logo-fill: 12.91px; --gt-logo-fill-at: 409.81px; }
+  81.38% { --gt-logo-fill: 11px; --gt-logo-fill-at: 411.72px; }
+  81.641% { --gt-logo-fill: 9.18px; --gt-logo-fill-at: 413.54px; }
+  82.031% { --gt-logo-fill: 6.64px; --gt-logo-fill-at: 416.08px; }
+  82.292% { --gt-logo-fill: 5.05px; --gt-logo-fill-at: 417.67px; }
+  82.552% { --gt-logo-fill: 3.56px; --gt-logo-fill-at: 419.16px; }
+  82.813% { --gt-logo-fill: 2.14px; --gt-logo-fill-at: 420.58px; }
+  83.203% { --gt-logo-fill: 0.16px; --gt-logo-fill-at: 422.56px; }
+  83.333% { --gt-logo-fill: 0px; --gt-logo-fill-at: 423.18px; }
+  83.594% { --gt-logo-fill: 0px; --gt-logo-fill-at: 424.37px; }
+  83.854% { --gt-logo-fill: 0px; --gt-logo-fill-at: 425.49px; }
+  84.245% { --gt-logo-fill: 0px; --gt-logo-fill-at: 427.05px; }
+  84.635% { --gt-logo-fill: 0px; --gt-logo-fill-at: 428.46px; }
+  84.896% { --gt-logo-fill: 0px; --gt-logo-fill-at: 429.32px; }
+  85.286% { --gt-logo-fill: 0px; --gt-logo-fill-at: 430.5px; }
+  85.677% { --gt-logo-fill: 0px; --gt-logo-fill-at: 431.56px; }
+  86.068% { --gt-logo-fill: 0px; --gt-logo-fill-at: 432.5px; }
+  86.458% { --gt-logo-fill: 0px; --gt-logo-fill-at: 433.32px; }
+  86.849% { --gt-logo-fill: 0px; --gt-logo-fill-at: 434.04px; }
+  87.24% { --gt-logo-fill: 0px; --gt-logo-fill-at: 434.64px; }
+  87.63% { --gt-logo-fill: 0px; --gt-logo-fill-at: 435.15px; }
+  88.021% { --gt-logo-fill: 0px; --gt-logo-fill-at: 435.56px; }
+  88.411% { --gt-logo-fill: 0px; --gt-logo-fill-at: 435.88px; }
+  88.802% { --gt-logo-fill: 0px; --gt-logo-fill-at: 436.11px; }
+  89.193% { --gt-logo-fill: 0px; --gt-logo-fill-at: 436.26px; }
+  89.714% { --gt-logo-fill: 0px; --gt-logo-fill-at: 436.32px; }
+  100% { --gt-logo-fill: 0px; --gt-logo-fill-at: 436.32px; }
 }
 
 @keyframes gt-logo-head-lap {
   0% { --gt-logo-head: 0px; --gt-logo-head-at: 428.52px; }
   60.677% { --gt-logo-head: 0px; --gt-logo-head-at: 428.52px; }
   60.807% { --gt-logo-head: 1px; --gt-logo-head-at: 428.52px; }
+  61.068% { --gt-logo-head: 1.04px; --gt-logo-head-at: 428.52px; }
   61.328% { --gt-logo-head: 1.17px; --gt-logo-head-at: 428.52px; }
+  61.589% { --gt-logo-head: 1.39px; --gt-logo-head-at: 428.52px; }
   61.849% { --gt-logo-head: 1.71px; --gt-logo-head-at: 428.52px; }
+  62.109% { --gt-logo-head: 2.12px; --gt-logo-head-at: 428.52px; }
   62.37% { --gt-logo-head: 2.65px; --gt-logo-head-at: 428.52px; }
   62.76% { --gt-logo-head: 3.65px; --gt-logo-head-at: 428.52px; }
+  63.021% { --gt-logo-head: 4.46px; --gt-logo-head-at: 428.52px; }
   63.151% { --gt-logo-head: 4.92px; --gt-logo-head-at: 428.52px; }
+  63.411% { --gt-logo-head: 5.93px; --gt-logo-head-at: 428.52px; }
   63.542% { --gt-logo-head: 6.48px; --gt-logo-head-at: 428.52px; }
+  63.802% { --gt-logo-head: 7.71px; --gt-logo-head-at: 428.52px; }
   63.932% { --gt-logo-head: 8.37px; --gt-logo-head-at: 428.52px; }
   64.193% { --gt-logo-head: 9.83px; --gt-logo-head-at: 428.52px; }
-  64.323% { --gt-logo-head: 9.73px; --gt-logo-head-at: 429.41px; }
-  64.714% { --gt-logo-head: 8.88px; --gt-logo-head-at: 432.9px; }
-  65.104% { --gt-logo-head: 8.73px; --gt-logo-head-at: 436.11px; }
-  65.495% { --gt-logo-head: 9.3px; --gt-logo-head-at: 439.08px; }
-  65.885% { --gt-logo-head: 10.65px; --gt-logo-head-at: 441.81px; }
-  66.276% { --gt-logo-head: 12.8px; --gt-logo-head-at: 444.33px; }
-  66.536% { --gt-logo-head: 14.72px; --gt-logo-head-at: 445.9px; }
-  66.667% { --gt-logo-head: 15.83px; --gt-logo-head-at: 446.65px; }
-  66.927% { --gt-logo-head: 18.39px; --gt-logo-head-at: 448.1px; }
-  67.057% { --gt-logo-head: 19.85px; --gt-logo-head-at: 448.8px; }
-  67.318% { --gt-logo-head: 23.13px; --gt-logo-head-at: 450.13px; }
-  67.448% { --gt-logo-head: 24.97px; --gt-logo-head-at: 450.77px; }
-  67.578% { --gt-logo-head: 25.69px; --gt-logo-head-at: 451.39px; }
-  68.49% { --gt-logo-head: 21.8px; --gt-logo-head-at: 455.28px; }
-  73.568% { --gt-logo-head: 2.72px; --gt-logo-head-at: 474.36px; }
-  73.958% { --gt-logo-head: 1.45px; --gt-logo-head-at: 475.64px; }
-  74.349% { --gt-logo-head: 0.47px; --gt-logo-head-at: 476.61px; }
+  64.323% { --gt-logo-head: 10.62px; --gt-logo-head-at: 428.52px; }
+  64.453% { --gt-logo-head: 11.09px; --gt-logo-head-at: 428.88px; }
+  64.583% { --gt-logo-head: 10.75px; --gt-logo-head-at: 430.1px; }
+  64.714% { --gt-logo-head: 10.5px; --gt-logo-head-at: 431.27px; }
+  64.844% { --gt-logo-head: 10.32px; --gt-logo-head-at: 432.42px; }
+  64.974% { --gt-logo-head: 10.23px; --gt-logo-head-at: 433.54px; }
+  65.104% { --gt-logo-head: 10.21px; --gt-logo-head-at: 434.62px; }
+  65.234% { --gt-logo-head: 10.28px; --gt-logo-head-at: 435.68px; }
+  65.365% { --gt-logo-head: 10.43px; --gt-logo-head-at: 436.71px; }
+  65.495% { --gt-logo-head: 10.67px; --gt-logo-head-at: 437.71px; }
+  65.625% { --gt-logo-head: 10.99px; --gt-logo-head-at: 438.69px; }
+  65.755% { --gt-logo-head: 11.4px; --gt-logo-head-at: 439.64px; }
+  65.885% { --gt-logo-head: 11.89px; --gt-logo-head-at: 440.56px; }
+  66.016% { --gt-logo-head: 12.48px; --gt-logo-head-at: 441.46px; }
+  66.146% { --gt-logo-head: 13.17px; --gt-logo-head-at: 442.33px; }
+  66.276% { --gt-logo-head: 13.95px; --gt-logo-head-at: 443.18px; }
+  66.406% { --gt-logo-head: 14.82px; --gt-logo-head-at: 444.01px; }
+  66.536% { --gt-logo-head: 15.8px; --gt-logo-head-at: 444.82px; }
+  66.667% { --gt-logo-head: 16.89px; --gt-logo-head-at: 445.6px; }
+  66.797% { --gt-logo-head: 18.08px; --gt-logo-head-at: 446.37px; }
+  66.927% { --gt-logo-head: 19.39px; --gt-logo-head-at: 447.11px; }
+  67.057% { --gt-logo-head: 20.81px; --gt-logo-head-at: 447.83px; }
+  67.188% { --gt-logo-head: 22.36px; --gt-logo-head-at: 448.53px; }
+  67.318% { --gt-logo-head: 24.04px; --gt-logo-head-at: 449.22px; }
+  67.448% { --gt-logo-head: 25.86px; --gt-logo-head-at: 449.88px; }
+  67.578% { --gt-logo-head: 26.55px; --gt-logo-head-at: 450.53px; }
+  67.969% { --gt-logo-head: 24.72px; --gt-logo-head-at: 452.36px; }
+  68.229% { --gt-logo-head: 23.58px; --gt-logo-head-at: 453.5px; }
+  68.49% { --gt-logo-head: 22.51px; --gt-logo-head-at: 454.57px; }
+  71.484% { --gt-logo-head: 10.88px; --gt-logo-head-at: 466.21px; }
+  73.047% { --gt-logo-head: 4.76px; --gt-logo-head-at: 472.32px; }
+  73.568% { --gt-logo-head: 2.8px; --gt-logo-head-at: 474.28px; }
+  73.958% { --gt-logo-head: 1.49px; --gt-logo-head-at: 475.6px; }
+  74.219% { --gt-logo-head: 0.77px; --gt-logo-head-at: 476.31px; }
+  74.349% { --gt-logo-head: 0.48px; --gt-logo-head-at: 476.6px; }
+  74.479% { --gt-logo-head: 0.26px; --gt-logo-head-at: 476.82px; }
   74.609% { --gt-logo-head: 0.1px; --gt-logo-head-at: 476.98px; }
+  74.74% { --gt-logo-head: 0.02px; --gt-logo-head-at: 477.06px; }
   74.87% { --gt-logo-head: 0px; --gt-logo-head-at: 477.08px; }
   89.583% { --gt-logo-head: 0px; --gt-logo-head-at: 477.08px; }
   89.714% { --gt-logo-head: 0px; --gt-logo-head-at: 428.52px; }
