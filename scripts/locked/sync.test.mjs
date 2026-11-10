@@ -24,12 +24,12 @@ test('only web types with plain names go up', () => {
 test('the raise files: the viewer, its data and its media when present, never notes, sheets, the archive or other ideas', () => {
   const dir = mkdtempSync(join(tmpdir(), 'pt-sync-'));
   try {
-    for (const path of ['index.html', 'rounds.json', 'notes.md', 'sheet.png', 'viewer/app.js', 'viewer/run.py', 'rounds/r1/a.webp', 'posters/p.png', 'inspiration/i.webp', '_archive/old.html', 'other-ideas/x.png']) {
+    for (const path of ['index.html', 'rounds.json', 'writeups.json', 'notes.md', 'sheet.png', 'viewer/app.js', 'viewer/run.py', 'rounds/r1/a.webp', 'posters/p.png', 'inspiration/i.webp', '_archive/old.html', 'other-ideas/x.png']) {
       mkdirSync(join(dir, path, '..'), { recursive: true });
       writeFileSync(join(dir, path), path);
     }
     const files = localFiles(dir, AREAS.raise);
-    assert.deepEqual(files.map((file) => file.path), ['index.html', 'rounds.json', 'viewer/app.js', 'rounds/r1/a.webp', 'posters/p.png', 'inspiration/i.webp']);
+    assert.deepEqual(files.map((file) => file.path), ['index.html', 'rounds.json', 'writeups.json', 'viewer/app.js', 'rounds/r1/a.webp', 'posters/p.png', 'inspiration/i.webp']);
     assert.ok(files.every((file) => /^[0-9a-f]{64}$/.test(file.sha256)));
   } finally {
     rmSync(dir, { recursive: true, force: true });

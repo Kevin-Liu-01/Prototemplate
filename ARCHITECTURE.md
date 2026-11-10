@@ -65,10 +65,12 @@ src/
                           (LOCKED in src/lib/seo/policy.ts) for 30 days;
                           src/lib/access.ts holds the checks, and src/proxy.ts
                           and each locked route run them
-    raise/[[...path]]/    /raise, open by link and unlisted: its files,
-                          streamed from the locked areas' private Blob
-                          store, which scripts/locked/sync.mjs fills;
-                          its route is src/lib/blob-area.ts
+    raise/                /raise, open by link and unlisted: a docs site
+                          in the notebook layout whose words and media are
+                          read at request time from the locked areas'
+                          private Blob store (src/lib/raise.ts), which
+                          scripts/locked/sync.mjs fills; files/ streams
+                          the media through src/lib/blob-area.ts
     prototemplate.css     the pt grammar (index + craft chrome)
     globals.css           the four color tokens, the reset, the scrollbar,
                           the plate theme import and Tailwind's sources

@@ -1,0 +1,109 @@
+/* The raise pages' own parts on top of the docs stylesheet (src/app/docs/
+   docs.css, which src/app/raise/layout.tsx also imports): the round tag in
+   the sidebar, the facts row, the media grid, the status chips and the
+   folded list of every other file. Colors, corners and type come from
+   tokens.css; the one line role is the row hairline. */
+
+/* the round's tag before its title in the sidebar: the title's face in the
+   muted ink, never broken across lines (the row is a flex box, so the tag
+   is its own item and keeps its width) */
+.pt-raise .raise-tag {
+  flex: none;
+  white-space: nowrap;
+  color: var(--color-fd-muted-foreground);
+}
+
+/* the facts under the lead, one after another */
+.raise-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+/* the files: as many columns as fit at 220 px, each file at its own ratio */
+.raise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px 16px;
+  margin: 16px 0 24px;
+}
+
+.raise-media {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+}
+
+.raise-frame {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--pt-radius-card);
+  background: var(--pt-plate);
+}
+
+.raise-frame img,
+video.raise-frame {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: var(--pt-radius-card);
+}
+
+/* a score candidate: its waveform over the player */
+.raise-track {
+  display: flex;
+  flex-direction: column;
+}
+.raise-track audio {
+  width: 100%;
+}
+
+.raise-media figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: 0;
+  font-size: var(--pt-t-small);
+  line-height: var(--pt-t-small-lh);
+  color: var(--color-fd-foreground);
+}
+
+.raise-caption {
+  font-weight: 500;
+}
+
+.raise-note {
+  flex-basis: 100%;
+  color: var(--color-fd-muted-foreground);
+}
+
+.raise-quiet {
+  color: var(--color-fd-muted-foreground);
+}
+
+/* the status chip: quiet for a reference or a drop, inked for a file that stood */
+.raise-chip {
+  padding: 0 6px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-chip);
+  font-size: var(--pt-t-small);
+  color: var(--color-fd-muted-foreground);
+}
+.raise-chip:is([data-status='kept'], [data-status='pick'], [data-status='shipped']) {
+  color: var(--color-fd-foreground);
+}
+
+/* every other file of a round, folded until asked for */
+.raise-more {
+  margin: 16px 0 24px;
+}
+.raise-more > summary {
+  cursor: pointer;
+  width: fit-content;
+  min-height: 24px;
+  color: var(--color-fd-primary);
+}

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /* oxlint-disable no-console -- a report printed to stdout. */
 // Uploads an area's files to the private Blob store under locked/<area>/,
-// where the area's route serves them (src/lib/blob-area.ts, for raise,
-// open to anyone with the link). Each area names
-// the files and folders its viewer needs, and only files of the web types
-// below go up. Re-runnable: a manifest blob (locked/<area>.manifest.json,
+// where the raise pages read them (src/lib/raise.ts) and their files route
+// serves them (src/lib/blob-area.ts), open to anyone with the link. Each
+// area names the files and folders it needs, and only files of the web
+// types below go up. Re-runnable: a manifest blob (locked/<area>.manifest.json,
 // outside the area's prefix, so the route never serves it) records each
 // uploaded file's SHA-256, so an unchanged file is skipped, and a blob
 // whose file is gone from the folder is deleted. The report prints counts
@@ -36,10 +36,10 @@ import { ROOT } from '../lib/root.mjs';
 
 helpIfAsked(import.meta.url);
 
-/** What each area uploads: its viewer's top-level files (each when present) and folders. Nothing else in the folder goes up. The raise viewer fetches status.json and decisions.json beside its index. */
+/** What each area uploads: its top-level files (each when present) and folders. Nothing else in the folder goes up. The raise pages read viewer/data.js and writeups.json (src/lib/raise.ts); the media sit in the folders. */
 export const AREAS = {
   raise: {
-    files: ['index.html', 'rounds.json', 'status.json', 'decisions.json'],
+    files: ['index.html', 'rounds.json', 'status.json', 'decisions.json', 'writeups.json'],
     folders: ['viewer', 'rounds', 'posters', 'inspiration'],
   },
 };
