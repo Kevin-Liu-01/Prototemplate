@@ -50,7 +50,7 @@ The deck builds to one HTML page, `public/brand-deck.html`, with its pictures as
 
 ## Speed marks
 
-- Slides 17 to 23 present the seven speed marks. Each is the markup of one file under `public/marks` (bar-monogram, bar-monogram-lockup, plate-inverted, double-cut, livery-stack, bar-monogram-dithered, bar-monogram-ascii) pasted into the slide, with an explicit width and height in px on the root that keeps the file's aspect. The files are one color in currentColor, so a mark takes the slide's ink in both themes.
+- Slides 17 to 23 present the seven speed marks as history. They are previous marks, like the doubled-line monogram, and never stand in for the logo: every other slide draws the logo through the `#gt-mark` symbol. Each is the markup of one file under `public/marks` (bar-monogram, bar-monogram-lockup, plate-inverted, double-cut, livery-stack, bar-monogram-dithered, bar-monogram-ascii) pasted into the slide, with an explicit width and height in px on the root that keeps the file's aspect. The files are one color in currentColor, so a mark takes the slide's ink in both themes.
 - `pnpm build:marks` regenerates the files from `scripts/build/speed-marks.mjs`. A mark is never redrawn by hand in a slide: when the files change, paste the new markup over the old.
 
 ## Slide scoped CSS

@@ -157,15 +157,15 @@ export function textShape(text: string, family: string, cols: number, rows: numb
 /** A mark's artwork, drawable into any box at its own aspect. */
 export type MarkArt = { aspect: number; draw: (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) => void };
 
-/** A catalog id (src/lib/marks.ts), or `gt` for the reference GT mark. */
+/** A catalog id (src/lib/marks.ts), or `gt` for the logo. */
 export type MarkId = string;
 
-/** The marks the tiers plate offers: the GT mark, the first two of the shortlist, then four marks of the earlier rounds. */
+/** The marks the tiers plate offers: the logo, the first two of the shortlist, then four marks of the earlier rounds. */
 const TIER_MARKS: readonly MarkId[] = ['gt', ...SHORTLIST.slice(1, 3), 'bar-monogram', 'globe-g', 'two-way', 'plate-inverted'];
 
 /** Each offered mark's label: its name in the catalog. */
 export const MARK_LABELS: Readonly<Record<MarkId, string>> = Object.fromEntries(
-  TIER_MARKS.map((id) => [id, id === 'gt' ? 'General Translation mark' : (catalogMark(id)?.name ?? id)])
+  TIER_MARKS.map((id) => [id, id === 'gt' ? 'General Translation logo' : (catalogMark(id)?.name ?? id)])
 );
 
 const artCache = new Map<MarkId, Promise<MarkArt>>();
