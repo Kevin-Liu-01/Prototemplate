@@ -117,7 +117,7 @@ function Cut({ cut }: { cut: RaiseCut }) {
         <span className='raise-caption'>{cut.label}</span>
         {cut.final ? (
           <span className='raise-chip' data-status='shipped'>
-            Final
+            Shipped
           </span>
         ) : cut.candidate ? (
           <span className='raise-chip' data-status='pick'>
