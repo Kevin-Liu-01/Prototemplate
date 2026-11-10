@@ -149,9 +149,10 @@ Rules:
   1.1 times the span from the first line's cap top to the second line's
   baseline (2.4627 cap heights), centred on that span, so it overshoots
   the cap top and the baseline by 0.1231 cap height each. The gap from
-  the globe's ink to the G is 0.8 cap height. A round mark only as tall
-  as flat-topped text looks shorter than the text, for the same reason
-  round letters such as O overshoot the cap height and the baseline.
+  the globe's ink to the G is 0.8 cap height (Kevin, 2026-11-09). A round
+  mark only as tall as flat-topped text looks shorter than the text, for
+  the same reason round letters such as O overshoot the cap height and
+  the baseline.
 - **On one line**, "General Translation" beside the globe, where height
   is short (a header bar, a footer, a banner): the globe is 2.2 cap
   heights tall, the size at which its ring is as thick as the name's
