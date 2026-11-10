@@ -327,7 +327,7 @@ const PAGES: readonly BrandPage[] = [
         <p>
           On one line, where height is short, the logo is 2.2 cap heights tall and centred on the
           cap band, the size at which its ring is as thick as the name&rsquo;s stems. In both lockups
-          the logo&rsquo;s ink stands 0.5637 cap height from the G. Clear space is a quarter of the
+          the logo&rsquo;s ink stands 0.8 cap height from the G. Clear space is a quarter of the
           logo&rsquo;s height on every side: 0.68 cap height around the stacked lockup and 0.55
           around the one-line lockup. The logo alone is at least 24px tall, and 16px only as a tab
           icon; a lockup keeps a cap height of at least 9px.

@@ -11,7 +11,7 @@ name's size, with CAP the T's flat top:
                the G's left side bearing)
   the logo     LOGO (src/lib/logo.ts) by its drawn box, 1.1 times the span from "General"'s cap line to
                "Translation"'s baseline (2 CAP + R), centred on that span, so it overshoots each line equally
-  the gap      0.5637 CAP of white from the logo's ink to the G's ink
+  the gap      0.8 CAP of white from the logo's ink to the G's ink (Kevin, 2026-11-09)
 
 Writes, each from the same layout:
   public/brand/gt-globe-lockup.svg         the lockup in currentColor, cropped to its ink, for masks and inline use
@@ -32,7 +32,7 @@ committed, so the site builds without the checkout. GSUB is not applied: no defa
 locl, rlig, liga, clig, calt, rclt) substitutes in these two words, which the build checks and refuses otherwise.
 
 Requires: python3 with fontTools (pip install fonttools).
-Last real run: 2026-11-08, Prototemplate session (the Katagami name).
+Last real run: 2026-11-09, Prototemplate session (the 0.8 cap gap).
 """
 import json
 import os
@@ -55,7 +55,7 @@ ROOT = Path(__file__).resolve().parents[2]
 NAME = ('General', 'Translation')
 WGHT = 500
 SPAN_SCALE = 1.1  # the logo over the span from the first cap line to the second baseline (Kevin, 2026-11-06)
-GAP = 0.5637  # caps of white from the logo's ink to the G's ink
+GAP = 0.8  # caps of white from the logo's ink to the G's ink (Kevin, 2026-11-09)
 DEFAULT_GSUB = ('rvrn', 'ccmp', 'locl', 'rlig', 'liga', 'clig', 'calt', 'rclt')
 
 

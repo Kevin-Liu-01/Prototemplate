@@ -149,7 +149,7 @@ Rules:
   1.1 times the span from the first line's cap top to the second line's
   baseline (2.4627 cap heights), centred on that span, so it overshoots
   the cap top and the baseline by 0.1231 cap height each. The gap from
-  the globe's ink to the G is 0.5637 cap height. A round mark only as tall
+  the globe's ink to the G is 0.8 cap height. A round mark only as tall
   as flat-topped text looks shorter than the text, for the same reason
   round letters such as O overshoot the cap height and the baseline.
 - **On one line**, "General Translation" beside the globe, where height
@@ -158,7 +158,7 @@ Rules:
   stems (the ring is 6.57 percent of the globe's height and the stem at
   weight 500 is 0.1448 cap height, so they match at 2.203, rounded to
   2.2). It is centred on the cap band, so it stands 0.6 cap height above
-  the cap line and below the baseline, and its ink is 0.5637 cap height
+  the cap line and below the baseline, and its ink is 0.8 cap height
   from the G's, as in the stacked lockup (Kevin approved the brand kit's
   one-line lockup, clear space and minimum sizes on 2026-11-08).
 - **Clear space** is X, a quarter of the globe's height, on every side

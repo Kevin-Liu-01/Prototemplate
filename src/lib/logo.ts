@@ -35,7 +35,8 @@ export const LOGO = {
  * gap. The globe is 1.1 times the span from the first line's cap top to
  * the second line's baseline, 2.4627 cap heights, centred on that span, so
  * it overshoots both by 0.1231 cap height; the gap from its ink to the G
- * is 0.5637 cap height. Multiply by the name's cap height in px.
+ * is 0.8 cap height in both lockups (Kevin, 2026-11-09). Multiply by the
+ * name's cap height in px.
  * pnpm build:lockup draws the files (public/brand/gt-globe-lockup*.svg, the
  * deck's #gt-lockup, the globe rows' name) and writes these numbers to
  * public/brand/gt-globe-lockup.json, which pnpm test:marks holds them to.
@@ -49,5 +50,5 @@ export const LOCKUP = {
   /** the globe's height in cap heights: scale times span */
   mark: 2.709,
   overshoot: 0.1231,
-  gap: 0.5637,
+  gap: 0.8,
 } as const;
