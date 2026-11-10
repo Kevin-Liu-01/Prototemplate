@@ -2,6 +2,8 @@
 
 import { useRef, useState } from 'react';
 
+import GtLogoMotion from '@/components/brand/GtLogoMotion';
+
 import type { MagazineIssue, StoryCard } from '../content';
 import { COVERS, FALLBACK_COVER } from '../gpu/covers';
 import { drawLayers } from '../gpu/emblems';
@@ -226,6 +228,8 @@ export default function MagazineView({
   const [at, setAt] = useState({ state: 0, max: 0 });
   /** The article could not be fetched, so there are no pages to turn. */
   const [failed, setFailed] = useState(false);
+  /** The pages are laid out and shown; until then the stage shows the logo's loader. */
+  const [paged, setPaged] = useState(false);
 
   // the focus goes to the close control as the magazine shows, where the keyboard starts
   useLayoutWork(
@@ -241,7 +245,9 @@ export default function MagazineView({
     let sheet: Flip | null = null;
     let gone = false;
     const sync = () => {
-      if (sheet) setAt({ state: sheet.state, max: sheet.max });
+      if (!sheet) return;
+      setAt({ state: sheet.state, max: sheet.max });
+      setPaged(true);
     };
     // the page size the article was set for; a resize to another sets it again, at the same place in the story
     let size = '';
@@ -411,6 +417,11 @@ export default function MagazineView({
       </div>
       <div className='gtp-riffle-stage'>
         <div ref={host} className='gtp-riffle-mag' />
+        {open && !paged && !failed ? (
+          <div className='gtp-riffle-loading'>
+            <GtLogoMotion mode='loader' size={32} label='Loading the magazine' />
+          </div>
+        ) : null}
         {failed ? (
           <p className='gtp-riffle-failed' role='alert'>
             This magazine did not load.

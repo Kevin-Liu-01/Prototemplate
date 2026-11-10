@@ -3,7 +3,7 @@ import { useId } from 'react';
 import { dmsPair, HOME } from '../coords';
 import GtMark from './GtMark';
 
-/* The press seal from Direction 01: the monogram inside a ring of minute
+/* The press seal from Direction 01: the General Translation logo inside a ring of minute
    ticks, with the press's name and coordinates set around it. Drawn in
    currentColor at one stroke weight. */
 export default function Seal({
@@ -15,7 +15,7 @@ export default function Seal({
 }) {
   const id = useId().replace(/:/g, '');
   const ticks = Array.from({ length: 72 }, (_, i) => i);
-  const text = `GT ATLAS · GENERAL TRANSLATION · SAN FRANCISCO · ${dmsPair(HOME)} · `;
+  const text = `ATLAS · GENERAL TRANSLATION · SAN FRANCISCO · ${dmsPair(HOME)} · `;
   return (
     <svg
       className={className}
@@ -102,8 +102,8 @@ export default function Seal({
         stroke='currentColor'
         strokeWidth='0.75'
       />
-      <g transform='translate(72 82)'>
-        <GtMark size={56} />
+      <g transform='translate(74 74)'>
+        <GtMark size={52} />
       </g>
     </svg>
   );

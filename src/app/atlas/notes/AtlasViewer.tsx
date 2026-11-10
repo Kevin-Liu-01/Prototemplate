@@ -120,7 +120,7 @@ const PARTS: readonly Part[] = [
     lead: 'On the shelf, Translating Euclid is set as the book it is about, by Taylor Fang: light brown paper taken from the cover scan’s own paper, one serif face (Newsreader, loaded as Atlas Text), a title page, and a stage beside the text for its pictures.',
     body: [
       'On a wide screen the text keeps to the left 61.8% at a 620px measure and the stage holds the rest: the cover, then each of the story’s 21 pictures with a short caption that links to its source, fading from one to the next as the reader reaches the paragraph about it. The stage empties at the sources. Notes sit in the margin level with their numbers, and on a phone each picture and note follows its paragraph.',
-      'It is still the shared reader, with the same theme switch, monogram home and crossfade from the shelf as the other stories. The first figure shows the first eight definitions of Book I in five versions, English, Greek, Arabic, Latin and Chinese: the globe turns to each city in turn every six seconds until the reader picks one.',
+      'It is still the shared reader, with the same theme switch, logo home and crossfade from the shelf as the other stories. The first figure shows the first eight definitions of Book I in five versions, English, Greek, Arabic, Latin and Chinese: the globe turns to each city in turn every six seconds until the reader picks one.',
     ],
     figures: [
       { src: '/shots/atlas/book.webp', alt: 'Translating Euclid on the shelf in the light theme: its title page on brown paper on the left, and the 1607 page of the Jihe Yuanben on the stage', caption: 'Translating Euclid opens on its title page, with the 1607 page on the stage beside it.' },

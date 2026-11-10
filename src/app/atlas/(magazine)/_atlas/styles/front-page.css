@@ -170,6 +170,9 @@
 .gtp-shelf-track { transition: opacity 0.3s var(--gtp-ease); }
 .gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 0; visibility: hidden; }
 @media (scripting: none) { .gtp-landing[data-ready='false'] .gtp-shelf-track { opacity: 1; visibility: visible; } }
+/* the logo's loader in the middle of the hall while the shelf is hidden; with no script the shelf shows at once */
+.gtp-shelf-loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--gtp-ink); pointer-events: none; }
+@media (scripting: none) { .gtp-shelf-loading { display: none; } }
 @media (prefers-reduced-motion: reduce) { .gtp-shelf-track { transition: none; } }
 
 /* dragging the row: the hall keeps the plain arrow and a magazine the hand, and only a drag under way grabs */
@@ -463,11 +466,11 @@
 .gtp-nameplate-mark svg { display: block; width: 100%; height: 100%; overflow: visible; }
 /* the imprint's spine lies over the sheet's margin guide, so the guide runs into the spine rather than beside it */
 .gtp-landing[data-edition='magazine'] .gtp-nameplate-mark svg { translate: -1px 0; }
-/* the imprint's GT is a link to the General Translation home (ui/HomeMark.tsx): a click swings the cover open on the
+/* the imprint's logo is a link to the General Translation home (ui/HomeMark.tsx): a click swings the cover open on the
    spine, over to the left as a front board opens, and the first page's lines show under it before the page leaves */
 .gtp-homemark-gt { position: absolute; left: 19%; top: 7%; width: 48%; height: 30%; border-radius: 4px; }
 .gtp-homemark-gt:focus-visible { outline: 1.5px solid var(--gtp-signal); outline-offset: 2px; }
-/* the cover turns edge-on, then its plain inside swings on over the spine, so the GT never shows reversed */
+/* the cover turns edge-on, then its plain inside swings on over the spine, so the logo never shows reversed */
 .gtp-homemark :is(.gtp-mark-cover, .gtp-mark-inside) { transform-origin: 25px 63.5px; }
 .gtp-homemark[data-going] .gtp-mark-cover { animation: gtp-cover-shut 0.62s linear forwards; }
 .gtp-homemark[data-going] .gtp-mark-inside { animation: gtp-cover-inside 0.62s linear forwards; }
