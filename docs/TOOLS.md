@@ -82,6 +82,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | Command | What it does | Runs |
 | --- | --- | --- |
 | `pnpm build:blog` | Builds src/lib/blog-posts.ts, the post and release list behind /blog, its sidebar run and the search: the frontmatter of every post in content/blog (title, summary, date, authors, tags, covers) with each author's name and avatar from content/authors, and every release of the ... | `scripts/build/blog.mjs` |
+| `pnpm build:brand-kit` | Copies the brand kit's zip, previews and small files into public/brand/kit and writes public/brand/kit/manifest.json, which the brand kit section on /brand reads for every file's name and size. | `scripts/build/brand-kit.mjs` |
 | `pnpm build:deck` | Builds public/brand-deck.html, the standalone brand deck viewer, from the deck source checked in at deck/. | `scripts/build/deck.mjs` |
 | `pnpm build:inter` | Split the rsms InterVariable roman and italic into unicode-range subsets, and cut the two static Latin TTF instances the social card route draws with (pnpm build:inter; needs fonttools and brotli). | `scripts/build/subset-inter.py` |
 | `pnpm build:lockup` | Draw the General Translation logo lockup, the logo beside "General" over "Translation", from Katagami Text 500 as outlines. | `scripts/build/lockup.py` |

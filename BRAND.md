@@ -127,6 +127,14 @@ globe, axis behind, the same globe without its meridian. Both lead the
 shortlist on `/marks`, and `/marks/graticule` shows the marks that led to
 them. Locadex carries its own mark (`/brand/locadex-mark.svg`).
 
+The brand kit opens `/brand`: every logo file (the mark, both lockups and
+both wordmarks as SVG, PDF and PNG, with the transparent PNGs in one
+folder), the palette files, Katagami Text, the loader and hover films and
+the guides, in one zip. `pnpm build:brand-kit` copies the kit's previews
+and small files into `public/brand/kit`, with the zip itself, which the
+site serves from there. The second section of `/brand`, The logo system, draws the
+logo's construction, its three states and the lockup numbers.
+
 The logo replaced the doubled-line GT monogram on 2026-11-08 in this
 site's chrome, the tab icon, `/brand` and the deck. The monogram, in
 which every stroke of the mark is two parallel lines, is the previous
@@ -196,6 +204,12 @@ Four absolute colors (ink `#070707`, raised ink `#101010`, titanium
 color everywhere derives from the four as alpha steps; dark mode is a pure
 token remap. Full law: `DESIGN.md` §1. The accent is a controlled edge,
 never a wash; one bright white; depth from lines and material, not shadows.
+
+Texture is the 1-bit Bayer dither (`DESIGN.md` §7, `gt-dither`): whole
+square cells in one ink, so a tone is a count of lit cells. Kevin set the
+palette's direction from dithered artifact pictures in black, white and
+blue (2026-10-01), and `/brand` gives his reasoning for the palette in its
+third section, Black, white, dither and blue.
 
 ## 6. Type
 

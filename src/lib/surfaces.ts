@@ -137,7 +137,7 @@ function thumb(stem: string): { shot: string; shotDark: string } {
  */
 const PAGES: readonly Surface[] = [
   internal('gallery', pageLabel('gallery'), '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
-  internal('brand', pageLabel('brand'), '/brand', 'The identity canon in ten sections.', 'Pages', thumb('brand')),
+  internal('brand', pageLabel('brand'), '/brand', 'The identity canon in thirteen sections.', 'Pages', thumb('brand')),
   internal('docs', pageLabel('docs'), '/docs', 'The handbook, the live component library with the blog globe figure, and how the hub is built, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
   internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
   internal('press', pageLabel('press'), '/atlas', 'Atlas, the General Translation magazine: each story an issue with its own cover, and a feature with its own art and colors.', 'Pages', thumb('press')),
@@ -437,6 +437,17 @@ const LIBRARY_ROWS: readonly Surface[] = LIBRARY_INDEX.map((lib) =>
 );
 
 const BRAND_SECTIONS: readonly Surface[] = [
+  ['brand-kit', 'Brand kit', 'Every logo file, the palette, Katagami Text, the motion and the guides, to download.'],
+  [
+    'logo-system',
+    'The logo system',
+    'How the globe logo is drawn, its three states, the lockups and their numbers, and the mark it replaced.',
+  ],
+  [
+    'black-white-dither-blue',
+    'Black, white, dither and blue',
+    'How I set the palette: black and white for structure, 1-bit dither for texture, and one blue.',
+  ],
   ['the-name', 'The name', 'The company name, how it is written in text, and Locadex.'],
   ['the-idea', 'The idea', 'Every product in every language: the mission and the positioning.'],
   ['the-character', 'The character', 'The personality, the voice, and the attribute scales.'],

@@ -1,0 +1,264 @@
+{
+  "zip": {
+    "name": "General-Translation-brand-kit.zip",
+    "bytes": 24645721,
+    "url": null
+  },
+  "folders": {
+    "logo": 250,
+    "frames": 193,
+    "color": 5,
+    "type": 7,
+    "guides": 8,
+    "motion": 8
+  },
+  "logos": [
+    {
+      "key": "mark",
+      "svg": {
+        "ink": {
+          "file": "svg/gt-mark-ink.svg",
+          "bytes": 15062
+        },
+        "white": {
+          "file": "svg/gt-mark-white.svg",
+          "bytes": 15062
+        },
+        "accent": {
+          "file": "svg/gt-mark-accent.svg",
+          "bytes": 15062
+        },
+        "accent-lift": {
+          "file": "svg/gt-mark-accent-lift.svg",
+          "bytes": 15062
+        },
+        "currentcolor": {
+          "file": "svg/gt-mark-currentcolor.svg",
+          "bytes": 15067
+        }
+      },
+      "png": {
+        "ink": {
+          "file": "png/gt-mark-ink-on-transparent-1024.png",
+          "bytes": 42579
+        },
+        "white": {
+          "file": "png/gt-mark-white-on-transparent-1024.png",
+          "bytes": 34556
+        }
+      }
+    },
+    {
+      "key": "lockup-stacked",
+      "svg": {
+        "ink": {
+          "file": "svg/gt-lockup-stacked-ink.svg",
+          "bytes": 25706
+        },
+        "white": {
+          "file": "svg/gt-lockup-stacked-white.svg",
+          "bytes": 25706
+        },
+        "accent": {
+          "file": "svg/gt-lockup-stacked-accent.svg",
+          "bytes": 25706
+        },
+        "accent-lift": {
+          "file": "svg/gt-lockup-stacked-accent-lift.svg",
+          "bytes": 25706
+        },
+        "currentcolor": {
+          "file": "svg/gt-lockup-stacked-currentcolor.svg",
+          "bytes": 25721
+        }
+      },
+      "png": {
+        "ink": {
+          "file": "png/gt-lockup-stacked-ink-on-transparent-1024.png",
+          "bytes": 25459
+        },
+        "white": {
+          "file": "png/gt-lockup-stacked-white-on-transparent-1024.png",
+          "bytes": 19534
+        }
+      }
+    },
+    {
+      "key": "lockup-horizontal",
+      "svg": {
+        "ink": {
+          "file": "svg/gt-lockup-horizontal-ink.svg",
+          "bytes": 25923
+        },
+        "white": {
+          "file": "svg/gt-lockup-horizontal-white.svg",
+          "bytes": 25923
+        },
+        "accent": {
+          "file": "svg/gt-lockup-horizontal-accent.svg",
+          "bytes": 25923
+        },
+        "accent-lift": {
+          "file": "svg/gt-lockup-horizontal-accent-lift.svg",
+          "bytes": 25923
+        },
+        "currentcolor": {
+          "file": "svg/gt-lockup-horizontal-currentcolor.svg",
+          "bytes": 25933
+        }
+      },
+      "png": {
+        "ink": {
+          "file": "png/gt-lockup-horizontal-ink-on-transparent-1024.png",
+          "bytes": 15609
+        },
+        "white": {
+          "file": "png/gt-lockup-horizontal-white-on-transparent-1024.png",
+          "bytes": 11512
+        }
+      }
+    },
+    {
+      "key": "wordmark",
+      "svg": {
+        "ink": {
+          "file": "svg/gt-wordmark-ink.svg",
+          "bytes": 10982
+        },
+        "white": {
+          "file": "svg/gt-wordmark-white.svg",
+          "bytes": 10982
+        },
+        "accent": {
+          "file": "svg/gt-wordmark-accent.svg",
+          "bytes": 10982
+        },
+        "accent-lift": {
+          "file": "svg/gt-wordmark-accent-lift.svg",
+          "bytes": 10982
+        },
+        "currentcolor": {
+          "file": "svg/gt-wordmark-currentcolor.svg",
+          "bytes": 10987
+        }
+      },
+      "png": {
+        "ink": {
+          "file": "png/gt-wordmark-ink-on-transparent-1024.png",
+          "bytes": 11371
+        },
+        "white": {
+          "file": "png/gt-wordmark-white-on-transparent-1024.png",
+          "bytes": 8641
+        }
+      }
+    },
+    {
+      "key": "wordmark-stacked",
+      "svg": {
+        "ink": {
+          "file": "svg/gt-wordmark-stacked-ink.svg",
+          "bytes": 10745
+        },
+        "white": {
+          "file": "svg/gt-wordmark-stacked-white.svg",
+          "bytes": 10745
+        },
+        "accent": {
+          "file": "svg/gt-wordmark-stacked-accent.svg",
+          "bytes": 10745
+        },
+        "accent-lift": {
+          "file": "svg/gt-wordmark-stacked-accent-lift.svg",
+          "bytes": 10745
+        },
+        "currentcolor": {
+          "file": "svg/gt-wordmark-stacked-currentcolor.svg",
+          "bytes": 10755
+        }
+      },
+      "png": {
+        "ink": {
+          "file": "png/gt-wordmark-stacked-ink-on-transparent-1024.png",
+          "bytes": 22084
+        },
+        "white": {
+          "file": "png/gt-wordmark-stacked-white-on-transparent-1024.png",
+          "bytes": 17548
+        }
+      }
+    }
+  ],
+  "color": [
+    {
+      "file": "color/colors.css",
+      "bytes": 1225
+    },
+    {
+      "file": "color/colors.json",
+      "bytes": 4644
+    },
+    {
+      "file": "color/colors.ase",
+      "bytes": 380
+    }
+  ],
+  "sheets": [
+    {
+      "key": "brand-sheet",
+      "file": "sheets/brand-sheet.webp",
+      "bytes": 86516,
+      "width": 1800,
+      "height": 1340,
+      "pdf": "guides/brand-sheet.pdf"
+    },
+    {
+      "key": "clear-space",
+      "file": "sheets/clear-space.webp",
+      "bytes": 215350,
+      "width": 1800,
+      "height": 4300,
+      "pdf": "guides/clear-space.pdf"
+    },
+    {
+      "key": "minimum-size",
+      "file": "sheets/minimum-size.webp",
+      "bytes": 56488,
+      "width": 1800,
+      "height": 1483,
+      "pdf": "guides/minimum-size.pdf"
+    },
+    {
+      "key": "variant-sheet",
+      "file": "sheets/variant-sheet.webp",
+      "bytes": 326062,
+      "width": 1800,
+      "height": 3227,
+      "pdf": "guides/variant-sheet.pdf"
+    },
+    {
+      "key": "type-spec",
+      "file": "sheets/type-spec.webp",
+      "bytes": 212326,
+      "width": 1800,
+      "height": 2549,
+      "pdf": "type/type-spec.pdf"
+    },
+    {
+      "key": "color-sheet",
+      "file": "sheets/color-sheet.webp",
+      "bytes": 92692,
+      "width": 1800,
+      "height": 1746,
+      "pdf": "color/color-sheet.pdf"
+    },
+    {
+      "key": "frames-sheet",
+      "file": "sheets/frames-sheet.webp",
+      "bytes": 103030,
+      "width": 1800,
+      "height": 1903,
+      "pdf": null
+    }
+  ]
+}

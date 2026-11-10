@@ -19,7 +19,7 @@ import { useMountEffect } from '@/lib/use-mount-effect';
 import { BRAND_COUNT, BRAND_SECTIONS, BRAND_SHELL_SECTIONS, headingsOf } from './brand-sections';
 import GtVariants from './GtVariants';
 
-/* the sidebar head: the mark, this, and `10 sections` share 208px */
+/* the sidebar head: the mark, this, and `13 sections` share 208px */
 const BRAND_TITLE = PAGE_NAMES.brand.name;
 const BRAND_MODES: readonly ShellMode[] = ['book', 'grid'];
 
@@ -261,7 +261,7 @@ export type BrandViewerProps = {
 };
 
 /**
- * The brand book on the viewer shell: ten sections as the run under Pages
+ * The brand book on the viewer shell: thirteen sections as the run under Pages
  * > Brand in the list (with the h3s of the section being read under it)
  * and as captured thumbnails in the grid, the article itself in a flow
  * sheet at the book width (1280px, as every book) as the book, the site

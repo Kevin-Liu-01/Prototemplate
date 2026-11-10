@@ -1,0 +1,230 @@
+{
+  "name": "General Translation colours",
+  "rules": [
+    "Four absolute colours (ink, raised ink, titanium, paper) and one accent.",
+    "The accent is #2f5ce0 on paper and its lift #86a8ff on ink; never #2f5ce0 on ink.",
+    "The logo is always one colour: ink on paper, paper on ink, accent on paper, or accent lift on ink.",
+    "The accent marks small elements only and never fills a large area."
+  ],
+  "colors": [
+    {
+      "id": "ink",
+      "name": "Ink",
+      "hex": "#070707",
+      "rgb": [
+        7,
+        7,
+        7
+      ],
+      "hsl": [
+        0,
+        0,
+        3
+      ],
+      "oklch": {
+        "l": 0.1286,
+        "c": 0,
+        "h": 0,
+        "css": "oklch(12.86% 0.0000 0)"
+      },
+      "role": "The logo and text on paper; the dark ground"
+    },
+    {
+      "id": "raised-ink",
+      "name": "Raised ink",
+      "hex": "#101010",
+      "rgb": [
+        16,
+        16,
+        16
+      ],
+      "hsl": [
+        0,
+        0,
+        6
+      ],
+      "oklch": {
+        "l": 0.173,
+        "c": 0,
+        "h": 0,
+        "css": "oklch(17.30% 0.0000 0)"
+      },
+      "role": "The one raised surface on an ink ground: code, panels"
+    },
+    {
+      "id": "titanium",
+      "name": "Titanium",
+      "hex": "#8a8f98",
+      "rgb": [
+        138,
+        143,
+        152
+      ],
+      "hsl": [
+        219,
+        6,
+        57
+      ],
+      "oklch": {
+        "l": 0.6488,
+        "c": 0.0146,
+        "h": 262.4,
+        "css": "oklch(64.88% 0.0146 262.4)"
+      },
+      "role": "Captions, counters and quiet labels; never the logo"
+    },
+    {
+      "id": "paper",
+      "name": "Paper",
+      "hex": "#ffffff",
+      "rgb": [
+        255,
+        255,
+        255
+      ],
+      "hsl": [
+        0,
+        0,
+        100
+      ],
+      "oklch": {
+        "l": 1,
+        "c": 0,
+        "h": 0,
+        "css": "oklch(100.00% 0.0000 0)"
+      },
+      "role": "The light ground; the logo on ink"
+    },
+    {
+      "id": "accent",
+      "name": "Accent",
+      "hex": "#2f5ce0",
+      "rgb": [
+        47,
+        92,
+        224
+      ],
+      "hsl": [
+        225,
+        74,
+        53
+      ],
+      "oklch": {
+        "l": 0.5267,
+        "c": 0.2072,
+        "h": 265.3,
+        "css": "oklch(52.67% 0.2072 265.3)"
+      },
+      "role": "The one accent, on paper: small elements only; the logo on paper"
+    },
+    {
+      "id": "accent-lift",
+      "name": "Accent lift",
+      "hex": "#86a8ff",
+      "rgb": [
+        134,
+        168,
+        255
+      ],
+      "hsl": [
+        223,
+        100,
+        76
+      ],
+      "oklch": {
+        "l": 0.7424,
+        "c": 0.1319,
+        "h": 267,
+        "css": "oklch(74.24% 0.1319 267)"
+      },
+      "role": "The accent on an ink ground; the logo on ink"
+    },
+    {
+      "id": "motion-off-white",
+      "name": "Motion off-white",
+      "hex": "#f2f2f0",
+      "rgb": [
+        242,
+        242,
+        240
+      ],
+      "hsl": [
+        60,
+        7,
+        95
+      ],
+      "oklch": {
+        "l": 0.9606,
+        "c": 0.0027,
+        "h": 106.4,
+        "css": "oklch(96.06% 0.0027 106.4)"
+      },
+      "role": "The mark in the dark motion files; text on ink in dark mode"
+    }
+  ],
+  "contrast": [
+    {
+      "foreground": "ink",
+      "ground": "paper",
+      "use": "Logo and text on paper",
+      "allowed": true,
+      "ratio": 20.14
+    },
+    {
+      "foreground": "paper",
+      "ground": "ink",
+      "use": "Logo and text on ink",
+      "allowed": true,
+      "ratio": 20.14
+    },
+    {
+      "foreground": "accent",
+      "ground": "paper",
+      "use": "Logo or accent on paper",
+      "allowed": true,
+      "ratio": 5.63
+    },
+    {
+      "foreground": "accent-lift",
+      "ground": "ink",
+      "use": "Logo or accent on ink",
+      "allowed": true,
+      "ratio": 8.69
+    },
+    {
+      "foreground": "paper",
+      "ground": "raised-ink",
+      "use": "Text on a raised surface",
+      "allowed": true,
+      "ratio": 19.03
+    },
+    {
+      "foreground": "motion-off-white",
+      "ground": "ink",
+      "use": "The mark in the dark motion files",
+      "allowed": true,
+      "ratio": 17.97
+    },
+    {
+      "foreground": "titanium",
+      "ground": "ink",
+      "use": "Captions on ink",
+      "allowed": true,
+      "ratio": 6.2
+    },
+    {
+      "foreground": "titanium",
+      "ground": "paper",
+      "use": "Captions on paper at 24 px and up only (under 4.5:1)",
+      "allowed": true,
+      "ratio": 3.25
+    },
+    {
+      "foreground": "accent",
+      "ground": "ink",
+      "use": "Never: use the accent lift on ink",
+      "allowed": false,
+      "ratio": 3.58
+    }
+  ]
+}

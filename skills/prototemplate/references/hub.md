@@ -7,7 +7,7 @@ Detail for sections 1 and 2 of `prototemplate`, moved from SKILL.md on 2026-10-1
 | route | holds | source |
 | --- | --- | --- |
 | `/` | the design lab: every direction as an article (Book), one live exhibit at a time (Live) or a grid, with the anatomy wall and the capabilities ledger | `src/app/page.tsx`, `src/app/GalleryViewer.tsx`, `src/lib/directions.ts` |
-| `/brand` | the brand book in ten sections | `src/app/brand/`, `brand-sections.ts`, `BRAND.md` |
+| `/brand` | the brand book in thirteen sections | `src/app/brand/`, `brand-sections.ts`, `BRAND.md` |
 | `/docs`, `/docs/<slug>` | the docs site, in fumadocs' notebook layout outside the shell, with a Markdown twin at each address plus `.md`, in five tabs: the Guide with the handbook, Components (`/docs/components/<slug>`, every instrument live with controls, props and its reduced-motion still, and the blog globe figure at `/docs/components/blog-globe` with all three rounds live, each a frame of `/d/blog-globe`, `/r1` or `/r2`, noindex), Craft (`/docs/craft/<slug>`), Engineering (`/docs/engineering/<slug>`) and Internals; `/docs/template` explains how to lift it into another project | `content/docs/`, `src/app/docs/`, `src/components/docs/` (the plates in `demos/`), `src/components/blog-globe/`, `src/lib/source.ts`, `source.config.ts` |
 | `/deck` | the brand deck in its own viewer: `public/brand-deck.html` itself, through a rewrite in `next.config.ts` | `deck/`, `pnpm build:deck` |
 | `/skills`, `/skills/<slug>` | the curated General Translation skills by area, each page with its body, files and install line; the raw files at `/skills/<slug>/SKILL.md` and `/skills/index.json` | `skills/<slug>/`, the generated `src/lib/skills.ts`, `src/app/skills/` |

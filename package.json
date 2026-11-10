@@ -44,6 +44,7 @@
     "test:line-globe": "node --test scripts/lint/line-globe.test.mjs",
     "build:inter": "python3 scripts/build/subset-inter.py",
     "build:thumbs": "node scripts/build/thumbs.mjs",
+    "build:brand-kit": "node scripts/build/brand-kit.mjs",
     "build:skills": "node scripts/build/skills.mjs",
     "build:blog": "node scripts/build/blog.mjs",
     "lint:blog": "node scripts/build/blog.mjs --check",

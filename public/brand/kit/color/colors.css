@@ -1,0 +1,21 @@
+/* General Translation colours. The accent is --gt-accent on paper and --gt-accent-lift on ink. */
+:root {
+  --gt-ink: #070707; /* Ink: rgb(7 7 7), hsl(0 0% 3%), oklch(12.86% 0.0000 0) */
+  --gt-raised-ink: #101010; /* Raised ink: rgb(16 16 16), hsl(0 0% 6%), oklch(17.30% 0.0000 0) */
+  --gt-titanium: #8a8f98; /* Titanium: rgb(138 143 152), hsl(219 6% 57%), oklch(64.88% 0.0146 262.4) */
+  --gt-paper: #ffffff; /* Paper: rgb(255 255 255), hsl(0 0% 100%), oklch(100.00% 0.0000 0) */
+  --gt-accent: #2f5ce0; /* Accent: rgb(47 92 224), hsl(225 74% 53%), oklch(52.67% 0.2072 265.3) */
+  --gt-accent-lift: #86a8ff; /* Accent lift: rgb(134 168 255), hsl(223 100% 76%), oklch(74.24% 0.1319 267) */
+  --gt-motion-off-white: #f2f2f0; /* Motion off-white: rgb(242 242 240), hsl(60 7% 95%), oklch(96.06% 0.0027 106.4) */
+}
+
+/* The same colours in OKLCH, for wide gamut work */
+:root {
+  --gt-ink-oklch: oklch(12.86% 0.0000 0);
+  --gt-raised-ink-oklch: oklch(17.30% 0.0000 0);
+  --gt-titanium-oklch: oklch(64.88% 0.0146 262.4);
+  --gt-paper-oklch: oklch(100.00% 0.0000 0);
+  --gt-accent-oklch: oklch(52.67% 0.2072 265.3);
+  --gt-accent-lift-oklch: oklch(74.24% 0.1319 267);
+  --gt-motion-off-white-oklch: oklch(96.06% 0.0027 106.4);
+}

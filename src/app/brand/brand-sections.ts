@@ -2,7 +2,7 @@ import type { ShellSection, ShellShot } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 
 /**
- * The brand book's shape as data: the ten sections in reading order, each
+ * The brand book's shape as data: the thirteen sections in reading order, each
  * with the h3 headings inside it, and the helpers that turn them into the
  * shell's section list. Pure data, so the server page and the client viewer
  * read the same source. Section ids are the anchors the article has always
@@ -36,6 +36,43 @@ function heading(sectionId: string, slug: string, title: string): BrandHeading {
 }
 
 export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
+  {
+    id: 'brand-kit',
+    title: 'Brand kit',
+    desc: 'Every logo file, the palette, Katagami Text, the motion and the guides, to download.',
+    source: 'the brand kit',
+    headings: [
+      heading('brand-kit', 'logo', 'Logo'),
+      heading('brand-kit', 'transparent', 'Transparent PNGs'),
+      heading('brand-kit', 'color', 'Color'),
+      heading('brand-kit', 'type', 'Type'),
+      heading('brand-kit', 'motion', 'Motion'),
+      heading('brand-kit', 'guides', 'Guides'),
+    ],
+  },
+  {
+    id: 'logo-system',
+    title: 'The logo system',
+    desc: 'How the globe logo is drawn, its three states, the lockups and their numbers, and the mark it replaced.',
+    source: 'BRAND.md part 4',
+    headings: [
+      heading('logo-system', 'construction', 'Construction'),
+      heading('logo-system', 'states', 'States'),
+      heading('logo-system', 'lockups', 'Lockups'),
+      heading('logo-system', 'previous', 'The previous mark'),
+    ],
+  },
+  {
+    id: 'black-white-dither-blue',
+    title: 'Black, white, dither and blue',
+    desc: 'How I set the palette: black and white for structure, 1-bit dither for texture, and one blue.',
+    source: 'BRAND.md part 5',
+    headings: [
+      heading('black-white-dither-blue', 'black-and-white', 'Black and white'),
+      heading('black-white-dither-blue', 'dither', 'Dither'),
+      heading('black-white-dither-blue', 'blue', 'Blue'),
+    ],
+  },
   {
     id: 'the-name',
     title: 'The name',
@@ -142,7 +179,7 @@ export function brandShot(sectionId: string): ShellShot {
 }
 
 /**
- * The shell's list: one section, Sections, with the ten sections as items.
+ * The shell's list: one section, Sections, with the thirteen sections as items.
  * It opens as the run under Pages > Brand in the sidebar (`under`); the
  * grid keeps the label.
  */

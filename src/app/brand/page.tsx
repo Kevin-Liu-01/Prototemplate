@@ -6,10 +6,13 @@ import Link from 'next/link';
 import ReassemblerDemo from '../craft/ReassemblerDemo';
 import AttributeScales, { AESTHETIC, PERSONALITY } from './AttributeScales';
 import BrandFilm from './BrandFilm';
+import BrandKit from './BrandKit';
 import BrandMarkFigure from './BrandMarkFigure';
+import BrandPalette from './BrandPalette';
 import type { BrandPage } from './BrandViewer';
 import BrandViewer from './BrandViewer';
 import { headingId } from './brand-sections';
+import LogoSystem from './LogoSystem';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import { PAGE_NAMES } from '@/lib/page-names';
 import { readingMinutes } from '@/lib/reading';
@@ -25,7 +28,7 @@ const route = seoRoute({
   title: PAGE_NAMES.brand.name,
   kind: 'page',
   description:
-    'General Translation’s identity, laid out: the name, the idea, the character, the mark, color, type, language as material, and where it ships.',
+    'General Translation’s identity: the brand kit to download, the logo system, the palette, and the name, character, type and devices behind them.',
 });
 
 export const metadata = route.metadata;
@@ -149,7 +152,7 @@ const GLOBES = [
 
 /** The head's lead: two or three lines that say what the page is. */
 const LEAD =
-  'General Translation’s identity, laid out: the name, the idea, the character, the mark, the color and type systems, and the devices that make it recognizable.';
+  'General Translation’s identity, laid out: the brand kit to download, the logo system and the palette, then the name, the idea, the character, and the devices that make it recognizable.';
 
 /** The rest of the introduction, under the head's rule. */
 const NOTE = (
@@ -161,7 +164,7 @@ const NOTE = (
 );
 
 /**
- * The ten sections, each rendered on the server and handed to the viewer as
+ * The thirteen sections, each rendered on the server and handed to the viewer as
  * a page. Ids match brand-sections.ts, which the viewer reads for the list,
  * the grid, the hash and each section's divider (its title is the divider's
  * h2, so a body starts under it); the h3 ids are the rows under the active
@@ -170,6 +173,9 @@ const NOTE = (
  * &hellip;) is written as {' '}, because the JSX transform drops it.
  */
 const PAGES: readonly BrandPage[] = [
+  { id: 'brand-kit', body: <BrandKit /> },
+  { id: 'logo-system', body: <LogoSystem /> },
+  { id: 'black-white-dither-blue', body: <BrandPalette /> },
   {
     id: 'the-name',
     body: (
