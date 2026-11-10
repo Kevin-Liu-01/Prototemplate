@@ -25,6 +25,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | Command | What it does | Runs |
 | --- | --- | --- |
 | `pnpm lint:all` | Runs lint:static, then the live lints against PT_BASE (default `http://localhost:3005`). | `pnpm lint:static && pnpm lint:lines:shell && pnpm lint:ty...` |
+| `pnpm lint:blog` | Builds src/lib/blog-posts.ts, the post and release list behind /blog, its sidebar run and the search: the frontmatter of every post in content/blog (title, summary, date, authors, tags, covers) with each author's name and avatar from content/authors, and every release of the ... | `scripts/build/blog.mjs --check` |
 | `pnpm lint:code` | Runs oxlint with the gt-ui plugin (scripts/lint/oxlint-plugins/gt-ui.ts) over the live surfaces under src/. | `oxlint` |
 | `pnpm lint:copies` | Holds every copy in this repository to its record in scripts/lint/copies.json. | `scripts/lint/copies.mjs` |
 | `pnpm lint:heads` | Holds every book page to one structure (DESIGN.md section 4, The book page): BookHead renders the front matter (the mast with the title, the lead and the panel, one rule, the note, the contents and the hatch band), every section opens with the shared divider, and every space ... | `scripts/lint/heads.mjs` |
