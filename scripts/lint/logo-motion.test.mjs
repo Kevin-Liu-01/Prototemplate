@@ -57,10 +57,10 @@
 // LOGO_MOTION_THEMES=light,dark widen the run to report the other engines
 // (Firefox and WebKit round masks and blends by a level or more, so only
 // Chromium is held to it); LOGO_MOTION_SMALL_BROWSERS=chromium sets the
-// engines of the small sizes; LOGO_MOTION_SRC=<dir> runs the checks on another
-// copy of the component's three files (an older one, say, to see what the
-// checks catch); LOGO_MOTION_SHOTS=<dir> writes the checked frames there as
-// PNG. Usage: node --test scripts/lint/logo-motion.test.mjs
+// engines of the small sizes (none skips them); LOGO_MOTION_SRC=<dir> runs
+// the checks on another copy of the component's three files (an older one,
+// say, to see what the checks catch); LOGO_MOTION_SHOTS=<dir> writes the
+// checked frames there as PNG. Usage: node --test scripts/lint/logo-motion.test.mjs
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { registerHooks } from 'node:module';
@@ -156,7 +156,7 @@ const SMALL = [
   [32, 2],
 ];
 /** the engines the small sizes run in, each held to the rule: Chromium, and WebKit where Playwright has it */
-const SMALL_BROWSERS = (process.env.LOGO_MOTION_SMALL_BROWSERS ?? 'chromium,webkit').split(',').filter((e) => e === 'chromium' || existsSync(ENGINES[e].executablePath()));
+const SMALL_BROWSERS = (process.env.LOGO_MOTION_SMALL_BROWSERS ?? 'chromium,webkit').split(',').filter((e) => e === 'chromium' || (ENGINES[e] && existsSync(ENGINES[e].executablePath())));
 /** levels a ring pixel may differ by at a small size: an edge drawn in two paths (the logo's and the ring's alone) at a pixel of one to four units, and WebKit's rounding of masks */
 const SMALL_SLACK = 24;
 
