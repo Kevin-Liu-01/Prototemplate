@@ -6,6 +6,8 @@ import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layo
 import { formatLongDay } from '@/lib/dates';
 import { duration, FINALS, fileUrl, loadRaise, roundsByDay } from '@/lib/raise';
 import type { Raise, RaiseCut, RaiseItem, RaiseRound, RaiseText } from '@/lib/raise';
+
+import { METHOD, METHOD_LEAD, METHOD_SLUG, METHOD_TITLE } from '../method';
 import { seoRoute } from '@/lib/seo/route';
 
 type Params = { params: Promise<{ slug?: string[] }> };
@@ -19,19 +21,22 @@ const DESCRIPTION = 'The media of the funding announcement, round by round, with
 function titleOf(raise: Raise | null, slug: string | undefined): string {
   if (!slug) return 'Raise';
   if (slug === FINALS) return 'Raise finals';
+  if (slug === METHOD_SLUG) return METHOD_TITLE;
   const round = raise?.data.rounds.find((r) => r.id === slug);
   return round ? `Raise ${round.tag}` : 'Raise';
 }
 
-/** The overview, every round and the finals, from the store at build time; the overview alone when the store cannot be read, and any other round renders on its first request. */
+/** The overview, the method, every round and the finals, from the store at build time; the overview and the method alone when the store cannot be read, and any other round renders on its first request. */
 export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
   const raise = await loadRaise();
-  if (!raise) return [{ slug: [] }];
-  return [{ slug: [] }, ...raise.data.rounds.map((round) => ({ slug: [round.id] })), { slug: [FINALS] }];
+  const fixed = [{ slug: [] }, { slug: [METHOD_SLUG] }];
+  if (!raise) return fixed;
+  return [...fixed, ...raise.data.rounds.map((round) => ({ slug: [round.id] })), { slug: [FINALS] }];
 }
 
 /** A page's own description: its account's lead when that reads whole in a search snippet (50 to 160 characters), else one built from the round's tag and title. */
 function descriptionOf(raise: Raise | null, slug: string | undefined): string {
+  if (slug === METHOD_SLUG) return METHOD_LEAD;
   if (!slug || !raise) return DESCRIPTION;
   const fits = (text: string | undefined): text is string => !!text && text.length >= 50 && text.length <= 160;
   const lead = raise.text[slug]?.lead;
@@ -181,6 +186,7 @@ function OverviewPage({ raise }: { raise: Raise }) {
   const first = data.rounds[0];
   const toc: TocItem[] = [
     { title: 'How the work was directed', url: '#process', depth: 2 },
+    { title: 'How the media was made', url: '#method', depth: 2 },
     { title: 'Rounds', url: '#rounds', depth: 2 },
     ...days.map((day) => ({ title: day.label, url: `#day-${day.day}`, depth: 3 })),
     { title: 'Finals', url: '#finals', depth: 2 },
@@ -193,6 +199,10 @@ function OverviewPage({ raise }: { raise: Raise }) {
       <DocsBody>
         <h2 id='process'>How the work was directed</h2>
         <Paragraphs lines={intro.body} />
+        <h2 id='method'>How the media was made</h2>
+        <Cards>
+          <Card href={`/raise/${METHOD_SLUG}`} title={METHOD_TITLE} description={METHOD_LEAD} />
+        </Cards>
         <h2 id='rounds'>Rounds</h2>
         {days.map((day) => (
           <section key={day.day} aria-labelledby={`day-${day.day}`}>
@@ -335,15 +345,41 @@ function FinalsPage({ raise }: { raise: Raise }) {
   );
 }
 
+/** The method: the working rules the launch lanes settled on, one section per subject (src/app/raise/method.ts). */
+function MethodPage() {
+  const toc: TocItem[] = METHOD.map((section) => ({ title: section.heading, url: `#${section.id}`, depth: 2 }));
+  return (
+    <DocsPage toc={toc} breadcrumb={{ enabled: false }}>
+      <DocsTitle>{METHOD_TITLE}</DocsTitle>
+      <DocsDescription className='docs-lead'>{METHOD_LEAD}</DocsDescription>
+      <DocsBody>
+        {METHOD.map((section) => (
+          <section key={section.id} aria-labelledby={section.id}>
+            <h2 id={section.id}>{section.heading}</h2>
+            <p>{section.lead}</p>
+            <ul>
+              {section.points.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </DocsBody>
+    </DocsPage>
+  );
+}
+
 /**
- * /raise, /raise/<round> and /raise/finals: the overview, one round, or the
- * run of show, rendered on each request from the private store
- * (src/lib/raise.ts). Every word and file comes from the store; this file
- * holds only the structure. A store that cannot be read shows one line.
+ * /raise, /raise/method, /raise/<round> and /raise/finals: the overview, the
+ * method, one round, or the run of show, built from the Blob store
+ * (src/lib/raise.ts) and rebuilt from it every five minutes. The rounds' and
+ * the overview's words and files come from the store; the method is this
+ * repository's own text. A store that cannot be read shows one line.
  */
 export default async function Page({ params }: Params) {
   const { slug = [] } = await params;
   if (slug.length > 1) notFound();
+  if (slug[0] === METHOD_SLUG) return <MethodPage />;
   const raise = await loadRaise();
   if (!raise) {
     return (

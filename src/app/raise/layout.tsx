@@ -9,6 +9,7 @@ import SidebarMotion from '@/components/docs/SidebarMotion';
 import { FINALS, loadRaise, roundsByDay } from '@/lib/raise';
 import type { Raise } from '@/lib/raise';
 
+import { METHOD_SLUG } from './method';
 import RaiseNameplate from './RaiseNameplate';
 
 import '../docs/docs.css';
@@ -17,9 +18,12 @@ import './raise.css';
 /* the pages are built from the store and built again from it at most every five minutes, so a sync shows within that time */
 export const revalidate = 300;
 
-/** The sidebar: the overview, then the rounds under one separator per day, then the finals. */
+/** The sidebar: the overview and the method, then the rounds under one separator per day, then the finals. */
 function raiseTree(raise: Raise | null): Root {
-  const children: Node[] = [{ type: 'page', name: 'Overview', url: '/raise' }];
+  const children: Node[] = [
+    { type: 'page', name: 'Overview', url: '/raise' },
+    { type: 'page', name: 'How the media was made', url: `/raise/${METHOD_SLUG}` },
+  ];
   if (raise) {
     for (const day of roundsByDay(raise.data.rounds)) {
       children.push({ type: 'separator', name: day.label });
@@ -42,12 +46,12 @@ function raiseTree(raise: Raise | null): Root {
 }
 
 /**
- * /raise: the media history of an embargoed launch as a docs site, in the
- * notebook layout and stylesheet the docs at /docs run (src/app/docs), with
- * its own sidebar built at request time from the private store
- * (src/lib/raise.ts). It is open to anyone with the link and listed
- * nowhere: no search here, and no row in the docs tree, the sitemap, the
- * search index or /llms.txt (PRIVATE_PATHS in src/lib/seo/policy.ts).
+ * /raise: the media history of the funding announcement as a docs site, in
+ * the notebook layout and stylesheet the docs at /docs run (src/app/docs),
+ * with its own sidebar built from the Blob store (src/lib/raise.ts). It is
+ * a public Knowledge page: indexed, in the sitemap, the search index and
+ * the site's sidebar (src/lib/surfaces.ts). The section has no search of
+ * its own.
  */
 export default async function Layout({ children }: { children: ReactNode }) {
   const raise = await loadRaise();
