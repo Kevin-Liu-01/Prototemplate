@@ -2,11 +2,14 @@
 """Copy the Katagami web fonts and the country flags the /atlas pages use.
 
 The press sets Katagami Text for its text, Katagami Mono for code and
-figures, and Katagami Serif for its serif type. Their Latin, Arabic and Devanagari slices are
-copied as they are. The website carries no italics yet, so Katagami Text's
-and Katagami Serif's italics are cut from the Katagami repository's variable
-fonts to the characters of the roman Latin slices, when KATAGAMI_REPO names a
-checkout. The CJK companions are 1.5 to 3 MB
+figures, and Katagami Serif for its serif type. The romans and the Arabic and
+Devanagari slices are copied as they are from the website's public/fonts.
+Katagami Text's and Katagami Serif's italics are cut from the Katagami
+repository's variable fonts to the characters of their romans, when
+KATAGAMI_REPO names a checkout. Each of those five faces then gets a Latin
+slice, <face>-latin.woff2, cut to the range the Latin @font-face rules in
+_atlas/styles/tokens.css declare, so a page in English loads 80 to 100 KB a
+face. The CJK companions are 1.5 to 3 MB
 each, so each one is cut down to the Han, kana and Hangul characters that
 appear in src/app/atlas/(magazine), and the cut is written as Katagami<CJK>-press.woff2.
 Run it again after adding CJK text to the press. The flags are the
@@ -18,7 +21,7 @@ Usage:
   python3 scripts/build/press-assets.py <Katagami-Website checkout>
 
 Requires: python3 with fontTools and brotli (pip install fonttools brotli).
-Last real run: 2026-10-23, Press session (the italics).
+Last real run: 2026-11-11, Katagami 1.2 session (every face cut from Katagami 1.2).
 """
 
 import os
@@ -62,6 +65,15 @@ ITALICS = [
     ('KatagamiSerif.woff2', 'serif/KatagamiSerif-Italic[wght].ttf'),
 ]
 
+# the Latin slices, each cut from its whole face to the unicode-range of the Latin @font-face rules in tokens.css
+LATIN = ['KatagamiText', 'KatagamiText-Italic', 'KatagamiSerif', 'KatagamiSerif-Italic', 'KatagamiMono']
+LATIN_RANGES = [
+    (0x0, 0xFF), (0x131, 0x131), (0x152, 0x153), (0x2BB, 0x2BC), (0x2C6, 0x2C6), (0x2DA, 0x2DA), (0x2DC, 0x2DC),
+    (0x304, 0x304), (0x308, 0x308), (0x329, 0x329), (0x2000, 0x206F), (0x2074, 0x2074), (0x20AC, 0x20AC),
+    (0x2122, 0x2122), (0x2190, 0x2199), (0x2212, 0x2212), (0x2215, 0x2215),
+]
+LATIN_CHARS = {u for first, last in LATIN_RANGES for u in range(first, last + 1)}
+
 
 def cut_italics() -> None:
     repo = os.environ.get('KATAGAMI_REPO')
@@ -85,13 +97,28 @@ def cut_italics() -> None:
         print(f'press-fonts: {name}, {len(chars)} characters')
 
 
+def cut_latin() -> None:
+    for face in LATIN:
+        options = subset.Options()
+        options.flavor = 'woff2'
+        options.layout_features = ['*']
+        options.name_IDs = ['*']
+        font = subset.load_font(str(OUT / f'{face}.woff2'), options)
+        chars = set(font.getBestCmap()) & LATIN_CHARS
+        cutter = subset.Subsetter(options)
+        cutter.populate(unicodes=sorted(chars))
+        cutter.subset(font)
+        subset.save_font(font, str(OUT / f'{face}-latin.woff2'), options)
+        print(f'press-fonts: {face}-latin.woff2, {len(chars)} characters')
+
+
 def site_fonts() -> Path:
     arg = sys.argv[1] if len(sys.argv) > 1 else os.environ.get('KATAGAMI_SITE')
     if not arg:
         sys.exit('press-fonts: pass the Katagami-Website checkout or set KATAGAMI_SITE')
-    fonts = Path(arg).expanduser() / 'fonts'
+    fonts = Path(arg).expanduser() / 'public' / 'fonts'
     if not fonts.is_dir():
-        sys.exit(f'press-fonts: no fonts folder in {arg}')
+        sys.exit(f'press-fonts: no public/fonts folder in {arg}')
     return fonts
 
 
@@ -121,6 +148,7 @@ def main() -> None:
         target = OUT / name.replace('.woff2', '-press.woff2')
         subset.save_font(font, str(target), options)
     cut_italics()
+    cut_latin()
     FLAGS_OUT.mkdir(parents=True, exist_ok=True)
     for code in FLAGS:
         shutil.copyfile(FLAGS_IN / f'{code}.svg', FLAGS_OUT / f'{code}.svg')
