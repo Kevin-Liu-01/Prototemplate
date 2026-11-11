@@ -692,7 +692,8 @@
   color: var(--pt-titanium);
 }
 
-.ptb-kit-zip {
+/* two classes, so the shell's .pt-root a { color: inherit } cannot win */
+.ptb-kit-get .ptb-kit-zip {
   display: inline-flex;
   align-items: center;
   min-height: 36px;
@@ -705,7 +706,7 @@
   text-decoration: none;
 }
 
-.ptb-kit-zip:hover {
+.ptb-kit-get .ptb-kit-zip:hover {
   background: var(--pt-ink-2);
 }
 
