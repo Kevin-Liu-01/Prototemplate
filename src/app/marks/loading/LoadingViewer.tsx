@@ -53,6 +53,7 @@ import {
   REDUCED_LEAD,
   REDUCED_NOTES,
   REDUCED_TITLE,
+  RING_CAPTION,
   SAFARI_CAPTION,
   sectionsIn,
   timingRows,
@@ -76,7 +77,7 @@ const PARTS: readonly Part[] = [
   { id: CHECKS_ID, title: CHECKS_TITLE, lead: CHECKS_LEAD, count: CHECKS.length },
   { id: REDUCED_ID, title: REDUCED_TITLE, lead: REDUCED_LEAD, count: REDUCED_NOTES.length },
   { id: COMPARE_ID, title: COMPARE_TITLE, lead: COMPARE_LEAD, count: COMPARE_NOTES.length },
-  { id: FIX_ID, title: FIX_TITLE, lead: FIX_LEAD, count: 3 },
+  { id: FIX_ID, title: FIX_TITLE, lead: FIX_LEAD, count: 5 },
 ];
 
 /** The gutter note of each section. */
@@ -357,8 +358,24 @@ function LoadingBook({ sheetRef, jumpRef, activeOut, updated, timing }: BookProp
           file='fix-sheet.webp'
           width={2098}
           height={2644}
-          alt='Frames of the hover and the loader from the first loader and the final one, each beside its difference from the logo, and the meridian’s bottom cut face at 8x'
+          alt='Frames of the hover and the loader from the first loader and after the third fix, each beside its difference from the logo, and the meridian’s bottom cut face at 8x'
           caption={FIX_SHEET_CAPTION}
+          wide
+        />
+        <SheetFigure
+          file='ring-tick.webp'
+          width={1854}
+          height={1222}
+          alt='The four points where the meridian leaves the ring, at 8x, old and new, each beside the pixels that differ from the ring drawn alone'
+          caption={RING_CAPTION.points}
+          wide
+        />
+        <SheetFigure
+          file='ring-tick-webkit.webp'
+          width={1623}
+          height={412}
+          alt='The north pole merge in WebKit at 8x, old with a grey fringe on the ring and new without it'
+          caption={RING_CAPTION.webkit}
           wide
         />
         <div className='ld-row is-two'>

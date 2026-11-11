@@ -108,7 +108,7 @@ export const BUILD_PARTS: readonly { term: string; body: string }[] = [
   },
   {
     term: 'The ring and the meridian',
-    body: 'No mask reaches the ring, so the ring is the logo’s own path in every frame. The meridian is only drawn and undrawn along its own ellipse at the logo’s width, and its cut faces stay where the logo’s are until the draw-back reaches them.',
+    body: 'No mask reaches the ring except beside a line’s ink in its hole, within 0.8 units or 1.5 CSS pixels of it, whichever is more, so the ring is the logo’s own path in every frame and none of its pixels holds a line’s ink. The meridian is only drawn and undrawn along its own ellipse at the logo’s width, and its cut faces stay where the logo’s are until the draw-back reaches them.',
   },
   {
     term: 'Dash lengths',
@@ -170,10 +170,17 @@ export const COMPARE_CAPTION = 'Both panes of /compare while their pages load, i
 export const FIX_ID = 'before-and-after';
 export const FIX_TITLE = 'Before and after';
 export const FIX_LEAD =
-  'Three fixes brought the loader to this state. The first keeps the logo the logo outside the moving line, the second makes the hover run in Safari, and the third keeps the ring off every mask, holds the meridian to its own ellipse and measures each dash on its path’s own length.';
+  'Four fixes brought the loader to this state. The first keeps the logo the logo outside the moving line, the second makes the hover run in Safari, the third keeps the ring off every mask, holds the meridian to its own ellipse and measures each dash on its path’s own length, and the fourth takes the last of the meridian’s ink off the ring’s inner edge.';
+
+export const RING_CAPTION = {
+  points:
+    'The ring’s inner edge at 8x in light, at the four points 23.1 degrees either side of each pole where the meridian’s ink leaves the ring, in the end pose, a rest and a G lap. Old is main at 8e91d034, and red marks each pixel that differs from the ring drawn alone by more than 32 levels. The band no mask reaches was cut most of a degree short of where the meridian’s ink leaves the ring, so a tick of the meridian showed there once it was undrawn. The band is now drawn from the lines themselves, and no tick is left.',
+  webkit:
+    'The north pole’s merge at 8x in WebKit, the logo at 96 px on a 2x screen, in the end pose. WebKit draws a mask in CSS pixels, so at this size a reach of 0.8 units left the meridian’s ink on the ring’s inner edge as a grey fringe. The reach is now 0.8 units or 1.5 CSS pixels, whichever is more, and the fringe is gone.',
+};
 
 export const FIX_SHEET_CAPTION =
-  'Frames of the hover and the loader from the first loader and from the final one. In the columns against the logo, grey is ink in both the frame and the logo, blue is ink only in the logo and red is ink only in the frame. Before, red edged every still part, because the motion layer drew them a little heavier than the logo, so the G’s top arc moved and the meridian’s C shrank. After, red is left only on the line that is moving and where the C closes behind the undrawn meridian. The G end at 4x: before, it stopped short of the logo’s tip, and after, it lands on it. The last row is the meridian’s bottom cut face at 8x: in the first hover it had moved 4.86 units by 1.083 seconds, and in the final one it has not moved.';
+  'Frames of the hover and the loader from the first loader and from main at 8e91d034, the third fix, before the ring fix below. In the columns against the logo, grey is ink in both the frame and the logo, blue is ink only in the logo and red is ink only in the frame. Before, red edged every still part, because the motion layer drew them a little heavier than the logo, so the G’s top arc moved and the meridian’s C shrank. After, red is left only on the line that is moving and where the C closes behind the undrawn meridian. The G end at 4x: before, it stopped short of the logo’s tip, and after, it lands on it. The last row is the meridian’s bottom cut face at 8x: in the first hover it had moved 4.86 units by 1.083 seconds, and after the fix it has not moved.';
 
 export const SAFARI_CAPTION = {
   before:
