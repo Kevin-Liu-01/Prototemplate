@@ -1,8 +1,8 @@
 {
   "zip": {
     "name": "General-Translation-brand-kit.zip",
-    "bytes": 24645721,
-    "url": null
+    "bytes": 24699089,
+    "url": "/brand/kit/General-Translation-brand-kit.zip"
   },
   "folders": {
     "logo": 250,
@@ -88,33 +88,33 @@
       "svg": {
         "ink": {
           "file": "svg/gt-lockup-horizontal-ink.svg",
-          "bytes": 25923
+          "bytes": 25935
         },
         "white": {
           "file": "svg/gt-lockup-horizontal-white.svg",
-          "bytes": 25923
+          "bytes": 25935
         },
         "accent": {
           "file": "svg/gt-lockup-horizontal-accent.svg",
-          "bytes": 25923
+          "bytes": 25935
         },
         "accent-lift": {
           "file": "svg/gt-lockup-horizontal-accent-lift.svg",
-          "bytes": 25923
+          "bytes": 25935
         },
         "currentcolor": {
           "file": "svg/gt-lockup-horizontal-currentcolor.svg",
-          "bytes": 25933
+          "bytes": 25945
         }
       },
       "png": {
         "ink": {
           "file": "png/gt-lockup-horizontal-ink-on-transparent-1024.png",
-          "bytes": 15609
+          "bytes": 15304
         },
         "white": {
           "file": "png/gt-lockup-horizontal-white-on-transparent-1024.png",
-          "bytes": 11512
+          "bytes": 11311
         }
       }
     },
@@ -123,33 +123,33 @@
       "svg": {
         "ink": {
           "file": "svg/gt-wordmark-ink.svg",
-          "bytes": 10982
+          "bytes": 10980
         },
         "white": {
           "file": "svg/gt-wordmark-white.svg",
-          "bytes": 10982
+          "bytes": 10980
         },
         "accent": {
           "file": "svg/gt-wordmark-accent.svg",
-          "bytes": 10982
+          "bytes": 10980
         },
         "accent-lift": {
           "file": "svg/gt-wordmark-accent-lift.svg",
-          "bytes": 10982
+          "bytes": 10980
         },
         "currentcolor": {
           "file": "svg/gt-wordmark-currentcolor.svg",
-          "bytes": 10987
+          "bytes": 10985
         }
       },
       "png": {
         "ink": {
           "file": "png/gt-wordmark-ink-on-transparent-1024.png",
-          "bytes": 11371
+          "bytes": 11562
         },
         "white": {
           "file": "png/gt-wordmark-white-on-transparent-1024.png",
-          "bytes": 8641
+          "bytes": 8737
         }
       }
     },
@@ -192,11 +192,11 @@
   "color": [
     {
       "file": "color/colors.css",
-      "bytes": 1225
+      "bytes": 1241
     },
     {
       "file": "color/colors.json",
-      "bytes": 4644
+      "bytes": 5034
     },
     {
       "file": "color/colors.ase",
@@ -207,15 +207,15 @@
     {
       "key": "brand-sheet",
       "file": "sheets/brand-sheet.webp",
-      "bytes": 86516,
+      "bytes": 89986,
       "width": 1800,
-      "height": 1340,
+      "height": 1370,
       "pdf": "guides/brand-sheet.pdf"
     },
     {
       "key": "clear-space",
       "file": "sheets/clear-space.webp",
-      "bytes": 215350,
+      "bytes": 216340,
       "width": 1800,
       "height": 4300,
       "pdf": "guides/clear-space.pdf"
@@ -223,7 +223,7 @@
     {
       "key": "minimum-size",
       "file": "sheets/minimum-size.webp",
-      "bytes": 56488,
+      "bytes": 59648,
       "width": 1800,
       "height": 1483,
       "pdf": "guides/minimum-size.pdf"
@@ -231,33 +231,33 @@
     {
       "key": "variant-sheet",
       "file": "sheets/variant-sheet.webp",
-      "bytes": 326062,
+      "bytes": 419654,
       "width": 1800,
-      "height": 3227,
+      "height": 3973,
       "pdf": "guides/variant-sheet.pdf"
     },
     {
       "key": "type-spec",
       "file": "sheets/type-spec.webp",
-      "bytes": 212326,
+      "bytes": 222036,
       "width": 1800,
-      "height": 2549,
+      "height": 2613,
       "pdf": "type/type-spec.pdf"
     },
     {
       "key": "color-sheet",
       "file": "sheets/color-sheet.webp",
-      "bytes": 92692,
+      "bytes": 98280,
       "width": 1800,
-      "height": 1746,
+      "height": 1799,
       "pdf": "color/color-sheet.pdf"
     },
     {
       "key": "frames-sheet",
       "file": "sheets/frames-sheet.webp",
-      "bytes": 103030,
+      "bytes": 108456,
       "width": 1800,
-      "height": 1903,
+      "height": 1928,
       "pdf": null
     }
   ]
