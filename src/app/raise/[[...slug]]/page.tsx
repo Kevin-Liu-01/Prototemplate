@@ -30,11 +30,22 @@ export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
   return [{ slug: [] }, ...raise.data.rounds.map((round) => ({ slug: [round.id] })), { slug: [FINALS] }];
 }
 
+/** A page's own description: its account's lead when that reads whole in a search snippet (50 to 160 characters), else one built from the round's tag and title. */
+function descriptionOf(raise: Raise | null, slug: string | undefined): string {
+  if (!slug || !raise) return DESCRIPTION;
+  const fits = (text: string | undefined): text is string => !!text && text.length >= 50 && text.length <= 160;
+  const lead = raise.text[slug]?.lead;
+  if (fits(lead)) return lead;
+  if (slug === FINALS) return 'Every deliverable of the funding announcement with all its cuts, in posting order, then the loader and the music.';
+  const round = raise.data.rounds.find((r) => r.id === slug);
+  return round ? `Round ${round.tag} of the funding announcement media: ${round.title}.` : DESCRIPTION;
+}
+
 export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
   const rest = slug?.length ? `/${slug.join('/')}` : '';
   const raise = await loadRaise();
-  return seoRoute({ path: `/raise${rest}`, title: titleOf(raise, slug?.[0]), kind: 'page', description: DESCRIPTION })
+  return seoRoute({ path: `/raise${rest}`, title: titleOf(raise, slug?.[0]), kind: 'page', description: descriptionOf(raise, slug?.[0]) })
     .metadata;
 }
 
