@@ -822,11 +822,6 @@
   line-height: var(--pt-t-meta-lh);
 }
 
-.ptb-kit-logo > .ptb-kit-links {
-  margin-top: auto;
-  padding-top: 8px;
-}
-
 .ptb-book .ptb-kit-row {
   margin-top: 12px;
 }
@@ -841,6 +836,228 @@
 .ptb-kit-links a:hover {
   color: var(--pt-ink);
   text-decoration-color: var(--pt-ink-2);
+}
+
+/* the row's verb, Download or Copy, before its links */
+.ptb-kit-verb {
+  min-width: 64px;
+  color: var(--pt-titanium);
+}
+
+/* a logo card's actions, held to the card's foot: the colour, then copy and download */
+.ptb-kit-acts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.ptb-kit-seg {
+  max-width: 100%;
+}
+
+/* a copy control set as a link: the name, then the copy glyph */
+.ptb-kit-copy {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--pt-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--pt-ink-4);
+  cursor: pointer;
+}
+
+.ptb-kit-copy svg {
+  width: 13px;
+  height: 13px;
+  color: var(--pt-titanium);
+}
+
+.ptb-kit-copy:hover {
+  color: var(--pt-ink);
+  text-decoration-color: var(--pt-ink-2);
+}
+
+.ptb-kit-copy.is-copied svg,
+.ptb-kit-value.is-copied svg {
+  color: var(--pt-ink);
+}
+
+/* the colours: one card each, the swatch, the name and role, then a copy row per value */
+.ptb-kit-colors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px 14px;
+  max-width: 900px;
+  margin-top: 20px;
+}
+
+.ptb-kit-color {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ptb-kit-color i {
+  display: block;
+  height: 64px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background-clip: padding-box;
+}
+
+.ptb-kit-color b {
+  display: block;
+  margin-top: 10px;
+  font-size: var(--pt-t-small);
+  font-weight: 500;
+  color: var(--pt-ink);
+}
+
+/* two lines held for every role, so the value rows line up across a row of cards */
+.ptb-kit-color > p {
+  min-height: 3em;
+  margin: 2px 0 6px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink-2);
+}
+
+/* a value row: its label, the value in the code face, the copy glyph; the whole row copies */
+.ptb-kit-value {
+  appearance: none;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--pt-radius-control);
+  background: none;
+  font: inherit;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ptb-kit-color .ptb-kit-value {
+  margin-left: -6px;
+  width: calc(100% + 12px);
+}
+
+.ptb-kit-value:hover {
+  background: var(--pt-plate);
+}
+
+.ptb-kit-value span {
+  color: var(--pt-titanium);
+}
+
+.ptb-kit-value code {
+  overflow: hidden;
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-meta);
+  color: var(--pt-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ptb-kit-value svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pt-titanium);
+}
+
+.ptb-kit-values {
+  max-width: 640px;
+  margin: 12px 0 0 -6px;
+}
+
+.ptb-kit-values .ptb-kit-value {
+  grid-template-columns: 72px minmax(0, 1fr) 14px;
+}
+
+/* the type specimen, set live in Katagami Text */
+@font-face {
+  font-family: 'Katagami Text'; /* lint-type: allow the brand kit's live specimen of the brand typeface */
+  src: url('/fonts/katagami/KatagamiText-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+2074, U+20AC, U+2122, U+2190-2199, U+2212, U+2215;
+}
+
+.ptb-kit-type {
+  max-width: 900px;
+  margin-top: 20px;
+  padding: 28px 28px 24px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-card);
+  background-clip: padding-box;
+  font-family: 'Katagami Text', var(--pt-text); /* lint-type: allow the brand kit's live specimen of the brand typeface */
+  color: var(--pt-ink);
+}
+
+.ptb-book .ptb-kit-type p {
+  margin: 0;
+  max-width: none;
+  color: var(--pt-ink);
+}
+
+.ptb-book .ptb-kit-type .ptb-kit-type-name {
+  font-size: var(--pt-d1);
+  line-height: var(--pt-d1-lh);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.ptb-kit-type-weights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.ptb-kit-type-weights div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+}
+
+.ptb-kit-type-sample {
+  font-size: var(--pt-d2);
+  line-height: var(--pt-d2-lh);
+  color: var(--pt-ink);
+}
+
+.ptb-kit-type-sample.is-w400 {
+  font-weight: 400;
+}
+
+.ptb-kit-type-sample.is-w500 {
+  font-weight: 500;
+}
+
+.ptb-book .ptb-kit-type .ptb-kit-type-text {
+  margin-top: 20px;
+  font-size: var(--pt-t-lead);
+  line-height: var(--pt-t-lead-lh);
+  color: var(--pt-ink-2);
 }
 
 /* the live motion and the states: the logo on an absolute paper or ink tile */
@@ -1098,9 +1315,15 @@
   }
 
   .ptb-art .ptb-send a,
-  .ptb-kit-links a {
+  .ptb-kit-links a,
+  .ptb-kit-links .ptb-kit-copy,
+  .ptb-kit-links .ptb-kit-verb {
     display: inline-flex;
     align-items: center;
+    min-height: 44px;
+  }
+
+  .ptb-kit-value {
     min-height: 44px;
   }
 }
@@ -1117,6 +1340,29 @@
   .ptb-swatches,
   .ptb-pal {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* one colour a row, so every value shows whole */
+  .ptb-kit-colors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ptb-kit-color > p {
+    min-height: 0;
+  }
+
+  .ptb-kit-value code {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .ptb-kit-type {
+    padding: 20px 18px 18px;
+  }
+
+  .ptb-book .ptb-kit-type .ptb-kit-type-name {
+    font-size: var(--pt-d2);
+    line-height: var(--pt-d2-lh);
   }
 
   .ptb-kit-logos,

@@ -1,4 +1,7 @@
 import { headingId } from './brand-sections';
+import { KitCopy } from './KitCopy';
+import { KitLogoActions } from './KitLogoActions';
+import COLORS from '../../../public/brand/kit/color/colors.json';
 import KIT from '../../../public/brand/kit/manifest.json';
 import GtLogoMotion from '@/components/brand/GtLogoMotion';
 
@@ -27,13 +30,33 @@ const LOGO_TEXT: Record<LogoKey, { name: string; use: string; wide: boolean }> =
   'wordmark-stacked': { name: 'Stacked wordmark', use: 'The name alone on two lines, in the spacing of the stacked lockup.', wide: true },
 };
 
-const SVG_LABEL = [
-  ['ink', 'ink'],
-  ['white', 'white'],
-  ['accent', 'accent'],
-  ['accent-lift', 'accent lift'],
-  ['currentcolor', 'currentColor'],
+/** the two weights of Katagami Text and what each sets */
+const TYPE_WEIGHTS = [
+  ['400', 'running text'],
+  ['500', 'headings, labels and the name'],
 ] as const;
+
+/** the type as CSS declarations a reader pastes */
+const TYPE_VALUES = [
+  ['Text', "font-family: 'Katagami Text', system-ui, sans-serif;"],
+  ['Code', "font-family: 'Geist Mono', ui-monospace, monospace;"],
+  ['Weights', 'font-weight: 400; /* 500 for headings, labels and the name */'],
+] as const;
+
+type KitColor = (typeof COLORS.colors)[number];
+
+/** a colour's values in the forms a reader pastes: CSS hex, rgb(), hsl() and oklch() */
+const colorValues = (c: KitColor): [string, string][] => [
+  ['hex', c.hex],
+  ['RGB', `rgb(${c.rgb.join(' ')})`],
+  ['HSL', `hsl(${c.hsl[0]} ${c.hsl[1]}% ${c.hsl[2]}%)`],
+  ['OKLCH', `oklch(${trim(c.oklch.l * 100)}% ${trim(c.oklch.c)} ${trim(c.oklch.h)})`],
+];
+
+/** a number with no trailing zeros, to four decimals at most: 0.1319, 12.86, 0 */
+function trim(n: number): string {
+  return String(Number(n.toFixed(4)));
+}
 
 const sheet = (key: string) => {
   const found = KIT.sheets.find((s) => s.key === key);
@@ -103,7 +126,8 @@ export default function BrandKit() {
       <p>
         Every logo comes as SVG, PDF and PNG at 512, 1024 and 2048 px. The transparent files use ink or accent on a
         light ground and white or accent lift on a dark one. The <code>currentColor</code> SVG takes the colour of
-        the text around it, for inline SVG and icon systems.
+        the text around it, for inline SVG and icon systems. Copy SVG puts the code on the clipboard, which Figma
+        and other design tools paste as vectors, and Copy PNG puts the 1024 px transparent PNG there as an image.
       </p>
       <div className='ptb-kit-logos'>
         {KIT.logos.map((logo) => {
@@ -120,19 +144,7 @@ export default function BrandKit() {
               </div>
               <b>{text.name}</b>
               <p>{text.use}</p>
-              <p className='ptb-kit-links'>
-                {SVG_LABEL.map(([color, label]) => (
-                  <a download href={`${BASE}/${logo.svg[color].file}`} key={color}>
-                    SVG {label}
-                  </a>
-                ))}
-                <a download href={`${BASE}/${logo.png.ink.file}`}>
-                  PNG ink
-                </a>
-                <a download href={`${BASE}/${logo.png.white.file}`}>
-                  PNG white
-                </a>
-              </p>
+              <KitLogoActions base={BASE} name={text.name.toLowerCase()} png={logo.png} svg={logo.svg} />
             </div>
           );
         })}
@@ -149,27 +161,76 @@ export default function BrandKit() {
       </p>
 
       <h3 id={headingId('brand-kit', 'color')}>Color</h3>
-      <Sheet
-        alt='The colour sheet: ink, raised ink, titanium, paper, the accent and its lift, each with its values'
-        caption='The colour sheet: four absolute colours and one blue accent, with the hex, RGB, HSL and OKLCH values of each.'
-        crop
-        k='color-sheet'
-      />
+      <p>
+        Four absolute colours and one blue accent, with its lift for ink. Motion off-white is the mark in the dark
+        motion files and the text of an interface in dark mode. Click any value to copy it.
+      </p>
+      <div className='ptb-kit-colors'>
+        {COLORS.colors.map((color) => (
+          <div className='ptb-kit-color' key={color.id}>
+            <i style={{ background: color.hex }} />
+            <b>{color.name}</b>
+            <p>{color.role}</p>
+            {colorValues(color).map(([label, value]) => (
+              <KitCopy className='ptb-kit-value' key={label} text={value} what={`${color.name} ${label}`}>
+                <span>{label}</span>
+                <code>{value}</code>
+              </KitCopy>
+            ))}
+          </div>
+        ))}
+      </div>
       <p className='ptb-kit-links ptb-kit-row'>
+        <span className='ptb-kit-verb'>Copy</span>
+        <KitCopy className='ptb-kit-copy' url={`${BASE}/color/colors.css`} what='The colours as CSS variables'>
+          CSS variables
+        </KitCopy>
+      </p>
+      <p className='ptb-kit-links'>
+        <span className='ptb-kit-verb'>Download</span>
         {KIT.color.map((file) => (
           <a download href={`${BASE}/${file.file}`} key={file.file}>
             {file.file.replace('color/', '')} ({KB(file.bytes)})
           </a>
         ))}
       </p>
+      <p className='ptb-kit-links ptb-kit-row'>
+        <a href={`${BASE}/${sheet('color-sheet').file}`}>Open the colour sheet</a>
+      </p>
 
       <h3 id={headingId('brand-kit', 'type')}>Type</h3>
-      <Sheet
-        alt='The type spec: Katagami Text at weights 400 and 500, and Geist Mono for code'
-        caption='The type spec: Katagami Text sets the name in the logo, the interface, headings and body at weights 400 and 500, and Geist Mono sets code.'
-        crop
-        k='type-spec'
-      />
+      <p>
+        Katagami Text sets the name in the logo, the interface, headings and body, at weight 400 for running text
+        and 500 for headings, labels and the name. Geist Mono sets code. The specimen below is set live in Katagami
+        Text.
+      </p>
+      <div className='ptb-kit-type'>
+        <p className='ptb-kit-type-name'>General Translation</p>
+        <div className='ptb-kit-type-weights'>
+          {TYPE_WEIGHTS.map(([weight, use]) => (
+            <div key={weight}>
+              <span className={`ptb-kit-type-sample is-w${weight}`}>Aa Gg 01</span>
+              <span>
+                {weight}, {use}
+              </span>
+            </div>
+          ))}
+        </div>
+        <p className='ptb-kit-type-text'>
+          Translations are generated at build time and deploy with the app.
+        </p>
+      </div>
+      <div className='ptb-kit-values'>
+        {TYPE_VALUES.map(([label, value]) => (
+          <KitCopy className='ptb-kit-value' key={label} text={value} what={`The ${label.toLowerCase()} CSS`}>
+            <span>{label}</span>
+            <code>{value}</code>
+          </KitCopy>
+        ))}
+      </div>
+      <p className='ptb-kit-links ptb-kit-row'>
+        <a href={`${BASE}/${sheet('type-spec').file}`}>Open the type spec</a>
+      </p>
       <p>
         The kit carries Katagami Text, roman and italic, as desktop TTF and web WOFF2 files with its SIL Open Font
         License. Katagami is a free, open-source type family.
