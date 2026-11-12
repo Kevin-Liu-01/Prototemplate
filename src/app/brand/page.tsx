@@ -122,16 +122,8 @@ const markNote = (src: string) => {
   return note ? `\u00a0· ${note}` : '';
 };
 
-/** The partnership globes under public/media: 2048 by 2048 on ink or on paper (`ground`), each still one with a -transparent twin for a ground of its own kind, and the `live` one drawn by GlyphGlobe over its PNG's first frame; the captions set their separators as FILMS does. The page shows each globe's lossless WebP and the links download the PNGs. */
+/** The partnership globes under public/media: the `live` one first, a 16 by 9 frame across both columns that GlyphGlobe draws over its PNG, the first frame of its turn; then the four stills in their pairs, 2048 by 2048 on ink or on paper (`ground`), each with a -transparent twin for a ground of its own kind. The captions set their separators as FILMS does. The page shows each still's lossless WebP and the links download the PNGs. */
 const GLOBES = [
-  {
-    stem: 'gt-globe-dithered',
-    ground: 'ink',
-    name: 'the dithered globe',
-    alt: 'A globe printed in pale blue Bayer dither on near-black, lit from the upper left, with land and sea told apart by the density of the dots',
-    caption:
-      'the dithered globe\u00a0· the dashboard sign-in globe through the 8x8 Bayer screen in #86a8ff on ink, 6\u00a0px cells',
-  },
   {
     stem: 'gt-globe-glyph-launch',
     ground: 'ink',
@@ -140,6 +132,14 @@ const GLOBES = [
     alt: 'A dithered blue Earth turning on near-black, its bright land covered in square tiles that each hold one white letter from a different writing system, under a pale rim of light',
     caption:
       'the launch glyph globe\u00a0· the globe from the launch graphics and films, the dithered Earth with letters from the world\u2019s scripts, one full turn every 10\u00a0seconds',
+  },
+  {
+    stem: 'gt-globe-dithered',
+    ground: 'ink',
+    name: 'the dithered globe',
+    alt: 'A globe printed in pale blue Bayer dither on near-black, lit from the upper left, with land and sea told apart by the density of the dots',
+    caption:
+      'the dithered globe\u00a0· the dashboard sign-in globe through the 8x8 Bayer screen in #86a8ff on ink, 6\u00a0px cells',
   },
   {
     stem: 'gt-globe-dithered-mark',
@@ -616,16 +616,23 @@ const PAGES: readonly BrandPage[] = [
         </div>
         <h3 id={headingId('made-with-the-system', 'partnership-globes')}>Partnership globes</h3>
         <p>
-          The globes are square graphics for laying beside a partner&rsquo;s mark,
-          each 2048 by 2048&nbsp;px. The dark ones come on ink, #070707, and the light
-          ones on paper, #ffffff. Each still globe also comes as a transparent twin
-          with the same art on an alpha ground: a dark twin is for a dark ground and
-          a light twin for a light one. The launch glyph globe turns on the page as it
-          turns in the launch films, and its PNG is the first frame of its turn.
+          The globes are graphics for laying beside a partner&rsquo;s mark. The launch
+          glyph globe comes first, in the 16 by 9 frame of the launch films. It turns
+          on the page as it turns there, and its PNG is the first frame of its turn,
+          3200 by 1800&nbsp;px. The four stills under it are square, each 2048 by
+          2048&nbsp;px. The dark ones come on ink, #070707, and the light ones on paper,
+          #ffffff. Each still also comes as a transparent twin with the same art on an
+          alpha ground: a dark twin is for a dark ground and a light twin for a light
+          one.
         </p>
         <div className='ptb-globes'>
           {GLOBES.map((globe) => (
-            <div className={globe.ground === 'paper' ? 'ptb-art ptb-art-paper' : 'ptb-art'} key={globe.stem}>
+            <div
+              className={
+                'live' in globe ? 'ptb-art ptb-art-wide' : globe.ground === 'paper' ? 'ptb-art ptb-art-paper' : 'ptb-art'
+              }
+              key={globe.stem}
+            >
               <figure className='ptb-shot'>
                 {'live' in globe ? (
                   <GlyphGlobe className='ptb-globe-live' poster={`/media/${globe.stem}.webp`} title={globe.alt} />
