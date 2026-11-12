@@ -38,6 +38,7 @@ export const EdgeGlobeDemo = dynamic(() => import('./EdgeGlobeDemo'), { loading:
 export const EverySentenceDemo = dynamic(() => import('./EverySentenceDemo'), { loading: slot(330) });
 export const GlobeFigure = dynamic(() => import('@/components/blog-globe/GlobeFigure'), { loading: slot(700) });
 export const GlobeGrid = dynamic(() => import('@/components/blog-globe/GlobeGrid'), { loading: slot(1400) });
+export const GlyphGlobeDemo = dynamic(() => import('./GlyphGlobeDemo'), { loading: slot(1300) });
 export const GlyphFieldDemo = dynamic(() => import('./GlyphFieldDemo'), { loading: slot(440) });
 export const GtLogoMotionDemo = dynamic(() => import('./GtLogoMotionDemo'), { loading: slot(260) });
 export const HeadFrameDemo = dynamic(() => import('./HeadFrameDemo'), { loading: slot(540) });

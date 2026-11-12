@@ -281,6 +281,7 @@ export function siteRoutes() {
     { id: 'docs-template', path: '/docs/template', tools: 'check', source: docsSite },
     { id: 'docs-components', path: '/docs/components', tools: 'check live capture', source: components },
     { id: 'docs-components-globes', path: '/docs/components/globes', tools: 'check', source: [...components, 'src/components/blog-globe'] },
+    { id: 'docs-components-glyph-globe', path: '/docs/components/glyph-globe', tools: 'check capture', source: [...components, 'src/components/shared/GlyphGlobe.tsx', 'src/lib/glyph-globe.ts', 'src/lib/glyph-globe-presets.ts'] },
     { id: 'docs-components-blog-globe', path: '/docs/components/blog-globe', tools: 'check capture', source: [...docsSite, 'src/components/blog-globe', 'src/app/d/blog-globe'] },
     { id: 'docs-components-marks', path: '/docs/components/marks', tools: 'check live', source: [...components, 'src/lib/marks.ts', 'public/marks'] },
     { id: 'compare', path: '/compare', tools: 'check live lines capture', source: ['src/app/compare'] },

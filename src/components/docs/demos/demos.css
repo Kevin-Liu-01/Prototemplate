@@ -1046,3 +1046,54 @@
 .dmo-iso-mark {
   fill: var(--dmo-ink);
 }
+
+/* ---------- the glyph globe's configurator ---------- */
+
+.dmo-gg-controls {
+  display: grid;
+  flex-basis: 100%;
+  gap: 14px;
+  min-width: 0;
+}
+
+.dmo-gg-group {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dmo-gg-title {
+  font-size: var(--pt-t-meta);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
+}
+
+.dmo-gg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 18px;
+  min-width: 0;
+}
+
+.dmo-gg-color {
+  width: 44px;
+  height: 32px;
+  padding: 2px;
+  border: 1px solid var(--pt-hair);
+  border-radius: var(--pt-radius-control);
+  background: var(--pt-paper);
+}
+
+.dmo-gg-code {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--pt-hair-soft);
+  border-radius: var(--pt-radius-control);
+  font-family: var(--pt-mono);
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-ink);
+  white-space: pre;
+  overflow-x: auto;
+}

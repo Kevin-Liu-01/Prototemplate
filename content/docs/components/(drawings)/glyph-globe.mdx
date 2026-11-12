@@ -1,0 +1,101 @@
+---
+title: The glyph globe
+description: "The globe from the launch graphics and films as one component: a dithered earth with glyph tiles that spins in full turns, with every setting and preset live."
+icon: Globe
+sources:
+  - src/components/shared/GlyphGlobe.tsx
+  - src/lib/glyph-globe.ts
+  - src/lib/glyph-globe-presets.ts
+  - src/components/docs/demos/GlyphGlobeDemo.tsx
+  - public/media/glyph-globe
+---
+
+import { GlyphGlobeDemo } from '@/components/docs/demos/lazy';
+
+`GlyphGlobe` draws the globe from the launch graphics and films. A whole-earth tone map turns under an orthographic view and prints through the 8 by 8 Bayer screen in three blues on ink. Where the land is bright, solid squares hold one letter each from 64 letters of the world's scripts, and every letter changes on the beat. A rim light, a sunrise glow along the top of the limb, a blue bloom and sparse stars sit over it. The default is the launch look, and it turns one full revolution every 10 seconds, west to east.
+
+<GlyphGlobeDemo />
+
+Each control sets one prop, and the code under the controls is the JSX for the globe on the stage. A preset sets the props its variation changed, and the props passed with it win.
+
+## Import and props
+
+```tsx
+import GlyphGlobe from '@/components/shared/GlyphGlobe';
+
+<GlyphGlobe className='hero-globe' />;
+<GlyphGlobe preset='plain' framing='whole' revolutionSeconds={30} />;
+```
+
+The globe fills its box, so the caller sets its size. Every length inside it is a share of the globe's radius, so the look holds at any size. At the launch framing in a 1600 by 900 box at a pixel ratio of 2, every cell, tile and star lands on the pixel the launch renderer drew it on.
+
+| Prop | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `preset` | a preset below | `'launch'` | The named look the other props are set over. |
+| `glyphs` | `'tiles'`, `'surface'`, `'grid'` or `'none'` | `'tiles'` | How the letters sit on the earth. Tiles is a grid fixed to the frame. Surface fixes the tiles to the sphere. Grid uses larger frame tiles that change through a dissolve. None draws no letters. |
+| `boxes` | boolean | `true` | The solid square behind each letter. Off, each letter stands alone with a dark keyline. |
+| `glyphSet` | string | `''` | Up to 64 letters drawn in the page's face. Empty uses the launch atlas. |
+| `density` | 0 to 1 | `1` | The share of lit tiles kept. |
+| `tile` | share of the radius | `0.0401` | The tile pitch. Surface and grid use 0.0366. |
+| `tileReach` | 0 to 1 | `0.93` | Tiles appear only inside this share of the radius, squared. |
+| `threshold` | 0 to 1 | `0.42` | A tile lights where the earth under it is brighter than this tone. |
+| `split` | 0 to 1 | `0.55` | A lit tile takes the high color above this tone. |
+| `jitter` | 0 to 0.4 | `0.12` | Each tile's own offset on the threshold and the split. |
+| `letterMin`, `letterMax` | share of the tile | `0.56`, `0.9` | The letter's size at the threshold and at full tone. |
+| `lonePoints` | 0 to 1 | `0.035` | The share of dark tiles that hold a lone letter. |
+| `beatSeconds` | seconds | `0.5` | The time between letter changes. |
+| `screen` | `8`, `4` or `2` | `8` | The Bayer matrix order. The 4 and 2 matrices are corners of `BAYER_8` in `src/lib/dither.ts`. |
+| `cell` | CSS px | `0` | The screen cell. 0 keeps the launch share of the radius, 4.8 pixels across a 1920 pixel frame. |
+| `ocean`, `land` | 0 to 1.5 | `0`, `1` | The tones the map's black and white print at. A higher ocean lights the sea. |
+| `limbDarken` | 0 to 1 | `0` | Darkens the earth toward the limb so it reads round. |
+| `soften` | 0 to 1 | `0` | Blends the smooth ramp under the screen. |
+| `revolutionSeconds` | seconds | `10` | One full turn. 0 holds the earth still. |
+| `direction` | `1` or `-1` | `1` | 1 turns the land west to east. |
+| `motion`, `swayDegrees` | `'spin'` or `'sway'`, degrees | `'spin'`, `8` | Sway turns the earth west and back once a loop instead of spinning. |
+| `latitude`, `longitude`, `roll` | degrees | `39.81`, `-39.71`, `0.32` | The view at the start of the loop. |
+| `framing` | `'launch'`, `'whole'` or `{ x, y, r }` | `'launch'` | Launch keeps the upper left of the globe in view, as the launch graphics framed it, at any aspect. Whole centers the globe at 0.4 of the shorter side. |
+| `rim`, `dawn`, `bloom` | 0 to 2 | `1`, `1`, `0.42` | The rim light, the sunrise glow and the bloom. |
+| `sunAngle` | degrees | `-96` | The screen angle of the light. -90 is straight up. |
+| `breathe`, `twinkle` | boolean | `true` | The glow breathes and the stars twinkle once to three times a loop. |
+| `stars` | 0 to 1 | `1` | The share of the launch stars shown. |
+| `palette` | `GlyphGlobePalette` | the launch blues | The ground, one to five screen inks, the two tile colors, the letter, the rim, the dawn, the bloom tint and the two star colors. |
+| `autoplay` | boolean | `true` | Spins on its own once on screen. |
+| `stillTime` | seconds | `0` | The frame shown under reduced motion, while paused and before the first frame. |
+| `dpr` | number | `2` at most | The device pixel ratio cap. |
+| `poster` | URL or `null` | the launch still | The picture shown before the first frame and without WebGL2. |
+| `title` | string | none | The accessible name. Without one the globe is decoration. |
+| `onHandle`, `onFrame` | functions | none | The running globe's handle, and each frame's time in milliseconds. |
+
+## Presets
+
+`GLYPH_GLOBE_PRESETS` in `src/lib/glyph-globe-presets.ts` holds each look the launch work explored.
+
+| Preset | What it is |
+| --- | --- |
+| `launch` | The globe from the launch graphics and films. |
+| `surface` | Tiles fixed to the sphere in rows of latitude. They turn with the land, shrink toward the limb and roll over as a front of change crosses the view. |
+| `grid` | Larger frame tiles. Their letters change every four beats through a Bayer-order dissolve that sweeps east to west. |
+| `plain` | The earth, the screen and the sky with no letters. |
+| `letters` | The launch tiles without their squares. |
+| `film` | The earlier film look, with a darker limb, a softer screen and a 32/60 second beat. |
+| `sway` | The first motion, 8 degrees west and back over 16 seconds. |
+| `whole` | The launch look with the whole globe centered. |
+| `vintage` | Muted blues and a warm paper on ink. |
+| `mono` | One ink, #f2f2f0, on ink. |
+| `mono-water` | The mono screen with its faintest cells, mostly sea, in #86a8ff. |
+| `mono-glyphs` | The mono screen with blue letters. |
+| `home` | The homepage studio field's five blues and white. |
+
+## When to use it
+
+Use the glyph globe where a page or a graphic needs the launch globe: a hero, a cover, an end card or a still for a post. The letters say that the product works in every language. Use the globe field on [Globes and maps](/docs/components/globes) for a quiet sphere of noise behind a form, and the edge globe where a page explains delivery.
+
+## Motion and themes
+
+The globe is created paused and plays only while it is on screen and its tab is visible. Every frame is a function of the loop time, so the turn joins without a jump. Under reduced motion it draws the frame at `stillTime` once and never starts the loop. All globes on a page draw through one WebGL2 context, which is released a second after the last globe leaves. Without WebGL2 the poster stays in place.
+
+The globe is a picture on ink, so it keeps its palette in both themes.
+
+## Sources
+
+The earth is a 2048 by 1024 tone map built from Natural Earth land with seeded relief, ice and clouds. The letters are an 8 by 8 atlas of 128 pixel cells in Katagami Text and Katagami CJK. Both are copies of the launch graphics' files, and `public/media/README.md` records their checksums. The engine ports the launch renderer's laws: the screen, the tiles, the sky and the 160 stars as it seeded them.

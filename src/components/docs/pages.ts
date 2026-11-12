@@ -108,6 +108,13 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
       'Every globe in the library, live: the edge delivery globe, the dithered globe field in two looks, and the blog globe directions from all three rounds.',
   },
   {
+    slug: 'components/glyph-globe',
+    href: '/docs/components/glyph-globe',
+    title: 'The glyph globe',
+    description:
+      'The globe from the launch graphics and films as one component: a dithered earth with glyph tiles that spins in full turns, with every setting and preset live.',
+  },
+  {
     slug: 'components/blog-globe',
     href: '/docs/components/blog-globe',
     title: 'The blog globe figure',
