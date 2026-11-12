@@ -18,7 +18,7 @@ import { GlyphGlobeDemo } from '@/components/docs/demos/lazy';
 
 <GlyphGlobeDemo />
 
-Each control sets one prop, and the code under the controls is the JSX for the globe on the stage. A preset sets the props its variation changed, and the props passed with it win.
+Each control sets one prop, and the code under the controls is the JSX for the globe on the stage. Still at sets `stillTime`, the frame that Still and reduced motion show, and Custom framing places the disc by its center, as shares of the box, and its radius, as a share of the shorter side. A preset sets the props its variation changed, and the props passed with it win.
 
 ## Import and props
 
@@ -55,7 +55,7 @@ The globe fills its box, so the caller sets its size. Every length inside it is 
 | `direction` | `1` or `-1` | `1` | 1 turns the land west to east. |
 | `motion`, `swayDegrees` | `'spin'` or `'sway'`, degrees | `'spin'`, `8` | Sway turns the earth west and back once a loop instead of spinning. |
 | `latitude`, `longitude`, `roll` | degrees | `39.81`, `-39.71`, `0.32` | The view at the start of the loop. |
-| `framing` | `'launch'`, `'whole'` or `{ x, y, r }` | `'launch'` | Launch keeps the upper left of the globe in view, as the launch graphics framed it, at any aspect. Whole centers the globe at 0.4 of the shorter side. |
+| `framing` | `'launch'`, `'whole'` or `{ x, y, r }` | `'launch'` | Launch keeps the upper left of the globe in view, as the launch graphics framed it, at any aspect. Whole centers the globe at 0.4 of the shorter side. `{ x, y, r }` sets the center as shares of the box and the radius as a share of the shorter side. |
 | `rim`, `dawn`, `bloom` | 0 to 2 | `1`, `1`, `0.42` | The rim light, the sunrise glow and the bloom. |
 | `sunAngle` | degrees | `-96` | The screen angle of the light. -90 is straight up. |
 | `breathe`, `twinkle` | boolean | `true` | The glow breathes and the stars twinkle once to three times a loop. |
@@ -87,6 +87,8 @@ The globe fills its box, so the caller sets its size. Every length inside it is 
 | `mono-water` | The mono screen with its faintest cells, mostly sea, in #86a8ff. |
 | `mono-glyphs` | The mono screen with blue letters. |
 | `home` | The homepage studio field's five blues and white. |
+
+The last five presets put the palettes the launch work tried on the launch earth. Those palettes were first tried on stills of an older photographed earth, which shows one hemisphere and cannot turn a full revolution. So these presets match the stills' colors, not their earth, and `letters` drops the squares from the launch tiles rather than redrawing those stills' glyphs.
 
 ## When to use it
 

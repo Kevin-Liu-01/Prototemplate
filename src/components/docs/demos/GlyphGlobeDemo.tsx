@@ -20,7 +20,7 @@ import {
   type GlyphGlobePreset,
 } from '@/lib/glyph-globe-presets';
 
-import { Choice, Range, Toggle } from './controls';
+import { Action, Choice, Range, Toggle } from './controls';
 import { useReducedMotion } from './hooks';
 import Plate from './Plate';
 
@@ -91,13 +91,30 @@ const PALETTES: Record<string, { label: string; palette: GlyphGlobePalette }> = 
   home: { label: 'Home', palette: GLYPH_GLOBE_HOME },
 };
 
-type ColorKey = 'ground' | 'tileLow' | 'tileHigh' | 'letter';
+type ColorKey = 'ground' | 'tileLow' | 'tileHigh' | 'letter' | 'rim' | 'dawn' | 'bloom';
 
 const COLORS: readonly { key: ColorKey; label: string }[] = [
   { key: 'ground', label: 'Ground' },
   { key: 'tileLow', label: 'Tile low' },
   { key: 'tileHigh', label: 'Tile high' },
   { key: 'letter', label: 'Letter' },
+  { key: 'rim', label: 'Rim' },
+  { key: 'dawn', label: 'Dawn' },
+  { key: 'bloom', label: 'Bloom' },
+];
+
+/** The screen takes one to five inks. */
+const MAX_INKS = 5;
+
+type FramingBox = { x: number; y: number; r: number };
+
+/** Where a custom framing starts: the whole framing's disc. */
+const CUSTOM_FRAMING: FramingBox = { x: 0.5, y: 0.5, r: 0.4 };
+
+const FRAMING_RANGES: readonly { key: keyof FramingBox; label: string; min: number; max: number }[] = [
+  { key: 'x', label: 'Center x', min: -0.5, max: 1.5 },
+  { key: 'y', label: 'Center y', min: -0.5, max: 1.5 },
+  { key: 'r', label: 'Radius', min: 0.1, max: 2 },
 ];
 
 function same(a: unknown, b: unknown): boolean {
@@ -117,8 +134,8 @@ function literal(value: unknown): string {
   return String(value);
 }
 
-/** The JSX for the current globe: the preset, then every prop that differs from it. */
-function snippet(preset: GlyphGlobePreset, settings: GlyphGlobeSettings): string {
+/** The JSX for the current globe: the preset, then every prop that differs from it, then the still's time. */
+function snippet(preset: GlyphGlobePreset, settings: GlyphGlobeSettings, stillTime: number): string {
   const base = glyphGlobeSettings(preset);
   const lines = preset === 'launch' ? [] : [`preset='${preset}'`];
   for (const key of Object.keys(settings) as (keyof GlyphGlobeSettings)[]) {
@@ -126,6 +143,7 @@ function snippet(preset: GlyphGlobePreset, settings: GlyphGlobeSettings): string
     const value = settings[key];
     lines.push(typeof value === 'string' ? `${key}=${literal(value)}` : `${key}={${literal(value)}}`);
   }
+  if (stillTime) lines.push(`stillTime={${literal(stillTime)}}`);
   const head = "import GlyphGlobe from '@/components/shared/GlyphGlobe';\n\n";
   if (!lines.length) return `${head}<GlyphGlobe />`;
   return `${head}<GlyphGlobe\n${lines.map((l) => `  ${l}`).join('\n')}\n/>`;
@@ -165,14 +183,19 @@ export default function GlyphGlobeDemo() {
   const [preset, setPreset] = useState<GlyphGlobePreset>('launch');
   const [overrides, setOverrides] = useState<Partial<GlyphGlobeSettings>>({});
   const [still, setStill] = useState(false);
+  const [stillTime, setStillTime] = useState(0);
 
   const settings = glyphGlobeSettings(preset, overrides);
   const set = (patch: Partial<GlyphGlobeSettings>) => setOverrides((o) => ({ ...o, ...patch }));
   const setPalette = (patch: Partial<GlyphGlobePalette>) => set({ palette: { ...settings.palette, ...patch } });
   const paletteKey = Object.keys(PALETTES).find((k) => same(PALETTES[k].palette, settings.palette)) ?? 'custom';
+  const inks = settings.palette.inks;
+  const box = typeof settings.framing === 'string' ? null : settings.framing;
+  const loop = settings.revolutionSeconds > 0 ? settings.revolutionSeconds : 10;
   const pickPreset = (next: GlyphGlobePreset) => {
     setPreset(next);
     setOverrides({});
+    setStillTime(0);
   };
 
   return (
@@ -208,14 +231,15 @@ export default function GlyphGlobeDemo() {
               value={settings.glyphs}
               onChange={(glyphs) => set({ glyphs })}
             />
-            <Choice<'launch' | 'whole'>
+            <Choice<'launch' | 'whole' | 'custom'>
               label='Framing'
               options={[
                 { value: 'launch', label: 'Launch' },
                 { value: 'whole', label: 'Whole' },
+                { value: 'custom', label: 'Custom' },
               ]}
-              value={typeof settings.framing === 'string' ? settings.framing : 'launch'}
-              onChange={(framing) => set({ framing })}
+              value={box ? 'custom' : (settings.framing as 'launch' | 'whole')}
+              onChange={(v) => set({ framing: v === 'custom' ? (box ?? CUSTOM_FRAMING) : v })}
             />
             <Choice<'8' | '4' | '2'>
               label='Screen'
@@ -270,6 +294,31 @@ export default function GlyphGlobeDemo() {
                   onChange={(v) => set({ [r.key]: v })}
                 />
               ))}
+              {group.title === 'Motion' ? (
+                <Range
+                  format={(v) => `${v.toFixed(2)} s`}
+                  label='Still at'
+                  max={loop}
+                  min={0}
+                  step={0.05}
+                  value={Math.min(stillTime, loop)}
+                  onChange={setStillTime}
+                />
+              ) : null}
+              {group.title === 'View' && box
+                ? FRAMING_RANGES.map((f) => (
+                    <Range
+                      format={(v) => v.toFixed(2)}
+                      key={f.key}
+                      label={f.label}
+                      max={f.max}
+                      min={f.min}
+                      step={0.01}
+                      value={box[f.key]}
+                      onChange={(v) => set({ framing: { ...box, [f.key]: v } })}
+                    />
+                  ))
+                : null}
               {group.title === 'Glyphs' ? (
                 <div className='dmo-field dmo-field-wide'>
                   <label className='dmo-field-label' htmlFor={glyphId}>
@@ -312,16 +361,40 @@ export default function GlyphGlobeDemo() {
             {COLORS.map((c) => (
               <ColorField key={c.key} label={c.label} value={settings.palette[c.key]} onChange={(v) => setPalette({ [c.key]: v })} />
             ))}
-            {settings.palette.inks.map((ink, i) => (
+            {settings.palette.stars.map((star, i) => (
+              <ColorField
+                key={`star-${i}`}
+                label={`Star ${i + 1}`}
+                value={star}
+                onChange={(v) =>
+                  setPalette({ stars: i === 0 ? [v, settings.palette.stars[1]] : [settings.palette.stars[0], v] })
+                }
+              />
+            ))}
+            {inks.map((ink, i) => (
               <ColorField
                 key={`ink-${i}`}
                 label={`Ink ${i + 1}`}
                 value={ink}
-                onChange={(v) => setPalette({ inks: settings.palette.inks.map((x, j) => (j === i ? v : x)) })}
+                onChange={(v) => setPalette({ inks: inks.map((x, j) => (j === i ? v : x)) })}
               />
             ))}
+            <Action
+              disabled={inks.length >= MAX_INKS}
+              title='Add a lighter ink to the screen'
+              onClick={() => setPalette({ inks: [...inks, inks[inks.length - 1] ?? settings.palette.letter] })}
+            >
+              Add Ink
+            </Action>
+            <Action
+              disabled={inks.length <= 1}
+              title='Take the lightest ink off the screen'
+              onClick={() => setPalette({ inks: inks.slice(0, -1) })}
+            >
+              Remove Ink
+            </Action>
           </Group>
-          <pre className='dmo-gg-code'>{snippet(preset, settings)}</pre>
+          <pre className='dmo-gg-code'>{snippet(preset, settings, stillTime)}</pre>
         </div>
       }
       height={520}
@@ -332,7 +405,13 @@ export default function GlyphGlobeDemo() {
       phoneHeight={320}
       tag='<GlyphGlobe />'
     >
-      <GlyphGlobe autoplay={!still} preset={preset} style={{ position: 'absolute', inset: 0 }} {...overrides} />
+      <GlyphGlobe
+        autoplay={!still}
+        preset={preset}
+        stillTime={Math.min(stillTime, loop)}
+        style={{ position: 'absolute', inset: 0 }}
+        {...overrides}
+      />
     </Plate>
   );
 }
