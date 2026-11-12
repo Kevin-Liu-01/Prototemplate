@@ -124,8 +124,8 @@ export const GLYPH_GLOBE_PRESETS: Record<GlyphGlobePreset, GlyphGlobePresetEntry
   },
   mono: {
     label: 'Mono',
-    note: 'One ink, #f2f2f0, on ink, with grey tiles.',
-    settings: { palette: GLYPH_GLOBE_MONO },
+    note: 'One ink, #f2f2f0, on ink, with grey tiles and a darker sea.',
+    settings: { palette: GLYPH_GLOBE_MONO, ocean: -0.3, land: 1.2 },
   },
   'mono-water': {
     label: 'Mono water',
@@ -135,7 +135,7 @@ export const GLYPH_GLOBE_PRESETS: Record<GlyphGlobePreset, GlyphGlobePresetEntry
   'mono-glyphs': {
     label: 'Mono glyphs',
     note: 'The mono screen with the letters and the lone points in #86a8ff.',
-    settings: { palette: { ...GLYPH_GLOBE_MONO, tileLow: '#1c1c1c', tileHigh: '#2c2c2b', letter: '#86a8ff' } },
+    settings: { palette: { ...GLYPH_GLOBE_MONO, tileLow: '#1c1c1c', tileHigh: '#2c2c2b', letter: '#86a8ff' }, ocean: -0.3, land: 1.2 },
   },
   home: {
     label: 'Home',

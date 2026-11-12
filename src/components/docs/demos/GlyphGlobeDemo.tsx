@@ -52,7 +52,7 @@ const GROUPS: readonly { title: string; ranges: readonly RangeSpec[] }[] = [
     title: 'Earth',
     ranges: [
       { key: 'cell', label: 'Cell', min: 0, max: 12, step: 1, unit: ' px', digits: 0 },
-      { key: 'ocean', label: 'Ocean tone', min: 0, max: 0.6, step: 0.01 },
+      { key: 'ocean', label: 'Ocean tone', min: -0.5, max: 0.6, step: 0.01 },
       { key: 'land', label: 'Land tone', min: 0.3, max: 1.5, step: 0.01 },
       { key: 'limbDarken', label: 'Limb', min: 0, max: 1, step: 0.01 },
       { key: 'soften', label: 'Soften', min: 0, max: 1, step: 0.01 },

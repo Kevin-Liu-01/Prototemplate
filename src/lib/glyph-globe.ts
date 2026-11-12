@@ -111,7 +111,7 @@ export type GlyphGlobeSettings = {
   screen: 8 | 4 | 2;
   /** the screen cell in CSS px; 0 keeps the launch share of the radius (4 stage px, 0.00458 of the radius) */
   cell: number;
-  /** the tone where the map is black, 0 to 1 (launch 0): raises the oceans */
+  /** the tone where the map is black, -0.5 to 1 (launch 0): above 0 lights the sea, below 0 darkens it */
   ocean: number;
   /** the tone where the map is white, 0 to 1.5 (launch 1): brightens the land */
   land: number;
