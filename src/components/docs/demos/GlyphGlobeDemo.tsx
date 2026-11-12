@@ -11,6 +11,12 @@ import {
   type GlyphGlobeSettings,
 } from '@/lib/glyph-globe';
 import {
+  GLYPH_GLOBE_COLORS,
+  GLYPH_GLOBE_RANGE_GROUPS,
+  rangeStep,
+  snapRange,
+} from '@/lib/glyph-globe-controls';
+import {
   GLYPH_GLOBE_HOME,
   GLYPH_GLOBE_MONO,
   GLYPH_GLOBE_PRESET_IDS,
@@ -24,84 +30,12 @@ import { Action, Choice, Range, Toggle } from './controls';
 import { useReducedMotion } from './hooks';
 import Plate from './Plate';
 
-type NumberKey = {
-  [K in keyof GlyphGlobeSettings]: GlyphGlobeSettings[K] extends number ? K : never;
-}[keyof GlyphGlobeSettings];
-
-type RangeSpec = { key: NumberKey; label: string; min: number; max: number; step: number; unit?: string; digits?: number };
-
-/* every number the engine takes, grouped as the configurator shows them */
-const GROUPS: readonly { title: string; ranges: readonly RangeSpec[] }[] = [
-  {
-    title: 'Motion',
-    ranges: [
-      { key: 'revolutionSeconds', label: 'Turn', min: 0, max: 60, step: 1, unit: ' s', digits: 0 },
-      { key: 'beatSeconds', label: 'Beat', min: 0.1, max: 2, step: 0.05, unit: ' s' },
-      { key: 'swayDegrees', label: 'Sway', min: 0, max: 45, step: 1, unit: '°', digits: 0 },
-    ],
-  },
-  {
-    title: 'View',
-    ranges: [
-      { key: 'latitude', label: 'Latitude', min: -90, max: 90, step: 0.5, unit: '°', digits: 1 },
-      { key: 'longitude', label: 'Longitude', min: -180, max: 180, step: 0.5, unit: '°', digits: 1 },
-      { key: 'roll', label: 'Roll', min: -45, max: 45, step: 0.5, unit: '°', digits: 1 },
-    ],
-  },
-  {
-    title: 'Earth',
-    ranges: [
-      { key: 'cell', label: 'Cell', min: 0, max: 12, step: 1, unit: ' px', digits: 0 },
-      { key: 'ocean', label: 'Ocean tone', min: -0.5, max: 0.6, step: 0.01 },
-      { key: 'land', label: 'Land tone', min: 0.3, max: 1.5, step: 0.01 },
-      { key: 'limbDarken', label: 'Limb', min: 0, max: 1, step: 0.01 },
-      { key: 'soften', label: 'Soften', min: 0, max: 1, step: 0.01 },
-    ],
-  },
-  {
-    title: 'Glyphs',
-    ranges: [
-      { key: 'tile', label: 'Tile', min: 0.02, max: 0.12, step: 0.001, digits: 3 },
-      { key: 'density', label: 'Density', min: 0, max: 1, step: 0.01 },
-      { key: 'tileReach', label: 'Reach', min: 0.2, max: 1, step: 0.01 },
-      { key: 'threshold', label: 'Threshold', min: 0.05, max: 0.95, step: 0.01 },
-      { key: 'split', label: 'Split', min: 0.05, max: 0.95, step: 0.01 },
-      { key: 'jitter', label: 'Jitter', min: 0, max: 0.4, step: 0.01 },
-      { key: 'letterMin', label: 'Letter at threshold', min: 0.2, max: 1, step: 0.01 },
-      { key: 'letterMax', label: 'Letter at full', min: 0.2, max: 1, step: 0.01 },
-      { key: 'lonePoints', label: 'Lone letters', min: 0, max: 0.3, step: 0.005, digits: 3 },
-    ],
-  },
-  {
-    title: 'Light',
-    ranges: [
-      { key: 'rim', label: 'Rim', min: 0, max: 2, step: 0.01 },
-      { key: 'dawn', label: 'Dawn', min: 0, max: 2, step: 0.01 },
-      { key: 'bloom', label: 'Bloom', min: 0, max: 1.5, step: 0.01 },
-      { key: 'sunAngle', label: 'Light angle', min: -180, max: 180, step: 1, unit: '°', digits: 0 },
-      { key: 'stars', label: 'Stars', min: 0, max: 1, step: 0.01 },
-    ],
-  },
-];
-
 const PALETTES: Record<string, { label: string; palette: GlyphGlobePalette }> = {
   blue: { label: 'Blue', palette: GLYPH_GLOBE_BLUE },
   vintage: { label: 'Vintage', palette: GLYPH_GLOBE_VINTAGE },
   mono: { label: 'Mono', palette: GLYPH_GLOBE_MONO },
   home: { label: 'Home', palette: GLYPH_GLOBE_HOME },
 };
-
-type ColorKey = 'ground' | 'tileLow' | 'tileHigh' | 'letter' | 'rim' | 'dawn' | 'bloom';
-
-const COLORS: readonly { key: ColorKey; label: string }[] = [
-  { key: 'ground', label: 'Ground' },
-  { key: 'tileLow', label: 'Tile low' },
-  { key: 'tileHigh', label: 'Tile high' },
-  { key: 'letter', label: 'Letter' },
-  { key: 'rim', label: 'Rim' },
-  { key: 'dawn', label: 'Dawn' },
-  { key: 'bloom', label: 'Bloom' },
-];
 
 /** The screen takes one to five inks. */
 const MAX_INKS = 5;
@@ -185,6 +119,7 @@ export default function GlyphGlobeDemo() {
   const [still, setStill] = useState(false);
   const [stillTime, setStillTime] = useState(0);
 
+  const base = glyphGlobeSettings(preset);
   const settings = glyphGlobeSettings(preset, overrides);
   const set = (patch: Partial<GlyphGlobeSettings>) => setOverrides((o) => ({ ...o, ...patch }));
   const setPalette = (patch: Partial<GlyphGlobePalette>) => set({ palette: { ...settings.palette, ...patch } });
@@ -280,20 +215,24 @@ export default function GlyphGlobeDemo() {
               onChange={setStill}
             />
           </Group>
-          {GROUPS.map((group) => (
+          {GLYPH_GLOBE_RANGE_GROUPS.map((group) => (
             <Group key={group.title} title={group.title}>
-              {group.ranges.map((r) => (
-                <Range
-                  format={(v) => (r.key === 'cell' && v === 0 ? 'auto' : `${v.toFixed(r.digits ?? 2)}${r.unit ?? ''}`)}
-                  key={r.key}
-                  label={r.label}
-                  max={r.max}
-                  min={r.min}
-                  step={r.step}
-                  value={settings[r.key]}
-                  onChange={(v) => set({ [r.key]: v })}
-                />
-              ))}
+              {group.ranges.map((r) => {
+                const step = rangeStep(r, base[r.key]);
+                const digits = Math.max(r.digits ?? 2, String(step).split('.')[1]?.length ?? 0);
+                return (
+                  <Range
+                    format={(v) => (r.key === 'cell' && v === 0 ? 'auto' : `${v.toFixed(digits)}${r.unit ?? ''}`)}
+                    key={r.key}
+                    label={r.label}
+                    max={r.max}
+                    min={r.min}
+                    step={step}
+                    value={settings[r.key]}
+                    onChange={(v) => set({ [r.key]: snapRange(v, step, base[r.key]) })}
+                  />
+                );
+              })}
               {group.title === 'Motion' ? (
                 <Range
                   format={(v) => `${v.toFixed(2)} s`}
@@ -358,7 +297,7 @@ export default function GlyphGlobeDemo() {
                 {paletteKey === 'custom' ? <option value='custom'>Custom</option> : null}
               </select>
             </div>
-            {COLORS.map((c) => (
+            {GLYPH_GLOBE_COLORS.map((c) => (
               <ColorField key={c.key} label={c.label} value={settings.palette[c.key]} onChange={(v) => setPalette({ [c.key]: v })} />
             ))}
             {settings.palette.stars.map((star, i) => (
