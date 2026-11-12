@@ -11,15 +11,21 @@
 // and the page's download button links it; without --zip the page names no
 // zip and shows no button.
 //
+// It records every logo picture it writes (the mark's and both lockups'
+// PNGs) in scripts/lint/logo.json at the current LOGO.d, as pnpm build:logo
+// does, so a rebuilt kit leaves no stale pin for pnpm lint:logo; a logo
+// picture the manifest does not list fails the build until it is listed.
+//
 // Usage:
-//   node scripts/build/brand-kit.mjs --from <kit folder> [--zip <kit zip>]
-// Requires: cwebp (brew install webp).
+//   node scripts/build/brand-kit.mjs --from <kit folder> [--zip <kit zip>] [--root <checkout>]
+// Requires: cwebp (brew install webp) and sips (macOS).
 import { execFileSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 
-import { ROOT } from '../lib/root.mjs';
+import { ROOT as REPO_ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
+import { loadLogo, recordGenerated, sha256 } from '../lib/logo-lock.mjs';
 
 helpIfAsked(import.meta.url);
 
@@ -30,6 +36,7 @@ function arg(name) {
 
 const FROM = arg('--from');
 const ZIP = arg('--zip');
+const ROOT = arg('--root') ? resolve(arg('--root')) : REPO_ROOT;
 /** the zip's name in public/brand/kit and in the download */
 const ZIP_NAME = 'General-Translation-brand-kit.zip';
 if (!FROM || !existsSync(join(FROM, 'README.md'))) {
@@ -38,7 +45,7 @@ if (!FROM || !existsSync(join(FROM, 'README.md'))) {
 }
 
 const OUT = join(ROOT, 'public/brand/kit');
-/** the logo types the page shows, as the kit names its folders and files */
+/** the logo types the page shows, as the kit names its folders and files; the wordmarks hold no globe */
 const TYPES = [
   ['mark', 'mark', 'gt-mark'],
   ['lockup-stacked', 'lockup-stacked', 'gt-lockup-stacked'],
@@ -89,6 +96,11 @@ const logos = TYPES.map(([key, folder, stem]) => ({
   ),
 }));
 
+/* every logo picture written, pinned at the current LOGO.d */
+const { LOGO } = await loadLogo(ROOT);
+const pictures = logos.filter((l) => !l.key.startsWith('wordmark')).flatMap((l) => Object.values(l.png).map((f) => `public/brand/kit/${f.file}`));
+recordGenerated(ROOT, pictures, sha256(LOGO.d));
+
 const color = COLOR_FILES.map((name) => copy(`color/${name}`, `color/${name}`));
 
 const sheets = SHEETS.map(([key, src]) => {
@@ -118,4 +130,6 @@ const manifest = {
 writeFileSync(join(OUT, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 
 const total = [...logos.flatMap((l) => [...Object.values(l.svg), ...Object.values(l.png)]), ...color, ...sheets].reduce((sum, f) => sum + f.bytes, 0);
-console.log(`brand-kit: wrote public/brand/kit (${(total / 1024).toFixed(0)} KB)${manifest.zip ? `, zip ${manifest.zip.bytes} bytes` : ''}`);
+console.log(
+  `brand-kit: wrote public/brand/kit (${(total / 1024).toFixed(0)} KB)${manifest.zip ? `, zip ${manifest.zip.bytes} bytes` : ''}; recorded ${pictures.length} logo pictures in scripts/lint/logo.json`
+);

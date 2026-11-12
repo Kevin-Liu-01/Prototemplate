@@ -54,6 +54,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | Command | What it does | Runs |
 | --- | --- | --- |
 | `pnpm test:access` | Tests for src/lib/access.ts and LOCKED in src/lib/seo/policy.ts, loaded through Node's type stripping: the environment failing closed, the key check, the session cookie (signed, tampered, expired, revoked), isLocked, the next-path guard, the gate's answers and the proxy's ... | `scripts/lint/access.test.mjs scripts/locked/sync.test.mjs` |
+| `pnpm test:brand-kit` | Tests for scripts/build/brand-kit.mjs: node --test scripts/build/brand-kit.test.mjs (pnpm test:brand-kit). | `scripts/build/brand-kit.test.mjs` |
 | `pnpm test:copies` | Tests for scripts/lint/copies.mjs: node --test scripts/lint/copies.test.mjs (pnpm test:copies). | `scripts/lint/copies.test.mjs` |
 | `pnpm test:every-lines` | Tests for src/lib/every-lines.ts, loaded through Node's type stripping: EverySentence's dust sampler groups a hidden copy's glyph boxes into the browser's own line boxes, so the ink it samples breaks where the print does. | `scripts/lint/every-lines.test.mjs` |
 | `pnpm test:glyph-globe` | Tests for the glyph globe configurator's controls (src/lib/glyph-globe-controls.ts): under every preset, each slider reaches its default exactly, so an untouched slider and one moved back print no prop, and no two controls share an accessible name. | `scripts/lint/glyph-globe.test.mjs` |
