@@ -639,7 +639,8 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
 
   dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, pick: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
 
-  dyn({ id: 'axis-and-meridian-behind', name: 'Axis and meridian behind', family: 'globe', pick: true, use: 'logo', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A ring, a meridian oval and a latitude oval draw the globe and the G, and the T\'s stem, the polar axis, breaks where it passes behind the front of the equator, as does the back meridian, while the front meridian still meets it.' }),
+  dyn({ id: 'refined-1112', name: 'Refined globe', family: 'globe', pick: true, use: 'logo', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'Axis and meridian behind on its own construction (Kevin, 2026-11-12): the meridian and the latitude ovals each have their own centre and radii, the lines are 13.2 units of the 256 square, and the gaps where a line passes behind another are narrower.' }),
+  dyn({ id: 'axis-and-meridian-behind', name: 'Axis and meridian behind', family: 'globe', pick: true, variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A ring, a meridian oval and a latitude oval draw the globe and the G, and the T\'s stem, the polar axis, breaks where it passes behind the front of the equator, as does the back meridian, while the front meridian still meets it.' }),
   dyn({ id: 'oval-axis-behind', name: 'Oval globe, axis behind', family: 'globe', pick: true, use: 'state', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The logo without its meridian: a ring and a latitude oval draw the globe and the G, and the T\'s stem breaks where it passes behind the front of the equator.' }),
   dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G, two parallels are its arm and its needle bar, and the limb and the meridian thin toward the upper right as on a lit sphere.' }),
   dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, and the equator is both its bar and the crossbar of the T on the central meridian.' }),
@@ -669,16 +670,18 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
 
 /**
  * The shortlist in page order, by id: only marks Kevin chose, in the order
- * of his verdicts, newest first: the logo he chose on 2026-11-06 and its
- * state on hover, on sign-in and while loading, then the mark he loves,
+ * of his verdicts, newest first: the logo he refined on 2026-11-12 and its
+ * state on hover, on sign-in and while loading, the globe he chose on
+ * 2026-11-06 that it refines, then the mark he loves,
  * the mark he featured on 2026-11-02, the marks he liked on 2026-10-30,
  * the marks he kept on 2026-10-28, then those he liked on 2026-10-27. At
  * most 16. Only Kevin adds a mark or removes one, and the other picks stay
  * in their families.
  */
 export const SHORTLIST: readonly string[] = [
-  'axis-and-meridian-behind',
+  'refined-1112',
   'oval-axis-behind',
+  'axis-and-meridian-behind',
   'graticule-gt',
   'equator',
   'speed-needle',

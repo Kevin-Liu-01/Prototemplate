@@ -3,41 +3,45 @@ import Link from 'next/link';
 import { headingId } from './brand-sections';
 import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { LOCKUP, LOGO } from '@/lib/logo';
-import MOTION from '../../../scripts/build/logo-motion.json';
+import CONSTRUCTION from '@/lib/logo-construction.json';
 
 /**
  * The logo system section: the construction drawing, the three states
  * live, the lockups with their numbers, and the monogram the logo
  * replaced. Every number is read from LOGO and LOCKUP in src/lib/logo.ts
- * and from the logo block of scripts/build/logo-motion.json (R the ring's
- * radius, A the ovals' short half-axis, w the stroke), so the section moves
- * with the drawing.
+ * and from the logo's construction, src/lib/logo-construction.json (the
+ * ring, the two ovals with their own centres and radii, the weight, the
+ * bar and the stem, in the 256 unit square), so the section moves with the
+ * drawing.
  */
+const { ring: RING, meridian: MER, latitude: LAT, weight: STROKE, stem: STEM } = CONSTRUCTION.new;
 const cx = 128;
 const cy = 128;
-const r = MOTION.logo.R;
-const OVAL = MOTION.logo.A;
-const STROKE = MOTION.logo.w;
+const r = RING.mid;
 const fix = (n: number, d = 1) => Number(n.toFixed(d)).toString();
+/** the drawn box's side: the ring's outer diameter */
+const BOX = 2 * RING.outer;
+/** the ring's weight over the mark's height */
+const RING_SHARE = STROKE / BOX;
 
 /** the drawing's parts, in the order the figure numbers them */
 const PARTS = [
   ['The ring', `a circle of radius ${fix(r)} on the 256 unit square, ${fix(STROKE)} units thick, and it is the globe’s outline.`],
-  ['The latitude oval', `${fix(r)} by ${fix(OVAL, 2)} units at the half-axes: the equator seen from just above. Its lower arc is the front of the globe.`],
-  ['The meridian oval', `${fix(OVAL, 2)} by ${fix(r)}, the same oval stood upright. Its left half draws the G’s bowl, and its back half breaks where it passes behind the front of the equator.`],
+  ['The latitude oval', `${fix(LAT.rx)} by ${fix(LAT.ry)} units at the half-axes, centred ${fix(cx - LAT.cx, 2)} left of the ring’s centre: the equator seen from just above. Its lower arc is the front of the globe.`],
+  ['The meridian oval', `${fix(MER.rx)} by ${fix(MER.ry)}, an oval of its own stood upright, centred ${fix(cy - MER.cy, 2)} above the ring’s centre. Its left half draws the G’s bowl, and its back half breaks where it passes behind the front of the equator.`],
   ['The bar', `the horizontal through the centre, ${fix(STROKE)} units thick, from the G’s bowl to the ring. It is the G’s bar and the top of the T.`],
-  ['The axis', 'the T’s stem, along the polar axis from the centre to the ring’s foot. It breaks where it passes behind the front of the equator.'],
+  ['The axis', `the T’s stem, ${fix(STEM.width)} units wide, along the polar axis from the centre to the ring’s foot. It breaks where it passes behind the front of the equator.`],
 ] as const;
 
 /** the lockup numbers, in cap heights of the name */
 const NUMBERS = [
   ['Unit', 'the name’s cap height, the height of the T'],
-  ['Name', `${LOCKUP.face} at weight ${LOCKUP.weight}, tracking 0, with the font’s own kerning, drawn as outlines`],
-  ['Line gap', `${LOCKUP.rhythm} cap from the first baseline to the second cap line: the word gap between a T and a G`],
-  ['Stacked mark', `${LOCKUP.mark} cap tall, ${LOCKUP.scale} times the ${LOCKUP.span} cap span of the two lines, centred, so it passes the cap line and the baseline by ${fix(LOCKUP.overshoot, 3)} cap`],
-  ['One-line mark', `2.2 cap tall, where the ring (6.57 percent of the mark) is as thick as the name’s stems (0.1448 cap)`],
-  ['Gap to the G', `${LOCKUP.gap} cap from the mark’s ink to the G’s ink in both lockups, ${fix(LOCKUP.gap / LOCKUP.rhythm, 2)} times the line gap`],
-  ['Clear space', 'a quarter of the mark’s height on every side: 0.68 cap around the stacked lockup and 0.55 around the one-line lockup'],
+  ['Name', `${LOCKUP.face} at weight ${LOCKUP.weight}, tracking ${LOCKUP.tracking} em, with the font’s own kerning, drawn as outlines; both lines start at one pen origin`],
+  ['Line gap', `${LOCKUP.rhythm} cap from the first baseline to the second cap line: the cap height less the x-height`],
+  ['Stacked mark', `${LOCKUP.mark} cap tall, centred on the name’s ink from the G’s top to the foot of the a`],
+  ['One-line mark', `${LOCKUP.oneLine} cap tall, where the ring (${fix(RING_SHARE * 100, 2)} percent of the mark) is as thick as the name’s stems (${fix(LOCKUP.oneLine * RING_SHARE, 3)} cap)`],
+  ['Gap to the name', `${LOCKUP.gap} cap from the mark’s ink to the name’s nearest ink in both lockups: the T stacked, the G on one line`],
+  ['Clear space', `a quarter of the mark’s height on every side: ${fix(LOCKUP.mark / 4, 2)} cap around the stacked lockup and ${fix(LOCKUP.oneLine / 4, 2)} around the one-line lockup`],
   ['Smallest size', 'the mark 24 px tall alone, and 16 px only as a tab icon; a lockup or a wordmark at a 9 px cap height'],
 ] as const;
 
@@ -48,10 +52,10 @@ function Construction() {
   /* the parts' number seats, each on its primitive */
   const seats: readonly [number, number][] = [
     [cx + r * 0.707, cy - r * 0.707],
-    [cx + r * 0.6, cy + OVAL * 0.8],
-    [cx - OVAL * 0.5, cy - r * 0.866],
+    [LAT.cx + LAT.rx * 0.6, LAT.cy + LAT.ry * 0.8],
+    [MER.cx - MER.rx * 0.5, MER.cy - MER.ry * 0.866],
     [cx + r * 0.78, cy],
-    [cx, cy + r * 0.62],
+    [STEM.centre, cy + r * 0.62],
   ];
   return (
     <figure className='ptb-sys-fig'>
@@ -60,10 +64,10 @@ function Construction() {
           <path className='ptb-sys-ghost' d={LOGO.d} />
           <g className='ptb-sys-guide'>
             <circle cx={cx} cy={cy} r={r} {...guide} />
-            <ellipse cx={cx} cy={cy} rx={r} ry={OVAL} {...guide} />
-            <ellipse cx={cx} cy={cy} rx={OVAL} ry={r} {...guide} />
+            <ellipse cx={LAT.cx} cy={LAT.cy} rx={LAT.rx} ry={LAT.ry} {...guide} />
+            <ellipse cx={MER.cx} cy={MER.cy} rx={MER.rx} ry={MER.ry} {...guide} />
             <line x1={cx - r} x2={cx + r} y1={cy} y2={cy} {...guide} />
-            <line x1={cx} x2={cx} y1={top} y2={foot} {...guide} />
+            <line x1={STEM.centre} x2={STEM.centre} y1={top} y2={foot} {...guide} />
           </g>
           {seats.map(([x, y], i) => (
             <g className='ptb-sys-key' key={PARTS[i][0]}>
@@ -103,7 +107,7 @@ export default function LogoSystem() {
       <p>
         The two breaks give the drawing its depth. The axis and the back of the meridian stop where the front of the
         globe passes over them, so the globe reads as a sphere seen from just above the equator. The drawing&rsquo;s
-        name is Axis and meridian behind. The marks that led to it are on{' '}
+        name is Refined globe: Axis and meridian behind on its own construction. The marks that led to it are on{' '}
         <Link href='/marks/graticule'>the graticule page</Link>.
       </p>
 

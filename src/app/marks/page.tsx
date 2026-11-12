@@ -15,7 +15,7 @@ const route = seoRoute({
   title: PAGE_NAMES.marks.name,
   kind: 'page',
   description:
-    'The two General Translation marks in production, the shortlist led by the logo, Axis and meridian behind, and every family of marks by the idea it draws.',
+    'The two General Translation marks in production, the shortlist led by the logo, Refined globe, and every family of marks by the idea it draws.',
 });
 
 export const metadata = route.metadata;

@@ -1,0 +1,281 @@
+{
+ "about": "The refined GT globe (Kevin, 2026-11-12) fitted primitive by primitive. new: in the logo's old 256 unit frame; newUnits: in symbol.svg units; old: the current LOGO construction (logo-motion.json, strip.py, LOGO d).",
+ "new": {
+  "frame": "old 256 unit square, ring centre 128,128, ring outer 103.7; new units x 207.4/487 = 0.4258727",
+  "weight": 13.2021,
+  "ring": {
+   "outer": 103.7,
+   "inner": 90.4979,
+   "mid": 97.099
+  },
+  "meridian": {
+   "cx": 127.746,
+   "cy": 127.5756,
+   "rx": 51.2808,
+   "ry": 96.2566
+  },
+  "latitude": {
+   "cx": 127.1509,
+   "cy": 127.9993,
+   "rx": 96.2524,
+   "ry": 51.1104
+  },
+  "gaps": {
+   "meridianUpper": 5.905,
+   "meridianLower": 5.773,
+   "cUpper": 5.331,
+   "cLower": 5.534,
+   "stemAbove": 5.947,
+   "stemBelow": 5.992
+  },
+  "thetas": {
+   "meridianStart": [
+    131.4951,
+    124.9479
+   ],
+   "meridianEnd": [
+    409.0969,
+    415.6548
+   ],
+   "cGapEnd": [
+    310.4882,
+    409.4946
+   ],
+   "gEnd": [
+    496.6414,
+    496.2993
+   ]
+  },
+  "gTip": {
+   "outer": [
+    200.366,
+    87.161
+   ],
+   "inner": [
+    193.527,
+    98.465
+   ]
+  },
+  "bar": {
+   "top": 121.399,
+   "bottomRight": 135.2398,
+   "bottomLeft": 135.1359,
+   "stemLeft": 120.5472,
+   "leftEnd": 83.1786,
+   "rightEnd": 218.2603
+  },
+  "stem": {
+   "left": 120.5472,
+   "right": 134.4073,
+   "centre": 127.4772,
+   "width": 13.8601
+  },
+  "fillet": 10.4339
+ },
+ "newUnits": {
+  "frame": "symbol.svg, viewBox 0 0 487 487, ring centre 243.5,243.5",
+  "weight": 31,
+  "ring": {
+   "outer": 243.5,
+   "inner": 212.5
+  },
+  "meridian": {
+   "cx": 242.905,
+   "cy": 242.5,
+   "rx": 120.41,
+   "ry": 226
+  },
+  "latitude": {
+   "cx": 241.5,
+   "cy": 243.5,
+   "rx": 226,
+   "ry": 120
+  },
+  "bar": {
+   "top": 228,
+   "bottomRight": 260.5,
+   "bottomLeft": 260.256
+  },
+  "stem": {
+   "left": 226,
+   "right": 258.545
+  },
+  "fillet": 24.5,
+  "gaps": {
+   "meridianUpper": 13.87,
+   "meridianLower": 13.56,
+   "cUpper": 12.52,
+   "cLower": 12.99,
+   "stemAbove": 13.96,
+   "stemBelow": 14.07
+  },
+  "gTip": {
+   "outer": [
+    413.423,
+    147.605
+   ],
+   "inner": [
+    397.366,
+    174.148
+   ]
+  }
+ },
+ "old": {
+  "weight": 13.6,
+  "ring": {
+   "outer": 103.7,
+   "inner": 90.1,
+   "mid": 96.9
+  },
+  "meridian": {
+   "cx": 128,
+   "cy": 128,
+   "rx": 51.46,
+   "ry": 96.9
+  },
+  "latitude": {
+   "cx": 128,
+   "cy": 128,
+   "rx": 96.9,
+   "ry": 51.46
+  },
+  "gaps": {
+   "meridianUpper": 7.3,
+   "meridianLower": 7.45,
+   "cUpper": 8.3,
+   "cLower": 8.3,
+   "stemAbove": 6.8,
+   "stemBelow": 6.8
+  },
+  "thetas": {
+   "meridianStart": [
+    133.0534,
+    126.1013
+   ],
+   "meridianEnd": [
+    407.0906,
+    414.0189
+   ],
+   "cGapEnd": [
+    313.88,
+    406.12
+   ],
+   "gEnd": 495.6589
+  },
+  "gTip": {
+   "outer": [
+    200.55,
+    86.06
+   ],
+   "inner": [
+    194.05,
+    98.01
+   ]
+  },
+  "bar": {
+   "top": 121.2,
+   "bottomRight": 134.8,
+   "bottomLeft": 134.8,
+   "leftEnd": 83.47,
+   "rightEnd": 217.84
+  },
+  "stem": {
+   "left": 121.2,
+   "right": 134.8,
+   "centre": 128,
+   "width": 13.6
+  },
+  "fillet": 13.77
+ },
+ "motion": {
+  "about": "logo-motion.json logo block, refitted: meridian and latitude no longer share a centre or radii, so the generator needs per-ellipse cx, cy, rx, ry",
+  "meridian": {
+   "cx": 127.746,
+   "cy": 127.5756,
+   "rx": 51.2808,
+   "ry": 96.2566
+  },
+  "latitude": {
+   "cx": 127.1509,
+   "cy": 127.9993,
+   "rx": 96.2524,
+   "ry": 51.1104
+  },
+  "w": 13.2021,
+  "barTop": 121.399,
+  "barBottom": [
+   135.1359,
+   135.2398
+  ],
+  "barLeftX": 73.68,
+  "stemX": [
+   120.5472,
+   134.4073
+  ],
+  "gapLeft": [
+   5.331,
+   5.534
+  ],
+  "axisAbove": 5.947,
+  "axisBelow": 5.992,
+  "meridianStart": [
+   131.4951,
+   124.9479
+  ],
+  "meridianEnd": [
+   409.0969,
+   415.6548
+  ],
+  "latitudeStart": 180,
+  "gEnd": 496.4703,
+  "gEndCorners": [
+   496.6414,
+   496.2993
+  ],
+  "cGapEnd": [
+   310.4882,
+   409.4946
+  ],
+  "crossings": {
+   "meridianTheta": [
+    62.49,
+    118.12,
+    241.63,
+    297.74
+   ],
+   "latitudeTheta": [
+    62.265,
+    118.599,
+    241.57,
+    297.555
+   ]
+  },
+  "stemBandOnLatitude": [
+   265.6764,
+   273.934
+  ],
+  "ends": [
+   116.492,
+   243.712
+  ],
+  "fillet": 10.4339,
+  "ringInner": 90.4979
+ },
+ "lockupFromWordmark": {
+  "about": "measured on kevin/wordmark.svg (globe 487 tall at y 22.5..509.5); cap = T of Translation, 295.149 to baseline 501.13",
+  "cap": 205.981,
+  "markInCaps": 2.3643,
+  "spanInCaps": 2.2865,
+  "rhythm": 0.2865,
+  "scale": 1.034,
+  "overshootTop": 0.0371,
+  "overshootBottom": 0.0406,
+  "gapToG": 0.5987,
+  "gapToT": 0.5826,
+  "stemOverCap": 0.121,
+  "lineLeftInk": {
+   "G": 610.313,
+   "T": 607.0
+  }
+ }
+}

@@ -607,7 +607,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
 
           <section className='pt-sec pt-post-sec'>
             <h2>The marks</h2>
-            <p>The shortlist opens on the logo, Axis and meridian behind, then its state and the General Translation marks chosen before them.</p>
+            <p>The shortlist opens on the logo, Refined globe, then its state and the General Translation marks chosen before them.</p>
             <MarksRow />
           </section>
 

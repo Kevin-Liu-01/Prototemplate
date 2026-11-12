@@ -25,6 +25,8 @@
 //                                               addresses, which other sites link to,
 //                                               drawn as the globe at their old size
 //                                               and ground (Kevin, 2026-11-10)
+//   public/marks/graticule/variations/<id>.svg  the logo's catalog row on /marks, on
+//                                               the catalog's canonical 256 header
 //   public/marks/production/gt-mark.svg         /marks' production card of the GT mark,
 //                                               the same file as gt-globe-logo.svg; the
 //                                               monogram it held is history at
@@ -69,6 +71,8 @@ const FILES = {
   'public/brand/gt-logo-light.svg': svg(LOGO.square, path('#070707'), 500),
   'public/brand/gt-logo-dark.svg': svg(LOGO.square, path('#ffffff'), 500),
   'public/marks/production/gt-mark.svg': master,
+  /* the logo's catalog file on /marks, on the catalog's canonical header */
+  [`public/marks/graticule/variations/${LOGO.id}.svg`]: svg(LOGO.square, path('currentColor'), 256),
   'motion/kit/brand/gt-mark.svg': master,
   'motion/kit/brand/gt-mark.js': `// The General Translation logo for the films' scripts, written by pnpm build:logo from LOGO in\n// src/lib/logo.ts; load it before kit/sheet.js or a film's lib/film.js. Do not edit.\nwindow.GT_LOGO = ${JSON.stringify({ d: LOGO.d, viewBox: LOGO.viewBox, fillRule: LOGO.fillRule })};\n`,
 };

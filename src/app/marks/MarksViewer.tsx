@@ -76,7 +76,7 @@ const hemiMarks = (family: HemisphereFamily) => HEMISPHERE_MARKS.filter((mark) =
 const hemiShown = (mark: HemisphereMark) => Boolean(mark.lead || mark.constructionFile);
 
 const BOOK_LEAD =
-  'General Translation ships the two marks below. The shortlist opens on the logo, Axis and meridian behind, and each family after it collects the marks that draw one idea.';
+  'General Translation ships the two marks below. The shortlist opens on the logo, Refined globe, and each family after it collects the marks that draw one idea.';
 
 const BOOK_NOTE =
   'Only the logo and the Locadex mark are in production. Every mark is one color and takes the ink of whatever it sits on.';
