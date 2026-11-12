@@ -103,7 +103,7 @@ pnpm dev                              # http://localhost:3005
 | [`docs/TOOLS.md`](./docs/TOOLS.md) | every pnpm command and the scripts the skills bundle, written by `pnpm build:tools`; the live version is `/docs/handbook/tools` |
 | [`docs/archive/`](./docs/archive/README.md) | finished round specs kept as design history |
 | [`docs/LIBRARIES.md`](./docs/LIBRARIES.md) | the library index; the live version is `/docs/handbook/libraries`, where the build log follows it with every library running |
-| [`public/media/`](./public/media/README.md) | finished artwork made with the system: the Open Source announcement reel, the X banner, two blog films and three partnership globes, shown live in `/brand`, and the three translation series films, which play on `/motion` |
+| [`public/media/`](./public/media/README.md) | finished artwork made with the system: the Open Source announcement reel, the X banner, two blog films and five partnership globes, shown live in `/brand`, and the three translation series films, which play on `/motion` |
 | [`docs/GRAPHICS.md`](./docs/GRAPHICS.md) | the graphics pipeline: how the blog illustrations are captured, composed, rendered, clipped and handed to a post; the live version is `/docs/handbook/graphics`, and the set is `/graphics` |
 | [`graphics/`](./graphics/README.md) | the toolchain itself: the generator, the renderer, the exports, the captures and the recordings |
 

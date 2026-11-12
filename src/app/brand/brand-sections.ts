@@ -137,7 +137,7 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
   {
     id: 'made-with-the-system',
     title: 'Made with the system',
-    desc: 'Finished artwork made with the system: the Open Source reel, the X banner, two blog films and three partnership globes.',
+    desc: 'Finished artwork made with the system: the Open Source reel, the X banner, two blog films and five partnership globes.',
     source: 'Finished artwork',
     headings: [
       heading('made-with-the-system', 'blog-films', 'Blog films'),

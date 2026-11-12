@@ -638,8 +638,9 @@
   text-wrap: pretty;
 }
 
-/* the globes: square tiles on ink or on paper, two across (the dithered pair,
-   then the glyph pair), framed in the tile edge */
+/* the globes: square tiles on ink or on paper, two across (the dithered
+   globe beside the launch glyph globe it led to, then the mark and the glyph
+   pair), framed in the tile edge */
 .ptb-globes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -659,6 +660,13 @@
 }
 
 /* a light globe holds the paper ground while it loads */
+.ptb-globes .ptb-globe-live {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+}
+
 .ptb-globes .ptb-art-paper .ptb-shot img {
   background-color: #ffffff;
 }
