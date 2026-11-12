@@ -4231,8 +4231,8 @@
   },
   {
    "path": "kit/brand/gt-mark.svg",
-   "bytes": 15026,
-   "sha256": "fc695bef0e9bbe9879cba2be9020edd382bcd4fec60a0a03759d2026c19b0ed9",
+   "bytes": 3300,
+   "sha256": "b3181665b6136d299e842f817d7ab2512ecce8b35e9d4e35d3761a0f7567dff9",
    "kind": "mark",
    "twin": "public/brand/gt-globe-logo.svg",
    "used_by": [
@@ -4244,7 +4244,7 @@
     "stills/partnership-globe"
    ],
    "derived_from": null,
-   "source": "General Translation's logo, the globe \"Axis and meridian behind\": byte-identical to Prototemplate's public/brand/gt-globe-logo.svg (the doubled-line GT monogram until 2026-11-09)",
+   "source": "General Translation's logo, the refined globe of 2026-11-12: byte-identical to Prototemplate's public/brand/gt-globe-logo.svg (the 11-06 globe \"Axis and meridian behind\" until 2026-11-12, the doubled-line GT monogram until 2026-11-09)",
    "licence": "General Translation's own material",
    "credit": "General Translation logo: kit/brand/gt-mark.svg (currentColor)",
    "redistribute": "own",
