@@ -132,6 +132,13 @@ const pictures = [
 ].map((rel) => `public/brand/kit/${rel}`);
 const missing = unlisted(readManifest(ROOT), pictures);
 if (missing.length) fail(`${missing.map(unlistedMessage).join('\n')}\nnothing was written`);
+/* the tools and the logo the write step needs, checked before anything is deleted */
+try {
+  execFileSync('cwebp', ['-version'], { stdio: 'ignore' });
+} catch {
+  fail('cwebp is missing (brew install webp)\nnothing was written');
+}
+const { LOGO } = await loadLogo(ROOT);
 
 /* ---- write: copy, cut, then record ---- */
 
@@ -143,7 +150,6 @@ for (const s of sheetCuts) {
   execFileSync('cwebp', ['-quiet', '-q', '80', '-m', '6', '-resize', String(s.width), String(s.height), s.from, '-o', join(OUT, s.rel)]);
 }
 
-const { LOGO } = await loadLogo(ROOT);
 recordGenerated(ROOT, pictures, sha256(LOGO.d));
 
 const entry = (rel) => ({ file: rel, bytes: size(join(OUT, rel)) });
