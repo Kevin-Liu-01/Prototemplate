@@ -58,7 +58,9 @@
  *      a picture a client component draws after load (the hub's grid, its
  *      preview card) is held too (scripts/lint/logo-dom.mjs)
  *  12. previous logo: a path whose sha256 is a previous logo's
- *      (PREVIOUS_LOGOS in scripts/lib/logo-lock.mjs: the 11-06 globe) in
+ *      (PREVIOUS_LOGOS in scripts/lib/logo-lock.mjs: the 11-06 globe), or
+ *      that has its whole outline (every command and every number, so a
+ *      copy renumbered, respaced, shifted or uniformly scaled is caught), in
  *      code, markup or an SVG outside history; draw LOGO instead. Dated
  *      films and pictures that end on it are history (GLOBE_1106_REASON),
  *      and --external reports the same on the other repositories' copies
@@ -354,6 +356,57 @@ const MONOGRAM_SHAPES = MONOGRAM_DRAWINGS.filter((rel) => existsSync(join(REPO_R
   .flatMap((rel) => [...readFileSync(join(REPO_ROOT, rel), 'utf8').matchAll(/ d="([^"]+)"/g)].map((m) => shape(m[1])))
   .filter(Boolean);
 
+/**
+ * A whole path as an outline: every command letter and every number, the
+ * absolute coordinates moved so the path starts at 0,0 (H moves with x, V
+ * with y), then scaled so the largest is 1. The same drawing renumbered to
+ * fewer decimals, respaced, shifted or uniformly scaled has the same
+ * outline; null for a path with arcs, which the logos never use.
+ */
+function outline(d) {
+  let letters = '';
+  const nums = [];
+  let axis = 0;
+  for (const [, letter, num] of d.matchAll(/([MLHVCSQTAZmlhvcsqtaz])|(-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?)/g)) {
+    if (letter) {
+      if (/[Aa]/.test(letter)) return null;
+      letters += letter;
+      axis = 0;
+      continue;
+    }
+    const cmd = letters.at(-1) ?? 'M';
+    const which = cmd === 'H' || cmd === 'h' ? 0 : cmd === 'V' || cmd === 'v' ? 1 : axis++ % 2;
+    nums.push({ n: Number(num), which, absolute: cmd === cmd.toUpperCase() });
+  }
+  if (nums.length < 2 || !letters.startsWith('M')) return null;
+  const origin = [nums[0].n, nums[1].n];
+  const moved = nums.map((v) => (v.absolute ? v.n - origin[v.which] : v.n));
+  const scale = Math.max(...moved.map(Math.abs));
+  return scale ? { letters, vec: moved.map((v) => v / scale) } : null;
+}
+const sameOutline = (a, b) => a && b && a.letters === b.letters && a.vec.length === b.vec.length && a.vec.every((v, i) => Math.abs(v - b.vec[i]) < 0.005);
+/* each previous logo's outline, read from its history file in this repository, as the monogram's drawings are */
+const PREVIOUS_OUTLINES = PREVIOUS_LOGOS.filter((logo) => logo.file && existsSync(join(REPO_ROOT, logo.file))).flatMap((logo) =>
+  [...readFileSync(join(REPO_ROOT, logo.file), 'utf8').matchAll(/ d="([^"]+)"/g)]
+    .filter((m) => sha256(m[1]) === logo.sha256)
+    .map((m) => ({ logo, outline: outline(m[1]), size: m[1].length }))
+);
+if (PREVIOUS_OUTLINES.length !== PREVIOUS_LOGOS.length) {
+  console.error('lint:logo: a previous logo\'s file does not hold its drawing (PREVIOUS_LOGOS in scripts/lib/logo-lock.mjs)');
+  process.exit(2);
+}
+/** The previous logo a path is, by its hash or by its outline; undefined when it is none. */
+function previousLogo(d, hash) {
+  const exact = PREVIOUS_LOGOS.find((logo) => logo.sha256 === hash);
+  if (exact) return { logo: exact, how: '' };
+  /* a renumbered copy is shorter or longer, but not by half */
+  const near = PREVIOUS_OUTLINES.filter((p) => d.length > p.size * 0.5 && d.length < p.size * 1.5);
+  if (!near.length) return undefined;
+  const mine = outline(d);
+  const found = near.find((p) => sameOutline(p.outline, mine));
+  return found ? { logo: found.logo, how: ', renumbered, respaced or scaled (by its outline)' } : undefined;
+}
+
 let textFiles = 0;
 for (const rel of SCANNED) {
   if (!TEXT.test(rel) || SELF.has(rel)) continue;
@@ -407,8 +460,8 @@ for (const rel of SCANNED) {
       else if (MONOGRAM_SHAPES.some((m) => sameShape(m, shape(d)))) fail('rule 1 monogram', where, 'the doubled-line monogram\'s path, respaced, renumbered or scaled (by its shape)');
     }
     /* 12: a previous logo's path outside history */
-    const previous = PREVIOUS_LOGOS.find((logo) => logo.sha256 === hash);
-    if (previous && !exempt(rel, 12)) fail('rule 12 previous logo', where, `carries the ${previous.name}; use LOGO`);
+    const previous = previousLogo(d, hash);
+    if (previous && !exempt(rel, 12)) fail('rule 12 previous logo', where, `carries the ${previous.logo.name}${previous.how}; use LOGO`);
     const loser = LOSERS.get(hash);
     if (loser && !LOSERS_AT.some((p) => matches(p, rel)) && !exempt(rel, 3)) fail('rule 3 vote loser', where, `the losing candidate ${loser}; it belongs only on /marks`);
     if (!loser && !previous && !generated?.derived && !exempt(rel, 2)) {
@@ -555,8 +608,8 @@ if (EXTERNAL) {
       continue;
     }
     const text = readFileSync(abs, 'utf8');
-    const previous = [...text.matchAll(PATH_RUN)].map((m) => PREVIOUS_LOGOS.find((logo) => logo.sha256 === sha256(m[0].trim()))).find(Boolean);
-    console.log(`  note ${entry.path}: ${text.includes(LOGO.d) ? 'holds LOGO.d' : 'does not hold LOGO.d byte for byte'}${previous ? `; carries the ${previous.name}; use LOGO` : ''}`);
+    const previous = [...text.matchAll(PATH_RUN)].map((m) => previousLogo(m[0].trim(), sha256(m[0].trim()))).find(Boolean);
+    console.log(`  note ${entry.path}: ${text.includes(LOGO.d) ? 'holds LOGO.d' : 'does not hold LOGO.d byte for byte'}${previous ? `; carries the ${previous.logo.name}${previous.how}; use LOGO` : ''}`);
   }
 }
 

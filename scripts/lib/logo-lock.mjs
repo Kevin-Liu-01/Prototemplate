@@ -22,10 +22,19 @@ export const GLOBE_1106_REASON = 'ends on the 11-06 globe; kept as made';
  * The previous logos, by their path's sha256: the globe chosen on
  * 2026-11-06, the logo until the refined globe of 2026-11-12. Dated films
  * and pictures that end on it stay as history (GLOBE_1106_REASON); any code,
- * markup or SVG outside history whose path hashes to one fails rule 12, so
- * everything drawn from now on uses LOGO.
+ * markup or SVG outside history whose path hashes to one, or has its
+ * outline (the same drawing renumbered, respaced, shifted or scaled), fails
+ * rule 12, so everything drawn from now on uses LOGO. `file` is the history
+ * file on /marks that holds the drawing.
  */
-export const PREVIOUS_LOGOS = [{ sha256: '50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c', name: '11-06 globe', until: '2026-11-12' }];
+export const PREVIOUS_LOGOS = [
+  {
+    sha256: '50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c',
+    name: '11-06 globe',
+    until: '2026-11-12',
+    file: 'public/marks/graticule/variations/axis-and-meridian-behind.svg',
+  },
+];
 /* files whose bytes are a picture: a generated one is held by its recorded sha256 */
 export const RASTER = /\.(png|ico|webp|jpe?g|gif|avif|mp4|webm|mov)$/i;
 

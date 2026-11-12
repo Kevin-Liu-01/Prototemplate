@@ -5,7 +5,7 @@
  * generated picture and the fingerprint, then seeds one violation.
  */
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { after, describe, it } from 'node:test';
@@ -122,6 +122,37 @@ describe('lint:logo', () => {
     root = checkout((m) => ({ ...m, history: [...m.history, { path: 'public/marks/old-globe.svg', rules: [12], reason: 'the 11-06 globe, kept as made' }] }));
     put(root, 'public/marks/old-globe.svg', `<svg xmlns="http://www.w3.org/2000/svg"><path d="${GLOBE_1106}"/></svg>\n`);
     passes(root);
+  });
+
+  it('rule 12: catches the 11-06 globe renumbered, respaced, shifted or scaled, and nothing else on /marks', () => {
+    const renumber = (d, f) => d.replace(/-?(?:\d+\.?\d*|\.\d+)/g, (n) => String(+f(Number(n)).toFixed(1)));
+    /* one decimal, every separator a space */
+    let root = checkout();
+    put(root, 'public/brand/rounded.svg', `<svg xmlns="http://www.w3.org/2000/svg"><path d="${renumber(GLOBE_1106, (n) => n).replace(/([A-Za-z])/g, ' $1 ')}"/></svg>\n`);
+    fails(root, /rule 12 previous logo public\/brand\/rounded\.svg:1: carries the 11-06 globe, renumbered, respaced or scaled \(by its outline\); use LOGO/);
+    /* every coordinate halved and moved, as a 128 unit copy drawn elsewhere (the path is absolute) */
+    root = checkout();
+    let axis = 0;
+    const scaled = GLOBE_1106.replace(/([A-Za-z])|(-?(?:\d+\.?\d*|\.\d+))/g, (m, letter, n) => {
+      if (letter) return letter;
+      const shift = axis++ % 2 === 0 ? 10 : 20;
+      return String(+(Number(n) / 2 + shift).toFixed(3));
+    });
+    put(root, 'src/components/Small.tsx', `export const Small = () => <path d="${scaled}" />;\n`);
+    fails(root, /rule 12 previous logo src\/components\/Small\.tsx:1: carries the 11-06 globe, renumbered/);
+    /* the logo itself and every other drawing on /marks/graticule keep their own outline */
+    root = checkout();
+    const dir = join(ROOT, 'public/marks/graticule/variations');
+    let others = 0;
+    for (const name of readdirSync(dir).filter((f) => f.endsWith('.svg') && f !== 'axis-and-meridian-behind.svg')) {
+      const body = readFileSync(join(dir, name), 'utf8');
+      if (!body.includes(' d="')) continue;
+      put(root, `public/marks/others/${name}`, body);
+      others += 1;
+    }
+    assert.ok(others > 10, `read ${others} drawings`);
+    const result = run(root);
+    assert.doesNotMatch(result.stdout, /rule 12/, result.stdout);
   });
 
   it('rule 4: fails on LOGO.d copied into a component', () => {
