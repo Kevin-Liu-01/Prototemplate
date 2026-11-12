@@ -15,6 +15,7 @@ import { headingId } from './brand-sections';
 import LogoSystem from './LogoSystem';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import GlyphGlobe from '@/components/shared/GlyphGlobe';
+import { LOCKUP, STRIP } from '@/lib/logo';
 import { PAGE_NAMES } from '@/lib/page-names';
 import { filmNote } from '@/lib/previous-mark';
 import { readingMinutes } from '@/lib/reading';
@@ -332,9 +333,9 @@ const PAGES: readonly BrandPage[] = [
         </div>
         <p>
           In the lockup the logo stands beside the stacked name, &ldquo;General&rdquo; over
-          &ldquo;Translation&rdquo;, at 1.1 times the span from the first line&rsquo;s cap line to the
-          second line&rsquo;s baseline, centred on that span. The name is Katagami Text at weight 500,
-          drawn as outlines. Katagami Text is also the face of running copy, headings and interface
+          &ldquo;Translation&rdquo;, {LOCKUP.mark} cap heights tall and centred on the name&rsquo;s ink.
+          The name is Katagami Text at weight {LOCKUP.weight} and {LOCKUP.tracking} em, both lines from
+          one pen origin, drawn as outlines. Katagami Text is also the face of running copy, headings and interface
           text; this site still renders Inter until its own switch.
         </p>
         <div className='ptb-marks ptb-lockups'>
@@ -350,9 +351,9 @@ const PAGES: readonly BrandPage[] = [
         <p>
           The four-globe lockup sets three graticule globes before the logo and the same stacked
           name: a whole graticule with its polar arcs, the graticule with its meridian opened where
-          the G opens, the graticule without its polar arcs, then the logo. The globes share the
-          logo&rsquo;s ring, line weight and ovals, stand 0.22 globe diameters apart, and the logo
-          and the name keep the lockup&rsquo;s size and 0.8 cap height gap.
+          the G opens, the graticule without its polar arcs, then the logo. The globes stand{' '}
+          {STRIP.between} globe diameters apart, and the logo and the name keep the lockup&rsquo;s size
+          and {LOCKUP.gap} cap height gap.
         </p>
         <div className='ptb-marks ptb-strips'>
           <figure className='ptb-mark is-paper'>
@@ -365,11 +366,12 @@ const PAGES: readonly BrandPage[] = [
           </figure>
         </div>
         <p>
-          On one line, where height is short, the logo is 2.2 cap heights tall and centred on the
-          cap band, the size at which its ring is as thick as the name&rsquo;s stems. In both lockups
-          the logo&rsquo;s ink stands 0.8 cap height from the G. Clear space is a quarter of the
-          logo&rsquo;s height on every side: 0.68 cap height around the stacked lockup and 0.55
-          around the one-line lockup. The logo alone is at least 24px tall, and 16px only as a tab
+          On one line, where height is short, the logo is {LOCKUP.oneLine} cap heights tall and centred
+          on the cap band, the size at which its ring is as thick as the name&rsquo;s stems. In both
+          lockups the logo&rsquo;s ink stands {LOCKUP.gap} cap height from the name. Clear space is a
+          quarter of the logo&rsquo;s height on every side: {Number((LOCKUP.mark / 4).toFixed(2))} cap
+          height around the stacked lockup and {Number((LOCKUP.oneLine / 4).toFixed(3))} around the
+          one-line lockup. The logo alone is at least 24px tall, and 16px only as a tab
           icon; a lockup keeps a cap height of at least 9px.
         </p>
         <p>
