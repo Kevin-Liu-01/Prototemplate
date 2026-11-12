@@ -960,6 +960,7 @@ function PrintFigure({
   const frame = frames[shown];
   const many = frames.length > 1;
   const said = Boolean(figure.caption?.length || figure.credit?.length);
+  const note = frame?.note;
   // a live figure without a caption of its own shows none
   const plain =
     figure.live && !frame ? LIVE_CAPTION[figure.live] : (frame?.alt ?? '');
@@ -990,7 +991,7 @@ function PrintFigure({
           ))}
         </ol>
       ) : null}
-      {said || plain || many ? (
+      {said || plain || many || note ? (
         <figcaption className='gtp-print-caption'>
           {/* one span, so the caption's italics stay in its line rather than becoming rows of the caption's grid */}
           <span>
@@ -999,6 +1000,7 @@ function PrintFigure({
             ) : (
               plain
             )}
+            {note ? ` ${note}` : null}
           </span>
           {many ? (
             <span className='gtp-print-count'>{`${shown + 1} of ${frames.length}`}</span>

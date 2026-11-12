@@ -9,6 +9,7 @@ import remarkGfm from 'remark-gfm';
 
 import Carousel, { CarouselItem } from '@/components/blog/Carousel';
 import Spotlight from '@/components/blog/Spotlight';
+import { pictureNote } from '@/lib/previous-mark';
 
 import PostFumadocsArchitecture from './PostFumadocsArchitecture';
 import PostGitHub from './PostGitHub';
@@ -89,7 +90,7 @@ function PostLink({ href = '', children, ...props }: ComponentProps<'a'>) {
  */
 function PostImage({ alt = '', src, title }: ComponentProps<'img'>) {
   if (typeof src !== 'string' || !src) return null;
-  return (
+  const image = (
     // oxlint-disable-next-line nextjs/no-img-element -- live renders this plain img, unsized and unoptimized
     <img
       alt={alt}
@@ -101,6 +102,15 @@ function PostImage({ alt = '', src, title }: ComponentProps<'img'>) {
       src={src}
       title={title}
     />
+  );
+  /* a figure the logo lock holds as history says so under it (src/lib/previous-mark.ts); live has no such line */
+  const note = pictureNote(src);
+  if (!note) return image;
+  return (
+    <span data-previous-mark=''>
+      {image}
+      <span className='pba-img-note'>{note}</span>
+    </span>
   );
 }
 

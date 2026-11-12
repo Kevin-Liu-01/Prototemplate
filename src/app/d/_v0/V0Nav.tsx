@@ -284,8 +284,8 @@ export default function V0Nav(): ReactNode {
     <header className='v0-nav' data-v0-nav>
       <div className='v0-nav-in'>
         <a className='v0-nav-brand' href={base || '/'}>
-          <Image className='v0-nav-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={22} height={22} />
-          <Image className='v0-nav-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={22} height={22} />
+          <Image className='v0-nav-logo-light' src='/brand/no-bg-gt-globe-logo-light.png' alt='' width={22} height={22} />
+          <Image className='v0-nav-logo-dark' src='/brand/no-bg-gt-globe-logo-dark.png' alt='' width={22} height={22} />
           General Translation
         </a>
 

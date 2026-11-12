@@ -91,7 +91,7 @@ function ArchiveStage({ item }: { item: ArchiveEntry }) {
           branch {ARCHIVE_DELETION.branch}.
         </p>
         <p className='ar-static'>
-          This is a static capture; nothing in it is live.{' '}
+          This is a static capture; nothing in it is live. It was taken before the logo, so it shows the previous mark.{' '}
           <a href={archiveShot(item)} target='_blank' rel='noreferrer'>
             Open the 1440 by 900 crop
             <Icon name='external' />

@@ -24,7 +24,7 @@ type FilmPlayerDemoProps = {
  * pick while a film plays starts the next film at once; a pick while it is
  * paused shows the next film's poster.
  */
-export default function FilmPlayerDemo({ films, initial = 'blog-designing-docs' }: FilmPlayerDemoProps) {
+export default function FilmPlayerDemo({ films, initial = 'slash-announcement' }: FilmPlayerDemoProps) {
   const selectId = useId();
   const frame = useRef<HTMLDivElement>(null);
   const [slug, setSlug] = useState(initial);
@@ -59,7 +59,8 @@ export default function FilmPlayerDemo({ films, initial = 'blog-designing-docs' 
             </select>
           </div>
           <p className='dmo-bar-status'>
-            <span className='dmo-num'>{film.length}</span>, {films.length} published films
+            <span className='dmo-num'>{film.length}</span>
+            {film.note ? `, ${film.note}` : null}, {films.length} published films
           </p>
         </>
       }

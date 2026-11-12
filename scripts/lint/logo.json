@@ -1,0 +1,1620 @@
+{
+  "$comment": "The logo lock's manifest, read by pnpm lint:logo (scripts/lint/logo.mjs). generated: files a generator writes from LOGO in src/lib/logo.ts; a picture carries its sha256 and the LOGO.d hash it was drawn from, which the generator records (pnpm build:logo does; otherwise node scripts/lint/logo.mjs --record <path>). history: files that show a previous mark on purpose, exempt from every rule or from the rules listed; with \"symbol\" only inside that <symbol> element, and with \"count\" (rules [9] only) for that many references and no more. A film, poster or contact sheet whose reason is \"made before the globe; re-render pending\" is labelled as the previous mark wherever the site plays it (src/lib/previous-mark.ts). notLogo: files that look like a logo by name or shape but are not one, exempt from rules 2, 3 and 8. checked: films and pictures looked at frame by frame that show the logo or no mark, each held at the sha256 it was checked at. external: the copies in other repositories, compared by --external as notes only.",
+  "generated": [
+    {
+      "path": "public/brand/gt-globe-logo.svg",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "public/brand/gt-globe-logo-light.svg",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "public/brand/gt-globe-logo-dark.svg",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "public/brand/gt-globe-logo-icon.svg",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "public/brand/gt-globe-logo.ico",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "4f0fd72df346fa56f71400151759472d5995fa198dd17192eca45ea7599e58db"
+    },
+    {
+      "path": "public/brand/no-bg-gt-globe-logo-light.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "17d51d1fc591d6f4f21c61e2435db5db77d250b672b7c5a2f9d00dfe6266d3b4"
+    },
+    {
+      "path": "public/brand/no-bg-gt-globe-logo-dark.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "6e5f9ac08a9edb3dcdfdde7e1369d84743aa64faf155e69aff80d2e14006123c"
+    },
+    {
+      "path": "public/brand/no-bg-gt-globe-logo-light-96.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "9d3990ec68eea80fbef4d30fc947bbb38cd31d5f74a6e9c998db925f2494bc30"
+    },
+    {
+      "path": "public/brand/no-bg-gt-globe-logo-dark-96.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "7390d849c8847445e261e174a652e6a52f26eaf0594ad57ae025c32bf21fffda"
+    },
+    {
+      "path": "public/brand/no-bg-gt-globe-logo-dark-256.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "cc67e5916485c4fee11147a037e1ea81fc6d1e652dcc3a3f1294ab043c13473f"
+    },
+    {
+      "path": "public/brand/gt-globe-logo.json",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "public/brand/gt-logo-light.svg",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "public/brand/gt-logo-dark.svg",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "public/brand/gt-logo-light.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "1e3c547af57fee26ea30f69387ad8b1c9529d147cee8910bbbecc18744a33a17"
+    },
+    {
+      "path": "public/brand/no-bg-gt-logo-light.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "17d51d1fc591d6f4f21c61e2435db5db77d250b672b7c5a2f9d00dfe6266d3b4"
+    },
+    {
+      "path": "public/brand/no-bg-gt-logo-dark.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "6e5f9ac08a9edb3dcdfdde7e1369d84743aa64faf155e69aff80d2e14006123c"
+    },
+    {
+      "path": "public/brand/no-bg-gt-logo-light-96.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "9d3990ec68eea80fbef4d30fc947bbb38cd31d5f74a6e9c998db925f2494bc30"
+    },
+    {
+      "path": "public/brand/no-bg-gt-logo-dark-96.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "7390d849c8847445e261e174a652e6a52f26eaf0594ad57ae025c32bf21fffda"
+    },
+    {
+      "path": "public/brand/no-bg-gt-logo-dark-256.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "cc67e5916485c4fee11147a037e1ea81fc6d1e652dcc3a3f1294ab043c13473f"
+    },
+    {
+      "path": "public/static/avatars/logo.png",
+      "generator": "pnpm build:logo",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "c8aa4b3da73c30dc7ab62db0277778424f30eb232a245ab3efb56a9e0aa94dde"
+    },
+    {
+      "path": "public/marks/production/gt-mark.svg",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "motion/kit/brand/gt-mark.svg",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "motion/kit/brand/gt-mark.js",
+      "generator": "pnpm build:logo"
+    },
+    {
+      "path": "motion/kit/brand/gt-logo-motion.js",
+      "generator": "node motion/kit/brand/logo-motion.mjs (from GtLogoMotion, which draws LOGO)",
+      "derived": true
+    },
+    {
+      "path": "deck/parts/head.html",
+      "generator": "pnpm build:logo (#gt-mark) and pnpm build:lockup (#gt-lockup)"
+    },
+    {
+      "path": "public/brand-deck.html",
+      "generator": "pnpm build:deck"
+    },
+    {
+      "path": "public/brand/gt-globe-lockup*.svg",
+      "generator": "pnpm build:lockup"
+    },
+    {
+      "path": "public/brand/gt-globe-strip*.svg",
+      "generator": "pnpm build:strip (the four-globe lockup; its last globe is LOGO)"
+    },
+    {
+      "path": "public/brand/kit/svg/gt-mark-*.svg",
+      "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)"
+    },
+    {
+      "path": "public/brand/kit/svg/gt-lockup-*.svg",
+      "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)"
+    },
+    {
+      "path": "public/brand/kit/png/gt-mark-ink-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "c5607ac96b7f9f0027885e0a5f97c415ed6aff33b36ad198d3b92d6c3390be3b"
+    },
+    {
+      "path": "public/brand/kit/png/gt-mark-white-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "c145bc2680a37322228974a04e170d9dac82bb996cef460ef160b54c112bf392"
+    },
+    {
+      "path": "public/brand/kit/png/gt-lockup-horizontal-ink-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "f1a75efe6ca6dd28cedeb4b2d9994090adca6d4179cd9edc5e1cc9f8b71c4746"
+    },
+    {
+      "path": "public/brand/kit/png/gt-lockup-horizontal-white-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "78c8932de5ab65792712f4111ca78d84a18f0c1ed8728af69e275a12831cb6db"
+    },
+    {
+      "path": "public/brand/kit/png/gt-lockup-stacked-ink-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "54efe28b4ccc91772c8bb04f6d6a46a1cf3c67cd997e164e22b8ea24adf2b383"
+    },
+    {
+      "path": "public/brand/kit/png/gt-lockup-stacked-white-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit (copies the brand kit, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "fb23b7dc7816ff75b9a935626f610d71cbc55cfc668921f6daaed5e890b03b7c"
+    },
+    {
+      "path": "public/marks/graticule/variations/axis-and-meridian-behind.svg",
+      "generator": "the graticule study's export (pnpm test:marks holds it to LOGO)"
+    },
+    {
+      "path": "src/components/brand/GtLogoMotion.geometry.ts",
+      "generator": "pnpm build:logo-motion",
+      "derived": "the motion layer's pieces are cut from LOGO.d; pnpm test:marks holds them"
+    },
+    {
+      "path": "public/media/gt-globe-dithered-mark.png",
+      "generator": "node motion/stills/partnership-globe/render.mjs (draws public/brand/gt-globe-logo.svg into the dithered globe)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "3cdf07b813342e4763f6ddb1c842ad45abfeedf3f561fc7069e8f31c032ca86c"
+    },
+    {
+      "path": "public/media/gt-globe-dithered-mark-transparent.png",
+      "generator": "node motion/stills/partnership-globe/render.mjs (draws public/brand/gt-globe-logo.svg into the dithered globe)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "b8d2a7eed6966fef6d4f95a83cf0b080ba214e7704b69aeb35b5ebea85650c6c"
+    },
+    {
+      "path": "public/media/gt-globe-dithered-mark.webp",
+      "generator": "node motion/stills/partnership-globe/render.mjs (draws public/brand/gt-globe-logo.svg into the dithered globe)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "37b0ae343f0b7cfb7d247e5f25a212c9d67b393b4968922cfb4c9b62be5f705d"
+    },
+    {
+      "path": "public/atlas/og/atlas.png",
+      "generator": "copied from gt-cloud apps/atlas/public/atlas/og, pinned in scripts/lint/copies.json",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "73602dcfef2cdc6a79e5eb3ba97cd090ca788d63c07a8eeec7a9930ac1158a78"
+    },
+    {
+      "path": "public/atlas/og/designing-docs-for-humans.png",
+      "generator": "copied from gt-cloud apps/atlas/public/atlas/og, pinned in scripts/lint/copies.json",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "0fbd74f9bd70881decf3bdcdd668fd9e2de6a0c6f060c136232e4ea6c7b7a611"
+    },
+    {
+      "path": "public/atlas/og/fuma-nama.png",
+      "generator": "copied from gt-cloud apps/atlas/public/atlas/og, pinned in scripts/lint/copies.json",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "b8a2e3155f3983c5091eb1f3c2c37dd52b6c3cf95c68b021bcd2e0f1ed232f6c"
+    },
+    {
+      "path": "public/atlas/og/rewriting-our-docs.png",
+      "generator": "copied from gt-cloud apps/atlas/public/atlas/og, pinned in scripts/lint/copies.json",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "dad826b04276d5ef3365cd663fe9a3a12fa815116e7e06619972894b4a757a9a"
+    },
+    {
+      "path": "public/atlas/og/translating-euclid.png",
+      "generator": "copied from gt-cloud apps/atlas/public/atlas/og, pinned in scripts/lint/copies.json",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "e192e5b6dbe3703103c1317a127cd18ae9b38736eb837d39e94b4849bc8389bb"
+    }
+  ],
+  "history": [
+    {
+      "path": "src/app/d/_v0/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/apadana-grid/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/aurora-paper/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/blog-globe/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/brick-lattice/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/calendar-rings/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/chroma-flow/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/clay-tablet/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/dither-field/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/event-horizon/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/glazed-bond/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/glyph-rain/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/hourglass/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/lens-gate/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/paper-foundry/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/prism-light/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/raking-relief/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/screenfold-codex/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/singularity/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/singularity-dossier/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/singularity-orbit/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/singularity-signal/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/stepped-fret/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/talud-tablero/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/terminus-board/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/textile-block/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/toolchain/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "src/app/d/wide-rule/",
+      "reason": "dated design study"
+    },
+    {
+      "path": "public/media/rewriting-docs-film.mp4",
+      "reason": "ends on the logo, but its captures were taken before the globe; recapture pending"
+    },
+    {
+      "path": "public/motion/sheets/blog-rewriting-docs.png",
+      "reason": "ends on the logo, but its captures were taken before the globe; recapture pending"
+    },
+    {
+      "path": "public/motion/sheets/blog-rewriting-docs.webp",
+      "reason": "ends on the logo, but its captures were taken before the globe; recapture pending"
+    },
+    {
+      "path": "public/media/open-source-reel.mp4",
+      "reason": "made before the globe; re-render pending"
+    },
+    {
+      "path": "public/media/open-source-poster.jpg",
+      "reason": "made before the globe; re-render pending"
+    },
+    {
+      "path": "public/media/banner-contact-sheet.png",
+      "reason": "the process record of the X banner explorations, made before the globe"
+    },
+    {
+      "path": "public/marks/previous/gt-monogram.svg",
+      "reason": "the doubled-line monogram, the previous mark, which /brand shows under The previous mark"
+    },
+    {
+      "path": "src/app/brand/LogoSystem.tsx",
+      "rules": [
+        9
+      ],
+      "reason": "the /brand figure under The previous mark, which loads the monogram's file"
+    },
+    {
+      "path": "src/lib/marks.ts",
+      "rules": [
+        9
+      ],
+      "reason": "names the previous mark's file where it describes the production marks",
+      "count": 1
+    },
+    {
+      "path": "deck/shots/site-proto-dossier-*",
+      "reason": "captures of the Dossier direction, a dated design study that draws the doubled-line monogram"
+    },
+    {
+      "path": "deck/shots/proto-dossier-top.jpg",
+      "reason": "captures of the Dossier direction, a dated design study that draws the doubled-line monogram"
+    },
+    {
+      "path": "deck/shots/thumb/proto-dossier-top.jpg",
+      "reason": "captures of the Dossier direction, a dated design study that draws the doubled-line monogram"
+    },
+    {
+      "path": "deck/shots/thumb/dir-*",
+      "reason": "thumbnails of the dated design studies under /d"
+    },
+    {
+      "path": "deck/shots/proto-archive-record-*",
+      "reason": "the archive record of a deleted direction, captured before the globe"
+    },
+    {
+      "path": "deck/shots/reel-poster.jpg",
+      "reason": "the end frame of the open-source reel, a film made before the globe"
+    },
+    {
+      "path": "deck/shots/linkedin.jpg",
+      "reason": "the LinkedIn company page with the avatar LinkedIn served before the globe; LinkedIn's bot check stops the capture tools, so it is captured again by hand"
+    },
+    {
+      "path": "deck/shots/thumb/linkedin.jpg",
+      "reason": "the LinkedIn company page with the avatar LinkedIn served before the globe; LinkedIn's bot check stops the capture tools, so it is captured again by hand"
+    },
+    {
+      "path": "public/deck-assets/site-proto-dossier-*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/proto-dossier-top.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/shots/deck/proto-dossier-top.jpg",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/dir-*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/shots/deck/dir-*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/proto-archive-record-*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/reel-poster.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/linkedin.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/shots/deck/linkedin.jpg",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-A1-zones-overlay.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-A2-wireframe-map.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-A3-exploded-layers.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-A4-reading-path.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-A5-four-corners.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-B1-redline-pass.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-B2-before-after-split.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-B4-peel-the-layers.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-B5-header-strip.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-C1-nav-census.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-C2-accordion-anatomy.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-C4-sidebars-side-by-side.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-C5-one-tree.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-C6-another-section.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-D5-quickstart-pages.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-E5-localized.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-E7-quiet-scrollbar.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-F3-dont-do.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-H0-cover-final-light.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs-H0-cover-final.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/designing-docs.webp",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/rewriting-docs-sidebar.png",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/rewriting-our-docs-dark.png",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/rewriting-our-docs-og.png",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "public/static/blogs/rewriting-our-docs.png",
+      "reason": "figures of a dated blog post, captured from the docs before the globe; the docs sidebar shows the doubled-line monogram"
+    },
+    {
+      "path": "deck/slides/16-mark.html",
+      "reason": "slide 16 shows the doubled-line monogram as the previous mark"
+    },
+    {
+      "path": "deck/parts/head.html",
+      "symbol": "gt-monogram",
+      "rules": [
+        1,
+        9
+      ],
+      "reason": "the #gt-monogram symbol, which slide 16 draws as the previous mark; the waiver covers that symbol only"
+    },
+    {
+      "path": "public/brand-deck.html",
+      "symbol": "gt-monogram",
+      "rules": [
+        1,
+        9
+      ],
+      "reason": "the built deck carries the #gt-monogram symbol for slide 16; the waiver covers that symbol only"
+    },
+    {
+      "path": "public/brand-deck.html",
+      "rules": [
+        9
+      ],
+      "reason": "the built deck carries slide 16, which draws #gt-monogram as the previous mark",
+      "count": 1
+    },
+    {
+      "path": "motion/kit/picture-sources.json",
+      "rules": [
+        6
+      ],
+      "reason": "the films' record of the monogram files they used"
+    },
+    {
+      "path": "scripts/build/logo.mjs",
+      "rules": [
+        6,
+        9
+      ],
+      "reason": "the generator that draws the globe at the retired addresses and names the previous mark's file"
+    },
+    {
+      "path": "deck/shots/glyph-animation-*",
+      "reason": "captures of glyphfield.com from before the globe, where its General Translation identity drew the doubled-line monogram; slide 84 and the surfaces grid say the capture shows the previous mark"
+    },
+    {
+      "path": "deck/shots/glyph-brand-book-*",
+      "reason": "captures of glyphfield.com from before the globe, where its General Translation identity drew the doubled-line monogram; slide 84 and the surfaces grid say the capture shows the previous mark"
+    },
+    {
+      "path": "deck/shots/glyph-home*",
+      "reason": "captures of glyphfield.com from before the globe, where its General Translation identity drew the doubled-line monogram; slide 84 and the surfaces grid say the capture shows the previous mark"
+    },
+    {
+      "path": "deck/shots/glyph-slides-*",
+      "reason": "captures of glyphfield.com from before the globe, where its General Translation identity drew the doubled-line monogram; slide 84 and the surfaces grid say the capture shows the previous mark"
+    },
+    {
+      "path": "deck/shots/glyph-studio*",
+      "reason": "captures of glyphfield.com from before the globe, where its General Translation identity drew the doubled-line monogram; slide 84 and the surfaces grid say the capture shows the previous mark"
+    },
+    {
+      "path": "deck/shots/thumb/glyph-home.jpg",
+      "reason": "captures of glyphfield.com from before the globe, where its General Translation identity drew the doubled-line monogram; slide 84 and the surfaces grid say the capture shows the previous mark"
+    },
+    {
+      "path": "deck/shots/thumb/glyph-studio.jpg",
+      "reason": "captures of glyphfield.com from before the globe, where its General Translation identity drew the doubled-line monogram; slide 84 and the surfaces grid say the capture shows the previous mark"
+    },
+    {
+      "path": "public/deck-assets/glyph-home-hero-*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/shots/deck/glyph-home.jpg",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/shots/deck/glyph-studio.jpg",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "deck/shots/proto-archive-light.jpg",
+      "reason": "the archive record of a deleted direction, captured before the globe"
+    },
+    {
+      "path": "deck/shots/proto-archive-dark.jpg",
+      "reason": "the archive record of a deleted direction, captured before the globe"
+    },
+    {
+      "path": "public/shots/archive/",
+      "reason": "captures of the retired versions, taken before the globe; the gallery's Archive, the archive pages and the surfaces grid say they show the previous mark"
+    },
+    {
+      "path": "public/shots/thumb/archive-*",
+      "reason": "thumbnails of the retired versions' captures, taken before the globe; the surfaces grid says they show the previous mark"
+    },
+    {
+      "path": "graphics/shots/hi/",
+      "reason": "captures of the docs from before the globe, the sources of a dated blog post's figures; the docs sidebar shows the doubled-line monogram, and the post labels each figure"
+    },
+    {
+      "path": "graphics/shots/covers/cuelume-og.png",
+      "reason": "covers of blog posts published before the globe, kept as inputs of the cover builders; no page shows them"
+    },
+    {
+      "path": "graphics/shots/covers/cuelume.webp",
+      "reason": "covers of blog posts published before the globe, kept as inputs of the cover builders; no page shows them"
+    },
+    {
+      "path": "graphics/shots/covers/fuma-nama-og.png",
+      "reason": "covers of blog posts published before the globe, kept as inputs of the cover builders; no page shows them"
+    },
+    {
+      "path": "graphics/shots/covers/fumadocs.png",
+      "reason": "covers of blog posts published before the globe, kept as inputs of the cover builders; no page shows them"
+    },
+    {
+      "path": "graphics/shots/covers/open-source.png",
+      "reason": "covers of blog posts published before the globe, kept as inputs of the cover builders; no page shows them"
+    },
+    {
+      "path": "graphics/shots/covers/slash.jpg",
+      "reason": "covers of blog posts published before the globe, kept as inputs of the cover builders; no page shows them"
+    },
+    {
+      "path": "graphics/shots/covers/spine.png",
+      "reason": "covers of blog posts published before the globe, kept as inputs of the cover builders; no page shows them"
+    },
+    {
+      "path": "graphics/shots/rewriting-cover-ground.png",
+      "reason": "the ground of a dated blog post's cover, cut from a docs capture made before the globe; no page shows it"
+    },
+    {
+      "path": "graphics/rec/react-stopmo2.mp4",
+      "reason": "stop-motion clips recorded from the docs before the globe, kept as references for the stop-motion guide; no page plays them"
+    },
+    {
+      "path": "graphics/rec/toc4.webm",
+      "reason": "stop-motion clips recorded from the docs before the globe, kept as references for the stop-motion guide; no page plays them"
+    },
+    {
+      "path": "docs/reference-shots/generaltranslation/",
+      "reason": "reference captures of generaltranslation.com from before the globe; no page shows them"
+    },
+    {
+      "path": "docs/composites/",
+      "reason": "design composites made before the globe, the record of earlier reviews; no page shows them"
+    }
+  ],
+  "notLogo": [
+    {
+      "path": "public/marks/",
+      "reason": "the /marks catalog: candidates, vote losers and past picks, each labelled on /marks"
+    },
+    {
+      "path": "public/marks/bar-monogram*",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "public/marks/double-cut.svg",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "public/marks/livery-stack.svg",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "public/marks/plate-inverted.svg",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "public/marks/two-way*.svg",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "public/marks/globe-g*.svg",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "scripts/build/speed-marks.mjs",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "deck/slides/17-speed-monogram.html",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "deck/slides/18-speed-lockup.html",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "deck/slides/19-speed-plate.html",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "deck/slides/20-speed-double-cut.html",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "deck/slides/21-speed-livery.html",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "deck/slides/22-speed-dithered.html",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "deck/slides/23-speed-ascii.html",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "deck/shots/proto-marks-speed-*",
+      "reason": "speed marks are a separate approved system"
+    },
+    {
+      "path": "public/media/gt-globe-glyphs*",
+      "reason": "the partnership glyph globe artwork, a globe picture and not the logo"
+    },
+    {
+      "path": "public/media/gt-globe-dithered.png",
+      "reason": "the partnership dithered globe without the logo"
+    },
+    {
+      "path": "public/media/gt-globe-dithered.webp",
+      "reason": "the partnership dithered globe without the logo"
+    },
+    {
+      "path": "public/media/gt-globe-dithered-transparent.png",
+      "reason": "the partnership dithered globe without the logo"
+    },
+    {
+      "path": "public/media/mark-sting-film.mp4",
+      "reason": "the bar monogram's sting, which plays on /marks; speed marks are a separate approved system"
+    },
+    {
+      "path": "public/media/mark-sting-poster.jpg",
+      "reason": "the bar monogram sting's poster, which plays on /marks; speed marks are a separate approved system"
+    }
+  ],
+  "checked": [
+    {
+      "path": "public/media/slash-announcement-film.mp4",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "e39499466b5ef673a792c08b2be568cd0b5f702e35c7027fd8030b80d16d2918"
+    },
+    {
+      "path": "public/media/slash-announcement-poster.jpg",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "4ac8e4edd1194c874ba962930952c64fb4cd0645e164292a9255d21aa0b44d58"
+    },
+    {
+      "path": "public/motion/sheets/slash-announcement.png",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "bee2d452ab49f9ebb19bc5c2529da6995574ac9deac179d7e70632024f9b71cc"
+    },
+    {
+      "path": "public/motion/sheets/slash-announcement.webp",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "6c39c34a00922ce6dff6973aa8959ba7d889f08ef0f302bcbe8bacb353126346"
+    },
+    {
+      "path": "public/media/slash-announcement-de-film.mp4",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "50b36d0b9c02618bf80d68fa166fa5b87032b6fea3f09a884caefef61f8cabba"
+    },
+    {
+      "path": "public/media/slash-announcement-de-poster.jpg",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "5405ff27801787900a696f913b4ccf4599efe46b9f3e19533faf2c0abaa1496c"
+    },
+    {
+      "path": "public/motion/sheets/slash-announcement-de.png",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "4b8d7b9e63d9baf9a1cfc24505d72abf3a160ce80a3a3f37136e030da54dae83"
+    },
+    {
+      "path": "public/motion/sheets/slash-announcement-de.webp",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "a89a8ed498bb728b5fce9b34afd3664afbdbbae00aad1a331ed3181f8288d583"
+    },
+    {
+      "path": "public/media/slash-announcement-es-film.mp4",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "ddfab39f124c21eca782a925594a2b1f61062ae9edd0bbbeb8d9fa2d72423e68"
+    },
+    {
+      "path": "public/media/slash-announcement-es-poster.jpg",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "36a977d25859bb3c4c07ec13c9e9c9c70b4675e0595f94c963e1659072c5b587"
+    },
+    {
+      "path": "public/motion/sheets/slash-announcement-es.png",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "73226b627ef939c0585a8c4fb1eca2c9842cd18fcfc667f2a2d8ff45319c8ae3"
+    },
+    {
+      "path": "public/motion/sheets/slash-announcement-es.webp",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "57f194e05b2ff05205aa9c3acbe25b2ed90bfaf943a592fdf62c6782fb1b7dcb"
+    },
+    {
+      "path": "public/media/slash-announcement-ja-film.mp4",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "1d2eec05a31781cc8472d8fea63a757aeafd23d20aa9647df80b191daf97400b"
+    },
+    {
+      "path": "public/media/slash-announcement-ja-poster.jpg",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "7bc9a86ff4ca5b139bfdbbb3cbc7d5aa6df0eab36f7f333da00bf05b588d41d7"
+    },
+    {
+      "path": "public/motion/sheets/slash-announcement-ja.png",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "7f046be53f33f1bb70eecdadc51421ebd7635aad3ca3d8f7945385abacde9046"
+    },
+    {
+      "path": "public/motion/sheets/slash-announcement-ja.webp",
+      "reason": "ends on the globe in the Slash lockup; checked on its contact sheet and end frame",
+      "sha256": "f889e5cf56185b5a13fef0e96fe42621d768f3ba9f9a4dd813f90d4fe124ddeb"
+    },
+    {
+      "path": "public/media/jihe-yuanben-film.mp4",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "aaccb2d025e708983bdeb1290017028e5d8ab38f151e78af9a4bea56729429e2"
+    },
+    {
+      "path": "public/media/jihe-yuanben-poster.jpg",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "f09c5ed54a89d167e2791ff6f46ebc9d1c1a59358e950edd99797d7ba88120d8"
+    },
+    {
+      "path": "public/motion/sheets/jihe-yuanben.png",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "9dd7fb6daf7b0fc655c745b436379765cd333cfb0de27580a9069df7e74429d1"
+    },
+    {
+      "path": "public/motion/sheets/jihe-yuanben.webp",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "d4a391ef65e40667bf6d98f5a0dac960387528779d43b1b7c9d7294191092044"
+    },
+    {
+      "path": "public/media/journey-to-the-west-film.mp4",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "e7e5eefd2b9bb0326370a0dcbabe6fdbeffd80bca9e1052c4aba2acf8799d66a"
+    },
+    {
+      "path": "public/media/journey-to-the-west-poster.jpg",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "e621a51900a0788a88b33763d9ce78d399ebdc452e756871c2977f48dc27e151"
+    },
+    {
+      "path": "public/motion/sheets/journey-to-the-west.png",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "bc87fefcbf1be217a58d6add44868a34cf8a53556ec6adc69ee0c8e65243abf6"
+    },
+    {
+      "path": "public/motion/sheets/journey-to-the-west.webp",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "182c53505c5bc9ee84ab7f1e9febdb5a10eb6a048d8313dd8ca6da04d68965c1"
+    },
+    {
+      "path": "public/media/modern-hebrew-film.mp4",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "4b4e14245d646120954fb5cb42b56d5cff5942cb2e3e55b8f83313b18b0e7c04"
+    },
+    {
+      "path": "public/media/modern-hebrew-poster.jpg",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "d1615a180e74afc445db1acb419519d4990cde0a072fbf9acc800f68dad0283c"
+    },
+    {
+      "path": "public/motion/sheets/modern-hebrew.png",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "4ca1e38681af1466e4f5be7d8aa2f2dfaf48f7d018bcd47847f51dd61d6fcd58"
+    },
+    {
+      "path": "public/motion/sheets/modern-hebrew.webp",
+      "reason": "a translation series film that shows no GT mark; checked on its contact sheet and end frame",
+      "sha256": "e2f16a899f3105b78f22a83c513bd64bde1ba7c20198d3b214be2c99b01571f3"
+    },
+    {
+      "path": "public/media/release-board-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "105f3a67f55d7c1b450c993c2fcd171ca145b2e936710994ca226e24517f8c17"
+    },
+    {
+      "path": "public/media/gt-banner-signin.png",
+      "reason": "the X banner: the dithered globe and the customer grid, no GT mark",
+      "sha256": "76a5f35e6f04e455b03f5432e4b96eea4d7657160950f98022fd3d9d5bf967f0"
+    },
+    {
+      "path": "public/media/gt-banner-signin@2x.webp",
+      "reason": "the X banner: the dithered globe and the customer grid, no GT mark",
+      "sha256": "7181a7803a329d0cd76a666527b123bca14bcf15dcf12731b40798822c986959"
+    },
+    {
+      "path": "public/media/add-i18n-to-nextjs-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "31e736af8f1fbf4ffbccadf99636ad5ce31d957045e22a01b8b923f6b1d7b70c"
+    },
+    {
+      "path": "public/motion/sheets/kb-add-i18n-to-nextjs.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "b93539c38f2b54aade037cc2e2e327f7e438c2c92ebce71f79af556f7374f156"
+    },
+    {
+      "path": "public/motion/sheets/kb-add-i18n-to-nextjs.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "21f6f9aed39da6aa458ec622727810b4a0ef553998453f403dd54fd3e45f0d6f"
+    },
+    {
+      "path": "public/media/add-i18n-to-nextjs-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "5c9d2d85041a1e5fda50bbc21f4d2ffda145e3c830dea2b3740825dbde83692d"
+    },
+    {
+      "path": "public/media/ai-agent-i18n-setup-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "075f004d97bbfc7c98fee2b8f2b9e21b42140c1bea47d424640eccbaf9d8990f"
+    },
+    {
+      "path": "public/motion/sheets/kb-ai-agent-i18n-setup.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "2f916d33403bf66bd1ddefd423a7029478e60451e35b2a2b0ce7211eb0c8631d"
+    },
+    {
+      "path": "public/motion/sheets/kb-ai-agent-i18n-setup.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "7d4510f5c21213c515e62a5ffa17c154981f3b1c8822e09eb121fe9df7148745"
+    },
+    {
+      "path": "public/media/ai-agent-i18n-setup-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "e6b8d26b36c231aaac0a6e9f0d193901179946c8cd322cf0873a776dee8858c8"
+    },
+    {
+      "path": "public/media/best-localization-software-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "3fd2e9e515ba77beb0f3fd8c8da5a266d69031d9c436adedf8135413e027692a"
+    },
+    {
+      "path": "public/motion/sheets/kb-best-localization-software.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "e3b2d81973659d5af8fdc8f7dad0916d9cc16bfde3b0bbb14af3207b113e6197"
+    },
+    {
+      "path": "public/motion/sheets/kb-best-localization-software.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "9543e4dd851062f34f6382e86a55ff48c944c4e1469f74684a8dbb3b575a3b96"
+    },
+    {
+      "path": "public/media/best-localization-software-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "55a8eff4c9af3596d8b146e82de5c646f42f29688affb134961a529d2b50cdca"
+    },
+    {
+      "path": "public/media/designing-docs-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "379d7214e48be39138ca7a9993d6c34061764b9a6a89f786e9f02fc049fe3e44"
+    },
+    {
+      "path": "public/motion/sheets/blog-designing-docs.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "93a07fc94c03fa0d4204eecaaee49be9510d375e62669fc462099d5e6651e3fe"
+    },
+    {
+      "path": "public/motion/sheets/blog-designing-docs.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "91f64f8b721ef7da54921b241fd7d171900e445d72e0a34c914825cf1d5edc32"
+    },
+    {
+      "path": "public/media/designing-docs-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "324134440040ad5daa50792bedc1a3596d832ff96473f0ac81a172ed4b9c3a60"
+    },
+    {
+      "path": "public/media/format-numbers-dates-currencies-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "f9ef5adf27b7657b678559607084b90bffcf1ee2f85b8eb0059a303806960253"
+    },
+    {
+      "path": "public/motion/sheets/kb-format-numbers-dates-currencies.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "3cadb19024b53e276c2f63431c80d61074932116bc112db09893b46e1e77d6a5"
+    },
+    {
+      "path": "public/motion/sheets/kb-format-numbers-dates-currencies.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "5f3999deb9f32d2e25e7a3b7e1f122ca6a75e0bdedd68658006f1d67c2139bf5"
+    },
+    {
+      "path": "public/media/format-numbers-dates-currencies-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "facdd42e1c68ec878704300cf7b67a471b815a314fb337c4c20b321ed56f4107"
+    },
+    {
+      "path": "public/media/fuma-nama-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "c7bc69ba3044a8b0942de24fbe5cc06bc36eca3ac1fddfae291a16443a01a784"
+    },
+    {
+      "path": "public/motion/sheets/blog-fuma-nama.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "402be438382284c53d9003b97cf7cc68bc75bee4d6ac920400184468917cfe7f"
+    },
+    {
+      "path": "public/motion/sheets/blog-fuma-nama.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "9b71455fb11277ec4b9627754898d884b54d7a16ddf59f21727fa04d8ada4707"
+    },
+    {
+      "path": "public/media/fuma-nama-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "c5793de8a1e18525ef71ffa6ba3b0779d943537280fb1ba917f494d6a7d6d8c5"
+    },
+    {
+      "path": "public/media/how-gt-works-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "afd7e5c6c871afe92564f6b7b1f3a5ad45f18dbf844867e9a20bfaf09c1366c9"
+    },
+    {
+      "path": "public/motion/sheets/gif-how-gt-works.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "a42ff42d8331889da5bcefc640cbb7693960a0c7d275fc1838dabc82ce74ea31"
+    },
+    {
+      "path": "public/motion/sheets/gif-how-gt-works.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "f4286492af9b451dc280ccddb77a7ff658a2819579a7e93b1c693c9e696d32ad"
+    },
+    {
+      "path": "public/media/how-gt-works-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "dad47ed0349229f8975a11e792b3401c6b53ca533e935c6ce442308d51f06aab"
+    },
+    {
+      "path": "public/media/how-to-handle-plurals-in-react-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "576819a850fe97905a45ffe07cd4c6a6027b13818a7eb247ad5716f8357d3dcc"
+    },
+    {
+      "path": "public/motion/sheets/kb-how-to-handle-plurals-in-react.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "ac479c106be8396cd68bb18887c8bd1678f39b558990124c33ebf6a1e340d867"
+    },
+    {
+      "path": "public/motion/sheets/kb-how-to-handle-plurals-in-react.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "c12d991173cd8a9304c9b9379f391abc131c318273394bae9f67ad730fca14b2"
+    },
+    {
+      "path": "public/media/how-to-handle-plurals-in-react-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "6dc7f0a4e4fb8ec20682c8d31126ac3f301a6bdeb1c6995ec74debfb36539a3c"
+    },
+    {
+      "path": "public/media/hunayn-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "37b55af05ccf1fbb268a3dce372d26c444137c7452ec245c052633c7f24ba52e"
+    },
+    {
+      "path": "public/motion/sheets/hunayn.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "79334cf56fb9486e64c9c1a36f051d22d10ecd3e954e473c53f2d82e7f93fbb1"
+    },
+    {
+      "path": "public/motion/sheets/hunayn.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "4984ead36fdf64ad632cc7b77171bc9e92d3e4a473bb27a494ae58f9f2d43ddf"
+    },
+    {
+      "path": "public/media/hunayn-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "9c585fa76c0114415003fe3424773703978a8fd032387c900a49f8957a3985ae"
+    },
+    {
+      "path": "public/media/i18n-without-translation-files-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "e48777aac79e35f86adb1100831845cd96d818d49778d359e27d7f83d9980896"
+    },
+    {
+      "path": "public/motion/sheets/kb-i18n-without-translation-files.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "8540b595843f0fb02cbccd95606a4613352270f605dee8e97990e353fbae6497"
+    },
+    {
+      "path": "public/motion/sheets/kb-i18n-without-translation-files.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "c3eb431a19f63045c5c4687fa160946b68fa7a9885a1ff6cbc3f21e5cf200311"
+    },
+    {
+      "path": "public/media/i18n-without-translation-files-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "fa20cab5ac40e620b6438f0c9188edf8f639d4b83aa314215e60f9f88c4f4dd7"
+    },
+    {
+      "path": "public/media/multilingual-nextjs-seo-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "f02aa091a75709e589e93531a143fff1e67f707e32df1dde2e47204c8d55fb83"
+    },
+    {
+      "path": "public/motion/sheets/kb-multilingual-nextjs-seo.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "b7aa70103a57d053f7b1058f047b4afe6b98381338565e11401d7303797809a5"
+    },
+    {
+      "path": "public/motion/sheets/kb-multilingual-nextjs-seo.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "4924ad3f81976ce19f68a4fe382ecd7969263c3b66aa1f691335e67a72a9d826"
+    },
+    {
+      "path": "public/media/multilingual-nextjs-seo-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "937d815ad93ab1f74afd43476f1145d74e70665801624f2d60f4629fecf52063"
+    },
+    {
+      "path": "public/media/nishi-amane-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "30f743938dd0d168bad9716a8773e798cf10a8a7267800aba762e076ea109579"
+    },
+    {
+      "path": "public/motion/sheets/nishi-amane.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "0d3c99aa895b7ad31e848c6cb4718613e9e3283942d97a2af484142a102ec05a"
+    },
+    {
+      "path": "public/motion/sheets/nishi-amane.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "89399f066d3fdfe77faceee83c903d995bf398b253f72cc15c60f48f943bff5b"
+    },
+    {
+      "path": "public/media/nishi-amane-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "5d001859858e0e76f760c258407c7690a19f25696572e09234cb423a61869f0f"
+    },
+    {
+      "path": "public/media/release-board-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "24a909600ce2d88eedc128f28e7b747f7a54677170c08af8f5b2b899328c870c"
+    },
+    {
+      "path": "public/motion/sheets/release-board.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "595c95057c0e4b4347fde8534bf11e8e7e2a997540a94852d2ac51ab369500b3"
+    },
+    {
+      "path": "public/motion/sheets/release-board.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "e00d8119eec4db0d9df193b9e83547d8123427ec805a8d14cf5c1172dc1bceb2"
+    },
+    {
+      "path": "public/media/review-translations-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "854716631394097a377ae06f4c7799bd83051b7f813c122fe2a6c089f5c2b928"
+    },
+    {
+      "path": "public/motion/sheets/kb-review-translations.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "16b3a6d07c9aab3cac2bc7a47891868502e9e8377e9c35e89cce13b3a94802d4"
+    },
+    {
+      "path": "public/motion/sheets/kb-review-translations.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "353c6f050a405bc250fb8a587be75bb226138fa035c95c23e1c6a1bbbec8184b"
+    },
+    {
+      "path": "public/media/review-translations-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "b29db44680ce5799e0717fffbe82d24d69d26c320d61e20e64093e1d114859a5"
+    },
+    {
+      "path": "public/media/rewriting-docs-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "385d73f8e2392c852f64dd338c3abb84ff1ac72f356cb485b4be0d91ceac2489"
+    },
+    {
+      "path": "public/media/translate-conditional-jsx-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "965bb59c2ac5edbcfe881a09b3dd86593e199d273f3c7f0910964c39dd6e6de8"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-conditional-jsx.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "44633f98502c8ca31c19fde0aaa7ce1f61bc023c20f9d5f88df9ea008afbae95"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-conditional-jsx.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "ca072a5bd2c5c3f7fc3a696d6d445dd1f327075473c36b169fd37cc935c9d3dc"
+    },
+    {
+      "path": "public/media/translate-conditional-jsx-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "b3fa797391b26d71fa15e30b681a821200496089792a5150d4f1ee57a4832ba9"
+    },
+    {
+      "path": "public/media/translate-google-slides-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "3e73a06fdd98732bc1ec5656df0a1f459833cf17e5cf243a08094c221d80e8ee"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-google-slides.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "1042966b56bce9e50aaa77c4ae68d8eabd06c8621499917008fe70adaf1f8ebd"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-google-slides.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "ddf600ce4c322c81c3dc3be60bd8eb6f19a4254f701e5cff4bc4a189244cde8a"
+    },
+    {
+      "path": "public/media/translate-google-slides-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "1b1ceeed0a0a9e45ac829900ecaaf00fb681d7165965a226251f4c68815f833c"
+    },
+    {
+      "path": "public/media/translate-lottie-animations-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "7627e3e786281f22cf0affa3777953e9be7dc296afbcff9e90a2b2798cb1d678"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-lottie-animations.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "60ee5c8c7f57669627c5fad624428c50a531046571ea005ca41d56f6793164df"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-lottie-animations.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "95b5a4bc40c27607b886e54e3e75da9f4cef42c2935125960cfbce015b86a475"
+    },
+    {
+      "path": "public/media/translate-lottie-animations-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "c49b94843fc4930dd323e7b30b1f06d4d498813e7cbd0b0f66f628d8550f32d0"
+    },
+    {
+      "path": "public/media/translate-mintlify-docs-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "7a777276168d8cc5afb2aa4ec47a4f77957e78638c99a595bc839afadc66384e"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-mintlify-docs.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "e5be0ee24f72140e8839b80a19778f262f8e15d3ebd4b02682e3c2a6c6404250"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-mintlify-docs.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "f37d72e3e7876f7ee5a203560bd8546e96a6b2b540c49c33e304c3a59ab9e1f6"
+    },
+    {
+      "path": "public/media/translate-mintlify-docs-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "6573651b836685fc492010050a1956f4e1fb7cb1c3d7f390d5778fbd8718905a"
+    },
+    {
+      "path": "public/media/translate-node-app-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "f6866ecdc51d4e16f1bcc06a8567eb34250e44e12a8215594c9c1e69f4c5e4df"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-node-app.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "ac75dd080ce11d598295247d8c0a39a7c4ddae01938d03a972ffe870228a8711"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-node-app.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "3e0a7504fbdd98529134436445bb638c6e22f6e4e6384023c2e115ec66bd6b13"
+    },
+    {
+      "path": "public/media/translate-node-app-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "36881c4fe6302b64427188f4c043faaddc2b02947188a191b9513231b5be032f"
+    },
+    {
+      "path": "public/media/translate-product-walkthroughs-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "0a1621f93287295e22f4f388310c40705afd93b27a64bd3f332aa603d64ab1ca"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-product-walkthroughs.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "449e90dda94886e26cfa80f9d7ac87aa32e07a5c2468a4aafaa538bd7bc02ca7"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-product-walkthroughs.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "0b49c5745ee2ca460ec9387449e2be338bdfc9d17fbd6bbe560390b67f445a4a"
+    },
+    {
+      "path": "public/media/translate-product-walkthroughs-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "1c782cffd832574d89377c77f2a87869e3e7f9d6e31dbae5de45be260f32393f"
+    },
+    {
+      "path": "public/media/translate-react-app-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "88a0a044c4b1541dfe471308149f8ed6139b46ac6ddec681823780ef53b32d67"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-react-app.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "a13e64e9272c2ad037b00087a879bac63547a369c9e82d8c14e383938ba19327"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-react-app.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "0dba2460d604418d7cfcd53c08f913245472150c99ee849c1bf486fa07898ab8"
+    },
+    {
+      "path": "public/media/translate-react-app-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "48e160345d94568dbcbd9e4f7f0e9aa5985493bbc5a73d26d361aa9346b24f58"
+    },
+    {
+      "path": "public/media/translate-react-native-app-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "311b0d477a6e2e47007c0f2bef67a36bda404c2751a807ab67dd2bdce7e7ab8a"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-react-native-app.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "64af798264f32adc96591cfd821ef36e321c9bf7c251c284f9f954f046812e75"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-react-native-app.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "9fe442a193fcbf3a2f23695c27730a6f9a6b1f93936f645d9e55a9557c5cbe92"
+    },
+    {
+      "path": "public/media/translate-react-native-app-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "c0a7ef7c5a344d4de8e86674cce9b2e77a5e1772bacf33a7ced9cdc06a9cb641"
+    },
+    {
+      "path": "public/media/translate-sanity-content-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "8564cbc88460ac025c79d69a689e6fac380f96837532527ab226a06d52128ee8"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-sanity-content.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "1f36b5b3bf15814732430d86c3a7c9cfc39ff3a0bf5bf346ffa8dff2411e0194"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-sanity-content.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "9075a7ec0311445d2af1459e9ce63b8cb39f75d8fd6c9d5bdee136344ea1b4c9"
+    },
+    {
+      "path": "public/media/translate-sanity-content-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "29311431465bca22f64a2c906c9660809793e9b45a490ec630a671bf43d8d3a8"
+    },
+    {
+      "path": "public/media/translate-srt-subtitles-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "40a396d0d69af835ce388fc1fbe4823bbd5970baee8fe65ceae84446d2f527fe"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-srt-subtitles.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "dcba529a89dd13c214a89b198946417d6a3bb49e5c06e11b5378bafe91bb71bd"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-srt-subtitles.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "af6936bb359dbde9f0ed6d322aadb5903f82d92a4dc1fc0346555032ff9784f7"
+    },
+    {
+      "path": "public/media/translate-srt-subtitles-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "6e1919ca38363966f0aa6690ea0a68a3c0ee0a23763d32a727e4620bd3fb36f8"
+    },
+    {
+      "path": "public/media/translate-storyblok-content-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "9e613c0f9759bedc8de85afa3f793d12887c4bcbe17ea102b5184149ca022252"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-storyblok-content.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "b195e6440b5273b982d0faffe73a0b4efb54f92788071147f90473ffc66e9d47"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-storyblok-content.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "eefaea70b2345b7576fdeb1e81f0b5d7b5b7e8f0429d0bdb3b43802f974b1c42"
+    },
+    {
+      "path": "public/media/translate-storyblok-content-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "f8c9b2a4ec4b9b1546baabe4d5050c5b4b591185476ff9879887c60c7b10b449"
+    },
+    {
+      "path": "public/media/translate-strings-outside-jsx-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "0555c527f78c2fa323087dceb8b16f264dbeb23fedd9c235cd2500aaefa61fc8"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-strings-outside-jsx.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "21fcac7f6adb2b66aae0320d520baaf24750cc5192a9307b58c5c8deb67172ae"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-strings-outside-jsx.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "e58272597ed91b8dee06227980e0c7be6d1685cb48735aa2f8968902ebadcb07"
+    },
+    {
+      "path": "public/media/translate-strings-outside-jsx-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "afbc3b13db79cd6ab18f7186b4cdc1ddda87c61e6fa9e741ff8f8761be3f2e82"
+    },
+    {
+      "path": "public/media/translate-tanstack-start-app-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "da5c2dda42539156a25f8c818f4767d46b0cbbb680035d76d6ddee794d69141c"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-tanstack-start-app.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "d4ffbabe3d19e1e7a5e893adae1dd5a88977b8a4bf53b603b44517600ecd7aae"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-tanstack-start-app.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "76b844e31b6c23a22ee152d9852a79eeffc859e8da5f8c743f6ff7cbbd44e4c7"
+    },
+    {
+      "path": "public/media/translate-tanstack-start-app-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "1b35c6ed8f531a71728b251ab7dd041c862cc6307a4bac6ccc073d7afe4366a4"
+    },
+    {
+      "path": "public/media/translate-vue-app-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "cb4fd8707ac44a02b6d217ba777a2aaf38c4ab0f74423e808acc43bf4a498022"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-vue-app.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "463e452cd651514d04a0f3e94ad1516ca4e0b1e3a2b8dcd1b6ec60cc3445d17f"
+    },
+    {
+      "path": "public/motion/sheets/kb-translate-vue-app.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "f6a4933f1d17a8e5e85494cd036868ee43a950e09e881eaebd1b4d5fcf68370d"
+    },
+    {
+      "path": "public/media/translate-vue-app-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "7518688b89c42cd51557825b1615cc7869ce7f90a10af95d1ee77cbe6296e94f"
+    },
+    {
+      "path": "public/media/translations-in-ci-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "cb7cce943e8b56bd2c979b6c398a12636c5fac218a4b97dc51da95462319922d"
+    },
+    {
+      "path": "public/motion/sheets/kb-translations-in-ci.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "dfb56ec866bbfd780290289201a94d693f12c6f513725ce35aca26f0a025486a"
+    },
+    {
+      "path": "public/motion/sheets/kb-translations-in-ci.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "17180a74f6d27197be4f56ed63fe1597c08aa91af5f725202cedd6c3cca4accf"
+    },
+    {
+      "path": "public/media/translations-in-ci-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "0de8ae6d3ff97d141f96016aecbe6281ca95c700fc8f3b2676aa4f03e22312d3"
+    },
+    {
+      "path": "public/media/tyndale-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "8423c352940377b660e0bf3f584a905c56a1f505f80b73ab3db27e96e4d179d5"
+    },
+    {
+      "path": "public/motion/sheets/tyndale.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "b77e7be7da218bc244a69401f6a4a3bc19125f8b839727c49acfa5284eecb659"
+    },
+    {
+      "path": "public/motion/sheets/tyndale.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "e2a1dd2203f9b81ed5596786852aa3db4e8c286427d06512905819b0ed9e9026"
+    },
+    {
+      "path": "public/media/tyndale-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "2ab4a008b6286131790f4f89d437b418519b07914544d473668385ca7b436de5"
+    },
+    {
+      "path": "public/media/what-is-locadex-film.mp4",
+      "reason": "cut again on 2026-11-09 to end on the logo; its first and last frames and a frame every 4 s show no previous mark",
+      "sha256": "3a64a3b8bf3c4e9852d846d8e77489c04a1cd2e98a18a9ec588cdb4049cb0677"
+    },
+    {
+      "path": "public/motion/sheets/kb-what-is-locadex.png",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "c1c5adeb371421b515556135d0fd501d52670886f5bbfd32dd986bde37c9246d"
+    },
+    {
+      "path": "public/motion/sheets/kb-what-is-locadex.webp",
+      "reason": "the contact sheet of a film cut again on 2026-11-09 to end on the logo; it shows no previous mark",
+      "sha256": "08e093f15b4f51cb3d8d336242b6c467d312dab670d48897040922a65e0c2951"
+    },
+    {
+      "path": "public/media/what-is-locadex-poster.jpg",
+      "reason": "the poster of a film cut again on 2026-11-09 to end on the logo; it shows the logo or no mark",
+      "sha256": "0c9eca73614985e2fa892a8bd11ac59979c3c41945bed6216a42cef83698604c"
+    }
+  ],
+  "external": [
+    {
+      "path": "gt-cloud:packages/ui/src/components/icons/GtMark.tsx",
+      "note": "should carry LOGO.d byte for byte; pin pending: its repository does not yet test it against the fingerprint's sha256 (pnpm lint:logo --external compares it)"
+    },
+    {
+      "path": "gt-cloud:packages/ui/src/components/brand/GtLogoMotion.geometry.ts",
+      "note": "should carry LOGO.d byte for byte; pin pending: its repository does not yet test it against the fingerprint's sha256 (pnpm lint:logo --external compares it)"
+    },
+    {
+      "path": "gt-cloud:apps/admin/public/favicon.svg",
+      "note": "should carry LOGO.d byte for byte; pin pending: its repository does not yet test it against the fingerprint's sha256 (pnpm lint:logo --external compares it)"
+    },
+    {
+      "path": "gt-cloud:apps/landing/public/brand/gt-globe-logo-light.svg",
+      "note": "should carry LOGO.d byte for byte; pin pending: its repository does not yet test it against the fingerprint's sha256 (pnpm lint:logo --external compares it)"
+    },
+    {
+      "path": "glyphfield:public/brands/gt/logos/mark-black.svg",
+      "note": "should carry LOGO.d byte for byte; pin pending: its repository does not yet test it against the fingerprint's sha256 (pnpm lint:logo --external compares it)"
+    },
+    {
+      "path": "glyphfield:public/brands/gt/logos/mark-white.svg",
+      "note": "should carry LOGO.d byte for byte; pin pending: its repository does not yet test it against the fingerprint's sha256 (pnpm lint:logo --external compares it)"
+    },
+    {
+      "path": "turboslide:packages/theme/src/sprite.ts",
+      "note": "should carry LOGO.d byte for byte; pin pending: its repository does not yet test it against the fingerprint's sha256 (pnpm lint:logo --external compares it)"
+    }
+  ]
+}

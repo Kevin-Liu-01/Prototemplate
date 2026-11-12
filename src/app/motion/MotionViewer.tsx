@@ -43,6 +43,8 @@ export type MotionRoster = {
   sections: readonly MotionSectionInfo[];
   statusLabel: Readonly<Record<MotionStatus, string>>;
   shellSections: readonly ShellSection[];
+  /** the ids of the films whose web copy ends on the previous mark (src/lib/previous-mark.ts); their rows carry the note */
+  previousMark: readonly string[];
 };
 
 /** The film's local path the meta line names: the final render when it is not published, the folder while the film is in production. */
@@ -302,6 +304,7 @@ function MotionBook({ roster, summaries, records, sheetRef, jumpRef, activeOut, 
                   id={film.id}
                   className={cn('gx-row', isActive && 'is-active')}
                   data-id={film.id}
+                  data-previous-mark={roster.previousMark.includes(film.id) ? '' : undefined}
                   aria-current={isActive ? 'true' : undefined}
                 >
                   <div className='gx-n'>

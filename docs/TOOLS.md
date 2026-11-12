@@ -32,6 +32,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm lint:heads:live` | Holds every book page to one structure (DESIGN.md section 4, The book page): BookHead renders the front matter (the mast with the title, the lead and the panel, one rule, the note, the contents and the hatch band), every section opens with the shared divider, and every space ... | `scripts/lint/heads.mjs --live` |
 | `pnpm lint:lines` | Renders the pages it is given and audits the hairlines they draw: doubled lines from two owners, missing seams between sections and two owners on one seam. | `scripts/lint/lines.mjs` |
 | `pnpm lint:lines:shell` | Audits the shell routes at PT_BASE the same way, and holds every chrome border to its three line tokens. | `scripts/lint/lines.mjs --shell` |
+| `pnpm lint:logo` | Holds every logo in this repository to its one drawing, LOGO.d in src/lib/logo.ts, and to the manifest scripts/lint/logo.json, which lists the files a generator writes from it (generated), the files that show a previous mark on purpose (history), the files that look like a logo ... | `scripts/lint/logo.mjs` |
 | `pnpm lint:pictures` | Holds the artifact pictures to the standard (docs/ARTIFACT-PICTURES.md, scripts/media/mood-tone/standard.json). | `scripts/lint/pictures.mjs` |
 | `pnpm lint:practices` | Practice lint with a ratchet: every check counts its violations and records their locations in scripts/lint/practices.baseline.json. | `scripts/lint/practices.mjs` |
 | `pnpm lint:public` | Scans the checkout for what must never be public: key shapes, machine paths and the terms on a private denylist. | `scripts/lint/public.mjs` |
@@ -56,6 +57,8 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm test:copies` | Tests for scripts/lint/copies.mjs: node --test scripts/lint/copies.test.mjs (pnpm test:copies). | `scripts/lint/copies.test.mjs` |
 | `pnpm test:heads` | Tests for scripts/lint/heads.mjs: a passing and a failing fixture per static rule, and each live judge fed recorded geometry (the judges are pure functions over what collectHead measures, so no browser runs here). | `scripts/lint/heads.test.mjs` |
 | `pnpm test:line-globe` | Tests for the line globe animations (src/lib/graticule/): Language globe turn and Mark to globe, each for Graticule GT, heavy and Graticule jaw, thicker. | `scripts/lint/line-globe.test.mjs` |
+| `pnpm test:logo` | Tests for scripts/lint/logo.mjs: node --test scripts/lint/logo.test.mjs (pnpm test:logo). | `scripts/lint/logo.test.mjs` |
+| `pnpm test:logo-pixels` | Tests for scripts/lint/logo-pixels.mjs (pnpm lint:logo --pixels): node --test scripts/lint/logo-pixels.test.mjs (pnpm test:logo-pixels). | `scripts/lint/logo-pixels.test.mjs` |
 | `pnpm test:marks` | Tests for the marks catalog (src/lib/marks.ts) against public/marks: every file a row names exists, every file under public/marks/dynamic has a row, every dynamic file is one path in currentColor on the canonical 256 unit header and at most 8 KB (the logo and its state are drawn ... | `scripts/lint/marks.test.mjs scripts/lint/mark-file.test.m...` |
 | `pnpm test:pagecheck` | Tests for the page check's console allow list (scripts/check/pagecheck/hooks.mjs): a hydration error is counted and the dev server's notices are not. | `scripts/check/pagecheck/hooks.test.mjs` |
 | `pnpm test:pictures` | Tests for scripts/lint/pictures.mjs: the repository passes, and each kind of defect in a fixture copy of the picture files is reported. | `scripts/lint/pictures.test.mjs` |
@@ -90,6 +93,7 @@ This file is written by `pnpm build:tools` from `package.json` and the opening c
 | `pnpm build:logo-motion` | Writes the live logo motion from its numbers: the hover (the meridian draws back along its oval) and the loader (the same draw-back once, then a line runs once round the meridian and the G draws off and back on once round the equator), drawn with SVG and CSS alone. | `scripts/build/logo-motion.mjs` |
 | `pnpm build:marks` | Builds the speed marks under public/marks: the race-type set for General Translation (wide letters, a forward slant, one horizontal cut through the letters, speed bars into the first letter), every file one color in currentColor with a tight viewBox, so the marks page inlines ... | `scripts/build/speed-marks.mjs` |
 | `pnpm build:motion` | Builds src/lib/motion.ts, the typed data behind /motion and /motion/\<slug>, and public/motion/\<slug>.md, the research package each translation-series page renders, from the motion folder: the roster in motion/MOTION.md (its "## The films" section, one "### \<slug>: \<title> ... | `scripts/build/motion.mjs` |
+| `pnpm build:previous-mark` | Writes src/lib/previous-mark.json from the logo manifest's history (scripts/lint/logo.json): the films that end on the previous mark, the films that end on the logo but show captures from before it, and the pictures under public/ that show it, as manifest paths. | `scripts/build/previous-mark.mjs` |
 | `pnpm build:skills` | Builds src/lib/skills.ts, the typed registry behind /skills, /skills/\<slug> and the raw files under /skills/\<slug>/, from the curated skills in this repository: skills/\<slug>/SKILL.md and the supporting files beside it. | `scripts/build/skills.mjs` |
 | `pnpm build:strip` | Draw the four-globe lockup: three graticule globes, the logo, then "General" over "Translation". | `scripts/build/strip.py` |
 | `pnpm build:thumbs` | Builds the preview thumbnails the preview layer reads (directive 8.6): public/shots/thumb/\<stem>.webp and \<stem>-dark.webp at 640x360 (the 320x180 card at 2x), cut from the 1440-wide exhibit captures under public/shots. | `scripts/build/thumbs.mjs` |
@@ -155,7 +159,9 @@ Each tool reads its setting from a flag first, then the variable, then the defau
 | --- | --- | --- |
 | `PT_BASE` | The base URL for the live lints, the page check and the captures; CAPTURE_BASE and REDESIGN_BASE are older names for it. | `http://localhost:3005` |
 | `CHROME_PATH` | The Chrome for Testing binary the browser tools launch. | playwright-core's `chromium.executablePath()` |
-| `GT_CLOUD` | A gt-cloud checkout, for the tools that compare with it (lint:copies notes). | none |
+| `GT_CLOUD` | A gt-cloud checkout, for the tools that compare with it (lint:copies and lint:logo --external notes). | none |
+| `GLYPHFIELD` | A Glyphfield checkout, for lint:logo --external notes on its copies of the logo. | none |
+| `TURBOSLIDE` | A Turboslide checkout, for lint:logo --external notes on its copies of the logo. | none |
 | `MOTION_DIR` | The motion folder build:motion reads. | `<repo>/motion` |
 | `PT_DENYLIST` | The private term list lint:public reads; skipped under VERCEL or CI. | none |
 | `PT_PUBLIC_NO_DENYLIST` | Set to 1 to let the pre-push hook run without the private term list, in a clone that has none. | unset |

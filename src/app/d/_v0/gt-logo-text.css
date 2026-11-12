@@ -1,13 +1,12 @@
 /* ============================================================
    GT LOGO TEXT — the inline brand token (GtLogoText.tsx). One
    rule pair, em-sized, so the mark rides any run of copy at that
-   copy's own size and ink: the monogram is a mask filled with
-   currentColor. The source PNG is a 1198px square whose glyph
-   fills only rows 221–976 (18.4% transparent top and bottom), so
-   a `contain` mask rendered the mark small and floating; the
-   158.5% mask height (1198/756) crops that padding, making the
-   box the glyph itself — width/height carry the glyph's true
-   1198:756 aspect, sized to the text face's cap height and
+   copy's own size and ink: the logo is a mask filled with
+   currentColor. The source PNG is the generated globe on a 1198px
+   square whose ink fills 113–1085 on both axes (81.1%), so the
+   123.25% mask size (1198/972, the same on both axes, so the
+   globe stays round) crops that margin and makes the square box
+   the globe itself, sized to the text face's cap height and
    seated on its baseline.
    ============================================================ */
 
@@ -21,10 +20,10 @@
 .toolchain-root .v0-gtword-mark,
 .singularity-root .v0-gtword-mark {
   display: inline-block;
-  width: 1.14em;
+  width: 0.72em;
   height: 0.72em;
   vertical-align: -0.02em;
   background-color: currentColor;
-  -webkit-mask: url('/brand/no-bg-gt-logo-light.png') center / 100% 158.5% no-repeat;
-  mask: url('/brand/no-bg-gt-logo-light.png') center / 100% 158.5% no-repeat;
+  -webkit-mask: url('/brand/no-bg-gt-globe-logo-light.png') center / 123.25% 123.25% no-repeat;
+  mask: url('/brand/no-bg-gt-globe-logo-light.png') center / 123.25% 123.25% no-repeat;
 }

@@ -69,8 +69,8 @@
     #90959e 82%,
     #d3d6db 100%
   );
-  -webkit-mask-image: url('/brand/no-bg-gt-logo-light.png');
-  mask-image: url('/brand/no-bg-gt-logo-light.png');
+  -webkit-mask-image: url('/brand/no-bg-gt-globe-logo-light.png');
+  mask-image: url('/brand/no-bg-gt-globe-logo-light.png');
   -webkit-mask-size: contain;
   mask-size: contain;
   -webkit-mask-repeat: no-repeat;
@@ -404,8 +404,8 @@
   /* eight offset copies — four orthogonal, four diagonal — union into a
      DISC dilation, so the border wraps each corner in a smooth join
      instead of the square kernel's harsh 90s (founder round) */
-  -webkit-mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
-  mask-image: url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png'), url('/brand/no-bg-gt-logo-light.png');
+  -webkit-mask-image: url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png');
+  mask-image: url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png'), url('/brand/no-bg-gt-globe-logo-light.png');
   -webkit-mask-size: 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px;
   mask-size: 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px, 88px 88px;
   -webkit-mask-repeat: no-repeat;

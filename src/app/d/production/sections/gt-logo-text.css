@@ -46,8 +46,8 @@
   height: 1.14em;
   vertical-align: baseline;
   background: currentColor;
-  -webkit-mask-image: url('/brand/no-bg-gt-logo-light.png');
-  mask-image: url('/brand/no-bg-gt-logo-light.png');
+  -webkit-mask-image: url('/brand/no-bg-gt-globe-logo-light.png');
+  mask-image: url('/brand/no-bg-gt-globe-logo-light.png');
   -webkit-mask-size: contain;
   mask-size: contain;
   -webkit-mask-repeat: no-repeat;

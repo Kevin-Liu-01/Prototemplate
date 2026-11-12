@@ -37,14 +37,14 @@ export function Footer() {
         <span className='apg-foot-marks'>
           <Image
             className='apg-foot-logo is-light'
-            src='/brand/no-bg-gt-logo-light.png'
+            src='/brand/no-bg-gt-globe-logo-light.png'
             alt='General Translation'
             width={30}
             height={30}
           />
           <Image
             className='apg-foot-logo is-dark'
-            src='/brand/no-bg-gt-logo-dark.png'
+            src='/brand/no-bg-gt-globe-logo-dark.png'
             alt=''
             width={30}
             height={30}

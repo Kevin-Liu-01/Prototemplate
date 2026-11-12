@@ -27,6 +27,8 @@ export type Entry = {
   variants: readonly Variant[];
   /** the sidebar and grid thumbnail: the dark version under the dark theme, the light one under light */
   shot: { light: string; dark?: string };
+  /** what the row says when a version shows the previous mark (src/lib/previous-mark.ts), from the server */
+  markNote?: string;
 };
 
 /** One section of the viewer: an area of the post, the covers, the sheets, the grounds, an earlier post. */

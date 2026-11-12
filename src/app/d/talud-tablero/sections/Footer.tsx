@@ -17,7 +17,7 @@ export default function Footer() {
             <div className='tt-foot-brand'>
               <img
                 className='tt-foot-mark is-light'
-                src='/brand/no-bg-gt-logo-light.png'
+                src='/brand/no-bg-gt-globe-logo-light.png'
                 alt='General Translation'
                 width={40}
                 height={40}
@@ -26,7 +26,7 @@ export default function Footer() {
               />
               <img
                 className='tt-foot-mark is-dark'
-                src='/brand/no-bg-gt-logo-dark.png'
+                src='/brand/no-bg-gt-globe-logo-dark.png'
                 alt='General Translation'
                 width={40}
                 height={40}

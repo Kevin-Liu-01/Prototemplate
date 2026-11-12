@@ -31,7 +31,7 @@ export default function YcHero() {
             alt=''
             className='cpp-lockup-mark'
             height={26}
-            src='/brand/no-bg-gt-logo-light.png'
+            src='/brand/no-bg-gt-globe-logo-light.png'
             width={26}
           />
           <i aria-hidden='true'>&times;</i>

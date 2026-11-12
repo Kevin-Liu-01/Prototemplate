@@ -153,9 +153,11 @@ function figure(
 ): Piece[] {
   if (!frame?.src) return [];
   // the caption, or the picture's own description when it has none, and whom it credits, kept apart so a page can set them side by side
-  const said: Inline[] = caption?.length
+  const own: Inline[] = caption?.length
     ? caption
     : [{ t: 'text', v: frame.alt }];
+  // a picture that shows the previous mark says so after its caption (content.ts)
+  const said: Inline[] = frame.note ? [...own, { t: 'text', v: ` ${frame.note}` }] : own;
   // the magazine's pages are white stock, so a picture with a light twin prints that one
   const src = lightTwin(frame.src) ?? frame.src;
   return [

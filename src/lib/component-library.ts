@@ -181,7 +181,7 @@ const UNDOCUMENTED: readonly { code: string; path: string; desc: string }[] = [
   { code: 'Toast', path: 'src/components/plate/ui/toast.tsx', desc: 'The dashboard’s toast notifications.' },
   { code: 'LanguageSelector', path: 'src/components/plate/ui/LanguageSelector.tsx', desc: 'A static copy of the site’s language selector for the plate frame’s foot.' },
   { code: 'ClaudeLogo', path: 'src/components/plate/icons', desc: 'The model logos of the onboarding survey: Claude, DeepSeek, Gemini, Grok, Mistral and OpenAI.' },
-  { code: 'GtMark', path: 'src/components/plate/icons/GtMark.tsx', desc: 'The General Translation mark in one ink, cropped to the glyph so it sits beside text on the plate pages.' },
+  { code: 'GtMark', path: 'src/components/plate/icons/GtMark.tsx', desc: 'The General Translation logo (LOGO) in one ink, centred at the height of the box it is given so it sits beside text on the plate pages.' },
   { code: 'AuthFrame', path: 'src/components/plate/pages/auth/AuthFrame.tsx', desc: 'The heading, lede, content and footnote every secondary auth screen stacks in the plate column.' },
   { code: 'SignInForm', path: 'src/components/plate/pages/auth/SignInForm.tsx', desc: 'The dashboard’s sign-in form: the email link, SSO and the social buttons.' },
   { code: 'CliTerminal', path: 'src/components/plate/pages/cli/CliTerminal.tsx', desc: 'What npx gt login prints before the browser opens, on a terminal panel.' },

@@ -54,6 +54,8 @@ A red browser gate can mean the page is wrong, or that the machine or the server
 
 The pre-push hook runs `pnpm lint:public`, which scans the change for key shapes, machine paths and, with `PT_DENYLIST` set, the private denylist. A finding stops the push.
 
+Then it runs `pnpm lint:logo --pixels`, which searches every picture under `public/`, `deck/`, `graphics/`, `content/` and `docs/`, and the first and last frame of every film, for the doubled-line monogram at any size, in any colour and on either ground, inside screenshots too. A monogram in a file that `scripts/lint/logo.json` does not list under history (or the `/marks` catalog and the speed marks under notLogo) stops the push. Results are cached by each file's sha256, so a push reads only new or changed pictures. It needs Python 3 with `requirements.txt` and Chrome for Testing, and ffmpeg for the films; without them the hook says so and lets the push through.
+
 ## A new rule becomes a lint
 
 A defect fixed once is fixed as a class, with the lint that keeps it from coming back ([operating principle 4](/docs/handbook/operating-principles)). A lint has the law in its header with its source, pure checkers that tests import, the `file:line rule message` output and the three exit codes, a passing and a failing fixture per rule, and a line in `lint:static` or the build. Section 4 of the gt-lints skill gives the steps.

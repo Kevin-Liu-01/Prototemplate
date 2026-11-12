@@ -2109,7 +2109,7 @@ export default function TranslateWindow({
                   glyph IS the product's name here */}
               <span className='sgdh-app-mark'>
                 <Image
-                  src='/brand/no-bg-gt-logo-light.png'
+                  src='/brand/no-bg-gt-globe-logo-light.png'
                   alt='GT'
                   width={21}
                   height={21}

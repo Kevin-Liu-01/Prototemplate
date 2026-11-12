@@ -1,5 +1,6 @@
 import { BLOG_POSTS, BLOG_RELEASES } from '@/lib/blog-posts';
 import { PAGE_NAMES } from '@/lib/page-names';
+import { pictureNote } from '@/lib/previous-mark';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
@@ -19,12 +20,20 @@ const route = seoRoute({
 
 export const metadata = route.metadata;
 
+/** The note under each cover that shows the previous mark, by post slug. */
+const COVER_NOTES: Readonly<Record<string, string>> = Object.fromEntries(
+  BLOG_POSTS.flatMap((post) => {
+    const note = pictureNote(post.image);
+    return note ? [[post.slug, note]] : [];
+  })
+);
+
 /** /blog: the posts and the changelog on the viewer shell (BlogViewer). */
 export default function BlogIndexPage() {
   return (
     <>
       <JsonLd nodes={route.jsonLd} />
-      <BlogViewer updated={requireUpdated('/blog')} />
+      <BlogViewer updated={requireUpdated('/blog')} coverNotes={COVER_NOTES} />
     </>
   );
 }

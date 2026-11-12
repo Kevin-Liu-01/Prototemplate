@@ -114,5 +114,5 @@ export function archiveCode(item: ArchiveEntry): string {
 
 /** One plain sentence for a row's description. */
 export function archiveDesc(item: ArchiveEntry): string {
-  return `Retired version, captured ${archiveDate(item)} at ${item.width} pixels wide.`;
+  return `Retired version, captured ${archiveDate(item)} at ${item.width} pixels wide, before the logo, so it shows the previous mark.`;
 }

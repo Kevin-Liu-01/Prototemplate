@@ -13,7 +13,7 @@ import { ViewerShell } from '@/components/viewer/ViewerShell';
 import { ARCHIVE, ARCHIVE_DELETION, archiveDate, archiveDesc, archiveFull, archiveHost, archiveShot } from '@/lib/archive';
 import type { ArchiveEntry } from '@/lib/archive';
 import { cn } from '@/lib/cn';
-import { DIRECTIONS, directionPageHref } from '@/lib/directions';
+import { DATED_STUDY_NOTE, DIRECTIONS, directionPageHref } from '@/lib/directions';
 import { boxMask, shortlist } from '@/lib/marks';
 import type { ShellItem, ShellKeysProp, ShellMode, ShellSection } from '@/lib/shell-data';
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -620,7 +620,7 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
               each with its own take on the hero terminal, over an enterprise page built on the
               singularity gate. Dossier is the completed direction; Signal and Orbit keep their own
               heroes and now carry the previous-generation sections it retired. The two faces of
-              each site are overlaid below. Drag the seam to sweep between them.
+              each site are overlaid below. Drag the seam to sweep between them. {DATED_STUDY_NOTE}
             </p>
             <p className='pt-site-links'>
               <Link href='/compare'>Compare any two, live →</Link>
@@ -671,7 +671,8 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
             <p>
               Twenty-plus directions got built; thirteen survived review. Some are quiet
               evolutions of the current site, some are physics experiments with type. Each row
-              below opens the direction's own page, with its live prototype and its captures.
+              below opens the direction's own page, with its live prototype and its captures.{' '}
+              {DATED_STUDY_NOTE}
             </p>
           </section>
 
@@ -699,7 +700,8 @@ function GalleryArticle({ fontClass, anatomy, ledger, scrollRef, intent }: Artic
                 <h2>Archive</h2>
                 <p>
                   The versions retired from the site. Each row opens its full-page capture; the code
-                  stays in the repository history under the commit the capture names.
+                  stays in the repository history under the commit the capture names. The captures
+                  were taken before the logo, so they show the previous mark.
                 </p>
               </section>
 

@@ -2,6 +2,7 @@ import { closeSync, openSync, readdirSync, readFileSync, readSync } from 'node:f
 import { join } from 'node:path';
 
 import { getPost, postFigures } from '@/lib/blog';
+import { pictureNote } from '@/lib/previous-mark';
 
 /**
  * The illustration set behind /graphics: the manifest
@@ -364,7 +365,9 @@ export function getGraphicsBlocks(): readonly Block[] {
     ordinal: i + 1,
     entries: block.entries.map((entry) => {
       n += 1;
-      return { ...entry, n: pad3(n) };
+      /* an image the logo lock holds as history says so on its row */
+      const markNote = entry.variants.map((v) => pictureNote(v.src)).find(Boolean);
+      return markNote ? { ...entry, n: pad3(n), markNote } : { ...entry, n: pad3(n) };
     }),
   }));
 }

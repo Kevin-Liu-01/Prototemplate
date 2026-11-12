@@ -3,6 +3,7 @@ import { Children, isValidElement } from 'react';
 
 import CarouselGallery from '@/components/blog/CarouselGallery';
 import type { CarouselImage } from '@/components/blog/CarouselGallery';
+import { pictureNote } from '@/lib/previous-mark';
 
 export type CarouselItemProps = {
   src: string;
@@ -50,5 +51,7 @@ export default function Carousel({ label, width, height, interval, children }: C
     });
   }
   const every = interval === undefined ? undefined : Number(interval);
-  return <CarouselGallery items={items} label={label} interval={every !== undefined && Number.isFinite(every) ? every : undefined} />;
+  /* a gallery with an image the logo lock holds as history says so under it */
+  const note = items.map((item) => pictureNote(item.src)).find(Boolean) ?? null;
+  return <CarouselGallery items={items} label={label} interval={every !== undefined && Number.isFinite(every) ? every : undefined} note={note} />;
 }

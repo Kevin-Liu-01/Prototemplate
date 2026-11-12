@@ -65,7 +65,7 @@ function GtMark() {
       alt='GT'
       className='tc-cinema-gtmark'
       height={64}
-      src='/brand/no-bg-gt-logo-dark.png'
+      src='/brand/no-bg-gt-globe-logo-dark.png'
       width={64}
     />
   );

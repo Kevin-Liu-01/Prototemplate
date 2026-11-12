@@ -655,7 +655,7 @@ export const PUBLIC_SURFACES: readonly Surface[] = [
     'LinkedIn',
     'https://linkedin.com/company/generaltranslation',
     'linkedin.com/company/generaltranslation',
-    'The company page.',
+    'The company page. The capture predates the logo; its avatar is the previous mark.',
     'Social and community',
     'linkedin.jpg'
   ),
@@ -700,7 +700,7 @@ export const PUBLIC_SURFACES: readonly Surface[] = [
     'Singularity Dossier',
     'https://prototemplate.com/d/singularity-dossier',
     'prototemplate.com/d/singularity-dossier',
-    'The last iteration before the final direction.',
+    'The last iteration before the final direction, a dated design study captured before the logo, so it shows the previous mark.',
     'Prototemplate',
     'proto-dossier-top.jpg'
   ),
@@ -727,7 +727,7 @@ export const PUBLIC_SURFACES: readonly Surface[] = [
     'Glyphfield',
     'https://glyphfield.com',
     'glyphfield.com',
-    'Open-source design and motion tooling. It produced the shader graphics, several videos, and the shaders on the site.',
+    'Open-source design and motion tooling. It produced the shader graphics, several videos, and the shaders on the site. The capture predates the logo; its General Translation identity shows the previous mark.',
     'Glyphfield',
     'glyph-home.jpg'
   ),
@@ -736,7 +736,7 @@ export const PUBLIC_SURFACES: readonly Surface[] = [
     'Studio',
     'https://glyphfield.com/studio',
     'glyphfield.com/studio',
-    'The shader and animation studio.',
+    'The shader and animation studio. The capture predates the logo; its General Translation identity shows the previous mark.',
     'Glyphfield',
     'glyph-studio.jpg'
   ),

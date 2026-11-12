@@ -58,7 +58,9 @@ const DESCRIBE = {
 const ENVIRONMENT = [
   ['PT_BASE', 'The base URL for the live lints, the page check and the captures; CAPTURE_BASE and REDESIGN_BASE are older names for it.', '`http://localhost:3005`'],
   ['CHROME_PATH', 'The Chrome for Testing binary the browser tools launch.', "playwright-core's `chromium.executablePath()`"],
-  ['GT_CLOUD', 'A gt-cloud checkout, for the tools that compare with it (lint:copies notes).', 'none'],
+  ['GT_CLOUD', 'A gt-cloud checkout, for the tools that compare with it (lint:copies and lint:logo --external notes).', 'none'],
+  ['GLYPHFIELD', 'A Glyphfield checkout, for lint:logo --external notes on its copies of the logo.', 'none'],
+  ['TURBOSLIDE', 'A Turboslide checkout, for lint:logo --external notes on its copies of the logo.', 'none'],
   ['MOTION_DIR', 'The motion folder build:motion reads.', '`<repo>/motion`'],
   ['PT_DENYLIST', 'The private term list lint:public reads; skipped under VERCEL or CI.', 'none'],
   ['PT_PUBLIC_NO_DENYLIST', 'Set to 1 to let the pre-push hook run without the private term list, in a clone that has none.', 'unset'],

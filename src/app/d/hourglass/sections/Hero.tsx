@@ -778,7 +778,7 @@ export default function Hero() {
           <Image
             className='hg-mark'
             data-hg-in
-            src='/brand/no-bg-gt-logo-dark.png'
+            src='/brand/no-bg-gt-globe-logo-dark.png'
             alt='General Translation'
             width={42}
             height={42}

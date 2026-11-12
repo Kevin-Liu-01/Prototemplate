@@ -215,7 +215,7 @@ export default function HomeHero() {
         </h1>
 
         <p className='tc-hero-sub' data-hero-in>
-          <img alt='General Translation' className='tch-sub-mark is-light' src='/brand/no-bg-gt-logo-light-96.png' width={96} height={96} /><img alt='' aria-hidden className='tch-sub-mark is-dark' src='/brand/no-bg-gt-logo-dark-96.png' width={96} height={96} /> builds full-stack infrastructure for localizing apps, docs, and websites.
+          <img alt='General Translation' className='tch-sub-mark is-light' src='/brand/no-bg-gt-globe-logo-light-96.png' width={96} height={96} /><img alt='' aria-hidden className='tch-sub-mark is-dark' src='/brand/no-bg-gt-globe-logo-dark-96.png' width={96} height={96} /> builds full-stack infrastructure for localizing apps, docs, and websites.
         </p>
 
         <div className='tc-hero-acts' data-hero-in>

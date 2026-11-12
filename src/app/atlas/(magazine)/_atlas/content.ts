@@ -7,6 +7,8 @@ import path from 'node:path';
 
 import { cache } from 'react';
 
+import { pictureNote } from '@/lib/previous-mark';
+
 import { HOME, type LatLon } from './coords';
 import {
   parseBody,
@@ -15,6 +17,7 @@ import {
   wordCount,
   type Block,
   type Figure,
+  type Frame,
   type Inline,
 } from './parse';
 import { plain } from './plain';
@@ -162,6 +165,19 @@ function listOf(value: string | string[] | undefined): string[] {
   return Array.isArray(value) ? value : value ? [value] : [];
 }
 
+/** A frame with the note it carries when it shows the previous mark (src/lib/previous-mark.ts); every caption the press sets for it ends with the note. */
+function noted(frame: Frame): Frame {
+  const note = pictureNote(frame.src);
+  return note ? { ...frame, note } : frame;
+}
+
+/** A figure or side picture whose frames show the previous mark, labelled as such wherever the press sets them. */
+function markBlock(block: Block): Block {
+  if (block.kind === 'side') return { ...block, frame: noted(block.frame) };
+  if (block.kind === 'figure') return { ...block, figure: { ...block.figure, frames: block.figure.frames.map(noted) } };
+  return block;
+}
+
 /** A story from its MDX, read and parsed once per request however many times a page asks for it. */
 const load = cache((slug: string): Story | null => {
   const n = STORIES.findIndex((s) => s.slug === slug) + 1;
@@ -173,7 +189,7 @@ const load = cache((slug: string): Story | null => {
   if (!entry || !fs.existsSync(file)) return null;
   const { data, body } = splitFrontmatter(fs.readFileSync(file, 'utf8'));
   const blocks = parseBody(body, videoFor).map((block) =>
-    relinkBlock(block, relink)
+    markBlock(relinkBlock(block, relink))
   );
 
   let count = 0;

@@ -81,6 +81,9 @@ pnpm dev                              # http://localhost:3005
 - The pre-push hook runs `pnpm lint:public` and stops the push on any
   finding: a key shape, a machine path or, with `PT_DENYLIST` set to the
   private term list, a denylist term.
+  Then it runs `pnpm lint:logo --pixels`, which stops the push on a
+  picture or film frame that shows the previous mark (the doubled-line
+  monogram) unless `scripts/lint/logo.json` lists it as history.
 - To load the skills in your agents, run `pnpm skills:install --user`
   (your agent home) or `pnpm skills:install --project <dir>` (one
   project); Skills below has the details.

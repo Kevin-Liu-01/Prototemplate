@@ -1223,6 +1223,14 @@ a.pt-sb-mark:focus-visible {
   color: var(--pt-ink);
 }
 
+/* a capture taken before the logo: one quiet line under the name (src/lib/previous-mark.ts) */
+.pt-thumb-note {
+  font-size: var(--pt-t-group);
+  line-height: var(--pt-t-meta-lh);
+  color: var(--pt-titanium);
+  margin-top: 2px;
+}
+
 /* ThumbShot: light and dark twins; the theme attribute picks one */
 .pt-shot {
   position: absolute;

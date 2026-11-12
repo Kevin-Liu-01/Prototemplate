@@ -110,7 +110,7 @@ export default function Hero() {
             <Image
               className='cf-hero-mark tc-logo-light'
               data-hero-in
-              src='/brand/no-bg-gt-logo-light.png'
+              src='/brand/no-bg-gt-globe-logo-light.png'
               alt='General Translation'
               width={34}
               height={34}
@@ -118,7 +118,7 @@ export default function Hero() {
             <Image
               className='cf-hero-mark tc-logo-dark'
               data-hero-in
-              src='/brand/no-bg-gt-logo-dark.png'
+              src='/brand/no-bg-gt-globe-logo-dark.png'
               alt='General Translation'
               width={34}
               height={34}

@@ -14,6 +14,7 @@ import Spotlight from '@/components/blog/Spotlight';
 import Tweet from '@/components/blog/Tweet';
 import Video from '@/components/blog/Video';
 import { BLOG_COLUMN_SIZES, isGif } from '@/lib/blog-image-sizes';
+import { PREVIOUS_MARK_PICTURE_NOTE, showsPreviousMark } from '@/lib/previous-mark';
 
 const SITE = 'https://generaltranslation.com';
 
@@ -41,11 +42,12 @@ function PostLink({ href = '', children, ...rest }: AnchorHTMLAttributes<HTMLAnc
 /**
  * A markdown image: the asset at its public path, lazy, served at the
  * column's device width (the masters are 3840px wide, and a browser-side
- * shrink softens them). Animated clips skip the optimizer.
+ * shrink softens them). Animated clips skip the optimizer. A figure that
+ * shows the previous mark carries a note under it.
  */
 function PostImage({ src = '', alt = '' }: ImgHTMLAttributes<HTMLImageElement>) {
   if (typeof src !== 'string' || !src) return null;
-  return (
+  const image = (
     <Image
       className='blog-image'
       src={src}
@@ -56,6 +58,14 @@ function PostImage({ src = '', alt = '' }: ImgHTMLAttributes<HTMLImageElement>) 
       quality={95}
       unoptimized={isGif(src)}
     />
+  );
+  /* a figure the logo lock holds as history says so (src/lib/previous-mark.ts) */
+  if (!showsPreviousMark(src)) return image;
+  return (
+    <>
+      {image}
+      <span className='blog-image-note'>{PREVIOUS_MARK_PICTURE_NOTE}</span>
+    </>
   );
 }
 

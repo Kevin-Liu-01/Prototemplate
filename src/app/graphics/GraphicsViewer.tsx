@@ -48,6 +48,7 @@ function metaText(entry: Entry): string {
   const first = entry.variants[0];
   if (first?.w && first?.h) parts.push(`${first.w}×${first.h}`);
   if (entry.variants.length > 1) parts.push(`${entry.variants.length} versions`);
+  if (entry.markNote) parts.push(entry.markNote);
   return parts.join(' · ');
 }
 
@@ -138,6 +139,7 @@ function GraphicsBook({ blocks, sheetRef, jumpRef, activeOut, posts, updated }: 
               id={entry.id}
               className={cn('gx-row', entry.id === active && 'is-active')}
               data-id={entry.id}
+              data-previous-mark={entry.markNote ? '' : undefined}
               aria-current={entry.id === active ? 'true' : undefined}
             >
               <div className='gx-n'>

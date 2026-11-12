@@ -18,6 +18,8 @@ import {
 
 export type BlogIndexPost = IndexPost & {
   category: BlogCategory;
+  /** what the card says when its cover shows the previous mark (pictureNote in src/lib/previous-mark.ts), from the server */
+  markNote?: string | null;
 };
 
 type BlogPostBoardProps = {
@@ -64,6 +66,7 @@ function PostBody({
         {post.summary}
       </span>
       <PostAuthors authors={post.authors} variant='card' />
+      {post.markNote ? <span className='text-xs text-(--tc-ink-3)'>{post.markNote}</span> : null}
     </span>
   );
 }
@@ -168,6 +171,7 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
                 key={post.slug}
                 href={postHref(base, post.slug)}
                 data-testid={lead ? 'blog-feature-lead' : 'blog-feature-side'}
+                data-previous-mark={post.markNote ? '' : undefined}
                 /* the lead adopts the grid's row tracks (subgrid): its
                    cover fills row one exactly, its seams are the grid's */
                 className={`${CARD} ${
@@ -224,6 +228,7 @@ export default function BlogPostBoard({ posts }: BlogPostBoardProps) {
               key={post.slug}
               href={postHref(base, post.slug)}
               className={CARD}
+              data-previous-mark={post.markNote ? '' : undefined}
             >
               {/* every card carries its cover at the image's own 16:9, lazily below the fold */}
               <BlogPostCover

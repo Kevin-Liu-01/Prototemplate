@@ -163,6 +163,7 @@ export default function ContactSheetDemo({ films, initial = 'blog-fuma-nama' }: 
           <p className='dmo-bar-status' role='status'>
             Frame <span className='dmo-num'>{at + 1}</span> of {sheet.frames}, from{' '}
             <span className='dmo-num'>{halfSecond(at)}</span> of {film.length}
+            {film.note ? `, ${film.note}` : null}
           </p>
         </>
       }

@@ -127,7 +127,7 @@ The color rules have four documented exceptions, each named in `references/color
 
 Detail, files and procedures are in `references/marks.md`.
 
-- **The current mark** is the logo, Axis and meridian behind (Kevin, 2026-11-08: "Swap everything"): a globe whose ring and ovals draw the G and whose polar axis is the T's stem. Its one drawing is `LOGO` in `src/lib/logo.ts`, and `pnpm build:logo` writes the masters in `public/brand`, the tab icon and the deck's `#gt-mark` symbol from it. The doubled-line monogram is the previous mark; its files stay at their URLs.
+- **The current mark** is the logo, Axis and meridian behind (Kevin, 2026-11-08: "Swap everything"): a globe whose ring and ovals draw the G and whose polar axis is the T's stem. Its one drawing is `LOGO` in `src/lib/logo.ts`, and `pnpm build:logo` writes the masters in `public/brand`, the tab icon and the deck's `#gt-mark` symbol from it. The doubled-line monogram is the previous mark; its old URLs show the globe.
 - **One ink.** Ink on paper or paper on ink. No third color, no gradient, no shadow, no glow. On a dark surface the drawn mark inverts, as an alpha mask that takes the surface's ink or as a clean invert. A mark ships only as vector geometry.
 - **Compression.** The mark must hold at 16px (favicon), 32px (CLI banner), 64px (README header), 128px (npm page) and 256px (website), because developers meet the brand in a terminal as often as on the site (deck slide 25).
 - **The logo's state** on hover, sign-in and loading is Oval globe, axis behind; both lead `SHORTLIST`.

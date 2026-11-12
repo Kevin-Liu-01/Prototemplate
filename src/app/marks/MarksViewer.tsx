@@ -79,7 +79,7 @@ const BOOK_LEAD =
   'General Translation ships the two marks below. The shortlist opens on the logo, Axis and meridian behind, and each family after it collects the marks that draw one idea.';
 
 const BOOK_NOTE =
-  'Only the doubled-line GT monogram and the Locadex mark are in production. Every mark is one color and takes the ink of whatever it sits on.';
+  'Only the logo and the Locadex mark are in production. Every mark is one color and takes the ink of whatever it sits on.';
 
 const SHORTLIST_LEAD =
   'The chosen marks, newest first, each drawn in one color on a 256 unit square: the logo, then its state on hover, on sign-in and while loading, then the marks chosen before them.';
@@ -150,7 +150,7 @@ const DYN_LEAD: readonly [number, number] = [440, 400];
 const DYN_SIZES: readonly number[] = [64, 32];
 const DYN_FEATURE_SIZES: readonly number[] = [128, 64, 32];
 
-/** A production mark in the head's strip: the GT monogram at 64px, and every live mark at the same area, so the square Locadex mark reads as large as the wide GT. */
+/** A production mark in the head's strip: the GT logo at 64px, and every live mark at the same area, so a mark of another aspect reads as large as the logo. */
 const LIVE_PX = 64;
 const LIVE_AREA = LIVE_PX * LIVE_PX * (PRODUCTION_MARKS[0]?.aspect ?? 1);
 const liveHeight = (aspect: number) => Math.round(Math.sqrt(LIVE_AREA / aspect));
@@ -158,9 +158,6 @@ const liveHeight = (aspect: number) => Math.round(Math.sqrt(LIVE_AREA / aspect))
 /** The 16px cut, drawn at 1x and enlarged so its pixels read. */
 const CUT_PX = 16;
 const CUT_ZOOM = 3;
-
-/** The mark in production that leads the shortlist's field, at the same height as the shortlist. */
-const GT_PRODUCTION = PRODUCTION_MARKS[0];
 
 /** The section row of a family drawn from its dynamic marks. */
 function familySection(family: MarkFamilyRow): ShellSection {
@@ -236,7 +233,7 @@ const SECTIONS: readonly ShellSection[] = [
         id: PRODUCTION_ID,
         label: family.name,
         under: 'marks',
-        items: [{ id: PRODUCTION_ID, n: '', title: 'In production', desc: 'The doubled-line GT monogram and the Locadex mark, the two marks generaltranslation.com ships.' }],
+        items: [{ id: PRODUCTION_ID, n: '', title: 'In production', desc: 'The logo and the Locadex mark, the two marks generaltranslation.com ships.' }],
       };
     }
     return familySection(family);
@@ -728,8 +725,8 @@ function Group({ id, section, count, title, lead, active, children }: GroupProps
  * The shortlist: one square tile per mark, the first (the logo) two
  * tiles wide and two rows tall, its drawing large on paper with its name
  * under it, and its use where Kevin chose one, else its family where the
- * name does not already say it, each a jump to the mark's card in its family; then the shortlist at one height on both grounds, after the GT
- * mark in production, so each reads beside the mark that ships.
+ * name does not already say it, each a jump to the mark's card in its family; then the shortlist at one height on both grounds, led by
+ * the logo, so each reads beside the mark that ships.
  */
 function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, id: string) => void }) {
   return (
@@ -748,13 +745,8 @@ function ShortlistBody({ onJump }: { onJump: (e: MouseEvent<HTMLAnchorElement>, 
         ))}
       </div>
       {GROUNDS.map((ground) => (
-        <figure key={ground} className={cn('mk-field is-short', groundClass(ground))} aria-label={`The shortlist ${groundName(ground).toLowerCase()}, after the General Translation mark in production`}>
+        <figure key={ground} className={cn('mk-field is-short', groundClass(ground))} aria-label={`The shortlist ${groundName(ground).toLowerCase()}, led by the logo`}>
           <div className='mk-field-row'>
-            {GT_PRODUCTION && (
-              <span className='mk-field-item'>
-                <MaskArt file={GT_PRODUCTION.file} height={SHORT_FIELD_PX} aspect={GT_PRODUCTION.aspect} />
-              </span>
-            )}
             {SHORTLIST.map((mark) => {
               const aspect = mark.box ? boxAspect(mark.box) : 1;
               return (

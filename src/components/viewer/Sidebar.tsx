@@ -9,6 +9,7 @@ import GtLogoMotion from '@/components/brand/GtLogoMotion';
 import { brandFontVariables } from '@/lib/brand-fonts';
 import { cn } from '@/lib/cn';
 import { isDocumentHref, openSiteHref } from '@/lib/document-routes';
+import { PREVIOUS_MARK_TAG, shotShowsPreviousMark } from '@/lib/previous-mark';
 import { scrollBehavior } from '@/lib/reduced-motion';
 import type { ShellDensity, ShellItem, ShellMark, ShellSection, ShellShot, ShellSubRow, ShellThumb } from '@/lib/shell-data';
 import { previewId } from '@/lib/shell-data';
@@ -612,12 +613,15 @@ type ThumbItemProps = {
 /** A route item as a captured 16:9 frame with its number and title; the caption previews the item (directive 8.6). */
 function ThumbItem({ item, active, onSelect }: ThumbItemProps) {
   const select = () => onSelect(item.id);
+  /* a capture taken before the logo says so under its name (src/lib/previous-mark.ts) */
+  const previousMark = shotShowsPreviousMark(item.shot);
   return (
     <div
       className={cn('pt-thumb', active && 'is-active')}
       role='button'
       tabIndex={0}
       data-id={item.id}
+      data-previous-mark={previousMark ? '' : undefined}
       aria-current={active || undefined}
       onMouseDown={pressWithoutFocus}
       onClick={select}
@@ -631,6 +635,7 @@ function ThumbItem({ item, active, onSelect }: ThumbItemProps) {
         <div className='pt-thumb-title' data-preview={previewId(item)}>
           {item.title}
         </div>
+        {previousMark ? <div className='pt-thumb-note'>{PREVIOUS_MARK_TAG}</div> : null}
       </div>
     </div>
   );

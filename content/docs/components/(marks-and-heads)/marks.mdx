@@ -17,7 +17,7 @@ sources:
 import { DitheredMarkDemo, GtLogoMotionDemo } from '@/components/docs/demos/lazy';
 import MarksDemo from '@/components/docs/demos/MarksDemo';
 
-Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The chosen logo, Axis and meridian behind, leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The mark in production on generaltranslation.com is the doubled-line monogram, which the plate's `GtMark` (`src/components/plate/icons/GtMark.tsx`) draws inline. The viewer's `GtMark` draws the logo.
+Every mark in Prototemplate is one color in `currentColor`, so the same file draws positive on paper and reversed on ink with no redraw. Every mark is an SVG file under `public/marks`, listed with its notes in the catalog of `src/lib/marks.ts` and shown in full at [/marks](/marks). The chosen logo, Axis and meridian behind, leads the shortlist, with its state on hover, on sign-in and while loading, Oval globe, axis behind, after it, and [/marks/graticule](/marks/graticule#progression) shows the marks that led to both. The viewer's `GtMark` and the plate's `GtMark` (`src/components/plate/icons/GtMark.tsx`) both draw the logo from `LOGO`; the plate's centres it in the wide box the doubled-line monogram had.
 
 ## The marks
 

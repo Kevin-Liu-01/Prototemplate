@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { DirectionCorner } from '@/components/viewer/DirectionCorner';
 import SmoothScroll from '@/components/shared/SmoothScroll';
+import { pictureNote } from '@/lib/previous-mark';
 import { seoRoute } from '@/lib/seo/route';
 
 import ProdFooter from '../../sections/ProdFooter';
@@ -33,6 +34,14 @@ import type { Metadata } from 'next';
 const BASE = '/d/production';
 
 type Params = { params: Promise<{ slug: string }> };
+
+/* the posts whose cover the logo lock holds as history, with what the page says under it (src/lib/previous-mark.ts); live has no such line */
+const COVER_NOTES: Readonly<Record<string, string>> = Object.fromEntries(
+  ALL_POSTS.flatMap((post) => {
+    const note = pictureNote(post.images?.[0]) ?? pictureNote(post.imagesLight?.[0]);
+    return note ? [[post.slug, note]] : [];
+  })
+);
 
 /** Every filed post gets a static article. */
 export function generateStaticParams(): { slug: string }[] {
@@ -123,6 +132,7 @@ export default async function ProductionBlogPostPage({ params }: Params) {
               headings={source?.headings ?? []}
               post={post}
               postType={postType}
+              coverNotes={COVER_NOTES}
             />
           ) : (
             <BlogArticleNotFound suggestions={suggestions} />

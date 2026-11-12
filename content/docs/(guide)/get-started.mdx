@@ -18,7 +18,7 @@ pnpm dev
 - `--filter=blob:none` makes a blobless clone. The history holds large reference captures, and a blobless clone downloads an old file's contents only when a command reads it.
 - `pnpm install` also writes `.source/`, the compiled docs collection these pages are built from (`fumadocs-mdx`, run as the install's postinstall step).
 - `pnpm run doctor` checks Node at the `.nvmrc` major, pnpm at `package.json`'s `packageManager`, the installed packages, the Chrome for Testing build the browser tools launch (`pnpm exec playwright-core install chromium`, or `CHROME_PATH`), and Python 3 with the packages in `requirements.txt`. ffmpeg and the HyperFrames CLI are optional; only the films need them. Each missing item prints the command that fixes it. Write `pnpm run doctor`: a bare `pnpm doctor` runs pnpm's own command.
-- The pre-push hook in `.githooks/` runs `pnpm lint:public` and stops a push on any finding: a key shape, a machine path or, with `PT_DENYLIST` set, a term from the private denylist.
+- The pre-push hook in `.githooks/` runs `pnpm lint:public` and stops a push on any finding: a key shape, a machine path or, with `PT_DENYLIST` set, a term from the private denylist. Then it runs `pnpm lint:logo --pixels`, which stops a push on a picture or film frame that shows the previous mark unless the logo manifest lists it as history.
 - `pnpm dev` serves the site at `http://localhost:3005`.
 
 ## Work beside other sessions

@@ -27,12 +27,12 @@ export default function SiteFooter() {
           <div className='bl-foot-brand'>
             <Image
               className='bl-foot-logo is-light'
-              src='/brand/no-bg-gt-logo-light.png'
+              src='/brand/no-bg-gt-globe-logo-light.png'
               alt='General Translation'
               width={32}
               height={32}
             />
-            <Image className='bl-foot-logo is-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={32} height={32} />
+            <Image className='bl-foot-logo is-dark' src='/brand/no-bg-gt-globe-logo-dark.png' alt='' width={32} height={32} />
             <p>End-to-end localization for the world&rsquo;s best companies.</p>
           </div>
           <div className='bl-foot-cols'>

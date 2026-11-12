@@ -1,4 +1,5 @@
 import { MOTION_FILMS, MOTION_SECTIONS, type MotionCutFields } from '@/lib/motion';
+import { filmNote } from '@/lib/previous-mark';
 
 import { SHEET_TILE } from './film-list';
 
@@ -31,6 +32,8 @@ export type PublishedFilm = {
   captions?: string;
   captionsLang?: { locale: string; label: string };
   sheet?: FilmSheet;
+  /** the previous-mark note when the cut shows the previous mark (filmNote in src/lib/previous-mark.ts) */
+  note?: string;
 };
 
 function sheetOf(fields: MotionCutFields): FilmSheet | undefined {
@@ -63,6 +66,7 @@ export const PUBLISHED_FILMS: readonly PublishedFilm[] = MOTION_FILMS.flatMap((f
         captions: fields.captions,
         captionsLang: lang ? { locale: lang.locale, label: lang.name } : undefined,
         sheet: sheetOf(fields),
+        note: filmNote(fields.media.video) ?? undefined,
       },
     ];
   });

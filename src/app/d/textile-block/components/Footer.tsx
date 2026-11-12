@@ -49,10 +49,10 @@ export default function Footer() {
             alt='General Translation'
             className='tb-foot-logo is-light'
             height={30}
-            src='/brand/no-bg-gt-logo-light.png'
+            src='/brand/no-bg-gt-globe-logo-light.png'
             width={30}
           />
-          <Image alt='' className='tb-foot-logo is-dark' height={30} src='/brand/no-bg-gt-logo-dark.png' width={30} />
+          <Image alt='' className='tb-foot-logo is-dark' height={30} src='/brand/no-bg-gt-globe-logo-dark.png' width={30} />
         </div>
         <p>{FOOTER_LEAD}</p>
       </Block>

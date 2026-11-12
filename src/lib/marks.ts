@@ -283,10 +283,12 @@ export function markFamily(mark: Mark): { id: MarkFamily; label: string; princip
 /**
  * The marks in production: the two marks generaltranslation.com ships
  * today, at the top of /marks. Each file under public/marks/production is
- * one color in currentColor: gt-mark.svg is the doubled-line monogram,
- * GT's previous mark until the logo replaced it on 2026-11-08 (the logo's
- * drawing is LOGO in src/lib/logo.ts), and locadex-mark.svg is the geometry of LocadexMark in
- * gt-cloud's packages/ui. `files` lists the files the sites serve.
+ * one color in currentColor: gt-mark.svg is the logo, which pnpm build:logo
+ * writes from LOGO in src/lib/logo.ts, and locadex-mark.svg is the geometry
+ * of LocadexMark in gt-cloud's packages/ui. `files` lists the files the
+ * sites serve. The doubled-line monogram, the mark until 2026-11-08, is
+ * public/marks/previous/gt-monogram.svg, which /brand shows as the
+ * previous mark.
  */
 export type ProductionMark = {
   id: string;
@@ -306,14 +308,15 @@ export const PRODUCTION_MARKS: readonly ProductionMark[] = [
     id: 'gt',
     name: 'General Translation',
     file: '/marks/production/gt-mark.svg',
-    aspect: 1213 / 771,
-    text: 'The doubled-line GT monogram: every stroke of the G and the T is two parallel lines. generaltranslation.com draws it in the header, the footer, the docs and the social cards, and the dashboard draws it on the sign-in plate.',
+    aspect: 1,
+    text: 'The logo, Axis and meridian behind: a globe whose ring and ovals draw the G and whose polar axis is the stem of the T. generaltranslation.com and the dashboard draw it from GtMark in gt-cloud\'s packages/ui. It replaced the doubled-line monogram on 8 November 2026.',
     files: [
       '/marks/production/gt-mark.svg',
-      '/brand/gt-logo-light.svg',
-      '/brand/gt-logo-dark.svg',
-      '/brand/no-bg-gt-logo-light.png',
-      '/brand/no-bg-gt-logo-dark.png',
+      '/brand/gt-globe-logo.svg',
+      '/brand/gt-globe-logo-light.svg',
+      '/brand/gt-globe-logo-dark.svg',
+      '/brand/no-bg-gt-globe-logo-light.png',
+      '/brand/no-bg-gt-globe-logo-dark.png',
     ],
   },
   {
@@ -375,7 +378,7 @@ export const HEMISPHERE_FAMILIES: readonly HemisphereFamily[] = [
   { id: 't-facing-g', name: 'The t facing the G', lead: 't-west-limb', groups: ['t-west', 'split', 'halo', 'studs'], text: 'A lowercase t stands in the east half with its crossbar turned toward the G. Kevin picked t-west-limb and t-west-jaw from this family, and both are drawn beside their construction.' },
   { id: 't-wrapping-limb', name: 'The T wrapping the limb', lead: 'solid-c1', groups: ['c1', 'c3', 'c4'], text: 'The T stands in the east half, and its crossbar runs along the edge of the disc. The tilt versions lean the T, and the land versions cut a coastline into it.' },
   { id: 'graticule-globes', name: 'Graticule globes', lead: 'globe-ball-jaw', groups: ['globe-grat', 'globe-ball'], text: 'The letters are drawn as the lines of a globe. The ball versions paint the strokes on a sphere, so every line in them is curved.' },
-  { id: 'doubled-lines', name: 'Doubled lines', lead: 'double-a1', groups: ['double-a1', 'double-b'], text: 'Every stroke of the G and the T is two parallel lines, as in the mark in production. The land versions cut a continent into the disc.' },
+  { id: 'doubled-lines', name: 'Doubled lines', lead: 'double-a1', groups: ['double-a1', 'double-b'], text: 'Every stroke of the G and the T is two parallel lines, as in the previous mark. The land versions cut a continent into the disc.' },
 ];
 
 /** The poster of the whole round and one per family, public paths under /marks/hemispheres/posters. */
@@ -502,7 +505,7 @@ export const FAMILIES: readonly MarkFamilyRow[] = [
   { id: 'crescent-globe', name: 'Crescent globe', anchor: 'crescent-globe', engaged: '2026-11-04', lead: 'A globe is drawn as a crescent limb around the ring of the G, turned on a tilted axis, with the bar of the G on the equator.' },
   { id: 'bolt', name: 'Bolt', anchor: 'bolt', engaged: '2026-11-03', lead: 'The G is drawn as a lightning bolt whose blade runs down to a point.' },
   { id: 'speed', name: 'Speed', anchor: 'bar-collection', engaged: '2026-11-02', lead: 'Wide letters lean forward, one cut runs through them, and speed bars lead into the G.' },
-  { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the mark in production.' },
+  { id: 'doubled-line', name: 'Doubled line', anchor: 'doubled-line', engaged: '2026-10-29', lead: 'Every stroke of the G and the T is drawn as two parallel lines, the grammar of the previous mark.' },
   { id: 'globe', name: 'Globe', anchor: 'globe', engaged: '2026-11-06', lead: 'The letters are picked out of the lines of a globe: its ring, its meridians, its latitudes and its equator. The logo comes from this family.' },
   { id: 'locadex', name: 'Locadex', anchor: 'locadex', engaged: '2026-11-08', lead: 'Marks for Locadex, the AI agent of General Translation: the lines of the logo\'s globe draw an L or a lambda.' },
   { id: 'hemispheres', name: 'Hemispheres', anchor: 'hemispheres', engaged: '2026-10-26', lead: 'A disc is split in two, and the west half draws the G while the east half draws the T.' },

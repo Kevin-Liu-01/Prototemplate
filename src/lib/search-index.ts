@@ -697,7 +697,7 @@ const DECK_SLIDES: readonly string[] = [
   'Visual references',
   'A proto-cuneiform tablet',
   'The name',
-  'The mark',
+  'The previous mark',
   'The bar monogram',
   'The lockup',
   'The plate',

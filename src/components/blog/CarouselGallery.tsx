@@ -24,6 +24,8 @@ type CarouselGalleryProps = {
   label?: string;
   /** Milliseconds between automatic advances; 0 turns autoplay off. */
   interval?: number;
+  /** What the gallery says under it when one of its images shows the previous mark (pictureNote in src/lib/previous-mark.ts), from the server. */
+  note?: string | null;
 };
 
 const AUTOPLAY_MS = 4500;
@@ -45,7 +47,7 @@ const DEBOUNCE_MS = 350;
  * commands step from the last requested slide so rapid presses land one
  * slide each.
  */
-export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }: CarouselGalleryProps) {
+export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS, note }: CarouselGalleryProps) {
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef(0);
@@ -266,6 +268,7 @@ export default function CarouselGallery({ items, label, interval = AUTOPLAY_MS }
           </span>
         </div>
       ) : null}
+      {note ? <figcaption className='blog-image-note'>{note}</figcaption> : null}
     </figure>
   );
 }

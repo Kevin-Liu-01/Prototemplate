@@ -138,9 +138,22 @@ logo's construction, its three states and the lockup numbers.
 The logo replaced the doubled-line GT monogram on 2026-11-08 in this
 site's chrome, the tab icon, `/brand` and the deck. The monogram, in
 which every stroke of the mark is two parallel lines, is the previous
-mark: its files (`/brand/gt-logo-light.svg`, `gt-logo-dark.svg` and the
-`no-bg-gt-logo-*` PNGs) stay at their URLs, `/marks` keeps it as a past
-pick, and generaltranslation.com and the dashboard still draw it.
+mark: `/marks` keeps it as a past pick, `/brand` and deck slide 16 show
+it as the previous mark, and generaltranslation.com and the dashboard
+draw the globe. Its old addresses (`/brand/gt-logo-light.svg`,
+`gt-logo-dark.svg`, `gt-logo-light.png`, the `no-bg-gt-logo-*` PNGs and
+`/static/avatars/logo.png`) serve the globe since 2026-11-10, at their
+old size and ground, and `/marks/production/gt-mark.svg` serves it as
+the one-color master, so outside links show the current logo.
+
+Every logo file comes from `LOGO`: `pnpm build:logo` writes the masters,
+the old addresses and `public/brand/gt-globe-logo.json`, the fingerprint
+(the sha256 of `LOGO.d`, its viewBox, the lockup's sha256 and the two
+lockup gaps) that checks in other repositories compare against, and
+`pnpm lint:logo` fails on the monogram, an edited or hand copy of the
+path, a stale generated file, an old address in code, a typeset name or
+an unlisted logo picture (`scripts/lint/logo.json` lists the generated
+files, the history and what is not the logo).
 
 Rules:
 

@@ -86,8 +86,8 @@ export default function TopNav(): ReactNode {
     <header className='tc-nav' data-tc-nav>
       <div className='tc-nav-in'>
         <a className='tc-nav-brand' href='/d/toolchain'>
-          <Image className='tc-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={22} height={22} />
-          <Image className='tc-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={22} height={22} />
+          <Image className='tc-logo-light' src='/brand/no-bg-gt-globe-logo-light.png' alt='' width={22} height={22} />
+          <Image className='tc-logo-dark' src='/brand/no-bg-gt-globe-logo-dark.png' alt='' width={22} height={22} />
           General Translation
         </a>
 

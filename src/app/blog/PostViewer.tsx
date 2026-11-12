@@ -40,6 +40,8 @@ export type PostViewerProps = {
   minutes: number;
   /** the post's entry in src/lib/updated.ts */
   updated: PageUpdated;
+  /** the note under the cover when it shows the previous mark (src/lib/previous-mark.ts), from the server page */
+  coverNote: string | null;
 };
 
 /**
@@ -51,7 +53,7 @@ export type PostViewerProps = {
  * 2 names its authors. Selecting another post navigates to its page; the
  * changelog row opens its section on the index.
  */
-export default function PostViewer({ slug, body, minutes, updated }: PostViewerProps) {
+export default function PostViewer({ slug, body, minutes, updated, coverNote }: PostViewerProps) {
   const router = useRouter();
   const row = findPost(slug) ?? POSTS[0];
   if (!row) return null;
@@ -96,7 +98,7 @@ export default function PostViewer({ slug, body, minutes, updated }: PostViewerP
             <div className='bl-doc-row'>
               <div aria-hidden='true' />
               <div className='bl-doc-body'>
-                <PostCover post={post} priority />
+                <PostCover post={post} priority note={coverNote} />
                 <div className='blog-body'>{body}</div>
               </div>
             </div>

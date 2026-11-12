@@ -249,7 +249,7 @@ export default function Hero() {
           <span className='wr-guide-v' aria-hidden />
           <div className='wr-gate' data-gate>
             <Image
-              src='/brand/no-bg-gt-logo-light.png'
+              src='/brand/no-bg-gt-globe-logo-light.png'
               alt='General Translation'
               width={26}
               height={26}

@@ -155,7 +155,7 @@ export default function Hero() {
           <Image
             className='tc-hero-mark'
             data-hero-in
-            src='/brand/no-bg-gt-logo-light.png'
+            src='/brand/no-bg-gt-globe-logo-light.png'
             alt='General Translation'
             width={34}
             height={34}

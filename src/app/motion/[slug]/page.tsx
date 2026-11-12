@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { plainText } from '@/components/book/markdown';
 import { MOTION_PACKAGE_SLUGS, getMotionFilm } from '@/lib/motion';
 import type { MotionFilm } from '@/lib/motion';
+import { markNoteFor } from '@/lib/previous-mark';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
@@ -90,6 +91,7 @@ export default async function MotionPackagePage({ params }: Params) {
         sheet={sheetBlock(film)}
         script={scriptBlock(film)}
         review={reviewBlock(film)}
+        markNote={markNoteFor(film)}
         sections={page.sections}
         updated={requireUpdated(`/motion/${slug}`)}
       />

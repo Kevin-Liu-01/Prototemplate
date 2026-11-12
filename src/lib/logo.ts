@@ -4,7 +4,8 @@
  * (GtMark), the /brand figure and badge, the docs demos, and the masters,
  * the tab icon and the deck symbol that pnpm build:logo writes from it. The doubled-line monogram it replaced on
  * 2026-11-08 stays on /marks as a past pick (doubled-gt) and in the
- * production row, and its files stay at their URLs.
+ * production row; its old addresses serve this logo (2026-11-10), and
+ * pnpm lint:logo holds every logo file to this drawing.
  *
  * One path in currentColor with the nonzero fill rule, on the catalog's
  * 256 unit square, the same path as

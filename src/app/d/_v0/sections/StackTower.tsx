@@ -728,7 +728,7 @@ function TopGlyph({ id }: { id: string }) {
                 both grounds alone) */}
             <image
               className='v0s-dash-mark is-light'
-              href='/brand/no-bg-gt-logo-light-96.png'
+              href='/brand/no-bg-gt-globe-logo-light-96.png'
               x={-6.5}
               y={-4}
               width={13}
@@ -736,7 +736,7 @@ function TopGlyph({ id }: { id: string }) {
             />
             <image
               className='v0s-dash-mark is-dark'
-              href='/brand/no-bg-gt-logo-dark-96.png'
+              href='/brand/no-bg-gt-globe-logo-dark-96.png'
               x={-6.5}
               y={-4}
               width={13}

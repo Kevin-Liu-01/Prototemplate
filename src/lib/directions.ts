@@ -376,6 +376,9 @@ export function directionPageHref(slug: string): string {
   return direction?.reference ? `/d/${direction.slug}` : `/directions/${slug}`;
 }
 
+/** What a page says where it shows the directions' captures: every direction but the shipped one is a dated design study. */
+export const DATED_STUDY_NOTE = 'They are dated design studies, made before the shipped site.';
+
 /**
  * The 1440 by 900 captures of a direction, or of one of its pages
  * (`singularity-dossier-enterprise`), in both themes: public/shots/light

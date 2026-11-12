@@ -92,6 +92,7 @@
 
 /* the cover: a framed plate, ink on hover and on the row being read */
 .bl-cover {
+  position: relative;
   display: block;
   margin-top: 16px;
   aspect-ratio: 16 / 9;
@@ -340,6 +341,20 @@
   display: none;
 }
 
+/* a cover that shows the previous mark says so under it (src/lib/previous-mark.ts) */
+.blog-cover + .blog-image-note {
+  margin: 0.5em 0 0;
+}
+
+/* on a row's cropped cover the note sits on the plate along the bottom edge */
+.bl-cover .blog-image-note {
+  position: absolute;
+  inset: auto 0 0;
+  margin: 0;
+  padding: 6px 12px;
+  background: var(--pt-plate);
+}
+
 /* ---- article ---- */
 
 .blog-body {
@@ -419,6 +434,17 @@
 
 .blog-body p:has(> .blog-image:only-child) {
   margin: 0;
+}
+
+.blog-image:has(+ .blog-image-note) {
+  margin-bottom: 0.5em;
+}
+
+.blog-image-note {
+  display: block;
+  margin: 0 0 2em;
+  font-size: var(--pt-t-meta);
+  color: var(--pt-ink-2);
 }
 
 .blog-body .lucide {
@@ -810,6 +836,11 @@
   justify-content: center;
   gap: 8px;
   margin-top: 12px;
+}
+
+/* a gallery with an image that shows the previous mark says so under its dots */
+.blog-carousel > .blog-image-note {
+  margin: 12px 0 0;
 }
 
 .blog-carousel-dot {

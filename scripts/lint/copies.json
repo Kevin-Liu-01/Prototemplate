@@ -19,7 +19,7 @@
       "mode": "fork",
       "from": "gt-cloud:packages/ui/src/components/plate (apps/dashboard before gt-cloud #5216)",
       "ported": "b56e64c1 (2026-10-01)",
-      "reason": "the sign-in plate port, frozen: gt-next, the server actions and navigation are stubs, and it is not re-synced"
+      "reason": "the sign-in plate port, frozen: gt-next, the server actions and navigation are stubs, and it is not re-synced; since 2026-11-10 its GtMark and the CLI callback snapshots draw the logo from LOGO in src/lib/logo.ts in place of the retired doubled-line monogram"
     },
     {
       "path": "src/lib/dither.ts",
@@ -640,6 +640,36 @@
       "from": "gt-cloud:apps/landing/src/components/blog/versions-field.ts (k/blog-globe)",
       "ported": "5ba413acfb (2026-10-20)",
       "reason": "only the eight exports the globes import, verbatim; the Versions field and mountVersions are left out"
+    },
+    {
+      "path": "public/atlas/og/atlas.png",
+      "mode": "pin",
+      "from": "gt-cloud:apps/atlas/public/atlas/og/atlas.png",
+      "sha256": "73602dcfef2cdc6a79e5eb3ba97cd090ca788d63c07a8eeec7a9930ac1158a78"
+    },
+    {
+      "path": "public/atlas/og/designing-docs-for-humans.png",
+      "mode": "pin",
+      "from": "gt-cloud:apps/atlas/public/atlas/og/designing-docs-for-humans.png",
+      "sha256": "0fbd74f9bd70881decf3bdcdd668fd9e2de6a0c6f060c136232e4ea6c7b7a611"
+    },
+    {
+      "path": "public/atlas/og/fuma-nama.png",
+      "mode": "pin",
+      "from": "gt-cloud:apps/atlas/public/atlas/og/fuma-nama.png",
+      "sha256": "b8a2e3155f3983c5091eb1f3c2c37dd52b6c3cf95c68b021bcd2e0f1ed232f6c"
+    },
+    {
+      "path": "public/atlas/og/rewriting-our-docs.png",
+      "mode": "pin",
+      "from": "gt-cloud:apps/atlas/public/atlas/og/rewriting-our-docs.png",
+      "sha256": "dad826b04276d5ef3365cd663fe9a3a12fa815116e7e06619972894b4a757a9a"
+    },
+    {
+      "path": "public/atlas/og/translating-euclid.png",
+      "mode": "pin",
+      "from": "gt-cloud:apps/atlas/public/atlas/og/translating-euclid.png",
+      "sha256": "e192e5b6dbe3703103c1317a127cd18ae9b38736eb837d39e94b4849bc8389bb"
     }
   ]
 }

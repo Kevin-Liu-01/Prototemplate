@@ -1,3 +1,5 @@
+import { pictureNote } from '@/lib/previous-mark';
+
 import BlogHeroBoard from './BlogHeroBoard';
 import BlogPostBoard from './BlogPostBoard';
 import { getBlogCategory, POSTS, RELEASES } from './blog-index-data';
@@ -14,9 +16,11 @@ import UpdatesBoard from './UpdatesBoard';
  * blog-index-data.ts and renders the en-US resolution.
  */
 export default function BlogList() {
+  /* a card whose cover the logo lock holds as history says so (src/lib/previous-mark.ts); the live page has no such line */
   const posts = POSTS.map((post) => ({
     ...post,
     category: getBlogCategory(post),
+    markNote: pictureNote(post.images?.[0]) ?? pictureNote(post.imagesLight?.[0]),
   }));
 
   return (

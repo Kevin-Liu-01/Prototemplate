@@ -81,6 +81,8 @@ export default function Plate({
     stop === 'live' && figure.live
       ? LIVE_CAPTION[figure.live]
       : (shown?.alt ?? '');
+  // the wipe shows the figure's own picture and its light twin, so it carries that picture's note
+  const note = shown ? shown.note : figure.live === 'wipe' ? frames[0]?.note : undefined;
   // on the stage only the active plate shows, so the rest take no focus and reach no screen reader
   const hidden = !inline && !active;
 
@@ -120,7 +122,10 @@ export default function Plate({
       </div>
       <footer className='gtp-plate-foot'>
         <span className='gtp-mono gtp-plate-n'>Fig. {pad(figure.n)}</span>
-        <p className='gtp-plate-caption'>{caption}</p>
+        <p className='gtp-plate-caption'>
+          {caption}
+          {note ? ` ${note}` : null}
+        </p>
         {stops.length > 1 ? (
           <StopSlider
             stops={stops}

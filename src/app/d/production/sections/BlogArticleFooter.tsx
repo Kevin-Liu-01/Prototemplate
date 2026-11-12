@@ -25,6 +25,8 @@ type Props = {
   previous?: ArticlePost;
   next?: ArticlePost;
   related: readonly ArticlePost[];
+  /** what a card says when its post's cover shows the previous mark, by slug (pictureNote in src/lib/previous-mark.ts) */
+  coverNotes: Readonly<Record<string, string>>;
 };
 
 export default function BlogArticleFooter({
@@ -33,6 +35,7 @@ export default function BlogArticleFooter({
   previous,
   next,
   related,
+  coverNotes,
 }: Props) {
   const showNavigation = postType === 'devlog' && Boolean(previous ?? next);
 
@@ -81,6 +84,7 @@ export default function BlogArticleFooter({
                 className='pba-card'
                 href={`${base}/blog/${post.slug}`}
                 key={post.slug}
+                data-previous-mark={coverNotes[post.slug] ? '' : undefined}
               >
                 <BlogArticleCover
                   className='is-card'
@@ -102,6 +106,7 @@ export default function BlogArticleFooter({
                   </span>
                   <strong>{post.title}</strong>
                   <span className='pba-card-dek'>{post.summary}</span>
+                  {coverNotes[post.slug] ? <span className='pba-card-note'>{coverNotes[post.slug]}</span> : null}
                 </span>
               </a>
             ))}

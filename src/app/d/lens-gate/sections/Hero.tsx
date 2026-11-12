@@ -623,7 +623,7 @@ export default function Hero() {
         <Image
           className='tc-hero-mark'
           data-hero-in
-          src='/brand/no-bg-gt-logo-light.png'
+          src='/brand/no-bg-gt-globe-logo-light.png'
           alt='General Translation'
           width={34}
           height={34}
@@ -709,7 +709,7 @@ export default function Hero() {
 
         {/* The product's mark holds the core of the glass. */}
         <div className='lg-lens-core' aria-hidden>
-          <Image src='/brand/no-bg-gt-logo-light.png' alt='' width={38} height={38} />
+          <Image src='/brand/no-bg-gt-globe-logo-light.png' alt='' width={38} height={38} />
         </div>
 
         {/* The coverage ledger, seated on the band's last rule: endonyms with

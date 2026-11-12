@@ -457,14 +457,14 @@ export default function ProdNav() {
               alt='GT, Inc. light logo'
               className='pn-logo-light'
               height={40}
-              src='/brand/no-bg-gt-logo-light.png'
+              src='/brand/no-bg-gt-globe-logo-light.png'
               width={40}
             />
             <Image
               alt='GT, Inc. dark logo'
               className='pn-logo-dark'
               height={40}
-              src='/brand/no-bg-gt-logo-dark.png'
+              src='/brand/no-bg-gt-globe-logo-dark.png'
               width={40}
             />
             <span className='pn-sr'>General Translation, Inc.</span>

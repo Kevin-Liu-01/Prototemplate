@@ -67,6 +67,7 @@ deck/tmp
 !/motion/kit/brand/gt-mark.svg
 !/motion/kit/brand/logo-motion.mjs
 !/motion/kit/brand/gt-logo-motion.js
+!/motion/kit/brand/gt-mark.js
 # sound/ and review/ hold code and docs only; takes, beds and review audio stay local
 /motion/kit/sound/**
 !/motion/kit/sound/**/

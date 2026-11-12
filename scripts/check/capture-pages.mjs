@@ -56,7 +56,10 @@
 // page failed.
 //
 // Usage: pnpm capture:pages [--base <url>, default PT_BASE] [--only <id>[,<id>]] [--live]
-//          [--direction <slug>[,<slug>]] [--viewport 1440x900] [--out <dir>]
+//          [--direction <slug>[,<slug>]] [--viewport 1440x900] [--out <dir>] [--hide <selector>]
+// --hide takes a CSS selector list whose elements are removed from the
+// layout (display: none) before every shot, for a live page that carries
+// something this public repository must not hold in a picture.
 // --viewport changes the capture size, and --out the folder the captures go
 // to (public/shots/pages, or public/shots for --direction); a review at
 // another size goes to its own --out, so the committed captures stay 1440x900.
@@ -97,6 +100,7 @@ const BASE = (option(argv, '--base') ?? BASE_URL).replace(/\/$/, '');
 const ONLY = option(argv, '--only')?.split(',').filter(Boolean);
 const LIVE = argv.includes('--live');
 const DIRECTIONS = option(argv, '--direction')?.split(',').filter(Boolean);
+const HIDE = option(argv, '--hide');
 
 const LIVE_ORIGIN = 'https://generaltranslation.com';
 
@@ -216,7 +220,7 @@ for (const theme of THEMES) {
         });
       }
       await page.evaluate(() => document.fonts.ready);
-      await page.addStyleTag({ content: HIDE_CSS });
+      await page.addStyleTag({ content: HIDE ? `${HIDE_CSS} ${HIDE} { display: none !important; }` : HIDE_CSS });
       await page.waitForTimeout(LIVE ? LIVE_SETTLE_MS : SETTLE_MS);
       await page.screenshot({ path: target, type: 'jpeg', quality: QUALITY });
       written += 1;

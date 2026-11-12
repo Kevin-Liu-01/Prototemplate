@@ -14,8 +14,8 @@ export function Footer() {
       <div className='cr-col cr-foot-in'>
         <div className='cr-foot-brand'>
           {/* both drawn marks ship; the stylesheet shows the one the theme calls for */}
-          <Image className='cr-foot-mark is-light' src='/brand/no-bg-gt-logo-light.png' alt='General Translation' width={30} height={30} />
-          <Image className='cr-foot-mark is-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={30} height={30} />
+          <Image className='cr-foot-mark is-light' src='/brand/no-bg-gt-globe-logo-light.png' alt='General Translation' width={30} height={30} />
+          <Image className='cr-foot-mark is-dark' src='/brand/no-bg-gt-globe-logo-dark.png' alt='' width={30} height={30} />
           <p>End-to-end localization for the world&rsquo;s best companies.</p>
         </div>
         <div className='cr-foot-cols'>

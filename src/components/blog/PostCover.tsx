@@ -10,6 +10,8 @@ type PostCoverProps = {
   priority?: boolean;
   /** how wide the cover renders; the article column by default */
   sizes?: string;
+  /** what the page says under a cover that shows the previous mark (pictureNote in src/lib/previous-mark.ts), from the server page */
+  note?: string | null;
 };
 
 /**
@@ -19,9 +21,10 @@ type PostCoverProps = {
  * covers without a request. Only the dark cover, the default theme's, takes
  * `priority`; the light twin loads lazily, and the browser does not fetch a
  * lazy image while it is hidden. The optimizer serves each at the width it
- * is shown, from the 3840px master, so the browser never resizes it.
+ * is shown, from the 3840px master, so the browser never resizes it. A
+ * cover that shows the previous mark carries its note under it.
  */
-export default function PostCover({ post, className, priority = false, sizes = BLOG_COLUMN_SIZES }: PostCoverProps) {
+export default function PostCover({ post, className, priority = false, sizes = BLOG_COLUMN_SIZES, note = null }: PostCoverProps) {
   if (!post.image) return null;
   const classes = className ? ` ${className}` : '';
   const cover = (src: string, extra = '', first = priority) => (
@@ -36,11 +39,19 @@ export default function PostCover({ post, className, priority = false, sizes = B
       priority={first}
     />
   );
-  if (!post.imageLight) return cover(post.image);
+  const noted = note ? <span className='blog-image-note'>{note}</span> : null;
+  if (!post.imageLight)
+    return (
+      <>
+        {cover(post.image)}
+        {noted}
+      </>
+    );
   return (
     <>
       {cover(post.image, ' blog-cover-dark')}
       {cover(post.imageLight, ' blog-cover-light', false)}
+      {noted}
     </>
   );
 }

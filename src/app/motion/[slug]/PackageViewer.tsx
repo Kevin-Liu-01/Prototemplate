@@ -45,7 +45,8 @@ const STATUS_ICON: Readonly<Record<MotionStatus, IconName>> = {
  * package: the contact sheet and the script as built (records.tsx), or the
  * one sentence a film gets while its records belong to a cut in review.
  */
-type RecordPart = { id: string; title: string; note: string; body: ReactNode; className: string };
+/** `mark`: the part shows frames that end on the previous mark, so its divider says so */
+type RecordPart = { id: string; title: string; note: string; body: ReactNode; className: string; mark?: boolean };
 
 /** One section of the package as the server rendered it (package.ts). */
 export type PackageSectionView = {
@@ -100,7 +101,7 @@ function RawLink({ slug }: { slug: string }) {
  * toggle over it (FilmCutPlayer), which swaps the film, its poster, its
  * captions, the MP4 and the credits; the sections below stay the base cut's.
  */
-function FilmHead({ film }: { film: MotionFilm }) {
+function FilmHead({ film, markNote }: { film: MotionFilm; markNote: string | null }) {
   const state = useFilmCut(film);
   const cut = state.current;
   const media = cut.film.media;
@@ -121,6 +122,7 @@ function FilmHead({ film }: { film: MotionFilm }) {
               </a>
             </>
           ) : null}
+          {markNote ? ` · ${markNote}` : null}
         </p>
       ) : null}
     </>
@@ -180,6 +182,8 @@ export type PackageViewerProps = {
   script: ReactNode | null;
   /** the sentence a film without published records gets while a newer cut is in review, or null */
   review: ReactNode | null;
+  /** what the page says beside a film that ends on the previous mark (src/lib/previous-mark.ts), or null */
+  markNote: string | null;
   sections: readonly PackageSectionView[];
   /** the package page's entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
@@ -199,7 +203,7 @@ export type PackageViewerProps = {
  * The shell ignores that hash, since it names no item. Selecting another
  * film navigates to it; the raw package is one click away in the toolbar.
  */
-export default function PackageViewer({ slug, lead, leadRest, credits, sheet, script, review, sections, updated }: PackageViewerProps) {
+export default function PackageViewer({ slug, lead, leadRest, credits, sheet, script, review, markNote, sections, updated }: PackageViewerProps) {
   const router = useRouter();
   const film = getMotionFilm(slug);
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -248,8 +252,10 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
   const parts: readonly RecordPart[] = useMemo(() => {
     const out: RecordPart[] = [];
     if (sheet && film?.sheet) {
-      const note = film.sheet.frames ? `${film.sheet.frames} frames` : 'WebP';
-      out.push({ id: 'contact-sheet', title: 'Contact sheet', note, body: sheet, className: 'mo-sheet-body' });
+      const frames = film.sheet.frames ? `${film.sheet.frames} frames` : 'WebP';
+      /* the sheet holds the film's end frames, so a film that ends on the previous mark says so here too */
+      const note = markNote ? `${frames} · ${markNote}` : frames;
+      out.push({ id: 'contact-sheet', title: 'Contact sheet', note, body: sheet, className: 'mo-sheet-body', mark: Boolean(markNote) });
     }
     if (script && film?.script) {
       out.push({ id: 'film-script', title: 'Script', note: `${film.script.lines} lines`, body: script, className: 'mo-built mo-wide' });
@@ -258,7 +264,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
       out.push({ id: 'contact-sheet', title: 'Contact sheet and script', note: 'In review', body: review, className: '' });
     }
     return out;
-  }, [sheet, script, review, film]);
+  }, [sheet, script, review, film, markNote]);
   const filmId = film?.id;
   const subRows: SubRows = useCallback(
     (item) =>
@@ -353,7 +359,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
           />
 
           {/* the film block: the player, the status sentence, the credits and the rest of the series text; it names no row in the list, so it carries no data-section */}
-          <section id={FILM_ID} className='pt-book-part ptd-doc mo-sec' aria-labelledby='mo-film-h'>
+          <section id={FILM_ID} className='pt-book-part ptd-doc mo-sec' aria-labelledby='mo-film-h' data-previous-mark={markNote ? '' : undefined}>
             <div className='ptd-sec pt-book-sec'>
               <small>
                 <span>Section 1</span>
@@ -364,7 +370,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
             <div className='ptd-row ptd-lead'>
               <div className='ptd-pn' aria-hidden='true' />
               <div className='ptd-body pt-root'>
-                {film.media ? <FilmHead film={film} /> : null}
+                {film.media ? <FilmHead film={film} markNote={markNote} /> : null}
                 <StatusLine film={film} />
                 {film.review ? <p className='mo-review'>A newer cut is in review: {reviewWords(film.review)}.</p> : null}
                 {credits ? (
@@ -385,6 +391,7 @@ export default function PackageViewer({ slug, lead, leadRest, credits, sheet, sc
               id={part.id}
               className='pt-book-part ptd-doc mo-sec'
               data-section={part.id}
+              data-previous-mark={part.mark ? '' : undefined}
               aria-labelledby={`mo-${part.id}`}
             >
               <div className='ptd-sec pt-book-sec'>

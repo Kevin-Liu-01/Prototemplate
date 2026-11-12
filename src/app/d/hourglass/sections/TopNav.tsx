@@ -39,8 +39,8 @@ export default function TopNav() {
             bar, and the unlit dark-frame state forces the white mark in both
             themes — the hero plate never remaps. */}
         <a className='tc-nav-brand' href='#top'>
-          <Image className='tc-logo-light' src='/brand/no-bg-gt-logo-light.png' alt='' width={22} height={22} />
-          <Image className='tc-logo-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={22} height={22} />
+          <Image className='tc-logo-light' src='/brand/no-bg-gt-globe-logo-light.png' alt='' width={22} height={22} />
+          <Image className='tc-logo-dark' src='/brand/no-bg-gt-globe-logo-dark.png' alt='' width={22} height={22} />
           General Translation
         </a>
 

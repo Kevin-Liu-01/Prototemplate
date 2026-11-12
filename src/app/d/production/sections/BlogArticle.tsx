@@ -52,9 +52,11 @@ type Props = {
   headerIntro: ReactNode;
   /** The body's h2 and h3 headings, for the contents rail. */
   headings: readonly PostHeading[];
+  /** What a cover says when it shows the previous mark, by post slug (pictureNote in src/lib/previous-mark.ts), from the server. */
+  coverNotes: Readonly<Record<string, string>>;
 };
 
-export default function BlogArticle({ post, postType, body, headerIntro, headings }: Props) {
+export default function BlogArticle({ post, postType, body, headerIntro, headings, coverNotes }: Props) {
   const pathname = usePathname();
   const base = pathname?.match(/^\/d\/[^/]+/)?.[0] ?? '/d/production';
 
@@ -117,13 +119,14 @@ export default function BlogArticle({ post, postType, body, headerIntro, heading
           {/* The cover renders in the copy column (grid-column-start: 2)
               only while the lead keeps its rail column — above 980px,
               matching the body grid's breakpoint. */}
-          <div className='pba-cover'>
+          <div className='pba-cover' data-previous-mark={coverNotes[post.slug] ? '' : undefined}>
             <BlogArticleCover
               id={`article-${post.slug}`}
               post={post}
               priority
               sizes='(max-width: 980px) calc(100vw - 40px), 960px'
             />
+            {coverNotes[post.slug] ? <p className='pba-cover-note'>{coverNotes[post.slug]}</p> : null}
           </div>
           {headerIntro ? (
             <div className='pba-header-intro'>
@@ -151,6 +154,7 @@ export default function BlogArticle({ post, postType, body, headerIntro, heading
         postType={postType}
         previous={previous}
         related={related}
+        coverNotes={coverNotes}
       />
     </>
   );

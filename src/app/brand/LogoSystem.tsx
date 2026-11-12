@@ -169,13 +169,13 @@ export default function LogoSystem() {
       <p>
         Until 8 November 2026 the mark was the doubled-line monogram. Every stroke of its G and T was two parallel
         lines, the same grammar as the doubled-line connectors in the diagrams. The globe replaced it in this
-        site&rsquo;s chrome, the tab icon, this page and the deck. The monogram&rsquo;s files stay at their addresses,
-        and <Link href='/marks'>the marks page</Link> keeps it as a past pick.
+        site&rsquo;s chrome, the tab icon, this page and the deck. The addresses of the monogram&rsquo;s files serve the
+        globe since 10 November 2026, and <Link href='/marks'>the marks page</Link> keeps the monogram as a past pick.
       </p>
       <div className='ptb-marks ptb-lockups'>
         <figure className='ptb-mark is-paper'>
-          <img alt='The doubled-line monogram of the letters G and T, the previous mark' decoding='async' loading='lazy' src='/brand/gt-logo-light.svg' />
-          <figcaption>The doubled-line monogram, the mark until 8 November 2026.</figcaption>
+          <img alt='The doubled-line monogram of the letters G and T, the previous mark' decoding='async' loading='lazy' src='/marks/previous/gt-monogram.svg' />
+          <figcaption>The doubled-line monogram, the previous mark, used until 8 November 2026.</figcaption>
         </figure>
         <figure className='ptb-mark is-paper'>
           <img alt='The globe logo, the current mark' decoding='async' loading='lazy' src='/brand/kit/svg/gt-mark-ink.svg' />

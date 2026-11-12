@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '@/lib/cn';
+import { PREVIOUS_MARK_TAG, showsPreviousMark } from '@/lib/previous-mark';
 import { getSurface } from '@/lib/surfaces';
 import { useLayoutWork } from '@/lib/use-layout-work';
 import { useMountEffect } from '@/lib/use-mount-effect';
@@ -285,7 +286,8 @@ function requestImage(src: string, urgent: boolean, el: HTMLElement | null): Pro
 /* ---- resolving and placing ---- */
 
 /** solo: the surface has a light capture only, so the dark theme mats it (PreviewLayer.css .is-solo). */
-type Subject = { id: string; name: string; src: string | null; initial: string; solo: boolean };
+/** previousMark: the capture was taken before the logo, so the card says so over its foot (src/lib/previous-mark.ts). */
+type Subject = { id: string; name: string; src: string | null; initial: string; solo: boolean; previousMark: boolean };
 
 function darkTheme(): boolean {
   return document.documentElement.dataset.theme === 'dark';
@@ -296,7 +298,14 @@ function subjectFor(id: string): Subject | null {
   const surface = getSurface(id);
   if (!surface) return null;
   const src = surface.shot ? (darkTheme() && surface.shotDark ? surface.shotDark : surface.shot) : null;
-  return { id, name: surface.name, src, initial: surface.name.charAt(0).toUpperCase(), solo: !surface.shotDark };
+  return {
+    id,
+    name: surface.name,
+    src,
+    initial: surface.name.charAt(0).toUpperCase(),
+    solo: !surface.shotDark,
+    previousMark: src !== null && showsPreviousMark(src),
+  };
 }
 
 type Place = { x: number; y: number };
@@ -745,9 +754,10 @@ export function PreviewLayer() {
       style={card ? { transform: `translate3d(${card.x}px, ${card.y}px, 0)` } : undefined}
       aria-hidden='true'
     >
-      <div className={cn('pt-preview-frame', card?.solo && 'is-solo')}>
+      <div className={cn('pt-preview-frame', card?.solo && 'is-solo')} data-previous-mark={card?.previousMark ? '' : undefined}>
         <span className='pt-preview-plate'>{card?.initial ?? ''}</span>
         <div ref={frame} className='pt-preview-img' />
+        {card?.previousMark ? <span className='pt-preview-note'>{PREVIOUS_MARK_TAG}</span> : null}
       </div>
       <div className='pt-preview-title'>{card?.name ?? ''}</div>
     </div>,

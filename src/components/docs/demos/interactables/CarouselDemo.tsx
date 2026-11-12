@@ -27,8 +27,8 @@ const IMAGES: readonly CarouselImage[] = [
     height: 2160,
   },
   {
-    src: '/static/blogs/designing-docs-E7-quiet-scrollbar.webp?v=20260920-0930',
-    alt: 'The sidebar with its thin rounded scrollbar thumb on a transparent track, and the thumb enlarged',
+    src: '/static/blogs/designing-docs-E1-hover-mask.webp',
+    alt: 'The On this page rail of the quickstart, with the current step marked by a blue line',
     width: 3840,
     height: 2160,
   },

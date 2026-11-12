@@ -45,7 +45,7 @@ These stay in the local `motion/` folder; `vendor.mjs` writes the twins and `pic
 
 | path | what it is |
 | --- | --- |
-| `kit/marks/`, `kit/brand/` | the speed marks (bar monogram, lockup, dithered, ASCII, plate inverted, double cut, livery stack, two-way, globe G), explorations shown on /marks and never the logo, and `kit/brand/gt-mark.svg`, the General Translation mark every film's end card draws (tracked). It still holds the doubled-line monogram, the previous mark, until the kit takes the logo from `public/brand/gt-globe-logo.svg` (`references/look.md`) |
+| `kit/marks/`, `kit/brand/` | the speed marks (bar monogram, lockup, dithered, ASCII, plate inverted, double cut, livery stack, two-way, globe G), explorations shown on /marks and never the logo, and `kit/brand/gt-mark.svg` and `gt-mark.js`, the General Translation logo, which `pnpm build:logo` writes from `LOGO` (tracked; `references/look.md`) |
 | `kit/logos/`, `kit/logos/adopters/` | Fumadocs, MDX, Next.js, React, TanStack and Mintlify marks; the marks and GitHub avatars of Fumadocs' adopters |
 | `kit/fonts/` | Katagami Text and its italic, KatagamiCanvas (cv11 baked in, for canvas text), and the earlier InterVariable |
 | `kit/gem-shapes/*.png` | processed shapes for gem smoke glass (`gt-bar-monogram`, `gt-mark`, `fumadocs-moon`), written by `make.mjs` |

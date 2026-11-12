@@ -174,7 +174,7 @@ Load the `hyperframes-core` skill before you write composition HTML, and `hyperf
 
 ### The series frame
 
-The deck's sheet is the films' common frame: `GTSheet.mount(el, { inset: 67 })` draws two rails and two rules 67 px in from the edges, a registration cross at each meeting, the doubled-line GT mark in the lower left margin, and a counter in the lower right margin (use it for the film's section, "01 / 05", in tabular figures, or for the film's title in titanium). Draw the rails out of their crosses at the film's start (0.6 s, `expo.out`). Full-bleed dither scenes may run under the rails, as the deck's mood slides do. A film may drop the frame for a full-frame beat, but it opens and closes on it.
+The deck's sheet is the films' common frame: `GTSheet.mount(el, { inset: 67 })` draws two rails and two rules 67 px in from the edges, a registration cross at each meeting, the General Translation logo in the lower left margin, and a counter in the lower right margin (use it for the film's section, "01 / 05", in tabular figures, or for the film's title in titanium). Draw the rails out of their crosses at the film's start (0.6 s, `expo.out`). Full-bleed dither scenes may run under the rails, as the deck's mood slides do. A film may drop the frame for a full-frame beat, but it opens and closes on it.
 
 ### Credits
 
@@ -225,7 +225,7 @@ The company in one breath.
 
 ### mark-sting: the bar monogram sting (6 s)
 
-Since 2026-10-21 it plays on /marks beside the bar monogram, not on /motion (Kevin: "move it to marks where it can properly join bar monogram"; `offSite` in public/motion/published.json, Prototemplate eca197c6). Films on /motion end on the doubled-line GT mark.
+Since 2026-10-21 it plays on /marks beside the bar monogram, not on /motion (Kevin: "move it to marks where it can properly join bar monogram"; `offSite` in public/motion/published.json, Prototemplate eca197c6). Films on /motion rendered before 2026-11-08 end on the doubled-line GT mark, the previous mark; films rendered since end on the logo.
 
 A logo sting for the start and end of any video.
 

@@ -45,7 +45,7 @@ export default function Colophon() {
         <span className='sfc-foot-mark'>
           <img
             className='is-light'
-            src='/brand/no-bg-gt-logo-light.png'
+            src='/brand/no-bg-gt-globe-logo-light.png'
             alt='General Translation'
             width={44}
             height={44}
@@ -54,7 +54,7 @@ export default function Colophon() {
           />
           <img
             className='is-dark'
-            src='/brand/no-bg-gt-logo-dark.png'
+            src='/brand/no-bg-gt-globe-logo-dark.png'
             alt='General Translation'
             width={44}
             height={44}

@@ -44,6 +44,7 @@ type BlogBookProps = {
   /** the active row, read by the shell's onSelect outside this component */
   activeOut: RefObject<string>;
   updated: PageUpdated;
+  coverNotes: Readonly<Record<string, string>>;
 };
 
 /**
@@ -56,7 +57,7 @@ type BlogBookProps = {
  * shared read line: the post row or the changelog under the line is
  * selected through the shell.
  */
-function BlogBook({ sheetRef, jumpRef, activeOut, updated }: BlogBookProps) {
+function BlogBook({ sheetRef, jumpRef, activeOut, updated, coverNotes }: BlogBookProps) {
   const { active, ready, select } = usePtShell();
   activeOut.current = active;
 
@@ -117,7 +118,7 @@ function BlogBook({ sheetRef, jumpRef, activeOut, updated }: BlogBookProps) {
               <p>{post.summary}</p>
               <PostAuthors authors={post.authors} date={post.date} />
               <Link className='bl-cover' href={postHref(post.slug)} aria-hidden='true' tabIndex={-1}>
-                <PostCover post={post} sizes={ROW_COVER_SIZES} />
+                <PostCover post={post} sizes={ROW_COVER_SIZES} note={coverNotes[post.slug]} />
               </Link>
             </div>
           </article>
@@ -159,6 +160,8 @@ function BlogBook({ sheetRef, jumpRef, activeOut, updated }: BlogBookProps) {
 export type BlogViewerProps = {
   /** the /blog entry in src/lib/updated.ts, from the server page */
   updated: PageUpdated;
+  /** the note under each cover that shows the previous mark, by post slug, from the server page (src/lib/previous-mark.ts) */
+  coverNotes: Readonly<Record<string, string>>;
 };
 
 /**
@@ -169,7 +172,7 @@ export type BlogViewerProps = {
  * row in the list opens the post's page; the changelog row scrolls to its
  * section.
  */
-export default function BlogViewer({ updated }: BlogViewerProps) {
+export default function BlogViewer({ updated, coverNotes }: BlogViewerProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<(id: string) => void>(() => {});
   const activeOut = useRef(POSTS[0]?.post.slug ?? '');
@@ -192,7 +195,7 @@ export default function BlogViewer({ updated }: BlogViewerProps) {
       }}
     >
       <Sheet variant='flow' scrollRef={sheetRef}>
-        <BlogBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} />
+        <BlogBook sheetRef={sheetRef} jumpRef={jumpRef} activeOut={activeOut} updated={updated} coverNotes={coverNotes} />
       </Sheet>
     </ViewerShell>
   );

@@ -31,12 +31,12 @@ export default function Footer() {
           <div className='sf-foot-brand'>
             <Image
               className='sf-foot-logo is-light'
-              src='/brand/no-bg-gt-logo-light.png'
+              src='/brand/no-bg-gt-globe-logo-light.png'
               alt='General Translation'
               width={30}
               height={30}
             />
-            <Image className='sf-foot-logo is-dark' src='/brand/no-bg-gt-logo-dark.png' alt='' width={30} height={30} />
+            <Image className='sf-foot-logo is-dark' src='/brand/no-bg-gt-globe-logo-dark.png' alt='' width={30} height={30} />
             <p>{FOOTER_LINE}</p>
           </div>
 

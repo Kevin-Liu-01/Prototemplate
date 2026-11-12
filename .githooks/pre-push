@@ -6,6 +6,12 @@
 # With PT_DENYLIST unset the scan would skip the private terms and still
 # pass, so the hook stops the push instead. A clone that has no private list
 # sets PT_PUBLIC_NO_DENYLIST=1 to push without it.
+# Then it runs the logo's pixel check (pnpm lint:logo --pixels), which
+# searches every picture and every film's first and last frame for the
+# doubled-line monogram and stops the push on one the logo manifest does not
+# list as history. Its results are cached by file, so a push reads only new
+# or changed pictures. Without python3, numpy, Pillow or Chrome it says so
+# and lets the push through (pnpm run doctor lists what is missing).
 # Enable the hook once per clone: git config core.hooksPath .githooks
 root="$(git rev-parse --show-toplevel)" || exit 1
 if [ -z "$PT_DENYLIST" ] && [ -z "$CI" ] && [ "$PT_PUBLIC_NO_DENYLIST" != "1" ]; then
@@ -15,5 +21,14 @@ fi
 if ! node "$root/scripts/lint/public.mjs"; then
   echo "pre-push: lint:public failed; the push is stopped. Fix each finding above (or add a file that must spell a pattern to scripts/lint/public.allow.json) and push again."
   exit 1
+fi
+node "$root/scripts/lint/logo-pixels.mjs"
+pixels=$?
+if [ "$pixels" -eq 1 ]; then
+  echo "pre-push: lint:logo --pixels found the previous mark in a picture the logo manifest does not list; the push is stopped. Recapture or re-render each picture above, or list it under history in scripts/lint/logo.json with a reason on a page that labels it, and push again."
+  exit 1
+fi
+if [ "$pixels" -ne 0 ]; then
+  echo "pre-push: lint:logo --pixels could not run (exit $pixels), so the pictures were not searched; run pnpm run doctor."
 fi
 exit 0

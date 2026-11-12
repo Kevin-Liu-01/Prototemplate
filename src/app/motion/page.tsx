@@ -4,6 +4,7 @@ import { renderInline } from '@/components/book/markdown';
 import { MOTION_FILMS, MOTION_SECTIONS, MOTION_STATUS_LABEL } from '@/lib/motion';
 import type { MotionFilm, MotionLocal, MotionVersion } from '@/lib/motion';
 import { PAGE_NAMES } from '@/lib/page-names';
+import { markNoteFor, withMarkNote } from '@/lib/previous-mark';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
@@ -38,7 +39,8 @@ function rosterVersion({ credits, cut, local, ...version }: MotionVersion): Moti
 
 /** A film as the client roster reads it: without the published cut's credits and render, which the roster never shows. */
 function rosterFilm({ credits, cut, local, versions, ...film }: MotionFilm): MotionFilm {
-  return { ...film, local: rosterLocal(local), versions: versions?.map(rosterVersion) };
+  /* a film whose web copy ends on the previous mark says so in its meta line (src/lib/previous-mark.ts) */
+  return withMarkNote({ ...film, local: rosterLocal(local), versions: versions?.map(rosterVersion) });
 }
 
 /**
@@ -75,6 +77,7 @@ export default function MotionPage() {
     sections: MOTION_SECTIONS,
     statusLabel: MOTION_STATUS_LABEL,
     shellSections: motionSections('index', MOTION_FILMS, MOTION_SECTIONS),
+    previousMark: MOTION_FILMS.filter((film) => markNoteFor(film)).map((film) => film.id),
   };
   return (
     <>

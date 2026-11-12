@@ -129,7 +129,7 @@ All are defined in `head.html`; check there before writing slide CSS.
 
 ## 9. Speed marks
 
-Slides 17 to 23 present the seven race-type marks Kevin chose on 2026-09-29, kept as history: previous marks that never stand in for the logo. Each slide pastes its file from `public/marks`, and The lockup also pastes `bar-monogram.svg` at 375, 187 and 94 px on a paper and an ink ground:
+Slides 17 to 23 present the seven race-type marks Kevin chose on 2026-09-29, a separate approved system that never stands in for the logo. Each slide pastes its file from `public/marks`, and The lockup also pastes `bar-monogram.svg` at 375, 187 and 94 px on a paper and an ink ground:
 
 | Slide | File |
 | --- | --- |

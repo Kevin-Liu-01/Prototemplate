@@ -5,6 +5,7 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
 import { getAuthors, getPost, getPosts, type Post } from '@/lib/blog';
+import { pictureNote } from '@/lib/previous-mark';
 import { readingMinutes } from '@/lib/reading';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
@@ -65,6 +66,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         slug={slug}
         minutes={readingMinutes(post.body)}
         updated={requireUpdated(`/blog/${slug}`)}
+        coverNote={pictureNote(post.image)}
         body={
           <MDXRemote
             source={post.body}

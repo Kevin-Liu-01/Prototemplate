@@ -1847,6 +1847,25 @@
   color: var(--tc-ink-2);
 }
 
+/* a picture that shows the previous mark says so under it (src/lib/previous-mark.ts); live has no such line */
+.prod-root .pba-card-note,
+.prod-root .pba-cover-note,
+.prod-root .pba-prose .pba-img-note {
+  display: block;
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--tc-ink-3);
+}
+
+.prod-root .pba-prose :where(.pba-img):has(+ .pba-img-note) {
+  margin-bottom: 0;
+}
+
+.prod-root .pba-prose .pba-img-note {
+  margin-bottom: 2em;
+}
+
 /* ---- below the rail breakpoint ---- */
 
 @media (max-width: 980px) {

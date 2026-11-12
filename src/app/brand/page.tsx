@@ -15,6 +15,7 @@ import { headingId } from './brand-sections';
 import LogoSystem from './LogoSystem';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import { PAGE_NAMES } from '@/lib/page-names';
+import { filmNote } from '@/lib/previous-mark';
 import { readingMinutes } from '@/lib/reading';
 import JsonLd from '@/lib/seo/JsonLd';
 import { seoRoute } from '@/lib/seo/route';
@@ -113,6 +114,12 @@ const FILMS = [
       'the trailer for “Designing docs for humans”\u00a0· blue gem smoke on navy, then white and #86a8ff on #2f5ce0, with the post’s blue dither',
   },
 ] as const;
+
+/** A film caption's closing words when its web copy shows the previous mark (src/lib/previous-mark.ts). */
+const markNote = (src: string) => {
+  const note = filmNote(src);
+  return note ? `\u00a0· ${note}` : '';
+};
 
 /** The partnership globes under public/media: 2048 by 2048 on ink or on paper (`ground`), each with a -transparent twin for a ground of its own kind; the captions set their separators as FILMS does. The page shows each globe's lossless WebP and the links download the PNGs. */
 const GLOBES = [
@@ -554,6 +561,7 @@ const PAGES: readonly BrandPage[] = [
             <figcaption>
               the Open Source announcement reel&nbsp;· twelve studio materials cut on the
               beat in the brand blue, landing on the gem smoke composition
+              {markNote('/media/open-source-reel.mp4')}
             </figcaption>
           </figure>
           <figure className='ptb-shot'>
@@ -582,7 +590,10 @@ const PAGES: readonly BrandPage[] = [
             <div className='ptb-art' key={film.file}>
               <figure className='ptb-shot'>
                 <BrandFilm name={film.name} poster={`/media/${film.poster}`} src={`/media/${film.file}`} />
-                <figcaption>{film.caption}</figcaption>
+                <figcaption>
+                  {film.caption}
+                  {markNote(`/media/${film.file}`)}
+                </figcaption>
               </figure>
               <p className='pt-site-links ptb-send'>
                 <a aria-label={`download the MP4 of ${film.name}`} download href={`/media/${film.file}`}>

@@ -204,8 +204,8 @@ export default function AnatomyWall() {
       <section className='pt-sec pt-post-sec aw-head'>
         <h2>The flagship, dissected</h2>
         <p>
-          Every section of the completed direction in four states (both themes, both widths),
-          interlocked into one wall. Hovering any capture lights up its section&apos;s other three
+          Every section of the Dossier, the completed direction and a dated design study, in four
+          states (both themes, both widths), interlocked into one wall. Hovering any capture lights up its section&apos;s other three
           states. The captures are theme-locked, so light and dark grounds hold whichever theme
           this page is read in.
         </p>

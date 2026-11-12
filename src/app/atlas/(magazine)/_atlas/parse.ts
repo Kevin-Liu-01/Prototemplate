@@ -32,6 +32,8 @@ export type Frame = {
   video?: string;
   width?: number;
   height?: number;
+  /** What the press says after the frame's caption when it shows the previous mark (content.ts, from src/lib/previous-mark.ts). */
+  note?: string;
 };
 
 export type Figure = {
