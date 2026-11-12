@@ -16,8 +16,16 @@ export const PREVIOUS_MARK = 'src/lib/previous-mark.json';
 export const FILM_REASON = 'made before the globe; re-render pending';
 /* a film cut again to end on the logo whose frames still hold captures from before the globe: the site says that instead */
 export const FILM_CAPTURES_REASON = 'ends on the logo, but its captures were taken before the globe; recapture pending';
-/* the one-line lockup's globe in the name's cap heights (skills/gt-brand/references/marks.md, approved 2026-11-08) */
-export const ONE_LINE_MARK = 2.2;
+/* a dated film or picture that ends on the previous logo, the globe of 2026-11-06: history, kept as made and not labelled */
+export const GLOBE_1106_REASON = 'ends on the 11-06 globe; kept as made';
+/**
+ * The previous logos, by their path's sha256: the globe chosen on
+ * 2026-11-06, the logo until the refined globe of 2026-11-12. Dated films
+ * and pictures that end on it stay as history (GLOBE_1106_REASON); any code,
+ * markup or SVG outside history whose path hashes to one fails rule 12, so
+ * everything drawn from now on uses LOGO.
+ */
+export const PREVIOUS_LOGOS = [{ sha256: '50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c', name: '11-06 globe', until: '2026-11-12' }];
 /* files whose bytes are a picture: a generated one is held by its recorded sha256 */
 export const RASTER = /\.(png|ico|webp|jpe?g|gif|avif|mp4|webm|mov)$/i;
 
@@ -35,7 +43,7 @@ const round4 = (n) => Math.round(n * 10000) / 10000;
  * The published fingerprint: what any outside check compares against, so
  * no other repository parses TypeScript. `lockup` is the sha256 of the
  * stacked lockup's measured numbers; the two gaps are the white from the
- * globe's ink to the G over the globe's height, in the stacked and the
+ * globe's ink to the name's ink over the globe's height, in the stacked and the
  * one-line lockups.
  */
 export function fingerprint(root, LOGO, LOCKUP) {
@@ -46,7 +54,8 @@ export function fingerprint(root, LOGO, LOCKUP) {
     viewBox: LOGO.viewBox,
     lockup: existsSync(lockup) ? sha256(readFileSync(lockup)) : null,
     gapStacked: round4(LOCKUP.gap / LOCKUP.mark),
-    gapOneLine: round4(LOCKUP.gap / ONE_LINE_MARK),
+    /* the one-line lockup's globe is LOCKUP.oneLine cap heights tall (1.9 since 2026-11-12) */
+    gapOneLine: round4(LOCKUP.gap / LOCKUP.oneLine),
   };
 }
 

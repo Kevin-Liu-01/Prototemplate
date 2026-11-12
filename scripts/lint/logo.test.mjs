@@ -22,6 +22,8 @@ const { LOGO, LOCKUP } = await loadLogo(ROOT);
 const LOGO_SHA = sha256(LOGO.d);
 /* the doubled-line monogram's bar drawing opens this way */
 const MONOGRAM = 'M363 222.5L1197 222.5L1196.5 283L834 283.5L832.5 976L773 975.5L772.5 398L359.5 398Z';
+/* the 11-06 globe, the previous logo, from its history file on /marks */
+const GLOBE_1106 = readFileSync(join(ROOT, 'public/marks/graticule/variations/axis-and-meridian-behind.svg'), 'utf8').match(/ d="([^"]+)"/)[1];
 const LOSER = readFileSync(join(ROOT, 'public/marks/graticule/variations/meridian-axis-behind.svg'), 'utf8').match(/ d="([^"]+)"/)[1];
 const PICTURE = Buffer.from('a generated picture');
 
@@ -96,7 +98,9 @@ describe('lint:logo', () => {
 
   it('rule 2: fails on an edited copy of LOGO.d', () => {
     const root = checkout();
-    put(root, 'src/components/Edited.ts', `export const D = '${LOGO.d.replace('163.71', '163.7')}';\n`);
+    const edited = LOGO.d.replace(/(\d)(?=[^\d]*$)/, (digit) => String((Number(digit) + 1) % 10));
+    assert.notEqual(edited, LOGO.d);
+    put(root, 'src/components/Edited.ts', `export const D = '${edited}';\n`);
     fails(root, /rule 2 edited copy src\/components\/Edited\.ts:1/);
   });
 
@@ -106,6 +110,18 @@ describe('lint:logo', () => {
     passes(root);
     put(root, 'src/components/Loser.tsx', `export const L = () => <path d="${LOSER}" />;\n`);
     fails(root, /rule 3 vote loser src\/components\/Loser\.tsx:1: the losing candidate meridian-axis-behind/);
+  });
+
+  it('rule 12: fails on the 11-06 globe in new code and an SVG, passes on it under history', () => {
+    let root = checkout();
+    put(root, 'src/components/Globe.tsx', `export const Globe = () => <path d='${GLOBE_1106}' />;\n`);
+    fails(root, /rule 12 previous logo src\/components\/Globe\.tsx:1: carries the 11-06 globe; use LOGO/);
+    root = checkout();
+    put(root, 'public/brand/new-banner.svg', `<svg xmlns="http://www.w3.org/2000/svg"><path d="${GLOBE_1106}"/></svg>\n`);
+    fails(root, /rule 12 previous logo public\/brand\/new-banner\.svg:1/);
+    root = checkout((m) => ({ ...m, history: [...m.history, { path: 'public/marks/old-globe.svg', rules: [12], reason: 'the 11-06 globe, kept as made' }] }));
+    put(root, 'public/marks/old-globe.svg', `<svg xmlns="http://www.w3.org/2000/svg"><path d="${GLOBE_1106}"/></svg>\n`);
+    passes(root);
   });
 
   it('rule 4: fails on LOGO.d copied into a component', () => {

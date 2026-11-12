@@ -57,6 +57,11 @@
  *      same way, and --dom reads them in a browser on a running server, so
  *      a picture a client component draws after load (the hub's grid, its
  *      preview card) is held too (scripts/lint/logo-dom.mjs)
+ *  12. previous logo: a path whose sha256 is a previous logo's
+ *      (PREVIOUS_LOGOS in scripts/lib/logo-lock.mjs: the 11-06 globe) in
+ *      code, markup or an SVG outside history; draw LOGO instead. Dated
+ *      films and pictures that end on it are history (GLOBE_1106_REASON),
+ *      and --external reports the same on the other repositories' copies
  * and, in every HTML file, the #gt-mark symbol must draw LOGO.d and nothing
  * else (rule 2); no manifest entry waives that.
  * A listed path that is not on disk fails too. Exemptions: a history entry
@@ -102,7 +107,7 @@ import { join, relative, resolve } from 'node:path';
 
 import { ROOT as REPO_ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
-import { FINGERPRINT, MANIFEST, PREVIOUS_MARK, RASTER, fingerprint, fingerprintText, loadLogo, matches, previousMarkText, readManifest, recordGenerated, sha256 } from '../lib/logo-lock.mjs';
+import { FINGERPRINT, MANIFEST, PREVIOUS_LOGOS, PREVIOUS_MARK, RASTER, fingerprint, fingerprintText, loadLogo, matches, previousMarkText, readManifest, recordGenerated, sha256 } from '../lib/logo-lock.mjs';
 import { unlabelled } from './logo-labels.mjs';
 
 helpIfAsked(import.meta.url);
@@ -401,9 +406,12 @@ for (const rel of SCANNED) {
       if (hash === MONOGRAM_SHA) fail('rule 1 monogram', where, 'the doubled-line monogram\'s path (by its hash)');
       else if (MONOGRAM_SHAPES.some((m) => sameShape(m, shape(d)))) fail('rule 1 monogram', where, 'the doubled-line monogram\'s path, respaced, renumbered or scaled (by its shape)');
     }
+    /* 12: a previous logo's path outside history */
+    const previous = PREVIOUS_LOGOS.find((logo) => logo.sha256 === hash);
+    if (previous && !exempt(rel, 12)) fail('rule 12 previous logo', where, `carries the ${previous.name}; use LOGO`);
     const loser = LOSERS.get(hash);
     if (loser && !LOSERS_AT.some((p) => matches(p, rel)) && !exempt(rel, 3)) fail('rule 3 vote loser', where, `the losing candidate ${loser}; it belongs only on /marks`);
-    if (!loser && !generated?.derived && !exempt(rel, 2)) {
+    if (!loser && !previous && !generated?.derived && !exempt(rel, 2)) {
       const why = nearLogo(d);
       if (why) fail('rule 2 edited copy', where, `a path that ${why} but is not byte for byte LOGO.d; draw LOGO itself`);
     }
@@ -542,8 +550,13 @@ if (EXTERNAL) {
       continue;
     }
     const abs = join(resolve(base), file);
-    if (!existsSync(abs)) console.log(`  note ${entry.path}: not in ${base}`);
-    else console.log(`  note ${entry.path}: ${readFileSync(abs, 'utf8').includes(LOGO.d) ? 'holds LOGO.d' : 'does not hold LOGO.d byte for byte'}`);
+    if (!existsSync(abs)) {
+      console.log(`  note ${entry.path}: not in ${base}`);
+      continue;
+    }
+    const text = readFileSync(abs, 'utf8');
+    const previous = [...text.matchAll(PATH_RUN)].map((m) => PREVIOUS_LOGOS.find((logo) => logo.sha256 === sha256(m[0].trim()))).find(Boolean);
+    console.log(`  note ${entry.path}: ${text.includes(LOGO.d) ? 'holds LOGO.d' : 'does not hold LOGO.d byte for byte'}${previous ? `; carries the ${previous.name}; use LOGO` : ''}`);
   }
 }
 
