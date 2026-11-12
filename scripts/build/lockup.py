@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
-"""Draw the General Translation logo lockup, the logo beside "General" over "Translation", from Katagami Text 500 as outlines.
+"""Draw the General Translation logo lockup, the logo beside "General" over "Translation", from Katagami Text 400 as outlines.
 
 Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!" The name in the
-lockup is Katagami Text at wght 500, letter-spacing 0, with the font's GPOS kerning, every glyph as a path, so no
-page loads the face. Running copy stays in Inter. The construction, in the font's units (2048 per em) at the
+lockup is Katagami Text at wght 400, tracked -0.05 em (102.4 units after each advance), with the font's GPOS
+kerning at that instance (only T-r applies), every glyph as a path, so no page loads the face. The numbers are
+measured on Kevin's wordmark file of 2026-11-12. The construction, in the font's units (2048 per em) at the
 name's size, with CAP the T's flat top:
 
-  the name     "General" over "Translation", flush left by ink, with R of white between the first baseline and the
-               second cap line, where R is the name's own word gap (the T's right side bearing, a word space and
-               the G's left side bearing)
-  the logo     LOGO (src/lib/logo.ts) by its drawn box, 1.1 times the span from "General"'s cap line to
-               "Translation"'s baseline (2 CAP + R), centred on that span, so it overshoots each line equally
-  the gap      0.8 CAP of white from the logo's ink to the G's ink (Kevin, 2026-11-09)
+  the name     "General" over "Translation", both lines from one pen origin (so the T's ink stands left of the
+               G's), with R of white between the first baseline and the second cap line: RHYTHM CAP, about the cap
+               height less the x-height
+  the logo     LOGO (src/lib/logo.ts) by its drawn box, MARK CAP tall, centred on the name's ink box (the G's top
+               to the foot of the a and the o)
+  the gap      GAP CAP of white from the logo's ink to the name's leftmost ink, the T's
 
 Writes, each from the same layout:
   public/brand/gt-globe-lockup.svg         the lockup in currentColor, cropped to its ink, for masks and inline use
   public/brand/gt-globe-lockup-light.svg   #070707 ink, and -dark.svg in #ffffff, for img tags
-  public/brand/gt-globe-lockup.json        the numbers (cap, R, span, the boxes, the kerning applied); LOCKUP in
+  public/brand/gt-globe-lockup.json        the numbers (cap, R, the boxes, the kerning applied); LOCKUP in
                                            src/lib/logo.ts and the globe rows read the same numbers, and
                                            pnpm test:marks holds them together
   public/marks/graticule/rows/name.svg     the name alone, its box from the logo's top to the name's ink foot and
@@ -27,12 +28,12 @@ Usage:
   KATAGAMI_REPO=<Katagami checkout> python3 scripts/build/lockup.py     (pnpm build:lockup)
 
 The font is Katagami Text, fonts/text/KatagamiText[wght].ttf in a Katagami checkout
-(github.com/Kevin-Liu-01/Katagami, SIL Open Font License 1.1), instanced at wght 500. The written outlines are
+(github.com/Kevin-Liu-01/Katagami, SIL Open Font License 1.1), instanced at wght 400. The written outlines are
 committed, so the site builds without the checkout. GSUB is not applied: no default-feature lookup (rvrn, ccmp,
 locl, rlig, liga, clig, calt, rclt) substitutes in these two words, which the build checks and refuses otherwise.
 
 Requires: python3 with fontTools (pip install fonttools).
-Last real run: 2026-11-09, Prototemplate session (the 0.8 cap gap).
+Last real run: 2026-11-12, Prototemplate session (the refined lockup: 400, -0.05 em, pen origin).
 """
 import json
 import os
@@ -53,9 +54,11 @@ from fontTools.varLib import instancer
 
 ROOT = Path(__file__).resolve().parents[2]
 NAME = ('General', 'Translation')
-WGHT = 500
-SPAN_SCALE = 1.1  # the logo over the span from the first cap line to the second baseline (Kevin, 2026-11-06)
-GAP = 0.8  # caps of white from the logo's ink to the G's ink (Kevin, 2026-11-09)
+WGHT = 400
+TRACK_EM = -0.05  # letter-spacing after each advance (Kevin's wordmark, 2026-11-12)
+RHYTHM = 0.2865  # caps of white between the first baseline and the second cap line (Kevin's wordmark: 265 px pitch at a 205.981 px cap); within 0.3 units of the cap height less the x-height
+MARK = 2.3643  # the logo's height in caps, centred on the name's ink box (Kevin's wordmark: 487 / 205.981)
+GAP = 0.5826  # caps of white from the logo's ink to the name's leftmost ink (Kevin's wordmark: 120 / 205.981)
 DEFAULT_GSUB = ('rvrn', 'ccmp', 'locl', 'rlig', 'liga', 'clig', 'calt', 'rclt')
 
 
@@ -195,8 +198,12 @@ class Type:
         self.cmap = self.font.getBestCmap()
         self.gs = self.font.getGlyphSet()
         self.hmtx = self.font['hmtx']
+        self.upm = self.font['head'].unitsPerEm
+        self.track = TRACK_EM * self.upm
         self.cap = self.bounds('T')[3]
-        self.rhythm = (self.hmtx['T'][0] - self.bounds('T')[2]) + self.hmtx['space'][0] + self.bounds('G')[0]
+        self.xheight = self.bounds('x')[3]
+        # the white between the first baseline and the second cap line, about the cap height less the x-height
+        self.rhythm = RHYTHM * self.cap
 
     def bounds(self, g):
         pen = BoundsPen(self.gs)
@@ -210,17 +217,16 @@ class Type:
 
 
 class Line:
-    """One word on one baseline (SVG y down), its first glyph's left ink at ink_left, kerned."""
+    """One word on one baseline (SVG y down) from a pen origin, kerned and tracked."""
 
-    def __init__(self, T, text, base, ink_left):
+    def __init__(self, T, text, base, origin):
         self.T, self.base = T, base
         glyphs = [T.cmap[ord(c)] for c in text]
         adv, place, self.kerns = kerning(T.font, glyphs)
-        origin = ink_left - T.bounds(glyphs[0])[0]
         self.items, x = [], 0
         for g, a, p in zip(glyphs, adv, place):
             self.items.append((g, origin + x + p))
-            x += T.hmtx[g][0] + a
+            x += T.hmtx[g][0] + a + T.track
 
     def box(self):
         xs, ys = [], []
@@ -235,15 +241,21 @@ class Line:
 
 
 def layout(T, logo_box):
-    """Every part in one system: "General"'s baseline at y 0, the logo's left ink at x 0."""
+    """Every part in one system: "General"'s baseline at y 0, the logo's left ink at x 0, both lines from one pen
+    origin."""
     cap, r = T.cap, T.rhythm
-    span = 2 * cap + r
-    h = SPAN_SCALE * span
-    top = -cap - (SPAN_SCALE - 1) / 2 * span
+    h = MARK * cap
     k = h / logo_box[3]
-    globe = {'box': (0.0, top, logo_box[2] * k, top + h), 'k': k, 'tx': -logo_box[0] * k, 'ty': top - logo_box[1] * k}
-    x = globe['box'][2] + GAP * cap
-    return globe, Line(T, NAME[0], 0.0, x), Line(T, NAME[1], cap + r, x)
+    width = logo_box[2] * k
+    # the pen origin: the name's leftmost ink (the first letter of either line) GAP CAP right of the logo's ink
+    first = min(T.bounds(T.cmap[ord(word[0])])[0] for word in NAME)
+    origin = width + GAP * cap - first
+    l1, l2 = Line(T, NAME[0], 0.0, origin), Line(T, NAME[1], cap + r, origin)
+    b1, b2 = l1.box(), l2.box()
+    mid = (min(b1[1], b2[1]) + max(b1[3], b2[3])) / 2
+    top = mid - h / 2
+    globe = {'box': (0.0, top, width, top + h), 'k': k, 'tx': -logo_box[0] * k, 'ty': top - logo_box[1] * k}
+    return globe, l1, l2
 
 
 def svg(view, body, fill, label='General Translation'):
@@ -299,15 +311,18 @@ def main():
         return {'x': r4(b[0] + ox), 'y': r4(b[1] + oy), 'w': r4(b[2] - b[0]), 'h': r4(b[3] - b[1])}
 
     metrics = {
-        'font': f'Katagami Text {T.version}, wght {WGHT}, letter-spacing 0, GPOS kerning, as outlines',
+        'font': f'Katagami Text {T.version}, wght {WGHT}, letter-spacing {TRACK_EM} em, GPOS kerning, as outlines',
         'units': "Katagami Text font units (2048 per em) at the name's size",
         'cap': r4(cap),
+        'xHeight': r4(T.xheight),
         'rhythm': r4(r),
         'rhythmInCaps': r4(r / cap),
         'spanInCaps': r4(span / cap),
-        'markInCaps': r4(SPAN_SCALE * span / cap),
-        'overshootInCaps': r4((SPAN_SCALE - 1) / 2 * span / cap),
+        'markInCaps': MARK,
         'gapInCaps': GAP,
+        'trackingEm': TRACK_EM,
+        'align': 'pen',
+        'penOrigin': r4(l1.items[0][1] + dx),
         'viewBox': [r4(v) for v in view],
         'capLine': r4(-cap + dy),
         'baselines': [r4(l1.base + dy), r4(l2.base + dy)],
@@ -320,9 +335,8 @@ def main():
     }
     (brand / 'gt-globe-lockup.json').write_text(json.dumps(metrics, indent=1) + '\n')
     print('lockup: public/brand/gt-globe-lockup.json')
-    print('cap %.2f R %.2f (%.4f cap) span %.4f cap, mark %.4f cap, overshoot %.4f cap, rows name %.4f globes, aspect %.4f' % (
-        cap, r, r / cap, span / cap, SPAN_SCALE * span / cap, metrics['overshootInCaps'],
-        metrics['rows']['nameWidthInGlobes'], metrics['rows']['nameAspect']))
+    print('cap %.2f R %.2f (%.4f cap) span %.4f cap, mark %.4f cap, gap %.4f cap, rows name %.4f globes, aspect %.4f' % (
+        cap, r, r / cap, span / cap, MARK, GAP, metrics['rows']['nameWidthInGlobes'], metrics['rows']['nameAspect']))
 
 
 if __name__ == '__main__':

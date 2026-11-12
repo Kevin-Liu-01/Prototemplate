@@ -10,7 +10,7 @@ import { ARC_ENDS, AXIS_BEHIND, GLOBES, LOCKUPS, REDRAWS, TRACED } from './varia
 export const GRATICULE_MARKS = graticuleMarks();
 
 /** The head's lead. */
-export const LEAD = 'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters. The logo, Axis and meridian behind, is one of them.';
+export const LEAD = 'Every graticule mark is cut from one wireframe globe, whose ring, latitudes, meridians and equator draw its letters. The logo, Refined globe, is one of them.';
 
 /** The section of the marks; its divider is the h2 alone. */
 export const MARKS_ID = 'marks';
@@ -34,7 +34,7 @@ export type Animation = { id: LineAnimationId; caption: string };
 export type MotionLoop = { id: string; name: string; caption: string; poster?: true };
 
 /** The static mark and the state its hovers settle into, by variation id. */
-export const STATIC_MARK = 'axis-and-meridian-behind';
+export const STATIC_MARK = 'refined-1112';
 export const STATE_MARK = 'oval-axis-behind';
 
 /** The hovers and the loader on the static mark, in the order they were chosen. Each video starts and ends on the static mark. */
@@ -71,7 +71,7 @@ export const motionPoster = (loop: MotionLoop, theme: 'light' | 'dark') => `/mar
 export const MOTION_GROUP = {
   id: 'animations-hover',
   title: 'Hover and loading',
-  lead: `These ${MOTION_LOOPS.length} play on Axis and meridian behind. The first hover and the loader are the live logo's own, where only the line being drawn moves; the other two hovers settle it into Oval globe, axis behind.`,
+  lead: `These ${MOTION_LOOPS.length} were recorded on Axis and meridian behind, the logo before Refined globe. The first hover and the loader are the live logo's own, which now plays them on Refined globe, where only the line being drawn moves; the other two hovers settle it into Oval globe, axis behind.`,
 };
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */
@@ -98,8 +98,9 @@ export const BEST_TITLE = 'Best';
 
 /** The best marks in order, each by its catalog id or its variation id: the static mark first, then its hover state. */
 const BEST_IDS: readonly string[] = [
-  'axis-and-meridian-behind',
+  'refined-1112',
   'oval-axis-behind',
+  'axis-and-meridian-behind',
   'meridian-axis-behind',
   'meridian-wide-axis-gap',
   'oval-wide-axis-gap',
@@ -229,7 +230,11 @@ const LOGO_STEPS: readonly StepEntry[] = [
   },
   {
     id: 'axis-and-meridian-behind',
-    caption: 'The back meridian breaks behind the equator as well, while the front meridian still meets it. This is the logo.',
+    caption: 'The back meridian breaks behind the equator as well, while the front meridian still meets it.',
+  },
+  {
+    id: 'refined-1112',
+    caption: 'Each oval takes its own centre and radii, the lines lighten to 13.2 units and the gaps narrow. This is the logo.',
   },
 ];
 
@@ -249,7 +254,7 @@ export const PROGRESSION: readonly ProgressionLine[] = [
   {
     id: 'progression-logo',
     title: 'The logo',
-    lead: `These ${LOGO_STEPS.length} marks run from the first wireframe globe GT to Axis and meridian behind.`,
+    lead: `These ${LOGO_STEPS.length} marks run from the first wireframe globe GT to Refined globe.`,
     steps: LOGO_STEPS.map(step),
   },
   {
@@ -264,13 +269,13 @@ export const PROGRESSION: readonly ProgressionLine[] = [
 export const STEPS: readonly Step[] = PROGRESSION.flatMap((line) => line.steps);
 
 /** The best section's lead, which counts its marks. */
-export const BEST_LEAD = `These ${BEST.length} marks are the best of every drawing on this page. The first is the logo, Axis and meridian behind, and the second is its state on hover, on sign-in and while loading, Oval globe, axis behind.`;
+export const BEST_LEAD = `These ${BEST.length} marks are the best of every drawing on this page. The first is the logo, Refined globe, and the second is its state on hover, on sign-in and while loading, Oval globe, axis behind.`;
 
 /** The section of the globe rows; its divider is the h2 and the lead. */
 export const ROWS_ID = 'rows';
 export const ROWS_TITLE = 'Globe rows';
 export const ROWS_LEAD =
-  "Each row draws two earlier globes with a whole top arc, then the oval state, the logo and the name. Beside the stacked name the globe is 1.1 times the span from the first line's cap top to the second line's baseline, centred on it.";
+  "Each row draws two earlier globes with a whole top arc, then the oval state, the logo and the name. Beside the stacked name the globe is 2.3643 cap heights tall, centred on the name's ink.";
 
 /** One globe row: its name, what changes along it, and its four globes left to right, each a public file in currentColor on the 256 unit square. */
 export type GlobeRow = { id: string; name: string; caption: string; globes: readonly string[] };
@@ -282,21 +287,21 @@ export const GLOBE_ROWS: readonly GlobeRow[] = [
   {
     id: 'rows-bar',
     name: 'The bar shortens',
-    caption: 'The whole oval and the whole equator with the stem joined to it, then the bar shortened into the T, then Oval globe, axis behind and Axis and meridian behind.',
+    caption: 'The whole oval and the whole equator with the stem joined to it, then the bar shortened into the T, then Oval globe, axis behind and Refined globe.',
     globes: ['/marks/graticule/rows/stem-joined.svg', '/marks/graticule/rows/short-bar.svg', ...LOGOS],
   },
   {
     id: 'rows-axis',
     name: 'The axis joins',
-    caption: 'The whole oval, the whole equator and the whole axis, then the T, then Oval globe, axis behind and Axis and meridian behind.',
+    caption: 'The whole oval, the whole equator and the whole axis, then the T, then Oval globe, axis behind and Refined globe.',
     globes: ['/marks/graticule/rows/whole-axis.svg', '/marks/graticule/rows/short-bar.svg', ...LOGOS],
   },
 ];
 
-/** The name that ends every row, in Katagami Text 500 outlines and currentColor (pnpm build:lockup). Its box starts at the top of a globe's drawn box and is NAME_WIDTH globes wide, so the globe beside it is 1.1 times the span from the first line's cap top to the second line's baseline, centred on that span; both numbers are rows in public/brand/gt-globe-lockup.json, and pnpm test:marks holds them to it. */
+/** The name that ends every row, in Katagami Text 400 outlines at -0.05 em and currentColor (pnpm build:lockup). Its box starts at the top of a globe's drawn box and is NAME_WIDTH globes wide, so the globe beside it is centred on the name's ink, as in the stacked lockup; both numbers are rows in public/brand/gt-globe-lockup.json, and pnpm test:marks holds them to it. */
 export const NAME_FILE = '/marks/graticule/rows/name.svg';
-export const NAME_WIDTH = 2.5418;
-export const NAME_ASPECT = 2.6459;
+export const NAME_WIDTH = 2.557;
+export const NAME_ASPECT = 2.5823;
 
 /** A count with its noun. */
 export const marksIn = (n: number) => `${n} ${n === 1 ? 'mark' : 'marks'}`;

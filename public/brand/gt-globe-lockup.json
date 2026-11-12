@@ -1,137 +1,124 @@
 {
- "font": "Katagami Text Version 1.200, wght 500, letter-spacing 0, GPOS kerning, as outlines",
+ "font": "Katagami Text Version 1.200, wght 400, letter-spacing -0.05 em, GPOS kerning, as outlines",
  "units": "Katagami Text font units (2048 per em) at the name's size",
  "cap": 1430.0,
- "rhythm": 661.6446,
- "rhythmInCaps": 0.4627,
- "spanInCaps": 2.4627,
- "markInCaps": 2.709,
- "overshootInCaps": 0.1231,
- "gapInCaps": 0.8,
+ "xHeight": 1020.0,
+ "rhythm": 409.695,
+ "rhythmInCaps": 0.2865,
+ "spanInCaps": 2.2865,
+ "markInCaps": 2.3643,
+ "gapInCaps": 0.5826,
+ "trackingEm": -0.05,
+ "align": "pen",
+ "penOrigin": 4133.067,
  "viewBox": [
   0.0,
   0.0,
-  14864.4034,
-  3873.8091
+  12859.067,
+  3380.949
  ],
- "capLine": 176.0822,
+ "capLine": 53.127,
  "baselines": [
-  1606.0822,
-  3697.7268
+  1483.127,
+  3322.822
  ],
  "mark": {
   "x": 0.0,
   "y": 0.0,
-  "w": 3873.8091,
-  "h": 3873.8091
+  "w": 3380.949,
+  "h": 3380.949
  },
  "name": {
-  "x": 5017.8091,
-  "y": 156.0822,
-  "w": 9846.5944,
-  "h": 3565.3648
+  "x": 4214.067,
+  "y": 33.127,
+  "w": 8645.0,
+  "h": 3314.695
  },
  "letters": {
   "General": [
    [
     "G",
-    4921.8077
+    4133.067
    ],
    [
     "e",
-    6394.8077
+    5501.667
    ],
    [
     "n",
-    7517.8077
+    6514.267
    ],
    [
     "e",
-    8650.8077
+    7526.867
    ],
    [
     "r",
-    9773.8077
+    8539.467
    ],
    [
     "a",
-    10485.8077
+    9139.067
    ],
    [
     "l",
-    11572.8077
+    10112.667
    ]
   ],
   "Translation": [
    [
     "T",
-    4943.368
+    4133.067
    ],
    [
     "r",
-    6086.368
+    5160.667
    ],
    [
     "a",
-    6798.368
+    5760.267
    ],
    [
     "n",
-    7885.368
+    6733.867
    ],
    [
     "s",
-    9018.368
+    7746.467
    ],
    [
     "l",
-    10044.368
+    8651.067
    ],
    [
     "a",
-    10510.368
+    8997.667
    ],
    [
     "t",
-    11594.368
+    9971.267
    ],
    [
     "i",
-    12236.368
+    10487.867
    ],
    [
     "o",
-    12702.368
+    10834.467
    ],
    [
     "n",
-    13861.368
+    11883.067
    ]
   ]
  },
  "kerns": {
-  "General": [
-   {
-    "left": "r",
-    "right": "a",
-    "units": -8
-   }
-  ],
+  "General": [],
   "Translation": [
    {
     "left": "T",
     "right": "r",
     "units": -111
-   },
-   {
-    "left": "r",
-    "right": "a",
-    "units": -8
-   },
-   {
-    "left": "a",
-    "right": "t",
-    "units": -3
    }
   ]
  },
@@ -139,10 +126,10 @@
   "viewBox": [
    0.0,
    0.0,
-   9846.5944,
-   3721.447
+   8645.0,
+   3347.822
   ],
-  "nameWidthInGlobes": 2.5418,
-  "nameAspect": 2.6459
+  "nameWidthInGlobes": 2.557,
+  "nameAspect": 2.5823
  }
 }

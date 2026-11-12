@@ -106,8 +106,8 @@ html[data-theme='light'] .gr-vid.is-dark {
 
 /* a globe row: four globes cropped to their rings, then the name, whose column is NAME_WIDTH (content.ts) globes wide,
    so the name keeps its lockup size beside them and its top meets the rings' tops. The lockup gap sits between the
-   last globe and the name: 0.8 cap height, which is 0.2953 of a globe 2.709 cap heights tall, as a track of its own;
-   the name steps back over the two 24px column gaps around that track, so only the 0.8 cap remains */
+   last globe and the name: 0.5826 cap height, which is 0.2464 of a globe 2.3643 cap heights tall, as a track of its
+   own; the name steps back over the two 24px column gaps around that track, so only the 0.5826 cap remains */
 .gr-rows {
   display: flex;
   flex-direction: column;
@@ -117,7 +117,7 @@ html[data-theme='light'] .gr-vid.is-dark {
 
 .gr-prog {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 0.2953fr) minmax(0, 2.5418fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 0.2464fr) minmax(0, 2.557fr);
   align-items: start;
   gap: 24px;
 }

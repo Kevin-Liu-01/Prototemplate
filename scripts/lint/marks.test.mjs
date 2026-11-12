@@ -15,7 +15,7 @@
 // the deck's #gt-mark symbol pnpm build:logo writes draw it, the live logo
 // motion (GtLogoMotion) rests on it, is what pnpm build:logo-motion writes
 // and is the still logo under reduced motion, the lockup files pnpm build:lockup writes draw LOGO beside the Katagami Text name and
-// LOCKUP, the globe rows' NAME_WIDTH and NAME_ASPECT and the deck's
+// LOCKUP (weight, tracking, rhythm, mark, gap and pen alignment), the globe rows' NAME_WIDTH and NAME_ASPECT and the deck's
 // #gt-lockup keep the numbers it measured, the four-globe lockup pnpm build:strip writes draws
 // LOGO and its three stage marks beside the same name and keeps STRIP's numbers, and the
 // catalog and the dynamic files name each mark by its idea alone:
@@ -167,14 +167,19 @@ test('LOGO is the logo\'s catalog file, and the masters and the deck symbol draw
 
 test('the lockup files draw LOGO, and LOCKUP, the globe rows and the deck symbol keep the numbers pnpm build:lockup wrote', () => {
   const metrics = JSON.parse(readFileSync(publicFile('brand/gt-globe-lockup.json'), 'utf8'));
-  assert.match(metrics.font, /^Katagami Text .*wght 500/, 'the lockup name is not Katagami Text 500');
+  assert.match(metrics.font, new RegExp(`^Katagami Text .*wght ${LOCKUP.weight}, letter-spacing ${LOCKUP.tracking} em`), `the lockup name is not Katagami Text ${LOCKUP.weight} at ${LOCKUP.tracking} em`);
   const near = (a, b, what) => assert.ok(Math.abs(a - b) < 5e-4, `${what}: ${a} is not ${b}: run pnpm build:lockup`);
   near(LOCKUP.rhythm, metrics.rhythmInCaps, 'LOCKUP.rhythm');
   near(LOCKUP.span, metrics.spanInCaps, 'LOCKUP.span');
+  near(LOCKUP.span, 2 + LOCKUP.rhythm, 'LOCKUP.span against two caps and the rhythm');
   near(LOCKUP.mark, metrics.markInCaps, 'LOCKUP.mark');
-  near(LOCKUP.overshoot, metrics.overshootInCaps, 'LOCKUP.overshoot');
   near(LOCKUP.gap, metrics.gapInCaps, 'LOCKUP.gap');
-  near(LOCKUP.mark, LOCKUP.scale * LOCKUP.span, 'LOCKUP.mark against scale times span');
+  near(LOCKUP.tracking, metrics.trackingEm, 'LOCKUP.tracking');
+  assert.equal(LOCKUP.align, metrics.align, 'LOCKUP.align is not the lockup\'s line alignment: run pnpm build:lockup');
+  /* the mark is centred on the name's ink, and its ink stands LOCKUP.gap caps from the name's */
+  near((metrics.mark.y + metrics.mark.h / 2 - (metrics.name.y + metrics.name.h / 2)) / metrics.cap, 0, 'the mark\'s centre against the name\'s ink centre');
+  near((metrics.name.x - metrics.mark.x - metrics.mark.w) / metrics.cap, LOCKUP.gap, 'the gap from the mark\'s ink to the name\'s');
+  near(metrics.mark.h / metrics.cap, LOCKUP.mark, 'the mark\'s height');
   near(NAME_WIDTH, metrics.rows.nameWidthInGlobes, 'NAME_WIDTH');
   near(NAME_ASPECT, metrics.rows.nameAspect, 'NAME_ASPECT');
   assert.match(readFileSync(join(ROOT, 'src/app/marks/graticule/graticule.css'), 'utf8'), new RegExp(`minmax\\(0, ${NAME_WIDTH}fr\\)`), 'the globe rows\' name column is not NAME_WIDTH');
