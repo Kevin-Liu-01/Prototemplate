@@ -25,9 +25,11 @@ butt ends:
 Each stroke is written as its outline (offset curves as cubic Beziers, circles as arcs) in one path with the
 nonzero rule, like LOGO, so the files need no stroke and mask cleanly.
 
-The name and the logo are laid out by lockup.py's own layout (the logo 1.1 times the name's span, centred on it,
-and 0.8 cap height of white from the logo's ink to the G), so the strip's last globe and name are the stacked
-lockup exactly. The three graticule globes stand to its left at the logo's size, BETWEEN globe diameters apart.
+The name and the logo are laid out by lockup.py's own layout (the refined lockup of 2026-11-12: the logo 2.3643 cap
+heights tall, centred on the name's ink, 0.5826 cap height of white from the logo's ink to the name's, the name in
+Katagami Text 400 at -0.05 em from one pen origin), so the strip's last globe and name are the stacked lockup
+exactly. The three stage globes are the construction of the globe of 2026-11-06 and wait for the refined
+progression. The three graticule globes stand to its left at the logo's size, BETWEEN globe diameters apart.
 
 Writes:
   public/marks/graticule/strip/stage-1.svg .. stage-3.svg   globes 1 to 3 alone, currentColor, 256 square
@@ -53,7 +55,7 @@ if {'--help', '-h'} & set(sys.argv[1:]):
     sys.exit(0)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from lockup import GAP, NAME, ROOT, SPAN_SCALE, WGHT, Type, font_path, layout, logo, num, r4  # noqa: E402
+from lockup import GAP, MARK, NAME, ROOT, TRACK_EM, WGHT, Type, font_path, layout, logo, num, r4  # noqa: E402
 
 BETWEEN = 0.22  # globe diameters of white between neighbouring globes, measured 0.223 on the reference strip
 W = 13.6  # the logo's line weight
@@ -268,10 +270,10 @@ def main():
         return {'x': r4(b[0] + dx), 'y': r4(b[1] + dy), 'w': r4(b[2] - b[0]), 'h': r4(b[3] - b[1])}
 
     metrics = {
-        'font': f'Katagami Text {T.version}, wght {WGHT}, letter-spacing 0, GPOS kerning, as outlines',
+        'font': f'Katagami Text {T.version}, wght {WGHT}, letter-spacing {TRACK_EM} em, GPOS kerning, as outlines',
         'units': "Katagami Text font units (2048 per em) at the name's size",
         'cap': r4(cap),
-        'markInCaps': r4(SPAN_SCALE * (2 * cap + T.rhythm) / cap),
+        'markInCaps': MARK,
         'gapInCaps': GAP,
         'betweenInGlobes': BETWEEN,
         'betweenInCaps': r4(BETWEEN * size / cap),

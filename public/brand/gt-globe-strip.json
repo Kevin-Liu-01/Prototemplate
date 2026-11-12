@@ -1,48 +1,48 @@
 {
- "font": "Katagami Text Version 1.200, wght 500, letter-spacing 0, GPOS kerning, as outlines",
+ "font": "Katagami Text Version 1.200, wght 400, letter-spacing -0.05 em, GPOS kerning, as outlines",
  "units": "Katagami Text font units (2048 per em) at the name's size",
  "cap": 1430.0,
- "markInCaps": 2.709,
- "gapInCaps": 0.8,
+ "markInCaps": 2.3643,
+ "gapInCaps": 0.5826,
  "betweenInGlobes": 0.22,
- "betweenInCaps": 0.596,
+ "betweenInCaps": 0.5201,
  "viewBox": [
   0.0,
   0.0,
-  29042.5445,
-  3873.8091
+  25233.3403,
+  3380.949
  ],
  "marks": [
   {
    "x": 0.0,
    "y": 0.0,
-   "w": 3873.8091,
-   "h": 3873.8091
+   "w": 3380.949,
+   "h": 3380.949
   },
   {
-   "x": 4726.047,
+   "x": 4124.7578,
    "y": 0.0,
-   "w": 3873.8091,
-   "h": 3873.8091
+   "w": 3380.949,
+   "h": 3380.949
   },
   {
-   "x": 9452.0941,
+   "x": 8249.5156,
    "y": 0.0,
-   "w": 3873.8091,
-   "h": 3873.8091
+   "w": 3380.949,
+   "h": 3380.949
   },
   {
-   "x": 14178.1411,
+   "x": 12374.2733,
    "y": 0.0,
-   "w": 3873.8091,
-   "h": 3873.8091
+   "w": 3380.949,
+   "h": 3380.949
   }
  ],
  "name": {
-  "x": 19195.9502,
-  "y": 156.0822,
-  "w": 9846.5944,
-  "h": 3565.3648
+  "x": 16588.3403,
+  "y": 33.127,
+  "w": 8645.0,
+  "h": 3314.695
  },
  "stages": [
   "/marks/graticule/strip/stage-1.svg",
