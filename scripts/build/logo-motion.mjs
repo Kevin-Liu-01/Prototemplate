@@ -9,7 +9,10 @@
 //   src/components/brand/GtLogoMotion.css          the keyframes and the
 //       rules that pick them by mode
 //
-// It reads scripts/build/logo-motion.json: the logo's measures, and per beat
+// It reads the logo's construction, src/lib/logo-construction.json (its
+// motion block: each oval's own centre and radii, the weight, the bar, the
+// stem, the cut faces and the gaps, fitted to the refined logo of
+// 2026-11-12), and scripts/build/logo-motion.json: the timing and, per beat,
 // a table of where each moving end stands at 240 samples a second.
 //
 // THE RULE: whatever is not being drawn or undrawn is the logo itself. The
@@ -76,11 +79,16 @@ helpIfAsked(import.meta.url);
 
 const { LOGO } = await import(new URL('../../src/lib/logo.ts', import.meta.url).href);
 const SRC = JSON.parse(readFileSync(join(ROOT, 'scripts/build/logo-motion.json'), 'utf8'));
+const CONSTRUCTION = JSON.parse(readFileSync(join(ROOT, 'src/lib/logo-construction.json'), 'utf8'));
 const OUT_TS = 'src/components/brand/GtLogoMotion.geometry.ts';
 const OUT_CSS = 'src/components/brand/GtLogoMotion.css';
 const check = process.argv.includes('--check');
 
-const { R, A, w, h, gapLeft, axisAbove, axisBelow, meridianStart, meridianEnd, latitudeStart, gEnd, barLeft, cGapEnd } = SRC.logo;
+const { meridian: MERIDIAN, latitude: LATITUDE, w, barTop, barBottom, barLeftX, stemX, axisAbove, axisBelow, meridianStart, meridianEnd, latitudeStart, gEnd, cGapEnd } = CONSTRUCTION.motion;
+/** the ring: its centre line's radius (`R`) and its inner edge's (`R_IN`), round the square's centre */
+const { mid: R, inner: R_IN } = CONSTRUCTION.new.ring;
+/** half the line weight */
+const h = w / 2;
 const { gTail0, gHead0 } = SRC.source;
 const { hover: HOVER_S, beats, rate } = SRC.timing;
 const LOOP_S = beats.D1 + beats.R1 + beats.D2 + beats.R2;
@@ -109,9 +117,20 @@ const lerp = (a, b, k) => a + (b - a) * k;
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
 /* ------------------------------------------------------------ the two ellipses */
+/* each oval has its own centre and radii (the refined logo); d1 is the line's direction by theta, per radian */
 const LINES = {
-  meridian: { at: (t) => [C + A * Math.sin(t * DEG), C - R * Math.cos(t * DEG)], rx: A, ry: R },
-  latitude: { at: (t) => [C - R * Math.cos(t * DEG), C - A * Math.sin(t * DEG)], rx: R, ry: A },
+  meridian: {
+    at: (t) => [MERIDIAN.cx + MERIDIAN.rx * Math.sin(t * DEG), MERIDIAN.cy - MERIDIAN.ry * Math.cos(t * DEG)],
+    d1: (t) => [MERIDIAN.rx * Math.cos(t * DEG), MERIDIAN.ry * Math.sin(t * DEG)],
+    rx: MERIDIAN.rx,
+    ry: MERIDIAN.ry,
+  },
+  latitude: {
+    at: (t) => [LATITUDE.cx - LATITUDE.rx * Math.cos(t * DEG), LATITUDE.cy - LATITUDE.ry * Math.sin(t * DEG)],
+    d1: (t) => [LATITUDE.rx * Math.sin(t * DEG), -LATITUDE.ry * Math.cos(t * DEG)],
+    rx: LATITUDE.rx,
+    ry: LATITUDE.ry,
+  },
 };
 
 /**
@@ -193,9 +212,9 @@ const tailAt = (t) => latitudeStart + Math.max(0, t - latitudeStart) * TAIL_STRE
 const HEAD_SHIFT = gEnd - gHead0;
 const S_TIP = LAT.s(gEnd);
 const AXIS = (axisAbove + axisBelow) / 2;
-/* where the stem's band crosses the lower arc, as lengths along the latitude */
-const STEM_HALF = Math.asin(h / R) / DEG;
-const STEM_BAND = [LAT.s(270 - STEM_HALF), LAT.s(270 + STEM_HALF)];
+/* where the stem's band crosses the lower arc (the latitude's centre line under the stem's two edges), as lengths along the latitude */
+const latUnderX = (x) => 360 - Math.acos((LATITUDE.cx - x) / LATITUDE.rx) / DEG;
+const STEM_BAND = [LAT.s(latUnderX(stemX[1])), LAT.s(latUnderX(stemX[0]))];
 const MINW = 0.3 * w;
 const SNAP = 0.05;
 /* the stem's fill across its cut: the undrawn stretch less the logo's gap
@@ -362,8 +381,11 @@ function easing(fn, seconds, back = false) {
    left half) whole across the breaks the meridian cut (closedC). It shows
    only inside the meridian's zone, so no other part is needed. */
 const rect = (x0, y0, x1, y1) => `M${f3(x0)} ${f3(y0)}H${f3(x1)}V${f3(y1)}H${f3(x0)}Z`;
-const BAR = rect(C + barLeft, C - h, C + R, C + h);
-const STEM = rect(C - h, C, C + h, C + R);
+/* the bar from its free end to the ring: its top level, its foot a hair lower right of the stem than left of it (the
+   step stands under the stem) */
+const STEM_MID = (stemX[0] + stemX[1]) / 2;
+const BAR = `M${f3(barLeftX)} ${f3(barTop)}H${f3(C + R)}V${f3(barBottom[1])}H${f3(STEM_MID)}V${f3(barBottom[0])}H${f3(barLeftX)}Z`;
+const STEM = rect(stemX[0], C, stemX[1], C + R);
 /* the meridian's zone: its band reaching BAND past its ink; the latitude's
    band from each crossing across the gap where the C breaks round the
    meridian, to REACH past the gap's far face; less
@@ -371,12 +393,26 @@ const STEM = rect(C - h, C, C + h, C + R);
    the lower and the upper arc. Each piece is a stroke, so its edge lies
    past the ink it stands for, where the logo and the logo without the
    meridian agree. */
-/* where the meridian crosses the latitude on the left: cos t = sqrt((1 - k^2) / (1 / k^2 - k^2)), k = A / R */
-const k = A / R;
-const CROSS = Math.acos(Math.sqrt((1 - k * k) / (1 / (k * k) - k * k))) / DEG;
-const CROSSINGS = [360 - CROSS, 360 + CROSS];
+/* where the meridian crosses the latitude on the left, as the latitude's thetas: the two ovals no longer share a centre
+   or radii, so each crossing is solved for, from below the left node (the lower arc) and above it (the upper arc) */
+const onMeridian = (t) => {
+  const [x, y] = LINES.latitude.at(t);
+  return ((x - MERIDIAN.cx) / MERIDIAN.rx) ** 2 + ((y - MERIDIAN.cy) / MERIDIAN.ry) ** 2 - 1;
+};
+/** the latitude's theta between t0 and t1 where it crosses the meridian (one sign change between them) */
+function crossing(t0, t1) {
+  let [a, b] = [t0, t1];
+  const fa = onMeridian(a);
+  for (let i = 0; i < 80; i++) {
+    const m = (a + b) / 2;
+    if (Math.sign(onMeridian(m)) === Math.sign(fa)) a = m;
+    else b = m;
+  }
+  return (a + b) / 2;
+}
+const CROSSINGS = [crossing(270, 330), 360 + crossing(30, 90)];
 /* each break runs from the crossing to REACH past the far corner of the C's cut face across the gap */
-const reachDeg = (t) => REACH / (Math.hypot(R * Math.sin(t * DEG), A * Math.cos(t * DEG)) * DEG);
+const reachDeg = (t) => REACH / (Math.hypot(...LINES.latitude.d1(t)) * DEG);
 const BREAKS = [
   [CROSSINGS[0], cGapEnd[0] + reachDeg(cGapEnd[0])],
   [cGapEnd[1] - reachDeg(cGapEnd[1]), CROSSINGS[1]],
@@ -384,7 +420,7 @@ const BREAKS = [
 /* the latitude's theta under each of the meridian's ends (the meridian's x there, on the arc it stands a gap from) */
 const latUnder = (merTheta, upper) => {
   const x = LINES.meridian.at(merTheta)[0];
-  const t = Math.acos((C - x) / R) / DEG;
+  const t = Math.acos((LATITUDE.cx - x) / LATITUDE.rx) / DEG;
   return upper ? t : 360 - t;
 };
 const END_HALF = 20;
@@ -396,7 +432,7 @@ const DASH_HALF = (() => {
   for (const [t0, t1] of BREAKS) {
     for (let t = t0; t <= t1; t += 0.1) {
       const [px, py] = LINES.latitude.at(t);
-      const [dx, dy] = [R * Math.sin(t * DEG), -A * Math.cos(t * DEG)];
+      const [dx, dy] = LINES.latitude.d1(t);
       const l = Math.hypot(dx, dy);
       for (const o of [-(h + BAND), h + BAND]) {
         const q = [px - (dy / l) * o, py + (dx / l) * o];
@@ -429,7 +465,7 @@ function closedC() {
   const DEG_STEP = 0.5;
   const edge = (t, o) => {
     const [px, py] = LINES.latitude.at(t);
-    const [dx, dy] = [R * Math.sin(t * DEG), -A * Math.cos(t * DEG)];
+    const [dx, dy] = LINES.latitude.d1(t);
     const l = Math.hypot(dx, dy);
     return [px - (dy / l) * o, py + (dx / l) * o];
   };
@@ -445,14 +481,14 @@ function closedC() {
     for (let k = 0; k < 6; k++) {
       const f = (u) => {
         const [px, py] = LINES.latitude.at(u);
-        const [dx, dy] = [R * Math.sin(u * DEG), -A * Math.cos(u * DEG)];
+        const [dx, dy] = LINES.latitude.d1(u);
         return (px - x) * dx + (py - y) * dy;
       };
       const g = (f(t + 1e-4) - f(t - 1e-4)) / 2e-4;
       if (g) t -= f(t) / g;
     }
     const [px, py] = LINES.latitude.at(t);
-    const [dx, dy] = [R * Math.sin(t * DEG), -A * Math.cos(t * DEG)];
+    const [dx, dy] = LINES.latitude.d1(t);
     const o = ((x - px) * -dy + (y - py) * dx) / Math.hypot(dx, dy);
     return { t: ((t % 360) + 360) % 360, o };
   };
@@ -536,7 +572,6 @@ function closedC() {
    leaves next to the meridian's ink lies wholly under the meridian's mask,
    and there the layers add to the logo or to the logo without the
    meridian, never to a pixel between them. */
-const R_IN = R - w / 2;
 /** units: where the free ring starts, inside the ring's inner edge */
 const RING_GAP = 0.4;
 /** units: the free ring keeps at least this far from a line's ink inside the hole */
@@ -547,9 +582,9 @@ const NEAR_PX = 1.5;
 const NEAR_REACH = 24;
 /* the logo's ring as one path: its outer contour verbatim, and an inner
    circle made of the logo's own inner-edge pieces with arcs between them */
-/** the logo's path as segments: each subpath's index, its ends a and b, its points and its text */
+/** the logo's path as segments: each subpath's index, its ends a and b, its points and its text (H and V as L) */
 function logoSegments() {
-  const toks = LOGO.d.match(/[MCLQZ]|-?\d*\.?\d+/g);
+  const toks = LOGO.d.match(/[MCLQHVZ]|-?\d*\.?\d+/g);
   const segs = [];
   let i = 0;
   let cmd = '';
@@ -568,6 +603,12 @@ function logoSegments() {
     } else if (cmd === 'Z') {
       segs.push({ sub, text: 'Z' });
       cur = first;
+    } else if (cmd === 'H' || cmd === 'V') {
+      /* a level or plumb line (the refined logo draws its bar and stem edges so), kept as an L */
+      const v = num();
+      const b = cmd === 'H' ? [v, cur[1]] : [cur[0], v];
+      segs.push({ sub, a: cur, b, p: b, cmd: 'L', text: `L${b.map(f3).join(' ')}` });
+      cur = b;
     } else {
       const n = { C: 6, Q: 4, L: 2 }[cmd];
       const p = Array.from({ length: n }, num);
@@ -577,6 +618,8 @@ function logoSegments() {
   }
   return segs;
 }
+/** units: how far a piece's ends may stand off the ring's inner edge and still be the ring (the drawing's cubics stand up to 0.025 off its circle) */
+const ON_RING = 0.03;
 function ringPath() {
   const segs = logoSegments();
   const outer = segs.filter((s) => s.sub === 0).map((s) => s.text).join('');
@@ -584,7 +627,7 @@ function ringPath() {
   const angOf = (p) => ((Math.atan2(p[1] - C, p[0] - C) / DEG) % 360 + 360) % 360;
   /* the logo's inner-edge pieces, each running clockwise to anticlockwise (falling angle) */
   const pieces = segs
-    .filter((s) => s.a && s.text[0] === 'C' && Math.abs(rOf(s.a) - R_IN) < 0.02 && Math.abs(rOf(s.b) - R_IN) < 0.02)
+    .filter((s) => s.a && s.text[0] === 'C' && Math.abs(rOf(s.a) - R_IN) < ON_RING && Math.abs(rOf(s.b) - R_IN) < ON_RING)
     .map((s) => ({ s, a0: angOf(s.a), a1: angOf(s.a) - ((angOf(s.a) - angOf(s.b) + 360) % 360) }))
     .sort((x, y) => y.a0 - x.a0);
   const arcTo = (a0, a1) => {
@@ -598,6 +641,7 @@ function ringPath() {
     const c2 = [p3[0] + q * R_IN * Math.sin(t1), p3[1] - q * R_IN * Math.cos(t1)];
     return `C${[...c1, ...c2, ...p3].map(f3).join(' ')}`;
   };
+  const P_AT = (a) => [C + R_IN * Math.cos(a * DEG), C + R_IN * Math.sin(a * DEG)];
   let d = `M${pieces[0].s.a.map(f3).join(' ')}`;
   let at = pieces[0].a0;
   const order = [...pieces, { a0: pieces[0].a0 - 360, s: null }];
@@ -610,6 +654,9 @@ function ringPath() {
       at = next;
     }
     if (!p.s) break;
+    /* the arc lands on the inner edge's radius; the logo's piece starts where it starts (its cubics stand up to ON_RING
+       off the circle), so the edge runs on from the piece's own first point */
+    if (Math.hypot(...p.s.a.map((v, i) => v - P_AT(at)[i])) > 1e-3) d += `L${p.s.a.map(f3).join(' ')}`;
     d += p.s.text;
     at = p.a1;
   }
@@ -678,20 +725,23 @@ function nearInk(id, reach = NEAR_REACH) {
     if (run) runs.push(run);
   }
   let d = runs.map((run) => `M${run.map((p) => p.map(f3).join(' ')).join('L')}`).join('');
-  /* the inner edge under the line's ink: round each merge, between the outer edge's crossings of it */
+  /* the inner edge under the line's ink: round each merge, between the outer edge's crossings of it, found on each side
+     of the merge apart, since an oval off the ring's centre crosses it at other thetas on its two sides */
   const at = (t) => edgeOf(id, t, w / 2);
-  let lo = 0;
-  let hi = 90;
-  for (let k = 0; k < 60; k++) {
-    const m = (lo + hi) / 2;
-    if (rOf(at(m)) > R_IN) lo = m;
-    else hi = m;
-  }
-  const t = (lo + hi) / 2;
+  const out = (k, side) => {
+    let lo = 0;
+    let hi = 90;
+    for (let n = 0; n < 60; n++) {
+      const m = (lo + hi) / 2;
+      if (rOf(at(k + side * m)) > R_IN) lo = m;
+      else hi = m;
+    }
+    return k + side * ((lo + hi) / 2);
+  };
   const angle = (p) => Math.atan2(p[0] - C, C - p[1]) / DEG;
   for (const k of [0, 180]) {
-    const a0 = angle(at(k - t));
-    let a1 = angle(at(k + t));
+    const a0 = angle(at(out(k, -1)));
+    let a1 = angle(at(out(k, 1)));
     while (a1 < a0) a1 += 360;
     d += `M${polar([R_IN, a0])}${ringArc(R_IN, a0, a1)}`;
   }

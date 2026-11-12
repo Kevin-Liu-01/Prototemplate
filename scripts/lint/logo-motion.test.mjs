@@ -31,7 +31,7 @@
 //   meridian   wherever the meridian shows (drawn or on its lap), every
 //              pixel it adds lies on the logo's meridian ellipse at the
 //              logo's width (within two pixels at 4x), its width across the
-//              line is the logo's (13.6, and within 0.05 of the still
+//              line is the logo's (13.2, and within 0.05 of the still
 //              logo's own where the logo's meridian shows), and each of its
 //              two cut faces stands where the logo's does, within 0.05
 //              units on three lines along it, in every frame the undrawn
@@ -103,7 +103,9 @@ const { renderToStaticMarkup } = await import('react-dom/server');
 const { default: GtLogoMotion } = await import(pathToFileURL(join(SRC, 'GtLogoMotion.tsx')).href);
 const { GT_LOGO_MOTION: G } = await import(pathToFileURL(join(SRC, 'GtLogoMotion.geometry.ts')).href);
 const CSS = readFileSync(join(SRC, 'GtLogoMotion.css'), 'utf8');
-const { timing: TIMING, logo: MEASURES, tables: TABLES } = JSON.parse(readFileSync(join(ROOT, 'scripts/build/logo-motion.json'), 'utf8'));
+const { timing: TIMING, tables: TABLES } = JSON.parse(readFileSync(join(ROOT, 'scripts/build/logo-motion.json'), 'utf8'));
+/* the logo's measures: its construction's motion block (each oval's own centre and radii, the weight, the cut faces, the G's end) */
+const MEASURES = JSON.parse(readFileSync(join(ROOT, 'src/lib/logo-construction.json'), 'utf8')).motion;
 /* the course the generator writes the keyframes from (only for the component the generator writes) */
 const COURSE = OWN ? (await import('../build/logo-motion.mjs')).COURSE : null;
 
@@ -138,7 +140,7 @@ const STILL_SLACK = 1;
 /** units: how far a cut face may stand from the logo's, how far the meridian's width from the logo's */
 const FACE_TOL = 0.05;
 const WIDTH_TOL = 0.05;
-/** units: how far the meridian's measured width may stand from its drawn 13.6 (antialiasing and the logo's two-decimal outline) */
+/** units: how far the meridian's measured width may stand from its drawn weight (antialiasing and the logo's four-decimal outline) */
 const WIDTH_ABS = 0.15;
 const ENGINES = { chromium, firefox, webkit };
 const BROWSERS = (process.env.LOGO_MOTION_BROWSERS ?? 'chromium').split(',');
@@ -240,8 +242,8 @@ const BARE =
   `<path d="${G.bar}"/><path d="${G.stem}"/>${G.c ? `<path d="${G.c}"/>` : ''}`;
 /* the G's tip: 16 units square round its free end */
 const TIP = {
-  x: G.ring.cx - MEASURES.R * Math.cos((MEASURES.gEnd * Math.PI) / 180),
-  y: G.ring.cy - MEASURES.A * Math.sin((MEASURES.gEnd * Math.PI) / 180),
+  x: MEASURES.latitude.cx - MEASURES.latitude.rx * Math.cos((MEASURES.gEnd * Math.PI) / 180),
+  y: MEASURES.latitude.cy - MEASURES.latitude.ry * Math.sin((MEASURES.gEnd * Math.PI) / 180),
   half: 8,
 };
 

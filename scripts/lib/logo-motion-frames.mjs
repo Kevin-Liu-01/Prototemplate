@@ -29,8 +29,11 @@ import { join } from 'node:path';
 
 import { ROOT } from './root.mjs';
 
-const { logo: M } = JSON.parse(readFileSync(join(ROOT, 'scripts/build/logo-motion.json'), 'utf8'));
-const { R, A, w } = M;
+/* the logo's construction: each oval's own centre and radii, the weight and the ring */
+const CONSTRUCTION = JSON.parse(readFileSync(join(ROOT, 'src/lib/logo-construction.json'), 'utf8'));
+const { meridian: MER, latitude: LAT } = CONSTRUCTION.motion;
+/** the ring's inner edge's radius, round the square's centre C */
+const R_IN = CONSTRUCTION.new.ring.inner;
 const C = 128;
 const DEG = Math.PI / 180;
 export const THEMES = { light: { paper: '#ffffff', ink: '#070707' }, dark: { paper: '#070707', ink: '#f2f2f0' } };
@@ -73,10 +76,18 @@ export function crop(frame, box) {
 }
 
 /* ------------------------------------------------------------ the lines */
-/** the logo's two ellipses by theta: the meridian (0 the north pole, 90 the right) and the latitude (0 the left node, 90 the top) */
+/** the logo's two ellipses by theta, each on its own centre and radii: the meridian (0 the north pole, 90 the right) and the latitude (0 the left node, 90 the top) */
 export const LINES = {
-  meridian: { at: (t) => [C + A * Math.sin(t * DEG), C - R * Math.cos(t * DEG)], d1: (t) => [A * Math.cos(t * DEG), R * Math.sin(t * DEG)], guess: (x, y) => Math.atan2((x - C) / A, (C - y) / R) / DEG },
-  latitude: { at: (t) => [C - R * Math.cos(t * DEG), C - A * Math.sin(t * DEG)], d1: (t) => [R * Math.sin(t * DEG), -A * Math.cos(t * DEG)], guess: (x, y) => Math.atan2((C - y) / A, (C - x) / R) / DEG },
+  meridian: {
+    at: (t) => [MER.cx + MER.rx * Math.sin(t * DEG), MER.cy - MER.ry * Math.cos(t * DEG)],
+    d1: (t) => [MER.rx * Math.cos(t * DEG), MER.ry * Math.sin(t * DEG)],
+    guess: (x, y) => Math.atan2((x - MER.cx) / MER.rx, (MER.cy - y) / MER.ry) / DEG,
+  },
+  latitude: {
+    at: (t) => [LAT.cx - LAT.rx * Math.cos(t * DEG), LAT.cy - LAT.ry * Math.sin(t * DEG)],
+    d1: (t) => [LAT.rx * Math.sin(t * DEG), -LAT.ry * Math.cos(t * DEG)],
+    guess: (x, y) => Math.atan2((LAT.cy - y) / LAT.ry, (LAT.cx - x) / LAT.rx) / DEG,
+  },
 };
 
 /** the arc length table of a line from t0 to t1, as the generator builds it (0.01 degree steps), and its inverse */
@@ -185,11 +196,19 @@ export function lineMap(box, path, reach = 32) {
   return { s, d, path };
 }
 
-/** the box pixels within half of a path between two lengths along it (a dash and its stroke's half width) */
+/**
+ * the box pixels within half of a path between two lengths along it (a dash and its stroke's half width). On a
+ * closed path (once round its line) the stretch wraps past the path's ends, so a pixel just before the start of a
+ * dash that begins at the path's first point (the lap's tail at the north pole) lies in it: its nearest point on
+ * the path is near the path's end.
+ */
 export function band(map, from, to, half) {
   const out = new Uint8Array(map.s.length);
   if (!(to > from)) return out;
-  for (let i = 0; i < out.length; i++) if (map.d[i] <= half && map.s[i] >= from && map.s[i] <= to) out[i] = 1;
+  const closed = map.path && map.path.t1 - map.path.t0 >= 360 - 1e-6;
+  const L = map.path?.length ?? Infinity;
+  const inside = (v) => (v >= from && v <= to) || (closed && ((from < 0 && v >= L + from) || (to > L && v <= to - L)));
+  for (let i = 0; i < out.length; i++) if (map.d[i] <= half && inside(map.s[i])) out[i] = 1;
   return out;
 }
 
@@ -234,7 +253,7 @@ export const RASTER = 8;
  * (frameRule's ring)
  */
 export function ringZones(box, reach = 0) {
-  const rIn = R - w / 2;
+  const rIn = R_IN;
   const core = new Uint8Array(box.px * box.px);
   const edge = new Uint8Array(box.px * box.px);
   for (let y = 0; y < box.px; y++) {

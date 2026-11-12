@@ -1,20 +1,5 @@
 {
-  "about": "The numbers the live logo motion is drawn from. Measures are in the logo's 256 unit square, centred on the ring; angles are degrees on each line (meridian: 0 the north pole, 90 the right; latitude: 0 the left node, 90 the top, 180 the right node). meridianStart and meridianEnd are the thetas of the logo's meridian's two cut faces, the inner corner first; gEnd is the G's free end; cGapEnd are the latitude's thetas of the far corners of the C's two breaks round the meridian, past the lower and the upper crossing; barLeft is where the bar ends once the meridian has gone. The tables are copied once from the motion source the first published videos were rendered from, each one beat sampled at timing.rate per second: hoverEnd is where the meridian's moving end stands on hover, meridianLap and gLap are [tail, head] of the line in each loader beat. The source drew the G's lap from its own rest stroke, source.gTail0 to source.gHead0; the generator moves each end of that lap so it leaves and lands on the logo's G.",
-  "logo": {
-    "R": 96.9,
-    "A": 51.46,
-    "w": 13.6,
-    "h": 6.8,
-    "gapLeft": 8.2999,
-    "axisAbove": 6.8,
-    "axisBelow": 6.8,
-    "meridianStart": [133.0534, 126.1013],
-    "meridianEnd": [407.0906, 414.0189],
-    "latitudeStart": 180,
-    "gEnd": 495.6589,
-    "cGapEnd": [313.88, 406.12],
-    "barLeft": -54.245
-  },
+  "about": "The live logo motion's timing and courses; the logo's measures are its construction, src/lib/logo-construction.json (the motion block: each oval's own centre and radii, the weight, the bar, the stem, the cut faces and the gaps, in the logo's 256 unit square, centred on the ring). Angles are degrees on each line (meridian: 0 the north pole, 90 the right; latitude: 0 the left node, 90 the top, 180 the right node). The tables are copied once from the motion source the first published videos were rendered from, each one beat sampled at timing.rate per second: hoverEnd is where the meridian's moving end stands on hover, meridianLap and gLap are [tail, head] of the line in each loader beat; the generator rescales each to the logo's own cut faces and G. The source drew the G's lap from its own rest stroke, source.gTail0 to source.gHead0; the generator moves each end of that lap so it leaves and lands on the logo's G.",
   "source": {
     "gTail0": 169.7,
     "gHead0": 493.222
