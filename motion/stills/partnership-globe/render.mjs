@@ -33,8 +33,8 @@ mkdirSync(OUT, { recursive: true });
 const PINNED = {
   'gt-globe-dithered': '76e3728ff4f1f4f01c60b3480fb91ab483057ecf25c4524c6b4f42d3be32629c',
   'gt-globe-dithered-transparent': '3010604efb32b8058088a4d109cec0846fdb3c5b1f00556c887fce1c024a210b',
-  'gt-globe-dithered-mark': '3cdf07b813342e4763f6ddb1c842ad45abfeedf3f561fc7069e8f31c032ca86c',
-  'gt-globe-dithered-mark-transparent': 'b8d2a7eed6966fef6d4f95a83cf0b080ba214e7704b69aeb35b5ebea85650c6c',
+  'gt-globe-dithered-mark': '39ff309b4203618507f87fb715fd10ca51d980da11bbbad9da25afaa6435c808',
+  'gt-globe-dithered-mark-transparent': 'd9bb1b05a2d148a2abf769644d0b506605e0317e9982022ca13f5d8d3b1b2051',
   'gt-globe-glyphs': 'c25f5d9ce84dd085a2b25ecf2bc8a00c101c9896b9260e5361958265bed99385',
   'gt-globe-glyphs-transparent': 'b5eeeb535734bda4b7550ef9283e471ec1d6b5ba43056415813dd2380acf8933',
   'gt-globe-glyphs-dark': 'c25f5d9ce84dd085a2b25ecf2bc8a00c101c9896b9260e5361958265bed99385',
