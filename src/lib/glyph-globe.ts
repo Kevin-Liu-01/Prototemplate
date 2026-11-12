@@ -31,13 +31,16 @@
  * ARCHITECTURE, as studio-field.ts and horizon-field.ts: at most ONE WebGL
  * context for this module, shared by every globe on the page. Each globe
  * registers here; the engine draws into one offscreen canvas and blits
- * into the globe's own 2D canvas. The context is built for the first globe
- * and lost on purpose a second after the last one leaves (gl-release.ts).
+ * into the globe's own 2D canvas. The context is built, and the two maps
+ * fetched, only when a globe comes within NEAR of the viewport, and
+ * the context is lost on purpose a second after the last globe leaves
+ * (gl-release.ts).
  * A globe is created paused and plays only while it is on screen and its
  * tab is visible; under reduced motion it draws one designed still and no
  * loop ever starts. WebGL2 is required (integer hashes, explicit texture
- * levels); without it createGlyphGlobe returns null and the caller's still
- * stays in place.
+ * levels); without it createGlyphGlobe returns null, or the canvas stays
+ * blank when the context fails once the globe nears the viewport, and the
+ * caller's still stays in place.
  */
 
 import { BAYER_8 } from '@/lib/dither';
@@ -868,6 +871,8 @@ type Subscriber = {
   dpr: number;
   autoplay: boolean;
   running: boolean;
+  /** within NEAR of the viewport once: the engine may start and draw it */
+  near: boolean;
   visible: boolean;
   reduced: boolean;
   stillTime: number;
@@ -876,6 +881,7 @@ type Subscriber = {
   last: number;
   font: string;
   observer?: IntersectionObserver;
+  nearObserver?: IntersectionObserver;
   resize?: ResizeObserver;
   onFrame?: (ms: number) => void;
 };
@@ -1263,6 +1269,7 @@ function sizeOf(sub: Subscriber): { width: number; height: number } {
 }
 
 function renderSubscriber(sub: Subscriber, time: number) {
+  if (!sub.near) return;
   const active = getEngine();
   if (!active || !active.ready) return;
   const { width, height } = sizeOf(sub);
@@ -1334,12 +1341,22 @@ export type GlyphGlobeHandle = {
 };
 
 /**
- * Registers a globe on a canvas. Returns null when WebGL2 is unavailable,
- * so the caller's still stays in place. The globe is created paused and
- * plays while it is on screen; under reduced motion it draws its still once.
+ * How far outside the viewport a globe starts the engine and fetches the
+ * maps: a screen ahead. scrollMargin carries the margin into the scrollers
+ * in between (the viewer shell's sheet), whose clip a rootMargin stops at;
+ * a browser without it starts the engine when the globe comes into view.
+ */
+const NEAR: IntersectionObserverInit & { scrollMargin?: string } = { rootMargin: '100% 0px', scrollMargin: '100% 0px' };
+
+/**
+ * Registers a globe on a canvas. Returns null when the browser has no
+ * WebGL2, so the caller's still stays in place. The engine and its maps
+ * wait until the globe is within NEAR of the viewport. The globe is
+ * created paused and plays while it is on screen; under reduced motion it
+ * draws its still once.
  */
 export function createGlyphGlobe(canvas: HTMLCanvasElement, options: GlyphGlobeOptions = {}): GlyphGlobeHandle | null {
-  if (!getEngine()) return null;
+  if (engineFailed || typeof WebGL2RenderingContext === 'undefined') return null;
   const blit = canvas.getContext('2d');
   if (!blit) return null;
   const reduced = prefersReducedMotion();
@@ -1352,6 +1369,7 @@ export function createGlyphGlobe(canvas: HTMLCanvasElement, options: GlyphGlobeO
     dpr: options.dpr ?? Math.min(window.devicePixelRatio || 1, 2),
     autoplay,
     running: autoplay && !reduced,
+    near: false,
     visible: false,
     reduced,
     stillTime,
@@ -1363,11 +1381,22 @@ export function createGlyphGlobe(canvas: HTMLCanvasElement, options: GlyphGlobeO
   subscribers.add(sub);
 
   if (typeof IntersectionObserver !== 'undefined') {
+    sub.nearObserver = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        sub.nearObserver?.disconnect();
+        sub.near = true;
+        renderSubscriber(sub, sub.elapsed);
+      },
+      NEAR
+    );
+    sub.nearObserver.observe(canvas);
     sub.observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[entries.length - 1];
         if (!entry) return;
         sub.visible = entry.isIntersecting;
+        if (sub.visible) sub.near = true;
         if (sub.visible && !sub.running) renderSubscriber(sub, sub.elapsed);
         schedule();
       },
@@ -1375,6 +1404,7 @@ export function createGlyphGlobe(canvas: HTMLCanvasElement, options: GlyphGlobeO
     );
     sub.observer.observe(canvas);
   } else {
+    sub.near = true;
     sub.visible = true;
   }
 
@@ -1408,6 +1438,7 @@ export function createGlyphGlobe(canvas: HTMLCanvasElement, options: GlyphGlobeO
       renderSubscriber(sub, time);
     },
     destroy() {
+      sub.nearObserver?.disconnect();
       sub.observer?.disconnect();
       sub.resize?.disconnect();
       subscribers.delete(sub);

@@ -20,6 +20,8 @@ export type GlyphGlobeProps = Partial<GlyphGlobeSettings> & {
   glyphFont?: string;
   /** the picture shown before the first frame and without WebGL2; the launch still for the launch look by default */
   poster?: string | null;
+  /** the globe is above the fold: the poster loads at once instead of lazily */
+  priority?: boolean;
   /** the accessible name; without one the globe is decoration and hidden from assistive technology */
   title?: string;
   className?: string;
@@ -40,6 +42,7 @@ const ENGINE_KEYS = new Set([
   'dpr',
   'glyphFont',
   'poster',
+  'priority',
   'title',
   'className',
   'style',
@@ -61,11 +64,13 @@ function settingsOf(props: GlyphGlobeProps): Partial<GlyphGlobeSettings> {
  * tiles from the launch graphics and films. By default it is the launch look
  * exactly and turns a full revolution every 10 seconds, west to east.
  * Callers size it; the globe fills its box and the 'launch' framing keeps
- * the globe's upper left in view at any aspect. It is created paused, plays
- * only while on screen, and under reduced motion shows one still.
+ * the globe's upper left in view at any aspect. It is created paused, starts
+ * its engine and fetches its maps only near the viewport, plays only while
+ * on screen, and under reduced motion shows one still. The poster loads
+ * lazily unless the globe is marked priority.
  */
 export default function GlyphGlobe(props: GlyphGlobeProps) {
-  const { preset = 'launch', autoplay = true, stillTime = 0, dpr, glyphFont, title, className, style, onHandle, onFrame } = props;
+  const { preset = 'launch', autoplay = true, stillTime = 0, dpr, glyphFont, priority, title, className, style, onHandle, onFrame } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const handleRef = useRef<GlyphGlobeHandle | null>(null);
   const frameRef = useRef(onFrame);
@@ -122,6 +127,8 @@ export default function GlyphGlobe(props: GlyphGlobeProps) {
         <img
           alt=''
           decoding='async'
+          fetchPriority={priority ? 'high' : undefined}
+          loading={priority ? 'eager' : 'lazy'}
           src={poster}
           style={{ ...fill, objectFit: 'cover', objectPosition: 'right bottom' }}
         />

@@ -65,6 +65,7 @@ The globe fills its box, so the caller sets its size. Every length inside it is 
 | `stillTime` | seconds | `0` | The frame shown under reduced motion, while paused and before the first frame. |
 | `dpr` | number | `2` at most | The device pixel ratio cap. |
 | `poster` | URL or `null` | the launch still | The picture shown before the first frame and without WebGL2. |
+| `priority` | boolean | `false` | The globe is above the fold, so the poster loads at once instead of lazily. |
 | `title` | string | none | The accessible name. Without one the globe is decoration. |
 | `onHandle`, `onFrame` | functions | none | The running globe's handle, and each frame's time in milliseconds. |
 
@@ -96,7 +97,7 @@ Use the glyph globe where a page or a graphic needs the launch globe: a hero, a 
 
 ## Motion and themes
 
-The globe is created paused and plays only while it is on screen and its tab is visible. Every frame is a function of the loop time, so the turn joins without a jump. Under reduced motion it draws the frame at `stillTime` once and never starts the loop. All globes on a page draw through one WebGL2 context, which is released a second after the last globe leaves. Without WebGL2 the poster stays in place.
+The globe is created paused. It builds its WebGL2 context and fetches its two maps only when it comes within a screen of the viewport, and it plays only while it is on screen and its tab is visible. Every frame is a function of the loop time, so the turn joins without a jump. Under reduced motion it draws the frame at `stillTime` once and never starts the loop. All globes on a page draw through one WebGL2 context, which is released a second after the last globe leaves. Without WebGL2 the poster stays in place.
 
 The globe is a picture on ink, so it keeps its palette in both themes.
 
