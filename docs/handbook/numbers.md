@@ -6,7 +6,7 @@ This page collects the numbers that General Translation design and engineering w
 
 ## Type
 
-The site sets one face, the self-hosted rsms InterVariable 4.1, with an optical-size axis from 14 to 32 and a weight axis from 100 to 900. The one exception is the name in the logo lockup, Katagami Text 500 as outlines (the Marks table below).
+The site sets one face, the self-hosted rsms InterVariable 4.1, with an optical-size axis from 14 to 32 and a weight axis from 100 to 900. The one exception is the name in the logo lockup, Katagami Text 400 at -0.05 em as outlines (the Marks table below).
 
 | Value | Reason | Token or constant | Held by | Explained in |
 | --- | --- | --- | --- | --- |

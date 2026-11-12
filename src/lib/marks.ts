@@ -309,7 +309,7 @@ export const PRODUCTION_MARKS: readonly ProductionMark[] = [
     name: 'General Translation',
     file: '/marks/production/gt-mark.svg',
     aspect: 1,
-    text: 'The logo, Axis and meridian behind: a globe whose ring and ovals draw the G and whose polar axis is the stem of the T. generaltranslation.com and the dashboard draw it from GtMark in gt-cloud\'s packages/ui. It replaced the doubled-line monogram on 8 November 2026.',
+    text: 'The logo, Refined globe: Axis and meridian behind on its own construction (12 November 2026), a globe whose ring and ovals draw the G and whose polar axis is the stem of the T. generaltranslation.com and the dashboard draw it from GtMark in gt-cloud\'s packages/ui. It replaced the doubled-line monogram on 8 November 2026.',
     files: [
       '/marks/production/gt-mark.svg',
       '/brand/gt-globe-logo.svg',

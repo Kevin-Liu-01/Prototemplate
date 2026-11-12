@@ -16,7 +16,7 @@ sources:
   - DESIGN.md
 ---
 
-Prototemplate sets one face, the rsms InterVariable 4.1, self-hosted from `public/fonts/`. The one General Translation exception is the name in the logo lockup, Katagami Text 500 drawn as outlines, which no page loads as a font ([Marks](/docs/components/marks#when-to-use-it)). The roman file is 352,240 bytes with sha1 `f55b18fd`, and it has two axes: optical size (`opsz`, 14 to 32) and weight (`wght`, 100 to 900). Most of the work is keeping the browser from replacing that file or degrading it, and the browser reports none of these failures. The measurements below come from a type audit on 2026-10-05 (Chrome for Testing, dark theme, 1440 and 390 wide, read after `document.fonts.ready`) and from a probe of these docs on 2026-10-21. The [gt-brand](/skills/gt-brand) skill holds the rules, and `scripts/lint/type.mjs` enforces them.
+Prototemplate sets one face, the rsms InterVariable 4.1, self-hosted from `public/fonts/`. The one General Translation exception is the name in the logo lockup, Katagami Text 400 at -0.05 em drawn as outlines, which no page loads as a font ([Marks](/docs/components/marks#when-to-use-it)). The roman file is 352,240 bytes with sha1 `f55b18fd`, and it has two axes: optical size (`opsz`, 14 to 32) and weight (`wght`, 100 to 900). Most of the work is keeping the browser from replacing that file or degrading it, and the browser reports none of these failures. The measurements below come from a type audit on 2026-10-05 (Chrome for Testing, dark theme, 1440 and 390 wide, read after `document.fonts.ready`) and from a probe of these docs on 2026-10-21. The [gt-brand](/skills/gt-brand) skill holds the rules, and `scripts/lint/type.mjs` enforces them.
 
 ## The binding
 

@@ -180,7 +180,7 @@ In gt-cloud the gt-ui oxlint plugin holds the type rules (`$GT_CLOUD/tooling/oxl
 | specimens | deck slide 27 and `.ptb-display` on `/brand` | they show the weights 300 to 800 on purpose |
 | the presenter | `src/app/present/**`, with `src/app/present/fonts.ts` loading Sora and Instrument Sans for the intro lockup | its type beats set other faces beside the right Inter on purpose; the lint skips the folder |
 | speed mark faces | `public/fonts/google/` (Michroma, Orbitron, Anybody) | converted to outlines at build time; no page loads them |
-| the name in the logo lockup | Katagami Text 500 from a Katagami checkout, drawn as outlines by `pnpm build:lockup` into `public/brand/gt-globe-lockup*.svg`, the deck's `#gt-lockup` and the globe rows' name | Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!"; on this site no page loads the face yet, so running copy renders in Inter until the switch |
+| the name in the logo lockup | Katagami Text 400 at -0.05 em from a Katagami checkout, drawn as outlines by `pnpm build:lockup` into `public/brand/gt-globe-lockup*.svg`, the deck's `#gt-lockup` and the globe rows' name | Kevin, 2026-11-08: "remember the word mark of general translation text uses katagami text!", and his wordmark of 2026-11-12 for the weight and tracking; on this site no page loads the face yet, so running copy renders in Inter until the switch |
 
 A new exception goes into DESIGN.md section 15 or the lint allowlist with its reason, in the same change.
 
@@ -208,7 +208,7 @@ These blocks stood in `SKILL.md` section 4 until 2026-10-10 and moved here uncha
 
 **The stack** is `var(--font-inter), system-ui, sans-serif` (the shell's `--pt-text`). next/font's fallback face is already a metric-matched local Arial, so `'Helvetica Neue', Arial` after the variable add nothing.
 
-**Tracking.** Tracking tightens with size and weight, and weight 400 text is never tracked.
+**Tracking.** Tracking tightens with size and weight, and weight 400 text is never tracked. The name in the logo is not text: it is outlines at weight 400 and -0.05 em (`references/marks.md`).
 
 | role | tracking | where it is set |
 | --- | --- | --- |
@@ -245,7 +245,7 @@ The Prototemplate shell tracks nothing positive, and its type lint fails any pos
 - The presenter (`/present`), whose intro lockup sets Sora and Instrument Sans (`src/app/present/fonts.ts`) and whose type beats show other faces beside Inter on purpose.
 - Specimens that show the weights 300 to 800: deck slide 27 and `.ptb-display` on `/brand`.
 - The speed marks' faces (Michroma, Orbitron, Anybody), which exist only as outlines inside the mark files.
-- The name in the logo lockup: Katagami Text at weight 500, letter-spacing 0, with its kerning, as outlines (Kevin, 2026-11-08). Since 2026-11-09 Katagami Text is the one typeface everywhere; on this site running copy renders in Inter until the switch.
+- The name in the logo lockup: Katagami Text at weight 400, letter-spacing -0.05 em, with its kerning, as outlines (Kevin, 2026-11-08; weight and tracking from his wordmark of 2026-11-12). Since 2026-11-09 Katagami Text is the one typeface everywhere; on this site running copy renders in Inter until the switch.
 
 **Enforcement.**
 
