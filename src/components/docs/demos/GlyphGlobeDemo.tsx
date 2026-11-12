@@ -12,6 +12,8 @@ import {
 } from '@/lib/glyph-globe';
 import {
   GLYPH_GLOBE_COLORS,
+  GLYPH_GLOBE_FRAMING_RANGES,
+  GLYPH_GLOBE_MAX_INKS,
   GLYPH_GLOBE_RANGE_GROUPS,
   rangeStep,
   snapRange,
@@ -37,19 +39,10 @@ const PALETTES: Record<string, { label: string; palette: GlyphGlobePalette }> = 
   home: { label: 'Home', palette: GLYPH_GLOBE_HOME },
 };
 
-/** The screen takes one to five inks. */
-const MAX_INKS = 5;
-
 type FramingBox = { x: number; y: number; r: number };
 
 /** Where a custom framing starts: the whole framing's disc. */
 const CUSTOM_FRAMING: FramingBox = { x: 0.5, y: 0.5, r: 0.4 };
-
-const FRAMING_RANGES: readonly { key: keyof FramingBox; label: string; min: number; max: number }[] = [
-  { key: 'x', label: 'Center x', min: -0.5, max: 1.5 },
-  { key: 'y', label: 'Center y', min: -0.5, max: 1.5 },
-  { key: 'r', label: 'Radius', min: 0.1, max: 2 },
-];
 
 function same(a: unknown, b: unknown): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
@@ -156,7 +149,7 @@ export default function GlyphGlobeDemo() {
               </select>
             </div>
             <Choice<GlyphGlobeMode>
-              label='Glyphs'
+              label='Glyph mode'
               options={[
                 { value: 'tiles', label: 'Tiles' },
                 { value: 'surface', label: 'Surface' },
@@ -187,7 +180,7 @@ export default function GlyphGlobeDemo() {
               onChange={(v) => set({ screen: Number(v) as 8 | 4 | 2 })}
             />
             <Choice<'spin' | 'sway'>
-              label='Motion'
+              label='Motion mode'
               options={[
                 { value: 'spin', label: 'Spin' },
                 { value: 'sway', label: 'Sway' },
@@ -245,7 +238,7 @@ export default function GlyphGlobeDemo() {
                 />
               ) : null}
               {group.title === 'View' && box
-                ? FRAMING_RANGES.map((f) => (
+                ? GLYPH_GLOBE_FRAMING_RANGES.map((f) => (
                     <Range
                       format={(v) => v.toFixed(2)}
                       key={f.key}
@@ -319,7 +312,7 @@ export default function GlyphGlobeDemo() {
               />
             ))}
             <Action
-              disabled={inks.length >= MAX_INKS}
+              disabled={inks.length >= GLYPH_GLOBE_MAX_INKS}
               title='Add a lighter ink to the screen'
               onClick={() => setPalette({ inks: [...inks, inks[inks.length - 1] ?? settings.palette.letter] })}
             >

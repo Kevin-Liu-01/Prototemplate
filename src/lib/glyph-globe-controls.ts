@@ -1,7 +1,8 @@
 /**
  * The glyph globe configurator's controls (src/components/docs/demos/
- * GlyphGlobeDemo.tsx): a slider for every number the engine takes and a
- * picker for each palette color, each with its own accessible name. A
+ * GlyphGlobeDemo.tsx): a slider for every number the engine takes, the
+ * custom framing's three sliders, and a picker for each palette color,
+ * each with its own accessible name. A
  * slider's step comes from the default it starts at, so an untouched
  * slider and one moved back both hold that default exactly and the printed
  * JSX leaves it out (pnpm test:glyph-globe holds every preset to that).
@@ -30,7 +31,7 @@ export const GLYPH_GLOBE_RANGE_GROUPS: readonly { title: string; ranges: readonl
     ranges: [
       { key: 'revolutionSeconds', label: 'Turn', min: 0, max: 60, step: 1, unit: ' s', digits: 0 },
       { key: 'beatSeconds', label: 'Beat', min: 0.1, max: 2, step: 0.05, unit: ' s' },
-      { key: 'swayDegrees', label: 'Sway', min: 0, max: 45, step: 1, unit: '°', digits: 0 },
+      { key: 'swayDegrees', label: 'Sway angle', min: 0, max: 45, step: 1, unit: '°', digits: 0 },
     ],
   },
   {
@@ -76,6 +77,16 @@ export const GLYPH_GLOBE_RANGE_GROUPS: readonly { title: string; ranges: readonl
     ],
   },
 ];
+
+/** The sliders a custom framing adds to the View group: its disc's center and radius, as fractions of the stage. */
+export const GLYPH_GLOBE_FRAMING_RANGES: readonly { key: 'x' | 'y' | 'r'; label: string; min: number; max: number }[] = [
+  { key: 'x', label: 'Center x', min: -0.5, max: 1.5 },
+  { key: 'y', label: 'Center y', min: -0.5, max: 1.5 },
+  { key: 'r', label: 'Radius', min: 0.1, max: 2 },
+];
+
+/** The screen takes one to five inks, each with its own picker (Ink 1 to Ink 5). */
+export const GLYPH_GLOBE_MAX_INKS = 5;
 
 export type GlyphGlobeColorKey = 'ground' | 'tileLow' | 'tileHigh' | 'letter' | 'rim' | 'dawn' | 'bloom';
 
