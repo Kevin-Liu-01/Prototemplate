@@ -790,6 +790,10 @@
       "reason": "the partnership glyph globe artwork, a globe picture and not the logo"
     },
     {
+      "path": "public/media/gt-globe-glyph-launch*",
+      "reason": "the launch glyph globe, the dithered Earth with letter tiles from the launch graphics and films, a globe picture and not the logo"
+    },
+    {
       "path": "public/media/gt-globe-dithered.png",
       "reason": "the partnership dithered globe without the logo"
     },
