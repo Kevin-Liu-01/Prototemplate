@@ -2,12 +2,39 @@
    toolchain hero-every sheet, rescoped to the component so it composes
    under any root; ink derives from currentColor throughout. */
 
+/* The em stacks the live word over a hidden copy of every sentence in one
+   grid cell, so from the first frame it is the tallest sentence's height and
+   no sentence moves the content below. */
 em.every-sentence[data-every] {
   position: relative;
-  display: inline-block;
+  display: inline-grid;
+  place-items: center;
+  vertical-align: top;
   white-space: nowrap;
   /* a bidi isolate: an RTL word's run resolves inside the em and can
      never reorder or push the sentence's trailing period */
+  unicode-bidi: isolate;
+}
+
+em.every-sentence[data-every] > * {
+  grid-area: 1 / 1;
+}
+
+/* Zero width, so on desktop the stack adds height and the em keeps the live word's width; the child combinators outrank a host's h1 span rule. */
+em.every-sentence[data-every] > [data-every-stack] {
+  display: grid;
+  width: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+em.every-sentence[data-every] > [data-every-stack] > span {
+  grid-area: 1 / 1;
+  /* start, not stretch: each copy keeps its own height, which EverySentence reads as that sentence's line count */
+  align-self: start;
+  justify-self: start;
+  width: max-content;
   unicode-bidi: isolate;
 }
 
@@ -49,9 +76,13 @@ em.every-sentence[data-every] {
   bottom: 0;
 }
 
-/* the dissolve dust — a canvas since the perf round; the engine sizes
-   and seats it inline */
+/* the dissolve dust, drawn on a plate that overhangs the em; EverySentence
+   reads this offset as its plate padding */
 .every-sentence .tc-edust {
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  overflow: visible;
   pointer-events: none;
 }
 
@@ -66,24 +97,30 @@ em.every-sentence[data-every] {
   will-change: transform, opacity;
 }
 
-/* MOBILE (founder: "take two lines"): the sentence folds at the em's
-   pinned column width. The wrap must be GREEDY (text-wrap: wrap beats
-   any inherited balance), because the dust sampler folds greedily with
-   measureText — a balanced break on a different word would print lines
-   the settled motes never traced. */
+/* MOBILE (founder: "take two lines"): the sentence folds at the column
+   width. The live word and its hidden copy must wrap the same way
+   (text-wrap: wrap beats any inherited balance), because the dust sampler
+   reads the copy's line boxes. */
 @media (max-width: 720px) {
   em.every-sentence[data-every],
-  .every-sentence [data-every-word] {
+  .every-sentence [data-every-word],
+  em.every-sentence[data-every] > [data-every-stack] > span {
     white-space: normal;
     text-wrap: wrap;
   }
 
-  /* Korean folds at SPACES, like the sampler (iOS pass: '출시하세요'
-     broke mid-word — Hangul wraps between syllables by default, so the
-     printed fold disagreed with the mote targets). keep-all scopes to
-     :lang(ko) only: ja/zh carry no spaces and must keep the char folds
-     the sampler already mirrors. */
+  /* The em is the column width, and each hidden sentence folds at it. */
+  em.every-sentence[data-every],
+  em.every-sentence[data-every] > [data-every-stack],
+  em.every-sentence[data-every] > [data-every-stack] > span {
+    width: 100%;
+  }
+
+  /* Korean folds at spaces (iOS pass: '출시하세요' broke mid-word, since
+     Hangul wraps between syllables by default). keep-all scopes to
+     :lang(ko) only: ja/zh carry no spaces and fold between characters. */
   .every-sentence [data-every-word]:lang(ko),
+  em.every-sentence[data-every] > [data-every-stack] > span:lang(ko),
   em.every-sentence[data-every]:lang(ko) {
     word-break: keep-all;
   }

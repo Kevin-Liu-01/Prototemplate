@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useImperativeHandle, useRef, type Ref } from 'react';
 
+import { groupEveryLines, readEveryGlyphs } from '@/lib/every-lines';
 import { prefersReducedMotion } from '@/lib/reduced-motion';
 
 import './every-sentence.css';
@@ -25,24 +26,23 @@ gsap.registerPlugin(useGSAP);
  * boundary; one landing mid-form kills the timeline and re-dissolves; a
  * same-text locale change retags lang/dir only. Calls that arrive before
  * the engine boots are buffered and served at boot, so any mount order is
- * safe. Width follows the moving-type law: the whole shaped word measured
- * from a hidden probe carrying the word's own lang/dir, cached,
- * device-pixel snapped, tweened once per cycle — never per-character
- * boxes, which disconnect Arabic joining and split Devanagari matras.
- * The viewport is live: any resize without a reload (DevTools device
- * emulation, rotation, drag-resize) re-derives the whole width table in
- * one debounced, batched probe pass, settles the standing span in 0.2s,
- * re-aims a mid-form glide, and re-reads the 720px law and the device
- * pixel ratio — nothing is ever measured in a frame loop.
+ * safe. A hidden stack of every sentence shares the em's one grid cell,
+ * so CSS holds the em at the tallest sentence's height from the first
+ * frame; the script only reads each copy's width and height from it. On
+ * desktop the width tweens once per cycle between whole shaped words,
+ * device-pixel snapped. The viewport is live: any resize without a
+ * reload re-reads the stack in one debounced pass, settles the standing
+ * span in 0.2s, re-aims a mid-form glide, and re-reads the 720px law and
+ * the device pixel ratio; nothing is measured in a frame loop.
  *
  * Type and ink are inherited: the engine reads the host's computed font
  * for the dust and the raster, and every color derives from currentColor.
  * Under prefers-reduced-motion the driver is a plain text/lang/dir swap.
  * Under 720px the dissolve itself runs (founder: "do the dissolving
  * instead of fade in fade out") in a cheap cut — fewer motes, a lower
- * canvas dpr, the em pinned to the column so a two-line word never
- * tweens layout — and the sampler folds the text so mote targets land
- * on both wrapped lines.
+ * canvas dpr, the em at the column width by CSS so a two-line word never
+ * tweens layout — and the sampler reads the copy's own line boxes so mote
+ * targets land on both wrapped lines.
  */
 export type EveryWord = { text: string; lang: string; rtl?: boolean };
 
@@ -143,51 +143,27 @@ export default function EverySentence({
         let dpr = Math.max(1, window.devicePixelRatio || 1);
         const snapPx = (w: number) => Math.round(w * dpr) / dpr;
         const widthCache = new Map<string, number>();
-        const measure = (w: EveryWord) => {
-          const hit = widthCache.get(w.text);
-          if (hit !== undefined) return hit;
-          const probe = document.createElement('span');
-          probe.style.cssText =
-            'visibility:hidden;position:absolute;left:-9999px;top:0;white-space:nowrap;';
-          probe.setAttribute('lang', w.lang);
-          probe.setAttribute('dir', w.rtl ? 'rtl' : 'ltr');
-          probe.textContent = w.text;
-          em.appendChild(probe);
-          const width = snapPx(probe.getBoundingClientRect().width);
-          probe.remove();
-          widthCache.set(w.text, width);
-          return width;
-        };
-        /* the full roster in ONE batched pass: a hidden row inside the em
-           (so it inherits the exact computed type) carries every locale's
-           whole shaped sentence with its own lang/dir; appended once, all
-           widths read after a single layout flush, removed. This is the
-           only measurement a viewport change ever costs — nothing is
-           measured in any frame loop. data-every-measures counts passes
-           so the perf probe can see the debounce coalescing. */
-        const probeRow = document.createElement('span');
-        probeRow.style.cssText =
-          'visibility:hidden;position:absolute;left:-9999px;top:0;display:block;';
-        probeRow.setAttribute('aria-hidden', 'true');
-        const probeSpans = Object.values(words).map((w) => {
-          const s = document.createElement('span');
-          s.style.cssText = 'display:block;width:max-content;white-space:nowrap;';
-          s.setAttribute('lang', w.lang);
-          s.setAttribute('dir', w.rtl ? 'rtl' : 'ltr');
-          s.textContent = w.text;
-          probeRow.appendChild(s);
-          return [w, s] as const;
-        });
+        const heightCache = new Map<string, number>();
+        let holdH = 0;
+        const stack = Array.from(em.querySelectorAll<HTMLElement>('[data-every-stack] > span'));
+        /* data-every-measures counts passes so the perf probe can see the debounce coalescing. */
         let measurePasses = 0;
+        /* CSS sizes the em from the hidden stack of every sentence, so the script only reads it. */
         const measureAll = () => {
-          em.appendChild(probeRow);
           widthCache.clear();
-          for (const [w, s] of probeSpans) {
-            widthCache.set(w.text, snapPx(s.getBoundingClientRect().width));
+          heightCache.clear();
+          holdH = 0;
+          for (const s of stack) {
+            const text = s.textContent ?? '';
+            const r = s.getBoundingClientRect();
+            widthCache.set(text, snapPx(r.width));
+            heightCache.set(text, r.height);
+            holdH = Math.max(holdH, r.height);
           }
-          probeRow.remove();
           em.dataset.everyMeasures = String(++measurePasses);
         };
+        measureAll();
+        const measure = (w: EveryWord) => widthCache.get(w.text) ?? 0;
         /* the live word is ONE shaped text node — lang for font selection,
            dir so the RTL run renders right-to-left inside its isolate */
         const showWord = (w: EveryWord) => {
@@ -201,18 +177,17 @@ export default function EverySentence({
         let current: EveryWord = initialWord;
         let morphing = false;
         let armed = false;
-        /* MOBILE WIDTH LAW (founder: two lines, no lag): under 720px the
-           em pins to the COLUMN — the full width the h1 offers — never the
-           word's own measure, so a sentence that folds to two lines cannot
-           reflow the h1 at all; centring stays the h1's text-align. Desktop
-           keeps the measured per-word pin and its one gliding tween. */
+        /* Under 720px CSS sets the em to the column width, so a sentence that folds never reflows the host. */
         const colWidth = () =>
           snapPx(Math.max((em.parentElement ?? em).getBoundingClientRect().width, 30));
         const layoutWidth = (w: EveryWord) => (compactEvery ? colWidth() : measure(w));
         const holdWidth = () => {
-          em.style.width = `${layoutWidth(current)}px`;
+          em.style.width = compactEvery ? '' : `${measure(current)}px`;
         };
         holdWidth();
+
+        /* The em centres the word, so ink sampled from the word's top edge sits this far down the em. */
+        const inkTop = (w: EveryWord) => Math.max(0, (holdH - (heightCache.get(w.text) ?? holdH)) / 2);
 
         /* `target` is the single source of truth for where the sentence
            is headed — every phase boundary reads it fresh. */
@@ -260,8 +235,8 @@ export default function EverySentence({
 
         /* The dissolve runs at every width (founder: "do the dissolving
            instead of fade in fade out"). The mobile cut of the morph is
-           cheap instead: about 200 motes and no per-tick width tween (the
-           em is pinned to the column above). */
+           cheap instead: about 200 motes and no per-tick width tween (CSS
+           holds the em at the column width). */
         {
           const guideL = document.createElement('span');
           guideL.className = 'tc-eg is-l';
@@ -293,18 +268,12 @@ export default function EverySentence({
              the gliding guides and can never overhang them; at 0, mote x
              is a plain canvas px coordinate (dissolve space). */
           let spanLive = 0;
-          /* the plate OVERHANGS the em on every side: a dust glyph is a
-             centred quad around its point — ink at x≈0 keeps its left
-             half and the last line keeps its descenders (founder:
-             "clipping the glyphs at left side and below") — and the draw
-             origin shifts by the same pad, so mote coordinates stay
-             em-anchored and no choreography math changes */
-          const PLATE_PAD = 14;
           const dust = document.createElement('canvas');
           dust.className = 'tc-edust';
-          dust.style.cssText = `position:absolute;left:${-PLATE_PAD}px;top:${-PLATE_PAD}px;pointer-events:none;`;
           dust.setAttribute('aria-hidden', 'true');
           em.append(guideL, guideR, dust);
+          /* The plate overhangs the em by the offset .tc-edust sets, to fit ink at x=0, tall diacritics and descenders. */
+          const PLATE_PAD = -parseFloat(getComputedStyle(dust).left) || 0;
           const dctx = dust.getContext('2d');
           /* the plate renders at up to 2x everywhere: a lower cap reads
              soft on 3x phones (founder: "without becoming blurry"); 2x is
@@ -385,64 +354,11 @@ export default function EverySentence({
              the pitch upward until the point count fits the pool. Cached
              by (text, width): it runs once per locale per size and every
              later cycle reads warm. */
-          /* ONE greedy fold shared by the sampler and the density law —
-             the printed wrap, the sampled ink and the mote budget must
-             all break on the same words (greedy on spaces, a spaceless
-             CJK run folding character by character) */
-          const foldLines = (
-            fctx: CanvasRenderingContext2D,
-            text: string,
-            avail: number
-          ): string[] => {
-            const lines: string[] = [];
-            let line = '';
-            for (const tok of text.split(' ')) {
-              const tryTok = line ? `${line} ${tok}` : tok;
-              if (fctx.measureText(tryTok).width <= avail) {
-                line = tryTok;
-                continue;
-              }
-              if (line) lines.push(line);
-              line = '';
-              if (fctx.measureText(tok).width <= avail) {
-                line = tok;
-              } else {
-                for (const chr of tok) {
-                  const tryChr = line + chr;
-                  if (line && fctx.measureText(tryChr).width > avail) {
-                    lines.push(line);
-                    line = chr;
-                  } else {
-                    line = tryChr;
-                  }
-                }
-              }
-            }
-            if (line) lines.push(line);
-            if (!lines.length) lines.push(text);
-            return lines;
-          };
-          /* the density law's line counter: the same fold at CSS scale,
-             one warm ctx — pure measureText, no raster, cached by
-             (text, column) like every other measurement here */
-          const lineCtx = document.createElement('canvas').getContext('2d') as
-            | (CanvasRenderingContext2D & { letterSpacing?: string })
-            | null;
-          const lineCache = new Map<string, number>();
-          const countLines = (text: string) => {
-            if (!compactEvery || !lineCtx) return 1;
-            const avail = colWidth();
-            const key = `${text}@${Math.round(avail)}`;
-            const hit = lineCache.get(key);
-            if (hit !== undefined) return hit;
-            const style = getComputedStyle(word);
-            lineCtx.font = `${style.fontWeight} ${parseFloat(style.fontSize)}px ${style.fontFamily}`;
-            if (style.letterSpacing !== 'normal') {
-              lineCtx.letterSpacing = style.letterSpacing;
-            }
-            const n = foldLines(lineCtx, text, avail).length;
-            lineCache.set(key, n);
-            return n;
+          const countLines = (w: EveryWord) => {
+            if (!compactEvery) return 1;
+            const lineH = parseFloat(getComputedStyle(word).lineHeight);
+            const h = heightCache.get(w.text);
+            return h && lineH ? Math.max(1, Math.round(h / lineH)) : 1;
           };
           const ptsCache = new Map<string, { x: number; y: number }[]>();
           const sampleShape = (text: string, width: number, height: number, count: number) => {
@@ -490,17 +406,12 @@ export default function EverySentence({
               const fmet = ctx.measureText('Hg');
               const asc = fmet.fontBoundingBoxAscent || fontPx * 0.8;
               const desc = fmet.fontBoundingBoxDescent || fontPx * 0.25;
-              /* MOBILE WRAP SAMPLING (founder: two lines): once white-space
-                 goes normal the printed word folds at the pinned column, so
-                 mote targets must land on BOTH lines — the shared fold —
-                 and each line prints centred at its line-height offset
-                 (the h1 centres; so must the ink the motes seat on). The
-                 cache key already carries the wrap width, so a resize
-                 re-folds. */
               const avail = Math.max(width, 10) * scale;
               const lineH =
                 (parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.1) * scale;
-              const lines = foldLines(ctx, text, avail);
+              /* The hidden copy is laid out exactly as the printed word, so its line boxes say where each line breaks and starts. */
+              const copy = stack.find((el) => el.textContent === text);
+              const lines = copy ? groupEveryLines(readEveryGlyphs(copy)) : [{ text, x: 0 }];
               const base = (lineH - (asc + desc)) / 2 + asc;
               sw = Math.ceil(avail) + 8;
               sh = Math.ceil((lines.length - 1) * lineH + base + desc) + 4;
@@ -509,8 +420,7 @@ export default function EverySentence({
               canvas.height = sh;
               applyFont();
               lines.forEach((ln, li) => {
-                const x0 = Math.max(0, (avail - ctx.measureText(ln).width) / 2);
-                ctx.fillText(ln, x0, li * lineH + base);
+                ctx.fillText(ln.text, ln.x * scale, li * lineH + base);
               });
             } else {
               /* the single-line seat, same law as the wrap branch: the
@@ -630,10 +540,7 @@ export default function EverySentence({
             const w0live = Math.max(em.getBoundingClientRect().width, 1);
             for (const g of parts) g.x /= w0live;
             if (compactEvery) {
-              /* the column pin lands while the line is fully dust — the one
-                 layout write of a mobile morph besides the print */
               spanLive = Math.max(w1, 1);
-              if (w0live !== w1) em.style.width = `${w1}px`;
             } else {
               spanLive = w0live;
             }
@@ -659,11 +566,8 @@ export default function EverySentence({
             // the bounds glide to the incoming sentence's shaped width — ONE
             // continuous tween, quantized to device pixels, whose value IS
             // spanLive: the guides and the cloud read the same width every
-            // tick of the glide. Desktop only: the mobile em is pinned to
-            // the column, so the one layout write of a mobile morph is the
-            // print itself (the word's new block height lands while the
-            // line is fully dust — one reflow, not ~40 width ticks;
-            // founder: "slow and laggy on mobile").
+            // tick of the glide. Desktop only: under 720px CSS holds the
+            // em at the column width and the tallest sentence's height.
             if (!compactEvery) {
               const glide = { w: w0live };
               glideTw = gsap.to(glide, {
@@ -703,30 +607,13 @@ export default function EverySentence({
             tl.add(() => {
               const hh = em.offsetHeight;
               const pts = sampleShape(goal.text, w1, hh, cycleN);
+              const dy = inkTop(goal);
               if (compactEvery) {
                 /* a two-line target overruns the plate sized off the
                    standing block — grow it before the first mote lands */
                 let maxY = 0;
                 for (const pt of pts) maxY = Math.max(maxY, pt.y);
-                growDust(maxY + 12);
-                /* the guides take the INCOMING extent while the cloud
-                   assembles into it (founder: a one-line arrival out of
-                   a two-line stand left the brackets tall until the
-                   print began) — the height is predicted from the shared
-                   fold, no layout write; the em itself still lays out
-                   once, at the print, whose glide hands off from
-                   wherever these stand */
-                const lineHpx = parseFloat(getComputedStyle(word).lineHeight) || hh;
-                const hPred = countLines(goal.text) * lineHpx;
-                if (Math.abs(hPred - hh) > 1) {
-                  const gpad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
-                  gsap.set([guideL, guideR], { bottom: 'auto', height: hh + gpad });
-                  gsap.to([guideL, guideR], {
-                    height: hPred + gpad,
-                    duration: 0.6,
-                    ease: 'power2.inOut',
-                  });
-                }
+                growDust(maxY + dy + 12);
               }
               const span = Math.max(w1, 1);
               for (let i = 0; i < cycleN; i++) {
@@ -740,7 +627,7 @@ export default function EverySentence({
                 const u = goal.rtl ? 1 - pt.x / span : pt.x / span;
                 gsap.to(g, {
                   x: pt.x / span,
-                  y: pt.y,
+                  y: pt.y + dy,
                   a: 1,
                   duration: LAND,
                   ease: 'power3.inOut',
@@ -757,34 +644,7 @@ export default function EverySentence({
               }
               printCall = gsap.delayedCall(PRINT_AT, () => {
                 printCall = null;
-                /* the brackets GLIDE between line counts (founder: "when
-                   we do one sentence instead of two, properly animate the
-                   brackets becoming smaller"): the mobile print is the one
-                   moment the em's block height lands, and the guides'
-                   top/bottom anchors would snap with it — so freeze them
-                   at the outgoing height and tween to the incoming one
-                   while the front prints. 0.22em is their overshoot
-                   (top -0.06em + bottom -0.16em). */
-                const h0 = em.offsetHeight;
                 showWord(goal);
-                const h1 = em.offsetHeight;
-                if (h1 !== h0) {
-                  const pad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
-                  /* hand off from wherever the guides stand — the
-                     condense may already have squeezed them to the
-                     incoming extent; snapping back to the outgoing
-                     height would undo it in front of the reader */
-                  const standing = parseFloat(getComputedStyle(guideL).height) || h0 + pad;
-                  gsap.set([guideL, guideR], { bottom: 'auto', height: standing });
-                  gsap.to([guideL, guideR], {
-                    height: h1 + pad,
-                    duration: 0.55,
-                    ease: 'power2.inOut',
-                    onComplete: () => {
-                      gsap.set([guideL, guideR], { clearProps: 'height,bottom' });
-                    },
-                  });
-                }
                 gsap.fromTo(
                   word,
                   {
@@ -853,30 +713,13 @@ export default function EverySentence({
               tl.add(() => {
                 const hh = em.offsetHeight;
                 const pts = sampleShape(goal.text, w1, hh, cycleN);
+                const dy = inkTop(goal);
                 if (compactEvery) {
                   /* a two-line target overruns the plate sized off the
                      standing block — grow it before the first mote lands */
                   let maxY = 0;
                   for (const pt of pts) maxY = Math.max(maxY, pt.y);
-                  growDust(maxY + 12);
-                  /* the guides take the INCOMING extent while the cloud
-                     assembles into it (founder: a one-line arrival out
-                     of a two-line stand left the brackets tall until
-                     the print began) — the height is predicted from the
-                     shared fold, no layout write; the em itself still
-                     lays out once, at the print, whose glide hands off
-                     from wherever these stand */
-                  const lineHpx = parseFloat(getComputedStyle(word).lineHeight) || hh;
-                  const hPred = countLines(goal.text) * lineHpx;
-                  if (Math.abs(hPred - hh) > 1) {
-                    const gpad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
-                    gsap.set([guideL, guideR], { bottom: 'auto', height: hh + gpad });
-                    gsap.to([guideL, guideR], {
-                      height: hPred + gpad,
-                      duration: 0.6,
-                      ease: 'power2.inOut',
-                    });
-                  }
+                  growDust(maxY + dy + 12);
                 }
                 const span = Math.max(w1, 1);
                 for (let i = 0; i < cycleN; i++) {
@@ -899,7 +742,7 @@ export default function EverySentence({
                   const u = goal.rtl ? 1 - pt.x / span : pt.x / span;
                   gsap.to(g, {
                     x: pt.x / span,
-                    y: pt.y,
+                    y: pt.y + dy,
                     a: 1,
                     duration: landDur,
                     ease: 'power3.inOut',
@@ -916,34 +759,7 @@ export default function EverySentence({
                 }
                 printCall = gsap.delayedCall(printFrom, () => {
                   printCall = null;
-                  /* the brackets GLIDE between line counts (founder: "when
-                     we do one sentence instead of two, properly animate the
-                     brackets becoming smaller"): the mobile print is the one
-                     moment the em's block height lands, and the guides'
-                     top/bottom anchors would snap with it — so freeze them
-                     at the outgoing height and tween to the incoming one
-                     while the front prints. 0.22em is their overshoot
-                     (top -0.06em + bottom -0.16em). */
-                  const h0 = em.offsetHeight;
                   showWord(goal);
-                  const h1 = em.offsetHeight;
-                  if (h1 !== h0) {
-                    const pad = 0.22 * parseFloat(getComputedStyle(em).fontSize);
-                    /* hand off from wherever the guides stand — the
-                       condense may already have squeezed them to the
-                       incoming extent; snapping back to the outgoing
-                       height would undo it in front of the reader */
-                    const standing = parseFloat(getComputedStyle(guideL).height) || h0 + pad;
-                    gsap.set([guideL, guideR], { bottom: 'auto', height: standing });
-                    gsap.to([guideL, guideR], {
-                      height: h1 + pad,
-                      duration: 0.55,
-                      ease: 'power2.inOut',
-                      onComplete: () => {
-                        gsap.set([guideL, guideR], { clearProps: 'height,bottom' });
-                      },
-                    });
-                  }
                   gsap.fromTo(
                     word,
                     {
@@ -993,7 +809,6 @@ export default function EverySentence({
               exitFrac();
               gsap.killTweensOf([word, em]);
               gsap.killTweensOf([guideL, guideR]);
-              gsap.set([guideL, guideR], { clearProps: 'height,bottom' });
               gsap.set(word, { clearProps: 'clipPath' });
             };
           };
@@ -1011,7 +826,7 @@ export default function EverySentence({
                morph wraps taller sets the budget, a line's worth of motes
                per line, capped by the pool */
             cycleN = compactEvery
-              ? Math.min(POOL_MAX, poolN * Math.max(countLines(current.text), countLines(target.text)))
+              ? Math.min(POOL_MAX, poolN * Math.max(countLines(current), countLines(target)))
               : poolN;
             holdWidth();
             const w0 = layoutWidth(current);
@@ -1033,7 +848,7 @@ export default function EverySentence({
               parts.forEach((g, i) => {
                 const pt = pts0.length ? pts0[i % pts0.length] : undefined;
                 g.x = pt ? pt.x : w0 / 2;
-                g.y = pt ? pt.y : h * 0.45;
+                g.y = pt ? pt.y + inkTop(current) : h * 0.45;
                 g.a = 0;
               });
             }, 0);
@@ -1116,11 +931,11 @@ export default function EverySentence({
           /* ---- THE VIEWPORT IS LIVE (founder: "someone goes into inspect
              and chooses the iPhone screen width") ----
              Every width above descends from the viewport: the clamp()ed
-             type, the 720px law, the shaped-word table, the em's pin, the
+             type, the 720px law, the shaped-word table, the em's width, the
              dust plate's size and scale. A viewport that changes WITHOUT a
              reload re-derives all of it here — one trailing ~150ms debounce
              (a drag-resize storm collapses to its last state), ONE batched
-             probe-row read per pass, one observer for the engine's
+             read of the hidden stack per pass, one observer for the engine's
              lifetime, and never a measurement inside a frame loop. */
           const retargetGlide = () => {
             /* mid-form the cloud already rides spanLive, so moving the
@@ -1133,7 +948,7 @@ export default function EverySentence({
             widthTw = null;
             if (compactEvery) {
               spanLive = Math.max(w1, 1);
-              em.style.width = `${w1}px`;
+              em.style.width = '';
               return;
             }
             const glide = { w: Math.max(em.getBoundingClientRect().width, 1) };
@@ -1161,6 +976,10 @@ export default function EverySentence({
             if (drawing) sizeDust();
             if (phase === 'form') {
               retargetGlide();
+            } else if (compactEvery) {
+              widthTw?.kill();
+              widthTw = null;
+              em.style.width = '';
             } else if (!morphing) {
               /* the standing sentence settles onto its fresh width — a
                  quick glide, never a snap */
@@ -1189,10 +1008,7 @@ export default function EverySentence({
           void document.fonts.ready.then(() => {
             if (em.isConnected) repass();
           });
-          /* container truth: the column can move without a window resize.
-             ONE observer, gated to real width changes — the em's own morphs
-             resize the parent's height, never its width (the host h1's span
-             is a block), so the engine can never re-trigger itself. */
+          /* Only width changes count, so the em's own height hold never re-triggers the engine. */
           let lastColW = -1;
           const ro = new ResizeObserver((entries) => {
             const cw = entries[entries.length - 1]?.contentRect.width ?? -1;
@@ -1253,6 +1069,13 @@ export default function EverySentence({
     <em className='every-sentence' data-every ref={emRef}>
       <span data-every-word dir={initialWord.rtl ? 'rtl' : 'ltr'} lang={initialWord.lang}>
         {initialWord.text}
+      </span>
+      <span aria-hidden='true' data-every-stack>
+        {Object.entries(words).map(([loc, w]) => (
+          <span dir={w.rtl ? 'rtl' : 'ltr'} key={loc} lang={w.lang}>
+            {w.text}
+          </span>
+        ))}
       </span>
     </em>
   );
