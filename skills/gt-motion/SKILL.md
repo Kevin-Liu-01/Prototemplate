@@ -336,7 +336,7 @@ renders).
   once round the meridian, then the G once round the equator), SVG and
   CSS alone. Each part is a dashed ellipse arc, each gap a mask, and
   `pnpm build:logo-motion` writes both from the videos' timing and eases
-  at the logo's weight.
+  on the logo's construction.
 
 Five dash traps were each found in a rejected round, and
 [references/traps.md](references/traps.md) ("SVG dashes and lines", "GSAP")

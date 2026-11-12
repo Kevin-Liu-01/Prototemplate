@@ -27,7 +27,7 @@ This file backs section 4 of `gt-brand`. Katagami Text is the one typeface (Kevi
 | labels, weight 500 | -0.01em |
 | group labels, weight 500 | -0.005em |
 | running text, weight 400 | 0 |
-| the name in the logo, weight 500 | 0, with the font's kerning |
+| the name in the logo, weight 400 | -0.05em, with the font's kerning (Kevin's wordmark, 2026-11-12) |
 
 - **Code.** Geist Mono (OFL 1.1, from Google Fonts or vercel/geist-font), bound in gt-cloud as `mono` on `--font-mono` through `next/font/google`, the one Google face gt-ui allows. The brand kit does not bundle it.
 - **The lint.** gt-cloud #5765 renames gt-ui's `inter-only` to `katagami-text-only`: next/font/google faces other than Geist Mono, `localFont` files other than the Katagami Text builds, and font classes and inline families outside the site type fail.

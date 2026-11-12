@@ -133,7 +133,10 @@ docked. Hover and pointer events inside it keep working.
   dialog) shows the logo's loader: `GtLogoMotion` in `loader` mode, with a
   label that says what loads (2026-11-09).
 - The logo inside a link or a button takes `GtLogoMotion`'s `hover` mode,
-  so its meridian draws back while the link is hovered or focused.
+  so its meridian draws back while the link is hovered or focused. Both
+  modes draw the refined logo of 2026-11-12; a copy of the component in
+  another repository takes the regenerated `GtLogoMotion.css` and
+  `GtLogoMotion.geometry.ts`, never an older copy.
 - A placeholder that only holds a height for a moment stays blank, and the
   doubled-line monogram, the speed marks and a generic spinner never stand
   in for the loader.

@@ -31,7 +31,7 @@ This file is the detail behind sections 6 and 9 of `../SKILL.md`. Paths that sta
 | `kit/dither.js` | `window.GTDither`: `grid(canvas, cell)`, `toneFromImage(img, grid, { fit, focusX, focusY, gamma, invert, blur, lift, region })`, `draw(grid, field, { ink, paper })`, `mix(a, b, p)` on one smoothstep (drive `p` with ease `none`), `fields.ramp`, `fields.disc`, `fields.horizon`, `rng(seed)` |
 | `kit/gemsmoke.js` | `window.GTGem` (an ES module that fires `gtgem-ready`): `mount(host, { palette, params, image, width, height, pixelRatio, offset, rate })` resolves to `{ at(t), set(params), dither(grid, { tones, gain, gamma, amount }), canvas, mount }` |
 | `kit/endcard/endcard.js` | `addEndCard(tl, { palette, title: [line1, line2], url, start })` |
-| `kit/brand/gt-logo-motion.js` | `window.GTLogoMotion.create({ ink })` returns `{ svg, set(t) }`: the logo and its loop "Meridian, then G" at loop time t; `node kit/brand/logo-motion.mjs` writes it from the site's GtLogoMotion files |
+| `kit/brand/gt-logo-motion.js` | `window.GTLogoMotion.create({ ink })` returns `{ svg, set(t) }`: the logo and its loop "Meridian, then G" at loop time t; `node kit/brand/logo-motion.mjs` writes it from the site's GtLogoMotion files (the refined logo since 2026-11-12, same API, layers and timing) |
 | `kit/sheet.js` | `window.GTSheet.mount(el, { inset: 67 })`: rails, rules, registration crosses, the small mark and a counter |
 | `kit/gem-shapes/make.mjs` | processes a mark into a gem smoke shape PNG; add a row to its SHAPES list and run it (Chrome through playwright-core, `CHROME_PATH` to pin one) |
 

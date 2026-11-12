@@ -116,13 +116,17 @@ product.
 
 ## 4. The mark
 
-The mark is the logo, Axis and meridian behind
+The mark is the logo, the refined globe of 2026-11-12
 (`/brand/gt-globe-logo-light.svg`, `gt-globe-logo-dark.svg` + transparent
 PNG variants, all written from `LOGO` in `src/lib/logo.ts` by
 `pnpm build:logo`): a globe whose ring, meridian oval and latitude oval
 draw the G, with the T's stem, the polar axis, and the back meridian
 broken where they pass behind the oval's lower arc, the front of the
-equator. On hover, on sign-in and while loading it takes its state, Oval
+equator. It is Kevin's drawing of Axis and meridian behind (the globe he
+chose on 2026-11-06) on its own construction: each oval has its own
+centre and radii, the lines are 13.2 units of the 256 square, and the
+gaps where a line passes behind another are narrower
+(`src/lib/logo-construction.json`). On hover, on sign-in and while loading it takes its state, Oval
 globe, axis behind, the same globe without its meridian. Both lead the
 shortlist on `/marks`, and `/marks/graticule` shows the marks that led to
 them. Locadex carries its own mark (`/brand/locadex-mark.svg`).
@@ -151,9 +155,15 @@ the old addresses and `public/brand/gt-globe-logo.json`, the fingerprint
 (the sha256 of `LOGO.d`, its viewBox, the lockup's sha256 and the two
 lockup gaps) that checks in other repositories compare against, and
 `pnpm lint:logo` fails on the monogram, an edited or hand copy of the
-path, a stale generated file, an old address in code, a typeset name or
-an unlisted logo picture (`scripts/lint/logo.json` lists the generated
-files, the history and what is not the logo).
+path, a stale generated file, an old address in code, a typeset name,
+an unlisted logo picture or the previous logo (`scripts/lint/logo.json`
+lists the generated files, the history and what is not the logo).
+
+On 2026-11-12 the globe of 2026-11-06 became the previous logo. Graphics
+already made stay as they are: the films, posters, contact sheets and
+cards that end on it are history in the lock and are not labelled. Every
+new code, markup or SVG uses `LOGO`; rule 12 of `pnpm lint:logo` fails on
+the 11-06 globe's path anywhere else.
 
 Rules:
 
@@ -167,46 +177,48 @@ Rules:
   Bayer-dithered specular shimmer (`DitheredMark`), never a GIF, never a
   filter glow.
 - **Beside the stacked name**, "General" over "Translation", the globe is
-  1.1 times the span from the first line's cap top to the second line's
-  baseline (2.4627 cap heights), centred on that span, so it overshoots
-  the cap top and the baseline by 0.1231 cap height each. The gap from
-  the globe's ink to the G is 0.8 cap height (Kevin, 2026-11-09). A round
+  2.3643 cap heights tall, centred on the name's ink from the G's top to
+  the foot of the a, and the gap from its ink to the name's leftmost ink,
+  the T's, is 0.5826 cap height (Kevin's wordmark, 2026-11-12). A round
   mark only as tall as flat-topped text looks shorter than the text, for
   the same reason round letters such as O overshoot the cap height and
   the baseline.
 - **On one line**, "General Translation" beside the globe, where height
-  is short (a header bar, a footer, a banner): the globe is 2.2 cap
+  is short (a header bar, a footer, a banner): the globe is 1.9 cap
   heights tall, the size at which its ring is as thick as the name's
-  stems (the ring is 6.57 percent of the globe's height and the stem at
-  weight 500 is 0.1448 cap height, so they match at 2.203, rounded to
-  2.2). It is centred on the cap band, so it stands 0.6 cap height above
-  the cap line and below the baseline, and its ink is 0.8 cap height
-  from the G's, as in the stacked lockup (Kevin approved the brand kit's
-  one-line lockup, clear space and minimum sizes on 2026-11-08).
+  stems (the ring is 6.37 percent of the globe's height and the stem at
+  weight 400 is 0.121 cap height, so they match at 1.90). It is centred
+  on the cap band, so it stands 0.45 cap height above the cap line and
+  below the baseline, and its ink is 0.5826 cap height from the G's, as
+  in the stacked lockup (2026-11-12; it was 2.2 cap heights and 0.8).
 - **The four-globe lockup** sets three graticule globes before the logo
   and the stacked name: a whole graticule with its polar arcs, the
   graticule with its meridian opened on the right where the G opens, the
-  graticule without its polar arcs, then the logo. Every globe shares the
-  logo's ring, 13.6 unit line weight, meridian oval and latitude oval; the
-  globes stand 0.22 globe diameters apart (0.596 cap height), and the logo
-  and the name keep the stacked lockup's size and 0.8 cap height gap.
+  graticule without its polar arcs, then the logo. The three stage globes
+  are still drawn on the 11-06 globe's construction (13.6 unit lines,
+  shared ovals) and wait for the refined progression; the globes stand
+  0.22 globe diameters apart (0.5201 cap height), and the logo and the
+  name keep the stacked lockup's size and 0.5826 cap height gap.
   `pnpm build:strip` writes `public/brand/gt-globe-strip*.svg` (currentColor,
   ink, paper, the accent and its lift) and the three graticule globes alone
   (`public/marks/graticule/strip/stage-*.svg`).
 - **Clear space** is X, a quarter of the globe's height, on every side
-  of either lockup: 0.68 cap height in the stacked lockup and 0.55 in the
-  one-line lockup. The name alone keeps 0.68 cap height, the space it has
+  of either lockup: 0.59 cap height in the stacked lockup and 0.475 in the
+  one-line lockup. The name alone keeps 0.59 cap height, the space it has
   in the stacked lockup. No text, edge or other logo enters it.
 - **Minimum sizes.** The globe alone 24px tall (16px only as a tab
   icon); either lockup and the name alone at a cap height of 9px, where
-  the stacked globe is 24.4px and the one-line globe 19.8px. In print
+  the stacked globe is 21.3px and the one-line globe 17.1px. In print
   24px is 6.4 mm and a 9px cap height 2.4 mm.
-- **The name in the lockup is Katagami Text** at weight 500, letter-spacing
-  0, with the font's own kerning, drawn as outlines (Kevin, 2026-11-08:
-  "remember the word mark of general translation text uses katagami
-  text!"). The two lines are flush left by ink, with 0.4627 cap height of
-  white between the first baseline and the second cap line: the name's own
-  word gap. `pnpm build:lockup` writes every lockup file from the font and
+- **The name in the lockup is Katagami Text** at weight 400, letter-spacing
+  -0.05 em, with the font's own kerning (at 400 only T and r kern), drawn
+  as outlines (Kevin, 2026-11-08: "remember the word mark of general
+  translation text uses katagami text!"; weight and tracking from his
+  wordmark of 2026-11-12, which ends the earlier rule of no negative
+  tracking in the lockup). The two lines start at one pen origin, so the
+  T's ink stands 0.0161 cap height left of the G's, with 0.2865 cap height
+  of white between the first baseline and the second cap line, about the
+  cap height less the x-height. `pnpm build:lockup` writes every lockup file from the font and
   `LOGO` (`public/brand/gt-globe-lockup*.svg`, the deck's `#gt-lockup`,
   the globe rows' name). Running copy is Katagami Text too (section 6).
 - **In running text, write General Translation.** A sentence never names
@@ -308,9 +320,9 @@ The identity is applied on four kinds of surface today.
   2026-09-25.
 - **Motion.** The films on `/motion` apply the identity to film: the blog
   trailers, the product films and the translation-history series.
-- **The marks.** The logo, Axis and meridian behind, is the mark in this
-  site's chrome, on `/brand` and in the deck since 2026-11-08 (section
-  4). The shortlist on `/marks` opens on it and its state, Oval globe,
+- **The marks.** The logo, the refined globe, is the mark in this site's
+  chrome, on `/brand` and in the deck since 2026-11-12, after Axis and
+  meridian behind from 2026-11-08 (section 4). The shortlist on `/marks` opens on it and its state, Oval globe,
   axis behind. The speed marks chosen on 2026-09-29 sit beside the
   doubled-line monogram, the previous mark. The title badges in the
   `/brand` and `/marks` heads cycle through a selection of the marks on
