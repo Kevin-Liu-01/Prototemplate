@@ -185,6 +185,36 @@
       "sha256": "fb23b7dc7816ff75b9a935626f610d71cbc55cfc668921f6daaed5e890b03b7c"
     },
     {
+      "path": "public/brand/kit/sheets/brand-sheet.webp",
+      "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "c6c49c10471b2da9ac017fd92beded5ffef62122551c841b08c2a7a99062fdfc"
+    },
+    {
+      "path": "public/brand/kit/sheets/clear-space.webp",
+      "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "c5f34de6fffae3ebbc96ca5903f2b6a0541c874bb6bf16d0fb7bc1d99a1b3e1e"
+    },
+    {
+      "path": "public/brand/kit/sheets/minimum-size.webp",
+      "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "8309c47f9b9b3efe178b2faeb8c975595ec4037aee30ee03846af5d2c23b47f9"
+    },
+    {
+      "path": "public/brand/kit/sheets/variant-sheet.webp",
+      "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "23fa01149f72287b5b170b0be482cb405b91bfc761b12b9594702876d5bae1d6"
+    },
+    {
+      "path": "public/brand/kit/sheets/frames-sheet.webp",
+      "generator": "pnpm build:brand-kit (cuts the brand kit's guide sheet, which draws LOGO)",
+      "sourceSha256": "50fbc3ecf6a586e6bd1aec15d6cb0518efea8fd83ec0a0e45d69a4fce65b243c",
+      "sha256": "7f66690d03a8f6c708876f9092e97e6b1311578533b58fe7bce8c0c3d803ebe6"
+    },
+    {
       "path": "public/marks/graticule/variations/axis-and-meridian-behind.svg",
       "generator": "the graticule study's export (pnpm test:marks holds it to LOGO)"
     },

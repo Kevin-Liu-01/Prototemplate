@@ -77,14 +77,28 @@ export function matches(pattern, rel) {
 }
 
 /**
+ * The paths among `rels` the manifest lists under neither "generated" nor
+ * "checked", each by its own path: recordGenerated refuses them, so a
+ * generator checks its outputs here before it writes any.
+ */
+export function unlisted(manifest, rels) {
+  return rels.filter((rel) => !manifest.generated.some((item) => item.path === rel) && !manifest.checked.some((item) => item.path === rel));
+}
+
+export const unlistedMessage = (rel) => `${rel} is listed under neither "generated" nor "checked" in ${MANIFEST}; list it first`;
+
+/**
  * Records the generated rasters at `rels` as built from the current LOGO.d:
  * each one's sha256 and the LOGO.d hash it was drawn from; and the checked
  * pictures at `rels` at their present bytes (their sha256). A path the
- * manifest lists under neither is an error, so a new output is listed by
- * hand once, with its generator or the reason it was checked.
+ * manifest lists under neither is an error, raised before anything is
+ * recorded, so a new output is listed by hand once, with its generator or
+ * the reason it was checked.
  */
 export function recordGenerated(root, rels, logoSha) {
   const manifest = readManifest(root);
+  const missing = unlisted(manifest, rels);
+  if (missing.length) throw new Error(missing.map(unlistedMessage).join('\n'));
   for (const rel of rels) {
     const checked = manifest.checked.find((item) => item.path === rel);
     if (checked) {
@@ -92,7 +106,6 @@ export function recordGenerated(root, rels, logoSha) {
       continue;
     }
     const entry = manifest.generated.find((item) => item.path === rel);
-    if (!entry) throw new Error(`${rel} is listed under neither "generated" nor "checked" in ${MANIFEST}; list it first`);
     if (!RASTER.test(rel)) continue;
     entry.sourceSha256 = logoSha;
     entry.sha256 = sha256(readFileSync(join(root, rel)));

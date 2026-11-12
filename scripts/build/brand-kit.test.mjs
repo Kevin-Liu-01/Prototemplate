@@ -1,15 +1,17 @@
 /**
  * Tests for scripts/build/brand-kit.mjs: node --test scripts/build/brand-kit.test.mjs
  * (pnpm test:brand-kit). Each case builds a stand-in kit whose logo PNGs
- * differ from the committed ones, runs the builder with --root on a
- * temporary checkout holding the real src/lib/logo.ts and
+ * and guide sheets differ from the committed ones, runs the builder with
+ * --root on a temporary checkout holding the real src/lib/logo.ts and
  * scripts/lint/logo.json, and reads the manifest after: every logo picture
- * the kit writes is pinned at its new bytes and the current LOGO.d, and an
- * unlisted one fails the build. The builder cuts the sheets with sips and
- * cwebp, so the cases skip where either is missing (Linux CI).
+ * the kit writes (the mark's and lockups' PNGs and the sheets that draw the
+ * mark) is pinned at its new bytes and the current LOGO.d, and an unlisted
+ * one, PNG or sheet, fails the build before it deletes or writes a file.
+ * The builder cuts the sheets with sips and cwebp, so the cases skip where
+ * either is missing (Linux CI).
  */
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { after, describe, it } from 'node:test';
@@ -43,6 +45,8 @@ const TYPES = [
   ['wordmark', 'gt-wordmark-stacked'],
 ];
 const SHEETS = ['guides/brand-sheet', 'guides/clear-space', 'guides/minimum-size', 'guides/variant-sheet', 'type/type-spec', 'color/color-sheet', 'frames/frames-sheet'];
+/** the sheets that draw the mark, as the builder writes them; type-spec and color-sheet do not */
+const MARK_SHEETS = ['brand-sheet', 'clear-space', 'minimum-size', 'variant-sheet', 'frames-sheet'].map((k) => `public/brand/kit/sheets/${k}.webp`);
 
 after(() => {
   for (const root of ROOTS) rmSync(root, { recursive: true, force: true });
@@ -86,10 +90,11 @@ const run = (root, from) => spawnSync(process.execPath, [SCRIPT, '--from', from,
 const kitPictures = (manifest) => manifest.generated.filter((e) => e.path.startsWith('public/brand/kit/') && RASTER.test(e.path));
 
 describe('brand-kit records its logo pictures', { skip: SKIP }, () => {
-  it('pins every listed kit picture at its new bytes and the current LOGO.d', () => {
+  it('pins every listed kit picture, the sheets that draw the mark among them, at its new bytes and the current LOGO.d', () => {
     const root = checkout();
     const before = kitPictures(JSON.parse(readFileSync(join(root, MANIFEST), 'utf8')));
-    assert.ok(before.length >= 6, 'the manifest lists the mark and lockup PNGs');
+    assert.ok(before.length >= 6 + MARK_SHEETS.length, 'the manifest lists the mark and lockup PNGs and the mark sheets');
+    for (const sheet of MARK_SHEETS) assert.ok(before.some((e) => e.path === sheet), `the manifest lists ${sheet}`);
     const result = run(root, kit());
     assert.equal(result.status, 0, result.stderr);
     const pinned = kitPictures(JSON.parse(readFileSync(join(root, MANIFEST), 'utf8')));
@@ -102,11 +107,29 @@ describe('brand-kit records its logo pictures', { skip: SKIP }, () => {
     }
   });
 
-  it('fails on a logo picture the manifest does not list', () => {
-    const missing = 'public/brand/kit/png/gt-mark-white-on-transparent-1024.png';
+  /**
+   * A checkout whose manifest leaves out `missing` and whose public/brand/kit
+   * holds an earlier build; the builder must fail and leave both as they were.
+   */
+  function failsBeforeWriting(missing) {
     const root = checkout((manifest) => ({ ...manifest, generated: manifest.generated.filter((e) => e.path !== missing) }));
+    const earlier = { 'public/brand/kit/manifest.json': '{"earlier":true}\n', [missing]: 'an earlier build' };
+    for (const [rel, body] of Object.entries(earlier)) put(root, rel, body);
+    const lock = readFileSync(join(root, MANIFEST), 'utf8');
     const result = run(root, kit());
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /gt-mark-white-on-transparent-1024\.png is listed under neither/);
+    const name = missing.split('/').pop().replace(/[.]/g, '\\.');
+    assert.match(result.stderr, new RegExp(`${name} is listed under neither`));
+    for (const [rel, body] of Object.entries(earlier)) assert.equal(readFileSync(join(root, rel), 'utf8'), body, `${rel} is left as it was`);
+    assert.ok(!existsSync(join(root, 'public/brand/kit/svg')), 'no kit file is written');
+    assert.equal(readFileSync(join(root, MANIFEST), 'utf8'), lock, 'the logo lock is left as it was');
+  }
+
+  it('fails on a logo PNG the manifest does not list, before it deletes or writes anything', () => {
+    failsBeforeWriting('public/brand/kit/png/gt-mark-white-on-transparent-1024.png');
+  });
+
+  it('fails on a sheet that draws the mark the manifest does not list, before it deletes or writes anything', () => {
+    failsBeforeWriting('public/brand/kit/sheets/frames-sheet.webp');
   });
 });

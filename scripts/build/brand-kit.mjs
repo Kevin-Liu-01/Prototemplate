@@ -11,10 +11,16 @@
 // and the page's download button links it; without --zip the page names no
 // zip and shows no button.
 //
-// It records every logo picture it writes (the mark's and both lockups'
-// PNGs) in scripts/lint/logo.json at the current LOGO.d, as pnpm build:logo
-// does, so a rebuilt kit leaves no stale pin for pnpm lint:logo; a logo
-// picture the manifest does not list fails the build until it is listed.
+// Every picture it writes that shows the mark is a logo picture: the
+// mark's and both lockups' 1024 px PNGs in ink and white (six files) and the five guide
+// sheets that draw the mark (brand-sheet, clear-space, minimum-size,
+// variant-sheet and frames-sheet; type-spec and color-sheet do not). It
+// records each one in scripts/lint/logo.json, at the bytes it wrote and the
+// current LOGO.d, as pnpm build:logo does, so a rebuilt kit leaves no stale
+// pin for pnpm lint:logo. It works out every file first and checks each
+// logo picture is listed under "generated" or "checked" there; one that is
+// not stops it before it deletes or writes anything. Then it copies and
+// cuts, then records, then writes the manifest.
 //
 // Usage:
 //   node scripts/build/brand-kit.mjs --from <kit folder> [--zip <kit zip>] [--root <checkout>]
@@ -25,7 +31,7 @@ import { join, resolve } from 'node:path';
 
 import { ROOT as REPO_ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
-import { loadLogo, recordGenerated, sha256 } from '../lib/logo-lock.mjs';
+import { loadLogo, readManifest, recordGenerated, sha256, unlisted, unlistedMessage } from '../lib/logo-lock.mjs';
 
 helpIfAsked(import.meta.url);
 
@@ -56,31 +62,26 @@ const TYPES = [
 const SVG_COLORS = ['ink', 'white', 'accent', 'accent-lift', 'currentcolor'];
 const PNG_COLORS = ['ink', 'white'];
 const COLOR_FILES = ['colors.css', 'colors.json', 'colors.ase'];
-/** the guide sheets: the page's key, the kit path, and its PDF beside it when there is one */
+/** the guide sheets: the page's key, the kit path (its PDF sits beside it when there is one), and whether the sheet draws the mark */
 const SHEETS = [
-  ['brand-sheet', 'guides/brand-sheet.png'],
-  ['clear-space', 'guides/clear-space.png'],
-  ['minimum-size', 'guides/minimum-size.png'],
-  ['variant-sheet', 'guides/variant-sheet.png'],
-  ['type-spec', 'type/type-spec.png'],
-  ['color-sheet', 'color/color-sheet.png'],
-  ['frames-sheet', 'frames/frames-sheet.png'],
+  ['brand-sheet', 'guides/brand-sheet.png', true],
+  ['clear-space', 'guides/clear-space.png', true],
+  ['minimum-size', 'guides/minimum-size.png', true],
+  ['variant-sheet', 'guides/variant-sheet.png', true],
+  ['type-spec', 'type/type-spec.png', false],
+  ['color-sheet', 'color/color-sheet.png', false],
+  ['frames-sheet', 'frames/frames-sheet.png', true],
 ];
 
 /** the widest a sheet's WebP is cut: 1800 px, twice the 900 px it shows at */
 const MAX_SHEET = 1800;
 
-rmSync(OUT, { recursive: true, force: true });
-for (const dir of ['svg', 'png', 'color', 'sheets']) mkdirSync(join(OUT, dir), { recursive: true });
+function fail(message) {
+  console.error(`brand-kit: ${message}`);
+  process.exit(1);
+}
 
 const size = (file) => statSync(file).size;
-if (ZIP) copyFileSync(ZIP, join(OUT, ZIP_NAME));
-function copy(src, rel) {
-  const from = join(FROM, src);
-  if (!existsSync(from)) throw new Error(`brand-kit: the kit has no ${src}`);
-  copyFileSync(from, join(OUT, rel));
-  return { file: rel, bytes: size(join(OUT, rel)) };
-}
 
 function dims(file) {
   const out = execFileSync('sips', ['-g', 'pixelWidth', '-g', 'pixelHeight', file], { encoding: 'utf8' });
@@ -88,41 +89,75 @@ function dims(file) {
   return { width: n('pixelWidth'), height: n('pixelHeight') };
 }
 
-const logos = TYPES.map(([key, folder, stem]) => ({
-  key,
-  svg: Object.fromEntries(SVG_COLORS.map((c) => [c, copy(`logo/${folder}/svg/${stem}-${c}.svg`, `svg/${stem}-${c}.svg`)])),
-  png: Object.fromEntries(
-    PNG_COLORS.map((c) => [c, copy(`logo/transparent/${folder}/${stem}-${c}-on-transparent-1024.png`, `png/${stem}-${c}-on-transparent-1024.png`)])
-  ),
-}));
+/* ---- what it will write, worked out before anything is written ---- */
 
-/* every logo picture written, pinned at the current LOGO.d */
-const { LOGO } = await loadLogo(ROOT);
-const pictures = logos.filter((l) => !l.key.startsWith('wordmark')).flatMap((l) => Object.values(l.png).map((f) => `public/brand/kit/${f.file}`));
-recordGenerated(ROOT, pictures, sha256(LOGO.d));
-
-const color = COLOR_FILES.map((name) => copy(`color/${name}`, `color/${name}`));
-
-const sheets = SHEETS.map(([key, src]) => {
+/** [kit file, path under public/brand/kit] for every file copied as it is */
+const copies = [];
+function planCopy(src, rel) {
   const from = join(FROM, src);
-  const rel = `sheets/${key}.webp`;
+  if (!existsSync(from)) fail(`the kit has no ${src}`);
+  copies.push([from, rel]);
+  return rel;
+}
+
+const logoFiles = TYPES.map(([key, folder, stem]) => ({
+  key,
+  svg: SVG_COLORS.map((c) => [c, planCopy(`logo/${folder}/svg/${stem}-${c}.svg`, `svg/${stem}-${c}.svg`)]),
+  png: PNG_COLORS.map((c) => [c, planCopy(`logo/transparent/${folder}/${stem}-${c}-on-transparent-1024.png`, `png/${stem}-${c}-on-transparent-1024.png`)]),
+}));
+const colorFiles = COLOR_FILES.map((name) => planCopy(`color/${name}`, `color/${name}`));
+const sheetCuts = SHEETS.map(([key, src, mark]) => {
+  const from = join(FROM, src);
+  if (!existsSync(from)) fail(`the kit has no ${src}`);
   const source = dims(from);
   const width = Math.min(source.width, MAX_SHEET);
   const height = Math.round((source.height * width) / source.width);
-  execFileSync('cwebp', ['-quiet', '-q', '80', '-m', '6', '-resize', String(width), String(height), from, '-o', join(OUT, rel)]);
   const pdf = src.replace(/\.png$/, '.pdf');
-  return { key, file: rel, bytes: size(join(OUT, rel)), width, height, pdf: existsSync(join(FROM, pdf)) ? pdf : null };
+  return { key, from, rel: `sheets/${key}.webp`, mark, width, height, pdf: existsSync(join(FROM, pdf)) ? pdf : null };
 });
 
 /** what the zip holds, counted from the folder: files per top-level folder */
 function count(dir) {
+  if (!existsSync(join(FROM, dir))) fail(`the kit has no ${dir}/ folder`);
   const out = execFileSync('find', [join(FROM, dir), '-type', 'f'], { encoding: 'utf8' });
   return out.split('\n').filter(Boolean).length;
 }
+const folders = Object.fromEntries(['logo', 'frames', 'color', 'type', 'guides', 'motion'].map((d) => [d, count(d)]));
+if (ZIP && !existsSync(ZIP)) fail(`no zip at ${ZIP}`);
+
+/* every picture it writes that shows the mark: the mark's and the lockups' PNGs and the sheets that draw the mark */
+const pictures = [
+  ...logoFiles.filter((l) => !l.key.startsWith('wordmark')).flatMap((l) => l.png.map(([, rel]) => rel)),
+  ...sheetCuts.filter((s) => s.mark).map((s) => s.rel),
+].map((rel) => `public/brand/kit/${rel}`);
+const missing = unlisted(readManifest(ROOT), pictures);
+if (missing.length) fail(`${missing.map(unlistedMessage).join('\n')}\nnothing was written`);
+
+/* ---- write: copy, cut, then record ---- */
+
+rmSync(OUT, { recursive: true, force: true });
+for (const dir of ['svg', 'png', 'color', 'sheets']) mkdirSync(join(OUT, dir), { recursive: true });
+if (ZIP) copyFileSync(ZIP, join(OUT, ZIP_NAME));
+for (const [from, rel] of copies) copyFileSync(from, join(OUT, rel));
+for (const s of sheetCuts) {
+  execFileSync('cwebp', ['-quiet', '-q', '80', '-m', '6', '-resize', String(s.width), String(s.height), s.from, '-o', join(OUT, s.rel)]);
+}
+
+const { LOGO } = await loadLogo(ROOT);
+recordGenerated(ROOT, pictures, sha256(LOGO.d));
+
+const entry = (rel) => ({ file: rel, bytes: size(join(OUT, rel)) });
+const logos = logoFiles.map((l) => ({
+  key: l.key,
+  svg: Object.fromEntries(l.svg.map(([c, rel]) => [c, entry(rel)])),
+  png: Object.fromEntries(l.png.map(([c, rel]) => [c, entry(rel)])),
+}));
+const color = colorFiles.map(entry);
+const sheets = sheetCuts.map((s) => ({ key: s.key, ...entry(s.rel), width: s.width, height: s.height, pdf: s.pdf }));
 
 const manifest = {
   zip: ZIP ? { name: ZIP_NAME, bytes: size(ZIP), url: `/brand/kit/${ZIP_NAME}` } : null,
-  folders: Object.fromEntries(['logo', 'frames', 'color', 'type', 'guides', 'motion'].map((d) => [d, count(d)])),
+  folders,
   logos,
   color,
   sheets,
