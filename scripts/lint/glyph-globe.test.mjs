@@ -1,7 +1,7 @@
 // Tests for the glyph globe configurator's controls
 // (src/lib/glyph-globe-controls.ts): under every preset, each slider
 // reaches its default exactly, so an untouched slider and one moved back
-// print no prop. Loaded
+// print no prop, and no two controls share an accessible name. Loaded
 // through Node's type stripping, with a resolve hook that maps @/ to src/
 // and adds .ts to extensionless imports.
 //
@@ -68,4 +68,39 @@ test('the 39.81 latitude, 0.32 roll and launch tile are reached', () => {
   assert.equal(rangeStep(range('latitude'), 39.81), 0.01);
   assert.equal(rangeStep(range('roll'), 0.32), 0.01);
   assert.equal(snapRange(0.04, rangeStep(range('tile'), base.tile), base.tile), base.tile);
+});
+
+test('every control has its own accessible name', () => {
+  const names = [
+    ...RANGES.map((r) => r.label),
+    ...GLYPH_GLOBE_COLORS.map((c) => c.label),
+    /* the demo's own controls (GlyphGlobeDemo.tsx) */
+    'Preset',
+    'Glyphs',
+    'Framing',
+    'Screen',
+    'Motion',
+    'Direction',
+    'Boxes',
+    'Breathe',
+    'Twinkle',
+    'Still',
+    'Still at',
+    'Center x',
+    'Center y',
+    'Radius',
+    'Glyph set',
+    'Palette',
+    'Star 1',
+    'Star 2',
+    ...Array.from({ length: 5 }, (_, i) => `Ink ${i + 1}`),
+    'Add Ink',
+    'Remove Ink',
+  ];
+  const seen = new Map();
+  for (const name of names) {
+    const key = name.toLowerCase();
+    assert.ok(!seen.has(key), `two controls are named ${name}`);
+    seen.set(key, name);
+  }
 });

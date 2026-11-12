@@ -1,7 +1,7 @@
 /**
  * The glyph globe configurator's controls (src/components/docs/demos/
  * GlyphGlobeDemo.tsx): a slider for every number the engine takes and a
- * picker for each palette color. A
+ * picker for each palette color, each with its own accessible name. A
  * slider's step comes from the default it starts at, so an untouched
  * slider and one moved back both hold that default exactly and the printed
  * JSX leaves it out (pnpm test:glyph-globe holds every preset to that).
@@ -68,9 +68,9 @@ export const GLYPH_GLOBE_RANGE_GROUPS: readonly { title: string; ranges: readonl
   {
     title: 'Light',
     ranges: [
-      { key: 'rim', label: 'Rim', min: 0, max: 2, step: 0.01 },
-      { key: 'dawn', label: 'Dawn', min: 0, max: 2, step: 0.01 },
-      { key: 'bloom', label: 'Bloom', min: 0, max: 1.5, step: 0.01 },
+      { key: 'rim', label: 'Rim strength', min: 0, max: 2, step: 0.01 },
+      { key: 'dawn', label: 'Dawn strength', min: 0, max: 2, step: 0.01 },
+      { key: 'bloom', label: 'Bloom strength', min: 0, max: 1.5, step: 0.01 },
       { key: 'sunAngle', label: 'Light angle', min: -180, max: 180, step: 1, unit: '°', digits: 0 },
       { key: 'stars', label: 'Stars', min: 0, max: 1, step: 0.01 },
     ],
@@ -85,9 +85,9 @@ export const GLYPH_GLOBE_COLORS: readonly { key: GlyphGlobeColorKey; label: stri
   { key: 'tileLow', label: 'Tile low' },
   { key: 'tileHigh', label: 'Tile high' },
   { key: 'letter', label: 'Letter' },
-  { key: 'rim', label: 'Rim' },
-  { key: 'dawn', label: 'Dawn' },
-  { key: 'bloom', label: 'Bloom' },
+  { key: 'rim', label: 'Rim color' },
+  { key: 'dawn', label: 'Dawn color' },
+  { key: 'bloom', label: 'Bloom color' },
 ];
 
 /** Places after the point a slider's step may take: finer defaults are reached by snapping. */
