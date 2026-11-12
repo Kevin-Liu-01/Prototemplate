@@ -122,6 +122,7 @@ The signature visuals as components and engines. Full table, interfaces and gt-c
 | --- | --- |
 | dither | `src/lib/dither.ts` (`createDitherLoop`, field factories, combinators) |
 | studio field | `src/lib/studio-field.ts` with `src/components/shared/StudioField.tsx` (`BAYER_PRESETS`, default `'02'`) |
+| glyph globe | `src/components/shared/GlyphGlobe.tsx` over `src/lib/glyph-globe.ts` (the launch globe; presets in `glyph-globe-presets.ts`) |
 | glyph field | `src/lib/glyph-field.ts` (`createGlyphField`) |
 | horizon field | `src/lib/horizon-field.ts` (`createHorizonField`) |
 | prismatic field | `src/components/shared/PrismaticField.tsx` |

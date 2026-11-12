@@ -14,6 +14,7 @@ graduate to their own repos.
 | prismatic-field | `src/components/shared/PrismaticField.tsx` | The chroma wash behind dark bands; presets `'1'`/`'2'`, `exposureScale` is the dimmer. |
 | dither | `src/lib/dither.ts` | CPU 1-bit renderer: any `fn(u,v,t)→0..1` through the 8×8 Bayer screen; field factories (radialBurst, globe, streakBands, gradientRamp, makeGlyphField) + combinators. |
 | studio-field | `src/lib/studio-field.ts` | GPU Bayer family — the codified `BAYER_PRESETS` roster (10 variants, default `BAYER_DEFAULT_ID` = 02 bayer-8x8). Switch by remount; one shared GL context. React wrapper: `src/components/shared/StudioField.tsx`. |
+| glyph-globe | `src/lib/glyph-globe.ts` | The launch globe on the GPU: a turning dithered earth through `BAYER_8` with letter tiles, the launch sky and stars; 13 presets in `glyph-globe-presets.ts`, one shared WebGL2 context on `glRelease`. React wrapper: `src/components/shared/GlyphGlobe.tsx`, the launch look and a full turn every 10 s by default. |
 | iso | `src/app/d/toolchain/diagrams/iso.ts` | The isometric kit: project/faces/silhouette for boxes, `IsoPrism` for convex plan polygons, `plane()` seats flat art, `markPath()` lays bars. |
 | DitheredMark | `src/app/d/toolchain/diagrams/DitheredMark.tsx` | A masked brand mark + Bayer specular shimmer; `shineTravel()` gives drivers their tween endpoints. Worn by the tower capstone. |
 | DoubledLine | `src/components/shared/diagrams/DoubledLine.tsx` | The two-thread stroke as a component; optional two-tone via half-plane clip; pulse slot between threads and core. |

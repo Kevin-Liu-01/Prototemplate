@@ -11,6 +11,7 @@ export const LIBRARY_INDEX = [
   { name: 'prismatic-field', role: 'the chroma wash' },
   { name: 'dither', role: 'the 1-bit Bayer renderer' },
   { name: 'studio-field', role: 'the authentic Bayer family' },
+  { name: 'glyph-globe', role: 'the launch globe' },
   { name: 'iso', role: 'the isometric drawing kit' },
   { name: 'doubled-line', role: 'the two-thread diagram stroke' },
   { name: 'edge-globe', role: 'the delivery drawing' },

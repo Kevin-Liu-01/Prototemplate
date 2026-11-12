@@ -159,6 +159,14 @@ const active = BAYER_PRESETS.find((v) => v.id === id);
   </button>
 ))}`;
 
+const GLYPH_GLOBE_SNIPPET = `import GlyphGlobe from '@/components/shared/GlyphGlobe';
+
+/* the launch look: a full turn every 10 seconds, west to east */
+<GlyphGlobe className='hero-globe' title='The Earth covered in letters' />
+
+/* a named variation, with any setting over it */
+<GlyphGlobe preset='plain' framing='whole' revolutionSeconds={30} />`;
+
 const ISO_SNIPPET = `import {
   frontEdge, leftFace, rightFace, roundedPolygon,
   segment, silhouette, topFace, type IsoBox,
@@ -455,6 +463,19 @@ export const LIBRARIES: readonly Library[] = [
     },
     file: 'src/lib/studio-field.ts',
     snippet: STUDIO_SNIPPET,
+  },
+  {
+    ...libraryEntry('glyph-globe'),
+    body:
+      'The globe from the launch graphics and films as one component. A whole-earth tone map turns under an orthographic view and prints through BAYER_8 from the CPU renderer in three blues on ink. Where the land is bright, solid squares hold one letter each from an atlas of 64 letters of the world’s scripts, and every letter changes on the beat. A rim light, a sunrise glow, a blue bloom and the launch sky’s 160 seeded stars sit over it. By default it is the launch look and turns one full revolution every 10 seconds. Every setting is a prop: the glyph law (frame tiles, tiles fixed to the surface, a dissolving grid, or none), the screen, the view, the turn, the light and the palette. Thirteen presets hold the variations the launch work tried. Every globe on a page draws through one shared WebGL2 context, released through glRelease a second after the last globe goes. Each frame is a function of the loop time, so the turn joins without a jump.',
+    demo: {
+      kind: 'glyph-globe',
+      tag: '<GlyphGlobe />',
+      label:
+        'Live demo: the launch glyph globe, a dithered blue Earth turning west to east, its bright land covered in square tiles that each hold one white letter.',
+    },
+    file: 'src/components/shared/GlyphGlobe.tsx',
+    snippet: GLYPH_GLOBE_SNIPPET,
   },
   {
     ...libraryEntry('iso'),

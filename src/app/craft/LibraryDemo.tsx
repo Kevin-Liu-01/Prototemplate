@@ -12,6 +12,7 @@ import ReassemblerDemo from './ReassemblerDemo';
 import SeamDemo from './SeamDemo';
 import ThreadsDemo from './ThreadsDemo';
 import TransitionDemo from './TransitionDemo';
+import GlyphGlobe from '@/components/shared/GlyphGlobe';
 import PrismaticField from '@/components/shared/PrismaticField';
 import {
   createDitherLoop,
@@ -33,6 +34,7 @@ export type LibraryDemoKind =
   | 'prismatic'
   | 'dither'
   | 'bayer'
+  | 'glyph-globe'
   | 'iso'
   | 'threads'
   | 'globe'
@@ -185,6 +187,10 @@ export default function LibraryDemo({
       ) : kind === 'bayer' ? (
         armed ? (
           <BayerDemo />
+        ) : null
+      ) : kind === 'glyph-globe' ? (
+        armed ? (
+          <GlyphGlobe style={{ position: 'absolute', inset: 0 }} />
         ) : null
       ) : kind === 'iso' ? (
         <IsoDemo />
