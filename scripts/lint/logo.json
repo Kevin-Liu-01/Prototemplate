@@ -768,6 +768,36 @@
       "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
       "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
       "sha256": "176b8cf340ccdabfeee77c02a7b51aedc9b8f343f026d9f6219b4846c3a4f25e"
+    },
+    {
+      "path": "public/atlas/og/atlas.png",
+      "generator": "node scripts/build/atlas-og.mjs (draws LOGO into the Atlas imprint on the captured card)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "1cfd388bc2a7002894b8b9c5972127e1a8ac4bbcf7d02ff409f622ef34bb8274"
+    },
+    {
+      "path": "public/atlas/og/designing-docs-for-humans.png",
+      "generator": "node scripts/build/atlas-og.mjs (draws LOGO into the Atlas imprint on the captured card)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "d5fa588a6b2da054bceaa16fc26a8d74aaf43a70d3bc788dc79139fef926a3a5"
+    },
+    {
+      "path": "public/atlas/og/fuma-nama.png",
+      "generator": "node scripts/build/atlas-og.mjs (draws LOGO into the Atlas imprint on the captured card)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "906d7563d9244aaf23edeb79f143ef2bd3956cdac972f70b896e9d839b84dc1b"
+    },
+    {
+      "path": "public/atlas/og/rewriting-our-docs.png",
+      "generator": "node scripts/build/atlas-og.mjs (draws LOGO into the Atlas imprint on the captured card)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "056a37eb2ac48793176de4b1cefecc24bd0fe8dedb715eac293caf3675c59eaa"
+    },
+    {
+      "path": "public/atlas/og/translating-euclid.png",
+      "generator": "node scripts/build/atlas-og.mjs (draws LOGO into the Atlas imprint on the captured card)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "d35af8d6dec59c280100dbc51537b4df2c5d206d991f79cb03e46f13d9ac970f"
     }
   ],
   "history": [
@@ -2324,46 +2354,6 @@
       ],
       "reason": "ends on the 11-06 globe; kept as made",
       "sha256": "0c9eca73614985e2fa892a8bd11ac59979c3c41945bed6216a42cef83698604c"
-    },
-    {
-      "path": "public/atlas/og/atlas.png",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "73602dcfef2cdc6a79e5eb3ba97cd090ca788d63c07a8eeec7a9930ac1158a78"
-    },
-    {
-      "path": "public/atlas/og/designing-docs-for-humans.png",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "0fbd74f9bd70881decf3bdcdd668fd9e2de6a0c6f060c136232e4ea6c7b7a611"
-    },
-    {
-      "path": "public/atlas/og/fuma-nama.png",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "b8a2e3155f3983c5091eb1f3c2c37dd52b6c3cf95c68b021bcd2e0f1ed232f6c"
-    },
-    {
-      "path": "public/atlas/og/rewriting-our-docs.png",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "dad826b04276d5ef3365cd663fe9a3a12fa815116e7e06619972894b4a757a9a"
-    },
-    {
-      "path": "public/atlas/og/translating-euclid.png",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "e192e5b6dbe3703103c1317a127cd18ae9b38736eb837d39e94b4849bc8389bb"
     },
     {
       "path": "deck/shots/cover-gt-open-source.png",

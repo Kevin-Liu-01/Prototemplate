@@ -643,33 +643,33 @@
     },
     {
       "path": "public/atlas/og/atlas.png",
-      "mode": "pin",
-      "from": "gt-cloud:apps/atlas/public/atlas/og/atlas.png",
-      "sha256": "73602dcfef2cdc6a79e5eb3ba97cd090ca788d63c07a8eeec7a9930ac1158a78"
+      "mode": "source",
+      "copies": ["gt-cloud:apps/atlas/public/atlas/og/atlas.png"],
+      "reason": "node scripts/build/atlas-og.mjs draws the logo into the captured card here; gt-cloud's copy follows this one"
     },
     {
       "path": "public/atlas/og/designing-docs-for-humans.png",
-      "mode": "pin",
-      "from": "gt-cloud:apps/atlas/public/atlas/og/designing-docs-for-humans.png",
-      "sha256": "0fbd74f9bd70881decf3bdcdd668fd9e2de6a0c6f060c136232e4ea6c7b7a611"
+      "mode": "source",
+      "copies": ["gt-cloud:apps/atlas/public/atlas/og/designing-docs-for-humans.png"],
+      "reason": "node scripts/build/atlas-og.mjs draws the logo into the captured card here; gt-cloud's copy follows this one"
     },
     {
       "path": "public/atlas/og/fuma-nama.png",
-      "mode": "pin",
-      "from": "gt-cloud:apps/atlas/public/atlas/og/fuma-nama.png",
-      "sha256": "b8a2e3155f3983c5091eb1f3c2c37dd52b6c3cf95c68b021bcd2e0f1ed232f6c"
+      "mode": "source",
+      "copies": ["gt-cloud:apps/atlas/public/atlas/og/fuma-nama.png"],
+      "reason": "node scripts/build/atlas-og.mjs draws the logo into the captured card here; gt-cloud's copy follows this one"
     },
     {
       "path": "public/atlas/og/rewriting-our-docs.png",
-      "mode": "pin",
-      "from": "gt-cloud:apps/atlas/public/atlas/og/rewriting-our-docs.png",
-      "sha256": "dad826b04276d5ef3365cd663fe9a3a12fa815116e7e06619972894b4a757a9a"
+      "mode": "source",
+      "copies": ["gt-cloud:apps/atlas/public/atlas/og/rewriting-our-docs.png"],
+      "reason": "node scripts/build/atlas-og.mjs draws the logo into the captured card here; gt-cloud's copy follows this one"
     },
     {
       "path": "public/atlas/og/translating-euclid.png",
-      "mode": "pin",
-      "from": "gt-cloud:apps/atlas/public/atlas/og/translating-euclid.png",
-      "sha256": "e192e5b6dbe3703103c1317a127cd18ae9b38736eb837d39e94b4849bc8389bb"
+      "mode": "source",
+      "copies": ["gt-cloud:apps/atlas/public/atlas/og/translating-euclid.png"],
+      "reason": "node scripts/build/atlas-og.mjs draws the logo into the captured card here; gt-cloud's copy follows this one"
     }
   ]
 }
