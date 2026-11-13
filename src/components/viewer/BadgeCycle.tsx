@@ -4,17 +4,27 @@ import type { CSSProperties, ReactNode } from 'react';
 export type BadgeFrame = { key: string; content: ReactNode };
 
 /**
- * The brand head's badge content (BookHead's `badge`): the General Translation logo and marks,
- * cut one to the next every 1.4s. /brand is the one page with a badge
- * (Kevin, 2026-10-21). A hidden sizer stacks every
- * frame in one cell, so the box takes the widest frame's width; the strip
- * shows them side by side, each exactly one box wide, and BookView.css
- * steps it one box to the left with steps(n), so the count lives in the
- * frames alone. Under reduced motion the first frame stays and the box
- * takes its width. No frames, no badge.
+ * A head badge's content (BookHead's `badge`): its frames, cut one to the
+ * next every 1.4s. /brand is the one page with a badge (Kevin, 2026-10-21),
+ * and it holds one frame, the logo with its hover (GtVariants.tsx; Kevin,
+ * 2026-11-13). A hidden sizer stacks every frame in one cell, so the box
+ * takes the widest frame's width; the strip shows them side by side, each
+ * exactly one box wide, and BookView.css steps it one box to the left with
+ * steps(n), so the count lives in the frames alone. One frame has no strip:
+ * the sizer's cell shows it, still. Under reduced motion the first frame
+ * stays and the box takes its width. No frames, no badge.
  */
 export function BadgeCycle({ frames }: { frames: readonly BadgeFrame[] }) {
   if (frames.length === 0) return null;
+  if (frames.length === 1) {
+    return (
+      <span className='pt-cycle'>
+        <span className='pt-cycle-size is-still'>
+          <span>{frames[0].content}</span>
+        </span>
+      </span>
+    );
+  }
   return (
     <span className='pt-cycle' style={{ '--n': frames.length }}>
       <span className='pt-cycle-size'>

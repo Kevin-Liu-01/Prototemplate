@@ -1,6 +1,6 @@
 ---
 title: Badges and heads
-description: "The badge that cuts through the General Translation logo and marks after the Brand title, and the book head every hub page opens with, live at two widths."
+description: "The badge after the Brand title, which holds the General Translation logo with its hover, the strip that cuts a badge through marks, and the book head every hub page opens with, live at two widths."
 icon: Book
 sources:
   - src/components/docs/demos
@@ -12,15 +12,15 @@ sources:
 
 import { BadgeCycleDemo, HeadFrameDemo } from '@/components/docs/demos/lazy';
 
-Every page of the hub that reads as a book opens with the same head: the title, a lead of one to three lines, a panel of facts, and one hatch band. DESIGN.md section 4 sets the standard and `pnpm lint:heads` holds it. /brand alone sets a badge after its title, which cuts through the General Translation marks one frame at a time.
+Every page of the hub that reads as a book opens with the same head: the title, a lead of one to three lines, a panel of facts, and one hatch band. DESIGN.md section 4 sets the standard and `pnpm lint:heads` holds it. /brand alone sets a badge after its title. It holds the General Translation logo, whose meridian draws back while the reader points at it (Kevin, 2026-11-13); the marks the badge used to cut through stay on [/marks](/marks).
 
 ## The head badge
 
-The plate sets the Brand title with its badge as `BookHead` sets it: the badge follows the title's last word and never breaks away from it. Count sets how many of the badge's marks the strip holds, and Size sets the title at the page and section steps. Still applies the rule reduced motion applies.
+The plate sets the Brand title with a badge as `BookHead` sets it: the badge follows the title's last word and never breaks away from it. Here the badge cuts through shortlisted marks from /marks to show the strip. Count sets how many marks the strip holds, and Size sets the title at the page and section steps. Still applies the rule reduced motion applies.
 
 <BadgeCycleDemo />
 
-Every frame sits side by side in one strip, each exactly one box wide, and a CSS animation steps the strip one box to the left every 1.4 seconds with `steps(n)`, so each change is a hard cut. A hidden sizer stacks every frame in one cell, so the box takes the widest frame's width and never changes size. `BookHead` hides the badge from the accessible name, so the h1 a crawler reads holds the title alone.
+Every frame sits side by side in one strip, each exactly one box wide, and a CSS animation steps the strip one box to the left every 1.4 seconds with `steps(n)`, so each change is a hard cut. A hidden sizer stacks every frame in one cell, so the box takes the widest frame's width and never changes size. With one frame there is no strip, and the frame stands still: /brand passes the logo as `<GtLogoMotion mode='hover' />`, which takes the cap height. `BookHead` hides the badge from the accessible name, so the h1 a crawler reads holds the title alone.
 
 ### Import and props
 
@@ -32,7 +32,7 @@ import { BadgeCycle, badgeMark } from '@/components/viewer/BadgeCycle';
 
 | Export | Props | What it does |
 | --- | --- | --- |
-| `BadgeCycle` | `frames`: `{ key, content }[]` | The strip of frames. With no frames it renders nothing. |
+| `BadgeCycle` | `frames`: `{ key, content }[]` | The strip of frames. With one frame it shows that frame still, and with none it renders nothing. |
 | `badgeMark(src)` | a public file path | One frame that draws the file as an alpha mask in the title's ink. |
 
 The rules live in `src/components/viewer/BookView.css`, so a host outside a book head imports that sheet, as this plate does.

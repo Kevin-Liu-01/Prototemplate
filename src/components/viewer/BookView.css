@@ -70,7 +70,8 @@
 }
 
 /* a badge after the title: a card-cornered box on the title's line that
-   cuts through the General Translation logo and marks (BadgeCycle.tsx), on /brand alone. Its content is the
+   holds the General Translation logo with its hover (BadgeCycle.tsx,
+   GtVariants.tsx), on /brand alone. Its content is the
    cap height tall and sits on the baseline; the padding stays inside the
    title's line box, so the line keeps its height. The title's last word
    and the badge never break apart (.pt-book-title-end), so a narrow title
@@ -150,6 +151,16 @@
 .pt-cycle svg {
   display: block;
   width: auto;
+  height: 100%;
+}
+
+/* one frame: the sizer's cell shows it, with no strip */
+.pt-cycle-size.is-still {
+  visibility: visible;
+}
+
+/* the logo with its hover (GtLogoMotion) takes the cap height as a bare svg does */
+.pt-cycle .gt-logo-motion {
   height: 100%;
 }
 

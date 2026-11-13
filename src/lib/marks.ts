@@ -741,12 +741,13 @@ export function shortlist(): readonly CatalogMark[] {
 }
 
 /**
- * The marks /brand's badge cuts through after the logo: the first four
- * shortlisted marks after it whose drawn box is no wider than `aspect`,
- * the logo's width over its height, so the logo sets the badge's width and
- * the box holds still. The logo's own files (its use: the logo and its
- * state) and a previous logo are left out: the badge is a current surface,
- * and the 11-06 globe and its state on file are not the logo (2026-11-12).
+ * The marks the BadgeCycle demo on /docs/components/heads cuts through
+ * (/brand's badge holds the logo alone since 2026-11-13): the first four
+ * shortlisted marks whose drawn box is no wider than `aspect`, the logo's
+ * width over its height, so no frame is wider than the logo and the box
+ * holds still. The logo's own files (its use: the logo and its state) and
+ * a previous logo are left out: the 11-06 globe and its state on file are
+ * not the logo (2026-11-12).
  */
 export function badgeMarks(aspect: number): readonly CatalogMark[] {
   return shortlist()

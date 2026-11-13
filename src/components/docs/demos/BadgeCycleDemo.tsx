@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 
-import { BADGE_MARKS } from '@/app/brand/GtVariants';
-import { BadgeCycle } from '@/components/viewer/BadgeCycle';
+import { BadgeCycle, badgeMark } from '@/components/viewer/BadgeCycle';
+import { LOGO } from '@/lib/logo';
+import { badgeMarks, boxMask } from '@/lib/marks';
 
 import { Choice, Toggle } from './controls';
 import { useReducedMotion } from './hooks';
@@ -14,12 +15,19 @@ import '@/components/viewer/BookView.css';
 
 type Size = 'title' | 'section';
 
+/* the logo's width over its height, from its drawn box */
+const [, , logoWidth, logoHeight] = LOGO.viewBox.split(' ').map(Number);
+
+/* the shortlisted marks no wider than the logo, each cut to its drawn box */
+const BADGE_MARKS = badgeMarks(logoWidth / logoHeight).map((mark) => badgeMark(mark.file, mark.box ? boxMask(mark.box) : undefined));
+
 /* every count from two to all of the badge's marks */
 const COUNTS = Array.from({ length: Math.max(BADGE_MARKS.length - 1, 1) }, (_, i) => String(i + 2));
 
 /**
- * BadgeCycle, live: the badge /brand's head sets after its title's last
- * word. Every frame sits side by side in one strip, each exactly one box
+ * BadgeCycle, live, cutting through marks from /marks: a badge set after a
+ * title's last word as BookHead sets /brand's, which holds one frame, the
+ * logo with its hover. Every frame sits side by side in one strip, each exactly one box
  * wide, and a CSS animation steps the strip one box to the left every 1.4s
  * with steps(n), so each change is a hard cut. A hidden sizer stacks every
  * frame in one cell, so the box takes the widest frame and never changes
