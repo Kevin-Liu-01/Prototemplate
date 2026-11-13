@@ -476,6 +476,18 @@
       "sha256": "1bda67df253652c52e1e74e8272ee0cee2642eb0f3965d24a8be4b57a1361ac9"
     },
     {
+      "path": "public/shots/thumb/brand-profile-banners-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "39b548a41002ad4d9c6302bb9a1f0ba59a4fd14ff891cb157e9e781301e0bdc8"
+    },
+    {
+      "path": "public/shots/thumb/brand-profile-banners.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "f5034566292dde13aa79591f1b8ea6440da25c97a68cf6f19ceb22cfc1f9cda4"
+    },
+    {
       "path": "public/shots/thumb/brand.webp",
       "generator": "pnpm capture:pages --only brand, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
       "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
