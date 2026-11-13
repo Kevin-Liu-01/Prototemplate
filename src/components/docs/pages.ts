@@ -182,7 +182,7 @@ export const DOCS_PAGES: readonly DocsPageEntry[] = [
     href: '/docs/components/heads',
     title: 'Badges and heads',
     description:
-      'The badge that cuts through the General Translation logo and marks after the Brand title, and the book head every hub page opens with, live at two widths.',
+      'The badge after the Brand title, which holds the General Translation logo with its hover, the strip that cuts a badge through marks, and the book head every hub page opens with, live at two widths.',
   },
   {
     slug: 'components/artifact-pictures',
