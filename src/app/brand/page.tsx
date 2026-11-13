@@ -13,6 +13,7 @@ import type { BrandPage } from './BrandViewer';
 import BrandViewer from './BrandViewer';
 import { headingId } from './brand-sections';
 import LogoSystem from './LogoSystem';
+import ProfileBanners from './ProfileBanners';
 import LocaleTag from '@/app/d/toolchain/components/LocaleTag';
 import GlyphGlobe from '@/components/shared/GlyphGlobe';
 import { LOCKUP, STRIP } from '@/lib/logo';
@@ -183,7 +184,7 @@ const NOTE = (
 );
 
 /**
- * The thirteen sections, each rendered on the server and handed to the viewer as
+ * The fourteen sections, each rendered on the server and handed to the viewer as
  * a page. Ids match brand-sections.ts, which the viewer reads for the list,
  * the grid, the hash and each section's divider (its title is the divider's
  * h2, so a body starts under it); the h3 ids are the rows under the active
@@ -670,6 +671,7 @@ const PAGES: readonly BrandPage[] = [
       </>
     ),
   },
+  { id: 'profile-banners', body: <ProfileBanners /> },
   {
     id: 'context',
     body: (

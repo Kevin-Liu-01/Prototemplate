@@ -36,7 +36,7 @@ canonical address and the other two are aliases. Every route below works
 at each of them.
 
 - `/`: the design lab, the twenty-seven directions read as an article, one live exhibit at a time, or as a grid of captures, with the anatomy wall (the flagship cut into section tiles, light and dark, desktop and mobile) and the capabilities ledger (what the system can do, each entry pointing at where it runs live)
-- `/brand`: the brand book, the identity canon in thirteen sections
+- `/brand`: the brand book, the identity canon in fourteen sections
 - `/docs`: the docs site, in the fumadocs notebook layout generaltranslation.com/docs runs, outside the viewer shell, in five tabs: the Guide (what Prototemplate is, getting started and the handbook under `/docs/handbook`), Components (the live component library under `/docs/components`: every instrument mounted with controls for its props, its import path and its reduced-motion still, and the blog globe figure with all three rounds of its four directions live), Craft (`/docs/craft`, the numbers and traps behind the design rules), Engineering (`/docs/engineering`, the browser and build traps) and Internals (how the hub is built; `/docs/template` explains how to lift the docs site into another project). Each page has a Markdown twin at its address plus `.md`
 - `/deck`: the General Translation brand deck, 93 slides in its own viewer
 - `/skills`: the curated skills, one page per skill with its SKILL.md, its files and its install line, and the raw files at `/skills/<slug>/SKILL.md`

@@ -261,7 +261,7 @@ export type BrandViewerProps = {
 };
 
 /**
- * The brand book on the viewer shell: thirteen sections as the run under Pages
+ * The brand book on the viewer shell: fourteen sections as the run under Pages
  * > Brand in the list (with the h3s of the section being read under it)
  * and as captured thumbnails in the grid, the article itself in a flow
  * sheet at the book width (1280px, as every book) as the book, the site

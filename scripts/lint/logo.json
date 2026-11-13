@@ -240,6 +240,294 @@
       "generator": "node motion/stills/partnership-globe/render.mjs (draws public/brand/gt-globe-logo.svg into the dithered globe)",
       "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
       "sha256": "89d392eed7410f21d664f6090753427ff416195b0dca76dd8956289d3d1eb5dc"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-1-rows-no-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "07b8a0eae3ee5fd37c0e2c147ea49683136bdfe4003aa4538f0f274cbc2b1cb1"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-1-rows-no-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "e3650c46b1f8464a7b87c66f7660cbc8a9e2cb6e6cb603e91385d3396ae0f43f"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-1-rows-no-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "daced4029ed43cdfb07bd988f861f3e12d3c372b1ab7031b7fe1ac7c2b025287"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-1-rows-no-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "e807671842684b2af7fda8ea9a01de0f3d598077a65af0b5de1cc5574f4b1bbf"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-1-rows-with-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "2ce3d1c6294dd466ab25c443ecd6a69f5ea00dd90f0f75bee3ee553c73dd1b1e"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-1-rows-with-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "f20486466d0da0f9cb0ca142bcc1257c5859703d955dafd8651362424c069845"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-1-rows-with-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "d110b622e976cf77a05b887ff4c34c657c26b8c0143a4d8188ff279d12d75f18"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-1-rows-with-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "704e940dd44c12cabe1528edac51059b186893c1a5e56326b8b95b08e99b8f4d"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-2-rows-tagged-no-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "097e48fdad9554949ea2ecd08f73c5bf52aaf21adfb27de5ba112c5c80d01d8c"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-2-rows-tagged-no-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "26c455c0e8010ac3d6c3442a7f3c26ff077b9ddb4703d334acadd45207e7fc0b"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-2-rows-tagged-no-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "3a8e1abf0b94b382b1ac277e4e8261cccad96fde20b5bcde2f50167fd8e8a9a1"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-2-rows-tagged-no-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "a3e6caea22e0b2ecd34791d46cb5fbb19fc727567802d7684530a50e74dcfcb1"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-2-rows-tagged-with-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "97c99de96e373620518bedcf43cea1d3d2044dbac6514e75e333240248c37a34"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-2-rows-tagged-with-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "139f0cc8b79360cb95a8770a785c3d3861dbcb378b1c94ca7208a497a550cabe"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-2-rows-tagged-with-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "a5e0d58e3d8c78e25ccc55d407ddf98b80bcc02e8e18177da99c3e370e21cabd"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-2-rows-tagged-with-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "4662fdac91eb1d28258dc1ed6cf3041ef85de66bf7d15e2d8a81ea47601421d9"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-3-band-cloud-no-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "c718fd81a36669afdbc476425d4717b28c710e7285220153cf47a548242a3368"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-3-band-cloud-no-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "0e98c6772b49976b9424d83fc98f961ea2eccf6095574ea0463f68afa1f6dd9b"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-3-band-cloud-no-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "009c0a8a22f047911eee200d981b66e2560c0006ee926aab4dd5b1a098d4ae01"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-3-band-cloud-no-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "d2c93c8967900d6188ffb0b4f12a16ac976c21f83057b50d12ee8df1a0f2df3e"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-3-band-cloud-with-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "f8eecb0bee16bf241affb3068d36a1254539467a68a02e311789093b2ddd01a8"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-3-band-cloud-with-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b93db0af33bf98cd197723c58873db57b366eb8caac58c30796248653b6dafcc"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-3-band-cloud-with-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "992d1fa1c5c522c5d095471a0af54a9d8a40e8642d899427ac4e307d4febb03a"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-3-band-cloud-with-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "10fdd35542fb0fe8b3c31627443b0691619259f814d51fd021e9a7622fdda6fc"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-4-word-cloud-no-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "e0273d311102c69d1cd577af149feedd778caee3b33fe33b16e6304feda9d786"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-4-word-cloud-no-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b54c48f7623420095faf0dd61520424dd957cc8c65d88d8cd7cc76bfb20c5b88"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-4-word-cloud-no-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "24a30ed7830bc3851e30d822160fa722093ecb2e1f01788d47d0760a61487ce8"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-4-word-cloud-no-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "414f803d7db5ad0f86445908417dc11872b042cb50ebb4ade327ec8e20bc79d7"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-4-word-cloud-with-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "f0ae15aa4ee2f019c4b68ee69f1eb64bb844c126deea871d50caf8a55b4e30c8"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-4-word-cloud-with-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b0b27f5c6f91cb3ac91d62d6d75e033d5f6bc2f201c0ce86f05e1c3bcff63254"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-4-word-cloud-with-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "366696635417daf2cd04623c99ca662cac0b5814febea864d71e43dd6a7ce764"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-4-word-cloud-with-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "4e340a15ed2b96cee710b80d39aa62950a3afb59362f38cedc2eed5a17d6fcce"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-5-word-cloud-small-globe-no-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "4a51d04d4658a80253b790626bba5c94c8986744c2c109bd663aca23ce41dadc"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-5-word-cloud-small-globe-no-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "e89064f7b9e02a7dbec4adce08accd92e33b113edf2e273942c9c32cf3c80b9f"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-5-word-cloud-small-globe-no-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "64f798c4c77ef046936bb84eebdd282f1d8ac7e52dd98620ef649e3788d364fe"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-5-word-cloud-small-globe-no-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "07da2e86297ee68cb1e2182d09c3511f406638a318e92a2f36625f36206d3f1a"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-5-word-cloud-small-globe-with-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "90877716be0d31e911acec274ab188f7f5b7c8ce3a31bdaad89243061ad1bffe"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-5-word-cloud-small-globe-with-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "9e6d9dbac17a6c1b6a1584f0681ce0c6e52a90e9f714426f8819cbc57ced6b94"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-5-word-cloud-small-globe-with-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "1b93c968f3eedcf2a90eae81cf2419a3d35bb4e3c5c92e3c4aea7e944dc28d9b"
+    },
+    {
+      "path": "public/media/profile-banners/linkedin-5-word-cloud-small-globe-with-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "1c16fc0435fa7d047372ea13083ab2ed7a27e01be007abae2f751283a943ada8"
+    },
+    {
+      "path": "public/media/profile-banners/x-word-cloud-no-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "eeaffb52c4d830a4b527146f70e6824ddfb12f0901792f75079487a9d8cb0c22"
+    },
+    {
+      "path": "public/media/profile-banners/x-word-cloud-no-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "abc0217d4eacf8813e9f7142eef119f222b44e342c647ce753bc4be1f9ab61cc"
+    },
+    {
+      "path": "public/media/profile-banners/x-word-cloud-no-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "847744d0858597d33b0f300c1d37b4925a6caa6a710c3bcb5baaba74d7f712bb"
+    },
+    {
+      "path": "public/media/profile-banners/x-word-cloud-no-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "9811c0ad8570e660365566108c601737097089c368e9d0e6b87ff79b6835352a"
+    },
+    {
+      "path": "public/media/profile-banners/x-word-cloud-with-logos-dark.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "cfca1b3abc4157c7f2d9bef6df6d564dda287f0a364cb7dd0458fad1fde88937"
+    },
+    {
+      "path": "public/media/profile-banners/x-word-cloud-with-logos-dark@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "e1c9588c72fb03e41bce23350d16ca95121df3d3dd916015ca405ab0860b75dd"
+    },
+    {
+      "path": "public/media/profile-banners/x-word-cloud-with-logos-light.png",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b7f920e764ca18c53cd7200bc8eb6bdb328fe35125a42cc2489d21317863c56b"
+    },
+    {
+      "path": "public/media/profile-banners/x-word-cloud-with-logos-light@2x.webp",
+      "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "176b8cf340ccdabfeee77c02a7b51aedc9b8f343f026d9f6219b4846c3a4f25e"
     }
   ],
   "history": [

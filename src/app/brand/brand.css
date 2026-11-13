@@ -676,6 +676,31 @@
   background-color: #ffffff;
 }
 
+/* the profile banners: one style's four banners, the editions as rows and
+   the themes as columns, framed in the tile edge on their own ground */
+.ptb-banners {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ptb-banners img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--pt-edge);
+  border-radius: var(--pt-radius-card);
+  background-clip: padding-box;
+}
+
+.ptb-banners .ptb-banner-dark {
+  background-color: #070707;
+}
+
+.ptb-banners .ptb-banner-light {
+  background-color: #ffffff;
+}
+
 /* the media headings open a new run of figures and take more air than a
    heading under prose */
 .pt-post-sec .ptb-media + h3 {
@@ -1346,6 +1371,7 @@
   .ptb-lockups,
   .ptb-type,
   .ptb-globes,
+  .ptb-banners,
   .ptb-brief {
     grid-template-columns: minmax(0, 1fr);
   }

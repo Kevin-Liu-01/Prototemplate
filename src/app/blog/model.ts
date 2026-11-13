@@ -3,6 +3,7 @@ import type { BlogPostMeta, BlogRelease } from '@/lib/blog-posts';
 import { formatDay } from '@/lib/dates';
 import type { ShellSection } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
+import { getSurface } from '@/lib/surfaces';
 
 /**
  * The shapes the blog routes share: the index (/blog, BlogViewer) and a
@@ -14,6 +15,22 @@ import { pad2 } from '@/lib/shell-data';
 
 /** The changelog's one row in the sidebar, and the anchor of its section on the index. */
 export const CHANGELOG_ID = 'changelog';
+
+/** /raise, the media of the funding announcement, listed before the posts: its one row in the sidebar and the anchor of its row on the index. */
+export const RAISE_ID = 'raise';
+
+const RAISE_SURFACE = getSurface(RAISE_ID);
+if (!RAISE_SURFACE) throw new Error('blog: src/lib/surfaces.ts has no raise row');
+
+/** The raise row: the page's name and description from its Knowledge row, the heading and summary of its row on the index, and its 1440 page captures as the cover. */
+export const RAISE = {
+  title: RAISE_SURFACE.name,
+  heading: 'The media of the funding announcement',
+  href: RAISE_SURFACE.href,
+  desc: RAISE_SURFACE.desc,
+  summary: 'Every round of the launch media with an account of how it was directed, then every deliverable in posting order.',
+  cover: { image: '/shots/pages/raise-dark.jpg', imageLight: '/shots/pages/raise-light.jpg' },
+} as const;
 
 /** A post with its place in the list, newest first, and its number padded to two digits. */
 export type NumberedPost = { post: BlogPostMeta; n: string };
@@ -57,13 +74,30 @@ const SHORT: Readonly<Record<string, string>> = {
 };
 
 /**
- * The run under the Knowledge group's Blog row (`under`): every post
+ * The run under the Knowledge group's Blog row (`under`): /raise first, as
+ * one row that opens its page, then every post
  * numbered 01 onward, newest first, each a link to its page and previewed
  * by its cover, then the changelog as one row that opens its section on the
  * index. The description carries the date and the authors first, so the
  * sidebar filter matches a post by either.
  */
 export const SECTIONS: readonly ShellSection[] = [
+  {
+    id: RAISE_ID,
+    label: RAISE.title,
+    under: 'blog',
+    paged: false,
+    items: [
+      {
+        id: RAISE_ID,
+        n: '',
+        title: RAISE.title,
+        href: RAISE.href,
+        desc: RAISE.desc,
+        ...(RAISE_SURFACE.shot ? { shot: { light: RAISE_SURFACE.shot, dark: RAISE_SURFACE.shotDark } } : {}),
+      },
+    ],
+  },
   {
     id: 'posts',
     label: 'Posts',

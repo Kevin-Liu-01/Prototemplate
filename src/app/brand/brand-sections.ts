@@ -2,7 +2,7 @@ import type { ShellSection, ShellShot } from '@/lib/shell-data';
 import { pad2 } from '@/lib/shell-data';
 
 /**
- * The brand book's shape as data: the thirteen sections in reading order, each
+ * The brand book's shape as data: the fourteen sections in reading order, each
  * with the h3 headings inside it, and the helpers that turn them into the
  * shell's section list. Pure data, so the server page and the client viewer
  * read the same source. Section ids are the anchors the article has always
@@ -145,6 +145,16 @@ export const BRAND_SECTIONS: readonly BrandSectionDef[] = [
     ],
   },
   {
+    id: 'profile-banners',
+    title: 'Profile banners',
+    desc: 'Kevin’s LinkedIn and X banners: hello in fourteen languages beside the globe, with the customer logos and without.',
+    source: 'Finished artwork',
+    headings: [
+      heading('profile-banners', 'linkedin', 'LinkedIn'),
+      heading('profile-banners', 'x', 'X'),
+    ],
+  },
+  {
     id: 'context',
     title: 'Context',
     desc: 'The industry, the audience, and the visual references.',
@@ -179,7 +189,7 @@ export function brandShot(sectionId: string): ShellShot {
 }
 
 /**
- * The shell's list: one section, Sections, with the thirteen sections as items.
+ * The shell's list: one section, Sections, with the fourteen sections as items.
  * It opens as the run under Pages > Brand in the sidebar (`under`); the
  * grid keeps the label.
  */

@@ -6,6 +6,7 @@ import { seoRoute } from '@/lib/seo/route';
 import { requireUpdated } from '@/lib/updated';
 
 import BlogViewer from './BlogViewer';
+import { RAISE, RAISE_ID } from './model';
 
 /** General Translation publishes the posts and serves their feed; the index points at it rather than syndicating them from a second domain. */
 const GT_FEED = 'https://generaltranslation.com/rss.xml';
@@ -20,9 +21,9 @@ const route = seoRoute({
 
 export const metadata = route.metadata;
 
-/** The note under each cover that shows the previous mark, by post slug. */
+/** The note under each cover that shows the previous mark, by post slug and for the raise row. */
 const COVER_NOTES: Readonly<Record<string, string>> = Object.fromEntries(
-  BLOG_POSTS.flatMap((post) => {
+  [{ slug: RAISE_ID, image: RAISE.cover.image }, ...BLOG_POSTS].flatMap((post) => {
     const note = pictureNote(post.image);
     return note ? [[post.slug, note]] : [];
   })

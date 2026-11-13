@@ -137,7 +137,7 @@ function thumb(stem: string): { shot: string; shotDark: string } {
  */
 const PAGES: readonly Surface[] = [
   internal('gallery', pageLabel('gallery'), '/', `The gallery of ${DIRECTIONS.length} directions.`, 'Pages', thumb('gallery')),
-  internal('brand', pageLabel('brand'), '/brand', 'The identity canon in thirteen sections.', 'Pages', thumb('brand')),
+  internal('brand', pageLabel('brand'), '/brand', 'The identity canon in fourteen sections.', 'Pages', thumb('brand')),
   internal('docs', pageLabel('docs'), '/docs', 'The handbook, the live component library with the blog globe figure, and how the hub is built, in the docs layout General Translation runs.', 'Pages', thumb('docs')),
   internal('deck', pageLabel('deck'), '/deck', 'The General Translation brand deck: the identity in slides, its own viewer.', 'Pages', thumb('deck')),
   internal('press', pageLabel('press'), '/atlas', 'Atlas, the General Translation magazine: each story an issue with its own cover, and a feature with its own art and colors.', 'Pages', thumb('press')),
@@ -480,6 +480,11 @@ const BRAND_SECTIONS: readonly Surface[] = [
     'made-with-the-system',
     'Made with the system',
     'Finished artwork made with the system: the Open Source reel, the X banner, two blog films and five partnership globes.',
+  ],
+  [
+    'profile-banners',
+    'Profile banners',
+    'Kevin’s LinkedIn and X banners: hello in fourteen languages beside the globe, with the customer logos and without.',
   ],
   [
     'context',
