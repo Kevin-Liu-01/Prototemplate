@@ -203,7 +203,7 @@ Rules:
   ink, paper, the accent and its lift) and the three graticule globes alone
   (`public/marks/graticule/strip/stage-*.svg`).
 - **Clear space** is X, a quarter of the globe's height, on every side
-  of either lockup: 0.59 cap height in the stacked lockup and 0.475 in the
+  of either lockup: 0.59 cap height in the stacked lockup and 0.48 in the
   one-line lockup. The name alone keeps 0.59 cap height, the space it has
   in the stacked lockup. No text, edge or other logo enters it.
 - **Minimum sizes.** The globe alone 24px tall (16px only as a tab
@@ -211,7 +211,7 @@ Rules:
   the stacked globe is 21.3px and the one-line globe 17.1px. In print
   24px is 6.4 mm and a 9px cap height 2.4 mm.
 - **The name in the lockup is Katagami Text** at weight 400, letter-spacing
-  -0.05 em, with the font's own kerning (at 400 only T and r kern), drawn
+  -0.0496 em, with the font's own kerning (at 400 only T and r kern), drawn
   as outlines (Kevin, 2026-11-08: "remember the word mark of general
   translation text uses katagami text!"; weight and tracking from his
   wordmark of 2026-11-12, which ends the earlier rule of no negative

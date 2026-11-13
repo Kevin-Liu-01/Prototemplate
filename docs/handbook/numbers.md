@@ -6,7 +6,7 @@ This page collects the numbers that General Translation design and engineering w
 
 ## Type
 
-The site sets one face, the self-hosted rsms InterVariable 4.1, with an optical-size axis from 14 to 32 and a weight axis from 100 to 900. The one exception is the name in the logo lockup, Katagami Text 400 at -0.05 em as outlines (the Marks table below).
+The site sets one face, the self-hosted rsms InterVariable 4.1, with an optical-size axis from 14 to 32 and a weight axis from 100 to 900. The one exception is the name in the logo lockup, Katagami Text 400 at -0.0496 em as outlines (the Marks table below).
 
 | Value | Reason | Token or constant | Held by | Explained in |
 | --- | --- | --- | --- | --- |
@@ -169,7 +169,7 @@ Bounce, elastic and back overshoot are not used, and every number here has a red
 | 2.3643 cap heights | Beside the stacked name the globe is 2.3643 cap heights tall, centred on the name's ink from the G's top to the foot of the a, as in Kevin's wordmark of 2026-11-12 (it was 1.1 times the two lines' span, 2.709). On one line it is 1.9 cap heights, where its ring is as thick as the name's stems. | `LOCKUP` in `src/lib/logo.ts`; `NAME_WIDTH` (2.557, the name's width in globes) in `src/app/marks/graticule/content.ts` | `pnpm test:marks` (against `public/brand/gt-globe-lockup.json`) | [Marks: when to use it](https://www.prototemplate.com/docs/components/marks#when-to-use-it); gt-brand `references/marks.md` |
 | 0.5826 cap height | The gap from the globe's ink to the name's nearest ink (the T stacked, the G on one line), from Kevin's wordmark of 2026-11-12; it was 0.8. | `LOCKUP.gap` in `src/lib/logo.ts` | `pnpm test:marks` | gt-brand `references/marks.md`, The mark beside the name |
 | 0.22 globe diameters | The white between neighbouring globes in the four-globe lockup, 0.5201 cap height; the logo and the name keep the stacked lockup's size and 0.5826 cap height gap. The stage globes wait for the refined progression. | `STRIP` in `src/lib/logo.ts`; `BETWEEN` in `scripts/build/strip.py` | `pnpm test:marks` | gt-brand `references/marks.md`, The four-globe lockup |
-| Katagami Text 400, -0.05 em, 0.2865 cap height | The name in the lockup is Katagami Text at weight 400, letter-spacing -0.05 em, kerned, as outlines, both lines from one pen origin; the white between the first baseline and the second cap line is 0.2865 cap height, about the cap height less the x-height. | `LOCKUP` in `src/lib/logo.ts`; `scripts/build/lockup.py` | `pnpm test:marks` | gt-brand `references/marks.md`, The mark beside the name |
+| Katagami Text 400, -0.0496 em, 0.2865 cap height | The name in the lockup is Katagami Text at weight 400, letter-spacing -0.0496 em (fitted to every glyph of his wordmark), kerned, as outlines, both lines from one pen origin; the white between the first baseline and the second cap line is 0.2865 cap height, about the cap height less the x-height. | `LOCKUP` in `src/lib/logo.ts`; `scripts/build/lockup.py` | `pnpm test:marks` | gt-brand `references/marks.md`, The mark beside the name |
 | 256 units, 8 KB | Every imported mark is one path in `currentColor` on a 256 unit square and at most 8 KB; the logo and its state are drawn from their larger files on `/marks/graticule`. | `MAX_BYTES` in `scripts/build/import-marks.mjs` | `pnpm test:marks` | gt-brand `references/marks.md`, The catalog and the shortlist |
 
 ## Graphics
