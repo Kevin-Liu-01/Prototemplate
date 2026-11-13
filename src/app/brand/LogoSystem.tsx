@@ -175,13 +175,13 @@ export default function LogoSystem() {
         globe since 10 November 2026, and <Link href='/marks'>the marks page</Link> keeps the monogram as a past pick.
       </p>
       <div className='ptb-marks ptb-lockups'>
-        <figure className='ptb-mark is-paper'>
+        <figure className='ptb-mark is-paper' data-previous-mark=''>
           <img alt='The doubled-line monogram of the letters G and T, the previous mark' decoding='async' loading='lazy' src='/marks/previous/gt-monogram.svg' />
           <figcaption>The doubled-line monogram, the previous mark, used until 8 November 2026.</figcaption>
         </figure>
         <figure className='ptb-mark is-paper'>
           <img alt='The globe logo, the current mark' decoding='async' loading='lazy' src='/brand/kit/svg/gt-mark-ink.svg' />
-          <figcaption>The globe, the mark since 8 November 2026.</figcaption>
+          <figcaption>The globe, the mark since 8 November 2026, in the refined drawing of 12 November.</figcaption>
         </figure>
       </div>
     </>

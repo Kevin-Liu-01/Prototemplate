@@ -14,6 +14,9 @@ import '@/components/viewer/BookView.css';
 
 type Size = 'title' | 'section';
 
+/* every count from two to all of the badge's marks */
+const COUNTS = Array.from({ length: Math.max(BADGE_MARKS.length - 1, 1) }, (_, i) => String(i + 2));
+
 /**
  * BadgeCycle, live: the badge /brand's head sets after its title's last
  * word. Every frame sits side by side in one strip, each exactly one box
@@ -25,7 +28,7 @@ type Size = 'title' | 'section';
  */
 export default function BadgeCycleDemo() {
   const reduced = useReducedMotion();
-  const [count, setCount] = useState('4');
+  const [count, setCount] = useState(String(BADGE_MARKS.length));
   const [size, setSize] = useState<Size>('title');
   const [still, setStill] = useState(false);
   const n = Number(count);
@@ -36,7 +39,7 @@ export default function BadgeCycleDemo() {
         <>
           <Choice
             label='Count'
-            options={['2', '3', '4'].map((value) => ({ value, label: value }))}
+            options={COUNTS.map((value) => ({ value, label: value }))}
             value={count}
             onChange={setCount}
           />

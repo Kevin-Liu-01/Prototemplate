@@ -11,14 +11,13 @@
 // and the page's download button links it; without --zip the page names no
 // zip and shows no button.
 //
-// Every picture it writes that shows the mark is a logo picture: the
-// mark's and both lockups' 1024 px PNGs in ink and white (six files) and the five guide
-// sheets that draw the mark (brand-sheet, clear-space, minimum-size,
-// variant-sheet and frames-sheet; type-spec and color-sheet do not). It
-// records each one in scripts/lint/logo.json, at the bytes it wrote and the
-// current LOGO.d, as pnpm build:logo does, so a rebuilt kit leaves no stale
+// Every picture it writes is held by the logo lock, since /brand shows
+// them all: the mark's, both lockups' and both wordmarks' 1024 px PNGs in
+// ink and white (ten files) and the seven guide sheets. It records each one
+// in scripts/lint/logo.json, at the bytes it wrote and the current LOGO.d,
+// as pnpm build:logo does, so a rebuilt kit leaves no stale
 // pin for pnpm lint:logo. It works out every file first and checks each
-// logo picture is listed under "generated" or "checked" there; one that is
+// picture is listed under "generated" or "checked" there; one that is
 // not stops it before it deletes or writes anything. Then it copies and
 // cuts, then records, then writes the manifest.
 //
@@ -62,15 +61,15 @@ const TYPES = [
 const SVG_COLORS = ['ink', 'white', 'accent', 'accent-lift', 'currentcolor'];
 const PNG_COLORS = ['ink', 'white'];
 const COLOR_FILES = ['colors.css', 'colors.json', 'colors.ase'];
-/** the guide sheets: the page's key, the kit path (its PDF sits beside it when there is one), and whether the sheet draws the mark */
+/** the guide sheets: the page's key and the kit path (its PDF sits beside it when there is one) */
 const SHEETS = [
-  ['brand-sheet', 'guides/brand-sheet.png', true],
-  ['clear-space', 'guides/clear-space.png', true],
-  ['minimum-size', 'guides/minimum-size.png', true],
-  ['variant-sheet', 'guides/variant-sheet.png', true],
-  ['type-spec', 'type/type-spec.png', false],
-  ['color-sheet', 'color/color-sheet.png', false],
-  ['frames-sheet', 'frames/frames-sheet.png', true],
+  ['brand-sheet', 'guides/brand-sheet.png'],
+  ['clear-space', 'guides/clear-space.png'],
+  ['minimum-size', 'guides/minimum-size.png'],
+  ['variant-sheet', 'guides/variant-sheet.png'],
+  ['type-spec', 'type/type-spec.png'],
+  ['color-sheet', 'color/color-sheet.png'],
+  ['frames-sheet', 'frames/frames-sheet.png'],
 ];
 
 /** the widest a sheet's WebP is cut: 1800 px, twice the 900 px it shows at */
@@ -106,14 +105,14 @@ const logoFiles = TYPES.map(([key, folder, stem]) => ({
   png: PNG_COLORS.map((c) => [c, planCopy(`logo/transparent/${folder}/${stem}-${c}-on-transparent-1024.png`, `png/${stem}-${c}-on-transparent-1024.png`)]),
 }));
 const colorFiles = COLOR_FILES.map((name) => planCopy(`color/${name}`, `color/${name}`));
-const sheetCuts = SHEETS.map(([key, src, mark]) => {
+const sheetCuts = SHEETS.map(([key, src]) => {
   const from = join(FROM, src);
   if (!existsSync(from)) fail(`the kit has no ${src}`);
   const source = dims(from);
   const width = Math.min(source.width, MAX_SHEET);
   const height = Math.round((source.height * width) / source.width);
   const pdf = src.replace(/\.png$/, '.pdf');
-  return { key, from, rel: `sheets/${key}.webp`, mark, width, height, pdf: existsSync(join(FROM, pdf)) ? pdf : null };
+  return { key, from, rel: `sheets/${key}.webp`, width, height, pdf: existsSync(join(FROM, pdf)) ? pdf : null };
 });
 
 /** what the zip holds, counted from the folder: files per top-level folder */
@@ -125,10 +124,10 @@ function count(dir) {
 const folders = Object.fromEntries(['logo', 'frames', 'color', 'type', 'guides', 'motion'].map((d) => [d, count(d)]));
 if (ZIP && !existsSync(ZIP)) fail(`no zip at ${ZIP}`);
 
-/* every picture it writes that shows the mark: the mark's and the lockups' PNGs and the sheets that draw the mark */
+/* every picture it writes: the mark's, the lockups' and the wordmarks' PNGs and every sheet; /brand shows them all, so lint:logo holds each to the bytes recorded here (rule 5) */
 const pictures = [
-  ...logoFiles.filter((l) => !l.key.startsWith('wordmark')).flatMap((l) => l.png.map(([, rel]) => rel)),
-  ...sheetCuts.filter((s) => s.mark).map((s) => s.rel),
+  ...logoFiles.flatMap((l) => l.png.map(([, rel]) => rel)),
+  ...sheetCuts.map((s) => s.rel),
 ].map((rel) => `public/brand/kit/${rel}`);
 const missing = unlisted(readManifest(ROOT), pictures);
 if (missing.length) fail(`${missing.map(unlistedMessage).join('\n')}\nnothing was written`);

@@ -531,6 +531,8 @@ export type CatalogMark = {
   pick?: true;
   /** the job Kevin chose the mark for: the logo, or the state the logo takes on hover, on sign-in and while loading */
   use?: MarkUse;
+  /** a logo Kevin has since replaced (the 11-06 globe): /marks keeps it as a past pick, and no current surface shows it */
+  previous?: true;
   /** a drawing the family grew from: it follows the family's shortlisted marks and precedes the rest */
   opens?: true;
   /** one sentence on what the drawing does */
@@ -640,7 +642,7 @@ export const DYNAMIC_MARKS: readonly CatalogMark[] = [
   dyn({ id: 'doubled-gt', name: 'Doubled GT', family: 'doubled-line', opens: true, pick: true, box: [0, 66.5, 256, 123], note: 'Every stroke of the G and the T is drawn as two parallel lines.' }),
 
   dyn({ id: 'refined-1112', name: 'Refined globe', family: 'globe', pick: true, use: 'logo', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'Axis and meridian behind on its own construction (Kevin, 2026-11-12): the meridian and the latitude ovals each have their own centre and radii, the lines are 13.2 units of the 256 square, and the gaps where a line passes behind another are narrower.' }),
-  dyn({ id: 'axis-and-meridian-behind', name: 'Axis and meridian behind', family: 'globe', pick: true, variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A ring, a meridian oval and a latitude oval draw the globe and the G, and the T\'s stem, the polar axis, breaks where it passes behind the front of the equator, as does the back meridian, while the front meridian still meets it.' }),
+  dyn({ id: 'axis-and-meridian-behind', name: 'Axis and meridian behind', family: 'globe', pick: true, previous: true, variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'A ring, a meridian oval and a latitude oval draw the globe and the G, and the T\'s stem, the polar axis, breaks where it passes behind the front of the equator, as does the back meridian, while the front meridian still meets it.' }),
   dyn({ id: 'oval-axis-behind', name: 'Oval globe, axis behind', family: 'globe', pick: true, use: 'state', variation: true, box: [24.3, 24.3, 207.4, 207.4], note: 'The logo without its meridian: a ring and a latitude oval draw the globe and the G, and the T\'s stem breaks where it passes behind the front of the equator.' }),
   dyn({ id: 'turning-globe', name: 'Turning globe', family: 'globe', opens: true, box: [22, 22, 212, 212], note: 'One meridian is the G, two parallels are its arm and its needle bar, and the limb and the meridian thin toward the upper right as on a lit sphere.' }),
   dyn({ id: 'graticule-gt', name: 'Graticule GT', family: 'globe', opens: true, pick: true, box: [24.3, 24.3, 207.4, 207.4], note: 'In a wireframe globe the flat latitude opens at its upper right as the G, and the equator is both its bar and the crossbar of the T on the central meridian.' }),
@@ -742,11 +744,13 @@ export function shortlist(): readonly CatalogMark[] {
  * The marks /brand's badge cuts through after the logo: the first four
  * shortlisted marks after it whose drawn box is no wider than `aspect`,
  * the logo's width over its height, so the logo sets the badge's width and
- * the box holds still.
+ * the box holds still. The logo's own files (its use: the logo and its
+ * state) and a previous logo are left out: the badge is a current surface,
+ * and the 11-06 globe and its state on file are not the logo (2026-11-12).
  */
 export function badgeMarks(aspect: number): readonly CatalogMark[] {
   return shortlist()
-    .filter((mark) => mark.use !== 'logo' && mark.box && mark.box[2] / mark.box[3] <= aspect)
+    .filter((mark) => !mark.use && !mark.previous && mark.box && mark.box[2] / mark.box[3] <= aspect)
     .slice(0, 4);
 }
 

@@ -14,7 +14,8 @@ import { fileURLToPath } from 'node:url';
 
 import { ROOT } from '../lib/root.mjs';
 import { fingerprint, fingerprintText, loadLogo, previousMarkText, sha256 } from '../lib/logo-lock.mjs';
-import { unlabelled } from './logo-labels.mjs';
+import { unlabelled, unmarked } from './logo-labels.mjs';
+import { CURRENT_PAGES, currentPage } from '../lib/logo-lock.mjs';
 
 const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), 'logo.mjs');
 const ROOTS = [];
@@ -335,11 +336,81 @@ describe('lint:logo', () => {
     fails(root, /rule 11 unlabelled previous mark deck\/slides\/40-old\.html:1: shows deck\/shots\/old-capture\.jpg/);
     root = checkout(listed);
     put(root, 'deck/shots/old-capture.jpg', PHOTO);
+    /* the deck is a current page, so rule 13 asks for the figure to be marked too */
+    put(root, 'deck/slides/40-old.html', slide('The archive, captured before the logo, so it shows the previous mark.').replace('<figure>', '<figure data-previous-mark>'));
+    passes(root);
+    root = checkout(listed);
+    put(root, 'deck/shots/old-capture.jpg', PHOTO);
     put(root, 'deck/slides/40-old.html', slide('The archive, captured before the logo, so it shows the previous mark.'));
-    passes(root);    root = checkout(listed);
+    fails(root, /rule 13 previous logo on a current page deck\/slides\/40-old\.html:1/);
+    root = checkout(listed);
     put(root, 'deck/shots/old-capture.jpg', PHOTO);
     put(root, 'deck/slides/40-old.html', '<section class="slide"><figure><img src="../shots/old-capture.jpg" alt=""></figure></section>\n');
     fails(root, /rule 11 unlabelled previous mark deck\/slides\/40-old\.html:1: shows deck\/shots\/old-capture\.jpg/);
+  });
+
+  it('rule 13: fails on a current page that shows a previous logo outside a labelled previous-logo figure', () => {
+    const POSTER = Buffer.from('a poster that ends on the 11-06 globe');
+    /* a film poster that ends on the 11-06 globe: history for rule 8 only, so rule 11 never reads it */
+    const listed = (m) => ({ ...m, history: [...m.history, { path: 'deck/shots/old-film-poster.jpg', rules: [8], reason: 'ends on the 11-06 globe; kept as made' }] });
+    const slide = (open, caption) => `<section class="slide"><figure${open}><img src="shots/old-film-poster.jpg" alt=""><figcaption>${caption}</figcaption></figure></section>\n`;
+    const seeded = (open, caption) => {
+      const root = checkout(listed);
+      put(root, 'deck/shots/old-film-poster.jpg', POSTER);
+      put(root, 'deck/slides/40-film.html', slide(open, caption));
+      return root;
+    };
+    /* the seeded violation: the poster on a deck slide, captioned but in no previous-logo figure */
+    fails(seeded('', 'The film ends on the previous logo.'), /rule 13 previous logo on a current page deck\/slides\/40-film\.html:1: shows deck\/shots\/old-film-poster\.jpg, .* outside a previous-logo figure/);
+    /* marked, but the figure does not say what it shows */
+    fails(seeded(' data-previous-mark', 'The film ends on the logo.'), /rule 13 .* in a figure marked data-previous-mark that does not say so/);
+    /* a labelled previous-logo figure */
+    passes(seeded(' data-previous-mark', 'The film ends on the previous logo, the globe of 2026-11-06.'));
+  });
+
+  it('rule 14: fails on a current page that shows a picture the manifest does not list, or a checked one that changed', () => {
+    const CAPTURE = Buffer.from('a capture of a page whose header carries a logo');
+    const seeded = (edit = (m) => m, body = CAPTURE) => {
+      const root = checkout(edit);
+      put(root, 'deck/shots/site-capture.jpg', body);
+      put(root, 'deck/slides/40-site.html', '<section class="slide"><figure><img src="shots/site-capture.jpg" alt=""><figcaption>The home page.</figcaption></figure></section>\n');
+      return root;
+    };
+    /* the seeded violation: an unlisted capture on a deck slide, which no rule before 14 reads */
+    fails(seeded(), /rule 14 unlisted picture on a current page deck\/slides\/40-site\.html:1: shows deck\/shots\/site-capture\.jpg, which the manifest does not list/);
+    const checked = (sha) => (m) => ({ ...m, checked: [{ path: 'deck/shots/site-capture.jpg', reason: 'no GT mark', sha256: sha }] });
+    /* looked at and listed at its bytes */
+    passes(seeded(checked(sha256(CAPTURE))));
+    /* shot again since it was checked: looked at again before a visitor sees it */
+    fails(seeded(checked(sha256(CAPTURE)), Buffer.from('a recapture')), /rule 14 changed picture deck\/slides\/40-site\.html:1: shows deck\/shots\/site-capture\.jpg, which changed since it was checked/);
+    /* a capture this repository shoots of its own pages: generated, recorded against LOGO.d, stale when the logo changes */
+    const generated = (source) => (m) => ({ ...m, generated: [...m.generated, { path: 'deck/shots/site-capture.jpg', generator: 'test', sourceSha256: source, sha256: sha256(CAPTURE) }] });
+    passes(seeded(generated(LOGO_SHA)));
+    fails(seeded(generated('0'.repeat(64))), /rule 5 stale deck\/shots\/site-capture\.jpg/);
+    /* notLogo names a place, not a picture: a capture under a notLogo folder, glob or even its own path is not looked at */
+    for (const path of ['deck/shots/', 'deck/shots/site-*', 'deck/shots/site-capture.jpg']) {
+      fails(seeded((m) => ({ ...m, notLogo: [{ path, reason: 'test' }] })), new RegExp(`rule 14 unlisted picture on a current page .*lists only by the entry ${path.replace(/[.*]/g, '\\$&')}, a place and not a picture`));
+    }
+    /* a page outside the current ones is not held: an unlisted picture there passes */
+    const root = checkout();
+    put(root, 'deck/shots/site-capture.jpg', CAPTURE);
+    put(root, 'src/app/other/page.html', '<img src="/shots/site-capture.jpg">\n');
+    passes(root);
+  });
+
+  it('rule 14: holds an SVG that carries a picture, and only that kind of SVG', () => {
+    const seeded = (svg, edit = (m) => m) => {
+      const root = checkout(edit);
+      put(root, 'deck/shots/wrapped.svg', svg);
+      put(root, 'deck/slides/41-wrapped.html', '<section class="slide"><figure><img src="shots/wrapped.svg" alt=""><figcaption>A figure.</figcaption></figure></section>\n');
+      return root;
+    };
+    /* a raster wrapped in an SVG, which rules 1, 2 and 12 never read */
+    const WRAPPED = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><image href="data:image/png;base64,AAAA" width="10" height="10"/></svg>\n';
+    fails(seeded(WRAPPED), /rule 14 unlisted picture on a current page deck\/slides\/41-wrapped\.html:1: shows deck\/shots\/wrapped\.svg, which the manifest does not list/);
+    passes(seeded(WRAPPED, (m) => ({ ...m, checked: [{ path: 'deck/shots/wrapped.svg', reason: 'no GT mark', sha256: sha256(WRAPPED) }] })));
+    /* an SVG of paths alone is read as text by the path rules */
+    passes(seeded('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M0 0L10 10"/></svg>\n'));
   });
 
   it('fails when a listed path is gone', () => {
@@ -384,5 +455,31 @@ describe('lint:logo labels (logo-labels.mjs)', () => {
     const card = (note) => `<section><a data-previous-mark=""><figure><img src="/shots/old.jpg"></figure><span>${note}</span></a></section>`;
     assert.equal(unlabelled(card(NOTE), site, old).length, 0);
     assert.equal(unlabelled(card('A card.'), site, old).length, 1);
+  });
+});
+
+describe('lint:logo current pages (rule 13)', () => {
+  const site = (address) => (address.startsWith('/') ? `public${address}` : null);
+  const previous = (rel) => rel === 'public/marks/graticule/variations/axis-and-meridian-behind.svg';
+  const BADGE = '<span class="pt-cycle-mark" style="mask-image:url(/marks/graticule/variations/axis-and-meridian-behind.svg);mask-size:123.43% 123.43%"></span>';
+
+  it('names /brand and every route under it, the deck and the production card on /marks, and nothing else', () => {
+    for (const route of ['/brand', '/brand/kit', '/deck', '/marks']) assert.ok(currentPage(route), route);
+    for (const route of ['/', '/marks/graticule', '/brandish', '/motion']) assert.equal(currentPage(route), undefined, route);
+    assert.equal(CURRENT_PAGES.length, 3);
+  });
+
+  it('catches a previous logo drawn as a CSS mask, such as a badge frame, unless a labelled figure holds it', () => {
+    assert.deepEqual(unmarked(`<main><h1>Brand ${BADGE}</h1></main>`, site, previous).map((m) => m.rel), ['public/marks/graticule/variations/axis-and-meridian-behind.svg']);
+    assert.equal(unmarked(`<figure data-previous-mark>${BADGE}<figcaption>The previous logo.</figcaption></figure>`, site, previous).length, 0);
+  });
+
+  it('on /marks reads the production card and the live strip only', () => {
+    const scope = currentPage('/marks').scope;
+    const inScope = (element) => scope.attrs.test(` ${element.attrs}`);
+    const page = (where) => `<main><section class="pt-book-part mk-group" data-id="${where}">${BADGE}</section></main>`;
+    assert.equal(unmarked(page('production'), site, previous, inScope).length, 1);
+    assert.equal(unmarked(page('globe'), site, previous, inScope).length, 0);
+    assert.equal(unmarked(`<div class="mk-live"><a>${BADGE}</a></div>`, site, previous, inScope).length, 1);
   });
 });

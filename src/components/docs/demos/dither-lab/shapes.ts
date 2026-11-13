@@ -1,5 +1,5 @@
 import { LOGO } from '@/lib/logo';
-import { catalogMark, SHORTLIST } from '@/lib/marks';
+import { catalogMark, shortlist } from '@/lib/marks';
 import { smoothstep } from '@/lib/math';
 
 /**
@@ -160,8 +160,22 @@ export type MarkArt = { aspect: number; draw: (ctx: CanvasRenderingContext2D, x:
 /** A catalog id (src/lib/marks.ts), or `gt` for the logo. */
 export type MarkId = string;
 
-/** The marks the tiers plate offers: the logo, the first two of the shortlist, then four marks of the earlier rounds. */
-const TIER_MARKS: readonly MarkId[] = ['gt', ...SHORTLIST.slice(1, 3), 'bar-monogram', 'globe-g', 'two-way', 'plate-inverted'];
+/**
+ * The marks the tiers plate offers: the logo, the first two of the
+ * shortlist that are neither one of the logo's own files nor a previous
+ * logo (as the /brand badge picks them), then four marks of the earlier rounds.
+ */
+const TIER_MARKS: readonly MarkId[] = [
+  'gt',
+  ...shortlist()
+    .filter((mark) => !mark.use && !mark.previous)
+    .slice(0, 2)
+    .map((mark) => mark.id),
+  'bar-monogram',
+  'globe-g',
+  'two-way',
+  'plate-inverted',
+];
 
 /** Each offered mark's label: its name in the catalog. */
 export const MARK_LABELS: Readonly<Record<MarkId, string>> = Object.fromEntries(

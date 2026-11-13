@@ -71,7 +71,7 @@ export const motionPoster = (loop: MotionLoop, theme: 'light' | 'dark') => `/mar
 export const MOTION_GROUP = {
   id: 'animations-hover',
   title: 'Hover and loading',
-  lead: `These ${MOTION_LOOPS.length} were recorded on Axis and meridian behind, the logo before Refined globe. The first hover and the loader are the live logo's own, which now plays them on Refined globe, where only the line being drawn moves; the other two hovers settle it into Oval globe, axis behind.`,
+  lead: `The first hover and the loader are the live logo's own, recorded on Refined globe on 2026-11-12, where only the line being drawn moves. The other two hovers were recorded on Axis and meridian behind, the logo before Refined globe, and settle it into Oval globe, axis behind.`,
 };
 
 /** The animations in the order they were chosen. Each starts and ends on the exact mark. */

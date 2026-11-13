@@ -3,9 +3,9 @@
  * (pnpm test:brand-kit). Each case builds a stand-in kit whose logo PNGs
  * and guide sheets differ from the committed ones, runs the builder with
  * --root on a temporary checkout holding the real src/lib/logo.ts and
- * scripts/lint/logo.json, and reads the manifest after: every logo picture
- * the kit writes (the mark's and lockups' PNGs and the sheets that draw the
- * mark) is pinned at its new bytes and the current LOGO.d, and an unlisted
+ * scripts/lint/logo.json, and reads the manifest after: every picture
+ * the kit writes (the mark's, lockups' and wordmarks' PNGs and every sheet)
+ * is pinned at its new bytes and the current LOGO.d, and an unlisted
  * one, PNG or sheet, fails the build before it deletes or writes a file.
  * The builder cuts the sheets with sips and cwebp, so the cases skip where
  * either is missing (Linux CI).

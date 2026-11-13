@@ -64,6 +64,34 @@
  *      code, markup or an SVG outside history; draw LOGO instead. Dated
  *      films and pictures that end on it are history (GLOBE_1106_REASON),
  *      and --external reports the same on the other repositories' copies
+ *  13. previous logo on a current page: a current page (CURRENT_PAGES in
+ *      scripts/lib/logo-lock.mjs: /brand and every route under it, the
+ *      brand deck and the production card on /marks) that shows a
+ *      picture whose manifest entry is history (previousPictures: the
+ *      monogram's pictures, the 11-06 globe's files and the films and
+ *      pictures that end on it) outside a previous-logo figure, an
+ *      element marked data-previous-mark whose text says what it shows.
+ *      It reads the deck's slides, parts and the built
+ *      public/brand-deck.html on every run, the prerendered current pages
+ *      with --built and the pages in a browser, CSS masks included, with
+ *      --dom (logo-dom.mjs); no manifest entry waives it
+ *  14. unlisted picture on a current page: a picture or film a current
+ *      page shows, or an SVG there that carries a picture (an <image>),
+ *      that the manifest does not list by its own path under checked (at
+ *      the sha256 it was checked at), generated or history
+ *      (unlistedOnCurrent in scripts/lib/logo-lock.mjs). notLogo and
+ *      folder or glob entries under generated do not count: they name a
+ *      place, so a picture dropped into the /marks catalog would pass
+ *      unseen. A capture of a page that carries the logo is a
+ *      picture of the logo, so every picture on /brand, the deck and the
+ *      /marks production card is looked at and listed before a visitor
+ *      sees it: generated (a capture this repository shoots of its own
+ *      pages, recorded against LOGO.d, so a logo change makes it stale),
+ *      checked (it shows the logo or no mark), or history (it shows a
+ *      previous logo, in a labelled figure, rule 13). Read where rule 13
+ *      is: the deck's slides and parts (the sources the built deck is cut
+ *      from), the prerendered current pages with --built and the pages in
+ *      a browser with --dom
  * and, in every HTML file, the #gt-mark symbol must draw LOGO.d and nothing
  * else (rule 2); no manifest entry waives that.
  * A listed path that is not on disk fails too. Exemptions: a history entry
@@ -82,7 +110,10 @@
  * and text only and needs no browser; --pixels adds the pixel check
  * (scripts/lint/logo-pixels.mjs), which searches every picture and every
  * film's first and last frame for the monogram at any size, so a screenshot
- * that shows it under any name fails unless history lists it.
+ * that shows it under any name fails unless history lists it. It knows the
+ * monogram only: the 11-06 globe and the refined logo differ by too little
+ * to tell apart at a header's size, so rule 14 has someone look at every
+ * picture on a current page instead.
  *
  * Usage:
  *   node scripts/lint/logo.mjs [--root <dir>]          (pnpm lint:logo)
@@ -109,8 +140,8 @@ import { join, relative, resolve } from 'node:path';
 
 import { ROOT as REPO_ROOT } from '../lib/root.mjs';
 import { helpIfAsked } from '../lib/help.mjs';
-import { FINGERPRINT, MANIFEST, PREVIOUS_LOGOS, PREVIOUS_MARK, RASTER, fingerprint, fingerprintText, loadLogo, matches, previousMarkText, readManifest, recordGenerated, sha256 } from '../lib/logo-lock.mjs';
-import { unlabelled } from './logo-labels.mjs';
+import { FINGERPRINT, MANIFEST, PREVIOUS_LOGOS, PREVIOUS_MARK, RASTER, currentPage, fingerprint, fingerprintText, loadLogo, matches, previousMarkText, previousPictures, readManifest, recordGenerated, sha256, unlistedOnCurrent } from '../lib/logo-lock.mjs';
+import { shownPictures, unlabelled, unmarked } from './logo-labels.mjs';
 
 helpIfAsked(import.meta.url);
 
@@ -574,6 +605,44 @@ for (const rel of DECK_PAGES) {
   report11(rel, unlabelled(readFileSync(join(ROOT, rel), 'utf8'), deckPath, showsPrevious));
 }
 
+/* ---- rule 13: a previous logo or mark on a current page, outside a previous-logo figure ---- */
+
+const PREVIOUS_PICTURES = previousPictures(manifest);
+const isPreviousPicture = (rel) => PREVIOUS_PICTURES.some((pattern) => matches(pattern, rel));
+const report13 = (where, misses) => {
+  const seen = new Set();
+  for (const miss of misses) {
+    const key = `${miss.rel}:${miss.line}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    fail(
+      'rule 13 previous logo on a current page',
+      `${where}:${miss.line}`,
+      `shows ${miss.rel}, which history lists as a previous logo or mark, ${miss.marked ? 'in a figure marked data-previous-mark that does not say so' : 'outside a previous-logo figure'}; show the logo (regenerate the picture), or put it in an element marked data-previous-mark that says it shows the previous logo or mark`
+    );
+  }
+};
+/* the deck is a current page whole: its slides, its parts and the built deck */
+for (const rel of DECK_PAGES) report13(rel, unmarked(readFileSync(join(ROOT, rel), 'utf8'), deckPath, isPreviousPicture));
+
+/* ---- rule 14: an unlisted picture on a current page ---- */
+
+const LIST_IT = 'look at it and list it by its own path under checked (it shows the logo or no mark; --record it), generated (this repository shoots it from its own pages) or history (it shows a previous logo, in a labelled figure)';
+
+const report14 = (where, shown) => {
+  const seen = new Set();
+  for (const { rel, line } of shown) {
+    if (seen.has(rel)) continue;
+    seen.add(rel);
+    const why = unlistedOnCurrent(manifest, ROOT, rel);
+    if (why === 'changed') fail('rule 14 changed picture', `${where}:${line}`, `shows ${rel}, which changed since it was checked; look at it again and record it (node scripts/lint/logo.mjs --record ${rel}), or move it to history`);
+    else if (why === 'unlisted') fail('rule 14 unlisted picture on a current page', `${where}:${line}`, `shows ${rel}, which the manifest does not list; ${LIST_IT}`);
+    else if (why) fail('rule 14 unlisted picture on a current page', `${where}:${line}`, `shows ${rel}, which the manifest lists only by the entry ${why.slice(5)}, a place and not a picture; ${LIST_IT}`);
+  }
+};
+/* the deck's sources: the built deck names content-hashed copies of the same pictures */
+for (const rel of DECK_PAGES) if (rel !== 'public/brand-deck.html') report14(rel, shownPictures(readFileSync(join(ROOT, rel), 'utf8'), deckPath));
+
 /* --built: the pages next build prerendered, outside the dated studies under /d (history; /d/production mirrors the product and is read) */
 if (argv.includes('--built')) {
   const { builtPages } = await import('./seo.mjs');
@@ -583,12 +652,22 @@ if (argv.includes('--built')) {
     process.exit(2);
   }
   let read = 0;
+  let currents = 0;
   for (const [route, file] of pages) {
     if (route.startsWith('/d/') && !route.startsWith('/d/production')) continue;
     read += 1;
-    report11(`built ${route}`, unlabelled(readFileSync(file, 'utf8'), (address) => (address.startsWith('/') ? `public${address}` : null), showsPrevious));
+    const html = readFileSync(file, 'utf8');
+    const site = (address) => (address.startsWith('/') ? `public${address}` : null);
+    report11(`built ${route}`, unlabelled(html, site, showsPrevious));
+    const current = currentPage(route);
+    if (current) {
+      currents += 1;
+      const inScope = current.scope ? (element) => current.scope.attrs.test(` ${element.attrs}`) : undefined;
+      report13(`built ${route}`, unmarked(html, site, isPreviousPicture, inScope));
+      report14(`built ${route}`, shownPictures(html, site, inScope));
+    }
   }
-  console.log(`Logo labels: ${read} prerendered pages read`);
+  console.log(`Logo labels: ${read} prerendered pages read, ${currents} of them current`);
 }
 
 /* ---- external copies: notes only ---- */

@@ -154,4 +154,65 @@ export function previousMarkLists(manifest) {
   };
 }
 
+/**
+ * The pictures that show a previous logo or mark, from the manifest's
+ * history: every picture entry under public/ or deck/ (a raster, a film, an
+ * SVG, a folder or a glob), whatever rules it waives: the monogram's
+ * captures and films, the 11-06 globe's files and the dated films and
+ * pictures that end on it (GLOBE_1106_REASON). A symbol or counted entry
+ * waives a rule inside a page and names no picture. Rule 13 reads these.
+ */
+export function previousPictures(manifest) {
+  return manifest.history
+    .filter((entry) => /^(public|deck)\//.test(entry.path) && !entry.symbol && !entry.count && (entry.path.endsWith('/') || entry.path.endsWith('*') || RASTER.test(entry.path) || entry.path.endsWith('.svg')))
+    .map((entry) => entry.path);
+}
+
+/**
+ * The current pages, which show the logo and nothing before it (Kevin,
+ * 2026-11-12: "update stuff like our banners and everything under
+ * /brand"): /brand and every route under it, the brand deck (/deck serves
+ * public/brand-deck.html; its slides and parts are read as files) and, on
+ * /marks, the production card and the head's strip of the marks in
+ * production. `scope` limits a page to those elements: `attrs` matches an
+ * element's open tag in prerendered markup, `selector` the same elements
+ * in a browser. A previous picture on a current page fails rule 13 unless
+ * it sits inside an element marked data-previous-mark, the previous-logo
+ * figure, which rule 11 holds to its label.
+ */
+export const CURRENT_PAGES = [
+  { route: '/brand', under: true },
+  { route: '/deck' },
+  { route: '/marks', scope: { attrs: /\sdata-id="production"|\sclass="[^"]*\bmk-live\b/, selector: '[data-id="production"], .mk-live' } },
+];
+
+/* an SVG that carries a picture: an <image> element, a data: raster or a linked file, which no text rule reads */
+const PICTURE_IN_SVG = /<image\b/i;
+
+/**
+ * Rule 14: why a current page may not show the file at `rel`, or null when
+ * it may. It holds pictures and films, and SVGs that carry a picture (an
+ * <image>), since rules 1, 2 and 12 read only an SVG's paths. A current
+ * page shows a file only at bytes someone vouched for: checked at its
+ * sha256, generated under its own path (rule 5 holds its sha256 and the
+ * LOGO.d it was drawn from), or history (rule 13 then wants a labelled
+ * previous-logo figure). notLogo never counts here, and neither does a
+ * folder or glob entry under generated: those name a place, not a
+ * picture, so a file dropped into the /marks catalog would pass unseen.
+ */
+export function unlistedOnCurrent(manifest, root, rel) {
+  const abs = join(root, rel);
+  if (!existsSync(abs)) return null;
+  if (!RASTER.test(rel) && !(rel.endsWith('.svg') && PICTURE_IN_SVG.test(readFileSync(abs, 'utf8')))) return null;
+  const checked = manifest.checked.find((entry) => entry.path === rel);
+  if (checked) return sha256(readFileSync(abs)) === checked.sha256 ? null : 'changed';
+  if (manifest.generated.some((entry) => entry.path === rel)) return null;
+  if (manifest.history.some((entry) => matches(entry.path, rel))) return null;
+  const place = [...manifest.notLogo, ...manifest.generated].find((entry) => matches(entry.path, rel));
+  return place ? `only ${place.path}` : 'unlisted';
+}
+
+/** The current page a route is, or undefined. */
+export const currentPage = (route) => CURRENT_PAGES.find((page) => route === page.route || (page.under && route.startsWith(`${page.route}/`)));
+
 export const previousMarkText = (manifest) => `${JSON.stringify(previousMarkLists(manifest), null, 2)}\n`;

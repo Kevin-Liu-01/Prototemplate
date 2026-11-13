@@ -178,8 +178,8 @@ export function headingsOf(sectionId: string): readonly BrandHeading[] {
 /**
  * The section captures: public/shots/thumb/brand-<id>.webp in light and
  * brand-<id>-dark.webp in dark, each a 16:9 crop from the section's top,
- * shot by the capture pass against the running route and cut to WebP by
- * pnpm build:thumbs.
+ * shot by pnpm capture:pages --sections against the running route and cut
+ * to WebP by pnpm build:thumbs.
  */
 export function brandShot(sectionId: string): ShellShot {
   return {

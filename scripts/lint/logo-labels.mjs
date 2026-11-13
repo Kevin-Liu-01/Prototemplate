@@ -25,8 +25,8 @@
  * --dom (logo-dom.mjs) reads the page in a browser as a reader sees it.
  */
 
-/** What a label says: the note in src/lib/previous-mark.ts, a film's note, or a caption's own words. */
-export const LABEL = /previous mark|before the (?:logo|globe)|predates the logo/i;
+/** What a label says: the note in src/lib/previous-mark.ts, a film's note, or a caption's own words: the previous mark (the monogram) or the previous logo (the 11-06 globe). */
+export const LABEL = /previous (?:mark|logo)|before the (?:logo|globe|refined (?:logo|globe))|predates the logo/i;
 
 const VOID = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
 const SCOPES = new Set(['figure', 'p', 'li', 'article', 'tr', 'section']);
@@ -47,12 +47,12 @@ export const twin = (rel) => rel.replace(/\.[0-9a-f]{8}(?=\.\w+$)/, '').replace(
 const textOf = (html) => html.replace(/<[^>]*>/g, ' ');
 
 /**
- * The references to history pictures in `html` that no label covers.
- * `toRel` maps an address as written (`/shots/a.jpg`, `shots/a.jpg`) to a
- * repository path or null; `isHistory` says whether that path shows the
- * previous mark. Returns [{ ref, rel, line }].
+ * The references in `html` to the pictures `isHistory` names, each with
+ * the element that shows it (its open tag's name and attributes, its
+ * parent chain) and the address as written. `toRel` maps an address as
+ * written (`/shots/a.jpg`, `shots/a.jpg`) to a repository path or null.
  */
-export function unlabelled(html, toRel, isHistory) {
+function references(html, toRel, isHistory) {
   /* scripts, styles and comments hold no shown picture; the head shows nothing */
   let doc = html
     .replace(/<!--[\s\S]*?-->/g, blank)
@@ -62,7 +62,6 @@ export function unlabelled(html, toRel, isHistory) {
   doc = doc.replace(/%(2F|3F|3D|26|23)/gi, (_, hex) => String.fromCharCode(Number.parseInt(hex, 16)));
 
   /* the element tree: each element's open tag, its attributes and where it closes */
-  const elements = [];
   const stack = [];
   const refs = [];
   for (const m of doc.matchAll(TAG)) {
@@ -75,7 +74,6 @@ export function unlabelled(html, toRel, isHistory) {
       continue;
     }
     const element = { name, attrs, start: m.index, open: m.index + whole.length, end: doc.length, parent: stack.at(-1) ?? null };
-    elements.push(element);
     for (const [, attr, dq, sq, bare] of attrs.matchAll(ATTR)) {
       if (!shows(name, attr.toLowerCase())) continue;
       for (const a of ` ${dq ?? sq ?? bare ?? ''}`.matchAll(ASSET)) {
@@ -85,17 +83,69 @@ export function unlabelled(html, toRel, isHistory) {
     }
     if (!VOID.has(name) && !whole.endsWith('/>')) stack.push(element);
   }
+  return { doc, refs };
+}
+
+/** True when the element or an ancestor carries data-previous-mark: a figure, card or grid that says it shows a previous logo or mark. */
+const markedBy = (element) => {
+  for (let e = element; e; e = e.parent) if (/\sdata-previous-mark\b/.test(` ${e.attrs}`)) return e;
+  return null;
+};
+const lineAt = (doc, index) => doc.slice(0, index).split('\n').length;
+
+/**
+ * Rule 13: the references to previous pictures in `html` (a current page)
+ * that sit inside no previous-logo figure: an element marked
+ * data-previous-mark whose text says what it shows (LABEL). `inScope`,
+ * when given, takes an element and says whether it bounds the part of the
+ * page that is current (the production card on /marks); a reference
+ * outside every such element is skipped. Returns [{ ref, rel, line,
+ * marked }], marked when the element is there but says nothing.
+ */
+export function unmarked(html, toRel, isPrevious, inScope) {
+  const { doc, refs } = references(html, toRel, isPrevious);
+  const within = (element) => {
+    for (let e = element; e; e = e.parent) if (inScope(e)) return true;
+    return false;
+  };
+  const out = [];
+  for (const { ref, rel, element, index } of refs) {
+    if (inScope && !within(element)) continue;
+    const figure = markedBy(element);
+    if (figure && LABEL.test(textOf(doc.slice(figure.open, figure.end)))) continue;
+    out.push({ ref, rel, line: lineAt(doc, index), marked: Boolean(figure) });
+  }
+  return out;
+}
+
+/**
+ * Rule 14: every picture `html` (a current page) shows, as [{ ref, rel,
+ * line }], whatever the manifest says of it; `inScope` as for unmarked.
+ * The caller holds each one to the manifest: a picture on a current page
+ * that no list names fails, so a capture that shows a logo is looked at
+ * before a visitor sees it.
+ */
+export function shownPictures(html, toRel, inScope) {
+  const { doc, refs } = references(html, toRel, () => true);
+  const within = (element) => {
+    for (let e = element; e; e = e.parent) if (inScope(e)) return true;
+    return false;
+  };
+  return refs.filter(({ element }) => !inScope || within(element)).map(({ ref, rel, index }) => ({ ref, rel, line: lineAt(doc, index) }));
+}
+
+/**
+ * The references to history pictures in `html` that no label covers.
+ * `toRel` maps an address as written (`/shots/a.jpg`, `shots/a.jpg`) to a
+ * repository path or null; `isHistory` says whether that path shows the
+ * previous mark. Returns [{ ref, rel, line }].
+ */
+export function unlabelled(html, toRel, isHistory) {
+  const { doc, refs } = references(html, toRel, isHistory);
 
   const scoped = refs.map((ref) => {
-    let scope = null;
-    let marked = false;
-    for (let e = ref.element; e; e = e.parent) {
-      if (/\sdata-previous-mark\b/.test(` ${e.attrs}`)) {
-        scope = e;
-        marked = true;
-        break;
-      }
-    }
+    let scope = markedBy(ref.element);
+    const marked = Boolean(scope);
     if (!scope) for (let e = ref.element; e; e = e.parent) if (SCOPES.has(e.name)) { scope = e; break; }
     return { ...ref, scope, marked };
   });
@@ -113,7 +163,7 @@ export function unlabelled(html, toRel, isHistory) {
       const labels = textOf(doc.slice(scope.open, scope.end)).split(/[.!?]+/).filter((sentence) => LABEL.test(sentence)).length;
       said = labels >= pictures.size;
     }
-    if (!said) out.push({ ref, rel, element, line: doc.slice(0, index).split('\n').length, scope: scope?.name ?? null });
+    if (!said) out.push({ ref, rel, element, line: lineAt(doc, index), scope: scope?.name ?? null });
   }
   return out.map(({ element, ...miss }) => miss);
 }

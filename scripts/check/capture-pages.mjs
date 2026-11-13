@@ -34,6 +34,13 @@
 //     /d/<slug>/enterprise), written to public/shots/light/<stem>.jpg and
 //     public/shots/dark/<stem>.jpg, the files directionShots() in
 //     src/lib/directions.ts reads; a page that fails to load writes nothing
+//   - with --sections, the /brand section thumbnails instead: each
+//     section[id] of /brand scrolled to the top of the stage and shot at 2x
+//     as a 16:9 crop from its top, in both themes, into
+//     public/shots/thumb/brand-<id>.jpg and brand-<id>-dark.jpg (the files
+//     brandShot() in src/app/brand/brand-sections.ts names, once
+//     pnpm build:thumbs has cut them to WebP); --only limits it to those
+//     section ids
 //   - with --live, the pages of generaltranslation.com the Shipped group's
 //     `Live site` child lists (LIVE_PAGES below, ids live-<name>), instead
 //     of the local pages: the cookie banner is declined through the
@@ -56,7 +63,7 @@
 // page failed.
 //
 // Usage: pnpm capture:pages [--base <url>, default PT_BASE] [--only <id>[,<id>]] [--live]
-//          [--direction <slug>[,<slug>]] [--viewport 1440x900] [--out <dir>] [--hide <selector>]
+//          [--direction <slug>[,<slug>]] [--sections] [--viewport 1440x900] [--out <dir>] [--hide <selector>]
 // --hide takes a CSS selector list whose elements are removed from the
 // layout (display: none) before every shot, for a live page that carries
 // something this public repository must not hold in a picture.
@@ -171,6 +178,55 @@ function targets() {
     .filter(([id]) => !seen.has(id) && seen.add(id))
     .map(([id, path]) => [id, `${BASE}${path}`]);
   return ONLY ? all.filter(([id]) => ONLY.includes(id)) : all;
+}
+
+/**
+ * --sections: the /brand section thumbnails. Each section is scrolled to
+ * the top of its scroller, its lazy pictures are let load, and a 16:9 clip
+ * from its top edge at its own width is written as a JPEG into
+ * public/shots/thumb, which pnpm build:thumbs cuts to WebP.
+ */
+async function captureSections() {
+  const out = join(ROOT, 'public/shots/thumb');
+  mkdirSync(out, { recursive: true });
+  const browser = await chromium.launch({ executablePath: EXEC, headless: true });
+  let shot = 0;
+  for (const theme of THEMES) {
+    const context = await browser.newContext({ viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 2, colorScheme: theme, reducedMotion: 'reduce' });
+    await seedTheme(context, theme);
+    const page = await context.newPage();
+    await page.goto(`${BASE}/brand`, { waitUntil: 'networkidle', timeout: 90000 });
+    await page.evaluate(() => document.fonts.ready);
+    await page.addStyleTag({ content: HIDE_CSS });
+    await page.waitForTimeout(SETTLE_MS);
+    const ids = (await page.$$eval('section[id]', (els) => els.map((el) => el.id))).filter((id) => !ONLY || ONLY.includes(id));
+    for (const id of ids) {
+      const section = page.locator(`section[id="${id}"]`);
+      await section.evaluate((el) => el.scrollIntoView({ block: 'start' }));
+      /* the lazy pictures in the first fold of the section, decoded */
+      await page.evaluate(() => {
+        const shown = [...document.images].filter((img) => img.getBoundingClientRect().top < innerHeight);
+        for (const img of shown) img.loading = 'eager';
+        return Promise.race([Promise.all(shown.map((img) => img.decode().catch(() => {}))), new Promise((r) => setTimeout(r, 4000))]);
+      });
+      await page.waitForTimeout(600);
+      const box = await section.boundingBox();
+      if (!box) throw new Error(`capture-pages --sections: section ${id} has no box`);
+      const height = Math.min(Math.round((box.width * 9) / 16), HEIGHT - Math.max(0, Math.round(box.y)));
+      const target = join(out, `brand-${id}${theme === 'dark' ? '-dark' : ''}.jpg`);
+      await page.screenshot({ path: target, type: 'jpeg', quality: 92, clip: { x: box.x, y: Math.max(0, box.y), width: box.width, height } });
+      shot += 1;
+      console.log(`  ${theme.padEnd(5)} brand-${id}`);
+    }
+    await context.close();
+  }
+  await browser.close();
+  console.log(`capture:pages --sections  ${shot} section captures -> public/shots/thumb (run pnpm build:thumbs)`);
+}
+
+if (argv.includes('--sections')) {
+  await captureSections();
+  process.exit(0);
 }
 
 const list = targets();

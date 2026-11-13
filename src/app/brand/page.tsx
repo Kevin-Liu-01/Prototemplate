@@ -62,7 +62,7 @@ const SHIPS = [
   ['Motion', 'the films on /motion: the blog trailers, the product films and the translation-history series'],
   [
     'The marks',
-    'the logo chosen on 2026-11-06, which replaced the doubled-line monogram on 2026-11-08, its state, and the marks it was reached from; the title badges in the /brand and /marks heads cycle through a selection of the marks on /marks',
+    'the refined globe of 2026-11-12, which refines the globe chosen on 2026-11-06 that replaced the doubled-line monogram on 2026-11-08, its state, and the marks it was reached from; the title badges in the /brand and /marks heads cycle through a selection of the marks on /marks',
   ],
 ] as const;
 
@@ -124,6 +124,9 @@ const markNote = (src: string) => {
   const note = filmNote(src);
   return note ? `\u00a0· ${note}` : '';
 };
+
+/** The figure's previous-logo marker: a film whose web copy shows the previous mark sits in a figure marked data-previous-mark, which pnpm lint:logo holds to its note. */
+const previousFigure = (src: string) => (filmNote(src) ? '' : undefined);
 
 /** The partnership globes under public/media: the `live` one first, a 16 by 9 frame across both columns that GlyphGlobe draws over its PNG, the first frame of its turn; then the four stills in their pairs, 2048 by 2048 on ink or on paper (`ground`), each with a -transparent twin for a ground of its own kind. The captions set their separators as FILMS does. The page shows each still's lossless WebP and the links download the PNGs. */
 const GLOBES = [
@@ -566,7 +569,7 @@ const PAGES: readonly BrandPage[] = [
           slideshow at <a href='/deck'>/deck</a>.
         </p>
         <div className='ptb-media'>
-          <figure className='ptb-shot'>
+          <figure className='ptb-shot' data-previous-mark={previousFigure('/media/open-source-reel.mp4')}>
             <BrandFilm
               name='the Open Source announcement reel'
               poster='/media/open-source-poster.jpg'
@@ -602,7 +605,7 @@ const PAGES: readonly BrandPage[] = [
         <div className='ptb-media'>
           {FILMS.map((film) => (
             <div className='ptb-art' key={film.file}>
-              <figure className='ptb-shot'>
+              <figure className='ptb-shot' data-previous-mark={previousFigure(`/media/${film.file}`)}>
                 <BrandFilm name={film.name} poster={`/media/${film.poster}`} src={`/media/${film.file}`} />
                 <figcaption>
                   {film.caption}

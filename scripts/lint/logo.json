@@ -242,6 +242,246 @@
       "sha256": "89d392eed7410f21d664f6090753427ff416195b0dca76dd8956289d3d1eb5dc"
     },
     {
+      "path": "deck/shots/proto-brand-head-light.jpg",
+      "generator": "node deck/shoot-proto.mjs (against a running server)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "0885dffb0cbc191ad7b435254727c379afb4ec62b510f2e1bb865ba50f70b511"
+    },
+    {
+      "path": "deck/shots/proto-brand-head-dark.jpg",
+      "generator": "node deck/shoot-proto.mjs (against a running server)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "6bf027028b24bc65778c81ee0476b4fc5d1b01f3e30110ef70a862ac554d0448"
+    },
+    {
+      "path": "deck/shots/proto-present.jpg",
+      "generator": "node deck/shoot-proto.mjs (against a running server)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b11a240a025ebe9337fed4f2af68ad1060dcbf44bf309ce8870198635a555c90"
+    },
+    {
+      "path": "deck/shots/proto-brand-light.jpg",
+      "generator": "node deck/shoot-proto.mjs (against a running server)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "2884a95041e8a3a0c175017b968644174696c49d5097ff00cd31569d1b400b98"
+    },
+    {
+      "path": "deck/shots/proto-brand-dark.jpg",
+      "generator": "node deck/shoot-proto.mjs (against a running server)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "a4474c3b37979fe17a7e7b116384a9c483c89800e97087b7e7aa1dac00bdaa13"
+    },
+    {
+      "path": "deck/shots/thumb/proto-brand.jpg",
+      "generator": "node deck/shoot-proto.mjs (against a running server)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "64f9715f3333fbce020f571b49db4148b9225e9b3cfc1cb37c650fd8cfd38e71"
+    },
+    {
+      "path": "deck/shots/thumb/proto-production.jpg",
+      "generator": "node deck/shoot-proto.mjs (against a running server)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "905a783753b266e264404fc4d7c24adeb312751f807b0f25f382b30b8fa7a4aa"
+    },
+    {
+      "path": "deck/shots/thumb/proto-deck.jpg",
+      "generator": "node deck/shoot-proto.mjs (against a running server)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "dff410f3cdde4e2a94d7d650998507f7e303bbcfd45c47583210846f60e65b61"
+    },
+    {
+      "path": "public/brand/kit/png/gt-wordmark-ink-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "2641721b7a69a600273d579fad06fb003584b3f6833d9da9d974ad43040f5198"
+    },
+    {
+      "path": "public/brand/kit/png/gt-wordmark-white-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "ce1e5af48e6318c88fad0ed7cf3eb6ffa648e690e44dc831b4f69084871543be"
+    },
+    {
+      "path": "public/brand/kit/png/gt-wordmark-stacked-ink-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "bf327beb3ea825d4f61c13eb8b338498105ba65a4040e1fe3af9716121652c4d"
+    },
+    {
+      "path": "public/brand/kit/png/gt-wordmark-stacked-white-on-transparent-1024.png",
+      "generator": "pnpm build:brand-kit",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "f7a6a48d2d7ce87cf31db8a605f33a940913bc1474d64b9c242826ba03751455"
+    },
+    {
+      "path": "public/brand/kit/sheets/type-spec.webp",
+      "generator": "pnpm build:brand-kit",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "7ed0ff3c464f864e6c7173f45c4032f68a78c30f8c37e8dfc4c15c6f88abb614"
+    },
+    {
+      "path": "public/brand/kit/sheets/color-sheet.webp",
+      "generator": "pnpm build:brand-kit",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "84b0f29e6da05b05415764c5255d6db837faf4b4ce7e26f6da6538ff79cc9434"
+    },
+    {
+      "path": "public/shots/thumb/brand-black-white-dither-blue-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "c5ea7d8e3b057a64631d4fea3858751c356df1b0fcbb0193da59520c1dfa1a7f"
+    },
+    {
+      "path": "public/shots/thumb/brand-black-white-dither-blue.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "94b4eccbdde76c7b580e10125d0127b13613400e2f40ea282d1fe5bbd3ca1cde"
+    },
+    {
+      "path": "public/shots/thumb/brand-brand-kit-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "a68c856f213d8424b0d270b75c69cfed4ec9f5b794c7f0213806caeb7dd5623b"
+    },
+    {
+      "path": "public/shots/thumb/brand-brand-kit.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "21395972a31549e5a30f61b316aede70299a31f453e15ec004bfebb1cc7d5f56"
+    },
+    {
+      "path": "public/shots/thumb/brand-color-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b2020bdcd84ebc9bc7c2321ceb0e14703ae74ef17c6fbef708cf9856352b5c77"
+    },
+    {
+      "path": "public/shots/thumb/brand-color.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "fd1eb23f33503c110462bbd9fdaa6ed12b72d13f24867e185383add85f972985"
+    },
+    {
+      "path": "public/shots/thumb/brand-context-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "87750983e46de5c139ad147d7f83f518b669d5a8363a43844e387b7d2af99113"
+    },
+    {
+      "path": "public/shots/thumb/brand-context.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "c6efc2e90cbf203131c58cc867914dc1e6f32933735374b2ed6a2fc550cf07af"
+    },
+    {
+      "path": "public/shots/thumb/brand-dark.webp",
+      "generator": "pnpm capture:pages --only brand, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "50d852c564373f3bc63e544d127f3db012b13bfe3a31db2d64ff9a411b008d49"
+    },
+    {
+      "path": "public/shots/thumb/brand-language-as-material-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "84a670664140ab9ab00352bfe263f77586ecf945defca2e203cf8bca757fdfd7"
+    },
+    {
+      "path": "public/shots/thumb/brand-language-as-material.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "44325d96ade3a15fec27d856efc6a0b88dee3a1ee99036ce56cdfa929802a451"
+    },
+    {
+      "path": "public/shots/thumb/brand-logo-system-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "9c10f8aab4d5edac1aee19aed0940332e3e2ed345b05d58733212c57abf0d4f3"
+    },
+    {
+      "path": "public/shots/thumb/brand-logo-system.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "f6be96d90c5ad6cf10fa3b023597233a84a06b10f6f57f6e7cfc42fd073059b7"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-character-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "fedff37d4d9d416968300bd69187000fb2aa34bf7066c0e5dcecdeea1b96973c"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-character.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "b25201369cb4da6c07cf4b5fac7c3e747e27c0778d1cdf1c607af09d880121cf"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-completed-reference-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "9c4be00b4e7b2cdd8dee357279ffe9e94d41d0042907c3e345d1ed03a7f86fc0"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-completed-reference.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "ed766f0174fcb6274f7475b172f7587c546c84a881ad00b959966ee51b0d63e5"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-idea-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "33ff47265bc2e758193b2ef7d1b0b56b6ad513389b390455b41429cbc8839f39"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-idea.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "2bc13d14e855556066a2b8685e5dbdf1a89eec06d6eb3523816128b5a4c25f6d"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-mark-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "1c56f49e9f5b9e03c352782d0990b0222fe4dd5915ab6138b0b1f3906387e18d"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-mark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "14ce3d792eba52e25b27a418245de54adec2fea51a436f4853ffa349c8d7d706"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-name-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "770e8c2b19d1100544fb916eabdb8d73e4783ee3d3f0181340c90e169eb0af85"
+    },
+    {
+      "path": "public/shots/thumb/brand-the-name.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "85fb9d4aabf398f6a813be50727185aef9ace4931666bd9b791b7ffce3464e97"
+    },
+    {
+      "path": "public/shots/thumb/brand-type-dark.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "bdb726adb2e71d9b2df11a28ab78828ce7c1ef54d7a01030ebdb84a003d7d855"
+    },
+    {
+      "path": "public/shots/thumb/brand-type.webp",
+      "generator": "pnpm capture:pages --sections, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "1bda67df253652c52e1e74e8272ee0cee2642eb0f3965d24a8be4b57a1361ac9"
+    },
+    {
+      "path": "public/shots/thumb/brand.webp",
+      "generator": "pnpm capture:pages --only brand, then pnpm build:thumbs (a capture of /brand, which shows the logo; looked at after each capture)",
+      "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
+      "sha256": "f239e75fbc115c7c5cf7d2fea08a02c732cc5837c6f590b64d152d951f358304"
+    },
+    {
       "path": "public/media/profile-banners/linkedin-1-rows-no-logos-dark.png",
       "generator": "Kevin's profile banner renderers outside this repository (cloud.html, rows.html, banner2.html), which draw the globe from public/brand/gt-globe-logo.svg",
       "sourceSha256": "4cd01651f9291bb8efba81f2bd255d4e90247e3d5454d9ab38edfe2f4c6b46a4",
@@ -1015,6 +1255,13 @@
       "reason": "the 11-06 globe, the previous logo, kept on /marks as the vote record of 2026-11-06"
     },
     {
+      "path": "public/marks/graticule/variations/oval-axis-behind.svg",
+      "rules": [
+        12
+      ],
+      "reason": "the 11-06 globe without its meridian, its state on hover, kept on /marks as the vote record; the refined logo draws its own state (GtLogoMotion), so no current page shows this file"
+    },
+    {
       "path": "public/media/slash-announcement-film.mp4",
       "rules": [
         8
@@ -1247,38 +1494,6 @@
       "sha256": "55a8eff4c9af3596d8b146e82de5c646f42f29688affb134961a529d2b50cdca"
     },
     {
-      "path": "public/media/designing-docs-film.mp4",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "379d7214e48be39138ca7a9993d6c34061764b9a6a89f786e9f02fc049fe3e44"
-    },
-    {
-      "path": "public/motion/sheets/blog-designing-docs.png",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "93a07fc94c03fa0d4204eecaaee49be9510d375e62669fc462099d5e6651e3fe"
-    },
-    {
-      "path": "public/motion/sheets/blog-designing-docs.webp",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "91f64f8b721ef7da54921b241fd7d171900e445d72e0a34c914825cf1d5edc32"
-    },
-    {
-      "path": "public/media/designing-docs-poster.jpg",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "324134440040ad5daa50792bedc1a3596d832ff96473f0ac81a172ed4b9c3a60"
-    },
-    {
       "path": "public/media/format-numbers-dates-currencies-film.mp4",
       "rules": [
         8
@@ -1309,38 +1524,6 @@
       ],
       "reason": "ends on the 11-06 globe; kept as made",
       "sha256": "facdd42e1c68ec878704300cf7b67a471b815a314fb337c4c20b321ed56f4107"
-    },
-    {
-      "path": "public/media/fuma-nama-film.mp4",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "c7bc69ba3044a8b0942de24fbe5cc06bc36eca3ac1fddfae291a16443a01a784"
-    },
-    {
-      "path": "public/motion/sheets/blog-fuma-nama.png",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "402be438382284c53d9003b97cf7cc68bc75bee4d6ac920400184468917cfe7f"
-    },
-    {
-      "path": "public/motion/sheets/blog-fuma-nama.webp",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "9b71455fb11277ec4b9627754898d884b54d7a16ddf59f21727fa04d8ada4707"
-    },
-    {
-      "path": "public/media/fuma-nama-poster.jpg",
-      "rules": [
-        8
-      ],
-      "reason": "ends on the 11-06 globe; kept as made",
-      "sha256": "c5793de8a1e18525ef71ffa6ba3b0779d943537280fb1ba917f494d6a7d6d8c5"
     },
     {
       "path": "public/media/how-gt-works-film.mp4",
@@ -2181,6 +2364,406 @@
       ],
       "reason": "ends on the 11-06 globe; kept as made",
       "sha256": "e192e5b6dbe3703103c1317a127cd18ae9b38736eb837d39e94b4849bc8389bb"
+    },
+    {
+      "path": "deck/shots/cover-gt-open-source.png",
+      "rules": [
+        8
+      ],
+      "reason": "ends on the 11-06 globe; kept as made"
+    },
+    {
+      "path": "deck/shots/cover-fumadocs.png",
+      "rules": [
+        8
+      ],
+      "reason": "ends on the 11-06 globe; kept as made"
+    },
+    {
+      "path": "public/deck-assets/cover-gt-open-source.*",
+      "rules": [
+        8
+      ],
+      "reason": "ends on the 11-06 globe; kept as made"
+    },
+    {
+      "path": "public/deck-assets/cover-fumadocs.*",
+      "rules": [
+        8
+      ],
+      "reason": "ends on the 11-06 globe; kept as made"
+    },
+    {
+      "path": "deck/shots/thumb/cover-gt-open-source.jpg",
+      "rules": [
+        8
+      ],
+      "reason": "ends on the 11-06 globe; kept as made"
+    },
+    {
+      "path": "deck/shots/thumb/cover-fumadocs.jpg",
+      "rules": [
+        8
+      ],
+      "reason": "ends on the 11-06 globe; kept as made"
+    },
+    {
+      "path": "public/shots/deck/cover-gt-open-source.jpg",
+      "rules": [
+        8
+      ],
+      "reason": "ends on the 11-06 globe; kept as made"
+    },
+    {
+      "path": "public/shots/deck/cover-fumadocs.jpg",
+      "rules": [
+        8
+      ],
+      "reason": "ends on the 11-06 globe; kept as made"
+    },
+    {
+      "path": "public/shots/thumb/brand-made-with-the-system.webp",
+      "reason": "the first fold of /brand's Made with the system section, which opens on the Open Source reel's poster, made before the globe"
+    },
+    {
+      "path": "public/shots/thumb/brand-made-with-the-system-dark.webp",
+      "reason": "the first fold of /brand's Made with the system section, which opens on the Open Source reel's poster, made before the globe"
+    },
+    {
+      "path": "deck/shots/site-home-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-home-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-pricing-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-pricing-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-enterprise-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-enterprise-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-contact-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-contact-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-report-card-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-report-card-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-docs-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-docs-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-blog-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-blog-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-blog-post-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-blog-post-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-blog-oss-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-blog-oss-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-dash-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/site-dash-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/gt-careers.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/gt-careers-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/detail-nav-mark-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/detail-nav-mark-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/detail-footer-corner-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/detail-footer-corner-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-home-light.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-home-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-pricing.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-pricing-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-enterprise.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-enterprise-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-careers.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-careers-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-docs.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-docs-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-report-card.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-report-card-dark.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-blog.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-contact.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/thumb/gt-dash.jpg",
+      "reason": "a capture of generaltranslation.com taken before the site moved to the refined logo: its header shows the previous logo; shown in a labelled figure until gt-cloud ships the refined logo and the capture is taken again"
+    },
+    {
+      "path": "deck/shots/proto-grid-tiles-light.jpg",
+      "reason": "a capture of the gallery whose tiles were taken before the refined logo: the shipped site tiles show the previous logo; shown in a labelled figure"
+    },
+    {
+      "path": "deck/shots/proto-grid-tiles-dark.jpg",
+      "reason": "a capture of the gallery whose tiles were taken before the refined logo: the shipped site tiles show the previous logo; shown in a labelled figure"
+    },
+    {
+      "path": "public/deck-assets/site-home-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-home-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-pricing-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-pricing-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-enterprise-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-enterprise-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-contact-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-contact-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-report-card-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-report-card-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-docs-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-docs-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-blog-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-blog-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-blog-post-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-blog-post-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-blog-oss-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-blog-oss-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-dash-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/site-dash-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-careers.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-careers-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/detail-nav-mark-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/detail-nav-mark-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/detail-footer-corner-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/detail-footer-corner-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-home-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-home-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-pricing.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-pricing-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-enterprise.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-enterprise-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-docs.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-docs-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-report-card.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-report-card-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-blog.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-contact.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/gt-dash.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/proto-grid-tiles-light.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
+    },
+    {
+      "path": "public/deck-assets/proto-grid-tiles-dark.*",
+      "reason": "the built deck's copy of a deck picture listed above (pnpm build:deck)"
     }
   ],
   "notLogo": [
@@ -2347,6 +2930,681 @@
       "path": "public/media/gt-banner-signin@2x.webp",
       "reason": "the X banner: the dithered globe and the customer grid, no GT mark",
       "sha256": "7181a7803a329d0cd76a666527b123bca14bcf15dcf12731b40798822c986959"
+    },
+    {
+      "path": "public/media/designing-docs-film.mp4",
+      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "sha256": "06a09a580e0ffe32ef8d69ea3f48fbffb90b18b300aa7991ca5e35150cdb2ab5"
+    },
+    {
+      "path": "public/media/designing-docs-poster.jpg",
+      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "sha256": "d12e909577aad015500ce9fed53d2b173acde60e6db24e996645b58e19d7323f"
+    },
+    {
+      "path": "public/motion/sheets/blog-designing-docs.png",
+      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "sha256": "6328377de58be65f0d47ae838c8b284f8cbf8b03b031d311d3bf7291a9a8f28d"
+    },
+    {
+      "path": "public/motion/sheets/blog-designing-docs.webp",
+      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "sha256": "9c3a4a3b3b62b69770a8d6453ae3ce465a0501b4430e7a0f5a33655a74dbbdf8"
+    },
+    {
+      "path": "public/media/fuma-nama-film.mp4",
+      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "sha256": "94752a76d5516e57faef46ae6b35fdefba1643e77609a685a346853e078742c4"
+    },
+    {
+      "path": "public/media/fuma-nama-poster.jpg",
+      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "sha256": "8ab62fd9c0e7fc996e99b5bf8a7c6e789021097842e44d38ac87d79f91b527e6"
+    },
+    {
+      "path": "public/motion/sheets/blog-fuma-nama.png",
+      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "sha256": "7789160ad4a8da3054288789dd79d800ada5b226ed458139129b28d001eed951"
+    },
+    {
+      "path": "public/motion/sheets/blog-fuma-nama.webp",
+      "reason": "rendered again on the refined logo on 2026-11-12 (kit/film.mjs final); every frame of the contact sheet and the end card checked by eye: the logo, nothing earlier",
+      "sha256": "922e9b679dcdb463a39179eb2bd2c8a52b05d54f5181eea5b7d3364e65b49314"
+    },
+    {
+      "path": "deck/shots/opener-brand-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "be61fd62562df709f28060cd6245deea964a40f1d92fbe35e2a6a13b9b2c26a5"
+    },
+    {
+      "path": "deck/shots/opener-brand.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "48970d59699e00ddc3599505650a8f5a2b8c734fd2a6ff7a8714944b61de73f6"
+    },
+    {
+      "path": "deck/shots/tone/mood-earth.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "afc48ff22267e4d3b38807e730e5e891e0eb3bcc06357007372ad478e078cf4f"
+    },
+    {
+      "path": "deck/shots/tone/mood-rosetta.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "e1fd5131b95bb332b23e4010590176a10015f450fc6158fdd9f55b7041e503eb"
+    },
+    {
+      "path": "deck/shots/thumb/ref-brockmann.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "2af6d6d952faf7b415fed3689a12d582ba99510a5cd0d6b73a99451153e84c03"
+    },
+    {
+      "path": "deck/shots/thumb/ref-aicher.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "fd3beae276d5d7294f6a2c9dcc2743d027f7f8c00feb2ef014411afa6154f538"
+    },
+    {
+      "path": "deck/shots/thumb/ref-vignelli.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "dba25709275299106d432f2d3c34e6f827daabb366a4753e37df84503ea23dff"
+    },
+    {
+      "path": "deck/shots/thumb/ref-solari.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "ab77932eb64a8509c3a447b7707cfd19ea1ab3c64ed26b4e4f00673357e8f98a"
+    },
+    {
+      "path": "deck/shots/thumb/ref-chart.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "1693268fbb1d5ec1ccf157a9ba7423f16fa0e4750840f298d0a181ecaff656b7"
+    },
+    {
+      "path": "deck/shots/thumb/ref-rosetta.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "472d3400eb7249635070edcc0083ec5a128495a93ac5fad0555badb1223f1e33"
+    },
+    {
+      "path": "deck/shots/thumb/ref-chrysler.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "4d55a3bfc1f47842cd07cb02303e77d23f561cde5d442769763fee0fa2048fef"
+    },
+    {
+      "path": "deck/shots/thumb/ref-whole-earth.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "8f108984d27c42fe6e20e22b2f144fe5cd089bb5cd07561dfa77a69312b28827"
+    },
+    {
+      "path": "deck/shots/thumb/ref-subway-sign.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "ea0911e7c47933e662a0b04e2be1fd56744b4a19f195e28583842e9917b9e51f"
+    },
+    {
+      "path": "deck/shots/thumb/ref-rams.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "a0dd44d40051dd6bb95d6c54fd9b53266ff58212e99d5a61f4165f4c1fb9dc29"
+    },
+    {
+      "path": "deck/shots/thumb/ref-stamp.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "76266dd802af5a4ed8b176c3743bcb6eab16b74b075d06aa08928131b563b964"
+    },
+    {
+      "path": "deck/shots/tone/mood-tablet.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "bead570fb56990e150853d8ed0d3f67fb16fc45554c63e5c9bd9812ab54ed702"
+    },
+    {
+      "path": "deck/shots/thumb/logo-gm.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "eac644f18dede9429a512117c7035cfb2b3b1f275576a1feb740aba3c1fb0b28"
+    },
+    {
+      "path": "deck/shots/thumb/logo-ge.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "8d18af9922e7d52a0f1483717b98b92c5847e9e3cba7d69661a11d6b2ccb4f24"
+    },
+    {
+      "path": "deck/shots/opener-design-system-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "516cc73f95135bf76bed12b5380a3b5dfcedfa1ff2f3b902e3aa66a9df0eff80"
+    },
+    {
+      "path": "deck/shots/opener-design-system.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "fa515e3c00e87be435cb3d624d82a696855c8cf75832621880d1aee011dafb68"
+    },
+    {
+      "path": "deck/shots/tone/mood-calligraphy.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "b4a2e278f4b2f19ce27e0da0e1c0ec0d7f43932b03b0dbe97d34a3b087ad171f"
+    },
+    {
+      "path": "deck/shots/opener-website-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "0a5b6308a8d5e6fe25301053219c6a2f754c4a5ddf80adb8cc09da5baf088266"
+    },
+    {
+      "path": "deck/shots/opener-website.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "16ec5009cde7d86cc3ea7d5a1988e571dd08e34569f961c98c23d2be52395599"
+    },
+    {
+      "path": "deck/shots/tone/mood-lighthouse.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "e2faa09fe64077e3a9e49d1d7f1078a3d53968b374d2b04c31997838b331e9f6"
+    },
+    {
+      "path": "deck/shots/detail-nav-actions-light.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "7ee9d2e535708270afbca3264d228395b638970c9fb4ddeb4154c1e99179119d"
+    },
+    {
+      "path": "deck/shots/detail-nav-actions-dark.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "d27967b3ffce1dffa96487c26509dbeb5c599c29ab939d67c863840f4872cbc7"
+    },
+    {
+      "path": "deck/shots/detail-pricing-seam-light.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "abde44b979e0c3e7bd0402e60a4f06e34532d1fadeedd674e6b6368b4a7c609e"
+    },
+    {
+      "path": "deck/shots/detail-pricing-seam-dark.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "104129005cba8916d80f470a58b358a0bc5ac6c6b507489585744008301fe9e6"
+    },
+    {
+      "path": "deck/shots/detail-logo-row-light.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "f776b7792e14e0f531a678511561d4ff473f332af02b5421142c5bbb7066f6e7"
+    },
+    {
+      "path": "deck/shots/detail-logo-row-dark.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "ff972d87666b412c09cbb20cbea7b0fef252c09f23e1751c10fa387edab1b51e"
+    },
+    {
+      "path": "deck/shots/detail-docs-toc-light.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "511a73688bbf33eb477074a8f591db576cc3e2beadd20141055b07cae2af279c"
+    },
+    {
+      "path": "deck/shots/detail-docs-toc-dark.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "c10be75b2fc2c75bb013e1dbb5a4f51d0816b6bae54227e38ced6aa968b29982"
+    },
+    {
+      "path": "deck/shots/detail-404-copy-light.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "3e278a00ba30769214c474380476085210970b024d982aed855104efe404be32"
+    },
+    {
+      "path": "deck/shots/detail-404-copy-dark.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "75c92c6a3f527630ffef0e5aaa90565dff232ab3df20a538d151f466e3b66241"
+    },
+    {
+      "path": "deck/shots/detail-cross-light.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "caf044c165b21c2c95421110b87812724d5dcb36ef502eefaccdc8a93468687c"
+    },
+    {
+      "path": "deck/shots/detail-cross-dark.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "fc4f6eb117a9669c1ea22f80f2f6a3fe6bb8a6be9d33300767159ec99de42fa0"
+    },
+    {
+      "path": "deck/shots/detail-code-panel-light.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "752387849678307f143e79062017b53f7523bf21ea5ba0d2a8c344b0263d37c0"
+    },
+    {
+      "path": "deck/shots/detail-code-panel-dark.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "cf658c730a990be75481f430e4f32af1be8f138ad0b2b6d7235cd65cb77c7aa3"
+    },
+    {
+      "path": "deck/shots/opener-documentation-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "680a3da31c76d12ceb15c6c1f969dc5a9f13e14dd12705b236a5a1ad7477f1c5"
+    },
+    {
+      "path": "deck/shots/opener-documentation.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "00ff8bed1d989deaedf3ad348b640ef8de7a28d887691f6f8ace8f9fedd87512"
+    },
+    {
+      "path": "deck/shots/opener-blog-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "952e6b839486154ee33adec89192fa41c2668d8587bdcce7137c8d97ef3e249f"
+    },
+    {
+      "path": "deck/shots/opener-blog.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "952e6b839486154ee33adec89192fa41c2668d8587bdcce7137c8d97ef3e249f"
+    },
+    {
+      "path": "deck/shots/tone/mood-devanagari.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "5044a672f595d1ddcf2df84187c22b5b569fc5bc9aaa0a4aa597cb8ff709d6cc"
+    },
+    {
+      "path": "deck/shots/tone/mood-gloss.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "c473103dbf0f37f13d4257f92aaaf30f3a2e7128d19babd17c968208045df906"
+    },
+    {
+      "path": "deck/shots/x-banner.png",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "76a5f35e6f04e455b03f5432e4b96eea4d7657160950f98022fd3d9d5bf967f0"
+    },
+    {
+      "path": "deck/shots/opener-developer-experience-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "6c34e5a2d4cae61b06731139f60d099d7184d972eea56da9ca880d7a3bd5794e"
+    },
+    {
+      "path": "deck/shots/opener-developer-experience.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "6c34e5a2d4cae61b06731139f60d099d7184d972eea56da9ca880d7a3bd5794e"
+    },
+    {
+      "path": "deck/shots/tone/mood-cable.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "93bfc59b954afa307319e558c77353f49597b9527db752687f1d7b833221a74b"
+    },
+    {
+      "path": "deck/shots/opener-prototemplate-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "127b3000c5e5ae54b99e4370aa56d07688c66dbce97596d160ff1c3dd0d08dc8"
+    },
+    {
+      "path": "deck/shots/opener-prototemplate.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "8e58ea8b1587452fbca69565b885940be0b5cba1adc1759fb9737c9c17d4c657"
+    },
+    {
+      "path": "deck/shots/proto-skills-rows-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "0b058e1459b7927e26229201a0e4f8f99db583956097b29dc068b4e4a0469a23"
+    },
+    {
+      "path": "deck/shots/proto-skills-rows-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "4ac895d20b262e313e7f25000bc4fbe8a98118459d5150564226465f4983e0a9"
+    },
+    {
+      "path": "deck/shots/proto-index-panel-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "dfb268a542e5afd1abb89cff83fbb32295962acf30fc7c1979463d1d729a2fec"
+    },
+    {
+      "path": "deck/shots/proto-index-panel-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "ff7e40be45b328c5c3a99bacd6c7781bd1b292307e1c93bd10c516ebec4f853a"
+    },
+    {
+      "path": "deck/shots/proto-search-card-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "7eade17fa51120acba629b561629e5a35cd6c9d5edda67a7e39334cdb08cc87a"
+    },
+    {
+      "path": "deck/shots/proto-search-card-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "78a220e8ec8e507223d8937c74dc2089305c496877bbc5b5ae4d02e60a17798a"
+    },
+    {
+      "path": "deck/shots/proto-shell-corner-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "9fc4cb23c7b7f2c59587fb2a4421044108a5c2aefb4d23e5afd71b275411eda3"
+    },
+    {
+      "path": "deck/shots/proto-shell-corner-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "aa0b4ef6fdb388fe03c441091ec1f26c0038e8c6438caaa915e4ffa64438bc4c"
+    },
+    {
+      "path": "deck/shots/proto-compare-list-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "6e705571432e75130175b006457221c91a76e313191c1e2413798a915140facf"
+    },
+    {
+      "path": "deck/shots/proto-compare-list-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "354b4c2929b86eb0c9df45574ed4ddbb9454619a209da85f15911eabf75f4b46"
+    },
+    {
+      "path": "deck/shots/proto-compare-count-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "bf25c32b0eec0a6597e46bca77fb728e2d343af65518c06ca28161402ac5261d"
+    },
+    {
+      "path": "deck/shots/proto-compare-count-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "92ce6c9ecef382e05d0fec82e17b9e8b90806dd3dec4764c631c9679cfbfa71b"
+    },
+    {
+      "path": "deck/shots/proto-compare-view-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "92c0acb7b12735bfd739c8103226c6ba95bff5b0f6397927d45a4ca9b4de9d6c"
+    },
+    {
+      "path": "deck/shots/proto-compare-view-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "4de67f4db8d889efbe99012fecc61e9cef6f3d685e123f0835e560d8fedacbeb"
+    },
+    {
+      "path": "deck/shots/tone/mood-wave.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "a871b19af03f5d463c784567762870db473b02b91c06130cef4a58d371a660a6"
+    },
+    {
+      "path": "deck/shots/proto-engine-horizon-field-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "7a10f307ee299ff219d46012feaa37962a2aae15abac6d410fad1acbd11e6d04"
+    },
+    {
+      "path": "deck/shots/proto-engine-horizon-field-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "d30e72af25061d3a57f5627c07251078fcdecdb6215737469b3ac846694902fd"
+    },
+    {
+      "path": "deck/shots/proto-engine-glyph-field-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "0b6ba6d9a3146eda98db73a240a99f596c49c2e7ca55d02775205306a05ab631"
+    },
+    {
+      "path": "deck/shots/proto-engine-glyph-field-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "6bf57fc52d9b7676ecd674da69763f57dddd80d91988454d2bbc3767ec4adc3e"
+    },
+    {
+      "path": "deck/shots/proto-engine-ink-field-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "60a1502a9568b4bef672a7a346f5a0a357b5e69f755113c71516979f95f72666"
+    },
+    {
+      "path": "deck/shots/proto-engine-ink-field-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "38c9ef8b583d9ae12b1b032a1a1e8727dc9915814f945c88ab5f74dcdc4ffd29"
+    },
+    {
+      "path": "deck/shots/proto-engine-prismatic-field-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "bc64930d3801b07b83f30c310d00fe257fdded345774a6327e3234913a56bf0a"
+    },
+    {
+      "path": "deck/shots/proto-engine-prismatic-field-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "7883b34c5f71ab2173a0a893e0a8617d744035f0679e3b384d4c59e6c75c2f63"
+    },
+    {
+      "path": "deck/shots/proto-engine-dither-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "116c6d5ffd9889c283a4207539027d6b3f70800103aaea1bb9636d0bc313f6b3"
+    },
+    {
+      "path": "deck/shots/proto-engine-dither-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "116c6d5ffd9889c283a4207539027d6b3f70800103aaea1bb9636d0bc313f6b3"
+    },
+    {
+      "path": "deck/shots/proto-engine-studio-field-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "0a74062f51001905f89b7fff8fccb321f0b9af767384b4d179f03ee141fbe24b"
+    },
+    {
+      "path": "deck/shots/proto-engine-studio-field-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "365226754e2fe01dfd4f1ae0fd5ab9a65fd189f5c903fdb5bd37d891cd4cf259"
+    },
+    {
+      "path": "deck/shots/proto-engine-iso-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "ca44777c9a23c934ae628348711b176be3b92c4904d595f8dda1b2f70b6f0703"
+    },
+    {
+      "path": "deck/shots/proto-engine-iso-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "ca44777c9a23c934ae628348711b176be3b92c4904d595f8dda1b2f70b6f0703"
+    },
+    {
+      "path": "deck/shots/proto-engine-doubled-line-detail-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "826ab6af5e5e887387b7d47d7b5ffef10a10498e635cea54d17ed734b3ee4ec6"
+    },
+    {
+      "path": "deck/shots/proto-engine-doubled-line-detail-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "826ab6af5e5e887387b7d47d7b5ffef10a10498e635cea54d17ed734b3ee4ec6"
+    },
+    {
+      "path": "deck/shots/proto-engine-edge-globe-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "c156230dd6b8428353ad2a0650064fd6b830ee7d73870b65d70c5641d0e1e4c4"
+    },
+    {
+      "path": "deck/shots/proto-engine-edge-globe-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "2650eace722822998e33412e2ee8107b875cccc525e2e591c1890f98bef3680b"
+    },
+    {
+      "path": "deck/shots/proto-engine-locale-tag-detail-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "f27e29ecf0415dde86dc60596190c4d323cf2ebf911aeeb55ecf8406a6d675b6"
+    },
+    {
+      "path": "deck/shots/proto-engine-locale-tag-detail-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "f27e29ecf0415dde86dc60596190c4d323cf2ebf911aeeb55ecf8406a6d675b6"
+    },
+    {
+      "path": "deck/shots/proto-engine-reveal-seam-detail-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "4afd3df5e6c0f93d9e2a9d6de665d6261bd41430fa73100015ee6b4667ea2e84"
+    },
+    {
+      "path": "deck/shots/proto-engine-reveal-seam-detail-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "4afd3df5e6c0f93d9e2a9d6de665d6261bd41430fa73100015ee6b4667ea2e84"
+    },
+    {
+      "path": "deck/shots/proto-engine-glyph-reassembler-detail-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "90206bf8170c92885f4470f1c979f561137322c22fa0c7afb073961d74aae58c"
+    },
+    {
+      "path": "deck/shots/proto-engine-glyph-reassembler-detail-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "90206bf8170c92885f4470f1c979f561137322c22fa0c7afb073961d74aae58c"
+    },
+    {
+      "path": "deck/shots/proto-docs-entry-light.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "5d9cb6ed0562cbef612ce3ac222abcc5e80a3d6187ca6e588588d89f7bb40ed8"
+    },
+    {
+      "path": "deck/shots/proto-docs-entry-dark.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "9cd1f95fac154c6793c324c2572d3c2ea2210c00b1820b0d729951578bd73682"
+    },
+    {
+      "path": "deck/shots/detail-glyph-animation-light.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "c331cc0e88d22da3a04bfdc66bfc2eaec095ed35f272d7ac47234889dde337c9"
+    },
+    {
+      "path": "deck/shots/detail-glyph-animation-dark.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "497ec6b1d51f33d2fbb520b8955c752df26f55e18495ef2f66ef3e09a1a34bda"
+    },
+    {
+      "path": "deck/shots/detail-glyph-book-bar-light.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "73a19a62b99fcd19f06c981f2f4ad2e0949be7920edafb0fa985819a4ee7b492"
+    },
+    {
+      "path": "deck/shots/detail-glyph-book-bar-dark.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "722bec1a7f8aa5d94a5707a7427941c669a960a7be5822e09f94d8aba9967fd8"
+    },
+    {
+      "path": "deck/shots/detail-glyph-book-light.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "f6df6332874ceae659d30188b5cafac057f8645b8b953e3e2491ac58974c12c9"
+    },
+    {
+      "path": "deck/shots/detail-glyph-book-dark.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "374d2ab06dc1c54935f939b4ba077660a435b7b046b44a717dd5808c62cbfa40"
+    },
+    {
+      "path": "deck/shots/detail-glyph-slides-bar-light.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "3f1d1e876dbb598712b1e47208f318a13ab278a61301b94aa3355b994bc2fd6e"
+    },
+    {
+      "path": "deck/shots/detail-glyph-slides-bar-dark.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "4c1e44be60478285e6358ee9adc4584c5d44caf6a06af329e1fb8e740444c7f8"
+    },
+    {
+      "path": "deck/shots/detail-glyph-slides-light.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "0654fa5508975ba033f7f1c168f552a86385fc6c50c0561f74e9e84435dbac94"
+    },
+    {
+      "path": "deck/shots/detail-glyph-slides-dark.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "f30b983cedef86c09726d0d888cbc1f6536f296c83f87fc99f1212101c7bdca7"
+    },
+    {
+      "path": "deck/shots/glyph-material-gem-smoke.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "271a9da297ec9bcc78609edcd7566951e2e76b2ffe25daeeb855e2c6db1ca232"
+    },
+    {
+      "path": "deck/shots/glyph-material-liquid-metal.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "3510e8d8fd1aecd66695b61fbf0b454dde528c5022e3fc44d8748e3485e0aed6"
+    },
+    {
+      "path": "deck/shots/glyph-material-god-rays.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "4e91539b892be8d071e9c58590193acfd9a19fd9c3a0b9dcbe5c0bac283200c3"
+    },
+    {
+      "path": "deck/shots/glyph-material-smoke-ring.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "175ae4f07d472b6ef2799e24e3194e9a57ec4aa160b0ce04afc8f6d125b9853b"
+    },
+    {
+      "path": "deck/shots/glyph-material-chroma-flow.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "37d8d6b96139349a16f3459189cd85e85ed9e79c39fd0b31a9c6debdd50cab55"
+    },
+    {
+      "path": "deck/shots/glyph-material-grain-gradient.jpg",
+      "reason": "a Glyphfield capture or material; no GT mark (its sample brand is a four-point star); checked by eye on 2026-11-12",
+      "sha256": "957455339a4c87fef30d0f072055814c1dd22a71eae0892eca7f385cee8ab06d"
+    },
+    {
+      "path": "deck/shots/opener-status-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "07d335416594f799eade1a8741dfe72dbf764126174dd1b012df1f3e06e5b1eb"
+    },
+    {
+      "path": "deck/shots/opener-status.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "e40da13765f24b3cd6ef8a5dd2f4217fbedf35ebf121231a8e018f627c612274"
+    },
+    {
+      "path": "deck/shots/gh-gt.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "ba10f2662dae0061dd3994ccf86ff43bf4658ae8e95a8de7379d266eb6d92e0e"
+    },
+    {
+      "path": "deck/shots/tone/mood-compass.jpg",
+      "reason": "a reference or mood picture on a deck slide; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "ca3e40c2ddf7e817270f6e1cda7c4f5bf6942aa3789e531a22849b6015971ca1"
+    },
+    {
+      "path": "deck/shots/detail-docs-ja-light.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "b0b15879bec2520956a9d3d2052955a5ad059e282f4bd7e7eb48a65ba865af38"
+    },
+    {
+      "path": "deck/shots/detail-docs-ja-dark.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "267aefed36fbdcb35fb29c6da64ce6791893c24769fd41c165bf7b200592680e"
+    },
+    {
+      "path": "deck/shots/opener-closing-light.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "46183bb70cedc6548069bd839850227a2c865dc8a87dad2d8821c7d4b4125f22"
+    },
+    {
+      "path": "deck/shots/opener-closing.jpg",
+      "reason": "a deck section opener, a dithered shader field; no GT mark; checked by eye on 2026-11-12",
+      "sha256": "eab56b6aa0956ae077d2f85a6be6066d6f42e46743492b72cc880606fcdedc37"
+    },
+    {
+      "path": "deck/shots/thumb/x-banner.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "665da46bbf49f8a65b247dafdebce9f8abd0bce6c90ac70822337284dec42a03"
+    },
+    {
+      "path": "deck/shots/thumb/gh-gt.jpg",
+      "reason": "a crop or capture with no GT mark (header actions, seams, customer logos, docs text, the 404 copy, the X banner, the GitHub page); checked by eye on 2026-11-12",
+      "sha256": "f863b6dec779fe72881f9e85d64e05e8dfda1eb7b596719d218d2767e95c9243"
+    },
+    {
+      "path": "deck/shots/thumb/proto-gallery.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "641e61085f2b576a322fbe9c31244191f4d6490e5332c5f9c0f55497820d615a"
+    },
+    {
+      "path": "deck/shots/thumb/proto-compare.jpg",
+      "reason": "a capture of a Prototemplate control, engine or panel; no GT mark at a legible size; checked by eye on 2026-11-12",
+      "sha256": "3ab00c5b02479c61f1f3da7636e37d0e5cede76211daf7c916a795a0329008c4"
+    },
+    {
+      "path": "public/brand/no-bg-locadex-logo-light.png",
+      "reason": "the Locadex mark, a product mark, not the GT logo; shown on /brand; checked by eye on 2026-11-12",
+      "sha256": "12020092c73e3dc0ee9bf60379bd4f3a1c17039274db0363becad0a3caf330fc"
+    },
+    {
+      "path": "public/brand/locadex-mark-dark.png",
+      "reason": "the Locadex mark, a product mark, not the GT logo; shown on /brand; checked by eye on 2026-11-12",
+      "sha256": "a7681f9359147522b6aa04eceda414bea51e88ff3cc443aa6a23e740e00541fa"
+    },
+    {
+      "path": "public/media/gt-globe-glyphs.webp",
+      "reason": "the partnership glyph globe, letter tiles on a sphere; no GT mark; shown on /brand; checked by eye on 2026-11-12",
+      "sha256": "9df4ec750b9f6e3b6fae3c3dcb6d66188b563fd8857541b851a1dbf0d3600a92"
+    },
+    {
+      "path": "public/media/gt-globe-glyphs-light.webp",
+      "reason": "the partnership glyph globe in the light theme, letter tiles on a sphere; no GT mark; shown on /brand; checked by eye on 2026-11-12",
+      "sha256": "67b5b918242c97decc89cde6027acd0b205e96679832b5ce01302f608ea882db"
+    },
+    {
+      "path": "public/media/gt-globe-glyph-launch.webp",
+      "reason": "the launch glyph globe, the dithered Earth with letter tiles; no GT mark; shown on /brand; checked by eye on 2026-11-12",
+      "sha256": "869546b8b91d2038520e083c86302f7d82cdf8736b907a167aa7ba7051498a79"
+    },
+    {
+      "path": "public/media/gt-globe-dithered.webp",
+      "reason": "the partnership dithered globe, a dithered Earth; no GT mark; shown on /brand; checked by eye on 2026-11-12",
+      "sha256": "494d67bde0fa180e291ff2bbb3aa0c5ed1c76a378d228570134936994cea4466"
+    },
+    {
+      "path": "deck/shots/proto-marks-speed-light.jpg",
+      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are a separate approved system, deck slide 73; checked by eye on 2026-11-12",
+      "sha256": "290558b7798536dd09b6e0455414b61f60ff350108b83b99672a20361845148d"
+    },
+    {
+      "path": "deck/shots/proto-marks-speed-dark.jpg",
+      "reason": "a capture of the speed set on /marks (bar monogram, lockup, plate, double cut, livery, dithered, ASCII, two-way, globe G); no globe logo; the speed marks are a separate approved system, deck slide 73; checked by eye on 2026-11-12",
+      "sha256": "70dbe6761b1ad26ef004b538e5c6f1383b931c45c8b6587c1278961e6a56fbc9"
     }
   ],
   "external": [

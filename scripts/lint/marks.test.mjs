@@ -141,10 +141,11 @@ test('/marks/graticule draws every graticule mark once: the shortlisted first, t
   assert.equal(ids.indexOf('graticule-jaw-thicker'), ids.indexOf('graticule-jaw') + 1);
 });
 
-test('every mark /brand\'s badge cuts through after the logo is no wider than the logo', () => {
+test('every mark /brand\'s badge cuts through after the logo is no wider than the logo, and none is the logo\'s own file or a previous logo', () => {
   const [, , width, height] = LOGO.viewBox.split(' ').map(Number);
   for (const mark of badgeMarks(width / height)) {
-    assert.notEqual(mark.use, 'logo', 'the badge repeats the logo after its first frame');
+    assert.equal(mark.use, undefined, `${mark.id} is the logo's own file (${mark.use}); the badge's first frame is the logo`);
+    assert.notEqual(mark.previous, true, `${mark.id} is a previous logo, which no current surface shows`);
     assert.ok(mark.box[2] / mark.box[3] <= width / height, `${mark.id} is wider than the logo`);
   }
 });
